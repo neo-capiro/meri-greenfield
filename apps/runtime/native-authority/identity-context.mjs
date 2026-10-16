@@ -4,10 +4,10 @@ import {createCapiroApplicationAuthorityClient} from '../../control/action-host/
 import {createApplicationContextAdapters} from '../../control/action-host/application-adapters/context-adapter.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 export function createNativeIdentityContext(configuration){
- const {origin,currentOwner,commandContext,fetchImpl,now,limits,enabled=false,selectRun}=own(configuration,['origin','currentOwner','commandContext','fetchImpl','now','limits'],['enabled','selectRun']);
+ const {origin,currentOwner,commandContext,fetchImpl,now,limits,enabled=false,selectRun,admitInitialConversation}=own(configuration,['origin','currentOwner','commandContext','fetchImpl','now','limits'],['enabled','selectRun','admitInitialConversation']);
  const l=data(own(limits,['maxRequestMs','maxFactBytes'])),currentRun=storageMethod(currentOwner,'currentRun');
  const client=createCapiroApplicationAuthorityClient({origin,fetchImpl,now,enabled,limits:{maxRequestMs:l.maxRequestMs,maxResponseBytes:l.maxFactBytes}});
- const mapped=createApplicationContextAdapters({client,currentRun,commandContext,now,limits:l,selectRun});
+ const mapped=createApplicationContextAdapters({client,currentRun,commandContext,now,limits:l,...(selectRun?{selectRun}:{}),...(admitInitialConversation?{admitInitialConversation}:{})});
  const unavailable=()=>{throw Object.assign(Error('NATIVE_AUTHORITY_UNAVAILABLE'),{code:'NATIVE_AUTHORITY_UNAVAILABLE',status:503});};
  return Object.freeze({
   async verifyIdentity(call){if(!enabled)unavailable();try{return await mapped.verifyIdentity(call);}catch{unavailable();}},

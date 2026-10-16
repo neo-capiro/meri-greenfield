@@ -1,0 +1,23 @@
+# Meri initial-run admission source outline - 2026-10-16
+
+Base: draft PR #91 head `268dfe4`, on local branch `work/meri-initial-run-admission-20261016`. This is ordinary first chat. Objective generation stays independent and disabled.
+
+## Ownership and interface
+
+Core draft PR #43 at `c64f0005` publishes `POST /api/clio/conversations/bootstrap` with native Clerk bearer and `{schemaVersion:1,requestId:<stable UUID>,clientId:<UUID>}`. Its HTTP 200 receipt carries `{schemaVersion:1,requestId,conversationId,tenantId,actorId,clientId}`. Meri accepts only `conversationId` as a candidate and independently proves current identity, ownership, and configured-client context before durable admission. The frontend gateway write policy must explicitly allow this narrow operation before activation.
+
+Core owns idempotent creation or reuse of a current, tenant/actor/client-owned `ClioConversation` UUID. The frontend passes that UUID as a candidate, after resolving it through the narrow authenticated Core gateway. Meri alone admits the UUID into its initial run. Neither a browser hint nor a Core resolver receipt substitutes for Meri's fresh native bearer `/identity` and `/context` verification.
+
+The Meri application context adapter will, in opt-in dynamic mode, verify Core context for the candidate UUID and fixed configured client before asking a trusted initial-run owner to admit/select it. The owner persists one immutable writer-fence-1 binding under `(tenantId, conversationId)` and returns the same binding on exact replay. It rejects changed actor, client, policy, versions or reviewed configuration, and never mints a replacement after an uncertain commit or expiry. Per-session identity and context revisions remain freshness facts, not durable replay keys. Existing action-session hashes and native Core identity joins remain unchanged.
+
+The initial-run journal is a separate PostgreSQL adapter using the conversation advisory transaction pattern. A product migration ID and live database activation remain centrally unallocated, so the new port stays optional and unmounted by default. The prepared candidate selects the admitted original before any run exists; its existing first-input claim then accepts the first queued run. The run registry and issuance owner read the same admission before recognizing or preparing a non-static original, and continue to use the canonical issuer, facts compiler, allocator, and expiry record. The startup-bound original remains available unchanged.
+
+Dynamic admission is restricted to the startup-configured selected client. A different client requires a separately reviewed configuration and must fail closed. The reviewed nonsecret execution configuration receives one digest covering model/budgets, runtime versions, plan, preparation, allocation semantics, qualification, task request, transport, operations, and approved reads; no credential content enters that digest or the journal.
+
+The trusted startup API may inject the journal into `startPreparedCandidate`; without that port, startup and readiness preserve the fixed preview behavior. With the port, readiness requires the new table plus a current Core membership and selected-client roster, without assuming an unrelated startup conversation is active. The fixed native `/identity` and `/context` route remains the authority for each candidate session. The exact production configuration is not yet bound; before activation, review every configured value for an embedded startup conversation ID and qualify the dynamic workspace retarget.
+
+Restarted dynamic-original stop reconstructs only the canonical stop intent from retained issuance and allocation records. It does not prepare or allocate again. Reconstruction compares against the currently reviewed configuration; after a deployment changes that configuration, cleanup of an older admitted task needs separately retained old-pin custody before activation. A mismatch fails closed rather than claiming the task stopped.
+
+## Focused verification
+
+Exercise exact replay and conflict under the journal lock, uncertain commit, expired admission, wrong client/actor, Core context denial and rotation, session reauthentication, first input and accepted run, original issuance replay, restart stop, and subsequent saved transcript read. Use existing Node 24 and repository fixtures. No dependency install, provider call, AWS build/deploy, live database migration, or broad audit is in scope. A coherent integration pin later needs the frontend/Core resolver contracts, database migration allocation, and the preview gateway write policy: current `CAPIRO_PREVIEW_READ_ONLY=true` rejects the proposed Core create-or-reuse POST.

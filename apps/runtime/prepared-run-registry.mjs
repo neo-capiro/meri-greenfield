@@ -2,6 +2,7 @@
 import {own,data,nativeSignal} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash,validateShape} from '../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
+import {createRunReconciler} from '../control/conversations/run-reconciler.mjs';
 import {storageMethod} from '../artifacts/storage/boundary.mjs';
 import {types} from 'node:util';
 import {jsonBody} from '../control/action-application/http.mjs';
@@ -17,7 +18,7 @@ import {captureReadRuntimeOptions} from './native-authority/prepared-reads.mjs';
 const fail=()=>{throw Object.assign(Error('PREPARED_RUN_REGISTRY_REFUSED'),{code:'PREPARED_RUN_REGISTRY_REFUSED'});};
 const same=(a,b)=>hash(a)===hash(b);
 export function createPreparedRunRegistry(configuration){
- const c=own(configuration,['issuance','issuanceIntent','store','pool','client','identity','controlCapability','objects','limits'],['now','allocate','retireOriginal','fetchImpl','maximumExpiresAtMs','prepareOriginal','approvedReads','sourceEnabled','generalReads','createReadsRuntime']);
+ const c=own(configuration,['issuance','issuanceIntent','store','pool','client','identity','controlCapability','objects','limits'],['now','allocate','retireOriginal','retireInitial','fetchImpl','maximumExpiresAtMs','prepareOriginal','prepareInitial','initialBindings','configurationSha256','approvedReads','sourceEnabled','generalReads','createReadsRuntime']);
  const readsRuntime=captureReadRuntimeOptions(Object.fromEntries(['createReadsRuntime','generalReads'].filter(k=>c[k]!==undefined).map(k=>[k,c[k]])));
  const now=c.now??Date.now,fetchImpl=c.fetchImpl??fetch,limits=own(c.limits,['maxRequestMs','maxFactBytes'],['cleanupMs','maxWaitMs']),controlDigest=capabilityDigest(c.controlCapability),cache=new Map(),ready=new Map(),cancellation=new AbortController();let closed=false,closing;
  const read=storageMethod(c.store,'read'),readTarget=storageMethod(c.store.nextRuns,'readTarget'),current=storageMethod(c.store.nextRuns,'current'),readAllocation=storageMethod(c.store.allocations,'read'),prepare=storageMethod(c.issuance,'prepare'),resolveFacts=storageMethod(c.issuance,'resolveFacts'),resolveCapability=storageMethod(c.issuance,'resolveCapability');
@@ -25,11 +26,28 @@ export function createPreparedRunRegistry(configuration){
  const portLimits={maxRequestMs:limits.maxRequestMs,maxFactBytes:limits.maxFactBytes};
  const rootIdentity=own(c.identity,['origin','credential','commandContext','fetchImpl']);own(rootIdentity.commandContext,['binding','clientResolution']);
  if(c.prepareOriginal!==undefined&&(typeof c.prepareOriginal!=='function'||types.isProxy(c.prepareOriginal)))fail();
- const isOriginal=binding=>c.prepareOriginal!==undefined&&same(binding,rootIdentity.commandContext.binding);
+ if((c.initialBindings===undefined)!==(c.prepareInitial===undefined)||(c.initialBindings===undefined)!==(c.retireInitial===undefined)||c.prepareInitial!==undefined&&(typeof c.prepareInitial!=='function'||types.isProxy(c.prepareInitial)||typeof c.retireInitial!=='function'||types.isProxy(c.retireInitial)||typeof c.configurationSha256!=='string'||!/^[a-f0-9]{64}$/u.test(c.configurationSha256)))fail();
+ const readInitial=c.initialBindings===undefined?null:storageMethod(c.initialBindings,'read'),readInitialConversation=c.initialBindings===undefined?null:storageMethod(c.initialBindings,'readConversation'),readInitialRun=c.initialBindings===undefined?null:storageMethod(c.store,'readOptional'),isStaticOriginal=binding=>c.prepareOriginal!==undefined&&same(binding,rootIdentity.commandContext.binding);
  function check(signal){if(closed||signal?.aborted)fail();}
- async function accepted(binding,life,expected,stopOnly=false){
-  check(life.signal);const row=data(await life.run(()=>read(binding,{},life.check))),reservation=data(await life.run(()=>readTarget(binding,life.check))),selected=data(await life.run(()=>current(binding,life.check)));life.check();
-  if(!same(row.run.binding,binding)||!stopOnly&&!['queued','starting','running'].includes(row.run.state)||!isOriginal(binding)&&(!reservation||reservation.state!=='ACCEPTED'||!same(reservation.target,binding)||!same(reservation.scopes,row.run.scopes)||reservation.policyRevision!==row.run.policyRevision||!same(reservation.versions,row.run.versions))||selected.reserved!==false||!same(selected.binding,binding)||selected.policyRevision!==row.run.policyRevision||!same(selected.scopes,row.run.scopes)||expected&&!same(row.request,expected))fail();return {row,reservation};
+ function principal(binding){if(readInitial&&(binding.tenantId!==rootIdentity.commandContext.binding.tenantId||binding.actorId!==rootIdentity.commandContext.binding.actorId))fail();}
+ const exactInitialScopes=(scopes,binding,admitted)=>Array.isArray(scopes)&&same(scopes,[{kind:'client',tenantId:binding.tenantId,resourceId:admitted.selectedClientId,policyRevision:admitted.policyRevision}]);
+ function admittedRecord(raw,binding,allowExpired){
+  const r=data(own(raw,['schemaVersion','state','binding','selectedClientId','policyRevision','versions','configurationSha256','expiresAtMs','createdAtMs']));
+  if(r.schemaVersion!==1||r.state!=='ADMITTED'||r.binding.writerFence!==1||r.binding.tenantId!==binding.tenantId||r.binding.actorId!==binding.actorId||r.binding.conversationId!==binding.conversationId||r.selectedClientId!==rootIdentity.commandContext.clientResolution.clientId||r.configurationSha256!==c.configurationSha256||!Number.isSafeInteger(r.createdAtMs)||r.createdAtMs<1||r.createdAtMs>now()||!Number.isSafeInteger(r.expiresAtMs)||!allowExpired&&r.expiresAtMs<=now()||r.expiresAtMs<=r.createdAtMs||c.maximumExpiresAtMs!==undefined&&r.expiresAtMs>c.maximumExpiresAtMs)fail();return r;
+ }
+ async function initial(binding,life,allowExpired=false){
+  principal(binding);if(!readInitial||isStaticOriginal(binding)||binding.writerFence!==1)return null;
+  const raw=await life.run(()=>readInitial({binding},life.check));life.check();if(raw===null)return null;
+  const r=admittedRecord(raw,binding,allowExpired);if(!same(r.binding,binding))fail();return r;
+ }
+ async function originalAdmission(binding,life){
+  principal(binding);if(!readInitial||binding.conversationId===rootIdentity.commandContext.binding.conversationId||binding.writerFence===1)return null;
+  const raw=await life.run(()=>readInitialConversation({principal:{tenantId:binding.tenantId,actorId:binding.actorId},conversationId:binding.conversationId,selectedClientId:rootIdentity.commandContext.clientResolution.clientId},life.check));life.check();if(raw===null)fail();const admitted=admittedRecord(raw,binding,true);
+  const saved=await life.run(()=>readInitialRun(admitted.binding,{},life.check));life.check();if(!saved||!same(saved.run?.binding,admitted.binding)||!same(saved.run.versions,admitted.versions)||saved.run.policyRevision!==admitted.policyRevision||!exactInitialScopes(saved.run.scopes,binding,admitted))fail();return admitted;
+ }
+ async function accepted(binding,life,expected,stopOnly=false,pinnedInitial){
+  check(life.signal);principal(binding);const admission=await initial(binding,life),original=await originalAdmission(binding,life),row=data(await life.run(()=>read(binding,{},life.check))),reservation=data(await life.run(()=>readTarget(binding,life.check))),selected=data(await life.run(()=>current(binding,life.check)));life.check();
+  if(pinnedInitial!==undefined&&!same(admission,pinnedInitial)||!same(row.run.binding,binding)||!stopOnly&&!['queued','starting','running'].includes(row.run.state)||!isStaticOriginal(binding)&&!admission&&(!reservation||reservation.state!=='ACCEPTED'||!same(reservation.target,binding)||!same(reservation.scopes,row.run.scopes)||reservation.policyRevision!==row.run.policyRevision||!same(reservation.versions,row.run.versions))||admission&&(admission.policyRevision!==row.run.policyRevision||!same(admission.versions,row.run.versions)||!exactInitialScopes(row.run.scopes,binding,admission))||original&&(original.policyRevision!==row.run.policyRevision||!same(original.versions,row.run.versions)||reservation&&!same(reservation.source?.conversationId,binding.conversationId))||selected.reserved!==false||!same(selected.binding,binding)||selected.policyRevision!==row.run.policyRevision||!same(selected.scopes,row.run.scopes)||expected&&!same(row.request,expected))fail();return {row,reservation,admission};
  }
  function lifetime(signal,expiresAtMs=now()+limits.maxRequestMs){nativeSignal(signal);return createOperationLifetime({now,signal:signal?AbortSignal.any([signal,cancellation.signal]):cancellation.signal,deadlineMs:Math.min(expiresAtMs,now()+limits.maxRequestMs),errorFactory:()=>Error('PREPARED_RUN_REGISTRY_REFUSED')});}
  /** A stop-only entry (the stop route after a restart) may serve a run that is already terminal but whose original is not yet retired; it
@@ -37,9 +55,9 @@ export function createPreparedRunRegistry(configuration){
  async function build(binding,signal,record,stopOnly){
   const life=lifetime(signal);let entry;
   try{
-   const {row,reservation}=await accepted(binding,life,undefined,stopOnly);let source,policy,issued;
-   if(isOriginal(binding)){
-    if(stopOnly)fail();record.issuanceStarted=true;issued=data(await life.run(signal=>c.prepareOriginal({signal})));policy={expiresAtMs:issued.issuance.expiresAtMs};
+   const {row,reservation,admission}=await accepted(binding,life,undefined,stopOnly),originalKind=isStaticOriginal(binding)?'static':admission?'admitted':null;let source,policy,issued;
+   if(originalKind){
+    if(stopOnly)fail();record.issuanceStarted=true;issued=data(await life.run(signal=>originalKind==='static'?c.prepareOriginal({signal}):c.prepareInitial({binding,signal})));policy={expiresAtMs:issued.issuance.expiresAtMs};if(admission&&policy.expiresAtMs!==admission.expiresAtMs)fail();
    }else{
    const sourceSaved=data(await life.run(()=>readAllocation({binding:reservation.source,allocationKey:hash(reservation.source)},life.check)));life.check();const s=sourceSaved.record;
    const noAuthority=reservation.facts?.noAuthority?.foreclosureSha256;
@@ -55,14 +73,14 @@ export function createPreparedRunRegistry(configuration){
    if(!same(compiled.approvedReads??null,c.approvedReads??null))fail();
    // The delivery/transport contract is this entry's own, bound into the immutable facts hash above; nothing here is shared across entries.
    const transport=parseTransport(compiled.transport);if(!same(transport,issued.transport))fail();
-   await accepted(binding,life,row.request,stopOnly);life.check();
+   await accepted(binding,life,row.request,stopOnly,admission);life.check();
    const original=compiled.original,identity={...rootIdentity,commandContext:{...rootIdentity.commandContext,binding}};let controller,pending,controllerClose;
-   const readCurrentEntry=compiled.approvedReads===undefined?undefined:createPreparedReadEntry({store:c.store,issuance:c.issuance,issued,request:row.request,now,resource:()=>controller?.resource,readCurrentRun:async(_,{signal})=>{const fresh=lifetime(signal,original.expiresAtMs);try{return (await accepted(binding,fresh,row.request)).row;}finally{fresh.close();}}});
-   const prepareAgain=signal=>isOriginal(binding)?c.prepareOriginal({signal}):prepare({...intent,source,signal});
+   const readCurrentEntry=compiled.approvedReads===undefined?undefined:createPreparedReadEntry({store:c.store,issuance:c.issuance,issued,request:row.request,now,resource:()=>controller?.resource,readCurrentRun:async(_,{signal})=>{const fresh=lifetime(signal,original.expiresAtMs);try{return (await accepted(binding,fresh,row.request,false,admission)).row;}finally{fresh.close();}}});
+   const prepareAgain=signal=>originalKind==='static'?c.prepareOriginal({signal}):originalKind==='admitted'?c.prepareInitial({binding,signal}):prepare({...intent,source,signal});
    const closeController=()=>{if(!controller)return Promise.resolve();return controllerClose??=Promise.resolve().then(()=>controller.close());};
    let entryClosed=false;
    const lazy={get prepared(){return controller?.prepared;},allocate({signal}={}){nativeSignal(signal);check(signal);if(entryClosed||stopOnly)fail();if(!pending)pending=Promise.resolve().then(async()=>{
-    const checkLife=lifetime(signal,original.expiresAtMs);try{await accepted(binding,checkLife,row.request);const replay=data(await checkLife.run(prepareAgain));if(!same(replay,issued))fail();checkLife.check();}finally{checkLife.close();}
+    const checkLife=lifetime(signal,original.expiresAtMs);try{await accepted(binding,checkLife,row.request,false,admission);const replay=data(await checkLife.run(prepareAgain));if(!same(replay,issued))fail();checkLife.check();}finally{checkLife.close();}
     check(signal);if(entryClosed)fail();return (c.allocate??allocateRemoteNativeController)({pool:c.pool,client:c.client,identity,allocationJson:facts.allocationJson,qualification:facts.qualification,grantIntents:facts.grantIntents,grantId:facts.grantId,operations:facts.operations,taskCapability:capability,controlCapabilitySha256:controlDigest,runtime:facts.runtime,plan:facts.plan,preparationIntent:facts.preparationIntent,taskRequest:facts.taskRequest,containerName:facts.containerName,limits:portLimits,objects:c.objects,enabled:true,now,...(readCurrentEntry?{readCurrentEntry,approvedReads:compiled.approvedReads,runRequestSha256:issued.issuance.requestSha256,issuanceFactsSha256:compiled.factsSha256,scopes:row.run.scopes,sourceEnabled:c.sourceEnabled===true,...readsRuntime}:{}),transportFactory:({original})=>({original,origin:transport.origin,credential:c.controlCapability,fetchImpl,now})});
    }).then(async value=>{controller=value;if(closed||entryClosed){await closeController();fail();}return {original,resource:controller.resource};});return pending;},async reconcile({signal}={}){await lazy.allocate();return controller.reconcile({signal});},async close(){entryClosed=true;try{await pending;}catch{}await closeController();},
     // Stop-only: forecloses later allocation here, then the original's canonical stop rebuilt from these exact replayed issuance facts.
@@ -70,7 +88,7 @@ export function createPreparedRunRegistry(configuration){
    const runner=Object.fromEntries(['readiness','release'].map(method=>[method,value=>createPreparedRunnerReleaseClient({original,taskArn:value.taskArn,origin:transport.origin,credential:c.controlCapability,fetchImpl,now})[method](value)]));
    const kickoff=createPreparedTaskKickoff({original,controller:lazy,store:c.store,runner,enabled:true,reconcile:true,now,maxRequestMs:limits.maxRequestMs,maxWaitMs:limits.maxWaitMs??Math.max(1,Math.min(1800000,original.expiresAtMs-now())),cleanupMs:limits.cleanupMs??3000}),kickoffHttp=createPreparedKickoffApplication({owner:kickoff,controlCapabilitySha256:controlDigest,enabled:true,now,maxRequestMs:limits.maxRequestMs});
    entry=Object.freeze({binding,original,kickoff,kickoffHttp,matchesTaskCapability:credential=>matchesCapability(credential,issued.issuance.capabilitySha256),session(port,method,value){check();if(entryClosed||!controller||!same(value.request?.binding,binding))throw Object.assign(Error('SDK_SESSION_UNAVAILABLE'),{code:'SDK_SESSION_UNAVAILABLE'});return controller.productPorts[port][method](value);},async read(operation,input,credential,signal,deadlineMs){check(signal);if(entryClosed||!controller?.readsOwner||!matchesCapability(credential,issued.issuance.capabilitySha256))throw nativeReadFault('ACCESS_DENIED');const combined=signal?AbortSignal.any([signal,cancellation.signal]):cancellation.signal,result=await controller.readsOwner.handle(operation,input,credential,combined,deadlineMs);check(combined);if(entryClosed)throw nativeReadFault('ACCESS_DENIED');return result;},application:Object.freeze({async handle(request){if(entryClosed||closed||!controller)return null;return await controller.application.handle(request)??await controller.supervisor.application.handle(request);}}),async bootstrap(value){
-    const v=own(value,['binding','versions','credential'],['signal']),bootLife=lifetime(v.signal,original.expiresAtMs);try{check(bootLife.signal);if(entryClosed||!controller||!same(v.binding,binding)||!same(v.versions,original.versions)||!matchesCapability(v.credential,issued.issuance.capabilitySha256))fail();await accepted(binding,bootLife,row.request);await bootLife.run(signal=>controller.supervisor.taskVerifier.verify({capability, binding,operation:'load',inputSha256:hash({binding}),signal,deadlineMs:Math.min(now()+limits.maxRequestMs,original.expiresAtMs)}));const admitted=await bootLife.run(signal=>controller.prepared.preparationAuthorizer.admitted({original,signal}));bootLife.check();if(admitted.taskArn!==controller.resource.taskArn)fail();return data({original,preparationIntent:facts.preparationIntent,taskArn:admitted.taskArn,controlCapabilitySha256:controlDigest,processOrigin:transport.origin,http:transport.http,preparedKickoff:true,...(compiled.approvedReads===undefined?{}:{approvedReads:compiled.approvedReads})});}finally{bootLife.close();}
+    const v=own(value,['binding','versions','credential'],['signal']),bootLife=lifetime(v.signal,original.expiresAtMs);try{check(bootLife.signal);if(entryClosed||!controller||!same(v.binding,binding)||!same(v.versions,original.versions)||!matchesCapability(v.credential,issued.issuance.capabilitySha256))fail();await accepted(binding,bootLife,row.request,false,admission);await bootLife.run(signal=>controller.supervisor.taskVerifier.verify({capability, binding,operation:'load',inputSha256:hash({binding}),signal,deadlineMs:Math.min(now()+limits.maxRequestMs,original.expiresAtMs)}));const admitted=await bootLife.run(signal=>controller.prepared.preparationAuthorizer.admitted({original,signal}));bootLife.check();if(admitted.taskArn!==controller.resource.taskArn)fail();return data({original,preparationIntent:facts.preparationIntent,taskArn:admitted.taskArn,controlCapabilitySha256:controlDigest,processOrigin:transport.origin,http:transport.http,preparedKickoff:true,...(compiled.approvedReads===undefined?{}:{approvedReads:compiled.approvedReads})});}finally{bootLife.close();}
    }});
    check(life.signal);ready.set(hash(binding),entry);return entry;
   }catch{if(entry)await entry.kickoff.close().catch(()=>{});fail();}finally{life.close();}
@@ -91,16 +109,23 @@ export function createPreparedRunRegistry(configuration){
   const cap=path.startsWith('/v1/runner/session/')?9437184:path==='/v1/runner/runtime'||path.startsWith('/v1/runner/checkpoint/')?2097152:path.startsWith('/v1/runner/native/')&&path!=='/v1/runner/native/bootstrap'?262144:131072;
   life=lifetime(info.signal);const clone=Request.prototype.clone.call(request),input=await jsonBody({body:clone.body,length:length===null?null:Number(length)},cap,life,life.check);life.check();
   if(!input||typeof input!=='object'||Array.isArray(input))fail();const binding=data(input.binding??input.original?.binding);validateShape('RunBinding',binding);if(input.binding&&input.original?.binding&&!same(input.binding,input.original.binding))fail();
+  principal(binding);
   let entry=ready.get(hash(binding));
   if(path==='/v1/execution/kickoff'){
    own(input,['binding','executionKey']);if(input.executionKey!==hash(binding))fail();
-   if(!entry){if(!isOriginal(binding)){const reservation=await life.run(()=>readTarget(binding,life.check));life.check();if(!reservation)return null;}entry=await life.run(signal=>ensure({binding,signal}));}
+   if(!entry){if(!isStaticOriginal(binding)&&!await initial(binding,life)){const reservation=await life.run(()=>readTarget(binding,life.check));life.check();if(!reservation)return null;}entry=await life.run(signal=>ensure({binding,signal}));}
    return await life.run(()=>entry.kickoffHttp.handle(request));
   }
-  // The broker's independent stop (and the workflow's reconciliation) may reach a control process that has not seen this
-  // accepted target since a restart: the entry is rebuilt from the same issuance (exact replay, no allocation) so its stop
-  // reaches the canonical owners and the run reconciler. It never kicks off or allocates; it may serve a run that is already terminal.
-  if(path==='/v1/execution/kickoff/stop'&&!entry){own(input,['binding','executionId']);if(input.executionId!==hash(binding))fail();if(isOriginal(binding))return null;const reservation=await life.run(()=>readTarget(binding,life.check));life.check();if(!reservation)return null;entry=await life.run(signal=>ensure({binding,signal},true));}
+  // A restarted dynamic original has no cached issuance/controller. Reconcile its accepted run through the stop-only
+  // durable retirement port; expiry does not turn an allocated task into an unowned task. No preparation or allocation occurs.
+  if(path==='/v1/execution/kickoff/stop'&&!entry){own(input,['binding','executionId']);if(input.executionId!==hash(binding))fail();if(isStaticOriginal(binding))return null;
+   const admitted=await initial(binding,life,true);
+   if(admitted){try{const saved=await life.run(()=>read(binding,{},life.check));life.check();if(!same(saved?.run?.binding,binding)||!same(saved.run.versions,admitted.versions)||saved.run.policyRevision!==admitted.policyRevision||!exactInitialScopes(saved.run.scopes,binding,admitted))fail();
+    const reconciler=createRunReconciler({store:c.store,retirement:{retire:({binding,signal})=>c.retireInitial({binding,client:c.client,signal})},now,maxReconcileMs:limits.cleanupMs??3000});
+    const result=await life.run(signal=>reconciler.reconcile({binding,signal}));if(result.outcome==='unknown')throw Error('PREPARED_KICKOFF_UNKNOWN');
+    return reply({binding,executionId:hash(binding),expiresAtMs:admitted.expiresAtMs});
+   }catch{return reply({error:{code:'PREPARED_KICKOFF_UNKNOWN'}},503);}}
+   const reservation=await life.run(()=>readTarget(binding,life.check));life.check();if(!reservation)return null;entry=await life.run(signal=>ensure({binding,signal},true));}
   if(!entry)return null;if(!control&&!entry.matchesTaskCapability(credential))fail();
   if(kickoffRoute)return await life.run(()=>entry.kickoffHttp.handle(request));
   if(path==='/v1/runner/native/bootstrap'){
