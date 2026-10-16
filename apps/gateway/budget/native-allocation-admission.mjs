@@ -8,6 +8,7 @@ import {allocation,same,digest,integer as positive} from './tool-budget-binding.
 import {admittedConfiguration,assertRun,dbTime,integer} from './admitted-run-binding.mjs';
 import {readCurrentAdmission} from './admitted-run-current.mjs';
 import {PostgresBudgetStore,BudgetStateDenied,refuse} from './postgres-budget-store.mjs';
+import {nativeTenantBudget} from './tenant/native-admission.mjs';
 
 export function createNativeAllocationAdmission(configuration){
  const c=own(configuration,['pool','allocationJson','grantIntents','qualification','binding','now','limits'],['namespace']);
@@ -63,6 +64,7 @@ export function createNativeAllocationAdmission(configuration){
     if(!runs.length&&!allocations.length&&!grants.length)return data({state:'REVOKED',taskArn:input.taskArn,grantIds:intents.map(i=>i.grantId),revocationProven:true,authorityAbsent:true});
    }
    if(install){
+    await nativeTenantBudget({client,binding,nowMs:dbTime(budget.now),allocation:a,signal:life.signal,check}).admit();check();
     const f=admitted.facts[0],mapping=f.qualificationBinding;
     await client.query(`INSERT INTO ${t.runs}(run_id,attempt,worker_arn,fence,policy_revision) VALUES($1,$2,$3,$4,$5) ON CONFLICT DO NOTHING`,[mapping.runId,mapping.attempt,mapping.workerArn,mapping.fence,mapping.policyRevision]);check();
     await client.query(`INSERT INTO ${t.tool_run_allocations}(run_id,allocation_sha256,allocation,max_tool_calls,max_cost_micro_usd) VALUES($1,$2,$3,$4,$5) ON CONFLICT DO NOTHING`,[binding.runId,admitted.allocationSha256,a,a.budgets.maxToolCalls,a.budgets.maxCostMicroUSD]);check();
@@ -77,6 +79,7 @@ export function createNativeAllocationAdmission(configuration){
     for(const fact of admitted.facts){await client.query(`UPDATE ${t.grants} SET state='REVOKED' WHERE grant_id=$1 AND state IN ('ACTIVE','PENDING')`,[fact.grantId]);check();}
     const revoked=(await client.query(`SELECT * FROM ${t.grants} WHERE run_id=$1 ORDER BY grant_id FOR UPDATE`,[binding.runId])).rows;check();
     if(revoked.length!==intents.length||revoked.some(g=>g.state!=='REVOKED'))refuse('NATIVE_REVOCATION_UNKNOWN');
+    await nativeTenantBudget({client,binding,nowMs:dbTime(budget.now),allocation:a,signal:life.signal,check}).revoke();check();
     return data({state:'REVOKED',taskArn:input.taskArn,grantIds:admitted.facts.map(f=>f.grantId),revocationProven:true});
    }
    if(install)for(const fact of admitted.facts){await client.query(`UPDATE ${t.grants} SET state='ACTIVE' WHERE grant_id=$1 AND state='PENDING'`,[fact.grantId]);check();}

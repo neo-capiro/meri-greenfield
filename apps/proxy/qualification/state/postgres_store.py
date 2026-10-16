@@ -5,6 +5,7 @@ import psycopg
 from psycopg.rows import dict_row
 
 from .pricing import StateDenied
+from .namespace import budget_schema
 
 
 class CommitUncertain(StateDenied):
@@ -12,16 +13,19 @@ class CommitUncertain(StateDenied):
 
 
 class PostgresStore:
-    def __init__(self, connection_parameters, *, after_commit=None):
+    def __init__(self, connection_parameters, *, after_commit=None, namespace='qualification'):
+        self._namespace = namespace
+        self._schema = budget_schema(namespace)
         # Trusted operator configuration, never parsed from agent HTTP input.
         allowed = {"host", "port", "dbname", "user", "password", "sslmode", "sslrootcert"}
         if type(connection_parameters) is not dict or set(connection_parameters) - allowed:
             raise StateDenied("INVALID_DATABASE_CONFIGURATION")
         if not {"host", "port", "dbname", "user"} <= set(connection_parameters):
             raise StateDenied("INCOMPLETE_DATABASE_CONFIGURATION")
+        database_pattern = r"meri_qualification(?:_[a-z0-9_]+)?" if namespace == 'qualification' else r"meri_product(?:_[a-z0-9_]+)?"
         if (type(connection_parameters["dbname"]) is not str
-            or not re.fullmatch(r"meri_qualification(?:_[a-z0-9_]+)?",connection_parameters["dbname"])):
-            raise StateDenied("QUALIFICATION_DATABASE_REQUIRED")
+            or not re.fullmatch(database_pattern,connection_parameters["dbname"])):
+            raise StateDenied("QUALIFICATION_DATABASE_REQUIRED" if namespace == 'qualification' else "PRODUCT_DATABASE_REQUIRED")
         if (type(connection_parameters["host"]) is not str or not re.fullmatch(r"[A-Za-z0-9.-]+",connection_parameters["host"])
             or type(connection_parameters["user"]) is not str or not connection_parameters["user"]
             or type(connection_parameters["port"]) is not int or not 1<=connection_parameters["port"]<=65535):
@@ -41,7 +45,7 @@ class PostgresStore:
     def connect(self):
         try:
             return psycopg.connect(**self.parameters, connect_timeout=5,
-                                   application_name="meri-qualification-state", row_factory=dict_row)
+                                   application_name="meri-"+self.namespace+"-state", row_factory=dict_row)
         except Exception:
             raise StateDenied("DATABASE_CONNECTION_FAILED") from None
 
@@ -76,22 +80,32 @@ class PostgresStore:
 
     def migrate_new_database(self):
         """Explicit owner/test operation; schema must not exist already."""
+        self._qualification_migration()
         sql = (Path(__file__).parent / "migrations/0001_qualification_state.sql").read_text(encoding="utf-8")
         return self.transact(lambda cursor: cursor.execute(sql))
 
     def migrate_tool_budget(self):
         """Explicit owner upgrade after 0001; never called automatically."""
+        self._qualification_migration()
         sql = (Path(__file__).parent / "migrations/0002_tool_budget.sql").read_text(encoding="utf-8")
         return self.transact(lambda cursor: cursor.execute(sql))
 
     def migrate_tool_invocations(self):
         """Explicit owner upgrade after 0002; never called automatically."""
+        self._qualification_migration()
         sql = (Path(__file__).parent / "migrations/0003_tool_invocations.sql").read_text(encoding="utf-8")
         return self.transact(lambda cursor: cursor.execute(sql))
 
-    @staticmethod
-    def budget(cursor):
-        cursor.execute("SELECT * FROM meri_qualification.budget WHERE id=1 FOR UPDATE")
+    @property
+    def namespace(self):
+        return self._namespace
+
+    def _qualification_migration(self):
+        if self.namespace != 'qualification':
+            raise StateDenied('PRODUCT_MIGRATION_OWNER_REQUIRED')
+
+    def budget(self, cursor):
+        cursor.execute(f"SELECT * FROM {self._schema}.budget WHERE id=1 FOR UPDATE")
         row = cursor.fetchone()
         if row is None:
             raise StateDenied("BUDGET_UNAVAILABLE")

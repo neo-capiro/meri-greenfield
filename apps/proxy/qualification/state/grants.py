@@ -2,6 +2,7 @@
 from dataclasses import dataclass
 import re
 import uuid
+from .namespace import budget_schema, store_namespace
 from .pricing import StateDenied, digest, utc
 
 WORKER = re.compile(r"arn:aws:ecs:us-east-1:967807252336:task/[A-Za-z0-9_-]{1,255}/[0-9a-f]{32}\Z")
@@ -47,17 +48,21 @@ def same_binding(row, binding):
 class Grants:
     def __init__(self, store):
         self.store = store
+        self.namespace = store_namespace(store)
+        self.schema = budget_schema(self.namespace)
+        if self.namespace != 'qualification':
+            raise StateDenied('PRODUCT_GRANTS_OWNED_BY_NATIVE_ADMISSION')
 
     def set_current_run(self, binding):
         if type(binding) is not RunBinding:
             raise StateDenied("TYPED_BINDING_REQUIRED")
         def operation(cursor):
             self.store.budget(cursor)
-            cursor.execute("SELECT * FROM meri_qualification.runs WHERE run_id=%s", (binding.run_id,))
+            cursor.execute(f"SELECT * FROM {self.schema}.runs WHERE run_id=%s", (binding.run_id,))
             old = cursor.fetchone()
             if old and (binding.attempt <= old["attempt"] or binding.fence <= old["fence"]):
                 raise StateDenied("RUN_SEQUENCE_NOT_ADVANCED")
-            cursor.execute("INSERT INTO meri_qualification.runs(run_id,attempt,worker_arn,fence,policy_revision) VALUES(%s,%s,%s,%s,%s) ON CONFLICT(run_id) DO UPDATE SET attempt=excluded.attempt,worker_arn=excluded.worker_arn,fence=excluded.fence,policy_revision=excluded.policy_revision", binding.values())
+            cursor.execute(f"INSERT INTO {self.schema}.runs(run_id,attempt,worker_arn,fence,policy_revision) VALUES(%s,%s,%s,%s,%s) ON CONFLICT(run_id) DO UPDATE SET attempt=excluded.attempt,worker_arn=excluded.worker_arn,fence=excluded.fence,policy_revision=excluded.policy_revision", binding.values())
         self.store.transact(operation)
 
     def create_pending(self, grant_id, binding, capability_sha256, expires_at):
@@ -66,10 +71,10 @@ class Grants:
             raise StateDenied("TYPED_BINDING_REQUIRED")
         def operation(cursor):
             budget=self.store.budget(cursor)
-            self._current(cursor,binding)
+            self._current(cursor,binding,self.namespace)
             if expires_at <= budget["now"]:
                 raise StateDenied("GRANT_ALREADY_EXPIRED")
-            cursor.execute("INSERT INTO meri_qualification.grants(grant_id,run_id,attempt,worker_arn,fence,policy_revision,capability_sha256,expires_at,state) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,'PENDING')", (grant_id,*binding.values(),capability_sha256,expires_at))
+            cursor.execute(f"INSERT INTO {self.schema}.grants(grant_id,run_id,attempt,worker_arn,fence,policy_revision,capability_sha256,expires_at,state) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,'PENDING')", (grant_id,*binding.values(),capability_sha256,expires_at))
         self.store.transact(operation)
 
     def activate(self, grant_id, binding):
@@ -78,24 +83,25 @@ class Grants:
         if type(binding) is not RunBinding:
             raise StateDenied("TYPED_BINDING_REQUIRED")
         def operation(cursor):
-            budget=self.store.budget(cursor);self._current(cursor,binding)
-            cursor.execute("SELECT * FROM meri_qualification.grants WHERE grant_id=%s",(grant_id,));grant=cursor.fetchone()
+            budget=self.store.budget(cursor);self._current(cursor,binding,self.namespace)
+            cursor.execute(f"SELECT * FROM {self.schema}.grants WHERE grant_id=%s",(grant_id,));grant=cursor.fetchone()
             if not grant or grant["state"]!="PENDING" or not same_binding(grant,binding) or grant["expires_at"]<=budget["now"]:
                 raise StateDenied("GRANT_ACTIVATION_DENIED")
-            cursor.execute("UPDATE meri_qualification.grants SET state='ACTIVE' WHERE grant_id=%s",(grant_id,))
+            cursor.execute(f"UPDATE {self.schema}.grants SET state='ACTIVE' WHERE grant_id=%s",(grant_id,))
         self.store.transact(operation)
 
     def revoke(self, grant_id):
         identifier(grant_id)
         def operation(cursor):
             self.store.budget(cursor)
-            cursor.execute("UPDATE meri_qualification.grants SET state='REVOKED' WHERE grant_id=%s RETURNING grant_id",(grant_id,))
+            cursor.execute(f"UPDATE {self.schema}.grants SET state='REVOKED' WHERE grant_id=%s RETURNING grant_id",(grant_id,))
             if cursor.fetchone() is None:
                 raise StateDenied("GRANT_NOT_FOUND")
         self.store.transact(operation)
 
     @staticmethod
-    def _current(cursor,binding):
-        cursor.execute("SELECT * FROM meri_qualification.runs WHERE run_id=%s",(binding.run_id,));row=cursor.fetchone()
+    def _current(cursor,binding,namespace="qualification"):
+        schema=budget_schema(namespace)
+        cursor.execute(f"SELECT * FROM {schema}.runs WHERE run_id=%s",(binding.run_id,));row=cursor.fetchone()
         if not row or not same_binding(row,binding):
             raise StateDenied("STALE_RUN_BINDING")
