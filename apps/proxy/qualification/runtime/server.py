@@ -3,7 +3,7 @@ import asyncio
 from dataclasses import dataclass
 import time
 
-from .ingress import IngressAdmission
+from .ingress import IngressAdmission, COUNT_TOKENS_PATH
 from .lifetime import LifetimeLimits, PendingWork, RequestLifetime, _request_lifetime
 from ..state.pricing import StateDenied
 
@@ -16,10 +16,13 @@ class TrustedRequest:
 
 
 class InferenceApp:
-    def __init__(self, upstream_app, trusted_resolver, limits):
-        if not callable(upstream_app) or not callable(trusted_resolver) or type(limits) is not LifetimeLimits:
+    def __init__(self, upstream_app, trusted_resolver, limits, count_tokens_app=None):
+        if (not callable(upstream_app) or not callable(trusted_resolver)
+                or type(limits) is not LifetimeLimits
+                or count_tokens_app is not None and not callable(count_tokens_app)):
             raise StateDenied("INVALID_SERVER_COMPOSITION")
         self.upstream_app, self.trusted_resolver, self.limits = upstream_app, trusted_resolver, limits
+        self.count_tokens_app = count_tokens_app
         self.pending = PendingWork()
 
     @property
@@ -57,6 +60,7 @@ class InferenceApp:
             channel = asyncio.Queue(maxsize=2)
             ended = False
             body_bytes = output_bytes = events = output_events = 0
+            original_body = bytearray()
             response_done = False
 
             async def pump():
@@ -76,10 +80,14 @@ class InferenceApp:
                                 or type(event.get("more_body", False)) is not bool):
                             raise StateDenied("INVALID_REQUEST_EVENT")
                         events += 1
-                        body_bytes += len(event.get("body", b""))
+                        chunk = event.get("body", b"")
+                        body_bytes += len(chunk)
                         if events > self.limits.max_events or body_bytes > self.limits.max_body_bytes:
                             raise StateDenied("REQUEST_BODY_BOUND")
+                        original_body.extend(chunk)
                         ended = not event.get("more_body", False)
+                        if ended:
+                            life.original_body = bytes(original_body)
                         await channel.put(event)
                 except asyncio.CancelledError:
                     life.deny("REQUEST_RECEIVE_CANCELLED")
@@ -129,7 +137,10 @@ class InferenceApp:
             async def invoke():
                 token = _request_lifetime.set(life)
                 try:
-                    await self.upstream_app(scope, upstream_receive, upstream_send)
+                    selected = self.count_tokens_app if scope["path"] == COUNT_TOKENS_PATH else self.upstream_app
+                    if selected is None:
+                        raise StateDenied("COUNT_TOKENS_UNAVAILABLE")
+                    await selected(scope, upstream_receive, upstream_send)
                     if not response_done:
                         raise StateDenied("INCOMPLETE_UPSTREAM_RESPONSE")
                 finally:
@@ -158,6 +169,6 @@ class InferenceApp:
                 await life.close()
 
 
-def create_app(upstream_app, trusted_resolver, limits=LifetimeLimits()):
+def create_app(upstream_app, trusted_resolver, limits=LifetimeLimits(), *, count_tokens_app=None):
     """Composition must provide canonical trusted resolver and actual upstream."""
-    return InferenceApp(upstream_app, trusted_resolver, limits)
+    return InferenceApp(upstream_app, trusted_resolver, limits, count_tokens_app)

@@ -7,6 +7,7 @@ UsageResult is data, not proof of its own provenance outside this host.
 """
 import base64
 import binascii
+from dataclasses import dataclass
 import hashlib
 import json
 
@@ -28,6 +29,20 @@ _CHUNK_HEADERS = {
     ":content-type": _JSON_TYPE,
 }
 _MAX_MONEY = (1 << 63) - 1
+
+
+@dataclass(frozen=True)
+class SettlementContext:
+    """Stable, trusted startup facts; final native values are learned at send."""
+    request_id: str
+    raw_request_sha256: str
+    pricing_revision: str
+    allowed_tool_names: frozenset = frozenset({"local_echo"})
+
+    def __post_init__(self):
+        # Reuse the canonical usage-binding validator for the stable subset.
+        UsageBinding(self.request_id, "0" * 64, self.raw_request_sha256,
+                     self.pricing_revision, 1, 1, self.allowed_tool_names)
 
 
 def _settled_outcome(value, request_id):
@@ -158,17 +173,18 @@ class _ObservedResponseStream(httpx.AsyncByteStream):
 class NativeSettlementTransport(httpx.AsyncBaseTransport):
     """Single-send HTTPX adapter composed inside the existing guarded client.
 
-    `guard` and `usage_binding` are constructor-captured by trusted startup.
-    Their Python types alone do not authenticate a cross-process settlement
-    message; the injected bridge must do that before exposing it to JS.
+    Trusted startup captures `guard` and stable context. The exact native hash,
+    CountTokens result and validated UNKNOWN receipt are bound only after the
+    request hook arms the guard. Python types alone do not authenticate a
+    cross-process settlement message; the injected bridge must do that.
     """
-    def __init__(self, inner, *, guard, usage_binding, settle_complete, read_outcome=None):
+    def __init__(self, inner, *, guard, context, settle_complete, read_outcome=None):
         if (not isinstance(inner, httpx.AsyncBaseTransport)
-                or type(usage_binding) is not UsageBinding or not callable(settle_complete)
+                or type(context) is not SettlementContext or not callable(settle_complete)
                 or (read_outcome is not None and not callable(read_outcome))):
             raise AdmissionDenied("INVALID_SETTLEMENT_COMPOSITION")
         self.inner, self.guard = inner, guard
-        self.usage_binding, self.settle_complete = usage_binding, settle_complete
+        self.context, self.settle_complete = context, settle_complete
         self.read_outcome = read_outcome
         self.entered = False
 
@@ -178,13 +194,19 @@ class NativeSettlementTransport(httpx.AsyncBaseTransport):
         self.entered = True
         body = getattr(self.guard, "native_body", None)
         count = getattr(self.guard, "count_observation", None)
+        receipt = getattr(self.guard, "hold_receipt", None)
+        ledger = getattr(self.guard, "ledger", None)
         if (getattr(self.guard, "armed", False) is not True
                 or getattr(self.guard, "hook_entries", None) != 1
                 or type(body) is not NativeBody or count is None
-                or getattr(self.guard, "request_id", None) != self.usage_binding.request_id
-                or body.sha256 != self.usage_binding.native_body_sha256
-                or body.max_output_tokens != self.usage_binding.max_output_tokens
-                or getattr(count, "input_tokens", None) != self.usage_binding.counted_input_tokens):
+                or getattr(self.guard, "request_id", None) != self.context.request_id
+                or getattr(self.guard, "expected_count_origin", None) != "aws-counttokens"
+                or getattr(count, "origin", None) != "aws-counttokens"
+                or getattr(count, "native_body_sha256", None) != body.sha256
+                or getattr(receipt, "request_id", None) != self.context.request_id
+                or getattr(receipt, "native_body_sha256", None) != body.sha256
+                or getattr(receipt, "state", None) != "UNKNOWN"
+                or getattr(ledger, "reserved_raw_request_sha256", None) != self.context.raw_request_sha256):
             raise AdmissionDenied("UNARMED_SETTLEMENT_SLOT")
         try:
             raw = request.content
@@ -192,11 +214,15 @@ class NativeSettlementTransport(httpx.AsyncBaseTransport):
             raise AdmissionDenied("UNQUALIFIED_STREAMING_REQUEST_BODY") from exc
         if raw != body.raw or hashlib.sha256(raw).hexdigest() != body.sha256:
             raise AdmissionDenied("NATIVE_BODY_DRIFT")
+        binding = UsageBinding(self.context.request_id, body.sha256,
+                               self.context.raw_request_sha256, self.context.pricing_revision,
+                               count.input_tokens, body.max_output_tokens,
+                               self.context.allowed_tool_names)
         response = await self.inner.handle_async_request(request)
         if not isinstance(response, httpx.Response) or not isinstance(response.stream, httpx.AsyncByteStream):
             raise AdmissionDenied("INVALID_NATIVE_RESPONSE")
         response.stream = _ObservedResponseStream(response.stream, response.status_code,
-                                                  response.headers, self.usage_binding,
+                                                  response.headers, binding,
                                                   self.settle_complete, self.read_outcome)
         return response
 

@@ -73,6 +73,7 @@ class BedrockSendGuard:
         self.clock = clock
         self.hook_entries = 0
         self.armed = False
+        self.hold_receipt = None
         self.native_body = None
         self.count_observation = None
         self._entered = False
@@ -135,14 +136,21 @@ class BedrockSendGuard:
             raise AdmissionDenied("INPUT_TOKEN_BOUND")
         try:
             self._check_lifetime()
+            # Product uses the same one-send guard and CountTokens result, but
+            # its canonical JS reservation owner also needs the actual final
+            # HTTPX request. The qualification ledger retains its old port.
+            product_reserve = getattr(self.ledger, "reserve_final_native_once", None)
             hold = await self._within_deadline(
-                lambda: self.ledger.reserve_and_arm_once(self.request_id, body, count))
+                (lambda: product_reserve(self.request_id, request, body, count))
+                if callable(product_reserve) else
+                (lambda: self.ledger.reserve_and_arm_once(self.request_id, body, count)))
         except Exception:
             raise AdmissionDenied("LEDGER_ADMISSION_FAILED") from None
         self._check_lifetime()
         if (type(hold) is not HoldReceipt or hold.request_id != self.request_id
                 or hold.native_body_sha256 != body.sha256 or hold.state != "UNKNOWN"):
             raise AdmissionDenied("INVALID_DURABLE_SEND_RECEIPT")
+        self.hold_receipt = hold
         self.native_body = body
         self.count_observation = count
         self.armed = True

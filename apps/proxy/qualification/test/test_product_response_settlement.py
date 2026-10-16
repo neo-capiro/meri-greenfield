@@ -4,12 +4,13 @@ import gzip
 import hashlib
 import json
 import struct
+from types import SimpleNamespace
 import unittest
 import zlib
 
 import httpx
 
-from apps.proxy.product.response_settlement import NativeSettlementTransport
+from apps.proxy.product.response_settlement import NativeSettlementTransport, SettlementContext
 from apps.proxy.qualification.runtime.bedrock_body import NativeBody
 from apps.proxy.qualification.runtime.native_usage import UsageBinding
 
@@ -58,8 +59,11 @@ class Guard:
     armed = True
     hook_entries = 1
     request_id = BINDING.request_id
+    expected_count_origin = "aws-counttokens"
     native_body = NativeBody(RAW_REQUEST, SHA, 16)
-    count_observation = type("Count", (), {"input_tokens": 7})()
+    count_observation = SimpleNamespace(input_tokens=7, native_body_sha256=SHA, origin="aws-counttokens")
+    hold_receipt = SimpleNamespace(request_id=BINDING.request_id, native_body_sha256=SHA, state="UNKNOWN")
+    ledger = SimpleNamespace(reserved_raw_request_sha256=BINDING.raw_request_sha256)
 
 
 class Chunks(httpx.AsyncByteStream):
@@ -98,7 +102,9 @@ class SettlementTests(unittest.IsolatedAsyncioTestCase):
                 await callback()
         inner = Inner(parts, status=status, headers=headers, error=error)
         transport = NativeSettlementTransport(inner, guard=guard or Guard(),
-                                              usage_binding=BINDING, settle_complete=settle,
+                                              context=SettlementContext(BINDING.request_id,
+                                                  BINDING.raw_request_sha256, BINDING.pricing_revision),
+                                              settle_complete=settle,
                                               read_outcome=read_outcome)
         return inner, transport
 
@@ -118,6 +124,30 @@ class SettlementTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(slot, BINDING.request_id)
         self.assertEqual((result.status, result.input_tokens, result.output_tokens), ("COMPLETE", 7, 3))
         self.assertEqual(result.evidence_sha256, hashlib.sha256(payload).hexdigest())
+
+    async def test_binding_is_derived_after_guard_arms_with_exact_receipt_and_source_hash(self):
+        guard = Guard()
+        guard.armed = False
+        guard.native_body = None
+        guard.count_observation = None
+        guard.hold_receipt = None
+        inner, transport = self.setup_transport([raw(message())], guard=guard)
+        guard.native_body = NativeBody(RAW_REQUEST, SHA, 16)
+        guard.count_observation = SimpleNamespace(input_tokens=7, native_body_sha256=SHA,
+                                                  origin="aws-counttokens")
+        guard.hold_receipt = SimpleNamespace(request_id=BINDING.request_id,
+                                             native_body_sha256=SHA, state="UNKNOWN")
+        guard.armed = True
+        await self.call(transport)
+        self.assertEqual(inner.sends, 1)
+        self.assertEqual(len(self.calls), 1)
+        self.assertEqual(self.calls[0][1].binding, BINDING)
+        guard = Guard()
+        guard.ledger = SimpleNamespace(reserved_raw_request_sha256="d" * 64)
+        inner, transport = self.setup_transport([raw(message())], guard=guard)
+        with self.assertRaisesRegex(Exception, "UNARMED_SETTLEMENT_SLOT"):
+            await self.call(transport)
+        self.assertEqual(inner.sends, 0)
 
     async def test_native_stream_fragmented_frames_settle_only_on_eof(self):
         payload = b"".join(frame(event) for event in events())
