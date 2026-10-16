@@ -18,7 +18,7 @@ import {own,data} from '../../../../packages/contracts/commands-0.2/execution-bo
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {READ_SERVER_NAME,READ_TOOL_PREFIX,readToolName,defineReadTool,assertConvertible} from './tools.mjs';
-import {failureCode,failureResult} from './results.mjs';
+import {failureCode,failureResult,readNotices} from './results.mjs';
 import {createReadLedger,READ_TIMEOUT_MS} from './budget.mjs';
 const fault=(/** @type {string} */code)=>Object.assign(Error(code),{code});
 const SESSION=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u,TOOL_USE=/^[A-Za-z0-9_-]{1,128}$/u,ALWAYS_LOAD_MAX=24;
@@ -67,7 +67,7 @@ export function createGeneralReadServer(c){
    const subject=/** @type {any} */(parsed)?.subject;
    receipts.push(Object.freeze({deliveryId:entry.deliveryId,operation:row.operation,argumentsSha256:entry.argumentsSha256,resultSha256:canonicalSha256(parsed),
     decisionId:typeof subject?.authorizationDecisionId==='string'?subject.authorizationDecisionId:null,policyRevision:typeof subject?.policyRevision==='string'?subject.policyRevision:null,executionCatalogSha256:c.executionCatalogSha256}));
-   return {content:[{type:'text',text:result}]};
+   return {content:[{type:'text',text:result},...readNotices(row.operation,result)]};
   }catch(error){return failureResult(failureCode(error),name);}finally{life?.close();}
  };
  const alwaysLoad=c.available.length<=ALWAYS_LOAD_MAX,tools=c.available.map(row=>defineReadTool(row,handler(row),alwaysLoad));

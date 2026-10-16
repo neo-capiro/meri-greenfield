@@ -12,12 +12,13 @@ import {assertCapabilityPolicy} from '../../capabilities/policy.mjs';
 import {resolveCapabilityPolicy,intersectCapabilityPolicies} from '../../capabilities/policy-resolution.mjs';
 const MAIL=['mail.list_messages','mail.search_messages','mail.read_thread'].map(id=>({id,version:'0.2.0'}));
 const ids=r=>r.available.map(row=>row.operation.id).sort();
-const open={policy:assertCapabilityPolicy({generalReads:true}),installation:{operations:MAIL},discovery:{operations:MAIL},scopes:[{kind:'mailbox'}]};
+const MAIL_FAMILIES={mail:{clientScope:'optional'}};
+const open={families:MAIL_FAMILIES,policy:assertCapabilityPolicy({generalReads:true}),installation:{operations:MAIL},discovery:{operations:MAIL},scopes:[{kind:'mailbox'}]};
 
 test('all six gates open: exactly the wired mail family, in catalog order, read-only descriptors only',()=>{
  const r=resolveAvailableReads(open);assert.deepEqual(ids(r),MAIL.map(o=>o.id).sort());assert.deepEqual(r.unavailable,[]);
  for(const row of r.available){assert.equal(row.descriptor.sideEffect,'none');assert.equal(row.descriptor.approvalBoundary,'none');assert.equal(resolveOperationContract(row.operation).binding.group,'mail');}
- assert.deepEqual(familyReads().map(row=>row.operation),catalog.operations.filter(d=>resolveOperationContract(d.operation).binding?.group==='mail').map(d=>d.operation));
+ assert.deepEqual(familyReads(MAIL_FAMILIES).map(row=>row.operation),catalog.operations.filter(d=>resolveOperationContract(d.operation).binding?.group==='mail').map(d=>d.operation));
 });
 
 test('each gate alone excludes: installation, policy, family list, discovery grant, client scope',()=>{
@@ -50,7 +51,7 @@ test('the availability snapshot refuses foreign, stale, expired, duplicated or s
   const s=good();change(s);assert.throws(()=>assertAvailabilitySnapshot(s,expected),/READ_AVAILABILITY_REFUSED/,String(change));}
 });
 
-test('advertised schemas: canonical when provably no wider, otherwise the envelope; a hash mismatch is a configuration failure',()=>{
+test('advertised schemas: canonical only when provably no wider; a hash mismatch is a configuration failure',()=>{
  for(const op of MAIL){const d=resolveOperationContract(op).descriptor,a=advertisedArguments(d.inputSchema);assert.equal(a.mode,'canonical',op.id);}
  assert.throws(()=>canonicalInputSchema({id:'urn:meri:retrieval:mail:0.2.0#/$defs/MailListInput',sha256:'0'.repeat(64)}),/READ_SCHEMA_CONFIGURATION/);
  assert.throws(()=>canonicalInputSchema({id:'urn:meri:artifacts:0.2.0#/$defs/WordRequest',sha256:'0'.repeat(64)}),/READ_SCHEMA_CONFIGURATION/);
@@ -76,8 +77,8 @@ test('every gateway code renders its own closed text; unknown failures are INTER
  assert.equal(failureCode(Object.assign(Error('x'),{code:'DEADLINE'})),'DEADLINE');assert.equal(failureCode(Error('ACCESS_DENIED')),'ACCESS_DENIED');assert.equal(failureCode(Error('PRIVATE detail')),'INTERNAL_ERROR');assert.equal(failureCode(null),'INTERNAL_ERROR');
 });
 
-test('P8 fields resolve platform ∧ tenant ∧ role: flags AND, families intersect, widening refused',()=>{
- const platform={maximum:{generalReads:true,readFamilies:['mail']},defaults:{},roleCeilings:{admin:{generalReads:true},viewer:{generalReads:true}}};
+test('P8 fields resolve platform Ã¢Ë†Â§ tenant Ã¢Ë†Â§ role: flags AND, families intersect, widening refused',()=>{
+ const platform={maximum:{generalReads:true,readFamilies:['mail']},defaults:{readFamilies:['mail']},roleCeilings:{admin:{generalReads:true,readFamilies:['mail']},viewer:{generalReads:true,readFamilies:['mail']}}};
  assert.equal(resolveCapabilityPolicy({platform,role:'admin'}).generalReads,false,'default off');
  assert.equal(resolveCapabilityPolicy({platform,tenant:{capabilities:{generalReads:true}},role:'admin'}).generalReads,true);
  const viewer=resolveCapabilityPolicy({platform,tenant:{capabilities:{generalReads:true},roles:{viewer:{readFamilies:[]}}},role:'viewer'});assert.deepEqual([viewer.generalReads,viewer.readFamilies],[false,[]],'a tenant narrowing the role to no family switches general reads off');
