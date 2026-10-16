@@ -1,0 +1,63 @@
+{
+  "limitStopped": false,
+  "argv": [
+    "--max-old-space-size=128",
+    "--experimental-test-module-mocks",
+    "--import",
+    "./docs/qualification/candidates/dot-planner-20261016/dependency-seams.mjs",
+    "--test",
+    "--test-isolation=none",
+    "--test-concurrency=1",
+    "apps/control/objective-planner/test/receipts.test.mjs",
+    "apps/control/objective-planner/test/materializer.test.mjs"
+  ],
+  "sourceFiles": [
+    {
+      "sha256": "d1d63856c19ff28dcd7126316e626541d17cf38467358cbfe5d9122a161b60e0",
+      "path": "apps\\control\\objective-planner\\core-receipts.mjs"
+    },
+    {
+      "sha256": "0202d1e929b4aa804cac990d3725828578d940fb5a7bb96dac668d1893298bb2",
+      "path": "apps\\control\\objective-planner\\identity.mjs"
+    },
+    {
+      "sha256": "77986b20aeab0f97e4b6c13f21736965979f06be1093f2ab17acf90c86883a81",
+      "path": "apps\\control\\objective-planner\\materializer.mjs"
+    },
+    {
+      "sha256": "4e75f902b95fc85da72549aff4be296a88255d09b46babf707ec5477120a5ff1",
+      "path": "apps\\control\\objective-planner\\test\\fixtures.mjs"
+    },
+    {
+      "sha256": "15dae5ea287179759d04d0bd2d5e93e0ce43798e000a437ded77e45b80270408",
+      "path": "apps\\control\\objective-planner\\test\\materializer.test.mjs"
+    },
+    {
+      "sha256": "7ba538a532e80ecbdb399e5be5b0b1f560184be1303f6932a2d44e49a49c3d8d",
+      "path": "apps\\control\\objective-planner\\test\\receipts.test.mjs"
+    }
+  ],
+  "elapsedMs": 147,
+  "note": "Real production source, fixed synthetic receipts/transport; hash-only dependency stub. Actual canonicalize/Ajv, Core authority/stored custody/Temporal/provider/DB UNRUN.",
+  "processCount": 1,
+  "heapMiB": 128,
+  "memory": {
+    "freeBytes": 12030021632,
+    "totalBytes": 33632079872,
+    "rssBytes": 35438592
+  },
+  "sampledPeakWorkingSetBytes": 48893952,
+  "finishedAt": "2026-10-16T03:10:59.2645078+00:00",
+  "cleanup": {
+    "servicesCreated": 0,
+    "portsCreated": 0,
+    "ownedProcessExited": true
+  },
+  "workingSetLimitBytes": 268435456,
+  "hardWallMs": 30000,
+  "synthetic": true,
+  "startedAt": "2026-10-16T03:10:58.9364900+00:00",
+  "exitCode": 0,
+  "ports": [],
+  "sourceParent": "cf639d4707df0060524218c65d941834ed7ea2e3"
+}

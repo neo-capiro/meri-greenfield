@@ -1,0 +1,43 @@
+✔ inert construction creates no effects or credential; fixed routes retain the same request identity (4.764ms)
+✔ missing, stale or unavailable current observation never proves no effect: 404 (0.593ms)
+✔ missing, stale or unavailable current observation never proves no effect: 409 (1.0735ms)
+✔ missing, stale or unavailable current observation never proves no effect: 503 (0.4285ms)
+✔ lost POST acknowledgement retains UNKNOWN and performs no automatic retry (0.9918ms)
+✔ invalid or oversized post-effect observation cannot be released as an application receipt (0.9852ms)
+✔ revoked read authority withholds current data (0.4335ms)
+✔ deadline aborts a parked transport and closes owned lifecycle without retry (14.3386ms)
+✔ cancelled caller or invalid source never reaches transport (0.7248ms)
+✔ actual ObjectiveReceipt shape binds requested revision and actual saved StrategyVersion, not model completion (1.137ms)
+✔ Strategy source mismatch refuses: clientId (0.39ms)
+✔ Strategy source mismatch refuses: objectiveId (0.2575ms)
+✔ Strategy source mismatch refuses: objectiveRevisionId (0.2415ms)
+✔ Strategy source mismatch refuses: objectiveVersion (0.2154ms)
+✔ uncorrelated Strategy result refuses: sourceDigest (0.3047ms)
+✔ uncorrelated Strategy result refuses: coverageDigest (0.2468ms)
+✔ uncorrelated Strategy result refuses: inputDigest (0.305ms)
+✔ uncorrelated Strategy result refuses: contextPacketId (0.2571ms)
+✔ incomplete context, stale failure, provider envelopes and invalid timestamps refuse (1.1751ms)
+✔ canonical intent + original actor retain one request/workflow identity when job/version changes (0.4669ms)
+✔ caller selection cannot supply actor, outputs, authority, credentials or a model result (0.2254ms)
+✔ noncanonical Strategy, changed effect ID and unsupported epoch refuse before effect selection (0.7203ms)
+✔ materializer input is exactly existing saved-version request with no model query, group cap or reservation alias (0.3076ms)
+✔ Planner observation pins actual source: generationJobId (0.3897ms)
+✔ Planner observation pins actual source: generationRequestId (0.2949ms)
+✔ Planner observation pins actual source: clientId (0.5256ms)
+✔ Planner observation pins actual source: objectiveId (0.3003ms)
+✔ Planner observation pins actual source: objectiveVersion (0.2936ms)
+✔ Planner observation pins actual source: objectiveRevisionId (0.311ms)
+✔ Planner observation pins actual source: strategyId (0.3251ms)
+✔ Planner observation pins actual source: strategyVersionId (0.3298ms)
+✔ Planner observation pins actual source: snapshotDigest (0.3333ms)
+✔ current human edits, task regrouping and unavailable outputs are retained without recreation (0.5764ms)
+✔ closed nested observation rejects injected authority, duplicate outputs and inconsistent source counts (2.5458ms)
+✔ context-only plan retains its issues and project without inventing actionable tasks (0.42ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 75.9788
