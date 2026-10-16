@@ -10,8 +10,11 @@ import {types} from 'node:util';
 import {createConversationHistoryService} from '../control/conversations/history/service.mjs';
 import {createConversationHistoryApplication} from '../control/conversations/history/http.mjs';
 import {HISTORY_PATHS} from '../control/conversations/history/protocol.mjs';
+import {runtimeArtifactRecovery} from './artifacts/composition.mjs';
 // Provenance is process-private. Caller-authored configuredOwners fields remain unknown keys and never establish readiness.
 const capturedPorts=new WeakSet();
+const capturedArtifactRecovery=new WeakMap();
+export function readRuntimeArtifactRecovery(ports){if(!capturedPorts.has(ports))throw fault('PRODUCT_PORTS_CONFIGURATION');return capturedArtifactRecovery.get(ports.artifactStore)??null;}
 export function captureRuntimePorts(value={}){
  if(capturedPorts.has(value))return value;
  const c=own(value,[],['identityContext','transitionAuthority','continuationAdmission','approvals','actionApplication','conversationMembership','conversationTurns','artifactOptionsOwner','selectedController','sdkSessionOwner','sdkSessionSnapshot','selectedSkillAdmission','selectedOutputPublication','artifactStore','retentionLedgerSink']);
@@ -19,6 +22,8 @@ export function captureRuntimePorts(value={}){
  const optionalMethod=(port,name)=>{let cursor=port;for(let depth=0;cursor!==null&&depth<32;depth++){if(types.isProxy(cursor))throw fault('PRODUCT_PORTS_CONFIGURATION');if(Object.getOwnPropertyDescriptor(cursor,name))return storageMethod(port,name);cursor=Object.getPrototypeOf(cursor);}if(cursor!==null)throw fault('PRODUCT_PORTS_CONFIGURATION');};
  const identity=c.identityContext===undefined?Object.freeze({verifyIdentity:async()=>{throw fault('NATIVE_AUTHORITY_UNAVAILABLE');},resolveContext:async()=>{throw fault('NATIVE_AUTHORITY_UNAVAILABLE');}}):methods(c.identityContext,['verifyIdentity','resolveContext']);
  const transitionResolver=c.identityContext===undefined?undefined:optionalMethod(c.identityContext,'resolveTransitionContext'),transitionContext=transitionResolver===undefined?{}:{resolveTransitionContext:transitionResolver};
+ const artifactStore=c.artifactStore===undefined?undefined:methods(c.artifactStore,['verifyPrivate']);
+ if(artifactStore){const recovery=runtimeArtifactRecovery(c.artifactStore)??capturedArtifactRecovery.get(c.artifactStore);if(recovery)capturedArtifactRecovery.set(artifactStore,recovery);}
  const captured=Object.freeze({
   configuredOwners:Object.freeze(Object.keys(c).filter(k=>c[k]!==undefined)),
   identityContext:Object.freeze({...identity,...transitionContext}),
@@ -35,7 +40,7 @@ export function captureRuntimePorts(value={}){
   ...(c.selectedSkillAdmission===undefined?{}:{selectedSkillAdmission:methods(c.selectedSkillAdmission,['admitSelection'])}),
   ...(c.selectedOutputPublication===undefined?{}:{selectedOutputPublication:methods(c.selectedOutputPublication,['prepareEvent'])}),
   // The private artifact store's read-only privacy proof (createRuntimeArtifactStorage().verifyPrivate); required to open download links.
-  ...(c.artifactStore===undefined?{}:{artifactStore:methods(c.artifactStore,['verifyPrivate'])}),
+  ...(artifactStore===undefined?{}:{artifactStore}),
   // The authoritative retention ledger sink (the shipping owner's write-once store); without it declared retention serving stays fenced.
   ...(c.retentionLedgerSink===undefined?{}:{retentionLedgerSink:methods(c.retentionLedgerSink,['append','read'])}),
  });

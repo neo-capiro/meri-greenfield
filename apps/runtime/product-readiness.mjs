@@ -10,6 +10,7 @@ export function productReadiness({ports,retention,sourceEnabled}){
   {name:'sources.currentInstallation',state:sourceEnabled?'unavailable':'disabled'},
   {name:'proxy.modelGrants',state:'unavailable'},
   {name:'schedules.dispatchWorker',state:'unregistered-placement-pending'});
+ const recovery=retention?.artifactRecovery?.();if(recovery?.required)owners.push({name:'retention.artifactRecovery',state:recovery.state});
  return Object.freeze({schema:'meri.product-readiness/1',ready:owners.every(o=>o.state==='composed'),owners:Object.freeze(owners.map(Object.freeze)),
   missingOwners:Object.freeze(owners.filter(o=>o.state!=='composed').map(o=>o.name))});
 }
