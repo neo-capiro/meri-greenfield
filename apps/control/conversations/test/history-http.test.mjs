@@ -8,6 +8,7 @@ import {createConversationHistoryService} from '../history/service.mjs';
 import {createConversationHistoryApplication} from '../history/http.mjs';
 import {hash} from '../boundary.mjs';
 import {lifecycleFixture} from './lifecycle-fixture.mjs';
+import {assertConversationHistoryResponse} from '../../../../packages/contracts/conversation-history/validate.mjs';
 async function fixture({lifecycle=false}={}){
  const f=await (lifecycle?lifecycleFixture():applicationFixture()),state=f.state;let serial=1000;
  // Script only the two newly added read queries; canonical write/next-run SQL keeps its existing independent fixture.
@@ -26,7 +27,8 @@ async function fixture({lifecycle=false}={}){
   readMembership:async({credential})=>{state.memberCredentialReads.push(credential);return {...state.member,checkedAtMs:Date.now(),expiresAtMs:Date.now()+30000};}});
  state.retentionChecks=0;const retention={async assertServable(){state.retentionChecks++;if(state.suppressed)throw Object.assign(Error('RETENTION_SUPPRESSED'),{code:'RETENTION_SUPPRESSED'});}};
  const service=createConversationHistoryService({store,nextRunOwner:owner,gate,retention}),app=createConversationHistoryApplication({service,gate,now:Date.now,limits:{maxRequestMs:2000,maxRequestBytes:131072,maxResponseBytes:2097152}});
- const post=(path,body,token='native')=>app.handle(new Request(`https://meri.invalid/api/conversations/${path}`,{method:'POST',headers:{authorization:`Bearer ${token}`,'content-type':'application/json'},body:JSON.stringify(body)}));
+ const post=async(path,body,token='native')=>{const response=await app.handle(new Request(`https://meri.invalid/api/conversations/${path}`,{method:'POST',headers:{authorization:`Bearer ${token}`,'content-type':'application/json'},body:JSON.stringify(body)}));
+  if(response.status===200)assertConversationHistoryResponse(path==='next-turn'?'nextTurn':path,await response.clone().json(),body);return response;};
  async function turn(n){const source=state.context.binding;if(n===1)await f.service.submit({credential:f.credential,input:f.input});
   const issued=n===1?{credential:f.credential}:await f.sessions.issue({identityCredential:'synthetic-native'});
   if(n!==1)await f.service.submit({credential:issued.credential,input:{requestId:id(serial++),prompt:`prompt ${n}`}});
@@ -36,6 +38,13 @@ async function fixture({lifecycle=false}={}){
  }
  return {...f,store,owner,post,turn,gate,historyService:service};
 }
+test('history enforces its public byte caps when startup permits larger transport limits',async()=>{
+ const f=await fixture();try{let calls=0;const app=createConversationHistoryApplication({gate:f.gate,now:Date.now,limits:{maxRequestMs:2000,maxRequestBytes:1048576,maxResponseBytes:8388608},service:{async list(){calls++;return {oversized:'x'.repeat(2097152)};}}});
+  const post=body=>app.handle(new Request('https://meri.invalid/api/conversations/list',{method:'POST',headers:{authorization:'Bearer native','content-type':'application/json'},body}));
+  assert.equal((await post('{}'+' '.repeat(131071))).status,413);assert.equal(calls,0);
+  const response=await post('{}');assert.equal(response.status,502);assert.deepEqual(await response.json(),{error:{code:'PRODUCT_UNAVAILABLE'}});assert.equal(calls,1);
+ }finally{f.close();}
+});
 test('three turns page and reload over one monotonic cursor while original UIEvent sequences and requests stay intact',async()=>{
  const f=await fixture();try{await f.turn(1);await f.turn(2);await f.turn(3);let after=0,seen=[],requests=new Map();
   do{const response=await f.post('transcript',{conversationId:binding.conversationId,after,limit:3});assert.equal(response.status,200);const page=await response.json();
