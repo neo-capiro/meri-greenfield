@@ -1,28 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {normalize} from 'node:path';
-import {candidateFixture} from '../../apps/runtime/test/prepared-candidate-fixture.mjs';
 import {compileProductMaterialPlan,verifyProductMaterial} from './material-delivery.mjs';
+import {runtimeUser as user,materialRoot as root,controlMaterialConfiguration as control,workerMaterialConfiguration as worker} from './material-test-fixture.mjs';
 
-const user='1000:1000',root='/run/meri/';
-function control(){
- const c=structuredClone(candidateFixture().configuration),n=c.nativeCandidate;
- // The canonical preparation intent uses the host path normalizer; keep this synthetic fixture valid under Windows Node 24.
- const i=n.preparationIntent;
- for(const key of ['workspace','configParentDirectory','secureStorageDirectory'])i[key]=normalize(i[key]);
- i.launchTemplate.command=normalize(i.launchTemplate.command);
- i.launchTemplate.env.CLAUDE_SECURESTORAGE_CONFIG_DIR=i.secureStorageDirectory;
- c.native.capabilityFile=root+'control-capability';
- c.database.connectionFile=root+'database-url';
- c.temporal.tls={caFile:root+'temporal-ca',certFile:root+'temporal-cert',keyFile:root+'temporal-key'};
- n.identity.credentialFile=root+'identity-capability';n.taskCapabilityFile=root+'task-capability';
- n.controlCapabilityFile=c.native.capabilityFile;n.proxyCredentialFile=root+'proxy-capability';
- return c;
-}
-function worker(){
- const c=control();delete c.database;delete c.sessions;delete c.versions;delete c.nativeCandidate;
- c.native={...c.native,preparedKickoff:true};c.http.port=8081;return c;
-}
 const plan=(role,configuration)=>compileProductMaterialPlan({role,configuration,runtimeUser:user});
 
 test('control plan derives exactly the canonical static files, including candidate credentials, without material values',()=>{
@@ -68,6 +48,8 @@ test('wrong role, runtime user, HTTP binding, foreign secret paths and accidenta
   x=>{x.temporal.tls.caFile=x.native.capabilityFile;},
   x=>{x.temporal.tls.caFile=root+'control.json';},
   x=>{x.nativeCandidate.controlCapabilityFile=root+'different-capability';},
+  x=>{x.nativeCandidate.multiRun={runWindowMs:600000,materialDirectory:'/run/meri'};},
+  x=>{x.nativeCandidate.multiRun={runWindowMs:600000,materialDirectory:'/run/meri/issued'};},
  ]){const bad=structuredClone(c);changed(bad);assert.throws(()=>plan('control',bad),/PRODUCT_MATERIAL_REFUSED/);}
 });
 
