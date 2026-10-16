@@ -4,14 +4,17 @@ import {billTextCase} from '../../sources/bill-text/test/fixture.mjs';
 import {nativeResult,noEstimate} from '../../sources/public-reports/test/fixture.mjs';
 import {acquisitionFixture,personId} from '../../sources/acquisition-personnel/test/fixtures.mjs';
 import {setup as disclosuresFixture} from '../../sources/disclosures/test/fixture.mjs';
+import {directoryCase,requests as directoryRequests} from '../../sources/legislative-directory/test/fixture.mjs';
 
 export const DISCLOSURE_FAMILY_CASES=Object.freeze(['search_lda_filings','search_sec_filings','search_fara_registrations'].map(id=>['disclosures',id]));
 
 export const NATIVE_FAMILY_CASES=Object.freeze([
  ['public-reports','search_cbo_cost_estimates'],['public-reports','search_gao_reports'],['public-reports','search_crs_reports'],
  ['acquisition-personnel','search_acquisition_personnel'],['acquisition-personnel','get_acquisition_person'],
+ ['legislative-directory','get_committee_roster'],['legislative-directory','list_members'],
 ]);
-export function nativeFamilyCase(family,id,{request=id==='get_acquisition_person'?{id:personId}:{},actorRole='standard_user'}={}){
+export function nativeFamilyCase(family,id,{request=directoryRequests[id]??(id==='get_acquisition_person'?{id:personId}:{}),actorRole='standard_user'}={}){
+ if(family==='legislative-directory')return directoryCase(id,{request});
  const scene=billTextCase(),operation={id,version:'0.2.0'},contract=resolveOperationContract(operation),normalizationContext=family==='acquisition-personnel'?{actorRole}:{};
  if(contract.binding.group!==family)throw Error('SYNTHETIC_FAMILY_MISMATCH');
  scene.authority.sourceIds=[...new Set(contract.descriptor.sourceRequirements.map(source=>source.sourceId))];

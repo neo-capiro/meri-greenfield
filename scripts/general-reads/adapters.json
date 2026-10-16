@@ -21,6 +21,14 @@
   },
   "adapters": [
     {
+      "path": "apps/gateway/sources/legislative-directory",
+      "family": "legislative-directory",
+      "declaredIn": ["apps/gateway/sources/legislative-directory/handler.mjs"],
+      "operations": ["get_committee_roster", "list_members"],
+      "adapterChecks": ["exact current decision, actor, policy and source proof", "fixed native POST with original flat request; normalize once in Core", "current task/allocation/native user and service credentials", "separate federal/state frozen projections, selection refusals and incomplete roster notes"],
+      "subject": "current authorized native Core tenant/user; global stored directory; no normalization context keys"
+    },
+    {
       "path": "apps/gateway/sources/bill-text",
       "family": "bill-text",
       "declaredIn": ["apps/gateway/sources/bill-text/handler.mjs"],

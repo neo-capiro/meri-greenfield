@@ -9808,11 +9808,11 @@
       "packages/contracts/retrieval-0.2/catalog.json": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
       "scripts/scope-ledger/backend-producers.json": "ad5fb22cb7f4ef3ffa78f4a730c74bb28e59c0a689a2cec7d5a74a45d7ef6ea4",
       "packages/contracts/retrieval-0.2/catalog-validation.mjs": "ac6881b7abd5e4ecb91f8975d28efbbab3bd04128336a0ef90645067466cb56d",
-      "apps/worker/conversation/reads/families.mjs": "0130506819273a94559cef39de62e67cc3c00480c22c51d6454656d55625fc65",
+      "apps/worker/conversation/reads/families.mjs": "a86307922303a4e95e71c982fa3f11c513c4f65f90d086a0b23b45792d23a388",
       "apps/worker/conversation/reads/server.mjs": "d3a28df432f44e20849ceeadf7a38e73bed3748f9f36057d1d22057d4ab829b5",
-      "apps/gateway/general-reads/registration.mjs": "f6ba2e54163330cf8f73437b4c600538f17dd57e809c84438c4b8743efef6b26",
-      "apps/gateway/general-reads/integration.mjs": "3e2de817cce3c4d5146a1f5f86c0856614f3a9c0817539cbd70a3d02a405031e",
-      "scripts/general-reads/adapters.json": "6cc3a549e8b56d3a36377d9108983d7849f2875b3f9d7ea90707da0ee46545a6",
+      "apps/gateway/general-reads/registration.mjs": "43c1b2661cc79bf2af78e062153d3546adb2a9114644770d383cfcf8521bf38d",
+      "apps/gateway/general-reads/integration.mjs": "ca46518596046f87e4e79951855b2feeeb57e8a10a9a52d2853611b83aa249d0",
+      "scripts/general-reads/adapters.json": "cf33a0fc93824b8ff9a6ee8fa788db794e5c8fa752361e52d78ac352f3a3dfa1",
       "apps/gateway/general-reads/families/meeting-source.mjs": "66ee8011d604721b5977ebb601199b4fdaf3149143effb79645898f41fb186b8",
       "apps/gateway/general-reads/families/action-items-complete.mjs": "abfd9f60479cb4c4cbe9d876d04bbebd9755227461673b026f4c6d74c02b7ceb",
       "apps/gateway/general-reads/families/operational-reads.mjs": "d19d6d3297c955b68d2b5048695493f62cc98e367a9469eb5abb8e86e4320563",
@@ -9828,7 +9828,12 @@
       "apps/gateway/general-reads/families/research-portfolio.mjs": "13d963b033c55fd889dc00717dfbc7c248fe0a27dbafc616dd6cc74d01d99404",
       "apps/gateway/general-reads/families/florida-budget.mjs": "b9b33bb64f01201b0499606ac51102d1f66f7cb32bf21d794bd0c310cc6da5ef",
       "apps/gateway/general-reads/families/bill-text.mjs": "21e3bbf8b0bf381fa18f7aa951018f3aa449fdc028ccc3247fc00ba7ba81916b",
-      "apps/gateway/sources/bill-text/handler.mjs": "44b149d835432d1953748f0f1a09c8dec5a95ac051113157ae107ba57e44ff90",
+      "apps/gateway/general-reads/families/public-reports.mjs": "afdaa7806d24581db21d4371da946d9845a7cc290d797e804a32780d39af36f0",
+      "apps/gateway/general-reads/families/acquisition-personnel.mjs": "dc5dc810a366ce7ebad8faaa0f38b42b0db4eddb17a7c463bfa65d024cb5eb95",
+      "apps/gateway/general-reads/families/disclosures.mjs": "97a62c1bf5d1ec7d901569ec5acce3555745d530ea3d79007f5fabf0d3c23c4a",
+      "apps/gateway/general-reads/families/legislative-directory.mjs": "a0c2e30e2f70380e40f1048a99125f090f776416471a045bc06649ef0a82dca0",
+      "apps/gateway/sources/legislative-directory/handler.mjs": "cb831c55c3c16682d63fb5c9f60e28899cc4576c2541ca1a1a5ff6333e4e81f5",
+      "apps/gateway/sources/bill-text/handler.mjs": "7deb17fbde2396760a9563e14dc9afff7cda0f8a4a38888a49f3d5c469cd2c01",
       "apps/gateway/sources/mail/handler.mjs": "d0ee875b991d4865ade0de978c813ba99385b1d3656cf885df8ba083a41e5dae",
       "apps/gateway/sources/mail/request-context.mjs": "bdfa9414c83b3df9bf18f31df9d71963eff40d8a3bd8919e1e2886f8198af869",
       "apps/gateway/sources/meetings/handler.mjs": "7a16e82939fc37f41cc824971e37bd2b0fc1d22f17c6d1da380c16258aae9977",
@@ -9850,6 +9855,9 @@
       "apps/gateway/sources/research-portfolio-evidence/request-context.mjs": "2423779ebad05718b8af4143c65bf2f80b3c5a12a046d121db34ce82d5fe1d6d",
       "apps/gateway/sources/research-portfolio/handler.mjs": "e495a384b3acef5b7ede3db13834d5730957dc654952a160befec41c159e87cc",
       "apps/gateway/sources/florida-budget/handler.mjs": "edf3dc42e8bcdfcef474e14f5cb97ce427c8bfb377a4aaedfe62ad6dae8afb50",
+      "apps/gateway/sources/public-reports/handler.mjs": "3c212f7fcf4448b043499a934e08bbafab34be9be389cdbceda3ab304bce8af4",
+      "apps/gateway/sources/acquisition-personnel/handler.mjs": "3cb660401c6df53c571cfba35288c98a3ee7623ffaee5dd0962d49cd12d89d3f",
+      "apps/gateway/sources/disclosures/handler.mjs": "e475938b9ace4dc95478ebf1046ddc27b82087f03ea85357ae1172a44e48b34b",
       "packages/skills/assets.json": "ebe456d0cc4b9dc34fbbc4467e2411ccccebeab424a45b1357007720342a56a5",
       "apps/control/document-application/research-brief/manifest.json": "fbc7e2708ef41d5d28adec9dcb7f5dd7240b69567f996f676b576f68a0e4b64b",
       "packages/skills/originals/client_changes/1.0.0/manifest.json": "ea9b6fcb18bb51f3a5568f33bd515fda6adeea719d420aacce6a8b5a192ebcd7",
@@ -9935,9 +9943,9 @@
       "excludedCapabilities": 43,
       "selectedSourceReads": 82,
       "selectedProductOrGoverned": 14,
-      "registeredGeneralOperations": 23,
-      "registeredFamilies": 16,
-      "generalSelectedSourceReads": 21,
+      "registeredGeneralOperations": 33,
+      "registeredFamilies": 20,
+      "generalSelectedSourceReads": 31,
       "generalSelectedProductStateReads": 1,
       "generalHistoricalOperations": 1,
       "sourceReadsWithSkillDeclarations": 53,
@@ -9945,9 +9953,9 @@
       "sourceReadsWithHistoricalOnlySkillDeclaration": 1,
       "sourceReadsWithAdmittedSkillSourceRoute": 11,
       "existingSourceAdaptersWithoutGeneralExposure": 0,
-      "missingSourceAdapters": 61,
-      "missingAdaptersDeclaredBySkills": 38,
-      "missingAdaptersWithoutSkillDeclaration": 23,
+      "missingSourceAdapters": 51,
+      "missingAdaptersDeclaredBySkills": 33,
+      "missingAdaptersWithoutSkillDeclaration": 18,
       "mappedBackendProducers": 63,
       "live": 0
     },
@@ -9956,6 +9964,13 @@
       "quick_skill.commitments_audit"
     ],
     "generalRegistration": [
+      {
+        "family": "acquisition-personnel",
+        "operations": [
+          "get_acquisition_person",
+          "search_acquisition_personnel"
+        ]
+      },
       {
         "family": "action-items-complete",
         "operations": [
@@ -10000,6 +10015,14 @@
         ]
       },
       {
+        "family": "disclosures",
+        "operations": [
+          "search_fara_registrations",
+          "search_lda_filings",
+          "search_sec_filings"
+        ]
+      },
+      {
         "family": "entity-candidates",
         "operations": [
           "resolve_entity"
@@ -10009,6 +10032,13 @@
         "family": "florida-budget",
         "operations": [
           "get_florida_budget_project"
+        ]
+      },
+      {
+        "family": "legislative-directory",
+        "operations": [
+          "get_committee_roster",
+          "list_members"
         ]
       },
       {
@@ -10041,6 +10071,14 @@
         ]
       },
       {
+        "family": "public-reports",
+        "operations": [
+          "search_cbo_cost_estimates",
+          "search_crs_reports",
+          "search_gao_reports"
+        ]
+      },
+      {
         "family": "research-portfolio",
         "operations": [
           "get_research_portfolio",
@@ -10062,13 +10100,6 @@
     ],
     "existingAdaptersWithoutGeneralExposure": [],
     "missingAdapterFamilies": [
-      {
-        "family": "acquisition-personnel",
-        "operations": [
-          "get_acquisition_person",
-          "search_acquisition_personnel"
-        ]
-      },
       {
         "family": "business-development",
         "operations": [
@@ -10100,14 +10131,6 @@
         "family": "data-search",
         "operations": [
           "search_capiro_data"
-        ]
-      },
-      {
-        "family": "disclosures",
-        "operations": [
-          "search_fara_registrations",
-          "search_lda_filings",
-          "search_sec_filings"
         ]
       },
       {
@@ -10157,13 +10180,6 @@
         ]
       },
       {
-        "family": "legislative-directory",
-        "operations": [
-          "get_committee_roster",
-          "list_members"
-        ]
-      },
-      {
         "family": "outreach-query",
         "operations": [
           "query_outreach"
@@ -10203,14 +10219,6 @@
         "family": "public-domain-query",
         "operations": [
           "query_global_data"
-        ]
-      },
-      {
-        "family": "public-reports",
-        "operations": [
-          "search_cbo_cost_estimates",
-          "search_crs_reports",
-          "search_gao_reports"
         ]
       },
       {
@@ -10945,10 +10953,15 @@
         ],
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
-        "generalOperations": [],
-        "adapterPaths": [],
+        "generalOperations": [
+          "search_cbo_cost_estimates"
+        ],
+        "adapterPaths": [
+          "apps/gateway/general-reads/families/public-reports.mjs",
+          "apps/gateway/sources/public-reports/handler.mjs"
+        ],
         "requiredContextKeys": [],
-        "state": "adapter-missing",
+        "state": "adapter-present",
         "backendProducer": {
           "operation": "search_cbo_cost_estimates",
           "family": "public-reports",
@@ -11008,10 +11021,15 @@
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
-        "generalOperations": [],
-        "adapterPaths": [],
+        "generalOperations": [
+          "search_lda_filings"
+        ],
+        "adapterPaths": [
+          "apps/gateway/general-reads/families/disclosures.mjs",
+          "apps/gateway/sources/disclosures/handler.mjs"
+        ],
         "requiredContextKeys": [],
-        "state": "adapter-missing",
+        "state": "adapter-present",
         "backendProducer": {
           "operation": "search_lda_filings",
           "family": "disclosures",
@@ -11093,10 +11111,15 @@
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
-        "generalOperations": [],
-        "adapterPaths": [],
+        "generalOperations": [
+          "search_sec_filings"
+        ],
+        "adapterPaths": [
+          "apps/gateway/general-reads/families/disclosures.mjs",
+          "apps/gateway/sources/disclosures/handler.mjs"
+        ],
         "requiredContextKeys": [],
-        "state": "adapter-missing",
+        "state": "adapter-present",
         "backendProducer": {
           "operation": "search_sec_filings",
           "family": "disclosures",
@@ -11124,10 +11147,15 @@
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
-        "generalOperations": [],
-        "adapterPaths": [],
+        "generalOperations": [
+          "search_fara_registrations"
+        ],
+        "adapterPaths": [
+          "apps/gateway/general-reads/families/disclosures.mjs",
+          "apps/gateway/sources/disclosures/handler.mjs"
+        ],
         "requiredContextKeys": [],
-        "state": "adapter-missing",
+        "state": "adapter-present",
         "backendProducer": {
           "operation": "search_fara_registrations",
           "family": "disclosures",
@@ -11232,10 +11260,15 @@
         ],
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
-        "generalOperations": [],
-        "adapterPaths": [],
+        "generalOperations": [
+          "search_gao_reports"
+        ],
+        "adapterPaths": [
+          "apps/gateway/general-reads/families/public-reports.mjs",
+          "apps/gateway/sources/public-reports/handler.mjs"
+        ],
         "requiredContextKeys": [],
-        "state": "adapter-missing",
+        "state": "adapter-present",
         "backendProducer": {
           "operation": "search_gao_reports",
           "family": "public-reports",
@@ -11382,10 +11415,15 @@
         ],
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
-        "generalOperations": [],
-        "adapterPaths": [],
+        "generalOperations": [
+          "get_committee_roster"
+        ],
+        "adapterPaths": [
+          "apps/gateway/general-reads/families/legislative-directory.mjs",
+          "apps/gateway/sources/legislative-directory/handler.mjs"
+        ],
         "requiredContextKeys": [],
-        "state": "adapter-missing",
+        "state": "adapter-present",
         "backendProducer": {
           "operation": "get_committee_roster",
           "family": "legislative-directory",
@@ -11470,10 +11508,15 @@
         ],
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
-        "generalOperations": [],
-        "adapterPaths": [],
+        "generalOperations": [
+          "list_members"
+        ],
+        "adapterPaths": [
+          "apps/gateway/general-reads/families/legislative-directory.mjs",
+          "apps/gateway/sources/legislative-directory/handler.mjs"
+        ],
         "requiredContextKeys": [],
-        "state": "adapter-missing",
+        "state": "adapter-present",
         "backendProducer": {
           "operation": "list_members",
           "family": "legislative-directory",
@@ -11743,10 +11786,15 @@
         ],
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
-        "generalOperations": [],
-        "adapterPaths": [],
+        "generalOperations": [
+          "search_crs_reports"
+        ],
+        "adapterPaths": [
+          "apps/gateway/general-reads/families/public-reports.mjs",
+          "apps/gateway/sources/public-reports/handler.mjs"
+        ],
         "requiredContextKeys": [],
-        "state": "adapter-missing",
+        "state": "adapter-present",
         "backendProducer": {
           "operation": "search_crs_reports",
           "family": "public-reports",
@@ -12358,12 +12406,17 @@
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
-        "generalOperations": [],
-        "adapterPaths": [],
+        "generalOperations": [
+          "search_acquisition_personnel"
+        ],
+        "adapterPaths": [
+          "apps/gateway/general-reads/families/acquisition-personnel.mjs",
+          "apps/gateway/sources/acquisition-personnel/handler.mjs"
+        ],
         "requiredContextKeys": [
           "actorRole"
         ],
-        "state": "adapter-missing",
+        "state": "adapter-present",
         "backendProducer": {
           "operation": "search_acquisition_personnel",
           "family": "acquisition-personnel",
@@ -12392,12 +12445,17 @@
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
-        "generalOperations": [],
-        "adapterPaths": [],
+        "generalOperations": [
+          "get_acquisition_person"
+        ],
+        "adapterPaths": [
+          "apps/gateway/general-reads/families/acquisition-personnel.mjs",
+          "apps/gateway/sources/acquisition-personnel/handler.mjs"
+        ],
         "requiredContextKeys": [
           "actorRole"
         ],
-        "state": "adapter-missing",
+        "state": "adapter-present",
         "backendProducer": {
           "operation": "get_acquisition_person",
           "family": "acquisition-personnel",

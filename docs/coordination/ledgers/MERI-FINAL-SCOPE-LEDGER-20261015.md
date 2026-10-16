@@ -1,5 +1,18 @@
 # Meri final scope ledger
 
+16 October 2026 legislative-directory increment, release base `caa7810ff19c09c8f7ea1c2524c025f36f99ccd6`:
+`get_committee_roster` and `list_members` now have fixed native gateway adapters,
+current task/tenant/user grant and credential-owner wiring, and `meri_reads`
+exposure. Actual current source is **33 operations / 20 worker families**, with
+**31 of 82 selected source reads implemented/exposed** and **51 reads remaining
+across 28 families**. This also reconciles already-present public-report,
+acquisition and disclosure source omitted by the older generated snapshot.
+Research portfolio, portfolio changes and Florida budget project reads remain
+implemented/exposed through their existing retained-context path. **Qualified/live
+remains zero**; installed receipts, actual current native inputs and live gates are
+still required. Earlier prose counts below are historical. See
+[the implementation and verification report](../reports/CODEX-LEGISLATIVE-DIRECTORY-READS-20261016.md).
+
 Next adapter batch, base `fb708d231c7273f86b1462c72a72e70ccc36a3d6`:
 all 63 missing names have actual retained Core dispatches at
 `b525032222515d636b0dae2d46e40c7c3d8b5528`, tree
@@ -178,12 +191,12 @@ This is source reconciliation only. The historical proposal tables below retain 
 | --- | --- |
 | Selected capabilities / continued exclusions | 96 / 43 |
 | Selected source reads / separate product or governed capabilities | 82 / 14 |
-| Single meri_reads registry | 23 operations / 16 families |
-| Registry accounting | 21 selected source reads + 1 product-state read + 1 historical contract |
+| Single meri_reads registry | 33 operations / 20 families |
+| Registry accounting | 31 selected source reads + 1 product-state read + 1 historical contract |
 | Selected source reads declared in skill manifests | 52 current contracts + 1 historical-only contract |
 | Selected source reads reachable through admitted skill source | 11 |
 | Existing source adapters lacking general-conversation registration | 0 |
-| Selected source reads lacking adapters | 61 (38 declared by skills; 23 without a skill declaration) |
+| Selected source reads lacking adapters | 51 (33 declared by skills; 18 without a skill declaration) |
 | Pinned actual Core producer mappings (not qualification) | 63 |
 | Live | 0 |
 
@@ -196,6 +209,7 @@ Only `quick_skill.relationship_brief`, `quick_skill.commitments_audit` are admit
 
 | Registered family | Exact operations |
 | --- | --- |
+| `acquisition-personnel` | `get_acquisition_person`, `search_acquisition_personnel` |
 | `action-items-complete` | `actions.query` |
 | `bill-text` | `read_bill_text`, `search_congress_bills` |
 | `client-documents` | `read_client_documents` |
@@ -203,41 +217,40 @@ Only `quick_skill.relationship_brief`, `quick_skill.commitments_audit` are admit
 | `client-knowledge-monday` | `read_monday_client_boards` |
 | `client-knowledge-profile` | `get_client_context` |
 | `dataset-metadata` | `list_global_datasets` |
+| `disclosures` | `search_fara_registrations`, `search_lda_filings`, `search_sec_filings` |
 | `entity-candidates` | `resolve_entity` |
 | `florida-budget` | `get_florida_budget_project` |
+| `legislative-directory` | `get_committee_roster`, `list_members` |
 | `mail` | `mail.list_messages`, `mail.read_thread`, `mail.search_messages` |
 | `meeting-source` | `meeting.list_upcoming_meetings`, `meeting.query_debriefs`, `meeting.read_client_meetings` |
 | `memory-proposals` | `memory.list_own_proposals` |
 | `operational-reads` | `query_action_items`, `query_tasks` |
+| `public-reports` | `search_cbo_cost_estimates`, `search_crs_reports`, `search_gao_reports` |
 | `research-portfolio` | `get_research_portfolio`, `get_research_portfolio_changes` |
 | `research-portfolio-evidence` | `get_research_evidence` |
 | `tenant-contacts` | `find_contacts` |
 
-Every canonical source adapter already present is exposed. The new bill-text source family adds two fixed native producers, retaining all receiving-contract truth limits. The remaining selected source reads lack an adapter; producer mapping alone does not implement them. Their exact unresolved families and operations are:
+Every canonical source adapter already present is exposed. Finite native bill, public-report, acquisition, disclosure and legislative-directory families retain their receiving-contract truth limits and require current task, tenant/user and native credentials. Research portfolio, portfolio changes and Florida budget project reads remain exposed through their existing retained-context path. These source paths are not qualified or live. The remaining selected source reads lack an adapter; producer mapping alone does not implement them. Their exact unresolved families and operations are:
 
 | Missing adapter family | Selected operations |
 | --- | --- |
-| `acquisition-personnel` | `get_acquisition_person`, `search_acquisition_personnel` |
 | `business-development` | `get_business_development_context`, `get_business_development_evidence`, `get_business_development_recent_changes` |
 | `certification-status` | `get_certification_status` |
 | `client-knowledge-search` | `query_knowledge_graph`, `search_client_knowledge` |
 | `client-registry` | `lookup_client_registry` |
 | `data-search` | `search_capiro_data` |
-| `disclosures` | `search_fara_registrations`, `search_lda_filings`, `search_sec_filings` |
 | `district-nexus` | `get_district_nexus_changes`, `get_district_nexus_context` |
 | `facility-representation` | `get_representation` |
 | `federal-legislation` | `get_bill_status`, `search_floor_votes` |
 | `federal-market` | `get_district_federal_market`, `search_contract_vehicles`, `search_federal_contract_awards`, `search_federal_subawards`, `search_procurement_forecasts` |
 | `funding-opportunities` | `get_funding_opportunity`, `get_funding_opportunity_requirements`, `get_opportunity_client_context`, `get_opportunity_government_landscape`, `search_funding_opportunities` |
 | `intelligence-summary` | `query_intelligence` |
-| `legislative-directory` | `get_committee_roster`, `list_members` |
 | `outreach-query` | `query_outreach` |
 | `pe-references` | `get_pe_bills`, `get_pe_contractors`, `get_pe_report_language` |
 | `program-elements` | `get_pe_budget_timeline`, `get_program_element`, `search_program_elements` |
 | `public-data` | `query_economic_data`, `search_federal_awards`, `search_federal_grants` |
 | `public-domain-hearings` | `search_committee_hearings` |
 | `public-domain-query` | `query_global_data` |
-| `public-reports` | `search_cbo_cost_estimates`, `search_crs_reports`, `search_gao_reports` |
 | `public-web` | `scrape_web_page`, `search_public_web` |
 | `regulatory-dockets` | `query_regulatory_dockets` |
 | `research-legal-candidates` | `search_research_sources` |

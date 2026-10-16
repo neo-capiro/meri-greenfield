@@ -23,10 +23,10 @@ for(const [family,id] of NATIVE_FAMILY_CASES){
   const f=await wired(id),raw=await f.invoke(),out=JSON.parse(raw),[r]=f.state.reservations.values();
   assert.deepEqual(Object.keys(out).sort(),['binding','subject','operation','argumentsSha256','result'].sort());
   assert.deepEqual(out.binding,f.binding);assert.deepEqual(out.subject,f.authority.subject);assert.deepEqual(out.operation,f.operation);assert.equal(out.result.tool,id);
-  const context=family==='public-reports'?{}:{actorRole:'standard_user'},normalized=f.contract.normalizeInput(f.request,context);
+  const context=family==='acquisition-personnel'?{actorRole:'standard_user'}:{},normalized=f.contract.normalizeInput(f.request,context);
   assert.equal(out.argumentsSha256,normalized.argumentsSha256);assert.equal(f.stateOwner.secretProof.requestSha256,hash(f.request));assert.deepEqual(f.stateOwner.secretProof.normalizationContext,context);
   assert.equal(f.wire.length,1);assert.equal(f.wire[0].url,`https://native-core.example.invalid/api/clio/tools/${id}`);
-  assert.deepEqual(f.wire[0].body,family==='public-reports'||id==='search_acquisition_personnel'?f.request:normalized.input);
+  assert.deepEqual(f.wire[0].body,id==='get_acquisition_person'?normalized.input:f.request);
   assert.deepEqual(Object.keys(f.wire[0].options.headers).sort(),['authorization','accept','accept-encoding','x-meri-deadline-at','x-internal-service-secret','content-type'].sort());
   assert.equal(f.wire[0].options.headers.authorization,'Bearer SYNTHETIC_NATIVE');assert.equal(f.wire[0].options.headers['x-internal-service-secret'],'SYNTHETIC_SERVICE');
   assert.equal(r.state,'SETTLED');assert.equal(r.charged_micro_usd,1);assert.equal(r.output_bytes,Buffer.byteLength(raw));assert.equal(f.state.produced.size,1);
@@ -74,6 +74,20 @@ for(const field of ['identityRevision','membershipRevision','role'])test(`acquis
  const f=await wired('get_acquisition_person');f.state.afterSource=()=>f.core.state[field]=field==='role'?'user_admin':'c'.repeat(64);
  await assert.rejects(f.invoke(),{message:'ACCESS_DENIED'});assert.equal(f.wire.length,1);unknown(f);
 });
+
+for(const id of ['get_committee_roster','list_members']){
+ for(const field of ['identityRevision','membershipRevision','role'])test(`${id}: current native ${field} drift after source withholds release`,async()=>{
+  const f=await wired(id);f.state.afterSource=()=>f.core.state[field]=field==='role'?'user_admin':'c'.repeat(64);
+  await assert.rejects(f.invoke(),{message:'ACCESS_DENIED'});assert.equal(f.wire.length,1);unknown(f);
+ });
+ test(`${id}: foreign native principal and unallocated operation refuse before reservation`,async()=>{
+  for(const mode of ['principal','operation']){
+   const f=await wired(id,{...(mode==='operation'?{owner:f=>createNativeReadCredentialOwner({...f.configuration,approvedReads:{...f.configuration.approvedReads,operations:[{id:'read_bill_text',version:'0.2.0'}]}})}:{})});
+   if(mode==='principal')f.core.state.principal={...f.core.principal,actorId:'dddddddd-dddd-4ddd-8ddd-dddddddddddd'};
+   await assert.rejects(f.invoke());assert.equal(f.wire.length,0);assert.equal(f.state.reservations.size,0);
+  }
+ });
+}
 for(const [family,id] of [['public-reports','search_gao_reports'],['acquisition-personnel','get_acquisition_person']])test(`${family}: static plus per-call credential configuration is refused`,async()=>{
  const f=await ownerFixture(id);await assert.rejects(createGeneralReadFamilyHandlers({families:{[family]:{...f.transport,credentialsForCall:f.owner.credentialsForCall}},now:f.now,newId:randomUUID}),{message:'GATEWAY_CONFIGURATION'});assert.equal(f.wire.length,0);
 });

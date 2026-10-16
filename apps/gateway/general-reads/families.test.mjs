@@ -51,7 +51,7 @@ for(const [family,id] of CASES){
  });
 }
 test('family registration is inert, closed and does not fabricate native installation receipts',async()=>{
- assert.equal(GENERAL_READ_ADAPTER_FAMILIES.length,18);
+ assert.equal(GENERAL_READ_ADAPTER_FAMILIES.length,19);
  assert.equal((await createGeneralReadFamilyHandlers({families:{},now:Date.now,newId:()=>''})).size,0);
  await assert.rejects(createGeneralReadFamilyHandlers({families:{'florida-budget':{}},now:Date.now,newId:()=>''}));
  let effects=0;const source={get origin(){effects++;return 'https://invalid.example';}};

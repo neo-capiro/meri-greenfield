@@ -26,8 +26,8 @@ export function coreFixture(options={}){
 function retarget(value,old,seen=new Set()){if(!value||typeof value!=='object'||seen.has(value))return;seen.add(value);for(const [key,v] of Object.entries(value)){if(v===old.tenantId)value[key]=uuid('b');else if(v===old.actorId)value[key]=uuid('c');else retarget(v,old,seen);}}
 export async function ownerFixture(id='read_bill_text',options={}){
  const operation={id,version:'0.2.0'},contract=resolveOperationContract(operation),group=contract.binding.group;
- const scene=['public-reports','acquisition-personnel','disclosures'].includes(group)?nativeFamilyCase(group,id,options):billTextCase(['read_bill_text','search_congress_bills'].includes(id)?id:'read_bill_text');retarget(scene,{...scene.binding});
- const request=['bill-text','public-reports','acquisition-personnel','disclosures'].includes(group)?scene.arguments:{};
+ const scene=['public-reports','acquisition-personnel','disclosures','legislative-directory'].includes(group)?nativeFamilyCase(group,id,options):billTextCase(['read_bill_text','search_congress_bills'].includes(id)?id:'read_bill_text');retarget(scene,{...scene.binding});
+ const request=['bill-text','public-reports','acquisition-personnel','disclosures','legislative-directory'].includes(group)?scene.arguments:{};
  scene.operation=operation;scene.authority.sourceIds=[...new Set(contract.descriptor.sourceRequirements.map(s=>s.sourceId))];scene.authority.decision.operation=`${id}@0.2.0`;scene.arguments=request;
  const f=await durableFamilyFixture(scene),grant=[...f.state.bindings.values()][0].facts,allocated=[...f.state.allocations.values()][0].allocation;
  const sf=storeFixture(),store=createPostgresConversationStore({pool:sf.pool,now:f.now}),runRequest={requestId:uuid('e'),prompt:'Offline native read'},run={binding:f.binding,state:'queued',scopes:f.scopes,createdAt:new Date(f.now()).toISOString(),policyRevision:f.policyRevision,versions},conversation={conversationId:f.binding.conversationId,owner:{tenantId:f.binding.tenantId,actorId:f.binding.actorId},scopes:f.scopes,createdAt:run.createdAt,policyRevision:f.policyRevision};
