@@ -10,6 +10,14 @@ const schema='meri_product_budget',tables=Object.freeze({budgets:`${schema}.tena
 const fromRow=row=>({tenantId:row.tenant_id,runId:row.run_id,month:row.month,holdMicroUSD:storedMicroUsd(row.hold_micro_usd,1),settledMicroUSD:row.settled_micro_usd===null?null:storedMicroUsd(row.settled_micro_usd),state:row.state});
 export function createPostgresTenantBudgetStore({pool}){
  const store=new PostgresBudgetStore(pool,{namespace:'product'});
+ return tenantStore((operation,check)=>store.transact(operation,check));
+}
+/** Join the native admission owner's existing transaction. Never begins, commits, releases or borrows another client. */
+export function createPostgresTenantBudgetTransaction({client}){
+ if(typeof client?.query!=='function')refuse('TENANT_BUDGET_CONFIGURATION');
+ return tenantStore(async(operation,check)=>{check();const result=await operation(client);check();return result;});
+}
+function tenantStore(transact){
  const check=signal=>()=>{if(signal?.aborted)refuse('TENANT_BUDGET_CANCELLED');};
  async function lockedCurrent(client,tenant,period){
   const budget=(await client.query(`SELECT * FROM ${tables.budgets} WHERE tenant_id=$1 FOR UPDATE`,[tenant])).rows[0];if(!budget)refuse('TENANT_BUDGET_UNCONFIGURED');
@@ -29,9 +37,9 @@ export function createPostgresTenantBudgetStore({pool}){
  }
  return Object.freeze({
   async readTenantBudget(input){const i=own(input,['tenantId','month'],['signal']);tenantId(i.tenantId);month(i.month);nativeSignal(i.signal);
-   return store.transact(async client=>budgetView(await lockedCurrent(client,i.tenantId,i.month),i.month),check(i.signal));},
+   return transact(async client=>budgetView(await lockedCurrent(client,i.tenantId,i.month),i.month),check(i.signal));},
   async reserve(input){const i=own(input,['tenantId','runId','month','holdMicroUSD'],['signal']);tenantId(i.tenantId);runId(i.runId);month(i.month);microUsd(i.holdMicroUSD,1);nativeSignal(i.signal);
-   return store.transact(async client=>{
+   return transact(async client=>{
     const current=await lockedCurrent(client,i.tenantId,i.month);
     const existing=(await client.query(`SELECT * FROM ${tables.reservations} WHERE tenant_id=$1 AND run_id=$2 FOR UPDATE`,[i.tenantId,i.runId])).rows[0];
     if(existing)return Object.freeze({...replayReservation(fromRow(existing),i),replayed:true});
@@ -40,11 +48,11 @@ export function createPostgresTenantBudgetStore({pool}){
     return Object.freeze({tenantId:i.tenantId,runId:i.runId,month:i.month,holdMicroUSD:i.holdMicroUSD,settledMicroUSD:null,state:'HELD',replayed:false});
    },check(i.signal));},
   async release(input){const i=own(input,['tenantId','runId'],['signal']);tenantId(i.tenantId);runId(i.runId);nativeSignal(i.signal);
-   return store.transact(async client=>{const before=await lockedReservation(client,i.tenantId,i.runId);return Object.freeze(await write(client,before,releaseTransition(before)));},check(i.signal));},
+   return transact(async client=>{const before=await lockedReservation(client,i.tenantId,i.runId);return Object.freeze(await write(client,before,releaseTransition(before)));},check(i.signal));},
   async settle(input){const i=own(input,['tenantId','runId','measuredMicroUSD'],['signal']);tenantId(i.tenantId);runId(i.runId);microUsd(i.measuredMicroUSD);nativeSignal(i.signal);
-   return store.transact(async client=>{const before=await lockedReservation(client,i.tenantId,i.runId);return Object.freeze(await write(client,before,settleTransition(before,i.measuredMicroUSD)));},check(i.signal));},
+   return transact(async client=>{const before=await lockedReservation(client,i.tenantId,i.runId);return Object.freeze(await write(client,before,settleTransition(before,i.measuredMicroUSD)));},check(i.signal));},
   async recordNotDispatched(input){const i=own(input,['tenantId','runId'],['signal']);tenantId(i.tenantId);runId(i.runId);nativeSignal(i.signal);
-   return store.transact(async client=>{const before=await lockedReservation(client,i.tenantId,i.runId);return Object.freeze(await write(client,before,notDispatchedTransition(before)));},check(i.signal));},
+   return transact(async client=>{const before=await lockedReservation(client,i.tenantId,i.runId);return Object.freeze(await write(client,before,notDispatchedTransition(before)));},check(i.signal));},
   tables,
  });
 }

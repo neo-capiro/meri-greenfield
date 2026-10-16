@@ -7,7 +7,7 @@ import {BudgetCommitUncertain} from '../postgres-budget-store.mjs';
 /** Scripted SQL transaction model. No PostgreSQL or task allocation is claimed. */
 function fixture(){
  const seed=productFixture(),commands=[];let clock=NOW,lose=false,fail=false,chain=Promise.resolve();
- let state={budget:{id:1,cap_micro_usd:'1000000',consumed_micro_usd:'0',quarantined:false},runs:new Map(),grants:new Map(),allocations:new Map(),bindings:new Map()};
+ let state={budget:{id:1,cap_micro_usd:'1000000',consumed_micro_usd:'0',quarantined:false},runs:new Map(),grants:new Map(),allocations:new Map(),bindings:new Map(),tenantPolicy:{tenant_id:seed.invocation.binding.tenantId,monthly_cap_micro_usd:'1000000',max_concurrent_runs:2},tenantReservations:new Map(),liabilities:[]};
  const pool={async connect(){let local,unlock,readOnly=false;return{async query(sql,p=[]){
   commands.push({sql,p});const rows=v=>({rows:structuredClone(v),rowCount:v.length});
   if(sql.startsWith('BEGIN')){readOnly=sql.includes('READ ONLY');if(readOnly)local=structuredClone(state);return rows([]);}
@@ -16,6 +16,15 @@ function fixture(){
   if(sql==='ROLLBACK')return rows([]);
   if(sql==='SELECT clock_timestamp() AS now')return rows([{now:new Date(clock)}]);
   if(sql.includes('.budget WHERE')){if(!readOnly&&!local){const prior=chain;chain=new Promise(r=>unlock=r);await prior;local=structuredClone(state);}return rows([local.budget]);}
+  if(sql.includes('to_regclass('))return rows([{reservations:'meri_product_budget.tenant_run_reservations'}]);
+  if(sql.includes('.tenant_budgets WHERE'))return rows(local.tenantPolicy?[local.tenantPolicy]:[]);
+  if(sql.startsWith('SELECT count(*) FILTER')){
+   if(sql.includes('budget_liabilities'))return rows([{unresolved:String(local.liabilities.filter(r=>r.state==='UNKNOWN').length),consumed:String(local.liabilities.reduce((sum,r)=>sum+Number(r.consumed_micro_usd??0),0))}]);
+   const reservations=[...local.tenantReservations.values()];return rows([{active:String(reservations.filter(r=>r.state==='HELD').length),held:String(reservations.filter(r=>['HELD','RELEASED'].includes(r.state)&&r.month===p[1]).reduce((sum,r)=>sum+Number(r.hold_micro_usd),0)),settled:String(reservations.filter(r=>r.state==='SETTLED'&&r.month===p[1]).reduce((sum,r)=>sum+Number(r.settled_micro_usd),0))}]);
+  }
+  if(sql.includes('.tenant_run_reservations WHERE'))return rows(local.tenantReservations.has(p[1])?[local.tenantReservations.get(p[1])]:[]);
+  if(sql.startsWith('INSERT INTO meri_product_budget.tenant_run_reservations')){local.tenantReservations.set(p[1],{tenant_id:p[0],run_id:p[1],month:p[2],hold_micro_usd:String(p[3]),settled_micro_usd:null,state:'HELD'});return rows([]);}
+  if(sql.startsWith('UPDATE meri_product_budget.tenant_run_reservations')){const r=local.tenantReservations.get(p[1]);if(!r||r.state!==p[4])return {rows:[],rowCount:0};Object.assign(r,{state:p[2],settled_micro_usd:p[3]});return {rows:[],rowCount:1};}
   if(sql.startsWith('SELECT * FROM meri_product_budget.')){
    const name=sql.match(/meri_product_budget\.([a-z_]+)/)[1],map={runs:local.runs,grants:local.grants,tool_run_allocations:local.allocations,tool_grant_bindings:local.bindings}[name];
    assert.ok(map,'known table');
