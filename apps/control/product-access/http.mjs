@@ -11,7 +11,8 @@ export const PRODUCT_ERROR_STATUSES=Object.freeze({INVALID_REQUEST:400,UNAUTHENT
  METHOD_NOT_ALLOWED:405,DEADLINE:408,MEMBERSHIP_CHANGED:409,REQUEST_TOO_LARGE:413,UNSUPPORTED_MEDIA_TYPE:415,CANCELLED:499,PRODUCT_UNAVAILABLE:502});
 const ROUTE=/^\/api\/(?:[a-z][a-z-]{0,31}\/){1,3}[a-z][a-z-]{0,31}$/u;
 /** `routes` maps an exact path to `{handle({principal,body,signal,deadlineMs}), errors?:{CODE:status}, effect?:boolean}`. A route with
- * `effect:true` reports RESULT_NOT_RELEASED when its acknowledged result is withheld (membership recheck, size, deadline). */
+ * `effect:true` reports UNKNOWN when an invoked route has an indeterminate outcome, and RESULT_NOT_RELEASED when its returned
+ * result is withheld. Starting a route is not proof of an effect or of physical cancellation; callers must reconcile by identity. */
 export function createProductApplication(options){
  const {gate,routes,now=Date.now,limits}=options??{};
  if(!gate||['admit','recheck'].some(k=>typeof gate[k]!=='function')||typeof now!=='function'||!routes||typeof routes!=='object')throw new ProductError('PRODUCT_CONFIGURATION');
@@ -32,7 +33,7 @@ export function createProductApplication(options){
   return response({error:{code,...(owned?.outcome?{outcome:owned.outcome}:{}),...(owned?.field&&status!==502?{field:owned.field}:{})}},status);
  };
  return Object.freeze({paths:Object.freeze([...table.keys()]),async handle(request){
-  let lifetime,route,handled=false;
+  let lifetime,route,started=false,handled=false;
   try{
    if(!request||types.isProxy(request)||!(request instanceof Request))refuse('INVALID_REQUEST');
    let info;try{info=Object.fromEntries(Object.entries(getters).map(([k,g])=>[k,g.call(request)]));}catch{refuse('INVALID_REQUEST');}
@@ -48,13 +49,20 @@ export function createProductApplication(options){
    catch(error){if(productFailure(error))throw error;refuse(String(error?.message)==='REQUEST_TOO_LARGE'?'REQUEST_TOO_LARGE':'INVALID_REQUEST');}
    const {principal,expiresAtMs}=await lifetime.run(signal=>gate.admit({credential:auth.slice(7),signal,deadlineMs}));
    lifetime.limitDeadline(Math.min(deadlineMs,expiresAtMs));
-   const result=await lifetime.run(signal=>route.handle({principal,body,signal,deadlineMs:Math.min(deadlineMs,expiresAtMs)}));handled=true;
+   const result=await lifetime.run(async signal=>{started=true;const result=await route.handle({principal,body,signal,deadlineMs:Math.min(deadlineMs,expiresAtMs)});handled=true;return result;});
    // Stored data and effects are released only to a member who is still active at the admitted revision.
    await lifetime.run(signal=>gate.recheck({principal,signal,deadlineMs}));
    const text=JSON.stringify(result);if(Buffer.byteLength(text)>maxResponseBytes)refuse('PRODUCT_UNAVAILABLE');
    lifetime.check();return response(result,200);
   }catch(error){
-   if(handled&&route.effect)return failure(new ProductError(productFailure(error)?.code??'PRODUCT_UNAVAILABLE','RESULT_NOT_RELEASED'),route);
+   const owned=productFailure(error);
+   if(started&&route.effect){
+    if(handled)return failure(new ProductError(owned?.code??'PRODUCT_UNAVAILABLE',owned?.outcome??'RESULT_NOT_RELEASED'),route);
+    // The lifetime races the handler; its rejection does not settle a pending COMMIT or Core submission. Mark start inside the
+    // callback, after run()'s cancellation check, so pre-dispatch refusals remain ordinary failures. Preserve domain-owned outcomes.
+    if(owned?.outcome)return failure(error,route);
+    if(lifetime.signal.aborted||!owned)return failure(new ProductError(owned?.code??'PRODUCT_UNAVAILABLE','UNKNOWN'),route);
+   }
    return failure(error,route);
   }finally{lifetime?.close();}
  }});
