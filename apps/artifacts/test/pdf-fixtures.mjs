@@ -37,3 +37,19 @@ export function syntheticConverter(){
     return {bytes:out,receipt:{inputSha256:sha(bytes),outputSha256:sha(out),format,target,nativeQualification:false,renderInspection:'pending',formulaEquivalence:'unqualified'}};
   }};
 }
+
+/** SYNTHETIC preview converter port (not LibreOffice): accepts a structurally valid DOCX, XLSX or PPTX and returns a
+ * one-page PDF naming the format and the input digest, so a test can see exactly which bytes were converted. */
+export function syntheticOfficeConverter(){
+  const calls=[];
+  return {calls,synthetic:true,async transform({bytes,format,target}){
+    const check=structureCheck(bytes,format);calls.push({format,target,inputSha256:sha(bytes),valid:check.valid});
+    if(!['docx','xlsx','pptx'].includes(format)||target!=='pdf'||!check.valid)throw Object.assign(new Error('SYNTHETIC_CONVERTER_INPUT'),{code:'ARTIFACT_PROCESS_FAILED'});
+    const out=realPdf([`synthetic ${format} preview`,sha(bytes)]);
+    return {bytes:out,receipt:{inputSha256:sha(bytes),outputSha256:sha(out),format,target,nativeQualification:false,renderInspection:'pending',formulaEquivalence:'unqualified'}};
+  }};
+}
+
+/** A complete synthetic renderer admission record for tests (never a qualification). */
+export const syntheticAdmission=(overrides={})=>({rendererId:'libreoffice',rendererVersion:'24.2.7.2',executable:'/usr/bin/soffice',imageDigest:'sha256:'+'0'.repeat(64),qualificationId:'synthetic-test-admission',
+  sandbox:{nonRootUser:true,noNetwork:true,readOnlyRootFilesystem:true,noNewPrivileges:true,dropAllCapabilities:true,privateWorkspace:true,boundedResources:true,noCredentials:true},...overrides});

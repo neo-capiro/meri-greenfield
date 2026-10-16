@@ -10,6 +10,7 @@ import {configuration,requestCurrent,data,own,same,v} from './current.mjs';
 import {admitsDocumentFormat,admitsDocumentMime} from './format-admission.mjs';
 import {errorResponse as bodyErrorResponse} from '../action-application/http.mjs';
 import {requestInfo,jsonBody,response,errorResponse,fail} from './http.mjs';
+import {previewConfiguration,previewRoute} from './preview-route.mjs';
 const uuid=value=>typeof value==='string'&&/^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/iu.test(value);
 function input(value,intent,admission){
  const raw=data(value),write=['create','revise'].includes(intent);
@@ -33,7 +34,7 @@ function created(value,call,context,admission){
  return result;
 }
 export function createDocumentApplication(options){
- const config=configuration(options),context=config.options.context,admission=config.formatAdmission;
+ const config=configuration(options),context=config.options.context,admission=config.formatAdmission;config.preview=previewConfiguration(config.previewOptions);
  return Object.freeze({async handle(request){
   let life;const state={};
   try{
@@ -50,6 +51,8 @@ export function createDocumentApplication(options){
     state.writeStarted=true;
     result=await life.run(async signal=>{const result=await writes.execute(call,config.credential,signal);state.completed=true;return result;});
     result=created(result,call,context,admission);
+   }else if(info.intent==='preview'||info.intent==='preview-publish'){
+    return await previewRoute({config,admission,current,life,intent:info.intent,versionId:call.versionId,state,release:value=>version(value,context,admission,call.versionId)});
    }else{
     const forbidden=()=>fail('DOCUMENT_READ_BUDGET_REFUSED',500);
     const reads=createArtifactService({...config.options,authorize:current.authorize,budget:{reserve:forbidden,settle:forbidden}});

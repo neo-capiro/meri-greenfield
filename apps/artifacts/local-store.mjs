@@ -37,6 +37,12 @@ export async function createLocalArtifactStore({root,canonicalSha256}){
         readHead:async artifactId=>(await readRegular(join(root,'heads',id(artifactId)),100)).toString('utf8'),
         listVersions:()=>readdir(join(root,'versions')),hash:canonicalSha256,check:()=>{active();check(signal);}});
     },
+    /** The version id whose immutable object is `objectId`, within one tenant conversation; ENOENT when none. */
+    async findByObject({objectId,tenantId,conversationId},signal){
+      active();check(signal);id(objectId);const names=(await readdir(join(root,'versions'))).filter(n=>/^[a-f0-9-]{36}\.json$/i.test(n));if(names.length>10000)fail('ARTIFACT_STORE_LIMIT');
+      const found=[];for(const name of names){const r=await readVersion(name.slice(0,36),signal);if(r.version.object.objectId===objectId&&r.version.binding.tenantId===tenantId&&r.version.binding.conversationId===conversationId)found.push(r.version.versionId);}
+      if(found.length>1)fail('ARTIFACT_VERSION_CORRUPT');if(!found.length)throw Object.assign(new Error('ENOENT'),{code:'ENOENT'});return found[0];
+    },
     async commit({version,spec,specSha256,requestSha256,inspection,expectedParentVersionId},signal){
       active();check(signal);id(version.versionId);id(version.artifactId);if(expectedParentVersionId!==null)id(expectedParentVersionId);
       if(specSha256!==canonicalSha256(spec)||version.parentVersionId!==expectedParentVersionId)fail('ARTIFACT_COMMIT_INPUT');

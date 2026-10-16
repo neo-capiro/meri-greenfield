@@ -1,0 +1,128 @@
+{
+ "recordedAt": "2026-10-16T00:01:45.353Z",
+ "scope": "local evidence; synthetic admission record; not renderer or native qualification",
+ "renderer": {
+  "state": "available",
+  "reason": "RENDERER_ADMITTED",
+  "sandboxRequirements": [
+   "nonRootUser",
+   "noNetwork",
+   "readOnlyRootFilesystem",
+   "noNewPrivileges",
+   "dropAllCapabilities",
+   "privateWorkspace",
+   "boundedResources",
+   "noCredentials"
+  ],
+  "missingRequirements": [],
+  "rendererId": "libreoffice",
+  "rendererVersion": "24.2.7.2",
+  "imageDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "qualificationId": "synthetic-test-admission",
+  "observedVersion": "LibreOffice 24.2.7.2 420(Build:2)"
+ },
+ "host": {
+  "uid": 0,
+  "sandboxAttested": false
+ },
+ "node": "v24.11.1",
+ "records": [
+  {
+   "check": "openability",
+   "format": "docx",
+   "inputSha256": "0423439272ea57740f943fa1a444cbf3e99a67aa6291b7f119796a75aafd4706",
+   "outputSha256": "df982518905caff77b594fe3d5d08e67097e079714bdfe0b4c320b878d0a465c",
+   "pages": 1,
+   "passed": true,
+   "qualificationId": "synthetic-test-admission",
+   "imageDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+   "processGroupAbsent": true,
+   "exitCode": 0
+  },
+  {
+   "check": "openability",
+   "format": "xlsx",
+   "inputSha256": "36c97979ba1a36c6014916d8e549d90d1ae792f233abd9a57469f6a57e4ab600",
+   "outputSha256": "08131c74a927b2247d65b1ce80cd8c9371c2b0b0892802b0b612f7b318f5c9ef",
+   "pages": 1,
+   "passed": true,
+   "qualificationId": "synthetic-test-admission",
+   "imageDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+   "processGroupAbsent": true,
+   "exitCode": 0
+  },
+  {
+   "check": "openability",
+   "format": "pptx",
+   "inputSha256": "f00a9b58a9fd3421e974f16f9f54e56974b74dbe38f5ccd8b71ad860b076c8ee",
+   "outputSha256": "15117182572f0f08c96fcc913a4bcc6c6a8c190277db7ed20c18587215ef9441",
+   "pages": 2,
+   "passed": true,
+   "qualificationId": "synthetic-test-admission",
+   "imageDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+   "processGroupAbsent": true,
+   "exitCode": 0
+  },
+  {
+   "check": "openability",
+   "format": "pdf",
+   "inputSha256": "67eea1812d13cf62aa1af657c5e7536ee67fc3fe6f64625a96a86c3ae8d881f8",
+   "outputSha256": "615a43715a741437f24053cb6891d9c3febb47673c64cdde21914d556247ab9f",
+   "pages": 1,
+   "passed": true,
+   "qualificationId": "synthetic-test-admission",
+   "imageDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+   "processGroupAbsent": true,
+   "exitCode": 0
+  },
+  {
+   "check": "formula-recalculation",
+   "inputSha256": "8f86379f19872e84c0861d3fc7893c900cc07637fe3392c0728444da8ed5674a",
+   "outputSha256": "eb5e90a40fc1994b03cc8ab9a5bef220111704375b242ed130f2895757b1a1a3",
+   "cells": [
+    {
+     "cell": "Data!B4",
+     "formula": "=SUM(B2:B3)",
+     "storedBefore": 0,
+     "storedAfter": 5,
+     "expected": 5,
+     "passed": true
+    }
+   ],
+   "formulas": [
+    {
+     "cell": "Data!B4",
+     "formula": "=SUM(B2:B3)",
+     "preserved": true
+    }
+   ],
+   "formulasPreserved": true,
+   "passed": true,
+   "qualificationId": "synthetic-test-admission",
+   "imageDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+   "processGroupAbsent": true,
+   "exitCode": 0
+  },
+  {
+   "check": "reference-totals",
+   "inputSha256": "8f86379f19872e84c0861d3fc7893c900cc07637fe3392c0728444da8ed5674a",
+   "outputSha256": "db7ccef0d05bbb050fb8d0b676d62119a9e9ea88ede88dbfef51f89bbf8274b9",
+   "totals": [
+    {
+     "total": "Data!B4",
+     "range": "Data!B2:B3",
+     "formula": "=SUM(B2:B3)",
+     "stored": 5,
+     "independentSum": 5,
+     "referencedCells": 2,
+     "passed": true
+    }
+   ],
+   "passed": true,
+   "qualificationId": "synthetic-test-admission",
+   "imageDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+   "processGroupAbsent": true,
+   "exitCode": 0
+  }
+ ]
+}

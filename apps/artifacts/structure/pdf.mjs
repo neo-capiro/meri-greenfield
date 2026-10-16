@@ -132,9 +132,9 @@ function verifyPageTree(rootRef,resolve){
   let leaves=0;for(const kid of kids)leaves+=walk(kid,ref,depth+1);
   return leaves===count?leaves:refuse('PDF_PAGE_TREE');
  };
- walk(rootRef,null,0);
+ return walk(rootRef,null,0);
 }
-/** Throws a StructureInvalid unless `bytes` is a structurally coherent PDF. */
+/** Throws a StructureInvalid unless `bytes` is a structurally coherent PDF; returns its verified page-tree leaf count. */
 export function verifyPdf(bytes){
  const src=bytes.toString('latin1');
  if(!HEADER.test(src.slice(0,16)))refuse('PDF_HEADER');
@@ -145,5 +145,5 @@ export function verifyPdf(bytes){
  const root=trailer.get('Root');if(!isRef(root))refuse('PDF_TRAILER');
  const catalog=resolve(root,'PDF_CATALOG'),pages=catalog instanceof Map?catalog.get('Pages'):undefined;
  if(!(catalog instanceof Map)||!isName(catalog.get('Type'),'Catalog')||!isRef(pages))refuse('PDF_CATALOG');
- verifyPageTree(pages,resolve);
+ return {pages:verifyPageTree(pages,resolve)};
 }
