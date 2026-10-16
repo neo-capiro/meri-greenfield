@@ -74,3 +74,26 @@ the pinned installed library; no npm install. One baseline attempt was cancelled
 because an early test assertion left the old approval timer pending; the test
 now settles its synthetic port before asserting, and the recorded negative exits
 in 178 ms. No real browser, SDK query, activation-gate change or P2b retry.
+
+## R4-DOC-1 implemented, pending independent review
+
+`source-http.prepare` reads credentials/metadata and returns a one-use private
+token. The effectful artifact resolver now runs in `source-http.execute`, reached
+only after the unchanged command executor has durably claimed the canonical
+payload, reserved budget and rechecked authority/approval. Attachment broker
+UNKNOWN is translated explicitly to COMMAND_OUTCOME_UNKNOWN; the command owner
+records UNKNOWN and budget liability. Completed/UNKNOWN/claim-ACK-loss replay
+never registers again. No new broker retry or endpoint is introduced.
+
+Synthetic production pipeline checks: **50 pass, 0 fail, 0 skip**, exit 0
+(`commands-filing-custody`, `commands-execution`,
+`commands-independent-transport-budget`). The four new custody regressions fail
+exact-base source-http: **0 pass, 4 fail**. They use the actual artifact resolver,
+canonical validators, real command owners over scripted SQL, and synthetic
+artifact-read/register/HTTP ports. Assertions cover pure preparation, completed
+and concurrent replay, lost registration ACK, lost claim ACK, budget failure,
+and current-authority revocation before registration.
+
+The existing mismatched-attachment test now expects durable UNKNOWN after claim
+instead of pre-claim refusal, while still proving zero final source save. The
+real host broker, external upload and actual filing route remain UNRUN/unwired.
