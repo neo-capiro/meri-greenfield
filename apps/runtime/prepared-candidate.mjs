@@ -67,6 +67,7 @@ export function createPreparedCandidateIdentity({store,identity,qualification,no
 export function assemblePreparedCandidate(options){
  const c=own(options,['configuration','pool','ecs','objects','credentials'],['fetchImpl','now','allocate','retireOriginal','runIssuance','issuanceIntent','admissionForBinding','prepareOriginal','prepareInitial','retireInitial','initialBindings','configurationSha256','proposeInitialExpiry','createReadsRuntime','generalReads']),config=compilePreparedCandidateConfiguration(c.configuration.nativeCandidate,c.configuration.versions),fetchImpl=c.fetchImpl??fetch,now=c.now??Date.now,limits={maxRequestMs:c.configuration.limits.requestMs,maxFactBytes:131072},secrets=own(c.credentials,['identity','task','control','proxy']);
  const reads=captureReadRuntimeOptions(Object.fromEntries(['createReadsRuntime','generalReads'].filter(k=>c[k]!==undefined).map(k=>[k,c[k]])));
+ if((config.multiRun?.dynamicInitialRuns===true)!==(c.initialBindings!==undefined))refuse();
  if([secrets.identity,secrets.task,secrets.control,secrets.proxy].some(v=>typeof v!=='string'||!/^\S{1,8192}$/u.test(v))||new Set(Object.values(secrets)).size!==4||c.retireOriginal!==undefined&&typeof c.retireOriginal!=='function')refuse();
  const runtime={...config.runtime,proxyCredential:secrets.proxy},compiled=compileNativeBrokerPlan({runtime,plan:config.plan,preparationIntent:config.preparationIntent}),original=compiled.original,store=createPostgresConversationStore({pool:c.pool}),identity={origin:config.identity.origin,credential:secrets.identity,commandContext:config.identity.commandContext,fetchImpl};
  const {controlDigest,taskDigest}=assertFirstRunGrantBindings(config.grantIntents,config.grantId,secrets),multi=[c.runIssuance,c.issuanceIntent,c.admissionForBinding].some(v=>v!==undefined);
@@ -99,7 +100,7 @@ export function assemblePreparedCandidate(options){
 /** CLI-owned clients use the approved control workload role; task receives no AWS credentials. */
 export async function startPreparedCandidate({configuration,pool,signal,issuanceStore,capabilityAuthority,modelGrants,initialBindings,createReadsRuntime,generalReads}){
  const config=compilePreparedCandidateConfiguration(configuration.nativeCandidate,configuration.versions),reads=captureReadRuntimeOptions({...(createReadsRuntime===undefined?{}:{createReadsRuntime}),...(generalReads===undefined?{}:{generalReads})});signal?.throwIfAborted();
- if(initialBindings&&config.multiRun===undefined)refuse();
+ if((config.multiRun?.dynamicInitialRuns===true)!==(initialBindings!==undefined))refuse();
  const [identity,task,control,proxy]=await Promise.all([config.identity.credentialFile,config.taskCapabilityFile,config.controlCapabilityFile,config.proxyCredentialFile].map(readSecret));signal?.throwIfAborted();
  // Multi-run mode (S2): the three ports are composed from startup-supplied owners; a declared multi-run mode without them fails startup
  // here instead of advertising the fixed first-run path.
