@@ -24,13 +24,13 @@ const among=(/** @type {readonly OperationRef[]} */list)=>{const keys=new Set(li
 /** Names the owner excluded, as recorded in the catalog originals (`disposition:'deferred'`). */
 export const DEFERRED_ORIGINALS=Object.freeze(catalog.originals.filter(o=>o.disposition==='deferred').map(o=>o.id));
 /** Catalog rows of the constructible families, in catalog order: `{operation, family, descriptor}`.
- * @param {Readonly<Record<string,{clientScope:string}>>} [families] @returns {AvailableRead[]} */
+ * @param {Readonly<Record<string,import('./families.mjs').ReadFamily>>} [families] @returns {AvailableRead[]} */
 export function familyReads(families=READ_FAMILIES){
  return catalog.operations.flatMap(descriptor=>{const family=resolveOperationContract(descriptor.operation).binding?.group;
   return typeof family==='string'&&Object.hasOwn(families,family)?[{operation:descriptor.operation,family,descriptor}]:[];});
 }
 /** @param {{policy:{generalReads?:boolean,readFamilies?:readonly string[]},installation:{operations:readonly OperationRef[]},
- *  discovery:{operations:readonly OperationRef[]},scopes:readonly {kind:string}[],families?:Readonly<Record<string,{clientScope:string}>>,
+ *  discovery:{operations:readonly OperationRef[]},scopes:readonly {kind:string}[],families?:Readonly<Record<string,import('./families.mjs').ReadFamily>>,
  *  narrowTo?:readonly OperationRef[],exclude?:readonly OperationRef[]}} input
  * @returns {{available:AvailableRead[],unavailable:string[]}} */
 export function resolveAvailableReads({policy,installation,discovery,scopes,families=READ_FAMILIES,narrowTo,exclude=[]}){
@@ -43,7 +43,7 @@ export function resolveAvailableReads({policy,installation,discovery,scopes,fami
    installed(row.operation)&&
    policy.generalReads===true&&(policy.readFamilies??[]).includes(row.family)&&
    eligible(row.operation)&&
-   (family.clientScope!=='required'||client)&&
+   (client||family.clientScope!=='required'&&!family.requiredClientOperations?.includes(row.operation.id))&&
    !deferred.has(row.operation.id)&&!deferred.has(sdkToolName(row.operation))&&
    narrowed(row.operation)&&!excluded(row.operation);
   if(open)available.push(row);else if(!excluded(row.operation))unavailable.push(d.displayName);

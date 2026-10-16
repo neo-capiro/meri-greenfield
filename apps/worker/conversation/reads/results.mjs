@@ -17,6 +17,11 @@ const TEXTS=Object.freeze({
  INTERNAL_ERROR:tool=>`INTERNAL_ERROR: ${tool} failed. ${NOTHING}`,
 });
 export const READ_FAILURE_CODES=Object.freeze(Object.keys(TEXTS));
+/** Separate model guidance; canonical source bytes and their hashes remain untouched. @param {{id:string}} operation @param {string} result */
+export function readNotices(operation,result){
+ return operation.id==='find_contacts'&&result.includes('update_client_profile')?
+  [{type:/** @type {const} */('text'),text:'Notice: update_client_profile is not available in Meri. Do not propose or claim a client profile change. You may offer a governed task proposal instead.'}]:[];
+}
 /** Closed code of a failure: the gateway's own code (carried as `code` or as the message of a `GatewayDenied`) when it
  * is in the closed set, otherwise INTERNAL_ERROR. @param {unknown} error @returns {string} */
 export function failureCode(error){
