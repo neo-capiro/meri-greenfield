@@ -1,6 +1,6 @@
 # Dynamic first-run binding journal: source proposal
 
-Status: source only, unmounted. No product migration ID, database change, deployment, or live first-chat acceptance is claimed.
+Status: source only, unmounted. The central ledger now reserves `apps/control/conversations/migrations/0017_initial_run_bindings.sql` exclusively to the Meri first-chat lane. No database change, deployment, or live first-chat acceptance is claimed.
 
 ## Ownership and interface
 
@@ -10,9 +10,9 @@ Core owns creation and current authorization of a `ClioConversation`. The Meri n
 
 The single transaction holds a tenant/conversation advisory lock, checks for an existing row, and uses insert-on-conflict/readback. The first write refuses an existing run, initial-input allocation, or next-run reservation. A replay checks that the original persisted run and initial-input allocation, when present, match the saved binding; subsequent valid next-run state does not replace the original. Commit acknowledgment loss is uncertain; the caller retries the same verified operation and recovers the saved row. SQL failures never grant a session.
 
-## Schema request for central allocation
+## Allocated source schema
 
-The source references proposed `meri_conversations.initial_run_bindings`. A migration owner must allocate an ID and review/qualify the following additive schema before composition. In particular, immutability must hold against writers outside this adapter. This is a proposal, not a migration file to execute.
+The source uses `meri_conversations.initial_run_bindings`. The parent allocated source ID 0017 in the central ledger; `0017_initial_run_bindings.sql` carries the following additive schema. Review and qualify it before composition. In particular, immutability must hold against writers outside this adapter. The SQL below remains a review aid, not an instruction to execute the migration.
 
 ```sql
 CREATE TABLE meri_conversations.initial_run_bindings (
@@ -103,11 +103,11 @@ CREATE TRIGGER immutable_initial_run_binding_truncate BEFORE TRUNCATE ON meri_co
 
 The JSON checks intentionally require complete, exact top-level, binding, and version keys. Each extracted field check is explicitly true, so SQL UNKNOWN cannot admit a missing key or JSON null. Timestamp casts stay inside a CASE branch guarded by JSON number types. The digest column's pattern check does not prove that it hashes the record; the journal verifies the canonical hash when reading. PostgreSQL 16 requires UPDATE privilege on at least one column for the journal's SELECT FOR UPDATE, so the app role needs narrow column-level UPDATE plus the rejecting trigger. The app role must not own this table or have DELETE, TRUNCATE, or DDL rights.
 
-## Isolated PostgreSQL 16 qualification to run after central allocation
+## Isolated PostgreSQL 16 qualification required before activation
 
 1. Apply the exact preceding migration manifest and the allocated additive migration to an isolated database, both empty and with preserved preexisting conversation rows. Inspect columns, primary/unique keys, constraints, triggers, and least-privilege SELECT/INSERT/column-UPDATE grants. Prove app-role SELECT FOR UPDATE succeeds on the new table and on the existing runs, initial_inputs, and next_runs rows the journal locks, while actual UPDATE of the new table is rejected by the trigger and DELETE, TRUNCATE, and DDL are denied. Check the restored catalog and row hashes.
 2. Insert one valid adapter-produced record, then attempt each missing top-level, binding, and version key, JSON null and wrong scalar/container types, numeric strings for schema version, fence, and timestamps, fractional/negative/over-safe timestamps, bad UUID/hash, and a row-column mismatch. Every malformed insert must fail. Attempt duplicate tenant/conversation and tenant/run keys, then UPDATE, DELETE, and TRUNCATE with the app role.
 3. Exercise two concurrent claims for the same tenant/conversation, identical replay, changed actor/client/policy/configuration conflict, preexisting run/input/reservation refusal, expiry, and lost-COMMIT acknowledgment recovery against real PostgreSQL. Confirm no second binding or changed original expiry.
 4. Restore a snapshot with an admitted binding and accepted run; verify the same parsed/canonical record and recomputed canonical hash, source rows, readback, and old rows unchanged. JSONB does not preserve original JSON bytes. Check fail-closed readiness when the table is absent and the exact SHA/order/privileges/restore steps in the deployment manifest.
 
-These controls are prepared only; no PostgreSQL instance, migration, or live service has been run for this proposal. The current source tests use a scripted PostgreSQL protocol fixture.
+These controls are prepared only. No authorized isolated PostgreSQL instance, migration, or live service has been run for this source. The current source tests use a scripted PostgreSQL protocol fixture.
