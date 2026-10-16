@@ -31,6 +31,7 @@ def _deny():
 
 _SLOT = re.compile(r"[A-Za-z0-9_-]{1,128}\Z")
 _UUID = re.compile(r"[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}\Z", re.IGNORECASE)
+_SHA256 = re.compile(r"[0-9a-f]{64}\Z")
 
 
 def _binding(value):
@@ -96,13 +97,22 @@ class HostRequestObservation:
     This source is inert until trusted host composition installs both hooks.
     """
 
-    def __init__(self, counter, *, request_id, binding, deadline_ms, limits=BodyLimits()):
+    def __init__(self, counter, *, request_id, binding, deadline_ms,
+                 selected_client_id=None, check_current_conversation=None,
+                 limits=BodyLimits()):
         if (not callable(getattr(counter, "count", None)) or type(request_id) is not str
                 or not _SLOT.fullmatch(request_id)
                 or type(deadline_ms) is not int or not 0 < deadline_ms <= 9007199254740991
+                or type(selected_client_id) is not str or not _UUID.fullmatch(selected_client_id)
+                or selected_client_id != selected_client_id.lower()
+                or not callable(check_current_conversation)
                 or type(limits) is not BodyLimits):
             _deny()
         self.counter, self.request_id = counter, request_id
+        # The future authenticated host composition supplies this private Meri
+        # Core-context reader. No worker input, native bearer or codec frame does.
+        self._check_current_conversation = check_current_conversation
+        self._selected_client_id = selected_client_id
         self._binding, self.deadline_ms, self.limits = _binding(binding), deadline_ms, limits
         self._lifetime = self._request = self._native = self._count = None
         self._count_entered = self._request_read = self._claim_read = False
@@ -113,6 +123,39 @@ class HostRequestObservation:
     def binding(self):
         return self._binding.copy()
 
+    async def _current(self, life):
+        started = time.time_ns() // 1_000_000
+        try:
+            receipt = await life._bounded(lambda: self._check_current_conversation({
+                "binding": self._binding.copy(), "requestId": self.request_id,
+                "deadlineMs": self.deadline_ms}))
+        except Exception:
+            _deny()
+        at = time.time_ns() // 1_000_000
+        if (type(receipt) is not dict or set(receipt) != {
+                "identitySha256", "binding", "scopes", "selectedClientId",
+                "contextRevision", "checkedAtMs", "expiresAtMs"}
+                or receipt["binding"] != self._binding
+                or type(receipt["identitySha256"]) is not str
+                or not _SHA256.fullmatch(receipt["identitySha256"])
+                or type(receipt["contextRevision"]) is not str
+                or not _SHA256.fullmatch(receipt["contextRevision"])
+                or receipt["selectedClientId"] != self._selected_client_id
+                or type(receipt["scopes"]) is not list or len(receipt["scopes"]) != 1
+                or type(receipt["scopes"][0]) is not dict
+                or set(receipt["scopes"][0]) != {
+                    "kind", "tenantId", "resourceId", "policyRevision"}
+                or receipt["scopes"][0] != {
+                    "kind": "client", "tenantId": self._binding["tenantId"],
+                    "resourceId": self._selected_client_id,
+                    "policyRevision": life.peer.binding.policy_revision}
+                or type(receipt["checkedAtMs"]) is not int
+                or not started <= receipt["checkedAtMs"] <= at
+                or type(receipt["expiresAtMs"]) is not int
+                or receipt["expiresAtMs"] <= at):
+            _deny()
+        life.check()
+
     async def before_guard(self, request):
         if self._lifetime is not None:
             _deny()
@@ -121,6 +164,7 @@ class HostRequestObservation:
             _deny()
         await life.refresh()
         life.check()
+        await self._current(life)
         if type(life.original_body) is not bytes or not 1 <= len(life.original_body) <= 4 * 1024 * 1024:
             _deny()
         body, native = _native_request(request, self.limits)
@@ -158,13 +202,15 @@ class HostRequestObservation:
         self._count = observation
         return observation
 
-    async def _source(self):
+    async def _source(self, *, require_current=True):
         life = self._lifetime
         if (type(life) is not RequestLifetime or self._request is None
                 or self._count is None or self._native is None):
             _deny()
         await life.refresh()
         life.check()
+        if require_current:
+            await self._current(life)
         if (life.original_body is None or life.proxy_credential is None
                 or type(life.original_body) is not bytes
                 or not 1 <= len(life.original_body) <= 4 * 1024 * 1024
@@ -276,6 +322,9 @@ class HostResponseObservationTransport(httpx.AsyncBaseTransport):
         binding = UsageBinding(self.context.request_id, body.sha256, raw_sha,
                                self.context.pricing_revision, count.input_tokens,
                                body.max_output_tokens, self.context.allowed_tool_names)
+        # Recheck at the final async boundary. A denial retains the committed
+        # UNKNOWN hold and sends no provider bytes.
+        await self.request_capture._current(self.request_capture._lifetime)
         response = await self.inner.handle_async_request(request)
         if not isinstance(response, httpx.Response) or not isinstance(response.stream, httpx.AsyncByteStream):
             _deny()
@@ -303,7 +352,10 @@ class HostResponseObservationTransport(httpx.AsyncBaseTransport):
                 or self._result.status != "COMPLETE"):
             _deny()
         self.read = True
-        source = await self.request_capture._source()
+        # Settlement records cost already incurred. It still refreshes the
+        # original peer/grant and bytes, but a later Core archive must not
+        # suppress complete usage evidence or imply the hold was refunded.
+        source = await self.request_capture._source(require_current=False)
         if request["grantId"] != source["peer"]["grantId"]:
             _deny()
         raw = source["rawRequestBody"]

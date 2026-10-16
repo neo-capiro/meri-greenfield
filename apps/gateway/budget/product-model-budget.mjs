@@ -2,12 +2,15 @@
  * native request in `observe`; this module exposes no worker or HTTP operation.
  */
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {validateShape} from '../../../packages/contracts/validate.mjs';
+import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {createPostgresAdmittedRunOwner} from './admitted-run-owner.mjs';
 import {parseAdmittedGrantSet} from './admitted-run-binding.mjs';
 import {digest,same} from './tool-budget-binding.mjs';
 import {refuse} from './postgres-budget-store.mjs';
 
 const slot=/^[A-Za-z0-9_-]{1,128}$/u;
+const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u;
 const decimal=/^(0|[1-9][0-9]*)$/u;
 const maxBigint=(1n<<63n)-1n;
 function money(value){
@@ -37,13 +40,38 @@ function observation(value,selected,pricing){
  return {...v,count,hold};
 }
 
+/** The callback is captured by trusted Meri composition and must resolve fresh
+ * native identity/Core conversation context for this exact run. Its receipt is
+ * checked here; a worker, proxy request, or cached boolean cannot authorize it.
+ */
+async function currentConversation(check,selected,selectedClientId,value,now,maxRequestMs){
+ const started=now();
+ let life;
+ try{
+  if(!Number.isSafeInteger(started)||value.signal?.aborted)throw Error('CURRENT_STOPPED');
+  const deadlineMs=Math.min(value.deadlineMs,started+maxRequestMs);
+  life=createOperationLifetime({deadlineMs,now,signal:value.signal,errorFactory:()=>new Error('PRODUCT_MODEL_CONTEXT_REFUSED')});
+  const raw=await life.run(signal=>check(Object.freeze({binding:selected.binding,deadlineMs,signal})));
+  const receipt=data(own(raw,['identitySha256','binding','scopes','selectedClientId','contextRevision','checkedAtMs','expiresAtMs']));
+  digest(receipt.identitySha256);digest(receipt.contextRevision);
+  if(!same(receipt.binding,selected.binding)||!Array.isArray(receipt.scopes)||receipt.scopes.length!==1)throw Error('CURRENT_BINDING');
+  const scope=own(receipt.scopes[0],['kind','tenantId','resourceId','policyRevision']);validateShape('Scope',scope);
+  if(receipt.selectedClientId!==selectedClientId||scope.kind!=='client'||scope.tenantId!==selected.binding.tenantId||scope.resourceId!==selectedClientId||scope.policyRevision!==selected.qualificationBinding.policyRevision)throw Error('CURRENT_SCOPE');
+  const at=now();
+  if(!Number.isSafeInteger(at)||!Number.isSafeInteger(receipt.checkedAtMs)||receipt.checkedAtMs<started||receipt.checkedAtMs>at||!Number.isSafeInteger(receipt.expiresAtMs)||receipt.expiresAtMs<=at||value.signal?.aborted)throw Error('CURRENT_EXPIRED');
+  life.check();
+  return receipt.expiresAtMs;
+ }catch{refuse('PRODUCT_MODEL_CONTEXT_REFUSED');}
+ finally{life?.close();}
+}
+
 /** `observe` is a compiled host callback, not request JSON or an origin string.
  * It must independently authenticate the proxy bearer and task peer, inspect the
  * final native body, and return a CountTokens result bound to those exact bytes.
  */
 export function createProductModelReservation(configuration){
- const c=own(configuration,['pool','allocationJson','grantFactsJsons','modelGrantId','pricing','observe','now','limits']);
- if(typeof c.observe!=='function'||typeof c.now!=='function')refuse('PRODUCT_MODEL_CONFIGURATION');
+ const c=own(configuration,['pool','allocationJson','grantFactsJsons','modelGrantId','selectedClientId','pricing','observe','checkCurrentConversation','now','limits']);
+ if(typeof c.observe!=='function'||typeof c.checkCurrentConversation!=='function'||typeof c.now!=='function'||typeof c.selectedClientId!=='string'||!uuid.test(c.selectedClientId))refuse('PRODUCT_MODEL_CONFIGURATION');
  const {facts}=parseAdmittedGrantSet(c),selected=facts.find(f=>f.grantId===c.modelGrantId);
  if(!selected)refuse('PRODUCT_MODEL_GRANT_REFUSED');
  const pricing=pricingPin(c.pricing),admission=createPostgresAdmittedRunOwner({pool:c.pool,allocationJson:c.allocationJson,grantFactsJsons:c.grantFactsJsons,namespace:'product',now:c.now,limits:c.limits});
@@ -53,7 +81,8 @@ export function createProductModelReservation(configuration){
   // No SQL is borrowed until the host produces its own authenticated evidence.
   const observed=observation(await c.observe(Object.freeze({requestId:v.requestId,binding:selected.binding,deadlineMs:v.deadlineMs,signal:v.signal})),selected,pricing);
   if(v.signal?.aborted||v.deadlineMs<=c.now())refuse('PRODUCT_MODEL_REQUEST_STOPPED');
-  return admission.withCurrentAllocation({binding:selected.binding,deadlineMs:v.deadlineMs,signal:v.signal},async({client,current},limitDeadline)=>{
+  const contextExpiresAtMs=await currentConversation(c.checkCurrentConversation,selected,c.selectedClientId,v,c.now,c.limits.maxRequestMs);
+  return admission.withCurrentAllocation({binding:selected.binding,deadlineMs:Math.min(v.deadlineMs,contextExpiresAtMs),signal:v.signal},async({client,current},limitDeadline)=>{
    if(!same(current.binding,selected.binding)||current.policyRevision!==selected.qualificationBinding.policyRevision||current.allocationSha256!==selected.allocationSha256||!same(current.allocation.run,Object.fromEntries(Object.keys(current.allocation.run).map(k=>[k,selected.binding[k]]))))refuse('PRODUCT_MODEL_CURRENT_REFUSED');
    limitDeadline(pricing.validUntilMs);
    const budgetRows=(await client.query('SELECT cap_micro_usd,consumed_micro_usd,quarantined FROM meri_product_budget.budget WHERE id=1')).rows;
@@ -64,6 +93,9 @@ export function createProductModelReservation(configuration){
    if(existing.length)refuse('PRODUCT_MODEL_SLOT_USED');
    const totals=(await client.query("SELECT COALESCE(sum(CASE WHEN state='UNKNOWN' THEN hold_micro_usd ELSE 0 END),0) AS held, COALESCE(sum(CASE WHEN run_id=$1 THEN CASE WHEN state='UNKNOWN' THEN hold_micro_usd ELSE consumed_micro_usd END ELSE 0 END),0) AS run_total FROM meri_product_budget.budget_liabilities",[selected.binding.runId])).rows;
    if(totals.length!==1||money(budget.consumed_micro_usd)+money(totals[0].held)+observed.hold>money(budget.cap_micro_usd)||money(totals[0].run_total)+observed.hold>money(current.allocation.budgets.maxCostMicroUSD))refuse('PRODUCT_MODEL_BUDGET_EXHAUSTED');
+   // The first Core read prevented borrowing SQL for an archived conversation.
+   // Repeat inside this lease immediately before recording the UNKNOWN hold.
+   limitDeadline(await currentConversation(c.checkCurrentConversation,selected,c.selectedClientId,{...v,deadlineMs:Math.min(v.deadlineMs,current.deadlineMs)},c.now,c.limits.maxRequestMs));
    const q=selected.qualificationBinding;
    await client.query("INSERT INTO meri_product_budget.requests(request_id,grant_id,run_id,attempt,worker_arn,fence,policy_revision,native_body_sha256,raw_request_sha256,model_id,profile_id,pricing_revision,pricing_valid_until,input_tokens,max_output_tokens,hold_micro_usd,state) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,'UNKNOWN')",[v.requestId,selected.grantId,selected.binding.runId,q.attempt,q.workerArn,q.fence,q.policyRevision,observed.nativeBodySha256,observed.rawRequestSha256,pricing.modelId,pricing.profileId,pricing.revision,new Date(pricing.validUntilMs),observed.count.inputTokens,observed.maxOutputTokens,observed.hold.toString()]);
    const finalTime=(await client.query('SELECT clock_timestamp() AS now')).rows;

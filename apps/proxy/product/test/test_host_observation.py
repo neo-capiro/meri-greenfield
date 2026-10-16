@@ -53,7 +53,14 @@ BINDING = {"tenantId": "tenant", "actorId": "actor",
            "attemptId": "22222222-2222-4222-8222-222222222222",
            "workerId": "33333333-3333-4333-8333-333333333333",
            "writerFence": RUN.fence}
+CLIENT_ID = "11111111-1111-4111-8111-111111111111"
+OTHER_CLIENT = "44444444-4444-4444-8444-444444444444"
 VALUE = {"requestId": "request_A", "binding": BINDING, "deadlineMs": 9000000000000}
+
+
+def wrong_client(receipt):
+    return {**receipt, "selectedClientId": OTHER_CLIENT,
+            "scopes": [{**receipt["scopes"][0], "resourceId": OTHER_CLIENT}]}
 
 
 class Counter:
@@ -146,6 +153,23 @@ class HostObservationTests(unittest.IsolatedAsyncioTestCase):
         await self.life.start(scope)
         self.life.original_body = RAW
         self.token = _request_lifetime.set(self.life)
+        self.archived = False
+        self.current_requests = []
+        self.context_change = None
+
+    async def current_conversation(self, request):
+        self.current_requests.append(request)
+        if self.archived:
+            raise RuntimeError("synthetic archived Core conversation")
+        now = time.time_ns() // 1_000_000
+        receipt = {"identitySha256": "a" * 64, "binding": BINDING.copy(),
+                   "scopes": [{"kind": "client", "tenantId": BINDING["tenantId"],
+                               "resourceId": CLIENT_ID,
+                               "policyRevision": RUN.policy_revision}],
+                   "selectedClientId": CLIENT_ID,
+                   "contextRevision": "b" * 64,
+                   "checkedAtMs": now, "expiresAtMs": now + 5000}
+        return self.context_change(receipt) if self.context_change else receipt
 
     async def asyncTearDown(self):
         _request_lifetime.reset(self.token)
@@ -154,7 +178,9 @@ class HostObservationTests(unittest.IsolatedAsyncioTestCase):
     def composition(self):
         counter = Counter()
         host = HOST.HostRequestObservation(counter, request_id="request_A",
-                                           binding=BINDING, deadline_ms=VALUE["deadlineMs"])
+                                           binding=BINDING, deadline_ms=VALUE["deadlineMs"],
+                                           selected_client_id=CLIENT_ID,
+                                           check_current_conversation=self.current_conversation)
         bridge = Bridge(host)
         adapter = ADMISSION.ProductReservationAdapter(
             bridge, host.claim_ingress, binding=BINDING, deadline_ms=VALUE["deadlineMs"])
@@ -176,6 +202,9 @@ class HostObservationTests(unittest.IsolatedAsyncioTestCase):
         counter, host, bridge, adapter, guard, request = await self.armed()
         self.assertTrue(guard.armed)
         self.assertEqual(counter.calls, 1)
+        self.assertGreaterEqual(len(self.current_requests), 3)
+        self.assertTrue(all(set(call) == {"binding", "requestId", "deadlineMs"}
+                            and call["binding"] == BINDING for call in self.current_requests))
         self.assertEqual(bridge.observed, bridge.claim)
         self.assertEqual(bridge.observed["rawRequestBody"], RAW)
         self.assertEqual(bridge.observed["nativeRequest"]["body"], NATIVE)
@@ -187,6 +216,113 @@ class HostObservationTests(unittest.IsolatedAsyncioTestCase):
         with self.assertRaises(Exception):
             await guard.before_send(request)
         self.assertEqual(counter.calls, 1)
+
+    async def test_missing_or_denied_core_currentness_refuses_before_count_or_hold(self):
+        with self.assertRaisesRegex(Exception, "PRODUCT_HOST_OBSERVATION_REFUSED"):
+            HOST.HostRequestObservation(Counter(), request_id="request_A",
+                                        binding=BINDING, deadline_ms=VALUE["deadlineMs"],
+                                        selected_client_id=CLIENT_ID)
+        with self.assertRaisesRegex(Exception, "PRODUCT_HOST_OBSERVATION_REFUSED"):
+            HOST.HostRequestObservation(Counter(), request_id="request_A",
+                                        binding=BINDING, deadline_ms=VALUE["deadlineMs"],
+                                        selected_client_id="AAAAAAAA-AAAA-4AAA-8AAA-AAAAAAAAAAAA",
+                                        check_current_conversation=self.current_conversation)
+        counter, host, _, _, guard, request = self.composition()
+        self.archived = True
+        with self.assertRaisesRegex(Exception, "PRODUCT_HOST_OBSERVATION_REFUSED"):
+            await host.before_guard(request)
+        self.assertEqual(counter.calls, 0)
+        self.archived = False
+        self.context_change = lambda receipt: {**receipt, "binding": {
+            **BINDING, "conversationId": "22222222-2222-4222-8222-222222222222"}}
+        other_counter, other_host, _, _, _, other_request = self.composition()
+        with self.assertRaisesRegex(Exception, "PRODUCT_HOST_OBSERVATION_REFUSED"):
+            await other_host.before_guard(other_request)
+        self.assertEqual(other_counter.calls, 0)
+        self.context_change = wrong_client
+        wrong_counter, wrong_host, _, _, _, wrong_request = self.composition()
+        with self.assertRaisesRegex(Exception, "PRODUCT_HOST_OBSERVATION_REFUSED"):
+            await wrong_host.before_guard(wrong_request)
+        self.assertEqual(wrong_counter.calls, 0)
+
+    async def test_archive_after_count_refuses_reservation_and_after_hold_refuses_native_send(self):
+        counter, host, _, adapter, guard, request = self.composition()
+        await host.before_guard(request)
+        original_count = counter.count
+
+        async def count_then_archive(parameters):
+            result = await original_count(parameters)
+            self.archived = True
+            return result
+
+        counter.count = count_then_archive
+        with self.assertRaisesRegex(Exception, "LEDGER_ADMISSION_FAILED"):
+            await guard.before_send(request)
+        self.assertEqual(counter.calls, 1)
+        self.assertFalse(guard.armed)
+        self.assertIsNone(adapter.reserved_raw_request_sha256)
+
+        self.archived = False
+        _, host, _, adapter, guard, request = await self.armed()
+        self.archived = True
+        context = SETTLEMENT.SettlementContext("request_A", hashlib.sha256(RAW).hexdigest(), "a" * 64)
+        inner = Inner([MESSAGE])
+        captured = HOST.HostResponseObservationTransport(inner, guard=guard,
+                                                         context=context, request_capture=host)
+        with self.assertRaisesRegex(Exception, "PRODUCT_HOST_OBSERVATION_REFUSED"):
+            await captured.handle_async_request(request)
+        self.assertEqual(inner.calls, 0)
+        self.assertTrue(guard.armed)
+        self.assertEqual(guard.hold_receipt.state, "UNKNOWN")
+        self.assertIsNotNone(adapter.reserved_raw_request_sha256)
+
+        self.archived = False
+        _, wrong_host, _, wrong_adapter, wrong_guard, wrong_request = await self.armed()
+        self.context_change = wrong_client
+        wrong_inner = Inner([MESSAGE])
+        wrong_capture = HOST.HostResponseObservationTransport(
+            wrong_inner, guard=wrong_guard, context=context,
+            request_capture=wrong_host)
+        with self.assertRaisesRegex(Exception, "PRODUCT_HOST_OBSERVATION_REFUSED"):
+            await wrong_capture.handle_async_request(wrong_request)
+        self.assertEqual(wrong_inner.calls, 0)
+        self.assertEqual(wrong_guard.hold_receipt.state, "UNKNOWN")
+        self.assertIsNotNone(wrong_adapter.reserved_raw_request_sha256)
+
+        self.context_change = None
+        _, final_host, _, _, final_guard, final_request = await self.armed()
+        self.current_requests.clear()
+        self.context_change = lambda receipt: (wrong_client(receipt)
+                                                if len(self.current_requests) == 2 else receipt)
+        final_inner = Inner([MESSAGE])
+        final_capture = HOST.HostResponseObservationTransport(
+            final_inner, guard=final_guard, context=context,
+            request_capture=final_host)
+        with self.assertRaisesRegex(Exception, "PRODUCT_HOST_OBSERVATION_REFUSED"):
+            await final_capture.handle_async_request(final_request)
+        self.assertEqual(len(self.current_requests), 2)
+        self.assertEqual(final_inner.calls, 0)
+        self.assertEqual(final_guard.hold_receipt.state, "UNKNOWN")
+
+    async def test_archive_after_provider_dispatch_preserves_complete_usage_evidence(self):
+        _, host, _, _, guard, request = await self.armed()
+        context = SETTLEMENT.SettlementContext("request_A", hashlib.sha256(RAW).hexdigest(), "a" * 64)
+        captured = HOST.HostResponseObservationTransport(Inner([MESSAGE]), guard=guard,
+                                                         context=context, request_capture=host)
+        settled = []
+
+        async def complete(request_id, claim):
+            settled.append(await captured.capture_authenticated_complete({
+                "requestId": request_id, "binding": BINDING, "grantId": GRANT}))
+
+        outer = SETTLEMENT.NativeSettlementTransport(captured, guard=guard,
+                                                     context=context, settle_complete=complete)
+        response = await outer.handle_async_request(request)
+        self.archived = True
+        self.assertEqual(b"".join([chunk async for chunk in response.stream]), MESSAGE)
+        self.assertEqual(len(settled), 1)
+        self.assertEqual(settled[0]["completion"]["usage"], {
+            "inputTokens": 12, "outputTokens": 3})
 
     async def test_claim_or_mutation_cannot_create_host_request_evidence(self):
         counter, host, _, _, _, request = self.composition()

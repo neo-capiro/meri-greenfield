@@ -4,13 +4,18 @@ import {applicationFixture,binding,scopes,versions,id} from './application-fixtu
 import {createPostgresConversationStore} from '../postgres-store.mjs';
 import {createNextRunOwner} from '../next-run.mjs';
 import {createMembershipGate} from '../../product-access/membership.mjs';
+import {ProductError} from '../../product-access/errors.mjs';
 import {createConversationHistoryService} from '../history/service.mjs';
 import {createConversationHistoryApplication} from '../history/http.mjs';
 import {hash} from '../boundary.mjs';
 import {lifecycleFixture} from './lifecycle-fixture.mjs';
 import {assertConversationHistoryResponse} from '../../../../packages/contracts/conversation-history/validate.mjs';
-async function fixture({lifecycle=false}={}){
- const f=await (lifecycle?lifecycleFixture():applicationFixture()),state=f.state;let serial=1000;
+async function fixture({lifecycle=false,extraClient=false}={}){
+ const f=await (lifecycle?lifecycleFixture({extraClient}):applicationFixture({initialInput:true})),state=f.state;let serial=1000;
+ if(!lifecycle){const original=f.service;let initialAllocation;
+  // The original submit requires the canonical durable input allocation; successors already have next-run reservations.
+  f.service={...original,async submit(call){if(state.runs.size===0){initialAllocation??=original.allocateInput({credential:call.credential,input:call.input});await initialAllocation;}return original.submit(call);}};
+ }
  // Script only the two newly added read queries; canonical write/next-run SQL keeps its existing independent fixture.
  const pool={async connect(){const c=await f.pool.connect();return {...c,async query(sql,p){
   if(sql.includes('owner_actor_id=$2'))return {rows:[...state.conversations.values()].filter(r=>r.tenant_id===p[0]&&r.owner_actor_id===p[1]&&r.projection.scopes.every(s=>s.kind!=='client'||p[2].includes(s.resourceId)))
@@ -22,11 +27,18 @@ async function fixture({lifecycle=false}={}){
   return c.query(sql,p);
  }};}};
  const store=createPostgresConversationStore({pool}),owner=createNextRunOwner({store,versions,newId:()=>id(serial++),retirement:{async verifyRetired(){throw Error('not admitted');}},revocation:{async verifyRevoked(){throw Error('not admitted');}}});
- state.member={tenantId:binding.tenantId,actorId:binding.actorId,status:'active',role:'member',permissions:[],clientIds:[id(5)],membershipRevision:'m1'};
+ state.member={tenantId:binding.tenantId,actorId:binding.actorId,status:'active',role:'member',permissions:[],clientIds:extraClient?[id(5),id(7)]:[id(5)],membershipRevision:'m1'};
  state.memberCredentialReads=[];const gate=createMembershipGate({now:Date.now,limits:{maxRequestMs:1000,maxFactBytes:65536},verifyToken:async({credential})=>{if(credential!=='native')throw Error('invalid');return {tenantId:state.member.tenantId,actorId:state.member.actorId,checkedAtMs:Date.now(),expiresAtMs:Date.now()+30000};},
   readMembership:async({credential})=>{state.memberCredentialReads.push(credential);return {...state.member,checkedAtMs:Date.now(),expiresAtMs:Date.now()+30000};}});
  state.retentionChecks=0;const retention={async assertServable(){state.retentionChecks++;if(state.suppressed)throw Object.assign(Error('RETENTION_SUPPRESSED'),{code:'RETENTION_SUPPRESSED'});}};
- const service=createConversationHistoryService({store,nextRunOwner:owner,gate,retention}),app=createConversationHistoryApplication({service,gate,now:Date.now,limits:{maxRequestMs:2000,maxRequestBytes:131072,maxResponseBytes:2097152}});
+ state.coreState='active';state.coreClientId=id(5);state.coreReads=[];
+ const currentness={async assertCurrent({credential,principal,conversationId,scopes,signal,deadlineMs}){
+  state.coreReads.push({credential,principal,conversationId,scopes,signal,deadlineMs});await state.onCoreRead?.();
+  if(state.coreError)throw state.coreError;
+  if(credential!=='native'||principal.tenantId!==binding.tenantId||principal.actorId!==binding.actorId||conversationId!==binding.conversationId&&![...state.conversations.values()].some(row=>row.conversation_id===conversationId)||!scopes.some(scope=>scope.kind==='client'&&scope.tenantId===principal.tenantId&&scope.resourceId===state.coreClientId)||state.coreState!=='active')throw Error('Core context unavailable');
+ }};
+ const turnOwner={async admitTurn(input){const result=await owner.admitTurn(input);await state.onTurnAdmitted?.();return result;}};
+ const service=createConversationHistoryService({store,nextRunOwner:turnOwner,gate,retention}),app=createConversationHistoryApplication({service,gate,currentness,now:Date.now,limits:{maxRequestMs:2000,maxRequestBytes:131072,maxResponseBytes:2097152}});
  const post=async(path,body,token='native')=>{const response=await app.handle(new Request(`https://meri.invalid/api/conversations/${path}`,{method:'POST',headers:{authorization:`Bearer ${token}`,'content-type':'application/json'},body:JSON.stringify(body)}));
   if(response.status===200)assertConversationHistoryResponse(path==='next-turn'?'nextTurn':path,await response.clone().json(),body);return response;};
  async function turn(n){const source=state.context.binding;if(n===1)await f.service.submit({credential:f.credential,input:f.input});
@@ -36,13 +48,14 @@ async function fixture({lifecycle=false}={}){
   const admitted=await owner.admitTurn({principal:{tenantId:binding.tenantId,actorId:binding.actorId},conversationId:binding.conversationId,sourceRunId:source.runId});
   state.context.binding=admitted.targetBinding;return {source,admitted};
  }
- return {...f,store,owner,post,turn,gate,historyService:service};
+ return {...f,store,owner,post,turn,gate,currentness,historyService:service};
 }
 test('history enforces its public byte caps when startup permits larger transport limits',async()=>{
- const f=await fixture();try{let calls=0;const app=createConversationHistoryApplication({gate:f.gate,now:Date.now,limits:{maxRequestMs:2000,maxRequestBytes:1048576,maxResponseBytes:8388608},service:{async list(){calls++;return {oversized:'x'.repeat(2097152)};}}});
+ const f=await fixture();try{let calls=0,retained;const app=createConversationHistoryApplication({gate:f.gate,currentness:f.currentness,now:Date.now,limits:{maxRequestMs:2000,maxRequestBytes:1048576,maxResponseBytes:8388608},service:{async list(call){assert.equal(Object.hasOwn(call,'credential'),false);assert.equal(typeof call.recheckConversation,'function');retained=call.recheckConversation;calls++;return {oversized:'x'.repeat(2097152)};}}});
   const post=body=>app.handle(new Request('https://meri.invalid/api/conversations/list',{method:'POST',headers:{authorization:'Bearer native','content-type':'application/json'},body}));
   assert.equal((await post('{}'+' '.repeat(131071))).status,413);assert.equal(calls,0);
   const response=await post('{}');assert.equal(response.status,502);assert.deepEqual(await response.json(),{error:{code:'PRODUCT_UNAVAILABLE'}});assert.equal(calls,1);
+  await assert.rejects(retained({conversationId:binding.conversationId,scopes}));assert.equal(f.state.coreReads.length,0,'closed requests cannot reuse the native bearer');
  }finally{f.close();}
 });
 test('three turns page and reload over one monotonic cursor while original UIEvent sequences and requests stay intact',async()=>{
@@ -71,6 +84,70 @@ test('lost turn ACK and later replay recover the same source mapping without a n
 
 test('next-turn uses the same native bearer for membership before effect and final release',async()=>{
  const f=await fixture();try{await f.turn(1);const response=await f.post('next-turn',{conversationId:binding.conversationId,sourceRunId:binding.runId});assert.equal(response.status,200);assert.deepEqual(f.state.memberCredentialReads,['native','native','native']);}finally{f.close();}
+});
+test('history requires a read-only currentness owner and confines the native bearer to product HTTP',async()=>{
+ const f=await fixture();try{
+  assert.throws(()=>createConversationHistoryApplication({service:f.historyService,gate:f.gate,now:Date.now,limits:{maxRequestMs:2000,maxRequestBytes:131072,maxResponseBytes:2097152}}),/PRODUCT_CONFIGURATION/);
+  await f.service.submit({credential:f.credential,input:f.input});
+  const response=await f.post('transcript',{conversationId:binding.conversationId});assert.equal(response.status,200);
+  assert.equal(f.state.coreReads.length,1);assert.equal(f.state.coreReads[0].credential,'native');assert.deepEqual(f.state.coreReads[0].scopes,scopes);
+ }finally{f.close();}
+});
+test('archived or unavailable Core context withholds saved pages and cannot admit a next turn',async()=>{
+ const f=await fixture();try{await f.service.submit({credential:f.credential,input:f.input});await f.service.cancel({credential:f.credential});
+  const before=f.state.nextRuns.size;
+  for(const coreState of ['archived','unavailable']){
+   f.state.coreState=coreState;
+   for(const path of ['list','transcript','next-turn']){
+    const response=await f.post(path,path==='list'?{}:{conversationId:binding.conversationId,...(path==='next-turn'?{sourceRunId:binding.runId}:{})});
+    assert.equal(response.status,503,`${coreState} ${path}`);const body=await response.json();assert.equal(body.error.code,'CONVERSATION_UNAVAILABLE');
+    if(path==='next-turn')assert.equal(body.error.outcome,'NOT_DISPATCHED');
+   }
+   assert.equal(f.state.nextRuns.size,before);
+  }
+ }finally{f.close();}
+});
+test('Core client mismatch refuses transcript and next-turn even with saved ownership',async()=>{
+ const f=await fixture();try{await f.service.submit({credential:f.credential,input:f.input});await f.service.cancel({credential:f.credential});
+  f.state.coreClientId=id(88);const before=f.state.nextRuns.size;
+  for(const path of ['transcript','next-turn']){const response=await f.post(path,{conversationId:binding.conversationId,...(path==='next-turn'?{sourceRunId:binding.runId}:{})});assert.equal(response.status,503);}
+  assert.equal(f.state.nextRuns.size,before);
+ }finally{f.close();}
+});
+test('saved conversations with multiple client scopes use configured Core client authority',async()=>{
+ const f=await fixture({lifecycle:true,extraClient:true});try{await f.running();
+  const transcript=await f.post('transcript',{conversationId:binding.conversationId});assert.equal(transcript.status,200);
+  assert.equal((await transcript.json()).conversation.scopes.length,2);assert.deepEqual(f.state.coreReads.at(-1).scopes,f.state.context.scopes);
+  const list=await f.post('list',{});assert.equal(list.status,200);assert.equal((await list.json()).conversations.length,1);
+ }finally{f.close();}
+});
+test('Core archive after saved read withholds transcript; archive after turn admission withholds its result',async()=>{
+ const f=await fixture();try{await f.service.submit({credential:f.credential,input:f.input});await f.service.cancel({credential:f.credential});
+  f.state.onHistoryRead=()=>{f.state.coreState='archived';};
+  const withheld=await f.post('transcript',{conversationId:binding.conversationId});assert.equal(withheld.status,503);assert.equal((await withheld.json()).error.code,'CONVERSATION_UNAVAILABLE');
+  f.state.onHistoryRead=null;f.state.coreState='active';f.state.onTurnAdmitted=()=>{f.state.coreState='archived';};
+  const before=f.state.nextRuns.size,response=await f.post('next-turn',{conversationId:binding.conversationId,sourceRunId:binding.runId});
+  assert.equal(response.status,503);assert.deepEqual(await response.json(),{error:{code:'CONVERSATION_UNAVAILABLE',outcome:'RESULT_NOT_RELEASED'}});
+  assert.equal(f.state.nextRuns.size,before+1,'the accepted mapping remains durable after result withholding');
+  f.state.onTurnAdmitted=null;f.state.coreState='active';
+  const replay=await f.post('next-turn',{conversationId:binding.conversationId,sourceRunId:binding.runId});assert.equal(replay.status,200);assert.equal((await replay.json()).replayed,true);assert.equal(f.state.nextRuns.size,before+1);
+ }finally{f.close();}
+});
+test('owned Core denial after turn admission retains its code and RESULT_NOT_RELEASED',async()=>{
+ const f=await fixture();try{await f.service.submit({credential:f.credential,input:f.input});await f.service.cancel({credential:f.credential});
+  f.state.onTurnAdmitted=()=>{f.state.coreError=new ProductError('ACCESS_DENIED','UNKNOWN');};
+  const before=f.state.nextRuns.size,response=await f.post('next-turn',{conversationId:binding.conversationId,sourceRunId:binding.runId});
+  assert.equal(response.status,403);assert.deepEqual(await response.json(),{error:{code:'ACCESS_DENIED',outcome:'RESULT_NOT_RELEASED'}});
+  assert.equal(f.state.nextRuns.size,before+1);
+ }finally{f.close();}
+});
+test('membership revoked after saved read refuses next-turn before admission',async()=>{
+ const f=await fixture();try{await f.service.submit({credential:f.credential,input:f.input});await f.service.cancel({credential:f.credential});
+  f.state.onCoreRead=()=>{f.state.member.status='removed';};const before=f.state.nextRuns.size;
+  const response=await f.post('next-turn',{conversationId:binding.conversationId,sourceRunId:binding.runId});
+  assert.equal(response.status,403);assert.deepEqual(await response.json(),{error:{code:'MEMBERSHIP_REVOKED',outcome:'NOT_DISPATCHED'}});
+  assert.equal(f.state.nextRuns.size,before);
+ }finally{f.close();}
 });
 for(const field of ['tenant','actor','client'])test(`current ${field} denial prevents disclosure or next-turn effects`,async()=>{
  const f=await fixture();try{await f.turn(1);const before=f.state.nextRuns.size;

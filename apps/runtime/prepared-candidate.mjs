@@ -14,6 +14,7 @@ import {createPreparedRunBindings} from './prepared-run-bindings.mjs';
 import {compileNativeBrokerPlan} from './native-authority/broker-stack.mjs';
 import {allocateRemoteNativeController,createOriginalRetirement} from './native-authority/remote-composition.mjs';
 import {createNativeIdentityContext} from './native-authority/identity-context.mjs';
+import {createCoreConversationCurrentness} from './native-authority/conversation-currentness.mjs';
 import {createCoreMembershipGate} from '../control/product-access/core-membership.mjs';
 import {capabilityDigest,matchesCapability} from './native-authority/task-verifier.mjs';
 import {createNativeCheckpointInspection} from './native-authority/checkpoint-inspection.mjs';
@@ -75,6 +76,7 @@ export function assemblePreparedCandidate(options){
  const unavailableReads=createPreparedNativeReads({binding:original.binding,...(config.approvedReads===undefined?{}:{approvedReads:config.approvedReads}),now}).application;
  const identityContext=createPreparedCandidateIdentity({store,identity:{origin:identity.origin,commandContext:identity.commandContext,fetchImpl},qualification:config.qualification,now,limits,...(nextRunOwner?{nextRunOwner}:{}),...(c.initialBindings?{initialBindings:c.initialBindings,configurationSha256:c.configurationSha256,versions:c.configuration.versions,proposeInitialExpiry:c.proposeInitialExpiry}:{})});
  const conversationMembership=createCoreMembershipGate({origin:identity.origin,identityContext,fetchImpl,now,limits:{maxRequestMs:limits.maxRequestMs,maxFactBytes:262144}});
+ const conversationCurrentness=createCoreConversationCurrentness({origin:identity.origin,fetchImpl,now,limits,selectedClientId:config.identity.commandContext.clientResolution.clientId});
  let controller,pending,closed=false,outerApplication;
  const lazy={get prepared(){return controller?.prepared;},async reconcile({signal}={}){await lazy.allocate();return controller.reconcile({signal});},allocate(){if(closed)refuse();if(!pending)pending=Promise.resolve().then(()=>{if(closed)refuse();return (c.allocate??allocateRemoteNativeController)({pool:c.pool,client:c.ecs,identity,allocationJson:config.allocationJson,qualification:config.qualification,grantIntents:config.grantIntents,grantId:config.grantId,operations:config.operations,taskCapability:secrets.task,controlCapabilitySha256:controlDigest,runtime,plan:config.plan,preparationIntent:config.preparationIntent,taskRequest:config.taskRequest,containerName:config.containerName,limits,objects:c.objects,enabled:true,now,transportFactory:({original})=>({original,origin:config.taskOrigin,credential:secrets.control,fetchImpl,now})});}).then(async owned=>{controller=owned;if(closed){await owned.close();refuse();}return {original,resource:owned.resource};});return pending;},async close(){closed=true;try{await pending;}catch{}await controller?.close();},
   // Stop-only: forecloses any later allocation here, then the original's canonical stop rebuilt from the same exact allocation facts
@@ -89,7 +91,7 @@ export function assemblePreparedCandidate(options){
  // Stable ports borrow the same lazy controller's durable owner. No registration is inferred from configuration;
  // before an allocated controller exists every session operation refuses. Multi-run routes retain registry authority.
  const sessionCall=(port,method)=>value=>{if(closed)throw Object.assign(Error('SDK_SESSION_UNAVAILABLE'),{code:'SDK_SESSION_UNAVAILABLE'});const entry=value.request?.binding&&runRegistry?.get(value.request.binding);if(entry)return entry.session(port,method,value);if(!controller||!same(value.request?.binding,original.binding))throw Object.assign(Error('SDK_SESSION_UNAVAILABLE'),{code:'SDK_SESSION_UNAVAILABLE'});return controller.productPorts[port][method](value);};
- const productPorts=Object.freeze({identityContext,conversationMembership,...(nextRunOwner?{conversationTurns:nextRunOwner}:{}),
+ const productPorts=Object.freeze({identityContext,conversationMembership,conversationCurrentness,...(nextRunOwner?{conversationTurns:nextRunOwner}:{}),
   sdkSessionOwner:Object.freeze(Object.fromEntries(['register','load','append','listSubkeys'].map(method=>[method,sessionCall('sdkSessionOwner',method)]))),
   sdkSessionSnapshot:Object.freeze({readSnapshot:sessionCall('sdkSessionSnapshot','readSnapshot')})});
  return Object.freeze({original,controlCapabilitySha256:controlDigest,identityContext,productPorts,native:localNative,application,bindApplication(application){if(outerApplication)refuse();outerApplication=application;},readiness:localNative.readiness,async close(){try{await runRegistry?.close();}finally{await kickoff.close();}}});
