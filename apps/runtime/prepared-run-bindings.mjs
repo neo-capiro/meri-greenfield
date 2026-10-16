@@ -11,6 +11,8 @@ import {allocation} from '../gateway/budget/tool-budget-binding.mjs';
 import {capabilityDigest} from './native-authority/task-verifier.mjs';
 import {compilePreparedCandidateConfiguration} from './prepared-candidate-config.mjs';
 import {issueRunModelGrant} from './run-model-grant.mjs';
+import {createOriginalRunPreparation} from './original-run-preparation.mjs';
+import {assertNativeReadConfiguration,nativeReadOperations} from '../../packages/contracts/runtime-0.2/reads.mjs';
 const fail=code=>{throw Object.assign(Error('PREPARED_RUN_BINDINGS_'+code),{code:'PREPARED_RUN_BINDINGS_'+code});};
 export function createPreparedRunBindings(options){
  const o=own(options,['configuration','pool','store','credentials'],['issuanceStore','capabilityAuthority','modelGrants','now','limits']),now=o.now??Date.now,limits=o.limits??{maxRequestMs:3000,maxFactBytes:131072};
@@ -35,13 +37,16 @@ export function createPreparedRunBindings(options){
   * current durable run record (binding, versions, policy revision) when one exists; a later run must have one. The per-entry
   * transport contract is part of the facts. */
  const facts={async compile({intent,issuance,signal}){const c=structuredClone(config),check=()=>{if(signal?.aborted)fail('CANCELLED');};
+  const approvedReads=c.approvedReads===undefined?undefined:assertNativeReadConfiguration(c.approvedReads),operations=[...new Set([...c.operations,...(approvedReads===undefined?[]:nativeReadOperations)])];
   const saved=await o.store.readOptional(intent.binding,{},check);
   if(saved){if(hash(saved.run.binding)!==hash(intent.binding)||hash(saved.run.versions)!==hash(c.runtime.versions)||saved.run.policyRevision!==c.qualification.policyRevision)fail('RUN_RECORD_MISMATCH');}
   else if(intent.binding.writerFence>1)fail('RUN_RECORD_REQUIRED');
+  if(approvedReads!==undefined&&(!saved||hash(saved.request)!==intent.requestSha256))fail('RUN_REQUEST_MISMATCH');
   const model=await issueRunModelGrant({owner:o.modelGrants,intent,taskGrant:issuance,controlSha256:controlDigest,now,signal});
-  return {runtime:{...c.runtime,binding:intent.binding,deadlineMs:intent.expiresAtMs,proxyCredential:model.proxyCredential},plan:c.plan,preparationIntent:c.preparationIntent,allocationJson:retarget(intent.binding),qualification:c.qualification,grantIntents:[{grantId:issuance.grantId,capabilitySha256:issuance.capabilitySha256,expiresAtMs:intent.expiresAtMs},model.grantIntent],grantId:issuance.grantId,operations:c.operations,taskRequest:c.taskRequest,containerName:c.containerName,controlCapabilitySha256:controlDigest,transport:{origin:c.taskOrigin,http:c.taskHttp}};}};
+  return {runtime:{...c.runtime,binding:intent.binding,deadlineMs:intent.expiresAtMs,proxyCredential:model.proxyCredential},plan:c.plan,preparationIntent:c.preparationIntent,allocationJson:retarget(intent.binding),qualification:c.qualification,grantIntents:[{grantId:issuance.grantId,capabilitySha256:issuance.capabilitySha256,expiresAtMs:intent.expiresAtMs},model.grantIntent],grantId:issuance.grantId,operations,...(approvedReads===undefined?{}:{approvedReads}),taskRequest:c.taskRequest,containerName:c.containerName,controlCapabilitySha256:controlDigest,transport:{origin:c.taskOrigin,http:c.taskHttp}};}};
  const issuer=createPreparedRunIssuer({store:o.issuanceStore,authority:o.capabilityAuthority,now,maxRequestMs:limits.maxRequestMs});
  const runIssuance=createPreparedRunIssuance({issuer,facts,sourceOwners,now,maxRequestMs:limits.maxRequestMs});
+ const prepareOriginal=createOriginalRunPreparation({binding:config.runtime.binding,expiresAtMs:config.runtime.deadlineMs,store:o.store,issuer,runIssuance,now,maxRequestMs:limits.maxRequestMs});
  /** The run's expiry. An issuance already recorded durably for this binding keeps its original expiry across process recreation
   * (the window is never recomputed from a later clock); otherwise the reviewed window, never beyond the allocation schedule, never
   * earlier than now. */
@@ -49,5 +54,5 @@ export function createPreparedRunBindings(options){
   const issuanceKey=hash(binding),existing=await o.issuanceStore.read({issuanceKey,signal});
   if(existing){if(existing.issuanceKey!==issuanceKey||hash(existing.binding)!==issuanceKey||!Number.isSafeInteger(existing.expiresAtMs))fail('ISSUANCE_RECORD_REFUSED');return {expiresAtMs:existing.expiresAtMs,persisted:true};}
   const expiresAtMs=Math.min(now()+config.multiRun.runWindowMs,scheduleExpiresAtMs);if(expiresAtMs<=now())fail('WINDOW_EXPIRED');return {expiresAtMs,persisted:false};}
- return Object.freeze({runIssuance,issuanceIntent,admissionForBinding,issuer,facts,runWindowMs:config.multiRun.runWindowMs,controlCapabilitySha256:controlDigest,configurationSha256:hash({multiRun:config.multiRun,allocationJson:config.allocationJson})});
+ return Object.freeze({runIssuance,issuanceIntent,admissionForBinding,issuer,facts,prepareOriginal,runWindowMs:config.multiRun.runWindowMs,controlCapabilitySha256:controlDigest,configurationSha256:hash({multiRun:config.multiRun,allocationJson:config.allocationJson})});
 }
