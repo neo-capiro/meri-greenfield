@@ -6,6 +6,8 @@ import {nativeSignal} from '../../../../packages/contracts/commands-0.2/executio
 import {ProductError} from '../../product-access/errors.mjs';
 import {jsonBody} from '../../action-application/http.mjs';
 const getters=Object.fromEntries(['status','headers','body','redirected'].map(k=>[k,Object.getOwnPropertyDescriptor(Response.prototype,k).get]));
+// Core API-Strategy main.ts mounts every controller under this fixed prefix; the ALB preserves it.
+const CORE_SERVICE_PREFIX='/strategy-api';
 function cancel(response){try{if(response instanceof Response&&!types.isProxy(response))Promise.resolve(getters.body.call(response)?.cancel()).catch(()=>{});}catch{}}
 export function createCoreCanonicalPlannerClient({origin,fetchImpl,authorization,enabled=false,now=Date.now,maxRequestMs=3000,maxFactBytes=1048576}){
  let base;try{base=new URL(origin);}catch{fail('CONFIGURATION');}
@@ -22,7 +24,7 @@ export function createCoreCanonicalPlannerClient({origin,fetchImpl,authorization
   try{
    const secret=await credential(mode),method=mode==='prepare'?'POST':'GET',body=mode==='prepare'?JSON.stringify(corePlannerRequest(w)):undefined;
    if(body&&Buffer.byteLength(body)>maxFactBytes)fail('INVALID_RECEIPT');
-   response=await life.run(signal=>{const pending=Promise.resolve(fetchImpl(base.origin+APPLICATIONS_PATH+(mode==='read'?'/'+w.applicationRequestId:''),{method,redirect:'error',credentials:'omit',cache:'no-store',headers:{authorization:'Bearer '+secret,accept:'application/json',...(body?{'content-type':'application/json'}:{})},...(body?{body}:{}),signal}));pending.then(r=>{if(life.signal.aborted)cancel(r);},()=>{});return pending;});life.check();
+   response=await life.run(signal=>{const pending=Promise.resolve(fetchImpl(base.origin+CORE_SERVICE_PREFIX+APPLICATIONS_PATH+(mode==='read'?'/'+w.applicationRequestId:''),{method,redirect:'error',credentials:'omit',cache:'no-store',headers:{authorization:'Bearer '+secret,accept:'application/json',...(body?{'content-type':'application/json'}:{})},...(body?{body}:{}),signal}));pending.then(r=>{if(life.signal.aborted)cancel(r);},()=>{});return pending;});life.check();
    if(!response||types.isProxy(response)||!(response instanceof Response)||getters.redirected.call(response))fail('INVALID_RECEIPT');
    // Denial/missing ACK is uncertainty. In particular404/503 never grants another prepare.
    if(getters.status.call(response)!==(method==='POST'?201:200))return {kind:'unavailable'};

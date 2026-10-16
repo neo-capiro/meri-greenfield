@@ -23,6 +23,8 @@ function strings(v,validate=text){if(!Array.isArray(v))fail('INVALID_RECEIPT');v
 export function creationObservation(raw,value){
  const w=continuationWork(value),r=data(own(raw,['schemaVersion','applicationRequestId','creation','current']));if(r.schemaVersion!==1||r.applicationRequestId!==w.applicationRequestId)fail('INVALID_RECEIPT');
  const current=materializationObservation(r.current,{requestId:w.applicationRequestId,source:materializationSource(w)}),p=own(r.creation,['availability','ack','sha256']);
+ // Core's canonical frozen tuple is stricter than the retained legacy projection decoder.
+ for(const {output:o} of [...current.projects,...current.tasks])if(o.availability==='unavailable'?o.id!==null||o.currentVersion!==null:o.id===null||o.currentVersion===null)fail('INVALID_RECEIPT');
  if(p.availability==='unavailable'){if(p.ack!==null||p.sha256!==null)fail('INVALID_RECEIPT');return data({kind:'unavailable'});}
  if(p.availability!=='available'||digest(p.sha256)!==coreDigest(p.ack))fail('INVALID_RECEIPT');
  const a=own(p.ack,['schemaVersion','operation','applicationRequestId','requestSha256','canonical','actorUserId','consentId','controlVersion','source','objectiveReceiptSha256','ownerReceiptId','ownerReceiptSha256','recordedAt','outcome','projects','tasks']);
