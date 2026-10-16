@@ -52,6 +52,20 @@ test('read-only product state is counted separately; writes and other product op
 test('all43 exclusions remain absent from both selected mappings and general registration',()=>{
  for(const original of catalog.originals.filter(row=>row.disposition==='deferred')){assert.equal(row(original.id),undefined);assert.equal(registered.includes(original.id),false);}
 });
+
+test('all63 reviewed producer records correlate exact operations, context keys and immutable report pointers',()=>{
+ const mapped=snapshot.rows.filter(row=>row.backendProducer);assert.equal(mapped.length,63);assert.equal(snapshot.counts.mappedBackendProducers,63);
+ assert.equal(new Set(mapped.map(row=>row.operation)).size,63);assert.equal(new Set(mapped.map(row=>row.family)).size,33);
+ assert.equal(snapshot.backendProducerEvidence.backend.commit,'b525032222515d636b0dae2d46e40c7c3d8b5528');
+ assert.equal(snapshot.backendProducerEvidence.reviewedIndex.sha256,'5a498e4cd2e06a118d54bae3e0caba44e9418c524b57f9d27481a51c37c2dad8');
+ for(const entry of mapped){assert.deepEqual(entry.requiredContextKeys,entry.backendProducer.requiredContextKeys);assert.match(entry.backendProducer.evidence.sha256,/^[a-f0-9]{64}$/);}
+ assert.match(row('get_acquisition_person').backendProducer.currentContext.join(' '),/ctx.role/);
+ assert.ok(snapshot.backendProducerEvidence.constraints.some(value=>value.includes('audit rows')));
+ const base=JSON.parse(readFileSync(new URL('./backend-producers.json',import.meta.url),'utf8'));
+ for(const mutate of [m=>m.operations.pop(),m=>m.operations[1]=m.operations[0],m=>m.operations[0].requiredContextKeys=['modelAuthority'],m=>m.operations[0].evidence.sha256='0'.repeat(64)]){
+  const input=synthetic();input.backendMapping=structuredClone(base);mutate(input.backendMapping);refuses(()=>reconcileSourceExposure(input));
+ }
+});
 test('current source provenance measures declared canonical paths without claiming qualification',()=>{
  assert.match(snapshot.note,/No qualification/);assert.equal(Object.keys(snapshot.provenance).some(path=>path.includes('node_modules')),false);
  for(const [path,digest] of Object.entries(snapshot.provenance))assert.equal(createHash('sha256').update(readFileSync(new URL(`../../${path}`,import.meta.url))).digest('hex'),digest,path);
