@@ -8,6 +8,7 @@ import {remoteOriginal} from './native-authority/remote-task-boundary.mjs';
 import {compileNativePreparationIntent} from './native-authority/preparation-intent.mjs';
 import {compilePreparedCandidateConfiguration} from './prepared-candidate-config.mjs';
 import {parseTemporalAuthorizationConfiguration} from './temporal-authorization.mjs';
+import {assertNativeReadConfiguration} from '../../packages/contracts/runtime-0.2/reads.mjs';
 export const fault=code=>Object.assign(new Error(code),{code});
 const requireValue=(condition,code='RUNTIME_CONFIGURATION')=>{if(!condition)throw fault(code);};
 const integer=(n,min,max)=>Number.isSafeInteger(n)&&n>=min&&n<=max;
@@ -44,7 +45,8 @@ export function validateConfiguration(raw,role){
  }
  if(c.nativeCandidate!==undefined){requireValue(role==='control');compilePreparedCandidateConfiguration(c.nativeCandidate,c.versions);requireValue(c.native.capabilityFile===c.nativeCandidate.controlCapabilityFile,'PREPARED_CANDIDATE_CONFIGURATION');}
  if(c.remoteTask!==undefined){
-  const r=own(c.remoteTask,['original','preparationIntent','taskArn','controlCapabilitySha256','processOrigin','http'],['preparedKickoff']),o=remoteOriginal(r.original),i=compileNativePreparationIntent(r.preparationIntent);
+  const r=own(c.remoteTask,['original','preparationIntent','taskArn','controlCapabilitySha256','processOrigin','http'],['preparedKickoff','approvedReads']),o=remoteOriginal(r.original),i=compileNativePreparationIntent(r.preparationIntent);
+  if(r.approvedReads!==undefined)assertNativeReadConfiguration(r.approvedReads);
   requireValue(role==='conversation-runner'&&c.captureOwnsClose===true&&hash(o.binding)===hash(c.binding)&&hash(o.versions)===hash(c.versions)&&i.workspace===c.workspace&&o.versions.imageDigest==='sha256:'+i.imageSha256&&typeof r.controlCapabilitySha256==='string'&&/^[a-f0-9]{64}$/u.test(r.controlCapabilitySha256)&&typeof r.taskArn==='string'&&/^arn:aws:ecs:us-east-1:967807252336:task\/[A-Za-z0-9_-]{1,255}\/[a-f0-9]{32}$/u.test(r.taskArn)&&r.processOrigin===endpoint(r.processOrigin),'REMOTE_RUNNER_CONFIGURATION');
   own(r.http,['hostname','port','frontendOrigin']);requireValue(['127.0.0.1','0.0.0.0','::1','::'].includes(r.http.hostname)&&integer(r.http.port,0,65535)&&r.http.frontendOrigin===endpoint(r.http.frontendOrigin),'REMOTE_RUNNER_CONFIGURATION');
   if(r.preparedKickoff!==undefined)requireValue(r.preparedKickoff===true,'REMOTE_RUNNER_CONFIGURATION');

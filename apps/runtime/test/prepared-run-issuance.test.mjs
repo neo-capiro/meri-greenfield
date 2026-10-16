@@ -1,12 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {normalize} from 'node:path';
-import {createPreparedRunIssuance} from '../prepared-run-issuance.mjs';
+import {createPreparedRunIssuance,compilePreparedRunFacts} from '../prepared-run-issuance.mjs';
 import {candidateFixture} from './prepared-candidate-fixture.mjs';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {capabilityDigest} from '../native-authority/task-verifier.mjs';
 import {compileNativeBrokerPlan} from '../native-authority/broker-stack.mjs';
 import {id} from '../../control/conversations/test/application-fixture.mjs';
+import {NATIVE_READS_SCHEMA_VERSION as schemaVersion,nativeReadOperations} from '../../../packages/contracts/runtime-0.2/reads.mjs';
 function fixture(){
  const f=candidateFixture(),config=f.configuration.nativeCandidate,rows=new Map(),stats={issue:0,resolve:0,revoke:0,compile:0},state={now:f.now,readUnknown:false,throwIssue:false,loseAck:false,wrongCapability:false,changeFacts:false};
  for(const k of ['workspace','configParentDirectory','secureStorageDirectory'])config.preparationIntent[k]=normalize(config.preparationIntent[k]);
@@ -131,3 +132,15 @@ test('a source that never claimed an allocation is admitted only on its exact fo
  const issued=await owner(evidence).prepare({...f.next,source:{binding:source,foreclosureSha256:hash(evidence)}});assert.equal(issued.issuance.issuanceKey,hash(f.next.binding));assert.equal(revokes,0);
  for(const [record,sha] of [[null,hash(evidence)],[evidence,'f'.repeat(64)],[{...evidence,state:'RETIRED'},hash(evidence)],[{...evidence,binding:f.next.binding},hash({...evidence,binding:f.next.binding})]]){const g=fixture();
   await assert.rejects(createPreparedRunIssuance({issuer:g.issuer,facts:g.facts,sourceOwners:{allocations:{async read(){return {record};}},admission:{async revoke(){throw Error('unused');}}},now:()=>g.state.now,maxRequestMs:1000}).prepare({...g.next,source:{binding:record?.binding??source,foreclosureSha256:sha}}),/SOURCE_NOT_RETIRED|SOURCE_REFUSED/);assert.equal(g.stats.issue,0);}});
+
+test('read-only issuance lookup never compiles/issues/resolves material, and rejects changed/unknown/expired receipts',async()=>{
+ const f=fixture(),entry=await f.owner.prepare(f.input),before={...f.stats};assert.deepEqual(await f.owner.readIssuance(entry.issuance),entry.issuance);assert.deepEqual(f.stats,before);
+ await assert.rejects(f.owner.readIssuance({...entry.issuance,factsSha256:'e'.repeat(64)}));f.state.readUnknown=true;await assert.rejects(f.owner.readIssuance(entry.issuance));f.state.readUnknown=false;f.state.now=entry.issuance.expiresAtMs;await assert.rejects(f.owner.readIssuance(entry.issuance));assert.deepEqual(f.stats,before);
+});
+test('complete approved READS config + both native operations enter immutable facts; absent keeps old hash',async()=>{
+ const f=fixture(),entry=await f.owner.prepare(f.input),raw=await f.owner.resolveFacts(entry.issuance),base=compilePreparedRunFacts(raw,{intent:f.input,issuance:entry.issuance,now:()=>f.state.now});assert.equal(base.factsSha256,entry.factsSha256);assert.equal(Object.hasOwn(base,'approvedReads'),false);
+ const approvedReads={schemaVersion,enabled:true,operations:JSON.parse(raw.allocationJson).manifest.allowedOperations,maxExecuteMs:10000,maxRequestBytes:65536,maxResponseBytes:1048576},config={...raw,approvedReads,operations:[...raw.operations,...nativeReadOperations]};
+ const read=compilePreparedRunFacts(config,{intent:f.input,issuance:entry.issuance,now:()=>f.state.now});assert.deepEqual(read.approvedReads,approvedReads);assert.notEqual(read.factsSha256,base.factsSha256);
+ for(const change of [{maxExecuteMs:10001},{enabled:false},{operations:[]}]){const next={...config,approvedReads:{...approvedReads,...change}};if(change.operations)assert.throws(()=>compilePreparedRunFacts(next,{intent:f.input,issuance:entry.issuance,now:()=>f.state.now}));else assert.notEqual(compilePreparedRunFacts(next,{intent:f.input,issuance:entry.issuance,now:()=>f.state.now}).factsSha256,read.factsSha256);}
+ assert.throws(()=>compilePreparedRunFacts({...config,operations:raw.operations},{intent:f.input,issuance:entry.issuance,now:()=>f.state.now}));
+});

@@ -14,6 +14,7 @@ import {createNativeTaskAllocator} from './native-authority/task-allocator.mjs';
 import {compileNativeTaskAccess,matchesCapability} from './native-authority/task-verifier.mjs';
 import {createNativeAllocationAdmission} from '../gateway/budget/native-allocation-admission.mjs';
 import {allocation} from '../gateway/budget/tool-budget-binding.mjs';
+import {assertNativeReadConfiguration,nativeReadOperations} from '../../packages/contracts/runtime-0.2/reads.mjs';
 const fail=code=>{throw Object.assign(Error('PREPARED_RUN_'+code),{code:'PREPARED_RUN_'+code});};
 const digest=v=>typeof v==='string'&&/^[a-f0-9]{64}$/u.test(v);
 const same=(a,b)=>hash(a)===hash(b);
@@ -37,7 +38,9 @@ export function parseTransport(value){
 }
 /** Inert fact compiler: calls no database/cloud/provider port and retains original expiry. */
 export function compilePreparedRunFacts(value,{intent,issuance,now=Date.now}){
- const i=intentOf(intent),r=receiptOf(issuance,i),c=data(own(value,['runtime','plan','preparationIntent','allocationJson','qualification','grantIntents','grantId','operations','taskRequest','containerName','controlCapabilitySha256','transport'])),transport=parseTransport(c.transport);
+ const i=intentOf(intent),r=receiptOf(issuance,i),c=data(own(value,['runtime','plan','preparationIntent','allocationJson','qualification','grantIntents','grantId','operations','taskRequest','containerName','controlCapabilitySha256','transport'],['approvedReads'])),transport=parseTransport(c.transport);
+ const reads=c.approvedReads===undefined?{}:{approvedReads:assertNativeReadConfiguration(c.approvedReads)};
+ if(c.approvedReads!==undefined&&nativeReadOperations.some(op=>!c.operations.includes(op)))fail('FACTS_REFUSED');
  const compiled=compileNativeBrokerPlan({runtime:c.runtime,plan:c.plan,preparationIntent:c.preparationIntent}),a=allocation(c.allocationJson);
  if(!same(compiled.original.binding,i.binding)||compiled.original.expiresAtMs!==i.expiresAtMs||i.expiresAtMs<=now()||!digest(c.controlCapabilitySha256)||r.capabilitySha256===c.controlCapabilitySha256||c.grantId!==r.grantId||c.runtime.maxTurns>a.budgets.maxTurns||c.runtime.maxCostMicroUSD>a.budgets.maxCostMicroUSD||c.runtime.maxOutputBytes>a.budgets.maxOutputBytes||i.expiresAtMs>Date.parse(a.schedule.expiresAt))fail('FACTS_REFUSED');
  const taskGrant=c.grantIntents.find(g=>g.grantId===r.grantId);
@@ -46,7 +49,7 @@ export function compilePreparedRunFacts(value,{intent,issuance,now=Date.now}){
  const noEffect=()=>{fail('UNEXPECTED_EFFECT');},limits={maxRequestMs:3000,maxFactBytes:131072};
  createNativeAllocationAdmission({pool:{connect:noEffect},allocationJson:c.allocationJson,qualification:c.qualification,grantIntents:c.grantIntents,binding:i.binding,now,limits});
  const allocator=createNativeTaskAllocator({journal:{claim:noEffect,read:noEffect,record:noEffect},authority:{verify:noEffect},admission:{admit:noEffect,read:noEffect,revoke:noEffect},client:{send:noEffect},original:compiled.original,taskRequest:c.taskRequest,qualification:c.qualification,grantIntents:c.grantIntents,allocationSha256:hash(a),containerName:c.containerName});
- const facts=data({original:compiled.original,allocationSha256:hash(a),taskRequestSha256:allocator.intent.taskRequestSha256,qualification:c.qualification,grantIntents:c.grantIntents,grantId:c.grantId,operations:c.operations,controlCapabilitySha256:c.controlCapabilitySha256,transport});
+ const facts=data({original:compiled.original,allocationSha256:hash(a),taskRequestSha256:allocator.intent.taskRequestSha256,qualification:c.qualification,grantIntents:c.grantIntents,grantId:c.grantId,operations:c.operations,controlCapabilitySha256:c.controlCapabilitySha256,transport,...reads});
  return data({...facts,factsSha256:hash(facts)});
 }
 export function createPreparedRunIssuance(configuration){
@@ -114,5 +117,13 @@ export function createPreparedRunIssuance(configuration){
    if(facts.factsSha256!==receipt.factsSha256)fail('FACTS_REPLAY_REFUSED');return configuration;
   }catch(error){if(typeof error?.code==='string'&&/^PREPARED_RUN_[A-Z_]+$/u.test(error.code))throw error;fail('UNKNOWN');}finally{life.close();}
  }
- return Object.freeze({prepare,resolveCapability,resolveFacts});
+ /** Read the exact already-issued immutable receipt without compiling facts, resolving material or issuing anything. */
+ async function readIssuance(value,{signal}={}){
+  nativeSignal(signal);const r=data(value),intent=intentOf({binding:r.binding,requestSha256:r.requestSha256,expiresAtMs:r.expiresAtMs}),receipt=receiptOf(r,intent);
+  if(!receipt.factsSha256)fail('FACTS_REQUIRED');
+  const life=createOperationLifetime({now,signal,deadlineMs:Math.min(receipt.expiresAtMs,now()+maxRequestMs),errorFactory:()=>Error('PREPARED_RUN_UNKNOWN')});
+  try{life.check();const current=stateOf(await life.run(signal=>read({...intent,signal})),intent);life.check();if(!current||!same(current,receipt))fail('ISSUER_REFUSED');return data(current);}
+  catch(error){if(typeof error?.code==='string'&&/^PREPARED_RUN_[A-Z_]+$/u.test(error.code))throw error;fail('UNKNOWN');}finally{life.close();}
+ }
+ return Object.freeze({prepare,resolveCapability,resolveFacts,readIssuance});
 }

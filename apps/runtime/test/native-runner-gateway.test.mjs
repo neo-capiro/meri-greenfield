@@ -8,9 +8,19 @@ import {fixture,NOW,id as sessionId} from '../native-authority/test/fixture.mjs'
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {runOwnerOperations} from '../../../packages/contracts/runtime-0.2/validate.mjs';
 import {sdkSessionOperations} from '../../../packages/contracts/runtime-0.2/session.mjs';
+import {NATIVE_READS_SCHEMA_VERSION as schemaVersion} from '../../../packages/contracts/runtime-0.2/reads.mjs';
+import {operation} from '../../gateway/test/fixtures.mjs';
 const limits={maxRequestMs:1000,maxRequestBytes:9437184,maxResponseBytes:35651584};
 const request=(path,body='{}',token='presented-task',options={})=>{const {headers,...rest}=options;return new Request('https://native.synthetic.invalid'+path,{method:'POST',body,...rest,headers:{authorization:'Bearer '+token,'content-type':'application/json',...headers}});};
 const make=(fetchImpl,options={})=>createNativeRunnerGateway({controlOrigin:'https://control.synthetic.invalid',fetchImpl,limits,enabled:true,...options});
+
+test('native READS relay preserves exact task bytes and uses explicit execute cutoff instead of generic short deadline',async()=>{
+ let at=Date.now(),calls=0;const approvedReads={schemaVersion,enabled:true,operations:[operation],maxExecuteMs:10000,maxRequestBytes:2048,maxResponseBytes:4096},gateway=make(async(url,init)=>{calls++;assert.equal(url,'https://control.synthetic.invalid/v1/runner/reads/execute');assert.equal(init.headers.authorization,'Bearer actual-task');assert.equal(Buffer.from(init.body).toString(),'{}');at+=4000;return Response.json({synthetic:true});},{approvedReads,now:()=>at});
+ assert.equal((await gateway.handle(request('/v1/runner/reads/execute','{}','actual-task'))).status,200);assert.equal(calls,1);
+ const absent=make(()=>assert.fail('Absent config must not fetch'));assert.equal((await absent.handle(request('/v1/runner/reads/availability'))).status,503);
+ const availability=make(async()=>{at+=4000;return Response.json({synthetic:true});},{approvedReads,now:()=>at});assert.equal((await availability.handle(request('/v1/runner/reads/availability'))).status,408);
+ assert.equal((await gateway.handle(request('/v1/runner/reads/execute','x'.repeat(2049),'actual-task'))).status,413);assert.equal(calls,1);
+});
 
 test('completion checkpoint relay preserves exact task bearer/body and delegates all proof ownership upstream',async()=>{
  const body='{ "binding": {"opaque":"preserved"}, "request":{"prompt":"second prompt"} }\n';let calls=0;

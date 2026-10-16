@@ -8,11 +8,13 @@ import {runOwnerOperations} from '../../packages/contracts/runtime-0.2/validate.
 import {compileNativeTaskAccess} from './native-authority/task-verifier.mjs';
 import {allocation} from '../gateway/budget/tool-budget-binding.mjs';
 import {createNativeAllocationAdmission} from '../gateway/budget/native-allocation-admission.mjs';
+import {assertNativeReadConfiguration,nativeReadOperations} from '../../packages/contracts/runtime-0.2/reads.mjs';
 const refuse=()=>{throw Error('PREPARED_CANDIDATE_CONFIGURATION');};
 const file=value=>{if(typeof value!=='string'||!isAbsolute(value)||value.includes('/../')||value.length>4096)refuse();};
 const origin=value=>{let u;try{u=new URL(value);}catch{refuse();}if(u.protocol!=='https:'||u.username||u.password||u.search||u.hash||u.pathname!=='/'||u.origin!==value)refuse();};
 export function compilePreparedCandidateConfiguration(value,versions){
- const c=data(own(value,['identity','runtime','proxyCredentialFile','plan','preparationIntent','allocationJson','qualification','grantIntents','grantId','operations','taskCapabilityFile','controlCapabilityFile','taskRequest','containerName','taskOrigin','taskHttp','objects'],['multiRun']));
+ const c=data(own(value,['identity','runtime','proxyCredentialFile','plan','preparationIntent','allocationJson','qualification','grantIntents','grantId','operations','taskCapabilityFile','controlCapabilityFile','taskRequest','containerName','taskOrigin','taskHttp','objects'],['multiRun','approvedReads']));
+ const reads=c.approvedReads===undefined?{}:{approvedReads:assertNativeReadConfiguration(c.approvedReads),operations:data([...new Set([...c.operations,...nativeReadOperations])])};
  // Multi-run mode (S2) is a closed declaration of reviewed static bounds; the durable issuer, capability authority and admission owners are
  // supplied as ports by startup, never named in configuration. Declaring it without those ports fails readiness instead of first-run fallback.
  if(c.multiRun!==undefined){const m=own(c.multiRun,['runWindowMs'],['materialDirectory']);if(!Number.isSafeInteger(m.runWindowMs)||m.runWindowMs<60000||m.runWindowMs>86400000)refuse();if(m.materialDirectory!==undefined)file(m.materialDirectory);}
@@ -30,5 +32,5 @@ export function compilePreparedCandidateConfiguration(value,versions){
  const noEffect=()=>{};createNativeTaskAllocator({journal:{claim:noEffect,read:noEffect,record:noEffect},authority:{verify:noEffect},admission:{admit:noEffect,read:noEffect,revoke:noEffect},client:{send:noEffect},original:compiled.original,taskRequest:c.taskRequest,qualification:c.qualification,grantIntents:c.grantIntents,allocationSha256:hash(JSON.parse(c.allocationJson)),containerName:c.containerName});
  const scopes=[{kind:'client',tenantId:c.runtime.binding.tenantId,resourceId:i.commandContext.clientResolution.clientId,policyRevision:c.qualification.policyRevision}];if(c.preparationIntent.authoritySha256!==hash({scopes,selectedClientId:i.commandContext.clientResolution.clientId,policyRevision:c.qualification.policyRevision})||!c.grantIntents.some(g=>g.grantId===c.grantId)||c.grantIntents.some(g=>g.expiresAtMs<c.runtime.deadlineMs))refuse();
  createNativeAllocationAdmission({pool:{connect(){}},allocationJson:c.allocationJson,qualification:c.qualification,grantIntents:c.grantIntents,binding:c.runtime.binding,now:Date.now,limits:{maxRequestMs:3000,maxFactBytes:131072}});
- return Object.freeze({...c,preparationIntent:compiled.preparationIntent});
+ return Object.freeze({...c,...reads,preparationIntent:compiled.preparationIntent});
 }
