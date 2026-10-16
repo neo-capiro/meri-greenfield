@@ -6,7 +6,7 @@ import {nativeReadFault} from '../../../../packages/contracts/runtime-0.2/reads.
 import {createCapiroApplicationAuthorityClient} from '../../../control/action-host/application-adapters/authority-http.mjs';
 import {readJsonResponse,responseBody,cancelBody} from '../../../gateway/sources/json-response.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
-export function createCoreRetainedAuthorityClient(configuration){
+export function createCoreRetainedAuthorityClient(configuration={}){
  const c=own(configuration,[],['origin','getNativeCredential','fetchImpl','now','maxRequestMs','enabled']),now=c.now??Date.now,maxRequestMs=c.maxRequestMs??3000,enabled=c.enabled??false;
  if(typeof now!=='function'||typeof enabled!=='boolean'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>3000)throw nativeReadFault('CONFIGURATION');
  const ready=Boolean(enabled&&c.origin&&c.getNativeCredential&&c.fetchImpl),origin=c.origin===undefined?undefined:retainedOrigin(c.origin);
