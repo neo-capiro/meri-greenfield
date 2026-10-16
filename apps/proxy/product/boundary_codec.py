@@ -6,6 +6,7 @@ parser. Encoding is not authentication: the JavaScript bridge still requires
 its independent, constructor-captured host observation before budget SQL.
 """
 import base64
+import hashlib
 import json
 import re
 
@@ -173,4 +174,87 @@ def encode_settlement(request_id, result):
                counted, maximum, names],
               _text(result.evidence_sha256, 64, pattern=_HASH),
               counted, output, result.reason, "native-usage-data"]]
+    return _wire(frame)
+
+
+def encode_complete_capture(request_id, captured):
+    """Encode fresh response-tee evidence for the separate owner capture port.
+
+    The input must come directly from
+    ``HostResponseObservationTransport.capture_authenticated_complete``.
+    This positional frame is DATA; the receiving owner still authenticates
+    its channel and compares it against the separate operation claim.
+    """
+    _text(request_id, 128, pattern=_SLOT)
+    _keys(captured, ("reservation", "rawRequestBody", "nativeRequestBody",
+                     "completion", "usageResult"))
+    receipt = captured["reservation"]
+    _keys(receipt, ("requestId", "nativeBodySha256", "state"))
+    _keys(captured["completion"], ("requestId", "binding", "taskArn",
+           "capabilitySha256", "nativeBodySha256", "rawRequestSha256",
+           "modelId", "profileId", "pricingRevision", "evidenceSha256",
+           "httpStatus", "complete", "eof", "usage"))
+    _keys(captured["completion"]["usage"], ("inputTokens", "outputTokens"))
+    _keys(captured["usageResult"], ("status", "binding", "evidence_sha256",
+           "input_tokens", "output_tokens", "reason", "origin"))
+    _keys(captured["usageResult"]["binding"], ("request_id", "native_body_sha256",
+           "raw_request_sha256", "pricing_revision", "counted_input_tokens",
+           "max_output_tokens", "allowed_tool_names"))
+    complete = captured["completion"]
+    raw, native = captured["rawRequestBody"], captured["nativeRequestBody"]
+    raw_b64, native_b64 = _body(raw), _body(native)
+    native_sha = hashlib.sha256(native).hexdigest()
+    raw_sha = hashlib.sha256(raw).hexdigest()
+    if (receipt["requestId"] != request_id or receipt["state"] != "UNKNOWN"
+            or receipt["nativeBodySha256"] != native_sha
+            or complete["requestId"] != request_id
+            or complete["nativeBodySha256"] != native_sha
+            or complete["rawRequestSha256"] != raw_sha
+            or complete["httpStatus"] != 200
+            or complete["complete"] is not True or complete["eof"] is not True):
+        _deny()
+    binding = captured["usageResult"]["binding"]
+    names = binding["allowed_tool_names"]
+    if type(names) is not list:
+        _deny()
+    checked_names = [_text(name, 128, pattern=_SLOT) for name in names]
+    if len(checked_names) != len(set(checked_names)) or checked_names != sorted(checked_names):
+        _deny()
+    try:
+        typed = UsageResult(
+            captured["usageResult"]["status"],
+            UsageBinding(binding["request_id"], binding["native_body_sha256"],
+                         binding["raw_request_sha256"], binding["pricing_revision"],
+                         binding["counted_input_tokens"], binding["max_output_tokens"],
+                         frozenset(checked_names)),
+            captured["usageResult"]["evidence_sha256"],
+            captured["usageResult"]["input_tokens"],
+            captured["usageResult"]["output_tokens"],
+            captured["usageResult"]["reason"],
+            captured["usageResult"]["origin"])
+        usage = json.loads(encode_settlement(request_id, typed).decode("ascii"))[2]
+    except (KeyError, TypeError, ValueError):
+        _deny()
+    tokens = complete["usage"]
+    if (binding["native_body_sha256"] != native_sha
+            or binding["raw_request_sha256"] != raw_sha
+            or binding["pricing_revision"] != complete["pricingRevision"]
+            or typed.evidence_sha256 != complete["evidenceSha256"]
+            or typed.input_tokens != tokens["inputTokens"]
+            or typed.output_tokens != tokens["outputTokens"]):
+        _deny()
+    frame = ["meri.proxy.complete-capture/1", request_id,
+             [request_id, native_sha, "UNKNOWN"], raw_b64, native_b64,
+             [request_id, _binding(complete["binding"]),
+              _printable(complete["taskArn"], 512),
+              _text(complete["capabilitySha256"], 64, pattern=_HASH),
+              native_sha, raw_sha,
+              _printable(complete["modelId"], 128),
+              _printable(complete["profileId"], 128),
+              _text(complete["pricingRevision"], 64, pattern=_HASH),
+              _text(complete["evidenceSha256"], 64, pattern=_HASH),
+              200, True, True,
+              [_integer(tokens["inputTokens"], 1, 8192),
+               _integer(tokens["outputTokens"], 0, 256)]],
+             usage]
     return _wire(frame)
