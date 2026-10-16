@@ -26,6 +26,7 @@ export function createNativeReadsClient(configuration){
   finally{try{if(reader){void reader.cancel().catch(()=>{});reader.releaseLock();}else if(response&&!types.isProxy(response)&&response instanceof Response)void get.body.call(response)?.cancel().catch(()=>{});}catch{}life.close();}
  }
  async function readAvailability(raw={}){const {signal}=own(raw,[],['signal']),result=await call('availability',{},signal),identity={installationId:result.installation.installationId,baseCatalogSha256:result.installation.baseCatalogSha256,executionCatalogSha256:result.installation.executionCatalogSha256,allocationSha256:result.allocationSha256,policyRevision:result.policyRevision};
+  const approved=new Set(config.operations.map(hash));if([...result.installation.operations,...result.discovery.operations].some(op=>!approved.has(hash(op))))fail('INVALID_RESULT');
   if(identity.baseCatalogSha256!==hash(catalog)||pin&&hash(pin)!==hash(identity))fail('UNAVAILABLE');pin??=data(identity);return data({installation:result.installation,discovery:result.discovery});}
  async function execute(raw){const v=own(raw,['operation','arguments','deliveryId'],['signal']);nativeSignal(v.signal);if(!pin)await readAvailability({signal:v.signal});if(!config.operations.some(op=>hash(op)===hash(v.operation)))fail('UNAVAILABLE');
   const result=await call('execute',{operation:v.operation,arguments:v.arguments,deliveryId:v.deliveryId,installationId:pin.installationId,executionCatalogSha256:pin.executionCatalogSha256},v.signal);return result.resultJson;}
