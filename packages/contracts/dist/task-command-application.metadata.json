@@ -1,0 +1,186 @@
+{
+  "contractVersion": "0.1.0",
+  "schemaId": "urn:meri:task-command-application:0.1.0",
+  "routes": {
+    "prepare": {
+      "method": "POST",
+      "path": "/api/task-commands/prepare",
+      "response": "json"
+    },
+    "execute": {
+      "method": "POST",
+      "path": "/api/task-commands/execute",
+      "response": "json"
+    }
+  },
+  "authentication": {
+    "scheme": "Bearer",
+    "authority": "trusted session resolution and current server approval/command owners",
+    "expectedContext": "independently authenticated tenantId, actorId, conversationId and runId"
+  },
+  "limits": {
+    "requestBytes": 16777216,
+    "responseBytes": 16777216,
+    "jsonNodes": 100000,
+    "jsonDepth": 64
+  },
+  "errorStatuses": {
+    "ACCESS_DENIED": 403,
+    "APPLICATION_CLOCK": 500,
+    "APPLICATION_CONFIGURATION": 500,
+    "CANCELLED": 499,
+    "COMMAND_APPROVAL_REFUSED": 409,
+    "COMMAND_AUTHORITY_REFUSED": 502,
+    "COMMAND_COMMIT_UNCERTAIN": 502,
+    "COMMAND_OUTCOME_UNKNOWN": 502,
+    "COMMAND_PREPARATION_REFUSED": 502,
+    "COMMAND_REFUSED": 502,
+    "DEADLINE": 408,
+    "EXECUTION_AUTHORITY_REFUSED": 403,
+    "INVALID_BODY": 400,
+    "INVALID_CONTENT_LENGTH": 400,
+    "INVALID_JSON": 400,
+    "INVALID_REQUEST": 400,
+    "INVALID_UTF8": 400,
+    "LOOKUP_REPLAY": 409,
+    "LOOKUP_UNAVAILABLE": 502,
+    "METHOD_NOT_ALLOWED": 405,
+    "NOT_FOUND": 404,
+    "REQUEST_FAILED": 502,
+    "REQUEST_TOO_LARGE": 413,
+    "RESPONSE_TOO_LARGE": 413,
+    "SESSION_SCOPE_REFUSED": 403,
+    "TASK_COMMAND_UNAVAILABLE": 503,
+    "UNAUTHENTICATED": 401,
+    "UNAVAILABLE": 502,
+    "UNSUPPORTED_CONTENT_ENCODING": 415,
+    "UNSUPPORTED_MEDIA_TYPE": 415
+  },
+  "errorOutcomes": [
+    "NOT_DISPATCHED",
+    "UNKNOWN",
+    "RESULT_NOT_RELEASED",
+    "STORED_NOT_RELEASED",
+    "NOT_STORED",
+    "READ_UNAVAILABLE"
+  ],
+  "semantics": {
+    "preparation": "approval_required is an immutable proposal, never approval",
+    "execution": "observed requires a succeeded receipt and matching task result; indeterminate is not success",
+    "expiry": "caller checks createdAt/expiresAt against a fresh clock before display and execution; server rechecks current authority",
+    "resume": "attemptId, workerId and writerFence may change within the same stable tenant/actor/conversation/run binding"
+  },
+  "declarations": "json-schema-to-ts/typescript",
+  "bundler": "rolldown",
+  "sources": [
+    {
+      "path": "../../apps/control/action-application/http.mjs",
+      "sha256": "eb11bac0cc7c26a8658b8e702e3e31ffc1eab38b6bd1de01bd0e0847411b6a30",
+      "bytes": 4832
+    },
+    {
+      "path": "../../apps/control/task-command-application/http.mjs",
+      "sha256": "c79663d686dd4796d0c8481b1025b6edf61632dab9e5d6475f44f1c433005384",
+      "bytes": 1380
+    },
+    {
+      "path": "../../apps/control/task-command-application/index.mjs",
+      "sha256": "20ef41575827947a5acce9736a968b05248d5aacbc912cbafc08842d24598e1a",
+      "bytes": 3629
+    },
+    {
+      "path": "../../apps/control/task-command-application/session.mjs",
+      "sha256": "ead3d438ad44b5b74313724aa2e4a2b78fd9e67c2525d78939c7061399ea98b8",
+      "bytes": 2028
+    },
+    {
+      "path": "../../apps/runtime/product-applications.mjs",
+      "sha256": "f0877bef3f4363460bb8181e4c946ffff8847d03df96f20542ef80b6dfa04232",
+      "bytes": 9368
+    },
+    {
+      "path": "commands-0.2/task-update-validation.mjs",
+      "sha256": "883ee549d2520ea47c558aa33e893eac8f5e76596aef834c7775b4c2ae35d5e5",
+      "bytes": 3186
+    },
+    {
+      "path": "commands-0.2/task-update.schema.json",
+      "sha256": "2def0842b4f72ce862df09f0064b0ea32ab7428d25cb2f10bdc2b6055d26c857",
+      "bytes": 5176
+    },
+    {
+      "path": "document-application/boundary.mjs",
+      "sha256": "6a82c49b1db426d2435d751eaf754731658ac1d448750e1a8f060fdada869982",
+      "bytes": 2216
+    },
+    {
+      "path": "generate-task-commands.mjs",
+      "sha256": "4a80574e68bae24f8c305c873fbdc179f102b600bfdd88930fc162a11ac0f4cd",
+      "bytes": 13453
+    },
+    {
+      "path": "meri.schema.json",
+      "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
+      "bytes": 50043
+    },
+    {
+      "path": "task-command-application/boundary.mjs",
+      "sha256": "fdad45dff42e6fc1f838bfe86c623c52798ae240cf85bc2fbbee4e8988573c28",
+      "bytes": 1751
+    },
+    {
+      "path": "task-command-application/declarations.mjs",
+      "sha256": "61037a4f26792ec92a64d72a3deaadeddc798c830bd35eb0bc63d0c3af4193d7",
+      "bytes": 3022
+    },
+    {
+      "path": "task-command-application/normalizer-snapshot.mjs",
+      "sha256": "390a5c272bfe2c67e84979af134bfbf6f0d5d7009d82b3a076e30183a1c0559f",
+      "bytes": 284
+    },
+    {
+      "path": "task-command-application/protocol.mjs",
+      "sha256": "48ba4719e7811977eba56fc6fb6a1a7dc1a159452ca6e462cd920d5bf37934c9",
+      "bytes": 1580
+    },
+    {
+      "path": "task-command-application/README.md",
+      "sha256": "1257312f26d3c790f9d0b13388a21878e6fd85a169ad7bdfb6396ea83657dc9b",
+      "bytes": 3906
+    },
+    {
+      "path": "task-command-application/receive.mjs",
+      "sha256": "1dfeee1eb33c129b4900d3a02481475671dec4d2897dfa5613751eb4ec2642cc",
+      "bytes": 2287
+    },
+    {
+      "path": "task-command-application/schema.mjs",
+      "sha256": "f9bc6272f4eaa459a1a18a0485c660687aa958864e8e9404fad4aad98bf7ff41",
+      "bytes": 1783
+    },
+    {
+      "path": "task-command-application/semantics.mjs",
+      "sha256": "b337f4346fca50d69b1d0c7fdc78f63400c40e5ff925381427aff56df9fe1f12",
+      "bytes": 3104
+    }
+  ],
+  "schemaSha256": "7c932d10fa824723b3de6ea862d7b6c3791c9e00031be61b4e971631923e299c",
+  "browserInputs": [
+    "commands-0.2/task-update-validation.mjs",
+    "document-application/boundary.mjs",
+    "node_modules/ajv-formats/dist/formats.js",
+    "node_modules/ajv/dist/runtime/equal.js",
+    "node_modules/ajv/dist/runtime/ucs2length.js",
+    "node_modules/canonicalize/lib/canonicalize.js",
+    "node_modules/fast-deep-equal/index.js",
+    "task-command-application/boundary.mjs",
+    "task-command-application/normalizer-snapshot.mjs",
+    "task-command-application/protocol.mjs",
+    "task-command-application/receive.mjs",
+    "task-command-application/semantics.mjs",
+    "virtual:rolldown/runtime.js",
+    "virtual:task-command-generated-status",
+    "virtual:task-command-generated-validator"
+  ],
+  "browserImports": []
+}

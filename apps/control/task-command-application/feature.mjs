@@ -5,19 +5,22 @@ import {createTaskUpdateServices} from '../intents/task-update-services.mjs';
 import {createIntentMount} from '../intents/mount.mjs';
 import {createPostgresIntentJournalStore} from '../intents/postgres-journal.mjs';
 import {createTaskCommandApplication} from './index.mjs';
+import {createTaskCommandSessionResolver} from './native-session.mjs';
 export function createTaskUpdateFeature(configuration){
- const c=own(configuration,['enabled'],['services','sessions','intentJournalPool','resultRelease','httpLimits']);
+ const c=own(configuration,['enabled'],['services','sessions','selectedClientId','authorizeExecution','intentJournalPool','resultRelease','httpLimits']);
  if(typeof c.enabled!=='boolean')throw Error('TASK_UPDATE_CONFIGURATION');
  if(!c.enabled)return null;
- const session=own(c.sessions,['resolve']);if(typeof session.resolve!=='function')throw Error('TASK_UPDATE_CONFIGURATION');
  const services=createTaskUpdateServices(c.services),options=services.commandOptions;
+ const native=c.authorizeExecution!==undefined;
+ const session=native?createTaskCommandSessionResolver({sessions:c.sessions,commandOptions:options,selectedClientId:c.selectedClientId,authorizeExecution:c.authorizeExecution,now:options.now}):own(c.sessions,['resolve']);
+ if(typeof session.resolve!=='function')throw Error('TASK_UPDATE_CONFIGURATION');
  const intents=createIntentMount({binding:options.commandContext.binding,preparers:[services.preparer],
   journalStore:createPostgresIntentJournalStore({pool:c.intentJournalPool}),resultRelease:c.resultRelease,now:options.now,
   limits:{maxRequestMs:options.limits.maxRequestMs},enabled:true});
  const application=createTaskCommandApplication({now:options.now,limits:c.httpLimits,async resolveSession(value){
   // Existing session authority must resolve the browser credential freshly. Callers cannot replace the command owner.
-  const fact=own(await session.resolve.call(c.sessions,value),['binding','authorizeExecution','checkedAtMs','expiresAtMs']);
-  return {...fact,commandOptions:options};
+  const fact=own(await session.resolve.call(native?session:c.sessions,value),['binding','authorizeExecution','checkedAtMs','expiresAtMs',...(native?['commandOptions']:[])]);
+  return native?fact:{...fact,commandOptions:options};
  }});
  return Object.freeze({application,intents,commandExecutor:services.commandExecutor});
 }
