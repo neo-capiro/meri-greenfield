@@ -32,9 +32,9 @@ Node `v24.19.0`, concurrency 1. Dependencies installed using existing locks with
 - Test invocations used Node's normal test-file subprocess isolation with concurrency 1. In-process MCP and SDK server construction were exercised; no SDK query, native CLI, model, provider, browser or database process was started. Heap/RSS was not measured in these development runs.
 - `git diff --check`: pass.
 
-These are working-tree development results; the sealed source candidate still requires its separately bounded exact-pin verification and independent review. Reverted-fix controls, full affected tests and package typechecks remain pending the sole shipping coordinator's resource grant. Further test and install stages are held after the coordinator's explicit scheduling update. Initial failures are preserved.
+These are working-tree development results. The later exact-pin focused controls below supersede the small-test hold under the parent's shared light-work policy; installs, compiler, browser/database/native/provider and broad release checks remain held for the sole shipping coordinator. Initial failures are preserved. Independent review remains pending.
 
-Follow-up source inspection found that the appended contacts guidance was outside the worker's byte accounting. Accounting now includes every model-visible text block while the canonical result digest still covers only the unchanged canonical source result. A focused negative output-bound regression was added. It and the updated 98-case focused source set are **UNRUN**, preserving the coordinator's test-stage hold. This follow-up is not covered by the earlier development passes.
+Follow-up source inspection found that the appended contacts guidance was outside the worker's byte accounting. Accounting now includes every model-visible text block while the canonical result digest still covers only the unchanged canonical source result. The output-bound regression is covered by the later 162-case pass and the intentionally reverted negative control below.
 
 ## Contract, endpoint and migration requests
 
@@ -49,6 +49,28 @@ A narrow injected current-context port must corroborate the full run binding, cu
 Shared edits: `dispatch/{operation-context,read-result-envelope}.mjs`, `general-reads/mount.mjs`, and the narrow `tool-dispatch.mjs` optional-port/observation seam. Budget explicitly confirmed no overlapping edits/claims before this change. All reserve/settle/uncertain logic stays with the existing owner. Startup `activity.mjs` and artifact paths remain untouched.
 
 Exact `5eec8597fe729578fb5e5117649bd2d9cd699315` / tree `f1e82ff0f74e9a9c17b52dfaa1119db7e47363bf` synthetic check: corrected saved supervisor completed **97/98 pass**, primary exit 1, cleanup 0, 3.974 seconds, observed peak working set 212,303,872 bytes (not a guarantee). The first supervisor attempt left empty logs and no execution receipt; its outcome remains **UNCERTAIN**. The failing contacts output-bound fixture spent the tested allocation while measuring its baseline; measurement is now isolated in a separate fixture. Earlier failures and exact logs remain preserved outside Git.
+
+### Exact focused source controls
+
+All controls used one Node process, `--max-old-space-size=128 --test --test-isolation=none --test-concurrency=1 --test-reporter=tap`, fresh host commit headroom, and a saved PowerShell supervisor with a 120-second hard wall. Synthetic HTTPS responses, current-authority ports and scripted SQL exercise the real gateway owners; no database or service was launched. SDK/MCP libraries are imported only for in-memory worker server checks, without query/native/model/provider execution.
+
+| Exact source | Selected controls | Result | Elapsed / observed peak working set | TAP SHA256 |
+| --- | --- | --- | --- | --- |
+| `388561b12aec71dbd7137e9b54ba95add301d170`, tree `1329e6e143401b05af3aff6c43d58e4d2b7a3d69` | `general-reads/families.test.mjs`, `general-reads/retained.test.mjs`, worker `reads/test/families.test.mjs` | **162/162 pass**, primary0 / cleanup0 | 6.560s / 244,219,904 bytes | `684f63e8bedb5f5a61a43986287e6914d014c7db07dde42918a2acaa3d7668f3` |
+| `b6dd05153fcebf8685e6a2c66bcc63b151c113e6`, tree `32559f187d7ec9dc0c3184f4cf7b7ecc09f6c078` (test-only successor) | retained controls plus affected projection, memory, mail, action-item and authority-deadline gateway tests | **195/195 pass**, primary0 / cleanup0 | 3.259s / 175,316,992 bytes | `1938e61b2e39a42aef9a8a71a98e75f3ceaffbaeed5e9e233679fe073cbbf72f` |
+| `b6dd0515` with only notice byte accounting temporarily reverted | `--test-name-pattern=contacts.guidance.counts`, worker family file | **0/1 pass, expected failure**, primary1 / cleanup0 | 0.823s / 125,132,800 bytes | `7b2cd2212e623dd15b5e00534b7dc8fb066a16cc88c8a19a4bcbb45bb9f6fca4` |
+
+The negative control restored the original worker server bytes exactly (`d3a28df432f44e20849ceeadf7a38e73bed3748f9f36057d1d22057d4ab829b5`). No timeout occurred. Observed working-set peaks are measurements, not a memory guarantee. Terminal supervisors confirmed owned processes exited; isolation was disabled and selected tests create no child/port services. The first uncertain attempt, original 75/82 failures and all intermediate logs remain immutable in the task workspace.
+
+The added controls cover current-context proof substitution, missing context/broker, pre-reserve denial, broker recipient/input/context mismatch, release and post-settlement revocation, HTTP denial/body bounds, recipient/cursor/count correlation, normalized Florida selectors, declared projection and the absence of an invented historical cutoff. They do not establish live current authority, comprehensive source completeness or cursor authenticity.
+
+### Proof preservation and remaining qualification
+
+See [DOT-READS-RETAINED-PROOF-DELTA-20261016.json](DOT-READS-RETAINED-PROOF-DELTA-20261016.json): all 11 historical assembled-image manifest bytes remain unchanged and none of their 45 enumerated proof paths was edited. Three shared dispatch source paths have explicit predecessor/successor hashes; 51 existing qualification-reference rows referring to them remain historical records, with no silent repinning. The family integration hash changed, so measured native handler installation receipts must be newly qualified rather than reused.
+
+The Objective/Core owner's narrow `622905839c7a510ab01a512ef8012926b2e1b4ce` source inventory found no authored research/Florida typed change, but could not establish inherited equivalence to the accepted mapping pins. This branch preserves the seven accepted baseline artifacts and adopts no new Core revision on that basis.
+
+Remaining blockers are production current-context and credential-broker port binding, native installation/discovery/allocation qualification, independent source review, and the serialized compiler/integrated release/Core/SDK/PostgreSQL stages. The passive source bridge is implemented; absent trusted ports return `UNAVAILABLE`. No migration allocation is required here. Scoped durable history/citation shape remains the separate R-READ-2 proposal; no preview-store edits were made.
 
 See [DOT-READS-CONTRACT-REQUESTS-20261016.md](../proposals/DOT-READS-CONTRACT-REQUESTS-20261016.md). No migration ID is requested for these passive family modules. No preview-store source or schema is touched; that remains with the document/qualification owners.
 
