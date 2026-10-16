@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {readFileSync} from 'node:fs';
 import {synthesizeTemporalPreview} from './temporal-deployment.mjs';
-import {TEMPORAL_ROLES,TEMPORAL_PORTS,TEMPORAL_INTERFACE_ENDPOINTS,validateTemporalFixture} from './temporal-binding.mjs';
+import {TEMPORAL_ROLES,TEMPORAL_PORTS,TEMPORAL_INTERFACE_ENDPOINTS,TEMPORAL_EXISTING_DATABASE,validateTemporalFixture} from './temporal-binding.mjs';
 import {TEMPORAL_MIGRATION_PLAN,TEMPORAL_MIGRATION_PLAN_SHA256} from './temporal-migration-plan.mjs';
 import {validateTemporalNetworkReadback} from './temporal-network-readback.mjs';
 import {validateTemporalIssuerRenewal} from './temporal-issuer-renewal.mjs';
@@ -27,28 +27,29 @@ function binding(){return {
   migrationSecurityGroupId:'sg-aaaaaaaa'},
  auth:{issuer:'https://issuer.meri.internal/',jwksUrl:'https://issuer.meri.internal/.well-known/jwks.json',issuerCaSha256:sha,audience:'meri-temporal',namespace:'meri',taskQueue:'meri-conversations',
   materialSecretVersionByRole:Object.fromEntries(TEMPORAL_ROLES.map((r,i)=>[r,version(r,i+1)]))},
- database:{kmsKeyArn:`arn:aws:kms:${region}:${account}:key/aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa`,masterSecretVersionArn:version('master',6),
-  masterUsername:'temporal_admin',primarySecretVersionArn:version('primary',7),primaryUsername:'temporal_primary',
+ database:{...TEMPORAL_EXISTING_DATABASE,primaryDatabase:'temporal',visibilityDatabase:'temporal_visibility',
+  primarySecretVersionArn:version('primary',7),primaryUsername:'temporal_primary',
   visibilitySecretVersionArn:version('visibility',8),visibilityUsername:'temporal_visibility',
-  instanceClass:'db.m6g.large',storageGiB:100,backupDays:7,rdsCaSha256:sha,migrationPlanSha256:TEMPORAL_MIGRATION_PLAN_SHA256}
+  rdsCaSha256:sha,migrationPlanSha256:TEMPORAL_MIGRATION_PLAN_SHA256,grantsSha256:sha}
 };}
 const resources=(template,type)=>Object.values(template.Resources).filter(x=>x.Type===type).map(x=>x.Properties);
 const task=(template,role)=>resources(template,'AWS::ECS::TaskDefinition').find(x=>x.Family===`meri-product-preview-temporal-${role}`);
 
-test('fully bound synthesis emits five stopped private roles and one independent encrypted PG16 store',()=>{
+test('fully bound synthesis emits five stopped private roles using the approved existing Aurora endpoint',()=>{
  const b=binding(),t=synthesizeTemporalPreview(b);
  assert.equal(resources(t,'AWS::ECS::Service').length,5);
  assert.equal(resources(t,'AWS::ECS::TaskDefinition').length,5);
  assert.equal(resources(t,'AWS::ServiceDiscovery::PrivateDnsNamespace').length,1);
  assert.equal(resources(t,'AWS::ServiceDiscovery::Service').length,5);
- assert.equal(resources(t,'AWS::RDS::DBInstance').length,1);
- const db=resources(t,'AWS::RDS::DBInstance')[0];
+ assert.equal(resources(t,'AWS::RDS::DBInstance').length,0);
+ assert.equal(resources(t,'AWS::RDS::DBCluster').length,0);
+ assert.equal(resources(t,'AWS::RDS::DBSubnetGroup').length,0);
  assert.equal(t.Outputs.TemporalFrontendAddress.Value,'frontend.temporal.meri.internal:7233');
  assert.equal(t.Outputs.TemporalNamespace.Value,'meri');assert.equal(t.Outputs.TemporalTaskQueue.Value,'meri-conversations');
- assert.equal(db.Engine,'postgres');assert.equal(db.EngineVersion,'16.15');assert.equal(db.DBName,'temporal');
- assert.equal(db.MultiAZ,true);assert.equal(db.StorageEncrypted,true);assert.equal(db.PubliclyAccessible,false);
- assert.equal(db.DeletionProtection,true);assert.equal(db.KmsKeyId,b.database.kmsKeyArn);
- assert.match(db.MasterUserPassword,/^\{\{resolve:secretsmanager:.*:SecretString:password::6{32}\}\}$/u);
+ assert.equal(t.Outputs.TemporalDatabaseEndpoint.Value,b.database.endpoint);
+ assert.equal(t.Outputs.TemporalDatabaseClusterArn.Value,b.database.clusterArn);
+ assert.equal(JSON.stringify(t).includes('MasterUser'),false);
+ assert.equal(JSON.stringify(t).includes('resolve:secretsmanager'),false);
  for(const s of resources(t,'AWS::ECS::Service')){
   assert.equal(s.DesiredCount,0);assert.equal(s.PlatformVersion,'1.4.0');assert.equal(s.EnableExecuteCommand,false);
   assert.equal(s.NetworkConfiguration.AwsvpcConfiguration.AssignPublicIp,'DISABLED');
@@ -74,6 +75,10 @@ test('fully bound synthesis emits five stopped private roles and one independent
   assert.equal(env.MERI_TEMPORAL_ACTIVATION,'disabled');assert.equal(env.MERI_TEMPORAL_SERVICE_NAME,role);
   assert.equal(env.MERI_TEMPORAL_PRIMARY_USERNAME_EXPECTED,b.database.primaryUsername);
   assert.equal(env.MERI_TEMPORAL_VISIBILITY_USERNAME_EXPECTED,b.database.visibilityUsername);
+  assert.equal(env.MERI_TEMPORAL_DB_GRANTS_SHA256,b.database.grantsSha256);
+  assert.equal(env.POSTGRES_SEEDS,b.database.endpoint);assert.equal(env.VISIBILITY_POSTGRES_SEEDS,b.database.endpoint);
+  assert.equal(env.SQL_HOST_NAME,b.database.endpoint);assert.equal(env.DB_PORT,'5432');
+  assert.equal(env.DBNAME,'temporal');assert.equal(env.VISIBILITY_DBNAME,'temporal_visibility');
   assert.equal(env.USE_INTERNAL_FRONTEND,'true');assert.equal(env.TEMPORAL_NAMESPACE,'meri');
   assert.equal(env.TEMPORAL_TASK_QUEUE,'meri-conversations');
   assert.equal(Number(env.SQL_MAX_CONNS)+Number(env.SQL_VIS_MAX_CONNS),role==='history'?40:20);
@@ -96,7 +101,11 @@ test('the exact reviewed fixture refuses changes to role and trust decisions',()
 test('migration plan binds the pinned ordered source stages without running SQL',()=>{
  assert.equal(TEMPORAL_MIGRATION_PLAN.serverImageAmd64Digest,pins.server.imageAmd64Digest);
  assert.equal(TEMPORAL_MIGRATION_PLAN.adminToolsImageAmd64Digest,pins.adminTools.imageAmd64Digest);
- assert.equal(TEMPORAL_MIGRATION_PLAN.postgresVersion,pins.postgres.candidateMinorVersion);
+ assert.equal(TEMPORAL_MIGRATION_PLAN.isolatedQualificationPostgresVersion,pins.postgres.candidateMinorVersion);
+ assert.equal(TEMPORAL_MIGRATION_PLAN.databaseKind,'existing-aurora-postgresql');
+ assert.equal(TEMPORAL_MIGRATION_PLAN.observedEngineVersion,TEMPORAL_EXISTING_DATABASE.engineVersion);
+ assert.equal(TEMPORAL_MIGRATION_PLAN.stages[0].action,'verify-existing-cluster-and-dedicated-database-owners');
+ assert.equal(TEMPORAL_MIGRATION_PLAN.stages[1].action,'verify-dedicated-empty-or-exact-retained-schemas');
  assert.equal(TEMPORAL_MIGRATION_PLAN.stages[2].targetVersion,pins.postgres.schemaPrimaryVersion);
  assert.equal(TEMPORAL_MIGRATION_PLAN.stages[3].targetVersion,pins.postgres.schemaVisibilityVersion);
  assert.deepEqual(TEMPORAL_MIGRATION_PLAN.stages.map(x=>x.order),[1,2,3,4,5,6]);
@@ -107,13 +116,18 @@ test('migration plan binds the pinned ordered source stages without running SQL'
 
 test('network creates role-specific security groups with no unrestricted egress',()=>{
  const t=synthesizeTemporalPreview(binding()),groups=resources(t,'AWS::EC2::SecurityGroup');
- assert.equal(groups.length,6);
+ assert.equal(groups.length,5);
  const egress=resources(t,'AWS::EC2::SecurityGroupEgress');
  assert(egress.length>0);
  assert(egress.some(x=>x.DestinationPrefixListId==='pl-11111111'&&x.FromPort===443));
  assert(!egress.some(x=>x.CidrIp==='0.0.0.0/0'||x.CidrIpv6==='::/0'));
  const ingress=resources(t,'AWS::EC2::SecurityGroupIngress');
- assert(ingress.some(x=>x.FromPort===5432&&x.ToPort===5432));
+ const dbIngress=ingress.filter(x=>x.FromPort===5432&&x.ToPort===5432);
+ assert.equal(dbIngress.length,6);
+ assert(dbIngress.every(x=>x.GroupId===TEMPORAL_EXISTING_DATABASE.securityGroupId&&x.IpProtocol==='tcp'));
+ assert.equal(dbIngress.filter(x=>x.SourceSecurityGroupId==='sg-aaaaaaaa').length,1);
+ assert(dbIngress.filter(x=>x.SourceSecurityGroupId!=='sg-aaaaaaaa').every(x=>typeof x.SourceSecurityGroupId==='object'));
+ assert(!groups.some(x=>x.GroupDescription==='Meri Temporal PostgreSQL only'));
  assert(ingress.some(x=>x.FromPort===7233&&x.ToPort===7233));
  assert(!ingress.some(x=>x.CidrIp==='0.0.0.0/0'||x.CidrIpv6==='::/0'));
 });
@@ -182,10 +196,17 @@ test('missing or contradictory authority and network inputs refuse before synthe
   x=>{x.auth.audience='';},x=>{x.auth.namespace='default';},x=>{x.auth.taskQueue='';},
   x=>{x.database.primarySecretVersionArn=x.database.visibilitySecretVersionArn;},
   x=>{x.database.primarySecretVersionArn=x.database.visibilitySecretVersionArn.replace(/[^:]+$/u,'9'.repeat(32));},
-  x=>{x.database.masterSecretVersionArn=x.auth.materialSecretVersionByRole.frontend.replace(/[^:]+$/u,'9'.repeat(32));},
-  x=>{x.database.primaryUsername=x.database.masterUsername;},
+  x=>{x.database.primarySecretVersionArn=x.auth.materialSecretVersionByRole.frontend.replace(/[^:]+$/u,'9'.repeat(32));},
   x=>{x.database.visibilityUsername=x.database.primaryUsername;},
-  x=>{x.database.kmsKeyArn='';},x=>{x.database.backupDays=0;},x=>{x.database.rdsCaFile='';},
+  x=>{x.database.masterSecretVersionArn=version('master',6);},
+  x=>{x.database.instanceClass='db.m6g.large';},x=>{x.database.storageGiB=100;},
+  x=>{x.database.backupDays=7;},x=>{x.database.kmsKeyArn='';},x=>{x.database.rdsCaFile='';},
+  x=>{x.database.kind='new-rds-postgresql';},x=>{x.database.clusterArn=x.database.clusterArn+'-foreign';},
+  x=>{x.database.endpoint=x.database.endpoint.replace('.cluster-','.cluster-ro-');},
+  x=>{x.database.port=5433;},x=>{x.database.securityGroupId='sg-deadbeef';},
+  x=>{x.database.databaseVpcId=x.vpcId;},x=>{x.database.engine='postgres';},
+  x=>{x.database.engineVersion='16.15';},x=>{x.database.primaryDatabase='capiro';},
+  x=>{x.database.visibilityDatabase='temporal';},x=>{x.database.grantsSha256='';},
   x=>{x.network.issuerSecurityGroupId=x.network.clientSecurityGroupIds[0];},
   x=>{x.network.clientSecurityGroupIds.push('sg-66666666');},
   x=>{x.network.interfaceEndpoints.ecrDkr.endpointId=x.network.interfaceEndpoints.ecrApi.endpointId;},

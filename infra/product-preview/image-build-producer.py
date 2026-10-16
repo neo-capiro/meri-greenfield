@@ -25,6 +25,7 @@ REGION = "us-east-1"
 LINUX_ONLY_TESTS = (
     "apps/runtime/test/prepared-candidate-bootstrap.test.mjs",
     "apps/runtime/test/remote-conversation-runner.test.mjs",
+    "apps/runtime/temporal-product-token-writer.test.mjs",
 )
 _deadline = None
 

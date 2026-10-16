@@ -1,4 +1,4 @@
-/** Read-only product proxy facts over the control's one borrowed PostgreSQL pool.
+/** Read-only product proxy facts over the product owner's one borrowed PostgreSQL pool.
  *
  * Fixed product tables locate a bearer digest; canonical issuance, conversation
  * and budget owners then verify its original custody. This resolver supplies

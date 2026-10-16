@@ -4,7 +4,7 @@ import {createHash} from 'node:crypto';
 import {readFileSync} from 'node:fs';
 import {canonicalSha256} from '../../packages/contracts/validate.mjs';
 import {TEMPORAL_MIGRATION_PLAN_SHA256} from './temporal-migration-plan.mjs';
-import {TEMPORAL_ROLES,TEMPORAL_INTERFACE_ENDPOINTS} from './temporal-binding.mjs';
+import {TEMPORAL_ROLES,TEMPORAL_INTERFACE_ENDPOINTS,TEMPORAL_EXISTING_DATABASE} from './temporal-binding.mjs';
 import {inspectTemporalProductJoin} from './temporal-product-join.mjs';
 
 const account='967807252336',region='us-east-1',sha='a'.repeat(64),sourceCommit='c'.repeat(40);
@@ -29,12 +29,10 @@ function temporal(){return {
  auth:{issuer:'https://issuer.meri.internal/',jwksUrl:'https://issuer.meri.internal/.well-known/jwks.json',
   issuerCaSha256:sha,audience:'meri-temporal',namespace:'meri',taskQueue:'meri-conversations',
   materialSecretVersionByRole:Object.fromEntries(TEMPORAL_ROLES.map((x,i)=>[x,roleSecret(x,i+1)]))},
- database:{kmsKeyArn:`arn:aws:kms:${region}:${account}:key/aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa`,
-  masterSecretVersionArn:roleSecret('master',6),masterUsername:'temporal_admin',
+ database:{...TEMPORAL_EXISTING_DATABASE,primaryDatabase:'temporal',visibilityDatabase:'temporal_visibility',
   primarySecretVersionArn:roleSecret('primary',7),primaryUsername:'temporal_primary',
   visibilitySecretVersionArn:roleSecret('visibility',8),visibilityUsername:'temporal_visibility',
-  instanceClass:'db.m6g.large',storageGiB:100,backupDays:7,rdsCaSha256:sha,
-  migrationPlanSha256:TEMPORAL_MIGRATION_PLAN_SHA256}
+  rdsCaSha256:sha,migrationPlanSha256:TEMPORAL_MIGRATION_PLAN_SHA256,grantsSha256:sha}
 };}
 function expected(role){const x={schemaVersion:1,role:role==='control'?'control':'temporal-worker',runtimeUser:'1000:1000',
  sourceCommit,imageDigest:`sha256:${sha}`,sha256ByPath:{

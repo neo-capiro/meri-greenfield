@@ -11,6 +11,15 @@ export const TEMPORAL_INTERFACE_ENDPOINTS=Object.freeze({
  ecrApi:'com.amazonaws.us-east-1.ecr.api',ecrDkr:'com.amazonaws.us-east-1.ecr.dkr',
  secretsManager:'com.amazonaws.us-east-1.secretsmanager',logs:'com.amazonaws.us-east-1.logs',kms:'com.amazonaws.us-east-1.kms'
 });
+// Fresh 2026-10-16 jump-cli DescribeDBClusters metadata, no secret lookup.
+// The parent fixed existing Aurora use; this source creates no database instance.
+export const TEMPORAL_EXISTING_DATABASE=Object.freeze({
+ kind:'existing-aurora-postgresql',
+ clusterArn:'arn:aws:rds:us-east-1:967807252336:cluster:capiro-dev-data-auroracluster23d869c0-ltmz40k47ewv',
+ endpoint:'capiro-dev-data-auroracluster23d869c0-ltmz40k47ewv.cluster-csryw28ai752.us-east-1.rds.amazonaws.com',
+ port:5432,securityGroupId:'sg-059b4e4de0b1dcca5',databaseVpcId:'vpc-0ac26cfac7ed972be',
+ engine:'aurora-postgresql',engineVersion:'16.11'
+});
 const fail=()=>{throw Error('TEMPORAL_PREVIEW_BINDING_REFUSED');};
 const hex64=/^[a-f0-9]{64}$/u;
 const id=/^[a-zA-Z0-9._-]{1,128}$/u;
@@ -87,21 +96,22 @@ export function validateTemporalPreviewBinding(value){
  for(const role of TEMPORAL_ROLES)secret(a.materialSecretVersionByRole[role],b.account,b.region);
  const roleSecretBases=Object.values(a.materialSecretVersionByRole).map(secretBase);
  distinct(roleSecretBases,5,/^arn:aws:secretsmanager:/u);
- const d=closed(b.database,['kmsKeyArn','masterSecretVersionArn','masterUsername','primarySecretVersionArn','primaryUsername','visibilitySecretVersionArn','visibilityUsername','instanceClass','storageGiB','backupDays','rdsCaSha256','migrationPlanSha256']);
- if(!new RegExp(`^arn:aws:kms:${b.region}:${b.account}:key/[a-f0-9-]{36}$`,'u').test(d.kmsKeyArn)||
-    !/^[a-z][a-z0-9_]{0,62}$/u.test(d.masterUsername)||
+ const d=closed(b.database,[...Object.keys(TEMPORAL_EXISTING_DATABASE),'primaryDatabase','visibilityDatabase',
+  'primarySecretVersionArn','primaryUsername','visibilitySecretVersionArn','visibilityUsername','rdsCaSha256','migrationPlanSha256','grantsSha256']);
+ if(Object.entries(TEMPORAL_EXISTING_DATABASE).some(([key,value])=>d[key]!==value)||
+    d.primaryDatabase!=='temporal'||d.visibilityDatabase!=='temporal_visibility'||
     ![d.primaryUsername,d.visibilityUsername].every(x=>typeof x==='string'&&/^[a-z][a-z0-9_]{0,62}$/u.test(x))||
-    new Set([d.masterUsername,d.primaryUsername,d.visibilityUsername]).size!==3||
-    !/^db\.[a-z0-9]+\.[a-z0-9]+$/u.test(d.instanceClass)||
-    !Number.isInteger(d.storageGiB)||d.storageGiB<100||d.storageGiB>1000||!Number.isInteger(d.backupDays)||d.backupDays<7||d.backupDays>35||
-    !hex64.test(d.rdsCaSha256)||d.migrationPlanSha256!==TEMPORAL_MIGRATION_PLAN_SHA256)fail();
- for(const key of ['masterSecretVersionArn','primarySecretVersionArn','visibilitySecretVersionArn'])secret(d[key],b.account,b.region);
- const dbSecretBases=[d.masterSecretVersionArn,d.primarySecretVersionArn,d.visibilitySecretVersionArn].map(secretBase);
- distinct(dbSecretBases,3,/^arn:aws:secretsmanager:/u);
- distinct([...roleSecretBases,...dbSecretBases],8,/^arn:aws:secretsmanager:/u);
+    d.primaryUsername===d.visibilityUsername||
+    !hex64.test(d.rdsCaSha256)||!hex64.test(d.grantsSha256)||d.migrationPlanSha256!==TEMPORAL_MIGRATION_PLAN_SHA256||
+    [...n.clientSecurityGroupIds,...endpoints.map(x=>x.securityGroupId),n.issuerSecurityGroupId,n.migrationSecurityGroupId].includes(d.securityGroupId))fail();
+ for(const key of ['primarySecretVersionArn','visibilitySecretVersionArn'])secret(d[key],b.account,b.region);
+ const dbSecretBases=[d.primarySecretVersionArn,d.visibilitySecretVersionArn].map(secretBase);
+ distinct(dbSecretBases,2,/^arn:aws:secretsmanager:/u);
+ distinct([...roleSecretBases,...dbSecretBases],7,/^arn:aws:secretsmanager:/u);
  if(pins.server.version!=='1.32.1'||pins.postgres.majorVersion!==16||pins.postgres.candidateMinorVersion!=='16.15'||pins.postgres.plugin!=='postgres12'||
     pins.postgres.schemaPrimaryVersion!=='1.19'||pins.postgres.schemaVisibilityVersion!=='1.14'||fixture.historyShards!==128||
-    fixture.database.newResources!==true||fixture.database.encrypted!==true||fixture.database.multiAz!==true||
+    // Historical fixture remains checksum-pinned; its newResources/instance
+    // placement is not deployment authority for the selected existing Aurora.
     fixture.roles.frontend.claimMapper!=='default'||fixture.roles.frontend.authorizer!=='default'||fixture.roles['internal-frontend'].ingress!=='internode'||
     TEMPORAL_ROLES.some(role=>fixture.roles[role]?.replicas!==2||fixture.roles[role]?.mtls?.requireClientAuth!==true||
       !Number.isSafeInteger(fixture.provisionalSizing?.perRole?.[role]?.dbConnections)||fixture.provisionalSizing.perRole[role].dbConnections<2||
