@@ -1,0 +1,46 @@
+{
+  "synthetic": true,
+  "runs": [
+    {
+      "elapsedMs": 225.9092,
+      "exitCode": 0,
+      "sampledPeakWorkingSetBytes": 49315840,
+      "stderr": "adapter-after.stderr.txt",
+      "timedOut": false,
+      "name": "adapter-after",
+      "stdout": "adapter-after.stdout.txt",
+      "arguments": [
+        "--max-old-space-size=128",
+        "--experimental-test-module-mocks",
+        "--import",
+        "./docs/qualification/candidates/dot-budget-planner-20261016/dependency-seams.mjs",
+        "--test",
+        "--test-isolation=none",
+        "--test-concurrency=1",
+        "apps/control/intents/test/postgres-journal.test.mjs",
+        "apps/control/intents/test/result-release.test.mjs",
+        "apps/control/memory/test/migration-source.test.mjs"
+      ],
+      "negative": false
+    },
+    {
+      "elapsedMs": 164.2749,
+      "exitCode": 0,
+      "sampledPeakWorkingSetBytes": 46346240,
+      "stderr": "source-proof-after-ddl.stderr.txt",
+      "timedOut": false,
+      "name": "source-proof-after-ddl",
+      "stdout": "source-proof-after-ddl.stdout.txt",
+      "arguments": [
+        "--max-old-space-size=128",
+        "--test",
+        "--test-isolation=none",
+        "scripts/qualification/assembled-image/source-proof.test.mjs"
+      ],
+      "negative": false
+    }
+  ],
+  "note": "memory/intent controls mock hash/schema/preparer dependency seams; remaining controls use built-ins and scripted ports. No live qualification.",
+  "restorations": [],
+  "base": "eca78d458acb46cbfd54a94cf870841d999ef6b1"
+}

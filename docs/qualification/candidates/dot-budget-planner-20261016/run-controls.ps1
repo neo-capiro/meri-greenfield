@@ -1,5 +1,5 @@
-param([switch]$Help)
-if($Help) { Write-Output 'Usage: run-controls.ps1 [-Help]. Runs synthetic controls serially; temporarily reverts owned source and restores exact bytes. Exit 0: expected outcomes; exit 1: check/setup failure. No infrastructure or dependency installation.'; return }
+param([switch]$Help,[switch]$Supplemental)
+if($Help) { Write-Output 'Usage: run-controls.ps1 [-Supplemental] [-Help]. Runs synthetic controls serially; temporarily reverts owned source and restores exact bytes. Supplemental runs adapter/DDL controls only. Exit 0: expected outcomes; exit 1: check/setup failure. No infrastructure or dependency installation.'; return }
 $ErrorActionPreference = 'Stop'
 $evidenceRoot = $PSScriptRoot
 $repoRoot = (Resolve-Path (Join-Path $evidenceRoot '../../../..')).Path
@@ -47,6 +47,11 @@ function Baseline([string]$path) {
 }
 $common=@('--max-old-space-size=128','--experimental-test-module-mocks','--import',$seam,'--test','--test-isolation=none','--test-concurrency=1')
 try {
+ if($Supplemental) {
+  Invoke-Control 'adapter-after' $nodePath ($common+@('apps/control/intents/test/postgres-journal.test.mjs','apps/control/intents/test/result-release.test.mjs','apps/control/memory/test/migration-source.test.mjs'))
+  Invoke-Control 'source-proof-after-ddl' $nodePath @('--max-old-space-size=128','--test','--test-isolation=none','scripts/qualification/assembled-image/source-proof.test.mjs')
+  return
+ }
  With-Source @{'apps/control/memory/producer.mjs'=(Baseline 'apps/control/memory/producer.mjs')} {
   Invoke-Control 'memory-before' $nodePath ($common+@('--test-name-pattern=correction lost ACK|correction replay after','apps/control/memory/test/producer.test.mjs')) $true
  }
@@ -73,5 +78,6 @@ try {
  Invoke-Control 'model-grant-after' $nodePath @('--max-old-space-size=128','--test','--test-isolation=none','apps/runtime/test/run-model-grant.test.mjs')
  Invoke-Control 'source-proof' $nodePath @('--max-old-space-size=128','--test','--test-isolation=none','scripts/qualification/assembled-image/source-proof.test.mjs')
 } finally {
- @{base='eca78d458acb46cbfd54a94cf870841d999ef6b1';synthetic=$true;note='memory/intent controls mock hash/schema/preparer dependency seams; remaining controls use built-ins and scripted ports. No live qualification.';runs=$runs;restorations=$restorations} | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath (Join-Path $evidenceRoot 'controls.json') -Encoding utf8
+ $resultFile=if($Supplemental){'supplemental-controls.json'}else{'controls.json'}
+ @{base='eca78d458acb46cbfd54a94cf870841d999ef6b1';synthetic=$true;note='memory/intent controls mock hash/schema/preparer dependency seams; remaining controls use built-ins and scripted ports. No live qualification.';runs=$runs;restorations=$restorations} | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath (Join-Path $evidenceRoot $resultFile) -Encoding utf8
 }

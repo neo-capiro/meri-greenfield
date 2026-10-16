@@ -1,0 +1,31 @@
+✔ canonical claim, PREPARED custody and same-conversation replay use only the reserved namespaced table (7.3561ms)
+✔ claim COMMIT loss leaves PENDING and replay UNKNOWN; no replacement claim or inferred absence (1.1225ms)
+✔ settlement COMMIT loss retains exact PREPARED outcome, recovered by canonical claim without second settlement (1.3933ms)
+✔ UNKNOWN settlement uses SQL NULL and never becomes dispatchable (0.7781ms)
+✔ tenant, actor and conversation remain independent claim keys; cancelled requests do not acquire a client (0.9469ms)
+✔ scripted concurrent claims retain one row and grant preparation to only one caller (0.6083ms)
+✔ malformed custody hash and terminal rewrites fail closed (1.6318ms)
+✔ fresh and retained results both reauthorize; replay preserves immutable output without redispatch (2.8619ms)
+✔ revoked client on retained release is denied without changing custody or repeating preparation (1.2524ms)
+✔ original authority expiry cannot be extended on replay (1.1422ms)
+✔ revocation during fresh preparation withholds release but retains exact result for later authorized read (1.3252ms)
+✔ resumed run uses current authorization but preserves original run identity and expiry (1.7734ms)
+✔ legacy retained result without original authority receipt is withheld without redispatch (0.8615ms)
+✔ missing canonical result-release owner fails unavailable before any claim or preparation (0.3215ms)
+✔ invalid canonical release receipt authorized refuses before preparation (0.4167ms)
+✔ invalid canonical release receipt binding refuses before preparation (0.4191ms)
+✔ invalid canonical release receipt selectionSha256 refuses before preparation (0.3987ms)
+✔ invalid canonical release receipt checkedAtMs refuses before preparation (0.3423ms)
+✔ invalid canonical release receipt expiresAtMs refuses before preparation (0.2665ms)
+✔ worker rejects client scope revocation and changed policy revision for a resumed retained result (0.5608ms)
+✔ reserved migrations contain only their canonical schemas and no execution, role, seed or public fallback (0.6736ms)
+✔ memory preserves immutable identity/hash custody, unique proposer key and monotone acknowledged review identity (0.1349ms)
+✔ settings preserves one document revision, same-transaction audit columns and append-only update guard with retention deletion available (0.7552ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 97.658
