@@ -27,6 +27,11 @@ for(const id of ids){
   const f=await durableFamilyFixture(retainedCase(id));f.state.contextMutator=(r,n)=>{if(n>=4)r.policyRevision='revoked';};
   await assert.rejects(f.execute(),code('ACCESS_DENIED'));assert.equal(f.wire.length,1);assert.equal(f.state.produced.size,1);
  });
+ test(`synthetic ${id}: current-context revocation after settlement still withholds result`,async()=>{
+  const f=await durableFamilyFixture(retainedCase(id));f.state.contextMutator=(r,n)=>{if(n===5)r.policyRevision='revoked';};
+  await assert.rejects(f.execute(),code('ACCESS_DENIED'));assert.equal(f.wire.length,1);
+  assert.equal([...f.state.reservations.values()][0].state,'SETTLED');
+ });
  for(const field of ['origin','argumentsSha256','normalizationContext'])test(`synthetic ${id}: broker ${field} substitution never calls Core`,async()=>{
   const f=await durableFamilyFixture(retainedCase(id));f.state.brokerMutator=r=>{r[field]=field==='normalizationContext'?{}:'forged';};
   await assert.rejects(f.execute(),code('INVALID_RESULT'));assert.equal(f.wire.length,0);
@@ -71,4 +76,21 @@ test('Florida scope/clock drift and malformed result identity fail closed',async
  const b=await durableFamilyFixture(retainedCase(ids[2]));b.page.result.scope.clientId=clientId;
  await assert.rejects(b.execute(),code('INVALID_RESULT'));
  const c=await durableFamilyFixture(retainedCase(ids[2]));c.page.tool='other';await assert.rejects(c.execute(),code('INVALID_RESULT'));
+});
+test('Florida projection withholds extra raw columns while retaining independent observations after asOf',async()=>{
+ const f=await durableFamilyFixture(retainedCase(ids[2]));
+ f.page.result.projects=[{id:'project-one',fiscal_year:'2026-27',title:'Retained project',agency:null,identities:{},relations:[],evidence:[],
+  saved:false,tracking_version:null,recentAmounts:[{project_id:'project-one',id:'amount-one',observation:{session:'independent'}}],private_column:'withhold'}];
+ f.page.result.documents=[{id:'doc-one',publisher:'Publisher',source_url:'https://publisher.example.invalid/document',content_hash:'a'.repeat(64),
+  title:'Retained document',fiscal_year:'2026-27',session_key:'future-session',chamber:'house',stage:'request',role:'request',offer:null,
+  publication_date:null,observed_at:'2026-10-13T01:00:00.000Z',complete:false,metadata:{unverified:true}}];
+ const page=JSON.parse(await f.execute()).result;
+ assert.equal('private_column'in page.result.projects[0],false);assert.equal(page.result.projects[0].recentAmounts[0].observation.session,'independent');
+ assert.ok(Date.parse(page.result.documents[0].observed_at)>Date.parse(page.generatedAt),'observation label adds no historical cutoff');
+});
+test('Florida folder/client substitution is refused before source; noncooperative credential wait is bounded',async()=>{
+ const f=await durableFamilyFixture(retainedCase(ids[2]));f.state.contextMutator=r=>{r.context.effectiveScope.folderId='other-folder';};
+ await assert.rejects(f.execute('wrong-folder',{folderId:'requested-folder'}),code('INVALID_ARGUMENTS'));assert.equal(f.wire.length,0);
+ const scene=retainedCase(ids[2]);scene.transport.maxRequestMs=10;scene.transport.getCredentials=()=>new Promise(()=>{});
+ const b=await durableFamilyFixture(scene);await assert.rejects(b.execute(),code('DEADLINE'));assert.equal(b.wire.length,0);
 });
