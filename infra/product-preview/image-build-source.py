@@ -13,6 +13,7 @@ import subprocess
 import sys
 import tempfile
 import threading
+import time
 import zipfile
 
 SHA = re.compile(r"[a-f0-9]{64}\Z")
@@ -99,7 +100,7 @@ def archive_members(archive):
     return result
 
 
-def bounded_command(args, timeout=30, input_bytes=None):
+def bounded_command(args, timeout=30, input_bytes=None, report=None):
     """Drain both pipes while running; abort before combined output exceeds 16 MiB.
 
     Failed command bytes and stderr are never returned or logged. This applies to
@@ -107,7 +108,12 @@ def bounded_command(args, timeout=30, input_bytes=None):
     """
     need(type(timeout) in (int, float) and 0 < timeout <= 1600, "COMMAND_BOUND")
     need(input_bytes is None or type(input_bytes) is bytes and len(input_bytes) <= 16384, "COMMAND_BOUND")
-    process = None
+    process, started = None, time.monotonic()
+    def mark(status, exit_code=None, output_bytes=0):
+        if report is not None:
+            report({"status": status, "exitCode": exit_code if type(exit_code) is int and -255 <= exit_code <= 255 else None,
+                    "outputBytes": min(max(0, output_bytes), 17 * 1024**2),
+                    "elapsedMs": min(max(0, int((time.monotonic() - started) * 1000)), 1600000)})
     try:
         process = subprocess.Popen(args, stdin=subprocess.PIPE if input_bytes is not None else subprocess.DEVNULL,
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -148,15 +154,21 @@ def bounded_command(args, timeout=30, input_bytes=None):
         except subprocess.TimeoutExpired:
             process.kill()
             process.wait(timeout=5)
+            mark("TIMEOUT", output_bytes=state["bytes"])
             raise ValueError("PRODUCT_IMAGE_COMMAND_UNAVAILABLE_OR_TIMEOUT") from None
         for reader in readers:
             reader.join(timeout=5)
         if writer is not None:
             writer.join(timeout=5)
-        need(not any(reader.is_alive() for reader in readers) and
-             (writer is None or not writer.is_alive()) and not state["overflow"] and not state["writeFailed"], "COMMAND_BOUND")
+        bounded = not any(reader.is_alive() for reader in readers) and (writer is None or not writer.is_alive()) and not state["overflow"] and not state["writeFailed"]
+        if not bounded:
+            mark("BOUND", process.returncode, state["bytes"])
+        need(bounded, "COMMAND_BOUND")
+        if process.returncode != 0:
+            mark("EXIT_NONZERO", process.returncode, state["bytes"])
         return process.returncode, b"".join(chunks)
     except OSError:
+        mark("UNAVAILABLE")
         raise ValueError("PRODUCT_IMAGE_COMMAND_UNAVAILABLE_OR_TIMEOUT") from None
     finally:
         if process is not None:
@@ -171,9 +183,9 @@ def bounded_command(args, timeout=30, input_bytes=None):
                         pass
 
 
-def run(args, timeout=30, input_bytes=None):
+def run(args, timeout=30, input_bytes=None, report=None):
     # Never return/log a failed command's output (Docker/AWS may contain secrets).
-    code, stdout = bounded_command(args, timeout=timeout, input_bytes=input_bytes)
+    code, stdout = bounded_command(args, timeout=timeout, input_bytes=input_bytes, report=report)
     need(code == 0, "COMMAND_FAILED")
     return stdout
 

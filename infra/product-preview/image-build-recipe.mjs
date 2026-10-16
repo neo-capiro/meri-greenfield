@@ -23,21 +23,199 @@ export function createProductImageBuildRecipe(value){
  // command. Only base64 and validated hex are interpolated into the bootstrap.
  const requestJson=JSON.stringify(p),packet=Buffer.from(requestJson).toString('base64');
  const bootstrap=`python3 -I -B -S - <<'MERI_PRODUCT_BUILD'
-import base64,hashlib,pathlib,subprocess,sys,tempfile
+import base64,hashlib,json,os,pathlib,subprocess,sys,tempfile
 source=pathlib.Path('infra/product-preview/image-build-source.py')
 producer=pathlib.Path('infra/product-preview/image-build-producer.py')
-if hashlib.sha256(source.read_bytes()).hexdigest()!='${p.verifierSha256}':
-    raise SystemExit('PRODUCT_IMAGE_VERIFIER_SHA_MISMATCH')
-if hashlib.sha256(producer.read_bytes()).hexdigest()!='${p.producerSha256}':
-    raise SystemExit('PRODUCT_IMAGE_PRODUCER_SHA_MISMATCH')
-with tempfile.TemporaryDirectory(prefix='meri-product-request-') as directory:
-    request=pathlib.Path(directory)/'request.json'
-    request.write_bytes(base64.b64decode('${packet}',validate=True))
-    request.chmod(0o600)
-    result=subprocess.run([sys.executable,'-I','-B','-S',str(producer),'--request',str(request),'--output','product-image-receipt.json'],timeout=1600,check=False)
-    raise SystemExit(result.returncode)
+diagnostic=pathlib.Path('product-image-diagnostic.json')
+owner=os.urandom(16).hex()
+def save(status,phase,code=None,detail=None):
+    primary=None if code is None else {'phase':phase,'category':'BOOTSTRAP','code':code,'detail':detail}
+    cleanup_status='UNKNOWN' if phase=='BOOTSTRAP_CHILD' else 'NOT_RUN'
+    try:
+        if diagnostic.is_symlink():
+            raise ValueError()
+        if diagnostic.exists():
+            if diagnostic.stat().st_size>2048 or json.loads(diagnostic.read_text(encoding='ascii')).get('diagnosticOwner')!=owner:
+                raise ValueError()
+        payload=json.dumps({'schemaVersion':1,'status':status,'phase':phase,'diagnosticOwner':owner,'primary':primary,'cleanup':{'status':cleanup_status,'failure':None,'additionalFailures':[]}},sort_keys=True,separators=(',',':'))+'\\n'
+        with diagnostic.open('w' if diagnostic.exists() else 'x',encoding='ascii') as stream:
+            stream.write(payload)
+        return True
+    except Exception:
+        print('PRODUCT_IMAGE_CHECK_FAILED phase=DIAGNOSTIC category=WRITE code=PRODUCT_IMAGE_CHECK_FAILED',file=sys.stderr)
+        return False
+def child_receipt():
+    try:
+        if diagnostic.is_symlink() or diagnostic.stat().st_size>2048:
+            return None
+        row=json.loads(diagnostic.read_text(encoding='ascii'))
+        phases=set('REQUEST BUILD_IDENTITY BUILD_READBACK REPOSITORY_READBACK WORKDIR SOURCE_ARCHIVE SOURCE_MANIFEST SOURCE_VERIFY SOURCE_EXTRACT DOCKER_PREFLIGHT DOCKER_BUILD IMAGE_INSPECT SANDBOX_HELP SANDBOX_MEASURE LINUX_TESTS ECR_AUTH ECR_PUSH ECR_READBACK ECR_SCAN CLEANUP WORKDIR_CLEANUP RECEIPT'.split())
+        types=set('MISSING_FILE PERMISSION OS JSON IMPORT KEY TYPE VALUE TIMEOUT UNEXPECTED'.split())
+        categories=types|{'COMMAND','CHECK'}
+        codes={'PRODUCT_IMAGE_CHECK_FAILED'}|{'PRODUCT_IMAGE_'+name for name in 'ARCHIVE_BOUND ARCHIVE_SHA_MISMATCH BUILD_IDENTITY BUILD_SOURCE CLEANUP_UNKNOWN COMMAND_BOUND COMMAND_FAILED COMMAND_UNAVAILABLE_OR_TIMEOUT DUPLICATE_KEY DUPLICATE_MEMBER FILE_BOUND IMAGE_IDENTITY IMAGE_MEASUREMENT IMAGE_READBACK LOCAL_IMAGE_EXISTS LOCAL_PROBE_EXISTS MANIFEST_BOUND MANIFEST_ORDER MANIFEST_SHA_MISMATCH MANIFEST_SHAPE MEMBER_ANCESTOR MEMBER_PATH MEMBER_TYPE NODE_PIN OBJECT_BINDING OBJECT_BOUND PRIVATE_MEMBER PRODUCER_DEADLINE PRODUCER_PLATFORM_OR_OUTPUT PROJECT_PIN REPOSITORY_PIN REPOSITORY_POLICY REQUEST_OBJECT REQUEST_PIN RUNNER_BOUND RUNTIME_USER SCAN_FINDINGS_HOLD SCAN_INCOMPLETE SHAPE_REFUSED SOURCE_COMMIT SOURCE_MEMBERS_MISMATCH SOURCE_PIN_MISMATCH TAG_PIN'.split()}
+        statuses={'EXIT_NONZERO','TIMEOUT','BOUND','UNAVAILABLE'}
+        def checked(record):
+            if type(record) is not dict or set(record)!={'phase','category','code','detail'}:
+                return None
+            phase,category,code,detail=(record[key] for key in ('phase','category','code','detail'))
+            if type(phase) is not str or phase not in phases or type(category) is not str or category not in categories or type(code) is not str or code not in codes or type(detail) is not dict:
+                return None
+            if category=='COMMAND':
+                if set(detail)!={'status','exitCode','outputBytes','elapsedMs'} or type(detail['status']) is not str or detail['status'] not in statuses:
+                    return None
+                exit_code,count,elapsed=(detail[key] for key in ('exitCode','outputBytes','elapsedMs'))
+                if exit_code is not None and (type(exit_code) is not int or not -255<=exit_code<=255) or type(count) is not int or not 0<=count<=17*1024**2 or type(elapsed) is not int or not 0<=elapsed<=1600000:
+                    return None
+                safe_detail={'status':detail['status'],'exitCode':exit_code,'outputBytes':count,'elapsedMs':elapsed}
+            else:
+                if set(detail)!={'errorType','errno'} or type(detail['errorType']) is not str or detail['errorType'] not in types:
+                    return None
+                errno=detail['errno']
+                if errno is not None and (type(errno) is not int or not 0<=errno<=255):
+                    return None
+                safe_detail={'errorType':detail['errorType'],'errno':errno}
+            return {'phase':phase,'category':category,'code':code,'detail':safe_detail}
+        base={'schemaVersion','status','phase','diagnosticOwner','primary','cleanup'}
+        extras={'bootstrapFailure','bootstrapCleanup','childCleanupStatus'}
+        if type(row) is not dict or not base<=set(row) or set(row)-base-extras or row['schemaVersion']!=1 or row['status']!='FAILED' or row['diagnosticOwner']!=owner or type(row['phase']) is not str or row['phase'] not in phases:
+            return None
+        primary=checked(row['primary'])
+        cleanup=row['cleanup']
+        if primary is None or type(cleanup) is not dict or set(cleanup)!={'status','failure','additionalFailures'} or cleanup['status'] not in ('NOT_RUN','OK','FAILED') or type(cleanup['additionalFailures']) is not list or len(cleanup['additionalFailures'])>1:
+            return None
+        if cleanup['status']=='FAILED':
+            first=checked(cleanup['failure'])
+            more=[checked(item) for item in cleanup['additionalFailures']]
+            if first is None or any(item is None for item in more):
+                return None
+        else:
+            if cleanup['failure'] is not None or cleanup['additionalFailures']:
+                return None
+            first,more=None,[]
+        safe={'schemaVersion':1,'status':'FAILED','phase':row['phase'],'diagnosticOwner':owner,'primary':primary,'cleanup':{'status':cleanup['status'],'failure':first,'additionalFailures':more}}
+        if 'childCleanupStatus' in row:
+            if row['childCleanupStatus']!='UNKNOWN':
+                return None
+            safe['childCleanupStatus']='UNKNOWN'
+        bootstrap_codes={'PRODUCT_IMAGE_BOOTSTRAP_TIMEOUT','PRODUCT_IMAGE_BOOTSTRAP_CHILD_UNAVAILABLE','PRODUCT_IMAGE_BOOTSTRAP_CLEANUP_UNKNOWN'}
+        for name in set(row)-base-{'childCleanupStatus'}:
+            extra=row[name]
+            if type(extra) is not dict or set(extra)!={'phase','category','code','detail'} or extra['category']!='BOOTSTRAP' or extra['phase'] not in ('BOOTSTRAP_CHILD','BOOTSTRAP_CLEANUP') or extra['code'] not in bootstrap_codes:
+                return None
+            detail=extra['detail']
+            if detail is not None and not (type(detail) is dict and (detail=={'timeoutSeconds':1600} or set(detail)=={'exitCode'} and type(detail['exitCode']) is int and -255<=detail['exitCode']<=255)):
+                return None
+            safe[name]={'phase':extra['phase'],'category':'BOOTSTRAP','code':extra['code'],'detail':detail}
+        def line(prefix,record):
+            detail=record['detail']
+            if record['category']=='COMMAND':
+                suffix=' commandStatus='+detail['status']+' exitCode='+(str(detail['exitCode']) if detail['exitCode'] is not None else 'none')+' outputBytes='+str(detail['outputBytes'])+' elapsedMs='+str(detail['elapsedMs'])
+            else:
+                suffix=' errorType='+detail['errorType']+' errno='+(str(detail['errno']) if detail['errno'] is not None else 'none')
+            return prefix+' phase='+record['phase']+' category='+record['category']+' code='+record['code']+suffix
+        lines=[line('PRODUCT_IMAGE_CHECK_FAILED',primary)]
+        if first is not None:
+            lines.extend(line('PRODUCT_IMAGE_CLEANUP_FAILED',item) for item in (first,*more))
+        if safe.get('childCleanupStatus')=='UNKNOWN':
+            lines.append('PRODUCT_IMAGE_CHILD_CLEANUP_UNKNOWN phase=BOOTSTRAP_CHILD')
+        return safe,lines
+    except Exception:
+        return None
+def bootstrap_receipt():
+    try:
+        if diagnostic.is_symlink() or diagnostic.stat().st_size>2048:
+            return None
+        row=json.loads(diagnostic.read_text(encoding='ascii'))
+        if type(row) is not dict or set(row)!={'schemaVersion','status','phase','diagnosticOwner','primary','cleanup'} or row['schemaVersion']!=1 or row['status']!='FAILED' or row['diagnosticOwner']!=owner:
+            return None
+        primary=row['primary']
+        if type(primary) is not dict or set(primary)!={'phase','category','code','detail'} or primary['category']!='BOOTSTRAP' or row['phase']!=primary['phase']:
+            return None
+        codes={'BOOTSTRAP_REQUEST':{'PRODUCT_IMAGE_BOOTSTRAP_REQUEST_UNAVAILABLE'},'BOOTSTRAP_CHILD':{'PRODUCT_IMAGE_BOOTSTRAP_TIMEOUT','PRODUCT_IMAGE_BOOTSTRAP_CHILD_UNAVAILABLE','PRODUCT_IMAGE_BOOTSTRAP_CHILD_FAILED','PRODUCT_IMAGE_BOOTSTRAP_CHILD_INCOMPLETE'}}
+        phase,code,detail=primary['phase'],primary['code'],primary['detail']
+        if type(phase) is not str or type(code) is not str or code not in codes.get(phase,set()):
+            return None
+        if code=='PRODUCT_IMAGE_BOOTSTRAP_TIMEOUT':
+            if detail!={'timeoutSeconds':1600}:return None
+        elif code=='PRODUCT_IMAGE_BOOTSTRAP_CHILD_FAILED':
+            if type(detail) is not dict or set(detail)!={'exitCode'} or type(detail['exitCode']) is not int or not -255<=detail['exitCode']<=255:return None
+        elif detail is not None:return None
+        cleanup=row['cleanup']
+        expected='UNKNOWN' if phase=='BOOTSTRAP_CHILD' else 'NOT_RUN'
+        if type(cleanup) is not dict or cleanup!={'status':expected,'failure':None,'additionalFailures':[]}:
+            return None
+        safe={'schemaVersion':1,'status':'FAILED','phase':phase,'diagnosticOwner':owner,'primary':{'phase':phase,'category':'BOOTSTRAP','code':code,'detail':detail},'cleanup':cleanup}
+        lines=['PRODUCT_IMAGE_CHECK_FAILED phase='+phase+' category=BOOTSTRAP code='+code]
+        if expected=='UNKNOWN':lines.append('PRODUCT_IMAGE_CHILD_CLEANUP_UNKNOWN phase=BOOTSTRAP_CHILD')
+        return safe,lines
+    except Exception:
+        return None
+def fail(phase,code,detail=None,preserve_child=False):
+    child=(child_receipt() or bootstrap_receipt()) if preserve_child else None
+    if child is None:
+        save('FAILED',phase,code,detail)
+    else:
+        safe,lines=child
+        safe['bootstrapCleanup' if phase=='BOOTSTRAP_CLEANUP' else 'bootstrapFailure']={'phase':phase,'category':'BOOTSTRAP','code':code,'detail':detail}
+        if phase=='BOOTSTRAP_CHILD':
+            safe['childCleanupStatus']='UNKNOWN'
+        try:
+            diagnostic.write_text(json.dumps(safe,sort_keys=True,separators=(',',':'))+'\\n',encoding='ascii')
+        except Exception:
+            print('PRODUCT_IMAGE_CHECK_FAILED phase=DIAGNOSTIC category=WRITE code=PRODUCT_IMAGE_CHECK_FAILED',file=sys.stderr)
+        for line in lines:
+            print(line,file=sys.stderr)
+    print('PRODUCT_IMAGE_CHECK_FAILED phase='+phase+' category=BOOTSTRAP code='+code,file=sys.stderr)
+    if phase=='BOOTSTRAP_CHILD':
+        print('PRODUCT_IMAGE_CHILD_CLEANUP_UNKNOWN phase=BOOTSTRAP_CHILD',file=sys.stderr)
+    raise SystemExit(2)
+if not save('STARTED','BOOTSTRAP_SOURCE'):
+    raise SystemExit(2)
+try:
+    source_hash=hashlib.sha256(source.read_bytes()).hexdigest()
+    producer_hash=hashlib.sha256(producer.read_bytes()).hexdigest()
+except Exception:
+    fail('BOOTSTRAP_SOURCE','PRODUCT_IMAGE_BOOTSTRAP_SOURCE_UNAVAILABLE')
+if source_hash!='${p.verifierSha256}':
+    fail('BOOTSTRAP_SOURCE','PRODUCT_IMAGE_VERIFIER_SHA_MISMATCH')
+if producer_hash!='${p.producerSha256}':
+    fail('BOOTSTRAP_SOURCE','PRODUCT_IMAGE_PRODUCER_SHA_MISMATCH')
+try:
+    with tempfile.TemporaryDirectory(prefix='meri-product-request-') as directory:
+        request=pathlib.Path(directory)/'request.json'
+        try:
+            request.write_bytes(base64.b64decode('${packet}',validate=True))
+            request.chmod(0o600)
+        except Exception:
+            fail('BOOTSTRAP_REQUEST','PRODUCT_IMAGE_BOOTSTRAP_REQUEST_UNAVAILABLE')
+        try:
+            child_env=dict(os.environ,MERI_PRODUCT_DIAGNOSTIC_OWNER=owner)
+            result=subprocess.run([sys.executable,'-I','-B','-S',str(producer),'--request',str(request),'--output','product-image-receipt.json'],timeout=1600,check=False,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,env=child_env)
+        except subprocess.TimeoutExpired:
+            fail('BOOTSTRAP_CHILD','PRODUCT_IMAGE_BOOTSTRAP_TIMEOUT',{'timeoutSeconds':1600},preserve_child=True)
+        except Exception:
+            fail('BOOTSTRAP_CHILD','PRODUCT_IMAGE_BOOTSTRAP_CHILD_UNAVAILABLE',preserve_child=True)
+except SystemExit:
+    raise
+except Exception:
+    fail('BOOTSTRAP_CLEANUP','PRODUCT_IMAGE_BOOTSTRAP_CLEANUP_UNKNOWN',preserve_child=True)
+try:
+    final=json.loads(diagnostic.read_text(encoding='ascii'))
+    state=final.get('status') if type(final) is dict and final.get('diagnosticOwner')==owner else None
+except Exception:
+    state=None
+if result.returncode!=0:
+    child=child_receipt()
+    if child is None:
+        fail('BOOTSTRAP_CHILD','PRODUCT_IMAGE_BOOTSTRAP_CHILD_FAILED',{'exitCode':max(-255,min(255,result.returncode))})
+    for line in child[1]:
+        print(line,file=sys.stderr)
+    raise SystemExit(2)
+if state!='SUCCEEDED':
+    fail('BOOTSTRAP_CHILD','PRODUCT_IMAGE_BOOTSTRAP_CHILD_INCOMPLETE')
+raise SystemExit(0)
 MERI_PRODUCT_BUILD`;
- const buildspec={version:0.2,env:{shell:'bash'},phases:{build:{'on-failure':'ABORT',commands:[bootstrap]}},artifacts:{files:['product-image-receipt.json'],'discard-paths':'yes'}};
+ const buildspec={version:0.2,env:{shell:'bash'},phases:{build:{'on-failure':'ABORT',commands:[bootstrap]}},artifacts:{files:['product-image-receipt.json','product-image-diagnostic.json'],'discard-paths':'yes'}};
  const buildspecJson=JSON.stringify(buildspec,null,2)+'\n';
  return Object.freeze({status:'OFFLINE_RECIPE_ONLY',buildspecJson,buildspecSha256:hash(buildspecJson),requestSha256:hash(requestJson)});
 }

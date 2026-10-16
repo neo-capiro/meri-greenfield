@@ -35,8 +35,79 @@ test('offline recipe produces deterministic reviewable override bytes with diges
  assert.equal(result.buildspecSha256,hash(result.buildspecJson));assert.deepEqual(result,createProductImageBuildRecipe(structuredClone(f.pin)));
  const spec=JSON.parse(result.buildspecJson);assert.equal(spec.version,0.2);assert.equal(spec.phases.build['on-failure'],'ABORT');
  const script=spec.phases.build.commands[0];assert.ok(script.indexOf(f.pin.verifierSha256)<script.indexOf('str(producer)'));assert.match(script,/timeout=1600/u);
- assert.deepEqual(spec.artifacts.files,['product-image-receipt.json']);
+ assert.deepEqual(spec.artifacts.files,['product-image-receipt.json','product-image-diagnostic.json']);
  for(const change of [p=>{p.nodeImageUri='node:24';},p=>{p.archive.versionId='null';},p=>{p.runtimeUser='root';},p=>{p.imageTag='latest';},p=>{p.runnerSha256='';},p=>{p.secret='unexpected';},p=>{p.archive.key='x\nprintenv';}]){const pin=structuredClone(f.pin);change(pin);assert.throws(()=>createProductImageBuildRecipe(pin),/PRODUCT_IMAGE_RECIPE_REFUSED/u);}
+});
+
+test('bootstrap failures produce bounded artifact before and after producer import',async t=>{
+ const scenarios=['source-hash','producer-import','request-decode','request-decode-cleanup','child-timeout','child-receipt-timeout','producer-check','bootstrap-cleanup'];
+ for(const scenario of scenarios)await t.test(scenario,t=>{
+  const f=fixture(t),producerFile=join(f.repo,'infra/product-preview/image-build-producer.py');
+  if(scenario==='producer-import'){
+   writeFileSync(producerFile,'not valid python secret=top-secret\n');
+   f.pin.producerSha256=hash(readFileSync(producerFile));
+  }
+  if(scenario==='child-timeout'){
+   writeFileSync(producerFile,'import time\ntime.sleep(5)\n');
+   f.pin.producerSha256=hash(readFileSync(producerFile));
+  }
+  if(scenario==='child-receipt-timeout'){
+   writeFileSync(producerFile,`import json,os,pathlib,time
+row={'schemaVersion':1,'status':'FAILED','phase':'DOCKER_BUILD','diagnosticOwner':os.environ['MERI_PRODUCT_DIAGNOSTIC_OWNER'],'primary':{'phase':'DOCKER_BUILD','category':'CHECK','code':'PRODUCT_IMAGE_CHECK_FAILED','detail':{'errorType':'UNEXPECTED','errno':None}},'cleanup':{'status':'NOT_RUN','failure':None,'additionalFailures':[]}}
+pathlib.Path('product-image-diagnostic.json').write_text(json.dumps(row))
+time.sleep(5)
+`);
+   f.pin.producerSha256=hash(readFileSync(producerFile));
+  }
+  const recipe=createProductImageBuildRecipe(f.pin);
+  const script=JSON.parse(recipe.buildspecJson).phases.build.commands[0];
+  let body=script.slice(script.indexOf('\n')+1,script.lastIndexOf('\nMERI_PRODUCT_BUILD'));
+  if(scenario==='source-hash')writeFileSync(join(f.repo,'infra/product-preview/image-build-source.py'),'secret=top-secret\n');
+  if(['request-decode','request-decode-cleanup'].includes(scenario))body=body.replace(/base64\.b64decode\('[^']+',validate=True\)/u,"base64.b64decode('not valid!',validate=True)");
+  if(scenario==='child-timeout')body=body.replace('timeout=1600,check=False','timeout=0.01,check=False');
+  if(scenario==='child-receipt-timeout')body=body.replace('timeout=1600,check=False','timeout=0.4,check=False');
+  if(['bootstrap-cleanup','request-decode-cleanup'].includes(scenario))body=body.replace('owner=os.urandom(16).hex()',`owner=os.urandom(16).hex()
+real_temp=tempfile.TemporaryDirectory
+class FailingTemp:
+ def __init__(self,*args,**kwargs):self.inner=real_temp(*args,**kwargs)
+ def __enter__(self):return self.inner.__enter__()
+ def __exit__(self,*args):self.inner.__exit__(*args);raise OSError('secret=never-log-this')
+tempfile.TemporaryDirectory=FailingTemp`);
+  const result=python(['-c',body],{cwd:f.repo});
+  assert.equal(result.status,2,result.stderr);
+  assert.equal(result.stdout,'');
+  assert.ok(!result.stderr.includes('top-secret'));
+  const diagnostic=JSON.parse(readFileSync(join(f.repo,'product-image-diagnostic.json'),'utf8'));
+  assert.equal(diagnostic.status,'FAILED');
+  assert.equal(diagnostic.schemaVersion,1);
+  if(['producer-check','bootstrap-cleanup','child-receipt-timeout'].includes(scenario)){
+   assert.equal(diagnostic.primary.category,'CHECK');
+   assert.ok(['PRODUCT_IMAGE_PRODUCER_PLATFORM_OR_OUTPUT','PRODUCT_IMAGE_BUILD_IDENTITY','PRODUCT_IMAGE_CHECK_FAILED'].includes(diagnostic.primary.code));
+   assert.notEqual(diagnostic.primary.phase,'BOOTSTRAP_CHILD');
+   assert.ok(result.stderr.includes(`PRODUCT_IMAGE_CHECK_FAILED phase=${diagnostic.primary.phase} category=CHECK code=${diagnostic.primary.code} errorType=${scenario==='child-receipt-timeout'?'UNEXPECTED':'VALUE'} errno=none`));
+   if(scenario==='bootstrap-cleanup'){
+    assert.equal(diagnostic.bootstrapCleanup.code,'PRODUCT_IMAGE_BOOTSTRAP_CLEANUP_UNKNOWN');
+    assert.ok(result.stderr.includes('phase=BOOTSTRAP_CLEANUP category=BOOTSTRAP code=PRODUCT_IMAGE_BOOTSTRAP_CLEANUP_UNKNOWN'));
+   }
+   if(scenario==='child-receipt-timeout'){
+    assert.equal(diagnostic.bootstrapFailure.code,'PRODUCT_IMAGE_BOOTSTRAP_TIMEOUT');
+    assert.equal(diagnostic.childCleanupStatus,'UNKNOWN');
+    assert.ok(result.stderr.includes('PRODUCT_IMAGE_CHILD_CLEANUP_UNKNOWN phase=BOOTSTRAP_CHILD'));
+   }
+  }else assert.equal(diagnostic.primary.category,'BOOTSTRAP');
+  const expected={'source-hash':'PRODUCT_IMAGE_VERIFIER_SHA_MISMATCH','producer-import':'PRODUCT_IMAGE_BOOTSTRAP_CHILD_FAILED','request-decode':'PRODUCT_IMAGE_BOOTSTRAP_REQUEST_UNAVAILABLE','request-decode-cleanup':'PRODUCT_IMAGE_BOOTSTRAP_REQUEST_UNAVAILABLE','child-timeout':'PRODUCT_IMAGE_BOOTSTRAP_TIMEOUT'};
+  if(!['producer-check','bootstrap-cleanup','child-receipt-timeout'].includes(scenario))assert.equal(diagnostic.primary.code,expected[scenario]);
+  if(scenario==='request-decode-cleanup'){
+   assert.equal(diagnostic.bootstrapCleanup.code,'PRODUCT_IMAGE_BOOTSTRAP_CLEANUP_UNKNOWN');
+   assert.ok(result.stderr.includes('phase=BOOTSTRAP_REQUEST category=BOOTSTRAP code=PRODUCT_IMAGE_BOOTSTRAP_REQUEST_UNAVAILABLE'));
+   assert.ok(result.stderr.includes('phase=BOOTSTRAP_CLEANUP category=BOOTSTRAP code=PRODUCT_IMAGE_BOOTSTRAP_CLEANUP_UNKNOWN'));
+  }
+  if(['producer-import','child-timeout'].includes(scenario)){
+   assert.equal(diagnostic.cleanup.status,'UNKNOWN');
+   assert.ok(result.stderr.includes('PRODUCT_IMAGE_CHILD_CLEANUP_UNKNOWN phase=BOOTSTRAP_CHILD'));
+  }
+  assert.ok(!JSON.stringify(diagnostic).includes('top-secret'));
+ });
 });
 
 test('sealing proves ZIP file bytes and modes against exact Git objects; verification joins all sealed pins',t=>{
