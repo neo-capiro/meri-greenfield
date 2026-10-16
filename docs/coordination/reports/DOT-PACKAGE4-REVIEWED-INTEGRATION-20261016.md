@@ -2,7 +2,16 @@
 
 **SOURCE-ONLY PARTIAL CANDIDATE; overall source composition, candidate-h, image and live release remain HOLD.** This is not a main merge or runtime qualification.
 
-## Latest accepted preview DDL addition, 2026-10-16 02:21 UTC
+## Current accepted source snapshot, 2026-10-16 02:26 UTC
+
+Source **`838eaf07e620e035f9559c8dee1ccd723afef869`**, tree **`c9a709765fa1478315690b0ac6f8094de682a32d`**, also includes the four CORE5 source/test paths accepted at **`260de18f9b1328e71996f227f82b8d6239295e5a`**: canonical memory producer, existing PostgreSQL journal lookup and focused fixtures/tests. Every Git blob matches that exact reviewed source. The total after75f is now **36 selected paths in seven scoped commits**; earlier CORE2/3 remain intact. No model issuer, memory/settings SQL or unaccepted lane head was merged.
+
+The owner22/22 synthetic controls and four89aaff before-fix negatives were inspected by the independent parent reviewer; they were not rerun here. Hash/schema dependency seams remain explicitly mocked in that author evidence. The immutable retained candidate is checked against current submission scope immediately before submit; status visibility remains separate. Real Core submit/status/authority qualification stays open. Earlier source/static6/6 and preview SQL-text3/3 retain their exact tested source pins in the custody record; unchanged checks were not repeated. **Zero changed proof rows**, no frozen selector or manifest repin.
+
+The latest parent history verdict releases additive export authoring at5abfa653, with complete pending-reservation shape/integrity correction before artifact acceptance. C owns schema/validator/receiver generation and narrow package export/scripts/provenance; proposed0.1.6 source release and exact frontend artifact adoption remain pending. Later schedule/read/model source is outside that verdict. Retention write proof is scoped acceptable but the combined adapter remains held for the confirmed read ABA and pending atomic snapshot repair.
+
+## Prior accepted preview DDL addition, 2026-10-16 02:21 UTC
+
 
 Current source snapshot **`4944e806cdfec78ce7031a0a9093fc4562b1c32b`**, tree **`d6935a360b25c821bcac3f0b3319e6e2dd94c3cf`**, adds exactly two source/test paths accepted by the parent at `eb52ed44f688403306c70269c29508d39a4c2184`: preview0003 SQL and its static test. Both Git blobs match; no `c5ebb14f` retention implementation or lane report was imported. This makes **32 selected paths in six scoped commits** after the initial75f candidate. Previous receipts remain preserved at their commits.
 

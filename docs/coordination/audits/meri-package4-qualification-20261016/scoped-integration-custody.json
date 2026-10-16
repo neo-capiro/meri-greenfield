@@ -215,10 +215,39 @@
           "integratedBlob": "8892631068add74801e50667d95b8ab0c842b3fe"
         }
       ]
+    },
+    {
+      "label": "CORE5 immutable memory replay and current submission scope",
+      "reviewedSource": "260de18f9b1328e71996f227f82b8d6239295e5a",
+      "predecessor": "7915163012e2a8cece68076f725f3211bd6a842e",
+      "integratedCommit": "838eaf07e620e035f9559c8dee1ccd723afef869",
+      "integratedTree": "c9a709765fa1478315690b0ac6f8094de682a32d",
+      "files": [
+        {
+          "path": "apps/control/memory/postgres-journal.mjs",
+          "acceptedBlob": "98f819e35b35ddada7013d551699ebb8c5882298",
+          "integratedBlob": "98f819e35b35ddada7013d551699ebb8c5882298"
+        },
+        {
+          "path": "apps/control/memory/producer.mjs",
+          "acceptedBlob": "618508d5e518e995a6401209f7fa5205d4d6d7f9",
+          "integratedBlob": "618508d5e518e995a6401209f7fa5205d4d6d7f9"
+        },
+        {
+          "path": "apps/control/memory/test/fixtures.mjs",
+          "acceptedBlob": "b9170048169534a8126f4decda1b55e8f6cae0fe",
+          "integratedBlob": "b9170048169534a8126f4decda1b55e8f6cae0fe"
+        },
+        {
+          "path": "apps/control/memory/test/producer.test.mjs",
+          "acceptedBlob": "f8ed1380bbc7413bdc5e327e61ededace956fa4e",
+          "integratedBlob": "f8ed1380bbc7413bdc5e327e61ededace956fa4e"
+        }
+      ]
     }
   ],
-  "sourceHead": "4944e806cdfec78ce7031a0a9093fc4562b1c32b",
-  "sourceTree": "d6935a360b25c821bcac3f0b3319e6e2dd94c3cf",
+  "sourceHead": "838eaf07e620e035f9559c8dee1ccd723afef869",
+  "sourceTree": "c9a709765fa1478315690b0ac6f8094de682a32d",
   "validation": {
     "command": "node --max-old-space-size=128 --test --test-isolation=none --test-concurrency=1 --test-timeout=15000 --test-reporter=tap scripts/qualification/assembled-image/source-proof.test.mjs apps/control/retention/test/watermark-migration-source.test.mjs",
     "node": "v24.19.0",
@@ -252,14 +281,14 @@
   },
   "holds": [
     "retention read behavior: confirmed ABA at c5ebb14f; atomic snapshot successor pending (write-side proof scoped accepted)",
-    "memory CORE-5 successor260de18f",
     "canonical intent authorizer and PG runtime",
     "L3 source5abfa653 accepted; pending reservation-shape fix, public export generation and exact artifact/frontend adoption",
     "model issuance implementation and runtime",
     "compiler/browser/database/image/live qualification",
     "seven historical runtime failures",
     "three frozen-candidate selector failures",
-    "preview deployed canonical adapter and outside-rollback custody/tombstone replay plus allocation lookup"
+    "preview deployed canonical adapter and outside-rollback custody/tombstone replay plus allocation lookup",
+    "real Core memory authority/submit/status integration not live qualified"
   ],
   "additionalValidation": {
     "command": "node --max-old-space-size=128 --test --test-isolation=none --test-concurrency=1 --test-timeout=15000 --test-reporter=tap apps/artifacts/test/preview-migration-source.test.mjs",
@@ -283,5 +312,16 @@
       "probeRss": 36401152,
       "commitAvailable": null
     }
-  }
+  },
+  "reusedEvidence": [
+    {
+      "sourcePin": "260de18f9b1328e71996f227f82b8d6239295e5a",
+      "ownerSyntheticPasses": 22,
+      "ownerBeforeFixNegatives": 4,
+      "canonicalHashSeamMocked": true,
+      "independentlyExecutedByCoordinator": false,
+      "parentScopedSourceReviewAccepted": true,
+      "scope": "immutable replay plus scope before actual submission; status visibility remains separate"
+    }
+  ]
 }
