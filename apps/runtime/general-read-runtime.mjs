@@ -7,7 +7,7 @@ import {createGeneralReadGatewayMount} from '../gateway/general-reads/mount.mjs'
 import {deny} from '../gateway/dispatch/operation-result.mjs';
 const REQUIRED=['pool','allocationJson','authority','limits','producerContext','producer','credential','handlers',
  'readCurrentInstallation','discoveryOwner','catalogJson','contracts','scopes','now','newId'];
-const OPTIONAL=['sourceEnabled','sourceRoot','memoryContextPorts','mailContextPorts','retainedContextPorts','defaultCongress','namespace'];
+const OPTIONAL=['sourceEnabled','sourceRoot','memoryContextPorts','mailContextPorts','retainedContextPorts','nativeReadContextPorts','defaultCongress','namespace'];
 const unavailable=Object.freeze({async readAvailability(){deny('UNAVAILABLE');},async execute(){deny('UNAVAILABLE');}});
 export function createControlGeneralReadRuntime(configuration={}){
  const c=own(configuration,[],[...REQUIRED,...OPTIONAL]);

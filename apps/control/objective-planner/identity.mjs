@@ -5,8 +5,8 @@ import {refuse} from '../product-access/errors.mjs';
 export {own,data,hash};
 export const fail=(code,outcome)=>refuse('OBJECTIVE_PLANNER_'+code,outcome);
 export const same=(a,b)=>hash(a)===hash(b);
-export function uuid(v){if(typeof v!=='string'||!/^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/u.test(v))fail('INVALID_SELECTION');return v;}
-export function digest(v){if(typeof v!=='string'||!/^[a-f0-9]{64}$/u.test(v))fail('INVALID_RECEIPT');return v;}
+export function uuid(v){if(typeof v!=='string'||v.length!==36||!/^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/u.test(v))fail('INVALID_SELECTION');return v;}
+export function digest(v){if(typeof v!=='string'||v.length!==64||!/^[a-f0-9]{64}$/u.test(v))fail('INVALID_RECEIPT');return v;}
 export function integer(v){if(!Number.isInteger(v)||v<1||v>2147483647)fail('INVALID_RECEIPT');return v;}
 export function instant(v){if(typeof v!=='string'||!Number.isFinite(Date.parse(v))||new Date(v).toISOString()!==v)fail('INVALID_RECEIPT');return v;}
 export function text(v){if(typeof v!=='string'||!v.length)fail('INVALID_RECEIPT');return v;}

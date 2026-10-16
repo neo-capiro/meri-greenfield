@@ -19,10 +19,21 @@ function output(value){const o=own(value,['availability','id','createdVersion','
 }
 /** Mutable current read projection, never the stored creation receipt or its immutable custody hash. */
 export function plannerObservation(raw,value){
- const r=data(own(raw,['requestId','status','replayed','recordedAt','observedAt','source','projects','tasks','context','edges','exclusions','issues','counts'])),w=work(value);
- if(r.requestId!==w.plannerRequestId||!['prepared','prepared_with_issues','partial'].includes(r.status)||typeof r.replayed!=='boolean')fail('INVALID_RECEIPT');instant(r.recordedAt);instant(r.observedAt);
+ const w=work(value);return materializationObservation(raw,{requestId:w.plannerRequestId,source:expectedSource(w)});
+}
+/** Legacy browser materialization: every projected output was created by this request. */
+export function materializationObservation(raw,expected){
+ return decodeMaterialization(raw,expected,false);
+}
+/** Canonical regeneration reuses existing outputs; creation counts report only actual new rows. */
+export function canonicalMaterializationObservation(raw,expected){
+ return decodeMaterialization(raw,expected,true);
+}
+function decodeMaterialization(raw,expected,reusesOutputs){
+ const e=data(own(expected,['requestId','source'])),r=data(own(raw,['requestId','status','replayed','recordedAt','observedAt','source','projects','tasks','context','edges','exclusions','issues','counts']));
+ if(r.requestId!==e.requestId||!['prepared','prepared_with_issues','partial'].includes(r.status)||typeof r.replayed!=='boolean')fail('INVALID_RECEIPT');instant(r.recordedAt);instant(r.observedAt);
  own(r.source,['generationJobId','generationRequestId','clientId','objectiveId','objectiveVersion','objectiveRevisionId','strategyId','strategyVersionId','snapshotDigest']);
- if(!same(r.source,expectedSource(w)))fail('SOURCE_STALE');
+ if(!same(r.source,e.source))fail('SOURCE_STALE');
  if(!Array.isArray(r.projects)||!Array.isArray(r.tasks)||!Array.isArray(r.context)||!Array.isArray(r.edges)||!Array.isArray(r.exclusions)||!Array.isArray(r.issues))fail('INVALID_RECEIPT');
  const groups=new Set(),nodes=new Set(),outputs=new Set();
  for(const p of r.projects){own(p,['groupKey','name','originalNodeIds','output']);text(p.groupKey);text(p.name);strings(p.originalNodeIds,uuid);if(groups.has(p.groupKey))fail('INVALID_RECEIPT');groups.add(p.groupKey);output(p.output);if(p.output.id!==null){if(outputs.has(p.output.id))fail('INVALID_RECEIPT');outputs.add(p.output.id);}}
@@ -32,7 +43,7 @@ export function plannerObservation(raw,value){
  for(const e of r.edges){own(e,['sourceNodeId','dependsOnSourceNodeId','disposition']);uuid(e.sourceNodeId);uuid(e.dependsOnSourceNodeId);if(!nodes.has(e.sourceNodeId)||!nodes.has(e.dependsOnSourceNodeId)||!['task_dependency','context_only','archived_source'].includes(e.disposition))fail('INVALID_RECEIPT');}
  for(const i of r.issues){own(i,['code','sourceNodeIds','message']);text(i.code);text(i.message);strings(i.sourceNodeIds,uuid);}
  const counts=own(r.counts,['savedNodes','actionableNodes','contextNodes','archivedNodes','createdProjects','createdTasks']);
- if(Object.values(counts).some(n=>!Number.isSafeInteger(n)||n<0)||counts.createdProjects!==r.projects.length||counts.createdTasks!==r.tasks.length||counts.actionableNodes!==r.tasks.length||counts.contextNodes!==r.context.length||counts.archivedNodes!==r.exclusions.length||counts.savedNodes!==nodes.size)fail('INVALID_RECEIPT');
+ if(Object.values(counts).some(n=>!Number.isSafeInteger(n)||n<0)||(reusesOutputs?counts.createdProjects>r.projects.length||counts.createdTasks>r.tasks.length:counts.createdProjects!==r.projects.length||counts.createdTasks!==r.tasks.length)||counts.actionableNodes!==r.tasks.length||counts.contextNodes!==r.context.length||counts.archivedNodes!==r.exclusions.length||counts.savedNodes!==nodes.size)fail('INVALID_RECEIPT');
  // Current groups/version/availability may change after application. Never overwrite human edits or recreate missing outputs.
  return r;
 }

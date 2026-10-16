@@ -8,6 +8,7 @@ import { prepareProjectionReadContext } from './projection-read-context.mjs';
 import { deny } from './operation-result.mjs';
 import {retainedReadGroup,prepareRetainedReadContext} from './retained-read-context.mjs';
 import {prepareBillTextReadContext} from './bill-text-context.mjs';
+import {nativeReadGroup,prepareNativeReadContext} from './native-read-context.mjs';
 
 export function assertOperationArguments(entry, request) {
   const profile = entry.contract.binding?.dispatchProfile;
@@ -19,8 +20,13 @@ export function assertOperationArguments(entry, request) {
   try { validateShape(entry.contract.binding.input, request); } catch { deny('INVALID_ARGUMENTS'); }
 }
 
-export async function prepareOperationContext({ entry, request, identity, authorize, ports, mailPorts, retainedPorts, lifetime, readDeadline, now, maxBytes, defaultCongress }) {
+export async function prepareOperationContext({ entry, request, identity, authorize, ports, mailPorts, retainedPorts, nativePorts, lifetime, readDeadline, now, maxBytes, defaultCongress }) {
   const profile = entry.contract.binding?.dispatchProfile;
+  if(nativeReadGroup(entry)&&(nativePorts!==undefined||entry.contract.binding.group!=='bill-text')){
+    const authority=await authorize(request);
+    if(canonicalSha256(authority.binding)!==canonicalSha256(identity.claims.binding)||authority.policyRevision!==identity.claims.policyRevision)deny('ACCESS_DENIED');
+    return prepareNativeReadContext({entry,request,authority,ports:nativePorts,lifetime,readDeadline,now,maxBytes});
+  }
   if(entry.contract.binding?.group==='bill-text')return prepareBillTextReadContext({entry,authority:await authorize(request),identity,defaultCongress});
   if(retainedReadGroup(entry)){
     const authority=await authorize(request);

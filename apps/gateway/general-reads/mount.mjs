@@ -16,7 +16,7 @@ import {safeFailure,deny,GatewayDenied} from '../dispatch/operation-result.mjs';
 import {createInstalledCatalogView} from '../catalog/installed-catalog.mjs';
 const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b),DELIVERY=/^[-A-Za-z0-9_.:@/]{1,255}$/u;
 export function createGeneralReadGatewayMount(configuration){
- const c=own(configuration,['pool','allocationJson','authority','limits','producerContext','producer','credential','installationOwner','discoveryOwner','catalogJson','contracts','now','newId'],['sourceEnabled','memoryContextPorts','mailContextPorts','retainedContextPorts','defaultCongress','namespace']);
+ const c=own(configuration,['pool','allocationJson','authority','limits','producerContext','producer','credential','installationOwner','discoveryOwner','catalogJson','contracts','now','newId'],['sourceEnabled','memoryContextPorts','mailContextPorts','retainedContextPorts','nativeReadContextPorts','defaultCongress','namespace']);
  if(c.namespace!==undefined&&!['qualification','product'].includes(c.namespace))deny('GATEWAY_CONFIGURATION');
  const a=allocation(c.allocationJson),context=parseToolGrantFacts(JSON.stringify(data(c.producerContext)),a),producer=data(c.producer),limits=data(c.limits);
  const installation=own(c.installationOwner,['readCurrent','handlers']),discovery=own(c.discoveryOwner,['readDiscoveryGrant']);own(producer,['namespace','executionId']);
@@ -38,7 +38,7 @@ export function createGeneralReadGatewayMount(configuration){
   try{const receipt=await current(life);
    const catalog=createInstalledCatalogView({catalogJson:c.catalogJson,contracts:c.contracts,handlers:installation.handlers,receipt,now:c.now});
    if(catalog.entry(v.operation)===null)deny('UNAVAILABLE');
-   const gateway=createDurableToolDispatch({pool:c.pool,allocationJson:c.allocationJson,catalog,authority:c.authority,limits,now:c.now,newId:c.newId,sourceEnabled:true,...(c.namespace?{namespace:c.namespace}:{}),...(c.memoryContextPorts?{memoryContextPorts:c.memoryContextPorts}:{}),...(c.mailContextPorts?{mailContextPorts:c.mailContextPorts}:{}),...(c.retainedContextPorts?{retainedContextPorts:c.retainedContextPorts}:{}),...(c.defaultCongress?{defaultCongress:c.defaultCongress}:{})});
+   const gateway=createDurableToolDispatch({pool:c.pool,allocationJson:c.allocationJson,catalog,authority:c.authority,limits,now:c.now,newId:c.newId,sourceEnabled:true,...(c.namespace?{namespace:c.namespace}:{}),...(c.memoryContextPorts?{memoryContextPorts:c.memoryContextPorts}:{}),...(c.mailContextPorts?{mailContextPorts:c.mailContextPorts}:{}),...(c.retainedContextPorts?{retainedContextPorts:c.retainedContextPorts}:{}),...(c.nativeReadContextPorts?{nativeReadContextPorts:c.nativeReadContextPorts}:{}),...(c.defaultCongress?{defaultCongress:c.defaultCongress}:{})});
    const requestJson=JSON.stringify({operation:v.operation,arguments:v.arguments}),deliveryJson=JSON.stringify({context,producer,deliveryId:v.deliveryId});
    const result=await life.run(signal=>gateway.executeOwned(requestJson,c.credential,deliveryJson,signal));
    // The installation must still be current at release; otherwise the result is withheld.

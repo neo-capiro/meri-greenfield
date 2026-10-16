@@ -15,7 +15,7 @@ function sameAuthority(a, b) {
   return sameBinding(a, b) && canonicalSha256(subjectSelection(a.subject)) === canonicalSha256(subjectSelection(b.subject));
 }
 
-export function createToolDispatch({ catalog, authority, budget, limits, now, newId, sourceEnabled = false, memoryContextPorts, mailContextPorts, retainedContextPorts, defaultCongress }) {
+export function createToolDispatch({ catalog, authority, budget, limits, now, newId, sourceEnabled = false, memoryContextPorts, mailContextPorts, retainedContextPorts, nativeReadContextPorts, defaultCongress }) {
   if (!catalog || typeof catalog.entry !== 'function' || typeof catalog.discoverable !== 'function' ||
       !authority || typeof authority.identify !== 'function' || typeof authority.check !== 'function' ||
       !budget || ['reserve', 'settle', 'markUncertain'].some(name => typeof budget[name] !== 'function') ||
@@ -47,7 +47,7 @@ export function createToolDispatch({ catalog, authority, budget, limits, now, ne
       const authorize = input => lifetime.run(signal => authority.check({ credential, descriptor: entry.descriptor,
         input, signal, limitDeadline: lifetime.limitDeadline }));
       const context = await prepareOperationContext({ entry, request: request.arguments, identity, authorize,
-        ports: memoryContextPorts, mailPorts: mailContextPorts, retainedPorts:retainedContextPorts, lifetime, readDeadline: () => deadlineMs,
+        ports: memoryContextPorts, mailPorts: mailContextPorts, retainedPorts:retainedContextPorts, nativePorts:nativeReadContextPorts, lifetime, readDeadline: () => deadlineMs,
         now, maxBytes: limits.maxResponseBytes, defaultCongress });
       let normalized;
       try { normalized = context.normalized ?? entry.contract.normalizeInput(request.arguments, context.options(context.authority)); }
@@ -80,7 +80,7 @@ export function createToolDispatch({ catalog, authority, budget, limits, now, ne
       catch (error) {
         const failure = safeFailure(error);
         if (['DEADLINE', 'CANCELLED'].includes(failure.message)) throw failure;
-        if(failure.message==='UNAVAILABLE'&&['research-portfolio','florida-budget','bill-text'].includes(entry.contract.binding?.group))throw failure;
+        if(failure.message==='UNAVAILABLE'&&['research-portfolio','florida-budget','bill-text','public-reports','acquisition-personnel','disclosures'].includes(entry.contract.binding?.group))throw failure;
         deny('INVALID_RESULT');
       }
       const output = parseRawJson(outputJson, Math.min(limits.maxResponseBytes, effect.claims.budgets.maxOutputBytes), 'INVALID_RESULT');
