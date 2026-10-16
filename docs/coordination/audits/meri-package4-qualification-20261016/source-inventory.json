@@ -1,0 +1,716 @@
+{
+  "package_four": {
+    "commit": "eca78d458acb46cbfd54a94cf870841d999ef6b1",
+    "tree": "af0fa89750d9ffb8a58b66dfcb6f84cf4300fd49",
+    "parents": [
+      "753bd62124d6754442a55e81bbd94c03ed451584"
+    ]
+  },
+  "audit": "f8d1816eda48347eeca4c0c25308870f2885c1f5",
+  "frontend": {
+    "commit": "2acbd89cf70a2d8bc70fa5be7059abb8d79ca6b2",
+    "tree": "c1d85ee1420413904de2ab8a27b771d07f5ddc14",
+    "parent": "ca66b0fdf60ddd92e7215bd81969d87bd81d1985",
+    "base": "c7e060007f5cd5a9b786442d0cc168a73c5565a8",
+    "verification": "Direct GitHub git/commits API reads of both full pins; no frontend worktree counted here"
+  },
+  "handoff_refs": [
+    {
+      "abbreviation": "1f883f0c",
+      "commit": "1f883f0c31166b865d2e8380883e7328a40246bf",
+      "parents": [
+        "a0a85df895b1df1006cb3d28029bf5fc71681b9f"
+      ],
+      "ancestor_of_package_four": true
+    },
+    {
+      "abbreviation": "1fcac067",
+      "commit": "1fcac067924aaa269247fb1dacd9ac391f7ab8af",
+      "parents": [
+        "48a27c8d0e09f8eb6501e13f0d137458460e163e"
+      ],
+      "ancestor_of_package_four": true
+    },
+    {
+      "abbreviation": "2138b50f",
+      "commit": "2138b50f05acfc2d82bbb8f85137bfd8a9ec3c8f",
+      "parents": [
+        "b75ababc84155ff831af596ec67d8dc09cfbb200",
+        "94e3b83bd4beb5bca724fa5bb9fa526ea6b1b55d"
+      ],
+      "ancestor_of_package_four": true
+    },
+    {
+      "abbreviation": "355d64de",
+      "commit": "355d64de79454f6a657af2576ecface950fc49c0",
+      "parents": [
+        "ba1a409f334796a5e5550d048c43d12d7c4744c5"
+      ],
+      "ancestor_of_package_four": true
+    },
+    {
+      "abbreviation": "3d79610c",
+      "commit": "3d79610cd4127618caf56f731a50f1f14ce9a5ae",
+      "parents": [
+        "48a27c8d0e09f8eb6501e13f0d137458460e163e",
+        "1f883f0c31166b865d2e8380883e7328a40246bf"
+      ],
+      "ancestor_of_package_four": true
+    },
+    {
+      "abbreviation": "48a27c8d",
+      "commit": "48a27c8d0e09f8eb6501e13f0d137458460e163e",
+      "parents": [
+        "dcec33d815c7bf29d44d6589eeb468c991c08e72"
+      ],
+      "ancestor_of_package_four": true
+    },
+    {
+      "abbreviation": "62a93745",
+      "commit": "62a93745aa7307afa494f941cea6e1318deb4fd8",
+      "parents": [
+        "973dbbf34e97080150e2c64f6748c3c72b065b79",
+        "1fcac067924aaa269247fb1dacd9ac391f7ab8af"
+      ],
+      "ancestor_of_package_four": true
+    },
+    {
+      "abbreviation": "753bd621",
+      "commit": "753bd62124d6754442a55e81bbd94c03ed451584",
+      "parents": [
+        "e86202784f98840ea06a2ac88b8056a48f9cbb9a"
+      ],
+      "ancestor_of_package_four": true
+    },
+    {
+      "abbreviation": "8694c1ed",
+      "commit": "8694c1ed35e8ab06c0984b7a7e0a30b39fc28222",
+      "parents": [
+        "86f5749491e172fc3628ad45f73dc8cf946bf56c"
+      ],
+      "ancestor_of_package_four": true
+    },
+    {
+      "abbreviation": "94e3b83b",
+      "commit": "94e3b83bd4beb5bca724fa5bb9fa526ea6b1b55d",
+      "parents": [
+        "48a27c8d0e09f8eb6501e13f0d137458460e163e"
+      ],
+      "ancestor_of_package_four": true
+    },
+    {
+      "abbreviation": "973dbbf3",
+      "commit": "973dbbf34e97080150e2c64f6748c3c72b065b79",
+      "parents": [
+        "2138b50f05acfc2d82bbb8f85137bfd8a9ec3c8f",
+        "9a6bb724c199dbe9b67f0f182491043cfb17907b"
+      ],
+      "ancestor_of_package_four": true
+    },
+    {
+      "abbreviation": "9a6bb724",
+      "commit": "9a6bb724c199dbe9b67f0f182491043cfb17907b",
+      "parents": [
+        "cdb85b33beeca5872ec89884d069c7178de71e9e"
+      ],
+      "ancestor_of_package_four": true
+    },
+    {
+      "abbreviation": "b1db921b",
+      "commit": "b1db921b4b2469f8516806602bcaed93668691d2",
+      "parents": [
+        "81e20025b7a805ac28a44f2044df87b0ebab905b"
+      ],
+      "ancestor_of_package_four": true
+    },
+    {
+      "abbreviation": "b75ababc",
+      "commit": "b75ababc84155ff831af596ec67d8dc09cfbb200",
+      "parents": [
+        "cb94dfbb57246c6a9ed5fb434ace82f0a8a73867",
+        "8694c1ed35e8ab06c0984b7a7e0a30b39fc28222"
+      ],
+      "ancestor_of_package_four": true
+    },
+    {
+      "abbreviation": "c1a86b1b",
+      "commit": "c1a86b1b70ccb83f5693bbffc6cbe6b31ca8cb1e",
+      "parents": [
+        "b7cc7ba97d431cbe399426cd1449509696b94be1"
+      ],
+      "ancestor_of_package_four": true
+    },
+    {
+      "abbreviation": "cb94dfbb",
+      "commit": "cb94dfbb57246c6a9ed5fb434ace82f0a8a73867",
+      "parents": [
+        "3d79610cd4127618caf56f731a50f1f14ce9a5ae",
+        "c1a86b1b70ccb83f5693bbffc6cbe6b31ca8cb1e"
+      ],
+      "ancestor_of_package_four": true
+    },
+    {
+      "abbreviation": "cdb85b33",
+      "commit": "cdb85b33beeca5872ec89884d069c7178de71e9e",
+      "parents": [
+        "e677f434816639a6c2b691af545f672a6f7864e4"
+      ],
+      "ancestor_of_package_four": true
+    },
+    {
+      "abbreviation": "e677f434",
+      "commit": "e677f434816639a6c2b691af545f672a6f7864e4",
+      "parents": [
+        "48a27c8d0e09f8eb6501e13f0d137458460e163e"
+      ],
+      "ancestor_of_package_four": true
+    },
+    {
+      "abbreviation": "e8620278",
+      "commit": "e86202784f98840ea06a2ac88b8056a48f9cbb9a",
+      "parents": [
+        "62a93745aa7307afa494f941cea6e1318deb4fd8"
+      ],
+      "ancestor_of_package_four": true
+    },
+    {
+      "abbreviation": "f8d1816e",
+      "commit": "f8d1816eda48347eeca4c0c25308870f2885c1f5",
+      "parents": [
+        "a5dccb19a28e1b68a7e831a97bccf858c0af12c2"
+      ],
+      "ancestor_of_package_four": false
+    }
+  ],
+  "handoff_document_links": [
+    {
+      "source": "docs/coordination/reports/FABLE-REPAIR-PACKAGE-4-20261016.md",
+      "link": "FABLE-OWNER-DECISIONS-20261015.md",
+      "target": "docs/coordination/reports/FABLE-OWNER-DECISIONS-20261015.md",
+      "exists_at_pin": true
+    },
+    {
+      "source": "docs/coordination/reports/FABLE-REPAIR-PACKAGE-4-20261016.md",
+      "link": "../briefs/FABLE-LIVE-LANE-BRIEFS-20261016.md",
+      "target": "docs/coordination/briefs/FABLE-LIVE-LANE-BRIEFS-20261016.md",
+      "exists_at_pin": true
+    },
+    {
+      "source": "docs/coordination/reports/FABLE-REPAIR-PACKAGE-4-20261016.md",
+      "link": "FABLE-R4-DEPS-RECIPE-20261015.md",
+      "target": "docs/coordination/reports/FABLE-R4-DEPS-RECIPE-20261015.md",
+      "exists_at_pin": true
+    },
+    {
+      "source": "docs/coordination/reports/FABLE-REPAIR-PACKAGE-4-20261016.md",
+      "link": "FABLE-INTENTS-20261016.md",
+      "target": "docs/coordination/reports/FABLE-INTENTS-20261016.md",
+      "exists_at_pin": true
+    },
+    {
+      "source": "docs/coordination/reports/FABLE-REPAIR-PACKAGE-4-20261016.md",
+      "link": "../proposals/FABLE-INTENTS-PROPOSALS-20261016.md",
+      "target": "docs/coordination/proposals/FABLE-INTENTS-PROPOSALS-20261016.md",
+      "exists_at_pin": true
+    },
+    {
+      "source": "docs/coordination/reports/FABLE-REPAIR-PACKAGE-4-20261016.md",
+      "link": "FABLE-RETENTION-20261016.md",
+      "target": "docs/coordination/reports/FABLE-RETENTION-20261016.md",
+      "exists_at_pin": true
+    },
+    {
+      "source": "docs/coordination/reports/FABLE-REPAIR-PACKAGE-4-20261016.md",
+      "link": "../proposals/FABLE-RETENTION-MIGRATION-REQUEST-20261016.md",
+      "target": "docs/coordination/proposals/FABLE-RETENTION-MIGRATION-REQUEST-20261016.md",
+      "exists_at_pin": true
+    },
+    {
+      "source": "docs/coordination/reports/FABLE-REPAIR-PACKAGE-4-20261016.md",
+      "link": "FABLE-DOCUMENTS-20261016.md",
+      "target": "docs/coordination/reports/FABLE-DOCUMENTS-20261016.md",
+      "exists_at_pin": true
+    },
+    {
+      "source": "docs/coordination/reports/FABLE-REPAIR-PACKAGE-4-20261016.md",
+      "link": "FABLE-BROWSER-COMPOSITION-20261016.md",
+      "target": "docs/coordination/reports/FABLE-BROWSER-COMPOSITION-20261016.md",
+      "exists_at_pin": true
+    },
+    {
+      "source": "docs/coordination/reports/FABLE-REPAIR-PACKAGE-4-20261016.md",
+      "link": "FABLE-MEMORY-SETTINGS-20261016.md",
+      "target": "docs/coordination/reports/FABLE-MEMORY-SETTINGS-20261016.md",
+      "exists_at_pin": true
+    },
+    {
+      "source": "docs/coordination/reports/FABLE-REPAIR-PACKAGE-4-20261016.md",
+      "link": "../proposals/FABLE-MEMORY-SETTINGS-PROPOSALS-20261016.md",
+      "target": "docs/coordination/proposals/FABLE-MEMORY-SETTINGS-PROPOSALS-20261016.md",
+      "exists_at_pin": true
+    },
+    {
+      "source": "docs/coordination/reports/FABLE-REPAIR-PACKAGE-4-20261016.md",
+      "link": "../proposals/memory-settings-20261016/proposed-memory-settings.sql",
+      "target": "docs/coordination/proposals/memory-settings-20261016/proposed-memory-settings.sql",
+      "exists_at_pin": true
+    },
+    {
+      "source": "docs/coordination/reports/FABLE-REPAIR-PACKAGE-4-20261016.md",
+      "link": "../briefs/FABLE-LIVE-LANE-BRIEFS-20261016.md",
+      "target": "docs/coordination/briefs/FABLE-LIVE-LANE-BRIEFS-20261016.md",
+      "exists_at_pin": true
+    },
+    {
+      "source": "docs/coordination/reports/FABLE-REPAIR-PACKAGE-4-20261016.md",
+      "link": "FABLE-OWNER-DECISIONS-20261015.md",
+      "target": "docs/coordination/reports/FABLE-OWNER-DECISIONS-20261015.md",
+      "exists_at_pin": true
+    },
+    {
+      "source": "docs/coordination/briefs/FABLE-LIVE-LANE-BRIEFS-20261016.md",
+      "link": "../reports/FABLE-REPAIR-PACKAGE-4-20261016.md",
+      "target": "docs/coordination/reports/FABLE-REPAIR-PACKAGE-4-20261016.md",
+      "exists_at_pin": true
+    }
+  ],
+  "manifests": {
+    "source-manifest.json": {
+      "sha256": "d7f743dcf6b0514310ccf5b2b7bdcf2a5ed40d4359caac3d78add7310c74587f",
+      "files": 45,
+      "status": "UNSEALED_REPAIR_CANDIDATE",
+      "previousCandidate": null,
+      "changedRowCount": null,
+      "unchangedRowCount": null,
+      "current_source_mismatches": [
+        {
+          "path": "apps/control/conversations/native-preparation-journal.mjs",
+          "expected": "6f0d34c67d179af93f15dd6179c56a4ae437f1ca63250baf637a836df8dd63a5",
+          "actual": "0297baf0a33da0241ccdae25c82f4fe4f5c8fcc5a26e9264e0eb8c21260816fa"
+        },
+        {
+          "path": "apps/control/conversations/postgres-store.mjs",
+          "expected": "4b8ad2df837a2a7c7ae26d7d23ca60017b50a9b186193553093195d31e80a71f",
+          "actual": "2de6bce64ace8a6d2b5d0ed205f9ffb5b7ac2884d6109df19bc629b13d48c1cb"
+        },
+        {
+          "path": "apps/runtime/config.mjs",
+          "expected": "a786efc5a3eb046fe4ada7439c314d456ab11d81353b2137eebc47d683624e1d",
+          "actual": "9558183a7eab179d3b66d2b1d65707a0f495f882b3aa03e8b04b029942c6685d"
+        },
+        {
+          "path": "apps/runtime/control.mjs",
+          "expected": "904b12d08007bc9803b57f26afbf0e0763cfe80f7cb17aedc581ba77135c4e52",
+          "actual": "ec63730199cbc092042dab6b6694506087530ee85572e1daadfb478bf76c5757"
+        },
+        {
+          "path": "apps/runtime/conversation-runner.mjs",
+          "expected": "ff9a037395eef3d89f62573e53c26c2c038dc5b5ffb59c37266a7c873cc48794",
+          "actual": "9b6ac5506161513caab33a41c547b634dc314426b51e274f376340556a1ba26d"
+        },
+        {
+          "path": "apps/runtime/native-authority/checkpoint-capture.mjs",
+          "expected": "06e52b65ac5bef5666cde03b94ec819e1211853b31bdb4f6555de76dee1a7173",
+          "actual": "13eae4bbce5c2b747417625279d8852ff0b44412fb72b06b73c8bf14354eb0e2"
+        },
+        {
+          "path": "apps/runtime/native-authority/checkpoint-http.mjs",
+          "expected": "5cd20e089ea176aa16ced1402f32be8c2803be179908c9b176bb190228c66fe6",
+          "actual": "bf2c9a066e20be402e9ebf41483f03515e7c358f49beadc5315e23e61cfc8776"
+        },
+        {
+          "path": "apps/runtime/native-authority/prepared-kickoff.mjs",
+          "expected": "b8623c6b9c78b92a81a858756073dace0fd47a4646c12eadb9f403a80dfcf875",
+          "actual": "2cdbe486433963b6525ace3bacebfaec91de116adeb67e4b1e54e7f1067c0182"
+        },
+        {
+          "path": "apps/runtime/native-authority/prepared-runtime.mjs",
+          "expected": "14acba096a126400d4d3f1bd74492fc9d99e5650cc20ba1413305030829f1d5c",
+          "actual": "e3e3629d370f81f0b71e6b2e6d2f2a8b19b3fd277c111a8db1c7be82f2e47e3b"
+        },
+        {
+          "path": "apps/runtime/native-authority/remote-composition.mjs",
+          "expected": "eaa996c353a37cba9f0953f7997e759459a273b24cd8018ad1f855225ad44017",
+          "actual": "2c4162da6af533902090d7aa2861278c892335a90b4e4a75cbae99b80ba5ab4b"
+        },
+        {
+          "path": "apps/runtime/native-authority/test/broker-pg-fixture.mjs",
+          "expected": "fe7fa54367099a16bef76dd087a7993aaf6f94e3bba06b5c5839205980797d4c",
+          "actual": "8dbcd953faea355b2a6fbffbcfd165b05ce5fb120e10af4e5a31db25029a4f2b"
+        },
+        {
+          "path": "apps/runtime/native-runner-gateway.mjs",
+          "expected": "2b32a50bc77ff534fe351ca87b0f765117ecb66da67ace5f78e966d88c2468af",
+          "actual": "9c4daaee94de339fe97cbd6d55654d0cc5890b58a12069500e8e877f889edece"
+        },
+        {
+          "path": "apps/runtime/prepared-candidate-config.mjs",
+          "expected": "8cc1bf393f78ee182077c03c313af4b53826f3e8842e6116fd0b42266afbc156",
+          "actual": "2dd1963e3350948c3d7b93543e84f3bd1031545e94b74eca79db11ba59651bc7"
+        },
+        {
+          "path": "apps/runtime/prepared-candidate.mjs",
+          "expected": "698f9adbb5ebda2e4e964c4c7f6d8425932141dcd803716b43372e26d7625d5a",
+          "actual": "56a56689f2bf0ee365f9f1b7e479f5f5e693ae05998d9e80057c3e8da278b603"
+        },
+        {
+          "path": "apps/runtime/task-bootstrap.mjs",
+          "expected": "17e639caffbc321cc923c24d9871583f4aced5741282f09c57ed8f183337d9b1",
+          "actual": "1a44df48814c509f5cf7826847f3990a7179035474014119e39eef51eb8880dc"
+        },
+        {
+          "path": "apps/runtime/temporal-worker.mjs",
+          "expected": "7e309e52b3fd6e0b5ebb74b91f82d2953fef48425936d13953d472e2633ffb9b",
+          "actual": "4a0a145c2014bf08006e7623cce9e9f325c1c4c03ee8ef436377189b00c9ca3e"
+        },
+        {
+          "path": "apps/runtime/test/prepared-candidate.test.mjs",
+          "expected": "1e3b0ff5a884969f969c7dc44a9e30118caa3eee5d970ed769f3c8018ed8ce04",
+          "actual": "e8b11f520ee37518916ae21c7860d9606e3d7ea0e17b58f44ed1153b2ed2826c"
+        },
+        {
+          "path": "apps/runtime/test/prepared-temporal.test.mjs",
+          "expected": "654ba8b9c9b00dc6e83dd92cc561c374e68839179055e006c98cb43f95b8d5ba",
+          "actual": "67a68c78fd3942e0d66678b8bbebff9e45cccac510d68a7dda7446860f550b50"
+        }
+      ]
+    },
+    "candidate-manifest-fable-20261015f.json": {
+      "sha256": "3215210633f64dcb4c8d98aa1c7e17af658c512511bc4f7bdf3df4f8a4085017",
+      "files": 45,
+      "status": "CANDIDATE_HOLD_SOURCE_REVIEW",
+      "previousCandidate": {
+        "path": "candidate-manifest-fable-20261015e.json",
+        "sha256": "41814143b72e4288f83bf3137b4cfcd7f14c9a93df467772b3685b0f1b35c341"
+      },
+      "changedRowCount": 18,
+      "unchangedRowCount": 27,
+      "current_source_mismatches": [
+        {
+          "path": "apps/control/conversations/native-preparation-journal.mjs",
+          "expected": "b8aadcb9ca7b06cb5ad9571da5b72b1134827b7c949498a949a54dcbafb439c9",
+          "actual": "0297baf0a33da0241ccdae25c82f4fe4f5c8fcc5a26e9264e0eb8c21260816fa"
+        },
+        {
+          "path": "apps/control/conversations/postgres-store.mjs",
+          "expected": "e3568dd6ce0f8afafaee43a61f5e66ecda368f7f4dbebf26f9ead21674bfe920",
+          "actual": "2de6bce64ace8a6d2b5d0ed205f9ffb5b7ac2884d6109df19bc629b13d48c1cb"
+        },
+        {
+          "path": "apps/runtime/config.mjs",
+          "expected": "3a1a136ddeccac2983040113c9de16a91110a70178964da601c839db8f169b71",
+          "actual": "9558183a7eab179d3b66d2b1d65707a0f495f882b3aa03e8b04b029942c6685d"
+        },
+        {
+          "path": "apps/runtime/control.mjs",
+          "expected": "399698afaa8cac6851f9f40590b1bbf0173e73541125a6b25be65af75ad18ee0",
+          "actual": "ec63730199cbc092042dab6b6694506087530ee85572e1daadfb478bf76c5757"
+        },
+        {
+          "path": "apps/runtime/native-authority/prepared-kickoff.mjs",
+          "expected": "3650e3af495e5a096a108c0071703012dfbaaf0e27d61e8469bd7eaf22a2d0e7",
+          "actual": "2cdbe486433963b6525ace3bacebfaec91de116adeb67e4b1e54e7f1067c0182"
+        },
+        {
+          "path": "apps/runtime/native-authority/remote-composition.mjs",
+          "expected": "b1e3c3e92e40103edc48c42779be55fcc51c89fe9e2ce7f4bbecc7888d0c982a",
+          "actual": "2c4162da6af533902090d7aa2861278c892335a90b4e4a75cbae99b80ba5ab4b"
+        },
+        {
+          "path": "apps/runtime/prepared-candidate.mjs",
+          "expected": "a27377181aa678db1228c2f60832aad74084eb0cf39439125f86fad8639bb36e",
+          "actual": "56a56689f2bf0ee365f9f1b7e479f5f5e693ae05998d9e80057c3e8da278b603"
+        }
+      ]
+    },
+    "candidate-manifest-fable-20261015g.json": {
+      "sha256": "b74243e64a2a6d031434315cd7e4699ecc151f6ba2ca13959c04c31a75edfcd6",
+      "files": 45,
+      "status": "CANDIDATE_HOLD_SOURCE_REVIEW",
+      "previousCandidate": {
+        "path": "candidate-manifest-fable-20261015f.json",
+        "sha256": "3215210633f64dcb4c8d98aa1c7e17af658c512511bc4f7bdf3df4f8a4085017"
+      },
+      "changedRowCount": 18,
+      "unchangedRowCount": 27,
+      "current_source_mismatches": [
+        {
+          "path": "apps/runtime/config.mjs",
+          "expected": "3a1a136ddeccac2983040113c9de16a91110a70178964da601c839db8f169b71",
+          "actual": "9558183a7eab179d3b66d2b1d65707a0f495f882b3aa03e8b04b029942c6685d"
+        },
+        {
+          "path": "apps/runtime/control.mjs",
+          "expected": "399698afaa8cac6851f9f40590b1bbf0173e73541125a6b25be65af75ad18ee0",
+          "actual": "ec63730199cbc092042dab6b6694506087530ee85572e1daadfb478bf76c5757"
+        }
+      ]
+    },
+    "candidate-manifest-fable-20261015h.json": {
+      "sha256": "79a5f7fc5254c0152c0119264d653cdb5b561f27ded91d379569d00ba73a5c1e",
+      "files": 45,
+      "status": "CANDIDATE_HOLD_SOURCE_REVIEW",
+      "previousCandidate": {
+        "path": "candidate-manifest-fable-20261015g.json",
+        "sha256": "b74243e64a2a6d031434315cd7e4699ecc151f6ba2ca13959c04c31a75edfcd6"
+      },
+      "changedRowCount": 18,
+      "unchangedRowCount": 27,
+      "current_source_mismatches": []
+    }
+  },
+  "g_to_h_delta": [
+    {
+      "path": "apps/runtime/config.mjs",
+      "g": "3a1a136ddeccac2983040113c9de16a91110a70178964da601c839db8f169b71",
+      "h": "9558183a7eab179d3b66d2b1d65707a0f495f882b3aa03e8b04b029942c6685d"
+    },
+    {
+      "path": "apps/runtime/control.mjs",
+      "g": "399698afaa8cac6851f9f40590b1bbf0173e73541125a6b25be65af75ad18ee0",
+      "h": "ec63730199cbc092042dab6b6694506087530ee85572e1daadfb478bf76c5757"
+    }
+  ],
+  "migration_paths_by_inspected_head": {
+    "eca78d458acb46cbfd54a94cf870841d999ef6b1": [
+      "apps/artifacts/migrations/0001_versions.sql",
+      "apps/artifacts/migrations/0002_retention.sql",
+      "apps/control/commands/approval-metadata/migrations/0001_approval_metadata.sql",
+      "apps/control/commands/migrations/0001_commands.sql",
+      "apps/control/conversations/migrations/0001_conversations.sql",
+      "apps/control/conversations/migrations/0002_lifecycle.sql",
+      "apps/control/conversations/migrations/0003_selected_outputs.sql",
+      "apps/control/conversations/migrations/0004_sdk_sessions.sql",
+      "apps/control/conversations/migrations/0005_selected_reads.sql",
+      "apps/control/conversations/migrations/0006_native_executions.sql",
+      "apps/control/conversations/migrations/0007_native_preparation.sql",
+      "apps/control/conversations/migrations/0008_native_prepared_launch.sql",
+      "apps/control/conversations/migrations/0009_next_runs.sql",
+      "apps/control/conversations/migrations/0010_retention.sql",
+      "apps/control/conversations/migrations/0011_run_issuance.sql",
+      "apps/control/qualification-sdk-fixture/state/migrations/0001_qualification_sdk_fixture_state.sql",
+      "apps/control/schedules/migrations/0001_schedule_owner.sql",
+      "apps/control/task-lookup/migrations/0001_task_lookup.sql",
+      "apps/gateway/budget/migrations/0001_product_budget.sql",
+      "apps/gateway/budget/migrations/0002_tenant_budgets.sql",
+      "apps/proxy/qualification/state/migrations/0001_qualification_state.sql",
+      "apps/proxy/qualification/state/migrations/0002_tool_budget.sql",
+      "apps/proxy/qualification/state/migrations/0003_tool_invocations.sql"
+    ],
+    "f8d1816eda48347eeca4c0c25308870f2885c1f5": [
+      "apps/artifacts/migrations/0001_versions.sql",
+      "apps/control/commands/approval-metadata/migrations/0001_approval_metadata.sql",
+      "apps/control/commands/migrations/0001_commands.sql",
+      "apps/control/conversations/migrations/0001_conversations.sql",
+      "apps/control/conversations/migrations/0002_lifecycle.sql",
+      "apps/control/conversations/migrations/0003_selected_outputs.sql",
+      "apps/control/conversations/migrations/0004_sdk_sessions.sql",
+      "apps/control/conversations/migrations/0005_selected_reads.sql",
+      "apps/control/conversations/migrations/0006_native_executions.sql",
+      "apps/control/conversations/migrations/0007_native_preparation.sql",
+      "apps/control/conversations/migrations/0008_native_prepared_launch.sql",
+      "apps/control/conversations/migrations/0009_next_runs.sql",
+      "apps/control/qualification-sdk-fixture/state/migrations/0001_qualification_sdk_fixture_state.sql",
+      "apps/control/schedules/migrations/0001_schedule_owner.sql",
+      "apps/control/task-lookup/migrations/0001_task_lookup.sql",
+      "apps/gateway/budget/migrations/0001_product_budget.sql",
+      "apps/proxy/qualification/state/migrations/0001_qualification_state.sql",
+      "apps/proxy/qualification/state/migrations/0002_tool_budget.sql",
+      "apps/proxy/qualification/state/migrations/0003_tool_invocations.sql"
+    ],
+    "e6e3016e215126dfaf4cb4aa8ed13cd5a1bee4f7": [
+      "apps/artifacts/migrations/0001_versions.sql",
+      "apps/control/commands/approval-metadata/migrations/0001_approval_metadata.sql",
+      "apps/control/commands/migrations/0001_commands.sql",
+      "apps/control/conversations/migrations/0001_conversations.sql",
+      "apps/control/conversations/migrations/0002_lifecycle.sql",
+      "apps/control/conversations/migrations/0003_selected_outputs.sql",
+      "apps/control/conversations/migrations/0004_sdk_sessions.sql",
+      "apps/control/conversations/migrations/0005_selected_reads.sql",
+      "apps/control/conversations/migrations/0006_native_executions.sql",
+      "apps/control/conversations/migrations/0007_native_preparation.sql",
+      "apps/control/conversations/migrations/0008_native_prepared_launch.sql",
+      "apps/control/conversations/migrations/0009_next_runs.sql",
+      "apps/control/qualification-sdk-fixture/state/migrations/0001_qualification_sdk_fixture_state.sql",
+      "apps/control/schedules/migrations/0001_schedule_owner.sql",
+      "apps/control/task-lookup/migrations/0001_task_lookup.sql",
+      "apps/gateway/budget/migrations/0001_product_budget.sql",
+      "apps/proxy/qualification/state/migrations/0001_qualification_state.sql",
+      "apps/proxy/qualification/state/migrations/0002_tool_budget.sql",
+      "apps/proxy/qualification/state/migrations/0003_tool_invocations.sql"
+    ],
+    "a631e22f6f8e2283c40140dd5fec147f1a487fa7": [
+      "apps/artifacts/migrations/0001_versions.sql",
+      "apps/control/commands/approval-metadata/migrations/0001_approval_metadata.sql",
+      "apps/control/commands/migrations/0001_commands.sql",
+      "apps/control/conversations/migrations/0001_conversations.sql",
+      "apps/control/conversations/migrations/0002_lifecycle.sql",
+      "apps/control/conversations/migrations/0003_selected_outputs.sql",
+      "apps/control/conversations/migrations/0004_sdk_sessions.sql",
+      "apps/control/conversations/migrations/0005_selected_reads.sql",
+      "apps/control/conversations/migrations/0006_native_executions.sql",
+      "apps/control/conversations/migrations/0007_native_preparation.sql",
+      "apps/control/conversations/migrations/0008_native_prepared_launch.sql",
+      "apps/control/conversations/migrations/0009_next_runs.sql",
+      "apps/control/qualification-sdk-fixture/state/migrations/0001_qualification_sdk_fixture_state.sql",
+      "apps/control/schedules/migrations/0001_schedule_owner.sql",
+      "apps/control/task-lookup/migrations/0001_task_lookup.sql",
+      "apps/gateway/budget/migrations/0001_product_budget.sql",
+      "apps/proxy/qualification/state/migrations/0001_qualification_state.sql",
+      "apps/proxy/qualification/state/migrations/0002_tool_budget.sql",
+      "apps/proxy/qualification/state/migrations/0003_tool_invocations.sql"
+    ],
+    "7606375dd30bafcde2a6a002efffbcf1c311bc66": [
+      "apps/artifacts/migrations/0001_versions.sql",
+      "apps/control/commands/approval-metadata/migrations/0001_approval_metadata.sql",
+      "apps/control/commands/migrations/0001_commands.sql",
+      "apps/control/conversations/migrations/0001_conversations.sql",
+      "apps/control/conversations/migrations/0002_lifecycle.sql",
+      "apps/control/conversations/migrations/0003_selected_outputs.sql",
+      "apps/control/conversations/migrations/0004_sdk_sessions.sql",
+      "apps/control/conversations/migrations/0005_selected_reads.sql",
+      "apps/control/conversations/migrations/0006_native_executions.sql",
+      "apps/control/conversations/migrations/0007_native_preparation.sql",
+      "apps/control/conversations/migrations/0008_native_prepared_launch.sql",
+      "apps/control/conversations/migrations/0009_next_runs.sql",
+      "apps/control/qualification-sdk-fixture/state/migrations/0001_qualification_sdk_fixture_state.sql",
+      "apps/control/schedules/migrations/0001_schedule_owner.sql",
+      "apps/control/task-lookup/migrations/0001_task_lookup.sql",
+      "apps/gateway/budget/migrations/0001_product_budget.sql",
+      "apps/proxy/qualification/state/migrations/0001_qualification_state.sql",
+      "apps/proxy/qualification/state/migrations/0002_tool_budget.sql",
+      "apps/proxy/qualification/state/migrations/0003_tool_invocations.sql"
+    ],
+    "8b123bea4c90794dc2d766814b6ddbdbfe0928bc": [
+      "apps/proxy/qualification/state/migrations/0001_qualification_state.sql"
+    ]
+  },
+  "migration_allocation_proposal": [
+    {
+      "namespace": "meri_conversations",
+      "path": "apps/control/conversations/migrations/0013_retention_recovery_watermark.sql",
+      "purpose": "retention watermark",
+      "status": "PROPOSED_NOT_ALLOCATED_NO_AUTHORING",
+      "colliding_inspected_heads": []
+    },
+    {
+      "namespace": "meri_conversations",
+      "path": "apps/control/conversations/migrations/0014_retention_row_targets.sql",
+      "purpose": "conversation row targets and delete admission; mapping and tombstone hold",
+      "status": "PROPOSED_NOT_ALLOCATED_NO_AUTHORING",
+      "colliding_inspected_heads": []
+    },
+    {
+      "namespace": "meri_intents (new namespace proposal)",
+      "path": "apps/control/intents/migrations/0001_intent_preparations.sql",
+      "purpose": "intent journal; original unqualified table proposal requires namespace decision",
+      "status": "PROPOSED_NOT_ALLOCATED_NO_AUTHORING",
+      "colliding_inspected_heads": []
+    },
+    {
+      "namespace": "meri_memory",
+      "path": "apps/control/memory/migrations/0001_memory_candidates.sql",
+      "purpose": "immutable producer outbox",
+      "status": "PROPOSED_NOT_ALLOCATED_NO_AUTHORING",
+      "colliding_inspected_heads": []
+    },
+    {
+      "namespace": "meri_settings",
+      "path": "apps/control/settings/migrations/0001_settings.sql",
+      "purpose": "user and tenant preferences plus audit",
+      "status": "PROPOSED_NOT_ALLOCATED_NO_AUTHORING",
+      "colliding_inspected_heads": []
+    },
+    {
+      "namespace": "meri_artifacts",
+      "path": "apps/artifacts/migrations/0003_previews.sql",
+      "purpose": "durable preview record and retention inventory agreement",
+      "status": "PROPOSED_NOT_ALLOCATED_NO_AUTHORING",
+      "colliding_inspected_heads": []
+    },
+    {
+      "namespace": "meri_schedules",
+      "path": "apps/control/schedules/migrations/0002_occurrences.sql",
+      "purpose": "durable occurrence barrier; no worker registration",
+      "status": "PROPOSED_NOT_ALLOCATED_NO_AUTHORING",
+      "colliding_inspected_heads": []
+    },
+    {
+      "namespace": "command journal",
+      "path": "apps/control/commands/migrations/0002_retention.sql",
+      "purpose": "receipt row-target deletion amendment only after exact identity mapping",
+      "status": "PROPOSED_NOT_ALLOCATED_NO_AUTHORING",
+      "colliding_inspected_heads": []
+    },
+    {
+      "namespace": "approval metadata",
+      "path": "apps/control/commands/approval-metadata/migrations/0002_retention.sql",
+      "purpose": "approval receipt row-target amendment only after exact identity mapping",
+      "status": "PROPOSED_NOT_ALLOCATED_NO_AUTHORING",
+      "colliding_inspected_heads": []
+    },
+    {
+      "namespace": "meri_task_lookup",
+      "path": "apps/control/task-lookup/migrations/0002_retention.sql",
+      "purpose": "receipt row-target amendment only after exact identity mapping",
+      "status": "PROPOSED_NOT_ALLOCATED_NO_AUTHORING",
+      "colliding_inspected_heads": []
+    }
+  ],
+  "preserved_conditional_hold": {
+    "path": "apps/control/conversations/migrations/0012_strategy_operation_results.sql",
+    "status": "CONDITIONAL_PATH_OWNERSHIP_AUTHORING_BLOCKED",
+    "record_ref": "f8d1816eda48347eeca4c0c25308870f2885c1f5"
+  },
+  "selected_test_source_inventory": [
+    {
+      "path": "apps/control/retention/test/postgres-journal-pg.test.mjs",
+      "top_level_test_calls": 8,
+      "environment_selectors": [
+        "MERI_BROKER_TEST_SOCKET"
+      ],
+      "source_sha256": "18dc7d545f346e53a64e24fbf845ea1ebe8e88753c3eccef9f7526594ace1d4e"
+    },
+    {
+      "path": "apps/control/retention/test/postgres-watermark.test.mjs",
+      "top_level_test_calls": 3,
+      "environment_selectors": [],
+      "source_sha256": "832b05373726323ddde77e629eb9a6f1fe27fb9fc68530d0521f5a83aec938b4"
+    },
+    {
+      "path": "apps/control/product-persistence/test/postgres-stores.test.mjs",
+      "top_level_test_calls": 2,
+      "environment_selectors": [
+        "MERI_PRODUCT_PG_DATABASE",
+        "MERI_PRODUCT_PG_SOCKET",
+        "MERI_PRODUCT_PG_USER",
+        "USER"
+      ],
+      "source_sha256": "d7fd1b4ff27429d74c7f60e823d473c7fd1714f4ddecb4a3483e1d02020c5db8"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/recovered-controller-pg.test.mjs",
+      "top_level_test_calls": 2,
+      "environment_selectors": [],
+      "source_sha256": "735df1cf1624c01e99cf5a77dbbade43120487df5134c081f8cb2e4fab54ade6"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/ecs-recovery-pg.test.mjs",
+      "top_level_test_calls": 1,
+      "environment_selectors": [],
+      "source_sha256": "4c94627fc5397228cd41a046f5a611b28f23b3da43a92048cba938e91bf50511"
+    },
+    {
+      "path": "apps/control/test/schedule-lifecycle-postgres.test.mjs",
+      "top_level_test_calls": 10,
+      "environment_selectors": [],
+      "source_sha256": "d9687c901bd6c84144d573a224697b8dbc2e660c9ceb45857fa255b81347b8ca"
+    }
+  ],
+  "notes": [
+    "Source rows are hashed from exact git blobs; working-tree CRLF and local edits are excluded.",
+    "Migration inspection covers exact supplied/current registry heads and remote branch metadata, not unpublished work.",
+    "Test call inventory is static discovery, not a run result.",
+    "Candidate h HOLD; frozen f unchanged."
+  ]
+}

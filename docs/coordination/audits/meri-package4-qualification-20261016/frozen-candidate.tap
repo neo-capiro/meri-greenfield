@@ -1,0 +1,128 @@
+Γ£ö the reviewed candidate f is selected and bound to every historical row: 45 paths, 18 changed, 27 unchanged (4.4369ms)
+Γ£û a COPY tree holding the current reviewed bytes passes; the obsolete historical hashes could never match it (78.8423ms)
+Γ£û a copy that is excluded or differs from the frozen bytes is reported per path (72.0513ms)
+Γ£ö any edit to the frozen candidate bytes refuses selection, even a whitespace-only one (2.1656ms)
+Γ£ö a historical manifest that the candidate does not name byte-exact refuses selection (1.2972ms)
+Γ£ö internally inconsistent candidates refuse: unbound changed/unchanged rows, path drift and duplicate rows (13.3118ms)
+Γ£û the static source proof and the Docker COPY check select the same frozen candidate file (5.8639ms)
+Γä╣ tests 7
+Γä╣ suites 0
+Γä╣ pass 4
+Γä╣ fail 3
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 256.1558
+
+Γ£û failing tests:
+
+test at scripts\qualification\assembled-image\frozen-candidate.test.mjs:36:1
+Γ£û a COPY tree holding the current reviewed bytes passes; the obsolete historical hashes could never match it (78.8423ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   {
+  +     actual: '0297baf0a33da0241ccdae25c82f4fe4f5c8fcc5a26e9264e0eb8c21260816fa',
+  +     expected: 'b8aadcb9ca7b06cb5ad9571da5b72b1134827b7c949498a949a54dcbafb439c9',
+  +     path: 'apps/control/conversations/native-preparation-journal.mjs'
+  +   },
+  +   {
+  +     actual: '2de6bce64ace8a6d2b5d0ed205f9ffb5b7ac2884d6109df19bc629b13d48c1cb',
+  +     expected: 'e3568dd6ce0f8afafaee43a61f5e66ecda368f7f4dbebf26f9ead21674bfe920',
+  +     path: 'apps/control/conversations/postgres-store.mjs'
+  +   },
+  +   {
+  +     actual: '9558183a7eab179d3b66d2b1d65707a0f495f882b3aa03e8b04b029942c6685d',
+  +     expected: '3a1a136ddeccac2983040113c9de16a91110a70178964da601c839db8f169b71',
+  +     path: 'apps/runtime/config.mjs'
+  +   },
+  +   {
+  +     actual: 'ec63730199cbc092042dab6b6694506087530ee85572e1daadfb478bf76c5757',
+  +     expected: '399698afaa8cac6851f9f40590b1bbf0173e73541125a6b25be65af75ad18ee0',
+  +     path: 'apps/runtime/control.mjs'
+  +   },
+  +   {
+  +     actual: '2cdbe486433963b6525ace3bacebfaec91de116adeb67e4b1e54e7f1067c0182',
+  +     expected: '3650e3af495e5a096a108c0071703012dfbaaf0e27d61e8469bd7eaf22a2d0e7',
+  +     path: 'apps/runtime/native-authority/prepared-kickoff.mjs'
+  +   },
+  +   {
+  +     actual: '2c4162da6af533902090d7aa2861278c892335a90b4e4a75cbae99b80ba5ab4b',
+  +     expected: 'b1e3c3e92e40103edc48c42779be55fcc51c89fe9e2ce7f4bbecc7888d0c982a',
+  +     path: 'apps/runtime/native-authority/remote-composition.mjs'
+  +   },
+  +   {
+  +     actual: '56a56689f2bf0ee365f9f1b7e479f5f5e693ae05998d9e80057c3e8da278b603',
+  +     expected: 'a27377181aa678db1228c2f60832aad74084eb0cf39439125f86fad8639bb36e',
+  +     path: 'apps/runtime/prepared-candidate.mjs'
+  +   }
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-8/meri-qualification/scripts/qualification/assembled-image/frozen-candidate.test.mjs:38:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { path: 'apps/control/conversations/native-preparation-journal.mjs', expected: 'b8aadcb9ca7b06cb5ad9571da5b72b1134827b7c949498a949a54dcbafb439c9', actual: '0297baf0a33da0241ccdae25c82f4fe4f5c8fcc5a26e9264e0eb8c21260816fa' }, { path: 'apps/control/conversations/postgres-store.mjs', expected: 'e3568dd6ce0f8afafaee43a61f5e66ecda368f7f4dbebf26f9ead21674bfe920', actual: '2de6bce64ace8a6d2b5d0ed205f9ffb5b7ac2884d6109df19bc629b13d48c1cb' }, { path: 'apps/runtime/config.mjs', expected: '3a1a136ddeccac2983040113c9de16a91110a70178964da601c839db8f169b71', actual: '9558183a7eab179d3b66d2b1d65707a0f495f882b3aa03e8b04b029942c6685d' }, { path: 'apps/runtime/control.mjs', expected: '399698afaa8cac6851f9f40590b1bbf0173e73541125a6b25be65af75ad18ee0', actual: 'ec63730199cbc092042dab6b6694506087530ee85572e1daadfb478bf76c5757' }, { path: 'apps/runtime/native-authority/prepared-kickoff.mjs', expected: '3650e3af495e5a096a108c0071703012dfbaaf0e27d61e8469bd7eaf22a2d0e7', actual: '2cdbe486433963b6525ace3bacebfaec91de116adeb67e4b1e54e7f1067c0182' }, { path: 'apps/runtime/native-authority/remote-composition.mjs', expected: 'b1e3c3e92e40103edc48c42779be55fcc51c89fe9e2ce7f4bbecc7888d0c982a', actual: '2c4162da6af533902090d7aa2861278c892335a90b4e4a75cbae99b80ba5ab4b' }, { path: 'apps/runtime/prepared-candidate.mjs', expected: 'a27377181aa678db1228c2f60832aad74084eb0cf39439125f86fad8639bb36e', actual: '56a56689f2bf0ee365f9f1b7e479f5f5e693ae05998d9e80057c3e8da278b603' } ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at scripts\qualification\assembled-image\frozen-candidate.test.mjs:44:1
+Γ£û a copy that is excluded or differs from the frozen bytes is reported per path (72.0513ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      'apps/control/conversations/native-preparation-journal.mjs',
+  +   'apps/control/conversations/postgres-store.mjs',
+      'apps/runtime/Dockerfile',
+  +   'apps/runtime/config.mjs',
+  +   'apps/runtime/control.mjs',
+  +   'apps/runtime/native-authority/prepared-kickoff.mjs',
+  +   'apps/runtime/native-authority/remote-composition.mjs',
+  +   'apps/runtime/prepared-candidate.mjs'
+    ]
+  
+      at TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-8/meri-qualification/scripts/qualification/assembled-image/frozen-candidate.test.mjs:48:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'apps/control/conversations/native-preparation-journal.mjs', 'apps/control/conversations/postgres-store.mjs', 'apps/runtime/Dockerfile', 'apps/runtime/config.mjs', 'apps/runtime/control.mjs', 'apps/runtime/native-authority/prepared-kickoff.mjs', 'apps/runtime/native-authority/remote-composition.mjs', 'apps/runtime/prepared-candidate.mjs' ],
+    expected: [ 'apps/control/conversations/native-preparation-journal.mjs', 'apps/runtime/Dockerfile' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at scripts\qualification\assembled-image\frozen-candidate.test.mjs:76:1
+Γ£û the static source proof and the Docker COPY check select the same frozen candidate file (5.8639ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(readFileSync(join(root,'scripts/qualification/assembled-image/source-proof.test.mjs'),'utf8').includes(`'./${FROZEN_CANDIDATE.file}'`))
+  
+      at TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-8/meri-qualification/scripts/qualification/assembled-image/frozen-candidate.test.mjs:77:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

@@ -1,0 +1,3 @@
+# Raw test output and generated inventories retain their captured bytes.
+*.tap -text -diff
+*.json -text
