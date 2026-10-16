@@ -1,0 +1,190 @@
+TAP version 13
+# Subtest: admission stores one full immutable request and queued event with zero dispatches; exact replay uses canonical rows
+ok 1 - admission stores one full immutable request and queued event with zero dispatches; exact replay uses canonical rows
+  ---
+  duration_ms: 92.3244
+  type: 'test'
+  ...
+# Subtest: admit then submit and exact replays preserve existing submit wire and a single upstream Temporal workflow identity
+ok 2 - admit then submit and exact replays preserve existing submit wire and a single upstream Temporal workflow identity
+  ---
+  duration_ms: 3.4993
+  type: 'test'
+  ...
+# Subtest: lost admission commit acknowledgement recovers positively from existing history and replays exact input
+not ok 3 - lost admission commit acknowledgement recovers positively from existing history and replays exact input
+  ---
+  duration_ms: 0.9727
+  type: 'test'
+  location: 'C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-11\\meri-input-admission\\apps\\control\\conversations\\test\\input-admission.test.mjs:29:1'
+  failureType: 'testCodeFailure'
+  error: 'STORE_CORRUPT'
+  code: 'STORE_CORRUPT'
+  stack: |-
+    tx (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-11/meri-input-admission/apps/control/conversations/postgres-store.mjs:16:68)
+  ...
+# Subtest: lost start acknowledgement after admission retries the same fixed workflow and never adds another queued event
+ok 4 - lost start acknowledgement after admission retries the same fixed workflow and never adds another queued event
+  ---
+  duration_ms: 3.0465
+  type: 'test'
+  ...
+# Subtest: concurrent identical admission and submit race creates at most one request/event and keeps the accepted normalization
+ok 5 - concurrent identical admission and submit race creates at most one request/event and keeps the accepted normalization
+  ---
+  duration_ms: 26.8227
+  type: 'test'
+  ...
+# Subtest: concurrent different bodies under one identity conflict without another event or dispatch
+ok 6 - concurrent different bodies under one identity conflict without another event or dispatch
+  ---
+  duration_ms: 2.1243
+  type: 'test'
+  ...
+# Subtest: a different request ID cannot replace accepted input on the same run
+ok 7 - a different request ID cannot replace accepted input on the same run
+  ---
+  duration_ms: 2.9614
+  type: 'test'
+  ...
+# Subtest: relative-window replay finds canonical request before normalization after clock/calendar rollover
+ok 8 - relative-window replay finds canonical request before normalization after clock/calendar rollover
+  ---
+  duration_ms: 4.5935
+  type: 'test'
+  ...
+# Subtest: current revocation after reservation lookup prevents acceptance persistence
+ok 9 - current revocation after reservation lookup prevents acceptance persistence
+  ---
+  duration_ms: 0.7223
+  type: 'test'
+  ...
+# Subtest: revocation after commit withholds receipt; accepted input stays durable without dispatch
+ok 10 - revocation after commit withholds receipt; accepted input stays durable without dispatch
+  ---
+  duration_ms: 0.9636
+  type: 'test'
+  ...
+# Subtest: expiry after commit withholds receipt; accepted input stays durable without dispatch
+ok 11 - expiry after commit withholds receipt; accepted input stays durable without dispatch
+  ---
+  duration_ms: 0.8145
+  type: 'test'
+  ...
+# Subtest: binding drift after commit withholds receipt; accepted input stays durable without dispatch
+ok 12 - binding drift after commit withholds receipt; accepted input stays durable without dispatch
+  ---
+  duration_ms: 0.8159
+  type: 'test'
+  ...
+# Subtest: scope drift after commit withholds receipt; accepted input stays durable without dispatch
+ok 13 - scope drift after commit withholds receipt; accepted input stays durable without dispatch
+  ---
+  duration_ms: 0.7429
+  type: 'test'
+  ...
+# Subtest: the final current-auth check can withhold an exact replay without another event or dispatch
+ok 14 - the final current-auth check can withhold an exact replay without another event or dispatch
+  ---
+  duration_ms: 1.9871
+  type: 'test'
+  ...
+# Subtest: retention suppression at persistence completion prevents receipt release and positive recovery until reopened
+ok 15 - retention suppression at persistence completion prevents receipt release and positive recovery until reopened
+  ---
+  duration_ms: 1.6082
+  type: 'test'
+  ...
+# Subtest: terminal admission recovery returns original target and delayed old submit does not dispatch terminal work
+ok 16 - terminal admission recovery returns original target and delayed old submit does not dispatch terminal work
+  ---
+  duration_ms: 14.0116
+  type: 'test'
+  ...
+# Subtest: reserved next run uses canonical nextRuns.accept, never restores older prompt; stale old session cannot retarget
+ok 17 - reserved next run uses canonical nextRuns.accept, never restores older prompt; stale old session cannot retarget
+  ---
+  duration_ms: 12.6864
+  type: 'test'
+  ...
+# Subtest: empty or unavailable recovery is no dispatch and supplies no synthesized input identity
+ok 18 - empty or unavailable recovery is no dispatch and supplies no synthesized input identity
+  ---
+  duration_ms: 0.359
+  type: 'test'
+  ...
+# Subtest: fixed Fetch admission returns exact no-store receipt and existing history recovers its canonical input without starting work
+ok 19 - fixed Fetch admission returns exact no-store receipt and existing history recovers its canonical input without starting work
+  ---
+  duration_ms: 11.9556
+  type: 'test'
+  ...
+# Subtest: closed canonical submit body rejects binding, scopes, client and dispatch flags before persistence
+ok 20 - closed canonical submit body rejects binding, scopes, client and dispatch flags before persistence
+  ---
+  duration_ms: 3.1493
+  type: 'test'
+  ...
+# Subtest: only fixed POST path is mounted; credentials, media, cursors and native Request brands fail closed
+ok 21 - only fixed POST path is mounted; credentials, media, cursors and native Request brands fail closed
+  ---
+  duration_ms: 1.2195
+  type: 'test'
+  ...
+# Subtest: malformed UTF8/JSON, declared lengths and public byte caps prevent admission
+ok 22 - malformed UTF8/JSON, declared lengths and public byte caps prevent admission
+  ---
+  duration_ms: 2.0421
+  type: 'test'
+  ...
+# Subtest: revoked session cannot admit, replay or release stored prompt bytes
+ok 23 - revoked session cannot admit, replay or release stored prompt bytes
+  ---
+  duration_ms: 3.9486
+  type: 'test'
+  ...
+# Subtest: conflicting input maps existing public replay error without creating another identity/event
+ok 24 - conflicting input maps existing public replay error without creating another identity/event
+  ---
+  duration_ms: 3.908
+  type: 'test'
+  ...
+# Subtest: unknown persistence response exposes no stored bytes and exact history recovery remains positive
+not ok 25 - unknown persistence response exposes no stored bytes and exact history recovery remains positive
+  ---
+  duration_ms: 1.642
+  type: 'test'
+  location: 'C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-11\\meri-input-admission\\apps\\control\\conversations\\test\\input-http.test.mjs:32:1'
+  failureType: 'testCodeFailure'
+  error: 'STORE_CORRUPT'
+  code: 'STORE_CORRUPT'
+  stack: |-
+    tx (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-11/meri-input-admission/apps/control/conversations/postgres-store.mjs:16:68)
+  ...
+# Subtest: HTTP body read/admission share one abortable deadline and cancellation never calls dispatch/cancel
+ok 26 - HTTP body read/admission share one abortable deadline and cancellation never calls dispatch/cancel
+  ---
+  duration_ms: 30.8773
+  type: 'test'
+  ...
+# Subtest: response cap and canonical closed response shape fail as content-free unavailable
+ok 27 - response cap and canonical closed response shape fail as content-free unavailable
+  ---
+  duration_ms: 4.2308
+  type: 'test'
+  ...
+# Subtest: configuration cannot expand public transport limits
+ok 28 - configuration cannot expand public transport limits
+  ---
+  duration_ms: 0.2227
+  type: 'test'
+  ...
+1..28
+# tests 28
+# suites 0
+# pass 26
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5725.4821

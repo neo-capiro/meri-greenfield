@@ -1,0 +1,40 @@
+{
+  "sourceBase": "14f0bc2e5716af7c00925d13d3365b26182c9e56",
+  "worktreeStatusBefore": " M apps/control/conversations/service.mjs\n?? apps/control/conversations/input/\n?? apps/control/conversations/test/input-admission.test.mjs\n?? apps/control/conversations/test/input-http.test.mjs\n?? docs/coordination/evidence/\n?? docs/coordination/reports/DOT-DURABLE-INPUT-ADMISSION-20261016.md\n?? packages/contracts/conversation-input/\n?? packages/contracts/generate-input.mjs\n?? packages/contracts/test/conversation-input-public-types.ts\n?? packages/contracts/test/conversation-input-public.test.mjs\n",
+  "sourceSha256": {
+    "apps/control/conversations/service.mjs": "74152d0bd4f11e8d85f57645feda247adab582df7ac405130ba0cfc2dff9af25",
+    "apps/control/conversations/test/input-admission.test.mjs": "d67bf194568989bfd47b2246b6f497895bdbed8035519ec9b8ef9357359983df",
+    "apps/control/conversations/test/input-http.test.mjs": "678d268549383a8d35ade28a7c90a2bb92612c208dccc1e168dbd212dcc21246"
+  },
+  "argv": [
+    "C:/Program Files/nodejs/node.exe",
+    "--max-old-space-size=128",
+    "--import",
+    "../dependency-reuse.mjs",
+    "--test",
+    "--test-isolation=none",
+    "--test-concurrency=1",
+    "--test-timeout=15000",
+    "--test-reporter=tap",
+    "apps/control/conversations/test/input-admission.test.mjs",
+    "apps/control/conversations/test/input-http.test.mjs"
+  ],
+  "pid": 32152,
+  "startedAt": "2026-10-16T04:08:24.649977+00:00",
+  "finishedAt": "2026-10-16T04:08:26.059663+00:00",
+  "wallMs": 1422.0,
+  "exit": 0,
+  "stopReason": null,
+  "hardWallSeconds": 120,
+  "heapMiB": 128,
+  "ownedProcessRemains": false,
+  "capacityBefore": {
+    "availableCommit": 2604056576,
+    "availablePhysical": 11670679552
+  },
+  "minimumObserved": {
+    "availableCommit": 2556932096,
+    "availablePhysical": 11598495744
+  },
+  "claim": "One node process, no child tests/services/database/provider. Scripted SQL and synthetic session/Temporal ports only. Existing installed dependencies resolved read-only."
+}

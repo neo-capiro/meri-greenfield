@@ -1,0 +1,38 @@
+{
+  "sourceBase": "14f0bc2e5716af7c00925d13d3365b26182c9e56",
+  "worktreeStatusBefore": " M apps/control/conversations/service.mjs\n?? apps/control/conversations/input/\n?? apps/control/conversations/test/input-admission.test.mjs\n?? docs/coordination/reports/DOT-DURABLE-INPUT-ADMISSION-20261016.md\n?? packages/contracts/conversation-input/\n?? packages/contracts/generate-input.mjs\n",
+  "sourceSha256": {
+    "apps/control/conversations/service.mjs": "d106511be66945ec96355122b74d87fb2ec6386c7d075aab2d0eaeff193e92ee",
+    "apps/control/conversations/test/input-admission.test.mjs": "d33fbe566cd719fa728cd721a95de7e3590b670695a256e418ca67654615b0be"
+  },
+  "argv": [
+    "C:/Program Files/nodejs/node.exe",
+    "--max-old-space-size=128",
+    "--import",
+    "../dependency-reuse.mjs",
+    "--test",
+    "--test-isolation=none",
+    "--test-concurrency=1",
+    "--test-timeout=15000",
+    "--test-reporter=tap",
+    "apps/control/conversations/test/input-admission.test.mjs"
+  ],
+  "pid": 34952,
+  "startedAt": "2026-10-16T04:04:54.229418+00:00",
+  "finishedAt": "2026-10-16T04:06:54.274817+00:00",
+  "wallMs": 120047.0,
+  "exit": 1,
+  "stopReason": "HARD_WALL_120S",
+  "hardWallSeconds": 120,
+  "heapMiB": 128,
+  "ownedProcessRemains": false,
+  "capacityBefore": {
+    "availableCommit": 2693918720,
+    "availablePhysical": 11751550976
+  },
+  "minimumObserved": {
+    "availableCommit": 2422849536,
+    "availablePhysical": 11435241472
+  },
+  "claim": "One node process, no child tests/services/database/provider. Scripted SQL and synthetic session/Temporal ports only. Existing installed dependencies resolved read-only."
+}

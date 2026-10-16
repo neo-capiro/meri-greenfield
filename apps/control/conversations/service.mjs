@@ -6,6 +6,7 @@ import {selectSkill} from '../../../packages/skills/index.mjs';
 import {assertSkillManifest,validateShape as retrievalShape} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import catalog from '../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
 import {assertSelectionAdmission} from '../../../packages/contracts/selected-skills/validate.mjs';
+import {assertConversationInputReceipt} from '../../../packages/contracts/conversation-input/validate.mjs';
 import {own,bounded,same,hash,fail,uuid,validateShape,terminal} from './boundary.mjs';
 /** Cleanup-only read used by the lifecycle owner's cancellation path: the same authenticated history without the retention serving gate,
  * so trusted cancellation still stops work for a suppressed subject. Not a public intent. */
@@ -31,11 +32,12 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
   try{const context=await fresh();const result=await body(context,life,fresh);await fresh();life.check();return result;}finally{life.close();}
  }
  const event=(binding,scopes,type,data)=>({contractVersion:'0.1.0',eventId:newId(),binding,sequence:1,createdAt:new Date(now()).toISOString(),scopes,type,data});
- async function submit({credential,input,signal}){const i=bounded(input);own(i,['requestId','prompt'],['skill','windowRequest']);uuid(i.requestId);if(typeof i.prompt!=='string'||!i.prompt.trim()||i.prompt.length>100000)fail('INVALID_REQUEST');
+ // Admission and submit share the existing immutable acceptance transaction. Only submit may dispatch.
+ async function acceptInput({credential,input,signal},dispatch){const i=bounded(input);own(i,['requestId','prompt'],['skill','windowRequest']);uuid(i.requestId);if(typeof i.prompt!=='string'||!i.prompt.trim()||i.prompt.length>100000)fail('INVALID_REQUEST');
   return operation(credential,signal,async(context,life,fresh)=>{const b=context.binding,createdAt=new Date(now()).toISOString();let skill=null,window=null;
    if(i.windowRequest)retrievalShape('WindowRequest',i.windowRequest);
    async function admit(request){if(!request.skill)return;const selected=selectSkill(request.skill.skillId,request.skill.skillVersion);if(!selectedSkillAdmission){assertSkillManifest(selected.manifest,catalog);return;}await fresh();const started=now();const receipt=assertSelectionAdmission(await life.run(signal=>admissionPort.admitSelection.call(selectedSkillAdmission,{binding:b,request,scopes:context.scopes,selectedClientId:context.selectedClientId,signal})),{binding:b,request,scopes:context.scopes,selectedClientId:context.selectedClientId,selected,started,now});life.limitDeadline(receipt.expiresAtMs);await fresh();}
-   async function release(saved){await fresh();await admit(saved.request);if(saved.run.state==='queued')await life.run(signal=>dispatcher.start({binding:b,signal}));await fresh();await admit(saved.request);return {run:saved.run,requestId:i.requestId,lastSequence:saved.lastSequence,replayed:saved.replayed};}
+   async function release(saved){if(!same(saved.run.binding,b))fail('STALE_WRITER');if(!same(saved.run.scopes,context.scopes))fail('SCOPE_REFUSED');await fresh();await admit(saved.request);if(dispatch&&saved.run.state==='queued')await life.run(signal=>dispatcher.start({binding:b,signal}));await fresh();await admit(saved.request);return dispatch?{run:saved.run,requestId:i.requestId,lastSequence:saved.lastSequence,replayed:saved.replayed}:assertConversationInputReceipt({run:saved.run,request:saved.request,lastSequence:saved.lastSequence,replayed:saved.replayed},i);}
    if(typeof store.findRequest!=='function')fail('CONTROL_CONFIGURATION');const retained=await life.run(()=>store.findRequest(b,i.requestId,life.check));
    if(retained){const selected=i.skill?selectSkill(i.skill.skillId,i.skill.skillVersion):null;if(i.skill)own(i.skill,['skillId','skillVersion']);if(!same(retained.run.scopes,context.scopes))fail('SCOPE_REFUSED');if(!same(retained.run.versions,versions)||retained.request.prompt!==i.prompt||!same(retained.request.windowRequest??null,i.windowRequest??null)||!same(retained.request.skill,selected?.pin??null))fail('REQUEST_REPLAY_REFUSED');return release(retained);}
 
@@ -47,10 +49,12 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
    await admit(request);
    // A session bound to a reserved next run accepts its new prompt through the next-run journal: same conversation, continued sequence base, never the old prompt.
    const reservation=typeof store.nextRuns?.readTarget==='function'?await life.run(()=>store.nextRuns.readTarget(b,life.check)):null;
+   await fresh();
    const saved=await life.run(()=>(reservation?store.nextRuns.accept:store.accept)({conversation,run,request,event:event(b,context.scopes,'run.status',{state:'queued',reasonCode:null})},life.check));
    // Durable request precedes Temporal start. A repeated submission recovers a lost start acknowledgement using the exact workflow ID.
    return release(saved);});
  }
+ const submit=input=>acceptInput(input,true),admitInput=input=>acceptInput(input,false);
  async function history({credential,after=0,limit=100,signal}){return operation(credential,signal,async(c,life)=>{const result=await life.run(()=>store.read(c.binding,{after,limit},life.check));if(!same(result.run.scopes,c.scopes))fail('SCOPE_REFUSED');return result;});}
  async function cancel({credential,signal}){return operation(credential,signal,async(c,life,fresh)=>{const old=await life.run(()=>store.read(c.binding,{after:0,limit:1},life.check));if(!same(old.run.scopes,c.scopes))fail('SCOPE_REFUSED');if(!terminal(old.run.state)){await fresh();const e=event(c.binding,c.scopes,'run.status',{state:'cancelled',reasonCode:'USER_CANCELLED'});await life.run(()=>store.append(c.binding,e,life.check,c.scopes));}await fresh();await life.run(signal=>dispatcher.cancel({binding:c.binding,signal}));return {state:terminal(old.run.state)?old.run.state:'cancelled'};},{cleanup:true});}
  async function loadForExecution({credential,binding,signal}){validateShape('RunBinding',binding);return operation(credential,signal,async(c,life)=>{if(!same(c.binding,binding))fail('STALE_WRITER');const result=await life.run(()=>store.read(binding,{after:0,limit:1},life.check));if(!same(result.run.scopes,c.scopes))fail('SCOPE_REFUSED');const lineage=typeof store.nextRuns?.execution==='function'?await life.run(()=>store.nextRuns.execution({binding,scopes:c.scopes,selectedClientId:c.selectedClientId},life.check)):null;return {run:result.run,request:result.request,...(lineage??{})};});}
@@ -62,6 +66,6 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
   await fresh();const result=await life.run(()=>store.append(binding,e,life.check,c.scopes));if(!same(result.scopes,c.scopes))fail('SCOPE_REFUSED');await fresh();return result;
  });}
  async function historyForCleanup({credential,after=0,limit=100,signal}){return operation(credential,signal,async(c,life)=>{const result=await life.run(()=>store.read(c.binding,{after,limit},life.check));if(!same(result.run.scopes,c.scopes))fail('SCOPE_REFUSED');return result;},{cleanup:true});}
- return Object.freeze({submit,history,cancel,loadForExecution,publish,publishSelectedOutput,[cleanupRead]:historyForCleanup});
+ return Object.freeze({submit,admitInput,history,cancel,loadForExecution,publish,publishSelectedOutput,[cleanupRead]:historyForCleanup});
 }
 function failError(code){return Object.assign(new Error(code),{code});}
