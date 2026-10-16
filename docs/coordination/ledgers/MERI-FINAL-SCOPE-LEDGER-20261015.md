@@ -152,7 +152,7 @@ This is source reconciliation only. The historical proposal tables below retain 
 | Selected source reads / separate product or governed capabilities | 82 / 14 |
 | Single meri_reads registry | 21 operations / 15 families |
 | Registry accounting | 19 selected source reads + 1 product-state read + 1 historical contract |
-| Selected source reads declared in skill manifests | 53 |
+| Selected source reads declared in skill manifests | 52 current contracts + 1 historical-only contract |
 | Selected source reads reachable through admitted skill source | 11 |
 | Existing source adapters lacking general-conversation registration | 0 |
 | Selected source reads lacking adapters | 63 (39 declared by skills; 24 without a skill declaration) |

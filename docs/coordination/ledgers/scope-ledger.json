@@ -9875,6 +9875,8 @@
       "generalSelectedProductStateReads": 1,
       "generalHistoricalOperations": 1,
       "sourceReadsWithSkillDeclarations": 53,
+      "sourceReadsWithCurrentContractDeclarations": 52,
+      "sourceReadsWithHistoricalOnlySkillDeclaration": 1,
       "sourceReadsWithAdmittedSkillSourceRoute": 11,
       "existingSourceAdaptersWithoutGeneralExposure": 0,
       "missingSourceAdapters": 63,
@@ -10222,6 +10224,7 @@
         "operation": "get_research_portfolio",
         "family": "research-portfolio",
         "kind": "source-read",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [
@@ -10242,6 +10245,7 @@
         "operation": "get_research_portfolio_changes",
         "family": "research-portfolio",
         "kind": "source-read",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [
@@ -10262,6 +10266,7 @@
         "operation": "get_research_evidence",
         "family": "research-portfolio-evidence",
         "kind": "source-read",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [
@@ -10283,6 +10288,7 @@
         "operation": "read_chat_attachments",
         "family": "client-knowledge-attachments",
         "kind": "product-or-governed",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [],
@@ -10298,6 +10304,7 @@
         "operation": "read_monday_client_boards",
         "family": "client-knowledge-monday",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.client_changes",
           "quick_skill.commitments_audit",
@@ -10326,6 +10333,7 @@
         "operation": "search_capiro_data",
         "family": "data-search",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.portfolio_changes",
           "quick_skill.portfolio_overlap"
@@ -10341,6 +10349,7 @@
         "operation": "get_client_context",
         "family": "client-knowledge-profile",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.client_changes",
           "quick_skill.funding_opportunity_match",
@@ -10373,6 +10382,7 @@
         "operation": "search_research_sources",
         "family": "research-legal-candidates",
         "kind": "source-read",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [],
@@ -10387,6 +10397,7 @@
         "operation": "run_analysis",
         "family": "artifacts",
         "kind": "product-or-governed",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [],
@@ -10407,6 +10418,7 @@
         "operation": "search_client_knowledge",
         "family": "client-knowledge-search",
         "kind": "source-read",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [],
@@ -10421,6 +10433,7 @@
         "operation": "query_intelligence",
         "family": "intelligence-summary",
         "kind": "source-read",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [],
@@ -10433,6 +10446,7 @@
         "operation": "query_knowledge_graph",
         "family": "client-knowledge-search",
         "kind": "source-read",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [],
@@ -10445,6 +10459,7 @@
         "operation": "search_memory",
         "family": "client-knowledge-memory",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.meeting_prep",
           "quick_skill.relationship_brief"
@@ -10472,6 +10487,7 @@
         "operation": "memory.list_own_proposals",
         "family": "memory-proposals",
         "kind": "product-or-governed",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [
@@ -10493,6 +10509,7 @@
         "operation": "search_congress_bills",
         "family": "bill-text",
         "kind": "source-read",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [],
@@ -10507,6 +10524,7 @@
         "operation": "get_bill_status",
         "family": "federal-legislation",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.bill_watch",
           "quick_skill.client_changes",
@@ -10529,6 +10547,7 @@
         "operation": "read_bill_text",
         "family": "bill-text",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.bill_watch",
           "quick_skill.hearing_watch",
@@ -10548,6 +10567,7 @@
         "operation": "get_certification_status",
         "family": "certification-status",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.research_company"
         ],
@@ -10564,6 +10584,7 @@
         "operation": "search_floor_votes",
         "family": "federal-legislation",
         "kind": "source-read",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [],
@@ -10578,6 +10599,7 @@
         "operation": "search_cbo_cost_estimates",
         "family": "public-reports",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.pe_deep_dive"
         ],
@@ -10592,6 +10614,7 @@
         "operation": "resolve_entity",
         "family": "entity-candidates",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.mail_history",
           "quick_skill.meeting_prep",
@@ -10622,6 +10645,7 @@
         "operation": "search_lda_filings",
         "family": "disclosures",
         "kind": "source-read",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [],
@@ -10634,6 +10658,7 @@
         "operation": "list_global_datasets",
         "family": "dataset-metadata",
         "kind": "source-read",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [
@@ -10651,6 +10676,7 @@
         "operation": "query_global_data",
         "family": "public-domain-query",
         "kind": "source-read",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [],
@@ -10665,6 +10691,7 @@
         "operation": "search_sec_filings",
         "family": "disclosures",
         "kind": "source-read",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [],
@@ -10677,6 +10704,7 @@
         "operation": "search_fara_registrations",
         "family": "disclosures",
         "kind": "source-read",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [],
@@ -10689,6 +10717,7 @@
         "operation": "search_federal_grants",
         "family": "public-data",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.funding_opportunity_match",
           "quick_skill.research_company"
@@ -10706,6 +10735,7 @@
         "operation": "search_federal_awards",
         "family": "public-data",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.funding_opportunity_match"
         ],
@@ -10722,6 +10752,7 @@
         "operation": "search_gao_reports",
         "family": "public-reports",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.pe_deep_dive"
         ],
@@ -10736,6 +10767,7 @@
         "operation": "search_state_bills",
         "family": "state-legislation",
         "kind": "source-read",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [],
@@ -10748,6 +10780,7 @@
         "operation": "get_state_bill_status",
         "family": "state-status-votes",
         "kind": "source-read",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [],
@@ -10760,6 +10793,7 @@
         "operation": "search_state_floor_votes",
         "family": "state-status-votes",
         "kind": "source-read",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [],
@@ -10772,6 +10806,7 @@
         "operation": "get_state_legislator",
         "family": "state-legislation",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.representation_lookup"
         ],
@@ -10786,6 +10821,7 @@
         "operation": "get_committee_roster",
         "family": "legislative-directory",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.hearing_watch",
           "quick_skill.representation_lookup"
@@ -10801,6 +10837,7 @@
         "operation": "get_representation",
         "family": "facility-representation",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.representation_lookup"
         ],
@@ -10818,6 +10855,7 @@
         "operation": "list_members",
         "family": "legislative-directory",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.hearing_watch",
           "quick_skill.representation_lookup"
@@ -10833,6 +10871,7 @@
         "operation": "get_state_rule_status",
         "family": "rule-status",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.regulatory_docket_brief"
         ],
@@ -10850,6 +10889,7 @@
         "operation": "search_intel_articles",
         "family": "stored-intelligence",
         "kind": "source-read",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [],
@@ -10862,6 +10902,7 @@
         "operation": "search_committee_hearings",
         "family": "public-domain-hearings",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.hearing_watch",
           "quick_skill.meeting_prep"
@@ -10880,6 +10921,7 @@
         "operation": "search_legiwatch_news",
         "family": "research-legal-news",
         "kind": "source-read",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [],
@@ -10898,6 +10940,7 @@
         "operation": "get_florida_budget_project",
         "family": "florida-budget",
         "kind": "source-read",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [
@@ -10919,6 +10962,7 @@
         "operation": "search_legislative_research",
         "family": "research-legal-legislation",
         "kind": "source-read",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [],
@@ -10934,6 +10978,7 @@
         "operation": "get_legal_reference",
         "family": "research-legal-legislation",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.regulatory_docket_brief"
         ],
@@ -10951,6 +10996,7 @@
         "operation": "search_crs_reports",
         "family": "public-reports",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.pe_deep_dive"
         ],
@@ -10965,6 +11011,7 @@
         "operation": "query_economic_data",
         "family": "public-data",
         "kind": "source-read",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [],
@@ -10977,6 +11024,7 @@
         "operation": "get_district_nexus_context",
         "family": "district-nexus",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.portfolio_overlap",
           "quick_skill.representation_lookup"
@@ -10995,6 +11043,7 @@
         "operation": "get_district_nexus_changes",
         "family": "district-nexus",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.client_changes",
           "quick_skill.portfolio_changes"
@@ -11013,6 +11062,7 @@
         "operation": "search_public_web",
         "family": "public-web",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.portfolio_overlap",
           "quick_skill.regulatory_docket_brief",
@@ -11029,6 +11079,7 @@
         "operation": "scrape_web_page",
         "family": "public-web",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.portfolio_overlap",
           "quick_skill.regulatory_docket_brief",
@@ -11045,6 +11096,7 @@
         "operation": "save_chat_attachments",
         "family": "command-tools",
         "kind": "product-or-governed",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [],
@@ -11061,6 +11113,7 @@
         "operation": "mail.list_messages",
         "family": "mail",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.mail_history"
         ],
@@ -11080,6 +11133,7 @@
         "operation": "mail.search_messages",
         "family": "mail",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.client_changes",
           "quick_skill.commitments_audit",
@@ -11107,6 +11161,7 @@
         "operation": "mail.read_thread",
         "family": "mail",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.client_changes",
           "quick_skill.commitments_audit",
@@ -11134,6 +11189,7 @@
         "operation": "meeting.list_upcoming_meetings",
         "family": "meeting-source",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.meeting_prep"
         ],
@@ -11154,6 +11210,7 @@
         "operation": "save_memory",
         "family": "command-tools",
         "kind": "product-or-governed",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [],
@@ -11170,6 +11227,7 @@
         "operation": "search_program_elements",
         "family": "program-elements",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.pe_deep_dive",
           "quick_skill.portfolio_overlap",
@@ -11188,6 +11246,7 @@
         "operation": "get_program_element",
         "family": "program-elements",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.pe_deep_dive",
           "quick_skill.portfolio_overlap",
@@ -11206,6 +11265,7 @@
         "operation": "get_pe_budget_timeline",
         "family": "program-elements",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.bill_watch",
           "quick_skill.pe_deep_dive",
@@ -11224,6 +11284,7 @@
         "operation": "get_pe_contractors",
         "family": "pe-references",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.pe_deep_dive"
         ],
@@ -11238,6 +11299,7 @@
         "operation": "get_pe_bills",
         "family": "pe-references",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.pe_deep_dive"
         ],
@@ -11252,6 +11314,7 @@
         "operation": "get_pe_report_language",
         "family": "pe-references",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.pe_deep_dive"
         ],
@@ -11266,6 +11329,7 @@
         "operation": "search_acquisition_personnel",
         "family": "acquisition-personnel",
         "kind": "source-read",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [],
@@ -11280,6 +11344,7 @@
         "operation": "get_acquisition_person",
         "family": "acquisition-personnel",
         "kind": "source-read",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [],
@@ -11294,6 +11359,7 @@
         "operation": "create_word",
         "family": "artifacts",
         "kind": "product-or-governed",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.bill_watch"
         ],
@@ -11316,6 +11382,7 @@
         "operation": "create_excel",
         "family": "artifacts",
         "kind": "product-or-governed",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [],
@@ -11336,6 +11403,7 @@
         "operation": "create_powerpoint",
         "family": "artifacts",
         "kind": "product-or-governed",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [],
@@ -11356,6 +11424,7 @@
         "operation": "schedule_task",
         "family": "schedule-tools",
         "kind": "product-or-governed",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [],
@@ -11370,6 +11439,7 @@
         "operation": "list_scheduled_tasks",
         "family": "schedule-tools",
         "kind": "product-or-governed",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [],
@@ -11384,6 +11454,7 @@
         "operation": "cancel_scheduled_task",
         "family": "schedule-tools",
         "kind": "product-or-governed",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [],
@@ -11398,6 +11469,7 @@
         "operation": "update_scheduled_task",
         "family": "schedule-tools",
         "kind": "product-or-governed",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [],
@@ -11412,6 +11484,7 @@
         "operation": "query_tasks",
         "family": "operational-reads",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.client_changes",
           "quick_skill.commitments_audit",
@@ -11439,6 +11512,7 @@
         "operation": "actions.query",
         "family": "action-items-complete",
         "kind": "source-read",
+        "currentContractDeclared": false,
         "declaredBySkills": [
           "quick_skill.client_changes",
           "quick_skill.commitments_audit",
@@ -11470,6 +11544,7 @@
         "operation": "search_tracked_bills",
         "family": "tracked-bills",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.client_changes",
           "quick_skill.hearing_watch",
@@ -11492,6 +11567,7 @@
         "operation": "query_regulatory_dockets",
         "family": "regulatory-dockets",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.regulatory_docket_brief"
         ],
@@ -11506,6 +11582,7 @@
         "operation": "search_sam_opportunities",
         "family": "sam-opportunities",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.funding_opportunity_match",
           "quick_skill.research_company"
@@ -11526,6 +11603,7 @@
         "operation": "meeting.query_debriefs",
         "family": "meeting-source",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.client_changes",
           "quick_skill.commitments_audit",
@@ -11553,6 +11631,7 @@
         "operation": "meeting.read_client_meetings",
         "family": "meeting-source",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.client_changes",
           "quick_skill.commitments_audit",
@@ -11580,6 +11659,7 @@
         "operation": "query_outreach",
         "family": "outreach-query",
         "kind": "source-read",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [],
@@ -11594,6 +11674,7 @@
         "operation": "read_client_documents",
         "family": "client-documents",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.client_changes",
           "quick_skill.commitments_audit",
@@ -11625,6 +11706,7 @@
         "operation": "lookup_client_registry",
         "family": "client-registry",
         "kind": "source-read",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [],
@@ -11637,6 +11719,7 @@
         "operation": "create_task",
         "family": "command-tools",
         "kind": "product-or-governed",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [],
@@ -11653,6 +11736,7 @@
         "operation": "update_task",
         "family": "command-tools",
         "kind": "product-or-governed",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [],
@@ -11669,6 +11753,7 @@
         "operation": "find_contacts",
         "family": "tenant-contacts",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.mail_history",
           "quick_skill.meeting_prep",
@@ -11697,6 +11782,7 @@
         "operation": "search_funding_opportunities",
         "family": "funding-opportunities",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.funding_opportunity_match",
           "quick_skill.research_company"
@@ -11714,6 +11800,7 @@
         "operation": "get_funding_opportunity_requirements",
         "family": "funding-opportunities",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.funding_opportunity_match",
           "quick_skill.research_company"
@@ -11731,6 +11818,7 @@
         "operation": "get_funding_opportunity",
         "family": "funding-opportunities",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.funding_opportunity_match"
         ],
@@ -11747,6 +11835,7 @@
         "operation": "get_opportunity_client_context",
         "family": "funding-opportunities",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.funding_opportunity_match"
         ],
@@ -11763,6 +11852,7 @@
         "operation": "get_opportunity_government_landscape",
         "family": "funding-opportunities",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.funding_opportunity_match"
         ],
@@ -11779,6 +11869,7 @@
         "operation": "search_federal_contract_awards",
         "family": "federal-market",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.portfolio_overlap",
           "quick_skill.research_company"
@@ -11794,6 +11885,7 @@
         "operation": "search_federal_subawards",
         "family": "federal-market",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.portfolio_overlap",
           "quick_skill.research_company"
@@ -11809,6 +11901,7 @@
         "operation": "search_contract_vehicles",
         "family": "federal-market",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.research_company"
         ],
@@ -11823,6 +11916,7 @@
         "operation": "search_procurement_forecasts",
         "family": "federal-market",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.research_company"
         ],
@@ -11837,6 +11931,7 @@
         "operation": "get_business_development_context",
         "family": "business-development",
         "kind": "source-read",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [],
@@ -11849,6 +11944,7 @@
         "operation": "get_business_development_evidence",
         "family": "business-development",
         "kind": "source-read",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [],
@@ -11861,6 +11957,7 @@
         "operation": "get_business_development_recent_changes",
         "family": "business-development",
         "kind": "source-read",
+        "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.client_changes",
           "quick_skill.portfolio_changes"
@@ -11876,6 +11973,7 @@
         "operation": "get_district_federal_market",
         "family": "federal-market",
         "kind": "source-read",
+        "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "generalOperations": [],
