@@ -13,20 +13,21 @@ import {canonicalSha256,validateShape} from '../../../packages/contracts/validat
 import {data,own,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {createIntentJournal} from './journal.mjs';
-import {intentFault} from './faults.mjs';
+import {intentFault,INTENT_FAILURE_CODES} from './faults.mjs';
+import {createIntentResultRelease} from './result-release.mjs';
 import {COMMAND_INTENT_OPERATIONS} from './command-preparer.mjs';
 import {SCHEDULE_INTENT_OPERATIONS} from './schedule-preparer.mjs';
 import {DOCUMENT_INTENT_OPERATIONS} from './document-preparer.mjs';
 const DELIVERY=/^sdk:[a-f0-9]{64}$/u,AVAILABILITY_MS=30000;
 const OWNERS=Object.freeze({command:Object.keys(COMMAND_INTENT_OPERATIONS),schedule:SCHEDULE_INTENT_OPERATIONS,document:DOCUMENT_INTENT_OPERATIONS});
-const CODES=new Set(['UNAVAILABLE','ACCESS_DENIED','REFUSED','INVALID_ARGUMENTS','DEADLINE','CANCELLED','CONFLICT','UNKNOWN']);
+const CODES=new Set(INTENT_FAILURE_CODES);
 const closed=code=>CODES.has(code)?code:'UNKNOWN';
-/** @param {{binding:object,preparers:readonly object[],journalStore:object,now:()=>number,limits:{maxRequestMs:number},enabled?:boolean}} configuration */
+/** @param {{binding:object,preparers:readonly object[],journalStore:object,now:()=>number,limits:{maxRequestMs:number},enabled?:boolean,resultRelease?:object}} configuration */
 export function createIntentMount(configuration){
- const c=own(configuration,['binding','preparers','journalStore','now','limits'],['enabled']),binding=data(c.binding),limits=data(c.limits);
+ const c=own(configuration,['binding','preparers','journalStore','now','limits'],['enabled','resultRelease']),binding=data(c.binding),limits=data(c.limits);
  validateShape('RunBinding',binding);own(limits,['maxRequestMs']);
  if(typeof c.now!=='function'||typeof(c.enabled??false)!=='boolean'||!Number.isSafeInteger(limits.maxRequestMs)||limits.maxRequestMs<1||limits.maxRequestMs>60000||!Array.isArray(c.preparers))throw intentFault('INTENT_CONFIGURATION');
- const journal=createIntentJournal(c.journalStore),byOperation=new Map();
+ const journal=createIntentJournal(c.journalStore),release=createIntentResultRelease({authority:c.resultRelease,binding,now:c.now}),byOperation=new Map();
  for(const p of c.preparers){
   // Only owner kinds with a canonical prepare-only path, for this run's exact binding, one preparer per operation.
   if(!OWNERS[p?.owner]?.includes(p.operation?.id)||p.operation.version!=='0.2.0'||typeof p.prepare!=='function'||canonicalSha256(p.binding)!==canonicalSha256(binding)||byOperation.has(p.operation.id))throw intentFault('INTENT_CONFIGURATION');
@@ -37,12 +38,12 @@ export function createIntentMount(configuration){
  return Object.freeze({
   async readAvailability(value={}){
    const {signal}=own(value,[],['signal']);nativeSignal(signal);if(signal?.aborted)throw intentFault('CANCELLED');
-   const at=c.now();if(c.enabled!==true)throw intentFault('UNAVAILABLE');
+   const at=c.now();if(c.enabled!==true||!release.available)throw intentFault('UNAVAILABLE');
    return data({binding,operations,checkedAtMs:at,expiresAtMs:at+AVAILABILITY_MS});
   },
   async prepare(value){
    const {signal,...raw}=own(value,['operation','arguments','deliveryId'],['signal']);nativeSignal(signal);
-   if(c.enabled!==true)throw intentFault('UNAVAILABLE');
+   if(c.enabled!==true||!release.available)throw intentFault('UNAVAILABLE');
    let v;try{v=data(raw);own(v.operation,['id','version']);}catch{throw intentFault('INVALID_ARGUMENTS');}
    const preparer=byOperation.get(v.operation.id);
    if(!preparer||v.operation.version!=='0.2.0')throw intentFault('UNAVAILABLE');
@@ -50,8 +51,12 @@ export function createIntentMount(configuration){
    const record=data({operation:preparer.operation,argumentsSha256:canonicalSha256(v.arguments)}),life=lifetime(signal),key={binding,deliveryId:v.deliveryId,record};
    try{
     const begun=await life.run(s=>journal.begin({...key,signal:s}));
-    if(begun.replayed)return begun.result;
-    let result;
+    const selected={operation:preparer.operation,deliveryId:v.deliveryId,argumentsSha256:record.argumentsSha256,life};
+    if(begun.replayed)return await release.release({...selected,owner:preparer.owner,result:begun.result,original:begun.release});
+    let result,original;
+    try{original=await release.capture(selected);}catch(error){
+     const code=closed(error?.code);try{await life.run(s=>journal.settle({...key,state:'FAILED',outcome:{code},signal:s}));}catch{}throw error;
+    }
     try{result=data(await life.run(s=>preparer.prepare({arguments:v.arguments,deliveryId:v.deliveryId,signal:s})));}
     catch(error){
      // A failure with no owner effect settles FAILED and replays the same refusal; anything else stays UNKNOWN.
@@ -60,9 +65,9 @@ export function createIntentMount(configuration){
      throw intentFault(code);
     }
     // A lost settlement acknowledgement leaves the delivery PENDING: the result is withheld as UNKNOWN, never retried.
-    // Once settled, the result is released even if the deadline passes now: it is durably the answer for this delivery.
-    try{await life.run(s=>journal.settle({...key,state:'PREPARED',outcome:{result},signal:s}));}catch{throw intentFault('UNKNOWN');}
-    return result;
+    // Custody is durable, but release still requires fresh authority and the original expiry. A refused release never redispatches.
+    try{await life.run(s=>journal.settle({...key,state:'PREPARED',outcome:{result,release:original},signal:s}));}catch{throw intentFault('UNKNOWN');}
+    return await release.release({...selected,owner:preparer.owner,result,original});
    }catch(error){throw intentFault(closed(error?.code));}finally{life.close();}
   },
  });

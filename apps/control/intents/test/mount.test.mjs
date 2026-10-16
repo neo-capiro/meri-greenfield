@@ -66,7 +66,8 @@ test('UNKNOWN after a lost journal acknowledgement: claim loss prepares nothing;
 
 test('UNKNOWN when the owner is still running at the deadline; nothing is re-prepared',async()=>{
  const c=commandComposition();let now=NOW;const store=createMemoryJournalStore();
- const m=createIntentMount({binding:c.binding,preparers:[c.preparer()],journalStore:store.port,now:()=>now,limits:{maxRequestMs:50},enabled:true});
+ const m=createIntentMount({binding:c.binding,preparers:[c.preparer()],journalStore:store.port,now:()=>now,limits:{maxRequestMs:50},enabled:true,
+  resultRelease:{async check({selection,selectionSha256}){return {authorized:true,selectionSha256,binding:selection.binding,scopes:c.scopes,checkedAtMs:now,expiresAtMs:NOW+60000};}}});
  c.hooks.prepare=()=>new Promise(()=>{});const pending=assert.rejects(call(m),code('UNKNOWN'));await new Promise(r=>setTimeout(r,80));now+=60;
  await pending;c.hooks.prepare=undefined;await assert.rejects(call(m),code('UNKNOWN'));assert.equal(c.metadataCalls.prepare,1);
 });
