@@ -175,7 +175,8 @@ export interface Canonical_ConversationErrorResponse_68Bab4E3 {
   };
 }
 
-import type {AdmittedConversationRequest,AdmittedConversationView,ConversationHistoryResponse} from '@capiro/meri-contracts/conversation-application';
+import type {AdmittedConversationRequest,AdmittedConversationView,ConversationHistoryResponse,ConversationErrorResponse} from '@capiro/meri-contracts/conversation-application';
+export type ConversationInputErrorResponse=ConversationErrorResponse;
 export type AdmittedConversationInputRequest=AdmittedConversationRequest<'submit'>;
 declare const admittedInputReceipt:unique symbol;
 export type AdmittedConversationInputReceipt=Readonly<ConversationInputAdmittedResponse>&{readonly [admittedInputReceipt]:true};

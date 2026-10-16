@@ -70,8 +70,8 @@
     },
     {
       "path": "generate-input.mjs",
-      "sha256": "6b67450cb93f8ede0e53c97a2ee32eb3fe6559a78c466a38f0b6d400414b1f90",
-      "bytes": 7973
+      "sha256": "85dffd9cbb24773ab4a9565af8b15353c2b6bfb37436185a60b54ea2d8b8d704",
+      "bytes": 8069
     },
     {
       "path": "meri.schema.json",
