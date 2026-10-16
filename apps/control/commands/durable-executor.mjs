@@ -18,7 +18,9 @@ export function createPostgresCommandExecutor(options){
  const noEffect=()=>deny('COMMAND_BUDGET_UNAVAILABLE');
  const observer=createCommandExecutor({...common,budget:{reserve:noEffect,settle:noEffect,markUncertain:noEffect}});
  function admitted(value){if(!configured.sourceEnabled)deny('UNAVAILABLE');const call=input(value);
-  if(call.proposal.command.action==='memory.propose'&&call.proposal.command.arguments.scope==='personal')deny('PENDING_PRODUCER_UNAVAILABLE');
+  // Personal memory is admitted only to a source that produces pending candidates (the governed memory producer), never to the
+  // legacy auto-committing route.
+  if(call.proposal.command.action==='memory.propose'&&call.proposal.command.arguments.scope==='personal'&&configured.source.personalPending!==true)deny('PENDING_PRODUCER_UNAVAILABLE');
   return {raw:JSON.stringify({proposal:call.proposal,execution:call.execution}),delivery:JSON.stringify({...trusted.producerContext,deliveryId:call.proposal.command.commandId})};}
  return Object.freeze({sourceEnabled:configured.sourceEnabled===true,
   bindTrustedGrant:durable.bindTrustedGrant,

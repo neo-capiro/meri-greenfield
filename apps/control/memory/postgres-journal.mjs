@@ -1,0 +1,58 @@
+/** PostgreSQL producer journal over the PROPOSED `meri_memory.candidates` table
+ * (docs/coordination/proposals/FABLE-MIGRATION-REQUEST-MEMORY-SETTINGS-20261016.md; no ID allocated, never applied by this source).
+ * The journal is the producer's outbox: the immutable candidate and its hash are written once; only the submission state moves
+ * PREPARED → SUBMITTED | SUBMISSION_UNKNOWN → SUBMITTED. Review status is never stored here; Core owns it. */
+import {refuse} from '../product-access/errors.mjs';
+import {assertPool,transact} from '../product-persistence/transaction.mjs';
+import {assertCandidate} from './candidate.mjs';
+const table='meri_memory.candidates';
+const COLUMNS='candidate, candidate_sha256, request_sha256, submission_state, review_id';
+export const SUBMISSION_STATES=Object.freeze(['PREPARED','SUBMITTED','SUBMISSION_UNKNOWN']);
+function record(row){
+ const {candidate,candidateSha256}=assertCandidate(row.candidate);
+ if(candidateSha256!==row.candidate_sha256||!SUBMISSION_STATES.includes(row.submission_state)||(row.submission_state==='SUBMITTED')!==(row.review_id!==null))refuse('MEMORY_JOURNAL_STATE');
+ return Object.freeze({candidate,candidateSha256,requestSha256:row.request_sha256,submission:Object.freeze({state:row.submission_state,reviewId:row.review_id})});
+}
+export function createPostgresMemoryJournal({pool}){
+ assertPool(pool);
+ const tx=(signal,operation,readOnly=false)=>transact(pool,operation,{readOnly,check:()=>{if(signal?.aborted)refuse('CANCELLED');},unavailable:'MEMORY_JOURNAL_UNAVAILABLE',uncertain:'MEMORY_JOURNAL_UNKNOWN'});
+ return Object.freeze({
+  /** Insert-once by (tenant, proposer, idempotency key). A replay returns the original record; a different request under the same
+   * key is a conflict, never a silent substitution. */
+  insert({candidate,candidateSha256,requestSha256,signal}){
+   return tx(signal,async client=>{
+    const inserted=(await client.query(`INSERT INTO ${table}(tenant_id,candidate_id,proposer_actor_id,idempotency_key,request_sha256,candidate,candidate_sha256,scope,client_id,created_at,submission_state)
+     VALUES($1,$2,$3,$4,$5,$6::jsonb,$7,$8,$9,$10,'PREPARED') ON CONFLICT (tenant_id,proposer_actor_id,idempotency_key) DO NOTHING RETURNING ${COLUMNS}`,
+     [candidate.tenantId,candidate.candidateId,candidate.proposerActorId,candidate.idempotencyKey,requestSha256,JSON.stringify(candidate),candidateSha256,candidate.scope,candidate.clientId,candidate.createdAt])).rows[0];
+    if(inserted)return Object.freeze({inserted:true,record:record(inserted)});
+    const existing=(await client.query(`SELECT ${COLUMNS} FROM ${table} WHERE tenant_id=$1 AND proposer_actor_id=$2 AND idempotency_key=$3 FOR UPDATE`,[candidate.tenantId,candidate.proposerActorId,candidate.idempotencyKey])).rows[0];
+    if(!existing)refuse('MEMORY_JOURNAL_STATE');
+    const r=record(existing);if(r.requestSha256!==requestSha256)refuse('MEMORY_IDEMPOTENCY_CONFLICT');
+    return Object.freeze({inserted:false,record:r});
+   });
+  },
+  recordSubmission({tenantId,candidateId,candidateSha256,reviewId,signal}){
+   return tx(signal,async client=>{
+    const r=await client.query(`UPDATE ${table} SET submission_state='SUBMITTED', review_id=$4, submitted_at=clock_timestamp() WHERE tenant_id=$1 AND candidate_id=$2 AND candidate_sha256=$3
+     AND (submission_state IN ('PREPARED','SUBMISSION_UNKNOWN') OR submission_state='SUBMITTED' AND review_id=$4)`,[tenantId,candidateId,candidateSha256,reviewId]);
+    if(r.rowCount!==1)refuse('MEMORY_JOURNAL_STATE');
+   });
+  },
+  recordUnknown({tenantId,candidateId,signal}){
+   return tx(signal,async client=>{await client.query(`UPDATE ${table} SET submission_state='SUBMISSION_UNKNOWN' WHERE tenant_id=$1 AND candidate_id=$2 AND submission_state='PREPARED'`,[tenantId,candidateId]);});
+  },
+  get({tenantId,proposerActorId,candidateId,signal}){
+   return tx(signal,async client=>{const row=(await client.query(`SELECT ${COLUMNS} FROM ${table} WHERE tenant_id=$1 AND proposer_actor_id=$2 AND candidate_id=$3`,[tenantId,proposerActorId,candidateId])).rows[0];return row?record(row):null;},true);
+  },
+  /** Own candidates newest first. Client-scoped rows are filtered to `clientIds` in SQL; personal and firm rows are the proposer's own. */
+  listOwn({tenantId,proposerActorId,clientIds,clientId,cursor,limit,signal}){
+   return tx(signal,async client=>{
+    const rows=(await client.query(`SELECT ${COLUMNS} FROM ${table} WHERE tenant_id=$1 AND proposer_actor_id=$2
+     AND (scope<>'client' OR client_id = ANY($3::uuid[])) AND ($4::uuid IS NULL OR client_id=$4)
+     AND ($5::timestamptz IS NULL OR (created_at,candidate_id) < ($5::timestamptz,$6::uuid))
+     ORDER BY created_at DESC, candidate_id DESC LIMIT $7`,[tenantId,proposerActorId,[...clientIds],clientId,cursor?.createdAt??null,cursor?.candidateId??null,limit])).rows;
+    return Object.freeze(rows.map(record));
+   },true);
+  },
+ });
+}
