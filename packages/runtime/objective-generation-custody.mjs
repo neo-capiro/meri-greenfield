@@ -8,8 +8,12 @@ import {objectiveDescriptorProtocol,objectiveRequestProtocol,OBJECTIVE_DRAFT_PRO
 export {own,data,hash};
 export const OBJECTIVE_DRAFT_PATH=OBJECTIVE_DRAFT_PROTOCOL.path;
 export const MAX_TYPED_RESULT_BYTES=2097152;
+// The journal retains the accepted request and execution context together. Keep this
+// bound shared with pre-query admission so a valid query cannot finish unjournalable.
+export const MAX_OBJECTIVE_SELECTION_BYTES=1048576;
 export const typedFault=()=>Error('OBJECTIVE_TYPED_RESULT_REFUSED');
 const refuse=()=>{throw typedFault();};
+const boundedSelection=value=>{if(Buffer.byteLength(JSON.stringify(value),'utf8')>MAX_OBJECTIVE_SELECTION_BYTES)refuse();return value;};
 const digest=v=>{if(typeof v!=='string'||v.length!==64||!/^[a-f0-9]{64}$/u.test(v))refuse();return v;};
 const uuid=v=>{if(typeof v!=='string'||v.length!==36||!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(v))refuse();return v;};
 export const rawTypedSha256=bytes=>createHash('sha256').update(bytes).digest('hex');
@@ -38,7 +42,7 @@ export function assertPreparedObjectiveSelection(value,{binding,acceptedRequest,
  for(const key of ['actorUserId','consentId','generationJobId','generationRequestId'])uuid(a[key]);
  const r=s.request;if(a.schemaVersion!==1||a.namespace!=='capiro.objective-strategy.admission:v1'||c.epoch!==1||a.expectedStrategyVersionId!==null||g.sourceAdmissionSha256!==sourceAdmissionDigest(a)||a.clerkUserId!==binding.actorId||c.tenantId!==binding.tenantId||a.generationRequestId!==acceptedRequest.requestId||!Number.isSafeInteger(a.admittedAtMs)||!Number.isSafeInteger(a.effectExpiresAtMs)||a.admittedAtMs<0||a.effectExpiresAtMs<=a.admittedAtMs||s.schemaVersion!==1||s.operation!=='strategy.draft'||hash(r)!==s.requestSha256||r.operation!=='strategy.draft'||r.basis!==null||r.jobId!==a.generationJobId||r.requestId!==a.generationRequestId||r.principal.tenantId!==c.tenantId||r.principal.actorId!==a.clerkUserId||r.principal.clientId!==c.clientId||r.source.kind!=='objective'||r.source.objectiveId!==c.objectiveId||r.source.objectiveRevisionId!==c.requestedObjectiveRevisionId||r.source.objectiveVersion!==c.requestedObjectiveVersion||r.source.snapshotSha256!==c.snapshotHash||r.input.typeHint===null||r.input.typeHint!==s.queuedType)refuse();
  if(!Number.isSafeInteger(expiresAtMs)||expiresAtMs<=a.admittedAtMs||expiresAtMs>Math.min(a.effectExpiresAtMs,r.originalExpiresAtMs)||nowMs!==undefined&&(!Number.isSafeInteger(nowMs)||nowMs<0||expiresAtMs<=nowMs))refuse();
- own(s.executionSelection,['provider','model']);assertObjectiveExecutionContext(s.executionContext,{request:r,acceptedRequest});return data({binding,acceptedRequest,sourceAdmissionSha256:g.sourceAdmissionSha256,strategy:s,sourceRequestSha256:hash(acceptedRequest)});
+ own(s.executionSelection,['provider','model']);assertObjectiveExecutionContext(s.executionContext,{request:r,acceptedRequest});return boundedSelection(data({binding,acceptedRequest,sourceAdmissionSha256:g.sourceAdmissionSha256,strategy:s,sourceRequestSha256:hash(acceptedRequest)}));
 }
 export function typedExecutionWitness(value){
  const v=value,e=v.execution,o=v.observation;
@@ -59,7 +63,7 @@ export function assertTypedResult(value,{binding,sourceRequestSha256,sessionId}=
 /** Retained original selection is written by native capture from issued facts, not the worker's descriptor/body. */
 export function assertTypedSelection(value,descriptor,{binding,acceptedRequest}){
  const s=data(own(value,['binding','acceptedRequest','sourceAdmissionSha256','strategy','sourceRequestSha256'])),d=assertTypedResult(descriptor,{binding,sourceRequestSha256:hash(acceptedRequest)}),strategy=own(s.strategy,['schemaVersion','operation','request','requestSha256','executionContext','queuedType','executionSelection']);
- if(hash(s.binding)!==hash(binding)||hash(s.acceptedRequest)!==hash(acceptedRequest)||s.sourceRequestSha256!==d.sourceRequestSha256||s.sourceAdmissionSha256!==d.sourceAdmissionSha256||strategy.schemaVersion!==1||strategy.operation!=='strategy.draft'||strategy.requestSha256!==d.typedRequestSha256||hash(strategy.request)!==strategy.requestSha256||strategy.request.requestId!==acceptedRequest.requestId||strategy.request.principal.tenantId!==binding.tenantId||strategy.request.principal.actorId!==binding.actorId||objectiveRequestProtocol(strategy.request,{sourceAdmissionSha256:s.sourceAdmissionSha256}).kind!==d.kind||strategy.request.input.typeHint!==strategy.queuedType||hash(strategy.executionSelection)!==hash({provider:d.execution.provider,model:d.execution.model}))refuse();assertObjectiveExecutionContext(strategy.executionContext,{request:strategy.request,acceptedRequest});return s;
+ if(hash(s.binding)!==hash(binding)||hash(s.acceptedRequest)!==hash(acceptedRequest)||s.sourceRequestSha256!==d.sourceRequestSha256||s.sourceAdmissionSha256!==d.sourceAdmissionSha256||strategy.schemaVersion!==1||strategy.operation!=='strategy.draft'||strategy.requestSha256!==d.typedRequestSha256||hash(strategy.request)!==strategy.requestSha256||strategy.request.requestId!==acceptedRequest.requestId||strategy.request.principal.tenantId!==binding.tenantId||strategy.request.principal.actorId!==binding.actorId||objectiveRequestProtocol(strategy.request,{sourceAdmissionSha256:s.sourceAdmissionSha256}).kind!==d.kind||strategy.request.input.typeHint!==strategy.queuedType||hash(strategy.executionSelection)!==hash({provider:d.execution.provider,model:d.execution.model}))refuse();assertObjectiveExecutionContext(strategy.executionContext,{request:strategy.request,acceptedRequest});return boundedSelection(s);
 }
 /** The locator is selected by the immutable journal witness, never by a read caller. */
 export function typedCheckpointObject(proof,descriptor){

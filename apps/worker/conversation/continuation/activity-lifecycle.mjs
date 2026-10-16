@@ -6,6 +6,7 @@ import {assertWorkerControl,assertLifecycleReceipt} from '../../../../packages/c
 import {createSdkCommandAdapter} from './commands.mjs';
 import {continuationContextSha256} from './options.mjs';
 import {assertCaptureReceipt} from './native-receipts.mjs';
+import {assertTypedResult} from '../../../../packages/runtime/objective-generation-custody.mjs';
 const fault=code=>Object.assign(new Error(code),{code}),same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u;
 /** The control store's only worker exit from a control hold (lifecycle/journal.mjs HOLD_CHECKPOINT_FAILED): an explicit, verified failure, never a silent close. */
@@ -93,8 +94,10 @@ export function createActivityLifecycle({config,runOwner,binding,saved,runtime,i
    catch{}finally{cleanup.close();pending.delete(entry.command.controlId);}}
   poll.close();if(!keepInputOpen)input.close();
  }
- async function complete(){if(!captureCompletion||held||fenced||!sessionId)throw fault('COMPLETION_CAPTURE_UNAVAILABLE');await finish({keepInputOpen:true});if(error||held||fenced)throw error??fault('COMPLETION_CAPTURE_UNAVAILABLE');const started=now();
-  const captured=await life.run(signal=>captureCompletion({binding,request:saved.request,versions:saved.run.versions,scopes:saved.run.scopes,sessionId,contextSha256,signal}));
+ async function complete(typedResult){if(!captureCompletion||held||fenced||!sessionId)throw fault('COMPLETION_CAPTURE_UNAVAILABLE');
+  if(typedResult!==undefined)typedResult=assertTypedResult(typedResult,{binding,sourceRequestSha256:canonicalSha256(saved.request),sessionId});
+  await finish({keepInputOpen:true});if(error||held||fenced)throw error??fault('COMPLETION_CAPTURE_UNAVAILABLE');const started=now();
+  const captured=await life.run(signal=>captureCompletion({binding,request:saved.request,versions:saved.run.versions,scopes:saved.run.scopes,sessionId,contextSha256,...(typedResult===undefined?{}:{typedResult}),signal}));
   const verified=assertCaptureReceipt(captured,{binding,versions:saved.run.versions,request:saved.request,scopes:saved.run.scopes,contextSha256,sessionId,started,now});life.limitDeadline(verified.expiresAtMs);return verified.receipt;
  }
  return Object.freeze({observe,fence,finish,captureCompletion:complete,canCaptureCompletion:()=>captureCompletion!==undefined,isHeld:()=>held||fenced,heldResult:()=>heldResult.promise,
