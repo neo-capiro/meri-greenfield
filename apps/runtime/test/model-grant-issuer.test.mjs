@@ -23,6 +23,19 @@ test('claim precedes synthetic material; exact retry and recreated owner resolve
  const row=f.store.snapshot().get(intent.issuanceKey);assert.equal(row.materialRef,'model-material:v1:'+intent.issuanceKey);assert.equal(row.capabilitySha256,capabilityDigest(first.proxyCredential));
  assert.ok(!JSON.stringify([...f.store.snapshot()]).includes(first.proxyCredential));assert.equal(first.expiresAtMs,intent.expiresAtMs);
 });
+test('read-only model grant lookup and resolution use the exact issued identity without generation',async()=>{
+ const f=fixture(),absent=await f.owner.read(intent);assert.deepEqual(absent,{state:'ABSENT'});
+ assert.deepEqual(f.stats,{generate:0,retrieve:0});
+ const issued=await f.owner.issue({intent}),reader=f.create(),current=await reader.read(intent);
+ assert.deepEqual(current,{state:'ISSUED',issuance:Object.fromEntries(Object.entries(issued).filter(([key])=>key!=='proxyCredential'))});
+ assert.equal(await reader.resolve(current.issuance),issued.proxyCredential);
+ assert.deepEqual(f.stats,{generate:1,retrieve:2});
+ for(const changed of [{...intent,requestSha256:'b'.repeat(64)},{...intent,expiresAtMs:intent.expiresAtMs+1}])await assert.rejects(reader.read(changed));
+ await assert.rejects(reader.resolve({...current.issuance,grantId:id(900)}));
+ assert.deepEqual(f.stats,{generate:1,retrieve:2});
+ f.state.retrieveState='REVOKED';await assert.rejects(reader.resolve(current.issuance));
+ assert.equal(f.stats.generate,1);
+});
 for(const crash of ['before-claim','after-claim','before-complete','after-complete'])test('synthetic '+crash+' lost ACK never remints or extends original identity',async()=>{
  const f=fixture(crash);if(crash==='after-complete'){
   const first=await f.owner.issue({intent});assert.deepEqual(await f.create().issue({intent}),first);assert.equal(f.stats.generate,1);return;
@@ -57,7 +70,7 @@ test('file authority composition is inert and model directory/reference purpose 
  await assert.rejects(model.retrieve({materialRef:'material:'+intent.issuanceKey,grantId:id(100)}),/MODEL_MATERIAL_REFUSED/);
  await assert.rejects(task.retrieve({materialRef:'model-material:v1:'+intent.issuanceKey,grantId:id(100)}),/CAPABILITY_AUTHORITY_REFUSED/);
  let queries=0;const owner=createPostgresModelGrants({pool:{async query(){queries++;throw Error('no SQL allowed');}},taskMaterialDirectory:directory,now:()=>at});
- assert.equal(typeof owner.issue,'function');assert.equal(queries,0,'startup construction neither queries nor generates');
+ assert.equal(typeof owner.issue,'function');assert.equal(typeof owner.read,'function');assert.equal(typeof owner.resolve,'function');assert.equal(queries,0,'startup construction neither queries nor generates');
  await assert.rejects(owner.issue({intent}),/MODEL_GRANT_UNKNOWN/);assert.equal(queries,1,'unavailable current store cannot reach material generation');
 });
 for(const operation of ['generate','status'])test('model material '+operation+' refuses a different issuance key reference',async()=>{
