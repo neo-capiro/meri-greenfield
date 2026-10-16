@@ -41,6 +41,12 @@ export function captureRuntimePorts(value={}){
  });
  capturedPorts.add(captured);return captured;
 }
+/** Join canonical prepared owners and trusted supplemental owners; neither can silently replace the other. */
+export function composeRuntimePorts(canonical,supplemental){
+ const a=captureRuntimePorts(canonical),b=captureRuntimePorts(supplemental),joined={};
+ for(const ports of [a,b])for(const name of ports.configuredOwners){if(Object.hasOwn(joined,name))throw fault('PRODUCT_PORTS_CONFIGURATION');joined[name]=ports[name];}
+ return captureRuntimePorts(joined);
+}
 /** `suppression` is the retention serving `{journal,serving}` pair when declared; the download-link gate needs it to revoke links. */
 export function createRuntimeProductApplications({configuration,sessions,ports,now,retention,suppression,conversationStore}){
  const history=ports.conversationMembership&&conversationStore?createConversationHistoryApplication({

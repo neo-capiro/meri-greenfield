@@ -13,8 +13,8 @@ mock.module('@temporalio/client',{namedExports:{WorkflowIdReusePolicy,WorkflowId
 mock.module('../config.mjs',{namedExports:{...configModule,async readSecret(path){calls.secrets++;return Buffer.from(path===sample.configuration.database.connectionFile?'postgres://synthetic.invalid/meri?sslmode=verify-full':sample.secret.control);}}});
 mock.module('../native-client.mjs',{namedExports:{createNativeCapabilityClient(){return {async readiness(){calls.nativeReady++;},async call(){throw Error('No native effect');}};}}});
 mock.module('../http-server.mjs',{namedExports:{async listenRuntime({application,readiness}){calls.listeners++;calls.application=application;calls.readiness=readiness;return {address:{port:12345},async close(){calls.listenerClosed++;}};}}});
-mock.module('../prepared-candidate.mjs',{namedExports:{async startPreparedCandidate(){calls.prepared++;return {controlCapabilitySha256:capabilityDigest(sample.secret.control),
- identityContext:{async verifyIdentity(){throw Error('Unavailable');},async resolveContext(){throw Error('Unavailable');}},native:{async readiness(){},async call(){throw Error('No native effect');}},
+mock.module('../prepared-candidate.mjs',{namedExports:{async startPreparedCandidate(){calls.prepared++;const identityContext={async verifyIdentity(){throw Error('Unavailable');},async resolveContext(){throw Error('Unavailable');}};return {controlCapabilitySha256:capabilityDigest(sample.secret.control),
+ identityContext,productPorts:{identityContext},native:{async readiness(){},async call(){throw Error('No native effect');}},
  application:{async handle(){return null;}},bindApplication(){calls.bound++;},async close(){calls.preparedClosed++;}};}}});
 const {startControl}=await import('../control.mjs');
 const {captureRuntimePorts}=await import('../product-applications.mjs');
@@ -29,6 +29,20 @@ for(const mode of ['default','direct','factory','prepared'])test(`actual startCo
   assert.equal(calls.prepared,mode==='prepared'?1:0);assert.equal(calls.bound,mode==='prepared'?1:0);
  }finally{await runtime.close();}
  assert.equal(calls.listenerClosed,1);assert.equal(calls.poolClosed,1);assert.equal(calls.connectionClosed,1);assert.equal(calls.preparedClosed,mode==='prepared'?1:0);
+});
+
+for(const mode of ['direct','factory'])test(`prepared startup composes supplemental ${mode} membership without replacing canonical identity`,async()=>{
+ reset();const configuration=structuredClone(sample.configuration);let invoked=0;
+ const conversationMembership={async admit(){invoked++;throw Object.assign(Error('synthetic-denial'),{code:'not trusted'});},async recheck(){throw Error('No release');}};
+ const runtime=await startControl(configuration,mode==='direct'?{productPorts:{conversationMembership}}:{productPortsFactory(context){assert.ok(context.canonicalProductPorts.configuredOwners.includes('identityContext'));return {conversationMembership};}});
+ try{const ready=await calls.readiness({});assert.equal(ready.product.owners.find(o=>o.name==='history.membership').state,'composed');
+  await calls.application.handle(new Request('https://meri.invalid/api/conversations/list',{method:'POST',headers:{authorization:'Bearer synthetic','content-type':'application/json'},body:'{}'}));assert.equal(invoked,1);
+ }finally{await runtime.close();}assert.equal(calls.preparedClosed,1);assert.equal(calls.poolClosed,1);assert.equal(calls.connectionClosed,1);
+});
+
+test('prepared identity override refuses before listener and closes all startup-owned resources',async()=>{
+ reset();await assert.rejects(startControl(structuredClone(sample.configuration),{productPorts:{identityContext:{async verifyIdentity(){},async resolveContext(){}}}}),{code:'CONTROL_STARTUP_FAILED'});
+ assert.equal(calls.listeners,0);assert.equal(calls.preparedClosed,1);assert.equal(calls.poolClosed,1);assert.equal(calls.connectionClosed,1);
 });
 test('only the exact privately captured object is idempotent; copying configuredOwners is rejected before effects',async()=>{
  const captured=captureRuntimePorts();assert.equal(captureRuntimePorts(captured),captured);

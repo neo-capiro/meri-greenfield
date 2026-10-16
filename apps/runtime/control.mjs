@@ -14,7 +14,7 @@ import {listenRuntime} from './http-server.mjs';
 import {createWorkerRunApplication} from './worker-http.mjs';
 import {createConversationLifecycleService} from '../control/conversations/lifecycle/service.mjs';
 import {createConversationLifecycleApplication} from '../control/conversations/lifecycle/http.mjs';
-import {captureRuntimePorts,createRuntimeProductApplications} from './product-applications.mjs';
+import {captureRuntimePorts,composeRuntimePorts,createRuntimeProductApplications} from './product-applications.mjs';
 import {productReadiness} from './product-readiness.mjs';
 import {capabilityDigest} from './native-authority/task-verifier.mjs';
 import {compilePreparedCandidateConfiguration} from './prepared-candidate-config.mjs';
@@ -45,18 +45,18 @@ export function retentionGate(configuration,pool,ports={}){
  return Object.freeze({serving:startup.serving,journal:startup.journal,gate:startup.gate,startup,tables:['meri_conversations.retention_subjects','meri_conversations.retention_purges','meri_conversations.retention_purge_targets','meri_artifacts.retention_subjects','meri_artifacts.retention_purges','meri_conversations.retention_recovery_watermark']});
 }
 export function assembleControl(options){
- const {configuration,pool,client,native,now=Date.now,telemetry,...binding}=own(options,['configuration','pool','client','native'],['now','telemetry','productPorts','productPortsFactory']);
+ const {configuration,pool,client,native,now=Date.now,telemetry,canonicalProductPorts,...binding}=own(options,['configuration','pool','client','native'],['now','telemetry','canonicalProductPorts','productPorts','productPortsFactory']);
  if(telemetry!==undefined&&typeof telemetry?.observeRunOwner!=='function')throw fault('TELEMETRY_CONFIGURATION');
- const captured=productBinding(binding);
+ const captured=productBinding(binding),canonical=captureRuntimePorts(canonicalProductPorts);
  let supplied;
  if(captured.factory){
-  supplied=Reflect.apply(captured.factory,undefined,[Object.freeze({configuration,pool,native,now})]);
+  supplied=Reflect.apply(captured.factory,undefined,[Object.freeze({configuration,pool,native,now,canonicalProductPorts:canonical})]);
   if(supplied===undefined)throw fault('PRODUCT_PORTS_CONFIGURATION');
   // Ordinary functions can still return a rejected Promise. Consume only native
   // Promise rejection while refusing it; never inspect or execute then getters.
   if(types.isPromise(supplied)){Promise.prototype.then.call(supplied,undefined,()=>{});throw fault('PRODUCT_PORTS_CONFIGURATION');}
  }
- const ports=captured.factory?captureRuntimePorts(supplied):captured.ports;
+ const ports=composeRuntimePorts(canonical,captured.factory?captureRuntimePorts(supplied):captured.ports);
  if(ports.transitionAuthority&&typeof ports.identityContext.resolveTransitionContext!=='function')throw fault('PRODUCT_PORTS_CONFIGURATION');
  const retention=retentionGate(configuration,pool,ports);
  const store=createPostgresConversationStore({pool,now,...(ports.transitionAuthority?{transitionAuthority:ports.transitionAuthority}:{})});
@@ -82,7 +82,7 @@ export function multiRunOwners(configuration,pool){
 export async function startControl(configuration,options={}){
  // Validate compiled bindings before secret reads, connections or owned allocation.
  const {signal,...binding}=own(options,[],['signal','productPorts','productPortsFactory']);nativeSignal(signal);const compiled=productBinding(binding);
- if(configuration.nativeCandidate!==undefined){compilePreparedCandidateConfiguration(configuration.nativeCandidate,configuration.versions);if(configuration.native.capabilityFile!==configuration.nativeCandidate.controlCapabilityFile)throw fault('PREPARED_CANDIDATE_CONFIGURATION');if(binding.productPorts!==undefined||binding.productPortsFactory!==undefined)throw fault('PRODUCT_PORTS_CONFIGURATION');}
+ if(configuration.nativeCandidate!==undefined){compilePreparedCandidateConfiguration(configuration.nativeCandidate,configuration.versions);if(configuration.native.capabilityFile!==configuration.nativeCandidate.controlCapabilityFile)throw fault('PREPARED_CANDIDATE_CONFIGURATION');}
  const mounted=compiled.factory?{productPortsFactory:compiled.factory}:{productPorts:compiled.ports};
  let pool,connection,listener,assembly,candidate,closing,authorization,telemetry;const close=()=>closing??=(async()=>{const errors=[];for(const method of [()=>candidate?.close(),()=>listener?.close(),()=>assembly?.close(),()=>connection?.close(),()=>authorization?.close(),()=>pool?.end(),()=>telemetry?.close()])try{await method();}catch(error){errors.push(error);}if(errors.length)throw new AggregateError(errors,'CONTROL_CLEANUP_UNKNOWN');})();
  try{
@@ -98,7 +98,7 @@ export async function startControl(configuration,options={}){
   if(!['postgres:','postgresql:'].includes(u.protocol)||u.hash||u.searchParams.getAll('sslmode').length!==1||u.searchParams.get('sslmode')!=='verify-full'||[...u.searchParams.keys()].some(key=>key!=='sslmode'))throw fault('DATABASE_CONFIGURATION');
   pool=new Pool({connectionString,max:10,connectionTimeoutMillis:configuration.limits.requestMs,idleTimeoutMillis:10000,query_timeout:configuration.limits.requestMs});
   connection=await Connection.connect({address:configuration.temporal.address,tls,connectTimeout:configuration.limits.startupMs,...(authorization?{apiKey:()=>authorization.apiKey()}:{})});signal?.throwIfAborted();const client=new Client({connection,namespace:configuration.temporal.namespace});
-  let native=createNativeCapabilityClient({configuration:configuration.native,credential:capabilityBytes.toString('utf8').trim()});signal?.throwIfAborted();if(configuration.nativeCandidate!==undefined){const {startPreparedCandidate}=await import('./prepared-candidate.mjs');candidate=await startPreparedCandidate({configuration,pool,signal,...multiRunOwners(configuration,pool)});if(candidate.controlCapabilitySha256!==capabilityDigest(capabilityBytes.toString('utf8').trim()))throw fault('PREPARED_CANDIDATE_CONFIGURATION');native=candidate.native;}assembly=assembleControl({configuration,pool,client,native,...(telemetry?{telemetry}:{}),...(candidate?{productPorts:{identityContext:candidate.identityContext}}:mounted)});candidate?.bindApplication(assembly.application);
+  let native=createNativeCapabilityClient({configuration:configuration.native,credential:capabilityBytes.toString('utf8').trim()});signal?.throwIfAborted();if(configuration.nativeCandidate!==undefined){const {startPreparedCandidate}=await import('./prepared-candidate.mjs');candidate=await startPreparedCandidate({configuration,pool,signal,...multiRunOwners(configuration,pool)});if(candidate.controlCapabilitySha256!==capabilityDigest(capabilityBytes.toString('utf8').trim()))throw fault('PREPARED_CANDIDATE_CONFIGURATION');native=candidate.native;}assembly=assembleControl({configuration,pool,client,native,...(telemetry?{telemetry}:{}),...mounted,...(candidate?{canonicalProductPorts:candidate.productPorts}:{})});candidate?.bindApplication(assembly.application);
   // The download-link gate opens only after its owners verify; a closed gate leaves every other route as composed.
   const downloads=await assembly.downloads.open({signal});signal?.throwIfAborted();const mountedApplication=candidate?{async handle(request){return (await candidate.application.handle(request))??assembly.application.handle(request);}}:assembly.application,application=telemetry?telemetry.instrumentApplication(mountedApplication):mountedApplication;
   async function readiness({signal}){signal?.throwIfAborted();if(authorization&&!authorization.healthy())throw fault('TEMPORAL_AUTHORIZATION_UNAVAILABLE');await pool.query("SELECT to_regclass('meri_conversations.runs') AS runs, to_regclass('meri_conversations.events') AS events, to_regclass('meri_conversations.controls') AS controls, to_regclass('meri_conversations.selected_outputs') AS selected_outputs").then(result=>{if(!result.rows[0]||Object.values(result.rows[0]).some(v=>v===null))throw fault('DATABASE_SCHEMA_UNAVAILABLE');});
