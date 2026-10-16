@@ -1,0 +1,13 @@
+Γ£ö every preceding candidate (Fable 14 Oct, dot 14 Oct, Fable 15 Oct, Fable 15 Oct b, c, d, e and f) is preserved byte-exact and the new candidate carries no image acceptance (11.7615ms)
+Γ£ö all45 historical proof paths and44 non-recipe hashes remain in the preserved historical manifest (7.365ms)
+Γ£ö the candidate manifest enumerates every changed proof row with both hashes, a reason and the recorded decision; every other row equals its historical bytes; the recipe is unchanged (8.0269ms)
+Γ£ö exact16 proof-test files are allowlisted with parent reopening and sibling denial (0.9359ms)
+Γ£ö exact observed Linux helper bytes and network-isolated build recipe are promoted (0.6012ms)
+Γä╣ tests 5
+Γä╣ suites 0
+Γä╣ pass 5
+Γä╣ fail 0
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 44.5403

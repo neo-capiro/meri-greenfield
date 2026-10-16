@@ -1,0 +1,55 @@
+{
+  "base": "eca78d458acb46cbfd54a94cf870841d999ef6b1",
+  "checkpoint": "acc9bc88368869d2d06f7fb78c30911b13982087",
+  "sourceSnapshot": "105f0cef8c65d83350cf7afa482d9f836909b361",
+  "sourceTree": "330614749db464d55dea561d88d7a76577f7a3ba",
+  "selectedOriginals": [
+    "b93abfddfbf0c0fe908820825fbf889b6fd78ba3",
+    "8cd11310d375694a8ee883849305e7ebc55594d6"
+  ],
+  "integratedCommits": [
+    "3699c331164fa40c5893a013253fe8ef199d17a9",
+    "105f0cef8c65d83350cf7afa482d9f836909b361"
+  ],
+  "files": [
+    {
+      "path": "apps/control/product-access/http.mjs",
+      "originalBlob": "c811b943fddae32dc595befe17ce928a4b350084",
+      "integratedBlob": "c811b943fddae32dc595befe17ce928a4b350084"
+    },
+    {
+      "path": "apps/control/product-access/test/effect-uncertainty.test.mjs",
+      "originalBlob": "a1e9915e330476b0910cca50cbbbaa4f1c473519",
+      "integratedBlob": "a1e9915e330476b0910cca50cbbbaa4f1c473519"
+    },
+    {
+      "path": "apps/worker/conversation/activity.mjs",
+      "originalBlob": "2d38d7dcd1be1bdf9d09a90a2f21412d9aa3e3bb",
+      "integratedBlob": "2d38d7dcd1be1bdf9d09a90a2f21412d9aa3e3bb"
+    },
+    {
+      "path": "apps/worker/conversation/cleanup.mjs",
+      "originalBlob": "bacfe48ffe159761d945f7846b7b72ab7e0c4b54",
+      "integratedBlob": "bacfe48ffe159761d945f7846b7b72ab7e0c4b54"
+    },
+    {
+      "path": "apps/worker/conversation/test/cleanup-activity.test.mjs",
+      "originalBlob": "e1d3fa1d575da02d5fe717a3f0ec885904956227",
+      "integratedBlob": "e1d3fa1d575da02d5fe717a3f0ec885904956227"
+    },
+    {
+      "path": "docs/coordination/reports/DOT-PRODUCT-EFFECT-UNCERTAINTY-20261016.md",
+      "originalBlob": "653fad20530f6f17acc45abffc903f350414141a",
+      "integratedBlob": "653fad20530f6f17acc45abffc903f350414141a"
+    },
+    {
+      "path": "docs/coordination/reports/DOT-WORKER-CLEANUP-20261016.md",
+      "originalBlob": "611ea996583d72d2b2bbf8bce9e2b2a768638653",
+      "integratedBlob": "611ea996583d72d2b2bbf8bce9e2b2a768638653"
+    }
+  ],
+  "status": "SOURCE_ONLY_PARTIAL_HOLD",
+  "candidateH": "HOLD",
+  "frozenF": "UNCHANGED",
+  "heavySuites": "UNRUN_NO_SLOT"
+}
