@@ -17,7 +17,7 @@ export function previewConfiguration(value){
  if(value===undefined)return null;
  const p=own(value,['previews','renderer'],['maxPreviewBytes']);
  if(p.renderer!==null&&!isRendererPort(p.renderer))fail('DOCUMENT_CONFIGURATION',500);
- return Object.freeze({previews:{read:method(p.previews,'read'),commit:method(p.previews,'commit')},renderer:p.renderer,...(p.maxPreviewBytes===undefined?{}:{maxPreviewBytes:p.maxPreviewBytes})});
+ return Object.freeze({previews:{read:method(p.previews,'read'),commit:method(p.previews,'commit'),claim:method(p.previews,'claim'),recordObject:method(p.previews,'recordObject')},renderer:p.renderer,...(p.maxPreviewBytes===undefined?{}:{maxPreviewBytes:p.maxPreviewBytes})});
 }
 /** Handles one preview intent; `release(version)` is the application's own version release check. */
 export async function previewRoute({config,admission,current,life,intent,versionId,state,release}){
@@ -27,7 +27,7 @@ export async function previewRoute({config,admission,current,life,intent,version
  const previews=createArtifactPreviewService({validators:v,artifacts,objects:config.options.objects,previews:config.preview.previews,renderer:config.preview.renderer,ids:config.options.ids,now:config.now,
   ...(config.preview.maxPreviewBytes===undefined?{}:{maxPreviewBytes:config.preview.maxPreviewBytes})});
  if(intent==='preview-publish'){
-  // Reads (authority, retention, bytes, render) precede the first effect; only the preview object write starts a write.
+  // Canonical reads precede the durable claim; claiming begins the uncertain-effect boundary before rendering.
   state.readStarted=true;
   const result=await life.run(async signal=>{const value=await previews.publish(versionId,context,{signal,onWriteStarted:()=>{state.writeStarted=true;}});state.completed=true;return value;});
   if(result.preview.versionId!==versionId||!admitsDocumentMime(admission,result.preview.source.mimeType))fail('DOCUMENT_RESULT_REFUSED',502);
