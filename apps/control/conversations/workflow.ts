@@ -8,3 +8,6 @@ export async function meriConversationWorkflow(input:{binding:Binding}):Promise<
 
 // Separate opt-in definition preserves legacy in-flight workflow history.
 export {meriConversationLifecycleWorkflow} from './lifecycle/workflow.ts';
+
+// Separate server continuation; scheduling remains opt-in through its authenticated Core owner.
+export {meriObjectivePlannerWorkflow} from '../objective-planner/continuation/workflow.ts';

@@ -19,10 +19,14 @@ function output(value){const o=own(value,['availability','id','createdVersion','
 }
 /** Mutable current read projection, never the stored creation receipt or its immutable custody hash. */
 export function plannerObservation(raw,value){
- const r=data(own(raw,['requestId','status','replayed','recordedAt','observedAt','source','projects','tasks','context','edges','exclusions','issues','counts'])),w=work(value);
- if(r.requestId!==w.plannerRequestId||!['prepared','prepared_with_issues','partial'].includes(r.status)||typeof r.replayed!=='boolean')fail('INVALID_RECEIPT');instant(r.recordedAt);instant(r.observedAt);
+ const w=work(value);return materializationObservation(raw,{requestId:w.plannerRequestId,source:expectedSource(w)});
+}
+/** Same Core-owned projection decoder, shared by legacy compatibility and the fixed canonical receiving envelope. */
+export function materializationObservation(raw,expected){
+ const e=data(own(expected,['requestId','source'])),r=data(own(raw,['requestId','status','replayed','recordedAt','observedAt','source','projects','tasks','context','edges','exclusions','issues','counts']));
+ if(r.requestId!==e.requestId||!['prepared','prepared_with_issues','partial'].includes(r.status)||typeof r.replayed!=='boolean')fail('INVALID_RECEIPT');instant(r.recordedAt);instant(r.observedAt);
  own(r.source,['generationJobId','generationRequestId','clientId','objectiveId','objectiveVersion','objectiveRevisionId','strategyId','strategyVersionId','snapshotDigest']);
- if(!same(r.source,expectedSource(w)))fail('SOURCE_STALE');
+ if(!same(r.source,e.source))fail('SOURCE_STALE');
  if(!Array.isArray(r.projects)||!Array.isArray(r.tasks)||!Array.isArray(r.context)||!Array.isArray(r.edges)||!Array.isArray(r.exclusions)||!Array.isArray(r.issues))fail('INVALID_RECEIPT');
  const groups=new Set(),nodes=new Set(),outputs=new Set();
  for(const p of r.projects){own(p,['groupKey','name','originalNodeIds','output']);text(p.groupKey);text(p.name);strings(p.originalNodeIds,uuid);if(groups.has(p.groupKey))fail('INVALID_RECEIPT');groups.add(p.groupKey);output(p.output);if(p.output.id!==null){if(outputs.has(p.output.id))fail('INVALID_RECEIPT');outputs.add(p.output.id);}}
