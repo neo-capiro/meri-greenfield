@@ -1,0 +1,8 @@
+{
+  "firstAttempt": "git apply --check of exact14f-to-C control delta",
+  "result": "FAILED_CONTEXT_ONLY_NO_MUTATION",
+  "detail": "First hunk adjacent to accepted input import; source/index clean afterward",
+  "resolution": "Byte-prove current control equals14f plus the exact three accepted input additions; apply those same additions to exact reviewed C control",
+  "before": "693a3436c36bc5674e75da3ecc2b8614ea3d6ecd",
+  "source": "7f9c84670bdabb3f96eaf0c3ce3785ff55684944"
+}

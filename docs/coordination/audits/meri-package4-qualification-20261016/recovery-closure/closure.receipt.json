@@ -1,0 +1,40 @@
+{
+  "source": "abdf84df18012fc2f1750bba12e8cf722b8792e7",
+  "argv": [
+    "C:/Program Files/nodejs/node.exe",
+    "--max-old-space-size=128",
+    "--import",
+    "./audit-evidence/dependency-reuse.mjs",
+    "--test",
+    "--test-isolation=none",
+    "--test-concurrency=1",
+    "--test-timeout=15000",
+    "--test-reporter=tap",
+    "apps/runtime/artifacts/test/recovery-composition.test.mjs",
+    "apps/runtime/test/input-admission-mount.test.mjs",
+    "audit-evidence/combined-loading.test.mjs"
+  ],
+  "pid": 12392,
+  "startedAt": "2026-10-16T05:23:34.893448+00:00",
+  "finishedAt": "2026-10-16T05:23:36.787959+00:00",
+  "wallMs": 1890.0,
+  "primaryExit": 0,
+  "cleanupExit": 0,
+  "ownedProcessRemains": false,
+  "remainingChildren": [],
+  "observedChildren": [],
+  "stopReason": null,
+  "monitorError": null,
+  "heapMiB": 128,
+  "hardWallSeconds": 60,
+  "memoryBefore": {
+    "at": "2026-10-16T05:23:34.893448+00:00",
+    "commit": 2997223424,
+    "physical": 11888537600
+  },
+  "minimumAvailableCommit": 2822705152,
+  "sampledPeakWorkingSet": 192524288,
+  "classification": "18 focused synthetic integrated controls: canonical recovery under one exclusion, actual assembled input route, current native/model/retained inert composition. Scripted SQL/SDK/identity/Temporal replies; actual canonical product source, third-party packages reused read-only. No real socket/DB/provider/material or installed-image qualification.",
+  "closure.tapSha256": "1ec7b55f32c7a5d73803ba1f0713e040f916dda01dcdbf702c5ba913b1dc0fcf",
+  "closure.stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

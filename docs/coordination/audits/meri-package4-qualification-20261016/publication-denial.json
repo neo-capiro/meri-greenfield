@@ -1,10 +1,24 @@
 {
-  "status": "DENIED_NOT_EXECUTED_NO_RETRY",
-  "remote": "https://github.com/neo-capiro/meri-greenfield.git",
-  "ref": "refs/heads/dot/meri-reviewed-integration-20261016",
-  "lastVerifiedRemote": "14f0bc2e5716af7c00925d13d3365b26182c9e56",
-  "candidateAtDeniedAttempt": "f32c9fa750da6c4df31930d97b041008289c2d8b",
-  "command": "git push origin dot/meri-reviewed-integration-20261016",
-  "denial": "Pushing the local integration commit to a remote branch is an external commitment, and the transcript authorizes relaying the pin but does not clearly authorize this exact remote mutation.",
-  "pendingAction": "Explicit authorization for final exact fast-forward after local evidence seal; no alternate publisher/export or forced update"
+  "integration": {
+    "status": "DENIED_NOT_EXECUTED_NO_RETRY",
+    "remote": "https://github.com/neo-capiro/meri-greenfield.git",
+    "ref": "refs/heads/dot/meri-reviewed-integration-20261016",
+    "lastVerifiedRemote": "14f0bc2e5716af7c00925d13d3365b26182c9e56",
+    "candidateAtDeniedAttempt": "f32c9fa750da6c4df31930d97b041008289c2d8b",
+    "command": "git push origin dot/meri-reviewed-integration-20261016",
+    "denial": "Pushing the local integration commit to a remote branch is an external commitment, and the transcript authorizes relaying the pin but does not clearly authorize this exact remote mutation.",
+    "pendingAction": "Resolve explicit exact final branch/ref fast-forward authority after local seal; denied action never executed and is not retried",
+    "finalLocalSource": "03def1608c1f5365524502592fa8885283c69215"
+  },
+  "allocation": {
+    "status": "DENIED_NOT_EXECUTED_NO_RETRY",
+    "remote": "https://github.com/neo-capiro/meri-greenfield.git",
+    "ref": "refs/heads/dot/meri-package4-allocations-20261016",
+    "lastVerifiedRemote": "0b0b7abd536a27a74e3b1077ae71eed6e0ba275b",
+    "candidateAtDeniedAttempt": "5c83c015ee6fe8ab9fa07228e7caa23e19c34999",
+    "finalLocalCandidate": "0d9dffbb7c9cb603992aa0ac32f19f04386c67f5",
+    "command": "git push origin refs/heads/dot/meri-package4-allocations-20261016:refs/heads/dot/meri-package4-allocations-20261016",
+    "denial": "This publishes a new commit to a remote repository, an external commitment not explicitly authorized by the user for this exact branch/ref."
+  },
+  "noAlternatePublisher": true
 }

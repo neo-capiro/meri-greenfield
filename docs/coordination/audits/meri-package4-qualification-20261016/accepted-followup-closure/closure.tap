@@ -1,0 +1,652 @@
+TAP version 13
+# Subtest: new acknowledgement allocates exactly one immutable identity without a run, event or dispatch
+ok 1 - new acknowledgement allocates exactly one immutable identity without a run, event or dispatch
+  ---
+  duration_ms: 23.3023
+  type: 'test'
+  ...
+# Subtest: concurrent exact claims have one new acknowledgement; reconstruction and later lease proposals never refresh it
+ok 2 - concurrent exact claims have one new acknowledgement; reconstruction and later lease proposals never refresh it
+  ---
+  duration_ms: 1.658
+  type: 'test'
+  ...
+# Subtest: concurrent different intents cannot overwrite the winner
+ok 3 - concurrent different intents cannot overwrite the winner
+  ---
+  duration_ms: 1.3762
+  type: 'test'
+  ...
+# Subtest: lost allocation COMMIT acknowledgement yields UNKNOWN, and its recovered identity is never new
+ok 4 - lost allocation COMMIT acknowledgement yields UNKNOWN, and its recovered identity is never new
+  ---
+  duration_ms: 1.2411
+  type: 'test'
+  ...
+# Subtest: no allocation cannot be interpreted as acceptance permission
+ok 5 - no allocation cannot be interpreted as acceptance permission
+  ---
+  duration_ms: 7.2001
+  type: 'test'
+  ...
+# Subtest: acceptance atomically matches the allocation and preserves the original prompt/context on exact replay
+ok 6 - acceptance atomically matches the allocation and preserves the original prompt/context on exact replay
+  ---
+  duration_ms: 60.6546
+  type: 'test'
+  ...
+# Subtest: acceptance refuses altered requestId before any run/event can be committed
+ok 7 - acceptance refuses altered requestId before any run/event can be committed
+  ---
+  duration_ms: 1.47
+  type: 'test'
+  ...
+# Subtest: acceptance refuses altered prompt before any run/event can be committed
+ok 8 - acceptance refuses altered prompt before any run/event can be committed
+  ---
+  duration_ms: 1.0703
+  type: 'test'
+  ...
+# Subtest: acceptance refuses altered window before any run/event can be committed
+ok 9 - acceptance refuses altered window before any run/event can be committed
+  ---
+  duration_ms: 0.9573
+  type: 'test'
+  ...
+# Subtest: acceptance refuses altered windowRequest before any run/event can be committed
+ok 10 - acceptance refuses altered windowRequest before any run/event can be committed
+  ---
+  duration_ms: 0.9508
+  type: 'test'
+  ...
+# Subtest: acceptance refuses altered skill before any run/event can be committed
+ok 11 - acceptance refuses altered skill before any run/event can be committed
+  ---
+  duration_ms: 0.8083
+  type: 'test'
+  ...
+# Subtest: a different actor cannot recover or accept another original identity
+ok 12 - a different actor cannot recover or accept another original identity
+  ---
+  duration_ms: 1.0276
+  type: 'test'
+  ...
+# Subtest: a different run cannot recover or accept another original identity
+ok 13 - a different run cannot recover or accept another original identity
+  ---
+  duration_ms: 0.9839
+  type: 'test'
+  ...
+# Subtest: a different attempt cannot recover or accept another original identity
+ok 14 - a different attempt cannot recover or accept another original identity
+  ---
+  duration_ms: 0.7208
+  type: 'test'
+  ...
+# Subtest: a different worker cannot recover or accept another original identity
+ok 15 - a different worker cannot recover or accept another original identity
+  ---
+  duration_ms: 0.6885
+  type: 'test'
+  ...
+# Subtest: a different fence cannot recover or accept another original identity
+ok 16 - a different fence cannot recover or accept another original identity
+  ---
+  duration_ms: 0.6192
+  type: 'test'
+  ...
+# Subtest: a different scope cannot recover or accept another original identity
+ok 17 - a different scope cannot recover or accept another original identity
+  ---
+  duration_ms: 0.6495
+  type: 'test'
+  ...
+# Subtest: a different client cannot recover or accept another original identity
+ok 18 - a different client cannot recover or accept another original identity
+  ---
+  duration_ms: 0.6552
+  type: 'test'
+  ...
+# Subtest: a different versions cannot recover or accept another original identity
+ok 19 - a different versions cannot recover or accept another original identity
+  ---
+  duration_ms: 0.6688
+  type: 'test'
+  ...
+# Subtest: a different rawIntent cannot recover or accept another original identity
+ok 20 - a different rawIntent cannot recover or accept another original identity
+  ---
+  duration_ms: 0.6761
+  type: 'test'
+  ...
+# Subtest: a different preparedRequest cannot recover or accept another original identity
+ok 21 - a different preparedRequest cannot recover or accept another original identity
+  ---
+  duration_ms: 0.8604
+  type: 'test'
+  ...
+# Subtest: expired original identity cannot be renewed or accepted
+ok 22 - expired original identity cannot be renewed or accepted
+  ---
+  duration_ms: 0.9948
+  type: 'test'
+  ...
+# Subtest: failure after marking acceptance rolls back the allocation, run and event together
+ok 23 - failure after marking acceptance rolls back the allocation, run and event together
+  ---
+  duration_ms: 1.0525
+  type: 'test'
+  ...
+# Subtest: authority check invalidated during acceptance refuses release and rolls back all three records
+ok 24 - authority check invalidated during acceptance refuses release and rolls back all three records
+  ---
+  duration_ms: 1.1266
+  type: 'test'
+  ...
+# Subtest: lost acceptance ACK reconstructs the same accepted input without a duplicate event
+ok 25 - lost acceptance ACK reconstructs the same accepted input without a duplicate event
+  ---
+  duration_ms: 1.3685
+  type: 'test'
+  ...
+# Subtest: corrupt or inconsistent stored state never becomes fresh allocation evidence
+ok 26 - corrupt or inconsistent stored state never becomes fresh allocation evidence
+  ---
+  duration_ms: 0.987
+  type: 'test'
+  ...
+# Subtest: any existing original input, conversation shell or successor journal refuses a new original claim
+ok 27 - any existing original input, conversation shell or successor journal refuses a new original claim
+  ---
+  duration_ms: 9.6625
+  type: 'test'
+  ...
+# Subtest: canonical public input/request correlation refuses an altered prepared prompt before store IO
+ok 28 - canonical public input/request correlation refuses an altered prepared prompt before store IO
+  ---
+  duration_ms: 0.7381
+  type: 'test'
+  ...
+# Subtest: expiry during claim COMMIT cannot release a positive acknowledgement
+ok 29 - expiry during claim COMMIT cannot release a positive acknowledgement
+  ---
+  duration_ms: 0.7019
+  type: 'test'
+  ...
+# Subtest: expiry during accept COMMIT cannot release a positive acknowledgement
+ok 30 - expiry during accept COMMIT cannot release a positive acknowledgement
+  ---
+  duration_ms: 1.2287
+  type: 'test'
+  ...
+# Subtest: global request identity collision cannot create another tenant/conversation slot
+ok 31 - global request identity collision cannot create another tenant/conversation slot
+  ---
+  duration_ms: 1.1291
+  type: 'test'
+  ...
+# Subtest: original normalized calendar window is retained, never recomputed at acceptance or replay
+ok 32 - original normalized calendar window is retained, never recomputed at acceptance or replay
+  ---
+  duration_ms: 18.078
+  type: 'test'
+  ...
+# Subtest: current selected client must match the original allocation even if the run scope array is unchanged
+ok 33 - current selected client must match the original allocation even if the run scope array is unchanged
+  ---
+  duration_ms: 0.9979
+  type: 'test'
+  ...
+# Subtest: a shorter current cutoff remains binding through replay COMMIT without changing the original lease
+ok 34 - a shorter current cutoff remains binding through replay COMMIT without changing the original lease
+  ---
+  duration_ms: 0.9447
+  type: 'test'
+  ...
+# Subtest: request is immutable and replay survives owner reconstruction
+ok 35 - request is immutable and replay survives owner reconstruction
+  ---
+  duration_ms: 1.4543
+  type: 'test'
+  ...
+# Subtest: events atomically advance state and stable IDs replay without duplicates
+ok 36 - events atomically advance state and stable IDs replay without duplicates
+  ---
+  duration_ms: 2.1818
+  type: 'test'
+  ...
+# Subtest: concurrent starting attempts serialize and allow one model admission
+ok 37 - concurrent starting attempts serialize and allow one model admission
+  ---
+  duration_ms: 1.0281
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign tenant
+ok 38 - stored reads/writes deny foreign tenant
+  ---
+  duration_ms: 0.5318
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign actor
+ok 39 - stored reads/writes deny foreign actor
+  ---
+  duration_ms: 0.5539
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign conversation
+ok 40 - stored reads/writes deny foreign conversation
+  ---
+  duration_ms: 0.5114
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign run
+ok 41 - stored reads/writes deny foreign run
+  ---
+  duration_ms: 0.4534
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign attempt
+ok 42 - stored reads/writes deny foreign attempt
+  ---
+  duration_ms: 0.4916
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign worker
+ok 43 - stored reads/writes deny foreign worker
+  ---
+  duration_ms: 0.5144
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign fence
+ok 44 - stored reads/writes deny foreign fence
+  ---
+  duration_ms: 0.5114
+  type: 'test'
+  ...
+# Subtest: cancelled run refuses late text and completion but original events remain inspectable
+ok 45 - cancelled run refuses late text and completion but original events remain inspectable
+  ---
+  duration_ms: 1.738
+  type: 'test'
+  ...
+# Subtest: lost COMMIT acknowledgement is unknown and exact retry recovers one saved request
+ok 46 - lost COMMIT acknowledgement is unknown and exact retry recovers one saved request
+  ---
+  duration_ms: 0.5751
+  type: 'test'
+  ...
+# Subtest: retained event corruption and a sequence hole refuse reconnect
+ok 47 - retained event corruption and a sequence hole refuse reconnect
+  ---
+  duration_ms: 1.2524
+  type: 'test'
+  ...
+# Subtest: cursor after durable end and oversized publication refuse
+ok 48 - cursor after durable end and oversized publication refuse
+  ---
+  duration_ms: 1.1454
+  type: 'test'
+  ...
+# Subtest: search_congress_bills: fixed flat POST with both native credentials; actual JSON DTO dates
+ok 49 - search_congress_bills: fixed flat POST with both native credentials; actual JSON DTO dates
+  ---
+  duration_ms: 29.2661
+  type: 'test'
+  ...
+# Subtest: search_congress_bills: actual canonical durable dispatch settles once and preserves duplicate uncertainty
+ok 50 - search_congress_bills: actual canonical durable dispatch settles once and preserves duplicate uncertainty
+  ---
+  duration_ms: 144.2802
+  type: 'test'
+  ...
+# Subtest: search_congress_bills: disabled, uninstalled and missing captured Congress cannot fetch
+ok 51 - search_congress_bills: disabled, uninstalled and missing captured Congress cannot fetch
+  ---
+  duration_ms: 46.8358
+  type: 'test'
+  ...
+# Subtest: search_congress_bills: model authority is rejected before source and budget
+ok 52 - search_congress_bills: model authority is rejected before source and budget
+  ---
+  duration_ms: 40.9985
+  type: 'test'
+  ...
+# Subtest: search_congress_bills: release revocation withholds the fetched result
+ok 53 - search_congress_bills: release revocation withholds the fetched result
+  ---
+  duration_ms: 59.0963
+  type: 'test'
+  ...
+# Subtest: read_bill_text: fixed flat POST with both native credentials; actual JSON DTO dates
+ok 54 - read_bill_text: fixed flat POST with both native credentials; actual JSON DTO dates
+  ---
+  duration_ms: 20.1363
+  type: 'test'
+  ...
+# Subtest: read_bill_text: actual canonical durable dispatch settles once and preserves duplicate uncertainty
+ok 55 - read_bill_text: actual canonical durable dispatch settles once and preserves duplicate uncertainty
+  ---
+  duration_ms: 115.6044
+  type: 'test'
+  ...
+# Subtest: read_bill_text: disabled, uninstalled and missing captured Congress cannot fetch
+ok 56 - read_bill_text: disabled, uninstalled and missing captured Congress cannot fetch
+  ---
+  duration_ms: 46.5829
+  type: 'test'
+  ...
+# Subtest: read_bill_text: model authority is rejected before source and budget
+ok 57 - read_bill_text: model authority is rejected before source and budget
+  ---
+  duration_ms: 46.0295
+  type: 'test'
+  ...
+# Subtest: read_bill_text: release revocation withholds the fetched result
+ok 58 - read_bill_text: release revocation withholds the fetched result
+  ---
+  duration_ms: 54.4723
+  type: 'test'
+  ...
+# Subtest: SEARCH resolves a designation under captured118 before a Core119 clock could retarget it
+ok 59 - SEARCH resolves a designation under captured118 before a Core119 clock could retarget it
+  ---
+  duration_ms: 3.3696
+  type: 'test'
+  ...
+# Subtest: text-search mode preserves literal Unicode notes, counts and selection
+ok 60 - text-search mode preserves literal Unicode notes, counts and selection
+  ---
+  duration_ms: 2.1541
+  type: 'test'
+  ...
+# Subtest: sequential continuation preserves revision/hash/offset and detects a changed native vector
+ok 61 - sequential continuation preserves revision/hash/offset and detects a changed native vector
+  ---
+  duration_ms: 4.1334
+  type: 'test'
+  ...
+# Subtest: locator mode remains excerpts, not complete text or a renewable continuation authority
+ok 62 - locator mode remains excerpts, not complete text or a renewable continuation authority
+  ---
+  duration_ms: 2.1666
+  type: 'test'
+  ...
+# Subtest: HTTP200 unavailable revision is explicit UNAVAILABLE and a malformed tool payload is invalid
+ok 63 - HTTP200 unavailable revision is explicit UNAVAILABLE and a malformed tool payload is invalid
+  ---
+  duration_ms: 3.3327
+  type: 'test'
+  ...
+# Subtest: missing credential owner and forbidden delegated mode cannot reach a native route
+ok 64 - missing credential owner and forbidden delegated mode cannot reach a native route
+  ---
+  duration_ms: 0.7726
+  type: 'test'
+  ...
+# Subtest: native secret proof mismatch refuses before fetch
+ok 65 - native secret proof mismatch refuses before fetch
+  ---
+  duration_ms: 0.9253
+  type: 'test'
+  ...
+# Subtest: native binding proof mismatch refuses before fetch
+ok 66 - native binding proof mismatch refuses before fetch
+  ---
+  duration_ms: 0.7145
+  type: 'test'
+  ...
+# Subtest: native expiry proof mismatch refuses before fetch
+ok 67 - native expiry proof mismatch refuses before fetch
+  ---
+  duration_ms: 0.8498
+  type: 'test'
+  ...
+# Subtest: current audience mismatch refuses before native credentials
+ok 68 - current audience mismatch refuses before native credentials
+  ---
+  duration_ms: 0.3876
+  type: 'test'
+  ...
+# Subtest: current decision mismatch refuses before native credentials
+ok 69 - current decision mismatch refuses before native credentials
+  ---
+  duration_ms: 0.4745
+  type: 'test'
+  ...
+# Subtest: response cap, media and redirects fail closed without changing native DTO validation
+ok 70 - response cap, media and redirects fail closed without changing native DTO validation
+  ---
+  duration_ms: 3.1471
+  type: 'test'
+  ...
+# Subtest: pre-abort and original deadline do not start native work
+ok 71 - pre-abort and original deadline do not start native work
+  ---
+  duration_ms: 0.5678
+  type: 'test'
+  ...
+# Subtest: no endpoint or operation selector can widen the finite family
+ok 72 - no endpoint or operation selector can widen the finite family
+  ---
+  duration_ms: 0.2778
+  type: 'test'
+  ...
+# Subtest: canonical publication-only recovery restores versions once under the same exclusion, even with no preview rows
+ok 73 - canonical publication-only recovery restores versions once under the same exclusion, even with no preview rows
+  ---
+  duration_ms: 5.7705
+  type: 'test'
+  ...
+# Subtest: canonical preview recovery restores versions once under the same exclusion, even with no preview rows
+ok 74 - canonical preview recovery restores versions once under the same exclusion, even with no preview rows
+  ---
+  duration_ms: 3.4969
+  type: 'test'
+  ...
+# Subtest: recovery projection failure cannot record a watermark or open serving
+ok 75 - recovery projection failure cannot record a watermark or open serving
+  ---
+  duration_ms: 7.776
+  type: 'test'
+  ...
+# Subtest: recovery unverified SQL inventory cannot record a watermark or open serving
+ok 76 - recovery unverified SQL inventory cannot record a watermark or open serving
+  ---
+  duration_ms: 1.2208
+  type: 'test'
+  ...
+# Subtest: disabled canonical storage stays unavailable without any SQL or SDK calls
+ok 77 - disabled canonical storage stays unavailable without any SQL or SDK calls
+  ---
+  duration_ms: 0.8336
+  type: 'test'
+  ...
+# Subtest: missing and caller-authored recovery cannot qualify a declared artifact store
+ok 78 - missing and caller-authored recovery cannot qualify a declared artifact store
+  ---
+  duration_ms: 0.2732
+  type: 'test'
+  ...
+# Subtest: canonical provenance survives recapture; mismatched raw journal or retention forwarder refuses
+ok 79 - canonical provenance survives recapture; mismatched raw journal or retention forwarder refuses
+  ---
+  duration_ms: 0.4168
+  type: 'test'
+  ...
+# Subtest: absent capability leaves the existing optional callback absent; invalid enable values cannot normalize to disabled
+ok 80 - absent capability leaves the existing optional callback absent; invalid enable values cannot normalize to disabled
+  ---
+  duration_ms: 0.562
+  type: 'test'
+  ...
+# Subtest: document composition uses the SAME canonical versions and preview owners and refuses a competing preview store
+ok 81 - document composition uses the SAME canonical versions and preview owners and refuses a competing preview store
+  ---
+  duration_ms: 0.5021
+  type: 'test'
+  ...
+# Subtest: actual control factory receives its canonical raw journal/forwarder before port capture, without constructor IO
+ok 82 - actual control factory receives its canonical raw journal/forwarder before port capture, without constructor IO
+  ---
+  duration_ms: 1.5461
+  type: 'test'
+  ...
+# Subtest: actual startup mounts admission on SAME lifecycle service; durable replay has one queued event and zero workflows until submit
+ok 83 - actual startup mounts admission on SAME lifecycle service; durable replay has one queued event and zero workflows until submit
+  ---
+  duration_ms: 26.3946
+  type: 'test'
+  ...
+# Subtest: mounted admission keeps revoked and forged requests from persistence and never calls native/model dispatch
+ok 84 - mounted admission keeps revoked and forged requests from persistence and never calls native/model dispatch
+  ---
+  duration_ms: 1.8683
+  type: 'test'
+  ...
+# Subtest: search_congress_bills: actual canonical conversion accepts literals without defaults and rejects model authority
+ok 85 - search_congress_bills: actual canonical conversion accepts literals without defaults and rejects model authority
+  ---
+  duration_ms: 7.1852
+  type: 'test'
+  ...
+# Subtest: read_bill_text: actual canonical conversion accepts literals without defaults and rejects model authority
+ok 86 - read_bill_text: actual canonical conversion accepts literals without defaults and rejects model authority
+  ---
+  duration_ms: 2.83
+  type: 'test'
+  ...
+# Subtest: integrated canonical startup owners satisfy actual model/task bindings without I/O or material creation
+ok 87 - integrated canonical startup owners satisfy actual model/task bindings without I/O or material creation
+  ---
+  duration_ms: 6.0243
+  type: 'test'
+  ...
+# Subtest: integrated control retention composes mandatory atomic store ports and refuses missing external ledger before effects
+ok 88 - integrated control retention composes mandatory atomic store ports and refuses missing external ledger before effects
+  ---
+  duration_ms: 0.4825
+  type: 'test'
+  ...
+# Subtest: integrated control READS factory and native sibling expose no authority without genuine allocated owners
+ok 89 - integrated control READS factory and native sibling expose no authority without genuine allocated owners
+  ---
+  duration_ms: 0.5236
+  type: 'test'
+  ...
+# Subtest: integrated concrete preview evidence/source recovery stays disabled without effects by default
+ok 90 - integrated concrete preview evidence/source recovery stays disabled without effects by default
+  ---
+  duration_ms: 0.4478
+  type: 'test'
+  ...
+# Subtest: integrated retained CONTROL consumer refuses absent genuine trust without touching borrowed owners
+ok 91 - integrated retained CONTROL consumer refuses absent genuine trust without touching borrowed owners
+  ---
+  duration_ms: 0.6404
+  type: 'test'
+  ...
+# Subtest: integrated input admission retains one canonical queued input and submit reuses it without a second event
+ok 92 - integrated input admission retains one canonical queued input and submit reuses it without a second event
+  ---
+  duration_ms: 9.284
+  type: 'test'
+  ...
+# Subtest: 96 selected and43 excluded are reconciled separately from23 registered operations
+ok 93 - 96 selected and43 excluded are reconciled separately from23 registered operations
+  ---
+  duration_ms: 0.0972
+  type: 'test'
+  ...
+# Subtest: every existing selected source adapter already has general exposure; remaining61 are genuine adapter gaps
+ok 94 - every existing selected source adapter already has general exposure; remaining61 are genuine adapter gaps
+  ---
+  duration_ms: 0.3426
+  type: 'test'
+  ...
+# Subtest: only source-admitted original skills can establish a source route
+ok 95 - only source-admitted original skills can establish a source route
+  ---
+  duration_ms: 0.17
+  type: 'test'
+  ...
+# Subtest: historical action-items contract is an additional route for one selected successor
+ok 96 - historical action-items contract is an additional route for one selected successor
+  ---
+  duration_ms: 0.0806
+  type: 'test'
+  ...
+# Subtest: read-only product state is counted separately; writes and other product operations stay outside meri_reads
+ok 97 - read-only product state is counted separately; writes and other product operations stay outside meri_reads
+  ---
+  duration_ms: 0.1815
+  type: 'test'
+  ...
+# Subtest: all43 exclusions remain absent from both selected mappings and general registration
+ok 98 - all43 exclusions remain absent from both selected mappings and general registration
+  ---
+  duration_ms: 0.2148
+  type: 'test'
+  ...
+# Subtest: all63 reviewed producer records correlate exact operations, context keys and immutable report pointers
+ok 99 - all63 reviewed producer records correlate exact operations, context keys and immutable report pointers
+  ---
+  duration_ms: 6.865
+  type: 'test'
+  ...
+# Subtest: current source provenance measures declared canonical paths without claiming qualification
+ok 100 - current source provenance measures declared canonical paths without claiming qualification
+  ---
+  duration_ms: 19.2352
+  type: 'test'
+  ...
+# Subtest: registering a governed write family refuses instead of expanding the read server
+ok 101 - registering a governed write family refuses instead of expanding the read server
+  ---
+  duration_ms: 1.1724
+  type: 'test'
+  ...
+# Subtest: registered family without adapter fails closed
+ok 102 - registered family without adapter fails closed
+  ---
+  duration_ms: 1.1335
+  type: 'test'
+  ...
+# Subtest: a manifest declaration alone never manufactures an adapter or source route
+ok 103 - a manifest declaration alone never manufactures an adapter or source route
+  ---
+  duration_ms: 1.5287
+  type: 'test'
+  ...
+# Subtest: duplicate adapter claims and changed selected scope refuse
+ok 104 - duplicate adapter claims and changed selected scope refuse
+  ---
+  duration_ms: 2.3464
+  type: 'test'
+  ...
+# Subtest: a duplicate canonical binding refuses rather than choosing an arbitrary adapter family
+ok 105 - a duplicate canonical binding refuses rather than choosing an arbitrary adapter family
+  ---
+  duration_ms: 0.9278
+  type: 'test'
+  ...
+# Subtest: targeted refresh preserves all139 historical rows, exclusions, source provenance and gates
+ok 106 - targeted refresh preserves all139 historical rows, exclusions, source provenance and gates
+  ---
+  duration_ms: 55.7626
+  type: 'test'
+  ...
+# Subtest: committed current exposure regenerates exactly with a scoped drift check
+ok 107 - committed current exposure regenerates exactly with a scoped drift check
+  ---
+  duration_ms: 87.2164
+  type: 'test'
+  ...
+1..107
+# tests 107
+# suites 0
+# pass 107
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2630.1513

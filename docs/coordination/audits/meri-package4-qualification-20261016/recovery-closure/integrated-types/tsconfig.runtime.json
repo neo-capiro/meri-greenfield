@@ -1,0 +1,116 @@
+{
+  "extends": "C:/Users/neoma/Documents/Codex/2026-10-15/task-8/meri-qualification/apps/runtime/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "C:/Users/neoma/Documents/Codex/2026-10-15/task-8/meri-qualification",
+    "paths": {
+      "*": [
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/runtime/node_modules/*",
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/control/conversations/node_modules/*",
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/worker/conversation/node_modules/*",
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/packages/contracts/node_modules/*",
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/packages/ui-stream/node_modules/*",
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/packages/window-resolution/node_modules/*",
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/artifacts/storage/node_modules/*",
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/node_modules/*"
+      ],
+      "@anthropic-ai/claude-agent-sdk": [
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk/sdk.d.ts"
+      ],
+      "@opentelemetry/api": [
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/runtime/node_modules/@opentelemetry/api/build/src/index.d.ts"
+      ],
+      "@opentelemetry/exporter-metrics-otlp-http": [
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/runtime/node_modules/@opentelemetry/exporter-metrics-otlp-http/build/src/index.d.ts"
+      ],
+      "@opentelemetry/exporter-trace-otlp-http": [
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/runtime/node_modules/@opentelemetry/exporter-trace-otlp-http/build/src/index.d.ts"
+      ],
+      "@opentelemetry/sdk-node": [
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/runtime/node_modules/@opentelemetry/sdk-node/build/src/index.d.ts"
+      ],
+      "@temporalio/client": [
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/runtime/node_modules/@temporalio/client/lib/index.d.ts"
+      ],
+      "@temporalio/worker": [
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/runtime/node_modules/@temporalio/worker/lib/index.d.ts"
+      ],
+      "@temporalio/workflow": [
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/control/conversations/node_modules/@temporalio/workflow/lib/index.d.ts"
+      ],
+      "ajv": [
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/packages/contracts/node_modules/ajv/dist/ajv.d.ts"
+      ],
+      "ajv-formats": [
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/packages/contracts/node_modules/ajv-formats/dist/index.d.ts"
+      ],
+      "zod": [
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/worker/conversation/node_modules/zod/index.d.cts"
+      ],
+      "@capiro/meri-contracts": [
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-8/meri-qualification/packages/contracts/dist/index.d.ts"
+      ],
+      "@capiro/meri-contracts/browser": [
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-8/meri-qualification/packages/contracts/dist/browser.d.ts"
+      ],
+      "@capiro/meri-contracts/node": [
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-8/meri-qualification/packages/contracts/validate.mjs"
+      ],
+      "@capiro/meri-contracts/metadata": [
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-8/meri-qualification/packages/contracts/dist/metadata.d.ts"
+      ],
+      "@capiro/meri-contracts/schema": [
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-8/meri-qualification/packages/contracts/meri.schema.json"
+      ],
+      "@capiro/meri-contracts/action-application": [
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-8/meri-qualification/packages/contracts/dist/action-application.d.ts"
+      ],
+      "@capiro/meri-contracts/action-application/schema": [
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-8/meri-qualification/packages/contracts/dist/action-application.schema.json"
+      ],
+      "@capiro/meri-contracts/document-application": [
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-8/meri-qualification/packages/contracts/dist/document-application.d.ts"
+      ],
+      "@capiro/meri-contracts/document-application/schema": [
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-8/meri-qualification/packages/contracts/dist/document-application.schema.json"
+      ],
+      "@capiro/meri-contracts/conversation-application": [
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-8/meri-qualification/packages/contracts/dist/conversation-application.d.ts"
+      ],
+      "@capiro/meri-contracts/conversation-application/schema": [
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-8/meri-qualification/packages/contracts/dist/conversation-application.schema.json"
+      ],
+      "@capiro/meri-contracts/conversation-lifecycle": [
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-8/meri-qualification/packages/contracts/dist/conversation-lifecycle.d.ts"
+      ],
+      "@capiro/meri-contracts/conversation-lifecycle/schema": [
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-8/meri-qualification/packages/contracts/dist/conversation-lifecycle.schema.json"
+      ],
+      "@capiro/meri-contracts/conversation-history": [
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-8/meri-qualification/packages/contracts/dist/conversation-history.d.ts"
+      ],
+      "@capiro/meri-contracts/conversation-history/schema": [
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-8/meri-qualification/packages/contracts/dist/conversation-history.schema.json"
+      ],
+      "@capiro/meri-contracts/conversation-input": [
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-8/meri-qualification/packages/contracts/dist/conversation-input.d.ts"
+      ],
+      "@capiro/meri-contracts/conversation-input/schema": [
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-8/meri-qualification/packages/contracts/dist/conversation-input.schema.json"
+      ],
+      "@capiro/meri-ui-stream": [
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-8/meri-qualification/packages/ui-stream/dist/producer.d.ts"
+      ],
+      "@capiro/meri-ui-stream/protocol": [
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-8/meri-qualification/packages/ui-stream/dist/protocol.d.ts"
+      ],
+      "@capiro/meri-window-resolution": [
+        "C:/Users/neoma/Documents/Codex/2026-10-15/task-8/meri-qualification/packages/window-resolution/index.mjs"
+      ]
+    },
+    "typeRoots": [
+      "C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/runtime/node_modules/@types",
+      "C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/control/conversations/node_modules/@types",
+      "C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/packages/contracts/node_modules/@types"
+    ]
+  }
+}

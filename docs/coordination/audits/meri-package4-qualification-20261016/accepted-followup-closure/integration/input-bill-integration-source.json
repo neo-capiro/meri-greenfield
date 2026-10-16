@@ -1,0 +1,212 @@
+{
+  "groups": [
+    {
+      "label": "canonical original input claim store and centrally reserved0016",
+      "predecessor": "a54239c5f252667b3aaaaa588ef1776219816075",
+      "reviewedSource": "55c20109ff4bb840088b1372a7fe04669041803a",
+      "before": "abdf84df18012fc2f1750bba12e8cf722b8792e7",
+      "integratedCommit": "6ffe9a15ee1a88868aea936f786af633865b1f58",
+      "integratedTree": "48ae55cf1ed2e965fad69437c5cf25cf6f3827bf",
+      "files": [
+        {
+          "path": "apps/control/conversations/initial-input-facts.mjs",
+          "acceptedBlob": "fe979b988ea899cfd6715a849317fadbc1cd9652",
+          "integratedBlob": "fe979b988ea899cfd6715a849317fadbc1cd9652"
+        },
+        {
+          "path": "apps/control/conversations/initial-input-journal.mjs",
+          "acceptedBlob": "b6f8ada5066d00406b80a977db985baa78927cd8",
+          "integratedBlob": "b6f8ada5066d00406b80a977db985baa78927cd8"
+        },
+        {
+          "path": "apps/control/conversations/migrations/0016_initial_inputs.sql",
+          "acceptedBlob": "7f0373abcd086c4dd984ad31f8646981b8930f22",
+          "integratedBlob": "7f0373abcd086c4dd984ad31f8646981b8930f22"
+        },
+        {
+          "path": "apps/control/conversations/postgres-store.mjs",
+          "acceptedBlob": "a4449be9c283fefcfaee80fd379797b418c3d728",
+          "integratedBlob": "a4449be9c283fefcfaee80fd379797b418c3d728"
+        },
+        {
+          "path": "apps/control/conversations/test/initial-input-fixture.mjs",
+          "acceptedBlob": "7320181a258e617df26f7d485131580b026df0c7",
+          "integratedBlob": "7320181a258e617df26f7d485131580b026df0c7"
+        },
+        {
+          "path": "apps/control/conversations/test/initial-input.test.mjs",
+          "acceptedBlob": "24d4c0f5bdd9a827c0dcb01cb5d59397c2fd4389",
+          "integratedBlob": "24d4c0f5bdd9a827c0dcb01cb5d59397c2fd4389"
+        }
+      ]
+    },
+    {
+      "label": "bill-text required current source exposure ledger dependency",
+      "predecessor": "074937e9a7d38825f2fae2ca6c2c2e2ca714774f",
+      "reviewedSource": "fb708d231c7273f86b1462c72a72e70ccc36a3d6",
+      "before": "6ffe9a15ee1a88868aea936f786af633865b1f58",
+      "integratedCommit": "e43b373a329fbdd8bfcb3ef5ed801b4f73597852",
+      "integratedTree": "fd3aab790e188cb73075e6c418f016141f27d088",
+      "files": [
+        {
+          "path": "docs/coordination/ledgers/MERI-FINAL-SCOPE-LEDGER-20261015.md",
+          "acceptedBlob": "5ba89d5249ecd526fe4207c600cc92811e8c815d",
+          "integratedBlob": "5ba89d5249ecd526fe4207c600cc92811e8c815d"
+        },
+        {
+          "path": "docs/coordination/ledgers/scope-ledger.json",
+          "acceptedBlob": "1546e9566cb0719261ca660bd5402732f65146e7",
+          "integratedBlob": "1546e9566cb0719261ca660bd5402732f65146e7"
+        },
+        {
+          "path": "scripts/scope-ledger/cli.mjs",
+          "acceptedBlob": "892708ccff48880c431b41f50640910d92fbaad4",
+          "integratedBlob": "892708ccff48880c431b41f50640910d92fbaad4"
+        },
+        {
+          "path": "scripts/scope-ledger/ledger.mjs",
+          "acceptedBlob": "6ae9198292d1370597a41a4a8dd0b10fa35b4c69",
+          "integratedBlob": "6ae9198292d1370597a41a4a8dd0b10fa35b4c69"
+        },
+        {
+          "path": "scripts/scope-ledger/markdown.mjs",
+          "acceptedBlob": "01a30042505cf190db325a2fe93a4a581f5e6f15",
+          "integratedBlob": "01a30042505cf190db325a2fe93a4a581f5e6f15"
+        },
+        {
+          "path": "scripts/scope-ledger/source-exposure.mjs",
+          "acceptedBlob": "f8ae34d3e4c44fb22d3182a54db07b961d621e28",
+          "integratedBlob": "f8ae34d3e4c44fb22d3182a54db07b961d621e28"
+        },
+        {
+          "path": "scripts/scope-ledger/source-exposure.test.mjs",
+          "acceptedBlob": "c1ed80543c90a9c9dd1ece4a379e2f24c2d00971",
+          "integratedBlob": "c1ed80543c90a9c9dd1ece4a379e2f24c2d00971"
+        },
+        {
+          "path": "scripts/scope-ledger/sources.mjs",
+          "acceptedBlob": "6bb62f38260962ad5abc9b7e65ea50545128f722",
+          "integratedBlob": "6bb62f38260962ad5abc9b7e65ea50545128f722"
+        }
+      ]
+    },
+    {
+      "label": "source-accepted bill-text flat native routes and canonical worker schemas",
+      "predecessor": "fb708d231c7273f86b1462c72a72e70ccc36a3d6",
+      "reviewedSource": "674460a57ad8f334f1b6acacaea4702ea3130791",
+      "before": "e43b373a329fbdd8bfcb3ef5ed801b4f73597852",
+      "integratedCommit": "03def1608c1f5365524502592fa8885283c69215",
+      "integratedTree": "ff15a0b3bf23efdf86f5ff6c67962b0b5e67a05e",
+      "files": [
+        {
+          "path": "apps/gateway/dispatch/bill-text-context.mjs",
+          "acceptedBlob": "9bd17a01931165d120956ade4200c792f08c6957",
+          "integratedBlob": "9bd17a01931165d120956ade4200c792f08c6957"
+        },
+        {
+          "path": "apps/gateway/dispatch/operation-context.mjs",
+          "acceptedBlob": "e426ab7766e2e9f97b0fc1c344e81adf79349a23",
+          "integratedBlob": "e426ab7766e2e9f97b0fc1c344e81adf79349a23"
+        },
+        {
+          "path": "apps/gateway/dispatch/read-result-envelope.mjs",
+          "acceptedBlob": "e50860cb5c67088df2719fba381f0b72dffa828c",
+          "integratedBlob": "e50860cb5c67088df2719fba381f0b72dffa828c"
+        },
+        {
+          "path": "apps/gateway/dispatch/tool-dispatch.mjs",
+          "acceptedBlob": "6a56b11ee632cdcbf1033e7007cafab475b10afb",
+          "integratedBlob": "6a56b11ee632cdcbf1033e7007cafab475b10afb"
+        },
+        {
+          "path": "apps/gateway/general-reads/families.test.mjs",
+          "acceptedBlob": "90598af3f49e2524edb16753a8816101b8eba34d",
+          "integratedBlob": "90598af3f49e2524edb16753a8816101b8eba34d"
+        },
+        {
+          "path": "apps/gateway/general-reads/families/bill-text.mjs",
+          "acceptedBlob": "672bf072ff4d24b847c97b458bd400cf01535d7e",
+          "integratedBlob": "672bf072ff4d24b847c97b458bd400cf01535d7e"
+        },
+        {
+          "path": "apps/gateway/general-reads/integration.mjs",
+          "acceptedBlob": "80dbe63b1ceedbe9b4db083a41f16906e954a5cc",
+          "integratedBlob": "80dbe63b1ceedbe9b4db083a41f16906e954a5cc"
+        },
+        {
+          "path": "apps/gateway/general-reads/test/family-cases.mjs",
+          "acceptedBlob": "a510aad45c74e4289f40ba9e242ca960f71cdea2",
+          "integratedBlob": "a510aad45c74e4289f40ba9e242ca960f71cdea2"
+        },
+        {
+          "path": "apps/gateway/sources/bill-text/handler.mjs",
+          "acceptedBlob": "293f743efc53eccca7d564d1888291409e08f5ce",
+          "integratedBlob": "293f743efc53eccca7d564d1888291409e08f5ce"
+        },
+        {
+          "path": "apps/gateway/sources/bill-text/test/fixture.mjs",
+          "acceptedBlob": "731e7c1a232e430d63c3ac58f9535eeaa7e41963",
+          "integratedBlob": "731e7c1a232e430d63c3ac58f9535eeaa7e41963"
+        },
+        {
+          "path": "apps/gateway/sources/bill-text/test/handler.test.mjs",
+          "acceptedBlob": "f2c481bd0017fec39053d44ce3ab50b2551c66ae",
+          "integratedBlob": "f2c481bd0017fec39053d44ce3ab50b2551c66ae"
+        },
+        {
+          "path": "apps/worker/conversation/reads/families.mjs",
+          "acceptedBlob": "bbb83a378482070764d3e28497b622b760e60208",
+          "integratedBlob": "bbb83a378482070764d3e28497b622b760e60208"
+        },
+        {
+          "path": "apps/worker/conversation/reads/test/bill-text.test.mjs",
+          "acceptedBlob": "30e44bb48114ea8a08bb760e0f5e97b129d5d8e6",
+          "integratedBlob": "30e44bb48114ea8a08bb760e0f5e97b129d5d8e6"
+        },
+        {
+          "path": "apps/worker/conversation/reads/test/families.test.mjs",
+          "acceptedBlob": "319c6cae09389b60a1d67573a4abd02f5afb068a",
+          "integratedBlob": "319c6cae09389b60a1d67573a4abd02f5afb068a"
+        },
+        {
+          "path": "docs/coordination/ledgers/MERI-FINAL-SCOPE-LEDGER-20261015.md",
+          "acceptedBlob": "935e5742f6eea6fac0939f44651de6bfafe9bf83",
+          "integratedBlob": "935e5742f6eea6fac0939f44651de6bfafe9bf83"
+        },
+        {
+          "path": "docs/coordination/ledgers/scope-ledger.json",
+          "acceptedBlob": "8948e793f63608469010d07bea432d4987ada355",
+          "integratedBlob": "8948e793f63608469010d07bea432d4987ada355"
+        },
+        {
+          "path": "scripts/general-reads/adapters.json",
+          "acceptedBlob": "1ee3aa858d9fa28ee82d40506eb45c63ad35cdd7",
+          "integratedBlob": "1ee3aa858d9fa28ee82d40506eb45c63ad35cdd7"
+        },
+        {
+          "path": "scripts/scope-ledger/backend-producers.json",
+          "acceptedBlob": "741f7a354ffdb55eac18bf44cf8d6663dad089ef",
+          "integratedBlob": "741f7a354ffdb55eac18bf44cf8d6663dad089ef"
+        },
+        {
+          "path": "scripts/scope-ledger/markdown.mjs",
+          "acceptedBlob": "95ffdf2f83def43b96a40ee051403f1b12282b75",
+          "integratedBlob": "95ffdf2f83def43b96a40ee051403f1b12282b75"
+        },
+        {
+          "path": "scripts/scope-ledger/source-exposure.mjs",
+          "acceptedBlob": "15ee396a495dd6a435a4fa86efe27b1ee83acb5d",
+          "integratedBlob": "15ee396a495dd6a435a4fa86efe27b1ee83acb5d"
+        },
+        {
+          "path": "scripts/scope-ledger/source-exposure.test.mjs",
+          "acceptedBlob": "7b35060c6a94f4e59d9b60c0bd1d8d034896394c",
+          "integratedBlob": "7b35060c6a94f4e59d9b60c0bd1d8d034896394c"
+        }
+      ]
+    }
+  ],
+  "source": "03def1608c1f5365524502592fa8885283c69215",
+  "tree": "ff15a0b3bf23efdf86f5ff6c67962b0b5e67a05e",
+  "checks": "PENDING focused coherent exact-source checks"
+}

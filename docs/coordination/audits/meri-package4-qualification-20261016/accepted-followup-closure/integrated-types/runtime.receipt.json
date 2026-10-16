@@ -1,0 +1,35 @@
+{
+  "project": "apps/runtime",
+  "source": "03def1608c1f5365524502592fa8885283c69215",
+  "argv": [
+    "C:/Program Files/nodejs/node.exe",
+    "--max-old-space-size=768",
+    "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-4\\meri-greenfield\\apps\\runtime\\node_modules\\typescript\\bin\\tsc",
+    "--noEmit",
+    "-p",
+    "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-8\\meri-qualification\\audit-evidence\\accepted-followup-closure\\integrated-types\\tsconfig.runtime.json",
+    "--pretty",
+    "false",
+    "--extendedDiagnostics"
+  ],
+  "originalTsconfigSha256": "84a5bc6233e89722d044bfe4ffef3ed8785a8d342ec16f7feab49fc8cb4488c8",
+  "dependencyOverlaySha256": "bb065f6503c3da05fa46aaf21520476c5a37171e6255b5c939af9449ae612255",
+  "pid": 28480,
+  "startedAt": "2026-10-16T05:33:25.477357+00:00",
+  "finishedAt": "2026-10-16T05:33:29.002351+00:00",
+  "wallMs": 3531.0,
+  "primaryExit": 0,
+  "cleanupExit": 0,
+  "ownedProcessRemains": false,
+  "timedOut": false,
+  "pressureStop": false,
+  "memoryBefore": {
+    "at": "2026-10-16T05:33:25.476356+00:00",
+    "availableCommitBytes": 2916343808,
+    "availablePhysicalBytes": 11777224704
+  },
+  "minimumAvailableCommitBytes": 2350936064,
+  "peakProcessRss": "not measured",
+  "stdoutSha256": "55b9ac1baa9ffff5f63b9051d5ca97dfbad054efd5f15e1990ff6133787ecaaa",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

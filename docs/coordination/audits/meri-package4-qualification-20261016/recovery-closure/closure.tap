@@ -1,0 +1,118 @@
+TAP version 13
+# Subtest: canonical publication-only recovery restores versions once under the same exclusion, even with no preview rows
+ok 1 - canonical publication-only recovery restores versions once under the same exclusion, even with no preview rows
+  ---
+  duration_ms: 6.6118
+  type: 'test'
+  ...
+# Subtest: canonical preview recovery restores versions once under the same exclusion, even with no preview rows
+ok 2 - canonical preview recovery restores versions once under the same exclusion, even with no preview rows
+  ---
+  duration_ms: 3.0776
+  type: 'test'
+  ...
+# Subtest: recovery projection failure cannot record a watermark or open serving
+ok 3 - recovery projection failure cannot record a watermark or open serving
+  ---
+  duration_ms: 1.5174
+  type: 'test'
+  ...
+# Subtest: recovery unverified SQL inventory cannot record a watermark or open serving
+ok 4 - recovery unverified SQL inventory cannot record a watermark or open serving
+  ---
+  duration_ms: 1.0526
+  type: 'test'
+  ...
+# Subtest: disabled canonical storage stays unavailable without any SQL or SDK calls
+ok 5 - disabled canonical storage stays unavailable without any SQL or SDK calls
+  ---
+  duration_ms: 0.7909
+  type: 'test'
+  ...
+# Subtest: missing and caller-authored recovery cannot qualify a declared artifact store
+ok 6 - missing and caller-authored recovery cannot qualify a declared artifact store
+  ---
+  duration_ms: 0.2963
+  type: 'test'
+  ...
+# Subtest: canonical provenance survives recapture; mismatched raw journal or retention forwarder refuses
+ok 7 - canonical provenance survives recapture; mismatched raw journal or retention forwarder refuses
+  ---
+  duration_ms: 0.3974
+  type: 'test'
+  ...
+# Subtest: absent capability leaves the existing optional callback absent; invalid enable values cannot normalize to disabled
+ok 8 - absent capability leaves the existing optional callback absent; invalid enable values cannot normalize to disabled
+  ---
+  duration_ms: 0.3937
+  type: 'test'
+  ...
+# Subtest: document composition uses the SAME canonical versions and preview owners and refuses a competing preview store
+ok 9 - document composition uses the SAME canonical versions and preview owners and refuses a competing preview store
+  ---
+  duration_ms: 0.4517
+  type: 'test'
+  ...
+# Subtest: actual control factory receives its canonical raw journal/forwarder before port capture, without constructor IO
+ok 10 - actual control factory receives its canonical raw journal/forwarder before port capture, without constructor IO
+  ---
+  duration_ms: 4.3324
+  type: 'test'
+  ...
+# Subtest: actual startup mounts admission on SAME lifecycle service; durable replay has one queued event and zero workflows until submit
+ok 11 - actual startup mounts admission on SAME lifecycle service; durable replay has one queued event and zero workflows until submit
+  ---
+  duration_ms: 95.8103
+  type: 'test'
+  ...
+# Subtest: mounted admission keeps revoked and forged requests from persistence and never calls native/model dispatch
+ok 12 - mounted admission keeps revoked and forged requests from persistence and never calls native/model dispatch
+  ---
+  duration_ms: 1.9509
+  type: 'test'
+  ...
+# Subtest: integrated canonical startup owners satisfy actual model/task bindings without I/O or material creation
+ok 13 - integrated canonical startup owners satisfy actual model/task bindings without I/O or material creation
+  ---
+  duration_ms: 8.917
+  type: 'test'
+  ...
+# Subtest: integrated control retention composes mandatory atomic store ports and refuses missing external ledger before effects
+ok 14 - integrated control retention composes mandatory atomic store ports and refuses missing external ledger before effects
+  ---
+  duration_ms: 0.5182
+  type: 'test'
+  ...
+# Subtest: integrated control READS factory and native sibling expose no authority without genuine allocated owners
+ok 15 - integrated control READS factory and native sibling expose no authority without genuine allocated owners
+  ---
+  duration_ms: 0.6115
+  type: 'test'
+  ...
+# Subtest: integrated concrete preview evidence/source recovery stays disabled without effects by default
+ok 16 - integrated concrete preview evidence/source recovery stays disabled without effects by default
+  ---
+  duration_ms: 0.4698
+  type: 'test'
+  ...
+# Subtest: integrated retained CONTROL consumer refuses absent genuine trust without touching borrowed owners
+ok 17 - integrated retained CONTROL consumer refuses absent genuine trust without touching borrowed owners
+  ---
+  duration_ms: 0.74
+  type: 'test'
+  ...
+# Subtest: integrated input admission retains one canonical queued input and submit reuses it without a second event
+ok 18 - integrated input admission retains one canonical queued input and submit reuses it without a second event
+  ---
+  duration_ms: 9.9695
+  type: 'test'
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 18
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1800.4575

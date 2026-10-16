@@ -1,0 +1,54 @@
+{
+  "source": "7f9c84670bdabb3f96eaf0c3ce3785ff55684944",
+  "evidence": "36f303dd4cea911e9026b3a39757766d59939ec0",
+  "parentDisposition": "SOURCE_ACCEPT",
+  "before": "693a3436c36bc5674e75da3ecc2b8614ea3d6ecd",
+  "integratedCommit": "abdf84df18012fc2f1750bba12e8cf722b8792e7",
+  "integratedTree": "78448a83afc7e04b2fe43e5dd58c74a3ad15d253",
+  "files": [
+    {
+      "path": "apps/runtime/artifacts/composition.mjs",
+      "beforeBlob": "2af9db638e3489dade4bf4ac809687415ab944f4",
+      "reviewedBlob": "1e063bf88e12a181333bebabf216c1c135fd3a07",
+      "integratedBlob": "1e063bf88e12a181333bebabf216c1c135fd3a07",
+      "merge": "Exact reviewed source"
+    },
+    {
+      "path": "apps/runtime/artifacts/recovery-binding.mjs",
+      "beforeBlob": null,
+      "reviewedBlob": "c8e62d8a8b13a8efd8d279d6517e33a3b01a7307",
+      "integratedBlob": "c8e62d8a8b13a8efd8d279d6517e33a3b01a7307",
+      "merge": "Exact reviewed source"
+    },
+    {
+      "path": "apps/runtime/artifacts/test/recovery-composition.test.mjs",
+      "beforeBlob": null,
+      "reviewedBlob": "ffe026446e0515d956d9b04664f17a36ebf17d13",
+      "integratedBlob": "ffe026446e0515d956d9b04664f17a36ebf17d13",
+      "merge": "Exact reviewed source"
+    },
+    {
+      "path": "apps/runtime/control.mjs",
+      "beforeBlob": "30d74a55c04c10de5e5f947a7338e5fd23b63d2e",
+      "reviewedBlob": "ad1509973bb275cad8560b258f7a14abc09129a0",
+      "integratedBlob": "ceac3c07bacfc36ceffdca318ea5ad38c743d510",
+      "merge": "Only accepted control hunks applied; corrected input mount retained"
+    },
+    {
+      "path": "apps/runtime/product-applications.mjs",
+      "beforeBlob": "e367aef9531d0a5d7faa824336f52cee4355c349",
+      "reviewedBlob": "11c051db00cbead55ae6bc63ff3294a49e8aeaef",
+      "integratedBlob": "11c051db00cbead55ae6bc63ff3294a49e8aeaef",
+      "merge": "Exact reviewed source"
+    },
+    {
+      "path": "apps/runtime/product-readiness.mjs",
+      "beforeBlob": "d1b0f0a8e5b9bc7ac963408b18a87c92e224dc54",
+      "reviewedBlob": "7b89a7427ef30a04fc26205bbef6db4c2cba4daa",
+      "integratedBlob": "7b89a7427ef30a04fc26205bbef6db4c2cba4daa",
+      "merge": "Exact reviewed source"
+    }
+  ],
+  "checks": "PENDING focused integrated closure after serialized UI sequence",
+  "noWholeMerge": true
+}

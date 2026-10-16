@@ -2134,10 +2134,266 @@
         }
       ],
       "disposition": "Parent scoped SOURCE ACCEPT after13 exact-source +3 independent controls; author44/44 attributed, not rerun here"
+    },
+    {
+      "label": "same-journal runtime recovery composition",
+      "reviewedSource": "7f9c84670bdabb3f96eaf0c3ce3785ff55684944",
+      "integratedCommit": "abdf84df18012fc2f1750bba12e8cf722b8792e7",
+      "integratedTree": "78448a83afc7e04b2fe43e5dd58c74a3ad15d253",
+      "files": [
+        {
+          "path": "apps/runtime/artifacts/composition.mjs",
+          "beforeBlob": "2af9db638e3489dade4bf4ac809687415ab944f4",
+          "reviewedBlob": "1e063bf88e12a181333bebabf216c1c135fd3a07",
+          "integratedBlob": "1e063bf88e12a181333bebabf216c1c135fd3a07",
+          "merge": "Exact reviewed source"
+        },
+        {
+          "path": "apps/runtime/artifacts/recovery-binding.mjs",
+          "beforeBlob": null,
+          "reviewedBlob": "c8e62d8a8b13a8efd8d279d6517e33a3b01a7307",
+          "integratedBlob": "c8e62d8a8b13a8efd8d279d6517e33a3b01a7307",
+          "merge": "Exact reviewed source"
+        },
+        {
+          "path": "apps/runtime/artifacts/test/recovery-composition.test.mjs",
+          "beforeBlob": null,
+          "reviewedBlob": "ffe026446e0515d956d9b04664f17a36ebf17d13",
+          "integratedBlob": "ffe026446e0515d956d9b04664f17a36ebf17d13",
+          "merge": "Exact reviewed source"
+        },
+        {
+          "path": "apps/runtime/control.mjs",
+          "beforeBlob": "30d74a55c04c10de5e5f947a7338e5fd23b63d2e",
+          "reviewedBlob": "ad1509973bb275cad8560b258f7a14abc09129a0",
+          "integratedBlob": "ceac3c07bacfc36ceffdca318ea5ad38c743d510",
+          "merge": "Only accepted control hunks applied; corrected input mount retained"
+        },
+        {
+          "path": "apps/runtime/product-applications.mjs",
+          "beforeBlob": "e367aef9531d0a5d7faa824336f52cee4355c349",
+          "reviewedBlob": "11c051db00cbead55ae6bc63ff3294a49e8aeaef",
+          "integratedBlob": "11c051db00cbead55ae6bc63ff3294a49e8aeaef",
+          "merge": "Exact reviewed source"
+        },
+        {
+          "path": "apps/runtime/product-readiness.mjs",
+          "beforeBlob": "d1b0f0a8e5b9bc7ac963408b18a87c92e224dc54",
+          "reviewedBlob": "7b89a7427ef30a04fc26205bbef6db4c2cba4daa",
+          "integratedBlob": "7b89a7427ef30a04fc26205bbef6db4c2cba4daa",
+          "merge": "Exact reviewed source"
+        }
+      ],
+      "disposition": "Parent SOURCE_ACCEPT; exact five files and verified accepted input additions on control"
+    },
+    {
+      "label": "canonical original input claim store and centrally reserved0016",
+      "predecessor": "a54239c5f252667b3aaaaa588ef1776219816075",
+      "reviewedSource": "55c20109ff4bb840088b1372a7fe04669041803a",
+      "before": "abdf84df18012fc2f1750bba12e8cf722b8792e7",
+      "integratedCommit": "6ffe9a15ee1a88868aea936f786af633865b1f58",
+      "integratedTree": "48ae55cf1ed2e965fad69437c5cf25cf6f3827bf",
+      "files": [
+        {
+          "path": "apps/control/conversations/initial-input-facts.mjs",
+          "acceptedBlob": "fe979b988ea899cfd6715a849317fadbc1cd9652",
+          "integratedBlob": "fe979b988ea899cfd6715a849317fadbc1cd9652"
+        },
+        {
+          "path": "apps/control/conversations/initial-input-journal.mjs",
+          "acceptedBlob": "b6f8ada5066d00406b80a977db985baa78927cd8",
+          "integratedBlob": "b6f8ada5066d00406b80a977db985baa78927cd8"
+        },
+        {
+          "path": "apps/control/conversations/migrations/0016_initial_inputs.sql",
+          "acceptedBlob": "7f0373abcd086c4dd984ad31f8646981b8930f22",
+          "integratedBlob": "7f0373abcd086c4dd984ad31f8646981b8930f22"
+        },
+        {
+          "path": "apps/control/conversations/postgres-store.mjs",
+          "acceptedBlob": "a4449be9c283fefcfaee80fd379797b418c3d728",
+          "integratedBlob": "a4449be9c283fefcfaee80fd379797b418c3d728"
+        },
+        {
+          "path": "apps/control/conversations/test/initial-input-fixture.mjs",
+          "acceptedBlob": "7320181a258e617df26f7d485131580b026df0c7",
+          "integratedBlob": "7320181a258e617df26f7d485131580b026df0c7"
+        },
+        {
+          "path": "apps/control/conversations/test/initial-input.test.mjs",
+          "acceptedBlob": "24d4c0f5bdd9a827c0dcb01cb5d59397c2fd4389",
+          "integratedBlob": "24d4c0f5bdd9a827c0dcb01cb5d59397c2fd4389"
+        }
+      ]
+    },
+    {
+      "label": "bill-text required current source exposure ledger dependency",
+      "predecessor": "074937e9a7d38825f2fae2ca6c2c2e2ca714774f",
+      "reviewedSource": "fb708d231c7273f86b1462c72a72e70ccc36a3d6",
+      "before": "6ffe9a15ee1a88868aea936f786af633865b1f58",
+      "integratedCommit": "e43b373a329fbdd8bfcb3ef5ed801b4f73597852",
+      "integratedTree": "fd3aab790e188cb73075e6c418f016141f27d088",
+      "files": [
+        {
+          "path": "docs/coordination/ledgers/MERI-FINAL-SCOPE-LEDGER-20261015.md",
+          "acceptedBlob": "5ba89d5249ecd526fe4207c600cc92811e8c815d",
+          "integratedBlob": "5ba89d5249ecd526fe4207c600cc92811e8c815d"
+        },
+        {
+          "path": "docs/coordination/ledgers/scope-ledger.json",
+          "acceptedBlob": "1546e9566cb0719261ca660bd5402732f65146e7",
+          "integratedBlob": "1546e9566cb0719261ca660bd5402732f65146e7"
+        },
+        {
+          "path": "scripts/scope-ledger/cli.mjs",
+          "acceptedBlob": "892708ccff48880c431b41f50640910d92fbaad4",
+          "integratedBlob": "892708ccff48880c431b41f50640910d92fbaad4"
+        },
+        {
+          "path": "scripts/scope-ledger/ledger.mjs",
+          "acceptedBlob": "6ae9198292d1370597a41a4a8dd0b10fa35b4c69",
+          "integratedBlob": "6ae9198292d1370597a41a4a8dd0b10fa35b4c69"
+        },
+        {
+          "path": "scripts/scope-ledger/markdown.mjs",
+          "acceptedBlob": "01a30042505cf190db325a2fe93a4a581f5e6f15",
+          "integratedBlob": "01a30042505cf190db325a2fe93a4a581f5e6f15"
+        },
+        {
+          "path": "scripts/scope-ledger/source-exposure.mjs",
+          "acceptedBlob": "f8ae34d3e4c44fb22d3182a54db07b961d621e28",
+          "integratedBlob": "f8ae34d3e4c44fb22d3182a54db07b961d621e28"
+        },
+        {
+          "path": "scripts/scope-ledger/source-exposure.test.mjs",
+          "acceptedBlob": "c1ed80543c90a9c9dd1ece4a379e2f24c2d00971",
+          "integratedBlob": "c1ed80543c90a9c9dd1ece4a379e2f24c2d00971"
+        },
+        {
+          "path": "scripts/scope-ledger/sources.mjs",
+          "acceptedBlob": "6bb62f38260962ad5abc9b7e65ea50545128f722",
+          "integratedBlob": "6bb62f38260962ad5abc9b7e65ea50545128f722"
+        }
+      ]
+    },
+    {
+      "label": "source-accepted bill-text flat native routes and canonical worker schemas",
+      "predecessor": "fb708d231c7273f86b1462c72a72e70ccc36a3d6",
+      "reviewedSource": "674460a57ad8f334f1b6acacaea4702ea3130791",
+      "before": "e43b373a329fbdd8bfcb3ef5ed801b4f73597852",
+      "integratedCommit": "03def1608c1f5365524502592fa8885283c69215",
+      "integratedTree": "ff15a0b3bf23efdf86f5ff6c67962b0b5e67a05e",
+      "files": [
+        {
+          "path": "apps/gateway/dispatch/bill-text-context.mjs",
+          "acceptedBlob": "9bd17a01931165d120956ade4200c792f08c6957",
+          "integratedBlob": "9bd17a01931165d120956ade4200c792f08c6957"
+        },
+        {
+          "path": "apps/gateway/dispatch/operation-context.mjs",
+          "acceptedBlob": "e426ab7766e2e9f97b0fc1c344e81adf79349a23",
+          "integratedBlob": "e426ab7766e2e9f97b0fc1c344e81adf79349a23"
+        },
+        {
+          "path": "apps/gateway/dispatch/read-result-envelope.mjs",
+          "acceptedBlob": "e50860cb5c67088df2719fba381f0b72dffa828c",
+          "integratedBlob": "e50860cb5c67088df2719fba381f0b72dffa828c"
+        },
+        {
+          "path": "apps/gateway/dispatch/tool-dispatch.mjs",
+          "acceptedBlob": "6a56b11ee632cdcbf1033e7007cafab475b10afb",
+          "integratedBlob": "6a56b11ee632cdcbf1033e7007cafab475b10afb"
+        },
+        {
+          "path": "apps/gateway/general-reads/families.test.mjs",
+          "acceptedBlob": "90598af3f49e2524edb16753a8816101b8eba34d",
+          "integratedBlob": "90598af3f49e2524edb16753a8816101b8eba34d"
+        },
+        {
+          "path": "apps/gateway/general-reads/families/bill-text.mjs",
+          "acceptedBlob": "672bf072ff4d24b847c97b458bd400cf01535d7e",
+          "integratedBlob": "672bf072ff4d24b847c97b458bd400cf01535d7e"
+        },
+        {
+          "path": "apps/gateway/general-reads/integration.mjs",
+          "acceptedBlob": "80dbe63b1ceedbe9b4db083a41f16906e954a5cc",
+          "integratedBlob": "80dbe63b1ceedbe9b4db083a41f16906e954a5cc"
+        },
+        {
+          "path": "apps/gateway/general-reads/test/family-cases.mjs",
+          "acceptedBlob": "a510aad45c74e4289f40ba9e242ca960f71cdea2",
+          "integratedBlob": "a510aad45c74e4289f40ba9e242ca960f71cdea2"
+        },
+        {
+          "path": "apps/gateway/sources/bill-text/handler.mjs",
+          "acceptedBlob": "293f743efc53eccca7d564d1888291409e08f5ce",
+          "integratedBlob": "293f743efc53eccca7d564d1888291409e08f5ce"
+        },
+        {
+          "path": "apps/gateway/sources/bill-text/test/fixture.mjs",
+          "acceptedBlob": "731e7c1a232e430d63c3ac58f9535eeaa7e41963",
+          "integratedBlob": "731e7c1a232e430d63c3ac58f9535eeaa7e41963"
+        },
+        {
+          "path": "apps/gateway/sources/bill-text/test/handler.test.mjs",
+          "acceptedBlob": "f2c481bd0017fec39053d44ce3ab50b2551c66ae",
+          "integratedBlob": "f2c481bd0017fec39053d44ce3ab50b2551c66ae"
+        },
+        {
+          "path": "apps/worker/conversation/reads/families.mjs",
+          "acceptedBlob": "bbb83a378482070764d3e28497b622b760e60208",
+          "integratedBlob": "bbb83a378482070764d3e28497b622b760e60208"
+        },
+        {
+          "path": "apps/worker/conversation/reads/test/bill-text.test.mjs",
+          "acceptedBlob": "30e44bb48114ea8a08bb760e0f5e97b129d5d8e6",
+          "integratedBlob": "30e44bb48114ea8a08bb760e0f5e97b129d5d8e6"
+        },
+        {
+          "path": "apps/worker/conversation/reads/test/families.test.mjs",
+          "acceptedBlob": "319c6cae09389b60a1d67573a4abd02f5afb068a",
+          "integratedBlob": "319c6cae09389b60a1d67573a4abd02f5afb068a"
+        },
+        {
+          "path": "docs/coordination/ledgers/MERI-FINAL-SCOPE-LEDGER-20261015.md",
+          "acceptedBlob": "935e5742f6eea6fac0939f44651de6bfafe9bf83",
+          "integratedBlob": "935e5742f6eea6fac0939f44651de6bfafe9bf83"
+        },
+        {
+          "path": "docs/coordination/ledgers/scope-ledger.json",
+          "acceptedBlob": "8948e793f63608469010d07bea432d4987ada355",
+          "integratedBlob": "8948e793f63608469010d07bea432d4987ada355"
+        },
+        {
+          "path": "scripts/general-reads/adapters.json",
+          "acceptedBlob": "1ee3aa858d9fa28ee82d40506eb45c63ad35cdd7",
+          "integratedBlob": "1ee3aa858d9fa28ee82d40506eb45c63ad35cdd7"
+        },
+        {
+          "path": "scripts/scope-ledger/backend-producers.json",
+          "acceptedBlob": "741f7a354ffdb55eac18bf44cf8d6663dad089ef",
+          "integratedBlob": "741f7a354ffdb55eac18bf44cf8d6663dad089ef"
+        },
+        {
+          "path": "scripts/scope-ledger/markdown.mjs",
+          "acceptedBlob": "95ffdf2f83def43b96a40ee051403f1b12282b75",
+          "integratedBlob": "95ffdf2f83def43b96a40ee051403f1b12282b75"
+        },
+        {
+          "path": "scripts/scope-ledger/source-exposure.mjs",
+          "acceptedBlob": "15ee396a495dd6a435a4fa86efe27b1ee83acb5d",
+          "integratedBlob": "15ee396a495dd6a435a4fa86efe27b1ee83acb5d"
+        },
+        {
+          "path": "scripts/scope-ledger/source-exposure.test.mjs",
+          "acceptedBlob": "7b35060c6a94f4e59d9b60c0bd1d8d034896394c",
+          "integratedBlob": "7b35060c6a94f4e59d9b60c0bd1d8d034896394c"
+        }
+      ]
     }
   ],
-  "sourceHead": "15cb46af5ba734373426111724f84895e0662900",
-  "sourceTree": "d29199707962858b409d74861bfbbc1b1d59d35d",
+  "sourceHead": "03def1608c1f5365524502592fa8885283c69215",
+  "sourceTree": "ff15a0b3bf23efdf86f5ff6c67962b0b5e67a05e",
   "validation": {
     "command": "node --max-old-space-size=128 --test --test-isolation=none --test-concurrency=1 --test-timeout=15000 --test-reporter=tap scripts/qualification/assembled-image/source-proof.test.mjs apps/control/retention/test/watermark-migration-source.test.mjs",
     "node": "v24.19.0",
@@ -2166,73 +2422,63 @@
   "changedProofRows": [
     {
       "path": "apps/control/conversations/postgres-store.mjs",
-      "historicalSourceSha256": "4b8ad2df837a2a7c7ae26d7d23ca60017b50a9b186193553093195d31e80a71f",
       "hSha256": "2de6bce64ace8a6d2b5d0ed205f9ffb5b7ac2884d6109df19bc629b13d48c1cb",
-      "currentSha256": "d385fd62d5cfb26bc184d26c2659298fde1ba8ba9c2d5ca3210429a8a3d03420",
-      "reason": "Exact parent-accepted source; h remains unchanged/HOLD"
+      "currentSha256": "96002cc66ed5658273af0cd4035e027efaaaa94708e020f28b79c22f1fc355a0",
+      "reason": "Exact accepted current source; historical h unchanged/HOLD"
     },
     {
       "path": "apps/runtime/config.mjs",
-      "historicalSourceSha256": "a786efc5a3eb046fe4ada7439c314d456ab11d81353b2137eebc47d683624e1d",
       "hSha256": "9558183a7eab179d3b66d2b1d65707a0f495f882b3aa03e8b04b029942c6685d",
       "currentSha256": "716be73148849c3eba958a15c69f0905aac534a4495b244cbc91cb4010450750",
-      "reason": "Exact parent-accepted source; h remains unchanged/HOLD"
+      "reason": "Exact accepted current source; historical h unchanged/HOLD"
     },
     {
       "path": "apps/runtime/control.mjs",
-      "historicalSourceSha256": "904b12d08007bc9803b57f26afbf0e0763cfe80f7cb17aedc581ba77135c4e52",
       "hSha256": "ec63730199cbc092042dab6b6694506087530ee85572e1daadfb478bf76c5757",
-      "currentSha256": "b2676fa19f1134e7535fa6d8d9966d1a588532a7ffe1776bd8f1dc1fe9873bd0",
-      "reason": "Exact parent-accepted source; h remains unchanged/HOLD"
+      "currentSha256": "514120080b16c2bf920bb73ee30a9cf41e92d7d51b6764d79ddd9bab34135035",
+      "reason": "Exact accepted current source; historical h unchanged/HOLD"
     },
     {
       "path": "apps/runtime/conversation-runner.mjs",
-      "historicalSourceSha256": "ff9a037395eef3d89f62573e53c26c2c038dc5b5ffb59c37266a7c873cc48794",
       "hSha256": "9b6ac5506161513caab33a41c547b634dc314426b51e274f376340556a1ba26d",
       "currentSha256": "4afd72fb8605bc557343d18b55c920c04e7299e40890612352484cc971356a3d",
-      "reason": "Exact parent-accepted source; h remains unchanged/HOLD"
+      "reason": "Exact accepted current source; historical h unchanged/HOLD"
     },
     {
       "path": "apps/runtime/native-authority/remote-composition.mjs",
-      "historicalSourceSha256": "eaa996c353a37cba9f0953f7997e759459a273b24cd8018ad1f855225ad44017",
       "hSha256": "2c4162da6af533902090d7aa2861278c892335a90b4e4a75cbae99b80ba5ab4b",
       "currentSha256": "44505e413d15120fcd2844c5d4e427685b490a2af5d69493b9aabbdbb2de036d",
-      "reason": "Exact parent-accepted source; h remains unchanged/HOLD"
+      "reason": "Exact accepted current source; historical h unchanged/HOLD"
     },
     {
       "path": "apps/runtime/native-runner-gateway.mjs",
-      "historicalSourceSha256": "2b32a50bc77ff534fe351ca87b0f765117ecb66da67ace5f78e966d88c2468af",
       "hSha256": "9c4daaee94de339fe97cbd6d55654d0cc5890b58a12069500e8e877f889edece",
       "currentSha256": "571fd29580768069bbf8b5aa09c51d14822d6e9f84cff306b50e4ead1c7329f9",
-      "reason": "Exact parent-accepted source; h remains unchanged/HOLD"
+      "reason": "Exact accepted current source; historical h unchanged/HOLD"
     },
     {
       "path": "apps/runtime/prepared-candidate-config.mjs",
-      "historicalSourceSha256": "8cc1bf393f78ee182077c03c313af4b53826f3e8842e6116fd0b42266afbc156",
       "hSha256": "2dd1963e3350948c3d7b93543e84f3bd1031545e94b74eca79db11ba59651bc7",
       "currentSha256": "db989a4d33300cc0ffc4881a3905ea0139da6d04dba4ce6d659f1318fcacf8b4",
-      "reason": "Exact parent-accepted source; h remains unchanged/HOLD"
+      "reason": "Exact accepted current source; historical h unchanged/HOLD"
     },
     {
       "path": "apps/runtime/prepared-candidate.mjs",
-      "historicalSourceSha256": "698f9adbb5ebda2e4e964c4c7f6d8425932141dcd803716b43372e26d7625d5a",
       "hSha256": "56a56689f2bf0ee365f9f1b7e479f5f5e693ae05998d9e80057c3e8da278b603",
       "currentSha256": "8e59dbc0431755772b63d6d58b5ccc6fa68c7963857ca494cc959773fe4d52f1",
-      "reason": "Exact parent-accepted source; h remains unchanged/HOLD"
+      "reason": "Exact accepted current source; historical h unchanged/HOLD"
     },
     {
       "path": "apps/runtime/remote-conversation-runner.mjs",
-      "historicalSourceSha256": "830775231cd1a96bce6fc8c5d81a2092be883712080655163270149032dd45ec",
       "hSha256": "830775231cd1a96bce6fc8c5d81a2092be883712080655163270149032dd45ec",
       "currentSha256": "9e59307773644abf258e822cf0d96f5412c59e89d449665b1c02ea20aaf65e8a",
-      "reason": "Exact parent-accepted source; h remains unchanged/HOLD"
+      "reason": "Exact accepted current source; historical h unchanged/HOLD"
     },
     {
       "path": "apps/runtime/task-bootstrap.mjs",
-      "historicalSourceSha256": "17e639caffbc321cc923c24d9871583f4aced5741282f09c57ed8f183337d9b1",
       "hSha256": "1a44df48814c509f5cf7826847f3990a7179035474014119e39eef51eb8880dc",
       "currentSha256": "626bfa08b71265e766cc0b2baab44d3096ca5eca1b2da13e0f434f30c8390fd3",
-      "reason": "Exact parent-accepted source; h remains unchanged/HOLD"
+      "reason": "Exact accepted current source; historical h unchanged/HOLD"
     }
   ],
   "historicalCandidates": {
@@ -2300,22 +2546,20 @@
     "tapSha256": "0812abe1d0194c20127453194d3984578c1db62f12d8c248ee8a464d59aeac35"
   },
   "combinedCheckpoint": {
-    "sourceHead": "15cb46af5ba734373426111724f84895e0662900",
-    "sourceTree": "d29199707962858b409d74861bfbbc1b1d59d35d",
-    "sharedAuthoringBase": "14f0bc2e5716af7c00925d13d3365b26182c9e56",
-    "classification": "Exact accepted source/artifact integration; overall runtime/image/release HOLD",
-    "typedSource": "f32c9fa750da6c4df31930d97b041008289c2d8b",
-    "types": "Both original project checks pass with resolution-only overlay; raw flags unchanged",
-    "compositionSource": "f32c9fa750da6c4df31930d97b041008289c2d8b",
-    "composition": "6/6 synthetic; first5 inert, input case scripted SQL",
-    "mountedInputSource": "054285efc19038c8c6306a47599749785cab241d",
-    "mountedInput": "2/2 actual assembler scripted-resource controls",
+    "sourceHead": "03def1608c1f5365524502592fa8885283c69215",
+    "sourceTree": "ff15a0b3bf23efdf86f5ff6c67962b0b5e67a05e",
+    "sharedReachableAuthoringBase": "14f0bc2e5716af7c00925d13d3365b26182c9e56",
+    "classification": "Accepted source/artifact integration and focused synthetic closure; full image/live release HOLD",
+    "composition": "107/107 at exact source; includes prior18 cases, do not sum",
+    "types": "Both original project checks0 via exact-lock resolution-only overlay; no allJS/normal-install claim",
+    "initialInput": "Store CAS/0016 source accepted; public0.1.8 service/receiver/mount in progress, old routes not yet universally enforcing claim",
     "excluded": [
-      "pending Planner continuation source/review",
-      "real Core producer-consumer/trust/install qualification",
-      "genuine pre-input fresh-allocation receipt",
-      "full UI build/browser/image/live release",
-      "Startup same-journal runtime factory/readiness composition still in source review; accepted callback integrated"
+      "real protected evidence-root/no-delete/outside-rollback qualification",
+      "genuine task capability bootstrap/TLS/material installation",
+      "Core-to-retained consumer trust/current authority/installation",
+      "typed Strategy producer/custody/facts source still unsealed or in review",
+      "actual initial0.1.8 artifact/route and consumer qualification",
+      "full UI build/browser/image/live acceptance"
     ]
   },
   "combinedLoading": {
@@ -2358,20 +2602,20 @@
   },
   "localQueue": {
     "ownedProcess": "NONE",
-    "inputCorrection": "5/5 primary0/cleanup0, no children; old failure retained",
-    "coreRetainedAuth": "Actual184=182pass2fail, primary1/cleanup0/PID1536 exited, sources unchanged; owner fixture correction pending, no automatic retry",
-    "UI033": "TERMINAL65/65 in5files/14nested suites, primary0/PID27064 exited,11.280s, sampled aggregate220823552B, ownedcleanupverified, source033/lockunchanged; no automatic nextstage",
-    "fullBuildBrowser": "Deferred to coherent input UI candidate; actual capacity/approved shipping path pending, no OOM or new credentials",
-    "nextStages": "Core reviewed fixture-only targeted36 source/runtime binding pending; UI845 exact locked materialization/changed SDK+UI checks profile pending, no stage launched"
+    "currentOwner": "FREE after exact accepted follow-up checks",
+    "Core": "Original182/184 preserved; corrected targeted36 atcbe15 PASS36/36, primary0cleanup0/noPID. Published docs-only1b9fedc5 receipt, productionb525 unchanged",
+    "UI033": "65/65 at033, preserved unchanged",
+    "UI845": "Install0; SDK-only compiler0 expected sole emittedJS9e46; SDK12/12 and UI/proxy48/48 syntheticPASS cleanup0. Published sealedb2c7dab2, independentSOURCE_ONLY acceptance330b232f; attributed owner execution, no rerun here",
+    "next": "No admitted heavy stage. Initial0.1.8 exact source/profile/artifact pending; full build/browser deferred coherent candidate. Cleanup/shipping source dependency/image alignment only, no cloud submission from this lane"
   },
   "ownershipFollowup": {
-    "Artifact": "44807996 accepted3source/test paths integrated; runtime factory/control/readiness remains Startup-owned on reachable14f authoring basis",
-    "Startup": "Runtime/control/readiness/canonical artifact recovery factory and genuine pre-input allocation proof; uses reachable14f authoring basis, no older2cba retention merge.",
-    "Reads": "Retained074 consumer integrated; CorePR35 exact compatibility and real trust pending. Scope ledger63missing adapters remains full selected scope.",
-    "Planner": "New ecdd/a503/105/924 chain source review and actual typed Strategy custody/semantic sourceAdmission compiler bridge pending; no second model/0012."
+    "Artifact": "Accepted publication/final release/448 callback integrated; source-disabled real resource binding remains pending",
+    "Startup": "Recovery C6 integrated; initial store0016 source accepted; C generator/package0.1.8/tiny mount/executor, Input common service/newHTTP/public receiver sources; no duplicate owner",
+    "Reads": "Bill-text e431/674 source integrated plus required current exposure mapping;23ops16families21selected source reads61gaps/live0; two new family workers and shared successor remain local-only publication-held",
+    "Planner": "B owns six narrow worker/completion seams plus inert descriptor/new modules; C protected fullfacts/readback/startup. Core full typed request/context publisher in progress and unsealed, no fabricated proof"
   },
   "integratedTypes": {
-    "source": "f32c9fa750da6c4df31930d97b041008289c2d8b",
+    "source": "03def1608c1f5365524502592fa8885283c69215",
     "compilerVersion": "5.9.3",
     "classification": "Real TypeScript compiler over original complete project inputs/strict options; task-local dependency-resolution overlay only, read-only exact-lock third-party dependencies and integrated product public exports. No suppression, emit, install, services/provider/DB/browser or native child. Canonical unmodified CLI with materialized local dependencies is not claimed. Junction creation was denied; not retried or escalated.",
     "verifiedEqualDependencyLocks": [
@@ -2399,72 +2643,72 @@
     "stages": [
       {
         "project": "apps/control/conversations",
-        "source": "f32c9fa750da6c4df31930d97b041008289c2d8b",
+        "source": "03def1608c1f5365524502592fa8885283c69215",
         "argv": [
           "C:/Program Files/nodejs/node.exe",
           "--max-old-space-size=768",
           "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-4\\meri-greenfield\\apps\\runtime\\node_modules\\typescript\\bin\\tsc",
           "--noEmit",
           "-p",
-          "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-8\\meri-qualification\\audit-evidence\\integrated-types\\tsconfig.conversations.json",
+          "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-8\\meri-qualification\\audit-evidence\\accepted-followup-closure\\integrated-types\\tsconfig.conversations.json",
           "--pretty",
           "false",
           "--extendedDiagnostics"
         ],
         "originalTsconfigSha256": "93531e1fe0cd2ff57b0137e2a624a0122a025ae38d90d7b46dc8a6468407510f",
-        "dependencyOverlaySha256": "d3eed5ff29c087b14fefc2fef0b895dca568e902ad13996d4c4bfc1af926feb5",
-        "pid": 37548,
-        "startedAt": "2026-10-16T04:36:43.154915+00:00",
-        "finishedAt": "2026-10-16T04:36:46.286689+00:00",
-        "wallMs": 3125.0,
+        "dependencyOverlaySha256": "cb0ef1b1d6da0a5da34e39ea918edbfe3da4249c29ee85dbc70b2327d8b1d5e3",
+        "pid": 38280,
+        "startedAt": "2026-10-16T05:33:22.334442+00:00",
+        "finishedAt": "2026-10-16T05:33:25.467355+00:00",
+        "wallMs": 3141.0,
         "primaryExit": 0,
         "cleanupExit": 0,
         "ownedProcessRemains": false,
         "timedOut": false,
         "pressureStop": false,
         "memoryBefore": {
-          "at": "2026-10-16T04:36:43.153916+00:00",
-          "availableCommitBytes": 2702155776,
-          "availablePhysicalBytes": 11131207680
+          "at": "2026-10-16T05:33:22.333442+00:00",
+          "availableCommitBytes": 2848788480,
+          "availablePhysicalBytes": 11708702720
         },
-        "minimumAvailableCommitBytes": 2065145856,
+        "minimumAvailableCommitBytes": 2335350784,
         "peakProcessRss": "not measured",
-        "stdoutSha256": "0e930a5363a08dec1b74128b6fb06d1db30c198c0eddb862924070e48189c19f",
+        "stdoutSha256": "3f001170b476ee1d7a6663e77eec61c0a505e1877150080594bca954434c3ea3",
         "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
       {
         "project": "apps/runtime",
-        "source": "f32c9fa750da6c4df31930d97b041008289c2d8b",
+        "source": "03def1608c1f5365524502592fa8885283c69215",
         "argv": [
           "C:/Program Files/nodejs/node.exe",
           "--max-old-space-size=768",
           "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-4\\meri-greenfield\\apps\\runtime\\node_modules\\typescript\\bin\\tsc",
           "--noEmit",
           "-p",
-          "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-8\\meri-qualification\\audit-evidence\\integrated-types\\tsconfig.runtime.json",
+          "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-8\\meri-qualification\\audit-evidence\\accepted-followup-closure\\integrated-types\\tsconfig.runtime.json",
           "--pretty",
           "false",
           "--extendedDiagnostics"
         ],
         "originalTsconfigSha256": "84a5bc6233e89722d044bfe4ffef3ed8785a8d342ec16f7feab49fc8cb4488c8",
-        "dependencyOverlaySha256": "23045d0a14aa4006b91573de699b21a7c4599c863a2aacb94c0ef8af68bbae6d",
-        "pid": 33048,
-        "startedAt": "2026-10-16T04:36:46.296686+00:00",
-        "finishedAt": "2026-10-16T04:36:49.529592+00:00",
-        "wallMs": 3234.0,
+        "dependencyOverlaySha256": "bb065f6503c3da05fa46aaf21520476c5a37171e6255b5c939af9449ae612255",
+        "pid": 28480,
+        "startedAt": "2026-10-16T05:33:25.477357+00:00",
+        "finishedAt": "2026-10-16T05:33:29.002351+00:00",
+        "wallMs": 3531.0,
         "primaryExit": 0,
         "cleanupExit": 0,
         "ownedProcessRemains": false,
         "timedOut": false,
         "pressureStop": false,
         "memoryBefore": {
-          "at": "2026-10-16T04:36:46.294689+00:00",
-          "availableCommitBytes": 2650066944,
-          "availablePhysicalBytes": 11113320448
+          "at": "2026-10-16T05:33:25.476356+00:00",
+          "availableCommitBytes": 2916343808,
+          "availablePhysicalBytes": 11777224704
         },
-        "minimumAvailableCommitBytes": 2109513728,
+        "minimumAvailableCommitBytes": 2350936064,
         "peakProcessRss": "not measured",
-        "stdoutSha256": "71cac40960679c07c937ccd5b38efb23801b878560e5028c52a4edb1ab43d3ed",
+        "stdoutSha256": "55b9ac1baa9ffff5f63b9051d5ca97dfbad054efd5f15e1990ff6133787ecaaa",
         "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       }
     ]
@@ -2517,7 +2761,8 @@
     "candidateAtDeniedAttempt": "f32c9fa750da6c4df31930d97b041008289c2d8b",
     "command": "git push origin dot/meri-reviewed-integration-20261016",
     "denial": "Pushing the local integration commit to a remote branch is an external commitment, and the transcript authorizes relaying the pin but does not clearly authorize this exact remote mutation.",
-    "pendingAction": "Explicit authorization for final exact fast-forward after local evidence seal; no alternate publisher/export or forced update"
+    "pendingAction": "Resolve explicit exact final branch/ref fast-forward authority after local seal; denied action never executed and is not retried",
+    "finalLocalSource": "03def1608c1f5365524502592fa8885283c69215"
   },
   "typedStrategyOwnership": {
     "sourceBase": "14f0bc2e5716af7c00925d13d3365b26182c9e56",
@@ -2525,9 +2770,129 @@
       "options.mjs outputFormat assignment only",
       "activity.mjs terminal typed capture before existing captureCompletion, preserve finally/READS/browser/model",
       "existing completion-journal.mjs +completion-capture.mjs immutable expected typed-file/rawSHA/execution-selection pin",
-      "new cohesive worker/runtime objective-generation helpers and retained PUBLISHED reader"
+      "new cohesive worker/runtime objective-generation helpers and retained PUBLISHED reader",
+      "continuation/activity-lifecycle.mjs optional typedResult forwarding only",
+      "native-authority/checkpoint-http.mjs closed private complete route optional typedResult forwarding only"
     ],
     "Startup": "compilePreparedRunFacts/readIssuance protected objectiveGeneration validation and actual startup binding; preserve accepted7dd issuer blob a89195ac852791940422a4cf1f2b0fbb3468829c",
-    "constraints": "One SDK query, same completion storage/table/transaction, no SQL/new journal/0012, actual accepted Core payload/source association only; runtime SDK/heavy tests pending exact source/profile"
+    "constraints": "One SDK query, same completion storage/table/transaction, no SQL/new journal/0012, actual accepted Core payload/source association only; runtime SDK/heavy tests pending exact source/profile",
+    "readback": "Actual full immutable prepared entry/facts required; metadata-only7dd readIssuance alone is insufficient. Historical read uses native-verified original journal selection, not expired fact recompilation.",
+    "latestProtocol": "Core new publisher POST201 identity-only and read-only GET200 full request+executionContext; source pin unsealed/disabled. Exact prompt/IDs/rawSHA, JCS full context and original issuance expiry require genuine verifier-owned correlation."
+  },
+  "recoveryClosureAtAbdf": {
+    "source": "abdf84df18012fc2f1750bba12e8cf722b8792e7",
+    "argv": [
+      "C:/Program Files/nodejs/node.exe",
+      "--max-old-space-size=128",
+      "--import",
+      "./audit-evidence/dependency-reuse.mjs",
+      "--test",
+      "--test-isolation=none",
+      "--test-concurrency=1",
+      "--test-timeout=15000",
+      "--test-reporter=tap",
+      "apps/runtime/artifacts/test/recovery-composition.test.mjs",
+      "apps/runtime/test/input-admission-mount.test.mjs",
+      "audit-evidence/combined-loading.test.mjs"
+    ],
+    "pid": 12392,
+    "startedAt": "2026-10-16T05:23:34.893448+00:00",
+    "finishedAt": "2026-10-16T05:23:36.787959+00:00",
+    "wallMs": 1890.0,
+    "primaryExit": 0,
+    "cleanupExit": 0,
+    "ownedProcessRemains": false,
+    "remainingChildren": [],
+    "observedChildren": [],
+    "stopReason": null,
+    "monitorError": null,
+    "heapMiB": 128,
+    "hardWallSeconds": 60,
+    "memoryBefore": {
+      "at": "2026-10-16T05:23:34.893448+00:00",
+      "commit": 2997223424,
+      "physical": 11888537600
+    },
+    "minimumAvailableCommit": 2822705152,
+    "sampledPeakWorkingSet": 192524288,
+    "classification": "18 focused synthetic integrated controls: canonical recovery under one exclusion, actual assembled input route, current native/model/retained inert composition. Scripted SQL/SDK/identity/Temporal replies; actual canonical product source, third-party packages reused read-only. No real socket/DB/provider/material or installed-image qualification.",
+    "closure.tapSha256": "1ec7b55f32c7a5d73803ba1f0713e040f916dda01dcdbf702c5ba913b1dc0fcf",
+    "closure.stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "acceptedFollowupClosure": {
+    "source": "03def1608c1f5365524502592fa8885283c69215",
+    "argv": [
+      "C:/Program Files/nodejs/node.exe",
+      "--max-old-space-size=128",
+      "--import",
+      "./audit-evidence/dependency-reuse.mjs",
+      "--test",
+      "--test-isolation=none",
+      "--test-concurrency=1",
+      "--test-timeout=15000",
+      "--test-reporter=tap",
+      "apps/control/conversations/test/initial-input.test.mjs",
+      "apps/control/conversations/test/store.test.mjs",
+      "apps/gateway/sources/bill-text/test/handler.test.mjs",
+      "apps/worker/conversation/reads/test/bill-text.test.mjs",
+      "scripts/scope-ledger/source-exposure.test.mjs",
+      "apps/runtime/artifacts/test/recovery-composition.test.mjs",
+      "apps/runtime/test/input-admission-mount.test.mjs",
+      "audit-evidence/combined-loading.test.mjs"
+    ],
+    "pid": 40556,
+    "startedAt": "2026-10-16T05:33:02.574735+00:00",
+    "finishedAt": "2026-10-16T05:33:05.340710+00:00",
+    "wallMs": 2766.0,
+    "primaryExit": 0,
+    "cleanupExit": 0,
+    "ownedProcessRemains": false,
+    "remainingChildren": [],
+    "observedChildren": [],
+    "stopReason": null,
+    "monitorError": null,
+    "heapMiB": 128,
+    "hardWallSeconds": 60,
+    "memoryBefore": {
+      "at": "2026-10-16T05:33:02.574735+00:00",
+      "commit": 2987798528,
+      "physical": 11851681792
+    },
+    "minimumAvailableCommit": 2665070592,
+    "sampledPeakWorkingSet": 223531008,
+    "classification": "Focused coherent accepted follow-up controls: original-input store CAS and legacy accept, bill-text canonical adapter/durable scripted SQL/worker schemas, current source-exposure ledger, same-exclusion recovery and actual input mount. Actual counts are in TAP. Scripted SQL/SDK/identity/Temporal replies; actual canonical product source, third-party packages reused read-only. No real socket/DB/provider/material or installed-image qualification.",
+    "closure.tapSha256": "83af03aee235eec3a81c0d3bd79004a0612e3c3061adfa2219f221918ec38213",
+    "closure.stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "centralInitialInputAllocation": {
+    "commit": "0d9dffbb7c9cb603992aa0ac32f19f04386c67f5",
+    "tree": "e7d98b6a18a69265c7dde7c5bb7e045ec54cc4e8",
+    "parent": "fe4f53123d585bfda9d9d38b999b30b99f79d9b3",
+    "branch": "refs/heads/dot/meri-package4-allocations-20261016",
+    "path": "docs/coordination/tasks/CODEX-PACKAGE4-CENTRAL-MIGRATION-ALLOCATIONS-20261016.md",
+    "blob": "c3c8090a0c92be191fb2cd12322ea43c10058a22",
+    "sha256": "5838c49ed7357c9b1d5ad4015c27799956cfb1c0fecabc7cfd1d00713bb323e5",
+    "reservation": "apps/control/conversations/migrations/0016_initial_inputs.sql",
+    "table": "meri_conversations.initial_inputs",
+    "owner": "01a14241-cbba-7531-9aba-71299cd430d7",
+    "status": "SOURCE_RESERVED_AUTHORING_RELEASED; public receipt review pending; no SQL/live action",
+    "remotePublication": "DENIED_NOT_EXECUTED; no retry; exact final ref fast-forward authorization pending",
+    "deniedCommand": "git push origin refs/heads/dot/meri-package4-allocations-20261016:refs/heads/dot/meri-package4-allocations-20261016",
+    "denialReason": "This publishes a new commit to a remote repository, an external commitment not explicitly authorized by the user for this exact branch/ref.",
+    "latestProposalNote": "Prepared requestSha256 added alongside raw inputSha256; public digest/status/brand bridge pending narrow review; no public export/version or SQL execution.",
+    "deniedAttemptCommit": "5c83c015ee6fe8ab9fa07228e7caa23e19c34999",
+    "sourceCandidate": "41c54452f6cfd6e26aa55f9f23370fbbcade49c3",
+    "wireDisposition": "PARENT_SOURCE_WIRE_ACCEPT41c; Input/Startup implementation in progress, artifact and live gates pending",
+    "publicArtifactAllocation": "contracts0.1.8 /conversation-initial-input and /schema; C sole package/generator/executor, Input canonical modules/service/HTTP"
+  },
+  "allocationPublication": {
+    "status": "DENIED_NOT_EXECUTED_NO_RETRY",
+    "remote": "https://github.com/neo-capiro/meri-greenfield.git",
+    "ref": "refs/heads/dot/meri-package4-allocations-20261016",
+    "lastVerifiedRemote": "0b0b7abd536a27a74e3b1077ae71eed6e0ba275b",
+    "candidateAtDeniedAttempt": "5c83c015ee6fe8ab9fa07228e7caa23e19c34999",
+    "finalLocalCandidate": "0d9dffbb7c9cb603992aa0ac32f19f04386c67f5",
+    "command": "git push origin refs/heads/dot/meri-package4-allocations-20261016:refs/heads/dot/meri-package4-allocations-20261016",
+    "denial": "This publishes a new commit to a remote repository, an external commitment not explicitly authorized by the user for this exact branch/ref."
   }
 }

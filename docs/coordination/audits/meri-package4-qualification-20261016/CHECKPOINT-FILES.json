@@ -1,11 +1,172 @@
 {
-  "source": "15cb46af5ba734373426111724f84895e0662900",
-  "sourceTree": "d29199707962858b409d74861bfbbc1b1d59d35d",
+  "source": "03def1608c1f5365524502592fa8885283c69215",
+  "sourceTree": "ff15a0b3bf23efdf86f5ff6c67962b0b5e67a05e",
+  "hashBytes": "Exact staged Git payload; new raw evidence uses scoped -text attributes",
+  "preExistingTextNormalizationOnly": [
+    "combined-loading/run_combined_loading.py",
+    "source-count.json",
+    "source-inventory.json"
+  ],
   "files": [
     {
       "path": ".gitattributes",
       "sha256": "c66de023405de89520d9bae688aefb4eaaadd2d98784a14b13045008c4a3f669",
       "bytes": 112
+    },
+    {
+      "path": "accepted-followup-closure/.gitattributes",
+      "sha256": "730a35ae3d558080083c3103d9ac8100c3f6561678092abe341701dfa331eb1d",
+      "bytes": 29
+    },
+    {
+      "path": "accepted-followup-closure/closure.receipt.json",
+      "sha256": "ff0d121d291013f0dfbd0f2c9a31e3286ee566af3aa8118df77ba1e5c6ab2ce1",
+      "bytes": 2005
+    },
+    {
+      "path": "accepted-followup-closure/closure.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "accepted-followup-closure/closure.tap",
+      "sha256": "83af03aee235eec3a81c0d3bd79004a0612e3c3061adfa2219f221918ec38213",
+      "bytes": 24496
+    },
+    {
+      "path": "accepted-followup-closure/combined-loading.test.mjs",
+      "sha256": "4f306490ac88eb4ba56d18719c4465142be35bc40d1262af2f107bb768c03aeb",
+      "bytes": 6437
+    },
+    {
+      "path": "accepted-followup-closure/dependency-resolutions.json",
+      "sha256": "8dc9ffbf7c2c73cc139ba64aa11e33c235370aac2e4a7470c1c1d791be9ab767",
+      "bytes": 2374
+    },
+    {
+      "path": "accepted-followup-closure/dependency-reuse.mjs",
+      "sha256": "7f916520fcbe7b9fe18588bf452e5d10899b2eeb6dc6b4ca0a0cd64252703547",
+      "bytes": 2752
+    },
+    {
+      "path": "accepted-followup-closure/integrate_input_claim_and_bill.py",
+      "sha256": "482f90b19d3f8811425e97b4298f2fc747c0883381d548d2b506f379208e375a",
+      "bytes": 4227
+    },
+    {
+      "path": "accepted-followup-closure/integrate_recovery_composition.py",
+      "sha256": "e66c287789ff7ced607a9305f832377d24d8f820626e21b854a70c8291af55f8",
+      "bytes": 7110
+    },
+    {
+      "path": "accepted-followup-closure/integrated-types/conversations.receipt.json",
+      "sha256": "d36e85962dd58ffd32ca61973c43717baf4b3f6ced413ffdb4a5797236ac5c97",
+      "bytes": 1467
+    },
+    {
+      "path": "accepted-followup-closure/integrated-types/conversations.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "accepted-followup-closure/integrated-types/conversations.stdout.txt",
+      "sha256": "3f001170b476ee1d7a6663e77eec61c0a505e1877150080594bca954434c3ea3",
+      "bytes": 972
+    },
+    {
+      "path": "accepted-followup-closure/integrated-types/resolved-root-declarations.json",
+      "sha256": "83129917b53de2668c3324137ca69d7181e22f1d6598e7b22379d3aba7ce1784",
+      "bytes": 3068
+    },
+    {
+      "path": "accepted-followup-closure/integrated-types/runtime.receipt.json",
+      "sha256": "06bd99217f1db3a5a7c5a79abf0594d18dde4db69ff4ed5adaa2dccf17150820",
+      "bytes": 1447
+    },
+    {
+      "path": "accepted-followup-closure/integrated-types/runtime.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "accepted-followup-closure/integrated-types/runtime.stdout.txt",
+      "sha256": "55b9ac1baa9ffff5f63b9051d5ca97dfbad054efd5f15e1990ff6133787ecaaa",
+      "bytes": 972
+    },
+    {
+      "path": "accepted-followup-closure/integrated-types/SUMMARY.json",
+      "sha256": "c345d14ab7e220fd966efe0859479ac4ea5509f444d912e07616fa5a3bf44a39",
+      "bytes": 4556
+    },
+    {
+      "path": "accepted-followup-closure/integrated-types/tsconfig.conversations.json",
+      "sha256": "cb0ef1b1d6da0a5da34e39ea918edbfe3da4249c29ee85dbc70b2327d8b1d5e3",
+      "bytes": 7378
+    },
+    {
+      "path": "accepted-followup-closure/integrated-types/tsconfig.runtime.json",
+      "sha256": "bb065f6503c3da05fa46aaf21520476c5a37171e6255b5c939af9449ae612255",
+      "bytes": 7364
+    },
+    {
+      "path": "accepted-followup-closure/integration/central-allocation-0016.initial-denied.json",
+      "sha256": "9fcd6c1b74d0793f4af070542d35537edbdd4d6fcd5eaaf4a1f944bf2d085f49",
+      "bytes": 1362
+    },
+    {
+      "path": "accepted-followup-closure/integration/central-allocation-0016.json",
+      "sha256": "2c1fb52e9708f6eb0acfdf661bb41bd91162a9c37dc42c5763eb4fafa86f6c58",
+      "bytes": 1757
+    },
+    {
+      "path": "accepted-followup-closure/integration/input-bill-integration-source.json",
+      "sha256": "e97cbcc379074aa7e46a069497d02827783d0d4f00fffd434d8e87487c95a4b9",
+      "bytes": 9565
+    },
+    {
+      "path": "accepted-followup-closure/integration/input-bill-predecessor-preflight.json",
+      "sha256": "099e776e204a18afe540c9033fc8cafe67db7f09b1658d397576e47d2510a970",
+      "bytes": 2458
+    },
+    {
+      "path": "accepted-followup-closure/integration/recovery-control-preflight.json",
+      "sha256": "cd810a6d1f05fdcdfdff89f01886eeb38543647c2977468f31ae30a686c2ec8b",
+      "bytes": 480
+    },
+    {
+      "path": "accepted-followup-closure/integration/recovery-integration-source.json",
+      "sha256": "b1bcdf289a7d0d2132479df9fc1cec9336286b906897188df3244787ede9128b",
+      "bytes": 2274
+    },
+    {
+      "path": "accepted-followup-closure/preserved-and-provenance.json",
+      "sha256": "ff062ec43e377f54b892daae3e2798542a986e8946c012485c92c089c0cf66e2",
+      "bytes": 5751
+    },
+    {
+      "path": "accepted-followup-closure/README.md",
+      "sha256": "38ca53c7cc520a5a3e6a1a14bc273c821cc84fc55d490e198f9df4dee9560056",
+      "bytes": 2683
+    },
+    {
+      "path": "accepted-followup-closure/run_input_bill_closure.py",
+      "sha256": "ac92fa4675483514d2acf1ac8eb84df8a617b638674f22b240a463531e99ecc6",
+      "bytes": 6074
+    },
+    {
+      "path": "accepted-followup-closure/run_input_bill_typechecks.py",
+      "sha256": "41f67b622bd59775454a3dbe04924127487cd0ec3f61386d5986bf44fbe2f916",
+      "bytes": 5831
+    },
+    {
+      "path": "accepted-followup-closure/run_recovery_closure.py",
+      "sha256": "0b7b2be69234e17be304aa9bbe30bd553d3a869e151348d78856f3e96ecedd9f",
+      "bytes": 5699
+    },
+    {
+      "path": "accepted-followup-closure/run_recovery_typechecks.py",
+      "sha256": "fb2eaabf972405816d27dc06dd90f3762a76c58d2bbd89db7f8dcf437a01bd8e",
+      "bytes": 5822
     },
     {
       "path": "combined-loading/.gitattributes",
@@ -202,7 +363,7 @@
       "sha256": "f64f720169a8df53be129e895c55a930a58c6f33d3d2ffcb92c4206b8d37f1b9",
       "bytes": 2235,
       "observedWorkingCopySha256": "78c1aadd53d73532dc72971067bbc8162861ff70430dab3dec35f5487cc324d1",
-      "normalization": "Existing Git text normalization CRLF to LF only; published source/evidence file not changed"
+      "normalization": "Pre-existing Git CRLF-to-LF text normalization only"
     },
     {
       "path": "combined-loading/run_input_mount.py",
@@ -446,13 +607,83 @@
     },
     {
       "path": "publication-denial.json",
-      "sha256": "acf4f9d7c9be6dbd82606b36bd1502b15897018b7566f946b4bf485cae21ff87",
-      "bytes": 739
+      "sha256": "948122a5e133445b916e750e7dd5d8ffe751b43cccc98f7626c412320b9569a1",
+      "bytes": 1588
+    },
+    {
+      "path": "recovery-closure/.gitattributes",
+      "sha256": "730a35ae3d558080083c3103d9ac8100c3f6561678092abe341701dfa331eb1d",
+      "bytes": 29
+    },
+    {
+      "path": "recovery-closure/closure.receipt.json",
+      "sha256": "0c2742404fe728fff55f17901b4166a7ffdd461de7075b80ba0c3e4066a09f46",
+      "bytes": 1614
+    },
+    {
+      "path": "recovery-closure/closure.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "recovery-closure/closure.tap",
+      "sha256": "1ec7b55f32c7a5d73803ba1f0713e040f916dda01dcdbf702c5ba913b1dc0fcf",
+      "bytes": 4944
+    },
+    {
+      "path": "recovery-closure/integrated-types/conversations.receipt.json",
+      "sha256": "04545a86903edaaca53366f5ab1077d35ac0a38602d5b1d75fd04868243425c8",
+      "bytes": 1458
+    },
+    {
+      "path": "recovery-closure/integrated-types/conversations.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "recovery-closure/integrated-types/conversations.stdout.txt",
+      "sha256": "61c6b95d782e30f95282804cdc724a726ee2e0d9eedc742c20b8b628343d5985",
+      "bytes": 972
+    },
+    {
+      "path": "recovery-closure/integrated-types/resolved-root-declarations.json",
+      "sha256": "83129917b53de2668c3324137ca69d7181e22f1d6598e7b22379d3aba7ce1784",
+      "bytes": 3068
+    },
+    {
+      "path": "recovery-closure/integrated-types/runtime.receipt.json",
+      "sha256": "ad9a87513a38d2f4eb09bf51ed89a8967544b78e683991f542f6bbef6eec050a",
+      "bytes": 1437
+    },
+    {
+      "path": "recovery-closure/integrated-types/runtime.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "recovery-closure/integrated-types/runtime.stdout.txt",
+      "sha256": "872e5d9fe7a7f00810ca7f58d576adf16ecc54f5153eeb65318d5f5be656a205",
+      "bytes": 972
+    },
+    {
+      "path": "recovery-closure/integrated-types/SUMMARY.json",
+      "sha256": "72652bfc0a9401c1e8d3b512ab34f979f51a7455b54e67c06bf47970a49f08fd",
+      "bytes": 4537
+    },
+    {
+      "path": "recovery-closure/integrated-types/tsconfig.conversations.json",
+      "sha256": "cb0ef1b1d6da0a5da34e39ea918edbfe3da4249c29ee85dbc70b2327d8b1d5e3",
+      "bytes": 7378
+    },
+    {
+      "path": "recovery-closure/integrated-types/tsconfig.runtime.json",
+      "sha256": "bb065f6503c3da05fa46aaf21520476c5a37171e6255b5c939af9449ae612255",
+      "bytes": 7364
     },
     {
       "path": "scoped-integration-custody.json",
-      "sha256": "391a085a3d6462b50c124b748bb9d92095d70d21172165afdb879dfe3fa2ed64",
-      "bytes": 120418
+      "sha256": "6e16d48a9e7c8729703db137a401fa59066b6fc0c309023bf032b2e18af6262c",
+      "bytes": 138542
     },
     {
       "path": "scoped-integration-proof.tap",
@@ -464,14 +695,14 @@
       "sha256": "e65cef13be5c15bc3e64bfc6630f1b4ea910bf49e0291b61780102c475ab2e15",
       "bytes": 373229,
       "observedWorkingCopySha256": "0c233a4317a474449572851dbe06ec362b9b0d65fd5ab3e1b7e53b621638995f",
-      "normalization": "Existing Git text normalization CRLF to LF only; published source/evidence file not changed"
+      "normalization": "Pre-existing Git CRLF-to-LF text normalization only"
     },
     {
       "path": "source-inventory.json",
       "sha256": "0fb3554f1975de7711818063f29879ff4013f6ed70a7786c84ebc34cdc827cfc",
       "bytes": 31619,
       "observedWorkingCopySha256": "082d3164d743a69e5d320365350ca36db00ec40056d79351adb93001ca25e59f",
-      "normalization": "Existing Git text normalization CRLF to LF only; published source/evidence file not changed"
+      "normalization": "Pre-existing Git CRLF-to-LF text normalization only"
     },
     {
       "path": "source-proof.tap",
@@ -483,14 +714,5 @@
       "sha256": "cf39d4715adb6a13f37ecf70c743d40259cfd11e50e4a259563258578c860446",
       "bytes": 4902
     }
-  ],
-  "hashBytes": "Exact Git index payload; existing working-copy-only line-ending differences explicitly retained",
-  "preCommitCheck": {
-    "initialCheck": "Three pre-existing text files differed only by existing CRLF-to-LF Git normalization; no raw new process evidence changed",
-    "normalizedPaths": [
-      "combined-loading/run_combined_loading.py",
-      "source-count.json",
-      "source-inventory.json"
-    ]
-  }
+  ]
 }

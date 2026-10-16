@@ -1,0 +1,56 @@
+{
+  "before": "abdf84df18012fc2f1750bba12e8cf722b8792e7",
+  "mismatches": [],
+  "groups": [
+    {
+      "label": "canonical original input claim store and centrally reserved0016",
+      "paths": [
+        "apps/control/conversations/initial-input-facts.mjs",
+        "apps/control/conversations/initial-input-journal.mjs",
+        "apps/control/conversations/migrations/0016_initial_inputs.sql",
+        "apps/control/conversations/postgres-store.mjs",
+        "apps/control/conversations/test/initial-input-fixture.mjs",
+        "apps/control/conversations/test/initial-input.test.mjs"
+      ]
+    },
+    {
+      "label": "bill-text required current source exposure ledger dependency",
+      "paths": [
+        "docs/coordination/ledgers/MERI-FINAL-SCOPE-LEDGER-20261015.md",
+        "docs/coordination/ledgers/scope-ledger.json",
+        "scripts/scope-ledger/cli.mjs",
+        "scripts/scope-ledger/ledger.mjs",
+        "scripts/scope-ledger/markdown.mjs",
+        "scripts/scope-ledger/source-exposure.mjs",
+        "scripts/scope-ledger/source-exposure.test.mjs",
+        "scripts/scope-ledger/sources.mjs"
+      ]
+    },
+    {
+      "label": "source-accepted bill-text flat native routes and canonical worker schemas",
+      "paths": [
+        "apps/gateway/dispatch/bill-text-context.mjs",
+        "apps/gateway/dispatch/operation-context.mjs",
+        "apps/gateway/dispatch/read-result-envelope.mjs",
+        "apps/gateway/dispatch/tool-dispatch.mjs",
+        "apps/gateway/general-reads/families.test.mjs",
+        "apps/gateway/general-reads/families/bill-text.mjs",
+        "apps/gateway/general-reads/integration.mjs",
+        "apps/gateway/general-reads/test/family-cases.mjs",
+        "apps/gateway/sources/bill-text/handler.mjs",
+        "apps/gateway/sources/bill-text/test/fixture.mjs",
+        "apps/gateway/sources/bill-text/test/handler.test.mjs",
+        "apps/worker/conversation/reads/families.mjs",
+        "apps/worker/conversation/reads/test/bill-text.test.mjs",
+        "apps/worker/conversation/reads/test/families.test.mjs",
+        "docs/coordination/ledgers/MERI-FINAL-SCOPE-LEDGER-20261015.md",
+        "docs/coordination/ledgers/scope-ledger.json",
+        "scripts/general-reads/adapters.json",
+        "scripts/scope-ledger/backend-producers.json",
+        "scripts/scope-ledger/markdown.mjs",
+        "scripts/scope-ledger/source-exposure.mjs",
+        "scripts/scope-ledger/source-exposure.test.mjs"
+      ]
+    }
+  ]
+}

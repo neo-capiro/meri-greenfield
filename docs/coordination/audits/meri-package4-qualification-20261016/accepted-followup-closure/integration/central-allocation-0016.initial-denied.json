@@ -1,0 +1,17 @@
+{
+  "commit": "5c83c015ee6fe8ab9fa07228e7caa23e19c34999",
+  "tree": "6b8bd8af1d908a6421304439ecc05feda49533a4",
+  "parent": "0b0b7abd536a27a74e3b1077ae71eed6e0ba275b",
+  "branch": "refs/heads/dot/meri-package4-allocations-20261016",
+  "path": "docs/coordination/tasks/CODEX-PACKAGE4-CENTRAL-MIGRATION-ALLOCATIONS-20261016.md",
+  "blob": "ba854a43e13a15611fb3c27da09ffcd769607708",
+  "sha256": "97f2ab7a5c42e3f41bc4c8311b771f26757ca30420d194b749759f81e2b99ceb",
+  "reservation": "apps/control/conversations/migrations/0016_initial_inputs.sql",
+  "table": "meri_conversations.initial_inputs",
+  "owner": "01a14241-cbba-7531-9aba-71299cd430d7",
+  "status": "SOURCE_RESERVED_AUTHORING_RELEASED; public receipt review pending; no SQL/live action",
+  "remotePublication": "DENIED_NOT_EXECUTED; exact allocation branch/ref authorization unclear to automatic approval review; no retry",
+  "deniedCommand": "git push origin refs/heads/dot/meri-package4-allocations-20261016:refs/heads/dot/meri-package4-allocations-20261016",
+  "denialReason": "This publishes a new commit to a remote repository, an external commitment not explicitly authorized by the user for this exact branch/ref.",
+  "latestProposalNote": "Prepared requestSha256 added alongside raw inputSha256; public digest/status/brand bridge pending narrow review; no public export/version or SQL execution."
+}

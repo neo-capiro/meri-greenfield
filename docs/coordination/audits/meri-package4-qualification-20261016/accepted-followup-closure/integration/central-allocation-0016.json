@@ -1,0 +1,21 @@
+{
+  "commit": "0d9dffbb7c9cb603992aa0ac32f19f04386c67f5",
+  "tree": "e7d98b6a18a69265c7dde7c5bb7e045ec54cc4e8",
+  "parent": "fe4f53123d585bfda9d9d38b999b30b99f79d9b3",
+  "branch": "refs/heads/dot/meri-package4-allocations-20261016",
+  "path": "docs/coordination/tasks/CODEX-PACKAGE4-CENTRAL-MIGRATION-ALLOCATIONS-20261016.md",
+  "blob": "c3c8090a0c92be191fb2cd12322ea43c10058a22",
+  "sha256": "5838c49ed7357c9b1d5ad4015c27799956cfb1c0fecabc7cfd1d00713bb323e5",
+  "reservation": "apps/control/conversations/migrations/0016_initial_inputs.sql",
+  "table": "meri_conversations.initial_inputs",
+  "owner": "01a14241-cbba-7531-9aba-71299cd430d7",
+  "status": "SOURCE_RESERVED_AUTHORING_RELEASED; public receipt review pending; no SQL/live action",
+  "remotePublication": "DENIED_NOT_EXECUTED; no retry; exact final ref fast-forward authorization pending",
+  "deniedCommand": "git push origin refs/heads/dot/meri-package4-allocations-20261016:refs/heads/dot/meri-package4-allocations-20261016",
+  "denialReason": "This publishes a new commit to a remote repository, an external commitment not explicitly authorized by the user for this exact branch/ref.",
+  "latestProposalNote": "Prepared requestSha256 added alongside raw inputSha256; public digest/status/brand bridge pending narrow review; no public export/version or SQL execution.",
+  "deniedAttemptCommit": "5c83c015ee6fe8ab9fa07228e7caa23e19c34999",
+  "sourceCandidate": "41c54452f6cfd6e26aa55f9f23370fbbcade49c3",
+  "wireDisposition": "PARENT_SOURCE_WIRE_ACCEPT41c; Input/Startup implementation in progress, artifact and live gates pending",
+  "publicArtifactAllocation": "contracts0.1.8 /conversation-initial-input and /schema; C sole package/generator/executor, Input canonical modules/service/HTTP"
+}

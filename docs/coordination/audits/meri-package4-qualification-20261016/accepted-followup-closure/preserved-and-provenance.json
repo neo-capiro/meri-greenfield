@@ -1,0 +1,115 @@
+{
+  "source": "03def1608c1f5365524502592fa8885283c69215",
+  "oldDistCount": 26,
+  "oldDistAllGitBytesEqual": true,
+  "preservedLockCount": 14,
+  "frozenSchemaAndHistoricalImagesEqual": true,
+  "hChanged": [
+    {
+      "path": "apps/control/conversations/postgres-store.mjs",
+      "hSha256": "2de6bce64ace8a6d2b5d0ed205f9ffb5b7ac2884d6109df19bc629b13d48c1cb",
+      "currentSha256": "96002cc66ed5658273af0cd4035e027efaaaa94708e020f28b79c22f1fc355a0",
+      "reason": "Exact accepted current source; historical h unchanged/HOLD"
+    },
+    {
+      "path": "apps/runtime/config.mjs",
+      "hSha256": "9558183a7eab179d3b66d2b1d65707a0f495f882b3aa03e8b04b029942c6685d",
+      "currentSha256": "716be73148849c3eba958a15c69f0905aac534a4495b244cbc91cb4010450750",
+      "reason": "Exact accepted current source; historical h unchanged/HOLD"
+    },
+    {
+      "path": "apps/runtime/control.mjs",
+      "hSha256": "ec63730199cbc092042dab6b6694506087530ee85572e1daadfb478bf76c5757",
+      "currentSha256": "514120080b16c2bf920bb73ee30a9cf41e92d7d51b6764d79ddd9bab34135035",
+      "reason": "Exact accepted current source; historical h unchanged/HOLD"
+    },
+    {
+      "path": "apps/runtime/conversation-runner.mjs",
+      "hSha256": "9b6ac5506161513caab33a41c547b634dc314426b51e274f376340556a1ba26d",
+      "currentSha256": "4afd72fb8605bc557343d18b55c920c04e7299e40890612352484cc971356a3d",
+      "reason": "Exact accepted current source; historical h unchanged/HOLD"
+    },
+    {
+      "path": "apps/runtime/native-authority/remote-composition.mjs",
+      "hSha256": "2c4162da6af533902090d7aa2861278c892335a90b4e4a75cbae99b80ba5ab4b",
+      "currentSha256": "44505e413d15120fcd2844c5d4e427685b490a2af5d69493b9aabbdbb2de036d",
+      "reason": "Exact accepted current source; historical h unchanged/HOLD"
+    },
+    {
+      "path": "apps/runtime/native-runner-gateway.mjs",
+      "hSha256": "9c4daaee94de339fe97cbd6d55654d0cc5890b58a12069500e8e877f889edece",
+      "currentSha256": "571fd29580768069bbf8b5aa09c51d14822d6e9f84cff306b50e4ead1c7329f9",
+      "reason": "Exact accepted current source; historical h unchanged/HOLD"
+    },
+    {
+      "path": "apps/runtime/prepared-candidate-config.mjs",
+      "hSha256": "2dd1963e3350948c3d7b93543e84f3bd1031545e94b74eca79db11ba59651bc7",
+      "currentSha256": "db989a4d33300cc0ffc4881a3905ea0139da6d04dba4ce6d659f1318fcacf8b4",
+      "reason": "Exact accepted current source; historical h unchanged/HOLD"
+    },
+    {
+      "path": "apps/runtime/prepared-candidate.mjs",
+      "hSha256": "56a56689f2bf0ee365f9f1b7e479f5f5e693ae05998d9e80057c3e8da278b603",
+      "currentSha256": "8e59dbc0431755772b63d6d58b5ccc6fa68c7963857ca494cc959773fe4d52f1",
+      "reason": "Exact accepted current source; historical h unchanged/HOLD"
+    },
+    {
+      "path": "apps/runtime/remote-conversation-runner.mjs",
+      "hSha256": "830775231cd1a96bce6fc8c5d81a2092be883712080655163270149032dd45ec",
+      "currentSha256": "9e59307773644abf258e822cf0d96f5412c59e89d449665b1c02ea20aaf65e8a",
+      "reason": "Exact accepted current source; historical h unchanged/HOLD"
+    },
+    {
+      "path": "apps/runtime/task-bootstrap.mjs",
+      "hSha256": "1a44df48814c509f5cf7826847f3990a7179035474014119e39eef51eb8880dc",
+      "currentSha256": "626bfa08b71265e766cc0b2baab44d3096ca5eca1b2da13e0f434f30c8390fd3",
+      "reason": "Exact accepted current source; historical h unchanged/HOLD"
+    }
+  ],
+  "hEqual": 35,
+  "oldMetadataSourceDrift": [
+    {
+      "metadata": "conversation-application.metadata.json",
+      "path": "../../apps/control/conversations/service.mjs",
+      "recorded": "e888dceb510694333e580a54392fa3b79f92acdbab939b30b93ccf83da7587e3",
+      "current": "964dcfec144659d9cd5729e6008ed74f7f1012278f00d71cd4ae2b29cfaa8773"
+    },
+    {
+      "metadata": "conversation-lifecycle.metadata.json",
+      "path": "../../apps/control/conversations/lifecycle/http.mjs",
+      "recorded": "eb52b7bd1d50575d04189d56871db004f04fc6f8af4a8e6080d4a19e992fba25",
+      "current": "a221b726ad7699d22c0da4d00523e904dc83c4ae05570255cad836c3c5302602"
+    },
+    {
+      "metadata": "conversation-lifecycle.metadata.json",
+      "path": "../../apps/control/conversations/lifecycle/service.mjs",
+      "recorded": "b505c4d9848e2cd4ce0e184642bb0199fbfb84c8a80964c12b094f5011959f0c",
+      "current": "eb26eb9adbcbb421568e42d2885153e4209142e2a620612ba70c73fc7f26f246"
+    },
+    {
+      "metadata": "document-application.metadata.json",
+      "path": "../../apps/control/document-application/current.mjs",
+      "recorded": "a9d5da860e0d562693aef51a78eade4197ea3e9d90b64955528384d38b840dce",
+      "current": "0c31c70a46b5bfe2f2bcda0601c51f827103d35f2c64c436fb5f752fb0d16b34"
+    },
+    {
+      "metadata": "document-application.metadata.json",
+      "path": "../../apps/control/document-application/format-admission.mjs",
+      "recorded": "575e0ca5227400c86628765321c4c1d8b699f7725a41d464d86823d5d2c79a75",
+      "current": "da746a47c0f4e0a5a3ee10da87655eb182dd590c67419316e2d3e71080bd14f2"
+    },
+    {
+      "metadata": "document-application.metadata.json",
+      "path": "../../apps/control/document-application/http.mjs",
+      "recorded": "84c0c5cdf62ae040909bc174aa470fd50dc0d0f38d72396d6dcc001c51defe6d",
+      "current": "27f6930dadb6241b5aed2258a34ebef552a76548bb19b09172226dde0b4f7548"
+    },
+    {
+      "metadata": "document-application.metadata.json",
+      "path": "../../apps/control/document-application/index.mjs",
+      "recorded": "9950e014929cf416a256d9398fa632e46bb2dd3831ae09168205c71a6aaa9dc5",
+      "current": "c788ca4a19183e3254bd7827ca7a645170bc8963fbd94876cc0155c9a7426554"
+    }
+  ],
+  "note": "Old artifacts preserved; metadata source drift is explicit and not a regenerated whole-generator check"
+}
