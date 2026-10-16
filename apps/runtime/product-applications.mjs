@@ -8,7 +8,7 @@ import {createNativeSdkSessionApplication} from './native-authority/session-http
 import {fault} from './config.mjs';
 import {types} from 'node:util';
 export function captureRuntimePorts(value={}){
- const c=own(value,[],['identityContext','transitionAuthority','artifactOptionsOwner','selectedController','sdkSessionOwner','sdkSessionSnapshot','selectedSkillAdmission','selectedOutputPublication','artifactStore']);
+ const c=own(value,[],['identityContext','transitionAuthority','artifactOptionsOwner','selectedController','sdkSessionOwner','sdkSessionSnapshot','selectedSkillAdmission','selectedOutputPublication','artifactStore','retentionLedgerSink']);
  const methods=(port,names)=>Object.freeze(Object.fromEntries(names.map(name=>[name,storageMethod(port,name)])));
  const optionalMethod=(port,name)=>{let cursor=port;for(let depth=0;cursor!==null&&depth<32;depth++){if(types.isProxy(cursor))throw fault('PRODUCT_PORTS_CONFIGURATION');if(Object.getOwnPropertyDescriptor(cursor,name))return storageMethod(port,name);cursor=Object.getPrototypeOf(cursor);}if(cursor!==null)throw fault('PRODUCT_PORTS_CONFIGURATION');};
  const identity=c.identityContext===undefined?Object.freeze({verifyIdentity:async()=>{throw fault('NATIVE_AUTHORITY_UNAVAILABLE');},resolveContext:async()=>{throw fault('NATIVE_AUTHORITY_UNAVAILABLE');}}):methods(c.identityContext,['verifyIdentity','resolveContext']);
@@ -24,6 +24,8 @@ export function captureRuntimePorts(value={}){
   ...(c.selectedOutputPublication===undefined?{}:{selectedOutputPublication:methods(c.selectedOutputPublication,['prepareEvent'])}),
   // The private artifact store's read-only privacy proof (createRuntimeArtifactStorage().verifyPrivate); required to open download links.
   ...(c.artifactStore===undefined?{}:{artifactStore:methods(c.artifactStore,['verifyPrivate'])}),
+  // The authoritative retention ledger sink (the shipping owner's write-once store); without it declared retention serving stays fenced.
+  ...(c.retentionLedgerSink===undefined?{}:{retentionLedgerSink:methods(c.retentionLedgerSink,['append','read'])}),
  });
 }
 /** `suppression` is the retention serving `{journal,serving}` pair when declared; the download-link gate needs it to revoke links. */
