@@ -27,7 +27,8 @@ export async function generateInputContracts({check=false}={}){
   const imports=Object.values(bundled.metafile.outputs).flatMap(o=>o.imports);if(!imports.length||imports.some(i=>!i.external||i.path!==canonicalImport||i.kind!=='import-statement'))throw Error('Unexpected conversation input browser dependency');
   const declarations=await compile({title:'ConversationInputEnvelope',anyOf:names.map(name=>({$ref:'#/$defs/'+name})),$defs:root.$defs},'ConversationInputEnvelope',{bannerComment:'// Generated additive input receipt over accepted canonical schemas. No authorization implied.',additionalProperties:false,style:{singleQuote:true}});
   const api=`
-import type {AdmittedConversationRequest,AdmittedConversationView,ConversationHistoryResponse} from '@capiro/meri-contracts/conversation-application';
+import type {AdmittedConversationRequest,AdmittedConversationView,ConversationHistoryResponse,ConversationErrorResponse} from '@capiro/meri-contracts/conversation-application';
+export type ConversationInputErrorResponse=ConversationErrorResponse;
 export type AdmittedConversationInputRequest=AdmittedConversationRequest<'submit'>;
 declare const admittedInputReceipt:unique symbol;
 export type AdmittedConversationInputReceipt=Readonly<ConversationInputAdmittedResponse>&{readonly [admittedInputReceipt]:true};
