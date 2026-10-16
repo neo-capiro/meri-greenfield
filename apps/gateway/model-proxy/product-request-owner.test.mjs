@@ -9,6 +9,8 @@ const credential='synthetic-product-model-bearer-000001';
 const host='bedrock-runtime.us-east-1.amazonaws.com';
 const url=`https://${host}/model/us.anthropic.claude-sonnet-4-6/invoke`;
 const pin={modelId:'anthropic.claude-sonnet-4-6',profileId:'us.anthropic.claude-sonnet-4-6',revision:'b'.repeat(64),validUntilMs:NOW+8000,actualInputMicroUSDPerK:3300,reserveInputMicroUSDPerK:6600,outputMicroUSDPerK:16500,maxInputTokens:8192,maxOutputTokens:256};
+const clientId='11111111-1111-4111-8111-111111111111';
+const current=selected=>async()=>({identitySha256:'a'.repeat(64),binding:selected.binding,scopes:[{kind:'client',tenantId:selected.binding.tenantId,resourceId:clientId,policyRevision:selected.qualificationBinding.policyRevision}],selectedClientId:clientId,contextRevision:'b'.repeat(64),checkedAtMs:NOW,expiresAtMs:NOW+5000});
 function fixture(){
  const seed=productFixture(),selected={...seed.context(),capabilitySha256:hash(credential)};
  const rawRequestBody=Buffer.from('{"model":"meri-sonnet-qualification","messages":[{"role":"user","content":"synthetic"}],"max_tokens":16}');
@@ -36,7 +38,7 @@ test('wrong direct peer, bearer, final bytes, count or route refuses before any 
  ];
  for(const change of changes){
   const altered={...source,peer:{...source.peer},rawRequestBody:Buffer.from(source.rawRequestBody),nativeRequest:{...source.nativeRequest,body:Buffer.from(source.nativeRequest.body),headers:source.nativeRequest.headers.map(pair=>[...pair])},count:{...source.count}};change(altered);
-  const owner=createProductProxyRequestOwner({pool:{connect(){attempts.push('sql');throw Error('should not connect');}},allocationJson:JSON.stringify(seed.allocation),grantFactsJsons:[JSON.stringify(selected)],modelGrantId:selected.grantId,pricing:pin,now:()=>NOW,limits:{maxRequestMs:1000,maxFactBytes:65536},observeProxy:async()=>altered});
+  const owner=createProductProxyRequestOwner({pool:{connect(){attempts.push('sql');throw Error('should not connect');}},allocationJson:JSON.stringify(seed.allocation),grantFactsJsons:[JSON.stringify(selected)],modelGrantId:selected.grantId,selectedClientId:clientId,pricing:pin,now:()=>NOW,limits:{maxRequestMs:1000,maxFactBytes:65536},observeProxy:async()=>altered,checkCurrentConversation:current(selected)});
   await assert.rejects(owner.reserve({requestId:'request_A',binding:selected.binding,deadlineMs:NOW+5000}),/PRODUCT_PROXY_OBSERVATION_REFUSED/);
  }
  assert.deepEqual(attempts,[]);
@@ -44,7 +46,7 @@ test('wrong direct peer, bearer, final bytes, count or route refuses before any 
 
 test('worker-supplied observation cannot enter the private reserve port',async()=>{
  const {seed,selected,source}=fixture();let observed=0;
- const owner=createProductProxyRequestOwner({pool:{connect(){throw Error('unexpected SQL');}},allocationJson:JSON.stringify(seed.allocation),grantFactsJsons:[JSON.stringify(selected)],modelGrantId:selected.grantId,pricing:pin,now:()=>NOW,limits:{maxRequestMs:1000,maxFactBytes:65536},observeProxy:async()=>{observed++;return source;}});
+ const owner=createProductProxyRequestOwner({pool:{connect(){throw Error('unexpected SQL');}},allocationJson:JSON.stringify(seed.allocation),grantFactsJsons:[JSON.stringify(selected)],modelGrantId:selected.grantId,selectedClientId:clientId,pricing:pin,now:()=>NOW,limits:{maxRequestMs:1000,maxFactBytes:65536},observeProxy:async()=>{observed++;return source;},checkCurrentConversation:current(selected)});
  await assert.rejects(owner.reserve({requestId:'request_A',binding:selected.binding,deadlineMs:NOW+5000,count:source.count}));
  assert.equal(observed,0);
 });

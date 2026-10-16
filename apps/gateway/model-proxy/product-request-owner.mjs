@@ -49,14 +49,14 @@ export function observeProductProxyRequest(source,selected,pricing,requestId,now
  * guarded request. Missing host authentication makes this port unmountable.
  */
 export function createProductProxyRequestOwner(configuration){
- const c=own(configuration,['pool','allocationJson','grantFactsJsons','modelGrantId','pricing','observeProxy','now','limits']);
- if(typeof c.observeProxy!=='function'||typeof c.now!=='function'||c.pricing?.modelId!==modelId||c.pricing?.profileId!==profileId)deny();
+ const c=own(configuration,['pool','allocationJson','grantFactsJsons','modelGrantId','selectedClientId','pricing','observeProxy','checkCurrentConversation','now','limits']);
+ if(typeof c.observeProxy!=='function'||typeof c.checkCurrentConversation!=='function'||typeof c.now!=='function'||c.pricing?.modelId!==modelId||c.pricing?.profileId!==profileId)deny();
  const {facts}=parseAdmittedGrantSet(c),selected=facts.find(f=>f.grantId===c.modelGrantId);
  if(!selected)deny();
  return Object.freeze({async reserve(value){
   const v=own(value,['requestId','binding','deadlineMs'],['signal']);nativeSignal(v.signal);
   if(!same(v.binding,selected.binding))deny();
-  const owner=createProductModelReservation({pool:c.pool,allocationJson:c.allocationJson,grantFactsJsons:c.grantFactsJsons,modelGrantId:c.modelGrantId,pricing:c.pricing,now:c.now,limits:c.limits,
+  const owner=createProductModelReservation({pool:c.pool,allocationJson:c.allocationJson,grantFactsJsons:c.grantFactsJsons,modelGrantId:c.modelGrantId,selectedClientId:c.selectedClientId,pricing:c.pricing,now:c.now,limits:c.limits,checkCurrentConversation:c.checkCurrentConversation,
    observe:async request=>observeProductProxyRequest(await c.observeProxy(request),selected,c.pricing,v.requestId,c.now)});
   return owner.reserve(v);
  }});

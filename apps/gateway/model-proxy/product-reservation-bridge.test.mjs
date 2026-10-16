@@ -9,6 +9,7 @@ const credential='synthetic-product-model-bearer-000001';
 const host='bedrock-runtime.us-east-1.amazonaws.com';
 const url=`https://${host}/model/us.anthropic.claude-sonnet-4-6/invoke`;
 const pricing={modelId:'anthropic.claude-sonnet-4-6',profileId:'us.anthropic.claude-sonnet-4-6',revision:'b'.repeat(64),validUntilMs:NOW+8000,actualInputMicroUSDPerK:3300,reserveInputMicroUSDPerK:6600,outputMicroUSDPerK:16500,maxInputTokens:8192,maxOutputTokens:256};
+const clientId='11111111-1111-4111-8111-111111111111';
 
 function fixture(){
  const seed=productFixture(),selected={...seed.context(),capabilitySha256:hash(credential)};
@@ -18,13 +19,16 @@ function fixture(){
   nativeRequest:{method:'POST',url,host,contentType:'application/json',body,headers:[['host',host],['content-type','application/json']]},
   count:{inputTokens:12,nativeBodySha256:hash(body),modelId:pricing.modelId,origin:'aws-counttokens'}};
  const value={requestId:'request_A',binding:selected.binding,deadlineMs:NOW+5000};
- const config={allocationJson:JSON.stringify(seed.allocation),grantFactsJsons:[JSON.stringify(selected)],modelGrantId:selected.grantId,pricing,now:()=>NOW,limits:{maxRequestMs:1000,maxFactBytes:65536}};
+ const config={allocationJson:JSON.stringify(seed.allocation),grantFactsJsons:[JSON.stringify(selected)],modelGrantId:selected.grantId,selectedClientId:clientId,pricing,now:()=>NOW,limits:{maxRequestMs:1000,maxFactBytes:65536},checkCurrentConversation:async()=>({identitySha256:'a'.repeat(64),binding:selected.binding,scopes:[{kind:'client',tenantId:selected.binding.tenantId,resourceId:clientId,policyRevision:selected.qualificationBinding.policyRevision}],selectedClientId:clientId,contextRevision:'b'.repeat(64),checkedAtMs:NOW,expiresAtMs:NOW+5000})};
  return {observation,value,config};
 }
 
 test('bridge requires a constructor-captured host authenticator',()=>{
  const {config}=fixture();
  assert.throws(()=>createProductProxyReservationBridge({...config,pool:{connect(){}},captureAuthenticatedCall:null}),/PRODUCT_PROXY_BRIDGE_REFUSED/);
+ assert.throws(()=>createProductProxyReservationBridge({...config,pool:{connect(){}},captureAuthenticatedCall:async()=>null,checkCurrentConversation:null}),/PRODUCT_PROXY_BRIDGE_REFUSED/);
+ const withoutClient={...config};delete withoutClient.selectedClientId;
+ assert.throws(()=>createProductProxyReservationBridge({...withoutClient,pool:{connect(){}},captureAuthenticatedCall:async()=>null}));
 });
 
 test('caller observation is cross-checked against independent host capture before SQL',async()=>{

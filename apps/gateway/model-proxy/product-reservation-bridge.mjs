@@ -36,8 +36,8 @@ function snapshot(value){
  * would not satisfy this contract.
  */
 export function createProductProxyReservationBridge(configuration){
- const c=own(configuration,['pool','allocationJson','grantFactsJsons','modelGrantId','pricing','captureAuthenticatedCall','now','limits']);
- if(typeof c.captureAuthenticatedCall!=='function')deny();
+ const c=own(configuration,['pool','allocationJson','grantFactsJsons','modelGrantId','selectedClientId','pricing','captureAuthenticatedCall','checkCurrentConversation','now','limits']);
+ if(typeof c.captureAuthenticatedCall!=='function'||typeof c.checkCurrentConversation!=='function')deny();
  let entered=false;
  return Object.freeze({async reserve(value,claimedObservation){
   if(entered)deny();entered=true;
@@ -50,7 +50,7 @@ export function createProductProxyReservationBridge(configuration){
   const authenticated=snapshot(await c.captureAuthenticatedCall(request));
   if(!isDeepStrictEqual(claim,authenticated))deny();
   const owner=createProductProxyRequestOwner({pool:c.pool,allocationJson:c.allocationJson,grantFactsJsons:c.grantFactsJsons,
-   modelGrantId:c.modelGrantId,pricing:c.pricing,now:c.now,limits:c.limits,
+   modelGrantId:c.modelGrantId,selectedClientId:c.selectedClientId,pricing:c.pricing,now:c.now,limits:c.limits,checkCurrentConversation:c.checkCurrentConversation,
    observeProxy:async observedRequest=>{
     if(!isDeepStrictEqual(observedRequest,request))deny();
     return authenticated;

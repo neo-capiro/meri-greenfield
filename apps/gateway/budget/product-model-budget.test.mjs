@@ -6,7 +6,9 @@ import {BudgetCommitUncertain} from './postgres-budget-store.mjs';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 
 const pin=()=>({modelId:'anthropic.claude-sonnet-4-6',profileId:'us.anthropic.claude-sonnet-4-6',revision:'b'.repeat(64),validUntilMs:NOW+8000,actualInputMicroUSDPerK:3300,reserveInputMicroUSDPerK:6600,outputMicroUSDPerK:16500,maxInputTokens:8192,maxOutputTokens:256});
-function fixture({cap='100',liabilities=[],observe}={}){
+const clientId='11111111-1111-4111-8111-111111111111';
+function context(fact){return {identitySha256:'a'.repeat(64),binding:fact.binding,scopes:[{kind:'client',tenantId:fact.binding.tenantId,resourceId:clientId,policyRevision:fact.qualificationBinding.policyRevision}],selectedClientId:clientId,contextRevision:'b'.repeat(64),checkedAtMs:NOW,expiresAtMs:NOW+5000};}
+function fixture({cap='100',liabilities=[],observe,current}={}){
  const seed=productFixture(),fact=seed.context(),pricing=pin(),commands=[],releases=[];
  let clock=NOW,dbClock=NOW,lose=false,afterInsert=()=>{};
  let state={budget:{id:1,cap_micro_usd:cap,consumed_micro_usd:'0',quarantined:false},run:seed.state().run,grant:seed.state().grant,
@@ -37,7 +39,7 @@ function fixture({cap='100',liabilities=[],observe}={}){
   assert.fail('unsupported model SQL: '+sql);
  },release(error){releases.push(error);}};}};
  const defaultObservation=()=>({binding:fact.binding,taskArn:fact.qualificationBinding.workerArn,capabilitySha256:fact.capabilitySha256,nativeBodySha256:'c'.repeat(64),rawRequestSha256:'d'.repeat(64),modelId:pricing.modelId,profileId:pricing.profileId,maxOutputTokens:1,count:{nativeBodySha256:'c'.repeat(64),modelId:pricing.modelId,inputTokens:1}});
- const config={pool,allocationJson:JSON.stringify(seed.allocation),grantFactsJsons:[JSON.stringify(fact)],modelGrantId:fact.grantId,pricing,observe:observe??defaultObservation,now:()=>clock,limits:{maxRequestMs:1000,maxFactBytes:65536}};
+ const config={pool,allocationJson:JSON.stringify(seed.allocation),grantFactsJsons:[JSON.stringify(fact)],modelGrantId:fact.grantId,selectedClientId:clientId,pricing,observe:observe??defaultObservation,checkCurrentConversation:current??(async()=>context(fact)),now:()=>clock,limits:{maxRequestMs:1000,maxFactBytes:65536}};
  return {seed,fact,pricing,config,commands,releases,state:()=>state,request:(requestId='request_A')=>({requestId,binding:fact.binding,deadlineMs:NOW+5000}),setDatabaseClock:value=>{dbClock=value;},afterInsert:fn=>{afterInsert=fn;},loseCommit:()=>{lose=true;}};
 }
 
@@ -51,7 +53,44 @@ test('one exact model grant reserves an UNKNOWN product hold under the current a
 });
 test('missing trusted observer or unconfigured model grant refuses before SQL',()=>{
  const f=fixture();assert.throws(()=>createProductModelReservation({...f.config,observe:null}));
+ assert.throws(()=>createProductModelReservation({...f.config,checkCurrentConversation:null}),/PRODUCT_MODEL_CONFIGURATION/);
+ assert.throws(()=>createProductModelReservation({...f.config,selectedClientId:null}),/PRODUCT_MODEL_CONFIGURATION/);
  assert.throws(()=>createProductModelReservation({...f.config,modelGrantId:'11111111-1111-4111-8111-000000000099'}));assert.equal(f.commands.length,0);
+});
+test('fresh native Core context must match exact run, client scope and current time before SQL',async()=>{
+ const f=fixture(),checks=[];
+ const valid=createProductModelReservation({...f.config,checkCurrentConversation:async call=>{checks.push(call);throw Error('synthetic archived Core conversation');}});
+ await assert.rejects(valid.reserve(f.request()),/PRODUCT_MODEL_CONTEXT_REFUSED/);
+ assert.equal(checks.length,1);assert.deepEqual(checks[0].binding,f.fact.binding);assert.equal(f.commands.length,0);
+ for(const change of [
+  r=>({...r,binding:{...r.binding,conversationId:'22222222-2222-4222-8222-222222222222'}}),
+  r=>({...r,scopes:[{...r.scopes[0],policyRevision:'c'.repeat(64)}]}),
+  r=>({...r,selectedClientId:'22222222-2222-4222-8222-222222222222'}),
+  r=>({...r,selectedClientId:'22222222-2222-4222-8222-222222222222',scopes:[{...r.scopes[0],resourceId:'22222222-2222-4222-8222-222222222222'}]}),
+  r=>({...r,checkedAtMs:NOW-1}),
+  r=>({...r,expiresAtMs:NOW}),
+  ()=>true,
+ ]){
+  const owner=createProductModelReservation({...f.config,checkCurrentConversation:async()=>change(context(f.fact))});
+  await assert.rejects(owner.reserve(f.request()),/PRODUCT_MODEL_CONTEXT_REFUSED/);
+ }
+ assert.equal(f.commands.length,0);
+});
+test('a stalled Core currentness callback times out before borrowing SQL',async()=>{
+ const f=fixture(),owner=createProductModelReservation({...f.config,now:Date.now,limits:{...f.config.limits,maxRequestMs:30},checkCurrentConversation:()=>new Promise(()=>{})});
+ await assert.rejects(owner.reserve({...f.request(),deadlineMs:Date.now()+5000}),/PRODUCT_MODEL_CONTEXT_REFUSED/);
+ assert.equal(f.commands.length,0);
+});
+test('archive during the leased budget read rolls back before inserting a model hold',async()=>{
+ const f=fixture();let checks=0;
+ const owner=createProductModelReservation({...f.config,checkCurrentConversation:async()=>{
+  checks++;if(checks===2)throw Error('synthetic archive after budget read');return context(f.fact);
+ }});
+ await assert.rejects(owner.reserve(f.request()),/PRODUCT_MODEL_CONTEXT_REFUSED/);
+ assert.equal(checks,2);
+ assert.equal(f.state().requests.size,0);
+ assert.equal(f.commands.some(c=>c.sql.startsWith('INSERT INTO meri_product_budget.requests(')),false);
+ assert.equal(f.commands.at(-1).sql,'ROLLBACK');
 });
 test('observer mismatch and caller supplied evidence refuse before a database connection',async()=>{
  const f=fixture({observe:()=>({...fixture().config.observe(),capabilitySha256:'e'.repeat(64)})}),owner=createProductModelReservation(f.config);
