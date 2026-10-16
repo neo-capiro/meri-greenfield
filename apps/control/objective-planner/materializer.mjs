@@ -14,7 +14,7 @@ export function createCorePlannerMaterializer({transport,now=Date.now,maxRequest
    const response=own(await life.run(signal=>{dispatched=true;return transport.request({method,path:'/planner/strategy-materializations'+(method==='GET'?'/'+w.plannerRequestId:''),body:method==='POST'?JSON.stringify(materializationInput(w)):null,work:w,signal,deadlineMs:cutoff});}),['status','body']);
    if(response.status===401||response.status===403)fail('ACCESS_DENIED');
    // GET can become SOURCE_STALE after an Objective revision advances. Neither that nor 404 proves an absent effect.
-   if(response.status!==200)return {state:'unconfirmed'};
+   if(response.status!==(method==='POST'?201:200))return {state:'unconfirmed'};
    if(typeof response.body!=='string'||Buffer.byteLength(response.body)>maxFactBytes)fail('INVALID_RECEIPT');
    let json;try{json=JSON.parse(response.body);}catch{fail('INVALID_RECEIPT');}
    const observation=plannerObservation(json,w);life.check();return {state:'observed',observation};

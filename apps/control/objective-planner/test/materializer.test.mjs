@@ -5,7 +5,7 @@ import {materializationInput} from '../identity.mjs';
 import {productFailure} from '../../product-access/errors.mjs';
 import {fixture,now} from './fixtures.mjs';
 test('inert construction creates no effects or credential; fixed routes retain the same request identity',async()=>{
- const f=fixture(),calls=[],client=createCorePlannerMaterializer({now:()=>now,transport:{async request(call){calls.push(call);return {status:200,body:JSON.stringify(f.observation)};}}});assert.equal(calls.length,0);
+ const f=fixture(),calls=[],client=createCorePlannerMaterializer({now:()=>now,transport:{async request(call){calls.push(call);return {status:call.method==='POST'?201:200,body:JSON.stringify(f.observation)};}}});assert.equal(calls.length,0);
  const call={work:f.work,deadlineMs:now+5000},out=await client.apply(call);await client.read(call);
  assert.equal(out.state,'observed');assert.deepEqual(JSON.parse(calls[0].body),materializationInput(f.work));assert.equal(calls[0].path,'/planner/strategy-materializations');assert.equal(calls[1].path,'/planner/strategy-materializations/'+f.work.plannerRequestId);assert.equal(calls[1].body,null);assert.equal(calls.length,2);assert.equal(calls[0].signal.aborted,true,'owned lifetime closed after request');
 });
@@ -16,8 +16,11 @@ test('lost POST acknowledgement retains UNKNOWN and performs no automatic retry'
  const f=fixture();let calls=0;const client=createCorePlannerMaterializer({now:()=>now,transport:{async request(){calls++;throw Error('synthetic lost ACK');}}});
  await assert.rejects(client.apply({work:f.work,deadlineMs:now+1000}),e=>productFailure(e)?.outcome==='UNKNOWN');assert.equal(calls,1);
 });
-test('invalid or oversized post-effect observation cannot be released as an application receipt',async()=>{
- const f=fixture();for(const body of ['{',JSON.stringify({...f.observation,providerData:{}}),'x'.repeat(4097)]){let calls=0;const client=createCorePlannerMaterializer({now:()=>now,maxFactBytes:4096,transport:{async request(){calls++;return{status:200,body};}}});await assert.rejects(client.apply({work:f.work,deadlineMs:now+1000}),e=>productFailure(e)?.outcome==='UNKNOWN');assert.equal(calls,1);}
+test('malformed or oversized201 post-effect observation cannot be released as an application receipt',async()=>{
+ const f=fixture();for(const body of ['{',JSON.stringify({...f.observation,providerData:{}}),'x'.repeat(4097)]){let calls=0;const client=createCorePlannerMaterializer({now:()=>now,maxFactBytes:4096,transport:{async request(){calls++;return{status:201,body};}}});await assert.rejects(client.apply({work:f.work,deadlineMs:now+1000}),e=>productFailure(e)?.outcome==='UNKNOWN');assert.equal(calls,1);}
+});
+for(const [method,status] of [['read',201],['apply',200]])test('method-specific success refuses '+method+' status'+status,async()=>{
+ const f=fixture();let calls=0;const client=createCorePlannerMaterializer({now:()=>now,transport:{async request(){calls++;return{status,body:JSON.stringify(f.observation)};}}});assert.deepEqual(await client[method]({work:f.work,deadlineMs:now+1000}),{state:'unconfirmed'});assert.equal(calls,1);
 });
 test('revoked read authority withholds current data',async()=>{
  const f=fixture(),client=createCorePlannerMaterializer({now:()=>now,transport:{async request(){return{status:403,body:JSON.stringify(f.observation)};}}});await assert.rejects(client.read({work:f.work,deadlineMs:now+1000}),/ACCESS_DENIED/);
