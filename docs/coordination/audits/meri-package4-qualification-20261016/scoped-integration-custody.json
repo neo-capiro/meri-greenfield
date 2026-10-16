@@ -196,10 +196,29 @@
           "integratedBlob": "f7a99bd5f482fb096af9b2e9940bb31406825ccd"
         }
       ]
+    },
+    {
+      "label": "preview0003 source-only DDL",
+      "reviewedSource": "eb52ed44f688403306c70269c29508d39a4c2184",
+      "predecessor": "c5ebb14f32ea49fcf493b32af8469d2731daa34c",
+      "integratedCommit": "4944e806cdfec78ce7031a0a9093fc4562b1c32b",
+      "integratedTree": "d6935a360b25c821bcac3f0b3319e6e2dd94c3cf",
+      "files": [
+        {
+          "path": "apps/artifacts/migrations/0003_previews.sql",
+          "acceptedBlob": "aba7fb58bbdea87306dc4b3cc50e120f0593c3b3",
+          "integratedBlob": "aba7fb58bbdea87306dc4b3cc50e120f0593c3b3"
+        },
+        {
+          "path": "apps/artifacts/test/preview-migration-source.test.mjs",
+          "acceptedBlob": "8892631068add74801e50667d95b8ab0c842b3fe",
+          "integratedBlob": "8892631068add74801e50667d95b8ab0c842b3fe"
+        }
+      ]
     }
   ],
-  "sourceHead": "c7f5e35b60289dcd24799ba2361b47d523c0f5cb",
-  "sourceTree": "e043ea8ddbcb7dee90d5f478c6fd57532ce3eabe",
+  "sourceHead": "4944e806cdfec78ce7031a0a9093fc4562b1c32b",
+  "sourceTree": "d6935a360b25c821bcac3f0b3319e6e2dd94c3cf",
   "validation": {
     "command": "node --max-old-space-size=128 --test --test-isolation=none --test-concurrency=1 --test-timeout=15000 --test-reporter=tap scripts/qualification/assembled-image/source-proof.test.mjs apps/control/retention/test/watermark-migration-source.test.mjs",
     "node": "v24.19.0",
@@ -222,7 +241,8 @@
       "physicalTotal": 33632079872,
       "probeRss": 35508224,
       "commitAvailable": null
-    }
+    },
+    "testedSourceHead": "c7f5e35b60289dcd24799ba2361b47d523c0f5cb"
   },
   "changedProofRows": [],
   "historicalCandidates": {
@@ -231,14 +251,37 @@
     "h": "79a5f7fc5254c0152c0119264d653cdb5b561f27ded91d379569d00ba73a5c1e"
   },
   "holds": [
-    "retention behavior including c5ebb14f",
+    "retention read behavior: confirmed ABA at c5ebb14f; atomic snapshot successor pending (write-side proof scoped accepted)",
     "memory CORE-5 successor260de18f",
-    "unreviewed preview0003",
     "canonical intent authorizer and PG runtime",
-    "corrected L3/public export acceptance",
+    "L3 source5abfa653 accepted; pending reservation-shape fix, public export generation and exact artifact/frontend adoption",
     "model issuance implementation and runtime",
     "compiler/browser/database/image/live qualification",
     "seven historical runtime failures",
-    "three frozen-candidate selector failures"
-  ]
+    "three frozen-candidate selector failures",
+    "preview deployed canonical adapter and outside-rollback custody/tombstone replay plus allocation lookup"
+  ],
+  "additionalValidation": {
+    "command": "node --max-old-space-size=128 --test --test-isolation=none --test-concurrency=1 --test-timeout=15000 --test-reporter=tap apps/artifacts/test/preview-migration-source.test.mjs",
+    "testedSourceHead": "4944e806cdfec78ce7031a0a9093fc4562b1c32b",
+    "classification": "3 static SQL-text assertions; no SQL parser or DB execution",
+    "primaryExit": 0,
+    "passed": 3,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "durationMs": 15.8892,
+    "tapSha256": "d5a7ecf10325077c1777bd08262c677ca232dc38c59cd82003d4d24d0c833036",
+    "heapLimitMiB": 128,
+    "testFileIsolation": "none",
+    "testProcesses": 1,
+    "processPeak": null,
+    "preBatchMemory": {
+      "at": "2026-10-16T02:20:07.865Z",
+      "physicalFree": 11857375232,
+      "physicalTotal": 33632079872,
+      "probeRss": 36401152,
+      "commitAvailable": null
+    }
+  }
 }

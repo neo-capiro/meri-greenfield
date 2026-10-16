@@ -2,7 +2,18 @@
 
 **SOURCE-ONLY PARTIAL CANDIDATE; overall source composition, candidate-h, image and live release remain HOLD.** This is not a main merge or runtime qualification.
 
-## Current scoped integration, 2026-10-16 02:15 UTC
+## Latest accepted preview DDL addition, 2026-10-16 02:21 UTC
+
+Current source snapshot **`4944e806cdfec78ce7031a0a9093fc4562b1c32b`**, tree **`d6935a360b25c821bcac3f0b3319e6e2dd94c3cf`**, adds exactly two source/test paths accepted by the parent at `eb52ed44f688403306c70269c29508d39a4c2184`: preview0003 SQL and its static test. Both Git blobs match; no `c5ebb14f` retention implementation or lane report was imported. This makes **32 selected paths in six scoped commits** after the initial75f candidate. Previous receipts remain preserved at their commits.
+
+The new three SQL-text assertions passed **3/3**, 15.8892ms, exit0, one Node128MiB process, isolation none; raw `preview-ddl-static.tap` and its SHA256 are in the custody record. They do not parse/apply SQL or prove database concurrency, canonical packet hashing or deployed durability. Earlier6/6 source/static evidence is retained at its tested source pin; unchanged suites were not repeated. No hashed proof paths changed; frozen f/g/h hashes remain exact.
+
+**Retention distinction:** parent scoped acceptance of the exact write-side projection proof does not close the confirmed read-side ABA at `c5ebb14f` (restore removes A; read captures null; recovery restores A and the same H; split checks release stale null). The combined retention adapter remains outside this candidate pending coherent atomic projection/watermark snapshot repair and exact review. Preview activation still requires trusted canonical adapter verification, outside-rollback custody/tombstone replay and object allocation lookup; source SQL acceptance authorizes no deployment, migration or purge.
+
+READS has since reported source-only `388561b12aec71dbd7137e9b54ba95add301d170` with162/162 focused synthetic controls and an independent-allocation fixture correction. It remains outside this candidate pending exact review, push/custody and changed-proof-row verification. Its first uncertain run and97/98 predecessor failure remain historical evidence. Startup final reported head772cefd2 changes7 hashed rows; no such source or silent repin was integrated here. The parent has now accepted exact history `5abfa6535263e2a8d2a7cd8cacadd86305227844` and its reviewed ancestors for additive public export authoring. C owns the history schema/validator/receiver/generator, narrow package export/scripts and source release/provenance work; proposed next package0.1.6 and exact frontend artifact adoption remain review gates. Before package artifact acceptance C must fix complete pending-reservation shape validation: a missing scopes field with recomputed digest currently reaches generic503. This source acceptance does not accept later schedule/read/model work, frozen-contract changes or runtime/live qualification.
+
+## Earlier scoped expansion, 2026-10-16 02:15 UTC (source c7f5e35b)
+
 
 Source snapshot **`c7f5e35b60289dcd24799ba2361b47d523c0f5cb`**, tree **`e043ea8ddbcb7dee90d5f478c6fd57532ce3eabe`**, adds only five parent-accepted scopes to the earlier published `75f3767555f7b973ee5a0c76987fefb0ff07c112` candidate. Exactly **30 source/test paths** were selected; every integrated Git blob equals the exact reviewed source. This uses explicit path selection with predecessor-blob checks, not whole lane merges. The initial receipt below remains historical.
 

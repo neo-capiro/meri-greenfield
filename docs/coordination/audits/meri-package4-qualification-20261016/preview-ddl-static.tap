@@ -1,0 +1,28 @@
+TAP version 13
+# Subtest: source-only: both preview owners retain exact tenant/conversation/artifact/source foreign keys without purge or privileges
+ok 1 - source-only: both preview owners retain exact tenant/conversation/artifact/source foreign keys without purge or privileges
+  ---
+  duration_ms: 1.2389
+  type: 'test'
+  ...
+# Subtest: source-only: original claim identity is immutable, physical custody is null-to-one and publication requires the exact retained object
+ok 2 - source-only: original claim identity is immutable, physical custody is null-to-one and publication requires the exact retained object
+  ---
+  duration_ms: 0.2131
+  type: 'test'
+  ...
+# Subtest: source-only: custody enumerates uncertain allocations including missing physical receipts with no expiry or retry path
+ok 3 - source-only: custody enumerates uncertain allocations including missing physical receipts with no expiry or retry path
+  ---
+  duration_ms: 0.2206
+  type: 'test'
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 15.8892
