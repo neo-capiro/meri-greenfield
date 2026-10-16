@@ -11,7 +11,7 @@ function recordValue(raw){const r=data(own(raw,['version','spec','specSha256','r
 function decode(row){if(!row||v.hash(row.record)!==row.record_sha256)fail('ARTIFACT_VERSION_CORRUPT');const r=recordValue(row.record),b=r.version.binding;
  if(row.version_id!==r.version.versionId||row.artifact_id!==r.version.artifactId||row.tenant_id!==b.tenantId||row.actor_id!==b.actorId||row.conversation_id!==b.conversationId||row.request_sha256!==r.requestSha256)fail('ARTIFACT_VERSION_CORRUPT');return r;}
 // The same inert packet validator is used when immutable source prerequisites are retained outside SQL rollback.
-export {recordValue as verifyArtifactVersionStorageRecord};
+export {recordValue as verifyArtifactVersionStorageRecord,decode as verifyArtifactVersionStorageRow};
 export function createPostgresArtifactVersions(options){const {pool,now,maxRequestMs=15000}=own(options,['pool','now'],['maxRequestMs']);configuration(now,maxRequestMs);
  const connect=storageMethod(pool,'connect');
  async function transaction(signal,body){const life=storageLifetime({now,maxRequestMs},signal);let c,begun=false,committing=false,reusable=false,failure,result;

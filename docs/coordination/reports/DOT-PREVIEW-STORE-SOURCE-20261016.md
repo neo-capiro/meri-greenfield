@@ -308,3 +308,147 @@ exit and no second put is issued. Evidence `preview-duplicate-release-3b294-nega
 and `preview-duplicate-release-fixed*` retains exact argv, fresh memory, measured
 sampled peaks, TAP/stderr and cleanup. No broad rerun or live action was performed.
 Parent's portable independent probe remains pending; source acceptance is separate.
+
+## Concrete owner discovery and disabled continuation outline
+
+The subsequent parent instruction asks for real source wiring rather than another
+generic required port. Discovery at3ca32b13 confirms:
+
+- `scripts/qualification/sdk-native-evidence-owner.mjs` composes a signed,
+  one-shot qualification observer/publisher. Its canonical fixture S3 transport
+  has fixed qualification-kind keys and IfNoneMatch writes; it has no product
+  conditional winner, complete preview namespace or authoritative head recovery.
+- `scripts/qualification/aws_evidence.py` is an owner-only CLI qualification
+  capture with fixed build-upload targets. It is not a product evidence service;
+  those qualification bucket/KMS values cannot become product configuration.
+- `apps/artifacts/recovery.mjs` recovers a producer-owned invocation only by
+  reading already stored, published lineage through versions.read. The canonical
+  `storage/postgres-versions.mjs` commits immutable rows/head CAS but has no restore
+  operation. Neither can reconstruct an absent authoritative head from a preview.
+
+Shipping was asked only for exact existing source/interface/resource facts. No
+credentials, provider call, new resource or security/policy change was requested.
+
+The smallest concrete source extension being prepared on separate child
+`dot/meri-preview-evidence-source-20261016` uses actual existing S3 SDK commands
+and canonical bounded storage validation: a purpose-scoped tenant index updated
+with IfNoneMatch initially and IfMatch on its observed ETag thereafter. One
+conditional index update excludes both source and allocation and retains the
+complete bounded immutable fact set; ETag is a concurrency token, never a digest.
+Exact native version, checksum/KMS/account metadata and full-byte readback precede
+acknowledgement. Unknown PUT acknowledgement never retries; a proven412 may
+re-read before a bounded CAS retry. Ordinary reads use that single current index,
+not object listing as a completeness certificate. All new activation defaults
+disabled, and no qualification resource is silently selected. Bound exhaustion
+refuses; it does not silently truncate inventory or grant dispatch.
+
+A concrete PostgreSQL source-recovery owner will insert-or-identical the retained
+canonical immutable source row under the existing exclusive recovery transaction,
+then revalidate it through the existing versions.read/head-lineage path. It never
+inserts, nominates or rewrites a head from a historical preview claim. If the
+authoritative head is absent, rolled back outside provable lineage or itself
+unrecoverable, readiness remains unavailable. The remaining minimal head-contract
+proposal is separate durable artifact publication/head-CAS evidence from the
+canonical version publication owner; no new enum/table or generic replacement is
+silently invented. Actual runtime control/readiness remains Startup-owned.
+
+### Concrete implementation result
+
+The described extension is now implemented in `storage/s3-preview-evidence.mjs`,
+`storage/postgres-source-recovery.mjs` and `preview/postgres-composition.mjs`.
+It does not require another anonymous evidence or recovery factory: the concrete
+composition accepts the existing borrowed S3 client/configuration, pg pool and
+canonical retention journal, then constructs the actual adapters itself.
+
+The S3 owner uses one bounded, purpose-scoped tenant index containing the full
+immutable fact set and allocation reservations. Its actual PutObject conditions
+atomically select the source/allocation winner. The existing installed upstream
+SDK3.1141.0 PutObjectRequest declaration includes both IfMatch and IfNoneMatch;
+no provider endpoint/method was invented. Exact versioned GET readback checks
+full bytes, SHA256 checksum, KMS key, expected account, namespace and tenant.
+ETag is used solely for concurrency. Only proven412 permits bounded re-read/CAS;
+any other unknown write/readback acknowledgement holds, and an identical replay
+cannot regain created:true. Reads never use listing or a cached completeness flag.
+Known delete-marker errors, unavailable versioning,403, malformed metadata,
+overflow and contention refuse. The default bound is1024 facts and8MiB per tenant
+index; hitting it is an explicit unavailable barrier, never partial inventory.
+Larger retained history requires a reviewed paging/index extension before live
+capacity qualification; no full-scope capability is declared released here.
+
+Immutable source recovery inserts-or-identical existing0001 rows inside the
+canonical exclusive transaction. The same storage packet/relational-row validators
+are reused. It restores a complete bounded prerequisite batch before checking
+each version through the existing canonical published-lineage reader. The preview
+replay accepts this concrete recoverAll method and preserves the original recover
+fallback. No source head row is inserted, updated, deleted or selected from a
+historical preview. The outer canonical recovery domain preserves failures in
+its cause chain and keeps readiness unavailable.
+
+Concrete composition defaults disabled: preview/readiness/recovery methods refuse
+before SQL/SDK work. Enabled source fixtures are explicitly synthetic and do not
+establish authority to enable any product runtime or select a resource. No runtime
+control/readiness file or actual configuration was changed. No qualification
+bucket, key, credential or policy is reused as product configuration.
+
+`preview-concrete-evidence-fixed*` passes **39/39**, no skip, exit0:
+18 concrete conditional SDK/SQL/composition controls,20 custody controls and the
+independent release-race regression. Node1259.8ms, controlled wall1444ms, sampled
+peak working set120,537,088bytes;128MiB V8 heap, fresh11,664,261,120bytes and120s
+hard wall/pressure stop. All owned work exited. The full concrete fixture publishes
+once, clears SQL immutable/preview projections, recovers through actual canonical
+owners and returns existing with one total object-port put. Constructor/default
+disabled paths issue zero SQL/SDK calls. CAS races select one winner; allocation
+collision, failed/lost native ACK/readback,403, changed metadata, inventory limits,
+and missing/rolled-back head refuse. These remain **synthetic scripted SQL and
+SDK replies**, not native database/cloud acceptance.
+
+One additional targeted control, `preview-concrete-index-absence*`, passes1/1
+for known index delete-marker errors (both native property and HTTP header) and
+foreign-bucket404. None is treated as empty current custody and no PUT occurs.
+This adds one distinct control to the39 without re-running broad checks. Actual
+unknown/malicious removal of the authoritative evidence namespace is outside its
+required non-rollback resource boundary; source cannot replace that missing
+Shipping qualification with a local cache or boolean. **40 distinct controls**
+have valid synthetic evidence for this concrete continuation.
+
+The first concrete batch14/15 is retained: its one failure expected the inner
+SOURCE_HEAD_UNAVAILABLE code at the outer recovery boundary. The corrected
+assertion explicitly requires RETENTION_STORE_UNAVAILABLE with that exact inner
+cause; no production owner/error policy was weakened.
+
+### Exact remaining head and resource decision
+
+No inspected product source at3ca32b13 supplies a durable current artifact
+publication/head journal outside SQL rollback. Preview custody contains only
+previewed versions, so it cannot identify a later **unpreviewed** publication or
+prove that a restored SQL head is the latest authoritative head. Existing lineage
+verification is retained, but it is not presented as outside-rollback head proof.
+An absent or unreachable head is refused; the concrete source extension does not
+close that broader authoritative-head gap or activate restore serving.
+
+Recommended minimal parent-owned contract: the canonical version publication
+owner must retain the full immutable storage envelope and expectedParentVersionId
+with its original authority binding in a separate artifact-publication namespace;
+conditional per-artifact head CAS precedes SQL head projection. Current complete
+publication/head receipts rebuild exact lineage and head, with lost acknowledgements
+remaining UNKNOWN and current authorization on replay. Likely affected paths are
+the canonical postgres-versions publication seam, one cohesive publication
+evidence owner reusing the concrete S3 CAS transport, and preview composition.
+This is a precise **pending proposal**, not an implemented/accepted new enum,
+schema, certificate, migration or placement. The frozen ArtifactVersion is unchanged.
+
+Shipping's exact existing product evidence bucket/purpose-prefix/KMS/owner and
+outside-rollback, deletion/rollback-protection facts remain pending; no concrete
+resource binding was received. The source extension can implement the missing
+conditional semantics using current SDK methods, but cannot make an unqualified
+or restorable bucket authoritative by a boolean. No real storage write, cloud
+resource/security/credential operation, migration execution or purge was attempted.
+
+The parent portable release probe was also copied and run against3ca32b13 with a
+wrapper requiring EFFECT_UNKNOWN caused by TOMBSTONED:1/1 pass, wall675ms,
+sampled peak106,041,344bytes. Precision: copied executable LF bytes hash
+e7bcba8af115350ecda1e861765cf694abcff71ea6c51930c68c192286ae6632
+differs from announced34160d9751be151a316f8bd7ac5ce2ec952e40a16372f1d6ebf6262fe9edf62b;
+HTML arrow entities were decoded and no LF/CRLF ending variant matched. The copy
+and wrapper are retained as evidence; byte identity to the announced artifact is
+not claimed. Root temporary copies were removed and the mismatch was relayed.
