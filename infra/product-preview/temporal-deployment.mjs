@@ -16,7 +16,7 @@ function security(stack,b,vpc){
  const groups=Object.fromEntries(TEMPORAL_ROLES.map(role=>[role,new ec2.SecurityGroup(stack,`${roleName(role)}Sg`,{vpc,allowAllOutbound:false,description:`Meri Temporal ${role} only`})]));
  const db=new ec2.SecurityGroup(stack,'temporalDbSg',{vpc,allowAllOutbound:false,description:'Meri Temporal PostgreSQL only'});
  const clients=b.network.clientSecurityGroupIds.map((id,i)=>ec2.SecurityGroup.fromSecurityGroupId(stack,`temporalClient${i}`,id,{mutable:false}));
- const endpoints=b.network.endpointSecurityGroupIds.map((id,i)=>ec2.SecurityGroup.fromSecurityGroupId(stack,`temporalEndpoint${i}`,id,{mutable:false}));
+ const endpoints=Object.values(b.network.interfaceEndpoints).map((item,i)=>ec2.SecurityGroup.fromSecurityGroupId(stack,`temporalEndpoint${i}`,item.securityGroupId,{mutable:false}));
  const issuer=ec2.SecurityGroup.fromSecurityGroupId(stack,'temporalIssuer',b.network.issuerSecurityGroupId,{mutable:false});
  const migration=ec2.SecurityGroup.fromSecurityGroupId(stack,'temporalMigration',b.network.migrationSecurityGroupId,{mutable:false});
  for(const role of TEMPORAL_ROLES){
@@ -24,6 +24,7 @@ function security(stack,b,vpc){
   for(const [peer,other] of Object.entries(groups))for(const port of TEMPORAL_PORTS[peer])group.addEgressRule(other,ec2.Port.tcp(port),`Temporal ${peer} RPC or membership`);
   group.addEgressRule(db,ec2.Port.tcp(5432),'dedicated Temporal database');
   for(const endpoint of endpoints)group.addEgressRule(endpoint,ec2.Port.tcp(443),'reviewed AWS image/secret/log endpoint');
+  group.addEgressRule(ec2.Peer.prefixList(b.network.s3Gateway.prefixListId),ec2.Port.tcp(443),'S3 gateway for private ECR image layers');
   group.addEgressRule(issuer,ec2.Port.tcp(443),'dedicated JWKS issuer');
   db.addIngressRule(group,ec2.Port.tcp(5432),`Temporal ${role} store access`);
   for(const port of TEMPORAL_PORTS[role])for(const other of Object.values(groups))group.addIngressRule(other,ec2.Port.tcp(port),'Temporal internode only');
@@ -70,6 +71,7 @@ function roleEnvironment(b,db,role){
   env('MERI_TEMPORAL_LAUNCH_SOURCE_COMMIT',b.launchSourceCommit),env('MERI_TEMPORAL_UPSTREAM_IMAGE_DIGEST',b.upstreamServerImageDigest),
   env('MERI_TEMPORAL_RDS_CA_SHA256',d.rdsCaSha256),env('MERI_TEMPORAL_ISSUER_CA_SHA256',auth.issuerCaSha256),
   env('MERI_TEMPORAL_MIGRATION_PLAN_SHA256',d.migrationPlanSha256),
+  env('MERI_TEMPORAL_PRIMARY_USERNAME_EXPECTED',d.primaryUsername),env('MERI_TEMPORAL_VISIBILITY_USERNAME_EXPECTED',d.visibilityUsername),
   env('MERI_TEMPORAL_ROLE',fixture.roles[role].temporalRole),env('DB','postgres12'),env('DB_PORT','5432'),
   env('DBNAME','temporal'),env('VISIBILITY_DBNAME','temporal_visibility'),env('POSTGRES_SEEDS',host),env('VISIBILITY_POSTGRES_SEEDS',host),
   env('SQL_MAX_CONNS',perStoreConnections),env('SQL_MAX_IDLE_CONNS',perStoreConnections),

@@ -22,6 +22,10 @@ need, decode, encoded = _source.need, _source.decode, _source.encoded
 validate_request, verify, file_sha = _source.validate_request, _source.verify, _source.file_sha
 SHA, RUNNER, CONTRACT = _source.SHA, _source.RUNNER, _source.CONTRACT
 REGION = "us-east-1"
+LINUX_ONLY_TESTS = (
+    "apps/runtime/test/prepared-candidate-bootstrap.test.mjs",
+    "apps/runtime/test/remote-conversation-runner.test.mjs",
+)
 _deadline = None
 
 
@@ -125,6 +129,9 @@ def produce(pin, output):
             probe = "import fs from 'node:fs';import {createHash} from 'node:crypto';import {measureProductRunner} from './apps/runtime/native-authority/ecs-prepared-task-proof.mjs';const runner=await measureProductRunner();await import('./apps/runtime/control.mjs');await import('./apps/runtime/temporal-worker.mjs');await import('./apps/runtime/conversation-runner.mjs');console.log(JSON.stringify({runner,node:process.version,runtimeUser:process.getuid()+':'+process.getgid(),executableSha256:createHash('sha256').update(fs.readFileSync(process.execPath)).digest('hex')}));"
             measured = decode(run(sandbox + ["--input-type=module", "-e", probe], timeout=90))
             need(measured["node"] == p["nodeVersion"] and measured["runtimeUser"] == p["runtimeUser"] and measured["runner"] == {"contract": CONTRACT, "path": RUNNER, "runnerSha256": p["runnerSha256"], "bytes": verified["runnerBytes"]} and SHA.fullmatch(measured["executableSha256"]), "IMAGE_MEASUREMENT")
+            # These fixtures require POSIX path and owner semantics. Qualify them
+            # inside the exact nonroot image before obtaining registry credentials.
+            run(sandbox + ["--test", *LINUX_ONLY_TESTS], timeout=180)
             # No registry credentials exist until all source and image checks pass.
             password = run(["aws", "--region", REGION, "ecr", "get-login-password"])
             try:

@@ -94,3 +94,60 @@ none of the current focused tests proves that upstream route uses it. The
 port cannot be replaced with a global LiteLLM client or a test HTTPX client
 for live traffic. The assembled pinned image and native wire qualification
 remain required before this host can serve product requests.
+
+## Source continuation at the disabled product service entrypoint
+
+`service_entrypoint.py` now refuses HTTP and ASGI startup by default. Enabled
+source composition demands an explicit `DirectTlsSocketCapture`, control-owned
+bearer/issued-task lookup, short-deadline ECS/EC2 clients, current session
+resolver and the exact pinned LiteLLM loader before it constructs the existing
+product host. It forwards the native LiteLLM lifespan and withholds HTTP until
+startup completed and its one deployment hook remains registered. This is an
+application factory, not a listener or a deployment toggle in any manifest.
+
+`socket_capture.py` can read the accepted asyncio TLS transport's actual
+connected socket and negotiated server TLS state, bind that observation to
+the exact ASGI scope, and revoke it at dispatch exit. The accepted server must
+wrap each ASGI request with its actual transport; an ASGI `scope.client`
+value or forwarding header cannot create this binding. The source-only
+`uvicorn_tls_protocol.py` factory now pins Uvicorn 0.51.0 plus h11 0.16.0 and
+returns a custom HTTP/1 protocol class for an explicit TLS server config.
+It wraps Uvicorn's per-request app at the pinned `RequestResponseCycle` seam,
+requires the exact cycle scope and accepted transport, and calls
+`bind_request` before entering the product service. Config validation refuses
+proxy-header rewriting, WebSocket dispatch, a non-TLS server or a different
+application. The deadline begins at connection acceptance, conservatively
+before request arrival; long-lived keep-alive traffic may be denied early.
+The factory does not start or mount a listener. Synthetic protocol tests do
+not establish pinned wheel behavior or a Linux TLS/NLB handshake; those remain
+activation checks. The lock already pins h11 but does not pin httptools, so
+the source deliberately uses Uvicorn's h11 protocol.
+`create_product_h11_config` composes the exact service and protocol into a
+stopped TLS server config on plan port 8443 using a caller-supplied server TLS
+context. `serve_product_proxy` is an explicit opt-in entry point that first
+constructs the enabled product service from required ports; a missing port or
+TLS context refuses before opening a listener. Neither entry point is wired
+into a deployment manifest. The server certificate material, durable
+bearer/issued-task resolver, bounded ECS/EC2 observer IAM and authentic
+session/owner channel remain external HOLD inputs. No source here creates
+those inputs or establishes Linux handshake behavior.
+
+`upstream_callback.py` lazily imports LiteLLM 1.104.2 and its native proxy ASGI
+app, installs a single `CustomLogger` deployment hook, and injects the one
+guarded handler through a revocable per-request context. The host marks actual
+guarded native transport entry and confirmed complete settlement; the adapter
+refuses a 2xx start without entry and a final 2xx body without settlement.
+Offline fake-app controls cover registration, concurrent isolation and late
+child callbacks. They do not prove the real native route, auth, lifespan,
+Prisma setup, provider dispatch or retry semantics. Those require the exact
+pinned Linux image and disposable native environment.
+
+`boundary_codec.encode_complete_capture` now emits a bounded positional
+record from the host's lower response tee for the separate owner capture
+channel. The companion `owner-wire-codec.mjs` decodes it as data. The existing
+plan-compatible separate HTTPS :8444 owner service, certificate issuer and
+trust policy, two authenticated logical channels, durable constructor facts
+and native end-to-end capture comparison are not implemented. No source in
+this entrypoint substitutes a Python claim for the owner's independent
+capture. Until these ports are bound and qualified, the service remains
+disabled and no product traffic is accepted.

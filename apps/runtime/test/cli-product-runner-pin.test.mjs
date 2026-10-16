@@ -76,3 +76,19 @@ test('product Temporal poller refuses a loopback native origin before secret or 
   assert.equal(await main(['temporal-worker','--config',file]),2);assert.equal(diagnostic,'RUNTIME_CONFIGURATION\n');
  }finally{process.stderr.write=write;if(previous===undefined)delete process.env.MERI_PRODUCT_PREVIEW_REQUIRED;else process.env.MERI_PRODUCT_PREVIEW_REQUIRED=previous;await rm(directory,{recursive:true,force:true});}
 });
+test('product Temporal poller refuses missing issuer token configuration before startup',async()=>{
+ const directory=await mkdtemp(join(tmpdir(),'meri-product-auth-')),file=join(directory,'worker.json'),previous=process.env.MERI_PRODUCT_PREVIEW_REQUIRED,write=process.stderr.write;
+ let diagnostic='';
+ try{
+  const configuration={version:1,profile:'isolated-preview',sourceEnabled:false,
+   limits:{startupMs:3000,shutdownMs:1000,requestMs:1000,requestBytes:131072},
+   native:{origin:'https://control.synthetic.invalid',capabilityFile:join(directory,'native'),loopback:false,maxResponseBytes:131072,preparedKickoff:true},
+   http:{hostname:'0.0.0.0',port:8081,frontendOrigin:'https://frontend.synthetic.invalid'},
+   temporal:{address:'temporal.synthetic.invalid:7233',namespace:'meri',taskQueue:'meri',tls:{caFile:join(directory,'ca'),certFile:join(directory,'cert'),keyFile:join(directory,'key')}}};
+  assert.doesNotThrow(()=>validateConfiguration(configuration,'temporal-worker'));
+  await writeFile(file,JSON.stringify(configuration));process.stderr.write=value=>{diagnostic+=value;return true;};
+  process.env.MERI_PRODUCT_PREVIEW_REQUIRED='1';
+  assert.equal(await main(['temporal-worker','--config',file]),2);
+  assert.equal(diagnostic,'RUNTIME_CONFIGURATION\n');
+ }finally{process.stderr.write=write;if(previous===undefined)delete process.env.MERI_PRODUCT_PREVIEW_REQUIRED;else process.env.MERI_PRODUCT_PREVIEW_REQUIRED=previous;await rm(directory,{recursive:true,force:true});}
+});

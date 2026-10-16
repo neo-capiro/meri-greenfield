@@ -6,6 +6,7 @@ import {renderTemporalConfig} from './temporal-launch-render.mjs';
 import {readTaskEniAddress,checkIssuerJwks,checkCa} from './temporal-launch-main.mjs';
 import {rootCertificates} from 'node:tls';
 import {X509Certificate} from 'node:crypto';
+import {TEMPORAL_MIGRATION_PLAN_SHA256} from './temporal-migration-plan.mjs';
 
 const cert='-----BEGIN CERTIFICATE-----\n'+'A'.repeat(80)+'\n-----END CERTIFICATE-----\n';
 const key='-----BEGIN PRIVATE KEY-----\n'+'B'.repeat(80)+'\n-----END PRIVATE KEY-----\n';
@@ -25,7 +26,8 @@ function env(service='frontend'){
   TEMPORAL_AUTH_ISSUER:'https://issuer.meri.internal/',TEMPORAL_JWT_KEY_SOURCE1:'https://issuer.meri.internal/.well-known/jwks.json',
   SQL_MAX_CONNS:conns,SQL_MAX_IDLE_CONNS:conns,SQL_VIS_MAX_CONNS:conns,SQL_VIS_MAX_IDLE_CONNS:conns,
   POSTGRES_USER:'temporal_user',POSTGRES_PWD:'synthetic-primary',VISIBILITY_POSTGRES_USER:'visibility_user',VISIBILITY_POSTGRES_PWD:'synthetic-visibility',
-  MERI_TEMPORAL_RDS_CA_SHA256:sha,MERI_TEMPORAL_ISSUER_CA_SHA256:sha,MERI_TEMPORAL_MIGRATION_PLAN_SHA256:sha,MERI_TEMPORAL_INTERNODE_CERT_PEM:cert,
+  MERI_TEMPORAL_PRIMARY_USERNAME_EXPECTED:'temporal_user',MERI_TEMPORAL_VISIBILITY_USERNAME_EXPECTED:'visibility_user',
+  MERI_TEMPORAL_RDS_CA_SHA256:sha,MERI_TEMPORAL_ISSUER_CA_SHA256:sha,MERI_TEMPORAL_MIGRATION_PLAN_SHA256:TEMPORAL_MIGRATION_PLAN_SHA256,MERI_TEMPORAL_INTERNODE_CERT_PEM:cert,
   MERI_TEMPORAL_INTERNODE_KEY_PEM:key,MERI_TEMPORAL_INTERNODE_CA_PEM:cert,MERI_TEMPORAL_FRONTEND_CA_PEM:cert,
   MERI_TEMPORAL_RDS_CA_PEM:cert,
   ...(service==='frontend'?{MERI_TEMPORAL_FRONTEND_CERT_PEM:cert,MERI_TEMPORAL_FRONTEND_KEY_PEM:key,MERI_TEMPORAL_CLIENT_CA_PEM:cert}:{})};
@@ -69,6 +71,9 @@ test('activation, role, issuer, SQL, cert scope and broadcast contradictions fai
   x=>{x.TEMPORAL_AUTH_AUDIENCE='';},x=>{x.TEMPORAL_AUTH_CLAIM_MAPPER='';},
   x=>{x.TEMPORAL_JWT_KEY_SOURCE1='https://foreign.invalid/.well-known/jwks.json';},
   x=>{x.SQL_HOST_VERIFICATION='false';},x=>{x.POSTGRES_USER=x.VISIBILITY_POSTGRES_USER;},
+  x=>{x.MERI_TEMPORAL_PRIMARY_USERNAME_EXPECTED='other_user';},
+  x=>{x.MERI_TEMPORAL_VISIBILITY_USERNAME_EXPECTED='other_user';},
+  x=>{x.MERI_TEMPORAL_MIGRATION_PLAN_SHA256=sha;},
   x=>{x.MERI_TEMPORAL_INTERNODE_KEY_PEM='';},x=>{x.MERI_TEMPORAL_IMAGE_SOURCE_COMMIT='';}
  ];
  for(const change of changes){const e=env();change(e);assert.throws(()=>renderTemporalConfig(e,['frontend'],'10.4.8.12',files()),/TEMPORAL_LAUNCH_REFUSED/u);}

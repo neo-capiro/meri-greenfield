@@ -8,10 +8,10 @@ export async function main(argv=process.argv.slice(2),{poststartTls,nativeFetch}
   if((poststartTls===undefined)!==(nativeFetch===undefined)||poststartTls!==undefined&&
      (role!=='conversation-runner'||process.env.MERI_PRODUCT_PREVIEW_REQUIRED!=='1'||c.bootstrap?.remote!==true||c.remoteTask!==undefined||typeof nativeFetch!=='function'))throw Error('PRODUCT_POSTSTART_REFUSED');
   if(role==='control'&&process.env.MERI_PRODUCT_PREVIEW_REQUIRED!==undefined&&
-     (process.env.MERI_PRODUCT_PREVIEW_REQUIRED!=='1'||c.privateHttp===undefined||c.nativeCandidate===undefined||c.taskRouter?.enabled!==true||c.taskRouter.poststart?.enabled!==true))throw Error('PRODUCT_LISTENER_REFUSED');
+     (process.env.MERI_PRODUCT_PREVIEW_REQUIRED!=='1'||c.privateHttp===undefined||c.nativeCandidate===undefined||c.taskRouter?.enabled!==true||c.taskRouter.poststart?.enabled!==true||c.temporal.authorization===undefined))throw Error('PRODUCT_LISTENER_REFUSED');
   if(role==='temporal-worker'&&process.env.MERI_PRODUCT_PREVIEW_REQUIRED!==undefined&&
      (process.env.MERI_PRODUCT_PREVIEW_REQUIRED!=='1'||c.native.preparedKickoff!==true||c.native.loopback!==false||
-      !c.native.origin.startsWith('https://')||c.http.port!==8081))throw Error('PRODUCT_WORKER_REFUSED');
+      !c.native.origin.startsWith('https://')||c.http.port!==8081||c.temporal.authorization===undefined))throw Error('PRODUCT_WORKER_REFUSED');
   if(role==='conversation-runner'&&process.env.MERI_PRODUCT_PREVIEW_REQUIRED!==undefined&&
      (process.env.MERI_PRODUCT_PREVIEW_REQUIRED!=='1'||c.bootstrap?.remote!==true||c.remoteTask!==undefined||poststartTls===undefined||typeof nativeFetch!=='function'))throw Error('PRODUCT_RUNNER_TLS_REFUSED');
   if(role==='conversation-runner'&&(c.remoteTask!==undefined||c.bootstrap?.remote===true)){

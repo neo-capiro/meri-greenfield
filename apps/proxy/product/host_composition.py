@@ -29,7 +29,9 @@ from .host_observation import (HostRequestObservation, HostResponseObservationTr
                                require_current_conversation, _binding, _SLOT, _UUID)
 from .request_admission import ProductReservationAdapter
 from .response_settlement import NativeSettlementTransport, SettlementContext
+from .response_settlement import _settled_outcome
 from .bearer_eni_admission import create_bearer_eni_trusted_resolver
+from .upstream_callback import ProductNativeDispatchEvidence
 
 
 MODEL_ALIAS = "meri-sonnet-qualification"
@@ -97,9 +99,10 @@ def _session(life, session):
 class _OneNativeTransport(httpx.AsyncBaseTransport):
     """Bind raw-body hash and the response capture only after the send is armed."""
 
-    def __init__(self, inner, *, life, session, guard, request_capture, bridge):
+    def __init__(self, inner, *, life, session, guard, request_capture, bridge, evidence):
         self.inner, self.life, self.session = inner, life, session
         self.guard, self.request_capture, self.bridge = guard, request_capture, bridge
+        self.evidence = evidence
         self.entered = False
 
     async def handle_async_request(self, request):
@@ -122,11 +125,23 @@ class _OneNativeTransport(httpx.AsyncBaseTransport):
         # provider transport is entered.
         if self.bridge.bind_complete_capture(observed.capture_authenticated_complete) is not None:
             _deny()
+        async def settle_complete(request_id, result):
+            await self.bridge.settle_complete(request_id, result)
+            self.evidence.mark_settled()
+
+        async def read_outcome(request_id):
+            outcome = await self.bridge.read_outcome(request_id)
+            if _settled_outcome(outcome, request_id):
+                self.evidence.mark_settled()
+            return outcome
+
         transport = NativeSettlementTransport(
             observed, guard=self.guard, context=context,
-            settle_complete=self.bridge.settle_complete,
-            read_outcome=self.bridge.read_outcome)
-        return await transport.handle_async_request(request)
+            settle_complete=settle_complete,
+            read_outcome=read_outcome)
+        response = await transport.handle_async_request(request)
+        self.evidence.mark_entered()
+        return response
 
     async def aclose(self):
         await self.inner.aclose()
@@ -163,11 +178,14 @@ async def create_guarded_product_handler(life, session):
             if inspect.isawaitable(result):
                 await result
         _deny()
+    evidence = ProductNativeDispatchEvidence()
     transport = _OneNativeTransport(inner, life=life, session=session, guard=guard,
-                                    request_capture=host, bridge=bridge)
+                                    request_capture=host, bridge=bridge, evidence=evidence)
     try:
-        return AsyncHTTPHandler(event_hooks={"request": [host.before_guard, guard.before_send]},
-                                transport=transport, follow_redirects=False)
+        handler = AsyncHTTPHandler(event_hooks={"request": [host.before_guard, guard.before_send]},
+                                   transport=transport, follow_redirects=False)
+        handler._product_native_dispatch_evidence = evidence
+        return handler
     except BaseException:
         await transport.aclose()
         raise

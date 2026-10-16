@@ -1,4 +1,5 @@
 /** Pure production configuration for the pinned Temporal 1.32.1 server. */
+import {TEMPORAL_MIGRATION_PLAN_SHA256} from './temporal-migration-plan.mjs';
 const SERVER_DIGEST='sha256:2695f2564ec51aa84232bf3fa59b31e2cce99bec437a64f5bc487cbe21b2de0e';
 const SERVICE_ROLE=Object.freeze({frontend:'frontend',history:'history',matching:'matching','internal-worker':'worker','internal-frontend':'internal-frontend'});
 const ROLE_PORTS=Object.freeze({frontend:[7233,6933,7243],history:[7234,6934],matching:[7235,6935],worker:[7239,6939],'internal-frontend':[7236,6936,7246]});
@@ -53,11 +54,13 @@ export function validateTemporalLaunch(env,argv){
  for(const key of ['SQL_MAX_CONNS','SQL_MAX_IDLE_CONNS','SQL_VIS_MAX_CONNS','SQL_VIS_MAX_IDLE_CONNS'])exact(env,key,String(conns));
  const primaryUser=required(env,'POSTGRES_USER',/^[a-z][a-z0-9_]{0,62}$/u);
  const visibilityUser=required(env,'VISIBILITY_POSTGRES_USER',/^[a-z][a-z0-9_]{0,62}$/u);
+ exact(env,'MERI_TEMPORAL_PRIMARY_USERNAME_EXPECTED',primaryUser);
+ exact(env,'MERI_TEMPORAL_VISIBILITY_USERNAME_EXPECTED',visibilityUser);
  if(primaryUser===visibilityUser||!env.POSTGRES_PWD||!env.VISIBILITY_POSTGRES_PWD||env.POSTGRES_PWD===env.VISIBILITY_POSTGRES_PWD)fail();
  for(const key of ['POSTGRES_PWD','VISIBILITY_POSTGRES_PWD'])if(typeof env[key]!=='string'||env[key].length>4096)fail();
  required(env,'MERI_TEMPORAL_RDS_CA_SHA256',hex64);
  required(env,'MERI_TEMPORAL_ISSUER_CA_SHA256',hex64);
- required(env,'MERI_TEMPORAL_MIGRATION_PLAN_SHA256',hex64);
+ exact(env,'MERI_TEMPORAL_MIGRATION_PLAN_SHA256',TEMPORAL_MIGRATION_PLAN_SHA256);
  pem(env.MERI_TEMPORAL_INTERNODE_CERT_PEM,'CERTIFICATE');
  pem(env.MERI_TEMPORAL_INTERNODE_KEY_PEM,'PRIVATE KEY');
  pem(env.MERI_TEMPORAL_INTERNODE_CA_PEM,'CERTIFICATE');

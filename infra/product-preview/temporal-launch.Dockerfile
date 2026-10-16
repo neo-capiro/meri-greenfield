@@ -17,6 +17,7 @@ COPY --from=node-runtime /node-deps/lib/ /opt/meri/node-lib/
 COPY --chmod=0555 infra/product-preview/temporal-launch.sh /opt/meri/temporal-launch
 COPY --chmod=0444 infra/product-preview/temporal-launch-main.mjs /opt/meri/temporal-launch-main.mjs
 COPY --chmod=0444 infra/product-preview/temporal-launch-render.mjs /opt/meri/temporal-launch-render.mjs
+COPY --chmod=0444 infra/product-preview/temporal-migration-plan.mjs /opt/meri/temporal-migration-plan.mjs
 RUN /opt/meri/node-loader --library-path /opt/meri/node-lib /opt/meri/node -e 'const n=process.env.NODE24_IMAGE,s=process.env.LAUNCH_SOURCE_COMMIT;if(!/^node:24-alpine@sha256:[a-f0-9]{64}$/.test(n)||!(/^[a-f0-9]{40}$/.test(s))||process.versions.node.split(".")[0]!=="24")process.exit(1)'
 # The supplied CA is public trust material, but its exact version/hash still needs review.
 # BuildKit --secret id=temporal_issuer_ca supplies it without a credential in source/build args.

@@ -3,9 +3,14 @@ import {createHash} from 'node:crypto';
 import {readFileSync} from 'node:fs';
 import pins from '../../apps/control/qualification-temporal/component-pins.json' with {type:'json'};
 import fixture from '../../apps/control/qualification-temporal/deployment.fixture.json' with {type:'json'};
+import {TEMPORAL_MIGRATION_PLAN_SHA256} from './temporal-migration-plan.mjs';
 
 export const TEMPORAL_ROLES=Object.freeze(['frontend','history','matching','internal-worker','internal-frontend']);
 export const TEMPORAL_PORTS=Object.freeze({frontend:[7233,6933,7243],history:[7234,6934],matching:[7235,6935],'internal-worker':[7239,6939],'internal-frontend':[7236,6936,7246]});
+export const TEMPORAL_INTERFACE_ENDPOINTS=Object.freeze({
+ ecrApi:'com.amazonaws.us-east-1.ecr.api',ecrDkr:'com.amazonaws.us-east-1.ecr.dkr',
+ secretsManager:'com.amazonaws.us-east-1.secretsmanager',logs:'com.amazonaws.us-east-1.logs',kms:'com.amazonaws.us-east-1.kms'
+});
 const fail=()=>{throw Error('TEMPORAL_PREVIEW_BINDING_REFUSED');};
 const hex64=/^[a-f0-9]{64}$/u;
 const id=/^[a-zA-Z0-9._-]{1,128}$/u;
@@ -31,6 +36,7 @@ function secret(value,account,region){
  const match=typeof value==='string'&&value.match(new RegExp(`^arn:aws:secretsmanager:${region}:${account}:secret:([A-Za-z0-9/_+=.@-]{1,512}):::([A-Za-z0-9-]{32,64})$`,'u'));
  if(!match)fail();return value;
 }
+const secretBase=value=>value.slice(0,value.lastIndexOf(':::'));
 export function versionedSecretKey(secretVersionArn,key){
  const pos=secretVersionArn.lastIndexOf(':::');
  if(pos<0||!id.test(key))fail();
@@ -57,12 +63,21 @@ export function validateTemporalPreviewBinding(value){
  closed(b.taskRoleArns,TEMPORAL_ROLES);
  for(const role of TEMPORAL_ROLES)if(!roleArn.test(b.taskRoleArns[role])||b.taskRoleArns[role]===b.executionRoleArn)fail();
  distinct(Object.values(b.taskRoleArns),5,roleArn);
- const n=closed(b.network,['clientSecurityGroupIds','issuerSecurityGroupId','endpointSecurityGroupIds','migrationSecurityGroupId']);
+ const n=closed(b.network,['clientSecurityGroupIds','issuerSecurityGroupId','interfaceEndpoints','s3Gateway','taskRouteTableBySubnet','migrationSecurityGroupId']);
  if(n.clientSecurityGroupIds?.length!==2)fail();
  distinct(n.clientSecurityGroupIds,2,/^sg-[a-f0-9]{8,17}$/u);
- distinct(n.endpointSecurityGroupIds,1,/^sg-[a-f0-9]{8,17}$/u);
+ closed(n.interfaceEndpoints,Object.keys(TEMPORAL_INTERFACE_ENDPOINTS));
+ const endpoints=Object.values(n.interfaceEndpoints).map(value=>closed(value,['endpointId','securityGroupId']));
+ distinct(endpoints.map(value=>value.endpointId),5,/^vpce-[a-f0-9]{8,17}$/u);
+ distinct(endpoints.map(value=>value.securityGroupId),5,/^sg-[a-f0-9]{8,17}$/u);
+ closed(n.s3Gateway,['endpointId','prefixListId']);
+ if(!/^vpce-[a-f0-9]{8,17}$/u.test(n.s3Gateway.endpointId)||
+    !/^pl-[a-f0-9]{8,17}$/u.test(n.s3Gateway.prefixListId)||
+    endpoints.some(value=>value.endpointId===n.s3Gateway.endpointId))fail();
+ closed(n.taskRouteTableBySubnet,subnets.map(value=>value.id));
+ if(Object.values(n.taskRouteTableBySubnet).some(value=>typeof value!=='string'||!/^rtb-[a-f0-9]{8,17}$/u.test(value)))fail();
  if(![n.issuerSecurityGroupId,n.migrationSecurityGroupId].every(x=>/^sg-[a-f0-9]{8,17}$/u.test(x))||
-    new Set([...n.clientSecurityGroupIds,...n.endpointSecurityGroupIds,n.issuerSecurityGroupId,n.migrationSecurityGroupId]).size!==n.clientSecurityGroupIds.length+n.endpointSecurityGroupIds.length+2)fail();
+    new Set([...n.clientSecurityGroupIds,...endpoints.map(value=>value.securityGroupId),n.issuerSecurityGroupId,n.migrationSecurityGroupId]).size!==n.clientSecurityGroupIds.length+endpoints.length+2)fail();
  const a=closed(b.auth,['issuer','jwksUrl','issuerCaSha256','audience','namespace','taskQueue','materialSecretVersionByRole']);
  let issuer,jwks;try{issuer=new URL(a.issuer);jwks=new URL(a.jwksUrl);}catch{fail();}
  if(issuer.protocol!=='https:'||issuer.username||issuer.password||issuer.search||issuer.hash||issuer.pathname!=='/'||!hex64.test(a.issuerCaSha256)||
@@ -70,14 +85,20 @@ export function validateTemporalPreviewBinding(value){
     a.audience!==fixture.roles.frontend.externalAudience||a.namespace!==fixture.namespaces.primary||!id.test(a.taskQueue))fail();
  closed(a.materialSecretVersionByRole,TEMPORAL_ROLES);
  for(const role of TEMPORAL_ROLES)secret(a.materialSecretVersionByRole[role],b.account,b.region);
- distinct(Object.values(a.materialSecretVersionByRole),5,/^arn:aws:secretsmanager:/u);
- const d=closed(b.database,['kmsKeyArn','masterSecretVersionArn','masterUsername','primarySecretVersionArn','visibilitySecretVersionArn','instanceClass','storageGiB','backupDays','rdsCaSha256','migrationPlanSha256']);
+ const roleSecretBases=Object.values(a.materialSecretVersionByRole).map(secretBase);
+ distinct(roleSecretBases,5,/^arn:aws:secretsmanager:/u);
+ const d=closed(b.database,['kmsKeyArn','masterSecretVersionArn','masterUsername','primarySecretVersionArn','primaryUsername','visibilitySecretVersionArn','visibilityUsername','instanceClass','storageGiB','backupDays','rdsCaSha256','migrationPlanSha256']);
  if(!new RegExp(`^arn:aws:kms:${b.region}:${b.account}:key/[a-f0-9-]{36}$`,'u').test(d.kmsKeyArn)||
-    !/^[a-z][a-z0-9_]{0,62}$/u.test(d.masterUsername)||!/^db\.[a-z0-9]+\.[a-z0-9]+$/u.test(d.instanceClass)||
+    !/^[a-z][a-z0-9_]{0,62}$/u.test(d.masterUsername)||
+    ![d.primaryUsername,d.visibilityUsername].every(x=>typeof x==='string'&&/^[a-z][a-z0-9_]{0,62}$/u.test(x))||
+    new Set([d.masterUsername,d.primaryUsername,d.visibilityUsername]).size!==3||
+    !/^db\.[a-z0-9]+\.[a-z0-9]+$/u.test(d.instanceClass)||
     !Number.isInteger(d.storageGiB)||d.storageGiB<100||d.storageGiB>1000||!Number.isInteger(d.backupDays)||d.backupDays<7||d.backupDays>35||
-    !hex64.test(d.rdsCaSha256)||!hex64.test(d.migrationPlanSha256))fail();
+    !hex64.test(d.rdsCaSha256)||d.migrationPlanSha256!==TEMPORAL_MIGRATION_PLAN_SHA256)fail();
  for(const key of ['masterSecretVersionArn','primarySecretVersionArn','visibilitySecretVersionArn'])secret(d[key],b.account,b.region);
- distinct([d.masterSecretVersionArn,d.primarySecretVersionArn,d.visibilitySecretVersionArn],3,/^arn:aws:secretsmanager:/u);
+ const dbSecretBases=[d.masterSecretVersionArn,d.primarySecretVersionArn,d.visibilitySecretVersionArn].map(secretBase);
+ distinct(dbSecretBases,3,/^arn:aws:secretsmanager:/u);
+ distinct([...roleSecretBases,...dbSecretBases],8,/^arn:aws:secretsmanager:/u);
  if(pins.server.version!=='1.32.1'||pins.postgres.majorVersion!==16||pins.postgres.candidateMinorVersion!=='16.15'||pins.postgres.plugin!=='postgres12'||
     pins.postgres.schemaPrimaryVersion!=='1.19'||pins.postgres.schemaVisibilityVersion!=='1.14'||fixture.historyShards!==128||
     fixture.database.newResources!==true||fixture.database.encrypted!==true||fixture.database.multiAz!==true||

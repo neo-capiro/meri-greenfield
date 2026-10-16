@@ -91,7 +91,7 @@ else:print('UNBOUNDED')
 });
 
 test('producer gates auth/push on measured image bytes and emits joined receipt only after clean scan',async t=>{
- for(const scenario of ['success','runner-mismatch','scan-hold','source-mismatch','cleanup-unknown'])await t.test(scenario,t=>{
+ for(const scenario of ['success','runner-mismatch','linux-test-hold','scan-hold','source-mismatch','cleanup-unknown'])await t.test(scenario,t=>{
   const f=fixture(t),output=join(f.root,'receipt.json');
   const harness=`import importlib.util,json,pathlib,shutil,sys,types,os
 s=importlib.util.spec_from_file_location('build_source',sys.argv[1]);m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
@@ -110,6 +110,10 @@ def run(args,timeout=30,input_bytes=None):
  if 'ls' in args:return b''
  if 'build' in args:events.append('docker-build');return b''
  if 'inspect' in args:return json.dumps([{'Os':'linux','Architecture':'amd64','Size':1,'Config':{'Entrypoint':['node','apps/runtime/cli.mjs'],'Labels':{'org.opencontainers.image.revision':p['sourceCommit'],'org.opencontainers.image.base.name':p['nodeImageUri']}}}]).encode()
+ if 'run' in args and '--test' in args:
+  events.append('linux-tests:'+','.join(args[args.index('--test')+1:]))
+  if scenario=='linux-test-hold':raise ValueError('scripted Linux test failure')
+  return b''
  if 'run' in args and '--input-type=module' in args:
   events.append('image-measurement');return json.dumps({'node':p['nodeVersion'],'runtimeUser':p['runtimeUser'],'executableSha256':'a'*64,'runner':{'contract':m.CONTRACT,'path':m.RUNNER,'runnerSha256':'0'*64 if scenario=='runner-mismatch' else p['runnerSha256'],'bytes':23}}).encode()
  if 'login' in args:events.append('login');assert input_bytes==b'never-log-this-value';return b''
@@ -126,7 +130,8 @@ except Exception:status='refused'
 print(json.dumps({'status':status,'events':events,'receipt':json.loads(pathlib.Path(output).read_text()) if pathlib.Path(output).exists() else None}))
 `;
   const result=python(['-c',harness,producer,f.request,f.archive,f.manifest,output,scenario]);assert.equal(result.status,0,result.stderr);assert.ok(!result.stdout.includes('never-log-this-value'));const observed=JSON.parse(result.stdout);
-  if(scenario==='success'){assert.equal(observed.status,'success');assert.ok(observed.events.indexOf('image-measurement')<observed.events.indexOf('credentials'));assert.ok(observed.events.indexOf('credentials')<observed.events.indexOf('push'));assert.equal(observed.receipt.runnerMeasurement.runnerSha256,f.pin.runnerSha256);assert.equal(observed.receipt.sourceManifestSha256,f.pin.manifest.sha256);assert.equal(observed.receipt.scanStatus,'COMPLETE');}
-  else{assert.equal(observed.status,'refused');assert.equal(observed.receipt,null);if(['runner-mismatch','source-mismatch'].includes(scenario))assert.equal(observed.events.includes('credentials'),false);if(scenario==='runner-mismatch')assert.equal(observed.events.includes('image-measurement'),true);if(['scan-hold','cleanup-unknown'].includes(scenario))assert.equal(observed.events.includes('push'),true);if(scenario==='source-mismatch')assert.equal(observed.events.includes('docker-build'),false);}
+  const linuxTests='linux-tests:apps/runtime/test/prepared-candidate-bootstrap.test.mjs,apps/runtime/test/remote-conversation-runner.test.mjs';
+  if(scenario==='success'){assert.equal(observed.status,'success');assert.ok(observed.events.indexOf('image-measurement')<observed.events.indexOf(linuxTests));assert.ok(observed.events.indexOf(linuxTests)<observed.events.indexOf('credentials'));assert.ok(observed.events.indexOf('credentials')<observed.events.indexOf('push'));assert.equal(observed.receipt.runnerMeasurement.runnerSha256,f.pin.runnerSha256);assert.equal(observed.receipt.sourceManifestSha256,f.pin.manifest.sha256);assert.equal(observed.receipt.scanStatus,'COMPLETE');}
+  else{assert.equal(observed.status,'refused');assert.equal(observed.receipt,null);if(['runner-mismatch','linux-test-hold','source-mismatch'].includes(scenario))assert.equal(observed.events.includes('credentials'),false);if(['runner-mismatch','linux-test-hold'].includes(scenario))assert.equal(observed.events.includes('image-measurement'),true);if(scenario==='linux-test-hold')assert.equal(observed.events.includes(linuxTests),true);if(['scan-hold','cleanup-unknown'].includes(scenario))assert.equal(observed.events.includes('push'),true);if(scenario==='source-mismatch')assert.equal(observed.events.includes('docker-build'),false);}
  });
 });
