@@ -89,7 +89,7 @@ const SOURCE_PATHS=Object.freeze({
 });
 const COMMON=['apps/gateway/general-reads/integration.mjs','apps/gateway/general-reads/registration.mjs',
  'apps/gateway/sources/source-admission.mjs','apps/gateway/sources/json-response.mjs'];
-const TRANSPORT_FIELDS=['origin','endpoints','getCredentials','fetchImpl','maxRequestMs','maxResponseBytes','readMemoryEligibility','registry'];
+const TRANSPORT_FIELDS=['origin','endpoints','getCredentials','delegatedTransport','fetchImpl','maxRequestMs','maxResponseBytes','readMemoryEligibility','registry'];
 export async function createGeneralReadFamilyHandlers(configuration){
  const {families,now,newId}=ownFields(configuration,['families','now','newId']);
  if(typeof now!=='function'||typeof newId!=='function')deny('GATEWAY_CONFIGURATION');

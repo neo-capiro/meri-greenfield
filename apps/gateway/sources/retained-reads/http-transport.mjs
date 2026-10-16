@@ -8,14 +8,18 @@ import {credentialProof} from './call-context.mjs';
 const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const token=value=>typeof value==='string'&&/^[\x21-\x7e]{1,8192}$/.test(value);
 export function createRetainedHttpTransport(configuration){
- const {origin,now,getCredentials,fetchImpl=globalThis.fetch,maxRequestMs=15000,maxResponseBytes=1048576}=
-  ownFields(configuration,['origin','now'],['getCredentials','fetchImpl','maxRequestMs','maxResponseBytes']);
+ const {origin,now,getCredentials,delegatedTransport,fetchImpl=globalThis.fetch,maxRequestMs=15000,maxResponseBytes=1048576}=
+  ownFields(configuration,['origin','now'],['getCredentials','delegatedTransport','fetchImpl','maxRequestMs','maxResponseBytes']);
  try{const url=new URL(origin);if(typeof origin!=='string'||url.protocol!=='https:'||url.origin!==origin||url.username||url.password)deny('GATEWAY_CONFIGURATION');}
  catch{deny('GATEWAY_CONFIGURATION');}
  if(typeof now!=='function'||getCredentials!==undefined&&typeof getCredentials!=='function'||typeof fetchImpl!=='function'||
   !Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>3600000||
   !Number.isSafeInteger(maxResponseBytes)||maxResponseBytes<1||maxResponseBytes>16777216)deny('GATEWAY_CONFIGURATION');
+ const delegated=delegatedTransport===undefined?null:ownFields(delegatedTransport,['read']);
+ if(delegated&&(typeof delegated.read!=='function'||getCredentials!==undefined))deny('GATEWAY_CONFIGURATION');
  return Object.freeze({async read(c,{path,method,body,serviceSecret=false}){
+  // Explicit trusted composition only. New-mode failure never reaches legacy credentials or transport.
+  if(delegated)return delegated.read.call(delegatedTransport,c,{path,method,...(body===undefined?{}:{body})});
   if(!getCredentials)deny('UNAVAILABLE');
   let cutoff=Math.min(c.deadlineMs,now()+maxRequestMs);
   const lifetime=createDispatchLifetime({deadlineMs:cutoff,now,signal:c.signal});
