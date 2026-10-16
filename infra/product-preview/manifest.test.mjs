@@ -52,10 +52,14 @@ test('offline source has only two stopped services and three immutable role task
  assert(!services.some(s=>s.ServiceName.includes('runner')));
 });
 
-test('optional pre-existing control target group attaches only to stopped control port 8080',()=>{
+test('two distinct reviewed control target groups attach only to stopped control port 8080',()=>{
  const input=binding();input.controlTargetGroupArn='arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/meri-product-preview/1234567890abcdef';
+ input.controlPrivateTargetGroupArn='arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/meri-private/abcdef0123456789';
  const services=byType(synthesizeProductPreview(input),'AWS::ECS::Service'),control=services.find(s=>s.ServiceName==='meri-product-preview-control');
- assert.deepEqual(control.LoadBalancers,[{ContainerName:'control',ContainerPort:8080,TargetGroupArn:input.controlTargetGroupArn}]);
+ assert.deepEqual(control.LoadBalancers,[
+  {ContainerName:'control',ContainerPort:8080,TargetGroupArn:input.controlTargetGroupArn},
+  {ContainerName:'control',ContainerPort:8080,TargetGroupArn:input.controlPrivateTargetGroupArn}
+ ]);
  assert.equal(control.DesiredCount,0);
  assert.equal(services.find(s=>s.ServiceName==='meri-product-preview-temporal-worker').LoadBalancers,undefined);
 });
@@ -77,7 +81,9 @@ test('missing inventory, foreign refs, runnable state and claimed material deliv
   x=>{x.network.runnerSecurityGroupIds=[];},
   x=>{x.network.privateSubnetId='subnet-foreign';},
   x=>{x.controlTargetGroupArn='arn:aws:elasticloadbalancing:us-west-2:967807252336:targetgroup/meri-product-preview/1234567890abcdef';},
-  x=>{x.controlTargetGroupArn='arn:aws:elasticloadbalancing:us-east-1:000000000000:targetgroup/foreign/1234567890abcdef';}
+  x=>{x.controlTargetGroupArn='arn:aws:elasticloadbalancing:us-east-1:000000000000:targetgroup/foreign/1234567890abcdef';},
+  x=>{x.controlPrivateTargetGroupArn='arn:aws:elasticloadbalancing:us-west-2:967807252336:targetgroup/foreign/1234567890abcdef';},
+  x=>{x.controlTargetGroupArn='arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/meri-preview/1234567890abcdef';x.controlPrivateTargetGroupArn=x.controlTargetGroupArn;}
  ];
  for(const change of variants){const x=binding();change(x);assert.throws(()=>synthesizeProductPreview(x),/PRODUCT_PREVIEW_BINDING_REFUSED/);}
 });

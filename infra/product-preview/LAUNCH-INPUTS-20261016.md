@@ -1,5 +1,7 @@
 # Meri preview launch input map — read-only observation, 2026-10-16
 
+**Later same-day readback:** `CAPIRO-DEV-CHANGE-SET-20261016.md` supersedes the candidate selection and resource findings below. In particular, `https://app.capiro.ai` is an observed Core-origin candidate, a qualified Meri build project/ECR/log/execution-role reuse path was found, and a proposed `capiro-dev` public/private route was mapped. None is an activation receipt. Keep this earlier table as the initial observation, not the final change set.
+
 Source pin: draft PR #98 on PR #97. This is an input and approval map, not a deployment manifest, migration instruction, or permission to start a task. AWS reads used the existing `jump-cli` default identity in account `967807252336`, region `us-east-1`. No credentials or secret values were displayed; no live database query, build, AWS write, or deployment was performed. Identifiers and policies are point-in-time observations; repeat exact readback before an approved change.
 
 ## Exact source joins and observed resources

@@ -18,7 +18,7 @@ function sized(value){
  return v;
 }
 function validate(value){
- const b=record(value,['account','region','enabled','materialDelivery','clusterArn','imageUri','logGroupName','executionRoleArn','controlTaskRoleArn','runtimeUser','network','sizing','runnerSha256'],['controlTargetGroupArn']);
+ const b=record(value,['account','region','enabled','materialDelivery','clusterArn','imageUri','logGroupName','executionRoleArn','controlTaskRoleArn','runtimeUser','network','sizing','runnerSha256'],['controlTargetGroupArn','controlPrivateTargetGroupArn']);
  if(b.account!==ACCOUNT||b.region!==REGION||b.enabled!==false||b.materialDelivery!=='unmounted'||
     !/^arn:aws:ecs:us-east-1:967807252336:cluster\/[A-Za-z0-9_-]{1,255}$/u.test(b.clusterArn)||
     !new RegExp(`^${ACCOUNT}\\.dkr\\.ecr\\.${REGION}\\.amazonaws\\.com\\/[a-z0-9._/-]+@sha256:[a-f0-9]{64}$`).test(b.imageUri)||
@@ -27,7 +27,9 @@ function validate(value){
     !/^arn:aws:iam::967807252336:role\/[A-Za-z0-9_+=,.@/-]{1,512}$/u.test(b.controlTaskRoleArn)||
     b.executionRoleArn===b.controlTaskRoleArn||
     !/^[1-9][0-9]*:[1-9][0-9]*$/u.test(b.runtimeUser)||!hex64.test(b.runnerSha256))fail();
- if(b.controlTargetGroupArn!==undefined&&!/^arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup\/[A-Za-z0-9_-]{1,32}\/[a-f0-9]{16}$/u.test(b.controlTargetGroupArn))fail();
+ const targetGroup=/^arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup\/[A-Za-z0-9_-]{1,32}\/[a-f0-9]{16}$/u;
+ if([b.controlTargetGroupArn,b.controlPrivateTargetGroupArn].some(arn=>arn!==undefined&&!targetGroup.test(arn))||
+    b.controlTargetGroupArn!==undefined&&b.controlTargetGroupArn===b.controlPrivateTargetGroupArn)fail();
  const n=record(b.network,['privateSubnetId','controlSecurityGroupId','workerSecurityGroupId','runnerSecurityGroupIds']);
  if(!/^subnet-[a-f0-9]+$/u.test(n.privateSubnetId)||
     ![n.controlSecurityGroupId,n.workerSecurityGroupId].every(x=>/^sg-[a-f0-9]+$/u.test(x))||
@@ -59,10 +61,11 @@ function task(stack,b,role,port){
 }
 function service(stack,b,role,definition,securityGroupId){
  const name=role==='temporalWorker'?'temporal-worker':role;
+ const targets=role==='control'?[b.controlTargetGroupArn,b.controlPrivateTargetGroupArn].filter(Boolean).map(targetGroupArn=>({containerName:'control',containerPort:8080,targetGroupArn})):[];
  return new ecs.CfnService(stack,`${role}Service`,{serviceName:`meri-product-preview-${name}`,cluster:b.clusterArn,taskDefinition:definition.ref,
   desiredCount:0,launchType:'FARGATE',platformVersion:'1.4.0',enableExecuteCommand:false,
   networkConfiguration:{awsvpcConfiguration:{subnets:[b.network.privateSubnetId],securityGroups:[securityGroupId],assignPublicIp:'DISABLED'}},
-  ...(role==='control'&&b.controlTargetGroupArn?{loadBalancers:[{containerName:'control',containerPort:8080,targetGroupArn:b.controlTargetGroupArn}]}:{})});
+  ...(targets.length?{loadBalancers:targets}:{})});
 }
 
 /** Returns source data only. No lookup, build, AWS client, deployment, or file materialization is performed. */

@@ -70,10 +70,14 @@ export async function verifyProductMaterial(plan,{expectedSha256ByPath}={}){
  let parsed;
  for(const {path} of plan.requiredFiles){
   let handle,bytes;try{
-   handle=await open(path,constants.O_RDONLY|constants.O_NOFOLLOW);const st=await handle.stat();
+   // A foreign FIFO at an expected path must not block the preflight before fstat can reject it.
+   handle=await open(path,constants.O_RDONLY|constants.O_NOFOLLOW|constants.O_NONBLOCK);const st=await handle.stat();
    if(!st.isFile()||st.uid!==plan.uid||st.gid!==plan.gid||(st.mode&0o777)!==mode||st.size<1||st.size>maxBytes)refuse();
-   bytes=await handle.readFile();if(bytes.length!==st.size||hash(bytes)!==expectedSha256ByPath[path])refuse();
-   if(path===plan.configurationPath)parsed=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));
+   bytes=Buffer.alloc(maxBytes+1);let used=0;
+   while(used<bytes.length){const {bytesRead}=await handle.read(bytes,used,bytes.length-used,used);if(bytesRead===0)break;used+=bytesRead;}
+   const after=await handle.stat();
+   if(used!==st.size||used>maxBytes||after.size!==st.size||after.ino!==st.ino||hash(bytes.subarray(0,used))!==expectedSha256ByPath[path])refuse();
+   if(path===plan.configurationPath)parsed=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes.subarray(0,used)));
   }catch{refuse();}finally{bytes?.fill(0);await handle?.close();}
  }
  let actual;try{actual=compileProductMaterialPlan({role:plan.role,configuration:parsed,runtimeUser:plan.runtimeUser});}catch{refuse();}
