@@ -28,21 +28,22 @@ test('synthetic: restore after projection ACK but before watermark advance canno
  assert.equal((await f.sink.read()).length,1,'ledger-only recovery does not issue another decision');
 });
 
-test('synthetic: restore between watermark check and projection read refuses the first served read',async()=>{
+test('synthetic: a restore at the projection snapshot refuses the first served read',async()=>{
  const f=composeStartup(),s=subjectOf();let restore=null;
- const journal={...f.journal,async get(...args){if(restore){f.restore(restore);restore=null;}return f.journal.get(...args);}};
- f.startup=createRetentionStartup({journal,watermark:f.watermark,ledgerSink:f.sink,ownership,purge:{enabled:false},now:f.clock.now});
+ const watermark={...f.watermark,async readProjection(...args){if(restore){f.restore(restore);restore=null;}return f.watermark.readProjection(...args);}};
+ f.startup=createRetentionStartup({journal:f.journal,watermark,ledgerSink:f.sink,ownership,purge:{enabled:false},now:f.clock.now});
  await f.startup.start();const backup=f.backup();await suppress(f,s);restore=backup;
  await refused(f,s);assert.equal((await f.watermark.read()).sequence,0);assert.equal(f.startup.state().enabled,false);
  await f.startup.recover();await assert.rejects(f.startup.gate.assertServable(s),/RETENTION_SUPPRESSED/);
 });
 
-test('synthetic: a changed watermark during a read refuses that observation without disabling healthy serving',async()=>{
+test('synthetic: a completed atomic snapshot stays coherent across a later healthy watermark advance',async()=>{
  const f=composeStartup(),s=subjectOf();let advance=false;
- const journal={...f.journal,async get(...args){const result=await f.journal.get(...args);if(advance){advance=false;await f.watermark.record({sequence:1,entrySha256:'a'.repeat(64)});}return result;}};
- f.startup=createRetentionStartup({journal,watermark:f.watermark,ledgerSink:f.sink,ownership,purge:{enabled:false},now:f.clock.now});await f.startup.start();advance=true;
- await refused(f,s);assert.equal(f.startup.state().enabled,true,'a concurrent proven position is a coherence refusal, not a restore claim');
- await f.startup.gate.assertServable(s);
+ const watermark={...f.watermark,async readProjection(...args){const result=await f.watermark.readProjection(...args);if(advance){advance=false;await f.watermark.record({sequence:1,entrySha256:'a'.repeat(64)});}return result;}};
+ f.startup=createRetentionStartup({journal:f.journal,watermark,ledgerSink:f.sink,ownership,purge:{enabled:false},now:f.clock.now});await f.startup.start();advance=true;
+ await f.startup.gate.assertServable(s);assert.equal(advance,false,'the atomic port was called');
+ assert.equal(f.startup.state().enabled,true);assert.equal(f.startup.state().highWater,0,'only the captured position is observed');
+ await f.startup.gate.assertServable(s);assert.equal(f.startup.state().highWater,1);
 });
 
 test('synthetic: legacy blind-advance ports cannot satisfy retention startup configuration',()=>{

@@ -12,8 +12,10 @@ import {hash} from '../boundary.mjs';
 /** One-row table emulation; `faults` maps a statement prefix to 'throw'. Every lease records its releases. */
 function syntheticPool({faults={}}={}){
  let row=null;const made=[],idle=[],projections=new Map();
- const answer=(sql,values)=>{const k=Object.keys(faults).find(prefix=>sql.startsWith(prefix));if(k&&faults[k]==='throw')throw Object.assign(new Error('synthetic '+k),{code:'08006'});if(k&&faults[k]!=null)return faults[k];
+ const answer=(sql,values)=>{const k=Object.keys(faults).find(prefix=>sql.startsWith(prefix));if(k&&faults[k]==='throw')throw Object.assign(new Error('synthetic '+k),{code:'08006'});if(k&&typeof faults[k]==='function')return faults[k](sql,values);if(k&&faults[k]!=null)return faults[k];
   if(sql.startsWith('SELECT sequence'))return {rows:row?[{...row}]:[],rowCount:row?1:0};
+  if(sql.startsWith('SELECT s.projection,')){const kind=sql.includes('meri_artifacts.retention_subjects')?'artifact':'conversation',p=projections.get(kind+JSON.stringify(values));
+   return {rows:[{projection:null,projection_sha256:null,state:null,ledger_sequence:null,...p,watermark_sequence:row?.sequence??null,watermark_entry_sha256:row?.entry_sha256??null}],rowCount:1};}
   if(sql.startsWith('SELECT * FROM')&&sql.includes('.retention_subjects')){const kind=sql.includes('meri_artifacts')?'artifact':'conversation',p=projections.get(kind+JSON.stringify(values));return {rows:p?[p]:[]};}
   if(sql.startsWith('INSERT INTO meri_conversations.retention_recovery_watermark')){const exact=sql.includes('entry_sha256=EXCLUDED.entry_sha256');const [sequence,entry]=values;
    if(exact||!row)row={sequence:String(sequence),entry_sha256:exact?entry??null:null};else if(sequence>Number(row.sequence))row={sequence:String(sequence),entry_sha256:null};return {rows:[{...row}],rowCount:1};}
@@ -70,4 +72,42 @@ test('synthetic SQL: missing, changed or wrong-sequence projections cannot advan
  const proof=statements.findIndex(s=>s.startsWith('SELECT * FROM')&&s.endsWith('FOR UPDATE')),advance=statements.findIndex(s=>s.startsWith('INSERT INTO'));
  assert.ok(proof>statements.indexOf('BEGIN')&&advance>proof&&statements.indexOf('COMMIT')>advance);assert.equal(statements.filter(s=>s==='BEGIN').length,1);
  assert.ok(statements.some(s=>s.includes('meri_retention_subject:')||s.includes('pg_advisory_xact_lock(hashtextextended($1,0))')));
+});
+
+test('synthetic SQL snapshot: one joined data statement follows the shared recovery lock in the same clean transaction',async()=>{
+ const {pool,store}=compose(),key=`tenant-a:conversation:${randomUUID()}`;
+ assert.deepEqual(await store.readProjection(key),{projection:null,watermark:{sequence:0,entrySha256:null}});
+ const row=rowAt(1);pool.project(key,row);pool.row={sequence:'1',entry_sha256:'a'.repeat(64)};
+ assert.deepEqual(await store.readProjection(key),{projection:row,watermark:{sequence:1,entrySha256:'a'.repeat(64)}});
+ const statements=pool.made[0].statements,joined=statements.map((s,i)=>s.startsWith('SELECT s.projection,')?i:-1).filter(i=>i>=0);
+ assert.equal(joined.length,2);
+ assert.equal(statements.filter(s=>s.startsWith('BEGIN')).every(s=>s==='BEGIN ISOLATION LEVEL READ COMMITTED'),true,'pool session isolation cannot establish an older snapshot before the recovery lock grants');
+ for(const i of joined){assert.ok(statements[i].includes('LEFT JOIN meri_conversations.retention_subjects'));
+  assert.ok(statements[i].includes('LEFT JOIN meri_conversations.retention_recovery_watermark'));
+  assert.ok(statements[i-1].startsWith('SELECT pg_advisory_xact_lock_shared'));assert.equal(statements[i+1],'COMMIT');}
+ assert.equal(statements.some(s=>s.startsWith('SELECT sequence')||s.startsWith('SELECT * FROM')),false,'no independent projection/watermark observation');
+ assert.ok(pool.made.every(c=>c.releases.every(e=>e===undefined)));
+ assert.throws(()=>createPostgresWatermarkStore({journal:{tx(){},assertProjection(){}}}),/RETENTION_CONFIGURATION/);
+});
+
+test('synthetic SQL snapshot: another owner completing recovery before the shared lock grants is observed by the data snapshot',async()=>{
+ let enter,release;const entered=new Promise(r=>{enter=r;}),released=new Promise(r=>{release=r;});
+ const faults={'SELECT pg_advisory_xact_lock_shared':async()=>{enter();await released;return {rows:[]};}}, {pool,store}=compose({faults});
+ const key=`tenant-a:conversation:${randomUUID()}`,reading=store.readProjection(key);await entered;
+ try{assert.equal(pool.made[0].statements.some(s=>s.startsWith('SELECT s.projection,')),false);
+  pool.project(key,rowAt(1));pool.row={sequence:'1',entry_sha256:'a'.repeat(64)};
+ }finally{release();}
+ assert.deepEqual(await reading,{projection:rowAt(1),watermark:{sequence:1,entrySha256:'a'.repeat(64)}});
+ assert.deepEqual(pool.made[0].releases,[undefined]);
+});
+
+test('synthetic SQL snapshot: malformed data or lost commit returns no snapshot and retires unknown leases',async()=>{
+ const key=`tenant-a:conversation:${randomUUID()}`;
+ for(const result of [{rows:[]},{rows:[{projection:null,projection_sha256:null,state:null,ledger_sequence:null,watermark_sequence:'x',watermark_entry_sha256:null}]},
+  {rows:[{projection:null,projection_sha256:hash(null),state:'SUPPRESSED',ledger_sequence:'1',watermark_sequence:'1',watermark_entry_sha256:'a'.repeat(64)}]}]){
+  const {store,pool}=compose({faults:{'SELECT s.projection,':result}});await assert.rejects(store.readProjection(key),/RETENTION_STORE_CORRUPT/);
+  assert.ok(pool.made[0].queries.includes('ROLLBACK'));assert.deepEqual(pool.made[0].releases,[undefined]);
+ }
+ const {store,pool}=compose({faults:{COMMIT:'throw'}});await assert.rejects(store.readProjection(key),/RETENTION_COMMIT_UNKNOWN/);
+ assert.equal(pool.made[0].queries.includes('ROLLBACK'),false);assert.ok(pool.made[0].releases[0] instanceof Error);
 });

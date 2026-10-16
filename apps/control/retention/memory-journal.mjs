@@ -19,6 +19,10 @@ export function createMemoryRetentionJournal(){
  const copy=m=>new Map([...m].map(([k,v])=>[k,structuredClone(v)]));
  return Object.freeze({
   async get(key){const v=state.get(key);return v?structuredClone(v):null;},
+  /** The backing store captures both values without yielding, under the same recovery exclusion shared by every owner. */
+  readProjection(key,readWatermark){return lock.shared(()=>{
+   const projection=state.get(key)??null,watermark=readWatermark();
+   return structuredClone({projection,watermark});});},
   async set(key,value,{expected,exclusive=false}={}){if(typeof key!=='string'||!key||!value||typeof value!=='object')fail('RETENTION_INVALID_REQUEST');
    const write=async()=>{const current=state.get(key)??null,token=current?hash(current):null;if(expected!==undefined&&expected!==token)fail('RETENTION_STALE_WRITE');state.set(key,structuredClone(value));return structuredClone(value);};
    return exclusive?write():lock.shared(write);},

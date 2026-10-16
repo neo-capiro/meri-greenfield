@@ -2,18 +2,20 @@
  * transition. It lives in the database (so a restore rolls it back with the projection) and only moves forward in ordinary operation:
  * every successful projection write advances it to the ledger sequence that write carries, and a completed reconciliation records the
  * exact ledger head (sequence and entry hash). Port: `read({exclusive})`,
+ * `readProjection(key) -> {projection,watermark}` (one store snapshot under shared recovery exclusion),
  * `advanceProjection({key,projectionSha256,sequence,minimumSequence},{exclusive})` (exact projection proof and
  * advancement are atomic; blind sequence-only stores are refused), and
  * `record({sequence,entrySha256},{exclusive})` (exact, recovery only). The PostgreSQL adapter is `postgres-watermark.mjs`. */
-import {fail,hash} from './boundary.mjs';
+import {fail,hash,own,data} from './boundary.mjs';
 import {advanceProof,projectionSequence} from './projection-proof.mjs';
 /** Test and contract store; `snapshot`/`restore` model a database backup taken and restored together with the journal. */
 export function createMemoryWatermarkStore({journal}={}){
- if(typeof journal?.assertProjection!=='function')fail('RETENTION_CONFIGURATION');
+ if(typeof journal?.assertProjection!=='function'||typeof journal?.readProjection!=='function')fail('RETENTION_CONFIGURATION');
  let value={sequence:0,entrySha256:null};const faults={read:false,advance:false,record:false};
  const check=name=>{if(faults[name])fail('RETENTION_STORE_UNAVAILABLE');};
  return Object.freeze({
   async read(){check('read');return {...value};},
+  readProjection(key){return journal.readProjection(key,()=>{check('read');return {...value};});},
   async advanceProjection(raw){check('advance');const proof=advanceProof(raw);
    // No await: the journal proof and watermark mutation form one memory-store step.
    if(journal.assertProjection(proof)!==true)fail('RETENTION_PROJECTION_UNVERIFIED');
@@ -24,14 +26,19 @@ export function createMemoryWatermarkStore({journal}={}){
 }
 /** The journal every transition owner writes through: after the projection write succeeds, the watermark advances to the ledger
  * position it carries and the fence learns it; an advance whose outcome is unknown closes the fence (the projection itself stands,
- * and reconciliation re-proves the watermark before serving resumes). Ordinary reads require coherent watermark observations
- * around the projection; exclusive recovery reads bypass the closed serving fence. */
+ * and reconciliation re-proves the watermark before serving resumes). Ordinary reads require a store-owned atomic projection and
+ * watermark snapshot; split reads cannot detect ABA across recovery owners. Exclusive recovery reads bypass the serving fence. */
 export function watermarkedJournal({journal,watermark,fence}){
- if(typeof journal?.get!=='function'||typeof journal?.set!=='function'||typeof journal?.exclusive!=='function'||typeof watermark?.advanceProjection!=='function'||typeof watermark?.read!=='function'||['observe','disable','verify','state'].some(m=>typeof fence?.[m]!=='function'))fail('RETENTION_CONFIGURATION');
+ if(typeof journal?.get!=='function'||typeof journal?.set!=='function'||typeof journal?.exclusive!=='function'||typeof watermark?.advanceProjection!=='function'||typeof watermark?.read!=='function'||typeof watermark?.readProjection!=='function'||['observe','disable','verify','state'].some(m=>typeof fence?.[m]!=='function'))fail('RETENTION_CONFIGURATION');
  async function get(key,options={}){
   if(options.exclusive===true)return journal.get(key,options);
-  const before=await fence.verify(()=>watermark.read()),row=await journal.get(key,options),after=await fence.verify(()=>watermark.read());
-  if(before.sequence!==after.sequence||before.entrySha256!==after.entrySha256)fail('RETENTION_RECOVERY_BARRIER');return row;
+  if(!fence.state().enabled)fail('RETENTION_RECOVERY_BARRIER');
+  let snapshot;try{snapshot=own(data(await watermark.readProjection(key)),['projection','watermark']);
+   if(snapshot.projection!==null&&(typeof snapshot.projection!=='object'||Array.isArray(snapshot.projection)))fail('RETENTION_WATERMARK_UNVERIFIED');
+  }catch{fence.disable('RETENTION_WATERMARK_UNVERIFIED');fail('RETENTION_WATERMARK_UNVERIFIED');}
+  await fence.verify(()=>snapshot.watermark);
+  if(snapshot.projection!==null&&projectionSequence(snapshot.projection)>snapshot.watermark.sequence)fail('RETENTION_RECOVERY_BARRIER');
+  return snapshot.projection;
  }
  async function set(key,row,options={}){
   const sequence=projectionSequence(row),projectionSha256=hash(row);

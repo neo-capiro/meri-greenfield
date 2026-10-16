@@ -260,6 +260,78 @@ Qualification relayed parent acceptance of exact browser `769848f1`, filing
 accept held retention behavior (`338a04ec` / follow-up `c5ebb14f`) or this new
 preview0003 source. Candidate h remains HOLD.
 
+## ABA follow-up: c5ebb14f split reads were insufficient
+
+Independent re-review demonstrated a third restore window: a row read captured
+null after restore; another recovery pass then reapplied the subject and returned
+to exactly the previous recovered sequence **and entry hash** before the second
+watermark observation. The first read served that null; the next correctly
+suppressed. Thus the paired-read equality claim at c5ebb14f above was insufficient.
+A process-local fence generation would also miss a separate recovery owner.
+
+Before production edits, `atomic-read.test.mjs` reproduced both reading-owner and
+separate-owner variants on unchanged `eb52ed44f688403306c70269c29508d39a4c2184`
+(its retention source is c5ebb14f): **0 pass, 2 fail**, both missing the expected
+refusal. The original one-owner negative also failed separately; it is the same
+case, not a third distinct negative. The supplied reviewer probe's restore,
+null capture, same-head recovery and following suppression are preserved. New
+port injection also proves the restored null was actually captured before
+recovery; the passing result does not merely bypass the old `get` hook.
+
+The required internal read contract is now
+`watermark.readProjection(key) -> {projection,watermark}`: one canonical-store
+snapshot under the recovery exclusion shared by all owners. Split-read ports
+are refused at construction; no fallback or local generation is used.
+
+- Memory: the backing journal holds its shared recovery lock and copies the
+  projection and watermark in the same synchronous step, without an await.
+- PostgreSQL: the existing bounded transaction explicitly starts at **READ
+  COMMITTED**, acquires the shared recovery advisory lock, then reads projection
+  and watermark with **one joined data statement**. A borrowed session's default
+  isolation cannot retain a snapshot created before waiting on recovery. There
+  is no separate row/watermark SELECT or repeatable-read snapshot before the lock.
+- The serving fence verifies the position carried by that snapshot. A row ahead
+  of its certified position is refused until advancement is acknowledged. A JSON
+  null projection on an existing subject is corruption, not absence. Snapshot
+  errors keep the prior WATERMARK_UNVERIFIED diagnostic and public recovery
+  barrier. Unknown COMMIT still retires its lease and releases no snapshot.
+
+Existing write-side exact-row advancement and predecessor floor are preserved.
+Exclusive reconciliation bypasses ordinary read gating as before; no recovery
+lock reentry, new ledger decision, DDL, frozen wire or deployed component change.
+The earlier read-gap test now injects restore at the atomic port boundary. The
+healthy-concurrent-advance test now verifies a completed snapshot's captured
+position: a later healthy advance does not invalidate a coherent earlier read.
+This intentionally replaces the old conservative two-observation mismatch rule.
+
+Final focused batch: **31 pass, 0 fail, 0 skip**, exit 0; Node reported **220 ms**,
+controlled wall **328 ms**, sampled peak working set **67,837,952 bytes**. The
+heap limit was 128 MiB; sampled working set is the measured Windows process
+counter, not a claim about total machine usage. Fresh available physical memory
+was 11,808,673,792 bytes. One process, no test child; 120-second hard wall and
+pressure stop were installed. Exit was observed and no Node process remained.
+
+```
+node --max-old-space-size=128 --test --test-isolation=none apps/control/retention/test/atomic-read.test.mjs apps/control/retention/test/startup-restore.test.mjs apps/control/retention/test/postgres-watermark.test.mjs
+```
+
+Evidence in `task-9/evidence`: `retention-aba-two-owner-eb52-negative.tap` and its
+process JSON; `retention-atomic-snapshot-fixed.tap`, empty stderr and
+`retention-atomic-snapshot-process.json`. The first fixed batch was **30/31**:
+all safety controls passed but an existing diagnostic assertion caught a changed
+reason. Its log/process JSON are preserved as `retention-atomic-snapshot-first*`;
+production now preserves the prior reason. An intermediate 31/31 pass is retained
+as `retention-atomic-snapshot-pre-null-guard*`; the final rerun added the existing
+JSON-null-row corruption assertion to the SQL failure case. No failure is hidden.
+
+These are synthetic production-source controls and scripted SQL, not PostgreSQL
+execution, cross-process host recovery, or release acceptance. The parent's
+scoped integration candidate `b2d37130343a3a015a5d886bdec4392715c9cdec` excludes
+held retention behavior and preview0003; this lane does not alter it. The new
+follow-up depends on the held retention source and needs exact independent
+review before integration. Retention and candidate h remain **HOLD**; preview
+activation/restore-custody and all migration/purge holds remain as above.
+
 ## Proof and remaining gates
 
 The candidate-h source proof passes **5/5**. **Zero of its 45 rows changed**;
