@@ -62,4 +62,27 @@ export function assembleConversationRunner({configuration,native,query,credentia
  Object.defineProperty(execute,'cleanupStatus',{value:()=>sdkSession?.cleanupStatus()??{pendingInitializations:0,closed:true,failures:[],physicalStopProven:false}});return execute;
 }
 export async function assertRunnerWorkspace(configuration){const workspace=await lstat(configuration.workspace);if(process.getuid()===0||!workspace.isDirectory()||workspace.isSymbolicLink()||workspace.uid!==process.getuid()||await realpath(configuration.workspace)!==configuration.workspace)throw fault('RUNNER_WORKSPACE_REFUSED');}
-export async function runConversation(configuration,{signal,query,sessionFactory,generalReads}={}){const readPort=captureGeneralReadPort(generalReads,configuration.sourceEnabled);assertRunnerEnvironment();await assertRunnerWorkspace(configuration);if(configuration.remoteTask&&query===undefined){const {runRemoteConversation}=await import('./remote-conversation-runner.mjs');return runRemoteConversation(configuration,{signal,...(readPort?{generalReads:readPort}:{}),...(sessionFactory?{sessionFactory}:{})});}const bytes=await readSecret(configuration.native.capabilityFile),credential=bytes.toString('utf8').trim(),native=createNativeCapabilityClient({configuration:configuration.native,credential});if(configuration.bootstrap?.remote===true&&query===undefined){const resolved=await loadRemoteTaskBinding({native,configuration,signal});const {runRemoteConversation}=await import('./remote-conversation-runner.mjs');return runRemoteConversation(resolved,{signal,...(readPort?{generalReads:readPort}:{}),...(sessionFactory?{sessionFactory}:{})});}if(configuration.bootstrap)await waitForAdmittedTask({native,binding:configuration.binding,versions:configuration.versions,deadlineMs:configuration.bootstrap.expiresAtMs,signal});const sessions=sessionFactory??createRuntimeSdkSessionFactory({origin:configuration.native.origin,credential,binding:configuration.binding});return assembleConversationRunner({configuration,native,credentialForBinding:async()=>credential,sessionFactory:sessions,...(readPort?{generalReads:readPort}:{}),...(query?{query}:{})})({binding:configuration.binding,signal});}
+export async function runConversation(configuration,{signal,query,sessionFactory,generalReads,poststartTls,nativeFetch}={}){
+ const readPort=captureGeneralReadPort(generalReads,configuration.sourceEnabled);
+ assertRunnerEnvironment();await assertRunnerWorkspace(configuration);
+ const product=process.env.MERI_PRODUCT_PREVIEW_REQUIRED==='1';
+ const initialPoststart=poststartTls!==undefined&&nativeFetch!==undefined&&configuration.bootstrap?.remote===true&&query===undefined&&product;
+ const nestedPoststart=poststartTls===undefined&&nativeFetch!==undefined&&configuration.remoteTask?.tls!==undefined&&query!==undefined&&product&&configuration.remoteTask.processOrigin===configuration.native.origin;
+ if(product&&!initialPoststart&&!nestedPoststart)throw fault('RUNNER_POSTSTART_REFUSED');
+ if((poststartTls!==undefined||nativeFetch!==undefined)&&!initialPoststart&&!nestedPoststart)throw fault('RUNNER_POSTSTART_REFUSED');
+ if(configuration.remoteTask&&query===undefined){
+  if(poststartTls!==undefined||nativeFetch!==undefined)throw fault('RUNNER_POSTSTART_REFUSED');
+  const {runRemoteConversation}=await import('./remote-conversation-runner.mjs');
+  return runRemoteConversation(configuration,{signal,...(readPort?{generalReads:readPort}:{}),...(sessionFactory?{sessionFactory}:{})});
+ }
+ const bytes=await readSecret(configuration.native.capabilityFile),credential=bytes.toString('utf8').trim(),native=createNativeCapabilityClient({configuration:configuration.native,credential,...(nativeFetch===undefined?{}:{fetch:nativeFetch})});
+ if(configuration.bootstrap?.remote===true&&query===undefined){
+  const resolved=await loadRemoteTaskBinding({native,configuration,signal,...(poststartTls===undefined?{}:{poststartTls})});
+  const {runRemoteConversation}=await import('./remote-conversation-runner.mjs');
+  return runRemoteConversation(resolved,{signal,...(nativeFetch===undefined?{}:{fetchImpl:nativeFetch,poststartNativeFetch:nativeFetch}),...(readPort?{generalReads:readPort}:{}),...(sessionFactory?{sessionFactory}:{})});
+ }
+ if(poststartTls!==undefined)throw fault('RUNNER_POSTSTART_REFUSED');
+ if(configuration.bootstrap)await waitForAdmittedTask({native,binding:configuration.binding,versions:configuration.versions,deadlineMs:configuration.bootstrap.expiresAtMs,signal});
+ const sessions=sessionFactory??createRuntimeSdkSessionFactory({origin:configuration.native.origin,credential,binding:configuration.binding});
+ return assembleConversationRunner({configuration,native,credentialForBinding:async()=>credential,sessionFactory:sessions,...(readPort?{generalReads:readPort}:{}),...(query?{query}:{})})({binding:configuration.binding,signal});
+}

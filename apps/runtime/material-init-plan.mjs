@@ -53,6 +53,7 @@ export function compileProductMaterialPlan({role,configuration,runtimeUser}){
    add(c.nativeCandidate.proxyCredentialFile,'proxy-capability');
   }
   if(c.taskRouter?.enabled)add(c.taskRouter.runnerCaFile,'runner-ca');
+  if(c.taskRouter?.poststart?.enabled){add(c.taskRouter.poststart.runnerCaKeyFile,'runner-ca-key');add(c.taskRouter.poststart.controlCaFile,'poststart-control-ca');}
  }
  const dynamicMaterialDirectory=c.nativeCandidate?.multiRun?.materialDirectory??null;
  if(dynamicMaterialDirectory!==null){const path=posix.normalize(dynamicMaterialDirectory);if(!posix.isAbsolute(path)||path===root||path.startsWith(root+'/'))refuse();}

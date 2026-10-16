@@ -1,11 +1,11 @@
 """Inert proxy-host observations from the actual HTTPX and ASGI lifetimes.
 
 The request hook must precede BedrockSendGuard.before_send, and this object must
-be the guard's counter wrapper. The current guarded_client installs only the
-guard hook, so the product composition is not mounted. The response transport
-must sit below NativeSettlementTransport. These objects open no listener and
-authenticate no cross-process caller. A future host composition must install
-both hooks and a separate authenticated channel before observations authorize SQL.
+be the guard's counter wrapper. The product host composition installs both
+hooks but is not mounted by a direct TLS server. The response transport must
+sit below NativeSettlementTransport. These objects open no listener and
+authenticate no cross-process caller. A separate authenticated channel is
+still required before observations authorize SQL.
 Neither reader accepts a Python-to-JavaScript codec frame as evidence.
 """
 import hashlib
@@ -88,6 +88,42 @@ def _native_request(request, limits):
                   "body": bytes(raw), "headers": pairs}
 
 
+async def require_current_conversation(life, *, binding, request_id, deadline_ms,
+                                       selected_client_id, check_current_conversation):
+    """Fresh Core identity/context join shared by Messages and CountTokens."""
+    started = time.time_ns() // 1_000_000
+    try:
+        receipt = await life._bounded(lambda: check_current_conversation({
+            "binding": binding.copy(), "requestId": request_id,
+            "deadlineMs": deadline_ms}))
+    except Exception:
+        _deny()
+    at = time.time_ns() // 1_000_000
+    if (type(receipt) is not dict or set(receipt) != {
+            "identitySha256", "binding", "scopes", "selectedClientId",
+            "contextRevision", "checkedAtMs", "expiresAtMs"}
+            or receipt["binding"] != binding
+            or type(receipt["identitySha256"]) is not str
+            or not _SHA256.fullmatch(receipt["identitySha256"])
+            or type(receipt["contextRevision"]) is not str
+            or not _SHA256.fullmatch(receipt["contextRevision"])
+            or receipt["selectedClientId"] != selected_client_id
+            or type(receipt["scopes"]) is not list or len(receipt["scopes"]) != 1
+            or type(receipt["scopes"][0]) is not dict
+            or set(receipt["scopes"][0]) != {
+                "kind", "tenantId", "resourceId", "policyRevision"}
+            or receipt["scopes"][0] != {
+                "kind": "client", "tenantId": binding["tenantId"],
+                "resourceId": selected_client_id,
+                "policyRevision": life.peer.binding.policy_revision}
+            or type(receipt["checkedAtMs"]) is not int
+            or not started <= receipt["checkedAtMs"] <= at
+            or type(receipt["expiresAtMs"]) is not int
+            or receipt["expiresAtMs"] <= at):
+        _deny()
+    life.check()
+
+
 class HostRequestObservation:
     """One final HTTPX request and actual CountTokens result, from separate hooks.
 
@@ -124,37 +160,10 @@ class HostRequestObservation:
         return self._binding.copy()
 
     async def _current(self, life):
-        started = time.time_ns() // 1_000_000
-        try:
-            receipt = await life._bounded(lambda: self._check_current_conversation({
-                "binding": self._binding.copy(), "requestId": self.request_id,
-                "deadlineMs": self.deadline_ms}))
-        except Exception:
-            _deny()
-        at = time.time_ns() // 1_000_000
-        if (type(receipt) is not dict or set(receipt) != {
-                "identitySha256", "binding", "scopes", "selectedClientId",
-                "contextRevision", "checkedAtMs", "expiresAtMs"}
-                or receipt["binding"] != self._binding
-                or type(receipt["identitySha256"]) is not str
-                or not _SHA256.fullmatch(receipt["identitySha256"])
-                or type(receipt["contextRevision"]) is not str
-                or not _SHA256.fullmatch(receipt["contextRevision"])
-                or receipt["selectedClientId"] != self._selected_client_id
-                or type(receipt["scopes"]) is not list or len(receipt["scopes"]) != 1
-                or type(receipt["scopes"][0]) is not dict
-                or set(receipt["scopes"][0]) != {
-                    "kind", "tenantId", "resourceId", "policyRevision"}
-                or receipt["scopes"][0] != {
-                    "kind": "client", "tenantId": self._binding["tenantId"],
-                    "resourceId": self._selected_client_id,
-                    "policyRevision": life.peer.binding.policy_revision}
-                or type(receipt["checkedAtMs"]) is not int
-                or not started <= receipt["checkedAtMs"] <= at
-                or type(receipt["expiresAtMs"]) is not int
-                or receipt["expiresAtMs"] <= at):
-            _deny()
-        life.check()
+        await require_current_conversation(
+            life, binding=self._binding, request_id=self.request_id,
+            deadline_ms=self.deadline_ms, selected_client_id=self._selected_client_id,
+            check_current_conversation=self._check_current_conversation)
 
     async def before_guard(self, request):
         if self._lifetime is not None:

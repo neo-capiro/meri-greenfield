@@ -36,3 +36,14 @@ test('router refuses a shared origin, ambiguous task network or incomplete priva
  for(const change of changes){const c=product();change(c);assert.throws(()=>compileControlTaskRouterConfiguration(c));}
  assert.equal(compileControlTaskRouterConfiguration(candidateFixture().configuration),null);
 });
+test('poststart option requires a distinct reviewed CA pair and the pre-CLI runner command',()=>{
+ const configured=product(),poststart={enabled:true,runnerCaKeyFile:'/run/meri/runner-ca-key.pem',controlCaFile:'/run/meri/control-ca.pem'};
+ configured.taskRouter.poststart=poststart;
+ configured.nativeCandidate.taskRequest.overrides.containerOverrides[0].command=['start'];
+ assert.deepEqual(compileControlTaskRouterConfiguration(configured).poststart,{runnerCaKeyFile:poststart.runnerCaKeyFile,controlCaFile:poststart.controlCaFile});
+ for(const change of [c=>c.nativeCandidate.taskRequest.overrides.containerOverrides[0].command=['conversation-runner'],
+  c=>c.taskRouter.poststart.controlCaFile=c.taskRouter.runnerCaFile,
+  c=>c.nativeCandidate.taskRequest.overrides.containerOverrides[0].environment.push({name:'TOKEN',value:'bad'})]){
+  const variant=structuredClone(configured);change(variant);assert.throws(()=>compileControlTaskRouterConfiguration(variant));
+ }
+});

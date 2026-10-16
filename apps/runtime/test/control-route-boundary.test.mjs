@@ -19,6 +19,16 @@ test('private listener excludes public paths and passes its unforgeable marker o
  assert.equal((await routes.public.handle(new Request('https://public.invalid/v1/native-task/prepare'))).status,404);
  assert.equal(seen.length,1);
 });
+test('poststart challenge is reachable only through the private listener marker',async()=>{
+ const marker=Object.freeze({}),seen=[],poststart={privateApplication:{handle(request,context){seen.push(context.ingress);return new URL(request.url).pathname==='/v1/runner-poststart/challenge'?new Response('challenge'):null;}}};
+ const routes=createControlRouteApplications({assembly:{handle(){return new Response('public');}},candidate:{handle(){return null;}},
+  poststart,privateIngress:{issue(){return marker;}}});
+ const url='https://control.invalid/v1/runner-poststart/challenge';
+ assert.equal((await routes.public.handle(new Request(url))).status,404);
+ assert.equal(seen.length,0);
+ assert.equal((await routes.private.handle(new Request(url))).status,200);
+ assert.strictEqual(seen[0],marker);
+});
 test('public listener waits for private bind; failed public bind retires the private listener',async()=>{
  const events=[],held=Promise.withResolvers(),configuration={http:{port:8080},privateHttp:{port:8082}},application={handle(){}},readiness=()=>{};
  const listen=async({configuration:configured})=>{if(configured.http.port===8082){events.push('private-open');await held.promise;return {close(){events.push('private-close');}};}events.push('public-open');throw Error('public-bind-failed');};

@@ -2,6 +2,7 @@
 import {App, Stack, CfnOutput, BootstraplessSynthesizer, aws_ecs as ecs} from 'aws-cdk-lib';
 import {Template} from 'aws-cdk-lib/assertions';
 import {parseStaticProductMaterialExpected} from '../../apps/runtime/material-init.mjs';
+import {createHash} from 'node:crypto';
 
 const ACCOUNT='967807252336', REGION='us-east-1';
 const hex64=/^[a-f0-9]{64}$/u;
@@ -33,8 +34,20 @@ function material(value,b){
  if(m.control.valueFrom===m.temporalWorker.valueFrom)fail();
  return m;
 }
+function poststart(value,b){
+ const p=record(value,['controlOrigin','controlCaFile','controlCaBase64','controlCaSha256']);
+ let u;try{u=new URL(p.controlOrigin);}catch{fail();}
+ if(u.protocol!=='https:'||u.origin!==p.controlOrigin||u.pathname!=='/'||u.search||u.hash||u.username||u.password||
+    !/^\/run\/meri\/[A-Za-z0-9._-]{1,128}$/u.test(p.controlCaFile)||
+    typeof p.controlCaBase64!=='string'||p.controlCaBase64.length<4||p.controlCaBase64.length>21848||!hex64.test(p.controlCaSha256))fail();
+ const ca=Buffer.from(p.controlCaBase64,'base64');
+ if(ca.length<1||ca.length>16384||ca.toString('base64')!==p.controlCaBase64||
+    createHash('sha256').update(ca).digest('hex')!==p.controlCaSha256||
+    b.materialDelivery.control.expected.sha256ByPath[p.controlCaFile]!==p.controlCaSha256)fail();
+ return p;
+}
 function validate(value){
- const b=record(value,['account','region','enabled','materialDelivery','clusterArn','imageUri','logGroupName','executionRoleArn','controlTaskRoleArn','runtimeUser','network','sizing','runnerSha256'],['controlTargetGroupArn','controlPrivateTargetGroupArn','sourceCommit']);
+ const b=record(value,['account','region','enabled','materialDelivery','runnerPoststart','clusterArn','imageUri','logGroupName','executionRoleArn','controlTaskRoleArn','runtimeUser','network','sizing','runnerSha256'],['controlTargetGroupArn','controlPrivateTargetGroupArn','sourceCommit']);
  if(b.account!==ACCOUNT||b.region!==REGION||b.enabled!==false||
     !/^arn:aws:ecs:us-east-1:967807252336:cluster\/[A-Za-z0-9_-]{1,255}$/u.test(b.clusterArn)||
     !new RegExp(`^${ACCOUNT}\\.dkr\\.ecr\\.${REGION}\\.amazonaws\\.com\\/[a-z0-9._/-]+@sha256:[a-f0-9]{64}$`).test(b.imageUri)||
@@ -56,21 +69,25 @@ function validate(value){
  const s=record(b.sizing,['control','temporalWorker','runner']);
  for(const value of Object.values(s))sized(value);
  material(b.materialDelivery,b);
+ poststart(b.runnerPoststart,b);
  return b;
 }
 
-const command=Object.freeze({control:['control','--config','/run/meri/control.json'],temporalWorker:['temporal-worker','--config','/run/meri/worker.json'],runner:['conversation-runner','--config','/run/meri/task.json']});
+const command=Object.freeze({control:['control','--config','/run/meri/control.json'],temporalWorker:['temporal-worker','--config','/run/meri/worker.json'],runner:['start']});
 function health(port){return {command:['CMD','node','-e',`fetch('http://127.0.0.1:${port}/health/live').then(r=>process.exit(r.status===200?0:1)).catch(()=>process.exit(1))`],interval:30,timeout:5,retries:3,startPeriod:60};}
 function task(stack,b,role,port){
  const name=role==='temporalWorker'?'temporal-worker':role;
  const delivery=role==='runner'?null:material(b.materialDelivery,b)[role];
  const portMappings=role==='control'?[{containerPort:8080,protocol:'tcp'},{containerPort:8082,protocol:'tcp'}]:[{containerPort:port,protocol:'tcp'}];
  const c={name:role==='runner'?'worker':name,image:b.imageUri,essential:true,user:b.runtimeUser,privileged:false,readonlyRootFilesystem:true,stopTimeout:60,
-  entryPoint:['node','apps/runtime/cli.mjs'],command:command[role],
-  environment:role==='runner'?[{name:'MERI_RUNNER_SHA256',value:b.runnerSha256},{name:'MERI_PRODUCT_PREVIEW_REQUIRED',value:'1'}]:[{name:'MERI_PRODUCT_PREVIEW_REQUIRED',value:'1'}],
+  entryPoint:['node',role==='runner'?'apps/runtime/runner-poststart-cli.mjs':'apps/runtime/cli.mjs'],command:command[role],
+  environment:role==='runner'?[{name:'MERI_RUNNER_SHA256',value:b.runnerSha256},{name:'MERI_PRODUCT_PREVIEW_REQUIRED',value:'1'},
+   {name:'MERI_POSTSTART_CONTROL_ORIGIN',value:b.runnerPoststart.controlOrigin},
+   {name:'MERI_POSTSTART_CA_BASE64',value:b.runnerPoststart.controlCaBase64},
+   {name:'MERI_POSTSTART_CA_SHA256',value:b.runnerPoststart.controlCaSha256}]:[{name:'MERI_PRODUCT_PREVIEW_REQUIRED',value:'1'}],
   portMappings,linuxParameters:{capabilities:{drop:['ALL']}},
   mountPoints:[{sourceVolume:'workspace',containerPath:'/workspace',readOnly:false},{sourceVolume:'tmp',containerPath:'/tmp',readOnly:false},
-   ...(delivery?[{sourceVolume:'material',containerPath:'/run/meri',readOnly:true}]:[])],
+   ...(delivery?[{sourceVolume:'material',containerPath:'/run/meri',readOnly:true}]:role==='runner'?[{sourceVolume:'material',containerPath:'/run/meri',readOnly:false}]:[])],
   ...(delivery?{dependsOn:[{containerName:'material-init',condition:'SUCCESS'}]}:{}),
   logConfiguration:{logDriver:'awslogs',options:{'awslogs-group':b.logGroupName,'awslogs-region':REGION,'awslogs-stream-prefix':`product-preview-${name}`,'mode':'blocking'}},
   ...(role==='runner'?{}:{healthCheck:health(port)})};
@@ -85,7 +102,7 @@ function task(stack,b,role,port){
   cpu:String(size.cpu),memory:String(size.memoryMiB),ephemeralStorage:{sizeInGiB:size.ephemeralStorageGiB},
   runtimePlatform:{cpuArchitecture:'X86_64',operatingSystemFamily:'LINUX'},executionRoleArn:b.executionRoleArn,
   ...(role==='control'?{taskRoleArn:b.controlTaskRoleArn}:{}),
-  volumes:[{name:'workspace'},{name:'tmp'},...(delivery?[{name:'material'}]:[])],containerDefinitions:[...(init?[init]:[]),c]});
+  volumes:[{name:'workspace'},{name:'tmp'},...(delivery||role==='runner'?[{name:'material'}]:[])],containerDefinitions:[...(init?[init]:[]),c]});
 }
 function service(stack,b,role,definition,securityGroupId){
  const name=role==='temporalWorker'?'temporal-worker':role;

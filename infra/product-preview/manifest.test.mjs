@@ -2,10 +2,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {synthesizeProductPreview} from './manifest.mjs';
 import {canonicalSha256} from '../../packages/contracts/validate.mjs';
+import {createHash} from 'node:crypto';
 
 const a='a'.repeat(64),b='b'.repeat(64),sourceCommit='c'.repeat(40);
+const controlCa=Buffer.from('synthetic reviewed public CA');
+const controlCaSha256=createHash('sha256').update(controlCa).digest('hex');
 function binding(){return {
- account:'967807252336',region:'us-east-1',enabled:false,sourceCommit,materialDelivery:delivery(),
+ account:'967807252336',region:'us-east-1',enabled:false,sourceCommit,materialDelivery:delivery(),runnerPoststart:{controlOrigin:'https://private-control.example.invalid',controlCaFile:'/run/meri/control-ca.pem',controlCaBase64:controlCa.toString('base64'),controlCaSha256},
  clusterArn:'arn:aws:ecs:us-east-1:967807252336:cluster/meri-greenfield-product-preview',
  imageUri:`967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/product-runtime@sha256:${a}`,
  logGroupName:'/meri-greenfield/product-preview/runtime',
@@ -19,7 +22,7 @@ const byType=(template,type)=>Object.values(template.Resources).filter(r=>r.Type
 const byFamily=(tasks,family)=>tasks.find(t=>t.Family===`meri-product-preview-${family}`);
 function expected(role){
  const e={schemaVersion:1,role,runtimeUser:'1000:1000',sourceCommit,imageDigest:`sha256:${a}`,
-  sha256ByPath:{[`/run/meri/${role==='control'?'control':'worker'}.json`]:'d'.repeat(64)}};
+  sha256ByPath:{[`/run/meri/${role==='control'?'control':'worker'}.json`]:'d'.repeat(64),...(role==='control'?{'/run/meri/control-ca.pem':controlCaSha256}:{})}};
  return {...e,materialContractSha256:canonicalSha256(e)};
 }
 function delivery(){return {control:{valueFrom:`arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/control-ABC123:::${'1'.repeat(32)}`,expected:expected('control')},
@@ -30,10 +33,10 @@ test('offline source has only two stopped services and three immutable role task
  assert.deepEqual(types,[...Array(2).fill('AWS::ECS::Service'),...Array(3).fill('AWS::ECS::TaskDefinition')].sort());
  const tasks=byType(template,'AWS::ECS::TaskDefinition'),services=byType(template,'AWS::ECS::Service');
  assert.equal(tasks.length,3);assert.equal(services.length,2);
- for(const [role,port,config] of [['control',8080,'control.json'],['temporal-worker',8081,'worker.json'],['runner',8080,'task.json']]){
+ for(const [role,port,config] of [['control',8080,'control.json'],['temporal-worker',8081,'worker.json'],['runner',8080,null]]){
   const task=byFamily(tasks,role),container=task.ContainerDefinitions.at(-1);
-  assert.deepEqual(container.EntryPoint,['node','apps/runtime/cli.mjs']);
-  assert.deepEqual(container.Command,[role==='runner'?'conversation-runner':role,'--config',`/run/meri/${config}`]);
+  assert.deepEqual(container.EntryPoint,['node',role==='runner'?'apps/runtime/runner-poststart-cli.mjs':'apps/runtime/cli.mjs']);
+  assert.deepEqual(container.Command,role==='runner'?['start']:[role,'--config',`/run/meri/${config}`]);
   assert.equal(task.ExecutionRoleArn,input.executionRoleArn);assert.equal(task.NetworkMode,'awsvpc');
   assert.deepEqual(task.RequiresCompatibilities,['FARGATE']);
   assert.equal(task.RuntimePlatform.OperatingSystemFamily,'LINUX');
@@ -50,7 +53,10 @@ test('offline source has only two stopped services and three immutable role task
  assert.equal(byFamily(tasks,'temporal-worker').TaskRoleArn,undefined);
  assert.equal(byFamily(tasks,'runner').TaskRoleArn,undefined);
  assert.equal(byFamily(tasks,'runner').ContainerDefinitions[0].Name,'worker','matches nativeCandidate taskRequest containerName');
- assert.deepEqual(byFamily(tasks,'runner').ContainerDefinitions[0].Environment,[{Name:'MERI_RUNNER_SHA256',Value:b},{Name:'MERI_PRODUCT_PREVIEW_REQUIRED',Value:'1'}]);
+ assert.deepEqual(byFamily(tasks,'runner').ContainerDefinitions[0].Environment,[{Name:'MERI_RUNNER_SHA256',Value:b},{Name:'MERI_PRODUCT_PREVIEW_REQUIRED',Value:'1'},
+  {Name:'MERI_POSTSTART_CONTROL_ORIGIN',Value:input.runnerPoststart.controlOrigin},
+  {Name:'MERI_POSTSTART_CA_BASE64',Value:input.runnerPoststart.controlCaBase64},
+  {Name:'MERI_POSTSTART_CA_SHA256',Value:input.runnerPoststart.controlCaSha256}]);
  assert.equal(template.Outputs.RunnerClusterArn.Value,input.clusterArn);
  assert.equal(template.Outputs.RunnerPrivateSubnetId.Value,input.network.privateSubnetId);
  assert.equal(template.Outputs.RunnerSecurityGroupIds.Value,input.network.runnerSecurityGroupIds.join(','));
@@ -95,8 +101,12 @@ test('closed versioned bundle binding emits one-shot nonroot init and task-local
  }
  const runner=byFamily(tasks,'runner');assert.equal(runner.ContainerDefinitions.length,1);
  assert.equal(runner.ContainerDefinitions[0].Secrets,undefined);
- assert.equal(runner.ContainerDefinitions[0].MountPoints.some(m=>m.SourceVolume==='material'),false);
- assert.deepEqual(runner.ContainerDefinitions[0].Environment,[{Name:'MERI_RUNNER_SHA256',Value:b},{Name:'MERI_PRODUCT_PREVIEW_REQUIRED',Value:'1'}]);
+ assert.deepEqual(runner.Volumes.map(v=>v.Name),['workspace','tmp','material']);
+ assert.deepEqual(runner.ContainerDefinitions[0].MountPoints.find(m=>m.SourceVolume==='material'),{SourceVolume:'material',ContainerPath:'/run/meri',ReadOnly:false});
+ assert.deepEqual(runner.ContainerDefinitions[0].Environment,[{Name:'MERI_RUNNER_SHA256',Value:b},{Name:'MERI_PRODUCT_PREVIEW_REQUIRED',Value:'1'},
+  {Name:'MERI_POSTSTART_CONTROL_ORIGIN',Value:input.runnerPoststart.controlOrigin},
+  {Name:'MERI_POSTSTART_CA_BASE64',Value:input.runnerPoststart.controlCaBase64},
+  {Name:'MERI_POSTSTART_CA_SHA256',Value:input.runnerPoststart.controlCaSha256}]);
  assert.equal(byType(template,'AWS::ECS::Service').every(s=>s.DesiredCount===0),true);
 });
 
@@ -111,7 +121,9 @@ test('mounted material requires complete independently pinned role envelopes and
   x=>{x.materialDelivery.control.expected.imageDigest=`sha256:${b}`;},
   x=>{x.materialDelivery.temporalWorker.expected.runtimeUser='1001:1001';},
   x=>{x.materialDelivery.temporalWorker.expected.materialContractSha256='f'.repeat(64);},
-  x=>{x.materialDelivery.control.expected.sha256ByPath['/run/meri/other']='e'.repeat(64);}
+  x=>{x.materialDelivery.control.expected.sha256ByPath['/run/meri/other']='e'.repeat(64);},
+  x=>{x.runnerPoststart.controlCaSha256='f'.repeat(64);},
+  x=>{x.runnerPoststart.controlOrigin='http://private-control.example.invalid';}
  ];
  for(const change of variants){const x=mountedBinding();change(x);assert.throws(()=>synthesizeProductPreview(x),/PRODUCT_PREVIEW_BINDING_REFUSED/);}
 });

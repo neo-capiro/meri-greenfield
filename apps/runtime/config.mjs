@@ -19,7 +19,7 @@ const taskZone=value=>typeof value==='string'&&value.length<=220&&/^(?:[a-z0-9](
 /** Static router admission is closed before startup reads material or opens a connection. */
 export function compileControlTaskRouterConfiguration(configuration){
  const route=configuration.taskRouter;if(route===undefined)return null;
- const c=own(route,['enabled','runnerCaFile','zone','vpcId']),candidate=configuration.nativeCandidate,
+ const c=own(route,['enabled','runnerCaFile','zone','vpcId'],['poststart']),candidate=configuration.nativeCandidate,
   network=candidate?.taskRequest?.networkConfiguration?.awsvpcConfiguration;
  requireValue(c.enabled===true&&configuration.privateHttp?.hostname==='0.0.0.0'&&configuration.privateHttp.port===8082&&
   configuration.http?.port===8080&&configuration.privateHttp.frontendOrigin===configuration.native?.origin&&
@@ -30,7 +30,19 @@ export function compileControlTaskRouterConfiguration(configuration){
   Array.isArray(network.securityGroups)&&network.securityGroups.length>=1&&network.securityGroups.length<=5&&
   network.securityGroups.every(value=>id('sg',value))&&new Set(network.securityGroups).size===network.securityGroups.length&&
   network.assignPublicIp==='DISABLED','TASK_ROUTER_CONFIGURATION');file(c.runnerCaFile);
- return Object.freeze({runnerCaFile:c.runnerCaFile,zone:c.zone,network:Object.freeze({
+ let poststart;
+ if(c.poststart!==undefined){
+  const p=own(c.poststart,['enabled','runnerCaKeyFile','controlCaFile']);
+  const overrides=candidate.taskRequest.overrides?.containerOverrides;
+  requireValue(p.enabled===true&&Array.isArray(overrides)&&overrides.length===1&&
+   overrides[0].name===candidate.containerName&&
+   JSON.stringify(overrides[0].command)==='["start"]'&&
+   Array.isArray(overrides[0].environment)&&overrides[0].environment.length===0,'RUNNER_POSTSTART_CONFIGURATION');
+  file(p.runnerCaKeyFile);file(p.controlCaFile);
+  requireValue(new Set([p.runnerCaKeyFile,p.controlCaFile,c.runnerCaFile]).size===3,'RUNNER_POSTSTART_CONFIGURATION');
+  poststart=Object.freeze({runnerCaKeyFile:p.runnerCaKeyFile,controlCaFile:p.controlCaFile});
+ }
+ return Object.freeze({runnerCaFile:c.runnerCaFile,zone:c.zone,...(poststart?{poststart}:{}),network:Object.freeze({
   clusterArn:candidate.taskRequest.cluster,taskDefinitionArn:candidate.taskRequest.taskDefinition,
   vpcId:c.vpcId,subnetId:network.subnets[0],securityGroupIds:Object.freeze([...network.securityGroups])
  })});

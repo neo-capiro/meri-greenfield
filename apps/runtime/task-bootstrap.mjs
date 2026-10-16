@@ -13,11 +13,11 @@ export async function waitForAdmittedTask({native,binding,versions,deadlineMs,si
 }
 
 /** Resolve only the admitted original task's private binding; no extra credential. */
-export async function loadRemoteTaskBinding({native,configuration,signal,now=Date.now,pollMs=100}){
+export async function loadRemoteTaskBinding({native,configuration,signal,poststartTls,now=Date.now,pollMs=100}){
  const deadlineMs=configuration.bootstrap.expiresAtMs;nativeSignal(signal);if(!Number.isSafeInteger(deadlineMs)||deadlineMs<=now()||!Number.isSafeInteger(pollMs)||pollMs<10||pollMs>1000)throw fault('TASK_BOOTSTRAP_REFUSED');
  const life=createOperationLifetime({now,signal,deadlineMs,errorFactory:()=>fault('TASK_BOOTSTRAP_REFUSED')});
  try{while(true){life.check();let binding;try{binding=await life.run(signal=>native.call('runner/native/bootstrap',{binding:configuration.binding,versions:configuration.versions},{signal,deadlineMs}));}catch{life.check();}
-  if(binding){const remote=own(binding,['original','preparationIntent','taskArn','controlCapabilitySha256','processOrigin','http'],['preparedKickoff','approvedReads','tls']);if(remote.original.expiresAtMs!==deadlineMs)throw fault('TASK_BOOTSTRAP_REFUSED');const {bootstrap,...rest}=configuration;return validateConfiguration({...rest,remoteTask:remote},'conversation-runner');}
+  if(binding){const remote=own(binding,['original','preparationIntent','taskArn','controlCapabilitySha256','processOrigin','http'],['preparedKickoff','approvedReads','tls']);if(remote.original.expiresAtMs!==deadlineMs||poststartTls!==undefined&&(remote.tls!==undefined||remote.processOrigin!==configuration.native.origin))throw fault('TASK_BOOTSTRAP_REFUSED');const {bootstrap,...rest}=configuration;return validateConfiguration({...rest,remoteTask:poststartTls===undefined?remote:{...remote,tls:poststartTls}},'conversation-runner');}
   await life.run(()=>new Promise(resolve=>setTimeout(resolve,pollMs)));
  }}finally{life.close();}
 }
