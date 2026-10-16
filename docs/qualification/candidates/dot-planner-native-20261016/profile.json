@@ -5,8 +5,8 @@
   "dependencies": "Existing exact package-lock installs in this candidate only; no install, borrowed node_modules, resolver shim or credential generation.",
   "stages": {
     "modules": {
-      "heapMiB": 256, "hardWallMs": 120000, "workingSetLimitMiB": 768, "expectedTests": 59,
-      "argv": ["--max-old-space-size=256", "--test", "--test-isolation=none", "--test-concurrency=1", "apps/control/objective-planner/continuation/contract.test.mjs", "apps/control/objective-planner/continuation/core-client.test.mjs", "apps/control/objective-planner/continuation/admission.test.mjs", "apps/control/conversations/test/objective-planner-dispatch.test.mjs", "apps/runtime/test/objective-planner-activities.test.mjs", "apps/runtime/test/objective-planner-startup.test.mjs", "apps/control/objective-planner/continuation/server.test.mjs", "apps/control/objective-planner/continuation/registration.test.mjs"]
+      "heapMiB": 256, "hardWallMs": 120000, "workingSetLimitMiB": 768, "expectedTests": 70,
+      "argv": ["--max-old-space-size=256", "--test", "--test-isolation=none", "--test-concurrency=1", "apps/control/objective-planner/continuation/contract.test.mjs", "apps/control/objective-planner/continuation/core-client.test.mjs", "apps/control/objective-planner/continuation/core-producer.test.mjs", "apps/control/objective-planner/continuation/admission.test.mjs", "apps/control/conversations/test/objective-planner-dispatch.test.mjs", "apps/runtime/test/objective-planner-activities.test.mjs", "apps/runtime/test/objective-planner-startup.test.mjs", "apps/control/objective-planner/continuation/server.test.mjs", "apps/control/objective-planner/continuation/registration.test.mjs"]
     },
     "workflow": {
       "heapMiB": 256, "hardWallMs": 120000, "workingSetLimitMiB": 768, "expectedTests": 8,
