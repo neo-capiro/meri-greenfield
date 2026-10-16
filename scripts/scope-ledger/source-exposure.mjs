@@ -36,7 +36,7 @@ export function reconcileSourceExposure({catalog,bindings,families,adapters,skil
   const declared=skills.filter(skill=>skill.operations.some(id=>related.includes(id))).map(skill=>skill.id).sort();
   const admitted=skills.filter(skill=>admittedSkills.includes(skill.id)&&skill.operations.some(id=>related.includes(id)&&adapterByOperation.has(id))).map(skill=>skill.id).sort();
   return {id:original.id,operation,family:binding.group,kind:productGroups.has(binding.group)?'product-or-governed':'source-read',
-   declaredBySkills:declared,sourceAdmittedSkills:admitted,generalOperations:related.filter(id=>registered.has(id)),
+   currentContractDeclared:skills.some(skill=>skill.operations.includes(operation)),declaredBySkills:declared,sourceAdmittedSkills:admitted,generalOperations:related.filter(id=>registered.has(id)),
    adapterPaths:adapterByOperation.get(operation)??[],requiredContextKeys:[...(binding.contextKeys??[])],
    state:adapterByOperation.has(operation)?'adapter-present':productGroups.has(binding.group)?'separate-product-path':'adapter-missing'};
  });
@@ -50,6 +50,8 @@ export function reconcileSourceExposure({catalog,bindings,families,adapters,skil
    generalSelectedProductStateReads:rows.filter(row=>row.kind==='product-or-governed'&&row.generalOperations.includes(row.operation)).length,
    generalHistoricalOperations:operations.filter(descriptor=>!rows.some(row=>row.operation===descriptor.operation.id)).length,
    sourceReadsWithSkillDeclarations:sourceReads.filter(row=>row.declaredBySkills.length).length,
+   sourceReadsWithCurrentContractDeclarations:sourceReads.filter(row=>row.currentContractDeclared).length,
+   sourceReadsWithHistoricalOnlySkillDeclaration:sourceReads.filter(row=>!row.currentContractDeclared&&row.declaredBySkills.length).length,
    sourceReadsWithAdmittedSkillSourceRoute:sourceReads.filter(row=>row.sourceAdmittedSkills.length).length,
    existingSourceAdaptersWithoutGeneralExposure:unexposed.length,missingSourceAdapters:missing.length,
    missingAdaptersDeclaredBySkills:missing.filter(row=>row.declaredBySkills.length).length,

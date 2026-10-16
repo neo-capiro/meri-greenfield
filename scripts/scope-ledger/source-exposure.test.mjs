@@ -34,10 +34,13 @@ test('only source-admitted original skills can establish a source route',()=>{
  for(const entry of snapshot.rows)for(const skill of entry.sourceAdmittedSkills){assert.ok(snapshot.admittedSkills.includes(skill));assert.ok(entry.declaredBySkills.includes(skill));}
  assert.ok(row('get_bill_status').declaredBySkills.length);assert.deepEqual(row('get_bill_status').sourceAdmittedSkills,[]);
  assert.ok(row('query_tasks').sourceAdmittedSkills.length);
+ assert.equal(snapshot.counts.sourceReadsWithCurrentContractDeclarations,52);assert.equal(snapshot.counts.sourceReadsWithHistoricalOnlySkillDeclaration,1);
+ assert.equal(snapshot.counts.sourceReadsWithAdmittedSkillSourceRoute,11);
 });
 test('historical action-items contract is an additional route for one selected successor',()=>{
  assert.equal(row('query_action_items').operation,'actions.query');assert.deepEqual(row('query_action_items').generalOperations,['actions.query','query_action_items']);
  assert.ok(row('query_action_items').sourceAdmittedSkills.length);assert.equal(snapshot.rows.filter(row=>row.id==='query_action_items').length,1);
+ assert.equal(row('query_action_items').currentContractDeclared,false);
 });
 test('read-only product state is counted separately; writes and other product operations stay outside meri_reads',()=>{
  assert.equal(row('list_memory_proposals').kind,'product-or-governed');assert.deepEqual(row('list_memory_proposals').generalOperations,['memory.list_own_proposals']);

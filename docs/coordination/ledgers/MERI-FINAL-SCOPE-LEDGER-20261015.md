@@ -142,7 +142,83 @@ It ran no product code, model, database, browser or deployment. "Declared" means
 | Audit declared-read equation | 47 literal legacy-name read matches + 6 renamed read IDs - 1 historical query_action_items match = 52 declared current reads; + create_word = 53 |
 | Live | 0 |
 
-### Accounting bridge (audit CSV versus p3 inventory)
+### Current selected read source exposure (16 October 2026)
+
+This is source reconciliation only. The historical proposal tables below retain their original status; current adapter/server presence is recorded here and in `scope-ledger.json.sourceExposure.rows`. No source receipt is repinned and live availability remains zero.
+
+| Measure | Current source |
+| --- | --- |
+| Selected capabilities / continued exclusions | 96 / 43 |
+| Selected source reads / separate product or governed capabilities | 82 / 14 |
+| Single meri_reads registry | 21 operations / 15 families |
+| Registry accounting | 19 selected source reads + 1 product-state read + 1 historical contract |
+| Selected source reads declared in skill manifests | 53 |
+| Selected source reads reachable through admitted skill source | 11 |
+| Existing source adapters lacking general-conversation registration | 0 |
+| Selected source reads lacking adapters | 63 (39 declared by skills; 24 without a skill declaration) |
+| Live | 0 |
+
+Only `quick_skill.relationship_brief`, `quick_skill.commitments_audit` are admitted by the original skill server. A declaration in another manifest is not source reachability. The historical `query_action_items` and successor `actions.query` represent one selected capability. `memory.list_own_proposals` is a product-state read; product writes and effects remain on their separate governed route.
+
+| Registered family | Exact operations |
+| --- | --- |
+| `action-items-complete` | `actions.query` |
+| `client-documents` | `read_client_documents` |
+| `client-knowledge-memory` | `search_memory` |
+| `client-knowledge-monday` | `read_monday_client_boards` |
+| `client-knowledge-profile` | `get_client_context` |
+| `dataset-metadata` | `list_global_datasets` |
+| `entity-candidates` | `resolve_entity` |
+| `florida-budget` | `get_florida_budget_project` |
+| `mail` | `mail.list_messages`, `mail.read_thread`, `mail.search_messages` |
+| `meeting-source` | `meeting.list_upcoming_meetings`, `meeting.query_debriefs`, `meeting.read_client_meetings` |
+| `memory-proposals` | `memory.list_own_proposals` |
+| `operational-reads` | `query_action_items`, `query_tasks` |
+| `research-portfolio` | `get_research_portfolio`, `get_research_portfolio_changes` |
+| `research-portfolio-evidence` | `get_research_evidence` |
+| `tenant-contacts` | `find_contacts` |
+
+Every canonical source adapter already present is exposed by the agreed phase-1 plus retained-three cut. The remaining selected source reads are outside that cut and lack an adapter; contract mapping alone does not implement them. Their exact unresolved families and operations are:
+
+| Missing adapter family | Selected operations |
+| --- | --- |
+| `acquisition-personnel` | `get_acquisition_person`, `search_acquisition_personnel` |
+| `bill-text` | `read_bill_text`, `search_congress_bills` |
+| `business-development` | `get_business_development_context`, `get_business_development_evidence`, `get_business_development_recent_changes` |
+| `certification-status` | `get_certification_status` |
+| `client-knowledge-search` | `query_knowledge_graph`, `search_client_knowledge` |
+| `client-registry` | `lookup_client_registry` |
+| `data-search` | `search_capiro_data` |
+| `disclosures` | `search_fara_registrations`, `search_lda_filings`, `search_sec_filings` |
+| `district-nexus` | `get_district_nexus_changes`, `get_district_nexus_context` |
+| `facility-representation` | `get_representation` |
+| `federal-legislation` | `get_bill_status`, `search_floor_votes` |
+| `federal-market` | `get_district_federal_market`, `search_contract_vehicles`, `search_federal_contract_awards`, `search_federal_subawards`, `search_procurement_forecasts` |
+| `funding-opportunities` | `get_funding_opportunity`, `get_funding_opportunity_requirements`, `get_opportunity_client_context`, `get_opportunity_government_landscape`, `search_funding_opportunities` |
+| `intelligence-summary` | `query_intelligence` |
+| `legislative-directory` | `get_committee_roster`, `list_members` |
+| `outreach-query` | `query_outreach` |
+| `pe-references` | `get_pe_bills`, `get_pe_contractors`, `get_pe_report_language` |
+| `program-elements` | `get_pe_budget_timeline`, `get_program_element`, `search_program_elements` |
+| `public-data` | `query_economic_data`, `search_federal_awards`, `search_federal_grants` |
+| `public-domain-hearings` | `search_committee_hearings` |
+| `public-domain-query` | `query_global_data` |
+| `public-reports` | `search_cbo_cost_estimates`, `search_crs_reports`, `search_gao_reports` |
+| `public-web` | `scrape_web_page`, `search_public_web` |
+| `regulatory-dockets` | `query_regulatory_dockets` |
+| `research-legal-candidates` | `search_research_sources` |
+| `research-legal-legislation` | `get_legal_reference`, `search_legislative_research` |
+| `research-legal-news` | `search_legiwatch_news` |
+| `rule-status` | `get_state_rule_status` |
+| `sam-opportunities` | `search_sam_opportunities` |
+| `state-legislation` | `get_state_legislator`, `search_state_bills` |
+| `state-status-votes` | `get_state_bill_status`, `search_state_floor_votes` |
+| `stored-intelligence` | `search_intel_articles` |
+| `tracked-bills` | `search_tracked_bills` |
+
+Canonical gateway family adapter and operation-specific trusted dispatch/current-resource context, plus an admitted exact producer/endpoint protocol. A schema/normalizer binding or skill declaration is not a producer. No guessed endpoint, default credential or permissive generic query is allocated.
+
+### Historical accounting bridge (audit CSV versus p3 inventory)
 
 | Measure | Audit | p3 | Explanation |
 | --- | --- | --- | --- |

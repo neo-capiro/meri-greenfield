@@ -50,7 +50,7 @@ function sourceExposure(snapshot) {
       ['Selected source reads / separate product or governed capabilities',`${counts.selectedSourceReads} / ${counts.selectedProductOrGoverned}`],
       ['Single meri_reads registry',`${counts.registeredGeneralOperations} operations / ${counts.registeredFamilies} families`],
       ['Registry accounting',`${counts.generalSelectedSourceReads} selected source reads + ${counts.generalSelectedProductStateReads} product-state read + ${counts.generalHistoricalOperations} historical contract`],
-      ['Selected source reads declared in skill manifests',counts.sourceReadsWithSkillDeclarations],
+      ['Selected source reads declared in skill manifests',`${counts.sourceReadsWithCurrentContractDeclarations} current contracts + ${counts.sourceReadsWithHistoricalOnlySkillDeclaration} historical-only contract`],
       ['Selected source reads reachable through admitted skill source',counts.sourceReadsWithAdmittedSkillSourceRoute],
       ['Existing source adapters lacking general-conversation registration',counts.existingSourceAdaptersWithoutGeneralExposure],
       ['Selected source reads lacking adapters',`${counts.missingSourceAdapters} (${counts.missingAdaptersDeclaredBySkills} declared by skills; ${counts.missingAdaptersWithoutSkillDeclaration} without a skill declaration)`],
