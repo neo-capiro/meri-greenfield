@@ -6,16 +6,25 @@ import { prepareMailReadContext } from './mail-read-context.mjs';
 import { normalizeActionReadRequest, prepareActionReadContext } from './action-read-context.mjs';
 import { prepareProjectionReadContext } from './projection-read-context.mjs';
 import { deny } from './operation-result.mjs';
+import {retainedReadGroup,prepareRetainedReadContext} from './retained-read-context.mjs';
 
 export function assertOperationArguments(entry, request) {
   const profile = entry.contract.binding?.dispatchProfile;
-  if (profile === undefined) return;
+  if (profile === undefined) {
+    if(retainedReadGroup(entry))try{validateShape(entry.contract.binding.group==='florida-budget'?'FloridaBudgetRequest':entry.contract.binding.input,request);}catch{deny('INVALID_ARGUMENTS');}
+    return;
+  }
   if (!['memory-proposals/1', 'mail-candidates/1', 'dataset-metadata/1', 'portfolio-evidence/1', 'actions-complete/1', 'bound-projection/1', 'client-documents/1'].includes(profile)) deny('GATEWAY_CONFIGURATION');
   try { validateShape(entry.contract.binding.input, request); } catch { deny('INVALID_ARGUMENTS'); }
 }
 
-export async function prepareOperationContext({ entry, request, identity, authorize, ports, mailPorts, lifetime, readDeadline, now, maxBytes, defaultCongress }) {
+export async function prepareOperationContext({ entry, request, identity, authorize, ports, mailPorts, retainedPorts, lifetime, readDeadline, now, maxBytes, defaultCongress }) {
   const profile = entry.contract.binding?.dispatchProfile;
+  if(retainedReadGroup(entry)){
+    const authority=await authorize(request);
+    if(canonicalSha256(authority.binding)!==canonicalSha256(identity.claims.binding)||authority.policyRevision!==identity.claims.policyRevision)deny('ACCESS_DENIED');
+    return prepareRetainedReadContext({entry,request,authority,ports:retainedPorts,lifetime,readDeadline,now,maxBytes});
+  }
   if (profile === undefined) {const normalizationContext=Object.freeze({nowMs:now(),actorId:identity.claims.binding.actorId});return Object.freeze({ authority: null,
     options: () => normalizationContext,
     handlerNormalization: entry.contract.binding?.group === 'operational-reads',

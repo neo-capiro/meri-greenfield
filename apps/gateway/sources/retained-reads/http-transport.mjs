@@ -1,0 +1,44 @@
+/** Fixed-route source transport. Missing broker stays unavailable; no ambient credentials. */
+import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
+import {createDispatchLifetime} from '../../dispatch/dispatch-lifetime.mjs';
+import {deny,safeFailure} from '../../dispatch/operation-result.mjs';
+import {ownFields,frozenData} from '../source-admission.mjs';
+import {readJsonResponse,cancelBody,responseBody} from '../json-response.mjs';
+import {credentialProof} from './call-context.mjs';
+const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
+const token=value=>typeof value==='string'&&/^[\x21-\x7e]{1,8192}$/.test(value);
+export function createRetainedHttpTransport(configuration){
+ const {origin,now,getCredentials,fetchImpl=globalThis.fetch,maxRequestMs=15000,maxResponseBytes=1048576}=
+  ownFields(configuration,['origin','now'],['getCredentials','fetchImpl','maxRequestMs','maxResponseBytes']);
+ try{const url=new URL(origin);if(typeof origin!=='string'||url.protocol!=='https:'||url.origin!==origin||url.username||url.password)deny('GATEWAY_CONFIGURATION');}
+ catch{deny('GATEWAY_CONFIGURATION');}
+ if(typeof now!=='function'||getCredentials!==undefined&&typeof getCredentials!=='function'||typeof fetchImpl!=='function'||
+  !Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>3600000||
+  !Number.isSafeInteger(maxResponseBytes)||maxResponseBytes<1||maxResponseBytes>16777216)deny('GATEWAY_CONFIGURATION');
+ return Object.freeze({async read(c,{path,method,body,serviceSecret=false}){
+  if(!getCredentials)deny('UNAVAILABLE');
+  let cutoff=Math.min(c.deadlineMs,now()+maxRequestMs);
+  const lifetime=createDispatchLifetime({deadlineMs:cutoff,now,signal:c.signal});
+  let acquired;
+  try{
+   const proof=credentialProof(c,origin),credentials=frozenData(await lifetime.run(signal=>getCredentials(Object.freeze({
+    ...proof,input:c.input,deadlineMs:cutoff,signal}))));
+   ownFields(credentials,[...Object.keys(proof),'bearerToken','expiresAtMs',...(serviceSecret?['serviceSecret']:[])]);
+   if(Object.keys(proof).some(key=>!same(credentials[key],proof[key]))||!token(credentials.bearerToken)||
+    serviceSecret&&!token(credentials.serviceSecret)||!Number.isSafeInteger(credentials.expiresAtMs)||credentials.expiresAtMs<=now())deny('ACCESS_DENIED');
+   cutoff=Math.min(cutoff,credentials.expiresAtMs);lifetime.limitDeadline(cutoff);
+   const response=await lifetime.run(async signal=>{
+    const result=await fetchImpl(new URL(path,origin).href,{method,redirect:'error',credentials:'omit',cache:'no-store',signal,
+     headers:{authorization:`Bearer ${credentials.bearerToken}`,accept:'application/json','accept-encoding':'identity',
+      'x-meri-deadline-at':String(cutoff),
+      ...(serviceSecret?{'x-internal-service-secret':credentials.serviceSecret}:{}),...(body===undefined?{}:{'content-type':'application/json'})},
+     ...(body===undefined?{}:{body:JSON.stringify(body)})});
+    acquired=result;
+    try{lifetime.check();return result;}catch(error){try{cancelBody(responseBody(result));}catch{}throw error;}
+   });
+   const value=frozenData(await readJsonResponse(response,{lifetime,maxResponseBytes:Math.min(maxResponseBytes,c.authority.claims.budgets.maxOutputBytes)}));
+   lifetime.check();return value;
+  }catch(error){throw safeFailure(error);}
+  finally{try{if(acquired)cancelBody(responseBody(acquired));}catch{}lifetime.close();}
+ }});
+}

@@ -15,7 +15,7 @@ function sameAuthority(a, b) {
   return sameBinding(a, b) && canonicalSha256(subjectSelection(a.subject)) === canonicalSha256(subjectSelection(b.subject));
 }
 
-export function createToolDispatch({ catalog, authority, budget, limits, now, newId, sourceEnabled = false, memoryContextPorts, mailContextPorts, defaultCongress }) {
+export function createToolDispatch({ catalog, authority, budget, limits, now, newId, sourceEnabled = false, memoryContextPorts, mailContextPorts, retainedContextPorts, defaultCongress }) {
   if (!catalog || typeof catalog.entry !== 'function' || typeof catalog.discoverable !== 'function' ||
       !authority || typeof authority.identify !== 'function' || typeof authority.check !== 'function' ||
       !budget || ['reserve', 'settle', 'markUncertain'].some(name => typeof budget[name] !== 'function') ||
@@ -47,7 +47,7 @@ export function createToolDispatch({ catalog, authority, budget, limits, now, ne
       const authorize = input => lifetime.run(signal => authority.check({ credential, descriptor: entry.descriptor,
         input, signal, limitDeadline: lifetime.limitDeadline }));
       const context = await prepareOperationContext({ entry, request: request.arguments, identity, authorize,
-        ports: memoryContextPorts, mailPorts: mailContextPorts, lifetime, readDeadline: () => deadlineMs,
+        ports: memoryContextPorts, mailPorts: mailContextPorts, retainedPorts:retainedContextPorts, lifetime, readDeadline: () => deadlineMs,
         now, maxBytes: limits.maxResponseBytes, defaultCongress });
       let normalized;
       try { normalized = context.normalized ?? entry.contract.normalizeInput(request.arguments, context.options(context.authority)); }
@@ -59,7 +59,7 @@ export function createToolDispatch({ catalog, authority, budget, limits, now, ne
       if (context.authority && !sameAuthority(context.authority, before)) deny('ACCESS_DENIED');
       if (now() >= before.deadlineMs) deny('DEADLINE');
       lifetime.limitDeadline(before.deadlineMs);
-      context.observeAuthority(before);
+      await context.observeAuthority(before);
       reservationId = newId();
       if (typeof reservationId !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(reservationId)) deny('GATEWAY_CONFIGURATION');
       reservationAttempted = true;
@@ -71,7 +71,7 @@ export function createToolDispatch({ catalog, authority, budget, limits, now, ne
       const effect = await inspect();
       if (!sameAuthority(before, effect) || now() >= effect.deadlineMs) deny('ACCESS_DENIED');
       lifetime.limitDeadline(effect.deadlineMs);
-      context.observeAuthority(effect);
+      await context.observeAuthority(effect);
       let outputJson;
       const projection = ['bound-projection/1','client-documents/1'].includes(entry.contract.binding?.dispatchProfile);
       try { outputJson = await lifetime.run(signal => entry.execute({ input: normalized.input,
@@ -80,6 +80,7 @@ export function createToolDispatch({ catalog, authority, budget, limits, now, ne
       catch (error) {
         const failure = safeFailure(error);
         if (['DEADLINE', 'CANCELLED'].includes(failure.message)) throw failure;
+        if(failure.message==='UNAVAILABLE'&&['research-portfolio','florida-budget'].includes(entry.contract.binding?.group))throw failure;
         deny('INVALID_RESULT');
       }
       const output = parseRawJson(outputJson, Math.min(limits.maxResponseBytes, effect.claims.budgets.maxOutputBytes), 'INVALID_RESULT');
@@ -87,7 +88,7 @@ export function createToolDispatch({ catalog, authority, budget, limits, now, ne
       const release = await inspect();
       if (!sameAuthority(effect, release) || now() >= release.deadlineMs) deny('ACCESS_DENIED');
       lifetime.limitDeadline(release.deadlineMs);
-      context.observeAuthority(release);
+      await context.observeAuthority(release);
       await context.retain({ current: release, normalized, result });
       const settlement = parseRawJson(await lifetime.run(signal => budget.settle({ reservationId, outcome: 'completed',
         outputBytes: Buffer.byteLength(outputJson, 'utf8'), resultSha256: canonicalSha256(output), signal })), limits.maxResponseBytes, 'BUDGET_UNCERTAIN');
@@ -97,6 +98,7 @@ export function createToolDispatch({ catalog, authority, budget, limits, now, ne
       const final = await inspect();
       if (!sameAuthority(effect, final) || now() >= final.deadlineMs) deny('ACCESS_DENIED');
       lifetime.limitDeadline(final.deadlineMs);
+      await context.observeAuthority(final);
       lifetime.check();
       return outputJson;
     } catch (error) {

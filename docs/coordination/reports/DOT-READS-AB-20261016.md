@@ -17,7 +17,7 @@ No `.agents/` path exists in the verified repository tree. Root `AGENTS.md`, imp
 
 ## Implemented source
 
-Twelve per-family gateway composition modules reuse existing adapters and derive operation references from the canonical catalog. The lane-owned integration module measures source manifests and returns handlers; it neither creates installation receipts nor enables source access. Fifteen operations join the three existing mail operations, across thirteen constructible families. The three retained reads remain required and unregistered pending the exact missing owners below.
+Fourteen per-family gateway composition modules derive operation references from the canonical catalog. The lane-owned integration module measures source manifests and returns handlers; it neither creates installation receipts nor enables source access. Eighteen operations join the three existing mail operations, across fifteen constructible families. The three retained reads now have the parent-authorized passive typed bridge described below; production current-context/broker bindings and native installation remain unavailable.
 
 Worker availability adds per-operation required-client checks for `meeting.read_client_meetings` and historical `query_action_items`, alongside required-client families. Personal meetings and actor-bound tasks remain constructible. Canonical schema lookup now resolves the catalog binding group (the meeting schema's ID differs from its filename), preserves `$ref` siblings and supports conservative union/array proof. Conversion that cannot prove equal or narrower admission fails `READ_SCHEMA_CONFIGURATION`; the broad envelope fallback and its dead description branch were removed. Contacts results preserve canonical bytes and hashes, with the deferred-tool notice appended separately.
 
@@ -37,6 +37,18 @@ These are working-tree development results; the sealed source candidate still re
 Follow-up source inspection found that the appended contacts guidance was outside the worker's byte accounting. Accounting now includes every model-visible text block while the canonical result digest still covers only the unchanged canonical source result. A focused negative output-bound regression was added. It and the updated 98-case focused source set are **UNRUN**, preserving the coordinator's test-stage hold. This follow-up is not covered by the earlier development passes.
 
 ## Contract, endpoint and migration requests
+
+### Retained-three source outline (parent-authorized successor)
+
+Use only the verified Core producers: `GET /api/research-portfolios/:id`, its `/changes` route and `POST /api/clio/tools/get_florida_budget_project`. The seven supplied Core handoff artifacts were SHA-verified; source reference `016e79b585c14f20d13669e13c987c01e3dd29dd` / `cd3c51e940f14e1b2a1040b0ffa445e85d68b332`. No Core source is imported or modified.
+
+Add separate research-portfolio and Florida source/family modules, reuse bounded JSON transport and dispatch lifetimes, and register only in this lane's integration module. Canonical schemas and normalization own projection/defaults. Portfolio results retain the canonical binding/subject wrapper; Florida uses the existing private dispatch lineage wrapper outside its unchanged domain DTO. Florida `asOf` labels observation time only; preserve the producer's distinct project/document/recent-amount/exact-amount/event query windows.
+
+A narrow injected current-context port must corroborate the full run binding, current subject, operation, raw-request digest, policy and source tuple before reservation/effect/release. A task-bound credential broker must bind that same tuple plus normalized input, context and recipient origin. Absent trusted ports are explicitly `UNAVAILABLE`; construction supplies no credentials, grants, qualification or availability. These local binding shapes remain proposals for production composition. No migrations or frozen-contract changes are needed for this passive source bridge.
+
+Shared edits: `dispatch/{operation-context,read-result-envelope}.mjs`, `general-reads/mount.mjs`, and the narrow `tool-dispatch.mjs` optional-port/observation seam. Budget explicitly confirmed no overlapping edits/claims before this change. All reserve/settle/uncertain logic stays with the existing owner. Startup `activity.mjs` and artifact paths remain untouched.
+
+Exact `5eec8597fe729578fb5e5117649bd2d9cd699315` / tree `f1e82ff0f74e9a9c17b52dfaa1119db7e47363bf` synthetic check: corrected saved supervisor completed **97/98 pass**, primary exit 1, cleanup 0, 3.974 seconds, observed peak working set 212,303,872 bytes (not a guarantee). The first supervisor attempt left empty logs and no execution receipt; its outcome remains **UNCERTAIN**. The failing contacts output-bound fixture spent the tested allocation while measuring its baseline; measurement is now isolated in a separate fixture. Earlier failures and exact logs remain preserved outside Git.
 
 See [DOT-READS-CONTRACT-REQUESTS-20261016.md](../proposals/DOT-READS-CONTRACT-REQUESTS-20261016.md). No migration ID is requested for these passive family modules. No preview-store source or schema is touched; that remains with the document/qualification owners.
 

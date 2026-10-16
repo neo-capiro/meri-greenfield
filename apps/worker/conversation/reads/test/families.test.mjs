@@ -13,13 +13,13 @@ import {assertCapabilityPolicy} from '../../capabilities/policy.mjs';
 import {CASES,familyCase} from '../../../../gateway/general-reads/test/family-cases.mjs';
 import {durableFamilyFixture} from '../../../../gateway/general-reads/test/durable-fixture.mjs';
 const operations=familyReads().map(r=>r.operation),policy=assertCapabilityPolicy({generalReads:true});
-test('all thirteen constructible families remain unavailable without installation or discovery',()=>{
- assert.equal(READ_FAMILY_IDS.length,13);assert.equal(operations.length,18);
+test('all fifteen constructible families remain unavailable without installation or discovery',()=>{
+ assert.equal(READ_FAMILY_IDS.length,15);assert.equal(operations.length,21);
  for(const [installation,discovery] of [[[],operations],[operations,[]],[[],[]]])
   assert.deepEqual(resolveAvailableReads({policy,installation:{operations:installation},discovery:{operations:discovery},scopes:[{kind:'client'}]}).available,[]);
  const all=resolveAvailableReads({policy,installation:{operations},discovery:{operations},scopes:[{kind:'client'}]});
- assert.equal(all.available.length,18);assert.deepEqual(all.unavailable,[]);
- assert.ok(!operations.some(o=>['get_research_portfolio','get_research_portfolio_changes','get_florida_budget_project'].includes(o.id)));
+ assert.equal(all.available.length,21);assert.deepEqual(all.unavailable,[]);
+ for(const id of ['get_research_portfolio','get_research_portfolio_changes','get_florida_budget_project'])assert.ok(operations.some(o=>o.id===id));
 });
 test('per-operation client prefilter preserves personal meetings/tasks while withholding required-client reads',()=>{
  const result=resolveAvailableReads({policy,installation:{operations},discovery:{operations},scopes:[{kind:'private-user'}]}),ids=result.available.map(r=>r.operation.id);
@@ -56,8 +56,10 @@ test('contacts canonical bytes and receipt hashes are preserved with a separate 
  }finally{await client.close();await runtime.close();}
 });
 test('contacts guidance counts toward the complete model-visible output limit',async()=>{
+ const measurement=await durableFamilyFixture(familyCase('tenant-contacts','find_contacts'));
+ const canonical=await measurement.execute('synthetic:measure-canonical');
+ // Measuring must not spend or alter the tested run's durable allocation.
  const f=await durableFamilyFixture(familyCase('tenant-contacts','find_contacts'));
- const canonical=await f.execute('synthetic:measure-canonical');
  const runtime=await createGeneralReadRuntime({binding:f.binding,scopes:f.scopes,policy,port:f.mount(),now:f.now,deadlineMs:f.deadlineMs,
   skill:{allowedOperations:[f.operation],budgets:{maxToolCalls:24,maxOutputBytes:Buffer.byteLength(canonical)}}});
  const client=new Client({name:'synthetic-output-bound',version:'1'}),[a,b]=InMemoryTransport.createLinkedPair();

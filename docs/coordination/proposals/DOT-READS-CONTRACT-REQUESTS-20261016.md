@@ -4,6 +4,16 @@ Base: `eca78d458acb46cbfd54a94cf870841d999ef6b1`. Proposals only; no frozen-cont
 
 ## R-READ-1: three retained reads need producer contracts and trusted dispatch
 
+**Successor status:** parent supplied and authorized the exact current Core producers, resolving the endpoint mapping request below. Seven SHA-verified handoff artifacts pin `neo-capiro/capiro-backend` at `016e79b585c14f20d13669e13c987c01e3dd29dd` / tree `aae45db5f9464559739fd8eb0ad6374852b1351b`, with the same mapped producer files at `cd3c51e940f14e1b2a1040b0ffa445e85d68b332`. Passive source implementation uses only `GET /api/research-portfolios/:id`, `GET /api/research-portfolios/:id/changes` (raw event-ID cursor, explicit default limit25, ceiling100) and `POST /api/clio/tools/get_florida_budget_project`. No endpoint was invented. The historical request text remains below for provenance.
+
+Remaining production allocation is the narrow trusted port binding, **not another generic endpoint wait**:
+
+- `retainedContextPorts.readCurrent` receives full current binding/subject, canonical operation, raw-request digest, policy revision, exact authorized source IDs, raw request, observation label, deadline and AbortSignal. It must establish the current conversation-to-Core principal/portfolio grant or Florida membership/feature/folder/client-wall resolution. Its bounded JSON receipt repeats the proof tuple plus canonical `context`, fresh `checkedAtMs` and `expiresAtMs`. Dispatch rechecks it before reservation/effect, release and final return. Missing port is `UNAVAILABLE` before reserve. This is a local owner proposal, not a newly accepted public wire contract.
+- The injected `getCredentials` port receives that proof plus canonical normalized-argument digest, canonical normalization context and exact HTTPS recipient origin. It returns the identical correlation tuple, current user bearer and expiry; Florida additionally requires the existing Core service-secret credential. No ambient secret is read and no new credential is created. Absent broker is explicitly `UNAVAILABLE`. Parent must bind the genuine issuer/audience/subject/tenant/conversation mapping and recipient approval; these cannot be inferred from Core's Clerk/shared-secret guards.
+- Canonical validators keep their unchanged context keys. Florida's private lineage envelope sits outside the unchanged domain output; `asOf` is an observation label, with no historical snapshot or cutoff promise. Existing independent project/document/recent-amount/exact-amount/event windows remain intact. Additional producer database columns are withheld by the declared projection, without truncating row arrays or inventing completeness.
+
+No migration, frozen profile, lockfile or Core-source edit is requested. Native installation/discovery and real current-context, broker, Core HTTPS and PostgreSQL qualification remain separate gates.
+
 The following private retrieval contracts already exist. Their presence does not establish an accepted Core HTTP endpoint or current authority producer. This repository contains no corresponding source adapter; the canonical dispatch context supplies none of their required trusted keys. Do not guess a route, send model scope as authority, or reclassify these reads as excluded.
 
 | Operation | Existing canonical input / result | Missing trusted context |

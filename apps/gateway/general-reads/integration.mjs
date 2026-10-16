@@ -18,10 +18,25 @@ import * as f8 from './families/client-knowledge-monday.mjs';
 import * as f9 from './families/dataset-metadata.mjs';
 import * as f10 from './families/memory-proposals.mjs';
 import * as f11 from './families/research-portfolio-evidence.mjs';
-const modules=[f0,f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11];
+import * as f12 from './families/research-portfolio.mjs';
+import * as f13 from './families/florida-budget.mjs';
+const modules=[f0,f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13];
 const byFamily=new Map(modules.map(f=>[f.id,f]));
 export const GENERAL_READ_ADAPTER_FAMILIES=Object.freeze(modules.map(f=>f.id));
 const SOURCE_PATHS=Object.freeze({
+ "research-portfolio": [
+  "apps/gateway/sources/research-portfolio/handler.mjs",
+  "apps/gateway/sources/retained-reads/call-context.mjs",
+  "apps/gateway/sources/retained-reads/http-transport.mjs",
+  "apps/gateway/dispatch/retained-read-context.mjs"
+ ],
+ "florida-budget": [
+  "apps/gateway/sources/florida-budget/handler.mjs",
+  "apps/gateway/sources/florida-budget/projection.mjs",
+  "apps/gateway/sources/retained-reads/call-context.mjs",
+  "apps/gateway/sources/retained-reads/http-transport.mjs",
+  "apps/gateway/dispatch/retained-read-context.mjs"
+ ],
  "action-items": [
   "apps/gateway/sources/action-items/handler.mjs",
   "apps/gateway/sources/action-items/http-adapter.mjs",

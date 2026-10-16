@@ -46,7 +46,8 @@ export async function durableFamilyFixture(scene){
   limits:{maxRequestBytes:65536,maxResponseBytes:1048576,maxRequestMs:3000,maxCleanupMs:100},producerContext:grant,
   producer:{namespace:'general-reads',executionId:'synthetic-family-run'},credential,installationOwner,
   discoveryOwner:{async readDiscoveryGrant(){return {binding,policyRevision,operations:[operation],checkedAtMs:now(),expiresAtMs:expires};}},
-  catalogJson:JSON.stringify(catalog),contracts:{resolveOperationContract},now,newId:randomUUID,sourceEnabled:true,defaultCongress:119,memoryContextPorts,...changes});
+  catalogJson:JSON.stringify(catalog),contracts:{resolveOperationContract},now,newId:randomUUID,sourceEnabled:true,defaultCongress:119,memoryContextPorts,
+  ...(scene.retainedContextPorts?{retainedContextPorts:scene.retainedContextPorts}:{}),...changes});
  return {...scene,binding,scopes,policyRevision,handlers,mount,deadlineMs:expires,
   execute:(deliveryId='synthetic:read',args=scene.arguments)=>mount().execute({operation,arguments:args,deliveryId})};
 }
