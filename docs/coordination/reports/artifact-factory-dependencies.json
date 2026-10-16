@@ -1,0 +1,130 @@
+{
+  "base": "14f0bc2e5716af7c00925d13d3365b26182c9e56",
+  "acceptedArtifactSource": "2cba7e425d7c00c904451f78f8d7577320431950",
+  "changed": [
+    {
+      "path": "apps/artifacts/preview/custody-journal.mjs",
+      "previousSha256": null,
+      "sha256": "f973334ae9b6089a81e3069e1ef127eb1add61b6861627ee6abe7db9873db3a5"
+    },
+    {
+      "path": "apps/artifacts/preview/custody-recovery.mjs",
+      "previousSha256": null,
+      "sha256": "ba2643ec89515065d4d68d87bfb9dcff7e9140291d06440a7d009a349dd4c556"
+    },
+    {
+      "path": "apps/artifacts/preview/postgres-composition.mjs",
+      "previousSha256": null,
+      "sha256": "5719672b52bcfc9d6611a6541b91c0e4868523e6cef6577463bcc04d0639b741"
+    },
+    {
+      "path": "apps/artifacts/preview/postgres-custody.mjs",
+      "previousSha256": null,
+      "sha256": "c048700a7fd917bce9e0fda252336e6ce75c4f930b2afd79a48e98037c9be1db"
+    },
+    {
+      "path": "apps/artifacts/preview/postgres-store.mjs",
+      "previousSha256": "7372fea04da244226ed24880f4468a3822c3015e5f14a0e65a4bd7c0d8972c42",
+      "sha256": "1a85d1b34bf6ba9fe04c342cde262606dcb61fc080a8798935b927269da89b04"
+    },
+    {
+      "path": "apps/artifacts/storage/allocation-lookup.mjs",
+      "previousSha256": null,
+      "sha256": "5bb1e1d0efa5e826f20f0a7aad4dc0816bceee6c26c8c4745d335fafa571d3ad"
+    },
+    {
+      "path": "apps/artifacts/storage/artifact-publication.mjs",
+      "previousSha256": null,
+      "sha256": "839f3d7af5dcc72a876446fa485af23c99211ded120a714e5a17ee350474e641"
+    },
+    {
+      "path": "apps/artifacts/storage/index.mjs",
+      "previousSha256": "21f616353be0307e30ea1e6ad605466692886d0ce3fd165213183eda78951d1a",
+      "sha256": "9868b357fc8abe8f646336b9bb6be0ee91aff046d197e5d5bde284973f6b21f4"
+    },
+    {
+      "path": "apps/artifacts/storage/postgres-publication-projection.mjs",
+      "previousSha256": null,
+      "sha256": "060109ab005899e2bce1c8f05b143dda6c8499488b1bb19563a8e74f3f3aa3eb"
+    },
+    {
+      "path": "apps/artifacts/storage/postgres-source-recovery.mjs",
+      "previousSha256": null,
+      "sha256": "7c8e0271639bd56fb27711df76cbc96aaf1f7a87b567170cf71fbbcdac5bce7d"
+    },
+    {
+      "path": "apps/artifacts/storage/postgres-versions.mjs",
+      "previousSha256": "f9692aabe43b746fbf0eb1ab9073a3b460139ed187765363839bbf4f4a67d86d",
+      "sha256": "02afaae96d2ed6002e3ad891727f40095e6ae1d7d392657595d81f49b477157f"
+    },
+    {
+      "path": "apps/artifacts/storage/s3-artifact-publication.mjs",
+      "previousSha256": null,
+      "sha256": "65101632e53df1faf20b7dbef1d483367ef156ed219e37d1612f95e6fc5292f7"
+    },
+    {
+      "path": "apps/artifacts/storage/s3-conditional-document.mjs",
+      "previousSha256": null,
+      "sha256": "bf0825837968456ce6661ea15669a0da2ba748e35c9b490831ac8004817600d8"
+    },
+    {
+      "path": "apps/artifacts/storage/s3-objects.mjs",
+      "previousSha256": "1fcd1bdf88e51042935ec57fa926431c45c9b544f6af9aa32d6b11d06a299767",
+      "sha256": "1554c7e86ff92327be026f09ebb2b97918b76bfc8f2da891a9ea462fd09a5dea"
+    },
+    {
+      "path": "apps/artifacts/storage/s3-preview-evidence.mjs",
+      "previousSha256": null,
+      "sha256": "ae4e848c80ab8beca565cc09db85a936b7d3555518f724d7a942986e61ed3da5"
+    },
+    {
+      "path": "apps/artifacts/storage/s3-sdk.mjs",
+      "previousSha256": "b92f2bad11c67397ee2cf0d8349e5863d3fe71d532f9ad6011f47c8b565f2e66",
+      "sha256": "4a9279b3831f21e8fa2fdff81f4ba87ccb65e104b822e24e9f13bebda0701d94"
+    },
+    {
+      "path": "apps/artifacts/storage/version-record.mjs",
+      "previousSha256": null,
+      "sha256": "e8ed2d9d5a43b27821217bc3d1de42d583ce02fa1162a3bc8c1328b943ad0ba3"
+    }
+  ],
+  "closure": [
+    "apps/artifacts/local-replay.mjs",
+    "apps/artifacts/preview/claim.mjs",
+    "apps/artifacts/preview/custody-journal.mjs",
+    "apps/artifacts/preview/custody-recovery.mjs",
+    "apps/artifacts/preview/postgres-composition.mjs",
+    "apps/artifacts/preview/postgres-custody.mjs",
+    "apps/artifacts/preview/postgres-store.mjs",
+    "apps/artifacts/preview/record.mjs",
+    "apps/artifacts/preview/render.mjs",
+    "apps/artifacts/storage/allocation-lookup.mjs",
+    "apps/artifacts/storage/artifact-publication.mjs",
+    "apps/artifacts/storage/boundary.mjs",
+    "apps/artifacts/storage/index.mjs",
+    "apps/artifacts/storage/postgres-publication-projection.mjs",
+    "apps/artifacts/storage/postgres-source-recovery.mjs",
+    "apps/artifacts/storage/postgres-versions.mjs",
+    "apps/artifacts/storage/s3-artifact-publication.mjs",
+    "apps/artifacts/storage/s3-conditional-document.mjs",
+    "apps/artifacts/storage/s3-objects.mjs",
+    "apps/artifacts/storage/s3-preview-evidence.mjs",
+    "apps/artifacts/storage/s3-private-bucket.mjs",
+    "apps/artifacts/storage/s3-sdk.mjs",
+    "apps/artifacts/storage/version-record.mjs",
+    "apps/artifacts/structure/file-structure.mjs",
+    "apps/artifacts/structure/ooxml.mjs",
+    "apps/artifacts/structure/pdf-objects.mjs",
+    "apps/artifacts/structure/pdf.mjs",
+    "apps/artifacts/structure/refusal.mjs",
+    "apps/artifacts/structure/xml.mjs",
+    "apps/artifacts/structure/zip.mjs"
+  ],
+  "unchangedExternalDependencies": [
+    "packages/contracts/artifacts-0.2/artifact-formats.mjs",
+    "packages/contracts/commands-0.2/execution-boundary.mjs",
+    "packages/contracts/retrieval-0.2/validate.mjs",
+    "packages/contracts/validate.mjs",
+    "packages/runtime/operation-lifetime.mjs"
+  ]
+}
