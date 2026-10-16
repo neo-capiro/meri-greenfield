@@ -4,6 +4,7 @@ import {resolve,relative} from 'node:path';
 import {createHash} from 'node:crypto';
 import {CATALOG_OPERATION_BINDINGS} from '../../packages/contracts/retrieval-0.2/catalog-validation.mjs';
 import {READ_FAMILIES} from '../../apps/worker/conversation/reads/families.mjs';
+import {canonicalSha256} from '../../packages/contracts/validate.mjs';
 import {parseAdmittedSkills} from '../general-reads/sources.mjs';
 
 const fail=message=>{throw Object.assign(Error(message),{code:'SOURCE_EXPOSURE_INVALID'});};
@@ -87,8 +88,9 @@ export function loadSourceExposure(root){
  const assets=JSON.parse(read('packages/skills/assets.json'));
  const skills=assets.assets.map(asset=>{
   const path=relative(root,resolve(root,'packages/skills',asset.manifestPath)).replaceAll('\\','/'),text=read(path);
-  if(sha(Buffer.from(text))!==asset.manifestSha256)fail(`Skill manifest pin changed ${asset.skillId}`);
-  const manifest=JSON.parse(text);return {id:manifest.skillId,operations:manifest.allowedOperations.map(operation=>operation.id)};
+  const manifest=JSON.parse(text);
+  if(canonicalSha256(manifest)!==asset.manifestSha256)fail(`Skill manifest pin changed ${asset.skillId}`);
+  return {id:manifest.skillId,operations:manifest.allowedOperations.map(operation=>operation.id)};
  });
  const admittedSkills=parseAdmittedSkills(read('apps/worker/conversation/skills/mcp.mjs'));
  return reconcileSourceExposure({catalog,bindings:CATALOG_OPERATION_BINDINGS,families:READ_FAMILIES,adapters,skills,admittedSkills,provenance});
