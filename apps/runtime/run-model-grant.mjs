@@ -1,4 +1,4 @@
-/** LOCAL PROPOSAL: a trusted durable model-grant issuer, distinct from task/control credentials. No issuance implementation here.
+/** Admit the trusted canonical durable model-grant issuer, distinct from task/control credentials. No issuance implementation here.
  * The issuer must recover the same protected material for an identical intent, and refuse changed/uncertain issuance. */
 import {createHash} from 'node:crypto';
 import {isDeepStrictEqual} from 'node:util';
