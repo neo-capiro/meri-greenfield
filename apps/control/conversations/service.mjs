@@ -7,6 +7,8 @@ import {assertSkillManifest,validateShape as retrievalShape} from '../../../pack
 import catalog from '../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
 import {assertSelectionAdmission} from '../../../packages/contracts/selected-skills/validate.mjs';
 import {assertConversationInputReceipt} from '../../../packages/contracts/conversation-input/validate.mjs';
+import {assertOriginalInputFacts,assertOriginalInputActive,assertOriginalInputAcceptance,prepareOriginalInputFacts,sameOriginalInputIdentity,originalInputReceipt} from './initial-input-facts.mjs';
+import {ProductError} from '../product-access/errors.mjs';
 import {own,bounded,same,hash,fail,uuid,validateShape,terminal} from './boundary.mjs';
 /** Cleanup-only read used by the lifecycle owner's cancellation path: the same authenticated history without the retention serving gate,
  * so trusted cancellation still stops work for a suppressed subject. Not a public intent. */
@@ -20,37 +22,54 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
  // unavailable response; an unreadable journal or a closed barrier never means "unsuppressed". Cancellation runs without the gate.
  const retentionGate=retention===undefined?undefined:own(retention,['assertServable'],['isSuppressed']);if(retentionGate!==undefined&&typeof retentionGate.assertServable!=='function')fail('CONTROL_CONFIGURATION');
  validateShape('RuntimeVersions',versions);versions=bounded(versions);fiscalCalendars=bounded(fiscalCalendars);if(['authenticateSession','readCurrentState'].some(k=>typeof sessions?.[k]!=='function')||['accept','append','read'].some(k=>typeof store?.[k]!=='function')||['start','cancel'].some(k=>typeof dispatcher?.[k]!=='function')||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('CONTROL_CONFIGURATION');
- async function operation(credential,signal,body,{cleanup=false}={}){if(typeof credential!=='string'||!credential||credential.length>8192)fail('SESSION_REFUSED');const life=createOperationLifetime({deadlineMs:now()+maxRequestMs,now,signal,errorFactory:failError});let pinned;
+ async function operation(credential,signal,body,{cleanup=false}={}){if(typeof credential!=='string'||!credential||credential.length>8192)fail('SESSION_REFUSED');const life=createOperationLifetime({deadlineMs:now()+maxRequestMs,now,signal,errorFactory:failError});let pinned,authorityExpiresAtMs=Number.MAX_SAFE_INTEGER;
   async function fresh(){const started=now();const authentication=bounded(await life.run(signal=>sessions.authenticateSession({credential,signal,deadlineMs:started+maxRequestMs})));const current=bounded(await life.run(signal=>sessions.readCurrentState({authentication,signal,deadlineMs:started+maxRequestMs})));
    if(current.authenticationSha256!==hash(authentication)||authentication.principal?.tenantId!==current.binding?.tenantId||authentication.principal?.actorId!==current.binding?.actorId||authentication.principal?.conversationId!==current.binding?.conversationId||authentication.principal?.runId!==current.binding?.runId)fail('SESSION_REFUSED');validateShape('RunBinding',current.binding);if(!Array.isArray(current.scopes)||!current.scopes.length||current.scopes.length>100)fail('SCOPE_REFUSED');
    for(const scope of current.scopes){validateShape('Scope',scope);if(scope.tenantId!==current.binding.tenantId)fail('SCOPE_REFUSED');}if(new Set(current.scopes.map(hash)).size!==current.scopes.length||new Set(current.scopes.map(s=>s.policyRevision)).size!==1)fail('SCOPE_REFUSED');
-   const at=now();for(const receipt of [authentication,current])if(!Number.isSafeInteger(receipt.checkedAtMs)||receipt.checkedAtMs<started||receipt.checkedAtMs>at||!Number.isSafeInteger(receipt.expiresAtMs)||receipt.expiresAtMs<=at)fail('SESSION_REFUSED');life.limitDeadline(Math.min(authentication.expiresAtMs,current.expiresAtMs));
+   const at=now();for(const receipt of [authentication,current])if(!Number.isSafeInteger(receipt.checkedAtMs)||receipt.checkedAtMs<started||receipt.checkedAtMs>at||!Number.isSafeInteger(receipt.expiresAtMs)||receipt.expiresAtMs<=at)fail('SESSION_REFUSED');authorityExpiresAtMs=Math.min(authorityExpiresAtMs,authentication.expiresAtMs,current.expiresAtMs);life.limitDeadline(authorityExpiresAtMs);
    const selected=bounded({binding:current.binding,scopes:current.scopes,selectedClientId:current.selectedClientId});if(pinned&&!same(pinned,selected))fail('SESSION_CHANGED');pinned??=selected;life.check();
    if(retentionGate&&!cleanup){await life.run(()=>retentionGate.assertServable({tenantId:pinned.binding.tenantId,kind:'conversation',subjectId:pinned.binding.conversationId}));life.check();}
    return pinned;
   }
-  try{const context=await fresh();const result=await body(context,life,fresh);await fresh();life.check();return result;}finally{life.close();}
+  try{const context=await fresh();const result=await body(context,life,fresh,()=>authorityExpiresAtMs);await fresh();life.check();return result;}finally{life.close();}
  }
  const event=(binding,scopes,type,data)=>({contractVersion:'0.1.0',eventId:newId(),binding,sequence:1,createdAt:new Date(now()).toISOString(),scopes,type,data});
+ function inputIntent(raw){const i=bounded(raw);own(i,['requestId','prompt'],['skill','windowRequest']);uuid(i.requestId);if(typeof i.prompt!=='string'||!i.prompt.trim()||i.prompt.length>100000)fail('INVALID_REQUEST');if(i.windowRequest)retrievalShape('WindowRequest',i.windowRequest);return i;}
+ function prepareInput(i,createdAt){let skill=null,window=i.windowRequest?resolveWindow(i.windowRequest,{referenceAt:createdAt,fiscalCalendars}):null;
+  if(i.skill){own(i.skill,['skillId','skillVersion']);const selected=selectSkill(i.skill.skillId,i.skill.skillVersion);if(!selectedSkillAdmission)assertSkillManifest(selected.manifest,catalog);if(!window)fail('SKILL_WINDOW_REQUIRED');if(!selected.manifest.subjectKinds.includes('client')||!selected.manifest.windowBases.includes(window.basis))fail('SKILL_SCOPE_REFUSED');skill=selected.pin;}
+  if(window)retrievalShape('NormalizedWindow',window);return {requestId:i.requestId,prompt:i.prompt,skill,window,windowRequest:i.windowRequest??null};
+ }
+ async function admitPrepared(request,context,life,fresh){if(!request.skill)return;const selected=selectSkill(request.skill.skillId,request.skill.skillVersion);if(!selectedSkillAdmission){assertSkillManifest(selected.manifest,catalog);return;}await fresh();const started=now();const receipt=assertSelectionAdmission(await life.run(signal=>admissionPort.admitSelection.call(selectedSkillAdmission,{binding:context.binding,request,scopes:context.scopes,selectedClientId:context.selectedClientId,signal})),{binding:context.binding,request,scopes:context.scopes,selectedClientId:context.selectedClientId,selected,started,now});life.limitDeadline(receipt.expiresAtMs);await fresh();}
+ function initialPorts(){const ports=own(store.initialInputs,['claim','read','accept']);if(Object.values(ports).some(p=>typeof p!=='function'))fail('CONTROL_CONFIGURATION');return ports;}
+ function pinOriginal(saved,context,i,life){own(saved,['facts','state']);if(!['RESERVED','ACCEPTED'].includes(saved.state))fail('INITIAL_INPUT_CORRUPT');const f=assertOriginalInputFacts(saved.facts);
+  if(!same(f.binding,context.binding)||!same(f.scopes,context.scopes)||!same(f.versions,versions)||f.selectedClientId!==context.selectedClientId||f.requestId!==i.requestId||f.inputSha256!==hash(i))fail('INITIAL_INPUT_CONFLICT');assertOriginalInputActive(f,now());life.limitDeadline(f.expiresAtMs);return f;
+ }
+ /** Only the existing store's conditional acknowledgement proves a new original allocation. No run/event/dispatcher is created. */
+ async function allocateInput({credential,input,signal}){const i=inputIntent(input);let acknowledged=false;try{return await operation(credential,signal,async(context,life,fresh,authorityExpiry)=>{
+  if(context.binding.writerFence!==1)fail('INITIAL_INPUT_CONFLICT');const ports=initialPorts(),saved=await life.run(()=>ports.read(context.binding,life.check));
+  const original=saved?pinOriginal(saved,context,i,life):null,allocatedAtMs=original?.allocatedAtMs??now(),request=prepareInput(i,new Date(allocatedAtMs).toISOString());
+  await admitPrepared(request,context,life,fresh);await fresh();
+  let facts=await prepareOriginalInputFacts({...context,versions,input:i,request,allocatedAtMs,expiresAtMs:original?.expiresAtMs??authorityExpiry()});life.check();await fresh();
+  if(!original)facts=assertOriginalInputFacts({...facts,expiresAtMs:Math.min(facts.expiresAtMs,authorityExpiry())});
+  const result=bounded(await life.run(()=>ports.claim(facts,life.check)));acknowledged=true;own(result,['allocation','state','created']);const out=originalInputReceipt(result.allocation,result.state,result.created);
+  if(!sameOriginalInputIdentity(out.allocation,facts)||saved&&out.created)fail('INITIAL_INPUT_CORRUPT');assertOriginalInputActive(out.allocation,now());life.limitDeadline(out.allocation.expiresAtMs);return out;
+ });}catch(error){if(acknowledged)throw new ProductError('INITIAL_INPUT_UNAVAILABLE','UNKNOWN');throw error;}}
  // Admission and submit share the existing immutable acceptance transaction. Only submit may dispatch.
- async function acceptInput({credential,input,signal},dispatch){const i=bounded(input);own(i,['requestId','prompt'],['skill','windowRequest']);uuid(i.requestId);if(typeof i.prompt!=='string'||!i.prompt.trim()||i.prompt.length>100000)fail('INVALID_REQUEST');
-  return operation(credential,signal,async(context,life,fresh)=>{const b=context.binding,createdAt=new Date(now()).toISOString();let skill=null,window=null;
-   if(i.windowRequest)retrievalShape('WindowRequest',i.windowRequest);
-   async function admit(request){if(!request.skill)return;const selected=selectSkill(request.skill.skillId,request.skill.skillVersion);if(!selectedSkillAdmission){assertSkillManifest(selected.manifest,catalog);return;}await fresh();const started=now();const receipt=assertSelectionAdmission(await life.run(signal=>admissionPort.admitSelection.call(selectedSkillAdmission,{binding:b,request,scopes:context.scopes,selectedClientId:context.selectedClientId,signal})),{binding:b,request,scopes:context.scopes,selectedClientId:context.selectedClientId,selected,started,now});life.limitDeadline(receipt.expiresAtMs);await fresh();}
+ async function acceptInput({credential,input,signal},dispatch){const i=inputIntent(input);
+  return operation(credential,signal,async(context,life,fresh)=>{const b=context.binding;
+   const admit=request=>admitPrepared(request,context,life,fresh);
    async function release(saved){if(!same(saved.run.binding,b))fail('STALE_WRITER');if(!same(saved.run.scopes,context.scopes))fail('SCOPE_REFUSED');await fresh();await admit(saved.request);if(dispatch&&saved.run.state==='queued')await life.run(signal=>dispatcher.start({binding:b,signal}));await fresh();await admit(saved.request);return dispatch?{run:saved.run,requestId:i.requestId,lastSequence:saved.lastSequence,replayed:saved.replayed}:assertConversationInputReceipt({run:saved.run,request:saved.request,lastSequence:saved.lastSequence,replayed:saved.replayed},i);}
    if(typeof store.findRequest!=='function')fail('CONTROL_CONFIGURATION');const retained=await life.run(()=>store.findRequest(b,i.requestId,life.check));
+   const originalPorts=b.writerFence===1?initialPorts():null,allocation=originalPorts?await life.run(()=>originalPorts.read(b,life.check)):null,original=allocation?pinOriginal(allocation,context,i,life):null;
    if(retained){const selected=i.skill?selectSkill(i.skill.skillId,i.skill.skillVersion):null;if(i.skill)own(i.skill,['skillId','skillVersion']);if(!same(retained.run.scopes,context.scopes))fail('SCOPE_REFUSED');if(!same(retained.run.versions,versions)||retained.request.prompt!==i.prompt||!same(retained.request.windowRequest??null,i.windowRequest??null)||!same(retained.request.skill,selected?.pin??null))fail('REQUEST_REPLAY_REFUSED');return release(retained);}
-
-   if(i.windowRequest)window=resolveWindow(i.windowRequest,{referenceAt:createdAt,fiscalCalendars});
-   if(i.skill){own(i.skill,['skillId','skillVersion']);const selected=selectSkill(i.skill.skillId,i.skill.skillVersion);if(!selectedSkillAdmission)assertSkillManifest(selected.manifest,catalog);if(!window)fail('SKILL_WINDOW_REQUIRED');if(!selected.manifest.subjectKinds.includes('client')||!selected.manifest.windowBases.includes(window.basis))fail('SKILL_SCOPE_REFUSED');skill=selected.pin;}
-   if(window)retrievalShape('NormalizedWindow',window);
-   const request={requestId:i.requestId,prompt:i.prompt,skill,window,windowRequest:i.windowRequest??null};const run={binding:b,state:'queued',scopes:context.scopes,createdAt,policyRevision:context.scopes[0].policyRevision,versions};
+   if(originalPorts&&!original)fail('INITIAL_INPUT_REQUIRED');const createdAt=new Date(original?.allocatedAtMs??now()).toISOString(),request=prepareInput(i,createdAt),run={binding:b,state:'queued',scopes:context.scopes,createdAt,policyRevision:context.scopes[0].policyRevision,versions};
+   if(original)assertOriginalInputAcceptance(original,{run,request,selectedClientId:context.selectedClientId});
    const conversation={conversationId:b.conversationId,owner:{tenantId:b.tenantId,actorId:b.actorId},scopes:context.scopes,createdAt,policyRevision:run.policyRevision};
    await admit(request);
    // A session bound to a reserved next run accepts its new prompt through the next-run journal: same conversation, continued sequence base, never the old prompt.
-   const reservation=typeof store.nextRuns?.readTarget==='function'?await life.run(()=>store.nextRuns.readTarget(b,life.check)):null;
+   const reservation=!originalPorts&&typeof store.nextRuns?.readTarget==='function'?await life.run(()=>store.nextRuns.readTarget(b,life.check)):null;
    await fresh();
-   const saved=await life.run(()=>(reservation?store.nextRuns.accept:store.accept)({conversation,run,request,event:event(b,context.scopes,'run.status',{state:'queued',reasonCode:null})},life.check));
+   const saved=await life.run(()=>(originalPorts?originalPorts.accept:reservation?store.nextRuns.accept:store.accept)({conversation,run,request,event:event(b,context.scopes,'run.status',{state:'queued',reasonCode:null}),...(originalPorts?{selectedClientId:context.selectedClientId}:{})},life.check));
    // Durable request precedes Temporal start. A repeated submission recovers a lost start acknowledgement using the exact workflow ID.
    return release(saved);});
  }
@@ -66,6 +85,6 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
   await fresh();const result=await life.run(()=>store.append(binding,e,life.check,c.scopes));if(!same(result.scopes,c.scopes))fail('SCOPE_REFUSED');await fresh();return result;
  });}
  async function historyForCleanup({credential,after=0,limit=100,signal}){return operation(credential,signal,async(c,life)=>{const result=await life.run(()=>store.read(c.binding,{after,limit},life.check));if(!same(result.run.scopes,c.scopes))fail('SCOPE_REFUSED');return result;},{cleanup:true});}
- return Object.freeze({submit,admitInput,history,cancel,loadForExecution,publish,publishSelectedOutput,[cleanupRead]:historyForCleanup});
+ return Object.freeze({submit,admitInput,allocateInput,history,cancel,loadForExecution,publish,publishSelectedOutput,[cleanupRead]:historyForCleanup});
 }
 function failError(code){return Object.assign(new Error(code),{code});}
