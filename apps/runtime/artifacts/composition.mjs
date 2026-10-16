@@ -4,11 +4,12 @@ import {artifactValidators as v} from '../../../packages/contracts/retrieval-0.2
 import {createS3ArtifactObjects,createPostgresArtifactVersions,createPrivateBucketVerifier} from '../../artifacts/storage/index.mjs';
 import {createLocalArtifactExecutor} from '../../artifacts/local-executor.mjs';
 import {admittedConverter,isRendererPort} from '../../artifacts/renderer.mjs';
-export function createRuntimeArtifactStorage(options){const c=own(options,['s3','versionsPool','now'],['maxRequestMs','maxBytes']);
+export function createRuntimeArtifactStorage(options){const c=own(options,['s3','versionsPool','now'],['maxRequestMs','maxBytes','journal','publication','retention','tenantId']);
  const s3=own(c.s3,['client','bucket','prefix','expectedBucketOwner','kmsKeyId']);
  const deadline=c.maxRequestMs===undefined?{}:{maxRequestMs:c.maxRequestMs},privacy=createPrivateBucketVerifier({client:s3.client,bucket:s3.bucket,expectedBucketOwner:s3.expectedBucketOwner,now:c.now,...deadline});
  // verifyPrivate is the read-only bucket privacy proof the download-link readiness gate requires (the `artifactStore` product port).
- return Object.freeze({objects:createS3ArtifactObjects({...s3,now:c.now,...deadline,...(c.maxBytes===undefined?{}:{maxBytes:c.maxBytes})}),versions:createPostgresArtifactVersions({pool:c.versionsPool,now:c.now,...deadline}),verifyPrivate:input=>privacy.verifyPrivate(input)});}
+ const publication=Object.fromEntries(['journal','publication','retention','tenantId'].filter(k=>c[k]!==undefined).map(k=>[k,c[k]]));
+ return Object.freeze({objects:createS3ArtifactObjects({...s3,now:c.now,...deadline,...(c.maxBytes===undefined?{}:{maxBytes:c.maxBytes})}),versions:createPostgresArtifactVersions({pool:c.versionsPool,now:c.now,...deadline,...publication}),verifyPrivate:input=>privacy.verifyPrivate(input)});}
 /** The fixed generator owner. PDF conversion is bound only through a qualified-renderer port (`../../artifacts/renderer.mjs`);
  * a raw `officeTransformer` is refused, and an absent or unavailable port leaves PDF fail-closed (ARTIFACT_RENDERER_UNAVAILABLE). */
 export function createFixedRuntimeArtifactExecutor(configuration){const {renderer,...c}=own(configuration,['pythonExecutable','nodeExecutable','pptxModulePath','tempRoot'],['timeoutMs','renderer']);
