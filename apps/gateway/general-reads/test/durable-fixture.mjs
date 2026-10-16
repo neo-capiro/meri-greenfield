@@ -43,12 +43,13 @@ export async function durableFamilyFixture(scene){
   async authorizeSources({sourceRequirements}){return JSON.stringify({sourceIds:[...new Set(sourceRequirements.map(s=>s.sourceId))],enabled:true,policyRevision,checkedAtMs:now()});}};
  const retained=new Map(),memoryContextPorts={async loadPrevious({key}){return JSON.stringify({record:retained.get(canonicalSha256(key))??null,checkedAtMs:now()});},
   async retain({record}){retained.set(canonicalSha256(record.key),structuredClone(record));return JSON.stringify({decision:'retained',keySha256:canonicalSha256(record.key),previousSha256:record.previousSha256,checkedAtMs:now()});}};
- const mount=(changes={})=>createGeneralReadGatewayMount({pool,allocationJson,authority:createCurrentToolAuthority({ports,now,maxFactBytes:1048576}),
+ const gatewayConfiguration={pool,allocationJson,authority:createCurrentToolAuthority({ports,now,maxFactBytes:1048576}),
   limits:{maxRequestBytes:65536,maxResponseBytes:1048576,maxRequestMs:3000,maxCleanupMs:100},producerContext:grant,
   producer:{namespace:'general-reads',executionId:'synthetic-family-run'},credential,installationOwner,
   discoveryOwner:{async readDiscoveryGrant(){const r={binding,policyRevision,operations:[operation],checkedAtMs:now(),expiresAtMs:expires};state.discoveryMutator?.(r);return r;}},
   catalogJson:JSON.stringify(catalog),contracts:{resolveOperationContract},now,newId:randomUUID,sourceEnabled:true,defaultCongress:119,memoryContextPorts,
-  ...(scene.retainedContextPorts?{retainedContextPorts:scene.retainedContextPorts}:{}),...changes});
- return {...scene,binding,scopes,policyRevision,handlers,mount,deadlineMs:expires,installationOwner,allocationJson,grant,
+  ...(scene.retainedContextPorts?{retainedContextPorts:scene.retainedContextPorts}:{})};
+ const mount=(changes={})=>createGeneralReadGatewayMount({...gatewayConfiguration,...changes});
+ return {...scene,binding,scopes,policyRevision,handlers,mount,deadlineMs:expires,installationOwner,allocationJson,grant,gatewayConfiguration,
   execute:(deliveryId='synthetic:read',args=scene.arguments)=>mount().execute({operation,arguments:args,deliveryId})};
 }
