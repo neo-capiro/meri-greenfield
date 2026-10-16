@@ -1,0 +1,12 @@
+// Synthetic Core622 receipt data. These are not real application receipts or credentials.
+import {hash,requestId,expectedSource} from '../identity.mjs';
+export const id=n=>`${String(n).padStart(8,'0')}-0000-4000-8000-000000000000`;
+export const now=1792108800000,at=new Date(now).toISOString(),clone=structuredClone;
+export function fixture(){
+ const canonical={canonicalPlanId:id(1),tenantId:id(2),clientId:id(3),objectiveId:id(4),canonicalStrategyId:id(5),canonicalProjectId:id(6),bindingVersion:1,epoch:1,requestedIntentId:id(7),requestedObjectiveRevisionId:id(8),requestedObjectiveVersion:1,snapshotHash:'a'.repeat(64)};
+ const receipt={schemaVersion:1,requestId:id(9),source:{clientId:id(3),objectiveId:id(4),objectiveVersion:1,objectiveRevisionId:id(8)},context:{reobservedAt:at,state:'complete',packetId:'synthetic-packet',compiledAt:at,sourceDigest:'b'.repeat(64),coverageDigest:'c'.repeat(64),inputDigest:'d'.repeat(64),issues:[]},result:{strategyId:id(5),strategyVersionId:id(10),savedAt:at,sourceDigest:'b'.repeat(64),contextPacketId:'synthetic-packet',coverageDigest:'c'.repeat(64),inputDigest:'d'.repeat(64)},failure:null};
+ const work={canonical,actorId:'user_synthetic',generationJobId:id(11),generationRequestId:id(9),strategyId:id(5),strategyVersionId:id(10),strategyReceiptSha256:hash(receipt),snapshotDigest:'e'.repeat(64),plannerRequestId:requestId({canonical,actorId:'user_synthetic'})};
+ const output=n=>({availability:'available',id:id(n),createdVersion:1,currentVersion:1});
+ const observation={requestId:work.plannerRequestId,status:'prepared_with_issues',replayed:false,recordedAt:at,observedAt:at,source:expectedSource(work),projects:[{groupKey:'default',name:'Synthetic plan',originalNodeIds:[id(20),id(21)],output:output(30)}],tasks:[{sourceNodeId:id(20),originalGroupKeys:['default'],currentGroupKeys:['default'],output:output(31)},{sourceNodeId:id(21),originalGroupKeys:['default'],currentGroupKeys:['default'],output:output(32)}],context:[{sourceNodeId:id(22),kind:'gate',title:'Synthetic approval',note:null,dependsOnSourceNodeIds:[]}],edges:[{sourceNodeId:id(21),dependsOnSourceNodeId:id(22),disposition:'context_only'}],exclusions:[],issues:[{code:'CONTEXT_ONLY_DEPENDENCY',sourceNodeIds:[id(21),id(22)],message:'Synthetic context dependency'}],counts:{savedNodes:3,actionableNodes:2,contextNodes:1,archivedNodes:0,createdProjects:1,createdTasks:2}};
+ return clone({canonical,receipt,work,observation});
+}
