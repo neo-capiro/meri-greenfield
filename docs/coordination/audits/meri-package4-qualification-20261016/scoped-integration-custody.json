@@ -2109,10 +2109,35 @@
         }
       ],
       "disposition": "Exact parent scoped acceptance; native/provider/deployed qualification remains HOLD"
+    },
+    {
+      "label": "same-exclusive settled-pass recovery prerequisites continuation",
+      "reviewedSource": "4480799634b80016d7c79f83bbf1bb3e8f5761d0",
+      "predecessor": "14f0bc2e5716af7c00925d13d3365b26182c9e56",
+      "integratedCommit": "15cb46af5ba734373426111724f84895e0662900",
+      "integratedTree": "d29199707962858b409d74861bfbbc1b1d59d35d",
+      "files": [
+        {
+          "path": "apps/control/retention/reconciliation.mjs",
+          "acceptedBlob": "4d1dbdeaaec3a51bd2f42b3a73b3330fb827395b",
+          "integratedBlob": "4d1dbdeaaec3a51bd2f42b3a73b3330fb827395b"
+        },
+        {
+          "path": "apps/control/retention/startup.mjs",
+          "acceptedBlob": "ed043d5c021fcb36cb55c45c9f6613b0bc8752f1",
+          "integratedBlob": "ed043d5c021fcb36cb55c45c9f6613b0bc8752f1"
+        },
+        {
+          "path": "apps/control/retention/test/recovery-continuation.test.mjs",
+          "acceptedBlob": "ab86b65a7f7c679d826d98090a1958d94b88c548",
+          "integratedBlob": "ab86b65a7f7c679d826d98090a1958d94b88c548"
+        }
+      ],
+      "disposition": "Parent scoped SOURCE ACCEPT after13 exact-source +3 independent controls; author44/44 attributed, not rerun here"
     }
   ],
-  "sourceHead": "054285efc19038c8c6306a47599749785cab241d",
-  "sourceTree": "6464485b7cec02342b8fc352d5265d126a633165",
+  "sourceHead": "15cb46af5ba734373426111724f84895e0662900",
+  "sourceTree": "d29199707962858b409d74861bfbbc1b1d59d35d",
   "validation": {
     "command": "node --max-old-space-size=128 --test --test-isolation=none --test-concurrency=1 --test-timeout=15000 --test-reporter=tap scripts/qualification/assembled-image/source-proof.test.mjs apps/control/retention/test/watermark-migration-source.test.mjs",
     "node": "v24.19.0",
@@ -2275,8 +2300,8 @@
     "tapSha256": "0812abe1d0194c20127453194d3984578c1db62f12d8c248ee8a464d59aeac35"
   },
   "combinedCheckpoint": {
-    "sourceHead": "054285efc19038c8c6306a47599749785cab241d",
-    "sourceTree": "6464485b7cec02342b8fc352d5265d126a633165",
+    "sourceHead": "15cb46af5ba734373426111724f84895e0662900",
+    "sourceTree": "d29199707962858b409d74861bfbbc1b1d59d35d",
     "sharedAuthoringBase": "14f0bc2e5716af7c00925d13d3365b26182c9e56",
     "classification": "Exact accepted source/artifact integration; overall runtime/image/release HOLD",
     "typedSource": "f32c9fa750da6c4df31930d97b041008289c2d8b",
@@ -2287,10 +2312,10 @@
     "mountedInput": "2/2 actual assembler scripted-resource controls",
     "excluded": [
       "pending Planner continuation source/review",
-      "pending same-exclusive recovery callback/runtime factory composition",
       "real Core producer-consumer/trust/install qualification",
       "genuine pre-input fresh-allocation receipt",
-      "full UI build/browser/image/live release"
+      "full UI build/browser/image/live release",
+      "Startup same-journal runtime factory/readiness composition still in source review; accepted callback integrated"
     ]
   },
   "combinedLoading": {
@@ -2335,11 +2360,12 @@
     "ownedProcess": "NONE",
     "inputCorrection": "5/5 primary0/cleanup0, no children; old failure retained",
     "coreRetainedAuth": "Actual184=182pass2fail, primary1/cleanup0/PID1536 exited, sources unchanged; owner fixture correction pending, no automatic retry",
-    "UI033": "Exact parent384/768onefork5-file120s grant; next serialized release subject fresh >=2.5GiB commit and1GiB floor",
-    "fullBuildBrowser": "Deferred to coherent input UI candidate; actual capacity/approved shipping path pending, no OOM or new credentials"
+    "UI033": "TERMINAL65/65 in5files/14nested suites, primary0/PID27064 exited,11.280s, sampled aggregate220823552B, ownedcleanupverified, source033/lockunchanged; no automatic nextstage",
+    "fullBuildBrowser": "Deferred to coherent input UI candidate; actual capacity/approved shipping path pending, no OOM or new credentials",
+    "nextStages": "Core reviewed fixture-only targeted36 source/runtime binding pending; UI845 exact locked materialization/changed SDK+UI checks profile pending, no stage launched"
   },
   "ownershipFollowup": {
-    "Artifact": "Additive startup/reconciliation callback only on published14f exact855 blobs;44807996 pending independent review.335 accepted/integrated.",
+    "Artifact": "44807996 accepted3source/test paths integrated; runtime factory/control/readiness remains Startup-owned on reachable14f authoring basis",
     "Startup": "Runtime/control/readiness/canonical artifact recovery factory and genuine pre-input allocation proof; uses reachable14f authoring basis, no older2cba retention merge.",
     "Reads": "Retained074 consumer integrated; CorePR35 exact compatibility and real trust pending. Scope ledger63missing adapters remains full selected scope.",
     "Planner": "New ecdd/a503/105/924 chain source review and actual typed Strategy custody/semantic sourceAdmission compiler bridge pending; no second model/0012."
@@ -2492,5 +2518,16 @@
     "command": "git push origin dot/meri-reviewed-integration-20261016",
     "denial": "Pushing the local integration commit to a remote branch is an external commitment, and the transcript authorizes relaying the pin but does not clearly authorize this exact remote mutation.",
     "pendingAction": "Explicit authorization for final exact fast-forward after local evidence seal; no alternate publisher/export or forced update"
+  },
+  "typedStrategyOwnership": {
+    "sourceBase": "14f0bc2e5716af7c00925d13d3365b26182c9e56",
+    "BudgetPlanner": [
+      "options.mjs outputFormat assignment only",
+      "activity.mjs terminal typed capture before existing captureCompletion, preserve finally/READS/browser/model",
+      "existing completion-journal.mjs +completion-capture.mjs immutable expected typed-file/rawSHA/execution-selection pin",
+      "new cohesive worker/runtime objective-generation helpers and retained PUBLISHED reader"
+    ],
+    "Startup": "compilePreparedRunFacts/readIssuance protected objectiveGeneration validation and actual startup binding; preserve accepted7dd issuer blob a89195ac852791940422a4cf1f2b0fbb3468829c",
+    "constraints": "One SDK query, same completion storage/table/transaction, no SQL/new journal/0012, actual accepted Core payload/source association only; runtime SDK/heavy tests pending exact source/profile"
   }
 }

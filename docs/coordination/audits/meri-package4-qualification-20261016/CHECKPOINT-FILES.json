@@ -1,6 +1,6 @@
 {
-  "source": "054285efc19038c8c6306a47599749785cab241d",
-  "sourceTree": "6464485b7cec02342b8fc352d5265d126a633165",
+  "source": "15cb46af5ba734373426111724f84895e0662900",
+  "sourceTree": "d29199707962858b409d74861bfbbc1b1d59d35d",
   "files": [
     {
       "path": ".gitattributes",
@@ -451,8 +451,8 @@
     },
     {
       "path": "scoped-integration-custody.json",
-      "sha256": "737db9b78c2ccd0fd3c9ebf7d6adae634061880ca68e137713b269fa84abcc26",
-      "bytes": 117997
+      "sha256": "391a085a3d6462b50c124b748bb9d92095d70d21172165afdb879dfe3fa2ed64",
+      "bytes": 120418
     },
     {
       "path": "scoped-integration-proof.tap",
