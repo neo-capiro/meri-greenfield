@@ -11,7 +11,7 @@ function setup({authorize=authority,resolve=f=>f.context}={}){
  const lifecycle={calls:[],async execute(r){lifecycle.calls.push(r);return {operation:r.intent.operation,intentId:r.intent.intentId,generation:r.intent.generation,projection:r.intent.projection,outcome:'ACKNOWLEDGED',physicalStopProven:false};},async list(){throw Error('not used');}};
  const tool=createScheduleToolInterface({lifecycle,validators,authorize,clock:()=>NOW});const resolved=[];
  const preparers=SCHEDULE_INTENT_OPERATIONS.map(operation=>createScheduleIntentPreparer({operation,tool,binding,resolveContext:async({operation:op,request})=>{const f=fixture(op);resolved.push(request);return resolve(f);}}));
- return {lifecycle,resolved,...mount({binding,preparers,now:()=>NOW})};
+ return {lifecycle,resolved,...mount({binding,preparers,now:()=>NOW,scopes:[{tenantId:'tenant',kind:'client',resourceId:'client',policyRevision:'p1'}]})};
 }
 for(const op of SCHEDULE_INTENT_OPERATIONS)test(`${op}: prepare-only proposal under current authority, no lifecycle mutation`,async()=>{
  const s=setup(),out=await s.mount.prepare({operation:{id:op,version:'0.2.0'},arguments:fixture(op).request,deliveryId:delivery(1)});

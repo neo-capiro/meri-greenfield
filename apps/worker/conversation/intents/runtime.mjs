@@ -53,7 +53,7 @@ export async function createIntentRuntime(configuration){
   let offered;try{offered=await read(signal);}catch{if(signal.aborted)throw fault('CANCELLED');return false;}
   return gates(offered).some(r=>key(r.operation)===key(operation));
  };
- const server=createIntentServer({available,binding,...(c.expectedSessionId?{expectedSessionId:c.expectedSessionId}:{}),timeoutMs,deadlineMs:c.deadlineMs,now:c.now,stillAvailable,
+ const server=createIntentServer({available,binding,scopes,...(c.expectedSessionId?{expectedSessionId:c.expectedSessionId}:{}),timeoutMs,deadlineMs:c.deadlineMs,now:c.now,stillAvailable,
   prepare:call=>port.prepare.call(c.port,call)});
  return Object.freeze({available:Object.freeze(available.map(r=>r.operation)),
   sdkOptions:Object.freeze({mcpServers:Object.freeze({[INTENT_SERVER_NAME]:server.server}),allowedTools:server.allowedTools,canUseTool:server.canUseTool,hooks:server.hooks}),

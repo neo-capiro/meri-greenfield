@@ -15,7 +15,7 @@ const binding={tenantId:'tenant',actorId:'actor',conversationId:id(1),runId:id(2
 async function real(t){
  const f=await createLocalDocumentFixture({mode:'synthetic-local',pythonExecutable:python});t.after(()=>f.close());
  const writes={execute:(call,signal)=>createPostgresArtifactService(f.artifactOptions).execute(call,f.credential,signal)};
- const b=f.artifactOptions.context.binding;return {f,...mount({binding:b,preparers:[createDocumentIntentPreparer({descriptor:f.artifactOptions.descriptor,writes,binding:b})],now:f.now})};
+ const b=f.artifactOptions.context.binding;return {f,...mount({binding:b,preparers:[createDocumentIntentPreparer({descriptor:f.artifactOptions.descriptor,writes,binding:b})],now:f.now,scopes:f.artifactOptions.context.scopes})};
 }
 test('create_word prepares an immutable draft version once; the same delivery is the owner\'s own replay',async t=>{
  const s=await real(t),out=await s.mount.prepare({operation:WORD,arguments:spec,deliveryId:delivery(1)});

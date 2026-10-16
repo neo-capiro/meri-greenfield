@@ -36,7 +36,7 @@ const deny=(/** @type {string} */reason)=>({hookSpecificOutput:{hookEventName:/*
 /** @typedef {{id:string,version:string}} OperationRef */
 /** @typedef {{deliveryId:string,operation:OperationRef,argumentsSha256:string,outcome:'prepared'|'unknown',status:'approval_required'|'draft'|null,reference:string|null,resultSha256:string|null}} IntentReceipt */
 /**
- * @param {{available:readonly import('./catalog.mjs').IntentRow[],binding:any,expectedSessionId?:string,maxCalls?:number,timeoutMs:number,deadlineMs:number,now:()=>number,
+ * @param {{available:readonly import('./catalog.mjs').IntentRow[],binding:any,scopes:any[],expectedSessionId?:string,maxCalls?:number,timeoutMs:number,deadlineMs:number,now:()=>number,
  *  stillAvailable:(operation:OperationRef,signal:AbortSignal)=>Promise<boolean>,
  *  prepare:(call:{operation:OperationRef,arguments:unknown,deliveryId:string,signal:AbortSignal})=>Promise<unknown>}} c
  */
@@ -73,7 +73,7 @@ export function createIntentServer(c){
    if(!await life.run(signal=>c.stillAvailable(row.operation,signal)))throw fault('UNAVAILABLE');
    started=true;
    const result=await life.run(signal=>c.prepare({operation:row.operation,arguments:args,deliveryId:entry.deliveryId,signal}));life.check();
-   const prepared=assertPreparedResult(row.owner,row.operation,result,binding),json=JSON.stringify(prepared.value);
+   const prepared=assertPreparedResult(row.owner,row.operation,result,binding,{scopes:c.scopes,nowMs:c.now()}),json=JSON.stringify(prepared.value);
    receipts.push(Object.freeze({deliveryId:entry.deliveryId,operation:row.operation,argumentsSha256:entry.argumentsSha256,outcome:'prepared',status:prepared.status,reference:prepared.reference,resultSha256:canonicalSha256(prepared.value)}));
    return preparedResult(json,prepared.status);
   }catch(error){
