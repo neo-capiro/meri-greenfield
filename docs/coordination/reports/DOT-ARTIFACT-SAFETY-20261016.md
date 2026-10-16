@@ -97,3 +97,46 @@ and current-authority revocation before registration.
 The existing mismatched-attachment test now expects durable UNKNOWN after claim
 instead of pre-claim refusal, while still proving zero final source save. The
 real host broker, external upload and actual filing route remain UNRUN/unwired.
+
+## R4-DOC-2 source-local repair, deployed design remains held
+
+Preview publication now requires an atomic durable claim before rendering/put,
+and persists exact returned object-version custody before immutable publication.
+Concurrent service instances cannot put twice. Reopen retains the original
+allocation; UNKNOWN never dispatches again. Lost publication ACK recovers the
+committed record through current artifact authority. Potential orphans retain
+their logical object ID before put; known orphans retain the exact ObjectReference.
+`custody()` exposes both to the trusted retention/recovery owner. It is not yet
+consumed by a deployed retention inventory. No claimed or orphan state expires
+into an automatic retry. Existing records remain behind canonical artifact reads.
+
+The local store uses exclusive directories, synced temporary files and rename;
+borrowed reopened roots are preserved on dispose. Both document and runtime
+preview wrappers retain the new claim/object methods under their existing
+current-owner checks. Legacy record-only configurations fail closed. The new
+claim packet/port is explicitly a local proposal, never a frozen wire contract.
+
+Synthetic PDF/artifact/object ports, real source-local store, and method-plumbing
+controls: **7 pass, 0 fail, 0 skip**, exit 0. Exact-base service+local store
+negative: **0 pass, 1 fail**, because concurrent publications put **2 objects
+instead of 1**, before their conflicting commits. The fixed test puts one.
+Other cases: lost put ACK/reopen, exact known-orphan version, commit ACK recovery,
+revoked replay, revocation during claim, and refusal of record-only ports.
+No generator or actual renderer ran. All fixture directories were removed.
+
+Windows sandbox Temp denied hard links and rename during initial local-store
+verification. Atomic directory exclusion supports Windows without hard links;
+owned workspace fixtures then passed. A method-configuration test initially
+expected a public error property instead of the existing private error/message
+boundary; only its assertion was corrected.
+
+The older generator/native preview suite was adapted for claim/UNKNOWN semantics
+but is **UNRUN** under the current source-only admission. A failed render now
+retains an uncertain durable claim and its original cause; it does not retry.
+Its prior unsafe retry-after-post-write-failure assertion now refuses the held
+attempt and uses a separate fresh version for record-corruption checks.
+
+Exact store/schema/retention mapping proposal:
+`docs/coordination/proposals/DOT-PREVIEW-CUSTODY-20261016.md`.
+Artifacts migration 0003 remains AUTHORING HOLD, as do conversation row-target
+0014 and receipt-retention changes. No SQL for those paths was authored.

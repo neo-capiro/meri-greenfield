@@ -21,7 +21,7 @@ async function setup(t,{renderer='synthetic',maxPreviewBytes}={}){
  const h=await artifactHarness(t,{converter:syntheticConverter()}),office=syntheticOfficeConverter();
  const port=renderer==='synthetic'?createRendererPort({admission:syntheticAdmission(),transformer:office}):renderer==='real'?createLibreOfficeRendererPort({admission:syntheticAdmission({executable:soffice}),executable:soffice,tempRoot:h.root}):renderer;
  const previews=await createLocalPreviewStore({root:join(h.root,'previews'),canonicalSha256:hash});
- const counted={read:(...a)=>previews.read(...a),commits:0,async commit(...a){counted.commits++;return previews.commit(...a);}};
+ const counted={read:(...a)=>previews.read(...a),claim:(...a)=>previews.claim(...a),recordObject:(...a)=>previews.recordObject(...a),commits:0,async commit(...a){counted.commits++;return previews.commit(...a);}};
  const service=createArtifactPreviewService({validators:v,artifacts:h.service,objects:h.objects,previews:counted,renderer:port,ids:()=>({artifactId:randomUUID(),versionId:randomUUID(),objectId:randomUUID()}),now:Date.now,...(maxPreviewBytes?{maxPreviewBytes}:{})});
  const ctx=context(),create=async format=>(await h.service.create(specs[format],ctx)).version;
  return {...h,office,port,previews,counted,service,ctx,create};
@@ -59,14 +59,14 @@ test('without an admitted renderer office previews fail closed; a PDF version st
 });
 test('previews are bounded: an oversize preview is refused before any write',async t=>{
  const a=await setup(t,{maxPreviewBytes:64}),docx=await a.create('docx'),puts=a.state.puts;
- await assert.rejects(a.service.publish(docx.versionId,a.ctx),{code:'ARTIFACT_PREVIEW_LIMIT'});assert.equal(a.state.puts,puts);assert.equal(a.counted.commits,0);
+ await assert.rejects(a.service.publish(docx.versionId,a.ctx),e=>e.code==='ARTIFACT_EFFECT_UNKNOWN'&&e.cause.code==='ARTIFACT_PREVIEW_LIMIT');assert.equal(a.state.puts,puts);assert.equal(a.counted.commits,0);
 });
 test('converter output must be a structurally valid PDF with a matching receipt',async t=>{
  const outputs=[{bytes:Buffer.from('%PDF-1.4 not really'),fix:r=>r},{bytes:realPdf(['x']),fix:r=>({...r,inputSha256:'0'.repeat(64)})},{bytes:realPdf(['x']),fix:r=>({...r,nativeQualification:true})}];
  for(const [i,output] of outputs.entries()){
   const transformer={async transform({bytes}){return {bytes:output.bytes,receipt:output.fix({inputSha256:sha(bytes),outputSha256:sha(output.bytes),nativeQualification:false})};}};
   const a=await setup(t,{renderer:createRendererPort({admission:syntheticAdmission(),transformer})}),docx=await a.create('docx'),puts=a.state.puts;
-  await assert.rejects(a.service.publish(docx.versionId,a.ctx),{code:i===0?'ARTIFACT_PREVIEW_STRUCTURE':'ARTIFACT_TRANSFORM_MISMATCH'});assert.equal(a.state.puts,puts);
+  await assert.rejects(a.service.publish(docx.versionId,a.ctx),e=>e.code==='ARTIFACT_EFFECT_UNKNOWN'&&e.cause.code===(i===0?'ARTIFACT_PREVIEW_STRUCTURE':'ARTIFACT_TRANSFORM_MISMATCH'));assert.equal(a.state.puts,puts);
  }
 });
 test('suppression, a recovery barrier and revoked authority refuse publish and read; a suppression during serving releases nothing',async t=>{
@@ -88,11 +88,12 @@ test('a failure after the preview object write is UNKNOWN, never no-effect; a ta
  const failure=await a.service.publish(version.versionId,a.ctx).then(()=>assert.fail('committed'),e=>e);
  assert.equal(failure.code,'ARTIFACT_EFFECT_UNKNOWN');assert.equal(failure.previewCommitted,false);assert.match(failure.objectId,/^[0-9a-f-]{36}$/);assert.equal(failure.cause.code,'ARTIFACT_PREVIEW_CONFLICT');
  await assert.rejects(a.service.read(version.versionId,a.ctx),{code:'ARTIFACT_PREVIEW_PENDING'});a.counted.commit=commit;
- const published=(await a.service.publish(version.versionId,a.ctx)).preview,read=a.counted.read;
+ await assert.rejects(a.service.publish(version.versionId,a.ctx),{code:'ARTIFACT_EFFECT_UNKNOWN'});const fresh=await a.create('docx');
+ const published=(await a.service.publish(fresh.versionId,a.ctx)).preview,read=a.counted.read;
  for(const tamper of [r=>{r.source.sha256='0'.repeat(64);},r=>{r.versionId=randomUUID();},r=>{r.nativeQualified=true;},r=>{r.conversion.outputSha256='0'.repeat(64);},r=>{r.extra=1;}]){
-  a.counted.read=async()=>{const r=structuredClone(published);tamper(r);return r;};await assert.rejects(a.service.read(version.versionId,a.ctx),{code:'ARTIFACT_PREVIEW_CORRUPT'});
+  a.counted.read=async()=>{const r=structuredClone(published);tamper(r);return r;};await assert.rejects(a.service.read(fresh.versionId,a.ctx),{code:'ARTIFACT_PREVIEW_CORRUPT'});
  }
- a.counted.read=read;assert.deepEqual((await a.service.read(version.versionId,a.ctx)).preview,published);
+ a.counted.read=read;assert.deepEqual((await a.service.read(fresh.versionId,a.ctx)).preview,published);
 });
 test('real LibreOffice previews for DOCX, XLSX (recalculated) and PPTX (opt-in MERI_ARTIFACT_SOFFICE)',{skip:!soffice&&'MERI_ARTIFACT_SOFFICE not set'},async t=>{
  const a=await setup(t,{renderer:'real'}),texts={};
