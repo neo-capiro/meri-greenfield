@@ -4,11 +4,12 @@
  * or port that applied an effect, or answered for another tenant, is never shown to the model as prepared.
  *
  * Accepted shapes (LOCAL PROPOSAL P-INT-1, pending dot):
- * - command:  `{status:'approval_required', proposal}` with a public `Proposal` whose command action matches.
+ * - command:  `{status:'approval_required', proposal}` with a canonical public or private task-update proposal whose action matches.
  * - schedule: `{status:'approval_required', proposal}` with the schedule tool's pending `approval_required` output.
  * - document: `{status:'draft', version}` with an immutable artifact version in `generationStatus:'draft'`. */
 import {own,data} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {assertProposalIntegrity,canonicalSha256,validateShape} from '../../../../packages/contracts/validate.mjs';
+import {assertTaskUpdateProposal} from '../../../../packages/contracts/commands-0.2/validate.mjs';
 const ACTIONS=Object.freeze({create_task:'task.create',update_task:'task.update',save_memory:'memory.propose',save_chat_attachments:'artifact.file'});
 const refuse=()=>{throw Object.assign(Error('INVALID_RESULT'),{code:'INVALID_RESULT'});};
 /** @param {any} b @param {any} binding */
@@ -28,7 +29,8 @@ export function assertPreparedResult(owner,operation,value,binding,current){
   for(const s of current.scopes){validateShape('Scope',s);if(s.tenantId!==binding.tenantId)refuse();}
   const v=/** @type {any} */(data(value));
   if(owner==='command'){
-   own(v,['status','proposal']);const p=v.proposal;assertProposalIntegrity(p);
+   own(v,['status','proposal']);const p=v.proposal;
+   if(operation.id==='update_task')assertTaskUpdateProposal(p,{binding:p?.command?.binding});else assertProposalIntegrity(p);
    if(v.status!=='approval_required'||p.command.action!==ACTIONS[/** @type {keyof typeof ACTIONS} */(operation.id)]||!sameRun(p.command.binding,binding)||!currentScopes(p.command.scopes,binding,current.scopes)||p.requiredApprover?.tenantId!==binding.tenantId||Date.parse(p.createdAt)>current.nowMs||Date.parse(p.expiresAt)<=current.nowMs)refuse();
    return {status:'approval_required',reference:p.proposalId,value:v};
   }

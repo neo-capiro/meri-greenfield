@@ -43,6 +43,7 @@
   {"name": "control-admitted-runs", "purpose": "persisted admitted-run composition", "cwd": ".", "files": ["apps/control/admitted-runs/**/*.test.mjs"]},
   {"name": "control-commands", "purpose": "commands and approval metadata", "cwd": ".", "files": ["apps/control/commands/**/*.test.mjs"]},
   {"name": "control-intents", "purpose": "prepare-only conversational write intents: control mount, journal and preparers", "cwd": ".", "files": ["apps/control/intents/test/*.test.mjs"]},
+  {"name": "control-task-commands", "purpose": "governed task-update Fetch API over canonical proposal and execution owners", "cwd": ".", "files": ["apps/control/task-command-application/test/*.test.mjs"]},
   {"name": "control-document-application", "purpose": "document application, local flow, selected output and skill-specific controls", "cwd": ".", "files": ["apps/control/document-application/**/*.test.mjs"], "knownHostRequirements": ["python3 with python-docx at the Codex-host path", "LibreOffice"]},
   {"name": "control-schedules", "purpose": "schedules and Temporal inspection", "cwd": ".", "files": ["apps/control/schedules/test/*.test.mjs"]},
   {"name": "control-task-lookup", "purpose": "task lookup", "cwd": ".", "files": ["apps/control/task-lookup/**/*.test.mjs"]},

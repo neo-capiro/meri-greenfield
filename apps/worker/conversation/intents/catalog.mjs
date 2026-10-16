@@ -28,9 +28,9 @@ export const INTENT_ROWS=Object.freeze([
  row('update_scheduled_task','propose_schedule_change','schedule'),
  row('cancel_scheduled_task','propose_schedule_change','schedule'),
  row('create_task','propose_task','command'),
- row('update_task','propose_task_update','command','OWNER_MISSING: the approval-metadata owner persists task.create proposals only; task.update has no proposal owner yet.'),
- row('save_memory','propose_memory','command','OWNER_MISSING: the approval-metadata owner persists task.create proposals only; memory.propose has no proposal owner yet, and personal scope has no pending producer (MEMORY-PRODUCER).'),
- row('save_chat_attachments','propose_attachment_filing','command','OWNER_MISSING: the approval-metadata owner persists task.create proposals only; artifact.file has no proposal owner yet.'),
+ row('update_task','propose_task_update','command'),
+ row('save_memory','propose_memory','command','OWNER_MISSING: the approval-metadata owner admits task commands only; memory.propose has no proposal metadata codec yet.'),
+ row('save_chat_attachments','propose_attachment_filing','command','OWNER_MISSING: the approval-metadata owner admits task commands only; artifact.file has no proposal metadata codec yet.'),
 ]);
 /** Selected capabilities the ledger also routes to `meri_intents` but which are reads, so never a prepare-only intent. */
 export const NOT_INTENTS=Object.freeze({list_scheduled_tasks:'READ: listing schedules has no effect to approve; it belongs on a read route (proposal P-INT-5).'});
