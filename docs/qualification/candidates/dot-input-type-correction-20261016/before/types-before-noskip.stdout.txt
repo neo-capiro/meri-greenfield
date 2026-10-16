@@ -1,0 +1,1 @@
+dist/conversation-input.d.ts(260,310): error TS2552: Cannot find name 'ConversationInputErrorResponse'. Did you mean 'ConversationHistoryResponse'?

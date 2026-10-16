@@ -1,5 +1,7 @@
 # Actual conversation input0.1.7 artifact
 
+Historical result: **HOLD**, superseded by the narrow type correction recorded in `../dot-input-type-correction-20261016/README.md`. The original SHA53497 tarball is preserved under `packages/contracts/conversation-input/evidence/held-43142561/`; its skipLibCheck outcome did not qualify the new declaration. Every receipt below remains an unchanged historical outcome.
+
 Accepted input source4a10288c35569a384668ef89b970df524b4723da/tree28956c45e62bc7e7336b30b9535b35f8ed60dcb3. Narrow package metadata/runtime mount successor95b4b2aae548c3523785149d876c87248f5e769c/tree8f3c41d1ccf54197d8e45828692fa2be8d2bc0cb. Actual generated/artifact source954f900cc1c5e250574b34ffe26b1dccbebef528/treecb8d02d9604ed07fdca22f45f5f1d611b28053a9. Later evidence commits change no production/generator/artifact bytes. Dedicated branch `dot/meri-input-package-20261016`; native7dd remains separate.
 
 Artifact `packages/contracts/conversation-input/evidence/capiro-meri-contracts-0.1.7.tgz`:
