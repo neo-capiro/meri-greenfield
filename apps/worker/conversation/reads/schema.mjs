@@ -72,9 +72,9 @@ export function isNarrowerOrEqual(advertised,canonical){
  if(canonical===true||advertised===false)return true;
  if(canonical===false)return advertised===false;
  if(!isObject(canonical)||!isObject(advertised))return false;
- if(Array.isArray(advertised.type))return advertised.type.every(type=>isNarrowerOrEqual({...advertised,type},canonical));
+ if(Array.isArray(advertised.type))return advertised.type.every((/** @type {unknown} */type)=>isNarrowerOrEqual({...advertised,type},canonical));
  if(unionOnly(advertised))return advertised.anyOf.every((/** @type {any} */branch)=>isNarrowerOrEqual(branch,canonical));
- if(Array.isArray(canonical.type))return canonical.type.some(type=>isNarrowerOrEqual(advertised,{...canonical,type}));
+ if(Array.isArray(canonical.type))return canonical.type.some((/** @type {unknown} */type)=>isNarrowerOrEqual(advertised,{...canonical,type}));
  if(unionOnly(canonical))return canonical.anyOf.some((/** @type {any} */branch)=>isNarrowerOrEqual(advertised,branch));
  for(const [k,c] of Object.entries(canonical)){
   if(ANNOTATIONS.has(k)||inapplicable(k,canonical))continue;const a=advertised[k];
