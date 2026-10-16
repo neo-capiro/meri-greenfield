@@ -13,14 +13,14 @@ import {canonicalSha256,validateShape} from '../../../packages/contracts/validat
 import {data,own,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {createIntentJournal} from './journal.mjs';
-import {intentFault} from './faults.mjs';
+import {intentFault,INTENT_FAILURE_CODES} from './faults.mjs';
 import {createIntentResultRelease} from './result-release.mjs';
 import {COMMAND_INTENT_OPERATIONS} from './command-preparer.mjs';
 import {SCHEDULE_INTENT_OPERATIONS} from './schedule-preparer.mjs';
 import {DOCUMENT_INTENT_OPERATIONS} from './document-preparer.mjs';
 const DELIVERY=/^sdk:[a-f0-9]{64}$/u,AVAILABILITY_MS=30000;
 const OWNERS=Object.freeze({command:Object.keys(COMMAND_INTENT_OPERATIONS),schedule:SCHEDULE_INTENT_OPERATIONS,document:DOCUMENT_INTENT_OPERATIONS});
-const CODES=new Set(['UNAVAILABLE','ACCESS_DENIED','REFUSED','INVALID_ARGUMENTS','DEADLINE','CANCELLED','CONFLICT','UNKNOWN']);
+const CODES=new Set(INTENT_FAILURE_CODES);
 const closed=code=>CODES.has(code)?code:'UNKNOWN';
 /** @param {{binding:object,preparers:readonly object[],journalStore:object,now:()=>number,limits:{maxRequestMs:number},enabled?:boolean,resultRelease?:object}} configuration */
 export function createIntentMount(configuration){

@@ -3,8 +3,9 @@
  * calls the owner again: PREPARED replays the retained result, FAILED (owner refused before any effect) replays the
  * same refusal, and PENDING or UNKNOWN answers UNKNOWN. A different request under the same delivery is a CONFLICT.
  *
- * The store is a port (LOCAL PROPOSAL; its table is migration request P-INT-M1 in
- * docs/coordination/proposals/FABLE-INTENTS-PROPOSALS-20261016.md, no migration ID allocated):
+ * The store is a port (LOCAL PROPOSAL; historical request P-INT-M1 is preserved in
+ * docs/coordination/proposals/FABLE-INTENTS-PROPOSALS-20261016.md). Central allocation now reserves
+ * migrations/0001_intent_preparations.sql for meri_intents.preparations; exact DDL authoring remains on HOLD:
  *  - `claim({key,record,signal})` → `{claimed:true}` or `{claimed:false,entry:{record,state,outcome}}` (atomic insert-or-read).
  *  - `settle({key,record,state,outcome,signal})` → the settled entry; only a PENDING entry with the same record settles.
  * A lost acknowledgement from either call leaves the delivery PENDING or unknown; nothing here retries or deletes. */

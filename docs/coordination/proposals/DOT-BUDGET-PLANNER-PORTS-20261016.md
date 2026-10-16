@@ -29,7 +29,7 @@ The owner must reuse current canonical authorization; a callback that merely ech
 
 Missing owner is UNAVAILABLE before any preparation. Retained pre-repair outcomes without an original authority receipt are withheld; there is no inferred expiry and no redispatch. A refused post-settlement release leaves PREPARED custody unchanged. The worker independently intersects result scopes with its validated current run scopes. These local shapes do not edit UIEvent, Run or `packages/contracts/**`.
 
-**Parent decision needed:** accept this local owner seam and allocate its canonical adapter/composition. P-INT-M1's journal table remains the original unallocated migration request. The existing JSON outcome can hold the receipt without a new table; no migration was authored here.
+**Parent decision needed:** accept this local owner seam and its canonical authorization adapter/composition. Subsequent central source allocation `641f298025c4c9f344d9d16f852cb6eb62b21906` reserves `apps/control/intents/migrations/0001_intent_preparations.sql` and the sole table `meri_intents.preparations`; exact intent DDL authoring/design release remains pending. The original unqualified P-INT-M1 proposal is preserved byte-for-byte. The existing JSON outcome can hold the receipt without a second table. A focused `postgres-journal.mjs` store adapter is proposed behind the existing journal; no intent SQL or startup mounting was authored. See [the bounded design](../reports/DOT-CANONICAL-INTENT-JOURNAL-20261016.md).
 
 ## BG-1: one product ledger
 
