@@ -10227,6 +10227,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [
           "get_research_portfolio"
         ],
@@ -10248,6 +10249,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [
           "get_research_portfolio_changes"
         ],
@@ -10269,6 +10271,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [
           "get_research_evidence"
         ],
@@ -10291,6 +10294,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -10316,6 +10320,9 @@
           "quick_skill.commitments_audit",
           "quick_skill.relationship_brief"
         ],
+        "sourceAdmittedOperations": [
+          "read_monday_client_boards"
+        ],
         "generalOperations": [
           "read_monday_client_boards"
         ],
@@ -10339,6 +10346,7 @@
           "quick_skill.portfolio_overlap"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [],
@@ -10362,6 +10370,7 @@
           "quick_skill.research_company"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [
           "get_client_context"
         ],
@@ -10385,6 +10394,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -10400,6 +10410,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -10421,6 +10432,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -10436,6 +10448,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [],
@@ -10449,6 +10462,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [],
@@ -10466,6 +10480,9 @@
         ],
         "sourceAdmittedSkills": [
           "quick_skill.relationship_brief"
+        ],
+        "sourceAdmittedOperations": [
+          "search_memory"
         ],
         "generalOperations": [
           "search_memory"
@@ -10490,6 +10507,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [
           "memory.list_own_proposals"
         ],
@@ -10512,6 +10530,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -10535,6 +10554,7 @@
           "quick_skill.research_company"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -10555,6 +10575,7 @@
           "quick_skill.research_company"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -10572,6 +10593,7 @@
           "quick_skill.research_company"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -10587,6 +10609,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -10604,6 +10627,7 @@
           "quick_skill.pe_deep_dive"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [],
@@ -10625,6 +10649,9 @@
         ],
         "sourceAdmittedSkills": [
           "quick_skill.relationship_brief"
+        ],
+        "sourceAdmittedOperations": [
+          "resolve_entity"
         ],
         "generalOperations": [
           "resolve_entity"
@@ -10648,6 +10675,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [],
@@ -10661,6 +10689,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [
           "list_global_datasets"
         ],
@@ -10679,6 +10708,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -10694,6 +10724,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [],
@@ -10707,6 +10738,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [],
@@ -10723,6 +10755,7 @@
           "quick_skill.research_company"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -10740,6 +10773,7 @@
           "quick_skill.funding_opportunity_match"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -10757,6 +10791,7 @@
           "quick_skill.pe_deep_dive"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [],
@@ -10770,6 +10805,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [],
@@ -10783,6 +10819,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [],
@@ -10796,6 +10833,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [],
@@ -10811,6 +10849,7 @@
           "quick_skill.representation_lookup"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [],
@@ -10827,6 +10866,7 @@
           "quick_skill.representation_lookup"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [],
@@ -10842,6 +10882,7 @@
           "quick_skill.representation_lookup"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -10861,6 +10902,7 @@
           "quick_skill.representation_lookup"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [],
@@ -10876,6 +10918,7 @@
           "quick_skill.regulatory_docket_brief"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -10892,6 +10935,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [],
@@ -10908,6 +10952,7 @@
           "quick_skill.meeting_prep"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -10924,6 +10969,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -10943,6 +10989,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [
           "get_florida_budget_project"
         ],
@@ -10965,6 +11012,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -10983,6 +11031,7 @@
           "quick_skill.regulatory_docket_brief"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -11001,6 +11050,7 @@
           "quick_skill.pe_deep_dive"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [],
@@ -11014,6 +11064,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [],
@@ -11030,6 +11081,7 @@
           "quick_skill.representation_lookup"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -11049,6 +11101,7 @@
           "quick_skill.portfolio_changes"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -11069,6 +11122,7 @@
           "quick_skill.research_company"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [],
@@ -11086,6 +11140,7 @@
           "quick_skill.research_company"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [],
@@ -11099,6 +11154,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -11118,6 +11174,7 @@
           "quick_skill.mail_history"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [
           "mail.list_messages"
         ],
@@ -11145,6 +11202,9 @@
         "sourceAdmittedSkills": [
           "quick_skill.commitments_audit",
           "quick_skill.relationship_brief"
+        ],
+        "sourceAdmittedOperations": [
+          "mail.search_messages"
         ],
         "generalOperations": [
           "mail.search_messages"
@@ -11174,6 +11234,9 @@
           "quick_skill.commitments_audit",
           "quick_skill.relationship_brief"
         ],
+        "sourceAdmittedOperations": [
+          "mail.read_thread"
+        ],
         "generalOperations": [
           "mail.read_thread"
         ],
@@ -11194,6 +11257,7 @@
           "quick_skill.meeting_prep"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [
           "meeting.list_upcoming_meetings"
         ],
@@ -11213,6 +11277,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -11234,6 +11299,7 @@
           "quick_skill.research_company"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -11253,6 +11319,7 @@
           "quick_skill.research_company"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -11272,6 +11339,7 @@
           "quick_skill.research_company"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -11289,6 +11357,7 @@
           "quick_skill.pe_deep_dive"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [],
@@ -11304,6 +11373,7 @@
           "quick_skill.pe_deep_dive"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [],
@@ -11319,6 +11389,7 @@
           "quick_skill.pe_deep_dive"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [],
@@ -11332,6 +11403,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -11347,6 +11419,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -11364,6 +11437,7 @@
           "quick_skill.bill_watch"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -11385,6 +11459,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -11406,6 +11481,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -11427,6 +11503,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -11442,6 +11519,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -11457,6 +11535,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -11472,6 +11551,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -11495,6 +11575,9 @@
         "sourceAdmittedSkills": [
           "quick_skill.commitments_audit",
           "quick_skill.relationship_brief"
+        ],
+        "sourceAdmittedOperations": [
+          "query_tasks"
         ],
         "generalOperations": [
           "query_tasks"
@@ -11523,6 +11606,9 @@
         "sourceAdmittedSkills": [
           "quick_skill.commitments_audit",
           "quick_skill.relationship_brief"
+        ],
+        "sourceAdmittedOperations": [
+          "query_action_items"
         ],
         "generalOperations": [
           "actions.query",
@@ -11553,6 +11639,7 @@
           "quick_skill.research_company"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -11572,6 +11659,7 @@
           "quick_skill.regulatory_docket_brief"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [],
@@ -11588,6 +11676,7 @@
           "quick_skill.research_company"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -11614,6 +11703,9 @@
         "sourceAdmittedSkills": [
           "quick_skill.commitments_audit",
           "quick_skill.relationship_brief"
+        ],
+        "sourceAdmittedOperations": [
+          "meeting.query_debriefs"
         ],
         "generalOperations": [
           "meeting.query_debriefs"
@@ -11643,6 +11735,9 @@
           "quick_skill.commitments_audit",
           "quick_skill.relationship_brief"
         ],
+        "sourceAdmittedOperations": [
+          "meeting.read_client_meetings"
+        ],
         "generalOperations": [
           "meeting.read_client_meetings"
         ],
@@ -11662,6 +11757,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -11686,6 +11782,9 @@
           "quick_skill.commitments_audit",
           "quick_skill.relationship_brief"
         ],
+        "sourceAdmittedOperations": [
+          "read_client_documents"
+        ],
         "generalOperations": [
           "read_client_documents"
         ],
@@ -11709,6 +11808,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [],
@@ -11722,6 +11822,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -11739,6 +11840,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -11765,6 +11867,9 @@
         "sourceAdmittedSkills": [
           "quick_skill.relationship_brief"
         ],
+        "sourceAdmittedOperations": [
+          "find_contacts"
+        ],
         "generalOperations": [
           "find_contacts"
         ],
@@ -11788,6 +11893,7 @@
           "quick_skill.research_company"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -11806,6 +11912,7 @@
           "quick_skill.research_company"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -11823,6 +11930,7 @@
           "quick_skill.funding_opportunity_match"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -11840,6 +11948,7 @@
           "quick_skill.funding_opportunity_match"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -11857,6 +11966,7 @@
           "quick_skill.funding_opportunity_match"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [
@@ -11875,6 +11985,7 @@
           "quick_skill.research_company"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [],
@@ -11891,6 +12002,7 @@
           "quick_skill.research_company"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [],
@@ -11906,6 +12018,7 @@
           "quick_skill.research_company"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [],
@@ -11921,6 +12034,7 @@
           "quick_skill.research_company"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [],
@@ -11934,6 +12048,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [],
@@ -11947,6 +12062,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [],
@@ -11963,6 +12079,7 @@
           "quick_skill.portfolio_changes"
         ],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [],
@@ -11976,6 +12093,7 @@
         "currentContractDeclared": false,
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
+        "sourceAdmittedOperations": [],
         "generalOperations": [],
         "adapterPaths": [],
         "requiredContextKeys": [],

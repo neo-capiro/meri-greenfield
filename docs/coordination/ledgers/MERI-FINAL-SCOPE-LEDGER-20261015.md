@@ -160,6 +160,11 @@ This is source reconciliation only. The historical proposal tables below retain 
 
 Only `quick_skill.relationship_brief`, `quick_skill.commitments_audit` are admitted by the original skill server. A declaration in another manifest is not source reachability. The historical `query_action_items` and successor `actions.query` represent one selected capability. `memory.list_own_proposals` is a product-state read; product writes and effects remain on their separate governed route.
 
+| Source-admitted skill | Exact adapter-backed operations |
+| --- | --- |
+| `quick_skill.relationship_brief` | `find_contacts`, `mail.read_thread`, `mail.search_messages`, `meeting.query_debriefs`, `meeting.read_client_meetings`, `query_action_items`, `query_tasks`, `read_client_documents`, `read_monday_client_boards`, `resolve_entity`, `search_memory` |
+| `quick_skill.commitments_audit` | `mail.read_thread`, `mail.search_messages`, `meeting.query_debriefs`, `meeting.read_client_meetings`, `query_action_items`, `query_tasks`, `read_client_documents`, `read_monday_client_boards` |
+
 | Registered family | Exact operations |
 | --- | --- |
 | `action-items-complete` | `actions.query` |
