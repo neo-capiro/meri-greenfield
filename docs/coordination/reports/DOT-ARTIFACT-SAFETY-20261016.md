@@ -209,6 +209,57 @@ test process or migration execution. Terminal process exit was observed, and
 further test launches are held for Shipping's READS stage. Retention remains
 **HOLD** until the exact follow-up source is independently reviewed.
 
+## Released preview0003 source authoring
+
+Later central disposition supersedes the earlier authoring HOLD above:
+`dot/meri-package4-allocations-20261016` at
+`0b0b7abd536a27a74e3b1077ae71eed6e0ba275b`, tree
+`79e4989d27d9a0c3079ca1b795751813a01128dd`, includes the explicit parent release
+at `e5b1116fc15a5a19bd23e175f3153bd0400632dc`. The original local proposal and
+historical allocation/proof records remain unchanged. Source ownership is
+exclusively this artifact-safety lane; no other held migration was authored.
+
+Implementation outline and result: extend canonical artifacts storage additively
+with tenant/conversation/artifact/source-version foreign keys; retain immutable
+original claim/binding/deadline/allocation; permit only null-to-one known physical
+ObjectReference custody; require matching known custody for immutable publication.
+Derive UNKNOWN and potential-orphan inventory without expiry or claim takeover.
+The storage envelope's `record_sha256` is **not** the hash of ArtifactVersion;
+the schema never conflates them. Canonical source/claim/receipt hashing and full
+packet validation remain the trusted adapter's responsibility. Current authority
+on replay stays in the existing preview service; SQL establishes no user access.
+
+`apps/artifacts/migrations/0003_previews.sql` now contains those source guards.
+Claim and record deletion are refused; foreign keys also prevent deleting their
+source version. No tombstone is erased or UNKNOWN disposition retried. A future
+retention amendment requires separately accepted exact identities, durable
+restore tombstones and potential-orphan resolution. There is no deployed adapter
+or activation. A database restore before claim insertion can still remove this
+database projection: activation must remain blocked until durable decision/custody
+evidence outside that rollback boundary is replayed under the canonical restore
+barrier. This source-only table is not proof of that recovery owner.
+
+Three **static SQL source assertions pass**, exit 0, Node-reported 17 ms:
+
+```
+node --max-old-space-size=128 --test --test-isolation=none apps/artifacts/test/preview-migration-source.test.mjs
+```
+
+No SQL parser or PostgreSQL executed. The single hidden controlled process had a
+120-second hard stop and a fresh available-memory guard; 128 MiB is its V8 heap
+limit, not measured RSS. Peak RSS was not retained by the host console. The
+Windows performance counter was unavailable; the read-only VisualBasic memory
+API worked (12.30 GB free at the initial check; 12.44 GB after). Exit and zero
+remaining Node processes were observed; no fixture directories were created.
+Evidence: `task-9/evidence/preview-migration-source.stdout.tap`, empty stderr and
+`preview-migration-source-process.json`. DB syntax/constraints, real concurrent
+transactions, restore replay and deployed retention inventory remain UNRUN/HOLD.
+
+Qualification relayed parent acceptance of exact browser `769848f1`, filing
+`805e55a6`, preview `d56f07f9` paths and the narrow0013 table shape. That does not
+accept held retention behavior (`338a04ec` / follow-up `c5ebb14f`) or this new
+preview0003 source. Candidate h remains HOLD.
+
 ## Proof and remaining gates
 
 The candidate-h source proof passes **5/5**. **Zero of its 45 rows changed**;
@@ -216,8 +267,8 @@ all repair dependencies are outside that finite proof map. There are no old/new
 proof-row hashes to repin. Historical manifests, the frozen f pin and h HOLD are
 unchanged. Hash agreement does not qualify this dependency closure.
 
-Final distinct checks: **132 synthetic source controls + 5 static proof checks**,
-all pass. Runs used Node 24.19.0, `--max-old-space-size=128 --test
+Original handoff distinct checks: **132 synthetic source controls + 5 static proof checks**,
+all pass at their recorded source. Runs used Node 24.19.0, `--max-old-space-size=128 --test
 --test-isolation=none`, sequential single processes, each under 3 seconds.
 Exact logs and baseline-negative evidence are retained in task-9/evidence;
 normal process exits were observed and preview fixture cleanup completed.
@@ -235,5 +286,6 @@ Temporal, object store/broker/filing, actual browser/SDK, native renderer/qualit
 image builds/cloud/deployment, migration execution and purge. Generator/native
 preview checks await their separate authorized profile. Package-four's seven
 runtime failures and three frozen-candidate failures remain open; this lane did
-not relabel or rerun them. Every returned source commit needs independent review;
-none is automatically integrated or accepted.
+not relabel or rerun them. Later exact-path acceptance is recorded above; neither
+the retention follow-up nor preview0003 is accepted by this report. This lane
+has not automatically integrated source or changed any release gate.
