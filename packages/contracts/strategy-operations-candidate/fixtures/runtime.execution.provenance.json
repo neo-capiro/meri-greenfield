@@ -1,0 +1,7 @@
+{
+  "provider": "synthetic-provider",
+  "model": "synthetic-trusted-model",
+  "receiptRef": "00000000-0000-4000-8000-000000000019",
+  "receiptSha256": "59dbb5a5e6bfc999237b70015dca45ef9a604e4909b3fe8cd9207de36d589c27",
+  "bindingSha256": "4895ade0590ae401839d626611073692a01518eb4fbe9ad3cec1ea645a97758e"
+}

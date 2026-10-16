@@ -1,0 +1,173 @@
+{
+  "dto": {
+    "clientId": "00000000-0000-4000-8000-000000000004",
+    "type": "authorization",
+    "goal": "  Preserve the supplied goal  ",
+    "meriContext": "Keep the source caveat verbatim.",
+    "ownerUserId": "  synthetic-owner  ",
+    "targetDate": "2026-12-10",
+    "attachmentIds": [
+      "00000000-0000-4000-8000-0000000000c9",
+      "00000000-0000-4000-8000-0000000000ca",
+      "00000000-0000-4000-8000-0000000000c9",
+      "00000000-0000-4000-8000-0000000000cb",
+      ""
+    ]
+  },
+  "coreResolution": {
+    "documents": [
+      {
+        "id": "00000000-0000-4000-8000-0000000000ca",
+        "filename": "B synthetic source",
+        "kind": "pdf",
+        "text": "Synthetic Unicode evidence: é😀",
+        "status": "truncated",
+        "truncated": true,
+        "reason": "Synthetic extraction caveat"
+      },
+      {
+        "id": "00000000-0000-4000-8000-0000000000c9",
+        "filename": "A synthetic source",
+        "kind": "pdf",
+        "text": "Synthetic source A.",
+        "status": "ready",
+        "truncated": false,
+        "reason": null
+      }
+    ],
+    "unavailableAttachmentIds": [
+      "00000000-0000-4000-8000-0000000000cb"
+    ]
+  },
+  "request": {
+    "candidateVersion": "strategy-candidate/20261015.2",
+    "operation": "strategy.draft",
+    "requestId": "00000000-0000-4000-8000-000000000001",
+    "jobId": "00000000-0000-4000-8000-000000000002",
+    "principal": {
+      "tenantId": "synthetic-tenant",
+      "actorId": "00000000-0000-4000-8000-000000000003",
+      "clientId": "00000000-0000-4000-8000-000000000004",
+      "ownerActorId": "synthetic-owner"
+    },
+    "source": {
+      "kind": "manual",
+      "manualRequestId": "00000000-0000-4000-8000-00000000005b",
+      "goal": "Synthetic explicit manual draft"
+    },
+    "context": {
+      "packetId": "00000000-0000-4000-8000-000000000007",
+      "contextSha256": "cc52de9a78b323690e89ba919283066066450e048e1de77bd4d135d037846a40",
+      "coverageSha256": "2faf869715a6a590a28796146c4ac3dc5acf0d64f268837dcba3fdaf7fc6dd03",
+      "asOfMs": 1792065599000,
+      "evidence": [
+        {
+          "ref": "evidence:accepted",
+          "sourceId": "synthetic-source",
+          "asOfMs": 1792065598000,
+          "scope": "client",
+          "clientId": "00000000-0000-4000-8000-000000000004",
+          "reviewState": "accepted"
+        },
+        {
+          "ref": "evidence:pending",
+          "sourceId": "synthetic-candidate",
+          "asOfMs": 1792065598000,
+          "scope": "tenant-shared",
+          "clientId": null,
+          "reviewState": "pending"
+        }
+      ],
+      "ownerRefs": [
+        "owner:synthetic"
+      ],
+      "draft": {
+        "mappingVersion": "legacy-draft-observation/1",
+        "clientId": "00000000-0000-4000-8000-000000000004",
+        "input": {
+          "typeHint": "authorization",
+          "goal": "  Preserve the supplied goal  ",
+          "meriContext": "Keep the source caveat verbatim.",
+          "ownerUserId": "  synthetic-owner  ",
+          "targetDate": "2026-12-10",
+          "attachmentIds": [
+            "00000000-0000-4000-8000-0000000000c9",
+            "00000000-0000-4000-8000-0000000000ca",
+            "00000000-0000-4000-8000-0000000000c9",
+            "00000000-0000-4000-8000-0000000000cb",
+            ""
+          ]
+        },
+        "selectedOwnerActorId": "synthetic-owner",
+        "attachments": {
+          "correlation": "explicit-core-document-id",
+          "coverage": "prompt-excerpt-only",
+          "responseSha256": "b157e4e7905e9fa365bd6470746372e07a232cfefbd22ae735fa07f0d18a9cf6",
+          "unavailableAttachmentIds": [
+            "00000000-0000-4000-8000-0000000000cb"
+          ],
+          "documents": [
+            {
+              "id": "00000000-0000-4000-8000-0000000000ca",
+              "filename": "B synthetic source",
+              "kind": "pdf",
+              "status": "truncated",
+              "truncated": true,
+              "reason": "Synthetic extraction caveat",
+              "promptTextSha256": "0ac7104a219d6663a410dee0770f123c256b09b052e4301112366105aba8e16e",
+              "promptTextUtf8Bytes": 34,
+              "snapshotSha256": "e08d1d916c8203fa53792baa56296446ff74ab39ee23d84509018e2454369ff7",
+              "versionRef": {
+                "kind": "content-snapshot",
+                "sha256": "e08d1d916c8203fa53792baa56296446ff74ab39ee23d84509018e2454369ff7"
+              },
+              "fullExtractedTextSha256": null,
+              "originalFileSha256": null
+            },
+            {
+              "id": "00000000-0000-4000-8000-0000000000c9",
+              "filename": "A synthetic source",
+              "kind": "pdf",
+              "status": "ready",
+              "truncated": false,
+              "reason": null,
+              "promptTextSha256": "292c9a4a7edbcf355000562c89d5cd2253ed965054445b665a3ea26d682bb428",
+              "promptTextUtf8Bytes": 19,
+              "snapshotSha256": "836790d1ec4dadb9fddb765dca2668ea2f280ccbb3742c858fc188a0500f9a05",
+              "versionRef": {
+                "kind": "content-snapshot",
+                "sha256": "836790d1ec4dadb9fddb765dca2668ea2f280ccbb3742c858fc188a0500f9a05"
+              },
+              "fullExtractedTextSha256": null,
+              "originalFileSha256": null
+            }
+          ]
+        }
+      }
+    },
+    "basis": null,
+    "delegation": {
+      "ref": "00000000-0000-4000-8000-000000000008",
+      "revision": "synthetic-revision",
+      "issuedAtMs": 1792065599000,
+      "absoluteExpiresAtMs": 1792151999000
+    },
+    "requestedAtMs": 1792065600000,
+    "originalExpiresAtMs": 1792066500000,
+    "inputSha256": "12f55162668351ae2638a472bbe34d62a727662d7203296b421450e50a5f0342",
+    "input": {
+      "typeHint": "authorization",
+      "goal": "  Preserve the supplied goal  ",
+      "meriContext": "Keep the source caveat verbatim.",
+      "ownerUserId": "  synthetic-owner  ",
+      "targetDate": "2026-12-10",
+      "attachmentIds": [
+        "00000000-0000-4000-8000-0000000000c9",
+        "00000000-0000-4000-8000-0000000000ca",
+        "00000000-0000-4000-8000-0000000000c9",
+        "00000000-0000-4000-8000-0000000000cb",
+        ""
+      ]
+    }
+  }
+}

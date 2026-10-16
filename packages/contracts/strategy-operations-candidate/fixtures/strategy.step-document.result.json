@@ -1,0 +1,63 @@
+{
+  "candidateVersion": "strategy-candidate/20261015.2",
+  "operation": "strategy.step-document",
+  "requestId": "00000000-0000-4000-8000-000000000001",
+  "jobId": "00000000-0000-4000-8000-000000000002",
+  "requestSha256": "ccf554407e2c6680d9462384f84301e4cbe545fb694551cad3e741963b558282",
+  "inputSha256": "b0855e231b3c8363626b7686db44dd8cc9c49a6018657ea343108ac78a5d9d73",
+  "sourceSha256": "5236552e8fa951d4727e8d0e745a66bf9bd1d8faf3d3d2a69d8064f148b4e1bf",
+  "contextSha256": "cbbb18b6474dbdef8dd3b39b1f634a2ba035d0d60c7df59687e41747be8058d4",
+  "basisSha256": "caa96463378b92f52caa4ce7c9ae9b82508a58decc6d3599b627d1bfc894ba24",
+  "binding": {
+    "tenantId": "synthetic-tenant",
+    "actorId": "00000000-0000-4000-8000-000000000003",
+    "conversationId": "00000000-0000-4000-8000-000000000014",
+    "runId": "00000000-0000-4000-8000-000000000015",
+    "attemptId": "00000000-0000-4000-8000-000000000016",
+    "workerId": "00000000-0000-4000-8000-000000000017",
+    "writerFence": 1
+  },
+  "execution": {
+    "provider": "synthetic-provider",
+    "model": "synthetic-trusted-model",
+    "receiptRef": "00000000-0000-4000-8000-000000000019",
+    "receiptSha256": "59dbb5a5e6bfc999237b70015dca45ef9a604e4909b3fe8cd9207de36d589c27",
+    "bindingSha256": "4895ade0590ae401839d626611073692a01518eb4fbe9ad3cec1ea645a97758e"
+  },
+  "resultRef": "00000000-0000-4000-8000-000000000018",
+  "completedAtMs": 1792065601000,
+  "state": "succeeded",
+  "payload": {
+    "title": "Synthetic brief",
+    "summary": null,
+    "sections": [
+      {
+        "heading": "Evidence",
+        "html": "<p>Synthetic proposal; not a materialized document.</p>",
+        "sources": [
+          {
+            "section": "synthetic",
+            "ref": "evidence:accepted"
+          }
+        ]
+      }
+    ],
+    "coverage": {
+      "complete": false,
+      "omitted": [
+        "Unqualified live sources"
+      ],
+      "assumptions": [],
+      "sources": [
+        {
+          "section": "synthetic",
+          "ref": "evidence:accepted"
+        }
+      ],
+      "pendingSources": []
+    }
+  },
+  "payloadSha256": "fc425e887646d7658674a90d73c2cc2b5fcf06082e8da3afec20013bb34a8c57",
+  "issues": [],
+  "resultSha256": "692ea8be40e39392ca38ffa7ed527cfb44414249c67effb5650956dcf2cf6759"
+}

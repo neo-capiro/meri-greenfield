@@ -1,0 +1,50 @@
+/** Synthetic construction only; no real client, credential, delegated grant or result. */
+import {candidateVersion,policy} from './schema.mjs';
+import {hash,requestInputHash,without} from './validate.mjs';
+import {normalizedDraftDto,draftContextPacket} from './draft-context.mjs';
+export const id=n=>'00000000-0000-4000-8000-'+n.toString(16).padStart(12,'0');
+export const at=Date.UTC(2026,9,15,12);
+const documentNode=()=>({id:id(101),kind:'action',subject:'deliverable',title:'Synthetic brief',note:null,startsOn:'2026-10-17',endsOn:null});
+export function request(operation='strategy.draft'){
+ const v={candidateVersion,operation,requestId:id(1),jobId:id(2),principal:{tenantId:'synthetic-tenant',actorId:id(3),clientId:id(4),ownerActorId:id(3)},source:{kind:'objective',objectiveId:id(5),objectiveRevisionId:id(6),objectiveVersion:2,snapshotSha256:hash('synthetic-objective'),intent:{outcome:'A reviewable route',governmentProblem:'Synthetic evidence gap',askType:'meri_propose',minimumWin:'Identify a supported route',limits:'No external send'}},context:{packetId:id(7),contextSha256:hash('synthetic-context'),coverageSha256:hash('synthetic-coverage'),asOfMs:at-1000,evidence:[{ref:'evidence:accepted',sourceId:'synthetic-source',asOfMs:at-2000,scope:'client',clientId:id(4),reviewState:'accepted'},{ref:'evidence:pending',sourceId:'synthetic-candidate',asOfMs:at-2000,scope:'tenant-shared',clientId:null,reviewState:'pending'}],ownerRefs:['owner:synthetic']},basis:null,delegation:{ref:id(8),revision:'synthetic-revision',issuedAtMs:at-1000,absoluteExpiresAtMs:at+policy.delegationMs-1000},requestedAtMs:at,originalExpiresAtMs:at+policy.attemptMs,inputSha256:'',input:{typeHint:null}};
+ if(operation!=='strategy.draft')v.basis={strategyId:id(9),strategyVersionId:id(10),strategySha256:hash('synthetic-strategy'),nodes:[{nodeId:id(101),nodeSha256:hash(documentNode()),dependsOn:[],startsOn:'2026-10-17',endsOn:null},{nodeId:id(102),nodeSha256:hash('synthetic-second-node'),dependsOn:[id(101)],startsOn:'2026-10-18',endsOn:null}]};
+ if(operation==='strategy.edit')v.input={scope:'strategy',nodeId:null,instruction:'Clarify the rationale',clientMessageId:id(11),attachmentIds:[],attachments:[]};
+ if(operation==='strategy.step-document')v.input={kind:'workspace_draft',strategyType:'authorization',goal:null,node:documentNode()};
+ if(operation==='strategy.draft')v.input={typeHint:null,goal:null,meriContext:null,ownerUserId:null,targetDate:null,attachmentIds:[]};
+ v.context.draft=operation==='strategy.draft'?draftContextPacket({clientId:v.principal.clientId,input:v.input,ownerActorId:v.principal.ownerActorId,resolvedDocuments:[]}):null;
+ v.context.contextSha256=hash(without(v.context,'contextSha256'));v.inputSha256=requestInputHash(v);return v;
+}
+export const binding=()=>({tenantId:'synthetic-tenant',actorId:id(3),conversationId:id(20),runId:id(21),attemptId:id(22),workerId:id(23),writerFence:1});
+export const execution=()=>({provider:'synthetic-provider',model:'synthetic-trusted-model',receiptRef:id(25),receiptSha256:hash('synthetic-trusted-execution-receipt'),bindingSha256:hash(binding())});
+export const coverage=()=>({complete:false,omitted:['Unqualified live sources'],assumptions:[],sources:[{section:'synthetic',ref:'evidence:accepted'}],pendingSources:[]});
+export function payload(operation){
+ if(operation==='strategy.draft')return {type:'authorization',rationale:'Synthetic proposal only',summary:'Review the evidence',nodes:[{sourceNodeKey:'review',kind:'action',subject:'deliverable',title:'Review sources',note:null,status:'suggested',ownerRef:null,startsOn:'2026-10-17',endsOn:null,openEnded:false,sources:[{section:'synthetic',ref:'evidence:accepted'}],dependsOn:[]},{sourceNodeKey:'decision',kind:'decision',subject:'outcome',title:'Choose route',note:null,status:'suggested',ownerRef:null,startsOn:'2026-10-18',endsOn:null,openEnded:false,sources:[],dependsOn:['review']}],coverage:coverage()};
+ if(operation==='strategy.edit')return {reply:'Proposed edit only',summary:null,edits:[{op:'update',nodeId:id(101),sourceNodeKey:null,changes:{note:'Synthetic clarified rationale'}}],coverage:coverage()};
+ return {title:'Synthetic brief',summary:null,sections:[{heading:'Evidence',html:'<p>Synthetic proposal; not a materialized document.</p>',sources:[{section:'synthetic',ref:'evidence:accepted'}]}],coverage:coverage()};
+}
+export function result(r=request()){
+ const p=payload(r.operation),v={candidateVersion,operation:r.operation,requestId:r.requestId,jobId:r.jobId,requestSha256:hash(r),inputSha256:r.inputSha256,sourceSha256:hash(r.source),contextSha256:r.context.contextSha256,basisSha256:r.basis===null?null:hash(r.basis),binding:binding(),execution:execution(),resultRef:id(24),completedAtMs:at+1000,state:'succeeded',payload:p,payloadSha256:hash(p),issues:[],resultSha256:''};v.resultSha256=hash(without(v,'resultSha256'));return v;
+}
+export function decision(){const r=request();return {candidateVersion,audience:'capiro:objective-strategy-generation:v1',operation:'objective.strategy.draft',use:'dispatch',delegationRef:r.delegation.ref,delegationRevision:r.delegation.revision,jobId:r.jobId,principal:r.principal,inputSha256:r.inputSha256,sourceSha256:hash(r.source),policyRevision:'synthetic-policy',issuedAtMs:at,expiresAtMs:r.originalExpiresAtMs,confirmedAtMs:at-1000,absoluteExpiresAtMs:r.delegation.absoluteExpiresAtMs,originalExpiresAtMs:r.originalExpiresAtMs,renewalCount:0,previousDecisionSha256:null,cancelled:false,allowedSources:['synthetic-source'],productWrites:[]};}
+export function legacyDraftConformance(kind='complete'){
+ const dto=kind==='defaults'?{clientId:id(4),type:'authorization',goal:'',meriContext:'',ownerUserId:'   '}:{clientId:id(4),type:'authorization',goal:'  Preserve the supplied goal  ',meriContext:'Keep the source caveat verbatim.',ownerUserId:'  synthetic-owner  ',targetDate:'2026-12-10',attachmentIds:['synthetic-doc-b','synthetic-doc-a','synthetic-doc-b','']};
+ const resolvedDocuments=kind==='complete'?[{filename:'B synthetic source',text:'Observed synthetic source text B.'},{filename:'A synthetic source',text:'Observed synthetic source text A.'}]:[];
+ const r=request(),n=normalizedDraftDto(dto);r.source={kind:'manual',manualRequestId:id(91),goal:'Synthetic explicit manual draft'};r.input=n.input;r.principal.ownerActorId=dto.ownerUserId?.trim()||r.principal.actorId;
+ r.context.draft=draftContextPacket({clientId:n.clientId,input:n.input,ownerActorId:r.principal.ownerActorId,resolvedDocuments});r.context.contextSha256=hash(without(r.context,'contextSha256'));r.inputSha256=requestInputHash(r);
+ return {dto,resolvedDocuments,request:r};
+}
+export function coreDraftConformance(){
+ const f=legacyDraftConformance();f.dto.attachmentIds=[id(201),id(202),id(201),id(203),''];
+ const coreResolution={documents:[{id:id(202),filename:'B synthetic source',kind:'pdf',text:'Synthetic Unicode evidence: \u00e9\ud83d\ude00',status:'truncated',truncated:true,reason:'Synthetic extraction caveat'},{id:id(201),filename:'A synthetic source',kind:'pdf',text:'Synthetic source A.',status:'ready',truncated:false,reason:null}],unavailableAttachmentIds:[id(203)]};
+ const r=f.request,n=normalizedDraftDto(f.dto);r.input=n.input;r.context.draft=draftContextPacket({clientId:n.clientId,input:n.input,ownerActorId:r.principal.ownerActorId,coreResolution});r.context.contextSha256=hash(without(r.context,'contextSha256'));r.inputSha256=requestInputHash(r);return {dto:f.dto,coreResolution,request:r};
+}
+export function allFixtures(){
+ const out={};for(const op of ['strategy.draft','strategy.edit','strategy.step-document']){const r=request(op);out[op+'.request']=r;out[op+'.result']=result(r);}
+ out['workload.draft.decision']=decision();const p=decision();Object.assign(p,{audience:'capiro:objective-planner-materialization:v1',operation:'objective.plan.prepare',use:'planner-materialize',productWrites:['planner.materialize']});out['workload.planner.decision']=p;
+ const n=result();Object.assign(n,{state:'needs-information',payload:null,payloadSha256:hash(null),issues:[{code:'MISSING_REQUIRED_DATE',message:'A required date is unknown.'}]});n.resultSha256=hash(without(n,'resultSha256'));out['strategy.needs-information.result']=n;
+ for(const kind of ['complete','unavailable','defaults'])out['legacy-draft.'+kind+'.mapping']=legacyDraftConformance(kind);
+ out['core-draft.explicit-ids.mapping']=coreDraftConformance();
+ const empty=request('strategy.edit');empty.source={kind:'manual',manualRequestId:id(91),goal:'Synthetic empty manual strategy'};empty.basis.nodes=[];empty.inputSha256=requestInputHash(empty);out['strategy.edit.empty.request']=empty;
+ const added=result(empty),fields=structuredClone(payload('strategy.draft').nodes[0]);delete fields.sourceNodeKey;added.payload.edits=[{op:'add',nodeId:null,sourceNodeKey:'restored',changes:{...fields,dependsOn:[]}}];added.payloadSha256=hash(added.payload);added.resultSha256=hash(without(added,'resultSha256'));out['strategy.edit.empty.result']=added;
+ out['runtime.execution.provenance']=execution();return out;
+}

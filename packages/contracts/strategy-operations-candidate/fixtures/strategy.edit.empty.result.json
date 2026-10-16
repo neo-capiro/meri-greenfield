@@ -1,0 +1,76 @@
+{
+  "candidateVersion": "strategy-candidate/20261015.2",
+  "operation": "strategy.edit",
+  "requestId": "00000000-0000-4000-8000-000000000001",
+  "jobId": "00000000-0000-4000-8000-000000000002",
+  "requestSha256": "f36a182a26389931e104db777ed5ec07b4160acd018b687e348f9a7171b1815f",
+  "inputSha256": "8a265990d89c4749e2f5f93abc1bb582c9c7d0903671892a3964b5b324bb3b12",
+  "sourceSha256": "173603b04db99a234e74ffe582148685ca08f76dc08613bd0ad0bb4d37d53c49",
+  "contextSha256": "cbbb18b6474dbdef8dd3b39b1f634a2ba035d0d60c7df59687e41747be8058d4",
+  "basisSha256": "90b1d0cd9fd2cf0ff9d422ff3ca6774cbe394a855082e0ca38e5c301ef0dc361",
+  "binding": {
+    "tenantId": "synthetic-tenant",
+    "actorId": "00000000-0000-4000-8000-000000000003",
+    "conversationId": "00000000-0000-4000-8000-000000000014",
+    "runId": "00000000-0000-4000-8000-000000000015",
+    "attemptId": "00000000-0000-4000-8000-000000000016",
+    "workerId": "00000000-0000-4000-8000-000000000017",
+    "writerFence": 1
+  },
+  "execution": {
+    "provider": "synthetic-provider",
+    "model": "synthetic-trusted-model",
+    "receiptRef": "00000000-0000-4000-8000-000000000019",
+    "receiptSha256": "59dbb5a5e6bfc999237b70015dca45ef9a604e4909b3fe8cd9207de36d589c27",
+    "bindingSha256": "4895ade0590ae401839d626611073692a01518eb4fbe9ad3cec1ea645a97758e"
+  },
+  "resultRef": "00000000-0000-4000-8000-000000000018",
+  "completedAtMs": 1792065601000,
+  "state": "succeeded",
+  "payload": {
+    "reply": "Proposed edit only",
+    "summary": null,
+    "edits": [
+      {
+        "op": "add",
+        "nodeId": null,
+        "sourceNodeKey": "restored",
+        "changes": {
+          "kind": "action",
+          "subject": "deliverable",
+          "title": "Review sources",
+          "note": null,
+          "status": "suggested",
+          "ownerRef": null,
+          "startsOn": "2026-10-17",
+          "endsOn": null,
+          "openEnded": false,
+          "sources": [
+            {
+              "section": "synthetic",
+              "ref": "evidence:accepted"
+            }
+          ],
+          "dependsOn": []
+        }
+      }
+    ],
+    "coverage": {
+      "complete": false,
+      "omitted": [
+        "Unqualified live sources"
+      ],
+      "assumptions": [],
+      "sources": [
+        {
+          "section": "synthetic",
+          "ref": "evidence:accepted"
+        }
+      ],
+      "pendingSources": []
+    }
+  },
+  "payloadSha256": "fa2a348aea04dd5ee4ce17074333b05d63d289c2f0a18ade6d9c86ba58e74cee",
+  "issues": [],
+  "resultSha256": "58e262ab4a74b461fb1dede21ce570930fce99b21c2a3c033279ee2b8cb63140"
+}
