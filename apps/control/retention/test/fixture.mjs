@@ -8,6 +8,8 @@ import {createServingGate,createRecoveryReconciler} from '../reconciliation.mjs'
 import {createPurgeExecutor,planPurge} from '../purge.mjs';
 import {subjectKey} from '../boundary.mjs';
 import {rowClassSubjectKind,classes,externalClasses} from '../inventory.mjs';
+import {createMemoryWatermarkStore} from '../recovery-watermark.mjs';
+import {createRetentionStartup} from '../startup.mjs';
 export const tenant='tenant-a',owner='actor-owner';
 /** Every class the registry makes active; retained (identifier-only) classes are never purgeable. */
 export const policy=()=>({policyId:'policy-synthetic',version:3,coolingPeriodMs:86400000,classes:Object.fromEntries(classes.map(c=>[c,{retentionMs:7*86400000,purgeable:!externalClasses.includes(c)}]))});
@@ -75,3 +77,21 @@ export function compose({ownerMediated,permissions={getObjectVersion:true,listBu
 export function planFrom(f,s,journalState,{inventory,policy:p=f.current.policy}={}){const key=subjectKey(s);if(inventory){f.current.inventories.set(key,inventory);if(typeof f.rows?.seed==='function')f.rows.seed(key,inventory);}const inv=f.current.inventories.get(key);
  return planPurge({subject:s,journalState,policy:p,inventory:inv,shared:f.current.shared.get(key)??[],holds:f.facts.holds,liabilities:f.current.liabilities.get(key)??[],lastActivityAtMs:f.current.lastActivity.get(key)??f.clock.now()-30*86400000,nowMs:f.clock.now()});}
 
+/** The retention startup owner over the in-process journal, watermark store and ledger sink, with the fixture's bucket, row port and
+ * facts as the purge owners. `purge` is the explicit switch; `backup()`/`restore()` model one database backup of the journal and
+ * the watermark together (the ledger sink stays outside the restored boundary). Every storage request and row purge is counted. */
+export function composeStartup({purge=false,ledger=true,watermark:withWatermark=true,rowPreflight=null}={}){
+ const base=compose(),journal=createMemoryRetentionJournal(),watermark=createMemoryWatermarkStore(),deletes=[],rowPurges=[];
+ const send=async request=>{if(request.operation==='DeleteObject')deletes.push(request.input);return base.store.send(request);};
+ const storage=createVersionStorage({send,bucket:'synthetic-bucket',expectedBucketOwner:'967807252336',permissions:{getObjectVersion:true,listBucketVersions:true,deleteObjectVersion:true},now:base.clock.now,maxRequestMs:200});
+ const rows={...base.rows,...(rowPreflight?{preflight:rowPreflight}:{}),async purge(key,plan){rowPurges.push(key);return base.rows.purge(key,plan);}};
+ const owners=purge?{enabled:true,storage,rows,facts:base.facts,keyFor:base.keyFor}:{enabled:false};
+ // Fault switches: `lostAck` makes the sink record an entry but lose its acknowledgement; `failSets` fails that many projection writes.
+ const faults={lostAck:false,failSets:0};
+ const sink={async append(row){const ack=await base.sink.append(row);return faults.lostAck?null:ack;},read:()=>base.sink.read()};
+ const faulty={...journal,async set(...args){if(faults.failSets>0){faults.failSets--;throw Object.assign(new Error('RETENTION_STORE_UNAVAILABLE'),{code:'RETENTION_STORE_UNAVAILABLE'});}return journal.set(...args);}};
+ const startup=createRetentionStartup({journal:faulty,watermark:withWatermark?watermark:null,ledgerSink:ledger?sink:null,ownership,purge:owners,now:base.clock.now});
+ return {...base,journal,watermark,startup,storage,rows,deletes,rowPurges,faults,
+  backup:()=>({journal:journal.snapshot(),watermark:watermark.snapshot()}),
+  restore(saved){journal.restore(saved.journal);watermark.restore(saved.watermark);}};
+}
