@@ -50,6 +50,11 @@ async function fixture(t){
  f.suppressed=async(s,inventory)=>{await suppression.suppress({principal:f.principal,subject:s,reason:'owner request'});c.advance(2*day);current.inventories.set(subjectKey(s),inventory);return journal.get(subjectKey(s));};
  return f;
 }
+/** The applied schema admits row deletions only for the SDK mirror and artifact versions (the amendments in 0010 and artifacts 0002); a
+ * complete conversation inventory also targets its conversation, event, checkpoint and journal rows and is refused at preflight
+ * until the requested amendment migration exists. To keep exercising the admitted row paths on the real cluster, these tests narrow
+ * an enumerated inventory to the admitted row classes; the refusal of the complete inventory is its own test below. */
+const admitted=inventory=>{const rowClasses=['sdkSession','artifactVersions'];return Object.freeze({...inventory,rowTargets:Object.freeze(inventory.rowTargets.filter(t=>rowClasses.includes(t.className)))});};
 test('the PostgreSQL journal round-trips suppression and release for conversation and artifact subjects, refuses stale and corrupt projections, and a purge executes storage, SDK mirror rows and the purge projection end to end',async t=>{
  const f=await fixture(t),s=await f.conversation(),key=subjectKey(s);
  assert.equal(await f.journal.get(key),null);
@@ -63,7 +68,7 @@ test('the PostgreSQL journal round-trips suppression and release for conversatio
  assert.deepEqual(new Set(await f.journal.keys()),new Set([key,subjectKey(made.subject)]));
  const released=await f.suppression.release({principal:f.principal,subject:s,reason:'withdrawn'});assert.equal(released.state,'RELEASED');assert.equal((await f.journal.get(key)).state,'RELEASED');
  assert.equal((await f.pool.query('SELECT suppressed_at FROM meri_conversations.retention_subjects WHERE conversation_id=$1',[s.subjectId])).rows[0].suppressed_at,null);
- const entries=await f.sdkRows(s,[1,2]);const js=await f.suppressed(s,enumerateReferences(snapshot(s,{sdkEntries:entries})));
+ const entries=await f.sdkRows(s,[1,2]);const js=await f.suppressed(s,admitted(enumerateReferences(snapshot(s,{sdkEntries:entries}))));
  const plan=planFrom(f,s,js);assert.equal(plan.state,'PLANNED');assert.equal(plan.rowSteps.length,2);f.seed(plan);
  const done=await f.executor().execute(plan);assert.equal(done.state,'EXECUTED');assert.equal(done.rowSteps.length,2);assert.ok(done.rowSteps.every(r=>r.state==='EXECUTED'&&r.deleted===1));
  assert.ok(plan.steps.every(st=>!f.store.has(f.keyFor(st),st.versionId)),'storage versions deleted');for(const e of entries)assert.equal(await f.entryCount(e),0,'SDK mirror rows deleted');
@@ -98,7 +103,7 @@ test('finding 3: two connections that both observed an absent row cannot both cr
 });
 test('finding 5: a SDK mirror row is deleted only by the transaction that recorded its exact target under the current serialized plan while the subject is SUPPRESSED; wrong class, run, session or entry, a released subject, a stale plan or generation, and UPDATE are refused; a failed transaction rolls everything back',async t=>{
  const f=await fixture(t),s=await f.conversation(),key=subjectKey(s);const [e1,e2]=await f.sdkRows(s,[1,2]);const [foreign]=await f.sdkRows(s,[1]);
- const js=await f.suppressed(s,enumerateReferences(snapshot(s,{sdkEntries:[e1]})));const plan=planFrom(f,s,js);assert.equal(plan.rowSteps.length,1);
+ const js=await f.suppressed(s,admitted(enumerateReferences(snapshot(s,{sdkEntries:[e1]}))));const plan=planFrom(f,s,js);assert.equal(plan.rowSteps.length,1);
  const del=(c,e)=>c.query('DELETE FROM meri_conversations.sdk_session_entries WHERE run_id=$1 AND session_id=$2 AND subpath=$3 AND sequence=$4',[e.runId,e.sessionId,e.subpath,e.sequence]);
  await assert.rejects(del(f.pool,e1),/SDK_MIRROR_IMMUTABLE/,'no target: refused');
  await assert.rejects(f.journal.tx(c=>f.journal.planRows(c,key,plan)),/RETENTION_PURGE_PLAN_MISMATCH/,'targets need the subject to carry this plan as its current plan');
@@ -120,7 +125,7 @@ test('finding 5: a SDK mirror row is deleted only by the transaction that record
 });
 test('finding 6: database artifact versions keep their identity end to end: several versions sharing one storage object are each carried, deleted with the retired head in one transaction, projected per version, rebuilt from the ledger alone, and a revived version is re-planned',async t=>{
  const f=await fixture(t),conv=await f.conversation(),shared=object(),own=object();const made=await f.artifact([shared,shared,own],conv.subjectId),a=made.subject,key=subjectKey(a);
- const inv=enumerateReferences(snapshot(a,{sdkEntries:[],artifactVersions:made.versions}));assert.equal(inv.objects.length,2+2+1+2,'one checkpoint and one completion checkpoint of two objects each, one selected output, and the two artifact storage objects');
+ const inv=enumerateReferences(snapshot(a,{sdkEntries:[],artifactVersions:made.versions}));assert.equal(inv.objects.length,2,'the two artifact storage objects (an artifact subject carries no conversation checkpoints or outputs)');
  const sharedObject=inv.objects.find(o=>o.objectId===shared.objectId);assert.deepEqual(sharedObject.artifactVersionIds,made.versions.slice(0,2).map(v=>v.versionId).sort());assert.deepEqual(inv.rowTargets.map(r=>r.className),['artifactVersions','artifactVersions','artifactVersions']);
  const js=await f.suppressed(a,inv),plan=planFrom(f,a,js);f.seed(plan);assert.equal(plan.rowSteps.length,3);
  await assert.rejects(f.pool.query('DELETE FROM meri_artifacts.versions WHERE version_id=$1',[made.versions[2].versionId]),/MERI_ARTIFACT_VERSION_IMMUTABLE/);
@@ -148,7 +153,7 @@ test('recovery over the PostgreSQL journal: a restore that predates a suppressio
  const report=await f.reconciler().reconcile();assert.deepEqual(report.reapplied,[key]);assert.equal(await f.suppression.isSuppressed(s),true);
  const row=(await f.pool.query('SELECT state,ledger_sequence::int AS seq FROM meri_conversations.retention_subjects WHERE conversation_id=$1',[s.subjectId])).rows[0];assert.deepEqual(row,{state:'SUPPRESSED',seq:1});
  assert.deepEqual((await f.reconciler().reconcile()).reapplied,[],'idempotent');
- const [e1]=await f.sdkRows(s,[1]);f.clock.advance(2*day);f.current.inventories.set(key,enumerateReferences(snapshot(s,{sdkEntries:[e1]})));const plan=planFrom(f,s,await f.journal.get(key));f.seed(plan);
+ const [e1]=await f.sdkRows(s,[1]);f.clock.advance(2*day);f.current.inventories.set(key,admitted(enumerateReferences(snapshot(s,{sdkEntries:[e1]}))));const plan=planFrom(f,s,await f.journal.get(key));f.seed(plan);
  assert.equal((await f.executor().execute(plan)).state,'EXECUTED');assert.equal(await f.entryCount(e1),0);
  await f.pool.query('INSERT INTO meri_conversations.sdk_session_entries(tenant_id,conversation_id,run_id,session_id,subpath,sequence,entry,entry_sha256) VALUES($1,$2,$3,$4,$5,$6,$7,$8)',[tenant,s.subjectId,e1.runId,e1.sessionId,e1.subpath,e1.sequence,{e:1},hash({e:1})]);
  const revived=await f.reconciler().reconcile();assert.deepEqual(revived.replanned,[key]);assert.equal((await f.journal.get(key)).purge.state,'PLANNED');
@@ -167,7 +172,7 @@ test('DA-1 on PostgreSQL: a conversation snapshot carrying a real artifact versi
  const mixed=planFrom(f,s,await f.suppressed(s,enumerateReferences(snapshot(s,{sdkEntries:[e1],artifactVersions:made.versions}))));f.seed(mixed);
  assert.equal(mixed.state,'BLOCKED');assert.ok(mixed.blocks.some(b=>b.reason==='ROW_TARGET_SUBJECT_MISMATCH'));await assert.rejects(f.executor().execute(mixed),/RETENTION_PURGE_BLOCKED/);
  assert.ok(mixed.steps.every(st=>f.store.has(f.keyFor(st),st.versionId)),'zero storage deletes');assert.equal(await f.entryCount(e1),1);assert.equal(await f.versionCount(made.subject.subjectId),1);assert.deepEqual((await f.sink.read()).map(r=>r.state),['SUPPRESSED']);
- f.current.inventories.set(key,enumerateReferences(snapshot(s,{sdkEntries:[e1]})));const plan=planFrom(f,s,await f.journal.get(key));f.seed(plan);assert.equal(plan.state,'PLANNED');
+ f.current.inventories.set(key,admitted(enumerateReferences(snapshot(s,{sdkEntries:[e1]}))));const plan=planFrom(f,s,await f.journal.get(key));f.seed(plan);assert.equal(plan.state,'PLANNED');
  const lossy=faultyPool(f.pool,{dropAfterSend:['COMMIT']}),rowsOverLossy=createPostgresRetentionJournal({pool:lossy}).rows;
  const exec=createPurgeExecutor({storage:f.storage,ledger:f.ledger,journal:f.journal,keyFor:f.keyFor,facts:f.facts,serving:f.serving,rows:rowsOverLossy,enabled:true,now:f.clock.now});
  await assert.rejects(exec.execute(plan),e=>e.code==='RETENTION_COMMIT_UNKNOWN');assert.equal(await f.entryCount(e1),0,'the commit really happened; only its acknowledgement was lost');
@@ -187,4 +192,11 @@ test('DA-4 on PostgreSQL: a ROLLBACK and an advisory unlock whose replies are lo
  await assert.rejects(j2.exclusive(async()=>'pass'),/RETENTION_STORE_UNAVAILABLE/,'the caller is told the unlock outcome is unknown');
  assert.ok(noUnlock.sessions[0].releases[0] instanceof Error);assert.ok(await sessionEnded(f.pool,noUnlock.sessions[0].pid),'the session holding the exclusive recovery lock is ended');
  assert.equal(await recoveryLockFree(f.pool),true);assert.equal((await f.suppression.release({principal:f.principal,subject:s,reason:'withdrawn'})).state,'RELEASED','transitions take the shared recovery lock again');
+});
+test('class completion on PostgreSQL: a complete conversation inventory targets rows the applied schema does not admit and is refused at preflight with zero storage, row or ledger effects',async t=>{
+ const f=await fixture(t),s=await f.conversation(),key=subjectKey(s);const [e1]=await f.sdkRows(s,[1]);
+ const plan=planFrom(f,s,await f.suppressed(s,enumerateReferences(snapshot(s,{sdkEntries:[e1]}))));f.seed(plan);assert.equal(plan.state,'PLANNED');
+ assert.ok(['conversation','events','lifecycle','completionCheckpoints','nativeJournals'].every(c=>plan.rowSteps.some(r=>r.className===c)),'the plan targets every retained conversation row class');
+ const before=(await f.sink.read()).length;await assert.rejects(f.executor().execute(plan),e=>e.code==='RETENTION_ROW_CLASS_UNSUPPORTED');
+ assert.ok(plan.steps.every(st=>f.store.has(f.keyFor(st),st.versionId)),'zero storage deletes');assert.equal(await f.entryCount(e1),1,'zero row deletes');assert.equal((await f.sink.read()).length,before,'nothing recorded');assert.equal((await f.journal.get(key)).purge,null);
 });

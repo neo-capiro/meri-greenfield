@@ -7,19 +7,23 @@ import {createVersionStorage} from '../storage-port.mjs';
 import {createServingGate,createRecoveryReconciler} from '../reconciliation.mjs';
 import {createPurgeExecutor,planPurge} from '../purge.mjs';
 import {subjectKey} from '../boundary.mjs';
-import {rowClassSubjectKind} from '../inventory.mjs';
+import {rowClassSubjectKind,classes,externalClasses} from '../inventory.mjs';
 export const tenant='tenant-a',owner='actor-owner';
-export const policy=()=>({policyId:'policy-synthetic',version:3,coolingPeriodMs:86400000,classes:Object.fromEntries(['conversation','events','lifecycle','completionCheckpoints','nextRuns','sdkSession','selectedOutputs','nativeJournals','artifactVersions','uploads','logs'].map(c=>[c,{retentionMs:7*86400000,purgeable:c!=='logs'}]))});
+/** Every class the registry makes active; retained (identifier-only) classes are never purgeable. */
+export const policy=()=>({policyId:'policy-synthetic',version:3,coolingPeriodMs:86400000,classes:Object.fromEntries(classes.map(c=>[c,{retentionMs:7*86400000,purgeable:!externalClasses.includes(c)}]))});
 export const object=()=>({objectId:randomUUID(),versionId:'v-'+randomUUID().slice(0,8),sha256:'1'.repeat(64)});
 /** Trusted application ownership for tests: subjects are registered here when created; the suppression owner reads it, never the caller's claim. */
 export const owners=new Map();
 export const ownership={async ownerOf({tenantId,kind,subjectId}){return owners.get(`${tenantId}:${kind}:${subjectId}`)??null;}};
 export const subjectOf=(kind='conversation',ownerActorId=owner)=>{const s={tenantId:tenant,kind,subjectId:randomUUID()};owners.set(`${tenant}:${kind}:${s.subjectId}`,ownerActorId);return {...s,ownerActorId};};
 export const sdkEntry=({runId=randomUUID(),sessionId=randomUUID(),subpath='main',sequence=1}={})=>({entryId:randomUUID(),runId,sessionId,subpath,sequence});
-export function snapshot(subject,{checkpoints=1,outputs=1,shared=[],sdkEntries=[sdkEntry()],artifactVersions=[]}={}){
+/** A conversation snapshot carries runs, checkpoints and journals by default; an artifact snapshot carries none of those conversation
+ * rows unless a test passes them on purpose (they would be another subject's obligation). */
+export function snapshot(subject,{checkpoints=subject.kind==='artifact'?0:1,outputs=subject.kind==='artifact'?0:1,shared=[],sdkEntries=subject.kind==='artifact'?[]:[sdkEntry()],artifactVersions=[]}={}){
  const checkpoint=()=>{const opaque=object(),entry=object();return {checkpointId:randomUUID(),checkpoint:{opaqueSession:opaque,workspace:{entries:[{object:entry}]}}};};
  const cps=Array.from({length:checkpoints},checkpoint);if(shared.length)cps[0].checkpoint.workspace.entries.push(...shared.map(o=>({object:{objectId:o.objectId,versionId:o.versionId,sha256:o.sha256}})));
- return {subject,runs:[{runId:randomUUID(),continuation:null}],checkpoints:cps,completionCheckpoints:[checkpoint()],nextRuns:[],sdkSessionEntries:sdkEntries,selectedOutputs:Array.from({length:outputs},()=>({outputId:randomUUID(),object:object()})),artifactVersions,nativeJournalRows:[{runId:randomUUID()}],uploads:[]};
+ const conversation=subject.kind==='conversation';
+ return {subject,runs:conversation?[{runId:randomUUID(),continuation:null}]:[],checkpoints:cps,completionCheckpoints:conversation?[checkpoint()]:[],nextRuns:[],sdkSessionEntries:sdkEntries,selectedOutputs:Array.from({length:outputs},()=>({outputId:randomUUID(),object:object()})),artifactVersions,nativeJournalRows:conversation?[{runId:randomUUID()}]:[],uploads:[]};
 }
 export function clock(start=1_800_000_000_000){let t=start;return {now:()=>t,advance(ms){t+=ms;return t;}};}
 /** Injected storage handler: an in-memory versioned bucket whose responses mimic S3 status codes; `fault` switches ambiguity on. */
@@ -49,7 +53,7 @@ export function currentFacts(c){
 export function memoryRows(){
  const present=new Map();const id=t=>JSON.stringify(t);
  const route=(key,plan)=>{const kind=key.split(':').at(-2);for(const st of plan.rowSteps)if(rowClassSubjectKind[st.className]!==kind)throw Object.assign(new Error('RETENTION_INVALID_REQUEST'),{code:'RETENTION_INVALID_REQUEST'});};
- return {present,seed(key,inventory){present.set(key,new Set(inventory.rowTargets.map(id)));},
+ return {remaining:key=>[...(present.get(key)??[])],seed(key,inventory){present.set(key,new Set(inventory.rowTargets.map(id)));},
   async preflight(key,plan){route(key,plan);return true;},
   async purge(key,plan){route(key,plan);const rows=present.get(key)??new Set();return plan.rowSteps.map(st=>{const had=rows.delete(id(st.target));return {workflowId:st.workflowId,state:'EXECUTED',deleted:had?1:0};});},
   async present(key,fact){return (present.get(key)??new Set()).has(id(fact.target));},
@@ -70,3 +74,4 @@ export function compose({ownerMediated,permissions={getObjectVersion:true,listBu
 /** Ordinary planning from the fixture's current facts for a subject; registers the inventory if given. */
 export function planFrom(f,s,journalState,{inventory,policy:p=f.current.policy}={}){const key=subjectKey(s);if(inventory){f.current.inventories.set(key,inventory);if(typeof f.rows?.seed==='function')f.rows.seed(key,inventory);}const inv=f.current.inventories.get(key);
  return planPurge({subject:s,journalState,policy:p,inventory:inv,shared:f.current.shared.get(key)??[],holds:f.facts.holds,liabilities:f.current.liabilities.get(key)??[],lastActivityAtMs:f.current.lastActivity.get(key)??f.clock.now()-30*86400000,nowMs:f.clock.now()});}
+

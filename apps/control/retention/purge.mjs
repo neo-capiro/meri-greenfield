@@ -6,6 +6,7 @@
 import {own,data,fail,hash,subject,subjectKey,clock} from './boundary.mjs';
 import {purgeEligibility,requirePurgePolicy} from './policy.mjs';
 import {externalClasses,rowClasses,rowClassSubjectKind} from './inventory.mjs';
+import {externalRequestClasses} from './data-classes.mjs';
 import {projectionToken} from './memory-journal.mjs';
 export const workflowIdentity=({tenantId,classes,objectId,versionId,policyVersion})=>hash({tenantId,classes,objectId,versionId,policyVersion});
 export const rowWorkflowIdentity=({tenantId,subjectId,target,policyVersion})=>hash({tenantId,subjectId,target,policyVersion});
@@ -29,6 +30,8 @@ export function planPurge({subject:rawSubject,journalState,policy,inventory,shar
  const p=requirePurgePolicy(policy);if(!Number.isSafeInteger(nowMs)||typeof holds!=='function'||!Array.isArray(shared)||!Array.isArray(liabilities))fail('RETENTION_INVALID_REQUEST');
  const blocks=[],steps=[],rowSteps=[];const sharedByKey=new Map(shared.map(x=>[`${x.object.objectId}@${x.object.versionId}`,x]));
  for(const l of liabilities){const v=own(data(l),['runId','kind']);blocks.push({reason:'UNKNOWN_LIABILITY',detail:v});}
+ // Data owned outside Meri (memory proposals) leaves only through its owner; with no deletion port the plan stays BLOCKED naming it.
+ for(const r of inventory.rows??[])if(externalRequestClasses.includes(r.className))blocks.push({reason:'EXTERNAL_DELETION_UNAVAILABLE',detail:{className:r.className,key:r.key}});
  const eligible=(className,detail)=>{const e=purgeEligibility({policy:p,className,suppressedAtMs:journalState.suppressedAtMs,lastActivityAtMs,nowMs});for(const r of e.reasons)blocks.push({reason:r,detail:{...detail,className}});return e.eligible;};
  for(const o of inventory.objects){
   const obligations=o.classes.filter(c=>!externalClasses.includes(c));if(!obligations.length)continue;

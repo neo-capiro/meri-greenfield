@@ -94,8 +94,10 @@ export function createPostgresRetentionJournal({pool,now=Date.now,maxRequestMs=1
  }
  const rowWhere={sdkSession:{table:'meri_conversations.sdk_session_entries',where:'tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND session_id=$4 AND subpath=$5 AND sequence=$6',args:(k,g)=>[k.tenantId,k.subjectId,uuid(g.runId),uuid(g.sessionId),text(g.subpath,1024),Number.isSafeInteger(g.sequence)&&g.sequence>0?g.sequence:fail('RETENTION_INVALID_REQUEST')]},
   artifactVersions:{table:'meri_artifacts.versions',where:'tenant_id=$1 AND artifact_id=$2 AND version_id=$3',args:(k,g)=>[k.tenantId,k.subjectId,uuid(g.artifactVersionId)]}};
- /** Routing for one row target: the class must belong to this subject kind and the exact target must be well formed. */
- const rowTarget=(k,st)=>{const w=rowWhere[st?.className];if(!w||rowClassSubjectKind[st.className]!==k.kind||!st.target||typeof st.target!=='object')fail('RETENTION_INVALID_REQUEST');w.args(k,st.target);return w;};
+ /** Routing for one row target: the class must belong to this subject kind and the exact target must be well formed. A registered row
+ * class whose deletion the schema does not admit yet (no trigger amendment allocated: every row class other than the SDK mirror and
+ * artifact versions) refuses with RETENTION_ROW_CLASS_UNSUPPORTED, so a plan carrying it fails preflight with zero effects. */
+ const rowTarget=(k,st)=>{if(rowClassSubjectKind[st?.className]!==k.kind||!st.target||typeof st.target!=='object')fail('RETENTION_INVALID_REQUEST');const w=rowWhere[st.className];if(!w)fail('RETENTION_ROW_CLASS_UNSUPPORTED');w.args(k,st.target);return w;};
  /** Validates every row target of a plan against this routing with no database access, so a purge refuses before any effect. */
  async function preflightRows(key,plan){const k=parseKey(key);if(!Array.isArray(plan?.rowSteps))fail('RETENTION_INVALID_REQUEST');for(const st of plan.rowSteps)rowTarget(k,st);return true;}
  /** The database-row purge port. `purge` deletes every row target of the plan in one transaction that first records the exact targets
@@ -117,6 +119,6 @@ export function createPostgresRetentionJournal({pool,now=Date.now,maxRequestMs=1
  async function ownerOf({tenantId,kind,subjectId}){if(!tables[kind])fail('RETENTION_INVALID_REQUEST');
   const rows=kind==='conversation'?(await pool.query('SELECT owner_actor_id AS owner FROM meri_conversations.conversations WHERE tenant_id=$1 AND conversation_id=$2',[tenantId,subjectId])).rows:(await pool.query('SELECT actor_id AS owner FROM meri_artifacts.heads WHERE tenant_id=$1 AND artifact_id=$2',[tenantId,subjectId])).rows;
   return rows[0]?.owner??null;}
- return Object.freeze({get,set,keys,exclusive,planRows,rows,tx,ownerOf});
+ return Object.freeze({get,set,keys,exclusive,planRows,rows,tx,ownerOf,rowClasses:Object.freeze(Object.keys(rowWhere))});
 }
 export {parseSubject};
