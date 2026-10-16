@@ -8,11 +8,14 @@ import {fail,subjectKey,clock} from './boundary.mjs';
 import {recomputePlan,stepFacts,rowStepFacts} from './purge.mjs';
 import {projectionToken} from './memory-journal.mjs';
 export function createServingGate(){let enabled=true;return Object.freeze({disable(){enabled=false;},enable(){enabled=true;},isEnabled:()=>enabled});}
+const sameHead=(left,right)=>(left?.sequence??0)===(right?.sequence??0)&&(left?.entrySha256??null)===(right?.entrySha256??null);
 /** `storage`, `keyFor` and `facts` may be null where no purge owner is bound (the runtime keeps purge inactive): a recorded purge step then
  * stays UNKNOWN and a recorded plan stays BLOCKED with RETENTION_AUTHORITY_UNAVAILABLE, never cleared. With a `watermark` port, the
- * settled pass records the exact ledger head in the database, reads it back, and reopens serving only with that recovered watermark. */
-export function createRecoveryReconciler({ledger,journal,storage=null,serving,keyFor=null,facts=null,rows=null,watermark=null,now,maxPasses=8}){
+ * settled pass records the exact ledger head in the database, reads it back, and reopens serving only with that recovered watermark.
+ * A trusted continuation may recover prerequisite projections under this SAME exclusion; no serving-gated or nested-lock calls. */
+export function createRecoveryReconciler({ledger,journal,storage=null,serving,keyFor=null,facts=null,rows=null,watermark=null,now,maxPasses=8,recoverPrerequisitesExclusive=null}){
  if(typeof ledger?.replay!=='function'||typeof journal?.get!=='function'||typeof journal?.set!=='function'||typeof journal?.exclusive!=='function'||storage!==null&&typeof storage?.headVersion!=='function'||typeof serving?.disable!=='function'||storage!==null&&typeof keyFor!=='function'||facts!==null&&typeof facts!=='object'||rows!==null&&typeof rows?.present!=='function'||watermark!==null&&(typeof watermark?.record!=='function'||typeof watermark?.read!=='function')||!Number.isSafeInteger(maxPasses)||maxPasses<1)fail('RETENTION_CONFIGURATION');const tick=clock(now);
+ if(recoverPrerequisitesExclusive!==null&&typeof recoverPrerequisitesExclusive!=='function')fail('RETENTION_CONFIGURATION');
  const stepRow=f=>({workflowId:f.workflowId,classes:f.classes,objectId:f.objectId,versionId:f.versionId,sha256:f.sha256,artifactVersionIds:f.artifactVersionIds??[]});
  /** Current-facts re-planning; any unavailable authority returns a BLOCKED result naming it (never a cleared block). */
  async function replan(subjectValue,journalState,nowMs){try{return await recomputePlan(facts,subjectValue,journalState,nowMs);}catch(error){return {state:'BLOCKED',blocks:[{reason:String(error?.code??'RETENTION_AUTHORITY_UNAVAILABLE'),detail:{}}],steps:[],rowSteps:[],planSha256:null};}}
@@ -49,7 +52,11 @@ export function createRecoveryReconciler({ledger,journal,storage=null,serving,ke
   serving.disable();
   return journal.exclusive(async()=>{const report={subjects:0,reapplied:[],verified:[],replanned:[],unknown:[],released:[],stillBlocked:[],passes:0};
    for(let i=0;i<maxPasses;i++){const before=(await ledger.replay()).length;report.passes++;await pass(report,nowMs);const settled=await ledger.replay(),after=settled.length;
-    if(after===before){const recovered=await recordWatermark(settled.at(-1));serving.enable(recovered?{watermark:recovered}:undefined);return Object.freeze({...report,subjects:new Set([...report.reapplied,...report.verified,...report.replanned,...report.unknown,...report.released,...report.stillBlocked]).size,watermark:after,...(recovered?{recovered}:{}),completedAtMs:tick(),servingEnabled:true});}}
+    if(after===before){const head=settled.at(-1);
+     if(recoverPrerequisitesExclusive){await recoverPrerequisitesExclusive();if(!sameHead(head,(await ledger.replay()).at(-1)))continue;}
+     const recovered=await recordWatermark(head);
+     if(recoverPrerequisitesExclusive&&!sameHead(head,(await ledger.replay()).at(-1)))continue;
+     serving.enable(recovered?{watermark:recovered}:undefined);return Object.freeze({...report,subjects:new Set([...report.reapplied,...report.verified,...report.replanned,...report.unknown,...report.released,...report.stillBlocked]).size,watermark:after,...(recovered?{recovered}:{}),completedAtMs:tick(),servingEnabled:true});}}
    fail('RETENTION_RECOVERY_UNSETTLED');});
  }
  /** The exact ledger head, recorded and read back under the recovery lock; anything else is not a recovered watermark. */
