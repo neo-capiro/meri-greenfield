@@ -1,9 +1,10 @@
-param([switch]$Help,[ValidatePattern('^[a-z][a-z0-9-]{0,63}$')][string]$Name='controls')
+param([switch]$Help,[ValidatePattern('^[a-z][a-z0-9-]{0,63}$')][string]$Name='controls',[ValidateSet('continuation','canonical-review')][string]$Slice='continuation')
 if($Help){Write-Output 'Usage: run-controls.ps1 [-Name unused-evidence-name] [-Help]. One built-in Node synthetic Planner control process, heap128MiB, wall30s, measured working-set cap256MiB, owned process-tree cleanup. No dependencies/services/model/provider/DB. Exit0 pass; exit1 control/setup failure. Existing proof files cannot be overwritten.';return}
 $ErrorActionPreference='Stop'
 $repoRoot=(Resolve-Path (Join-Path $PSScriptRoot '../../../..')).Path
 $nodePath=(Get-Command node).Source
 $nodeArguments=@('--max-old-space-size=128','--experimental-test-module-mocks','--import','./docs/qualification/candidates/dot-planner-continuation-20261016/dependency-seams.mjs','--test','--test-isolation=none','--test-concurrency=1','apps/control/objective-planner/continuation/driver.test.mjs','apps/control/objective-planner/continuation/dispatcher.test.mjs','apps/control/objective-planner/continuation/registration.test.mjs','apps/control/objective-planner/continuation/contract.test.mjs','apps/control/objective-planner/continuation/core-client.test.mjs','apps/control/objective-planner/continuation/admission.test.mjs','apps/control/objective-planner/continuation/activities.test.mjs','apps/control/objective-planner/continuation/server.test.mjs','apps/control/objective-planner/continuation/composition.test.mjs','apps/control/objective-planner/test/receipts.test.mjs','apps/control/objective-planner/test/materializer.test.mjs')
+if($Slice -eq 'canonical-review'){$nodeArguments=@($nodeArguments[0..6])+@('apps/control/objective-planner/continuation/contract.test.mjs','apps/control/objective-planner/continuation/core-client.test.mjs','apps/control/objective-planner/continuation/activities.test.mjs','apps/control/objective-planner/continuation/composition.test.mjs')}
 $stdout=Join-Path $PSScriptRoot ($Name+'.stdout.txt')
 $stderr=Join-Path $PSScriptRoot ($Name+'.stderr.txt')
 $metadata=Join-Path $PSScriptRoot ($Name+'.json')

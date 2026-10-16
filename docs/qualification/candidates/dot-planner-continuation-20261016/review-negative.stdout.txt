@@ -1,0 +1,224 @@
+✔ prepare requires independent trusted admission even when initial ACK lookup is unavailable (4.4874ms)
+✔ missing/expired initial admission returns definitive not-dispatched refusal before Core prepare (0.8982ms)
+✔ historical ACK reconciliation calls only fresh-read owner, never prepare/model/admission (0.7657ms)
+✔ immutable work SHA mismatch refuses before all ports (1.1149ms)
+✖ prepare transport is capped to the genuine producer admission expiry including original consent/task bounds (1.1607ms)
+✖ expired-after-admission or malformed proof refuses before Core transport (1.0387ms)
+✖ a longer Core credential cannot extend shorter producer admission during late authorization (96.4359ms)
+✔ actual source composition stays disabled without genuine producer or transport issuer; no effects on import/construction (1.3657ms)
+✔ coherent admitted source joins actual driver/activities/Core client/custody/server; lost POST ACK recovers one application after caller leaves (13.5107ms)
+✔ fixed server request has exactly nine Core fields and no actor/groups/model/credential payload (0.9579ms)
+✔ exact source pins change request/work digest while application identity stays fixed (1.3561ms)
+✔ Core sorted JSON hash preserves array order, scalar escapes and lexical numeric keys (0.1847ms)
+✔ application UUID uses Core namespace/version8/variant8 and native actor; workflow separately pins original consent/control (1.0856ms)
+✔ creation ACK has separate whole-owner receipt hash and actual canonical default project ID (1.199ms)
+✔ mutable current human edits/regrouping/replay do not change immutable creation custody (2.0963ms)
+✔ original consent/control must echo even when historical current authority has advanced (5.4089ms)
+✔ withheld ACK yields no output references; cached or malformed substitution is refused (1.0144ms)
+✔ ACK envelope/content/hash/output identity and source integrity are closed (5.0634ms)
+✔ UUIDs and digests reject a final newline despite the regular expression end-anchor allowance (2.5358ms)
+✖ canonical tuple rejects available creation ACK when an unavailable current output retains any ID/version (1.5365ms)
+✖ canonical tuple rejects archived-null outputs, including withheld creation observations (0.8942ms)
+✔ canonical archived outputs retain their authorized IDs and human-edited current versions/groups (1.5747ms)
+✖ fixed POST201 and GET200 use separate current authorization and release checks, original application ID and nine fields (2.7664ms)
+✖ deployed Core producer route includes global strategy-api prefix for BOTH POST and GET, without assumed rewrite (1.269ms)
+✔ trusted service origin cannot add an arbitrary prefix, path, query or fragment (1.7101ms)
+✔ disabled/missing issuer refuses before credential/network access (1.0423ms)
+✔ every noncanonical status stays uncertain; GET404/503 never produces absence/eligibility (10.4377ms)
+✔ wrong/malformed credential actor/tenant/hash/time refuses before transport (4.3319ms)
+✔ post-effect read revocation withholds even a valid original creation ACK without retry (1.7466ms)
+✔ historical read accepts original consent/control ACK without extending any prepare grant (3.0248ms)
+✔ malformed, oversized, wrong content-type/encoding/length and mismatched original ACK never release (5.896ms)
+✔ a hanging response stream is bounded, cancelled and never retried (13.4282ms)
+✔ late response after caller cancellation is cancelled without release (1.3105ms)
+✔ retained immutable ACK short-circuits preparation and preserves exact output identity (0.2ms)
+✔ original prepare is scheduled once after initial stored receipt lookup (0.1252ms)
+✔ lost ACK/worker failure recovers the same immutable receipt without repeat prepare or model dispatch (0.1777ms)
+✔ Stop before dispatch makes no application attempt (0.0963ms)
+✔ Stop during prepare preserves committed application truth (0.1427ms)
+✔ Stop after unknown retains read-only reconciliation and late exact ACK (0.214ms)
+✔ unavailable lookup confers no eligibility; original write still needs independent admission and its refusal stops (0.1044ms)
+✔ browser closure affects no server port and reopening observes the same continuation (0.131ms)
+✔ definitive not-dispatched refusal stops original prepare and cannot become a retry (0.1322ms)
+✔ current read refusal after uncertainty cannot erase the uncertain original effect (0.1226ms)
+ℹ tests 43
+ℹ suites 0
+ℹ pass 36
+ℹ fail 7
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 265.2769
+
+✖ failing tests:
+
+test at apps\control\objective-planner\continuation\activities.test.mjs:9:1
+✖ prepare transport is capped to the genuine producer admission expiry including original consent/task bounds (1.1607ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 1792108815000
+  - 1792108800007
+            ^
+  
+      at TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/objective-planner/continuation/activities.test.mjs:9:227)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1792108815000,
+    expected: 1792108800007,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps\control\objective-planner\continuation\activities.test.mjs:10:1
+✖ expired-after-admission or malformed proof refuses before Core transport (1.0387ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   kind: 'unavailable'
+  -   kind: 'refused'
+    }
+  
+      at TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/objective-planner/continuation/activities.test.mjs:10:362)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [Object],
+    expected: [Object],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at apps\control\objective-planner\continuation\activities.test.mjs:11:1
+✖ a longer Core credential cannot extend shorter producer admission during late authorization (96.4359ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   ack: {
+  +     applicationRequestId: '8d2d083f-b799-8ebf-887d-f5784c95732c',
+  +     creationAckSha256: '9a7e65466c4560f3503639c39c031ea83987c313647f6f75d78e03c75673b8fc',
+  +     ownerReceiptId: '00000042-0000-4000-8000-000000000000',
+  +     ownerReceiptSha256: 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+  +     projects: [
+  +       {
+  +         createdVersion: 1,
+  +         groupKey: 'default',
+  +         originalNodeIds: [
+  +           '00000020-0000-4000-8000-000000000000',
+  +           '00000021-0000-4000-8000-000000000000'
+  +         ],
+  +         projectId: '00000006-0000-4000-8000-000000000000'
+  +       }
+  +     ],
+  +     tasks: [
+  +       {
+  +         createdVersion: 1,
+  +         originalGroupKeys: [
+  +           'default'
+  +         ],
+  +         sourceNodeId: '00000020-0000-4000-8000-000000000000',
+  +         taskId: '00000031-0000-4000-8000-000000000000'
+  +       },
+  +       {
+  +         createdVersion: 1,
+  +         originalGroupKeys: [
+  +           'default'
+  +         ],
+  +         sourceNodeId: '00000021-0000-4000-8000-000000000000',
+  +         taskId: '00000032-0000-4000-8000-000000000000'
+  +       }
+  +     ]
+  +   },
+  +   kind: 'ack'
+  -   kind: 'unavailable'
+    }
+  
+      at TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/objective-planner/continuation/activities.test.mjs:11:1013)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [Object],
+    expected: [Object],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at apps\control\objective-planner\continuation\contract.test.mjs:16:1
+✖ canonical tuple rejects available creation ACK when an unavailable current output retains any ID/version (1.5365ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/objective-planner/continuation/contract.test.mjs:16:384)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at apps\control\objective-planner\continuation\contract.test.mjs:17:1
+✖ canonical tuple rejects archived-null outputs, including withheld creation observations (0.8942ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/objective-planner/continuation/contract.test.mjs:17:388)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at apps\control\objective-planner\continuation\core-client.test.mjs:7:1
+✖ fixed POST201 and GET200 use separate current authorization and release checks, original application ID and nine fields (2.7664ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'https://core.synthetic.invalid/internal/objective-canonical/planner-applications'
+  - 'https://core.synthetic.invalid/strategy-api/internal/objective-canonical/planner-applications'
+  
+      at TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/objective-planner/continuation/core-client.test.mjs:7:304)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'https://core.synthetic.invalid/internal/objective-canonical/planner-applications',
+    expected: 'https://core.synthetic.invalid/strategy-api/internal/objective-canonical/planner-applications',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps\control\objective-planner\continuation\core-client.test.mjs:8:1
+✖ deployed Core producer route includes global strategy-api prefix for BOTH POST and GET, without assumed rewrite (1.269ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'unavailable'
+  - 'ack'
+  
+      at TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/objective-planner/continuation/core-client.test.mjs:8:680)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'unavailable',
+    expected: 'ack',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

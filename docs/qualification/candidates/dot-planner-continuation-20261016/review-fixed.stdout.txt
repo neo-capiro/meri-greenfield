@@ -1,0 +1,41 @@
+✔ prepare requires independent trusted admission even when initial ACK lookup is unavailable (4.0186ms)
+✔ missing/expired initial admission returns definitive not-dispatched refusal before Core prepare (1.4816ms)
+✔ historical ACK reconciliation calls only fresh-read owner, never prepare/model/admission (0.8483ms)
+✔ immutable work SHA mismatch refuses before all ports (0.8415ms)
+✔ prepare transport is capped to the genuine producer admission expiry including original consent/task bounds (0.9893ms)
+✔ expired-after-admission or malformed proof refuses before Core transport (3.2005ms)
+✔ a longer Core credential cannot extend shorter producer admission during late authorization (62.7136ms)
+✔ actual source composition stays disabled without genuine producer or transport issuer; no effects on import/construction (1.6176ms)
+✔ coherent admitted source joins actual driver/activities/Core client/custody/server; lost POST ACK recovers one application after caller leaves (20.6732ms)
+✔ fixed server request has exactly nine Core fields and no actor/groups/model/credential payload (1.2911ms)
+✔ exact source pins change request/work digest while application identity stays fixed (1.2305ms)
+✔ Core sorted JSON hash preserves array order, scalar escapes and lexical numeric keys (0.2463ms)
+✔ application UUID uses Core namespace/version8/variant8 and native actor; workflow separately pins original consent/control (1.3265ms)
+✔ creation ACK has separate whole-owner receipt hash and actual canonical default project ID (1.8161ms)
+✔ mutable current human edits/regrouping/replay do not change immutable creation custody (2.8364ms)
+✔ original consent/control must echo even when historical current authority has advanced (9.156ms)
+✔ withheld ACK yields no output references; cached or malformed substitution is refused (1.7756ms)
+✔ ACK envelope/content/hash/output identity and source integrity are closed (8.2575ms)
+✔ UUIDs and digests reject a final newline despite the regular expression end-anchor allowance (4.2423ms)
+✔ canonical tuple rejects available creation ACK when an unavailable current output retains any ID/version (10.5886ms)
+✔ canonical tuple rejects archived-null outputs, including withheld creation observations (2.7364ms)
+✔ canonical archived outputs retain their authorized IDs and human-edited current versions/groups (1.5576ms)
+✔ fixed POST201 and GET200 use separate current authorization and release checks, original application ID and nine fields (3.6217ms)
+✔ deployed Core producer route includes global strategy-api prefix for BOTH POST and GET, without assumed rewrite (2.9218ms)
+✔ trusted service origin cannot add an arbitrary prefix, path, query or fragment (1.6403ms)
+✔ disabled/missing issuer refuses before credential/network access (0.9768ms)
+✔ every noncanonical status stays uncertain; GET404/503 never produces absence/eligibility (8.6657ms)
+✔ wrong/malformed credential actor/tenant/hash/time refuses before transport (4.1993ms)
+✔ post-effect read revocation withholds even a valid original creation ACK without retry (1.75ms)
+✔ historical read accepts original consent/control ACK without extending any prepare grant (2.7284ms)
+✔ malformed, oversized, wrong content-type/encoding/length and mismatched original ACK never release (5.2928ms)
+✔ a hanging response stream is bounded, cancelled and never retried (15.9266ms)
+✔ late response after caller cancellation is cancelled without release (1.422ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 33
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 263.5585
