@@ -42,7 +42,7 @@ test('the shipped activation record is held and only an evidence-bearing open re
  assert.equal(activationOpen({state:'open',evidence:'docs/qualification/egress-record',requirements:EGRESS_REQUIREMENTS}),true);
  assert.equal(createBrowserCapability.length,1,'no activation argument');
 });
-test('the scripted Playwright MCP config pins the sandbox, per-conversation profile, the destination allowlist and platform blocked origins',()=>{
+test('the scripted Playwright MCP config pins the sandbox, per-conversation profile, the egress proxy, the destination allowlist and platform blocked origins',()=>{
  const r=recorders(),open=policy=>buildOpenBrowserFragment({binding,cwd,policy:validateBrowserPolicy(policy),installation,sourceScopes,artifacts:r.artifactPort,receipts:r.receiptPort,now:clock});
  const def=open(DEFAULT_BROWSER_POLICY).mcpServers.meri_browser.args;
  assert.equal(def[def.indexOf('--allowed-origins')+1],NO_DESTINATION_ORIGIN,'an empty allowlist must not become upstream allow-all');assert.equal(def[def.indexOf('--blocked-origins')+1],PLATFORM_BLOCKED_ORIGINS.join(';'));
@@ -52,6 +52,9 @@ test('the scripted Playwright MCP config pins the sandbox, per-conversation prof
  assert.equal(args[0],'/opt/scripted/@playwright/mcp/cli.js');for(const flag of ['--sandbox','--headless','--no-webmcp','--block-service-workers'])assert.ok(args.includes(flag),flag);
  assert.equal(args[args.indexOf('--user-data-dir')+1],`${cwd}/.browser/profile`);assert.equal(args[args.indexOf('--output-dir')+1],`${cwd}/.browser/output`);
  assert.equal(args[args.indexOf('--allowed-origins')+1],'https://records.example;https://notices.example');
+ assert.equal(args[args.indexOf('--proxy-server')+1],installation.egressProxy,'every browser request goes to the host egress control');
+ assert.ok(!args.some(a=>a.startsWith('--proxy-bypass')),'no bypass: Playwright then proxies loopback too');
+ assert.ok(!Object.keys(server.env).some(k=>k.startsWith('PLAYWRIGHT_DISABLE')),'forced loopback proxying is not disabled');
  assert.equal(args[args.indexOf('--blocked-origins')+1],PLATFORM_BLOCKED_ORIGINS.join(';'));assert.equal(args.filter(a=>a==='--allowed-origins').length,1);
  for(const flag of ['--no-sandbox','--storage-state','--secrets','--extension','--cdp-endpoint','--save-session','--caps','--allow-unrestricted-file-access','--shared-browser-context','--config','--init-script'])assert.ok(!args.some(a=>a===flag||a.startsWith(`${flag}=`)),flag);
  assert.deepEqual(server.env,{PLAYWRIGHT_BROWSERS_PATH:'/opt/scripted/browsers',HOME:`${cwd}/.browser/home`});
@@ -63,8 +66,8 @@ test('interaction tools are never pre-approved; unadmitted exposed tools are rem
  for(const t of INTERACTION_TOOLS)assert.ok(!cap.allowedTools.includes(`mcp__meri_browser__${t}`),t);
  assert.deepEqual(cap.allowedTools,BROWSER_TOOLS.filter(t=>!INTERACTION_TOOLS.includes(t)).map(t=>`mcp__meri_browser__${t}`));
  for(const t of ['browser_evaluate','browser_run_code_unsafe','browser_file_upload','browser_network_requests','browser_drag'])assert.ok(cap.disallowedTools.includes(`mcp__meri_browser__${t}`),t);
- assert.equal(typeof cap.canUseTool,'function');assert.deepEqual(Object.keys(cap.hooks),['PreToolUse','PostToolUse']);
- for(const event of ['PreToolUse','PostToolUse'])assert.equal(cap.hooks[event][0].matcher,'mcp__meri_browser__.*');
+ assert.equal(typeof cap.canUseTool,'function');assert.deepEqual(Object.keys(cap.hooks),['PreToolUse','PostToolUse','PostToolUseFailure']);
+ for(const event of ['PreToolUse','PostToolUse','PostToolUseFailure'])assert.equal(cap.hooks[event][0].matcher,'mcp__meri_browser__.*');
  const narrow=openFragment({cwd}).cap;assert.deepEqual(narrow.allowedTools,['mcp__meri_browser__browser_navigate','mcp__meri_browser__browser_snapshot','mcp__meri_browser__browser_take_screenshot']);
  assert.ok(narrow.disallowedTools.includes('mcp__meri_browser__browser_type'));assert.ok(!narrow.disallowedTools.includes('mcp__meri_browser__browser_click'));
 });
@@ -75,6 +78,8 @@ test('configuration refuses a workspace that is not this conversation, missing p
  const open=over=>buildOpenBrowserFragment({...base,cwd,policy:validateBrowserPolicy(enabledPolicy()),...over});
  assert.throws(()=>open({receipts:undefined}),/BROWSER_CONFIGURATION/);assert.throws(()=>open({artifacts:{}}),/BROWSER_CONFIGURATION/);
  assert.throws(()=>open({installation:{...installation,version:'0.0.84'}}),/BROWSER_CONFIGURATION/);assert.throws(()=>open({installation:{...installation,cliPath:'cli.js'}}),/BROWSER_CONFIGURATION/);
+ for(const egressProxy of [undefined,'','http://127.0.0.1','https://127.0.0.1:3128','socks5://127.0.0.1:1080','http://u:p@127.0.0.1:3128','http://127.0.0.1:3128/path','http://127.0.0.1:3128/','http://127.0.0.1:3128?x=1'])
+  assert.throws(()=>open({installation:{...installation,egressProxy}}),/BROWSER_CONFIGURATION/,String(egressProxy));
  assert.throws(()=>open({sourceScopes:[{...sourceScopes[0],tenantId:'tenant-other'}]}),/BROWSER_CONFIGURATION/);assert.throws(()=>open({sourceScopes:[{tenantId:binding.tenantId,kind:'any',resourceId:'x',policyRevision:'p'}]}),/BROWSER_CONFIGURATION/);
  assert.throws(()=>open({sourceScopes:undefined}),/BROWSER_CONFIGURATION/);
  assert.equal(open({artifacts:undefined,sourceScopes:undefined,policy:validateBrowserPolicy(enabledPolicy({downloads:{enabled:false,formats:['pdf'],maxBytes:1,maxFiles:1}}))}).enabled,true);
