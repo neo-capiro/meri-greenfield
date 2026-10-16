@@ -1,0 +1,103 @@
+{
+  "sourceFiles": [
+    {
+      "sha256": "77af7f47a9bc0f34919f20c36b9532344599cc5c8c760e7a63eeb70d25306de0",
+      "path": "packages/runtime/objective-generation-custody.mjs"
+    },
+    {
+      "sha256": "089795b616049b0b49b49ffd05dfd15dfcb8ffa56acdcc4cdc65620ca74bccee",
+      "path": "apps/worker/conversation/activity.mjs"
+    },
+    {
+      "sha256": "038b4fe078afbd8f8c22ba2c65f8f3fdadac8e4889fa7e015b4dd3a8dc355de8",
+      "path": "apps/worker/conversation/options.mjs"
+    },
+    {
+      "sha256": "2b4669e1f4fdf9d61997e1613c7ea0981d7abb9e5feff42495a0a34ed4d6ed29",
+      "path": "apps/worker/conversation/continuation/activity-lifecycle.mjs"
+    },
+    {
+      "sha256": "02142e24a120df3efee7c8b9b2972feb298274217f88ef9050996d1192defa35",
+      "path": "apps/control/conversations/completion-journal.mjs"
+    },
+    {
+      "sha256": "e475e878cd6b4673db0fdde1070a0c2963498f3dcf72a10a520768e243104080",
+      "path": "apps/runtime/native-authority/completion-capture.mjs"
+    },
+    {
+      "sha256": "2114c12f370b09e5a376c7ce581dd79401e9d587a39bda7eabc3b540a211cef1",
+      "path": "apps/runtime/native-authority/checkpoint-http.mjs"
+    },
+    {
+      "sha256": "3f85656a9e4e357897cfb9706f2706dc3f3a901cd0b5144ee47beba128ed4303",
+      "path": "docs/qualification/candidates/dot-strategy-custody-20261016/dependency-seams.mjs"
+    },
+    {
+      "sha256": "68788d1345182067561dd1c61238f74d7bdb0bdf58d5ce1adeccac4fa2715007",
+      "path": "docs/qualification/candidates/dot-strategy-custody-20261016/run-controls.ps1"
+    },
+    {
+      "sha256": "3a700572b6d54a55dcb289c0d55f4b279962951ec6d3f22b1ec6a960b410b0cb",
+      "path": "apps\\worker\\conversation\\objective-generation\\fixed-file.mjs"
+    },
+    {
+      "sha256": "1ead58f15d2de00585180e9731014b30cd9275c7079e8bd47f98e1f8b765bd08",
+      "path": "apps\\worker\\conversation\\objective-generation\\runtime.mjs"
+    },
+    {
+      "sha256": "63ef0b57fa7b1721f48bdf9a000cd5606e95763d60fdc050ba748549eba1c30a",
+      "path": "apps\\worker\\conversation\\objective-generation\\typed-result.mjs"
+    },
+    {
+      "sha256": "277a4289863c90bbea94f6910196eba8115588538f22b3de87ccaaf03f1d384f",
+      "path": "apps\\worker\\conversation\\objective-generation\\test\\fixtures.mjs"
+    },
+    {
+      "sha256": "069ce31767a037d5cfe9183a064f9b67faf2cb11b185e7462fdb5f3513d14e93",
+      "path": "apps\\worker\\conversation\\objective-generation\\test\\runtime.test.mjs"
+    },
+    {
+      "sha256": "467cc5e4f87c48561f88e6cc579523353341186123aad6f7936c4ffb88f93abc",
+      "path": "apps\\worker\\conversation\\objective-generation\\test\\typed-result.test.mjs"
+    },
+    {
+      "sha256": "d710d19a3178e54684649a7330941fd705d8258c507c2b56e2de727f40c02b48",
+      "path": "apps\\runtime\\objective-generation\\retained-result.mjs"
+    }
+  ],
+  "limitStopped": false,
+  "elapsedMs": 209,
+  "sourceParent": "14f0bc2e5716af7c00925d13d3365b26182c9e56",
+  "note": "Real changed typed/custody source with scripted canonical candidate/schema/hash, SQL/native/authority ports. Installed Ajv/canonicalize/SDK/real provider/DB and Linux fd writer UNRUN.",
+  "memory": {
+    "freeBytes": 12390096896,
+    "totalBytes": 33632079872,
+    "rssBytes": 33091584
+  },
+  "exitCode": 0,
+  "synthetic": true,
+  "sampledPeakWorkingSetBytes": 52387840,
+  "argv": [
+    "--max-old-space-size=128",
+    "--experimental-test-module-mocks",
+    "--import",
+    "./docs/qualification/candidates/dot-strategy-custody-20261016/dependency-seams.mjs",
+    "--test",
+    "--test-isolation=none",
+    "--test-concurrency=1",
+    "apps/worker/conversation/objective-generation/test/typed-result.test.mjs",
+    "apps/worker/conversation/objective-generation/test/runtime.test.mjs"
+  ],
+  "finishedAt": "2026-10-16T05:21:15.7012501+00:00",
+  "ports": [],
+  "workingSetLimitBytes": 268435456,
+  "processCount": 1,
+  "heapMiB": 128,
+  "cleanup": {
+    "servicesCreated": 0,
+    "portsCreated": 0,
+    "ownedProcessExited": true
+  },
+  "startedAt": "2026-10-16T05:21:15.2608487+00:00",
+  "hardWallMs": 30000
+}

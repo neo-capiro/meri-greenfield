@@ -1,0 +1,132 @@
+{
+  "memory": {
+    "freeBytes": 11802546176,
+    "totalBytes": 33632079872,
+    "rssBytes": 32370688
+  },
+  "cleanup": {
+    "servicesCreated": 0,
+    "portsCreated": 0,
+    "ownedProcessExited": true
+  },
+  "note": "Real changed typed/custody source with scripted canonical candidate/schema/hash, SQL/native/authority ports. Installed Ajv/canonicalize/SDK/real provider/DB and Linux fd writer UNRUN.",
+  "startedAt": "2026-10-16T05:28:15.8757761+00:00",
+  "elapsedMs": 214,
+  "exitCode": 1,
+  "argv": [
+    "--max-old-space-size=128",
+    "--experimental-test-module-mocks",
+    "--import",
+    "./docs/qualification/candidates/dot-strategy-custody-20261016/dependency-seams.mjs",
+    "--test",
+    "--test-isolation=none",
+    "--test-concurrency=1",
+    "apps/worker/conversation/objective-generation/test/activity-hook.test.mjs",
+    "apps/runtime/native-authority/test/typed-checkpoint-http.test.mjs",
+    "apps/worker/conversation/test/completion-activity.test.mjs"
+  ],
+  "limitStopped": false,
+  "sourceFiles": [
+    {
+      "path": "packages/runtime/objective-generation-custody.mjs",
+      "sha256": "4ba59fa7f314daa03769fb58616f8e06f4521124616d3bbb6c24334246a85f2f"
+    },
+    {
+      "path": "apps/worker/conversation/activity.mjs",
+      "sha256": "089795b616049b0b49b49ffd05dfd15dfcb8ffa56acdcc4cdc65620ca74bccee"
+    },
+    {
+      "path": "apps/worker/conversation/options.mjs",
+      "sha256": "038b4fe078afbd8f8c22ba2c65f8f3fdadac8e4889fa7e015b4dd3a8dc355de8"
+    },
+    {
+      "path": "apps/worker/conversation/continuation/activity-lifecycle.mjs",
+      "sha256": "2b4669e1f4fdf9d61997e1613c7ea0981d7abb9e5feff42495a0a34ed4d6ed29"
+    },
+    {
+      "path": "apps/control/conversations/completion-journal.mjs",
+      "sha256": "02142e24a120df3efee7c8b9b2972feb298274217f88ef9050996d1192defa35"
+    },
+    {
+      "path": "apps/runtime/native-authority/completion-capture.mjs",
+      "sha256": "e475e878cd6b4673db0fdde1070a0c2963498f3dcf72a10a520768e243104080"
+    },
+    {
+      "path": "apps/runtime/native-authority/checkpoint-http.mjs",
+      "sha256": "2114c12f370b09e5a376c7ce581dd79401e9d587a39bda7eabc3b540a211cef1"
+    },
+    {
+      "path": "docs/qualification/candidates/dot-strategy-custody-20261016/dependency-seams.mjs",
+      "sha256": "002f0d4af0c44ef1d8e6c1057b3401b420fe4d500e2109be437161934d1aba32"
+    },
+    {
+      "path": "docs/qualification/candidates/dot-strategy-custody-20261016/sdk-seam.mjs",
+      "sha256": "6d14e2205ab807a8bfb88e8bd00663b9362759a52e3d3825d6082256e10ea6c2"
+    },
+    {
+      "path": "docs/qualification/candidates/dot-strategy-custody-20261016/run-controls.ps1",
+      "sha256": "8917f38bba386670739b9eabb305f0c8b842d2f9909371f7ab1cc195fd1d29b0"
+    },
+    {
+      "path": "apps/worker/conversation/objective-generation/test/activity-hook.test.mjs",
+      "sha256": "7bcee0edbe65e46f16bf87c885ae1d6237733309e3b9e0ed6d4b8ad78568cf2d"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/typed-checkpoint-http.test.mjs",
+      "sha256": "e4b735ea7d66aa82f5be7e648f4cbf94e6e827f402ad939b439825bd18663f43"
+    },
+    {
+      "path": "apps/worker/conversation/test/completion-activity.test.mjs",
+      "sha256": "ff5aba9cb211ec3bb1fe9f9507f51cac6fd9bd6d277eb3c4c90af7e09336d099"
+    },
+    {
+      "path": "apps/control/conversations/test/typed-completion-fixture.mjs",
+      "sha256": "692c1e60f39523e42cb4393b4a4957a40479c045a9b83ad717709cf7cebe919d"
+    },
+    {
+      "path": "apps\\worker\\conversation\\objective-generation\\fixed-file.mjs",
+      "sha256": "a163c06ea4d45477a316103f558e8fac909aa6efa1c37df43cbf2b022c317390"
+    },
+    {
+      "path": "apps\\worker\\conversation\\objective-generation\\runtime.mjs",
+      "sha256": "1ead58f15d2de00585180e9731014b30cd9275c7079e8bd47f98e1f8b765bd08"
+    },
+    {
+      "path": "apps\\worker\\conversation\\objective-generation\\typed-result.mjs",
+      "sha256": "63ef0b57fa7b1721f48bdf9a000cd5606e95763d60fdc050ba748549eba1c30a"
+    },
+    {
+      "path": "apps\\worker\\conversation\\objective-generation\\test\\activity-hook.test.mjs",
+      "sha256": "7bcee0edbe65e46f16bf87c885ae1d6237733309e3b9e0ed6d4b8ad78568cf2d"
+    },
+    {
+      "path": "apps\\worker\\conversation\\objective-generation\\test\\fixtures.mjs",
+      "sha256": "277a4289863c90bbea94f6910196eba8115588538f22b3de87ccaaf03f1d384f"
+    },
+    {
+      "path": "apps\\worker\\conversation\\objective-generation\\test\\runtime.test.mjs",
+      "sha256": "069ce31767a037d5cfe9183a064f9b67faf2cb11b185e7462fdb5f3513d14e93"
+    },
+    {
+      "path": "apps\\worker\\conversation\\objective-generation\\test\\typed-result.test.mjs",
+      "sha256": "467cc5e4f87c48561f88e6cc579523353341186123aad6f7936c4ffb88f93abc"
+    },
+    {
+      "path": "apps\\runtime\\objective-generation\\retained-result.mjs",
+      "sha256": "d710d19a3178e54684649a7330941fd705d8258c507c2b56e2de727f40c02b48"
+    },
+    {
+      "path": "apps\\runtime\\objective-generation\\test\\retained-result.test.mjs",
+      "sha256": "11d28dfacb3a1e2b0412f17fce266f0464704a9e18c9eae69fe3a4776fa0d7d3"
+    }
+  ],
+  "sampledPeakWorkingSetBytes": 55672832,
+  "sourceParent": "14f0bc2e5716af7c00925d13d3365b26182c9e56",
+  "synthetic": true,
+  "hardWallMs": 30000,
+  "finishedAt": "2026-10-16T05:28:16.2922402+00:00",
+  "workingSetLimitBytes": 268435456,
+  "ports": [],
+  "heapMiB": 128,
+  "processCount": 1
+}

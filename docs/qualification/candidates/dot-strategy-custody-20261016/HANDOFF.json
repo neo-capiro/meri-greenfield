@@ -1,0 +1,287 @@
+{
+  "sourceTree": "c2e53682a4bc701aff097f18f1b5aa27661e4699",
+  "authority": {
+    "newMigration": false,
+    "mainMerge": false,
+    "sql": false,
+    "frozenContractsChanged": false,
+    "runtimeActivated": false,
+    "newMaterial": false,
+    "lockfilesChanged": false,
+    "cloud": false,
+    "provider": false
+  },
+  "finalSynthetic": {
+    "record": "combined-source-final.json",
+    "failed": 0,
+    "tests": 53,
+    "elapsedMs": 452,
+    "retainedControls": 3,
+    "heapMiB": 128,
+    "allProofSourceBytesMatch": true,
+    "cancelled": 0,
+    "skipped": 0,
+    "cleanup": {
+      "ownedProcessExited": true,
+      "servicesCreated": 0,
+      "portsCreated": 0
+    },
+    "newControls": 50,
+    "processes": 1,
+    "sampledPeakWorkingSetBytes": 76677120,
+    "memory": {
+      "freeBytes": 11638198272,
+      "totalBytes": 33632079872,
+      "rssBytes": 35766272
+    },
+    "sampledWorkingSetCeilingBytes": 268435456,
+    "passed": 53,
+    "hardWallMs": 30000,
+    "verifiedFinalProofSourcePaths": 28
+  },
+  "remaining": [
+    "Independent exact-source review/integration by Qualification",
+    "Actual Core five-field request publisher/current proof and genuine delegation verifier",
+    "C protected objectiveGeneration/objectiveStrategy compiler/readback/startup and genuine full-entry preparedFacts port",
+    "Actual Core completion receiver over this fresh-authority original-result reader",
+    "Strategy regeneration needs a separately approved candidate basis/applicationTarget successor"
+  ],
+  "sourceManifestSha256": "ad3e53a5ac8e972cce527172334f98037ad798142f767ba5236aca0329e73faa",
+  "unrun": [
+    "Seven actual candidate Ajv/JCS/graph codec tests (candidate directory absent at14f)",
+    "Actual SDK outputFormat/structured result/checkpoint composition",
+    "Linux fd-anchor exclusive-create writer",
+    "Current Core identity/workload verifier and actual preparedFacts compiler/startup/receiver integration",
+    "Full compiler/build/native/browser/database suites"
+  ],
+  "base": "14f0bc2e5716af7c00925d13d3365b26182c9e56",
+  "proofs": [
+    {
+      "limitStopped": false,
+      "exitCode": 0,
+      "cleanup": {
+        "servicesCreated": 0,
+        "ownedProcessExited": true,
+        "portsCreated": 0
+      },
+      "stdoutSha256": "4702cec17ffa64bc79f17a2083b10e3cd7f3691123c6502e20b7d8f384aa77a4",
+      "name": "combined-focused-first",
+      "metadataSha256": "b6488cbb1b0a67cb00f6780be3d9465896e63b3ccca33db5c6dfcbe02c11d065",
+      "sampledPeakWorkingSetBytes": 75939840,
+      "elapsedMs": 455,
+      "stderrSha256": "541cf11528a668e9b506e0b73758fa6bca598b34ab523c69a98e753567f81a0d",
+      "reportedTestLines": [
+        "ℹ tests 52",
+        "ℹ pass 52",
+        "ℹ fail 0",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "ℹ duration_ms 365.747"
+      ]
+    },
+    {
+      "limitStopped": false,
+      "exitCode": 0,
+      "cleanup": {
+        "ownedProcessExited": true,
+        "servicesCreated": 0,
+        "portsCreated": 0
+      },
+      "stdoutSha256": "3a15c2320c12bf63a11d1ad0422a30c09298a883135a0a8397da0e339137c8b4",
+      "name": "combined-source-final",
+      "metadataSha256": "b6d91267cf68372174398f596870db53bc2ebab8e660e349781121b1d360f69e",
+      "sampledPeakWorkingSetBytes": 76677120,
+      "elapsedMs": 452,
+      "stderrSha256": "201352b97787a5e8759d5418066f913ea45d0322d9b3bacc2d8f1f8dc66b78b2",
+      "reportedTestLines": [
+        "ℹ tests 53",
+        "ℹ pass 53",
+        "ℹ fail 0",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "ℹ duration_ms 363.4511"
+      ]
+    },
+    {
+      "limitStopped": false,
+      "exitCode": 1,
+      "cleanup": {
+        "portsCreated": 0,
+        "servicesCreated": 0,
+        "ownedProcessExited": true
+      },
+      "stdoutSha256": "88c9517bf08a8dce20fda4d67fb0a59f8263b530bf6b07c1f54395c8111c1fc0",
+      "name": "custody-first",
+      "metadataSha256": "8334bb4450274f42d868cbd01122bd9e9ed3c3009870a0c2c461521b655fe119",
+      "sampledPeakWorkingSetBytes": 57966592,
+      "elapsedMs": 329,
+      "stderrSha256": "f6ed6b907cf5e513a590f46201b8a1da6ebe8185de005842141943cd82762e9d",
+      "reportedTestLines": [
+        "ℹ tests 36",
+        "ℹ pass 34",
+        "ℹ fail 2",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "ℹ duration_ms 225.5103"
+      ]
+    },
+    {
+      "limitStopped": false,
+      "exitCode": 1,
+      "cleanup": {
+        "servicesCreated": 0,
+        "portsCreated": 0,
+        "ownedProcessExited": true
+      },
+      "stdoutSha256": "8fbaf148dfac26da7e9437fc234c25d30181a8357dea948472791af8c8bb15c5",
+      "name": "custody-fixtures-corrected",
+      "metadataSha256": "a8d161c459aa8ac7f7fe5cf05e6d8fea8ee113a6b2ee46411a7307c23e73cb14",
+      "sampledPeakWorkingSetBytes": 58990592,
+      "elapsedMs": 301,
+      "stderrSha256": "3c1c1f7ac81c3bf115d20d9e061a1697797d4978851db9aa43dd7f088fb37c9f",
+      "reportedTestLines": [
+        "ℹ tests 36",
+        "ℹ pass 35",
+        "ℹ fail 1",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "ℹ duration_ms 207.38"
+      ]
+    },
+    {
+      "limitStopped": false,
+      "exitCode": 0,
+      "cleanup": {
+        "ownedProcessExited": true,
+        "servicesCreated": 0,
+        "portsCreated": 0
+      },
+      "stdoutSha256": "37d5ab7d1d771379a789366ef58d95102d6c97fb6216c5dca146c3c2add942af",
+      "name": "custody-policy-fixture-corrected",
+      "metadataSha256": "a366b9c4dbb3735c43fad887aa31f6a5ddfaa858df7c54b805f86a4cd8941f66",
+      "sampledPeakWorkingSetBytes": 59674624,
+      "elapsedMs": 354,
+      "stderrSha256": "8a7d311cff2b1e64907356ffa5584f0ad5b7439709c1b38b88054221e9d4091a",
+      "reportedTestLines": [
+        "ℹ tests 42",
+        "ℹ pass 42",
+        "ℹ fail 0",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "ℹ duration_ms 255.758"
+      ]
+    },
+    {
+      "limitStopped": false,
+      "exitCode": 1,
+      "cleanup": {
+        "servicesCreated": 0,
+        "portsCreated": 0,
+        "ownedProcessExited": true
+      },
+      "stdoutSha256": "23f565fc38318793f119e00ebdae6d72cde74d33510c4a71688f7b416d462fc7",
+      "name": "custody-private-schema-seam",
+      "metadataSha256": "1a09b27760c99b82843bee720e89dfee1bc2f63d02054dff8894569ca5bbe009",
+      "sampledPeakWorkingSetBytes": 58802176,
+      "elapsedMs": 352,
+      "stderrSha256": "5c72253bfc6a3c97bac5c2b855211516e2ca7d782bdef25b05b49937c1d92cb1",
+      "reportedTestLines": [
+        "ℹ tests 42",
+        "ℹ pass 36",
+        "ℹ fail 6",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "ℹ duration_ms 246.1411"
+      ]
+    },
+    {
+      "limitStopped": false,
+      "exitCode": 1,
+      "cleanup": {
+        "servicesCreated": 0,
+        "portsCreated": 0,
+        "ownedProcessExited": true
+      },
+      "stdoutSha256": "c86baab2bb2edc1083004aa8d0f7be0da8c63f1843f320a81228c8f0eaf73497",
+      "name": "hooks-first",
+      "metadataSha256": "e94e61907109005ee5ff9a20f7b4e098f7317a6b4868c415187ac8d765125af1",
+      "sampledPeakWorkingSetBytes": 55672832,
+      "elapsedMs": 214,
+      "stderrSha256": "d6c2092e2d73501851cffd7963c777e04033dcdbf934b6fe4dffc31f9e040fb0",
+      "reportedTestLines": [
+        "ℹ tests 4",
+        "ℹ pass 2",
+        "ℹ fail 2",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "ℹ duration_ms 128.3709"
+      ]
+    },
+    {
+      "limitStopped": false,
+      "exitCode": 1,
+      "cleanup": {
+        "portsCreated": 0,
+        "servicesCreated": 0,
+        "ownedProcessExited": true
+      },
+      "stdoutSha256": "7da992c1c0ea9488e945c6754bdb29b14b06fb1b9d4214101e5ec83276b3ca9c",
+      "name": "hooks-original-import-seams",
+      "metadataSha256": "950781213283987a1c05a84649382b76a71b509231275896e286e0c662802838",
+      "sampledPeakWorkingSetBytes": 62857216,
+      "elapsedMs": 250,
+      "stderrSha256": "8700acf572bca0caea94461385a8d852b6b3a8b7ae746bd49d636bd8d048c075",
+      "reportedTestLines": [
+        "ℹ tests 9",
+        "ℹ pass 6",
+        "ℹ fail 3",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "ℹ duration_ms 166.7387"
+      ]
+    },
+    {
+      "limitStopped": false,
+      "exitCode": 0,
+      "cleanup": {
+        "servicesCreated": 0,
+        "portsCreated": 0,
+        "ownedProcessExited": true
+      },
+      "stdoutSha256": "20ec6c8bca7e84db01e04eac90cb851f149c72dcd7169d90296c149e2dc4a57b",
+      "name": "validation-first",
+      "metadataSha256": "a924783b084a0668294ff8ee8ac3530c385a6b3baf0004975862d799d3cbf769",
+      "sampledPeakWorkingSetBytes": 52387840,
+      "elapsedMs": 209,
+      "stderrSha256": "8ed2492934adb3e7cd7e67f4f0d3fd64216d5083b25a74925b82d11dadc25ecf",
+      "reportedTestLines": [
+        "ℹ tests 21",
+        "ℹ pass 21",
+        "ℹ fail 0",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "ℹ duration_ms 118.9597"
+      ]
+    }
+  ],
+  "dependencies": {
+    "candidateData": "4d8bd8ee3d3c6f0c5e1c91edbfebe44598dcf7af (separately reviewed data only; absent here)",
+    "coreLocal": "f236b5a065592260bcb52581ee2a719ce96b4429/tree98defa552473a7afcdaa00ae82db3a7b7d71e760 (new producer/v3, not published)",
+    "corePublisher": "LOCAL8009706cf7b73747314f10582690a0b48b1c0469/treeb3d5438a5a7ebb296df5a2a2f3f4d2667ff694ac/directf236; 143 source fixtures reported; independent final pin review pending; unpublished and not imported",
+    "compilerOwner": "C: accepted7dd issuer blob a89195ac852791940422a4cf1f2b0fbb3468829c plus separately coordinated protected facts/startup",
+    "corePublished": "53b5932f08f867581a0671f5c256935b1429a129 (old receiver only)"
+  },
+  "status": "SOURCE_REVIEW_PENDING_RUNTIME_HOLD",
+  "branch": "dot/strategy-result-custody-20261016",
+  "schemaVersion": 1,
+  "source": "99ed57c6660902be608350a300b433ff4f9b537d",
+  "sourcePathCount": 26,
+  "blocked": {
+    "alreadyCompleted": "Core localf236 source/evidence sealed; current publisher successor authored but unsealed",
+    "action": "Publish Core producer/v3 successor",
+    "target": "capiro-backend feature branch (Core-owned)",
+    "retryOrAlternatePublisherAttemptedByThisLane": false,
+    "state": "DENIED in Core lane",
+    "reason": "Automatic approval review rejected branch creation under the original no-push delegation"
+  }
+}

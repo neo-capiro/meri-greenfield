@@ -1,0 +1,110 @@
+{
+  "elapsedMs": 301,
+  "finishedAt": "2026-10-16T05:24:31.8064446+00:00",
+  "sampledPeakWorkingSetBytes": 58990592,
+  "sourceParent": "14f0bc2e5716af7c00925d13d3365b26182c9e56",
+  "processCount": 1,
+  "note": "Real changed typed/custody source with scripted canonical candidate/schema/hash, SQL/native/authority ports. Installed Ajv/canonicalize/SDK/real provider/DB and Linux fd writer UNRUN.",
+  "hardWallMs": 30000,
+  "heapMiB": 128,
+  "cleanup": {
+    "servicesCreated": 0,
+    "portsCreated": 0,
+    "ownedProcessExited": true
+  },
+  "startedAt": "2026-10-16T05:24:31.2850468+00:00",
+  "exitCode": 1,
+  "workingSetLimitBytes": 268435456,
+  "sourceFiles": [
+    {
+      "path": "packages/runtime/objective-generation-custody.mjs",
+      "sha256": "4ba59fa7f314daa03769fb58616f8e06f4521124616d3bbb6c24334246a85f2f"
+    },
+    {
+      "path": "apps/worker/conversation/activity.mjs",
+      "sha256": "089795b616049b0b49b49ffd05dfd15dfcb8ffa56acdcc4cdc65620ca74bccee"
+    },
+    {
+      "path": "apps/worker/conversation/options.mjs",
+      "sha256": "038b4fe078afbd8f8c22ba2c65f8f3fdadac8e4889fa7e015b4dd3a8dc355de8"
+    },
+    {
+      "path": "apps/worker/conversation/continuation/activity-lifecycle.mjs",
+      "sha256": "2b4669e1f4fdf9d61997e1613c7ea0981d7abb9e5feff42495a0a34ed4d6ed29"
+    },
+    {
+      "path": "apps/control/conversations/completion-journal.mjs",
+      "sha256": "02142e24a120df3efee7c8b9b2972feb298274217f88ef9050996d1192defa35"
+    },
+    {
+      "path": "apps/runtime/native-authority/completion-capture.mjs",
+      "sha256": "e475e878cd6b4673db0fdde1070a0c2963498f3dcf72a10a520768e243104080"
+    },
+    {
+      "path": "apps/runtime/native-authority/checkpoint-http.mjs",
+      "sha256": "2114c12f370b09e5a376c7ce581dd79401e9d587a39bda7eabc3b540a211cef1"
+    },
+    {
+      "path": "docs/qualification/candidates/dot-strategy-custody-20261016/dependency-seams.mjs",
+      "sha256": "71f3ef43ef1a6ca0c7309728c966d8ae6b7689a43b9c7a6b3e1efec3e95b271d"
+    },
+    {
+      "path": "docs/qualification/candidates/dot-strategy-custody-20261016/run-controls.ps1",
+      "sha256": "68788d1345182067561dd1c61238f74d7bdb0bdf58d5ce1adeccac4fa2715007"
+    },
+    {
+      "path": "apps\\worker\\conversation\\objective-generation\\fixed-file.mjs",
+      "sha256": "a163c06ea4d45477a316103f558e8fac909aa6efa1c37df43cbf2b022c317390"
+    },
+    {
+      "path": "apps\\worker\\conversation\\objective-generation\\runtime.mjs",
+      "sha256": "1ead58f15d2de00585180e9731014b30cd9275c7079e8bd47f98e1f8b765bd08"
+    },
+    {
+      "path": "apps\\worker\\conversation\\objective-generation\\typed-result.mjs",
+      "sha256": "63ef0b57fa7b1721f48bdf9a000cd5606e95763d60fdc050ba748549eba1c30a"
+    },
+    {
+      "path": "apps\\worker\\conversation\\objective-generation\\test\\fixtures.mjs",
+      "sha256": "277a4289863c90bbea94f6910196eba8115588538f22b3de87ccaaf03f1d384f"
+    },
+    {
+      "path": "apps\\worker\\conversation\\objective-generation\\test\\runtime.test.mjs",
+      "sha256": "069ce31767a037d5cfe9183a064f9b67faf2cb11b185e7462fdb5f3513d14e93"
+    },
+    {
+      "path": "apps\\worker\\conversation\\objective-generation\\test\\typed-result.test.mjs",
+      "sha256": "467cc5e4f87c48561f88e6cc579523353341186123aad6f7936c4ffb88f93abc"
+    },
+    {
+      "path": "apps\\runtime\\objective-generation\\retained-result.mjs",
+      "sha256": "d710d19a3178e54684649a7330941fd705d8258c507c2b56e2de727f40c02b48"
+    },
+    {
+      "path": "apps\\runtime\\objective-generation\\test\\retained-result.test.mjs",
+      "sha256": "11d28dfacb3a1e2b0412f17fce266f0464704a9e18c9eae69fe3a4776fa0d7d3"
+    }
+  ],
+  "ports": [],
+  "synthetic": true,
+  "limitStopped": false,
+  "memory": {
+    "freeBytes": 11714383872,
+    "totalBytes": 33632079872,
+    "rssBytes": 32006144
+  },
+  "argv": [
+    "--max-old-space-size=128",
+    "--experimental-test-module-mocks",
+    "--import",
+    "./docs/qualification/candidates/dot-strategy-custody-20261016/dependency-seams.mjs",
+    "--test",
+    "--test-isolation=none",
+    "--test-concurrency=1",
+    "apps/worker/conversation/objective-generation/test/typed-result.test.mjs",
+    "apps/worker/conversation/objective-generation/test/runtime.test.mjs",
+    "apps/runtime/objective-generation/test/retained-result.test.mjs",
+    "apps/control/conversations/test/typed-completion.test.mjs",
+    "apps/runtime/native-authority/test/typed-completion-capture.test.mjs"
+  ]
+}

@@ -1,0 +1,46 @@
+✔ private completion RPC forwards optional descriptor without changing existing untyped body (7.7824ms)
+✔ private completion body cannot supply native protected selection, raw result or arbitrary locator (5.2573ms)
+✖ apps\worker\conversation\objective-generation\test\activity-hook.test.mjs (0.0595ms)
+✖ apps\worker\conversation\test\completion-activity.test.mjs (0.0428ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 2
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 128.3709
+
+✖ failing tests:
+
+test at apps\worker\conversation\objective-generation\test\activity-hook.test.mjs:1:1
+✖ apps\worker\conversation\objective-generation\test\activity-hook.test.mjs (0.0595ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ajv' imported from C:\Users\neoma\Documents\Codex\2026-10-15\task-6\meri-strategy-custody\packages\contracts\conversation-lifecycle\shape.mjs
+      at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)
+      at packageResolve (node:internal/modules/esm/resolve:768:81)
+      at moduleResolve (node:internal/modules/esm/resolve:859:18)
+      at defaultResolve (node:internal/modules/esm/resolve:992:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+      at nextStep (node:internal/modules/customization_hooks:189:26)
+      at resolve (node:internal/test_runner/mock/loader:21:29)
+      at nextStep (node:internal/modules/customization_hooks:189:26)
+      at resolve (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-strategy-custody/docs/qualification/candidates/dot-strategy-custody-20261016/dependency-seams.mjs:8:333) {
+    code: 'ERR_MODULE_NOT_FOUND'
+  }
+
+test at apps\worker\conversation\test\completion-activity.test.mjs:1:1
+✖ apps\worker\conversation\test\completion-activity.test.mjs (0.0428ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ajv' imported from C:\Users\neoma\Documents\Codex\2026-10-15\task-6\meri-strategy-custody\packages\contracts\conversation-lifecycle\shape.mjs
+      at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)
+      at packageResolve (node:internal/modules/esm/resolve:768:81)
+      at moduleResolve (node:internal/modules/esm/resolve:859:18)
+      at defaultResolve (node:internal/modules/esm/resolve:992:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+      at nextStep (node:internal/modules/customization_hooks:189:26)
+      at resolve (node:internal/test_runner/mock/loader:21:29)
+      at nextStep (node:internal/modules/customization_hooks:189:26)
+      at resolve (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-strategy-custody/docs/qualification/candidates/dot-strategy-custody-20261016/dependency-seams.mjs:8:333) {
+    code: 'ERR_MODULE_NOT_FOUND'
+  }

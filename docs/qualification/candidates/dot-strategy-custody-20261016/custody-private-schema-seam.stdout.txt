@@ -1,0 +1,112 @@
+✔ typed capture selection/raw file are retained before one physical capture; concurrent original retries do not recapture (11.6399ms)
+✔ worker descriptor without actual native protected selection refuses before journal effect (2.2421ms)
+✔ original expected descriptor/selection cannot be replaced, removed or changed during UNKNOWN replay (5.1461ms)
+✔ exact typed checkpoint publishes atomically and lost commit ACK reads same immutable result (6.2147ms)
+✔ wrong selected file/hash/version cannot publish completed even with recomputed outer checkpoint hashes (9.3621ms)
+✔ stored selection drift or source-request corruption is rejected on read (6.3737ms)
+✔ historical untyped identity stays unmodified and refuses a later typed retrofit (1.6361ms)
+✖ native owner derives protected selection and pins exact typed file in existing PUBLISHED completion (4.2133ms)
+✔ worker descriptor alone and missing/changed native protected request refuse before physical capture (5.3668ms)
+✖ captured bytes changed after terminal observation leave UNKNOWN and never recapture or complete (3.3931ms)
+✖ fresh authority revocation after object effect refuses PUBLISHED/completed (2.1712ms)
+✖ lost publication ACK reads original committed typed result without another capture (1.4874ms)
+✖ stripped or changed typed descriptor cannot adopt a previously PUBLISHED ACK (1.7062ms)
+✖ ordinary completion remains usable when no Objective selection or descriptor exists (1.1743ms)
+✔ historical read after original task expiry returns original PUBLISHED typed bytes under fresh current authority only (4.2316ms)
+✔ caller cannot select binding/path/latest result/hash or another job (4.3016ms)
+✔ missing, UNKNOWN, untyped or source-mismatched completion never becomes an empty eligibility response (5.1411ms)
+✔ fresh current denial or context drift after object read withholds the entire result (4.1951ms)
+✔ immutable selection/proof drift after read cannot adopt latest receipt (2.7791ms)
+✔ tampered exact object bytes refuse; no alternate object/path read (1.5818ms)
+✔ disabled reader refuses before identity/storage/network effects (0.8293ms)
+✔ trusted facts select outputFormat before one existing query; one terminal capture fixes file/ref/witness (2.2638ms)
+✔ ordinary prepared facts have no typed path or file/schema effects (0.2821ms)
+✔ absent typed request, unbound issued facts or changed actual runtime model refuses before file effect (1.2564ms)
+✔ protected fact drift between original preparation and terminal observation refuses with no retry/write (1.5338ms)
+✔ unknown fixed-file write keeps one attempt and does not overwrite/remint (2.5418ms)
+✔ parked facts read is bounded and aborts the owned signal without a child/session (14.0449ms)
+✔ missing exact private candidate distribution fails closed; general imports stay inert (1.0271ms)
+✔ outputFormat derives canonical ModelOutcome/Draft and narrows only the actual draft operation (0.2151ms)
+✔ actual outcome maps once to closed original-binding result with literal Unicode and no Core application assertion (1.2925ms)
+✔ model cannot select provenance/result reference or leak extra SDK fields into retained result (0.6503ms)
+✔ literal queued type, original draft basis and Objective-only mapping refuse invented type/basis/manual adoption (1.4661ms)
+✔ changed request hash, Clerk actor, tenant or accepted request identity refuses before SDK validation (0.9003ms)
+✔ missing structured outcome or successful payload proposing another Strategy type refuses (1.1907ms)
+✔ typed needs-information/refusal retain null payload and issues without becoming successful application (1.1849ms)
+✔ result completion never extends or rewrites the original attempt deadline (1.1534ms)
+✔ private descriptor rejects caller path/unknown fields or changed execution witness (3.6808ms)
+✔ raw bytes and original descriptor distinguish file integrity from logical result hash (1.3515ms)
+✔ checkpoint object selector is fixed and rejects missing, executable, wrong raw hash/version files (2.6704ms)
+✔ issued semantic admission and full-facts hash remain separate; original association/prompt are exact (2.0388ms)
+✔ execution context cannot rename packet/owner refs, rewrite prompt Unicode or carry private extra metadata (1.45ms)
+✔ actual file writer refuses unsupported host before touching a workspace (0.7751ms)
+ℹ tests 42
+ℹ suites 0
+ℹ pass 36
+ℹ fail 6
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 246.1411
+
+✖ failing tests:
+
+test at apps\runtime\native-authority\test\typed-completion-capture.test.mjs:10:1
+✖ native owner derives protected selection and pins exact typed file in existing PUBLISHED completion (4.2133ms)
+  Error: NATIVE_COMPLETION_CAPTURE_UNKNOWN
+      at fault (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-strategy-custody/apps/runtime/native-authority/completion-capture.mjs:13:17)
+      at Object.captureCompletion (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-strategy-custody/apps/runtime/native-authority/completion-capture.mjs:39:257)
+      at async TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-strategy-custody/apps/runtime/native-authority/test/typed-completion-capture.test.mjs:10:136)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps\runtime\native-authority\test\typed-completion-capture.test.mjs:12:1
+✖ captured bytes changed after terminal observation leave UNKNOWN and never recapture or complete (3.3931ms)
+  TypeError: Cannot read properties of null (reading 'state')
+      at TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-strategy-custody/apps/runtime/native-authority/test/typed-completion-capture.test.mjs:12:241)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps\runtime\native-authority\test\typed-completion-capture.test.mjs:13:1
+✖ fresh authority revocation after object effect refuses PUBLISHED/completed (2.1712ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-strategy-custody/apps/runtime/native-authority/test/typed-completion-capture.test.mjs:13:307)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps\runtime\native-authority\test\typed-completion-capture.test.mjs:14:1
+✖ lost publication ACK reads original committed typed result without another capture (1.4874ms)
+  Error: NATIVE_COMPLETION_CAPTURE_UNKNOWN
+      at fault (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-strategy-custody/apps/runtime/native-authority/completion-capture.mjs:13:17)
+      at Object.captureCompletion (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-strategy-custody/apps/runtime/native-authority/completion-capture.mjs:39:257)
+      at async TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-strategy-custody/apps/runtime/native-authority/test/typed-completion-capture.test.mjs:14:383)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps\runtime\native-authority\test\typed-completion-capture.test.mjs:15:1
+✖ stripped or changed typed descriptor cannot adopt a previously PUBLISHED ACK (1.7062ms)
+  Error: NATIVE_COMPLETION_CAPTURE_UNKNOWN
+      at fault (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-strategy-custody/apps/runtime/native-authority/completion-capture.mjs:13:17)
+      at Object.captureCompletion (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-strategy-custody/apps/runtime/native-authority/completion-capture.mjs:39:257)
+      at async TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-strategy-custody/apps/runtime/native-authority/test/typed-completion-capture.test.mjs:15:111)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps\runtime\native-authority\test\typed-completion-capture.test.mjs:16:1
+✖ ordinary completion remains usable when no Objective selection or descriptor exists (1.1743ms)
+  Error: NATIVE_COMPLETION_CAPTURE_UNKNOWN
+      at fault (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-strategy-custody/apps/runtime/native-authority/completion-capture.mjs:13:17)
+      at Object.captureCompletion (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-strategy-custody/apps/runtime/native-authority/completion-capture.mjs:39:257)
+      at async TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-strategy-custody/apps/runtime/native-authority/test/typed-completion-capture.test.mjs:16:241)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

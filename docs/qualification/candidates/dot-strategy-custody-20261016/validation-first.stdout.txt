@@ -1,0 +1,29 @@
+✔ trusted facts select outputFormat before one existing query; one terminal capture fixes file/ref/witness (6.9542ms)
+✔ ordinary prepared facts have no typed path or file/schema effects (0.5348ms)
+✔ absent typed request, unbound issued facts or changed actual runtime model refuses before file effect (2.5031ms)
+✔ protected fact drift between original preparation and terminal observation refuses with no retry/write (1.761ms)
+✔ unknown fixed-file write keeps one attempt and does not overwrite/remint (1.915ms)
+✔ parked facts read is bounded and aborts the owned signal without a child/session (27.0524ms)
+✔ missing exact private candidate distribution fails closed; general imports stay inert (1.6556ms)
+✔ outputFormat derives canonical ModelOutcome/Draft and narrows only the actual draft operation (0.7056ms)
+✔ actual outcome maps once to closed original-binding result with literal Unicode and no Core application assertion (1.5962ms)
+✔ model cannot select provenance/result reference or leak extra SDK fields into retained result (1.2661ms)
+✔ literal queued type, original draft basis and Objective-only mapping refuse invented type/basis/manual adoption (1.614ms)
+✔ changed request hash, Clerk actor, tenant or accepted request identity refuses before SDK validation (1.3446ms)
+✔ missing structured outcome or successful payload proposing another Strategy type refuses (1.4453ms)
+✔ typed needs-information/refusal retain null payload and issues without becoming successful application (1.5255ms)
+✔ result completion never extends or rewrites the original attempt deadline (1.7403ms)
+✔ private descriptor rejects caller path/unknown fields or changed execution witness (5.6398ms)
+✔ raw bytes and original descriptor distinguish file integrity from logical result hash (1.7342ms)
+✔ checkpoint object selector is fixed and rejects missing, executable, wrong raw hash/version files (5.5249ms)
+✔ issued semantic admission and full-facts hash remain separate; original association/prompt are exact (2.2184ms)
+✔ execution context cannot rename packet/owner refs, rewrite prompt Unicode or carry private extra metadata (1.1319ms)
+✔ actual file writer refuses unsupported host before touching a workspace (1.0121ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 118.9597

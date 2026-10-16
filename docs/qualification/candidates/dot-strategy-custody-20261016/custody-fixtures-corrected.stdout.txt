@@ -1,0 +1,59 @@
+✔ typed capture selection/raw file are retained before one physical capture; concurrent original retries do not recapture (8.6476ms)
+✔ worker descriptor without actual native protected selection refuses before journal effect (1.5528ms)
+✔ original expected descriptor/selection cannot be replaced, removed or changed during UNKNOWN replay (4.2346ms)
+✔ exact typed checkpoint publishes atomically and lost commit ACK reads same immutable result (5.1964ms)
+✔ wrong selected file/hash/version cannot publish completed even with recomputed outer checkpoint hashes (8.3859ms)
+✔ stored selection drift or source-request corruption is rejected on read (4.7016ms)
+✔ historical untyped identity stays unmodified and refuses a later typed retrofit (1.5637ms)
+✖ apps\runtime\native-authority\test\typed-completion-capture.test.mjs (0.1111ms)
+✔ historical read after original task expiry returns original PUBLISHED typed bytes under fresh current authority only (5.3065ms)
+✔ caller cannot select binding/path/latest result/hash or another job (4.4026ms)
+✔ missing, UNKNOWN, untyped or source-mismatched completion never becomes an empty eligibility response (5.4804ms)
+✔ fresh current denial or context drift after object read withholds the entire result (4.1535ms)
+✔ immutable selection/proof drift after read cannot adopt latest receipt (3.1734ms)
+✔ tampered exact object bytes refuse; no alternate object/path read (1.8978ms)
+✔ disabled reader refuses before identity/storage/network effects (1.3055ms)
+✔ trusted facts select outputFormat before one existing query; one terminal capture fixes file/ref/witness (1.9828ms)
+✔ ordinary prepared facts have no typed path or file/schema effects (0.2926ms)
+✔ absent typed request, unbound issued facts or changed actual runtime model refuses before file effect (1.2877ms)
+✔ protected fact drift between original preparation and terminal observation refuses with no retry/write (1.2627ms)
+✔ unknown fixed-file write keeps one attempt and does not overwrite/remint (1.368ms)
+✔ parked facts read is bounded and aborts the owned signal without a child/session (10.8253ms)
+✔ missing exact private candidate distribution fails closed; general imports stay inert (0.9173ms)
+✔ outputFormat derives canonical ModelOutcome/Draft and narrows only the actual draft operation (0.194ms)
+✔ actual outcome maps once to closed original-binding result with literal Unicode and no Core application assertion (1.1014ms)
+✔ model cannot select provenance/result reference or leak extra SDK fields into retained result (0.9077ms)
+✔ literal queued type, original draft basis and Objective-only mapping refuse invented type/basis/manual adoption (1.1179ms)
+✔ changed request hash, Clerk actor, tenant or accepted request identity refuses before SDK validation (0.8887ms)
+✔ missing structured outcome or successful payload proposing another Strategy type refuses (1.3989ms)
+✔ typed needs-information/refusal retain null payload and issues without becoming successful application (1.2515ms)
+✔ result completion never extends or rewrites the original attempt deadline (1.3698ms)
+✔ private descriptor rejects caller path/unknown fields or changed execution witness (4.7743ms)
+✔ raw bytes and original descriptor distinguish file integrity from logical result hash (1.9906ms)
+✔ checkpoint object selector is fixed and rejects missing, executable, wrong raw hash/version files (3.822ms)
+✔ issued semantic admission and full-facts hash remain separate; original association/prompt are exact (1.9572ms)
+✔ execution context cannot rename packet/owner refs, rewrite prompt Unicode or carry private extra metadata (0.9297ms)
+✔ actual file writer refuses unsupported host before touching a workspace (0.716ms)
+ℹ tests 36
+ℹ suites 0
+ℹ pass 35
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 207.38
+
+✖ failing tests:
+
+test at apps\runtime\native-authority\test\typed-completion-capture.test.mjs:1:1
+✖ apps\runtime\native-authority\test\typed-completion-capture.test.mjs (0.1111ms)
+  file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-strategy-custody/apps/gateway/budget/tool-budget-binding.mjs:3
+  import { validateShape as privateShape } from '../../../packages/contracts/retrieval-0.2/validate.mjs';
+           ^^^^^^^^^^^^^
+  SyntaxError: The requested module '../../../packages/contracts/retrieval-0.2/validate.mjs' does not provide an export named 'validateShape'
+      at #asyncInstantiate (node:internal/modules/esm/module_job:327:21)
+      at async ModuleJob.run (node:internal/modules/esm/module_job:431:5)
+      at async node:internal/modules/esm/loader:643:26
+      at async node:internal/test_runner/runner:1071:15
+      at async runFiles (node:internal/test_runner/runner:1037:9)
+      at async runChain (node:internal/test_runner/runner:1115:5)

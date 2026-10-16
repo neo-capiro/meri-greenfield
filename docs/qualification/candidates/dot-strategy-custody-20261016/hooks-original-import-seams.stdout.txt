@@ -1,0 +1,61 @@
+✔ private completion RPC forwards optional descriptor without changing existing untyped body (8.1754ms)
+✔ private completion body cannot supply native protected selection, raw result or arbitrary locator (5.4307ms)
+✔ single actual activity query receives derived outputFormat and forwards trusted typed capture before completion (8.6221ms)
+✔ typed original requires existing completion capture before any SDK query (2.4167ms)
+✔ unknown typed write fails one activity without completion, second model query or cleanup regression (4.1589ms)
+✔ actual options keep general format absent and reject replacing selected skill structured output (1.4509ms)
+✖ successful result captures before input/query disposal and never separately publishes completed (0.3998ms)
+✖ unknown completion capture fails with one query and no fabricated completed publication (0.1066ms)
+✖ failed SDK result never captures a successful checkpoint (0.0926ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 6
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 166.7387
+
+✖ failing tests:
+
+test at apps\worker\conversation\test\completion-activity.test.mjs:12:1
+✖ successful result captures before input/query disposal and never separately publishes completed (0.3998ms)
+  Error: UNRELATED_SYNTHETIC_PORT_UNAVAILABLE
+      at unavailable (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-strategy-custody/apps/worker/conversation/objective-generation/test/activity-hook.test.mjs:6:30)
+      at continuationFixture (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-strategy-custody/apps/worker/conversation/continuation/test/fixtures.mjs:13:103)
+      at fixture (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-strategy-custody/apps/worker/conversation/test/completion-activity.test.mjs:6:69)
+      at TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-strategy-custody/apps/worker/conversation/test/completion-activity.test.mjs:12:122)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps\worker\conversation\test\completion-activity.test.mjs:13:1
+✖ unknown completion capture fails with one query and no fabricated completed publication (0.1066ms)
+  Error: UNRELATED_SYNTHETIC_PORT_UNAVAILABLE
+      at unavailable (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-strategy-custody/apps/worker/conversation/objective-generation/test/activity-hook.test.mjs:6:30)
+      at continuationFixture (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-strategy-custody/apps/worker/conversation/continuation/test/fixtures.mjs:13:103)
+      at fixture (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-strategy-custody/apps/worker/conversation/test/completion-activity.test.mjs:6:69)
+      at TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-strategy-custody/apps/worker/conversation/test/completion-activity.test.mjs:13:114)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps\worker\conversation\test\completion-activity.test.mjs:14:1
+✖ failed SDK result never captures a successful checkpoint (0.0926ms)
+  Error: UNRELATED_SYNTHETIC_PORT_UNAVAILABLE
+      at unavailable (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-strategy-custody/apps/worker/conversation/objective-generation/test/activity-hook.test.mjs:6:30)
+      at continuationFixture (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-strategy-custody/apps/worker/conversation/continuation/test/fixtures.mjs:13:103)
+      at fixture (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-strategy-custody/apps/worker/conversation/test/completion-activity.test.mjs:6:69)
+      at TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-strategy-custody/apps/worker/conversation/test/completion-activity.test.mjs:14:83)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

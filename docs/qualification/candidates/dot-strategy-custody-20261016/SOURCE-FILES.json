@@ -1,0 +1,164 @@
+{
+  "tree": "c2e53682a4bc701aff097f18f1b5aa27661e4699",
+  "paths": [
+    {
+      "priorBlob": "2df00648cf83b6e3eb2409d77b048028e274ba4c",
+      "sha256": "02142e24a120df3efee7c8b9b2972feb298274217f88ef9050996d1192defa35",
+      "path": "apps/control/conversations/completion-journal.mjs",
+      "gitBlob": "47864b0422be26df280961e5369717f56c94122e"
+    },
+    {
+      "priorBlob": null,
+      "sha256": "692c1e60f39523e42cb4393b4a4957a40479c045a9b83ad717709cf7cebe919d",
+      "path": "apps/control/conversations/test/typed-completion-fixture.mjs",
+      "gitBlob": "f6f47a9563fe2a22691b715b75067998bb18d8c3"
+    },
+    {
+      "priorBlob": null,
+      "sha256": "499dfeb886aae81941f7368df113f16730b7c714fc80941afa0b86dc2191c590",
+      "path": "apps/control/conversations/test/typed-completion.test.mjs",
+      "gitBlob": "787b95886dd6f48e7d860567ee174753815a7b0b"
+    },
+    {
+      "priorBlob": "90c4c98891f87158b680f5791939a28dccb8c871",
+      "sha256": "2114c12f370b09e5a376c7ce581dd79401e9d587a39bda7eabc3b540a211cef1",
+      "path": "apps/runtime/native-authority/checkpoint-http.mjs",
+      "gitBlob": "a625c3163425fb3787efd0b38f40728b1d8a5507"
+    },
+    {
+      "priorBlob": "a9fef009b620a35cf378f050b594e5ee27e69c10",
+      "sha256": "706a71842560931c7011aeb7e7ab978e28bbe755e940f230b7f2c7a1b65d8fd4",
+      "path": "apps/runtime/native-authority/completion-capture.mjs",
+      "gitBlob": "01bb2f9d61556e2c00b8e239b9fb51ed9f86e805"
+    },
+    {
+      "priorBlob": null,
+      "sha256": "e4b735ea7d66aa82f5be7e648f4cbf94e6e827f402ad939b439825bd18663f43",
+      "path": "apps/runtime/native-authority/test/typed-checkpoint-http.test.mjs",
+      "gitBlob": "a7ecbdc2ac9d73fb56b3dcf8cb7dc4ebfe0a074a"
+    },
+    {
+      "priorBlob": null,
+      "sha256": "83d946158de2ad0623d80d9df09afd631f9bd6377585629272dd9c74af6910dc",
+      "path": "apps/runtime/native-authority/test/typed-completion-capture.test.mjs",
+      "gitBlob": "3b0ac45081d8f8c16d676eb310cd3c289b64b1d9"
+    },
+    {
+      "priorBlob": null,
+      "sha256": "d710d19a3178e54684649a7330941fd705d8258c507c2b56e2de727f40c02b48",
+      "path": "apps/runtime/objective-generation/retained-result.mjs",
+      "gitBlob": "e4b1c9616ac8ad7bedbfedcb70bc5f81db348ac2"
+    },
+    {
+      "priorBlob": null,
+      "sha256": "11d28dfacb3a1e2b0412f17fce266f0464704a9e18c9eae69fe3a4776fa0d7d3",
+      "path": "apps/runtime/objective-generation/test/retained-result.test.mjs",
+      "gitBlob": "d7693f887d8db69d26097fa02ee69218dbac994f"
+    },
+    {
+      "priorBlob": "2d38d7dcd1be1bdf9d09a90a2f21412d9aa3e3bb",
+      "sha256": "089795b616049b0b49b49ffd05dfd15dfcb8ffa56acdcc4cdc65620ca74bccee",
+      "path": "apps/worker/conversation/activity.mjs",
+      "gitBlob": "5ccf089e22eaf50688c4e6c187795a1599ef4819"
+    },
+    {
+      "priorBlob": "8718cb9772042b6a1b7af39a66e65a9d564aa83f",
+      "sha256": "2b4669e1f4fdf9d61997e1613c7ea0981d7abb9e5feff42495a0a34ed4d6ed29",
+      "path": "apps/worker/conversation/continuation/activity-lifecycle.mjs",
+      "gitBlob": "0c22e0065dc13f67cf288ecfbcc0cb913bc4ee56"
+    },
+    {
+      "priorBlob": null,
+      "sha256": "a163c06ea4d45477a316103f558e8fac909aa6efa1c37df43cbf2b022c317390",
+      "path": "apps/worker/conversation/objective-generation/fixed-file.mjs",
+      "gitBlob": "35a5ac01589ac0df02328a1e1700dae26fa88632"
+    },
+    {
+      "priorBlob": null,
+      "sha256": "16584281dabdb9f0f78ea6d07ca6afe59256ea787675095953c7ea92a06284b1",
+      "path": "apps/worker/conversation/objective-generation/qualification/canonical-codec.test.mjs",
+      "gitBlob": "bc1b45c26d129a1d99e6fc266ecbeef8821b2cfa"
+    },
+    {
+      "priorBlob": null,
+      "sha256": "1ead58f15d2de00585180e9731014b30cd9275c7079e8bd47f98e1f8b765bd08",
+      "path": "apps/worker/conversation/objective-generation/runtime.mjs",
+      "gitBlob": "fa44cd0f73bb9812ca846980406b30caf42d031c"
+    },
+    {
+      "priorBlob": null,
+      "sha256": "e37fc4ec576c1fc26d055e416100d4d8cf7a06806307979bcb7547c288f2670d",
+      "path": "apps/worker/conversation/objective-generation/test/activity-hook.test.mjs",
+      "gitBlob": "fd9e8e4123af73e5a38e3d6bf30f1c4d8f37a795"
+    },
+    {
+      "priorBlob": null,
+      "sha256": "f9b5f9af850ad89ce06ad0474a4fab27f7e9aefbb4e327fb5dac5f4f1b2a5f7d",
+      "path": "apps/worker/conversation/objective-generation/test/fixtures.mjs",
+      "gitBlob": "d7f54ed89dab5444a2a36aeb3af409d371d77733"
+    },
+    {
+      "priorBlob": null,
+      "sha256": "069ce31767a037d5cfe9183a064f9b67faf2cb11b185e7462fdb5f3513d14e93",
+      "path": "apps/worker/conversation/objective-generation/test/runtime.test.mjs",
+      "gitBlob": "fca43ee3f88c7ad00798b8c31ebf51ad8147bd5d"
+    },
+    {
+      "priorBlob": null,
+      "sha256": "8e7f1dcac5d8005ea047f3e72ee27574f0505c474d0b0fb76012bc486de1f8ee",
+      "path": "apps/worker/conversation/objective-generation/test/typed-result.test.mjs",
+      "gitBlob": "be6910bdde37e5d0e379b3097f82261dc0b58501"
+    },
+    {
+      "priorBlob": null,
+      "sha256": "63ef0b57fa7b1721f48bdf9a000cd5606e95763d60fdc050ba748549eba1c30a",
+      "path": "apps/worker/conversation/objective-generation/typed-result.mjs",
+      "gitBlob": "fd47275df6a22adf935d4291ef30a1474eabd3b9"
+    },
+    {
+      "priorBlob": "ad5c29dd98b6c95f7972004307f03f99a9743039",
+      "sha256": "038b4fe078afbd8f8c22ba2c65f8f3fdadac8e4889fa7e015b4dd3a8dc355de8",
+      "path": "apps/worker/conversation/options.mjs",
+      "gitBlob": "22af9c87964b75d15816acd9ec52356bb8be4494"
+    },
+    {
+      "priorBlob": null,
+      "sha256": "5527d90032534a3cb5999e853126f534f64fdf05b6282ea5ea1b22ce7d736c4c",
+      "path": "docs/coordination/tasks/DOT-STRATEGY-RESULT-CUSTODY-20261016.md",
+      "gitBlob": "1e89c7d3b75e0b5e8cffd2ae347c8159b974f425"
+    },
+    {
+      "priorBlob": null,
+      "sha256": "f339fdbbcc787fe084b21fd1369bbfc9e758000065418933d976a73d716897a2",
+      "path": "docs/qualification/candidates/dot-strategy-custody-20261016/QUALIFICATION-PROFILE.md",
+      "gitBlob": "fa0c5f1f3859f4e6e34050a679d0a2e96c699035"
+    },
+    {
+      "priorBlob": null,
+      "sha256": "a6dc278f9f1abd70383826efbdd233ce6d3c1314ddcb4cfa20a972b8ed796452",
+      "path": "docs/qualification/candidates/dot-strategy-custody-20261016/dependency-seams.mjs",
+      "gitBlob": "15ec24e938456981ba32cabd781b057d9af15dd8"
+    },
+    {
+      "priorBlob": null,
+      "sha256": "698f56d067237e7c8a1d82cc4a42b006cf3e6d9d6a14b762ceab6835f2e4eb3f",
+      "path": "docs/qualification/candidates/dot-strategy-custody-20261016/run-controls.ps1",
+      "gitBlob": "b3999b4b3711a8cff6343a4737bc9c2501f9ba2b"
+    },
+    {
+      "priorBlob": null,
+      "sha256": "6d14e2205ab807a8bfb88e8bd00663b9362759a52e3d3825d6082256e10ea6c2",
+      "path": "docs/qualification/candidates/dot-strategy-custody-20261016/sdk-seam.mjs",
+      "gitBlob": "b40fff9b791887e9110bd60fcc35c9a7da61a2f9"
+    },
+    {
+      "priorBlob": null,
+      "sha256": "db22275abf6eff37cd45d3a01846823ca597eca1a0c240461d0ddddb3b80b14c",
+      "path": "packages/runtime/objective-generation-custody.mjs",
+      "gitBlob": "a8291661483b00dca41aac37309774188f61713c"
+    }
+  ],
+  "schemaVersion": 1,
+  "source": "99ed57c6660902be608350a300b433ff4f9b537d",
+  "parent": "14f0bc2e5716af7c00925d13d3365b26182c9e56"
+}

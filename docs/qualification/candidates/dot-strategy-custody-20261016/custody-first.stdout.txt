@@ -1,0 +1,70 @@
+✔ typed capture selection/raw file are retained before one physical capture; concurrent original retries do not recapture (10.2496ms)
+✔ worker descriptor without actual native protected selection refuses before journal effect (1.402ms)
+✔ original expected descriptor/selection cannot be replaced, removed or changed during UNKNOWN replay (6.9469ms)
+✔ exact typed checkpoint publishes atomically and lost commit ACK reads same immutable result (4.9357ms)
+✔ wrong selected file/hash/version cannot publish completed even with recomputed outer checkpoint hashes (9.3952ms)
+✔ stored selection drift or source-request corruption is rejected on read (3.6655ms)
+✔ historical untyped identity stays unmodified and refuses a later typed retrofit (1.8301ms)
+✖ apps\runtime\native-authority\test\typed-completion-capture.test.mjs (0.1218ms)
+✔ historical read after original task expiry returns original PUBLISHED typed bytes under fresh current authority only (5.3389ms)
+✔ caller cannot select binding/path/latest result/hash or another job (5.7933ms)
+✖ missing, UNKNOWN, untyped or source-mismatched completion never becomes an empty eligibility response (4.2929ms)
+✔ fresh current denial or context drift after object read withholds the entire result (4.5469ms)
+✔ immutable selection/proof drift after read cannot adopt latest receipt (3.075ms)
+✔ tampered exact object bytes refuse; no alternate object/path read (1.689ms)
+✔ disabled reader refuses before identity/storage/network effects (0.8739ms)
+✔ trusted facts select outputFormat before one existing query; one terminal capture fixes file/ref/witness (2.5744ms)
+✔ ordinary prepared facts have no typed path or file/schema effects (0.3965ms)
+✔ absent typed request, unbound issued facts or changed actual runtime model refuses before file effect (1.3744ms)
+✔ protected fact drift between original preparation and terminal observation refuses with no retry/write (1.0802ms)
+✔ unknown fixed-file write keeps one attempt and does not overwrite/remint (1.8086ms)
+✔ parked facts read is bounded and aborts the owned signal without a child/session (12.4509ms)
+✔ missing exact private candidate distribution fails closed; general imports stay inert (1.0261ms)
+✔ outputFormat derives canonical ModelOutcome/Draft and narrows only the actual draft operation (0.2244ms)
+✔ actual outcome maps once to closed original-binding result with literal Unicode and no Core application assertion (1.4452ms)
+✔ model cannot select provenance/result reference or leak extra SDK fields into retained result (1.0968ms)
+✔ literal queued type, original draft basis and Objective-only mapping refuse invented type/basis/manual adoption (3.7044ms)
+✔ changed request hash, Clerk actor, tenant or accepted request identity refuses before SDK validation (2.5055ms)
+✔ missing structured outcome or successful payload proposing another Strategy type refuses (2.9754ms)
+✔ typed needs-information/refusal retain null payload and issues without becoming successful application (3.3162ms)
+✔ result completion never extends or rewrites the original attempt deadline (2.7948ms)
+✔ private descriptor rejects caller path/unknown fields or changed execution witness (7.6954ms)
+✔ raw bytes and original descriptor distinguish file integrity from logical result hash (3.2618ms)
+✔ checkpoint object selector is fixed and rejects missing, executable, wrong raw hash/version files (5.8196ms)
+✔ issued semantic admission and full-facts hash remain separate; original association/prompt are exact (3.3217ms)
+✔ execution context cannot rename packet/owner refs, rewrite prompt Unicode or carry private extra metadata (2.721ms)
+✔ actual file writer refuses unsupported host before touching a workspace (1.8654ms)
+ℹ tests 36
+ℹ suites 0
+ℹ pass 34
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 225.5103
+
+✖ failing tests:
+
+test at apps\runtime\native-authority\test\typed-completion-capture.test.mjs:1:1
+✖ apps\runtime\native-authority\test\typed-completion-capture.test.mjs (0.1218ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@capiro/meri-contracts' imported from C:\Users\neoma\Documents\Codex\2026-10-15\task-6\meri-strategy-custody\apps\worker\qualification\checkpoint\bound-session-store.mjs
+      at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)
+      at packageResolve (node:internal/modules/esm/resolve:768:81)
+      at moduleResolve (node:internal/modules/esm/resolve:859:18)
+      at defaultResolve (node:internal/modules/esm/resolve:992:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+      at nextStep (node:internal/modules/customization_hooks:189:26)
+      at resolve (node:internal/test_runner/mock/loader:21:29)
+      at nextStep (node:internal/modules/customization_hooks:189:26)
+      at resolveWithHooks (node:internal/modules/customization_hooks:417:10) {
+    code: 'ERR_MODULE_NOT_FOUND'
+  }
+
+test at apps\runtime\objective-generation\test\retained-result.test.mjs:12:1
+✖ missing, UNKNOWN, untyped or source-mismatched completion never becomes an empty eligibility response (4.2929ms)
+  TypeError: Cannot assign to read only property 'jobId' of object '#<Object>'
+      at file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-strategy-custody/apps/runtime/objective-generation/test/retained-result.test.mjs:12:228
+      at TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-strategy-custody/apps/runtime/objective-generation/test/retained-result.test.mjs:12:308)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
