@@ -25,6 +25,7 @@ export function createPreparedRunBindings(options){
  const secrets=own(o.credentials,['control'],['proxy']);if(typeof secrets.control!=='string'||!/^\S{1,8192}$/u.test(secrets.control))fail('CONFIGURATION');
  const controlDigest=capabilityDigest(secrets.control),a=allocation(config.allocationJson),scheduleExpiresAtMs=Date.parse(a.schedule.expiresAt);
  const configuredBinding=config.runtime.binding,selectedClientId=config.identity.commandContext.clientResolution.clientId,readInitial=o.initialBindings===undefined?null:storageMethod(o.initialBindings,'read');
+ if((config.multiRun.dynamicInitialRuns===true)!==(readInitial!==null))fail('INITIAL_BINDING_UNAVAILABLE');
  // This digest describes the reviewed, retargetable workload. A new Core conversation supplies only its UUID and the journal's
  // writer-fenced binding; the startup UUID, fixed deadline and credential locations cannot decide a later run's identity.
  const {run:_,...allocationSemantics}=a,{binding:__,deadlineMs:___,...runtimeSemantics}=config.runtime;

@@ -22,6 +22,7 @@ import {productReadiness} from './product-readiness.mjs';
 import {capabilityDigest} from './native-authority/task-verifier.mjs';
 import {compilePreparedCandidateConfiguration} from './prepared-candidate-config.mjs';
 import {createPostgresIssuanceStore} from './prepared-run-issuance-postgres.mjs';
+import {createInitialRunBindingJournal} from '../control/conversations/initial-run-binding-journal.mjs';
 import {createFileCapabilityAuthority} from './capability-material-authority.mjs';
 import {createPostgresModelGrants} from './model-grant-issuer.mjs';
 import {createPostgresRetentionJournal} from '../control/retention/postgres-journal.mjs';
@@ -86,7 +87,7 @@ export function assembleControl(options){
  * multi-run mode without the material directory composes no authority, so the bindings refuse readiness (PREPARED_RUN_BINDINGS_UNAVAILABLE). */
 export function multiRunOwners(configuration,pool){
  const multi=configuration.nativeCandidate?.multiRun;if(multi===undefined)return {};
- return {issuanceStore:createPostgresIssuanceStore({pool}),...(multi.materialDirectory!==undefined?{capabilityAuthority:createFileCapabilityAuthority({directory:multi.materialDirectory}),modelGrants:createPostgresModelGrants({pool,taskMaterialDirectory:multi.materialDirectory,maxRequestMs:configuration.limits.requestMs})}:{})};
+ return {issuanceStore:createPostgresIssuanceStore({pool}),...(multi.materialDirectory!==undefined?{capabilityAuthority:createFileCapabilityAuthority({directory:multi.materialDirectory}),modelGrants:createPostgresModelGrants({pool,taskMaterialDirectory:multi.materialDirectory,maxRequestMs:configuration.limits.requestMs})}:{}),...(multi.dynamicInitialRuns===true?{initialBindings:createInitialRunBindingJournal({pool})}:{})};
 }
 export async function startControl(configuration,options={}){
  // Validate compiled bindings before secret reads, connections or owned allocation.

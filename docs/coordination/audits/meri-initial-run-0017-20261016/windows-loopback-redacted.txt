@@ -1,0 +1,23 @@
+target: task-owned Windows-loopback PostgreSQL 16.15 at 127.0.0.1:55418/meri_initial_0017_control_qual
+testExit: 0
+runFailure:
+cleanupFailure:
+Unix-socket qualification: not run
+
+Γ£ö 0017 fixture refuses unapproved servers before database creation (3.5153ms)
+Γ£ö 0017 applies after exact predecessors and preserves older accepted rows (3165.7484ms)
+Γ£ö 0017 rejects every missing key, wrong JSON type, unsafe time, identity mismatch, and duplicate key (1764.4505ms)
+Γ£ö 0017 syntactically valid but false stored SHA is rejected by the journal (1724.0582ms)
+Γ£ö 0017 narrow app role can lock all journal rows but cannot mutate or administer them (1779.1842ms)
+Γ£ö 0017 real concurrent claims block on the same advisory lock and preserve one original (1876.6942ms)
+Γ£ö 0017 refuses a new original when an older accepted run, input, and successor already exist (1712.2035ms)
+Γ£ö 0017 lost acknowledgment after real COMMIT recovers only the persisted binding (1913.2318ms)
+Γ£ö 0017 private pg_dump/pg_restore retains admitted binding and accepted source rows (3456.8805ms)
+Γä╣ tests 9
+Γä╣ suites 0
+Γä╣ pass 9
+Γä╣ fail 0
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 17703.8589

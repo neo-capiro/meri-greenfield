@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {normalize} from 'node:path';
+import {normalize,resolve} from 'node:path';
 import {candidateFixture} from './prepared-candidate-fixture.mjs';
 import {initialInputFixture} from '../../control/conversations/test/initial-input-fixture.mjs';
 import {id} from '../../control/conversations/test/store-fixture.mjs';
@@ -9,11 +9,12 @@ import {createPreparedRunRegistry} from '../prepared-run-registry.mjs';
 import {createMemoryIssuanceStore} from '../prepared-run-issuance-store.mjs';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {capabilityDigest} from '../native-authority/task-verifier.mjs';
+import {assemblePreparedCandidate,startPreparedCandidate} from '../prepared-candidate.mjs';
 
 async function fixture(){
  const f=candidateFixture(),c=f.configuration.nativeCandidate,binding={...f.binding,conversationId:id(300),runId:id(301),attemptId:id(302),workerId:id(303)},scopes=[{kind:'client',tenantId:binding.tenantId,resourceId:c.identity.commandContext.clientResolution.clientId,policyRevision:c.qualification.policyRevision}];
  for(const key of ['workspace','configParentDirectory','secureStorageDirectory'])c.preparationIntent[key]=normalize(c.preparationIntent[key]);
- c.preparationIntent.launchTemplate.command=normalize(c.preparationIntent.launchTemplate.command);c.preparationIntent.launchTemplate.env.CLAUDE_SECURESTORAGE_CONFIG_DIR=c.preparationIntent.secureStorageDirectory;c.multiRun={runWindowMs:60000};
+ c.preparationIntent.launchTemplate.command=normalize(c.preparationIntent.launchTemplate.command);c.preparationIntent.launchTemplate.env.CLAUDE_SECURESTORAGE_CONFIG_DIR=c.preparationIntent.secureStorageDirectory;c.multiRun={runWindowMs:60000,materialDirectory:resolve('synthetic-meri-material'),dynamicInitialRuns:true};
  const proposal=await initialInputFixture().proposal({context:{binding,scopes,versions:c.runtime.versions,selectedClientId:c.identity.commandContext.clientResolution.clientId}});
  const saved={run:proposal.acceptance.run,request:proposal.acceptance.request};
  const state={saved,admission:null,modelCalls:0,taskCalls:0,allocations:0,currentBinding:binding,clock:f.now,allocation:null,events:[]},initialBindings={async read({binding:asked},check){check();return hash(asked)===hash(state.admission?.binding)?structuredClone(state.admission):null;},async readConversation({principal,conversationId,selectedClientId},check){check();const r=state.admission;return r&&r.binding.tenantId===principal.tenantId&&r.binding.actorId===principal.actorId&&r.binding.conversationId===conversationId&&r.selectedClientId===selectedClientId?structuredClone(r):null;}},store={async readOptional(){return structuredClone(state.saved);},async read(){return structuredClone(state.saved);},async append(b,event){assert.deepEqual(b,binding);state.events.push(event.data);state.saved.run.state=event.data.state;return structuredClone(event);},nextRuns:{async readTarget(){return null;},async current(){return {binding:state.currentBinding,reserved:false,policyRevision:c.qualification.policyRevision,scopes:state.saved.run.scopes};}},allocations:{async read(){return {record:structuredClone(state.allocation)};},async claim(){assert.fail('No allocation claim');},async record(){assert.fail('No allocation record');}}};
@@ -24,6 +25,22 @@ async function fixture(){
  const expiresAtMs=ports.proposeInitialExpiry();state.admission={schemaVersion:1,state:'ADMITTED',binding,selectedClientId:c.identity.commandContext.clientResolution.clientId,policyRevision:c.qualification.policyRevision,versions:c.runtime.versions,configurationSha256:ports.configurationSha256,expiresAtMs,createdAtMs:f.now};
  return {f,c,binding,scopes,store,ports,state,initialBindings,issuanceStore,close:async()=>{}};
 }
+
+test('dynamic declaration and journal port must agree before candidate secrets or effects',async()=>{
+ const x=await fixture();let effects=0;const pool={connect(){effects++;throw Error('No SQL');}},ecs={send(){effects++;}},objects={get(){effects++;},put(){effects++;}};
+ await assert.rejects(startPreparedCandidate({configuration:x.f.configuration,pool}),/PREPARED_CANDIDATE_REFUSED/);
+ assert.throws(()=>assemblePreparedCandidate({configuration:x.f.configuration,pool,ecs,objects,credentials:x.f.secret}),/PREPARED_CANDIDATE_REFUSED/);
+ const unmounted=structuredClone(x.f.configuration);delete unmounted.nativeCandidate.multiRun.dynamicInitialRuns;
+ await assert.rejects(startPreparedCandidate({configuration:unmounted,pool,initialBindings:x.initialBindings}),/PREPARED_CANDIDATE_REFUSED/);
+ assert.throws(()=>assemblePreparedCandidate({configuration:unmounted,pool,ecs,objects,credentials:x.f.secret,initialBindings:x.initialBindings}),/PREPARED_CANDIDATE_REFUSED/);
+ assert.equal(effects,0);
+});
+
+test('mounted dynamic candidate refuses a missing 0017 relation before authority effects',async()=>{
+ const x=await fixture();let effects=0,requested=[];const pool={connect(){effects++;throw Error('No SQL transaction');},async query(sql,args){if(!sql.startsWith('SELECT name,to_regclass'))throw Error('Unexpected SQL');requested=args[0];return {rows:requested.map(name=>({name,relation:name==='meri_conversations.initial_run_bindings'?null:name}))};}};
+ const candidate=assemblePreparedCandidate({configuration:x.f.configuration,pool,ecs:{send(){effects++;}},objects:{get(){effects++;},put(){effects++;}},credentials:x.f.secret,fetchImpl(){effects++;throw Error('No Core read');},initialBindings:{...x.initialBindings,async claim(){effects++;throw Error('No claim');}},runIssuance:x.ports.runIssuance,issuanceIntent:x.ports.issuanceIntent,admissionForBinding:x.ports.admissionForBinding,prepareOriginal:x.ports.prepareOriginal,prepareInitial:x.ports.prepareInitial,retireInitial:x.ports.retireInitial,configurationSha256:x.ports.configurationSha256,proposeInitialExpiry:x.ports.proposeInitialExpiry});
+ try{await assert.rejects(candidate.readiness());assert.ok(requested.includes('meri_conversations.initial_run_bindings'));assert.equal(effects,0);}finally{await candidate.close();}
+});
 
 test('opt-in original preparation uses the durable binding and expiry with the same issuer, and retargets only its workspace suffix',async()=>{
  const x=await fixture();try{

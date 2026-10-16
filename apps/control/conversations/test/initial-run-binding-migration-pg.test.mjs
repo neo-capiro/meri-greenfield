@@ -1,12 +1,13 @@
 /** Native 0017 qualification only. Run against a separately attested,
- * disposable PostgreSQL 16 Unix-socket cluster, never a deployed database. */
+ * disposable PostgreSQL 16 cluster, never a deployed database. The Windows
+ * loopback and Unix-socket profiles are separate qualification evidence. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
 import {execFile as execFileCallback} from 'node:child_process';
 import {promisify} from 'node:util';
-import {mkdtemp,readFile,readdir,rm,rmdir} from 'node:fs/promises';
-import {join,posix} from 'node:path';
+import {lstat,mkdtemp,readFile,readdir,realpath,rm,rmdir} from 'node:fs/promises';
+import {join,posix,win32} from 'node:path';
 import pg from 'pg';
 import {createInitialRunBindingJournal} from '../initial-run-binding-journal.mjs';
 import {hash} from '../boundary.mjs';
@@ -14,6 +15,15 @@ import {versions} from './store-fixture.mjs';
 
 const execFile=promisify(execFileCallback);
 const migrations=new URL('../migrations/',import.meta.url);
+// This task-owned Meri allocation is distinct from Core's disposed task-3
+// cluster. Source preflight does not authorize starting or using the server.
+const taskRoot='C:\\Users\\Administrator\\Documents\\Codex\\2026-10-16\\task';
+const windowsTarget=Object.freeze({
+ host:'127.0.0.1',port:55418,
+ dataDirectory:win32.join(taskRoot,'pg0017-isolated-20261016','data'),
+ controlDatabase:'meri_initial_0017_control_qual',
+ binDirectory:'C:\\Program Files\\PostgreSQL\\16\\bin'
+});
 const manifest=[
  '0001_conversations.sql','0002_lifecycle.sql','0003_selected_outputs.sql',
  '0004_sdk_sessions.sql','0005_selected_reads.sql','0006_native_executions.sql',
@@ -28,16 +38,53 @@ function deferred(){let resolve;const promise=new Promise(done=>{resolve=done;})
 async function boundedWait(promise,ms,message){let timer;try{return await Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error(message)),ms);})]);}finally{clearTimeout(timer);}}
 
 function configuration(env){
- const host=env.MERI_INSPECTION_TEST_SOCKET,controlDatabase=env.MERI_INSPECTION_TEST_DATABASE;
+ const transport=env.MERI_INITIAL_RUN_MIGRATION_TEST_TRANSPORT??'unix-socket';
  const dataDirectory=env.MERI_INITIAL_RUN_MIGRATION_TEST_DATA_DIRECTORY;
  const port=Number(env.MERI_INITIAL_RUN_MIGRATION_TEST_PORT);
- if(host!=='/tmp/meri-prepared-kickoff-pg-20261014/socket'||controlDatabase!=='meri_inspection_final'||env.MERI_INITIAL_RUN_MIGRATION_TEST_ISOLATED!=='1')throw Error('EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED');
+ if(env.MERI_INITIAL_RUN_MIGRATION_TEST_ISOLATED!=='1')throw Error('EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED');
+ if(transport==='windows-loopback'){
+  if(process.platform!=='win32'||env.MERI_INSPECTION_TEST_SOCKET!==undefined||env.MERI_INSPECTION_TEST_DATABASE!==windowsTarget.controlDatabase||dataDirectory!==windowsTarget.dataDirectory||port!==windowsTarget.port||env.MERI_INITIAL_RUN_MIGRATION_TEST_PG_BIN_DIRECTORY!==windowsTarget.binDirectory||typeof env.PGPASSWORD!=='string'||env.PGPASSWORD.length===0)throw Error('EXACT_WINDOWS_LOOPBACK_POSTGRES_REQUIRED');
+  return {transport,...windowsTarget};
+ }
+ const host=env.MERI_INSPECTION_TEST_SOCKET,controlDatabase=env.MERI_INSPECTION_TEST_DATABASE;
+ if(transport!=='unix-socket'||host!=='/tmp/meri-prepared-kickoff-pg-20261014/socket'||controlDatabase!=='meri_inspection_final')throw Error('EXPLICIT_ISOLATED_UNIX_POSTGRES_REQUIRED');
  if(typeof dataDirectory!=='string'||!posix.isAbsolute(dataDirectory)||dataDirectory==='/'||dataDirectory.endsWith('/')||posix.normalize(dataDirectory)!==dataDirectory||/[\x00-\x1f\x7f]/u.test(dataDirectory)||dataDirectory.length>4096)throw Error('EXPLICIT_VALIDATOR_DATA_DIRECTORY_REQUIRED');
  if(!Number.isInteger(port)||port<1024||port>65535)throw Error('EXPLICIT_PRIVATE_POSTGRES_PORT_REQUIRED');
- return {host,controlDatabase,dataDirectory,port};
+ return {transport,host,controlDatabase,dataDirectory,port};
 }
 function privateServer(row,config){
- if(!row||!/^16[0-9]{4}$/u.test(row.version_num)||row.listen_addresses!==''||row.data_directory!==config.dataDirectory||Number(row.port)!==config.port)throw Error('PRIVATE_POSTGRES_SERVER_PREFLIGHT_REFUSED');
+ if(!row||!(config.transport==='windows-loopback'?row.version_num==='160015':/^16[0-9]{4}$/u.test(row.version_num))||row.listen_addresses!==(config.transport==='windows-loopback'?'127.0.0.1':'')||Number(row.port)!==config.port)throw Error('PRIVATE_POSTGRES_SERVER_PREFLIGHT_REFUSED');
+ const sameData=config.transport==='windows-loopback'?win32.normalize(row.data_directory??'').toLowerCase()===config.dataDirectory.toLowerCase():row.data_directory===config.dataDirectory;
+ if(!sameData)throw Error('PRIVATE_POSTGRES_SERVER_PREFLIGHT_REFUSED');
+}
+function databaseCleanupDisposition(entry,rows){
+ if(entry.oid===null)return rows.length===0?'absent':'uncertain';
+ assert.equal(rows.length,1,'a fixture-created database must still exist for guarded cleanup');
+ assert.equal(rows[0].oid,entry.oid,'drop only this fixture-owned database');
+ return 'drop';
+}
+async function taskOwnedWindowsDirectory(directory){
+ if(typeof directory!=='string'||!win32.isAbsolute(directory)||win32.normalize(directory)!==directory)throw Error('EXPLICIT_TASK_OWNED_DIRECTORY_REQUIRED');
+ const relative=win32.relative(taskRoot,directory);
+ if(!relative||relative==='..'||relative.startsWith(`..${win32.sep}`)||win32.isAbsolute(relative))throw Error('EXPLICIT_TASK_OWNED_DIRECTORY_REQUIRED');
+ let path=taskRoot;
+ for(const part of ['',...relative.split(win32.sep)]){
+  if(part)path=win32.join(path,part);
+  const stat=await lstat(path),resolved=await realpath(path);
+  if(!stat.isDirectory()||stat.isSymbolicLink()||resolved.toLowerCase()!==path.toLowerCase())throw Error('PRIVATE_POSTGRES_REPARSE_POINT_REFUSED');
+ }
+}
+async function windowsProcess(config){
+ if(config.dataDirectory!==windowsTarget.dataDirectory)throw Error('EXACT_WINDOWS_LOOPBACK_POSTGRES_REQUIRED');
+ await taskOwnedWindowsDirectory(config.dataDirectory);
+ const lines=(await readFile(join(config.dataDirectory,'postmaster.pid'),'utf8')).split(/\r?\n/u);
+ const pid=Number(lines[0]);
+ if(!Number.isSafeInteger(pid)||pid<=0||win32.normalize(lines[1]??'').toLowerCase()!==config.dataDirectory.toLowerCase()||!/^\d{10}$/u.test(lines[2]??'')||Number(lines[3])!==config.port||lines[5]!==config.host)throw Error('PRIVATE_POSTGRES_PROCESS_PREFLIGHT_REFUSED');
+ const script=`$ErrorActionPreference = 'Stop'; $p = Get-CimInstance Win32_Process -Filter 'ProcessId = ${pid}'; $s = @(Get-NetTCPConnection -LocalAddress 127.0.0.1 -LocalPort ${config.port} -State Listen -ErrorAction Stop); if ($null -eq $p -or $s.Count -ne 1) { throw 'missing exact postmaster/listener' }; [pscustomobject]@{executable=$p.ExecutablePath; listenerPid=$s[0].OwningProcess} | ConvertTo-Json -Compress`;
+ const {stdout}=await execFile('powershell.exe',['-NoProfile','-NonInteractive','-Command',script],{timeout:5000,maxBuffer:4096,env:{SystemRoot:process.env.SystemRoot,WINDIR:process.env.WINDIR,PATH:process.env.PATH,PSModulePath:process.env.PSModulePath,TEMP:process.env.TEMP,TMP:process.env.TMP}});
+ const processRow=JSON.parse(stdout);
+ if(win32.normalize(processRow.executable??'').toLowerCase()!==win32.normalize(join(config.binDirectory,'postgres.exe')).toLowerCase()||Number(processRow.listenerPid)!==pid)throw Error('PRIVATE_POSTGRES_PROCESS_PREFLIGHT_REFUSED');
+ return {pid,startedAtEpoch:lines[2]};
 }
 async function files(){
  const names=await readdir(migrations);
@@ -47,7 +94,9 @@ async function files(){
 }
 async function fixture(t,{preexisting=false,probeAbsent=false}={}){
  const config=configuration(process.env),sql=await files();
- const connection={host:config.host,port:config.port,user:'postgres',connectionTimeoutMillis:3000,options:'-c statement_timeout=5000'};
+ process.env.PGPASSFILE=config.transport==='windows-loopback'?'NUL':'/dev/null';
+ const processEvidence=config.transport==='windows-loopback'?await windowsProcess(config):null;
+ const connection={host:config.host,port:config.port,user:'postgres',password:config.transport==='windows-loopback'?process.env.PGPASSWORD:undefined,ssl:false,connectionTimeoutMillis:3000,options:'-c statement_timeout=5000'};
  const admin=new pg.Client({...connection,database:config.controlDatabase});
  const databases=[],pools=[],clients=[],roles=[];
  t.after(async()=>{
@@ -57,10 +106,10 @@ async function fixture(t,{preexisting=false,probeAbsent=false}={}){
    const uncertain=[];
    for(const entry of databases.reverse()){
     const {name}=entry;
-    if(entry.oid===null){uncertain.push(name);continue;}
     const row=(await admin.query('SELECT oid::text FROM pg_database WHERE datname=$1',[name])).rows;
-    assert.equal(row.length,1,'a fixture-created database must still exist for guarded cleanup');
-    assert.equal(row[0].oid,entry.oid,'drop only this fixture-owned database');
+    const disposition=databaseCleanupDisposition(entry,row);
+    if(disposition==='absent')continue;
+    if(disposition==='uncertain'){uncertain.push(name);continue;}
     await admin.query(`DROP DATABASE ${quoted(name)}`);
    }
    if(uncertain.length)throw Error(`DATABASE_OWNERSHIP_UNCERTAIN_MANUAL_RECONCILIATION: ${uncertain.join(',')}`);
@@ -68,14 +117,15 @@ async function fixture(t,{preexisting=false,probeAbsent=false}={}){
   }finally{await admin.end();}
  });
  await admin.connect();
- const metadata=(await admin.query("SELECT current_setting('server_version_num') AS version_num,current_setting('listen_addresses') AS listen_addresses,current_setting('data_directory') AS data_directory,current_setting('port') AS port")).rows[0];
+ const metadata=(await admin.query("SELECT current_setting('server_version_num') AS version_num,current_setting('listen_addresses') AS listen_addresses,current_setting('data_directory') AS data_directory,current_setting('port') AS port,floor(extract(epoch from pg_postmaster_start_time()))::bigint::text AS started_at_epoch")).rows[0];
  privateServer(metadata,config);
+ if(processEvidence&&metadata.started_at_epoch!==processEvidence.startedAtEpoch)throw Error('PRIVATE_POSTGRES_PROCESS_CHANGED');
  async function database(prefix){
   const name=prefix+'_'+randomUUID().replaceAll('-','');quoted(name);
   assert.notEqual(name,config.controlDatabase);
   assert.equal((await admin.query('SELECT oid::text FROM pg_database WHERE datname=$1',[name])).rows.length,0,'random database name must be unused before CREATE');
-  await admin.query(`CREATE DATABASE ${quoted(name)} TEMPLATE template0`);
   const entry={name,oid:null};databases.push(entry);
+  await admin.query(`CREATE DATABASE ${quoted(name)} TEMPLATE template0`);
   const oid=(await admin.query('SELECT oid::text FROM pg_database WHERE datname=$1',[name])).rows[0]?.oid;
   assert.ok(oid);entry.oid=oid;return name;
  }
@@ -147,11 +197,33 @@ async function grantAppRole(f){
  return {role,appPool};
 }
 
-test('0017 fixture refuses unapproved servers before database creation',()=>{
+test('0017 fixture refuses unapproved servers before database creation',async()=>{
  const env={MERI_INSPECTION_TEST_SOCKET:'/tmp/meri-prepared-kickoff-pg-20261014/socket',MERI_INSPECTION_TEST_DATABASE:'meri_inspection_final',MERI_INITIAL_RUN_MIGRATION_TEST_ISOLATED:'1',MERI_INITIAL_RUN_MIGRATION_TEST_DATA_DIRECTORY:'/tmp/validator-owned-0017/data',MERI_INITIAL_RUN_MIGRATION_TEST_PORT:'55432'};
  const config=configuration(env);assert.doesNotThrow(()=>privateServer({version_num:'160015',listen_addresses:'',data_directory:config.dataDirectory,port:'55432'},config));
  for(const change of [{MERI_INITIAL_RUN_MIGRATION_TEST_ISOLATED:'0'},{MERI_INITIAL_RUN_MIGRATION_TEST_DATA_DIRECTORY:'/'},{MERI_INITIAL_RUN_MIGRATION_TEST_DATA_DIRECTORY:'/tmp/../tmp/data'},{MERI_INITIAL_RUN_MIGRATION_TEST_PORT:'0'},{MERI_INSPECTION_TEST_SOCKET:'localhost'}])assert.throws(()=>configuration({...env,...change}));
  for(const change of [{version_num:'150015'},{listen_addresses:'localhost'},{data_directory:'/tmp/other/data'},{port:'5432'}])assert.throws(()=>privateServer({version_num:'160015',listen_addresses:'',data_directory:config.dataDirectory,port:'55432',...change},config));
+ const windows={transport:'windows-loopback',...windowsTarget};
+ const windowsRow={version_num:'160015',listen_addresses:'127.0.0.1',data_directory:windows.dataDirectory,port:'55418'};
+ assert.doesNotThrow(()=>privateServer(windowsRow,windows));
+ for(const change of [{version_num:'160014'},{listen_addresses:'*'},{data_directory:'C:\\Program Files\\PostgreSQL\\16\\data'},{port:'5432'}])assert.throws(()=>privateServer({...windowsRow,...change},windows));
+ const windowsEnv={
+  MERI_INITIAL_RUN_MIGRATION_TEST_TRANSPORT:'windows-loopback',
+  MERI_INITIAL_RUN_MIGRATION_TEST_ISOLATED:'1',
+  MERI_INSPECTION_TEST_DATABASE:windowsTarget.controlDatabase,
+  MERI_INITIAL_RUN_MIGRATION_TEST_DATA_DIRECTORY:windowsTarget.dataDirectory,
+  MERI_INITIAL_RUN_MIGRATION_TEST_PORT:String(windowsTarget.port),
+  MERI_INITIAL_RUN_MIGRATION_TEST_PG_BIN_DIRECTORY:windowsTarget.binDirectory,
+  PGPASSWORD:'synthetic-placeholder'
+ };
+ if(process.platform==='win32')assert.deepEqual(configuration(windowsEnv),windows);
+ else assert.throws(()=>configuration(windowsEnv),{message:'EXACT_WINDOWS_LOOPBACK_POSTGRES_REQUIRED'});
+ for(const change of [{MERI_INSPECTION_TEST_DATABASE:'postgres'},{MERI_INITIAL_RUN_MIGRATION_TEST_DATA_DIRECTORY:'C:\\Program Files\\PostgreSQL\\16\\data'},{MERI_INITIAL_RUN_MIGRATION_TEST_PORT:'5432'},{MERI_INITIAL_RUN_MIGRATION_TEST_PG_BIN_DIRECTORY:'C:\\other\\bin'},{PGPASSWORD:''},{MERI_INSPECTION_TEST_SOCKET:'localhost'}])assert.throws(()=>configuration({...windowsEnv,...change}),{message:'EXACT_WINDOWS_LOOPBACK_POSTGRES_REQUIRED'});
+ await assert.rejects(taskOwnedWindowsDirectory(taskRoot),{message:'EXPLICIT_TASK_OWNED_DIRECTORY_REQUIRED'});
+ await assert.rejects(taskOwnedWindowsDirectory('C:\\Windows\\System32'),{message:'EXPLICIT_TASK_OWNED_DIRECTORY_REQUIRED'});
+ assert.equal(databaseCleanupDisposition({name:'synthetic',oid:null},[]),'absent');
+ assert.equal(databaseCleanupDisposition({name:'synthetic',oid:null},[{oid:'42'}]),'uncertain');
+ assert.equal(databaseCleanupDisposition({name:'synthetic',oid:'42'},[{oid:'42'}]),'drop');
+ assert.throws(()=>databaseCleanupDisposition({name:'synthetic',oid:'42'},[{oid:'43'}]),/drop only this fixture-owned database/u);
 });
 
 test('0017 applies after exact predecessors and preserves older accepted rows',async t=>{
@@ -282,15 +354,20 @@ test('0017 lost acknowledgment after real COMMIT recovers only the persisted bin
 
 test('0017 private pg_dump/pg_restore retains admitted binding and accepted source rows',async t=>{
  const bin=process.env.MERI_INITIAL_RUN_MIGRATION_TEST_PG_BIN_DIRECTORY,scratch=process.env.MERI_INITIAL_RUN_MIGRATION_TEST_SCRATCH_DIRECTORY;
- for(const path of [bin,scratch])if(typeof path!=='string'||!posix.isAbsolute(path)||path==='/'||path.endsWith('/')||posix.normalize(path)!==path||/[\x00-\x1f\x7f]/u.test(path))throw Error('EXPLICIT_PRIVATE_RESTORE_PATH_REQUIRED');
+ const config=configuration(process.env),pathStyle=config.transport==='windows-loopback'?win32:posix;
+ for(const path of [bin,scratch])if(typeof path!=='string'||!pathStyle.isAbsolute(path)||pathStyle.parse(path).root===path||path.endsWith(pathStyle.sep)||pathStyle.normalize(path)!==path||/[\x00-\x1f\x7f]/u.test(path))throw Error('EXPLICIT_PRIVATE_RESTORE_PATH_REQUIRED');
+ if(config.transport==='windows-loopback'){
+  if(bin!==config.binDirectory)throw Error('EXPLICIT_TASK_OWNED_RESTORE_PATH_REQUIRED');
+  await taskOwnedWindowsDirectory(scratch);
+ }
  const f=await fixture(t,{preexisting:true}),claim=await f.journal().claim(f.input,check);
  await seedAccepted(f.client,claim.record.binding,{selectedClientId:claim.record.selectedClientId,policyRevision:claim.record.policyRevision,createdAtMs:claim.record.createdAtMs,expiresAtMs:claim.record.expiresAtMs});
  const source=await snapshotExisting(f.client,claim.record.binding),saved=await f.row();
  const restored=await f.database('meri_initial_0017_restore');
  const directory=await mkdtemp(join(scratch,'meri-0017-')),dump=join(directory,'source.dump');
  t.after(async()=>{await rm(dump,{force:true});await rmdir(directory);});
- const env={PATH:process.env.PATH,PGPASSFILE:'/dev/null',PGCONNECT_TIMEOUT:'3'};
- const run=async(executable,args)=>{const result=await execFile(join(bin,executable),args,{timeout:30000,maxBuffer:1048576,env});assert.equal(result.stderr,'');return result.stdout;};
+ const env={PATH:process.env.PATH,PGPASSFILE:config.transport==='windows-loopback'?'NUL':'/dev/null',PGPASSWORD:config.transport==='windows-loopback'?process.env.PGPASSWORD:undefined,PGCONNECT_TIMEOUT:'3'};
+ const run=async(executable,args)=>{const result=await execFile(join(bin,executable+(config.transport==='windows-loopback'?'.exe':'')),args,{timeout:30000,maxBuffer:1048576,env});assert.equal(result.stderr,'');return result.stdout;};
  for(const executable of ['pg_dump','pg_restore'])assert.match(await run(executable,['--version']),/PostgreSQL\) 16[.]/u);
  const target=`--host=${f.config.host}`,port=`--port=${f.config.port}`;
  await run('pg_dump',['--format=custom','--no-owner','--no-acl',target,port,'--username=postgres',`--dbname=${f.name}`,`--file=${dump}`]);
