@@ -1,0 +1,26 @@
+[
+  {
+    "path": "node_modules/ajv/package.json",
+    "present": false
+  },
+  {
+    "path": "node_modules/canonicalize/package.json",
+    "present": false
+  },
+  {
+    "path": "apps/control/conversations/node_modules/@temporalio/client/package.json",
+    "present": false
+  },
+  {
+    "path": "apps/control/conversations/node_modules/@temporalio/workflow/package.json",
+    "present": false
+  },
+  {
+    "path": "apps/runtime/node_modules/@temporalio/activity/package.json",
+    "present": false
+  },
+  {
+    "path": "apps/runtime/node_modules/@temporalio/worker/package.json",
+    "present": false
+  }
+]

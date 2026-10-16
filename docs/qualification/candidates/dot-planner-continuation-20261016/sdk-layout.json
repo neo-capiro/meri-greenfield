@@ -1,0 +1,170 @@
+{
+  "exitCode": 0,
+  "note": "Real new driver/dispatcher/client/admission/activities/server/composition/contract plus legacy controls; scripted ports, public hash/schema and Temporal enum/Context import seams. Core sorted hash uses real node:crypto. Actual Temporal1.24/server/replay, Core authority/stored custody, canonicalize/Ajv/provider/DB UNRUN.",
+  "argv": [
+    "--max-old-space-size=128",
+    "--experimental-test-module-mocks",
+    "--import",
+    "./docs/qualification/candidates/dot-planner-continuation-20261016/dependency-seams.mjs",
+    "--test",
+    "--test-isolation=none",
+    "--test-concurrency=1",
+    "apps/control/objective-planner/continuation/contract.test.mjs",
+    "apps/control/objective-planner/continuation/core-client.test.mjs",
+    "apps/runtime/test/objective-planner-activities.test.mjs",
+    "apps/runtime/test/objective-planner-startup.test.mjs",
+    "apps/control/conversations/test/objective-planner-dispatch.test.mjs"
+  ],
+  "sourceParent": "b4aca5fbad14a391e5f6fa383a9c46b33c8b84e5",
+  "startedAt": "2026-10-16T04:33:27.6125979+00:00",
+  "workingSetLimitBytes": 268435456,
+  "ports": [],
+  "elapsedMs": 408,
+  "sampledPeakWorkingSetBytes": 97533952,
+  "synthetic": true,
+  "sourceFiles": [
+    {
+      "path": "apps\\control\\objective-planner\\core-receipts.mjs",
+      "sha256": "a78026e624bc09ae26fd064a0cbb25775b4fdf52c362132020c0144e03eea89f"
+    },
+    {
+      "path": "apps\\control\\objective-planner\\identity.mjs",
+      "sha256": "f2427933375c5169c72bec1936c60678aa1519443407a801305dea5e67b06dec"
+    },
+    {
+      "path": "apps\\control\\objective-planner\\materializer.mjs",
+      "sha256": "7e87621bc2eae19aff70d28ffbd355e4fcfdd955636797c104f27259b17350f3"
+    },
+    {
+      "path": "apps\\control\\objective-planner\\continuation\\admission.mjs",
+      "sha256": "7b63393ac1505c6e3b4275c131d5ef336b7840820268852f6dbbf492b0dfaa2d"
+    },
+    {
+      "path": "apps\\control\\objective-planner\\continuation\\admission.test.mjs",
+      "sha256": "e03b7b0a642abef44f58bdfdddfdc590bc02bbfba9eb091ed8bfdef049f38c67"
+    },
+    {
+      "path": "apps\\control\\objective-planner\\continuation\\contract.mjs",
+      "sha256": "2ce3bd2e72bac31774c448c128040de43f73f4017de00e1ef1be6dd2c476c38b"
+    },
+    {
+      "path": "apps\\control\\objective-planner\\continuation\\contract.test.mjs",
+      "sha256": "79b806d82876413e73e2c78739a64e0bf493735db26ae9198fb7a368f88d54ec"
+    },
+    {
+      "path": "apps\\control\\objective-planner\\continuation\\core-client.mjs",
+      "sha256": "15252b4377599fbbd18871add8a17e5d70b6985862c3fb27cbf7afbd6818ba80"
+    },
+    {
+      "path": "apps\\control\\objective-planner\\continuation\\core-client.test.mjs",
+      "sha256": "0376a69def82f0a5fdee0f19c2745c209c41f73a656667011356521a73aef8c1"
+    },
+    {
+      "path": "apps\\control\\objective-planner\\continuation\\driver.mjs",
+      "sha256": "1d1bf47be87664444f5de22ea712e2a100969c280ec5a5519ed305ddfdf6c3bc"
+    },
+    {
+      "path": "apps\\control\\objective-planner\\continuation\\driver.test.mjs",
+      "sha256": "fc5d88c2662cdb020555af589745675f90680f2105b9e907a129cc96cdb35da0"
+    },
+    {
+      "path": "apps\\control\\objective-planner\\continuation\\fixtures.mjs",
+      "sha256": "32f64c09e907f949bc4f130625038aba423a5914ba4e20c07d3c7221877d4a4c"
+    },
+    {
+      "path": "apps\\control\\objective-planner\\continuation\\registration.mjs",
+      "sha256": "7d27d06cb19bb5d4baeedc92e7275501a6a55e826b06bc1fde13e5e2dc2621c1"
+    },
+    {
+      "path": "apps\\control\\objective-planner\\continuation\\registration.test.mjs",
+      "sha256": "4c7ed90c33a3ffd0356c323094c9fe2c8e379a04f1ddd71def1252d5d5764d53"
+    },
+    {
+      "path": "apps\\control\\objective-planner\\continuation\\server.mjs",
+      "sha256": "a4019e3d73aa59192f0b06f8e221b1497d7488125dca5f8048df43d579ab3f46"
+    },
+    {
+      "path": "apps\\control\\objective-planner\\continuation\\server.test.mjs",
+      "sha256": "6073eb636c21706dbc5850555c8402145a1828a5558bbe7becb8bb7b12417af3"
+    },
+    {
+      "path": "apps\\control\\objective-planner\\test\\fixtures.mjs",
+      "sha256": "4e75f902b95fc85da72549aff4be296a88255d09b46babf707ec5477120a5ff1"
+    },
+    {
+      "path": "apps\\control\\objective-planner\\test\\materializer.test.mjs",
+      "sha256": "25d7bc332d3191a8f7e226e7f9d03a1c90737c0c9b552adfff4b0fb68c28c4df"
+    },
+    {
+      "path": "apps\\control\\objective-planner\\test\\receipts.test.mjs",
+      "sha256": "7ba538a532e80ecbdb399e5be5b0b1f560184be1303f6932a2d44e49a49c3d8d"
+    },
+    {
+      "path": "apps/control/conversations/workflow.ts",
+      "sha256": "e0496b772af601ba70cec25fdcc2d5b34750ae0ef178bebd14916872d41f6947"
+    },
+    {
+      "path": "apps/runtime/temporal-worker.mjs",
+      "sha256": "19258b6c522bf0eec2a6348feff468e7fedfd579c59b22679f7c9260cfe9b322"
+    },
+    {
+      "path": "apps/runtime/objective-planner-activities.mjs",
+      "sha256": "35d0da105f9a274ff18dcc0c7b3d4e8ca62405444925f50e413996a35376d823"
+    },
+    {
+      "path": "apps/runtime/objective-planner-startup.mjs",
+      "sha256": "28e596891989e2173c9675a83be12d1b6a26f5b23b18939e7000794105f88d4a"
+    },
+    {
+      "path": "apps/runtime/test/objective-planner-activities.test.mjs",
+      "sha256": "ef36098ddbc30ae68de149aec367ba35c678b347b1c8f22e47e6a26767c9a160"
+    },
+    {
+      "path": "apps/runtime/test/objective-planner-startup.test.mjs",
+      "sha256": "8535a963e2412cb594c40fbb63abb4bd8e9cf6bdc43b53d45f4ecfcd70a4bb7d"
+    },
+    {
+      "path": "apps/control/conversations/objective-planner-dispatch.mjs",
+      "sha256": "2b89f6490453d7e5e6e7e1a3af365d6ccf5e70dd9725ca2069e0e2ac5479ed01"
+    },
+    {
+      "path": "apps/control/conversations/objective-planner-workflow.ts",
+      "sha256": "3d42a350e926cebd3b3f26bfb9040cf6bb793424571c9fbee96ae5e0280e86a2"
+    },
+    {
+      "path": "apps/control/conversations/test/objective-planner-dispatch.test.mjs",
+      "sha256": "9dd7e55ec0ded67061de3174351b3d2b667629e7221e4cac8489939e47f3a627"
+    },
+    {
+      "path": "docs/qualification/candidates/dot-planner-continuation-20261016/dependency-seams.mjs",
+      "sha256": "995b95ffc809a91c25d49650b3d5379beb5f537664fe6ba714f50fc233516723"
+    },
+    {
+      "path": "docs/qualification/candidates/dot-planner-continuation-20261016/temporal-client-shim.mjs",
+      "sha256": "f010514d51ebdac2f22b6cb0ab2435b0568c691d2903a8ec4cc01ca3952372e1"
+    },
+    {
+      "path": "docs/qualification/candidates/dot-planner-continuation-20261016/temporal-activity-shim.mjs",
+      "sha256": "441a840323e149e425b1eabc1939df8c0243c29d0d3b4ea402f41853e805f12f"
+    },
+    {
+      "path": "docs/qualification/candidates/dot-planner-continuation-20261016/run-controls.ps1",
+      "sha256": "410025b105ebae3e4f8b9e15a47080f3ddb951ba8bff2b56de211c2206b73f3a"
+    }
+  ],
+  "heapMiB": 128,
+  "processCount": 1,
+  "cleanup": {
+    "servicesCreated": 0,
+    "portsCreated": 0,
+    "ownedProcessExited": true
+  },
+  "memory": {
+    "freeBytes": 11201867776,
+    "totalBytes": 33632079872,
+    "rssBytes": 35328000
+  },
+  "limitStopped": false,
+  "hardWallMs": 30000,
+  "finishedAt": "2026-10-16T04:33:28.2100686+00:00"
+}

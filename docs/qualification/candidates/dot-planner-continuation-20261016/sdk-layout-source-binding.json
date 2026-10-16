@@ -1,0 +1,9 @@
+{
+  "tests": 42,
+  "source": "105f925088c3c4973f42bcb8b71ff45a80b2b271",
+  "nativeProfile": "PREPARED_UNRUN",
+  "synthetic": true,
+  "tree": "17b188e595dd37eadc16ca4544e434d31a1c6279",
+  "allRecordedSourceHashesMatch": true,
+  "proof": "sdk-layout.json"
+}
