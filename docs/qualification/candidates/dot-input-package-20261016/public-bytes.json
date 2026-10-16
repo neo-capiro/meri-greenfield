@@ -1,0 +1,43 @@
+{
+  "source": "95b4b2aae548c3523785149d876c87248f5e769c",
+  "name": "public-bytes",
+  "argv": [
+    "--max-old-space-size=128",
+    "--test",
+    "--test-isolation=none",
+    "--test-concurrency=1",
+    "test/conversation-input-public.test.mjs"
+  ],
+  "hardSeconds": 45,
+  "memoryBefore": {
+    "physicalTotal": 33632079872,
+    "physicalAvailable": 11582357504,
+    "commitTotal": 33632079872,
+    "commitAvailable": 2628616192
+  },
+  "primaryExit": 0,
+  "cleanupExit": 0,
+  "reason": null,
+  "wallMs": 422,
+  "sampledOwnedTreeRssBytes": 80748544,
+  "ownedPrimaryPid": 25848,
+  "ownedExited": true,
+  "observedOwnedProcesses": [
+    {
+      "pid": 25848,
+      "parent": 41448,
+      "name": "node.exe",
+      "created": 134365982368928260,
+      "rss": 10526720
+    },
+    {
+      "pid": 30148,
+      "parent": 25848,
+      "name": "conhost.exe",
+      "created": 134365982369040451,
+      "rss": 7811072
+    }
+  ],
+  "residualPids": [],
+  "preservedBytes": true
+}

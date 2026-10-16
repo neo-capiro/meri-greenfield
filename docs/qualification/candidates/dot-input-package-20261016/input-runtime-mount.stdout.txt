@@ -1,0 +1,26 @@
+✖ actual startup mounts admission on SAME lifecycle service; durable replay has one queued event and zero workflows until submit (97.3089ms)
+✖ mounted admission keeps revoked and forged requests from persistence and never calls native/model dispatch (1.4659ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2338.5293
+
+✖ failing tests:
+
+test at apps\runtime\test\input-admission-mount.test.mjs:16:1
+✖ actual startup mounts admission on SAME lifecycle service; durable replay has one queued event and zero workflows until submit (97.3089ms)
+  TypeError: Cannot read properties of undefined (reading 'size')
+      at TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/runtime/test/input-admission-mount.test.mjs:22:29)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at apps\runtime\test\input-admission-mount.test.mjs:25:1
+✖ mounted admission keeps revoked and forged requests from persistence and never calls native/model dispatch (1.4659ms)
+  TypeError: Cannot read properties of undefined (reading 'size')
+      at TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/runtime/test/input-admission-mount.test.mjs:27:133)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

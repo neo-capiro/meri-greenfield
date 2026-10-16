@@ -1,0 +1,33 @@
+{
+  "artifactSource": "954f900cc1c5e250574b34ffe26b1dccbebef528",
+  "reviewedCheckpoint": "43142561c1b94f8d33d6db45a4a88a047929bd9a",
+  "artifactSha256": "53497d94c3f2b9ee0945f7d3398d621151702db17f5d9e2ffa37b7b915ba3614",
+  "artifactIntegrity": "sha512-+mqtOOOuGf40fJcbjB8nYqNwVJpsiuO0E9t0VbGTmZoR9sfbdEzwcEXfiyO+ONtb5A5dW3nui7K4sKqEugSHFg==",
+  "archiveChecksPassed": 375,
+  "extractedExactFiles": 35,
+  "consumerRoot": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-11\\input-artifact-consumer-53497d94",
+  "argv": [
+    "C:/Program Files/nodejs/node.exe",
+    "--max-old-space-size=128",
+    "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-11\\artifact-consumer-smoke.mjs",
+    "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-11\\input-artifact-consumer-53497d94"
+  ],
+  "pid": 39204,
+  "startedAt": "2026-10-16T04:30:07.260700+00:00",
+  "finishedAt": "2026-10-16T04:30:07.468699+00:00",
+  "wallMs": 219.0,
+  "exit": 0,
+  "stopReason": null,
+  "hardWallSeconds": 120,
+  "heapMiB": 128,
+  "ownedProcessRemains": false,
+  "capacityBefore": {
+    "availableCommit": 2057433088,
+    "availablePhysical": 10834812928
+  },
+  "minimumObserved": {
+    "availableCommit": 2043211776,
+    "availablePhysical": 10811621376
+  },
+  "claim": "Independent actual extracted package consumer. One Node process, no test worker, generator, compiler, service, database, provider or native effect."
+}

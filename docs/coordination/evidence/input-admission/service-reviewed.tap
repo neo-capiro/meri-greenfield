@@ -1,0 +1,592 @@
+TAP version 13
+# Subtest: real Fetch submit/history reuses existing opaque session and persisted cursor
+ok 1 - real Fetch submit/history reuses existing opaque session and persisted cursor
+  ---
+  duration_ms: 70.2298
+  type: 'test'
+  ...
+# Subtest: a lost Temporal start ack keeps request recoverable on exact resubmission
+ok 2 - a lost Temporal start ack keeps request recoverable on exact resubmission
+  ---
+  duration_ms: 6.4438
+  type: 'test'
+  ...
+# Subtest: current revocation blocks old history, publication and replay submit
+ok 3 - current revocation blocks old history, publication and replay submit
+  ---
+  duration_ms: 4.0473
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed tenant before transcript release
+ok 4 - existing session refuses changed tenant before transcript release
+  ---
+  duration_ms: 2.9014
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed actor before transcript release
+ok 5 - existing session refuses changed actor before transcript release
+  ---
+  duration_ms: 2.9672
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed fence before transcript release
+ok 6 - existing session refuses changed fence before transcript release
+  ---
+  duration_ms: 2.8952
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed attempt before transcript release
+ok 7 - existing session refuses changed attempt before transcript release
+  ---
+  duration_ms: 2.9935
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed worker before transcript release
+ok 8 - existing session refuses changed worker before transcript release
+  ---
+  duration_ms: 3.6924
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed conversation before transcript release
+ok 9 - existing session refuses changed conversation before transcript release
+  ---
+  duration_ms: 3.1031
+  type: 'test'
+  ...
+# Subtest: normalizes actual last-week window and refuses unavailable selected skills
+ok 10 - normalizes actual last-week window and refuses unavailable selected skills
+  ---
+  duration_ms: 27.9913
+  type: 'test'
+  ...
+# Subtest: cancel fences late worker publications and cancellation survives repeat
+ok 11 - cancel fences late worker publications and cancellation survives repeat
+  ---
+  duration_ms: 14.4988
+  type: 'test'
+  ...
+# Subtest: reconnect emits only new events and source cancellation stops its polls
+ok 12 - reconnect emits only new events and source cancellation stops its polls
+  ---
+  duration_ms: 7.2938
+  type: 'test'
+  ...
+# Subtest: revocation after first stream event prevents subsequent disclosure
+ok 13 - revocation after first stream event prevents subsequent disclosure
+  ---
+  duration_ms: 4.4882
+  type: 'test'
+  ...
+# Subtest: upstream Temporal pins stable workflow and rejects reuse while accepting a current start
+ok 14 - upstream Temporal pins stable workflow and rejects reuse while accepting a current start
+  ---
+  duration_ms: 0.7228
+  type: 'test'
+  ...
+# Subtest: HTTP body read and dispatch share one deadline signal
+ok 15 - HTTP body read and dispatch share one deadline signal
+  ---
+  duration_ms: 33.6172
+  type: 'test'
+  ...
+# Subtest: history enforces its public byte caps when startup permits larger transport limits
+ok 16 - history enforces its public byte caps when startup permits larger transport limits
+  ---
+  duration_ms: 8.1159
+  type: 'test'
+  ...
+# Subtest: three turns page and reload over one monotonic cursor while original UIEvent sequences and requests stay intact
+ok 17 - three turns page and reload over one monotonic cursor while original UIEvent sequences and requests stay intact
+  ---
+  duration_ms: 92.2811
+  type: 'test'
+  ...
+# Subtest: lost turn ACK and later replay recover the same source mapping without a new reservation
+ok 18 - lost turn ACK and later replay recover the same source mapping without a new reservation
+  ---
+  duration_ms: 25.7716
+  type: 'test'
+  ...
+# Subtest: next-turn uses the same native bearer for membership before effect and final release
+ok 19 - next-turn uses the same native bearer for membership before effect and final release
+  ---
+  duration_ms: 5.8778
+  type: 'test'
+  ...
+# Subtest: current tenant denial prevents disclosure or next-turn effects
+ok 20 - current tenant denial prevents disclosure or next-turn effects
+  ---
+  duration_ms: 8.4246
+  type: 'test'
+  ...
+# Subtest: current actor denial prevents disclosure or next-turn effects
+ok 21 - current actor denial prevents disclosure or next-turn effects
+  ---
+  duration_ms: 8.2338
+  type: 'test'
+  ...
+# Subtest: current client denial prevents disclosure or next-turn effects
+ok 22 - current client denial prevents disclosure or next-turn effects
+  ---
+  duration_ms: 12.1068
+  type: 'test'
+  ...
+# Subtest: member removal and retention suppression refuse history release
+ok 23 - member removal and retention suppression refuse history release
+  ---
+  duration_ms: 6.1121
+  type: 'test'
+  ...
+# Subtest: forged cursor, scope hints, corrupt event and identity substitution cannot become a successful page
+ok 24 - forged cursor, scope hints, corrupt event and identity substitution cannot become a successful page
+  ---
+  duration_ms: 5.883
+  type: 'test'
+  ...
+# Subtest: discovery cursor pages owned conversations deterministically without dropping identity
+ok 25 - discovery cursor pages owned conversations deterministically without dropping identity
+  ---
+  duration_ms: 7.118
+  type: 'test'
+  ...
+# Subtest: concurrent explicit turn admission reserves exactly one durable target
+ok 26 - concurrent explicit turn admission reserves exactly one durable target
+  ---
+  duration_ms: 8.6426
+  type: 'test'
+  ...
+# Subtest: submit ACK recovery keeps exact request identity and refuses prompt substitution or a new turn on its queued target
+ok 27 - submit ACK recovery keeps exact request identity and refuses prompt substitution or a new turn on its queued target
+  ---
+  duration_ms: 11.1417
+  type: 'test'
+  ...
+# Subtest: explicit null list limit is refused without coercion
+ok 28 - explicit null list limit is refused without coercion
+  ---
+  duration_ms: 5.4242
+  type: 'test'
+  ...
+# Subtest: explicit null transcript limit is refused without coercion
+ok 29 - explicit null transcript limit is refused without coercion
+  ---
+  duration_ms: 10.4586
+  type: 'test'
+  ...
+# Subtest: explicit null transcript after is refused without coercion
+ok 30 - explicit null transcript after is refused without coercion
+  ---
+  duration_ms: 5.3316
+  type: 'test'
+  ...
+# Subtest: foreign actor, suppression false: ownership denial has no retention observation
+ok 31 - foreign actor, suppression false: ownership denial has no retention observation
+  ---
+  duration_ms: 5.8909
+  type: 'test'
+  ...
+# Subtest: foreign actor, suppression true: ownership denial has no retention observation
+ok 32 - foreign actor, suppression true: ownership denial has no retention observation
+  ---
+  duration_ms: 6.1006
+  type: 'test'
+  ...
+# Subtest: foreign client, suppression false: ownership denial has no retention observation
+ok 33 - foreign client, suppression false: ownership denial has no retention observation
+  ---
+  duration_ms: 6.3835
+  type: 'test'
+  ...
+# Subtest: foreign client, suppression true: ownership denial has no retention observation
+ok 34 - foreign client, suppression true: ownership denial has no retention observation
+  ---
+  duration_ms: 5.601
+  type: 'test'
+  ...
+# Subtest: membership revision changed during canonical read withholds the page with canonical409
+ok 35 - membership revision changed during canonical read withholds the page with canonical409
+  ---
+  duration_ms: 5.9477
+  type: 'test'
+  ...
+# Subtest: canonical conversation-shape is an integrity500, without foreign database details
+ok 36 - canonical conversation-shape is an integrity500, without foreign database details
+  ---
+  duration_ms: 5.5416
+  type: 'test'
+  ...
+# Subtest: canonical run-shape is an integrity500, without foreign database details
+ok 37 - canonical run-shape is an integrity500, without foreign database details
+  ---
+  duration_ms: 5.1602
+  type: 'test'
+  ...
+# Subtest: canonical request-hash is an integrity500, without foreign database details
+ok 38 - canonical request-hash is an integrity500, without foreign database details
+  ---
+  duration_ms: 13.0252
+  type: 'test'
+  ...
+# Subtest: canonical event-shape is an integrity500, without foreign database details
+ok 39 - canonical event-shape is an integrity500, without foreign database details
+  ---
+  duration_ms: 5.8489
+  type: 'test'
+  ...
+# Subtest: canonical pending-shape is an integrity500, without foreign database details
+ok 40 - canonical pending-shape is an integrity500, without foreign database details
+  ---
+  duration_ms: 5.895
+  type: 'test'
+  ...
+# Subtest: canonical pending-missing-scopes is an integrity500, without foreign database details
+ok 41 - canonical pending-missing-scopes is an integrity500, without foreign database details
+  ---
+  duration_ms: 6.0166
+  type: 'test'
+  ...
+# Subtest: canonical pending-missing-versions is an integrity500, without foreign database details
+ok 42 - canonical pending-missing-versions is an integrity500, without foreign database details
+  ---
+  duration_ms: 6.3584
+  type: 'test'
+  ...
+# Subtest: canonical pending-missing-facts is an integrity500, without foreign database details
+ok 43 - canonical pending-missing-facts is an integrity500, without foreign database details
+  ---
+  duration_ms: 6.1589
+  type: 'test'
+  ...
+# Subtest: canonical pending-missing-policyRevision is an integrity500, without foreign database details
+ok 44 - canonical pending-missing-policyRevision is an integrity500, without foreign database details
+  ---
+  duration_ms: 5.9342
+  type: 'test'
+  ...
+# Subtest: canonical pending-missing-reservedAt is an integrity500, without foreign database details
+ok 45 - canonical pending-missing-reservedAt is an integrity500, without foreign database details
+  ---
+  duration_ms: 6.0865
+  type: 'test'
+  ...
+# Subtest: resume, lost receipt and reload retain one logical prompt; identical-text new turn remains distinct
+ok 46 - resume, lost receipt and reload retain one logical prompt; identical-text new turn remains distinct
+  ---
+  duration_ms: 127.6058
+  type: 'test'
+  ...
+# Subtest: fork starts a conversation-local prompt identity while retaining exact external source lineage
+ok 47 - fork starts a conversation-local prompt identity while retaining exact external source lineage
+  ---
+  duration_ms: 58.4586
+  type: 'test'
+  ...
+# Subtest: resumed canonical digest substitution refuses prompt lineage
+ok 48 - resumed canonical digest substitution refuses prompt lineage
+  ---
+  duration_ms: 79.41
+  type: 'test'
+  ...
+# Subtest: resumed canonical request substitution refuses prompt lineage
+ok 49 - resumed canonical request substitution refuses prompt lineage
+  ---
+  duration_ms: 56.4612
+  type: 'test'
+  ...
+# Subtest: resumed canonical source-binding substitution refuses prompt lineage
+ok 50 - resumed canonical source-binding substitution refuses prompt lineage
+  ---
+  duration_ms: 72.1675
+  type: 'test'
+  ...
+# Subtest: resumed canonical context substitution refuses prompt lineage
+ok 51 - resumed canonical context substitution refuses prompt lineage
+  ---
+  duration_ms: 60.8251
+  type: 'test'
+  ...
+# Subtest: admission stores one full immutable request and queued event with zero dispatches; exact replay uses canonical rows
+ok 52 - admission stores one full immutable request and queued event with zero dispatches; exact replay uses canonical rows
+  ---
+  duration_ms: 20.3048
+  type: 'test'
+  ...
+# Subtest: admit then submit and exact replays preserve existing submit wire and a single upstream Temporal workflow identity
+ok 53 - admit then submit and exact replays preserve existing submit wire and a single upstream Temporal workflow identity
+  ---
+  duration_ms: 2.2399
+  type: 'test'
+  ...
+# Subtest: lost admission commit acknowledgement recovers positively from existing history and replays exact input
+ok 54 - lost admission commit acknowledgement recovers positively from existing history and replays exact input
+  ---
+  duration_ms: 2.288
+  type: 'test'
+  ...
+# Subtest: lost start acknowledgement after admission retries the same fixed workflow and never adds another queued event
+ok 55 - lost start acknowledgement after admission retries the same fixed workflow and never adds another queued event
+  ---
+  duration_ms: 2.5699
+  type: 'test'
+  ...
+# Subtest: concurrent identical admission and submit race creates at most one request/event and keeps the accepted normalization
+ok 56 - concurrent identical admission and submit race creates at most one request/event and keeps the accepted normalization
+  ---
+  duration_ms: 8.717
+  type: 'test'
+  ...
+# Subtest: concurrent different bodies under one identity conflict without another event or dispatch
+ok 57 - concurrent different bodies under one identity conflict without another event or dispatch
+  ---
+  duration_ms: 1.9962
+  type: 'test'
+  ...
+# Subtest: a different request ID cannot replace accepted input on the same run
+ok 58 - a different request ID cannot replace accepted input on the same run
+  ---
+  duration_ms: 1.5472
+  type: 'test'
+  ...
+# Subtest: relative-window replay finds canonical request before normalization after clock/calendar rollover
+ok 59 - relative-window replay finds canonical request before normalization after clock/calendar rollover
+  ---
+  duration_ms: 4.3809
+  type: 'test'
+  ...
+# Subtest: current revocation after reservation lookup prevents acceptance persistence
+ok 60 - current revocation after reservation lookup prevents acceptance persistence
+  ---
+  duration_ms: 0.7114
+  type: 'test'
+  ...
+# Subtest: revocation after commit withholds receipt; accepted input stays durable without dispatch
+ok 61 - revocation after commit withholds receipt; accepted input stays durable without dispatch
+  ---
+  duration_ms: 0.8871
+  type: 'test'
+  ...
+# Subtest: expiry after commit withholds receipt; accepted input stays durable without dispatch
+ok 62 - expiry after commit withholds receipt; accepted input stays durable without dispatch
+  ---
+  duration_ms: 0.7251
+  type: 'test'
+  ...
+# Subtest: binding drift after commit withholds receipt; accepted input stays durable without dispatch
+ok 63 - binding drift after commit withholds receipt; accepted input stays durable without dispatch
+  ---
+  duration_ms: 0.7179
+  type: 'test'
+  ...
+# Subtest: scope drift after commit withholds receipt; accepted input stays durable without dispatch
+ok 64 - scope drift after commit withholds receipt; accepted input stays durable without dispatch
+  ---
+  duration_ms: 0.7038
+  type: 'test'
+  ...
+# Subtest: the final current-auth check can withhold an exact replay without another event or dispatch
+ok 65 - the final current-auth check can withhold an exact replay without another event or dispatch
+  ---
+  duration_ms: 1.9048
+  type: 'test'
+  ...
+# Subtest: retention suppression at persistence completion prevents receipt release and positive recovery until reopened
+ok 66 - retention suppression at persistence completion prevents receipt release and positive recovery until reopened
+  ---
+  duration_ms: 1.5038
+  type: 'test'
+  ...
+# Subtest: terminal admission recovery returns original target and delayed old submit does not dispatch terminal work
+ok 67 - terminal admission recovery returns original target and delayed old submit does not dispatch terminal work
+  ---
+  duration_ms: 6.7552
+  type: 'test'
+  ...
+# Subtest: reserved next run uses canonical nextRuns.accept, never restores older prompt; stale old session cannot retarget
+ok 68 - reserved next run uses canonical nextRuns.accept, never restores older prompt; stale old session cannot retarget
+  ---
+  duration_ms: 10.2437
+  type: 'test'
+  ...
+# Subtest: empty or unavailable recovery is no dispatch and supplies no synthesized input identity
+ok 69 - empty or unavailable recovery is no dispatch and supplies no synthesized input identity
+  ---
+  duration_ms: 0.435
+  type: 'test'
+  ...
+# Subtest: a structurally valid store response with substituted binding cannot release an admission receipt
+ok 70 - a structurally valid store response with substituted binding cannot release an admission receipt
+  ---
+  duration_ms: 1.3016
+  type: 'test'
+  ...
+# Subtest: a structurally valid store response with substituted scope cannot release an admission receipt
+ok 71 - a structurally valid store response with substituted scope cannot release an admission receipt
+  ---
+  duration_ms: 1.1655
+  type: 'test'
+  ...
+# Subtest: a structurally valid store response with substituted request ID cannot release an admission receipt
+ok 72 - a structurally valid store response with substituted request ID cannot release an admission receipt
+  ---
+  duration_ms: 1.4817
+  type: 'test'
+  ...
+# Subtest: a structurally valid store response with substituted prompt cannot release an admission receipt
+ok 73 - a structurally valid store response with substituted prompt cannot release an admission receipt
+  ---
+  duration_ms: 4.0614
+  type: 'test'
+  ...
+# Subtest: fixed Fetch admission returns exact no-store receipt and existing history recovers its canonical input without starting work
+ok 74 - fixed Fetch admission returns exact no-store receipt and existing history recovers its canonical input without starting work
+  ---
+  duration_ms: 6.4811
+  type: 'test'
+  ...
+# Subtest: closed canonical submit body rejects binding, scopes, client and dispatch flags before persistence
+ok 75 - closed canonical submit body rejects binding, scopes, client and dispatch flags before persistence
+  ---
+  duration_ms: 12.6211
+  type: 'test'
+  ...
+# Subtest: only fixed POST path is mounted; credentials, media, cursors and native Request brands fail closed
+ok 76 - only fixed POST path is mounted; credentials, media, cursors and native Request brands fail closed
+  ---
+  duration_ms: 1.5735
+  type: 'test'
+  ...
+# Subtest: malformed UTF8/JSON, declared lengths and public byte caps prevent admission
+ok 77 - malformed UTF8/JSON, declared lengths and public byte caps prevent admission
+  ---
+  duration_ms: 1.7969
+  type: 'test'
+  ...
+# Subtest: revoked session cannot admit, replay or release stored prompt bytes
+ok 78 - revoked session cannot admit, replay or release stored prompt bytes
+  ---
+  duration_ms: 3.0129
+  type: 'test'
+  ...
+# Subtest: conflicting input maps existing public replay error without creating another identity/event
+ok 79 - conflicting input maps existing public replay error without creating another identity/event
+  ---
+  duration_ms: 2.9648
+  type: 'test'
+  ...
+# Subtest: unknown persistence response exposes no stored bytes and exact history recovery remains positive
+ok 80 - unknown persistence response exposes no stored bytes and exact history recovery remains positive
+  ---
+  duration_ms: 5.9645
+  type: 'test'
+  ...
+# Subtest: HTTP body read/admission share one abortable deadline and cancellation never calls dispatch/cancel
+ok 81 - HTTP body read/admission share one abortable deadline and cancellation never calls dispatch/cancel
+  ---
+  duration_ms: 21.3592
+  type: 'test'
+  ...
+# Subtest: response cap and canonical closed response shape fail as content-free unavailable
+ok 82 - response cap and canonical closed response shape fail as content-free unavailable
+  ---
+  duration_ms: 4.6498
+  type: 'test'
+  ...
+# Subtest: configuration cannot expand public transport limits
+ok 83 - configuration cannot expand public transport limits
+  ---
+  duration_ms: 0.2321
+  type: 'test'
+  ...
+# Subtest: request is immutable and replay survives owner reconstruction
+ok 84 - request is immutable and replay survives owner reconstruction
+  ---
+  duration_ms: 1.7584
+  type: 'test'
+  ...
+# Subtest: events atomically advance state and stable IDs replay without duplicates
+ok 85 - events atomically advance state and stable IDs replay without duplicates
+  ---
+  duration_ms: 2.0956
+  type: 'test'
+  ...
+# Subtest: concurrent starting attempts serialize and allow one model admission
+ok 86 - concurrent starting attempts serialize and allow one model admission
+  ---
+  duration_ms: 1.0543
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign tenant
+ok 87 - stored reads/writes deny foreign tenant
+  ---
+  duration_ms: 0.5911
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign actor
+ok 88 - stored reads/writes deny foreign actor
+  ---
+  duration_ms: 0.5332
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign conversation
+ok 89 - stored reads/writes deny foreign conversation
+  ---
+  duration_ms: 0.475
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign run
+ok 90 - stored reads/writes deny foreign run
+  ---
+  duration_ms: 0.454
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign attempt
+ok 91 - stored reads/writes deny foreign attempt
+  ---
+  duration_ms: 0.5032
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign worker
+ok 92 - stored reads/writes deny foreign worker
+  ---
+  duration_ms: 0.5359
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign fence
+ok 93 - stored reads/writes deny foreign fence
+  ---
+  duration_ms: 0.4995
+  type: 'test'
+  ...
+# Subtest: cancelled run refuses late text and completion but original events remain inspectable
+ok 94 - cancelled run refuses late text and completion but original events remain inspectable
+  ---
+  duration_ms: 1.3687
+  type: 'test'
+  ...
+# Subtest: lost COMMIT acknowledgement is unknown and exact retry recovers one saved request
+ok 95 - lost COMMIT acknowledgement is unknown and exact retry recovers one saved request
+  ---
+  duration_ms: 0.5792
+  type: 'test'
+  ...
+# Subtest: retained event corruption and a sequence hole refuse reconnect
+ok 96 - retained event corruption and a sequence hole refuse reconnect
+  ---
+  duration_ms: 1.029
+  type: 'test'
+  ...
+# Subtest: cursor after durable end and oversized publication refuse
+ok 97 - cursor after durable end and oversized publication refuse
+  ---
+  duration_ms: 1.1592
+  type: 'test'
+  ...
+1..97
+# tests 97
+# suites 0
+# pass 97
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2082.3655

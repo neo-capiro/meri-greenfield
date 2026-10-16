@@ -1,0 +1,29 @@
+✔ input metadata preserves exact canonical statuses and byte limits (1.0062ms)
+✔ strict receipt agrees across internal server assertion and public receiver (26.6677ms)
+✔ new requests and views share genuine canonical brands in both directions (1.8711ms)
+✔ positive receipt requires independent tenantId context (0.3392ms)
+✔ positive receipt requires independent actorId context (0.2923ms)
+✔ positive receipt requires independent conversationId context (0.2516ms)
+✔ positive receipt requires independent runId context (0.2229ms)
+✔ positive receipt requires independent clientId context (0.1959ms)
+✔ expected context is mandatory, closed, bounded and rejects accessors before reading them (1.9702ms)
+✔ context cannot be inferred from a wholly foreign but self-consistent receipt (1.4689ms)
+✔ full immutable request identity correlates with the genuine submit input (0.5743ms)
+✔ full immutable prompt correlates with the genuine submit input (0.6108ms)
+✔ full immutable window request correlates with the genuine submit input (0.4296ms)
+✔ full immutable stored skill correlates with the genuine submit input (0.5557ms)
+✔ canonical normalized window pairs and selected skill pins retain exact full identity on replay (2.0151ms)
+✔ fiscal and relative windows reuse existing semantic verification (0.925ms)
+✔ subsequent responses cannot change binding, scopes, retained request or regress the sequence (0.8682ms)
+✔ admission replay allows every canonical run state without claiming provider execution (0.6647ms)
+✔ canonical error statuses, request provenance, and bytes remain enforced (1.3546ms)
+✔ input-only generation records exact canonical provenance and one shared browser import (12.4027ms)
+✔ offline public package preserves cross-entrypoint brands and private source boundaries (119.6012ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 317.957

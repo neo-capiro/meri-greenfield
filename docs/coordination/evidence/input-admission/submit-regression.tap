@@ -1,0 +1,400 @@
+TAP version 13
+# Subtest: real Fetch submit/history reuses existing opaque session and persisted cursor
+ok 1 - real Fetch submit/history reuses existing opaque session and persisted cursor
+  ---
+  duration_ms: 75.6057
+  type: 'test'
+  ...
+# Subtest: a lost Temporal start ack keeps request recoverable on exact resubmission
+ok 2 - a lost Temporal start ack keeps request recoverable on exact resubmission
+  ---
+  duration_ms: 4.7448
+  type: 'test'
+  ...
+# Subtest: current revocation blocks old history, publication and replay submit
+ok 3 - current revocation blocks old history, publication and replay submit
+  ---
+  duration_ms: 4.2968
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed tenant before transcript release
+ok 4 - existing session refuses changed tenant before transcript release
+  ---
+  duration_ms: 4.9893
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed actor before transcript release
+ok 5 - existing session refuses changed actor before transcript release
+  ---
+  duration_ms: 3.2501
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed fence before transcript release
+ok 6 - existing session refuses changed fence before transcript release
+  ---
+  duration_ms: 2.8767
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed attempt before transcript release
+ok 7 - existing session refuses changed attempt before transcript release
+  ---
+  duration_ms: 2.898
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed worker before transcript release
+ok 8 - existing session refuses changed worker before transcript release
+  ---
+  duration_ms: 3.2394
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed conversation before transcript release
+ok 9 - existing session refuses changed conversation before transcript release
+  ---
+  duration_ms: 2.9323
+  type: 'test'
+  ...
+# Subtest: normalizes actual last-week window and refuses unavailable selected skills
+ok 10 - normalizes actual last-week window and refuses unavailable selected skills
+  ---
+  duration_ms: 27.5749
+  type: 'test'
+  ...
+# Subtest: cancel fences late worker publications and cancellation survives repeat
+ok 11 - cancel fences late worker publications and cancellation survives repeat
+  ---
+  duration_ms: 10.4026
+  type: 'test'
+  ...
+# Subtest: reconnect emits only new events and source cancellation stops its polls
+ok 12 - reconnect emits only new events and source cancellation stops its polls
+  ---
+  duration_ms: 11.3207
+  type: 'test'
+  ...
+# Subtest: revocation after first stream event prevents subsequent disclosure
+ok 13 - revocation after first stream event prevents subsequent disclosure
+  ---
+  duration_ms: 4.2433
+  type: 'test'
+  ...
+# Subtest: upstream Temporal pins stable workflow and rejects reuse while accepting a current start
+ok 14 - upstream Temporal pins stable workflow and rejects reuse while accepting a current start
+  ---
+  duration_ms: 0.5888
+  type: 'test'
+  ...
+# Subtest: HTTP body read and dispatch share one deadline signal
+ok 15 - HTTP body read and dispatch share one deadline signal
+  ---
+  duration_ms: 26.7308
+  type: 'test'
+  ...
+# Subtest: history enforces its public byte caps when startup permits larger transport limits
+ok 16 - history enforces its public byte caps when startup permits larger transport limits
+  ---
+  duration_ms: 7.6412
+  type: 'test'
+  ...
+# Subtest: three turns page and reload over one monotonic cursor while original UIEvent sequences and requests stay intact
+ok 17 - three turns page and reload over one monotonic cursor while original UIEvent sequences and requests stay intact
+  ---
+  duration_ms: 95.0823
+  type: 'test'
+  ...
+# Subtest: lost turn ACK and later replay recover the same source mapping without a new reservation
+ok 18 - lost turn ACK and later replay recover the same source mapping without a new reservation
+  ---
+  duration_ms: 29.8175
+  type: 'test'
+  ...
+# Subtest: next-turn uses the same native bearer for membership before effect and final release
+ok 19 - next-turn uses the same native bearer for membership before effect and final release
+  ---
+  duration_ms: 6.7051
+  type: 'test'
+  ...
+# Subtest: current tenant denial prevents disclosure or next-turn effects
+ok 20 - current tenant denial prevents disclosure or next-turn effects
+  ---
+  duration_ms: 8.7468
+  type: 'test'
+  ...
+# Subtest: current actor denial prevents disclosure or next-turn effects
+ok 21 - current actor denial prevents disclosure or next-turn effects
+  ---
+  duration_ms: 6.8242
+  type: 'test'
+  ...
+# Subtest: current client denial prevents disclosure or next-turn effects
+ok 22 - current client denial prevents disclosure or next-turn effects
+  ---
+  duration_ms: 6.4972
+  type: 'test'
+  ...
+# Subtest: member removal and retention suppression refuse history release
+ok 23 - member removal and retention suppression refuse history release
+  ---
+  duration_ms: 12.879
+  type: 'test'
+  ...
+# Subtest: forged cursor, scope hints, corrupt event and identity substitution cannot become a successful page
+ok 24 - forged cursor, scope hints, corrupt event and identity substitution cannot become a successful page
+  ---
+  duration_ms: 5.9856
+  type: 'test'
+  ...
+# Subtest: discovery cursor pages owned conversations deterministically without dropping identity
+ok 25 - discovery cursor pages owned conversations deterministically without dropping identity
+  ---
+  duration_ms: 7.7631
+  type: 'test'
+  ...
+# Subtest: concurrent explicit turn admission reserves exactly one durable target
+ok 26 - concurrent explicit turn admission reserves exactly one durable target
+  ---
+  duration_ms: 9.2593
+  type: 'test'
+  ...
+# Subtest: submit ACK recovery keeps exact request identity and refuses prompt substitution or a new turn on its queued target
+ok 27 - submit ACK recovery keeps exact request identity and refuses prompt substitution or a new turn on its queued target
+  ---
+  duration_ms: 10.1011
+  type: 'test'
+  ...
+# Subtest: explicit null list limit is refused without coercion
+ok 28 - explicit null list limit is refused without coercion
+  ---
+  duration_ms: 5.0686
+  type: 'test'
+  ...
+# Subtest: explicit null transcript limit is refused without coercion
+ok 29 - explicit null transcript limit is refused without coercion
+  ---
+  duration_ms: 5.1298
+  type: 'test'
+  ...
+# Subtest: explicit null transcript after is refused without coercion
+ok 30 - explicit null transcript after is refused without coercion
+  ---
+  duration_ms: 9.4156
+  type: 'test'
+  ...
+# Subtest: foreign actor, suppression false: ownership denial has no retention observation
+ok 31 - foreign actor, suppression false: ownership denial has no retention observation
+  ---
+  duration_ms: 5.8361
+  type: 'test'
+  ...
+# Subtest: foreign actor, suppression true: ownership denial has no retention observation
+ok 32 - foreign actor, suppression true: ownership denial has no retention observation
+  ---
+  duration_ms: 5.9254
+  type: 'test'
+  ...
+# Subtest: foreign client, suppression false: ownership denial has no retention observation
+ok 33 - foreign client, suppression false: ownership denial has no retention observation
+  ---
+  duration_ms: 5.655
+  type: 'test'
+  ...
+# Subtest: foreign client, suppression true: ownership denial has no retention observation
+ok 34 - foreign client, suppression true: ownership denial has no retention observation
+  ---
+  duration_ms: 5.3791
+  type: 'test'
+  ...
+# Subtest: membership revision changed during canonical read withholds the page with canonical409
+ok 35 - membership revision changed during canonical read withholds the page with canonical409
+  ---
+  duration_ms: 5.9488
+  type: 'test'
+  ...
+# Subtest: canonical conversation-shape is an integrity500, without foreign database details
+ok 36 - canonical conversation-shape is an integrity500, without foreign database details
+  ---
+  duration_ms: 5.0531
+  type: 'test'
+  ...
+# Subtest: canonical run-shape is an integrity500, without foreign database details
+ok 37 - canonical run-shape is an integrity500, without foreign database details
+  ---
+  duration_ms: 5.3105
+  type: 'test'
+  ...
+# Subtest: canonical request-hash is an integrity500, without foreign database details
+ok 38 - canonical request-hash is an integrity500, without foreign database details
+  ---
+  duration_ms: 12.8122
+  type: 'test'
+  ...
+# Subtest: canonical event-shape is an integrity500, without foreign database details
+ok 39 - canonical event-shape is an integrity500, without foreign database details
+  ---
+  duration_ms: 5.7229
+  type: 'test'
+  ...
+# Subtest: canonical pending-shape is an integrity500, without foreign database details
+ok 40 - canonical pending-shape is an integrity500, without foreign database details
+  ---
+  duration_ms: 5.2792
+  type: 'test'
+  ...
+# Subtest: canonical pending-missing-scopes is an integrity500, without foreign database details
+ok 41 - canonical pending-missing-scopes is an integrity500, without foreign database details
+  ---
+  duration_ms: 5.4862
+  type: 'test'
+  ...
+# Subtest: canonical pending-missing-versions is an integrity500, without foreign database details
+ok 42 - canonical pending-missing-versions is an integrity500, without foreign database details
+  ---
+  duration_ms: 6.1638
+  type: 'test'
+  ...
+# Subtest: canonical pending-missing-facts is an integrity500, without foreign database details
+ok 43 - canonical pending-missing-facts is an integrity500, without foreign database details
+  ---
+  duration_ms: 5.8998
+  type: 'test'
+  ...
+# Subtest: canonical pending-missing-policyRevision is an integrity500, without foreign database details
+ok 44 - canonical pending-missing-policyRevision is an integrity500, without foreign database details
+  ---
+  duration_ms: 6.2846
+  type: 'test'
+  ...
+# Subtest: canonical pending-missing-reservedAt is an integrity500, without foreign database details
+ok 45 - canonical pending-missing-reservedAt is an integrity500, without foreign database details
+  ---
+  duration_ms: 5.8697
+  type: 'test'
+  ...
+# Subtest: resume, lost receipt and reload retain one logical prompt; identical-text new turn remains distinct
+ok 46 - resume, lost receipt and reload retain one logical prompt; identical-text new turn remains distinct
+  ---
+  duration_ms: 134.6761
+  type: 'test'
+  ...
+# Subtest: fork starts a conversation-local prompt identity while retaining exact external source lineage
+ok 47 - fork starts a conversation-local prompt identity while retaining exact external source lineage
+  ---
+  duration_ms: 56.3428
+  type: 'test'
+  ...
+# Subtest: resumed canonical digest substitution refuses prompt lineage
+ok 48 - resumed canonical digest substitution refuses prompt lineage
+  ---
+  duration_ms: 87.664
+  type: 'test'
+  ...
+# Subtest: resumed canonical request substitution refuses prompt lineage
+ok 49 - resumed canonical request substitution refuses prompt lineage
+  ---
+  duration_ms: 59.6547
+  type: 'test'
+  ...
+# Subtest: resumed canonical source-binding substitution refuses prompt lineage
+ok 50 - resumed canonical source-binding substitution refuses prompt lineage
+  ---
+  duration_ms: 75.6935
+  type: 'test'
+  ...
+# Subtest: resumed canonical context substitution refuses prompt lineage
+ok 51 - resumed canonical context substitution refuses prompt lineage
+  ---
+  duration_ms: 66.34
+  type: 'test'
+  ...
+# Subtest: request is immutable and replay survives owner reconstruction
+ok 52 - request is immutable and replay survives owner reconstruction
+  ---
+  duration_ms: 1.3389
+  type: 'test'
+  ...
+# Subtest: events atomically advance state and stable IDs replay without duplicates
+ok 53 - events atomically advance state and stable IDs replay without duplicates
+  ---
+  duration_ms: 1.5383
+  type: 'test'
+  ...
+# Subtest: concurrent starting attempts serialize and allow one model admission
+ok 54 - concurrent starting attempts serialize and allow one model admission
+  ---
+  duration_ms: 0.9825
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign tenant
+ok 55 - stored reads/writes deny foreign tenant
+  ---
+  duration_ms: 0.5517
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign actor
+ok 56 - stored reads/writes deny foreign actor
+  ---
+  duration_ms: 0.7683
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign conversation
+ok 57 - stored reads/writes deny foreign conversation
+  ---
+  duration_ms: 0.4377
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign run
+ok 58 - stored reads/writes deny foreign run
+  ---
+  duration_ms: 0.4509
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign attempt
+ok 59 - stored reads/writes deny foreign attempt
+  ---
+  duration_ms: 0.4641
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign worker
+ok 60 - stored reads/writes deny foreign worker
+  ---
+  duration_ms: 0.451
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign fence
+ok 61 - stored reads/writes deny foreign fence
+  ---
+  duration_ms: 0.424
+  type: 'test'
+  ...
+# Subtest: cancelled run refuses late text and completion but original events remain inspectable
+ok 62 - cancelled run refuses late text and completion but original events remain inspectable
+  ---
+  duration_ms: 1.2379
+  type: 'test'
+  ...
+# Subtest: lost COMMIT acknowledgement is unknown and exact retry recovers one saved request
+ok 63 - lost COMMIT acknowledgement is unknown and exact retry recovers one saved request
+  ---
+  duration_ms: 0.5174
+  type: 'test'
+  ...
+# Subtest: retained event corruption and a sequence hole refuse reconnect
+ok 64 - retained event corruption and a sequence hole refuse reconnect
+  ---
+  duration_ms: 0.9698
+  type: 'test'
+  ...
+# Subtest: cursor after durable end and oversized publication refuse
+ok 65 - cursor after durable end and oversized publication refuse
+  ---
+  duration_ms: 1.3072
+  type: 'test'
+  ...
+1..65
+# tests 65
+# suites 0
+# pass 65
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2182.383

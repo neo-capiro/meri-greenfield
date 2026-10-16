@@ -1,0 +1,20 @@
+/** Independent actual-tarball consumer smoke; no generator, compiler, service or child. */
+import assert from 'node:assert/strict';import {createRequire} from 'node:module';
+import {resolve} from 'node:path';import {pathToFileURL} from 'node:url';
+const root=resolve(process.argv[2]),require=createRequire(pathToFileURL(resolve(root,'consumer.cjs')));
+const inputUrl=pathToFileURL(require.resolve('@capiro/meri-contracts/conversation-input')),oldUrl=pathToFileURL(require.resolve('@capiro/meri-contracts/conversation-application'));
+assert.ok(inputUrl.href.startsWith(pathToFileURL(root+'/').href));assert.ok(oldUrl.href.startsWith(pathToFileURL(root+'/').href));
+const input=await import(inputUrl),old=await import(oldUrl),bytes=v=>new TextEncoder().encode(JSON.stringify(v)),id=n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
+const binding={tenantId:'artifact-consumer',actorId:'actor',conversationId:id(1),runId:id(2),attemptId:id(3),workerId:id(4),writerFence:1},scopes=[{tenantId:binding.tenantId,kind:'client',resourceId:id(5),policyRevision:'p1'}],at='2026-10-16T12:00:00Z';
+const run={binding,scopes,state:'queued',policyRevision:'p1',createdAt:at,versions:{imageDigest:'sha256:'+'a'.repeat(64),sdk:'0.3.295',cli:'2.1.295',contracts:'0.1.0',skillsDigest:'b'.repeat(64),checkpointFormat:'0.1.0'}};
+const original={requestId:id(6),prompt:'Artifact consumer smoke'},request=input.receiveConversationInputRequest(bytes(original)),receipt={run,request:{...original,skill:null,window:null,windowRequest:null},lastSequence:1,replayed:false},context={tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,runId:binding.runId,clientId:id(5)};
+const admitted=await input.receiveConversationInputResponse(200,bytes(receipt),request,context),view=input.conversationInputView(admitted);
+assert.equal(input.conversationInputMetadata.packageVersion,'0.1.7');assert.equal(view.events.length,0);assert.equal(view.nextSequence,receipt.lastSequence);
+const submit={run,requestId:original.requestId,lastSequence:1,replayed:true};assert.deepEqual(await old.receiveConversationResponse('submit',200,bytes(submit),request,view),submit);
+const event={contractVersion:'0.1.0',eventId:id(7),binding,scopes,sequence:1,createdAt:at,type:'run.status',data:{state:'queued',reasonCode:null}},page={run,request:receipt.request,events:[event],lastSequence:1,nextSequence:1,hasMore:false};
+const hydrated=await old.receiveConversationResponse('history',200,bytes(page),old.receiveConversationRequest('history',bytes({after:0,limit:1})),view);assert.deepEqual(hydrated.events,[event]);assert.equal(view.events.length,0,'synthetic correlation view and hydrated history remain separate');
+await assert.rejects(input.receiveConversationInputResponse(200,bytes(receipt),structuredClone(request),context),/UNADMITTED_REQUEST/);
+await assert.rejects(input.receiveConversationInputResponse(200,bytes(receipt),request,{...context,runId:id(90)}),/INPUT_CONTEXT_MISMATCH/);
+assert.throws(()=>input.conversationInputView(structuredClone(admitted)),/UNADMITTED_VIEW/);
+assert.throws(()=>require.resolve('@capiro/meri-contracts/conversation-input/validate.mjs'));
+console.log(JSON.stringify({packageVersion:'0.1.7',inputModule:inputUrl.href,canonicalModule:oldUrl.href,checks:['new/old canonical request brand','receipt/canonical view brand','exact submit response interoperability','separate real history hydration','serialized clones refused','independent target correlation','private source not exported'],status:'PASS'}));

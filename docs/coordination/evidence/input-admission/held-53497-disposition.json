@@ -1,0 +1,15 @@
+{
+  "schema": "meri.input-artifact-disposition/1",
+  "at": "2026-10-16T04:31:07.353180+00:00",
+  "checkpoint": "43142561c1b94f8d33d6db45a4a88a047929bd9a",
+  "artifactSource": "954f900cc1c5e250574b34ffe26b1dccbebef528",
+  "artifactSha256": "53497d94c3f2b9ee0945f7d3398d621151702db17f5d9e2ffa37b7b915ba3614",
+  "disposition": "HOLD",
+  "reason": "Actual generated declaration references undeclared ConversationInputErrorResponse. Original skipLibCheck concealed this new declaration defect.",
+  "independentArchive": "375 checks PASS, scoped to bytes/provenance/archive",
+  "independentRuntimeConsumer": "PASS, scoped to actual extracted module brands and separate history hydration; no compiler",
+  "typeAcceptance": false,
+  "adoptionAuthorized": false,
+  "generatorCorrectionOwner": "Startup for this narrow alias/publictypes correction; input lane does not edit concurrently",
+  "next": "Reproduce without skipLibCheck; fix explicit public alias; regenerate only four input artifacts and repack under Qualification. Preserve this artifact and all old distribution bytes."
+}

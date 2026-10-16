@@ -1,0 +1,24 @@
+{
+  "acceptedSource": "4a10288c35569a384668ef89b970df524b4723da",
+  "acceptedTree": "28956c45e62bc7e7336b30b9535b35f8ed60dcb3",
+  "sourceReview": "Parent independent SOURCE ACCEPT; generation released",
+  "singleArtifactExecutor": "Startup; dot/meri-input-package-20261016 direct accepted source",
+  "serializationOwner": "Qualification",
+  "independentArtifactReviewer": "Input admission lane",
+  "contractsLockSha256": "418a5af3b8673d9cdd2faed654b0d94586b03afdca4b23a1a7995462686e54e3",
+  "installedLockEqualsSourceBytewise": true,
+  "installedToolchain": {"ajv":"8.20.0","ajv-formats":"3.0.1","canonicalize":"5.1.0","esbuild":"0.28.2","json-schema-to-typescript":"16.0.0","typescript":"5.9.3"},
+  "install": "none; reuse exact installed lock/toolchain without dependency version or lock edits",
+  "stages": [
+    {"name":"input-only generation and reproducibility check","heapMiB":256,"hardWallSecondsPerInvocation":120,"command":"node --max-old-space-size=256 packages/contracts/generate-input.mjs; only on success run same command with --check","children":"one pinned native esbuild helper; finally stop and verify cleanup","writes":"only four new dist/conversation-input artifacts"},
+    {"name":"focused public receiver controls","heapMiB":128,"hardWallSeconds":120,"command":"node --max-old-space-size=128 --test --test-isolation=none --test-concurrency=1 --test-timeout=15000 packages/contracts/test/conversation-input-public.test.mjs","children":"none"},
+    {"name":"focused declarations","heapMiB":256,"hardWallSeconds":120,"command":"node --max-old-space-size=256 <pinned TypeScript 5.9.3>/lib/tsc.js --noEmit --strict --target ES2022 --module NodeNext --moduleResolution NodeNext packages/contracts/test/conversation-input-public-types.ts packages/contracts/test/conversation-application-public-types.ts packages/contracts/test/conversation-history-public-types.ts","children":"none"},
+    {"name":"frozen bytes and provenance","children":"none","checks":["all 26 accepted dist files byte exact","frozen meri.schema and contracts lock byte exact","new metadata binds reviewed service/input HTTP and canonical artifact hashes","one exact browser sibling import ./conversation-application.mjs","new metadata source rows match current source bytes","no change to dependency versions, journals or migrations"]},
+    {"name":"offline package and actual tarball round trip","heapMiB":256,"hardWallSeconds":120,"command":"node --max-old-space-size=256 <installed npm>/bin/npm-cli.js pack . --offline --ignore-scripts --json --workspaces=false --pack-destination=<task-local output> --cache=<task-local cache> --no-update-notifier","cwd":"packages/contracts","checks":["0.1.7 package preserves all old exports and adds only allocated input exports","actual tarball SHA256 and npm SHA512 integrity recorded","all prior dist bytes and all four new input artifacts equal source","private input source absent","safe offline tar inspection/extraction only inside task workspace","genuine new/old receiver brand interoperability from actual extracted package","focused consumer type resolution from actual extracted package"]}
+  ],
+  "conditionalBatch": "Run stages serially after accepted source and available Qualification slot; continue on success without a parent pause per step; stop on actual failure or memory pressure and retain failed/unrun evidence.",
+  "resourceObservation": "Fresh normal capacity observation, existing start margin; monitor actual pressure; hard wall and task-owned process/child cleanup.",
+  "knownSourceProvenanceDelta": "Old conversation-application metadata retains pre-refactor service hash e888dceb510694333e580a54392fa3b79f92acdbab939b30b93ccf83da7587e3. Preserve that artifact and report intentional source delta; do not claim old whole-generator provenance check passes or regenerate old distribution.",
+  "consumerCaveat": "conversationInputView(receipt) is a synthetic canonical empty tail for immutable request/view correlation; hydrate actual transcript/history separately and never replace rendered events with this tail.",
+  "currentOutcome": "This proposed profile was superseded by Qualification's released actual Startup profiles (384MiB/90s generation,256MiB/60s strict no-skip types,128MiB/45s public controls,128MiB/30s pack). Corrected actual artifact a54239c5/8f0c2e14 passes scoped independent review:376 archive/static checks plus203ms actual-tar128MiB Node smoke. See DOT-INPUT-ARTIFACT-REVIEW-20261016.md and actual stage receipts; this proposed profile itself is not execution evidence."
+}

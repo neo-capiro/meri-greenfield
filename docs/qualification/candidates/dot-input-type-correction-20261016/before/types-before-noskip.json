@@ -1,0 +1,49 @@
+{
+  "source": "5fb3309ccaeeed3742ef1927ec9892d4c0fe49bd",
+  "name": "types-before-noskip",
+  "argv": [
+    "--max-old-space-size=256",
+    "node_modules/typescript/bin/tsc",
+    "--noEmit",
+    "--strict",
+    "--target",
+    "ES2022",
+    "--module",
+    "NodeNext",
+    "--moduleResolution",
+    "NodeNext",
+    "test/.conversation-input-before-public-types.ts"
+  ],
+  "hardSeconds": 60,
+  "memoryBefore": {
+    "physicalTotal": 33632079872,
+    "physicalAvailable": 11145134080,
+    "commitTotal": 33632079872,
+    "commitAvailable": 2715750400
+  },
+  "primaryExit": 2,
+  "cleanupExit": 0,
+  "reason": null,
+  "wallMs": 1031,
+  "sampledOwnedTreeRssBytes": 312147968,
+  "ownedPrimaryPid": 20996,
+  "ownedExited": true,
+  "observedOwnedProcesses": [
+    {
+      "pid": 20996,
+      "parent": 28260,
+      "name": "node.exe",
+      "created": 134365988373029497,
+      "rss": 10805248
+    },
+    {
+      "pid": 848,
+      "parent": 20996,
+      "name": "conhost.exe",
+      "created": 134365988373092732,
+      "rss": 7811072
+    }
+  ],
+  "residualPids": [],
+  "preservedBytes": true
+}

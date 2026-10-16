@@ -1,0 +1,42 @@
+{
+  "sourceBase": "14f0bc2e5716af7c00925d13d3365b26182c9e56",
+  "worktreeStatusBefore": " M apps/control/conversations/service.mjs\n?? apps/control/conversations/input/\n?? apps/control/conversations/test/input-admission.test.mjs\n?? apps/control/conversations/test/input-http.test.mjs\n?? docs/coordination/evidence/\n?? docs/coordination/reports/DOT-DURABLE-INPUT-ADMISSION-20261016.md\n?? packages/contracts/conversation-input/\n?? packages/contracts/generate-input.mjs\n?? packages/contracts/test/conversation-input-public-types.ts\n?? packages/contracts/test/conversation-input-public.test.mjs\n",
+  "sourceSha256": {
+    "apps/control/conversations/service.mjs": "74152d0bd4f11e8d85f57645feda247adab582df7ac405130ba0cfc2dff9af25",
+    "apps/control/conversations/test/application.test.mjs": "1a82f6bfc614b564a2aaae188aa5a0187c8325e8d8724158020fa6e7254e2238",
+    "apps/control/conversations/test/store.test.mjs": "68eeb89f0a170523c4df47370af3f5883349d273210fb431e4c3db66e12b5c2b",
+    "apps/control/conversations/test/history-http.test.mjs": "38d16fc6598d9b59333154d95a75ae4ea88d48c6b70ed883ce7112bea611bf05"
+  },
+  "argv": [
+    "C:/Program Files/nodejs/node.exe",
+    "--max-old-space-size=128",
+    "--import",
+    "../dependency-reuse.mjs",
+    "--test",
+    "--test-isolation=none",
+    "--test-concurrency=1",
+    "--test-timeout=15000",
+    "--test-reporter=tap",
+    "apps/control/conversations/test/application.test.mjs",
+    "apps/control/conversations/test/store.test.mjs",
+    "apps/control/conversations/test/history-http.test.mjs"
+  ],
+  "pid": 38852,
+  "startedAt": "2026-10-16T04:08:55.556895+00:00",
+  "finishedAt": "2026-10-16T04:08:57.969640+00:00",
+  "wallMs": 2422.0,
+  "exit": 0,
+  "stopReason": null,
+  "hardWallSeconds": 120,
+  "heapMiB": 128,
+  "ownedProcessRemains": false,
+  "capacityBefore": {
+    "availableCommit": 2833465344,
+    "availablePhysical": 11889774592
+  },
+  "minimumObserved": {
+    "availableCommit": 2570801152,
+    "availablePhysical": 11618447360
+  },
+  "claim": "One node process, no child tests/services/database/provider. Scripted SQL and synthetic session/Temporal ports only. Existing installed dependencies resolved read-only."
+}

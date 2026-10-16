@@ -1,0 +1,48 @@
+{
+  "source": "95b4b2aae548c3523785149d876c87248f5e769c",
+  "name": "pack",
+  "argv": [
+    "--max-old-space-size=128",
+    "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+    "pack",
+    "--ignore-scripts",
+    "--offline",
+    "--json",
+    "--cache",
+    "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-4\\input-npm-cache",
+    "--pack-destination",
+    "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-4\\input-package"
+  ],
+  "hardSeconds": 30,
+  "memoryBefore": {
+    "physicalTotal": 33632079872,
+    "physicalAvailable": 11576877056,
+    "commitTotal": 33632079872,
+    "commitAvailable": 2625290240
+  },
+  "primaryExit": 0,
+  "cleanupExit": 0,
+  "reason": null,
+  "wallMs": 1250,
+  "sampledOwnedTreeRssBytes": 108158976,
+  "ownedPrimaryPid": 39312,
+  "ownedExited": true,
+  "observedOwnedProcesses": [
+    {
+      "pid": 39312,
+      "parent": 41448,
+      "name": "node.exe",
+      "created": 134365982373205845,
+      "rss": 10629120
+    },
+    {
+      "pid": 25720,
+      "parent": 39312,
+      "name": "conhost.exe",
+      "created": 134365982373284145,
+      "rss": 7811072
+    }
+  ],
+  "residualPids": [],
+  "preservedBytes": true
+}

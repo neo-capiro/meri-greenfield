@@ -1,0 +1,63 @@
+{
+  "preserved": [
+    "package-lock.json",
+    "packages/contracts/package-lock.json",
+    "packages/contracts/meri.schema.json",
+    "packages/contracts/dist/action-application.d.ts",
+    "packages/contracts/dist/action-application.metadata.json",
+    "packages/contracts/dist/action-application.mjs",
+    "packages/contracts/dist/action-application.schema.json",
+    "packages/contracts/dist/browser.d.ts",
+    "packages/contracts/dist/browser.mjs",
+    "packages/contracts/dist/contracts.d.ts",
+    "packages/contracts/dist/conversation-application.d.ts",
+    "packages/contracts/dist/conversation-application.metadata.json",
+    "packages/contracts/dist/conversation-application.mjs",
+    "packages/contracts/dist/conversation-application.schema.json",
+    "packages/contracts/dist/conversation-history.d.ts",
+    "packages/contracts/dist/conversation-history.metadata.json",
+    "packages/contracts/dist/conversation-history.mjs",
+    "packages/contracts/dist/conversation-history.schema.json",
+    "packages/contracts/dist/conversation-input.d.ts",
+    "packages/contracts/dist/conversation-input.metadata.json",
+    "packages/contracts/dist/conversation-input.mjs",
+    "packages/contracts/dist/conversation-input.schema.json",
+    "packages/contracts/dist/conversation-lifecycle.d.ts",
+    "packages/contracts/dist/conversation-lifecycle.metadata.json",
+    "packages/contracts/dist/conversation-lifecycle.mjs",
+    "packages/contracts/dist/conversation-lifecycle.schema.json",
+    "packages/contracts/dist/document-application.d.ts",
+    "packages/contracts/dist/document-application.metadata.json",
+    "packages/contracts/dist/document-application.mjs",
+    "packages/contracts/dist/document-application.schema.json",
+    "packages/contracts/dist/index.d.ts",
+    "packages/contracts/dist/metadata.d.ts",
+    "packages/contracts/dist/metadata.mjs"
+  ],
+  "stages": [
+    {
+      "children": "none",
+      "reserveBytes": 536870912,
+      "hardSeconds": 60,
+      "name": "types-before-noskip",
+      "argv": [
+        "--max-old-space-size=256",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--strict",
+        "--target",
+        "ES2022",
+        "--module",
+        "NodeNext",
+        "--moduleResolution",
+        "NodeNext",
+        "test/.conversation-input-before-public-types.ts"
+      ]
+    }
+  ],
+  "source": "5fb3309ccaeeed3742ef1927ec9892d4c0fe49bd",
+  "node": "C:\\Program Files\\nodejs\\node.exe",
+  "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-4\\meri-greenfield\\packages\\contracts",
+  "baselineDistCount": 30,
+  "outputDirectory": "input-types-before"
+}
