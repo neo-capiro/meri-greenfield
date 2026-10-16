@@ -48,7 +48,8 @@ export async function durableFamilyFixture(scene){
   producer:{namespace:'general-reads',executionId:'synthetic-family-run'},credential,installationOwner,
   discoveryOwner:{async readDiscoveryGrant(){const r={binding,policyRevision,operations:[operation],checkedAtMs:now(),expiresAtMs:expires};state.discoveryMutator?.(r);return r;}},
   catalogJson:JSON.stringify(catalog),contracts:{resolveOperationContract},now,newId:randomUUID,sourceEnabled:true,defaultCongress:119,memoryContextPorts,
-  ...(scene.retainedContextPorts?{retainedContextPorts:scene.retainedContextPorts}:{})};
+  ...(scene.retainedContextPorts?{retainedContextPorts:scene.retainedContextPorts}:{}),
+  ...(scene.nativeReadContextPorts?{nativeReadContextPorts:scene.nativeReadContextPorts}:{})};
  const mount=(changes={})=>createGeneralReadGatewayMount({...gatewayConfiguration,...changes});
  return {...scene,binding,scopes,policyRevision,handlers,mount,deadlineMs:expires,installationOwner,allocationJson,grant,gatewayConfiguration,
   execute:(deliveryId='synthetic:read',args=scene.arguments)=>mount().execute({operation,arguments:args,deliveryId})};

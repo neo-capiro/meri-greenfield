@@ -6,6 +6,7 @@ import {createHash} from 'node:crypto';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {ownFields} from '../sources/source-admission.mjs';
 import {deny} from '../dispatch/operation-result.mjs';
+import {assertFamilyHandlerSet} from './registration.mjs';
 import * as f0 from './families/meeting-source.mjs';
 import * as f1 from './families/action-items-complete.mjs';
 import * as f2 from './families/operational-reads.mjs';
@@ -21,15 +22,55 @@ import * as f11 from './families/research-portfolio-evidence.mjs';
 import * as f12 from './families/research-portfolio.mjs';
 import * as f13 from './families/florida-budget.mjs';
 import * as f14 from './families/bill-text.mjs';
-const modules=[f0,f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13,f14];
+import * as f15 from './families/public-reports.mjs';
+import * as f16 from './families/acquisition-personnel.mjs';
+import * as f17 from './families/disclosures.mjs';
+const modules=[f0,f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13,f14,f15,f16,f17];
 const byFamily=new Map(modules.map(f=>[f.id,f]));
 export const GENERAL_READ_ADAPTER_FAMILIES=Object.freeze(modules.map(f=>f.id));
 const SOURCE_PATHS=Object.freeze({
+ "disclosures": [
+  "apps/gateway/sources/disclosures/handler.mjs",
+  "apps/gateway/sources/retained-reads/call-context.mjs",
+  "apps/gateway/sources/retained-reads/http-transport.mjs",
+  "apps/gateway/dispatch/native-read-context.mjs",
+  "apps/runtime/native-authority/native-read-credentials/core-client.mjs",
+  "apps/runtime/native-authority/native-read-credentials/owner.mjs",
+  "apps/gateway/dispatch/operation-context.mjs",
+  "apps/gateway/dispatch/read-result-envelope.mjs",
+  "apps/gateway/dispatch/tool-dispatch.mjs"
+ ],
+ "public-reports": [
+  "apps/gateway/sources/public-reports/handler.mjs",
+  "apps/gateway/sources/retained-reads/call-context.mjs",
+  "apps/gateway/sources/retained-reads/http-transport.mjs",
+  "apps/gateway/dispatch/native-read-context.mjs",
+  "apps/runtime/native-authority/native-read-credentials/core-client.mjs",
+  "apps/runtime/native-authority/native-read-credentials/owner.mjs",
+  "apps/gateway/dispatch/operation-context.mjs",
+  "apps/gateway/dispatch/read-result-envelope.mjs",
+  "apps/gateway/dispatch/tool-dispatch.mjs"
+ ],
+ "acquisition-personnel": [
+  "apps/gateway/sources/acquisition-personnel/handler.mjs",
+  "apps/gateway/sources/acquisition-personnel/request-context.mjs",
+  "apps/gateway/sources/retained-reads/call-context.mjs",
+  "apps/gateway/sources/retained-reads/http-transport.mjs",
+  "apps/gateway/dispatch/native-read-context.mjs",
+  "apps/runtime/native-authority/native-read-credentials/core-client.mjs",
+  "apps/runtime/native-authority/native-read-credentials/owner.mjs",
+  "apps/gateway/dispatch/operation-context.mjs",
+  "apps/gateway/dispatch/read-result-envelope.mjs",
+  "apps/gateway/dispatch/tool-dispatch.mjs"
+ ],
  "bill-text": [
   "apps/gateway/sources/bill-text/handler.mjs",
   "apps/gateway/sources/retained-reads/call-context.mjs",
   "apps/gateway/sources/retained-reads/http-transport.mjs",
   "apps/gateway/dispatch/bill-text-context.mjs",
+  "apps/gateway/dispatch/native-read-context.mjs",
+  "apps/runtime/native-authority/native-read-credentials/core-client.mjs",
+  "apps/runtime/native-authority/native-read-credentials/owner.mjs",
   "apps/gateway/dispatch/operation-context.mjs",
   "apps/gateway/dispatch/read-result-envelope.mjs",
   "apps/gateway/dispatch/tool-dispatch.mjs"
@@ -99,14 +140,14 @@ const SOURCE_PATHS=Object.freeze({
 });
 const COMMON=['apps/gateway/general-reads/integration.mjs','apps/gateway/general-reads/registration.mjs',
  'apps/gateway/sources/source-admission.mjs','apps/gateway/sources/json-response.mjs'];
-const TRANSPORT_FIELDS=['origin','endpoints','getCredentials','delegatedTransport','fetchImpl','maxRequestMs','maxResponseBytes','readMemoryEligibility','registry'];
+const TRANSPORT_FIELDS=['origin','endpoints','getCredentials','credentialsForCall','delegatedTransport','fetchImpl','maxRequestMs','maxResponseBytes','readMemoryEligibility','registry'];
 export async function createGeneralReadFamilyHandlers(configuration){
  const {families,now,newId}=ownFields(configuration,['families','now','newId']);
  if(typeof now!=='function'||typeof newId!=='function')deny('GATEWAY_CONFIGURATION');
  const configured=ownFields(families,[],GENERAL_READ_ADAPTER_FAMILIES),handlers=new Map();
  for(const [id,transport] of Object.entries(configured)){
   const family=byFamily.get(id),usesIds=['action-items-complete','operational-reads'].includes(id);
-  const values=family.createHandlers({...ownFields(transport,[],TRANSPORT_FIELDS),now,...(usesIds?{newId}:{})});
+  const values=assertFamilyHandlerSet(id,family.createHandlers({...ownFields(transport,[],TRANSPORT_FIELDS),now,...(usesIds?{newId}:{})}));
   const labels=[...COMMON,`apps/gateway/general-reads/families/${id}.mjs`,...SOURCE_PATHS[family.sourceDirectory]];
   const sourceFiles=await Promise.all(labels.map(async label=>({label,sha256:createHash('sha256').update(await readFile(new URL(`../../../${label}`,import.meta.url))).digest('hex')})));
   for(const {operation,execute} of values){const key=`${operation.id}@${operation.version}`;

@@ -178,13 +178,15 @@ This is source reconciliation only. The historical proposal tables below retain 
 | --- | --- |
 | Selected capabilities / continued exclusions | 96 / 43 |
 | Selected source reads / separate product or governed capabilities | 82 / 14 |
-| Single meri_reads registry | 23 operations / 16 families |
-| Registry accounting | 21 selected source reads + 1 product-state read + 1 historical contract |
+| Single meri_reads registry | 31 operations / 19 families |
+| Registry accounting | 29 selected source reads + 1 product-state read + 1 historical contract |
 | Selected source reads declared in skill manifests | 52 current contracts + 1 historical-only contract |
 | Selected source reads reachable through admitted skill source | 11 |
 | Existing source adapters lacking general-conversation registration | 0 |
-| Selected source reads lacking adapters | 61 (38 declared by skills; 23 without a skill declaration) |
+| Selected source reads lacking adapters | 53 (35 declared by skills; 18 without a skill declaration) |
 | Pinned actual Core producer mappings (not qualification) | 63 |
+| Locally implemented reads pending integration and publication | 0 |
+| Approved published family reads adopted as source (not qualification) | 5 |
 | Live | 0 |
 
 Only `quick_skill.relationship_brief`, `quick_skill.commitments_audit` are admitted by the original skill server. A declaration in another manifest is not source reachability. The historical `query_action_items` and successor `actions.query` represent one selected capability. `memory.list_own_proposals` is a product-state read; product writes and effects remain on their separate governed route.
@@ -196,6 +198,7 @@ Only `quick_skill.relationship_brief`, `quick_skill.commitments_audit` are admit
 
 | Registered family | Exact operations |
 | --- | --- |
+| `acquisition-personnel` | `get_acquisition_person`, `search_acquisition_personnel` |
 | `action-items-complete` | `actions.query` |
 | `bill-text` | `read_bill_text`, `search_congress_bills` |
 | `client-documents` | `read_client_documents` |
@@ -203,27 +206,27 @@ Only `quick_skill.relationship_brief`, `quick_skill.commitments_audit` are admit
 | `client-knowledge-monday` | `read_monday_client_boards` |
 | `client-knowledge-profile` | `get_client_context` |
 | `dataset-metadata` | `list_global_datasets` |
+| `disclosures` | `search_fara_registrations`, `search_lda_filings`, `search_sec_filings` |
 | `entity-candidates` | `resolve_entity` |
 | `florida-budget` | `get_florida_budget_project` |
 | `mail` | `mail.list_messages`, `mail.read_thread`, `mail.search_messages` |
 | `meeting-source` | `meeting.list_upcoming_meetings`, `meeting.query_debriefs`, `meeting.read_client_meetings` |
 | `memory-proposals` | `memory.list_own_proposals` |
 | `operational-reads` | `query_action_items`, `query_tasks` |
+| `public-reports` | `search_cbo_cost_estimates`, `search_crs_reports`, `search_gao_reports` |
 | `research-portfolio` | `get_research_portfolio`, `get_research_portfolio_changes` |
 | `research-portfolio-evidence` | `get_research_evidence` |
 | `tenant-contacts` | `find_contacts` |
 
-Every canonical source adapter already present is exposed. The new bill-text source family adds two fixed native producers, retaining all receiving-contract truth limits. The remaining selected source reads lack an adapter; producer mapping alone does not implement them. Their exact unresolved families and operations are:
+Every canonical source adapter already present is exposed. Bill-text, public reports and acquisition use finite native producers and preserve their receiving-contract truth limits. Acquisition producers still perform their native mandatory audit writes. The remaining selected source reads lack an adapter; producer mapping alone does not implement them. Their exact unresolved families and operations are:
 
 | Missing adapter family | Selected operations |
 | --- | --- |
-| `acquisition-personnel` | `get_acquisition_person`, `search_acquisition_personnel` |
 | `business-development` | `get_business_development_context`, `get_business_development_evidence`, `get_business_development_recent_changes` |
 | `certification-status` | `get_certification_status` |
 | `client-knowledge-search` | `query_knowledge_graph`, `search_client_knowledge` |
 | `client-registry` | `lookup_client_registry` |
 | `data-search` | `search_capiro_data` |
-| `disclosures` | `search_fara_registrations`, `search_lda_filings`, `search_sec_filings` |
 | `district-nexus` | `get_district_nexus_changes`, `get_district_nexus_context` |
 | `facility-representation` | `get_representation` |
 | `federal-legislation` | `get_bill_status`, `search_floor_votes` |
@@ -237,7 +240,6 @@ Every canonical source adapter already present is exposed. The new bill-text sou
 | `public-data` | `query_economic_data`, `search_federal_awards`, `search_federal_grants` |
 | `public-domain-hearings` | `search_committee_hearings` |
 | `public-domain-query` | `query_global_data` |
-| `public-reports` | `search_cbo_cost_estimates`, `search_crs_reports`, `search_gao_reports` |
 | `public-web` | `scrape_web_page`, `search_public_web` |
 | `regulatory-dockets` | `query_regulatory_dockets` |
 | `research-legal-candidates` | `search_research_sources` |
@@ -249,6 +251,11 @@ Every canonical source adapter already present is exposed. The new bill-text sou
 | `state-status-votes` | `get_state_bill_status`, `search_state_floor_votes` |
 | `stored-intelligence` | `search_intel_articles` |
 | `tracked-bills` | `search_tracked_bills` |
+
+| Approved family source | Exact original reviewed pin | State |
+| --- | --- | --- |
+| `public-reports` | `53c377211294fa64c36ea81df836c62198f87ee5` | Approved unchanged publication independently read back and adopted; current authority/credentials/installation qualification pending, live zero |
+| `acquisition-personnel` | `857163136a1e1e38b08f73f1b5a6d32df1ae0571` | Approved unchanged publication independently read back and adopted; current authority/credentials/installation qualification pending, live zero |
 
 Canonical gateway family adapter and operation-specific trusted dispatch/current-resource context, plus an admitted exact producer/endpoint protocol. A schema/normalizer binding or skill declaration is not a producer. No guessed endpoint, default credential or permissive generic query is allocated.
 

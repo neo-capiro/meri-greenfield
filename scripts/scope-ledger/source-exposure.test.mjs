@@ -16,15 +16,15 @@ function synthetic(){return {catalog:structuredClone(catalog),bindings:CATALOG_O
  adapters:[{operations:[...registered],paths:['synthetic adapter path']}],skills:[],admittedSkills:[],provenance:{}};}
 const refuses=work=>assert.throws(work,error=>error.code==='SOURCE_EXPOSURE_INVALID');
 
-test('96 selected and43 excluded are reconciled separately from23 registered operations',()=>{
+test('96 selected and43 excluded are reconciled separately from31 registered operations',()=>{
  assert.equal(snapshot.rows.length,96);assert.equal(snapshot.counts.selectedSourceReads,82);assert.equal(snapshot.counts.selectedProductOrGoverned,14);
- assert.equal(snapshot.counts.registeredGeneralOperations,23);assert.equal(snapshot.counts.registeredFamilies,16);
- assert.equal(snapshot.counts.generalSelectedSourceReads,21);assert.equal(snapshot.counts.generalSelectedProductStateReads,1);assert.equal(snapshot.counts.generalHistoricalOperations,1);
+ assert.equal(snapshot.counts.registeredGeneralOperations,31);assert.equal(snapshot.counts.registeredFamilies,19);
+ assert.equal(snapshot.counts.generalSelectedSourceReads,29);assert.equal(snapshot.counts.generalSelectedProductStateReads,1);assert.equal(snapshot.counts.generalHistoricalOperations,1);
  assert.equal(snapshot.counts.excludedCapabilities,43);assert.equal(snapshot.counts.live,0);
 });
-test('every existing selected source adapter already has general exposure; remaining61 are genuine adapter gaps',()=>{
+test('every existing selected source adapter already has general exposure; remaining53 are genuine adapter gaps',()=>{
  assert.deepEqual(snapshot.existingAdaptersWithoutGeneralExposure,[]);assert.equal(snapshot.counts.existingSourceAdaptersWithoutGeneralExposure,0);
- assert.equal(snapshot.counts.missingSourceAdapters,61);assert.equal(snapshot.counts.missingAdaptersDeclaredBySkills,38);assert.equal(snapshot.counts.missingAdaptersWithoutSkillDeclaration,23);
+ assert.equal(snapshot.counts.missingSourceAdapters,53);assert.equal(snapshot.counts.missingAdaptersDeclaredBySkills,35);assert.equal(snapshot.counts.missingAdaptersWithoutSkillDeclaration,18);
  const gaps=snapshot.rows.filter(row=>row.kind==='source-read'&&row.state==='adapter-missing');
  for(const gap of gaps){assert.deepEqual(gap.adapterPaths,[]);assert.deepEqual(gap.generalOperations,[]);assert.deepEqual(gap.sourceAdmittedSkills,[]);assert.ok(Array.isArray(gap.requiredContextKeys));}
  assert.deepEqual(snapshot.missingAdapterFamilies.flatMap(row=>row.operations).sort(),gaps.map(row=>row.operation).sort());
@@ -66,6 +66,16 @@ test('all63 reviewed producer records correlate exact operations, context keys a
  const base=JSON.parse(readFileSync(new URL('./backend-producers.json',import.meta.url),'utf8'));
  for(const mutate of [m=>m.operations.pop(),m=>m.operations[1]=m.operations[0],m=>m.operations[0].requiredContextKeys=['modelAuthority'],m=>m.operations[0].evidence.sha256='0'.repeat(64)]){
   const input=synthetic();input.backendMapping=structuredClone(base);mutate(input.backendMapping);refuses(()=>reconcileSourceExposure(input));
+ }
+});
+
+test('five approved published slices become source adapters while qualification and live availability remain closed',()=>{
+ const rows=snapshot.rows.filter(row=>row.backendProducer?.localImplementation);assert.equal(rows.length,5);assert.equal(snapshot.counts.locallyImplementedPendingIntegration,0);assert.equal(snapshot.counts.publishedFamilySourceAdopted,5);
+ assert.equal(snapshot.counts.registeredGeneralOperations,31);assert.equal(snapshot.counts.missingSourceAdapters,53);assert.equal(snapshot.counts.live,0);
+ for(const entry of rows){const local=entry.backendProducer.localImplementation;assert.equal(local.status,'source-adopted-pending-qualification');
+  assert.equal(local.sourceAdopted,true);assert.equal(local.qualified,false);assert.equal(local.live,false);assert.match(local.publication,/Approved unchanged slice published/);
+  assert.equal(local.adoptionCommit,'9a0ea1cf4e8c60b9722b05d0f30005536e718776');
+  assert.equal(entry.state,'adapter-present');assert.ok(entry.adapterPaths.some(path=>path.endsWith('/handler.mjs')));assert.deepEqual(entry.generalOperations,[entry.operation]);
  }
 });
 test('current source provenance measures declared canonical paths without claiming qualification',()=>{

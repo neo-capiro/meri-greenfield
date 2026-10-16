@@ -21,6 +21,30 @@
   },
   "adapters": [
     {
+      "path": "apps/gateway/sources/disclosures",
+      "family": "disclosures",
+      "declaredIn": ["apps/gateway/sources/disclosures/handler.mjs"],
+      "operations": ["search_lda_filings", "search_sec_filings", "search_fara_registrations"],
+      "adapterChecks": ["canonical inert admission and exact decision/subject/policy/source proof", "fixed flat original-request native POST; normalization once", "genuine current native CONTROL identity and both native credentials", "unchanged frozen JSON DTO and exact carrier receiving"],
+      "subject": "current ordinary native Core tenant/user; global stored disclosure catalog; empty context"
+    },
+    {
+      "path": "apps/gateway/sources/public-reports",
+      "family": "public-reports",
+      "declaredIn": ["apps/gateway/sources/public-reports/handler.mjs", "packages/contracts/retrieval-0.2/public-reports-validation.mjs"],
+      "operations": ["search_cbo_cost_estimates", "search_gao_reports", "search_crs_reports"],
+      "adapterChecks": ["canonical retained-call correlation", "fixed native POST with original admitted flat request", "genuine task-bound CONTROL native identity and service credentials", "unchanged native JSON DTO and exact private carrier receiving"],
+      "subject": "current ordinary native Core tenant/user; fixed current identity/member/identity; no context keys"
+    },
+    {
+      "path": "apps/gateway/sources/acquisition-personnel",
+      "family": "acquisition-personnel",
+      "declaredIn": ["apps/gateway/sources/acquisition-personnel/handler.mjs", "apps/gateway/sources/acquisition-personnel/request-context.mjs"],
+      "operations": ["search_acquisition_personnel", "get_acquisition_person"],
+      "adapterChecks": ["current decision/subject/policy/source correlation", "fixed native flat POST wrappers retain mandatory audit effects", "genuine task-bound CONTROL native principal and current effective role", "exact capiro_admin PII receiving; model role is a job filter only"],
+      "subject": "current ordinary native Core tenant/user; trusted actorRole from separately pinned identity/member revisions"
+    },
+    {
       "path": "apps/gateway/sources/bill-text",
       "family": "bill-text",
       "declaredIn": ["apps/gateway/sources/bill-text/handler.mjs"],

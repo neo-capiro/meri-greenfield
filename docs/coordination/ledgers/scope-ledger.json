@@ -9806,13 +9806,13 @@
     "note": "Source paths and manifest declarations are evidence only. No qualification, authority, credential, native producer or live availability is inferred.",
     "provenance": {
       "packages/contracts/retrieval-0.2/catalog.json": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
-      "scripts/scope-ledger/backend-producers.json": "ad5fb22cb7f4ef3ffa78f4a730c74bb28e59c0a689a2cec7d5a74a45d7ef6ea4",
+      "scripts/scope-ledger/backend-producers.json": "a363631497a61d75785bd055be4816290abada538e91815fe0206e9e8b5d8339",
       "packages/contracts/retrieval-0.2/catalog-validation.mjs": "ac6881b7abd5e4ecb91f8975d28efbbab3bd04128336a0ef90645067466cb56d",
-      "apps/worker/conversation/reads/families.mjs": "0130506819273a94559cef39de62e67cc3c00480c22c51d6454656d55625fc65",
+      "apps/worker/conversation/reads/families.mjs": "cc096c8682e0af3b7a6c5d64e68bddf25a49b15ce763a1d5b1c707c0bf749951",
       "apps/worker/conversation/reads/server.mjs": "d3a28df432f44e20849ceeadf7a38e73bed3748f9f36057d1d22057d4ab829b5",
-      "apps/gateway/general-reads/registration.mjs": "f6ba2e54163330cf8f73437b4c600538f17dd57e809c84438c4b8743efef6b26",
-      "apps/gateway/general-reads/integration.mjs": "3e2de817cce3c4d5146a1f5f86c0856614f3a9c0817539cbd70a3d02a405031e",
-      "scripts/general-reads/adapters.json": "6cc3a549e8b56d3a36377d9108983d7849f2875b3f9d7ea90707da0ee46545a6",
+      "apps/gateway/general-reads/registration.mjs": "43c1b2661cc79bf2af78e062153d3546adb2a9114644770d383cfcf8521bf38d",
+      "apps/gateway/general-reads/integration.mjs": "670d10704bfe717221ec03823e2bdd1517089261c1565ae2376d61f5e1272d4a",
+      "scripts/general-reads/adapters.json": "13dbde38cd72642e5234f4501c5ade1bf9fc7f9ae6feb873b40b08d7b9d824fe",
       "apps/gateway/general-reads/families/meeting-source.mjs": "66ee8011d604721b5977ebb601199b4fdaf3149143effb79645898f41fb186b8",
       "apps/gateway/general-reads/families/action-items-complete.mjs": "abfd9f60479cb4c4cbe9d876d04bbebd9755227461673b026f4c6d74c02b7ceb",
       "apps/gateway/general-reads/families/operational-reads.mjs": "d19d6d3297c955b68d2b5048695493f62cc98e367a9469eb5abb8e86e4320563",
@@ -9828,7 +9828,15 @@
       "apps/gateway/general-reads/families/research-portfolio.mjs": "13d963b033c55fd889dc00717dfbc7c248fe0a27dbafc616dd6cc74d01d99404",
       "apps/gateway/general-reads/families/florida-budget.mjs": "b9b33bb64f01201b0499606ac51102d1f66f7cb32bf21d794bd0c310cc6da5ef",
       "apps/gateway/general-reads/families/bill-text.mjs": "21e3bbf8b0bf381fa18f7aa951018f3aa449fdc028ccc3247fc00ba7ba81916b",
-      "apps/gateway/sources/bill-text/handler.mjs": "44b149d835432d1953748f0f1a09c8dec5a95ac051113157ae107ba57e44ff90",
+      "apps/gateway/general-reads/families/public-reports.mjs": "afdaa7806d24581db21d4371da946d9845a7cc290d797e804a32780d39af36f0",
+      "apps/gateway/general-reads/families/acquisition-personnel.mjs": "dc5dc810a366ce7ebad8faaa0f38b42b0db4eddb17a7c463bfa65d024cb5eb95",
+      "apps/gateway/general-reads/families/disclosures.mjs": "97a62c1bf5d1ec7d901569ec5acce3555745d530ea3d79007f5fabf0d3c23c4a",
+      "apps/gateway/sources/disclosures/handler.mjs": "e475938b9ace4dc95478ebf1046ddc27b82087f03ea85357ae1172a44e48b34b",
+      "apps/gateway/sources/public-reports/handler.mjs": "3c212f7fcf4448b043499a934e08bbafab34be9be389cdbceda3ab304bce8af4",
+      "packages/contracts/retrieval-0.2/public-reports-validation.mjs": "ee9f65b7f4df1f870c92752855a6fd11378824214fcf16b1073092e9c53a980b",
+      "apps/gateway/sources/acquisition-personnel/handler.mjs": "3cb660401c6df53c571cfba35288c98a3ee7623ffaee5dd0962d49cd12d89d3f",
+      "apps/gateway/sources/acquisition-personnel/request-context.mjs": "8147fc5b7b7ae651e965282da1f2e3dba87041835cee75bd411a5834bfe4d082",
+      "apps/gateway/sources/bill-text/handler.mjs": "7deb17fbde2396760a9563e14dc9afff7cda0f8a4a38888a49f3d5c469cd2c01",
       "apps/gateway/sources/mail/handler.mjs": "d0ee875b991d4865ade0de978c813ba99385b1d3656cf885df8ba083a41e5dae",
       "apps/gateway/sources/mail/request-context.mjs": "bdfa9414c83b3df9bf18f31df9d71963eff40d8a3bd8919e1e2886f8198af869",
       "apps/gateway/sources/meetings/handler.mjs": "7a16e82939fc37f41cc824971e37bd2b0fc1d22f17c6d1da380c16258aae9977",
@@ -9935,9 +9943,9 @@
       "excludedCapabilities": 43,
       "selectedSourceReads": 82,
       "selectedProductOrGoverned": 14,
-      "registeredGeneralOperations": 23,
-      "registeredFamilies": 16,
-      "generalSelectedSourceReads": 21,
+      "registeredGeneralOperations": 31,
+      "registeredFamilies": 19,
+      "generalSelectedSourceReads": 29,
       "generalSelectedProductStateReads": 1,
       "generalHistoricalOperations": 1,
       "sourceReadsWithSkillDeclarations": 53,
@@ -9945,10 +9953,12 @@
       "sourceReadsWithHistoricalOnlySkillDeclaration": 1,
       "sourceReadsWithAdmittedSkillSourceRoute": 11,
       "existingSourceAdaptersWithoutGeneralExposure": 0,
-      "missingSourceAdapters": 61,
-      "missingAdaptersDeclaredBySkills": 38,
-      "missingAdaptersWithoutSkillDeclaration": 23,
+      "missingSourceAdapters": 53,
+      "missingAdaptersDeclaredBySkills": 35,
+      "missingAdaptersWithoutSkillDeclaration": 18,
       "mappedBackendProducers": 63,
+      "locallyImplementedPendingIntegration": 0,
+      "publishedFamilySourceAdopted": 5,
       "live": 0
     },
     "admittedSkills": [
@@ -9956,6 +9966,13 @@
       "quick_skill.commitments_audit"
     ],
     "generalRegistration": [
+      {
+        "family": "acquisition-personnel",
+        "operations": [
+          "get_acquisition_person",
+          "search_acquisition_personnel"
+        ]
+      },
       {
         "family": "action-items-complete",
         "operations": [
@@ -10000,6 +10017,14 @@
         ]
       },
       {
+        "family": "disclosures",
+        "operations": [
+          "search_fara_registrations",
+          "search_lda_filings",
+          "search_sec_filings"
+        ]
+      },
+      {
         "family": "entity-candidates",
         "operations": [
           "resolve_entity"
@@ -10041,6 +10066,14 @@
         ]
       },
       {
+        "family": "public-reports",
+        "operations": [
+          "search_cbo_cost_estimates",
+          "search_crs_reports",
+          "search_gao_reports"
+        ]
+      },
+      {
         "family": "research-portfolio",
         "operations": [
           "get_research_portfolio",
@@ -10062,13 +10095,6 @@
     ],
     "existingAdaptersWithoutGeneralExposure": [],
     "missingAdapterFamilies": [
-      {
-        "family": "acquisition-personnel",
-        "operations": [
-          "get_acquisition_person",
-          "search_acquisition_personnel"
-        ]
-      },
       {
         "family": "business-development",
         "operations": [
@@ -10100,14 +10126,6 @@
         "family": "data-search",
         "operations": [
           "search_capiro_data"
-        ]
-      },
-      {
-        "family": "disclosures",
-        "operations": [
-          "search_fara_registrations",
-          "search_lda_filings",
-          "search_sec_filings"
         ]
       },
       {
@@ -10203,14 +10221,6 @@
         "family": "public-domain-query",
         "operations": [
           "query_global_data"
-        ]
-      },
-      {
-        "family": "public-reports",
-        "operations": [
-          "search_cbo_cost_estimates",
-          "search_crs_reports",
-          "search_gao_reports"
         ]
       },
       {
@@ -10945,10 +10955,16 @@
         ],
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
-        "generalOperations": [],
-        "adapterPaths": [],
+        "generalOperations": [
+          "search_cbo_cost_estimates"
+        ],
+        "adapterPaths": [
+          "apps/gateway/general-reads/families/public-reports.mjs",
+          "apps/gateway/sources/public-reports/handler.mjs",
+          "packages/contracts/retrieval-0.2/public-reports-validation.mjs"
+        ],
         "requiredContextKeys": [],
-        "state": "adapter-missing",
+        "state": "adapter-present",
         "backendProducer": {
           "operation": "search_cbo_cost_estimates",
           "family": "public-reports",
@@ -10962,7 +10978,19 @@
           "currentContext": [
             "Current native authenticated principal; no caller-supplied actorRole/client scope needed for these global public records."
           ],
-          "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+          "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required.",
+          "localImplementation": {
+            "status": "source-adopted-pending-qualification",
+            "commit": "53c377211294fa64c36ea81df836c62198f87ee5",
+            "parent": "fb708d231c7273f86b1462c72a72e70ccc36a3d6",
+            "review": "Exact original worker source independently reviewed; approved remote blobs independently verified and adopted; shared integration review pending",
+            "authorOfflineCases": 92,
+            "publication": "Approved unchanged slice published; exact remote commit and decoded Git blobs verified before adoption",
+            "sourceAdopted": true,
+            "adoptionCommit": "9a0ea1cf4e8c60b9722b05d0f30005536e718776",
+            "qualified": false,
+            "live": false
+          }
         }
       },
       {
@@ -11008,10 +11036,15 @@
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
-        "generalOperations": [],
-        "adapterPaths": [],
+        "generalOperations": [
+          "search_lda_filings"
+        ],
+        "adapterPaths": [
+          "apps/gateway/general-reads/families/disclosures.mjs",
+          "apps/gateway/sources/disclosures/handler.mjs"
+        ],
         "requiredContextKeys": [],
-        "state": "adapter-missing",
+        "state": "adapter-present",
         "backendProducer": {
           "operation": "search_lda_filings",
           "family": "disclosures",
@@ -11093,10 +11126,15 @@
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
-        "generalOperations": [],
-        "adapterPaths": [],
+        "generalOperations": [
+          "search_sec_filings"
+        ],
+        "adapterPaths": [
+          "apps/gateway/general-reads/families/disclosures.mjs",
+          "apps/gateway/sources/disclosures/handler.mjs"
+        ],
         "requiredContextKeys": [],
-        "state": "adapter-missing",
+        "state": "adapter-present",
         "backendProducer": {
           "operation": "search_sec_filings",
           "family": "disclosures",
@@ -11124,10 +11162,15 @@
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
-        "generalOperations": [],
-        "adapterPaths": [],
+        "generalOperations": [
+          "search_fara_registrations"
+        ],
+        "adapterPaths": [
+          "apps/gateway/general-reads/families/disclosures.mjs",
+          "apps/gateway/sources/disclosures/handler.mjs"
+        ],
         "requiredContextKeys": [],
-        "state": "adapter-missing",
+        "state": "adapter-present",
         "backendProducer": {
           "operation": "search_fara_registrations",
           "family": "disclosures",
@@ -11232,10 +11275,16 @@
         ],
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
-        "generalOperations": [],
-        "adapterPaths": [],
+        "generalOperations": [
+          "search_gao_reports"
+        ],
+        "adapterPaths": [
+          "apps/gateway/general-reads/families/public-reports.mjs",
+          "apps/gateway/sources/public-reports/handler.mjs",
+          "packages/contracts/retrieval-0.2/public-reports-validation.mjs"
+        ],
         "requiredContextKeys": [],
-        "state": "adapter-missing",
+        "state": "adapter-present",
         "backendProducer": {
           "operation": "search_gao_reports",
           "family": "public-reports",
@@ -11249,7 +11298,19 @@
           "currentContext": [
             "Current native user/tenant admission remains required although public data query is system-scoped."
           ],
-          "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+          "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required.",
+          "localImplementation": {
+            "status": "source-adopted-pending-qualification",
+            "commit": "53c377211294fa64c36ea81df836c62198f87ee5",
+            "parent": "fb708d231c7273f86b1462c72a72e70ccc36a3d6",
+            "review": "Exact original worker source independently reviewed; approved remote blobs independently verified and adopted; shared integration review pending",
+            "authorOfflineCases": 92,
+            "publication": "Approved unchanged slice published; exact remote commit and decoded Git blobs verified before adoption",
+            "sourceAdopted": true,
+            "adoptionCommit": "9a0ea1cf4e8c60b9722b05d0f30005536e718776",
+            "qualified": false,
+            "live": false
+          }
         }
       },
       {
@@ -11743,10 +11804,16 @@
         ],
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
-        "generalOperations": [],
-        "adapterPaths": [],
+        "generalOperations": [
+          "search_crs_reports"
+        ],
+        "adapterPaths": [
+          "apps/gateway/general-reads/families/public-reports.mjs",
+          "apps/gateway/sources/public-reports/handler.mjs",
+          "packages/contracts/retrieval-0.2/public-reports-validation.mjs"
+        ],
         "requiredContextKeys": [],
-        "state": "adapter-missing",
+        "state": "adapter-present",
         "backendProducer": {
           "operation": "search_crs_reports",
           "family": "public-reports",
@@ -11760,7 +11827,19 @@
           "currentContext": [
             "Current native authenticated context; no model actor/client selector establishes authority."
           ],
-          "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+          "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required.",
+          "localImplementation": {
+            "status": "source-adopted-pending-qualification",
+            "commit": "53c377211294fa64c36ea81df836c62198f87ee5",
+            "parent": "fb708d231c7273f86b1462c72a72e70ccc36a3d6",
+            "review": "Exact original worker source independently reviewed; approved remote blobs independently verified and adopted; shared integration review pending",
+            "authorOfflineCases": 92,
+            "publication": "Approved unchanged slice published; exact remote commit and decoded Git blobs verified before adoption",
+            "sourceAdopted": true,
+            "adoptionCommit": "9a0ea1cf4e8c60b9722b05d0f30005536e718776",
+            "qualified": false,
+            "live": false
+          }
         }
       },
       {
@@ -12358,12 +12437,18 @@
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
-        "generalOperations": [],
-        "adapterPaths": [],
+        "generalOperations": [
+          "search_acquisition_personnel"
+        ],
+        "adapterPaths": [
+          "apps/gateway/general-reads/families/acquisition-personnel.mjs",
+          "apps/gateway/sources/acquisition-personnel/handler.mjs",
+          "apps/gateway/sources/acquisition-personnel/request-context.mjs"
+        ],
         "requiredContextKeys": [
           "actorRole"
         ],
-        "state": "adapter-missing",
+        "state": "adapter-present",
         "backendProducer": {
           "operation": "search_acquisition_personnel",
           "family": "acquisition-personnel",
@@ -12380,7 +12465,19 @@
             "actorRole must be exact current Core ctx.role; only capiro_admin sees email/phone/parentOffice/department.",
             "Current tenant/user used for withTenant query/audit. User-provided role is a personnel filter, never caller role."
           ],
-          "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+          "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required.",
+          "localImplementation": {
+            "status": "source-adopted-pending-qualification",
+            "commit": "857163136a1e1e38b08f73f1b5a6d32df1ae0571",
+            "parent": "fb708d231c7273f86b1462c72a72e70ccc36a3d6",
+            "review": "Exact original worker source independently reviewed; approved remote blobs independently verified and adopted; shared integration review pending",
+            "authorOfflineCases": 81,
+            "publication": "Approved unchanged slice published; exact remote commit and decoded Git blobs verified before adoption",
+            "sourceAdopted": true,
+            "adoptionCommit": "9a0ea1cf4e8c60b9722b05d0f30005536e718776",
+            "qualified": false,
+            "live": false
+          }
         }
       },
       {
@@ -12392,12 +12489,18 @@
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
-        "generalOperations": [],
-        "adapterPaths": [],
+        "generalOperations": [
+          "get_acquisition_person"
+        ],
+        "adapterPaths": [
+          "apps/gateway/general-reads/families/acquisition-personnel.mjs",
+          "apps/gateway/sources/acquisition-personnel/handler.mjs",
+          "apps/gateway/sources/acquisition-personnel/request-context.mjs"
+        ],
         "requiredContextKeys": [
           "actorRole"
         ],
-        "state": "adapter-missing",
+        "state": "adapter-present",
         "backendProducer": {
           "operation": "get_acquisition_person",
           "family": "acquisition-personnel",
@@ -12413,7 +12516,19 @@
           "currentContext": [
             "Exact current ctx.role capiro_admin owns contact/private metadata exposure; current tenant/user own audit context."
           ],
-          "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+          "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required.",
+          "localImplementation": {
+            "status": "source-adopted-pending-qualification",
+            "commit": "857163136a1e1e38b08f73f1b5a6d32df1ae0571",
+            "parent": "fb708d231c7273f86b1462c72a72e70ccc36a3d6",
+            "review": "Exact original worker source independently reviewed; approved remote blobs independently verified and adopted; shared integration review pending",
+            "authorOfflineCases": 81,
+            "publication": "Approved unchanged slice published; exact remote commit and decoded Git blobs verified before adoption",
+            "sourceAdopted": true,
+            "adoptionCommit": "9a0ea1cf4e8c60b9722b05d0f30005536e718776",
+            "qualified": false,
+            "live": false
+          }
         }
       },
       {

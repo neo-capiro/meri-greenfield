@@ -1,0 +1,499 @@
+{
+  "schemaVersion": 2,
+  "title": "Reviewed native read boundary, five-read integration repair and disclosures candidate",
+  "state": "LOCAL_SOURCE_REVIEW_CLEAR_SYNTHETIC_PASS_RUNTIME_HOLD_PUBLICATION_PENDING",
+  "repository": "neo-capiro/meri-greenfield",
+  "source": {
+    "postTestDifference": "Only native credential README clarification at49ca and two source README sanitization/accuracy corrections at875; all executable source/tests/ledger bytes unchanged from reviewed/tested slices",
+    "sourceFiles": 50,
+    "commit": "875e87cade522de19ef2367342a5ec79cdf05f14",
+    "tree": "4c0f8db7cfa6903655dea2bd6e0c1cf4cd937e08",
+    "testedDisclosuresSource": "cd14aff172095d794fc54435c657b6020b6f8619"
+  },
+  "scope": {
+    "control": "New closed native identity/member receiving client and purpose-bound read credential owner, plus only the allocated gateway context/credential wiring and runtime factory optional field",
+    "existingBillIntegration": "Existing accepted bill source receives only the trusted per-call credentials hook",
+    "shared": "Canonical measured family registration, dispatch/result receiving, worker schemas/fixtures and current adapter/source-exposure ledger",
+    "fiveReads": [
+      "search_cbo_cost_estimates",
+      "search_gao_reports",
+      "search_crs_reports",
+      "search_acquisition_personnel",
+      "get_acquisition_person"
+    ],
+    "disclosures": [
+      "search_lda_filings",
+      "search_sec_filings",
+      "search_fara_registrations"
+    ]
+  },
+  "behavior": {
+    "workers": "No Core user bearer, service secret, database or provider credential crosses into worker task transport",
+    "ordinaryCoreRole": "Same private request-local bearer and pinned origin: identity{} -> membership{} -> identity{}. Closed receipts, genuine Core UUID principal equality, equal outer identity revisions, separate membership revision, active standard_user/user_admin/capiro_admin floor, min original expiries. Tenant/impersonation/cookie/Host/header forwarding and redirects remain forbidden.",
+    "privateCarrier": "Exactly binding,subject,operation,argumentsSha256,result; raw native HTTP JSON DTO is frozen-validated without response reshaping",
+    "normalization": "Send original schema-admitted flat request for public reports, acquisition search and disclosures. Canonical normalized input/hash and original request remain proof-bound. Acquisition detail retains normalized canonical UUID.",
+    "retainedThree": "Separately delegated three-read protocol remains unchanged; no envelope/route expansion",
+    "pii": "Acquisition PII requires exact current Core capiro_admin; user_admin/model job-role is not authority",
+    "accounting": "Full serialized private carrier accounted by existing durable owner; post-reservation uncertainty retains UNKNOWN; duplicate claims never repeat source execution",
+    "credentialOwner": "Default disabled. Genuine admitted same-task/config/allocation/request/fence and native credential/service-secret callbacks required. Both original scope and callback cancellation propagate through secret awaits. Current facts and both revisions are pinned/rechecked before effect and release; no original expiry renewal."
+  },
+  "proof": {
+    "rowsChangedByThisBatch": 0,
+    "historicalRows": 45,
+    "sourceIdentityImpact": "COMMON measured integration changed. All 17 earlier general-read family identities plus disclosures need fresh installation qualification; historical rows and receipts do not qualify this successor.",
+    "historicalCapabilityRows": 139,
+    "repinned": false,
+    "currentCounts": {
+      "workerFamilies": 19,
+      "generalOperations": 31,
+      "live": 0,
+      "selectedSourceReads": 29,
+      "adapterGaps": 53
+    },
+    "preservedFields": [
+      "capabilities",
+      "ownerDirection",
+      "coverageOrigin",
+      "provenance",
+      "counts",
+      "gates",
+      "excludedReferences",
+      "ownershipGraph"
+    ],
+    "mismatched": 6,
+    "equal": 39,
+    "historicalManifest": "scripts/qualification/assembled-image/candidate-manifest-fable-20261015h.json",
+    "historicalManifestSha256": "79a5f7fc5254c0152c0119264d653cdb5b561f27ded91d379569d00ba73a5c1e"
+  },
+  "tests": [
+    {
+      "scope": "CONTROL receiving owner after cancellation repair",
+      "sourceCommit": "0cc14d786735bd53b374003d67a69a52fa91a27d",
+      "sourceTree": "f951639e2bcb90431d63ca333fcb46ae8392215a",
+      "classification": "SYNTHETIC_OFFLINE",
+      "command": [
+        "node",
+        "--max-old-space-size=128",
+        "--test",
+        "--test-isolation=none",
+        "--test-concurrency=1",
+        "--test-reporter=tap",
+        "apps/runtime/native-authority/native-read-credentials/test/core-client.test.mjs",
+        "apps/runtime/native-authority/native-read-credentials/test/owner.test.mjs"
+      ],
+      "actual": {
+        "tests": 88,
+        "pass": 88,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "nodeDurationMs": 1359.9951,
+      "hardWallSeconds": 120,
+      "v8HeapMiB": 128,
+      "processProfile": "One process; test-isolation none; concurrency1; no uncontrolled children, native/provider/DB/SDK/compiler/browser/install execution",
+      "freeCommitBeforeBytes": 3080282112,
+      "observedPeakWorkingSetBytes": 163852288,
+      "peakIsGuarantee": false,
+      "primaryExit": 0,
+      "cleanupExit": 0,
+      "remainingOwnedProcesses": 0,
+      "timedOut": false,
+      "rawReceiptSha256": "c9dc74cfe4b9053f72c4ad9a55d1cfcb41d913447ea9cdee8a6702328303eb5e",
+      "stdoutSha256": "4317dbad035613e9aef4a00e46cfbba7fc0bea3256eb28607da295de124b5a0d",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "scope": "Canonical gateway native context and existing bill transport",
+      "sourceCommit": "1cfc459fdd1ff615f8c7954b6cd868813bf562c2",
+      "sourceTree": "71dae3cba85d1b817459497f2310a97ed84ad1b7",
+      "classification": "SYNTHETIC_OFFLINE",
+      "command": [
+        "node",
+        "--max-old-space-size=128",
+        "--test",
+        "--test-isolation=none",
+        "--test-concurrency=1",
+        "--test-reporter=tap",
+        "apps/runtime/native-authority/native-read-credentials/test/wiring.test.mjs",
+        "apps/gateway/sources/bill-text/test/handler.test.mjs",
+        "apps/gateway/general-reads/registration.test.mjs",
+        "scripts/scope-ledger/source-exposure.test.mjs"
+      ],
+      "actual": {
+        "tests": 53,
+        "pass": 53,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "nodeDurationMs": 1360.7017,
+      "hardWallSeconds": 120,
+      "v8HeapMiB": 128,
+      "processProfile": "One process; test-isolation none; concurrency1; no uncontrolled children, native/provider/DB/SDK/compiler/browser/install execution",
+      "freeCommitBeforeBytes": 2879221760,
+      "observedPeakWorkingSetBytes": 158691328,
+      "peakIsGuarantee": false,
+      "primaryExit": 0,
+      "cleanupExit": 0,
+      "remainingOwnedProcesses": 0,
+      "timedOut": false,
+      "rawReceiptSha256": "f2e51290a41328bc70b01b63a85f581131b99f9cd5d9c682fa9961ad41caf5b2",
+      "stdoutSha256": "a8e8a799923372b7f95c30b6bfddb8c0f591bc7f49f8568aee2e99640cbf86fa",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "scope": "Narrow optional CONTROL factory context propagation",
+      "sourceCommit": "749b9919732ca239bd3eae63d5ff41077ebb45b7",
+      "sourceTree": "9bbe386a3011bd3f3ef9923a6bbca051f8731a23",
+      "classification": "SYNTHETIC_OFFLINE",
+      "command": [
+        "node",
+        "--max-old-space-size=128",
+        "--test",
+        "--test-isolation=none",
+        "--test-concurrency=1",
+        "--test-reporter=tap",
+        "apps/runtime/native-authority/native-read-credentials/test/wiring.test.mjs"
+      ],
+      "actual": {
+        "tests": 9,
+        "pass": 9,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "nodeDurationMs": 916.8791,
+      "hardWallSeconds": 120,
+      "v8HeapMiB": 128,
+      "processProfile": "One process; test-isolation none; concurrency1; no uncontrolled children, native/provider/DB/SDK/compiler/browser/install execution",
+      "freeCommitBeforeBytes": 2895073280,
+      "observedPeakWorkingSetBytes": 159858688,
+      "peakIsGuarantee": false,
+      "primaryExit": 0,
+      "cleanupExit": 0,
+      "remainingOwnedProcesses": 0,
+      "timedOut": false,
+      "rawReceiptSha256": "f368440f06a7100cdd7b611c6b71bfa71d463a03981d820219154d8299f656ba",
+      "stdoutSha256": "5d96a624cf9c113e198991743588c0a582a51bd8287703fe0c11addb80c779ea",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "scope": "Initial five-read source/integration checkpoint",
+      "sourceCommit": "8c9adc05edb849a1b41eb1f5900c4631473baec9",
+      "sourceTree": "c3b72ab3a509ee964d06712ec0a61ea6c42a73eb",
+      "classification": "SYNTHETIC_OFFLINE",
+      "command": [
+        "node",
+        "--max-old-space-size=128",
+        "--test",
+        "--test-isolation=none",
+        "--test-concurrency=1",
+        "--test-reporter=tap",
+        "apps/runtime/native-authority/native-read-credentials/test/family-wiring.test.mjs",
+        "apps/runtime/native-authority/native-read-credentials/test/wiring.test.mjs",
+        "apps/gateway/sources/public-reports/test/handler.test.mjs",
+        "apps/gateway/sources/acquisition-personnel/test/handler.test.mjs",
+        "apps/worker/conversation/reads/test/native-families.test.mjs",
+        "apps/gateway/general-reads/registration.test.mjs",
+        "scripts/scope-ledger/source-exposure.test.mjs"
+      ],
+      "actual": {
+        "tests": 124,
+        "pass": 124,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "nodeDurationMs": 4357.2504,
+      "hardWallSeconds": 120,
+      "v8HeapMiB": 128,
+      "processProfile": "One process; test-isolation none; concurrency1; no uncontrolled children, native/provider/DB/SDK/compiler/browser/install execution",
+      "freeCommitBeforeBytes": 2294849536,
+      "observedPeakWorkingSetBytes": 180797440,
+      "peakIsGuarantee": false,
+      "primaryExit": 0,
+      "cleanupExit": 0,
+      "remainingOwnedProcesses": 0,
+      "timedOut": false,
+      "rawReceiptSha256": "a63a81b0f208f4567214956f4b2edaef401c9f47e1fe5c7c1479c48409fb0793",
+      "stdoutSha256": "3b8a860f6ddd21ef881fe3561c20cd2588994fd5af3f93e2f02ae5a779c657dc",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "scope": "Affected acquisition selector-clipping repair only",
+      "sourceCommit": "83321c14de05df036cc8a8af792eaf80654730fd",
+      "sourceTree": "da2c904437308a58cf3c408c0d55a0da1852d0a8",
+      "classification": "SYNTHETIC_OFFLINE",
+      "command": [
+        "node",
+        "--max-old-space-size=128",
+        "--test",
+        "--test-isolation=none",
+        "--test-concurrency=1",
+        "--test-reporter=tap",
+        "apps/runtime/native-authority/native-read-credentials/test/family-wiring.test.mjs",
+        "apps/gateway/sources/acquisition-personnel/test/handler.test.mjs"
+      ],
+      "actual": {
+        "tests": 63,
+        "pass": 63,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "nodeDurationMs": 3476.734,
+      "hardWallSeconds": 120,
+      "v8HeapMiB": 128,
+      "processProfile": "One process; test-isolation none; concurrency1; no uncontrolled children, native/provider/DB/SDK/compiler/browser/install execution",
+      "freeCommitBeforeBytes": 2141593600,
+      "observedPeakWorkingSetBytes": 169381888,
+      "peakIsGuarantee": false,
+      "primaryExit": 0,
+      "cleanupExit": 0,
+      "remainingOwnedProcesses": 0,
+      "timedOut": false,
+      "rawReceiptSha256": "9ac2a576de8a5b1bcb5b222b2f4fcb1ebfc730b040159378c70775c9a062dd06",
+      "stdoutSha256": "54a317b747c62fdbbb6dda83d409ff4aa8b40cdde5107a79f2c2eb7fd6e28956",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "scope": "Disclosures source and frozen receiving contracts",
+      "sourceCommit": "bba9bca679cfa7f7dffe522049949ef68891765b",
+      "sourceTree": "5af88047204061dc8579a23e54a544b75ed219be",
+      "classification": "SYNTHETIC_OFFLINE",
+      "command": [
+        "node",
+        "--max-old-space-size=128",
+        "--test",
+        "--test-isolation=none",
+        "--test-concurrency=1",
+        "--test-reporter=tap",
+        "apps/gateway/sources/disclosures/test/handler.test.mjs",
+        "packages/contracts/test/retrieval-disclosures.test.mjs",
+        "packages/contracts/test/retrieval-disclosures-independent.test.mjs"
+      ],
+      "actual": {
+        "tests": 93,
+        "pass": 93,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "nodeDurationMs": 629.6219,
+      "hardWallSeconds": 120,
+      "v8HeapMiB": 128,
+      "processProfile": "One process; test-isolation none; concurrency1; no uncontrolled children, native/provider/DB/SDK/compiler/browser/install execution",
+      "freeCommitBeforeBytes": 2391011328,
+      "observedPeakWorkingSetBytes": 110407680,
+      "peakIsGuarantee": false,
+      "primaryExit": 0,
+      "cleanupExit": 0,
+      "remainingOwnedProcesses": 0,
+      "timedOut": false,
+      "rawReceiptSha256": "b3579b6809f2f00479feb3c4ce454132f916c07c7a9db8cb313e3852b3307fe6",
+      "stdoutSha256": "eba494d39802fa12da5a77ee917832ebb4930bd310e66e33c1db0d787235ccfb",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "scope": "Affected disclosures mounted/worker/registration/source-exposure controls only",
+      "sourceCommit": "cd14aff172095d794fc54435c657b6020b6f8619",
+      "sourceTree": "83fadd01343032fe1fe0833b38690a78eca40d11",
+      "classification": "SYNTHETIC_OFFLINE",
+      "command": [
+        "node",
+        "--max-old-space-size=128",
+        "--test",
+        "--test-isolation=none",
+        "--test-concurrency=1",
+        "--test-reporter=tap",
+        "apps/runtime/native-authority/native-read-credentials/test/disclosures-wiring.test.mjs",
+        "apps/worker/conversation/reads/test/disclosures.test.mjs",
+        "apps/gateway/general-reads/registration.test.mjs",
+        "scripts/scope-ledger/source-exposure.test.mjs"
+      ],
+      "actual": {
+        "tests": 44,
+        "pass": 44,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "nodeDurationMs": 2214.7349,
+      "hardWallSeconds": 120,
+      "v8HeapMiB": 128,
+      "processProfile": "One process; test-isolation none; concurrency1; no uncontrolled children, native/provider/DB/SDK/compiler/browser/install execution",
+      "freeCommitBeforeBytes": 2164383744,
+      "observedPeakWorkingSetBytes": 182968320,
+      "peakIsGuarantee": false,
+      "primaryExit": 0,
+      "cleanupExit": 0,
+      "remainingOwnedProcesses": 0,
+      "timedOut": false,
+      "rawReceiptSha256": "4c60960383c80beea792c6f0ff37deb8a5eca0d22d17735e429c280187e628a3",
+      "stdoutSha256": "3a10c70d61a3262d913cbc92e798a32efc063a24c24b69d81b95e8b04c8cb251",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "preservedFailures": {
+    "earlierGatewayAttempts": [
+      {
+        "scope": "Preserved initial gateway fixture mismatches;50/53",
+        "sourceCommit": "ad1eb83ae7e0fe3e7e93f061c4fba2c629809d23",
+        "sourceTree": "476d5a7c8c279211d4736271174645def45ae142",
+        "classification": "SYNTHETIC_OFFLINE",
+        "command": [
+          "node",
+          "--max-old-space-size=128",
+          "--test",
+          "--test-isolation=none",
+          "--test-concurrency=1",
+          "--test-reporter=tap",
+          "apps/runtime/native-authority/native-read-credentials/test/wiring.test.mjs",
+          "apps/gateway/sources/bill-text/test/handler.test.mjs",
+          "apps/gateway/general-reads/registration.test.mjs",
+          "scripts/scope-ledger/source-exposure.test.mjs"
+        ],
+        "actual": {
+          "tests": 53,
+          "pass": 50,
+          "fail": 3,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "nodeDurationMs": 2587.2333,
+        "hardWallSeconds": 120,
+        "v8HeapMiB": 128,
+        "processProfile": "One process; test-isolation none; concurrency1; no uncontrolled children, native/provider/DB/SDK/compiler/browser/install execution",
+        "freeCommitBeforeBytes": 2362093568,
+        "observedPeakWorkingSetBytes": 168181760,
+        "peakIsGuarantee": false,
+        "primaryExit": 1,
+        "cleanupExit": 0,
+        "remainingOwnedProcesses": 0,
+        "timedOut": false,
+        "rawReceiptSha256": "a4668076db26c2936f7d485b8356a2b5fb89b1baae032406a5fb86a74151965e",
+        "stdoutSha256": "79d7c1a5eded1976cda2334714c63f210bae3f1e06933fc91cbb7f19c545e41b",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "scope": "Preserved narrowed gateway fixture mismatch;52/53",
+        "sourceCommit": "b4c5372e3c8a8347da937d2f8c82b18abc9292e7",
+        "sourceTree": "2ccf85dac0031d5e2e0f1eedb37f5e79fa3a858a",
+        "classification": "SYNTHETIC_OFFLINE",
+        "command": [
+          "node",
+          "--max-old-space-size=128",
+          "--test",
+          "--test-isolation=none",
+          "--test-concurrency=1",
+          "--test-reporter=tap",
+          "apps/runtime/native-authority/native-read-credentials/test/wiring.test.mjs",
+          "apps/gateway/sources/bill-text/test/handler.test.mjs",
+          "apps/gateway/general-reads/registration.test.mjs",
+          "scripts/scope-ledger/source-exposure.test.mjs"
+        ],
+        "actual": {
+          "tests": 53,
+          "pass": 52,
+          "fail": 1,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "nodeDurationMs": 1353.7984,
+        "hardWallSeconds": 120,
+        "v8HeapMiB": 128,
+        "processProfile": "One process; test-isolation none; concurrency1; no uncontrolled children, native/provider/DB/SDK/compiler/browser/install execution",
+        "freeCommitBeforeBytes": 2914152448,
+        "observedPeakWorkingSetBytes": 158425088,
+        "peakIsGuarantee": false,
+        "primaryExit": 1,
+        "cleanupExit": 0,
+        "remainingOwnedProcesses": 0,
+        "timedOut": false,
+        "rawReceiptSha256": "a2ceabff9ae0723a0e55b848fa52bbd9bf840414b5ab9631ac7d7eba9e084f1a",
+        "stdoutSha256": "b7f6b4ebfd69b3da7261e20129b35c24161f3885df8d28f220b1b6d400290b84",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ],
+    "sourceFindings": [
+      {
+        "repair": "0cc14d786735bd53b374003d67a69a52fa91a27d",
+        "evidence": "Original review and80/87 earlier passing checkpoints retained; regression expands corrected receiving run to88",
+        "finding": "P2 original gateway cancellation omitted during unresolved borrowed service-secret await"
+      },
+      {
+        "repair": "f932d21d0f5cd745a4dbefe1e89566f926b40f31",
+        "evidence": "Original124-case checkpoint and finding retained; only63 affected controls rerun",
+        "testedSuccessor": "83321c14de05df036cc8a8af792eaf80654730fd",
+        "finding": "P2 repeated acquisition search trim/clip changed trailing-space selectors"
+      }
+    ]
+  },
+  "independentReview": [
+    {
+      "scope": "Two CONTROL receiving modules after cancellation repair",
+      "custodyLimit": "Readable byte hashes independently checked; reviewer Git operation was denied, not retried; source commit custody was owner-reported",
+      "state": "CLEAR_SOURCE_ONLY_REVIEWER_REPORTED",
+      "receiptSha256": "6e3d4a45265b4d3d7af8e3b45ce6469d50c53e90b5483ab9cd8af8232548e2f3"
+    },
+    {
+      "scope": "Five-read integration repair",
+      "custodyLimit": "Pinned local source/adoption metadata independently verified; remote-original source remains producer-reported to reviewer after stopped failed promisor lookup",
+      "state": "CLEAR_SOURCE_ONLY",
+      "receiptSha256": "84019ae809be405f429046b6c0491cacf9b3f9e00e470bcd6dd6c0c44a4a9851"
+    },
+    {
+      "scope": "Disclosures source",
+      "custodyLimit": "Five local pinned files and stored93-case output checked; upstream Core comparison author/connector-reported",
+      "state": "CLEAR_SOURCE_ONLY",
+      "receiptSha256": "fdfc07cac67d3abd8a3f6fc9ced3499b0cc096c14f3964b2bc73ce4ee45a6c1e"
+    },
+    {
+      "scope": "Disclosures integration",
+      "custodyLimit": "Exact18-path integration code delta independently checked; subsequent native README-only clarification is author-sealed. Stored44-case output inspected; no independent test rerun or joint target inspection",
+      "state": "CLEAR_SOURCE_ONLY",
+      "receiptSha256": "0b68375b8f21ca73dabe69083f89ec4c5cecb4851e5dc3b327861fc802e74c6a"
+    }
+  ],
+  "upstream": {
+    "originalAcquisitionCommit": "857163136a1e1e38b08f73f1b5a6d32df1ae0571",
+    "coreProducerCommit": "b525032222515d636b0dae2d46e40c7c3d8b5528",
+    "coreScope": "Pinned schema/producer/policy comparison only. No private backend implementation copied; no native call, credential, effective-current permission or deployment qualification inferred.",
+    "originalPublicReportsCommit": "53c377211294fa64c36ea81df836c62198f87ee5",
+    "authorRemoteReadback": "All11 original worker file bodies fetched at exact commits and locally recomputed Git blob/SHA256 matched before adoption. Successor repairs are separately pinned, not attributed to those original bytes.",
+    "originalCommonParent": "fb708d231c7273f86b1462c72a72e70ccc36a3d6",
+    "coreMappingPublication": "384325afaaf7ad34aeb9ff9b2f183d667ee17343"
+  },
+  "runtimeGates": [
+    "Q alone reconciles the selected source on the actual approved joint baseline, preserving peer edits",
+    "Genuine purpose-bound request/session native bearer and Core service-secret producers, with no static/global/prepared-identity fallback",
+    "Genuine current task/config/allocation/fence/business/source scope and release authority",
+    "Fresh measured installation/discovery and enforced native guard/durable receipt qualification for the changed source identities"
+  ],
+  "claimLimits": "These distinct pinned synthetic stages overlap and must not be summed or advertised as a fresh complete release run. The combined publication target has not been built or tested. No new compiler/browser/install/DB/broad suite was launched for this packet. Runtime remains unavailable/live0.",
+  "publication": "No push, PR, upload, merge, remote source object creation, credential setup or activation is performed by preparing this local packet. Explicit approval is still required.",
+  "sanitizationSuccessor": {
+    "previousSource": "49ca9b9ab613d298ccc89743fc378bf4cdc5e064",
+    "source": "875e87cade522de19ef2367342a5ec79cdf05f14",
+    "paths": [
+      "apps/gateway/sources/acquisition-personnel/README.md",
+      "apps/gateway/sources/public-reports/README.md"
+    ],
+    "reason": "Independent packet review found historical process/workstation metadata in two source READMEs; remove metadata and clarify original versus successor publication/verification claims",
+    "previousManifestSha256": "613695a750b466f2cfa02729ea6e4962236cf9948f6f7fb1e83b003444187a14",
+    "previousEvidenceSha256": "fe9a6aecf7ff99c59f89887628377b612c3e428d8c6f0c3d4a261f0ec252f7f2",
+    "originalsPreserved": true,
+    "sourceBehaviorChanged": false,
+    "testsRepeated": false
+  }
+}

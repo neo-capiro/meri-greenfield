@@ -70,7 +70,19 @@
       "currentContext": [
         "Exact current ctx.role capiro_admin owns contact/private metadata exposure; current tenant/user own audit context."
       ],
-      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required.",
+      "localImplementation": {
+        "status": "source-adopted-pending-qualification",
+        "commit": "857163136a1e1e38b08f73f1b5a6d32df1ae0571",
+        "parent": "fb708d231c7273f86b1462c72a72e70ccc36a3d6",
+        "review": "Exact original worker source independently reviewed; approved remote blobs independently verified and adopted; shared integration review pending",
+        "authorOfflineCases": 81,
+        "publication": "Approved unchanged slice published; exact remote commit and decoded Git blobs verified before adoption",
+        "sourceAdopted": true,
+        "adoptionCommit": "9a0ea1cf4e8c60b9722b05d0f30005536e718776",
+        "qualified": false,
+        "live": false
+      }
     },
     {
       "operation": "search_acquisition_personnel",
@@ -88,7 +100,19 @@
         "actorRole must be exact current Core ctx.role; only capiro_admin sees email/phone/parentOffice/department.",
         "Current tenant/user used for withTenant query/audit. User-provided role is a personnel filter, never caller role."
       ],
-      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required.",
+      "localImplementation": {
+        "status": "source-adopted-pending-qualification",
+        "commit": "857163136a1e1e38b08f73f1b5a6d32df1ae0571",
+        "parent": "fb708d231c7273f86b1462c72a72e70ccc36a3d6",
+        "review": "Exact original worker source independently reviewed; approved remote blobs independently verified and adopted; shared integration review pending",
+        "authorOfflineCases": 81,
+        "publication": "Approved unchanged slice published; exact remote commit and decoded Git blobs verified before adoption",
+        "sourceAdopted": true,
+        "adoptionCommit": "9a0ea1cf4e8c60b9722b05d0f30005536e718776",
+        "qualified": false,
+        "live": false
+      }
     },
     {
       "operation": "read_bill_text",
@@ -1035,7 +1059,19 @@
       "currentContext": [
         "Current native authenticated principal; no caller-supplied actorRole/client scope needed for these global public records."
       ],
-      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required.",
+      "localImplementation": {
+        "status": "source-adopted-pending-qualification",
+        "commit": "53c377211294fa64c36ea81df836c62198f87ee5",
+        "parent": "fb708d231c7273f86b1462c72a72e70ccc36a3d6",
+        "review": "Exact original worker source independently reviewed; approved remote blobs independently verified and adopted; shared integration review pending",
+        "authorOfflineCases": 92,
+        "publication": "Approved unchanged slice published; exact remote commit and decoded Git blobs verified before adoption",
+        "sourceAdopted": true,
+        "adoptionCommit": "9a0ea1cf4e8c60b9722b05d0f30005536e718776",
+        "qualified": false,
+        "live": false
+      }
     },
     {
       "operation": "search_crs_reports",
@@ -1050,7 +1086,19 @@
       "currentContext": [
         "Current native authenticated context; no model actor/client selector establishes authority."
       ],
-      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required.",
+      "localImplementation": {
+        "status": "source-adopted-pending-qualification",
+        "commit": "53c377211294fa64c36ea81df836c62198f87ee5",
+        "parent": "fb708d231c7273f86b1462c72a72e70ccc36a3d6",
+        "review": "Exact original worker source independently reviewed; approved remote blobs independently verified and adopted; shared integration review pending",
+        "authorOfflineCases": 92,
+        "publication": "Approved unchanged slice published; exact remote commit and decoded Git blobs verified before adoption",
+        "sourceAdopted": true,
+        "adoptionCommit": "9a0ea1cf4e8c60b9722b05d0f30005536e718776",
+        "qualified": false,
+        "live": false
+      }
     },
     {
       "operation": "search_gao_reports",
@@ -1065,7 +1113,19 @@
       "currentContext": [
         "Current native user/tenant admission remains required although public data query is system-scoped."
       ],
-      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required.",
+      "localImplementation": {
+        "status": "source-adopted-pending-qualification",
+        "commit": "53c377211294fa64c36ea81df836c62198f87ee5",
+        "parent": "fb708d231c7273f86b1462c72a72e70ccc36a3d6",
+        "review": "Exact original worker source independently reviewed; approved remote blobs independently verified and adopted; shared integration review pending",
+        "authorOfflineCases": 92,
+        "publication": "Approved unchanged slice published; exact remote commit and decoded Git blobs verified before adoption",
+        "sourceAdopted": true,
+        "adoptionCommit": "9a0ea1cf4e8c60b9722b05d0f30005536e718776",
+        "qualified": false,
+        "live": false
+      }
     },
     {
       "operation": "scrape_web_page",
