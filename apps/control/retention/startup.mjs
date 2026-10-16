@@ -14,9 +14,11 @@ import {createServingFence} from './serving-fence.mjs';
 import {watermarkedJournal,acknowledgedLedger} from './recovery-watermark.mjs';
 const disabledPurge=Object.freeze({enabled:false,async execute(){fail('RETENTION_PURGE_DISABLED');},async recordBlocked(){fail('RETENTION_PURGE_DISABLED');}});
 /** `purge` is required: `{enabled:false}`, or `{enabled:true,storage,rows,facts,keyFor}` with every deletion owner bound. `ownership`
- * composes the suppression owner (trusted application ownership reader); without it only the read gate and recovery exist. */
-export function createRetentionStartup({journal,watermark=null,ledgerSink=null,ownership=null,authorization=refusingOwnerMediation,cancellation=null,purge,now=Date.now}){
+ * composes the suppression owner (trusted application ownership reader); without it only the read gate and recovery exist. The optional
+ * trusted recovery continuation runs inside the existing exclusion before the watermark is certified and serving opens. */
+export function createRetentionStartup({journal,watermark=null,ledgerSink=null,ownership=null,authorization=refusingOwnerMediation,cancellation=null,purge,now=Date.now,recoverPrerequisitesExclusive=null}){
  if(typeof journal?.get!=='function'||typeof journal?.set!=='function'||typeof journal?.exclusive!=='function'||typeof purge?.enabled!=='boolean'||watermark!==null&&['read','readProjection','advanceProjection','record'].some(m=>typeof watermark?.[m]!=='function')||ledgerSink!==null&&(typeof ledgerSink?.append!=='function'||typeof ledgerSink?.read!=='function'))fail('RETENTION_CONFIGURATION');
+ if(recoverPrerequisitesExclusive!==null&&typeof recoverPrerequisitesExclusive!=='function')fail('RETENTION_CONFIGURATION');
  const owners=purge.enabled?purge:{storage:null,rows:null,facts:null,keyFor:null};
  if(purge.enabled&&(typeof owners.storage?.deleteVersion!=='function'||typeof owners.rows?.purge!=='function'||typeof owners.facts!=='object'||owners.facts===null||typeof owners.keyFor!=='function'))fail('RETENTION_CONFIGURATION');
  clock(now);const fence=createServingFence();
@@ -25,7 +27,7 @@ export function createRetentionStartup({journal,watermark=null,ledgerSink=null,o
  const tracked=watermark&&ledger?watermarkedJournal({journal,watermark,fence,ledger}):journal;
  // Every ordinary tracked read requires one backing-store snapshot of the projection and its recovered watermark.
  const gate=createRetentionReadGate({journal:tracked,serving:fence});
- const reconciler=ledger&&watermark?createRecoveryReconciler({ledger,journal:tracked,serving:fence,watermark,storage:owners.storage,keyFor:owners.keyFor,facts:owners.facts,rows:owners.rows,now}):null;
+ const reconciler=ledger&&watermark?createRecoveryReconciler({ledger,journal:tracked,serving:fence,watermark,storage:owners.storage,keyFor:owners.keyFor,facts:owners.facts,rows:owners.rows,now,recoverPrerequisitesExclusive}):null;
  const suppression=ledger&&ownership?createSuppressionOwner({ledger,journal:tracked,ownership,authorization,cancellation,serving:fence,now}):null;
  const executor=purge.enabled&&ledger?createPurgeExecutor({storage:owners.storage,ledger,journal:tracked,keyFor:owners.keyFor,facts:owners.facts,serving:fence,rows:owners.rows,enabled:true,now}):disabledPurge;
  let recovering=null;
