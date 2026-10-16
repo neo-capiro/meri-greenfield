@@ -6,6 +6,8 @@
  * The injected credential owner must verify the original native/Clerk delegation
  * and issue an operation-, phase-, route-, method-, body- and source-bound bearer.
  * Its echoes are checked here before dispatch and again before reply release.
+ * The second callback must revalidate the same issuer-minted token and current
+ * delegation; it must not mint a fresh jti for that operation recheck.
  * No response decoder or product composition is enabled until Core publishes its
  * closed response contract. No ambient credential or Core route is discovered.
  */
@@ -83,7 +85,7 @@ export function createCoreObjectiveGenerationTransport(configuration){
    if(!/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(header('content-type')??'')||![null,'identity'].includes(header('content-encoding'))||
     length!==null&&(!/^(0|[1-9][0-9]*)$/u.test(length)||!Number.isSafeInteger(Number(length))||Number(length)>maxFactBytes))refuse();
    const raw=await jsonBody({body:getters.body.call(response),length:length===null?null:Number(length)},maxFactBytes,life,life.check);
-   await credential();life.check();
+   if(await credential()!==secret)refuse();life.check();
    // Core's closed response decoder, still unallocated, must validate before any use.
    return data({kind:'unqualified-response',status,value:raw});
   }catch{return unavailable();}finally{cancel(response);life?.close();}

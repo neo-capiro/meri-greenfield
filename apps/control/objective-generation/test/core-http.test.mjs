@@ -135,6 +135,16 @@ test('changed exact-wire body digest on second credential check withholds the re
  assert.equal(f.state.calls.length,1);assert.equal(count,2);
 });
 
+test('second check cannot substitute a fresh credential with identical bound echoes',async()=>{
+ const f=setup(),read=f.authorization.readCredential;let count=0;
+ const authorization={async readCredential(call){const value=await read(call);if(++count===2)value.credential='synthetic-delegated-core-reminted';return value;}};
+ const client=createCoreObjectiveGenerationTransport({origin:'https://core.synthetic.invalid',source:source(),
+  fetchImpl:async(url,options)=>{f.state.calls.push({url,options});return Response.json({opaque:'not-released'},{status:201});},
+  authorization,enabled:true,now:()=>at,maxRequestMs:100});
+ assert.deepEqual(await client.publish(f.call),{kind:'unavailable'});
+ assert.equal(f.state.calls.length,1);assert.equal(count,2);
+});
+
 test('non-success, malformed, encoded, oversized and stalled Core replies remain unavailable',async()=>{
  for(const response of [
   ()=>Response.json({error:'synthetic'},{status:409}),
