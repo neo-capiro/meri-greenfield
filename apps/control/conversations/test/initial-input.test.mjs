@@ -7,7 +7,7 @@ import {prepareOriginalInputFacts,originalInputReceipt} from '../initial-input-f
 const check=()=>{};
 test('new acknowledgement allocates exactly one immutable identity without a run, event or dispatch',async()=>{
  const f=initialInputFixture(),p=await f.proposal(),out=await f.store().initialInputs.claim(p.facts,check);
- assert.equal(out.created,true);assert.equal(out.state,'RESERVED');assert.equal(out.allocation.inputSha256,hash(p.input));assert.equal(Object.hasOwn(out.allocation,'requestSha256'),false);
+ assert.equal(out.created,true);assert.equal(out.state,'RESERVED');assert.equal(out.allocation.inputSha256,hash(p.input));assert.equal(out.allocation.requestSha256,hash(p.acceptance.request));
  assert.equal(f.allocations.size,1);assert.equal(f.state.runs.size,0);assert.equal(f.state.events.size,0);assert.equal(JSON.stringify([...f.allocations.values()]).includes(p.input.prompt),false);
 });
 test('concurrent exact claims have one new acknowledgement; reconstruction and later lease proposals never refresh it',async()=>{

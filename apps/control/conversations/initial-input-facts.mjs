@@ -26,6 +26,6 @@ export function assertOriginalInputAcceptance(facts,{run,request,selectedClientI
 }
 /** Proposed additive wire envelope, kept internal until exact public source review. No bearer or prompt text is released. */
 export function originalInputReceipt(facts,state,created){
- const {requestSha256:_,...allocation}=assertOriginalInputFacts(facts);
+ const allocation=assertOriginalInputFacts(facts);
  if(!['RESERVED','ACCEPTED'].includes(state)||typeof created!=='boolean'||created&&state!=='RESERVED')fail('INITIAL_INPUT_CORRUPT');return {allocation,state,created};
 }
