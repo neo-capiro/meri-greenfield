@@ -244,10 +244,549 @@
           "integratedBlob": "f8ed1380bbc7413bdc5e327e61ededace956fa4e"
         }
       ]
+    },
+    {
+      "label": "accepted L2, startup and corrected L3 through5abfa653",
+      "reviewedSource": "5abfa6535263e2a8d2a7cd8cacadd86305227844",
+      "predecessor": "eca78d458acb46cbfd54a94cf870841d999ef6b1",
+      "integratedCommit": "fbfd52507fed7511277441f47455fb404fbe0f99",
+      "integratedTree": "ba3ec5cc344437c5594684cd4814ef2e9157d269",
+      "files": [
+        {
+          "path": "apps/control/conversations/history/http.mjs",
+          "acceptedBlob": "31c5c1e1f26694a2dd4b0930cfa0e7e5d91ba70a",
+          "integratedBlob": "31c5c1e1f26694a2dd4b0930cfa0e7e5d91ba70a"
+        },
+        {
+          "path": "apps/control/conversations/history/lineage.mjs",
+          "acceptedBlob": "30dfe987abee7fd6ce8a70df8343d6ca7bdf5b3d",
+          "integratedBlob": "30dfe987abee7fd6ce8a70df8343d6ca7bdf5b3d"
+        },
+        {
+          "path": "apps/control/conversations/history/protocol.mjs",
+          "acceptedBlob": "121690c10e62493f4f89449f8d28089c840c3b6d",
+          "integratedBlob": "121690c10e62493f4f89449f8d28089c840c3b6d"
+        },
+        {
+          "path": "apps/control/conversations/history/service.mjs",
+          "acceptedBlob": "82b716e16709bd241e948862dedda33eaeeb61e0",
+          "integratedBlob": "82b716e16709bd241e948862dedda33eaeeb61e0"
+        },
+        {
+          "path": "apps/control/conversations/history/store.mjs",
+          "acceptedBlob": "21fac497b087dc22dcd445c1c4723916f0efd429",
+          "integratedBlob": "21fac497b087dc22dcd445c1c4723916f0efd429"
+        },
+        {
+          "path": "apps/control/conversations/lifecycle/authority.mjs",
+          "acceptedBlob": "42daeaa36138a405376fbb23aa340ea9b7aaf760",
+          "integratedBlob": "42daeaa36138a405376fbb23aa340ea9b7aaf760"
+        },
+        {
+          "path": "apps/control/conversations/lifecycle/http.mjs",
+          "acceptedBlob": "5051ca2d55b52bd5645296feeb824ae1637ceeec",
+          "integratedBlob": "5051ca2d55b52bd5645296feeb824ae1637ceeec"
+        },
+        {
+          "path": "apps/control/conversations/lifecycle/journal.mjs",
+          "acceptedBlob": "9b91868e0be542f5b917f0fbc19e10bc382cc5eb",
+          "integratedBlob": "9b91868e0be542f5b917f0fbc19e10bc382cc5eb"
+        },
+        {
+          "path": "apps/control/conversations/lifecycle/service.mjs",
+          "acceptedBlob": "88a0c3f26b94131798d7aa4c8737e4d120b5cb1e",
+          "integratedBlob": "88a0c3f26b94131798d7aa4c8737e4d120b5cb1e"
+        },
+        {
+          "path": "apps/control/conversations/next-run.mjs",
+          "acceptedBlob": "4cc1a9c8bff92ca8ccf9bdb2a87863d85d655bfe",
+          "integratedBlob": "4cc1a9c8bff92ca8ccf9bdb2a87863d85d655bfe"
+        },
+        {
+          "path": "apps/control/conversations/postgres-store.mjs",
+          "acceptedBlob": "b917916d27c9cd7b1d896021d0b72ad60f90abc8",
+          "integratedBlob": "b917916d27c9cd7b1d896021d0b72ad60f90abc8"
+        },
+        {
+          "path": "apps/control/conversations/test/authority-before-successor.test.mjs",
+          "acceptedBlob": "38c5e6e964c8caed93351f8def9dd23861f4119a",
+          "integratedBlob": "38c5e6e964c8caed93351f8def9dd23861f4119a"
+        },
+        {
+          "path": "apps/control/conversations/test/history-http.test.mjs",
+          "acceptedBlob": "df687d39b4732f78f4da318f729b4f0f5c4f005a",
+          "integratedBlob": "df687d39b4732f78f4da318f729b4f0f5c4f005a"
+        },
+        {
+          "path": "apps/control/conversations/test/lifecycle-http-uncertainty.test.mjs",
+          "acceptedBlob": "6eb4305833f3e613b41b83215dd4c77aa66059fe",
+          "integratedBlob": "6eb4305833f3e613b41b83215dd4c77aa66059fe"
+        },
+        {
+          "path": "apps/control/conversations/test/next-run-owner.test.mjs",
+          "acceptedBlob": "616ea8f62f6d307888933378b0d516812cbe7a09",
+          "integratedBlob": "616ea8f62f6d307888933378b0d516812cbe7a09"
+        },
+        {
+          "path": "apps/runtime/control.mjs",
+          "acceptedBlob": "cfa7ac1d994b478bbc0c0c4fb8c78b0904fda251",
+          "integratedBlob": "cfa7ac1d994b478bbc0c0c4fb8c78b0904fda251"
+        },
+        {
+          "path": "apps/runtime/http-server.mjs",
+          "acceptedBlob": "e89b38321b7d28dde7c614d1a4c66463ec4a080d",
+          "integratedBlob": "e89b38321b7d28dde7c614d1a4c66463ec4a080d"
+        },
+        {
+          "path": "apps/runtime/native-authority/remote-composition.mjs",
+          "acceptedBlob": "8c33270dce4c8356b4f65d7167ffeeead00ce61b",
+          "integratedBlob": "8c33270dce4c8356b4f65d7167ffeeead00ce61b"
+        },
+        {
+          "path": "apps/runtime/prepared-candidate.mjs",
+          "acceptedBlob": "10edcd9c1cfe61372b9f65f1fe750aead7c69c41",
+          "integratedBlob": "10edcd9c1cfe61372b9f65f1fe750aead7c69c41"
+        },
+        {
+          "path": "apps/runtime/product-applications.mjs",
+          "acceptedBlob": "e367aef9531d0a5d7faa824336f52cee4355c349",
+          "integratedBlob": "e367aef9531d0a5d7faa824336f52cee4355c349"
+        },
+        {
+          "path": "apps/runtime/product-readiness.mjs",
+          "acceptedBlob": "d1b0f0a8e5b9bc7ac963408b18a87c92e224dc54",
+          "integratedBlob": "d1b0f0a8e5b9bc7ac963408b18a87c92e224dc54"
+        },
+        {
+          "path": "apps/runtime/test/prepared-product-ports.test.mjs",
+          "acceptedBlob": "f5b9e2d34add52220c493216c23dc274d9cd9197",
+          "integratedBlob": "f5b9e2d34add52220c493216c23dc274d9cd9197"
+        },
+        {
+          "path": "apps/runtime/test/product-readiness.test.mjs",
+          "acceptedBlob": "004e298b47d7ef6b55112ad66fbad012dba130fc",
+          "integratedBlob": "004e298b47d7ef6b55112ad66fbad012dba130fc"
+        },
+        {
+          "path": "apps/runtime/test/start-control-port-boundary.test.mjs",
+          "acceptedBlob": "1a53f24e6e139848bec18764f3cd40001b67f234",
+          "integratedBlob": "1a53f24e6e139848bec18764f3cd40001b67f234"
+        },
+        {
+          "path": "apps/runtime/test/startup-history.test.mjs",
+          "acceptedBlob": "4a54d750b338d2840c53f6c7a0ab75a7f6efd851",
+          "integratedBlob": "4a54d750b338d2840c53f6c7a0ab75a7f6efd851"
+        }
+      ],
+      "previouslyIntegratedIdenticalPaths": [
+        "apps/control/product-access/http.mjs",
+        "apps/control/product-access/test/effect-uncertainty.test.mjs",
+        "apps/worker/conversation/activity.mjs",
+        "apps/worker/conversation/cleanup.mjs",
+        "apps/worker/conversation/test/cleanup-activity.test.mjs"
+      ],
+      "excludedLaterWork": [
+        "schedule83f1/772",
+        "ordinaryreads a3e1",
+        "model propagationf0a2",
+        "public export and e5eda integrity successor"
+      ]
+    },
+    {
+      "label": "model prerequisite bindings and canonical native admission",
+      "reviewedSource": "cf639d4707df0060524218c65d941834ed7ea2e3",
+      "predecessor": "eca78d458acb46cbfd54a94cf870841d999ef6b1",
+      "integratedCommit": "502c816b13abf605ce5987f3cfc5c421b1cdcd5e",
+      "integratedTree": "b13c8f59f13da5592f7677d4ef129b08da3fc43b",
+      "files": [
+        {
+          "path": "apps/gateway/budget/native-allocation-admission.mjs",
+          "acceptedBlob": "23e6456416f562526d2b5a914fa935428b592917",
+          "integratedBlob": "23e6456416f562526d2b5a914fa935428b592917"
+        },
+        {
+          "path": "apps/gateway/budget/tenant/native-admission.mjs",
+          "acceptedBlob": "d3dfed0b4d8f0851d71a2237a7fe07ff76ed0387",
+          "integratedBlob": "d3dfed0b4d8f0851d71a2237a7fe07ff76ed0387"
+        },
+        {
+          "path": "apps/gateway/budget/tenant/postgres-store.mjs",
+          "acceptedBlob": "f8c8ce06f3c9a0f2838a4b6598bbcaab17a95ecd",
+          "integratedBlob": "f8c8ce06f3c9a0f2838a4b6598bbcaab17a95ecd"
+        },
+        {
+          "path": "apps/gateway/budget/tenant/test/native-admission.test.mjs",
+          "acceptedBlob": "e310a84dc79a2b9ce55c56cb4d2f8aeeabeb1127",
+          "integratedBlob": "e310a84dc79a2b9ce55c56cb4d2f8aeeabeb1127"
+        },
+        {
+          "path": "apps/gateway/budget/test/native-allocation-admission.test.mjs",
+          "acceptedBlob": "56b9534ff04b24eebbc820d1c7a465bf3d2d6e31",
+          "integratedBlob": "56b9534ff04b24eebbc820d1c7a465bf3d2d6e31"
+        },
+        {
+          "path": "apps/runtime/prepared-run-bindings.mjs",
+          "acceptedBlob": "d4c5ef5bb21893a8586510abbfb5ea97ec0fea3e",
+          "integratedBlob": "d4c5ef5bb21893a8586510abbfb5ea97ec0fea3e"
+        },
+        {
+          "path": "apps/runtime/run-model-grant.mjs",
+          "acceptedBlob": "6c64e76482fe2a0648085f40ec1a986ee42c1480",
+          "integratedBlob": "6c64e76482fe2a0648085f40ec1a986ee42c1480"
+        },
+        {
+          "path": "apps/runtime/test/prepared-run-bindings.test.mjs",
+          "acceptedBlob": "7ff2110dd2d40b1bdf7fd13375e5e067f2f093e3",
+          "integratedBlob": "7ff2110dd2d40b1bdf7fd13375e5e067f2f093e3"
+        },
+        {
+          "path": "apps/runtime/test/run-model-grant.test.mjs",
+          "acceptedBlob": "06794284ccddf650aca0a10e0250d0e73c0d57eb",
+          "integratedBlob": "06794284ccddf650aca0a10e0250d0e73c0d57eb"
+        }
+      ],
+      "previouslyIntegratedIdenticalPaths": []
+    },
+    {
+      "label": "durable model issuance and purpose-isolated material",
+      "reviewedSource": "d674b207dd1964ecb000f5238e623dea1f3e5415",
+      "predecessor": "eca78d458acb46cbfd54a94cf870841d999ef6b1",
+      "integratedCommit": "fc63b86dd85e5c837fb540e9e988657bea088106",
+      "integratedTree": "59f1ace03ad355079d748fd9e58d894e9da03449",
+      "files": [
+        {
+          "path": "apps/control/conversations/migrations/0015_model_run_issuance.sql",
+          "acceptedBlob": "403e7d0e7a670b0e29c77715c521b9339c2e20e9",
+          "integratedBlob": "403e7d0e7a670b0e29c77715c521b9339c2e20e9"
+        },
+        {
+          "path": "apps/runtime/model-grant-issuer.mjs",
+          "acceptedBlob": "e5afad79956c2b6fddec2566d20438c495a1ca4f",
+          "integratedBlob": "e5afad79956c2b6fddec2566d20438c495a1ca4f"
+        },
+        {
+          "path": "apps/runtime/model-material-authority.mjs",
+          "acceptedBlob": "e5bd93019871ea679013e5963d002ea4193d850c",
+          "integratedBlob": "e5bd93019871ea679013e5963d002ea4193d850c"
+        },
+        {
+          "path": "apps/runtime/prepared-run-issuance-postgres.mjs",
+          "acceptedBlob": "b8377a63d998e328f3c50a5778353dcaf9935b2b",
+          "integratedBlob": "b8377a63d998e328f3c50a5778353dcaf9935b2b"
+        },
+        {
+          "path": "apps/runtime/test/model-grant-issuer.test.mjs",
+          "acceptedBlob": "d3a212aa498e749e2577ed80584d5104c16e9087",
+          "integratedBlob": "d3a212aa498e749e2577ed80584d5104c16e9087"
+        },
+        {
+          "path": "apps/runtime/test/model-grant-store.test.mjs",
+          "acceptedBlob": "dc9ce881a1612729804d1e76d377e6d012cb3871",
+          "integratedBlob": "dc9ce881a1612729804d1e76d377e6d012cb3871"
+        }
+      ],
+      "previouslyIntegratedIdenticalPaths": [
+        "apps/runtime/run-model-grant.mjs"
+      ]
+    },
+    {
+      "label": "canonical intent preparation schema and adapter",
+      "reviewedSource": "cc078f188b2aca0eaee92cd5db0c3930975d7185",
+      "predecessor": "eca78d458acb46cbfd54a94cf870841d999ef6b1",
+      "integratedCommit": "71185ba6778c456abfc26c4522749032c6a5769f",
+      "integratedTree": "6cd73afc20d6d4a371c4a8aaa87efd0d0459d87d",
+      "files": [
+        {
+          "path": "apps/control/intents/journal.mjs",
+          "acceptedBlob": "6c2f643a365e37f2d3f122cc0fabf171bbc34a3d",
+          "integratedBlob": "6c2f643a365e37f2d3f122cc0fabf171bbc34a3d"
+        },
+        {
+          "path": "apps/control/intents/migrations/0001_intent_preparations.sql",
+          "acceptedBlob": "96b3d3b660b28b8dd242ebc84d3d3a6cbd2a8015",
+          "integratedBlob": "96b3d3b660b28b8dd242ebc84d3d3a6cbd2a8015"
+        },
+        {
+          "path": "apps/control/intents/postgres-journal.mjs",
+          "acceptedBlob": "9270882c925144f672476fb0b6f881425e6b26ec",
+          "integratedBlob": "9270882c925144f672476fb0b6f881425e6b26ec"
+        },
+        {
+          "path": "apps/control/intents/test/migration-source.test.mjs",
+          "acceptedBlob": "a7093f2cee43743fd03b09c626b38ede1e0ee8c0",
+          "integratedBlob": "a7093f2cee43743fd03b09c626b38ede1e0ee8c0"
+        },
+        {
+          "path": "apps/control/intents/test/postgres-journal.test.mjs",
+          "acceptedBlob": "f5300e3abff9d37649e433553a65d60a878192ee",
+          "integratedBlob": "f5300e3abff9d37649e433553a65d60a878192ee"
+        }
+      ],
+      "previouslyIntegratedIdenticalPaths": []
+    },
+    {
+      "label": "narrow canonical model startup propagation",
+      "reviewedSource": "f0a2b1651fa53379c2179eb03e4955aa2573b340",
+      "predecessor": "83f1c6bec804271f049a2d54cc925456ede05ee5",
+      "integratedCommit": "4251f2490f251217c37f62c551fe6ecafdb1f853",
+      "integratedTree": "5011054d68bc7fe3cd5573042f97efde96990f31",
+      "files": [
+        {
+          "path": "apps/runtime/control.mjs",
+          "acceptedBlob": "6d09a3dc88d5017ed42a7ca5b947d44b4d1177fe",
+          "integratedBlob": "6d09a3dc88d5017ed42a7ca5b947d44b4d1177fe"
+        },
+        {
+          "path": "apps/runtime/prepared-candidate.mjs",
+          "acceptedBlob": "9992c74b42454bb853a516138cd3a36b3ee20b21",
+          "integratedBlob": "9992c74b42454bb853a516138cd3a36b3ee20b21"
+        },
+        {
+          "path": "apps/runtime/test/prepared-candidate-startup.test.mjs",
+          "acceptedBlob": "8b9a484b61f69a777c863c231e35a770da65d59b",
+          "integratedBlob": "8b9a484b61f69a777c863c231e35a770da65d59b"
+        }
+      ],
+      "previouslyIntegratedIdenticalPaths": []
+    },
+    {
+      "label": "accepted passive READS source",
+      "reviewedSource": "75a6bd646a7df70bb650afe6b5827cd5aeb88542",
+      "predecessor": "eca78d458acb46cbfd54a94cf870841d999ef6b1",
+      "integratedCommit": "1cf6cf4652382db369ae3e084c1b97ec43e928e5",
+      "integratedTree": "24267c121f26c57dec70cd8aaadc74dc2ab4d7f2",
+      "files": [
+        {
+          "path": "apps/gateway/dispatch/operation-context.mjs",
+          "acceptedBlob": "2ff2535f3634d0b9d195151bde7cbc809b08239e",
+          "integratedBlob": "2ff2535f3634d0b9d195151bde7cbc809b08239e"
+        },
+        {
+          "path": "apps/gateway/dispatch/read-result-envelope.mjs",
+          "acceptedBlob": "de303559fa966f471991d1f67137bf1faca8fb66",
+          "integratedBlob": "de303559fa966f471991d1f67137bf1faca8fb66"
+        },
+        {
+          "path": "apps/gateway/dispatch/retained-read-context.mjs",
+          "acceptedBlob": "b4e3216bfd802e0010d6876c973086abfc12270d",
+          "integratedBlob": "b4e3216bfd802e0010d6876c973086abfc12270d"
+        },
+        {
+          "path": "apps/gateway/dispatch/tool-dispatch.mjs",
+          "acceptedBlob": "7b1f772f456ca4ff4d53b7ca2b464ae7a92ff8c2",
+          "integratedBlob": "7b1f772f456ca4ff4d53b7ca2b464ae7a92ff8c2"
+        },
+        {
+          "path": "apps/gateway/general-reads/families.test.mjs",
+          "acceptedBlob": "30d9117a91332d37f6189f193e99280245973489",
+          "integratedBlob": "30d9117a91332d37f6189f193e99280245973489"
+        },
+        {
+          "path": "apps/gateway/general-reads/families/action-items-complete.mjs",
+          "acceptedBlob": "6b26a4388d519afb9974b2eb6f75b66c7e98a85a",
+          "integratedBlob": "6b26a4388d519afb9974b2eb6f75b66c7e98a85a"
+        },
+        {
+          "path": "apps/gateway/general-reads/families/client-documents.mjs",
+          "acceptedBlob": "6c0a269b05cd97add591d6d91ce69330498f5e01",
+          "integratedBlob": "6c0a269b05cd97add591d6d91ce69330498f5e01"
+        },
+        {
+          "path": "apps/gateway/general-reads/families/client-knowledge-memory.mjs",
+          "acceptedBlob": "c02393d8aadfba7ca42ca09acb8057f60edd172a",
+          "integratedBlob": "c02393d8aadfba7ca42ca09acb8057f60edd172a"
+        },
+        {
+          "path": "apps/gateway/general-reads/families/client-knowledge-monday.mjs",
+          "acceptedBlob": "7982ecc8646b6fbd4c4eceee7611d7f280d06628",
+          "integratedBlob": "7982ecc8646b6fbd4c4eceee7611d7f280d06628"
+        },
+        {
+          "path": "apps/gateway/general-reads/families/client-knowledge-profile.mjs",
+          "acceptedBlob": "66373d49bf8e138b60a9e06eeeda4e5df0e3f0d7",
+          "integratedBlob": "66373d49bf8e138b60a9e06eeeda4e5df0e3f0d7"
+        },
+        {
+          "path": "apps/gateway/general-reads/families/dataset-metadata.mjs",
+          "acceptedBlob": "daf9187504ec0f26e86ddac15ab08612a7583cce",
+          "integratedBlob": "daf9187504ec0f26e86ddac15ab08612a7583cce"
+        },
+        {
+          "path": "apps/gateway/general-reads/families/entity-candidates.mjs",
+          "acceptedBlob": "356725e9d94eb92c4d665b37b2d25a38f0e20aeb",
+          "integratedBlob": "356725e9d94eb92c4d665b37b2d25a38f0e20aeb"
+        },
+        {
+          "path": "apps/gateway/general-reads/families/florida-budget.mjs",
+          "acceptedBlob": "f7eb78bcc821a0076ea44ae61cddc58e4ffecb7d",
+          "integratedBlob": "f7eb78bcc821a0076ea44ae61cddc58e4ffecb7d"
+        },
+        {
+          "path": "apps/gateway/general-reads/families/meeting-source.mjs",
+          "acceptedBlob": "60239ab06c0ff3651fef61c379793655253b6154",
+          "integratedBlob": "60239ab06c0ff3651fef61c379793655253b6154"
+        },
+        {
+          "path": "apps/gateway/general-reads/families/memory-proposals.mjs",
+          "acceptedBlob": "3d4cc804e8c721e61cc72cec028f280208f77cb9",
+          "integratedBlob": "3d4cc804e8c721e61cc72cec028f280208f77cb9"
+        },
+        {
+          "path": "apps/gateway/general-reads/families/operational-reads.mjs",
+          "acceptedBlob": "2b5344408abce836958e2ac6ebc2045e16bbcbc0",
+          "integratedBlob": "2b5344408abce836958e2ac6ebc2045e16bbcbc0"
+        },
+        {
+          "path": "apps/gateway/general-reads/families/research-portfolio-evidence.mjs",
+          "acceptedBlob": "50c2f9c5a3e88917c3deae9deb036e669b03ee5f",
+          "integratedBlob": "50c2f9c5a3e88917c3deae9deb036e669b03ee5f"
+        },
+        {
+          "path": "apps/gateway/general-reads/families/research-portfolio.mjs",
+          "acceptedBlob": "d2d84ea81873911091f05e59a311558c22335d7d",
+          "integratedBlob": "d2d84ea81873911091f05e59a311558c22335d7d"
+        },
+        {
+          "path": "apps/gateway/general-reads/families/tenant-contacts.mjs",
+          "acceptedBlob": "f2f532c0a1efc19c9479dc9aecba76929297cb4b",
+          "integratedBlob": "f2f532c0a1efc19c9479dc9aecba76929297cb4b"
+        },
+        {
+          "path": "apps/gateway/general-reads/integration.mjs",
+          "acceptedBlob": "db79c9f41c2bd1607a5b0ccea443387ea5c98556",
+          "integratedBlob": "db79c9f41c2bd1607a5b0ccea443387ea5c98556"
+        },
+        {
+          "path": "apps/gateway/general-reads/mount.mjs",
+          "acceptedBlob": "1dbdb750963e42cedefbbe43161d3e978271b33b",
+          "integratedBlob": "1dbdb750963e42cedefbbe43161d3e978271b33b"
+        },
+        {
+          "path": "apps/gateway/general-reads/registration.mjs",
+          "acceptedBlob": "c080b4bbe958a1216987310928941e593477cd01",
+          "integratedBlob": "c080b4bbe958a1216987310928941e593477cd01"
+        },
+        {
+          "path": "apps/gateway/general-reads/retained.test.mjs",
+          "acceptedBlob": "86d1e5c89f8e58dd1c28da26b7c67504ebcecc6d",
+          "integratedBlob": "86d1e5c89f8e58dd1c28da26b7c67504ebcecc6d"
+        },
+        {
+          "path": "apps/gateway/general-reads/test/durable-fixture.mjs",
+          "acceptedBlob": "df013212936b2d83ab958807075852b145c40c8f",
+          "integratedBlob": "df013212936b2d83ab958807075852b145c40c8f"
+        },
+        {
+          "path": "apps/gateway/general-reads/test/family-cases.mjs",
+          "acceptedBlob": "19d78a4d59b25a1370c7ad3b01055e863c8056bf",
+          "integratedBlob": "19d78a4d59b25a1370c7ad3b01055e863c8056bf"
+        },
+        {
+          "path": "apps/gateway/general-reads/test/retained-cases.mjs",
+          "acceptedBlob": "8b6cbcce3ca0bb73e5959faec18cdd15c7d954bb",
+          "integratedBlob": "8b6cbcce3ca0bb73e5959faec18cdd15c7d954bb"
+        },
+        {
+          "path": "apps/gateway/sources/florida-budget/handler.mjs",
+          "acceptedBlob": "238087484d459c14e910340587f11127434032db",
+          "integratedBlob": "238087484d459c14e910340587f11127434032db"
+        },
+        {
+          "path": "apps/gateway/sources/florida-budget/projection.mjs",
+          "acceptedBlob": "1145df2d5391690688870c22a33306e80c693a3f",
+          "integratedBlob": "1145df2d5391690688870c22a33306e80c693a3f"
+        },
+        {
+          "path": "apps/gateway/sources/research-portfolio/handler.mjs",
+          "acceptedBlob": "d9dac38e64d73e5203941ce8141f9cb9d021bd3e",
+          "integratedBlob": "d9dac38e64d73e5203941ce8141f9cb9d021bd3e"
+        },
+        {
+          "path": "apps/gateway/sources/retained-reads/call-context.mjs",
+          "acceptedBlob": "c7538b24b8e9785aaf7da19fa00b6c7177551306",
+          "integratedBlob": "c7538b24b8e9785aaf7da19fa00b6c7177551306"
+        },
+        {
+          "path": "apps/gateway/sources/retained-reads/http-transport.mjs",
+          "acceptedBlob": "a0eedf0d43743fa049b85e417b0f2f826972a2bf",
+          "integratedBlob": "a0eedf0d43743fa049b85e417b0f2f826972a2bf"
+        },
+        {
+          "path": "apps/worker/conversation/reads/availability.mjs",
+          "acceptedBlob": "85eb2acbf7529a383a21a034e798c40e9219be43",
+          "integratedBlob": "85eb2acbf7529a383a21a034e798c40e9219be43"
+        },
+        {
+          "path": "apps/worker/conversation/reads/families.mjs",
+          "acceptedBlob": "ce90103de066b4844f260293afa51c0328614944",
+          "integratedBlob": "ce90103de066b4844f260293afa51c0328614944"
+        },
+        {
+          "path": "apps/worker/conversation/reads/results.mjs",
+          "acceptedBlob": "614718af5cdca44fd7cd22006544a5cfbf0eb89e",
+          "integratedBlob": "614718af5cdca44fd7cd22006544a5cfbf0eb89e"
+        },
+        {
+          "path": "apps/worker/conversation/reads/schema.mjs",
+          "acceptedBlob": "e4fcf1187a4251b7a37574c7d8008b9bb2e58f41",
+          "integratedBlob": "e4fcf1187a4251b7a37574c7d8008b9bb2e58f41"
+        },
+        {
+          "path": "apps/worker/conversation/reads/server.mjs",
+          "acceptedBlob": "cb1d62571c356f201004d31f50816a1c4f72f49b",
+          "integratedBlob": "cb1d62571c356f201004d31f50816a1c4f72f49b"
+        },
+        {
+          "path": "apps/worker/conversation/reads/test/availability.test.mjs",
+          "acceptedBlob": "0000aefc45d5522e04e7de4593cc162aea623c15",
+          "integratedBlob": "0000aefc45d5522e04e7de4593cc162aea623c15"
+        },
+        {
+          "path": "apps/worker/conversation/reads/test/families.test.mjs",
+          "acceptedBlob": "d3ec742dd9c7391b953a6836902e3646ef239a81",
+          "integratedBlob": "d3ec742dd9c7391b953a6836902e3646ef239a81"
+        },
+        {
+          "path": "apps/worker/conversation/reads/tools.mjs",
+          "acceptedBlob": "2a143a877c509afd01ae089123f55ee4ac88eca2",
+          "integratedBlob": "2a143a877c509afd01ae089123f55ee4ac88eca2"
+        }
+      ],
+      "previouslyIntegratedIdenticalPaths": []
+    },
+    {
+      "label": "actual ordinary and remote READS port propagation",
+      "reviewedSource": "a3e1afc8be840049bd07dd6fbb2410f189e98e6c",
+      "predecessor": "83f1c6bec804271f049a2d54cc925456ede05ee5",
+      "integratedCommit": "eaca77e1ea6f8b805a3a6942e179bcb8acd7d0e4",
+      "integratedTree": "1dcbd97082925dad84fd8648443ec035fba43b19",
+      "files": [
+        {
+          "path": "apps/runtime/conversation-runner.mjs",
+          "acceptedBlob": "2383f2a08af76f74830ddd047c617053ce6efb69",
+          "integratedBlob": "2383f2a08af76f74830ddd047c617053ce6efb69"
+        },
+        {
+          "path": "apps/runtime/general-read-port.mjs",
+          "acceptedBlob": "4d30704c4f02db1d39b3aeffd534cb6f7c3dec31",
+          "integratedBlob": "4d30704c4f02db1d39b3aeffd534cb6f7c3dec31"
+        },
+        {
+          "path": "apps/runtime/remote-conversation-runner.mjs",
+          "acceptedBlob": "585562d12b232dc33193957671f171be7c61150f",
+          "integratedBlob": "585562d12b232dc33193957671f171be7c61150f"
+        },
+        {
+          "path": "apps/runtime/test/general-read-port.test.mjs",
+          "acceptedBlob": "830625b9051c64d1d97030e94111c1ff11ca5cd5",
+          "integratedBlob": "830625b9051c64d1d97030e94111c1ff11ca5cd5"
+        }
+      ],
+      "previouslyIntegratedIdenticalPaths": []
     }
   ],
-  "sourceHead": "838eaf07e620e035f9559c8dee1ccd723afef869",
-  "sourceTree": "c9a709765fa1478315690b0ac6f8094de682a32d",
+  "sourceHead": "eaca77e1ea6f8b805a3a6942e179bcb8acd7d0e4",
+  "sourceTree": "1dcbd97082925dad84fd8648443ec035fba43b19",
   "validation": {
     "command": "node --max-old-space-size=128 --test --test-isolation=none --test-concurrency=1 --test-timeout=15000 --test-reporter=tap scripts/qualification/assembled-image/source-proof.test.mjs apps/control/retention/test/watermark-migration-source.test.mjs",
     "node": "v24.19.0",
@@ -273,7 +812,50 @@
     },
     "testedSourceHead": "c7f5e35b60289dcd24799ba2361b47d523c0f5cb"
   },
-  "changedProofRows": [],
+  "changedProofRows": [
+    {
+      "path": "apps/control/conversations/postgres-store.mjs",
+      "historicalSourceSha256": "4b8ad2df837a2a7c7ae26d7d23ca60017b50a9b186193553093195d31e80a71f",
+      "hSha256": "2de6bce64ace8a6d2b5d0ed205f9ffb5b7ac2884d6109df19bc629b13d48c1cb",
+      "currentSha256": "d385fd62d5cfb26bc184d26c2659298fde1ba8ba9c2d5ca3210429a8a3d03420",
+      "reason": "Reviewed startup/history plus complete model propagation and actual READS runner forwarding; frozen candidate unchanged, image/runtime HOLD"
+    },
+    {
+      "path": "apps/runtime/control.mjs",
+      "historicalSourceSha256": "904b12d08007bc9803b57f26afbf0e0763cfe80f7cb17aedc581ba77135c4e52",
+      "hSha256": "ec63730199cbc092042dab6b6694506087530ee85572e1daadfb478bf76c5757",
+      "currentSha256": "db70320a96c325710b0fa0eaed956e176f130ca706912be99347cad5f97147b4",
+      "reason": "Reviewed startup/history plus complete model propagation and actual READS runner forwarding; frozen candidate unchanged, image/runtime HOLD"
+    },
+    {
+      "path": "apps/runtime/conversation-runner.mjs",
+      "historicalSourceSha256": "ff9a037395eef3d89f62573e53c26c2c038dc5b5ffb59c37266a7c873cc48794",
+      "hSha256": "9b6ac5506161513caab33a41c547b634dc314426b51e274f376340556a1ba26d",
+      "currentSha256": "4afd72fb8605bc557343d18b55c920c04e7299e40890612352484cc971356a3d",
+      "reason": "Reviewed startup/history plus complete model propagation and actual READS runner forwarding; frozen candidate unchanged, image/runtime HOLD"
+    },
+    {
+      "path": "apps/runtime/native-authority/remote-composition.mjs",
+      "historicalSourceSha256": "eaa996c353a37cba9f0953f7997e759459a273b24cd8018ad1f855225ad44017",
+      "hSha256": "2c4162da6af533902090d7aa2861278c892335a90b4e4a75cbae99b80ba5ab4b",
+      "currentSha256": "c6fa03643c633c59b019c2c220696ebaa28ce7e35405dfb34b3b52a4b26c2028",
+      "reason": "Reviewed startup/history plus complete model propagation and actual READS runner forwarding; frozen candidate unchanged, image/runtime HOLD"
+    },
+    {
+      "path": "apps/runtime/prepared-candidate.mjs",
+      "historicalSourceSha256": "698f9adbb5ebda2e4e964c4c7f6d8425932141dcd803716b43372e26d7625d5a",
+      "hSha256": "56a56689f2bf0ee365f9f1b7e479f5f5e693ae05998d9e80057c3e8da278b603",
+      "currentSha256": "2cebeeb07ac10a6673cb7c3250d76f49c02f22f10c2d841ba4633d7c58e7d7d6",
+      "reason": "Reviewed startup/history plus complete model propagation and actual READS runner forwarding; frozen candidate unchanged, image/runtime HOLD"
+    },
+    {
+      "path": "apps/runtime/remote-conversation-runner.mjs",
+      "historicalSourceSha256": "830775231cd1a96bce6fc8c5d81a2092be883712080655163270149032dd45ec",
+      "hSha256": "830775231cd1a96bce6fc8c5d81a2092be883712080655163270149032dd45ec",
+      "currentSha256": "f945a77f0b215db5ff52bdc467339f0b930133a7a740dc389627ab82ce6be15d",
+      "reason": "Reviewed startup/history plus complete model propagation and actual READS runner forwarding; frozen candidate unchanged, image/runtime HOLD"
+    }
+  ],
   "historicalCandidates": {
     "f": "3215210633f64dcb4c8d98aa1c7e17af658c512511bc4f7bdf3df4f8a4085017",
     "g": "b74243e64a2a6d031434315cd7e4699ecc151f6ba2ca13959c04c31a75edfcd6",
@@ -323,5 +905,32 @@
       "parentScopedSourceReviewAccepted": true,
       "scope": "immutable replay plus scope before actual submission; status visibility remains separate"
     }
-  ]
+  ],
+  "proofDisposition": "h preserved and remains HOLD; earlier source-proof pass is only evidence for its recorded pre-history pin",
+  "currentSourceProof": {
+    "testedSourceHead": "fbfd52507fed7511277441f47455fb404fbe0f99",
+    "command": "node --max-old-space-size=128 --test --test-isolation=none --test-concurrency=1 --test-timeout=15000 --test-reporter=tap scripts/qualification/assembled-image/source-proof.test.mjs",
+    "primaryExit": 1,
+    "passed": 4,
+    "failed": 1,
+    "skipped": 0,
+    "cancelled": 0,
+    "durationMs": 41.359,
+    "reason": "Retained h no longer matches accepted source; hash mismatch is explicit, not an environmental failure",
+    "classification": "built-in source check before final model/READS assembly; not re-promoted to final-pin pass",
+    "tapSha256": "0812abe1d0194c20127453194d3984578c1db62f12d8c248ee8a464d59aeac35"
+  },
+  "combinedCheckpoint": {
+    "sourceHead": "eaca77e1ea6f8b805a3a6942e179bcb8acd7d0e4",
+    "sourceTree": "1dcbd97082925dad84fd8648443ec035fba43b19",
+    "tests": "pending bounded combined loading/startup/schema checks only after complete source assembly",
+    "excluded": [
+      "unreviewed model terminal-fence tighteningaf5804",
+      "new factory85620023",
+      "public history export/e5/936 successors",
+      "retention current-head855e423 and activation",
+      "later schedule role/config",
+      "product proxy Python changes not required for model issuer loading"
+    ]
+  }
 }

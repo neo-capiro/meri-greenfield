@@ -2,7 +2,36 @@
 
 **SOURCE-ONLY PARTIAL CANDIDATE; overall source composition, candidate-h, image and live release remain HOLD.** This is not a main merge or runtime qualification.
 
-## Current accepted source snapshot, 2026-10-16 02:26 UTC
+## Combined accepted-source checkpoint, 2026-10-16 UTC
+
+Source **`eaca77e1ea6f8b805a3a6942e179bcb8acd7d0e4`**, tree **`1dcbd97082925dad84fd8648443ec035fba43b19`**, assembles the complete reviewed model dependency/bindings/issuer/startup bundle, canonical intent adapter/DDL and accepted READS75a6 with actual ordinary/remote runnera3 forwarding. No partial-model tests were run. The14scoped source commits after75f select124 distinct source/test paths; every selected copy was checked against its exact reviewed blob with predecessor overlap checks. No whole branch was merged.
+
+The new model/intent sources are d674b207/cc078f18 atcf639d47; model startupf0a2 is installed only together with priorc087 bindings/model helper and required canonical native admission. SQL is source only. Existing task issuance API,2aac canonicalSDK/productPorts, L4 cleanup and accepted CORE1/2/3/5 remain. READS uses accepted75a6 and exacta3 source, default disabled and unavailable without genuine ports. New control factory85620023 and native transport semantics remain separate review/integration work; membership cannot stand in for portfolio/folder authority.
+
+**6 of45 h proof rows differ.** Complete h/current/historical hashes are in the custody JSON; f/g/h and image recipe stay byte-identical. The pre-bundle built-in proof atfbfd5250 actually returned **4/5, exit1**,41.359ms for retained-h hash mismatch. It is captured, not classified as environment failure or silently repaired. Prior6/6 and3/3 receipts apply only to their recorded earlier source pins. No broad baseline suite was rerun.
+
+The combined pin is ready for bounded module-loading/startup-fixture/schema-readiness checks. Full control/conversations types, real isolated PostgreSQL, browser/image/live qualification remain pending the integrated checkpoint and capability/resource slots. Seven historical runtime failures and three frozen-candidate failures remain explicit. Native activation, actual provider use, source installation/discovery/current retained context and broker delegation are not qualified.
+
+Local queue: Shipping delegated one membership security Jest512MiB/<60s stage. Its first attempt failed before cases (two Babel/TypeScript transform errors), primary1/cleanup0, no owned process; no retry granted. Earlier approved normal memory sample was relayed without denied-probe retries. Small shared checks remain separate; no compiler/browser/install/DB grant was inferred.
+
+## Earlier accepted startup/history integration (source fbfd5250)
+
+
+Source **`fbfd52507fed7511277441f47455fb404fbe0f99`**, tree **`ba3ec5cc344437c5594684cd4814ef2e9157d269`**, adds25 exact accepted startup/history paths through **`5abfa6535263e2a8d2a7cd8cacadd86305227844`**. Five CORE2/3 paths already matched and were preserved. This excludes all later schedule/read/model source, the pending integrity successor and public package authoring. All61 added source/test paths in eight selected scopes match their reviewed blobs. The pending reservation-shape correction remains a package artifact gate; source acceptance does not qualify actual membership/model/provider or SDK observations.
+
+**4 of45 h proof rows now differ; f/g/h remain byte-exact and HOLD.** Old/new complete hashes are in the custody JSON. Earlier zero-delta and passing source-proof receipts below refer only to their recorded source snapshots; they do not attest this successor. No successor manifest or silent selector repin was created.
+
+| Changed h proof path | Exact source reason |
+| --- | --- |
+| `apps/control/conversations/postgres-store.mjs` | Accepted startup/history through5abfa653; qualification pending. |
+| `apps/runtime/control.mjs` | Accepted startup/history through5abfa653; qualification pending. |
+| `apps/runtime/native-authority/remote-composition.mjs` | Accepted startup/history through5abfa653; qualification pending. |
+| `apps/runtime/prepared-candidate.mjs` | Accepted startup/history through5abfa653; qualification pending. |
+
+The current built-in source-proof run and known mismatch are recorded below after execution. All compiler/browser/real-database/image/live stages remain pending the integrated checkpoint. Seven historical runtime and three frozen-candidate failures remain explicit; no blanket environment claim.
+
+## Earlier accepted memory source snapshot, 2026-10-16 02:26 UTC
+
 
 Source **`838eaf07e620e035f9559c8dee1ccd723afef869`**, tree **`c9a709765fa1478315690b0ac6f8094de682a32d`**, also includes the four CORE5 source/test paths accepted at **`260de18f9b1328e71996f227f82b8d6239295e5a`**: canonical memory producer, existing PostgreSQL journal lookup and focused fixtures/tests. Every Git blob matches that exact reviewed source. The total after75f is now **36 selected paths in seven scoped commits**; earlier CORE2/3 remain intact. No model issuer, memory/settings SQL or unaccepted lane head was merged.
 
