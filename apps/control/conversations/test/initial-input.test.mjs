@@ -98,3 +98,7 @@ test('current selected client must match the original allocation even if the run
  const f=initialInputFixture(),p=await f.proposal();await f.store().initialInputs.claim(p.facts,check);
  await assert.rejects(f.store().initialInputs.accept({...p.acceptance,selectedClientId:id(99)},check),/INITIAL_INPUT_CONFLICT/);assert.equal(f.state.runs.size,0);assert.equal(f.state.events.size,0);
 });
+test('a shorter current cutoff remains binding through replay COMMIT without changing the original lease',async()=>{
+ const f=initialInputFixture(),p=await f.proposal();await f.store().initialInputs.claim(p.facts,check);const shorter={...p.facts,expiresAtMs:f.now()+500};f.faults.onCommit=()=>f.advance(500);
+ await assert.rejects(f.store().initialInputs.claim(shorter,check),/STORE_COMMIT_UNKNOWN/);assert.equal(f.allocations.get(f.key()).allocation.expiresAtMs,p.facts.expiresAtMs);
+});

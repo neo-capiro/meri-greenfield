@@ -13,7 +13,7 @@ export function createOriginalInputJournal({tx,rowRun,now}){
  function consistent(saved,rows){if(saved.state==='RESERVED'){if(rows.length)fail('INITIAL_INPUT_CORRUPT');return;}
   if(rows.length!==1)fail('INITIAL_INPUT_CORRUPT');const r=rowRun(rows[0]);assertOriginalInputAcceptance(saved.facts,{run:r.projection,request:r.request,selectedClientId:saved.facts.selectedClientId});
  }
- async function claim(raw,check){const proposed=assertOriginalInputFacts(raw),b=proposed.binding;let pinned=proposed;const callerCheck=check;check=()=>{callerCheck();active(pinned);};check();return tx(b,check,async c=>{
+ async function claim(raw,check){const proposed=assertOriginalInputFacts(raw),b=proposed.binding;let pinned=proposed;const callerCheck=check;check=()=>{callerCheck();active(proposed);active(pinned);};check();return tx(b,check,async c=>{
   const old=await readRow(c,b,check),existing=await runs(c,b,check,old?.state==='ACCEPTED');
   if(old){pinned=old.facts;check();if(!sameOriginalInputIdentity(old.facts,proposed))fail('INITIAL_INPUT_CONFLICT');consistent(old,existing);return originalInputReceipt(old.facts,old.state,false);}
   if(existing.length)fail('INITIAL_INPUT_ALREADY_EXISTS');
