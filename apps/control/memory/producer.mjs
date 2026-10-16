@@ -9,7 +9,7 @@ import {encodeCursor} from './wire.mjs';
 const UUID4=/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u;
 export function createMemoryProducer(options){
  const {journal,review,memory,newId,now}=options??{};
- if(['insert','recordSubmission','recordUnknown','get','listOwn'].some(k=>typeof journal?.[k]!=='function')||['submit','status'].some(k=>typeof review?.[k]!=='function')||
+ if(['insert','recordSubmission','recordUnknown','get','findOwnByKey','listOwn'].some(k=>typeof journal?.[k]!=='function')||['submit','status'].some(k=>typeof review?.[k]!=='function')||
   ['readTarget','findByKey'].some(k=>typeof memory?.[k]!=='function')||typeof newId!=='function'||typeof now!=='function')refuse('PRODUCT_CONFIGURATION');
  const id=()=>{const v=newId();if(typeof v!=='string'||!UUID4.test(v))refuse('PRODUCT_CONFIGURATION');return v;};
  /** Journal then submit. A replayed idempotency key resubmits the identical journaled candidate only when its earlier submission was
@@ -17,8 +17,22 @@ export function createMemoryProducer(options){
  async function produce(fields,requestSha256,{signal,deadlineMs}){
   const built=buildCandidate({...fields,candidateId:id(),createdAt:new Date(now()).toISOString()});
   const {record}=await journal.insert({...built,requestSha256,signal});
+  return submitRecord(fields.principal,record,{signal,deadlineMs});
+ }
+ /** Look up immutable custody before consulting mutable memory. Current visibility still gates every release or resubmission. */
+ async function replay(principal,idempotencyKey,requestSha256,options){
+  const record=await journal.findOwnByKey({tenantId:principal.tenantId,proposerActorId:principal.actorId,idempotencyKey,signal:options.signal});
+  if(!record)return null;
+  if(!visibleToProposer(principal,record.candidate))refuse('MEMORY_PROPOSAL_NOT_FOUND');
+  if(record.requestSha256!==requestSha256)refuse('MEMORY_IDEMPOTENCY_CONFLICT');
+  const current=(await statuses(principal,[record],options))[0];
+  if(current.review.status!=='submission_unknown')return current;
+  return submitRecord(principal,record,options);
+ }
+ async function submitRecord(principal,record,{signal,deadlineMs}){
+  if(!visibleToProposer(principal,record.candidate))refuse('MEMORY_PROPOSAL_NOT_FOUND');
   // A replay of an acknowledged submission reports Core's current review state rather than assuming it is still pending.
-  if(record.submission.state==='SUBMITTED')return (await statuses(fields.principal,[record],{signal,deadlineMs}))[0];
+  if(record.submission.state==='SUBMITTED')return (await statuses(principal,[record],{signal,deadlineMs}))[0];
   let reviewId;
   try{({reviewId}=await review.submit({candidate:record.candidate,candidateSha256:record.candidateSha256,signal,deadlineMs}));}
   catch{
@@ -56,9 +70,10 @@ export function createMemoryProducer(options){
   /** Sourced correction of an existing memory. The target is pinned by its current content hash; review decides whether it applies. */
   async correct({principal,request,origin,signal,deadlineMs}){
    try{
+    const requestSha256=canonicalSha256({operation:'memory.correct',origin,request});
+    const retained=await replay(principal,request.idempotencyKey,requestSha256,{signal,deadlineMs});if(retained)return retained;
     const target=await memory.readTarget({tenantId:principal.tenantId,actorId:principal.actorId,memoryId:request.targetMemoryId,signal,deadlineMs});
     assertCorrectionTarget(principal,target);
-    const requestSha256=canonicalSha256({operation:'memory.correct',origin,request});
     return await produce({principal,scope:target.scope,clientId:target.clientId,content:request.content,key:target.key,ttlDays:null,
      corrects:{memoryId:target.memoryId,memorySha256:target.memorySha256},reason:request.reason,sources:request.sources,origin,idempotencyKey:request.idempotencyKey},requestSha256,{signal,deadlineMs});
    }catch(error){throw asProductError(error,'MEMORY_UNAVAILABLE');}
@@ -68,13 +83,15 @@ export function createMemoryProducer(options){
    try{
     const a=command.arguments,origin={kind:'conversation',conversationId:command.binding.conversationId,runId:command.binding.runId,commandId:command.commandId,commandSha256};
     assertProposalScope(principal,a);
+    const requestSha256=canonicalSha256({operation:'memory.propose.command',commandSha256});
+    const retained=await replay(principal,command.idempotencyKey,requestSha256,{signal,deadlineMs});if(retained)return retained;
     let corrects=null;
     if(a.key!==null){
      const target=await memory.findByKey({tenantId:principal.tenantId,actorId:principal.actorId,scope:a.scope,clientId:a.clientId,key:a.key,signal,deadlineMs});
      if(target){assertCorrectionTarget(principal,target);corrects={memoryId:target.memoryId,memorySha256:target.memorySha256};}
     }
     return await produce({principal,scope:a.scope,clientId:a.clientId,content:a.content,key:a.key,ttlDays:a.ttlDays===null?null:Math.ceil(a.ttlDays),corrects,reason:null,sources:[],origin,idempotencyKey:command.idempotencyKey},
-     canonicalSha256({operation:'memory.propose.command',commandSha256}),{signal,deadlineMs});
+     requestSha256,{signal,deadlineMs});
    }catch(error){throw asProductError(error,'MEMORY_UNAVAILABLE');}
   },
   async list({principal,request,signal,deadlineMs}){

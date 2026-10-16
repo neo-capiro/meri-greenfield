@@ -44,6 +44,10 @@ export function createPostgresMemoryJournal({pool}){
   get({tenantId,proposerActorId,candidateId,signal}){
    return tx(signal,async client=>{const row=(await client.query(`SELECT ${COLUMNS} FROM ${table} WHERE tenant_id=$1 AND proposer_actor_id=$2 AND candidate_id=$3`,[tenantId,proposerActorId,candidateId])).rows[0];return row?record(row):null;},true);
   },
+  /** Immutable request custody, scoped to the current tenant and original proposer. No mutable target read is needed for replay. */
+  findOwnByKey({tenantId,proposerActorId,idempotencyKey,signal}){
+   return tx(signal,async client=>{const row=(await client.query(`SELECT ${COLUMNS} FROM ${table} WHERE tenant_id=$1 AND proposer_actor_id=$2 AND idempotency_key=$3`,[tenantId,proposerActorId,idempotencyKey])).rows[0];return row?record(row):null;},true);
+  },
   /** Own candidates newest first. Client-scoped rows are filtered to `clientIds` in SQL; personal and firm rows are the proposer's own. */
   listOwn({tenantId,proposerActorId,clientIds,clientId,cursor,limit,signal}){
    return tx(signal,async client=>{

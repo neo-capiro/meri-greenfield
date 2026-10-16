@@ -22,6 +22,27 @@ function setup(){
 const code=async(promise,expected)=>{await assert.rejects(promise,e=>productFailure(e)?.code===expected);};
 const web={kind:'web_page',reference:'https://example.gov/report'};
 
+for(const targetState of ['superseded','forgotten','expired','missing'])test(`correction lost ACK then ${targetState}: same key retains original candidate and current review without rereading target`,async()=>{
+ const t=setup(),memoryId='memory-replay';t.core.addMemory({memoryId,scope:'client',clientId:CLIENT_A,ownerActorId:null,key:'fiscal'});
+ const body={idempotencyKey:id(801),targetMemoryId:memoryId,content:'Corrected fact',reason:'New evidence',sources:[web]};
+ t.core.failSubmit='lostAck';const first=await t.correct(principal(),body);assert.equal(first.review.status,'submission_unknown');
+ t.core.decide(first.candidateId,'approved');
+ if(targetState==='missing')t.core.memories.delete(memoryId);else t.core.memories.get(memoryId).state=targetState;
+ const before=t.core.calls.length,again=await t.correct(principal(),body);
+ assert.equal(again.candidateId,first.candidateId);assert.equal(again.candidateSha256,first.candidateSha256);assert.deepEqual(again.corrects,first.corrects);
+ assert.equal(again.review.status,'approved');assert.equal(t.core.reviews.size,1);
+ assert.deepEqual(t.core.calls.slice(before).map(c=>c.route),['status']);
+ await code(t.correct(principal(),{...body,content:'Changed under the same key'}),'MEMORY_IDEMPOTENCY_CONFLICT');
+});
+
+test('correction replay after client visibility revocation reveals nothing and neither reads target nor resubmits',async()=>{
+ const t=setup(),memoryId='memory-revoked';t.core.addMemory({memoryId,scope:'client',clientId:CLIENT_A,ownerActorId:null});
+ const body={idempotencyKey:id(802),targetMemoryId:memoryId,content:'Corrected fact',reason:'New evidence',sources:[web]};
+ t.core.failSubmit='lostAck';const first=await t.correct(principal(),body),before=t.core.calls.length;
+ await code(t.correct(principal({clientIds:[]}),body),'MEMORY_PROPOSAL_NOT_FOUND');
+ assert.equal(t.core.calls.length,before);assert.equal(t.core.reviews.size,1);assert.equal([...t.journal.rows.values()][0].candidate.candidateId,first.candidateId);
+});
+
 test('personal, client and firm proposals produce pending sourced candidates; personal no longer refuses',async()=>{
  const t=setup();
  const personal=await t.propose(principal(),{idempotencyKey:id(1),scope:'personal',content:'  Prefers short briefs  ',sources:[web]});

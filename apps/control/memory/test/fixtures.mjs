@@ -29,6 +29,7 @@ export function createJournalDouble(){
   },
   async recordUnknown({tenantId,candidateId}){calls.push('recordUnknown');const r=rows.get(`${tenantId}/${candidateId}`);if(r?.submission.state==='PREPARED')r.submission={state:'SUBMISSION_UNKNOWN',reviewId:null};},
   async get({tenantId,proposerActorId,candidateId}){const r=rows.get(`${tenantId}/${candidateId}`);return r&&r.candidate.proposerActorId===proposerActorId?clone(r):null;},
+  async findOwnByKey({tenantId,proposerActorId,idempotencyKey}){calls.push('findOwnByKey');const r=[...rows.values()].find(r=>r.candidate.tenantId===tenantId&&r.candidate.proposerActorId===proposerActorId&&r.candidate.idempotencyKey===idempotencyKey);return r?clone(r):null;},
   async listOwn({tenantId,proposerActorId,clientIds,clientId,cursor,limit}){
    return [...rows.values()].filter(r=>r.candidate.tenantId===tenantId&&r.candidate.proposerActorId===proposerActorId&&(r.candidate.scope!=='client'||clientIds.includes(r.candidate.clientId))&&(clientId===null||r.candidate.clientId===clientId))
     .sort((a,b)=>b.candidate.createdAt.localeCompare(a.candidate.createdAt)||b.candidate.candidateId.localeCompare(a.candidate.candidateId))
