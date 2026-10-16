@@ -1,0 +1,29 @@
+✔ concurrent server starts retain one workflow and full original work identity (3.7315ms)
+✔ lost start ACK queries the same retained workflow instead of reminting or reporting application (0.7259ms)
+✔ same canonical intent with a different job/version conflicts before stop or result release (2.5899ms)
+✔ browser close/reopen reads existing server state and stop is a durable signal, never workflow cancellation (1.0817ms)
+✔ completed workflow remains read-recoverable with exact ACK reference (1.1649ms)
+✔ unknown start and missing lookup never become proof of absence or another workflow identity (0.5106ms)
+✔ cancelled or malformed input refuses before Temporal calls (1.0496ms)
+✔ missing actual SDK scopes refuses before workflow RPC (0.6365ms)
+✔ parked start is bounded, aborts its owned RPC signal and never retries (24.7731ms)
+✔ retained immutable ACK short-circuits preparation and preserves exact output identity (0.4098ms)
+✔ original prepare is scheduled once after initial stored receipt lookup (0.1606ms)
+✔ lost ACK/worker failure recovers the same immutable receipt without repeat prepare or model dispatch (0.2193ms)
+✔ Stop before dispatch makes no application attempt (0.1089ms)
+✔ Stop during prepare preserves committed application truth (0.1782ms)
+✔ Stop after unknown retains read-only reconciliation and late exact ACK (0.2331ms)
+✔ current authority unavailable cannot authorize prepare, then fresh read may recover ACK (0.1109ms)
+✔ browser closure affects no server port and reopening observes the same continuation (0.1443ms)
+✔ definitive not-dispatched refusal stops original prepare and cannot become a retry (0.1116ms)
+✔ current read refusal after uncertainty cannot erase the uncertain original effect (0.1467ms)
+✔ default worker receives no continuation activity or new execution owner (0.1076ms)
+✔ optional composition admits only the two continuation activities (0.272ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 78.4002

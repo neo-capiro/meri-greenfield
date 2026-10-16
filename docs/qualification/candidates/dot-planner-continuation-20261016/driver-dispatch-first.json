@@ -1,0 +1,92 @@
+{
+  "processCount": 1,
+  "exitCode": 0,
+  "argv": [
+    "--max-old-space-size=128",
+    "--experimental-test-module-mocks",
+    "--import",
+    "./docs/qualification/candidates/dot-planner-continuation-20261016/dependency-seams.mjs",
+    "--test",
+    "--test-isolation=none",
+    "--test-concurrency=1",
+    "apps/control/objective-planner/continuation/driver.test.mjs",
+    "apps/control/objective-planner/continuation/dispatcher.test.mjs",
+    "apps/control/objective-planner/continuation/registration.test.mjs"
+  ],
+  "startedAt": "2026-10-16T03:30:52.1301267+00:00",
+  "finishedAt": "2026-10-16T03:30:52.4591543+00:00",
+  "ports": [],
+  "sourceFiles": [
+    {
+      "sha256": "d1d63856c19ff28dcd7126316e626541d17cf38467358cbfe5d9122a161b60e0",
+      "path": "apps\\control\\objective-planner\\core-receipts.mjs"
+    },
+    {
+      "sha256": "0202d1e929b4aa804cac990d3725828578d940fb5a7bb96dac668d1893298bb2",
+      "path": "apps\\control\\objective-planner\\identity.mjs"
+    },
+    {
+      "sha256": "7e87621bc2eae19aff70d28ffbd355e4fcfdd955636797c104f27259b17350f3",
+      "path": "apps\\control\\objective-planner\\materializer.mjs"
+    },
+    {
+      "sha256": "32c0116c915cab7bd0f46bdd663491c31a741033a224abc2954e3e931448bff3",
+      "path": "apps\\control\\objective-planner\\continuation\\dispatcher.mjs"
+    },
+    {
+      "sha256": "4e483c048375a9fb5c25fbcd6fb79ef29f9c140e082b16035dce1f444c8800ac",
+      "path": "apps\\control\\objective-planner\\continuation\\dispatcher.test.mjs"
+    },
+    {
+      "sha256": "9cb70612bbe866b74fad1d5d80776db16558e0d6908421dde1a9321c1b14fcdf",
+      "path": "apps\\control\\objective-planner\\continuation\\driver.mjs"
+    },
+    {
+      "sha256": "b666df50e3492c049e1be17ab239f2f89c0cfb578d00a86bce63441254169fc3",
+      "path": "apps\\control\\objective-planner\\continuation\\driver.test.mjs"
+    },
+    {
+      "sha256": "7d27d06cb19bb5d4baeedc92e7275501a6a55e826b06bc1fde13e5e2dc2621c1",
+      "path": "apps\\control\\objective-planner\\continuation\\registration.mjs"
+    },
+    {
+      "sha256": "4c7ed90c33a3ffd0356c323094c9fe2c8e379a04f1ddd71def1252d5d5764d53",
+      "path": "apps\\control\\objective-planner\\continuation\\registration.test.mjs"
+    },
+    {
+      "sha256": "b2a0d178cdeda4ae1c9b845f7716a3dc2ecd4cd525e9fab1be60cc5d9584b3a1",
+      "path": "apps\\control\\objective-planner\\continuation\\workflow.ts"
+    },
+    {
+      "sha256": "4e75f902b95fc85da72549aff4be296a88255d09b46babf707ec5477120a5ff1",
+      "path": "apps\\control\\objective-planner\\test\\fixtures.mjs"
+    },
+    {
+      "sha256": "25d7bc332d3191a8f7e226e7f9d03a1c90737c0c9b552adfff4b0fb68c28c4df",
+      "path": "apps\\control\\objective-planner\\test\\materializer.test.mjs"
+    },
+    {
+      "sha256": "7ba538a532e80ecbdb399e5be5b0b1f560184be1303f6932a2d44e49a49c3d8d",
+      "path": "apps\\control\\objective-planner\\test\\receipts.test.mjs"
+    }
+  ],
+  "note": "Real new driver/dispatcher/registration, scripted ports; hash and Temporal enum import seams. Actual Temporal1.24/server/replay, Core authority/stored custody, canonicalize/Ajv/provider/DB UNRUN.",
+  "cleanup": {
+    "servicesCreated": 0,
+    "portsCreated": 0,
+    "ownedProcessExited": true
+  },
+  "elapsedMs": 166,
+  "workingSetLimitBytes": 268435456,
+  "sampledPeakWorkingSetBytes": 49426432,
+  "synthetic": true,
+  "hardWallMs": 30000,
+  "limitStopped": false,
+  "sourceParent": "be8d701333af290e09bae514d62b422248e04e99",
+  "heapMiB": 128,
+  "memory": {
+    "freeBytes": 12323528704,
+    "totalBytes": 33632079872,
+    "rssBytes": 35643392
+  }
+}
