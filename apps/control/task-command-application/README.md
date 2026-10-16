@@ -17,6 +17,12 @@ the factory adds only its own exact command options. `authorizeExecution({propos
 `{execution,credential}` for the canonical executor. The immutable proposal retains its original binding; an executing session may
 have a fresh attempt/worker/fence for the same tenant, actor, conversation and run. Preparation requires the exact current binding.
 
+For the existing opaque native session owner, supply `sessions`, trusted `selectedClientId` and `authorizeExecution` directly to
+the feature. The native adapter reuses the action host's current-session correlator and checks current identity, session revision,
+binding, scopes and selected client before and after capability issuance, metadata access and command execution. Revocation after a
+metadata acknowledgement withholds the proposal as `STORED_NOT_RELEASED`; revocation after an observed effect withholds the result
+as `RESULT_NOT_RELEASED`. These outcomes do not invite another mutation. The selected client comes from trusted host composition.
+
 | Route | POST JSON | Result |
 | --- | --- | --- |
 | `/api/task-commands/prepare` | `{arguments:{taskId,title?,status?,dueDate?}}` | `{status:'approval_required',proposal}` |
@@ -34,9 +40,10 @@ only `{taskId,...patch}` to the existing fixed `POST /clio/tools/update_task` so
 approval, budget reservation and durable command identity. Lost native acknowledgement returns `COMMAND_OUTCOME_UNKNOWN` /
 `outcome:'UNKNOWN'`; replay remains indeterminate and never redispatches. A proposal stored but withheld is also reported explicitly.
 
-## Integration ownership still pending
+## Host integration
 
-The shared runtime mount, worker startup transport and frontend contract package/export are not changed by this feature subtree.
-The source-only integration proposal is in the task-6 report. The frontend must consume a reviewed public task-update contract export;
-it must not copy these private DTOs. Runtime/frontend shared-file ownership coordination is pending because both cross-thread messaging
-attempts returned `thread not found`. No route is active in PR98 or PR60 and no live acceptance is claimed.
+The runtime accepts one optional `taskCommandApplication` owner and mounts its two exact paths only with source access enabled.
+Absent or source-disabled composition returns `TASK_COMMAND_UNAVAILABLE` with no dispatch. The additive public export is
+`@capiro/meri-contracts/task-command-application`; desktop callers receive that generated module with immutable provenance.
+The task-6 integration report records the reviewed source and frontend pins. Host composition, credentials and live qualification
+remain with release owners; these changes do not activate a route in the shipment candidates or deploy a service.
