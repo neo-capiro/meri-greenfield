@@ -1,0 +1,39 @@
+✔ fixed POST201 and GET200 use separate current authorization and release checks, original application ID and nine fields (12.1614ms)
+✔ deployed Core producer route includes global strategy-api prefix for BOTH POST and GET, without assumed rewrite (3.8282ms)
+✔ trusted service origin cannot add an arbitrary prefix, path, query or fragment (2.6112ms)
+✔ disabled/missing issuer refuses before credential/network access (1.5342ms)
+✔ every noncanonical status stays uncertain; GET404/503 never produces absence/eligibility (11.4252ms)
+✔ wrong/malformed credential actor/tenant/hash/time refuses before transport (5.4742ms)
+✔ post-effect read revocation withholds even a valid original creation ACK without retry (1.1951ms)
+✔ historical read accepts original consent/control ACK without extending any prepare grant (3.0161ms)
+✔ malformed, oversized, wrong content-type/encoding/length and mismatched original ACK never release (5.3935ms)
+✔ a hanging response stream is bounded, cancelled and never retried (13.0233ms)
+✔ late response after caller cancellation is cancelled without release (1.5683ms)
+✔ actual deployed producer POST200 binds literal route + start +WHOLE body SHA separately from work/application hashes (2.4964ms)
+✔ actual deployed producer POST200 binds literal route + prepare +WHOLE body SHA separately from work/application hashes (1.7692ms)
+✔ actual deployed producer POST200 binds literal route + read +WHOLE body SHA separately from work/application hashes (1.8969ms)
+✔ actual deployed producer POST200 binds literal route + stop +WHOLE body SHA separately from work/application hashes (2.2178ms)
+✔ default disabled/missing credential owner refuses before producer HTTP or authority calls (2.8393ms)
+✔ producer POST200 ONLY; missing/denied/wrong201 never becomes absence or prepare eligibility (8.2491ms)
+✔ closed producer reply and exact full-work SHA cannot be replaced with latest or post-hoc paired facts (4.955ms)
+✔ producer arguments cannot select another route/binding/hash or an unknown phase (1.1341ms)
+✔ current exact producer-phase authority is rechecked before result release (1.9223ms)
+✔ producer caller deadline bounds parked HTTP and closes the owned RPC signal without a retry (21.7509ms)
+✔ prepare requires independent trusted admission even when initial ACK lookup is unavailable (1.7098ms)
+✔ missing/expired initial admission returns definitive not-dispatched refusal before Core prepare (0.7635ms)
+✔ historical ACK reconciliation calls only fresh-read owner, never prepare/model/admission (0.7355ms)
+✔ immutable work SHA mismatch refuses before all ports (0.6981ms)
+✔ prepare transport is capped to the genuine producer admission expiry including original consent/task bounds (0.646ms)
+✔ expired-after-admission or malformed proof refuses before Core transport (2.717ms)
+✔ a longer Core credential cannot extend shorter producer admission during late authorization (64.8273ms)
+✔ actual source composition stays disabled without genuine producer or transport issuer; no effects on import/construction (1.3217ms)
+✔ coherent admitted source joins actual driver/activities/Core client/custody/server; lost POST ACK recovers one application after caller leaves (9.6341ms)
+✔ runtime DEFAULT consumes actual fixed Core producer client and canonical accepted run, with no injected producer callback (8.8104ms)
+ℹ tests 31
+ℹ suites 0
+ℹ pass 31
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 288.3501
