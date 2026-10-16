@@ -20,10 +20,20 @@ import * as f10 from './families/memory-proposals.mjs';
 import * as f11 from './families/research-portfolio-evidence.mjs';
 import * as f12 from './families/research-portfolio.mjs';
 import * as f13 from './families/florida-budget.mjs';
-const modules=[f0,f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13];
+import * as f14 from './families/bill-text.mjs';
+const modules=[f0,f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13,f14];
 const byFamily=new Map(modules.map(f=>[f.id,f]));
 export const GENERAL_READ_ADAPTER_FAMILIES=Object.freeze(modules.map(f=>f.id));
 const SOURCE_PATHS=Object.freeze({
+ "bill-text": [
+  "apps/gateway/sources/bill-text/handler.mjs",
+  "apps/gateway/sources/retained-reads/call-context.mjs",
+  "apps/gateway/sources/retained-reads/http-transport.mjs",
+  "apps/gateway/dispatch/bill-text-context.mjs",
+  "apps/gateway/dispatch/operation-context.mjs",
+  "apps/gateway/dispatch/read-result-envelope.mjs",
+  "apps/gateway/dispatch/tool-dispatch.mjs"
+ ],
  "research-portfolio": [
   "apps/gateway/sources/research-portfolio/handler.mjs",
   "apps/gateway/sources/retained-reads/call-context.mjs",

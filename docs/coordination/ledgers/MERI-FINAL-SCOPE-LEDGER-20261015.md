@@ -1,5 +1,22 @@
 # Meri final scope ledger
 
+Next adapter batch, base `fb708d231c7273f86b1462c72a72e70ccc36a3d6`:
+all 63 missing names have actual retained Core dispatches at
+`b525032222515d636b0dae2d46e40c7c3d8b5528`, tree
+`16723770a8e111fc66bcf70d36ff32ab71eb9928`; source existence does not clear
+native effects, context or credentials. Core's per-operation mapping supplements
+the concrete source facts. State designation fallback, global-query auditing,
+live certification, clock divergence and unproven client walls remain holds.
+The initial independent family is bill-text: fixed flat native POST bodies,
+canonical query bridge from captured `defaultCongress`, unchanged frozen DTOs,
+existing bounded retained transport and gateway authority/budget/release owners.
+CONTROL must separately own genuine native-user and internal-service credentials;
+the three-operation delegated envelope grants neither. New family source remains
+unavailable without that owner and current installation/discovery. Root owns only
+its new family/context modules and narrow existing registration/context/envelope
+seams. Focused tests use genuine HTTP JSON serialization with synthetic transport;
+no backend, provider, credential, frozen contract or activation change is implied.
+
 Current-source reconciliation, 16 October 2026: the generated `sourceExposure`
 snapshot below supersedes historical proposal claims about server/adapter presence;
 it does not change scope decisions, frozen contracts, the audit CSV, qualification

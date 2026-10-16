@@ -7,6 +7,7 @@ import { normalizeActionReadRequest, prepareActionReadContext } from './action-r
 import { prepareProjectionReadContext } from './projection-read-context.mjs';
 import { deny } from './operation-result.mjs';
 import {retainedReadGroup,prepareRetainedReadContext} from './retained-read-context.mjs';
+import {prepareBillTextReadContext} from './bill-text-context.mjs';
 
 export function assertOperationArguments(entry, request) {
   const profile = entry.contract.binding?.dispatchProfile;
@@ -20,6 +21,7 @@ export function assertOperationArguments(entry, request) {
 
 export async function prepareOperationContext({ entry, request, identity, authorize, ports, mailPorts, retainedPorts, lifetime, readDeadline, now, maxBytes, defaultCongress }) {
   const profile = entry.contract.binding?.dispatchProfile;
+  if(entry.contract.binding?.group==='bill-text')return prepareBillTextReadContext({entry,authority:await authorize(request),identity,defaultCongress});
   if(retainedReadGroup(entry)){
     const authority=await authorize(request);
     if(canonicalSha256(authority.binding)!==canonicalSha256(identity.claims.binding)||authority.policyRevision!==identity.claims.policyRevision)deny('ACCESS_DENIED');

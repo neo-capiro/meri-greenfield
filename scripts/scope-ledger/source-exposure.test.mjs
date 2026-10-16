@@ -16,15 +16,15 @@ function synthetic(){return {catalog:structuredClone(catalog),bindings:CATALOG_O
  adapters:[{operations:[...registered],paths:['synthetic adapter path']}],skills:[],admittedSkills:[],provenance:{}};}
 const refuses=work=>assert.throws(work,error=>error.code==='SOURCE_EXPOSURE_INVALID');
 
-test('96 selected and43 excluded are reconciled separately from21 registered operations',()=>{
+test('96 selected and43 excluded are reconciled separately from23 registered operations',()=>{
  assert.equal(snapshot.rows.length,96);assert.equal(snapshot.counts.selectedSourceReads,82);assert.equal(snapshot.counts.selectedProductOrGoverned,14);
- assert.equal(snapshot.counts.registeredGeneralOperations,21);assert.equal(snapshot.counts.registeredFamilies,15);
- assert.equal(snapshot.counts.generalSelectedSourceReads,19);assert.equal(snapshot.counts.generalSelectedProductStateReads,1);assert.equal(snapshot.counts.generalHistoricalOperations,1);
+ assert.equal(snapshot.counts.registeredGeneralOperations,23);assert.equal(snapshot.counts.registeredFamilies,16);
+ assert.equal(snapshot.counts.generalSelectedSourceReads,21);assert.equal(snapshot.counts.generalSelectedProductStateReads,1);assert.equal(snapshot.counts.generalHistoricalOperations,1);
  assert.equal(snapshot.counts.excludedCapabilities,43);assert.equal(snapshot.counts.live,0);
 });
-test('every existing selected source adapter already has general exposure; remaining63 are genuine adapter gaps',()=>{
+test('every existing selected source adapter already has general exposure; remaining61 are genuine adapter gaps',()=>{
  assert.deepEqual(snapshot.existingAdaptersWithoutGeneralExposure,[]);assert.equal(snapshot.counts.existingSourceAdaptersWithoutGeneralExposure,0);
- assert.equal(snapshot.counts.missingSourceAdapters,63);assert.equal(snapshot.counts.missingAdaptersDeclaredBySkills,39);assert.equal(snapshot.counts.missingAdaptersWithoutSkillDeclaration,24);
+ assert.equal(snapshot.counts.missingSourceAdapters,61);assert.equal(snapshot.counts.missingAdaptersDeclaredBySkills,38);assert.equal(snapshot.counts.missingAdaptersWithoutSkillDeclaration,23);
  const gaps=snapshot.rows.filter(row=>row.kind==='source-read'&&row.state==='adapter-missing');
  for(const gap of gaps){assert.deepEqual(gap.adapterPaths,[]);assert.deepEqual(gap.generalOperations,[]);assert.deepEqual(gap.sourceAdmittedSkills,[]);assert.ok(Array.isArray(gap.requiredContextKeys));}
  assert.deepEqual(snapshot.missingAdapterFamilies.flatMap(row=>row.operations).sort(),gaps.map(row=>row.operation).sort());

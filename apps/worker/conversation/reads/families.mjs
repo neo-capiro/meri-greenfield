@@ -25,6 +25,7 @@ export const READ_FAMILIES=Object.freeze({mail:Object.freeze({clientScope:'optio
  'research-portfolio-evidence':Object.freeze({clientScope:'optional'}),
  'research-portfolio':Object.freeze({clientScope:'optional'}),
  'florida-budget':Object.freeze({clientScope:'optional'}),
+ 'bill-text':Object.freeze({clientScope:'optional'}),
 });
 /** The `readFamilies` policy universe (PROPOSAL P8). */
 export const READ_FAMILY_IDS=Object.freeze(Object.keys(READ_FAMILIES));
