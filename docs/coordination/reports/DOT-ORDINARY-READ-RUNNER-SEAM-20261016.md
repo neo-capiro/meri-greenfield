@@ -1,0 +1,19 @@
+# Ordinary read port — passive runner composition
+
+Base `83f1c6bec804271f049a2d54cc925456ede05ee5`. Parent assigned the omitted runner seam after accepting READS passive design `922c07778c482419871e992e776d00351ed86f79`. That branch was read as design input, not automatically integrated. Existing canonical owner remains `apps/gateway/general-reads/mount.mjs`; the existing worker activity/read runtime owns policy intersection and tool mounting.
+
+Outline: capture only the trusted gateway mount's `readAvailability`/`execute`, preserve its receiver, forward through ordinary and remote runner composition, and leave absent/disabled source connectivity unavailable. `general-read-port.mjs` is shared by those two actual callers and creates no allocation, policy, grant, installation or discovery receipt. Invalid/getter ports refuse before secret/resource acquisition even when disabled. The port is borrowed; activity-owned read runtime cleanup stays canonical. Selected skill and SDK session behavior is retained. No new native RPC or second model loop.
+
+`assembleConversationRunner` now forwards optional `generalReads` into the existing activity; `runConversation` and `runRemoteConversation` retain it across both remote/bootstrap routes. `sourceEnabled !== true` omits the mount. Current validated production configuration still requires sourceEnabled=false, so this source does not activate a read.
+
+## Actual evidence
+
+Fresh read-only memory check: total33,632,079,872/free12,306,501,632 bytes via Node os; CIM denied access and English perf-counter names unavailable, so neither is claimed as evidence. No observed physical-memory pressure. Six synthetic seam controls and six existing product/SDK runner controls pass in separate sequential single-process runs, **12pass/0fail/0skip**, Node128MiB V8 heap, test isolation none/concurrency1, owned45s HARD watchdog. Actual exits0/0; elapsed1.33s/1.59s. Sampled peak Windows working sets153,776,128/168,370,176 bytes (samples, not a guaranteed OS peak; V8 heap is not total RSS). All child processes exited; no daemon/browser/DB/provider/compiler/install.
+
+The new control initially failed import because borrowed config and preparation mocks omitted unrelated named exports; both mocks now retain original exports. Earlier failures remain recorded here. No production guard was weakened. Commands per file: `node --max-old-space-size=128 --experimental-test-module-mocks --test --test-isolation=none --test-concurrency=1 apps/runtime/test/general-read-port.test.mjs` and `node --max-old-space-size=128 --test --test-isolation=none --test-concurrency=1 apps/runtime/test/product-mount.test.mjs`, each supervised by the task-owned45s watchdog.
+
+## Remaining concrete contracts/composition
+
+The canonical gateway mount needs a legitimate ordinary **no-skill** allocation, current native authority/budget owner, qualified installation owner (`readCurrent` plus approved handlers), discovery owner (`readDiscoveryGrant`), producer/current context/credential, and worker saved current policy with `generalReads`/read families. The existing mount's SkillManifest-shaped allocation cannot be fabricated for ordinary chat. Parent/READS allocation proposal remains required; do not mint synthetic skill or qualification facts. Real broker transport/production flag activation remain unavailable pending those bindings. P9 durable tool-history stays a separate public event/retention proposal; no new event shape or journal is created here. These are remaining read-feature requirements, not missing prerequisites for a source-disabled first private chat.
+
+No frozen contract, package lock, migration or historical manifest was changed. Compilation/browser/real DB/image checks are deferred to the single reviewed integration checkpoint. No other lane source was automatically integrated.
