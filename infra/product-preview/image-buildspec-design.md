@@ -1,29 +1,80 @@
-# Product runtime image buildspec design (unmounted)
+# Product runtime image recipe (unmounted)
 
-This is a source-only design for one reviewed image build. It is **not** a runnable CodeBuild override, build authorization, image receipt, or deployment instruction. No archive, AWS write, Docker build, registry login, or credential was created or used here.
+The repository contains a runnable recipe and offline source verifier. Authoring, importing, sealing and testing these files grants no AWS build/deployment authority. This source change ran no Docker build, registry login, AWS call, service, task, provider request or database operation. Final source/archive/base/object-version pins and a separately approved bounded build request remain required.
 
-## Current source and builder
+## Canonical runner measurement
 
-- `apps/runtime/Dockerfile` requires a separately supplied `NODE_IMAGE` build argument; the reviewed build request must pin it by digest. The Dockerfile installs seven locked npm dependency sets with scripts disabled, copies `apps` and `packages`, materializes the pinned SWC addon without network, then uses `USER node` and `node apps/runtime/cli.mjs`. The build must start from repository root. Neither the Dockerfile nor a tag proves a Node 24 base digest or the numeric runtime UID:GID.
-- The existing `meri-greenfield-qualification-build` project is an S3-source, privileged `aws/codebuild/standard:7.0` builder in account `967807252336`, `us-east-1`, with a 30-minute project timeout. Its default source is `inputs/qualification-source.zip`. The current Meri ECR candidate is the immutable, KMS-encrypted, scan-on-push `meri-greenfield/qualification-worker` repository. Actual builder role, object-prefix and repository permissions must be rechecked for the selected product input and output. A resource name does not itself disqualify reuse.
-- The historical qualification override is generated inside `scripts/qualification/assembled-image/meri_image_build.py`. It pins an old source/base, a qualification probe and repository, and leaves `QUALIFICATION_SOURCE` and `CODE` unset. It is not the product buildspec. The latest qualification image scan has 2 CRITICAL and 48 HIGH findings; its digest is not the product image.
+`apps/runtime/native-authority/ecs-prepared-task-proof.mjs` owns `productRunnerMeasurement`, `measureProductRunner` and `assertProductRunnerMeasurement`. Contract `meri.runner-entrypoint.v1` is SHA-256 of the **complete raw bytes** of `/opt/meri/apps/runtime/conversation-runner.mjs`. No newline normalization, BOM removal, metadata or JSON wrapper is included. A measurement has exactly `{contract,path,runnerSha256,bytes}`; `path` is `apps/runtime/conversation-runner.mjs`, and the file must contain 1 through 1,048,576 bytes. The reader rejects symlink files/ancestors, uses bounded positional reads plus one byte to detect growth, checks file metadata again, closes its handle and honors cancellation. It reads no environment/configuration.
 
-## One bounded build packet and override
+`assertProductRunnerMeasurement({expectedSha256,root?,signal?})` refuses missing/malformed pins or different actual bytes. The default root comes from the module location; only trusted callers/tests may override it. The product CLI checks the conversation runner before configuration/secret reads. `MERI_RUNNER_SHA256` is its expected declaration; that value alone never establishes measurement.
 
-The shipping owner should seal a final reviewed Meri Git commit and a full source ZIP whose individual members are proved against that commit. Record the ZIP SHA-256, exact S3 bucket/key/VersionId and upload checksum, Dockerfile SHA-256, reviewed Node 24 base image digest, intended repository URI, unique immutable full-commit tag, buildspec byte hash, project ARN, budget/time limit and idempotency token. Keep provider, database and Temporal credentials out of the ZIP, override, environment variables and logs.
+The ECS proof measures local shipped entrypoint bytes before borrowed ECS reads, then brackets the exact running task/task definition with immutable image checks. The existing prepared-runtime owner compares the measured receipt to `preparationIntent.runnerSha256`. This joins intent, startup check, image receipt and task image. It is **not remote filesystem attestation**: the deployment owner must verify control and runner use the same approved immutable image. The image digest and verified source archive independently pin all other source/dependency bytes; `runnerSha256` measures only the named entrypoint. The Node executable has a separate receipt measurement.
 
-An exact reviewed override would perform these ordered operations, with bounded timeouts and private temporary Docker authentication:
+## Module owners and offline preparation
 
-1. Compare the observed CodeBuild project/source object version to the sealed request, and verify the extracted build input against the accepted source member manifest and Dockerfile SHA. An S3 version ID alone does not prove which Git tree was uploaded. Reject missing, extra or altered source before Docker starts.
-2. Build `apps/runtime/Dockerfile` from that source with the reviewed `NODE_IMAGE@sha256` value and Linux amd64 target. Keep dependency locks and `--ignore-scripts`; do not silently substitute the old qualification recipe or a floating base.
-3. Inspect the image OS, architecture, entrypoint, numeric UID:GID and source/base labels. Run bounded, network-disabled, read-only CLI help and role-import/closure probes without starting a task, provider request or model turn. Record actual measured executable and runner bytes according to a separately approved measurement definition.
-4. Only after those checks, push a unique immutable tag using an existing authorized builder role and a task-owned private Docker config. Ensure logout and physical credential-file cleanup on success, failure and timeout; never print login material. Read back the ECR digest and completed scan. Zero HIGH and CRITICAL findings is the current conservative preview rule; changing it requires a reviewed source decision.
-5. Publish a nonsecret, immutable build receipt that joins the commit, member/archive hashes, S3 object version, base and Dockerfile digests, buildspec hash, project/build ID, ECR digest, numeric user, runner measurement and scan counts. Independently verify its member hashes, buildspec bytes, numeric user and measured runner bytes before supplying narrow authenticated projections to `image-provenance.mjs` for the commit/archive/Dockerfile/base/source-version/build/ECR/scan/manifest join. Its `METADATA_MATCH_ONLY` result is not runtime or deployment acceptance.
+- `image-build-source.py`: offline Git sealing, ZIP membership/mode/byte verification, sealed-request validation and CLI help. It has no AWS/Docker execution path.
+- `image-build-producer.py`: Linux CodeBuild identity/source checks, exact S3 downloads, verified extraction, Docker build/probes, private ECR login/push/readback/scan and cleanup. Importing it is inert.
+- `image-build-recipe.mjs`: inert `createProductImageBuildRecipe(request)` returns exact `buildspecJson`, `buildspecSha256` and `requestSha256` without I/O. The bootstrap authenticates both Python module byte hashes before executing either.
+- `image-provenance.mjs`: compares narrow independently authenticated projections, including producer `runnerMeasurement` and independent top-level `measurement` from the selected image. Its result remains `METADATA_MATCH_ONLY`.
 
-[AWS StartBuild](https://docs.aws.amazon.com/codebuild/latest/APIReference/API_StartBuild.html) supports a per-build `sourceLocationOverride`, S3 object `sourceVersion`, and `buildspecOverride`; the project default need not be changed. Those overrides can change executed commands, so the exact override bytes and caller authority must be reviewed. A separate product ZIP key avoids changing the qualification source object's current version, provided the builder role actually permits that key. Do not call `StartBuild` from this design.
+Seal an actual reviewed full 40-character commit from a trusted local Git object database. Both output paths must be absent:
 
-## Blocker to a runnable override
+```sh
+python3 -I -B -S infra/product-preview/image-build-source.py seal \
+  --repository . --commit "$SOURCE_COMMIT" \
+  --archive /absolute/product-source.zip --output /absolute/product-source-members.json
+```
 
-`apps/runtime/native-authority/ecs-prepared-task-proof.mjs` compares `MERI_RUNNER_SHA256` to the admitted `runnerSha256` value in ECS task-definition environment. It does **not** measure a runner file or executable. The current source does not define which image bytes that value canonically hashes. Choosing `conversation-runner.mjs`, `cli.mjs`, the SDK CLI, or another file here would invent a security contract and could turn an environment echo into false provenance. The image/runtime owner must first select the exact measured object and verification operation, then bind that result to preparation intent, the manifest and the build receipt.
+The sealer enumerates the complete Git tree, rejects symlinks/submodules/private credential paths, compares every payload to its exact Git blob object, and writes portable deterministic ZIP modes from the Git tree. This avoids Windows Git ZIP mode loss and ambient newline conversion. The manifest is sorted UTF-8 JSON with an LF terminator: `{contract:'meri.source-members.v1',sourceCommit,files:[{path,sha256,bytes,mode}]}`. Archive attributes that omit/rewrite tracked files fail. Working-tree changes cannot substitute for the selected commit.
 
-A final reviewed source commit/ZIP, acceptable Node 24 base digest and exact buildspec hash are also absent. The existing builder/repository are candidates, not authority to run a product build. Author a runnable, source-pinned override only after these inputs and the runner measurement contract are reviewed; then request separate bounded build approval. The current three-role manifest remains disabled and no service or runner task is started by this design.
+After separately authorized upload and independent checksum/version readback, author nonsecret `product-build-request.json` with exactly these fields:
+
+| Field | Required binding |
+| --- | --- |
+| `sourceCommit` | Reviewed full Git commit |
+| `archive`, `manifest` | Each `{bucket,key,versionId,sha256}` with actual non-null S3 version/raw hash |
+| `dockerfileSha256` | Raw `apps/runtime/Dockerfile` bytes in that commit |
+| `verifierSha256`, `producerSha256` | Raw bytes of the two Python modules in that commit |
+| `runnerSha256` | Raw canonical entrypoint bytes in that commit |
+| `nodeImageUri`, `nodeVersion` | Reviewed `public.ecr.aws/docker/library/node@sha256:<64 hex>` and actual exact `v24.<minor>.<patch>` |
+| `runtimeUser` | Expected measured nonzero numeric UID:GID |
+| `codeBuildProjectArn`, `ecrRepositoryUri` | Approved project/repository in `967807252336`, `us-east-1` |
+| `imageTag` | Unique `product-<full commit>-<32 lowercase hex attempt ID>` |
+
+Verify the downloaded inputs without AWS/Docker:
+
+```sh
+python3 -I -B -S infra/product-preview/image-build-source.py verify \
+  --request product-build-request.json --archive /absolute/product-source.zip \
+  --manifest /absolute/product-source-members.json
+```
+
+The verifier checks raw archive/manifest hashes, strict sorted records, commit binding, every regular file's bytes/mode and all four source pins. It refuses unsafe/duplicate/case-ambiguous members, symlinks, extra/missing/altered files and size violations before Docker starts. Extraction uses only verified regular members in a fresh private directory, never the ambient checkout.
+
+Generate the reviewable override from repository root:
+
+```sh
+node --input-type=module -e "import {readFileSync,writeFileSync} from 'node:fs';import {createProductImageBuildRecipe} from './infra/product-preview/image-build-recipe.mjs';const r=createProductImageBuildRecipe(JSON.parse(readFileSync('product-build-request.json','utf8')));writeFileSync('product-buildspec.json',r.buildspecJson,{flag:'wx'});console.log(r.buildspecSha256);"
+```
+
+Both Python CLIs return 0 for success/help and 2 for handled invalid input, failed check, unavailable command or timeout. Missing configuration allocates no external resource. Test discovery is `node --test infra/product-preview/image-build.test.mjs`; set `MERI_IMAGE_BUILD_TEST_PYTHON` if default Python is unavailable. Tests use synthetic Git repositories and mocked producer boundaries without Docker/AWS.
+
+## Separately approved execution
+
+Review the exact request/override bytes/hash, caller, project role, object prefixes/versions, repository, budget and one idempotency token. Use [StartBuild](https://docs.aws.amazon.com/codebuild/latest/APIReference/API_StartBuild.html) with exact S3 location/version and returned override; explicitly bound build to 30 minutes, queue to 5 minutes, one attempt and zero automatic retries. The recipe neither starts a build nor alters its project. Python 3, Docker and AWS CLI must exist in the approved Linux builder. Recheck the actual existing builder/repository and its selected-object/build-readback/ECR permissions; names alone do not establish authority. [CodeBuild environment identity](https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-env-vars.html) is cross-checked with authenticated build readback.
+
+The producer checks project/build/source identity and repository immutability/scan-on-push, then re-downloads the exact ZIP/manifest versions and hashes. It builds the existing Dockerfile for Linux amd64 with only the reviewed immutable Node build argument and source/base labels. Locked npm installs retain `--ignore-scripts`; no provider/database/Temporal credentials or secret build arguments are supplied.
+
+Before registry authentication it inspects image identity/size, runs CLI help and imports all three roles in bounded network-disabled, read-only probes. It measures actual entrypoint bytes using the runtime reader, numeric UID:GID, exact Node version and executable SHA-256. Different bytes/user/version or failed role imports refuse before authentication/push. Import closure does not prove native Temporal workflow bundling, real SDK/model execution or live isolation; those remain separate gates.
+
+Only then does the producer obtain the authorized role's ECR password in memory and pipe it to Docker stdin. Authentication uses a task-owned mode-0700 Docker directory. Subprocess output, environment and credential values are not logged. Push uses the unique immutable tag; digest readback and a completed scan with zero HIGH/CRITICAL findings are mandatory. A scan hold leaves that immutable image unadmitted and emits no success receipt; it neither deletes nor retries it.
+
+The producer has a 25-minute command budget and individual command deadlines. It checks local image/container names are absent before allocating them. Cleanup removes only those owned names, independently checks physical absence, logs out and physically deletes temporary authentication/source directories. Unknown cleanup refuses a success receipt. The receipt is written only after cleanup completes. The recipe starts no service/task/provider operation and makes no database, security or deployment changes.
+
+## Receipt and remaining gate
+
+The only success artifact is `product-image-receipt.json`: commit/archive/member-manifest/Dockerfile/base/verifier/producer pins, authenticated build ID/source version, ECR digest, actual `runnerMeasurement`, executable SHA, measured numeric user and completed scan counts. Artifact destination/encryption/retention belongs in the later approved request; this source creates none.
+
+Independently authenticate CodeBuild/ECR records, compare reviewed override bytes/hash, verify archive membership against the Git commit, and measure the canonical entrypoint from the selected immutable image. Supply narrow projections to `compareProductImageMetadata`, including independent `measurement` and producer `runnerMeasurement`; they must match fixed contract/path, hash and byte count. Independently check the receipt's other fields before projection. A matching result is metadata evidence only.
+
+No final reviewed source ZIP/S3 versions, acceptable Node base digest, finalized override hash, producer receipt or image scan is supplied by this source work. The three-role preview remains disabled. Obtaining these inputs and separate bounded build approval remains the next image gate.
