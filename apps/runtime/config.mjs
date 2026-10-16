@@ -14,9 +14,9 @@ const integer=(n,min,max)=>Number.isSafeInteger(n)&&n>=min&&n<=max;
 function file(p){requireValue(typeof p==='string'&&isAbsolute(p)&&!p.includes('/../')&&p.length<=4096);return p;}
 function endpoint(value,loopback=false){let u;try{u=new URL(value);}catch{throw fault('RUNTIME_CONFIGURATION');}requireValue(!u.username&&!u.password&&!u.search&&!u.hash&&u.pathname==='/'&&(u.protocol==='https:'||loopback&&u.protocol==='http:'&&['127.0.0.1','[::1]'].includes(u.hostname)));return u.origin;}
 export function validateConfiguration(raw,role){
- requireValue(['control','temporal-worker','conversation-runner'].includes(role));const c=data(raw);
- const common=['version','profile','sourceEnabled','limits','native'];
- own(c,[...common,...(role==='control'?['http','database','temporal','sessions','versions']:role==='temporal-worker'?['http','temporal']:['binding','versions','workspace','proxyOrigin'])],role==='conversation-runner'?['bootstrap','captureOwnsClose','remoteTask']:role==='control'?['nativeCandidate','retention','telemetry','downloadLinks']:[]);
+ requireValue(['control','temporal-worker','conversation-runner','schedule-worker'].includes(role));const c=data(raw);
+ const common=['version','profile','sourceEnabled','limits',...(role==='schedule-worker'?[]:['native'])];
+ own(c,[...common,...(role==='control'?['http','database','temporal','sessions','versions']:role==='temporal-worker'?['http','temporal']:role==='schedule-worker'?['http','temporal','versions','scheduledDispatch']:['binding','versions','workspace','proxyOrigin'])],role==='conversation-runner'?['bootstrap','captureOwnsClose','remoteTask']:role==='control'?['nativeCandidate','retention','telemetry','downloadLinks']:[]);
  // Retention serving is an explicit declaration: when enabled, control composes the canonical read gate over its own database and
  // readiness requires the retention projections; when absent, no gate exists and nothing pretends otherwise.
  // Purge is an explicit switch that this source only accepts off: activation is a reviewed change, never a configuration value.
@@ -25,10 +25,10 @@ export function validateConfiguration(raw,role){
  if(c.captureOwnsClose!==undefined)requireValue(typeof c.captureOwnsClose==='boolean','RUNNER_CAPTURE_CONFIGURATION');
  if(c.bootstrap!==undefined){own(c.bootstrap,['expiresAtMs'],['remote']);requireValue(c.bootstrap.remote===undefined||typeof c.bootstrap.remote==='boolean','TASK_BOOTSTRAP_CONFIGURATION');if(c.bootstrap.remote===true)requireValue(c.captureOwnsClose===true&&c.remoteTask===undefined,'TASK_BOOTSTRAP_CONFIGURATION');requireValue(Number.isSafeInteger(c.bootstrap.expiresAtMs)&&c.bootstrap.expiresAtMs>0,'TASK_BOOTSTRAP_CONFIGURATION');}
  own(c.limits,['startupMs','shutdownMs','requestMs','requestBytes']);requireValue(integer(c.limits.startupMs,100,30000)&&integer(c.limits.shutdownMs,100,30000)&&integer(c.limits.requestMs,10,3000)&&integer(c.limits.requestBytes,1,131072));
- own(c.native,['origin','capabilityFile','loopback','maxResponseBytes'],role==='temporal-worker'?['preparedKickoff']:[]);
+ if(role!=='schedule-worker'){own(c.native,['origin','capabilityFile','loopback','maxResponseBytes'],role==='temporal-worker'?['preparedKickoff']:[]);
  // The poller admits only the prepared original kickoff (stop-owned cleanup); the legacy execution/start mode has no original stop owner (audit L5).
  if(role==='temporal-worker'||c.native.preparedKickoff!==undefined)requireValue(c.native.preparedKickoff===true,'PREPARED_KICKOFF_CONFIGURATION');
- requireValue(typeof c.native.loopback==='boolean'&&integer(c.native.maxResponseBytes,1024,2097152)&&c.native.origin===endpoint(c.native.origin,c.native.loopback));file(c.native.capabilityFile);
+ requireValue(typeof c.native.loopback==='boolean'&&integer(c.native.maxResponseBytes,1024,2097152)&&c.native.origin===endpoint(c.native.origin,c.native.loopback));file(c.native.capabilityFile);}
  // Telemetry is an explicit control declaration: the OTLP collector origin (signal paths are appended by the SDK owner), an optional
  // export interval and service name. Absent or `enabled:false`, control composes no SDK and no instrumentation.
  if(c.telemetry!==undefined){requireValue(role==='control','TELEMETRY_CONFIGURATION');own(c.telemetry,['enabled','endpoint'],['exportIntervalMs','serviceName']);requireValue(typeof c.telemetry.enabled==='boolean'&&c.telemetry.endpoint===endpoint(c.telemetry.endpoint,c.native.loopback)&&(c.telemetry.exportIntervalMs===undefined||integer(c.telemetry.exportIntervalMs,1000,300000))&&(c.telemetry.serviceName===undefined||/^[a-z][a-z0-9-]{0,62}$/u.test(c.telemetry.serviceName)),'TELEMETRY_CONFIGURATION');}
@@ -36,11 +36,15 @@ export function validateConfiguration(raw,role){
  // startup) and an optional link lifetime of at most five minutes. Absent or `enabled:false`, the link routes answer DOWNLOADS_UNAVAILABLE.
  if(c.downloadLinks!==undefined){requireValue(role==='control','DOWNLOAD_LINK_CONFIGURATION');own(c.downloadLinks,['enabled'],['keyFile','ttlMs']);requireValue(typeof c.downloadLinks.enabled==='boolean'&&(c.downloadLinks.enabled===false||c.downloadLinks.keyFile!==undefined)&&(c.downloadLinks.ttlMs===undefined||integer(c.downloadLinks.ttlMs,1000,300000)),'DOWNLOAD_LINK_CONFIGURATION');if(c.downloadLinks.keyFile!==undefined)file(c.downloadLinks.keyFile);}
  if(role!=='conversation-runner'){
-  own(c.http,['hostname','port','frontendOrigin']);requireValue(['127.0.0.1','0.0.0.0','::1','::'].includes(c.http.hostname)&&integer(c.http.port,0,65535)&&c.http.frontendOrigin===endpoint(c.http.frontendOrigin,c.native.loopback));
+  own(c.http,['hostname','port','frontendOrigin']);requireValue(['127.0.0.1','0.0.0.0','::1','::'].includes(c.http.hostname)&&integer(c.http.port,0,65535)&&c.http.frontendOrigin===endpoint(c.http.frontendOrigin,c.native?.loopback??false));
   own(c.temporal,['address','namespace','taskQueue','tls'],['authorization']);if(c.temporal.authorization!==undefined)requireValue(parseTemporalAuthorizationConfiguration(c.temporal.authorization).namespace===c.temporal.namespace,'TEMPORAL_AUTHORIZATION_CONFIGURATION');requireValue(typeof c.temporal.address==='string'&&/^[a-zA-Z0-9.\-]+:[1-9][0-9]{0,4}$/u.test(c.temporal.address)&&Number(c.temporal.address.split(':').at(-1))<=65535);for(const k of ['namespace','taskQueue'])requireValue(typeof c.temporal[k]==='string'&&/^[a-zA-Z0-9._\-]{1,128}$/u.test(c.temporal[k]));own(c.temporal.tls,['caFile','certFile','keyFile']);Object.values(c.temporal.tls).forEach(file);
  }
  if(role==='control'){
   own(c.database,['connectionFile']);file(c.database.connectionFile);own(c.sessions,['mode','replicas','maxSessions','maxTtlMs']);requireValue(c.sessions.mode==='process-local'&&c.sessions.replicas===1&&integer(c.sessions.maxSessions,1,1000)&&integer(c.sessions.maxTtlMs,1,300000));validateShape('RuntimeVersions',c.versions);
+ }
+ if(role==='schedule-worker'){
+  const s=own(c.scheduledDispatch,['enabled','conversationTaskQueue','maxConcurrentActivities']);validateShape('RuntimeVersions',c.versions);
+  requireValue(s.enabled===true&&typeof s.conversationTaskQueue==='string'&&/^[a-zA-Z0-9._\-]{1,128}$/u.test(s.conversationTaskQueue)&&s.conversationTaskQueue!==c.temporal.taskQueue&&integer(s.maxConcurrentActivities,1,10),'SCHEDULE_WORKER_CONFIGURATION');
  }
  if(c.nativeCandidate!==undefined){requireValue(role==='control');compilePreparedCandidateConfiguration(c.nativeCandidate,c.versions);requireValue(c.native.capabilityFile===c.nativeCandidate.controlCapabilityFile,'PREPARED_CANDIDATE_CONFIGURATION');}
  if(c.remoteTask!==undefined){
