@@ -10,16 +10,22 @@ function safe(error,outcome,payload){
  return Object.assign(new CommandError(admitted),{outcome,...(payload?{metadataReference:data({proposalId:payload.record.proposalId,commandSha256:payload.commandSha256})}:{})});
 }
 export function createTaskCreateApprovalMetadataOwner(configuration){
+ return createTaskApprovalMetadataOwner(configuration,'task.create');
+}
+export function createTaskUpdateApprovalMetadataOwner(configuration){
+ return createTaskApprovalMetadataOwner(configuration,'task.update');
+}
+function createTaskApprovalMetadataOwner(configuration,action){
  const {store,commandContext,preparePolicy,now=Date.now,newId=randomUUID,maxRequestMs=60000}=own(configuration,['store','commandContext','preparePolicy'],['now','newId','maxRequestMs']);
- const c=context(commandContext);
+ const c=context(commandContext,action);
  if(typeof preparePolicy!=='function'||typeof now!=='function'||typeof newId!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>60000)deny('COMMAND_CONFIGURATION');
  const ports=own(store,['insert','read']);if(typeof ports.insert!=='function'||typeof ports.read!=='function')deny('COMMAND_CONFIGURATION');
  const insert=ports.insert.bind(store),readStored=ports.read.bind(store);
  function call(value,kind){
   const fields=kind==='prepare'?['operation','action','binding','request','input','inputSha256','deadlineMs','signal']:['proposalId','commandSha256','operation','action','binding','deadlineMs','signal'];
-  const raw=own(value,fields),{signal,...json}=raw,v=data(json);nativeSignal(signal);selected({operation:v.operation,action:v.action,binding:v.binding},c);
+  const raw=own(value,fields),{signal,...json}=raw,v=data(json);nativeSignal(signal);selected({operation:v.operation,action:v.action,binding:v.binding},c,action);
   const at=now();if(!Number.isSafeInteger(at)||!Number.isSafeInteger(v.deadlineMs)||v.deadlineMs<=at)deny('DEADLINE');
-  if(kind==='prepare'){const normalized=input(v.request,c);if(!same(normalized,v.input)||canonicalSha256(normalized)!==v.inputSha256)deny('COMMAND_PREPARATION_REFUSED');}
+  if(kind==='prepare'){const normalized=input(v.request,c,action);if(!same(normalized,v.input)||canonicalSha256(normalized)!==v.inputSha256)deny('COMMAND_PREPARATION_REFUSED');}
   else assertReadIds(v);
   return {value:v,lifetime:createOperationLifetime({deadlineMs:Math.min(v.deadlineMs,at+maxRequestMs),now,signal,errorFactory:code=>new CommandError(code)})};
  }
@@ -48,6 +54,7 @@ export function createTaskCreateApprovalMetadataOwner(configuration){
    const pre=await policy(l,'before_read',v);
    const raw=await l.run(()=>readStored({tenantId:v.binding.tenantId,actorId:v.binding.actorId,proposalId:v.proposalId},l.check));
    if(raw===null)deny('COMMAND_PREPARATION_REFUSED');payload=immutablePayload(raw);
+   selected({operation:payload.record.operation,action:payload.record.action,binding:payload.record.binding},c,action);
    if(!same(payload.commandContext,c)||!same(payload.record.binding,v.binding)||payload.record.proposalId.toLowerCase()!==v.proposalId.toLowerCase()||payload.commandSha256!==v.commandSha256||instant(payload.record.createdAt)>now())deny('COMMAND_PREPARATION_REFUSED');
    l.limitDeadline(instant(payload.record.expiresAt));
    if(!same(pre.scopes,payload.record.scopes)||!same(pre.requiredApprover,payload.record.requiredApprover)||pre.proposalExpiresAt!==payload.record.expiresAt)deny('COMMAND_PREPARATION_REFUSED');
