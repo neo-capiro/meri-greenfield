@@ -32,8 +32,16 @@ test('transcript gives direct typed envelope, frozen canonical rows and distinct
 });
 for(const[name,mutate]of [['foreign actor',v=>v.latestRun.binding.actorId='foreign'],['foreign scope',v=>v.events[0].event.scopes=[]],['global sequence',v=>v.events[0].sequence=2],['local sequence',v=>v.events[0].event.sequence=2],['tail cursor',v=>v.nextSequence=0],['unrepresented turn',v=>v.events=[]],['request identity',v=>v.turns[0].promptLineage.logicalRequestId=id(99)]])test(`transcript refuses ${name} substitution`,async()=>{const body=transcript();mutate(body);await assert.rejects(receive('transcript',200,bytes(body),request('transcript',bytes(input))));});
 test('resume lineage cannot substitute source request/root while genuine same-text submission stays distinct',async()=>{
- for(const change of [v=>v.turns[1].promptLineage.sourceRequestId=id(99),v=>v.turns[1].promptLineage.logicalRequestId=id(99)]){const body=resumed();change(body);await assert.rejects(receive('transcript',200,bytes(body),request('transcript',bytes(input))));}
+ for(const change of [v=>v.turns[1].promptLineage.sourceRequestId=id(99),v=>v.turns[1].promptLineage.logicalRequestId=id(99),v=>v.turns[1].request.prompt='Substituted prompt',v=>delete v.turns[1].request.windowRequest]){const body=resumed();change(body);await assert.rejects(receive('transcript',200,bytes(body),request('transcript',bytes(input))));}
  const next=resumed();next.turns[1].promptLineage={kind:'submission',logicalRequestId:next.turns[1].request.requestId,sourceBinding:null,sourceRequestId:null};assert.deepEqual(await receive('transcript',200,bytes(next),request('transcript',bytes(input))),next);
+});
+test('transcript refuses overlapping touched ranges and older overlap with an unrepresented latest run',async()=>{
+ const body=resumed();body.turns[0].lastSequence=2;body.turns[0].sequenceEnd=2;
+ await assert.rejects(receive('transcript',200,bytes(body),request('transcript',bytes(input))));
+ body.turns.pop();body.events.pop();body.nextSequence=1;body.hasMore=true;
+ await assert.rejects(receive('transcript',200,bytes(body),request('transcript',bytes({...input,limit:1}))));
+ const gap=resumed();gap.latestSequenceBase=2;gap.turns[1].sequenceBase=2;gap.events[1].sequence=3;gap.nextSequence=3;gap.lastSequence=3;
+ await assert.rejects(receive('transcript',200,bytes(gap),request('transcript',bytes(input))),{code:'TURN_MISMATCH'});
 });
 test('next-turn response is correlated to immutable source and exact next target fence',async()=>{
  const r=request('nextTurn',bytes({...input,sourceRunId:binding.runId})),target={...binding,runId:id(30),attemptId:id(31),workerId:id(32),writerFence:2},body={schema:'meri.conversation-turn/1',sourceBinding:binding,targetBinding:target,state:'RESERVED',replayed:true};

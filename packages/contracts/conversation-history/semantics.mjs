@@ -30,13 +30,13 @@ export function assertHistoryResponseSemantics(route,request,result){
  if(result.latestSequenceBase>=result.lastSequence||request.after>result.lastSequence||result.events.length>request.limit)fail('CURSOR_MISMATCH');
  const turns=new Map(),requests=new Set();let prior;
  for(const t of result.turns){run(t.run,c);const b=t.run.binding,l=t.promptLineage,end=t.sequenceBase+t.lastSequence;
-  if(!integer(end,1)||t.sequenceEnd!==null&&t.sequenceEnd!==end||b.writerFence>result.latestRun.binding.writerFence||t.sequenceBase<0||end>result.lastSequence||turns.has(b.runId)||requests.has(t.request.requestId)||prior&&(prior.run.binding.writerFence>=b.writerFence||prior.sequenceBase>=t.sequenceBase))fail('TURN_MISMATCH');
+  if(!integer(end,1)||t.sequenceEnd!==null&&t.sequenceEnd!==end||b.writerFence>result.latestRun.binding.writerFence||t.sequenceBase<0||end>result.lastSequence||turns.has(b.runId)||requests.has(t.request.requestId)||prior&&(prior.run.binding.writerFence>=b.writerFence||prior.sequenceBase+prior.lastSequence!==t.sequenceBase))fail('TURN_MISMATCH');
   if(b.runId===result.latestRun.binding.runId){if(!same(t.run,result.latestRun)||t.sequenceBase!==result.latestSequenceBase||end!==result.lastSequence)fail('TURN_MISMATCH');}
-  else if(t.sequenceEnd===null||b.writerFence>=result.latestRun.binding.writerFence)fail('TURN_MISMATCH');
+  else if(t.sequenceEnd===null||b.writerFence>=result.latestRun.binding.writerFence||end>result.latestSequenceBase)fail('TURN_MISMATCH');
   if(l.kind==='submission'){if(l.logicalRequestId!==t.request.requestId)fail('PROMPT_LINEAGE_MISMATCH');}
   else{const s=l.sourceBinding;if(s.tenantId!==b.tenantId||s.actorId!==b.actorId||s.runId===b.runId||l.sourceRequestId===t.request.requestId)fail('PROMPT_LINEAGE_MISMATCH');
    if(l.kind==='fork'){if(s.conversationId===b.conversationId||b.writerFence!==1||l.logicalRequestId!==t.request.requestId)fail('PROMPT_LINEAGE_MISMATCH');}
-   else{if(s.conversationId!==b.conversationId||s.writerFence>=b.writerFence)fail('PROMPT_LINEAGE_MISMATCH');const source=turns.get(s.runId);if(source&&(!same(source.run.binding,s)||source.request.requestId!==l.sourceRequestId||source.promptLineage.logicalRequestId!==l.logicalRequestId))fail('PROMPT_LINEAGE_MISMATCH');}
+   else{if(s.conversationId!==b.conversationId||s.writerFence>=b.writerFence)fail('PROMPT_LINEAGE_MISMATCH');const source=turns.get(s.runId);if(source&&(!same(source.run.binding,s)||source.request.requestId!==l.sourceRequestId||source.promptLineage.logicalRequestId!==l.logicalRequestId||!same({...source.request,requestId:t.request.requestId},t.request)))fail('PROMPT_LINEAGE_MISMATCH');}
   }
   turns.set(b.runId,t);requests.add(t.request.requestId);prior=t;
  }

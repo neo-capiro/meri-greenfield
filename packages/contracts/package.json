@@ -59,7 +59,7 @@
     "check:generated": "node generate.mjs --check && node generate-actions.mjs --check && node generate-documents.mjs --check && node generate-conversations.mjs --check && node generate-lifecycle.mjs --check && node generate-history.mjs --check",
     "check:history": "node generate-history.mjs --check",
     "typecheck": "tsc --noEmit --strict --skipLibCheck --target ES2022 --module NodeNext --moduleResolution NodeNext test/public-types.ts test/action-application-public-types.ts test/document-application-public-types.ts test/conversation-application-public-types.ts test/conversation-lifecycle-public-types.ts test/conversation-history-public-types.ts",
-    "test:public": "node --test test/public-package.test.mjs test/action-application-public.test.mjs test/document-application-public.test.mjs test/conversation-application-public.test.mjs test/conversation-lifecycle-public.test.mjs test/conversation-history-public.test.mjs",
+    "test:public": "node --test test/public-package.test.mjs test/action-application-public.test.mjs test/document-application-public.test.mjs test/conversation-application-public.test.mjs test/conversation-lifecycle-public.test.mjs test/conversation-history-public.test.mjs test/conversation-history-source.test.mjs",
     "check": "npm run check:generated && npm run typecheck && npm run test:public"
   },
   "dependencies": {
