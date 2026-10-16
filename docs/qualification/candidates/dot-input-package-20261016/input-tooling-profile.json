@@ -1,0 +1,110 @@
+{
+  "preserved": [
+    "package-lock.json",
+    "packages/contracts/package-lock.json",
+    "packages/contracts/meri.schema.json",
+    "packages/contracts/dist/action-application.d.ts",
+    "packages/contracts/dist/action-application.metadata.json",
+    "packages/contracts/dist/action-application.mjs",
+    "packages/contracts/dist/action-application.schema.json",
+    "packages/contracts/dist/browser.d.ts",
+    "packages/contracts/dist/browser.mjs",
+    "packages/contracts/dist/contracts.d.ts",
+    "packages/contracts/dist/conversation-application.d.ts",
+    "packages/contracts/dist/conversation-application.metadata.json",
+    "packages/contracts/dist/conversation-application.mjs",
+    "packages/contracts/dist/conversation-application.schema.json",
+    "packages/contracts/dist/conversation-history.d.ts",
+    "packages/contracts/dist/conversation-history.metadata.json",
+    "packages/contracts/dist/conversation-history.mjs",
+    "packages/contracts/dist/conversation-history.schema.json",
+    "packages/contracts/dist/conversation-lifecycle.d.ts",
+    "packages/contracts/dist/conversation-lifecycle.metadata.json",
+    "packages/contracts/dist/conversation-lifecycle.mjs",
+    "packages/contracts/dist/conversation-lifecycle.schema.json",
+    "packages/contracts/dist/document-application.d.ts",
+    "packages/contracts/dist/document-application.metadata.json",
+    "packages/contracts/dist/document-application.mjs",
+    "packages/contracts/dist/document-application.schema.json",
+    "packages/contracts/dist/index.d.ts",
+    "packages/contracts/dist/metadata.d.ts",
+    "packages/contracts/dist/metadata.mjs"
+  ],
+  "stages": [
+    {
+      "reserveBytes": 805306368,
+      "argv": [
+        "--max-old-space-size=384",
+        "generate-input.mjs"
+      ],
+      "name": "generate",
+      "children": "one esbuild service; generator finally stop",
+      "hardSeconds": 90
+    },
+    {
+      "reserveBytes": 805306368,
+      "argv": [
+        "--max-old-space-size=384",
+        "generate-input.mjs",
+        "--check"
+      ],
+      "name": "determinism",
+      "children": "one esbuild service; generator finally stop",
+      "hardSeconds": 90
+    },
+    {
+      "reserveBytes": 536870912,
+      "argv": [
+        "--max-old-space-size=256",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--strict",
+        "--skipLibCheck",
+        "--target",
+        "ES2022",
+        "--module",
+        "NodeNext",
+        "--moduleResolution",
+        "NodeNext",
+        "test/conversation-input-public-types.ts"
+      ],
+      "name": "types",
+      "children": "none",
+      "hardSeconds": 60
+    },
+    {
+      "reserveBytes": 402653184,
+      "argv": [
+        "--max-old-space-size=128",
+        "--test",
+        "--test-isolation=none",
+        "--test-concurrency=1",
+        "test/conversation-input-public.test.mjs"
+      ],
+      "name": "public-bytes",
+      "children": "none; tempconsumer finallycleanup",
+      "hardSeconds": 45
+    },
+    {
+      "reserveBytes": 402653184,
+      "argv": [
+        "--max-old-space-size=128",
+        "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "pack",
+        "--ignore-scripts",
+        "--offline",
+        "--json",
+        "--cache",
+        "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-4\\input-npm-cache",
+        "--pack-destination",
+        "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-4\\input-package"
+      ],
+      "name": "pack",
+      "children": "none; no lifecycle",
+      "hardSeconds": 30
+    }
+  ],
+  "source": "95b4b2aae548c3523785149d876c87248f5e769c",
+  "node": "C:\\Program Files\\nodejs\\node.exe",
+  "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-4\\meri-greenfield\\packages\\contracts"
+}

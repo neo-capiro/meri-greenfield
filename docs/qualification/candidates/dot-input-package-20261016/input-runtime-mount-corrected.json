@@ -1,0 +1,30 @@
+{
+  "name": "input-runtime-mount-corrected",
+  "head": "95b4b2aae548c3523785149d876c87248f5e769c",
+  "argv": [
+    "--max-old-space-size=128",
+    "--experimental-test-module-mocks",
+    "--test",
+    "--test-isolation=none",
+    "--test-concurrency=1",
+    "apps/runtime/test/input-admission-mount.test.mjs"
+  ],
+  "hardSeconds": 120,
+  "heapMiB": 128,
+  "memoryBefore": {
+    "physicalTotal": 33632079872,
+    "physicalAvailable": 11242057728,
+    "commitTotal": 33632079872,
+    "commitAvailable": 2287009792
+  },
+  "primaryExit": 0,
+  "cleanupExit": 0,
+  "timedOut": false,
+  "pressure": false,
+  "ownedPid": 39524,
+  "ownedExited": true,
+  "wallMs": 1818,
+  "sampledRssBytes": 198328320,
+  "children": "none: single Node process test-isolation=none",
+  "finishedAtUtc": "2026-10-16T04:20:14.9835300Z"
+}

@@ -1,0 +1,10 @@
+✔ actual startup mounts admission on SAME lifecycle service; durable replay has one queued event and zero workflows until submit (86.7758ms)
+✔ mounted admission keeps revoked and forged requests from persistence and never calls native/model dispatch (1.9873ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1656.203

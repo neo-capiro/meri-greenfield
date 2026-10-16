@@ -1,0 +1,51 @@
+[
+  {
+    "metadata": "conversation-application.metadata.json",
+    "source": "../../apps/control/conversations/service.mjs",
+    "declaredSha256": "e888dceb510694333e580a54392fa3b79f92acdbab939b30b93ccf83da7587e3",
+    "currentSha256": "964dcfec144659d9cd5729e6008ed74f7f1012278f00d71cd4ae2b29cfaa8773",
+    "decision": "PRESERVE accepted old artifact bytes; record later accepted source drift"
+  },
+  {
+    "metadata": "conversation-lifecycle.metadata.json",
+    "source": "../../apps/control/conversations/lifecycle/http.mjs",
+    "declaredSha256": "eb52b7bd1d50575d04189d56871db004f04fc6f8af4a8e6080d4a19e992fba25",
+    "currentSha256": "a221b726ad7699d22c0da4d00523e904dc83c4ae05570255cad836c3c5302602",
+    "decision": "PRESERVE accepted old artifact bytes; record later accepted source drift"
+  },
+  {
+    "metadata": "conversation-lifecycle.metadata.json",
+    "source": "../../apps/control/conversations/lifecycle/service.mjs",
+    "declaredSha256": "b505c4d9848e2cd4ce0e184642bb0199fbfb84c8a80964c12b094f5011959f0c",
+    "currentSha256": "eb26eb9adbcbb421568e42d2885153e4209142e2a620612ba70c73fc7f26f246",
+    "decision": "PRESERVE accepted old artifact bytes; record later accepted source drift"
+  },
+  {
+    "metadata": "document-application.metadata.json",
+    "source": "../../apps/control/document-application/current.mjs",
+    "declaredSha256": "a9d5da860e0d562693aef51a78eade4197ea3e9d90b64955528384d38b840dce",
+    "currentSha256": "0c31c70a46b5bfe2f2bcda0601c51f827103d35f2c64c436fb5f752fb0d16b34",
+    "decision": "PRESERVE accepted old artifact bytes; record later accepted source drift"
+  },
+  {
+    "metadata": "document-application.metadata.json",
+    "source": "../../apps/control/document-application/format-admission.mjs",
+    "declaredSha256": "575e0ca5227400c86628765321c4c1d8b699f7725a41d464d86823d5d2c79a75",
+    "currentSha256": "da746a47c0f4e0a5a3ee10da87655eb182dd590c67419316e2d3e71080bd14f2",
+    "decision": "PRESERVE accepted old artifact bytes; record later accepted source drift"
+  },
+  {
+    "metadata": "document-application.metadata.json",
+    "source": "../../apps/control/document-application/http.mjs",
+    "declaredSha256": "84c0c5cdf62ae040909bc174aa470fd50dc0d0f38d72396d6dcc001c51defe6d",
+    "currentSha256": "27f6930dadb6241b5aed2258a34ebef552a76548bb19b09172226dde0b4f7548",
+    "decision": "PRESERVE accepted old artifact bytes; record later accepted source drift"
+  },
+  {
+    "metadata": "document-application.metadata.json",
+    "source": "../../apps/control/document-application/index.mjs",
+    "declaredSha256": "9950e014929cf416a256d9398fa632e46bb2dd3831ae09168205c71a6aaa9dc5",
+    "currentSha256": "c788ca4a19183e3254bd7827ca7a645170bc8963fbd94876cc0155c9a7426554",
+    "decision": "PRESERVE accepted old artifact bytes; record later accepted source drift"
+  }
+]

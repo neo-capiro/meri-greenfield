@@ -1,0 +1,48 @@
+{
+  "source": "95b4b2aae548c3523785149d876c87248f5e769c",
+  "name": "determinism",
+  "argv": [
+    "--max-old-space-size=384",
+    "generate-input.mjs",
+    "--check"
+  ],
+  "hardSeconds": 90,
+  "memoryBefore": {
+    "physicalTotal": 33632079872,
+    "physicalAvailable": 11490627584,
+    "commitTotal": 33632079872,
+    "commitAvailable": 2520948736
+  },
+  "primaryExit": 0,
+  "cleanupExit": 0,
+  "reason": null,
+  "wallMs": 672,
+  "sampledOwnedTreeRssBytes": 122699776,
+  "ownedPrimaryPid": 32076,
+  "ownedExited": true,
+  "observedOwnedProcesses": [
+    {
+      "pid": 32076,
+      "parent": 41448,
+      "name": "node.exe",
+      "created": 134365982356892005,
+      "rss": 10649600
+    },
+    {
+      "pid": 27772,
+      "parent": 32076,
+      "name": "conhost.exe",
+      "created": 134365982356960463,
+      "rss": 7811072
+    },
+    {
+      "pid": 7260,
+      "parent": 32076,
+      "name": "esbuild.exe",
+      "created": 134365982360526376,
+      "rss": 28119040
+    }
+  ],
+  "residualPids": [],
+  "preservedBytes": true
+}
