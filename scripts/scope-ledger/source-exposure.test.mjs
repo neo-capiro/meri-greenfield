@@ -8,6 +8,7 @@ import catalog from '../../packages/contracts/retrieval-0.2/catalog.json' with {
 import {CATALOG_OPERATION_BINDINGS} from '../../packages/contracts/retrieval-0.2/catalog-validation.mjs';
 import {READ_FAMILIES} from '../../apps/worker/conversation/reads/families.mjs';
 import {loadSourceExposure,reconcileSourceExposure} from './source-exposure.mjs';
+import {generateExposure,runCli} from './cli.mjs';
 
 const root=fileURLToPath(new URL('../../',import.meta.url)),snapshot=loadSourceExposure(root);
 const row=id=>snapshot.rows.find(row=>row.id===id),registered=snapshot.generalRegistration.flatMap(row=>row.operations);
@@ -69,4 +70,16 @@ test('duplicate adapter claims and changed selected scope refuse',()=>{
 });
 test('a duplicate canonical binding refuses rather than choosing an arbitrary adapter family',()=>{
  const input=synthetic();input.bindings=[...input.bindings,input.bindings[0]];refuses(()=>reconcileSourceExposure(input));
+});
+test('targeted refresh preserves all139 historical rows, exclusions, source provenance and gates',()=>{
+ const historical=JSON.parse(readFileSync(new URL('../../docs/coordination/ledgers/scope-ledger.json',import.meta.url),'utf8'));
+ const next=generateExposure(root).ledger;
+ for(const field of ['capabilities','ownerDirection','coverageOrigin','provenance','counts','gates','excludedReferences','ownershipGraph'])assert.deepEqual(next[field],historical[field],field);
+ assert.deepEqual(next.sourceExposure,snapshot);
+});
+test('committed current exposure regenerates exactly with a scoped drift check',async()=>{
+ const generated=generateExposure(root);
+ assert.equal(generated.json,readFileSync(new URL('../../docs/coordination/ledgers/scope-ledger.json',import.meta.url),'utf8'));
+ assert.equal(generated.markdown,readFileSync(new URL('../../docs/coordination/ledgers/MERI-FINAL-SCOPE-LEDGER-20261015.md',import.meta.url),'utf8'));
+ assert.equal(await runCli(['--check-exposure'],{root,out(){},err(){}}),0);
 });

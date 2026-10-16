@@ -11,6 +11,11 @@ reads from product operations and the retained historical action-items contract.
 Missing producers/dispatch context remain explicit; no endpoint or permissive
 placeholder is inferred from a mapped contract. Verification covers this source
 mapping and refusal boundaries only, without re-running accepted runtime suites.
+Refresh this section with `node scripts/scope-ledger/cli.mjs --refresh-exposure`;
+check it with `--check-exposure`. The original complete-ledger commands retain
+their historical reference-classification checks. Their existing HOLD on a newly
+unclassified reference in accepted `reads/results.mjs` is preserved separately;
+this task does not re-audit or reclassify accepted source to refresh read coverage.
 
 Date: 15 October 2026. Lane: Fable `scope-ledger`, branch `fable/a5-scope-ledger-20261015`, base `e76189da` (`fable/p3-general-reads-design-20261015`). Documentation and source-evidence only: no product code, contract, catalog, lockfile, migration, credential or deployment is changed. **Nothing in this ledger is live, enabled, qualified or accepted.** Every gate below is open. dot independently verifies exact commits and records ACCEPT or HOLD.
 
