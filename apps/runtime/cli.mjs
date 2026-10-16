@@ -1,9 +1,17 @@
 /** Executable ownership only. Importing this file does not allocate resources. */
 import {pathToFileURL} from 'node:url';
 import {loadConfiguration} from './config.mjs';
+import {assertProductRunnerMeasurement} from './native-authority/ecs-prepared-task-proof.mjs';
 export async function main(argv=process.argv.slice(2)){
  if(argv.length===1&&['--help','-h'].includes(argv[0])){process.stdout.write('Usage: node apps/runtime/cli.mjs <control|temporal-worker|conversation-runner> --config /absolute/config.json\nExit: 0 graceful completion; 2 configuration/startup timeout; 3 runtime/startup failure/shutdown timeout.\n');return 0;}
- if(argv.length!==3||argv[1]!=='--config'){process.stderr.write('RUNTIME_ARGUMENTS\n');return 2;}const [role,,path]=argv;let c;try{c=await loadConfiguration(path,role);}catch{process.stderr.write('RUNTIME_CONFIGURATION\n');return 2;}
+ if(argv.length!==3||argv[1]!=='--config'){process.stderr.write('RUNTIME_ARGUMENTS\n');return 2;}const [role,,path]=argv;let c;try{c=await loadConfiguration(path,role);
+  if(role==='control'&&process.env.MERI_PRODUCT_PREVIEW_REQUIRED!==undefined&&
+     (process.env.MERI_PRODUCT_PREVIEW_REQUIRED!=='1'||c.privateHttp===undefined||c.nativeCandidate===undefined))throw Error('PRODUCT_LISTENER_REFUSED');
+  if(role==='conversation-runner'&&(c.remoteTask!==undefined||c.bootstrap?.remote===true)){
+   const measured=await assertProductRunnerMeasurement({expectedSha256:process.env.MERI_RUNNER_SHA256});
+   if(c.remoteTask!==undefined&&measured.runnerSha256!==c.remoteTask.preparationIntent.runnerSha256)throw Error('RUNNER_PIN_REFUSED');
+  }
+ }catch{process.stderr.write('RUNTIME_CONFIGURATION\n');return 2;}
  const controller=new AbortController();let runtime,shutdownTimer;const stop=()=>{controller.abort();shutdownTimer??=setTimeout(()=>{process.stderr.write('RUNTIME_SHUTDOWN_TIMEOUT\n');process.exit(3);},c.limits.shutdownMs+1000);shutdownTimer.unref();};process.once('SIGTERM',stop);process.once('SIGINT',stop);
  const startupTimer=setTimeout(()=>{process.stderr.write('RUNTIME_STARTUP_TIMEOUT\n');process.exit(2);},c.limits.startupMs);startupTimer.unref();
  try{if(role==='conversation-runner'){const {runConversation}=await import('./conversation-runner.mjs');clearTimeout(startupTimer);await runConversation(c,{signal:controller.signal});return 0;}

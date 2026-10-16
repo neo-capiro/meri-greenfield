@@ -12,6 +12,7 @@ import stat
 import subprocess
 import sys
 import tempfile
+import threading
 import zipfile
 
 SHA = re.compile(r"[a-f0-9]{64}\Z")
@@ -98,29 +99,101 @@ def archive_members(archive):
     return result
 
 
+def bounded_command(args, timeout=30, input_bytes=None):
+    """Drain both pipes while running; abort before combined output exceeds 16 MiB.
+
+    Failed command bytes and stderr are never returned or logged. This applies to
+    long Docker builds and short cleanup probes alike.
+    """
+    need(type(timeout) in (int, float) and 0 < timeout <= 1600, "COMMAND_BOUND")
+    need(input_bytes is None or type(input_bytes) is bytes and len(input_bytes) <= 16384, "COMMAND_BOUND")
+    process = None
+    try:
+        process = subprocess.Popen(args, stdin=subprocess.PIPE if input_bytes is not None else subprocess.DEVNULL,
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        chunks, state, guard = [], {"bytes": 0, "overflow": False, "writeFailed": False}, threading.Lock()
+
+        def drain(stream, capture):
+            while True:
+                block = stream.read(65536)
+                if not block:
+                    return
+                with guard:
+                    state["bytes"] += len(block)
+                    if state["bytes"] > 16 * 1024**2:
+                        state["overflow"] = True
+                        try:
+                            process.kill()
+                        except OSError:
+                            pass
+                    elif capture:
+                        chunks.append(block)
+
+        def write_input():
+            try:
+                process.stdin.write(input_bytes)
+                process.stdin.close()
+            except OSError:
+                state["writeFailed"] = True
+
+        readers = [threading.Thread(target=drain, args=(process.stdout, True), daemon=True),
+                   threading.Thread(target=drain, args=(process.stderr, False), daemon=True)]
+        for reader in readers:
+            reader.start()
+        writer = threading.Thread(target=write_input, daemon=True) if input_bytes is not None else None
+        if writer is not None:
+            writer.start()
+        try:
+            process.wait(timeout=timeout)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            process.wait(timeout=5)
+            raise ValueError("PRODUCT_IMAGE_COMMAND_UNAVAILABLE_OR_TIMEOUT") from None
+        for reader in readers:
+            reader.join(timeout=5)
+        if writer is not None:
+            writer.join(timeout=5)
+        need(not any(reader.is_alive() for reader in readers) and
+             (writer is None or not writer.is_alive()) and not state["overflow"] and not state["writeFailed"], "COMMAND_BOUND")
+        return process.returncode, b"".join(chunks)
+    except OSError:
+        raise ValueError("PRODUCT_IMAGE_COMMAND_UNAVAILABLE_OR_TIMEOUT") from None
+    finally:
+        if process is not None:
+            if process.poll() is None:
+                process.kill()
+                process.wait(timeout=5)
+            for stream in (process.stdin, process.stdout, process.stderr):
+                if stream is not None:
+                    try:
+                        stream.close()
+                    except OSError:
+                        pass
+
+
 def run(args, timeout=30, input_bytes=None):
     # Never return/log a failed command's output (Docker/AWS may contain secrets).
-    try:
-        result = subprocess.run(args, input=input_bytes, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=timeout, check=False)
-    except (OSError, subprocess.TimeoutExpired):
-        raise ValueError("PRODUCT_IMAGE_COMMAND_UNAVAILABLE_OR_TIMEOUT") from None
-    need(result.returncode == 0 and len(result.stdout) <= 16 * 1024**2, "COMMAND_FAILED")
-    return result.stdout
+    code, stdout = bounded_command(args, timeout=timeout, input_bytes=input_bytes)
+    need(code == 0, "COMMAND_FAILED")
+    return stdout
 
 
 def seal(repository, commit, archive, output):
     need(COMMIT.fullmatch(commit) and not archive.exists() and not output.exists(), "SEAL_INPUT")
     actual = run(["git", "-C", str(repository), "rev-parse", commit + "^{commit}"]).decode().strip()
     need(actual == commit, "SOURCE_COMMIT")
-    tree = run(["git", "-C", str(repository), "ls-tree", "-rz", "--full-tree", commit])
-    objects = {}
+    tree = run(["git", "-C", str(repository), "ls-tree", "-rlz", "--full-tree", commit])
+    objects, total = {}, 0
     for row in tree.split(b"\0"):
         if not row:
             continue
         header, path_bytes = row.split(b"\t", 1)
-        mode, kind, oid = header.decode().split(" ")
+        mode, kind, oid, size = header.decode().split()
         path = safe_path(path_bytes.decode("utf-8"))
-        need(kind == "blob" and mode in ("100644", "100755") and COMMIT.fullmatch(oid), "GIT_MEMBER_TYPE")
+        need(kind == "blob" and mode in ("100644", "100755") and COMMIT.fullmatch(oid) and
+             size.isdecimal() and int(size) <= 128 * 1024**2, "GIT_MEMBER_TYPE")
+        total += int(size)
+        need(len(objects) < 50000 and total <= 1024**3 - 16 * 1024**2, "GIT_SOURCE_BOUND")
         objects[path] = (mode, oid)
     # Git for Windows omits ZIP Unix modes and may apply core.autocrlf. Verify
     # blob bytes, then author portable ZIP modes from the authoritative Git tree.

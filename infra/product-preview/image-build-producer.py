@@ -36,37 +36,42 @@ def aws(*args):
     return decode(run(["aws", "--region", REGION, "--no-cli-pager", *args, "--output", "json"]))
 
 
-def download(pin, target):
+def download(pin, target, maximum):
+    # The VersionId is immutable, so reject an oversized source before the AWS
+    # CLI starts writing the task-local download file.
+    head = aws("s3api", "head-object", "--bucket", pin["bucket"], "--key", pin["key"], "--version-id", pin["versionId"])
+    need(head.get("VersionId") == pin["versionId"] and type(head.get("ContentLength")) is int and
+         0 < head["ContentLength"] <= maximum, "OBJECT_BOUND")
     response = aws("s3api", "get-object", "--bucket", pin["bucket"], "--key", pin["key"], "--version-id", pin["versionId"], str(target))
-    need(response.get("VersionId") == pin["versionId"] and file_sha(target, 1024**3) == pin["sha256"], "OBJECT_BINDING")
+    need(response.get("VersionId") == pin["versionId"] and target.stat().st_size == head["ContentLength"] and
+         file_sha(target, maximum) == pin["sha256"], "OBJECT_BINDING")
 
 
 def cleanup(docker, probe_name, image, registry, owned_probe, owned_image, authenticated):
     """Remove only names proved absent before this producer allocated them."""
     def call(args):
         try:
-            result = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=15, check=False)
-        except (OSError, subprocess.TimeoutExpired):
+            return _source.bounded_command(args, timeout=15)
+        except Exception:
             raise ValueError("PRODUCT_IMAGE_CLEANUP_UNKNOWN") from None
-        return result
     unknown = False
     if owned_probe:
         try:
             call(docker + ["container", "rm", "--force", probe_name])
             observed = call(docker + ["container", "ls", "--all", "--filter", "name=^/" + probe_name + "$", "--quiet"])
-            need(observed.returncode == 0 and not observed.stdout.strip(), "CLEANUP_UNKNOWN")
+            need(observed[0] == 0 and not observed[1].strip(), "CLEANUP_UNKNOWN")
         except Exception:
             unknown = True
     if authenticated:
         try:
-            need(call(docker + ["logout", registry]).returncode == 0, "CLEANUP_UNKNOWN")
+            need(call(docker + ["logout", registry])[0] == 0, "CLEANUP_UNKNOWN")
         except Exception:
             unknown = True
     if owned_image:
         try:
             call(docker + ["image", "rm", image])
             observed = call(docker + ["image", "ls", "--filter", "reference=" + image, "--quiet"])
-            need(observed.returncode == 0 and not observed.stdout.strip(), "CLEANUP_UNKNOWN")
+            need(observed[0] == 0 and not observed[1].strip(), "CLEANUP_UNKNOWN")
         except Exception:
             unknown = True
     need(not unknown, "CLEANUP_UNKNOWN")
@@ -92,8 +97,8 @@ def produce(pin, output):
         archive, manifest, context, auth = root / "source.zip", root / "members.json", root / "context", root / "auth"
         context.mkdir(mode=0o700)
         auth.mkdir(mode=0o700)
-        download(p["archive"], archive)
-        download(p["manifest"], manifest)
+        download(p["archive"], archive, 1024**3)
+        download(p["manifest"], manifest, 32 * 1024**2)
         verified = verify(archive, manifest, p)
         with zipfile.ZipFile(archive) as source:
             for row in decode(manifest.read_bytes())["files"]:

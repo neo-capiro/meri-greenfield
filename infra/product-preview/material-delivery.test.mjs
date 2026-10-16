@@ -42,6 +42,7 @@ test('wrong role, runtime user, HTTP binding, foreign secret paths and accidenta
  for(const runtimeUser of ['0:0','1000:0','node','1000:1000:1','99999999999:1000'])assert.throws(()=>compileProductMaterialPlan({role:'control',configuration:c,runtimeUser}),/PRODUCT_MATERIAL_REFUSED/);
  for(const changed of [
   x=>{x.http.port=80;},x=>{x.http.hostname='127.0.0.1';},
+  x=>{delete x.privateHttp;},x=>{x.privateHttp.port=8080;},x=>{x.privateHttp.frontendOrigin='https://foreign.synthetic.invalid';},
   x=>{x.database.connectionFile='/run/secrets/database';},
   x=>{x.nativeCandidate.identity.credentialFile='/run/meri/nested/identity';},
   x=>{x.temporal.tls.keyFile=x.temporal.tls.certFile;},

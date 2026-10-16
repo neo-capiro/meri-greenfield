@@ -22,6 +22,10 @@ COPY packages ./packages
 # Runtime retains the read-only root and non-executable temporary mount.
 RUN --network=none node apps/runtime/build/materialize-swc.mjs
 RUN mkdir -p node_modules/@capiro node_modules/@anthropic-ai node_modules/@aws-sdk && ln -s ../../packages/contracts node_modules/@capiro/meri-contracts && ln -s ../../apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk node_modules/@anthropic-ai/claude-agent-sdk && ln -s ../../apps/artifacts/storage/node_modules/@aws-sdk/client-s3 node_modules/@aws-sdk/client-s3
+# ECS copies this exact image path into the task-local bind mount. The one-shot
+# material writer and application both run as the pinned non-root node UID/GID.
+RUN test "$(id -u node)" = 1000 && test "$(id -g node)" = 1000 && mkdir -p /run/meri && chown node:node /run/meri && chmod 0700 /run/meri
 USER node
+VOLUME ["/run/meri"]
 ENTRYPOINT ["node", "apps/runtime/cli.mjs"]
 CMD ["--help"]

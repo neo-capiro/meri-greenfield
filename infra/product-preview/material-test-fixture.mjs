@@ -11,12 +11,13 @@ export function controlMaterialConfiguration(){
  for(const key of ['workspace','configParentDirectory','secureStorageDirectory'])i[key]=normalize(i[key]);
  i.launchTemplate.command=normalize(i.launchTemplate.command);i.launchTemplate.env.CLAUDE_SECURESTORAGE_CONFIG_DIR=i.secureStorageDirectory;
  c.native.capabilityFile=materialRoot+'control-capability';c.database.connectionFile=materialRoot+'database-url';
+ c.privateHttp={hostname:'0.0.0.0',port:8082,frontendOrigin:c.native.origin};
  c.temporal.tls={caFile:materialRoot+'temporal-ca',certFile:materialRoot+'temporal-cert',keyFile:materialRoot+'temporal-key'};
  n.identity.credentialFile=materialRoot+'identity-capability';n.taskCapabilityFile=materialRoot+'task-capability';
  n.controlCapabilityFile=c.native.capabilityFile;n.proxyCredentialFile=materialRoot+'proxy-capability';return c;
 }
 export function workerMaterialConfiguration(){
- const c=controlMaterialConfiguration();delete c.database;delete c.sessions;delete c.versions;delete c.nativeCandidate;
+ const c=controlMaterialConfiguration();delete c.database;delete c.sessions;delete c.versions;delete c.nativeCandidate;delete c.privateHttp;
  c.native={...c.native,preparedKickoff:true};c.http.port=8081;return c;
 }
 export function staticMaterialFixture(role='control',configuration=role==='control'?controlMaterialConfiguration():workerMaterialConfiguration()){

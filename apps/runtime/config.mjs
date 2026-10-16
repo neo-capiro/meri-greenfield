@@ -17,7 +17,7 @@ function endpoint(value,loopback=false){let u;try{u=new URL(value);}catch{throw 
 export function validateConfiguration(raw,role){
  requireValue(['control','temporal-worker','conversation-runner'].includes(role));const c=data(raw);
  const common=['version','profile','sourceEnabled','limits','native'];
- own(c,[...common,...(role==='control'?['http','database','temporal','sessions','versions']:role==='temporal-worker'?['http','temporal']:['binding','versions','workspace','proxyOrigin'])],role==='conversation-runner'?['bootstrap','captureOwnsClose','remoteTask']:role==='control'?['nativeCandidate','retention','telemetry','downloadLinks']:[]);
+ own(c,[...common,...(role==='control'?['http','database','temporal','sessions','versions']:role==='temporal-worker'?['http','temporal']:['binding','versions','workspace','proxyOrigin'])],role==='conversation-runner'?['bootstrap','captureOwnsClose','remoteTask']:role==='control'?['nativeCandidate','retention','telemetry','downloadLinks','privateHttp']:[]);
  // Retention serving is an explicit declaration: when enabled, control composes the canonical read gate over its own database and
  // readiness requires the retention projections; when absent, no gate exists and nothing pretends otherwise.
  // Purge is an explicit switch that this source only accepts off: activation is a reviewed change, never a configuration value.
@@ -41,6 +41,7 @@ export function validateConfiguration(raw,role){
   own(c.temporal,['address','namespace','taskQueue','tls'],['authorization']);if(c.temporal.authorization!==undefined)requireValue(parseTemporalAuthorizationConfiguration(c.temporal.authorization).namespace===c.temporal.namespace,'TEMPORAL_AUTHORIZATION_CONFIGURATION');requireValue(typeof c.temporal.address==='string'&&/^[a-zA-Z0-9.\-]+:[1-9][0-9]{0,4}$/u.test(c.temporal.address)&&Number(c.temporal.address.split(':').at(-1))<=65535);for(const k of ['namespace','taskQueue'])requireValue(typeof c.temporal[k]==='string'&&/^[a-zA-Z0-9._\-]{1,128}$/u.test(c.temporal[k]));own(c.temporal.tls,['caFile','certFile','keyFile']);Object.values(c.temporal.tls).forEach(file);
  }
  if(role==='control'){
+  if(c.privateHttp!==undefined){own(c.privateHttp,['hostname','port','frontendOrigin']);requireValue(c.nativeCandidate!==undefined&&c.http.port===8080&&c.privateHttp.hostname==='0.0.0.0'&&c.privateHttp.port===8082&&c.privateHttp.frontendOrigin===endpoint(c.privateHttp.frontendOrigin)&&c.privateHttp.frontendOrigin===c.native.origin&&c.privateHttp.frontendOrigin!==c.http.frontendOrigin,'PRIVATE_CONTROL_CONFIGURATION');}
   own(c.database,['connectionFile']);file(c.database.connectionFile);own(c.sessions,['mode','replicas','maxSessions','maxTtlMs']);requireValue(c.sessions.mode==='process-local'&&c.sessions.replicas===1&&integer(c.sessions.maxSessions,1,1000)&&integer(c.sessions.maxTtlMs,1,300000));validateShape('RuntimeVersions',c.versions);
  }
  if(c.nativeCandidate!==undefined){requireValue(role==='control');compilePreparedCandidateConfiguration(c.nativeCandidate,c.versions);requireValue(c.native.capabilityFile===c.nativeCandidate.controlCapabilityFile,'PREPARED_CANDIDATE_CONFIGURATION');}

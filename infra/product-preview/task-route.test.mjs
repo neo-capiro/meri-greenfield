@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {createExecutionBinding} from '../../apps/control/conversations/execution-boundary.mjs';
 import {binding,versions} from '../../apps/control/conversations/test/store-fixture.mjs';
 import {observeOriginalTaskNetworkCandidate} from './task-route.mjs';
+import {createTaskRouterNetworkReader} from '../../apps/runtime/native-authority/task-router-network-reader.mjs';
 
 const prefix='arn:aws:ecs:us-east-1:967807252336:',clusterArn=prefix+'cluster/capiro-dev',
  taskArn=prefix+'task/capiro-dev/'+'1'.repeat(32),taskDefinitionArn=prefix+'task-definition/meri-product-preview-runner:1';
@@ -43,4 +44,13 @@ test('foreign, public, stopped and inconsistent task/ENI readbacks refuse',()=>{
   f=>{f.now=()=>NaN;}
  ];
  for(const change of variants){const f=fixture();change(f);assert.throws(()=>observeOriginalTaskNetworkCandidate(f),/TASK_ROUTE_REFUSED/);}
+});
+test('network reader asks both adopted SDKs for the admitted task and only its observed ENI',async()=>{
+ const f=fixture(),calls=[];
+ const ecsClient={async send(command,{abortSignal}){assert.equal(abortSignal.aborted,false);calls.push(['ecs',command.constructor.name,command.input]);return {tasks:[f.task]};}};
+ const ec2Client={async send(command,{abortSignal}){assert.equal(abortSignal.aborted,false);calls.push(['ec2',command.constructor.name,command.input]);return {NetworkInterfaces:[f.networkInterface]};}};
+ const reader=await createTaskRouterNetworkReader({ecsClient,ec2Client,network:f.network,now:f.now});
+ const observed=await reader.observe({original:f.original,resource:f.resource,signal:new AbortController().signal,check:()=>{}});
+ assert.equal(observed.networkInterfaceId,'eni-abcdef01');
+ assert.deepEqual(calls,[['ecs','DescribeTasksCommand',{cluster:clusterArn,tasks:[taskArn],include:['TAGS']}],['ec2','DescribeNetworkInterfacesCommand',{NetworkInterfaceIds:['eni-abcdef01']}]]);
 });

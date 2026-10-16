@@ -32,6 +32,9 @@ export function compileProductMaterialPlan({role,configuration,runtimeUser}){
  const {uid,gid}=parseProductRuntimeUser(runtimeUser);
  let c;try{c=validateConfiguration(configuration,role);}catch{refuse();}
  if(c.http.hostname!=='0.0.0.0'||c.http.port!==(role==='control'?8080:8081))refuse();
+ // Static product control must never fall back to the legacy shared listener:
+ // the public ALB target reaches 8080 while native capabilities reach 8082.
+ if(role==='control'&&c.privateHttp===undefined)refuse();
  const configurationPath=`${root}/${names[role]}`,files=new Map([[configurationPath,new Set(['configuration'])]]);
  function add(path,purpose){
   direct(path);if(path===configurationPath)refuse();

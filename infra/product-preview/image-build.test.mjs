@@ -60,6 +60,35 @@ test('Python entrypoint help/import/missing configuration are bounded and inert'
  const code=`import importlib.util\ns=importlib.util.spec_from_file_location('build_source',${JSON.stringify(verifier)})\nm=importlib.util.module_from_spec(s);s.loader.exec_module(m)\nprint(m.CONTRACT)\n`;
  const result=python(['-c',code]);assert.equal(result.status,0,result.stderr);assert.equal(result.stdout.trim(),'meri.runner-entrypoint.v1');
 });
+test('subprocess adapter caps stdout and stderr while the command is running',()=>{
+ const code=`import importlib.util,sys
+s=importlib.util.spec_from_file_location('build_source',sys.argv[1]);m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
+for channel in ('stdout','stderr'):
+ script='import sys;sys.'+channel+'.buffer.write(b"x"*(17*1024*1024))'
+ try:m.run([sys.executable,'-c',script],timeout=10)
+ except ValueError as error:print(str(error))
+ else:print('UNBOUNDED')
+`;
+ const result=python(['-c',code,verifier]);assert.equal(result.status,0,result.stderr);
+ assert.deepEqual(result.stdout.trim().split(/\r?\n/u),['PRODUCT_IMAGE_COMMAND_BOUND','PRODUCT_IMAGE_COMMAND_BOUND']);
+});
+test('producer rejects an oversized exact S3 version before get-object writes scratch',t=>{
+ const directory=mkdtempSync(join(tmpdir(),'meri-image-head-'));t.after(()=>rmSync(directory,{recursive:true,force:true}));
+ const code=`import importlib.util,pathlib,sys
+s=importlib.util.spec_from_file_location('producer',sys.argv[1]);m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
+calls=[]
+def aws(*args):
+ calls.append(args[:2])
+ if args[:2]==('s3api','head-object'):return {'VersionId':'exact-v1','ContentLength':1024**3+1}
+ raise AssertionError('get-object must not run')
+m.aws=aws
+try:m.download({'bucket':'synthetic','key':'source.zip','versionId':'exact-v1','sha256':'0'*64},pathlib.Path(sys.argv[2]),1024**3)
+except ValueError as error:print(str(error),len(calls),pathlib.Path(sys.argv[2]).exists())
+else:print('UNBOUNDED')
+`;
+ const result=python(['-c',code,producer,join(directory,'source.zip')]);assert.equal(result.status,0,result.stderr);
+ assert.equal(result.stdout.trim(),'PRODUCT_IMAGE_OBJECT_BOUND 1 False');
+});
 
 test('producer gates auth/push on measured image bytes and emits joined receipt only after clean scan',async t=>{
  for(const scenario of ['success','runner-mismatch','scan-hold','source-mismatch','cleanup-unknown'])await t.test(scenario,t=>{
@@ -75,7 +104,7 @@ def aws(*args):
  if args[:2]==('ecr','describe-images'):return {'imageDetails':[{'imageDigest':'sha256:'+'d'*64}]}
  if args[:2]==('ecr','describe-image-scan-findings'):return {'imageScanStatus':{'status':'COMPLETE'},'imageScanFindings':{'findingSeverityCounts':{'HIGH':1} if scenario=='scan-hold' else {'MEDIUM':2}}}
  raise AssertionError('unexpected AWS operation')
-def download(pin,target):shutil.copyfile(archive if pin is p['archive'] else manifest,target)
+def download(pin,target,maximum):shutil.copyfile(archive if pin is p['archive'] else manifest,target)
 def run(args,timeout=30,input_bytes=None):
  if args[0]=='aws':events.append('credentials');return b'never-log-this-value'
  if 'ls' in args:return b''
@@ -89,8 +118,8 @@ def run(args,timeout=30,input_bytes=None):
  raise AssertionError('unexpected subprocess')
 m.aws=aws;m.download=download;m.run=run
 def cleanup(args,**kwargs):
- events.append('cleanup');assert not pathlib.Path(output).exists();return types.SimpleNamespace(returncode=1 if scenario=='cleanup-unknown' else 0,stdout=b'',stderr=b'')
-m.subprocess.run=cleanup
+ events.append('cleanup');assert not pathlib.Path(output).exists();return (1 if scenario=='cleanup-unknown' else 0,b'')
+m._source.bounded_command=cleanup
 if scenario=='source-mismatch':p['runnerSha256']='0'*64
 try:result=m.produce(p,pathlib.Path(output));status='success'
 except Exception:status='refused'
