@@ -1,0 +1,53 @@
+{
+  "sourceBase": "6c421c630a58357a1557afb7c5427bfc0d74d10b",
+  "worktreeStatusBefore": "?? docs/coordination/evidence/initial-input-integration/\n",
+  "sourceSha256": {
+    "apps/control/conversations/service.mjs": "73b0f4e70163b2741eb2b9080baed44552db04e6c0accc848207d227255c5a96",
+    "apps/control/conversations/initial-input/http.mjs": "b00da086ebacababf988b287d0cde1c76b3007f03382aedae309ffe7f9cf16b3",
+    "apps/control/conversations/postgres-store.mjs": "96002cc66ed5658273af0cd4035e027efaaaa94708e020f28b79c22f1fc355a0",
+    "apps/control/conversations/initial-input-facts.mjs": "9190080d3cbcf725b34636b229ff2a9490faeee5b299dfcecb5f1e9a7bd62236",
+    "apps/control/conversations/initial-input-journal.mjs": "aca25a23c131640eb3a1598e62643fbb94eab681d903b6bc0bfe938b858a02bf",
+    "apps/control/conversations/test/initial-input-service.test.mjs": "dc0da992ec3dac94fb64011dd8e25b1e79e5ab8c8f14b6368354bb57b5250b65",
+    "packages/contracts/test/conversation-initial-input-source.test.mjs": "a35f2372cd1cdf0c078f52d8c746ac242c995213522aecd0d01ba2776ae93bea",
+    "packages/contracts/conversation-initial-input/protocol.mjs": "92ab9b2752fd6faf27707104435d5427707ee11cc41e946a0934389adf94f1e8",
+    "packages/contracts/conversation-initial-input/receive.mjs": "bf455fa82f4f4ba29fc5620c9ebefb902d26eb894c3e13e8339dffef4028d264",
+    "packages/contracts/conversation-initial-input/schema.mjs": "c45678d9a9f7eb37215967be7726bf60f48100a6f2a4018347db7144f62c8d8d",
+    "packages/contracts/conversation-initial-input/semantics.mjs": "809f7a3d07c1e933fdc865f7c9a2c9a87ab553aca158464c5887135eca493c10",
+    "packages/contracts/conversation-initial-input/shape.mjs": "40d6163dd5ce4d78347d09415135242dc3ed25b4d2ad6f3bdbdab61b37b2a7b1",
+    "packages/contracts/conversation-initial-input/validate.mjs": "9e04f2574ac844eeee19e97b455a872e1774aa4e18dc7244d9912cc0a10861d7"
+  },
+  "argv": [
+    "C:/Program Files/nodejs/node.exe",
+    "--max-old-space-size=128",
+    "--import",
+    "../dependency-reuse.mjs",
+    "--test",
+    "--test-isolation=none",
+    "--test-concurrency=1",
+    "--test-timeout=15000",
+    "--test-reporter=tap",
+    "apps/control/conversations/test/initial-input-service.test.mjs",
+    "packages/contracts/test/conversation-initial-input-source.test.mjs"
+  ],
+  "pid": 20540,
+  "startedAt": "2026-10-16T05:40:00.413369+00:00",
+  "finishedAt": "2026-10-16T05:40:01.926899+00:00",
+  "wallMs": 1516.0,
+  "exit": 0,
+  "stopReason": null,
+  "observationFailure": null,
+  "hardWallSeconds": 120,
+  "heapMiB": 128,
+  "sampledPeakWorkingSet": 169517056,
+  "workingSetStopMiB": 256,
+  "ownedProcessRemains": false,
+  "capacityBefore": {
+    "availableCommit": 2814021632,
+    "availablePhysical": 11632472064
+  },
+  "minimumObserved": {
+    "availableCommit": 2607710208,
+    "availablePhysical": 11455172608
+  },
+  "claim": "One Node process, no child tests/services/database/provider. Scripted SQL/synthetic session and Temporal ports only. Existing installed dependencies resolved read-only. Sampling is observed, not a guaranteed peak."
+}

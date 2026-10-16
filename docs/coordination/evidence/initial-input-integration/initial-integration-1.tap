@@ -1,0 +1,622 @@
+TAP version 13
+# Subtest: new allocation acknowledges one immutable slot without a run, queued event or dispatcher
+ok 1 - new allocation acknowledges one immutable slot without a run, queued event or dispatcher
+  ---
+  duration_ms: 27.8624
+  type: 'test'
+  ...
+# Subtest: missing allocation cannot admit or dispatch a new original input
+ok 2 - missing allocation cannot admit or dispatch a new original input
+  ---
+  duration_ms: 1.4787
+  type: 'test'
+  ...
+# Subtest: allocate then admit and exact submit uses one queued event and the unchanged Temporal workflow identity
+ok 3 - allocate then admit and exact submit uses one queued event and the unchanged Temporal workflow identity
+  ---
+  duration_ms: 62.3703
+  type: 'test'
+  ...
+# Subtest: concurrent exact claims acknowledge one creator and retain the same allocation
+ok 4 - concurrent exact claims acknowledge one creator and retain the same allocation
+  ---
+  duration_ms: 5.7874
+  type: 'test'
+  ...
+# Subtest: different raw identity/body cannot replace the original slot: 00000061-0000-4000-8000-000000000000Original prompt
+ok 5 - different raw identity/body cannot replace the original slot: 00000061-0000-4000-8000-000000000000Original prompt
+  ---
+  duration_ms: 2.7592
+  type: 'test'
+  ...
+# Subtest: different raw identity/body cannot replace the original slot: 00000060-0000-4000-8000-000000000000Changed prompt
+ok 6 - different raw identity/body cannot replace the original slot: 00000060-0000-4000-8000-000000000000Changed prompt
+  ---
+  duration_ms: 2.2235
+  type: 'test'
+  ...
+# Subtest: lost allocation COMMIT acknowledgement recovers exactly and never relabels replay fresh
+ok 7 - lost allocation COMMIT acknowledgement recovers exactly and never relabels replay fresh
+  ---
+  duration_ms: 2.9612
+  type: 'test'
+  ...
+# Subtest: lost original acceptance acknowledgement leaves positive history and one event for exact recovery
+ok 8 - lost original acceptance acknowledgement leaves positive history and one event for exact recovery
+  ---
+  duration_ms: 5.8492
+  type: 'test'
+  ...
+# Subtest: allocation replay and delayed admission preserve original relative normalization across a calendar boundary
+ok 9 - allocation replay and delayed admission preserve original relative normalization across a calendar boundary
+  ---
+  duration_ms: 24.7092
+  type: 'test'
+  ...
+# Subtest: fresh authorization never extends expired original allocation, even after positive input recovery
+ok 10 - fresh authorization never extends expired original allocation, even after positive input recovery
+  ---
+  duration_ms: 8.7594
+  type: 'test'
+  ...
+# Subtest: shorter current cutoff during COMMIT releases no positive allocation and cannot refresh stored expiry
+not ok 11 - shorter current cutoff during COMMIT releases no positive allocation and cannot refresh stored expiry
+  ---
+  duration_ms: 1.9053
+  type: 'test'
+  location: 'C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-11\\meri-initial-input-integration\\apps\\control\\conversations\\test\\initial-input-service.test.mjs:43:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /STORE_COMMIT_UNKNOWN/. Input:
+    
+    'Error: DEADLINE'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+  error: 'DEADLINE'
+  code: 'DEADLINE'
+  stack: |-
+    failError (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-11/meri-initial-input-integration/apps/control/conversations/service.mjs:90:47)
+    cancel (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-11/meri-initial-input-integration/packages/runtime/operation-lifetime.mjs:10:40)
+    check (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-11/meri-initial-input-integration/packages/runtime/operation-lifetime.mjs:20:32)
+    check (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-11/meri-initial-input-integration/apps/control/conversations/initial-input-journal.mjs:16:153)
+    tx (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-11/meri-initial-input-integration/apps/control/conversations/postgres-store.mjs:17:215)
+    async Object.claim (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-11/meri-initial-input-integration/apps/control/conversations/test/initial-input-service.test.mjs:44:187)
+  operator: 'rejects'
+  stack: |-
+    async TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-11/meri-initial-input-integration/apps/control/conversations/test/initial-input-service.test.mjs:45:2)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: a shorter last pre-claim authorization expiry becomes the new immutable allocation expiry
+ok 12 - a shorter last pre-claim authorization expiry becomes the new immutable allocation expiry
+  ---
+  duration_ms: 1.379
+  type: 'test'
+  ...
+# Subtest: revocation after allocation lookup prevents persistence
+ok 13 - revocation after allocation lookup prevents persistence
+  ---
+  duration_ms: 0.4705
+  type: 'test'
+  ...
+# Subtest: revocation after successful claim prevents positive release; later exact recovery remains created:false
+ok 14 - revocation after successful claim prevents positive release; later exact recovery remains created:false
+  ---
+  duration_ms: 2.5989
+  type: 'test'
+  ...
+# Subtest: changed current context is refused before claim
+ok 15 - changed current context is refused before claim
+  ---
+  duration_ms: 0.4551
+  type: 'test'
+  ...
+# Subtest: changed current scope or client cannot recover the original allocation
+ok 16 - changed current scope or client cannot recover the original allocation
+  ---
+  duration_ms: 1.3938
+  type: 'test'
+  ...
+# Subtest: next-turn admission never reads, claims or accepts an original-input allocation
+ok 17 - next-turn admission never reads, claims or accepts an original-input allocation
+  ---
+  duration_ms: 1.1679
+  type: 'test'
+  ...
+# Subtest: preexisting positive original request remains recoverable without claiming it fresh
+ok 18 - preexisting positive original request remains recoverable without claiming it fresh
+  ---
+  duration_ms: 2.5677
+  type: 'test'
+  ...
+# Subtest: HTTP positive allocate uses same current service and no-store closed receipt
+ok 19 - HTTP positive allocate uses same current service and no-store closed receipt
+  ---
+  duration_ms: 9.7882
+  type: 'test'
+  ...
+# Subtest: HTTP rejects method without claim
+ok 20 - HTTP rejects method without claim
+  ---
+  duration_ms: 0.5615
+  type: 'test'
+  ...
+# Subtest: HTTP rejects query without claim
+ok 21 - HTTP rejects query without claim
+  ---
+  duration_ms: 0.396
+  type: 'test'
+  ...
+# Subtest: HTTP rejects bearer without claim
+ok 22 - HTTP rejects bearer without claim
+  ---
+  duration_ms: 0.3971
+  type: 'test'
+  ...
+# Subtest: HTTP rejects media without claim
+ok 23 - HTTP rejects media without claim
+  ---
+  duration_ms: 0.4073
+  type: 'test'
+  ...
+# Subtest: HTTP rejects cursor without claim
+ok 24 - HTTP rejects cursor without claim
+  ---
+  duration_ms: 0.3285
+  type: 'test'
+  ...
+# Subtest: HTTP rejects caller authority fields and malformed UTF8, with bounded input
+ok 25 - HTTP rejects caller authority fields and malformed UTF8, with bounded input
+  ---
+  duration_ms: 1.1688
+  type: 'test'
+  ...
+# Subtest: HTTP abort returns UNKNOWN with no permission or allocation
+ok 26 - HTTP abort returns UNKNOWN with no permission or allocation
+  ---
+  duration_ms: 0.4462
+  type: 'test'
+  ...
+# Subtest: HTTP bounded response failure gives no positive receipt; exact reconstruction is never fresh
+ok 27 - HTTP bounded response failure gives no positive receipt; exact reconstruction is never fresh
+  ---
+  duration_ms: 2.8587
+  type: 'test'
+  ...
+# Subtest: new allocation errors never alter the existing admission error envelope
+ok 28 - new allocation errors never alter the existing admission error envelope
+  ---
+  duration_ms: 1.0013
+  type: 'test'
+  ...
+# Subtest: HTTP rejects limits beyond the accepted canonical allocation bounds
+ok 29 - HTTP rejects limits beyond the accepted canonical allocation bounds
+  ---
+  duration_ms: 0.1832
+  type: 'test'
+  ...
+# Subtest: new acknowledgement allocates exactly one immutable identity without a run, event or dispatch
+ok 30 - new acknowledgement allocates exactly one immutable identity without a run, event or dispatch
+  ---
+  duration_ms: 0.7074
+  type: 'test'
+  ...
+# Subtest: concurrent exact claims have one new acknowledgement; reconstruction and later lease proposals never refresh it
+ok 31 - concurrent exact claims have one new acknowledgement; reconstruction and later lease proposals never refresh it
+  ---
+  duration_ms: 1.0831
+  type: 'test'
+  ...
+# Subtest: concurrent different intents cannot overwrite the winner
+ok 32 - concurrent different intents cannot overwrite the winner
+  ---
+  duration_ms: 1.0289
+  type: 'test'
+  ...
+# Subtest: lost allocation COMMIT acknowledgement yields UNKNOWN, and its recovered identity is never new
+ok 33 - lost allocation COMMIT acknowledgement yields UNKNOWN, and its recovered identity is never new
+  ---
+  duration_ms: 1.0341
+  type: 'test'
+  ...
+# Subtest: no allocation cannot be interpreted as acceptance permission
+ok 34 - no allocation cannot be interpreted as acceptance permission
+  ---
+  duration_ms: 0.5128
+  type: 'test'
+  ...
+# Subtest: acceptance atomically matches the allocation and preserves the original prompt/context on exact replay
+ok 35 - acceptance atomically matches the allocation and preserves the original prompt/context on exact replay
+  ---
+  duration_ms: 1.8522
+  type: 'test'
+  ...
+# Subtest: acceptance refuses altered requestId before any run/event can be committed
+ok 36 - acceptance refuses altered requestId before any run/event can be committed
+  ---
+  duration_ms: 0.9571
+  type: 'test'
+  ...
+# Subtest: acceptance refuses altered prompt before any run/event can be committed
+ok 37 - acceptance refuses altered prompt before any run/event can be committed
+  ---
+  duration_ms: 0.7745
+  type: 'test'
+  ...
+# Subtest: acceptance refuses altered window before any run/event can be committed
+ok 38 - acceptance refuses altered window before any run/event can be committed
+  ---
+  duration_ms: 0.8738
+  type: 'test'
+  ...
+# Subtest: acceptance refuses altered windowRequest before any run/event can be committed
+ok 39 - acceptance refuses altered windowRequest before any run/event can be committed
+  ---
+  duration_ms: 0.7348
+  type: 'test'
+  ...
+# Subtest: acceptance refuses altered skill before any run/event can be committed
+ok 40 - acceptance refuses altered skill before any run/event can be committed
+  ---
+  duration_ms: 0.766
+  type: 'test'
+  ...
+# Subtest: a different actor cannot recover or accept another original identity
+ok 41 - a different actor cannot recover or accept another original identity
+  ---
+  duration_ms: 0.8819
+  type: 'test'
+  ...
+# Subtest: a different run cannot recover or accept another original identity
+ok 42 - a different run cannot recover or accept another original identity
+  ---
+  duration_ms: 0.7081
+  type: 'test'
+  ...
+# Subtest: a different attempt cannot recover or accept another original identity
+ok 43 - a different attempt cannot recover or accept another original identity
+  ---
+  duration_ms: 0.7077
+  type: 'test'
+  ...
+# Subtest: a different worker cannot recover or accept another original identity
+ok 44 - a different worker cannot recover or accept another original identity
+  ---
+  duration_ms: 0.6505
+  type: 'test'
+  ...
+# Subtest: a different fence cannot recover or accept another original identity
+ok 45 - a different fence cannot recover or accept another original identity
+  ---
+  duration_ms: 0.5981
+  type: 'test'
+  ...
+# Subtest: a different scope cannot recover or accept another original identity
+ok 46 - a different scope cannot recover or accept another original identity
+  ---
+  duration_ms: 0.7008
+  type: 'test'
+  ...
+# Subtest: a different client cannot recover or accept another original identity
+ok 47 - a different client cannot recover or accept another original identity
+  ---
+  duration_ms: 0.6935
+  type: 'test'
+  ...
+# Subtest: a different versions cannot recover or accept another original identity
+ok 48 - a different versions cannot recover or accept another original identity
+  ---
+  duration_ms: 0.7014
+  type: 'test'
+  ...
+# Subtest: a different rawIntent cannot recover or accept another original identity
+ok 49 - a different rawIntent cannot recover or accept another original identity
+  ---
+  duration_ms: 0.6763
+  type: 'test'
+  ...
+# Subtest: a different preparedRequest cannot recover or accept another original identity
+ok 50 - a different preparedRequest cannot recover or accept another original identity
+  ---
+  duration_ms: 0.6774
+  type: 'test'
+  ...
+# Subtest: expired original identity cannot be renewed or accepted
+ok 51 - expired original identity cannot be renewed or accepted
+  ---
+  duration_ms: 0.9651
+  type: 'test'
+  ...
+# Subtest: failure after marking acceptance rolls back the allocation, run and event together
+ok 52 - failure after marking acceptance rolls back the allocation, run and event together
+  ---
+  duration_ms: 1.1216
+  type: 'test'
+  ...
+# Subtest: authority check invalidated during acceptance refuses release and rolls back all three records
+ok 53 - authority check invalidated during acceptance refuses release and rolls back all three records
+  ---
+  duration_ms: 1.1489
+  type: 'test'
+  ...
+# Subtest: lost acceptance ACK reconstructs the same accepted input without a duplicate event
+ok 54 - lost acceptance ACK reconstructs the same accepted input without a duplicate event
+  ---
+  duration_ms: 1.4621
+  type: 'test'
+  ...
+# Subtest: corrupt or inconsistent stored state never becomes fresh allocation evidence
+ok 55 - corrupt or inconsistent stored state never becomes fresh allocation evidence
+  ---
+  duration_ms: 1.5202
+  type: 'test'
+  ...
+# Subtest: any existing original input, conversation shell or successor journal refuses a new original claim
+ok 56 - any existing original input, conversation shell or successor journal refuses a new original claim
+  ---
+  duration_ms: 1.5485
+  type: 'test'
+  ...
+# Subtest: canonical public input/request correlation refuses an altered prepared prompt before store IO
+ok 57 - canonical public input/request correlation refuses an altered prepared prompt before store IO
+  ---
+  duration_ms: 0.4928
+  type: 'test'
+  ...
+# Subtest: expiry during claim COMMIT cannot release a positive acknowledgement
+ok 58 - expiry during claim COMMIT cannot release a positive acknowledgement
+  ---
+  duration_ms: 0.6616
+  type: 'test'
+  ...
+# Subtest: expiry during accept COMMIT cannot release a positive acknowledgement
+ok 59 - expiry during accept COMMIT cannot release a positive acknowledgement
+  ---
+  duration_ms: 0.9834
+  type: 'test'
+  ...
+# Subtest: global request identity collision cannot create another tenant/conversation slot
+ok 60 - global request identity collision cannot create another tenant/conversation slot
+  ---
+  duration_ms: 0.9833
+  type: 'test'
+  ...
+# Subtest: original normalized calendar window is retained, never recomputed at acceptance or replay
+ok 61 - original normalized calendar window is retained, never recomputed at acceptance or replay
+  ---
+  duration_ms: 2.9603
+  type: 'test'
+  ...
+# Subtest: current selected client must match the original allocation even if the run scope array is unchanged
+ok 62 - current selected client must match the original allocation even if the run scope array is unchanged
+  ---
+  duration_ms: 0.8472
+  type: 'test'
+  ...
+# Subtest: a shorter current cutoff remains binding through replay COMMIT without changing the original lease
+ok 63 - a shorter current cutoff remains binding through replay COMMIT without changing the original lease
+  ---
+  duration_ms: 7.5112
+  type: 'test'
+  ...
+# Subtest: request is immutable and replay survives owner reconstruction
+ok 64 - request is immutable and replay survives owner reconstruction
+  ---
+  duration_ms: 1.4391
+  type: 'test'
+  ...
+# Subtest: events atomically advance state and stable IDs replay without duplicates
+ok 65 - events atomically advance state and stable IDs replay without duplicates
+  ---
+  duration_ms: 2.1685
+  type: 'test'
+  ...
+# Subtest: concurrent starting attempts serialize and allow one model admission
+ok 66 - concurrent starting attempts serialize and allow one model admission
+  ---
+  duration_ms: 0.9773
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign tenant
+ok 67 - stored reads/writes deny foreign tenant
+  ---
+  duration_ms: 0.5503
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign actor
+ok 68 - stored reads/writes deny foreign actor
+  ---
+  duration_ms: 0.5968
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign conversation
+ok 69 - stored reads/writes deny foreign conversation
+  ---
+  duration_ms: 0.5313
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign run
+ok 70 - stored reads/writes deny foreign run
+  ---
+  duration_ms: 0.4732
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign attempt
+ok 71 - stored reads/writes deny foreign attempt
+  ---
+  duration_ms: 0.5734
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign worker
+ok 72 - stored reads/writes deny foreign worker
+  ---
+  duration_ms: 0.5427
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign fence
+ok 73 - stored reads/writes deny foreign fence
+  ---
+  duration_ms: 0.5363
+  type: 'test'
+  ...
+# Subtest: cancelled run refuses late text and completion but original events remain inspectable
+ok 74 - cancelled run refuses late text and completion but original events remain inspectable
+  ---
+  duration_ms: 1.5981
+  type: 'test'
+  ...
+# Subtest: lost COMMIT acknowledgement is unknown and exact retry recovers one saved request
+ok 75 - lost COMMIT acknowledgement is unknown and exact retry recovers one saved request
+  ---
+  duration_ms: 0.7112
+  type: 'test'
+  ...
+# Subtest: retained event corruption and a sequence hole refuse reconnect
+ok 76 - retained event corruption and a sequence hole refuse reconnect
+  ---
+  duration_ms: 1.1624
+  type: 'test'
+  ...
+# Subtest: cursor after durable end and oversized publication refuse
+ok 77 - cursor after durable end and oversized publication refuse
+  ---
+  duration_ms: 1.1431
+  type: 'test'
+  ...
+# Subtest: metadata fixes allocation transport, separate errors and unchanged old bridge cap
+ok 78 - metadata fixes allocation transport, separate errors and unchanged old bridge cap
+  ---
+  duration_ms: 0.1034
+  type: 'test'
+  ...
+# Subtest: allocation request remains genuine for accepted old submit receiver and allocation is not a Conversation view
+ok 79 - allocation request remains genuine for accepted old submit receiver and allocation is not a Conversation view
+  ---
+  duration_ms: 35.5773
+  type: 'test'
+  ...
+# Subtest: exact retained intent permits genuine created:false recovery and an actual old branded input view
+not ok 80 - exact retained intent permits genuine created:false recovery and an actual old branded input view
+  ---
+  duration_ms: 9.5273
+  type: 'test'
+  location: 'C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-11\\meri-initial-input-integration\\packages\\contracts\\test\\conversation-initial-input-source.test.mjs:32:1'
+  failureType: 'testCodeFailure'
+  error: 'INVALID_RESPONSE'
+  code: 'INVALID_RESPONSE'
+  name: 'ConversationResponseError'
+  stack: |-
+    fail2 (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-11/meri-initial-input-integration/packages/contracts/dist/conversation-application.mjs:22538:9)
+    receiveConversationResponse (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-11/meri-initial-input-integration/packages/contracts/dist/conversation-application.mjs:22598:118)
+    TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-11/meri-initial-input-integration/packages/contracts/test/conversation-initial-input-source.test.mjs:35:19)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: proof requires the exact original request and receipt objects, including after brand-valid re-admission
+ok 81 - proof requires the exact original request and receipt objects, including after brand-valid re-admission
+  ---
+  duration_ms: 1.9786
+  type: 'test'
+  ...
+# Subtest: independent tenantId mismatch prevents allocation proof and bridge reuse
+ok 82 - independent tenantId mismatch prevents allocation proof and bridge reuse
+  ---
+  duration_ms: 0.9286
+  type: 'test'
+  ...
+# Subtest: independent actorId mismatch prevents allocation proof and bridge reuse
+ok 83 - independent actorId mismatch prevents allocation proof and bridge reuse
+  ---
+  duration_ms: 1.1634
+  type: 'test'
+  ...
+# Subtest: independent conversationId mismatch prevents allocation proof and bridge reuse
+ok 84 - independent conversationId mismatch prevents allocation proof and bridge reuse
+  ---
+  duration_ms: 0.7618
+  type: 'test'
+  ...
+# Subtest: independent runId mismatch prevents allocation proof and bridge reuse
+ok 85 - independent runId mismatch prevents allocation proof and bridge reuse
+  ---
+  duration_ms: 0.5662
+  type: 'test'
+  ...
+# Subtest: independent clientId mismatch prevents allocation proof and bridge reuse
+ok 86 - independent clientId mismatch prevents allocation proof and bridge reuse
+  ---
+  duration_ms: 0.4969
+  type: 'test'
+  ...
+# Subtest: closed independent context rejects receipt-authored extra fields and accessors without reading them
+ok 87 - closed independent context rejects receipt-authored extra fields and accessors without reading them
+  ---
+  duration_ms: 0.5294
+  type: 'test'
+  ...
+# Subtest: canonical JCS input hash preserves exact optional fields and prompt content
+ok 88 - canonical JCS input hash preserves exact optional fields and prompt content
+  ---
+  duration_ms: 1.0505
+  type: 'test'
+  ...
+# Subtest: fixed timestamps and every allocation pin survive duplicate responses; ACCEPTED never regresses
+ok 89 - fixed timestamps and every allocation pin survive duplicate responses; ACCEPTED never regresses
+  ---
+  duration_ms: 1.8864
+  type: 'test'
+  ...
+# Subtest: concurrent different full pins cannot establish two positive facts for one retained request
+ok 90 - concurrent different full pins cannot establish two positive facts for one retained request
+  ---
+  duration_ms: 0.7753
+  type: 'test'
+  ...
+# Subtest: original expiry is checked after digest and before bridge; renewed context cannot extend it
+ok 91 - original expiry is checked after digest and before bridge; renewed context cannot extend it
+  ---
+  duration_ms: 0.8029
+  type: 'test'
+  ...
+# Subtest: facts reject nonoriginal fence, tenant/policy/client mismatch, duplicate scopes and impossible times
+ok 92 - facts reject nonoriginal fence, tenant/policy/client mismatch, duplicate scopes and impossible times
+  ---
+  duration_ms: 1.0573
+  type: 'test'
+  ...
+# Subtest: bridge full binding/scopes/versions pin adds constraints beyond independent run/client context
+ok 93 - bridge full binding/scopes/versions pin adds constraints beyond independent run/client context
+  ---
+  duration_ms: 2.6399
+  type: 'test'
+  ...
+# Subtest: bridge hashes complete canonical skill asset pins and original normalized window
+ok 94 - bridge hashes complete canonical skill asset pins and original normalized window
+  ---
+  duration_ms: 2.651
+  type: 'test'
+  ...
+# Subtest: allocation response cap never replaces the accepted bridge response cap
+ok 95 - allocation response cap never replaces the accepted bridge response cap
+  ---
+  duration_ms: 7.8228
+  type: 'test'
+  ...
+# Subtest: allocation errors stay closed, status-correlated and separate from old admission errors
+ok 96 - allocation errors stay closed, status-correlated and separate from old admission errors
+  ---
+  duration_ms: 3.1217
+  type: 'test'
+  ...
+1..96
+# tests 96
+# suites 0
+# pass 94
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6767.9681
