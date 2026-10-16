@@ -65,11 +65,12 @@ export function createInitialRunBindingJournal({pool,now=Date.now,newId=randomUU
    const anyNext=(await client.query('SELECT 1 FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 LIMIT 1 FOR UPDATE',p)).rows;check();
    if(!Array.isArray(anyNext)||anyNext.length>1)refuse('INITIAL_RUN_BINDING_CORRUPT');if(anyNext.length)refuse('INITIAL_RUN_BINDING_ALREADY_EXISTS');return;
   }
+  const selectedScope=[{tenantId:binding.tenantId,kind:'client',resourceId:existing.selectedClientId,policyRevision:existing.policyRevision}];
   if(runs.length!==inputs.length&&!(inputs.length&&inputs[0].state==='RESERVED'&&!runs.length)||runs.length&&inputs[0].state!=='ACCEPTED')refuse('INITIAL_RUN_BINDING_CONFLICT');
   if(runs.length){const r=runs[0];try{validateShape('Run',r.projection);}catch{refuse('INITIAL_RUN_BINDING_CONFLICT');}
-   if(hash(r.projection)!==r.projection_sha256||!same(r.projection.binding,binding)||r.projection.policyRevision!==existing.policyRevision||!same(r.projection.versions,existing.versions))refuse('INITIAL_RUN_BINDING_CONFLICT');}
+   if(hash(r.projection)!==r.projection_sha256||!same(r.projection.binding,binding)||!same(r.projection.scopes,selectedScope)||r.projection.policyRevision!==existing.policyRevision||!same(r.projection.versions,existing.versions))refuse('INITIAL_RUN_BINDING_CONFLICT');}
   if(inputs.length){const i=inputs[0],a=i.allocation;try{assertOriginalInputFacts(a);}catch{refuse('INITIAL_RUN_BINDING_CONFLICT');}
-   if(hash(a)!==i.allocation_sha256||i.tenant_id!==binding.tenantId||i.conversation_id!==binding.conversationId||i.run_id!==binding.runId||i.request_id!==a.requestId||!same(a.binding,binding)||a.selectedClientId!==existing.selectedClientId||!same(a.versions,existing.versions)||a.scopes[0].policyRevision!==existing.policyRevision||!['RESERVED','ACCEPTED'].includes(i.state)||i.state==='ACCEPTED'&&i.accepted_request_sha256!==a.requestSha256||i.state==='RESERVED'&&i.accepted_request_sha256!==null)refuse('INITIAL_RUN_BINDING_CONFLICT');}
+   if(hash(a)!==i.allocation_sha256||i.tenant_id!==binding.tenantId||i.conversation_id!==binding.conversationId||i.run_id!==binding.runId||i.request_id!==a.requestId||!same(a.binding,binding)||a.selectedClientId!==existing.selectedClientId||!same(a.versions,existing.versions)||!same(a.scopes,selectedScope)||!['RESERVED','ACCEPTED'].includes(i.state)||i.state==='ACCEPTED'&&i.accepted_request_sha256!==a.requestSha256||i.state==='RESERVED'&&i.accepted_request_sha256!==null)refuse('INITIAL_RUN_BINDING_CONFLICT');}
   if(successors.length){const s=successors[0];if(hash(s.reservation)!==s.reservation_sha256||!same(s.reservation?.source,binding)||!runs.length)refuse('INITIAL_RUN_BINDING_CONFLICT');}
  }
  async function claim(raw,check){

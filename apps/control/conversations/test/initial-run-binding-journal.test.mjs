@@ -94,6 +94,18 @@ test('replay checks an accepted first run and input allocation without replacing
  await assert.rejects(j.claim(f.input,check),{code:'INITIAL_RUN_BINDING_CONFLICT'});
 });
 
+test('replay refuses extra client scopes in either the first run or original input allocation',async()=>{
+ for(const changed of ['run','input']){
+  const f=fixture(),j=f.journal(),first=await j.claim(f.input,check),b=first.record.binding,k=f.key();
+  const extra={tenantId:b.tenantId,kind:'client',resourceId:id(6),policyRevision:f.input.policyRevision};
+  const run={binding:b,state:'queued',scopes:changed==='run'?[...scopes,extra]:scopes,versions,createdAt:new Date(first.record.createdAtMs).toISOString(),policyRevision:f.input.policyRevision};
+  f.state.runs.set(k,{projection:run,projection_sha256:hash(run)});
+  const allocation={binding:b,scopes:changed==='input'?[...scopes,extra]:scopes,versions,selectedClientId:f.input.selectedClientId,requestId:id(50),inputSha256:'a'.repeat(64),requestSha256:'b'.repeat(64),allocatedAtMs:first.record.createdAtMs,expiresAtMs:first.record.expiresAtMs};
+  f.state.inputs.set(k,{tenant_id:b.tenantId,conversation_id:b.conversationId,run_id:b.runId,request_id:allocation.requestId,allocation,allocation_sha256:hash(allocation),state:'ACCEPTED',accepted_request_sha256:allocation.requestSha256});
+  await assert.rejects(j.claim(f.input,check),{code:'INITIAL_RUN_BINDING_CONFLICT'},changed);
+ }
+});
+
 test('reserved original input without a run can replay; accepted input without its run is refused',async()=>{
  const f=fixture(),j=f.journal(),first=await j.claim(f.input,check),b=first.record.binding,k=f.key();
  const allocation={binding:b,scopes,versions,selectedClientId:id(5),requestId:id(50),inputSha256:'a'.repeat(64),requestSha256:'b'.repeat(64),allocatedAtMs:first.record.createdAtMs,expiresAtMs:first.record.expiresAtMs};
