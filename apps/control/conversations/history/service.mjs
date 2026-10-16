@@ -8,7 +8,8 @@ export function createConversationHistoryService({store,nextRunOwner,gate,retent
  const check=signal=>()=>signal?.throwIfAborted();
  async function servable(principal,conversationId){if(retention)await retention.assertServable({tenantId:principal.tenantId,kind:'conversation',subjectId:conversationId});}
  async function transcript({principal,request,signal}){
-  await servable(principal,request.conversationId);const result=await store.history.transcript({principal,...request},check(signal));
+  // Subject ownership/client authorization precedes subject-specific retention observations.
+  const result=await store.history.transcript({principal,...request},check(signal));
   await servable(principal,request.conversationId);return result;
  }
  return Object.freeze({

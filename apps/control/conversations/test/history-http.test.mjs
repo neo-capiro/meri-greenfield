@@ -7,14 +7,15 @@ import {createMembershipGate} from '../../product-access/membership.mjs';
 import {createConversationHistoryService} from '../history/service.mjs';
 import {createConversationHistoryApplication} from '../history/http.mjs';
 import {hash} from '../boundary.mjs';
-async function fixture(){
- const f=await applicationFixture(),state=f.state;let serial=1000;
+import {lifecycleFixture} from './lifecycle-fixture.mjs';
+async function fixture({lifecycle=false}={}){
+ const f=await (lifecycle?lifecycleFixture():applicationFixture()),state=f.state;let serial=1000;
  // Script only the two newly added read queries; canonical write/next-run SQL keeps its existing independent fixture.
  const pool={async connect(){const c=await f.pool.connect();return {...c,async query(sql,p){
   if(sql.includes('owner_actor_id=$2'))return {rows:[...state.conversations.values()].filter(r=>r.tenant_id===p[0]&&r.owner_actor_id===p[1]&&r.projection.scopes.every(s=>s.kind!=='client'||p[2].includes(s.resourceId)))
    .sort((a,b)=>b.projection.createdAt.localeCompare(a.projection.createdAt)||b.conversation_id.localeCompare(a.conversation_id))
    .filter(r=>p[3]===null||r.projection.createdAt<p[3]||r.projection.createdAt===p[3]&&r.conversation_id<p[4]).slice(0,p[5])};
-  if(sql.startsWith('SELECT e.*')){const entries=[];for(const r of state.runs.values())if(r.tenant_id===p[0]&&r.conversation_id===p[1])for(const e of state.events.get([r.tenant_id,r.conversation_id,r.run_id].join(':'))??[])
+  if(sql.startsWith('SELECT e.*')){await state.onHistoryRead?.();const entries=[];for(const r of state.runs.values())if(r.tenant_id===p[0]&&r.conversation_id===p[1])for(const e of state.events.get([r.tenant_id,r.conversation_id,r.run_id].join(':'))??[])
    entries.push({...e,tenant_id:r.tenant_id,conversation_id:r.conversation_id,run_id:r.run_id,global:r.sequence_base+e.sequence});
    return {rows:entries.sort((a,b)=>a.global-b.global).filter(e=>e.global>p[2]).slice(0,p[3])};}
   return c.query(sql,p);
@@ -23,7 +24,7 @@ async function fixture(){
  state.member={tenantId:binding.tenantId,actorId:binding.actorId,status:'active',role:'member',permissions:[],clientIds:[id(5)],membershipRevision:'m1'};
  const gate=createMembershipGate({now:Date.now,limits:{maxRequestMs:1000,maxFactBytes:65536},verifyToken:async({credential})=>{if(credential!=='native')throw Error('invalid');return {tenantId:state.member.tenantId,actorId:state.member.actorId,checkedAtMs:Date.now(),expiresAtMs:Date.now()+30000};},
   readMembership:async()=>({...state.member,checkedAtMs:Date.now(),expiresAtMs:Date.now()+30000})});
- const retention={async assertServable(){if(state.suppressed)throw Object.assign(Error('RETENTION_SUPPRESSED'),{code:'RETENTION_SUPPRESSED'});}};
+ state.retentionChecks=0;const retention={async assertServable(){state.retentionChecks++;if(state.suppressed)throw Object.assign(Error('RETENTION_SUPPRESSED'),{code:'RETENTION_SUPPRESSED'});}};
  const service=createConversationHistoryService({store,nextRunOwner:owner,gate,retention}),app=createConversationHistoryApplication({service,gate,now:Date.now,limits:{maxRequestMs:2000,maxRequestBytes:131072,maxResponseBytes:2097152}});
  const post=(path,body,token='native')=>app.handle(new Request(`https://meri.invalid/api/conversations/${path}`,{method:'POST',headers:{authorization:`Bearer ${token}`,'content-type':'application/json'},body:JSON.stringify(body)}));
  async function turn(n){const source=state.context.binding;if(n===1)await f.service.submit({credential:f.credential,input:f.input});
@@ -108,3 +109,64 @@ for(const [path,input] of [['list',{limit:null}],['transcript',{conversationId:b
   const f=await fixture();try{await f.turn(1);const response=await f.post(path,input);assert.equal(response.status,400);assert.deepEqual(await response.json(),{error:{code:'CONVERSATION_CURSOR_INVALID'}});}
   finally{f.close();}
  });
+
+for(const field of ['actor','client'])for(const suppressed of [false,true])test(`foreign ${field}, suppression ${suppressed}: ownership denial has no retention observation`,async()=>{
+ const f=await fixture();try{await f.turn(1);f.state.suppressed=suppressed;f.state.retentionChecks=0;
+  if(field==='actor')f.state.member.actorId='other';else f.state.member.clientIds=[];
+  for(const path of ['transcript','next-turn']){const response=await f.post(path,{conversationId:binding.conversationId,...(path==='next-turn'?{sourceRunId:binding.runId}:{})});assert.equal(response.status,404);assert.equal((await response.json()).error.code,'CONVERSATION_NOT_FOUND');}
+  assert.equal(f.state.retentionChecks,0);
+ }finally{f.close();}
+});
+
+test('membership revision changed during canonical read withholds the page with canonical409',async()=>{
+ const f=await fixture();try{await f.turn(1);f.state.onHistoryRead=()=>{f.state.member.membershipRevision='m2';};const response=await f.post('transcript',{conversationId:binding.conversationId});
+  assert.equal(response.status,409);assert.deepEqual(await response.json(),{error:{code:'MEMBERSHIP_CHANGED'}});
+ }finally{f.close();}
+});
+
+for(const corrupt of ['conversation-shape','run-shape','request-hash','event-shape','pending-shape'])test(`canonical ${corrupt} is an integrity500, without foreign database details`,async()=>{
+ const f=await fixture();try{await f.turn(1);const r=f.state.runs.values().next().value;
+  if(corrupt==='conversation-shape'){const c=f.state.conversations.values().next().value;c.projection.createdAt='invalid';c.projection_sha256=hash(c.projection);}
+  if(corrupt==='run-shape'){r.projection.state='invalid';r.projection_sha256=hash(r.projection);}
+  if(corrupt==='request-hash')r.request_sha256='0'.repeat(64);
+  if(corrupt==='event-shape'){const e=f.state.events.values().next().value[0];e.event.sequence='bad';e.event_sha256=hash(e.event);}
+  if(corrupt==='pending-shape')f.state.nextRuns.values().next().value.reservation=null;
+  const response=await f.post('transcript',{conversationId:binding.conversationId});assert.equal(response.status,500);assert.deepEqual(await response.json(),{error:{code:'CONVERSATION_STORE_CORRUPT'}});
+ }finally{f.close();}
+});
+
+async function continued(f,mode){await f.running();const pause=id(2300);await f.control({controlId:pause,intent:'pause'});await f.claim(pause);await f.checkpoint(pause);
+ const proof=f.proofs.get(id(220));return f.control({controlId:id(2301),intent:mode,checkpointId:proof.checkpoint.checkpointId,checkpointSha256:proof.checkpointSha256});}
+
+test('resume, lost receipt and reload retain one logical prompt; identical-text new turn remains distinct',async()=>{
+ const f=await fixture({lifecycle:true});try{const result=await continued(f,'resume');assert.equal(result.state,'APPLIED');assert.equal(f.state.runs.size,2);
+  const response=await f.post('transcript',{conversationId:binding.conversationId});assert.equal(response.status,200);const first=await response.json();
+  assert.equal(first.turns.length,2);assert.notEqual(first.turns[0].request.requestId,first.turns[1].request.requestId);assert.equal(new Set(first.turns.map(t=>t.promptLineage.logicalRequestId)).size,1);
+  assert.deepEqual(first.turns[1].promptLineage,{kind:'resume',logicalRequestId:first.turns[0].request.requestId,sourceBinding:binding,sourceRequestId:first.turns[0].request.requestId});
+  const reload=await (await f.post('transcript',{conversationId:binding.conversationId})).json();assert.deepEqual(reload.turns,first.turns);assert.equal(f.state.runs.size,2,'lost lifecycle receipt recovered by read, not a second successor');
+  const paged=[];let after=0;for(;;){const page=await (await f.post('transcript',{conversationId:binding.conversationId,after,limit:1})).json();paged.push(...page.turns);after=page.nextSequence;if(!page.hasMore)break;}
+  assert.equal(new Set(paged.map(t=>t.promptLineage.logicalRequestId)).size,1);
+  f.state.context.binding=result.targetBinding;const session=await f.sessions.issue({identityCredential:'synthetic-native'});await f.service.cancel({credential:session.credential});
+  const admitted=await f.owner.admitTurn({principal:{tenantId:binding.tenantId,actorId:binding.actorId},conversationId:binding.conversationId,sourceRunId:result.targetBinding.runId});
+  f.state.context.binding=admitted.targetBinding;const next=await f.sessions.issue({identityCredential:'synthetic-native'});await f.service.submit({credential:next.credential,input:{requestId:id(2302),prompt:'Hello'}});
+  const final=await (await f.post('transcript',{conversationId:binding.conversationId})).json();assert.equal(final.turns.length,3);assert.equal(new Set(final.turns.map(t=>t.request.prompt)).size,1);assert.equal(new Set(final.turns.map(t=>t.promptLineage.logicalRequestId)).size,2);
+  assert.deepEqual(final.turns.at(-1).promptLineage,{kind:'submission',logicalRequestId:id(2302),sourceBinding:null,sourceRequestId:null});
+ }finally{f.close();}
+});
+
+test('fork starts a conversation-local prompt identity while retaining exact external source lineage',async()=>{
+ const f=await fixture({lifecycle:true});try{const result=await continued(f,'fork'),response=await f.post('transcript',{conversationId:result.targetBinding.conversationId});assert.equal(response.status,200);const page=await response.json();
+  assert.equal(page.turns.length,1);const t=page.turns[0];assert.deepEqual(t.promptLineage,{kind:'fork',logicalRequestId:t.request.requestId,sourceBinding:binding,sourceRequestId:f.input.requestId});assert.equal(t.sequenceBase,0);
+ }finally{f.close();}
+});
+
+for(const corrupt of ['digest','request','source-binding','context'])test(`resumed canonical ${corrupt} substitution refuses prompt lineage`,async()=>{
+ const f=await fixture({lifecycle:true});try{const result=await continued(f,'resume'),row=[...f.state.runs.values()].find(r=>r.run_id===result.targetBinding.runId);
+  if(corrupt==='digest')row.continuation_sha256='0'.repeat(64);
+  if(corrupt==='request')row.continuation.sourceRequest.prompt='substituted';
+  if(corrupt==='source-binding'){const envelope=row.continuation.continuation;envelope.checkpoint.binding.workerId=id(2399);envelope.checkpointSha256=hash(envelope.checkpoint);}
+  if(corrupt==='context')row.continuation.continuation.contextSha256='0'.repeat(64);
+  if(corrupt!=='digest')row.continuation_sha256=hash(row.continuation);
+  const response=await f.post('transcript',{conversationId:binding.conversationId});assert.equal(response.status,500);assert.deepEqual(await response.json(),{error:{code:'CONVERSATION_STORE_CORRUPT'}});
+ }finally{f.close();}
+});
