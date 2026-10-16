@@ -1,0 +1,13 @@
+# Request-local membership bearer propagation
+
+Base `e5eda7ed01a191279f44d92ccc28f78309ee676e`. Qualification confirmed this narrow internal source seam after Core found that its fresh native-user membership endpoint cannot use the gate's old bearer-free recheck input. No frozen identity/context wire changes.
+
+The existing membership gate now forwards the native credential to its trusted readMembership port during admission and accepts it on recheck. The product HTTP owner retains that credential only in its request closure, supplies a bounded recheckMembership callback to domain handlers, and uses the same closure before releasing results. History next-turn calls it before admission effects. No token is put into principal/body/domain DTO, journal, cache, log or static configuration. A retained callback is closed with its request; the original identity/membership/operation cutoff cannot be extended by a fresh membership receipt. Direct trusted gate callers retain their existing API and are responsible for a genuine current authority port.
+
+The Core endpoint must derive its principal from that same freshly verified native bearer and correlate expected tenant/actor; no workload trust is inferred. Empty permissions means no additional business grants, with canonical Meri context/admission/grant rights still required separately. Core adapter/endpoint authoring remains the Core lane's responsibility and is not automatically integrated.
+
+Focused synthetic controls: **53pass/0fail/0skip**, exit0, wall1.88s, sampled peak working set182,874,112 bytes. Node128MiB heap, single process/isolation none, concurrency1, owned45s watchdog. Fresh memory total33,632,079,872/free12,021,690,368 bytes. Includes seven new credential/concurrency/revocation/expiry/closure controls, actual next-turn before-effect/final-release native bearer propagation, existing membership/session checks, and all accepted b93 uncertainty controls. Pending effects remain UNKNOWN and acknowledged-but-withheld results remain RESULT_NOT_RELEASED; no effect/handled classification was weakened.
+
+Command: `node --max-old-space-size=128 --test --test-isolation=none --test-concurrency=1 apps/control/product-access/test/request-credential.test.mjs apps/control/product-access/test/effect-uncertainty.test.mjs apps/control/product-access/test/membership.test.mjs apps/control/conversations/test/history-http.test.mjs`.
+
+No actual Core/Clerk/session/provider/database query, credential creation, compiler/browser/install or cloud action. Public history artifact implementation and package/provenance acceptance remain separate.

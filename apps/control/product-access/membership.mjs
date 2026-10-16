@@ -31,9 +31,9 @@ export function createMembershipGate(options){
   lifetime.limitDeadline(v.expiresAtMs);return v;
  }
  /** Core's current membership for exactly this identity; anything but an active member refuses. */
- async function membershipOf(identity,lifetime){
+ async function membershipOf(identity,lifetime,credential){
   const started=now();
-  const m=fact(await lifetime.run(signal=>readMembership({tenantId:identity.tenantId,actorId:identity.actorId,signal,deadlineMs:lifetime.deadline()})),MEMBERSHIP,started,lifetime);
+  const m=fact(await lifetime.run(signal=>readMembership({tenantId:identity.tenantId,actorId:identity.actorId,...(credential===undefined?{}:{credential}),signal,deadlineMs:lifetime.deadline()})),MEMBERSHIP,started,lifetime);
   if(m.tenantId!==identity.tenantId||m.actorId!==identity.actorId||!MEMBERSHIP_STATUSES.includes(m.status)||!text(m.membershipRevision,1,256)||typeof m.role!=='string'||!ROLE_NAME.test(m.role)||
    !Array.isArray(m.permissions)||m.permissions.length>64||new Set(m.permissions).size!==m.permissions.length||m.permissions.some(p=>typeof p!=='string'||!PERMISSION.test(p))||
    !Array.isArray(m.clientIds)||m.clientIds.length>4096||new Set(m.clientIds).size!==m.clientIds.length||m.clientIds.some(c=>typeof c!=='string'||!UUID.test(c)))refuse('ACCESS_DENIED');
@@ -46,7 +46,7 @@ export function createMembershipGate(options){
   const started=now();
   const identity=fact(await lifetime.run(signal=>verifyToken({credential,signal,deadlineMs:lifetime.deadline()})),[...IDENTITY,...TIMES],started,lifetime);
   if(!IDENTITY.every(k=>text(identity[k],1,128)))refuse('ACCESS_DENIED');
-  const m=await membershipOf(identity,lifetime);lifetime.check();
+  const m=await membershipOf(identity,lifetime,credential);lifetime.check();
   return {principal:principalFrom(m),expiresAtMs:Math.min(identity.expiresAtMs,m.expiresAtMs)};
  }
  return Object.freeze({
@@ -56,10 +56,10 @@ export function createMembershipGate(options){
    try{return await admitWithin(credential,lifetime);}catch(error){throw asProductError(error,'ACCESS_DENIED');}finally{lifetime.close();}
   },
   /** Stored or pending access: the same member must still be active at the same membership revision before anything is released. */
-  async recheck({principal,signal,deadlineMs}){
+  async recheck({principal,credential,signal,deadlineMs}){
    const lifetime=life(deadlineMs,signal);
    try{
-    const m=await membershipOf({tenantId:principal.tenantId,actorId:principal.actorId},lifetime);
+    const m=await membershipOf({tenantId:principal.tenantId,actorId:principal.actorId},lifetime,credential);
     if(canonicalSha256(principalFrom(m))!==canonicalSha256(principal))refuse('MEMBERSHIP_CHANGED');
     return principal;
    }catch(error){throw asProductError(error,'ACCESS_DENIED');}finally{lifetime.close();}
