@@ -9,6 +9,7 @@
  * No response decoder or product composition is enabled until Core publishes its
  * closed response contract. No ambient credential or Core route is discovered.
  */
+import {createHash} from 'node:crypto';
 import {types} from 'node:util';
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256,validateShape} from '../../../packages/contracts/validate.mjs';
@@ -31,6 +32,7 @@ const getters=Object.fromEntries(['status','headers','body','redirected'].map(ke
 const unavailable=()=>({kind:'unavailable'});
 const fault=()=>new ProductError('OBJECTIVE_GENERATION_CORE_UNAVAILABLE');
 const refuse=()=>{throw fault();};
+const sha256Utf8=value=>createHash('sha256').update(value,'utf8').digest('hex');
 function cancel(response){try{if(response&&!types.isProxy(response)&&response instanceof Response)Promise.resolve(getters.body.call(response)?.cancel()).catch(()=>{});}catch{}}
 
 export function createCoreObjectiveGenerationTransport(configuration){
@@ -52,18 +54,19 @@ export function createCoreObjectiveGenerationTransport(configuration){
   const v=own(value,['deadlineMs'],['signal']);nativeSignal(v.signal);
   if(!Number.isSafeInteger(v.deadlineMs))refuse();
   if(!available())return unavailable();
-  const reading=Object.hasOwn(readRoutes,phase),route=reading?readRoutes[phase]+'/'+source.generationJobId:routes[phase],method=reading?'GET':'POST';let life,response;
+  const reading=Object.hasOwn(readRoutes,phase),route=reading?readRoutes[phase]+'/'+source.generationJobId:routes[phase],method=reading?'GET':'POST',bodySha256=sha256Utf8(reading?'':body);let life,response;
   try{
+   if(route.includes('?')||route.includes('#'))refuse();
    const at=now();if(!Number.isSafeInteger(at)||at<0)refuse();
    let cutoff=Math.min(v.deadlineMs,at+maxRequestMs);
    life=createOperationLifetime({now,signal:v.signal,deadlineMs:cutoff,errorFactory:fault});
    async function credential(){
     const began=now();if(!Number.isSafeInteger(began)||began<0)refuse();
-    const raw=await life.run(signal=>readCredential({operation,phase,method,route,source,sourceSha256,requestSha256,signal,deadlineMs:cutoff}));
-    const a=data(own(raw,['credential','actorId','tenantId','generationJobId','operation','method','route','phase','sourceSha256','requestSha256','checkedAtMs','expiresAtMs']));
+    const raw=await life.run(signal=>readCredential({operation,phase,method,route,source,sourceSha256,requestSha256,bodySha256,signal,deadlineMs:cutoff}));
+    const a=data(own(raw,['credential','actorId','tenantId','generationJobId','operation','method','route','phase','sourceSha256','requestSha256','bodySha256','checkedAtMs','expiresAtMs']));
     const checked=now();if(!Number.isSafeInteger(checked)||checked<began)refuse();
     if(typeof a.credential!=='string'||!/^[A-Za-z0-9._~+/-]{1,8192}={0,2}$/u.test(a.credential)||a.actorId!==source.binding.actorId||a.tenantId!==source.binding.tenantId||
-     a.generationJobId!==source.generationJobId||a.operation!==operation||a.method!==method||a.route!==route||a.phase!==phase||a.sourceSha256!==sourceSha256||a.requestSha256!==requestSha256||
+     a.generationJobId!==source.generationJobId||a.operation!==operation||a.method!==method||a.route!==route||a.phase!==phase||a.sourceSha256!==sourceSha256||a.requestSha256!==requestSha256||a.bodySha256!==bodySha256||
      !Number.isSafeInteger(a.checkedAtMs)||a.checkedAtMs<began||a.checkedAtMs>checked||!Number.isSafeInteger(a.expiresAtMs)||a.expiresAtMs<=checked)refuse();
     cutoff=Math.min(cutoff,a.expiresAtMs);life.limitDeadline(cutoff);return a.credential;
    }
