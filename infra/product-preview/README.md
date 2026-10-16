@@ -6,6 +6,8 @@ The builder checks account, region, resource type and immutable image syntax. It
 
 The template contains three digest-pinned Linux Fargate task definitions, two ECS services with `DesiredCount: 0`, and no other resources. Control listens on port 8080, the Temporal worker on 8081, and the fresh conversation runner on private port 8080. The runner has one container named `worker`, matching the existing native candidate's `taskRequest` container binding, and no service. The services use an existing cluster, one supplied subnet and role-specific existing security groups with public IP disabled. An existing control target group may be named explicitly; none is inferred or created. No task can be started by synthesis. `enabled` must be `false` and `materialDelivery` must be `unmounted`.
 
+Task families and service names are fixed as `meri-product-preview-{control,temporal-worker,runner}` so a reviewed change set has stable, distinct ownership of this new three-role deployment and cannot silently target the qualification or legacy Meri service. This template always registers new task definitions and defines new zero-count control/worker services; it cannot adopt an otherwise qualified existing task definition or service with a different name. An existing cluster, ECR repository, roles, logs, network or target group may still be supplied after its actual owner and permissions are reviewed. Reusing an existing task definition or service would require a separately reviewed source change, not a name-based rejection of other qualified resources.
+
 The role commands match the image's `node apps/runtime/cli.mjs` entrypoint:
 
 | Role | Command |
