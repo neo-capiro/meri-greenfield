@@ -5,17 +5,14 @@ import {assertRun,bounded,hash,same,fail,validateShape,uuid,own} from './boundar
 import {validateCompletionProof} from './completion-journal.mjs';
 import {closeSequenceRange} from './sequence-ranges.mjs';
 import {FORECLOSED,foreclosed} from './native-preparation-journal.mjs';
-const digest=v=>typeof v==='string'&&/^[a-f0-9]{64}$/u.test(v);
+import {assertNextRunFacts as facts,assertNextRunReservation} from './next-run-reservation.mjs';
 /** Terminal states that may admit a next prompt once the original is retired and its grants revoked. */
 export const admitsNextRun=state=>state==='completed'||state==='failed'||state==='cancelled';
 export function createNextRunJournal({tx,rowRun}){
- const row=r=>{if(!r||hash(r.reservation)!==r.reservation_sha256)fail('STORE_CORRUPT');const v=r.reservation;if(r.source_run_id!==v.source.runId||r.target_run_id!==v.target.runId||r.tenant_id!==v.target.tenantId||r.conversation_id!==v.target.conversationId||!['RESERVED','ACCEPTED'].includes(r.state))fail('STORE_CORRUPT');return {...v,state:r.state};};
+ const row=r=>{if(!r||hash(r.reservation)!==r.reservation_sha256)fail('STORE_CORRUPT');const v=assertNextRunReservation(r.reservation);if(r.source_run_id!==v.source.runId||r.target_run_id!==v.target.runId||r.tenant_id!==v.target.tenantId||r.conversation_id!==v.target.conversationId||!['RESERVED','ACCEPTED'].includes(r.state))fail('STORE_CORRUPT');return {...v,state:r.state};};
  const key=value=>{const k=bounded(value);own(k,['tenantId','conversationId']);uuid(k.conversationId);if(typeof k.tenantId!=='string'||!k.tenantId||k.tenantId.length>256)fail('INVALID_REQUEST');return k;};
  /** Either retirement plus revocation of an allocation that existed, or (failed/cancelled source only) the store's explicit
   * no-authority evidence that the attempt never claimed one; the journal verifies whichever is named against the row itself. */
- function facts(value){const f=bounded(value);if(f&&typeof f==='object'&&Object.hasOwn(f,'noAuthority')){own(f,['checkpoint','noAuthority']);own(f.noAuthority,['foreclosureSha256']);if(f.checkpoint!==null||!digest(f.noAuthority.foreclosureSha256))fail('NEXT_RUN_FACTS_REFUSED');return f;}
-  own(f,['checkpoint','retirement','revocation']);own(f.retirement,['physicalStopProven']);own(f.revocation,['receiptSha256','grantIds']);if(f.checkpoint!==null){own(f.checkpoint,['checkpointId','proofSha256']);uuid(f.checkpoint.checkpointId);}
-  if(f.checkpoint!==null&&!digest(f.checkpoint.proofSha256)||f.retirement.physicalStopProven!==true||!digest(f.revocation.receiptSha256)||!Array.isArray(f.revocation.grantIds)||!f.revocation.grantIds.length||f.revocation.grantIds.length>64||f.revocation.grantIds.some(g=>typeof g!=='string'||!g||g.length>256))fail('NEXT_RUN_FACTS_REFUSED');return f;}
  function completion(r,source){if(!r||hash(r.identity)!==r.identity_sha256||r.tenant_id!==source.tenant_id||r.conversation_id!==source.conversation_id||r.run_id!==source.run_id||!same(r.identity.binding,source.projection.binding)||r.completion_id!==r.identity.completionId||r.checkpoint_id!==r.identity.checkpointId||!same(r.identity.sourceRequest,source.request)||r.identity.sourceRequestSha256!==source.request_sha256||r.identity.contextSha256!==hash({window:source.request.window,skill:source.request.skill,scopes:source.projection.scopes})||!same(r.identity.scopes,source.projection.scopes)||!same(r.identity.versions,source.projection.versions))fail('STORE_CORRUPT');if(r.state==='PUBLISHED'){if(hash(r.proof)!==r.proof_sha256)fail('STORE_CORRUPT');validateCompletionProof(r.proof,r.identity);}return r;}
  const projected=r=>({binding:r.projection.binding,state:r.projection.state,requestId:r.request_id,sequenceBase:Number(r.sequence_base),lastSequence:Number(r.last_sequence),sequenceEnd:r.sequence_end==null?null:Number(r.sequence_end),scopes:r.projection.scopes,policyRevision:r.projection.policyRevision,versions:r.projection.versions,createdAt:r.projection.createdAt});
  async function conversationRuns(c,k,check){const runs=(await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE',[k.tenantId,k.conversationId])).rows.map(rowRun).map(projected).sort((a,b)=>a.binding.writerFence-b.binding.writerFence);check();
@@ -47,7 +44,7 @@ export function createNextRunJournal({tx,rowRun}){
    if(f.noAuthority){if(a.state!==FORECLOSED||!foreclosed(a,source)||a.foreclosure.state!==latest.state||allocation[0].record_sha256!==f.noAuthority.foreclosureSha256)fail('NEXT_RUN_RETIREMENT_REQUIRED');}
    else{if(a.state!=='RETIRED'||a.resource?.physicalStopProven!==true)fail('NEXT_RUN_RETIREMENT_REQUIRED');
     if(!same([...f.revocation.grantIds].sort(),a.grantIntents.map(g=>g.grantId).sort()))fail('NEXT_RUN_REVOCATION_REQUIRED');}
-   const reservation={source,target,facts:f,scopes,versions:bounded(versions),policyRevision,reservedAt};
+   const reservation=assertNextRunReservation({source,target,facts:f,scopes,versions:bounded(versions),policyRevision,reservedAt});
    await c.query('INSERT INTO meri_conversations.next_runs(tenant_id,conversation_id,source_run_id,target_run_id,reservation,reservation_sha256,state) VALUES($1,$2,$3,$4,$5,$6,$7)',[source.tenantId,source.conversationId,source.runId,target.runId,reservation,hash(reservation),'RESERVED']);check();
    return {target,state:'RESERVED',replayed:false};
   });
