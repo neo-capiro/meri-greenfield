@@ -1,0 +1,49 @@
+{
+  "classification": "Read-only third-party dependency reuse; actual integrated product sources, not installed-image qualification",
+  "resolutions": [
+    [
+      "pg",
+      "file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/node_modules/pg/esm/index.mjs"
+    ],
+    [
+      "@temporalio/client",
+      "file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/runtime/node_modules/@temporalio/client/lib/index.js"
+    ],
+    [
+      "ajv/dist/2020.js",
+      "file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/packages/contracts/node_modules/ajv/dist/2020.js"
+    ],
+    [
+      "ajv-formats",
+      "file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/packages/contracts/node_modules/ajv-formats/dist/index.js"
+    ],
+    [
+      "canonicalize",
+      "file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/packages/contracts/node_modules/canonicalize/lib/canonicalize.js"
+    ],
+    [
+      "@js-temporal/polyfill",
+      "file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/packages/window-resolution/node_modules/@js-temporal/polyfill/dist/index.esm.js"
+    ],
+    [
+      "ai",
+      "file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/packages/ui-stream/node_modules/ai/dist/index.js"
+    ],
+    [
+      "@capiro/meri-contracts/node",
+      "file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-8/meri-qualification/packages/contracts/validate.mjs"
+    ],
+    [
+      "@aws-sdk/client-ecs",
+      "file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/runtime/node_modules/@aws-sdk/client-ecs/dist-cjs/index.js"
+    ],
+    [
+      "@hono/node-server",
+      "file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/runtime/node_modules/@hono/node-server/dist/index.mjs"
+    ],
+    [
+      "saxes",
+      "file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/node_modules/saxes/saxes.js"
+    ]
+  ]
+}

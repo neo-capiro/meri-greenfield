@@ -783,10 +783,667 @@
         }
       ],
       "previouslyIntegratedIdenticalPaths": []
+    },
+    {
+      "label": "complete canonical next-run reservation decoding",
+      "reviewedSource": "e5eda7ed01a191279f44d92ccc28f78309ee676e",
+      "predecessors": [
+        "5abfa6535263e2a8d2a7cd8cacadd86305227844"
+      ],
+      "integratedCommit": "d50aea5d35851b50bd7107806e27e591e1c93755",
+      "integratedTree": "ee68f6df214b04875fb60a57f29e20a20ba09850",
+      "files": [
+        {
+          "path": "apps/control/conversations/history/store.mjs",
+          "acceptedBlob": "bedef5f3cc89ac131b601961b13dac7dfb570c30",
+          "integratedBlob": "bedef5f3cc89ac131b601961b13dac7dfb570c30"
+        },
+        {
+          "path": "apps/control/conversations/next-run-journal.mjs",
+          "acceptedBlob": "22444ce1563f2252b56f8131489df2f5b0681d24",
+          "integratedBlob": "22444ce1563f2252b56f8131489df2f5b0681d24"
+        },
+        {
+          "path": "apps/control/conversations/next-run-reservation.mjs",
+          "acceptedBlob": "bc003ab5f4ff30c9c3c7d8f000847d127c652c8d",
+          "integratedBlob": "bc003ab5f4ff30c9c3c7d8f000847d127c652c8d"
+        },
+        {
+          "path": "apps/control/conversations/test/history-http.test.mjs",
+          "acceptedBlob": "a243b17d3e7e1a8dd1d103e74062f6cc34833aa0",
+          "integratedBlob": "a243b17d3e7e1a8dd1d103e74062f6cc34833aa0"
+        }
+      ],
+      "previouslyIntegratedIdenticalPaths": []
+    },
+    {
+      "label": "request-local native membership credential",
+      "reviewedSource": "936ef078c707d25669a78cd5ae84772cbd265e9f",
+      "predecessors": [
+        "e5eda7ed01a191279f44d92ccc28f78309ee676e",
+        "eca78d458acb46cbfd54a94cf870841d999ef6b1"
+      ],
+      "integratedCommit": "25ae1550268fd176fcba2ed2974d3cbcb98e3139",
+      "integratedTree": "75a49d7f699c6eb8db98e69a40e67848c6854f30",
+      "files": [
+        {
+          "path": "apps/control/conversations/history/http.mjs",
+          "acceptedBlob": "6b578d2b08ebadb3b4fda91faee087032be960d8",
+          "integratedBlob": "6b578d2b08ebadb3b4fda91faee087032be960d8"
+        },
+        {
+          "path": "apps/control/conversations/history/service.mjs",
+          "acceptedBlob": "d5afc2e881f55ee7a54c25f9ec93a20a6920f015",
+          "integratedBlob": "d5afc2e881f55ee7a54c25f9ec93a20a6920f015"
+        },
+        {
+          "path": "apps/control/conversations/test/history-http.test.mjs",
+          "acceptedBlob": "23e23607a832a867d7910ac7785f2dcc2b376d25",
+          "integratedBlob": "23e23607a832a867d7910ac7785f2dcc2b376d25"
+        },
+        {
+          "path": "apps/control/product-access/http.mjs",
+          "acceptedBlob": "f232d2d7fbc1f62eeae847b9dc6d1d9c451210ec",
+          "integratedBlob": "f232d2d7fbc1f62eeae847b9dc6d1d9c451210ec"
+        },
+        {
+          "path": "apps/control/product-access/membership.mjs",
+          "acceptedBlob": "55653efba6704ef314ada3a11c823dc22a9a35da",
+          "integratedBlob": "55653efba6704ef314ada3a11c823dc22a9a35da"
+        },
+        {
+          "path": "apps/control/product-access/test/request-credential.test.mjs",
+          "acceptedBlob": "08c972de16bef72ffd090f1d10b33b1eafa3c480",
+          "integratedBlob": "08c972de16bef72ffd090f1d10b33b1eafa3c480"
+        }
+      ],
+      "previouslyIntegratedIdenticalPaths": []
+    },
+    {
+      "label": "model terminal replay fence",
+      "reviewedSource": "af5804e507ad27a07b9375b52d91b5b7b0b4d0a4",
+      "predecessors": [
+        "d674b207dd1964ecb000f5238e623dea1f3e5415"
+      ],
+      "integratedCommit": "187bad2820563e493be9afe85ff859991ce0079d",
+      "integratedTree": "27908e80711afd1e9f560d0983405c1b12aac4a5",
+      "files": [
+        {
+          "path": "apps/runtime/prepared-run-issuance-postgres.mjs",
+          "acceptedBlob": "e19179e1d90e2959d170f77df7198dc8af2d8232",
+          "integratedBlob": "e19179e1d90e2959d170f77df7198dc8af2d8232"
+        },
+        {
+          "path": "apps/runtime/test/model-grant-store.test.mjs",
+          "acceptedBlob": "4e54fadb0a586e7a6e84e5425c7bf3d6e007cc67",
+          "integratedBlob": "4e54fadb0a586e7a6e84e5425c7bf3d6e007cc67"
+        }
+      ],
+      "previouslyIntegratedIdenticalPaths": []
+    },
+    {
+      "label": "coherent retention atomic projection and durable-current-head closure",
+      "reviewedSource": "855e423376c7724fb96124002dbd89092a479cfc",
+      "predecessors": [
+        "eca78d458acb46cbfd54a94cf870841d999ef6b1"
+      ],
+      "integratedCommit": "53622509bde6f95c0eeddeb5b5f005b1a1c875a3",
+      "integratedTree": "50e49562c6a1c110b19d9f3f538f5b9c484e1478",
+      "files": [
+        {
+          "path": "apps/control/retention/ledger.mjs",
+          "acceptedBlob": "add153fe91166b9976a95a02a282e0e79fedfb39",
+          "integratedBlob": "add153fe91166b9976a95a02a282e0e79fedfb39"
+        },
+        {
+          "path": "apps/control/retention/memory-journal.mjs",
+          "acceptedBlob": "b910578ab043ef5ff3f77168a1a64ea585868600",
+          "integratedBlob": "b910578ab043ef5ff3f77168a1a64ea585868600"
+        },
+        {
+          "path": "apps/control/retention/postgres-journal.mjs",
+          "acceptedBlob": "2759fdf653a717e0f610a18798a5fe0bf22ea968",
+          "integratedBlob": "2759fdf653a717e0f610a18798a5fe0bf22ea968"
+        },
+        {
+          "path": "apps/control/retention/postgres-watermark.mjs",
+          "acceptedBlob": "4642289ceeb267b57f33058d04be684231b94b22",
+          "integratedBlob": "4642289ceeb267b57f33058d04be684231b94b22"
+        },
+        {
+          "path": "apps/control/retention/projection-proof.mjs",
+          "acceptedBlob": "06d32bacaa25e13c1ce1809aa7dc528bfffcece7",
+          "integratedBlob": "06d32bacaa25e13c1ce1809aa7dc528bfffcece7"
+        },
+        {
+          "path": "apps/control/retention/purge.mjs",
+          "acceptedBlob": "86262a44aa164f7082c503b22664556ce1bc88be",
+          "integratedBlob": "86262a44aa164f7082c503b22664556ce1bc88be"
+        },
+        {
+          "path": "apps/control/retention/reconciliation.mjs",
+          "acceptedBlob": "9520bbc4a20705f02a17f1693e8e22919a9a5daf",
+          "integratedBlob": "9520bbc4a20705f02a17f1693e8e22919a9a5daf"
+        },
+        {
+          "path": "apps/control/retention/recovery-watermark.mjs",
+          "acceptedBlob": "2898686c2be321ce409d66b94f21445b902d7f76",
+          "integratedBlob": "2898686c2be321ce409d66b94f21445b902d7f76"
+        },
+        {
+          "path": "apps/control/retention/serving-fence.mjs",
+          "acceptedBlob": "a90dc80a7928a1147e799e1e07f80f0443e0920c",
+          "integratedBlob": "a90dc80a7928a1147e799e1e07f80f0443e0920c"
+        },
+        {
+          "path": "apps/control/retention/startup.mjs",
+          "acceptedBlob": "4ff11fe639b502d03ef8eff670cade205d3b85b9",
+          "integratedBlob": "4ff11fe639b502d03ef8eff670cade205d3b85b9"
+        },
+        {
+          "path": "apps/control/retention/suppression.mjs",
+          "acceptedBlob": "961d68b6d021e26c6f55e6394f7877c6db3a814f",
+          "integratedBlob": "961d68b6d021e26c6f55e6394f7877c6db3a814f"
+        },
+        {
+          "path": "apps/control/retention/test/atomic-read.test.mjs",
+          "acceptedBlob": "c49f5c906cbb0eb5e75c2ac8502c9bf951243591",
+          "integratedBlob": "c49f5c906cbb0eb5e75c2ac8502c9bf951243591"
+        },
+        {
+          "path": "apps/control/retention/test/current-head.test.mjs",
+          "acceptedBlob": "1683a66fe454cddb7eb756837b670f7eda7e83a9",
+          "integratedBlob": "1683a66fe454cddb7eb756837b670f7eda7e83a9"
+        },
+        {
+          "path": "apps/control/retention/test/fixture.mjs",
+          "acceptedBlob": "1359df0ad5c79dfd45cbb8dab654fc4b75c6c400",
+          "integratedBlob": "1359df0ad5c79dfd45cbb8dab654fc4b75c6c400"
+        },
+        {
+          "path": "apps/control/retention/test/postgres-watermark.test.mjs",
+          "acceptedBlob": "1264e397c0d0896ea000afe12f9ed18f238ba6c9",
+          "integratedBlob": "1264e397c0d0896ea000afe12f9ed18f238ba6c9"
+        },
+        {
+          "path": "apps/control/retention/test/startup-restore.test.mjs",
+          "acceptedBlob": "5d2014644fe503a79c56a4a5f4fe2db5d061bd10",
+          "integratedBlob": "5d2014644fe503a79c56a4a5f4fe2db5d061bd10"
+        }
+      ],
+      "previouslyIntegratedIdenticalPaths": [
+        "apps/control/retention/test/watermark-migration-source.test.mjs"
+      ]
+    },
+    {
+      "label": "control-side canonical READS factory and admission controls",
+      "reviewedSource": "57d4b40f315354817eef0038f26fdfe8c29b8a3b",
+      "predecessors": [
+        "75a6bd646a7df70bb650afe6b5827cd5aeb88542"
+      ],
+      "integratedCommit": "6377ed658762be9f633aa34dd5af46a464fb63f9",
+      "integratedTree": "c41a1787411a04515dfe2e29ab7aa29b04d154a4",
+      "files": [
+        {
+          "path": "apps/gateway/general-reads/admission.test.mjs",
+          "acceptedBlob": "f439c9f1d24087d0a508786ae335aa899c55271b",
+          "integratedBlob": "f439c9f1d24087d0a508786ae335aa899c55271b"
+        },
+        {
+          "path": "apps/gateway/general-reads/test/durable-fixture.mjs",
+          "acceptedBlob": "fcb8204453a9aa3d6256c2c6b88b1347b753e358",
+          "integratedBlob": "fcb8204453a9aa3d6256c2c6b88b1347b753e358"
+        },
+        {
+          "path": "apps/runtime/general-read-runtime.mjs",
+          "acceptedBlob": "3ec039f80caa79b05a8e35f83f4d19cc5c718df9",
+          "integratedBlob": "3ec039f80caa79b05a8e35f83f4d19cc5c718df9"
+        },
+        {
+          "path": "apps/runtime/test/general-read-runtime.test.mjs",
+          "acceptedBlob": "a04444813b538466afa305ccdd14a7be19639e1a",
+          "integratedBlob": "a04444813b538466afa305ccdd14a7be19639e1a"
+        },
+        {
+          "path": "apps/worker/conversation/reads/test/admission.test.mjs",
+          "acceptedBlob": "664f01119da95122c63aae10231e5af5ffe8d49b",
+          "integratedBlob": "664f01119da95122c63aae10231e5af5ffe8d49b"
+        }
+      ],
+      "previouslyIntegratedIdenticalPaths": []
+    },
+    {
+      "label": "strict preview claim and read-only reserved-schema projection",
+      "reviewedSource": "856b0ad8c8cd5d69ae72e30fe2f0cb5d006599a0",
+      "predecessors": [
+        "2124306473aa84054158e9fe1f0fdff01c9357ba"
+      ],
+      "integratedCommit": "6c906204a8f1c21f8d3816ae22a2c25d7199dd5c",
+      "integratedTree": "f1e0af94c5b7713903a77fc6f7095d31cebd3af4",
+      "files": [
+        {
+          "path": "apps/artifacts/preview/claim.mjs",
+          "acceptedBlob": "d92a801d42278aa9b57a860887b8a978bbbc2710",
+          "integratedBlob": "d92a801d42278aa9b57a860887b8a978bbbc2710"
+        },
+        {
+          "path": "apps/artifacts/preview/postgres-store.mjs",
+          "acceptedBlob": "a8e56e3664922132d10108555895809605deef96",
+          "integratedBlob": "a8e56e3664922132d10108555895809605deef96"
+        },
+        {
+          "path": "apps/artifacts/test/preview-claim-validation.test.mjs",
+          "acceptedBlob": "fc0ef294727cf95e451cc1c280cc8ed57418112d",
+          "integratedBlob": "fc0ef294727cf95e451cc1c280cc8ed57418112d"
+        },
+        {
+          "path": "apps/artifacts/test/preview-postgres-store.test.mjs",
+          "acceptedBlob": "f8af0b9d9135487b612c3833659d35c5fc7ce44c",
+          "integratedBlob": "f8af0b9d9135487b612c3833659d35c5fc7ce44c"
+        }
+      ],
+      "previouslyIntegratedIdenticalPaths": []
+    },
+    {
+      "label": "Planner immutable receipt decoders and existing materializer observation client",
+      "reviewedSource": "b8b75414340fc6e0367f50dbefdb01c3830f823b",
+      "predecessors": [
+        "cf639d4707df0060524218c65d941834ed7ea2e3"
+      ],
+      "integratedCommit": "1f43882a8c6c4568ece9f9886db1b5ff0762e5ba",
+      "integratedTree": "e495635b2c49f7dd495f58b848a280bfc5898d47",
+      "files": [
+        {
+          "path": "apps/control/objective-planner/core-receipts.mjs",
+          "acceptedBlob": "7e39f800ac70b7191036d5f22d25d11f7e4b3629",
+          "integratedBlob": "7e39f800ac70b7191036d5f22d25d11f7e4b3629"
+        },
+        {
+          "path": "apps/control/objective-planner/identity.mjs",
+          "acceptedBlob": "74f7c9a60a4f1bab7982595a04e701caf847549b",
+          "integratedBlob": "74f7c9a60a4f1bab7982595a04e701caf847549b"
+        },
+        {
+          "path": "apps/control/objective-planner/materializer.mjs",
+          "acceptedBlob": "7af26d277ccf2a399951699fc6bb829c8e8940a4",
+          "integratedBlob": "7af26d277ccf2a399951699fc6bb829c8e8940a4"
+        },
+        {
+          "path": "apps/control/objective-planner/test/fixtures.mjs",
+          "acceptedBlob": "67cbdf12da70cec4ddc3be4b8e66e935a5cba8d9",
+          "integratedBlob": "67cbdf12da70cec4ddc3be4b8e66e935a5cba8d9"
+        },
+        {
+          "path": "apps/control/objective-planner/test/materializer.test.mjs",
+          "acceptedBlob": "2f440bc12c480c37266f5b6004127b5737c4e749",
+          "integratedBlob": "2f440bc12c480c37266f5b6004127b5737c4e749"
+        },
+        {
+          "path": "apps/control/objective-planner/test/receipts.test.mjs",
+          "acceptedBlob": "70eb6061265d660630aacf7f4c780dc524d7bf8f",
+          "integratedBlob": "70eb6061265d660630aacf7f4c780dc524d7bf8f"
+        }
+      ],
+      "previouslyIntegratedIdenticalPaths": []
+    },
+    {
+      "label": "Planner existing POST201 and GET200 compatibility",
+      "reviewedSource": "a18efc52738fd731cd9264cbe30366d73a705e61",
+      "predecessors": [
+        "b8b75414340fc6e0367f50dbefdb01c3830f823b"
+      ],
+      "integratedCommit": "cefcad89c5ff406cf696272c9166a0ebd6efd243",
+      "integratedTree": "3d6caf597f007168c088a06b9b7a07828aef73c7",
+      "files": [
+        {
+          "path": "apps/control/objective-planner/materializer.mjs",
+          "acceptedBlob": "fb99480bb9ec4427078506b9d2d86c2625e3cef0",
+          "integratedBlob": "fb99480bb9ec4427078506b9d2d86c2625e3cef0"
+        },
+        {
+          "path": "apps/control/objective-planner/test/materializer.test.mjs",
+          "acceptedBlob": "2be736b3412b41727d19d4d0cb03139e3f2203a4",
+          "integratedBlob": "2be736b3412b41727d19d4d0cb03139e3f2203a4"
+        }
+      ],
+      "previouslyIntegratedIdenticalPaths": []
+    },
+    {
+      "label": "secret-free native READS sibling",
+      "reviewedSource": "c72e7aafd60343d254a645763f51cbff5b30a22d",
+      "predecessor": "f54dc958e83eb4a146cfc2066518108be16b84b7",
+      "integratedCommit": "8ec0235294855b189addaff6e7bb1ad527a224d0",
+      "integratedTree": "f01a6be695cf3fc420921c4bf092078276b8bd8c",
+      "files": [
+        {
+          "path": "apps/runtime/native-authority/read-task-verifier.mjs",
+          "acceptedBlob": "246d21bb45dc3b296423aebcf8e336f3c6a224ab",
+          "integratedBlob": "246d21bb45dc3b296423aebcf8e336f3c6a224ab"
+        },
+        {
+          "path": "apps/runtime/native-authority/reads-client.mjs",
+          "acceptedBlob": "350a49c1e3f16bcb6e62ef97b08623f008c06570",
+          "integratedBlob": "350a49c1e3f16bcb6e62ef97b08623f008c06570"
+        },
+        {
+          "path": "apps/runtime/native-authority/reads-http.mjs",
+          "acceptedBlob": "fb1427fbba7389205c3fa3df1615ae589f6a7ca9",
+          "integratedBlob": "fb1427fbba7389205c3fa3df1615ae589f6a7ca9"
+        },
+        {
+          "path": "apps/runtime/native-authority/reads-owner.mjs",
+          "acceptedBlob": "8c147e9fc0bc4c7b5777f302037e9dc6706c3bd7",
+          "integratedBlob": "8c147e9fc0bc4c7b5777f302037e9dc6706c3bd7"
+        },
+        {
+          "path": "apps/runtime/native-authority/test/reads-fixture.mjs",
+          "acceptedBlob": "dddd05d2ea1703177f62d61a67e0a20c4b8e46a2",
+          "integratedBlob": "dddd05d2ea1703177f62d61a67e0a20c4b8e46a2"
+        },
+        {
+          "path": "apps/runtime/native-authority/test/reads.test.mjs",
+          "acceptedBlob": "25c758d07fe8e17434397e09386a5418ccd178eb",
+          "integratedBlob": "25c758d07fe8e17434397e09386a5418ccd178eb"
+        },
+        {
+          "path": "packages/contracts/runtime-0.2/reads.mjs",
+          "acceptedBlob": "5d5049747110919941c4868cb43987cba0edf915",
+          "integratedBlob": "5d5049747110919941c4868cb43987cba0edf915"
+        }
+      ]
+    },
+    {
+      "label": "accepted history public source and exact0.1.6 artifact",
+      "reviewedSource": "5aa13719e8706704785d142ad903fb42db51220e",
+      "predecessor": "936ef078c707d25669a78cd5ae84772cbd265e9f",
+      "integratedCommit": "34f938a560339104ecc877e0f94a5f979f832eb2",
+      "integratedTree": "fb526b2dcaa2956b4c8a07c155078816ecc73682",
+      "files": [
+        {
+          "path": "apps/control/conversations/history/http.mjs",
+          "acceptedBlob": "944aec68ad145c6ec6ac4c4706cd13b657f863e5",
+          "integratedBlob": "944aec68ad145c6ec6ac4c4706cd13b657f863e5"
+        },
+        {
+          "path": "apps/control/conversations/history/protocol.mjs",
+          "acceptedBlob": "178194fdb98627680b9b85a0f2111350963c4e3a",
+          "integratedBlob": "178194fdb98627680b9b85a0f2111350963c4e3a"
+        },
+        {
+          "path": "apps/control/conversations/test/history-http.test.mjs",
+          "acceptedBlob": "087c1629585924180df7a98dd9007c51fc849d69",
+          "integratedBlob": "087c1629585924180df7a98dd9007c51fc849d69"
+        },
+        {
+          "path": "packages/contracts/conversation-history/IMPLEMENTATION.md",
+          "acceptedBlob": "ffbf199049db0118321acba694f0b156174a4bf9",
+          "integratedBlob": "ffbf199049db0118321acba694f0b156174a4bf9"
+        },
+        {
+          "path": "packages/contracts/conversation-history/evidence/.gitattributes",
+          "acceptedBlob": "504b89093e0a9c90d475aa5a4ba85d3e14a5a866",
+          "integratedBlob": "504b89093e0a9c90d475aa5a4ba85d3e14a5a866"
+        },
+        {
+          "path": "packages/contracts/conversation-history/evidence/PROVENANCE.json",
+          "acceptedBlob": "ca17bac3ca317c465622d5d9d128aa8c505343d7",
+          "integratedBlob": "ca17bac3ca317c465622d5d9d128aa8c505343d7"
+        },
+        {
+          "path": "packages/contracts/conversation-history/evidence/README.md",
+          "acceptedBlob": "66917141b56a5de80e0a6ece185e77a18ffaf5ce",
+          "integratedBlob": "66917141b56a5de80e0a6ece185e77a18ffaf5ce"
+        },
+        {
+          "path": "packages/contracts/conversation-history/evidence/capiro-meri-contracts-0.1.6.tgz",
+          "acceptedBlob": "1e9c450b986010426203f3348924f737fb78f9ff",
+          "integratedBlob": "1e9c450b986010426203f3348924f737fb78f9ff"
+        },
+        {
+          "path": "packages/contracts/conversation-history/evidence/tooling/history-memory.py",
+          "acceptedBlob": "03fff4f64a43b4d3b1fda9e251f4ceed4f75841f",
+          "integratedBlob": "03fff4f64a43b4d3b1fda9e251f4ceed4f75841f"
+        },
+        {
+          "path": "packages/contracts/conversation-history/evidence/tooling/history-tooling-profile-original.json",
+          "acceptedBlob": "ce42e3e47bd3b59085523bdfdec00a339fdb85ce",
+          "integratedBlob": "ce42e3e47bd3b59085523bdfdec00a339fdb85ce"
+        },
+        {
+          "path": "packages/contracts/conversation-history/evidence/tooling/history-tooling-profile.json",
+          "acceptedBlob": "fb8ae7581a5f3e315e70ef3e58181c159b69abc4",
+          "integratedBlob": "fb8ae7581a5f3e315e70ef3e58181c159b69abc4"
+        },
+        {
+          "path": "packages/contracts/conversation-history/evidence/tooling/history-tooling-stage-original.ps1",
+          "acceptedBlob": "812eeca2d5fb74fec72b5176c9940653e0d1b1ac",
+          "integratedBlob": "812eeca2d5fb74fec72b5176c9940653e0d1b1ac"
+        },
+        {
+          "path": "packages/contracts/conversation-history/evidence/tooling/history-tooling-stage.ps1",
+          "acceptedBlob": "5e499d5dd076ebe7869e75fd3a1a550ae766dce0",
+          "integratedBlob": "5e499d5dd076ebe7869e75fd3a1a550ae766dce0"
+        },
+        {
+          "path": "packages/contracts/conversation-history/evidence/tooling/history-verify-package.py",
+          "acceptedBlob": "db7c7f0c01dba8f68b6a7ea86d6841008e70f23e",
+          "integratedBlob": "db7c7f0c01dba8f68b6a7ea86d6841008e70f23e"
+        },
+        {
+          "path": "packages/contracts/conversation-history/evidence/tooling/package-verification.json",
+          "acceptedBlob": "50b17821671fc234bb4e3da7112fe2eefe603bd6",
+          "integratedBlob": "50b17821671fc234bb4e3da7112fe2eefe603bd6"
+        },
+        {
+          "path": "packages/contracts/conversation-history/evidence/tooling/package-verification.receipt.json",
+          "acceptedBlob": "5ee0bc6493543383f92329a3d26a88dc4c54c6e3",
+          "integratedBlob": "5ee0bc6493543383f92329a3d26a88dc4c54c6e3"
+        },
+        {
+          "path": "packages/contracts/conversation-history/evidence/tooling/package-verification.stderr.txt",
+          "acceptedBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+          "integratedBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+        },
+        {
+          "path": "packages/contracts/conversation-history/evidence/tooling/package-verification.stdout.txt",
+          "acceptedBlob": "f62a24f8f78f7b038ace12a63d44a3639648ca17",
+          "integratedBlob": "f62a24f8f78f7b038ace12a63d44a3639648ca17"
+        },
+        {
+          "path": "packages/contracts/conversation-history/evidence/tooling/preserved-inputs.json",
+          "acceptedBlob": "0a2d7639ac5288682e7af50b3d0d1a42a9481974",
+          "integratedBlob": "0a2d7639ac5288682e7af50b3d0d1a42a9481974"
+        },
+        {
+          "path": "packages/contracts/conversation-history/evidence/tooling/stage-1.receipt.json",
+          "acceptedBlob": "d9181a7af68581844248dcfefff33d7bbad95de1",
+          "integratedBlob": "d9181a7af68581844248dcfefff33d7bbad95de1"
+        },
+        {
+          "path": "packages/contracts/conversation-history/evidence/tooling/stage-1.stderr.txt",
+          "acceptedBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+          "integratedBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+        },
+        {
+          "path": "packages/contracts/conversation-history/evidence/tooling/stage-1.stdout.txt",
+          "acceptedBlob": "9d0245f13e1c381b244574d4d11216a51033bcf4",
+          "integratedBlob": "9d0245f13e1c381b244574d4d11216a51033bcf4"
+        },
+        {
+          "path": "packages/contracts/conversation-history/evidence/tooling/stage-2.receipt.json",
+          "acceptedBlob": "a885b6da81e66ccd3b530ff23607b14503ee93b3",
+          "integratedBlob": "a885b6da81e66ccd3b530ff23607b14503ee93b3"
+        },
+        {
+          "path": "packages/contracts/conversation-history/evidence/tooling/stage-2.stderr.txt",
+          "acceptedBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+          "integratedBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+        },
+        {
+          "path": "packages/contracts/conversation-history/evidence/tooling/stage-2.stdout.txt",
+          "acceptedBlob": "0f05fe26547419f0f6168d6672926b5455d1145a",
+          "integratedBlob": "0f05fe26547419f0f6168d6672926b5455d1145a"
+        },
+        {
+          "path": "packages/contracts/conversation-history/evidence/tooling/stage-3.receipt.json",
+          "acceptedBlob": "fbf859666f844f691f4f6ddfe59747bb61f15b99",
+          "integratedBlob": "fbf859666f844f691f4f6ddfe59747bb61f15b99"
+        },
+        {
+          "path": "packages/contracts/conversation-history/evidence/tooling/stage-3.stderr.txt",
+          "acceptedBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+          "integratedBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+        },
+        {
+          "path": "packages/contracts/conversation-history/evidence/tooling/stage-3.stdout.txt",
+          "acceptedBlob": "0f05fe26547419f0f6168d6672926b5455d1145a",
+          "integratedBlob": "0f05fe26547419f0f6168d6672926b5455d1145a"
+        },
+        {
+          "path": "packages/contracts/conversation-history/evidence/tooling/stage-4-attempt1.receipt.json",
+          "acceptedBlob": "f14670698a372cfd667b20a6ff6c4cfbcd4396d7",
+          "integratedBlob": "f14670698a372cfd667b20a6ff6c4cfbcd4396d7"
+        },
+        {
+          "path": "packages/contracts/conversation-history/evidence/tooling/stage-4-attempt1.stderr.txt",
+          "acceptedBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+          "integratedBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+        },
+        {
+          "path": "packages/contracts/conversation-history/evidence/tooling/stage-4-attempt1.stdout.txt",
+          "acceptedBlob": "4115c4f17389c4331fc8ac64127466ce4a33c0a1",
+          "integratedBlob": "4115c4f17389c4331fc8ac64127466ce4a33c0a1"
+        },
+        {
+          "path": "packages/contracts/conversation-history/evidence/tooling/stage-4.receipt.json",
+          "acceptedBlob": "34a0376df93f3352d69bc4af81fa87c2ff269b03",
+          "integratedBlob": "34a0376df93f3352d69bc4af81fa87c2ff269b03"
+        },
+        {
+          "path": "packages/contracts/conversation-history/evidence/tooling/stage-4.stderr.txt",
+          "acceptedBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+          "integratedBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+        },
+        {
+          "path": "packages/contracts/conversation-history/evidence/tooling/stage-4.stdout.txt",
+          "acceptedBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+          "integratedBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+        },
+        {
+          "path": "packages/contracts/conversation-history/evidence/tooling/stage-5.receipt.json",
+          "acceptedBlob": "4d9c95581deacf5f5434331bcfb2c6d09f3460d4",
+          "integratedBlob": "4d9c95581deacf5f5434331bcfb2c6d09f3460d4"
+        },
+        {
+          "path": "packages/contracts/conversation-history/evidence/tooling/stage-5.stderr.txt",
+          "acceptedBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+          "integratedBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+        },
+        {
+          "path": "packages/contracts/conversation-history/evidence/tooling/stage-5.stdout.txt",
+          "acceptedBlob": "8c1b0d57cc1aefe22275e56aac87dee405d36210",
+          "integratedBlob": "8c1b0d57cc1aefe22275e56aac87dee405d36210"
+        },
+        {
+          "path": "packages/contracts/conversation-history/evidence/tooling/stage-6.receipt.json",
+          "acceptedBlob": "30b71ec1d079aa2110d3ee3acc3a71608e509c10",
+          "integratedBlob": "30b71ec1d079aa2110d3ee3acc3a71608e509c10"
+        },
+        {
+          "path": "packages/contracts/conversation-history/evidence/tooling/stage-6.stderr.txt",
+          "acceptedBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+          "integratedBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+        },
+        {
+          "path": "packages/contracts/conversation-history/evidence/tooling/stage-6.stdout.txt",
+          "acceptedBlob": "ae883d3407f67e69ed2b38dea1cff95df99360f6",
+          "integratedBlob": "ae883d3407f67e69ed2b38dea1cff95df99360f6"
+        },
+        {
+          "path": "packages/contracts/conversation-history/protocol.mjs",
+          "acceptedBlob": "d2cf5616e3dfca2ae0f7eda1ca3492f37bd37d65",
+          "integratedBlob": "d2cf5616e3dfca2ae0f7eda1ca3492f37bd37d65"
+        },
+        {
+          "path": "packages/contracts/conversation-history/receive.mjs",
+          "acceptedBlob": "05eb8663adfbcee0c618e1fad86c25fee4354379",
+          "integratedBlob": "05eb8663adfbcee0c618e1fad86c25fee4354379"
+        },
+        {
+          "path": "packages/contracts/conversation-history/schema.mjs",
+          "acceptedBlob": "ec5ba3868e6051c21fcd7e135f8a23674dbd5f98",
+          "integratedBlob": "ec5ba3868e6051c21fcd7e135f8a23674dbd5f98"
+        },
+        {
+          "path": "packages/contracts/conversation-history/semantics.mjs",
+          "acceptedBlob": "8861778d0d024ef10477129105b1058db68d64a6",
+          "integratedBlob": "8861778d0d024ef10477129105b1058db68d64a6"
+        },
+        {
+          "path": "packages/contracts/conversation-history/shape.mjs",
+          "acceptedBlob": "f251c8ace629d20a25bd54d303aa749aec977433",
+          "integratedBlob": "f251c8ace629d20a25bd54d303aa749aec977433"
+        },
+        {
+          "path": "packages/contracts/conversation-history/validate.mjs",
+          "acceptedBlob": "40cdfc57ab6bc6b89edf0d32402a13b29b6eb762",
+          "integratedBlob": "40cdfc57ab6bc6b89edf0d32402a13b29b6eb762"
+        },
+        {
+          "path": "packages/contracts/dist/conversation-history.d.ts",
+          "acceptedBlob": "9dd07bf6132ba7f2dfc6ee8aba9b784ba0514f41",
+          "integratedBlob": "9dd07bf6132ba7f2dfc6ee8aba9b784ba0514f41"
+        },
+        {
+          "path": "packages/contracts/dist/conversation-history.metadata.json",
+          "acceptedBlob": "3cc968b60834601984d7f608e9d6071786fcbae0",
+          "integratedBlob": "3cc968b60834601984d7f608e9d6071786fcbae0"
+        },
+        {
+          "path": "packages/contracts/dist/conversation-history.mjs",
+          "acceptedBlob": "4d25dcc634a818b81f9fcf1eedfb760387fe3302",
+          "integratedBlob": "4d25dcc634a818b81f9fcf1eedfb760387fe3302"
+        },
+        {
+          "path": "packages/contracts/dist/conversation-history.schema.json",
+          "acceptedBlob": "ccbdb513abcac85a084301a395b2ee5b2a236a47",
+          "integratedBlob": "ccbdb513abcac85a084301a395b2ee5b2a236a47"
+        },
+        {
+          "path": "packages/contracts/generate-history.mjs",
+          "acceptedBlob": "1fecd4b1f80aeac8c60bb00049be6a4ff4329352",
+          "integratedBlob": "1fecd4b1f80aeac8c60bb00049be6a4ff4329352"
+        },
+        {
+          "path": "packages/contracts/package.json",
+          "acceptedBlob": "4d4418cc7c87733b8159bf4020b6a851ad0840d3",
+          "integratedBlob": "4d4418cc7c87733b8159bf4020b6a851ad0840d3"
+        },
+        {
+          "path": "packages/contracts/test/conversation-history-fixture.mjs",
+          "acceptedBlob": "3ef0a1e9b754593b2a24d2c2909b728e61df315c",
+          "integratedBlob": "3ef0a1e9b754593b2a24d2c2909b728e61df315c"
+        },
+        {
+          "path": "packages/contracts/test/conversation-history-public-types.ts",
+          "acceptedBlob": "4a6cc66564be10bcdd742685b37af46e9b8f2c43",
+          "integratedBlob": "4a6cc66564be10bcdd742685b37af46e9b8f2c43"
+        },
+        {
+          "path": "packages/contracts/test/conversation-history-public.test.mjs",
+          "acceptedBlob": "7c66a4194decd85cac3310416b594a714c2e2069",
+          "integratedBlob": "7c66a4194decd85cac3310416b594a714c2e2069"
+        },
+        {
+          "path": "packages/contracts/test/conversation-history-source.test.mjs",
+          "acceptedBlob": "1a430929f75517b249bda58d39e150595388bc6f",
+          "integratedBlob": "1a430929f75517b249bda58d39e150595388bc6f"
+        }
+      ]
     }
   ],
-  "sourceHead": "eaca77e1ea6f8b805a3a6942e179bcb8acd7d0e4",
-  "sourceTree": "1dcbd97082925dad84fd8648443ec035fba43b19",
+  "sourceHead": "34f938a560339104ecc877e0f94a5f979f832eb2",
+  "sourceTree": "fb526b2dcaa2956b4c8a07c155078816ecc73682",
   "validation": {
     "command": "node --max-old-space-size=128 --test --test-isolation=none --test-concurrency=1 --test-timeout=15000 --test-reporter=tap scripts/qualification/assembled-image/source-proof.test.mjs apps/control/retention/test/watermark-migration-source.test.mjs",
     "node": "v24.19.0",
@@ -818,42 +1475,42 @@
       "historicalSourceSha256": "4b8ad2df837a2a7c7ae26d7d23ca60017b50a9b186193553093195d31e80a71f",
       "hSha256": "2de6bce64ace8a6d2b5d0ed205f9ffb5b7ac2884d6109df19bc629b13d48c1cb",
       "currentSha256": "d385fd62d5cfb26bc184d26c2659298fde1ba8ba9c2d5ca3210429a8a3d03420",
-      "reason": "Reviewed startup/history plus complete model propagation and actual READS runner forwarding; frozen candidate unchanged, image/runtime HOLD"
+      "reason": "Exact accepted source; retained historical h is unchanged and HOLD"
     },
     {
       "path": "apps/runtime/control.mjs",
       "historicalSourceSha256": "904b12d08007bc9803b57f26afbf0e0763cfe80f7cb17aedc581ba77135c4e52",
       "hSha256": "ec63730199cbc092042dab6b6694506087530ee85572e1daadfb478bf76c5757",
       "currentSha256": "db70320a96c325710b0fa0eaed956e176f130ca706912be99347cad5f97147b4",
-      "reason": "Reviewed startup/history plus complete model propagation and actual READS runner forwarding; frozen candidate unchanged, image/runtime HOLD"
+      "reason": "Exact accepted source; retained historical h is unchanged and HOLD"
     },
     {
       "path": "apps/runtime/conversation-runner.mjs",
       "historicalSourceSha256": "ff9a037395eef3d89f62573e53c26c2c038dc5b5ffb59c37266a7c873cc48794",
       "hSha256": "9b6ac5506161513caab33a41c547b634dc314426b51e274f376340556a1ba26d",
       "currentSha256": "4afd72fb8605bc557343d18b55c920c04e7299e40890612352484cc971356a3d",
-      "reason": "Reviewed startup/history plus complete model propagation and actual READS runner forwarding; frozen candidate unchanged, image/runtime HOLD"
+      "reason": "Exact accepted source; retained historical h is unchanged and HOLD"
     },
     {
       "path": "apps/runtime/native-authority/remote-composition.mjs",
       "historicalSourceSha256": "eaa996c353a37cba9f0953f7997e759459a273b24cd8018ad1f855225ad44017",
       "hSha256": "2c4162da6af533902090d7aa2861278c892335a90b4e4a75cbae99b80ba5ab4b",
       "currentSha256": "c6fa03643c633c59b019c2c220696ebaa28ce7e35405dfb34b3b52a4b26c2028",
-      "reason": "Reviewed startup/history plus complete model propagation and actual READS runner forwarding; frozen candidate unchanged, image/runtime HOLD"
+      "reason": "Exact accepted source; retained historical h is unchanged and HOLD"
     },
     {
       "path": "apps/runtime/prepared-candidate.mjs",
       "historicalSourceSha256": "698f9adbb5ebda2e4e964c4c7f6d8425932141dcd803716b43372e26d7625d5a",
       "hSha256": "56a56689f2bf0ee365f9f1b7e479f5f5e693ae05998d9e80057c3e8da278b603",
       "currentSha256": "2cebeeb07ac10a6673cb7c3250d76f49c02f22f10c2d841ba4633d7c58e7d7d6",
-      "reason": "Reviewed startup/history plus complete model propagation and actual READS runner forwarding; frozen candidate unchanged, image/runtime HOLD"
+      "reason": "Exact accepted source; retained historical h is unchanged and HOLD"
     },
     {
       "path": "apps/runtime/remote-conversation-runner.mjs",
       "historicalSourceSha256": "830775231cd1a96bce6fc8c5d81a2092be883712080655163270149032dd45ec",
       "hSha256": "830775231cd1a96bce6fc8c5d81a2092be883712080655163270149032dd45ec",
       "currentSha256": "f945a77f0b215db5ff52bdc467339f0b930133a7a740dc389627ab82ce6be15d",
-      "reason": "Reviewed startup/history plus complete model propagation and actual READS runner forwarding; frozen candidate unchanged, image/runtime HOLD"
+      "reason": "Exact accepted source; retained historical h is unchanged and HOLD"
     }
   ],
   "historicalCandidates": {
@@ -921,16 +1578,111 @@
     "tapSha256": "0812abe1d0194c20127453194d3984578c1db62f12d8c248ee8a464d59aeac35"
   },
   "combinedCheckpoint": {
-    "sourceHead": "eaca77e1ea6f8b805a3a6942e179bcb8acd7d0e4",
-    "sourceTree": "1dcbd97082925dad84fd8648443ec035fba43b19",
-    "tests": "pending bounded combined loading/startup/schema checks only after complete source assembly",
+    "sourceHead": "34f938a560339104ecc877e0f94a5f979f832eb2",
+    "sourceTree": "fb526b2dcaa2956b4c8a07c155078816ecc73682",
+    "predecessorJointPin": "f54dc958e83eb4a146cfc2066518108be16b84b7",
+    "tests": "3/3 actual integrated inert-composition controls; no socket/DB/provider/material calls, real canonical validators with explicit third-party dependency reuse",
     "excluded": [
-      "unreviewed model terminal-fence tighteningaf5804",
-      "new factory85620023",
-      "public history export/e5/936 successors",
-      "retention current-head855e423 and activation",
-      "later schedule role/config",
-      "product proxy Python changes not required for model issuer loading"
+      "native READS shared routing/bootstrap and newly canonical original-run preparation",
+      "readinessd156 pending exact acceptance",
+      "new preview custody/source-evidence integration",
+      "new Planner continuation and actual Core receiving authority",
+      "later schedule worker role/config and independent Python product proxy source"
+    ],
+    "publicHistoryArtifactAccepted": "5aa13719e8706704785d142ad903fb42db51220e",
+    "exclusionsNote": "Earlier pending public artifact exclusion superseded by parent exact acceptance. Native shared composition/d156/new preview/Planner continuation still not integrated.",
+    "activeSharedSourceBase": "8ec0235294855b189addaff6e7bb1ad527a224d0",
+    "sourceBasePublication": {
+      "remote": "https://github.com/neo-capiro/meri-greenfield.git",
+      "branch": "dot/meri-reviewed-integration-20261016",
+      "verifiedRemotePin": "8ec0235294855b189addaff6e7bb1ad527a224d0",
+      "reviewRejection": "Initial focused push rejected as unverified destination. git remote get-url proved the exact user-named repository and absent alternate push URL; the same authorized focused push was then approved, succeeded and ls-remote confirmed. No workaround destination or outstanding denial."
+    }
+  },
+  "combinedLoading": {
+    "source": "34f938a560339104ecc877e0f94a5f979f832eb2",
+    "argv": [
+      "C:/Program Files/nodejs/node.exe",
+      "--max-old-space-size=128",
+      "--import",
+      "./audit-evidence/dependency-reuse.mjs",
+      "--test",
+      "--test-isolation=none",
+      "--test-concurrency=1",
+      "--test-timeout=15000",
+      "--test-reporter=tap",
+      "audit-evidence/combined-loading.test.mjs"
+    ],
+    "pid": 33088,
+    "startedAt": "2026-10-16T03:45:10.607182+00:00",
+    "finishedAt": "2026-10-16T03:45:12.146763+00:00",
+    "wallMs": 1531.0,
+    "primaryExit": 0,
+    "cleanupExit": 0,
+    "ownedProcessRemains": false,
+    "timedOut": false,
+    "hardWallSeconds": 60,
+    "heapMiB": 128,
+    "availableCommitBefore": 2860552192,
+    "availablePhysicalBefore": 11813842944,
+    "peakMemory": "not measured",
+    "classification": "Actual integrated module loading and inert composition with real canonical validators and third-party packages reused read-only; synthetic refusing SQL/store inputs; no socket/service/material/provider/DB or child test processes",
+    "tapSha256": "c268af7b3b507fa6fc56438c0af1e8978ef7b7330d83e71a26abd1df6d20580e",
+    "loaderSha256": "7f916520fcbe7b9fe18588bf452e5d10899b2eeb6dc6b4ca0a0cd64252703547",
+    "priorAttempts": [
+      {
+        "number": 1,
+        "outcome": "0 assertions executed; missing @js-temporal/polyfill, fixed by read-only exact0.5.1 package reuse"
+      },
+      {
+        "number": 2,
+        "outcome": "0 assertions executed; missing ai, fixed by read-only exact7.0.137 package reuse"
+      },
+      {
+        "number": 3,
+        "outcome": "0 assertions executed; product package alias absent, mapped to this integrated checkout public exports; no peer product source imported"
+      },
+      {
+        "number": 4,
+        "outcome": "2/3; Linux fixture path spelling failed canonical native Windows normalization. Reused existing prepared-run-bindings test normalization; no validator or production source change."
+      }
     ]
+  },
+  "historyArtifact": {
+    "source": "5aa13719e8706704785d142ad903fb42db51220e",
+    "sha256": "050ce4a5a0facb0c3df4dbc14c2dedb5b49bfdfe618c4f88148f7779300313a4",
+    "integrity": "sha512-cscsnPoKIF2CCCIzXyOSQQZcOiHCbx0gfkGCqfcjfdJ41K96eUz61UDjtBKNSCSNJQWspZDqXprKj9nTyvQSWw==",
+    "entries": 31,
+    "preservedBaseInputs": 25,
+    "parentDisposition": "ACCEPT_ARTIFACT_FOR_EXACT_UI_ADOPTION",
+    "independentCheck": "31 regular safe archive members byte-equal exact source; integrity/four outputs/25 prior files/unchanged generator inputs verified; inspector import/default assumption corrected and disclosed"
+  },
+  "localQueue": {
+    "state": "FREE_NO_OWNED_PROCESS",
+    "history": {
+      "generator": 0,
+      "determinism": 0,
+      "firstTypeAttempt": 2,
+      "correctedTypeAttempt": 0,
+      "publicBytesPassed": 30,
+      "package": 0,
+      "allCleanup": 0
+    },
+    "coreMembership": {
+      "attempt1": "2 runtime-error suites,0 cases,1/0 primary/cleanup",
+      "attempt2": "59/70,11 assertion failures,1/0",
+      "attempt3": "27/28,real cancellation checkpoint failure,1/0",
+      "attempt4": "71/71 (29 VM+42 actual NestDI),0/0,7556ms,PID37352 exited,author-run with scripted DB/Clerk",
+      "sourceSet": "8df09fd015f0fab593bc79bc34d2bfb9dddc9e37d3f529875910ae28818ceab9",
+      "actualProviderOrDatabase": false
+    },
+    "broadIntegratedTypesBrowserDatabase": "NOT_RUN_PENDING_COMPLETE_SOURCE_AND_SERIALIZED_CAPABILITY_PROFILE"
+  },
+  "ownershipFollowup": {
+    "StartupC": "Shared original/target compiler facts, native registry/controller/candidate/config/bootstrap/runner seams. Original static allocations remain unavailable; same canonical issuer only.",
+    "BudgetB": "prepareOriginal({signal}) in prepared-run-bindings plus new original-run-preparation.mjs/test and trusted fact producer approvedReads/read-operation propagation; no second issuer/journal.",
+    "Reads": "New retained authority contract/control-owner/Core client/broker/meri-context plus narrow delegatedTransport source seam; trusted canonical run/request/task assertion and real Core principal/resource revision join. No current credential supplied.",
+    "Artifact": "New custody3b/3ca source and actual conditional evidence/source-head recovery sibling source remain separate exact review; accepted856b read-only projection integrated.",
+    "UI": "Exact0.1.6 adoption and native history client/proxy, narrowly additive package/lock/provenance/boundary entries; bootstrap/reload no-identity Send remains failclosed."
   }
 }
