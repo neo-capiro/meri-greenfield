@@ -57,7 +57,7 @@ test('failure after marking acceptance rolls back the allocation, run and event 
 });
 test('authority check invalidated during acceptance refuses release and rolls back all three records',async()=>{
  const f=initialInputFixture(),p=await f.proposal();await f.store().initialInputs.claim(p.facts,check);let revoked=false;f.faults.onAccept=()=>{revoked=true;};
- await assert.rejects(f.store().initialInputs.accept(p.acceptance,()=>{if(revoked)throw Error('SYNTHETIC_AUTHORITY_REVOKED');}),/SYNTHETIC_AUTHORITY_REVOKED/);
+ await assert.rejects(f.store().initialInputs.accept(p.acceptance,()=>{if(revoked)throw Error('SYNTHETIC_AUTHORITY_REVOKED');}),/STORE_UNAVAILABLE/);
  assert.equal(f.state.runs.size,0);assert.equal(f.state.events.size,0);assert.equal(f.allocations.get(f.key()).state,'RESERVED');
 });
 test('lost acceptance ACK reconstructs the same accepted input without a duplicate event',async()=>{
@@ -83,4 +83,18 @@ for(const phase of ['claim','accept'])test(`expiry during ${phase} COMMIT cannot
  const f=initialInputFixture(),p=await f.proposal();if(phase==='accept')await f.store().initialInputs.claim(p.facts,check);f.faults.onCommit=()=>f.advance(30000);
  await assert.rejects(phase==='claim'?f.store().initialInputs.claim(p.facts,check):f.store().initialInputs.accept(p.acceptance,check),/STORE_COMMIT_UNKNOWN/);
  assert.equal(f.allocations.size,1);assert.equal(f.allocations.get(f.key()).state,phase==='claim'?'RESERVED':'ACCEPTED');
+});
+test('global request identity collision cannot create another tenant/conversation slot',async()=>{
+ const f=initialInputFixture(),p=await f.proposal();await f.store().initialInputs.claim(p.facts,check);
+ const other=await f.proposal({context:{binding:{...binding,tenantId:'tenant-other',conversationId:id(90)},scopes:[{...p.facts.scopes[0],tenantId:'tenant-other'}]}});
+ await assert.rejects(f.store().initialInputs.claim(other.facts,check),/INITIAL_INPUT_CONFLICT/);assert.equal(f.allocations.size,1);assert.equal(f.state.runs.size,0);
+});
+test('original normalized calendar window is retained, never recomputed at acceptance or replay',async()=>{
+ const f=initialInputFixture(),p=await f.proposal({input:{requestId:id(60),prompt:'Original dated prompt',windowRequest:{basis:'calendar-week',offset:-1,timezone:'America/New_York',weekStartsOn:'monday'}}});
+ await f.store().initialInputs.claim(p.facts,check);f.advance(1000);const saved=await f.store().initialInputs.accept(p.acceptance,check);
+ assert.deepEqual(saved.request,p.acceptance.request);assert.equal(hash(saved.request),p.facts.requestSha256);const retry=await f.store().initialInputs.accept(p.acceptance,check);assert.deepEqual(retry.request.window,saved.request.window);
+});
+test('current selected client must match the original allocation even if the run scope array is unchanged',async()=>{
+ const f=initialInputFixture(),p=await f.proposal();await f.store().initialInputs.claim(p.facts,check);
+ await assert.rejects(f.store().initialInputs.accept({...p.acceptance,selectedClientId:id(99)},check),/INITIAL_INPUT_CONFLICT/);assert.equal(f.state.runs.size,0);assert.equal(f.state.events.size,0);
 });

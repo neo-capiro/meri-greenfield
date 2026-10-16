@@ -14,7 +14,7 @@ export function initialInputFixture(){
   f.state.calls.push(sql);let rows=[];
   if(sql.startsWith('SELECT *')){const r=allocations.get(key(p));if(r)rows=[r];}
   else if(sql.startsWith('INSERT INTO')){
-   if(!allocations.has(key(p))&&![...allocations.values()].some(r=>r.tenant_id===p[0]&&r.request_id===p[3])){
+   if(!allocations.has(key(p))&&![...allocations.values()].some(r=>r.request_id===p[3])){
     const r={tenant_id:p[0],conversation_id:p[1],run_id:p[2],request_id:p[3],allocation:copy(p[4]),allocation_sha256:p[5],state:'RESERVED',accepted_request_sha256:null};allocations.set(key(p),r);rows=[r];
    }
   }else if(sql.startsWith('UPDATE')){const r=allocations.get(key(p));if(r?.state==='RESERVED'&&r.allocation_sha256===p[2]){r.state='ACCEPTED';r.accepted_request_sha256=p[3];rows=[r];}
