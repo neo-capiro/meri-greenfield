@@ -17,6 +17,17 @@ their historical reference-classification checks. Their existing HOLD on a newly
 unclassified reference in accepted `reads/results.mjs` is preserved separately;
 this task does not re-audit or reclassify accepted source to refresh read coverage.
 
+Focused checkpoint `be3eb2b2c3f83fb2673fd49916ce1fee88660a29` passed 14/14
+offline source-mapping/drift controls with Node heap 128 MiB, hard wall 120 seconds,
+primary/cleanup exits 0 and zero remaining owned processes. TAP SHA256:
+`dacedb67f1b0c35a3d23e40b71a92d85f77edbadf13d82c275d26555da07a7de`.
+The initial raw-versus-canonical manifest-pin error and subsequent full-generator
+reference-classification HOLD remain in separate execution receipts; neither is
+relabelled as a pass. No accepted runtime suite, compiler, SDK session or producer
+was executed. Remaining implementation work is 63 new source adapters across 33
+families, requiring concrete admitted producer protocols and their current-context
+owners; there is no existing adapter with an uncompleted general-read exposure.
+
 Date: 15 October 2026. Lane: Fable `scope-ledger`, branch `fable/a5-scope-ledger-20261015`, base `e76189da` (`fable/p3-general-reads-design-20261015`). Documentation and source-evidence only: no product code, contract, catalog, lockfile, migration, credential or deployment is changed. **Nothing in this ledger is live, enabled, qualified or accepted.** Every gate below is open. dot independently verifies exact commits and records ACCEPT or HOLD.
 
 This ledger answers the comprehensive audit's request ([README "Corrected tool and scope accounting"](https://github.com/neo-capiro/meri-greenfield/blob/82a015083f1965851ffddbc05d4f181bb90ecac2/docs/coordination/audits/meri-comprehensive-20261015/README.md) and [product-integration "End-goal scope accounting"](https://github.com/neo-capiro/meri-greenfield/blob/82a015083f1965851ffddbc05d4f181bb90ecac2/docs/coordination/audits/meri-comprehensive-20261015/meri-audit-product-integration.md)) for one reconciled final scope ledger that names every inclusion, every continued exclusion, its owner and its acceptance gate, without silently perpetuating the 43 historical exclusions.
