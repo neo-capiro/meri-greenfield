@@ -103,3 +103,8 @@ test('submit ACK recovery keeps exact request identity and refuses prompt substi
   assert.deepEqual(await refused.json(),{error:{code:'CONVERSATION_TURN_CONFLICT',outcome:'NOT_DISPATCHED'}});assert.equal(f.state.nextRuns.size,1);
  }finally{f.close();}
 });
+for(const [path,input] of [['list',{limit:null}],['transcript',{conversationId:binding.conversationId,limit:null}],['transcript',{conversationId:binding.conversationId,after:null}]])
+ test(`explicit null ${path} ${Object.hasOwn(input,'after')?'after':'limit'} is refused without coercion`,async()=>{
+  const f=await fixture();try{await f.turn(1);const response=await f.post(path,input);assert.equal(response.status,400);assert.deepEqual(await response.json(),{error:{code:'CONVERSATION_CURSOR_INVALID'}});}
+  finally{f.close();}
+ });

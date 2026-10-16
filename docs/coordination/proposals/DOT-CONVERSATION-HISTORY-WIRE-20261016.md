@@ -14,7 +14,7 @@ Closed request:
 {"before":{"createdAt":"2026-10-16T12:00:00.000Z","conversationId":"<uuid>"},"limit":50}
 ```
 
-Both fields optional; before defaults to null, limit to 50 (1–100). A non-null cursor contains exactly an ISO UTC `createdAt` and lower-case UUID `conversationId`. Tenant/actor/client fields are refused.
+Both fields optional; before defaults to null, limit to 50 (1–100). Explicit null is allowed only for before; null limit/after values are refused rather than normalized. A non-null cursor contains exactly an ISO UTC `createdAt` and lower-case UUID `conversationId`. Tenant/actor/client fields are refused.
 
 Response:
 
