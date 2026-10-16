@@ -4,9 +4,9 @@ import {candidateFixture} from './prepared-candidate-fixture.mjs';
 import {captureGeneralReadPort} from '../general-read-port.mjs';
 import * as configModule from '../config.mjs';
 import * as preparationModule from '../native-authority/preparation-intent.mjs';
-const f=candidateFixture();let activityOptions,secrets=0;
+const f=candidateFixture();let activityOptions,secrets=0,taskSecret=f.secret.task;
 mock.module('../../worker/conversation/activity.mjs',{namedExports:{createConversationActivity(options){activityOptions=options;return async()=> 'synthetic-no-query';}}});
-mock.module('../config.mjs',{namedExports:{...configModule,async readSecret(){secrets++;return Buffer.from(f.secret.task);}}});
+mock.module('../config.mjs',{namedExports:{...configModule,async readSecret(){secrets++;return Buffer.from(taskSecret);}}});
 mock.module('../native-client.mjs',{namedExports:{createNativeCapabilityClient(){return {async call(){throw Error('No native effect');}};}}});
 mock.module('../native-authority/preparation-intent.mjs',{namedExports:{...preparationModule,compileNativePreparationIntent(value){return value;}}});
 const {assembleConversationRunner}=await import('../conversation-runner.mjs');
@@ -33,4 +33,10 @@ for(const enabled of [false,true])test(`remote runner retains passive read port 
 });
 test('malformed borrowed read port refuses remote startup before secret or owned resource allocation',async()=>{
  const before=secrets;let getters=0;await assert.rejects(runRemoteConversation({}, {generalReads:{get execute(){getters++;return ()=>{};},readAvailability(){}}}));assert.equal(getters,0);assert.equal(secrets,before);
+});
+
+test('remote runner constructs the canonical native client from bootstrap config and TASK credential when no borrowed port exists',async()=>{
+ const {readsFixture}=await import('../native-authority/test/reads-fixture.mjs'),r=await readsFixture(),{createExecutionBinding}=await import('../../control/conversations/execution-boundary.mjs'),configuration=remoteConfiguration(true);configuration.binding=r.binding;configuration.remoteTask.original=createExecutionBinding({binding:r.binding,versions:f.configuration.versions,plan:{synthetic:true},expiresAtMs:r.now()+1000});configuration.remoteTask.approvedReads=r.config;taskSecret=r.credential;const clock=mock.method(Date,'now',r.now);let calls=0;
+ try{const result=await runRemoteConversation(configuration,{async fetchImpl(url,init){calls++;assert.equal(init.headers.authorization,'Bearer '+r.credential);assert.equal(init.credentials,'omit');return r.application.handle(new Request(url,init));},sessionFactory(){assert.fail('No session initialization');},createWorker(){return {query(){assert.fail('No SDK');},application:{async handle(){return null;}},async close(){}};},async listen(){return {async close(){}};},async execute(_c,options){const snapshot=await options.generalReads.readAvailability();assert.ok(snapshot.installation.operations.length);return 'actual-native-client';}});assert.equal(result,'actual-native-client');assert.equal(calls,1);
+ }finally{taskSecret=f.secret.task;clock.mock.restore();}
 });

@@ -4,13 +4,14 @@ import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/ex
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
 import {assertWorkerAuthorization,runOwnerOperations} from '../../../packages/contracts/runtime-0.2/validate.mjs';
 import {sdkSessionOperations} from '../../../packages/contracts/runtime-0.2/session.mjs';
+import {nativeReadOperations} from '../../../packages/contracts/runtime-0.2/reads.mjs';
 import {parseAdmittedGrantSet} from '../../gateway/budget/admitted-run-binding.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 export const taskFault=code=>Object.assign(Error('NATIVE_TASK_'+code),{code:'NATIVE_TASK_'+code});
 export const capabilityDigest=token=>createHash('sha256').update(token).digest('hex');
 export function matchesCapability(token,digest){return typeof token==='string'&&/^\S{1,8192}$/u.test(token)&&timingSafeEqual(Buffer.from(capabilityDigest(token),'hex'),Buffer.from(digest,'hex'));}
-const vocabulary=new Set([...Object.keys(runOwnerOperations),...sdkSessionOperations.map(op=>'runner/session/'+op)]);
+const vocabulary=new Set([...Object.keys(runOwnerOperations),...sdkSessionOperations.map(op=>'runner/session/'+op),...nativeReadOperations]);
 /** Inert access compiler shared by original allocation preflight and admitted verification. */
 export function compileNativeTaskAccess(configuration){
  const c=own(configuration,['identityCredential','taskCapabilitySha256','operations']),operations=data(c.operations);

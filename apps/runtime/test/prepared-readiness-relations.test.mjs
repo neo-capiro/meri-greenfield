@@ -1,0 +1,17 @@
+/** SYNTHETIC schema preflight over the actual candidate; Linux launch compiler borrowed, scripted SQL/identity, no DB/provider/cloud. */
+import test,{mock} from 'node:test';import assert from 'node:assert/strict';
+import {candidateFixture} from './prepared-candidate-fixture.mjs';
+import {storeFixture} from '../../control/conversations/test/store-fixture.mjs';
+import {createExecutionBinding} from '../../control/conversations/execution-boundary.mjs';
+import * as broker from '../native-authority/broker-stack.mjs';
+mock.module('../prepared-candidate-config.mjs',{namedExports:{compilePreparedCandidateConfiguration:value=>value}});
+mock.module('../native-authority/broker-stack.mjs',{namedExports:{...broker,compileNativeBrokerPlan:({runtime,plan,preparationIntent})=>({original:createExecutionBinding({binding:runtime.binding,versions:runtime.versions,plan,expiresAtMs:runtime.deadlineMs}),preparationIntent})}});
+const {assemblePreparedCandidate}=await import('../prepared-candidate.mjs');
+const tenant=['meri_product_budget.tenant_budgets','meri_product_budget.tenant_run_reservations'],issuance=['meri_conversations.run_issuances','meri_conversations.model_run_issuances'];
+function fixture({multi=false,missing}={}){const f=candidateFixture(),sql=storeFixture(),state={identityReads:0,queries:[],relations:[]};
+ sql.pool.query=async(query,args)=>{state.queries.push(query);if(query.startsWith('SELECT name,to_regclass')){state.relations=args[0];return {rows:args[0].map(name=>({name,relation:name===missing?null:name}))};}return {rows:[{cap_micro_usd:'1000',consumed_micro_usd:'0',quarantined:false}]};};
+ const fetchImpl=async(url,options)=>{state.identityReads++;const input=JSON.parse(options.body),principal={tenantId:f.binding.tenantId,actorId:f.binding.actorId},checkedAtMs=Date.now(),expiresAtMs=checkedAtMs+10000;return Response.json(url.endsWith('/identity')?{principal,identityRevision:'synthetic',checkedAtMs,expiresAtMs}:{principal,identityRevision:'synthetic',identitySha256:input.identitySha256,conversationId:f.binding.conversationId,selectedClientId:f.scopes[0].resourceId,contextRevision:'synthetic',checkedAtMs,expiresAtMs});};
+ const denied=async()=>{throw Error('No issuance or allocation');},candidate=assemblePreparedCandidate({configuration:f.configuration,pool:sql.pool,ecs:{send:denied},objects:{get:denied,put:denied},credentials:f.secret,fetchImpl,...(multi?{runIssuance:{prepare:denied,resolveFacts:denied,resolveCapability:denied},issuanceIntent:denied,admissionForBinding:denied}:{})});return {candidate,state};
+}
+for(const multi of [false,true])test(`schema preflight includes tenant policy/reservations and exact issuance owners, multi=${multi}`,async()=>{const f=fixture({multi});try{await f.candidate.readiness({});for(const name of tenant)assert.ok(f.state.relations.includes(name),name);for(const name of issuance)assert.equal(f.state.relations.includes(name),multi,name);assert.equal(new Set(f.state.relations).size,f.state.relations.length);assert.equal(f.state.identityReads,2);}finally{await f.candidate.close();}});
+for(const missing of [...tenant,...issuance])test(`missing ${missing} withholds readiness before identity or allocation`,async()=>{const f=fixture({multi:true,missing});try{await assert.rejects(f.candidate.readiness({}),/PREPARED_CANDIDATE_REFUSED/);assert.equal(f.state.identityReads,0);assert.equal(f.state.queries.length,1);}finally{await f.candidate.close();}});

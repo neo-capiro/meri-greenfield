@@ -28,7 +28,7 @@ test('multi-run bounds are a closed configuration declaration; ports are built o
 });
 test('the composed ports reach the canonical owners: prepare issues once through the durable issuer, binds facts, resolves the capability; the next-run window is bounded by the allocation schedule; admission per binding exposes revoke',async()=>{
  const x=fixture(),now=()=>Date.now(),b=createPreparedRunBindings({configuration:x.f.configuration,pool:x.pool,store:x.store,credentials:x.credentials,issuanceStore:createMemoryIssuanceStore(),capabilityAuthority:x.authority,modelGrants:x.modelGrants,now});
- assert.deepEqual(Object.keys(b).sort(),['admissionForBinding','configurationSha256','controlCapabilitySha256','facts','issuanceIntent','issuer','runIssuance','runWindowMs']);
+ assert.deepEqual(Object.keys(b).sort(),['admissionForBinding','configurationSha256','controlCapabilitySha256','facts','issuanceIntent','issuer','prepareOriginal','runIssuance','runWindowMs']);
  const intent=await b.issuanceIntent({binding:x.f.binding,source:null,request:{requestId:randomUUID()}});assert.ok(intent.expiresAtMs>now()&&intent.expiresAtMs<=now()+600000);
  const input={binding:x.f.binding,requestSha256:hash({prompt:'First prompt'}),expiresAtMs:x.config.runtime.deadlineMs};
  const prepared=await b.runIssuance.prepare(input);assert.equal(x.authority.generated,1);assert.equal(prepared.issuance.issuanceKey,hash(x.f.binding));assert.ok(prepared.factsSha256);assert.equal(prepared.controlCapabilitySha256,capabilityDigest(x.f.secret.control));
