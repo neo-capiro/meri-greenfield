@@ -17,7 +17,8 @@ export function previewConfiguration(value){
  if(value===undefined)return null;
  const p=own(value,['previews','renderer'],['maxPreviewBytes']);
  if(p.renderer!==null&&!isRendererPort(p.renderer))fail('DOCUMENT_CONFIGURATION',500);
- return Object.freeze({previews:{read:method(p.previews,'read'),commit:method(p.previews,'commit'),claim:method(p.previews,'claim'),recordObject:method(p.previews,'recordObject')},renderer:p.renderer,...(p.maxPreviewBytes===undefined?{}:{maxPreviewBytes:p.maxPreviewBytes})});
+ return Object.freeze({previews:{read:method(p.previews,'read'),commit:method(p.previews,'commit'),claim:method(p.previews,'claim'),recordObject:method(p.previews,'recordObject'),
+  ...(Object.hasOwn(p.previews,'assertCurrent')?{assertCurrent:method(p.previews,'assertCurrent')}:{})},renderer:p.renderer,...(p.maxPreviewBytes===undefined?{}:{maxPreviewBytes:p.maxPreviewBytes})});
 }
 /** Handles one preview intent; `release(version)` is the application's own version release check. */
 export async function previewRoute({config,admission,current,life,intent,versionId,state,release}){

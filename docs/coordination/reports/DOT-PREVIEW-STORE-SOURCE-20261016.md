@@ -85,3 +85,206 @@ unchanged; h remains HOLD. No runtime activation, SQL execution, real object/DB/
 provider/browser call, migration/purge, credential, cloud operation, heavy suite
 or P2b stopped-review retry occurred. This new preview source needs independent
 review; source acceptance alone cannot activate its held dependencies.
+
+## Accepted continuation design and implementation outline
+
+Parent independently accepted856b0ad8c8cd5d69ae72e30fe2f0cb5d006599a0
+(19 focused controls, three boundary probes, eight old-source negatives). The
+parent then released bounded source custody implementation: genuine conditional
+first-winner exclusion outside SQL rollback; purpose-isolated CLAIMED,
+OBJECT_RECORDED, COMMITTED and TOMBSTONE facts; original claim/authority retention;
+current complete durable facts checked against coherent SQL snapshots on every
+read/claim; replay under the existing recovery exclusion. This supersedes the
+pending-design paragraph above, not its live-activation holds.
+
+Canonical responsibilities and exclusive source paths:
+
+| Owner/path | Continuation responsibility |
+| --- | --- |
+| Existing preview/service.mjs | Keep the publication/authorization/render/readback loop and existing claim interface. Only a newly won durable claim followed by certified projection can return claimed:true. |
+| preview/custody-journal.mjs | Bound a separate preview namespace on the shipping evidence owner; validate conditional write receipts and complete immutable facts, canonical claim/source/receipt/record packets and hashes. No retention enum or sequence-certificate reuse. |
+| Existing preview/postgres-store.mjs | Add insert-or-identical claim/publication and null-to-exact native receipt CAS through journal.tx and0003; compare one joined SQL snapshot with current durable facts before release. |
+| preview/custody-recovery.mjs | Reuse journal.exclusive; recover canonical source prerequisites, replay immutable projections, re-read current facts and certify exact projection before readiness. TOMBSTONE overlays serving and dispatch without SQL DELETE. |
+| storage/allocation-lookup.mjs | Read-only bounded exact-allocation observations through the existing object owner; verified native versions/delete markers and stable complete pages. Empty observations never prove terminal absence or purge while an unknown writer may still complete. |
+| Startup-owned runtime/control/product-applications/readiness | Narrow composition only after the concrete callable handoff. This lane does not edit shared runtime files. |
+
+Effect order is durable conditional claim acknowledgement, SQL claim commit,
+current authority, rendering and put, durable native receipt acknowledgement,
+SQL receipt CAS, exact byte readback/current authority, durable immutable commit
+acknowledgement, SQL publication commit. Lost acknowledgement or unknown COMMIT
+stops the original operation. Replay restores custody without acquiring another
+dispatch right; conflicting claims retain the first allocation and original
+binding/deadline. No local cache or restorable boolean certifies freshness.
+
+The source adapter requires actual conditional write and current complete-read
+methods from the trusted, purpose-scoped evidence owner. The repository baseline
+only supplies a retention append/read port and a synthetic memory sink; these
+cannot meet winner exclusion. Shipping has been asked for the concrete binding.
+Missing guarantees refuse construction/live composition, rather than inventing
+a provider. Canonical prerequisite source recovery must similarly be supplied
+by its owner; preview replay cannot infer a current artifact head from an old
+preview claim. No migration ID or schema change is implied.
+
+Focused controls will cover competing owners, identical/conflicting claims,
+lost durable/SQL acknowledgements at each boundary, restored-away rows and an
+unseen later event, tombstone rollback, malformed/overflow/unstable allocation
+pages, and lease/deadline cleanup. All use synthetic ports/scripted SQL. Two
+existing-port characterization controls already pass2/2: lost claim ACK retains
+the original allocation/binding/deadline on allowed retry; current revocation
+blocks a second custody call. One128MiB process, exit0, Node421ms, wall555ms,
+sampled peak91,127,808bytes; fresh available11,922,784,256bytes. Its120-second
+hard wall and memory-pressure guard did not fire; it exited with no children or
+fixtures. Evidence: preview-custody-continuation.tap/stderr/process.json. No broad
+suite or provider/DB/storage action was run.
+
+## Implemented continuation and exact activation boundary
+
+The child `dot/meri-preview-custody-20261016` starts exactly at accepted856b0ad8.
+It preserves the sealed212 snapshot branch and separate accepted855 current-head
+branch. Qualification owns their eventual single integration; no retention source,
+frozen contract, migration or lockfile was changed in this continuation.
+
+The source now implements the outlined adapters. `postgres-store.mjs` delegates
+to cohesive `postgres-custody.mjs` only when a custodyJournal is supplied. Without
+it, the accepted read-only owner remains read-only and cannot enable publication.
+The existing canonical storage-envelope validator has one additional pure export;
+custody reuses it rather than copying its source/spec/inspection validation.
+
+`custody-journal.mjs` binds namespace
+`meri.artifact-preview-custody.proposal-1`. Its borrowed evidence owner must supply:
+
+- `claim(request,signal)`: atomically conditional on **both** tenant/sourceKey
+  and tenant/scope/object allocationKey, outside SQL rollback. Return the stored
+  winner plus a newly-created acknowledgement only to the actual winning call.
+  Identical replay returns created:false; a source conflict returns the original;
+  an allocation already owned by another source refuses. Competing append-only
+  claim records cannot implement this method.
+- `append(request,signal)`: insert-or-identical immutable state fact for the exact
+  tenant/source/state key; never overwrite a native receipt, commit or tombstone.
+- `read({namespace,tenantId,artifactId},signal)`: **current complete** immutable
+  artifact partition outside rollback, including all original claim/source
+  packets. It is a trusted owner guarantee, not a caller-set complete/restorable
+  boolean. Rows carry canonical entry and receipt hashes. The adapter bounds and
+  validates the complete set, and derives its distinct positionSha256 from those
+  immutable facts; it never borrows the retention sequence/watermark.
+
+Each write carries canonical namespace/tenant/artifact/source/state/claim hash
+and facts. Each acknowledgement binds namespace, exact state key and entry hash;
+its stored packet is checked before use. A durable CLAIMED packet retains the
+canonical source storage envelope needed by the source owner during recovery.
+UNKNOWN never gains dispatch from re-projection, alternate allocation or retry.
+
+The SQL extension uses the existing journal.tx, explicit READ COMMITTED and
+shared recovery lock; writes additionally lock the tenant/source key. Claim and
+commit are insert-or-identical, and the first physical receipt is a null-to-exact
+CAS, with exact canonical readback inside that transaction. Lost COMMIT retires
+the existing transaction owner's lease. Durable acknowledgements precede SQL.
+Ordinary reads/readiness and claim decisions compare one joined SQL snapshot with
+the current complete immutable facts, including events this reader never saw
+before restore. No process-local high-water mark can stand in for that comparison.
+
+Original native receipts may be retained after tombstone or SQL restore: this is
+custody bookkeeping, not serving or dispatch permission. TOMBSTONE blocks release
+and any new claim, remains in the durable facts after SQL rollback, and preserves
+known/potential orphan inventory without issuing SQL DELETE or claiming deletion.
+The service rechecks custody before render, put and commit and after bytes are
+read. The existing document and artifact runtime wrappers preserve assertCurrent.
+
+The sealed recovery interface is
+`createPreviewCustodyRecovery({store,sourceRecovery,now,maxRequestMs})`, returning
+`reconcileExclusive(signal)` and `ensureServing(signal)`. The former performs ONE
+bounded replay and current-facts certification and returns
+`{positionSha256,subjects}`. Startup must call it inside its existing raw
+journal.exclusive, before that existing fence opens. The existing coordinator
+owns exclusion, settling/retry and gate opening; this module adds no gate or
+second recovery loop. `sourceRecovery.recover(originalStorageEnvelope,signal)`
+must recover immutable prerequisites and the authoritative source/head lineage
+through their canonical owner. A preview claim cannot nominate a historical head.
+
+`s3-objects.mjs` now exposes read-only observeAllocation over its existing key
+derivation and exact native-version metadata verifier. Actual upstream
+ListObjectVersionsCommand is reused. The bounded lookup traverses all observed
+versions and relevant delete markers twice, refusing overflow, looping cursors,
+duplicates, mismatched scope/request metadata and unstable results. Each returned
+page retains its observed cursor and next cursor; the observation has a canonical
+hash. **Native S3 listing does not provide a point-in-time snapshot cursor or
+durable allocation closure/fencing.** Consequently the result explicitly reports
+complete:false and terminalAbsent:false, even for equal exhausted empty passes.
+It is observed custody only. No purge-complete inventory or terminal absence is
+exposed; a real owner with those additional guarantees is still required.
+
+## Verification and retained failures
+
+All evidence is synthetic production source, scripted SQL and synthetic object
+ports, including actual upstream SDK command classes. No PostgreSQL, AWS, native
+browser/compiler, renderer process, real storage/provider call or install ran.
+
+- `preview-custody-focused-final*`: **51/51**, no skip, exit0, Node1191ms,
+  controlled wall1350ms, sampled peak working set125,210,624bytes. This includes
+  16 initial durable custody controls and35 affected-owner controls (claim,
+  read-only projection, local custody, document configuration, allocation and
+  existing S3 owner checks).
+- Four additional durable boundary controls and a final source refinement were
+  then added: preserve an exact receipt after tombstone/restore; tombstone during
+  SQL publication; late conditional ACK after timeout; source recovery failure.
+  `preview-custody-sealed-source*`: **20/20**, no skip, exit0, Node919ms,
+  wall1094ms, sampled peak111,427,584bytes; fresh available12,120,936,448bytes.
+  These20 replace the earlier16 for changed custody/recovery source. The35 other
+  checks reuse their valid, unchanged exercised source evidence; **55 distinct
+  controls**, not a claim of one55-case invocation. Each process used128MiB V8
+  heap, test-isolation=none, a120-second hard wall and pressure stop. Every owned
+  process exited; no test child or local preview fixture remained.
+- Lost durable/SQL acknowledgements assert the exact failure cause, not merely
+  a generic effect error. Two independent store owners issue one put; all
+  acknowledgement/restore/tombstone replays retain original custody and issue
+  zero additional object effects.
+
+Earlier failures remain retained: source-first0/15 (missing SDK resolution and
+TXT inspection fields in a synthetic PDF envelope); source-corrected exit7
+(Windows --import needed a file URL); source-loader-fixed7/21 (fixture map passed
+Array.map's numeric index to structuredClone options); source-fixture-fixed5/14
+(historical fixed clock expired against render's real deadline). Fixture/loader
+corrections preserved validators and strengthened exact failure-phase checks.
+The intermediate clock-fixed16/16 and boundary-final20/20 are retained too; only
+the final sealed-source20 result binds the last recovery refinement.
+
+The local SDK junction attempt was denied (New-Item Access is denied); no junction
+was created and no denied action was retried or escalated. Tests instead used a
+task-owned Node resolution hook reading existing task4 @aws-sdk/client-s3
+**3.1141.0** and its dependencies. This establishes source-control evidence only,
+not clean-install/image qualification. Exact argv, actual exits, stderr, sampled
+peak measurements and cleanup are in each task-9/evidence process receipt. The
+task-owned hook/capture script are retained there for reproduction.
+
+`preview-byte-release-negative*` removes only the final preview-custody check
+after byte retrieval: the tombstone-during-read regression fails1/1 as expected
+(missing expected rejection, exit1), proving that guard changes observable byte
+release. This is an exact guard-revert control, not a whole-old-source claim.
+Source restoration SHA256 is
+67c25d43c9111521dfbf52cc466abe879a5041df87c5ee04c0cfbe70340fb15b,
+identical before/after; the current source's positive control is in sealed20/20.
+The negative process exited normally, no pressure/timeout, wall621ms,
+sampled peak105,955,328bytes. No extra object/provider action was performed.
+
+### Remaining blockers and ownership
+
+Runtime wiring is **pending**, not attempted/denied: Startup retains
+runtime/control/product-applications/readiness. Its owner confirmed the existing
+retention append/read port provides no conditional preview winner or purpose
+namespace. No concrete product Shipping evidence implementation or canonical
+source/head recovery factory has been supplied; both are required before live
+composition. This source refuses missing methods instead of fabricating a provider
+or inferring durable completeness from restored SQL. Shipping was asked for the
+exact existing owner/pin; no cloud action was requested.
+
+The bounded native allocation observer cannot meet snapshot/closed-writer terminal
+absence guarantees. Final absence, complete purge inventory, SQL deletion,
+retention0014/receipt amendments and any new certificate allocation remain HOLD.
+No distinct certificate table was needed or authored for exact-fact comparison.
+Parent exact-source independent review and Qualification integration are pending.
+
+The historical manifest SHA remains
+79a5f7fc5254c0152c0119264d653cdb5b561f27ded91d379569d00ba73a5c1e;
+all45 candidate-h current hashes still match its recorded rows: **zero changed
+proof rows**, zero repins. Historical proposals and manifests remain untouched;
+candidate h and live qualification remain HOLD. No P2b stopped-review retry ran.

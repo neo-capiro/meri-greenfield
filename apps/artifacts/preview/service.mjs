@@ -25,13 +25,13 @@ const formatOf=mimeType=>Object.keys(ARTIFACT_MIME_TYPES).find(format=>ARTIFACT_
 
 export function createArtifactPreviewService({validators:v,artifacts,objects,previews,renderer=null,ids,now,maxPreviewBytes=MAX_PREVIEW_BYTES}){
  if(![artifacts?.inspect,artifacts?.download,objects?.put,objects?.get,previews?.read,previews?.commit,previews?.claim,previews?.recordObject,ids,now].every(f=>typeof f==='function')||typeof v?.hash!=='function'||
-  renderer!==null&&!isRendererPort(renderer)||!Number.isSafeInteger(maxPreviewBytes)||maxPreviewBytes<1||maxPreviewBytes>MAX_PREVIEW_BYTES)fail('ARTIFACT_CONFIGURATION');
+  renderer!==null&&!isRendererPort(renderer)||previews.assertCurrent!==undefined&&typeof previews.assertCurrent!=='function'||!Number.isSafeInteger(maxPreviewBytes)||maxPreviewBytes<1||maxPreviewBytes>MAX_PREVIEW_BYTES)fail('ARTIFACT_CONFIGURATION');
  const converter=admittedConverter(renderer);
  async function stored(versionId,version,signal){const value=await previews.read(versionId,signal);return value===null?null:verifyPreviewRecord(v,value,version);}
  async function current(versionId,version,context,signal){const read=await artifacts.inspect(versionId,context,{signal});if(v.hash(read.version)!==v.hash(version))fail('ARTIFACT_OBJECT_MISMATCH');}
  async function publish(versionId,contextValue,{signal,onWriteStarted}={}){
   const context=v.context(contextValue),source=await artifacts.download(versionId,context,{signal}),version=source.version,format=formatOf(version.mimeType);
-  const existing=await stored(versionId,version,signal);if(existing){await current(versionId,version,context,signal);return {status:'existing',preview:existing};}
+  const existing=await stored(versionId,version,signal);if(existing){await current(versionId,version,context,signal);if(v.hash(await stored(versionId,version,signal))!==v.hash(existing))fail('ARTIFACT_PREVIEW_CORRUPT');return {status:'existing',preview:existing};}
   if(!PREVIEW_FORMATS.includes(format))fail('ARTIFACT_PREVIEW_UNSUPPORTED');
   if(format!=='pdf'&&!converter)fail('ARTIFACT_RENDERER_UNAVAILABLE');
   const allocation=v.snapshot(ids()),objectId=allocation?.objectId,previewId=allocation?.versionId;
@@ -46,14 +46,17 @@ export function createArtifactPreviewService({validators:v,artifacts,objects,pre
    }
    if(v.hash(custody)!==v.hash(attempt))fail('ARTIFACT_PREVIEW_CLAIM');
    await current(versionId,version,context,signal);
+   await previews.assertCurrent?.(v.snapshot(custody),signal);
    const rendered=await renderPreview({bytes:source.bytes,format,renderer:converter,deadlineMs:context.deadlineMs,maxBytes:maxPreviewBytes,signal});
    await current(versionId,version,context,signal);
+   await previews.assertCurrent?.(v.snapshot(custody),signal);
    const object=v.object(await objects.put({objectId,bytes:Buffer.from(rendered.bytes),scopes:v.snapshot(version.scopes),requestSha256:v.hash({preview:versionId,sourceSha256:version.object.sha256})},signal));
    if(object.objectId!==objectId||object.bytes!==rendered.bytes.length||object.sha256!==sha(rendered.bytes)||v.hash(object.scopes)!==v.hash(version.scopes))fail('ARTIFACT_OBJECT_MISMATCH');
    await previews.recordObject(v.snapshot(custody),v.snapshot(object),signal);
    const readBack=await objects.get(v.snapshot(object),signal);if(!Buffer.isBuffer(readBack)||!readBack.equals(rendered.bytes))fail('ARTIFACT_OBJECT_MISMATCH');
    // Current authority, retention and the exact source bytes again before the record makes the preview servable.
    await current(versionId,version,context,signal);
+   await previews.assertCurrent?.(v.snapshot(custody),signal);
    const record=previewRecord({v,previewId,version,object,pages:rendered.pages,conversion:rendered.conversion,createdAt:new Date(now()).toISOString()});
    const receipt=await previews.commit(v.snapshot(record),signal);
    if(!['committed','duplicate'].includes(receipt?.status)||receipt.versionId!==versionId||receipt.recordSha256!==v.hash(record))fail('ARTIFACT_PREVIEW_COMMIT_RECEIPT');
@@ -72,6 +75,7 @@ export function createArtifactPreviewService({validators:v,artifacts,objects,pre
   // Authority and retention after the preview bytes were read: a suppression or revocation in between releases nothing.
   const second=await artifacts.download(versionId,context,{signal});
   if(v.hash(second.version)!==v.hash(first.version))fail('ARTIFACT_OBJECT_MISMATCH');
+  if(v.hash(await stored(versionId,second.version,signal))!==v.hash(record))fail('ARTIFACT_PREVIEW_CORRUPT');
   return {version:second.version,preview:record,bytes:Buffer.from(bytes)};
  }
  return Object.freeze({publish,read});
