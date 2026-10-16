@@ -7,7 +7,14 @@ import * as actualConfig from '../config.mjs';
 
 const events=[];let listenHook,abortOnVerify;
 const KEY_FILE='/run/secrets/meri-download-link-key';
-mock.module('pg',{namedExports:{Pool:class{constructor(){events.push('pool');}async query(sql,args){if(sql.includes('unnest'))return {rows:args[0].map(name=>({name,relation:name}))};return {rows:[{runs:'runs',events:'events',controls:'controls',selected_outputs:'selected_outputs'}]};}connect(){throw Error('No SQL effects');}async end(){events.push('pool-end');}}}});
+/** Declared retention serving reconciles at readiness: the only statements a lease answers are the retention transaction, recovery lock
+ * and recovered-watermark statements; anything else is still refused. */
+const retentionLease=()=>{let watermark=null;return {async query(sql,values){
+ if(/^(BEGIN|COMMIT|ROLLBACK|SET LOCAL|SELECT pg_advisory_(xact_lock_shared|lock)\()/u.test(sql))return {rows:[],rowCount:0};if(sql.startsWith('SELECT pg_advisory_unlock'))return {rows:[{unlocked:true}],rowCount:1};
+ if(sql.startsWith('INSERT INTO meri_conversations.retention_recovery_watermark')){watermark={sequence:String(values[0]),entry_sha256:values[1]??null};return {rows:[watermark],rowCount:1};}
+ if(sql.startsWith('SELECT sequence,entry_sha256 FROM meri_conversations.retention_recovery_watermark'))return {rows:watermark?[watermark]:[],rowCount:watermark?1:0};
+ throw Error('No SQL effects');},release(){}};};
+mock.module('pg',{namedExports:{Pool:class{constructor(){events.push('pool');this.lease=retentionLease();}async query(sql,args){if(sql.includes('unnest'))return {rows:args[0].map(name=>({name,relation:name}))};return {rows:[{runs:'runs',events:'events',controls:'controls',selected_outputs:'selected_outputs'}]};}async connect(){return this.lease;}async end(){events.push('pool-end');}}}});
 mock.module('@temporalio/client',{namedExports:{WorkflowIdReusePolicy,WorkflowIdConflictPolicy,Connection:{async connect(){return {async close(){events.push('connection-close');},withDeadline(_at,fn){return fn();},withAbortSignal(_signal,fn){return fn();},workflowService:{async getSystemInfo(){}}};}},Client:class{workflow={start:async()=>{},getHandle:()=>({})};}}});
 mock.module('../config.mjs',{namedExports:{...actualConfig,async readSecret(path){events.push('secret:'+path);
  if(path==='db')return Buffer.from('postgres://synthetic.invalid/db?sslmode=verify-full');
@@ -21,7 +28,8 @@ const configuration=(changes={})=>({...base,retention:{enabled:true},downloadLin
 const identityContext={async verifyIdentity(){throw Error('synthetic refusal');},async resolveContext(){throw Error('synthetic refusal');}};
 const authorization={async resolve(){return null;}};
 const store=(verify=async()=>{events.push('store-verify');return {};})=>({async verifyPrivate(input){if(abortOnVerify)abortOnVerify();return verify(input);}});
-const ports=(changes={})=>({identityContext,artifactOptionsOwner:authorization,artifactStore:store(),...changes});
+const ledgerSink={async append(){throw Error('No ledger writes');},async read(){return [];}};
+const ports=(changes={})=>({identityContext,artifactOptionsOwner:authorization,artifactStore:store(),retentionLedgerSink:ledgerSink,...changes});
 const request=(path,body)=>new Request('https://synthetic.invalid'+path,{method:'POST',headers:{authorization:'Bearer action_session_'+'a'.repeat(43),'content-type':'application/json'},body:JSON.stringify(body)});
 const keyReads=()=>events.filter(e=>e.startsWith('secret:/run/secrets/')).length;
 

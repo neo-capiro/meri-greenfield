@@ -8,8 +8,11 @@ import {fail,subjectKey,clock} from './boundary.mjs';
 import {recomputePlan,stepFacts,rowStepFacts} from './purge.mjs';
 import {projectionToken} from './memory-journal.mjs';
 export function createServingGate(){let enabled=true;return Object.freeze({disable(){enabled=false;},enable(){enabled=true;},isEnabled:()=>enabled});}
-export function createRecoveryReconciler({ledger,journal,storage,serving,keyFor,facts,rows=null,now,maxPasses=8}){
- if(typeof ledger?.replay!=='function'||typeof journal?.get!=='function'||typeof journal?.set!=='function'||typeof journal?.exclusive!=='function'||typeof storage?.headVersion!=='function'||typeof serving?.disable!=='function'||typeof keyFor!=='function'||typeof facts!=='object'||facts===null||rows!==null&&typeof rows?.present!=='function'||!Number.isSafeInteger(maxPasses)||maxPasses<1)fail('RETENTION_CONFIGURATION');const tick=clock(now);
+/** `storage`, `keyFor` and `facts` may be null where no purge owner is bound (the runtime keeps purge inactive): a recorded purge step then
+ * stays UNKNOWN and a recorded plan stays BLOCKED with RETENTION_AUTHORITY_UNAVAILABLE, never cleared. With a `watermark` port, the
+ * settled pass records the exact ledger head in the database, reads it back, and reopens serving only with that recovered watermark. */
+export function createRecoveryReconciler({ledger,journal,storage=null,serving,keyFor=null,facts=null,rows=null,watermark=null,now,maxPasses=8}){
+ if(typeof ledger?.replay!=='function'||typeof journal?.get!=='function'||typeof journal?.set!=='function'||typeof journal?.exclusive!=='function'||storage!==null&&typeof storage?.headVersion!=='function'||typeof serving?.disable!=='function'||storage!==null&&typeof keyFor!=='function'||facts!==null&&typeof facts!=='object'||rows!==null&&typeof rows?.present!=='function'||watermark!==null&&(typeof watermark?.record!=='function'||typeof watermark?.read!=='function')||!Number.isSafeInteger(maxPasses)||maxPasses<1)fail('RETENTION_CONFIGURATION');const tick=clock(now);
  const stepRow=f=>({workflowId:f.workflowId,classes:f.classes,objectId:f.objectId,versionId:f.versionId,sha256:f.sha256,artifactVersionIds:f.artifactVersionIds??[]});
  /** Current-facts re-planning; any unavailable authority returns a BLOCKED result naming it (never a cleared block). */
  async function replan(subjectValue,journalState,nowMs){try{return await recomputePlan(facts,subjectValue,journalState,nowMs);}catch(error){return {state:'BLOCKED',blocks:[{reason:String(error?.code??'RETENTION_AUTHORITY_UNAVAILABLE'),detail:{}}],steps:[],rowSteps:[],planSha256:null};}}
@@ -30,7 +33,7 @@ export function createRecoveryReconciler({ledger,journal,storage,serving,keyFor,
      else{row={...base,purge:{state:'BLOCKED',planSha256:plan.planSha256??planSha256,ledgerSequence:last.sequence,steps:[],rowSteps:[],blocked:plan.blocks}};report.stillBlocked.push(key);}}
     else{const verified=[];let revived=false,pending=false;
      for(const f of factsSteps){const target=stepRow(f);if(!['EXECUTED','UNKNOWN','PENDING'].includes(f.state))fail('RETENTION_LEDGER_CORRUPT');
-      const readback=await storage.headVersion({key:keyFor(target),versionId:target.versionId});const state=readback.outcome==='ABSENT'?'EXECUTED':readback.outcome==='PRESENT'?'REVIVED':'UNKNOWN';if(state==='REVIVED')revived=true;if(state==='UNKNOWN')pending=true;verified.push({...target,readback,state});}
+      const readback=storage?await storage.headVersion({key:keyFor(target),versionId:target.versionId}):{outcome:'UNKNOWN',reason:'STORAGE_UNAVAILABLE'};const state=readback.outcome==='ABSENT'?'EXECUTED':readback.outcome==='PRESENT'?'REVIVED':'UNKNOWN';if(state==='REVIVED')revived=true;if(state==='UNKNOWN')pending=true;verified.push({...target,readback,state});}
      // Database row targets recorded as deleted are re-verified too: a restored row is a revival; an unverifiable one stays UNKNOWN.
      const verifiedRows=[];for(const f of last.facts.rowSteps??[]){if(!['EXECUTED','UNKNOWN','PENDING'].includes(f.state))fail('RETENTION_LEDGER_CORRUPT');const target={workflowId:f.workflowId,className:f.className,target:f.target};
       if(!rows){pending=true;verifiedRows.push({...target,state:'UNKNOWN'});continue;}let present;try{present=await rows.present(key,target);}catch{present=null;}
@@ -45,8 +48,13 @@ export function createRecoveryReconciler({ledger,journal,storage,serving,keyFor,
  async function reconcile({nowMs=tick()}={}){
   serving.disable();
   return journal.exclusive(async()=>{const report={subjects:0,reapplied:[],verified:[],replanned:[],unknown:[],released:[],stillBlocked:[],passes:0};
-   let watermark=-1;for(let i=0;i<maxPasses;i++){const before=(await ledger.replay()).length;report.passes++;await pass(report,nowMs);const after=(await ledger.replay()).length;watermark=after;if(after===before){serving.enable();return Object.freeze({...report,subjects:new Set([...report.reapplied,...report.verified,...report.replanned,...report.unknown,...report.released,...report.stillBlocked]).size,watermark,completedAtMs:tick(),servingEnabled:true});}}
+   for(let i=0;i<maxPasses;i++){const before=(await ledger.replay()).length;report.passes++;await pass(report,nowMs);const settled=await ledger.replay(),after=settled.length;
+    if(after===before){const recovered=await recordWatermark(settled.at(-1));serving.enable(recovered?{watermark:recovered}:undefined);return Object.freeze({...report,subjects:new Set([...report.reapplied,...report.verified,...report.replanned,...report.unknown,...report.released,...report.stillBlocked]).size,watermark:after,...(recovered?{recovered}:{}),completedAtMs:tick(),servingEnabled:true});}}
    fail('RETENTION_RECOVERY_UNSETTLED');});
  }
+ /** The exact ledger head, recorded and read back under the recovery lock; anything else is not a recovered watermark. */
+ async function recordWatermark(head){if(!watermark)return null;const position={sequence:head?.sequence??0,entrySha256:head?.entrySha256??null};
+  await watermark.record(position,{exclusive:true});const back=await watermark.read({exclusive:true});
+  if(back?.sequence!==position.sequence||(back?.entrySha256??null)!==position.entrySha256)fail('RETENTION_WATERMARK_UNVERIFIED');return Object.freeze({...position});}
  return Object.freeze({reconcile});
 }

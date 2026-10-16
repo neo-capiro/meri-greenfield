@@ -1,13 +1,14 @@
 /** Versioned retention policy: explicit required configuration, no defaults. A missing policy blocks physical purge and never blocks authorized suppression. */
 import {own,data,fail,text,hash} from './boundary.mjs';
-import {classes} from './inventory.mjs';
+import {classes,externalClasses} from './inventory.mjs';
 const positiveInteger=v=>Number.isSafeInteger(v)&&v>0;
 export function parseRetentionPolicy(value){
  const {policySha256:declared,...p}=own(data(value),['policyId','version','coolingPeriodMs','classes'],['policySha256']);text(p.policyId);
  if(declared!==undefined&&declared!==hash(p))fail('RETENTION_POLICY_INVALID');
  if(!positiveInteger(p.version)||!positiveInteger(p.coolingPeriodMs))fail('RETENTION_POLICY_INVALID');
  const configured=own(p.classes,[...classes]);
- for(const name of classes){const c=own(configured[name],['retentionMs','purgeable']);if(!positiveInteger(c.retentionMs)||typeof c.purgeable!=='boolean')fail('RETENTION_POLICY_INVALID');}
+ // A retained class (identifier-only evidence) is never purgeable by a subject purge; a policy that says otherwise is refused.
+ for(const name of classes){const c=own(configured[name],['retentionMs','purgeable']);if(!positiveInteger(c.retentionMs)||typeof c.purgeable!=='boolean'||c.purgeable&&externalClasses.includes(name))fail('RETENTION_POLICY_INVALID');}
  return Object.freeze({...p,policySha256:hash(p)});
 }
 /** Purge needs a policy; suppression does not. */

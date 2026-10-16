@@ -20,7 +20,7 @@ test('planning: refused without suppression or policy; cooling, holds, liabiliti
  assert.ok(planFrom(f,s,{...js,suppressedAtMs:f.clock.now()-1000}).blocks.every(b=>b.reason==='COOLING_PERIOD'));
  const plan=planFrom(f,s,js);assert.equal(plan.state,'PLANNED');assert.equal(plan.steps.length,inv.objects.length);assert.equal(plan.planSha256,planFrom(f,s,js).planSha256,'same inputs, same digest');assert.equal(planDigest(plan),plan.planSha256);
  assert.deepEqual(plan.suppression,{ledgerSequence:js.ledgerSequence,entrySha256:js.entrySha256},'the plan names its suppression generation');
- assert.deepEqual(plan.rowSteps.map(r=>r.className),['sdkSession'],'a conversation carries its SDK entry row target');
+ assert.deepEqual([...new Set(plan.rowSteps.map(r=>r.className))].sort(),['completionCheckpoints','conversation','events','lifecycle','nativeJournals','sdkSession','selectedOutputs'],'a conversation carries a row target for every retained conversation-scoped row it has, its SDK entry included');
  const a0=subjectOf('artifact'),artifact=object(),invA0=enumerateReferences(snapshot(a0,{sdkEntries:[],artifactVersions:[{versionId:randomUUID(),object:artifact},{versionId:randomUUID(),object:artifact}]})),planA0=planFrom(f,a0,await suppressed(f,a0,{inventory:invA0}));assert.equal(planA0.state,'PLANNED');
  const sharedStep=planA0.steps.find(st=>st.objectId===artifact.objectId);assert.equal(sharedStep.artifactVersionIds.length,2,'two database artifact versions sharing one storage object are both carried');
  assert.deepEqual(planA0.rowSteps.map(r=>r.className),['artifactVersions','artifactVersions'],'row targets: both artifact versions of the artifact subject');

@@ -20,8 +20,8 @@ import {compilePreparedCandidateConfiguration} from './prepared-candidate-config
 import {createPostgresIssuanceStore} from './prepared-run-issuance-postgres.mjs';
 import {createFileCapabilityAuthority} from './capability-material-authority.mjs';
 import {createPostgresRetentionJournal} from '../control/retention/postgres-journal.mjs';
-import {createRetentionReadGate} from '../control/retention/suppression.mjs';
-import {createServingGate} from '../control/retention/reconciliation.mjs';
+import {createPostgresWatermarkStore} from '../control/retention/postgres-watermark.mjs';
+import {createRetentionStartup} from '../control/retention/startup.mjs';
 import {types} from 'node:util';
 import {own,nativeSignal} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 function productBinding(options){
@@ -34,16 +34,19 @@ function productBinding(options){
 /** Optional trusted-client authorization (S4): one token provider for the client (apiKey callback) and the worker (setApiKey). */
 export async function temporalAuthorization(configuration,{signal}={}){if(configuration.temporal.authorization===undefined)return null;const c=configuration.temporal.authorization,authorization=createTemporalAuthorization({configuration:c,reader:createTemporalTokenFileReader({tokenFile:c.tokenFile})});await authorization.refresh({signal});return authorization;}
 export async function temporalTls(config){const [serverRootCACertificate,crt,key]=await Promise.all([readSecret(config.caFile),readSecret(config.certFile),readSecret(config.keyFile)]);return {serverRootCACertificate,clientCertPair:{crt,key}};}
-/** The canonical retention read gate over the control database (migrations conversations 0010 and artifacts 0002), composed only when
- * the configuration declares retention serving; the serving barrier is this process's recovery gate. */
-export function retentionGate(configuration,pool){
- if(configuration.retention===undefined)return null;const serving=createServingGate(),journal=createPostgresRetentionJournal({pool});
- return Object.freeze({serving,journal,gate:createRetentionReadGate({journal,serving}),tables:['meri_conversations.retention_subjects','meri_conversations.retention_purges','meri_conversations.retention_purge_targets','meri_artifacts.retention_subjects','meri_artifacts.retention_purges']});
+/** Retention serving over the control database (migrations conversations 0010 and artifacts 0002, plus the proposed recovered-watermark
+ * table), composed only when the configuration declares it: the retention startup owner with its serving fence closed until a
+ * reconciliation over the authoritative ledger (the trusted `retentionLedgerSink` port) records a watermark that reads back. Purge
+ * is composed explicitly disabled; no deletion owner exists in control. */
+export function retentionGate(configuration,pool,ports={}){
+ if(configuration.retention===undefined)return null;const journal=createPostgresRetentionJournal({pool});
+ const startup=createRetentionStartup({journal,watermark:createPostgresWatermarkStore({journal}),ledgerSink:ports.retentionLedgerSink??null,purge:{enabled:false}});
+ return Object.freeze({serving:startup.serving,journal:startup.journal,gate:startup.gate,startup,tables:['meri_conversations.retention_subjects','meri_conversations.retention_purges','meri_conversations.retention_purge_targets','meri_artifacts.retention_subjects','meri_artifacts.retention_purges','meri_conversations.retention_recovery_watermark']});
 }
 export function assembleControl(options){
  const {configuration,pool,client,native,now=Date.now,telemetry,...binding}=own(options,['configuration','pool','client','native'],['now','telemetry','productPorts','productPortsFactory']);
  if(telemetry!==undefined&&typeof telemetry?.observeRunOwner!=='function')throw fault('TELEMETRY_CONFIGURATION');
- const captured=productBinding(binding);const retention=retentionGate(configuration,pool);
+ const captured=productBinding(binding);
  let supplied;
  if(captured.factory){
   supplied=Reflect.apply(captured.factory,undefined,[Object.freeze({configuration,pool,native,now})]);
@@ -54,6 +57,7 @@ export function assembleControl(options){
  }
  const ports=captured.factory?captureRuntimePorts(supplied):captured.ports;
  if(ports.transitionAuthority&&typeof ports.identityContext.resolveTransitionContext!=='function')throw fault('PRODUCT_PORTS_CONFIGURATION');
+ const retention=retentionGate(configuration,pool,ports);
  const store=createPostgresConversationStore({pool,now,...(ports.transitionAuthority?{transitionAuthority:ports.transitionAuthority}:{})});
  const sessions=createActionSessionOwner({mode:'process-local',verifyIdentity:ports.identityContext.verifyIdentity,resolveContext:ports.identityContext.resolveContext,now,...(ports.transitionAuthority?{
   readTransition:({signal,...input})=>store.lifecycle.readTransition({...input,signal},()=>signal?.throwIfAborted()),
@@ -97,8 +101,9 @@ export async function startControl(configuration,options={}){
   // The download-link gate opens only after its owners verify; a closed gate leaves every other route as composed.
   const downloads=await assembly.downloads.open({signal});signal?.throwIfAborted();const mountedApplication=candidate?{async handle(request){return (await candidate.application.handle(request))??assembly.application.handle(request);}}:assembly.application,application=telemetry?telemetry.instrumentApplication(mountedApplication):mountedApplication;
   async function readiness({signal}){signal?.throwIfAborted();if(authorization&&!authorization.healthy())throw fault('TEMPORAL_AUTHORIZATION_UNAVAILABLE');await pool.query("SELECT to_regclass('meri_conversations.runs') AS runs, to_regclass('meri_conversations.events') AS events, to_regclass('meri_conversations.controls') AS controls, to_regclass('meri_conversations.selected_outputs') AS selected_outputs").then(result=>{if(!result.rows[0]||Object.values(result.rows[0]).some(v=>v===null))throw fault('DATABASE_SCHEMA_UNAVAILABLE');});
-   // Declared retention serving needs its projections present and its serving barrier open; a missing dependency is exposed, never bypassed.
-   if(assembly.retention){const r=await pool.query('SELECT name,to_regclass(name) AS relation FROM unnest($1::text[]) AS names(name)',[assembly.retention.tables]);if(r.rows.length!==assembly.retention.tables.length||r.rows.some(row=>row.relation===null))throw fault('RETENTION_SCHEMA_UNAVAILABLE');if(!assembly.retention.serving.isEnabled())throw fault('RETENTION_RECOVERY_BARRIER');}await connection.withDeadline(Date.now()+configuration.limits.requestMs,()=>signal?connection.withAbortSignal(signal,()=>connection.workflowService.getSystemInfo({})):connection.workflowService.getSystemInfo({}));await native.readiness({signal});signal?.throwIfAborted();}
+   // Declared retention serving needs its projections present and a recovered watermark: a fenced or stale projection is reconciled from
+   // the ledger here before serving, and a missing dependency is exposed, never bypassed.
+   if(assembly.retention){const r=await pool.query('SELECT name,to_regclass(name) AS relation FROM unnest($1::text[]) AS names(name)',[assembly.retention.tables]);if(r.rows.length!==assembly.retention.tables.length||r.rows.some(row=>row.relation===null))throw fault('RETENTION_SCHEMA_UNAVAILABLE');await assembly.retention.startup.ensureServing();}await connection.withDeadline(Date.now()+configuration.limits.requestMs,()=>signal?connection.withAbortSignal(signal,()=>connection.workflowService.getSystemInfo({})):connection.workflowService.getSystemInfo({}));await native.readiness({signal});signal?.throwIfAborted();}
   await readiness({signal});listener=await listenRuntime({configuration,application,readiness,...(candidate?{}:{signal})});return Object.freeze({address:listener.address,downloads,close});
  }catch(error){await close().catch(()=>{});throw Object.assign(fault('CONTROL_STARTUP_FAILED'),{cause:error});}
 }
