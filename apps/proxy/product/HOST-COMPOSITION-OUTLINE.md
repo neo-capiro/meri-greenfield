@@ -146,8 +146,14 @@ pinned Linux image and disposable native environment.
 record from the host's lower response tee for the separate owner capture
 channel. The companion `owner-wire-codec.mjs` decodes it as data. The existing
 plan-compatible separate HTTPS :8444 owner service, certificate issuer and
-trust policy, two authenticated logical channels, durable constructor facts
-and native end-to-end capture comparison are not implemented. No source in
+trust policy, two authenticated logical channels and native end-to-end capture
+comparison are not implemented. `product-owner-facts.mjs` now resolves the
+exact ISSUED model grant, native allocation, accepted request/client and current
+budget admission from the same borrowed product pool. It is disabled by
+default and supplies only constructor facts; it does not authenticate a host,
+provide current native credentials or choose pricing. The existing native
+identity/context adapter can supply Core currentness once trusted credential
+delivery is bound. No source in
 this entrypoint substitutes a Python claim for the owner's independent
 capture. Until these ports are bound and qualified, the service remains
 disabled and no product traffic is accepted.

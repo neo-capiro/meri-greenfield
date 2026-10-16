@@ -85,10 +85,18 @@ can touch the one canonical `meri_product_budget` store.
 - There is no owner HTTPS :8444 service/listener, mTLS client/server material
   schema, certificate issuer/trust policy, or task-lease binding implementation.
   The proxy plan is disabled and does not provision the owner service.
-- The owner must resolve its canonical PostgreSQL pool, original allocation and
-  grant facts, selected client and pricing, and a fresh Core conversation
-  currentness reader from trusted persisted custody. Python claims cannot
-  supply those constructor inputs.
+- `product-owner-facts.mjs` provides disabled, read-only fact resolution over
+  one borrowed canonical pool. It joins an ACTIVE bearer digest to the exact
+  ISSUED model grant, admitted native allocation, accepted request and configured
+  client, then rechecks current product budget admission. A task grant cannot
+  substitute for the model grant. This supplies constructor facts; the owner
+  service still needs to mount it with reviewed pricing and trusted current
+  native credential delivery. The existing `createNativeIdentityContext`
+  already supplies the required Core currentness receipt and should be reused.
+  Keep one service-owned resolver instance: unresolved database work permanently
+  quarantines it and makes `available` false. The future session composition must
+  use its immutable expiry cap and fail readiness when it is unavailable.
+  Python claims cannot supply these startup authorities.
 - The proxy host still lacks a mounted server callback for the actual accepted
   TLS socket and a proven pinned LiteLLM per-request handler injection. Neither
   a JSON field nor a global HTTPX client substitutes for those ports.
