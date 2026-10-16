@@ -28,15 +28,15 @@ export function createMemoryWatermarkStore({journal}={}){
  * position it carries and the fence learns it; an advance whose outcome is unknown closes the fence (the projection itself stands,
  * and reconciliation re-proves the watermark before serving resumes). Ordinary reads require a store-owned atomic projection and
  * watermark snapshot; split reads cannot detect ABA across recovery owners. Exclusive recovery reads bypass the serving fence. */
-export function watermarkedJournal({journal,watermark,fence}){
- if(typeof journal?.get!=='function'||typeof journal?.set!=='function'||typeof journal?.exclusive!=='function'||typeof watermark?.advanceProjection!=='function'||typeof watermark?.read!=='function'||typeof watermark?.readProjection!=='function'||['observe','disable','verify','state'].some(m=>typeof fence?.[m]!=='function'))fail('RETENTION_CONFIGURATION');
+export function watermarkedJournal({journal,watermark,fence,ledger}){
+ if(typeof journal?.get!=='function'||typeof journal?.set!=='function'||typeof journal?.exclusive!=='function'||typeof watermark?.advanceProjection!=='function'||typeof watermark?.read!=='function'||typeof watermark?.readProjection!=='function'||typeof ledger?.head!=='function'||['observe','disable','verify','state'].some(m=>typeof fence?.[m]!=='function'))fail('RETENTION_CONFIGURATION');
  async function get(key,options={}){
   if(options.exclusive===true)return journal.get(key,options);
   if(!fence.state().enabled)fail('RETENTION_RECOVERY_BARRIER');
   let snapshot;try{snapshot=own(data(await watermark.readProjection(key)),['projection','watermark']);
    if(snapshot.projection!==null&&(typeof snapshot.projection!=='object'||Array.isArray(snapshot.projection)))fail('RETENTION_WATERMARK_UNVERIFIED');
   }catch{fence.disable('RETENTION_WATERMARK_UNVERIFIED');fail('RETENTION_WATERMARK_UNVERIFIED');}
-  await fence.verify(()=>snapshot.watermark);
+  await fence.verify(()=>snapshot.watermark,()=>ledger.head());
   if(snapshot.projection!==null&&projectionSequence(snapshot.projection)>snapshot.watermark.sequence)fail('RETENTION_RECOVERY_BARRIER');
   return snapshot.projection;
  }
@@ -54,9 +54,9 @@ export function watermarkedJournal({journal,watermark,fence}){
 /** The ledger every transition owner appends through: an append whose acknowledgement is missing may still be durable, so the decision
  * it carries is UNKNOWN to the projection; the fence closes until reconciliation replays the ledger. */
 export function acknowledgedLedger({ledger,fence,watermark}){
- if(typeof ledger?.append!=='function'||typeof ledger?.replay!=='function'||typeof fence?.disable!=='function')fail('RETENTION_CONFIGURATION');
+ if(typeof ledger?.append!=='function'||typeof ledger?.replay!=='function'||typeof ledger?.head!=='function'||typeof fence?.disable!=='function')fail('RETENTION_CONFIGURATION');
  async function append(value,{exclusive=false}={}){
-  if(!exclusive)await fence.verify(()=>watermark.read());
+  if(!exclusive)await fence.verify(()=>watermark.read(),()=>ledger.head());
   try{return await ledger.append(value);}catch(error){if(error?.code==='RETENTION_LEDGER_UNACKNOWLEDGED')fence.disable('RETENTION_LEDGER_UNKNOWN');throw error;}}
- return Object.freeze({append,replay:()=>ledger.replay(),latest:()=>ledger.latest()});
+ return Object.freeze({append,replay:()=>ledger.replay(),latest:()=>ledger.latest(),head:()=>ledger.head()});
 }

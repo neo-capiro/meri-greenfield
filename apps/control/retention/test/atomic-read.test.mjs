@@ -1,6 +1,6 @@
 /** Production startup over synthetic restorable stores. No DB, provider, network or live migration. */
 import test from 'node:test';import assert from 'node:assert/strict';
-import {createRetentionStartup} from '../startup.mjs';import {subjectKey,hash} from '../boundary.mjs';
+import {createRetentionStartup} from '../startup.mjs';import {subjectKey,hash} from '../boundary.mjs';import {createServingFence} from '../serving-fence.mjs';import {watermarkedJournal} from '../recovery-watermark.mjs';
 import {composeStartup,subjectOf,ownership} from './fixture.mjs';
 const deferred=()=>{let resolve;const promise=new Promise(r=>{resolve=r;});return {promise,resolve};};
 
@@ -55,8 +55,12 @@ test('synthetic atomic read: split-read and malformed snapshot stores fail close
 
 test('synthetic atomic read: a projection not yet covered by its watermark is refused until advance is acknowledged',async()=>{
  const f=composeStartup(),subject=subjectOf(),key=subjectKey(subject);await f.startup.start();
+ // This adapter-level certificate control isolates the DB snapshot rule; startup additionally checks the external head.
+ const fence=createServingFence();fence.enable({watermark:{sequence:0,entrySha256:null}});
+ const tracked=watermarkedJournal({journal:f.journal,watermark:f.watermark,fence,ledger:f.ledger});
  const row={state:'SUPPRESSED',ledgerSequence:1,entrySha256:'1'.repeat(64)};await f.journal.set(key,row);
- await assert.rejects(f.startup.gate.assertServable(subject),/RETENTION_RECOVERY_BARRIER/);assert.equal(f.startup.state().enabled,true);
- await f.watermark.advanceProjection({key,projectionSha256:hash(row),sequence:1,minimumSequence:0});
- await assert.rejects(f.startup.gate.assertServable(subject),/RETENTION_SUPPRESSED/);
+ await assert.rejects(tracked.get(key),/RETENTION_RECOVERY_BARRIER/);assert.equal(fence.isEnabled(),true);
+ const entry=await f.ledger.append({subject,state:'SUPPRESSED',facts:{}}),acknowledged={...row,entrySha256:entry.entrySha256};await f.journal.set(key,acknowledged);
+ await f.watermark.advanceProjection({key,projectionSha256:hash(acknowledged),sequence:1,minimumSequence:0});
+ assert.equal((await tracked.get(key)).state,'SUPPRESSED');
 });

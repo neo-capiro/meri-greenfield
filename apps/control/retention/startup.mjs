@@ -21,8 +21,8 @@ export function createRetentionStartup({journal,watermark=null,ledgerSink=null,o
  if(purge.enabled&&(typeof owners.storage?.deleteVersion!=='function'||typeof owners.rows?.purge!=='function'||typeof owners.facts!=='object'||owners.facts===null||typeof owners.keyFor!=='function'))fail('RETENTION_CONFIGURATION');
  clock(now);const fence=createServingFence();
  const unavailable=ledgerSink===null?'RETENTION_LEDGER_UNAVAILABLE':watermark===null?'RETENTION_WATERMARK_UNAVAILABLE':null;
- const tracked=watermark?watermarkedJournal({journal,watermark,fence}):journal;
  const ledger=ledgerSink?acknowledgedLedger({ledger:createRetentionLedger({sink:ledgerSink,now}),fence,watermark}):null;
+ const tracked=watermark&&ledger?watermarkedJournal({journal,watermark,fence,ledger}):journal;
  // Every ordinary tracked read requires one backing-store snapshot of the projection and its recovered watermark.
  const gate=createRetentionReadGate({journal:tracked,serving:fence});
  const reconciler=ledger&&watermark?createRecoveryReconciler({ledger,journal:tracked,serving:fence,watermark,storage:owners.storage,keyFor:owners.keyFor,facts:owners.facts,rows:owners.rows,now}):null;
@@ -32,8 +32,8 @@ export function createRetentionStartup({journal,watermark=null,ledgerSink=null,o
  /** One reconciliation at a time; the fence stays closed throughout and opens only with the read-back watermark. */
  function recover(){if(unavailable){fence.disable(unavailable);return Promise.reject(Object.assign(new Error(unavailable),{code:unavailable}));}
   return recovering??=reconciler.reconcile().finally(()=>{recovering=null;});}
- /** Readiness: serving is open and the persisted watermark is not behind what this process projected; otherwise recover, then re-verify. */
- async function ensureServing(){if(fence.isEnabled()){try{return await fence.verify(()=>watermark.read());}catch{}}
-  await recover();return fence.verify(()=>watermark.read());}
+ /** Every readiness proof compares against the current external ledger, including decisions this process never observed. */
+ async function ensureServing(){if(fence.isEnabled()){try{return await fence.verify(()=>watermark.read(),()=>ledger.head());}catch{}}
+  await recover();return fence.verify(()=>watermark.read(),()=>ledger.head());}
  return Object.freeze({serving:fence,journal:tracked,ledger,gate,suppression,purge:executor,reconciler,recover,ensureServing,start:ensureServing,state:()=>Object.freeze({...fence.state(),purgeEnabled:purge.enabled,unavailable})});
 }

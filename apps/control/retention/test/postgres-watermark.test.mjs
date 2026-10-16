@@ -9,6 +9,7 @@ import {createPostgresWatermarkStore} from '../postgres-watermark.mjs';
 import {watermarkedJournal} from '../recovery-watermark.mjs';
 import {createServingFence} from '../serving-fence.mjs';
 import {hash} from '../boundary.mjs';
+import {createRetentionLedger,createMemoryLedgerSink} from '../ledger.mjs';
 /** One-row table emulation; `faults` maps a statement prefix to 'throw'. Every lease records its releases. */
 function syntheticPool({faults={}}={}){
  let row=null;const made=[],idle=[],projections=new Map();
@@ -49,7 +50,7 @@ test('lease faults: a lost COMMIT acknowledgement is unknown and retires the lea
 test('through the watermarked journal, an advance whose commit is unknown leaves the projection standing and closes the serving fence',async()=>{
  const faults={}, {store,pool}=compose({faults}),fence=createServingFence();fence.enable({watermark:{sequence:0,entrySha256:null}});
  const writes=[];const inner={async get(){return null;},async set(key,row){writes.push(key);return row;},async keys(){return [];},async exclusive(fn){return fn();}};
- const tracked=watermarkedJournal({journal:inner,watermark:store,fence});const key=`tenant-a:conversation:${randomUUID()}`;
+ const tracked=watermarkedJournal({journal:inner,watermark:store,fence,ledger:createRetentionLedger({sink:createMemoryLedgerSink(),now:Date.now})});const key=`tenant-a:conversation:${randomUUID()}`;
  const set=inner.set;inner.set=async(...args)=>{const result=await set(...args);pool.project(args[0],args[1]);faults.COMMIT='throw';return result;};
  await tracked.set(key,{state:'SUPPRESSED',ledgerSequence:1,entrySha256:'1'.repeat(64)});
  assert.deepEqual(writes,[key]);assert.equal(fence.isEnabled(),false);assert.equal(fence.state().reason,'RETENTION_WATERMARK_UNKNOWN');assert.equal(fence.state().highWater,0,'an unacknowledged advance is not observed');

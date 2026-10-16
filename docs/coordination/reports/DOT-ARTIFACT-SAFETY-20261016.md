@@ -332,6 +332,78 @@ follow-up depends on the held retention source and needs exact independent
 review before integration. Retention and candidate h remain **HOLD**; preview
 activation/restore-custody and all migration/purge holds remain as above.
 
+## Current durable head follow-up: unseen serving owners
+
+The parent independently **ACCEPTED the atomic snapshot source at
+`2124306473aa84054158e9fe1f0fdff01c9357ba`** and its 31 focused controls, while
+keeping overall restore safety HOLD. A reader opened at position zero can miss
+another owner's acknowledged suppression at one, then atomically read null/zero
+after restore: its local floor never learned one. This is a separate authoritative
+freshness gap, not a failure of the accepted snapshot implementation.
+
+Sealed212430 and its repair branch are preserved. The new isolated source branch
+is `dot/meri-retention-current-head-20261016`. Preview adapter source had not been
+edited when the parent prioritized this fix; `dot/meri-preview-store-20261016`
+still points to sealed212430. Startup confirmed the canonical runtime composition
+already injects the trusted `retentionLedgerSink.append/read` into this startup
+owner, so no shared runtime composition file or new external port is needed.
+
+Before production edits, three focused regressions failed unchanged212430:
+**0 pass, 3 fail** for serving, readiness, and a new decision before recovery.
+The parent's pasted portable probe also printed `suppressedSubjectServable:true`,
+ledger1/watermark0, reader floor0, writer floor1, exit0. Its LF source retained at
+`task-9/evidence/retention-unseen-reader-probe.mjs.txt` hashes to
+`4f125fc31cb5761ac4627f778e84d03674449c12b1e10c01d9f167304f757f29` after decoding
+transport arrows. This differs from the supplied `bd83f41f...` pin; no byte-exact
+identity is claimed. The executed semantics are unchanged and the exact output
+is retained. The temporary candidate-root probe was removed after exit.
+
+The canonical ledger now supplies `head()` through a fresh, integrity-verified
+replay of its existing sink read. It is never cached or derived from the restored
+database. A current, complete committed sink view outside the rollback boundary
+is required; an eventually consistent listing is not this contract. Head reads
+use the existing operation-lifetime owner, default10seconds, configurable up to
+60seconds, and retire their owned timer on completion/failure. A late read cannot
+release a timed-out caller; no physical cancellation of the borrowed sink is
+claimed. This favors correctness over a new unreviewed optimized head endpoint.
+
+Every ordinary snapshot release, readiness proof and pre-append check now compares
+its DB observation against that current verified head. Unseen decisions close the
+fence; a database position ahead of the ledger or a conflicting recovered hash is
+not proof. Missing/corrupt/unavailable heads refuse serving. Startup orders the
+existing ledger and tracked journal so all serving owners receive this guard.
+The accepted atomic store snapshot, exclusive reconciliation, exact-row advancement
+and UNKNOWN behavior are preserved. Projection writes after an acknowledged
+decision still use their predecessor proof rather than requiring the new decision
+to be projected before writing it.
+
+The stronger guard exposed purge completion's read-after-own-append ordering.
+Its completion and best-effort UNKNOWN paths now read the CAS row before appending
+their decision, then project with that same CAS token, as suppression/release do.
+The durable EFFECTS_STARTED marker remains before effects, and a stale CAS still
+closes serving. The old two-owner test is strengthened to refuse before a second
+decision is appended. The concurrent-read test now supplies a real other-owner
+decision and requires current-head refusal of the older completed snapshot.
+
+Final focused source batch: **47 pass, 0 fail, 0 skip**, exit0; Node523ms,
+controlled wall659ms, sampled peak working set76,296,192bytes with128MiB V8 heap
+cap. Fresh available memory11,948,355,584bytes. One controlled process,120second
+hard wall, no test child or remaining owned process. Exact argv:
+
+```
+node --max-old-space-size=128 --test --test-isolation=none apps/control/retention/test/current-head.test.mjs apps/control/retention/test/atomic-read.test.mjs apps/control/retention/test/startup-restore.test.mjs apps/control/retention/test/postgres-watermark.test.mjs apps/control/retention/test/ledger-suppression.test.mjs apps/control/retention/test/planning-execution-recovery.test.mjs
+```
+
+Evidence: `retention-current-head-212430-negative*`,
+`retention-unseen-reader-parent-212430*`, `retention-current-head-fixed.tap`, empty
+stderr and `retention-current-head-process.json` under `task-9/evidence`.
+The first fixed batch **37/39** is retained as `retention-current-head-first*`:
+the earlier-refusal expectation and purge self-pending read described above were
+corrected; existing planning/execution/recovery controls were added for that
+narrow ordering change. These are synthetic ports/scripted SQL only. No real
+DB, migration, provider, purge, P2b retry or heavy suite ran. This follow-up needs
+exact independent review; overall restore safety and candidate h remain HOLD.
+
 ## Proof and remaining gates
 
 The candidate-h source proof passes **5/5**. **Zero of its 45 rows changed**;

@@ -37,13 +37,14 @@ test('synthetic: a restore at the projection snapshot refuses the first served r
  await f.startup.recover();await assert.rejects(f.startup.gate.assertServable(s),/RETENTION_SUPPRESSED/);
 });
 
-test('synthetic: a completed atomic snapshot stays coherent across a later healthy watermark advance',async()=>{
+test('synthetic: a later durable decision fences a completed older snapshot before serving',async()=>{
  const f=composeStartup(),s=subjectOf();let advance=false;
- const watermark={...f.watermark,async readProjection(...args){const result=await f.watermark.readProjection(...args);if(advance){advance=false;await f.watermark.record({sequence:1,entrySha256:'a'.repeat(64)});}return result;}};
+ const other=createRetentionStartup({journal:f.journal,watermark:f.watermark,ledgerSink:f.sink,ownership,purge:{enabled:false},now:f.clock.now});
+ const watermark={...f.watermark,async readProjection(...args){const result=await f.watermark.readProjection(...args);if(advance){advance=false;await other.suppression.suppress({principal:f.principal,subject:s,reason:'concurrent owner request'});}return result;}};
  f.startup=createRetentionStartup({journal:f.journal,watermark,ledgerSink:f.sink,ownership,purge:{enabled:false},now:f.clock.now});await f.startup.start();advance=true;
- await f.startup.gate.assertServable(s);assert.equal(advance,false,'the atomic port was called');
- assert.equal(f.startup.state().enabled,true);assert.equal(f.startup.state().highWater,0,'only the captured position is observed');
- await f.startup.gate.assertServable(s);assert.equal(f.startup.state().highWater,1);
+ await other.start();await refused(f,s);assert.equal(advance,false,'the atomic port was called');
+ assert.equal(f.startup.state().enabled,false);assert.equal(f.startup.state().highWater,1,'the newer durable head is now known');
+ await f.startup.ensureServing();await assert.rejects(f.startup.gate.assertServable(s),/RETENTION_SUPPRESSED/);
 });
 
 test('synthetic: legacy blind-advance ports cannot satisfy retention startup configuration',()=>{
@@ -109,10 +110,10 @@ test('synthetic: another running owner cannot advance across an unseen restored-
  const f=composeStartup(),lost=subjectOf(),next=subjectOf();await f.startup.start();const saved=f.backup();
  const other=createRetentionStartup({journal:f.journal,watermark:f.watermark,ledgerSink:f.sink,ownership,purge:{enabled:false},now:f.clock.now});await other.start();
  await suppress(f,lost);f.restore(saved);
- await other.suppression.suppress({principal:f.principal,subject:next,reason:'owner request'});
- assert.equal(f.watermark.snapshot().sequence,0,'sequence two cannot certify missing sequence one');
+ await assert.rejects(other.suppression.suppress({principal:f.principal,subject:next,reason:'owner request'}),/RETENTION_WATERMARK_STALE/);
+ assert.equal(f.watermark.snapshot().sequence,0,'the unseen durable decision cannot be concealed');assert.equal((await f.sink.read()).length,1,'no second decision before recovery');
  assert.equal(other.state().reason,'RETENTION_WATERMARK_STALE');await assert.rejects(other.gate.assertServable(lost),/RETENTION_RECOVERY_BARRIER/);
- await other.recover();for(const s of [lost,next])await assert.rejects(other.gate.assertServable(s),/RETENTION_SUPPRESSED/);
+ await other.recover();await assert.rejects(other.gate.assertServable(lost),/RETENTION_SUPPRESSED/);await other.gate.assertServable(next);
 });
 
 test('serving is fenced from construction: nothing is read or suppressed before startup reconciles, the plain enable is refused, and startup opens only with the read-back watermark',async()=>{

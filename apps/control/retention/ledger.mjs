@@ -1,9 +1,10 @@
 /** Ordered, durably acknowledged retention transition history, outside the restored database's rollback boundary. The sink is a port
  * (the shipping owner's write-once evidence store in product; an in-memory sink in tests). Every transition is appended here first. */
 import {own,data,fail,hash,subject,subjectKey,clock,text} from './boundary.mjs';
+import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 export const transitions=Object.freeze(['SUPPRESSED','RELEASED','PURGE_PLANNED','PURGE_BLOCKED','PURGE_UNKNOWN','PURGE_EXECUTED']);
-export function createRetentionLedger({sink,now}){
- if(typeof sink?.append!=='function'||typeof sink?.read!=='function')fail('RETENTION_CONFIGURATION');const tick=clock(now);
+export function createRetentionLedger({sink,now,maxHeadMs=10000}){
+ if(typeof sink?.append!=='function'||typeof sink?.read!=='function'||!Number.isSafeInteger(maxHeadMs)||maxHeadMs<1||maxHeadMs>60000)fail('RETENTION_CONFIGURATION');const tick=clock(now);
  const entry=value=>{const e=own(data(value),['subject','state','facts'],['reason']);subject(e.subject);if(!transitions.includes(e.state))fail('RETENTION_INVALID_REQUEST');if(e.reason!==undefined)text(e.reason,1024);return e;};
  const receipt=(sequence,entrySha256)=>hash({sequence,entrySha256});
  /** Appends one transition; refuses to proceed without a verifiable durable acknowledgement. */
@@ -22,7 +23,11 @@ export function createRetentionLedger({sink,now}){
  }
  /** Latest transition per subject, in first-seen subject order. */
  async function latest(){const byKey=new Map();for(const r of await replay())byKey.set(subjectKey(r.subject),r);return byKey;}
- return Object.freeze({append,replay,latest});
+ /** Current authoritative position, never cached or inferred from a restorable database. The sink read must be a current,
+  * complete committed view outside that rollback boundary; an eventually consistent listing does not satisfy this contract. */
+ async function head(){const life=createOperationLifetime({deadlineMs:tick()+maxHeadMs,now:tick,errorFactory:()=>Object.assign(new Error('RETENTION_LEDGER_UNVERIFIED'),{code:'RETENTION_LEDGER_UNVERIFIED'})});
+  try{const last=(await life.run(()=>replay())).at(-1);return Object.freeze({sequence:last?.sequence??0,entrySha256:last?.entrySha256??null});}finally{life.close();}}
+ return Object.freeze({append,replay,latest,head});
 }
 /** Test and contract sink: durable within the process, with switches for an unacknowledged append. */
 export function createMemoryLedgerSink({acknowledge=true}={}){
