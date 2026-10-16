@@ -87,7 +87,7 @@ export function createArtifactService({validators:v,authorize,budget,versions,ob
       const commit=v.snapshot(await life.run(signal=>versions.commit({version:v.snapshot(version),spec:v.snapshot(request),specSha256:v.hash(request),requestSha256,inspection:v.snapshot(inspection),expectedParentVersionId:baseVersionId},signal,publication)));
       closed(commit,['status','versionId','requestSha256','versionSha256']);
       if(!['committed','duplicate'].includes(commit.status)||commit.versionId!==version.versionId||commit.requestSha256!==requestSha256||commit.versionSha256!==v.hash(version))fail('ARTIFACT_COMMIT_RECEIPT');versionCommitted=true;
-      await settle('completed',bytes.length);receipt=await authority(life,action,{...resource,object},requestSha256,context);await servable(life,context,readBase);
+      await settle('completed',bytes.length);receipt=await authority(life,action,{...resource,object},requestSha256,context);await servable(life,context,{version});
       return {version,inspection,execution:{requestSha256,authorizationReceiptId:receipt.receiptId,budgetTicketId:ticket.ticketId,objectCommitted:true,versionCommitted:true,nativeQualified:false}};
     }catch(cause){
       if(ticket&&!writeStarted&&!settlementStarted)try{await settle('failed',0);}catch{settlementUnknown=true;}
