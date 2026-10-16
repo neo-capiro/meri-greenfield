@@ -5,7 +5,7 @@ import {storeFixture,binding,scopes,versions,id} from '../../control/conversatio
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {workflowId} from '../../control/conversations/temporal-dispatch.mjs';
 function fixture(){
- const f=storeFixture(),state={revoked:false,starts:[],nativeCalls:0},now=Date.now;
+ const f=storeFixture(),state=Object.assign(f.state,{revoked:false,starts:[],nativeCalls:0}),now=Date.now;
  const identityContext={async verifyIdentity(){if(state.revoked)throw Error('revoked');return {principal:{tenantId:binding.tenantId,actorId:binding.actorId},identityRevision:'synthetic-current',checkedAtMs:now(),expiresAtMs:now()+30000};},async resolveContext({identity}){if(state.revoked)throw Error('revoked');return {identitySha256:hash(identity),binding,scopes,selectedClientId:id(5),contextRevision:'synthetic-current',checkedAtMs:now(),expiresAtMs:now()+30000};}};
  const configuration={versions,sourceEnabled:false,sessions:{maxSessions:10,maxTtlMs:30000},limits:{requestMs:1000,requestBytes:131072,shutdownMs:1000},temporal:{taskQueue:'synthetic'},native:{maxResponseBytes:2097152}};
  const client={connection:{async withDeadline(_at,body){return body();},async withAbortSignal(_signal,body){return body();}},workflow:{async start(name,options){state.starts.push({name,options});},getHandle(){return {};}}};
