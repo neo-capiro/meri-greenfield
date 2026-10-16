@@ -19,8 +19,9 @@ test('the inventory names every retained data class the product holds, each with
  for(const c of dataClasses){
   assert.ok(['row-target','object-version','external-request','retain'].includes(c.deletion),c.id);assert.ok(['policy','policy-retained'].includes(c.rule),c.id);
   assert.equal(c.rule==='policy-retained',c.deletion==='retain',`${c.id}: a retained class has the retained rule and only it`);
-  assert.ok(c.subjectKinds.length>=1&&c.subjectKinds.every(k=>['conversation','artifact'].includes(k)),c.id);
-  assert.ok(['retention-read-gate','admission-gate','not-served','external'].includes(c.serving.gate),c.id);
+  assert.ok(c.subjectKinds.length>=1&&c.subjectKinds.every(k=>['conversation','artifact','schedule'].includes(k)),c.id);
+  assert.ok(['retention-read-gate','admission-gate','not-served','external','subject-unsupported'].includes(c.serving.gate),c.id);
+  assert.equal(c.serving.gate==='subject-unsupported',c.subjectKinds.some(k=>!['conversation','artifact'].includes(k)),`${c.id}: only a class of an unsupported subject kind is declared unsuppressible`);
   if(c.owner===null)assert.ok(typeof c.pendingOwner==='string'&&c.pendingOwner.length>10,`${c.id}: a class without an owner yet names the pending owner`);else assert.ok(existsSync(root+c.owner),`${c.id}: owner ${c.owner} exists`);
   if(c.status==='active'&&['rows','rows+objects'].includes(c.storage))assert.ok(c.tables.length>=1,`${c.id}: stored rows name their tables`);
  }
@@ -40,7 +41,7 @@ test('policy, enumeration and row owners derive their vocabularies from the regi
  assert.deepEqual([...retainedClasses].sort(),['budgets','logs','telemetry']);assert.deepEqual(externalRequestClasses,['memoryProposals']);
  assert.ok(!policyClasses.includes('editorDrafts'),'a planned class is not configured');
  for(const id of retainedClasses)assert.ok(!rowTargetClasses.includes(id),id);
- assert.equal(rowTargetSubjectKind.artifactVersions,'artifact');for(const id of rowTargetClasses.filter(x=>x!=='artifactVersions'))assert.equal(rowTargetSubjectKind[id],'conversation',id);
+ assert.equal(rowTargetSubjectKind.artifactVersions,'artifact');assert.equal(rowTargetSubjectKind.schedules,'schedule');for(const id of rowTargetClasses.filter(x=>!['artifactVersions','schedules'].includes(x)))assert.equal(rowTargetSubjectKind[id],'conversation',id);
  const p=policy();assert.equal(parseRetentionPolicy(p).policyId,'policy-synthetic');
  for(const id of ['schedules','receipts','memoryProposals','budgets','telemetry']){const missing=structuredClone(p);delete missing.classes[id];assert.throws(()=>parseRetentionPolicy(missing),/INVALID_COMMAND|RETENTION_POLICY_INVALID/,`${id} must be configured`);}
  for(const id of retainedClasses){const purgeable=structuredClone(p);purgeable.classes[id].purgeable=true;assert.throws(()=>parseRetentionPolicy(purgeable),/RETENTION_POLICY_INVALID/,`${id} cannot be made purgeable`);}

@@ -10,15 +10,15 @@ import {createPostgresRetentionJournal} from '../postgres-journal.mjs';
 import {subjectKey} from '../boundary.mjs';
 import {composeStartup,subjectOf,snapshot,object,planFrom} from './fixture.mjs';
 const day=86400000;
-/** A conversation with rows in every conversation-scoped class, uploads, and retained budget evidence. */
-const everyClass=(s,extra={})=>({...snapshot(s,{checkpoints:2,outputs:2}),nextRuns:[{targetRunId:randomUUID()}],uploads:[{uploadId:randomUUID(),object:object()}],schedules:[{scheduleId:randomUUID()}],receipts:[{receiptId:randomUUID()},{receiptId:randomUUID()}],budgetRuns:[{runId:randomUUID()}],...extra});
+/** A conversation with rows in every conversation-scoped class, uploads, and retained budget evidence (schedules are their own subject). */
+const everyClass=(s,extra={})=>({...snapshot(s,{checkpoints:2,outputs:2}),nextRuns:[{targetRunId:randomUUID()}],uploads:[{uploadId:randomUUID(),object:object()}],receipts:[{receiptId:randomUUID()},{receiptId:randomUUID()}],budgetRuns:[{runId:randomUUID()}],...extra});
 async function prepared(f,s,raw){const inv=enumerateReferences(raw),key=subjectKey(s);f.current.inventories.set(key,inv);f.rows.seed(key,inv);for(const o of inv.objects)f.store.put(f.keyFor(o),o.versionId);
  await f.startup.suppression.suppress({principal:f.principal,subject:s,reason:'owner request'});f.clock.advance(30*day);return {inv,key,plan:planFrom(f,s,await f.startup.journal.get(key))};}
 
 test('a conversation with data in every retained conversation class and an artifact with versions are each deleted completely; retained evidence stays and is never targeted',async()=>{
  const f=composeStartup({purge:true}),s=subjectOf(),a=subjectOf('artifact');await f.startup.start();
  const {inv,key,plan}=await prepared(f,s,everyClass(s));assert.equal(plan.state,'PLANNED');
- const conversationRowClasses=rowTargetClasses.filter(c=>c!=='artifactVersions');
+ const conversationRowClasses=rowTargetClasses.filter(c=>!['artifactVersions','schedules'].includes(c));
  assert.deepEqual([...new Set(plan.rowSteps.map(r=>r.className))].sort(),[...conversationRowClasses].sort(),'every conversation row class has a target');
  assert.deepEqual([...new Set(inv.objects.flatMap(o=>o.classes))].sort(),['completionCheckpoints','conversation','lifecycle','selectedOutputs','uploads'].filter(c=>inv.objects.some(o=>o.classes.includes(c))).sort());
  assert.ok(inv.objects.some(o=>o.classes.includes('uploads')),'stored uploads are object targets');
@@ -30,6 +30,12 @@ test('a conversation with data in every retained conversation class and an artif
  for(const v of versions)assert.ok(!f.store.has(f.keyFor(v.object),v.object.versionId));assert.deepEqual(f.rows.remaining(art.key),[]);
  const executed=(await f.sink.read()).filter(e=>e.state==='PURGE_EXECUTED');assert.equal(executed.length,2);
  assert.ok(executed[0].facts.rowSteps.every(r=>r.state==='EXECUTED')&&executed[0].facts.steps.every(st=>st.state==='EXECUTED'),'every step recorded EXECUTED only after its readback');
+});
+
+test('schedules belong to their own subject kind: a conversation plan that carries schedule rows is BLOCKED as a subject mismatch with zero deletes',async()=>{
+ const f=composeStartup({purge:true}),s=subjectOf();await f.startup.start();const {plan}=await prepared(f,s,everyClass(s,{schedules:[{scheduleId:randomUUID()}]}));
+ assert.equal(plan.state,'BLOCKED');assert.deepEqual(plan.blocks.map(b=>[b.reason,b.detail.requiredSubjectKind]),[['ROW_TARGET_SUBJECT_MISMATCH','schedule']]);
+ await assert.rejects(f.startup.purge.execute(plan),/RETENTION_PURGE_BLOCKED/);assert.equal(f.deletes.length,0);assert.equal(f.rowPurges.length,0);
 });
 
 test('memory proposals owned outside Meri block the plan with zero deletes until their owner offers a deletion path',async()=>{
