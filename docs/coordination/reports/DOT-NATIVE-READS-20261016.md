@@ -145,3 +145,17 @@ credential fallback, issuer activation, grant or trust resource was introduced.
 Activation requires separate approval naming actual issuer, audience, principal
 scope, original TTL/revocation, workload secret access and concrete resource owner.
 All production availability remains zero until those prerequisites are qualified.
+
+Startup's f54 source scan establishes an additional original-entry fact gap:
+`assemblePreparedCandidate` has static approved configuration, grant intents and
+durable allocation, but no canonical original task `run_issuances` receipt or
+`factsSha256`. The target registry has `issued.issuance.factsSha256` and its row's
+request hash. Original READS therefore stays unavailable even when optional config
+is propagated. Hashing current startup config would fabricate an issuance proof
+and could accept a changed allowlist after restart. READS has no alternate producer.
+If original READS is expected, parent must allocate the existing canonical issuer's
+original-task issuance/material/approved-config durable binding and exact record
+correlation. No new journal, framework, migration, key or credential is proposed.
+Targets may consume their actual already-issued facts only after exact task/grant/
+request/allocation/config correlation and current accepted-entry checks. This is an
+absent prerequisite, not a denied action or a completed runtime qualification.
