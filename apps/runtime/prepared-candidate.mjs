@@ -25,6 +25,12 @@ import {createPreparedRunRegistry} from './prepared-run-registry.mjs';
 import {createPreparedNativeReads,captureReadRuntimeOptions} from './native-authority/prepared-reads.mjs';
 const refuse=()=>{throw Error('PREPARED_CANDIDATE_REFUSED');};
 const same=(a,b)=>hash(a)===hash(b);
+/** Check the configured first-run proxy bearer against the model grant intent before allocation. */
+export function assertFirstRunGrantBindings(grantIntents,taskGrantId,secrets){
+ const controlDigest=capabilityDigest(secrets.control),taskDigest=capabilityDigest(secrets.task),proxyDigest=capabilityDigest(secrets.proxy);
+ if(!/^[!-~]{32,256}$/u.test(secrets.proxy)||grantIntents.filter(v=>v.grantId===taskGrantId&&v.capabilitySha256===taskDigest).length!==1||grantIntents.filter(v=>v.grantId!==taskGrantId&&v.capabilitySha256===proxyDigest).length!==1||grantIntents.some(v=>v.capabilitySha256===controlDigest))refuse();
+ return Object.freeze({controlDigest,taskDigest});
+}
 /** Fresh native authority; only absence permits the approved fixed first-run input. */
 export function createPreparedCandidateIdentity({store,identity,qualification,now=Date.now,limits,nextRunOwner}){
  const binding=identity.commandContext.binding,scopes=[{kind:'client',tenantId:binding.tenantId,resourceId:identity.commandContext.clientResolution.clientId,policyRevision:qualification.policyRevision}];
@@ -42,14 +48,13 @@ export function assemblePreparedCandidate(options){
  const reads=captureReadRuntimeOptions(Object.fromEntries(['createReadsRuntime','generalReads'].filter(k=>c[k]!==undefined).map(k=>[k,c[k]])));
  if([secrets.identity,secrets.task,secrets.control,secrets.proxy].some(v=>typeof v!=='string'||!/^\S{1,8192}$/u.test(v))||new Set(Object.values(secrets)).size!==4||c.retireOriginal!==undefined&&typeof c.retireOriginal!=='function')refuse();
  const runtime={...config.runtime,proxyCredential:secrets.proxy},compiled=compileNativeBrokerPlan({runtime,plan:config.plan,preparationIntent:config.preparationIntent}),original=compiled.original,store=createPostgresConversationStore({pool:c.pool}),identity={origin:config.identity.origin,credential:secrets.identity,commandContext:config.identity.commandContext,fetchImpl};
- const controlDigest=capabilityDigest(secrets.control),taskDigest=capabilityDigest(secrets.task),multi=[c.runIssuance,c.issuanceIntent,c.admissionForBinding].some(v=>v!==undefined);
+ const {controlDigest,taskDigest}=assertFirstRunGrantBindings(config.grantIntents,config.grantId,secrets),multi=[c.runIssuance,c.issuanceIntent,c.admissionForBinding].some(v=>v!==undefined);
  if(multi&&(!c.runIssuance||typeof c.issuanceIntent!=='function'||typeof c.admissionForBinding!=='function'))refuse();
  const nextRunOwner=multi?createPreparedNextRunOwner({store,versions:c.configuration.versions,admissionForBinding:c.admissionForBinding,now}):undefined;
  const runRegistry=multi?createPreparedRunRegistry({issuance:c.runIssuance,issuanceIntent:c.issuanceIntent,store,pool:c.pool,client:c.ecs,identity,controlCapability:secrets.control,objects:c.objects,limits:{...limits,cleanupMs:c.configuration.limits.shutdownMs},now,sourceEnabled:c.configuration.sourceEnabled,...reads,...(config.approvedReads===undefined?{}:{approvedReads:config.approvedReads}),...(c.prepareOriginal?{prepareOriginal:c.prepareOriginal}:{}),...(c.allocate?{allocate:c.allocate}:{})}):null;
  const unavailableReads=createPreparedNativeReads({binding:original.binding,...(config.approvedReads===undefined?{}:{approvedReads:config.approvedReads}),now}).application;
  const identityContext=createPreparedCandidateIdentity({store,identity:{origin:identity.origin,commandContext:identity.commandContext,fetchImpl},qualification:config.qualification,now,limits,...(nextRunOwner?{nextRunOwner}:{})});
  const conversationMembership=createCoreMembershipGate({origin:identity.origin,identityContext,fetchImpl,now,limits:{maxRequestMs:limits.maxRequestMs,maxFactBytes:262144}});
- if(!config.grantIntents.some(v=>v.grantId===config.grantId&&v.capabilitySha256===taskDigest)||config.grantIntents.some(v=>v.capabilitySha256===controlDigest))refuse();
  let controller,pending,closed=false,outerApplication;
  const lazy={get prepared(){return controller?.prepared;},async reconcile({signal}={}){await lazy.allocate();return controller.reconcile({signal});},allocate(){if(closed)refuse();if(!pending)pending=Promise.resolve().then(()=>{if(closed)refuse();return (c.allocate??allocateRemoteNativeController)({pool:c.pool,client:c.ecs,identity,allocationJson:config.allocationJson,qualification:config.qualification,grantIntents:config.grantIntents,grantId:config.grantId,operations:config.operations,taskCapability:secrets.task,controlCapabilitySha256:controlDigest,runtime,plan:config.plan,preparationIntent:config.preparationIntent,taskRequest:config.taskRequest,containerName:config.containerName,limits,objects:c.objects,enabled:true,now,transportFactory:({original})=>({original,origin:config.taskOrigin,credential:secrets.control,fetchImpl,now})});}).then(async owned=>{controller=owned;if(closed){await owned.close();refuse();}return {original,resource:owned.resource};});return pending;},async close(){closed=true;try{await pending;}catch{}await controller?.close();},
   // Stop-only: forecloses any later allocation here, then the original's canonical stop rebuilt from the same exact allocation facts
