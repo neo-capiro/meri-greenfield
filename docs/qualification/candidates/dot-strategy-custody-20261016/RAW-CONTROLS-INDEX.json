@@ -1,0 +1,213 @@
+{
+  "archiveSha256": "bd4aa0dea92ee7769727d4ff6af3ad03d089d4a31cced47128564d262146a33f",
+  "schemaVersion": 1,
+  "source": "99ed57c6660902be608350a300b433ff4f9b537d",
+  "archive": "RAW-CONTROLS.zip",
+  "verifiedEntryCount": 29,
+  "evidenceCommit": "01d023cc25f8ef5adf8ea911102c9dd48b8e0775",
+  "entries": [
+    {
+      "normalization": "Git text=auto eol=lf may normalize JSON; this archive preserves original bytes",
+      "committedGitBlob": "3f52a03f1aca8bf7f3638a1ded0d8d82d72ff542",
+      "path": "combined-focused-first.json",
+      "rawSha256": "b6488cbb1b0a67cb00f6780be3d9465896e63b3ccca33db5c6dfcbe02c11d065",
+      "bytes": 6787
+    },
+    {
+      "normalization": "Git text=auto eol=lf may normalize JSON; this archive preserves original bytes",
+      "committedGitBlob": "c6e4f96bbf66552007a4c3fb4851443f6882ad12",
+      "path": "combined-focused-first.stderr.txt",
+      "rawSha256": "541cf11528a668e9b506e0b73758fa6bca598b34ab523c69a98e753567f81a0d",
+      "bytes": 290
+    },
+    {
+      "normalization": "Git text=auto eol=lf may normalize JSON; this archive preserves original bytes",
+      "committedGitBlob": "edce58096fb777a0e38601eb0daa921d6844ec65",
+      "path": "combined-focused-first.stdout.txt",
+      "rawSha256": "4702cec17ffa64bc79f17a2083b10e3cd7f3691123c6502e20b7d8f384aa77a4",
+      "bytes": 5588
+    },
+    {
+      "normalization": "Git text=auto eol=lf may normalize JSON; this archive preserves original bytes",
+      "committedGitBlob": "86e3240c0543739d4027f76da6ae398a7b769a3e",
+      "path": "combined-source-final.json",
+      "rawSha256": "b6d91267cf68372174398f596870db53bc2ebab8e660e349781121b1d360f69e",
+      "bytes": 6787
+    },
+    {
+      "normalization": "Git text=auto eol=lf may normalize JSON; this archive preserves original bytes",
+      "committedGitBlob": "f91568ad5165471f4f07c38120203bd95fa66ce4",
+      "path": "combined-source-final.stderr.txt",
+      "rawSha256": "201352b97787a5e8759d5418066f913ea45d0322d9b3bacc2d8f1f8dc66b78b2",
+      "bytes": 290
+    },
+    {
+      "normalization": "Git text=auto eol=lf may normalize JSON; this archive preserves original bytes",
+      "committedGitBlob": "4a3108dcd55bea924c8d15d71136acfdd3b07b5e",
+      "path": "combined-source-final.stdout.txt",
+      "rawSha256": "3a15c2320c12bf63a11d1ad0422a30c09298a883135a0a8397da0e339137c8b4",
+      "bytes": 5700
+    },
+    {
+      "normalization": "Git text=auto eol=lf may normalize JSON; this archive preserves original bytes",
+      "committedGitBlob": "f0e28d665b84bd51419962b6ff8c702f71b31f09",
+      "path": "custody-first.json",
+      "rawSha256": "8334bb4450274f42d868cbd01122bd9e9ed3c3009870a0c2c461521b655fe119",
+      "bytes": 4533
+    },
+    {
+      "normalization": "Git text=auto eol=lf may normalize JSON; this archive preserves original bytes",
+      "committedGitBlob": "44280c2f7d2231c9e6bf99c1a14c0c31355fa782",
+      "path": "custody-first.stderr.txt",
+      "rawSha256": "f6ed6b907cf5e513a590f46201b8a1da6ebe8185de005842141943cd82762e9d",
+      "bytes": 290
+    },
+    {
+      "normalization": "Git text=auto eol=lf may normalize JSON; this archive preserves original bytes",
+      "committedGitBlob": "7422d09a67416c0407d8963d7446408bd8ebce87",
+      "path": "custody-first.stdout.txt",
+      "rawSha256": "88c9517bf08a8dce20fda4d67fb0a59f8263b530bf6b07c1f54395c8111c1fc0",
+      "bytes": 5828
+    },
+    {
+      "normalization": "Git text=auto eol=lf may normalize JSON; this archive preserves original bytes",
+      "committedGitBlob": "78c499cae659d3c8f70274fc0e3c653819948391",
+      "path": "custody-fixtures-corrected.json",
+      "rawSha256": "a8d161c459aa8ac7f7fe5cf05e6d8fea8ee113a6b2ee46411a7307c23e73cb14",
+      "bytes": 4533
+    },
+    {
+      "normalization": "Git text=auto eol=lf may normalize JSON; this archive preserves original bytes",
+      "committedGitBlob": "86cc7103786f4500624dc2b63e57ab2e7636e713",
+      "path": "custody-fixtures-corrected.stderr.txt",
+      "rawSha256": "3c1c1f7ac81c3bf115d20d9e061a1697797d4978851db9aa43dd7f088fb37c9f",
+      "bytes": 290
+    },
+    {
+      "normalization": "Git text=auto eol=lf may normalize JSON; this archive preserves original bytes",
+      "committedGitBlob": "297f8465159ae77ac4bfb5bf37f27d138e8fc54a",
+      "path": "custody-fixtures-corrected.stdout.txt",
+      "rawSha256": "8fbaf148dfac26da7e9437fc234c25d30181a8357dea948472791af8c8bb15c5",
+      "bytes": 4867
+    },
+    {
+      "normalization": "Git text=auto eol=lf may normalize JSON; this archive preserves original bytes",
+      "committedGitBlob": "114b6173a90d03e4315c8dde982e31b436aaffb1",
+      "path": "custody-policy-fixture-corrected.json",
+      "rawSha256": "a366b9c4dbb3735c43fad887aa31f6a5ddfaa858df7c54b805f86a4cd8941f66",
+      "bytes": 5628
+    },
+    {
+      "normalization": "Git text=auto eol=lf may normalize JSON; this archive preserves original bytes",
+      "committedGitBlob": "521b1a7bcf4691435ca21088c5cfa4671b8bb6cc",
+      "path": "custody-policy-fixture-corrected.stderr.txt",
+      "rawSha256": "8a7d311cff2b1e64907356ffa5584f0ad5b7439709c1b38b88054221e9d4091a",
+      "bytes": 290
+    },
+    {
+      "normalization": "Git text=auto eol=lf may normalize JSON; this archive preserves original bytes",
+      "committedGitBlob": "d56379e4ef4f8224971e73234b0ffc1f9d087304",
+      "path": "custody-policy-fixture-corrected.stdout.txt",
+      "rawSha256": "37d5ab7d1d771379a789366ef58d95102d6c97fb6216c5dca146c3c2add942af",
+      "bytes": 4530
+    },
+    {
+      "normalization": "Git text=auto eol=lf may normalize JSON; this archive preserves original bytes",
+      "committedGitBlob": "1c23a1acc4f510f7e10009d9732bde6299ab2b9b",
+      "path": "custody-private-schema-seam.json",
+      "rawSha256": "1a09b27760c99b82843bee720e89dfee1bc2f63d02054dff8894569ca5bbe009",
+      "bytes": 5628
+    },
+    {
+      "normalization": "Git text=auto eol=lf may normalize JSON; this archive preserves original bytes",
+      "committedGitBlob": "b40c8622753d8cb239f1417142e709a87c65fac3",
+      "path": "custody-private-schema-seam.stderr.txt",
+      "rawSha256": "5c72253bfc6a3c97bac5c2b855211516e2ca7d782bdef25b05b49937c1d92cb1",
+      "bytes": 290
+    },
+    {
+      "normalization": "Git text=auto eol=lf may normalize JSON; this archive preserves original bytes",
+      "committedGitBlob": "7373fe7e5135dfa3cd4537419a9ce9c5f9332193",
+      "path": "custody-private-schema-seam.stdout.txt",
+      "rawSha256": "23f565fc38318793f119e00ebdae6d72cde74d33510c4a71688f7b416d462fc7",
+      "bytes": 9478
+    },
+    {
+      "normalization": "Git text=auto eol=lf may normalize JSON; this archive preserves original bytes",
+      "committedGitBlob": "726b524b82d937c912dbb3753b00b4e9f2bf4a0d",
+      "path": "HANDOFF.json",
+      "rawSha256": "6f3c54da1c12a6be89bff1b732c642c082cc6c995ce1263ce17de2a311a94c30",
+      "bytes": 10549
+    },
+    {
+      "normalization": "Git text=auto eol=lf may normalize JSON; this archive preserves original bytes",
+      "committedGitBlob": "4050bcdd3f97aa717e03517b389bc0bc8099537b",
+      "path": "hooks-first.json",
+      "rawSha256": "e94e61907109005ee5ff9a20f7b4e098f7317a6b4868c415187ac8d765125af1",
+      "bytes": 5498
+    },
+    {
+      "normalization": "Git text=auto eol=lf may normalize JSON; this archive preserves original bytes",
+      "committedGitBlob": "bc831fc7053f61dfc182d6cc178a033a06a84cbf",
+      "path": "hooks-first.stderr.txt",
+      "rawSha256": "d6c2092e2d73501851cffd7963c777e04033dcdbf934b6fe4dffc31f9e040fb0",
+      "bytes": 290
+    },
+    {
+      "normalization": "Git text=auto eol=lf may normalize JSON; this archive preserves original bytes",
+      "committedGitBlob": "07d063d78adaf541d4888a8d23248139e716fe2a",
+      "path": "hooks-first.stdout.txt",
+      "rawSha256": "c86baab2bb2edc1083004aa8d0f7be0da8c63f1843f320a81228c8f0eaf73497",
+      "bytes": 2965
+    },
+    {
+      "normalization": "Git text=auto eol=lf may normalize JSON; this archive preserves original bytes",
+      "committedGitBlob": "65145628d18588d73e5d1ea0b40b5f6295fb3613",
+      "path": "hooks-original-import-seams.json",
+      "rawSha256": "950781213283987a1c05a84649382b76a71b509231275896e286e0c662802838",
+      "bytes": 5498
+    },
+    {
+      "normalization": "Git text=auto eol=lf may normalize JSON; this archive preserves original bytes",
+      "committedGitBlob": "4b37db97eec59f910da6b5f2a501d98d65fbd0ad",
+      "path": "hooks-original-import-seams.stderr.txt",
+      "rawSha256": "8700acf572bca0caea94461385a8d852b6b3a8b7ae746bd49d636bd8d048c075",
+      "bytes": 290
+    },
+    {
+      "normalization": "Git text=auto eol=lf may normalize JSON; this archive preserves original bytes",
+      "committedGitBlob": "5e68b16543499f43f8b26cda9323d2fff20d8515",
+      "path": "hooks-original-import-seams.stdout.txt",
+      "rawSha256": "7da992c1c0ea9488e945c6754bdb29b14b06fb1b9d4214101e5ec83276b3ca9c",
+      "bytes": 4997
+    },
+    {
+      "normalization": "Git text=auto eol=lf may normalize JSON; this archive preserves original bytes",
+      "committedGitBlob": "8a69641a45bcdfc26ba8674ebfcae835409b1584",
+      "path": "SOURCE-FILES.json",
+      "rawSha256": "ad3e53a5ac8e972cce527172334f98037ad798142f767ba5236aca0329e73faa",
+      "bytes": 7411
+    },
+    {
+      "normalization": "Git text=auto eol=lf may normalize JSON; this archive preserves original bytes",
+      "committedGitBlob": "31a89d74793a294dcbf6bc663ce24c7e1fb1f925",
+      "path": "validation-first.json",
+      "rawSha256": "a924783b084a0668294ff8ee8ac3530c385a6b3baf0004975862d799d3cbf769",
+      "bytes": 4133
+    },
+    {
+      "normalization": "Git text=auto eol=lf may normalize JSON; this archive preserves original bytes",
+      "committedGitBlob": "6dc04f1c12ab3fb95b8b6e8ae13835002fc51db2",
+      "path": "validation-first.stderr.txt",
+      "rawSha256": "8ed2492934adb3e7cd7e67f4f0d3fd64216d5083b25a74925b82d11dadc25ecf",
+      "bytes": 290
+    },
+    {
+      "normalization": "Git text=auto eol=lf may normalize JSON; this archive preserves original bytes",
+      "committedGitBlob": "558ccf22c2a34b4946e65e656c03bb08e50ecea0",
+      "path": "validation-first.stdout.txt",
+      "rawSha256": "20ec6c8bca7e84db01e04eac90cb851f149c72dcd7169d90296c149e2dc4a57b",
+      "bytes": 2371
+    }
+  ]
+}
