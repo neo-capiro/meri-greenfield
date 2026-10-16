@@ -93,8 +93,8 @@ export function createActivityLifecycle({config,runOwner,binding,saved,runtime,i
    catch{}finally{cleanup.close();pending.delete(entry.command.controlId);}}
   poll.close();if(!keepInputOpen)input.close();
  }
- async function complete(){if(!captureCompletion||held||fenced||!sessionId)throw fault('COMPLETION_CAPTURE_UNAVAILABLE');await finish({keepInputOpen:true});if(error||held||fenced)throw error??fault('COMPLETION_CAPTURE_UNAVAILABLE');const started=now();
-  const captured=await life.run(signal=>captureCompletion({binding,request:saved.request,versions:saved.run.versions,scopes:saved.run.scopes,sessionId,contextSha256,signal}));
+ async function complete(typedResult){if(!captureCompletion||held||fenced||!sessionId)throw fault('COMPLETION_CAPTURE_UNAVAILABLE');await finish({keepInputOpen:true});if(error||held||fenced)throw error??fault('COMPLETION_CAPTURE_UNAVAILABLE');const started=now();
+  const captured=await life.run(signal=>captureCompletion({binding,request:saved.request,versions:saved.run.versions,scopes:saved.run.scopes,sessionId,contextSha256,...(typedResult===undefined?{}:{typedResult}),signal}));
   const verified=assertCaptureReceipt(captured,{binding,versions:saved.run.versions,request:saved.request,scopes:saved.run.scopes,contextSha256,sessionId,started,now});life.limitDeadline(verified.expiresAtMs);return verified.receipt;
  }
  return Object.freeze({observe,fence,finish,captureCompletion:complete,canCaptureCompletion:()=>captureCompletion!==undefined,isHeld:()=>held||fenced,heldResult:()=>heldResult.promise,

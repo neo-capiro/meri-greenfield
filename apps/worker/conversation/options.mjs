@@ -16,8 +16,8 @@ import {assertIntentOptions,mergeIntentOptions,intentPromptSentence} from './int
 import {composeBrowserOptions} from './browser/options.mjs';
 /** @returns {never} */
 const fail=()=>{throw Error('RUNTIME_CONFIGURATION');};
-/** @param {any} value @param {AbortController} abortController @param {unknown} [continuationContext] @param {unknown} [skillOptions] @param {unknown} [capabilityFragment] @param {unknown} [readOptions] @param {unknown} [intentOptions] @param {unknown} [browserFragment] @returns {import('@anthropic-ai/claude-agent-sdk').Options} */
-export function buildConversationOptions(value,abortController,continuationContext,skillOptions,capabilityFragment,readOptions,intentOptions,browserFragment){
+/** @param {any} value @param {AbortController} abortController @param {unknown} [continuationContext] @param {unknown} [skillOptions] @param {unknown} [capabilityFragment] @param {unknown} [readOptions] @param {unknown} [intentOptions] @param {unknown} [browserFragment] @param {unknown} [objectiveOutputFormat] @returns {import('@anthropic-ai/claude-agent-sdk').Options} */
+export function buildConversationOptions(value,abortController,continuationContext,skillOptions,capabilityFragment,readOptions,intentOptions,browserFragment,objectiveOutputFormat){
  const r=own(value,['binding','versions','cwd','proxyUrl','proxyCredential','model','sessionStore','deadlineMs','maxTurns','maxCostMicroUSD','maxOutputBytes'],[...(continuationContext===undefined?[]:['restoreReceipt']),'sdkConfigDirectory','sdkSecureStorageDirectory','skillPluginDirectory','bashSandbox']);
  // Per-task SDK configuration directories come only from the admitted preparation intent (remote task path); both or neither.
  const directories=[r.sdkConfigDirectory,r.sdkSecureStorageDirectory];if(directories.some(d=>d!==undefined)){if(directories.some(d=>typeof d!=='string'||!isAbsolute(d)||d.includes('/../')||d.endsWith('/')||d.includes('\0'))||r.sdkConfigDirectory===r.sdkSecureStorageDirectory||r.sdkConfigDirectory.startsWith(r.sdkSecureStorageDirectory+'/')||r.sdkSecureStorageDirectory.startsWith(r.sdkConfigDirectory+'/'))fail();}
@@ -41,6 +41,8 @@ export function buildConversationOptions(value,abortController,continuationConte
  // Governed write requests (`intents/runtime.mjs`): mounted only when the run's policy enables them and an owner can prepare one.
  // They only prepare proposals or drafts; the existing approval control and fresh authority gate every effect.
  if(intentOptions!==undefined)mounted=mergeIntentOptions(mounted,assertIntentOptions(intentOptions));
+ // The trusted original Objective owner supplies the exact candidate ModelOutcome schema; never replace a selected skill format.
+ if(objectiveOutputFormat!==undefined){const f=data(own(objectiveOutputFormat,['type','schema']));if(f.type!=='json_schema'||mounted.outputFormat!==undefined||continuationContext!==undefined)fail();mounted={...mounted,outputFormat:f};}
  // Capability fragment: validated own keys only; allowedTools union, hooks by event name, permission callbacks chained. Absent → unchanged output.
  // `settings` and `env` extend the fixed base (never replace it): permission rules/locks and the subprocess credential scrub only.
  const fragment=capabilityFragment===undefined?undefined:assertCapabilityFragment(capabilityFragment);

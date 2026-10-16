@@ -1,0 +1,17 @@
+# Exact local profiles
+
+Qualification owns the local queue. This packet grants no install, compiler, SDK execution, provider, native task, database, credential, cloud or deployment authority.
+
+The executed focused profile is `./docs/qualification/candidates/dot-strategy-custody-20261016/run-controls.ps1 -Name <unused-proof-name> -Slice all`: one Node24.19.0 process, V8 heap128MiB, hard wall30s, sampled working-set ceiling256MiB, no ports/services/children. A sequential fresh built-in Node memory probe precedes the test process. The runner kills and waits for its owned process on a limit/failure, preserves each stdout/stderr/JSON record and refuses overwriting earlier evidence. Exact test argv and source-file SHA256 values are in each record.
+
+`combined-source-final` passed53/53 (50 new controls plus3 existing completion regressions), zero skips/cancellations. Sampled working set is measured, not an assertion of true unsampled peak RSS. SQL transactions, opaque SDK snapshot, candidate/schema/JCS imports, native identity/context, provider Query, filesystem writes and external storage/authority ports are scripted as explicitly named in the tests/seams. The real changed journal, native capture/publication/readback, retained reader, activity/options/lifecycle and private complete RPC execute. No real SDK/provider/DB/material is exercised.
+
+After exact source integration and independently verified existing dependencies, the next small real-contract profile is:
+
+```
+node --max-old-space-size=128 --test --test-isolation=none --test-concurrency=1 apps/worker/conversation/objective-generation/qualification/canonical-codec.test.mjs
+```
+
+That file is UNRUN here. Seven tests use actual candidate Ajv/JCS/whole-graph validators with synthetic initial Core-shaped observations, no module mocks, network, SDK query, ports or processes beyond Node. Required candidate source is4d8bd8ee3d3c6f0c5e1c91edbfebe44598dcf7af: schema96c53b45a30e5dbda24f9907742c4dbdbc87430d, shapesdc7cfa828b3d00bb1c1e47bb49480b4fe9dcd49a, graph09283ca08106bd47118181dbe3a2be6d9ef4592b, validate0f634c3882feb55ff8b96b561039528902019c44 plus its same-owner dependencies. The directory is absent from14f. Do not copy schema, borrow modules or install to make this run; Qualification must review the integrated source/dependency profile. Proposed bounds: one128MiB heap process, hard wall30s, sampled RSS cap256MiB, zero PG buffers/connections/services/ports. Cleanup is kill/wait of that sole owned process. No deadline or permission is inferred from this proposal.
+
+Linux exclusive-create/fd-anchor writer behavior and actual installed SDK outputFormat/structured result/completion checkpoint composition remain UNRUN. Windows only exercised the writer's unsupported-host refusal. Native/type/browser/build/install/database stages remain in the reviewed integration checkpoint, with actual integrated pin, qualified dependencies, a fresh memory guard and an exact bounded lifecycle approved by Qualification. C's7dd compiler/readback plus protected objectiveStrategy/startup additions, the actual Core full request publisher/current verifier and the actual retained-result receiving adapter are separate integration dependencies; none is claimed mounted by these tests. Initial generation only: draft basis remains null and existing Strategy regeneration refuses until separately approved candidate semantics exist.
