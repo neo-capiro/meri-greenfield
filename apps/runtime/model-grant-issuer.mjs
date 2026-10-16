@@ -7,7 +7,23 @@ import {createFileModelMaterialAuthority} from './model-material-authority.mjs';
 const fail=code=>{throw Object.assign(Error('MODEL_GRANT_'+code),{code:'MODEL_GRANT_'+code});};
 export function createModelGrantIssuer({store,authority,now=Date.now,maxRequestMs=3000}){
  const issuer=createPreparedRunIssuer({store,authority,now,maxRequestMs}),uncertain=new Set();
- return Object.freeze({async issue(value){
+ const readFailure=error=>fail(error?.code==='PREPARED_RUN_ISSUER_INTENT_CONFLICT'?'INTENT_CONFLICT':error?.code==='PREPARED_RUN_ISSUER_EXPIRED'?'EXPIRED':'UNKNOWN');
+ return Object.freeze({
+ /** Read only: no claim, generation or reconciliation of an uncertain row. */
+ async read(value){
+  const {signal,...intent}=own(value,['issuanceKey','binding','requestSha256','expiresAtMs'],['signal']);nativeSignal(signal);
+  if(signal?.aborted)fail('CANCELLED');
+  try{return data(await issuer.read({...data(intent),signal}));}catch(error){readFailure(error);}
+ },
+ /** Retrieve protected material only for an exact, currently ISSUED identity. */
+ async resolve(value){
+  const {signal,...receipt}=own(value,['issuanceKey','binding','requestSha256','expiresAtMs','grantId','capabilitySha256'],['factsSha256','signal']);nativeSignal(signal);
+  if(signal?.aborted)fail('CANCELLED');
+  try{const credential=await issuer.resolve({...data(receipt),signal});
+   if(typeof credential!=='string'||!/^[!-~]{32,256}$/u.test(credential))fail('REFUSED');return credential;
+  }catch(error){readFailure(error);}
+ },
+ async issue(value){
   const {intent,signal}=own(value,['intent'],['signal']);nativeSignal(signal);if(signal?.aborted)fail('CANCELLED');
   const i=data(own(intent,['issuanceKey','binding','requestSha256','expiresAtMs']));
   try{
