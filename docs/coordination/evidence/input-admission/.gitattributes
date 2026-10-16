@@ -1,0 +1,6 @@
+# Preserve exact returned archive-review and process-evidence bytes.
+held-53497-* -text whitespace=cr-at-eol
+corrected-8f0c2-* -text whitespace=cr-at-eol
+artifact-consumer-smoke*.mjs -text whitespace=cr-at-eol
+verify-input-artifact*.py -text whitespace=cr-at-eol
+run-artifact-smoke*.py -text whitespace=cr-at-eol

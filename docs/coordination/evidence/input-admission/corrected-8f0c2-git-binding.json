@@ -1,0 +1,43 @@
+{
+  "schema": "meri.input-artifact-git-binding/1",
+  "reviewedCheckpoint": "a54239c5f252667b3aaaaa588ef1776219816075",
+  "reviewedTree": "1e1b27c4829baed7556a59aa1c631b40735caae4",
+  "artifactSource": "618db545b15b5c4bab58f0cd5d12cfb022232402",
+  "artifactSourceTree": "1df5f7a94eb3f5658a45a7dd87e1a4a81b5fb5d8",
+  "acceptedAdmissionSource": "4a10288c35569a384668ef89b970df524b4723da",
+  "aliasCorrectionSource": "5fb3309ccaeeed3742ef1927ec9892d4c0fe49bd",
+  "gitVerifiedSeparately": true,
+  "inspection": [
+    "fetch published branch and materialize exact checkpoint in own review worktree",
+    "git log exact checkpoint/tree matches supplied handoff",
+    "git status review worktree empty",
+    "git diff held431..correcteda542 shows allocated error alias/consumer and d.ts/metadata/archive; no JS/schema/service changes",
+    "git diff accepted4a..held431 confirms service/http/input sources and lock/schema unchanged; runtime/package delta reviewed separately"
+  ],
+  "artifact": {
+    "path": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-11\\meri-input-package-review\\packages\\contracts\\conversation-input\\evidence\\capiro-meri-contracts-0.1.7.tgz",
+    "bytes": 510639,
+    "sha256": "8f0c2e1435122c22f2a1ed7427dd744f361bc598e178f2ef842acd6f91b78daa",
+    "npmIntegrity": "sha512-GAbmH0ZshRDUAiyhuEImdlIyFAhUqwWUudHRYNPLL9WitFjc5cERyidP9Yhe9jOPHKC5lJGF3pF9yVgZeWfKlw==",
+    "npmShasum": "f4cd776c9bb07577452d47eebc403a968332267d",
+    "decompressedBytes": 6097408,
+    "entryCount": 35
+  },
+  "archiveAssertions": {
+    "passed": 376,
+    "failed": 0
+  },
+  "actualExtractedConsumer": {
+    "exit": 0,
+    "heapMiB": 128,
+    "wallMs": 203.0,
+    "ownedProcessRemains": false
+  },
+  "declarationEvidence": {
+    "originalNoSkip": "C before/types-before-noskip.json primary2 cleanup0; only TS2552 unresolved ConversationInputErrorResponse",
+    "correctedNoSkip": "C types.json primary0 cleanup0, strict NodeNext, no skipLibCheck; actual new declaration plus strengthened public consumer",
+    "reviewerCompilerRepeated": false
+  },
+  "disposition": "ACCEPT scoped corrected additive artifact and narrow package/mount source; held53497 remains HOLD; Qualification owns accepted-source integration and UI/runtime adoption",
+  "limits": "No deployment/provider/real DB/Temporal/native-effect completion claim."
+}
