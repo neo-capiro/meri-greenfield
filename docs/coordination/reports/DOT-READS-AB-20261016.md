@@ -34,6 +34,8 @@ Node `v24.19.0`, concurrency 1. Dependencies installed using existing locks with
 
 These are working-tree development results; the sealed source candidate still requires its separately bounded exact-pin verification and independent review. Reverted-fix controls, full affected tests and package typechecks remain pending the sole shipping coordinator's resource grant. Further test and install stages are held after the coordinator's explicit scheduling update. Initial failures are preserved.
 
+Follow-up source inspection found that the appended contacts guidance was outside the worker's byte accounting. Accounting now includes every model-visible text block while the canonical result digest still covers only the unchanged canonical source result. A focused negative output-bound regression was added. It and the updated 98-case focused source set are **UNRUN**, preserving the coordinator's test-stage hold. This follow-up is not covered by the earlier development passes.
+
 ## Contract, endpoint and migration requests
 
 See [DOT-READS-CONTRACT-REQUESTS-20261016.md](../proposals/DOT-READS-CONTRACT-REQUESTS-20261016.md). No migration ID is requested for these passive family modules. No preview-store source or schema is touched; that remains with the document/qualification owners.

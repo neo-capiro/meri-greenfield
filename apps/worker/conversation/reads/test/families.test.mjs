@@ -55,3 +55,18 @@ test('contacts canonical bytes and receipt hashes are preserved with a separate 
   assert.deepEqual((await client.listTools()).tools.map(t=>t.name),['find_contacts']);
  }finally{await client.close();await runtime.close();}
 });
+test('contacts guidance counts toward the complete model-visible output limit',async()=>{
+ const f=await durableFamilyFixture(familyCase('tenant-contacts','find_contacts'));
+ const canonical=await f.execute('synthetic:measure-canonical');
+ const runtime=await createGeneralReadRuntime({binding:f.binding,scopes:f.scopes,policy,port:f.mount(),now:f.now,deadlineMs:f.deadlineMs,
+  skill:{allowedOperations:[f.operation],budgets:{maxToolCalls:24,maxOutputBytes:Buffer.byteLength(canonical)}}});
+ const client=new Client({name:'synthetic-output-bound',version:'1'}),[a,b]=InMemoryTransport.createLinkedPair();
+ try{
+  await runtime.sdkOptions.mcpServers.meri_reads.instance.connect(a);await client.connect(b);
+  const decision=await runtime.sdkOptions.hooks.PreToolUse[0].hooks[0]({hook_event_name:'PreToolUse',session_id:'71000000-0000-4000-8000-000000000091',
+   tool_name:'mcp__meri_reads__find_contacts',tool_use_id:'bounded-contacts',tool_input:{arguments:f.arguments}},undefined,{});
+  const result=await client.callTool({name:'find_contacts',arguments:decision.hookSpecificOutput.updatedInput});
+  assert.equal(result.isError,true);assert.match(result.content[0].text,/^RESOURCE_LIMIT:/);
+  assert.equal(result.content.length,1);assert.deepEqual(runtime.receipts(),[]);
+ }finally{await client.close();await runtime.close();}
+});

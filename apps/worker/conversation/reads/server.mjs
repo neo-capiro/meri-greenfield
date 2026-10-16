@@ -63,11 +63,12 @@ export function createGeneralReadServer(c){
    const result=await life.run(signal=>c.execute({operation:row.operation,arguments:args,deliveryId:entry.deliveryId,signal}));
    if(typeof result!=='string')throw fault('INVALID_RESULT');
    let parsed;try{parsed=data(JSON.parse(result));}catch{throw fault('INVALID_RESULT');}
-   ledger.account(result);life.check();
+   const notices=readNotices(row.operation,result);
+   ledger.account([result,...notices.map(n=>n.text)].join(''));life.check();
    const subject=/** @type {any} */(parsed)?.subject;
    receipts.push(Object.freeze({deliveryId:entry.deliveryId,operation:row.operation,argumentsSha256:entry.argumentsSha256,resultSha256:canonicalSha256(parsed),
     decisionId:typeof subject?.authorizationDecisionId==='string'?subject.authorizationDecisionId:null,policyRevision:typeof subject?.policyRevision==='string'?subject.policyRevision:null,executionCatalogSha256:c.executionCatalogSha256}));
-   return {content:[{type:'text',text:result},...readNotices(row.operation,result)]};
+   return {content:[{type:'text',text:result},...notices]};
   }catch(error){return failureResult(failureCode(error),name);}finally{life?.close();}
  };
  const alwaysLoad=c.available.length<=ALWAYS_LOAD_MAX,tools=c.available.map(row=>defineReadTool(row,handler(row),alwaysLoad));
