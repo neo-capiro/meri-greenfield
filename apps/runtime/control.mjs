@@ -14,7 +14,7 @@ import {listenRuntime} from './http-server.mjs';
 import {createWorkerRunApplication} from './worker-http.mjs';
 import {createConversationLifecycleService} from '../control/conversations/lifecycle/service.mjs';
 import {createConversationLifecycleApplication} from '../control/conversations/lifecycle/http.mjs';
-import {captureRuntimePorts,composeRuntimePorts,createRuntimeProductApplications} from './product-applications.mjs';
+import {captureRuntimePorts,composeRuntimePorts,createRuntimeProductApplications,readRuntimeArtifactRecovery} from './product-applications.mjs';
 import {productReadiness} from './product-readiness.mjs';
 import {capabilityDigest} from './native-authority/task-verifier.mjs';
 import {compilePreparedCandidateConfiguration} from './prepared-candidate-config.mjs';
@@ -24,6 +24,7 @@ import {createPostgresModelGrants} from './model-grant-issuer.mjs';
 import {createPostgresRetentionJournal} from '../control/retention/postgres-journal.mjs';
 import {createPostgresWatermarkStore} from '../control/retention/postgres-watermark.mjs';
 import {createRetentionStartup} from '../control/retention/startup.mjs';
+import {createArtifactRecoveryBinding} from './artifacts/recovery-binding.mjs';
 import {types} from 'node:util';
 import {own,nativeSignal} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 function productBinding(options){
@@ -40,18 +41,21 @@ export async function temporalTls(config){const [serverRootCACertificate,crt,key
  * table), composed only when the configuration declares it: the retention startup owner with its serving fence closed until a
  * reconciliation over the authoritative ledger (the trusted `retentionLedgerSink` port) records a watermark that reads back. Purge
  * is composed explicitly disabled; no deletion owner exists in control. */
-export function retentionGate(configuration,pool,ports={}){
- if(configuration.retention===undefined)return null;const journal=createPostgresRetentionJournal({pool});
- const startup=createRetentionStartup({journal,watermark:createPostgresWatermarkStore({journal}),ledgerSink:ports.retentionLedgerSink??null,purge:{enabled:false}});
- return Object.freeze({serving:startup.serving,journal:startup.journal,gate:startup.gate,startup,tables:['meri_conversations.retention_subjects','meri_conversations.retention_purges','meri_conversations.retention_purge_targets','meri_artifacts.retention_subjects','meri_artifacts.retention_purges','meri_conversations.retention_recovery_watermark']});
+export function retentionGate(configuration,pool,ports={},binding=null,now=Date.now){
+ if(configuration.retention===undefined)return null;const journal=binding?.context.journal??createPostgresRetentionJournal({pool,now}),recovery=binding??createArtifactRecoveryBinding({journal}),captured=captureRuntimePorts(ports),required=captured.configuredOwners.some(name=>['artifactOptionsOwner','artifactStore'].includes(name));
+ const recoverPrerequisitesExclusive=recovery.configure(readRuntimeArtifactRecovery(captured),required);
+ const startup=createRetentionStartup({journal,watermark:createPostgresWatermarkStore({journal}),ledgerSink:captured.retentionLedgerSink??null,purge:{enabled:false},now,recoverPrerequisitesExclusive});
+ recovery.bindRetention(startup.gate);
+ return Object.freeze({serving:startup.serving,journal:startup.journal,gate:startup.gate,startup,artifactRecovery:recovery.state,tables:['meri_conversations.retention_subjects','meri_conversations.retention_purges','meri_conversations.retention_purge_targets','meri_artifacts.retention_subjects','meri_artifacts.retention_purges','meri_conversations.retention_recovery_watermark']});
 }
 export function assembleControl(options){
  const {configuration,pool,client,native,now=Date.now,telemetry,canonicalProductPorts,...binding}=own(options,['configuration','pool','client','native'],['now','telemetry','canonicalProductPorts','productPorts','productPortsFactory']);
  if(telemetry!==undefined&&typeof telemetry?.observeRunOwner!=='function')throw fault('TELEMETRY_CONFIGURATION');
  const captured=productBinding(binding),canonical=captureRuntimePorts(canonicalProductPorts);
+ const artifactRecovery=configuration.retention===undefined?null:createArtifactRecoveryBinding({journal:createPostgresRetentionJournal({pool,now})});
  let supplied;
  if(captured.factory){
-  supplied=Reflect.apply(captured.factory,undefined,[Object.freeze({configuration,pool,native,now,canonicalProductPorts:canonical})]);
+  supplied=Reflect.apply(captured.factory,undefined,[Object.freeze({configuration,pool,native,now,canonicalProductPorts:canonical,...(artifactRecovery?{artifactRecovery:artifactRecovery.context}:{})})]);
   if(supplied===undefined)throw fault('PRODUCT_PORTS_CONFIGURATION');
   // Ordinary functions can still return a rejected Promise. Consume only native
   // Promise rejection while refusing it; never inspect or execute then getters.
@@ -59,7 +63,7 @@ export function assembleControl(options){
  }
  const ports=composeRuntimePorts(canonical,captured.factory?captureRuntimePorts(supplied):captured.ports);
  if(ports.transitionAuthority&&typeof ports.identityContext.resolveTransitionContext!=='function')throw fault('PRODUCT_PORTS_CONFIGURATION');
- const retention=retentionGate(configuration,pool,ports);
+ const retention=retentionGate(configuration,pool,ports,artifactRecovery,now);
  const store=createPostgresConversationStore({pool,now,...(ports.transitionAuthority?{transitionAuthority:ports.transitionAuthority}:{})});
  const sessions=createActionSessionOwner({mode:'process-local',verifyIdentity:ports.identityContext.verifyIdentity,resolveContext:ports.identityContext.resolveContext,now,...(ports.transitionAuthority?{
   readTransition:({signal,...input})=>store.lifecycle.readTransition({...input,signal},()=>signal?.throwIfAborted()),
