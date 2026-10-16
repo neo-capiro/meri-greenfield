@@ -9,9 +9,10 @@ export function createNextRunOwner({store,retirement,revocation,versions,now=Dat
  const checking=signal=>()=>{if(signal?.aborted)fail('NEXT_RUN_CANCELLED');};
  /** Selection under the conversation lock; a pending reservation is returned unchanged, a live run is bound as is, a terminal run yields its
   * reserved successor only after its original is physically retired and its grants revoked (a nonterminal crashed run is first settled by the run reconciler). */
- async function selectRun({principal,conversationId,signal}){const p=own(bounded(principal),['tenantId','actorId']);uuid(conversationId);const check=checking(signal);
+ async function selectRun({principal,conversationId,signal,expectedSourceRunId}){const p=own(bounded(principal),['tenantId','actorId']);uuid(conversationId);if(expectedSourceRunId!==undefined)uuid(expectedSourceRunId);const check=checking(signal);
   const {runs,reservations}=await journal.listRuns({tenantId:p.tenantId,conversationId},check);if(!runs.length)fail('NEXT_RUN_NO_CONVERSATION');
   const latest=runs.at(-1);if(latest.binding.actorId!==p.actorId)fail('NEXT_RUN_OWNER_REFUSED');
+  if(expectedSourceRunId!==undefined&&latest.binding.runId!==expectedSourceRunId)fail('NEXT_RUN_NOT_LATEST');
   const pending=reservations.find(r=>r.state==='RESERVED'&&r.source.runId===latest.binding.runId);if(pending)return {binding:pending.target,source:latest.binding,reserved:true,replayed:true};
   if(!terminal(latest.state))return {binding:latest.binding,reserved:false};
   const checkpoint=latest.state==='completed'?await journal.latestCheckpoint(latest.binding,check):null;if(latest.state==='completed'&&!checkpoint)fail('NEXT_RUN_CHECKPOINT_REQUIRED');
@@ -28,5 +29,20 @@ export function createNextRunOwner({store,retirement,revocation,versions,now=Dat
  async function currentRun(binding,{signal}={}){const b=bounded(binding);validateShape('RunBinding',b);const check=checking(signal);
   return journal.current(b,check);
  }
- return Object.freeze({selectRun,currentRun});
+ /** Explicit turn command identity is its source run. Recover its original journal mapping even after acceptance; never select a later
+  * successor on replay. Returning an old target is a read receipt only and cannot make it eligible for execution. */
+ async function admitTurn({principal,conversationId,sourceRunId,signal}){
+  const p=own(bounded(principal),['tenantId','actorId']);uuid(conversationId);uuid(sourceRunId);const check=checking(signal);
+  const {runs,reservations}=await journal.listRuns({tenantId:p.tenantId,conversationId},check),source=runs.find(r=>r.binding.runId===sourceRunId);
+  if(!source||runs.some(r=>r.binding.actorId!==p.actorId))fail('NEXT_RUN_OWNER_REFUSED');
+  const prior=reservations.find(r=>r.source.runId===sourceRunId);
+  if(prior){validateShape('RunBinding',prior.target);if(!same(prior.source,source.binding)||prior.target.tenantId!==p.tenantId||prior.target.actorId!==p.actorId||prior.target.conversationId!==conversationId||
+   prior.target.writerFence!==source.binding.writerFence+1||prior.target.runId===sourceRunId||prior.state==='ACCEPTED'&&!runs.some(r=>same(r.binding,prior.target)))fail('NEXT_RUN_OWNER_REFUSED');
+   return {sourceBinding:prior.source,targetBinding:prior.target,state:prior.state,replayed:true};}
+  if(!terminal(source.state))fail('NEXT_RUN_SOURCE_NOT_TERMINAL');
+  const selected=await selectRun({principal:p,conversationId,signal,expectedSourceRunId:sourceRunId});check();
+  if(!selected.reserved||!same(selected.source,source.binding))fail('NEXT_RUN_NOT_LATEST');
+  return {sourceBinding:selected.source,targetBinding:selected.binding,state:'RESERVED',replayed:selected.replayed===true};
+ }
+ return Object.freeze({selectRun,currentRun,admitTurn});
 }

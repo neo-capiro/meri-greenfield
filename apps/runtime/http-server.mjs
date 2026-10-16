@@ -8,7 +8,7 @@ export async function listenRuntime({configuration,application,readiness,signal}
   const path=new URL(request.url).pathname;if(path==='/health/live'||path==='/health/ready'){
    if(request.method!=='GET'||new URL(request.url).search)return json({error:{code:'METHOD_NOT_ALLOWED'}},405);
    if(path==='/health/live')return json({status:stopping?'stopping':'live'},stopping?503:200);
-   if(stopping)return json({status:'not-ready'},503);try{await readiness({signal:request.signal});return json({status:'ready',profile:'isolated-preview',releaseAcceptance:'held'});}catch{return json({status:'not-ready'},503);}
+   if(stopping)return json({status:'not-ready'},503);try{const details=await readiness({signal:request.signal});if(details?.product?.ready===false)return json({status:'not-ready',...details,releaseAcceptance:'held'},503);return json({status:'ready',profile:'isolated-preview',releaseAcceptance:'held',...(details??{})});}catch{return json({status:'not-ready'},503);}
   }
   if(stopping)return json({error:{code:'RUNTIME_STOPPING'}},503);
   const origin=request.headers.get('origin');if(origin!==null&&origin!==configuration.http.frontendOrigin)return json({error:{code:'ORIGIN_REFUSED'}},403);
