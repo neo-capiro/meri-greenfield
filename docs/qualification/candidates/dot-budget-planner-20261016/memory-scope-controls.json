@@ -1,0 +1,55 @@
+{
+  "synthetic": true,
+  "restorations": [
+    {
+      "byteExact": true,
+      "path": "apps\\control\\memory\\producer.mjs",
+      "sha256": "5acba862dc5994790b29263708e208c7e44f0c98c81c93a7ef66aa92d7fe18b1"
+    }
+  ],
+  "note": "memory/intent controls mock hash/schema/preparer dependency seams; remaining controls use built-ins and scripted ports. No live qualification.",
+  "runs": [
+    {
+      "negative": true,
+      "elapsedMs": 204.7332,
+      "exitCode": 1,
+      "name": "memory-scope-before",
+      "sampledPeakWorkingSetBytes": 47689728,
+      "stdout": "memory-scope-before.stdout.txt",
+      "timedOut": false,
+      "arguments": [
+        "--max-old-space-size=128",
+        "--experimental-test-module-mocks",
+        "--import",
+        "./docs/qualification/candidates/dot-budget-planner-20261016/dependency-seams.mjs",
+        "--test",
+        "--test-isolation=none",
+        "--test-concurrency=1",
+        "--test-name-pattern=removed proposal permission",
+        "apps/control/memory/test/producer.test.mjs"
+      ],
+      "stderr": "memory-scope-before.stderr.txt"
+    },
+    {
+      "negative": false,
+      "elapsedMs": 212.2368,
+      "exitCode": 0,
+      "name": "memory-scope-after",
+      "sampledPeakWorkingSetBytes": 51011584,
+      "stdout": "memory-scope-after.stdout.txt",
+      "timedOut": false,
+      "arguments": [
+        "--max-old-space-size=128",
+        "--experimental-test-module-mocks",
+        "--import",
+        "./docs/qualification/candidates/dot-budget-planner-20261016/dependency-seams.mjs",
+        "--test",
+        "--test-isolation=none",
+        "--test-concurrency=1",
+        "apps/control/memory/test/producer.test.mjs"
+      ],
+      "stderr": "memory-scope-after.stderr.txt"
+    }
+  ],
+  "base": "eca78d458acb46cbfd54a94cf870841d999ef6b1"
+}

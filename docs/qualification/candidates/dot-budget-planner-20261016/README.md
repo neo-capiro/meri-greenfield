@@ -27,3 +27,7 @@ The following historical files remain byte-identical to package-four base (verif
 | `docs/coordination/proposals/FABLE-INTENTS-PROPOSALS-20261016.md` | `2ff708bca99e4426b25fefb7344521e7bcde3af3384febd725498adf4abbc36d` |
 | `docs/coordination/proposals/memory-settings-20261016/proposed-memory-settings.sql` | `0b38b7e7f49d167feeeae1627c0fc836290f08112fb7d9f80200a604e686caab0` |
 | `apps/gateway/budget/migrations/0002_tenant_budgets.sql` | `651d2573779be28e2be4993ef992d25107d5d51a0e65c5dac6186ab0b9f90da8` |
+
+## CORE5 current-scope successor
+
+`run-controls.ps1 -MemoryScope` retains a focused negative comparison against `89aaff209217bc86e49c866c57d83a2f6bd6590a`: four retained firm correction cases each reproduce an extra submit after permission removal. The repaired producer passes **22/22**, including six new controls for removed permission, separate retained-read visibility and restored-permission exact-candidate submission. `memory-scope-controls.json` records actual exits, argv, timings, sampled peak 51,011,584 bytes and byte-exact producer restoration. These add six unique synthetic tests; the earlier 16 producer tests are reused, not counted again. See `docs/coordination/reports/DOT-MEMORY-REPLAY-SCOPE-20261016.md` for the bounded repair and remaining qualification limits.

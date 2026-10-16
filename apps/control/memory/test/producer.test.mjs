@@ -43,6 +43,45 @@ test('correction replay after client visibility revocation reveals nothing and n
  assert.equal(t.core.calls.length,before);assert.equal(t.core.reviews.size,1);assert.equal([...t.journal.rows.values()][0].candidate.candidateId,first.candidateId);
 });
 
+for(const state of ['PREPARED','SUBMISSION_UNKNOWN'])for(const receipt of ['lostAck','refuse'])test(`firm correction ${state} ${receipt}: removed proposal permission prevents resubmission without rereading target`,async()=>{
+ const t=setup(),memoryId='memory-firm-replay',allowed=principal({permissions:[FIRM_PROPOSAL_PERMISSION]});
+ t.core.addMemory({memoryId,scope:'firm',ownerActorId:null});
+ if(state==='PREPARED')t.journal.recordUnknown=async()=>{throw Error('synthetic journal acknowledgement loss');};
+ const body={idempotencyKey:id(803),targetMemoryId:memoryId,content:'Corrected firm fact',reason:'New evidence',sources:[web]};
+ t.core.failSubmit=receipt;const first=await t.correct(allowed,body),row=[...t.journal.rows.values()][0];
+ assert.equal(first.review.status,'submission_unknown');assert.equal(row.submission.state,state);assert.equal(t.core.reviews.size,receipt==='lostAck'?1:0);
+ // The prior receipt may exist while its status is unavailable. Neither that uncertainty nor a definite not_found grants a submit.
+ t.core.failSubmit=null;t.core.failStatus=receipt==='lostAck';t.core.memories.delete(memoryId);
+ const before=t.core.calls.length,submits=t.core.calls.filter(c=>c.route==='submit').length;
+ const answer=await t.correct(principal({membershipRevision:'m2'}),body).then(value=>({value}),error=>({error}));
+ assert.equal(t.core.calls.filter(c=>c.route==='submit').length,submits,'removed firm proposal permission must prevent every new submit');
+ assert.equal(productFailure(answer.error)?.code,'MEMORY_SCOPE_REFUSED');assert.deepEqual(t.core.calls.slice(before).map(c=>c.route),['status']);
+ assert.equal(row.submission.state,state);assert.equal(row.candidate.candidateId,first.candidateId);assert.equal(row.candidateSha256,first.candidateSha256);
+});
+
+test('firm retained status and known-review correction replay stay visible after proposal permission removal without submitting',async()=>{
+ const t=setup(),memoryId='memory-firm-status',allowed=principal({permissions:[FIRM_PROPOSAL_PERMISSION]});t.core.addMemory({memoryId,scope:'firm',ownerActorId:null});
+ const body={idempotencyKey:id(804),targetMemoryId:memoryId,content:'Corrected firm fact',reason:'New evidence',sources:[web]};
+ t.core.failSubmit='lostAck';const first=await t.correct(allowed,body);t.core.memories.delete(memoryId);
+ const before=t.core.calls.length,removed=principal({membershipRevision:'m2'});
+ assert.equal((await t.status(removed,first.candidateId)).review.status,'pending');
+ assert.deepEqual((await t.list(removed)).proposals.map(p=>p.candidateId),[first.candidateId]);
+ const retained=await t.correct(removed,body);assert.equal(retained.candidateId,first.candidateId);assert.equal(retained.review.status,'pending');
+ assert.deepEqual(t.core.calls.slice(before).map(c=>c.route),['status','status','status']);assert.equal(t.core.calls.filter(c=>c.route==='submit').length,1);
+});
+
+test('firm never-received status remains readable and restored proposal permission submits the identical retained correction',async()=>{
+ const t=setup(),memoryId='memory-firm-restored',allowed=principal({permissions:[FIRM_PROPOSAL_PERMISSION]});t.core.addMemory({memoryId,scope:'firm',ownerActorId:null});
+ const body={idempotencyKey:id(805),targetMemoryId:memoryId,content:'Corrected firm fact',reason:'New evidence',sources:[web]};
+ t.core.failSubmit='refuse';const first=await t.correct(allowed,body);t.core.memories.delete(memoryId);t.core.failSubmit=null;
+ const before=t.core.calls.length,removed=principal({membershipRevision:'m2'});
+ assert.equal((await t.status(removed,first.candidateId)).review.status,'submission_unknown');
+ assert.equal((await t.list(removed)).proposals[0].review.status,'submission_unknown');
+ const replay=await t.correct(allowed,body);assert.equal(replay.candidateId,first.candidateId);assert.equal(replay.candidateSha256,first.candidateSha256);assert.deepEqual(replay.corrects,first.corrects);
+ assert.deepEqual(t.core.calls.slice(before).map(c=>c.route),['status','status','status','submit']);assert.equal(t.core.reviews.size,1);
+ assert.equal(t.core.calls.filter(c=>c.route==='submit').length,2);assert.equal(replay.review.status,'pending');
+});
+
 test('personal, client and firm proposals produce pending sourced candidates; personal no longer refuses',async()=>{
  const t=setup();
  const personal=await t.propose(principal(),{idempotencyKey:id(1),scope:'personal',content:'  Prefers short briefs  ',sources:[web]});

@@ -19,7 +19,7 @@ export function createMemoryProducer(options){
   const {record}=await journal.insert({...built,requestSha256,signal});
   return submitRecord(fields.principal,record,{signal,deadlineMs});
  }
- /** Look up immutable custody before consulting mutable memory. Current visibility still gates every release or resubmission. */
+ /** Look up immutable custody before consulting mutable memory. Visibility gates retained reads; submission also needs current scope. */
  async function replay(principal,idempotencyKey,requestSha256,options){
   const record=await journal.findOwnByKey({tenantId:principal.tenantId,proposerActorId:principal.actorId,idempotencyKey,signal:options.signal});
   if(!record)return null;
@@ -33,6 +33,8 @@ export function createMemoryProducer(options){
   if(!visibleToProposer(principal,record.candidate))refuse('MEMORY_PROPOSAL_NOT_FOUND');
   // A replay of an acknowledged submission reports Core's current review state rather than assuming it is still pending.
   if(record.submission.state==='SUBMITTED')return (await statuses(principal,[record],{signal,deadlineMs}))[0];
+  // Retaining a candidate permits status reads, not a new proposal effect. Check its immutable scope without rereading its target.
+  assertProposalScope(principal,record.candidate);
   let reviewId;
   try{({reviewId}=await review.submit({candidate:record.candidate,candidateSha256:record.candidateSha256,signal,deadlineMs}));}
   catch{

@@ -1,0 +1,82 @@
+✖ firm correction PREPARED lostAck: removed proposal permission prevents resubmission without rereading target (5.1127ms)
+✖ firm correction PREPARED refuse: removed proposal permission prevents resubmission without rereading target (1.0314ms)
+✖ firm correction SUBMISSION_UNKNOWN lostAck: removed proposal permission prevents resubmission without rereading target (1.3469ms)
+✖ firm correction SUBMISSION_UNKNOWN refuse: removed proposal permission prevents resubmission without rereading target (0.5209ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 0
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 78.1461
+
+✖ failing tests:
+
+test at apps\control\memory\test\producer.test.mjs:46:96
+✖ firm correction PREPARED lostAck: removed proposal permission prevents resubmission without rereading target (5.1127ms)
+  AssertionError [ERR_ASSERTION]: removed firm proposal permission must prevent every new submit
+  
+  2 !== 1
+  
+      at TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/memory/test/producer.test.mjs:57:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps\control\memory\test\producer.test.mjs:46:96
+✖ firm correction PREPARED refuse: removed proposal permission prevents resubmission without rereading target (1.0314ms)
+  AssertionError [ERR_ASSERTION]: removed firm proposal permission must prevent every new submit
+  
+  2 !== 1
+  
+      at TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/memory/test/producer.test.mjs:57:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps\control\memory\test\producer.test.mjs:46:96
+✖ firm correction SUBMISSION_UNKNOWN lostAck: removed proposal permission prevents resubmission without rereading target (1.3469ms)
+  AssertionError [ERR_ASSERTION]: removed firm proposal permission must prevent every new submit
+  
+  2 !== 1
+  
+      at TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/memory/test/producer.test.mjs:57:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps\control\memory\test\producer.test.mjs:46:96
+✖ firm correction SUBMISSION_UNKNOWN refuse: removed proposal permission prevents resubmission without rereading target (0.5209ms)
+  AssertionError [ERR_ASSERTION]: removed firm proposal permission must prevent every new submit
+  
+  2 !== 1
+  
+      at TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/memory/test/producer.test.mjs:57:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

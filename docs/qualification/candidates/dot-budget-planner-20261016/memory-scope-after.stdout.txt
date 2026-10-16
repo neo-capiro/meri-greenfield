@@ -1,0 +1,30 @@
+✔ correction lost ACK then superseded: same key retains original candidate and current review without rereading target (5.5937ms)
+✔ correction lost ACK then forgotten: same key retains original candidate and current review without rereading target (1.0111ms)
+✔ correction lost ACK then expired: same key retains original candidate and current review without rereading target (1.4347ms)
+✔ correction lost ACK then missing: same key retains original candidate and current review without rereading target (0.5484ms)
+✔ correction replay after client visibility revocation reveals nothing and neither reads target nor resubmits (0.57ms)
+✔ firm correction PREPARED lostAck: removed proposal permission prevents resubmission without rereading target (0.7592ms)
+✔ firm correction PREPARED refuse: removed proposal permission prevents resubmission without rereading target (0.5715ms)
+✔ firm correction SUBMISSION_UNKNOWN lostAck: removed proposal permission prevents resubmission without rereading target (0.4172ms)
+✔ firm correction SUBMISSION_UNKNOWN refuse: removed proposal permission prevents resubmission without rereading target (0.8447ms)
+✔ firm retained status and known-review correction replay stay visible after proposal permission removal without submitting (0.9602ms)
+✔ firm never-received status remains readable and restored proposal permission submits the identical retained correction (0.6435ms)
+✔ personal, client and firm proposals produce pending sourced candidates; personal no longer refuses (0.7435ms)
+✔ eligibility: client outside the member walls and firm without permission refuse before any journal or Core effect (0.3682ms)
+✔ candidates are immutable and hash-pinned: Core receives the exact journaled bytes and the hash is recomputable (0.3889ms)
+✔ idempotent replay returns the same candidate without a second review item; a different request under the key conflicts (0.3966ms)
+✔ no direct publish: the producer reports Core decisions and never approves; a submission answer claiming more is uncertainty (1.0474ms)
+✔ review authority: status answers must correlate to the exact candidate hash; unavailable Core is never shown as pending (0.401ms)
+✔ uncertain submission stays submission_unknown, is reconciled from Core on read, and replay resubmits only the identical candidate (1.0405ms)
+✔ sourced corrections: pinned to the target hash, scope from the target, walls hide foreign memories, inactive targets refuse (1.0558ms)
+✔ cross-tenant and cross-actor: listings and status never release another tenant or actor candidate (0.608ms)
+✔ removal from a client withholds stored client proposals; list filters, pagination and client filter stay inside current walls (8.1027ms)
+✔ an acknowledged submission whose journal update fails is still reported as submitted and reconciled by the next read (0.5452ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 99.6569
