@@ -32,6 +32,10 @@ export function createConversationLifecycleService({service,store,dispatcher,che
   if(p.resumeSessionAt!==null)uuid(p.resumeSessionAt);return p;}
  async function control({credential,input,signal}){const i=assertLifecycleCommand(input);return operation(credential,signal,async(saved,life,fresh)=>{
   const b=saved.run.binding,scopes=saved.run.scopes;let approval=null,command=null;
+  if(['resume','fork'].includes(i.intent)){
+   if(typeof sessions.verifyTransition!=='function'||typeof journal.requireTransitionAuthority!=='function'||typeof nativeAdmission?.admit!=='function'||i.intent==='resume'&&typeof nativeAdmission?.retire!=='function')fail('LIFECYCLE_OWNER_UNAVAILABLE');
+   journal.requireTransitionAuthority();
+  }
   if(i.intent==='approval.wait')approval=await proposal(i.proposalId,saved,life,fresh);
   if(['steer','pause','approval.wait'].includes(i.intent))command=assertWorkerControl({controlId:i.controlId,action:i.intent==='approval.wait'?'waitForApproval':i.intent,binding:b,contextSha256:contextHash(saved),...(i.intent==='steer'?{prompt:i.text}:{}),...(approval?{proposalId:approval.proposalId,proposalSha256:hash(approval)}:{})});
   let p=await life.run(()=>journal.begin({binding:b,scopes,selectedClientId:saved.selectedClientId,input:i,command,approval},life.check));await fresh();
@@ -61,7 +65,7 @@ export function createConversationLifecycleService({service,store,dispatcher,che
    if(admission.selectedClientId!==saved.selectedClientId||!same(admission.scopes,scopes)||!scopes.some(s=>s.kind==='client'&&s.resourceId===admission.selectedClientId)||!Number.isSafeInteger(admission.expiresAtMs)||admission.expiresAtMs<=now())fail('NATIVE_ADMISSION_REFUSED');life.limitDeadline(admission.expiresAtMs);
    const proposed={...p,target:admission,retirement};receipt(proposed);const t=admission.binding,continuation=assertContinuationEnvelope({mode:i.intent,controlId:i.controlId,checkpoint:verified.checkpoint,checkpointSha256:i.checkpointSha256,sourceRequestSha256:hash(saved.request),contextSha256:contextHash(saved),resumeSessionAt:verified.resumeSessionAt,targetSessionId:admission.targetSessionId});
    const createdAt=new Date(now()).toISOString(),run={...saved.run,binding:t,state:'queued',createdAt},request={...saved.request,requestId:newId()},conversation={conversationId:t.conversationId,owner:{tenantId:t.tenantId,actorId:t.actorId},scopes,createdAt,policyRevision:run.policyRevision};const queued={...event('run.status',{state:'queued',reasonCode:null}),binding:t,scopes,sequence:1};
-   p=await life.run(()=>journal.continuation({binding:b,scopes,selectedClientId:saved.selectedClientId,controlId:i.controlId,admission,retirement,proof:verified,conversation,run,request,continuation,event:queued},life.check));
+   p=await life.run(signal=>journal.continuation({binding:b,scopes,selectedClientId:saved.selectedClientId,controlId:i.controlId,admission,retirement,proof:verified,conversation,run,request,continuation,event:queued,signal,deadlineMs:life.deadline()},life.check));
    committed={controlId:i.controlId,sourceBinding:b,targetBinding:t,admissionReceiptId:admission.admissionReceiptId,retirementReceiptId:retirement?.retirementReceiptId??null};
    await transitionEffect('dispatch-start',(signal,deadlineMs)=>dispatcher.start({binding:t,signal,deadlineMs}));
    if(i.intent==='resume')await transitionEffect('dispatch-continued',(signal,deadlineMs)=>dispatcher.continued({binding:b,input:{controlId:i.controlId,sourceRunId:b.runId,targetRunId:t.runId,admissionReceiptId:admission.admissionReceiptId,retirementReceiptId:retirement.retirementReceiptId},signal,deadlineMs}));

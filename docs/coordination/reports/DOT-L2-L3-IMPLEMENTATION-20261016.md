@@ -1,0 +1,14 @@
+# Startup and conversation history implementation outline
+
+Base `eca78d458acb46cbfd54a94cf870841d999ef6b1`, audit `f8d1816eda48347eeca4c0c25308870f2885c1f5`. Isolated branch `dot/meri-startup-history-20261016`. No `.agents` directory or additional AGENTS files exist in this base. Read root guidance, implementation standards, continuation guide, package-four report/briefs, owner decisions, audit README, lifecycle/product reports and package-three review. Latest human reassignment supersedes historical Fable ownership. No source acceptance transfers from those reports.
+
+Owned paths: conversation lifecycle service/journal/HTTP, new cohesive history store/service/protocol/routes and tests, the conversation PostgreSQL store export, runtime control/product composition and readiness. Shared changes coordinated with qualification `01a14243-40ec-7321-b8f4-1cf827a7f0c1`, UI `01a14242-7696-7215-9305-26284f9340e4`, and budget/intents `01a14242-1d17-77a6-aad8-34c9c6ebe0c4`. Budget exclusively owns prepared-run-bindings; no competing grant implementation. Parent separately assigns product-access HTTP uncertainty and activity cleanup, each in its own commit.
+
+Plan:
+
+1. Keep authority in the existing identity/session/native owners. Check transition-owner availability and fresh source authority before successor persistence, and preserve post-commit target-authority checks and UNKNOWN barriers. Native admission/retirement and approval remain explicit named ports when no canonical startup binding exists.
+2. Reuse conversation/runs/events and sealed sequence ranges for authorized discovery and conversation-wide paging. Use the existing membership gate for actor/tenant/client admission; retain per-run frozen UIEvent sequences inside an explicitly versioned local response envelope. Keep run-local writer APIs unchanged. Historical reads confer no writer eligibility.
+3. Reuse next-run reservations for explicit new-turn admission and immutable request recovery. No new journal or migration ID is allocated here. Publish exact local wire proposals before frontend adoption; do not edit frozen contracts.
+4. Mount only trusted startup-supplied canonical ports. Report absent actions/artifacts/tasks/sessions/sources/retention/proxy/budget owners truthfully. Schedule dispatch registration stays a named unregistered point pending Q-X2. No new model loop.
+
+Checks: short synthetic tests capped at 192 MiB V8, concurrency one; explicit reverted-fix regressions. Compiler, browser, real PostgreSQL/Temporal and broad suites require a bounded slot from shipping coordinator `01a1383e-0c6b-778e-8893-2359c0da802e`. No AWS/provider/paid build/new credential/live migration/purge is authorized. Preserve historical manifests; report changed rows, never repin them silently. Remaining production owner bindings and public wire acceptance must be stated as blockers.
