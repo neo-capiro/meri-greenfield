@@ -20,14 +20,14 @@ function sized(value){
 function validate(value){
  const b=record(value,['account','region','enabled','materialDelivery','clusterArn','imageUri','logGroupName','executionRoleArn','controlTaskRoleArn','runtimeUser','network','sizing','runnerSha256'],['controlTargetGroupArn']);
  if(b.account!==ACCOUNT||b.region!==REGION||b.enabled!==false||b.materialDelivery!=='unmounted'||
-    !/^arn:aws:ecs:us-east-1:967807252336:cluster\/meri-greenfield-product-[A-Za-z0-9_-]{1,224}$/u.test(b.clusterArn)||
-    !new RegExp(`^${ACCOUNT}\\.dkr\\.ecr\\.${REGION}\\.amazonaws\\.com\\/meri-greenfield\\/product-[a-z0-9._/-]+@sha256:[a-f0-9]{64}$`).test(b.imageUri)||
-    !/^\/meri-greenfield\/product-[A-Za-z0-9_./-]{1,480}$/u.test(b.logGroupName)||
-    !/^arn:aws:iam::967807252336:role\/(?:MeriGreenfield-Product|meri-greenfield-product)[A-Za-z0-9_+=,.@/-]{1,480}$/u.test(b.executionRoleArn)||
-    !/^arn:aws:iam::967807252336:role\/(?:MeriGreenfield-Product|meri-greenfield-product)[A-Za-z0-9_+=,.@/-]{1,480}$/u.test(b.controlTaskRoleArn)||
+    !/^arn:aws:ecs:us-east-1:967807252336:cluster\/[A-Za-z0-9_-]{1,255}$/u.test(b.clusterArn)||
+    !new RegExp(`^${ACCOUNT}\\.dkr\\.ecr\\.${REGION}\\.amazonaws\\.com\\/[a-z0-9._/-]+@sha256:[a-f0-9]{64}$`).test(b.imageUri)||
+    !/^\/[A-Za-z0-9_./-]{1,511}$/u.test(b.logGroupName)||
+    !/^arn:aws:iam::967807252336:role\/[A-Za-z0-9_+=,.@/-]{1,512}$/u.test(b.executionRoleArn)||
+    !/^arn:aws:iam::967807252336:role\/[A-Za-z0-9_+=,.@/-]{1,512}$/u.test(b.controlTaskRoleArn)||
     b.executionRoleArn===b.controlTaskRoleArn||
     !/^[1-9][0-9]*:[1-9][0-9]*$/u.test(b.runtimeUser)||!hex64.test(b.runnerSha256))fail();
- if(b.controlTargetGroupArn!==undefined&&!/^arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup\/meri-product-[A-Za-z0-9_-]{1,19}\/[a-f0-9]{16}$/u.test(b.controlTargetGroupArn))fail();
+ if(b.controlTargetGroupArn!==undefined&&!/^arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup\/[A-Za-z0-9_-]{1,32}\/[a-f0-9]{16}$/u.test(b.controlTargetGroupArn))fail();
  const n=record(b.network,['privateSubnetId','controlSecurityGroupId','workerSecurityGroupId','runnerSecurityGroupIds']);
  if(!/^subnet-[a-f0-9]+$/u.test(n.privateSubnetId)||
     ![n.controlSecurityGroupId,n.workerSecurityGroupId].every(x=>/^sg-[a-f0-9]+$/u.test(x))||

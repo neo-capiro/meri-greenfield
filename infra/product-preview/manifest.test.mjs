@@ -66,18 +66,18 @@ test('missing inventory, foreign refs, runnable state and claimed material deliv
   x=>{x.region='us-west-2';},
   x=>{x.imageUri=x.imageUri.replace('967807252336.dkr','000000000000.dkr');},
   x=>{x.imageUri=x.imageUri.replace('@sha256:'+a,':latest');},
-  x=>{x.clusterArn='arn:aws:ecs:us-east-1:967807252336:cluster/meri-greenfield-qualification';},
-  x=>{x.clusterArn='arn:aws:ecs:us-east-1:967807252336:cluster/capiro-dev';},
-  x=>{x.imageUri=`967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:${a}`;},
-  x=>{x.logGroupName='/meri-greenfield/qualification/runtime';},
-  x=>{x.executionRoleArn='arn:aws:iam::967807252336:role/MeriGreenfield-QualificationExecution';},
+  x=>{x.clusterArn='arn:aws:ecs:us-east-1:000000000000:cluster/foreign';},
+  x=>{x.clusterArn='arn:aws:ecs:us-east-1:967807252336:service/not-a-cluster';},
+  x=>{x.imageUri=`967807252336.dkr.ecr.us-west-2.amazonaws.com/meri-greenfield/runtime@sha256:${a}`;},
+  x=>{x.logGroupName='not-an-absolute-log-group';},
+  x=>{x.executionRoleArn='arn:aws:iam::000000000000:role/foreign';},
   x=>{x.controlTaskRoleArn='arn:aws:iam::000000000000:role/foreign';},
   x=>{x.enabled=true;},
   x=>{x.materialDelivery='ready';},
   x=>{x.network.runnerSecurityGroupIds=[];},
   x=>{x.network.privateSubnetId='subnet-foreign';},
   x=>{x.controlTargetGroupArn='arn:aws:elasticloadbalancing:us-west-2:967807252336:targetgroup/meri-product-preview/1234567890abcdef';},
-  x=>{x.controlTargetGroupArn='arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/capiro-prod-meriv2-orch-tg/1234567890abcdef';}
+  x=>{x.controlTargetGroupArn='arn:aws:elasticloadbalancing:us-east-1:000000000000:targetgroup/foreign/1234567890abcdef';}
  ];
  for(const change of variants){const x=binding();change(x);assert.throws(()=>synthesizeProductPreview(x),/PRODUCT_PREVIEW_BINDING_REFUSED/);}
 });
