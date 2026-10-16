@@ -69,6 +69,16 @@ test('synthetic: atomic advance floor catches a restore after a successful guard
  await refused(f,lost);await f.startup.recover();await assert.rejects(f.startup.gate.assertServable(lost),/RETENTION_SUPPRESSED/);
 });
 
+test('synthetic: another running owner cannot advance across an unseen restored-away ledger transition',async()=>{
+ const f=composeStartup(),lost=subjectOf(),next=subjectOf();await f.startup.start();const saved=f.backup();
+ const other=createRetentionStartup({journal:f.journal,watermark:f.watermark,ledgerSink:f.sink,ownership,purge:{enabled:false},now:f.clock.now});await other.start();
+ await suppress(f,lost);f.restore(saved);
+ await other.suppression.suppress({principal:f.principal,subject:next,reason:'owner request'});
+ assert.equal(f.watermark.snapshot().sequence,0,'sequence two cannot certify missing sequence one');
+ assert.equal(other.state().reason,'RETENTION_WATERMARK_STALE');await assert.rejects(other.gate.assertServable(lost),/RETENTION_RECOVERY_BARRIER/);
+ await other.recover();for(const s of [lost,next])await assert.rejects(other.gate.assertServable(s),/RETENTION_SUPPRESSED/);
+});
+
 test('serving is fenced from construction: nothing is read or suppressed before startup reconciles, the plain enable is refused, and startup opens only with the read-back watermark',async()=>{
  const f=composeStartup(),s=subjectOf();
  assert.equal(f.startup.serving.isEnabled(),false);assert.equal(f.startup.state().reason,'RETENTION_STARTUP_FENCE');
@@ -160,6 +170,7 @@ test('the fence keeps its first closing reason, refuses a stale opening proof, a
  fence.enable({watermark:{sequence:4,entrySha256:'a'.repeat(64)}});fence.observe(6);assert.throws(()=>fence.enable({watermark:{sequence:5,entrySha256:null}}),/RETENTION_WATERMARK_STALE/);
  await assert.rejects(fence.verify(async()=>({sequence:5,entrySha256:null})),/RETENTION_WATERMARK_STALE/);assert.equal(fence.isEnabled(),false);
  fence.enable({watermark:{sequence:6,entrySha256:null}});assert.equal((await fence.verify(async()=>({sequence:7,entrySha256:null}))).sequence,7,'a persisted watermark ahead of this process (another writer) is not stale');
+ assert.equal(fence.state().highWater,7,'an observed position from another writer becomes a known restore floor');
  fence.disable('FIRST');fence.disable('SECOND');assert.equal(fence.state().reason,'FIRST');
  const sink=createMemoryLedgerSink();assert.equal(sink.size(),0);assert.ok(randomUUID());
 });

@@ -29,7 +29,7 @@ export function watermarkedJournal({journal,watermark,fence}){
   if(options.exclusive!==true)await fence.verify(()=>watermark.read());
   const result=await journal.set(key,row,options),sequence=sequenceOf(row);
   // The store compares this floor atomically with advancement; a restore during either await cannot be blessed.
-  const minimumSequence=options.exclusive===true?0:Math.max(0,fence.state().highWater);
+  const minimumSequence=options.exclusive===true?0:Math.max(0,fence.state().highWater,sequence-1);
   try{await watermark.advance(sequence,{exclusive:options.exclusive===true,minimumSequence});fence.observe(sequence);}catch(error){fence.disable(error?.code==='RETENTION_WATERMARK_STALE'?'RETENTION_WATERMARK_STALE':'RETENTION_WATERMARK_UNKNOWN');}return result;}
  return Object.freeze({get:(key,options)=>journal.get(key,options),set,keys:options=>journal.keys(options),exclusive:fn=>journal.exclusive(fn)});
 }

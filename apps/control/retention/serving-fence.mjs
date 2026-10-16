@@ -1,6 +1,6 @@
 /** The restore serving fence: the serving barrier every retention reader and writer consults, fenced from construction. It opens only
  * with a recovered watermark, the ledger position a completed reconciliation proved the database projection holds (recorded in the
- * database and read back), and it tracks the highest ledger position this process has since projected. `verify` compares the
+ * database and read back), and it tracks the highest ledger position this process has since projected or observed. `verify` compares the
  * database's persisted watermark with that position: a restore underneath a running process rolls the persisted watermark back, so
  * the fence closes (`RETENTION_WATERMARK_STALE`) and stays closed until reconciliation runs again. Any closure keeps its first reason
  * until a proven reopening. Same `isEnabled`/`disable` surface as the plain serving gate, so every existing owner composes over it. */
@@ -19,7 +19,7 @@ export function createServingFence(){
   observe(sequence){if(Number.isSafeInteger(sequence)&&sequence>highWater)highWater=sequence;},
   /** Compares the persisted watermark with what this process knows was projected; stale or unreadable closes the fence. */
   async verify(read){if(!enabled)fail(reason??'RETENTION_RECOVERY_BARRIER');let persisted;try{persisted=position(await read());}catch{fence.disable('RETENTION_WATERMARK_UNVERIFIED');fail('RETENTION_WATERMARK_UNVERIFIED');}
-   if(persisted.sequence<highWater){fence.disable('RETENTION_WATERMARK_STALE');fail('RETENTION_WATERMARK_STALE');}if(!enabled)fail(reason);return persisted;},
+   if(persisted.sequence<highWater){fence.disable('RETENTION_WATERMARK_STALE');fail('RETENTION_WATERMARK_STALE');}if(!enabled)fail(reason);highWater=Math.max(highWater,persisted.sequence);return persisted;},
   state:()=>Object.freeze({enabled,reason:enabled?null:reason,opened,highWater}),
  });
  return fence;

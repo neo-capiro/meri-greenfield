@@ -140,3 +140,57 @@ Exact store/schema/retention mapping proposal:
 `docs/coordination/proposals/DOT-PREVIEW-CUSTODY-20261016.md`.
 Artifacts migration 0003 remains AUTHORING HOLD, as do conversation row-target
 0014 and receipt-retention changes. No SQL for those paths was authored.
+
+## Final retention completeness and reserved 0013 source
+
+A second already-running owner may not have observed another owner's later
+suppression before a restore. Ordinary advancement therefore requires at least
+`max(processHighWater, projectedSequence - 1)` in the persisted watermark. It
+cannot skip an acknowledged predecessor, even when this process's prior floor
+was zero. Out-of-order concurrent projections or sparse ledger sequences close
+the serving fence and require reconciliation; they never certify completeness
+of unrelated rows. Recovery retains its exclusive rebuild exception. A verified
+persisted position from another writer becomes a known process floor too.
+
+Final retention source controls: **53 pass, 0 fail, 0 skip**, exit 0, including
+the new two-owner restore regression and migration-source check. Final focused
+exact-base negative: **11 pass, 6 fail**; fixed source restored. This supersedes
+the initial 51-test count above and preserves it as earlier evidence.
+
+Central numbering record: `dot/meri-package4-allocations-20261016` at
+`641f298025c4c9f344d9d16f852cb6eb62b21906`,
+`docs/coordination/tasks/CODEX-PACKAGE4-CENTRAL-MIGRATION-ALLOCATIONS-20261016.md`.
+Only `apps/control/conversations/migrations/0013_retention_recovery_watermark.sql`
+was authored: singleton, safe nonnegative sequence, nullable canonical head hash,
+no seed, roles, grants or unrelated mutation. It remains source-review pending.
+The static SQL contract check is not PostgreSQL syntax or migration execution.
+No held schema path was authored, and no migration ran.
+
+## Proof and remaining gates
+
+The candidate-h source proof passes **5/5**. **Zero of its 45 rows changed**;
+all repair dependencies are outside that finite proof map. There are no old/new
+proof-row hashes to repin. Historical manifests, the frozen f pin and h HOLD are
+unchanged. Hash agreement does not qualify this dependency closure.
+
+Final distinct checks: **132 synthetic source controls + 5 static proof checks**,
+all pass. Runs used Node 24.19.0, `--max-old-space-size=128 --test
+--test-isolation=none`, sequential single processes, each under 3 seconds.
+Exact logs and baseline-negative evidence are retained in task-9/evidence;
+normal process exits were observed and preview fixture cleanup completed.
+Windows denied CIM process enumeration, so no host-wide absence claim is made.
+
+Independent report input is retained outside Git at
+`task-9/artifact-independent-review-input.md`, SHA-256
+`e2917b2b12b941d8c2ef7df92e3e2e1bed613542954060fdbec35adb10a9ad06`.
+Transport entities were decoded to reconstruct the exact supplied hash.
+The published review is at audit commit
+`2e8419a0766476b41e63a03364f21cad3c65eee4`.
+
+UNRUN/held: compiler/typechecks and full repository suites; real PostgreSQL,
+Temporal, object store/broker/filing, actual browser/SDK, native renderer/quality,
+image builds/cloud/deployment, migration execution and purge. Generator/native
+preview checks await their separate authorized profile. Package-four's seven
+runtime failures and three frozen-candidate failures remain open; this lane did
+not relabel or rerun them. Every returned source commit needs independent review;
+none is automatically integrated or accepted.
