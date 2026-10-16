@@ -13,6 +13,8 @@ import {capabilityDigest} from './native-authority/task-verifier.mjs';
 import {compilePreparedCandidateConfiguration} from './prepared-candidate-config.mjs';
 import {issueRunModelGrant} from './run-model-grant.mjs';
 import {createOriginalRunPreparation} from './original-run-preparation.mjs';
+import {createNativeTaskAllocator} from './native-authority/task-allocator.mjs';
+import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 import {assertNativeReadConfiguration,nativeReadOperations} from '../../packages/contracts/runtime-0.2/reads.mjs';
 const fail=code=>{throw Object.assign(Error('PREPARED_RUN_BINDINGS_'+code),{code:'PREPARED_RUN_BINDINGS_'+code});};
 export function createPreparedRunBindings(options){
@@ -30,14 +32,16 @@ export function createPreparedRunBindings(options){
  const workspaceMatch=/^(.*[\\/])([0-9a-f-]{36})$/u.exec(workspace);
  if(readInitial&&(!workspaceMatch||workspaceMatch[2]!==configuredBinding.conversationId))fail('WORKSPACE');
  const workspaceParent=workspaceMatch?.[1],configurationSha256=hash({schemaVersion:1,multiRun:config.multiRun,identity:{origin:config.identity.origin,clientResolution:config.identity.commandContext.clientResolution},runtime:runtimeSemantics,allocation:allocationSemantics,plan:config.plan,preparationIntent:readInitial?{...preparationSemantics,workspaceParent}:config.preparationIntent,qualification:config.qualification,grantIntents:config.grantIntents,grantId:config.grantId,operations:config.operations,approvedReads:config.approvedReads??null,taskRequest:config.taskRequest,containerName:config.containerName,taskOrigin:config.taskOrigin,taskHttp:config.taskHttp,objects:config.objects});
- const checkedInitial=async(binding,check)=>{
+ const exactInitialScopes=(scopes,binding,policyRevision)=>Array.isArray(scopes)&&hash(scopes)===hash([{kind:'client',tenantId:binding.tenantId,resourceId:selectedClientId,policyRevision}]);
+ const initialRecord=async(binding,check,cleanup=false)=>{
   validateShape('RunBinding',binding);if(!readInitial||binding.writerFence!==1||hash(binding)===hash(configuredBinding)||binding.tenantId!==configuredBinding.tenantId||binding.actorId!==configuredBinding.actorId)fail('INITIAL_BINDING_UNAVAILABLE');
   check();const raw=await readInitial({binding},check);check();if(raw===null)fail('INITIAL_BINDING_UNAVAILABLE');
   const r=data(own(raw,['schemaVersion','state','binding','selectedClientId','policyRevision','versions','configurationSha256','expiresAtMs','createdAtMs']));
-  if(r.schemaVersion!==1||r.state!=='ADMITTED'||hash(r.binding)!==hash(binding)||r.selectedClientId!==selectedClientId||r.policyRevision!==config.qualification.policyRevision||hash(r.versions)!==hash(config.runtime.versions)||r.configurationSha256!==configurationSha256||!Number.isSafeInteger(r.createdAtMs)||r.createdAtMs<1||r.createdAtMs>now()||!Number.isSafeInteger(r.expiresAtMs)||r.expiresAtMs<=now()||r.expiresAtMs>r.createdAtMs+config.multiRun.runWindowMs||r.expiresAtMs>scheduleExpiresAtMs)fail('INITIAL_BINDING_REFUSED');
-  const saved=await o.store.readOptional(binding,{},check);check();if(!saved||hash(saved.run?.binding)!==hash(binding)||!['queued','starting','running'].includes(saved.run.state)||hash(saved.run.versions)!==hash(r.versions)||saved.run.policyRevision!==r.policyRevision||!Array.isArray(saved.run.scopes)||!saved.run.scopes.some(s=>s.kind==='client'&&s.tenantId===binding.tenantId&&s.resourceId===selectedClientId&&s.policyRevision===r.policyRevision))fail('INITIAL_RUN_REFUSED');
-  return r;
+  if(r.schemaVersion!==1||r.state!=='ADMITTED'||hash(r.binding)!==hash(binding)||r.selectedClientId!==selectedClientId||r.policyRevision!==config.qualification.policyRevision||hash(r.versions)!==hash(config.runtime.versions)||r.configurationSha256!==configurationSha256||!Number.isSafeInteger(r.createdAtMs)||r.createdAtMs<1||r.createdAtMs>now()||!Number.isSafeInteger(r.expiresAtMs)||!cleanup&&r.expiresAtMs<=now()||r.expiresAtMs<=r.createdAtMs||r.expiresAtMs>r.createdAtMs+config.multiRun.runWindowMs||r.expiresAtMs>scheduleExpiresAtMs)fail('INITIAL_BINDING_REFUSED');
+  const saved=await o.store.readOptional(binding,{},check);check();if(!saved||hash(saved.run?.binding)!==hash(binding)||!cleanup&&!['queued','starting','running'].includes(saved.run.state)||hash(saved.run.versions)!==hash(r.versions)||saved.run.policyRevision!==r.policyRevision||!exactInitialScopes(saved.run.scopes,binding,r.policyRevision))fail('INITIAL_RUN_REFUSED');
+  return {admission:r,saved};
  };
+ const checkedInitial=async(binding,check)=>{const {admission}=await initialRecord(binding,check);return admission;};
  const retargetPreparation=(binding,scopes)=>{if(!readInitial||!workspaceParent)fail('WORKSPACE');return {...config.preparationIntent,workspace:workspaceParent+binding.conversationId,authoritySha256:hash({scopes,selectedClientId,policyRevision:config.qualification.policyRevision})};};
  /** The authoritative allocation for a target binding: the reviewed static allocation retargeted to exactly that run. Its hash is what
   * the issued facts and the retired record carry; a record naming a different allocation hash is refused rather than admitted. */
@@ -60,14 +64,29 @@ export function createPreparedRunBindings(options){
   if(saved){if(hash(saved.run.binding)!==hash(intent.binding)||hash(saved.run.versions)!==hash(c.runtime.versions)||saved.run.policyRevision!==c.qualification.policyRevision)fail('RUN_RECORD_MISMATCH');}
   else if(intent.binding.writerFence>1)fail('RUN_RECORD_REQUIRED');
   if(intent.binding.conversationId!==configuredBinding.conversationId&&!readInitial)fail('INITIAL_BINDING_UNAVAILABLE');
-  if(intent.binding.writerFence===1&&hash(intent.binding)!==hash(configuredBinding)){const admitted=await checkedInitial(intent.binding,check);if(intent.expiresAtMs!==admitted.expiresAtMs)fail('INITIAL_EXPIRY_MISMATCH');}
+  if(intent.binding.writerFence===1&&hash(intent.binding)!==hash(configuredBinding)){const admitted=await checkedInitial(intent.binding,check);if(intent.expiresAtMs!==admitted.expiresAtMs||!saved||!exactInitialScopes(saved.run.scopes,intent.binding,admitted.policyRevision))fail('INITIAL_EXPIRY_MISMATCH');}
   if(approvedReads!==undefined&&(!saved||hash(saved.request)!==intent.requestSha256))fail('RUN_REQUEST_MISMATCH');
   const model=await issueRunModelGrant({owner:o.modelGrants,intent,taskGrant:issuance,controlSha256:controlDigest,now,signal});
   return {runtime:{...c.runtime,binding:intent.binding,deadlineMs:intent.expiresAtMs,proxyCredential:model.proxyCredential},plan:c.plan,preparationIntent:intent.binding.conversationId===configuredBinding.conversationId?c.preparationIntent:retargetPreparation(intent.binding,saved.run.scopes),allocationJson:retarget(intent.binding),qualification:c.qualification,grantIntents:[{grantId:issuance.grantId,capabilitySha256:issuance.capabilitySha256,expiresAtMs:intent.expiresAtMs},model.grantIntent],grantId:issuance.grantId,operations,...(approvedReads===undefined?{}:{approvedReads}),taskRequest:c.taskRequest,containerName:c.containerName,controlCapabilitySha256:controlDigest,transport:{origin:c.taskOrigin,http:c.taskHttp}};}};
  const issuer=createPreparedRunIssuer({store:o.issuanceStore,authority:o.capabilityAuthority,now,maxRequestMs:limits.maxRequestMs});
  const runIssuance=createPreparedRunIssuance({issuer,facts,sourceOwners,now,maxRequestMs:limits.maxRequestMs});
  const prepareOriginal=createOriginalRunPreparation({binding:config.runtime.binding,expiresAtMs:config.runtime.deadlineMs,store:o.store,issuer,runIssuance,now,maxRequestMs:limits.maxRequestMs});
- const prepareInitial=readInitial?async value=>{const {binding,signal}=own(value,['binding'],['signal']);nativeSignal(signal);const check=()=>{if(signal?.aborted)fail('CANCELLED');};const admitted=await checkedInitial(data(binding),check);return createOriginalRunPreparation({binding:admitted.binding,expiresAtMs:admitted.expiresAtMs,store:o.store,issuer,runIssuance,now,maxRequestMs:limits.maxRequestMs})({signal});}:undefined;
+ const prepareInitial=readInitial?async value=>{const {binding,signal}=own(value,['binding'],['signal']);nativeSignal(signal);const life=createOperationLifetime({now,signal,deadlineMs:now()+limits.maxRequestMs,errorFactory:()=>Object.assign(Error('PREPARED_RUN_BINDINGS_INITIAL_UNKNOWN'),{code:'PREPARED_RUN_BINDINGS_INITIAL_UNKNOWN'})});try{
+  const b=data(binding),admitted=await life.run(()=>checkedInitial(b,life.check));life.limitDeadline(admitted.expiresAtMs);
+  const issued=await life.run(signal=>createOriginalRunPreparation({binding:b,expiresAtMs:admitted.expiresAtMs,store:o.store,issuer,runIssuance,now,maxRequestMs:limits.maxRequestMs})({signal}));
+  const current=await life.run(()=>checkedInitial(b,life.check));if(hash(current)!==hash(admitted))fail('INITIAL_BINDING_CHANGED');return issued;
+ }finally{life.close();}}:undefined;
+ /** Rebuild only the canonical allocator's stop from the immutable allocation and issuance rows. The model credential is not read,
+  * and neither an issuance nor a task is created. An expired admission remains usable for cleanup, never fresh execution. */
+ const retireInitial=readInitial?async value=>{const {binding,client,signal}=own(value,['binding','client'],['signal']);nativeSignal(signal);const life=createOperationLifetime({now,signal,deadlineMs:now()+limits.maxRequestMs,errorFactory:()=>Object.assign(Error('PREPARED_RUN_BINDINGS_INITIAL_STOP_UNKNOWN'),{code:'PREPARED_RUN_BINDINGS_INITIAL_STOP_UNKNOWN'})});try{
+  const b=data(binding),{admission:admitted,saved}=await life.run(()=>initialRecord(b,life.check,true)),key={binding:b,allocationKey:hash(b)};
+  const allocationSaved=await life.run(()=>o.store.allocations.read(key,life.check));life.check();const record=allocationSaved?.record;
+  if(!record||record.state==='FORECLOSED'||hash(record.original?.binding)!==hash(b)||record.original.expiresAtMs!==admitted.expiresAtMs||hash(record.original.versions)!==hash(admitted.versions)||hash(record.qualification)!==hash(config.qualification)||!Array.isArray(record.grantIntents))fail('INITIAL_STOP_REFUSED');
+  const issued=await life.run(()=>o.issuanceStore.read({issuanceKey:key.allocationKey}));life.check();
+  if(issued?.state!=='ISSUED'||hash(issued.binding)!==hash(b)||issued.expiresAtMs!==admitted.expiresAtMs||issued.requestSha256!==hash(saved.request)||typeof issued.factsSha256!=='string'||!/^[a-f0-9]{64}$/u.test(issued.factsSha256)||!record.grantIntents.some(g=>g.grantId===issued.grantId&&g.capabilitySha256===issued.capabilitySha256&&g.expiresAtMs===admitted.expiresAtMs))fail('INITIAL_STOP_REFUSED');
+  const allocationJson=retarget(b),admission=admissionFor(b,record),allocator=createNativeTaskAllocator({journal:o.store.allocations,authority:{async verify(){fail('INITIAL_STOP_REFUSED');}},admission,client,original:record.original,taskRequest:config.taskRequest,qualification:config.qualification,grantIntents:record.grantIntents,allocationSha256:hash(allocation(allocationJson)),containerName:config.containerName,enabled:true,now,maxRequestMs:limits.maxRequestMs});
+  const {state:_,resource:__,...persistedIntent}=record;if(hash(persistedIntent)!==hash(allocator.intent))fail('INITIAL_STOP_CONFLICT');life.check();if(record.state==='RETIRED'&&record.resource?.physicalStopProven===true)return {physicalStopProven:true};return await life.run(()=>allocator.stop());
+ }finally{life.close();}}:undefined;
  function proposeInitialExpiry({signal}={}){nativeSignal(signal);if(signal?.aborted)fail('CANCELLED');const expiresAtMs=Math.min(now()+config.multiRun.runWindowMs,scheduleExpiresAtMs);if(expiresAtMs<=now())fail('WINDOW_EXPIRED');return expiresAtMs;}
  /** The run's expiry. An issuance already recorded durably for this binding keeps its original expiry across process recreation
   * (the window is never recomputed from a later clock); otherwise the reviewed window, never beyond the allocation schedule, never
@@ -76,5 +95,5 @@ export function createPreparedRunBindings(options){
   const issuanceKey=hash(binding),existing=await o.issuanceStore.read({issuanceKey,signal});
   if(existing){if(existing.issuanceKey!==issuanceKey||hash(existing.binding)!==issuanceKey||!Number.isSafeInteger(existing.expiresAtMs))fail('ISSUANCE_RECORD_REFUSED');return {expiresAtMs:existing.expiresAtMs,persisted:true};}
   return {expiresAtMs:proposeInitialExpiry({signal}),persisted:false};}
- return Object.freeze({runIssuance,issuanceIntent,admissionForBinding,issuer,facts,prepareOriginal,...(prepareInitial?{prepareInitial,proposeInitialExpiry}:{}),runWindowMs:config.multiRun.runWindowMs,controlCapabilitySha256:controlDigest,configurationSha256});
+ return Object.freeze({runIssuance,issuanceIntent,admissionForBinding,issuer,facts,prepareOriginal,...(prepareInitial?{prepareInitial,retireInitial,proposeInitialExpiry}:{}),runWindowMs:config.multiRun.runWindowMs,controlCapabilitySha256:controlDigest,configurationSha256});
 }
