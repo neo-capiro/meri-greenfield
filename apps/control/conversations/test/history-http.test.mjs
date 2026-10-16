@@ -124,13 +124,14 @@ test('membership revision changed during canonical read withholds the page with 
  }finally{f.close();}
 });
 
-for(const corrupt of ['conversation-shape','run-shape','request-hash','event-shape','pending-shape'])test(`canonical ${corrupt} is an integrity500, without foreign database details`,async()=>{
+for(const corrupt of ['conversation-shape','run-shape','request-hash','event-shape','pending-shape',...['scopes','versions','facts','policyRevision','reservedAt'].map(k=>'pending-missing-'+k)])test(`canonical ${corrupt} is an integrity500, without foreign database details`,async()=>{
  const f=await fixture();try{await f.turn(1);const r=f.state.runs.values().next().value;
   if(corrupt==='conversation-shape'){const c=f.state.conversations.values().next().value;c.projection.createdAt='invalid';c.projection_sha256=hash(c.projection);}
   if(corrupt==='run-shape'){r.projection.state='invalid';r.projection_sha256=hash(r.projection);}
   if(corrupt==='request-hash')r.request_sha256='0'.repeat(64);
   if(corrupt==='event-shape'){const e=f.state.events.values().next().value[0];e.event.sequence='bad';e.event_sha256=hash(e.event);}
   if(corrupt==='pending-shape')f.state.nextRuns.values().next().value.reservation=null;
+  if(corrupt.startsWith('pending-missing-')){const p=f.state.nextRuns.values().next().value;delete p.reservation[corrupt.slice('pending-missing-'.length)];p.reservation_sha256=hash(p.reservation);}
   const response=await f.post('transcript',{conversationId:binding.conversationId});assert.equal(response.status,500);assert.deepEqual(await response.json(),{error:{code:'CONVERSATION_STORE_CORRUPT'}});
  }finally{f.close();}
 });

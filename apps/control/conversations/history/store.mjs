@@ -3,6 +3,7 @@ import {hash,same,validateShape} from '../boundary.mjs';
 import {refuse} from '../../product-access/errors.mjs';
 import {DISCOVERY_SCHEMA,HISTORY_SCHEMA} from './protocol.mjs';
 import {promptLineages} from './lineage.mjs';
+import {assertNextRunReservation} from '../next-run-reservation.mjs';
 // Brand pure canonical decoding failures only. Driver/transport failures retain their unavailable semantics.
 const decode=fn=>{try{return fn();}catch{refuse('CONVERSATION_STORE_CORRUPT');}};
 const shape=(name,value)=>decode(()=>validateShape(name,value));
@@ -47,10 +48,10 @@ export function createConversationHistoryStore({tx,rowRun}){
   const turns=runs.filter(r=>touched.has(r.run_id)).map(r=>({run:r.projection,request:r.request,promptLineage:lineages.get(r.run_id),sequenceBase:Number(r.sequence_base),sequenceEnd:r.sequence_end==null?null:Number(r.sequence_end),lastSequence:Number(r.last_sequence)}));
   const reservations=(await c.query('SELECT * FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2',[key.tenantId,conversationId])).rows;check();
   const pending=reservations.filter(r=>r.state==='RESERVED');if(pending.length>1)refuse('CONVERSATION_STORE_CORRUPT');
-  const p=pending[0];if(p){if(!p.reservation||typeof p.reservation!=='object')refuse('CONVERSATION_STORE_CORRUPT');const {source,target}=p.reservation;shape('RunBinding',source);shape('RunBinding',target);
+  const p=pending[0];if(p){const reservation=decode(()=>assertNextRunReservation(p.reservation)),{source,target}=reservation;
    if(hash(p.reservation)!==p.reservation_sha256||p.tenant_id!==key.tenantId||p.conversation_id!==conversationId||p.source_run_id!==source.runId||!same(source,runs.at(-1).projection.binding)||p.target_run_id!==target.runId||
     target.tenantId!==source.tenantId||target.actorId!==source.actorId||target.conversationId!==source.conversationId||target.runId===source.runId||target.attemptId===source.attemptId||target.workerId===source.workerId||target.writerFence!==source.writerFence+1||
-    !same(p.reservation.scopes,subject.scopes)||p.reservation.policyRevision!==subject.policyRevision)refuse('CONVERSATION_STORE_CORRUPT');
+    !same(reservation.scopes,subject.scopes)||reservation.policyRevision!==subject.policyRevision||!same(reservation.versions,runs.at(-1).projection.versions))refuse('CONVERSATION_STORE_CORRUPT');
   }
   return {schema:HISTORY_SCHEMA,conversation:subject,latestRun:runs.at(-1).projection,latestSequenceBase:Number(runs.at(-1).sequence_base),turns,events:selected,nextSequence:selected.at(-1)?.sequence??after,lastSequence:end,hasMore:events.length>limit,
    pendingTurn:p?{sourceBinding:p.reservation.source,targetBinding:p.reservation.target,state:p.state}:null};
