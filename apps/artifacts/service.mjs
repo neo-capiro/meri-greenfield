@@ -82,7 +82,9 @@ export function createArtifactService({validators:v,authorize,budget,versions,ob
       await bytesFor(life,object,ticket.maxBytes);
       receipt=await authority(life,action,resource,requestSha256,context);
       const version=v.version({contractVersion:'0.1.0',artifactId:readBase?.version.artifactId??allocation.artifactId,versionId:allocation.versionId,parentVersionId:baseVersionId,binding:context.binding,object,filename:filenameFor(request),mimeType:mime[request.format],scopes:context.scopes,evidence:context.evidence,generationStatus:'draft',previewStatus:'pending',createdAt:new Date(now()).toISOString()});
-      const commit=v.snapshot(await life.run(signal=>versions.commit({version:v.snapshot(version),spec:v.snapshot(request),specSha256:v.hash(request),requestSha256,inspection:v.snapshot(inspection),expectedParentVersionId:baseVersionId},signal)));
+      await servable(life,context,{version});
+      const publication={authorization:receipt,invocation:{versionId:version.versionId,budgetTicketId:ticket.ticketId,binding:v.snapshot(context.binding),requestSha256,ownedInvocationId:null}};
+      const commit=v.snapshot(await life.run(signal=>versions.commit({version:v.snapshot(version),spec:v.snapshot(request),specSha256:v.hash(request),requestSha256,inspection:v.snapshot(inspection),expectedParentVersionId:baseVersionId},signal,publication)));
       closed(commit,['status','versionId','requestSha256','versionSha256']);
       if(!['committed','duplicate'].includes(commit.status)||commit.versionId!==version.versionId||commit.requestSha256!==requestSha256||commit.versionSha256!==v.hash(version))fail('ARTIFACT_COMMIT_RECEIPT');versionCommitted=true;
       await settle('completed',bytes.length);receipt=await authority(life,action,{...resource,object},requestSha256,context);await servable(life,context,readBase);

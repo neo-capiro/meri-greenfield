@@ -2,6 +2,8 @@
 import {createHash} from 'node:crypto';
 import {createPostgresArtifactVersions} from '../postgres-versions.mjs';
 import {artifactValidators as v} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {createPostgresRetentionJournal} from '../../../control/retention/postgres-journal.mjs';
+import {publicationFixture,publicationAuthority} from './publication-fixture.mjs';
 export const id=n=>`33333333-3333-4333-8333-${String(n).padStart(12,'0')}`,NOW=Date.parse('2026-10-13T18:00:00Z');
 const binding={tenantId:'synthetic-tenant',actorId:'synthetic-actor',conversationId:id(1),runId:id(2),attemptId:id(3),workerId:id(4),writerFence:1};
 const scopes=[{tenantId:binding.tenantId,kind:'client',resourceId:'synthetic-client',policyRevision:'synthetic-policy'}];
@@ -10,15 +12,24 @@ export function record(n=10,parentVersionId=null){const bytes=Buffer.from(`Synth
 export const commit=r=>({...r,expectedParentVersionId:r.version.parentVersionId});
 export function sqlFixture(){const state={versions:new Map(),heads:new Map()},events=[],releases=[],flags={commitFailure:false,rollbackPark:false,queryPark:false,hook:null};
  const client={async query(sql,args=[]){events.push({sql,args:structuredClone(args)});if(flags.hook)await flags.hook(sql,args);if(flags.queryPark&&sql.startsWith('SELECT *'))return new Promise(()=>{});
-  if(sql==='BEGIN'){this.snapshot=structuredClone(state);return {rows:[],rowCount:0};}if(sql.startsWith('SET LOCAL')||sql.startsWith('SELECT pg_advisory'))return {rows:[],rowCount:0};
+  if(sql.startsWith('SELECT pg_advisory_unlock'))return {rows:[{unlocked:true}],rowCount:1};
+  if(sql.startsWith('BEGIN')){this.snapshot=structuredClone(state);return {rows:[],rowCount:0};}if(sql.startsWith('SET LOCAL')||sql.startsWith('SELECT pg_advisory'))return {rows:[],rowCount:0};
   if(sql==='ROLLBACK'){if(flags.rollbackPark)return new Promise(()=>{});state.versions=this.snapshot.versions;state.heads=this.snapshot.heads;return {rows:[],rowCount:0};}
   if(sql==='COMMIT'){if(flags.commitFailure)throw Error('SYNTHETIC_LOST_COMMIT_ACK');return {rows:[],rowCount:0};}
+  if(sql.startsWith('SELECT COALESCE((SELECT jsonb_agg'))return {rows:[{versions:[...state.versions.values()].filter(r=>r.tenant_id===args[0]&&r.artifact_id===args[1]).sort((a,b)=>a.version_id.localeCompare(b.version_id)).slice(0,1025).map(r=>structuredClone(r)),heads:state.heads.has(args[1])?[structuredClone(state.heads.get(args[1]))]:[]}],rowCount:1};
+  if(sql.startsWith('SELECT artifact_id FROM meri_artifacts.versions'))return {rows:[...new Set([...state.versions.values(),...state.heads.values()].filter(r=>r.tenant_id===args[0]).map(r=>r.artifact_id))].sort().slice(0,1025).map(artifact_id=>({artifact_id})),rowCount:0};
+  if(sql.startsWith('SELECT s.projection,s.projection_sha256')){const kind=sql.includes('meri_artifacts.retention_subjects')?'artifact':'conversation',projection=suppressed.has(`${args[0]}:${kind}:${args[1]}`)?{state:'SUPPRESSED',ledgerSequence:1}:null;return {rows:[{projection,projection_sha256:projection?v.hash(projection):null,state:projection?.state??null,ledger_sequence:projection?.ledgerSequence??null,watermark_sequence:0,watermark_entry_sha256:null}],rowCount:1};}
   if(sql.startsWith('SELECT * FROM meri_artifacts.versions'))return {rows:state.versions.has(args[0])?[structuredClone(state.versions.get(args[0]))]:[],rowCount:state.versions.has(args[0])?1:0};
   if(sql.startsWith('SELECT * FROM meri_artifacts.heads'))return {rows:state.heads.has(args[0])?[structuredClone(state.heads.get(args[0]))]:[],rowCount:state.heads.has(args[0])?1:0};
   if(sql.includes("record #>> '{version,object,objectId}'"))return {rows:[...state.versions.values()].filter(r=>r.tenant_id===args[0]&&r.conversation_id===args[1]&&r.record.version.object.objectId===args[2]).sort((a,b)=>a.version_id.localeCompare(b.version_id)).slice(0,2).map(r=>({version_id:r.version_id})),rowCount:0};
   if(sql.startsWith('SELECT version_id'))return {rows:[...state.versions.values()].filter(r=>r.request_sha256===args[0]).sort((a,b)=>a.version_id.localeCompare(b.version_id)).slice(0,1025).map(r=>({version_id:r.version_id})),rowCount:0};
-  if(sql.startsWith('INSERT INTO meri_artifacts.versions')){const [version_id,artifact_id,tenant_id,actor_id,conversation_id,request_sha256,record,record_sha256]=args;if(state.versions.has(version_id))throw Error('SYNTHETIC_UNIQUE');state.versions.set(version_id,structuredClone({version_id,artifact_id,tenant_id,actor_id,conversation_id,request_sha256,record,record_sha256}));return {rows:[],rowCount:1};}
+  if(sql.startsWith('INSERT INTO meri_artifacts.versions')){const [version_id,artifact_id,tenant_id,actor_id,conversation_id,request_sha256,record,record_sha256]=args;if(state.versions.has(version_id)){if(sql.endsWith('ON CONFLICT DO NOTHING'))return {rows:[],rowCount:0};throw Error('SYNTHETIC_UNIQUE');}state.versions.set(version_id,structuredClone({version_id,artifact_id,tenant_id,actor_id,conversation_id,request_sha256,record,record_sha256}));return {rows:[],rowCount:1};}
   if(sql.startsWith('INSERT INTO meri_artifacts.heads')){const [artifact_id,version_id,tenant_id,actor_id,conversation_id,projection,projection_sha256]=args;if(state.heads.has(artifact_id))throw Error('SYNTHETIC_UNIQUE');state.heads.set(artifact_id,structuredClone({artifact_id,version_id,tenant_id,actor_id,conversation_id,projection,projection_sha256}));return {rows:[],rowCount:1};}
   if(sql.startsWith('UPDATE meri_artifacts.heads')){const [artifact_id,version_id,projection,projection_sha256,parent]=args,r=state.heads.get(artifact_id);if(r?.version_id!==parent)return {rows:[],rowCount:0};Object.assign(r,{version_id,projection:structuredClone(projection),projection_sha256});return {rows:[],rowCount:1};}
   throw Error(`Unexpected SQL: ${sql}`);},release(error){releases.push(error??null);}};
- const pool={async connect(){return client;},end(){throw Error('BORROWED_POOL_MUST_NOT_CLOSE');}};return {state,events,releases,flags,client,pool,create:options=>createPostgresArtifactVersions({pool,now:()=>NOW,maxRequestMs:100,...options})};}
+ const pool={async connect(){return client;},end(){throw Error('BORROWED_POOL_MUST_NOT_CLOSE');}},durable=publicationFixture(binding.tenantId,()=>NOW),suppressed=new Set();
+ const journalFor=(borrowed=pool,clock=()=>NOW,ms=100)=>({...createPostgresRetentionJournal({pool:borrowed,now:clock,maxRequestMs:ms}),async get(key){return suppressed.has(key)?{state:'SUPPRESSED'}:null;}});
+ const retention={async assertServable(s){if(suppressed.has(`${s.tenantId}:${s.kind}:${s.subjectId}`))throw Object.assign(Error('RETENTION_SUPPRESSED'),{code:'RETENTION_SUPPRESSED'});}},journal=journalFor();
+ function create(options={}){const clock=options.now??(()=>NOW),owner=createPostgresArtifactVersions({pool,now:clock,maxRequestMs:100,journal:options.pool?journalFor(options.pool,clock,options.maxRequestMs??100):journal,publication:durable.publication,tenantId:binding.tenantId,retention,...options});
+  return {...owner,commit:(r,signal,authority)=>owner.commit(r,signal,authority??publicationAuthority(r,clock()))};}
+ return {state,events,releases,flags,client,pool,create,durable,journal,retention,suppressed};}

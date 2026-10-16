@@ -11,10 +11,10 @@ export function createPostgresPreviewStore(options){
  const {journal,versions,tenantId,artifactId,now,maxRequestMs=15000,maxRows=128,custodyJournal=null}=own(options,['journal','versions','tenantId','artifactId','now'],['maxRequestMs','maxRows','custodyJournal']);
  configuration(now,maxRequestMs);uuid(artifactId);
  if(typeof tenantId!=='string'||!tenantId||!Number.isSafeInteger(maxRows)||maxRows<1||maxRows>256)fail('ARTIFACT_STORAGE_CONFIGURATION');
- const transaction=storageMethod(journal,'tx'),readVersion=storageMethod(versions,'read');
- async function decode(row,signal){
+ const transaction=storageMethod(journal,'tx'),readVersion=storageMethod(versions,'read'),readExclusive=Object.hasOwn(versions,'readExclusive')?storageMethod(versions,'readExclusive'):readVersion;
+ async function decode(row,signal,exclusive){
   if(row.tenant_id!==tenantId||row.artifact_id!==artifactId)corrupt();uuid(row.version_id);
-  const stored=data(await readVersion(row.version_id,signal)),version=v.version(stored.version),claim=verifyPreviewClaim(v,row.claim,version);
+  const stored=data(await (exclusive?readExclusive:readVersion)(row.version_id,signal)),version=v.version(stored.version),claim=verifyPreviewClaim(v,row.claim,version);
   if(version.binding.tenantId!==tenantId||version.artifactId!==artifactId||row.version_id!==claim.versionId||row.conversation_id!==claim.conversationId||row.preview_id!==claim.previewId||
    row.object_id!==claim.objectId||row.source_version_sha256!==claim.sourceVersionSha256||row.source_sha256!==claim.sourceSha256||row.claim_sha256!==v.hash(claim))corrupt();
   let object=null,record=null;
@@ -36,7 +36,7 @@ export function createPostgresPreviewStore(options){
    const out=[],seen=new Set();let bytes=0;
    for(const value of raw){const row=data(value);if(seen.has(row.version_id)||versionId!==null&&row.version_id!==versionId)corrupt();seen.add(row.version_id);
     bytes+=Buffer.byteLength(JSON.stringify(row));if(bytes>MAX_RESPONSE_BYTES)fail('ARTIFACT_PREVIEW_INVENTORY_UNAVAILABLE');
-    out.push(await life.run(signal=>decode(row,signal)));}
+    out.push(await life.run(signal=>decode(row,signal,exclusive)));}
    life.check();return data(out);
   }catch(cause){if(cause?.code?.startsWith('ARTIFACT_'))throw cause;
    throw Object.assign(new Error('ARTIFACT_PREVIEW_STORE_UNAVAILABLE'),{code:'ARTIFACT_PREVIEW_STORE_UNAVAILABLE',cause});

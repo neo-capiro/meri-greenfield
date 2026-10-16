@@ -93,9 +93,10 @@ export function createPostgresArtifactService(options){
           outputBytes=committed.version?.object?.bytes;
         }
         return record;
-      },async commit(value,abort){
+      },async commit(value,abort,publication){
         active();const record=v.snapshot(value);if(record.requestSha256!==requestSha256||record.version.object.bytes>maxBytes)fail('ARTIFACT_BUDGET_BINDING');
-        observation.versionCommitStarted=true;const receipt=v.snapshot(await versions.commit(value,abort));active();committed=record;
+        const retained=v.snapshot(publication);if(document){if(initial?.invocationId!=='owned_'+record.version.versionId)fail('ARTIFACT_BUDGET_BINDING');retained.invocation.ownedInvocationId=initial.invocationId;}
+        observation.versionCommitStarted=true;const receipt=v.snapshot(await versions.commit(value,abort,retained));active();committed=record;
         // Observe the accepted service's exact ACK predicate; do not turn a started
         // or malformed acknowledgement into a confirmed immutable version.
         if(Object.keys(receipt).sort().join()==='requestSha256,status,versionId,versionSha256'&&['committed','duplicate'].includes(receipt.status)&&receipt.versionId===record.version.versionId&&receipt.requestSha256===requestSha256&&receipt.versionSha256===v.hash(record.version))observation.versionCommitted=true;
