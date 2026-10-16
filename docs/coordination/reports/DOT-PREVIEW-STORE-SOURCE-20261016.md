@@ -288,3 +288,23 @@ The historical manifest SHA remains
 all45 candidate-h current hashes still match its recorded rows: **zero changed
 proof rows**, zero repins. Historical proposals and manifests remain untouched;
 candidate h and live qualification remain HOLD. No P2b stopped-review retry ran.
+
+## Independent duplicate-claim release finding and focused successor
+
+Parent review of3b2940b8 found a missing final custody check in the losing-claim
+recovery branch: another owner can commit after the first missing read, and a
+tombstone acknowledged during the later current artifact-authority check could
+still return a successful existing preview. This did not redispatch an object,
+but it released stale publication metadata.3b remains unaccepted for this finding.
+
+The separate child `dot/meri-preview-custody-release-20261016` adds the same final
+stored-record/current-custody equality check already used by the other existing
+record branch. No adapter architecture, authority, recovery or dispatch semantics
+are changed. A new production-module synthetic regression uses two canonical
+stores, one real source service winner, one object-port put and a durable tombstone
+during the losing caller's authority check. The regression fails unchanged3b1/1
+(missing expected rejection, exit1) and passes fixed1/1 (exit0); both processes
+exit and no second put is issued. Evidence `preview-duplicate-release-3b294-negative*`
+and `preview-duplicate-release-fixed*` retains exact argv, fresh memory, measured
+sampled peaks, TAP/stderr and cleanup. No broad rerun or live action was performed.
+Parent's portable independent probe remains pending; source acceptance is separate.

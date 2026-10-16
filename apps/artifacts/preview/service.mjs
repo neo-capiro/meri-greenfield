@@ -41,7 +41,7 @@ export function createArtifactPreviewService({validators:v,artifacts,objects,pre
    onWriteStarted?.();
    const claimed=await previews.claim(v.snapshot(attempt),signal);custody=verifyPreviewClaim(v,claimed?.claim,version);
    if(claimed.claimed!==true){
-    const recovered=await stored(versionId,version,signal);if(recovered){await current(versionId,version,context,signal);return {status:'existing',preview:recovered};}
+    const recovered=await stored(versionId,version,signal);if(recovered){await current(versionId,version,context,signal);if(v.hash(await stored(versionId,version,signal))!==v.hash(recovered))fail('ARTIFACT_PREVIEW_CORRUPT');return {status:'existing',preview:recovered};}
     fail('ARTIFACT_PREVIEW_CLAIM_HELD');
    }
    if(v.hash(custody)!==v.hash(attempt))fail('ARTIFACT_PREVIEW_CLAIM');
