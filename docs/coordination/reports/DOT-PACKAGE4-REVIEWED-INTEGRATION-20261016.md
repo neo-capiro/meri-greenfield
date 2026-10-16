@@ -2,6 +2,30 @@
 
 **SOURCE-ONLY PARTIAL CANDIDATE; overall source composition, candidate-h, image and live release remain HOLD.** This is not a main merge or runtime qualification.
 
+## Current scoped integration, 2026-10-16 02:15 UTC
+
+Source snapshot **`c7f5e35b60289dcd24799ba2361b47d523c0f5cb`**, tree **`e043ea8ddbcb7dee90d5f478c6fd57532ce3eabe`**, adds only five parent-accepted scopes to the earlier published `75f3767555f7b973ee5a0c76987fefb0ff07c112` candidate. Exactly **30 source/test paths** were selected; every integrated Git blob equals the exact reviewed source. This uses explicit path selection with predecessor-blob checks, not whole lane merges. The initial receipt below remains historical.
+
+| Accepted scope | Exact reviewed source | Integrated commit |
+| --- | --- | --- |
+| browser generation fencing | `769848f13da1eb3fa94532d252c1f6d380123e89` | `4043a1dc6ecee06e47e26e9273bcc19125922df3` |
+| filing effect custody | `805e55a6727e5f7ab131d85dc78809fd74ea94c3` | `662bfd26468dc3ff53a57f4b834ee9114f92c262` |
+| source-local preview custody | `d56f07f9b0e5e198ea470db50cd19ac68acf2ebd` | `11f6ed6aa008bf66b102559e90efa144617e69d1` |
+| reserved watermark table shape only | `338a04ec82626382045f8b944a4b7ed4dd48ab27` | `4b36a9e91d7b2c90fc2158fdb840249763231a77` |
+| CORE-1 intent result release | `89aaff209217bc86e49c866c57d83a2f6bd6590a` | `c7f5e35b60289dcd24799ba2361b47d523c0f5cb` |
+
+CORE-1 uses the reviewed `89aaff20` source paths, including its unchanged closed failure-code enum dependency; it excludes the proposed PostgreSQL adapter and SQL. The `0013` scope contains only the accepted table shape and its static SQL-text assertion. **No held retention behavior** from `5e035b34`, `338a04ec` or `c5ebb14f` was brought in. Preview0003 `eb52ed44` remains separate and unreviewed; browser/filing/source-local preview acceptance does not activate a live adapter or resolve restore custody.
+
+Current validation: **6/6 passed**, 67.8448ms, Windows Node v24.19.0, heap128MiB, test isolation none, one process: five existing built-in source-proof checks plus one static SQL-text check. No database/parser/runtime/browser/compiler/provider ran; no test peak is claimed. The fresh physical-memory probe observed 11,566,657,536 bytes free; CIM commit data was unavailable and was not bypassed. Exact argv, raw TAP SHA256, 30 blob pairs and all five commit/tree pins are in `../audits/meri-package4-qualification-20261016/scoped-integration-custody.json` and `scoped-integration-proof.tap`. Dependency-bearing author suites and parent independent 73/73 artifact checks are reused as attributed evidence, not reported as new integration runs.
+
+**Zero changed hashed proof rows.** Frozen f/g/h and all historical manifest bytes, image recipe, packages and locks are unchanged. h remains HOLD; the same seven historical runtime failures and three frozen-selector failures remain explicit. No selector repin, SQL execution, main merge or live release occurred.
+
+Remaining source gates: exact review of retention `c5ebb14f`, memory scope successor `260de18f`, corrected history `5abfa653` and the subsequent public export/artifact; real membership owner and durable model issuance/startup composition; preview restore evidence and allocation lookup before activation. The parent accepted the separate model record and released intent/preview source DDL; central record `0b0b7abd536a27a74e3b1077ae71eed6e0ba275b` reserves conversation0015 `model_run_issuances` and records these changes. The later decisions supersede the initial proposal/placement statuses below; the earlier source inventory/evidence is preserved.
+
+READS latest exact focused stage at `5eec8597`: 97/98 passed, primary1/cleanup0, no timeout, observed peak212,303,872B; its new output-accounting negative failed and is under investigation. Its first empty-log attempt stays UNCERTAIN. No old development pass is promoted to current qualification. Shared proportional light-check policy reached startup/artifact/budget/reads; UI delivery failed with AbsolutePathBuf and needs the parent relay. Heavy stages stay with Shipping and one integrated release checkpoint.
+
+## Initial integration receipt at 75f37675 (historical)
+
 ## Exact custody and selected integration
 
 Base package-four `eca78d458acb46cbfd54a94cf870841d999ef6b1`; published documentation checkpoint `acc9bc88368869d2d06f7fb78c30911b13982087` (tree `dde4c00791ed02bc03adb03416304609a124680c`). Dedicated branch: `dot/meri-reviewed-integration-20261016`.

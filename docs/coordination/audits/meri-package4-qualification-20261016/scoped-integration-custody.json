@@ -1,0 +1,244 @@
+{
+  "base": "75f3767555f7b973ee5a0c76987fefb0ff07c112",
+  "scope": "parent-exact-accepted-source-only",
+  "groups": [
+    {
+      "label": "browser generation fencing",
+      "reviewedSource": "769848f13da1eb3fa94532d252c1f6d380123e89",
+      "predecessor": "5e035b34f0eb804f56c78faec2b9237abc48cffa",
+      "integratedCommit": "4043a1dc6ecee06e47e26e9273bcc19125922df3",
+      "integratedTree": "5e398f216bda27df21f0c0f385a12cf87883f4e3",
+      "files": [
+        {
+          "path": "apps/worker/conversation/browser/page-context.mjs",
+          "acceptedBlob": "95df77be94b7fe26fd904c234b77d13d6903d390",
+          "integratedBlob": "95df77be94b7fe26fd904c234b77d13d6903d390"
+        },
+        {
+          "path": "apps/worker/conversation/browser/permissions.mjs",
+          "acceptedBlob": "72adee7b55957798b6ac74fc2e450553d03fc9c0",
+          "integratedBlob": "72adee7b55957798b6ac74fc2e450553d03fc9c0"
+        },
+        {
+          "path": "apps/worker/conversation/browser/test/page-generation.test.mjs",
+          "acceptedBlob": "8ecb5219f0c4ebec95b0464da79a91a7afdc130d",
+          "integratedBlob": "8ecb5219f0c4ebec95b0464da79a91a7afdc130d"
+        },
+        {
+          "path": "apps/worker/conversation/browser/test/permissions.test.mjs",
+          "acceptedBlob": "10832769e270d94125cb15ec8e07336e47ee99e3",
+          "integratedBlob": "10832769e270d94125cb15ec8e07336e47ee99e3"
+        }
+      ]
+    },
+    {
+      "label": "filing effect custody",
+      "reviewedSource": "805e55a6727e5f7ab131d85dc78809fd74ea94c3",
+      "predecessor": "769848f13da1eb3fa94532d252c1f6d380123e89",
+      "integratedCommit": "662bfd26468dc3ff53a57f4b834ee9114f92c262",
+      "integratedTree": "503c663fbaf5ea17ecb4f7408f2288c28f3cca7d",
+      "files": [
+        {
+          "path": "apps/artifacts/filing.mjs",
+          "acceptedBlob": "7dcfc6340036a8f2c769843044bc46d8d6415337",
+          "integratedBlob": "7dcfc6340036a8f2c769843044bc46d8d6415337"
+        },
+        {
+          "path": "apps/control/commands/source-http.mjs",
+          "acceptedBlob": "4b0dd63fed04e2fe62db0d8568134d4f3218cddc",
+          "integratedBlob": "4b0dd63fed04e2fe62db0d8568134d4f3218cddc"
+        },
+        {
+          "path": "apps/control/test/commands-filing-custody.test.mjs",
+          "acceptedBlob": "acf597c53763ea9e14770f44ba900b55bdb674e3",
+          "integratedBlob": "acf597c53763ea9e14770f44ba900b55bdb674e3"
+        },
+        {
+          "path": "apps/control/test/commands-independent-transport-budget.test.mjs",
+          "acceptedBlob": "036955162432d8d1d19db10d03cb7f3aa85bd347",
+          "integratedBlob": "036955162432d8d1d19db10d03cb7f3aa85bd347"
+        }
+      ]
+    },
+    {
+      "label": "source-local preview custody",
+      "reviewedSource": "d56f07f9b0e5e198ea470db50cd19ac68acf2ebd",
+      "predecessor": "805e55a6727e5f7ab131d85dc78809fd74ea94c3",
+      "integratedCommit": "11f6ed6aa008bf66b102559e90efa144617e69d1",
+      "integratedTree": "586a0ab7280fd930a27b653aaa5f1944bc5ff9ff",
+      "files": [
+        {
+          "path": "apps/artifacts/preview/claim.mjs",
+          "acceptedBlob": "88cbb80662e50d4bdcac0d4439be62913b61dcdd",
+          "integratedBlob": "88cbb80662e50d4bdcac0d4439be62913b61dcdd"
+        },
+        {
+          "path": "apps/artifacts/preview/local-store.mjs",
+          "acceptedBlob": "d0456ee2e377b467b0976a1e82d3d5ea954f307c",
+          "integratedBlob": "d0456ee2e377b467b0976a1e82d3d5ea954f307c"
+        },
+        {
+          "path": "apps/artifacts/preview/service.mjs",
+          "acceptedBlob": "ffce08b16c405ea845c27420e4936eea35c35d0b",
+          "integratedBlob": "ffce08b16c405ea845c27420e4936eea35c35d0b"
+        },
+        {
+          "path": "apps/artifacts/test/preview-custody.test.mjs",
+          "acceptedBlob": "a7f6cf908efcc836077486702aee20c36f8d42b5",
+          "integratedBlob": "a7f6cf908efcc836077486702aee20c36f8d42b5"
+        },
+        {
+          "path": "apps/artifacts/test/preview-service.test.mjs",
+          "acceptedBlob": "b2fa373f9dbd62094b61bad3c79bf3bc192d2725",
+          "integratedBlob": "b2fa373f9dbd62094b61bad3c79bf3bc192d2725"
+        },
+        {
+          "path": "apps/control/document-application/preview-route.mjs",
+          "acceptedBlob": "18bfd5e84187528a1f096ecc3162b54f730602b8",
+          "integratedBlob": "18bfd5e84187528a1f096ecc3162b54f730602b8"
+        },
+        {
+          "path": "apps/control/document-application/test/preview-custody-configuration.test.mjs",
+          "acceptedBlob": "2c7374cf6ccf384a53968ea912b5311bebc3f68d",
+          "integratedBlob": "2c7374cf6ccf384a53968ea912b5311bebc3f68d"
+        },
+        {
+          "path": "apps/runtime/artifacts/application.mjs",
+          "acceptedBlob": "5be757519ffce0e11f29d0fdd85dcb0037e16b2c",
+          "integratedBlob": "5be757519ffce0e11f29d0fdd85dcb0037e16b2c"
+        }
+      ]
+    },
+    {
+      "label": "reserved watermark table shape only",
+      "reviewedSource": "338a04ec82626382045f8b944a4b7ed4dd48ab27",
+      "predecessor": "d56f07f9b0e5e198ea470db50cd19ac68acf2ebd",
+      "integratedCommit": "4b36a9e91d7b2c90fc2158fdb840249763231a77",
+      "integratedTree": "c4f8fece204fb0fbd46e480119eb676ff39c5216",
+      "files": [
+        {
+          "path": "apps/control/conversations/migrations/0013_retention_recovery_watermark.sql",
+          "acceptedBlob": "1830c6414c25aa6f77dda27b2178f1c4b51707c8",
+          "integratedBlob": "1830c6414c25aa6f77dda27b2178f1c4b51707c8"
+        },
+        {
+          "path": "apps/control/retention/test/watermark-migration-source.test.mjs",
+          "acceptedBlob": "06bd71fc4dee86b59f62c5a4cb7f39d4a65967fe",
+          "integratedBlob": "06bd71fc4dee86b59f62c5a4cb7f39d4a65967fe"
+        }
+      ]
+    },
+    {
+      "label": "CORE-1 intent result release",
+      "reviewedSource": "89aaff209217bc86e49c866c57d83a2f6bd6590a",
+      "predecessor": "2c7a73b7c1fd6e46b95afc8965bd1d75f7a6f04a",
+      "integratedCommit": "c7f5e35b60289dcd24799ba2361b47d523c0f5cb",
+      "integratedTree": "e043ea8ddbcb7dee90d5f478c6fd57532ce3eabe",
+      "files": [
+        {
+          "path": "apps/control/intents/journal.mjs",
+          "acceptedBlob": "75ddf55a315622fabfd8e6115122c5f542dc76ec",
+          "integratedBlob": "75ddf55a315622fabfd8e6115122c5f542dc76ec"
+        },
+        {
+          "path": "apps/control/intents/mount.mjs",
+          "acceptedBlob": "dcf27db1589dbc0f803b919e1ed593fdb0a700c8",
+          "integratedBlob": "dcf27db1589dbc0f803b919e1ed593fdb0a700c8"
+        },
+        {
+          "path": "apps/control/intents/faults.mjs",
+          "acceptedBlob": "1acc38877f748e27bd7d064e7c6cbf9e42926176",
+          "integratedBlob": "1acc38877f748e27bd7d064e7c6cbf9e42926176"
+        },
+        {
+          "path": "apps/control/intents/result-release.mjs",
+          "acceptedBlob": "5a821974905ef996d3a2686b8d3dce46c462454a",
+          "integratedBlob": "5a821974905ef996d3a2686b8d3dce46c462454a"
+        },
+        {
+          "path": "apps/control/intents/test/document-preparer.test.mjs",
+          "acceptedBlob": "373cfccdf59ba98ef9c97cab9b463aff0ee306cd",
+          "integratedBlob": "373cfccdf59ba98ef9c97cab9b463aff0ee306cd"
+        },
+        {
+          "path": "apps/control/intents/test/fixture.mjs",
+          "acceptedBlob": "0fc6befc6df6dc92925f32be92646d7bd430e0fe",
+          "integratedBlob": "0fc6befc6df6dc92925f32be92646d7bd430e0fe"
+        },
+        {
+          "path": "apps/control/intents/test/mount.test.mjs",
+          "acceptedBlob": "0883bd95926726e5d6cb04c0a69d49cded02d025",
+          "integratedBlob": "0883bd95926726e5d6cb04c0a69d49cded02d025"
+        },
+        {
+          "path": "apps/control/intents/test/result-release.test.mjs",
+          "acceptedBlob": "de34254dadcb2fde8589431808a7b15ccfff511b",
+          "integratedBlob": "de34254dadcb2fde8589431808a7b15ccfff511b"
+        },
+        {
+          "path": "apps/control/intents/test/schedule-preparer.test.mjs",
+          "acceptedBlob": "f945d74681d52d9a69740aab6f8f885effb3102f",
+          "integratedBlob": "f945d74681d52d9a69740aab6f8f885effb3102f"
+        },
+        {
+          "path": "apps/worker/conversation/intents/prepared.mjs",
+          "acceptedBlob": "3d46b32fb860d0ddf7d437811b392d5b4c82a5e9",
+          "integratedBlob": "3d46b32fb860d0ddf7d437811b392d5b4c82a5e9"
+        },
+        {
+          "path": "apps/worker/conversation/intents/runtime.mjs",
+          "acceptedBlob": "3d0bc62be57239a7baae56bd6e87a381957fdf82",
+          "integratedBlob": "3d0bc62be57239a7baae56bd6e87a381957fdf82"
+        },
+        {
+          "path": "apps/worker/conversation/intents/server.mjs",
+          "acceptedBlob": "f7a99bd5f482fb096af9b2e9940bb31406825ccd",
+          "integratedBlob": "f7a99bd5f482fb096af9b2e9940bb31406825ccd"
+        }
+      ]
+    }
+  ],
+  "sourceHead": "c7f5e35b60289dcd24799ba2361b47d523c0f5cb",
+  "sourceTree": "e043ea8ddbcb7dee90d5f478c6fd57532ce3eabe",
+  "validation": {
+    "command": "node --max-old-space-size=128 --test --test-isolation=none --test-concurrency=1 --test-timeout=15000 --test-reporter=tap scripts/qualification/assembled-image/source-proof.test.mjs apps/control/retention/test/watermark-migration-source.test.mjs",
+    "node": "v24.19.0",
+    "platform": "Windows",
+    "primaryExit": 0,
+    "passed": 6,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "durationMs": 67.8448,
+    "classification": "5 built-in static source-proof checks plus 1 SQL-text assertion; no real database or runtime qualification",
+    "tapSha256": "bce8c57f44d129e64dff53f05709283676625147a05ef6a43205951dfb23212f",
+    "heapLimitMiB": 128,
+    "testFileIsolation": "none",
+    "testProcesses": 1,
+    "processPeak": null,
+    "preBatchMemory": {
+      "at": "2026-10-16T02:14:49.373Z",
+      "physicalFree": 11566657536,
+      "physicalTotal": 33632079872,
+      "probeRss": 35508224,
+      "commitAvailable": null
+    }
+  },
+  "changedProofRows": [],
+  "historicalCandidates": {
+    "f": "3215210633f64dcb4c8d98aa1c7e17af658c512511bc4f7bdf3df4f8a4085017",
+    "g": "b74243e64a2a6d031434315cd7e4699ecc151f6ba2ca13959c04c31a75edfcd6",
+    "h": "79a5f7fc5254c0152c0119264d653cdb5b561f27ded91d379569d00ba73a5c1e"
+  },
+  "holds": [
+    "retention behavior including c5ebb14f",
+    "memory CORE-5 successor260de18f",
+    "unreviewed preview0003",
+    "canonical intent authorizer and PG runtime",
+    "corrected L3/public export acceptance",
+    "model issuance implementation and runtime",
+    "compiler/browser/database/image/live qualification",
+    "seven historical runtime failures",
+    "three frozen-candidate selector failures"
+  ]
+}
