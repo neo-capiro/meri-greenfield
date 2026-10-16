@@ -1,0 +1,30 @@
+{
+  "synthetic": true,
+  "note": "Model controls mock canonical JSON/schema and artifact/native validator imports; execute real issuer/store code with fixed synthetic material and scripted ports. No live qualification.",
+  "base": "eca78d458acb46cbfd54a94cf870841d999ef6b1",
+  "restorations": [],
+  "runs": [
+    {
+      "stdout": "model-issuer-after.stdout.txt",
+      "elapsedMs": 226.5883,
+      "negative": false,
+      "name": "model-issuer-after",
+      "sampledPeakWorkingSetBytes": 46886912,
+      "timedOut": false,
+      "stderr": "model-issuer-after.stderr.txt",
+      "exitCode": 0,
+      "arguments": [
+        "--max-old-space-size=128",
+        "--experimental-test-module-mocks",
+        "--import",
+        "./docs/qualification/candidates/dot-budget-planner-20261016/model-grant-dependency-seams.mjs",
+        "--test",
+        "--test-isolation=none",
+        "--test-concurrency=1",
+        "apps/runtime/test/model-grant-issuer.test.mjs",
+        "apps/runtime/test/model-grant-store.test.mjs",
+        "apps/runtime/test/run-model-grant.test.mjs"
+      ]
+    }
+  ]
+}

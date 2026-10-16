@@ -1,0 +1,29 @@
+{
+  "runs": [
+    {
+      "sampledPeakWorkingSetBytes": 45297664,
+      "arguments": [
+        "--max-old-space-size=128",
+        "--experimental-test-module-mocks",
+        "--import",
+        "./docs/qualification/candidates/dot-budget-planner-20261016/dependency-seams.mjs",
+        "--test",
+        "--test-isolation=none",
+        "--test-concurrency=1",
+        "apps/control/intents/test/postgres-journal.test.mjs",
+        "apps/control/intents/test/migration-source.test.mjs"
+      ],
+      "exitCode": 0,
+      "timedOut": false,
+      "name": "intent-ddl-after",
+      "elapsedMs": 183.1142,
+      "negative": false,
+      "stderr": "intent-ddl-after.stderr.txt",
+      "stdout": "intent-ddl-after.stdout.txt"
+    }
+  ],
+  "restorations": [],
+  "base": "eca78d458acb46cbfd54a94cf870841d999ef6b1",
+  "synthetic": true,
+  "note": "memory/intent controls mock hash/schema/preparer dependency seams; remaining controls use built-ins and scripted ports. No live qualification."
+}

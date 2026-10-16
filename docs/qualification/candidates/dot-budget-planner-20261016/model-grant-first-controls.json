@@ -1,0 +1,31 @@
+{
+  "restorations": [],
+  "runs": [
+    {
+      "elapsedMs": 224.83,
+      "sampledPeakWorkingSetBytes": 50077696,
+      "arguments": [
+        "--max-old-space-size=128",
+        "--experimental-test-module-mocks",
+        "--import",
+        "./docs/qualification/candidates/dot-budget-planner-20261016/model-grant-dependency-seams.mjs",
+        "--test",
+        "--test-isolation=none",
+        "--test-concurrency=1",
+        "apps/runtime/test/model-grant-issuer.test.mjs",
+        "apps/runtime/test/model-grant-store.test.mjs",
+        "apps/runtime/test/run-model-grant.test.mjs"
+      ],
+      "stdout": "model-issuer-first.stdout.txt",
+      "name": "model-issuer-after",
+      "negative": false,
+      "exitCode": 0,
+      "stderr": null,
+      "timedOut": false
+    }
+  ],
+  "base": "eca78d458acb46cbfd54a94cf870841d999ef6b1",
+  "note": "memory/intent controls mock hash/schema/preparer dependency seams; remaining controls use built-ins and scripted ports. No live qualification.",
+  "synthetic": true,
+  "captureNote": "Initial passing28-case stdout retained separately. Original stderr overwritten by final run; only experimental module-mocking warnings were observed. No failure outcome inferred."
+}
