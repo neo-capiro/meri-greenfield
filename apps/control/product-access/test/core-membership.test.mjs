@@ -19,7 +19,7 @@ test('construction is inert; fixed request uses the current native bearer and or
  const f=fixture();assert.equal(f.state.requests.length,0);assert.equal(f.state.identities.length,0);
  const result=await f.gate.admit({credential:'A'}),call=f.state.requests[0];
  assert.equal(call.url,ORIGIN+PATH);assert.equal(call.options.method,'POST');assert.equal(call.options.body,'{}');
- assert.equal(call.options.headers.authorization,'Bearer A');assert.equal(call.options.headers['x-meri-deadline-at'],String(NOW+100));
+ assert.equal(call.options.headers.authorization,'Bearer A');assert.equal(call.options.headers['accept-encoding'],'identity');assert.equal(call.options.headers['x-meri-deadline-at'],String(NOW+100));
  assert.equal(call.options.redirect,'error');assert.equal(call.options.credentials,'omit');assert.equal(call.options.cache,'no-store');
  assert.deepEqual(result.principal,{tenantId:'tenant-A',actorId:'actor-A',role:'standard_user',permissions:[],clientIds:[CLIENT],membershipRevision:'m1'});
  assert.equal(result.expiresAtMs,NOW+100);assert.equal(Object.isFrozen(result.principal),true);

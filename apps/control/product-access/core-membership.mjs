@@ -31,7 +31,7 @@ export function createCoreMembershipGate(configuration){
    life=createOperationLifetime({deadlineMs,now,signal:call.signal,errorFactory:code=>new ProductError(code)});
    response=await life.run(signal=>{
     const pending=Promise.resolve(fetchImpl(origin+path,{method:'POST',redirect:'error',credentials:'omit',cache:'no-store',
-     headers:{authorization:'Bearer '+call.credential,'content-type':'application/json',accept:'application/json','x-meri-deadline-at':String(deadlineMs)},body:'{}',signal}));
+     headers:{authorization:'Bearer '+call.credential,'content-type':'application/json',accept:'application/json','accept-encoding':'identity','x-meri-deadline-at':String(deadlineMs)},body:'{}',signal}));
     // A raced-out fetch may settle later. It never releases a fact and its borrowed body is cancelled.
     pending.then(r=>{if(life.signal.aborted)cancel(r);},()=>{});return pending;
    });life.check();
