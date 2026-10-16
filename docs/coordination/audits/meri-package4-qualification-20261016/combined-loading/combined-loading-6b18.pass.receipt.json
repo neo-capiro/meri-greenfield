@@ -1,0 +1,29 @@
+{
+  "source": "6b18e6c0081614802bf0a9297a8cf3ca3b8f85aa",
+  "argv": [
+    "C:/Program Files/nodejs/node.exe",
+    "--max-old-space-size=128",
+    "--import",
+    "./audit-evidence/dependency-reuse.mjs",
+    "--test",
+    "--test-isolation=none",
+    "--test-concurrency=1",
+    "--test-timeout=15000",
+    "--test-reporter=tap",
+    "audit-evidence/combined-loading.test.mjs"
+  ],
+  "pid": 33112,
+  "startedAt": "2026-10-16T04:22:13.859469+00:00",
+  "finishedAt": "2026-10-16T04:22:15.526509+00:00",
+  "wallMs": 1656.0,
+  "primaryExit": 0,
+  "cleanupExit": 0,
+  "ownedProcessRemains": false,
+  "timedOut": false,
+  "hardWallSeconds": 60,
+  "heapMiB": 128,
+  "availableCommitBefore": 2685779968,
+  "availablePhysicalBefore": 11662614528,
+  "peakMemory": "not measured",
+  "classification": "Actual integrated module loading and inert composition with real canonical validators and third-party packages reused read-only; synthetic refusing SQL/store inputs; no socket/service/material/provider/DB or child test processes"
+}

@@ -1,0 +1,35 @@
+{
+  "project": "apps/control/conversations",
+  "source": "14f0bc2e5716af7c00925d13d3365b26182c9e56",
+  "argv": [
+    "C:/Program Files/nodejs/node.exe",
+    "--max-old-space-size=768",
+    "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-4\\meri-greenfield\\apps\\runtime\\node_modules\\typescript\\bin\\tsc",
+    "--noEmit",
+    "-p",
+    "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-8\\meri-qualification\\audit-evidence\\integrated-types\\tsconfig.conversations.json",
+    "--pretty",
+    "false",
+    "--extendedDiagnostics"
+  ],
+  "originalTsconfigSha256": "93531e1fe0cd2ff57b0137e2a624a0122a025ae38d90d7b46dc8a6468407510f",
+  "dependencyOverlaySha256": "ea97908659f624cad68ff0482df2a3c8beac96892b8bc20e25a807b9de2dcf82",
+  "pid": 39756,
+  "startedAt": "2026-10-16T03:56:56.188197+00:00",
+  "finishedAt": "2026-10-16T03:56:58.821754+00:00",
+  "wallMs": 2625.0,
+  "primaryExit": 2,
+  "cleanupExit": 0,
+  "ownedProcessRemains": false,
+  "timedOut": false,
+  "pressureStop": false,
+  "memoryBefore": {
+    "at": "2026-10-16T03:56:56.186197+00:00",
+    "availableCommitBytes": 2823651328,
+    "availablePhysicalBytes": 11842719744
+  },
+  "minimumAvailableCommitBytes": 2478616576,
+  "peakProcessRss": "not measured",
+  "stdoutSha256": "e49053feeaa54cc15db7592c30984b8fb0a5970ba02202a62c2f8278fc40540e",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

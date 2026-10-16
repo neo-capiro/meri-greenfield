@@ -1,0 +1,39 @@
+{
+  "source": "6b18e6c0081614802bf0a9297a8cf3ca3b8f85aa",
+  "compilerVersion": "5.9.3",
+  "classification": "Real TypeScript compiler over original complete project inputs/strict options; task-local dependency-resolution overlay only, read-only exact-lock third-party dependencies and integrated product public exports. No suppression, emit, install, services/provider/DB/browser or native child. Canonical unmodified CLI with materialized local dependencies is not claimed. Junction creation was denied; not retried or escalated.",
+  "verifiedEqualDependencyLocks": [
+    {
+      "path": "package-lock.json",
+      "sha256": "4a18a2e5eeb672758df381eba55653da2dc0d9e9ab26e3f6f7943ad19120753c"
+    },
+    {
+      "path": "apps/runtime/package-lock.json",
+      "sha256": "3e5cb0487709a2ad1cfc9ab1762cf6a496fe816127cdb0e89639b19d5de809df"
+    },
+    {
+      "path": "apps/control/conversations/package-lock.json",
+      "sha256": "3225d67c562631322a1ca6a6ef74f8f246975cdad2120e107acd9840670e98e2"
+    },
+    {
+      "path": "apps/worker/conversation/package-lock.json",
+      "sha256": "7a85d62634bb74c0cb861c91f24d73478d0f1ed8d45590055de969a723d1dcd8"
+    },
+    {
+      "path": "packages/ui-stream/package-lock.json",
+      "sha256": "520adf386172f23b99204aa0802a8b61f64381d3c8e9207e8e8f8683760d0d0d"
+    }
+  ],
+  "stages": [
+    {
+      "project": "apps/control/conversations",
+      "status": "HELD_BEFORE_LAUNCH",
+      "reason": "Need1GiB compiler reserve plus1GiB remaining commit",
+      "memoryBefore": {
+        "at": "2026-10-16T04:14:25.131632+00:00",
+        "availableCommitBytes": 2049671168,
+        "availablePhysicalBytes": 11220320256
+      }
+    }
+  ]
+}

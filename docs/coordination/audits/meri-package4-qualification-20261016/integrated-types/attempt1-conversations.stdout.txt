@@ -1,0 +1,71 @@
+lifecycle/workflow.ts(2,77): error TS2307: Cannot find module '@temporalio/workflow' or its corresponding type declarations.
+lifecycle/workflow.ts(16,31): error TS7006: Parameter 'v' implicitly has an 'any' type.
+lifecycle/workflow.ts(17,32): error TS7006: Parameter 'v' implicitly has an 'any' type.
+lifecycle/workflow.ts(19,87): error TS18046: 'result' is of type 'unknown'.
+lifecycle/workflow.ts(23,10): error TS2322: Type '"completed" | "failed" | "cancelled" | "executing" | "continued"' is not assignable to type 'Terminal | "continued"'.
+  Type '"executing"' is not assignable to type 'Terminal | "continued"'.
+recovery-workflow.ts(4,49): error TS2307: Cannot find module '@temporalio/workflow' or its corresponding type declarations.
+scheduled-dispatch-workflow.ts(6,65): error TS2307: Cannot find module '@temporalio/workflow' or its corresponding type declarations.
+workflow.ts(2,31): error TS2307: Cannot find module '@temporalio/workflow' or its corresponding type declarations.
+../../worker/conversation/browser/options.mjs(21,19): error TS2307: Cannot find module '@anthropic-ai/claude-agent-sdk' or its corresponding type declarations.
+../../worker/conversation/browser/options.mjs(26,19): error TS2307: Cannot find module '@anthropic-ai/claude-agent-sdk' or its corresponding type declarations.
+../../worker/conversation/browser/options.mjs(26,88): error TS2307: Cannot find module '@anthropic-ai/claude-agent-sdk' or its corresponding type declarations.
+../../worker/conversation/browser/options.mjs(27,21): error TS2307: Cannot find module '@anthropic-ai/claude-agent-sdk' or its corresponding type declarations.
+../../worker/conversation/browser/options.mjs(29,15): error TS7006: Parameter 'name' implicitly has an 'any' type.
+../../worker/conversation/browser/options.mjs(29,20): error TS7006: Parameter 'input' implicitly has an 'any' type.
+../../worker/conversation/browser/options.mjs(29,26): error TS7006: Parameter 'options' implicitly has an 'any' type.
+../../worker/conversation/capabilities/bash-sandbox.mjs(100,21): error TS2307: Cannot find module '@anthropic-ai/claude-agent-sdk' or its corresponding type declarations.
+../../worker/conversation/capabilities/fragment.mjs(17,22): error TS2307: Cannot find module '@anthropic-ai/claude-agent-sdk' or its corresponding type declarations.
+../../worker/conversation/capabilities/fragment.mjs(18,22): error TS2307: Cannot find module '@anthropic-ai/claude-agent-sdk' or its corresponding type declarations.
+../../worker/conversation/capabilities/fragment.mjs(19,177): error TS2307: Cannot find module '@anthropic-ai/claude-agent-sdk' or its corresponding type declarations.
+../../worker/conversation/capabilities/fragment.mjs(19,244): error TS2307: Cannot find module '@anthropic-ai/claude-agent-sdk' or its corresponding type declarations.
+../../worker/conversation/capabilities/fragment.mjs(19,434): error TS2307: Cannot find module '@anthropic-ai/claude-agent-sdk' or its corresponding type declarations.
+../../worker/conversation/capabilities/fragment.mjs(61,15): error TS7006: Parameter 'name' implicitly has an 'any' type.
+../../worker/conversation/capabilities/fragment.mjs(61,20): error TS7006: Parameter 'input' implicitly has an 'any' type.
+../../worker/conversation/capabilities/fragment.mjs(61,26): error TS7006: Parameter 'options' implicitly has an 'any' type.
+../../worker/conversation/capabilities/fragment.mjs(62,21): error TS2307: Cannot find module '@anthropic-ai/claude-agent-sdk' or its corresponding type declarations.
+../../worker/conversation/capabilities/skill-plugin.mjs(46,21): error TS2307: Cannot find module '@anthropic-ai/claude-agent-sdk' or its corresponding type declarations.
+../../worker/conversation/capabilities/workspace-tools.mjs(35,21): error TS2307: Cannot find module '@anthropic-ai/claude-agent-sdk' or its corresponding type declarations.
+../../worker/conversation/continuation/options.mjs(8,27): error TS2307: Cannot find module 'ajv-formats' or its corresponding type declarations.
+../../worker/conversation/continuation/options.mjs(16,19): error TS2307: Cannot find module 'ajv' or its corresponding type declarations.
+../../worker/conversation/continuation/options.mjs(25,74): error TS2307: Cannot find module '@anthropic-ai/claude-agent-sdk' or its corresponding type declarations.
+../../worker/conversation/continuation/options.mjs(53,3): error TS2322: Type 'Readonly<{ forkSession?: boolean; sessionId?: any; resumeSessionAt?: any; resume: any; }>' is not assignable to type 'Pick<any, "resume" | "resumeSessionAt" | "sessionId" | "forkSession">'.
+  Property 'resumeSessionAt' is optional in type 'Readonly<{ forkSession?: boolean; sessionId?: any; resumeSessionAt?: any; resume: any; }>' but required in type 'Pick<any, "resume" | "resumeSessionAt" | "sessionId" | "forkSession">'.
+../../worker/conversation/intents/options.mjs(10,86): error TS2307: Cannot find module '@anthropic-ai/claude-agent-sdk' or its corresponding type declarations.
+../../worker/conversation/intents/options.mjs(10,158): error TS2307: Cannot find module '@anthropic-ai/claude-agent-sdk' or its corresponding type declarations.
+../../worker/conversation/options.mjs(19,290): error TS2307: Cannot find module '@anthropic-ai/claude-agent-sdk' or its corresponding type declarations.
+../../worker/conversation/options.mjs(53,27): error TS2307: Cannot find module '@anthropic-ai/claude-agent-sdk' or its corresponding type declarations.
+../../worker/conversation/reads/options.mjs(10,86): error TS2307: Cannot find module '@anthropic-ai/claude-agent-sdk' or its corresponding type declarations.
+../../worker/conversation/reads/options.mjs(10,158): error TS2307: Cannot find module '@anthropic-ai/claude-agent-sdk' or its corresponding type declarations.
+../../worker/conversation/reads/schema.mjs(12,17): error TS2307: Cannot find module 'zod' or its corresponding type declarations.
+../../worker/conversation/reads/schema.mjs(75,65): error TS7006: Parameter 'type' implicitly has an 'any' type.
+../../worker/conversation/reads/schema.mjs(77,62): error TS7006: Parameter 'type' implicitly has an 'any' type.
+../../worker/conversation/reads/tools.mjs(5,20): error TS2307: Cannot find module '@anthropic-ai/claude-agent-sdk' or its corresponding type declarations.
+../../worker/conversation/reads/tools.mjs(6,17): error TS2307: Cannot find module 'zod' or its corresponding type declarations.
+Files:                         352
+Lines of Library:            51766
+Lines of Definitions:        76603
+Lines of TypeScript:            89
+Lines of JavaScript:          9052
+Lines of JSON:               12501
+Lines of Other:                  0
+Identifiers:                163658
+Symbols:                    138466
+Types:                       25795
+Instantiations:              16139
+Memory used:               217666K
+Assignability cache size:     2838
+Identity cache size:            75
+Subtype cache size:           1126
+Strict subtype cache size:    2474
+I/O Read time:               0.40s
+Parse time:                  0.29s
+ResolveModule time:          0.21s
+ResolveTypeReference time:   0.00s
+ResolveLibrary time:         0.01s
+Program time:                1.00s
+Bind time:                   0.19s
+Check time:                  0.86s
+printTime time:              0.00s
+Emit time:                   0.00s
+Total time:                  2.05s

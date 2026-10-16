@@ -1,0 +1,68 @@
+[
+  {
+    "name": "@anthropic-ai/claude-agent-sdk",
+    "version": "0.3.295",
+    "declaration": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-4\\meri-greenfield\\apps\\worker\\conversation\\node_modules\\@anthropic-ai\\claude-agent-sdk\\sdk.d.ts",
+    "owner": "apps/worker/conversation"
+  },
+  {
+    "name": "@opentelemetry/api",
+    "version": "1.9.1",
+    "declaration": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-4\\meri-greenfield\\apps\\runtime\\node_modules\\@opentelemetry\\api\\build\\src\\index.d.ts",
+    "owner": "apps/runtime"
+  },
+  {
+    "name": "@opentelemetry/exporter-metrics-otlp-http",
+    "version": "0.223.0",
+    "declaration": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-4\\meri-greenfield\\apps\\runtime\\node_modules\\@opentelemetry\\exporter-metrics-otlp-http\\build\\src\\index.d.ts",
+    "owner": "apps/runtime"
+  },
+  {
+    "name": "@opentelemetry/exporter-trace-otlp-http",
+    "version": "0.223.0",
+    "declaration": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-4\\meri-greenfield\\apps\\runtime\\node_modules\\@opentelemetry\\exporter-trace-otlp-http\\build\\src\\index.d.ts",
+    "owner": "apps/runtime"
+  },
+  {
+    "name": "@opentelemetry/sdk-node",
+    "version": "0.223.0",
+    "declaration": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-4\\meri-greenfield\\apps\\runtime\\node_modules\\@opentelemetry\\sdk-node\\build\\src\\index.d.ts",
+    "owner": "apps/runtime"
+  },
+  {
+    "name": "@temporalio/client",
+    "version": "1.24.0",
+    "declaration": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-4\\meri-greenfield\\apps\\runtime\\node_modules\\@temporalio\\client\\lib\\index.d.ts",
+    "owner": "apps/runtime"
+  },
+  {
+    "name": "@temporalio/worker",
+    "version": "1.24.0",
+    "declaration": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-4\\meri-greenfield\\apps\\runtime\\node_modules\\@temporalio\\worker\\lib\\index.d.ts",
+    "owner": "apps/runtime"
+  },
+  {
+    "name": "@temporalio/workflow",
+    "version": "1.24.0",
+    "declaration": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-4\\meri-greenfield\\apps\\control\\conversations\\node_modules\\@temporalio\\workflow\\lib\\index.d.ts",
+    "owner": "apps/control/conversations"
+  },
+  {
+    "name": "ajv",
+    "version": "8.20.0",
+    "declaration": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-4\\meri-greenfield\\packages\\contracts\\node_modules\\ajv\\dist\\ajv.d.ts",
+    "owner": "packages/contracts"
+  },
+  {
+    "name": "ajv-formats",
+    "version": "3.0.1",
+    "declaration": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-4\\meri-greenfield\\packages\\contracts\\node_modules\\ajv-formats\\dist\\index.d.ts",
+    "owner": "packages/contracts"
+  },
+  {
+    "name": "zod",
+    "version": "4.6.7",
+    "declaration": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-4\\meri-greenfield\\apps\\worker\\conversation\\node_modules\\zod\\index.d.cts",
+    "owner": "apps/worker/conversation"
+  }
+]

@@ -1,5 +1,5 @@
 {
-  "source": "34f938a560339104ecc877e0f94a5f979f832eb2",
+  "source": "f32c9fa750da6c4df31930d97b041008289c2d8b",
   "argv": [
     "C:/Program Files/nodejs/node.exe",
     "--max-old-space-size=128",
@@ -12,18 +12,18 @@
     "--test-reporter=tap",
     "audit-evidence/combined-loading.test.mjs"
   ],
-  "pid": 33088,
-  "startedAt": "2026-10-16T03:45:10.607182+00:00",
-  "finishedAt": "2026-10-16T03:45:12.146763+00:00",
-  "wallMs": 1531.0,
+  "pid": 38984,
+  "startedAt": "2026-10-16T04:36:58.708704+00:00",
+  "finishedAt": "2026-10-16T04:37:00.491120+00:00",
+  "wallMs": 1782.0,
   "primaryExit": 0,
   "cleanupExit": 0,
   "ownedProcessRemains": false,
   "timedOut": false,
   "hardWallSeconds": 60,
   "heapMiB": 128,
-  "availableCommitBefore": 2860552192,
-  "availablePhysicalBefore": 11813842944,
+  "availableCommitBefore": 2840530944,
+  "availablePhysicalBefore": 11274227712,
   "peakMemory": "not measured",
   "classification": "Actual integrated module loading and inert composition with real canonical validators and third-party packages reused read-only; synthetic refusing SQL/store inputs; no socket/service/material/provider/DB or child test processes"
 }

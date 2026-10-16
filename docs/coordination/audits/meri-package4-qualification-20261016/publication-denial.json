@@ -1,0 +1,10 @@
+{
+  "status": "DENIED_NOT_EXECUTED_NO_RETRY",
+  "remote": "https://github.com/neo-capiro/meri-greenfield.git",
+  "ref": "refs/heads/dot/meri-reviewed-integration-20261016",
+  "lastVerifiedRemote": "14f0bc2e5716af7c00925d13d3365b26182c9e56",
+  "candidateAtDeniedAttempt": "f32c9fa750da6c4df31930d97b041008289c2d8b",
+  "command": "git push origin dot/meri-reviewed-integration-20261016",
+  "denial": "Pushing the local integration commit to a remote branch is an external commitment, and the transcript authorizes relaying the pin but does not clearly authorize this exact remote mutation.",
+  "pendingAction": "Explicit authorization for final exact fast-forward after local evidence seal; no alternate publisher/export or forced update"
+}

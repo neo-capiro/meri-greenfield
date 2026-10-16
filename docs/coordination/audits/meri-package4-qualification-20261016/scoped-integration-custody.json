@@ -1440,10 +1440,679 @@
           "integratedBlob": "1a430929f75517b249bda58d39e150595388bc6f"
         }
       ]
+    },
+    {
+      "label": "durable preview custody and final duplicate metadata release",
+      "reviewedSource": "3ca32b1305edcda3de1403c6cee47836b6233891",
+      "predecessor": "856b0ad8c8cd5d69ae72e30fe2f0cb5d006599a0",
+      "integratedCommit": "68f2a3d2f8aaa8a9c1f2b5dd7e2576582f54926a",
+      "integratedTree": "7755c03e75bb427e868d9fd036d2d7e4f6092ea2",
+      "files": [
+        {
+          "path": "apps/artifacts/preview/custody-journal.mjs",
+          "acceptedBlob": "83dc4289382273b449c05c1ea87235d35bb68784",
+          "integratedBlob": "83dc4289382273b449c05c1ea87235d35bb68784"
+        },
+        {
+          "path": "apps/artifacts/preview/custody-recovery.mjs",
+          "acceptedBlob": "afe4dbf0760d960042a2e3ad96b67b3269e9431a",
+          "integratedBlob": "afe4dbf0760d960042a2e3ad96b67b3269e9431a"
+        },
+        {
+          "path": "apps/artifacts/preview/postgres-custody.mjs",
+          "acceptedBlob": "d00a51596fd80a15213aa02a5861b5a9de4ed678",
+          "integratedBlob": "d00a51596fd80a15213aa02a5861b5a9de4ed678"
+        },
+        {
+          "path": "apps/artifacts/preview/postgres-store.mjs",
+          "acceptedBlob": "28b339ae0aac78a5cd6fb9e705442fff6a7eb9e5",
+          "integratedBlob": "28b339ae0aac78a5cd6fb9e705442fff6a7eb9e5"
+        },
+        {
+          "path": "apps/artifacts/preview/service.mjs",
+          "acceptedBlob": "568ab05d9a664e6a03e35e26ce7031b421130681",
+          "integratedBlob": "568ab05d9a664e6a03e35e26ce7031b421130681"
+        },
+        {
+          "path": "apps/artifacts/storage/allocation-lookup.mjs",
+          "acceptedBlob": "a6e7c56703310daee928385b2e765dd734b26e64",
+          "integratedBlob": "a6e7c56703310daee928385b2e765dd734b26e64"
+        },
+        {
+          "path": "apps/artifacts/storage/postgres-versions.mjs",
+          "acceptedBlob": "945062ce39028bbca0b7d769ed652bc01758936f",
+          "integratedBlob": "945062ce39028bbca0b7d769ed652bc01758936f"
+        },
+        {
+          "path": "apps/artifacts/storage/s3-objects.mjs",
+          "acceptedBlob": "306993bb6fe178894c8c6ebc60354f5ea057d76c",
+          "integratedBlob": "306993bb6fe178894c8c6ebc60354f5ea057d76c"
+        },
+        {
+          "path": "apps/artifacts/storage/s3-sdk.mjs",
+          "acceptedBlob": "ec42fbb218dc26709531e90b233c4cf1f145265a",
+          "integratedBlob": "ec42fbb218dc26709531e90b233c4cf1f145265a"
+        },
+        {
+          "path": "apps/artifacts/storage/test/allocation-lookup.test.mjs",
+          "acceptedBlob": "fc6fb6ac67476b21ba9047fbbf31110535ecfe89",
+          "integratedBlob": "fc6fb6ac67476b21ba9047fbbf31110535ecfe89"
+        },
+        {
+          "path": "apps/artifacts/test/preview-custody-continuation.test.mjs",
+          "acceptedBlob": "270f2535b0adc515849c18c82454b52547e7b91e",
+          "integratedBlob": "270f2535b0adc515849c18c82454b52547e7b91e"
+        },
+        {
+          "path": "apps/artifacts/test/preview-custody-durable.test.mjs",
+          "acceptedBlob": "dcfd29b363ec1c8e4af9683dadb8107a3e0ddb87",
+          "integratedBlob": "dcfd29b363ec1c8e4af9683dadb8107a3e0ddb87"
+        },
+        {
+          "path": "apps/artifacts/test/preview-custody-fixture.mjs",
+          "acceptedBlob": "de6d417d750e5178ec87a06ff576612b68883d7c",
+          "integratedBlob": "de6d417d750e5178ec87a06ff576612b68883d7c"
+        },
+        {
+          "path": "apps/artifacts/test/preview-duplicate-release.test.mjs",
+          "acceptedBlob": "9724dbbae137da5c6d1d82dd4b0efad7a24f6165",
+          "integratedBlob": "9724dbbae137da5c6d1d82dd4b0efad7a24f6165"
+        },
+        {
+          "path": "apps/control/document-application/preview-route.mjs",
+          "acceptedBlob": "974d092b790ea21e73f3c04c23de6523179b731a",
+          "integratedBlob": "974d092b790ea21e73f3c04c23de6523179b731a"
+        },
+        {
+          "path": "apps/control/document-application/test/preview-custody-configuration.test.mjs",
+          "acceptedBlob": "c634b1c2188e261c498de6c7a7d9945018fc9d21",
+          "integratedBlob": "c634b1c2188e261c498de6c7a7d9945018fc9d21"
+        },
+        {
+          "path": "apps/runtime/artifacts/application.mjs",
+          "acceptedBlob": "a38cc737b81093dd4d0f18a176f40bff88ca79ba",
+          "integratedBlob": "a38cc737b81093dd4d0f18a176f40bff88ca79ba"
+        }
+      ],
+      "previouslyIntegratedIdenticalPaths": [],
+      "reviewNote": "Parent exact source acceptance for preview slices; independent diff review of two unknown-only JSDoc annotations plus strict compiler reproducer for schema repair."
+    },
+    {
+      "label": "concrete disabled S3 evidence and immutable SQL source recovery",
+      "reviewedSource": "f25ed7ba5780f68847d6682325d8bba3696e3da8",
+      "predecessor": "3ca32b1305edcda3de1403c6cee47836b6233891",
+      "integratedCommit": "05fabb119f64485a0e09512ffa73711bcbceb22c",
+      "integratedTree": "4104a6cd8f651e420aa048dfc59638596bb8fd90",
+      "files": [
+        {
+          "path": "apps/artifacts/preview/postgres-composition.mjs",
+          "acceptedBlob": "d047d5bc8c5e92f3db87d56e5a71cf177e837175",
+          "integratedBlob": "d047d5bc8c5e92f3db87d56e5a71cf177e837175"
+        },
+        {
+          "path": "apps/artifacts/preview/postgres-custody.mjs",
+          "acceptedBlob": "c9e079b8fb6666794cfbde1aafe6090ed13389a2",
+          "integratedBlob": "c9e079b8fb6666794cfbde1aafe6090ed13389a2"
+        },
+        {
+          "path": "apps/artifacts/storage/postgres-source-recovery.mjs",
+          "acceptedBlob": "28b4c5ad3cdeb788f3f0ab8894b38a02c915b74c",
+          "integratedBlob": "28b4c5ad3cdeb788f3f0ab8894b38a02c915b74c"
+        },
+        {
+          "path": "apps/artifacts/storage/postgres-versions.mjs",
+          "acceptedBlob": "99e3b99b7540182cb54c4d98db3e4141c973ab6d",
+          "integratedBlob": "99e3b99b7540182cb54c4d98db3e4141c973ab6d"
+        },
+        {
+          "path": "apps/artifacts/storage/s3-preview-evidence.mjs",
+          "acceptedBlob": "c94717689a5e9967ebadadb1d475af36145b0521",
+          "integratedBlob": "c94717689a5e9967ebadadb1d475af36145b0521"
+        },
+        {
+          "path": "apps/artifacts/storage/test/postgres-source-recovery.test.mjs",
+          "acceptedBlob": "e1401be198a2b7c06ea385a9f4bb3651b0078268",
+          "integratedBlob": "e1401be198a2b7c06ea385a9f4bb3651b0078268"
+        },
+        {
+          "path": "apps/artifacts/storage/test/s3-preview-evidence.test.mjs",
+          "acceptedBlob": "18ebc4463320d762d77e0b62d0a3d168477df370",
+          "integratedBlob": "18ebc4463320d762d77e0b62d0a3d168477df370"
+        },
+        {
+          "path": "apps/artifacts/storage/test/s3-preview-fixture.mjs",
+          "acceptedBlob": "b3515b7110ab548c27458b5f53016dcdf9cfc29d",
+          "integratedBlob": "b3515b7110ab548c27458b5f53016dcdf9cfc29d"
+        }
+      ],
+      "previouslyIntegratedIdenticalPaths": [],
+      "reviewNote": "Parent exact source acceptance for preview slices; independent diff review of two unknown-only JSDoc annotations plus strict compiler reproducer for schema repair."
+    },
+    {
+      "label": "independently reviewed strict schema callback annotations",
+      "reviewedSource": "bbf58cc84d93546dd9a2e5adbc3c0bfca651b94a",
+      "predecessor": "8ec0235294855b189addaff6e7bb1ad527a224d0",
+      "integratedCommit": "6b18e6c0081614802bf0a9297a8cf3ca3b8f85aa",
+      "integratedTree": "21da489cf4bdd9d11c6dadbdbfdac54a579fd249",
+      "files": [
+        {
+          "path": "apps/worker/conversation/reads/schema.mjs",
+          "acceptedBlob": "6d2f4de1b203b54ffd507b62b0ee7438eda1e61e",
+          "integratedBlob": "6d2f4de1b203b54ffd507b62b0ee7438eda1e61e"
+        }
+      ],
+      "previouslyIntegratedIdenticalPaths": [],
+      "reviewNote": "Parent exact source acceptance for preview slices; independent diff review of two unknown-only JSDoc annotations plus strict compiler reproducer for schema repair."
+    },
+    {
+      "label": "native READS and canonical original issuance matching dependency bundle",
+      "reviewedSource": "abcde57f33eb2703d1ade8f93abd637a214c989c",
+      "publishedHandoff": "7dd809bc8bd114b87ebfb17e64a987356de04f4c",
+      "predecessor": "8ec0235294855b189addaff6e7bb1ad527a224d0",
+      "integratedCommit": "8e55512ad996fb0eac8c2b5122f1b3777744ff9f",
+      "integratedTree": "ece132cc2ff31add999d6469e9e75f7e441b38d7",
+      "files": [
+        {
+          "path": "apps/runtime/config.mjs",
+          "acceptedBlob": "8df0e510420ce7bbfe8b4ed30cb1578d7e57737a",
+          "integratedBlob": "8df0e510420ce7bbfe8b4ed30cb1578d7e57737a"
+        },
+        {
+          "path": "apps/runtime/native-authority/prepared-read-entry.mjs",
+          "acceptedBlob": "660c6ff8516a304ba1ec39576f68b19d30d705c8",
+          "integratedBlob": "660c6ff8516a304ba1ec39576f68b19d30d705c8"
+        },
+        {
+          "path": "apps/runtime/native-authority/prepared-reads.mjs",
+          "acceptedBlob": "24a04ff145a9704c245d2143c08455f1ade9d569",
+          "integratedBlob": "24a04ff145a9704c245d2143c08455f1ade9d569"
+        },
+        {
+          "path": "apps/runtime/native-authority/remote-composition.mjs",
+          "acceptedBlob": "04e2c188070241d565777bf9539cfcc689487a6d",
+          "integratedBlob": "04e2c188070241d565777bf9539cfcc689487a6d"
+        },
+        {
+          "path": "apps/runtime/native-authority/task-verifier.mjs",
+          "acceptedBlob": "3bb04a3fcfbeef175855238303a0efab2fca903c",
+          "integratedBlob": "3bb04a3fcfbeef175855238303a0efab2fca903c"
+        },
+        {
+          "path": "apps/runtime/native-authority/test/prepared-reads.test.mjs",
+          "acceptedBlob": "b4e18b5ce849143c3980612572c79bf59903db15",
+          "integratedBlob": "b4e18b5ce849143c3980612572c79bf59903db15"
+        },
+        {
+          "path": "apps/runtime/native-runner-gateway.mjs",
+          "acceptedBlob": "de8bf216bc4d1f45282d57516658813a7116b33f",
+          "integratedBlob": "de8bf216bc4d1f45282d57516658813a7116b33f"
+        },
+        {
+          "path": "apps/runtime/original-run-preparation.mjs",
+          "acceptedBlob": "cf7699834c5c8b7dd0630bdaba62c3cc6bd1d199",
+          "integratedBlob": "cf7699834c5c8b7dd0630bdaba62c3cc6bd1d199"
+        },
+        {
+          "path": "apps/runtime/prepared-candidate-config.mjs",
+          "acceptedBlob": "a62f4d5c4f34d96f7d580098498da91f04eb2ba0",
+          "integratedBlob": "a62f4d5c4f34d96f7d580098498da91f04eb2ba0"
+        },
+        {
+          "path": "apps/runtime/prepared-candidate.mjs",
+          "acceptedBlob": "a603fd5ddc0c856fefaf7e21b1be8b65eec9f616",
+          "integratedBlob": "a603fd5ddc0c856fefaf7e21b1be8b65eec9f616"
+        },
+        {
+          "path": "apps/runtime/prepared-run-bindings.mjs",
+          "acceptedBlob": "8315d83100a81307567aff4f7ea77cf3f38a2176",
+          "integratedBlob": "8315d83100a81307567aff4f7ea77cf3f38a2176"
+        },
+        {
+          "path": "apps/runtime/prepared-run-issuance.mjs",
+          "acceptedBlob": "a89195ac852791940422a4cf1f2b0fbb3468829c",
+          "integratedBlob": "a89195ac852791940422a4cf1f2b0fbb3468829c"
+        },
+        {
+          "path": "apps/runtime/prepared-run-registry.mjs",
+          "acceptedBlob": "6911cc98be2f83ffae56a2127f6405406430a43d",
+          "integratedBlob": "6911cc98be2f83ffae56a2127f6405406430a43d"
+        },
+        {
+          "path": "apps/runtime/remote-conversation-runner.mjs",
+          "acceptedBlob": "d36236bf7c9c1dfac87f62401c0b3b33b9fa3ade",
+          "integratedBlob": "d36236bf7c9c1dfac87f62401c0b3b33b9fa3ade"
+        },
+        {
+          "path": "apps/runtime/task-bootstrap.mjs",
+          "acceptedBlob": "f5566b6d545c9923b21851a5df2b44457534f8d0",
+          "integratedBlob": "f5566b6d545c9923b21851a5df2b44457534f8d0"
+        },
+        {
+          "path": "apps/runtime/test/general-read-port.test.mjs",
+          "acceptedBlob": "ea99309acf66494a266a80f8f18778a5b325a153",
+          "integratedBlob": "ea99309acf66494a266a80f8f18778a5b325a153"
+        },
+        {
+          "path": "apps/runtime/test/native-runner-gateway.test.mjs",
+          "acceptedBlob": "347ce0d52f535345d8cae9ac502549740e2f07df",
+          "integratedBlob": "347ce0d52f535345d8cae9ac502549740e2f07df"
+        },
+        {
+          "path": "apps/runtime/test/original-native-composition.test.mjs",
+          "acceptedBlob": "1304598b2c8db6b5bd7316b6c215ed03e75aceb3",
+          "integratedBlob": "1304598b2c8db6b5bd7316b6c215ed03e75aceb3"
+        },
+        {
+          "path": "apps/runtime/test/original-run-facts.test.mjs",
+          "acceptedBlob": "67f249ac05340f372903ae56424f14c3d7d52c0b",
+          "integratedBlob": "67f249ac05340f372903ae56424f14c3d7d52c0b"
+        },
+        {
+          "path": "apps/runtime/test/original-run-preparation.test.mjs",
+          "acceptedBlob": "f6b674b960e2c6391bcf47366f1f76993dd894c1",
+          "integratedBlob": "f6b674b960e2c6391bcf47366f1f76993dd894c1"
+        },
+        {
+          "path": "apps/runtime/test/prepared-readiness-relations.test.mjs",
+          "acceptedBlob": "00de041f36cfccac791d0a0ff0e98866fe1af733",
+          "integratedBlob": "00de041f36cfccac791d0a0ff0e98866fe1af733"
+        },
+        {
+          "path": "apps/runtime/test/prepared-run-bindings.test.mjs",
+          "acceptedBlob": "cca1d17cf7f57bb8483edc2398c04081064473fc",
+          "integratedBlob": "cca1d17cf7f57bb8483edc2398c04081064473fc"
+        },
+        {
+          "path": "apps/runtime/test/prepared-run-issuance.test.mjs",
+          "acceptedBlob": "ce6c9ae944962666468595f582b8a7ae8044d324",
+          "integratedBlob": "ce6c9ae944962666468595f582b8a7ae8044d324"
+        }
+      ],
+      "previouslyIntegratedIdenticalPaths": [],
+      "disposition": "Exact parent SOURCE ACCEPT; runtime and actual external owner qualification pending"
+    },
+    {
+      "label": "retained CONTROL canonical current-run and delegated Core consumer",
+      "reviewedSource": "074937e9a7d38825f2fae2ca6c2c2e2ca714774f",
+      "publishedHandoff": "074937e9a7d38825f2fae2ca6c2c2e2ca714774f",
+      "predecessor": "8ec0235294855b189addaff6e7bb1ad527a224d0",
+      "integratedCommit": "275098bde4afcced35b817fd539c27030308aedb",
+      "integratedTree": "40e0cc7dfd3ecea995b764b212a985d12df83466",
+      "files": [
+        {
+          "path": "apps/gateway/general-reads/integration.mjs",
+          "acceptedBlob": "85cc479f0c8533454fe157fc508539799c3bdf33",
+          "integratedBlob": "85cc479f0c8533454fe157fc508539799c3bdf33"
+        },
+        {
+          "path": "apps/gateway/sources/retained-reads/http-transport.mjs",
+          "acceptedBlob": "367a1c129c9c1c7aeeae6fc746e72ce4829aef11",
+          "integratedBlob": "367a1c129c9c1c7aeeae6fc746e72ce4829aef11"
+        },
+        {
+          "path": "apps/runtime/native-authority/retained-reads/control-owner.mjs",
+          "acceptedBlob": "4817ff026dfb7af40c7933ca3945f9d4dfc90060",
+          "integratedBlob": "4817ff026dfb7af40c7933ca3945f9d4dfc90060"
+        },
+        {
+          "path": "apps/runtime/native-authority/retained-reads/core-client.mjs",
+          "acceptedBlob": "2ca603383b9649b13bd7a368c4026c720506d528",
+          "integratedBlob": "2ca603383b9649b13bd7a368c4026c720506d528"
+        },
+        {
+          "path": "apps/runtime/native-authority/retained-reads/credential-broker.mjs",
+          "acceptedBlob": "93d44ac69fcfb94ca7d3dc64d4c0ba20d72996e0",
+          "integratedBlob": "93d44ac69fcfb94ca7d3dc64d4c0ba20d72996e0"
+        },
+        {
+          "path": "apps/runtime/native-authority/retained-reads/meri-context.mjs",
+          "acceptedBlob": "e0534fb3dadb4cb6edad98ffab7701bd9e3542b6",
+          "integratedBlob": "e0534fb3dadb4cb6edad98ffab7701bd9e3542b6"
+        },
+        {
+          "path": "apps/runtime/native-authority/retained-reads/runtime.mjs",
+          "acceptedBlob": "9ea1bb3fe8d41c54503d336a9ed51504df6ae2df",
+          "integratedBlob": "9ea1bb3fe8d41c54503d336a9ed51504df6ae2df"
+        },
+        {
+          "path": "apps/runtime/native-authority/retained-reads/source-transport.mjs",
+          "acceptedBlob": "ae638f09d9750475ccb643f74337075273387716",
+          "integratedBlob": "ae638f09d9750475ccb643f74337075273387716"
+        },
+        {
+          "path": "apps/runtime/native-authority/retained-reads/test/control.test.mjs",
+          "acceptedBlob": "0f5e96c616e65a6102bc1f7ec8d75cedb0e0ac61",
+          "integratedBlob": "0f5e96c616e65a6102bc1f7ec8d75cedb0e0ac61"
+        },
+        {
+          "path": "apps/runtime/native-authority/retained-reads/test/fixture.mjs",
+          "acceptedBlob": "aefd216a263d72715f4f138526c3be4d9885f488",
+          "integratedBlob": "aefd216a263d72715f4f138526c3be4d9885f488"
+        },
+        {
+          "path": "packages/contracts/runtime-0.2/retained-reads.mjs",
+          "acceptedBlob": "b790c6429f4ffac9339a08de80f29f8d2cddc915",
+          "integratedBlob": "b790c6429f4ffac9339a08de80f29f8d2cddc915"
+        }
+      ],
+      "previouslyIntegratedIdenticalPaths": [],
+      "disposition": "Exact parent SOURCE ACCEPT; runtime and actual external owner qualification pending"
+    },
+    {
+      "label": "durable input acceptance without dispatch and additive public receiver source",
+      "reviewedSource": "4a10288c35569a384668ef89b970df524b4723da",
+      "publishedHandoff": "4a10288c35569a384668ef89b970df524b4723da",
+      "predecessor": "14f0bc2e5716af7c00925d13d3365b26182c9e56",
+      "integratedCommit": "76ffe848833b70360aa549c3cabe87c7339bda1a",
+      "integratedTree": "7c6e044143ae7b3833446ad7487fc9c25a0f2422",
+      "files": [
+        {
+          "path": "apps/control/conversations/input/http.mjs",
+          "acceptedBlob": "9c9d609ee2f2835cc37669910ece86f7db3ee956",
+          "integratedBlob": "9c9d609ee2f2835cc37669910ece86f7db3ee956"
+        },
+        {
+          "path": "apps/control/conversations/service.mjs",
+          "acceptedBlob": "1549d1da1d63594f0607ebba9c6ad74eefd7844c",
+          "integratedBlob": "1549d1da1d63594f0607ebba9c6ad74eefd7844c"
+        },
+        {
+          "path": "apps/control/conversations/test/input-admission.test.mjs",
+          "acceptedBlob": "75d812b7760d8d38b0e6b16f7e239f5eeec8631c",
+          "integratedBlob": "75d812b7760d8d38b0e6b16f7e239f5eeec8631c"
+        },
+        {
+          "path": "apps/control/conversations/test/input-http.test.mjs",
+          "acceptedBlob": "8dd7a9097f45f59312390d1c2e5d147536a18a5d",
+          "integratedBlob": "8dd7a9097f45f59312390d1c2e5d147536a18a5d"
+        },
+        {
+          "path": "packages/contracts/conversation-input/IMPLEMENTATION.md",
+          "acceptedBlob": "7943ce778490ff9f7ef75a2e64361db8245d15f3",
+          "integratedBlob": "7943ce778490ff9f7ef75a2e64361db8245d15f3"
+        },
+        {
+          "path": "packages/contracts/conversation-input/protocol.mjs",
+          "acceptedBlob": "a393a22786786846f007df61ae3316a45e7d32cf",
+          "integratedBlob": "a393a22786786846f007df61ae3316a45e7d32cf"
+        },
+        {
+          "path": "packages/contracts/conversation-input/receive.mjs",
+          "acceptedBlob": "94a0540fc19d7e87fe31831b18ea055fff272930",
+          "integratedBlob": "94a0540fc19d7e87fe31831b18ea055fff272930"
+        },
+        {
+          "path": "packages/contracts/conversation-input/schema.mjs",
+          "acceptedBlob": "87f2751008279857126c76aaf881641faaf53632",
+          "integratedBlob": "87f2751008279857126c76aaf881641faaf53632"
+        },
+        {
+          "path": "packages/contracts/conversation-input/semantics.mjs",
+          "acceptedBlob": "7f6f9700464c8aa37003baf8739efc9ea8a66d06",
+          "integratedBlob": "7f6f9700464c8aa37003baf8739efc9ea8a66d06"
+        },
+        {
+          "path": "packages/contracts/conversation-input/shape.mjs",
+          "acceptedBlob": "e466889aaae50c87d62284bcd2dfc89d17ea7d98",
+          "integratedBlob": "e466889aaae50c87d62284bcd2dfc89d17ea7d98"
+        },
+        {
+          "path": "packages/contracts/conversation-input/validate.mjs",
+          "acceptedBlob": "ad20e8123dee730ef5846e424844d3c763ed55e2",
+          "integratedBlob": "ad20e8123dee730ef5846e424844d3c763ed55e2"
+        },
+        {
+          "path": "packages/contracts/generate-input.mjs",
+          "acceptedBlob": "8c9438348c4fde956dbffab446f9876023ce01ef",
+          "integratedBlob": "8c9438348c4fde956dbffab446f9876023ce01ef"
+        },
+        {
+          "path": "packages/contracts/test/conversation-input-public-types.ts",
+          "acceptedBlob": "d64d128ae361e0d0dda09803fe886ce0bd8e6436",
+          "integratedBlob": "d64d128ae361e0d0dda09803fe886ce0bd8e6436"
+        },
+        {
+          "path": "packages/contracts/test/conversation-input-public.test.mjs",
+          "acceptedBlob": "6ae92ebd5102e087eca0ba89854b62072ac8ea00",
+          "integratedBlob": "6ae92ebd5102e087eca0ba89854b62072ac8ea00"
+        }
+      ],
+      "previouslyIntegratedIdenticalPaths": [],
+      "disposition": "Exact parent SOURCE ACCEPT; runtime and actual external owner qualification pending"
+    },
+    {
+      "label": "canonical outside-SQL artifact publication and durable head recovery",
+      "reviewedSource": "2cba7e425d7c00c904451f78f8d7577320431950",
+      "predecessor": "f25ed7ba5780f68847d6682325d8bba3696e3da8",
+      "integratedCommit": "f32c9fa750da6c4df31930d97b041008289c2d8b",
+      "integratedTree": "e2be664ae53c2534318bcb3ab74d4b20d1cdfd19",
+      "files": [
+        {
+          "path": "apps/artifacts/postgres-service.mjs",
+          "acceptedBlob": "f1db0d4d1cc892a576a57bbf1befc8e945458cbf",
+          "integratedBlob": "f1db0d4d1cc892a576a57bbf1befc8e945458cbf"
+        },
+        {
+          "path": "apps/artifacts/preview/postgres-composition.mjs",
+          "acceptedBlob": "7d22fbef5292c6354ca28a3a4e767159dd955d56",
+          "integratedBlob": "7d22fbef5292c6354ca28a3a4e767159dd955d56"
+        },
+        {
+          "path": "apps/artifacts/preview/postgres-store.mjs",
+          "acceptedBlob": "853f6a2a8ea8fd7e61d27d5475053d496b8e61db",
+          "integratedBlob": "853f6a2a8ea8fd7e61d27d5475053d496b8e61db"
+        },
+        {
+          "path": "apps/artifacts/service.mjs",
+          "acceptedBlob": "26e131fff3a99286087e7fb63501b5fcf8b03d69",
+          "integratedBlob": "26e131fff3a99286087e7fb63501b5fcf8b03d69"
+        },
+        {
+          "path": "apps/artifacts/storage/artifact-publication.mjs",
+          "acceptedBlob": "833c63ab53cf166c3837a486c41527aee973d784",
+          "integratedBlob": "833c63ab53cf166c3837a486c41527aee973d784"
+        },
+        {
+          "path": "apps/artifacts/storage/index.mjs",
+          "acceptedBlob": "3b7762cb48645a90085a311caacff11d9f410704",
+          "integratedBlob": "3b7762cb48645a90085a311caacff11d9f410704"
+        },
+        {
+          "path": "apps/artifacts/storage/postgres-publication-projection.mjs",
+          "acceptedBlob": "46fdb0fbb773de64469bc93f9ef0a4bafeacb561",
+          "integratedBlob": "46fdb0fbb773de64469bc93f9ef0a4bafeacb561"
+        },
+        {
+          "path": "apps/artifacts/storage/postgres-source-recovery.mjs",
+          "acceptedBlob": "c0e1aad73f8457df121eb4b36f6e888fc6e18bd2",
+          "integratedBlob": "c0e1aad73f8457df121eb4b36f6e888fc6e18bd2"
+        },
+        {
+          "path": "apps/artifacts/storage/postgres-versions.mjs",
+          "acceptedBlob": "821caddeb8feb0adebc177c04315416c45dcd0c1",
+          "integratedBlob": "821caddeb8feb0adebc177c04315416c45dcd0c1"
+        },
+        {
+          "path": "apps/artifacts/storage/s3-artifact-publication.mjs",
+          "acceptedBlob": "82e720b53dc44c7a7aacc7707d3a018780d769b3",
+          "integratedBlob": "82e720b53dc44c7a7aacc7707d3a018780d769b3"
+        },
+        {
+          "path": "apps/artifacts/storage/s3-conditional-document.mjs",
+          "acceptedBlob": "69428c94358f106d78924be2617bc3d830e09ebf",
+          "integratedBlob": "69428c94358f106d78924be2617bc3d830e09ebf"
+        },
+        {
+          "path": "apps/artifacts/storage/s3-preview-evidence.mjs",
+          "acceptedBlob": "9e8b963e984eeac1b81379c83d915539eabab0e8",
+          "integratedBlob": "9e8b963e984eeac1b81379c83d915539eabab0e8"
+        },
+        {
+          "path": "apps/artifacts/storage/test/artifact-publication.test.mjs",
+          "acceptedBlob": "ab5f0b6f344ded9a12007640faeadd735344a0d0",
+          "integratedBlob": "ab5f0b6f344ded9a12007640faeadd735344a0d0"
+        },
+        {
+          "path": "apps/artifacts/storage/test/pg-wire.test.mjs",
+          "acceptedBlob": "9c67bfecb519177afb21051d3d38defd4126b226",
+          "integratedBlob": "9c67bfecb519177afb21051d3d38defd4126b226"
+        },
+        {
+          "path": "apps/artifacts/storage/test/postgres-source-recovery.test.mjs",
+          "acceptedBlob": "aafc47947c9e045c1195da756446b6ba1071f445",
+          "integratedBlob": "aafc47947c9e045c1195da756446b6ba1071f445"
+        },
+        {
+          "path": "apps/artifacts/storage/test/postgres.test.mjs",
+          "acceptedBlob": "edc13ac31a9c6e5c33fff21c023ebdf58720f474",
+          "integratedBlob": "edc13ac31a9c6e5c33fff21c023ebdf58720f474"
+        },
+        {
+          "path": "apps/artifacts/storage/test/publication-fixture.mjs",
+          "acceptedBlob": "1ac2a0fa60f73cce41e3aed4dcb9aa25c4b23012",
+          "integratedBlob": "1ac2a0fa60f73cce41e3aed4dcb9aa25c4b23012"
+        },
+        {
+          "path": "apps/artifacts/storage/test/publication-rollback-regression.test.mjs",
+          "acceptedBlob": "b4b37a562dca69eaa77a6b3a2310828b97ac4589",
+          "integratedBlob": "b4b37a562dca69eaa77a6b3a2310828b97ac4589"
+        },
+        {
+          "path": "apps/artifacts/storage/test/publication-service.test.mjs",
+          "acceptedBlob": "4a88b17d2d2fc65d3aad2bb5b7496a11aafaaeda",
+          "integratedBlob": "4a88b17d2d2fc65d3aad2bb5b7496a11aafaaeda"
+        },
+        {
+          "path": "apps/artifacts/storage/test/s3-artifact-publication.test.mjs",
+          "acceptedBlob": "13dde2fb9d42c10618e4f1d535638a64d65c519f",
+          "integratedBlob": "13dde2fb9d42c10618e4f1d535638a64d65c519f"
+        },
+        {
+          "path": "apps/artifacts/storage/test/s3-preview-fixture.mjs",
+          "acceptedBlob": "606869c3158f41281bb2a01695e801da7e027077",
+          "integratedBlob": "606869c3158f41281bb2a01695e801da7e027077"
+        },
+        {
+          "path": "apps/artifacts/storage/test/sql-fixture.mjs",
+          "acceptedBlob": "ad32eb6308c6fbd76c62b07d26821d682727a038",
+          "integratedBlob": "ad32eb6308c6fbd76c62b07d26821d682727a038"
+        },
+        {
+          "path": "apps/artifacts/storage/version-record.mjs",
+          "acceptedBlob": "0a10a8aac7787cf1abe5e4fc7b71acbb59a80089",
+          "integratedBlob": "0a10a8aac7787cf1abe5e4fc7b71acbb59a80089"
+        },
+        {
+          "path": "apps/artifacts/test/postgres-service-independent.test.mjs",
+          "acceptedBlob": "6a39dd0b671071651f44cf48116815acf475b0cd",
+          "integratedBlob": "6a39dd0b671071651f44cf48116815acf475b0cd"
+        },
+        {
+          "path": "apps/runtime/artifacts/composition.mjs",
+          "acceptedBlob": "2af9db638e3489dade4bf4ac809687415ab944f4",
+          "integratedBlob": "2af9db638e3489dade4bf4ac809687415ab944f4"
+        }
+      ],
+      "disposition": "Exact scoped parent SOURCE ACCEPT; final metadata-release repair, shared recovery continuation and real protected evidence-root qualification pending"
+    },
+    {
+      "label": "final artifact metadata retention release check",
+      "reviewedSource": "3350270a617403f04046eb61fc2843b5bdf64bef",
+      "predecessor": "2cba7e425d7c00c904451f78f8d7577320431950",
+      "integratedCommit": "364b3e239daf13c0edce23dc9037f846508fa22e",
+      "integratedTree": "2acd3240af4bbb3ccacd999dbc469eb049ec7979",
+      "files": [
+        {
+          "path": "apps/artifacts/service.mjs",
+          "acceptedBlob": "0e6d0cba3ac30219d72ad13089abb209f17bee71",
+          "integratedBlob": "0e6d0cba3ac30219d72ad13089abb209f17bee71"
+        },
+        {
+          "path": "apps/artifacts/storage/test/review-final-retention-race.test.mjs",
+          "acceptedBlob": "7fdd4b5326d2dee3969897e59f28b5514a5d51fd",
+          "integratedBlob": "7fdd4b5326d2dee3969897e59f28b5514a5d51fd"
+        },
+        {
+          "path": "apps/artifacts/test/artifact-final-release.test.mjs",
+          "acceptedBlob": "9369ce7e7a245588b1742402feeec37d718b9317",
+          "integratedBlob": "9369ce7e7a245588b1742402feeec37d718b9317"
+        }
+      ],
+      "disposition": "Exact parent scoped acceptance; native/provider/deployed qualification remains HOLD"
+    },
+    {
+      "label": "corrected input0.1.7 artifact, canonical error alias and assembled lifecycle mount",
+      "reviewedSource": "a54239c5f252667b3aaaaa588ef1776219816075",
+      "predecessor": "4a10288c35569a384668ef89b970df524b4723da",
+      "integratedCommit": "054285efc19038c8c6306a47599749785cab241d",
+      "integratedTree": "6464485b7cec02342b8fc352d5265d126a633165",
+      "files": [
+        {
+          "path": "apps/runtime/control.mjs",
+          "acceptedBlob": "30d74a55c04c10de5e5f947a7338e5fd23b63d2e",
+          "integratedBlob": "30d74a55c04c10de5e5f947a7338e5fd23b63d2e"
+        },
+        {
+          "path": "apps/runtime/test/input-admission-mount.test.mjs",
+          "acceptedBlob": "1c662bcbb0a7c4b135ed297577d7981f5d35c7d9",
+          "integratedBlob": "1c662bcbb0a7c4b135ed297577d7981f5d35c7d9"
+        },
+        {
+          "path": "packages/contracts/conversation-input/evidence/capiro-meri-contracts-0.1.7.tgz",
+          "acceptedBlob": "ddb8eb7a6ac2d9acd6d3925bac907b0539b5ad58",
+          "integratedBlob": "ddb8eb7a6ac2d9acd6d3925bac907b0539b5ad58"
+        },
+        {
+          "path": "packages/contracts/conversation-input/evidence/held-43142561/README.md",
+          "acceptedBlob": "dd1802fa2a1dcb57950fb2423c3ea7f205d170d7",
+          "integratedBlob": "dd1802fa2a1dcb57950fb2423c3ea7f205d170d7"
+        },
+        {
+          "path": "packages/contracts/conversation-input/evidence/held-43142561/capiro-meri-contracts-0.1.7.tgz",
+          "acceptedBlob": "0e930457e9fafbda36644b679869467c9162f04e",
+          "integratedBlob": "0e930457e9fafbda36644b679869467c9162f04e"
+        },
+        {
+          "path": "packages/contracts/dist/conversation-input.d.ts",
+          "acceptedBlob": "c00a48307802a19bc9ed89eee9159e769b6770eb",
+          "integratedBlob": "c00a48307802a19bc9ed89eee9159e769b6770eb"
+        },
+        {
+          "path": "packages/contracts/dist/conversation-input.metadata.json",
+          "acceptedBlob": "e66706db679e54ecc7868df753f21eca3c143ccf",
+          "integratedBlob": "e66706db679e54ecc7868df753f21eca3c143ccf"
+        },
+        {
+          "path": "packages/contracts/dist/conversation-input.mjs",
+          "acceptedBlob": "813d05b352fe1f4307b62297f053e0785ea6905e",
+          "integratedBlob": "813d05b352fe1f4307b62297f053e0785ea6905e"
+        },
+        {
+          "path": "packages/contracts/dist/conversation-input.schema.json",
+          "acceptedBlob": "d1a362ca9998ea5cd3dae4d98032b39382b6f0c4",
+          "integratedBlob": "d1a362ca9998ea5cd3dae4d98032b39382b6f0c4"
+        },
+        {
+          "path": "packages/contracts/generate-input.mjs",
+          "acceptedBlob": "41ae1bac5e669fd8344ff846bcd2b4269b5d6678",
+          "integratedBlob": "41ae1bac5e669fd8344ff846bcd2b4269b5d6678"
+        },
+        {
+          "path": "packages/contracts/package.json",
+          "acceptedBlob": "a78c60072ca8bf7ba7432fa71b90591cc7667d5b",
+          "integratedBlob": "a78c60072ca8bf7ba7432fa71b90591cc7667d5b"
+        },
+        {
+          "path": "packages/contracts/test/conversation-input-public-types.ts",
+          "acceptedBlob": "9fd10eac197dd463bf3daa4caade43ada1f60e2d",
+          "integratedBlob": "9fd10eac197dd463bf3daa4caade43ada1f60e2d"
+        }
+      ],
+      "disposition": "Exact parent scoped acceptance; native/provider/deployed qualification remains HOLD"
     }
   ],
-  "sourceHead": "34f938a560339104ecc877e0f94a5f979f832eb2",
-  "sourceTree": "fb526b2dcaa2956b4c8a07c155078816ecc73682",
+  "sourceHead": "054285efc19038c8c6306a47599749785cab241d",
+  "sourceTree": "6464485b7cec02342b8fc352d5265d126a633165",
   "validation": {
     "command": "node --max-old-space-size=128 --test --test-isolation=none --test-concurrency=1 --test-timeout=15000 --test-reporter=tap scripts/qualification/assembled-image/source-proof.test.mjs apps/control/retention/test/watermark-migration-source.test.mjs",
     "node": "v24.19.0",
@@ -1475,42 +2144,70 @@
       "historicalSourceSha256": "4b8ad2df837a2a7c7ae26d7d23ca60017b50a9b186193553093195d31e80a71f",
       "hSha256": "2de6bce64ace8a6d2b5d0ed205f9ffb5b7ac2884d6109df19bc629b13d48c1cb",
       "currentSha256": "d385fd62d5cfb26bc184d26c2659298fde1ba8ba9c2d5ca3210429a8a3d03420",
-      "reason": "Exact accepted source; retained historical h is unchanged and HOLD"
+      "reason": "Exact parent-accepted source; h remains unchanged/HOLD"
+    },
+    {
+      "path": "apps/runtime/config.mjs",
+      "historicalSourceSha256": "a786efc5a3eb046fe4ada7439c314d456ab11d81353b2137eebc47d683624e1d",
+      "hSha256": "9558183a7eab179d3b66d2b1d65707a0f495f882b3aa03e8b04b029942c6685d",
+      "currentSha256": "716be73148849c3eba958a15c69f0905aac534a4495b244cbc91cb4010450750",
+      "reason": "Exact parent-accepted source; h remains unchanged/HOLD"
     },
     {
       "path": "apps/runtime/control.mjs",
       "historicalSourceSha256": "904b12d08007bc9803b57f26afbf0e0763cfe80f7cb17aedc581ba77135c4e52",
       "hSha256": "ec63730199cbc092042dab6b6694506087530ee85572e1daadfb478bf76c5757",
-      "currentSha256": "db70320a96c325710b0fa0eaed956e176f130ca706912be99347cad5f97147b4",
-      "reason": "Exact accepted source; retained historical h is unchanged and HOLD"
+      "currentSha256": "b2676fa19f1134e7535fa6d8d9966d1a588532a7ffe1776bd8f1dc1fe9873bd0",
+      "reason": "Exact parent-accepted source; h remains unchanged/HOLD"
     },
     {
       "path": "apps/runtime/conversation-runner.mjs",
       "historicalSourceSha256": "ff9a037395eef3d89f62573e53c26c2c038dc5b5ffb59c37266a7c873cc48794",
       "hSha256": "9b6ac5506161513caab33a41c547b634dc314426b51e274f376340556a1ba26d",
       "currentSha256": "4afd72fb8605bc557343d18b55c920c04e7299e40890612352484cc971356a3d",
-      "reason": "Exact accepted source; retained historical h is unchanged and HOLD"
+      "reason": "Exact parent-accepted source; h remains unchanged/HOLD"
     },
     {
       "path": "apps/runtime/native-authority/remote-composition.mjs",
       "historicalSourceSha256": "eaa996c353a37cba9f0953f7997e759459a273b24cd8018ad1f855225ad44017",
       "hSha256": "2c4162da6af533902090d7aa2861278c892335a90b4e4a75cbae99b80ba5ab4b",
-      "currentSha256": "c6fa03643c633c59b019c2c220696ebaa28ce7e35405dfb34b3b52a4b26c2028",
-      "reason": "Exact accepted source; retained historical h is unchanged and HOLD"
+      "currentSha256": "44505e413d15120fcd2844c5d4e427685b490a2af5d69493b9aabbdbb2de036d",
+      "reason": "Exact parent-accepted source; h remains unchanged/HOLD"
+    },
+    {
+      "path": "apps/runtime/native-runner-gateway.mjs",
+      "historicalSourceSha256": "2b32a50bc77ff534fe351ca87b0f765117ecb66da67ace5f78e966d88c2468af",
+      "hSha256": "9c4daaee94de339fe97cbd6d55654d0cc5890b58a12069500e8e877f889edece",
+      "currentSha256": "571fd29580768069bbf8b5aa09c51d14822d6e9f84cff306b50e4ead1c7329f9",
+      "reason": "Exact parent-accepted source; h remains unchanged/HOLD"
+    },
+    {
+      "path": "apps/runtime/prepared-candidate-config.mjs",
+      "historicalSourceSha256": "8cc1bf393f78ee182077c03c313af4b53826f3e8842e6116fd0b42266afbc156",
+      "hSha256": "2dd1963e3350948c3d7b93543e84f3bd1031545e94b74eca79db11ba59651bc7",
+      "currentSha256": "db989a4d33300cc0ffc4881a3905ea0139da6d04dba4ce6d659f1318fcacf8b4",
+      "reason": "Exact parent-accepted source; h remains unchanged/HOLD"
     },
     {
       "path": "apps/runtime/prepared-candidate.mjs",
       "historicalSourceSha256": "698f9adbb5ebda2e4e964c4c7f6d8425932141dcd803716b43372e26d7625d5a",
       "hSha256": "56a56689f2bf0ee365f9f1b7e479f5f5e693ae05998d9e80057c3e8da278b603",
-      "currentSha256": "2cebeeb07ac10a6673cb7c3250d76f49c02f22f10c2d841ba4633d7c58e7d7d6",
-      "reason": "Exact accepted source; retained historical h is unchanged and HOLD"
+      "currentSha256": "8e59dbc0431755772b63d6d58b5ccc6fa68c7963857ca494cc959773fe4d52f1",
+      "reason": "Exact parent-accepted source; h remains unchanged/HOLD"
     },
     {
       "path": "apps/runtime/remote-conversation-runner.mjs",
       "historicalSourceSha256": "830775231cd1a96bce6fc8c5d81a2092be883712080655163270149032dd45ec",
       "hSha256": "830775231cd1a96bce6fc8c5d81a2092be883712080655163270149032dd45ec",
-      "currentSha256": "f945a77f0b215db5ff52bdc467339f0b930133a7a740dc389627ab82ce6be15d",
-      "reason": "Exact accepted source; retained historical h is unchanged and HOLD"
+      "currentSha256": "9e59307773644abf258e822cf0d96f5412c59e89d449665b1c02ea20aaf65e8a",
+      "reason": "Exact parent-accepted source; h remains unchanged/HOLD"
+    },
+    {
+      "path": "apps/runtime/task-bootstrap.mjs",
+      "historicalSourceSha256": "17e639caffbc321cc923c24d9871583f4aced5741282f09c57ed8f183337d9b1",
+      "hSha256": "1a44df48814c509f5cf7826847f3990a7179035474014119e39eef51eb8880dc",
+      "currentSha256": "626bfa08b71265e766cc0b2baab44d3096ca5eca1b2da13e0f434f30c8390fd3",
+      "reason": "Exact parent-accepted source; h remains unchanged/HOLD"
     }
   ],
   "historicalCandidates": {
@@ -1578,29 +2275,26 @@
     "tapSha256": "0812abe1d0194c20127453194d3984578c1db62f12d8c248ee8a464d59aeac35"
   },
   "combinedCheckpoint": {
-    "sourceHead": "34f938a560339104ecc877e0f94a5f979f832eb2",
-    "sourceTree": "fb526b2dcaa2956b4c8a07c155078816ecc73682",
-    "predecessorJointPin": "f54dc958e83eb4a146cfc2066518108be16b84b7",
-    "tests": "3/3 actual integrated inert-composition controls; no socket/DB/provider/material calls, real canonical validators with explicit third-party dependency reuse",
+    "sourceHead": "054285efc19038c8c6306a47599749785cab241d",
+    "sourceTree": "6464485b7cec02342b8fc352d5265d126a633165",
+    "sharedAuthoringBase": "14f0bc2e5716af7c00925d13d3365b26182c9e56",
+    "classification": "Exact accepted source/artifact integration; overall runtime/image/release HOLD",
+    "typedSource": "f32c9fa750da6c4df31930d97b041008289c2d8b",
+    "types": "Both original project checks pass with resolution-only overlay; raw flags unchanged",
+    "compositionSource": "f32c9fa750da6c4df31930d97b041008289c2d8b",
+    "composition": "6/6 synthetic; first5 inert, input case scripted SQL",
+    "mountedInputSource": "054285efc19038c8c6306a47599749785cab241d",
+    "mountedInput": "2/2 actual assembler scripted-resource controls",
     "excluded": [
-      "native READS shared routing/bootstrap and newly canonical original-run preparation",
-      "readinessd156 pending exact acceptance",
-      "new preview custody/source-evidence integration",
-      "new Planner continuation and actual Core receiving authority",
-      "later schedule worker role/config and independent Python product proxy source"
-    ],
-    "publicHistoryArtifactAccepted": "5aa13719e8706704785d142ad903fb42db51220e",
-    "exclusionsNote": "Earlier pending public artifact exclusion superseded by parent exact acceptance. Native shared composition/d156/new preview/Planner continuation still not integrated.",
-    "activeSharedSourceBase": "8ec0235294855b189addaff6e7bb1ad527a224d0",
-    "sourceBasePublication": {
-      "remote": "https://github.com/neo-capiro/meri-greenfield.git",
-      "branch": "dot/meri-reviewed-integration-20261016",
-      "verifiedRemotePin": "8ec0235294855b189addaff6e7bb1ad527a224d0",
-      "reviewRejection": "Initial focused push rejected as unverified destination. git remote get-url proved the exact user-named repository and absent alternate push URL; the same authorized focused push was then approved, succeeded and ls-remote confirmed. No workaround destination or outstanding denial."
-    }
+      "pending Planner continuation source/review",
+      "pending same-exclusive recovery callback/runtime factory composition",
+      "real Core producer-consumer/trust/install qualification",
+      "genuine pre-input fresh-allocation receipt",
+      "full UI build/browser/image/live release"
+    ]
   },
   "combinedLoading": {
-    "source": "34f938a560339104ecc877e0f94a5f979f832eb2",
+    "source": "f32c9fa750da6c4df31930d97b041008289c2d8b",
     "argv": [
       "C:/Program Files/nodejs/node.exe",
       "--max-old-space-size=128",
@@ -1613,40 +2307,20 @@
       "--test-reporter=tap",
       "audit-evidence/combined-loading.test.mjs"
     ],
-    "pid": 33088,
-    "startedAt": "2026-10-16T03:45:10.607182+00:00",
-    "finishedAt": "2026-10-16T03:45:12.146763+00:00",
-    "wallMs": 1531.0,
+    "pid": 38984,
+    "startedAt": "2026-10-16T04:36:58.708704+00:00",
+    "finishedAt": "2026-10-16T04:37:00.491120+00:00",
+    "wallMs": 1782.0,
     "primaryExit": 0,
     "cleanupExit": 0,
     "ownedProcessRemains": false,
     "timedOut": false,
     "hardWallSeconds": 60,
     "heapMiB": 128,
-    "availableCommitBefore": 2860552192,
-    "availablePhysicalBefore": 11813842944,
+    "availableCommitBefore": 2840530944,
+    "availablePhysicalBefore": 11274227712,
     "peakMemory": "not measured",
-    "classification": "Actual integrated module loading and inert composition with real canonical validators and third-party packages reused read-only; synthetic refusing SQL/store inputs; no socket/service/material/provider/DB or child test processes",
-    "tapSha256": "c268af7b3b507fa6fc56438c0af1e8978ef7b7330d83e71a26abd1df6d20580e",
-    "loaderSha256": "7f916520fcbe7b9fe18588bf452e5d10899b2eeb6dc6b4ca0a0cd64252703547",
-    "priorAttempts": [
-      {
-        "number": 1,
-        "outcome": "0 assertions executed; missing @js-temporal/polyfill, fixed by read-only exact0.5.1 package reuse"
-      },
-      {
-        "number": 2,
-        "outcome": "0 assertions executed; missing ai, fixed by read-only exact7.0.137 package reuse"
-      },
-      {
-        "number": 3,
-        "outcome": "0 assertions executed; product package alias absent, mapped to this integrated checkout public exports; no peer product source imported"
-      },
-      {
-        "number": 4,
-        "outcome": "2/3; Linux fixture path spelling failed canonical native Windows normalization. Reused existing prepared-run-bindings test normalization; no validator or production source change."
-      }
-    ]
+    "classification": "Actual integrated module loading and inert composition with real canonical validators and third-party packages reused read-only; synthetic refusing SQL/store inputs; no socket/service/material/provider/DB or child test processes"
   },
   "historyArtifact": {
     "source": "5aa13719e8706704785d142ad903fb42db51220e",
@@ -1658,31 +2332,165 @@
     "independentCheck": "31 regular safe archive members byte-equal exact source; integrity/four outputs/25 prior files/unchanged generator inputs verified; inspector import/default assumption corrected and disclosed"
   },
   "localQueue": {
-    "state": "FREE_NO_OWNED_PROCESS",
-    "history": {
-      "generator": 0,
-      "determinism": 0,
-      "firstTypeAttempt": 2,
-      "correctedTypeAttempt": 0,
-      "publicBytesPassed": 30,
-      "package": 0,
-      "allCleanup": 0
-    },
-    "coreMembership": {
-      "attempt1": "2 runtime-error suites,0 cases,1/0 primary/cleanup",
-      "attempt2": "59/70,11 assertion failures,1/0",
-      "attempt3": "27/28,real cancellation checkpoint failure,1/0",
-      "attempt4": "71/71 (29 VM+42 actual NestDI),0/0,7556ms,PID37352 exited,author-run with scripted DB/Clerk",
-      "sourceSet": "8df09fd015f0fab593bc79bc34d2bfb9dddc9e37d3f529875910ae28818ceab9",
-      "actualProviderOrDatabase": false
-    },
-    "broadIntegratedTypesBrowserDatabase": "NOT_RUN_PENDING_COMPLETE_SOURCE_AND_SERIALIZED_CAPABILITY_PROFILE"
+    "ownedProcess": "NONE",
+    "inputCorrection": "5/5 primary0/cleanup0, no children; old failure retained",
+    "coreRetainedAuth": "Actual184=182pass2fail, primary1/cleanup0/PID1536 exited, sources unchanged; owner fixture correction pending, no automatic retry",
+    "UI033": "Exact parent384/768onefork5-file120s grant; next serialized release subject fresh >=2.5GiB commit and1GiB floor",
+    "fullBuildBrowser": "Deferred to coherent input UI candidate; actual capacity/approved shipping path pending, no OOM or new credentials"
   },
   "ownershipFollowup": {
-    "StartupC": "Shared original/target compiler facts, native registry/controller/candidate/config/bootstrap/runner seams. Original static allocations remain unavailable; same canonical issuer only.",
-    "BudgetB": "prepareOriginal({signal}) in prepared-run-bindings plus new original-run-preparation.mjs/test and trusted fact producer approvedReads/read-operation propagation; no second issuer/journal.",
-    "Reads": "New retained authority contract/control-owner/Core client/broker/meri-context plus narrow delegatedTransport source seam; trusted canonical run/request/task assertion and real Core principal/resource revision join. No current credential supplied.",
-    "Artifact": "New custody3b/3ca source and actual conditional evidence/source-head recovery sibling source remain separate exact review; accepted856b read-only projection integrated.",
-    "UI": "Exact0.1.6 adoption and native history client/proxy, narrowly additive package/lock/provenance/boundary entries; bootstrap/reload no-identity Send remains failclosed."
+    "Artifact": "Additive startup/reconciliation callback only on published14f exact855 blobs;44807996 pending independent review.335 accepted/integrated.",
+    "Startup": "Runtime/control/readiness/canonical artifact recovery factory and genuine pre-input allocation proof; uses reachable14f authoring basis, no older2cba retention merge.",
+    "Reads": "Retained074 consumer integrated; CorePR35 exact compatibility and real trust pending. Scope ledger63missing adapters remains full selected scope.",
+    "Planner": "New ecdd/a503/105/924 chain source review and actual typed Strategy custody/semantic sourceAdmission compiler bridge pending; no second model/0012."
+  },
+  "integratedTypes": {
+    "source": "f32c9fa750da6c4df31930d97b041008289c2d8b",
+    "compilerVersion": "5.9.3",
+    "classification": "Real TypeScript compiler over original complete project inputs/strict options; task-local dependency-resolution overlay only, read-only exact-lock third-party dependencies and integrated product public exports. No suppression, emit, install, services/provider/DB/browser or native child. Canonical unmodified CLI with materialized local dependencies is not claimed. Junction creation was denied; not retried or escalated.",
+    "verifiedEqualDependencyLocks": [
+      {
+        "path": "package-lock.json",
+        "sha256": "4a18a2e5eeb672758df381eba55653da2dc0d9e9ab26e3f6f7943ad19120753c"
+      },
+      {
+        "path": "apps/runtime/package-lock.json",
+        "sha256": "3e5cb0487709a2ad1cfc9ab1762cf6a496fe816127cdb0e89639b19d5de809df"
+      },
+      {
+        "path": "apps/control/conversations/package-lock.json",
+        "sha256": "3225d67c562631322a1ca6a6ef74f8f246975cdad2120e107acd9840670e98e2"
+      },
+      {
+        "path": "apps/worker/conversation/package-lock.json",
+        "sha256": "7a85d62634bb74c0cb861c91f24d73478d0f1ed8d45590055de969a723d1dcd8"
+      },
+      {
+        "path": "packages/ui-stream/package-lock.json",
+        "sha256": "520adf386172f23b99204aa0802a8b61f64381d3c8e9207e8e8f8683760d0d0d"
+      }
+    ],
+    "stages": [
+      {
+        "project": "apps/control/conversations",
+        "source": "f32c9fa750da6c4df31930d97b041008289c2d8b",
+        "argv": [
+          "C:/Program Files/nodejs/node.exe",
+          "--max-old-space-size=768",
+          "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-4\\meri-greenfield\\apps\\runtime\\node_modules\\typescript\\bin\\tsc",
+          "--noEmit",
+          "-p",
+          "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-8\\meri-qualification\\audit-evidence\\integrated-types\\tsconfig.conversations.json",
+          "--pretty",
+          "false",
+          "--extendedDiagnostics"
+        ],
+        "originalTsconfigSha256": "93531e1fe0cd2ff57b0137e2a624a0122a025ae38d90d7b46dc8a6468407510f",
+        "dependencyOverlaySha256": "d3eed5ff29c087b14fefc2fef0b895dca568e902ad13996d4c4bfc1af926feb5",
+        "pid": 37548,
+        "startedAt": "2026-10-16T04:36:43.154915+00:00",
+        "finishedAt": "2026-10-16T04:36:46.286689+00:00",
+        "wallMs": 3125.0,
+        "primaryExit": 0,
+        "cleanupExit": 0,
+        "ownedProcessRemains": false,
+        "timedOut": false,
+        "pressureStop": false,
+        "memoryBefore": {
+          "at": "2026-10-16T04:36:43.153916+00:00",
+          "availableCommitBytes": 2702155776,
+          "availablePhysicalBytes": 11131207680
+        },
+        "minimumAvailableCommitBytes": 2065145856,
+        "peakProcessRss": "not measured",
+        "stdoutSha256": "0e930a5363a08dec1b74128b6fb06d1db30c198c0eddb862924070e48189c19f",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "project": "apps/runtime",
+        "source": "f32c9fa750da6c4df31930d97b041008289c2d8b",
+        "argv": [
+          "C:/Program Files/nodejs/node.exe",
+          "--max-old-space-size=768",
+          "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-4\\meri-greenfield\\apps\\runtime\\node_modules\\typescript\\bin\\tsc",
+          "--noEmit",
+          "-p",
+          "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-8\\meri-qualification\\audit-evidence\\integrated-types\\tsconfig.runtime.json",
+          "--pretty",
+          "false",
+          "--extendedDiagnostics"
+        ],
+        "originalTsconfigSha256": "84a5bc6233e89722d044bfe4ffef3ed8785a8d342ec16f7feab49fc8cb4488c8",
+        "dependencyOverlaySha256": "23045d0a14aa4006b91573de699b21a7c4599c863a2aacb94c0ef8af68bbae6d",
+        "pid": 33048,
+        "startedAt": "2026-10-16T04:36:46.296686+00:00",
+        "finishedAt": "2026-10-16T04:36:49.529592+00:00",
+        "wallMs": 3234.0,
+        "primaryExit": 0,
+        "cleanupExit": 0,
+        "ownedProcessRemains": false,
+        "timedOut": false,
+        "pressureStop": false,
+        "memoryBefore": {
+          "at": "2026-10-16T04:36:46.294689+00:00",
+          "availableCommitBytes": 2650066944,
+          "availablePhysicalBytes": 11113320448
+        },
+        "minimumAvailableCommitBytes": 2109513728,
+        "peakProcessRss": "not measured",
+        "stdoutSha256": "71cac40960679c07c937ccd5b38efb23801b878560e5028c52a4edb1ab43d3ed",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ]
+  },
+  "mountedInput": {
+    "source": "054285efc19038c8c6306a47599749785cab241d",
+    "argv": [
+      "C:/Program Files/nodejs/node.exe",
+      "--max-old-space-size=128",
+      "--import",
+      "./audit-evidence/dependency-reuse.mjs",
+      "--test",
+      "--test-isolation=none",
+      "--test-concurrency=1",
+      "--test-timeout=15000",
+      "--test-reporter=tap",
+      "apps/runtime/test/input-admission-mount.test.mjs"
+    ],
+    "pid": 34856,
+    "startedAt": "2026-10-16T04:47:34.260582+00:00",
+    "finishedAt": "2026-10-16T04:47:36.089342+00:00",
+    "wallMs": 1828.0,
+    "primaryExit": 0,
+    "cleanupExit": 0,
+    "ownedProcessRemains": false,
+    "timedOut": false,
+    "hardWallSeconds": 60,
+    "heapMiB": 128,
+    "availableCommitBefore": 2779869184,
+    "availablePhysicalBefore": 11146977280,
+    "peakMemory": "not measured",
+    "classification": "Actual integrated assembled lifecycle/input route with real canonical validators and read-only third-party reuse; scripted SQL/current identity/Temporal resources, no real socket/service/material/provider/DB or child test processes"
+  },
+  "inputArtifact": {
+    "publication": "a54239c5f252667b3aaaaa588ef1776219816075",
+    "artifactSource": "618db545b15b5c4bab58f0cd5d12cfb022232402",
+    "sha256": "8f0c2e1435122c22f2a1ed7427dd744f361bc598e178f2ef842acd6f91b78daa",
+    "integrity": "sha512-GAbmH0ZshRDUAiyhuEImdlIyFAhUqwWUudHRYNPLL9WitFjc5cERyidP9Yhe9jOPHKC5lJGF3pF9yVgZeWfKlw==",
+    "parentDisposition": "ACCEPT_CORRECTED_SOURCE_ARTIFACT",
+    "heldPredecessor": "43142561/SHA53497d94: undefined public error type concealed by skipLibCheck; retained, never adopted",
+    "authorChecks": "Old actual declaration no-skip negative exit2 ONLY TS2552; corrected actual declaration+consumer strict no-skip0, generator/check/21bytes/offlinepack all0 and cleanup0",
+    "independentInputLane": "376/376 archive/static/provenance and actual extracted9brand/error/history checks pass; author/independent attribution explicit",
+    "semantics": "Synthetic empty-tail view is provenance correlation, not loaded transcript/unsent proof; same physical canonical package instance required; DTOs readmitted from bytes"
+  },
+  "remotePublication": {
+    "status": "DENIED_NOT_EXECUTED_NO_RETRY",
+    "remote": "https://github.com/neo-capiro/meri-greenfield.git",
+    "ref": "refs/heads/dot/meri-reviewed-integration-20261016",
+    "lastVerifiedRemote": "14f0bc2e5716af7c00925d13d3365b26182c9e56",
+    "candidateAtDeniedAttempt": "f32c9fa750da6c4df31930d97b041008289c2d8b",
+    "command": "git push origin dot/meri-reviewed-integration-20261016",
+    "denial": "Pushing the local integration commit to a remote branch is an external commitment, and the transcript authorizes relaying the pin but does not clearly authorize this exact remote mutation.",
+    "pendingAction": "Explicit authorization for final exact fast-forward after local evidence seal; no alternate publisher/export or forced update"
   }
 }

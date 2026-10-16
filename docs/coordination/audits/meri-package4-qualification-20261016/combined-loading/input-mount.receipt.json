@@ -1,0 +1,29 @@
+{
+  "source": "054285efc19038c8c6306a47599749785cab241d",
+  "argv": [
+    "C:/Program Files/nodejs/node.exe",
+    "--max-old-space-size=128",
+    "--import",
+    "./audit-evidence/dependency-reuse.mjs",
+    "--test",
+    "--test-isolation=none",
+    "--test-concurrency=1",
+    "--test-timeout=15000",
+    "--test-reporter=tap",
+    "apps/runtime/test/input-admission-mount.test.mjs"
+  ],
+  "pid": 34856,
+  "startedAt": "2026-10-16T04:47:34.260582+00:00",
+  "finishedAt": "2026-10-16T04:47:36.089342+00:00",
+  "wallMs": 1828.0,
+  "primaryExit": 0,
+  "cleanupExit": 0,
+  "ownedProcessRemains": false,
+  "timedOut": false,
+  "hardWallSeconds": 60,
+  "heapMiB": 128,
+  "availableCommitBefore": 2779869184,
+  "availablePhysicalBefore": 11146977280,
+  "peakMemory": "not measured",
+  "classification": "Actual integrated assembled lifecycle/input route with real canonical validators and read-only third-party reuse; scripted SQL/current identity/Temporal resources, no real socket/service/material/provider/DB or child test processes"
+}

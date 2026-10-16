@@ -1,0 +1,99 @@
+{
+  "source": "6b18e6c0081614802bf0a9297a8cf3ca3b8f85aa",
+  "compilerVersion": "5.9.3",
+  "classification": "Real TypeScript compiler over original complete project inputs/strict options; task-local dependency-resolution overlay only, read-only exact-lock third-party dependencies and integrated product public exports. No suppression, emit, install, services/provider/DB/browser or native child. Canonical unmodified CLI with materialized local dependencies is not claimed. Junction creation was denied; not retried or escalated.",
+  "verifiedEqualDependencyLocks": [
+    {
+      "path": "package-lock.json",
+      "sha256": "4a18a2e5eeb672758df381eba55653da2dc0d9e9ab26e3f6f7943ad19120753c"
+    },
+    {
+      "path": "apps/runtime/package-lock.json",
+      "sha256": "3e5cb0487709a2ad1cfc9ab1762cf6a496fe816127cdb0e89639b19d5de809df"
+    },
+    {
+      "path": "apps/control/conversations/package-lock.json",
+      "sha256": "3225d67c562631322a1ca6a6ef74f8f246975cdad2120e107acd9840670e98e2"
+    },
+    {
+      "path": "apps/worker/conversation/package-lock.json",
+      "sha256": "7a85d62634bb74c0cb861c91f24d73478d0f1ed8d45590055de969a723d1dcd8"
+    },
+    {
+      "path": "packages/ui-stream/package-lock.json",
+      "sha256": "520adf386172f23b99204aa0802a8b61f64381d3c8e9207e8e8f8683760d0d0d"
+    }
+  ],
+  "stages": [
+    {
+      "project": "apps/control/conversations",
+      "source": "6b18e6c0081614802bf0a9297a8cf3ca3b8f85aa",
+      "argv": [
+        "C:/Program Files/nodejs/node.exe",
+        "--max-old-space-size=768",
+        "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-4\\meri-greenfield\\apps\\runtime\\node_modules\\typescript\\bin\\tsc",
+        "--noEmit",
+        "-p",
+        "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-8\\meri-qualification\\audit-evidence\\integrated-types\\tsconfig.conversations.json",
+        "--pretty",
+        "false",
+        "--extendedDiagnostics"
+      ],
+      "originalTsconfigSha256": "93531e1fe0cd2ff57b0137e2a624a0122a025ae38d90d7b46dc8a6468407510f",
+      "dependencyOverlaySha256": "d3eed5ff29c087b14fefc2fef0b895dca568e902ad13996d4c4bfc1af926feb5",
+      "pid": 29728,
+      "startedAt": "2026-10-16T04:20:51.053465+00:00",
+      "finishedAt": "2026-10-16T04:20:54.179556+00:00",
+      "wallMs": 3125.0,
+      "primaryExit": 0,
+      "cleanupExit": 0,
+      "ownedProcessRemains": false,
+      "timedOut": false,
+      "pressureStop": false,
+      "memoryBefore": {
+        "at": "2026-10-16T04:20:51.052464+00:00",
+        "availableCommitBytes": 2459607040,
+        "availablePhysicalBytes": 11491049472
+      },
+      "minimumAvailableCommitBytes": 1746157568,
+      "peakProcessRss": "not measured",
+      "stdoutSha256": "663f10acf3dd7697477b7aaf7f68d4651a3b06705dba50047242bf8bf1cd439e",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "project": "apps/runtime",
+      "source": "6b18e6c0081614802bf0a9297a8cf3ca3b8f85aa",
+      "argv": [
+        "C:/Program Files/nodejs/node.exe",
+        "--max-old-space-size=768",
+        "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-4\\meri-greenfield\\apps\\runtime\\node_modules\\typescript\\bin\\tsc",
+        "--noEmit",
+        "-p",
+        "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-8\\meri-qualification\\audit-evidence\\integrated-types\\tsconfig.runtime.json",
+        "--pretty",
+        "false",
+        "--extendedDiagnostics"
+      ],
+      "originalTsconfigSha256": "84a5bc6233e89722d044bfe4ffef3ed8785a8d342ec16f7feab49fc8cb4488c8",
+      "dependencyOverlaySha256": "23045d0a14aa4006b91573de699b21a7c4599c863a2aacb94c0ef8af68bbae6d",
+      "pid": 10328,
+      "startedAt": "2026-10-16T04:20:54.188067+00:00",
+      "finishedAt": "2026-10-16T04:20:57.320231+00:00",
+      "wallMs": 3125.0,
+      "primaryExit": 0,
+      "cleanupExit": 0,
+      "ownedProcessRemains": false,
+      "timedOut": false,
+      "pressureStop": false,
+      "memoryBefore": {
+        "at": "2026-10-16T04:20:54.187066+00:00",
+        "availableCommitBytes": 2369548288,
+        "availablePhysicalBytes": 11395424256
+      },
+      "minimumAvailableCommitBytes": 1807257600,
+      "peakProcessRss": "not measured",
+      "stdoutSha256": "dd649a45bffae74fbc653d528ae5e39dd88e937eab4cd7f3660d7a16335567de",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

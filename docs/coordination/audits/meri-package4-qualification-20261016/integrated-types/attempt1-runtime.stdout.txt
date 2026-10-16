@@ -1,0 +1,39 @@
+telemetry/test/types.ts(2,67): error TS2307: Cannot find module '@opentelemetry/sdk-node' or its corresponding type declarations.
+telemetry/test/types.ts(3,33): error TS2307: Cannot find module '@opentelemetry/exporter-trace-otlp-http' or its corresponding type declarations.
+telemetry/test/types.ts(4,34): error TS2307: Cannot find module '@opentelemetry/exporter-metrics-otlp-http' or its corresponding type declarations.
+telemetry/test/types.ts(5,56): error TS2307: Cannot find module '@opentelemetry/api' or its corresponding type declarations.
+test/types.ts(1,77): error TS2307: Cannot find module '@temporalio/worker' or its corresponding type declarations.
+test/types.ts(2,50): error TS2307: Cannot find module '@temporalio/client' or its corresponding type declarations.
+test/types.ts(3,30): error TS2307: Cannot find module '@temporalio/client' or its corresponding type declarations.
+../worker/conversation/continuation/options.mjs(8,27): error TS2307: Cannot find module 'ajv-formats' or its corresponding type declarations.
+../worker/conversation/continuation/options.mjs(16,19): error TS2307: Cannot find module 'ajv' or its corresponding type declarations.
+../worker/conversation/continuation/options.mjs(25,74): error TS2307: Cannot find module '@anthropic-ai/claude-agent-sdk' or its corresponding type declarations.
+../worker/conversation/continuation/options.mjs(53,3): error TS2322: Type 'Readonly<{ forkSession?: boolean | undefined; sessionId?: any; resumeSessionAt?: any; resume: any; }>' is not assignable to type 'Pick<any, "sessionId" | "resume" | "resumeSessionAt" | "forkSession">'.
+  Property 'sessionId' is optional in type 'Readonly<{ forkSession?: boolean | undefined; sessionId?: any; resumeSessionAt?: any; resume: any; }>' but required in type 'Pick<any, "sessionId" | "resume" | "resumeSessionAt" | "forkSession">'.
+Files:                         404
+Lines of Library:            51766
+Lines of Definitions:        76603
+Lines of TypeScript:            38
+Lines of JavaScript:         11393
+Lines of JSON:               12501
+Lines of Other:                  0
+Identifiers:                189054
+Symbols:                    107109
+Types:                        3683
+Instantiations:               1061
+Memory used:               194570K
+Assignability cache size:       81
+Identity cache size:            31
+Subtype cache size:             46
+Strict subtype cache size:    1109
+I/O Read time:               0.29s
+Parse time:                  0.34s
+ResolveModule time:          0.18s
+ResolveTypeReference time:   0.00s
+ResolveLibrary time:         0.01s
+Program time:                0.88s
+Bind time:                   0.21s
+Check time:                  0.14s
+printTime time:              0.00s
+Emit time:                   0.00s
+Total time:                  1.23s

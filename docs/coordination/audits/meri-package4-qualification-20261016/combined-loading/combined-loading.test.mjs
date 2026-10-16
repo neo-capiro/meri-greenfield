@@ -7,6 +7,10 @@ import {createPreparedRunBindings} from '../apps/runtime/prepared-run-bindings.m
 import {candidateFixture} from '../apps/runtime/test/prepared-candidate-fixture.mjs';
 import {createControlGeneralReadRuntime} from '../apps/runtime/general-read-runtime.mjs';
 import {createNativeReadsOwner} from '../apps/runtime/native-authority/reads-owner.mjs';
+import {createPostgresS3PreviewCustody} from '../apps/artifacts/preview/postgres-composition.mjs';
+import {createRetainedReadControl,createRetainedControlGeneralReadRuntime} from '../apps/runtime/native-authority/retained-reads/runtime.mjs';
+import {createConversationInputApplication} from '../apps/control/conversations/input/http.mjs';
+import {applicationFixture} from '../apps/control/conversations/test/application-fixture.mjs';
 
 const forbidden=()=>{throw Error('Synthetic check forbids SQL, material and network effects');};
 const pool={query:forbidden,connect:forbidden};
@@ -43,4 +47,47 @@ test('integrated control READS factory and native sibling expose no authority wi
  await assert.rejects(gateway.readAvailability(),/UNAVAILABLE/);
  const native=createNativeReadsOwner({binding:f.binding});
  await assert.rejects(native.handle('availability',{},'synthetic-unused'),/UNAVAILABLE/);
+});
+test('integrated concrete preview evidence/source recovery stays disabled without effects by default',async()=>{
+ const f=candidateFixture();
+ const owner=createPostgresS3PreviewCustody({journal:{tx:forbidden,exclusive:forbidden},versionsPool:pool,
+  evidenceS3:{client:{send:forbidden},bucket:'synthetic-evidence-bucket',prefix:'shipping-evidence',expectedBucketOwner:'111122223333',kmsKeyId:'arn:aws:kms:us-east-1:111122223333:key/22222222-2222-4222-8222-222222222222'},
+  tenantId:f.binding.tenantId,artifactId:f.binding.runId,now:Date.now,maxRequestMs:1000});
+ await assert.rejects(owner.previews.read('synthetic-unavailable'),/ARTIFACT_PREVIEW_CUSTODY_DISABLED/);
+ await assert.rejects(owner.previews.claim({}),/ARTIFACT_PREVIEW_CUSTODY_DISABLED/);
+ await assert.rejects(owner.recovery.ensureServing(),/ARTIFACT_PREVIEW_CUSTODY_DISABLED/);
+});
+
+test('integrated retained CONTROL consumer refuses absent genuine trust without touching borrowed owners',async()=>{
+ const f=candidateFixture();
+ const retained={binding:f.binding,expiresAtMs:Date.now()+10000,
+  store:{read:forbidden},taskVerifier:{verify:forbidden},getNativeCredential:forbidden,fetchImpl:forbidden};
+ const owner=createRetainedReadControl(retained);
+ assert.equal(owner.available,false);
+ const gateway=await createRetainedControlGeneralReadRuntime({retained,gateway:{sourceEnabled:true}});
+ await assert.rejects(gateway.readAvailability(),/UNAVAILABLE/);
+});
+
+test('integrated input admission retains one canonical queued input and submit reuses it without a second event',async()=>{
+ const f=await applicationFixture();
+ try{
+  const application=createConversationInputApplication({service:f.service});
+  const make=()=>new Request('https://meri.invalid/api/conversations/input/admit',{
+   method:'POST',headers:{authorization:`Bearer ${f.credential}`,'content-type':'application/json'},body:JSON.stringify(f.input)});
+  const initial=await application.handle(make());
+  assert.equal(initial.status,200);
+  const receipt=await initial.json();
+  assert.equal(receipt.replayed,false);
+  assert.equal(receipt.lastSequence,1);
+  assert.equal(f.state.starts,0);
+  const repeat=await application.handle(make());
+  assert.equal((await repeat.json()).replayed,true);
+  assert.equal(f.state.starts,0);
+  const submitted=await f.service.submit({credential:f.credential,input:f.input});
+  assert.deepEqual(submitted.run.binding,receipt.run.binding);
+  assert.equal(f.state.starts,1);
+  const queued=f.state.events.values().next().value.filter(row=>row.event.type==='run.status'&&row.event.data.state==='queued');
+  assert.equal(queued.length,1);
+  assert.deepEqual((await f.service.history({credential:f.credential})).request,receipt.request);
+ }finally{f.close();}
 });

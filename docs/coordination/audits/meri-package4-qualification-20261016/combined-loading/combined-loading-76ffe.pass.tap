@@ -1,0 +1,46 @@
+TAP version 13
+# Subtest: integrated canonical startup owners satisfy actual model/task bindings without I/O or material creation
+ok 1 - integrated canonical startup owners satisfy actual model/task bindings without I/O or material creation
+  ---
+  duration_ms: 11.4388
+  type: 'test'
+  ...
+# Subtest: integrated control retention composes mandatory atomic store ports and refuses missing external ledger before effects
+ok 2 - integrated control retention composes mandatory atomic store ports and refuses missing external ledger before effects
+  ---
+  duration_ms: 1.4968
+  type: 'test'
+  ...
+# Subtest: integrated control READS factory and native sibling expose no authority without genuine allocated owners
+ok 3 - integrated control READS factory and native sibling expose no authority without genuine allocated owners
+  ---
+  duration_ms: 0.5753
+  type: 'test'
+  ...
+# Subtest: integrated concrete preview evidence/source recovery stays disabled without effects by default
+ok 4 - integrated concrete preview evidence/source recovery stays disabled without effects by default
+  ---
+  duration_ms: 0.9257
+  type: 'test'
+  ...
+# Subtest: integrated retained CONTROL consumer refuses absent genuine trust without touching borrowed owners
+ok 5 - integrated retained CONTROL consumer refuses absent genuine trust without touching borrowed owners
+  ---
+  duration_ms: 0.8134
+  type: 'test'
+  ...
+# Subtest: integrated input admission retains one canonical queued input and submit reuses it without a second event
+ok 6 - integrated input admission retains one canonical queued input and submit reuses it without a second event
+  ---
+  duration_ms: 81.7353
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1556.7712
