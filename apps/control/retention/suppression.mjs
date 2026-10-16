@@ -15,7 +15,7 @@ export const refusingOwnerMediation=Object.freeze({async ownerMediated(){fail('R
 export function createRetentionReadGate({journal,serving}){
  if(typeof journal?.get!=='function'||typeof serving?.isEnabled!=='function')fail('RETENTION_CONFIGURATION');
  const barrier=()=>{if(!serving.isEnabled())fail('RETENTION_RECOVERY_BARRIER');};
- async function isSuppressed(rawSubject){barrier();const s=subject(rawSubject);let current;try{current=await journal.get(subjectKey(s));}catch{fail('RETENTION_READ_UNAVAILABLE');}barrier();return Boolean(current&&current.state!=='RELEASED');}
+ async function isSuppressed(rawSubject){barrier();const s=subject(rawSubject);let current;try{current=await journal.get(subjectKey(s));}catch(error){if(!serving.isEnabled()||error?.code==='RETENTION_RECOVERY_BARRIER')fail('RETENTION_RECOVERY_BARRIER');fail('RETENTION_READ_UNAVAILABLE');}barrier();return Boolean(current&&current.state!=='RELEASED');}
  async function assertServable(rawSubject){if(await isSuppressed(rawSubject))fail('RETENTION_SUPPRESSED');}
  return Object.freeze({isSuppressed,assertServable});
 }

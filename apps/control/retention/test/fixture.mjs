@@ -81,7 +81,7 @@ export function planFrom(f,s,journalState,{inventory,policy:p=f.current.policy}=
  * facts as the purge owners. `purge` is the explicit switch; `backup()`/`restore()` model one database backup of the journal and
  * the watermark together (the ledger sink stays outside the restored boundary). Every storage request and row purge is counted. */
 export function composeStartup({purge=false,ledger=true,watermark:withWatermark=true,rowPreflight=null}={}){
- const base=compose(),journal=createMemoryRetentionJournal(),watermark=createMemoryWatermarkStore(),deletes=[],rowPurges=[];
+ const base=compose(),journal=createMemoryRetentionJournal(),watermark=createMemoryWatermarkStore({journal}),deletes=[],rowPurges=[];
  const send=async request=>{if(request.operation==='DeleteObject')deletes.push(request.input);return base.store.send(request);};
  const storage=createVersionStorage({send,bucket:'synthetic-bucket',expectedBucketOwner:'967807252336',permissions:{getObjectVersion:true,listBucketVersions:true,deleteObjectVersion:true},now:base.clock.now,maxRequestMs:200});
  const rows={...base.rows,...(rowPreflight?{preflight:rowPreflight}:{}),async purge(key,plan){rowPurges.push(key);return base.rows.purge(key,plan);}};

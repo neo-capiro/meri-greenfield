@@ -118,15 +118,17 @@ export function createPurgeExecutor({storage,ledger,journal,keyFor,facts,serving
     for(const st of pendingRows)if(!returned.has(st.workflowId))fail('RETENTION_ROW_PURGE_UNAVAILABLE');
     unknown=[...rowState.values()].find(r=>r.state!=='EXECUTED')??null;}
    const state=unknown?'UNKNOWN':'EXECUTED';
-   const e=await ledger.append({subject:p.subject,state:unknown?'PURGE_UNKNOWN':'PURGE_EXECUTED',facts:outcomeFacts()});sequence=e.sequence;
+   // Read the CAS target before appending our next decision: serving reads require the DB to cover the current durable head.
    const latest=await journal.get(p.subjectKey);if(!latest||latest.state!=='SUPPRESSED'||latest.purge?.planSha256!==p.planSha256||latest.ledgerSequence!==p.suppression.ledgerSequence)fail('RETENTION_STALE_WRITE');
+   const e=await ledger.append({subject:p.subject,state:unknown?'PURGE_UNKNOWN':'PURGE_EXECUTED',facts:outcomeFacts()});sequence=e.sequence;
    const purge=purgeRow(state);await cas(p.subjectKey,{...latest,purge},projectionToken(latest));return Object.freeze({...purge,replayed:false});
   }catch(error){if(started)await recordUncertain(error);throw error;}
   /** Best effort after effects may have begun: the outcome known so far is appended as PURGE_UNKNOWN and projected. If either write fails,
    * the earlier EFFECTS_STARTED entry and the per-step UNKNOWN markers still stand; the original failure is what the caller sees. */
   async function recordUncertain(error){try{
+   const latest=await journal.get(p.subjectKey);
    const e=await ledger.append({subject:p.subject,state:'PURGE_UNKNOWN',reason:String(error?.code??'RETENTION_EFFECT_FAILED').slice(0,1024),facts:outcomeFacts()});sequence=e.sequence;
-   const latest=await journal.get(p.subjectKey);if(latest?.state==='SUPPRESSED'&&latest.purge?.planSha256===p.planSha256&&latest.ledgerSequence===p.suppression.ledgerSequence)await cas(p.subjectKey,{...latest,purge:purgeRow('UNKNOWN')},projectionToken(latest));
+   if(latest?.state==='SUPPRESSED'&&latest.purge?.planSha256===p.planSha256&&latest.ledgerSequence===p.suppression.ledgerSequence)await cas(p.subjectKey,{...latest,purge:purgeRow('UNKNOWN')},projectionToken(latest));
   }catch{}}
  }
  /** A BLOCKED plan is recorded (ledger first, with its complete targets and reasons) so a restore can re-evaluate it; recording a block is not execution. */

@@ -9,6 +9,7 @@
  * arrives after its deadline is discarded through `release(error)` so no later borrower inherits an unknown transaction or lock. */
 import {fail,hash,uuid,text,subject as parseSubject,subjectKey} from './boundary.mjs';
 import {rowClassSubjectKind} from './inventory.mjs';
+import {assertExactProjection} from './projection-proof.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 const RECOVERY_LOCK="hashtextextended('meri_retention_recovery',0)";
 const tables={conversation:{schema:'meri_conversations',id:'conversation_id'},artifact:{schema:'meri_artifacts',id:'artifact_id'}};
@@ -27,14 +28,14 @@ export function createPostgresRetentionJournal({pool,now=Date.now,maxRequestMs=1
  function retire(c,acquiring,reusable,failure){
   if(!c){acquiring.then(lease=>{try{lease.release(storeError('RETENTION_LATE_LEASE'));}catch{}},()=>{});return failure;}
   try{c.release(reusable?undefined:failure??storeError('RETENTION_LEASE_UNKNOWN'));}catch{return failure??storeError('RETENTION_RELEASE_UNKNOWN');}return failure;}
- /** One transaction with bounded waits. Transition writes take the shared side of the recovery lock (`exclusive` writes come from the
-  * recovery pass that already holds the exclusive side on its own session); reads take no recovery lock, since the serving barrier
-  * already refuses reads while recovery runs. A failed COMMIT is an unknown outcome (`RETENTION_COMMIT_UNKNOWN`) and is never rolled
+ /** One transaction with bounded waits and shared recovery exclusion by default (`exclusive` calls come from the recovery pass that
+  * already holds the exclusive side on its own session). Atomic read snapshots explicitly select READ COMMITTED so a borrowed
+  * session's default isolation cannot freeze the data snapshot before lock acquisition. A failed COMMIT is UNKNOWN and is never rolled
   * back over; a body failure is rolled back within a short bound, and only a confirmed ROLLBACK makes the lease reusable. */
- async function tx(body,{exclusive=false,shared=!exclusive}={}){
+ async function tx(body,{exclusive=false,shared=!exclusive,readCommitted=false}={}){
   let c,begun=false,committing=false,reusable=false,uncertain=false,failure,result;const acquiring=Promise.resolve().then(()=>pool.connect());
   const call=operation=>bounded(operation).catch(error=>{if(error?.deadline)uncertain=true;throw error;});
-  try{c=await call(()=>acquiring);await call(()=>c.query('BEGIN'));begun=true;await call(()=>c.query("SET LOCAL statement_timeout = '5s'"));await call(()=>c.query("SET LOCAL lock_timeout = '2s'"));
+  try{c=await call(()=>acquiring);await call(()=>c.query(readCommitted?'BEGIN ISOLATION LEVEL READ COMMITTED':'BEGIN'));begun=true;await call(()=>c.query("SET LOCAL statement_timeout = '5s'"));await call(()=>c.query("SET LOCAL lock_timeout = '2s'"));
    if(shared)await call(()=>c.query(`SELECT pg_advisory_xact_lock_shared(${RECOVERY_LOCK})`));
    result=await body(Object.freeze({query:(sql,values)=>call(()=>c.query(sql,values))}));committing=true;await call(()=>c.query('COMMIT'));reusable=true;}
   catch(error){failure=committing?storeError('RETENTION_COMMIT_UNKNOWN',error):wrap(error);
@@ -46,6 +47,19 @@ export function createPostgresRetentionJournal({pool,now=Date.now,maxRequestMs=1
  /** Reads take the shared side of the recovery lock too, so a serving gate in any process waits for, or refuses during, a recovery pass
   * (bounded by lock_timeout); the recovery pass itself reads with `exclusive` on its own session. */
  async function get(key,{exclusive=false}={}){const k=parseKey(key);return tx(async c=>{const r=await readRow(c,k);if(!r)return null;const v=rowValue(r);if(v.state!==r.state||Number(r.ledger_sequence)!==v.ledgerSequence)fail('RETENTION_STORE_CORRUPT');return v;},{shared:!exclusive});}
+ /** One READ COMMITTED statement snapshot, acquired AFTER tx obtained the shared recovery lock. Separate SELECTs, or a
+  * repeatable-read snapshot established before waiting on that lock, could retain a restored-away projection across recovery. */
+ async function readProjection(c,key){const k=parseKey(key),t=tables[k.kind];
+  const rows=(await c.query(`SELECT s.projection,s.projection_sha256,s.state,s.ledger_sequence,w.sequence AS watermark_sequence,w.entry_sha256 AS watermark_entry_sha256 FROM (SELECT true AS singleton) seed LEFT JOIN ${t.schema}.retention_subjects s ON s.tenant_id=$1 AND s.${t.id}=$2 LEFT JOIN meri_conversations.retention_recovery_watermark w ON w.singleton=seed.singleton`,[k.tenantId,k.subjectId])).rows;
+  if(rows.length!==1)fail('RETENTION_STORE_CORRUPT');const r=rows[0];let projection=null;
+  // state is NOT NULL on an existing subject: a JSON null projection is corruption, not an absent subject.
+  if(r.state!==null){projection=rowValue(r);if(!projection||projection.state!==r.state||Number(r.ledger_sequence)!==projection.ledgerSequence)fail('RETENTION_STORE_CORRUPT');}
+  else if(r.projection!==null||r.projection_sha256!==null||r.ledger_sequence!==null)fail('RETENTION_STORE_CORRUPT');
+  return {projection,watermarkRow:{sequence:r.watermark_sequence??0,entry_sha256:r.watermark_entry_sha256??null}};}
+ /** Watermark advancement supplies its own bounded transaction. Keep the exact subject row locked until that same
+  * transaction commits both the proof and advancement; no independent get() transaction or read-back gap. */
+ async function assertProjection(c,proof){const k=parseKey(proof.key);await subjectLock(c,proof.key);const row=await readRow(c,k);
+  assertExactProjection(row?rowValue(row):null,proof);}
  /** Compare-and-set projection write under the subject advisory lock: `expected` null means the row must not exist (two writers that both
   * observed absence cannot both succeed); otherwise it must equal the current projection hash. */
  async function set(key,value,{expected,exclusive=false}={}){
@@ -119,6 +133,6 @@ export function createPostgresRetentionJournal({pool,now=Date.now,maxRequestMs=1
  async function ownerOf({tenantId,kind,subjectId}){if(!tables[kind])fail('RETENTION_INVALID_REQUEST');
   const rows=kind==='conversation'?(await pool.query('SELECT owner_actor_id AS owner FROM meri_conversations.conversations WHERE tenant_id=$1 AND conversation_id=$2',[tenantId,subjectId])).rows:(await pool.query('SELECT actor_id AS owner FROM meri_artifacts.heads WHERE tenant_id=$1 AND artifact_id=$2',[tenantId,subjectId])).rows;
   return rows[0]?.owner??null;}
- return Object.freeze({get,set,keys,exclusive,planRows,rows,tx,ownerOf,rowClasses:Object.freeze(Object.keys(rowWhere))});
+ return Object.freeze({get,set,keys,exclusive,planRows,rows,tx,readProjection,assertProjection,ownerOf,rowClasses:Object.freeze(Object.keys(rowWhere))});
 }
 export {parseSubject};
