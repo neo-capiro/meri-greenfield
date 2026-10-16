@@ -57,7 +57,9 @@
         "sha256": "19aa0a0a3daef6dfcab37541a08b6d9f3aeccadaaa016982e2495719a1b6806e",
         "jsonPointer": "#/operations/8"
       },
-      "currentContext": "Exact current ctx.role capiro_admin owns contact/private metadata exposure; current tenant/user own audit context.",
+      "currentContext": [
+        "Exact current ctx.role capiro_admin owns contact/private metadata exposure; current tenant/user own audit context."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -144,7 +146,9 @@
         "sha256": "61fc978bc31d651372340b7c15ebde71317a06716ce79974a9afc7d213c10255",
         "jsonPointer": "#/operations/11"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -176,7 +180,9 @@
         "sha256": "61fc978bc31d651372340b7c15ebde71317a06716ce79974a9afc7d213c10255",
         "jsonPointer": "#/operations/12"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -203,7 +209,9 @@
         "sha256": "61fc978bc31d651372340b7c15ebde71317a06716ce79974a9afc7d213c10255",
         "jsonPointer": "#/operations/13"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -220,7 +228,9 @@
         "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
         "jsonPointer": "#/operations/0"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -252,7 +262,9 @@
         "sha256": "61fc978bc31d651372340b7c15ebde71317a06716ce79974a9afc7d213c10255",
         "jsonPointer": "#/operations/2"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -286,7 +298,9 @@
         "sha256": "61fc978bc31d651372340b7c15ebde71317a06716ce79974a9afc7d213c10255",
         "jsonPointer": "#/operations/1"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -301,7 +315,9 @@
         "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
         "jsonPointer": "#/operations/9"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -333,7 +349,9 @@
         "sha256": "61fc978bc31d651372340b7c15ebde71317a06716ce79974a9afc7d213c10255",
         "jsonPointer": "#/operations/0"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -348,7 +366,9 @@
         "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
         "jsonPointer": "#/operations/4"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -363,7 +383,9 @@
         "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
         "jsonPointer": "#/operations/1"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -378,7 +400,9 @@
         "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
         "jsonPointer": "#/operations/3"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -408,7 +432,9 @@
         "sha256": "61fc978bc31d651372340b7c15ebde71317a06716ce79974a9afc7d213c10255",
         "jsonPointer": "#/operations/6"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -443,7 +469,9 @@
         "sha256": "61fc978bc31d651372340b7c15ebde71317a06716ce79974a9afc7d213c10255",
         "jsonPointer": "#/operations/5"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -478,7 +506,9 @@
         "sha256": "61fc978bc31d651372340b7c15ebde71317a06716ce79974a9afc7d213c10255",
         "jsonPointer": "#/operations/4"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -493,7 +523,9 @@
         "sha256": "19aa0a0a3daef6dfcab37541a08b6d9f3aeccadaaa016982e2495719a1b6806e",
         "jsonPointer": "#/operations/2"
       },
-      "currentContext": "Global public rows; defaultCongress from canonical server parser is required for implicit designations; no client authority inferred.",
+      "currentContext": [
+        "Global public rows; defaultCongress from canonical server parser is required for implicit designations; no client authority inferred."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -508,7 +540,9 @@
         "sha256": "19aa0a0a3daef6dfcab37541a08b6d9f3aeccadaaa016982e2495719a1b6806e",
         "jsonPointer": "#/operations/3"
       },
-      "currentContext": "Global public rows; implicit bill defaultCongress server-owned; member must resolve stored identity before scoped vote query.",
+      "currentContext": [
+        "Global public rows; implicit bill defaultCongress server-owned; member must resolve stored identity before scoped vote query."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -524,7 +558,9 @@
         "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
         "jsonPointer": "#/operations/19"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -540,7 +576,9 @@
         "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
         "jsonPointer": "#/operations/17"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -556,7 +594,9 @@
         "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
         "jsonPointer": "#/operations/15"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -572,7 +612,9 @@
         "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
         "jsonPointer": "#/operations/16"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -588,7 +630,9 @@
         "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
         "jsonPointer": "#/operations/18"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -605,7 +649,9 @@
         "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
         "jsonPointer": "#/operations/12"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -622,7 +668,9 @@
         "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
         "jsonPointer": "#/operations/11"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -639,7 +687,9 @@
         "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
         "jsonPointer": "#/operations/13"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -656,7 +706,9 @@
         "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
         "jsonPointer": "#/operations/14"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -673,7 +725,9 @@
         "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
         "jsonPointer": "#/operations/10"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -700,7 +754,9 @@
         "sha256": "61fc978bc31d651372340b7c15ebde71317a06716ce79974a9afc7d213c10255",
         "jsonPointer": "#/operations/3"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -713,7 +769,9 @@
         "sha256": "19aa0a0a3daef6dfcab37541a08b6d9f3aeccadaaa016982e2495719a1b6806e",
         "jsonPointer": "#/operations/15"
       },
-      "currentContext": "Current native admission; explicit jurisdiction/state selector controls domain resolution, not caller client grant.",
+      "currentContext": [
+        "Current native admission; explicit jurisdiction/state selector controls domain resolution, not caller client grant."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -726,7 +784,9 @@
         "sha256": "19aa0a0a3daef6dfcab37541a08b6d9f3aeccadaaa016982e2495719a1b6806e",
         "jsonPointer": "#/operations/16"
       },
-      "currentContext": "Public global current directory; native user context required.",
+      "currentContext": [
+        "Public global current directory; native user context required."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -755,7 +815,9 @@
         "sha256": "61fc978bc31d651372340b7c15ebde71317a06716ce79974a9afc7d213c10255",
         "jsonPointer": "#/operations/10"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -768,7 +830,9 @@
         "sha256": "19aa0a0a3daef6dfcab37541a08b6d9f3aeccadaaa016982e2495719a1b6806e",
         "jsonPointer": "#/operations/13"
       },
-      "currentContext": "Global public PE/bill evidence; current native admission required.",
+      "currentContext": [
+        "Global public PE/bill evidence; current native admission required."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -781,7 +845,9 @@
         "sha256": "19aa0a0a3daef6dfcab37541a08b6d9f3aeccadaaa016982e2495719a1b6806e",
         "jsonPointer": "#/operations/12"
       },
-      "currentContext": "Current native standard user; public PE/award evidence with explicit provenance and as-of cutoff inside owner.",
+      "currentContext": [
+        "Current native standard user; public PE/award evidence with explicit provenance and as-of cutoff inside owner."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -794,7 +860,9 @@
         "sha256": "19aa0a0a3daef6dfcab37541a08b6d9f3aeccadaaa016982e2495719a1b6806e",
         "jsonPointer": "#/operations/14"
       },
-      "currentContext": "Global stored provision linkage; accepted direct PE vs program-level candidate attribution remains distinct.",
+      "currentContext": [
+        "Global stored provision linkage; accepted direct PE vs program-level candidate attribution remains distinct."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -809,7 +877,9 @@
         "sha256": "19aa0a0a3daef6dfcab37541a08b6d9f3aeccadaaa016982e2495719a1b6806e",
         "jsonPointer": "#/operations/11"
       },
-      "currentContext": "Server current tenant chat evidenceAccuracyMode; global stored PE and year/milestone source values.",
+      "currentContext": [
+        "Server current tenant chat evidenceAccuracyMode; global stored PE and year/milestone source values."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -860,7 +930,9 @@
         "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
         "jsonPointer": "#/operations/7"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -877,7 +949,9 @@
         "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
         "jsonPointer": "#/operations/6"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -894,7 +968,9 @@
         "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
         "jsonPointer": "#/operations/5"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -931,7 +1007,9 @@
         "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
         "jsonPointer": "#/operations/2"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -944,7 +1022,9 @@
         "sha256": "19aa0a0a3daef6dfcab37541a08b6d9f3aeccadaaa016982e2495719a1b6806e",
         "jsonPointer": "#/operations/4"
       },
-      "currentContext": "Current native authenticated principal; no caller-supplied actorRole/client scope needed for these global public records.",
+      "currentContext": [
+        "Current native authenticated principal; no caller-supplied actorRole/client scope needed for these global public records."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -957,7 +1037,9 @@
         "sha256": "19aa0a0a3daef6dfcab37541a08b6d9f3aeccadaaa016982e2495719a1b6806e",
         "jsonPointer": "#/operations/6"
       },
-      "currentContext": "Current native authenticated context; no model actor/client selector establishes authority.",
+      "currentContext": [
+        "Current native authenticated context; no model actor/client selector establishes authority."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -970,7 +1052,9 @@
         "sha256": "19aa0a0a3daef6dfcab37541a08b6d9f3aeccadaaa016982e2495719a1b6806e",
         "jsonPointer": "#/operations/5"
       },
-      "currentContext": "Current native user/tenant admission remains required although public data query is system-scoped.",
+      "currentContext": [
+        "Current native user/tenant admission remains required although public data query is system-scoped."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -1002,7 +1086,9 @@
         "sha256": "61fc978bc31d651372340b7c15ebde71317a06716ce79974a9afc7d213c10255",
         "jsonPointer": "#/operations/8"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -1029,7 +1115,9 @@
         "sha256": "61fc978bc31d651372340b7c15ebde71317a06716ce79974a9afc7d213c10255",
         "jsonPointer": "#/operations/7"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -1042,7 +1130,9 @@
         "sha256": "d294db825ee3e7c03a873489d091b69cab54bff6f7dec579b23d3fdcf2cd5b9f",
         "jsonPointer": "#/families/3/operations/0"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -1057,7 +1147,9 @@
         "sha256": "d294db825ee3e7c03a873489d091b69cab54bff6f7dec579b23d3fdcf2cd5b9f",
         "jsonPointer": "#/families/4/operations/0"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -1073,7 +1165,9 @@
         "sha256": "d294db825ee3e7c03a873489d091b69cab54bff6f7dec579b23d3fdcf2cd5b9f",
         "jsonPointer": "#/families/5/operations/1"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -1089,7 +1183,9 @@
         "sha256": "d294db825ee3e7c03a873489d091b69cab54bff6f7dec579b23d3fdcf2cd5b9f",
         "jsonPointer": "#/families/5/operations/0"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -1108,7 +1204,9 @@
         "sha256": "d294db825ee3e7c03a873489d091b69cab54bff6f7dec579b23d3fdcf2cd5b9f",
         "jsonPointer": "#/families/6/operations/0"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -1124,7 +1222,9 @@
         "sha256": "d294db825ee3e7c03a873489d091b69cab54bff6f7dec579b23d3fdcf2cd5b9f",
         "jsonPointer": "#/families/2/operations/0"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -1144,7 +1244,9 @@
         "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
         "jsonPointer": "#/operations/8"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -1157,7 +1259,9 @@
         "sha256": "d294db825ee3e7c03a873489d091b69cab54bff6f7dec579b23d3fdcf2cd5b9f",
         "jsonPointer": "#/families/0/operations/1"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -1170,7 +1274,9 @@
         "sha256": "d294db825ee3e7c03a873489d091b69cab54bff6f7dec579b23d3fdcf2cd5b9f",
         "jsonPointer": "#/families/0/operations/0"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -1183,7 +1289,9 @@
         "sha256": "d294db825ee3e7c03a873489d091b69cab54bff6f7dec579b23d3fdcf2cd5b9f",
         "jsonPointer": "#/families/1/operations/0"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -1196,7 +1304,9 @@
         "sha256": "d294db825ee3e7c03a873489d091b69cab54bff6f7dec579b23d3fdcf2cd5b9f",
         "jsonPointer": "#/families/1/operations/1"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -1209,7 +1319,9 @@
         "sha256": "d294db825ee3e7c03a873489d091b69cab54bff6f7dec579b23d3fdcf2cd5b9f",
         "jsonPointer": "#/families/7/operations/0"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     },
     {
@@ -1250,7 +1362,9 @@
         "sha256": "61fc978bc31d651372340b7c15ebde71317a06716ce79974a9afc7d213c10255",
         "jsonPointer": "#/operations/9"
       },
-      "currentContext": "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly.",
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     }
   ]
