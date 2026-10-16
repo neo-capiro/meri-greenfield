@@ -1,8 +1,9 @@
 /** PDF create/revise/replay through the canonical owners the document application dispatches to: the durable
  * PostgresArtifactService (scripted canonical ledger, real local immutable store, real DOCX generator) for writes and
  * the ArtifactService for inspect/download. The DOCX -> PDF converter is the SYNTHETIC port from
- * apps/artifacts/test/pdf-fixtures.mjs; an opt-in variant uses real LibreOffice (MERI_ARTIFACT_SOFFICE, local evidence only). PDF stays unadmitted by format-admission.mjs (asserted last); this proves the
- * owners beneath that admission, not the HTTP route, native rendering or a qualified renderer. */
+ * apps/artifacts/test/pdf-fixtures.mjs; an opt-in variant uses real LibreOffice (MERI_ARTIFACT_SOFFICE, local evidence only). Without the
+ * explicit admission switch PDF stays unadmitted (asserted last); this proves the owners beneath that admission. The admitted HTTP route
+ * through the bound renderer port is pdf-http.test.mjs. Neither is native rendering or a qualified renderer. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtemp,readdir,rm} from 'node:fs/promises';
@@ -67,7 +68,7 @@ test('PDF revision is a durable full re-render with exact parent; replay returns
 test('real LibreOffice durable PDF create/revise/replay (opt-in MERI_ARTIFACT_SOFFICE)',{skip:!process.env.MERI_ARTIFACT_SOFFICE&&'MERI_ARTIFACT_SOFFICE not set'},
  t=>durableLineage(t,root=>createLibreOfficeTransformer({executable:process.env.MERI_ARTIFACT_SOFFICE,tempRoot:root})));
 
-test('the document application still refuses PDF before generation (admission is the remaining step)',async t=>{
+test('without the admission switch the document application still refuses PDF before generation',async t=>{
  const f=await createLocalDocumentFixture({mode:'synthetic-local',pythonExecutable:python});t.after(()=>f.close());
  const app=createDocumentApplication({sessions:f.sessions,selectedClientId:f.selectedClientId,artifactOptions:f.artifactOptions,credential:f.credential,now:f.now,limits:f.limits,enabled:true});
  const session=await f.sessions.issue({identityCredential:f.nativeCredential});

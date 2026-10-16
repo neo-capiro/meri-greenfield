@@ -18,7 +18,7 @@ export function createRuntimeArtifactApplication(configuration){const c=own(conf
   const body=data(await jsonBody(info,limits.maxRequestBytes,life,life.check)),requestSha256=hash({intent:info.intent,body});
   const rawResolved=await life.run(signal=>resolve({credential:info.credential,intent:info.intent,body,requestSha256,deadlineMs,signal}));if(rawResolved===null||rawResolved===undefined)fail('UNAVAILABLE');
   const resolved=own(rawResolved,['documentOptions','recheck']),recheck=method(rawResolved,'recheck');
-  const options=own(resolved.documentOptions,['sessions','selectedClientId','artifactOptions','credential','now','limits'],['enabled']);if(options.sessions!==c.sessions||options.now!==c.now)fail('ACCESS_DENIED');
+  const options=own(resolved.documentOptions,['sessions','selectedClientId','artifactOptions','credential','now','limits'],['enabled','admitPdf','previewOptions']);if(options.sessions!==c.sessions||options.now!==c.now)fail('ACCESS_DENIED');
   const innerLimits=documentLimits(options.limits);
   const effectiveLimits=Object.fromEntries(Object.keys(limits).map(key=>[key,Math.min(limits[key],innerLimits[key])]));
   const effectiveDeadlineMs=deadlineMs-limits.maxRequestMs+effectiveLimits.maxRequestMs;life.limitDeadline(effectiveDeadlineMs);
@@ -34,11 +34,14 @@ export function createRuntimeArtifactApplication(configuration){const c=own(conf
   const wrap=(port,name,resource=()=>null)=>{const invoke=method(port,name);return async(...args)=>{await fresh('effect',resource(args));const value=await life.run(()=>invoke(...args));await fresh('effect',resource(args));return value;};};
   const authority={check:wrap(o.authority,'check',args=>args[0]?.input??null)},authorize=o.authorize;
   if(typeof authorize!=='function'||types.isProxy(authorize))fail('ACCESS_DENIED');
-  const app=createDocumentApplication({...options,limits:effectiveLimits,artifactOptions:{...o,authority,async authorize(call){await fresh('effect',call.resource);const result=await life.run(()=>authorize(call));await fresh('effect',call.resource);return result;},
+  // Preview record reads/commits are rechecked like every other artifact port; the renderer port is process-local and is
+  // passed through unchanged (its admission brand must survive).
+  const previewOptions=options.previewOptions===undefined?{}:{previewOptions:(p=>({...p,previews:{read:wrap(p.previews,'read',args=>({versionId:args[0]})),commit:wrap(p.previews,'commit',args=>({versionId:args[0]?.versionId,previewId:args[0]?.previewId}))}}))(own(options.previewOptions,['previews','renderer'],['maxPreviewBytes']))};
+  const app=createDocumentApplication({...options,...previewOptions,limits:effectiveLimits,artifactOptions:{...o,authority,async authorize(call){await fresh('effect',call.resource);const result=await life.run(()=>authorize(call));await fresh('effect',call.resource);return result;},
    versions:{read:wrap(o.versions,'read',args=>typeof args[0]==='string'?{versionId:args[0]}:args[0]),commit:wrap(o.versions,'commit',args=>({versionId:args[0].version.versionId,object:args[0].version.object}))},
    objects:{get:wrap(o.objects,'get',args=>args[0]),put:wrap(o.objects,'put')},executor:{execute:wrap(o.executor,'execute')}}});
   await fresh('admission');const serialized=JSON.stringify(body),headers=new Headers(info.headers);headers.set('content-length',String(Buffer.byteLength(serialized)));
-  state.writeStarted=['create','revise'].includes(info.intent);state.readStarted=!state.writeStarted;
+  state.writeStarted=['create','revise','preview-publish'].includes(info.intent);state.readStarted=!state.writeStarted;
   const response=await life.run(signal=>app.handle(new Request(info.url,{method:info.method,headers,body:serialized,signal})));if(response.status!==200)return response;state.completed=true;
   await fresh('release');life.check();return response;
  }catch(error){return errorResponse(error,state);}finally{life?.close();}}});

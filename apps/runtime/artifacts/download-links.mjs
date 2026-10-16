@@ -1,8 +1,8 @@
 /** Short-lived revocable download links over the unchanged canonical document application. Two additive routes; every other path,
  * including the existing `/api/documents/download`, is delegated to the wrapped application unchanged, and link bytes still flow
- * through that canonical download.
- *   POST /api/documents/links/issue  {versionId} -> {versionId, token, expiresAtMs}
- *   POST /api/documents/links/redeem {token}     -> the attachment the canonical download returns
+ * through that canonical download (or, for `target:'preview'`, through the canonical `/api/documents/preview` route).
+ *   POST /api/documents/links/issue  {versionId, target?} -> {versionId, target?, token, expiresAtMs}  (target: download (default) | preview)
+ *   POST /api/documents/links/redeem {token}              -> the attachment the canonical download returns, or the inline preview
  * Both require the caller's Bearer session and a JSON body; a token is accepted only in the redeem body, never in a URL, so it cannot
  * reach request-line access logs, URL telemetry or a Referer. Issuance and redemption run the same authorized read: canonical inspect
  * (version-scoped `artifact.inspect` authorization, retention gate, current bytes), the suppression generation, then the canonical
@@ -35,7 +35,7 @@ import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {own,data,CommandError} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {jsonBody,response} from '../../control/document-application/http.mjs';
-import {createSignedDownloadCodec,MIN_KEY_BYTES,MAX_TTL_MS} from '../../artifacts/storage/signed-download.mjs';
+import {createSignedDownloadCodec,MIN_KEY_BYTES,MAX_TTL_MS,LINK_TARGETS} from '../../artifacts/storage/signed-download.mjs';
 import {readSecret,fault} from '../config.mjs';
 export const LINK_ROUTE=/^\/api\/documents\/links\/(issue|redeem)$/u;
 const MAX_BODY_BYTES=4096,JSON_TYPE=/^application\/json(?:\s*;\s*charset=utf-8)?$/iu;
@@ -68,14 +68,16 @@ export function createDownloadLinkApplication({documents,sessions,key,generation
   * under the caller's own session.
   * With `expected` (redemption) the signed sha256 and generation must match before the download is attempted. A canonical refusal is
   * returned as `{refused}` unchanged. */
- async function authorizedRead(request,versionId,who,life,expected=null){
+ async function authorizedRead(request,versionId,target,who,life,expected=null){
   const inspected=await life.run(signal=>forward(request,'inspect',{versionId},signal));if(inspected.status!==200)return {refused:inspected};
   const {version}=data(await life.run(()=>inspected.json()));if(version?.versionId!==versionId)fail('DOWNLOAD_LINK_REFUSED');
-  if(expected&&version.object.sha256!==expected.sha256)fail('DOWNLOAD_LINK_BYTES');
+  if(expected&&target==='download'&&version.object.sha256!==expected.sha256)fail('DOWNLOAD_LINK_BYTES');
   const subjects=versionSubjects(who.binding,version),read=()=>life.run(()=>generation(subjects)),suppressionGeneration=await read();
   if(expected&&suppressionGeneration!==expected.suppressionGeneration)fail('DOWNLOAD_LINK_REVOKED');
-  const downloaded=await life.run(signal=>forward(request,'download',{versionId},signal));if(downloaded.status!==200)return {refused:downloaded};
-  const bytes=Buffer.from(await life.run(()=>downloaded.arrayBuffer()));if(sha256(bytes)!==version.object.sha256)fail('DOWNLOAD_LINK_BYTES');
+  // The canonical download, or the canonical preview read (which itself binds the preview to this version's exact bytes).
+  const downloaded=await life.run(signal=>forward(request,target,{versionId},signal));if(downloaded.status!==200)return {refused:downloaded};
+  const bytes=Buffer.from(await life.run(()=>downloaded.arrayBuffer())),digest=sha256(bytes);
+  if(target==='download'&&digest!==version.object.sha256||expected&&digest!==expected.sha256)fail('DOWNLOAD_LINK_BYTES');
   // Early refusal of a suppression that landed during the body read, before spending an authority read.
   if(await read()!==suppressionGeneration)fail('DOWNLOAD_LINK_REVOKED');
   // The linearization point (module comment): the final authority read, then the final generation read, which brackets it with the
@@ -83,17 +85,19 @@ export function createDownloadLinkApplication({documents,sessions,key,generation
   const latest=await current(request,life);if(latest.actorId!==who.actorId||latest.scopeDigest!==who.scopeDigest)fail('DOWNLOAD_LINK_ACTOR');
   const confirmed=await read();
   if(confirmed!==suppressionGeneration)fail('DOWNLOAD_LINK_REVOKED');if(now()>=latest.expiresAtMs)fail('SESSION_REFUSED');life.check();
-  return {version,bytes,headers:downloaded.headers,suppressionGeneration,sessionExpiresAtMs:latest.expiresAtMs};
+  return {version,bytes,digest,headers:downloaded.headers,suppressionGeneration,sessionExpiresAtMs:latest.expiresAtMs};
  }
  async function issue(request,body,life){
-  const {versionId}=own(body,['versionId']);if(typeof versionId!=='string')fail('INVALID_REQUEST');const who=await current(request,life),read=await authorizedRead(request,versionId,who,life);if(read.refused)return read.refused;
-  const expiresAtMs=Math.min(now()+ttlMs,read.sessionExpiresAtMs),token=codec.issue({versionId,sha256:read.version.object.sha256,scopeDigest:who.scopeDigest,actorId:who.actorId,expiresAtMs,suppressionGeneration:read.suppressionGeneration});
-  return response({versionId,token,expiresAtMs});
+  const {versionId,target='download'}=own(body,['versionId'],['target']);if(typeof versionId!=='string'||!LINK_TARGETS.includes(target))fail('INVALID_REQUEST');
+  const who=await current(request,life),read=await authorizedRead(request,versionId,target,who,life);if(read.refused)return read.refused;
+  const preview=target==='preview'?{target}:{},expiresAtMs=Math.min(now()+ttlMs,read.sessionExpiresAtMs);
+  const token=codec.issue({versionId,...preview,sha256:read.digest,scopeDigest:who.scopeDigest,actorId:who.actorId,expiresAtMs,suppressionGeneration:read.suppressionGeneration});
+  return response({versionId,...preview,token,expiresAtMs});
  }
  async function redeem(request,body,life){
   const {token}=own(body,['token']),who=await current(request,life),claims=codec.verify(token);
   if(who.actorId!==claims.actorId||who.scopeDigest!==claims.scopeDigest)fail('DOWNLOAD_LINK_ACTOR');
-  const read=await authorizedRead(request,claims.versionId,who,life,claims);if(read.refused)return read.refused;
+  const read=await authorizedRead(request,claims.versionId,claims.target??'download',who,life,claims);if(read.refused)return read.refused;
   if(now()>=claims.expiresAtMs)fail('DOWNLOAD_LINK_EXPIRED');life.check();
   return new Response(read.bytes,{status:200,headers:read.headers});
  }

@@ -36,6 +36,13 @@ export function createPostgresArtifactVersions(options){const {pool,now,maxReque
   async listVersions(){const rows=(await life.run(()=>c.query('SELECT version_id FROM meri_artifacts.versions WHERE request_sha256=$1 ORDER BY version_id LIMIT 1025',[query.requestSha256]))).rows;life.check();return rows.map(row=>row.version_id+'.json');}});}
  async function read(value,signal){return transaction(signal,async(c,life)=>{if(typeof value!=='string')return replay(c,data(value),life);
   const record=await rawVersion(c,value,life);return replay(c,{kind:'artifact-replay',versionId:value,requestSha256:record.requestSha256,resultSha256:null},life);});}
+ /** The version id whose immutable object is `objectId` within one tenant conversation (decoded and checked); ENOENT when none.
+  * Unindexed JSON-path read on the existing table (no migration); an index is a separate migration proposal. */
+ async function findByObject(value,signal){const q=data(own(value,['objectId','tenantId','conversationId']));uuid(q.objectId);uuid(q.conversationId);if(typeof q.tenantId!=='string'||!q.tenantId)fail('ARTIFACT_STORAGE_INPUT');
+  return transaction(signal,async(c,life)=>{const rows=(await life.run(()=>c.query("SELECT version_id FROM meri_artifacts.versions WHERE tenant_id=$1 AND conversation_id=$2 AND record #>> '{version,object,objectId}'=$3 ORDER BY version_id LIMIT 2",[q.tenantId,q.conversationId,q.objectId]))).rows;life.check();
+   if(!rows.length)throw Object.assign(Error('ENOENT'),{code:'ENOENT'});if(rows.length!==1)fail('ARTIFACT_VERSION_CORRUPT');
+   // rawVersion decodes the row and checks its relational tenant/conversation columns against the record.
+   return (await rawVersion(c,rows[0].version_id,life)).version.versionId;});}
  async function commit(value,signal){const fields=own(value,['version','spec','specSha256','requestSha256','inspection','expectedParentVersionId']),{expectedParentVersionId,...raw}=fields,record=recordValue(raw),version=record.version,b=version.binding;
   if(expectedParentVersionId!==null)uuid(expectedParentVersionId);if(version.parentVersionId!==expectedParentVersionId)fail('ARTIFACT_COMMIT_INPUT');
   return transaction(signal,async(c,life)=>{await life.run(()=>c.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))',[`${b.tenantId}:${version.artifactId}`]));life.check();
@@ -52,5 +59,5 @@ export function createPostgresArtifactVersions(options){const {pool,now,maxReque
    if(current){const result=await life.run(()=>c.query('UPDATE meri_artifacts.heads SET version_id=$2,projection=$3,projection_sha256=$4 WHERE artifact_id=$1 AND version_id=$5',[version.artifactId,version.versionId,projection,v.hash(projection),expectedParentVersionId]));if(result.rowCount!==1)fail('ARTIFACT_STALE_PARENT');}
    else await life.run(()=>c.query('INSERT INTO meri_artifacts.heads(artifact_id,version_id,tenant_id,actor_id,conversation_id,projection,projection_sha256) VALUES($1,$2,$3,$4,$5,$6,$7)',[version.artifactId,version.versionId,b.tenantId,b.actorId,b.conversationId,projection,v.hash(projection)]));
    life.check();return {status:'committed',versionId:version.versionId,requestSha256:record.requestSha256,versionSha256:v.hash(version)};});}
- return Object.freeze({read,commit});
+ return Object.freeze({read,commit,findByObject});
 }

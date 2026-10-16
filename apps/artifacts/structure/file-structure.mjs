@@ -31,3 +31,8 @@ export function structureCheck(bytes,format){
 }
 /** True when `bytes` is structurally valid for `format` (one of the canonical artifact formats). */
 export function structurallyValid(bytes,format){return structureCheck(bytes,format).valid;}
+/** Page count of a structurally valid PDF (its verified page-tree leaves), or null when `bytes` is not one. */
+export function pdfPageCount(bytes){
+ try{if(!Buffer.isBuffer(bytes))refuse('STRUCTURE_UNREADABLE');return verifyPdf(bytes).pages;}
+ catch{return null;}
+}

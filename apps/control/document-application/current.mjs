@@ -14,7 +14,8 @@ function portError(error){
 }
 const asyncPort=fn=>async(...args)=>{try{return await fn(...args);}catch(error){throw portError(error);}};
 const syncPort=fn=>(...args)=>{try{return fn(...args);}catch(error){throw portError(error);}};
-function method(value,key){
+/** An own data-property method of a borrowed port, captured once; its rejections become inert closed codes. */
+export function method(value,key){
  if(!value||typeof value!=='object'||types.isProxy(value))fail('DOCUMENT_CONFIGURATION',500);
  const d=Object.getOwnPropertyDescriptor(value,key);
  if(!d||!Object.hasOwn(d,'value')||typeof d.value!=='function')fail('DOCUMENT_CONFIGURATION',500);
@@ -26,19 +27,19 @@ export function documentLimits(value){
  return limits;
 }
 export function configuration(value){
- const c=own(value,['sessions','selectedClientId','artifactOptions','credential','now','limits'],['enabled']);
+ const c=own(value,['sessions','selectedClientId','artifactOptions','credential','now','limits'],['enabled','admitPdf','previewOptions']);
  const o=own(c.artifactOptions,['pool','allocationJson','producerContext','descriptor','context','validators','authority','authorize','versions','objects','executor','now','ids','newReservationId','limits'],['sourceEnabled','namespace','retention']);
  if(o.retention!==undefined&&typeof o.retention?.assertServable!=='function')fail('DOCUMENT_CONFIGURATION',500);
  const limits=documentLimits(c.limits);
- if(typeof c.now!=='function'||c.now!==o.now||o.validators!==v||typeof c.credential!=='string'||!c.credential||c.credential.length>4096||typeof(c.enabled??false)!=='boolean'||typeof(o.sourceEnabled??false)!=='boolean'||o.namespace!==undefined&&!['qualification','product'].includes(o.namespace))fail('DOCUMENT_CONFIGURATION',500);
- const context=data(v.context(o.context)),formatAdmission=admitDocumentDescriptor(o.descriptor),descriptor=formatAdmission.descriptor;
+ if(typeof c.now!=='function'||c.now!==o.now||o.validators!==v||typeof c.credential!=='string'||!c.credential||c.credential.length>4096||typeof(c.enabled??false)!=='boolean'||typeof(c.admitPdf??false)!=='boolean'||typeof(o.sourceEnabled??false)!=='boolean'||o.namespace!==undefined&&!['qualification','product'].includes(o.namespace))fail('DOCUMENT_CONFIGURATION',500);
+ const context=data(v.context(o.context)),formatAdmission=admitDocumentDescriptor(o.descriptor,{pdf:c.admitPdf??false}),descriptor=formatAdmission.descriptor;
  if(!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(c.selectedClientId??'')||!context.scopes.some(s=>s.kind==='client'&&s.resourceId.toLowerCase()===c.selectedClientId))fail('DOCUMENT_CONFIGURATION',500);
  for(const fn of ['authorize','ids','newReservationId'])if(typeof o[fn]!=='function')fail('DOCUMENT_CONFIGURATION',500);
  const options={...o,authorize:asyncPort(o.authorize),ids:syncPort(o.ids),newReservationId:syncPort(o.newReservationId),context,descriptor,producerContext:data(o.producerContext),limits:data(o.limits),
   authority:{check:method(o.authority,'check')},versions:{read:method(o.versions,'read'),commit:method(o.versions,'commit')},
   objects:{get:method(o.objects,'get'),put:method(o.objects,'put')},executor:{execute:method(o.executor,'execute')}};
  return {sessions:{authenticateSession:method(c.sessions,'authenticateSession'),readCurrentState:method(c.sessions,'readCurrentState')},
-  options,formatAdmission,limits,now:c.now,credential:c.credential,selectedClientId:c.selectedClientId,enabled:c.enabled??false};
+  options,formatAdmission,limits,now:c.now,credential:c.credential,selectedClientId:c.selectedClientId,enabled:c.enabled??false,previewOptions:c.previewOptions};
 }
 export function requestCurrent(config,info,life,deadlineMs){
  const context=config.options.context;let cutoff=deadlineMs;

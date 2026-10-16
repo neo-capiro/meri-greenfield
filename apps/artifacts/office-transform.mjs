@@ -14,10 +14,13 @@ const xlsxRecalculationProfile=`<?xml version="1.0" encoding="UTF-8"?>
 </oor:items>
 `;
 
-// Source adapter only; caller must admit exact CLI/image/sandbox independently.
+// Source adapter only; caller must admit exact CLI/image/sandbox independently (renderer.mjs is that admission port).
+// DOCX/XLSX/PPTX -> PDF serves generation (DOCX) and previews; XLSX -> XLSX serves recalculation. An XLSX input always
+// loads with the fixed recalculation profile, so a workbook preview shows recalculated values.
 export function officeTransformArguments({workspace,format,target}){
-  if(!isAbsolute(workspace)||!((format==='docx'&&target==='pdf')||(format==='xlsx'&&target==='xlsx')))fail('ARTIFACT_TRANSFORM_UNSUPPORTED');
-  return ['-env:UserInstallation='+pathToFileURL(join(workspace,'profile')).href,'--headless','--nologo','--nodefault','--norestore','--convert-to',target,'--outdir',join(workspace,'out'),join(workspace,'input.'+format)];
+  if(!isAbsolute(workspace)||!((['docx','xlsx','pptx','pdf'].includes(format)&&target==='pdf')||(format==='xlsx'&&target==='xlsx')))fail('ARTIFACT_TRANSFORM_UNSUPPORTED');
+  // PDF -> PDF opens the file in Draw (native openability checks only; no generation or preview path converts a PDF).
+  return ['-env:UserInstallation='+pathToFileURL(join(workspace,'profile')).href,'--headless','--nologo','--nodefault','--norestore',...(format==='pdf'?['--infilter=draw_pdf_import']:[]),'--convert-to',target,'--outdir',join(workspace,'out'),join(workspace,'input.'+format)];
 }
 export function createLibreOfficeTransformer({executable,tempRoot}){
   if(typeof executable!=='string'||!isAbsolute(executable)||!isAbsolute(tempRoot))fail('ARTIFACT_RENDERER_UNAVAILABLE');
