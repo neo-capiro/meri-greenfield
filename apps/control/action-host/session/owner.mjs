@@ -18,10 +18,12 @@ export function assertActionSessionReceipt(value,at){
  return v;
 }
 export function createActionSessionOwner(configuration){
- const {mode,verifyIdentity,resolveContext,now=Date.now,limits,readTransition,resolveTransitionContext}=own(configuration,['mode','verifyIdentity','resolveContext','limits'],['now','readTransition','resolveTransitionContext']);
+ const {mode,verifyIdentity,resolveContext,now=Date.now,limits,readTransition,resolveTransitionContext,membership}=own(configuration,['mode','verifyIdentity','resolveContext','limits'],['now','readTransition','resolveTransitionContext','membership']);
  const l=data(own(limits,['maxSessions','maxRequestMs','maxTtlMs','maxFactBytes']));
  if(mode!=='process-local'||typeof verifyIdentity!=='function'||typeof resolveContext!=='function'||typeof now!=='function'||Object.values(l).some(n=>!Number.isSafeInteger(n)||n<1)||l.maxSessions>1000||l.maxRequestMs>30000||l.maxTtlMs>300000||l.maxFactBytes>131072)deny('SESSION_CONFIGURATION');
  if((readTransition!==undefined||resolveTransitionContext!==undefined)&&(typeof readTransition!=='function'||typeof resolveTransitionContext!=='function'))deny('SESSION_CONFIGURATION');
+ const member=membership===undefined?null:own(membership,['admit','recheck']);
+ if(member!==null&&Object.values(member).some(method=>typeof method!=='function'))deny('SESSION_CONFIGURATION');
  const sessions=new Map(),ids=new Map();let closed=false;
  function active(signal){const at=now();if(closed||signal?.aborted||!Number.isSafeInteger(at)||at<0)deny();return at;}
  function remove(r){sessions.delete(r.digest);ids.delete(r.sessionId);r.nativeCredential='';r.receipts.clear();}
@@ -30,18 +32,48 @@ export function createActionSessionOwner(configuration){
  function life(deadlineMs,signal){nativeSignal(signal);const at=active(signal);if(deadlineMs!==undefined&&!Number.isSafeInteger(deadlineMs))deny();let cutoff=Math.min(deadlineMs??at+l.maxRequestMs,at+l.maxRequestMs);const timer=createOperationLifetime({deadlineMs:cutoff,now,signal,errorFactory:()=>new ActionSessionError('SESSION_REFUSED')});return {...timer,deadline:()=>cutoff,limitDeadline(next){cutoff=Math.min(cutoff,next);timer.limitDeadline(cutoff);}};}
  function fact(value,keys,started,t){const v=data(value);own(v,keys);if(Buffer.byteLength(JSON.stringify(v))>l.maxFactBytes)deny();const at=active(t.signal);t.check();if(!Number.isSafeInteger(v.checkedAtMs)||v.checkedAtMs<started||v.checkedAtMs>at||!Number.isSafeInteger(v.expiresAtMs)||v.expiresAtMs<=at)deny();t.limitDeadline(v.expiresAtMs);return v;}
  function hints(value){const v=data(value);own(v,[],['conversationId','runId','clientId']);if(Object.values(v).some(x=>typeof x!=='string'||!uuid.test(x)))deny();return v;}
+ // The membership owner is independent of Core's native /identity and /context
+ // receipt join. Keep the original identity bytes for that join and pin only the
+ // admitted membership principal beside the opaque session.
+ function memberFact(raw,identity,selectedClientId){
+  const p=data(own(raw,['tenantId','actorId','role','permissions','clientIds','membershipRevision']));
+  if(p.tenantId!==identity.principal.tenantId||p.actorId!==identity.principal.actorId||
+   typeof p.membershipRevision!=='string'||!p.membershipRevision||p.membershipRevision.length>256||
+   typeof p.role!=='string'||!p.role||!Array.isArray(p.permissions)||
+   p.permissions.length>64||p.permissions.some(value=>typeof value!=='string')||
+   !Array.isArray(p.clientIds)||p.clientIds.length>4096||
+   p.clientIds.some(value=>typeof value!=='string'||!uuid.test(value))||new Set(p.clientIds).size!==p.clientIds.length||
+   selectedClientId!==undefined&&!p.clientIds.includes(selectedClientId))deny();
+  return p;
+ }
+ async function admitMember(credential,identity,t){
+  const receipt=data(own(await t.run(signal=>member.admit({credential,signal,deadlineMs:t.deadline()})),['principal','expiresAtMs']));
+  const p=memberFact(receipt.principal,identity);
+  if(!Number.isSafeInteger(receipt.expiresAtMs)||receipt.expiresAtMs<=active(t.signal))deny();
+  t.limitDeadline(receipt.expiresAtMs);return {principal:p,expiresAtMs:receipt.expiresAtMs};
+ }
+ async function recheckMember(principal,credential,identity,t,selectedClientId,record){
+  try{
+   const current=memberFact(await t.run(signal=>member.recheck({principal,credential,signal,deadlineMs:t.deadline()})),identity,selectedClientId);
+   if(!same(current,principal))deny();return current;
+  }catch{if(record&&!t.signal.aborted)remove(record);deny();}
+ }
  async function resolve(nativeCredential,selected,t,record,ceiling=Infinity){
   let started=active(t.signal);const identity=fact(await t.run(signal=>verifyIdentity({credential:nativeCredential,signal,deadlineMs:t.deadline()})),['principal','identityRevision','checkedAtMs','expiresAtMs'],started,t);
   own(identity.principal,['tenantId','actorId']);if(Object.values(identity.principal).some(v=>typeof v!=='string'||!v||v.length>256)||typeof identity.identityRevision!=='string'||!identity.identityRevision||identity.identityRevision.length>256)deny();
   if(record)valid(record,t.signal);
   if(record&&(!same(identity.principal,record.identity.principal)||identity.identityRevision!==record.identity.identityRevision))deny();
+  const membershipAdmission=member&&!record?await admitMember(nativeCredential,identity,t):undefined;
+  const membershipPrincipal=member?(record?record.membershipPrincipal:membershipAdmission.principal):undefined;
+  if(member&&record)await recheckMember(membershipPrincipal,nativeCredential,identity,t,record.context.selectedClientId,record);
   started=active(t.signal);const current=fact(await t.run(signal=>resolveContext({identityCredential:nativeCredential,identity,identitySha256:canonicalSha256(identity),hints:selected,signal,deadlineMs:t.deadline()})),['identitySha256','binding','scopes','selectedClientId','contextRevision','checkedAtMs','expiresAtMs'],started,t);
   if(record)valid(record,t.signal);validateShape('RunBinding',current.binding);if(current.identitySha256!==canonicalSha256(identity)||current.binding.tenantId!==identity.principal.tenantId||current.binding.actorId!==identity.principal.actorId||typeof current.selectedClientId!=='string'||!uuid.test(current.selectedClientId)||typeof current.contextRevision!=='string'||!current.contextRevision||current.contextRevision.length>256||!Array.isArray(current.scopes)||!current.scopes.length||current.scopes.length>100)deny();
   for(const scope of current.scopes){validateShape('Scope',scope);if(scope.tenantId!==identity.principal.tenantId)deny();}
   if(new Set(current.scopes.map(canonicalSha256)).size!==current.scopes.length||!current.scopes.some(s=>s.kind==='client'&&s.resourceId.toLowerCase()===current.selectedClientId))deny();
   for(const key of ['conversationId','runId'])if(selected[key]!==undefined&&selected[key]!==current.binding[key])deny();if(selected.clientId!==undefined&&selected.clientId!==current.selectedClientId)deny();
+  if(member)await recheckMember(membershipPrincipal,nativeCredential,identity,t,current.selectedClientId,record);
   const context=data({binding:current.binding,scopes:current.scopes,selectedClientId:current.selectedClientId,contextRevision:current.contextRevision});if(record&&!same(context,record.context))deny();
-  const expiresAtMs=Math.min(identity.expiresAtMs,current.expiresAtMs,record?.expiresAtMs??ceiling);t.limitDeadline(expiresAtMs);active(t.signal);t.check();return {identity,context,expiresAtMs};
+  const expiresAtMs=Math.min(identity.expiresAtMs,current.expiresAtMs,record?.expiresAtMs??ceiling,membershipAdmission?.expiresAtMs??Infinity);t.limitDeadline(expiresAtMs);active(t.signal);t.check();return {identity,context,expiresAtMs,...(member?{membershipPrincipal}:{})};
  }
  async function issue(value){const {identityCredential,hints:rawHints={},signal,deadlineMs}=own(value,['identityCredential'],['hints','signal','deadlineMs']);if(typeof identityCredential!=='string'||!identityCredential||identityCredential.length>8192||!/^\S+$/u.test(identityCredential))deny();const selected=hints(rawHints),t=life(deadlineMs,signal);let record;
   try{const started=active(t.signal);for(const r of sessions.values())if(r.expiresAtMs<=started)remove(r);if(sessions.size>=l.maxSessions)deny('SESSION_CAPACITY');const resolved=await resolve(identityCredential,selected,t,undefined,started+l.maxTtlMs);
@@ -70,6 +102,7 @@ export function createActionSessionOwner(configuration){
     const started=active(t.signal);identity=fact(await t.run(signal=>verifyIdentity({credential:nativeCredential,signal,deadlineMs:t.deadline()})),['principal','identityRevision','checkedAtMs','expiresAtMs'],started,t);check();
     own(identity.principal,['tenantId','actorId']);if(!same(identity.principal,originalIdentity.principal)||identity.identityRevision!==originalIdentity.identityRevision)deny();
    }catch{if(!t.signal.aborted)remove(r);else try{valid(r);}catch{}deny();}
+   if(member)await recheckMember(r.membershipPrincipal,nativeCredential,identity,t,sourceContext.selectedClientId,r);
    async function transition(){
     const started=active(t.signal),p=fact(await t.run(signal=>readTransition({sourceBinding:sourceContext.binding,controlId:input.controlId,signal,deadlineMs:t.deadline()})),transitionFactKeys,started,t);check();
     validateShape('RunBinding',p.sourceBinding);validateShape('RunBinding',p.targetBinding);
@@ -88,6 +121,7 @@ export function createActionSessionOwner(configuration){
     validateShape('RunBinding',current.binding);if(current.identitySha256!==canonicalSha256(identity)||!same(current.binding,before.targetBinding)||!same(current.scopes,sourceContext.scopes)||current.selectedClientId!==sourceContext.selectedClientId||typeof current.contextRevision!=='string'||!current.contextRevision||current.contextRevision.length>256)deny();
    }catch{if(!t.signal.aborted)remove(r);else try{valid(r);}catch{}deny();}
    const after=await transition();if(transitionHash(before)!==transitionHash(after))deny();check();
+   if(member){await recheckMember(r.membershipPrincipal,nativeCredential,identity,t,sourceContext.selectedClientId,r);check();}
    const result=data({checkedAtMs:active(t.signal),expiresAtMs:t.deadline(),transitionSha256:transitionHash(after)});release(r,t);return result;
   }catch{deny();}finally{t?.close();}
  }
