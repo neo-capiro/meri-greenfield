@@ -1,5 +1,5 @@
 /** Canonical createIntentJournal store adapter. Sole table meri_intents.preparations; no public fallback or DDL execution.
- * The table path is reserved for source authoring; exact intent DDL design/acceptance remains pending. */
+ * Parent released exact DDL source authoring in central allocation 0b0b7abd; SQL execution/integration qualification remain pending. */
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
 import {data,own,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {assertPool,transact} from '../product-persistence/transaction.mjs';
@@ -51,6 +51,7 @@ export function createPostgresIntentJournalStore({pool}){
   },
   async settle({key:rawKey,record:rawRecord,state,outcome:rawOutcome,signal}){
    const params=key(rawKey),r=record(rawRecord);if(state==='PENDING')refuse('INTENT_JOURNAL_STATE');const o=outcome(state,rawOutcome);
+   if(state==='PREPARED'&&o.release===undefined)refuse('INTENT_JOURNAL_STATE');
    return tx(signal,async client=>{
     const rows=(await client.query(`UPDATE ${TABLE} SET state=$6,outcome=$7::jsonb,settled_at=clock_timestamp() WHERE tenant_id=$1 AND actor_id=$2 AND conversation_id=$3 AND delivery_id=$4 AND record_sha256=$5 AND state='PENDING' RETURNING ${COLUMNS}`,[...params,hash(r),state,o===null?null:JSON.stringify(o)])).rows;
     if(rows.length!==1)refuse('INTENT_JOURNAL_STATE');return entry(rows[0]);

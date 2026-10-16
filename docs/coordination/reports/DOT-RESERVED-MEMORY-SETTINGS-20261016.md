@@ -10,6 +10,8 @@ The central record is `docs/coordination/tasks/CODEX-PACKAGE4-CENTRAL-MIGRATION-
 | `apps/control/settings/migrations/0001_settings.sql` | Authored; review pending |
 | `apps/control/intents/migrations/0001_intent_preparations.sql` | Reserved only; not authored; exact design release pending |
 
+That table records the initial allocation packet. The later parent disposition at central `0b0b7abd536a27a74e3b1077ae71eed6e0ba275b` released exact intent DDL source authoring; its focused successor is described in [DOT-CANONICAL-INTENT-JOURNAL-20261016.md](DOT-CANONICAL-INTENT-JOURNAL-20261016.md). It adds no SQL execution or first-chat dependency.
+
 The historical `docs/coordination/proposals/memory-settings-20261016/proposed-memory-settings.sql` remains unchanged. Memory source maps its original `meri_memory.candidates` subsection to the allocated path. Candidate/request hashes and identity columns remain immutable; the proposer-scoped idempotency key stays unique. Source additionally requires a submission timestamp exactly when SUBMITTED and forbids acknowledged review identity replacement, SUBMITTED regression, and SUBMISSION_UNKNOWN regression to PREPARED. It permits the existing same-review acknowledgement refresh. Core continues to own current review status. It adds no memory application, approval or authority.
 
 Settings source maps the historical `meri_settings` subsection exactly, apart from a source-only header. It retains per-user and per-tenant revisioned documents and the existing audit columns for the store's same-transaction CAS/audit writes. Audit UPDATE is forbidden; DELETE remains available to the separately governed retention owner. No automatic deletion or execution is introduced.

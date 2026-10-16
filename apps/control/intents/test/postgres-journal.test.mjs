@@ -59,3 +59,8 @@ test('malformed custody hash and terminal rewrites fail closed',async()=>{
  await f.journal.settle({...key,state:'FAILED',outcome:{code:'REFUSED'}});await assert.rejects(f.journal.begin(key),e=>e.code==='REFUSED');
  await assert.rejects(f.journal.settle({...key,state:'PREPARED',outcome}),e=>e.code==='UNKNOWN');assert.equal([...f.state.rows.values()][0].state,'FAILED');
 });
+test('new PREPARED settlement requires indivisible release custody before acquiring a SQL client',async()=>{
+ const f=fixture();await f.journal.begin(key);const before=f.state.commands.length;
+ await assert.rejects(f.store.settle({key:{tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,deliveryId},record,state:'PREPARED',outcome:{result:outcome.result}}));
+ assert.equal(f.state.commands.length,before);assert.equal([...f.state.rows.values()][0].state,'PENDING');
+});
