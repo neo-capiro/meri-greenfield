@@ -1,0 +1,30 @@
+{
+  "name": "schema-relations",
+  "head": "8ec0235294855b189addaff6e7bb1ad527a224d0",
+  "argv": [
+    "--max-old-space-size=128",
+    "--experimental-test-module-mocks",
+    "--test",
+    "--test-isolation=none",
+    "--test-concurrency=1",
+    "apps/runtime/test/prepared-readiness-relations.test.mjs"
+  ],
+  "hardSeconds": 120,
+  "heapMiB": 128,
+  "memoryBefore": {
+    "physicalTotal": 33632079872,
+    "physicalAvailable": 11855761408,
+    "commitTotal": 33632079872,
+    "commitAvailable": 2810613760
+  },
+  "primaryExit": 0,
+  "cleanupExit": 0,
+  "timedOut": false,
+  "pressure": false,
+  "ownedPid": 38276,
+  "ownedExited": true,
+  "wallMs": 1243,
+  "sampledRssBytes": 142225408,
+  "children": "none: single Node process test-isolation=none",
+  "finishedAtUtc": "2026-10-16T04:08:59.9718422Z"
+}

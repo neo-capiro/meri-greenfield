@@ -1,0 +1,20 @@
+[
+  {
+    "path": "apps/runtime/node_modules/@aws-sdk/client-ecs/package.json",
+    "name": "@aws-sdk/client-ecs",
+    "version": "3.1151.0",
+    "sha256": "4756a732d3cae4c459a32c284a1c1ba9330f2c55795e2a5e9c37e08ba108cb9f"
+  },
+  {
+    "path": "packages/contracts/node_modules/ajv/package.json",
+    "name": "ajv",
+    "version": "8.20.0",
+    "sha256": "1f9033ee5a6515e7d76938b7072941862d1ed228a6879cc7fe10cdeb75107989"
+  },
+  {
+    "path": "node_modules/ajv/package.json",
+    "name": "ajv",
+    "version": "8.20.0",
+    "sha256": "1f9033ee5a6515e7d76938b7072941862d1ed228a6879cc7fe10cdeb75107989"
+  }
+]

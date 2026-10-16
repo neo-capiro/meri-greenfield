@@ -1,0 +1,14 @@
+✔ joint original startup uses actual accepted request, fixed expiry, canonical task/model facts and same registry session owner (101.6658ms)
+✔ READS lookup never prepares or allocates; global control and missing/foreign entries cannot borrow authority (17.488ms)
+✔ static original or changed accepted input cannot receive new canonical authority, stop-only never issues (7.1073ms)
+✔ multi-run bounds are a closed configuration declaration; ports are built only from startup-supplied owners and a declared mode without them fails readiness (4.2278ms)
+✔ the composed ports reach the canonical owners: prepare issues once through the durable issuer, binds facts, resolves the capability; the next-run window is bounded by the allocation schedule; admission per binding exposes revoke (6.4742ms)
+✔ original expiry and authoritative target facts persist: a later target is admitted against its own retargeted allocation, process recreation after a clock advance keeps the recorded expiry and replays without re-minting, the facts bind the current run record and the per-entry transport, and a record naming another allocation hash is refused (7.5373ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1268.5135

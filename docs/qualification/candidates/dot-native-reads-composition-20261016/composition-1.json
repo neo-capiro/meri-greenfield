@@ -1,0 +1,32 @@
+{
+  "name": "composition-1",
+  "head": "8ec0235294855b189addaff6e7bb1ad527a224d0",
+  "argv": [
+    "--max-old-space-size=128",
+    "--experimental-test-module-mocks",
+    "--test",
+    "--test-isolation=none",
+    "--test-concurrency=1",
+    "apps/runtime/native-authority/test/prepared-reads.test.mjs",
+    "apps/runtime/test/prepared-run-issuance.test.mjs",
+    "apps/runtime/test/prepared-run-registry.test.mjs"
+  ],
+  "hardSeconds": 120,
+  "heapMiB": 128,
+  "memoryBefore": {
+    "physicalTotal": 33632079872,
+    "physicalAvailable": 11911106560,
+    "commitTotal": 33632079872,
+    "commitAvailable": 2924433408
+  },
+  "primaryExit": 0,
+  "cleanupExit": 0,
+  "timedOut": false,
+  "pressure": false,
+  "ownedPid": 39832,
+  "ownedExited": true,
+  "wallMs": 2003,
+  "sampledRssBytes": 175976448,
+  "children": "none: single Node process test-isolation=none",
+  "finishedAtUtc": "2026-10-16T04:04:06.5396116Z"
+}

@@ -1,0 +1,14 @@
+✔ schema preflight includes tenant policy/reservations and exact issuance owners, multi=false (14.0016ms)
+✔ schema preflight includes tenant policy/reservations and exact issuance owners, multi=true (2.999ms)
+✔ missing meri_product_budget.tenant_budgets withholds readiness before identity or allocation (1.1268ms)
+✔ missing meri_product_budget.tenant_run_reservations withholds readiness before identity or allocation (0.7797ms)
+✔ missing meri_conversations.run_issuances withholds readiness before identity or allocation (0.673ms)
+✔ missing meri_conversations.model_run_issuances withholds readiness before identity or allocation (0.563ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1108.6324

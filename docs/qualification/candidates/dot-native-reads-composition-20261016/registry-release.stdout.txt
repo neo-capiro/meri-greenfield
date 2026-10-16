@@ -1,0 +1,29 @@
+✔ joint original startup uses actual accepted request, fixed expiry, canonical task/model facts and same registry session owner (140.472ms)
+✔ READS lookup never prepares or allocates; global control and missing/foreign entries cannot borrow authority (19.5489ms)
+✔ static original or changed accepted input cannot receive new canonical authority, stop-only never issues (10.1296ms)
+✔ accepted run prepares one cached entry concurrently without allocating until canonical kickoff (9.6033ms)
+✔ pending reservation refuses issuance; later accepted prompt can prepare (4.1558ms)
+✔ UNKNOWN issuance entry is sticky and never reissued by same registry (1.1096ms)
+✔ retired source and active canonical target are required before issuance (1.8463ms)
+✔ bootstrap stays unavailable before allocation and isolates credentials, versions and binding (5.4441ms)
+✔ cancellation or changed accepted prompt before kickoff refuses allocation (7.1774ms)
+✔ close is idempotent, prevents new entries and does not allocate unstarted runs (3.336ms)
+✔ explicit trusted expiry cannot exceed configured ceiling or renew itself (0.8769ms)
+✔ allocation UNKNOWN remains one attempted dispatch through repeated kickoff and ensure (7.4203ms)
+✔ late owned controller settlement after close is contained exactly once (34.4859ms)
+✔ HTTP kickoff authenticates and validates closed request before any issuance (10.1772ms)
+✔ HTTP status/bootstrap never prepare and unowned bindings fall through (10.0323ms)
+✔ after a restart, HTTP kickoff/stop rebuilds the accepted target without allocating and settles the run the original left running (11.2584ms)
+✔ after a restart, a stop for an ALLOCATED target asks the stop-only owner with the exact replayed facts, never allocates, and settles once retired (4.3643ms)
+✔ re-entry: an uncertain stop-only retirement refuses the stop (UNKNOWN, nothing written) and a later stop resumes from durable state (6.2203ms)
+✔ the restart stop route also serves a target already terminal whose original was never retired, and leaves its outcome (5.1159ms)
+✔ a source with only its foreclosure (no-authority) evidence is accepted exactly; anything else is refused before issuance (4.801ms)
+✔ the production issuance-intent shape (expiry plus its persisted flag) is accepted; any other field is refused before issuance (9.5075ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1692.6336

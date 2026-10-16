@@ -1,0 +1,34 @@
+{
+  "name": "joint-exact-source",
+  "head": "abcde57f33eb2703d1ade8f93abd637a214c989c",
+  "argv": [
+    "--max-old-space-size=128",
+    "--experimental-test-module-mocks",
+    "--test",
+    "--test-isolation=none",
+    "--test-concurrency=1",
+    "apps/runtime/native-authority/test/prepared-reads.test.mjs",
+    "apps/runtime/test/original-native-composition.test.mjs",
+    "apps/runtime/test/prepared-run-issuance.test.mjs",
+    "apps/runtime/test/prepared-run-registry.test.mjs",
+    "apps/runtime/test/prepared-run-bindings.test.mjs"
+  ],
+  "hardSeconds": 120,
+  "heapMiB": 128,
+  "memoryBefore": {
+    "physicalTotal": 33632079872,
+    "physicalAvailable": 11849273344,
+    "commitTotal": 33632079872,
+    "commitAvailable": 2800193536
+  },
+  "primaryExit": 0,
+  "cleanupExit": 0,
+  "timedOut": false,
+  "pressure": false,
+  "ownedPid": 32956,
+  "ownedExited": true,
+  "wallMs": 2227,
+  "sampledRssBytes": 183123968,
+  "children": "none: single Node process test-isolation=none",
+  "finishedAtUtc": "2026-10-16T04:11:06.9342438Z"
+}

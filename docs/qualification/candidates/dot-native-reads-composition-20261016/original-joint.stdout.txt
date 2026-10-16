@@ -1,0 +1,87 @@
+✖ joint original startup uses actual accepted request, fixed expiry, canonical task/model facts and same registry session owner (67.2333ms)
+✖ READS lookup never prepares or allocates; global control and missing/foreign entries cannot borrow authority (3.4687ms)
+✖ static original or changed accepted input cannot receive new canonical authority, stop-only never issues (2.5754ms)
+✔ multi-run bounds are a closed configuration declaration; ports are built only from startup-supplied owners and a declared mode without them fails readiness (9.9467ms)
+✖ the composed ports reach the canonical owners: prepare issues once through the durable issuer, binds facts, resolves the capability; the next-run window is bounded by the allocation schedule; admission per binding exposes revoke (2.3912ms)
+✔ original expiry and authoritative target facts persist: a later target is admitted against its own retargeted allocation, process recreation after a clock advance keeps the recorded expiry and replays without re-minting, the facts bind the current run record and the per-entry transport, and a record naming another allocation hash is refused (9.1033ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 2
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1178.2315
+
+✖ failing tests:
+
+test at apps\runtime\test\original-native-composition.test.mjs:28:1
+✖ joint original startup uses actual accepted request, fixed expiry, canonical task/model facts and same registry session owner (67.2333ms)
+  Error: STORE_UNAVAILABLE
+      at tx (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/control/conversations/postgres-store.mjs:16:68)
+      at readState (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/control/conversations/postgres-store.mjs:56:10)
+      at Object.read (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/control/conversations/postgres-store.mjs:61:37)
+      at fixture (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/runtime/test/original-native-composition.test.mjs:16:154)
+      at async TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/runtime/test/original-native-composition.test.mjs:29:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    code: 'STORE_UNAVAILABLE'
+  }
+
+test at apps\runtime\test\original-native-composition.test.mjs:39:1
+✖ READS lookup never prepares or allocates; global control and missing/foreign entries cannot borrow authority (3.4687ms)
+  Error: STORE_UNAVAILABLE
+      at tx (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/control/conversations/postgres-store.mjs:16:68)
+      at readState (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/control/conversations/postgres-store.mjs:56:10)
+      at Object.read (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/control/conversations/postgres-store.mjs:61:37)
+      at fixture (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/runtime/test/original-native-composition.test.mjs:16:154)
+      at async TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/runtime/test/original-native-composition.test.mjs:40:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'STORE_UNAVAILABLE'
+  }
+
+test at apps\runtime\test\original-native-composition.test.mjs:47:1
+✖ static original or changed accepted input cannot receive new canonical authority, stop-only never issues (2.5754ms)
+  Error: STORE_UNAVAILABLE
+      at tx (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/control/conversations/postgres-store.mjs:16:68)
+      at readState (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/control/conversations/postgres-store.mjs:56:10)
+      at Object.read (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/control/conversations/postgres-store.mjs:61:37)
+      at fixture (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/runtime/test/original-native-composition.test.mjs:16:154)
+      at async TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/runtime/test/original-native-composition.test.mjs:48:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'STORE_UNAVAILABLE'
+  }
+
+test at apps\runtime\test\prepared-run-bindings.test.mjs:29:1
+✖ the composed ports reach the canonical owners: prepare issues once through the durable issuer, binds facts, resolves the capability; the next-run window is bounded by the allocation schedule; admission per binding exposes revoke (2.3912ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      'admissionForBinding',
+      'configurationSha256',
+      'controlCapabilitySha256',
+      'facts',
+      'issuanceIntent',
+      'issuer',
+  +   'prepareOriginal',
+      'runIssuance',
+      'runWindowMs'
+    ]
+  
+      at TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/runtime/test/prepared-run-bindings.test.mjs:31:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [Array],
+    expected: [Array],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

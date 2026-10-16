@@ -1,0 +1,31 @@
+{
+  "name": "registry-release",
+  "head": "8ec0235294855b189addaff6e7bb1ad527a224d0",
+  "argv": [
+    "--max-old-space-size=128",
+    "--experimental-test-module-mocks",
+    "--test",
+    "--test-isolation=none",
+    "--test-concurrency=1",
+    "apps/runtime/test/original-native-composition.test.mjs",
+    "apps/runtime/test/prepared-run-registry.test.mjs"
+  ],
+  "hardSeconds": 120,
+  "heapMiB": 128,
+  "memoryBefore": {
+    "physicalTotal": 33632079872,
+    "physicalAvailable": 11526451200,
+    "commitTotal": 33632079872,
+    "commitAvailable": 2403307520
+  },
+  "primaryExit": 0,
+  "cleanupExit": 0,
+  "timedOut": false,
+  "pressure": false,
+  "ownedPid": 34956,
+  "ownedExited": true,
+  "wallMs": 1843,
+  "sampledRssBytes": 166576128,
+  "children": "none: single Node process test-isolation=none",
+  "finishedAtUtc": "2026-10-16T04:09:25.7671434Z"
+}

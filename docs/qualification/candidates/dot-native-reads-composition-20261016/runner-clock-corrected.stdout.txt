@@ -1,0 +1,15 @@
+✔ capturing the trusted mount is inert, receiver-preserving and rejects getters even while disabled (1.1256ms)
+✔ ordinary runner passes only an explicitly enabled borrowed read port (false) to existing activity (3.1606ms)
+✔ ordinary runner passes only an explicitly enabled borrowed read port (true) to existing activity (0.299ms)
+✔ remote runner retains passive read port through existing execute boundary (false) (4.0902ms)
+✔ remote runner retains passive read port through existing execute boundary (true) (0.676ms)
+✔ malformed borrowed read port refuses remote startup before secret or owned resource allocation (0.2155ms)
+✔ remote runner constructs the canonical native client from bootstrap config and TASK credential when no borrowed port exists (148.9936ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1378.4183

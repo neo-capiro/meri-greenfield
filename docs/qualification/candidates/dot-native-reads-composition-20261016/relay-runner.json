@@ -1,0 +1,32 @@
+{
+  "name": "relay-runner",
+  "head": "8ec0235294855b189addaff6e7bb1ad527a224d0",
+  "argv": [
+    "--max-old-space-size=128",
+    "--experimental-test-module-mocks",
+    "--test",
+    "--test-isolation=none",
+    "--test-concurrency=1",
+    "apps/runtime/test/native-runner-gateway.test.mjs",
+    "apps/runtime/test/general-read-port.test.mjs",
+    "apps/runtime/test/prepared-product-ports.test.mjs"
+  ],
+  "hardSeconds": 120,
+  "heapMiB": 128,
+  "memoryBefore": {
+    "physicalTotal": 33632079872,
+    "physicalAvailable": 11815526400,
+    "commitTotal": 33632079872,
+    "commitAvailable": 2783875072
+  },
+  "primaryExit": 1,
+  "cleanupExit": 0,
+  "timedOut": false,
+  "pressure": false,
+  "ownedPid": 12728,
+  "ownedExited": true,
+  "wallMs": 3882,
+  "sampledRssBytes": 196878336,
+  "children": "none: single Node process test-isolation=none",
+  "finishedAtUtc": "2026-10-16T04:07:01.1347536Z"
+}

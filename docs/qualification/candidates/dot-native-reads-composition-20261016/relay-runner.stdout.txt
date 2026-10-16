@@ -1,0 +1,57 @@
+✔ capturing the trusted mount is inert, receiver-preserving and rejects getters even while disabled (1.2757ms)
+✔ ordinary runner passes only an explicitly enabled borrowed read port (false) to existing activity (0.5426ms)
+✔ ordinary runner passes only an explicitly enabled borrowed read port (true) to existing activity (0.2919ms)
+✔ remote runner retains passive read port through existing execute boundary (false) (2.2895ms)
+✔ remote runner retains passive read port through existing execute boundary (true) (0.7219ms)
+✔ malformed borrowed read port refuses remote startup before secret or owned resource allocation (0.2309ms)
+✖ remote runner constructs the canonical native client from bootstrap config and TASK credential when no borrowed port exists (150.3051ms)
+✔ native READS relay preserves exact task bytes and uses explicit execute cutoff instead of generic short deadline (2.8262ms)
+✔ completion checkpoint relay preserves exact task bearer/body and delegates all proof ownership upstream (1.3941ms)
+✔ all canonical relay destinations preserve presented bearer and exact bytes; unrelated provider operations fall through (2.4038ms)
+✔ relay executes canonical task-authorized load/publish and denies foreign/revoked tasks before further durable effects (66.4503ms)
+✔ canonical SDK client/owner registers and preserves opaque deep entries, marker duplicates and UNKNOWN through relay (15.7958ms)
+✔ constructor and request refusals are inert; origins cannot be supplied or coerced by callers (1.0807ms)
+✔ body overflow and parked request cancellation release owned readers without waiting on cancel promises (1.6653ms)
+✔ parked response cancellation and late replies clean up, preserve UNKNOWN and never retry (69.5528ms)
+✔ redirect, response media/length and size failures release no result after a single dispatch (1.3454ms)
+✔ private immutable snapshot read relays exact bearer and bytes to canonical session receiver (0.8758ms)
+✔ prepared SDK ports refuse before allocation, then borrow the same owner and refuse foreign bindings/after close (1.8796ms)
+✖ remote controller exposes exactly the durable session owner built with its canonical admission/verifier/registration (0.746ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 17
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3744.747
+
+✖ failing tests:
+
+test at apps\runtime\test\general-read-port.test.mjs:38:1
+✖ remote runner constructs the canonical native client from bootstrap config and TASK credential when no borrowed port exists (150.3051ms)
+  Error: INVALID_RESULT
+      at nativeReadFault (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/packages/contracts/runtime-0.2/reads.mjs:10:105)
+      at call (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/runtime/native-authority/reads-client.mjs:25:23)
+      at async Object.readAvailability (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/runtime/native-authority/reads-client.mjs:28:87)
+      at async execute (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/runtime/test/general-read-port.test.mjs:40:511)
+      at async runRemoteConversation (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/runtime/remote-conversation-runner.mjs:35:37)
+      at async TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/runtime/test/general-read-port.test.mjs:40:19)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'INVALID_RESULT'
+  }
+
+test at apps\runtime\test\prepared-product-ports.test.mjs:30:1
+✖ remote controller exposes exactly the durable session owner built with its canonical admission/verifier/registration (0.746ms)
+  Error: NATIVE_EXECUTION_PREPARATION_REFUSED
+      at executionFault (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/runtime/native-authority/execution-broker.mjs:9:49)
+      at refuse (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/runtime/native-authority/preparation-intent.mjs:7:25)
+      at compileNativePreparationIntent (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/runtime/native-authority/preparation-intent.mjs:12:713)
+      at compileNativeBrokerPlan (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/runtime/native-authority/broker-stack.mjs:22:27)
+      at createRemoteNativeController (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/runtime/native-authority/remote-composition.mjs:37:15)
+      at TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/runtime/test/prepared-product-ports.test.mjs:33:19)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'NATIVE_EXECUTION_PREPARATION_REFUSED'
+  }

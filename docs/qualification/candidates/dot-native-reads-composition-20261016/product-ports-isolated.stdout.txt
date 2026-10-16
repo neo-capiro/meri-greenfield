@@ -1,0 +1,10 @@
+✔ prepared SDK ports refuse before allocation, then borrow the same owner and refuse foreign bindings/after close (4.7336ms)
+✔ remote controller exposes exactly the durable session owner built with its canonical admission/verifier/registration (1.6096ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1252.5759

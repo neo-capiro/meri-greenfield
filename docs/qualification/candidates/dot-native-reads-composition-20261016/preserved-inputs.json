@@ -1,0 +1,150 @@
+[
+  {
+    "path": "package-lock.json",
+    "sha256": "4a18a2e5eeb672758df381eba55653da2dc0d9e9ab26e3f6f7943ad19120753c"
+  },
+  {
+    "path": "packages/contracts/package.json",
+    "sha256": "55630bf40a4b372259a00ba531b2cc041dd0ccebcdd52de64536a1020f9d0c0b"
+  },
+  {
+    "path": "packages/contracts/package-lock.json",
+    "sha256": "418a5af3b8673d9cdd2faed654b0d94586b03afdca4b23a1a7995462686e54e3"
+  },
+  {
+    "path": "packages/contracts/meri.schema.json",
+    "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b"
+  },
+  {
+    "path": "packages/contracts/dist/action-application.d.ts",
+    "sha256": "007880126ba782888b0a8411e3c90acd64d1cc0eb530ecb0cb41ff590bd6d762"
+  },
+  {
+    "path": "packages/contracts/dist/action-application.metadata.json",
+    "sha256": "9909cec1f8008a69415d5cca842230eb27e1bb70f419563be3da0da0b9514355"
+  },
+  {
+    "path": "packages/contracts/dist/action-application.mjs",
+    "sha256": "9e824b7f814561ec46aa63b0c31057a8292515a9f0186707bc838fed98eb3534"
+  },
+  {
+    "path": "packages/contracts/dist/action-application.schema.json",
+    "sha256": "a44e403281e8404462be8d06ddbb369e175b61e6501e16c8007646d9e74a803c"
+  },
+  {
+    "path": "packages/contracts/dist/browser.d.ts",
+    "sha256": "638d76071540b340cc8bd7efd728e3847cb22456dc8ec45d8733497792a0ba30"
+  },
+  {
+    "path": "packages/contracts/dist/browser.mjs",
+    "sha256": "3682cd96d10c1cc53f4e4a91845c6da514eda9d524ce8342b89e09ffcc19ae83"
+  },
+  {
+    "path": "packages/contracts/dist/contracts.d.ts",
+    "sha256": "e0366e2f5a668e9e14f09e90c175dce53cbec176125aa98a58c878b44fd74fbd"
+  },
+  {
+    "path": "packages/contracts/dist/conversation-application.d.ts",
+    "sha256": "f7e961446b69049cda1b054c695daffc45486da46b3ebf67c6b3a56e875916fe"
+  },
+  {
+    "path": "packages/contracts/dist/conversation-application.metadata.json",
+    "sha256": "5bf91bef62e92fbb3f2db936c02986b76926ff108f6908b3bf4e670635d44858"
+  },
+  {
+    "path": "packages/contracts/dist/conversation-application.mjs",
+    "sha256": "94465895c6a063536cd4de3ce84d6f736e8475890a663ef80e9c5d748992cea1"
+  },
+  {
+    "path": "packages/contracts/dist/conversation-application.schema.json",
+    "sha256": "76f8a5a12958fcbcc6842f870a22a7ccba1675dd8b19359c2344f5ef2b06ad1b"
+  },
+  {
+    "path": "packages/contracts/dist/conversation-lifecycle.d.ts",
+    "sha256": "1e9ff1c99e8b0d7d7a8ac86fdd275e2785adb5a6d300c095c783317d2c0ff523"
+  },
+  {
+    "path": "packages/contracts/dist/conversation-lifecycle.metadata.json",
+    "sha256": "19a9288f085940ac8360ba008e4fe301c0a2db1c4ee4bd5db6f4b6f4d97a1ea5"
+  },
+  {
+    "path": "packages/contracts/dist/conversation-lifecycle.mjs",
+    "sha256": "b283901e0006f9a06f4b63f957133cce57914e791fb07bec8c1017a1d4ae149e"
+  },
+  {
+    "path": "packages/contracts/dist/conversation-lifecycle.schema.json",
+    "sha256": "9ff87dc22a4fb144c1ad48d9b818f829a65053aac7937b83fdabdbff6f11ad4e"
+  },
+  {
+    "path": "packages/contracts/dist/document-application.d.ts",
+    "sha256": "1ce1f8f0f8967cbb705732bd9fd0396149cb4266fa0aec26d225d2f7e2a01d31"
+  },
+  {
+    "path": "packages/contracts/dist/document-application.metadata.json",
+    "sha256": "60a01c9a1221a3b5ee49b4b06fbd1ec0a3e9f94217de5855088672ddf9a9270e"
+  },
+  {
+    "path": "packages/contracts/dist/document-application.mjs",
+    "sha256": "4979699706346dc7fe3661ee1fafdc975e041e38a1f59873ea0b4f1795f9efde"
+  },
+  {
+    "path": "packages/contracts/dist/document-application.schema.json",
+    "sha256": "712348c7758e7c99c77f2e50d35397038a651a5a312bb9439bdda5bbd44f5c51"
+  },
+  {
+    "path": "packages/contracts/dist/index.d.ts",
+    "sha256": "b1d45e99574c3834d70354fd973298b5a9b4e76befc11d6e2996c51c70266642"
+  },
+  {
+    "path": "packages/contracts/dist/metadata.d.ts",
+    "sha256": "63e058d979f30b9807ed9a7c5df2760c06a180bd903ff13daa9c96bfcba78087"
+  },
+  {
+    "path": "packages/contracts/dist/metadata.mjs",
+    "sha256": "63a4733b40a9671dbca69419d12cae894adca42a9f2ced83cd729ce239e1ef94"
+  },
+  {
+    "path": "scripts/qualification/assembled-image/candidate-manifest-dot-20261014.json",
+    "sha256": "fb97f11639d173fd15781df776ea8c49d9c2c53cc868dc9e8512e957195b310b"
+  },
+  {
+    "path": "scripts/qualification/assembled-image/candidate-manifest-fable-20261014.json",
+    "sha256": "dc425cffa60a5a6bffc2d089cdf421be33694c3682d99d7c6b2b7818d3e1c627"
+  },
+  {
+    "path": "scripts/qualification/assembled-image/candidate-manifest-fable-20261015.json",
+    "sha256": "59a67fa2d8685f743f1b1a1e4a46360632c30bfead683b119ebccfa424b3c6a4"
+  },
+  {
+    "path": "scripts/qualification/assembled-image/candidate-manifest-fable-20261015b.json",
+    "sha256": "6c2f692660ac879056b9c6854d1c43b7e085194e5db40e173510ef81a75f6842"
+  },
+  {
+    "path": "scripts/qualification/assembled-image/candidate-manifest-fable-20261015c.json",
+    "sha256": "0ab37ea1be7b1bb0a966d12a0fe9f244bf32a73647d91feb81cb73355d8dc261"
+  },
+  {
+    "path": "scripts/qualification/assembled-image/candidate-manifest-fable-20261015d.json",
+    "sha256": "28b38f7e1ca05aca80f2f45f69c8ea21b7b1341ffdb252bf004f764975e555f5"
+  },
+  {
+    "path": "scripts/qualification/assembled-image/candidate-manifest-fable-20261015e.json",
+    "sha256": "41814143b72e4288f83bf3137b4cfcd7f14c9a93df467772b3685b0f1b35c341"
+  },
+  {
+    "path": "scripts/qualification/assembled-image/candidate-manifest-fable-20261015f.json",
+    "sha256": "3215210633f64dcb4c8d98aa1c7e17af658c512511bc4f7bdf3df4f8a4085017"
+  },
+  {
+    "path": "scripts/qualification/assembled-image/candidate-manifest-fable-20261015g.json",
+    "sha256": "b74243e64a2a6d031434315cd7e4699ecc151f6ba2ca13959c04c31a75edfcd6"
+  },
+  {
+    "path": "scripts/qualification/assembled-image/candidate-manifest-fable-20261015h.json",
+    "sha256": "79a5f7fc5254c0152c0119264d653cdb5b561f27ded91d379569d00ba73a5c1e"
+  },
+  {
+    "path": "scripts/qualification/assembled-image/source-manifest.json",
+    "sha256": "d7f743dcf6b0514310ccf5b2b7bdcf2a5ed40d4359caac3d78add7310c74587f"
+  }
+]

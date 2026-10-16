@@ -1,0 +1,28 @@
+# Focused native READS composition evidence
+
+Source `abcde57f33eb2703d1ade8f93abd637a214c989c`, tree `107499cd8da8d755e4da2dcd96450523e63601c1`, direct parent `8ec0235294855b189addaff6e7bb1ad527a224d0`. This source includes only the five exact accepted original-run dependency paths from18377eec20388dab770db6481d2b5f31d44e93aa plus the coordinated compiler/startup/native composition. No whole-head merge. Qualification remains the integration owner.
+
+`joint-exact-source` passed **75/75** on that clean source. One Node24.19.0 process, 128MiB V8 heap, hard120s, no children, 2227ms wall, sampled RSS183123968bytes, normal fresh commit availability2800193536bytes. Primary0, cleanup0, no timeout/pressure, owned process exited. This is synthetic evidence using actual schema/config/compiler, canonical task issuer/memory journal, registry, READS verifier/current read-only admission and gateway/budget modules. Accepted-run/SQL/native/HTTPS, capability/material/model issuance and allocation resources are synthetic. Fixed synthetic strings do not access or generate real credentials. No listener/provider/DB/cloud/Temporal/build/browser action occurred.
+
+The focused joint checks cover complete config hashing/operation vocabulary; original fixed expiry/current accepted request/claim-before-material/static refusal; same issuer/allocated entry/session ownership; metadata-only receipt lookup; global-control/foreign capability denial; no prepare/allocation on READS; shutdown and post-effect revocation result withholding; immutable allocation/grants/task metadata; target UNKNOWN, retirement, stop, concurrency and replay behavior. Missing/disabled/source-off/gateway-absent owners are inert and unavailable. The changed missing-gateway control ran in this final exact-source batch.
+
+Other retained checks (do not sum repeated cases):
+
+| Stage | Outcome | Scope |
+| --- | --- | --- |
+| composition-1 |69/69|Earlier read-entry/compiler/registry source before the last registry/current-gateway changes; superseded by joint-exact-source for those paths.|
+| original-joint |2/6|Three new fixtures omitted the canonical store's required check callback; existing exact method-list assertion lacked newly accepted prepareOriginal. No production fix was needed.|
+| original-joint-corrected |6/6|Only fixture callback and expected additive method corrected. Source compiler/config/issuer dependencies were real.|
+| relay-runner |17/19|Relay controls passed; new runner fixture used historical clock while production client used current clock, and combining independently mocked files reused a cached Linux-path compiler. Both failures retained.|
+| runner-clock-corrected |7/7|Scoped clock mock matches synthetic native receipt clock; actual native client/verifier/gateway run. Existing activity/config-secret/native-client/preparation fixture substitutions remain explicit.|
+| product-ports-isolated |2/2|Independent process restores existing module-mock isolation; actual candidate/controller exposes the same durable SDK owner. Linux compiler/config/kickoff/prepared-runtime/session-owner fixtures are substituted.|
+| schema-relations |6/6|Scripted schema rows and identity; actual candidate preflight, borrowed Linux compiler/config fixtures. Missing tenant/task/model relations refuse before identity/allocation.|
+| registry-release |21/21|Added canonical original release/shutdown check and existing target controls; synthetic resource owners. Final joint batch includes the same cases.|
+
+Every receipt records its actual argv, before-memory, PID/exit, wall and sampled RSS. Early receipts name the unchanged Git HEAD8ec while the worktree was under construction; they are development evidence, not a clean-pin qualification claim. Final joint-exact-source is bound to the committed source above. Raw bytes and failed outcomes are preserved; no passed compiler/generator/build/browser claim is implied. Existing experimental Node module-mock warnings are retained. RSS is sampled, not a guaranteed peak or budget.
+
+`historical-proof-deltas.json` inventories all45 h-candidate proof paths: **10 changed,35 equal**. It includes both hashes and leaves the historical manifest/candidate records untouched. This source changes no package/lock/frozen schema/history0.1.6 artifact bytes. Image/runtime and broader release checks remain unrun; the frozen source proof suite is expected to require a newly reviewed candidate rather than silently repinned h rows.
+
+Filesystem/Git readback: the chosen8ec joint base still has package metadata0.1.5 and contains no generated history0.1.6 output/tarball. The accepted artifact at5aa13719e8706704785d142ad903fb42db51220e remains on its separate published branch. This native batch neither imports nor changes that artifact. `preserved-inputs.json` inventories the actual local locks/package metadata/old dist/schema/manifests rather than claiming an absent tarball was read here. Qualification has been notified of this remaining integration distinction.
+
+Production availability remains0. Genuine Core resource authority, task-bound delegation, measured native installation/discovery and canonical gateway configuration are pending. The existing bootstrap materializer also lacks a genuine production delivery caller correlating task ARN/revision, original expiry, material/bootstrap reference and TLS/CA facts; static secret files cannot stand in for issued material. Cold original Stop retains accepted stop-only refusal and existing cleanup; unproven authority stays UNKNOWN. These are pending actions, not denied or completed actions.

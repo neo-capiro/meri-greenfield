@@ -1,0 +1,98 @@
+{
+  "source": "abcde57f33eb2703d1ade8f93abd637a214c989c",
+  "tree": "107499cd8da8d755e4da2dcd96450523e63601c1",
+  "files": [
+    {
+      "path": "apps/runtime/config.mjs",
+      "sha256": "716be73148849c3eba958a15c69f0905aac534a4495b244cbc91cb4010450750"
+    },
+    {
+      "path": "apps/runtime/native-authority/prepared-read-entry.mjs",
+      "sha256": "9d79b99d6dfe07ec6e9ddf9276f88cb213db6b495bf21ae3d1f8e969ca4116b6"
+    },
+    {
+      "path": "apps/runtime/native-authority/prepared-reads.mjs",
+      "sha256": "3a62a99e143a996358aa5b4e27f04255589904a907cf3a3534aaa51b4b85a72a"
+    },
+    {
+      "path": "apps/runtime/native-authority/remote-composition.mjs",
+      "sha256": "44505e413d15120fcd2844c5d4e427685b490a2af5d69493b9aabbdbb2de036d"
+    },
+    {
+      "path": "apps/runtime/native-authority/task-verifier.mjs",
+      "sha256": "28c54821e401b415c940c3c1f244a4d518f36ed6eedbb6579de1890d79fee52e"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/prepared-reads.test.mjs",
+      "sha256": "88c90b1ad9f2ae280c5ba795d5bfe5a0a2bbed3f58699ba92a4dcd3a2e80ba6b"
+    },
+    {
+      "path": "apps/runtime/native-runner-gateway.mjs",
+      "sha256": "571fd29580768069bbf8b5aa09c51d14822d6e9f84cff306b50e4ead1c7329f9"
+    },
+    {
+      "path": "apps/runtime/original-run-preparation.mjs",
+      "sha256": "20469862a51c7df62b732a6021c61fe4f1600059db551902a712af8070961992"
+    },
+    {
+      "path": "apps/runtime/prepared-candidate-config.mjs",
+      "sha256": "db989a4d33300cc0ffc4881a3905ea0139da6d04dba4ce6d659f1318fcacf8b4"
+    },
+    {
+      "path": "apps/runtime/prepared-candidate.mjs",
+      "sha256": "8e59dbc0431755772b63d6d58b5ccc6fa68c7963857ca494cc959773fe4d52f1"
+    },
+    {
+      "path": "apps/runtime/prepared-run-bindings.mjs",
+      "sha256": "b57c37822ff1df7f655982de4400dbb1adaaab673fbacc89495e884322077aa9"
+    },
+    {
+      "path": "apps/runtime/prepared-run-issuance.mjs",
+      "sha256": "799ddd8a6845fc6b453220f8ac6a99263bc9c5aec38053ad925e95563e4afb46"
+    },
+    {
+      "path": "apps/runtime/prepared-run-registry.mjs",
+      "sha256": "76c08779ae3519610d6548b50a10ab37ea86f2a62c9dbf486fe657875e66bebe"
+    },
+    {
+      "path": "apps/runtime/remote-conversation-runner.mjs",
+      "sha256": "9e59307773644abf258e822cf0d96f5412c59e89d449665b1c02ea20aaf65e8a"
+    },
+    {
+      "path": "apps/runtime/task-bootstrap.mjs",
+      "sha256": "626bfa08b71265e766cc0b2baab44d3096ca5eca1b2da13e0f434f30c8390fd3"
+    },
+    {
+      "path": "apps/runtime/test/general-read-port.test.mjs",
+      "sha256": "f53586945709412b03aae2417492444256827ab3c7bdb65243d3d38bbfc4d1d7"
+    },
+    {
+      "path": "apps/runtime/test/native-runner-gateway.test.mjs",
+      "sha256": "b02b68e08701cc737b4542be6f6320e0ed84f1f39bf1fbbb7d90ba72a2eaea5f"
+    },
+    {
+      "path": "apps/runtime/test/original-native-composition.test.mjs",
+      "sha256": "71d357e09252d7cec0e4d3169e219ab4090cb5623beb2c8476f3e0ccede51569"
+    },
+    {
+      "path": "apps/runtime/test/original-run-facts.test.mjs",
+      "sha256": "c54dafcbfd3fc557bbe95d387c2a1a8c4676e915dee59942a8db36694aef1e36"
+    },
+    {
+      "path": "apps/runtime/test/original-run-preparation.test.mjs",
+      "sha256": "77ad3465a74f299a1d30b6962130277917c310ca7164e4377d6d5c648adcadf2"
+    },
+    {
+      "path": "apps/runtime/test/prepared-readiness-relations.test.mjs",
+      "sha256": "2aa8f4ecc3953bc70a71cad76ed6cfc980039e1be166ea0480427b520ac38af2"
+    },
+    {
+      "path": "apps/runtime/test/prepared-run-bindings.test.mjs",
+      "sha256": "05df8f36e678c3ce7218bdfd880720269b4f38c8499c3fadc107de4ef77a30ab"
+    },
+    {
+      "path": "apps/runtime/test/prepared-run-issuance.test.mjs",
+      "sha256": "64424eb728b36fa21cc9644d209083e1a124aa0daada3180d5df870a8aecdd08"
+    }
+  ]
+}
