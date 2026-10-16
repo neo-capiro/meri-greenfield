@@ -40,6 +40,31 @@ function differenceTable(rows) {
       `${r.reconciliation.p3Kind}; ${r.reconciliation.relation}; literal legacy name declared ${r.reconciliation.legacyNameDeclared ? 'yes' : 'no'}`]));
 }
 
+function sourceExposure(snapshot) {
+  const counts=snapshot.counts;
+  return [
+    '### Current selected read source exposure (16 October 2026)', '',
+    'This is source reconciliation only. The historical proposal tables below retain their original status; current adapter/server presence is recorded here and in `scope-ledger.json.sourceExposure.rows`. No source receipt is repinned and live availability remains zero.', '',
+    table(['Measure','Current source'], [
+      ['Selected capabilities / continued exclusions',`${counts.selectedCapabilities} / ${counts.excludedCapabilities}`],
+      ['Selected source reads / separate product or governed capabilities',`${counts.selectedSourceReads} / ${counts.selectedProductOrGoverned}`],
+      ['Single meri_reads registry',`${counts.registeredGeneralOperations} operations / ${counts.registeredFamilies} families`],
+      ['Registry accounting',`${counts.generalSelectedSourceReads} selected source reads + ${counts.generalSelectedProductStateReads} product-state read + ${counts.generalHistoricalOperations} historical contract`],
+      ['Selected source reads declared in skill manifests',`${counts.sourceReadsWithCurrentContractDeclarations} current contracts + ${counts.sourceReadsWithHistoricalOnlySkillDeclaration} historical-only contract`],
+      ['Selected source reads reachable through admitted skill source',counts.sourceReadsWithAdmittedSkillSourceRoute],
+      ['Existing source adapters lacking general-conversation registration',counts.existingSourceAdaptersWithoutGeneralExposure],
+      ['Selected source reads lacking adapters',`${counts.missingSourceAdapters} (${counts.missingAdaptersDeclaredBySkills} declared by skills; ${counts.missingAdaptersWithoutSkillDeclaration} without a skill declaration)`],
+      ['Live',counts.live],
+    ]), '',
+    `Only ${snapshot.admittedSkills.map(code).join(', ')} are admitted by the original skill server. A declaration in another manifest is not source reachability. The historical \`query_action_items\` and successor \`actions.query\` represent one selected capability. \`memory.list_own_proposals\` is a product-state read; product writes and effects remain on their separate governed route.`, '',
+    table(['Source-admitted skill','Exact adapter-backed operations'],snapshot.admittedSkills.map(skill=>[code(skill),[...new Set(snapshot.rows.filter(row=>row.sourceAdmittedSkills.includes(skill)).flatMap(row=>row.sourceAdmittedOperations))].sort().map(code).join(', ')])), '',
+    table(['Registered family','Exact operations'],snapshot.generalRegistration.map(row=>[code(row.family),row.operations.map(code).join(', ')])), '',
+    'Every canonical source adapter already present is exposed by the agreed phase-1 plus retained-three cut. The remaining selected source reads are outside that cut and lack an adapter; contract mapping alone does not implement them. Their exact unresolved families and operations are:', '',
+    table(['Missing adapter family','Selected operations'],snapshot.missingAdapterFamilies.map(row=>[code(row.family),row.operations.map(code).join(', ')])), '',
+    snapshot.missingAdapterAction,
+  ].join('\n');
+}
+
 export function renderGenerated(ledger) {
   const included = ledger.capabilities.filter(r => r.decision === 'included');
   const excluded = ledger.capabilities.filter(r => r.decision === 'excluded');
@@ -64,7 +89,9 @@ export function renderGenerated(ledger) {
       ['Live', ledger.counts.live],
     ]),
     '',
-    '### Accounting bridge (audit CSV versus p3 inventory)',
+    sourceExposure(ledger.sourceExposure),
+    '',
+    '### Historical accounting bridge (audit CSV versus p3 inventory)',
     '',
     table(['Measure', 'Audit', 'p3', 'Explanation'], bridge.map(b => [b.measure, b.audit, b.p3, b.explanation])),
     '',

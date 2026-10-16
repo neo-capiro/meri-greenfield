@@ -5,6 +5,7 @@ import {resolve, relative} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {parseScopeLedger} from '../general-reads/sources.mjs';
 import {decodeCoverageCsv} from './coverage-csv.mjs';
+import {loadSourceExposure} from './source-exposure.mjs';
 
 export const DEFAULT_ROOT = resolve(fileURLToPath(new URL('../../', import.meta.url)));
 
@@ -93,6 +94,7 @@ export function loadSources(root = DEFAULT_ROOT) {
   const ownershipGraph = readJson(root, SOURCE_PATHS.ownershipGraph);
   const excludedNames = ownerExclusion.json.groups.flatMap(group => group.tools);
   return {
+    sourceExposure: loadSourceExposure(root),
     inventory: inventory.json,
     coverage: decodeCoverageCsv(coverage.text),
     coverageOrigin: COVERAGE_ORIGIN,

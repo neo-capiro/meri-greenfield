@@ -1,5 +1,33 @@
 # Meri final scope ledger
 
+Current-source reconciliation, 16 October 2026: the generated `sourceExposure`
+snapshot below supersedes historical proposal claims about server/adapter presence;
+it does not change scope decisions, frozen contracts, the audit CSV, qualification
+receipts or live availability. The generator joins the actual canonical bindings,
+single `meri_reads` family list, lane-owned family composition, existing adapter
+directories and indexed skill manifests. It distinguishes manifest declarations
+from the two source-admitted original skills and distinguishes selected source
+reads from product operations and the retained historical action-items contract.
+Missing producers/dispatch context remain explicit; no endpoint or permissive
+placeholder is inferred from a mapped contract. Verification covers this source
+mapping and refusal boundaries only, without re-running accepted runtime suites.
+Refresh this section with `node scripts/scope-ledger/cli.mjs --refresh-exposure`;
+check it with `--check-exposure`. The original complete-ledger commands retain
+their historical reference-classification checks. Their existing HOLD on a newly
+unclassified reference in accepted `reads/results.mjs` is preserved separately;
+this task does not re-audit or reclassify accepted source to refresh read coverage.
+
+Focused checkpoint `be3eb2b2c3f83fb2673fd49916ce1fee88660a29` passed 14/14
+offline source-mapping/drift controls with Node heap 128 MiB, hard wall 120 seconds,
+primary/cleanup exits 0 and zero remaining owned processes. TAP SHA256:
+`dacedb67f1b0c35a3d23e40b71a92d85f77edbadf13d82c275d26555da07a7de`.
+The initial raw-versus-canonical manifest-pin error and subsequent full-generator
+reference-classification HOLD remain in separate execution receipts; neither is
+relabelled as a pass. No accepted runtime suite, compiler, SDK session or producer
+was executed. Remaining implementation work is 63 new source adapters across 33
+families, requiring concrete admitted producer protocols and their current-context
+owners; there is no existing adapter with an uncompleted general-read exposure.
+
 Date: 15 October 2026. Lane: Fable `scope-ledger`, branch `fable/a5-scope-ledger-20261015`, base `e76189da` (`fable/p3-general-reads-design-20261015`). Documentation and source-evidence only: no product code, contract, catalog, lockfile, migration, credential or deployment is changed. **Nothing in this ledger is live, enabled, qualified or accepted.** Every gate below is open. dot independently verifies exact commits and records ACCEPT or HOLD.
 
 This ledger answers the comprehensive audit's request ([README "Corrected tool and scope accounting"](https://github.com/neo-capiro/meri-greenfield/blob/82a015083f1965851ffddbc05d4f181bb90ecac2/docs/coordination/audits/meri-comprehensive-20261015/README.md) and [product-integration "End-goal scope accounting"](https://github.com/neo-capiro/meri-greenfield/blob/82a015083f1965851ffddbc05d4f181bb90ecac2/docs/coordination/audits/meri-comprehensive-20261015/meri-audit-product-integration.md)) for one reconciled final scope ledger that names every inclusion, every continued exclusion, its owner and its acceptance gate, without silently perpetuating the 43 historical exclusions.
@@ -125,7 +153,88 @@ It ran no product code, model, database, browser or deployment. "Declared" means
 | Audit declared-read equation | 47 literal legacy-name read matches + 6 renamed read IDs - 1 historical query_action_items match = 52 declared current reads; + create_word = 53 |
 | Live | 0 |
 
-### Accounting bridge (audit CSV versus p3 inventory)
+### Current selected read source exposure (16 October 2026)
+
+This is source reconciliation only. The historical proposal tables below retain their original status; current adapter/server presence is recorded here and in `scope-ledger.json.sourceExposure.rows`. No source receipt is repinned and live availability remains zero.
+
+| Measure | Current source |
+| --- | --- |
+| Selected capabilities / continued exclusions | 96 / 43 |
+| Selected source reads / separate product or governed capabilities | 82 / 14 |
+| Single meri_reads registry | 21 operations / 15 families |
+| Registry accounting | 19 selected source reads + 1 product-state read + 1 historical contract |
+| Selected source reads declared in skill manifests | 52 current contracts + 1 historical-only contract |
+| Selected source reads reachable through admitted skill source | 11 |
+| Existing source adapters lacking general-conversation registration | 0 |
+| Selected source reads lacking adapters | 63 (39 declared by skills; 24 without a skill declaration) |
+| Live | 0 |
+
+Only `quick_skill.relationship_brief`, `quick_skill.commitments_audit` are admitted by the original skill server. A declaration in another manifest is not source reachability. The historical `query_action_items` and successor `actions.query` represent one selected capability. `memory.list_own_proposals` is a product-state read; product writes and effects remain on their separate governed route.
+
+| Source-admitted skill | Exact adapter-backed operations |
+| --- | --- |
+| `quick_skill.relationship_brief` | `find_contacts`, `mail.read_thread`, `mail.search_messages`, `meeting.query_debriefs`, `meeting.read_client_meetings`, `query_action_items`, `query_tasks`, `read_client_documents`, `read_monday_client_boards`, `resolve_entity`, `search_memory` |
+| `quick_skill.commitments_audit` | `mail.read_thread`, `mail.search_messages`, `meeting.query_debriefs`, `meeting.read_client_meetings`, `query_action_items`, `query_tasks`, `read_client_documents`, `read_monday_client_boards` |
+
+| Registered family | Exact operations |
+| --- | --- |
+| `action-items-complete` | `actions.query` |
+| `client-documents` | `read_client_documents` |
+| `client-knowledge-memory` | `search_memory` |
+| `client-knowledge-monday` | `read_monday_client_boards` |
+| `client-knowledge-profile` | `get_client_context` |
+| `dataset-metadata` | `list_global_datasets` |
+| `entity-candidates` | `resolve_entity` |
+| `florida-budget` | `get_florida_budget_project` |
+| `mail` | `mail.list_messages`, `mail.read_thread`, `mail.search_messages` |
+| `meeting-source` | `meeting.list_upcoming_meetings`, `meeting.query_debriefs`, `meeting.read_client_meetings` |
+| `memory-proposals` | `memory.list_own_proposals` |
+| `operational-reads` | `query_action_items`, `query_tasks` |
+| `research-portfolio` | `get_research_portfolio`, `get_research_portfolio_changes` |
+| `research-portfolio-evidence` | `get_research_evidence` |
+| `tenant-contacts` | `find_contacts` |
+
+Every canonical source adapter already present is exposed by the agreed phase-1 plus retained-three cut. The remaining selected source reads are outside that cut and lack an adapter; contract mapping alone does not implement them. Their exact unresolved families and operations are:
+
+| Missing adapter family | Selected operations |
+| --- | --- |
+| `acquisition-personnel` | `get_acquisition_person`, `search_acquisition_personnel` |
+| `bill-text` | `read_bill_text`, `search_congress_bills` |
+| `business-development` | `get_business_development_context`, `get_business_development_evidence`, `get_business_development_recent_changes` |
+| `certification-status` | `get_certification_status` |
+| `client-knowledge-search` | `query_knowledge_graph`, `search_client_knowledge` |
+| `client-registry` | `lookup_client_registry` |
+| `data-search` | `search_capiro_data` |
+| `disclosures` | `search_fara_registrations`, `search_lda_filings`, `search_sec_filings` |
+| `district-nexus` | `get_district_nexus_changes`, `get_district_nexus_context` |
+| `facility-representation` | `get_representation` |
+| `federal-legislation` | `get_bill_status`, `search_floor_votes` |
+| `federal-market` | `get_district_federal_market`, `search_contract_vehicles`, `search_federal_contract_awards`, `search_federal_subawards`, `search_procurement_forecasts` |
+| `funding-opportunities` | `get_funding_opportunity`, `get_funding_opportunity_requirements`, `get_opportunity_client_context`, `get_opportunity_government_landscape`, `search_funding_opportunities` |
+| `intelligence-summary` | `query_intelligence` |
+| `legislative-directory` | `get_committee_roster`, `list_members` |
+| `outreach-query` | `query_outreach` |
+| `pe-references` | `get_pe_bills`, `get_pe_contractors`, `get_pe_report_language` |
+| `program-elements` | `get_pe_budget_timeline`, `get_program_element`, `search_program_elements` |
+| `public-data` | `query_economic_data`, `search_federal_awards`, `search_federal_grants` |
+| `public-domain-hearings` | `search_committee_hearings` |
+| `public-domain-query` | `query_global_data` |
+| `public-reports` | `search_cbo_cost_estimates`, `search_crs_reports`, `search_gao_reports` |
+| `public-web` | `scrape_web_page`, `search_public_web` |
+| `regulatory-dockets` | `query_regulatory_dockets` |
+| `research-legal-candidates` | `search_research_sources` |
+| `research-legal-legislation` | `get_legal_reference`, `search_legislative_research` |
+| `research-legal-news` | `search_legiwatch_news` |
+| `rule-status` | `get_state_rule_status` |
+| `sam-opportunities` | `search_sam_opportunities` |
+| `state-legislation` | `get_state_legislator`, `search_state_bills` |
+| `state-status-votes` | `get_state_bill_status`, `search_state_floor_votes` |
+| `stored-intelligence` | `search_intel_articles` |
+| `tracked-bills` | `search_tracked_bills` |
+
+Canonical gateway family adapter and operation-specific trusted dispatch/current-resource context, plus an admitted exact producer/endpoint protocol. A schema/normalizer binding or skill declaration is not a producer. No guessed endpoint, default credential or permissive generic query is allocated.
+
+### Historical accounting bridge (audit CSV versus p3 inventory)
 
 | Measure | Audit | p3 | Explanation |
 | --- | --- | --- | --- |

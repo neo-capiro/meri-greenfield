@@ -4,15 +4,18 @@ import {readFileSync, writeFileSync, existsSync} from 'node:fs';
 import {resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {DEFAULT_ROOT, loadSources} from './sources.mjs';
-import {buildLedger} from './ledger.mjs';
+import {buildLedger,SCHEMA,LEDGER_NOTE} from './ledger.mjs';
+import {loadSourceExposure} from './source-exposure.mjs';
 import {renderGenerated, splice} from './markdown.mjs';
 
 export const JSON_PATH = 'docs/coordination/ledgers/scope-ledger.json';
 export const MARKDOWN_PATH = 'docs/coordination/ledgers/MERI-FINAL-SCOPE-LEDGER-20261015.md';
-export const USAGE = `Usage: node scripts/scope-ledger/cli.mjs (--check | --write | --help)
+export const USAGE = `Usage: node scripts/scope-ledger/cli.mjs (--check | --write | --check-exposure | --refresh-exposure | --help)
 
   --check  Regenerate in memory and compare with ${JSON_PATH} and the generated block of ${MARKDOWN_PATH}.
   --write  Regenerate and overwrite both (the Markdown outside its generated markers is kept).
+  --check-exposure  Compare only the current source exposure while retaining historical scope/reference evidence.
+  --refresh-exposure  Refresh current source exposure and its rendered section; preserve all historical rows/reference classifications.
   --help   Print this text.
 
 Exit codes: 0 success/up to date, 1 committed ledger drifted, 2 usage error,
@@ -28,14 +31,24 @@ export function generate(root = DEFAULT_ROOT) {
   return {ledger, json: renderJson(ledger), markdown: splice(readFileSync(markdownPath, 'utf8'), renderGenerated(ledger))};
 }
 
+/** Targeted current-source refresh; never reclassifies or suppresses the historical exclusion scan. */
+export function generateExposure(root=DEFAULT_ROOT){
+  const ledger=JSON.parse(readFileSync(resolve(root,JSON_PATH),'utf8')),exposure=loadSourceExposure(root);
+  const included=ledger.capabilities?.filter(row=>row.decision==='included').map(row=>row.id).sort();
+  const excluded=ledger.capabilities?.filter(row=>row.decision==='excluded');
+  if(ledger.schema!==SCHEMA||excluded?.length!==43||JSON.stringify(included)!==JSON.stringify(exposure.rows.map(row=>row.id).sort()))throw Error('Current exposure differs from preserved selected/excluded scope');
+  ledger.note=LEDGER_NOTE;ledger.sourceExposure=exposure;
+  return {ledger,json:renderJson(ledger),markdown:splice(readFileSync(resolve(root,MARKDOWN_PATH),'utf8'),renderGenerated(ledger))};
+}
+
 export async function runCli(argv, {root = DEFAULT_ROOT, out = console.log, err = console.error} = {}) {
-  if (argv.length !== 1 || !['--check', '--write', '--help'].includes(argv[0])) { err(USAGE); return 2; }
+  if (argv.length !== 1 || !['--check', '--write', '--check-exposure', '--refresh-exposure', '--help'].includes(argv[0])) { err(USAGE); return 2; }
   if (argv[0] === '--help') { out(USAGE); return 0; }
   let outputs;
-  try { outputs = generate(root); }
+  try { outputs = ['--check-exposure','--refresh-exposure'].includes(argv[0])?generateExposure(root):generate(root); }
   catch (error) { err(`Scope ledger not generated: ${error.message}`); return 3; }
   const targets = [[JSON_PATH, outputs.json], [MARKDOWN_PATH, outputs.markdown]];
-  if (argv[0] === '--write') {
+  if (['--write','--refresh-exposure'].includes(argv[0])) {
     for (const [path, text] of targets) writeFileSync(resolve(root, path), text);
     out(`Wrote ${JSON_PATH} and ${MARKDOWN_PATH}`); return 0;
   }
