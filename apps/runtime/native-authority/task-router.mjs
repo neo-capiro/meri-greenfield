@@ -32,6 +32,7 @@ export function createTaskRouterApplication(configuration){
    if(!cleanup)life.limitDeadline(original.expiresAtMs);
    const authority=()=>life.run(signal=>verify({original,operation,credential:authorization.slice(7),signal,check:life.check}));
    const first=await authority();exactOriginal(first.original,original);if(!cleanup)life.limitDeadline(first.expiresAtMs);
+   if((operation==='release-readiness'||operation==='release')&&input.taskArn!==first.resource.taskArn)throw taskRouterFault();
    for(const [key,value]of originals)if(value.expiresAtMs<=now()&&value.requests.size===0)originals.delete(key);
    entry=originals.get(original.executionKey);
    if(!entry){if(originals.size>=maxOriginals)throw taskRouterFault();entry={expiresAtMs:original.expiresAtMs,stopping:false,requests:new Set()};originals.set(original.executionKey,entry);}

@@ -62,11 +62,11 @@ test('even fully repinned material must contain valid canonical role configurati
  for(const changed of [
   c=>{c.sourceEnabled=true;},c=>{c.temporal.tls.keyFile='/run/meri/undeclared-key';},
   c=>{c.nativeCandidate.identity.credentialFile=c.nativeCandidate.proxyCredentialFile;},
-  c=>{c.database.connectionFile='/other/database';},c=>{c.http.port=9999;},c=>{c.nativeCandidate.multiRun={runWindowMs:600000,materialDirectory:'/tmp/dynamic'};},
+  c=>{c.database.connectionFile='/other/database';},c=>{c.http.port=9999;},c=>{c.nativeCandidate.multiRun={...c.nativeCandidate.multiRun,materialDirectory:'/tmp/dynamic'};},
  ]){
   const f=staticMaterialFixture(),c=controlMaterialConfiguration();changed(c);
   updateFile(f,f.plan.configurationPath,Buffer.from(JSON.stringify(c)));
-  if(c.nativeCandidate.multiRun){assert.doesNotThrow(()=>validateStaticProductDelivery(f),'dynamic storage is separate from the immutable static inventory');}
+  if(c.nativeCandidate.multiRun.materialDirectory==='/tmp/dynamic'){assert.doesNotThrow(()=>validateStaticProductDelivery(f),'dynamic storage is separate from the immutable static inventory');}
   else assert.throws(()=>validateStaticProductDelivery(f),/^Error: STATIC_INIT_/);
  }
  const f=staticMaterialFixture();updateFile(f,f.plan.configurationPath,Buffer.from([0xff]));
@@ -80,7 +80,7 @@ test('optional static signing/token files are included while token rotation rema
  const c=controlMaterialConfiguration();c.downloadLinks={enabled:true,keyFile:'/run/meri/download-key',ttlMs:60000};
  c.temporal.authorization={tokenFile:'/run/meri/temporal-token',namespace:c.temporal.namespace,audience:'temporal.meri',issuer:'https://issuer.synthetic.invalid',refreshMs:5000,maxLifetimeMs:60000};
  const f=staticMaterialFixture('control',c),s=validateStaticProductDelivery(f);
- assert.equal(s.fileCount,11);assert.equal(f.plan.requiresTokenRotation,true);
+ assert.equal(s.fileCount,12);assert.equal(f.plan.requiresTokenRotation,true);
 });
 
 test('missing delivery/invalid deadline/unsupported host refuse before any delivery effect and forged cleanup receipts refuse',async()=>{

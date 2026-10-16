@@ -19,7 +19,6 @@ function sized(value){
  return v;
 }
 function material(value,b){
- if(value==='unmounted')return null;
  const m=record(value,['control','temporalWorker']);
  if(typeof b.sourceCommit!=='string'||!/^[a-f0-9]{40}$/u.test(b.sourceCommit))fail();
  const secretVersion=/^arn:aws:secretsmanager:us-east-1:967807252336:secret:[A-Za-z0-9/_+=.@-]{1,512}:::[A-Za-z0-9-]{32,64}$/u;
@@ -64,11 +63,11 @@ const command=Object.freeze({control:['control','--config','/run/meri/control.js
 function health(port){return {command:['CMD','node','-e',`fetch('http://127.0.0.1:${port}/health/live').then(r=>process.exit(r.status===200?0:1)).catch(()=>process.exit(1))`],interval:30,timeout:5,retries:3,startPeriod:60};}
 function task(stack,b,role,port){
  const name=role==='temporalWorker'?'temporal-worker':role;
- const delivery=role==='runner'?null:material(b.materialDelivery,b)?.[role];
+ const delivery=role==='runner'?null:material(b.materialDelivery,b)[role];
  const portMappings=role==='control'?[{containerPort:8080,protocol:'tcp'},{containerPort:8082,protocol:'tcp'}]:[{containerPort:port,protocol:'tcp'}];
  const c={name:role==='runner'?'worker':name,image:b.imageUri,essential:true,user:b.runtimeUser,privileged:false,readonlyRootFilesystem:true,stopTimeout:60,
   entryPoint:['node','apps/runtime/cli.mjs'],command:command[role],
-  environment:role==='runner'?[{name:'MERI_RUNNER_SHA256',value:b.runnerSha256}]:role==='control'?[{name:'MERI_PRODUCT_PREVIEW_REQUIRED',value:'1'}]:[],
+  environment:role==='runner'?[{name:'MERI_RUNNER_SHA256',value:b.runnerSha256},{name:'MERI_PRODUCT_PREVIEW_REQUIRED',value:'1'}]:[{name:'MERI_PRODUCT_PREVIEW_REQUIRED',value:'1'}],
   portMappings,linuxParameters:{capabilities:{drop:['ALL']}},
   mountPoints:[{sourceVolume:'workspace',containerPath:'/workspace',readOnly:false},{sourceVolume:'tmp',containerPath:'/tmp',readOnly:false},
    ...(delivery?[{sourceVolume:'material',containerPath:'/run/meri',readOnly:true}]:[])],

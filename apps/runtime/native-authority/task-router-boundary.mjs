@@ -1,7 +1,7 @@
 /** Closed native-task routing protocol; authority remains with the receiving task. */
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 export const taskRouterFault=()=>Object.assign(Error('TASK_ROUTER_REFUSED'),{code:'TASK_ROUTER_REFUSED'});
-export const taskRouterFields=Object.freeze(Object.fromEntries(Object.entries({prepare:['descriptor'],start:['descriptorSha256'],stdin:['sequence','frame','end'],stdout:['sequence'],stop:[],inspect:[],retire:[],readiness:[],launch:['plan'],configuration:['tree'],registration:['request'],'workspace-restore':['request'],'workspace-verify':['request'],capture:['request'],'binding-read':[]}).map(([key,value])=>[key,Object.freeze(value)])));
+export const taskRouterFields=Object.freeze(Object.fromEntries(Object.entries({prepare:['descriptor'],start:['descriptorSha256'],stdin:['sequence','frame','end'],stdout:['sequence'],stop:[],inspect:[],retire:[],readiness:[], 'release-readiness':['taskArn'],release:['taskArn'],launch:['plan'],configuration:['tree'],registration:['request'],'workspace-restore':['request'],'workspace-verify':['request'],capture:['request'],'binding-read':[]}).map(([key,value])=>[key,Object.freeze(value)])));
 const taskOperations=new Set(['prepare','start','stdin','stdout','stop']);
 export function taskRouterOperation(value){if(typeof value!=='string'||!Object.hasOwn(taskRouterFields,value))throw taskRouterFault();return value;}
 export function taskRouterRole(operation,control,task){taskRouterOperation(operation);return operation==='stop'?control||task:taskOperations.has(operation)?task:control;}

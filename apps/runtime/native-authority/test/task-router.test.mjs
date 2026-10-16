@@ -13,6 +13,15 @@ test('authorized request connects after current task observation, rechecks after
  const f=fixture();f.onSend(async input=>{assert.equal(input.operation,'inspect');assert.equal(input.authorization,'Bearer '+f.controlCredential);assert.deepEqual(JSON.parse(input.body),{original:f.original});assert.equal(input.maxResponseBytes,2097152);return {status:200,body:Buffer.from(JSON.stringify({original:f.original,receipt:{ok:true}}))};});
  const response=await f.post();assert.equal(response.status,200);assert.equal(response.headers.get('cache-control'),'no-store');assert.equal(f.counts.network,3);assert.equal(f.counts.admission,3);assert.equal(f.counts.send,1);assert.equal(f.counts.close,1);assert.deepEqual(f.router.status(),{closed:false,activeRequests:0,trackedOriginals:1});f.router.close();
 });
+test('prepared release gates use the same admitted task route and exact task ARN',async()=>{
+ for(const operation of ['release-readiness','release']){
+  const f=fixture();f.onSend(async input=>{assert.equal(input.operation,operation);assert.deepEqual(JSON.parse(input.body),{original:f.original,taskArn:f.resource.taskArn});return {status:200,body:Buffer.from(JSON.stringify({original:f.original,taskArn:f.resource.taskArn,checkedAtMs:Date.now(),expiresAtMs:f.original.expiresAtMs,released:operation==='release'}))};});
+  assert.equal((await f.post(operation,f.controlCredential,{taskArn:f.resource.taskArn})).status,200);
+  assert.equal((await f.post(operation,f.taskCredential,{taskArn:f.resource.taskArn})).status,403);
+  assert.equal((await f.post(operation,f.controlCredential,{taskArn:f.resource.taskArn.replace(/a{32}$/u,'b'.repeat(32))})).status,403);
+  assert.equal(f.counts.send,1);f.router.close();
+ }
+});
 test('wrong credential, unknown operation, query, encoding and wrong original send no bearer',async()=>{
  const f=fixture();const invalid=[f.request('inspect','foreign'),f.request('unknown'),new Request('https://router.invalid/v1/native-task/inspect?q=1',{method:'POST',headers:{authorization:'Bearer '+f.controlCredential,'content-type':'application/json'},body:JSON.stringify({original:f.original})}),f.request('inspect',f.controlCredential,{original:{...f.original,expiresAtMs:f.original.expiresAtMs+1}})];
  for(const request of invalid)assert.equal((await f.router.privateApplication.handle(request,{ingress:f.ingress})).status,403);assert.equal(f.counts.connect,0);assert.equal(f.counts.send,0);f.router.close();

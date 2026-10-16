@@ -30,6 +30,8 @@ export function compileRunnerTlsServerMaterial(configuration){
   if(spki.length!==expected.length||!timingSafeEqual(spki,expected))refuse();
   const details=publicKey.asymmetricKeyDetails,type=publicKey.asymmetricKeyType;
   if(!['rsa','rsa-pss','ec','ed25519'].includes(type)||['rsa','rsa-pss'].includes(type)&&details.modulusLength<2048||type==='ec'&&!['prime256v1','secp384r1','secp521r1'].includes(details.namedCurve))refuse();
-  return Object.freeze({key:privateKey,cert:Buffer.isBuffer(c.cert)?Buffer.from(c.cert):c.cert,ca:Buffer.isBuffer(c.ca)?Buffer.from(c.ca):c.ca,minVersion:'TLSv1.3',honorCipherOrder:true,requestCert:false});
+  // Node's HTTPS server accepts PEM bytes here, not a KeyObject. Export only after
+  // proving that this key matches the exact task certificate.
+  return Object.freeze({key:privateKey.export({type:'pkcs8',format:'pem'}),cert:Buffer.isBuffer(c.cert)?Buffer.from(c.cert):c.cert,ca:Buffer.isBuffer(c.ca)?Buffer.from(c.ca):c.ca,minVersion:'TLSv1.3',honorCipherOrder:true,requestCert:false});
  }catch{refuse();}
 }

@@ -2,11 +2,12 @@
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 import {data,own} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {fault} from './config.mjs';
-export function createNativeCapabilityClient({configuration,credential,fetch:transport=fetch,now=Date.now}){
- if(typeof credential!=='string'||!/^[A-Za-z0-9._~+\/-]{1,8192}={0,2}$/u.test(credential))throw fault('NATIVE_CONFIGURATION');
+export function createNativeCapabilityClient({configuration,credential,fetch:transport=fetch,now=Date.now,maxRequestMs=3000}){
+ if(typeof credential!=='string'||!/^[A-Za-z0-9._~+\/-]{1,8192}={0,2}$/u.test(credential)||
+    !Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>10000)throw fault('NATIVE_CONFIGURATION');
  const c=configuration;
  async function call(operation,input,{signal,deadlineMs}={}){
-  const life=createOperationLifetime({deadlineMs:Math.min(deadlineMs??now()+3000,now()+3000),now,signal,errorFactory:fault});let response;
+  const life=createOperationLifetime({deadlineMs:Math.min(deadlineMs??now()+maxRequestMs,now()+maxRequestMs),now,signal,errorFactory:fault});let response;
   try{const body=JSON.stringify(data(input));if(Buffer.byteLength(body)>2097152)throw fault('NATIVE_REQUEST_LIMIT');
    response=await life.run(signal=>transport(c.origin+'/v1/'+operation,{method:'POST',redirect:'error',headers:{authorization:'Bearer '+credential,'content-type':'application/json'},body,signal}));
    if(response.status!==200||!/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(response.headers.get('content-type')??'')||response.headers.get('content-encoding'))throw fault('NATIVE_UNAVAILABLE');

@@ -8,10 +8,10 @@ import {createTemporalConversationDispatcher} from '../control/conversations/tem
 import {createActionSessionOwner} from '../control/action-host/session/owner.mjs';
 import {createActionSessionApplication} from '../control/action-host/session/http.mjs';
 import {createNativeCapabilityClient} from './native-client.mjs';
-import {readSecret,fault} from './config.mjs';
+import {readSecret,fault,compileControlTaskRouterConfiguration} from './config.mjs';
 import {createTemporalAuthorization,createTemporalTokenFileReader} from './temporal-authorization.mjs';
 import {listenRuntime} from './http-server.mjs';
-import {createControlRouteApplications} from './control-route-boundary.mjs';
+import {createControlRouteApplications,listenControlApplications} from './control-route-boundary.mjs';
 import {createWorkerRunApplication} from './worker-http.mjs';
 import {createConversationLifecycleService} from '../control/conversations/lifecycle/service.mjs';
 import {createConversationLifecycleApplication} from '../control/conversations/lifecycle/http.mjs';
@@ -33,6 +33,10 @@ import {createArtifactRecoveryBinding} from './artifacts/recovery-binding.mjs';
 import {types} from 'node:util';
 import {own,nativeSignal} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {captureReadRuntimeOptions} from './native-authority/prepared-reads.mjs';
+import {createTaskRouterIngress} from './native-authority/task-router-boundary.mjs';
+import {createTaskRouterApplication} from './native-authority/task-router.mjs';
+import {createTaskRouterNetworkReader} from './native-authority/task-router-network-reader.mjs';
+import {createRunnerTlsConnector} from './native-authority/runner-tls-client.mjs';
 function productBinding(options){
  const c=own(options,[],['productPorts','productPortsFactory']);
  if(c.productPorts!==undefined&&c.productPortsFactory!==undefined)throw fault('PRODUCT_PORTS_CONFIGURATION');
@@ -95,8 +99,9 @@ export async function startControl(configuration,options={}){
  const {signal,createReadsRuntime,generalReads,...binding}=own(options,[],['signal','productPorts','productPortsFactory','createReadsRuntime','generalReads']);nativeSignal(signal);const compiled=productBinding(binding),reads=captureReadRuntimeOptions({...(createReadsRuntime===undefined?{}:{createReadsRuntime}),...(generalReads===undefined?{}:{generalReads})});
  if(configuration.nativeCandidate===undefined&&Object.keys(reads).length)throw fault('PREPARED_CANDIDATE_CONFIGURATION');
  if(configuration.nativeCandidate!==undefined){compilePreparedCandidateConfiguration(configuration.nativeCandidate,configuration.versions);if(configuration.native.capabilityFile!==configuration.nativeCandidate.controlCapabilityFile)throw fault('PREPARED_CANDIDATE_CONFIGURATION');}
+ const routerPlan=compileControlTaskRouterConfiguration(configuration);
  const mounted=compiled.factory?{productPortsFactory:compiled.factory}:{productPorts:compiled.ports};
- let pool,connection,listener,privateListener,assembly,candidate,closing,authorization,telemetry;const close=()=>closing??=(async()=>{const errors=[];for(const method of [()=>privateListener?.close(),()=>listener?.close(),()=>candidate?.close(),()=>assembly?.close(),()=>connection?.close(),()=>authorization?.close(),()=>pool?.end(),()=>telemetry?.close()])try{await method();}catch(error){errors.push(error);}if(errors.length)throw new AggregateError(errors,'CONTROL_CLEANUP_UNKNOWN');})();
+ let pool,connection,listener,privateListener,assembly,candidate,router,routerClients,closing,authorization,telemetry;const close=()=>closing??=(async()=>{const errors=[];for(const method of [()=>listener?.close(),()=>privateListener?.close(),()=>router?.close(),()=>candidate?.close(),()=>assembly?.close(),()=>connection?.close(),()=>authorization?.close(),()=>pool?.end(),()=>telemetry?.close(),()=>routerClients?.forEach(client=>client.destroy())])try{await method();}catch(error){errors.push(error);}if(errors.length)throw new AggregateError(errors,'CONTROL_CLEANUP_UNKNOWN');})();
  try{
   signal?.throwIfAborted();
   // Declared telemetry starts first and closes last so every request span is flushed; the SDK is loaded only when enabled.
@@ -111,18 +116,29 @@ export async function startControl(configuration,options={}){
   pool=new Pool({connectionString,max:10,connectionTimeoutMillis:configuration.limits.requestMs,idleTimeoutMillis:10000,query_timeout:configuration.limits.requestMs});
   connection=await Connection.connect({address:configuration.temporal.address,tls,connectTimeout:configuration.limits.startupMs,...(authorization?{apiKey:()=>authorization.apiKey()}:{})});signal?.throwIfAborted();const client=new Client({connection,namespace:configuration.temporal.namespace});
   let native=createNativeCapabilityClient({configuration:configuration.native,credential:capabilityBytes.toString('utf8').trim()});signal?.throwIfAborted();if(configuration.nativeCandidate!==undefined){const {startPreparedCandidate}=await import('./prepared-candidate.mjs');candidate=await startPreparedCandidate({configuration,pool,signal,...multiRunOwners(configuration,pool),...reads});if(candidate.controlCapabilitySha256!==capabilityDigest(capabilityBytes.toString('utf8').trim()))throw fault('PREPARED_CANDIDATE_CONFIGURATION');native=candidate.native;}assembly=assembleControl({configuration,pool,client,native,...(telemetry?{telemetry}:{}),...mounted,...(candidate?{canonicalProductPorts:candidate.productPorts}:{})});candidate?.bindApplication(assembly.application);
+  // The opt-in router is assembled from this control's durable candidate owners and a fresh AWS task/ENI readback.
+  // The ingress marker is never derived from a request header or exposed by the public listener.
+  let privateIngress=null;
+  if(routerPlan){
+   if(!candidate?.taskRouterAuthority)throw fault('TASK_ROUTER_CONFIGURATION');
+   const ca=await readSecret(routerPlan.runnerCaFile);signal?.throwIfAborted();
+   const [{ECSClient},{EC2Client}]=await Promise.all([import('@aws-sdk/client-ecs'),import('@aws-sdk/client-ec2')]);
+   const ecs=new ECSClient({region:'us-east-1',maxAttempts:1}),ec2=new EC2Client({region:'us-east-1',maxAttempts:1});routerClients=[ecs,ec2];
+   const networkReader=await createTaskRouterNetworkReader({ecsClient:ecs,ec2Client:ec2,network:routerPlan.network});
+   const connector=createRunnerTlsConnector({ca,zone:routerPlan.zone});privateIngress=createTaskRouterIngress();
+   router=createTaskRouterApplication({authority:candidate.taskRouterAuthority,networkReader,connector,privateIngress,enabled:true,maxRequestMs:8000});
+  }
   // The download-link gate opens only after its owners verify; a closed gate leaves every other route as composed.
   const downloads=await assembly.downloads.open({signal});signal?.throwIfAborted();
   const mountedApplication=candidate?{async handle(request){return (await candidate.application.handle(request))??assembly.application.handle(request);}}:assembly.application;
-  const separated=configuration.privateHttp===undefined?null:createControlRouteApplications({assembly:assembly.application,candidate:candidate?.application});
+  const separated=configuration.privateHttp===undefined?null:createControlRouteApplications({assembly:assembly.application,candidate:candidate?.application,...(router?{router,privateIngress}:{})});
   const publicApplication=separated?.public??mountedApplication,application=telemetry?telemetry.instrumentApplication(publicApplication):publicApplication;
   const privateApplication=separated===null?null:telemetry?telemetry.instrumentApplication(separated.private):separated.private;
   async function readiness({signal}){signal?.throwIfAborted();if(authorization&&!authorization.healthy())throw fault('TEMPORAL_AUTHORIZATION_UNAVAILABLE');await pool.query("SELECT to_regclass('meri_conversations.runs') AS runs, to_regclass('meri_conversations.events') AS events, to_regclass('meri_conversations.controls') AS controls, to_regclass('meri_conversations.selected_outputs') AS selected_outputs, to_regclass('meri_conversations.initial_inputs') AS initial_inputs").then(result=>{if(!result.rows[0]||typeof result.rows[0].initial_inputs!=='string'||Object.values(result.rows[0]).some(v=>v===null))throw fault('DATABASE_SCHEMA_UNAVAILABLE');});
    // Declared retention serving needs its projections present and a recovered watermark: a fenced or stale projection is reconciled from
    // the ledger here before serving, and a missing dependency is exposed, never bypassed.
    if(assembly.retention){const r=await pool.query('SELECT name,to_regclass(name) AS relation FROM unnest($1::text[]) AS names(name)',[assembly.retention.tables]);if(r.rows.length!==assembly.retention.tables.length||r.rows.some(row=>row.relation===null))throw fault('RETENTION_SCHEMA_UNAVAILABLE');await assembly.retention.startup.ensureServing();}await connection.withDeadline(Date.now()+configuration.limits.requestMs,()=>signal?connection.withAbortSignal(signal,()=>connection.workflowService.getSystemInfo({})):connection.workflowService.getSystemInfo({}));await native.readiness({signal});signal?.throwIfAborted();return {product:assembly.productReadiness()};}
-  await readiness({signal});listener=await listenRuntime({configuration,application,readiness,...(candidate?{}:{signal})});
-  if(privateApplication!==null)privateListener=await listenRuntime({configuration:{...configuration,http:configuration.privateHttp},application:privateApplication,readiness,...(candidate?{}:{signal})});
+  await readiness({signal});({publicListener:listener,privateListener}=await listenControlApplications({configuration,publicApplication:application,privateApplication,readiness,signal:candidate?undefined:signal,listen:listenRuntime}));
   return Object.freeze({address:listener.address,...(privateListener?{privateAddress:privateListener.address}:{}),downloads,close});
  }catch(error){await close().catch(()=>{});throw Object.assign(fault('CONTROL_STARTUP_FAILED'),{cause:error});}
 }

@@ -1,10 +1,12 @@
 /** Production-capable HTTP adapter; canonical Fetch owners handle application input. */
 import {serve} from '@hono/node-server';
+import {createServer as createHttpsServer} from 'node:https';
 import {fault} from './config.mjs';
-export async function listenRuntime({configuration,application,readiness,signal}){
+export async function listenRuntime({configuration,application,readiness,signal,tls}){
  signal?.throwIfAborted();
  let stopping=false;const active=new Set(),sockets=new Set();const json=(body,status=200)=>Response.json(body,{status,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
- const server=serve({hostname:configuration.http.hostname,port:configuration.http.port,overrideGlobalObjects:false,fetch:async request=>{
+ const server=serve({hostname:configuration.http.hostname,port:configuration.http.port,overrideGlobalObjects:false,
+  ...(tls?{createServer:createHttpsServer,serverOptions:tls}:{}),fetch:async request=>{
   const path=new URL(request.url).pathname;if(path==='/health/live'||path==='/health/ready'){
    if(request.method!=='GET'||new URL(request.url).search)return json({error:{code:'METHOD_NOT_ALLOWED'}},405);
    if(path==='/health/live')return json({status:stopping?'stopping':'live'},stopping?503:200);

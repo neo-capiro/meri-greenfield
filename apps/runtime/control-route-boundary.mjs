@@ -17,3 +17,18 @@ export function createControlRouteApplications({assembly,candidate,router=null,p
    return absent();}})
  });
 }
+
+/** Do not expose public first-chat routes until their private native route is listening. */
+export async function listenControlApplications({configuration,publicApplication,privateApplication,readiness,signal,listen}){
+ if(typeof listen!=='function'||typeof publicApplication?.handle!=='function'||privateApplication!==null&&typeof privateApplication?.handle!=='function')throw Error('PRIVATE_CONTROL_CONFIGURATION');
+ let publicListener,privateListener;
+ try{
+  if(privateApplication!==null)privateListener=await listen({configuration:{...configuration,http:configuration.privateHttp},application:privateApplication,readiness,...(signal?{signal}:{})});
+  publicListener=await listen({configuration,application:publicApplication,readiness,...(signal?{signal}:{})});
+  return {publicListener,privateListener};
+ }catch(error){
+  // A failed public bind must retire the already-open private listener before startup returns.
+  await Promise.allSettled([publicListener?.close(),privateListener?.close()]);
+  throw error;
+ }
+}

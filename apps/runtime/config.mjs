@@ -14,10 +14,31 @@ const requireValue=(condition,code='RUNTIME_CONFIGURATION')=>{if(!condition)thro
 const integer=(n,min,max)=>Number.isSafeInteger(n)&&n>=min&&n<=max;
 function file(p){requireValue(typeof p==='string'&&isAbsolute(p)&&!p.includes('/../')&&p.length<=4096);return p;}
 function endpoint(value,loopback=false){let u;try{u=new URL(value);}catch{throw fault('RUNTIME_CONFIGURATION');}requireValue(!u.username&&!u.password&&!u.search&&!u.hash&&u.pathname==='/'&&(u.protocol==='https:'||loopback&&u.protocol==='http:'&&['127.0.0.1','[::1]'].includes(u.hostname)));return u.origin;}
+const id=(prefix,value)=>typeof value==='string'&&new RegExp(`^${prefix}-[a-f0-9]+$`,'u').test(value);
+const taskZone=value=>typeof value==='string'&&value.length<=220&&/^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/u.test(value);
+/** Static router admission is closed before startup reads material or opens a connection. */
+export function compileControlTaskRouterConfiguration(configuration){
+ const route=configuration.taskRouter;if(route===undefined)return null;
+ const c=own(route,['enabled','runnerCaFile','zone','vpcId']),candidate=configuration.nativeCandidate,
+  network=candidate?.taskRequest?.networkConfiguration?.awsvpcConfiguration;
+ requireValue(c.enabled===true&&configuration.privateHttp?.hostname==='0.0.0.0'&&configuration.privateHttp.port===8082&&
+  configuration.http?.port===8080&&configuration.privateHttp.frontendOrigin===configuration.native?.origin&&
+  candidate?.multiRun?.dynamicInitialRuns===true&&typeof candidate.multiRun.materialDirectory==='string'&&
+  candidate.taskOrigin===configuration.privateHttp.frontendOrigin&&candidate.taskHttp?.hostname==='0.0.0.0'&&candidate.taskHttp.port===8080&&
+  typeof c.runnerCaFile==='string'&&taskZone(c.zone)&&id('vpc',c.vpcId)&&
+  Array.isArray(network?.subnets)&&network.subnets.length===1&&id('subnet',network.subnets[0])&&
+  Array.isArray(network.securityGroups)&&network.securityGroups.length>=1&&network.securityGroups.length<=5&&
+  network.securityGroups.every(value=>id('sg',value))&&new Set(network.securityGroups).size===network.securityGroups.length&&
+  network.assignPublicIp==='DISABLED','TASK_ROUTER_CONFIGURATION');file(c.runnerCaFile);
+ return Object.freeze({runnerCaFile:c.runnerCaFile,zone:c.zone,network:Object.freeze({
+  clusterArn:candidate.taskRequest.cluster,taskDefinitionArn:candidate.taskRequest.taskDefinition,
+  vpcId:c.vpcId,subnetId:network.subnets[0],securityGroupIds:Object.freeze([...network.securityGroups])
+ })});
+}
 export function validateConfiguration(raw,role){
  requireValue(['control','temporal-worker','conversation-runner'].includes(role));const c=data(raw);
  const common=['version','profile','sourceEnabled','limits','native'];
- own(c,[...common,...(role==='control'?['http','database','temporal','sessions','versions']:role==='temporal-worker'?['http','temporal']:['binding','versions','workspace','proxyOrigin'])],role==='conversation-runner'?['bootstrap','captureOwnsClose','remoteTask']:role==='control'?['nativeCandidate','retention','telemetry','downloadLinks','privateHttp']:[]);
+ own(c,[...common,...(role==='control'?['http','database','temporal','sessions','versions']:role==='temporal-worker'?['http','temporal']:['binding','versions','workspace','proxyOrigin'])],role==='conversation-runner'?['bootstrap','captureOwnsClose','remoteTask']:role==='control'?['nativeCandidate','retention','telemetry','downloadLinks','privateHttp','taskRouter']:[]);
  // Retention serving is an explicit declaration: when enabled, control composes the canonical read gate over its own database and
  // readiness requires the retention projections; when absent, no gate exists and nothing pretends otherwise.
  // Purge is an explicit switch that this source only accepts off: activation is a reviewed change, never a configuration value.
@@ -45,11 +66,13 @@ export function validateConfiguration(raw,role){
   own(c.database,['connectionFile']);file(c.database.connectionFile);own(c.sessions,['mode','replicas','maxSessions','maxTtlMs']);requireValue(c.sessions.mode==='process-local'&&c.sessions.replicas===1&&integer(c.sessions.maxSessions,1,1000)&&integer(c.sessions.maxTtlMs,1,300000));validateShape('RuntimeVersions',c.versions);
  }
  if(c.nativeCandidate!==undefined){requireValue(role==='control');compilePreparedCandidateConfiguration(c.nativeCandidate,c.versions);requireValue(c.native.capabilityFile===c.nativeCandidate.controlCapabilityFile,'PREPARED_CANDIDATE_CONFIGURATION');}
+ if(c.taskRouter!==undefined){requireValue(role==='control','TASK_ROUTER_CONFIGURATION');compileControlTaskRouterConfiguration(c);}
  if(c.remoteTask!==undefined){
-  const r=own(c.remoteTask,['original','preparationIntent','taskArn','controlCapabilitySha256','processOrigin','http'],['preparedKickoff','approvedReads']),o=remoteOriginal(r.original),i=compileNativePreparationIntent(r.preparationIntent);
+  const r=own(c.remoteTask,['original','preparationIntent','taskArn','controlCapabilitySha256','processOrigin','http'],['preparedKickoff','approvedReads','tls']),o=remoteOriginal(r.original),i=compileNativePreparationIntent(r.preparationIntent);
   if(r.approvedReads!==undefined)assertNativeReadConfiguration(r.approvedReads);
   requireValue(role==='conversation-runner'&&c.captureOwnsClose===true&&hash(o.binding)===hash(c.binding)&&hash(o.versions)===hash(c.versions)&&i.workspace===c.workspace&&o.versions.imageDigest==='sha256:'+i.imageSha256&&typeof r.controlCapabilitySha256==='string'&&/^[a-f0-9]{64}$/u.test(r.controlCapabilitySha256)&&typeof r.taskArn==='string'&&/^arn:aws:ecs:us-east-1:967807252336:task\/[A-Za-z0-9_-]{1,255}\/[a-f0-9]{32}$/u.test(r.taskArn)&&r.processOrigin===endpoint(r.processOrigin),'REMOTE_RUNNER_CONFIGURATION');
   own(r.http,['hostname','port','frontendOrigin']);requireValue(['127.0.0.1','0.0.0.0','::1','::'].includes(r.http.hostname)&&integer(r.http.port,0,65535)&&r.http.frontendOrigin===endpoint(r.http.frontendOrigin),'REMOTE_RUNNER_CONFIGURATION');
+  if(r.tls!==undefined){own(r.tls,['zone','caFile','certFile','keyFile','candidateFile','metadataFile']);requireValue(taskZone(r.tls.zone)&&r.http.hostname==='0.0.0.0'&&r.http.port===8080,'RUNNER_TLS_CONFIGURATION');for(const name of ['caFile','certFile','keyFile','candidateFile','metadataFile'])file(r.tls[name]);}
   if(r.preparedKickoff!==undefined)requireValue(r.preparedKickoff===true,'REMOTE_RUNNER_CONFIGURATION');
   if(c.bootstrap)requireValue(c.bootstrap.expiresAtMs===o.expiresAtMs,'REMOTE_RUNNER_CONFIGURATION');
  }

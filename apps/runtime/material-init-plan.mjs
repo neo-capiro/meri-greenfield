@@ -34,7 +34,7 @@ export function compileProductMaterialPlan({role,configuration,runtimeUser}){
  if(c.http.hostname!=='0.0.0.0'||c.http.port!==(role==='control'?8080:8081))refuse();
  // Static product control must never fall back to the legacy shared listener:
  // the public ALB target reaches 8080 while native capabilities reach 8082.
- if(role==='control'&&c.privateHttp===undefined)refuse();
+ if(role==='control'&&(c.privateHttp===undefined||c.taskRouter?.enabled!==true))refuse();
  const configurationPath=`${root}/${names[role]}`,files=new Map([[configurationPath,new Set(['configuration'])]]);
  function add(path,purpose){
   direct(path);if(path===configurationPath)refuse();
@@ -52,6 +52,7 @@ export function compileProductMaterialPlan({role,configuration,runtimeUser}){
    add(c.nativeCandidate.controlCapabilityFile,'control-capability');
    add(c.nativeCandidate.proxyCredentialFile,'proxy-capability');
   }
+  if(c.taskRouter?.enabled)add(c.taskRouter.runnerCaFile,'runner-ca');
  }
  const dynamicMaterialDirectory=c.nativeCandidate?.multiRun?.materialDirectory??null;
  if(dynamicMaterialDirectory!==null){const path=posix.normalize(dynamicMaterialDirectory);if(!posix.isAbsolute(path)||path===root||path.startsWith(root+'/'))refuse();}
