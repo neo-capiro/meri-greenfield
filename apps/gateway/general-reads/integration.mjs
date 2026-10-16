@@ -25,10 +25,22 @@ import * as f14 from './families/bill-text.mjs';
 import * as f15 from './families/public-reports.mjs';
 import * as f16 from './families/acquisition-personnel.mjs';
 import * as f17 from './families/disclosures.mjs';
-const modules=[f0,f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13,f14,f15,f16,f17];
+import * as f18 from './families/legislative-directory.mjs';
+const modules=[f0,f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13,f14,f15,f16,f17,f18];
 const byFamily=new Map(modules.map(f=>[f.id,f]));
 export const GENERAL_READ_ADAPTER_FAMILIES=Object.freeze(modules.map(f=>f.id));
 const SOURCE_PATHS=Object.freeze({
+ "legislative-directory": [
+  "apps/gateway/sources/legislative-directory/handler.mjs",
+  "apps/gateway/sources/retained-reads/call-context.mjs",
+  "apps/gateway/sources/retained-reads/http-transport.mjs",
+  "apps/gateway/dispatch/native-read-context.mjs",
+  "apps/runtime/native-authority/native-read-credentials/core-client.mjs",
+  "apps/runtime/native-authority/native-read-credentials/owner.mjs",
+  "apps/gateway/dispatch/operation-context.mjs",
+  "apps/gateway/dispatch/read-result-envelope.mjs",
+  "apps/gateway/dispatch/tool-dispatch.mjs"
+ ],
  "disclosures": [
   "apps/gateway/sources/disclosures/handler.mjs",
   "apps/gateway/sources/retained-reads/call-context.mjs",

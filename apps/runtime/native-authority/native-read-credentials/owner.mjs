@@ -12,7 +12,7 @@ import {retainedCall,credentialProof} from '../../../gateway/sources/retained-re
 import {GatewayDenied,safeFailure} from '../../../gateway/dispatch/operation-result.mjs';
 import {assertNativeToolAuthority} from './core-client.mjs';
 const same=(a,b)=>hash(a)===hash(b),refuse=code=>{throw nativeReadFault(code);};
-const GROUPS=new Set(['bill-text','public-reports','acquisition-personnel','disclosures']);
+const GROUPS=new Set(['bill-text','public-reports','acquisition-personnel','disclosures','legislative-directory']);
 const selection=({authorizationDecisionId,...rest})=>rest;
 const taskSelection=({operation,inputSha256,authorizationDecisionId,checkedAtMs,expiresAtMs,...rest})=>rest;
 const nativeSelection=({checkedAtMs,expiresAtMs,...rest})=>rest;

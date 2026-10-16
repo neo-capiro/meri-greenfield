@@ -16,15 +16,15 @@ function synthetic(){return {catalog:structuredClone(catalog),bindings:CATALOG_O
  adapters:[{operations:[...registered],paths:['synthetic adapter path']}],skills:[],admittedSkills:[],provenance:{}};}
 const refuses=work=>assert.throws(work,error=>error.code==='SOURCE_EXPOSURE_INVALID');
 
-test('96 selected and43 excluded are reconciled separately from23 registered operations',()=>{
+test('96 selected and43 excluded are reconciled separately from33 registered operations',()=>{
  assert.equal(snapshot.rows.length,96);assert.equal(snapshot.counts.selectedSourceReads,82);assert.equal(snapshot.counts.selectedProductOrGoverned,14);
- assert.equal(snapshot.counts.registeredGeneralOperations,23);assert.equal(snapshot.counts.registeredFamilies,16);
- assert.equal(snapshot.counts.generalSelectedSourceReads,21);assert.equal(snapshot.counts.generalSelectedProductStateReads,1);assert.equal(snapshot.counts.generalHistoricalOperations,1);
+ assert.equal(snapshot.counts.registeredGeneralOperations,33);assert.equal(snapshot.counts.registeredFamilies,20);
+ assert.equal(snapshot.counts.generalSelectedSourceReads,31);assert.equal(snapshot.counts.generalSelectedProductStateReads,1);assert.equal(snapshot.counts.generalHistoricalOperations,1);
  assert.equal(snapshot.counts.excludedCapabilities,43);assert.equal(snapshot.counts.live,0);
 });
-test('every existing selected source adapter already has general exposure; remaining61 are genuine adapter gaps',()=>{
+test('every existing selected source adapter already has general exposure; remaining51 are genuine adapter gaps',()=>{
  assert.deepEqual(snapshot.existingAdaptersWithoutGeneralExposure,[]);assert.equal(snapshot.counts.existingSourceAdaptersWithoutGeneralExposure,0);
- assert.equal(snapshot.counts.missingSourceAdapters,61);assert.equal(snapshot.counts.missingAdaptersDeclaredBySkills,38);assert.equal(snapshot.counts.missingAdaptersWithoutSkillDeclaration,23);
+ assert.equal(snapshot.counts.missingSourceAdapters,51);assert.equal(snapshot.counts.missingAdaptersDeclaredBySkills,33);assert.equal(snapshot.counts.missingAdaptersWithoutSkillDeclaration,18);
  const gaps=snapshot.rows.filter(row=>row.kind==='source-read'&&row.state==='adapter-missing');
  for(const gap of gaps){assert.deepEqual(gap.adapterPaths,[]);assert.deepEqual(gap.generalOperations,[]);assert.deepEqual(gap.sourceAdmittedSkills,[]);assert.ok(Array.isArray(gap.requiredContextKeys));}
  assert.deepEqual(snapshot.missingAdapterFamilies.flatMap(row=>row.operations).sort(),gaps.map(row=>row.operation).sort());
@@ -73,6 +73,15 @@ test('current source provenance measures declared canonical paths without claimi
  for(const [path,digest] of Object.entries(snapshot.provenance))assert.equal(createHash('sha256').update(readFileSync(new URL(`../../${path}`,import.meta.url))).digest('hex'),digest,path);
  assert.ok(row('get_research_portfolio').adapterPaths.includes('apps/gateway/sources/research-portfolio/handler.mjs'));
  assert.ok(row('get_research_portfolio').adapterPaths.includes('apps/gateway/general-reads/families/research-portfolio.mjs'));
+});
+
+test('directory source is exposed while retained research/Florida scope and zero-live gates remain explicit',()=>{
+ for(const id of ['get_committee_roster','list_members','get_research_portfolio','get_research_portfolio_changes','get_florida_budget_project']){
+  assert.equal(row(id).state,'adapter-present');assert.deepEqual(row(id).generalOperations,[id]);
+ }
+ assert.equal(snapshot.missingAdapterFamilies.length,28);assert.equal(snapshot.counts.live,0);
+ assert.ok(row('get_committee_roster').adapterPaths.includes('apps/gateway/sources/legislative-directory/handler.mjs'));
+ assert.ok(row('list_members').adapterPaths.includes('apps/gateway/general-reads/families/legislative-directory.mjs'));
 });
 test('registering a governed write family refuses instead of expanding the read server',()=>{
  const input=synthetic();input.families={...READ_FAMILIES,'command-tools':{clientScope:'optional'}};refuses(()=>reconcileSourceExposure(input));

@@ -80,7 +80,7 @@ export function createToolDispatch({ catalog, authority, budget, limits, now, ne
       catch (error) {
         const failure = safeFailure(error);
         if (['DEADLINE', 'CANCELLED'].includes(failure.message)) throw failure;
-        if(failure.message==='UNAVAILABLE'&&['research-portfolio','florida-budget','bill-text','public-reports','acquisition-personnel','disclosures'].includes(entry.contract.binding?.group))throw failure;
+        if(failure.message==='UNAVAILABLE'&&['research-portfolio','florida-budget','bill-text','public-reports','acquisition-personnel','disclosures','legislative-directory'].includes(entry.contract.binding?.group))throw failure;
         deny('INVALID_RESULT');
       }
       const output = parseRawJson(outputJson, Math.min(limits.maxResponseBytes, effect.claims.budgets.maxOutputBytes), 'INVALID_RESULT');
