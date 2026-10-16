@@ -1,0 +1,30 @@
+{
+  "name": "recovery-composition-2",
+  "head": "7f9c84670bdabb3f96eaf0c3ce3785ff55684944",
+  "argv": [
+    "--max-old-space-size=128",
+    "--experimental-test-module-mocks",
+    "--test",
+    "--test-isolation=none",
+    "--test-concurrency=1",
+    "apps/runtime/artifacts/test/recovery-composition.test.mjs"
+  ],
+  "hardSeconds": 120,
+  "heapMiB": 128,
+  "memoryBefore": {
+    "physicalTotal": 33632079872,
+    "physicalAvailable": 10965086208,
+    "commitTotal": 33632079872,
+    "commitAvailable": 2753937408
+  },
+  "primaryExit": 0,
+  "cleanupExit": 0,
+  "timedOut": false,
+  "pressure": false,
+  "ownedPid": 41400,
+  "ownedExited": true,
+  "wallMs": 1802,
+  "sampledRssBytes": 173449216,
+  "children": "none: single Node process test-isolation=none",
+  "finishedAtUtc": "2026-10-16T05:01:17.1792544Z"
+}

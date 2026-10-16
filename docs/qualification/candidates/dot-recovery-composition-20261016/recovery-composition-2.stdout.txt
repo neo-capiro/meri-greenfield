@@ -1,0 +1,18 @@
+✔ canonical publication-only recovery restores versions once under the same exclusion, even with no preview rows (5.444ms)
+✔ canonical preview recovery restores versions once under the same exclusion, even with no preview rows (2.3838ms)
+✔ recovery projection failure cannot record a watermark or open serving (1.167ms)
+✔ recovery unverified SQL inventory cannot record a watermark or open serving (0.7255ms)
+✔ disabled canonical storage stays unavailable without any SQL or SDK calls (0.5894ms)
+✔ missing and caller-authored recovery cannot qualify a declared artifact store (0.2381ms)
+✔ canonical provenance survives recapture; mismatched raw journal or retention forwarder refuses (0.3567ms)
+✔ absent capability leaves the existing optional callback absent; invalid enable values cannot normalize to disabled (0.3589ms)
+✔ document composition uses the SAME canonical versions and preview owners and refuses a competing preview store (0.4409ms)
+✔ actual control factory receives its canonical raw journal/forwarder before port capture, without constructor IO (5.4059ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1662.0004

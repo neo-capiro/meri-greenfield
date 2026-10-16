@@ -1,0 +1,32 @@
+✔ recovery continuation: canonical retention replay precedes one continuation under the SAME exclusion and before watermark/fence (6.2684ms)
+✔ recovery continuation: UNKNOWN rejection never records the watermark or opens the fence (0.3667ms)
+✔ recovery continuation: a pending continuation cannot admit serving or release the existing exclusion (0.3926ms)
+✔ recovery continuation: an unseen decision during the continuation repeats the EXISTING pass before enabling (1.3437ms)
+✔ recovery continuation: an unseen decision during watermark ACK is checked before the fence opens (1.8914ms)
+✔ recovery continuation: continuously moving history exhausts the original bounded pass limit and stays closed (0.796ms)
+✔ recovery continuation: null is inert and invalid constructor values refuse before any callback or I/O (0.3504ms)
+✖ apps\runtime\artifacts\test\recovery-composition.test.mjs (0.0379ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 7
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 187.311
+
+✖ failing tests:
+
+test at apps\runtime\artifacts\test\recovery-composition.test.mjs:1:1
+✖ apps\runtime\artifacts\test\recovery-composition.test.mjs (0.0379ms)
+  SyntaxError: Unexpected token ')'
+      at compileSourceTextModule (node:internal/modules/esm/utils:318:16)
+      at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:89:18)
+      at #translate (node:internal/modules/esm/loader:434:20)
+      at afterLoad (node:internal/modules/esm/loader:502:29)
+      at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:507:12)
+      at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:560:36)
+      at afterResolve (node:internal/modules/esm/loader:607:52)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:613:12)
+      at node:internal/modules/esm/loader:632:32
+      at TracingChannel.tracePromise (node:diagnostics_channel:362:14)
