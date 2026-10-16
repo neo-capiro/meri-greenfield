@@ -1,0 +1,55 @@
+(node:40880) ExperimentalWarning: Module mocking is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✖ revoked client on retained release is denied without changing custody or repeating preparation (3.7323ms)
+✖ original authority expiry cannot be extended on replay (1.0806ms)
+✖ legacy retained result without original authority receipt is withheld without redispatch (1.0351ms)
+(node:40880) DeprecationWarning: mock.module(): options.namedExports is deprecated. Use options.exports instead.
+ℹ tests 3
+ℹ suites 0
+ℹ pass 0
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 90.3655
+
+✖ failing tests:
+
+test at apps\control\intents\test\result-release.test.mjs:26:1
+✖ revoked client on retained release is denied without changing custody or repeating preparation (3.7323ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection (denied).
+      at async TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/intents/test/result-release.test.mjs:28:47)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps\control\intents\test\result-release.test.mjs:31:1
+✖ original authority expiry cannot be extended on replay (1.0806ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection (denied).
+      at async TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/intents/test/result-release.test.mjs:33:53)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps\control\intents\test\result-release.test.mjs:46:1
+✖ legacy retained result without original authority receipt is withheld without redispatch (1.0351ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection (denied).
+      at async TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/intents/test/result-release.test.mjs:48:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }

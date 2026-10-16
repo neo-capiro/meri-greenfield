@@ -1,0 +1,24 @@
+(node:31472) ExperimentalWarning: Module mocking is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ fresh and retained results both reauthorize; replay preserves immutable output without redispatch (3.6626ms)
+✔ revoked client on retained release is denied without changing custody or repeating preparation (1.8633ms)
+✔ original authority expiry cannot be extended on replay (1.3333ms)
+✔ revocation during fresh preparation withholds release but retains exact result for later authorized read (0.7461ms)
+✔ resumed run uses current authorization but preserves original run identity and expiry (0.8297ms)
+✔ legacy retained result without original authority receipt is withheld without redispatch (0.6561ms)
+✔ missing canonical result-release owner fails unavailable before any claim or preparation (0.2621ms)
+✔ invalid canonical release receipt authorized refuses before preparation (0.3288ms)
+✔ invalid canonical release receipt binding refuses before preparation (0.3062ms)
+✔ invalid canonical release receipt selectionSha256 refuses before preparation (0.5848ms)
+✔ invalid canonical release receipt checkedAtMs refuses before preparation (0.2379ms)
+✔ invalid canonical release receipt expiresAtMs refuses before preparation (0.2175ms)
+✔ worker rejects client scope revocation and changed policy revision for a resumed retained result (0.436ms)
+(node:31472) DeprecationWarning: mock.module(): options.namedExports is deprecated. Use options.exports instead.
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 100.3608

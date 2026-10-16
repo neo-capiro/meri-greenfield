@@ -1,0 +1,27 @@
+(node:26708) ExperimentalWarning: Module mocking is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ correction lost ACK then superseded: same key retains original candidate and current review without rereading target (5.5177ms)
+✔ correction lost ACK then forgotten: same key retains original candidate and current review without rereading target (1.0399ms)
+✔ correction lost ACK then expired: same key retains original candidate and current review without rereading target (0.8564ms)
+✔ correction lost ACK then missing: same key retains original candidate and current review without rereading target (1.1463ms)
+✔ correction replay after client visibility revocation reveals nothing and neither reads target nor resubmits (1.0125ms)
+✔ personal, client and firm proposals produce pending sourced candidates; personal no longer refuses (1.3768ms)
+✔ eligibility: client outside the member walls and firm without permission refuse before any journal or Core effect (0.6688ms)
+✔ candidates are immutable and hash-pinned: Core receives the exact journaled bytes and the hash is recomputable (0.5287ms)
+✔ idempotent replay returns the same candidate without a second review item; a different request under the key conflicts (0.6975ms)
+✔ no direct publish: the producer reports Core decisions and never approves; a submission answer claiming more is uncertainty (1.3993ms)
+✔ review authority: status answers must correlate to the exact candidate hash; unavailable Core is never shown as pending (0.669ms)
+✔ uncertain submission stays submission_unknown, is reconciled from Core on read, and replay resubmits only the identical candidate (0.7778ms)
+✔ sourced corrections: pinned to the target hash, scope from the target, walls hide foreign memories, inactive targets refuse (1.1833ms)
+✔ cross-tenant and cross-actor: listings and status never release another tenant or actor candidate (0.5927ms)
+✔ removal from a client withholds stored client proposals; list filters, pagination and client filter stay inside current walls (8.3525ms)
+✔ an acknowledged submission whose journal update fails is still reported as submitted and reconciled by the next read (0.456ms)
+(node:26708) DeprecationWarning: mock.module(): options.namedExports is deprecated. Use options.exports instead.
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 122.3048

@@ -1,0 +1,21 @@
+✔ fresh and retained results both reauthorize; replay preserves immutable output without redispatch (10.1037ms)
+✔ revoked client on retained release is denied without changing custody or repeating preparation (9.2962ms)
+✔ original authority expiry cannot be extended on replay (4.2022ms)
+✔ revocation during fresh preparation withholds release but retains exact result for later authorized read (3.4788ms)
+✔ resumed run uses current authorization but preserves original run identity and expiry (1.9334ms)
+✔ legacy retained result without original authority receipt is withheld without redispatch (1.6008ms)
+✔ missing canonical result-release owner fails unavailable before any claim or preparation (0.5232ms)
+✔ invalid canonical release receipt authorized refuses before preparation (0.7336ms)
+✔ invalid canonical release receipt binding refuses before preparation (1.4597ms)
+✔ invalid canonical release receipt selectionSha256 refuses before preparation (0.58ms)
+✔ invalid canonical release receipt checkedAtMs refuses before preparation (0.5185ms)
+✔ invalid canonical release receipt expiresAtMs refuses before preparation (0.8654ms)
+✔ worker rejects client scope revocation and changed policy revision for a resumed retained result (1.0029ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 123.6321

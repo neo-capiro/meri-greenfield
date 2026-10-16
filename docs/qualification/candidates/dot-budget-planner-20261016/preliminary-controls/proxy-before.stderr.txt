@@ -1,0 +1,53 @@
+FF
+======================================================================
+FAIL: test_product_model_reserves_same_combined_liability_and_run_cap (apps.proxy.qualification.test.test_product_budget.ProductBudgetTests.test_product_model_reserves_same_combined_liability_and_run_cap)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\neoma\Documents\Codex\2026-10-15\task-6\meri-budget-planner\apps\proxy\qualification\test\test_product_budget.py", line 62, in test_product_model_reserves_same_combined_liability_and_run_cap
+    self.assertEqual(reserve(store).state, 'UNKNOWN')
+                     ^^^^^^^^^^^^^^
+  File "C:\Users\neoma\Documents\Codex\2026-10-15\task-6\meri-budget-planner\apps\proxy\qualification\test\test_product_budget.py", line 28, in reserve
+    return ledger(store).reserve_sync('collision', BODY, CountObservation(123, BODY.sha256, COUNT_MODEL_ID, 'fixture'))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\neoma\Documents\Codex\2026-10-15\task-6\meri-budget-planner\apps\proxy\qualification\state\ledger.py", line 82, in reserve_sync
+    return self.store.transact(operation)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\neoma\Documents\Codex\2026-10-15\task-6\meri-budget-planner\apps\proxy\qualification\test\test_tool_budget_source.py", line 38, in transact
+    def transact(self,operation):return operation(self)
+                                        ^^^^^^^^^^^^^^^
+  File "C:\Users\neoma\Documents\Codex\2026-10-15\task-6\meri-budget-planner\apps\proxy\qualification\state\ledger.py", line 63, in operation
+    Grants._current(cursor,self.binding)
+  File "C:\Users\neoma\Documents\Codex\2026-10-15\task-6\meri-budget-planner\apps\proxy\qualification\state\grants.py", line 105, in _current
+    cursor.execute(f"SELECT * FROM {schema}.runs WHERE run_id=%s",(binding.run_id,));row=cursor.fetchone()
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\neoma\Documents\Codex\2026-10-15\task-6\meri-budget-planner\apps\proxy\qualification\test\test_tool_budget_source.py", line 44, in execute
+    if expected not in sql:raise AssertionError((expected,sql))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('FROM meri_product_budget.runs', 'SELECT * FROM meri_qualification.runs WHERE run_id=%s')
+
+======================================================================
+FAIL: test_current_product_admission_uses_product_run_and_grant_rows (apps.proxy.qualification.test.test_product_budget.ProductBudgetTests.test_current_product_admission_uses_product_run_and_grant_rows)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\neoma\Documents\Codex\2026-10-15\task-6\meri-budget-planner\apps\proxy\qualification\test\test_product_budget.py", line 102, in test_current_product_admission_uses_product_run_and_grant_rows
+    store=product_store(reserve_steps()[:2]);GrantAdmission(store,GRANT,BINDING,'c'*64).check()
+                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\neoma\Documents\Codex\2026-10-15\task-6\meri-budget-planner\apps\proxy\qualification\state\admission.py", line 34, in check
+    self.store.transact(operation)
+  File "C:\Users\neoma\Documents\Codex\2026-10-15\task-6\meri-budget-planner\apps\proxy\qualification\test\test_tool_budget_source.py", line 38, in transact
+    def transact(self,operation):return operation(self)
+                                        ^^^^^^^^^^^^^^^
+  File "C:\Users\neoma\Documents\Codex\2026-10-15\task-6\meri-budget-planner\apps\proxy\qualification\state\admission.py", line 25, in operation
+    Grants._current(cursor, self.binding)
+  File "C:\Users\neoma\Documents\Codex\2026-10-15\task-6\meri-budget-planner\apps\proxy\qualification\state\grants.py", line 105, in _current
+    cursor.execute(f"SELECT * FROM {schema}.runs WHERE run_id=%s",(binding.run_id,));row=cursor.fetchone()
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\neoma\Documents\Codex\2026-10-15\task-6\meri-budget-planner\apps\proxy\qualification\test\test_tool_budget_source.py", line 44, in execute
+    if expected not in sql:raise AssertionError((expected,sql))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('FROM meri_product_budget.runs', 'SELECT * FROM meri_qualification.runs WHERE run_id=%s')
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.007s
+
+FAILED (failures=2)

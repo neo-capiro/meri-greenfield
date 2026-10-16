@@ -1,0 +1,27 @@
+✖ worker rejects client scope revocation and changed policy revision for a resumed retained result (2.5998ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 51.7391
+
+✖ failing tests:
+
+test at apps\control\intents\test\result-release.test.mjs:60:1
+✖ worker rejects client scope revocation and changed policy revision for a resumed retained result (2.5998ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/intents/test/result-release.test.mjs:63:97)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: [Function (anonymous)],
+    operator: 'throws',
+    diff: 'simple'
+  }

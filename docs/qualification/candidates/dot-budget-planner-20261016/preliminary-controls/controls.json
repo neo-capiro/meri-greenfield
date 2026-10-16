@@ -1,0 +1,203 @@
+{
+  "base": "eca78d458acb46cbfd54a94cf870841d999ef6b1",
+  "runs": [
+    {
+      "timedOut": false,
+      "stdout": "memory-before.stdout.txt",
+      "stderr": "memory-before.stderr.txt",
+      "elapsedMs": 231.3814,
+      "name": "memory-before",
+      "arguments": [
+        "--max-old-space-size=128",
+        "--experimental-test-module-mocks",
+        "--import",
+        "./docs/qualification/candidates/dot-budget-planner-20261016/dependency-seams.mjs",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern=correction lost ACK|correction replay after",
+        "apps/control/memory/test/producer.test.mjs"
+      ],
+      "exitCode": 1,
+      "negative": true,
+      "sampledPeakWorkingSetBytes": 38821888
+    },
+    {
+      "timedOut": false,
+      "stdout": "memory-after.stdout.txt",
+      "stderr": "memory-after.stderr.txt",
+      "elapsedMs": 211.7795,
+      "name": "memory-after",
+      "arguments": [
+        "--max-old-space-size=128",
+        "--experimental-test-module-mocks",
+        "--import",
+        "./docs/qualification/candidates/dot-budget-planner-20261016/dependency-seams.mjs",
+        "--test",
+        "--test-concurrency=1",
+        "apps/control/memory/test/producer.test.mjs"
+      ],
+      "exitCode": 0,
+      "negative": false,
+      "sampledPeakWorkingSetBytes": 38969344
+    },
+    {
+      "timedOut": false,
+      "stdout": "intent-replay-before.stdout.txt",
+      "stderr": "intent-replay-before.stderr.txt",
+      "elapsedMs": 175.5173,
+      "name": "intent-replay-before",
+      "arguments": [
+        "--max-old-space-size=128",
+        "--experimental-test-module-mocks",
+        "--import",
+        "./docs/qualification/candidates/dot-budget-planner-20261016/dependency-seams.mjs",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern=revoked client on retained|original authority expiry|legacy retained",
+        "apps/control/intents/test/result-release.test.mjs"
+      ],
+      "exitCode": 1,
+      "negative": true,
+      "sampledPeakWorkingSetBytes": 38899712
+    },
+    {
+      "timedOut": false,
+      "stdout": "intent-worker-before.stdout.txt",
+      "stderr": "intent-worker-before.stderr.txt",
+      "elapsedMs": 173.1592,
+      "name": "intent-worker-before",
+      "arguments": [
+        "--max-old-space-size=128",
+        "--experimental-test-module-mocks",
+        "--import",
+        "./docs/qualification/candidates/dot-budget-planner-20261016/dependency-seams.mjs",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern=worker rejects",
+        "apps/control/intents/test/result-release.test.mjs"
+      ],
+      "exitCode": 1,
+      "negative": true,
+      "sampledPeakWorkingSetBytes": 38866944
+    },
+    {
+      "timedOut": false,
+      "stdout": "intent-after.stdout.txt",
+      "stderr": "intent-after.stderr.txt",
+      "elapsedMs": 184.0136,
+      "name": "intent-after",
+      "arguments": [
+        "--max-old-space-size=128",
+        "--experimental-test-module-mocks",
+        "--import",
+        "./docs/qualification/candidates/dot-budget-planner-20261016/dependency-seams.mjs",
+        "--test",
+        "--test-concurrency=1",
+        "apps/control/intents/test/result-release.test.mjs"
+      ],
+      "exitCode": 0,
+      "negative": false,
+      "sampledPeakWorkingSetBytes": 38940672
+    },
+    {
+      "timedOut": false,
+      "stdout": "proxy-before.stdout.txt",
+      "stderr": "proxy-before.stderr.txt",
+      "elapsedMs": 485.2846,
+      "name": "proxy-before",
+      "arguments": [
+        "-B",
+        "-m",
+        "unittest",
+        "apps.proxy.qualification.test.test_product_budget.ProductBudgetTests.test_product_model_reserves_same_combined_liability_and_run_cap",
+        "apps.proxy.qualification.test.test_product_budget.ProductBudgetTests.test_current_product_admission_uses_product_run_and_grant_rows"
+      ],
+      "exitCode": 1,
+      "negative": true,
+      "sampledPeakWorkingSetBytes": 5570560
+    },
+    {
+      "timedOut": false,
+      "stdout": "proxy-after.stdout.txt",
+      "stderr": "proxy-after.stderr.txt",
+      "elapsedMs": 525.7136,
+      "name": "proxy-after",
+      "arguments": [
+        "-B",
+        "-m",
+        "unittest",
+        "apps.proxy.qualification.test.test_product_budget",
+        "apps.proxy.qualification.test.test_tool_budget_source",
+        "apps.proxy.qualification.test.test_ingress.StateTests"
+      ],
+      "exitCode": 0,
+      "negative": false,
+      "sampledPeakWorkingSetBytes": 5382144
+    },
+    {
+      "timedOut": false,
+      "stdout": "tenant-unknown-before.stdout.txt",
+      "stderr": "tenant-unknown-before.stderr.txt",
+      "elapsedMs": 189.1374,
+      "name": "tenant-unknown-before",
+      "arguments": [
+        "--max-old-space-size=128",
+        "--test",
+        "--test-name-pattern=cancellation/revocation",
+        "apps/gateway/budget/tenant/test/native-admission.test.mjs"
+      ],
+      "exitCode": 1,
+      "negative": true,
+      "sampledPeakWorkingSetBytes": 39473152
+    },
+    {
+      "timedOut": false,
+      "stdout": "tenant-after.stdout.txt",
+      "stderr": "tenant-after.stderr.txt",
+      "elapsedMs": 259.863,
+      "name": "tenant-after",
+      "arguments": [
+        "--max-old-space-size=128",
+        "--test",
+        "--test-concurrency=1",
+        "apps/gateway/budget/tenant/test/native-admission.test.mjs",
+        "apps/gateway/budget/tenant/test/tenant-budget-gate.test.mjs"
+      ],
+      "exitCode": 0,
+      "negative": false,
+      "sampledPeakWorkingSetBytes": 40235008
+    },
+    {
+      "timedOut": false,
+      "stdout": "model-grant-after.stdout.txt",
+      "stderr": "model-grant-after.stderr.txt",
+      "elapsedMs": 174.8286,
+      "name": "model-grant-after",
+      "arguments": [
+        "--max-old-space-size=128",
+        "--test",
+        "apps/runtime/test/run-model-grant.test.mjs"
+      ],
+      "exitCode": 0,
+      "negative": false,
+      "sampledPeakWorkingSetBytes": 39182336
+    },
+    {
+      "timedOut": false,
+      "stdout": "source-proof.stdout.txt",
+      "stderr": "source-proof.stderr.txt",
+      "elapsedMs": 202.0275,
+      "name": "source-proof",
+      "arguments": [
+        "--max-old-space-size=128",
+        "--test",
+        "scripts/qualification/assembled-image/source-proof.test.mjs"
+      ],
+      "exitCode": 0,
+      "negative": false,
+      "sampledPeakWorkingSetBytes": 38797312
+    }
+  ],
+  "synthetic": true,
+  "note": "memory/intent controls mock hash/schema/preparer dependency seams; remaining controls use built-ins and scripted ports. No live qualification."
+}

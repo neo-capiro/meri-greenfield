@@ -1,0 +1,83 @@
+✖ correction lost ACK then superseded: same key retains original candidate and current review without rereading target (10.732ms)
+✖ correction lost ACK then forgotten: same key retains original candidate and current review without rereading target (2.6938ms)
+✖ correction lost ACK then expired: same key retains original candidate and current review without rereading target (1.4735ms)
+✖ correction lost ACK then missing: same key retains original candidate and current review without rereading target (2.0859ms)
+✖ correction replay after client visibility revocation reveals nothing and neither reads target nor resubmits (5.2001ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 0
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 131.6469
+
+✖ failing tests:
+
+test at apps\control\memory\test\producer.test.mjs:25:73
+✖ correction lost ACK then superseded: same key retains original candidate and current review without rereading target (10.732ms)
+  ProductError: MEMORY_TARGET_INELIGIBLE
+      at refuse (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/product-access/errors.mjs:10:50)
+      at assertCorrectionTarget (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/memory/eligibility.mjs:26:29)
+      at Object.correct (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/memory/producer.mjs:60:5)
+      at async TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/memory/test/producer.test.mjs:31:41)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at apps\control\memory\test\producer.test.mjs:25:73
+✖ correction lost ACK then forgotten: same key retains original candidate and current review without rereading target (2.6938ms)
+  ProductError: MEMORY_TARGET_INELIGIBLE
+      at refuse (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/product-access/errors.mjs:10:50)
+      at assertCorrectionTarget (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/memory/eligibility.mjs:26:29)
+      at Object.correct (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/memory/producer.mjs:60:5)
+      at async TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/memory/test/producer.test.mjs:31:41)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps\control\memory\test\producer.test.mjs:25:73
+✖ correction lost ACK then expired: same key retains original candidate and current review without rereading target (1.4735ms)
+  ProductError: MEMORY_TARGET_INELIGIBLE
+      at refuse (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/product-access/errors.mjs:10:50)
+      at assertCorrectionTarget (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/memory/eligibility.mjs:26:29)
+      at Object.correct (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/memory/producer.mjs:60:5)
+      at async TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/memory/test/producer.test.mjs:31:41)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps\control\memory\test\producer.test.mjs:25:73
+✖ correction lost ACK then missing: same key retains original candidate and current review without rereading target (2.0859ms)
+  ProductError: MEMORY_TARGET_NOT_FOUND
+      at refuse (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/product-access/errors.mjs:10:50)
+      at Object.readTarget (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/memory/core-memory.mjs:20:25)
+      at async Object.correct (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/memory/producer.mjs:59:18)
+      at async TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/memory/test/producer.test.mjs:31:41)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps\control\memory\test\producer.test.mjs:38:1
+✖ correction replay after client visibility revocation reveals nothing and neither reads target nor resubmits (5.2001ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  ProductError: MEMORY_TARGET_NOT_FOUND
+      at async code (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/memory/test/producer.test.mjs:22:38)
+      at async TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/memory/test/producer.test.mjs:42:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: ProductError: MEMORY_TARGET_NOT_FOUND
+        at refuse (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/product-access/errors.mjs:10:50)
+        at assertCorrectionTarget (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/memory/eligibility.mjs:25:12)
+        at Object.correct (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/memory/producer.mjs:60:5)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async code (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/memory/test/producer.test.mjs:22:38)
+        at async TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/memory/test/producer.test.mjs:42:2)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    expected: [Function (anonymous)],
+    operator: 'rejects',
+    diff: 'simple'
+  }

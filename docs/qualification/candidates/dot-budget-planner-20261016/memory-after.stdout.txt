@@ -1,0 +1,24 @@
+✔ correction lost ACK then superseded: same key retains original candidate and current review without rereading target (17.7883ms)
+✔ correction lost ACK then forgotten: same key retains original candidate and current review without rereading target (3.1326ms)
+✔ correction lost ACK then expired: same key retains original candidate and current review without rereading target (4.3874ms)
+✔ correction lost ACK then missing: same key retains original candidate and current review without rereading target (2.0495ms)
+✔ correction replay after client visibility revocation reveals nothing and neither reads target nor resubmits (1.045ms)
+✔ personal, client and firm proposals produce pending sourced candidates; personal no longer refuses (1.7454ms)
+✔ eligibility: client outside the member walls and firm without permission refuse before any journal or Core effect (0.8367ms)
+✔ candidates are immutable and hash-pinned: Core receives the exact journaled bytes and the hash is recomputable (1.2551ms)
+✔ idempotent replay returns the same candidate without a second review item; a different request under the key conflicts (1.4507ms)
+✔ no direct publish: the producer reports Core decisions and never approves; a submission answer claiming more is uncertainty (3.3797ms)
+✔ review authority: status answers must correlate to the exact candidate hash; unavailable Core is never shown as pending (2.0173ms)
+✔ uncertain submission stays submission_unknown, is reconciled from Core on read, and replay resubmits only the identical candidate (2.8022ms)
+✔ sourced corrections: pinned to the target hash, scope from the target, walls hide foreign memories, inactive targets refuse (4.321ms)
+✔ cross-tenant and cross-actor: listings and status never release another tenant or actor candidate (2.1997ms)
+✔ removal from a client withholds stored client proposals; list filters, pagination and client filter stay inside current walls (25.6108ms)
+✔ an acknowledged submission whose journal update fails is still reported as submitted and reconciled by the next read (2.0149ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 167.8281

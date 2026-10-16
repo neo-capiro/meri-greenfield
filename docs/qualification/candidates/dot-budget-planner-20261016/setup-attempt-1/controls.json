@@ -1,0 +1,46 @@
+{
+  "note": "memory/intent controls mock hash/schema/preparer dependency seams; remaining controls use built-ins and scripted ports. No live qualification.",
+  "synthetic": true,
+  "base": "eca78d458acb46cbfd54a94cf870841d999ef6b1",
+  "runs": [
+    {
+      "stderr": "memory-before.stderr.txt",
+      "timedOut": false,
+      "elapsedMs": 189.2711,
+      "arguments": [
+        "--max-old-space-size=128",
+        "--experimental-test-module-mocks",
+        "--import",
+        "docs/qualification/candidates/dot-budget-planner-20261016/dependency-seams.mjs",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern=correction lost ACK|correction replay after",
+        "apps/control/memory/test/producer.test.mjs"
+      ],
+      "peakWorkingSetBytes": null,
+      "negative": true,
+      "stdout": "memory-before.stdout.txt",
+      "name": "memory-before",
+      "exitCode": 1
+    },
+    {
+      "stderr": "memory-after.stderr.txt",
+      "timedOut": false,
+      "elapsedMs": 159.9042,
+      "arguments": [
+        "--max-old-space-size=128",
+        "--experimental-test-module-mocks",
+        "--import",
+        "docs/qualification/candidates/dot-budget-planner-20261016/dependency-seams.mjs",
+        "--test",
+        "--test-concurrency=1",
+        "apps/control/memory/test/producer.test.mjs"
+      ],
+      "peakWorkingSetBytes": null,
+      "negative": false,
+      "stdout": "memory-after.stdout.txt",
+      "name": "memory-after",
+      "exitCode": 1
+    }
+  ]
+}

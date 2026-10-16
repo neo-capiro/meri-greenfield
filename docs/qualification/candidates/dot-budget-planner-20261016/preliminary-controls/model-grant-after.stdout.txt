@@ -1,0 +1,16 @@
+✔ exact per-run model grant is distinct from task/control and its credential is absent from retained grant facts (2.5811ms)
+✔ retargeted or extended model grant binding is refused (0.4315ms)
+✔ retargeted or extended model grant issuanceKey is refused (0.1263ms)
+✔ retargeted or extended model grant requestSha256 is refused (0.1167ms)
+✔ retargeted or extended model grant expiresAtMs is refused (0.1084ms)
+✔ retargeted or extended model grant capabilitySha256 is refused (0.1016ms)
+✔ task/control credential reuse, stale expiry and invalid clock are refused (0.38ms)
+✔ cancelled issuance and missing owner fail closed; issuer uncertainty is never replaced with a static proxy credential (0.2021ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 81.478

@@ -1,0 +1,25 @@
+✔ tenant reservation joins the caller transaction without another BEGIN, COMMIT, pool or client ownership (7.1327ms)
+✔ cancellation/revocation releases concurrency but UNKNOWN retains full liability; late exact settlement replaces hold (1.9241ms)
+✔ missing tenant policy and exhausted monthly cap refuse before any reservation (0.4738ms)
+✔ aborted admission cannot mutate the caller transaction (0.8701ms)
+✔ legacy absent schema or absent reservation does not block grant cleanup or assert settlement (0.2431ms)
+✔ monthly cap boundary: reaching the cap exactly is admitted, one micro-USD more is TENANT_BUDGET_EXCEEDED (2.2753ms)
+✔ a new calendar month starts a fresh cap while open holds still count against concurrency (2.1545ms)
+✔ concurrent reservations admit exactly the configured slots and refuse the rest atomically (5.134ms)
+✔ exact replay of a held reservation is idempotent; a different hold or a terminal run conflicts (1.2399ms)
+✔ release on failure frees the concurrency slot but keeps the hold as liability; release is idempotent and never undoes a settlement (1.4152ms)
+✔ settle after cancel charges the measured usage to the reservation month; a conflicting second settlement refuses (1.1757ms)
+✔ regression: cancel/release cannot free the cost reservation; reserve 100, release, reserve 100 again is refused under a cap of 100 (1.7319ms)
+✔ variant: settle after cancel replaces the retained hold with the measured charge; a larger concurrency budget lets another run start meanwhile (1.0335ms)
+✔ variant: authoritative no-dispatch proof releases the retained hold without a charge; settlement after it, and proof after settlement, conflict (3.4198ms)
+✔ variant: a double settlement is refused unless it is the identical replay, which charges nothing further (0.899ms)
+✔ unconfigured tenants, hostile inputs and unknown store receipts refuse without admitting a slot (1.0566ms)
+✔ the caller signal reaches the memory store: a live signal is accepted and an aborted one refuses before any slot is taken (0.5103ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 120.0228
