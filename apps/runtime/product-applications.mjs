@@ -12,13 +12,14 @@ import {createConversationHistoryApplication} from '../control/conversations/his
 import {HISTORY_PATHS} from '../control/conversations/history/protocol.mjs';
 import {runtimeArtifactRecovery} from './artifacts/composition.mjs';
 import {USER_PREFERENCES_PATHS,userPreferencesUnavailable} from '../control/settings/user-application/protocol.mjs';
+import {ROUTINE_PATHS,routinesUnavailable} from '../control/schedules/application-http.mjs';
 // Provenance is process-private. Caller-authored configuredOwners fields remain unknown keys and never establish readiness.
 const capturedPorts=new WeakSet();
 const capturedArtifactRecovery=new WeakMap();
 export function readRuntimeArtifactRecovery(ports){if(!capturedPorts.has(ports))throw fault('PRODUCT_PORTS_CONFIGURATION');return capturedArtifactRecovery.get(ports.artifactStore)??null;}
 export function captureRuntimePorts(value={}){
  if(capturedPorts.has(value))return value;
- const c=own(value,[],['identityContext','transitionAuthority','continuationAdmission','approvals','actionApplication','taskCommandApplication','conversationMembership','conversationCurrentness','conversationTurns','artifactOptionsOwner','selectedController','sdkSessionOwner','sdkSessionSnapshot','selectedSkillAdmission','selectedOutputPublication','artifactStore','retentionLedgerSink']);
+ const c=own(value,[],['identityContext','transitionAuthority','continuationAdmission','approvals','actionApplication','taskCommandApplication','routinesApplicationFactory','conversationMembership','conversationCurrentness','conversationTurns','artifactOptionsOwner','selectedController','sdkSessionOwner','sdkSessionSnapshot','selectedSkillAdmission','selectedOutputPublication','artifactStore','retentionLedgerSink']);
  const methods=(port,names)=>Object.freeze(Object.fromEntries(names.map(name=>[name,storageMethod(port,name)])));
  const optionalMethod=(port,name)=>{let cursor=port;for(let depth=0;cursor!==null&&depth<32;depth++){if(types.isProxy(cursor))throw fault('PRODUCT_PORTS_CONFIGURATION');if(Object.getOwnPropertyDescriptor(cursor,name))return storageMethod(port,name);cursor=Object.getPrototypeOf(cursor);}if(cursor!==null)throw fault('PRODUCT_PORTS_CONFIGURATION');};
  const identity=c.identityContext===undefined?Object.freeze({verifyIdentity:async()=>{throw fault('NATIVE_AUTHORITY_UNAVAILABLE');},resolveContext:async()=>{throw fault('NATIVE_AUTHORITY_UNAVAILABLE');}}):methods(c.identityContext,['verifyIdentity','resolveContext']);
@@ -33,6 +34,7 @@ export function captureRuntimePorts(value={}){
   ...(c.approvals===undefined?{}:{approvals:methods(c.approvals,['read','readDecision'])}),
   ...(c.actionApplication===undefined?{}:{actionApplication:methods(c.actionApplication,['handle'])}),
   ...(c.taskCommandApplication===undefined?{}:{taskCommandApplication:methods(c.taskCommandApplication,['handle'])}),
+  ...(c.routinesApplicationFactory===undefined?{}:{routinesApplicationFactory:methods(c.routinesApplicationFactory,['create','state'])}),
   ...(c.conversationMembership===undefined?{}:{conversationMembership:methods(c.conversationMembership,['admit','recheck'])}),
   ...(c.conversationCurrentness===undefined?{}:{conversationCurrentness:methods(c.conversationCurrentness,['assertCurrent'])}),
   ...(c.conversationTurns===undefined?{}:{conversationTurns:methods(c.conversationTurns,['admitTurn'])}),
@@ -57,6 +59,7 @@ export function composeRuntimePorts(canonical,supplemental){
 }
 /** `suppression` is the retention serving `{journal,serving}` pair when declared; the download-link gate needs it to revoke links. */
 export function createRuntimeProductApplications({configuration,sessions,ports,now,retention,suppression,conversationStore,userPreferences}){
+ const routines=ports.routinesApplicationFactory?ports.routinesApplicationFactory.create({sessions}):null;
  const history=ports.conversationMembership&&ports.conversationCurrentness&&conversationStore?createConversationHistoryApplication({
   service:createConversationHistoryService({store:conversationStore,gate:ports.conversationMembership,nextRunOwner:ports.conversationTurns,retention}),gate:ports.conversationMembership,currentness:ports.conversationCurrentness,now,
   limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes}}):null;
@@ -68,6 +71,7 @@ export function createRuntimeProductApplications({configuration,sessions,ports,n
  const sdkSessions=createNativeSdkSessionApplication({owner:ports.sdkSessionOwner??unavailableSession,...(ports.sdkSessionSnapshot===undefined?{}:{snapshot:ports.sdkSessionSnapshot}),now,maxRequestMs:configuration.limits.requestMs});
  return Object.freeze({downloads:Object.freeze({open:input=>downloads.open(input),state:()=>downloads.state()}),handle(request){const path=new URL(request.url).pathname;
   if(Object.values(USER_PREFERENCES_PATHS).includes(path))return userPreferences?userPreferences.handle(request):userPreferencesUnavailable();
+  if(Object.values(ROUTINE_PATHS).includes(path))return routines?routines.handle(request):routinesUnavailable();
   if(Object.values(HISTORY_PATHS).includes(path))return history?history.handle(request):Response.json({error:{code:'CONVERSATION_UNAVAILABLE',outcome:'NOT_DISPATCHED'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
   if(/^\/api\/action-followthrough\/(query|draft|prepare|execute)$/u.test(path))return ports.actionApplication?ports.actionApplication.handle(request):Response.json({error:{code:'UNAVAILABLE'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
   if(/^\/api\/task-commands\/(prepare|execute)$/u.test(path))return configuration.sourceEnabled===true&&ports.taskCommandApplication?ports.taskCommandApplication.handle(request):Response.json({error:{code:'TASK_COMMAND_UNAVAILABLE',outcome:'NOT_DISPATCHED'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});

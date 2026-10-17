@@ -95,8 +95,8 @@
     },
     {
       "path": "../../apps/runtime/product-applications.mjs",
-      "sha256": "bbec1853e59cde5bdbe2cd121549863924984c5c300b84350109a31bc45560a7",
-      "bytes": 9644
+      "sha256": "24d2b56a7a9e2aa3f88f20c0f127dd00d530de77e379344eac369706f6b033cb",
+      "bytes": 10124
     },
     {
       "path": "commands-0.2/task-update-validation.mjs",

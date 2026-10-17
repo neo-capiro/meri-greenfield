@@ -8,9 +8,10 @@ export function productReadiness({ports,retention,sourceEnabled,userPreferences}
  owners.push({name:'retention.startup',state:retention?'composed':'unavailable'},
   {name:'retention.ledgerSink',state:available.has('retentionLedgerSink')?'composed':'unavailable'},
   {name:'tasks.commands',state:sourceEnabled!==true?'disabled':available.has('taskCommandApplication')?'composed':'unavailable'},
+  {name:'schedules.application',state:available.has('routinesApplicationFactory')?ports.routinesApplicationFactory.state():'unavailable'},
   {name:'sources.currentInstallation',state:sourceEnabled?'unavailable':'disabled'},
   {name:'proxy.modelGrants',state:'unavailable'},
-  {name:'schedules.dispatchWorker',state:'unregistered-placement-pending'});
+  {name:'schedules.dispatchWorker',state:'separate-service-required'});
  const recovery=retention?.artifactRecovery?.();if(recovery?.required)owners.push({name:'retention.artifactRecovery',state:recovery.state});
  if(userPreferences!==undefined)owners.push({name:'settings.userPreferences',state:userPreferences});
  return Object.freeze({schema:'meri.product-readiness/1',ready:owners.every(o=>o.state==='composed'),owners:Object.freeze(owners.map(Object.freeze)),

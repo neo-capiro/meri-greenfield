@@ -1,0 +1,238 @@
+{
+  "status": "INDEPENDENT_SOURCE_ACCEPTED_NOT_ACTIVATED",
+  "branch": "codex/meri-routines-runtime-wiring-task6-20261017",
+  "base": {
+    "publishedCommit": "01a8e977aa1b35f4a6713e6d15b9ddecba5e5f11",
+    "localCommit": "5a8185baf5dc678ecf62705cff7101762ed98a1c",
+    "tree": "f96e6a6ca1f4c035c8f04cd5e104caa70a850065"
+  },
+  "checks": {
+    "node": "v24.19.0",
+    "focused": {
+      "passed": 334,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "receiptSha256": "c6ef9c9c861cc85b43f3f3a0849a5430b3284e3221b49569352e26db84c4bf11",
+      "command": "node --experimental-test-module-mocks --test <testFiles...>",
+      "testFiles": [
+        "apps/control/schedules/test/application.test.mjs",
+        "apps/control/schedules/test/application-http.test.mjs",
+        "apps/control/schedules/test/runtime-context.test.mjs",
+        "apps/control/intents/test/prepared-schedule-reader.test.mjs",
+        "apps/control/intents/test/postgres-journal.test.mjs",
+        "apps/control/intents/test/result-release.test.mjs",
+        "apps/control/schedules/test/approved-instructions.test.mjs",
+        "apps/control/schedules/test/scheduled-dispatch-composition.test.mjs",
+        "apps/runtime/native-authority/test/scheduled-admission.test.mjs",
+        "apps/runtime/test/schedule-service.test.mjs",
+        "apps/runtime/test/routines-mount.test.mjs",
+        "apps/runtime/test/product-readiness.test.mjs",
+        "apps/runtime/test/control-route-boundary.test.mjs",
+        "packages/contracts/test/schedule-tool-interface.test.mjs",
+        "packages/contracts/test/task-command-application-public.test.mjs"
+      ]
+    },
+    "runtimeTypecheck": "PASS",
+    "taskGeneratedCheck": "PASS",
+    "publicWireVersionsUnchanged": true,
+    "publicBrowserDeclarationSchemaBytesUnchanged": true,
+    "whitespace": "PASS"
+  },
+  "reviews": [
+    {
+      "reviewer": "contract_review",
+      "scope": "foreground context, service, HTTP, runtime mounts, proposal reader",
+      "status": "ACCEPT",
+      "distinctIndependentChecks": 219
+    },
+    {
+      "reviewer": "task_contracts",
+      "scope": "separate worker service and reused C poller",
+      "status": "ACCEPT",
+      "checks": 14
+    },
+    {
+      "reviewer": "independent_review",
+      "scope": "repaired dispatch and canonical native admission plus service composition",
+      "status": "ACCEPT",
+      "checks": 83
+    }
+  ],
+  "boundaries": {
+    "externalFixtures": [
+      "Core HTTP",
+      "mutation/firing policy",
+      "SQL protocol",
+      "Temporal SDK/protobuf",
+      "poller/listener allocation"
+    ],
+    "liveDatabase": false,
+    "liveWorker": false,
+    "awsChanges": false,
+    "migrations": false,
+    "dependencyInstalls": false,
+    "firstChatOwnedFilesChanged": false,
+    "cliReceiving": "PROPOSED_NOT_APPLIED",
+    "backgroundAuthorityProducer": "REQUIRED_UNIMPLEMENTED",
+    "frontendMemoryConsumer": "HELD_UNPUBLISHED_CORE_PIN"
+  },
+  "files": [
+    {
+      "path": "apps/control/intents/postgres-journal.mjs",
+      "bytes": 8817,
+      "sha256": "6a1986df31d056fd36166b172f188a28f97f0058ca1efc5cc5d3e5e9c84a904d",
+      "gitBlob": "3fbb5e63e5445e4da98448241fc50b6d98e29d7e"
+    },
+    {
+      "path": "apps/control/schedules/application-http.mjs",
+      "bytes": 6823,
+      "sha256": "9ebffabf49f550311a5424b6fcdc4b05338143e4fbc1b6d283bc7bc455e1cf6c",
+      "gitBlob": "e5a0866c5454cadbfb6a02f5a444bf0da47e9475"
+    },
+    {
+      "path": "apps/control/schedules/application.mjs",
+      "bytes": 10878,
+      "sha256": "14cd9a2718917c0704fcdcfdfa45060692da28d78bb9cb74658d651779a1bee5",
+      "gitBlob": "c8be2ce3f293ce84764b1d8af09ee4ff912de0c8"
+    },
+    {
+      "path": "apps/control/schedules/runtime-context.mjs",
+      "bytes": 15091,
+      "sha256": "d7903ea46efd49e6731b0961c162c01bf42f45bf2b7cdae02aa5da811f0474a0",
+      "gitBlob": "bae9ca5c63b8267e6e190fecdbbb7aef2a7367d9"
+    },
+    {
+      "path": "apps/control/schedules/scheduled-dispatch.mjs",
+      "bytes": 16073,
+      "sha256": "08f4aa5e5ace20b318fe5b5c982ec774d7b3771e2c8840f6096d6f08b7da25e8",
+      "gitBlob": "dbb4400558ae6529d2e7add0651e14242d3a33bc"
+    },
+    {
+      "path": "apps/control/schedules/test/application-fixture.mjs",
+      "bytes": 10234,
+      "sha256": "14709cc1e9742a4b7a0d636779c3b50a7cdb5d304f93d7851172dc63d35187b0",
+      "gitBlob": "7d13a633a93fb77bdade7b3e727b31659ee817d0"
+    },
+    {
+      "path": "apps/control/schedules/test/application-http.test.mjs",
+      "bytes": 14181,
+      "sha256": "32368ad080bb439b92736d99aa6f103c3b32fd804349483542230f37572160a5",
+      "gitBlob": "696b63ca4f0c3b8b54455a5e6da468ca57002cf4"
+    },
+    {
+      "path": "apps/control/schedules/test/application.test.mjs",
+      "bytes": 13430,
+      "sha256": "723854ec0a08183db5a585bcb37dd2c4e506b6bde71a31aef484a13bcdde1979",
+      "gitBlob": "1cfe3304b9484df2d67824928c8b7c444fc20d6b"
+    },
+    {
+      "path": "apps/control/schedules/test/runtime-context.test.mjs",
+      "bytes": 20170,
+      "sha256": "97e027a8e6653a4b0bbce168b5c9142ef4c79c83c73f8628eb636121abbd570d",
+      "gitBlob": "d9cf5df5bc5ae5d862eba2aef281f3820aa84dc8"
+    },
+    {
+      "path": "apps/runtime/control-route-boundary.mjs",
+      "bytes": 3302,
+      "sha256": "8a927ed71c551ff41f6ce57c45988ec90e75285e30ee2b41f5f5033608dc30e9",
+      "gitBlob": "7aea611cb4731618a5334e6642cbc6c0e76fdabf"
+    },
+    {
+      "path": "apps/runtime/native-authority/scheduled-admission.mjs",
+      "bytes": 12887,
+      "sha256": "43a8de54a641cf19d58e7f48d8014532365ad13b947defa66a2957bc4be916b7",
+      "gitBlob": "24f5e320f9b6e91f165b39ca4bd95dc72154bae2"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/scheduled-admission-fixture.mjs",
+      "bytes": 7856,
+      "sha256": "a98aa456da14f5903bbdc3df59e804cf30d1e8d213e2256777bacccc8dd1d8b9",
+      "gitBlob": "9b0f0ed52f5f86bc5865d4e83152f3bad93ba485"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/scheduled-admission.test.mjs",
+      "bytes": 23755,
+      "sha256": "b96c8ec644af528291a748b71ee58886392ac0c34ad43bf4b5f64361ca0481c5",
+      "gitBlob": "61469c549a378cafb5c3b69c0ba70061301ec104"
+    },
+    {
+      "path": "apps/runtime/product-applications.mjs",
+      "bytes": 10124,
+      "sha256": "24d2b56a7a9e2aa3f88f20c0f127dd00d530de77e379344eac369706f6b033cb",
+      "gitBlob": "39f2e97198ddbcf2ec08a913151f433bb10d26b9"
+    },
+    {
+      "path": "apps/runtime/product-readiness.mjs",
+      "bytes": 2048,
+      "sha256": "954bb80d3371f2aab86c670361b6403067f24377ccf0517653c025137bd69dc7",
+      "gitBlob": "7bffbb25bb42a4d7462ae4cdba31e6fef2177cb1"
+    },
+    {
+      "path": "apps/runtime/routines.mjs",
+      "bytes": 2722,
+      "sha256": "9408c882a68a14a8e036120221e8817798e7c760416bc52c1510ced5fe67c847",
+      "gitBlob": "96bce356084ad5ea5ca3468ea5efb27156548cd0"
+    },
+    {
+      "path": "apps/runtime/schedule-service-configuration.mjs",
+      "bytes": 1609,
+      "sha256": "631e84afc5f2ee436d20417d2ceb237877985f04399392325ac66c541d5cfb15",
+      "gitBlob": "7cdaa59af14189d4049741127a047aa5515d6a23"
+    },
+    {
+      "path": "apps/runtime/schedule-service.mjs",
+      "bytes": 5989,
+      "sha256": "74db4b452935b63fa211bb4eb1a6b0595ad3289826a909081de446152da960c5",
+      "gitBlob": "f1ba17d83892f4b2a59be0d73ee6beeab56ed2fd"
+    },
+    {
+      "path": "apps/runtime/schedule-worker.mjs",
+      "bytes": 5782,
+      "sha256": "f26f2d5c8a3676ec09842459f4495711add21e3b5eed1fb04fbcb56607d14be4",
+      "gitBlob": "46daf49e8816724f0bde6fefc6ab42df4a658e94"
+    },
+    {
+      "path": "apps/runtime/test/product-readiness.test.mjs",
+      "bytes": 1698,
+      "sha256": "f132fe0ac372c4f81d2dd8e116619443c1117d15bc303e084cf4606cd11e3fa5",
+      "gitBlob": "5904f619bc21ea9f4ae8f2224a67204f4bf608c0"
+    },
+    {
+      "path": "apps/runtime/test/routines-mount.test.mjs",
+      "bytes": 6622,
+      "sha256": "1f2c640bef3329d968df4723fd98d33b39e638e7d71f7e8766a3f899f700bb5e",
+      "gitBlob": "060d0797b7beb8a322472851a5c2aaac80d3643d"
+    },
+    {
+      "path": "apps/runtime/test/schedule-service.test.mjs",
+      "bytes": 18757,
+      "sha256": "c7711bd8e89aeb81ec4daf89a5d4dff3f873cdcb2825692b6afd56d3640ac328",
+      "gitBlob": "c85d0d7ebd5e911f2f0b023d184f2d534a63cd08"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-ROUTINES-PRIMARY-RECEIVING-20261017.md",
+      "bytes": 5607,
+      "sha256": "7e9d4c1e7e392a7e4660a5fd647ecc9daaf97c5b1c79995dd69d7ccf6eac2d93",
+      "gitBlob": "3cf5573f56ac03ecb131e1f0b54e4e014e2e7396"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-ROUTINES-RUNTIME-WIRING-20261017.md",
+      "bytes": 15388,
+      "sha256": "fa1efe34907ee1e2e1a986fd12e02ac300079cca69edf0776836307620da1a3f",
+      "gitBlob": "6f7295c9737332a436236db740c1d6bcd321aabc"
+    },
+    {
+      "path": "packages/contracts/dist/task-command-application.metadata.json",
+      "bytes": 6354,
+      "sha256": "9d6e64028510195cea5997f468a02eedef1ca2c77029ed33029f6df95ef396d5",
+      "gitBlob": "c47826a487925d3c46316495f67508982a476cf6"
+    },
+    {
+      "path": "packages/contracts/schedules-0.2/tool-interface-validation.mjs",
+      "bytes": 9028,
+      "sha256": "bfb0144da51a1c684fccc171ef40ddb7002b2859929dd62b9fb66b43f2b9cb24",
+      "gitBlob": "c027ce8a639eff0a902ca984de2c9f56fb3d7269"
+    }
+  ]
+}
