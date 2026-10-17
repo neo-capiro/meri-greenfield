@@ -1,0 +1,21 @@
+{
+  "rule": "Only whitespace-only diagnostic lines trimmed in working files. Git additionally normalizes CRLF to LF in staged/published text. Assertions, stacks, test counts and exit outcomes unchanged; original, working-normalized and staged/published SHA256 are distinct fields.",
+  "files": [
+    {
+      "name": "funding-source-initial.txt",
+      "originalSha256": "9ee406cfa7b1d2cde89f4aae66761674aa5643de2c06ffbbea0401ef3c6887b3",
+      "normalizedSha256": "9c98cf4be0b8fe3af4a817de9ae7a5d53e16bbc48aaa9c1e59ea1d12b6d4b970",
+      "changedBlankLines": 2,
+      "stagedPublishedSha256": "9c98cf4be0b8fe3af4a817de9ae7a5d53e16bbc48aaa9c1e59ea1d12b6d4b970",
+      "stagedLineEndings": "LF"
+    },
+    {
+      "name": "owner-source-initial.txt",
+      "originalSha256": "82311572d31c7781d64c38ff22f5b840a4130120b5d19acc643ca4f04205d761",
+      "normalizedSha256": "9d92043e04ff753d9e365089f6a290f2357d22ab2e983d6717fc736c232c92d9",
+      "changedBlankLines": 10,
+      "stagedPublishedSha256": "ec4f00cebc1652575be387fbc172144c084ba99aaea7e75029ba9d1799feaaf1",
+      "stagedLineEndings": "LF"
+    }
+  ]
+}

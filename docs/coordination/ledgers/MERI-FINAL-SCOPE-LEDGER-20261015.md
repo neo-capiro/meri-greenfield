@@ -201,14 +201,14 @@ This is source reconciliation only. The historical proposal tables below retain 
 | --- | --- |
 | Selected capabilities / continued exclusions | 96 / 43 |
 | Selected source reads / separate product or governed capabilities | 82 / 14 |
-| Selected source adapter coverage | 56 complete + 10 partial input + 16 absent = 82 |
+| Selected source adapter coverage | 56 complete + 15 partial + 11 absent = 82 |
 | Single meri_reads registry | 58 operations / 35 families |
 | Registry accounting | 56 selected source reads + 1 product-state read + 1 historical contract |
 | Selected source reads declared in skill manifests | 52 current contracts + 1 historical-only contract |
 | Selected source reads reachable through admitted skill source | 11 |
 | Complete source adapters lacking general-conversation registration | 0 |
-| Partial-input source adapters withheld from SDK exposure | 10 |
-| Selected source reads lacking complete adapters | 26 (10 partial input + 16 absent; 17 declared by skills; 9 without a skill declaration) |
+| Partial source adapters withheld from SDK exposure | 15 |
+| Selected source reads lacking complete adapters | 26 (15 partial + 11 absent; 17 declared by skills; 9 without a skill declaration) |
 | Pinned actual Core producer mappings (not qualification) | 63 |
 | Live | 0 |
 
@@ -259,11 +259,12 @@ Only `quick_skill.relationship_brief`, `quick_skill.commitments_audit` are admit
 
 Every complete source adapter already present is SDK-exposed.
 
-The following partial-input adapters implement restricted request branches. They remain outside the SDK registry and are included in the missing-complete inventory. Constructor or source-path presence does not establish complete request coverage:
+The following incomplete source adapters have restricted input/resource coverage or a pending native bridge. They remain outside the SDK registry and are included in the missing-complete inventory. Constructor or source-path presence does not establish complete operation coverage:
 
-| Partial-input adapter family | Restricted operations (not SDK-exposed) |
+| Partial adapter family | Incomplete operations (not SDK-exposed) |
 | --- | --- |
 | `business-development` | `get_business_development_context`, `get_business_development_recent_changes` |
+| `funding-opportunities` | `get_funding_opportunity`, `get_funding_opportunity_requirements`, `get_opportunity_client_context`, `get_opportunity_government_landscape`, `search_funding_opportunities` |
 | `outreach-query` | `query_outreach` |
 | `public-domain-hearings` | `search_committee_hearings` |
 | `research-legal-legislation` | `get_legal_reference`, `search_legislative_research` |
@@ -273,7 +274,7 @@ The following partial-input adapters implement restricted request branches. They
 
 The finite native families listed above retain their receiving-contract truth limits and require current task, tenant/user and native credentials. Research portfolio, portfolio changes and Florida budget project reads remain exposed through their existing retained-context path. These source paths are not qualified or live. The remaining selected source reads lack complete adapters; producer mapping or a restricted request branch alone does not complete them. Their exact unresolved families and operations are:
 
-| Family lacking complete adapters | Selected operations (partial input or absent) |
+| Family lacking complete adapters | Selected operations (partial or absent) |
 | --- | --- |
 | `business-development` | `get_business_development_context`, `get_business_development_evidence`, `get_business_development_recent_changes` |
 | `certification-status` | `get_certification_status` |
@@ -291,7 +292,7 @@ The finite native families listed above retain their receiving-contract truth li
 | `state-status-votes` | `get_state_bill_status`, `search_state_floor_votes` |
 | `tracked-bills` | `search_tracked_bills` |
 
-Missing complete coverage includes partial-input adapters and absent adapters. Complete the canonical gateway adapter and operation-specific trusted dispatch/current-resource context using an admitted exact producer/endpoint protocol. A schema/normalizer binding, skill declaration or restricted branch is not complete operation coverage. No guessed endpoint, default credential or permissive generic query is allocated.
+Missing complete coverage includes partial source adapters and absent adapters. Complete the canonical gateway adapter and operation-specific trusted dispatch/current-resource context using an admitted exact producer/endpoint protocol. A schema/normalizer binding, skill declaration, restricted branch or pending native bridge is not complete operation coverage. No guessed endpoint, default credential or permissive generic query is allocated.
 
 The 63 producer mappings pin Core `b525032222515d636b0dae2d46e40c7c3d8b5528` / tree `16723770a8e111fc66bcf70d36ff32ab71eb9928`. [Sanitized repository publication](https://github.com/neo-capiro/capiro-backend/blob/384325afaaf7ad34aeb9ff9b2f183d667ee17343/docs/retained-read-producer-mapping-20261016/MAPPING-HANDOFF-v2.json) is pinned at `384325afaaf7ad34aeb9ff9b2f183d667ee17343`. Its reviewed v2 index SHA is `c6ebaf2987015db466e88b9d4c550ab77878582ab7142ab256d298ae16ed0def`; publication review SHA `ceb7df958e5eb2f9971af7bd8ac093d6785d18543f5611d5149ebc1b8c4fb3ab`. Every mapped operation in JSON retains its exact scoped report hash/pointer, required receiving context and compatibility status. Original local v2 and superseded evidence remain preserved by their owner.
 

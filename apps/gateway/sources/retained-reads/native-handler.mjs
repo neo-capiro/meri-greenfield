@@ -20,8 +20,10 @@ function admitDecision(current,now){
 }
 
 export function createStoredNativeReadHandlers(configuration,operations,specification){
- const {family,routes,requestBody,resultBody}=ownFields(specification,['family','routes'],['requestBody','resultBody']);
+ const {family,routes,requestBody,resultBody,observation}=ownFields(specification,['family','routes'],['requestBody','resultBody','observation']);
  if(!NATIVE_READ_FAMILIES.includes(family)||[requestBody,resultBody].some(value=>value!==undefined&&(typeof value!=='function'||types.isProxy(value))))deny('GATEWAY_CONFIGURATION');
+ if(observation!==undefined&&(observation!=='funding-asof'||family!=='funding-opportunities'||requestBody!==undefined||resultBody!==undefined))deny('GATEWAY_CONFIGURATION');
+ if(family==='funding-opportunities'&&observation!=='funding-asof')deny('GATEWAY_CONFIGURATION');
  const fixed=frozenData(routes);
  if(!fixed||Array.isArray(fixed)||typeof fixed!=='object'||!Object.keys(fixed).length)deny('GATEWAY_CONFIGURATION');
  for(const [id,path] of Object.entries(fixed)){
@@ -42,9 +44,11 @@ export function createStoredNativeReadHandlers(configuration,operations,specific
    const {signal,...fields}=ownFields(call,['input','request','authority','argumentsSha256','normalizationContext'],['signal']),data=frozenData(fields);
    try{contract.normalizeInput(data.request,data.normalizationContext);}catch{deny('INVALID_ARGUMENTS');}
    const current=retainedCall(operation,{...data,...(signal===undefined?{}:{signal})},c.now);admitDecision(current,c.now);
+   // Observation support cannot be inferred from a static credential or a matching response clock.
+   if(observation&&!credentialsForCall)deny('UNAVAILABLE');
    const selected=credentialsForCall?createRetainedHttpTransport({...c,getCredentials:credentialsForCall(operation,call)}):transport;
    const body=requestBody?frozenData(requestBody(current)):current.request;
-   const result=await selected.read(current,{path:fixed[operation.id],method:'POST',body,serviceSecret:true});
+   const result=await selected.read(current,{path:fixed[operation.id],method:'POST',body,serviceSecret:true,...(observation?{observation}:{})});
    const received=resultBody?frozenData(await resultBody(current,result,call)):result;
    try{contract.assertOutput(received,{request:current.request,...current.normalizationContext});}catch{deny('INVALID_RESULT');}
    if(current.signal?.aborted)deny('CANCELLED');if(c.now()>=current.deadlineMs)deny('DEADLINE');

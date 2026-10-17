@@ -51,7 +51,7 @@ export function reconcileSourceExposure({catalog,bindings,families,adapters,skil
  for(const descriptor of operations){
   if(descriptor.sideEffect!=='none'||descriptor.approvalBoundary!=='none'||excluded.some(row=>row.id===descriptor.operation.id))fail(`Unsafe general-read registration ${descriptor.operation.id}`);
   if(!adapterByOperation.has(descriptor.operation.id))fail(`Registered read lacks a canonical adapter: ${descriptor.operation.id}`);
-  if(adapterByOperation.get(descriptor.operation.id).partial)fail(`Partial-input adapter cannot be SDK-exposed: ${descriptor.operation.id}`);
+  if(adapterByOperation.get(descriptor.operation.id).partial)fail(`Incomplete source adapter cannot be SDK-exposed: ${descriptor.operation.id}`);
  }
  const registered=new Set(operations.map(descriptor=>descriptor.operation.id));
  const productGroups=new Set(['artifacts','schedule-tools','client-knowledge-attachments','memory-proposals','command-tools']);
@@ -80,7 +80,7 @@ export function reconcileSourceExposure({catalog,bindings,families,adapters,skil
  }
  const unexposed=sourceReads.filter(row=>row.state==='adapter-present'&&!row.generalOperations.includes(row.operation));
  const groupRows=rows=>unique(rows.map(row=>row.family)).map(family=>({family,operations:rows.filter(row=>row.family===family).map(row=>row.operation).sort()}));
- return {schema:'meri-selected-source-exposure/1',note:'Source paths and manifest declarations are evidence only. Partial-input adapters remain missing complete coverage and cannot be SDK-exposed. No qualification, authority, credential, native producer or live availability is inferred.',
+ return {schema:'meri-selected-source-exposure/1',note:'Source paths and manifest declarations are evidence only. Partial source adapters remain missing complete coverage and cannot be SDK-exposed. No qualification, authority, credential, native producer or live availability is inferred.',
   provenance,...(backendMapping?{backendProducerEvidence:Object.fromEntries(Object.entries(backendMapping).filter(([key])=>key!=='operations'))}:{}),counts:{selectedCapabilities:rows.length,excludedCapabilities:excluded.length,selectedSourceReads:sourceReads.length,
    selectedProductOrGoverned:rows.length-sourceReads.length,registeredGeneralOperations:registered.size,registeredFamilies:Object.keys(families).length,
    generalSelectedSourceReads:sourceReads.filter(row=>row.generalOperations.includes(row.operation)).length,
@@ -97,7 +97,7 @@ export function reconcileSourceExposure({catalog,bindings,families,adapters,skil
    missingAdaptersWithoutSkillDeclaration:missing.filter(row=>!row.declaredBySkills.length).length,mappedBackendProducers:sourceReads.filter(row=>row.backendProducer).length,live:0},
   admittedSkills:[...admittedSkills],generalRegistration:groupRows(operations.map(descriptor=>({family:byOperation.get(descriptor.operation.id).group,operation:descriptor.operation.id}))),
   existingAdaptersWithoutGeneralExposure:unexposed.map(row=>row.id),partialAdapterFamilies:groupRows(partial),missingAdapterFamilies:groupRows(missing),
-  missingAdapterAction:'Missing complete coverage includes partial-input adapters and absent adapters. Complete the canonical gateway adapter and operation-specific trusted dispatch/current-resource context using an admitted exact producer/endpoint protocol. A schema/normalizer binding, skill declaration or restricted branch is not complete operation coverage. No guessed endpoint, default credential or permissive generic query is allocated.',
+  missingAdapterAction:'Missing complete coverage includes partial source adapters and absent adapters. Complete the canonical gateway adapter and operation-specific trusted dispatch/current-resource context using an admitted exact producer/endpoint protocol. A schema/normalizer binding, skill declaration, restricted branch or pending native bridge is not complete operation coverage. No guessed endpoint, default credential or permissive generic query is allocated.',
   rows};
 }
 

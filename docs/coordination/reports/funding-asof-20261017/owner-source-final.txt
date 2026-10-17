@@ -1,0 +1,40 @@
+Γ£ö search_funding_opportunities: one trusted asOf survives advancing native identity/membership and credential rechecks (222.2711ms)
+Γ£ö search_funding_opportunities: changed context, original body, operation or digest cannot reuse an observed credential scope (176.1926ms)
+Γ£ö search_funding_opportunities: client selectors require current native visibility and a coherent client resource before source credentials (92.5349ms)
+Γ£ö get_funding_opportunity_requirements: one trusted asOf survives advancing native identity/membership and credential rechecks (62.3094ms)
+Γ£ö get_funding_opportunity_requirements: changed context, original body, operation or digest cannot reuse an observed credential scope (134.1151ms)
+Γ£ö get_funding_opportunity_requirements: client selectors require current native visibility and a coherent client resource before source credentials (61.9032ms)
+Γ£ö get_funding_opportunity: one trusted asOf survives advancing native identity/membership and credential rechecks (38.8581ms)
+Γ£ö get_funding_opportunity: changed context, original body, operation or digest cannot reuse an observed credential scope (111.1547ms)
+Γ£ö get_funding_opportunity: client selectors require current native visibility and a coherent client resource before source credentials (56.6798ms)
+Γ£ö get_opportunity_client_context: one trusted asOf survives advancing native identity/membership and credential rechecks (50.46ms)
+Γ£ö get_opportunity_client_context: changed context, original body, operation or digest cannot reuse an observed credential scope (115.5898ms)
+Γ£ö get_opportunity_client_context: client selectors require current native visibility and a coherent client resource before source credentials (85.3443ms)
+Γ£ö get_opportunity_government_landscape: one trusted asOf survives advancing native identity/membership and credential rechecks (48.5294ms)
+Γ£ö get_opportunity_government_landscape: changed context, original body, operation or digest cannot reuse an observed credential scope (91.5374ms)
+Γ£ö get_opportunity_government_landscape: client selectors require current native visibility and a coherent client resource before source credentials (64.3893ms)
+Γ£ö funding context cannot be supplied from source output or an unobserved model-selected timestamp (14.084ms)
+Γ£ö funding current membership drift across service-secret await withholds the correlated credential pair (27.7512ms)
+Γ£ö search_funding_opportunities: synthetic governed source consumes the private observation and settles exact original request/result bytes (401.2028ms)
+Γ£ö search_funding_opportunities: missing governed installation, disabled source or missing current context cannot reach the bridge (156.0325ms)
+Γ£ö get_funding_opportunity_requirements: synthetic governed source consumes the private observation and settles exact original request/result bytes (145.0485ms)
+Γ£ö get_funding_opportunity_requirements: missing governed installation, disabled source or missing current context cannot reach the bridge (147.0896ms)
+Γ£ö get_funding_opportunity: synthetic governed source consumes the private observation and settles exact original request/result bytes (171.5338ms)
+Γ£ö get_funding_opportunity: missing governed installation, disabled source or missing current context cannot reach the bridge (141.052ms)
+Γ£ö get_opportunity_client_context: synthetic governed source consumes the private observation and settles exact original request/result bytes (151.9359ms)
+Γ£ö get_opportunity_client_context: missing governed installation, disabled source or missing current context cannot reach the bridge (126.6808ms)
+Γ£ö get_opportunity_government_landscape: synthetic governed source consumes the private observation and settles exact original request/result bytes (124.1702ms)
+Γ£ö get_opportunity_government_landscape: missing governed installation, disabled source or missing current context cannot reach the bridge (133.3386ms)
+Γ£ö funding observation never falls back to static native credentials or an unobserved legacy call (67.9593ms)
+Γ£ö a bridge HTTP refusal remains a single failed source attempt with UNKNOWN hold and no legacy retry (76.8634ms)
+Γ£ö funding native output cannot substitute its own asOf for the captured observation (77.298ms)
+Γ£ö funding current native membership revocation after source withholds result bytes and completion (86.989ms)
+Γ£ö funding is absent from SDK58/35 and the real native runtime refuses forged approved/install/discovery inventories (89.4223ms)
+Γä╣ tests 32
+Γä╣ suites 0
+Γä╣ pass 32
+Γä╣ fail 0
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 5771.9812
