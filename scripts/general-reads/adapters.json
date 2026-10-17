@@ -34,9 +34,8 @@
       "family": "business-development",
       "declaredIn": ["apps/gateway/sources/business-development/handler.mjs", "apps/gateway/sources/business-development/request-context.mjs", "apps/gateway/sources/retained-reads/native-families.mjs", "apps/gateway/general-reads/families/business-development.mjs"],
       "operations": ["get_business_development_context", "get_business_development_recent_changes"],
-      "partialOperations": ["get_business_development_context", "get_business_development_recent_changes"],
-      "adapterChecks": ["PARTIAL_RESOURCE: explicit owned native Core conversation with the exact current task client", "private canonical identity/context HTTP proves the native conversation resource before tool credentials", "current one-client subject, membership visibility and linked conversation scope rechecked; evidence/dossier operation remains absent"],
-      "subject": "current authorized one-client subject and its current owned linked Core conversation; no greenfield conversation substitution; SDK exposure withheld"
+      "adapterChecks": ["complete context and recent-changes reads for an explicit Core conversation under a current canonical personal or closed one-client task authority", "personal authority requires nonempty coherent tenant/private-user scopes; native authorizeScope checks the current actor-owned active conversation and persisted prospect scope before basic domain reads", "client authority retains the exact native identity/context receipt, current visible one-client subject, revision/expiry vector and whole-output linked-client guard; no client-to-personal downgrade", "no broad conversation GET, new receipt, consumed-revision claim or stronger native snapshot guarantee; evidence/dossier operation remains absent"],
+      "subject": "current authorized personal actor with coherent tenant/private-user scopes or current closed one-client subject with its exact native conversation receipt; SDK exposure is limited to context and recent changes"
     },
     {
       "path": "apps/gateway/sources/outreach-query",

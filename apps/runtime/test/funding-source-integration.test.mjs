@@ -93,13 +93,13 @@ test('funding current native membership revocation after source withholds result
  finally{f.scope.abort();}
 });
 
-test('funding is absent from SDK58/35 and the real native runtime refuses forged approved/install/discovery inventories',async()=>{
+test('funding is absent from SDK60/36 and the real native runtime refuses forged approved/install/discovery inventories',async()=>{
  const operations=ids.map(id=>({id,version:'0.2.0'})),x=await readsFixture({config:{operations}});let dispatched=0;
  const gateway=x.ownerConfiguration.gateway,owner=createNativeReadsOwner({...x.ownerConfiguration,gateway:{
   async readAvailability(options){const value=await gateway.readAvailability(options);return {...value,installation:{...value.installation,operations},discovery:{...value.discovery,operations}};},
   async execute(){dispatched++;throw Error('UNQUALIFIED_FUNDING_DISPATCH');},
  }});
- assert.equal(familyReads().length,58);assert.equal(READ_FAMILY_IDS.length,35);assert.equal(READ_FAMILY_IDS.includes('funding-opportunities'),false);
+ assert.equal(familyReads().length,60);assert.equal(READ_FAMILY_IDS.length,36);assert.equal(READ_FAMILY_IDS.includes('funding-opportunities'),false);
  assert.equal(familyReads().some(row=>ids.includes(row.operation.id)),false);
  const snapshot=await owner.handle('availability',x.request,x.credential);assert.deepEqual(snapshot.installation.operations,[]);assert.deepEqual(snapshot.discovery.operations,[]);
  for(const operation of operations)await assert.rejects(owner.handle('execute',{...x.executeRequest,operation,arguments:storedCase(operation.id).arguments,deliveryId:`funding-unqualified:${operation.id}`},x.credential),{message:'UNAVAILABLE'});

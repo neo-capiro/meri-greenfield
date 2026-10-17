@@ -69,9 +69,9 @@ for(const id of ids){
  });
 }
 
-test('reference citations remain UNAVAILABLE even with explicit referenceId or an ignored rules/versions view',async()=>{
- for(const view of ['statutes','rules','versions','unknown-view'])for(const citation of ['1.10','Article I',' ']){
-  const f=storedCase('get_legal_reference'),request={view,sessionKey:'2026',billId:'bill',referenceId:'explicit',citation};
+test('parser-dependent reference citations remain UNAVAILABLE with implicit identity or an effective edition',async()=>{
+ for(const view of ['statutes','references','unknown-view',null])for(const citation of ['1.10','Article I',' '])for(const selection of [{},{referenceId:'explicit',edition:'2026'}]){
+  const f=storedCase('get_legal_reference'),request={view,sessionKey:'2026',billId:'bill',citation,...selection};
   assert.throws(()=>assertUnscopedLegalRequest(f.operation,request),{message:'UNAVAILABLE'});
   await assert.rejects(f.handler()({...f.call(),request}),{message:'UNAVAILABLE'});assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
  }

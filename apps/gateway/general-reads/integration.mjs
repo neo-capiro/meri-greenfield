@@ -214,7 +214,10 @@ const COMMON=['apps/gateway/general-reads/integration.mjs','apps/gateway/general
  // The integration module statically imports the new family, including its private wire, for every composition.
  'apps/gateway/general-reads/families/funding-opportunities.mjs',
  'apps/gateway/sources/funding-opportunities/handler.mjs','apps/gateway/sources/funding-opportunities/request-context.mjs',
- 'packages/contracts/native-read-observation-0.2/schema.json','packages/contracts/native-read-observation-0.2/validate.mjs'];
+ 'packages/contracts/native-read-observation-0.2/schema.json','packages/contracts/native-read-observation-0.2/validate.mjs',
+ // These changed source modules are likewise loaded by static family imports in every composition.
+ 'apps/gateway/sources/business-development/handler.mjs','apps/gateway/sources/business-development/request-context.mjs',
+ 'apps/gateway/sources/research-legal-legislation/request-context.mjs'];
 const TRANSPORT_FIELDS=['origin','endpoints','getCredentials','credentialsForCall','authorizeResultForCall','delegatedTransport','fetchImpl','maxRequestMs','maxResponseBytes','readMemoryEligibility','registry'];
 export async function createGeneralReadFamilyHandlers(configuration){
  const {families,now,newId}=ownFields(configuration,['families','now','newId']);

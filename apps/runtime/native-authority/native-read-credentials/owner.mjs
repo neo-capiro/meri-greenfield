@@ -34,7 +34,8 @@ export function createNativeReadCredentialOwner(configuration){
   const contract=resolveOperationContract(v.operation);if(!nativeReadOperationAllowed(contract.binding.group,v.operation.id)||contract.descriptor.sideEffect!=='none'||contract.descriptor.approvalBoundary!=='none')refuse('ACCESS_DENIED');if(['bill-text','federal-legislation'].includes(contract.binding.group)&&c.defaultCongress===undefined)refuse('UNAVAILABLE');
   // Data-search's canonical raw-selector normalizer also validates its selector combination.
   if(contract.binding.group==='data-search')contract.normalizeInput(v.request,{});else if(contract.binding.group!=='state-status-votes')readShape(contract.binding.input,v.request);
-  assertSourceReadRequest(contract,v.request,v.subject);if(contract.binding.group==='business-development'&&!readConversation)refuse('UNAVAILABLE');
+  assertSourceReadRequest(contract,v.request,v.subject);
+  if(contract.binding.group==='business-development'&&!readConversation&&captureBusinessDevelopmentResource(v.operation,v.request,v.subject).clientId!==null)refuse('UNAVAILABLE');
   if(!same(v.binding,binding)||v.subject.policyRevision!==v.policyRevision||v.requestSha256!==hash(v.request)||!same([...v.sourceIds].sort(),[...new Set(contract.descriptor.sourceRequirements.map(s=>s.sourceId))].sort())||!Number.isSafeInteger(v.deadlineMs))refuse('ACCESS_DENIED');
   if(!approved.operations.some(op=>same(op,v.operation))||!allocated.manifest.allowedOperations.some(op=>same(op,v.operation)))refuse('ACCESS_DENIED');return v;}
  async function observe(proof,scopeSignal,signal){
@@ -56,9 +57,14 @@ export function createNativeReadCredentialOwner(configuration){
    if(native.principal.tenantId!==binding.tenantId||native.principal.actorId!==binding.actorId)refuse('UNAVAILABLE');
    const contract=resolveOperationContract(proof.operation);let conversation=null;
    if(contract.binding.group==='business-development'){
-    const resource=captureBusinessDevelopmentResource(proof.operation,proof.request,proof.subject);assertNativeVisibleClients(native,[resource.clientId]);
-    const started=now();conversation=assertNativeConversationAuthority(await life.run(signal=>readConversation({credential,...resource,signal,deadlineMs:cutoff})),{started,now,...resource});
-    if(!same(conversation.principal,native.principal)||conversation.identityRevision!==native.identityRevision)refuse('ACCESS_DENIED');limit(conversation.expiresAtMs);
+    const resource=captureBusinessDevelopmentResource(proof.operation,proof.request,proof.subject);
+    // Client tasks retain their exact private resource upper bound. Personal tasks use the native
+    // tool's existing owned-conversation/prospect authorization before its domain content read.
+    if(resource.clientId!==null){
+     assertNativeVisibleClients(native,[resource.clientId]);
+     const started=now();conversation=assertNativeConversationAuthority(await life.run(signal=>readConversation({credential,...resource,signal,deadlineMs:cutoff})),{started,now,...resource});
+     if(!same(conversation.principal,native.principal)||conversation.identityRevision!==native.identityRevision)refuse('ACCESS_DENIED');limit(conversation.expiresAtMs);
+    }
    }
    const context=createSourceReadContext({contract,proof,native,defaultCongress:c.defaultCongress,now,priorContext:pins.get(scopeSignal)?.context});
    contract.normalizeInput(proof.request,context);

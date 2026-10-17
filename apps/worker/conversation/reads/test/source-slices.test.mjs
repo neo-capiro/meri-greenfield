@@ -15,8 +15,9 @@ import {createControlGeneralReadRuntime} from '../../../../runtime/general-read-
 import {ownerFixture} from '../../../../runtime/native-authority/native-read-credentials/test/fixture.mjs';
 import {mountReads} from './fixture.mjs';
 
-const complete=[['public-data','query_economic_data'],['client-knowledge-search','query_knowledge_graph']];
-const partial=SOURCE_SLICE_CASES.filter(([family])=>!complete.some(([selected])=>selected===family));
+const complete=[['public-data',['query_economic_data']],['client-knowledge-search',['query_knowledge_graph']],
+ ['business-development',['get_business_development_context','get_business_development_recent_changes']]];
+const partial=SOURCE_SLICE_CASES.filter(([family,id])=>!complete.some(([selected,ids])=>selected===family&&ids.includes(id)));
 const familyOperations=family=>catalog.operations.filter(row=>resolveOperationContract(row.operation).binding.group===family).map(row=>row.operation);
 async function mounted(id,options={}){
  const f=await ownerFixture(id,options),{getCredentials,authorizeResultForCall,...transport}=f.transport;
@@ -26,15 +27,16 @@ async function mounted(id,options={}){
  return {...f,port};
 }
 
-for(const [family,id] of complete){
- test(`${id}: finite SDK family operation list excludes every canonical sibling even with forged installation/discovery`,()=>{
-  const operations=familyOperations(family),siblings=operations.filter(row=>row.id!==id);
-  assert.ok(siblings.length>0);assert.deepEqual(READ_FAMILIES[family].operationIds,[id]);
-  assert.deepEqual(familyReads().filter(row=>row.family===family).map(row=>row.operation.id),[id]);
+for(const [family,ids] of complete){
+ test(`${family}: finite SDK family operation list excludes every unsupported canonical sibling even with forged installation/discovery`,()=>{
+  const operations=familyOperations(family),siblings=operations.filter(row=>!ids.includes(row.id));
+  assert.ok(siblings.length>0);assert.deepEqual(READ_FAMILIES[family].operationIds,ids);
+  assert.deepEqual(familyReads().filter(row=>row.family===family).map(row=>row.operation.id),ids);
   const gates=resolveAvailableReads({policy:{generalReads:true,readFamilies:[family]},installation:{operations},discovery:{operations},scopes:[{kind:'client'}]});
-  assert.deepEqual(gates.available.map(row=>row.operation.id),[id]);
+  assert.deepEqual(gates.available.map(row=>row.operation.id),ids);
   for(const sibling of siblings)assert.equal(familyReads().some(row=>row.operation.id===sibling.id),false);
  });
+ for(const id of ids){
  test(`${id}: SDK arguments use the frozen raw contract and refuse model authority or normalization context`,()=>{
   const f=nativeFamilyCase(family,id),schema=advertisedArguments(f.contract.descriptor.inputSchema);
   assert.equal(schema.mode,'canonical');assert.deepEqual(schema.arguments.parse(f.arguments),f.arguments);
@@ -71,10 +73,11 @@ for(const [family,id] of complete){
    assert.equal(await mountReads(f,{port:f.mount({sourceEnabled:false})}),null);assert.equal(f.wire.length,0);assert.equal(f.state.reservations.size,0);
   }finally{f.scope.abort();}
  });
+ }
 }
 
-test('ten partial-input operations remain absent from SDK policy and cannot be advertised by installation/discovery',async()=>{
- assert.equal(partial.length,10);assert.equal(new Set(partial.map(([family])=>family)).size,7);
+test('eight partial-input operations remain absent from SDK policy and cannot be advertised by installation/discovery',async()=>{
+ assert.equal(partial.length,8);assert.equal(new Set(partial.map(([family])=>family)).size,6);
  const operations=partial.map(([,id])=>({id,version:'0.2.0'})),families=[...new Set(partial.map(([family])=>family))];
  const gates=resolveAvailableReads({policy:{generalReads:true,readFamilies:[...READ_FAMILY_IDS,...families]},installation:{operations},discovery:{operations},scopes:[{kind:'client'}]});
  assert.deepEqual(gates.available,[]);

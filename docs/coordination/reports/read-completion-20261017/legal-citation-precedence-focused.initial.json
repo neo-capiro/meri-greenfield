@@ -1,0 +1,19 @@
+{
+  "node": "C:/Users/Administrator/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe",
+  "arguments": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "--test-name-pattern",
+    "citation precedence|parser-dependent reference citations|unsupported citations",
+    "apps/gateway/sources/research-legal-legislation/test/citation-precedence.test.mjs",
+    "apps/gateway/sources/research-legal-legislation/test/selectors.test.mjs",
+    "apps/gateway/sources/research-legal-legislation/test/handler.test.mjs"
+  ],
+  "startedAt": "2026-10-17T01:55:12.6548944Z",
+  "finishedAt": "2026-10-17T01:55:14.7271341Z",
+  "exitCode": 0,
+  "sourceBase": "a945196efcd417a2ed09bcbacfae876acbefd2c3",
+  "corePin": "b525032222515d636b0dae2d46e40c7c3d8b5528"
+}
