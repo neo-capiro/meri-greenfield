@@ -25,10 +25,13 @@ const routes=Object.freeze({
  admit:'/strategy-api/internal/objective-canonical/generation-admissions',
  publish:'/strategy-api/internal/objective-canonical/generation-requests',
  accept:'/strategy-api/internal/objective-canonical/generation-acceptances',
+ // Core PR66: Nest POST 201 / GET 200, same generation-worker subject and body.
+ complete:'/strategy-api/internal/objective-canonical/generation-completions',
 });
 const readRoutes=Object.freeze({
  'admission-read':routes.admit,
  'request-read':routes.publish,
+ 'completion-read':routes.complete,
 });
 const getters=Object.fromEntries(['status','headers','body','redirected'].map(key=>[key,Object.getOwnPropertyDescriptor(Response.prototype,key).get]));
 const unavailable=()=>({kind:'unavailable'});
@@ -93,5 +96,6 @@ export function createCoreObjectiveGenerationTransport(configuration){
  return Object.freeze({available,
   admit:value=>send('admit',value),publish:value=>send('publish',value),accept:value=>send('accept',value),
   readAdmission:value=>send('admission-read',value),readRequest:value=>send('request-read',value),
+  complete:value=>send('complete',value),readCompletion:value=>send('completion-read',value),
  });
 }
