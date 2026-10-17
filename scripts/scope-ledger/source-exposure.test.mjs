@@ -17,16 +17,16 @@ function synthetic(){return {catalog:structuredClone(catalog),bindings:CATALOG_O
  adapters:[{operations:[...registered],paths:['synthetic adapter path']}],skills:[],admittedSkills:[],provenance:{}};}
 const refuses=work=>assert.throws(work,error=>error.code==='SOURCE_EXPOSURE_INVALID');
 
-test('96 selected and43 excluded are reconciled separately from58 registered operations',()=>{
+test('96 selected and43 excluded are reconciled separately from60 registered operations',()=>{
  assert.equal(snapshot.rows.length,96);assert.equal(snapshot.counts.selectedSourceReads,82);assert.equal(snapshot.counts.selectedProductOrGoverned,14);
- assert.equal(snapshot.counts.registeredGeneralOperations,58);assert.equal(snapshot.counts.registeredFamilies,35);
- assert.equal(snapshot.counts.generalSelectedSourceReads,56);assert.equal(snapshot.counts.generalSelectedProductStateReads,1);assert.equal(snapshot.counts.generalHistoricalOperations,1);
+ assert.equal(snapshot.counts.registeredGeneralOperations,60);assert.equal(snapshot.counts.registeredFamilies,36);
+ assert.equal(snapshot.counts.generalSelectedSourceReads,58);assert.equal(snapshot.counts.generalSelectedProductStateReads,1);assert.equal(snapshot.counts.generalHistoricalOperations,1);
  assert.equal(snapshot.counts.excludedCapabilities,43);assert.equal(snapshot.counts.live,0);
 });
-test('missing complete coverage counts fifteen incomplete adapters and eleven absent adapters exactly once',()=>{
+test('missing complete coverage counts thirteen incomplete adapters and eleven absent adapters exactly once',()=>{
  assert.deepEqual(snapshot.existingAdaptersWithoutGeneralExposure,[]);assert.equal(snapshot.counts.existingSourceAdaptersWithoutGeneralExposure,0);
- assert.equal(snapshot.counts.completeSourceAdapters,56);assert.equal(snapshot.counts.partialSourceAdapters,15);assert.equal(snapshot.counts.absentSourceAdapters,11);
- assert.equal(snapshot.counts.missingSourceAdapters,26);assert.equal(snapshot.counts.missingAdaptersDeclaredBySkills,17);assert.equal(snapshot.counts.missingAdaptersWithoutSkillDeclaration,9);
+ assert.equal(snapshot.counts.completeSourceAdapters,58);assert.equal(snapshot.counts.partialSourceAdapters,13);assert.equal(snapshot.counts.absentSourceAdapters,11);
+ assert.equal(snapshot.counts.missingSourceAdapters,24);assert.equal(snapshot.counts.missingAdaptersDeclaredBySkills,16);assert.equal(snapshot.counts.missingAdaptersWithoutSkillDeclaration,8);
  assert.equal(snapshot.counts.completeSourceAdapters+snapshot.counts.partialSourceAdapters+snapshot.counts.absentSourceAdapters,82);
  const gaps=snapshot.rows.filter(row=>row.kind==='source-read'&&row.state!=='adapter-present');
  for(const gap of gaps){if(gap.state==='adapter-missing')assert.deepEqual(gap.adapterPaths,[]);else assert.ok(gap.adapterPaths.length);assert.deepEqual(gap.generalOperations,[]);assert.deepEqual(gap.sourceAdmittedSkills,[]);assert.ok(Array.isArray(gap.requiredContextKeys));}
@@ -44,25 +44,35 @@ test('mixed SDK families expose economic and graph only; loading never manufactu
  assert.deepEqual(snapshot.generalRegistration.find(row=>row.family==='client-knowledge-search').operations,['query_knowledge_graph']);
 });
 
-test('bounded curated source declarations name seventeen operations and fifteen partial input/resource/bridge reads',()=>{
+test('bounded curated source declarations name seventeen operations and thirteen partial input/resource/bridge reads',()=>{
  const families=['public-data','client-knowledge-search','state-status-votes','tracked-bills','public-domain-hearings','research-legal-legislation','research-legal-news','outreach-query','business-development','funding-opportunities'];
  const declared=JSON.parse(readFileSync(new URL('../general-reads/adapters.json',import.meta.url),'utf8')).adapters.filter(adapter=>families.includes(adapter.family));
- assert.equal(declared.length,10);assert.equal(declared.flatMap(adapter=>adapter.operations).length,17);assert.equal(declared.flatMap(adapter=>adapter.partialOperations??[]).length,15);
+ assert.equal(declared.length,10);assert.equal(declared.flatMap(adapter=>adapter.operations).length,17);assert.equal(declared.flatMap(adapter=>adapter.partialOperations??[]).length,13);
  for(const adapter of declared){
   const text=adapter.declaredIn.map(path=>readFileSync(new URL(`../../${path}`,import.meta.url),'utf8')).join('\n');
   for(const id of adapter.operations)assert.ok(text.includes(`'${id}'`),`${adapter.path}: ${id}`);
  }
 });
 
-test('the fifteen incomplete input/resource/bridge operations keep source evidence outside SDK exposure',()=>{
- const expected=['get_state_bill_status','search_state_floor_votes','search_tracked_bills','search_committee_hearings','search_legislative_research','get_legal_reference','search_legiwatch_news','query_outreach','get_business_development_context','get_business_development_recent_changes','search_funding_opportunities','get_funding_opportunity_requirements','get_funding_opportunity','get_opportunity_client_context','get_opportunity_government_landscape'].sort();
+test('the thirteen incomplete input/resource/bridge operations keep source evidence outside SDK exposure',()=>{
+ const expected=['get_state_bill_status','search_state_floor_votes','search_tracked_bills','search_committee_hearings','search_legislative_research','get_legal_reference','search_legiwatch_news','query_outreach','search_funding_opportunities','get_funding_opportunity_requirements','get_funding_opportunity','get_opportunity_client_context','get_opportunity_government_landscape'].sort();
  assert.deepEqual(snapshot.partialAdapterFamilies.flatMap(row=>row.operations).sort(),expected);
- assert.equal(snapshot.counts.partialSourceAdaptersWithoutGeneralExposure,15);assert.equal(snapshot.partialAdapterFamilies.length,8);
+ assert.equal(snapshot.counts.partialSourceAdaptersWithoutGeneralExposure,13);assert.equal(snapshot.partialAdapterFamilies.length,7);
  for(const id of expected){const entry=row(id);assert.equal(entry.state,'adapter-partial');assert.ok(entry.adapterPaths.includes(`apps/gateway/sources/${entry.family}/handler.mjs`));assert.ok(entry.adapterPaths.includes(`apps/gateway/general-reads/families/${entry.family}.mjs`));assert.deepEqual(entry.generalOperations,[]);assert.equal(registered.includes(id),false);}
- // Partial-resource coverage must not manufacture the held evidence operation.
- for(const id of ['get_business_development_context','get_business_development_recent_changes']){const entry=row(id);assert.equal(entry.state,'adapter-partial');assert.ok(entry.adapterPaths.includes('apps/gateway/sources/business-development/request-context.mjs'));assert.deepEqual(entry.generalOperations,[]);}
+});
+
+test('only complete BD context and recent changes are promoted; evidence remains absent and SDK-held',()=>{
+ const ids=['get_business_development_context','get_business_development_recent_changes'];
+ const declared=JSON.parse(readFileSync(new URL('../general-reads/adapters.json',import.meta.url),'utf8')).adapters.find(adapter=>adapter.family==='business-development');
+ assert.deepEqual(declared.operations,ids);assert.equal(Object.hasOwn(declared,'partialOperations'),false);
+ assert.match(declared.adapterChecks.join(' '),/personal.*coherent tenant\/private-user scopes/);
+ assert.match(declared.adapterChecks.join(' '),/client authority retains the exact native identity\/context receipt/);
+ assert.doesNotMatch(declared.adapterChecks.join(' '),/HTTP proves|PARTIAL_RESOURCE/);
+ for(const id of ids){const entry=row(id);assert.equal(entry.state,'adapter-present');assert.ok(entry.adapterPaths.includes('apps/gateway/sources/business-development/request-context.mjs'));assert.deepEqual(entry.generalOperations,[id]);assert.equal(registered.includes(id),true);}
  const held=row('get_business_development_evidence');assert.equal(held.state,'adapter-missing');assert.deepEqual(held.adapterPaths,[]);assert.deepEqual(held.generalOperations,[]);
- assert.equal(Object.hasOwn(READ_FAMILIES,'business-development'),false);
+ assert.deepEqual(READ_FAMILIES['business-development'].operationIds,ids);
+ assert.deepEqual(snapshot.generalRegistration.find(entry=>entry.family==='business-development').operations,ids);
+ const input=synthetic();input.families={...input.families,'business-development':{clientScope:'optional'}};refuses(()=>reconcileSourceExposure(input));
 });
 
 test('all five funding sources stay partial for the pending Core bridge and cannot inherit SDK exposure',()=>{
@@ -173,8 +183,8 @@ test('registering an incomplete operation refuses even with a valid canonical op
 
 test('renderer calls partial coverage missing complete implementation and never calls it exposed',()=>{
  const markdown=generateExposure(root).markdown;
- assert.match(markdown,/56 complete \+ 15 partial \+ 11 absent = 82/);
- assert.match(markdown,/Partial source adapters withheld from SDK exposure \| 15/);
+ assert.match(markdown,/58 complete \+ 13 partial \+ 11 absent = 82/);
+ assert.match(markdown,/Partial source adapters withheld from SDK exposure \| 13/);
  assert.match(markdown,/Every complete source adapter already present is SDK-exposed/);
  assert.match(markdown,/Partial adapter family \| Incomplete operations \(not SDK-exposed\)/);
  assert.match(markdown,/restricted input\/resource coverage or a pending native bridge/);
@@ -194,13 +204,22 @@ test('duplicate adapter claims and changed selected scope refuse',()=>{
 test('a duplicate canonical binding refuses rather than choosing an arbitrary adapter family',()=>{
  const input=synthetic();input.bindings=[...input.bindings,input.bindings[0]];refuses(()=>reconcileSourceExposure(input));
 });
-test('targeted refresh preserves all eight historical fields from PR107, PR106 and earlier base08f65a79',()=>{
- const next=generateExposure(root).ledger;
- for(const base of ['615a5467ffa555f913ad49258b3919723ecf207d','e1845c3b0d7caa8fd3309ad96f6cb4e17f25ccce','08f65a79b99e5b269a8c7f7e82b6b8de225caae8']){
+test('targeted refresh preserves all eight historical fields from current base, PR107, PR106 and earlier base08f65a79',()=>{
+ const generated=generateExposure(root),next=generated.ledger;
+ const withoutExposure=text=>{
+  const start=text.indexOf('### Current selected read source exposure'),end=text.indexOf('### Historical accounting bridge',start);
+  assert.ok(start>=0&&end>start);return text.slice(0,start)+text.slice(end);
+ };
+ for(const base of ['a945196efcd417a2ed09bcbacfae876acbefd2c3','615a5467ffa555f913ad49258b3919723ecf207d','e1845c3b0d7caa8fd3309ad96f6cb4e17f25ccce','08f65a79b99e5b269a8c7f7e82b6b8de225caae8']){
   const historical=JSON.parse(execFileSync('git',['show',`${base}:docs/coordination/ledgers/scope-ledger.json`],{cwd:root,encoding:'utf8',maxBuffer:2*1024*1024}));
   for(const field of ['capabilities','ownerDirection','coverageOrigin','provenance','counts','gates','excludedReferences','ownershipGraph']){
    assert.deepEqual(next[field],historical[field],`${base}/${field}`);
    assert.equal(JSON.stringify(next[field]),JSON.stringify(historical[field]),`${base}/${field} serialization`);
+  }
+  const markdown=execFileSync('git',['show',`${base}:docs/coordination/ledgers/MERI-FINAL-SCOPE-LEDGER-20261015.md`],{cwd:root,encoding:'utf8',maxBuffer:2*1024*1024});
+  assert.equal(withoutExposure(generated.markdown),withoutExposure(markdown),`${base}/Markdown outside current exposure`);
+  for(const path of ['docs/coordination/ledgers/TOOL-COVERAGE-96.csv','docs/coordination/proposals/general-reads/inventory.json']){
+   assert.deepEqual(readFileSync(new URL(`../../${path}`,import.meta.url)),execFileSync('git',['show',`${base}:${path}`],{cwd:root,maxBuffer:2*1024*1024}),`${base}/${path}`);
   }
  }
  assert.deepEqual(next.sourceExposure,snapshot);

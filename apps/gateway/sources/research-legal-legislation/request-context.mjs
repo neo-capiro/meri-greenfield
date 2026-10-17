@@ -28,8 +28,11 @@ export function assertLegalSliceRequest(operation,request){
  let raw;
  try{raw=frozenData(request);validateShape(contract.binding.input.replace(/Input$/,'Request'),raw);}
  catch{deny('INVALID_ARGUMENTS');}
- if(raw.folderId||
-  operation.id==='get_legal_reference'&&(raw.citation??'')!=='')deny('UNAVAILABLE');
+ // Core never parses rules/versions citations. In references, an explicit ID
+ // bypasses parsed identity; edition is independent only when empty or forced
+ // empty by the explicit constitution code. Do not guess any parser result.
+ const citationIndependent=raw.view==='rules'||raw.view==='versions'||Boolean(raw.referenceId)&&((raw.edition??'')===''||raw.code==='constitution');
+ if(raw.folderId||operation.id==='get_legal_reference'&&(raw.citation??'')!==''&&!citationIndependent)deny('UNAVAILABLE');
  const context=requestContext(raw);
  try{contract.normalizeInput(raw,context);}catch{deny('INVALID_ARGUMENTS');}
  return raw;

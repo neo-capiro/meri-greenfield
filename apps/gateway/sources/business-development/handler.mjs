@@ -1,4 +1,4 @@
-/** PARTIAL_RESOURCE: current owned native conversation with the exact selected linked client; no dossier producer. */
+/** Native inline personal prospect authority or exact current client receipt; no dossier producer. */
 import {deny,safeFailure} from '../../dispatch/operation-result.mjs';
 import {ownFields,frozenData} from '../source-admission.mjs';
 import {createStoredNativeReadHandlers} from '../retained-reads/native-handler.mjs';
@@ -14,7 +14,7 @@ export function createBusinessDevelopmentHandlers(configuration,operations){
   resultBody(current,result){
    try{current.contract.assertOutput(result,{request:current.request,...current.normalizationContext});}catch{deny('INVALID_RESULT');}
    const resource=captureBusinessDevelopmentResource(current.operation,current.request,current.authority.subject);
-   if(current.operation.id==='get_business_development_context'&&result.prospect.linkedClientId?.toLowerCase()!==resource.clientId)deny('INVALID_RESULT');
+   if(resource.clientId!==null&&current.operation.id==='get_business_development_context'&&result.prospect.linkedClientId?.toLowerCase()!==resource.clientId)deny('INVALID_RESULT');
    return result;
   },
  });
@@ -22,7 +22,7 @@ export function createBusinessDevelopmentHandlers(configuration,operations){
   const {signal:ignored,...fields}=ownFields(call,['input','request','authority','argumentsSha256','normalizationContext'],['signal']);
   const data=frozenData(fields);
   captureBusinessDevelopmentResource(handler.operation,data.request,data.authority.subject);
-  // The private owner pins/rechecks the native conversation receipt. Static credentials cannot prove that resource.
+  // CONTROL current authority is mandatory; client tasks also pin/recheck the native conversation receipt.
   if(!config.credentialsForCall)deny('UNAVAILABLE');
   return await handler.execute(call);
  }catch(error){throw safeFailure(error);}}}));

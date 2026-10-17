@@ -23,7 +23,7 @@ for(const id of ids){
   const [handler]=createResearchLegalLegislationHandlers({...transport,now:f.now,credentialsForCall:()=>{factories++;return getCredentials;}},[f.operation]);
   const requests=[{...f.arguments,clientId:'Client name'},{...f.arguments,clientId:'not-a-uuid'},
    {...f.arguments,clientId,folderId:'private-folder'},{...f.arguments,clientId,folderId:' '}];
-  if(id==='get_legal_reference')requests.push({...f.arguments,clientId,citation:'Article I'},{...f.arguments,clientId,citation:' '});
+  if(id==='get_legal_reference')requests.push({...f.arguments,view:'references',clientId,citation:'Article I'},{...f.arguments,view:'references',clientId,citation:' '});
   for(const request of requests){assert.throws(()=>assertLegalSliceRequest(f.operation,request),{message:'UNAVAILABLE'});await assert.rejects(handler.execute({...f.call(),request}),{message:'UNAVAILABLE'});}
   assert.equal(factories,0);assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
  });

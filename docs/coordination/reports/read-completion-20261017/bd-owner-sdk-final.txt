@@ -1,0 +1,45 @@
+Γ£ö BD personal get_business_development_context: absent conversation reader still uses current native identity/membership and settles original bytes (295.598ms)
+Γ£ö BD personal get_business_development_context: exact actor private-user scope and combined tenant/private-user scopes remain usable (286.4717ms)
+Γ£ö BD personal get_business_development_context: a client relationship in native context is not rewritten into a task client grant (127.9092ms)
+Γ£ö BD personal get_business_development_context: client, mixed, foreign actor and foreign personal resources refuse before any native credential (325.4993ms)
+Γ£ö BD client get_business_development_context: missing resource reader cannot downgrade a client-bound task to personal (45.9127ms)
+Γ£ö BD personal get_business_development_context: revoked durable task prevents native credentials and source reservations (47.5468ms)
+Γ£ö BD personal get_business_development_context: foreign native principal and insufficient current membership refuse before service credentials (116.5671ms)
+Γ£ö BD personal get_business_development_context: native revision drift across the secret await releases no source HTTP and keeps UNKNOWN (91.3437ms)
+Γ£ö BD personal get_business_development_context: task/native revocation after source releases no result or completion (267.9189ms)
+Γ£ö BD personal get_business_development_context: uncertain native source response holds UNKNOWN without fallback or a private context request (81.0731ms)
+Γ£ö BD personal get_business_development_context: static source credentials cannot replace the current invocation credential owner (63.0354ms)
+Γ£ö BD personal get_business_development_recent_changes: absent conversation reader still uses current native identity/membership and settles original bytes (136.0685ms)
+Γ£ö BD personal get_business_development_recent_changes: exact actor private-user scope and combined tenant/private-user scopes remain usable (242.9812ms)
+Γ£ö BD personal get_business_development_recent_changes: a client relationship in native context is not rewritten into a task client grant (112.786ms)
+Γ£ö BD personal get_business_development_recent_changes: client, mixed, foreign actor and foreign personal resources refuse before any native credential (306.5705ms)
+Γ£ö BD client get_business_development_recent_changes: missing resource reader cannot downgrade a client-bound task to personal (44.2112ms)
+Γ£ö BD personal get_business_development_recent_changes: revoked durable task prevents native credentials and source reservations (60.3056ms)
+Γ£ö BD personal get_business_development_recent_changes: foreign native principal and insufficient current membership refuse before service credentials (90.2246ms)
+Γ£ö BD personal get_business_development_recent_changes: native revision drift across the secret await releases no source HTTP and keeps UNKNOWN (75.785ms)
+Γ£ö BD personal get_business_development_recent_changes: task/native revocation after source releases no result or completion (235.1121ms)
+Γ£ö BD personal get_business_development_recent_changes: uncertain native source response holds UNKNOWN without fallback or a private context request (75.8339ms)
+Γ£ö BD personal get_business_development_recent_changes: static source credentials cannot replace the current invocation credential owner (58.228ms)
+Γ£ö BD SDK exposes exactly the two complete operations to personal/client scope and withholds evidence despite forged inventories (6.597ms)
+Γ£ö BD SDK get_business_development_context: canonical full arguments accept explicit Core selectors and reject model authority/context (10.4982ms)
+Γ£ö BD SDK get_business_development_context: personal fixed native read settles exact MCP bytes without a conversation authority port (365.6454ms)
+Γ£ö BD SDK get_business_development_context: client-bound reads retain the exact Core conversation/client proof (171.0422ms)
+Γ£ö BD SDK get_business_development_context: source/install/discovery/family policy gates remain required for personal availability (52.9321ms)
+Γ£ö BD SDK get_business_development_context: current native revocation after source withholds all model bytes and receipts (126.8091ms)
+Γ£ö BD SDK get_business_development_context: native inline refusal is one failed attempt with UNKNOWN and no fallback or receipt (127.8203ms)
+Γ£ö BD SDK get_business_development_context: an explicit one-call budget settles once then refuses another source dispatch (147.5215ms)
+Γ£ö BD SDK get_business_development_recent_changes: canonical full arguments accept explicit Core selectors and reject model authority/context (4.0001ms)
+Γ£ö BD SDK get_business_development_recent_changes: personal fixed native read settles exact MCP bytes without a conversation authority port (159.3974ms)
+Γ£ö BD SDK get_business_development_recent_changes: client-bound reads retain the exact Core conversation/client proof (168.176ms)
+Γ£ö BD SDK get_business_development_recent_changes: source/install/discovery/family policy gates remain required for personal availability (52.6146ms)
+Γ£ö BD SDK get_business_development_recent_changes: current native revocation after source withholds all model bytes and receipts (124.9669ms)
+Γ£ö BD SDK get_business_development_recent_changes: native inline refusal is one failed attempt with UNKNOWN and no fallback or receipt (112.1875ms)
+Γ£ö BD SDK get_business_development_recent_changes: an explicit one-call budget settles once then refuses another source dispatch (144.2213ms)
+Γä╣ tests 37
+Γä╣ suites 0
+Γä╣ pass 37
+Γä╣ fail 0
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 6937.5273

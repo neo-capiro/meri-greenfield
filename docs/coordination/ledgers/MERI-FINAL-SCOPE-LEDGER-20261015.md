@@ -201,14 +201,14 @@ This is source reconciliation only. The historical proposal tables below retain 
 | --- | --- |
 | Selected capabilities / continued exclusions | 96 / 43 |
 | Selected source reads / separate product or governed capabilities | 82 / 14 |
-| Selected source adapter coverage | 56 complete + 15 partial + 11 absent = 82 |
-| Single meri_reads registry | 58 operations / 35 families |
-| Registry accounting | 56 selected source reads + 1 product-state read + 1 historical contract |
+| Selected source adapter coverage | 58 complete + 13 partial + 11 absent = 82 |
+| Single meri_reads registry | 60 operations / 36 families |
+| Registry accounting | 58 selected source reads + 1 product-state read + 1 historical contract |
 | Selected source reads declared in skill manifests | 52 current contracts + 1 historical-only contract |
 | Selected source reads reachable through admitted skill source | 11 |
 | Complete source adapters lacking general-conversation registration | 0 |
-| Partial source adapters withheld from SDK exposure | 15 |
-| Selected source reads lacking complete adapters | 26 (15 partial + 11 absent; 17 declared by skills; 9 without a skill declaration) |
+| Partial source adapters withheld from SDK exposure | 13 |
+| Selected source reads lacking complete adapters | 24 (13 partial + 11 absent; 16 declared by skills; 8 without a skill declaration) |
 | Pinned actual Core producer mappings (not qualification) | 63 |
 | Live | 0 |
 
@@ -224,6 +224,7 @@ Only `quick_skill.relationship_brief`, `quick_skill.commitments_audit` are admit
 | `acquisition-personnel` | `get_acquisition_person`, `search_acquisition_personnel` |
 | `action-items-complete` | `actions.query` |
 | `bill-text` | `read_bill_text`, `search_congress_bills` |
+| `business-development` | `get_business_development_context`, `get_business_development_recent_changes` |
 | `client-documents` | `read_client_documents` |
 | `client-knowledge-memory` | `search_memory` |
 | `client-knowledge-monday` | `read_monday_client_boards` |
@@ -263,7 +264,6 @@ The following incomplete source adapters have restricted input/resource coverage
 
 | Partial adapter family | Incomplete operations (not SDK-exposed) |
 | --- | --- |
-| `business-development` | `get_business_development_context`, `get_business_development_recent_changes` |
 | `funding-opportunities` | `get_funding_opportunity`, `get_funding_opportunity_requirements`, `get_opportunity_client_context`, `get_opportunity_government_landscape`, `search_funding_opportunities` |
 | `outreach-query` | `query_outreach` |
 | `public-domain-hearings` | `search_committee_hearings` |
@@ -276,7 +276,7 @@ The finite native families listed above retain their receiving-contract truth li
 
 | Family lacking complete adapters | Selected operations (partial or absent) |
 | --- | --- |
-| `business-development` | `get_business_development_context`, `get_business_development_evidence`, `get_business_development_recent_changes` |
+| `business-development` | `get_business_development_evidence` |
 | `certification-status` | `get_certification_status` |
 | `client-knowledge-search` | `search_client_knowledge` |
 | `funding-opportunities` | `get_funding_opportunity`, `get_funding_opportunity_requirements`, `get_opportunity_client_context`, `get_opportunity_government_landscape`, `search_funding_opportunities` |

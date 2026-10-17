@@ -1,0 +1,79 @@
+Γ£ö BD personal get_business_development_context: absent conversation reader still uses current native identity/membership and settles original bytes (292.8127ms)
+Γ£ö BD personal get_business_development_context: exact actor private-user scope and combined tenant/private-user scopes remain usable (250.3335ms)
+Γ£ö BD personal get_business_development_context: a client relationship in native context is not rewritten into a task client grant (116.9054ms)
+Γ£ö BD personal get_business_development_context: client, mixed, foreign actor and foreign personal resources refuse before any native credential (287.6697ms)
+Γ£ö BD client get_business_development_context: missing resource reader cannot downgrade a client-bound task to personal (53.5133ms)
+Γ£ö BD personal get_business_development_context: revoked durable task prevents native credentials and source reservations (54.5379ms)
+Γ£ö BD personal get_business_development_context: foreign native principal and insufficient current membership refuse before service credentials (97.8747ms)
+Γ£ö BD personal get_business_development_context: native revision drift across the secret await releases no source HTTP and keeps UNKNOWN (79.0628ms)
+Γ£ö BD personal get_business_development_context: task/native revocation after source releases no result or completion (249.499ms)
+Γ£ö BD personal get_business_development_context: uncertain native source response holds UNKNOWN without fallback or a private context request (79.9294ms)
+Γ£ö BD personal get_business_development_recent_changes: absent conversation reader still uses current native identity/membership and settles original bytes (131.6905ms)
+Γ£ö BD personal get_business_development_recent_changes: exact actor private-user scope and combined tenant/private-user scopes remain usable (213.8611ms)
+Γ£ö BD personal get_business_development_recent_changes: a client relationship in native context is not rewritten into a task client grant (123.0475ms)
+Γ£ö BD personal get_business_development_recent_changes: client, mixed, foreign actor and foreign personal resources refuse before any native credential (290.2067ms)
+Γ£ö BD client get_business_development_recent_changes: missing resource reader cannot downgrade a client-bound task to personal (45.2523ms)
+Γ£ö BD personal get_business_development_recent_changes: revoked durable task prevents native credentials and source reservations (42.8868ms)
+Γ£ö BD personal get_business_development_recent_changes: foreign native principal and insufficient current membership refuse before service credentials (103.6705ms)
+Γ£ö BD personal get_business_development_recent_changes: native revision drift across the secret await releases no source HTTP and keeps UNKNOWN (87.8901ms)
+Γ£ö BD personal get_business_development_recent_changes: task/native revocation after source releases no result or completion (241.9034ms)
+Γ£ö BD personal get_business_development_recent_changes: uncertain native source response holds UNKNOWN without fallback or a private context request (78.1657ms)
+Γ£ö BD SDK exposes exactly the two complete operations to personal/client scope and withholds evidence despite forged inventories (6.5295ms)
+Γ£ö BD SDK get_business_development_context: canonical full arguments accept explicit Core selectors and reject model authority/context (10.6942ms)
+Γ£ö BD SDK get_business_development_context: personal fixed native read settles exact MCP bytes without a conversation authority port (376.2688ms)
+Γ£ö BD SDK get_business_development_context: client-bound reads retain the exact Core conversation/client proof (193.654ms)
+Γ£ö BD SDK get_business_development_context: source/install/discovery/family policy gates remain required for personal availability (59.7804ms)
+Γ£ö BD SDK get_business_development_context: current native revocation after source withholds all model bytes and receipts (138.6254ms)
+Γ£û BD SDK get_business_development_context: native inline refusal is one failed attempt with UNKNOWN and no fallback or receipt (150.844ms)
+Γ£ö BD SDK get_business_development_context: an explicit one-call budget settles once then refuses another source dispatch (176.0031ms)
+Γ£ö BD SDK get_business_development_recent_changes: canonical full arguments accept explicit Core selectors and reject model authority/context (4.5337ms)
+Γ£ö BD SDK get_business_development_recent_changes: personal fixed native read settles exact MCP bytes without a conversation authority port (174.7856ms)
+Γ£ö BD SDK get_business_development_recent_changes: client-bound reads retain the exact Core conversation/client proof (210.464ms)
+Γ£ö BD SDK get_business_development_recent_changes: source/install/discovery/family policy gates remain required for personal availability (62.9433ms)
+Γ£ö BD SDK get_business_development_recent_changes: current native revocation after source withholds all model bytes and receipts (141.1486ms)
+Γ£û BD SDK get_business_development_recent_changes: native inline refusal is one failed attempt with UNKNOWN and no fallback or receipt (128.8705ms)
+Γ£ö BD SDK get_business_development_recent_changes: an explicit one-call budget settles once then refuses another source dispatch (167.1188ms)
+Γä╣ tests 35
+Γä╣ suites 0
+Γä╣ pass 33
+Γä╣ fail 2
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 6936.2945
+
+Γ£û failing tests:
+
+test at apps\worker\conversation\reads\test\business-development.test.mjs:90:2
+Γ£û BD SDK get_business_development_context: native inline refusal is one failed attempt with UNKNOWN and no fallback or receipt (150.844ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /ACCESS_DENIED/. Input:
+
+  'INVALID_RESULT: mcp__meri_reads__get_business_development_context returned a result that failed validation and was withheld. No evidence, absence or completeness is established.'
+
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/worker/conversation/reads/test/business-development.test.mjs:94:85)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'INVALID_RESULT: mcp__meri_reads__get_business_development_context returned a result that failed validation and was withheld. No evidence, absence or completeness is established.',
+    expected: /ACCESS_DENIED/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at apps\worker\conversation\reads\test\business-development.test.mjs:90:2
+Γ£û BD SDK get_business_development_recent_changes: native inline refusal is one failed attempt with UNKNOWN and no fallback or receipt (128.8705ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /ACCESS_DENIED/. Input:
+
+  'INVALID_RESULT: mcp__meri_reads__get_business_development_recent_changes returned a result that failed validation and was withheld. No evidence, absence or completeness is established.'
+
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/worker/conversation/reads/test/business-development.test.mjs:94:85)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'INVALID_RESULT: mcp__meri_reads__get_business_development_recent_changes returned a result that failed validation and was withheld. No evidence, absence or completeness is established.',
+    expected: /ACCESS_DENIED/,
+    operator: 'match',
+    diff: 'simple'
+  }

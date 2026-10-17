@@ -26,14 +26,15 @@ export function storedPage(id,input,at){
   note:schema.$defs.BusinessDevelopmentRecentChangesOutput.properties.alerts.properties.note.const}};
 }
 
-export function storedCase(id=ids[0],{request=requests[id]}={}){
+export function storedCase(id=ids[0],{request=requests[id],personal=false}={}){
  if(!ids.includes(id))throw Error('SYNTHETIC_OPERATION_MISMATCH');
  const scene=billTextCase(),operation={id,version:'0.2.0'},contract=resolveOperationContract(operation),normalizationContext={};
- const {authority,state,now,wire}=scene,scope={tenantId:authority.binding.tenantId,kind:'client',resourceId:clientId,policyRevision:authority.policyRevision};
- Object.assign(authority.subject,{kind:'client',entityType:'client',entityIds:[clientId],scopes:[scope]});
+ const {authority,state,now,wire}=scene,scope={tenantId:authority.binding.tenantId,kind:personal?'tenant':'client',resourceId:personal?authority.binding.tenantId:clientId,policyRevision:authority.policyRevision};
+ Object.assign(authority.subject,{kind:personal?'personal':'client',entityType:personal?'user':'client',entityIds:[personal?authority.binding.actorId:clientId],scopes:[scope]});
  authority.claims.scopes=[scope];authority.decision.scopes=[scope];authority.decision.operation=`${id}@0.2.0`;
  authority.sourceIds=[...new Set(contract.descriptor.sourceRequirements.map(source=>source.sourceId))];
  const input=contract.normalizeInput(request,normalizationContext).input,page=storedPage(id,input,now());
+ if(personal&&id===ids[0])page.prospect.linkedClientId=null;
  const {getCredentials,...passive}=scene.transport;
  const transport={...passive,credentialsForCall(selected,originalCall){
   state.credentialOwnerCalls??=[];state.credentialOwnerCalls.push({operation:selected,call:originalCall});
@@ -49,6 +50,6 @@ export function storedCase(id=ids[0],{request=requests[id]}={}){
   if(signal?.aborted)throw Error('CANCELLED');return JSON.stringify({...proof,context:normalizationContext,checkedAtMs:now(),expiresAtMs:Math.min(deadlineMs,authority.deadlineMs)});
  }};
  return {...scene,family:'business-development',operation,contract,arguments:request,normalizationContext,transport,page,call,nativeReadContextPorts,
-  visibleClientIds:[clientId],nativeConversation:captureBusinessDevelopmentResource(operation,request,authority.subject),
+  visibleClientIds:personal?[]:[clientId],...(personal?{}:{nativeConversation:captureBusinessDevelopmentResource(operation,request,authority.subject)}),
   handler:(changes={})=>createBusinessDevelopmentHandlers({...transport,now,...changes},[operation])[0].execute};
 }

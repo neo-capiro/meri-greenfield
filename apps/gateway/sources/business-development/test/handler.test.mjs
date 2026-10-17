@@ -51,9 +51,9 @@ test('hostile resource/subject objects cannot run getters or proxy traps',()=>{
 });
 
 test('only one coherent current client subject and its closed resource scope can reach the credential owner',async()=>{
- for(const change of ['personal','no-client-resource','multiple-clients','alternate-resource','broad-extra-resource','wrong-lineage','nonuuid']){
+ for(const change of ['client-scoped-personal','no-client-resource','multiple-clients','alternate-resource','broad-extra-resource','wrong-lineage','nonuuid']){
   const f=storedCase(),call=structuredClone(f.call()),a=call.authority;
-  if(change==='personal')Object.assign(a.subject,{kind:'personal',entityType:'user',entityIds:[a.binding.actorId]});
+  if(change==='client-scoped-personal')Object.assign(a.subject,{kind:'personal',entityType:'user',entityIds:[a.binding.actorId]});
   if(change==='no-client-resource')for(const scopes of [a.subject.scopes,a.claims.scopes,a.decision.scopes])Object.assign(scopes[0],{kind:'tenant',resourceId:a.binding.tenantId});
   if(change==='multiple-clients')a.subject.entityIds.push(otherClient);
   if(change==='alternate-resource')a.subject.scopes[0].resourceId=otherClient;
