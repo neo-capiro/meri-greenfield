@@ -45,7 +45,7 @@ for(const [family,id,selectors] of [
 ])test(`${id}: unsupported source selectors refuse before native credentials, reservation and HTTP`,async()=>{
  for(const selector of selectors){
   const scene=nativeFamilyCase(family,id);scene.arguments={...selector};
-  const f=await mounted(scene,{missingNameReader:['tracked-bills','public-domain-hearings','research-legal-legislation'].includes(family)});
+  const f=await mounted(scene,{missingNameReader:['tracked-bills','public-domain-hearings','research-legal-legislation','research-legal-news'].includes(family)});
   try{
    await assert.rejects(read(f),{message:'UNAVAILABLE'});
    // The current business-authority fixture rejects a name under an already selected UUID before CONTROL is called.

@@ -39,7 +39,7 @@ export function storedPage(id,input,at){
 }
 export function storedCase(id=ids[0],options={}){
  const scene=billTextCase(),operation={id,version:'0.2.0'},contract=resolveOperationContract(operation),request=options.request??requests[id];
- const normalizationContext=newsSliceContext(operation,request),normalized=contract.normalizeInput(request,normalizationContext),{authority,state,now,wire}=scene;
+ const normalizationContext=options.context??newsSliceContext(operation,request),normalized=contract.normalizeInput(request,normalizationContext),{authority,state,now,wire}=scene;
  const visibleClientIds=normalizationContext.clientResolution?[normalizationContext.clientResolution.clientId]:[];
  if(visibleClientIds.length){const scope={tenantId:authority.binding.tenantId,kind:'client',resourceId:visibleClientIds[0],policyRevision:authority.policyRevision};
   Object.assign(authority.subject,{kind:'client',entityType:'client',entityIds:[visibleClientIds[0]],scopes:[scope]});authority.claims.scopes=[scope];authority.decision.scopes=[scope];}
@@ -49,9 +49,9 @@ export function storedCase(id=ids[0],options={}){
   state.nativeValue=value;state.resultMutator?.(value);state.afterSource?.();return state.responseFactory?state.responseFactory(value):Response.json(value);
  }};
  const nativeReadContextPorts={async readCurrent({request:raw,deadlineMs,signal,...proof}){
-  if(signal?.aborted)throw Error('CANCELLED');return JSON.stringify({...proof,context:newsSliceContext(operation,raw),checkedAtMs:now(),expiresAtMs:Math.min(deadlineMs,authority.deadlineMs)});
+  if(signal?.aborted)throw Error('CANCELLED');return JSON.stringify({...proof,context:newsSliceContext(operation,raw,normalizationContext.clientResolution),checkedAtMs:now(),expiresAtMs:Math.min(deadlineMs,authority.deadlineMs)});
  }};
- const call=(args=request,current=authority,context=newsSliceContext(operation,args))=>{
+ const call=(args=request,current=authority,context=newsSliceContext(operation,args,normalizationContext.clientResolution))=>{
   const selected=contract.normalizeInput(args,context);
   return {request:args,input:selected.input,argumentsSha256:selected.argumentsSha256,normalizationContext:context,authority:current};
  };

@@ -7,14 +7,15 @@ import {createGeneralReadFamilyHandlers} from '../../../../gateway/general-reads
 import {nativeFamilyCase} from '../../../../gateway/general-reads/test/native-family-cases.mjs';
 import {createControlGeneralReadRuntime} from '../../../general-read-runtime.mjs';
 import {createNativeReadCredentialOwner} from '../owner.mjs';
+import {newsSliceContext} from '../../../../gateway/sources/research-legal-news/request-context.mjs';
 import {ownerFixture,uuid} from './fixture.mjs';
 
 const clientId='a1234567-b123-4c12-8d12-e123456789ab',foreign=uuid('e');
-const cases=[['tracked-bills','search_tracked_bills'],['public-domain-hearings','search_committee_hearings'],['research-legal-legislation','search_legislative_research'],['research-legal-legislation','get_legal_reference'],['outreach-query','query_outreach']];
+const cases=[['tracked-bills','search_tracked_bills'],['public-domain-hearings','search_committee_hearings'],['research-legal-legislation','search_legislative_research'],['research-legal-legislation','get_legal_reference'],['research-legal-news','search_legiwatch_news'],['outreach-query','query_outreach']];
 function scene(family,id,reference=' Synthetic named client '){
- const request={...(family==='research-legal-legislation'?nativeFamilyCase(family,id).arguments:{}),clientId:reference};
+ const request={...(family.startsWith('research-legal-')?nativeFamilyCase(family,id).arguments:{}),clientId:reference};
  const resolution={reference:reference.trim().slice(0,80).trim(),clientId};
- return nativeFamilyCase(family,id,{request,...(family==='public-domain-hearings'?{context:{tenantId:uuid('b'),clientResolution:resolution}}:{}),...(family==='research-legal-legislation'?{context:{clientResolution:resolution,citationResolution:null}}:{}),...(family==='outreach-query'?{resolution}:{})});
+ return nativeFamilyCase(family,id,{request,...(family==='public-domain-hearings'?{context:{tenantId:uuid('b'),clientResolution:resolution}}:{}),...(family==='research-legal-legislation'?{context:{clientResolution:resolution,citationResolution:null}}:{}),...(family==='research-legal-news'?{context:newsSliceContext({id,version:'0.2.0'},request,resolution)}:{}),...(family==='outreach-query'?{resolution}:{})});
 }
 async function setup(family,id,{reference,personal=false,configuration}={}){
  const selected=scene(family,id,reference);
@@ -44,6 +45,7 @@ for(const [family,id] of cases){
    if(family==='tracked-bills'){assert.equal(context.clientReference,expected);assert.equal(context.subject.entityIds[0],clientId);}
    else if(family==='public-domain-hearings')assert.deepEqual(context,{tenantId:f.binding.tenantId,clientResolution:{reference:expected.trim(),clientId}});
    else if(family==='research-legal-legislation')assert.deepEqual(context,{clientResolution:{reference:expected.trim(),clientId},citationResolution:null});
+   else if(family==='research-legal-news')assert.deepEqual(context,{clientResolution:{reference:expected.trim(),clientId},effectiveScope:{jurisdiction:'FL',sessionKey:f.request.sessionKey??'',folderId:null,clientId},windowAsOf:null,defaultYear:null,owner:null});
    else assert.deepEqual(context,{clientResolution:{reference:expected.trim(),clientId}});
    const normalized=f.contract.normalizeInput(f.request,context),call={request:f.request,input:normalized.input,argumentsSha256:normalized.argumentsSha256,normalizationContext:context,authority:f.authority,signal:f.scope.signal};
    const out=JSON.parse(await f.handlers.get(`${id}@0.2.0`).execute(call));

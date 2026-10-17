@@ -27,8 +27,12 @@ test('delta news UUID clipping matches the Core bridge without clipping or rewri
 test('delta news names, folders, clocks and monitor branches remain unavailable before credential factories',async()=>{
  const f=storedCase(),{getCredentials,...transport}=f.transport;let factories=0;
  const [handler]=createResearchLegalNewsHandlers({...transport,now:f.now,credentialsForCall:()=>{factories++;return getCredentials;}},[f.operation]);
- for(const request of [{...f.arguments,clientId:'Client name'},{...f.arguments,clientId:'malformed-uuid'},
-  {...f.arguments,clientId,folderId:'private-folder'},{...f.arguments,clientId,folderId:' '},
+ // Names reach native check-ref only through the credential owner; without its resolution they never normalize.
+ for(const request of [{...f.arguments,clientId:'Client name'},{...f.arguments,clientId:'malformed-uuid'}]){
+  assert.throws(()=>assertNewsSliceRequest(f.operation,request),{message:'UNAVAILABLE'});
+  await assert.rejects(handler.execute({...f.call(),request}),{message:'INVALID_ARGUMENTS'});
+ }
+ for(const request of [{...f.arguments,folderId:'private-folder'},{...f.arguments,clientId:null,folderId:'private-folder'},
   {clientId},{view:'news',clientId},{view:'monitors',clientId},{view:'personnel',clientId},{view:'personnel',clientId,year:null}]){
   assert.throws(()=>assertNewsSliceRequest(f.operation,request),{message:'UNAVAILABLE'});
   await assert.rejects(handler.execute({...f.call(),request}),{message:'UNAVAILABLE'});

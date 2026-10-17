@@ -23,14 +23,26 @@ for(const request of selections){
   assert.equal(out.result.authority,authorityNote);assert.equal(Object.hasOwn(out.result,'absenceEvidence'),false);
   for(const value of Object.values(f.contract.normalizeInput(request,f.normalizationContext).metadata))assert.equal(value,false);
  });
- test(`${request.view}/${request.kind}: selected names and folders are withheld before any native credential or HTTP`,async()=>{
+ test(`${request.view}/${request.kind}: names need a trusted resolution and a folder alone is withheld before any native credential or HTTP`,async()=>{
   const f=storedCase(id,{request});
-  for(const extra of [{clientId:'Client name'},{clientId:' Client name '},
-   {folderId:'private-folder'},{folderId:' '}]){
+  for(const extra of [{clientId:'Client name'},{clientId:' Client name '}]){
+   const raw={...request,...extra};assert.throws(()=>assertUnscopedNewsRequest(f.operation,raw),{message:'UNAVAILABLE'});
+   await assert.rejects(f.handler()({...f.call(),request:raw}),{message:'INVALID_ARGUMENTS'});
+  }
+  // A folder without an explicit client takes the folder's unobserved private client natively.
+  for(const extra of [{folderId:'private-folder'},{folderId:' '}]){
    const raw={...request,...extra};assert.throws(()=>assertUnscopedNewsRequest(f.operation,raw),{message:'UNAVAILABLE'});
    await assert.rejects(f.handler()({...f.call(),request:raw}),{message:'UNAVAILABLE'});
   }
   assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
+ });
+ test(`${request.view}/${request.kind}: a folder with an explicit current client keeps the request-determined effective scope`,async()=>{
+  const client='a1234567-b123-4c12-8d12-e123456789ab';
+  for(const folderId of ['private-folder',' ']){
+   const raw={...request,clientId:client,folderId},f=storedCase(id,{request:raw}),out=JSON.parse(await f.handler()(f.call()));
+   assert.deepEqual(f.wire[0].body,raw);assert.deepEqual(f.normalizationContext.effectiveScope,{jurisdiction:'FL',sessionKey:raw.sessionKey??'',folderId,clientId:client});
+   assert.deepEqual(out.result,JSON.parse(JSON.stringify(f.page)));
+  }
  });
 }
 
@@ -60,8 +72,10 @@ test('malformed exact source and explicit-year selectors fail canonical admissio
 test('unsupported branch and selected scope preflight precede per-call credential factory',async()=>{
  const f=storedCase(),{getCredentials,...configuration}=f.transport;let factories=0;
  const [handler]=createResearchLegalNewsHandlers({...configuration,now:f.now,credentialsForCall:()=>{factories++;return getCredentials;}},[f.operation]);
- for(const request of [{view:'news'},{view:'monitors'},{view:'personnel'}, {...f.arguments,clientId:'Client'}])
+ for(const request of [{view:'news'},{view:'monitors'},{view:'personnel'},{...f.arguments,folderId:'private-folder'}])
   await assert.rejects(handler.execute({...f.call(),request}),{message:'UNAVAILABLE'});
+ // An unresolved name cannot normalize without the owner's native resolution.
+ await assert.rejects(handler.execute({...f.call(),request:{...f.arguments,clientId:'Client'}}),{message:'INVALID_ARGUMENTS'});
  assert.equal(factories,0);assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
  await handler.execute(f.call());assert.equal(factories,1);assert.equal(f.wire.length,1);
 });
