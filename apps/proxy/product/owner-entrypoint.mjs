@@ -9,6 +9,7 @@ import {isAbsolute} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
+import {PRODUCT_MAX_INPUT_TOKENS,PRODUCT_MAX_OUTPUT_TOKENS} from '../../gateway/model-proxy/product-envelope.mjs';
 import {readSecret,validateConfiguration} from '../../runtime/config.mjs';
 import {createInitialRunBindingJournal} from '../../control/conversations/initial-run-binding-journal.mjs';
 import {createProductProxyPersistedFacts} from './product-owner-facts.mjs';
@@ -52,7 +53,7 @@ export function validateProductOwnerConfiguration(raw){
      price.modelId!=='anthropic.claude-sonnet-4-6'||price.profileId!=='us.anthropic.claude-sonnet-4-6'||!digest(price.revision)||
      !integer(price.validUntilMs,Number.MAX_SAFE_INTEGER)||
      ![price.actualInputMicroUSDPerK,price.reserveInputMicroUSDPerK,price.outputMicroUSDPerK].every(n=>integer(n,1_000_000_000))||
-     price.actualInputMicroUSDPerK>price.reserveInputMicroUSDPerK||!integer(price.maxInputTokens,8192)||!integer(price.maxOutputTokens,256))fail();
+     price.actualInputMicroUSDPerK>price.reserveInputMicroUSDPerK||!integer(price.maxInputTokens,PRODUCT_MAX_INPUT_TOKENS)||!integer(price.maxOutputTokens,PRODUCT_MAX_OUTPUT_TOKENS))fail();
   return data({...c,serviceTasks:s,enabled:c.enabled??false});
  }catch{fail();}
 }

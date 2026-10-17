@@ -3,6 +3,8 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 import re
 
+from ..runtime.bedrock_body import ENVELOPE_MAX_INPUT_TOKENS, ENVELOPE_MAX_OUTPUT_TOKENS
+
 CAP_MICRO_USD = 10_000_000
 PRICING_REVISION = "b21cfc4941e346275d9503700a094dc892f838172c41bc2e14c8284d91b1677a"
 INPUT_RATE = 3300
@@ -34,8 +36,8 @@ def tokens(value, maximum):
 
 
 def liability(input_tokens, output_tokens, *, reserve=False):
-    tokens(input_tokens, 8192 if reserve else 2**31-1)
-    tokens(output_tokens, 256 if reserve else 2**31-1)
+    tokens(input_tokens, ENVELOPE_MAX_INPUT_TOKENS if reserve else 2**31-1)
+    tokens(output_tokens, ENVELOPE_MAX_OUTPUT_TOKENS if reserve else 2**31-1)
     if reserve and (input_tokens == 0 or output_tokens == 0):
         raise StateDenied("EMPTY_TOKEN_BOUND")
     rate = RESERVE_INPUT_RATE if reserve else INPUT_RATE

@@ -10,6 +10,7 @@ import hashlib
 import json
 import re
 
+from ..qualification.runtime.bedrock_body import ENVELOPE_MAX_INPUT_TOKENS, ENVELOPE_MAX_OUTPUT_TOKENS
 from ..qualification.runtime.native_usage import UsageBinding, UsageResult
 
 
@@ -139,7 +140,7 @@ def encode_reservation(value, observation):
                _printable(native["url"], 1024), _printable(native["host"], 256),
                _printable(native["contentType"], 256), _body(native["body"]),
                checked_headers],
-              [_integer(count["inputTokens"], 1, 8192),
+              [_integer(count["inputTokens"], 1, ENVELOPE_MAX_INPUT_TOKENS),
                _text(count["nativeBodySha256"], 64, pattern=_HASH),
                _printable(count["modelId"], 128),
                _text(count["origin"], 64, pattern=_SLOT)]]]
@@ -160,9 +161,9 @@ def encode_settlement(request_id, result):
         _deny()
     names = sorted(_text(name, 128, pattern=_SLOT)
                    for name in binding.allowed_tool_names)
-    counted = _integer(binding.counted_input_tokens, 1, 8192)
-    maximum = _integer(binding.max_output_tokens, 1, 256)
-    if _integer(result.input_tokens, 1, 8192) != counted:
+    counted = _integer(binding.counted_input_tokens, 1, ENVELOPE_MAX_INPUT_TOKENS)
+    maximum = _integer(binding.max_output_tokens, 1, ENVELOPE_MAX_OUTPUT_TOKENS)
+    if _integer(result.input_tokens, 1, ENVELOPE_MAX_INPUT_TOKENS) != counted:
         _deny()
     output = _integer(result.output_tokens, 0, maximum)
     frame = ["meri.proxy.settlement/1", request_id,
@@ -254,7 +255,7 @@ def encode_complete_capture(request_id, captured):
               _text(complete["pricingRevision"], 64, pattern=_HASH),
               _text(complete["evidenceSha256"], 64, pattern=_HASH),
               200, True, True,
-              [_integer(tokens["inputTokens"], 1, 8192),
-               _integer(tokens["outputTokens"], 0, 256)]],
+              [_integer(tokens["inputTokens"], 1, ENVELOPE_MAX_INPUT_TOKENS),
+               _integer(tokens["outputTokens"], 0, ENVELOPE_MAX_OUTPUT_TOKENS)]],
              usage]
     return _wire(frame)

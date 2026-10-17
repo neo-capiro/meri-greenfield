@@ -8,7 +8,7 @@ import asyncio
 import json
 
 from .cli_count_tokens import _BETAS, _content, _tools, _tree
-from ..qualification.runtime.bedrock_body import COUNT_MODEL_ID
+from ..qualification.runtime.bedrock_body import COUNT_MODEL_ID, ENVELOPE_MAX_INPUT_TOKENS
 from ..qualification.runtime.lifetime import _request_lifetime
 from ..qualification.state.pricing import StateDenied
 
@@ -99,7 +99,7 @@ def create_fixed_cli_count_callback(client, *, allowed_tool_names=()):
         if type(response) is not dict or set(response) != {"inputTokens", "ResponseMetadata"}:
             _deny("CLI_COUNT_RESPONSE_REFUSED")
         tokens, metadata = response["inputTokens"], response["ResponseMetadata"]
-        if (type(tokens) is not int or not 1 <= tokens <= 8192
+        if (type(tokens) is not int or not 1 <= tokens <= ENVELOPE_MAX_INPUT_TOKENS
                 or type(metadata) is not dict
                 or not {"RequestId", "HTTPStatusCode", "HTTPHeaders", "RetryAttempts"} <= set(metadata)
                 or set(metadata) - {"RequestId", "HTTPStatusCode", "HTTPHeaders",
