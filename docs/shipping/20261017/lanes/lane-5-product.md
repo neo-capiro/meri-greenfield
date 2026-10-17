@@ -4,7 +4,7 @@
 |---|---|
 | Owner | lane-5 session (Fable), reporting to the integration owner (lane 1) |
 | Branch | `fable/meri-lane5-product-20261017` |
-| Base | integration `0e38ef49` on root `59856683` (seal `c7af4ed6` is a docs-only sibling, not an ancestor) |
+| Base | started on integration `0e38ef49` (root `59856683`); integration tips `3fa0325a` and `c11323a4` merged in (`af6bd393`, `fbcdedb9`) |
 | Target | draft PR into `fable/meri-first-chat-receiving-20261017` (PR #133) |
 | Coordination | meri-greenfield PR #121, comments headed "**Fable lane 5 →**" |
 | Status vocabulary | as in [BACKLOG.md](../BACKLOG.md): `source` · `integrated` · `qualified` · `deployed` · `live-verified` |
@@ -19,6 +19,8 @@ Nothing in this lane is qualified, deployed or live. "integrated (lane)" means r
 | `af8bfb0d` | Merge of PR131 `2a247510` unchanged (SOURCE HOLD snapshot: late task factory, readiness state, fixture extraction, failing flow scaffold, seal and evidence). |
 | `0503e8f2` | Routine 0/2 fixed at its cause (below), plus a construction-time hardening with a test that fails on the previous source. |
 | `83c8f2c9` | Cherry-pick `-x` of dot's `83f1c6be`: allocated `apps/control/schedules/migrations/0002_occurrences.sql` (owner C, P-R4-1) and its static witness. PR128's schedule owner and service already used `meri_schedules.occurrences`, but no tree on this path had its DDL. |
+| `af6bd393` | Merge of integration `3fa0325a` (D1 envelope and $2/run, material roles, CA trust, D2 migrations, renderers). Conflicts were adjacent additions only: budget reservation/settlement keep both the D1 envelope import and the occurrence cost scope; the CLI keeps the pinned server-CA worker gate and adds the schedule-worker refusal. No lane-1-owned file edited. |
+| `fbcdedb9` | Merge of integration `c11323a4`, no conflicts. |
 | `b99f22ec` | Explicit primary receiving for routines: `schedule-worker` config/CLI role (port of dot's `772cefd2`, closed by default) and control's Temporal `client` in the trusted `productPortsFactory` context. |
 
 Root's first-chat facts are unchanged: no first-chat file was replaced wholesale, and the only first-chat-owned edits are the additive `control.mjs` merge resolution, the `client` field in the factory context, and the new `schedule-worker` role in `config.mjs`/`cli.mjs`. Every other role's validation and the preview gates for the existing roles are unchanged.
@@ -42,7 +44,7 @@ What this proves: the receiving composition (actual foreground factory, public r
 | **Preferences / settings** | settings domain present (4 files), not mounted | PR111 via PR128: canonical POST `/api/settings/user/{read,save}`, `apps/runtime/user-preferences.mjs`, control-only `userPreferences` config, readiness before listeners, close hooks; migration `apps/control/settings/migrations/0001_settings.sql` adopted unchanged (allocated to B, blob `048a834c`) | integrated (lane), default off | PG qualification at `127.0.0.1:55436` **denied, not retried**. Needs Neo's approval of an exact isolated-PG command (none requested by this lane; local PG not needed for focused tests). Frontend PR62 composition is dot's. |
 | **Memory** | governed producer present: `apps/control/memory/*` (candidate, producer, Core review client, journal, routes); not mounted | nothing new (PR128/PR131 carry no memory source) | source, unmounted | (1) `meri_memory.candidates` has **no migration ID** (M1 request, 16 Oct; asked again on PR #121). (2) Core M2 submit/status/read-target routes are unpublished (dot/Core); Core PR40's review APIs are consumer APIs, not the writer contract. (3) The review consumer waits on the Core parser `87e140a0`, whose publication was **denied and is not retried**. Mounting before (1)–(2) would only produce 503s, so it was deliberately not done. |
 | **Routines / schedules** | lifecycle, owner, dispatch, occurrence barrier source; no foreground API, no worker, no occurrence DDL | PR120/124/128: foreground `createRuntimeRoutinesFeature` (POST `/api/routines/{prepare,approve,list,reconcile}`), `schedule-service.mjs` (4 owners, 3 activities, 13 relations), `schedule-worker.mjs` (= dot's `5aa13719` worker extended, not a second subsystem), job lifecycle/lineage/cancellation, inbox custody; occurrence migration `0002`; `schedule-worker` role | integrated (lane); flow 2/2 synthetic | The four trusted owners (`authority.authorize`, `runAdmission.admit`, `runControl.cancel`, `retirement.retire`) have no production composer. `createScheduledNativeAdmission` and `createScheduledRunProfile` have no production caller. Unattended firing needs the fixed-expiry routine grant: Core canonical grant/proof/revocation custody (dot/Core) plus whole-grant accounting by the budget owner ([proposal](../../../coordination/contracts/CODEX-ROUTINE-GRANT-PROPOSAL-20261017.md)). No routine create/manage UI and no public browser routine contract exist. The private `scheduled-conversation-receipt.mjs` has fixture consumers only and is left in place. Existing-data cleanup for old DISPATCHED-at-start rows is separate. |
-| **Budget store** | `meri_product_budget` 0001 (per-run allocation, `budget id=1`) and 0002 (tenant monthly/concurrency) | PR128 `occurrence-cost-scope.mjs`, read inside the existing global budget lock by model reservation, model settlement, tool budget and native allocation admission; product namespace only | integrated (lane) | Single owner confirmed: no second ledger. Lane 1's D1 proposes **$2/run** and **$25/day preview-wide**. Per-run maps to the existing allocation cap; a daily cap has no column in 0001/0002, so it needs a schema change and an allocated ID (lane 1, pending Neo). Not implemented here, to avoid two owners of D1. |
+| **Budget store** | `meri_product_budget` 0001 (per-run allocation, `budget id=1`) and 0002 (tenant monthly/concurrency) | PR128 `occurrence-cost-scope.mjs`, read inside the existing global budget lock by model reservation, model settlement, tool budget and native allocation admission; product namespace only | integrated (lane) | Single owner confirmed: no second ledger. **D1 approved by Neo and implemented by lane 1** (`d375d43d`, merged here): 64k/8k envelope; $2/run is the run allocation's `maxCostMicroUSD` 2,000,000; $25 is the `budget id=1` seed `cap_micro_usd` 25,000,000, which is non-resetting, so at most $25 per day. Routine occurrences draw on the same ledger and per-run cap, because `readOccurrenceCost` runs inside the existing global budget lock and callers still enforce the global/per-run caps. A true resetting daily cap would need a schema change and an allocated ID (not requested). |
 | **Per-run model grants** | `model-grant-issuer.mjs`, `meri_conversations.model_run_issuances` (0015), budget grants in `meri_product_budget.grants` via product owner facts | unchanged | source (lane 1 qualifies) | Scheduled runs: the sealed occurrence allocation and fixed expiry must flow through prepared-run issuance, raw/whole facts, admission, replay and continuation. This is the prepared-run compiler/whole-facts path, owned by lane 1. Readiness truthfully reports `proxy.modelGrants: unavailable` and `schedules.dispatchWorker: separate-service-required`. |
 
 ### Primary config / CLI / control / compiler / whole-facts receiving
@@ -62,6 +64,8 @@ What this proves: the receiving composition (actual foreground factory, public r
 - No lockfile changes. No new migration ID was allocated by this lane. `schedules/0002` was already centrally allocated to C; it was received, not allocated.
 
 ## Tests (this host: Windows, Node 24.19; see host notes in the lane brief)
+
+The results below were measured on the lane tree **before** the `3fa0325a`/`c11323a4` merges. After the merges the host's commit memory dropped to about 0.2 GB and `node` could not start (exit 127), so post-merge focused reruns are listed separately in "Post-merge focused results" as they complete. Until a row appears there, treat the merged tree as unverified.
 
 | Set | Result |
 |---|---|
@@ -98,7 +102,7 @@ The host's commit memory was exhausted for much of the session (commit headroom 
 - Tasks, preferences: source-complete in Meri with passing focused tests; activation gated on `sourceEnabled` and a trusted composer. **Met at source level.**
 - Memory: Meri producer source with passing tests; completion is blocked on (1)–(3) above. **Exact blockers recorded.**
 - Routines: synthetic flow passes 2/2 at its real cause; live firing blocked on the unattended grant producer. **Met / exact blocker.**
-- Budget and model grants: one canonical `meri_product_budget` owner, occurrence scope joined; D1 caps and scheduled prepared-run receipt belong to lane 1. **Joined at source; D1 pending Neo.**
+- Budget and model grants: one canonical `meri_product_budget` owner, occurrence scope joined; D1 is approved and implemented by lane 1; the scheduled prepared-run receipt belongs to lane 1. **Joined at source.**
 
 ## Denied actions (unchanged, not retried)
 
@@ -106,3 +110,9 @@ The host's commit memory was exhausted for much of the session (commit headroom 
 - Core memory parser `87e140a0` publication: not attempted, not vendored.
 - Scope-ledger blob `28865e43…`: not touched.
 - No AWS writes, builds, SQL, credentials, listeners or DNS changes.
+
+## Post-merge focused results (tree `fbcdedb9` or later, one file at a time)
+
+| File | Result |
+|---|---|
+| (pending host memory) | |
