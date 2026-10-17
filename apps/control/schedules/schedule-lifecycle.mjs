@@ -21,6 +21,9 @@ export function createScheduleLifecycle(options) {
   const owner=Object.fromEntries(['claim','markDispatching','commitKnown','markUnknown','list'].map(k=>[k,sdkMethod(scheduleOwner,k)]));
   // Connections are explicitly trusted borrowed SDK objects; no client is created/closed.
   const scheduleConnection=scheduleClient.connection,workflowConnection=workflowClient.connection;
+  // Both bound every effect RPC (workflow run cancellation included); refuse a missing port before any claim or SDK effect
+  // rather than after a schedule mutation, where the refusal could only leave the intent UNKNOWN.
+  for(const connection of [scheduleConnection,workflowConnection])for(const name of ['withDeadline','withAbortSignal'])sdkMethod(connection,name);
   function callLifetime(kind,request) {
     const raw=optionsData(request,kind==='Execute'?['intent','approval','callerIdentity','deadlineMs','signal']:['selection','callerIdentity','deadlineMs','signal']);
     const {signal,...data}=raw;
