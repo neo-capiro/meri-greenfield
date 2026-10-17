@@ -53,6 +53,6 @@ export const delivery=n=>'sdk:'+String(n).padStart(64,'0');
 /** @param {{binding:object,preparers:object[],store?:object,now?:()=>number,enabled?:boolean,scopes?:any[],resultRelease?:object}} c */
 export function mount({binding,preparers,store=createMemoryJournalStore(),now=()=>NOW,enabled=true,scopes=commandFixture('task.create').scopes.map(s=>({...s,tenantId:binding.tenantId})),resultRelease}){
  // Synthetic current-authority boundary only; production must supply its canonical owner, never this fixture.
- const authority=resultRelease??{async check({selection,selectionSha256}){return {authorized:true,selectionSha256,binding:selection.binding,scopes,checkedAtMs:now(),expiresAtMs:NOW+60000};}};
+ const authority=resultRelease??{async check({selection,selectionSha256}){return {authorized:true,selectionSha256,binding:selection.binding,scopes,checkedAtMs:now(),expiresAtMs:now()+60000};}};
  return {store,mount:createIntentMount({binding,preparers,journalStore:store.port,now,limits:{maxRequestMs:5000},enabled,resultRelease:authority})};
 }
