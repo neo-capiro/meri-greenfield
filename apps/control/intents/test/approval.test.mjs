@@ -7,6 +7,7 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {createIntentApprovalOwner} from '../approval.mjs';
 import {createIntentApplication,INTENT_PATHS} from '../http.mjs';
 import {createNativeIntentApprovals,createCommandJournalOutcomes} from '../native-approvals.mjs';
+import {composeIntentApprovals} from '../compose.mjs';
 import {ProductError,productFailure} from '../../product-access/errors.mjs';
 import {CommandError} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {commandComposition,mount,delivery,NOW} from './fixture.mjs';
@@ -142,4 +143,22 @@ test('an indeterminate executor outcome is UNKNOWN, never success or refusal; th
  await assert.rejects(s.decide(s.request(proposal)),code('COMMAND_OUTCOME_UNKNOWN','UNKNOWN'));assert.deepEqual(effects(s),{fetches:1,journal:1});
  assert.equal((await s.list()).intents[0].phase,'completed','history shows the durable result although the reply was lost');
  const again=await s.decide(s.request(proposal));assert.equal(again.status,'executed');assert.deepEqual(effects(s),{fetches:1,journal:1});
+});
+
+test('composition is inert and disabled by default; the native adapter refuses foreign or absent decisions',async()=>{
+ const calls={connect:0,native:0};const pool={connect:async()=>{calls.connect++;throw Error('no');},query:async()=>{throw Error('no');}};
+ const gate={async admit(){return {principal:{tenantId:'tenant',actorId:'actor',role:'member',permissions:[],clientIds:[],membershipRevision:'m1'},expiresAtMs:NOW+60000};},async recheck({principal}){return principal;}};
+ const c=commandComposition();
+ const composed=composeIntentApprovals({pool,native:{call:async()=>{calls.native++;throw Error('no');}},commandJournal:c.f.journal,contextFor:()=>c.f.context,commandOptionsFor:async()=>c.commandOptions,
+  issueExecution:async()=>{throw Error('no');},gate,now:()=>NOW,limits:{maxRequestMs:1000,maxRequestBytes:4096,maxResponseBytes:65536,maxFactBytes:65536}});
+ assert.deepEqual(calls,{connect:0,native:0});
+ const r=await composed.app.handle(new Request('http://127.0.0.1/api/conversations/intents/list',{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer t'},body:JSON.stringify({conversationId:c.binding.conversationId})}));
+ assert.equal(r.status,503);assert.deepEqual(await r.json(),{error:{code:'INTENT_APPROVALS_DISABLED',outcome:'NOT_DISPATCHED'}});assert.deepEqual(calls,{connect:0,native:0});
+ const core=syntheticCore(()=>NOW),native=createNativeIntentApprovals({call:core.call,now:()=>NOW,maxFactBytes:65536});
+ const q={proposalId:'00000000-0000-4000-8000-000000000123',commandSha256:'a'.repeat(64),binding:c.binding};
+ assert.equal(await native.readDecision(q),null);await assert.rejects(native.getCurrent(q),e=>e.message==='COMMAND_APPROVAL_REFUSED','no decision is never a current approval');
+ core.decisions.set(q.proposalId,{proposalId:q.proposalId,commandSha256:'b'.repeat(64),decision:'approved',decidedAt:new Date(NOW).toISOString(),expiresAt:new Date(NOW+1000).toISOString(),approver:{tenantId:'tenant',actorId:'actor'},policyRevision:'p1'});
+ await assert.rejects(native.readDecision(q),e=>e.message==='APPROVAL_RECEIPT_REFUSED','a decision for other content is refused');
+ const bad=createNativeIntentApprovals({call:async()=>({decision:{decision:'approved'},checkedAtMs:NOW,revoked:false}),now:()=>NOW,maxFactBytes:65536});
+ await assert.rejects(bad.record({proposal:{},decision:'approved',approver:{},binding:c.binding}),'a malformed decision receipt is refused');
 });
