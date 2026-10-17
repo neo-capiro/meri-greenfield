@@ -1,0 +1,47 @@
+{
+  "status": "ACCEPT_DIAGNOSTIC_SOURCE",
+  "sourceCommit": "38f52df94b1738649776792b2a28aac743801c19",
+  "baseCommit": "73d350476825ad46cf946e18ef0ec728c885c56d",
+  "treeSha": "7980fe7530d6623a2de9a788e150a377aca8201b",
+  "changedFiles": [
+    "apps/runtime/temporal-product-token-writer.test.mjs",
+    "infra/product-preview/image-build-producer.py",
+    "infra/product-preview/image-build-recipe.mjs",
+    "infra/product-preview/image-build-test-reporter.mjs",
+    "infra/product-preview/image-build.test.mjs",
+    "infra/product-preview/test_image_build_diagnostics.py"
+  ],
+  "contentSha256": {
+    "apps/runtime/temporal-product-token-writer.test.mjs": "68f2ad24767ec534ae5ffb020625221817743bce25710675b5db16d8f7ad1991",
+    "infra/product-preview/image-build-producer.py": "2e690246b895834271f8c3e4725345f7b7cd5e9c4bafddce084572494334ae80",
+    "infra/product-preview/image-build-recipe.mjs": "34f8551c6552c356752ba1c027c2da0be12b2ebeec0ace96821da0eaedc16fdb",
+    "infra/product-preview/image-build-test-reporter.mjs": "7bc9543d22d849b8ac16db97f96475b1e2ddaddd0d755834550d4815cc2cc51b",
+    "infra/product-preview/image-build.test.mjs": "e9cedd34dc16c8d9649e3387c15fb2254a5450b2e24d584ae0757640d77b44d2",
+    "infra/product-preview/test_image_build_diagnostics.py": "4094be8ac208429cdf45021e6610e5fe8a0d3b60405eda2f0ccb142c7fa6ed84"
+  },
+  "independentSourceReview": "ACCEPT",
+  "rootNodeTests": {
+    "passed": 33,
+    "failed": 0,
+    "evidence": "node-source-checks-final.txt"
+  },
+  "rootPythonTests": {
+    "passed": 14,
+    "failed": 0,
+    "evidence": "python-source-checks-final.txt"
+  },
+  "productionTlsGuardUnchanged": true,
+  "productionTokenWriterUnchanged": true,
+  "dockerignoreUnchanged": true,
+  "workingBytesEqualGitBlobs": true,
+  "repositoryClean": true,
+  "diffCheck": "PASS",
+  "fixtureClosure": "Ten exact verified read-only test files plus in-sandbox presence/hash preflight",
+  "linuxRuntimeSuiteQualifiedLocally": false,
+  "w08AssertionCause": "Prior remote assertion unobserved; source-proven token fixture mismatch corrected and exact check/class retained",
+  "sourcePublication": "Existing authorization, same PR101 branch, non-force fast-forward only",
+  "newImageBuildAllocated": false,
+  "singleAllocatedRunPendingSourcePinReconciliation": true,
+  "newImageBuildStarted": false,
+  "serviceActivationAuthorized": false
+}

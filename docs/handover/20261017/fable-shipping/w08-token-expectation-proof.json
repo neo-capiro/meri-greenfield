@@ -1,0 +1,12 @@
+{
+  "status": "PASS_SOURCE_CONTRACT_ONLY",
+  "productionSourceSha256": "39896c6c04459dc705e9bbcf93d7344e847cb29bd84c3446d272e7c383ba6cc0",
+  "realAcceptedDeliveryInvocations": 2,
+  "firstAndRenewedTokenExpectations": "Original string-to-envelope assertions refuse; expected nested token strings match",
+  "currentnessExpiryCap": "PRESERVED",
+  "productionSourceChanged": false,
+  "credentialFileReadOrWritten": false,
+  "networkCalls": 0,
+  "nativeLinuxPass": false,
+  "priorRemoteW08Assertion": "UNOBSERVED; this proves the visible source mismatch only"
+}

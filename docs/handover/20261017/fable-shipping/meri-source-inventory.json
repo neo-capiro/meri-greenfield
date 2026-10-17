@@ -1,0 +1,283 @@
+{
+  "sourceCommit": "38f52df94b1738649776792b2a28aac743801c19",
+  "tree": "7980fe7530d6623a2de9a788e150a377aca8201b",
+  "selectedBranch": "refs/heads/codex/meri-image-diagnostics-20261016",
+  "metadataSha256": "66f7117e761fc3d5f296e24eab2065bbc44e56b6cd2164ee2670a8621ff9e5aa",
+  "metadataRows": 103,
+  "localRepositoryShallow": true,
+  "requiredStack": [
+    {
+      "baseRefName": "dot/meri-reviewed-integration-20261016",
+      "headRefName": "codex/meri-recovered-source-20261016",
+      "headRefOid": "525aa22fb9cf207228f8d0a62d59f0cc9ba73820",
+      "isDraft": true,
+      "number": 89,
+      "title": "Recover exact local Meri continuation source",
+      "updatedAt": "2026-10-16T18:04:01Z",
+      "url": "https://github.com/neo-capiro/meri-greenfield/pull/89",
+      "selectedAncestor": true
+    },
+    {
+      "baseRefName": "codex/meri-recovered-source-20261016",
+      "headRefName": "codex/meri-objective-local-source-20261016",
+      "headRefOid": "5b166bf49bf4871138e3c02eebf04a8d6f04a5e2",
+      "isDraft": true,
+      "number": 90,
+      "title": "Add unmounted Objective workload source contracts",
+      "updatedAt": "2026-10-16T18:04:11Z",
+      "url": "https://github.com/neo-capiro/meri-greenfield/pull/90",
+      "selectedAncestor": true
+    },
+    {
+      "baseRefName": "codex/meri-objective-local-source-20261016",
+      "headRefName": "codex/meri-ordinary-first-chat-20261016",
+      "headRefOid": "268dfe4447a8e7ae8ece8f74a9b5b5479eb50f08",
+      "isDraft": true,
+      "number": 91,
+      "title": "Gate ordinary Meri chat on current membership",
+      "updatedAt": "2026-10-16T18:04:24Z",
+      "url": "https://github.com/neo-capiro/meri-greenfield/pull/91",
+      "selectedAncestor": true
+    },
+    {
+      "baseRefName": "codex/meri-ordinary-first-chat-20261016",
+      "headRefName": "codex/meri-initial-run-admission-20261016",
+      "headRefOid": "5850e858f9776ec5faa2902a90a1e90ea3903346",
+      "isDraft": true,
+      "number": 92,
+      "title": "Admit verified Core conversations into Meri initial runs",
+      "updatedAt": "2026-10-16T18:30:39Z",
+      "url": "https://github.com/neo-capiro/meri-greenfield/pull/92",
+      "selectedAncestor": true
+    },
+    {
+      "baseRefName": "codex/meri-initial-run-admission-20261016",
+      "headRefName": "codex/meri-initial-run-binding-migration-20261016",
+      "headRefOid": "d27c807bb5694cf84c73db5d647e2e8d13ba39f1",
+      "isDraft": true,
+      "number": 93,
+      "title": "Add reserved initial-run binding migration source",
+      "updatedAt": "2026-10-16T19:03:11Z",
+      "url": "https://github.com/neo-capiro/meri-greenfield/pull/93",
+      "selectedAncestor": true
+    },
+    {
+      "baseRefName": "codex/meri-initial-run-binding-migration-20261016",
+      "headRefName": "codex/meri-ordinary-currentness-20261016",
+      "headRefOid": "0f82c8817e0155fd3bd1a95b7166ba2499451784",
+      "isDraft": true,
+      "number": 94,
+      "title": "Guard saved Meri history and model sends with current Core context",
+      "updatedAt": "2026-10-16T19:16:29Z",
+      "url": "https://github.com/neo-capiro/meri-greenfield/pull/94",
+      "selectedAncestor": true
+    },
+    {
+      "baseRefName": "codex/meri-ordinary-currentness-20261016",
+      "headRefName": "codex/meri-initial-run-startup-mount-20261016",
+      "headRefOid": "8652488f087a1efa4d49d2df19a553b7cd7b3b65",
+      "isDraft": true,
+      "number": 97,
+      "title": "Mount journal-backed initial runs in Meri control",
+      "updatedAt": "2026-10-16T19:46:11Z",
+      "url": "https://github.com/neo-capiro/meri-greenfield/pull/97",
+      "selectedAncestor": true
+    },
+    {
+      "baseRefName": "codex/meri-initial-run-startup-mount-20261016",
+      "headRefName": "codex/meri-product-preview-manifests-20261016",
+      "headRefOid": "caa7810ff19c09c8f7ea1c2524c025f36f99ccd6",
+      "isDraft": true,
+      "number": 98,
+      "title": "Compose disabled Meri proxy startup and Temporal preview bindings",
+      "updatedAt": "2026-10-16T22:52:10Z",
+      "url": "https://github.com/neo-capiro/meri-greenfield/pull/98",
+      "selectedAncestor": true
+    },
+    {
+      "baseRefName": "codex/meri-product-preview-manifests-20261016",
+      "headRefName": "codex/meri-image-diagnostics-20261016",
+      "headRefOid": "38f52df94b1738649776792b2a28aac743801c19",
+      "isDraft": true,
+      "number": 101,
+      "title": "Retain exact W08 diagnostics and correct Linux qualification fixtures",
+      "updatedAt": "2026-10-17T01:15:02Z",
+      "url": "https://github.com/neo-capiro/meri-greenfield/pull/101",
+      "selectedAncestor": true
+    }
+  ],
+  "excludedLanes": [
+    {
+      "baseRefName": "codex/meri-initial-run-binding-migration-20261016",
+      "headRefName": "codex/meri-objective-reader-rs256-20261016",
+      "headRefOid": "5781c1150fbb3954c25ba245b26d325e06b4d82d",
+      "isDraft": true,
+      "number": 95,
+      "title": "Align unmounted Objective retained reader with proposed RS256 contract",
+      "updatedAt": "2026-10-16T19:20:58Z",
+      "url": "https://github.com/neo-capiro/meri-greenfield/pull/95",
+      "selectedAncestor": false
+    },
+    {
+      "baseRefName": "codex/meri-product-preview-manifests-20261016",
+      "headRefName": "codex/meri-general-reads-civic-20261016",
+      "headRefOid": "81b3df7a0e9016e4dde8bb78418fb9901243ee54",
+      "isDraft": true,
+      "number": 99,
+      "title": "Add grant-bound legislative directory reads and reconcile remaining families",
+      "updatedAt": "2026-10-16T23:34:47Z",
+      "url": "https://github.com/neo-capiro/meri-greenfield/pull/99",
+      "selectedAncestor": false
+    },
+    {
+      "baseRefName": "codex/meri-product-preview-manifests-20261016",
+      "headRefName": "codex/meri-product-features-task6-20261016",
+      "headRefOid": "78fbd3ae813fcf3fe286969e76102353c3a2eed2",
+      "isDraft": true,
+      "number": 100,
+      "title": "Add governed task-update intents and opt-in API composition",
+      "updatedAt": "2026-10-16T23:38:29Z",
+      "url": "https://github.com/neo-capiro/meri-greenfield/pull/100",
+      "selectedAncestor": false
+    },
+    {
+      "baseRefName": "codex/meri-product-features-task6-20261016",
+      "headRefName": "codex/meri-task-update-integration-task6-20261016",
+      "headRefOid": "cc43d0004be59f315658207405ff1aea126adad5",
+      "isDraft": true,
+      "number": 102,
+      "title": "Wire governed task updates through runtime and public contract",
+      "updatedAt": "2026-10-17T01:14:14Z",
+      "url": "https://github.com/neo-capiro/meri-greenfield/pull/102",
+      "selectedAncestor": false
+    },
+    {
+      "baseRefName": "codex/meri-general-reads-civic-20261016",
+      "headRefName": "codex/meri-general-reads-stored-next-20261016",
+      "headRefOid": "8bb0b2945429e70cf0ae1e594ea55eb8c3fa7ada",
+      "isDraft": true,
+      "number": 103,
+      "title": "Add ten current-grant stored read tools and verify exact Zod",
+      "updatedAt": "2026-10-17T00:02:32Z",
+      "url": "https://github.com/neo-capiro/meri-greenfield/pull/103",
+      "selectedAncestor": false
+    },
+    {
+      "baseRefName": "codex/meri-general-reads-stored-next-20261016",
+      "headRefName": "codex/meri-general-reads-governed-next-20261016",
+      "headRefOid": "0724a744d73356a0e935d15dabc5889ab2337d4b",
+      "isDraft": true,
+      "number": 104,
+      "title": "Add governed read families with current private client visibility",
+      "updatedAt": "2026-10-17T00:20:53Z",
+      "url": "https://github.com/neo-capiro/meri-greenfield/pull/104",
+      "selectedAncestor": false
+    },
+    {
+      "baseRefName": "codex/meri-general-reads-governed-next-20261016",
+      "headRefName": "codex/meri-data-search-request-20261017",
+      "headRefOid": "f33ea1a8945444b5ad8d15d5d048377abf201959",
+      "isDraft": true,
+      "number": 105,
+      "title": "Separate governed search raw requests from normalized input",
+      "updatedAt": "2026-10-17T00:38:19Z",
+      "url": "https://github.com/neo-capiro/meri-greenfield/pull/105",
+      "selectedAncestor": false
+    },
+    {
+      "baseRefName": "codex/meri-data-search-request-20261017",
+      "headRefName": "codex/meri-general-reads-remaining-next-20261017",
+      "headRefOid": "382f45ae695e271bf7433343d31486ac0d57184a",
+      "isDraft": true,
+      "number": 106,
+      "title": "Add governed read source slices with explicit partial coverage",
+      "updatedAt": "2026-10-17T00:57:59Z",
+      "url": "https://github.com/neo-capiro/meri-greenfield/pull/106",
+      "selectedAncestor": false
+    },
+    {
+      "baseRefName": "codex/meri-general-reads-remaining-next-20261017",
+      "headRefName": "codex/meri-read-resolution-next-20261017",
+      "headRefOid": "526b6be7c906c15298f13430fe5dd5a9db458e03",
+      "isDraft": true,
+      "number": 107,
+      "title": "Extend governed selectors and bind native prospect reads",
+      "updatedAt": "2026-10-17T01:24:33Z",
+      "url": "https://github.com/neo-capiro/meri-greenfield/pull/107",
+      "selectedAncestor": null,
+      "exclusionEvidence": "Separate captured branch excluded from selected ordinary first-chat shipping; ancestry not freshly evaluated in this docs refresh"
+    }
+  ],
+  "portedSidePR": {
+    "baseRefName": "codex/meri-initial-run-binding-migration-20261016",
+    "headRefName": "codex/meri-initial-run-pg16-portability-20261016",
+    "headRefOid": "0787c92672ee1a0b88fc6f69489c261e773490a1",
+    "isDraft": true,
+    "number": 96,
+    "title": "Prepare isolated Windows PG16 test profile for initial-run binding",
+    "updatedAt": "2026-10-16T19:27:26Z",
+    "url": "https://github.com/neo-capiro/meri-greenfield/pull/96",
+    "selectedAncestor": false,
+    "testPath": "apps/control/conversations/test/initial-run-binding-migration-pg.test.mjs",
+    "selectedAndSideTestBlob": "e19b51119cbcfe37907caf8619a0a12fc27c3206",
+    "headNotAncestor": true
+  },
+  "migration": {
+    "path": "apps/control/conversations/migrations/0017_initial_run_bindings.sql",
+    "gitBlob": "4fa941a215b3dac2f2a5cfbca190d7b73549b670",
+    "sha256": "e140cc489fc97ebb63a50406cea3e0b0db5755cdf461d92c0affe601b26900eb",
+    "nativeTestGitBlob": "e19b51119cbcfe37907caf8619a0a12fc27c3206",
+    "recordedResult": "Windows isolated PostgreSQL16.15 9/9; Unix and live product/Aurora qualification not run"
+  },
+  "sourceReviewHashesMatch38f": true,
+  "parentReportedExcludedReadSuccessor": {
+    "pr": 107,
+    "head": "526b6be7c906c15298f13430fe5dd5a9db458e03",
+    "basePR": 106,
+    "baseHead": "382f45ae695e271bf7433343d31486ac0d57184a",
+    "checkpoint": "docs/coordination/reports/CODEX-READ-RESOLUTION-IMPLEMENTED-20261017.md",
+    "coverage": "56 complete/10 partial/16 absent/live0",
+    "freshLocalVerification": false,
+    "metadataVerification": "Confirmed in local meri-greenfield-open-prs-final.json; implementation/live claims remain parent-reported"
+  },
+  "excludedFrontendTaskUpdate": {
+    "baseRefName": "feat/meri-first-chat-bootstrap-preview-20261016",
+    "headRefName": "codex/meri-task-update-desktop-task6-20261016",
+    "headRefOid": "bd9e0d03c54ef4fbb57010c3b97cfb3d77bdf2b9",
+    "isDraft": true,
+    "number": 61,
+    "title": "Add desktop governed task update workflow",
+    "updatedAt": "2026-10-17T01:14:04Z",
+    "url": "https://github.com/neo-capiro/capiro-frontend/pull/61"
+  },
+  "parentReportedExcludedPlanner": {
+    "repository": "neo-capiro/capiro-backend",
+    "pr": 50,
+    "head": "5591eac08428635bf911a0aa32acea859e2a5d95",
+    "branch": "feat/objective-planner-runtime-composition-20261016",
+    "updatedAt": "2026-10-17T01:33:01Z",
+    "verification": "Confirmed in local capiro-backend-open-prs-final.json; no implementation/live validation"
+  },
+  "actions": {
+    "sourceEdits": false,
+    "gitMutations": false,
+    "networkCalls": 0,
+    "awsCalls": 0,
+    "testsRun": 0
+  },
+  "existingAuroraSourceDirection": "Existing capiro-dev Aurora; application schemas in capiro; Temporal store/network/role/image qualification remains held. No new RDS source allocation.",
+  "asOfUtc": "2026-10-17T01:39:24.639090Z",
+  "ownership": {
+    "effectiveAtUtc": "2026-10-17T01:34:09Z",
+    "meri": "Codex/dot retains Meri qualification and shipping preparation; continue without waiting for Fable",
+    "frontendAndCore": "Immutable published handoffs remain technical checkpoints from their source owners; Fable assignment is historical",
+    "step3": "dot; real authenticated prompt, stream, save and reload acceptance",
+    "operationalStatusAuthority": "Root Meri thread and exact later operation receipts; pre-start checkpoint fields are historical",
+    "shippingCoordination": "Codex/dot; no activation permission inferred",
+    "currentInstruction": "Latest root direction: dot owns shipping; Fable assignment is historical across these continuity notes"
+  },
+  "originalMetadataSha256": "230f7d4cd83b084d7222db11761f7cff24eb414e1491f2a4b9035eebcf74d9e8",
+  "originalMetadataRows": 102,
+  "metadataSourceFile": "meri-greenfield-open-prs-final.json",
+  "historicalExcludedPlannerHead": "a2b35fb64548caa5f96f25c97bda6d2f5055be93"
+}

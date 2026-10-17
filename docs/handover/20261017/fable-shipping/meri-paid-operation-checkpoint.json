@@ -1,0 +1,65 @@
+{
+    "builds": [
+        {
+            "id": "meri-greenfield-qualification-build:8ac10ea2-a7c3-4420-bdb4-c39b359918d2",
+            "status": "FAILED",
+            "phase": "COMPLETED",
+            "sourceVersion": "dlRui9s0N4oEIKK5_DCANdyiJX0ZbVQH",
+            "start": "2026-10-17T00:35:22.281000+00:00",
+            "end": "2026-10-17T00:37:11.076000+00:00",
+            "autoRetryConfig": {
+                "autoRetryLimit": 0,
+                "autoRetryNumber": 0
+            }
+        },
+        {
+            "id": "meri-greenfield-qualification-build:a4cf9862-bade-4f1b-b982-1da9f072b732",
+            "status": "FAILED",
+            "phase": "COMPLETED",
+            "sourceVersion": "_XdCtetlpIrbnbZN5g3Rc6h_kWP9Ww48",
+            "start": "2026-10-17T00:01:21.548000+00:00",
+            "end": "2026-10-17T00:04:00.498000+00:00",
+            "autoRetryConfig": {
+                "autoRetryLimit": 0,
+                "autoRetryNumber": 0
+            }
+        },
+        {
+            "id": "meri-greenfield-qualification-build:3070ad4b-ebdd-4047-b68f-9648d7b90ca9",
+            "status": "FAILED",
+            "phase": "COMPLETED",
+            "sourceVersion": "upBD7L42zPXb4cCM.DLSFSMk9b04b_kx",
+            "start": "2026-10-16T23:18:54.121000+00:00",
+            "end": "2026-10-16T23:20:43.572000+00:00",
+            "autoRetryConfig": {
+                "autoRetryLimit": 0,
+                "autoRetryNumber": 0
+            }
+        },
+        {
+            "id": "meri-greenfield-qualification-build:acbf0109-1f5c-4d88-8d22-68f6a51d9202",
+            "status": "SUCCEEDED",
+            "phase": "COMPLETED",
+            "sourceVersion": "ND5xwxieHuuXuB3SIJU0ZpJFUXkzQtM3",
+            "start": "2026-10-14T18:32:22.877000+00:00",
+            "end": "2026-10-14T18:35:33.980000+00:00",
+            "autoRetryConfig": {
+                "autoRetryLimit": 0,
+                "autoRetryNumber": 0
+            }
+        },
+        {
+            "id": "meri-greenfield-qualification-build:05e0177c-b3fb-4f92-ab34-64e421e8adfc",
+            "status": "SUCCEEDED",
+            "phase": "COMPLETED",
+            "sourceVersion": "OLYq4KHi5v3VXpUo_bRrvQSlxUDYKzrZ",
+            "start": "2026-10-14T18:13:01.732000+00:00",
+            "end": "2026-10-14T18:14:31.784000+00:00",
+            "autoRetryConfig": {
+                "autoRetryLimit": 0,
+                "autoRetryNumber": 0
+            }
+        }
+    ],
+    "buildsNotFound": []
+}

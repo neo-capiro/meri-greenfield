@@ -1,0 +1,73 @@
+{
+  "status": "ACCEPT",
+  "baseCommit": "73d350476825ad46cf946e18ef0ec728c885c56d",
+  "reviewerTask": "/root/owner_source_closure",
+  "scope": "Frozen six-file source successor only; corrected successor commit/publication remains pending. Prior 73d3504 is not retroactively qualified. No native Linux/image/start/deploy acceptance.",
+  "contentSha256": {
+    "apps/runtime/temporal-product-token-writer.test.mjs": "68f2ad24767ec534ae5ffb020625221817743bce25710675b5db16d8f7ad1991",
+    "infra/product-preview/image-build-producer.py": "2e690246b895834271f8c3e4725345f7b7cd5e9c4bafddce084572494334ae80",
+    "infra/product-preview/image-build-recipe.mjs": "34f8551c6552c356752ba1c027c2da0be12b2ebeec0ace96821da0eaedc16fdb",
+    "infra/product-preview/image-build-test-reporter.mjs": "7bc9543d22d849b8ac16db97f96475b1e2ddaddd0d755834550d4815cc2cc51b",
+    "infra/product-preview/image-build.test.mjs": "e9cedd34dc16c8d9649e3387c15fb2254a5450b2e24d584ae0757640d77b44d2",
+    "infra/product-preview/test_image_build_diagnostics.py": "4094be8ac208429cdf45021e6610e5fe8a0d3b60405eda2f0ccb142c7fa6ed84"
+  },
+  "checks": {
+    "exactW08TestFileAndNameIdentityPreserved": true,
+    "closedCheckIdsOneThroughThirtyMapToOriginalOperationsAndAssertions": true,
+    "metadataModeUidAndLinkAssertionsDistinct": true,
+    "originalCallbackFailureCapturedBeforeProductionNormalization": true,
+    "originalThrownObjectRethrownAndOnlyFixedSummaryAttachedToStageError": true,
+    "writerCloseAndFixtureRmHooksUseIndependentCheckStates": true,
+    "fixtureHookOrderAndOtherCasesOriginalCleanupPreserved": true,
+    "w08FailureDetailReservedDespiteFourEarlierFailures": true,
+    "reporterProducerAndBootstrapRequireBoundedCheckIdExceptionAndCode": true,
+    "closedDetailSurvivesConsoleAndConditionalEncryptedRetentionStub": true,
+    "noRawMessageStackActualExpectedTokenOrPrivateErrorNameRetained": true,
+    "onlyTwoTokenExpectedPropertyCorrectionsChangeW08Assertions": true,
+    "canonicalWriterNormalizesEnvelopeToStringAndCapsExpiry": true,
+    "ownershipModeLinkInodeHealthRedactionAndCleanupGuardsPreserved": true,
+    "productionWriterReaderDockerfileDockerignoreUnchanged": true,
+    "all24CaseAcceptanceAndBeforeEcrAuthGatePreserved": true,
+    "fixedPrivatePythonBindingRenamesAvoidQuotedProtocolWordsAndRetain25600ByteGuard": true,
+    "primaryCleanupAndRetentionOrderingPreserved": true,
+    "diffCheck": "PASS",
+    "sourceFilesLf": true
+  },
+  "focusedEvidence": {
+    "nodeFinal": {
+      "passed": 33,
+      "failed": 0,
+      "receipt": "node-source-checks-final.txt"
+    },
+    "pythonFinal": {
+      "passed": 14,
+      "failed": 0,
+      "receipt": "python-source-checks-final.txt"
+    },
+    "w08LocalProof": {
+      "receipt": "w08-local-proof.json",
+      "checkIds": 30,
+      "callback": "PRESERVED_ORIGINAL_CHECK_5",
+      "afterHooks": "CHECKS_29_AND_30",
+      "nativeNode24AfterHookFieldSurvival": true
+    },
+    "canonicalContractProof": {
+      "receipt": "w08-token-expectation-proof.json",
+      "actualAcceptedDeliveryInvocations": 2,
+      "sourceSha256": "39896c6c04459dc705e9bbcf93d7344e847cb29bd84c3446d272e7c383ba6cc0",
+      "oldStringToObjectAssertionRefuses": true,
+      "correctedNestedTokenAndExpiryCapAndClaimsMatch": true
+    }
+  },
+  "reviewerActions": {
+    "sourceEdits": false,
+    "awsCalls": 0,
+    "buildsStarted": 0,
+    "testsRepeated": false
+  },
+  "remainingQualification": [
+    "Native Linux W08/B/R remains UNRUN at this corrected source.",
+    "The previous remote W08 assertion was not captured; the corrected mismatch is independently source-proven if those assertions are reached.",
+    "Parent must review the new published/sealed source pin and exact start packet before the allocated run; this receipt grants no StartBuild authority."
+  ]
+}

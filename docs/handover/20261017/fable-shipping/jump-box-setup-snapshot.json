@@ -1,0 +1,58 @@
+{
+  "observedAtUtc": "2026-10-17T01:25:50.3826025Z",
+  "os": "Microsoft Windows 10.0.26100",
+  "version": null,
+  "architecture": "X64",
+  "totalPhysicalKiB": null,
+  "freePhysicalKiB": null,
+  "totalVirtualKiB": null,
+  "freeVirtualKiB": null,
+  "cDriveFreeBytes": 2679574528,
+  "toolAvailability": [
+    {
+      "name": "git",
+      "available": true,
+      "path": "C:\\Program Files\\Git\\cmd\\git.exe"
+    },
+    {
+      "name": "node",
+      "available": true,
+      "path": "C:\\Program Files\\nodejs\\node.exe"
+    },
+    {
+      "name": "npm",
+      "available": true,
+      "path": "C:\\Program Files\\nodejs\\npm.ps1"
+    },
+    {
+      "name": "pnpm",
+      "available": true,
+      "path": "C:\\Program Files\\nodejs\\pnpm.ps1"
+    },
+    {
+      "name": "python",
+      "available": true,
+      "path": "C:\\ProgramData\\Hermes\\installs\\404726bdd5a78951\\environments\\89b9c16e9db3445e8b190ec8bf8f65c5\\venv\\Scripts\\python.exe"
+    },
+    {
+      "name": "aws",
+      "available": true,
+      "path": "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe"
+    },
+    {
+      "name": "docker",
+      "available": true,
+      "path": "C:\\Program Files\\docker\\docker.exe"
+    },
+    {
+      "name": "gh",
+      "available": true,
+      "path": "C:\\tools\\gh\\bin\\gh.exe"
+    }
+  ],
+  "defaultCredentialValuesRead": false,
+  "dockerDaemonAccess": "Previously denied; not retried",
+  "systemPostgres": "Existing PG16 service is not an authorized disposable fixture",
+  "memoryQueryStatus": "ACCESS_DENIED_BY_CIM; capacity and free values are unknown, not zero",
+  "osQuery": "Public RuntimeInformation API; protected CIM query was not retried"
+}
