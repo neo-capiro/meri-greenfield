@@ -8,7 +8,8 @@ import {productControlFixture} from './test/control-fixture.mjs';
 import {compileNativeTaskRequest} from '../../runtime/native-authority/task-request.mjs';
 import {compilePreparedRunConfigurationSha256} from '../../runtime/prepared-run-configuration.mjs';
 import {createProductOwnerAdmissionChannel} from './owner-channel.mjs';
-import {validateProductOwnerConfiguration,startProductOwner,runProductOwnerMain} from './owner-entrypoint.mjs';
+import {validateProductOwnerConfiguration,startProductOwner,runProductOwnerMain,
+ PRODUCT_OWNER_PAIR_STARTUP_WINDOW_MS,PRODUCT_OWNER_PAIR_RETRY_INTERVAL_MS} from './owner-entrypoint.mjs';
 import {servicePairFixture} from './test/service-pair-fixture.mjs';
 import {PRODUCT_MAX_INPUT_TOKENS,PRODUCT_MAX_OUTPUT_TOKENS} from '../../gateway/model-proxy/product-envelope.mjs';
 
@@ -200,4 +201,89 @@ test('real main hashes runtime source, starts the actual assembly and closes on 
  assert.equal(await runProductOwnerMain(['--config',path],{MERI_PRODUCT_OWNER_REQUIRED:'1',MERI_PRODUCT_OWNER_CONFIG_SHA256:sha(bytes)},f.dependencies),0);
  assert.equal(f.lifecycle.filter(x=>x==='pool.create').length,1);assert.equal(f.lifecycle.filter(x=>Array.isArray(x)&&x[0]==='listen').length,1);
  assert.deepEqual(f.lifecycle.slice(-4),['server.close','pool.end','ecs.destroy','ec2.destroy']);assert.equal(f.captured().nativeCurrentness.available,false);assert.ok(f.materialBuffers.every(b=>b.every(n=>n===0)));
+});
+
+/** Startup pair wait: a scripted clock advanced only by the injected sleep. */
+function retryClock(f){
+ let at=NOW;const sleeps=[];f.dependencies.now=()=>at;
+ f.dependencies.sleep=async ms=>{sleeps.push(ms);at+=ms;};
+ return {sleeps,at:()=>at};
+}
+const notRunning=role=>reply=>{
+ const s=reply.services.find(v=>v.serviceName==='meri-'+role);
+ s.runningCount=0;s.pendingCount=1;s.deployments[0].runningCount=0;s.deployments[0].pendingCount=1;return reply;
+};
+const kinds=f=>f.awsCalls.map(x=>x.command.constructor.name);
+
+test('peer (or own) service not yet RUNNING is re-read in full until the pair is admitted',async()=>{
+ for(const role of ['proxy','owner']){
+  const f=fixture(),clock=retryClock(f);let denials=2;
+  f.pair.change('DescribeServicesCommand',reply=>denials-->0?notRunning(role)(reply):reply);
+  const runtime=await startProductOwner(f.runtime,f.dependencies),ports=f.captured();
+  assert.equal(runtime.available,true);assert.deepEqual(clock.sleeps,[PRODUCT_OWNER_PAIR_RETRY_INTERVAL_MS,PRODUCT_OWNER_PAIR_RETRY_INTERVAL_MS]);
+  assert.equal(f.awsCalls.length,2+10,'each denied attempt stops at its first service read; the admitted one is a full read');
+  assert.equal(ports.clientPolicy.ownerTaskArn,f.pair.id('owner'));assert.equal(ports.clientPolicy.proxyTaskArn,f.pair.id('proxy'));
+  assert.ok(f.materialBuffers.every(b=>b.every(n=>n===0)));
+  await runtime.start();await runtime.close();assert.deepEqual(f.lifecycle.slice(-4),['server.close','pool.end','ecs.destroy','ec2.destroy']);
+ }
+ // A denial late in the proof (task still PENDING) is not cached: the next
+ // attempt rediscovers services, membership, definitions, tasks and ENIs.
+ const f=fixture(),clock=retryClock(f);let pending=true;
+ f.pair.change('DescribeTasksCommand',reply=>{if(pending){pending=false;reply.tasks.find(t=>t.group==='service:meri-proxy').lastStatus='PENDING';}return reply;});
+ const runtime=await startProductOwner(f.runtime,f.dependencies);assert.equal(runtime.available,true);assert.equal(clock.sleeps.length,1);
+ const calls=kinds(f);assert.equal(calls.length,6+10);assert.equal(calls[5],'DescribeTasksCommand');
+ assert.equal(calls[6],'DescribeServicesCommand');
+ assert.equal(calls.slice(6).filter(k=>k==='DescribeNetworkInterfacesCommand').length,1);
+ await runtime.close();
+});
+
+test('an exhausted startup window keeps the same content-free terminal refusal and cleanup',async()=>{
+ const f=fixture(),clock=retryClock(f);
+ f.runtime.serviceTasks.expiresAtMs=NOW+10*PRODUCT_OWNER_PAIR_STARTUP_WINDOW_MS;f.runtime.pricing.validUntilMs=NOW+10*PRODUCT_OWNER_PAIR_STARTUP_WINDOW_MS;
+ f.pair.change('DescribeServicesCommand',notRunning('proxy'));
+ await assert.rejects(startProductOwner(f.runtime,f.dependencies),refused);
+ const attempts=kinds(f).filter(k=>k==='DescribeServicesCommand').length;
+ assert.equal(attempts,clock.sleeps.length+1);assert.ok(attempts>1);
+ assert.ok(clock.at()-NOW<PRODUCT_OWNER_PAIR_STARTUP_WINDOW_MS,'no attempt starts after the window');
+ assert.ok(clock.at()-NOW+PRODUCT_OWNER_PAIR_RETRY_INTERVAL_MS>=PRODUCT_OWNER_PAIR_STARTUP_WINDOW_MS,'the whole window was used');
+ assert.equal(f.captured(),undefined);assert.deepEqual(f.lifecycle.slice(-3),['pool.end','ecs.destroy','ec2.destroy']);
+ assert.ok(f.materialBuffers.every(b=>b.every(n=>n===0)));
+ // Service pins that expire first end the wait earlier, never later.
+ const g=fixture(),short=retryClock(g);g.pair.change('DescribeServicesCommand',notRunning('owner'));
+ await assert.rejects(startProductOwner(g.runtime,g.dependencies),refused);
+ assert.ok(short.at()<g.runtime.serviceTasks.expiresAtMs);assert.ok(short.sleeps.length<clock.sleeps.length);
+ // The executable keeps its exit status for the exhausted window.
+ const h=fixture();retryClock(h);h.pair.change('DescribeServicesCommand',notRunning('proxy'));
+ const path=resolve('synthetic-exhausted-runtime.json'),bytes=Buffer.from(JSON.stringify(h.runtime));h.material.set(path,bytes);
+ assert.equal(await runProductOwnerMain(['--config',path],{MERI_PRODUCT_OWNER_REQUIRED:'1',MERI_PRODUCT_OWNER_CONFIG_SHA256:sha(bytes)},h.dependencies),3);
+ assert.equal(h.captured(),undefined);assert.deepEqual(h.lifecycle.slice(-3),['pool.end','ecs.destroy','ec2.destroy']);
+});
+
+test('configuration and material refusals fail before any pair read or retry',async()=>{
+ const mutate=[
+  f=>{f.material.set(f.runtime.tls.keyFile,Buffer.alloc(32769,107));},
+  f=>{f.material.set(f.runtime.tls.caFile,Buffer.alloc(0));},
+  f=>{f.material.set(f.runtime.controlConfigurationFile,Buffer.from('{}'));},
+  f=>{f.material.set(f.configuration.database.connectionFile,Buffer.from('postgres://a:b@synthetic.invalid/db?sslmode=require'));},
+  f=>{f.runtime.limits.maxLeaseMs=30001;},
+ ];
+ for(const change of mutate){
+  const f=fixture(),clock=retryClock(f);f.pair.change('DescribeServicesCommand',notRunning('proxy'));change(f);
+  await assert.rejects(startProductOwner(f.runtime,f.dependencies),refused);
+  assert.equal(f.awsCalls.length,0);assert.deepEqual(clock.sleeps,[]);assert.equal(f.captured(),undefined);
+  assert.ok(f.materialBuffers.every(b=>b.every(n=>n===0)));
+ }
+});
+
+test('quarantined reader (unsettled AWS work) and stop requests end the wait at once',async()=>{
+ const f=fixture(),clock=retryClock(f);f.runtime.limits.maxRequestMs=200;
+ f.pair.change('DescribeServicesCommand',()=>new Promise(()=>{}));
+ await assert.rejects(startProductOwner(f.runtime,f.dependencies),refused);
+ assert.deepEqual(clock.sleeps,[],'a quarantined reader is never retried');assert.equal(kinds(f).length,1);
+ assert.deepEqual(f.lifecycle.slice(-3),['pool.end','ecs.destroy','ec2.destroy']);
+ const g=fixture(),stop=retryClock(g);g.pair.change('DescribeServicesCommand',notRunning('proxy'));
+ const sleep=g.dependencies.sleep;g.dependencies.sleep=async(ms,signal)=>{await sleep(ms);process.emit('SIGTERM');assert.equal(signal.aborted,true);};
+ const path=resolve('synthetic-stopped-runtime.json'),bytes=Buffer.from(JSON.stringify(g.runtime));g.material.set(path,bytes);
+ assert.equal(await runProductOwnerMain(['--config',path],{MERI_PRODUCT_OWNER_REQUIRED:'1',MERI_PRODUCT_OWNER_CONFIG_SHA256:sha(bytes)},g.dependencies),3);
+ assert.equal(stop.sleeps.length,1);assert.equal(kinds(g).length,1);assert.deepEqual(g.lifecycle.slice(-3),['pool.end','ecs.destroy','ec2.destroy']);
 });

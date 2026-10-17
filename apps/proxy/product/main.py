@@ -3,6 +3,12 @@
 Reviewed files and the task's container-role credential provider are the only
 startup inputs. Native dependencies remain pinned by the existing Linux lock.
 No provider call, credential creation or database authority belongs here.
+
+The owner/proxy service pair is read with a bounded startup wait: each ECS
+service reaches RUNNING only after its own process starts (and a task may read
+as pending in its own service for a few seconds), so a one-shot read made both
+services crash-loop without ever overlapping. Only the pair read is retried;
+configuration and reviewed-material refusals still fail before the first read.
 """
 import argparse
 import asyncio
@@ -26,6 +32,11 @@ _NATIVE_CONFIG = Path(__file__).with_name("litellm-product-config.yaml")
 # Updated only with an independently reviewed change of the fixed product file.
 _NATIVE_SHA = "64860d829d7c022f6640b1a75eb48ad05dc2421d8e5e2bcdfdda50b421754d19"
 _running = False
+# Reviewed constants rather than startup configuration, so the closed proxy
+# schema and its rendered bindings stay unchanged. Each attempt is a complete
+# fresh rediscovery bounded by the existing 3s native-work ceiling.
+_PAIR_STARTUP_WINDOW_SECONDS = 180
+_PAIR_RETRY_INTERVAL_SECONDS = 2.5
 
 
 def _deny():
@@ -232,12 +243,39 @@ def _provider_factory(resources):
     return make
 
 
-def _tls(value, policy):
-    from .owner_https import load_owner_client_tls_material
+def _check_reviewed_tls_files(value):
     for section in ("serverTls", "ownerTls"):
         for key, ref in value[section].items():
             if key.endswith("File"):
                 read_reviewed_file(ref["path"], ref["sha256"], secret=key == "privateKeyFile")
+
+
+async def _read_startup_service_pair(service_pair, resources, expires_at_ms):
+    """Full pair re-reads until admitted or the bounded startup window closes.
+
+    A denied read caches nothing. CleanupUnknown (an unsettled native read) and
+    a retired or expired reader are terminal at once; window exhaustion raises
+    the same content-free denial a single failed read always raised.
+    """
+    window_end = time.monotonic() + _PAIR_STARTUP_WINDOW_SECONDS
+    while True:
+        if not service_pair.available or resources.retired or resources.cleanup_unknown:
+            _deny()
+        try:
+            return await _bounded_native(lambda: asyncio.to_thread(service_pair.read,
+                deadline_ms=min(expires_at_ms, time.time_ns()//1000000+3000)), resources, 3)
+        except CleanupUnknown:
+            raise
+        except StateDenied:
+            if (not service_pair.available or resources.retired or resources.cleanup_unknown
+                    or time.monotonic() + _PAIR_RETRY_INTERVAL_SECONDS >= window_end):
+                raise
+        await asyncio.sleep(_PAIR_RETRY_INTERVAL_SECONDS)
+
+
+def _tls(value, policy):
+    from .owner_https import load_owner_client_tls_material
+    _check_reviewed_tls_files(value)
     server = value["serverTls"]
     pem = Path(server["certificateFile"]["path"]).read_text(encoding="ascii")
     leaf = pem[:pem.index("-----END CERTIFICATE-----")+len("-----END CERTIFICATE-----")]
@@ -255,10 +293,7 @@ def _tls(value, policy):
         certificate_file=owner["certificateFile"]["path"], private_key_file=owner["privateKeyFile"]["path"])
     # Native SSL loaders reopen explicit protected refs; verify stable custody
     # again after loading. No copied secret/config becomes an HTTP authority.
-    for section in ("serverTls", "ownerTls"):
-        for key, ref in value[section].items():
-            if key.endswith("File"):
-                read_reviewed_file(ref["path"], ref["sha256"], secret=key == "privateKeyFile")
+    _check_reviewed_tls_files(value)
     return context, policy, material
 
 
@@ -285,11 +320,13 @@ async def run_product_proxy(configuration):
         os.environ["AWS_REGION"] = os.environ["AWS_DEFAULT_REGION"] = "us-east-1"
         compatibility = _native_bootstrap(resources)
         ecs, ec2, count = await _bounded_native(lambda: asyncio.to_thread(_clients, resources), resources)
-        from .service_pair_discovery import ProductServicePairDiscovery, compile_owner_peer
+        from .service_pair_discovery import ProductServicePairDiscovery, compile_owner_peer, parse_owner_peer_template
         service_pair = ProductServicePairDiscovery(configuration=value["serviceTasks"], ecs_client=ecs, ec2_client=ec2, enabled=True)
         resources.transports.append(service_pair)
-        pair = await _bounded_native(lambda: asyncio.to_thread(service_pair.read,
-            deadline_ms=min(value["expiresAtMs"], time.time_ns()//1000000+3000)), resources, 3)
+        # Reviewed material refuses before any pair read or startup wait.
+        _check_reviewed_tls_files(value)
+        parse_owner_peer_template(value["ownerPeer"])
+        pair = await _read_startup_service_pair(service_pair, resources, value["expiresAtMs"])
         policy = compile_owner_peer(value["ownerPeer"], pair)
         context, policy, material = _tls(value, policy)
         from .uvicorn_tls_protocol import serve_product_proxy_with_owner

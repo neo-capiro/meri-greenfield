@@ -30,6 +30,43 @@ const file=v=>typeof v==='string'&&v.length<=4096&&isAbsolute(v)&&!v.split(/[\\/
 const prefix='arn:aws:ecs:us-east-1:967807252336:';
 const runtimeRequire=createRequire(new URL('../../runtime/package.json',import.meta.url));
 const frozenDisabled=()=>Object.freeze({available:false,async start(){fail();},async close(){}});
+/** Bounded startup wait for the owner/proxy service pair. Each ECS service only
+ * reaches RUNNING after its own process starts, and a task may briefly read as
+ * pending in its own service, so a one-shot pair read crash-looped both sides.
+ * Only the canonical pair read is retried, each attempt a complete fresh
+ * rediscovery; material/config refusals fail before the first attempt. These
+ * are reviewed constants rather than runtime configuration so the closed
+ * runtime schema and its rendered bindings stay unchanged. */
+export const PRODUCT_OWNER_PAIR_STARTUP_WINDOW_MS=180000,PRODUCT_OWNER_PAIR_RETRY_INTERVAL_MS=2500;
+const PAIR_ATTEMPT_SETTLE_MS=1000;
+// Config read + material phase + the window's last attempt + listen + cleanup,
+// with slack: the executable watchdog must outlast the bounded pair wait.
+const PRODUCT_OWNER_STARTUP_WATCHDOG_MS=PRODUCT_OWNER_PAIR_STARTUP_WINDOW_MS+20000;
+function defaultSleep(ms,signal){
+ return new Promise(resolve=>{const timer=setTimeout(done,ms);function done(){clearTimeout(timer);signal?.removeEventListener('abort',done);resolve();}
+  signal?.addEventListener('abort',done,{once:true});});
+}
+/** Re-reads the whole pair until admitted or the window closes. A retired or
+ * quarantined reader, unsettled attempt or stop request is terminal at once. */
+async function readStartupPair({taskLeaseReader,now,sleep,maxRequestMs,expiresAtMs,signal}){
+ const begun=now();if(!Number.isSafeInteger(begun))fail();
+ const windowEndMs=Math.min(expiresAtMs,begun+PRODUCT_OWNER_PAIR_STARTUP_WINDOW_MS);
+ for(;;){
+  const at=now();
+  if(signal?.aborted||!taskLeaseReader.available||!Number.isSafeInteger(at)||at>=windowEndMs)fail();
+  // The reader's own lifetime ends at at+maxRequestMs and settles its read;
+  // this outer bound only catches a read that never settles (then terminal).
+  const attempt=createOperationLifetime({now,deadlineMs:at+maxRequestMs+PAIR_ATTEMPT_SETTLE_MS,signal,errorFactory:()=>Error('PRODUCT_OWNER_STARTUP_UNAVAILABLE')});
+  let pair=null;
+  try{pair=await attempt.run(abort=>taskLeaseReader.read({deadlineMs:at+maxRequestMs,signal:abort}));}
+  catch{pair=null;}
+  finally{if(attempt.close().unsettledOperations>0)fail();}
+  if(pair!==null)return {pair,deadlineMs:at+maxRequestMs};
+  const after=now();
+  if(signal?.aborted||!taskLeaseReader.available||!Number.isSafeInteger(after)||after+PRODUCT_OWNER_PAIR_RETRY_INTERVAL_MS>=windowEndMs)fail();
+  await sleep(PRODUCT_OWNER_PAIR_RETRY_INTERVAL_MS,signal);
+ }
+}
 
 /** Closed data only. An omitted enabled flag is false, before any material IO. */
 export function validateProductOwnerConfiguration(raw){
@@ -84,8 +121,11 @@ function defaultClients(options){
 /** Trusted tests can replace infrastructure constructors/material reads only.
  * Canonical facts/currentness/placement/journal and the single service gate are
  * always assembled here. No module names, credentials or callbacks are JSON.
- * Available means local assembly, not remote DB/Core/TLS/AWS qualification. */
-export async function startProductOwner(raw,dependencies={}){
+ * Available means local assembly, not remote DB/Core/TLS/AWS qualification.
+ * All material is read and checked in the first bounded phase; only then does
+ * the bounded service-pair startup wait begin. */
+export async function startProductOwner(raw,dependencies={}){return assembleProductOwner(raw,dependencies);}
+async function assembleProductOwner(raw,dependencies,stopSignal){
  let server,nativeCurrentness,pool,clients,closing,closed=false,started=false,life,closeMs=3000;
  const serviceGate=createProductOwnerServiceGate(),buffers=new Set();
  const close=()=>closing??=(async()=>{
@@ -106,11 +146,11 @@ export async function startProductOwner(raw,dependencies={}){
   const c=validateProductOwnerConfiguration(raw);
   if(!c.enabled)return frozenDisabled();
   closeMs=c.limits.maxRequestMs;
-  const d=own(dependencies,[],['readMaterial','createPool','createAwsClients','createServer','now','fetchImpl']),
+  const d=own(dependencies,[],['readMaterial','createPool','createAwsClients','createServer','now','fetchImpl','sleep']),
    readMaterial=d.readMaterial??readSecret,createPool=d.createPool??defaultPool,
    createAwsClients=d.createAwsClients??defaultClients,createServer=d.createServer??createProductOwnerHttpsServer,
-   now=d.now??Date.now,fetchImpl=d.fetchImpl??fetch;
-  if(![readMaterial,createPool,createAwsClients,createServer,now,fetchImpl].every(v=>typeof v==='function'))fail();
+   now=d.now??Date.now,fetchImpl=d.fetchImpl??fetch,sleep=d.sleep??defaultSleep;
+  if(![readMaterial,createPool,createAwsClients,createServer,now,fetchImpl,sleep].every(v=>typeof v==='function'))fail();
   const at=now();if(!Number.isSafeInteger(at)||at<0||c.serviceTasks.expiresAtMs<=at||c.pricing.validUntilMs<=at)fail();
   life=createOperationLifetime({now,deadlineMs:at+c.limits.maxRequestMs,errorFactory:()=>Error('PRODUCT_OWNER_STARTUP_UNAVAILABLE')});
   async function material(path){
@@ -138,16 +178,20 @@ export async function startProductOwner(raw,dependencies={}){
    now,limits,fetchImpl,enabled:true},{readMaterial});
   const taskLeaseReader=await life.run(()=>createProductServiceTaskLeaseReader({ecsClient:clients.ecsClient,ec2Client:clients.ec2Client,
    configuration:c.serviceTasks,now,limits:{maxRequestMs:c.limits.maxRequestMs,maxLeaseMs:c.limits.maxLeaseMs},enabled:true}));
+  const ca=await material(c.tls.caFile),cert=await material(c.tls.certFile),key=await material(c.tls.keyFile);
+  life.check();life.close();
   // Raw configuration has no task ARN/IP. Only this fresh canonical pair may
   // compile the existing internal channel policy. Later drift retires reader.
-  const pair=await life.run(signal=>taskLeaseReader.read({deadlineMs:at+c.limits.maxRequestMs,signal}));
+  // The peer service may not be RUNNING yet: bounded full re-reads, see above.
+  const {pair,deadlineMs}=await readStartupPair({taskLeaseReader,now,sleep,maxRequestMs:c.limits.maxRequestMs,
+   expiresAtMs:c.serviceTasks.expiresAtMs,signal:stopSignal});
+  const admitted=now();if(closed||!Number.isSafeInteger(admitted)||admitted>=deadlineMs||c.pricing.validUntilMs<=admitted)fail();
   const clientPolicy=data({...c.clientPolicy,ownerTaskArn:pair.ownerTaskArn,proxyTaskArn:pair.proxyTaskArn});
-  const ca=await material(c.tls.caFile),cert=await material(c.tls.certFile),key=await material(c.tls.keyFile);
   server=createServer({enabled:true,tlsMaterial:{origin:c.tls.origin,serverName:c.tls.serverName,ca,cert,key,
    certSha256:c.tls.certSha256,issuerSha256:c.tls.issuerSha256},clientPolicy,persistedFacts,
    ownerPorts:{pool,pricing:c.pricing,limits,checkCurrentConversation:nativeCurrentness.checkCurrentConversation},placement,taskLeaseReader,
    serviceGate,now,maxRequestMs:c.limits.maxRequestMs,nativeCurrentness});
-  life.check();if(server?.available!==true||typeof server.listen!=='function'||typeof server.close!=='function')fail();
+  if(now()>=deadlineMs||server?.available!==true||typeof server.listen!=='function'||typeof server.close!=='function')fail();
   return Object.freeze({get available(){return !closed&&server.available&&nativeCurrentness.available&&serviceGate.available;},
    async start(){let startup;try{if(closed||started||!server.available)fail();started=true;
      startup=createOperationLifetime({now,deadlineMs:now()+c.limits.maxRequestMs,errorFactory:()=>Error('PRODUCT_OWNER_STARTUP_UNAVAILABLE')});
@@ -164,15 +208,16 @@ export async function runProductOwnerMain(argv=process.argv.slice(2),env=process
  const watchdog=(code,ms)=>{const timer=setTimeout(()=>{process.stderr.write(code+'\n');process.exit(3);},ms);timer.unref();return timer;};
  try{
   if(argv.length!==2||argv[0]!=='--config'||!file(argv[1])||env.MERI_PRODUCT_OWNER_REQUIRED!=='1'||!digest(env.MERI_PRODUCT_OWNER_CONFIG_SHA256))fail();
-  startupTimer=watchdog('PRODUCT_OWNER_STARTUP_TIMEOUT',10000);
+  startupTimer=watchdog('PRODUCT_OWNER_STARTUP_TIMEOUT',PRODUCT_OWNER_STARTUP_WATCHDOG_MS);
   const readMaterial=dependencies.readMaterial??readSecret,bytes=await readMaterial(argv[1]);let c;
   try{if(!Buffer.isBuffer(bytes)||bytes.length<1||bytes.length>32768||sha(bytes)!==env.MERI_PRODUCT_OWNER_CONFIG_SHA256)fail();
    c=validateProductOwnerConfiguration(JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes)));}
   finally{if(Buffer.isBuffer(bytes))bytes.fill(0);}
   if(!c.enabled)fail();
-  const completion=new Promise(resolve=>{stop=()=>{stopped=true;shutdownTimer??=watchdog('PRODUCT_OWNER_SHUTDOWN_TIMEOUT',c.limits.maxRequestMs+1000);resolve();};});
+  const stopping=new AbortController();
+  const completion=new Promise(resolve=>{stop=()=>{stopped=true;stopping.abort();shutdownTimer??=watchdog('PRODUCT_OWNER_SHUTDOWN_TIMEOUT',c.limits.maxRequestMs+1000);resolve();};});
   process.once('SIGTERM',stop);process.once('SIGINT',stop);
-  runtime=await startProductOwner(c,dependencies);if(!stopped)await runtime.start();clearTimeout(startupTimer);await completion;await runtime.close();clearTimeout(shutdownTimer);return 0;
+  runtime=await assembleProductOwner(c,dependencies,stopping.signal);if(!stopped)await runtime.start();clearTimeout(startupTimer);await completion;await runtime.close();clearTimeout(shutdownTimer);return 0;
  }catch(error){let cleanupUnknown=error?.message==='PRODUCT_OWNER_CLEANUP_UNKNOWN';
   try{await runtime?.close();}catch{cleanupUnknown=true;}
   if(cleanupUnknown)shutdownTimer??=watchdog('PRODUCT_OWNER_SHUTDOWN_TIMEOUT',1000);else clearTimeout(shutdownTimer);
