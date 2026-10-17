@@ -7,7 +7,7 @@ import {rootCertificates} from 'node:tls';
 import {createTemporalIssuerService,parseTemporalIssuerServiceConfiguration} from './service.mjs';
 import {verifyTemporalIssuerToken} from './protocol.mjs';
 
-const ORIGIN='https://issuer.meri.internal';
+const ORIGIN='https://issuer.meri.internal:8445';
 const IDENTITY=Object.freeze({role:'control',subject:'meri-temporal-control:v1',workloadPrincipal:'meri-workload-control:v1'});
 const CONFIG=Object.freeze({schemaVersion:1,issuerOrigin:ORIGIN,kid:'test-rotation-1',namespace:'meri',
  audience:'meri-temporal',maxRequestMs:1000,bootstrapMaxRequestMs:4000,
@@ -62,6 +62,9 @@ test('closed configuration requires a bare HTTPS issuer origin and bounded curre
  assert.equal(parseTemporalIssuerServiceConfiguration(CONFIG).issuerOrigin,ORIGIN);
  assert.throws(()=>parseTemporalIssuerServiceConfiguration({...CONFIG,issuerOrigin:ORIGIN+'/'}));
  assert.throws(()=>parseTemporalIssuerServiceConfiguration({...CONFIG,issuerOrigin:'http://issuer.meri.internal'}));
+ assert.throws(()=>parseTemporalIssuerServiceConfiguration({...CONFIG,issuerOrigin:'https://issuer.meri.internal'}));
+ assert.throws(()=>parseTemporalIssuerServiceConfiguration({...CONFIG,issuerOrigin:'https://issuer.meri.internal:443'}));
+ assert.throws(()=>parseTemporalIssuerServiceConfiguration({...CONFIG,issuerOrigin:'https://issuer.meri.internal:8443'}));
  assert.throws(()=>parseTemporalIssuerServiceConfiguration({...CONFIG,currentnessLeaseMs:1000}));
  const {bootstrapMaxRequestMs,...withoutBootstrapBudget}=CONFIG;
  assert.throws(()=>parseTemporalIssuerServiceConfiguration(withoutBootstrapBudget));
@@ -69,6 +72,15 @@ test('closed configuration requires a bare HTTPS issuer origin and bounded curre
  assert.throws(()=>parseTemporalIssuerServiceConfiguration({...CONFIG,bootstrapMaxRequestMs:15000}));
  assert.equal(parseTemporalIssuerServiceConfiguration({...CONFIG,bootstrapMaxRequestMs:14000}).bootstrapMaxRequestMs,14000);
  assert.throws(()=>parseTemporalIssuerServiceConfiguration({...CONFIG,unreviewed:true}));
+});
+
+test('exported HTTPS service binds only the exact issuer listener host and port',async()=>{
+ const f=create(),tls={key:Buffer.from('unused'),cert:Buffer.from('unused'),ca:Buffer.from('unused')};
+ for(const [host,port] of [['10.0.1.42',8445],['127.0.0.1',8445],
+  ['0.0.0.0',443],['0.0.0.0',8443],['::',8445]])
+  await assert.rejects(f.service.listen({tls,host,port}),{code:'TEMPORAL_ISSUER_REFUSED'});
+ assert.deepEqual(await f.service.close(),{schemaVersion:1,state:'CLEAN',
+  listenerStopped:true,pendingRequests:0});
 });
 
 test('GET JWKS is public and exact; token POST requires authorized TLS peer',async()=>{
@@ -125,11 +137,42 @@ test('closing during an unsettled signing operation aborts and never releases it
   taskAuthority:{async readCurrent(){authorityReads++;return current();}},
   sign:async bytes=>{begin();await suspended;return keys.sign(bytes);}});
  const result=response();const handling=service.handle(request(),result);
- await started;await service.close();
+ await started;
+ const closing=service.close();assert.equal(closing,service.close());
+ const cleanup=await closing;
+ assert.equal(cleanup.state,'CLEANUP_UNKNOWN');
+ assert.equal(cleanup.listenerStopped,true);
+ assert.ok(cleanup.pendingRequests>0);
  assert.equal(result.status,503);assert.equal(body(result).error,'TEMPORAL_ISSUER_REFUSED');
  finish();await handling;
  assert.equal(authorityReads,1);assert.equal(result.status,503);
  assert.equal(service.available(),false);
+});
+
+test('unsettled raw authority and bootstrap operations remain visible after aborted HTTP handlers',async()=>{
+ const keys=fixture();let authorityEntered,releaseAuthority,bootstrapEntered,releaseBootstrap;
+ const authorityStarted=new Promise(resolve=>{authorityEntered=resolve;});
+ const authorityPending=new Promise(resolve=>{releaseAuthority=resolve;});
+ const bootstrapStarted=new Promise(resolve=>{bootstrapEntered=resolve;});
+ const bootstrapPending=new Promise(resolve=>{releaseBootstrap=resolve;});
+ const service=createTemporalIssuerService({configuration:CONFIG,publicJwk:keys.publicJwk,now:()=>NOW,
+  taskAuthority:{readCurrent:()=>{authorityEntered();return authorityPending;}},sign:keys.sign,
+  bootstrapOwner:{challenge:()=>{bootstrapEntered();return bootstrapPending;},redeem:()=>{throw Error('unused');}}});
+ const token=response(),challenge=response();
+ const tokenRequest=service.handle(request(),token);
+ const challengeRequest=service.handle(request({url:'/v1/internal/temporal/bootstrap/challenge',
+  authorized:false,body:{schemaVersion:1,role:'control',taskArn:'task-1',csrPem:'CSR'}}),challenge);
+ await Promise.all([authorityStarted,bootstrapStarted]);
+ const receipt=await service.close();
+ assert.equal(receipt.state,'CLEANUP_UNKNOWN');
+ assert.equal(receipt.listenerStopped,true);
+ assert.ok(receipt.pendingRequests>=2);
+ await Promise.all([tokenRequest,challengeRequest]);
+ assert.equal(token.status,503);assert.equal(challenge.status,503);
+ releaseAuthority(current());releaseBootstrap({schemaVersion:1,
+  challengeId:'6a8084ef-11ec-4f8d-98d5-80f0e3acc879',proofMessage:'e30=',expiresAtMs:NOW+5000});
+ await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(receipt.state,'CLEANUP_UNKNOWN'); // a prior uncertain receipt cannot be rewritten
 });
 
 test('an authority port that never settles is bounded by the service deadline',async()=>{
@@ -140,7 +183,7 @@ test('an authority port that never settles is bounded by the service deadline',a
   sign:bytes=>{signCalls++;return keys.sign(bytes);}});
  const result=response();await service.handle(request(),result);
  assert.equal(result.status,503);assert.equal(signCalls,0);
- await service.close();
+ assert.equal((await service.close()).state,'CLEANUP_UNKNOWN');
 });
 
 test('unknown request fields, wrong issuer, and oversized original body never reach authority or signer',async()=>{

@@ -2,7 +2,6 @@
 import {constants as fileFlags} from 'node:fs';
 import {open,lstat} from 'node:fs/promises';
 import {dirname} from 'node:path';
-import {isIP} from 'node:net';
 import {types} from 'node:util';
 import {X509Certificate,createHash} from 'node:crypto';
 import {parseTemporalIssuerServiceConfiguration,createTemporalIssuerService} from './service.mjs';
@@ -19,26 +18,21 @@ const LISTEN_KEYS=['host','port'];
 const TLS_KEYS=['keyFile','certFile','caFile'];
 const BOOTSTRAP_KEYS=['caKeyFile','caSha256'];
 const SHA256=/^[a-f0-9]{64}$/u;
-const MATERIAL_ROOT='/run/meri-temporal/issuer/';
+const MATERIAL_ROOT='/run/meri/';
 const parsedConfigurations=new WeakSet();
 const fault=()=>Object.assign(Error('TEMPORAL_ISSUER_ENTRYPOINT_REFUSED'),
  {code:'TEMPORAL_ISSUER_ENTRYPOINT_REFUSED'});
+const cleanupUnknown=receipt=>Object.assign(Error('TEMPORAL_ISSUER_CLEANUP_UNKNOWN'),
+ {code:'TEMPORAL_ISSUER_CLEANUP_UNKNOWN',receipt});
 
 function exact(value,keys){
  return value!==null&&typeof value==='object'&&!Array.isArray(value)&&!types.isProxy(value)&&
   Object.getPrototypeOf(value)===Object.prototype&&Reflect.ownKeys(value).length===keys.length&&
   keys.every(key=>Object.hasOwn(value,key)&&Object.hasOwn(Object.getOwnPropertyDescriptor(value,key),'value'));
 }
-function privateIpv4(host){
- if(typeof host!=='string'||isIP(host)!==4)return false;
- const octets=host.split('.').map(Number);
- return octets.every((octet,index)=>String(octet)===host.split('.')[index])&&
-  (octets[0]===10||(octets[0]===172&&octets[1]>=16&&octets[1]<=31)||
-   (octets[0]===192&&octets[1]===168));
-}
 function materialPath(path){
  return typeof path==='string'&&path.startsWith(MATERIAL_ROOT)&&path.length>MATERIAL_ROOT.length&&
-  /^\/run\/meri-temporal\/issuer\/[A-Za-z0-9._-]+$/u.test(path)&&!path.endsWith('/.')&&
+  /^\/run\/meri\/[A-Za-z0-9._-]+$/u.test(path)&&!path.endsWith('/.')&&
   !path.includes('..');
 }
 function checkSignal(signal){if(signal?.aborted)throw fault();}
@@ -46,8 +40,7 @@ function checkSignal(signal){if(signal?.aborted)throw fault();}
 /** A closed configuration with exact service, task, KMS and file joins. */
 export function parseTemporalIssuerEntrypointConfiguration(raw){
  if(!exact(raw,CONFIG_KEYS)||raw.schemaVersion!==1||!exact(raw.listen,LISTEN_KEYS)||
-    !privateIpv4(raw.listen.host)||!Number.isSafeInteger(raw.listen.port)||
-    raw.listen.port!==443||
+    raw.listen.host!=='0.0.0.0'||raw.listen.port!==8445||
     !Number.isSafeInteger(raw.startupTimeoutMs)||raw.startupTimeoutMs<1||
     raw.startupTimeoutMs>120000||!exact(raw.tls,TLS_KEYS)||
     TLS_KEYS.some(key=>!materialPath(raw.tls[key]))||
@@ -99,7 +92,7 @@ async function ownerOnlyRead(path,{signal,maxBytes}){
 }
 
 /** Late material returned after cancellation is wiped before it can be observed. */
-async function boundedMaterialRead(readMaterial,path,maxBytes,signal){
+async function boundedMaterialRead(readMaterial,path,maxBytes,signal,pendingMaterial){
  checkSignal(signal);
  let onAbort;
  const aborted=new Promise((_,reject)=>{
@@ -110,6 +103,8 @@ async function boundedMaterialRead(readMaterial,path,maxBytes,signal){
   if(signal.aborted){bytes.fill(0);throw fault();}
   return bytes;
  });
+ pendingMaterial.add(read);
+ read.then(()=>pendingMaterial.delete(read),()=>pendingMaterial.delete(read));
  try{return await Promise.race([read,aborted]);}
  finally{signal.removeEventListener('abort',onAbort);}
 }
@@ -137,46 +132,94 @@ export function createTemporalIssuerEntrypoint({configuration,registrationPool,s
       ['ecs','ec2','kms'].some(name=>typeof awsClients[name]?.send!=='function'))))throw fault();
  let state='new',service=null,signer=null,ownedClients=null,starting=null,cleaning=null,closing=null;
  let ownedRegistration=null,bootstrapOwner=null,certificateIssuer=null;
+ let awsReaders=null,taskProof=null,taskAuthority=null,pendingStartup=null,lateCleanupError=null;
+ const pendingMaterial=new Set(),pendingExternal=new Set();
  const cancellation=new AbortController();
  const available=()=>state==='running'&&service?.available()===true&&
   bootstrapOwner?.available()===true;
+ function track(set,promise){
+  set.add(promise);
+  promise.then(()=>set.delete(promise),()=>set.delete(promise));
+  return promise;
+ }
 
  async function clients(){
   if(awsClients)return awsClients;
   const region=c.taskAuthority.clusterArn.split(':')[3];
-  const [{ECSClient},{EC2Client},{KMSClient}]=await Promise.all([
-   import('@aws-sdk/client-ecs'),import('@aws-sdk/client-ec2'),import('@aws-sdk/client-kms')]);
+  const [{ECSClient},{EC2Client},{KMSClient}]=await track(pendingExternal,Promise.all([
+   import('@aws-sdk/client-ecs'),import('@aws-sdk/client-ec2'),import('@aws-sdk/client-kms')]));
   checkSignal(cancellation.signal);
-  const created={};
+  const created={};ownedClients=created;
   try{
    created.ecs=new ECSClient({region});created.ec2=new EC2Client({region});
    created.kms=new KMSClient({region});
-  }catch{
-   for(const client of Object.values(created))try{client.destroy?.();}catch{}
-   throw fault();
-  }
-  ownedClients=created;
+  }catch{throw fault();}
   return ownedClients;
  }
  function cleanup(){
   if(cleaning)return cleaning;
   cleaning=(async()=>{
    cancellation.abort();
-   let failure;
-   try{signer?.close();}catch(error){failure=error;}
-   const held=service;service=null;
-   try{await held?.close();}catch(error){failure??=error;}
-   try{bootstrapOwner?.close();}catch(error){failure??=error;}
-   bootstrapOwner=null;
-   try{certificateIssuer?.close();}catch(error){failure??=error;}
-   certificateIssuer=null;
-   try{ownedRegistration?.close();}catch(error){failure??=error;}
-   ownedRegistration=null;
-   const clientsToDestroy=ownedClients;ownedClients=null;
-   if(clientsToDestroy)for(const client of Object.values(clientsToDestroy)){
-    try{client.destroy?.();}catch(error){failure??=error;}
+   const receipts={},errors=[];
+   async function closeChild(name,child,requireReceipt=true){
+    if(!child)return;
+    if(typeof child.close!=='function'){errors.push(name);return;}
+    const raw=track(pendingExternal,Promise.resolve().then(()=>child.close()));
+    let timer;
+    const bounded=await Promise.race([
+     raw.then(value=>({settled:true,value}),()=>({settled:true,error:true})),
+     new Promise(resolve=>{timer=setTimeout(()=>resolve({settled:false}),2500);timer.unref?.();})
+    ]);
+    clearTimeout(timer);
+    if(!bounded.settled||bounded.error){errors.push(name);return;}
+    if(requireReceipt){
+     const value=bounded.value;
+     if(!value||value.schemaVersion!==1||
+        !['CLEAN','CLEANUP_UNKNOWN'].includes(value.state)){errors.push(name);return;}
+     if(value.state==='CLEAN'){
+      const valid=name==='service'?value.listenerStopped===true&&value.pendingRequests===0:
+       name==='registration'?value.pendingTransactions===0&&value.pendingQueries===0&&
+        value.pendingBorrows===0&&value.uncertain===false:
+       value.pendingOperations===0;
+      if(!valid){errors.push(name);return;}
+     }
+     receipts[name]=value;
+    }
    }
-   if(failure)throw failure;
+   await closeChild('service',service);
+   await closeChild('bootstrapOwner',bootstrapOwner);
+   await closeChild('taskAuthority',taskAuthority);
+   await closeChild('taskProof',taskProof);
+   await closeChild('awsReaders',awsReaders);
+   await closeChild('signer',signer);
+   await closeChild('registration',ownedRegistration);
+   await closeChild('certificateIssuer',certificateIssuer,false);
+   const clientsToDestroy=ownedClients;ownedClients=null;
+   if(clientsToDestroy)for(const [name,client] of Object.entries(clientsToDestroy)){
+    if(typeof client.destroy!=='function'){errors.push(`client:${name}`);continue;}
+    const raw=track(pendingExternal,Promise.resolve().then(()=>client.destroy()));
+    let timer;
+    const result=await Promise.race([raw.then(()=>true,()=>false),
+     new Promise(resolve=>{timer=setTimeout(()=>resolve(false),2500);timer.unref?.();})]);
+    clearTimeout(timer);
+    if(!result)errors.push(`client:${name}`);
+   }
+   const childReceipts=Object.freeze({...receipts});
+   const pendingServiceOperations=receipts.service?.pendingRequests??0;
+   const pendingStartupCount=pendingStartup===null?0:1;
+   const pendingExternalOperations=pendingExternal.size;
+   const pendingMaterialCount=pendingMaterial.size;
+   const listenerStopped=receipts.service?.listenerStopped??service===null;
+   const childrenClean=Object.values(receipts).every(value=>value.state==='CLEAN');
+   const clean=errors.length===0&&lateCleanupError===null&&childrenClean&&listenerStopped&&
+    pendingStartupCount===0&&pendingExternalOperations===0&&pendingMaterialCount===0&&
+    pendingServiceOperations===0;
+   const receipt=Object.freeze({schemaVersion:1,state:clean?'CLEAN':'CLEANUP_UNKNOWN',
+    listenerStopped,pendingStartup:pendingStartupCount,pendingMaterial:pendingMaterialCount,
+    pendingExternalOperations,pendingServiceOperations,childReceipts,
+    cleanupErrors:Object.freeze([...errors])});
+   if(!clean){lateCleanupError??=cleanupUnknown(receipt);throw lateCleanupError;}
+   return receipt;
   })().finally(()=>{cleaning=null;});
   return cleaning;
  }
@@ -195,24 +238,26 @@ export function createTemporalIssuerEntrypoint({configuration,registrationPool,s
     ...(kmsCommands===undefined?{}:{commands:kmsCommands}),now});
    // Actual GetPublicKey must match the pinned RSA JWK before reading any TLS
    // private material, constructing the listener, or accepting a request.
-   await signer.initialize({signal});checkSignal(signal);
+   await track(pendingExternal,signer.initialize({signal}));checkSignal(signal);
    const readers=createTemporalIssuerAwsReaders({ecsClient:sdk.ecs,ec2Client:sdk.ec2});
+   awsReaders=readers;
    const registration=registrationPool===undefined?serviceTaskRegistration:
     createTemporalIssuerServiceTaskRegistrationPg({pool:registrationPool,
      expectedRole:c.registrationRole});
    if(registrationPool!==undefined)ownedRegistration=registration;
-   const readiness=await registration.probe({signal});checkSignal(signal);
+   const readiness=await track(pendingExternal,registration.probe({signal}));checkSignal(signal);
    if(!exact(readiness,['schemaVersion','state'])||readiness.schemaVersion!==1||
       readiness.state!=='READY')throw fault();
    const authority=createTemporalIssuerTaskAuthority({configuration:c.taskAuthority,
     ...readers,bindings:registration,now});
+   taskAuthority=authority;
    const tls={};let caKey=null,createdService=null;
    let listenStarted=false;
    const wipe=()=>{for(const value of Object.values(tls))value.fill(0);caKey?.fill(0);};
    signal.addEventListener('abort',wipe,{once:true});
    try{
     for(const [name,key,maxBytes] of [['key','keyFile',16384],['cert','certFile',32768],['ca','caFile',32768]]){
-     tls[name]=await boundedMaterialRead(readMaterial,c.tls[key],maxBytes,signal);
+     tls[name]=await boundedMaterialRead(readMaterial,c.tls[key],maxBytes,signal,pendingMaterial);
      checkSignal(signal);
     }
     // The same pinned CA is used by the mTLS listener and the task-local CSR
@@ -224,13 +269,14 @@ export function createTemporalIssuerEntrypoint({configuration,registrationPool,s
      ca=new X509Certificate(tls.ca);
     }catch{throw fault();}
     if(!ca.ca||createHash('sha256').update(ca.raw).digest('hex')!==c.bootstrap.caSha256)throw fault();
-    caKey=await boundedMaterialRead(readMaterial,c.bootstrap.caKeyFile,32768,signal);
+    caKey=await boundedMaterialRead(readMaterial,c.bootstrap.caKeyFile,32768,signal,pendingMaterial);
     checkSignal(signal);
     certificateIssuer=createTemporalServiceClientCertificateIssuerFromMaterial({
      caPem:tls.ca,keyPem:caKey,caSha256:c.bootstrap.caSha256,now});
-    const taskProof=createTemporalIssuerAwsTaskProof({configuration:c.taskAuthority,...readers,now});
+    const proofOwner=createTemporalIssuerAwsTaskProof({configuration:c.taskAuthority,...readers,now});
+    taskProof=proofOwner;
     bootstrapOwner=createTemporalIssuerBootstrapOwner({configuration:c.taskAuthority,
-     taskProof,registration,certificateIssuer,now,
+     taskProof:proofOwner,registration,certificateIssuer,now,
      maxRequestMs:c.service.bootstrapMaxRequestMs-1000});
     createdService=serviceFactory({configuration:c.service,taskAuthority:authority,
      sign:(input,context)=>signer.sign(input,context),publicJwk:c.signer.publicJwk,
@@ -239,33 +285,49 @@ export function createTemporalIssuerEntrypoint({configuration,registrationPool,s
        typeof createdService?.available!=='function')throw fault();
     service=createdService;
     listenStarted=true;
-    await createdService.listen({tls,host:c.listen.host,port:c.listen.port});
+    await track(pendingExternal,createdService.listen({tls,host:c.listen.host,port:c.listen.port}));
     checkSignal(signal);
    }finally{
     signal.removeEventListener('abort',wipe);wipe();
     // Retain the local reference: timeout cleanup may have cleared `service`
     // before an uncooperative listen promise completed and opened its port.
     if(listenStarted&&(signal.aborted||state==='closed')){
-     await Promise.resolve().then(()=>createdService.close()).catch(()=>{});
+     const receipt=await track(pendingExternal,Promise.resolve().then(()=>createdService.close()));
+     if(receipt?.schemaVersion!==1||receipt.state!=='CLEAN'||
+        receipt.listenerStopped!==true||receipt.pendingRequests!==0)throw cleanupUnknown(
+      Object.freeze({schemaVersion:1,state:'CLEANUP_UNKNOWN',listenerStopped:receipt?.listenerStopped===true,
+       pendingStartup:1,pendingMaterial:pendingMaterial.size,
+       pendingExternalOperations:pendingExternal.size,pendingServiceOperations:receipt?.pendingRequests??1,
+       childReceipts:Object.freeze({service:receipt}),cleanupErrors:Object.freeze(['lateService'])}));
     }
    }
    if(state!=='starting'||createdService.available()!==true)throw fault();
    state='running';return Object.freeze({available:true});
   })();
-  // Late completion after a timeout never transitions readiness, and gets one
-  // more cleanup pass even if the HTTPS listen promise settled after abort.
-  operation.catch(()=>{}).finally(()=>{if(state==='closed')cleanup().catch(()=>{});});
+  // The raw startup operation can outlive the raced deadline. Keep it in the
+  // retirement receipt until it actually settles, then retain any late cleanup
+  // failure rather than suppressing a second listener or material owner.
+  pendingStartup=operation;
+  const afterStartup=()=>{
+   pendingStartup=null;
+   if(state==='closed')cleanup().catch(error=>{lateCleanupError??=error;});
+  };
+  operation.then(afterStartup,afterStartup);
   starting=Promise.race([operation,aborted]);
   try{return await starting;}
-  catch{state='closed';await cleanup().catch(()=>{});throw fault();}
+  catch{
+   state='closed';
+   await cleanup();
+   throw fault();
+  }
   finally{clearTimeout(deadline);signal.removeEventListener('abort',stop);starting=null;}
  }
  function close(){
   if(closing)return closing;
-  state='closed';cancellation.abort();signer?.close();
+  state='closed';cancellation.abort();
   closing=(async()=>{
    if(starting)try{await starting;}catch{}
-   await cleanup();
+   return cleanup();
   })();
   return closing;
  }

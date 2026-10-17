@@ -89,11 +89,27 @@ const ROW=`task_arn,role,host(peer_ipv4) AS peer_ipv4,revision,service_arn,
 export function createTemporalIssuerServiceTaskRegistrationPg({pool,expectedRole}={}){
  if(typeof pool?.connect!=='function'||typeof expectedRole!=='string'||
     !/^[a-z][a-z0-9_]{2,62}$/u.test(expectedRole))throw refused();
- let closed=false;
+ let closed=false,uncertain=false,cleanupUnknownSticky=false;
+ const pendingTransactions=new Set(),pendingQueries=new Set(),pendingBorrows=new Set();
  const isClosed=()=>closed;
+ function track(set,promise){
+  set.add(promise);
+  promise.then(()=>set.delete(promise),()=>set.delete(promise));
+  return promise;
+ }
+ function query(client,text,values){
+  const pending=track(pendingQueries,Promise.resolve().then(()=>client.query({text,values,
+   query_timeout:3000})));
+  // A client-side timeout or transport error does not prove the primary server
+  // stopped processing that statement, even if a later ROLLBACK is acknowledged.
+  pending.then(undefined,()=>{uncertain=true;});
+  return pending;
+ }
  async function borrow(signal){
   assertActive(isClosed,signal);
-  const pending=Promise.resolve().then(()=>pool.connect());
+  const pending=track(pendingBorrows,Promise.resolve().then(()=>pool.connect()));
+  let borrowSettled=false;
+  pending.then(()=>{borrowSettled=true;},()=>{borrowSettled=true;});
   let timer,abort;
   const stopped=new Promise((_,reject)=>{
    timer=setTimeout(()=>reject(unavailable()),2000);timer.unref?.();
@@ -101,20 +117,20 @@ export function createTemporalIssuerServiceTaskRegistrationPg({pool,expectedRole
   });
   try{return await Promise.race([pending,stopped]);}
   catch(error){
+   if(!borrowSettled)uncertain=true;
    // Return a client that becomes available only after the deadline.
    pending.then(client=>{try{client.release(unavailable());}catch{}},()=>{});
    throw error;
   }finally{clearTimeout(timer);signal?.removeEventListener('abort',abort);}
  }
- async function transaction(body,signal){
+ async function executeTransaction(body,signal){
   assertActive(isClosed,signal);
   let client,begun=false,committing=false,reusable=false,failure,result;
   try{
    client=await borrow(signal);assertActive(isClosed,signal);
    // pg 8.23 supports per-query query_timeout. Apply it before BEGIN so a
    // network-stalled BEGIN/COMMIT has a deadline even before SET LOCAL runs.
-   const boundedClient={query:(text,values)=>client.query({text,values,
-    query_timeout:3000})};
+   const boundedClient={query:(text,values)=>query(client,text,values)};
    await boundedClient.query('BEGIN TRANSACTION READ WRITE');begun=true;
    await boundedClient.query("SET LOCAL statement_timeout = '3s'");
    await boundedClient.query("SET LOCAL lock_timeout = '1s'");
@@ -126,17 +142,23 @@ export function createTemporalIssuerServiceTaskRegistrationPg({pool,expectedRole
    committing=true;await boundedClient.query('COMMIT');reusable=true;
    assertActive(isClosed,signal);
   }catch(error){
+   if(committing||pendingQueries.size>0||pendingBorrows.size>0)uncertain=true;
    failure=committing?unknown():
     error?.code==='TEMPORAL_ISSUER_REGISTRATION_REFUSED'?error:unavailable();
    // Roll back best-effort, then discard on every failure. In particular a
    // client-side query timeout does not prove the server stopped its statement.
-   if(begun&&!committing)try{await client.query({text:'ROLLBACK',query_timeout:3000});}catch{}
+   if(begun&&!committing)try{await query(client,'ROLLBACK');}
+    catch{uncertain=true;}
   }finally{
    if(client)try{client.release(reusable?undefined:failure??unavailable());}
-    catch{failure??=unavailable();}
+    catch{uncertain=true;failure??=unavailable();}
   }
   if(failure)throw failure;
   return result;
+ }
+ function transaction(body,signal){
+  const running=executeTransaction(body,signal);
+  return track(pendingTransactions,running);
  }
  async function readTaskCurrent({role,taskArn,signal}={}){
   try{
@@ -161,6 +183,34 @@ export function createTemporalIssuerServiceTaskRegistrationPg({pool,expectedRole
     r.rolsuper AS superuser,r.rolbypassrls AS bypass_rls,
     r.rolcreatedb AS create_db,r.rolcreaterole AS create_role,
     r.rolinherit AS inherit_role,pg_get_userbyid(c.relowner) AS table_owner,
+    pg_get_userbyid(n.nspowner) AS schema_owner,
+    pg_has_role(current_user,c.relowner,'MEMBER') AS table_owner_member,
+    pg_has_role(current_user,n.nspowner,'MEMBER') AS schema_owner_member,
+    pg_has_role(current_user,c.relowner,'SET') AS table_owner_set,
+    pg_has_role(current_user,n.nspowner,'SET') AS schema_owner_set,
+    EXISTS(SELECT 1 FROM pg_auth_members m WHERE m.member=r.oid OR m.roleid=r.oid)
+      AS role_membership,
+    EXISTS(SELECT 1 FROM aclexplode(coalesce(n.nspacl,acldefault('n',n.nspowner))) acl
+      WHERE acl.grantee=0) AS public_schema_acl,
+    EXISTS(SELECT 1 FROM aclexplode(coalesce(c.relacl,acldefault('r',c.relowner))) acl
+      WHERE acl.grantee=0) AS public_table_acl,
+    EXISTS(SELECT 1 FROM pg_attribute a CROSS JOIN LATERAL aclexplode(a.attacl) acl
+      WHERE a.attrelid=c.oid AND a.attnum>0 AND NOT a.attisdropped AND acl.grantee=0)
+      AS public_column_acl,
+    EXISTS(SELECT 1 FROM aclexplode(coalesce(n.nspacl,acldefault('n',n.nspowner))) acl
+      WHERE acl.grantee NOT IN (n.nspowner,r.oid)) AS other_schema_acl,
+    EXISTS(SELECT 1 FROM aclexplode(coalesce(c.relacl,acldefault('r',c.relowner))) acl
+      WHERE acl.grantee NOT IN (c.relowner,r.oid)) AS other_table_acl,
+    EXISTS(SELECT 1 FROM pg_attribute a CROSS JOIN LATERAL aclexplode(a.attacl) acl
+      WHERE a.attrelid=c.oid AND a.attnum>0 AND NOT a.attisdropped AND
+        acl.grantee NOT IN (c.relowner,r.oid)) AS other_column_acl,
+    EXISTS(SELECT 1 FROM aclexplode(coalesce(n.nspacl,acldefault('n',n.nspowner))) acl
+      WHERE acl.grantee=r.oid AND acl.is_grantable) AS issuer_schema_grant_option,
+    EXISTS(SELECT 1 FROM aclexplode(coalesce(c.relacl,acldefault('r',c.relowner))) acl
+      WHERE acl.grantee=r.oid AND acl.is_grantable) AS issuer_table_grant_option,
+    EXISTS(SELECT 1 FROM pg_attribute a CROSS JOIN LATERAL aclexplode(a.attacl) acl
+      WHERE a.attrelid=c.oid AND a.attnum>0 AND NOT a.attisdropped AND
+        acl.grantee=r.oid AND acl.is_grantable) AS issuer_column_grant_option,
     has_schema_privilege(current_user,'meri_service_identity','USAGE') AS schema_usage,
     has_schema_privilege(current_user,'meri_service_identity','CREATE') AS schema_create,
     has_table_privilege(current_user,'meri_service_identity.service_task_registrations','SELECT') AS table_select,
@@ -168,20 +218,33 @@ export function createTemporalIssuerServiceTaskRegistrationPg({pool,expectedRole
     has_table_privilege(current_user,'meri_service_identity.service_task_registrations','UPDATE') AS table_update,
     has_table_privilege(current_user,'meri_service_identity.service_task_registrations','DELETE') AS table_delete,
     has_table_privilege(current_user,'meri_service_identity.service_task_registrations','TRUNCATE') AS table_truncate,
+    has_table_privilege(current_user,'meri_service_identity.service_task_registrations','TRIGGER') AS table_trigger,
+    has_table_privilege(current_user,'meri_service_identity.service_task_registrations','REFERENCES') AS table_references,
+    has_any_column_privilege(current_user,c.oid,'REFERENCES') AS column_references,
+    EXISTS(SELECT 1 FROM pg_attribute a WHERE a.attrelid=c.oid AND a.attnum>0
+      AND NOT a.attisdropped AND a.attname NOT IN
+        ('certificate_sha256','expires_at_ms','proof_observed_at_ms','generation','updated_at','revoked_at')
+      AND has_column_privilege(current_user,c.oid,a.attnum,'UPDATE')) AS unexpected_column_update,
     has_column_privilege(current_user,'meri_service_identity.service_task_registrations','certificate_sha256','UPDATE') AS cert_update,
     has_column_privilege(current_user,'meri_service_identity.service_task_registrations','expires_at_ms','UPDATE') AS expiry_update,
     has_column_privilege(current_user,'meri_service_identity.service_task_registrations','proof_observed_at_ms','UPDATE') AS proof_update,
     has_column_privilege(current_user,'meri_service_identity.service_task_registrations','generation','UPDATE') AS generation_update,
     has_column_privilege(current_user,'meri_service_identity.service_task_registrations','updated_at','UPDATE') AS timestamp_update,
     has_column_privilege(current_user,'meri_service_identity.service_task_registrations','revoked_at','UPDATE') AS revoke_update
-    FROM pg_roles r CROSS JOIN pg_class c
+    FROM pg_roles r CROSS JOIN pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
     WHERE r.rolname=current_user AND c.oid='meri_service_identity.service_task_registrations'::regclass`);
    if(grants?.rows?.length!==1)throw unavailable();
    const g=grants.rows[0];
-   if(Object.keys(g).length!==21||g.session_role!==expectedRole||g.current_role!==expectedRole||
-      g.table_owner===expectedRole||
+   if(Object.keys(g).length!==40||g.session_role!==expectedRole||g.current_role!==expectedRole||
+      g.table_owner===expectedRole||g.schema_owner===expectedRole||
       ['superuser','bypass_rls','create_db','create_role','inherit_role',
-       'schema_create','table_update','table_delete','table_truncate'].some(key=>g[key]!==false)||
+       'schema_create','table_update','table_delete','table_truncate',
+       'table_trigger','table_references','column_references','unexpected_column_update',
+       'role_membership','table_owner_member','schema_owner_member',
+       'table_owner_set','schema_owner_set','public_schema_acl','public_table_acl',
+       'public_column_acl','other_schema_acl','other_table_acl','other_column_acl',
+       'issuer_schema_grant_option','issuer_table_grant_option',
+       'issuer_column_grant_option'].some(key=>g[key]!==false)||
       ['schema_usage','table_select','table_insert','cert_update','expiry_update',
        'proof_update','generation_update','timestamp_update','revoke_update'].some(key=>g[key]!==true))
     throw unavailable();
@@ -289,5 +352,17 @@ export function createTemporalIssuerServiceTaskRegistrationPg({pool,expectedRole
   return revoked();
  }
  return Object.freeze({probe,readTaskCurrent,readCurrent,registerCurrent,revokeTask,
-  close(){closed=true;},available:()=>!closed});
+  close(){
+   closed=true;
+   const pendingTransactionsCount=pendingTransactions.size;
+   const pendingQueriesCount=pendingQueries.size;
+   const pendingBorrowsCount=pendingBorrows.size;
+   if(pendingTransactionsCount>0||pendingQueriesCount>0||pendingBorrowsCount>0)
+    cleanupUnknownSticky=true;
+   return Object.freeze({schemaVersion:1,
+    state:uncertain||cleanupUnknownSticky?
+     'CLEANUP_UNKNOWN':'CLEAN',
+    pendingTransactions:pendingTransactionsCount,pendingQueries:pendingQueriesCount,
+    pendingBorrows:pendingBorrowsCount,uncertain});
+  },available:()=>!closed});
 }

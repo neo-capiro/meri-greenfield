@@ -101,11 +101,16 @@ test('close aborts a pending KMS Sign and cannot release a late signature',async
  const pending=signer.sign(message);
  await new Promise(resolve=>setImmediate(resolve));
  assert.equal(calls.length,2);
- signer.close();
+ assert.equal(signer.close().state,'CLEANUP_UNKNOWN');
  await failure(pending);
+ const unresolved=signer.close();
+ assert.equal(unresolved.state,'CLEANUP_UNKNOWN');
+ assert.ok(unresolved.pendingOperations>0);
  assert.equal(calls[1].options.abortSignal.aborted,true);
  complete({KeyId:KEY_ARN,SigningAlgorithm:'RSASSA_PKCS1_V1_5_SHA_256',
   Signature:localSign('sha256',message,{key:keys.privateKey,padding:constants.RSA_PKCS1_PADDING})});
+ await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(signer.close(),unresolved);
  await failure(signer.sign(message));
 });
 
@@ -116,10 +121,14 @@ test('close aborts a pending public-key preflight and rejects its late result',a
  const pending=signer.initialize();
  await new Promise(resolve=>setImmediate(resolve));
  assert.equal(calls.length,1);
- signer.close();
+ assert.equal(signer.close().state,'CLEANUP_UNKNOWN');
  await failure(pending);
+ const unresolved=signer.close();
+ assert.equal(unresolved.state,'CLEANUP_UNKNOWN');
  assert.equal(calls[0].options.abortSignal.aborted,true);
  complete(publicReply());
+ await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(signer.close(),unresolved);
  await failure(signer.initialize());
 });
 

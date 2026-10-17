@@ -28,7 +28,7 @@ export function parseTemporalIssuerDeliveryConfiguration(raw){
   if(raw!==null&&typeof raw==='object'&&parsedConfigurations.has(raw))return raw;
   if(!fields(raw,['schemaVersion','issuerOrigin','audience','namespace','identity','publicKey','tls','requestTimeoutMs','maxReplyBytes'])||raw.schemaVersion!==1)refused();
   const url=new URL(raw.issuerOrigin);
-  if(url.protocol!=='https:'||url.origin!==raw.issuerOrigin||url.pathname!=='/'||url.search||url.hash||url.username||url.password||
+  if(url.protocol!=='https:'||url.port!=='8445'||url.origin!==raw.issuerOrigin||url.pathname!=='/'||url.search||url.hash||url.username||url.password||
      !/^[a-z0-9.-]+$/u.test(url.hostname)||raw.audience!=='meri-temporal'||raw.namespace!=='meri')refused();
   const identity=raw.identity;
   if(!fields(identity,['role','subject','workloadPrincipal'])||!['control','temporal-worker'].includes(identity.role)||

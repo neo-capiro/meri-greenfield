@@ -2,9 +2,19 @@ import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import test from 'node:test';
 import {
+  createTemporalIssuerAwsReaders,
+  createTemporalIssuerAwsTaskProof,
   createTemporalIssuerTaskAuthority,
   parseTemporalIssuerTaskAuthorityConfiguration,
 } from './task-authority.mjs';
+
+function deferred() {
+  let resolve, reject;
+  const promise = new Promise((yes, no) => { resolve = yes; reject = no; });
+  return {promise, resolve, reject};
+}
+
+const turn = () => new Promise(resolve => setImmediate(resolve));
 
 const account = '123456789012';
 const region = 'us-east-1';
@@ -249,4 +259,115 @@ test('malformed current source shape and expired binding cannot issue lease', as
   const g = fixture();
   g.binding.extra = 'not a closed authority fact';
   assert.equal((await g.authority.readCurrent({peer: g.peer, identity: g.identity})).state, 'REVOKED');
+});
+
+test('reader close tracks a held dynamic import and blocks a late SDK send', async () => {
+  const loading = deferred();
+  let sends = 0;
+  const readers = createTemporalIssuerAwsReaders({
+    ecsClient: {send() { sends += 1; return Promise.resolve({}); }},
+    ec2Client: {send() { sends += 1; return Promise.resolve({}); }},
+    loadModule: () => loading.promise,
+  });
+  const first = readers.ecs.describeServices({cluster, services: []});
+  await turn();
+  const receipt = readers.close();
+  assert.deepEqual(receipt, {schemaVersion: 1, state: 'CLEANUP_UNKNOWN', pendingOperations: 1});
+  loading.resolve({DescribeServicesCommand: class { constructor(input) { this.input = input; } }});
+  await assert.rejects(first, {code: 'TEMPORAL_ISSUER_TASK_AUTHORITY_UNAVAILABLE'});
+  assert.equal(sends, 0);
+  await assert.rejects(readers.ecs.describeTasks({cluster, tasks: []}),
+    {code: 'TEMPORAL_ISSUER_TASK_AUTHORITY_UNAVAILABLE'});
+  assert.strictEqual(readers.close(), receipt);
+});
+
+test('reader close retains a held SDK send even when its AbortSignal is ignored', async () => {
+  const sending = deferred();
+  let sendSignal;
+  const readers = createTemporalIssuerAwsReaders({
+    ecsClient: {send(_command, options) { sendSignal = options.abortSignal; return sending.promise; }},
+    ec2Client: {send() { throw new Error('unexpected EC2'); }},
+    loadModule: async () => ({DescribeServicesCommand: class {}}),
+  });
+  const first = readers.ecs.describeServices({cluster, services: []});
+  await turn();
+  assert.equal(sendSignal.aborted, false);
+  const receipt = readers.close();
+  assert.deepEqual(receipt, {schemaVersion: 1, state: 'CLEANUP_UNKNOWN', pendingOperations: 1});
+  assert.equal(sendSignal.aborted, true);
+  sending.resolve({services: []});
+  await first;
+  assert.strictEqual(readers.close(), receipt);
+});
+
+test('direct AWS proof close tracks an uncooperative cloud read', async () => {
+  const f = fixture();
+  const serviceRead = deferred();
+  f.ports.ecs.describeServices = () => serviceRead.promise;
+  const proof = createTemporalIssuerAwsTaskProof({configuration: f.config, ecs: f.ports.ecs,
+    ec2: f.ports.ec2, now: () => f.nowMs});
+  const reading = proof.readCurrent({role, taskArn, peerIPv4: f.peer.remoteAddress});
+  await turn();
+  const receipt = proof.close();
+  assert.deepEqual(receipt, {schemaVersion: 1, state: 'CLEANUP_UNKNOWN', pendingOperations: 1});
+  serviceRead.resolve({services: [f.service], failures: []});
+  assert.equal((await reading).state, 'UNAVAILABLE');
+  assert.deepEqual(f.calls, []);
+  await assert.rejects(proof.readCurrent({role, taskArn, peerIPv4: f.peer.remoteAddress}),
+    {code: 'TEMPORAL_ISSUER_TASK_AUTHORITY_UNAVAILABLE'});
+});
+
+test('task authority close tracks held durable binding and never starts cloud proof afterward', async () => {
+  const f = fixture();
+  const bindingRead = deferred();
+  f.ports.bindings.readCurrent = () => bindingRead.promise;
+  const authority = createTemporalIssuerTaskAuthority({configuration: f.config,
+    ecs: f.ports.ecs, ec2: f.ports.ec2, bindings: f.ports.bindings, now: () => f.nowMs});
+  const reading = authority.readCurrent({peer: f.peer, identity: f.identity});
+  await turn();
+  const receipt = authority.close();
+  assert.deepEqual(receipt, {schemaVersion: 1, state: 'CLEANUP_UNKNOWN', pendingOperations: 1});
+  bindingRead.resolve(f.binding);
+  assert.equal((await reading).state, 'UNAVAILABLE');
+  assert.deepEqual(f.calls, []);
+  assert.strictEqual(authority.close(), receipt);
+  await assert.rejects(authority.readCurrent({peer: f.peer, identity: f.identity}),
+    {code: 'TEMPORAL_ISSUER_TASK_AUTHORITY_UNAVAILABLE'});
+});
+
+test('close after cloud proof resolves cannot start a second durable binding read',async()=>{
+ const f=fixture();let clockReads=0,authority,closeReceipt;
+ authority=createTemporalIssuerTaskAuthority({configuration:f.config,
+  ecs:f.ports.ecs,ec2:f.ports.ec2,bindings:f.ports.bindings,now:()=>{
+   clockReads++;
+   // The third read is the final timestamp inside the AWS proof. Schedule
+   // close before the awaiting outer authority can resume its continuation.
+   if(clockReads===3)queueMicrotask(()=>{closeReceipt=authority.close();});
+   return f.nowMs;
+  }});
+ const result=await authority.readCurrent({peer:f.peer,identity:f.identity});
+ assert.equal(result.state,'UNAVAILABLE');
+ assert.equal(closeReceipt.state,'CLEANUP_UNKNOWN');
+ assert.equal(f.calls.filter(call=>call==='binding').length,1);
+ assert.strictEqual(authority.close(),closeReceipt);
+});
+
+test('an already-aborted proof or authority read returns UNAVAILABLE without I/O',async()=>{
+ const f=fixture(),signal=AbortSignal.abort();
+ const proof=createTemporalIssuerAwsTaskProof({configuration:f.config,
+  ecs:f.ports.ecs,ec2:f.ports.ec2,now:()=>f.nowMs});
+ assert.equal((await proof.readCurrent({role,taskArn,peerIPv4:f.peer.remoteAddress,signal})).state,
+  'UNAVAILABLE');
+ assert.equal((await f.authority.readCurrent({peer:f.peer,identity:f.identity,signal})).state,
+  'UNAVAILABLE');
+ assert.deepEqual(f.calls,[]);
+ assert.deepEqual(proof.close(),{schemaVersion:1,state:'CLEAN',pendingOperations:0});
+ assert.deepEqual(f.authority.close(),{schemaVersion:1,state:'CLEAN',pendingOperations:0});
+});
+
+test('idle task readers and authorities close cleanly without starting work', () => {
+  const f = fixture();
+  assert.deepEqual(f.authority.close(), {schemaVersion: 1, state: 'CLEAN', pendingOperations: 0});
+  const readers = createTemporalIssuerAwsReaders({ecsClient: {send() {}}, ec2Client: {send() {}}});
+  assert.deepEqual(readers.close(), {schemaVersion: 1, state: 'CLEAN', pendingOperations: 0});
 });

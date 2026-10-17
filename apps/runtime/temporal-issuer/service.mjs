@@ -27,7 +27,8 @@ const exactIdentity=(a,b)=>own(a,IDENTITY_KEYS)&&own(b,IDENTITY_KEYS)&&
  IDENTITY_KEYS.every(key=>a[key]===b[key]);
 const origin=value=>{
  try{const url=new URL(value);return url.protocol==='https:'&&url.username===''&&url.password===''&&
-  url.search===''&&url.hash===''&&url.pathname==='/'&&url.origin===value&&url.hostname===url.hostname.toLowerCase();}
+  url.search===''&&url.hash===''&&url.pathname==='/'&&url.port==='8445'&&
+  url.origin===value&&url.hostname===url.hostname.toLowerCase();}
  catch{return false;}
 };
 const name=value=>typeof value==='string'&&/^[A-Za-z0-9._:-]{1,128}$/u.test(value);
@@ -156,13 +157,18 @@ function checkedFact(raw,identity,startedAtMs,nowMs,currentnessLeaseMs){
  return raw;
 }
 
-function bounded(call,signal){
+function bounded(call,signal,pendingWork){
  signal.throwIfAborted();
  let interrupt;
  const stopped=new Promise((_,reject)=>{
   interrupt=()=>reject(fault());signal.addEventListener('abort',interrupt,{once:true});
  });
- return Promise.race([Promise.resolve().then(call),stopped]).finally(()=>signal.removeEventListener('abort',interrupt));
+ // Promise.race settles the HTTP request, not the underlying authority, KMS,
+ // or registration operation. Keep the raw promise in the retirement ledger.
+ const raw=Promise.resolve().then(call);
+ pendingWork.add(raw);
+ raw.then(()=>pendingWork.delete(raw),()=>pendingWork.delete(raw));
+ return Promise.race([raw,stopped]).finally(()=>signal.removeEventListener('abort',interrupt));
 }
 
 /** The actual HTTPS boundary. taskAuthority.readCurrent must independently map
@@ -176,7 +182,8 @@ export function createTemporalIssuerService({configuration,taskAuthority,sign,pu
     typeof bootstrapOwner?.redeem!=='function'))throw fault();
  try{validateTemporalIssuerPublicJwk(publicJwk,c.kid);}catch{throw fault();}
  const pinnedPublicJwk=Object.freeze({...publicJwk});
- let closed=false,server=null;const active=new Set();
+ let closed=false,server=null,closing=null,pendingListen=null;
+ const active=new Set(),pendingWork=new Set();
  const available=()=>!closed&&server?.listening===true;
  async function handle(request,response){
   if(closed){refused(response,503);return;}
@@ -204,7 +211,8 @@ export function createTemporalIssuerService({configuration,taskAuthority,sign,pu
     bootstrapBody(body,kind);
     bootstrapValidated=true;
     if(bootstrapOwner.available?.()===false)throw fault();
-    const reply=await bounded(()=>bootstrapOwner[kind](body,{socket:peer,signal:controller.signal}),controller.signal);
+    const reply=await bounded(()=>bootstrapOwner[kind](body,{socket:peer,signal:controller.signal}),
+     controller.signal,pendingWork);
     controller.signal.throwIfAborted();
     if(closed)throw fault();
     headers(response,200,checkedBootstrapReply(reply,body,kind,now()));return;
@@ -212,7 +220,8 @@ export function createTemporalIssuerService({configuration,taskAuthority,sign,pu
    tokenBody(body);
    if(body.issuer!==c.issuerOrigin+'/'||body.namespace!==c.namespace||body.audience!==c.audience)throw fault();
    identity={role:body.role,subject:body.subject,workloadPrincipal:body.workloadPrincipal};
-   const first=checkedFact(await bounded(()=>taskAuthority.readCurrent({peer,identity,signal:controller.signal}),controller.signal),
+   const first=checkedFact(await bounded(()=>taskAuthority.readCurrent({peer,identity,signal:controller.signal}),
+    controller.signal,pendingWork),
     identity,startedAtMs,now(),c.currentnessLeaseMs);
    controller.signal.throwIfAborted();
    if(first.state!=='CURRENT'){
@@ -222,9 +231,11 @@ export function createTemporalIssuerService({configuration,taskAuthority,sign,pu
    const issued=await createTemporalIssuerToken({issuerOrigin:c.issuerOrigin,kid:c.kid,
     publicJwk:pinnedPublicJwk,role:first.identity.role,subject:first.identity.subject,audience:c.audience,
     namespace:c.namespace,nowMs:now(),validUntilMs:first.validUntilMs,
-    sign:input=>bounded(()=>sign(input,{signal:controller.signal,identity:first.identity}),controller.signal)});
+    sign:input=>bounded(()=>sign(input,{signal:controller.signal,identity:first.identity}),
+     controller.signal,pendingWork)});
    controller.signal.throwIfAborted();
-   const second=checkedFact(await bounded(()=>taskAuthority.readCurrent({peer,identity,signal:controller.signal}),controller.signal),
+   const second=checkedFact(await bounded(()=>taskAuthority.readCurrent({peer,identity,signal:controller.signal}),
+    controller.signal,pendingWork),
     identity,startedAtMs,now(),c.currentnessLeaseMs);
    controller.signal.throwIfAborted();
    if(second.state!=='CURRENT'){
@@ -256,19 +267,57 @@ export function createTemporalIssuerService({configuration,taskAuthority,sign,pu
  }
  async function listen({tls,host,port}){
   if(closed||server||!tls||typeof tls!=='object'||!tls.key||!tls.cert||!tls.ca||
-     typeof host!=='string'||!host||!integer(port,1,65535))throw fault();
+     host!=='0.0.0.0'||port!==8445)throw fault();
   // A public JWKS read shares this listener; token POST explicitly requires the
   // completed client-certificate handshake and the fresh server-side binding.
   server=createServer({key:tls.key,cert:tls.cert,ca:tls.ca,requestCert:true,
    rejectUnauthorized:false,minVersion:'TLSv1.3'},(req,res)=>{handle(req,res).catch(()=>refused(res,503));});
-  try{await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(port,host,resolve);});
-   return Object.freeze({address:server.address()});
-  }catch{server.close();server=null;throw fault();}
+  const held=server;
+  const listening=new Promise((resolve,reject)=>{
+   const onError=error=>{held.off('listening',onListening);reject(error);};
+   const onListening=()=>{held.off('error',onError);resolve();};
+   held.once('error',onError);held.once('listening',onListening);
+   try{held.listen(port,host);}catch(error){
+    held.off('error',onError);held.off('listening',onListening);reject(error);
+   }
+  });
+  pendingListen=listening;
+  listening.then(()=>{if(pendingListen===listening)pendingListen=null;},
+   ()=>{if(pendingListen===listening)pendingListen=null;});
+  try{await listening;
+   if(closed)throw fault();
+   return Object.freeze({address:held.address()});
+  }catch{
+   // Keep the failed listener owner for close(). Dropping it here would let
+   // startup report a settled cleanup without its actual close callback.
+   throw fault();
+  }
  }
- async function close(){
+ function close(){
+  if(closing)return closing;
   closed=true;
   for(const operation of active){operation.controller.abort();refused(operation.response,503);}
-  if(server){const held=server;server=null;held.closeAllConnections?.();await new Promise(resolve=>held.close(resolve));}
+  const held=server;server=null;
+  closing=(async()=>{
+   let listenerStopped=true;
+   if(held){
+    let connectionCloseFailed=false;
+    try{held.closeAllConnections?.();}catch{connectionCloseFailed=true;}
+    try{
+     const stopped=new Promise(resolve=>held.close(error=>resolve(error===undefined)));
+     let deadline;
+     const timed=new Promise(resolve=>{
+      deadline=setTimeout(()=>resolve(false),2000);deadline.unref?.();
+     });
+     listenerStopped=(await Promise.race([stopped,timed]))&&!connectionCloseFailed;
+     clearTimeout(deadline);
+    }catch{listenerStopped=false;}
+   }
+   const pendingRequests=active.size+pendingWork.size+(pendingListen===null?0:1);
+   return Object.freeze({schemaVersion:1,state:listenerStopped&&pendingRequests===0?'CLEAN':'CLEANUP_UNKNOWN',
+    listenerStopped,pendingRequests});
+  })();
+  return closing;
  }
  return Object.freeze({handle,listen,close,available});
 }

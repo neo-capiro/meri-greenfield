@@ -46,7 +46,7 @@ function fixture(){
  const otherCa=memoryCa(),otherIssuer=createTemporalServiceClientCertificateIssuerFromMaterial({
   ...otherCa,caSha256:pin(otherCa.caPem),now:()=>NOW});
  const configuration={schemaVersion:1,role:'control',clusterArn:CLUSTER,revision:'rev-1',
-  issuerOrigin:'https://issuer.meri.internal',serverName:'issuer.meri.internal',
+  issuerOrigin:'https://issuer.meri.internal:8445',serverName:'issuer.meri.internal',
   metadataUri:'http://169.254.170.2/v4/abcdef0123456789',peerSubjectCn:CN,
   peerUriBase:BASE,serverCaSha256:caSha256,clientCaSha256:caSha256,
   requestTimeoutMs:2000,totalTimeoutMs:10000,maxReplyBytes:16384};
@@ -102,6 +102,7 @@ test('post-placement bootstrap signs the one-use CSR challenge and returns only 
  assert.equal(f.calls[0].url,'http://169.254.170.2/v4/abcdef0123456789/task');
  assert.deepEqual(f.calls.slice(1).map(item=>new URL(item.url).pathname),[
   '/v1/internal/temporal/bootstrap/challenge','/v1/internal/temporal/bootstrap/redeem']);
+ assert.deepEqual(f.calls.slice(1).map(item=>new URL(item.url).port),['8445','8445']);
  assert.equal(f.redeemBody.taskArn,TASK);
  await assert.rejects(client.bootstrap(),{code:'TEMPORAL_ISSUER_BOOTSTRAP_CLIENT_REFUSED'});
  result.keyPem.fill(0);client.close();f.issuer.close();f.otherIssuer.close();
@@ -127,7 +128,11 @@ test('configuration excludes arbitrary metadata hosts, posted identity and loose
  assert.throws(()=>parseTemporalIssuerBootstrapClientConfiguration({...f.configuration,
   metadataUri:'http://example.com/v4/token'}),{code:'TEMPORAL_ISSUER_BOOTSTRAP_CLIENT_REFUSED'});
  assert.throws(()=>parseTemporalIssuerBootstrapClientConfiguration({...f.configuration,
-  issuerOrigin:'https://issuer.meri.internal/' }),{code:'TEMPORAL_ISSUER_BOOTSTRAP_CLIENT_REFUSED'});
+  issuerOrigin:'https://issuer.meri.internal:8445/' }),{code:'TEMPORAL_ISSUER_BOOTSTRAP_CLIENT_REFUSED'});
+ assert.throws(()=>parseTemporalIssuerBootstrapClientConfiguration({...f.configuration,
+  issuerOrigin:'https://issuer.meri.internal'}),{code:'TEMPORAL_ISSUER_BOOTSTRAP_CLIENT_REFUSED'});
+ assert.throws(()=>parseTemporalIssuerBootstrapClientConfiguration({...f.configuration,
+  issuerOrigin:'https://issuer.meri.internal:8446'}),{code:'TEMPORAL_ISSUER_BOOTSTRAP_CLIENT_REFUSED'});
  assert.throws(()=>parseTemporalIssuerBootstrapClientConfiguration({...f.configuration,
   taskArn:TASK}),{code:'TEMPORAL_ISSUER_BOOTSTRAP_CLIENT_REFUSED'});
  assert.throws(()=>createTemporalIssuerBootstrapClient({configuration:{...f.configuration,
@@ -137,14 +142,48 @@ test('configuration excludes arbitrary metadata hosts, posted identity and loose
 });
 
 test('close aborts a pending metadata read without generating or releasing a task key',async()=>{
- const f=fixture();let destroyed=false;
- const metadataRequest=()=>{const call=new EventEmitter();call.end=()=>{};
+ const f=fixture();let destroyed=false,rawCall;
+ const metadataRequest=()=>{const call=new EventEmitter();rawCall=call;call.end=()=>{};
   call.destroy=()=>{destroyed=true;call.emit('error',Error('closed'));};return call;};
  const client=createTemporalIssuerBootstrapClient({configuration:f.configuration,
   serverCaPem:f.caPem,clientCaPem:f.caPem,metadataRequest,
   request:()=>assert.fail('issuer request after cancellation'),now:()=>NOW});
- const pending=client.bootstrap();client.close();
+ const pending=client.bootstrap();
+ const receipt=client.close();
+ assert.equal(receipt.state,'CLEANUP_UNKNOWN');
  await assert.rejects(pending,{code:'TEMPORAL_ISSUER_BOOTSTRAP_CLIENT_REFUSED'});
  assert.equal(destroyed,true);assert.equal(client.available(),false);
+ assert.equal(client.close().state,'CLEANUP_UNKNOWN');
+ rawCall.emit('close');
+ assert.equal(client.close(),receipt);
+ f.issuer.close();f.otherIssuer.close();
+});
+
+test('a late TLS socket close cannot turn an aborted certificate bootstrap into CLEAN',async()=>{
+ const f=fixture();let heldSocket,heldCall,lateSocketDestroy=0;
+ const metadataRequest=(_url,_options,callback)=>{
+  const call=new EventEmitter();call.destroy=()=>call.emit('error',Error('destroyed'));
+  call.end=()=>{response(callback,{TaskARN:TASK});
+   queueMicrotask(()=>call.emit('close'));};return call;
+ };
+ const request=()=>{
+  const call=new EventEmitter(),socket=new EventEmitter();
+  socket.destroy=()=>{lateSocketDestroy++;socket.emit('close');};heldCall=call;heldSocket=socket;
+  call.destroy=()=>{call.emit('error',Error('destroyed'));call.emit('close');};
+  call.end=()=>{};
+  return call;
+ };
+ const client=createTemporalIssuerBootstrapClient({configuration:f.configuration,
+  serverCaPem:f.caPem,clientCaPem:f.caPem,metadataRequest,request,now:()=>NOW});
+ const pending=client.bootstrap();
+ for(let n=0;n<20&&!heldSocket;n++)await new Promise(resolve=>setImmediate(resolve));
+ assert.ok(heldSocket);
+ const receipt=client.close();
+ assert.equal(receipt.state,'CLEANUP_UNKNOWN');
+ await assert.rejects(pending,{code:'TEMPORAL_ISSUER_BOOTSTRAP_CLIENT_REFUSED'});
+ assert.ok(heldCall);
+ heldCall.emit('socket',heldSocket);
+ assert.equal(lateSocketDestroy,1);
+ assert.equal(client.close(),receipt);
  f.issuer.close();f.otherIssuer.close();
 });
