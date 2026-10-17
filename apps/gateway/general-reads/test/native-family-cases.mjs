@@ -5,6 +5,12 @@ import {nativeResult,noEstimate} from '../../sources/public-reports/test/fixture
 import {acquisitionFixture,personId} from '../../sources/acquisition-personnel/test/fixtures.mjs';
 import {setup as disclosuresFixture} from '../../sources/disclosures/test/fixture.mjs';
 import {directoryCase,requests as directoryRequests} from '../../sources/legislative-directory/test/fixture.mjs';
+import {storedCase as peCase} from '../../sources/pe-references/test/fixture.mjs';
+import {storedCase as federalCase} from '../../sources/federal-legislation/test/fixture.mjs';
+import {storedCase as stateCase} from '../../sources/state-legislation/test/fixture.mjs';
+import {storedCase as intelligenceCase} from '../../sources/stored-intelligence/test/fixture.mjs';
+import {storedCase as docketCase} from '../../sources/regulatory-dockets/test/fixture.mjs';
+import {storedCase as summaryCase} from '../../sources/intelligence-summary/test/fixture.mjs';
 
 export const DISCLOSURE_FAMILY_CASES=Object.freeze(['search_lda_filings','search_sec_filings','search_fara_registrations'].map(id=>['disclosures',id]));
 
@@ -12,8 +18,15 @@ export const NATIVE_FAMILY_CASES=Object.freeze([
  ['public-reports','search_cbo_cost_estimates'],['public-reports','search_gao_reports'],['public-reports','search_crs_reports'],
  ['acquisition-personnel','search_acquisition_personnel'],['acquisition-personnel','get_acquisition_person'],
  ['legislative-directory','get_committee_roster'],['legislative-directory','list_members'],
+ ['pe-references','get_pe_bills'],['pe-references','get_pe_contractors'],['pe-references','get_pe_report_language'],
+ ['federal-legislation','get_bill_status'],['federal-legislation','search_floor_votes'],
+ ['state-legislation','search_state_bills'],['state-legislation','get_state_legislator'],
+ ['stored-intelligence','search_intel_articles'],['regulatory-dockets','query_regulatory_dockets'],['intelligence-summary','query_intelligence'],
 ]);
-export function nativeFamilyCase(family,id,{request=directoryRequests[id]??(id==='get_acquisition_person'?{id:personId}:{}),actorRole='standard_user'}={}){
+const storedCases={'pe-references':peCase,'federal-legislation':federalCase,'state-legislation':stateCase,'stored-intelligence':intelligenceCase,'regulatory-dockets':docketCase,'intelligence-summary':summaryCase};
+export function nativeFamilyCase(family,id,options={}){
+ if(Object.hasOwn(storedCases,family))return storedCases[family](id,options);
+ const {request=directoryRequests[id]??(id==='get_acquisition_person'?{id:personId}:{}),actorRole='standard_user'}=options;
  if(family==='legislative-directory')return directoryCase(id,{request});
  const scene=billTextCase(),operation={id,version:'0.2.0'},contract=resolveOperationContract(operation),normalizationContext=family==='acquisition-personnel'?{actorRole}:{};
  if(contract.binding.group!==family)throw Error('SYNTHETIC_FAMILY_MISMATCH');

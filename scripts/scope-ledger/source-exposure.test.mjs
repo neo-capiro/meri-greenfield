@@ -16,15 +16,15 @@ function synthetic(){return {catalog:structuredClone(catalog),bindings:CATALOG_O
  adapters:[{operations:[...registered],paths:['synthetic adapter path']}],skills:[],admittedSkills:[],provenance:{}};}
 const refuses=work=>assert.throws(work,error=>error.code==='SOURCE_EXPOSURE_INVALID');
 
-test('96 selected and43 excluded are reconciled separately from33 registered operations',()=>{
+test('96 selected and43 excluded are reconciled separately from43 registered operations',()=>{
  assert.equal(snapshot.rows.length,96);assert.equal(snapshot.counts.selectedSourceReads,82);assert.equal(snapshot.counts.selectedProductOrGoverned,14);
- assert.equal(snapshot.counts.registeredGeneralOperations,33);assert.equal(snapshot.counts.registeredFamilies,20);
- assert.equal(snapshot.counts.generalSelectedSourceReads,31);assert.equal(snapshot.counts.generalSelectedProductStateReads,1);assert.equal(snapshot.counts.generalHistoricalOperations,1);
+ assert.equal(snapshot.counts.registeredGeneralOperations,43);assert.equal(snapshot.counts.registeredFamilies,26);
+ assert.equal(snapshot.counts.generalSelectedSourceReads,41);assert.equal(snapshot.counts.generalSelectedProductStateReads,1);assert.equal(snapshot.counts.generalHistoricalOperations,1);
  assert.equal(snapshot.counts.excludedCapabilities,43);assert.equal(snapshot.counts.live,0);
 });
-test('every existing selected source adapter already has general exposure; remaining51 are genuine adapter gaps',()=>{
+test('every existing selected source adapter already has general exposure; remaining41 are genuine adapter gaps',()=>{
  assert.deepEqual(snapshot.existingAdaptersWithoutGeneralExposure,[]);assert.equal(snapshot.counts.existingSourceAdaptersWithoutGeneralExposure,0);
- assert.equal(snapshot.counts.missingSourceAdapters,51);assert.equal(snapshot.counts.missingAdaptersDeclaredBySkills,33);assert.equal(snapshot.counts.missingAdaptersWithoutSkillDeclaration,18);
+ assert.equal(snapshot.counts.missingSourceAdapters,41);assert.equal(snapshot.counts.missingAdaptersDeclaredBySkills,27);assert.equal(snapshot.counts.missingAdaptersWithoutSkillDeclaration,14);
  const gaps=snapshot.rows.filter(row=>row.kind==='source-read'&&row.state==='adapter-missing');
  for(const gap of gaps){assert.deepEqual(gap.adapterPaths,[]);assert.deepEqual(gap.generalOperations,[]);assert.deepEqual(gap.sourceAdmittedSkills,[]);assert.ok(Array.isArray(gap.requiredContextKeys));}
  assert.deepEqual(snapshot.missingAdapterFamilies.flatMap(row=>row.operations).sort(),gaps.map(row=>row.operation).sort());
@@ -79,7 +79,7 @@ test('directory source is exposed while retained research/Florida scope and zero
  for(const id of ['get_committee_roster','list_members','get_research_portfolio','get_research_portfolio_changes','get_florida_budget_project']){
   assert.equal(row(id).state,'adapter-present');assert.deepEqual(row(id).generalOperations,[id]);
  }
- assert.equal(snapshot.missingAdapterFamilies.length,28);assert.equal(snapshot.counts.live,0);
+ assert.equal(snapshot.missingAdapterFamilies.length,22);assert.equal(snapshot.counts.live,0);
  assert.ok(row('get_committee_roster').adapterPaths.includes('apps/gateway/sources/legislative-directory/handler.mjs'));
  assert.ok(row('list_members').adapterPaths.includes('apps/gateway/general-reads/families/legislative-directory.mjs'));
 });
@@ -90,7 +90,9 @@ test('registered family without adapter fails closed',()=>{
  const input=synthetic();input.adapters[0].operations=input.adapters[0].operations.filter(id=>id!=='get_research_portfolio');refuses(()=>reconcileSourceExposure(input));
 });
 test('a manifest declaration alone never manufactures an adapter or source route',()=>{
- const input=synthetic();input.skills=[{id:'synthetic.skill',operations:['get_bill_status']}];input.admittedSkills=['synthetic.skill'];
+ const input=synthetic();input.families={...input.families};delete input.families['federal-legislation'];
+ input.adapters[0].operations=input.adapters[0].operations.filter(id=>id!=='get_bill_status');
+ input.skills=[{id:'synthetic.skill',operations:['get_bill_status']}];input.admittedSkills=['synthetic.skill'];
  const result=reconcileSourceExposure(input).rows.find(row=>row.id==='get_bill_status');assert.deepEqual(result.declaredBySkills,['synthetic.skill']);assert.deepEqual(result.sourceAdmittedSkills,[]);assert.equal(result.state,'adapter-missing');
 });
 test('duplicate adapter claims and changed selected scope refuse',()=>{

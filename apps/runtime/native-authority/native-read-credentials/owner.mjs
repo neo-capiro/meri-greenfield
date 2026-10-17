@@ -11,8 +11,9 @@ import {allocation} from '../../../gateway/budget/tool-budget-binding.mjs';
 import {retainedCall,credentialProof} from '../../../gateway/sources/retained-reads/call-context.mjs';
 import {GatewayDenied,safeFailure} from '../../../gateway/dispatch/operation-result.mjs';
 import {assertNativeToolAuthority} from './core-client.mjs';
+import {NATIVE_READ_FAMILIES} from '../../../gateway/sources/retained-reads/native-families.mjs';
 const same=(a,b)=>hash(a)===hash(b),refuse=code=>{throw nativeReadFault(code);};
-const GROUPS=new Set(['bill-text','public-reports','acquisition-personnel','disclosures','legislative-directory']);
+const GROUPS=new Set(NATIVE_READ_FAMILIES);
 const selection=({authorizationDecisionId,...rest})=>rest;
 const taskSelection=({operation,inputSha256,authorizationDecisionId,checkedAtMs,expiresAtMs,...rest})=>rest;
 const nativeSelection=({checkedAtMs,expiresAtMs,...rest})=>rest;
@@ -27,7 +28,7 @@ export function createNativeReadCredentialOwner(configuration){
  const available=Boolean(enabled&&c.store&&c.taskVerifier&&c.readCurrentEntry&&token(c.taskCapability)&&approved?.enabled&&allocated&&core?.available===true&&origin&&c.getNativeCredential&&c.getServiceSecret);
  const read=available?storageMethod(c.store,'read'):null,verify=available?storageMethod(c.taskVerifier,'verify'):null,currentCore=available?storageMethod(c.coreAuthority,'readCurrent'):null,pins=new WeakMap();
  function observation(raw){const v=data(own(raw,['binding','subject','operation','request','requestSha256','policyRevision','sourceIds','deadlineMs']));validateShape('RunBinding',v.binding);assertSubject(v.subject,v.binding);readShape('OperationRef',v.operation);
-  const contract=resolveOperationContract(v.operation);if(!GROUPS.has(contract.binding.group)||contract.descriptor.sideEffect!=='none'||contract.descriptor.approvalBoundary!=='none')refuse('ACCESS_DENIED');if(contract.binding.group==='bill-text'&&c.defaultCongress===undefined)refuse('UNAVAILABLE');readShape(contract.binding.input,v.request);
+  const contract=resolveOperationContract(v.operation);if(!GROUPS.has(contract.binding.group)||contract.descriptor.sideEffect!=='none'||contract.descriptor.approvalBoundary!=='none')refuse('ACCESS_DENIED');if(['bill-text','federal-legislation'].includes(contract.binding.group)&&c.defaultCongress===undefined)refuse('UNAVAILABLE');readShape(contract.binding.input,v.request);
   if(!same(v.binding,binding)||v.subject.policyRevision!==v.policyRevision||v.requestSha256!==hash(v.request)||!same([...v.sourceIds].sort(),[...new Set(contract.descriptor.sourceRequirements.map(s=>s.sourceId))].sort())||!Number.isSafeInteger(v.deadlineMs))refuse('ACCESS_DENIED');
   if(!approved.operations.some(op=>same(op,v.operation))||!allocated.manifest.allowedOperations.some(op=>same(op,v.operation)))refuse('ACCESS_DENIED');return v;}
  async function observe(proof,scopeSignal,signal){
@@ -47,7 +48,7 @@ export function createNativeReadCredentialOwner(configuration){
    const began=now(),native=assertNativeToolAuthority(await life.run(signal=>currentCore({credential,signal,deadlineMs:cutoff})),{started:began,now});limit(native.expiresAtMs);
    // Equality is permitted only for the canonical Core UUID principal already captured by native startup. No conversion/mapping.
    if(native.principal.tenantId!==binding.tenantId||native.principal.actorId!==binding.actorId)refuse('UNAVAILABLE');
-   const contract=resolveOperationContract(proof.operation),context=contract.binding.group==='bill-text'?{defaultCongress:c.defaultCongress}:contract.binding.group==='acquisition-personnel'?{actorRole:native.actorRole}:{};
+   const contract=resolveOperationContract(proof.operation),context=['bill-text','federal-legislation'].includes(contract.binding.group)?{defaultCongress:c.defaultCongress}:contract.binding.group==='acquisition-personnel'?{actorRole:native.actorRole}:{};
    contract.normalizeInput(proof.request,context);
    const after=await admission();if(!same(taskSelection(before),taskSelection(after)))refuse('ACCESS_DENIED');
    const vector={task:taskSelection(after),native:nativeSelection(native),credentialSha256:hash(credential),context},latest=pins.get(scopeSignal);if(latest&&(!same(latest.selected,selected)||!same(latest.vector,vector)))refuse('ACCESS_DENIED');if(latest)limit(latest.expiresAtMs);life.check();
