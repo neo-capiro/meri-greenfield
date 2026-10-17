@@ -1,5 +1,11 @@
 # Portable Fable checkpoint — 17 October 2026
 
+## Final ownership and first milestone
+
+Fable owns **all Meri runtime/services/tools/documents/memory/settings/routines and Meri-specific UI**, including the remaining accepted Meri backlog. The first milestone is a **deployed, connected preview with usable desktop chat**, returning full source/image/config pins and health evidence to dot. Mobile and previously deferred advanced capabilities remain in Fable's accepted backlog; they are not gates for that first milestone.
+
+Dot retains **Core, backend cleanup, Portfolio, non-Meri Modules/Settings, shared frontend and deployment coordination**, followed by live authenticated E2E acceptance. Shared authentication, Core listeners, database migration IDs and shared files require explicit coordination. There must be one deployment owner for each resource; Fable must coordinate any Core or shared-resource activation with dot. This scope allocation does not enable a held service, waive qualification or authorize an unallocated build.
+
 This is the operational entry point for the **02:17 UTC safe-stop**. Fable takes Meri on another machine. Dot retains Core/frontend coordination and the real authenticated prompt → streamed answer → saved conversation → reload acceptance. Fable must explicitly coordinate any Core activation with dot. Earlier 01:34 dot-shipping wording in dated receipts is historical. No new Meri image attempt, upload, activation, credential, or permission change was made for this handoff.
 
 ## What to select

@@ -105,13 +105,13 @@
   "portableFiles": [
     {
       "path": "AGENTS.md",
-      "sha256": "b0cad24b2381699405f5947551764cf466b21c0664378dfbe9f700009f9be370",
-      "bytes": 8697
+      "sha256": "1b990995df4cca9bb73aeca15682b4900dcdd9f724aa7f2ebdbab78823ad9367",
+      "bytes": 9688
     },
     {
       "path": "docs/handover/20261017/fable-shipping/ACTIVATION-BINDINGS.md",
-      "sha256": "b8e528442c79a58a0c041629cf15fe7b38de5c2a11acaf87feb72a58a1003655",
-      "bytes": 27685
+      "sha256": "475e9771b47bf7bb00c15c18f213f8eb5392aa7ad2b4a187df2be171c04222dc",
+      "bytes": 28781
     },
     {
       "path": "docs/handover/20261017/fable-shipping/CONTRACT-REPRODUCTION.md",
@@ -120,13 +120,13 @@
     },
     {
       "path": "docs/handover/20261017/fable-shipping/FABLE-SHIPPING-HANDOFF.md",
-      "sha256": "f6c022dec6e7e42601520928bd1f652eb35561ac7c0478c9799bac629607b15c",
-      "bytes": 42453
+      "sha256": "7c3160454ba4fa425588c9bf1aa2be1200a50658e3873d0daf49a42c0deccf14",
+      "bytes": 43802
     },
     {
       "path": "docs/handover/20261017/fable-shipping/FINAL-LANE-INVENTORY.json",
-      "sha256": "d89e8edafdce1771d98a4240bbcc674d1883b01b3abfbe2bc7671e34f6112d59",
-      "bytes": 9693
+      "sha256": "9a0b931e1eb05e81831142ae08cca96f9eab4d2546927cc4364f2a5fdd7c2328",
+      "bytes": 10692
     },
     {
       "path": "docs/handover/20261017/fable-shipping/jump-box-setup-snapshot.json",
@@ -140,8 +140,8 @@
     },
     {
       "path": "docs/handover/20261017/fable-shipping/MERI-CURRENT-QUALIFICATION.json",
-      "sha256": "45b569121474104973dce71019454b73918c82ae29118571c8389b3f20685edd",
-      "bytes": 4016
+      "sha256": "39bf2b84647820bab9a52a1f456000172cefd6017c7b697d09396c5e532ba406",
+      "bytes": 4670
     },
     {
       "path": "docs/handover/20261017/fable-shipping/meri-paid-operation-checkpoint.json",
@@ -155,13 +155,13 @@
     },
     {
       "path": "docs/handover/20261017/fable-shipping/MERI-SOURCE-AND-CONTEXT.md",
-      "sha256": "6aac5a447fc08a7991d06e11d14344faeec2ea386af3b73fb9def115c41e0e60",
-      "bytes": 28403
+      "sha256": "5d68c726f49d4cfba29ac6da4114b8a72ba4010a4d57c8ec1bfca3987bf066ad",
+      "bytes": 29499
     },
     {
       "path": "docs/handover/20261017/fable-shipping/meri-source-inventory.json",
-      "sha256": "0fcc61a513ce6374056066e9cbd86d1ec4823740909f491a99d0f01acddd158e",
-      "bytes": 13127
+      "sha256": "8c71c7618a5e1fe7821be1b8f402f8f9e4c89deb2722146c685b21949af06cba",
+      "bytes": 13781
     },
     {
       "path": "docs/handover/20261017/fable-shipping/MERI-TERMINAL-QUALIFICATION-20261017.md",
@@ -175,13 +175,13 @@
     },
     {
       "path": "docs/handover/20261017/fable-shipping/OWNER-HANDOFF-LINKS.json",
-      "sha256": "440bb11a75dfe6b56b0be7cd5d8624e639525960e664f7f27204cfa9a24f7c4b",
-      "bytes": 9337
+      "sha256": "83c24107c4e195544e58df911de36fd3987579920caee6cae60954698eb2eca0",
+      "bytes": 9991
     },
     {
       "path": "docs/handover/20261017/fable-shipping/PORTABLE-RESUME.md",
-      "sha256": "5921933480009b12f56b23b6b8e738b6b4806dcfc59bfc9c970be272646960f2",
-      "bytes": 19401
+      "sha256": "69177d2d740c222aa71bbb8fbd5b40abd7b7b31ca9cc342420a7279179ecadd1",
+      "bytes": 20392
     },
     {
       "path": "docs/handover/20261017/fable-shipping/reproduce-contract-compatibility.py",

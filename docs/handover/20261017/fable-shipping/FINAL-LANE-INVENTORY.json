@@ -5,7 +5,12 @@
     "meri": "Fable on another machine after this checkpoint",
     "coreAndFrontendCoordination": "dot; explicitly coordinate any Core activation with dot",
     "liveAuthenticatedE2E": "dot",
-    "newMeriBuildOrActivationAuthorized": false
+    "newMeriBuildOrActivationAuthorized": false,
+    "meriScope": "Fable: all Meri runtime/services/tools/documents/memory/settings/routines and Meri-specific UI; remaining accepted Meri backlog",
+    "firstMilestone": "Deployed connected preview with usable desktop chat; return full pins and health to dot",
+    "dotScope": "Core/backend cleanup/Portfolio/non-Meri ModulesSettings/sharedfrontend/deployment coordination, then live authenticated E2E",
+    "coordination": "Shared auth, Core listeners, DB migration IDs/sharedfiles require coordination; one deployment owner per resource",
+    "deferredBacklog": "Mobile/previously deferred advanced Meri work stays with Fable outside first milestone"
   },
   "primary": {
     "repository": "neo-capiro/meri-greenfield",
@@ -155,8 +160,13 @@
     "meriObjectivePR": 95,
     "meriObjectiveHead": "5781c1150fbb3954c25ba245b26d325e06b4d82d",
     "nativeEvidence": "PR50 and51 each exact-head20/20, independent cleanup; not live qualification",
-    "portableHandoff": "Source/native checkpoint: https://github.com/neo-capiro/capiro-backend/blob/81dd0313760c0f18858cb8aa2ad73191da71f138/docs/objective-planner-continuation-20261016/COMPOSITION.md ; separate portable docs publication is finishing under its owner and does not change ordinary first-chat source.",
-    "laterRecoveryLane": "Draft Core PR53 published source57f8c8047a73df6d4a73351a98a5239f38240a24/treecb2ac7d883290741e95d4dffa0f67406ed8e87e4, native qualification pending; excluded from Meri/first-chat/shipping. Ordinary source/native PR51 remains distinct."
+    "portableHandoff": "https://github.com/neo-capiro/capiro-backend/blob/ee00f6d2cbf76ad83f6c8a354ed22a2a931566df/docs/objective-meri-portable-handoff-20261017/HANDOFF.md",
+    "laterRecoveryLane": "Draft Core PR53 published source57f8c8047a73df6d4a73351a98a5239f38240a24/treecb2ac7d883290741e95d4dffa0f67406ed8e87e4, native qualification pending; excluded from Meri/first-chat/shipping. Ordinary source/native PR51 remains distinct.",
+    "portableHandoffPR": 54,
+    "portableHandoffHead": "ee00f6d2cbf76ad83f6c8a354ed22a2a931566df",
+    "portableHandoffTree": "eeb877bcdd62accbab6fa4e08d558bcac19bc02f",
+    "portableHandoffBase": "81dd0313760c0f18858cb8aa2ad73191da71f138",
+    "portableEvidence": "52files/448679bytes;48archives/370631bytes independently matched Git blobs; SOURCE-PINS.json/EVIDENCE.json alongside HANDOFF.md; final independent receiptf3665c19d0b347d93a31d00c196f66e9f32e15fb4cd3b7b9db3b444b6636f125"
   },
   "safeStop": {
     "ownedMeriBuild": "5b67476a-5b30-43a7-9957-d83c72525aa2 freshly read FAILED/COMPLETED with retry0/0",

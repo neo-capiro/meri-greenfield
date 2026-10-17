@@ -6,7 +6,12 @@
     "coreAndFrontend": "dot retains Core/frontend coordination; coordinate any Core activation explicitly with dot",
     "step3": "dot owns live authenticated prompt, streamed answer, save and reload E2E",
     "boundary": "No new Meri build or activation; fresh exact allocation/approval required",
-    "credentials": "Use receiving machine existing authorized profile; verify account967807252336 regionus-east-1; never copy jumpbox credentials"
+    "credentials": "Use receiving machine existing authorized profile; verify account967807252336 regionus-east-1; never copy jumpbox credentials",
+    "meriScope": "Fable: all Meri runtime/services/tools/documents/memory/settings/routines and Meri-specific UI; remaining accepted Meri backlog",
+    "firstMilestone": "Deployed connected preview with usable desktop chat; return full pins and health to dot",
+    "dotScope": "Core/backend cleanup/Portfolio/non-Meri ModulesSettings/sharedfrontend/deployment coordination, then live authenticated E2E",
+    "coordination": "Shared auth, Core listeners, DB migration IDs/sharedfiles require coordination; one deployment owner per resource",
+    "deferredBacklog": "Mobile/previously deferred advanced Meri work stays with Fable outside first milestone"
   },
   "frontend": {
     "repository": "neo-capiro/capiro-frontend",

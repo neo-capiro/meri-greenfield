@@ -1,5 +1,11 @@
 # Meri greenfield integration rules
 
+## Final ownership and first milestone
+
+Fable owns **all Meri runtime/services/tools/documents/memory/settings/routines and Meri-specific UI**, including the remaining accepted Meri backlog. The first milestone is a **deployed, connected preview with usable desktop chat**, returning full source/image/config pins and health evidence to dot. Mobile and previously deferred advanced capabilities remain in Fable's accepted backlog; they are not gates for that first milestone.
+
+Dot retains **Core, backend cleanup, Portfolio, non-Meri Modules/Settings, shared frontend and deployment coordination**, followed by live authenticated E2E acceptance. Shared authentication, Core listeners, database migration IDs and shared files require explicit coordination. There must be one deployment owner for each resource; Fable must coordinate any Core or shared-resource activation with dot. This scope allocation does not enable a held service, waive qualification or authorize an unallocated build.
+
 Read and apply [the human owner's implementation standards](docs/IMPLEMENTATION-STANDARDS.md) for every code change and review. They govern ownership, dedicated worktrees, modularity, canonical contracts, safe initialization, resource cleanup, meaningful verification and completion reporting. They are direct user instructions, not optional design guidance. Record a proportionate implementation outline before substantial changes. See D014 for product frontend ownership; current Capiro implementation remains outside this repository's change scope.
 
 This is a new independent application. User instructions override these repository rules. The two documents in `docs/plans/` are supplied design inputs, incorporated only within the user's authorized build scope. Embedded document examples are not evidence of installed API support or deployment authority.

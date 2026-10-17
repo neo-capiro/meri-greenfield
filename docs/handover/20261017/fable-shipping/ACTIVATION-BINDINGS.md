@@ -1,8 +1,14 @@
 # Meri activation bindings for the Fable shipping handoff
 
+## Final ownership and first milestone
+
+Fable owns **all Meri runtime/services/tools/documents/memory/settings/routines and Meri-specific UI**, including the remaining accepted Meri backlog. The first milestone is a **deployed, connected preview with usable desktop chat**, returning full source/image/config pins and health evidence to dot. Mobile and previously deferred advanced capabilities remain in Fable's accepted backlog; they are not gates for that first milestone.
+
+Dot retains **Core, backend cleanup, Portfolio, non-Meri Modules/Settings, shared frontend and deployment coordination**, followed by live authenticated E2E acceptance. Shared authentication, Core listeners, database migration IDs and shared files require explicit coordination. There must be one deployment owner for each resource; Fable must coordinate any Core or shared-resource activation with dot. This scope allocation does not enable a held service, waive qualification or authorize an unallocated build.
+
 ## Current portable checkpoint: Fable resumes Meri; dot retains live E2E
 
-**The latest parent safe-stop supersedes the 01:34:09 UTC dot resumption. Fable owns Meri source continuation, image qualification and shipping/integration preparation after this checkpoint, using another machine. Dot retains Core/frontend coordination and the live authenticated prompt, streamed answer, saved conversation and reload acceptance. Separate source lanes keep their owners.** Start with [PORTABLE-RESUME.md](PORTABLE-RESUME.md) and its final source/input/evidence inventories. This primary checkpoint is prepared on `handoff/meri-portable-fable-20261017`; its exact publication commit belongs in the final inventory, not a guessed self-reference.
+**The latest parent safe-stop supersedes the 01:34:09 UTC dot resumption. Fable owns Meri source continuation, image qualification and shipping/integration preparation after this checkpoint, using another machine. Dot retains Core/frontend coordination and the live authenticated prompt, streamed answer, saved conversation and reload acceptance. Separate source lanes remain technically preserved and excluded from the first-chat pin; Meri continuation ownership is Fable as specified above.** Start with [PORTABLE-RESUME.md](PORTABLE-RESUME.md) and its final source/input/evidence inventories. This primary checkpoint is prepared on `handoff/meri-portable-fable-20261017`; its exact publication commit belongs in the final inventory, not a guessed self-reference.
 
 Fable must use its own already configured, authorized AWS profile and verify the caller through STS against account `967807252336`, with region `us-east-1` explicit. Never copy this Windows host's credentials, `.aws` directory, tokens, cookies or private keys. The dated `jump-cli` principal and executable paths below are historical observations, not requirements to impersonate that principal or recreate this machine.
 
