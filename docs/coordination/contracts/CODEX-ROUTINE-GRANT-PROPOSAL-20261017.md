@@ -1,0 +1,64 @@
+# Fixed-expiry routine grant proposal
+
+Status: **SOURCE DESIGN PROPOSAL ONLY — issuance, service privileges and activation UNAPPROVED.** This document allocates no endpoint, credential, migration or live action. It proposes one same-owner grant for one acknowledged schedule generation. It does not implement an issuer or change existing public contracts.
+
+## Basis and ownership
+
+Meri baseline: reviewed PR124, local `de58c7e6fb842e8c7fb5b5165a44ccdea45be053`, tree `70ce52d253c0c2c1900a20d59c55651f82a11b12`. Authoring branch: `codex/meri-routines-occurrence-semantics-task6-20261017`. Only this document is owned by this task.
+
+The native Core authority owner must own human approval provenance, current original-owner/client/tenant permission checks and grant revocation. Meri's canonical schedule owner retains generation/state fencing, the preparation journal retains instruction custody, and the existing native allocation/input owners retain occurrence admission. Existing budget owners must enforce accounting; a grant cannot create another allocator or agent loop. Persistence and canonical schema/export ownership require explicit allocation before implementation; no storage design or migration ID is assigned here.
+
+At the **known inspected Core pin** `8b46d2df73f211ebdf09e5a138241539cb5dd922`:
+
+- `apps/api/src/auth/application-authority.controller.ts` (blob `2a062be013a2da9eac28612fe435dc2b72dd5d4f`) exposes POST `clio/application-authority/identity` and `/context` through `TenantContextMiddleware.readApplicationAuthority`.
+- `apps/api/src/auth/application-membership.controller.ts` (blob `ace4b6a766d0b212dbcce98fd2fd0d48ae219b15`) exposes POST `/membership` with the same native tenant context.
+- `apps/api/src/tenant/tenant-context.middleware.ts` (blob `700772f095c685ddb25da45314f925c232ebe939`) verifies the request's Clerk session token and calls `assertActiveApplicationAuthoritySession` for authority reads. `apps/api/src/auth/clerk.service.ts` is blob `0acf9f955c667df64a8bc4d4b3534b6054abca6c`.
+
+Those inspected owners do not expose grant creation, revocation or a service-authenticated standing-routine check. A source search for routine/standing/scheduled-grant names in that pin's auth/context/meri/shared source found none. This is bounded source evidence, not a claim about a newer remote head or deployed Core. No Core source was changed or published. Browser credentials must not be retained, refreshed or extended to fill this missing owner.
+
+## Minimal immutable approval payload
+
+The eventual canonical owner must accept a closed, bounded payload and reuse existing identity, scope, task, schedule-intent and allocation validators plus canonical SHA256. The following are proposed field responsibilities, **not a new hand-authored wire DTO**. Every value must be explicit; omitted limits, `null` meaning unlimited and default TTLs are refused.
+
+| Required selection | Binding and rule |
+|---|---|
+| Grant identity | Server-owned `grantId`, immutable revision and a creation request ID scoped to the original tenant/actor. |
+| Original authority | Native `tenantId`, original `actorId`, one `selectedClientId`, exact granted scopes and the current owner, tenant, client-wall and permission/security revisions. The approving human is that same original owner; delegation and administrator substitution are outside this proposal. |
+| Exact routine | `scheduleId`, acknowledged `generation`, full `intentSha256` and instruction digest. The schedule must be active, have no unresolved mutation, and still match at grant activation. A later update, pause, cancel or generation change invalidates this grant. |
+| Task and destination | Exact canonical TaskRef, manifest/configuration digests and approved `destinationId`. Destination is a permission boundary; its identity does not prove that an output-delivery adapter exists. |
+| Allocation | Digest of the validated allocation/template profile, its permitted capabilities and its expiry. An occurrence's actual allocation and complete native binding must also be correlated by the canonical allocator. No caller-authored JSON or grant may broaden or renew that profile. |
+| Absolute validity | Explicit UTC `notBefore` and `expiresAt`, with `approvedAt <= notBefore < expiresAt`, finite safe millisecond values, and an expiry no later than the approved allocation expiry. A proposed deployment maximum duration is also explicit configuration requiring approval; none is selected here. |
+| Per-occurrence budgets | Explicit finite positive integer `maxCostMicrousd`, `maxRuntimeSeconds`, and nonnegative integer `retryLimit`, bounded by the approved task/allocation. Retries share that occurrence's total cap. The existing static adapter only supports retry zero and its enforceable allocation profile; unsupported smaller caps or retries remain refused. |
+| Whole-grant budgets | Explicit finite positive integer `maxOccurrences` and `maxTotalCostMicrousd` across every occurrence and attempt. Total use plus outstanding reservations cannot exceed these caps. A future implementation needs enforceable canonical accounting before allowing work; presence of these fields alone proves nothing. |
+
+The human sees the complete selected routine, task, destination, expiry and both budget levels and explicitly approves **unattended execution within those bounds**. An existing one-time schedule approval, acknowledged effect, PREPARED proposal or active session does not imply this approval.
+
+Core derives the approving principal and timestamp from a fresh native request and stores a durable approval proof/reference with the complete payload digest and relevant authority revisions. No model/browser-supplied approver, timestamp, policy receipt or digest alone is approval proof. The complete grant and its proof must become durably readable together before any ALLOW can be released. Expanding expiry, budget, scope, task, allocation or destination requires a new explicit human approval; replay cannot amend the grant.
+
+Grant creation is idempotent on the native tenant/actor and creation request ID: an exact payload replay returns the same grant/proof; a changed payload conflicts. A lost creation/settlement acknowledgement is UNKNOWN until an authorized read proves the original result. It must not mint a replacement grant or repeat approval. Revocation is terminal for that grant; restoring permissions requires a new grant and approval rather than reviving the old one.
+
+## Firing checks and bounded receipts
+
+The future service authenticates as its own explicitly approved, least-privilege audience. Its privileges permit checking allocated grants and obtaining the required budget reservation/receipt, never approving as the human, changing membership or choosing an arbitrary tenant. Service identity, endpoint placement, credential issuance and privilege grants remain **UNAPPROVED**. Trusted compiled ports are required; configuration, headers and browser tokens do not install them.
+
+For each firing, the authority owner independently rereads the immutable grant/proof, current schedule/generation/intent and original owner's current active tenant/client permissions. Owner deactivation, tenant/client removal, relevant permission/security revision change, explicit revocation, schedule mismatch, expiry or exhausted caps must deny subsequent effects. A permission change does not silently refresh the approved revision. Natural browser-token expiry cannot extend the grant; compromise-related identity/session revocation must participate in the native security revision so the grant can be revoked without possessing that token.
+
+Checks are required immediately before admission and immediately before workflow start, including recovery of an already-admitted but unstarted occurrence. The existing dispatch phases remain `before_admission` and `before_start`; the native admission adapter also checks `before_claim`, `before_accept` and `before_release`. A queued row or prior ALLOW is not a bypass. The current receiving shapes remain canonical; an eventual grant adapter must validate its richer evidence internally before producing those exact receipts, not add unchecked fields to existing contracts.
+
+Each internal ALLOW receipt/lease must bind the grant ID/revision/payload digest, approval proof reference, exact phase/audience, tenant/original actor/client/scopes and current policy revisions, schedule/generation/intent digest, task/allocation/configuration/destination digests, occurrence key, complete native run binding and request/effect digests. It carries an owner-generated receipt ID, budget reservation reference, checked time and absolute expiry. The expiry is the minimum of the explicit grant, allocation/run and authority bounds and an explicitly approved check-lease limit. There is no default lease duration, sliding grant expiry or browser-readable bearer capability.
+
+A receipt for another occurrence, phase, run, generation, policy revision or selection digest is refused. Claim/reservation replay uses the same immutable occurrence/effect identity and retains original allocation/request timestamps and expiry; it cannot reserve or charge twice, reset a cost cap, create another run, or extend an old lease. Fresh phase checks may produce fresh evidence only within the original bounds. UNKNOWN reservation/admission/start outcomes retain existing durable barriers and require read-only reconciliation before another effect is attempted.
+
+An authoritative DENY (for example, revoked, expired, no longer permitted, stale generation or exhausted budget) is distinct from UNAVAILABLE (timeout, transport failure, malformed/mismatched receipt or uncertain durable state). Both stop new effects. UNAVAILABLE never becomes a cached grant, successful denial proof, inferred absence or automatic mutation retry. Existing dispatch `REFUSED` versus `UNKNOWN`, with its admitted flag and known effect evidence, must be preserved. A later failure cannot relabel a known acknowledged/admitted effect as never dispatched; no lease proves physical stop.
+
+## Execution safety and implementation boundary
+
+Admission/start checks are insufficient for an already-running job. The trusted execution/gateway owners must recheck current grant/revocation and remaining budgets before further model/tool/provider effects and after every resume or continuation. They must not issue a continuation or capability beyond the earliest grant/allocation/run expiry. Expiry or revocation fences further effects and requests stop through the existing run lifecycle; an in-flight provider effect remains acknowledged or uncertain according to actual evidence. It is not undone by revoking a grant.
+
+This proposal specifies the authority/budget ceilings those owners must enforce. Exact overlap occupancy, retry/cost settlement, partial-effect recovery, cancellation, completion and inbox delivery remain the separate occurrence-job semantics work. No approval of those choices or claim that the current static adapter enforces all of them is implied. If enforcement cannot be demonstrated, the supported profile stays unavailable/refused; it is not widened to unlimited work.
+
+Reuse points: [foreground native context](../../../apps/control/schedules/runtime-context.mjs), [human preparation/approval service](../../../apps/control/schedules/application.mjs), [current firing phases and durable occurrence barrier](../../../apps/control/schedules/scheduled-dispatch.mjs), [canonical native admission](../../../apps/runtime/native-authority/scheduled-admission.mjs), [instruction custody reader](../../../apps/control/intents/postgres-journal.mjs), [allocation validator](../../../apps/gateway/budget/tool-budget-binding.mjs), and [reviewed runtime receiving boundaries](../reports/CODEX-ROUTINES-RUNTIME-WIRING-20261017.md).
+
+Before implementation, Core and Meri owners must agree the canonical schema/export, native revocation source and service privilege allocation, durable approval/reservation custody and enforcement profile. Focused source tests must cover cross-owner/client/tenant and digest substitution; human proof absence; missing expiry/budgets; permission changes between phases; phase/occurrence receipt replay; concurrent cap exhaustion; lost custody/commit acknowledgements; admitted replay; expiry/revocation during execution and continuation; and known DENY versus unavailable/UNKNOWN. Real issuance, credentials, migrations, service calls and activation each remain separate explicitly authorized work. This document authorizes none of them.
+
+Verification for this draft: repository instructions reread; the named Meri reuse points and known pinned Core owners inspected read-only; relative links and document whitespace checked. No tests, issuer code, live requests, secrets, DDL or deployments were run or created.

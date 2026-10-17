@@ -9,6 +9,7 @@ import {admittedConfiguration,assertRun,dbTime,integer} from './admitted-run-bin
 import {readCurrentAdmission} from './admitted-run-current.mjs';
 import {PostgresBudgetStore,BudgetStateDenied,refuse} from './postgres-budget-store.mjs';
 import {nativeTenantBudget} from './tenant/native-admission.mjs';
+import {readOccurrenceCost} from './occurrence-cost-scope.mjs';
 
 export function createNativeAllocationAdmission(configuration){
  const c=own(configuration,['pool','allocationJson','grantIntents','qualification','binding','now','limits'],['namespace']);
@@ -82,6 +83,8 @@ export function createNativeAllocationAdmission(configuration){
     await nativeTenantBudget({client,binding,nowMs:dbTime(budget.now),allocation:a,signal:life.signal,check}).revoke();check();
     return data({state:'REVOKED',taskArn:input.taskArn,grantIds:admitted.facts.map(f=>f.grantId),revocationProven:true});
    }
+   const occurrence=await readOccurrenceCost({client,tables:t,allocation:a,parseAllocation:allocation});check();
+   if(occurrence&&occurrence.totalMicroUSD>occurrence.maxCostMicroUSD)refuse('NATIVE_ADMISSION_REFUSED');
    if(install)for(const fact of admitted.facts){await client.query(`UPDATE ${t.grants} SET state='ACTIVE' WHERE grant_id=$1 AND state='PENDING'`,[fact.grantId]);check();}
    const deadline=await readCurrentAdmission({c:admitted,store,client,life,check,locked:install,readOnly:!install});check();
    return data({state:'ADMITTED',grantFactsJsons:admitted.grantFactsJsons,currentAllocationJson:JSON.stringify({binding,policyRevision:q.policyRevision,deadlineMs:deadline,checkedAtMs:c.now(),allocation:a,allocationSha256:admitted.allocationSha256})});

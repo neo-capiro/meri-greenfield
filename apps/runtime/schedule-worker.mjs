@@ -12,25 +12,27 @@ import {createScheduledDispatch} from '../control/schedules/scheduled-dispatch.m
 import {createScheduledDispatchActivities} from '../control/schedules/scheduled-activities.mjs';
 import {createPostgresPreparedScheduleReader} from '../control/intents/postgres-journal.mjs';
 import {createApprovedScheduleInstructions} from '../control/schedules/approved-instructions.mjs';
+import {createScheduledJobLifecycle} from '../control/schedules/scheduled-job-lifecycle.mjs';
 import {temporalTls,temporalAuthorization} from './control.mjs';
 import {createWorkerReadiness,stopWorkerOnAuthorizationFailure} from './temporal-worker.mjs';
 import {listenRuntime} from './http-server.mjs';
 import {fault} from './config.mjs';
 /** Real canonical domain composition over borrowed resources. Trusted authority/instruction owners are never configuration selectors. */
-export function assembleScheduleDispatch({configuration,pool,client,authority,taskInstructions,runAdmission,now=Date.now}){
+export function assembleScheduleDispatch({configuration,pool,client,authority,taskInstructions,runAdmission,runControl,retirement,now=Date.now}){
  const s=configuration.scheduledDispatch;if(s?.enabled!==true)throw fault('SCHEDULE_WORKER_CONFIGURATION');
  const scheduleOwner=createPostgresScheduleOwner({pool});
  const instructions=taskInstructions??createApprovedScheduleInstructions({scheduleOwner,preparations:createPostgresPreparedScheduleReader({pool}),now,maxRequestMs:configuration.limits.requestMs});
- return createScheduledDispatch({scheduleOwner,store:createPostgresConversationStore({pool,now}),
+ const store=createPostgresConversationStore({pool,now}),jobOwner=runControl&&retirement?createScheduledJobLifecycle({store,runControl,retirement,now,maxRequestMs:configuration.limits.requestMs}):undefined;
+ return createScheduledDispatch({scheduleOwner,store,
   dispatcher:createTemporalConversationDispatcher({client,taskQueue:s.conversationTaskQueue,lifecycle:true,now,maxRequestMs:configuration.limits.requestMs}),
-  runs:createTemporalRunEvidence({client,now,maxRequestMs:configuration.limits.requestMs}),authority,taskInstructions:instructions,...(runAdmission===undefined?{}:{runAdmission}),versions:configuration.versions,now,maxRequestMs:configuration.limits.requestMs});
+  runs:createTemporalRunEvidence({client,now,maxRequestMs:configuration.limits.requestMs}),authority,taskInstructions:instructions,...(runAdmission===undefined?{}:{runAdmission}),...(jobOwner===undefined?{}:{jobOwner}),versions:configuration.versions,now,maxRequestMs:configuration.limits.requestMs});
 }
 export function scheduleWorkerOptions({configuration,connection,dispatch,context=()=>Context.current()}){
  const s=configuration.scheduledDispatch;
  if(s?.enabled!==true)throw fault('SCHEDULE_WORKER_CONFIGURATION');own(s,['enabled','conversationTaskQueue','maxConcurrentActivities']);
  if(!Number.isSafeInteger(s.maxConcurrentActivities)||s.maxConcurrentActivities<1||s.maxConcurrentActivities>10||typeof s.conversationTaskQueue!=='string'||!/^[a-zA-Z0-9._\-]{1,128}$/u.test(s.conversationTaskQueue)||s.conversationTaskQueue===configuration.temporal.taskQueue)throw fault('SCHEDULE_WORKER_CONFIGURATION');
- if(dispatch===undefined)throw fault('SCHEDULE_DISPATCH_UNAVAILABLE');own(dispatch,['dispatch','reconcile']);
- const borrowed=Object.freeze({dispatch:storageMethod(dispatch,'dispatch'),reconcile:storageMethod(dispatch,'reconcile')});
+ if(dispatch===undefined)throw fault('SCHEDULE_DISPATCH_UNAVAILABLE');const supplied=own(dispatch,['dispatch','reconcile'],['cancel']);
+ const borrowed=Object.freeze({dispatch:storageMethod(dispatch,'dispatch'),reconcile:storageMethod(dispatch,'reconcile'),...(supplied.cancel===undefined?{}:{cancel:storageMethod(dispatch,'cancel')})});
  return {connection,namespace:configuration.temporal.namespace,taskQueue:configuration.temporal.taskQueue,
   workflowsPath:fileURLToPath(new URL('../control/conversations/scheduled-dispatch-workflow.ts',import.meta.url)),
   activities:createScheduledDispatchActivities({dispatch:borrowed,context}),maxConcurrentActivityTaskExecutions:s.maxConcurrentActivities,

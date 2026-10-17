@@ -8,12 +8,15 @@ import {createPostgresScheduleOwner} from '../control/schedules/postgres-schedul
 import {createScheduleRuntimeContext} from '../control/schedules/runtime-context.mjs';
 import {createRoutinesService} from '../control/schedules/application.mjs';
 import {createRoutinesApplication} from '../control/schedules/application-http.mjs';
+import {createScheduledConversationCurrentness} from '../control/schedules/scheduled-conversation-currentness.mjs';
+import {createScheduledRunCancellation} from '../control/schedules/scheduled-run-cancellation.mjs';
+import {createPostgresConversationStore} from '../control/conversations/postgres-store.mjs';
 
 export function createRuntimeRoutinesFeature(configuration){
- const c=own(configuration,['enabled'],['pool','client','context','now','newId','limits']);
+ const c=own(configuration,['enabled'],['pool','client','context','now','newId','limits','runControl','retirement']);
  if(typeof c.enabled!=='boolean')throw Error('ROUTINES_CONFIGURATION');
  // The kill switch does not inspect authority ports or allocate resources.
- if(c.enabled===false)return Object.freeze({state:()=> 'disabled',create:()=>createRoutinesApplication({enabled:false})});
+ if(c.enabled===false)return Object.freeze({state:()=> 'disabled',inboxState:()=> 'disabled',create:()=>createRoutinesApplication({enabled:false})});
  const now=c.now??Date.now,newId=c.newId??randomUUID;
  const context=own(c.context,['commandContext','allocationJson','template','workflow','policy','limits']);
  const limits=own(c.limits,['maxRequestMs','maxRequestBytes','maxResponseBytes']);
@@ -22,12 +25,16 @@ export function createRuntimeRoutinesFeature(configuration){
  // Temporal SDK clients remain borrowed. No listener, timer, socket or query starts during construction.
  const scheduleClient=c.client?.schedule,workflowClient=c.client?.workflow;
  if(!scheduleClient||!workflowClient)throw Error('ROUTINES_CONFIGURATION');
- let state='pending';
- return Object.freeze({state:()=>state,create(value){
+ if((c.runControl===undefined)!==(c.retirement===undefined))throw Error('ROUTINES_CONFIGURATION');
+ const runCancellation=c.runControl===undefined?undefined:createScheduledRunCancellation({scheduleOwner,store:createPostgresConversationStore({pool:c.pool,now}),runControl:c.runControl,retirement:c.retirement,client:c.client,now,maxRequestMs:limits.maxRequestMs});
+ let state='pending',inboxState='pending';
+ return Object.freeze({state:()=>state,inboxState:()=>inboxState,historyCurrentness(value){
+  const {gate,core}=own(value,['gate','core']);try{const owner=createScheduledConversationCurrentness({scheduleOwner,gate,core,now,maxRequestMs:limits.maxRequestMs});inboxState='composed';return owner;}catch(error){inboxState='unavailable';throw error;}
+ },create(value){
   const {sessions}=own(value,['sessions']);
   try{
-   const contextOwner=createScheduleRuntimeContext({...context,sessions,scheduleOwner,now,newId});
-   const service=createRoutinesService({contextOwner,journalStore,proposalReader,scheduleOwner,scheduleClient,workflowClient,scheduleNotFoundError:ScheduleNotFoundError,now,maxRequestMs:limits.maxRequestMs});
+   const contextOwner=createScheduleRuntimeContext({...context,sessions,scheduleOwner,now,newId,...(runCancellation===undefined?{}:{runCancellation})});
+   const service=createRoutinesService({contextOwner,journalStore,proposalReader,scheduleOwner,scheduleClient,workflowClient,scheduleNotFoundError:ScheduleNotFoundError,now,maxRequestMs:limits.maxRequestMs,...(runCancellation===undefined?{}:{runCancellation})});
    const application=createRoutinesApplication({service,now,limits,enabled:true});state='composed';return application;
   }catch(error){state='unavailable';throw error;}
  }});

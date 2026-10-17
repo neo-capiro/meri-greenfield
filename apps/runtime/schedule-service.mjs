@@ -13,22 +13,24 @@ import {assembleScheduleDispatch,startScheduleWorker as startSchedulePoller} fro
 import {compileScheduleServiceConfiguration} from './schedule-service-configuration.mjs';
 
 const relations=Object.freeze(['meri_schedules.projections','meri_schedules.intents','meri_schedules.occurrences','meri_intents.preparations',
- 'meri_conversations.conversations','meri_conversations.runs','meri_conversations.events','meri_conversations.controls','meri_conversations.initial_inputs','meri_conversations.initial_run_bindings']);
+ 'meri_conversations.conversations','meri_conversations.runs','meri_conversations.events','meri_conversations.controls','meri_conversations.initial_inputs','meri_conversations.initial_run_bindings',
+ 'meri_conversations.native_allocations','meri_conversations.checkpoints','meri_conversations.next_runs']);
 function capture(value){
  try{
-  const c=own(value,['authority','runAdmission'],['pool','client','now']);
+  const c=own(value,['authority','runAdmission','runControl','retirement'],['pool','client','now']);
   const authority=Object.freeze({authorize:storageMethod(c.authority,'authorize')}),runAdmission=Object.freeze({admit:storageMethod(c.runAdmission,'admit')}),now=c.now??Date.now;
+  const runControl=Object.freeze({cancel:storageMethod(c.runControl,'cancel')}),retirement=Object.freeze({retire:storageMethod(c.retirement,'retire')});
   if(typeof now!=='function'||types.isProxy(now))throw Error();const at=now();if(!Number.isSafeInteger(at)||at<0)throw Error();
   if(c.pool!==undefined)assertPool(c.pool);
   if(c.client!==undefined&&(!c.client||typeof c.client!=='object'||types.isProxy(c.client)))throw Error();
-  return Object.freeze({authority,runAdmission,now,...(c.pool===undefined?{}:{pool:c.pool}),...(c.client===undefined?{}:{client:c.client})});
+  return Object.freeze({authority,runAdmission,runControl,retirement,now,...(c.pool===undefined?{}:{pool:c.pool}),...(c.client===undefined?{}:{client:c.client})});
  }catch{throw fault('SCHEDULE_SERVICE_UNAVAILABLE');}
 }
 /** Pure receiving seam over borrowed canonical resources. No listener, connection, credential read or SQL starts here. */
 export function composeScheduleService({configuration,runtimePorts}){
  const p=capture(runtimePorts);compileScheduleServiceConfiguration(configuration);
  if(!p.pool||!p.client)throw fault('SCHEDULE_SERVICE_CONFIGURATION');
- return assembleScheduleDispatch({configuration,pool:p.pool,client:p.client,authority:p.authority,runAdmission:p.runAdmission,now:p.now});
+ return assembleScheduleDispatch({configuration,pool:p.pool,client:p.client,authority:p.authority,runAdmission:p.runAdmission,runControl:p.runControl,retirement:p.retirement,now:p.now});
 }
 function connectionString(bytes){
  let text,url;try{text=new TextDecoder('utf-8',{fatal:true}).decode(bytes).trim();url=new URL(text);}catch{throw fault('DATABASE_CONFIGURATION');}

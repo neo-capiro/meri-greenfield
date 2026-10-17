@@ -9,6 +9,7 @@ export function productReadiness({ports,retention,sourceEnabled,userPreferences}
   {name:'retention.ledgerSink',state:available.has('retentionLedgerSink')?'composed':'unavailable'},
   {name:'tasks.commands',state:sourceEnabled!==true?'disabled':available.has('taskCommandApplication')?'composed':'unavailable'},
   {name:'schedules.application',state:available.has('routinesApplicationFactory')?ports.routinesApplicationFactory.state():'unavailable'},
+  {name:'schedules.inbox',state:available.has('routinesApplicationFactory')&&ports.routinesApplicationFactory.inboxState?ports.routinesApplicationFactory.inboxState():'unavailable'},
   {name:'sources.currentInstallation',state:sourceEnabled?'unavailable':'disabled'},
   {name:'proxy.modelGrants',state:'unavailable'},
   {name:'schedules.dispatchWorker',state:'separate-service-required'});

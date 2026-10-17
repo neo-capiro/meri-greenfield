@@ -85,7 +85,8 @@ for(const [name,change]of [
   p.projection=copy(f.intent.projection);p.projection_sha256=hash(p.projection);i.intent=copy(f.intent);i.intent_sha256=hash(i.intent);
   f.request.occurrence=f.occurrence;
  }
- await assert.rejects(createScheduledNativeAdmission(f.options).admit(f.request));assert.deepEqual(counts(f),empty);
+ if(name==='destination')assert.throws(()=>createScheduledNativeAdmission(f.options),{code:'SCHEDULE_ADMISSION_CONFIGURATION'});
+ else await assert.rejects(createScheduledNativeAdmission(f.options).admit(f.request));assert.deepEqual(counts(f),empty);
 });
 
 for(const [name,edit]of [

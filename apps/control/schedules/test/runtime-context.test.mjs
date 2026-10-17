@@ -94,7 +94,7 @@ test('approval reconstructs the identical intent without reminting and rejects c
  const f=await fixture();try{const initial=await f.context.resolve(f.call()),proposal=initial.prepared.proposal;f.state.now+=10;
   const approved=await f.context.resolve(f.call('schedule_task',{proposal}));assert.deepEqual(approved.prepared.intent,initial.prepared.intent);assert.equal(f.state.ids,102);
   const other=createScheduleRuntimeContext({...f.config,template:{...f.config.template,version:2}});await assert.rejects(other.resolve(f.call('schedule_task',{proposal})),{code:'SCHEDULE_CONTEXT_STALE'});
-  f.state.receiptHook=r=>{r.destinationResolution.destinationId='other-inbox';};await assert.rejects(f.context.resolve(f.call('schedule_task',{proposal})),{code:'SCHEDULE_CONTEXT_STALE'});
+  f.state.receiptHook=r=>{r.destinationResolution.destinationId='other-inbox';};await assert.rejects(f.context.resolve(f.call('schedule_task',{proposal})),{code:'SCHEDULE_CONTEXT_POLICY'});
  }finally{f.close();}
 });
 
@@ -195,5 +195,19 @@ test('list uses canonical defaults and current native owner, with null mutation 
 test('expired and cancelled requests never reach mutation policy or allocate identities',async()=>{
  const f=await fixture();try{await assert.rejects(f.context.authorizeRequest(f.call('schedule_task',{deadlineMs:NOW})));const cancellation=new AbortController();cancellation.abort();
   await assert.rejects(f.context.resolve(f.call('schedule_task',{signal:cancellation.signal})));assert.equal(f.state.policies.length,0);assert.equal(f.state.ids,100);
+ }finally{f.close();}
+});
+
+test('human cancel proposal binds server-resolved actual targets and refuses caller-selected executions',async()=>{
+ const f=await fixture();try{
+  const created=await f.context.resolve(f.call());await f.acknowledge(created.prepared.intent);
+  const request={scheduleId:created.prepared.intent.projection.scheduleId,mode:'pause',note:'Stop this actual job',running:'request_cancel',runs:[]},call=f.call('cancel_scheduled_task',{request});
+  await assert.rejects(f.context.resolve(call),{code:'SCHEDULE_CONTEXT_UNAVAILABLE'});
+  let runs=[{workflowId:'actual-native-execution',runId:id(900)}],calls=0;
+  const context=createScheduleRuntimeContext({...f.config,runCancellation:{async prepare(v){calls++;assert.deepEqual(v.callerIdentity,created.prepared.intent.projection.owner);assert.deepEqual(v.scopes,f.scopes());assert.deepEqual(v.request,request);return structuredClone(runs);}}});
+  const prepared=await context.resolve(call);assert.deepEqual(prepared.prepared.input.runs,runs);assert.deepEqual(prepared.prepared.intent.cancel.runs,runs);assert.deepEqual(prepared.prepared.proposal.cancel.runs,runs);
+  const replay=await context.resolve({...call,proposal:prepared.prepared.proposal});assert.equal(replay.prepared.intentSha256,prepared.prepared.intentSha256);
+  runs=[{workflowId:'new-actual-execution',runId:id(901)}];await assert.rejects(context.resolve({...call,proposal:prepared.prepared.proposal}),{code:'SCHEDULE_CONTEXT_STALE'});
+  const before=calls;await assert.rejects(context.resolve({...call,request:{...request,runs}}),{code:'SCHEDULE_CONTEXT_REQUEST'});assert.equal(calls,before);
  }finally{f.close();}
 });

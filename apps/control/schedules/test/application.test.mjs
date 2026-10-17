@@ -1,9 +1,11 @@
-/** Actual application integration. Fixtures script only external SQL/Core/Temporal wire, never preparation or lifecycle behavior. */
+/** Actual application integration. Fixtures script SQL/Core/Temporal boundaries and the explicitly labeled private cancellation
+ * port below, never canonical preparation, journal, native/session, policy correlation or lifecycle behavior. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {applicationFixture,routineRequest,binding} from './application-fixture.mjs';
+import {applicationFixture,routineRequest,binding,id} from './application-fixture.mjs';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 import {createRoutinesApplication,ROUTINE_PATHS} from '../application-http.mjs';
+import {workflowId} from '../../conversations/temporal-dispatch.mjs';
 
 test('prepare persists exact canonical proposal and replays without reminting or provider mutation',async()=>{
  const f=await applicationFixture();try{
@@ -106,6 +108,47 @@ test('canonical cancel proposal reader supports explicit delete, cancelled ACK r
   const result=await f.approve(cancel,request);assert.equal(result.receipt.projection.state,'cancelled');assert.equal(f.temporal.calls.delete,1);
   assert.deepEqual(await f.approve(cancel,request),result);assert.equal(f.temporal.calls.delete,1);
   const listed=await f.call('list',{});assert.equal(listed.status,'listed');assert.equal(listed.page.rows.length,1);assert.equal(listed.page.rows[0].projection.state,'cancelled');assert.equal(listed.page.rows[0].inspectionState,'unavailable');
+ }finally{f.close();}
+});
+
+test('foreground cancellation journals raw empty refs while trusted expansion is proposed and explicitly executed exactly once',async()=>{
+ // The private selection/control port is the ONLY new synthetic boundary here. Its actual job/lineage/retirement composition
+ // is independently covered in scheduled-run-cancellation.test; application, context, native sessions, journal and SDK are real.
+ const original={...binding,conversationId:id(700),runId:id(701),attemptId:id(702),workerId:id(703)},resumed={...original,runId:id(704),attemptId:id(705),workerId:id(706),writerFence:2};
+ const observed=Object.freeze([{workflowId:workflowId(original),runId:id(710)},{workflowId:workflowId(resumed),runId:id(711)}].map(Object.freeze));
+ const selections=[],effects=[];
+ const runCancellation={async prepare(call){selections.push(structuredClone({callerIdentity:call.callerIdentity,scopes:call.scopes,request:call.request}));return structuredClone(observed);},
+  async cancel({binding:approved}){assert.deepEqual(approved.intent.cancel.runs,observed);assert.equal(approved.approval.commandSha256,hash(approved.intent));effects.push(structuredClone(approved));}};
+ const f=await applicationFixture({runCancellation});try{
+  const created=await f.prepare();await f.approve(created);
+  const raw={scheduleId:created.proposal.projection.scheduleId,mode:'delete',note:'  Explicit cancellation  ',running:'request_cancel',runs:[]},rawSha=hash(raw);
+  const cancel=await f.prepare(raw,'cancel_scheduled_task','request-expanded-cancel'),ids=f.state.ids;
+  assert.equal(cancel.status,'approval_required');assert.deepEqual(cancel.proposal.cancel.runs,observed);assert.equal(cancel.proposal.cancel.note,raw.note);
+  assert.deepEqual(raw.runs,[]);assert.equal(hash(raw),rawSha);assert.equal(effects.length,0);assert.equal(f.temporal.calls.delete,0);assert.equal(selections.length,1);
+  assert.deepEqual(selections[0].callerIdentity,{tenantId:binding.tenantId,actorId:binding.actorId});assert.deepEqual(selections[0].scopes,f.scopes());assert.deepEqual(selections[0].request.runs,[]);
+  const row=[...f.preparations.state.rows.values()].find(r=>r.outcome?.result?.proposal?.proposalId===cancel.proposal.proposalId);
+  assert.equal(row.state,'PREPARED');assert.equal(row.record.argumentsSha256,rawSha);assert.notEqual(row.record.argumentsSha256,hash({...raw,runs:observed}));
+  assert.deepEqual(row.outcome.result.proposal,cancel.proposal);assert.deepEqual(row.outcome.result.proposal.cancel.runs,observed);
+  assert.deepEqual(await f.prepare(raw,'cancel_scheduled_task','request-expanded-cancel'),cancel);assert.equal(selections.length,1);assert.equal(f.state.ids,ids);
+  const result=await f.approve(cancel,raw);assert.equal(result.status,'acknowledged');assert.equal(result.receipt.projection.state,'cancelled');assert.equal(f.temporal.calls.delete,1);assert.equal(effects.length,1);assert.equal(selections.length,2);
+  const stored=await f.owner.readIntent({tenantId:binding.tenantId,intentId:cancel.proposal.proposalId},()=>{});
+  assert.equal(stored.state,'ACKNOWLEDGED');assert.equal(stored.intentSha256,cancel.proposal.intentSha256);assert.deepEqual(stored.intent,effects[0].intent);assert.deepEqual(stored.intent.cancel.runs,observed);
+  assert.equal(effects[0].approval.proposalId,cancel.proposal.proposalId);assert.deepEqual(effects[0].callerIdentity,{tenantId:binding.tenantId,actorId:binding.actorId});
+  const calls={...f.temporal.calls};assert.deepEqual(await f.approve(cancel,raw),result);assert.deepEqual(f.temporal.calls,calls);assert.equal(effects.length,1);assert.equal(selections.length,2);assert.equal(f.state.ids,ids);
+  assert.equal(row.record.argumentsSha256,rawSha);assert.deepEqual(raw.runs,[]);
+ }finally{f.close();}
+});
+
+test('caller-supplied cancellation refs are rejected before journal, native authority or private target selection',async()=>{
+ let selections=0,cancellations=0;const runCancellation={async prepare(){selections++;throw Error('must not select');},async cancel(){cancellations++;throw Error('must not cancel');}};
+ const f=await applicationFixture({runCancellation});try{
+  const request={scheduleId:id(720),mode:'delete',note:'Caller cannot select work',running:'request_cancel',runs:[{workflowId:workflowId({...binding,runId:id(721)}),runId:id(722)}]};
+  const body={operation:'cancel_scheduled_task',request,proposalId:id(723),intentSha256:'a'.repeat(64)},baseline=f.state.fetches.length;
+  await assert.rejects(f.prepare(request,'cancel_scheduled_task','request-forged-refs'),e=>e.code==='ROUTINES_INVALID_REQUEST'&&e.outcome==='NOT_DISPATCHED');
+  await assert.rejects(f.call('approve',{...body,decision:'approved'}),e=>e.code==='ROUTINES_INVALID_REQUEST'&&e.outcome==='NOT_DISPATCHED');
+  await assert.rejects(f.call('reconcile',body),e=>e.code==='ROUTINES_INVALID_REQUEST'&&e.outcome==='NOT_DISPATCHED');
+  assert.equal(f.state.fetches.length,baseline);assert.equal(f.state.policies.length,0);assert.equal(f.preparations.state.connects,0);assert.equal(f.preparations.state.rows.size,0);assert.equal(f.state.scheduleQueries.length,0);
+  assert.equal(f.sql.state.intents.size,0);assert.equal(f.state.ids,100);assert.equal(selections,0);assert.equal(cancellations,0);assert.deepEqual(f.temporal.calls,{describe:0,create:0,update:0,patch:0,delete:0});
  }finally{f.close();}
 });
 

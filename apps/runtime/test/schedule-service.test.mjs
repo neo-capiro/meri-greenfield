@@ -5,7 +5,8 @@ import assert from 'node:assert/strict';
 import {resolve} from 'node:path';
 import {WorkflowNotFoundError,WorkflowIdReusePolicy,WorkflowIdConflictPolicy} from '@temporalio/client';
 import {versions} from '../../control/conversations/test/store-fixture.mjs';
-import {scheduledAdmissionFixture,instruction} from '../native-authority/test/scheduled-admission-fixture.mjs';
+import {instruction} from '../native-authority/test/scheduled-admission-fixture.mjs';
+import {scheduledJobFixture} from '../../control/schedules/test/scheduled-job-fixture.mjs';
 import {createPreparedSchedulePoolFixture} from '../../control/intents/test/prepared-schedule-fixture.mjs';
 import {createPostgresIntentJournalStore} from '../../control/intents/postgres-journal.mjs';
 import {createIntentJournal} from '../../control/intents/journal.mjs';
@@ -39,7 +40,8 @@ const configuration={version:1,profile:'isolated-preview',sourceEnabled:false,ve
  http:{hostname:'127.0.0.1',port:0,frontendOrigin:'https://ui.synthetic.invalid'},
  temporal:{address:'temporal.synthetic.invalid:7233',namespace:'synthetic',taskQueue:'meri-schedules',tls:{caFile:resolve('synthetic-ca'),certFile:resolve('synthetic-cert'),keyFile:resolve('synthetic-key')}},
  scheduledDispatch:{enabled:true,conversationTaskQueue:'meri-conversations',maxConcurrentActivities:1}};
-const unavailableOwners=()=>({authority:{async authorize(){throw Error('Synthetic policy unavailable');}},runAdmission:{async admit(){throw Error('Synthetic native producer unavailable');}}});
+const unavailableOwners=()=>({authority:{async authorize(){throw Error('Synthetic policy unavailable');}},runAdmission:{async admit(){throw Error('Synthetic native producer unavailable');}},
+ runControl:{async cancel(){throw Error('Synthetic canonical cancel unavailable');}},retirement:{async retire(){throw Error('Synthetic physical retirement unavailable');}}});
 
 // Routes statements to the existing independent SQL fixtures. Transaction control is deferred until its first namespace is known;
 // this is an outer protocol boundary, with no custody, admission, identity or dispatch business logic reproduced here.
@@ -61,8 +63,8 @@ function multiplexPool(h,intents){
  };},async end(){sql.ends++;state.events.push('pool-end');}};
  return {pool,sql};
 }
-async function actualComposition(){
- const h=await scheduledAdmissionFixture(),intents=createPreparedSchedulePoolFixture(),boundary=multiplexPool(h,intents);
+async function actualComposition(t){
+ const h=await scheduledJobFixture({admit:false,allocated:false});t.after(h.close);const intents=createPreparedSchedulePoolFixture(),boundary=multiplexPool(h,intents);
  const f=scheduleToolFixture(),{task,workflow,...policy}=h.intent.configuration,limits={maxCostMicrousd:h.intent.projection.maxCostMicrousd,maxRuntimeSeconds:h.intent.projection.maxRuntimeSeconds,retryLimit:h.intent.projection.retryLimit};
  f.request={taskInstruction:instruction,policy,destinationReference:'Policy-owned Meri inbox',requestedLimits:limits};
  const c=f.context.scheduleContext;Object.assign(c,{callerIdentity:h.template.principal,intentId:h.intent.intentId,projection:h.intent.projection,requestSha256:hash(f.request),nowMs:h.now(),deadlineMs:h.now()+1000,
@@ -72,17 +74,23 @@ async function actualComposition(){
  const outcome={result:{status:'approval_required',proposal:prepared.proposal},release:{binding,scopes:h.scopes,expiresAtMs:h.now()-1}};
  const journal=createIntentJournal(createPostgresIntentJournalStore({pool:boundary.pool}));
  await journal.begin({binding,deliveryId,record});await journal.settle({binding,deliveryId,record,state:'PREPARED',outcome});
- return {h,intents,...boundary,runtimePorts:{authority:h.firingAuthority,runAdmission:h.adapter,pool:boundary.pool,client:h.temporal.client,now:h.now}};
+ return {h,intents,...boundary,runtimePorts:{authority:h.firingAuthority,runAdmission:h.adapter,runControl:h.options.runControl,retirement:h.options.retirement,pool:boundary.pool,client:h.temporal.client,now:h.now}};
 }
 
 test('missing, malformed or accessor authority/admission refuses before secrets and resources',async()=>{
- for(const runtimePorts of [undefined,{}, {authority:unavailableOwners().authority},{runAdmission:unavailableOwners().runAdmission},{...unavailableOwners(),policySelector:'synthetic'}, {...unavailableOwners(),authority:{authorize:undefined}}, {...unavailableOwners(),runAdmission:{admit:undefined}}]){
+ for(const runtimePorts of [undefined,{}, {authority:unavailableOwners().authority},{runAdmission:unavailableOwners().runAdmission},{...unavailableOwners(),policySelector:'synthetic'},
+  ...['authority','runAdmission','runControl','retirement'].map(key=>{const ports=unavailableOwners();delete ports[key];return ports;}),
+  ...[['authority','authorize'],['runAdmission','admit'],['runControl','cancel'],['retirement','retire']].map(([key,method])=>({...unavailableOwners(),[key]:{[method]:undefined}}))]){
   reset();await assert.rejects(startScheduleWorker(configuration,{runtimePorts}),{code:'SCHEDULE_SERVICE_UNAVAILABLE'});assert.deepEqual(state.events,[]);
  }
  let getters=0;const ports={runAdmission:unavailableOwners().runAdmission};Object.defineProperty(ports,'authority',{enumerable:true,get(){getters++;throw Error('PRIVATE');}});
  await assert.rejects(startScheduleWorker(configuration,{runtimePorts:ports}),{code:'SCHEDULE_SERVICE_UNAVAILABLE'});assert.equal(getters,0);
  const inner={...unavailableOwners(),authority:{get authorize(){getters++;throw Error('PRIVATE');}}};
  await assert.rejects(startScheduleWorker(configuration,{runtimePorts:inner}),{code:'SCHEDULE_SERVICE_UNAVAILABLE'});assert.equal(getters,0);assert.deepEqual(state.events,[]);
+ for(const [key,method] of [['runControl','cancel'],['retirement','retire']]){
+  const poisoned={...unavailableOwners(),[key]:{get [method](){getters++;throw Error('PRIVATE');}}};
+  await assert.rejects(startScheduleWorker(configuration,{runtimePorts:poisoned}),{code:'SCHEDULE_SERVICE_UNAVAILABLE'});assert.equal(getters,0);assert.deepEqual(state.events,[]);
+ }
 });
 
 test('canonical role settings stay closed, source-disabled, queue-separated and bounded',async()=>{
@@ -107,23 +115,24 @@ test('owned pool configuration enforces one verify-full TLS parameter before poo
  }
 });
 
-test('actual startup activities consume journal custody and canonical native admission, replaying one original run',async()=>{
- const x=await actualComposition();reset();
- const compiled=composeScheduleService({configuration,runtimePorts:x.runtimePorts});assert.deepEqual(Object.keys(compiled),['dispatch','reconcile']);
+test('actual startup activities consume journal custody and canonical native admission, replaying one original run',async t=>{
+ const x=await actualComposition(t);reset();
+ const compiled=composeScheduleService({configuration,runtimePorts:x.runtimePorts});assert.deepEqual(Object.keys(compiled),['dispatch','reconcile','cancel']);
  assert.deepEqual(state.events,[],'pure composition allocates nothing');
  const service=await startScheduleWorker(configuration,{runtimePorts:x.runtimePorts});
  try{
   assert.equal(state.registered.taskQueue,'meri-schedules');assert.match(state.registered.workflowsPath,/scheduled-dispatch-workflow\.ts$/u);
-  assert.deepEqual(Object.keys(state.registered.activities),['dispatchScheduledOccurrence','reconcileScheduledOccurrence']);
+  assert.deepEqual(Object.keys(state.registered.activities),['dispatchScheduledOccurrence','reconcileScheduledOccurrence','cancelScheduledOccurrence']);
   const dispatched=await state.registered.activities.dispatchScheduledOccurrence({occurrence:x.h.occurrence});
-  assert.equal(dispatched.outcome,'DISPATCHED');assert.deepEqual(dispatched.binding,x.h.identity.binding);
+  assert.equal(dispatched.outcome,'ACTIVE');assert.deepEqual(dispatched.binding,x.h.identity.binding);
   const accepted=await x.h.store.read(x.h.identity.binding,{after:0,limit:10},()=>{});
   assert.equal(accepted.request.prompt,instruction);assert.equal(x.h.bindings.size,1);assert.equal(x.h.conversations.allocations.size,1);
   assert.equal([...x.h.conversations.allocations.values()][0].state,'ACCEPTED');assert.equal(x.h.conversations.state.runs.size,1);
   assert.deepEqual([...x.h.bindings.values()][0].record.binding,x.h.identity.binding);assert.ok(x.h.policy.calls.length>=3);
   assert.equal(x.h.temporal.workflows.size,1);
-  assert.equal((await state.registered.activities.dispatchScheduledOccurrence({occurrence:x.h.occurrence})).outcome,'DISPATCHED');
-  assert.equal((await state.registered.activities.reconcileScheduledOccurrence({occurrence:x.h.occurrence})).outcome,'DISPATCHED');
+  assert.equal((await state.registered.activities.dispatchScheduledOccurrence({occurrence:x.h.occurrence})).outcome,'ACTIVE');
+  assert.equal((await state.registered.activities.reconcileScheduledOccurrence({occurrence:x.h.occurrence})).outcome,'ACTIVE');
+  assert.equal(x.h.scheduleSql.state.occurrences.get(`${x.h.identity.binding.tenantId}:${x.h.identity.occurrenceKey}`).state,'OPEN');
   assert.equal(x.h.temporal.workflows.size,1);assert.equal(x.h.conversations.state.runs.size,1);
   assert.equal((await state.listener.application.handle(new Request('https://health.synthetic.invalid/api/schedules/dispatch'))).status,404);
   await state.listener.readiness();
@@ -132,8 +141,38 @@ test('actual startup activities consume journal custody and canonical native adm
  assert.deepEqual(state.events.slice(-3),['listener-close','worker-stop','poller-close']);
 });
 
-for(const mode of ['custody','authority','admission'])test(`actual activity with unavailable ${mode} does not admit or start a run`,async()=>{
- const x=await actualComposition();reset();
+for(const held of ['pause','approval.wait'])test(`actual service retains ${held} through retirement/resume and cancels only the real target`,async t=>{
+ const x=await actualComposition(t);reset();const service=await startScheduleWorker(configuration,{runtimePorts:x.runtimePorts});
+ try{
+  const activities=state.registered.activities,call={occurrence:x.h.occurrence};
+  assert.equal((await activities.dispatchScheduledOccurrence(call)).outcome,'ACTIVE');await x.h.claim();await x.h.running();await x.h.pause(held);await x.h.retire();
+  assert.equal((await activities.reconcileScheduledOccurrence(call)).outcome,'ACTIVE');
+  const key=`${x.h.identity.binding.tenantId}:${x.h.identity.occurrenceKey}`;assert.equal(x.h.scheduleSql.state.occurrences.get(key).state,'OPEN');
+  const later={...x.h.occurrence,workflowId:'synthetic-later-held',scheduledAt:new Date(x.h.now()+1).toISOString()};
+  assert.equal((await activities.dispatchScheduledOccurrence({occurrence:later})).code,'SCHEDULE_OCCURRENCE_UNRESOLVED');
+  const target=await x.h.resume();await x.h.running(target);assert.notEqual(target.runId,x.h.identity.binding.runId);
+  assert.equal((await activities.reconcileScheduledOccurrence(call)).outcome,'ACTIVE');
+  assert.equal((await activities.cancelScheduledOccurrence(call)).outcome,'DISPATCHED');assert.deepEqual(x.h.calls.cancel,[target]);assert.deepEqual(x.h.calls.retire,[target]);
+  assert.equal(x.h.row(target).projection.state,'cancelled');assert.equal(x.h.scheduleSql.state.occurrences.get(key).state,'DISPATCHED');
+  assert.equal((await activities.reconcileScheduledOccurrence(call)).outcome,'DISPATCHED');assert.equal(x.h.temporal.calls.start,1);
+ }finally{await service.close();}
+});
+
+test('actual service settles only canonical terminal plus retirement evidence, then admits the next occurrence once',async t=>{
+ const x=await actualComposition(t);reset();const service=await startScheduleWorker(configuration,{runtimePorts:x.runtimePorts});
+ try{
+  const activities=state.registered.activities,call={occurrence:x.h.occurrence};assert.equal((await activities.dispatchScheduledOccurrence(call)).outcome,'ACTIVE');
+  await x.h.claim();await x.h.running();await x.h.status('completed');
+  const held=await activities.reconcileScheduledOccurrence(call);assert.equal(held.outcome,'ACTIVE');assert.equal(held.code,'SCHEDULE_JOB_RETIREMENT_UNPROVEN');
+  await x.h.retire();assert.equal((await activities.reconcileScheduledOccurrence(call)).outcome,'DISPATCHED');
+  x.h.advance(1);const next={...x.h.occurrence,workflowId:'synthetic-next-proven-terminal',scheduledAt:new Date(x.h.now()).toISOString()};
+  assert.equal((await activities.dispatchScheduledOccurrence({occurrence:next})).outcome,'ACTIVE');assert.equal((await activities.dispatchScheduledOccurrence({occurrence:next})).outcome,'ACTIVE');
+  assert.equal(x.h.temporal.calls.start,2);assert.equal(x.h.conversations.state.runs.size,2);
+ }finally{await service.close();}
+});
+
+for(const mode of ['custody','authority','admission'])test(`actual activity with unavailable ${mode} does not admit or start a run`,async t=>{
+ const x=await actualComposition(t);reset();
  if(mode==='custody')x.intents.state.rows.clear();
  if(mode==='authority')x.runtimePorts.authority={async authorize(){throw Error('Synthetic current owner policy unavailable');}};
  if(mode==='admission')x.runtimePorts.runAdmission={async admit(){throw Error('Synthetic genuine native producer unavailable');}};
@@ -143,18 +182,18 @@ for(const mode of ['custody','authority','admission'])test(`actual activity with
  }finally{await service.close();}
 });
 
-test('schema readiness or cancellation prevents poller/listener startup and leaves borrowed resources owned by caller',async()=>{
+test('schema readiness or cancellation prevents poller/listener startup and leaves borrowed resources owned by caller',async t=>{
  for(const mode of ['missing','cancel']){
-  const x=await actualComposition();reset();const controller=new AbortController();
+  const x=await actualComposition(t);reset();const controller=new AbortController();
   if(mode==='missing')x.sql.missingRelation=true;else x.sql.onSchema=()=>controller.abort();
   await assert.rejects(startScheduleWorker(configuration,{runtimePorts:x.runtimePorts,signal:controller.signal}),{code:'SCHEDULE_SERVICE_STARTUP_FAILED'});
   assert.deepEqual(state.events,[]);assert.equal(x.sql.ends,0);assert.equal(x.sql.releases.length>0,true);
  }
 });
 
-test('service-owned pool and JS connection close after the existing poller, without closing borrowed owners',async()=>{
+test('service-owned pool and JS connection close after the existing poller, without closing borrowed owners',async t=>{
  for(const mode of ['pool','client','both']){
-  const x=await actualComposition();reset();state.pool=x.pool;state.client=x.h.temporal.client;const owners={...x.runtimePorts};
+  const x=await actualComposition(t);reset();state.pool=x.pool;state.client=x.h.temporal.client;const owners={...x.runtimePorts};
   if(mode!=='client')delete owners.pool;if(mode!=='pool')delete owners.client;
   const service=await startScheduleWorker({...configuration,database:{connectionFile:resolve('synthetic-database')}},{runtimePorts:owners});
   if(mode!=='client')assert.equal(state.poolOptions.connectionTimeoutMillis,configuration.limits.requestMs);
@@ -165,27 +204,33 @@ test('service-owned pool and JS connection close after the existing poller, with
  }
 });
 
-test('startup captures borrowed authority/admission methods before its first await and retains their receivers',async()=>{
- const x=await actualComposition();reset();state.pool=x.pool;state.client=x.h.temporal.client;
- let checks=0,admissions=0;
+test('startup captures borrowed authority/admission/control/retirement methods before its first await and retains their receivers',async t=>{
+ const x=await actualComposition(t);reset();state.pool=x.pool;state.client=x.h.temporal.client;
+ let checks=0,admissions=0,cancellations=0,retirements=0;
  const authority={async authorize(request){assert.equal(this,authority);checks++;return x.h.firingAuthority.authorize(request);}};
  const runAdmission={async admit(request){assert.equal(this,runAdmission);admissions++;return x.h.adapter.admit(request);}};
- state.secretHook=()=>{authority.authorize=()=>{throw Error('replacement');};runAdmission.admit=()=>{throw Error('replacement');};};
- const service=await startScheduleWorker({...configuration,database:{connectionFile:resolve('synthetic-database')}},{runtimePorts:{authority,runAdmission,now:x.h.now}});
- try{assert.equal((await state.registered.activities.dispatchScheduledOccurrence({occurrence:x.h.occurrence})).outcome,'DISPATCHED');assert.equal(checks,2);assert.equal(admissions,1);}
+ const runControl={async cancel(request){assert.equal(this,runControl);cancellations++;return x.h.options.runControl.cancel(request);}};
+ const retirement={async retire(request){assert.equal(this,retirement);retirements++;return x.h.options.retirement.retire(request);}};
+ state.secretHook=()=>{for(const [port,method] of [[authority,'authorize'],[runAdmission,'admit'],[runControl,'cancel'],[retirement,'retire']])port[method]=()=>{throw Error('replacement');};};
+ const service=await startScheduleWorker({...configuration,database:{connectionFile:resolve('synthetic-database')}},{runtimePorts:{authority,runAdmission,runControl,retirement,now:x.h.now}});
+ try{
+  assert.equal((await state.registered.activities.dispatchScheduledOccurrence({occurrence:x.h.occurrence})).outcome,'ACTIVE');assert.equal(checks,2);assert.equal(admissions,1);
+  await x.h.claim();await x.h.running();assert.equal((await state.registered.activities.cancelScheduledOccurrence({occurrence:x.h.occurrence})).outcome,'DISPATCHED');
+  assert.equal(cancellations,1);assert.equal(retirements,1);
+ }
  finally{await service.close();}
 });
 
-for(const phase of ['worker','listener'])test(`failed ${phase} startup closes all allocated resources`,async()=>{
- const x=await actualComposition();reset();state.pool=x.pool;state.client=x.h.temporal.client;state[phase==='worker'?'failWorker':'failListener']=true;
+for(const phase of ['worker','listener'])test(`failed ${phase} startup closes all allocated resources`,async t=>{
+ const x=await actualComposition(t);reset();state.pool=x.pool;state.client=x.h.temporal.client;state[phase==='worker'?'failWorker':'failListener']=true;
  const {pool,client,...owners}=x.runtimePorts;
  await assert.rejects(startScheduleWorker({...configuration,database:{connectionFile:resolve('synthetic-database')}},{runtimePorts:owners}),{code:'SCHEDULE_SERVICE_STARTUP_FAILED'});
  assert.equal(x.sql.ends,1);assert.equal(state.events.filter(e=>e==='client-close').length,1);assert.equal(state.events.filter(e=>e==='poller-close').length,1);
  assert.equal(state.events.includes('worker-stop'),phase==='listener');
 });
 
-test('failed JS client construction closes its allocated connection and pool before any poller',async()=>{
- const x=await actualComposition();reset();state.pool=x.pool;
+test('failed JS client construction closes its allocated connection and pool before any poller',async t=>{
+ const x=await actualComposition(t);reset();state.pool=x.pool;
  const {pool,client,...owners}=x.runtimePorts;
  await assert.rejects(startScheduleWorker({...configuration,database:{connectionFile:resolve('synthetic-database')}},{runtimePorts:owners}),{code:'SCHEDULE_SERVICE_STARTUP_FAILED'});
  assert.equal(x.sql.ends,1);assert.deepEqual(state.events.slice(-2),['client-close','pool-end']);assert.equal(state.events.includes('poller-connect'),false);
