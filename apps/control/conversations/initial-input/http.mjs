@@ -9,7 +9,7 @@ import {fail} from '../boundary.mjs';
 import {productFailure} from '../../product-access/errors.mjs';
 const rejected=(code,status=initialInputErrorStatuses[code].at(-1))=>response({error:{code,outcome:initialInputErrorOutcomes[code]}},status);
 export function createConversationInitialInputApplication({service,now=Date.now,maxRequestBytes=131072,maxResponseBytes=131072,maxRequestMs=3000}){
- if(typeof service?.allocateInput!=='function'||!Number.isSafeInteger(maxRequestBytes)||maxRequestBytes<1||maxRequestBytes>131072||!Number.isSafeInteger(maxResponseBytes)||maxResponseBytes<1||maxResponseBytes>131072||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>3000)fail('HTTP_CONFIGURATION');
+ if(typeof service?.allocateInput!=='function'||!Number.isSafeInteger(maxRequestBytes)||maxRequestBytes<1||maxRequestBytes>131072||!Number.isSafeInteger(maxResponseBytes)||maxResponseBytes<1||maxResponseBytes>131072||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('HTTP_CONFIGURATION');
  return Object.freeze({async handle(request){let life;try{
   if(!request||types.isProxy(request))fail('INVALID_REQUEST');let info;
   try{info=Object.fromEntries(['url','method','headers','body','signal'].map(k=>[k,Object.getOwnPropertyDescriptor(Request.prototype,k).get.call(request)]));}catch{fail('INVALID_REQUEST');}

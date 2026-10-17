@@ -317,7 +317,10 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,ident
     serverCaSha256:pins.der['server-ca'],clientCaSha256:pins.der['issuer-client-ca'],requestTimeoutMs:12000,totalTimeoutMs:30000,maxReplyBytes:16384},
     serverCaFile:PATHS.issuerCa,clientCaFile:PATHS.issuerClientCa,directory:TEMPORAL_IDENTITY.directory,keyFile:TEMPORAL_IDENTITY.keyFile,certFile:TEMPORAL_IDENTITY.certFile}};
  }
- const limits={startupMs:30000,shutdownMs:10000,requestMs:3000,requestBytes:131072};
+ // requestMs is the per-request budget for every authority round trip. A session recheck performs about eight serial
+ // Core calls (identity, membership twice, context twice plus the run facts) at ~250ms each through the public ALB, and
+ // Core itself consults Clerk on every one; 3000ms overran on the first live `history` (408 DEADLINE, session dropped).
+ const limits={startupMs:30000,shutdownMs:10000,requestMs:12000,requestBytes:131072};
  const control={version:1,profile:'isolated-preview',sourceEnabled:false,limits,
   native:{origin:controlPrivate,capabilityFile:PATHS.controlCapability,loopback:false,maxResponseBytes:2097152},
   http:{hostname:'0.0.0.0',port:8080,frontendOrigin:k.frontendOrigin},database:{connectionFile:PATHS.database},temporal:temporal('control'),
