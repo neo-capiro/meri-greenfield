@@ -87,5 +87,6 @@ test('authenticated issuer inventory cannot omit or add a file outside the canon
 test('issuer configuration and receiving runtime user are rechecked even with recomputed bundle hashes',()=>{
  const bad=configuration();bad.database.connectionFile='/run/meri/issuer.json';
  assert.throws(()=>validateStaticProductDelivery(delivery({configurationBytes:Buffer.from(JSON.stringify(bad))})),{code:'STATIC_INIT_REFUSED'});
- const d=delivery();d.expected.runtimeUser='1001:1000';repin(d.expected);assert.throws(()=>validateStaticProductDelivery(d),{code:'STATIC_INIT_REFUSED'});
+ // The role-bound reader identity is now refused in the expected envelope, before any delivery.
+ const d=delivery();d.expected.runtimeUser='1001:1000';repin(d.expected);assert.throws(()=>validateStaticProductDelivery(d),{code:'STATIC_INIT_EXPECTED_REFUSED'});
 });
