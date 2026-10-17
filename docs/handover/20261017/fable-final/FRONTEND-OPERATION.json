@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "asOf": "2026-10-17T07:14:08Z",
+  "asOf": "2026-10-17T07:14:24Z",
   "source": "Frontend owner's trusted handoff message; no fresh AWS call by root",
   "ownerThread": "01a14534-18b7-7234-b9c6-9e34393c20e9",
   "owner": "Dot/frontend lane; not transferred to Fable",
@@ -12,7 +12,10 @@
   "coordinatorReservationsUsd": 343,
   "budgetCeilingUsd": 400,
   "autoRetries": 0,
-  "stage": "TERMINAL_FAILED_IMAGE_SCAN_GATE_PENDING_EXACT_DIGEST_AND_COMPLETE_FINDINGS",
+  "stage": "TERMINAL_FAILED_SCAN_READ_ACCESS_DENIED_PUSHED_IMAGE_LATER_SCANNED_CLEAN",
+  "failureAction": "ecr:DescribeImageScanFindings",
+  "failureTarget": "capiro/portfolio-preview in account967807252336 us-east-1",
+  "failureReason": "Owner CloudTrail readback07:12:54: CodeBuild role identity policy does not allow this action; not vulnerability finding or scan timeout",
   "terminalAt": "2026-10-17T07:12:55Z",
   "allocationState": "CONSUMED_NO_RETRY_OR_NEW_ALLOCATION",
   "archive": {
@@ -31,7 +34,8 @@
   "buildspecSha256": "7613c722ea6f926f5a3878bcf8db96e779d0b145e717a319baf1826fc8f17f0a",
   "activeTimeoutMinutes": 120,
   "queuedTimeoutMinutes": 10,
-  "imageDigest": null,
-  "scan": null,
-  "required": "Do not duplicate/retry upload or build. Dot/frontend owner must publish exact terminal ECR digest and COMPLETE scan findings before classifying failure; no qualified successor image is claimed. No new attempt or deployment authorized."
+  "imageDigest": "sha256:e1c5799b786ba7f55cfd4b97587500e9eaeab5c3e71582dcc31ff75e09bd80e7",
+  "imageRepository": "967807252336.dkr.ecr.us-east-1.amazonaws.com/capiro/portfolio-preview",
+  "scan": {"status":"COMPLETE","completedAt":"2026-10-17T07:14:24Z","findingSeverityCounts":{},"highCriticalNames":[],"nextToken":null,"reader":"Separately authorized read-only caller; owner report, not root AWS read"},
+  "required": "Do not duplicate/retry upload or build. CodeBuild qualification remains FAILED despite pushed image and later clean scan. Dot/frontend owner supplies sanitized terminal receipt and coordinates any separately approved IAM remediation/next attempt. No security change, retry, new attempt or deployment authorized."
 }
