@@ -11,12 +11,44 @@
 # Live: conditional SSE-KMS upload, version/checksum/KMS read-back, idle project check,
 # one StartBuild with timeout 30 / queue 5 / autoRetryLimitOverride 0. Never starts twice.
 set -euo pipefail
+PROJECT=meri-greenfield-qualification-build
+
+# Fail-closed preflight reads. Each returns nonzero unless AWS answered and the answer
+# proves the condition; transport, throttling, access and unknown errors all stop.
+require_project_idle() { # $@ = aws profile/region args
+  # Every build of the project, not just the newest: the CLI paginates the full
+  # list (no --max-items), then each chunk of <=100 IDs is read back and checked.
+  local listed chunks chunk builds
+  listed="$(aws "$@" codebuild list-builds-for-project --project-name "$PROJECT" --sort-order DESCENDING --output json)" || return 1
+  chunks="$(python3 -I -B -c 'import json,sys
+d=json.loads(sys.argv[1]); ids=d.get("ids")
+assert type(ids) is list and all(type(i) is str and i and " " not in i for i in ids) and len(ids)==len(set(ids))
+assert "nextToken" not in d and "NextToken" not in d
+for k in range(0,len(ids),100): print(" ".join(ids[k:k+100]))' "$listed")" || return 1
+  [[ -z "$chunks" ]] && return 0
+  while IFS= read -r chunk; do chunk="${chunk%$'\r'}"
+    builds="$(aws "$@" codebuild batch-get-builds --ids $chunk --output json)" || return 1
+    python3 -I -B -c 'import json,sys
+d=json.loads(sys.argv[1]); b=d.get("builds"); n=sys.argv[2].split()
+assert type(b) is list and sorted(x.get("id") for x in b)==sorted(n) and not d.get("buildsNotFound")
+assert all(x.get("buildComplete") is True and x.get("buildStatus") not in (None,"IN_PROGRESS") for x in b)' "$builds" "$chunk" || return 1
+  done <<< "$chunks"
+}
+require_tag_absent() { # $1 = tag, rest = aws profile/region args; only ImageNotFoundException proves absence
+  local tag="$1" err rc=0; shift
+  err="$(aws "$@" ecr describe-images --repository-name meri-greenfield/qualification-worker \
+    --image-ids imageTag="$tag" --output json 2>&1 >/dev/null)" || rc=$?
+  [[ $rc -eq 254 ]] || return 1
+  printf '%s\n' "$err" | grep -qE '^(aws: \[ERROR\]: )?An error occurred \(ImageNotFoundException\) when calling the DescribeImages operation' || return 1
+}
+# Sourcing with PROXY_IMAGE_START_LIBRARY=1 defines the preflight functions only (focused tests).
+if [[ "${PROXY_IMAGE_START_LIBRARY:-}" == 1 ]]; then return 0 2>/dev/null || exit 0; fi
+
 [[ $# -eq 3 && "$1" =~ ^[0-9a-f]{40}$ && "$3" =~ ^[0-9a-f]{64}$ ]] || { echo 'usage: proxy-image-start.sh COMMIT INPUTS_DIR ZIP_SHA256' >&2; exit 2; }
 C="$1"; O="$(cd "$2" && pwd)"; EXPECTED_ZIP="$3"
 command -v cygpath >/dev/null && O="$(cygpath -m "$O")"
 REPO="$(cd "${MERI_REPO:?set the repository checkout}" && pwd)"; command -v cygpath >/dev/null && REPO="$(cygpath -m "$REPO")"
 export AWS_PAGER='' AWS_MAX_ATTEMPTS=1 MSYS_NO_PATHCONV=1
-PROJECT=meri-greenfield-qualification-build
 B=meri-greenfield-qual-build-967807252336-us-east-1
 K=arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042
 REPOSITORY_URI=967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker
@@ -82,10 +114,10 @@ assert (h["ContentLength"] == len(d) and h["ChecksumSHA256"] == base64.b64encode
 EOF
 [[ -e attempt.txt ]] || python3 -I -B -c "import secrets;open('attempt.txt','x').write(secrets.token_hex(16)+'\n')"
 A="$(tr -d '\r\n' < attempt.txt)"
-ids="$(aws "${P[@]}" codebuild list-builds-for-project --project-name "$PROJECT" --max-items 3 --query ids --output text | head -1)"
-if aws "${P[@]}" codebuild batch-get-builds --ids $ids --query 'builds[?buildComplete==`false`].id' --output text | grep -q .; then echo ACTIVE_BUILD >&2; exit 3; fi
-aws "${P[@]}" ecr describe-images --repository-name meri-greenfield/qualification-worker \
-  --image-ids imageTag="proxy-assembly-$C-$A" >/dev/null 2>&1 && { echo TAG_EXISTS >&2; exit 3; }
+require_project_idle "${P[@]}" || { echo PROJECT_NOT_PROVEN_IDLE >&2; exit 3; }
+for tag in "proxy-assembly-$C-$A" "proxy-product-$C-$A"; do
+  require_tag_absent "$tag" "${P[@]}" || { echo "TAG_NOT_PROVEN_ABSENT $tag" >&2; exit 3; }
+done
 ( set -o noclobber; request "$A" "$V" > start-build.request.json )
 aws "${P[@]}" codebuild start-build --cli-input-json file://start-build.request.json \
   --query 'build.{id:id,status:buildStatus,sourceVersion:sourceVersion,timeout:timeoutInMinutes,queue:queuedTimeoutInMinutes,retry:autoRetryConfig}' \
