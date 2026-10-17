@@ -25,7 +25,7 @@ export async function qualificationPool(connectionString){
  const pool=new Pool({connectionString,max:6,connectionTimeoutMillis:2000,idleTimeoutMillis:1000,maxLifetimeSeconds:30,statement_timeout:5000,lock_timeout:2000,idle_in_transaction_session_timeout:5000,query_timeout:7000,application_name:'meri-prefs-task6-qualification'});
  pool.on('error',()=>{});
  try{
-  const {rows:[identity]}=await pool.query('SELECT current_database() AS database, inet_server_addr()::text AS address, inet_server_port() AS port, current_user AS role');
+  const {rows:[identity]}=await pool.query('SELECT current_database() AS database, host(inet_server_addr()) AS address, inet_server_port() AS port, current_user AS role');
   if(identity.database!==QUALIFICATION_DATABASE||identity.address!=='127.0.0.1'||identity.port!==QUALIFICATION_PORT)throw Error('PG qualification server identity mismatch; no writes permitted');
   const {rows:[tables]}=await pool.query("SELECT to_regclass('meri_settings.user_preferences')::text AS preferences, to_regclass('meri_settings.settings_audit')::text AS audit");
   if(tables.preferences!=='meri_settings.user_preferences'||tables.audit!=='meri_settings.settings_audit')throw Error('PG qualification requires the separately provisioned reserved settings schema');
