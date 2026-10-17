@@ -2,12 +2,21 @@
  * signing operation, and the live ECS/revocation authority are supplied by their
  * respective owners. A request body is never an authority for a workload. */
 import {createServer} from 'node:https';
+import {X509Certificate,createHash} from 'node:crypto';
+import {isIP} from 'node:net';
 import {createTemporalIssuerToken,validateTemporalIssuerPublicJwk} from './protocol.mjs';
 
 const TOKEN_PATH='/v1/internal/temporal/token/read';
 const JWKS_PATH='/.well-known/jwks.json';
+const CHALLENGE_PATH='/v1/internal/temporal/bootstrap/challenge';
+const REDEEM_PATH='/v1/internal/temporal/bootstrap/redeem';
 const IDENTITY_KEYS=['role','subject','workloadPrincipal'];
 const REQUEST_KEYS=['schemaVersion',...IDENTITY_KEYS,'namespace','audience','issuer'];
+const CHALLENGE_KEYS=['schemaVersion','role','taskArn','csrPem'];
+const REDEEM_KEYS=[...CHALLENGE_KEYS,'challengeId','proofBase64'];
+const CHALLENGE_REPLY_KEYS=['schemaVersion','challengeId','proofMessage','expiresAtMs'];
+const REDEEM_REPLY_KEYS=['schemaVersion','certPem','registration'];
+const REGISTRATION_KEYS=['schemaVersion','state','certificateSha256','role','peerSanUri','taskArn','revision','expiresAtMs'];
 const STATE_KEYS=['state','identity','observedAtMs','validUntilMs'];
 const fault=()=>Object.assign(Error('TEMPORAL_ISSUER_REFUSED'),{code:'TEMPORAL_ISSUER_REFUSED'});
 const own=(value,keys)=>value!==null&&typeof value==='object'&&!Array.isArray(value)&&
@@ -23,14 +32,16 @@ const origin=value=>{
 };
 const name=value=>typeof value==='string'&&/^[A-Za-z0-9._:-]{1,128}$/u.test(value);
 const role=value=>value==='control'||value==='temporal-worker';
-const configKeys=['schemaVersion','issuerOrigin','kid','namespace','audience','maxRequestMs','maxBodyBytes','currentnessLeaseMs'];
+const configKeys=['schemaVersion','issuerOrigin','kid','namespace','audience','maxRequestMs',
+ 'bootstrapMaxRequestMs','maxBodyBytes','currentnessLeaseMs'];
 
 /** Closed public configuration. issuerOrigin is a bare HTTPS URL; JWT/request iss
  * is exactly issuerOrigin + '/', matching Temporal's retained issuer field. */
 export function parseTemporalIssuerServiceConfiguration(raw){
  if(!own(raw,configKeys)||raw.schemaVersion!==1||!origin(raw.issuerOrigin)||
     !name(raw.kid)||raw.namespace!=='meri'||raw.audience!=='meri-temporal'||
-    !integer(raw.maxRequestMs,1,30000)||!integer(raw.maxBodyBytes,128,8192)||
+    !integer(raw.maxRequestMs,1,30000)||!integer(raw.bootstrapMaxRequestMs,3000,14000)||
+    !integer(raw.maxBodyBytes,128,8192)||
     !integer(raw.currentnessLeaseMs,raw.maxRequestMs+1,120000))throw fault();
  return Object.freeze({...raw});
 }
@@ -63,24 +74,73 @@ async function readJson(request,maxBodyBytes,signal){
   }
   signal.throwIfAborted();
  }finally{signal.removeEventListener('abort',interrupt);}
- const raw=Buffer.concat(chunks,length).toString('utf8');
+ let raw;try{raw=new TextDecoder('utf-8',{fatal:true}).decode(Buffer.concat(chunks,length));}
+ catch{throw fault();}
  let body;try{body=JSON.parse(raw);}catch{throw fault();}
  // The paired client emits one exact JSON object. This rejects duplicate keys,
  // alternate encodings and ambiguous transport transformations before binding.
  if(JSON.stringify(body)!==raw)throw fault();
+ return body;
+}
+
+function tokenBody(body){
  if(!own(body,REQUEST_KEYS)||body.schemaVersion!==1||!role(body.role)||
     !name(body.subject)||!name(body.workloadPrincipal)||body.namespace!=='meri'||
     body.audience!=='meri-temporal')throw fault();
  return body;
 }
 
+function bootstrapBody(body,kind){
+ const challenge=kind==='challenge';
+ if(!own(body,challenge?CHALLENGE_KEYS:REDEEM_KEYS)||body.schemaVersion!==1||!role(body.role)||
+    typeof body.taskArn!=='string'||body.taskArn.length<1||body.taskArn.length>512||
+    typeof body.csrPem!=='string'||body.csrPem.length<1||body.csrPem.length>8192||
+    (!challenge&&(typeof body.challengeId!=='string'||body.challengeId.length<1||body.challengeId.length>128||
+      typeof body.proofBase64!=='string'||body.proofBase64.length<1||body.proofBase64.length>1024)))throw fault();
+ return body;
+}
+
+function checkedBootstrapReply(reply,body,kind,nowMs){
+ if(kind==='challenge'){
+  if(!own(reply,CHALLENGE_REPLY_KEYS)||reply.schemaVersion!==1||
+     typeof reply.challengeId!=='string'||
+     !/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/iu.test(reply.challengeId)||
+     typeof reply.proofMessage!=='string'||reply.proofMessage.length<1||reply.proofMessage.length>4096||
+     !/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/u.test(reply.proofMessage)||
+     !integer(reply.expiresAtMs,nowMs+1,Number.MAX_SAFE_INTEGER))throw fault();
+ }else{
+  const registration=reply?.registration;
+  if(!own(reply,REDEEM_REPLY_KEYS)||reply.schemaVersion!==1||
+     typeof reply.certPem!=='string'||reply.certPem.length<1||reply.certPem.length>32768||
+     !own(registration,REGISTRATION_KEYS)||registration.schemaVersion!==1||registration.state!=='CURRENT'||
+     registration.role!==body.role||registration.taskArn!==body.taskArn||
+     typeof registration.certificateSha256!=='string'||
+     !/^[a-f0-9]{64}$/u.test(registration.certificateSha256)||
+     typeof registration.peerSanUri!=='string'||registration.peerSanUri.length>2048||
+     !/^spiffe:\/\/[a-z0-9.-]+\/[A-Za-z0-9/_-]+\//u.test(registration.peerSanUri)||
+     !registration.peerSanUri.endsWith(encodeURIComponent(body.taskArn))||
+     !name(registration.revision)||
+     !integer(registration.expiresAtMs,nowMs+1,Number.MAX_SAFE_INTEGER))throw fault();
+  let leaf;try{leaf=new X509Certificate(reply.certPem);}catch{throw fault();}
+  if(createHash('sha256').update(leaf.raw).digest('hex')!==registration.certificateSha256)throw fault();
+ }
+ return reply;
+}
+
+function bootstrapSource(request){
+ const socket=request.socket;
+ if(socket?.encrypted!==true||isIP(socket.remoteAddress)!==4)throw fault();
+ return socket;
+}
+
 function peerFrom(request){
  const socket=request.socket;
- if(socket?.encrypted!==true||socket.authorized!==true||typeof socket.getPeerCertificate!=='function')throw fault();
+ if(socket?.encrypted!==true||socket.authorized!==true||typeof socket.getPeerCertificate!=='function'||
+    isIP(socket.remoteAddress)!==4)throw fault();
  const certificate=socket.getPeerCertificate(true);
  if(!certificate||typeof certificate!=='object'||!Buffer.isBuffer(certificate.raw)||
     certificate.raw.length===0||!/^([\dA-F]{2}:){31}[\dA-F]{2}$/iu.test(certificate.fingerprint256??''))throw fault();
- return Object.freeze({authorized:true,certificate});
+ return Object.freeze({authorized:true,certificate,remoteAddress:socket.remoteAddress});
 }
 
 function checkedFact(raw,identity,startedAtMs,nowMs,currentnessLeaseMs){
@@ -109,9 +169,11 @@ function bounded(call,signal){
  * the verified TLS peer to live service/task/revocation facts on EACH call. sign
  * is an externally owned RSA signing port; protocol.mjs verifies its result
  * against the pinned public JWK before this service can release it. */
-export function createTemporalIssuerService({configuration,taskAuthority,sign,publicJwk,now=Date.now}={}){
+export function createTemporalIssuerService({configuration,taskAuthority,sign,publicJwk,bootstrapOwner,now=Date.now}={}){
  const c=parseTemporalIssuerServiceConfiguration(configuration);
  if(typeof taskAuthority?.readCurrent!=='function'||typeof sign!=='function'||typeof now!=='function')throw fault();
+ if(bootstrapOwner!==undefined&&(typeof bootstrapOwner?.challenge!=='function'||
+    typeof bootstrapOwner?.redeem!=='function'))throw fault();
  try{validateTemporalIssuerPublicJwk(publicJwk,c.kid);}catch{throw fault();}
  const pinnedPublicJwk=Object.freeze({...publicJwk});
  let closed=false,server=null;const active=new Set();
@@ -122,17 +184,32 @@ export function createTemporalIssuerService({configuration,taskAuthority,sign,pu
    if(request.headers['content-length']!==undefined||request.headers['transfer-encoding']!==undefined){refused(response);return;}
    headers(response,200,{keys:[pinnedPublicJwk]});return;
   }
-  if(request.url!==TOKEN_PATH||request.method!=='POST'){refused(response,404);return;}
-  let peer;try{peer=peerFrom(request);}catch{refused(response,401);return;}
+  const kind=request.method==='POST'&&request.url===CHALLENGE_PATH?'challenge':
+   request.method==='POST'&&request.url===REDEEM_PATH?'redeem':null;
+  if(kind&&!bootstrapOwner){refused(response,404);return;}
+  if(!kind&&(request.url!==TOKEN_PATH||request.method!=='POST')){refused(response,404);return;}
+  let peer;
+  try{peer=kind?bootstrapSource(request):peerFrom(request);}catch{refused(response,401);return;}
   const controller=new AbortController();
   const operation={controller,response};active.add(operation);
   const abort=()=>controller.abort();
   request.once('aborted',abort);response.once('close',abort);
-  const timeout=setTimeout(()=>{controller.abort();refused(response,503);request.destroy?.();},c.maxRequestMs);timeout.unref?.();
-  let identity;
+  const timeout=setTimeout(()=>{controller.abort();refused(response,503);request.destroy?.();},
+   kind?c.bootstrapMaxRequestMs:c.maxRequestMs);timeout.unref?.();
+  let identity,bootstrapValidated=false;
   try{
    const startedAtMs=now();if(!integer(startedAtMs,0,Number.MAX_SAFE_INTEGER))throw fault();
    const body=await readJson(request,c.maxBodyBytes,controller.signal);
+   if(kind){
+    bootstrapBody(body,kind);
+    bootstrapValidated=true;
+    if(bootstrapOwner.available?.()===false)throw fault();
+    const reply=await bounded(()=>bootstrapOwner[kind](body,{socket:peer,signal:controller.signal}),controller.signal);
+    controller.signal.throwIfAborted();
+    if(closed)throw fault();
+    headers(response,200,checkedBootstrapReply(reply,body,kind,now()));return;
+   }
+   tokenBody(body);
    if(body.issuer!==c.issuerOrigin+'/'||body.namespace!==c.namespace||body.audience!==c.audience)throw fault();
    identity={role:body.role,subject:body.subject,workloadPrincipal:body.workloadPrincipal};
    const first=checkedFact(await bounded(()=>taskAuthority.readCurrent({peer,identity,signal:controller.signal}),controller.signal),
@@ -165,9 +242,13 @@ export function createTemporalIssuerService({configuration,taskAuthority,sign,pu
    headers(response,200,{schemaVersion:1,state:'CURRENT',identity,observedAtMs,validUntilMs,
     token:{token:issued.token,expiresAtMs:issued.expiresAtMs,
      claims:{namespace:c.namespace,audience:c.audience,issuer:c.issuerOrigin+'/'}}});
-  }catch{
+  }catch(error){
    if(!controller.signal.aborted&&!response.writableEnded){
-    if(identity)headers(response,200,unavailable(identity,now()));else refused(response);
+    if(kind){
+     const denied=error?.code==='TEMPORAL_ISSUER_BOOTSTRAP_REFUSED'||error?.code==='RUNNER_POSTSTART_REFUSED';
+     refused(response,bootstrapValidated?(denied?403:503):400);
+    }
+    else if(identity)headers(response,200,unavailable(identity,now()));else refused(response);
    }
   }finally{
    clearTimeout(timeout);request.off('aborted',abort);response.off('close',abort);active.delete(operation);
