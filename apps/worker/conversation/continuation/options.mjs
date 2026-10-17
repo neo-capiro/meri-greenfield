@@ -39,17 +39,32 @@ export function buildContinuationOptions(value,target) {
       continuationContextSha256(t.sourceRequest,cp.scopes)!==c.contextSha256||continuationContextSha256(t.request,t.scopes)!==c.contextSha256||
       !same(t.sourceRequest.windowRequest,t.request.windowRequest)||t.request.prompt!==t.sourceRequest.prompt||
       t.request.requestId===t.sourceRequest.requestId)fail('CONTINUATION_PIN_REFUSED');
-  for(const key of ['tenantId','actorId'])if(cp.binding[key]!==t.binding[key])fail('CONTINUATION_SCOPE_REFUSED');
-  if(cp.binding.runId===t.binding.runId||cp.binding.attemptId===t.binding.attemptId||cp.binding.workerId===t.binding.workerId||
-      c.mode==='resume'&&t.binding.writerFence<=cp.binding.writerFence)fail('CONTINUATION_TARGET_REFUSED');
-  if(c.mode==='resume' ? cp.binding.conversationId!==t.binding.conversationId :
-      cp.binding.conversationId===t.binding.conversationId||c.targetSessionId===null||c.targetSessionId===cp.sessionId)fail('CONTINUATION_TARGET_REFUSED');
+  assertContinuationTarget(c,t.binding);
   if(t.request.skill!==null) {
     const selected=selectSkill(t.request.skill.skillId,t.request.skill.skillVersion);
     if(!same(selected.pin,t.request.skill))fail('CONTINUATION_SKILL_REFUSED');
   }
   // Chain entry and source restoration are verified by the trusted checkpoint
   // owner. No transcript, undo history or opaque SDK codec is reconstructed here.
-  return Object.freeze({resume:cp.sessionId,...(c.resumeSessionAt===null?{}:{resumeSessionAt:c.resumeSessionAt}),
-    ...(c.mode==='fork'?{forkSession:true,sessionId:c.targetSessionId}:{})});
+  return lineageResumeOptions({sessionId:cp.sessionId,resumeSessionAt:c.resumeSessionAt,targetSessionId:c.mode==='fork'?c.targetSessionId:null});
+}
+/** The target run a verified lifecycle envelope may continue into: same tenant and actor, a new run/attempt/worker; resume stays in the
+ * checkpoint's conversation at a later writer fence, fork moves to another conversation under a new SDK session id.
+ * Shared by buildContinuationOptions and the runner's SDK options pin (apps/runtime/native-authority/sdk-option-template.mjs).
+ * @param {any} c assertContinuationEnvelope output @param {any} binding the target RunBinding */
+export function assertContinuationTarget(c,binding) {
+  const cp=c.checkpoint;
+  for(const key of ['tenantId','actorId'])if(cp.binding[key]!==binding[key])fail('CONTINUATION_SCOPE_REFUSED');
+  if(cp.binding.runId===binding.runId||cp.binding.attemptId===binding.attemptId||cp.binding.workerId===binding.workerId||
+      c.mode==='resume'&&binding.writerFence<=cp.binding.writerFence)fail('CONTINUATION_TARGET_REFUSED');
+  if(c.mode==='resume' ? cp.binding.conversationId!==binding.conversationId :
+      cp.binding.conversationId===binding.conversationId||c.targetSessionId===null||c.targetSessionId===cp.sessionId)fail('CONTINUATION_TARGET_REFUSED');
+}
+/** The SDK continuation options of a verified lineage: resume the checkpoint session, optionally at a message, and for a fork write a
+ * new target session. The one definition of these fields, shared by both lineage builders and the runner's SDK options pin.
+ * @param {{sessionId:string,resumeSessionAt:string|null,targetSessionId:string|null}} lineage
+ * @returns {Pick<import('@anthropic-ai/claude-agent-sdk').Options,'resume'|'resumeSessionAt'|'forkSession'|'sessionId'>} */
+export function lineageResumeOptions({sessionId,resumeSessionAt,targetSessionId}) {
+  return Object.freeze({resume:sessionId,...(resumeSessionAt===null?{}:{resumeSessionAt}),
+    ...(targetSessionId===null?{}:{forkSession:true,sessionId:targetSessionId})});
 }
