@@ -1,5 +1,5 @@
 /** Upstream Temporal client owns start/cancel and workflow ID deduplication. */
-import {WorkflowIdReusePolicy,WorkflowIdConflictPolicy} from '@temporalio/client';
+import {WorkflowIdReusePolicy,WorkflowIdConflictPolicy,WorkflowNotFoundError} from '@temporalio/client';
 import {assertWorkerControl} from '../../../packages/contracts/conversation-lifecycle/validate.mjs';
 import {validateShape,fail,same,own,uuid} from './boundary.mjs';
 import {nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
@@ -25,7 +25,11 @@ export function createTemporalConversationDispatcher({client,taskQueue,lifecycle
    validateShape('RunBinding',binding);nativeSignal(signal);signal?.throwIfAborted();
    await dispatch({signal,deadlineMs},()=>client.workflow.start(lifecycle?'meriConversationLifecycleWorkflow':'meriConversationWorkflow',{workflowId:workflowId(binding),taskQueue,args:[{binding}],workflowIdReusePolicy:WorkflowIdReusePolicy.REJECT_DUPLICATE,workflowIdConflictPolicy:WorkflowIdConflictPolicy.USE_EXISTING}));signal?.throwIfAborted();
   },
-  async cancel({binding,signal,deadlineMs}){validateShape('RunBinding',binding);nativeSignal(signal);signal?.throwIfAborted();await dispatch({signal,deadlineMs},()=>client.workflow.getHandle(workflowId(binding)).cancel());signal?.throwIfAborted();}
+  /** Temporal NOT_FOUND is a definitive answer, not a lost acknowledgement: no open workflow carries this run's ID (never started, or
+   * already closed). Callers commit the run's terminal state before cancelling, so a start that lands later is fenced by that state.
+   * Every other failure, including a deadline, stays TEMPORAL_DISPATCH_UNKNOWN. */
+  async cancel({binding,signal,deadlineMs}){validateShape('RunBinding',binding);nativeSignal(signal);signal?.throwIfAborted();let workflow='CANCEL_REQUESTED';
+   await dispatch({signal,deadlineMs},async()=>{try{await client.workflow.getHandle(workflowId(binding)).cancel();}catch(error){if(!(error instanceof WorkflowNotFoundError))throw error;workflow='NOT_FOUND';}});signal?.throwIfAborted();return {workflow};}
  };
  if(!lifecycle)return Object.freeze(basic);
  return Object.freeze({...basic,
