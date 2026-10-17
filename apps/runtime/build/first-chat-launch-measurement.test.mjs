@@ -1,12 +1,12 @@
 /** Host-side checks of the in-image measurement module. The CLI executable on this host is not the Linux image's, so the
- * Linux-only launch gates are expected to FAIL here; everything else (descriptor capture, per-run SDK option pins replayed
- * through the real runner-query gate, runner and skills measurement, environment scrub) is exercised for real. */
+ * Linux-only launch gates are expected to FAIL here; everything else (descriptor capture, the run-invariant SDK option template
+ * replayed through the real runner-query gate, runner and skills measurement, environment scrub) is exercised for real. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {resolve} from 'node:path';
-import {measureFirstChatLaunch,probeOptions,scrubEnvironment,skillsDigest,PROBES,RECEIPT_SCHEMA} from './first-chat-launch-measurement.mjs';
+import {measureFirstChatLaunch,probeRun,scrubEnvironment,skillsDigest,PROBES,RECEIPT_SCHEMA} from './first-chat-launch-measurement.mjs';
 import {createPreparedRunnerQuery} from '../native-authority/runner-query.mjs';
 import {measureProductRunner} from '../native-authority/ecs-prepared-task-proof.mjs';
 
@@ -37,13 +37,17 @@ test('descriptor capture yields a credential-free launch template bound to the p
  if(process.platform==='linux')for(const [k,v] of Object.entries(r.gates))assert.equal(v,'PASS',k);
 });
 
-test('sdkOptionsSha256 is what runner-query.mjs admits for the probe run and refuses for any other run',async()=>{
- const r=await measured();assert.equal(r.sdkOptions.perRun,true);assert.notEqual(r.sdkOptions.sha256,r.sdkOptions.secondProbeSha256);
- const gate=()=>createPreparedRunnerQuery({sdkOptionsSha256:r.sdkOptions.sha256,processClientFactory:()=>({}),prepare:()=>{throw Error('not reached');}});
- const accepted=gate()({prompt:'p',options:await probeOptions(inputs,{root})});assert.equal(typeof accepted[Symbol.asyncIterator],'function');
- // Another run (new conversationId/runId: cwd and CLAUDE_CONFIG_DIR differ) is refused synchronously by query().
- const second=await probeOptions(inputs,{root,binding:PROBES[1]});
- assert.throws(()=>gate()({prompt:'p',options:second}),/SDK_OPTIONS_REFUSED/u);
+test('sdkOptionsSha256 is one run-invariant template hash runner-query.mjs admits for every probe run and refuses on any other option',async()=>{
+ const r=await measured();assert.equal(r.sdkOptions.runInvariant,true);assert.equal(r.sdkOptions.sha256,r.sdkOptions.secondProbeSha256);
+ assert.equal(r.sdkOptions.schema,'meri.sdk-options-template.v1');assert.equal(r.gates.runnerSdkOptions,'PASS');
+ assert.notEqual(r.sdkOptions.probes[0].workspace,r.sdkOptions.probes[1].workspace);assert.notEqual(r.sdkOptions.probes[0].sdkConfigDirectory,r.sdkOptions.probes[1].sdkConfigDirectory);
+ const gate=run=>createPreparedRunnerQuery({sdkOptions:{sdkOptionsSha256:r.sdkOptions.sha256,run},processClientFactory:()=>({}),prepare:()=>{throw Error('not reached');}});
+ const first=await probeRun(inputs,{root}),second=await probeRun(inputs,{root,binding:PROBES[1]});
+ // Two runs (different conversationId/runId: cwd, CLAUDE_CONFIG_DIR and request context differ) pass with the one configured value.
+ for(const p of [first,second])assert.equal(typeof gate(p.run)({prompt:'p',options:p.options})[Symbol.asyncIterator],'function');
+ // A run's options against another run's facts, or with a changed option, are refused synchronously by query().
+ assert.throws(()=>gate(first.run)({prompt:'p',options:second.options}),/SDK_OPTIONS_REFUSED/u);
+ assert.throws(()=>gate(first.run)({prompt:'p',options:{...first.options,model:'other-model'}}),/SDK_OPTIONS_REFUSED/u);
 });
 
 test('runner and skills values equal the repository measurement functions; the environment scrub drops injected secrets',async()=>{
