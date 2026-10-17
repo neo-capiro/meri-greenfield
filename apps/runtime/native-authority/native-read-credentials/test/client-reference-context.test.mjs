@@ -10,7 +10,7 @@ import {createNativeReadCredentialOwner} from '../owner.mjs';
 import {ownerFixture,uuid} from './fixture.mjs';
 
 const clientId='a1234567-b123-4c12-8d12-e123456789ab',foreign=uuid('e');
-const cases=[['tracked-bills','search_tracked_bills'],['public-domain-hearings','search_committee_hearings'],['research-legal-legislation','search_legislative_research'],['outreach-query','query_outreach']];
+const cases=[['tracked-bills','search_tracked_bills'],['public-domain-hearings','search_committee_hearings'],['research-legal-legislation','search_legislative_research'],['research-legal-legislation','get_legal_reference'],['outreach-query','query_outreach']];
 function scene(family,id,reference=' Synthetic named client '){
  const request={...(family==='research-legal-legislation'?nativeFamilyCase(family,id).arguments:{}),clientId:reference};
  const resolution={reference:reference.trim().slice(0,80).trim(),clientId};

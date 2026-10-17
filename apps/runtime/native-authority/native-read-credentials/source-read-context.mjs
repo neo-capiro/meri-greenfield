@@ -3,7 +3,7 @@ import {publicDomainDatasetRegistry} from '../../../../packages/contracts/retrie
 import {nativeReadFault} from '../../../../packages/contracts/runtime-0.2/reads.mjs';
 import {MODE_READ_OPERATIONS} from '../../../../packages/contracts/native-read-observation-0.2/validate.mjs';
 import {captureHearingClientReference,captureHearingClientSelection} from '../../../gateway/sources/public-domain-hearings/request-context.mjs';
-import {assertLegalSliceRequest,assertLegalSearchRequest,captureResearchClientReference,legalSliceContext} from '../../../gateway/sources/research-legal-legislation/request-context.mjs';
+import {assertLegalRawRequest,captureResearchClientReference,legalSliceContext} from '../../../gateway/sources/research-legal-legislation/request-context.mjs';
 import {assertNewsSliceRequest,newsSliceContext} from '../../../gateway/sources/research-legal-news/request-context.mjs';
 import {captureOutreachListClientReference,captureOutreachListClientSelection} from '../../../gateway/sources/outreach-query/request-context.mjs';
 import {assertStoredStateRequest} from '../../../gateway/sources/state-status-votes/request-context.mjs';
@@ -55,7 +55,7 @@ export function sourceReadClientReference(contract,request){
   reference=request.clientId.trim().slice(0,80);
   if(!reference.trim())refuse('INVALID_ARGUMENTS');
  }else if(contract.binding.group==='public-domain-hearings')reference=captureHearingClientReference(request);
- else if(contract.binding.group==='research-legal-legislation'&&contract.descriptor.operation.id==='search_legislative_research')reference=captureResearchClientReference(request);
+ else if(contract.binding.group==='research-legal-legislation')reference=captureResearchClientReference(request);
  else if(contract.binding.group==='outreach-query')reference=captureOutreachListClientReference(request);
  return reference!==null&&!UUID.test(reference.trim().toLowerCase())?reference:null;
 }
@@ -70,8 +70,7 @@ export function assertSourceReadRequest(contract,request,subject){
  if(contract.binding.group==='state-status-votes')assertStoredStateRequest(contract.descriptor.operation,request);
  if(contract.binding.group==='tracked-bills'||contract.binding.group==='public-domain-hearings')sourceReadClientReference(contract,request);
  if(contract.binding.group==='research-legal-legislation'){
-  if(contract.descriptor.operation.id==='search_legislative_research')assertLegalSearchRequest(contract.descriptor.operation,request);
-  else assertLegalSliceRequest(contract.descriptor.operation,request);
+  assertLegalRawRequest(contract.descriptor.operation,request);
  }
  if(contract.binding.group==='research-legal-news')assertNewsSliceRequest(contract.descriptor.operation,request);
  if(contract.binding.group==='outreach-query')captureOutreachListClientReference(request);

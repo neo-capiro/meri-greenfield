@@ -7,13 +7,18 @@ import {assertFamilyHandlerSet,familyOperations} from './registration.mjs';
 import {createGeneralReadFamilyHandlers,GENERAL_READ_ADAPTER_FAMILIES} from './integration.mjs';
 import {CASES,familyCase} from './test/family-cases.mjs';
 import {storedCase as fundingCase,ids as fundingIds} from '../sources/funding-opportunities/test/fixture.mjs';
+import {storedCase as programCase} from '../sources/program-elements/test/fixture.mjs';
 const rows=family=>familyOperations(family).map(operation=>({operation,async execute(){throw Error('Synthetic registration only');}}));
 const refuses=work=>assert.throws(work,error=>error.message==='GATEWAY_CONFIGURATION');
 
 test('all existing canonical family constructors satisfy the exact set before source measurement',async()=>{
  const covered=new Set();
- for(const [family,id] of [...CASES,['funding-opportunities',fundingIds[0]]]){
-  if(covered.has(family))continue;covered.add(family);const scene=family==='funding-opportunities'?fundingCase(id):familyCase(family,id);
+ // Mail and program-elements have no shared family case; mail constructs passively and must never call out.
+ const passiveMail=()=>({now:()=>1800000000000,wire:[],state:{},transport:{endpoints:Object.fromEntries(familyOperations('mail').map(op=>[op.id,`https://mail.example.invalid/${op.id}`])),
+  getCredentials:()=>{throw Error('UNEXPECTED_CREDENTIAL');},fetchImpl:()=>{throw Error('UNEXPECTED_FETCH');}}});
+ for(const [family,id] of [...CASES,['funding-opportunities',fundingIds[0]],['program-elements','search_program_elements'],['mail',familyOperations('mail')[0].id]]){
+  if(covered.has(family))continue;covered.add(family);
+  const scene=family==='funding-opportunities'?fundingCase(id):family==='program-elements'?programCase(id):family==='mail'?passiveMail():familyCase(family,id);
   const result=await createGeneralReadFamilyHandlers({families:{[family]:scene.transport},now:scene.now,newId:randomUUID});
   assert.deepEqual([...result.keys()].sort(),familyOperations(family).map(operation=>`${operation.id}@${operation.version}`).sort());
   if(family==='funding-opportunities'){

@@ -1,4 +1,4 @@
-/** Request-determined legal/client context; no name, folder, citation lookup or authority creation. */
+/** Request-determined legal/client context; native check-ref resolves names, ResearchService owns folders; no citation parsing. */
 import {resolveOperationContract,validateShape} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {deny} from '../../dispatch/operation-result.mjs';
 import {frozenData,ownFields} from '../source-admission.mjs';
@@ -42,20 +42,26 @@ export function assertLegalSearchRequest(operation,request){
  if(contract.descriptor.operation.id!=='search_legislative_research')deny('GATEWAY_CONFIGURATION');
  return raw;
 }
-export function assertLegalSliceRequest(operation,request,resolution){
- const {contract,raw}=legalRequest(operation,request),search=contract.descriptor.operation.id==='search_legislative_research';
+/** Closed raw admission for either operation before any named resolution. Folders are delegated to the native
+ * ResearchService gate, which checks folder access and an explicit client/folder mismatch before reading. */
+export function assertLegalRawRequest(operation,request){
+ const {contract,raw}=legalRequest(operation,request);
+ if(contract.descriptor.operation.id==='search_legislative_research')return raw;
  // Core never parses rules/versions citations. In references, an explicit ID
  // bypasses parsed identity; edition is independent only when empty or forced
  // empty by the explicit constitution code. Do not guess any parser result.
  const citationIndependent=raw.view==='rules'||raw.view==='versions'||Boolean(raw.referenceId)&&((raw.edition??'')===''||raw.code==='constitution');
- if(!search&&(raw.folderId||(raw.citation??'')!==''&&!citationIndependent))deny('UNAVAILABLE');
- const context=requestContext(raw,search?resolution:undefined);
+ if((raw.citation??'')!==''&&!citationIndependent)deny('UNAVAILABLE');
+ return raw;
+}
+export function assertLegalSliceRequest(operation,request,resolution){
+ const {contract}=legalRequest(operation,request),raw=assertLegalRawRequest(operation,request);
+ const context=requestContext(raw,resolution);
  try{contract.normalizeInput(raw,context);}catch{deny('INVALID_ARGUMENTS');}
  return raw;
 }
 export function legalSliceContext(operation,request,resolution){
- const raw=assertLegalSliceRequest(operation,request,resolution);
- return requestContext(raw,operation.id==='search_legislative_research'?resolution:undefined);
+ return requestContext(assertLegalSliceRequest(operation,request,resolution),resolution);
 }
 /** Existing callers that explicitly require an unscoped request retain that strict boundary. */
 export function assertUnscopedLegalRequest(operation,request){

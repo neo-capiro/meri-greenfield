@@ -56,10 +56,11 @@ test('citation precedence: implicit identity and effective edition stay unavaila
  assert.equal(factories,0);assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
 });
 
-test('citation precedence: accepted citations cannot relax client name, folder or current UUID resource authority',async()=>{
+test('citation precedence: accepted citations cannot relax client name or current UUID resource authority; folders stay native',async()=>{
  for(const selection of [{view:'rules'},{referenceId:'explicit'},{referenceId:'explicit',code:'constitution',edition:'2026'}]){
   const base={...selection,citation:'Article I'};
-  for(const extra of [{clientId:'Client name'},{folderId:'folder'},{folderId:' '}])assert.throws(()=>assertLegalSliceRequest(operation,{...base,...extra}),{message:'UNAVAILABLE'});
+  assert.throws(()=>assertLegalSliceRequest(operation,{...base,clientId:'Client name'}),{message:'UNAVAILABLE'});
+  for(const folderId of ['folder',' '])assert.deepEqual(legalSliceContext(operation,{...base,folderId}),{clientResolution:null,citationResolution:null});
   const f=storedCase(id,{request:{...base,clientId:` ${clientId.toUpperCase()} `}}),out=JSON.parse(await f.handler()(f.call()));
   assert.equal(out.result.result.scope.clientId,clientId);assert.equal(f.credentialCalls[0].normalizationContext.citationResolution,null);
   const call=structuredClone(f.call());call.authority.subject.entityIds=['d1234567-b123-4c12-8d12-e123456789ab'];

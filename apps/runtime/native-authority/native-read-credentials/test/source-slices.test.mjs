@@ -40,12 +40,12 @@ for(const [family,id,selectors] of [
  ['tracked-bills','search_tracked_bills',[{clientId:'Synthetic client'}]],
  ['public-domain-hearings','search_committee_hearings',[{clientId:'Synthetic client'}]],
  ['research-legal-legislation','search_legislative_research',[{clientId:'Synthetic client'}]],
- ['research-legal-legislation','get_legal_reference',[{folderId:'synthetic-folder'},{clientId:'Synthetic client'},{citation:'Fla. Stat. 1.10'}]],
+ ['research-legal-legislation','get_legal_reference',[{clientId:'Synthetic client'},{citation:'Fla. Stat. 1.10'}]],
  ['research-legal-news','search_legiwatch_news',[{view:'source',kind:'news',id:'synthetic-source',clientId:'Synthetic client'},{view:'source',kind:'news',id:'synthetic-source',folderId:' '},{view:'news'},{view:'monitors'},{},{view:'personnel'},{view:'personnel',year:null}]],
 ])test(`${id}: unsupported source selectors refuse before native credentials, reservation and HTTP`,async()=>{
  for(const selector of selectors){
   const scene=nativeFamilyCase(family,id);scene.arguments={...selector};
-  const f=await mounted(scene,{missingNameReader:['tracked-bills','public-domain-hearings'].includes(family)||id==='search_legislative_research'});
+  const f=await mounted(scene,{missingNameReader:['tracked-bills','public-domain-hearings','research-legal-legislation'].includes(family)});
   try{
    await assert.rejects(read(f),{message:'UNAVAILABLE'});
    // The current business-authority fixture rejects a name under an already selected UUID before CONTROL is called.
@@ -137,7 +137,9 @@ test('outreach any own detail key and absent, blank, named or malformed client r
  const requests=[...['synthetic-outreach',null,'',' '].map(outreachId=>({...valid,outreachId})),{},
   {clientId:null},{clientId:''},{clientId:' '},{clientId:'Synthetic client'},{clientId:'not-a-client-uuid'}];
  for(const request of requests){
-  const scene=nativeFamilyCase('outreach-query','query_outreach');scene.arguments=request;const f=await mounted(scene);
+  // A non-UUID name reaches native check-ref (covered by client-reference-context); without that reader it must refuse first.
+  const named=typeof request.clientId==='string'&&request.clientId.trim()!==''&&!/^[a-f0-9-]{36}$/iu.test(request.clientId.trim());
+  const scene=nativeFamilyCase('outreach-query','query_outreach');scene.arguments=request;const f=await mounted(scene,{missingNameReader:named});
   try{
    await assert.rejects(read(f),{message:'UNAVAILABLE'});
    // Current business authority refuses any supplied string that differs from its selected UUID before CONTROL.

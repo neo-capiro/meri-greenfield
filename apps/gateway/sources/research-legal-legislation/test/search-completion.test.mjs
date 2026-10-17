@@ -111,10 +111,13 @@ test('folder/client/query result substitutions withhold the entire native result
  }
 });
 
-test('legal reference keeps every name/folder/parser gate even when a caller supplies a search resolution',()=>{
+test('legal reference shares native name resolution and folder delegation but keeps every parser gate',()=>{
  const ref={id:'get_legal_reference',version:'0.2.0'};
- for(const request of [{view:'rules',clientId:'Client Name'},{view:'rules',folderId:'native-folder'},
-  {citation:'Article I'},{referenceId:'explicit',citation:'1.10',edition:'2026'}]){
+ assert.deepEqual(legalSliceContext(ref,{view:'rules',clientId:' Client Name '},selected().clientResolution),selected());
+ assert.deepEqual(legalSliceContext(ref,{view:'rules',folderId:'native-folder'}),{clientResolution:null,citationResolution:null});
+ assert.throws(()=>legalSliceContext(ref,{view:'rules',clientId:'Client Name'}),{message:'UNAVAILABLE'});
+ assert.throws(()=>legalSliceContext(ref,{view:'rules',clientId:'Other Name'},selected().clientResolution),{message:'ACCESS_DENIED'});
+ for(const request of [{citation:'Article I'},{referenceId:'explicit',citation:'1.10',edition:'2026'},{citation:'Article I',clientId:' Client Name '}]){
   assert.throws(()=>assertLegalSliceRequest(ref,request,selected().clientResolution),{message:'UNAVAILABLE'});
   assert.throws(()=>legalSliceContext(ref,request,selected().clientResolution),{message:'UNAVAILABLE'});
  }

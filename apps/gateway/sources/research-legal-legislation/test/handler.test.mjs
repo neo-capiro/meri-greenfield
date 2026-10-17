@@ -17,14 +17,14 @@ for(const id of ids){
   assert.equal(out.result.authority,authorityNote);assert.equal(Object.hasOwn(out.result,'complete'),false);
   for(const value of Object.values(f.contract.normalizeInput(f.arguments,legalLegislationContext).metadata))assert.equal(value,false);
  });
- test(`${id}: names need a coherent trusted context; folders expand only for complete search`,async()=>{
+ test(`${id}: names need a coherent trusted context; folders are delegated to the native ResearchService gate`,async()=>{
   const f=storedCase(id);
   for(const extra of [{clientId:'Client name'},{clientId:' Client name '},
    {folderId:'private-folder'},{folderId:' '}]){
    const request={...f.arguments,...extra};assert.throws(()=>assertUnscopedLegalRequest(f.operation,request),{message:'UNAVAILABLE'});
-   if(id==='search_legislative_research'&&extra.folderId){const selected=storedCase(id,{request});
+   if(extra.folderId){const selected=storedCase(id,{request});
     assert.deepEqual(JSON.parse(await selected.handler()(selected.call())).result,selected.page);assert.deepEqual(selected.wire[0].body,request);
-   }else await assert.rejects(f.handler()({...f.call(),request}),{message:id==='search_legislative_research'?'INVALID_ARGUMENTS':'UNAVAILABLE'});
+   }else await assert.rejects(f.handler()({...f.call(),request}),{message:'INVALID_ARGUMENTS'});
   }
   assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
  });

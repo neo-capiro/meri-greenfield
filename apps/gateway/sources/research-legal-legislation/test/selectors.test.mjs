@@ -18,15 +18,15 @@ for(const id of ids){
    assert.deepEqual(f.visibleClientIds,[clientId]);assert.equal(f.authority.subject.entityIds[0],clientId);
   }
  });
- test(`delta ${id}: unresolved names stay closed and only search admits native folders`,async()=>{
+ test(`delta ${id}: unresolved names stay closed, parser-dependent citations stay held and native folders are delegated`,async()=>{
   const f=storedCase(id),{getCredentials,...transport}=f.transport;let factories=0;
   const [handler]=createResearchLegalLegislationHandlers({...transport,now:f.now,credentialsForCall:()=>{factories++;return getCredentials;}},[f.operation]);
-  const requests=[{...f.arguments,clientId:'Client name'},{...f.arguments,clientId:'not-a-uuid'}];
-  if(id==='get_legal_reference')requests.push({...f.arguments,clientId,folderId:'private-folder'},{...f.arguments,clientId,folderId:' '},
-   {...f.arguments,view:'references',clientId,citation:'Article I'},{...f.arguments,view:'references',clientId,citation:' '});
-  for(const request of requests){assert.throws(()=>assertLegalSliceRequest(f.operation,request),{message:'UNAVAILABLE'});await assert.rejects(handler.execute({...f.call(),request}),{message:id==='search_legislative_research'?'INVALID_ARGUMENTS':'UNAVAILABLE'});}
+  for(const request of [{...f.arguments,clientId:'Client name'},{...f.arguments,clientId:'not-a-uuid'}]){
+   assert.throws(()=>assertLegalSliceRequest(f.operation,request),{message:'UNAVAILABLE'});await assert.rejects(handler.execute({...f.call(),request}),{message:'INVALID_ARGUMENTS'});}
+  if(id==='get_legal_reference')for(const request of [{...f.arguments,view:'references',clientId,citation:'Article I'},{...f.arguments,view:'references',clientId,citation:' '}]){
+   assert.throws(()=>assertLegalSliceRequest(f.operation,request),{message:'UNAVAILABLE'});await assert.rejects(handler.execute({...f.call(),request}),{message:'UNAVAILABLE'});}
   assert.equal(factories,0);assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
-  if(id==='search_legislative_research')for(const folderId of ['private-folder',' ']){const selected=storedCase(id,{request:{...f.arguments,clientId,folderId}});
+  for(const folderId of ['private-folder',' ']){const selected=storedCase(id,{request:{...f.arguments,clientId,folderId}});
    assert.deepEqual(JSON.parse(await selected.handler()(selected.call())).result,selected.page);assert.equal(selected.wire[0].body.folderId,folderId);}
  });
  test(`delta ${id}: a UUID context cannot borrow a foreign client or a mismatched/nonclient resource subject`,async()=>{
