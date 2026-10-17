@@ -82,17 +82,29 @@ function tokenWriters(value,b){
  if(worker.sha256ByPath[worker.tls.issuerCaFile]!==b.runnerPoststart.controlCaSha256)fail();
  return writers;
 }
+const ROLE_ARN=/^arn:aws:iam::967807252336:role\/[A-Za-z0-9_+=,.@/-]{1,512}$/u,LOG_GROUP=/^\/[A-Za-z0-9_./-]{1,511}$/u;
+const TASK_ROLES=Object.freeze(['control','temporalWorker','runner']);
+/** Exactly one form per setting: one value shared by all three task definitions (executionRoleArn / logGroupName), or
+ * one DISTINCT value per task definition (executionRoleArns / logGroupNames: {control,temporalWorker,runner}). The
+ * per-role form matches a foundation that scopes each execution role to its own material secret and log group. The
+ * runner's execution role is then the one role control's task role may iam:PassRole when it runs the runner task. */
+function perRole(b,single,map,pattern,forbidden){
+ if((b[single]===undefined)===(b[map]===undefined))fail();
+ const values=b[single]!==undefined?[b[single]]:TASK_ROLES.map(role=>record(b[map],TASK_ROLES)[role]);
+ if(values.some(v=>typeof v!=='string'||!pattern.test(v)||v===forbidden)||new Set(values).size!==values.length)fail();
+}
+const roleValue=(b,single,map,role)=>b[single]??b[map][role];
 function validate(value){
- const b=record(value,['account','region','enabled','materialDelivery','runnerPoststart','clusterArn','imageUri','logGroupName','executionRoleArn','controlTaskRoleArn','runtimeUser','network','sizing','runnerSha256'],['controlTargetGroupArn','controlPrivateTargetGroupArn','sourceCommit','temporalTokenWriters']);
+ const b=record(value,['account','region','enabled','materialDelivery','runnerPoststart','clusterArn','imageUri','controlTaskRoleArn','runtimeUser','network','sizing','runnerSha256'],
+  ['executionRoleArn','executionRoleArns','logGroupName','logGroupNames','controlTargetGroupArn','controlPrivateTargetGroupArn','sourceCommit','temporalTokenWriters']);
  if(b.account!==ACCOUNT||b.region!==REGION||b.enabled!==false||
     !/^arn:aws:ecs:us-east-1:967807252336:cluster\/[A-Za-z0-9_-]{1,255}$/u.test(b.clusterArn)||
     !new RegExp(`^${ACCOUNT}\\.dkr\\.ecr\\.${REGION}\\.amazonaws\\.com\\/[a-z0-9._/-]+@sha256:[a-f0-9]{64}$`).test(b.imageUri)||
-    !/^\/[A-Za-z0-9_./-]{1,511}$/u.test(b.logGroupName)||
-    !/^arn:aws:iam::967807252336:role\/[A-Za-z0-9_+=,.@/-]{1,512}$/u.test(b.executionRoleArn)||
-    !/^arn:aws:iam::967807252336:role\/[A-Za-z0-9_+=,.@/-]{1,512}$/u.test(b.controlTaskRoleArn)||
-    b.executionRoleArn===b.controlTaskRoleArn||
+    !ROLE_ARN.test(b.controlTaskRoleArn)||
     b.runtimeUser!=='1000:1000'||!hex64.test(b.runnerSha256)||
     b.sourceCommit!==undefined&&!/^[a-f0-9]{40}$/u.test(b.sourceCommit))fail();
+ perRole(b,'executionRoleArn','executionRoleArns',ROLE_ARN,b.controlTaskRoleArn);
+ perRole(b,'logGroupName','logGroupNames',LOG_GROUP);
  const targetGroup=/^arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup\/[A-Za-z0-9_-]{1,32}\/[a-f0-9]{16}$/u;
  if([b.controlTargetGroupArn,b.controlPrivateTargetGroupArn].some(arn=>arn!==undefined&&!targetGroup.test(arn))||
     b.controlTargetGroupArn!==undefined&&b.controlTargetGroupArn===b.controlPrivateTargetGroupArn)fail();
@@ -130,18 +142,18 @@ function task(stack,b,role,port){
    ...(delivery?[{sourceVolume:'material',containerPath:'/run/meri',readOnly:true}]:role==='runner'?[{sourceVolume:'material',containerPath:'/run/meri',readOnly:false}]:[]),
    ...(tokenWriter?[{sourceVolume:'temporal-token',containerPath:'/run/meri-temporal',readOnly:false}]:[])],
   ...(delivery?{dependsOn:[{containerName:'material-init',condition:'SUCCESS'}]}:{}),
-  logConfiguration:{logDriver:'awslogs',options:{'awslogs-group':b.logGroupName,'awslogs-region':REGION,'awslogs-stream-prefix':`product-preview-${name}`,'mode':'blocking'}},
+  logConfiguration:{logDriver:'awslogs',options:{'awslogs-group':roleValue(b,'logGroupName','logGroupNames',role),'awslogs-region':REGION,'awslogs-stream-prefix':`product-preview-${name}`,'mode':'blocking'}},
   ...(role==='runner'?{}:{healthCheck:health(port)})};
  const init=delivery?{name:'material-init',image:b.imageUri,essential:false,user:b.runtimeUser,privileged:false,readonlyRootFilesystem:true,
   entryPoint:['node','apps/runtime/material-init-cli.mjs'],command:['write'],linuxParameters:{capabilities:{drop:['ALL']}},
   environment:[{name:'MERI_STATIC_MATERIAL_EXPECTED',value:JSON.stringify(delivery.expected)}],
   secrets:[{name:'MERI_STATIC_MATERIAL_BUNDLE',valueFrom:delivery.valueFrom}],
   mountPoints:[{sourceVolume:'material',containerPath:'/run/meri',readOnly:false}],
-  logConfiguration:{logDriver:'awslogs',options:{'awslogs-group':b.logGroupName,'awslogs-region':REGION,'awslogs-stream-prefix':`product-preview-${name}-init`,'mode':'blocking'}}}:null;
+  logConfiguration:{logDriver:'awslogs',options:{'awslogs-group':roleValue(b,'logGroupName','logGroupNames',role),'awslogs-region':REGION,'awslogs-stream-prefix':`product-preview-${name}-init`,'mode':'blocking'}}}:null;
  const size=b.sizing[role];
  return new ecs.CfnTaskDefinition(stack,`${role}Task`,{family:`meri-product-preview-${name}`,networkMode:'awsvpc',requiresCompatibilities:['FARGATE'],
   cpu:String(size.cpu),memory:String(size.memoryMiB),ephemeralStorage:{sizeInGiB:size.ephemeralStorageGiB},
-  runtimePlatform:{cpuArchitecture:'X86_64',operatingSystemFamily:'LINUX'},executionRoleArn:b.executionRoleArn,
+  runtimePlatform:{cpuArchitecture:'X86_64',operatingSystemFamily:'LINUX'},executionRoleArn:roleValue(b,'executionRoleArn','executionRoleArns',role),
   ...(role==='control'?{taskRoleArn:b.controlTaskRoleArn}:{}),
   volumes:[{name:'workspace'},{name:'tmp'},...(delivery||role==='runner'?[{name:'material'}]:[]),...(tokenWriter?[{name:'temporal-token'}]:[])],containerDefinitions:[...(init?[init]:[]),c]});
 }
@@ -164,6 +176,8 @@ export function synthesizeProductPreview(binding){
  const control=task(stack,b,'control',8080),worker=task(stack,b,'temporalWorker',8081),runner=task(stack,b,'runner',8080);
  service(stack,b,'control',control,b.network.controlSecurityGroupIds);
  service(stack,b,'temporalWorker',worker,b.network.workerSecurityGroupIds);
+ new CfnOutput(stack,'ControlTaskDefinitionArn',{value:control.ref});
+ new CfnOutput(stack,'TemporalWorkerTaskDefinitionArn',{value:worker.ref});
  new CfnOutput(stack,'RunnerTaskDefinitionArn',{value:runner.ref});
  new CfnOutput(stack,'RunnerClusterArn',{value:b.clusterArn});
  // The runner is a one-off RunTask, not a service: control's nativeCandidate.taskRequest names exactly one
