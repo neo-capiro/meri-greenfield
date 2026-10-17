@@ -1,124 +1,119 @@
-/** Review-only CloudFormation shape for the private product model proxy.
- * Every resource is behind an unsatisfiable condition. This module performs
- * no AWS lookup, credential read or deployment, and cannot enable a service.
+/** CloudFormation for the private product model proxy and its canonical budget
+ * owner, both as ECS services at desired count 0 (approved change set Stage 3).
+ * Every resource is unconditional; creating the stack starts no task.
+ *
+ * Consumed, never created here (foundation stack outputs): security groups and
+ * their rules, IAM roles, log groups and the Cloud Map `meri.internal` services.
+ * Created here: the two task definitions, the two services and the managed
+ * policies attached to the supplied roles.
+ * This module performs no AWS lookup, credential read or deployment.
  */
-import {planPrivateModelProxy} from './model-proxy-plan.mjs';
+import {planPrivateModelProxy,repositoryArn} from './model-proxy-plan.mjs';
 
-const CONDITION='ProductProxyDisabled';
-const PROFILE='arn:aws:bedrock:us-east-1:967807252336:inference-profile/us.anthropic.claude-sonnet-4-6';
-const FOUNDATIONS=['us-east-1','us-east-2','us-west-2'].map(region=>
- `arn:aws:bedrock:${region}::foundation-model/anthropic.claude-sonnet-4-6`);
+const REGION='us-east-1',ACCOUNT='967807252336';
 const ref=name=>({'Ref':name});
-const getAtt=(name,attribute)=>({'Fn::GetAtt':[name,attribute]});
-const resource=(type,properties)=>({Type:type,Condition:CONDITION,Properties:properties});
+const resource=(type,properties,dependsOn)=>({Type:type,Properties:properties,...(dependsOn?{DependsOn:dependsOn}:{})});
 const roleName=arn=>arn.slice(arn.lastIndexOf('/')+1);
 const secretArn=valueFrom=>valueFrom.slice(0,valueFrom.lastIndexOf(':::'));
+const logGroupArn=name=>`arn:aws:logs:${REGION}:${ACCOUNT}:log-group:${name}:*`;
+const dropAll={Capabilities:{Drop:['ALL']}};
+const logging=(group,prefix)=>({LogDriver:'awslogs',Options:{'awslogs-group':group,'awslogs-region':REGION,
+ 'awslogs-stream-prefix':prefix,'mode':'blocking'}});
 
-export function synthesizeDisabledModelProxyTemplate(binding){
+function observerStatements(o){
+ return [
+  {Effect:'Allow',Action:'ecs:DescribeServices',Resource:o.describeServices},
+  {Effect:'Allow',Action:'ecs:DescribeTasks',Resource:o.describeTasks},
+  {Effect:'Allow',Action:'ecs:ListTasks',Resource:o.listTasks.resource,Condition:o.listTasks.condition},
+  {Effect:'Allow',Action:o.unscoped,Resource:'*'}];
+}
+function executionPolicy(service,images){
+ const repositories=[...new Set(images.map(repositoryArn))];
+ return {Version:'2012-10-17',Statement:[
+  {Effect:'Allow',Action:'ecr:GetAuthorizationToken',Resource:'*'},
+  {Effect:'Allow',Action:['ecr:BatchCheckLayerAvailability','ecr:GetDownloadUrlForLayer','ecr:BatchGetImage'],Resource:repositories},
+  {Effect:'Allow',Action:['logs:CreateLogStream','logs:PutLogEvents'],Resource:logGroupArn(service.logGroupName)},
+  // Material reaches only the init container through ECS secret injection.
+  {Effect:'Allow',Action:'secretsmanager:GetSecretValue',Resource:secretArn(service.material.valueFrom)}]};
+}
+/** Same init shape as manifest.mjs: one-shot writer, SUCCESS gate, read-only main mount. */
+function materialInit(service){
+ return {Name:'material-init',Image:service.initImage,Essential:false,User:service.runtimeUser,Privileged:false,ReadonlyRootFilesystem:true,
+  EntryPoint:['node','apps/runtime/material-init-cli.mjs'],Command:['write'],LinuxParameters:dropAll,
+  Environment:[{Name:'MERI_STATIC_MATERIAL_EXPECTED',Value:JSON.stringify(service.material.expected)}],
+  Secrets:[{Name:'MERI_STATIC_MATERIAL_BUNDLE',ValueFrom:service.material.valueFrom}],
+  MountPoints:[{SourceVolume:'material',ContainerPath:'/run/meri',ReadOnly:false}],
+  LogConfiguration:logging(service.logGroupName,`${service.serviceName}-init`)};
+}
+function taskDefinition(plan,service,main){
+ const size=plan.placement.sizing;
+ return resource('AWS::ECS::TaskDefinition',{
+  Family:service.family,RequiresCompatibilities:['FARGATE'],NetworkMode:'awsvpc',
+  Cpu:String(size.cpu),Memory:String(size.memoryMiB),EphemeralStorage:{SizeInGiB:size.ephemeralStorageGiB},
+  RuntimePlatform:{CpuArchitecture:'X86_64',OperatingSystemFamily:'LINUX'},
+  ExecutionRoleArn:service.executionRoleArn,TaskRoleArn:service.taskRoleArn,
+  Volumes:[{Name:'material'},{Name:'tmp'}],
+  ContainerDefinitions:[materialInit(service),{Name:service.containerName,Essential:true,User:service.runtimeUser,
+   Privileged:false,ReadonlyRootFilesystem:true,StopTimeout:60,LinuxParameters:dropAll,
+   PortMappings:[{ContainerPort:service.port,Protocol:'tcp'}],
+   MountPoints:[{SourceVolume:'material',ContainerPath:'/run/meri',ReadOnly:true},{SourceVolume:'tmp',ContainerPath:'/tmp',ReadOnly:false}],
+   DependsOn:[{ContainerName:'material-init',Condition:'SUCCESS'}],
+   LogConfiguration:logging(service.logGroupName,service.serviceName),...main}]});
+}
+function ecsService(plan,service,taskName,dependsOn){
+ const p=plan.placement;
+ return resource('AWS::ECS::Service',{
+  ServiceName:service.serviceName,Cluster:p.clusterArn,TaskDefinition:ref(taskName),DesiredCount:0,
+  LaunchType:'FARGATE',PlatformVersion:p.platformVersion,EnableExecuteCommand:false,
+  NetworkConfiguration:{AwsvpcConfiguration:{AssignPublicIp:'DISABLED',Subnets:[...p.privateSubnetIds],SecurityGroups:[...service.securityGroupIds]}},
+  ServiceRegistries:[{RegistryArn:service.registryArn}]},dependsOn);
+}
+
+export function synthesizeModelProxyTemplate(binding){
  const plan=planPrivateModelProxy(binding);
- const p=plan.placement,n=plan.network,m=plan.material,r=plan.roles;
- const role=roleName(r.proxyTaskRoleArn),execution=roleName(r.executionRoleArn);
- const rules={};
- let index=0;
- for(const edge of n.ingress){
-  for(const from of edge.from){
-   const name=`NetworkRule${++index}`;
-   rules[name]=resource('AWS::EC2::SecurityGroupIngress',{
-     GroupId:edge.to,IpProtocol:'tcp',FromPort:edge.port,ToPort:edge.port,
-     SourceSecurityGroupId:from,Description:'Reviewed private model-proxy edge'
-    });
-  }
- }
- for(const edge of n.egress){
-  for(const to of Array.isArray(edge.to)?edge.to:[edge.to]){
-   const name=`NetworkRule${++index}`;
-   rules[name]=resource('AWS::EC2::SecurityGroupEgress',{
-    GroupId:edge.from,IpProtocol:'tcp',FromPort:edge.port,ToPort:edge.port,
-    DestinationSecurityGroupId:to,Description:'Reviewed private model-proxy edge'
-   });
-  }
- }
+ const proxy=plan.services.proxy,owner=plan.services.owner,iam=plan.iam;
  return structuredClone({
   AWSTemplateFormatVersion:'2010-09-09',
-  Description:'DISABLED review shape only: Meri private model proxy; no resource can activate',
-  Metadata:{SourceSchema:plan.schema,Enabled:false,OneBudgetOwner:plan.owner.budgetNamespace,
-   ImageSourceCommit:plan.image.sourceCommit,ImageScanSha256:plan.image.reviewedScanSha256,
-    RequiredBeforeEnable:['assembled image and pinned LiteLLM wire',
-     'pinned server TLS, opaque bearer hash, direct socket IPv4 and fresh ECS task/ENI lease',
-    'native bounded asynchronous admission and process-supervisor qualification',
-    'scoped ECS/EC2 observer IAM and policy simulation',
-    'authenticated Python-to-JavaScript owner capture','new SG default-egress proof',
-    'exact IAM role trust and policy simulation','private endpoint/DNS conflict check',
-    'S3 gateway route tables and prefix-list match current subnet inventory',
+  Description:'Meri private model proxy and canonical budget owner: ECS services at desired count 0',
+  Metadata:{SourceSchema:plan.schema,DesiredCount:0,OneBudgetOwner:plan.owner.budgetNamespace,
+   ProxyImageSourceCommit:plan.images.proxy.sourceCommit,ProxyImageScanSha256:plan.images.proxy.reviewedScanSha256,
+   NodeRuntimeSourceCommit:plan.images.nodeRuntime.sourceCommit,NodeRuntimeScanSha256:plan.images.nodeRuntime.reviewedScanSha256,
+   BedrockPath:plan.network.bedrockPath,ReusedS3Gateway:plan.network.s3Gateway,
+   FoundationOwnedSecurityGroupRules:plan.network.foundationOwnedRules,
+   RequiredBeforeDesiredCountOne:['material-init roles model-proxy and model-owner in apps/runtime/material-init-plan.mjs',
+    'proxy material-init writes /run/meri as 10001:10001 from the Node runtime image',
+    'startup configs pin these task-definition ARNs, service ARNs, images and exact SG sets',
+    'Cloud Map service names proxy and owner in meri.internal',
+    'IAM policy simulation, including DescribeTasks include=TAGS',
+    'pinned server TLS, opaque bearer hash, direct socket IPv4 and fresh ECS task/ENI lease',
     'reviewed material issuer and exact secret versions','shipping approval']},
-  Conditions:{[CONDITION]:{'Fn::Equals':['false','true']}},
   Resources:{
-   ModelProxyLogGroup:resource('AWS::Logs::LogGroup',{
-    LogGroupName:'/capiro/meri/product-model-proxy',RetentionInDays:14}),
-   ModelProxyBedrockEndpoint:resource('AWS::EC2::VPCEndpoint',{
-    VpcId:p.vpcId,ServiceName:'com.amazonaws.us-east-1.bedrock-runtime',
-    VpcEndpointType:'Interface',PrivateDnsEnabled:true,
-    SubnetIds:p.privateSubnetIds,SecurityGroupIds:[binding.network.bedrockEndpointSecurityGroupId]}),
-   ModelProxyS3Gateway:resource('AWS::EC2::VPCEndpoint',{
-    VpcId:p.vpcId,ServiceName:n.s3LayerPath.service,VpcEndpointType:'Gateway',
-    RouteTableIds:n.s3LayerPath.routeTableIds,
-    PolicyDocument:{Version:'2012-10-17',Statement:[{Effect:'Allow',Principal:'*',
-     Action:'s3:GetObject',Resource:n.s3LayerPath.layerBucketArn}]}}),
-   ModelProxyS3LayerEgress:resource('AWS::EC2::SecurityGroupEgress',{
-    GroupId:binding.network.proxySecurityGroupId,IpProtocol:'tcp',FromPort:443,ToPort:443,
-    DestinationPrefixListId:n.s3LayerPath.prefixListId,
-    Description:'Only ECR image-layer S3 gateway prefix list'}),
-   ModelProxyNlb:resource('AWS::ElasticLoadBalancingV2::LoadBalancer',{
-    Type:'network',Scheme:'internal',IpAddressType:'ipv4',
-    Subnets:p.privateSubnetIds,SecurityGroups:[binding.network.nlbSecurityGroupId]}),
-   ModelProxyTargetGroup:resource('AWS::ElasticLoadBalancingV2::TargetGroup',{
-    VpcId:p.vpcId,Protocol:'TCP',Port:8443,TargetType:'ip',
-    HealthCheckProtocol:'TCP',HealthCheckPort:'8443',
-    TargetGroupAttributes:[{Key:'preserve_client_ip.enabled',Value:'true'}]}),
-   ModelProxyTcpListener:resource('AWS::ElasticLoadBalancingV2::Listener',{
-    LoadBalancerArn:ref('ModelProxyNlb'),Protocol:'TCP',Port:443,
-    DefaultActions:[{Type:'forward',TargetGroupArn:ref('ModelProxyTargetGroup')}]}),
    ModelProxyProviderPolicy:resource('AWS::IAM::ManagedPolicy',{
-    Roles:[role],PolicyDocument:{Version:'2012-10-17',Statement:[
-     {Effect:'Allow',Action:['bedrock:InvokeModel','bedrock:InvokeModelWithResponseStream'],
-      Resource:PROFILE,Condition:{StringEquals:{'aws:RequestedRegion':'us-east-1'}}},
-     {Effect:'Allow',Action:['bedrock:InvokeModel','bedrock:InvokeModelWithResponseStream'],
-      Resource:FOUNDATIONS,Condition:{ArnEquals:{'bedrock:InferenceProfileArn':PROFILE}}},
-     {Effect:'Allow',Action:'bedrock:CountTokens',Resource:FOUNDATIONS[0]},
-     {Effect:'Allow',Action:'bedrock:GetInferenceProfile',Resource:PROFILE}
-    ]}}),
+    Roles:[roleName(proxy.taskRoleArn)],PolicyDocument:{Version:'2012-10-17',Statement:[
+     {Effect:'Allow',Action:iam.proxyRole.actions,
+      Resource:iam.proxyRole.profile,Condition:{StringEquals:{'aws:RequestedRegion':iam.proxyRole.profileSourceRegion}}},
+     {Effect:'Allow',Action:iam.proxyRole.actions,
+      Resource:iam.proxyRole.foundations,Condition:{ArnEquals:iam.proxyRole.foundationCondition}},
+     {Effect:'Allow',Action:iam.countTokens.action,Resource:iam.countTokens.foundation},
+     ...observerStatements(iam.observer)]}}),
+   ModelOwnerObserverPolicy:resource('AWS::IAM::ManagedPolicy',{
+    Roles:[roleName(owner.taskRoleArn)],PolicyDocument:{Version:'2012-10-17',Statement:observerStatements(iam.observer)}}),
    ModelProxyExecutionPolicy:resource('AWS::IAM::ManagedPolicy',{
-    Roles:[execution],PolicyDocument:{Version:'2012-10-17',Statement:[
-     {Effect:'Allow',Action:'ecr:GetAuthorizationToken',Resource:'*'},
-     {Effect:'Allow',Action:['ecr:BatchCheckLayerAvailability','ecr:GetDownloadUrlForLayer','ecr:BatchGetImage'],
-      Resource:`arn:aws:ecr:us-east-1:967807252336:repository/${plan.image.uri.split('/').slice(1).join('/').split('@')[0]}`},
-     {Effect:'Allow',Action:['logs:CreateLogStream','logs:PutLogEvents'],Resource:getAtt('ModelProxyLogGroup','Arn')},
-     {Effect:'Allow',Action:'secretsmanager:GetSecretValue',Resource:[
-       secretArn(m.serverTls.valueFrom),secretArn(m.ownerBridgeClient.valueFrom)]}
-    ]}}),
-   ModelProxyTask:resource('AWS::ECS::TaskDefinition',{
-    RequiresCompatibilities:['FARGATE'],NetworkMode:'awsvpc',Cpu:'1024',Memory:'2048',
-    EphemeralStorage:{SizeInGiB:21},ExecutionRoleArn:r.executionRoleArn,TaskRoleArn:r.proxyTaskRoleArn,
-    ContainerDefinitions:[{Name:'model-proxy',Image:plan.image.uri,Essential:true,
-     User:'1000:1000',ReadonlyRootFilesystem:true,
-     PortMappings:[{ContainerPort:8443,Protocol:'tcp'}],
-     Environment:[{Name:'CAPIRO_PRODUCT_PROXY_ENABLED',Value:'false'},
-      {Name:'CAPIRO_PRODUCT_BUDGET_OWNER',Value:plan.owner.budgetNamespace},
-      {Name:'CAPIRO_PRODUCT_OWNER_ORIGIN',Value:plan.owner.fixedOrigin}],
-     Secrets:[{Name:'CAPIRO_PROXY_SERVER_TLS',ValueFrom:m.serverTls.valueFrom},
-      {Name:'CAPIRO_PROXY_OWNER_CLIENT',ValueFrom:m.ownerBridgeClient.valueFrom}],
-     LogConfiguration:{LogDriver:'awslogs',Options:{'awslogs-group':ref('ModelProxyLogGroup'),
-      'awslogs-region':'us-east-1','awslogs-stream-prefix':'model-proxy'}}}]}),
-   ModelProxyService:{...resource('AWS::ECS::Service',{
-    Cluster:p.clusterArn,TaskDefinition:ref('ModelProxyTask'),DesiredCount:0,
-    LaunchType:'FARGATE',EnableExecuteCommand:false,
-    NetworkConfiguration:{AwsvpcConfiguration:{AssignPublicIp:'DISABLED',
-     Subnets:p.privateSubnetIds,SecurityGroups:[binding.network.proxySecurityGroupId]}},
-    LoadBalancers:[{TargetGroupArn:ref('ModelProxyTargetGroup'),
-     ContainerName:'model-proxy',ContainerPort:8443}]}),
-    DependsOn:['ModelProxyTcpListener','ModelProxyProviderPolicy','ModelProxyExecutionPolicy']},
-   ...rules,
+    Roles:[roleName(proxy.executionRoleArn)],PolicyDocument:executionPolicy(proxy,[proxy.image,proxy.initImage])}),
+   ModelOwnerExecutionPolicy:resource('AWS::IAM::ManagedPolicy',{
+    Roles:[roleName(owner.executionRoleArn)],PolicyDocument:executionPolicy(owner,[owner.image])}),
+   ModelProxyTask:taskDefinition(plan,proxy,{Image:proxy.image,
+    Command:['--config',proxy.configFile,'--config-sha256',proxy.configSha256],
+    Environment:[{Name:'MERI_PRODUCT_PROXY_REQUIRED',Value:'1'}]}),
+   ModelOwnerTask:taskDefinition(plan,owner,{Image:owner.image,
+    EntryPoint:['node','apps/proxy/product/owner-entrypoint.mjs'],Command:['--config',owner.configFile],
+    Environment:[{Name:'MERI_PRODUCT_OWNER_REQUIRED',Value:'1'},{Name:'MERI_PRODUCT_OWNER_CONFIG_SHA256',Value:owner.configSha256}]}),
+   ModelProxyService:ecsService(plan,proxy,'ModelProxyTask',['ModelProxyProviderPolicy','ModelProxyExecutionPolicy']),
+   ModelOwnerService:ecsService(plan,owner,'ModelOwnerTask',['ModelOwnerObserverPolicy','ModelOwnerExecutionPolicy']),
   },
-  Outputs:{},
+  Outputs:{
+   ModelProxyTaskDefinitionArn:{Value:ref('ModelProxyTask')},ModelOwnerTaskDefinitionArn:{Value:ref('ModelOwnerTask')},
+   ModelProxyServiceArn:{Value:ref('ModelProxyService')},ModelOwnerServiceArn:{Value:ref('ModelOwnerService')},
+   ModelProxyOrigin:{Value:proxy.origin},ModelOwnerOrigin:{Value:owner.origin}},
  });
 }

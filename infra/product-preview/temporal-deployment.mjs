@@ -2,7 +2,7 @@
 import {App,Stack,CfnOutput,BootstraplessSynthesizer,aws_ec2 as ec2,aws_ecs as ecs,aws_servicediscovery as discovery} from 'aws-cdk-lib';
 import {Template} from 'aws-cdk-lib/assertions';
 import fixture from '../../apps/control/qualification-temporal/deployment.fixture.json' with {type:'json'};
-import {TEMPORAL_ROLES,TEMPORAL_PORTS,TEMPORAL_ISSUER_PORT,validateTemporalPreviewBinding,versionedSecretKey} from './temporal-binding.mjs';
+import {TEMPORAL_ROLES,TEMPORAL_PORTS,TEMPORAL_ISSUER_PORT,temporalEndpointSecurityGroupIds,validateTemporalPreviewBinding,versionedSecretKey} from './temporal-binding.mjs';
 
 const env=(name,value)=>({name,value:String(value)});
 const secret=(name,arn,key)=>({name,valueFrom:versionedSecretKey(arn,key)});
@@ -11,9 +11,12 @@ function security(stack,b,vpc){
  const groups=Object.fromEntries(TEMPORAL_ROLES.map(role=>[role,new ec2.SecurityGroup(stack,`${roleName(role)}Sg`,{vpc,allowAllOutbound:false,description:`Meri Temporal ${role} only`})]));
  const db=ec2.SecurityGroup.fromSecurityGroupId(stack,'existingAuroraSg',b.database.securityGroupId,{mutable:false});
  const clients=b.network.clientSecurityGroupIds.map((id,i)=>ec2.SecurityGroup.fromSecurityGroupId(stack,`temporalClient${i}`,id,{mutable:false}));
- const endpoints=Object.values(b.network.interfaceEndpoints).map((item,i)=>ec2.SecurityGroup.fromSecurityGroupId(stack,`temporalEndpoint${i}`,item.securityGroupId,{mutable:false}));
+ // Deduped: the capiro-dev interface endpoints share one SG, so one rule per distinct group.
+ const endpoints=temporalEndpointSecurityGroupIds(b.network).map((id,i)=>ec2.SecurityGroup.fromSecurityGroupId(stack,`temporalEndpoint${i}`,id,{mutable:false}));
  const issuer=ec2.SecurityGroup.fromSecurityGroupId(stack,'temporalIssuer',b.network.issuerSecurityGroupId,{mutable:false});
- const migration=ec2.SecurityGroup.fromSecurityGroupId(stack,'temporalMigration',b.network.migrationSecurityGroupId,{mutable:false});
+ // Aurora 5432 and issuer 8445 ingress belong to the foundation stack, keyed on the
+ // dbClient and issuerClient marker SGs that every role service also carries.
+ // This stack never modifies the shared Aurora SG or the issuer SG.
  for(const role of TEMPORAL_ROLES){
   const group=groups[role];
   for(const [peer,other] of Object.entries(groups))for(const port of TEMPORAL_PORTS[peer])group.addEgressRule(other,ec2.Port.tcp(port),`Temporal ${peer} RPC or membership`);
@@ -21,15 +24,9 @@ function security(stack,b,vpc){
   for(const endpoint of endpoints)group.addEgressRule(endpoint,ec2.Port.tcp(443),'reviewed AWS image/secret/log endpoint');
   group.addEgressRule(ec2.Peer.prefixList(b.network.s3Gateway.prefixListId),ec2.Port.tcp(443),'S3 gateway for private ECR image layers');
   group.addEgressRule(issuer,ec2.Port.tcp(TEMPORAL_ISSUER_PORT),'dedicated JWKS issuer');
-  new ec2.CfnSecurityGroupIngress(stack,`${roleName(role)}AuroraIngress`,{
-   groupId:db.securityGroupId,ipProtocol:'tcp',fromPort:b.database.port,toPort:b.database.port,
-   sourceSecurityGroupId:group.securityGroupId,description:`Meri Temporal ${role} store access`});
   for(const port of TEMPORAL_PORTS[role])for(const other of Object.values(groups))group.addIngressRule(other,ec2.Port.tcp(port),'Temporal internode only');
  }
  for(const client of clients)groups.frontend.addIngressRule(client,ec2.Port.tcp(7233),'authenticated application client only');
- new ec2.CfnSecurityGroupIngress(stack,'migrationAuroraIngress',{
-  groupId:db.securityGroupId,ipProtocol:'tcp',fromPort:b.database.port,toPort:b.database.port,
-  sourceSecurityGroupId:migration.securityGroupId,description:'Meri Temporal separately approved schema migration'});
  return {groups};
 }
 function roleSecrets(b,role){
@@ -91,7 +88,8 @@ function roleResources(stack,b,groups,namespace,role){
  });
  new ecs.CfnService(stack,`${roleName(role)}Service`,{serviceName:`meri-product-preview-temporal-${role}`,cluster:b.clusterArn,
   taskDefinition:task.ref,desiredCount:0,launchType:'FARGATE',platformVersion:'1.4.0',enableExecuteCommand:false,
-  networkConfiguration:{awsvpcConfiguration:{subnets:b.subnets.map(s=>s.id),securityGroups:[groups[role].securityGroupId],assignPublicIp:'DISABLED'}},
+  networkConfiguration:{awsvpcConfiguration:{subnets:b.subnets.map(s=>s.id),
+   securityGroups:[groups[role].securityGroupId,b.network.issuerClientSecurityGroupId,b.network.dbClientSecurityGroupId],assignPublicIp:'DISABLED'}},
   serviceRegistries:[{registryArn:registry.attrArn}]
  });
 }

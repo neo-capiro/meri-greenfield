@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {readFileSync} from 'node:fs';
 import {synthesizeTemporalPreview} from './temporal-deployment.mjs';
-import {TEMPORAL_ROLES,TEMPORAL_PORTS,TEMPORAL_INTERFACE_ENDPOINTS,TEMPORAL_EXISTING_DATABASE,validateTemporalFixture,validateTemporalPreviewBinding} from './temporal-binding.mjs';
+import {TEMPORAL_ROLES,TEMPORAL_PORTS,TEMPORAL_INTERFACE_ENDPOINTS,TEMPORAL_EXISTING_DATABASE,temporalEndpointSecurityGroupIds,validateTemporalFixture,validateTemporalPreviewBinding} from './temporal-binding.mjs';
 import {TEMPORAL_MIGRATION_PLAN,TEMPORAL_MIGRATION_PLAN_SHA256} from './temporal-migration-plan.mjs';
 import {validateTemporalNetworkReadback} from './temporal-network-readback.mjs';
 import {validateTemporalIssuerRenewal} from './temporal-issuer-renewal.mjs';
@@ -24,7 +24,7 @@ function binding(){return {
   interfaceEndpoints:Object.fromEntries(Object.keys(TEMPORAL_INTERFACE_ENDPOINTS).map((name,i)=>[name,{endpointId:`vpce-${String(i+1).repeat(8)}`,securityGroupId:`sg-${String(i+4).repeat(8)}`}])) ,
   s3Gateway:{endpointId:'vpce-99999999',prefixListId:'pl-11111111'},
   taskRouteTableBySubnet:{'subnet-1234abcd':'rtb-11111111','subnet-abcd1234':'rtb-22222222'},
-  migrationSecurityGroupId:'sg-aaaaaaaa'},
+  migrationSecurityGroupId:'sg-aaaaaaaa',issuerClientSecurityGroupId:'sg-bbbbbbbb',dbClientSecurityGroupId:'sg-cccccccc'},
  auth:{issuer:'https://issuer.meri.internal:8445/',jwksUrl:'https://issuer.meri.internal:8445/.well-known/jwks.json',issuerCaSha256:sha,audience:'meri-temporal',namespace:'meri',taskQueue:'meri-conversations',
   materialSecretVersionByRole:Object.fromEntries(TEMPORAL_ROLES.map((r,i)=>[r,version(r,i+1)]))},
  database:{...TEMPORAL_EXISTING_DATABASE,primaryDatabase:'temporal',visibilityDatabase:'temporal_visibility',
@@ -56,6 +56,9 @@ test('fully bound synthesis emits five stopped private roles using the approved 
   assert.equal(s.NetworkConfiguration.AwsvpcConfiguration.AssignPublicIp,'DISABLED');
   assert.deepEqual(s.NetworkConfiguration.AwsvpcConfiguration.Subnets,b.subnets.map(x=>x.id));
   assert.equal(s.ServiceRegistries.length,1);
+  assert.equal(s.NetworkConfiguration.AwsvpcConfiguration.SecurityGroups.length,3);
+  assert.deepEqual(s.NetworkConfiguration.AwsvpcConfiguration.SecurityGroups.slice(1),
+   [b.network.issuerClientSecurityGroupId,b.network.dbClientSecurityGroupId]);
  }
  for(const role of TEMPORAL_ROLES){
   const definition=task(t,role),container=definition.ContainerDefinitions[0];
@@ -148,11 +151,12 @@ test('network creates role-specific security groups with no unrestricted egress'
  assert(egress.some(x=>x.DestinationPrefixListId==='pl-11111111'&&x.FromPort===443));
  assert(!egress.some(x=>x.CidrIp==='0.0.0.0/0'||x.CidrIpv6==='::/0'));
  const ingress=resources(t,'AWS::EC2::SecurityGroupIngress');
- const dbIngress=ingress.filter(x=>x.FromPort===5432&&x.ToPort===5432);
- assert.equal(dbIngress.length,6);
- assert(dbIngress.every(x=>x.GroupId===TEMPORAL_EXISTING_DATABASE.securityGroupId&&x.IpProtocol==='tcp'));
- assert.equal(dbIngress.filter(x=>x.SourceSecurityGroupId==='sg-aaaaaaaa').length,1);
- assert(dbIngress.filter(x=>x.SourceSecurityGroupId!=='sg-aaaaaaaa').every(x=>typeof x.SourceSecurityGroupId==='object'));
+ // Aurora and issuer ingress are foundation-owned via the dbClient/issuerClient markers.
+ assert.equal(ingress.filter(x=>x.FromPort===5432||x.ToPort===5432).length,0);
+ assert(!ingress.some(x=>[TEMPORAL_EXISTING_DATABASE.securityGroupId,b.network.issuerSecurityGroupId].includes(x.GroupId)));
+ const dbEgress=egress.filter(x=>x.DestinationSecurityGroupId===TEMPORAL_EXISTING_DATABASE.securityGroupId);
+ assert.equal(dbEgress.length,5);
+ assert(dbEgress.every(x=>x.FromPort===5432&&x.ToPort===5432&&x.IpProtocol==='tcp'));
  assert(!groups.some(x=>x.GroupDescription==='Meri Temporal PostgreSQL only'));
  assert(ingress.some(x=>x.FromPort===7233&&x.ToPort===7233));
  assert(!ingress.some(x=>x.CidrIp==='0.0.0.0/0'||x.CidrIpv6==='::/0'));
@@ -189,8 +193,8 @@ test('offline network readback joins exact private ECR, Logs, Secrets, KMS and S
    SubnetIds:b.subnets.map(y=>y.id),Groups:[{GroupId:x.securityGroupId}]})),
   s3Gateway:{VpcEndpointId:n.s3Gateway.endpointId,VpcId:b.vpcId,ServiceName:'com.amazonaws.us-east-1.s3',
    VpcEndpointType:'Gateway',State:'available',RouteTableIds:routeIds},
-  securityGroups:[...Object.values(n.interfaceEndpoints).map(x=>x.securityGroupId),n.issuerSecurityGroupId,n.migrationSecurityGroupId]
-   .map(id=>({GroupId:id,VpcId:b.vpcId}))};
+  securityGroups:[...temporalEndpointSecurityGroupIds(n),n.issuerSecurityGroupId,n.migrationSecurityGroupId,
+   n.issuerClientSecurityGroupId,n.dbClientSecurityGroupId].map(id=>({GroupId:id,VpcId:b.vpcId}))};
  assert.match(validateTemporalNetworkReadback(b,evidence).readbackSha256,/^[a-f0-9]{64}$/u);
  for(const mutate of [
   x=>{x.routeTables[0].Routes[1].GatewayId='vpce-deadbeef';},
@@ -255,10 +259,92 @@ test('missing or contradictory authority and network inputs refuse before synthe
   x=>{x.network.issuerSecurityGroupId=x.network.clientSecurityGroupIds[0];},
   x=>{x.network.clientSecurityGroupIds.push('sg-66666666');},
   x=>{x.network.interfaceEndpoints.ecrDkr.endpointId=x.network.interfaceEndpoints.ecrApi.endpointId;},
-  x=>{x.network.interfaceEndpoints.logs.securityGroupId=x.network.interfaceEndpoints.ecrApi.securityGroupId;},
+  x=>{x.network.interfaceEndpoints.logs.securityGroupId=x.network.issuerSecurityGroupId;},
+  x=>{x.network.interfaceEndpoints.logs.securityGroupId=x.network.clientSecurityGroupIds[0];},
+  x=>{x.network.interfaceEndpoints.kms.securityGroupId=x.network.migrationSecurityGroupId;},
+  x=>{x.network.interfaceEndpoints.kms.securityGroupId=x.network.issuerClientSecurityGroupId;},
+  x=>{x.network.interfaceEndpoints.kms.securityGroupId=x.network.dbClientSecurityGroupId;},
+  x=>{x.network.interfaceEndpoints.kms.securityGroupId=x.database.securityGroupId;},
+  x=>{x.network.interfaceEndpoints.kms.securityGroupId='sg-unreviewed';},
+  x=>{x.network.issuerClientSecurityGroupId=x.network.dbClientSecurityGroupId;},
+  x=>{x.network.issuerClientSecurityGroupId=x.network.issuerSecurityGroupId;},
+  x=>{x.network.dbClientSecurityGroupId=x.database.securityGroupId;},
+  x=>{x.network.dbClientSecurityGroupId=x.network.clientSecurityGroupIds[1];},
+  x=>{delete x.network.issuerClientSecurityGroupId;},x=>{delete x.network.dbClientSecurityGroupId;},
+  x=>{x.network.dbClientSecurityGroupId='';},
   x=>{x.network.s3Gateway.prefixListId='';},
   x=>{delete x.network.taskRouteTableBySubnet['subnet-abcd1234'];},
   x=>{x.extra='unexpected';}
  ];
  for(const change of changes){const b=binding();change(b);assert.throws(()=>synthesizeTemporalPreview(b),/TEMPORAL_PREVIEW_BINDING_REFUSED/u);}
+});
+
+// Live capiro-dev inventory, 17 Oct 2026: every interface endpoint shares one SG.
+const CAPIRO_DEV_ENDPOINTS={ecrApi:'vpce-05d276fd4858f600c',ecrDkr:'vpce-066228cdabaad7a96',
+ secretsManager:'vpce-0cfdca671c055b395',logs:'vpce-0cfc2d02372c83f41',kms:'vpce-0129a64c28f36072a'};
+const SHARED_ENDPOINT_SG='sg-01def4e5c0fe44d4a';
+function capiroDevBinding(){
+ const b=binding();
+ b.subnets=[{id:'subnet-0920665f91c905f01',availabilityZone:'us-east-1a'},{id:'subnet-0e38bd390f8961fef',availabilityZone:'us-east-1b'},
+  {id:'subnet-06db79cd21239de19',availabilityZone:'us-east-1c'}];
+ b.network.interfaceEndpoints=Object.fromEntries(Object.entries(CAPIRO_DEV_ENDPOINTS).map(([name,endpointId])=>[name,{endpointId,securityGroupId:SHARED_ENDPOINT_SG}]));
+ b.network.s3Gateway={endpointId:'vpce-0cdaa6b79d616aa1c',prefixListId:'pl-63a5400a'};
+ b.network.taskRouteTableBySubnet={'subnet-0920665f91c905f01':'rtb-11111111','subnet-0e38bd390f8961fef':'rtb-22222222','subnet-06db79cd21239de19':'rtb-33333333'};
+ return b;
+}
+function readback(b){
+ const n=b.network,routeIds=[...new Set(Object.values(n.taskRouteTableBySubnet))];
+ return {schemaVersion:1,vpc:{VpcId:b.vpcId,IsDefault:false},
+  subnets:b.subnets.map(x=>({SubnetId:x.id,VpcId:b.vpcId,AvailabilityZone:x.availabilityZone,MapPublicIpOnLaunch:false})),
+  routeTables:routeIds.map(id=>({RouteTableId:id,VpcId:b.vpcId,Associations:b.subnets.filter(x=>n.taskRouteTableBySubnet[x.id]===id).map(x=>({
+   RouteTableId:id,SubnetId:x.id,Main:false,AssociationState:{State:'associated'}})),Routes:[
+   {GatewayId:'local',State:'active'},{DestinationPrefixListId:n.s3Gateway.prefixListId,GatewayId:n.s3Gateway.endpointId,State:'active'}]})),
+  interfaceEndpoints:Object.entries(n.interfaceEndpoints).map(([name,x])=>({VpcEndpointId:x.endpointId,VpcId:b.vpcId,
+   ServiceName:TEMPORAL_INTERFACE_ENDPOINTS[name],VpcEndpointType:'Interface',State:'available',PrivateDnsEnabled:true,
+   SubnetIds:b.subnets.map(y=>y.id),Groups:[{GroupId:x.securityGroupId}]})),
+  s3Gateway:{VpcEndpointId:n.s3Gateway.endpointId,VpcId:b.vpcId,ServiceName:'com.amazonaws.us-east-1.s3',
+   VpcEndpointType:'Gateway',State:'available',RouteTableIds:routeIds},
+  securityGroups:[...temporalEndpointSecurityGroupIds(n),n.issuerSecurityGroupId,n.migrationSecurityGroupId,
+   n.issuerClientSecurityGroupId,n.dbClientSecurityGroupId].map(id=>({GroupId:id,VpcId:b.vpcId}))};
+}
+
+test('one shared capiro-dev endpoint SG binds, dedupes egress and still needs distinct endpoint IDs',()=>{
+ const b=capiroDevBinding();
+ assert.equal(validateTemporalPreviewBinding(b),b);
+ assert.deepEqual(temporalEndpointSecurityGroupIds(b.network),[SHARED_ENDPOINT_SG]);
+ const t=synthesizeTemporalPreview(b),egress=resources(t,'AWS::EC2::SecurityGroupEgress');
+ const endpointEgress=egress.filter(x=>x.DestinationSecurityGroupId===SHARED_ENDPOINT_SG);
+ assert.equal(endpointEgress.length,5,'one 443 rule per role SG, not five duplicates per role');
+ assert(endpointEgress.every(x=>x.FromPort===443&&x.ToPort===443&&x.IpProtocol==='tcp'));
+ assert.equal(new Set(endpointEgress.map(x=>JSON.stringify(x.GroupId))).size,5);
+ assert.equal(egress.filter(x=>x.DestinationPrefixListId==='pl-63a5400a'&&x.FromPort===443).length,5);
+ assert.equal(egress.filter(x=>x.DestinationSecurityGroupId===b.network.issuerSecurityGroupId&&x.FromPort===8445&&x.ToPort===8445).length,5);
+ assert.equal(egress.filter(x=>x.DestinationSecurityGroupId===TEMPORAL_EXISTING_DATABASE.securityGroupId&&x.FromPort===5432).length,5);
+ assert(!egress.some(x=>x.CidrIp==='0.0.0.0/0'||x.CidrIpv6==='::/0'||
+  x.DestinationSecurityGroupId===b.network.issuerSecurityGroupId&&x.FromPort!==8445));
+ for(const service of resources(t,'AWS::ECS::Service'))
+  assert.deepEqual(service.NetworkConfiguration.AwsvpcConfiguration.Subnets,b.subnets.map(x=>x.id));
+ for(const mutate of [
+  x=>{x.network.interfaceEndpoints.logs.endpointId=x.network.interfaceEndpoints.kms.endpointId;},
+  x=>{x.network.interfaceEndpoints.logs.securityGroupId=x.network.issuerSecurityGroupId;},
+  x=>{x.network.issuerClientSecurityGroupId=SHARED_ENDPOINT_SG;},
+  x=>{x.network.dbClientSecurityGroupId=SHARED_ENDPOINT_SG;},
+  x=>{x.network.migrationSecurityGroupId=SHARED_ENDPOINT_SG;},
+  x=>{x.network.clientSecurityGroupIds[0]=SHARED_ENDPOINT_SG;}
+ ]){const copy=structuredClone(b);mutate(copy);assert.throws(()=>validateTemporalPreviewBinding(copy),/TEMPORAL_PREVIEW_BINDING_REFUSED/u);}
+});
+
+test('shared endpoint SG readback needs one SG row, exact service names and each endpoint on the bound group',()=>{
+ const b=capiroDevBinding(),evidence=readback(b);
+ assert.equal(evidence.securityGroups.length,5);
+ assert.match(validateTemporalNetworkReadback(b,evidence).readbackSha256,/^[a-f0-9]{64}$/u);
+ for(const mutate of [
+  x=>{x.securityGroups.push({GroupId:SHARED_ENDPOINT_SG,VpcId:b.vpcId});},
+  x=>{x.securityGroups=x.securityGroups.filter(g=>g.GroupId!==b.network.dbClientSecurityGroupId);},
+  x=>{x.interfaceEndpoints[2].Groups=[{GroupId:'sg-0123456789abcdef0'}];},
+  x=>{x.interfaceEndpoints[2].Groups.push({GroupId:b.network.issuerSecurityGroupId});},
+  x=>{x.interfaceEndpoints[3].ServiceName='com.amazonaws.us-east-1.sts';},
+  x=>{x.interfaceEndpoints[4].VpcEndpointId='vpce-079ecbeb9a17f6188';},
+  x=>{x.interfaceEndpoints.pop();}
+ ]){const copy=structuredClone(evidence);mutate(copy);assert.throws(()=>validateTemporalNetworkReadback(b,copy),/TEMPORAL_NETWORK_READBACK_REFUSED/u);}
 });

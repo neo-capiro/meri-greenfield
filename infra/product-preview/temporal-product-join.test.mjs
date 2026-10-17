@@ -25,7 +25,7 @@ function temporal(){return {
    {endpointId:`vpce-${String(i+1).repeat(8)}`,securityGroupId:`sg-${String(i+4).repeat(8)}`}])) ,
   s3Gateway:{endpointId:'vpce-99999999',prefixListId:'pl-11111111'},
   taskRouteTableBySubnet:{'subnet-11111111':'rtb-11111111','subnet-22222222':'rtb-22222222'},
-  migrationSecurityGroupId:'sg-aaaaaaaa'},
+  migrationSecurityGroupId:'sg-aaaaaaaa',issuerClientSecurityGroupId:'sg-bbbbbbbb',dbClientSecurityGroupId:'sg-cccccccc'},
  auth:{issuer:'https://issuer.meri.internal:8445/',jwksUrl:'https://issuer.meri.internal:8445/.well-known/jwks.json',
   issuerCaSha256:sha,audience:'meri-temporal',namespace:'meri',taskQueue:'meri-conversations',
   materialSecretVersionByRole:Object.fromEntries(TEMPORAL_ROLES.map((x,i)=>[x,roleSecret(x,i+1)]))},

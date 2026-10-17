@@ -52,6 +52,10 @@ export function versionedSecretKey(secretVersionArn,key){
  if(pos<0||!id.test(key))fail();
  return `${secretVersionArn.slice(0,pos)}:${key}::${secretVersionArn.slice(pos+3)}`;
 }
+/** Unique interface-endpoint SG IDs in first-seen order (one when shared). */
+export function temporalEndpointSecurityGroupIds(network){
+ return [...new Set(Object.values(network.interfaceEndpoints).map(value=>value.securityGroupId))];
+}
 export function validateTemporalPreviewBinding(value){
  validateTemporalFixture();
  const b=closed(value,['account','region','enabled','placement','clusterArn','vpcId','subnets','privateDnsName','serverImageUri','upstreamServerImageDigest','launchSourceCommit','launchContractSha256','logGroupName','executionRoleArn','taskRoleArns','network','auth','database']);
@@ -75,21 +79,26 @@ export function validateTemporalPreviewBinding(value){
  closed(b.taskRoleArns,TEMPORAL_ROLES);
  for(const role of TEMPORAL_ROLES)if(!roleArn.test(b.taskRoleArns[role])||b.taskRoleArns[role]===b.executionRoleArn)fail();
  distinct(Object.values(b.taskRoleArns),5,roleArn);
- const n=closed(b.network,['clientSecurityGroupIds','issuerSecurityGroupId','interfaceEndpoints','s3Gateway','taskRouteTableBySubnet','migrationSecurityGroupId']);
+ const n=closed(b.network,['clientSecurityGroupIds','issuerSecurityGroupId','issuerClientSecurityGroupId','dbClientSecurityGroupId',
+  'interfaceEndpoints','s3Gateway','taskRouteTableBySubnet','migrationSecurityGroupId']);
  if(n.clientSecurityGroupIds?.length!==2)fail();
  distinct(n.clientSecurityGroupIds,2,/^sg-[a-f0-9]{8,17}$/u);
  closed(n.interfaceEndpoints,Object.keys(TEMPORAL_INTERFACE_ENDPOINTS));
  const endpoints=Object.values(n.interfaceEndpoints).map(value=>closed(value,['endpointId','securityGroupId']));
  distinct(endpoints.map(value=>value.endpointId),5,/^vpce-[a-f0-9]{8,17}$/u);
- distinct(endpoints.map(value=>value.securityGroupId),5,/^sg-[a-f0-9]{8,17}$/u);
+ // capiro-dev interface endpoints share one SG; endpoint SGs may equal each
+ // other, never a client, issuer, marker, migration or database SG.
+ if(endpoints.some(value=>typeof value.securityGroupId!=='string'||!/^sg-[a-f0-9]{8,17}$/u.test(value.securityGroupId)))fail();
+ const endpointGroups=temporalEndpointSecurityGroupIds(n);
  closed(n.s3Gateway,['endpointId','prefixListId']);
  if(!/^vpce-[a-f0-9]{8,17}$/u.test(n.s3Gateway.endpointId)||
     !/^pl-[a-f0-9]{8,17}$/u.test(n.s3Gateway.prefixListId)||
     endpoints.some(value=>value.endpointId===n.s3Gateway.endpointId))fail();
  closed(n.taskRouteTableBySubnet,subnets.map(value=>value.id));
  if(Object.values(n.taskRouteTableBySubnet).some(value=>typeof value!=='string'||!/^rtb-[a-f0-9]{8,17}$/u.test(value)))fail();
- if(![n.issuerSecurityGroupId,n.migrationSecurityGroupId].every(x=>/^sg-[a-f0-9]{8,17}$/u.test(x))||
-    new Set([...n.clientSecurityGroupIds,...endpoints.map(value=>value.securityGroupId),n.issuerSecurityGroupId,n.migrationSecurityGroupId]).size!==n.clientSecurityGroupIds.length+endpoints.length+2)fail();
+ const ownGroups=[n.issuerSecurityGroupId,n.migrationSecurityGroupId,n.issuerClientSecurityGroupId,n.dbClientSecurityGroupId];
+ if(!ownGroups.every(x=>typeof x==='string'&&/^sg-[a-f0-9]{8,17}$/u.test(x)))fail();
+ distinct([...n.clientSecurityGroupIds,...endpointGroups,...ownGroups],n.clientSecurityGroupIds.length+endpointGroups.length+ownGroups.length,/^sg-[a-f0-9]{8,17}$/u);
  const a=closed(b.auth,['issuer','jwksUrl','issuerCaSha256','audience','namespace','taskQueue','materialSecretVersionByRole']);
  let issuer,jwks;try{issuer=new URL(a.issuer);jwks=new URL(a.jwksUrl);}catch{fail();}
  if(issuer.protocol!=='https:'||issuer.username||issuer.password||issuer.search||issuer.hash||issuer.pathname!=='/'||
@@ -107,7 +116,7 @@ export function validateTemporalPreviewBinding(value){
     ![d.primaryUsername,d.visibilityUsername].every(x=>typeof x==='string'&&/^[a-z][a-z0-9_]{0,62}$/u.test(x))||
     d.primaryUsername===d.visibilityUsername||
     !hex64.test(d.rdsCaSha256)||!hex64.test(d.grantsSha256)||d.migrationPlanSha256!==TEMPORAL_MIGRATION_PLAN_SHA256||
-    [...n.clientSecurityGroupIds,...endpoints.map(x=>x.securityGroupId),n.issuerSecurityGroupId,n.migrationSecurityGroupId].includes(d.securityGroupId))fail();
+    [...n.clientSecurityGroupIds,...endpointGroups,...ownGroups].includes(d.securityGroupId))fail();
  for(const key of ['primarySecretVersionArn','visibilitySecretVersionArn'])secret(d[key],b.account,b.region);
  const dbSecretBases=[d.primarySecretVersionArn,d.visibilitySecretVersionArn].map(secretBase);
  distinct(dbSecretBases,2,/^arn:aws:secretsmanager:/u);
