@@ -4,14 +4,15 @@ import {createRequire} from 'node:module';
 import {pathToFileURL} from 'node:url';
 import {mkdir,readFile,writeFile,rm,realpath} from 'node:fs/promises';
 import path from 'node:path';
-import {createHost,ensure,exists,plainDirectory} from './host.mjs';
+import {createHost,ensure,exists,plainDirectory,CLEANUP_RESERVE_MS} from './host.mjs';
+import {createDeadlineWork,isDeadlineWorkError} from './deadline-work.mjs';
 const sha=value=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const roleNames=Object.freeze({admin:'meri_prefs_task6_admin_20261017',app:'meri_prefs_task6_app_20261017'});
 export async function qualify(config){
  const adminPassword=randomBytes(32).toString('hex'),appPassword=randomBytes(32).toString('hex');
  const privatePaths=[[config.repo,'<SOURCE>'],[config.out,'<OWNED_OUTPUT>']].flatMap(([directory,label])=>[[pathToFileURL(directory).href,label],[directory,label],[directory.replaceAll('\\','/'),label],[directory.replaceAll('\\','\\\\'),label]]).sort((a,b)=>b[0].length-a[0].length);
  const scrub=value=>{let safe=String(value).replaceAll(adminPassword,'[redacted]').replaceAll(appPassword,'[redacted]').replace(/postgres(?:ql)?:\/\/[^\s'"<>]+/gu,'[private-postgres-target]');for(const [directory,label]of privatePaths)safe=safe.replaceAll(directory,label);return safe.replace(/file:\/\/\/[^\s)\r\n]+/gu,'<HOST_FILE>');};
- const host=createHost(config,scrub),data=path.join(config.out,'data'),passwordFile=path.join(config.out,'temporary-admin-password'),rawLog=path.join(config.out,'private-postgres.log'),dump=path.join(config.out,'private-settings.dump');
+ const host=createHost(config,scrub),normal=createDeadlineWork({deadlineMs:config.cutoff-CLEANUP_RESERVE_MS}),data=path.join(config.out,'data'),passwordFile=path.join(config.out,'temporary-admin-password'),rawLog=path.join(config.out,'private-postgres.log'),dump=path.join(config.out,'private-settings.dump');
  const receipt={wrapperStatus:'PORTABLE_WRAPPER_FUTURE_EXECUTION',sourceCommit:config.sourceCommit,sourceTree:config.sourceTree,migrationBlob:config.target.sqlBlob,startedAt:new Date().toISOString(),cutoff:new Date(config.cutoff).toISOString(),target:config.target,approvalReferenceProvided:true,steps:[],failures:[],tests:null,restore:null,cleanup:null};
  const note=(step,details={})=>{const item={step,at:new Date().toISOString(),...details};receipt.steps.push(item);process.stdout.write(JSON.stringify(item)+'\n');};
  let ownedOutput=false,initialized=false,startAttempted=false,ownedIdentity=null,postgres=null,pgCtl=null,admin=null;const clients=[],databases=[];
@@ -48,35 +49,35 @@ export async function qualify(config){
   await host.run(pgCtl,['-D',data,'-l',rawLog,'-o',`-h ${config.target.host} -p ${config.target.port} -c shared_buffers=32MB -c work_mem=4MB -c maintenance_work_mem=16MB -c max_connections=12 -c max_parallel_workers=0 -c min_wal_size=32MB -c max_wal_size=64MB -c log_min_error_statement=panic -c log_statement=none`,'-w','-t','15','start'],{timeout:25000});
   ownedIdentity=await host.processIdentity(data,postgres);note('owned-postmaster-verified',{pid:ownedIdentity.pid});
   const {Client}=createRequire(path.join(config.repo,'apps/runtime/package.json'))('pg');
-  const connection={host:config.target.host,port:config.target.port,user:roleNames.admin,password:adminPassword,ssl:false,connectionTimeoutMillis:3000,query_timeout:7000};
-  admin=new Client({...connection,database:'postgres'});admin.on('error',()=>{});await admin.connect();
-  const m=(await admin.query("SELECT current_setting('server_version_num') AS version,current_setting('listen_addresses') AS listen,current_setting('data_directory') AS directory,current_setting('port') AS port,floor(extract(epoch from pg_postmaster_start_time()))::bigint::text AS epoch")).rows[0];
+  const connection={host:config.target.host,port:config.target.port,user:roleNames.admin,password:adminPassword,ssl:false,query_timeout:7000};
+  async function connect(name){return normal.connect(connectionTimeoutMillis=>{const client=new Client({...connection,database:name,connectionTimeoutMillis});client.on('error',()=>{});clients.push(client);return client;});}
+  admin=await connect('postgres');
+  const m=(await normal.query(admin,"SELECT current_setting('server_version_num') AS version,current_setting('listen_addresses') AS listen,current_setting('data_directory') AS directory,current_setting('port') AS port,floor(extract(epoch from pg_postmaster_start_time()))::bigint::text AS epoch")).rows[0];
   const directory=await realpath(m.directory);ensure(m.version==='160015'&&m.listen===config.target.host&&Number(m.port)===config.target.port&&directory===await realpath(data)&&m.epoch===ownedIdentity.epoch,'SERVER_IDENTITY_REFUSED');
-  async function newDatabase(name){ensure((await admin.query('SELECT oid::text FROM pg_database WHERE datname=$1',[name])).rowCount===0,'DATABASE_ALREADY_EXISTS');await admin.query('CREATE DATABASE '+name+' TEMPLATE template0');const oid=(await admin.query('SELECT oid::text FROM pg_database WHERE datname=$1',[name])).rows[0]?.oid;ensure(oid,'DATABASE_OID_UNCERTAIN');databases.push({name,oid});}
-  async function connect(name){const client=new Client({...connection,database:name});client.on('error',()=>{});await client.connect();clients.push(client);return client;}
-  await newDatabase(config.target.database);const setup=await connect(config.target.database);await setup.query(sql);
-  await setup.query(`CREATE ROLE ${roleNames.app} LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOREPLICATION NOBYPASSRLS PASSWORD '${appPassword}'`);
-  for(const query of [`REVOKE ALL ON DATABASE ${config.target.database} FROM PUBLIC`,'REVOKE CREATE ON SCHEMA public FROM PUBLIC',`GRANT CONNECT ON DATABASE ${config.target.database} TO ${roleNames.app}`,`GRANT USAGE ON SCHEMA meri_settings TO ${roleNames.app}`,`GRANT SELECT,INSERT,UPDATE ON meri_settings.user_preferences TO ${roleNames.app}`,`GRANT SELECT,INSERT ON meri_settings.settings_audit TO ${roleNames.app}`,`GRANT USAGE ON SEQUENCE meri_settings.settings_audit_sequence_seq TO ${roleNames.app}`])await setup.query(query);
+  async function newDatabase(name){ensure((await normal.query(admin,'SELECT oid::text FROM pg_database WHERE datname=$1',[name])).rowCount===0,'DATABASE_ALREADY_EXISTS');await normal.query(admin,'CREATE DATABASE '+name+' TEMPLATE template0');const oid=(await normal.query(admin,'SELECT oid::text FROM pg_database WHERE datname=$1',[name])).rows[0]?.oid;ensure(oid,'DATABASE_OID_UNCERTAIN');databases.push({name,oid});}
+  await newDatabase(config.target.database);const setup=await connect(config.target.database);await normal.query(setup,sql);
+  await normal.query(setup,`CREATE ROLE ${roleNames.app} LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOREPLICATION NOBYPASSRLS PASSWORD '${appPassword}'`);
+  for(const query of [`REVOKE ALL ON DATABASE ${config.target.database} FROM PUBLIC`,'REVOKE CREATE ON SCHEMA public FROM PUBLIC',`GRANT CONNECT ON DATABASE ${config.target.database} TO ${roleNames.app}`,`GRANT USAGE ON SCHEMA meri_settings TO ${roleNames.app}`,`GRANT SELECT,INSERT,UPDATE ON meri_settings.user_preferences TO ${roleNames.app}`,`GRANT SELECT,INSERT ON meri_settings.settings_audit TO ${roleNames.app}`,`GRANT USAGE ON SEQUENCE meri_settings.settings_audit_sequence_seq TO ${roleNames.app}`])await normal.query(setup,query);
   note('exact-schema-and-restricted-role-provisioned');
   const url=(role,password)=>`postgresql://${role}:${password}@${config.target.host}:${config.target.port}/${config.target.database}`;
   let result;try{result=await host.run(process.execPath,['--max-old-space-size=512','--test','--test-concurrency=1','--test-reporter=spec','apps/control/settings/user-application/test/postgres-qualification.test.mjs'],{cwd:config.repo,timeout:180000,extraEnv:{MERI_PREFERENCES_PG_QUALIFY:'1',MERI_PREFERENCES_PG_URL:url(roleNames.admin,adminPassword),MERI_PREFERENCES_PG_ROLE_CHECK:'1',MERI_PREFERENCES_PG_APP_URL:url(roleNames.app,appPassword),MERI_PREFERENCES_PG_RESTORE_PLAN:'dispose-task6-owned-database'}});}catch(error){await writeFile(path.join(config.out,'tests.txt'),scrub(error.safeOutput??'CHILD_FAILED_NO_SAFE_DIAGNOSTIC'));throw Error('QUALIFICATION_TESTS_FAILED');}
   await writeFile(path.join(config.out,'tests.txt'),scrub(result.stdout+'\n'+result.stderr));receipt.tests={exit:0};note('tests-exited-zero');
-  const snapshot=async client=>({preferences:(await client.query('SELECT * FROM meri_settings.user_preferences ORDER BY tenant_id,actor_id')).rows,tenant:(await client.query('SELECT * FROM meri_settings.tenant_settings ORDER BY tenant_id')).rows,audit:(await client.query('SELECT * FROM meri_settings.settings_audit ORDER BY sequence')).rows});
+  const snapshot=async client=>({preferences:(await normal.query(client,'SELECT * FROM meri_settings.user_preferences ORDER BY tenant_id,actor_id')).rows,tenant:(await normal.query(client,'SELECT * FROM meri_settings.tenant_settings ORDER BY tenant_id')).rows,audit:(await normal.query(client,'SELECT * FROM meri_settings.settings_audit ORDER BY sequence')).rows});
   const before=await snapshot(setup);await newDatabase(config.target.restoreDatabase);
   const pgEnv={PGPASSWORD:adminPassword,PGPASSFILE:process.platform==='win32'?'NUL':'/dev/null',PGCONNECT_TIMEOUT:'3'};
   const args=['--no-owner','--no-acl','--host='+config.target.host,'--port='+config.target.port,'--username='+roleNames.admin];
   await host.run(binaries.pg_dump,['--format=custom',...args,'--dbname='+config.target.database,'--file='+dump],{timeout:30000,extraEnv:pgEnv});
   await host.run(binaries.pg_restore,['--exit-on-error','--single-transaction',...args,'--dbname='+config.target.restoreDatabase,dump],{timeout:30000,extraEnv:pgEnv});
-  const restored=await connect(config.target.restoreDatabase),after=await snapshot(restored);ensure(sha(before)===sha(after),'RESTORE_CONTENT_MISMATCH');let triggerState;try{await restored.query('UPDATE meri_settings.settings_audit SET recorded_at=recorded_at');}catch(error){triggerState=error.code;}ensure(triggerState==='P0001','RESTORED_AUDIT_TRIGGER_MISSING');
+  const restored=await connect(config.target.restoreDatabase),after=await snapshot(restored);ensure(sha(before)===sha(after),'RESTORE_CONTENT_MISMATCH');let triggerState;try{await normal.query(restored,'UPDATE meri_settings.settings_audit SET recorded_at=recorded_at');}catch(error){if(isDeadlineWorkError(error))throw error;triggerState=error.code;}ensure(triggerState==='P0001','RESTORED_AUDIT_TRIGGER_MISSING');
   receipt.restore={passed:true,sourceSha256:sha(before),restoredSha256:sha(after),preferences:before.preferences.length,auditRows:before.audit.length};
-  for(const entry of databases)ensure((await admin.query('SELECT oid::text FROM pg_database WHERE datname=$1',[entry.name])).rows[0]?.oid===entry.oid,'OWNED_DATABASE_OID_CHANGED');
+  for(const entry of databases)ensure((await normal.query(admin,'SELECT oid::text FROM pg_database WHERE datname=$1',[entry.name])).rows[0]?.oid===entry.oid,'OWNED_DATABASE_OID_CHANGED');
   await sourceGuard();note('restore-and-source-verified');
  }catch(error){const code=String(error.message);failure(/^[A-Z0-9_.-]+$/u.test(code)?code:'QUALIFICATION_FAILED_PRIVATE_DETAIL_WITHHELD');}
  finally{
   // One shared bound includes connection closes, independent identity, stop, verification and file cleanup.
   // Emergency cleanup may continue at most 30 seconds beyond the approved cutoff; every overrun is HOLD.
   const cleanupDeadline=Math.min(Date.now()+60000,config.cutoff+30000);markWindow();
-  await Promise.all([...clients,...(admin?[admin]:[])].map(client=>closeClient(client,cleanupDeadline)));
+  await Promise.all(clients.map(client=>closeClient(client,cleanupDeadline)));
   if(ownedOutput){let stopped=false;try{
    if(startAttempted){
     ensure(await bounded(()=>exists(path.join(data,'postmaster.pid')),cleanupDeadline,'CLEANUP_BUDGET_EXPIRED'),'START_OUTCOME_UNCERTAIN_NO_POSTMASTER_FILE');
