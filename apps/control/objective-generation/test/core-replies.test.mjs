@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {compileObjectiveProtectedFacts} from '../../../runtime/objective-source/protected-facts.mjs';
 import {coreApplicationSha256} from '../../../../packages/runtime/core-application-digest.mjs';
-import {decodeAdmissionReply,decodeAdmissionReadReply,decodePublicationReply,decodeAcceptanceReply,objectiveSourceSelection} from '../core-replies.mjs';
+import {decodeAdmissionReply,decodeAdmissionReadReply,decodePublicationReply,decodeAcceptanceReply,decodeCompletionReply,objectiveSourceSelection} from '../core-replies.mjs';
 import {coreRepliesFixture,NOW} from './core-replies-fixture.mjs';
 const refused=/OBJECTIVE_GENERATION_CORE_REPLY_REFUSED/;
 const mutate=(value,change)=>{const copy=structuredClone(value);change(copy);return copy;};
@@ -80,4 +80,19 @@ test('decoded admission and publication compile into the existing protected Obje
  const pair=compileObjectiveProtectedFacts(structuredClone(raw),{accepted:x.f.accepted,issuance:x.receipt,nowMs:NOW});
  assert.equal(pair.objectiveGeneration.sourceAdmissionSha256,x.sourceAdmissionSha256);assert.equal(pair.objectiveStrategy.requestSha256,publication.requestSha256);
  assert.throws(()=>objectiveSourceSelection({admission:admitted.sourceAdmission,publication,executionSelection:{provider:'p'}}),refused);
+});
+
+test('completion receipt decodes Core saved-generation evidence bound to the original source and acceptance',()=>{
+ const x=coreRepliesFixture(),admission=x.admission,publication=decodePublicationReply(x.replies.publication(),x.source,{admission});
+ const acceptance=decodeAdmissionReadReply(x.replies.admissionRead(),x.source).acceptance,context={admission,publication,acceptance};
+ const done=decodeCompletionReply(x.replies.completion(),x.source,context);
+ assert.equal(done.strategyId,admission.canonical.canonicalStrategyId);assert.equal(done.completion.completionId,x.replies.completion().completion.resultRef);
+ for(const change of [
+  r=>{r.extra=1;},r=>{r.generationJobId='00000000-0000-4000-8000-000000000099';},r=>{r.sourceBinding.writerFence=2;},r=>{r.objectiveReceiptSha256='0'.repeat(64);},
+  r=>{r.completion.namespace='other';},r=>{r.completion.typedRequestSha256='0'.repeat(64);},r=>{r.completion.executionContextSha256='0'.repeat(64);},
+  r=>{r.completion.completionId='00000000-0000-4000-8000-000000000099';},r=>{r.completion.completedAtMs=NOW-1;},
+  r=>{r.completion.completedAtMs=x.issuance.expiresAtMs;},r=>{r.objectiveReceipt.failure={code:'x'};r.objectiveReceiptSha256=coreApplicationSha256(r.objectiveReceipt);},
+  r=>{r.objectiveReceipt.requestId='00000000-0000-4000-8000-000000000099';r.objectiveReceiptSha256=coreApplicationSha256(r.objectiveReceipt);},
+ ])assert.throws(()=>decodeCompletionReply(mutate(x.replies.completion(),change),x.source,context),refused);
+ assert.throws(()=>decodeCompletionReply(x.replies.completion(),x.source,{...context,acceptance:{...acceptance,acceptedAtMs:NOW+20}}),refused,'completion before acceptance');
 });

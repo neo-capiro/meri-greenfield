@@ -11,12 +11,12 @@ const unknown=error=>productFailure(error)?.code==='OBJECTIVE_GENERATION_CORE_OU
 /** Synthetic transport with the core-http.mjs method surface and reply envelope. */
 function harness({replies={},available=true,clock=NOW}={}){
  const x=coreRepliesFixture(),calls=[],state={now:clock,available};
- const queue={admit:[x.replies.admit()],publish:[x.replies.publication()],accept:[x.replies.accept()],
+ const queue={admit:[x.replies.admit()],publish:[x.replies.publication()],accept:[x.replies.accept()],complete:[x.replies.completion()],readCompletion:[x.replies.completion()],
   readAdmission:[x.replies.admissionRead(),x.replies.admissionRead()],readRequest:[x.replies.publication()],...replies};
  const respond=method=>async value=>{calls.push({method,value});const next=queue[method].shift();
   if(next instanceof Error)throw next;if(next===undefined||next==='unavailable')return {kind:'unavailable'};
   return {kind:'unqualified-response',status:method.startsWith('read')?200:201,value:next};};
- const transport={available:()=>state.available,...Object.fromEntries(['admit','publish','accept','readAdmission','readRequest'].map(m=>[m,respond(m)]))};
+ const transport={available:()=>state.available,...Object.fromEntries(['admit','publish','accept','readAdmission','readRequest','complete','readCompletion'].map(m=>[m,respond(m)]))};
  const create=(options={})=>createCoreObjectiveGenerationClient({transport,source:x.source,executionSelection:x.executionSelection,issuance:x.issuance,now:()=>state.now,...options});
  return {x,calls,state,queue,transport,create};
 }
@@ -73,4 +73,13 @@ test('readCurrent refuses missing selection, unavailability, unaccepted job, dri
  await assert.rejects(h.create().readCurrent({...input(h),sourceRequestSha256:'0'.repeat(64)}),unavailable);
  await assert.rejects(h.create().readCurrent({...input(h),binding:{...h.x.source.binding,writerFence:2}}),unavailable);
  assert.equal(h.calls.length,1,'binding mismatch refuses before any Core read');
+});
+
+test('completion is an effect (UNKNOWN when lost) and readCompletion a read-only reconciliation',async()=>{
+ const h=harness(),client=h.create(),publication=await client.readRequest({admission:h.x.admission});
+ const acceptance=(await client.readAdmission()).acceptance,context={admission:h.x.admission,publication,acceptance};
+ const done=await client.complete(context);assert.equal(done.strategyId,h.x.admission.canonical.canonicalStrategyId);
+ assert.equal((await client.readCompletion(context)).objectiveReceiptSha256,done.objectiveReceiptSha256);
+ const lost=harness({replies:{complete:['unavailable'],readCompletion:['unavailable']}}),other=lost.create();
+ await assert.rejects(other.complete(context),unknown);await assert.rejects(other.readCompletion(context),unavailable);
 });

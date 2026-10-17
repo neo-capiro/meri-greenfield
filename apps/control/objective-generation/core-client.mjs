@@ -18,7 +18,7 @@ import {types} from 'node:util';
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
 import {ProductError,productFailure} from '../product-access/errors.mjs';
-import {decodeAdmissionReply,decodeAdmissionReadReply,decodePublicationReply,decodeAcceptanceReply,objectiveSourceSelection} from './core-replies.mjs';
+import {decodeAdmissionReply,decodeAdmissionReadReply,decodePublicationReply,decodeAcceptanceReply,decodeCompletionReply,objectiveSourceSelection} from './core-replies.mjs';
 
 const unavailable=()=>new ProductError('OBJECTIVE_GENERATION_CORE_UNAVAILABLE');
 const unknownOutcome=()=>new ProductError('OBJECTIVE_GENERATION_CORE_OUTCOME_UNKNOWN','UNKNOWN');
@@ -32,7 +32,7 @@ export function createCoreObjectiveGenerationClient(configuration){
   executionSelection=c.executionSelection===undefined?null:data(own(c.executionSelection,['provider','model']));
   issued=c.issuance===undefined?undefined:data(c.issuance);
   now=c.now??Date.now;maxRequestMs=c.maxRequestMs??3000;maxFreshMs=c.maxFreshMs??3000;
-  for(const m of ['available','admit','publish','accept','readAdmission','readRequest'])if(typeof transport?.[m]!=='function')throw unavailable();
+  for(const m of ['available','admit','publish','accept','readAdmission','readRequest','complete','readCompletion'])if(typeof transport?.[m]!=='function')throw unavailable();
   if(typeof now!=='function'||types.isProxy(now)||![maxRequestMs,maxFreshMs].every(v=>Number.isSafeInteger(v)&&v>=1&&v<=30000))throw unavailable();
  }catch{throw unavailable();}
 
@@ -58,6 +58,10 @@ export function createCoreObjectiveGenerationClient(configuration){
  /** POST accept: Core pairs the job with the genuine original ISSUED receipt. */
  const accept=value=>{const {admission,issuance,...rest}=own(value,['admission','issuance'],['signal','deadlineMs']);
   return decoded('accept',options(rest),true,raw=>decodeAcceptanceReply(raw,source,{admission,issuance}));};
+ /** POST complete after the accepted run's typed result is retained. Core reads it
+  * through its own signed retained reader; a lost reply is UNKNOWN (read back). */
+ const completion=method=>value=>{const {admission,publication,acceptance,...rest}=own(value,['admission','publication','acceptance'],['signal','deadlineMs']);
+  return decoded(method,options(rest),method==='complete',raw=>decodeCompletionReply(raw,source,{admission,publication,acceptance}));};
  const readAdmission=(value,issuance)=>decoded('readAdmission',options(value),false,raw=>decodeAdmissionReadReply(raw,source,{issuance}));
  const readRequest=(value,admission)=>decoded('readRequest',options(value),false,raw=>decodePublicationReply(raw,source,{admission}));
 
@@ -84,7 +88,7 @@ export function createCoreObjectiveGenerationClient(configuration){
   }catch(error){throw productFailure(error)?.code==='OBJECTIVE_GENERATION_CORE_UNAVAILABLE'?error:unavailable();}
  }
  return Object.freeze({available:()=>{try{return transport.available()===true;}catch{return false;}},
-  admit,publish,accept,
+  admit,publish,accept,complete:completion('complete'),readCompletion:completion('readCompletion'),
   readAdmission:value=>{const {issuance,...rest}=own(value??{},[],['issuance','signal','deadlineMs']);return readAdmission(rest,issuance);},
   readRequest:value=>{const {admission,...rest}=own(value,['admission'],['signal','deadlineMs']);return readRequest(rest,admission);},
   readCurrent});

@@ -6,6 +6,7 @@
  *  - POST/GET generation-requests    {schemaVersion,sourceAdmissionSha256,request,requestSha256,executionContext}
  *  - POST generation-acceptances     {schemaVersion,sourceAdmissionSha256,sourceBinding,sourceRequestSha256,issuance}
  *    (no acceptedAtMs; the GET acceptance value carries acceptedAtMs).
+ *  - POST/GET generation-completions {schemaVersion,generationJobId,...,completion,objectiveReceipt,...}
  * Pure data checks against the caller's trusted expected source. A decoded reply
  * is evidence for comparison, never authority: it authenticates no caller, issues
  * nothing and cannot create the accepted run, issuance or custody it is compared to.
@@ -17,6 +18,8 @@ import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts
 import {assertRequest} from '../../../packages/contracts/strategy-operations-candidate/validate.mjs';
 import {strategyTypes} from '../../../packages/contracts/strategy-operations-candidate/shapes.mjs';
 import {coreApplicationSha256} from '../../../packages/runtime/core-application-digest.mjs';
+import {objectiveCompletionId} from '../../../packages/runtime/objective-generation-custody.mjs';
+import {strategyApplication} from '../objective-planner/core-receipts.mjs';
 import {ProductError} from '../product-access/errors.mjs';
 
 export const OBJECTIVE_ADMISSION_NAMESPACE='capiro.objective-strategy.admission:v1';
@@ -131,5 +134,34 @@ export function objectiveSourceSelection({admission:admitted,publication,executi
   const s=closed(executionSelection,['provider','model']);if([s.provider,s.model].some(v=>typeof v!=='string'||!v.trim()||v.length>128))refuse();
   if(publication.sourceAdmissionSha256!==coreApplicationSha256(admitted))refuse();
   return frozen({sourceAdmission:admitted,request:publication.request,executionContext:publication.executionContext,queuedType:publication.queuedType,executionSelection:s});
+ }catch{refuse();}
+}
+
+const witnessKeys=['schemaVersion','namespace','generationJobId','generationRequestId','sourceAdmissionSha256','sourceRequestSha256','sourceBindingSha256','typedRequestSha256',
+ 'executionContextSha256','completionId','checkpointId','checkpointSha256','resultRef','resultSha256','rawFileSha256','executionSha256','completedAtMs','payloadSha256','corePayloadSha256'];
+/** POST/GET generation-completions: Core's saved-generation receipt for this job.
+ * `acceptance` is the decoded GET acceptance (with acceptedAtMs); `publication`
+ * the decoded initial publication. Consistency only: Core read the retained result
+ * through its own authenticated reader; this grants Meri no Planner authority. */
+export function decodeCompletionReply(raw,expected,{admission:admitted,publication,acceptance:accepted}){
+ try{
+  const source=expectedSource(expected),a=admission(admitted,source),digest=coreApplicationSha256(a);
+  const p=decodePublicationReply({schemaVersion:1,sourceAdmissionSha256:publication.sourceAdmissionSha256,request:publication.request,requestSha256:publication.requestSha256,executionContext:publication.executionContext},source,{admission:a});
+  const c=acceptance(accepted,{admitted:a,sourceAdmissionSha256:digest,source,issuance:undefined,observed:true});
+  const r=closed(raw,['schemaVersion','generationJobId','sourceAdmissionSha256','sourceBinding','sourceRequestSha256','completion','objectiveReceipt','objectiveReceiptSha256','snapshotDigest']);
+  const w=closed(r.completion,witnessKeys),completionId=objectiveCompletionId(source.binding);
+  if(r.schemaVersion!==1||r.generationJobId!==a.generationJobId||r.sourceAdmissionSha256!==digest||!same(binding(r.sourceBinding),source.binding)||
+     r.sourceRequestSha256!==c.sourceRequestSha256||sha(r.snapshotDigest)!==r.snapshotDigest||sha(r.objectiveReceiptSha256)!==coreApplicationSha256(r.objectiveReceipt))refuse();
+  if(w.schemaVersion!==1||w.namespace!=='capiro.objective-strategy.completion:v1'||w.generationJobId!==a.generationJobId||w.generationRequestId!==a.generationRequestId||
+     w.sourceAdmissionSha256!==digest||w.sourceRequestSha256!==c.sourceRequestSha256||w.sourceBindingSha256!==hash(source.binding)||
+     w.typedRequestSha256!==p.requestSha256||w.executionContextSha256!==hash(p.executionContext)||w.completionId!==completionId||w.resultRef!==completionId)refuse();
+  uuid(w.checkpointId);for(const key of ['checkpointSha256','resultSha256','rawFileSha256','executionSha256','payloadSha256','corePayloadSha256'])sha(w[key]);
+  integer(w.completedAtMs,0,TIME_MAX);
+  if(w.completedAtMs<Math.max(a.admittedAtMs,c.acceptedAtMs,p.request.requestedAtMs)||
+     w.completedAtMs>=Math.min(a.effectExpiresAtMs,c.issuance.expiresAtMs,p.request.originalExpiresAtMs))refuse();
+  const applied=strategyApplication({receipt:r.objectiveReceipt,status:'completed',canonical:a.canonical});
+  if(applied.generationRequestId!==a.generationRequestId)refuse();
+  return frozen({generationJobId:a.generationJobId,completion:w,strategyId:applied.strategyId,strategyVersionId:applied.strategyVersionId,
+   objectiveReceipt:r.objectiveReceipt,objectiveReceiptSha256:r.objectiveReceiptSha256,snapshotDigest:r.snapshotDigest});
  }catch{refuse();}
 }
