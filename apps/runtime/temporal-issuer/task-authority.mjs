@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { isIP } from 'node:net';
 
 const ROLES = ['control', 'temporal-worker'];
 const IDENTITIES = Object.freeze({
@@ -77,9 +78,11 @@ export function parseTemporalIssuerTaskAuthorityConfiguration(raw) {
   const roles = object(c.roles, ROLES);
   const parsedRoles = {};
   for (const role of ROLES) {
-    const r = object(roles[role], ['subject', 'workloadPrincipal', 'peerSubjectCn', 'peerUriBase', 'serviceArn', 'taskDefinitionArn', 'containerName', 'imageUri', 'taskRoleArn', 'executionRoleArn', 'revision']);
+    const r = object(roles[role], ['subject', 'workloadPrincipal', 'peerSubjectCn', 'peerUriBase', 'serviceArn', 'taskDefinitionArn', 'containerName', 'imageUri', 'taskRoleArn', 'executionRoleArn', 'revision'], ['allowPrimaryInProgress']);
     if (r.subject !== IDENTITIES[role].subject ||
-        r.workloadPrincipal !== IDENTITIES[role].workloadPrincipal) {
+        r.workloadPrincipal !== IDENTITIES[role].workloadPrincipal ||
+        (Object.hasOwn(r, 'allowPrimaryInProgress') && typeof r.allowPrimaryInProgress !== 'boolean') ||
+        (role === 'control' && r.taskRoleArn === null)) {
       throw fault('TEMPORAL_ISSUER_TASK_AUTHORITY_CONFIGURATION');
     }
     const serviceArn = arn(r.serviceArn, 'ecs', account, region, new RegExp(`^service/${cluster}/[A-Za-z0-9_-]{1,255}$`, 'u'));
@@ -100,9 +103,11 @@ export function parseTemporalIssuerTaskAuthorityConfiguration(raw) {
       taskDefinitionArn,
       containerName: string(r.containerName, /^[A-Za-z0-9_-]{1,255}$/u),
       imageUri: r.imageUri,
-      taskRoleArn: arn(r.taskRoleArn, 'iam', account, region, /^role\/[A-Za-z0-9+=,.@_/-]{1,512}$/u),
+      taskRoleArn: role === 'temporal-worker' && r.taskRoleArn === null ? null :
+        arn(r.taskRoleArn, 'iam', account, region, /^role\/[A-Za-z0-9+=,.@_/-]{1,512}$/u),
       executionRoleArn: arn(r.executionRoleArn, 'iam', account, region, /^role\/[A-Za-z0-9+=,.@_/-]{1,512}$/u),
       revision: string(r.revision, /^[A-Za-z0-9._:-]{1,128}$/u),
+      allowPrimaryInProgress: r.allowPrimaryInProgress === true,
     });
   }
   if (parsedRoles.control.subject === parsedRoles['temporal-worker'].subject ||
@@ -186,6 +191,96 @@ async function serviceOwnsTask(ecs, {clusterArn, serviceName, taskArn, signal}) 
   return false;
 }
 
+/** Fresh, bounded AWS proof shared by post-placement bootstrap and token renewal. */
+export function createTemporalIssuerAwsTaskProof({configuration, ecs, ec2, now = Date.now}) {
+  const c = parseTemporalIssuerTaskAuthorityConfiguration(configuration);
+  if (!ecs || typeof ecs.describeServices !== 'function' || typeof ecs.describeTasks !== 'function' ||
+      typeof ecs.listTasks !== 'function' || typeof ecs.describeTaskDefinition !== 'function' ||
+      !ec2 || typeof ec2.describeNetworkInterfaces !== 'function' || typeof now !== 'function') {
+    throw fault('TEMPORAL_ISSUER_TASK_AUTHORITY_CONFIGURATION');
+  }
+  return Object.freeze({
+    async readCurrent({role, taskArn, peerIPv4, signal} = {}) {
+      const result = state => {
+        let observedAtMs = null;
+        try {
+          const stamp = now();
+          if (Number.isSafeInteger(stamp)) observedAtMs = stamp;
+        } catch { /* unavailable clocks cannot produce a current proof */ }
+        return Object.freeze({state,
+        role: null, taskArn: null, peerIPv4: null, revision: null, serviceArn: null,
+        taskDefinitionArn: null, imageUri: null, taskRoleArn: null, executionRoleArn: null,
+        observedAtMs, validUntilMs: null});
+      };
+      try {
+        checkSignal(signal);
+        const startedAtMs = now();
+        if (!Number.isSafeInteger(startedAtMs) || !ROLES.includes(role) ||
+            !taskArnFor(c.clusterArn, taskArn) || isIP(peerIPv4) !== 4) return result('REVOKED');
+        const pin = c.roles[role];
+        const serviceReply = await ecs.describeServices({cluster: c.clusterArn, services: [pin.serviceArn], signal});
+        checkSignal(signal);
+        const service = one(serviceReply?.services, item => item?.serviceArn === pin.serviceArn &&
+          item.clusterArn === c.clusterArn && item.status === 'ACTIVE' && item.taskDefinition === pin.taskDefinitionArn &&
+          item.serviceName === pin.serviceArn.split('/').at(-1) &&
+          Number.isSafeInteger(item.desiredCount) && item.desiredCount > 0 &&
+          Number.isSafeInteger(item.runningCount) && item.runningCount > 0 &&
+          one(item.deployments?.filter(d => d.status === 'PRIMARY'),
+            d => d.taskDefinition === pin.taskDefinitionArn &&
+              (d.rolloutState === 'COMPLETED' ||
+                (pin.allowPrimaryInProgress && d.rolloutState === 'IN_PROGRESS'))));
+        if (!service || serviceReply.failures?.length) return result('REVOKED');
+        const taskReply = await ecs.describeTasks({cluster: c.clusterArn, tasks: [taskArn], signal});
+        checkSignal(signal);
+        const task = one(taskReply?.tasks, item => item?.taskArn === taskArn &&
+          item.clusterArn === c.clusterArn && item.taskDefinitionArn === pin.taskDefinitionArn &&
+          item.lastStatus === 'RUNNING' && item.desiredStatus === 'RUNNING' && item.launchType === 'FARGATE' &&
+          (item.overrides?.taskRoleArn == null || item.overrides.taskRoleArn === pin.taskRoleArn) &&
+          (item.overrides?.executionRoleArn == null || item.overrides.executionRoleArn === pin.executionRoleArn) &&
+          item.group === `service:${service.serviceName}` &&
+          one(item.containers?.filter(container => container.name === pin.containerName),
+            container => container.lastStatus === 'RUNNING' &&
+              container.imageDigest === pin.imageUri.slice(pin.imageUri.lastIndexOf('@') + 1)));
+        if (!task || taskReply.failures?.length) return result('REVOKED');
+        if (!await serviceOwnsTask(ecs, {clusterArn: c.clusterArn, serviceName: service.serviceName,
+          taskArn, signal})) return result('REVOKED');
+        checkSignal(signal);
+        const attachment = attachmentDetails(task);
+        // This proof uses the server-observed source of the direct private TLS connection.
+        if (!attachment || !c.privateSubnetIds.includes(attachment.subnetId) ||
+            peerIPv4 !== attachment.privateIPv4Address) return result('REVOKED');
+        const definitionReply = await ecs.describeTaskDefinition({taskDefinition: pin.taskDefinitionArn, signal});
+        checkSignal(signal);
+        const definition = definitionReply?.taskDefinition;
+        if (!definition || definition.taskDefinitionArn !== pin.taskDefinitionArn || definition.status !== 'ACTIVE' ||
+            definition.networkMode !== 'awsvpc' || !definition.requiresCompatibilities?.includes('FARGATE') ||
+            (definition.taskRoleArn ?? null) !== pin.taskRoleArn ||
+            definition.executionRoleArn !== pin.executionRoleArn ||
+            !one(definition.containerDefinitions?.filter(container => container.name === pin.containerName),
+              container => container.image === pin.imageUri)) return result('REVOKED');
+        const eniReply = await ec2.describeNetworkInterfaces({NetworkInterfaceIds: [attachment.networkInterfaceId], signal});
+        checkSignal(signal);
+        const eni = one(eniReply?.NetworkInterfaces, item => item?.NetworkInterfaceId === attachment.networkInterfaceId &&
+          item.VpcId === c.vpcId && item.SubnetId === attachment.subnetId && item.Status === 'in-use' &&
+          item.PrivateIpAddress === attachment.privateIPv4Address && item.Association == null &&
+          sameSet(item.Groups?.map(group => group.GroupId), c.securityGroupIds));
+        if (!eni) return result('REVOKED');
+        checkSignal(signal);
+        const finishedAtMs = now();
+        if (!Number.isSafeInteger(finishedAtMs) || finishedAtMs < startedAtMs ||
+            !Number.isSafeInteger(finishedAtMs + c.maxLeaseMs)) return result('REVOKED');
+        return Object.freeze({state: 'CURRENT', role, taskArn, peerIPv4, revision: pin.revision,
+          serviceArn: pin.serviceArn, taskDefinitionArn: pin.taskDefinitionArn,
+          imageUri: pin.imageUri, taskRoleArn: pin.taskRoleArn,
+          executionRoleArn: pin.executionRoleArn, observedAtMs: finishedAtMs,
+          validUntilMs: finishedAtMs + c.maxLeaseMs});
+      } catch {
+        return result('UNAVAILABLE');
+      }
+    },
+  });
+}
+
 /**
  * The ECS and EC2 ports are fresh readers. The binding port is an independent, durable
  * certificate/task/revision/revocation authority; absence is never interpreted as current.
@@ -198,6 +293,7 @@ export function createTemporalIssuerTaskAuthority({configuration, ecs, ec2, bind
       !bindings || typeof bindings.readCurrent !== 'function' || typeof now !== 'function') {
     throw fault('TEMPORAL_ISSUER_TASK_AUTHORITY_CONFIGURATION');
   }
+  const awsProof = createTemporalIssuerAwsTaskProof({configuration: c, ecs, ec2, now});
   return Object.freeze({
     async readCurrent({peer, identity, signal} = {}) {
       const observedAtMs = now();
@@ -219,45 +315,11 @@ export function createTemporalIssuerTaskAuthority({configuration, ecs, ec2, bind
         if (first?.state === 'REVOKED') return result('REVOKED');
         const current = currentBinding(first, {...certificate, role: echo.role, roleConfig: pin, clusterArn: c.clusterArn, nowMs: now()});
         if (!current || certificate.peerSanUri !== current.peerSanUri) return result('REVOKED');
-        const serviceReply = await ecs.describeServices({cluster: c.clusterArn, services: [pin.serviceArn], signal});
-        checkSignal(signal);
-        const service = one(serviceReply?.services, item => item?.serviceArn === pin.serviceArn &&
-          item.clusterArn === c.clusterArn && item.status === 'ACTIVE' && item.taskDefinition === pin.taskDefinitionArn &&
-          item.serviceName === pin.serviceArn.split('/').at(-1) &&
-          Number.isSafeInteger(item.desiredCount) && item.desiredCount > 0 &&
-          Number.isSafeInteger(item.runningCount) && item.runningCount > 0 &&
-          one(item.deployments?.filter(d => d.status === 'PRIMARY'), d => d.taskDefinition === pin.taskDefinitionArn && d.rolloutState === 'COMPLETED'));
-        if (!service || serviceReply.failures?.length) return result('REVOKED');
-        const taskReply = await ecs.describeTasks({cluster: c.clusterArn, tasks: [current.taskArn], signal});
-        checkSignal(signal);
-        const task = one(taskReply?.tasks, item => item?.taskArn === current.taskArn &&
-          item.clusterArn === c.clusterArn && item.taskDefinitionArn === pin.taskDefinitionArn &&
-          item.lastStatus === 'RUNNING' && item.desiredStatus === 'RUNNING' && item.launchType === 'FARGATE' &&
-          (item.overrides?.taskRoleArn == null || item.overrides.taskRoleArn === pin.taskRoleArn) &&
-          (item.overrides?.executionRoleArn == null || item.overrides.executionRoleArn === pin.executionRoleArn) &&
-          item.group === `service:${service.serviceName}` &&
-          one(item.containers?.filter(container => container.name === pin.containerName),
-            container => container.lastStatus === 'RUNNING' && container.imageDigest === pin.imageUri.slice(pin.imageUri.lastIndexOf('@') + 1)));
-        if (!task || taskReply.failures?.length) return result('REVOKED');
-        if (!await serviceOwnsTask(ecs, {clusterArn: c.clusterArn, serviceName: service.serviceName,
-          taskArn: current.taskArn, signal})) return result('REVOKED');
-        const attachment = attachmentDetails(task);
-        if (!attachment || !c.privateSubnetIds.includes(attachment.subnetId)) return result('REVOKED');
-        const definitionReply = await ecs.describeTaskDefinition({taskDefinition: pin.taskDefinitionArn, signal});
-        checkSignal(signal);
-        const definition = definitionReply?.taskDefinition;
-        if (!definition || definition.taskDefinitionArn !== pin.taskDefinitionArn || definition.status !== 'ACTIVE' ||
-            definition.networkMode !== 'awsvpc' || !definition.requiresCompatibilities?.includes('FARGATE') ||
-            definition.taskRoleArn !== pin.taskRoleArn || definition.executionRoleArn !== pin.executionRoleArn ||
-            !one(definition.containerDefinitions?.filter(container => container.name === pin.containerName),
-              container => container.image === pin.imageUri)) return result('REVOKED');
-        const eniReply = await ec2.describeNetworkInterfaces({NetworkInterfaceIds: [attachment.networkInterfaceId], signal});
-        checkSignal(signal);
-        const eni = one(eniReply?.NetworkInterfaces, item => item?.NetworkInterfaceId === attachment.networkInterfaceId &&
-          item.VpcId === c.vpcId && item.SubnetId === attachment.subnetId && item.Status === 'in-use' &&
-          item.PrivateIpAddress === attachment.privateIPv4Address && item.Association == null &&
-          sameSet(item.Groups?.map(group => group.GroupId), c.securityGroupIds));
-        if (!eni) return result('REVOKED');
+        const taskProof = await awsProof.readCurrent({role: echo.role, taskArn: current.taskArn,
+          peerIPv4: peer.remoteAddress, signal});
+        if (taskProof.state !== 'CURRENT' || taskProof.revision !== current.revision) {
+          return result(taskProof.state === 'UNAVAILABLE' ? 'UNAVAILABLE' : 'REVOKED');
+        }
         // A revocation or reassignment during the cloud reads must be visible before release.
         const second = await bindings.readCurrent(bindingRequest);
         checkSignal(signal);
@@ -265,7 +327,8 @@ export function createTemporalIssuerTaskAuthority({configuration, ecs, ec2, bind
         if (!refreshed || refreshed.taskArn !== current.taskArn || refreshed.peerSanUri !== current.peerSanUri ||
             refreshed.revision !== current.revision) return result('REVOKED');
         const finishMs = now();
-        const validUntilMs = Math.min(first.expiresAtMs, second.expiresAtMs, finishMs + c.maxLeaseMs);
+        const validUntilMs = Math.min(first.expiresAtMs, second.expiresAtMs,
+          taskProof.validUntilMs, finishMs + c.maxLeaseMs);
         if (!Number.isSafeInteger(finishMs) || validUntilMs <= finishMs) return result('REVOKED');
         return Object.freeze({state: 'CURRENT', identity: Object.freeze({...echo}),
           observedAtMs: finishMs, validUntilMs, revision: current.revision});

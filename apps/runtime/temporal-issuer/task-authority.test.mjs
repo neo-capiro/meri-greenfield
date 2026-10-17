@@ -44,7 +44,7 @@ function fixture() {
   };
   const pin = config.roles.control;
   const peerSanUri = pin.peerUriBase + encodeURIComponent(taskArn);
-  const peer = {authorized: true, certificate: {
+  const peer = {authorized: true, remoteAddress: '10.0.1.4', certificate: {
     raw, fingerprint256: fingerprint.toUpperCase().match(/../gu).join(':'),
     subject: {CN: pin.peerSubjectCn}, subjectaltname: `URI:${peerSanUri}`,
     valid_from: '2026-01-01T00:00:00.000Z', valid_to: '2027-01-01T00:00:00.000Z',
@@ -148,6 +148,18 @@ test('stopped ECS task revokes the lease', async () => {
   assert.equal((await f.authority.readCurrent({peer: f.peer, identity: f.identity})).state, 'REVOKED');
 });
 
+test('token authority keeps two durable reads when pinned PRIMARY rollout is in progress', async () => {
+  const f = fixture();
+  f.service.deployments[0].rolloutState = 'IN_PROGRESS';
+  assert.equal((await f.authority.readCurrent({peer: f.peer, identity: f.identity})).state, 'REVOKED');
+  f.config.roles.control.allowPrimaryInProgress = true;
+  const authority = createTemporalIssuerTaskAuthority({configuration: f.config, ecs: f.ports.ecs,
+    ec2: f.ports.ec2, bindings: f.ports.bindings, now: () => f.nowMs});
+  f.calls.length = 0;
+  assert.equal((await authority.readCurrent({peer: f.peer, identity: f.identity})).state, 'CURRENT');
+  assert.deepEqual(f.calls, ['binding', 'service', 'task', 'serviceTasks', 'definition', 'eni', 'binding']);
+});
+
 test('standalone task with forged service group is absent from service-scoped ListTasks', async () => {
   const f = fixture();
   f.ports.ecs.listTasks = async request => {
@@ -201,6 +213,12 @@ test('container image, task role, VPC, subnet and public ENI mismatch each revok
     change(f);
     assert.equal((await f.authority.readCurrent({peer: f.peer, identity: f.identity})).state, 'REVOKED');
   }
+});
+
+test('a copied current task certificate from another private ENI is revoked', async () => {
+  const f = fixture();
+  f.peer.remoteAddress = '10.0.1.99';
+  assert.equal((await f.authority.readCurrent({peer: f.peer, identity: f.identity})).state, 'REVOKED');
 });
 
 test('unrecognized role, wrong echo and unauthenticated or wrong-role peer are refused before durable reads', async () => {
