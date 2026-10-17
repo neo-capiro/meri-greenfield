@@ -69,6 +69,11 @@ function tokenWriters(value,b){
   const pins=record(writer.sha256ByPath,paths);
   if(paths.some(path=>!hex64.test(pins[path])||pins[path]!==expected[path]))fail();
  }
+ // One Meri preview server CA signs the control private origin (internal ALB), the model proxy and the issuer server
+ // certificates. The worker trusts the control private origin through its issuer server CA file (NODE_EXTRA_CA_CERTS
+ // below), so that file must be exactly the CA the runner poststart pins for the same origin.
+ const worker=writers.temporalWorker;
+ if(worker.sha256ByPath[worker.tls.issuerCaFile]!==b.runnerPoststart.controlCaSha256)fail();
  return writers;
 }
 function validate(value){
@@ -111,7 +116,9 @@ function task(stack,b,role,port){
   environment:role==='runner'?[{name:'MERI_RUNNER_SHA256',value:b.runnerSha256},{name:'MERI_PRODUCT_PREVIEW_REQUIRED',value:'1'},
    {name:'MERI_POSTSTART_CONTROL_ORIGIN',value:b.runnerPoststart.controlOrigin},
    {name:'MERI_POSTSTART_CA_BASE64',value:b.runnerPoststart.controlCaBase64},
-   {name:'MERI_POSTSTART_CA_SHA256',value:b.runnerPoststart.controlCaSha256}]:[{name:'MERI_PRODUCT_PREVIEW_REQUIRED',value:'1'}],
+   {name:'MERI_POSTSTART_CA_SHA256',value:b.runnerPoststart.controlCaSha256}]:[{name:'MERI_PRODUCT_PREVIEW_REQUIRED',value:'1'},
+   // Replaces the image's RDS bundle (the worker has no database): Node reads it once at start, after material-init SUCCESS.
+   ...(role==='temporalWorker'&&tokenWriter?[{name:'NODE_EXTRA_CA_CERTS',value:tokenWriter.tls.issuerCaFile}]:[])],
   portMappings,linuxParameters:{capabilities:{drop:['ALL']}},
   mountPoints:[{sourceVolume:'workspace',containerPath:'/workspace',readOnly:false},{sourceVolume:'tmp',containerPath:'/tmp',readOnly:false},
    ...(delivery?[{sourceVolume:'material',containerPath:'/run/meri',readOnly:true}]:role==='runner'?[{sourceVolume:'material',containerPath:'/run/meri',readOnly:false}]:[]),

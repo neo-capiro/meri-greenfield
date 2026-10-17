@@ -47,6 +47,17 @@ RUN --mount=type=bind,from=builder,source=/opt/meri-runtime-packages,target=/tmp
       bash=5.3-r14 libstdc++=16.2.0-r1 ncurses=6.6.20261010-r0 ncurses-terminfo-base=6.6.20261010-r0 && \
     node apps/runtime/build/runtime-packages.mjs verify --lock infra/product-preview/runtime-packages.lock.json
 RUN addgroup -g 1000 node && adduser -D -u 1000 -G node -h /home/node node
+# Amazon RDS global CA bundle, pinned by apps/runtime/certs/rds-global-bundle.lock.json.
+# node-postgres sslmode=verify-full (control, proxy owner, issuer -> Aurora) uses
+# Node's default trust store, which this extends; Node reads it once at start.
+# Root-owned and read-only; a task that needs a different private anchor (the
+# temporal worker) overrides NODE_EXTRA_CA_CERTS in its task environment.
+COPY --chown=0:0 --chmod=0444 apps/runtime/certs/rds-global-bundle.pem /opt/meri/certs/rds-global-bundle.pem
+RUN --network=none printf '%s\n' '90a6f1a7978a1b1b096dca6c57511ca48d3b8cf052f8e704baf358f34ea2f21b  /opt/meri/certs/rds-global-bundle.pem' | sha256sum -c - && \
+    test "$(grep -c -- '-----BEGIN CERTIFICATE-----' /opt/meri/certs/rds-global-bundle.pem)" = 114 && \
+    test "$(grep -c -- '-----BEGIN ' /opt/meri/certs/rds-global-bundle.pem)" = 114 && \
+    chmod 0555 /opt/meri/certs
+ENV NODE_EXTRA_CA_CERTS=/opt/meri/certs/rds-global-bundle.pem
 ENV HOME=/home/node
 # ECS copies this exact image path into the task-local bind mount. The one-shot
 # material writer and application both run as the pinned non-root node UID/GID.

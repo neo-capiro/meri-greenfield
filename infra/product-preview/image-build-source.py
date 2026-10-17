@@ -23,6 +23,12 @@ VERIFIER = "infra/product-preview/image-build-source.py"
 PRODUCER = "infra/product-preview/image-build-producer.py"
 RUNTIME_LOCK = "infra/product-preview/runtime-packages.lock.json"
 CONTRACT = "meri.runner-entrypoint.v1"
+# The one public certificate file the sealed source may carry: the pinned Amazon
+# RDS global CA bundle baked into the image for node-postgres verify-full.
+RDS_CA_BUNDLE = "apps/runtime/certs/rds-global-bundle.pem"
+RDS_CA_LOCK = "apps/runtime/certs/rds-global-bundle.lock.json"
+RDS_CA_IMAGE_PATH = "/opt/meri/certs/rds-global-bundle.pem"
+PEM_CERTIFICATE = re.compile(rb"-----BEGIN CERTIFICATE-----\n(?:[A-Za-z0-9+/]{1,64}\n)*[A-Za-z0-9+/]{0,63}={0,2}\n?-----END CERTIFICATE-----\n")
 
 
 def need(ok, code):
@@ -69,6 +75,27 @@ def encoded(value):
     return (json.dumps(value, sort_keys=True, separators=(",", ":")) + "\n").encode()
 
 
+def certificate_count(payload):
+    """Count PEM certificates; anything else (a key, another block, stray bytes) refuses."""
+    need(type(payload) is bytes and 0 < len(payload) <= 1024**2 and payload.isascii() and b"\r" not in payload, "PUBLIC_CA_BUNDLE")
+    blocks = PEM_CERTIFICATE.findall(payload)
+    need(blocks and b"".join(blocks) == payload, "PUBLIC_CA_BUNDLE")
+    return len(blocks)
+
+
+def rds_ca_lock(payload, bundle):
+    """The committed lock pins the bundle's exact bytes, digest and certificate count."""
+    need(type(payload) is bytes and 0 < len(payload) <= 65536, "RDS_CA_LOCK")
+    lock = exact(decode(payload), ["schemaVersion", "contract", "source", "retrievedOn", "path", "imagePath", "sha256", "bytes", "certificateCount", "requiredSubjects"])
+    need(lock["schemaVersion"] == 1 and type(lock["schemaVersion"]) is int and lock["contract"] == "meri.rds-ca-bundle.v1" and
+         lock["source"] == "https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem" and
+         lock["path"] == RDS_CA_BUNDLE and lock["imagePath"] == RDS_CA_IMAGE_PATH and
+         type(lock["sha256"]) is str and SHA.fullmatch(lock["sha256"]) and lock["sha256"] == sha(bundle) and
+         type(lock["bytes"]) is int and lock["bytes"] == len(bundle) and
+         type(lock["certificateCount"]) is int and lock["certificateCount"] == certificate_count(bundle), "RDS_CA_LOCK")
+    return lock
+
+
 def safe_path(value):
     need(type(value) is str and value and not re.search(r"[\\\x00-\x1f\x7f:]", value), "MEMBER_PATH")
     need(not value.startswith("/") and all(p not in ("", ".", "..") for p in value.split("/")), "MEMBER_PATH")
@@ -94,8 +121,10 @@ def archive_members(archive):
                 continue
             need(stat.S_IFMT(mode) in (0, stat.S_IFREG) and row.file_size <= 128 * 1024**2, "MEMBER_TYPE")
             need(not any(p in (".git", "node_modules", ".aws", ".codex", ".agents") for p in path.split("/")), "PRIVATE_MEMBER")
-            need(not any(p.startswith(".env") or p == "credentials" for p in path.split("/")) and not path.endswith((".key", ".pem")), "PRIVATE_MEMBER")
+            need(not any(p.startswith(".env") or p == "credentials" for p in path.split("/")) and (path == RDS_CA_BUNDLE or not path.endswith((".key", ".pem"))), "PRIVATE_MEMBER")
             payload = source.read(row)
+            if path == RDS_CA_BUNDLE:
+                certificate_count(payload)
             result[path] = {"path": path, "sha256": sha(payload), "bytes": len(payload), "mode": "100755" if mode & 0o111 else "100644"}
     need(all(not any(str(ancestor) in result for ancestor in list(PurePosixPath(path).parents)[:-1]) for path in result), "MEMBER_ANCESTOR")
     return result
@@ -283,6 +312,9 @@ def verify(archive, manifest_path, pin):
         need(path in measured and measured[path]["sha256"] == digest, "SOURCE_PIN_MISMATCH")
     need(0 < measured[RUNNER]["bytes"] <= 1024**2, "RUNNER_BOUND")
     need(0 < measured[RUNTIME_LOCK]["bytes"] <= 65536, "SOURCE_PIN_MISMATCH")
+    need(RDS_CA_BUNDLE in measured and RDS_CA_LOCK in measured, "RDS_CA_LOCK")
+    with zipfile.ZipFile(archive) as source:
+        rds_ca_lock(source.read(RDS_CA_LOCK), source.read(RDS_CA_BUNDLE))
     return {"status": "VERIFIED_SOURCE_ONLY", "sourceCommit": pin["sourceCommit"], "archiveSha256": pin["archive"]["sha256"], "sourceManifestSha256": pin["manifest"]["sha256"], "runtimePackagesSha256": pin["runtimePackagesSha256"], "fileCount": len(measured), "runnerBytes": measured[RUNNER]["bytes"]}
 
 
