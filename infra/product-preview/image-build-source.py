@@ -100,7 +100,22 @@ def archive_members(archive):
     return result
 
 
-def bounded_command(args, timeout=30, input_bytes=None, report=None):
+class ScanNotFoundPending(ValueError):
+    """Private static signal; raw CLI errors never cross the command boundary."""
+    def __init__(self):
+        super().__init__("PRODUCT_IMAGE_SCAN_INCOMPLETE")
+
+
+def _scan_read_command(args):
+    return (type(args) is list and len(args) == 12 and
+            args[:7] == ["aws", "--region", "us-east-1", "--no-cli-pager", "ecr", "describe-image-scan-findings", "--repository-name"] and
+            type(args[7]) is str and re.fullmatch(r"[a-z0-9][a-z0-9._/-]*", args[7]) is not None and
+            args[8] == "--image-id" and type(args[9]) is str and
+            re.fullmatch(r"imageDigest=sha256:[a-f0-9]{64}", args[9]) is not None and
+            args[10:] == ["--output", "json"])
+
+
+def bounded_command(args, timeout=30, input_bytes=None, report=None, scan_not_found=False):
     """Drain both pipes while running; abort before combined output exceeds 16 MiB.
 
     Failed command bytes and stderr are never returned or logged. This applies to
@@ -108,6 +123,7 @@ def bounded_command(args, timeout=30, input_bytes=None, report=None):
     """
     need(type(timeout) in (int, float) and 0 < timeout <= 1600, "COMMAND_BOUND")
     need(input_bytes is None or type(input_bytes) is bytes and len(input_bytes) <= 16384, "COMMAND_BOUND")
+    need(type(scan_not_found) is bool and (not scan_not_found or _scan_read_command(args)), "COMMAND_BOUND")
     process, started = None, time.monotonic()
     def mark(status, exit_code=None, output_bytes=0):
         if report is not None:
@@ -117,7 +133,7 @@ def bounded_command(args, timeout=30, input_bytes=None, report=None):
     try:
         process = subprocess.Popen(args, stdin=subprocess.PIPE if input_bytes is not None else subprocess.DEVNULL,
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        chunks, state, guard = [], {"bytes": 0, "overflow": False, "writeFailed": False}, threading.Lock()
+        chunks, errors, state, guard = [], bytearray(), {"bytes": 0, "overflow": False, "writeFailed": False, "errorBytes": 0}, threading.Lock()
 
         def drain(stream, capture):
             while True:
@@ -134,6 +150,10 @@ def bounded_command(args, timeout=30, input_bytes=None, report=None):
                             pass
                     elif capture:
                         chunks.append(block)
+                    elif scan_not_found:
+                        state["errorBytes"] += len(block)
+                        if state["errorBytes"] <= 4096:
+                            errors.extend(block)
 
         def write_input():
             try:
@@ -165,6 +185,13 @@ def bounded_command(args, timeout=30, input_bytes=None, report=None):
             mark("BOUND", process.returncode, state["bytes"])
         need(bounded, "COMMAND_BOUND")
         if process.returncode != 0:
+            # AWS CLI v2's service-error exit plus its complete single-line
+            # envelope is recognized only for the exact digest-bound scan read.
+            # Oversized, mixed, unrelated and malformed errors remain fatal.
+            if (scan_not_found and process.returncode == 254 and not chunks and
+                    0 < state["errorBytes"] <= 4096 and
+                    re.fullmatch(rb"\r?\n?An error occurred \(ScanNotFoundException\) when calling the DescribeImageScanFindings operation: [^\r\n]*\r?\n?", errors)):
+                raise ScanNotFoundPending() from None
             mark("EXIT_NONZERO", process.returncode, state["bytes"])
         return process.returncode, b"".join(chunks)
     except OSError:
@@ -183,9 +210,9 @@ def bounded_command(args, timeout=30, input_bytes=None, report=None):
                         pass
 
 
-def run(args, timeout=30, input_bytes=None, report=None):
+def run(args, timeout=30, input_bytes=None, report=None, scan_not_found=False):
     # Never return/log a failed command's output (Docker/AWS may contain secrets).
-    code, stdout = bounded_command(args, timeout=timeout, input_bytes=input_bytes, report=report)
+    code, stdout = bounded_command(args, timeout=timeout, input_bytes=input_bytes, report=report, scan_not_found=scan_not_found)
     need(code == 0, "COMMAND_FAILED")
     return stdout
 

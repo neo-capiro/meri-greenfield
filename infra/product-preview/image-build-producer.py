@@ -32,6 +32,7 @@ LINUX_ONLY_TESTS = (
 )
 _deadline = None
 _active_diagnostic = ContextVar("product_image_diagnostic", default=None)
+_active_scan_deadline = ContextVar("product_image_scan_deadline", default=None)
 DIAGNOSTIC_FILE = Path("product-image-diagnostic.json")
 _PHASES = frozenset((
     "REQUEST", "BUILD_IDENTITY", "BUILD_READBACK", "REPOSITORY_READBACK",
@@ -295,19 +296,54 @@ def _temporary_context(diagnostic):
         diagnostic["phase"] = failed_phase
 
 
-def run(args, timeout=30, input_bytes=None):
+def run(args, timeout=30, input_bytes=None, scan_not_found=False):
     diagnostic = _active_diagnostic.get()
     if diagnostic is not None:
         diagnostic["commandFailure"] = None
     if _deadline is not None:
         timeout = min(timeout, _deadline - time.monotonic())
         need(timeout > 0, "PRODUCER_DEADLINE")
+    scan_deadline = _active_scan_deadline.get()
+    if scan_deadline is not None:
+        timeout = min(timeout, scan_deadline - time.monotonic())
+        need(timeout > 0, "SCAN_INCOMPLETE")
     report = (lambda detail: _report_command(diagnostic, detail)) if diagnostic is not None else None
-    return _source.run(args, timeout=timeout, input_bytes=input_bytes, report=report)
+    return _source.run(args, timeout=timeout, input_bytes=input_bytes, report=report, scan_not_found=scan_not_found)
 
 
 def aws(*args):
-    return decode(run(["aws", "--region", REGION, "--no-cli-pager", *args, "--output", "json"]))
+    command = ["aws", "--region", REGION, "--no-cli-pager", *args, "--output", "json"]
+    if args[:2] == ("ecr", "describe-image-scan-findings"):
+        return decode(run(command, scan_not_found=True))
+    return decode(run(command))
+
+
+def wait_for_scan(repository, image_digest):
+    """Poll only pending scans; other CLI failures keep their original refusal."""
+    deadline = time.monotonic() + 300
+    if _deadline is not None:
+        deadline = min(deadline, _deadline)
+    token = _active_scan_deadline.set(deadline)
+    try:
+        while True:
+            need(time.monotonic() < deadline, "SCAN_INCOMPLETE")
+            try:
+                scan = aws("ecr", "describe-image-scan-findings", "--repository-name", repository,
+                           "--image-id", "imageDigest=" + image_digest)
+            except _source.ScanNotFoundPending:
+                status = "PENDING"
+            else:
+                status = scan["imageScanStatus"]["status"]
+            need(time.monotonic() < deadline, "SCAN_INCOMPLETE")
+            if status == "COMPLETE":
+                counts = scan.get("imageScanFindings", {}).get("findingSeverityCounts", {})
+                need(type(counts) is dict and all(type(n) is int and n >= 0 for n in counts.values()) and
+                     not counts.get("HIGH", 0) and not counts.get("CRITICAL", 0), "SCAN_FINDINGS_HOLD")
+                return status, counts
+            need(status in ("IN_PROGRESS", "PENDING"), "SCAN_INCOMPLETE")
+            time.sleep(min(10, max(0, deadline - time.monotonic())))
+    finally:
+        _active_scan_deadline.reset(token)
 
 
 def download(pin, target, maximum):
@@ -447,17 +483,8 @@ def _produce(pin, output, diagnostic):
             details = aws("ecr", "describe-images", "--repository-name", repository, "--image-ids", "imageTag=" + p["imageTag"])["imageDetails"]
             need(len(details) == 1 and re.fullmatch(r"sha256:[a-f0-9]{64}", details[0]["imageDigest"]), "IMAGE_READBACK")
             image_digest = details[0]["imageDigest"]
-            deadline = time.monotonic() + 300
             diagnostic["phase"] = "ECR_SCAN"
-            while True:
-                scan = aws("ecr", "describe-image-scan-findings", "--repository-name", repository, "--image-id", "imageDigest=" + image_digest)
-                status = scan["imageScanStatus"]["status"]
-                if status == "COMPLETE":
-                    break
-                need(status in ("IN_PROGRESS", "PENDING") and time.monotonic() < deadline, "SCAN_INCOMPLETE")
-                time.sleep(10)
-            counts = scan.get("imageScanFindings", {}).get("findingSeverityCounts", {})
-            need(type(counts) is dict and all(type(n) is int and n >= 0 for n in counts.values()) and not counts.get("HIGH", 0) and not counts.get("CRITICAL", 0), "SCAN_FINDINGS_HOLD")
+            status, counts = wait_for_scan(repository, image_digest)
             receipt = {"buildId": build_id, "sourceVersion": p["archive"]["versionId"], "sourceCommit": p["sourceCommit"], "archiveSha256": verified["archiveSha256"], "dockerfileSha256": p["dockerfileSha256"], "nodeImageUri": p["nodeImageUri"], "imageDigest": image_digest, "runnerSha256": measured["runner"]["runnerSha256"], "runnerMeasurement": measured["runner"], "runtimeUser": measured["runtimeUser"], "executableSha256": measured["executableSha256"], "sourceManifestSha256": verified["sourceManifestSha256"], "verifierSha256": p["verifierSha256"], "producerSha256": p["producerSha256"], "scanStatus": status, "findingSeverityCounts": counts}
         except Exception as error:
             _record_primary(diagnostic, error)
