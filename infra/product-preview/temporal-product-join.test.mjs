@@ -99,3 +99,14 @@ test('same-VPC source join stays HOLD with exact cluster, subnet readback, SG, c
   x=>{x.issuerRenewal.roles.control.namespaceRole='worker';}
  ]){const copy=structuredClone(input);mutate(copy);assert.throws(()=>inspectTemporalProductJoin(copy),/TEMPORAL_PRODUCT_JOIN_REFUSED/u);}
 });
+
+test('shared capiro-dev subnets are admitted only when product and Temporal agree on each shared route table',()=>{
+ const p=product(),t=temporal();
+ t.subnets=p.network.privateSubnetIds.map((id,i)=>({id,availabilityZone:`us-east-1${'ab'[i]}`}));
+ t.network.taskRouteTableBySubnet=Object.fromEntries(p.network.privateSubnetIds.map((id,i)=>[id,`rtb-0000000${i+1}`]));
+ const input={productBinding:p,temporalBinding:t,runtimeProjection:projection(p,t),issuerRenewal:renewal(t),
+  productSubnetReadbacks:p.network.privateSubnetIds.map((SubnetId,i)=>({SubnetId,VpcId:'vpc-0ac26cfac7ed972be',RouteTableId:`rtb-0000000${i+1}`}))};
+ assert.equal(inspectTemporalProductJoin(input).status,'HOLD');
+ const swapped=structuredClone(input);swapped.productSubnetReadbacks[0].RouteTableId='rtb-00000002';
+ assert.throws(()=>inspectTemporalProductJoin(swapped),/TEMPORAL_PRODUCT_JOIN_REFUSED/u);
+});
