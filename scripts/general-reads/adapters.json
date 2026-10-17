@@ -21,6 +21,62 @@
   },
   "adapters": [
     {
+      "path": "apps/gateway/sources/public-web",
+      "family": "public-web",
+      "declaredIn": ["apps/gateway/sources/public-web/handler.mjs"],
+      "operations": ["search_public_web", "scrape_web_page"],
+      "adapterChecks": ["fixed native routes and exact current credentials", "native hardened transport owns URL/DNS/redirect safety", "external untrusted discovery and page evidence remain distinct"],
+      "subject": "current native tenant/user; public web data; no fetched-content or live safety qualification from source tests"
+    },
+    {
+      "path": "apps/gateway/sources/data-search",
+      "family": "data-search",
+      "declaredIn": ["apps/gateway/sources/data-search/handler.mjs"],
+      "operations": ["search_capiro_data"],
+      "adapterChecks": ["fixed original native request", "native governed ContextPlane authorizes each page", "partial coverage, provenance and opaque cursor preserved"],
+      "subject": "current native tenant/user; Core owns client/mailbox visibility; empty context"
+    },
+    {
+      "path": "apps/gateway/sources/public-domain-query",
+      "family": "public-domain-query",
+      "declaredIn": ["apps/gateway/sources/public-domain-query/handler.mjs"],
+      "operations": ["query_global_data"],
+      "adapterChecks": ["canonical finite dataset registry", "CONTROL captures supported omitted defaultAsOf once and native request binds it", "strict native success projection removes only SQL before closed receiving"],
+      "subject": "current native tenant/user; typed public data; native analytics audit writes require qualification"
+    },
+    {
+      "path": "apps/gateway/sources/facility-representation",
+      "family": "facility-representation",
+      "declaredIn": ["apps/gateway/sources/facility-representation/handler.mjs"],
+      "operations": ["get_representation"],
+      "adapterChecks": ["current native visible client subject before credentials", "current binding and subject wrap raw native representation", "no inferred geography or selector substitution"],
+      "subject": "current authorized one-client subject and native membership.clientIds; fresh decision lineage"
+    },
+    {
+      "path": "apps/gateway/sources/district-nexus",
+      "family": "district-nexus",
+      "declaredIn": ["apps/gateway/sources/district-nexus/handler.mjs"],
+      "operations": ["get_district_nexus_context", "get_district_nexus_changes"],
+      "adapterChecks": ["current client subject and native visibility before credentials", "raw native facts/changes wrapped in fresh lineage", "gaps, truncation and inclusive windows preserved"],
+      "subject": "current authorized one-client subject and native membership.clientIds; fresh decision lineage"
+    },
+    {
+      "path": "apps/gateway/sources/client-registry",
+      "family": "client-registry",
+      "declaredIn": ["apps/gateway/sources/client-registry/handler.mjs"],
+      "operations": ["lookup_client_registry"],
+      "adapterChecks": ["private per-call result guard required before source", "complete native DTO validation then fresh current visible UUID admission", "whole private DTO withheld on denied output; no fabricated absence"],
+      "subject": "current native tenant/user; returned existing-client identity requires fresh native membership visibility"
+    },
+    {
+      "path": "apps/gateway/sources/federal-market",
+      "family": "federal-market",
+      "declaredIn": ["apps/gateway/sources/federal-market/handler.mjs"],
+      "operations": ["search_federal_contract_awards", "search_federal_subawards", "search_contract_vehicles", "search_procurement_forecasts", "get_district_federal_market"],
+      "adapterChecks": ["fixed actual native producer routes", "optional client selector checked against current subject and visibility", "native global forecast semantics, dates, source modes and nullable amounts preserved"],
+      "subject": "current native tenant/user; global or authorized client selection; no invented evidence-mode observation"
+    },
+    {
       "path": "apps/gateway/sources/pe-references",
       "family": "pe-references",
       "declaredIn": ["apps/gateway/sources/pe-references/handler.mjs"],

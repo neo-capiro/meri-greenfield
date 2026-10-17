@@ -36,6 +36,12 @@ export const READ_FAMILIES=Object.freeze({mail:Object.freeze({clientScope:'optio
  'stored-intelligence':Object.freeze({clientScope:'optional'}),
  'regulatory-dockets':Object.freeze({clientScope:'optional'}),
  'intelligence-summary':Object.freeze({clientScope:'optional'}),
+ 'public-web':Object.freeze({clientScope:'optional'}),
+ 'public-domain-query':Object.freeze({clientScope:'optional'}),
+ 'facility-representation':Object.freeze({clientScope:'required'}),
+ 'district-nexus':Object.freeze({clientScope:'required'}),
+ 'client-registry':Object.freeze({clientScope:'optional'}),
+ 'federal-market':Object.freeze({clientScope:'optional'}),
 });
 /** The `readFamilies` policy universe (PROPOSAL P8). */
 export const READ_FAMILY_IDS=Object.freeze(Object.keys(READ_FAMILIES));

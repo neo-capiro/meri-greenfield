@@ -15,10 +15,10 @@ import {NATIVE_READ_FAMILIES} from '../../../../gateway/sources/retained-reads/n
 export const uuid=d=>`${d.repeat(8)}-${d.repeat(4)}-4${d.repeat(3)}-8${d.repeat(3)}-${d.repeat(12)}`;
 export const origin='https://native-core.example.invalid';
 export function coreFixture(options={}){
- const state={now:1800000000000,role:'standard_user',identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64),calls:[],nativeExpiry:1800000060000},now=options.now??(()=>state.now),principal={tenantId:uuid('b'),actorId:uuid('c')};
+ const state={now:1800000000000,role:'standard_user',clientIds:[],identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64),calls:[],nativeExpiry:1800000060000},now=options.now??(()=>state.now),principal={tenantId:uuid('b'),actorId:uuid('c')};
  const fetchImpl=async(url,init)=>{
   const path=new URL(url).pathname;state.calls.push({url,init,path});await state.beforeResponse?.(path);
-  const value=path.endsWith('/identity')?{principal:state.principal??principal,identityRevision:state.identityRevision,checkedAtMs:now(),expiresAtMs:state.nativeExpiry}:{...principal,status:'active',role:state.role,permissions:[],clientIds:[],membershipRevision:state.membershipRevision,checkedAtMs:now(),expiresAtMs:state.nativeExpiry};
+  const value=path.endsWith('/identity')?{principal:state.principal??principal,identityRevision:state.identityRevision,checkedAtMs:now(),expiresAtMs:state.nativeExpiry}:{...principal,status:'active',role:state.role,permissions:[],clientIds:state.clientIds,membershipRevision:state.membershipRevision,checkedAtMs:now(),expiresAtMs:state.nativeExpiry};
   state.mutate?.(value,path);return state.response?.(value,path)??Response.json(value);
  };
  const configuration={origin,fetchImpl,now,enabled:true},client=createNativeToolAuthorityClient(configuration);
@@ -27,7 +27,7 @@ export function coreFixture(options={}){
 function retarget(value,old,seen=new Set()){if(!value||typeof value!=='object'||seen.has(value))return;seen.add(value);for(const [key,v] of Object.entries(value)){if(v===old.tenantId)value[key]=uuid('b');else if(v===old.actorId)value[key]=uuid('c');else retarget(v,old,seen);}}
 export async function ownerFixture(id='read_bill_text',options={}){
  const operation={id,version:'0.2.0'},contract=resolveOperationContract(operation),group=contract.binding.group;
- const scene=NATIVE_READ_FAMILIES.includes(group)&&group!=='bill-text'?nativeFamilyCase(group,id,options):billTextCase(['read_bill_text','search_congress_bills'].includes(id)?id:'read_bill_text');retarget(scene,{...scene.binding});
+ const scene=options.scene??(NATIVE_READ_FAMILIES.includes(group)&&group!=='bill-text'?nativeFamilyCase(group,id,options):billTextCase(['read_bill_text','search_congress_bills'].includes(id)?id:'read_bill_text'));retarget(scene,{...scene.binding});
  const request=NATIVE_READ_FAMILIES.includes(group)?scene.arguments:{};
  scene.operation=operation;scene.authority.sourceIds=[...new Set(contract.descriptor.sourceRequirements.map(s=>s.sourceId))];scene.authority.decision.operation=`${id}@0.2.0`;scene.arguments=request;
  const f=await durableFamilyFixture(scene),grant=[...f.state.bindings.values()][0].facts,allocated=[...f.state.allocations.values()][0].allocation;
@@ -39,7 +39,7 @@ export async function ownerFixture(id='read_bill_text',options={}){
  const entry={binding:f.binding,runRequestSha256:hash(runRequest),grantId:grant.grantId,taskArn:grant.qualificationBinding.workerArn,issuanceFactsSha256:'f'.repeat(64),allocationSha256:hash(allocated),scopes:f.scopes,policyRevision:f.policyRevision,readConfigurationSha256:hash(approvedReads),checkedAtMs:f.now(),expiresAtMs:f.deadlineMs};
  const readCurrentEntry=async()=>{state.entryReads++;const row={...entry,checkedAtMs:f.now()};state.entryMutator?.(row);return row;};
  const taskVerifier=createReadTaskVerifier({allocationJson:JSON.stringify(allocated),grantFactsJsons:[JSON.stringify(grant)],grantId:grant.grantId,currentOwner,readCurrentEntry,taskArn:entry.taskArn,issuanceFactsSha256:entry.issuanceFactsSha256,runRequestSha256:entry.runRequestSha256,scopes:f.scopes,approvedReads,expiresAtMs:f.deadlineMs,enabled:true,now:f.now});
- const core=coreFixture({now:f.now});core.state.nativeExpiry=f.now()+60000;if(options.actorRole)core.state.role=options.actorRole;const coreAuthority=core.client;
+ const core=coreFixture({now:f.now});core.state.nativeExpiry=f.now()+60000;core.state.clientIds=[...(options.clientIds??scene.visibleClientIds??[])];if(options.actorRole)core.state.role=options.actorRole;const coreAuthority=core.client;
  const configuration={binding:f.binding,expiresAtMs:f.deadlineMs,store,taskVerifier,readCurrentEntry,taskCapability:'synthetic-opaque',allocationJson:JSON.stringify(allocated),approvedReads,coreAuthority,defaultCongress:options.defaultCongress??119,now:f.now,enabled:true,
   getNativeCredential:async()=>{state.nativeCredentials++;return state.credential===undefined?'SYNTHETIC_NATIVE':state.credential;},getServiceSecret:async proof=>{state.secrets++;state.secretProof=proof;await state.beforeSecret?.();return state.secret===undefined?'SYNTHETIC_SERVICE':state.secret;}};
  const owner=createNativeReadCredentialOwner(configuration),scope=new AbortController();

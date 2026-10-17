@@ -201,12 +201,12 @@ This is source reconciliation only. The historical proposal tables below retain 
 | --- | --- |
 | Selected capabilities / continued exclusions | 96 / 43 |
 | Selected source reads / separate product or governed capabilities | 82 / 14 |
-| Single meri_reads registry | 43 operations / 26 families |
-| Registry accounting | 41 selected source reads + 1 product-state read + 1 historical contract |
+| Single meri_reads registry | 55 operations / 32 families |
+| Registry accounting | 53 selected source reads + 1 product-state read + 1 historical contract |
 | Selected source reads declared in skill manifests | 52 current contracts + 1 historical-only contract |
 | Selected source reads reachable through admitted skill source | 11 |
-| Existing source adapters lacking general-conversation registration | 0 |
-| Selected source reads lacking adapters | 41 (27 declared by skills; 14 without a skill declaration) |
+| Existing source adapters lacking general-conversation registration | 1 |
+| Selected source reads lacking adapters | 28 (17 declared by skills; 11 without a skill declaration) |
 | Pinned actual Core producer mappings (not qualification) | 63 |
 | Live | 0 |
 
@@ -226,10 +226,14 @@ Only `quick_skill.relationship_brief`, `quick_skill.commitments_audit` are admit
 | `client-knowledge-memory` | `search_memory` |
 | `client-knowledge-monday` | `read_monday_client_boards` |
 | `client-knowledge-profile` | `get_client_context` |
+| `client-registry` | `lookup_client_registry` |
 | `dataset-metadata` | `list_global_datasets` |
 | `disclosures` | `search_fara_registrations`, `search_lda_filings`, `search_sec_filings` |
+| `district-nexus` | `get_district_nexus_changes`, `get_district_nexus_context` |
 | `entity-candidates` | `resolve_entity` |
+| `facility-representation` | `get_representation` |
 | `federal-legislation` | `get_bill_status`, `search_floor_votes` |
+| `federal-market` | `get_district_federal_market`, `search_contract_vehicles`, `search_federal_contract_awards`, `search_federal_subawards`, `search_procurement_forecasts` |
 | `florida-budget` | `get_florida_budget_project` |
 | `intelligence-summary` | `query_intelligence` |
 | `legislative-directory` | `get_committee_roster`, `list_members` |
@@ -238,7 +242,9 @@ Only `quick_skill.relationship_brief`, `quick_skill.commitments_audit` are admit
 | `memory-proposals` | `memory.list_own_proposals` |
 | `operational-reads` | `query_action_items`, `query_tasks` |
 | `pe-references` | `get_pe_bills`, `get_pe_contractors`, `get_pe_report_language` |
+| `public-domain-query` | `query_global_data` |
 | `public-reports` | `search_cbo_cost_estimates`, `search_crs_reports`, `search_gao_reports` |
+| `public-web` | `scrape_web_page`, `search_public_web` |
 | `regulatory-dockets` | `query_regulatory_dockets` |
 | `research-portfolio` | `get_research_portfolio`, `get_research_portfolio_changes` |
 | `research-portfolio-evidence` | `get_research_evidence` |
@@ -246,25 +252,20 @@ Only `quick_skill.relationship_brief`, `quick_skill.commitments_audit` are admit
 | `stored-intelligence` | `search_intel_articles` |
 | `tenant-contacts` | `find_contacts` |
 
-Every canonical source adapter already present is exposed. The finite native families listed above retain their receiving-contract truth limits and require current task, tenant/user and native credentials. Research portfolio, portfolio changes and Florida budget project reads remain exposed through their existing retained-context path. These source paths are not qualified or live. The remaining selected source reads lack an adapter; producer mapping alone does not implement them. Their exact unresolved families and operations are:
+Implemented source adapters awaiting general exposure: `search_capiro_data`. Implementation does not establish a usable SDK input contract or availability.
+
+The finite native families listed above retain their receiving-contract truth limits and require current task, tenant/user and native credentials. Research portfolio, portfolio changes and Florida budget project reads remain exposed through their existing retained-context path. These source paths are not qualified or live. The remaining selected source reads lack an adapter; producer mapping alone does not implement them. Their exact unresolved families and operations are:
 
 | Missing adapter family | Selected operations |
 | --- | --- |
 | `business-development` | `get_business_development_context`, `get_business_development_evidence`, `get_business_development_recent_changes` |
 | `certification-status` | `get_certification_status` |
 | `client-knowledge-search` | `query_knowledge_graph`, `search_client_knowledge` |
-| `client-registry` | `lookup_client_registry` |
-| `data-search` | `search_capiro_data` |
-| `district-nexus` | `get_district_nexus_changes`, `get_district_nexus_context` |
-| `facility-representation` | `get_representation` |
-| `federal-market` | `get_district_federal_market`, `search_contract_vehicles`, `search_federal_contract_awards`, `search_federal_subawards`, `search_procurement_forecasts` |
 | `funding-opportunities` | `get_funding_opportunity`, `get_funding_opportunity_requirements`, `get_opportunity_client_context`, `get_opportunity_government_landscape`, `search_funding_opportunities` |
 | `outreach-query` | `query_outreach` |
 | `program-elements` | `get_pe_budget_timeline`, `get_program_element`, `search_program_elements` |
 | `public-data` | `query_economic_data`, `search_federal_awards`, `search_federal_grants` |
 | `public-domain-hearings` | `search_committee_hearings` |
-| `public-domain-query` | `query_global_data` |
-| `public-web` | `scrape_web_page`, `search_public_web` |
 | `research-legal-candidates` | `search_research_sources` |
 | `research-legal-legislation` | `get_legal_reference`, `search_legislative_research` |
 | `research-legal-news` | `search_legiwatch_news` |

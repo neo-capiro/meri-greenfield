@@ -12,6 +12,7 @@ import {retainedCall,credentialProof} from '../../../gateway/sources/retained-re
 import {GatewayDenied,safeFailure} from '../../../gateway/dispatch/operation-result.mjs';
 import {assertNativeToolAuthority} from './core-client.mjs';
 import {NATIVE_READ_FAMILIES} from '../../../gateway/sources/retained-reads/native-families.mjs';
+import {createSourceReadContext,sourceReadContextSelection,assertNativeVisibleClients,assertNativeResultClientIds} from './source-read-context.mjs';
 const same=(a,b)=>hash(a)===hash(b),refuse=code=>{throw nativeReadFault(code);};
 const GROUPS=new Set(NATIVE_READ_FAMILIES);
 const selection=({authorizationDecisionId,...rest})=>rest;
@@ -28,7 +29,9 @@ export function createNativeReadCredentialOwner(configuration){
  const available=Boolean(enabled&&c.store&&c.taskVerifier&&c.readCurrentEntry&&token(c.taskCapability)&&approved?.enabled&&allocated&&core?.available===true&&origin&&c.getNativeCredential&&c.getServiceSecret);
  const read=available?storageMethod(c.store,'read'):null,verify=available?storageMethod(c.taskVerifier,'verify'):null,currentCore=available?storageMethod(c.coreAuthority,'readCurrent'):null,pins=new WeakMap();
  function observation(raw){const v=data(own(raw,['binding','subject','operation','request','requestSha256','policyRevision','sourceIds','deadlineMs']));validateShape('RunBinding',v.binding);assertSubject(v.subject,v.binding);readShape('OperationRef',v.operation);
-  const contract=resolveOperationContract(v.operation);if(!GROUPS.has(contract.binding.group)||contract.descriptor.sideEffect!=='none'||contract.descriptor.approvalBoundary!=='none')refuse('ACCESS_DENIED');if(['bill-text','federal-legislation'].includes(contract.binding.group)&&c.defaultCongress===undefined)refuse('UNAVAILABLE');readShape(contract.binding.input,v.request);
+  const contract=resolveOperationContract(v.operation);if(!GROUPS.has(contract.binding.group)||contract.descriptor.sideEffect!=='none'||contract.descriptor.approvalBoundary!=='none')refuse('ACCESS_DENIED');if(['bill-text','federal-legislation'].includes(contract.binding.group)&&c.defaultCongress===undefined)refuse('UNAVAILABLE');
+  // Data-search's frozen binding names its normalized shape; its canonical raw-selector normalizer owns admission.
+  if(contract.binding.group==='data-search')contract.normalizeInput(v.request,{});else readShape(contract.binding.input,v.request);
   if(!same(v.binding,binding)||v.subject.policyRevision!==v.policyRevision||v.requestSha256!==hash(v.request)||!same([...v.sourceIds].sort(),[...new Set(contract.descriptor.sourceRequirements.map(s=>s.sourceId))].sort())||!Number.isSafeInteger(v.deadlineMs))refuse('ACCESS_DENIED');
   if(!approved.operations.some(op=>same(op,v.operation))||!allocated.manifest.allowedOperations.some(op=>same(op,v.operation)))refuse('ACCESS_DENIED');return v;}
  async function observe(proof,scopeSignal,signal){
@@ -48,11 +51,11 @@ export function createNativeReadCredentialOwner(configuration){
    const began=now(),native=assertNativeToolAuthority(await life.run(signal=>currentCore({credential,signal,deadlineMs:cutoff})),{started:began,now});limit(native.expiresAtMs);
    // Equality is permitted only for the canonical Core UUID principal already captured by native startup. No conversion/mapping.
    if(native.principal.tenantId!==binding.tenantId||native.principal.actorId!==binding.actorId)refuse('UNAVAILABLE');
-   const contract=resolveOperationContract(proof.operation),context=['bill-text','federal-legislation'].includes(contract.binding.group)?{defaultCongress:c.defaultCongress}:contract.binding.group==='acquisition-personnel'?{actorRole:native.actorRole}:{};
+   const contract=resolveOperationContract(proof.operation),context=createSourceReadContext({contract,proof,native,defaultCongress:c.defaultCongress,now,priorContext:pins.get(scopeSignal)?.context});
    contract.normalizeInput(proof.request,context);
    const after=await admission();if(!same(taskSelection(before),taskSelection(after)))refuse('ACCESS_DENIED');
-   const vector={task:taskSelection(after),native:nativeSelection(native),credentialSha256:hash(credential),context},latest=pins.get(scopeSignal);if(latest&&(!same(latest.selected,selected)||!same(latest.vector,vector)))refuse('ACCESS_DENIED');if(latest)limit(latest.expiresAtMs);life.check();
-   pins.set(scopeSignal,{selected,vector,expiresAtMs:cutoff});return {credential,context,checkedAtMs:Math.min(before.checkedAtMs,native.checkedAtMs,after.checkedAtMs),expiresAtMs:cutoff};
+   const vector={task:taskSelection(after),native:nativeSelection(native),credentialSha256:hash(credential),context:sourceReadContextSelection(contract.binding.group,context)},latest=pins.get(scopeSignal);if(latest&&(!same(latest.selected,selected)||!same(latest.vector,vector)))refuse('ACCESS_DENIED');if(latest)limit(latest.expiresAtMs);life.check();
+   pins.set(scopeSignal,{selected,vector,context,expiresAtMs:cutoff});return {credential,context,native,checkedAtMs:Math.min(before.checkedAtMs,native.checkedAtMs,after.checkedAtMs),expiresAtMs:cutoff};
   }finally{life.close();}
  }
  async function readCurrent(raw){try{if(!available)refuse('UNAVAILABLE');const {signal,...fields}=own(raw,['binding','subject','operation','request','requestSha256','policyRevision','sourceIds','deadlineMs'],['signal']),proof=observation(fields),result=await observe(proof,signal);const {request,deadlineMs,...echo}=proof;return JSON.stringify({...echo,context:result.context,checkedAtMs:result.checkedAtMs,expiresAtMs:result.expiresAtMs});}catch(error){throw failure(error);}}
@@ -66,5 +69,17 @@ export function createNativeReadCredentialOwner(configuration){
  // Trusted per-invocation composition binds the original request and gateway lifetime; the existing source callback stays unchanged.
  function credentialsForCall(operation,call){if(!available)throw failure(nativeReadFault('UNAVAILABLE'));const current=retainedCall(operation,call,now),expected=credentialProof(current,origin),scopeSignal=call.signal;
   return async raw=>{const {signal,deadlineMs,...fields}=own(raw,[...Object.keys(expected),'input','deadlineMs'],['signal']);if(!same(fields,{...expected,input:current.input}))throw failure(nativeReadFault('ACCESS_DENIED'));return getCredentials({...fields,request:current.request,scopeSignal,deadlineMs,signal});};}
- return Object.freeze({available,nativeReadContextPorts:Object.freeze({readCurrent}),getCredentials,credentialsForCall});
+ /** Private response-identity gate. It emits no roster, receipt or credential. */
+ function authorizeResultForCall(operation,call){try{
+  if(!available)refuse('UNAVAILABLE');const current=retainedCall(operation,call,now),scopeSignal=call.signal;
+  nativeSignal(scopeSignal);if(!scopeSignal||!pins.has(scopeSignal)||current.contract.binding.group!=='client-registry')refuse('ACCESS_DENIED');
+  const a=current.authority,proof=observation({binding:a.binding,subject:a.subject,operation,request:current.request,requestSha256:hash(current.request),policyRevision:a.policyRevision,sourceIds:a.sourceIds,deadlineMs:current.deadlineMs});
+  return async raw=>{try{
+   const {clientIds}=data(own(raw,['clientIds']));
+   assertNativeResultClientIds(clientIds);
+   const before=await observe(proof,scopeSignal);assertNativeVisibleClients(before.native,clientIds);
+   const after=await observe({...proof,deadlineMs:Math.min(proof.deadlineMs,before.expiresAtMs)},scopeSignal);assertNativeVisibleClients(after.native,clientIds);
+  }catch(error){throw failure(error);}};
+ }catch(error){throw failure(error);}}
+ return Object.freeze({available,nativeReadContextPorts:Object.freeze({readCurrent}),getCredentials,credentialsForCall,authorizeResultForCall});
 }

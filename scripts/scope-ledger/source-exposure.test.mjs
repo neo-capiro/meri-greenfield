@@ -16,18 +16,24 @@ function synthetic(){return {catalog:structuredClone(catalog),bindings:CATALOG_O
  adapters:[{operations:[...registered],paths:['synthetic adapter path']}],skills:[],admittedSkills:[],provenance:{}};}
 const refuses=work=>assert.throws(work,error=>error.code==='SOURCE_EXPOSURE_INVALID');
 
-test('96 selected and43 excluded are reconciled separately from43 registered operations',()=>{
+test('96 selected and43 excluded are reconciled separately from55 registered operations',()=>{
  assert.equal(snapshot.rows.length,96);assert.equal(snapshot.counts.selectedSourceReads,82);assert.equal(snapshot.counts.selectedProductOrGoverned,14);
- assert.equal(snapshot.counts.registeredGeneralOperations,43);assert.equal(snapshot.counts.registeredFamilies,26);
- assert.equal(snapshot.counts.generalSelectedSourceReads,41);assert.equal(snapshot.counts.generalSelectedProductStateReads,1);assert.equal(snapshot.counts.generalHistoricalOperations,1);
+ assert.equal(snapshot.counts.registeredGeneralOperations,55);assert.equal(snapshot.counts.registeredFamilies,32);
+ assert.equal(snapshot.counts.generalSelectedSourceReads,53);assert.equal(snapshot.counts.generalSelectedProductStateReads,1);assert.equal(snapshot.counts.generalHistoricalOperations,1);
  assert.equal(snapshot.counts.excludedCapabilities,43);assert.equal(snapshot.counts.live,0);
 });
-test('every existing selected source adapter already has general exposure; remaining41 are genuine adapter gaps',()=>{
- assert.deepEqual(snapshot.existingAdaptersWithoutGeneralExposure,[]);assert.equal(snapshot.counts.existingSourceAdaptersWithoutGeneralExposure,0);
- assert.equal(snapshot.counts.missingSourceAdapters,41);assert.equal(snapshot.counts.missingAdaptersDeclaredBySkills,27);assert.equal(snapshot.counts.missingAdaptersWithoutSkillDeclaration,14);
+test('implemented data-search awaits a consistent raw input contract; remaining28 are genuine adapter gaps',()=>{
+ assert.deepEqual(snapshot.existingAdaptersWithoutGeneralExposure,['search_capiro_data']);assert.equal(snapshot.counts.existingSourceAdaptersWithoutGeneralExposure,1);
+ assert.equal(snapshot.counts.missingSourceAdapters,28);assert.equal(snapshot.counts.missingAdaptersDeclaredBySkills,17);assert.equal(snapshot.counts.missingAdaptersWithoutSkillDeclaration,11);
  const gaps=snapshot.rows.filter(row=>row.kind==='source-read'&&row.state==='adapter-missing');
  for(const gap of gaps){assert.deepEqual(gap.adapterPaths,[]);assert.deepEqual(gap.generalOperations,[]);assert.deepEqual(gap.sourceAdmittedSkills,[]);assert.ok(Array.isArray(gap.requiredContextKeys));}
  assert.deepEqual(snapshot.missingAdapterFamilies.flatMap(row=>row.operations).sort(),gaps.map(row=>row.operation).sort());
+});
+
+test('governed data adapter exists while the inconsistent SDK selector is withheld',()=>{
+ const entry=row('search_capiro_data');assert.equal(entry.state,'adapter-present');assert.deepEqual(entry.generalOperations,[]);
+ assert.ok(entry.adapterPaths.includes('apps/gateway/sources/data-search/handler.mjs'));
+ assert.equal(registered.includes(entry.operation),false);assert.equal(Object.hasOwn(READ_FAMILIES,'data-search'),false);
 });
 test('only source-admitted original skills can establish a source route',()=>{
  assert.deepEqual(snapshot.admittedSkills,['quick_skill.relationship_brief','quick_skill.commitments_audit']);
@@ -79,7 +85,7 @@ test('directory source is exposed while retained research/Florida scope and zero
  for(const id of ['get_committee_roster','list_members','get_research_portfolio','get_research_portfolio_changes','get_florida_budget_project']){
   assert.equal(row(id).state,'adapter-present');assert.deepEqual(row(id).generalOperations,[id]);
  }
- assert.equal(snapshot.missingAdapterFamilies.length,22);assert.equal(snapshot.counts.live,0);
+ assert.equal(snapshot.missingAdapterFamilies.length,15);assert.equal(snapshot.counts.live,0);
  assert.ok(row('get_committee_roster').adapterPaths.includes('apps/gateway/sources/legislative-directory/handler.mjs'));
  assert.ok(row('list_members').adapterPaths.includes('apps/gateway/general-reads/families/legislative-directory.mjs'));
 });

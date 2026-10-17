@@ -11,8 +11,20 @@ import {storedCase as stateCase} from '../../sources/state-legislation/test/fixt
 import {storedCase as intelligenceCase} from '../../sources/stored-intelligence/test/fixture.mjs';
 import {storedCase as docketCase} from '../../sources/regulatory-dockets/test/fixture.mjs';
 import {storedCase as summaryCase} from '../../sources/intelligence-summary/test/fixture.mjs';
+import {storedCase as webCase,ids as webIds} from '../../sources/public-web/test/fixture.mjs';
+import {storedCase as dataCase,ids as dataIds} from '../../sources/data-search/test/fixture.mjs';
+import {storedCase as queryCase,id as queryId} from '../../sources/public-domain-query/test/fixture.mjs';
+import {storedCase as facilityCase,id as facilityId} from '../../sources/facility-representation/test/fixture.mjs';
+import {storedCase as districtCase,ids as districtIds} from '../../sources/district-nexus/test/fixture.mjs';
+import {storedCase as registryCase,id as registryId} from '../../sources/client-registry/test/fixture.mjs';
+import {storedCase as marketCase,ids as marketIds} from '../../sources/federal-market/test/fixture.mjs';
 
 export const DISCLOSURE_FAMILY_CASES=Object.freeze(['search_lda_filings','search_sec_filings','search_fara_registrations'].map(id=>['disclosures',id]));
+export const GOVERNED_NEXT_FAMILY_CASES=Object.freeze([
+ ...webIds.map(id=>['public-web',id]),...dataIds.map(id=>['data-search',id]),['public-domain-query',queryId],
+ ['facility-representation',facilityId],...districtIds.map(id=>['district-nexus',id]),['client-registry',registryId],
+ ...marketIds.map(id=>['federal-market',id]),
+]);
 
 export const NATIVE_FAMILY_CASES=Object.freeze([
  ['public-reports','search_cbo_cost_estimates'],['public-reports','search_gao_reports'],['public-reports','search_crs_reports'],
@@ -22,8 +34,10 @@ export const NATIVE_FAMILY_CASES=Object.freeze([
  ['federal-legislation','get_bill_status'],['federal-legislation','search_floor_votes'],
  ['state-legislation','search_state_bills'],['state-legislation','get_state_legislator'],
  ['stored-intelligence','search_intel_articles'],['regulatory-dockets','query_regulatory_dockets'],['intelligence-summary','query_intelligence'],
+ ...GOVERNED_NEXT_FAMILY_CASES,
 ]);
-const storedCases={'pe-references':peCase,'federal-legislation':federalCase,'state-legislation':stateCase,'stored-intelligence':intelligenceCase,'regulatory-dockets':docketCase,'intelligence-summary':summaryCase};
+const storedCases={'pe-references':peCase,'federal-legislation':federalCase,'state-legislation':stateCase,'stored-intelligence':intelligenceCase,'regulatory-dockets':docketCase,'intelligence-summary':summaryCase,
+ 'public-web':webCase,'data-search':dataCase,'public-domain-query':queryCase,'facility-representation':facilityCase,'district-nexus':districtCase,'client-registry':registryCase,'federal-market':marketCase};
 export function nativeFamilyCase(family,id,options={}){
  if(Object.hasOwn(storedCases,family))return storedCases[family](id,options);
  const {request=directoryRequests[id]??(id==='get_acquisition_person'?{id:personId}:{}),actorRole='standard_user'}=options;
