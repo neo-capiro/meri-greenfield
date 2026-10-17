@@ -31,11 +31,11 @@ export function createMemoryJournalStore(){
    return {entries:page,next:mine.length>start+limit?page.at(-1).deliveryId:null};}}};
 }
 /** A task.create composition: real metadata owner + real command interface/executor, approvals held by `approvals`. */
-export function commandComposition({tenantId='tenant'}={}){
+export function commandComposition({tenantId='tenant',approverActorId='reviewer',approvalStore:currentApprovals}={}){
  const f=commandFixture('task.create');
  const binding={...f.binding,tenantId},scopes=f.scopes.map(s=>({...s,tenantId}));
  const commandContext={binding,clientResolution:null},sql=createMetadataPoolFixture(),metadataCalls={prepare:0};
- const policy=createMetadataPolicyFixture({binding,scopes,requiredApprover:{tenantId,actorId:'reviewer'},expiresAt:new Date(NOW+45000).toISOString(),now:()=>f.state.now});
+ const policy=createMetadataPolicyFixture({binding,scopes,requiredApprover:{tenantId,actorId:approverActorId},expiresAt:new Date(NOW+45000).toISOString(),now:()=>f.state.now});
  let n=100;const metadataOwner=createTaskCreateApprovalMetadataOwner({store:createPostgresApprovalMetadataStore({pool:sql.pool}),commandContext,preparePolicy:policy.preparePolicy,now:()=>f.state.now,newId:()=>id(n++)});
  const hooks={};
  const approvalMetadataOwner={async prepare(v){metadataCalls.prepare++;if(hooks.prepare)return hooks.prepare(v,metadataOwner);return metadataOwner.prepare(v);},read:v=>metadataOwner.read(v)};
@@ -44,7 +44,7 @@ export function commandComposition({tenantId='tenant'}={}){
  const approvalStore={async getCurrent({proposalId}){const d=approvals.get(proposalId);if(!d)throw Error('no current approval');return JSON.stringify({decision:d,checkedAtMs:f.state.now,revoked:f.state.approvalRevoked});}};
  const approve=proposal=>approvals.set(proposal.proposalId,{proposalId:proposal.proposalId,commandSha256:proposal.commandSha256,decision:'approved',decidedAt:proposal.createdAt,expiresAt:new Date(NOW+40000).toISOString(),approver:proposal.requiredApprover,policyRevision:'p1'});
  const commandOptions={operation:{id:'create_task',version:'0.2.0'},action:'task.create',outputShape:'TaskCreateToolResult',commandContext,validators:commandToolValidators,assertProposal:assertProposalIntegrity,
-  approvalMetadataOwner,executor:f.create({approvalStore}),now:()=>f.state.now,limits:{maxRequestMs:1000,maxFactBytes:65536}};
+  approvalMetadataOwner,executor:f.create({approvalStore:currentApprovals??approvalStore}),now:()=>f.state.now,limits:{maxRequestMs:1000,maxFactBytes:65536}};
  /** The existing approved-execution path (`executeApproved`) with an execution request for exactly this proposal. */
  const executeApproved=proposal=>createCommandToolInterface(commandOptions).executeApproved(proposal,{...f.execution,proposalId:proposal.proposalId,commandSha256:proposal.commandSha256,idempotencyKey:proposal.command.idempotencyKey},'synthetic');
  return {f,binding,scopes,commandOptions,metadataCalls,hooks,sql,policy,approve,executeApproved,preparer:()=>createCommandIntentPreparer({commandOptions})};

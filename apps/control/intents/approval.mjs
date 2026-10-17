@@ -32,7 +32,7 @@ export const INTENT_APPROVAL_ERRORS=Object.freeze({
  INTENT_APPROVALS_DISABLED:503,INTENT_NOT_FOUND:404,INTENT_NOT_PREPARED:409,INTENT_NOT_APPROVABLE:409,INTENT_MISMATCH:409,INTENT_EXPIRED:409,
  INTENT_SCOPE_WITHHELD:403,APPROVER_REFUSED:403,APPROVAL_OWNER_UNAVAILABLE:503,APPROVAL_DECISION_REFUSED:409,APPROVAL_DECISION_UNKNOWN:502,
  EXECUTION_OWNER_UNAVAILABLE:503,EXECUTION_AUTHORITY_REFUSED:403,INTENT_CROSS_RUN:409,COMMAND_APPROVAL_REFUSED:409,COMMAND_AUTHORITY_REFUSED:403,
- COMMAND_PREPARATION_REFUSED:409,COMMAND_OUTCOME_UNKNOWN:502,INTENT_EXECUTION_UNKNOWN:502,INTENT_JOURNAL_UNAVAILABLE:503,INTENT_REQUEST_INVALID:400});
+ COMMAND_PREPARATION_REFUSED:409,COMMAND_REFUSED:409,COMMAND_OUTCOME_UNKNOWN:502,INTENT_RESULT_NOT_RELEASED:502,INTENT_EXECUTION_UNKNOWN:502,INTENT_JOURNAL_UNAVAILABLE:503,INTENT_REQUEST_INVALID:400});
 const fail=(code,outcome=null,field=null)=>{throw new ProductError(code,outcome,field);};
 const same=(a,b)=>hash(a)===hash(b);
 const conversationOf=b=>({tenantId:b.tenantId,actorId:b.actorId,conversationId:b.conversationId});
@@ -64,10 +64,10 @@ function commandProposal(entry){
 }
 export function createIntentApprovalOwner(configuration){
  const c=own(configuration,['journal','commandOptionsFor','now','limits'],['decisions','issueExecution','outcomes','enabled']);
- const journal=own(c.journal,['read','list']),limits=data(c.limits);own(limits,['maxRequestMs']);
+ const journal=own(c.journal,['read','list'],['claim','settle']),limits=data(c.limits);own(limits,['maxRequestMs']);
  if(typeof journal.read!=='function'||typeof journal.list!=='function'||typeof c.commandOptionsFor!=='function'||typeof c.now!=='function'||typeof(c.enabled??false)!=='boolean'||
   !Number.isSafeInteger(limits.maxRequestMs)||limits.maxRequestMs<1||limits.maxRequestMs>30000)throw new ProductError('PRODUCT_CONFIGURATION');
- const decisions=c.decisions===undefined?undefined:own(c.decisions,[],['record','readDecision']);
+ const decisions=c.decisions===undefined?undefined:own(c.decisions,[],['record','readDecision','getCurrent']);
  const outcomes=c.outcomes===undefined?undefined:own(c.outcomes,['read']);
  if(decisions&&Object.values(decisions).some(f=>typeof f!=='function')||outcomes&&typeof outcomes.read!=='function'||c.issueExecution!==undefined&&typeof c.issueExecution!=='function')throw new ProductError('PRODUCT_CONFIGURATION');
  const lifetime=(deadlineMs,signal)=>{nativeSignal(signal);const at=c.now();
@@ -134,16 +134,19 @@ export function createIntentApprovalOwner(configuration){
   // The command journal binds a command to its original run: an approval cannot execute it from another run (lane gap).
   if(['tenantId','actorId','conversationId','runId'].some(k=>e.executorBinding[k]!==proposal.command.binding[k]))fail('INTENT_CROSS_RUN','NOT_DISPATCHED');
   life.limitDeadline(issued.expiresAtMs);
-  let result,started2=false;
-  try{
-   result=data(await life.run(signal=>{started2=true;return createCommandToolInterface(options).executeApproved(proposal,e,issued.credential,signal);}));
-  }catch(error){
-   const code=String(error?.message??''),f=productFailure(error);
-   // Once executeApproved started, a deadline or cancellation cannot show that nothing was claimed or executed.
-   if(f)throw f.outcome||!started2?error:new ProductError(f.code,'UNKNOWN');
-   if(['COMMAND_APPROVAL_REFUSED','COMMAND_AUTHORITY_REFUSED','COMMAND_PREPARATION_REFUSED'].includes(code))fail(code,'NOT_DISPATCHED');
+  // Track whether the executor itself was reached and returned: before it nothing can be claimed; after it returned, an
+  // effect may exist and only the release failed; while it runs, only its own codes say whether it claimed.
+  const phase={executor:false,returned:false};
+  const tracked={...options,executor:{async execute(...call){phase.executor=true;const out=await options.executor.execute(...call);phase.returned=true;return out;}}};
+  let result;
+  try{result=data(await life.run(signal=>createCommandToolInterface(tracked).executeApproved(proposal,e,issued.credential,signal)));}
+  catch(error){
+   const f=productFailure(error),code=String(error?.message??'');
+   if(phase.returned)fail('INTENT_RESULT_NOT_RELEASED','RESULT_NOT_RELEASED');
+   if(f)throw new ProductError(f.code,phase.executor?'UNKNOWN':'NOT_DISPATCHED');
    if(code==='COMMAND_OUTCOME_UNKNOWN'||code==='COMMAND_COMMIT_UNCERTAIN')fail('COMMAND_OUTCOME_UNKNOWN','UNKNOWN');
-   fail('INTENT_EXECUTION_UNKNOWN',started2?'UNKNOWN':'NOT_DISPATCHED');
+   // The executor reports every refusal before its journal claim as a closed code other than the two above; no claim, no effect.
+   fail(['COMMAND_APPROVAL_REFUSED','COMMAND_AUTHORITY_REFUSED','COMMAND_PREPARATION_REFUSED'].includes(code)?code:'COMMAND_REFUSED','NOT_DISPATCHED');
   }
   if(result?.status==='observed')return data({status:'executed',deliveryId,proposalId:proposal.proposalId,decision,outcome:result.outcome});
   // Indeterminate: the existing journal holds the claim; nothing here retries it.

@@ -14,7 +14,7 @@ import {data,own} from '../../../packages/contracts/commands-0.2/execution-bound
 const fault=(code,extra={})=>Object.assign(Error(code),{code,...extra});
 const STATES=new Set(['PENDING','PREPARED','FAILED','UNKNOWN']);
 export function createIntentJournal(store){
- const ports=own(store,['claim','settle']);if(typeof ports.claim!=='function'||typeof ports.settle!=='function')throw fault('INTENT_CONFIGURATION');
+ const ports=own(store,['claim','settle'],['read','list']);if(typeof ports.claim!=='function'||typeof ports.settle!=='function')throw fault('INTENT_CONFIGURATION');
  const key=(binding,deliveryId)=>data({tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,deliveryId});
  /** Replay answer for an existing entry; never a new owner call. */
  function replay(entryValue,record){
