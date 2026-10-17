@@ -1,0 +1,466 @@
+{
+  "schemaVersion": "meri-read-lane-pr-stack/1",
+  "repository": "neo-capiro/meri-greenfield",
+  "observedDate": "2026-10-17",
+  "scope": "Read-only publication/ancestry snapshot; all identities independently read from GitHub PR metadata and Git commit objects. No tests or runtime qualification performed for this handoff.",
+  "statusAtObservation": {
+    "open": true,
+    "draft": true,
+    "merged": false
+  },
+  "release": {
+    "pr": 98,
+    "baseBeforeRelease": {
+      "commit": "8652488f087a1efa4d49d2df19a553b7cd7b3b65",
+      "tree": "0500a8908faf21cd614fbf795bb5b9338aca2733",
+      "commitUrl": "https://github.com/neo-capiro/meri-greenfield/commit/8652488f087a1efa4d49d2df19a553b7cd7b3b65"
+    },
+    "commitsWithinPr": 16
+  },
+  "readLane": [
+    99,
+    103,
+    104,
+    105,
+    106,
+    107,
+    109,
+    110
+  ],
+  "parallelStacks": [
+    [
+      100,
+      102
+    ],
+    [
+      101
+    ],
+    [
+      108
+    ]
+  ],
+  "portability": [
+    "Use immutable published commits/trees; local equivalents and local branch refs are not required.",
+    "PR110 contains PR98 and every listed read-lane ancestor. It does not contain parallel task-update, diagnostics or preferences work.",
+    "PR102 contains PR100. PR101 and PR108 branch independently from PR98; none is a read-lane dependency.",
+    "Parallel branch names are metadata hints owned by other lanes and may advance after this snapshot; these recorded commit/tree identities remain the handoff pins.",
+    "Published source identity and recorded source acceptance do not establish image, live source installation, deployment or end-to-end acceptance."
+  ],
+  "verificationMethods": [
+    "GitHub get_pr_info for PR98 through PR110 (the13 listed PRs).",
+    "GitHub GET git/commits/<full SHA> for each head and the release base.",
+    "GitHub PR98 and PR101 commit-list metadata to verify within-PR ancestry.",
+    "GitHub PR101 comments/reviews metadata to bound exact-head acceptance claims.",
+    "Read-only local report and git cat-file checks for historical pins."
+  ],
+  "pullRequests": [
+    {
+      "pr": 98,
+      "headBranch": "codex/meri-product-preview-manifests-20261016",
+      "baseBranch": "codex/meri-initial-run-startup-mount-20261016",
+      "head": "caa7810ff19c09c8f7ea1c2524c025f36f99ccd6",
+      "base": "8652488f087a1efa4d49d2df19a553b7cd7b3b65",
+      "tree": "32151864cd2ad280ad18241f57be5d0c8a0440b8",
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "headParent": [
+        "e4fc10347c7bf557eff93423e42816834b009a4e"
+      ],
+      "kind": "release-base",
+      "headCommitUrl": "https://github.com/neo-capiro/meri-greenfield/commit/caa7810ff19c09c8f7ea1c2524c025f36f99ccd6",
+      "baseCommitUrl": "https://github.com/neo-capiro/meri-greenfield/commit/8652488f087a1efa4d49d2df19a553b7cd7b3b65",
+      "treeUrl": "https://github.com/neo-capiro/meri-greenfield/tree/32151864cd2ad280ad18241f57be5d0c8a0440b8",
+      "qualification": {
+        "sourceAcceptance": "ACCEPT_SOURCE_RECORDED_FOR_DOCUMENTED_BOUNDARIES",
+        "checks": [
+          "Preview offline 62/62; Node owner channel 9/9; credential delivery 26/26; token writer 7 portable cases; Python 70/70 after documented unchanged-discovery workaround."
+        ],
+        "limits": [
+          "Source product/Temporal desired counts are zero and source connectivity is disabled.",
+          "Real bootstrap, owner transport, Linux/TLS, database/network/Fargate and live chat acceptance remain held or unrun.",
+          "A source manifest is not a current live cloud-state observation."
+        ]
+      }
+    },
+    {
+      "pr": 99,
+      "headBranch": "codex/meri-general-reads-civic-20261016",
+      "baseBranch": "codex/meri-product-preview-manifests-20261016",
+      "head": "81b3df7a0e9016e4dde8bb78418fb9901243ee54",
+      "base": "caa7810ff19c09c8f7ea1c2524c025f36f99ccd6",
+      "tree": "34571ec3353e6daa74a499a153dc8e9d33bc4de3",
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "headParent": [
+        "caa7810ff19c09c8f7ea1c2524c025f36f99ccd6"
+      ],
+      "kind": "read-lane",
+      "headCommitUrl": "https://github.com/neo-capiro/meri-greenfield/commit/81b3df7a0e9016e4dde8bb78418fb9901243ee54",
+      "baseCommitUrl": "https://github.com/neo-capiro/meri-greenfield/commit/caa7810ff19c09c8f7ea1c2524c025f36f99ccd6",
+      "treeUrl": "https://github.com/neo-capiro/meri-greenfield/tree/34571ec3353e6daa74a499a153dc8e9d33bc4de3",
+      "qualification": {
+        "sourceAcceptance": "ACCEPT_SOURCE_RECORDED",
+        "checks": [
+          "Adapter 22/22; mounted native owner 50/50; new MCP 6/6; grouped gateway/contract/exposure 362/362; worker checks 66 passed."
+        ],
+        "limits": [
+          "Native/live qualification unrun; installed grants/credentials and original skill admission not established.",
+          "Exact worker Zod mismatch was open at this checkpoint; PR103 subsequently supplied exact 4.6.7 checks.",
+          "Unchanged Windows workspace guard reached 6/7."
+        ]
+      }
+    },
+    {
+      "pr": 103,
+      "headBranch": "codex/meri-general-reads-stored-next-20261016",
+      "baseBranch": "codex/meri-general-reads-civic-20261016",
+      "head": "8bb0b2945429e70cf0ae1e594ea55eb8c3fa7ada",
+      "base": "81b3df7a0e9016e4dde8bb78418fb9901243ee54",
+      "tree": "d54f8b1eb9e20327fe19fc569585c259833eeb2c",
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "headParent": [
+        "81b3df7a0e9016e4dde8bb78418fb9901243ee54"
+      ],
+      "kind": "read-lane",
+      "headCommitUrl": "https://github.com/neo-capiro/meri-greenfield/commit/8bb0b2945429e70cf0ae1e594ea55eb8c3fa7ada",
+      "baseCommitUrl": "https://github.com/neo-capiro/meri-greenfield/commit/81b3df7a0e9016e4dde8bb78418fb9901243ee54",
+      "treeUrl": "https://github.com/neo-capiro/meri-greenfield/tree/d54f8b1eb9e20327fe19fc569585c259833eeb2c",
+      "qualification": {
+        "sourceAcceptance": "ACCEPT_SOURCE_RECORDED",
+        "checks": [
+          "Independent adapter/helper 121/121; MCP 30/30; mounted owner 40/40 plus eight federal authority assertions.",
+          "PR99 worker checks 72/72 against exact Zod 4.6.7; initial policy/ledger failures and corrected runs retained."
+        ],
+        "limits": [
+          "Qualified/live zero; source construction/exposure is not native installation acceptance.",
+          "Unchanged Windows workspace guard limitation preserved."
+        ]
+      }
+    },
+    {
+      "pr": 104,
+      "headBranch": "codex/meri-general-reads-governed-next-20261016",
+      "baseBranch": "codex/meri-general-reads-stored-next-20261016",
+      "head": "0724a744d73356a0e935d15dabc5889ab2337d4b",
+      "base": "8bb0b2945429e70cf0ae1e594ea55eb8c3fa7ada",
+      "tree": "118c29c8ac27df713896a803973616635e9343c0",
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "headParent": [
+        "8bb0b2945429e70cf0ae1e594ea55eb8c3fa7ada"
+      ],
+      "kind": "read-lane",
+      "headCommitUrl": "https://github.com/neo-capiro/meri-greenfield/commit/0724a744d73356a0e935d15dabc5889ab2337d4b",
+      "baseCommitUrl": "https://github.com/neo-capiro/meri-greenfield/commit/8bb0b2945429e70cf0ae1e594ea55eb8c3fa7ada",
+      "treeUrl": "https://github.com/neo-capiro/meri-greenfield/tree/118c29c8ac27df713896a803973616635e9343c0",
+      "qualification": {
+        "sourceAcceptance": "ACCEPT_SOURCE_RECORDED",
+        "checks": [
+          "Final integrated 538/538; stronger SDK 42/42; helper/ledger 27/27; independent owner/context/result 132/132 and native-wiring/MCP 213/213."
+        ],
+        "limits": [
+          "Data-search SDK exposure withheld at this checkpoint; repaired by PR105.",
+          "Broader retained/worker 143/147 preserves four unchanged fixture/platform failures reproduced at PR103.",
+          "54 selected reads implemented, 53 exposed; SDK 55/32; live zero at this checkpoint."
+        ]
+      }
+    },
+    {
+      "pr": 105,
+      "headBranch": "codex/meri-data-search-request-20261017",
+      "baseBranch": "codex/meri-general-reads-governed-next-20261016",
+      "head": "f33ea1a8945444b5ad8d15d5d048377abf201959",
+      "base": "0724a744d73356a0e935d15dabc5889ab2337d4b",
+      "tree": "f573e12b9d682e63e9c0a00082510cbf090963d7",
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "headParent": [
+        "0724a744d73356a0e935d15dabc5889ab2337d4b"
+      ],
+      "kind": "read-lane",
+      "headCommitUrl": "https://github.com/neo-capiro/meri-greenfield/commit/f33ea1a8945444b5ad8d15d5d048377abf201959",
+      "baseCommitUrl": "https://github.com/neo-capiro/meri-greenfield/commit/0724a744d73356a0e935d15dabc5889ab2337d4b",
+      "treeUrl": "https://github.com/neo-capiro/meri-greenfield/tree/f573e12b9d682e63e9c0a00082510cbf090963d7",
+      "qualification": {
+        "sourceAcceptance": "ACCEPT_SOURCE_RECORDED",
+        "checks": [
+          "Final integrated 322/322; author five-suite 201/201; independent contract/schema/MCP 73/73 plus native owner 6/6.",
+          "SDK-to-CONTROL success settled a receipt; post-source membership drift withheld output and retained UNKNOWN."
+        ],
+        "limits": [
+          "One unchanged Windows directory-symlink EPERM in asset suite 16/17 and unchanged historical inventory limitation recorded.",
+          "54 selected reads implemented/exposed; SDK 56/33; live zero at this checkpoint.",
+          "Source acceptance does not qualify a live installation."
+        ]
+      }
+    },
+    {
+      "pr": 106,
+      "headBranch": "codex/meri-general-reads-remaining-next-20261017",
+      "baseBranch": "codex/meri-data-search-request-20261017",
+      "head": "382f45ae695e271bf7433343d31486ac0d57184a",
+      "base": "f33ea1a8945444b5ad8d15d5d048377abf201959",
+      "tree": "9f3e147d6853fe975ba53e3c65b55f32419401b8",
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "headParent": [
+        "f33ea1a8945444b5ad8d15d5d048377abf201959"
+      ],
+      "kind": "read-lane",
+      "headCommitUrl": "https://github.com/neo-capiro/meri-greenfield/commit/382f45ae695e271bf7433343d31486ac0d57184a",
+      "baseCommitUrl": "https://github.com/neo-capiro/meri-greenfield/commit/f33ea1a8945444b5ad8d15d5d048377abf201959",
+      "treeUrl": "https://github.com/neo-capiro/meri-greenfield/tree/9f3e147d6853fe975ba53e3c65b55f32419401b8",
+      "qualification": {
+        "sourceAcceptance": "ACCEPT_SOURCE_RECORDED",
+        "checks": [
+          "Author integrated 704/704; independent differently selected 689/689; coordinator 285/285; independent ledger 24/24 and SDK 75/75."
+        ],
+        "limits": [
+          "56 complete + 8 partial-input + 18 absent=82; SDK 58/35; constructors40; qualified/live zero at this checkpoint.",
+          "Restricted state/tracked/hearing/legal/news/outreach request branches remain SDK-withheld.",
+          "Historical baseline limitations and initial failed outcomes retained."
+        ]
+      }
+    },
+    {
+      "pr": 107,
+      "headBranch": "codex/meri-read-resolution-next-20261017",
+      "baseBranch": "codex/meri-general-reads-remaining-next-20261017",
+      "head": "526b6be7c906c15298f13430fe5dd5a9db458e03",
+      "base": "382f45ae695e271bf7433343d31486ac0d57184a",
+      "tree": "fe07e12c2539b39604317c7f48b670e8e5818849",
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "headParent": [
+        "382f45ae695e271bf7433343d31486ac0d57184a"
+      ],
+      "kind": "read-lane",
+      "headCommitUrl": "https://github.com/neo-capiro/meri-greenfield/commit/526b6be7c906c15298f13430fe5dd5a9db458e03",
+      "baseCommitUrl": "https://github.com/neo-capiro/meri-greenfield/commit/382f45ae695e271bf7433343d31486ac0d57184a",
+      "treeUrl": "https://github.com/neo-capiro/meri-greenfield/tree/fe07e12c2539b39604317c7f48b670e8e5818849",
+      "qualification": {
+        "sourceAcceptance": "ACCEPT_SOURCE_RECORDED",
+        "checks": [
+          "Coherent 23-file integration 1108/1108, no failures/skips/cancellations; independent frozen/staged source acceptance; accounting 24/24."
+        ],
+        "limits": [
+          "56 complete + 10 partial + 16 absent=82; SDK 58/35; constructors41; qualified/live zero at this checkpoint.",
+          "BD context/recent were partial-resource paths here; broader personal completion arrives in PR110.",
+          "Additional mode/clock/locale/selector/access seams remain proposals, not installed interfaces."
+        ]
+      }
+    },
+    {
+      "pr": 109,
+      "headBranch": "codex/meri-funding-asof-20261017",
+      "baseBranch": "codex/meri-read-resolution-next-20261017",
+      "head": "b4daa4adf6e8269e7c341751db9a02bf6d4f062b",
+      "base": "526b6be7c906c15298f13430fe5dd5a9db458e03",
+      "tree": "2826443929c4ef797ff52e15e0bb4b296eb4e678",
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "headParent": [
+        "526b6be7c906c15298f13430fe5dd5a9db458e03"
+      ],
+      "kind": "read-lane",
+      "headCommitUrl": "https://github.com/neo-capiro/meri-greenfield/commit/b4daa4adf6e8269e7c341751db9a02bf6d4f062b",
+      "baseCommitUrl": "https://github.com/neo-capiro/meri-greenfield/commit/526b6be7c906c15298f13430fe5dd5a9db458e03",
+      "treeUrl": "https://github.com/neo-capiro/meri-greenfield/tree/2826443929c4ef797ff52e15e0bb4b296eb4e678",
+      "qualification": {
+        "sourceAcceptance": "ACCEPT_SOURCE_RECORDED",
+        "checks": [
+          "Coherent 16-file integration 1006/1006; independent 13 production/inventory hashes and53 wire/28 adapter/32 owner-source cases."
+        ],
+        "limits": [
+          "Funding five are PARTIAL_BRIDGE, not complete; accepted Core consumption and exact source/server qualification remain pending.",
+          "Funding stays SDK-withheld; matching response clocks do not prove observation consumption.",
+          "56 complete + 15 partial + 11 absent=82; SDK 58/35; constructors42; live zero at this checkpoint."
+        ]
+      }
+    },
+    {
+      "pr": 110,
+      "headBranch": "codex/meri-read-completion-next-20261017",
+      "baseBranch": "codex/meri-funding-asof-20261017",
+      "head": "f7f4ed5b397fcd44576251739ed361aee6941d7a",
+      "base": "b4daa4adf6e8269e7c341751db9a02bf6d4f062b",
+      "tree": "e5f752758583cc56a720c1b40093c1fb23a7372c",
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "headParent": [
+        "b4daa4adf6e8269e7c341751db9a02bf6d4f062b"
+      ],
+      "kind": "read-lane",
+      "headCommitUrl": "https://github.com/neo-capiro/meri-greenfield/commit/f7f4ed5b397fcd44576251739ed361aee6941d7a",
+      "baseCommitUrl": "https://github.com/neo-capiro/meri-greenfield/commit/b4daa4adf6e8269e7c341751db9a02bf6d4f062b",
+      "treeUrl": "https://github.com/neo-capiro/meri-greenfield/tree/e5f752758583cc56a720c1b40093c1fb23a7372c",
+      "qualification": {
+        "sourceAcceptance": "ACCEPT_SOURCE_RECORDED",
+        "checks": [
+          "Coherent 19-file affected integration 1029/1029, no failures/skips/cancellations.",
+          "Independent source acceptance; BD10/legal18/owner-SDK37/native-RPC1 plus passive217-assertion source-measurement probe."
+        ],
+        "limits": [
+          "58 complete + 13 partial + 11 absent=82;24 incomplete operations across 15 families; SDK 60/36; passive constructors42; live zero.",
+          "Only BD context/recent gain complete operation coverage; BD evidence remains absent/unavailable and the whole three-operation family remains incomplete.",
+          "Legal selector extension remains partial; funding's Core bridge stays pending with its separate owner.",
+          "No startup/image/runtime-binding or live qualification is implied."
+        ]
+      }
+    },
+    {
+      "pr": 100,
+      "headBranch": "codex/meri-product-features-task6-20261016",
+      "baseBranch": "codex/meri-product-preview-manifests-20261016",
+      "head": "78fbd3ae813fcf3fe286969e76102353c3a2eed2",
+      "base": "caa7810ff19c09c8f7ea1c2524c025f36f99ccd6",
+      "tree": "9dc1b7a7040dc24cb289cea531c527ad957077fe",
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "headParent": [
+        "caa7810ff19c09c8f7ea1c2524c025f36f99ccd6"
+      ],
+      "kind": "parallel-task-updates",
+      "headCommitUrl": "https://github.com/neo-capiro/meri-greenfield/commit/78fbd3ae813fcf3fe286969e76102353c3a2eed2",
+      "baseCommitUrl": "https://github.com/neo-capiro/meri-greenfield/commit/caa7810ff19c09c8f7ea1c2524c025f36f99ccd6",
+      "treeUrl": "https://github.com/neo-capiro/meri-greenfield/tree/9dc1b7a7040dc24cb289cea531c527ad957077fe",
+      "qualification": {
+        "sourceAcceptance": "ACCEPT_SOURCE_RECORDED",
+        "checks": [
+          "Focused 209/209; independent39 checks; syntax21 modules."
+        ],
+        "limits": [
+          "Prepare-only task-update intent and opt-in API source; shared runtime/public contract integration was pending here and is supplied by PR102.",
+          "Full build/typecheck, real PostgreSQL/Core/Temporal, model and browser qualification unrun.",
+          "Seven existing schedule fixture-expiry and three worker-options failures documented."
+        ]
+      }
+    },
+    {
+      "pr": 101,
+      "headBranch": "codex/meri-image-diagnostics-20261016",
+      "baseBranch": "codex/meri-product-preview-manifests-20261016",
+      "head": "6fd48c9c3d49962a111e7f801f9f71ad06a7f1c9",
+      "base": "caa7810ff19c09c8f7ea1c2524c025f36f99ccd6",
+      "tree": "b71b7a1baf63c88f18173cb5b41cbb4d9f66f74f",
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "headParent": [
+        "38f52df94b1738649776792b2a28aac743801c19"
+      ],
+      "kind": "parallel-diagnostics",
+      "headCommitUrl": "https://github.com/neo-capiro/meri-greenfield/commit/6fd48c9c3d49962a111e7f801f9f71ad06a7f1c9",
+      "baseCommitUrl": "https://github.com/neo-capiro/meri-greenfield/commit/caa7810ff19c09c8f7ea1c2524c025f36f99ccd6",
+      "treeUrl": "https://github.com/neo-capiro/meri-greenfield/tree/b71b7a1baf63c88f18173cb5b41cbb4d9f66f74f",
+      "qualification": {
+        "sourceAcceptance": "UNCONFIRMED_FOR_CURRENT_HEAD_FROM_INSPECTED_RECORDS",
+        "checks": [
+          "PR description records source 33/33 and Python 14/14 plus independent acceptance for predecessor 38f52df94b1738649776792b2a28aac743801c19."
+        ],
+        "limits": [
+          "Current head 6fd48c9c3d49962a111e7f801f9f71ad06a7f1c9 adds the pending-ECR-scan wait correction after that described review.",
+          "Inspected GitHub comments/reviews are empty; the description alone does not establish review or qualification of the current head.",
+          "Recorded earlier source 3b75f33ab5a13264bdd6a52115f97d832773909b build failed W08 with 12/24 observed cases and one unknown outcome; it is not qualification of the current head.",
+          "No accepted current-head image, merge, activation or deployment is established by this audit."
+        ],
+        "reviewedPredecessor": {
+          "commit": "38f52df94b1738649776792b2a28aac743801c19",
+          "tree": "7980fe7530d6623a2de9a788e150a377aca8201b",
+          "commitUrl": "https://github.com/neo-capiro/meri-greenfield/commit/38f52df94b1738649776792b2a28aac743801c19"
+        }
+      }
+    },
+    {
+      "pr": 102,
+      "headBranch": "codex/meri-task-update-integration-task6-20261016",
+      "baseBranch": "codex/meri-product-features-task6-20261016",
+      "head": "cc43d0004be59f315658207405ff1aea126adad5",
+      "base": "78fbd3ae813fcf3fe286969e76102353c3a2eed2",
+      "tree": "07c333a2e0bd1374386813ccc44fafb2c3d577ec",
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "headParent": [
+        "78fbd3ae813fcf3fe286969e76102353c3a2eed2"
+      ],
+      "kind": "parallel-task-updates",
+      "headCommitUrl": "https://github.com/neo-capiro/meri-greenfield/commit/cc43d0004be59f315658207405ff1aea126adad5",
+      "baseCommitUrl": "https://github.com/neo-capiro/meri-greenfield/commit/78fbd3ae813fcf3fe286969e76102353c3a2eed2",
+      "treeUrl": "https://github.com/neo-capiro/meri-greenfield/tree/07c333a2e0bd1374386813ccc44fafb2c3d577ec",
+      "qualification": {
+        "sourceAcceptance": "ACCEPT_SOURCE_RECORDED",
+        "checks": [
+          "Runtime/API/native session 48/48; public receiving 36/36; eight strict public TypeScript smoke files; browser-like VM and generation drift checks.",
+          "Independent native/runtime and public-contract reviews ACCEPT."
+        ],
+        "limits": [
+          "Contains PR100 ancestry and adds explicit opt-in task-update runtime/public contract wiring; defaults off and preview writes held.",
+          "Real PostgreSQL/Core/Temporal and live acceptance remain open with release composition owners.",
+          "Broader unchanged public 165/174 retains nine documented baseline/environment failures."
+        ]
+      }
+    },
+    {
+      "pr": 108,
+      "headBranch": "codex/meri-user-preferences-task6-20261017",
+      "baseBranch": "codex/meri-product-preview-manifests-20261016",
+      "head": "9fe0b0857f0284cf460effab34b17fda21c5621d",
+      "base": "caa7810ff19c09c8f7ea1c2524c025f36f99ccd6",
+      "tree": "5c135fb138aef4128898e756bdbf94af1c0254a9",
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "headParent": [
+        "caa7810ff19c09c8f7ea1c2524c025f36f99ccd6"
+      ],
+      "kind": "parallel-preferences",
+      "headCommitUrl": "https://github.com/neo-capiro/meri-greenfield/commit/9fe0b0857f0284cf460effab34b17fda21c5621d",
+      "baseCommitUrl": "https://github.com/neo-capiro/meri-greenfield/commit/caa7810ff19c09c8f7ea1c2524c025f36f99ccd6",
+      "treeUrl": "https://github.com/neo-capiro/meri-greenfield/tree/5c135fb138aef4128898e756bdbf94af1c0254a9",
+      "qualification": {
+        "sourceAcceptance": "ACCEPT_SOURCE_RECORDED",
+        "checks": [
+          "Combined107 passed/0 failed/1 explicit real-PostgreSQL skip; independent backend78 passed/1 skip; public29+six settings cases and strict/VM/generation checks."
+        ],
+        "limits": [
+          "Independent preferences branch off PR98; no dependency on task-update PR 100/102.",
+          "Feature runtime composition and real PostgreSQL/privileges/restore/retention, deployed Core and live authenticated qualification remain open.",
+          "Defaults off; existing reserved settings migration is not applied by this feature PR."
+        ]
+      }
+    }
+  ],
+  "historicalPins": {
+    "published": {
+      "commit": "b8f8339ce5c8899a9f023e6646cc143f775551b9",
+      "tree": "e77845dd43b89fa433b338d2271cb27bd9711a83",
+      "parent": "94c655f51c0cccc0c4bf7fb75cdb71971f87736a",
+      "commitUrl": "https://github.com/neo-capiro/meri-greenfield/commit/b8f8339ce5c8899a9f023e6646cc143f775551b9",
+      "status": "GITHUB_PUBLISHED_HISTORICAL_NOT_TASK_BASE",
+      "localObjectPresentAtAudit": false
+    },
+    "unverified": {
+      "commit": "c68bcca48971608bf5e72e6eedcb5cd75fc77ea0",
+      "status": "UNVERIFIED_UNUSED",
+      "localObjectPresentAtAudit": false,
+      "githubGitCommitLookup": "404 Not Found",
+      "earlierReportCommitLookup": "422 / no commit",
+      "published": null,
+      "publicationVerified": false,
+      "reliedOn": false
+    },
+    "reportPath": "docs/coordination/reports/CODEX-LEGISLATIVE-DIRECTORY-READS-20261016.md"
+  }
+}

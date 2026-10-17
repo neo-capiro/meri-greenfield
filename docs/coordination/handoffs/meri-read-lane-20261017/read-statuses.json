@@ -1,0 +1,1998 @@
+{
+  "schema": "meri-read-statuses/1",
+  "snapshotDate": "2026-10-17",
+  "disposition": "safe-stop source-only handoff",
+  "source": {
+    "repository": "neo-capiro/meri-greenfield",
+    "pullRequest": 110,
+    "pullRequestUrl": "https://github.com/neo-capiro/meri-greenfield/pull/110",
+    "publishedCommit": "f7f4ed5b397fcd44576251739ed361aee6941d7a",
+    "tree": "e5f752758583cc56a720c1b40093c1fb23a7372c",
+    "localEquivalentCommit": "e3b393c702b5df33e337e79a5c1f7063b6cb3757",
+    "inputs": [
+      {
+        "kind": "ledger",
+        "path": "docs/coordination/ledgers/scope-ledger.json",
+        "url": "https://github.com/neo-capiro/meri-greenfield/blob/f7f4ed5b397fcd44576251739ed361aee6941d7a/docs/coordination/ledgers/scope-ledger.json",
+        "gitBlobSha": "578393ac55f660707d9cb8ad85cfc81ef5632a5f",
+        "sha256": "31a5764bc3dcee4b60b44ff3ac9d655ec6f3fba01e4c076b127d8008dacb6c53"
+      },
+      {
+        "kind": "registry",
+        "path": "apps/worker/conversation/reads/families.mjs",
+        "url": "https://github.com/neo-capiro/meri-greenfield/blob/f7f4ed5b397fcd44576251739ed361aee6941d7a/apps/worker/conversation/reads/families.mjs",
+        "gitBlobSha": "e711d251f089b78a3cc46434be95b1b03ba2a856",
+        "sha256": "64fed993299072d2c72679e535aba2208dff71e04301b87ac04777feaab137bc"
+      },
+      {
+        "kind": "bindings",
+        "path": "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+        "url": "https://github.com/neo-capiro/meri-greenfield/blob/f7f4ed5b397fcd44576251739ed361aee6941d7a/packages/contracts/retrieval-0.2/catalog-validation.mjs",
+        "gitBlobSha": "690515919699847562672043eb44f2af91d1eb2d",
+        "sha256": "5717b6898ce56792a40b556748eeca68d377f4af4e544842bd618efc0b9f7bdc"
+      },
+      {
+        "kind": "catalog",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "url": "https://github.com/neo-capiro/meri-greenfield/blob/f7f4ed5b397fcd44576251739ed361aee6941d7a/packages/contracts/retrieval-0.2/catalog.json",
+        "gitBlobSha": "9773e4b2a8ecaadf2fa2cecfe53b1bc6d8e38001",
+        "sha256": "bac14e7e5dd740493914ff6a14b95cb5e6d7cbd09ee48b1cbd994d5eac728c08"
+      }
+    ],
+    "derivation": "Only committed scope-ledger.json.sourceExposure.rows supplies current adapter states; the actual READ_FAMILIES operationIds subsets and canonical bindings independently reproduce generalRegistration. Historical top-level ledger counts are not current source status."
+  },
+  "definitions": {
+    "complete": "Canonical source adapter covers the operation and is SDK-registered; current authority, source installation and all runtime gates remain required.",
+    "partial": "An implemented bounded input/resource branch or pending native bridge leaves the complete operation and SDK exposure held.",
+    "absent": "No canonical source adapter is declared for this operation.",
+    "familyStatus": "complete only if every selected source operation is complete; absent only if every selected source operation is absent; otherwise partial. Family partial includes mixed complete/absent coverage.",
+    "sdkExposed": "Static source registration only; this does not establish runtime availability or qualification.",
+    "qualification": "No read is claimed qualified or live by this source-only snapshot."
+  },
+  "counts": {
+    "selectedSourceReads": 82,
+    "complete": 58,
+    "partial": 13,
+    "absent": 11,
+    "incomplete": 24,
+    "incompleteFamilies": 15,
+    "sdkSelectedSourceOperations": 58,
+    "sdkOperations": 60,
+    "sdkFamilies": 36,
+    "excludedCapabilities": 43,
+    "qualified": 0,
+    "live": 0
+  },
+  "reads": [
+    {
+      "capabilityId": "get_acquisition_person",
+      "operation": "get_acquisition_person",
+      "family": "acquisition-personnel",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/acquisition-personnel.mjs",
+        "apps/gateway/sources/acquisition-personnel/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "search_acquisition_personnel",
+      "operation": "search_acquisition_personnel",
+      "family": "acquisition-personnel",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/acquisition-personnel.mjs",
+        "apps/gateway/sources/acquisition-personnel/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "query_action_items",
+      "operation": "actions.query",
+      "family": "action-items-complete",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/action-items-complete.mjs",
+        "apps/gateway/sources/action-items/handler.mjs",
+        "apps/gateway/sources/action-items/request-context.mjs"
+      ]
+    },
+    {
+      "capabilityId": "read_bill_text",
+      "operation": "read_bill_text",
+      "family": "bill-text",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/bill-text.mjs",
+        "apps/gateway/sources/bill-text/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "search_congress_bills",
+      "operation": "search_congress_bills",
+      "family": "bill-text",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/bill-text.mjs",
+        "apps/gateway/sources/bill-text/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "get_business_development_context",
+      "operation": "get_business_development_context",
+      "family": "business-development",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/business-development.mjs",
+        "apps/gateway/sources/business-development/handler.mjs",
+        "apps/gateway/sources/business-development/request-context.mjs",
+        "apps/gateway/sources/retained-reads/native-families.mjs"
+      ]
+    },
+    {
+      "capabilityId": "get_business_development_evidence",
+      "operation": "get_business_development_evidence",
+      "family": "business-development",
+      "status": "absent",
+      "sdkExposed": false,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": []
+    },
+    {
+      "capabilityId": "get_business_development_recent_changes",
+      "operation": "get_business_development_recent_changes",
+      "family": "business-development",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/business-development.mjs",
+        "apps/gateway/sources/business-development/handler.mjs",
+        "apps/gateway/sources/business-development/request-context.mjs",
+        "apps/gateway/sources/retained-reads/native-families.mjs"
+      ]
+    },
+    {
+      "capabilityId": "get_certification_status",
+      "operation": "get_certification_status",
+      "family": "certification-status",
+      "status": "absent",
+      "sdkExposed": false,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": []
+    },
+    {
+      "capabilityId": "read_client_documents",
+      "operation": "read_client_documents",
+      "family": "client-documents",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/client-documents.mjs",
+        "apps/gateway/general-reads/families/client-knowledge-profile.mjs",
+        "apps/gateway/sources/client-evidence/handler.mjs",
+        "apps/gateway/sources/client-evidence/request-context.mjs"
+      ]
+    },
+    {
+      "capabilityId": "search_memory",
+      "operation": "search_memory",
+      "family": "client-knowledge-memory",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/client-knowledge-memory.mjs",
+        "apps/gateway/general-reads/families/client-knowledge-monday.mjs",
+        "apps/gateway/sources/client-knowledge/handler.mjs",
+        "apps/gateway/sources/client-knowledge/request-context.mjs"
+      ]
+    },
+    {
+      "capabilityId": "read_monday_client_boards",
+      "operation": "read_monday_client_boards",
+      "family": "client-knowledge-monday",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/client-knowledge-memory.mjs",
+        "apps/gateway/general-reads/families/client-knowledge-monday.mjs",
+        "apps/gateway/sources/client-knowledge/handler.mjs",
+        "apps/gateway/sources/client-knowledge/request-context.mjs"
+      ]
+    },
+    {
+      "capabilityId": "get_client_context",
+      "operation": "get_client_context",
+      "family": "client-knowledge-profile",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/client-documents.mjs",
+        "apps/gateway/general-reads/families/client-knowledge-profile.mjs",
+        "apps/gateway/sources/client-evidence/handler.mjs",
+        "apps/gateway/sources/client-evidence/request-context.mjs"
+      ]
+    },
+    {
+      "capabilityId": "query_knowledge_graph",
+      "operation": "query_knowledge_graph",
+      "family": "client-knowledge-search",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/client-knowledge-search.mjs",
+        "apps/gateway/sources/client-knowledge-search/handler.mjs",
+        "apps/gateway/sources/retained-reads/native-families.mjs"
+      ]
+    },
+    {
+      "capabilityId": "search_client_knowledge",
+      "operation": "search_client_knowledge",
+      "family": "client-knowledge-search",
+      "status": "absent",
+      "sdkExposed": false,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": []
+    },
+    {
+      "capabilityId": "lookup_client_registry",
+      "operation": "lookup_client_registry",
+      "family": "client-registry",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/client-registry.mjs",
+        "apps/gateway/sources/client-registry/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "search_capiro_data",
+      "operation": "search_capiro_data",
+      "family": "data-search",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/data-search.mjs",
+        "apps/gateway/sources/data-search/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "list_global_datasets",
+      "operation": "list_global_datasets",
+      "family": "dataset-metadata",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/dataset-metadata.mjs",
+        "apps/gateway/sources/dataset-metadata/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "search_fara_registrations",
+      "operation": "search_fara_registrations",
+      "family": "disclosures",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/disclosures.mjs",
+        "apps/gateway/sources/disclosures/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "search_lda_filings",
+      "operation": "search_lda_filings",
+      "family": "disclosures",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/disclosures.mjs",
+        "apps/gateway/sources/disclosures/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "search_sec_filings",
+      "operation": "search_sec_filings",
+      "family": "disclosures",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/disclosures.mjs",
+        "apps/gateway/sources/disclosures/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "get_district_nexus_changes",
+      "operation": "get_district_nexus_changes",
+      "family": "district-nexus",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/district-nexus.mjs",
+        "apps/gateway/sources/district-nexus/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "get_district_nexus_context",
+      "operation": "get_district_nexus_context",
+      "family": "district-nexus",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/district-nexus.mjs",
+        "apps/gateway/sources/district-nexus/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "resolve_entity",
+      "operation": "resolve_entity",
+      "family": "entity-candidates",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/entity-candidates.mjs",
+        "apps/gateway/general-reads/families/tenant-contacts.mjs",
+        "apps/gateway/sources/identity-contacts/handler.mjs",
+        "apps/gateway/sources/identity-contacts/request-context.mjs"
+      ]
+    },
+    {
+      "capabilityId": "get_representation",
+      "operation": "get_representation",
+      "family": "facility-representation",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/facility-representation.mjs",
+        "apps/gateway/sources/facility-representation/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "get_bill_status",
+      "operation": "get_bill_status",
+      "family": "federal-legislation",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/federal-legislation.mjs",
+        "apps/gateway/sources/federal-legislation/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "search_floor_votes",
+      "operation": "search_floor_votes",
+      "family": "federal-legislation",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/federal-legislation.mjs",
+        "apps/gateway/sources/federal-legislation/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "get_district_federal_market",
+      "operation": "get_district_federal_market",
+      "family": "federal-market",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/federal-market.mjs",
+        "apps/gateway/sources/federal-market/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "search_contract_vehicles",
+      "operation": "search_contract_vehicles",
+      "family": "federal-market",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/federal-market.mjs",
+        "apps/gateway/sources/federal-market/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "search_federal_contract_awards",
+      "operation": "search_federal_contract_awards",
+      "family": "federal-market",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/federal-market.mjs",
+        "apps/gateway/sources/federal-market/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "search_federal_subawards",
+      "operation": "search_federal_subawards",
+      "family": "federal-market",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/federal-market.mjs",
+        "apps/gateway/sources/federal-market/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "search_procurement_forecasts",
+      "operation": "search_procurement_forecasts",
+      "family": "federal-market",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/federal-market.mjs",
+        "apps/gateway/sources/federal-market/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "get_florida_budget_project",
+      "operation": "get_florida_budget_project",
+      "family": "florida-budget",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/florida-budget.mjs",
+        "apps/gateway/sources/florida-budget/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "get_funding_opportunity",
+      "operation": "get_funding_opportunity",
+      "family": "funding-opportunities",
+      "status": "partial",
+      "sdkExposed": false,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/funding-opportunities.mjs",
+        "apps/gateway/sources/funding-opportunities/handler.mjs",
+        "apps/gateway/sources/funding-opportunities/request-context.mjs",
+        "apps/gateway/sources/retained-reads/native-families.mjs",
+        "packages/contracts/native-read-observation-0.2/schema.json",
+        "packages/contracts/native-read-observation-0.2/validate.mjs"
+      ]
+    },
+    {
+      "capabilityId": "get_funding_opportunity_requirements",
+      "operation": "get_funding_opportunity_requirements",
+      "family": "funding-opportunities",
+      "status": "partial",
+      "sdkExposed": false,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/funding-opportunities.mjs",
+        "apps/gateway/sources/funding-opportunities/handler.mjs",
+        "apps/gateway/sources/funding-opportunities/request-context.mjs",
+        "apps/gateway/sources/retained-reads/native-families.mjs",
+        "packages/contracts/native-read-observation-0.2/schema.json",
+        "packages/contracts/native-read-observation-0.2/validate.mjs"
+      ]
+    },
+    {
+      "capabilityId": "get_opportunity_client_context",
+      "operation": "get_opportunity_client_context",
+      "family": "funding-opportunities",
+      "status": "partial",
+      "sdkExposed": false,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/funding-opportunities.mjs",
+        "apps/gateway/sources/funding-opportunities/handler.mjs",
+        "apps/gateway/sources/funding-opportunities/request-context.mjs",
+        "apps/gateway/sources/retained-reads/native-families.mjs",
+        "packages/contracts/native-read-observation-0.2/schema.json",
+        "packages/contracts/native-read-observation-0.2/validate.mjs"
+      ]
+    },
+    {
+      "capabilityId": "get_opportunity_government_landscape",
+      "operation": "get_opportunity_government_landscape",
+      "family": "funding-opportunities",
+      "status": "partial",
+      "sdkExposed": false,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/funding-opportunities.mjs",
+        "apps/gateway/sources/funding-opportunities/handler.mjs",
+        "apps/gateway/sources/funding-opportunities/request-context.mjs",
+        "apps/gateway/sources/retained-reads/native-families.mjs",
+        "packages/contracts/native-read-observation-0.2/schema.json",
+        "packages/contracts/native-read-observation-0.2/validate.mjs"
+      ]
+    },
+    {
+      "capabilityId": "search_funding_opportunities",
+      "operation": "search_funding_opportunities",
+      "family": "funding-opportunities",
+      "status": "partial",
+      "sdkExposed": false,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/funding-opportunities.mjs",
+        "apps/gateway/sources/funding-opportunities/handler.mjs",
+        "apps/gateway/sources/funding-opportunities/request-context.mjs",
+        "apps/gateway/sources/retained-reads/native-families.mjs",
+        "packages/contracts/native-read-observation-0.2/schema.json",
+        "packages/contracts/native-read-observation-0.2/validate.mjs"
+      ]
+    },
+    {
+      "capabilityId": "query_intelligence",
+      "operation": "query_intelligence",
+      "family": "intelligence-summary",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/intelligence-summary.mjs",
+        "apps/gateway/sources/intelligence-summary/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "get_committee_roster",
+      "operation": "get_committee_roster",
+      "family": "legislative-directory",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/legislative-directory.mjs",
+        "apps/gateway/sources/legislative-directory/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "list_members",
+      "operation": "list_members",
+      "family": "legislative-directory",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/legislative-directory.mjs",
+        "apps/gateway/sources/legislative-directory/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "list_emails",
+      "operation": "mail.list_messages",
+      "family": "mail",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/sources/mail/handler.mjs",
+        "apps/gateway/sources/mail/request-context.mjs"
+      ]
+    },
+    {
+      "capabilityId": "get_email_thread",
+      "operation": "mail.read_thread",
+      "family": "mail",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/sources/mail/handler.mjs",
+        "apps/gateway/sources/mail/request-context.mjs"
+      ]
+    },
+    {
+      "capabilityId": "search_emails",
+      "operation": "mail.search_messages",
+      "family": "mail",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/sources/mail/handler.mjs",
+        "apps/gateway/sources/mail/request-context.mjs"
+      ]
+    },
+    {
+      "capabilityId": "list_upcoming_meetings",
+      "operation": "meeting.list_upcoming_meetings",
+      "family": "meeting-source",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/meeting-source.mjs",
+        "apps/gateway/sources/meetings/handler.mjs",
+        "apps/gateway/sources/meetings/request-context.mjs"
+      ]
+    },
+    {
+      "capabilityId": "query_debriefs",
+      "operation": "meeting.query_debriefs",
+      "family": "meeting-source",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/meeting-source.mjs",
+        "apps/gateway/sources/meetings/handler.mjs",
+        "apps/gateway/sources/meetings/request-context.mjs"
+      ]
+    },
+    {
+      "capabilityId": "read_client_meetings",
+      "operation": "meeting.read_client_meetings",
+      "family": "meeting-source",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/meeting-source.mjs",
+        "apps/gateway/sources/meetings/handler.mjs",
+        "apps/gateway/sources/meetings/request-context.mjs"
+      ]
+    },
+    {
+      "capabilityId": "query_tasks",
+      "operation": "query_tasks",
+      "family": "operational-reads",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/operational-reads.mjs",
+        "apps/gateway/sources/original-tracking/handler.mjs",
+        "apps/gateway/sources/original-tracking/request-context.mjs"
+      ]
+    },
+    {
+      "capabilityId": "query_outreach",
+      "operation": "query_outreach",
+      "family": "outreach-query",
+      "status": "partial",
+      "sdkExposed": false,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/outreach-query.mjs",
+        "apps/gateway/sources/outreach-query/handler.mjs",
+        "apps/gateway/sources/outreach-query/request-context.mjs",
+        "apps/gateway/sources/retained-reads/native-families.mjs"
+      ]
+    },
+    {
+      "capabilityId": "get_pe_bills",
+      "operation": "get_pe_bills",
+      "family": "pe-references",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/pe-references.mjs",
+        "apps/gateway/sources/pe-references/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "get_pe_contractors",
+      "operation": "get_pe_contractors",
+      "family": "pe-references",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/pe-references.mjs",
+        "apps/gateway/sources/pe-references/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "get_pe_report_language",
+      "operation": "get_pe_report_language",
+      "family": "pe-references",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/pe-references.mjs",
+        "apps/gateway/sources/pe-references/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "get_pe_budget_timeline",
+      "operation": "get_pe_budget_timeline",
+      "family": "program-elements",
+      "status": "absent",
+      "sdkExposed": false,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": []
+    },
+    {
+      "capabilityId": "get_program_element",
+      "operation": "get_program_element",
+      "family": "program-elements",
+      "status": "absent",
+      "sdkExposed": false,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": []
+    },
+    {
+      "capabilityId": "search_program_elements",
+      "operation": "search_program_elements",
+      "family": "program-elements",
+      "status": "absent",
+      "sdkExposed": false,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": []
+    },
+    {
+      "capabilityId": "query_economic_data",
+      "operation": "query_economic_data",
+      "family": "public-data",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/public-data.mjs",
+        "apps/gateway/sources/public-data/handler.mjs",
+        "apps/gateway/sources/retained-reads/native-families.mjs"
+      ]
+    },
+    {
+      "capabilityId": "search_federal_awards",
+      "operation": "search_federal_awards",
+      "family": "public-data",
+      "status": "absent",
+      "sdkExposed": false,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": []
+    },
+    {
+      "capabilityId": "search_federal_grants",
+      "operation": "search_federal_grants",
+      "family": "public-data",
+      "status": "absent",
+      "sdkExposed": false,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": []
+    },
+    {
+      "capabilityId": "search_committee_hearings",
+      "operation": "search_committee_hearings",
+      "family": "public-domain-hearings",
+      "status": "partial",
+      "sdkExposed": false,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/public-domain-hearings.mjs",
+        "apps/gateway/sources/public-domain-hearings/handler.mjs",
+        "apps/gateway/sources/public-domain-hearings/request-context.mjs",
+        "apps/gateway/sources/retained-reads/native-families.mjs"
+      ]
+    },
+    {
+      "capabilityId": "query_global_data",
+      "operation": "query_global_data",
+      "family": "public-domain-query",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/public-domain-query.mjs",
+        "apps/gateway/sources/public-domain-query/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "search_cbo_cost_estimates",
+      "operation": "search_cbo_cost_estimates",
+      "family": "public-reports",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/public-reports.mjs",
+        "apps/gateway/sources/public-reports/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "search_crs_reports",
+      "operation": "search_crs_reports",
+      "family": "public-reports",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/public-reports.mjs",
+        "apps/gateway/sources/public-reports/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "search_gao_reports",
+      "operation": "search_gao_reports",
+      "family": "public-reports",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/public-reports.mjs",
+        "apps/gateway/sources/public-reports/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "scrape_web_page",
+      "operation": "scrape_web_page",
+      "family": "public-web",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/public-web.mjs",
+        "apps/gateway/sources/public-web/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "search_public_web",
+      "operation": "search_public_web",
+      "family": "public-web",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/public-web.mjs",
+        "apps/gateway/sources/public-web/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "query_regulatory_dockets",
+      "operation": "query_regulatory_dockets",
+      "family": "regulatory-dockets",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/regulatory-dockets.mjs",
+        "apps/gateway/sources/regulatory-dockets/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "search_research_sources",
+      "operation": "search_research_sources",
+      "family": "research-legal-candidates",
+      "status": "absent",
+      "sdkExposed": false,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": []
+    },
+    {
+      "capabilityId": "get_legal_reference",
+      "operation": "get_legal_reference",
+      "family": "research-legal-legislation",
+      "status": "partial",
+      "sdkExposed": false,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/research-legal-legislation.mjs",
+        "apps/gateway/sources/research-legal-legislation/handler.mjs",
+        "apps/gateway/sources/research-legal-legislation/request-context.mjs",
+        "apps/gateway/sources/retained-reads/native-families.mjs"
+      ]
+    },
+    {
+      "capabilityId": "search_legislative_research",
+      "operation": "search_legislative_research",
+      "family": "research-legal-legislation",
+      "status": "partial",
+      "sdkExposed": false,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/research-legal-legislation.mjs",
+        "apps/gateway/sources/research-legal-legislation/handler.mjs",
+        "apps/gateway/sources/research-legal-legislation/request-context.mjs",
+        "apps/gateway/sources/retained-reads/native-families.mjs"
+      ]
+    },
+    {
+      "capabilityId": "search_legiwatch_news",
+      "operation": "search_legiwatch_news",
+      "family": "research-legal-news",
+      "status": "partial",
+      "sdkExposed": false,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/research-legal-news.mjs",
+        "apps/gateway/sources/research-legal-news/handler.mjs",
+        "apps/gateway/sources/research-legal-news/request-context.mjs",
+        "apps/gateway/sources/retained-reads/native-families.mjs"
+      ]
+    },
+    {
+      "capabilityId": "get_research_portfolio",
+      "operation": "get_research_portfolio",
+      "family": "research-portfolio",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/research-portfolio.mjs",
+        "apps/gateway/sources/research-portfolio/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "get_research_portfolio_changes",
+      "operation": "get_research_portfolio_changes",
+      "family": "research-portfolio",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/research-portfolio.mjs",
+        "apps/gateway/sources/research-portfolio/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "get_research_evidence",
+      "operation": "get_research_evidence",
+      "family": "research-portfolio-evidence",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/research-portfolio-evidence.mjs",
+        "apps/gateway/sources/research-portfolio-evidence/handler.mjs",
+        "apps/gateway/sources/research-portfolio-evidence/request-context.mjs"
+      ]
+    },
+    {
+      "capabilityId": "get_state_rule_status",
+      "operation": "get_state_rule_status",
+      "family": "rule-status",
+      "status": "absent",
+      "sdkExposed": false,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": []
+    },
+    {
+      "capabilityId": "search_sam_opportunities",
+      "operation": "search_sam_opportunities",
+      "family": "sam-opportunities",
+      "status": "absent",
+      "sdkExposed": false,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": []
+    },
+    {
+      "capabilityId": "get_state_legislator",
+      "operation": "get_state_legislator",
+      "family": "state-legislation",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/state-legislation.mjs",
+        "apps/gateway/sources/state-legislation/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "search_state_bills",
+      "operation": "search_state_bills",
+      "family": "state-legislation",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/state-legislation.mjs",
+        "apps/gateway/sources/state-legislation/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "get_state_bill_status",
+      "operation": "get_state_bill_status",
+      "family": "state-status-votes",
+      "status": "partial",
+      "sdkExposed": false,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/state-status-votes.mjs",
+        "apps/gateway/sources/retained-reads/native-families.mjs",
+        "apps/gateway/sources/state-status-votes/handler.mjs",
+        "apps/gateway/sources/state-status-votes/request-context.mjs"
+      ]
+    },
+    {
+      "capabilityId": "search_state_floor_votes",
+      "operation": "search_state_floor_votes",
+      "family": "state-status-votes",
+      "status": "partial",
+      "sdkExposed": false,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/state-status-votes.mjs",
+        "apps/gateway/sources/retained-reads/native-families.mjs",
+        "apps/gateway/sources/state-status-votes/handler.mjs",
+        "apps/gateway/sources/state-status-votes/request-context.mjs"
+      ]
+    },
+    {
+      "capabilityId": "search_intel_articles",
+      "operation": "search_intel_articles",
+      "family": "stored-intelligence",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/stored-intelligence.mjs",
+        "apps/gateway/sources/stored-intelligence/handler.mjs"
+      ]
+    },
+    {
+      "capabilityId": "find_contacts",
+      "operation": "find_contacts",
+      "family": "tenant-contacts",
+      "status": "complete",
+      "sdkExposed": true,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/entity-candidates.mjs",
+        "apps/gateway/general-reads/families/tenant-contacts.mjs",
+        "apps/gateway/sources/identity-contacts/handler.mjs",
+        "apps/gateway/sources/identity-contacts/request-context.mjs"
+      ]
+    },
+    {
+      "capabilityId": "search_tracked_bills",
+      "operation": "search_tracked_bills",
+      "family": "tracked-bills",
+      "status": "partial",
+      "sdkExposed": false,
+      "qualified": false,
+      "live": false,
+      "adapterPaths": [
+        "apps/gateway/general-reads/families/tracked-bills.mjs",
+        "apps/gateway/sources/retained-reads/native-families.mjs",
+        "apps/gateway/sources/tracked-bills/handler.mjs"
+      ]
+    }
+  ],
+  "families": [
+    {
+      "family": "acquisition-personnel",
+      "status": "complete",
+      "selectedSourceReads": 2,
+      "complete": 2,
+      "partial": 0,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 2,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "action-items-complete",
+      "status": "complete",
+      "selectedSourceReads": 1,
+      "complete": 1,
+      "partial": 0,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 1,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "bill-text",
+      "status": "complete",
+      "selectedSourceReads": 2,
+      "complete": 2,
+      "partial": 0,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 2,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "business-development",
+      "status": "partial",
+      "selectedSourceReads": 3,
+      "complete": 2,
+      "partial": 0,
+      "absent": 1,
+      "sdkExposedSelectedOperations": 2,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "certification-status",
+      "status": "absent",
+      "selectedSourceReads": 1,
+      "complete": 0,
+      "partial": 0,
+      "absent": 1,
+      "sdkExposedSelectedOperations": 0,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "client-documents",
+      "status": "complete",
+      "selectedSourceReads": 1,
+      "complete": 1,
+      "partial": 0,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 1,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "client-knowledge-memory",
+      "status": "complete",
+      "selectedSourceReads": 1,
+      "complete": 1,
+      "partial": 0,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 1,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "client-knowledge-monday",
+      "status": "complete",
+      "selectedSourceReads": 1,
+      "complete": 1,
+      "partial": 0,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 1,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "client-knowledge-profile",
+      "status": "complete",
+      "selectedSourceReads": 1,
+      "complete": 1,
+      "partial": 0,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 1,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "client-knowledge-search",
+      "status": "partial",
+      "selectedSourceReads": 2,
+      "complete": 1,
+      "partial": 0,
+      "absent": 1,
+      "sdkExposedSelectedOperations": 1,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "client-registry",
+      "status": "complete",
+      "selectedSourceReads": 1,
+      "complete": 1,
+      "partial": 0,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 1,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "data-search",
+      "status": "complete",
+      "selectedSourceReads": 1,
+      "complete": 1,
+      "partial": 0,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 1,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "dataset-metadata",
+      "status": "complete",
+      "selectedSourceReads": 1,
+      "complete": 1,
+      "partial": 0,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 1,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "disclosures",
+      "status": "complete",
+      "selectedSourceReads": 3,
+      "complete": 3,
+      "partial": 0,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 3,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "district-nexus",
+      "status": "complete",
+      "selectedSourceReads": 2,
+      "complete": 2,
+      "partial": 0,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 2,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "entity-candidates",
+      "status": "complete",
+      "selectedSourceReads": 1,
+      "complete": 1,
+      "partial": 0,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 1,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "facility-representation",
+      "status": "complete",
+      "selectedSourceReads": 1,
+      "complete": 1,
+      "partial": 0,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 1,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "federal-legislation",
+      "status": "complete",
+      "selectedSourceReads": 2,
+      "complete": 2,
+      "partial": 0,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 2,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "federal-market",
+      "status": "complete",
+      "selectedSourceReads": 5,
+      "complete": 5,
+      "partial": 0,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 5,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "florida-budget",
+      "status": "complete",
+      "selectedSourceReads": 1,
+      "complete": 1,
+      "partial": 0,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 1,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "funding-opportunities",
+      "status": "partial",
+      "selectedSourceReads": 5,
+      "complete": 0,
+      "partial": 5,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 0,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "intelligence-summary",
+      "status": "complete",
+      "selectedSourceReads": 1,
+      "complete": 1,
+      "partial": 0,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 1,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "legislative-directory",
+      "status": "complete",
+      "selectedSourceReads": 2,
+      "complete": 2,
+      "partial": 0,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 2,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "mail",
+      "status": "complete",
+      "selectedSourceReads": 3,
+      "complete": 3,
+      "partial": 0,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 3,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "meeting-source",
+      "status": "complete",
+      "selectedSourceReads": 3,
+      "complete": 3,
+      "partial": 0,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 3,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "operational-reads",
+      "status": "complete",
+      "selectedSourceReads": 1,
+      "complete": 1,
+      "partial": 0,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 1,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "outreach-query",
+      "status": "partial",
+      "selectedSourceReads": 1,
+      "complete": 0,
+      "partial": 1,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 0,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "pe-references",
+      "status": "complete",
+      "selectedSourceReads": 3,
+      "complete": 3,
+      "partial": 0,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 3,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "program-elements",
+      "status": "absent",
+      "selectedSourceReads": 3,
+      "complete": 0,
+      "partial": 0,
+      "absent": 3,
+      "sdkExposedSelectedOperations": 0,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "public-data",
+      "status": "partial",
+      "selectedSourceReads": 3,
+      "complete": 1,
+      "partial": 0,
+      "absent": 2,
+      "sdkExposedSelectedOperations": 1,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "public-domain-hearings",
+      "status": "partial",
+      "selectedSourceReads": 1,
+      "complete": 0,
+      "partial": 1,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 0,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "public-domain-query",
+      "status": "complete",
+      "selectedSourceReads": 1,
+      "complete": 1,
+      "partial": 0,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 1,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "public-reports",
+      "status": "complete",
+      "selectedSourceReads": 3,
+      "complete": 3,
+      "partial": 0,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 3,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "public-web",
+      "status": "complete",
+      "selectedSourceReads": 2,
+      "complete": 2,
+      "partial": 0,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 2,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "regulatory-dockets",
+      "status": "complete",
+      "selectedSourceReads": 1,
+      "complete": 1,
+      "partial": 0,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 1,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "research-legal-candidates",
+      "status": "absent",
+      "selectedSourceReads": 1,
+      "complete": 0,
+      "partial": 0,
+      "absent": 1,
+      "sdkExposedSelectedOperations": 0,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "research-legal-legislation",
+      "status": "partial",
+      "selectedSourceReads": 2,
+      "complete": 0,
+      "partial": 2,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 0,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "research-legal-news",
+      "status": "partial",
+      "selectedSourceReads": 1,
+      "complete": 0,
+      "partial": 1,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 0,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "research-portfolio",
+      "status": "complete",
+      "selectedSourceReads": 2,
+      "complete": 2,
+      "partial": 0,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 2,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "research-portfolio-evidence",
+      "status": "complete",
+      "selectedSourceReads": 1,
+      "complete": 1,
+      "partial": 0,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 1,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "rule-status",
+      "status": "absent",
+      "selectedSourceReads": 1,
+      "complete": 0,
+      "partial": 0,
+      "absent": 1,
+      "sdkExposedSelectedOperations": 0,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "sam-opportunities",
+      "status": "absent",
+      "selectedSourceReads": 1,
+      "complete": 0,
+      "partial": 0,
+      "absent": 1,
+      "sdkExposedSelectedOperations": 0,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "state-legislation",
+      "status": "complete",
+      "selectedSourceReads": 2,
+      "complete": 2,
+      "partial": 0,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 2,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "state-status-votes",
+      "status": "partial",
+      "selectedSourceReads": 2,
+      "complete": 0,
+      "partial": 2,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 0,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "stored-intelligence",
+      "status": "complete",
+      "selectedSourceReads": 1,
+      "complete": 1,
+      "partial": 0,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 1,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "tenant-contacts",
+      "status": "complete",
+      "selectedSourceReads": 1,
+      "complete": 1,
+      "partial": 0,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 1,
+      "qualified": false,
+      "live": false
+    },
+    {
+      "family": "tracked-bills",
+      "status": "partial",
+      "selectedSourceReads": 1,
+      "complete": 0,
+      "partial": 1,
+      "absent": 0,
+      "sdkExposedSelectedOperations": 0,
+      "qualified": false,
+      "live": false
+    }
+  ],
+  "sdk": {
+    "counts": {
+      "operations": 60,
+      "families": 36,
+      "selectedSourceOperations": 58,
+      "extraProductOrHistoricalOperations": 2
+    },
+    "extraOperations": [
+      {
+        "operation": "memory.list_own_proposals",
+        "family": "memory-proposals",
+        "kind": "product-state-read",
+        "capabilityId": "list_memory_proposals",
+        "selectedSourceOperation": null,
+        "countedAmong82SourceReads": false,
+        "sdkExposed": true,
+        "qualified": false,
+        "live": false
+      },
+      {
+        "operation": "query_action_items",
+        "family": "operational-reads",
+        "kind": "historical-contract-alias",
+        "capabilityId": "query_action_items",
+        "selectedSourceOperation": "actions.query",
+        "countedAmong82SourceReads": false,
+        "sdkExposed": true,
+        "qualified": false,
+        "live": false
+      }
+    ],
+    "registration": [
+      {
+        "family": "acquisition-personnel",
+        "operations": [
+          "get_acquisition_person",
+          "search_acquisition_personnel"
+        ]
+      },
+      {
+        "family": "action-items-complete",
+        "operations": [
+          "actions.query"
+        ]
+      },
+      {
+        "family": "bill-text",
+        "operations": [
+          "read_bill_text",
+          "search_congress_bills"
+        ]
+      },
+      {
+        "family": "business-development",
+        "operations": [
+          "get_business_development_context",
+          "get_business_development_recent_changes"
+        ]
+      },
+      {
+        "family": "client-documents",
+        "operations": [
+          "read_client_documents"
+        ]
+      },
+      {
+        "family": "client-knowledge-memory",
+        "operations": [
+          "search_memory"
+        ]
+      },
+      {
+        "family": "client-knowledge-monday",
+        "operations": [
+          "read_monday_client_boards"
+        ]
+      },
+      {
+        "family": "client-knowledge-profile",
+        "operations": [
+          "get_client_context"
+        ]
+      },
+      {
+        "family": "client-knowledge-search",
+        "operations": [
+          "query_knowledge_graph"
+        ]
+      },
+      {
+        "family": "client-registry",
+        "operations": [
+          "lookup_client_registry"
+        ]
+      },
+      {
+        "family": "data-search",
+        "operations": [
+          "search_capiro_data"
+        ]
+      },
+      {
+        "family": "dataset-metadata",
+        "operations": [
+          "list_global_datasets"
+        ]
+      },
+      {
+        "family": "disclosures",
+        "operations": [
+          "search_fara_registrations",
+          "search_lda_filings",
+          "search_sec_filings"
+        ]
+      },
+      {
+        "family": "district-nexus",
+        "operations": [
+          "get_district_nexus_changes",
+          "get_district_nexus_context"
+        ]
+      },
+      {
+        "family": "entity-candidates",
+        "operations": [
+          "resolve_entity"
+        ]
+      },
+      {
+        "family": "facility-representation",
+        "operations": [
+          "get_representation"
+        ]
+      },
+      {
+        "family": "federal-legislation",
+        "operations": [
+          "get_bill_status",
+          "search_floor_votes"
+        ]
+      },
+      {
+        "family": "federal-market",
+        "operations": [
+          "get_district_federal_market",
+          "search_contract_vehicles",
+          "search_federal_contract_awards",
+          "search_federal_subawards",
+          "search_procurement_forecasts"
+        ]
+      },
+      {
+        "family": "florida-budget",
+        "operations": [
+          "get_florida_budget_project"
+        ]
+      },
+      {
+        "family": "intelligence-summary",
+        "operations": [
+          "query_intelligence"
+        ]
+      },
+      {
+        "family": "legislative-directory",
+        "operations": [
+          "get_committee_roster",
+          "list_members"
+        ]
+      },
+      {
+        "family": "mail",
+        "operations": [
+          "mail.list_messages",
+          "mail.read_thread",
+          "mail.search_messages"
+        ]
+      },
+      {
+        "family": "meeting-source",
+        "operations": [
+          "meeting.list_upcoming_meetings",
+          "meeting.query_debriefs",
+          "meeting.read_client_meetings"
+        ]
+      },
+      {
+        "family": "memory-proposals",
+        "operations": [
+          "memory.list_own_proposals"
+        ]
+      },
+      {
+        "family": "operational-reads",
+        "operations": [
+          "query_action_items",
+          "query_tasks"
+        ]
+      },
+      {
+        "family": "pe-references",
+        "operations": [
+          "get_pe_bills",
+          "get_pe_contractors",
+          "get_pe_report_language"
+        ]
+      },
+      {
+        "family": "public-data",
+        "operations": [
+          "query_economic_data"
+        ]
+      },
+      {
+        "family": "public-domain-query",
+        "operations": [
+          "query_global_data"
+        ]
+      },
+      {
+        "family": "public-reports",
+        "operations": [
+          "search_cbo_cost_estimates",
+          "search_crs_reports",
+          "search_gao_reports"
+        ]
+      },
+      {
+        "family": "public-web",
+        "operations": [
+          "scrape_web_page",
+          "search_public_web"
+        ]
+      },
+      {
+        "family": "regulatory-dockets",
+        "operations": [
+          "query_regulatory_dockets"
+        ]
+      },
+      {
+        "family": "research-portfolio",
+        "operations": [
+          "get_research_portfolio",
+          "get_research_portfolio_changes"
+        ]
+      },
+      {
+        "family": "research-portfolio-evidence",
+        "operations": [
+          "get_research_evidence"
+        ]
+      },
+      {
+        "family": "state-legislation",
+        "operations": [
+          "get_state_legislator",
+          "search_state_bills"
+        ]
+      },
+      {
+        "family": "stored-intelligence",
+        "operations": [
+          "search_intel_articles"
+        ]
+      },
+      {
+        "family": "tenant-contacts",
+        "operations": [
+          "find_contacts"
+        ]
+      }
+    ]
+  },
+  "excludedCapabilityIds": [
+    "add_research_portfolio_review_note",
+    "apply_legiwatch_suggestion",
+    "build_opportunity_action_plan",
+    "compare_florida_budget_amounts",
+    "compare_funding_opportunities",
+    "compare_legislative_versions",
+    "confirm_memory",
+    "correct_memory",
+    "create_client",
+    "create_meeting_brief",
+    "create_research_portfolio_bookmark",
+    "create_research_portfolio_snapshot",
+    "draft_policy_memo",
+    "explain_opportunity_match",
+    "find_path_to",
+    "forget_memory",
+    "get_business_development_brief",
+    "get_legiwatch_review",
+    "get_pe_buyer_workspace",
+    "get_research_portfolio_analytics",
+    "get_research_portfolio_bookmarks",
+    "get_research_portfolio_fit",
+    "get_research_portfolio_imports",
+    "get_research_portfolio_operations",
+    "get_research_portfolio_reviews",
+    "get_research_portfolio_rules",
+    "manage_research_portfolio",
+    "prepare_legiwatch_briefing",
+    "prepare_research_portfolio_brief",
+    "prepare_research_portfolio_meeting",
+    "preview_legiwatch_relevance",
+    "reply_email",
+    "request_research_portfolio_output",
+    "resolve_business_development_source",
+    "save_business_development_brief",
+    "save_legislative_research",
+    "save_legiwatch_relevance",
+    "save_note",
+    "save_research_portfolio_output_to_client",
+    "send_email",
+    "update_client_profile",
+    "update_research_portfolio_change_state",
+    "watch_research_portfolio"
+  ]
+}

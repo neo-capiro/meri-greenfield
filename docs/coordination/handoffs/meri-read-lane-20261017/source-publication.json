@@ -1,0 +1,274 @@
+{
+  "schemaVersion": "meri-reviewed-source-publication/1",
+  "repository": "neo-capiro/meri-greenfield",
+  "pullRequest": "https://github.com/neo-capiro/meri-greenfield/pull/110",
+  "draft": true,
+  "head": "f7f4ed5b397fcd44576251739ed361aee6941d7a",
+  "tree": "e5f752758583cc56a720c1b40093c1fb23a7372c",
+  "base": "b4daa4adf6e8269e7c341751db9a02bf6d4f062b",
+  "branch": "codex/meri-read-completion-next-20261017",
+  "readback": {
+    "blobIdentities": 42,
+    "changedPaths": 42,
+    "ahead": 1,
+    "behind": 0,
+    "criticalFiles": [
+      "apps/gateway/sources/business-development/request-context.mjs",
+      "apps/gateway/sources/business-development/handler.mjs",
+      "apps/gateway/general-reads/integration.mjs",
+      "apps/runtime/native-authority/native-read-credentials/owner.mjs",
+      "apps/gateway/sources/research-legal-legislation/request-context.mjs",
+      "scripts/general-reads/adapters.json",
+      "apps/worker/conversation/reads/families.mjs",
+      "apps/runtime/native-authority/test/business-development-personal.test.mjs",
+      "apps/worker/conversation/reads/test/business-development.test.mjs",
+      "docs/coordination/reports/CODEX-READ-OWNER-DECISIONS-20261017.md",
+      "docs/coordination/reports/CODEX-READ-COMPLETION-20261017.md",
+      "docs/coordination/reports/CODEX-READ-COMPLETION-REVIEW-20261017.md",
+      "docs/coordination/ledgers/scope-ledger.json",
+      "docs/coordination/ledgers/MERI-FINAL-SCOPE-LEDGER-20261015.md"
+    ],
+    "exactTree": true
+  },
+  "tests": {
+    "affectedFiles": 19,
+    "passed": 1029,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "independent": "ACCEPT_SOURCE"
+  },
+  "counts": {
+    "complete": 58,
+    "partial": 13,
+    "absent": 11,
+    "selected": 82,
+    "incompleteFamilies": 15,
+    "sdkOperations": 60,
+    "sdkFamilies": 36,
+    "live": 0
+  },
+  "coordination": {
+    "backend": {
+      "threadId": "01a14534-418c-74f6-b593-fe3c52bb90c5",
+      "delivered": true
+    },
+    "dot": {
+      "threadId": "01a1450f-68da-7707-a574-9ed20372c0db",
+      "delivered": true
+    }
+  },
+  "files": [
+    {
+      "path": "apps/gateway/general-reads/integration.mjs",
+      "sha": "265f5bf5d954794f4ff345762ef1ffaab7546c06",
+      "bytes": 15112
+    },
+    {
+      "path": "apps/gateway/sources/business-development/handler.mjs",
+      "sha": "5713858941f819e5cc783ee6d2708f809b53f7f0",
+      "bytes": 2029
+    },
+    {
+      "path": "apps/gateway/sources/business-development/request-context.mjs",
+      "sha": "fce5c782535c562d120cbeda0624c6118c96ab04",
+      "bytes": 2098
+    },
+    {
+      "path": "apps/gateway/sources/business-development/test/fixture.mjs",
+      "sha": "0242cec9c9302fb25ffdd1c96dd89146b8cbde03",
+      "bytes": 5083
+    },
+    {
+      "path": "apps/gateway/sources/business-development/test/handler.test.mjs",
+      "sha": "5d687223c966b41ce572cbe466da01b01e332686",
+      "bytes": 12036
+    },
+    {
+      "path": "apps/gateway/sources/business-development/test/new-personal-source.test.mjs",
+      "sha": "a15358ee6af4d6e7b0ad11cdfb3d833034a0e396",
+      "bytes": 9017
+    },
+    {
+      "path": "apps/gateway/sources/research-legal-legislation/request-context.mjs",
+      "sha": "1847b6f332d9ab059f30eb90195a8cfbfe2d8992",
+      "bytes": 3263
+    },
+    {
+      "path": "apps/gateway/sources/research-legal-legislation/test/citation-precedence.test.mjs",
+      "sha": "7df112cc7d967b7ad62b9600aa8305ea2ac43fb4",
+      "bytes": 7116
+    },
+    {
+      "path": "apps/gateway/sources/research-legal-legislation/test/handler.test.mjs",
+      "sha": "ed94480e1bdf97ce26e5b1487c1fcd4621b5172a",
+      "bytes": 16584
+    },
+    {
+      "path": "apps/gateway/sources/research-legal-legislation/test/selectors.test.mjs",
+      "sha": "1a56ddd3a9d07ea964f90ee189b8741bd2426ca2",
+      "bytes": 6018
+    },
+    {
+      "path": "apps/runtime/native-authority/native-read-credentials/owner.mjs",
+      "sha": "e8a11b33f3d217f3b8593bcacffd2b885ec7fdbb",
+      "bytes": 14728
+    },
+    {
+      "path": "apps/runtime/native-authority/test/business-development-personal.test.mjs",
+      "sha": "64c8329a69c472715651c449a199254934d34d20",
+      "bytes": 12757
+    },
+    {
+      "path": "apps/runtime/test/funding-source-integration.test.mjs",
+      "sha": "6ca5ac822871d43008f3e3fe9247bf54c3b3d2b0",
+      "bytes": 9545
+    },
+    {
+      "path": "apps/worker/conversation/reads/families.mjs",
+      "sha": "e711d251f089b78a3cc46434be95b1b03ba2a856",
+      "bytes": 3813
+    },
+    {
+      "path": "apps/worker/conversation/reads/test/business-development.test.mjs",
+      "sha": "e50aad484b4585134e44ca73ca885fe3a1bdd600",
+      "bytes": 9670
+    },
+    {
+      "path": "apps/worker/conversation/reads/test/families.test.mjs",
+      "sha": "7bf7cf9dc48270ef839a6e7fb5df4a1b5db5ff6b",
+      "bytes": 6898
+    },
+    {
+      "path": "apps/worker/conversation/reads/test/source-slices.test.mjs",
+      "sha": "6fd5eceee8ea0874b4dbba77608a3de55fc08492",
+      "bytes": 8018
+    },
+    {
+      "path": "docs/coordination/ledgers/MERI-FINAL-SCOPE-LEDGER-20261015.md",
+      "sha": "9d86ab37374dc938e2cb6e3cf25320081d9e50a1",
+      "bytes": 112755
+    },
+    {
+      "path": "docs/coordination/ledgers/scope-ledger.json",
+      "sha": "578393ac55f660707d9cb8ad85cfc81ef5632a5f",
+      "bytes": 508194
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-BD-PERSONAL-SOURCE-20261017.md",
+      "sha": "0c176aefec870d9dfe188b256c14ab3108a2f0a7",
+      "bytes": 5399
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-LEGAL-CITATION-PRECEDENCE-20261017.md",
+      "sha": "40d81e599e52d135f15168c965ca256ab4b27a0c",
+      "bytes": 5503
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-READ-COMPLETION-20261017.md",
+      "sha": "d4468030387ace4544656455574409879adff4e2",
+      "bytes": 6018
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-READ-COMPLETION-LEDGER-20261017.md",
+      "sha": "7ba3346c82e57f38b049c2c4cf8586ab3d9a2dc0",
+      "bytes": 8047
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-READ-COMPLETION-OUTLINE-20261017.md",
+      "sha": "f547da334f9b99628e0a3e7b1e34dc9256cdf8a1",
+      "bytes": 5517
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-READ-COMPLETION-REVIEW-20261017.md",
+      "sha": "a85f260c8ac7ab4703ed0f3da41c130b0f131a9b",
+      "bytes": 13582
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-READ-OWNER-DECISIONS-20261017.md",
+      "sha": "eb8c44912716944895dc55cfb6d39de79cee42e4",
+      "bytes": 17039
+    },
+    {
+      "path": "docs/coordination/reports/read-completion-20261017/bd-native-runtime-initial.json",
+      "sha": "f5318bc46401c57e504d6267a7ae5d4703ca307b",
+      "bytes": 809
+    },
+    {
+      "path": "docs/coordination/reports/read-completion-20261017/bd-native-runtime-initial.txt",
+      "sha": "d46fea13ee55cca668b669bcb388c0ed21f6f2e0",
+      "bytes": 286
+    },
+    {
+      "path": "docs/coordination/reports/read-completion-20261017/bd-owner-sdk-final.json",
+      "sha": "0953acf26770933739032fdb6cf01865fb199281",
+      "bytes": 990
+    },
+    {
+      "path": "docs/coordination/reports/read-completion-20261017/bd-owner-sdk-final.txt",
+      "sha": "d81dbde2bbe9b7526c93a7a45f1676d0969724a7",
+      "bytes": 5716
+    },
+    {
+      "path": "docs/coordination/reports/read-completion-20261017/bd-owner-sdk-initial.json",
+      "sha": "aa2e63a01fb23938db363d3997876497b835b54d",
+      "bytes": 758
+    },
+    {
+      "path": "docs/coordination/reports/read-completion-20261017/bd-owner-sdk-initial.txt",
+      "sha": "8345402e9c3e3ee9d30159dc7b4d0c4d6e5e8a33",
+      "bytes": 7822
+    },
+    {
+      "path": "docs/coordination/reports/read-completion-20261017/bd-personal-source-focused.txt",
+      "sha": "e1ba5d060d015cec18c343f0e297c3f1aaed13d9",
+      "bytes": 2957
+    },
+    {
+      "path": "docs/coordination/reports/read-completion-20261017/bd-promotion-initial.json",
+      "sha": "1d5b354f26679ba359db207518c73e54b66131d7",
+      "bytes": 957
+    },
+    {
+      "path": "docs/coordination/reports/read-completion-20261017/bd-promotion-initial.txt",
+      "sha": "44e60c9413b6ce81f427dfbeb4704c9ff176cce6",
+      "bytes": 2174
+    },
+    {
+      "path": "docs/coordination/reports/read-completion-20261017/combined-affected-initial.json",
+      "sha": "01e377ca768f6151518d6bc3514bdf657d792999",
+      "bytes": 1742
+    },
+    {
+      "path": "docs/coordination/reports/read-completion-20261017/combined-affected-initial.txt",
+      "sha": "04c3066b9bcc77b85b4d1edb7a0dc2db40348701",
+      "bytes": 113869
+    },
+    {
+      "path": "docs/coordination/reports/read-completion-20261017/evidence-normalization.json",
+      "sha": "b02cec245f4cb296f74a90b456a4fe419e805bf7",
+      "bytes": 599
+    },
+    {
+      "path": "docs/coordination/reports/read-completion-20261017/legal-citation-precedence-focused.initial.json",
+      "sha": "82dc096567a8151393a0379ef9d092ab53902150",
+      "bytes": 823
+    },
+    {
+      "path": "docs/coordination/reports/read-completion-20261017/legal-citation-precedence-focused.initial.txt",
+      "sha": "0382d6fa36b71c25abf9f20c06480aeeb3c4f7a5",
+      "bytes": 2418
+    },
+    {
+      "path": "scripts/general-reads/adapters.json",
+      "sha": "274362dd8d1843e977c5d12a5de34061371a3eb2",
+      "bytes": 25511
+    },
+    {
+      "path": "scripts/scope-ledger/source-exposure.test.mjs",
+      "sha": "5082dd7e0d4630495c262c19c065f642c8668616",
+      "bytes": 22306
+    }
+  ],
+  "localEquivalentInformational": "e3b393c702b5df33e337e79a5c1f7063b6cb3757"
+}
