@@ -6,6 +6,8 @@ import {assertCapabilityFragment} from '../capabilities/fragment.mjs';
 import {createSdkCapabilities} from '../capabilities/index.mjs';
 import {buildConversationOptions} from '../options.mjs';
 import {binding,versions,id} from '../../../control/conversations/test/application-fixture.mjs';
+import {BASH_EGRESS_SCHEMA,bashEgressDomainsSha256} from '../egress/bash-egress.mjs';
+const egressFact=domains=>({schema:BASH_EGRESS_SCHEMA,httpProxyPort:41001,socksProxyPort:41002,domainsSha256:bashEgressDomainsSha256(domains)});
 const cwd=`/workspace/conversations/${binding.conversationId}`,signal=new AbortController().signal;
 const attested=Object.freeze({available:true,sdk:'0.3.295',cli:'2.1.295',weakerNestedSandbox:false,outerIsolationBoundary:true});
 const facts=(extra={})=>({runOwner:{append:async()=>{}},binding,cwd,now:Date.now,newId:()=>id(1),...extra});
@@ -32,19 +34,20 @@ test('Bash is admitted only with explicit policy eligibility AND an available at
 });
 
 test('the SDK sandbox settings lock every escape hatch, scrub every worker credential and confine writes to the task workspace',async()=>{
- const p=createBashSandbox(assertCapabilityPolicy({bash:true,sandboxNetworkDomains:['pypi.org','*.github.com']}),{cwd,attestation:attested,protectedPaths:{sdkConfigDirectory:'/run/meri/sdk/config',sdkSecureStorageDirectory:'/run/meri/sdk/secure'}});
- assert.deepEqual(p.tools,['Bash']);assert.deepEqual(p.allowedTools,[],'sandboxed Bash is auto-allowed by the SDK, never by name');assert.equal((await p.canUseTool('Bash',{command:'ls'},{signal})).behavior,'deny','a Bash call reaching the callback was not auto-allowed as sandboxed');
- assert.deepEqual(p.sandbox,{enabled:true,failIfUnavailable:true,autoAllowBashIfSandboxed:true,allowUnsandboxedCommands:false,
-  network:{allowedDomains:['pypi.org','*.github.com'],strictAllowlist:true,allowAllUnixSockets:false,allowLocalBinding:false},
+ const p=createBashSandbox(assertCapabilityPolicy({bash:true,sandboxNetworkDomains:['pypi.org','*.github.com']}),{cwd,attestation:attested,protectedPaths:{sdkConfigDirectory:'/run/meri/sdk/config',sdkSecureStorageDirectory:'/run/meri/sdk/secure'},egress:egressFact(['pypi.org','*.github.com']),approvals:{decide:async()=>null},binding,now:Date.now});
+ assert.deepEqual(p.tools,['Bash']);assert.deepEqual(p.allowedTools,[],'Bash is never pre-approved by name');assert.equal((await p.canUseTool('Bash',{command:'ls'},{signal})).behavior,'deny','a networked Bash call without a consumed approval is refused');
+ assert.deepEqual(p.sandbox,{enabled:true,failIfUnavailable:true,autoAllowBashIfSandboxed:false,allowUnsandboxedCommands:false,
+  network:{allowedDomains:['pypi.org','*.github.com'],strictAllowlist:true,allowAllUnixSockets:false,allowLocalBinding:false,httpProxyPort:41001,socksProxyPort:41002},
   filesystem:{allowWrite:[cwd],denyRead:['/run/meri/sdk/secure'],disabled:false},
   credentials:{envVars:SANDBOX_DENIED_ENV.map(name=>({name,mode:'deny'})),files:[{path:'/run/meri/sdk/config/.credentials.json',mode:'deny'}]},enableWeakerNestedSandbox:false});
  for(const name of ['ANTHROPIC_AUTH_TOKEN','ANTHROPIC_API_KEY','CLAUDE_CODE_OAUTH_TOKEN','AWS_ACCESS_KEY_ID','AWS_SECRET_ACCESS_KEY','AWS_SESSION_TOKEN','AWS_CONTAINER_CREDENTIALS_RELATIVE_URI','AWS_CONTAINER_CREDENTIALS_FULL_URI'])assert.ok(SANDBOX_DENIED_ENV.includes(name),name);
  assert.deepEqual(p.env,{CLAUDE_CODE_SUBPROCESS_ENV_SCRUB:'1'});
  assert.deepEqual(p.managedSettings,{sandbox:buildBashSandboxLocks(false)});assert.equal(p.managedSettings.sandbox.enableWeakerNestedSandbox,false);
- for(const key of ['allowUnixSockets','httpProxyPort','socksProxyPort','tlsTerminate','allowMachLookup','deniedDomains'])assert.equal(Object.hasOwn(p.sandbox.network,key),false,key);
+ for(const key of ['allowUnixSockets','tlsTerminate','allowMachLookup','deniedDomains'])assert.equal(Object.hasOwn(p.sandbox.network,key),false,key);
  for(const key of ['excludedCommands','ignoreViolations','bwrapPath','socatPath','ripgrep','enableWeakerNetworkIsolation','allowAppleEvents'])assert.equal(Object.hasOwn(p.sandbox,key),false,key);
  const weaker=createBashSandbox(assertCapabilityPolicy({bash:true}),{cwd,attestation:{...attested,weakerNestedSandbox:true}});assert.equal(weaker.sandbox.enableWeakerNestedSandbox,true);assert.equal(Object.hasOwn(weaker.managedSettings.sandbox,'enableWeakerNestedSandbox'),false,'the policy tier must not lock off what the attestation requires');
- assert.deepEqual(weaker.sandbox.credentials.files,[{path:'~/.claude/.credentials.json',mode:'deny'}]);assert.deepEqual(weaker.sandbox.filesystem.denyRead,[]);
+ assert.deepEqual(weaker.sandbox.credentials.files,[{path:'~/.claude/.credentials.json',mode:'deny'}]);assert.equal(weaker.sandbox.autoAllowBashIfSandboxed,true,'network-less Bash stays auto-allowed');
+ for(const key of ['httpProxyPort','socksProxyPort'])assert.equal(Object.hasOwn(weaker.sandbox.network,key),false,key);assert.deepEqual(weaker.sandbox.filesystem.denyRead,[]);
  assert.deepEqual(buildBashSandboxSettings({cwd,domains:[],weakerNestedSandbox:false,protectedPaths:{sdkConfigDirectory:'/c',sdkSecureStorageDirectory:'/c'}}).filesystem.denyRead,[],'one shared directory is protected through the credentials file entry');
  for(const bad of [{cwd:'relative',domains:[],weakerNestedSandbox:false},{cwd,domains:[],weakerNestedSandbox:false,protectedPaths:{sdkConfigDirectory:'rel'}}])assert.throws(()=>buildBashSandboxSettings(bad),/BASH_SANDBOX_CONFIGURATION/);
 });
