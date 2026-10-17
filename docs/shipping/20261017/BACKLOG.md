@@ -15,7 +15,7 @@ Integration branch: `fable/meri-first-chat-receiving-20261017` (PR #133), on roo
 
 | # | Lane | Owner (session) | Base / pins to receive | Status (17 Oct) | Key dependency |
 |---|---|---|---|---|---|
-| 1 | First shipment: images, deploy readiness, authenticated chat, saved history, second turn, Stop, task cleanup | Fable (this session) | PR #133 | Node runtime image **qualified** (`6617b236…`, build `398713a3`); proxy images B3 in progress; change set source; nothing deployed | Neo's stage approvals; dot: Core activation, listener map (backend PR78), frontend image |
+| 1 | First shipment: images, deploy readiness, authenticated chat, saved history, second turn, Stop, task cleanup | Fable (this session) | PR #133 | Node runtime image **qualified** (`6617b236…`, build `398713a3`); proxy B4 (Wolfi runtime) sealed at `ab590d9f`, awaiting dot scan-gate ack; change set source; nothing deployed | Neo's stage approvals; dot: Core activation, listener map (backend PR78), frontend image |
 | 2 | Read-tool families and skills: real adapters, authorization, installation/discovery, live qualification | lane-2 session | PR125 `69688364` accepted; PR132 `bba4ef68` HOLD_TESTS; Core PR52 `51c15744`, PR59 `59efe08f`, PR68 `8d6733c3` | source (69 complete / 3 partial / 10 absent of 82; installed/qualified/live 0) | Core read handlers (dot); denied scope-ledger payload stays unpublished |
 | 3 | Conversation write intents: proposals, approvals, execution, durable results | lane-3 session | root `59856683` plus write-intent sources (to inventory) | to inventory | Core write contracts (dot) |
 | 4 | Conversation lifecycle: history, paging, reconnect, pause/resume, recovery, continuation | lane-4 session | root `59856683` (conversations 0001–0017) | source, partial | none for source; lane 1 for live |
@@ -44,3 +44,6 @@ Integration branch: `fable/meri-first-chat-receiving-20261017` (PR #133), on roo
 | 17 Oct 11:11 | Proxy B1 `23210a45` FAILED (smoke HOME; receipt read-back 403), both fixed in `839fb16d` |
 | 17 Oct 11:50 | Proxy B2 `8724a1fb` FAILED (LiteLLM native callbacks), fixed in `f9b43fd9`, real smoke passes locally |
 | 17 Oct ~12:00 | Proxy B3 `2741f56a` started |
+| 17 Oct 12:00 | Proxy B3 FAILED at scan gate: smoke passed; Debian trixie base HIGH 9 (glibc/zlib/expat, no Debian fix). Not retried |
+| 17 Oct ~13:20 | Wolfi proxy runtime `100a56ca` + streaming sealer `ab590d9f`; focused suites pass; static link closure complete. B4 sealed (ZIP `d17e6d66…`), USD 4 proposed (363/600). **Waiting on dot ack of builder-only assembly scan semantics** (PR121 #issuecomment-6234210110) |
+| 17 Oct ~13:20 | Host commit memory exhausted (no pagefile): lane 6 turn stopped; lane 3 idle but not archivable (background work) |
