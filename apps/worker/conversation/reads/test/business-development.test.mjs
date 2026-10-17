@@ -27,7 +27,7 @@ const contexts=f=>f.core.state.calls.filter(call=>call.path.endsWith('/context')
 function unknown(f){const [r]=f.state.reservations.values();assert.equal(r.state,'UNKNOWN');assert.equal(r.output_bytes,null);assert.equal(r.charged_micro_usd,null);assert.equal(f.state.budget.consumed_micro_usd,0);assert.equal([...f.state.produced.values()][0].completion,null);}
 
 test('BD SDK exposes exactly the two complete operations to personal/client scope and withholds evidence despite forged inventories',()=>{
- assert.equal(familyReads().length,60);assert.equal(READ_FAMILY_IDS.length,36);
+ assert.equal(familyReads().length,76);assert.equal(READ_FAMILY_IDS.length,42);
  assert.deepEqual(READ_FAMILIES['business-development'],{clientScope:'optional',operationIds:ids});
  assert.deepEqual(familyReads().filter(row=>row.family==='business-development').map(row=>row.operation.id),ids);
  for(const kind of ['tenant','private-user','client']){
