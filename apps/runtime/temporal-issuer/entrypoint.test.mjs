@@ -47,17 +47,17 @@ function rolePin(role){
 }
 function configuration(){
  return {schemaVersion:1,startupTimeoutMs:30000,registrationRole:'test_issuer_role',
-  service:{schemaVersion:1,issuerOrigin:'https://issuer.meri.internal',kid:KID,namespace:'meri',
+  service:{schemaVersion:1,issuerOrigin:'https://issuer.meri.internal:8445',kid:KID,namespace:'meri',
    audience:'meri-temporal',maxRequestMs:5000,bootstrapMaxRequestMs:10000,
    maxBodyBytes:4096,currentnessLeaseMs:20000},
   taskAuthority:{schemaVersion:1,clusterArn:cluster,vpcId:'vpc-12345678',
    privateSubnetIds:['subnet-12345678'],securityGroupIds:['sg-12345678'],maxLeaseMs:10000,
    roles:{control:rolePin('control'),'temporal-worker':rolePin('temporal-worker')}},
   signer:{schemaVersion:1,keyArn:KEY_ARN,kid:KID,publicJwk,publicJwkSha256},
-  listen:{host:'10.0.1.42',port:443},
-  tls:{keyFile:'/run/meri-temporal/issuer/server.key',
-   certFile:'/run/meri-temporal/issuer/server.crt',caFile:'/run/meri-temporal/issuer/client-ca.pem'},
-  bootstrap:{caKeyFile:'/run/meri-temporal/issuer/client-ca.key',caSha256:caPin}};
+  listen:{host:'0.0.0.0',port:8445},
+  tls:{keyFile:'/run/meri/server.key',
+   certFile:'/run/meri/server.crt',caFile:'/run/meri/client-ca.pem'},
+  bootstrap:{caKeyFile:'/run/meri/client-ca.key',caSha256:caPin}};
 }
 const registration={async probe(){return {schemaVersion:1,state:'READY'};},
  async readCurrent(){return {state:'REVOKED'};},
@@ -77,11 +77,13 @@ function setup({publicReply,readMaterial,serviceFactory,registrationPort=registr
  const createService=serviceFactory??(()=>{
   let listening=false;
   return {async listen({tls,host,port}){
-   events.push('listen');assert.equal(host,'10.0.1.42');assert.equal(port,443);
+   events.push('listen');assert.equal(host,'0.0.0.0');assert.equal(port,8445);
    assert.equal(tls.key.toString(),'test-only-server.key');
    assert.equal(tls.cert.toString(),'test-only-server.crt');
    assert.deepEqual(tls.ca,caPem);listening=true;
-  },async close(){events.push('close');listening=false;},available(){return listening;}};
+  },async close(){events.push('close');listening=false;
+   return {schemaVersion:1,state:'CLEAN',listenerStopped:true,pendingRequests:0};},
+   available(){return listening;}};
  });
  const entrypoint=createTemporalIssuerEntrypoint({configuration:settings,
   serviceTaskRegistration:registrationPort,awsClients,readMaterial:material,now,
@@ -98,15 +100,21 @@ test('closed configuration joins exact KMS kid, private bind, lease, and owner-o
   {...configuration(),extra:true},
   {...configuration(),startupTimeoutMs:120001},
   {...configuration(),listen:{host:'0.0.0.0',port:443}},
-  {...configuration(),listen:{host:'8.8.8.8',port:443}},
-  {...configuration(),listen:{host:'10.0.1.42',port:8443}},
+  {...configuration(),listen:{host:'8.8.8.8',port:8445}},
+  {...configuration(),listen:{host:'10.0.1.42',port:8445}},
+  {...configuration(),listen:{host:'0.0.0.0',port:8443}},
   {...configuration(),tls:{...configuration().tls,keyFile:'/tmp/issuer.key'}},
+  {...configuration(),tls:{...configuration().tls,keyFile:'/run/meri-temporal/issuer/server.key'}},
+  {...configuration(),tls:{...configuration().tls,keyFile:'/run/meri/nested/server.key'}},
+  {...configuration(),bootstrap:{...configuration().bootstrap,caKeyFile:'/run/meri/nested/client-ca.key'}},
   {...configuration(),tls:{...configuration().tls,keyFile:configuration().tls.certFile}},
   {...configuration(),bootstrap:{...configuration().bootstrap,caKeyFile:configuration().tls.caFile}},
   {...configuration(),bootstrap:{...configuration().bootstrap,caSha256:'X'.repeat(64)}},
   {...configuration(),registrationRole:'Not-A-Database-Role'},
   {...configuration(),service:{...configuration().service,bootstrapMaxRequestMs:2999}},
   {...configuration(),service:{...configuration().service,bootstrapMaxRequestMs:14001}},
+  {...configuration(),service:{...configuration().service,issuerOrigin:'https://issuer.meri.internal'}},
+  {...configuration(),service:{...configuration().service,issuerOrigin:'https://issuer.meri.internal:443'}},
   {...configuration(),signer:{...configuration().signer,kid:'wrong-kid'}},
   {...configuration(),taskAuthority:{...configuration().taskAuthority,maxLeaseMs:20001}},
   {...configuration(),taskAuthority:{...configuration().taskAuthority,
@@ -161,8 +169,14 @@ test('borrowed primary Pool composes PG registration, task proof, and bootstrap 
    if(sql.includes('has_schema_privilege(current_user'))return {rows:[{
     session_role:'test_issuer_role',current_role:'test_issuer_role',
     superuser:false,bypass_rls:false,create_db:false,create_role:false,
-    inherit_role:false,table_owner:'test_schema_owner',schema_create:false,
-    table_update:false,table_delete:false,table_truncate:false,
+    inherit_role:false,table_owner:'test_schema_owner',schema_owner:'test_schema_owner',
+    table_owner_member:false,schema_owner_member:false,table_owner_set:false,schema_owner_set:false,
+    role_membership:false,public_schema_acl:false,public_table_acl:false,public_column_acl:false,
+    other_schema_acl:false,other_table_acl:false,other_column_acl:false,
+    issuer_schema_grant_option:false,issuer_table_grant_option:false,issuer_column_grant_option:false,
+    schema_create:false,table_update:false,table_delete:false,table_truncate:false,
+    table_trigger:false,table_references:false,column_references:false,
+    unexpected_column_update:false,
     schema_usage:true,table_select:true,table_insert:true,cert_update:true,
     expiry_update:true,proof_update:true,generation_update:true,timestamp_update:true,
     revoke_update:true}]};
@@ -181,7 +195,9 @@ test('borrowed primary Pool composes PG registration, task proof, and bootstrap 
    assert.equal(typeof bootstrap.redeem,'function');
    assert.equal(bootstrap.available(),true);
    assert.equal(typeof options.taskAuthority.readCurrent,'function');
-   return {async listen(){listening=true;},async close(){listening=false;},available(){return listening;}};}});
+   return {async listen(){listening=true;},async close(){listening=false;
+    return {schemaVersion:1,state:'CLEAN',listenerStopped:true,pendingRequests:0};},
+    available(){return listening;}};}});
  assert.deepEqual(await entrypoint.start(),{available:true});
  assert.equal(entrypoint.available(),true);
  assert.ok(queries.some(statement=>statement.includes('meri_service_identity.service_task_registrations LIMIT 0')));
@@ -211,12 +227,42 @@ test('wrong KMS public key refuses before any TLS read or listen',async()=>{
  assert.deepEqual(events,['kms']);assert.equal(entrypoint.available(),false);
 });
 
+test('close during an unsettled KMS startup read reports the raw startup and child operation',async()=>{
+ let entered,release;
+ const started=new Promise(resolve=>{entered=resolve;});
+ const pending=new Promise(resolve=>{release=resolve;});
+ const sdk={ecs:{send(){}},ec2:{send(){}},kms:{send(){entered();return pending;}}};
+ const entrypoint=createTemporalIssuerEntrypoint({configuration:configuration(),
+  serviceTaskRegistration:registration,awsClients:sdk,readMaterial:async path=>materialFor(path),
+  now,kmsCommands,serviceFactory:()=>{throw Error('must not construct service');}});
+ const startup=entrypoint.start();await started;
+ await assert.rejects(entrypoint.close(),error=>
+  error.code==='TEMPORAL_ISSUER_CLEANUP_UNKNOWN'&&
+  error.receipt.childReceipts.signer.pendingOperations>0);
+ await assert.rejects(startup,{code:'TEMPORAL_ISSUER_CLEANUP_UNKNOWN'});
+ release({KeyId:KEY_ARN,KeySpec:'RSA_2048',KeyUsage:'SIGN_VERIFY',
+  SigningAlgorithms:['RSASSA_PKCS1_V1_5_SHA_256'],PublicKey:DER});
+ await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(entrypoint.available(),false);
+});
+
+test('a stopped listener with pending raw service work is still CLEANUP_UNKNOWN',async()=>{
+ const {entrypoint}=setup({serviceFactory:()=>({async listen(){},available(){return true;},
+  async close(){return Object.freeze({schemaVersion:1,state:'CLEANUP_UNKNOWN',
+   listenerStopped:true,pendingRequests:1});}})});
+ await entrypoint.start();
+ await assert.rejects(entrypoint.close(),error=>
+  error.code==='TEMPORAL_ISSUER_CLEANUP_UNKNOWN'&&
+  error.receipt.listenerStopped===true&&error.receipt.pendingServiceOperations===1);
+});
+
 test('listener failure wipes every loaded buffer and closes; no readiness remains',async()=>{
  const material=[];
  const {entrypoint,events}=setup({readMaterial:async path=>{
   const bytes=materialFor(path);material.push(bytes);return bytes;
  },serviceFactory:()=>({async listen(){events.push('listen');throw Error('cannot bind');},
-  async close(){events.push('close');},available(){return false;}})});
+  async close(){events.push('close');return {schemaVersion:1,state:'CLEAN',
+   listenerStopped:true,pendingRequests:0};},available(){return false;}})});
  await assert.rejects(entrypoint.start(),{code:'TEMPORAL_ISSUER_ENTRYPOINT_REFUSED'});
  assert.equal(material.length,4);
  for(const bytes of material)assert.deepEqual(bytes,Buffer.alloc(bytes.length));
@@ -230,8 +276,9 @@ test('close while material is pending refuses late material and wipes it',async(
  const late=Buffer.from('late-private-material');
  const {entrypoint,events}=setup({readMaterial:async()=>{entered();return pending;}});
  const start=entrypoint.start();await started;
- await entrypoint.close();
- await assert.rejects(start,{code:'TEMPORAL_ISSUER_ENTRYPOINT_REFUSED'});
+ await assert.rejects(entrypoint.close(),error=>
+  error.code==='TEMPORAL_ISSUER_CLEANUP_UNKNOWN'&&error.receipt.pendingMaterial===1);
+ await assert.rejects(start,{code:'TEMPORAL_ISSUER_CLEANUP_UNKNOWN'});
  release(late);await new Promise(resolve=>setImmediate(resolve));
  assert.deepEqual(late,Buffer.alloc(late.length));
  assert.deepEqual(events,['kms']);assert.equal(entrypoint.available(),false);
@@ -251,12 +298,18 @@ test('a bounded startup deadline aborts a stalled material read without opening 
    return {KeyId:KEY_ARN,KeySpec:'RSA_2048',KeyUsage:'SIGN_VERIFY',
     SigningAlgorithms:['RSASSA_PKCS1_V1_5_SHA_256'],PublicKey:DER};}}},
   readMaterial:()=>pending,now,kmsCommands,
-  serviceFactory:()=>({async listen(){throw Error('must not listen');},async close(){},available(){return false;}})});
- await assert.rejects(timed.start(),{code:'TEMPORAL_ISSUER_ENTRYPOINT_REFUSED'});
+  serviceFactory:()=>({async listen(){throw Error('must not listen');},
+   async close(){return {schemaVersion:1,state:'CLEAN',listenerStopped:true,pendingRequests:0};},
+   available(){return false;}})});
+ await assert.rejects(timed.start(),error=>
+  error.code==='TEMPORAL_ISSUER_CLEANUP_UNKNOWN'&&error.receipt.pendingMaterial===1);
  assert.equal(timed.available(),false);
  release(material);await new Promise(resolve=>setImmediate(resolve));
  assert.deepEqual(material,Buffer.alloc(material.length));
- await timed.close();await entrypoint.close();assert.deepEqual(events,[]);
+ await assert.rejects(timed.close(),{code:'TEMPORAL_ISSUER_CLEANUP_UNKNOWN'});
+ assert.deepEqual(await entrypoint.close(),{schemaVersion:1,state:'CLEAN',listenerStopped:true,
+  pendingStartup:0,pendingMaterial:0,pendingExternalOperations:0,pendingServiceOperations:0,
+  childReceipts:{},cleanupErrors:[]});assert.deepEqual(events,[]);
 });
 
 test('a throwing service close still settles concurrent close with one result',async()=>{
@@ -277,7 +330,8 @@ test('a throwing service close still settles concurrent close with one result',a
  await entrypoint.start();
  const first=entrypoint.close(),second=entrypoint.close();
  assert.equal(first,second);
- await assert.rejects(first,/close failed/u);
+ await assert.rejects(first,error=>error.code==='TEMPORAL_ISSUER_CLEANUP_UNKNOWN'&&
+  error.receipt.cleanupErrors.includes('service'));
  assert.equal(closes,1);assert.deepEqual(destroyed,[]);
  assert.equal(entrypoint.available(),false);
 });
@@ -295,13 +349,17 @@ test('deadline wipes TLS immediately and re-closes a listener that finishes open
   serviceTaskRegistration:registration,awsClients:sdk,now,kmsCommands,
   readMaterial:async path=>{const bytes=materialFor(path);material.push(bytes);return bytes;},
   serviceFactory:()=>({async listen(){listenEntered();await pending;listening=true;},
-   async close(){closeCalls++;listening=false;},available(){return listening;}})});
+   async close(){closeCalls++;listening=false;
+    return {schemaVersion:1,state:'CLEAN',listenerStopped:true,pendingRequests:0};},
+    available(){return listening;}})});
  const startup=entrypoint.start();await entered;
- await assert.rejects(startup,{code:'TEMPORAL_ISSUER_ENTRYPOINT_REFUSED'});
+ await assert.rejects(startup,error=>error.code==='TEMPORAL_ISSUER_CLEANUP_UNKNOWN'&&
+  error.receipt.pendingStartup===1);
  assert.equal(material.length,4);
  for(const bytes of material)assert.deepEqual(bytes,Buffer.alloc(bytes.length));
  assert.equal(listening,false);assert.equal(entrypoint.available(),false);
  release();await new Promise(resolve=>setImmediate(resolve));
  assert.equal(listening,false);assert.ok(closeCalls>=2);
- await entrypoint.close();assert.equal(entrypoint.available(),false);
+ await assert.rejects(entrypoint.close(),{code:'TEMPORAL_ISSUER_CLEANUP_UNKNOWN'});
+ assert.equal(entrypoint.available(),false);
 });

@@ -70,7 +70,7 @@ export function parseTemporalIssuerBootstrapClientConfiguration(raw){
      !integer(raw.totalTimeoutMs,raw.requestTimeoutMs,30000)||
      !integer(raw.maxReplyBytes,1024,32768))throw refused();
   const issuer=new URL(raw.issuerOrigin),metadata=new URL(raw.metadataUri);
-  if(issuer.protocol!=='https:'||issuer.origin!==raw.issuerOrigin||issuer.port||
+  if(issuer.protocol!=='https:'||issuer.origin!==raw.issuerOrigin||issuer.port!=='8445'||
      issuer.pathname!=='/'||issuer.search||issuer.hash||issuer.username||issuer.password||
      !/^[a-z0-9.-]+$/u.test(issuer.hostname)||raw.serverName!==issuer.hostname||
      metadata.protocol!=='http:'||metadata.hostname!=='169.254.170.2'||metadata.port||
@@ -80,7 +80,7 @@ export function parseTemporalIssuerBootstrapClientConfiguration(raw){
  }catch{throw refused();}
 }
 
-function readHttp({request,url,method,body,configuration,ca,signal,secure}){
+function readHttp({request,url,method,body,configuration,ca,signal,secure,trackRequest}){
  return new Promise((resolve,reject)=>{
   let call,timer,done=false,size=0;const chunks=[];
   const finish=(value,error)=>{if(done)return;done=true;clearTimeout(timer);
@@ -113,6 +113,7 @@ function readHttp({request,url,method,body,configuration,ca,signal,secure}){
      else finish(Buffer.concat(chunks,size),false);});
     response.once('aborted',()=>finish(null,true));response.once('error',()=>finish(null,true));
    });
+   trackRequest(call);
    call.once('error',()=>finish(null,true));call.once('timeout',abort);
    signal?.addEventListener('abort',abort,{once:true});
    if(signal?.aborted)abort();else call.end(body);
@@ -178,10 +179,35 @@ export function createTemporalIssuerBootstrapClient({configuration,serverCaPem,c
  try{certificate(serverCa,c.serverCaSha256,now());
   clientCa=certificate(clientCaBytes,c.clientCaSha256,now());}
  catch{serverCa.fill(0);clientCaBytes.fill(0);throw refused();}
- let state='new',controller=null;
+ let state='new',controller=null,closeReceipt=null;
+ const physical=new Set();
+ const trackRequest=call=>{
+  physical.add(call);
+  call.once('close',()=>physical.delete(call));
+  // A completed ClientRequest can precede actual TLS/TCP socket retirement.
+  call.once('socket',socket=>{
+   physical.add(socket);
+   socket.once('close',()=>physical.delete(socket));
+   // A transport can deliver its assigned socket after the abort race has
+   // released the caller and after close walked the old request set.
+   if(state==='closed'||controller?.signal.aborted)try{socket.destroy?.();}catch{}
+  });
+ };
+ const close=()=>{
+  // Socket settlement alone cannot prove whether the issuer registered a
+  // certificate before abort. Preserve the first UNKNOWN retirement witness.
+  if(closeReceipt)return closeReceipt;
+  state='closed';controller?.abort();
+  for(const raw of physical)try{raw.destroy?.();}catch{}
+  serverCa.fill(0);clientCaBytes.fill(0);
+  const pendingOperations=physical.size+(controller===null?0:1);
+  closeReceipt=Object.freeze({schemaVersion:1,
+   state:pendingOperations===0?'CLEAN':'CLEANUP_UNKNOWN',pendingOperations});
+  return closeReceipt;
+ };
  return Object.freeze({
   available:()=>state==='new',
-  close(){state='closed';controller?.abort();serverCa.fill(0);clientCaBytes.fill(0);},
+  close,
   async bootstrap({signal}={}){
    if(state!=='new'||signal?.aborted)throw refused();
    state='running';controller=new AbortController();let keyPem,delivered=false;
@@ -191,14 +217,14 @@ export function createTemporalIssuerBootstrapClient({configuration,serverCaPem,c
     const startedAtMs=now();if(!integer(startedAtMs,0,Number.MAX_SAFE_INTEGER))throw refused();
     const metadataBytes=await readHttp({request:metadataRequest,
      url:new URL(c.metadataUri+'/task'),method:'GET',configuration:c,
-     signal:controller.signal,secure:false});
+     signal:controller.signal,secure:false,trackRequest});
     const metadata=json(metadataBytes),taskArn=metadata?.TaskARN;
     if(!taskArnFor(c.clusterArn,taskArn)||controller.signal.aborted)throw refused();
     const csr=createRunnerPoststartCsr();keyPem=Buffer.from(csr.keyPem,'utf8');
     const body={schemaVersion:1,role:c.role,taskArn,csrPem:csr.csrPem};
     const challengeBytes=await readHttp({request,url:new URL('/v1/internal/temporal/bootstrap/challenge',c.issuerOrigin),
      method:'POST',body:Buffer.from(JSON.stringify(body),'utf8'),configuration:c,
-     ca:serverCa,signal:controller.signal,secure:true});
+     ca:serverCa,signal:controller.signal,secure:true,trackRequest});
     const challengeReply=json(challengeBytes);
     const proofMessage=challenge(challengeReply,{configuration:c,taskArn,csrPem:csr.csrPem,
      startedAtMs,at:now()});
@@ -207,7 +233,7 @@ export function createTemporalIssuerBootstrapClient({configuration,serverCaPem,c
      proofBase64:csr.signProof(proofMessage)};
     const resultBytes=await readHttp({request,url:new URL('/v1/internal/temporal/bootstrap/redeem',c.issuerOrigin),
      method:'POST',body:Buffer.from(JSON.stringify(redeem),'utf8'),configuration:c,
-     ca:serverCa,signal:controller.signal,secure:true});
+     ca:serverCa,signal:controller.signal,secure:true,trackRequest});
     const finishedAtMs=now();
     if(controller.signal.aborted||challengeReply.expiresAtMs<=finishedAtMs||
        !integer(finishedAtMs,startedAtMs,startedAtMs+c.totalTimeoutMs)||state==='closed')throw refused();

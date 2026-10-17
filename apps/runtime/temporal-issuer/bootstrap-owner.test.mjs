@@ -174,3 +174,39 @@ test('registration is mandatory, and close/abort fail closed',async()=>{
  f.owner.close();
  await assert.rejects(f.challenge(),{code:'TEMPORAL_ISSUER_BOOTSTRAP_UNAVAILABLE'});
 });
+
+test('close reports a held AWS task proof until the raw read actually settles',async()=>{
+ const f=fixture();let release;
+ f.ports.taskProof.readCurrent=()=>new Promise(resolve=>{release=resolve;});
+ const pending=f.challenge();
+ await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(typeof release,'function');
+ const receipt=f.owner.close();
+ assert.equal(receipt.state,'CLEANUP_UNKNOWN');
+ assert.ok(receipt.pendingOperations>0);
+ await assert.rejects(pending,{code:'TEMPORAL_ISSUER_BOOTSTRAP_UNAVAILABLE'});
+ assert.equal(f.owner.close().state,'CLEANUP_UNKNOWN');
+ release(f.fact());
+ await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(f.owner.close(),receipt);
+});
+
+test('close cannot claim a held durable registration settled or release its late certificate',async()=>{
+ const f=fixture(),issued=await f.challenge();let release;
+ f.ports.registration.registerCurrent=row=>{f.calls.push('register');
+  f.ports.registrationRow=row;return new Promise(resolve=>{release=resolve;});};
+ const pending=f.redeem(issued);
+ for(let attempt=0;attempt<30&&typeof release!=='function';attempt++)
+  await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(typeof release,'function');
+ const receipt=f.owner.close();
+ assert.equal(receipt.state,'CLEANUP_UNKNOWN');
+ await assert.rejects(pending,{code:'TEMPORAL_ISSUER_BOOTSTRAP_UNAVAILABLE'});
+ assert.equal(f.owner.close().state,'CLEANUP_UNKNOWN');
+ release({schemaVersion:1,state:'CURRENT',certificateSha256:f.ports.registrationRow.certificateSha256,
+  role:'control',peerSanUri:f.ports.registrationRow.peerSanUri,taskArn:TASK,
+  revision:f.pin.revision,expiresAtMs:f.ports.registrationRow.expiresAtMs});
+ await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(f.owner.close(),receipt);
+ assert.equal(f.calls.includes('bindingRead'),false);
+});

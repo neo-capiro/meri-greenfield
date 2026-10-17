@@ -8,7 +8,7 @@ const jti='706430d8-2676-4dd5-9f8e-19d2186beb66';
 const {privateKey,publicKey}=generateKeyPairSync('rsa',{modulusLength:2048,publicExponent:65537});
 const publicJwk={...publicKey.export({format:'jwk'}),kid:'temporal-key-1',alg:'RS256',use:'sig'};
 const sign=input=>rsaSign('sha256',input,{key:privateKey,padding:constants.RSA_PKCS1_PADDING});
-const base={issuerOrigin:'https://issuer.meri.internal',kid:'temporal-key-1',publicJwk,role:'control',subject:'meri-temporal-control:v1',audience:'meri-temporal',namespace:'meri',nowMs};
+const base={issuerOrigin:'https://issuer.meri.internal:8445',kid:'temporal-key-1',publicJwk,role:'control',subject:'meri-temporal-control:v1',audience:'meri-temporal',namespace:'meri',nowMs};
 const issue=extra=>createTemporalIssuerToken({...base,validUntilMs:nowMs+30_000,sign,jti,...extra});
 const verify=(token,extra)=>verifyTemporalIssuerToken({...base,token,...extra});
 const failCode=(fn,code)=>assert.throws(fn,{code:'TEMPORAL_ISSUER_PROTOCOL_'+code});
@@ -31,18 +31,28 @@ test('externally signed RS256 token is verified, narrowly authorized and clipped
  assert.ok(Object.isFrozen(issued.claims.permissions));
 });
 
-test('absolute 60 second limit and exact bare origin plus slash join',async()=>{
+test('absolute 60 second limit and exact HTTPS :8445 origin plus slash join',async()=>{
  const issued=await issue({validUntilMs:nowMs+300_000});
  assert.equal(issued.claims.exp-issued.claims.iat,60);
- assert.equal(issued.claims.iss,'https://issuer.meri.internal/');
+ assert.equal(issued.claims.iss,'https://issuer.meri.internal:8445/');
  const first=await createTemporalIssuerToken({...base,validUntilMs:nowMs+30_000,sign});
  const second=await createTemporalIssuerToken({...base,validUntilMs:nowMs+30_000,sign});
  assert.match(first.claims.jti,/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u);
  assert.notEqual(first.claims.jti,second.claims.jti);
- failCode(()=>verify(issued.token,{issuerOrigin:'https://issuer.meri.internal/'}),'ISSUER');
- failCode(()=>verify(issued.token,{issuerOrigin:'https://issuer.meri.internal/other'}),'ISSUER');
- failCode(()=>verify(issued.token,{issuerOrigin:'http://issuer.meri.internal'}),'ISSUER');
- await rejectCode(()=>issue({issuerOrigin:'https://issuer.meri.internal/'}),'ISSUER');
+ for(const issuerOrigin of [
+  'https://issuer.meri.internal',
+  'https://issuer.meri.internal:443',
+  'https://issuer.meri.internal:8446',
+  'https://issuer.meri.internal:8445/',
+  'https://issuer.meri.internal:8445/other',
+  'https://issuer.meri.internal:8445?query=1',
+  'https://issuer.meri.internal:8445#fragment',
+  'https://user:password@issuer.meri.internal:8445',
+  'http://issuer.meri.internal:8445',
+ ]){
+  failCode(()=>verify(issued.token,{issuerOrigin}),'ISSUER');
+  await rejectCode(()=>issue({issuerOrigin}),'ISSUER');
+ }
  await rejectCode(()=>issue({validUntilMs:nowMs+400}),'CURRENTNESS');
 });
 
@@ -61,7 +71,7 @@ test('verified signatures still refuse wrong issuer, audience, subject, time, JT
  const header=JSON.parse(Buffer.from(headerSegment,'base64url'));
  const claims=JSON.parse(Buffer.from(claimsSegment,'base64url'));
  const cases=[
-  {iss:'https://issuer.meri.internal'},
+  {iss:'https://issuer.meri.internal:8445'},
   {aud:'other-temporal'},
   {sub:'meri-temporal-worker:v1'},
   {iat:claims.iat+3},

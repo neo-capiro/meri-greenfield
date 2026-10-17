@@ -38,8 +38,16 @@ function fakePool({standby=false,commitError=false,grant=true,profileOverrides={
    if(sql.includes('has_schema_privilege(current_user'))return {rows:[{
     session_role:'meri_issuer',current_role:'meri_issuer',superuser:false,bypass_rls:false,
     create_db:false,create_role:false,inherit_role:false,table_owner:'migration_admin',
+    schema_owner:'migration_admin',table_owner_member:false,schema_owner_member:false,
+    table_owner_set:false,schema_owner_set:false,role_membership:false,
+    public_schema_acl:false,public_table_acl:false,public_column_acl:false,
+    other_schema_acl:false,other_table_acl:false,other_column_acl:false,
+    issuer_schema_grant_option:false,issuer_table_grant_option:false,
+    issuer_column_grant_option:false,
     schema_usage:state.grant,schema_create:false,table_select:true,table_insert:true,
-    table_update:false,table_delete:false,table_truncate:false,cert_update:true,
+    table_update:false,table_delete:false,table_truncate:false,
+    table_trigger:false,table_references:false,column_references:false,
+    unexpected_column_update:false,cert_update:true,
     expiry_update:true,proof_update:true,generation_update:true,timestamp_update:true,revoke_update:true,
     ...state.profileOverrides}]};
    if(sql==='SELECT task_arn FROM meri_service_identity.service_task_registrations LIMIT 0')
@@ -111,7 +119,15 @@ test('startup preflight rejects missing narrow writer grant without touching a r
 test('startup rejects owner, elevated login, SET ROLE, and broad destructive privileges',async()=>{
  for(const profileOverrides of [{table_owner:'meri_issuer'}, {superuser:true},
   {session_role:'shared_app'}, {table_delete:true}, {table_truncate:true},
-  {table_update:true}, {inherit_role:true}, {bypass_rls:true}]){
+  {table_update:true}, {inherit_role:true}, {bypass_rls:true},
+  {schema_owner:'meri_issuer'}, {table_owner_member:true}, {schema_owner_member:true},
+  {table_owner_set:true}, {schema_owner_set:true},
+  {role_membership:true}, {table_trigger:true}, {table_references:true},
+  {column_references:true}, {unexpected_column_update:true},
+  {public_schema_acl:true}, {public_table_acl:true}, {public_column_acl:true},
+  {other_schema_acl:true}, {other_table_acl:true}, {other_column_acl:true},
+  {issuer_schema_grant_option:true}, {issuer_table_grant_option:true},
+  {issuer_column_grant_option:true}]){
   const pool=fakePool({profileOverrides});
   const owner=createTemporalIssuerServiceTaskRegistrationPg({pool,expectedRole:'meri_issuer'});
   await assert.rejects(owner.probe(),{code:'TEMPORAL_ISSUER_REGISTRATION_UNAVAILABLE'});
@@ -168,6 +184,67 @@ test('lost COMMIT is UNKNOWN, never a positive certificate receipt; damaged conn
  // The fake models a committed write with a lost ACK. Exact retry recovers only
  // through the new primary transaction and matching durable row.
  assert.equal((await owner.registerCurrent(input())).state,'CURRENT');
+});
+
+test('closing while pool borrow is unresolved reports pending work and never ends the borrowed pool',async()=>{
+ const pool=fakePool();const original=pool.connect.bind(pool);
+ let release,entered;const started=new Promise(resolve=>{entered=resolve;});
+ pool.connect=()=>{entered();return new Promise(resolve=>{release=async()=>resolve(await original());});};
+ const owner=createTemporalIssuerServiceTaskRegistrationPg({pool,expectedRole:'meri_issuer'});
+ const probing=owner.probe();await started;
+ const receipt=owner.close();
+ assert.deepEqual(receipt,{schemaVersion:1,state:'CLEANUP_UNKNOWN',
+  pendingTransactions:1,pendingQueries:0,pendingBorrows:1,uncertain:false});
+ assert.equal(pool.state.endCalls,0);
+ await release();
+ await assert.rejects(probing,{code:'TEMPORAL_ISSUER_REGISTRATION_UNAVAILABLE'});
+ assert.equal(pool.state.release.length,1);
+ assert.equal(receipt.state,'CLEANUP_UNKNOWN');
+ assert.equal(owner.close().state,'CLEANUP_UNKNOWN');
+});
+
+test('closing during a pending COMMIT leaves an explicit uncertain transaction receipt',async()=>{
+ const pool=fakePool(),original=pool.connect.bind(pool);
+ let release,entered;const started=new Promise(resolve=>{entered=resolve;});
+ pool.connect=async()=>{
+  const client=await original(),query=client.query.bind(client);
+  client.query=(sql,values)=>{
+   if((typeof sql==='object'?sql.text:sql)==='COMMIT'){
+    entered();return new Promise(resolve=>{release=()=>resolve(query(sql,values));});
+   }
+   return query(sql,values);
+  };
+  return client;
+ };
+ const owner=createTemporalIssuerServiceTaskRegistrationPg({pool,expectedRole:'meri_issuer'});
+ const registering=owner.registerCurrent(input());await started;
+ const receipt=owner.close();
+ assert.equal(receipt.state,'CLEANUP_UNKNOWN');
+ assert.equal(receipt.pendingTransactions,1);
+ assert.equal(receipt.pendingQueries,1);
+ assert.equal(pool.state.endCalls,0);
+ release();
+ await assert.rejects(registering,{code:'TEMPORAL_ISSUER_REGISTRATION_COMMIT_UNKNOWN'});
+ assert.equal(owner.close().state,'CLEANUP_UNKNOWN');
+ assert.equal(owner.close().uncertain,true);
+});
+
+test('a rejected primary query remains cleanup-uncertain after an acknowledged rollback',async()=>{
+ const pool=fakePool(),original=pool.connect.bind(pool);
+ pool.connect=async()=>{
+  const client=await original(),query=client.query.bind(client);
+  client.query=(sql,values)=>{
+   if((typeof sql==='object'?sql.text:sql)==='SELECT pg_is_in_recovery() AS standby')
+    throw Error('client query timeout; server outcome not known');
+   return query(sql,values);
+  };
+  return client;
+ };
+ const owner=createTemporalIssuerServiceTaskRegistrationPg({pool,expectedRole:'meri_issuer'});
+ await assert.rejects(owner.probe(),{code:'TEMPORAL_ISSUER_REGISTRATION_UNAVAILABLE'});
+ assert.ok(pool.state.events.some(event=>event.sql==='ROLLBACK'));
+ assert.deepEqual(owner.close(),{schemaVersion:1,state:'CLEANUP_UNKNOWN',
+  pendingTransactions:0,pendingQueries:0,pendingBorrows:0,uncertain:true});
 });
 
 test('input/proof errors fail before writes, and source SQL locks permanence and grants',async()=>{

@@ -22,7 +22,7 @@ const files=new Map([
 
 function config(overrides={}){
  return {
-  schemaVersion:1,issuerOrigin:'https://issuer.meri.internal',audience:'meri-temporal',namespace:'meri',
+  schemaVersion:1,issuerOrigin:'https://issuer.meri.internal:8445',audience:'meri-temporal',namespace:'meri',
   identity:{role:'control',subject:'meri-temporal-control:v1',workloadPrincipal:'meri-workload-control:v1'},
   publicKey:{kid:jwk.kid,alg:'RS256',jwkSha256:pin,manifestFile:'/run/meri/issuer-jwks.json'},
   tls:{serverName:'issuer.meri.internal',issuerCaFile:'/run/meri/issuer-ca.pem',
@@ -34,7 +34,7 @@ function config(overrides={}){
 function writerRequest(overrides={}){
  return {schemaVersion:1,role:'control',subject:'meri-temporal-control:v1',
   workloadPrincipal:'meri-workload-control:v1',namespace:'meri',audience:'meri-temporal',
-  issuer:'https://issuer.meri.internal/',signal:undefined,...overrides};
+  issuer:'https://issuer.meri.internal:8445/',signal:undefined,...overrides};
 }
 
 function materials(reads){
@@ -84,7 +84,7 @@ function requestStub(reply,requests){
 }
 
 async function currentReply(){
- const token=await createTemporalIssuerToken({issuerOrigin:'https://issuer.meri.internal',kid:jwk.kid,
+ const token=await createTemporalIssuerToken({issuerOrigin:'https://issuer.meri.internal:8445',kid:jwk.kid,
   publicJwk:jwk,role:'control',subject:'meri-temporal-control:v1',audience:'meri-temporal',
   namespace:'meri',nowMs:NOW,validUntilMs:NOW+30_000,
   sign:async input=>sign('sha256',input,{key:privateKey,padding:constants.RSA_PKCS1_PADDING})});
@@ -92,17 +92,27 @@ async function currentReply(){
   identity:{role:'control',subject:'meri-temporal-control:v1',workloadPrincipal:'meri-workload-control:v1'},
   observedAtMs:NOW,validUntilMs:token.expiresAtMs,
   token:{token:token.token,expiresAtMs:token.expiresAtMs,
-   claims:{namespace:'meri',audience:'meri-temporal',issuer:'https://issuer.meri.internal/'}}};
+   claims:{namespace:'meri',audience:'meri-temporal',issuer:'https://issuer.meri.internal:8445/'}}};
 }
 
-test('pure configuration parser pins a bare HTTPS origin and exact slash-terminated issuer',()=>{
+test('pure configuration parser pins the HTTPS :8445 origin and exact slash-terminated issuer',()=>{
  const parsed=parseTemporalIssuerDeliveryConfiguration(config());
- assert.equal(parsed.issuerOrigin,'https://issuer.meri.internal');
- assert.equal(parsed.issuer,'https://issuer.meri.internal/');
+ assert.equal(parsed.issuerOrigin,'https://issuer.meri.internal:8445');
+ assert.equal(parsed.issuer,'https://issuer.meri.internal:8445/');
  assert.ok(Object.isFrozen(parsed));
- assert.throws(()=>parseTemporalIssuerDeliveryConfiguration(config({issuerOrigin:'https://issuer.meri.internal/'})),
-  {code:'TEMPORAL_ISSUER_DELIVERY_REFUSED'});
- assert.throws(()=>parseTemporalIssuerDeliveryConfiguration(config({issuerOrigin:'http://issuer.meri.internal'})),
+ for(const issuerOrigin of [
+  'https://issuer.meri.internal',
+  'https://issuer.meri.internal:443',
+  'https://issuer.meri.internal:8446',
+  'https://issuer.meri.internal:8445/',
+  'https://issuer.meri.internal:8445/path',
+  'https://issuer.meri.internal:8445?query=1',
+  'https://issuer.meri.internal:8445#fragment',
+  'https://user:password@issuer.meri.internal:8445',
+  'http://issuer.meri.internal:8445',
+ ])assert.throws(()=>parseTemporalIssuerDeliveryConfiguration(config({issuerOrigin})),
+  {code:'TEMPORAL_ISSUER_DELIVERY_REFUSED'},issuerOrigin);
+ assert.throws(()=>parseTemporalIssuerDeliveryConfiguration(config({tls:{...config().tls,serverName:'issuer.meri.internal:8445'}})),
   {code:'TEMPORAL_ISSUER_DELIVERY_REFUSED'});
  assert.throws(()=>parseTemporalIssuerDeliveryConfiguration(config({unexpected:'ignored'})),
   {code:'TEMPORAL_ISSUER_DELIVERY_REFUSED'});
@@ -126,7 +136,7 @@ test('the writer request is exact and refuses wrong role or issuer before materi
   request:requestStub(async()=>({payload:await currentReply()}),requests)});
  await assert.rejects(delivery.read(writerRequest({role:'temporal-worker'})),
   {code:'TEMPORAL_ISSUER_DELIVERY_REFUSED'});
- await assert.rejects(delivery.read(writerRequest({issuer:'https://issuer.meri.internal'})),
+ await assert.rejects(delivery.read(writerRequest({issuer:'https://issuer.meri.internal:8445'})),
   {code:'TEMPORAL_ISSUER_DELIVERY_REFUSED'});
  assert.deepEqual(reads,[]);
  assert.deepEqual(requests,[]);
@@ -138,10 +148,10 @@ test('a pinned public key and mTLS POST return only a verified RS256 current tok
   request:requestStub(async()=>({payload:await currentReply()}),requests)});
  const result=await delivery.read(writerRequest());
  assert.equal(result.state,'CURRENT');
- assert.equal(result.token.claims.issuer,'https://issuer.meri.internal/');
+ assert.equal(result.token.claims.issuer,'https://issuer.meri.internal:8445/');
  assert.equal(requests.length,1);
  const {url,options,body}=requests[0];
- assert.equal(url.href,'https://issuer.meri.internal/v1/internal/temporal/token/read');
+ assert.equal(url.href,'https://issuer.meri.internal:8445/v1/internal/temporal/token/read');
  assert.equal(options.method,'POST');
  assert.equal(options.servername,'issuer.meri.internal');
  assert.equal(options.minVersion,'TLSv1.3');
@@ -157,7 +167,7 @@ test('a pinned public key and mTLS POST return only a verified RS256 current tok
  assert.equal(options.headers.authorization,undefined);
  assert.deepEqual(JSON.parse(body.toString('utf8')),{schemaVersion:1,role:'control',
   subject:'meri-temporal-control:v1',workloadPrincipal:'meri-workload-control:v1',
-  namespace:'meri',audience:'meri-temporal',issuer:'https://issuer.meri.internal/'});
+  namespace:'meri',audience:'meri-temporal',issuer:'https://issuer.meri.internal:8445/'});
  assert.deepEqual(reads.map(read=>read.kind),['manifest','issuerCa','clientCert','clientKey']);
  assert.equal(delivery.available(),true);
  delivery.close();

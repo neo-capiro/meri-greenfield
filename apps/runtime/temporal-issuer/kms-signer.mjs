@@ -52,15 +52,27 @@ export function createTemporalIssuerKmsSigner({configuration,kmsClient,commands,
       typeof commands.GetPublicKeyCommand!=='function'||typeof commands.SignCommand!=='function')))throw fault();
  const publicKey=validateTemporalIssuerPublicJwk(c.publicJwk,c.kid);
  const signatureLength=publicKey.asymmetricKeyDetails.modulusLength/8;
- let closed=false,initialized=false,initializing=null,loadedCommands=commands;
- const active=new Set();
+ let closed=false,initialized=false,initializing=null,loadedCommands=commands,loadingCommands=null,closeReceipt=null;
+ let activeCalls=0;
+ const active=new Set(),physical=new Set();
  const ensureOpen=()=>{if(closed)throw fault();};
+ // Keep the actual import/send promise after an abort has released its caller.
+ // Aborting an AWS SDK request is not proof that the request has settled.
+ function trackPhysical(work){
+  const pending=Promise.resolve().then(work);
+  physical.add(pending);
+  pending.finally(()=>physical.delete(pending)).catch(()=>{});
+  return pending;
+ }
  async function commandTypes(){
   if(loadedCommands)return loadedCommands;
-  const module=await import('@aws-sdk/client-kms');
-  if(typeof module.GetPublicKeyCommand!=='function'||typeof module.SignCommand!=='function')throw fault();
-  loadedCommands={GetPublicKeyCommand:module.GetPublicKeyCommand,SignCommand:module.SignCommand};
-  return loadedCommands;
+  loadingCommands??=trackPhysical(async()=>{
+   ensureOpen();const module=await import('@aws-sdk/client-kms');ensureOpen();
+   if(typeof module.GetPublicKeyCommand!=='function'||typeof module.SignCommand!=='function')throw fault();
+   loadedCommands={GetPublicKeyCommand:module.GetPublicKeyCommand,SignCommand:module.SignCommand};
+   return loadedCommands;
+  });
+  try{return await loadingCommands;}finally{loadingCommands=null;}
  }
  async function invoke(call,outerSignal){
   ensureOpen();checkSignal(outerSignal);
@@ -74,9 +86,10 @@ export function createTemporalIssuerKmsSigner({configuration,kmsClient,commands,
    if(controller.signal.aborted)stop();
   });
   try{
-   const result=await Promise.race([Promise.resolve().then(()=>{
+   const underlying=trackPhysical(()=>{
     ensureOpen();checkSignal(controller.signal);return call(controller.signal);
-   }),stopped]);
+   });
+   const result=await Promise.race([underlying,stopped]);
    ensureOpen();checkSignal(controller.signal);return result;
   }finally{
    controller.signal.removeEventListener('abort',stop);
@@ -97,6 +110,8 @@ export function createTemporalIssuerKmsSigner({configuration,kmsClient,commands,
   }finally{signal.removeEventListener('abort',abort);}
  }
  async function initialize({signal}={}){
+  activeCalls++;
+  try{
   ensureOpen();checkSignal(signal);
   if(initialized)return Object.freeze({keyArn:c.keyArn,kid:c.kid,publicJwkSha256:c.publicJwkSha256});
   // A second caller may stop waiting without aborting the first caller's
@@ -120,8 +135,11 @@ export function createTemporalIssuerKmsSigner({configuration,kmsClient,commands,
    return Object.freeze({keyArn:c.keyArn,kid:c.kid,publicJwkSha256:c.publicJwkSha256});
   })();
   try{return await initializing;}finally{initializing=null;}
+  }finally{activeCalls--;}
  }
  async function sign(input,{signal}={}){
+  activeCalls++;
+  try{
   ensureOpen();if(!initialized||!(input instanceof Uint8Array)||input.byteLength<1||input.byteLength>4096||
       !Number.isSafeInteger(now()))throw fault();
   const digest=createHash('sha256').update(input).digest();
@@ -135,7 +153,17 @@ export function createTemporalIssuerKmsSigner({configuration,kmsClient,commands,
    if(!verifySignature('sha256',input,{key:publicKey,padding:constants.RSA_PKCS1_PADDING},signature))throw fault();
    ensureOpen();checkSignal(signal);return signature;
   }finally{digest.fill(0);}
+  }finally{activeCalls--;}
  }
- function close(){closed=true;initialized=false;for(const controller of active)controller.abort();}
+ function close(){
+  // A late KMS completion cannot erase the first unresolved retirement witness.
+  // Clearing UNKNOWN requires owner reconciliation outside this signer.
+  if(closeReceipt)return closeReceipt;
+  closed=true;initialized=false;for(const controller of active)controller.abort();
+  const pendingOperations=physical.size+active.size+activeCalls;
+  closeReceipt=Object.freeze({schemaVersion:1,
+   state:pendingOperations===0?'CLEAN':'CLEANUP_UNKNOWN',pendingOperations});
+  return closeReceipt;
+ }
  return Object.freeze({initialize,sign,close});
 }
