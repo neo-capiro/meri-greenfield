@@ -14,19 +14,24 @@ from pathlib import Path
 SCRIPT = Path(__file__).resolve().parent / "proxy-image-build.sh"
 COMMIT, ATTEMPT = "c" * 40, "a" * 32
 AWS_STUB = r"""#!/usr/bin/env bash
-# Records each call; behaviour from STUB_PUT (ok|fail|empty) and STUB_HEAD (match|mismatch|fail).
-printf '%s\n' "$*" >> "$STUB_LOG"
+# Records each call; put-object behaviour from STUB_PUT (ok|fail|empty|badsum|badkms).
+printf '%s
+' "$*" >> "$STUB_LOG"
 case "$*" in
   *put-object*)
-    body=""; prev=""
-    for a in "$@"; do [ "$prev" = "--body" ] && body="$a"; prev="$a"; done
+    body=""; kms=""; prev=""
+    for a in "$@"; do [ "$prev" = "--body" ] && body="$a"; [ "$prev" = "--ssekms-key-id" ] && kms="$a"; prev="$a"; done
     cp "$body" "$STUB_STORE/$(basename "$body")"
-    case "${STUB_PUT:-ok}" in ok) echo "v-$(basename "$body")";; empty) echo "";; *) exit 254;; esac;;
-  *head-object*)
-    name=""; for a in "$@"; do case "$a" in results/*) name="$(basename "$a")";; esac; done
-    case "${STUB_HEAD:-match}" in
-      match) wc -c < "$STUB_STORE/$name" | tr -d '[:space:]'; echo;;
-      mismatch) echo 1;;
+    sum="$(python3 -c 'import base64,hashlib,sys;print(base64.b64encode(hashlib.sha256(open(sys.argv[1],"rb").read()).digest()).decode())' "$body")"
+    case "${STUB_PUT:-ok}" in
+      ok) printf '{"VersionId":"v-%s","ChecksumSHA256":"%s","ServerSideEncryption":"aws:kms","SSEKMSKeyId":"%s"}
+' "$(basename "$body")" "$sum" "$kms";;
+      empty) printf '{"ChecksumSHA256":"%s","ServerSideEncryption":"aws:kms","SSEKMSKeyId":"%s"}
+' "$sum" "$kms";;
+      badsum) printf '{"VersionId":"v1","ChecksumSHA256":"AAAA","ServerSideEncryption":"aws:kms","SSEKMSKeyId":"%s"}
+' "$kms";;
+      badkms) printf '{"VersionId":"v1","ChecksumSHA256":"%s","ServerSideEncryption":"aws:kms","SSEKMSKeyId":"other"}
+' "$sum";;
       *) exit 254;;
     esac;;
   *) exit 0;;
@@ -75,7 +80,8 @@ class ProxyImageReceiptTests(unittest.TestCase):
         self.assertIn("receiptVersion=v-proxy-image-receipt.json", r.stdout)
         receipt = json.loads((self.tmp / "store" / "proxy-image-receipt.json").read_text())
         self.assertEqual((receipt["status"], receipt["commit"], receipt["product"]["scan"]), ("SUCCEEDED", COMMIT, {}))
-        self.assertIn("head-object", self.log.read_text())
+        self.assertIn("--checksum-sha256", self.log.read_text())
+        self.assertNotIn("head-object", self.log.read_text())
 
     def test_failed_generation_never_reports_success_and_records_failure(self):
         self.counts(product=None)  # missing product counts makes receipt generation fail
@@ -98,7 +104,7 @@ class ProxyImageReceiptTests(unittest.TestCase):
 
     def test_failed_or_unproved_upload_is_not_success(self):
         for stub, expect in ((dict(STUB_PUT="fail"), "UNCONFIRMED"), (dict(STUB_PUT="empty"), "UNCONFIRMED"),
-                             (dict(STUB_HEAD="mismatch"), "UNCONFIRMED"), (dict(STUB_HEAD="fail"), "UNCONFIRMED")):
+                             (dict(STUB_PUT="badsum"), "UNCONFIRMED"), (dict(STUB_PUT="badkms"), "UNCONFIRMED")):
             with self.subTest(**stub):
                 shutil.rmtree(self.tmp / "store"); (self.tmp / "store").mkdir(); self.counts()
                 r = self.run_snippet("finish_success", **stub)

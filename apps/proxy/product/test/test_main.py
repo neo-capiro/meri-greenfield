@@ -221,8 +221,11 @@ class InstalledNativeStartup(unittest.IsolatedAsyncioTestCase):
         fixture = AuthTests(methodName="test_real_product_authority_refreshes_and_projects_sha_model_only")
         fixture_started = False
         gate = None
+        # HOME matches the assembly image's ENV, which production inherits; the nonroot
+        # UID has no passwd entry, so clearing it breaks the real Prisma import (Path.home()).
         env = {"LITELLM_LOCAL_MODEL_COST_MAP": "True", "AWS_EC2_METADATA_DISABLED": "true",
-               "AWS_SHARED_CREDENTIALS_FILE": os.devnull, "AWS_CONFIG_FILE": os.devnull}
+               "AWS_SHARED_CREDENTIALS_FILE": os.devnull, "AWS_CONFIG_FILE": os.devnull,
+               "HOME": "/tmp/meri-home"}
         try:
             with patch.dict(os.environ, env, clear=True), main._quiet_native_output():
                 native = import_module("litellm.proxy.proxy_server")

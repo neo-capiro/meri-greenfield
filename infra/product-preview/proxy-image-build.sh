@@ -16,18 +16,22 @@ PHASE=START
 declare -A DIGEST=()
 
 # Store one record and prove it: nonempty JSON object with schemaVersion 1 and a
-# known status, a returned VersionId, and a head-object of that exact version whose
-# size equals the local bytes. Prints the VersionId; any gap returns nonzero.
+# known status, a conditional put carrying the local SHA-256 (S3 rejects a mismatch),
+# and a response whose VersionId and server-computed ChecksumSHA256 match. The builder
+# role can write results/* but not read it, so no read-back is used. Prints the VersionId.
 record_file() { # $1 = name, $2 = local JSON file
-  local name="$1" file="$2" version size
+  local name="$1" file="$2" digest response version
   [[ -s "$file" ]] || return 1
   python3 -I -B -c 'import json,sys
 v=json.load(open(sys.argv[1],encoding="utf-8"))
 assert type(v) is dict and v.get("schemaVersion")==1 and v.get("status") in ("SUCCEEDED","FAILED")' "$file" || return 1
-  version="$(aws --region "$REGION" s3api put-object --bucket "$RESULT_BUCKET" --key "$RESULTS/$name"     --body "$file" --if-none-match '*' --server-side-encryption aws:kms --ssekms-key-id "$KMS_KEY_ARN"     --query VersionId --output text)" || return 1
-  [[ -n "$version" && "$version" != None && "$version" != null ]] || return 1
-  size="$(aws --region "$REGION" s3api head-object --bucket "$RESULT_BUCKET" --key "$RESULTS/$name"     --version-id "$version" --query ContentLength --output text)" || return 1
-  [[ "$size" == "$(wc -c < "$file" | tr -d '[:space:]')" ]] || return 1
+  digest="$(python3 -I -B -c 'import base64,hashlib,sys;print(base64.b64encode(hashlib.sha256(open(sys.argv[1],"rb").read()).digest()).decode())' "$file")" || return 1
+  response="$(aws --region "$REGION" s3api put-object --bucket "$RESULT_BUCKET" --key "$RESULTS/$name"     --body "$file" --if-none-match '*' --checksum-algorithm SHA256 --checksum-sha256 "$digest"     --server-side-encryption aws:kms --ssekms-key-id "$KMS_KEY_ARN" --output json)" || return 1
+  version="$(printf '%s' "$response" | python3 -I -B -c 'import json,sys
+r=json.load(sys.stdin); v=r.get("VersionId")
+assert type(v) is str and v and v not in ("None","null") and r.get("ChecksumSHA256")==sys.argv[1]
+assert r.get("ServerSideEncryption")=="aws:kms" and r.get("SSEKMSKeyId")==sys.argv[2]
+print(v)' "$digest" "$KMS_KEY_ARN")" || return 1
   printf '%s
 ' "$version"
 }
