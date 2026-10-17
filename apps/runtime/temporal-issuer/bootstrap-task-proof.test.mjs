@@ -24,13 +24,14 @@ function pin(role) {
     taskRoleArn: `arn:aws:iam::${account}:role/meri-${name}-task`,
     executionRoleArn: `arn:aws:iam::${account}:role/meri-${name}-execution`,
     revision: 'revision-17',
+    securityGroupIds: role === 'control' ? ['sg-05a350c100574b21f', 'sg-0c3da023e9e8fb292', 'sg-0d5b5286baf28242e'] : ['sg-00111cd0e475badfa', 'sg-0c3da023e9e8fb292'],
   };
 }
 
 function fixture(role = 'control') {
   const configuration = {
     schemaVersion: 1, clusterArn, vpcId: 'vpc-12345678',
-    privateSubnetIds: ['subnet-12345678'], securityGroupIds: ['sg-12345678'],
+    privateSubnetIds: ['subnet-12345678'],
     maxLeaseMs: 10000,
     roles: {control: pin('control'), 'temporal-worker': pin('temporal-worker')},
   };
@@ -62,7 +63,7 @@ function fixture(role = 'control') {
   const eni = {
     NetworkInterfaceId: 'eni-12345678', VpcId: configuration.vpcId,
     SubnetId: 'subnet-12345678', Status: 'in-use', PrivateIpAddress: peerIPv4,
-    Groups: [{GroupId: 'sg-12345678'}],
+    Groups: selected.securityGroupIds.map(GroupId => ({GroupId})),
   };
   const calls = [];
   const ecs = {

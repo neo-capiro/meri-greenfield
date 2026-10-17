@@ -38,12 +38,13 @@ function rolePin(name){
   containerName:`meri-${prefix}`,
   imageUri:`${account}.dkr.ecr.${region}.amazonaws.com/meri/${prefix}@sha256:${'b'.repeat(64)}`,
   taskRoleArn:`arn:aws:iam::${account}:role/meri-${prefix}-task`,
-  executionRoleArn:`arn:aws:iam::${account}:role/meri-${prefix}-execution`,revision:'revision-17'};
+  executionRoleArn:`arn:aws:iam::${account}:role/meri-${prefix}-execution`,revision:'revision-17',
+  securityGroupIds:name==='control'?['sg-05a350c100574b21f','sg-0c3da023e9e8fb292','sg-0d5b5286baf28242e']:['sg-00111cd0e475badfa','sg-0c3da023e9e8fb292']};
 }
 function fixture(){
  let currentMs=NOW;
  const configuration={schemaVersion:1,clusterArn:cluster,vpcId:'vpc-12345678',
-  privateSubnetIds:['subnet-12345678'],securityGroupIds:['sg-12345678'],maxLeaseMs:10000,
+  privateSubnetIds:['subnet-12345678'],maxLeaseMs:10000,
   roles:{control:rolePin('control'),'temporal-worker':rolePin('temporal-worker')}};
  const pin=configuration.roles.control,csr=createRunnerPoststartCsr(),calls=[];
  const socket={encrypted:true,remoteAddress:IP};

@@ -51,8 +51,9 @@ function product(){return {
  imageUri:`${account}.dkr.ecr.${region}.amazonaws.com/meri/product@sha256:${sha}`,
  logGroupName:'/meri/product',executionRoleArn:`arn:aws:iam::${account}:role/product-execution`,
  controlTaskRoleArn:`arn:aws:iam::${account}:role/product-control`,runtimeUser:'1000:1000',runnerSha256:sha,
- network:{privateSubnetId:'subnet-abcdef12',controlSecurityGroupId:'sg-1234abcd',
-  workerSecurityGroupId:'sg-5678abcd',runnerSecurityGroupIds:['sg-abcd1234']},
+ network:{privateSubnetIds:['subnet-abcdef12','subnet-abcdef34'],
+  controlSecurityGroupIds:['sg-1234abcd','sg-0c3da023e9e8fb292','sg-0d5b5286baf28242e'],
+  workerSecurityGroupIds:['sg-5678abcd','sg-0c3da023e9e8fb292'],runnerSecurityGroupIds:['sg-abcd1234']},
  sizing:{control:{cpu:512,memoryMiB:1024,ephemeralStorageGiB:21},
   temporalWorker:{cpu:512,memoryMiB:1024,ephemeralStorageGiB:21},
   runner:{cpu:1024,memoryMiB:2048,ephemeralStorageGiB:50}}
@@ -74,7 +75,7 @@ function projection(p,t){return Object.fromEntries(['control','temporalWorker'].
 
 test('same-VPC source join stays HOLD with exact cluster, subnet readback, SG, config, TLS and issuer pins',()=>{
  const p=product(),t=temporal(),input={productBinding:p,temporalBinding:t,runtimeProjection:projection(p,t),
-  productSubnetReadback:{SubnetId:p.network.privateSubnetId,VpcId:'vpc-0ac26cfac7ed972be',RouteTableId:'rtb-abcdef12'},
+  productSubnetReadbacks:p.network.privateSubnetIds.map(SubnetId=>({SubnetId,VpcId:'vpc-0ac26cfac7ed972be',RouteTableId:'rtb-abcdef12'})),
   issuerRenewal:renewal(t)};
  const receipt=inspectTemporalProductJoin(input);
  assert.equal(receipt.status,'HOLD');assert.equal(receipt.frontendAddress,'frontend.temporal.meri.internal:7233');
@@ -82,11 +83,15 @@ test('same-VPC source join stays HOLD with exact cluster, subnet readback, SG, c
  assert(receipt.pending.includes('same-vpc-route-and-sg-readback'));
  assert(!receipt.pending.includes('cross-vpc-route-and-sg-readback'));
  for(const mutate of [
-  x=>{x.productBinding.network.workerSecurityGroupId='sg-99999999';},
-  x=>{x.productSubnetReadback.VpcId='vpc-abcdef12';},
+  x=>{x.productBinding.network.workerSecurityGroupIds[0]='sg-99999999';},
+  x=>{x.productBinding.network.workerSecurityGroupIds[0]='sg-1234abcd';},
+  x=>{x.productBinding.network.controlSecurityGroupIds.push('sg-5678abcd');},
+  x=>{x.productSubnetReadbacks[1].VpcId='vpc-abcdef12';},
+  x=>{x.productSubnetReadbacks.pop();},
+  x=>{x.productSubnetReadbacks[1]=x.productSubnetReadbacks[0];},
   x=>{x.productBinding.clusterArn=`arn:aws:ecs:${region}:${account}:cluster/meri-product`;},
-  x=>{x.productSubnetReadback.SubnetId='subnet-deadbeef';},
-  x=>{x.productSubnetReadback.RouteTableId='';},
+  x=>{x.productSubnetReadbacks[0].SubnetId='subnet-deadbeef';},
+  x=>{x.productSubnetReadbacks[1].RouteTableId='';},
   x=>{x.runtimeProjection.control.audience='other';},
   x=>{x.runtimeProjection.temporalWorker.tlsCaSha256='f'.repeat(64);},
   x=>{x.issuerRenewal.issuerServiceTaskRoleArn=x.productBinding.controlTaskRoleArn;},
