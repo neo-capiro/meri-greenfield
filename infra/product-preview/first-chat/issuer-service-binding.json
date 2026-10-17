@@ -1,0 +1,53 @@
+{
+ "schema": "meri.product-preview.temporal-issuer/1",
+ "account": "967807252336",
+ "region": "us-east-1",
+ "placement": {
+  "clusterArn": "arn:aws:ecs:us-east-1:967807252336:cluster/capiro-dev",
+  "vpcId": "vpc-0ac26cfac7ed972be",
+  "privateSubnetIds": [
+   "subnet-0920665f91c905f01",
+   "subnet-0e38bd390f8961fef",
+   "subnet-06db79cd21239de19"
+  ]
+ },
+ "image": {
+  "uri": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:a0048f885796e33a6dab40ce12031317d90b9be06c401442df71d5559ae2b6e4",
+  "sourceCommit": "8cd5e45a89e5087e6f0694d5e0088242807c8808"
+ },
+ "roles": {
+  "executionRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-issuer-execution",
+  "taskRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-issuer-task"
+ },
+ "logGroupName": "/meri/product-preview/issuer",
+ "serviceDiscovery": {
+  "issuerRegistryArn": "arn:aws:servicediscovery:us-east-1:967807252336:service/srv-v7ppowfuwb7ub6me"
+ },
+ "network": {
+  "issuerSecurityGroupId": "sg-06fdc7ce3a117a478",
+  "dbClientSecurityGroupId": "sg-0d5b5286baf28242e"
+ },
+ "material": {
+  "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/issuer/material-MYhacb:::0edb8e72-2d80-4769-8f19-628430303362",
+  "expected": {
+   "schemaVersion": 1,
+   "role": "temporal-issuer",
+   "runtimeUser": "1000:1000",
+   "sourceCommit": "8cd5e45a89e5087e6f0694d5e0088242807c8808",
+   "imageDigest": "sha256:a0048f885796e33a6dab40ce12031317d90b9be06c401442df71d5559ae2b6e4",
+   "sha256ByPath": {
+    "/run/meri/issuer.json": "7c316d78d403eb1cddf92413185766765af0ef5ab9be5eade539eda90794a367",
+    "/run/meri/issuer-database.uri": "3e7126f2bb7a06a428c84b1ec7a67c6b923c0490cebec42be6151899249eab11",
+    "/run/meri/issuer-server.key": "8fb1be5b902e1e8cfda6c79fd4b91e47cb6bbf6276f62e1b9436abab536e5cb4",
+    "/run/meri/issuer-server.crt": "38de042ccb596df6df707b85b23c6b2f928ebf5a318f5a016e9f52869288a825",
+    "/run/meri/issuer-client-ca.pem": "f8984fff0b8068d88d71e7de104c96be5666c9304d3da51f40acf8dccf163193",
+    "/run/meri/issuer-client-ca.key": "f7cec29d522623c2afbcd563f89b0e264239e5e2cd27ddc45ebe0c23ec07f89d"
+   },
+   "materialContractSha256": "3062385de7a745abdb1408ff5904f44d3de2ad8b3a749bf82a073c410a50eb6f"
+  }
+ },
+ "startup": {
+  "configSha256": "7c316d78d403eb1cddf92413185766765af0ef5ab9be5eade539eda90794a367"
+ },
+ "desiredCount": 1
+}
