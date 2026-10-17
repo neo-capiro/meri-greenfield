@@ -1,0 +1,20 @@
+{
+  "projectName": "meri-greenfield-qualification-build",
+  "sourceTypeOverride": "S3",
+  "sourceLocationOverride": "meri-greenfield-qual-build-967807252336-us-east-1/REVIEWED_NEW_ARCHIVE_KEY",
+  "sourceVersion": "VERIFIED_NEW_ARCHIVE_VERSION",
+  "buildspecOverride": "EXACT_REVIEWED_RECIPE_JSON_STRING",
+  "idempotencyToken": "NEW_APPROVED_32_HEX_ATTEMPT",
+  "timeoutInMinutesOverride": 30,
+  "queuedTimeoutInMinutesOverride": 5,
+  "autoRetryLimitOverride": 0,
+  "artifactsOverride": {
+    "type": "S3",
+    "location": "meri-greenfield-qual-build-967807252336-us-east-1",
+    "path": "results/product-image/REVIEWED_FULL_COMMIT/NEW_APPROVED_32_HEX_ATTEMPT",
+    "name": "/",
+    "namespaceType": "NONE",
+    "packaging": "NONE",
+    "encryptionDisabled": false
+  }
+}

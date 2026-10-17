@@ -1,0 +1,150 @@
+{
+  "RoleName": "MeriGreenfield-QualificationBui-BuilderRoleBBEBFA71-8G97EeNmFM0H",
+  "PolicyName": "BuilderRoleDefaultPolicy8E4A45D4",
+  "PolicyDocument": {
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Action": [
+          "s3:GetObject*",
+          "s3:GetBucket*",
+          "s3:List*"
+        ],
+        "Resource": [
+          "arn:aws:s3:::meri-greenfield-qual-build-967807252336-us-east-1",
+          "arn:aws:s3:::meri-greenfield-qual-build-967807252336-us-east-1/inputs/*"
+        ],
+        "Effect": "Allow"
+      },
+      {
+        "Action": [
+          "kms:Decrypt",
+          "kms:DescribeKey"
+        ],
+        "Resource": "arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042",
+        "Effect": "Allow"
+      },
+      {
+        "Action": "s3:PutObject",
+        "Resource": "arn:aws:s3:::meri-greenfield-qual-build-967807252336-us-east-1/results/*",
+        "Effect": "Allow"
+      },
+      {
+        "Action": [
+          "kms:Encrypt",
+          "kms:ReEncrypt*",
+          "kms:GenerateDataKey*"
+        ],
+        "Resource": "arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042",
+        "Effect": "Allow"
+      },
+      {
+        "Action": [
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage",
+          "ecr:CompleteLayerUpload",
+          "ecr:UploadLayerPart",
+          "ecr:InitiateLayerUpload",
+          "ecr:PutImage"
+        ],
+        "Resource": "arn:aws:ecr:us-east-1:967807252336:repository/meri-greenfield/qualification-worker",
+        "Effect": "Allow"
+      },
+      {
+        "Action": "ecr:GetAuthorizationToken",
+        "Resource": "*",
+        "Effect": "Allow"
+      },
+      {
+        "Action": "ecr:DescribeImages",
+        "Resource": "arn:aws:ecr:us-east-1:967807252336:repository/meri-greenfield/qualification-worker",
+        "Effect": "Allow"
+      },
+      {
+        "Action": [
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ],
+        "Resource": "arn:aws:logs:us-east-1:967807252336:log-group:/meri-greenfield/qualification/build:*",
+        "Effect": "Allow"
+      },
+      {
+        "Condition": {
+          "StringEquals": {
+            "kms:ViaService": "logs.us-east-1.amazonaws.com"
+          }
+        },
+        "Action": [
+          "kms:Encrypt",
+          "kms:Decrypt",
+          "kms:ReEncrypt*",
+          "kms:GenerateDataKey*",
+          "kms:DescribeKey"
+        ],
+        "Resource": "arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042",
+        "Effect": "Allow"
+      },
+      {
+        "Action": [
+          "s3:GetObject*",
+          "s3:GetBucket*",
+          "s3:List*"
+        ],
+        "Resource": [
+          "arn:aws:s3:::meri-greenfield-qual-build-967807252336-us-east-1",
+          "arn:aws:s3:::meri-greenfield-qual-build-967807252336-us-east-1/inputs/qualification-source.zip"
+        ],
+        "Effect": "Allow"
+      },
+      {
+        "Action": [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ],
+        "Resource": [
+          "arn:aws:logs:us-east-1:967807252336:log-group:/aws/codebuild/meri-greenfield-qualification-build",
+          "arn:aws:logs:us-east-1:967807252336:log-group:/aws/codebuild/meri-greenfield-qualification-build:*"
+        ],
+        "Effect": "Allow"
+      },
+      {
+        "Action": [
+          "codebuild:CreateReportGroup",
+          "codebuild:CreateReport",
+          "codebuild:UpdateReport",
+          "codebuild:BatchPutTestCases",
+          "codebuild:BatchPutCodeCoverages"
+        ],
+        "Resource": "arn:aws:codebuild:us-east-1:967807252336:report-group/meri-greenfield-qualification-build-*",
+        "Effect": "Allow"
+      },
+      {
+        "Action": [
+          "kms:Decrypt",
+          "kms:Encrypt",
+          "kms:ReEncrypt*",
+          "kms:GenerateDataKey*"
+        ],
+        "Resource": "arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042",
+        "Effect": "Allow"
+      },
+      {
+        "Action": "codebuild:BatchGetBuilds",
+        "Resource": "arn:aws:codebuild:us-east-1:967807252336:project/meri-greenfield-qualification-build",
+        "Effect": "Allow",
+        "Sid": "ReadOwnProductBuildIdentity"
+      },
+      {
+        "Action": [
+          "ecr:DescribeRepositories",
+          "ecr:DescribeImageScanFindings"
+        ],
+        "Resource": "arn:aws:ecr:us-east-1:967807252336:repository/meri-greenfield/qualification-worker",
+        "Effect": "Allow",
+        "Sid": "ReadSelectedProductRepositoryAndScan"
+      }
+    ]
+  }
+}

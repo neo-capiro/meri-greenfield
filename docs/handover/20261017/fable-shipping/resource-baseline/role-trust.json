@@ -1,0 +1,30 @@
+{
+  "Role": {
+    "Path": "/",
+    "RoleName": "MeriGreenfield-QualificationBui-BuilderRoleBBEBFA71-8G97EeNmFM0H",
+    "RoleId": "AROA6CVOOW5YATAVJGRSF",
+    "Arn": "arn:aws:iam::967807252336:role/MeriGreenfield-QualificationBui-BuilderRoleBBEBFA71-8G97EeNmFM0H",
+    "AssumeRolePolicyDocument": {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Effect": "Allow",
+          "Principal": {
+            "Service": "codebuild.amazonaws.com"
+          },
+          "Action": "sts:AssumeRole",
+          "Condition": {
+            "StringEquals": {
+              "aws:SourceAccount": "967807252336"
+            },
+            "ArnEquals": {
+              "aws:SourceArn": "arn:aws:codebuild:us-east-1:967807252336:project/meri-greenfield-qualification-build"
+            }
+          }
+        }
+      ]
+    },
+    "MaxSessionDuration": 3600,
+    "PermissionsBoundary": null
+  }
+}

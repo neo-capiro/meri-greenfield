@@ -1,0 +1,366 @@
+{
+  "schemaVersion": 1,
+  "status": "OFFLINE_BYTE_INVENTORY_NOT_IMAGE_ACCEPTANCE",
+  "sourceCandidate": "31edd91a5762dd0a5909e541f815a25d7789fcc9",
+  "sourceCandidateTree": "7dd63badb808acd12716ea8269b70bf1bcaeb0ab",
+  "sourceParent": "6fd48c9c3d49962a111e7f801f9f71ad06a7f1c9",
+  "sourceFiles": [
+    {
+      "path": ".dockerignore",
+      "gitBlob": "c3b62a4bf49e41b4be0635158e13d98f47b9caab",
+      "sha256": "c5f84280069e09435862e5d10d785dc99f0e2e7ff95e726e6fa4e46959958e3c",
+      "bytes": 2287
+    },
+    {
+      "path": "apps/runtime/Dockerfile",
+      "gitBlob": "654263ce710abc29b28806940402fdc7af8d08d4",
+      "sha256": "77e676d85cab642d84d91ee7a0ef23d75e2b227016f0599697e288f964faae8b",
+      "bytes": 3915
+    },
+    {
+      "path": "apps/runtime/build/runtime-base-probe.mjs",
+      "gitBlob": "734c5b1b74137696fde0f7244ea017d71a8dde79",
+      "sha256": "45e17cc3682285a0ee9793f2eb17dff21a2eb0e36ca99bf661ddbcd287fd9a11",
+      "bytes": 3963
+    },
+    {
+      "path": "apps/runtime/build/runtime-base-probe.test.mjs",
+      "gitBlob": "8853c8ce62a3892b4d99c4a63ddfe3d8eabebeae",
+      "sha256": "5115b4e78a01283a0f5f4e9bdc4fdf728e823b94d66d3e7a8e718a8e9a0c9dcb",
+      "bytes": 1786
+    },
+    {
+      "path": "apps/runtime/build/runtime-packages.mjs",
+      "gitBlob": "b866984e2667021d3543e51103302f225c74ddf4",
+      "sha256": "e1190fbdb7dafbbe1d43f109f90854581a182ec4e8d47e70d810c3037475e873",
+      "bytes": 16981
+    },
+    {
+      "path": "apps/runtime/build/runtime-packages.test.mjs",
+      "gitBlob": "ce11a5c2e9b9c81131f9a9d3ce43843125438936",
+      "sha256": "1dd45e38fca70c5e7e4584ed8293278ab518d0e5c7664931063f0b785c0de631",
+      "bytes": 19522
+    },
+    {
+      "path": "infra/product-preview/RUNTIME-BASE-REMEDIATION-20261017.md",
+      "gitBlob": "4c4890a9fd19c5ffdcf53955495d5109098b0768",
+      "sha256": "23c4001521da94a2575de7b7cae54c1721e06bf1858798c60cf8103addde7556",
+      "bytes": 15147
+    },
+    {
+      "path": "infra/product-preview/image-build-producer.py",
+      "gitBlob": "81671442ec28e4e5c940351ea299b21f65ce824a",
+      "sha256": "9e4545549053a7c2a20ebb5006fcd9f0e12005d88ecfcd246d65923fa1cf852c",
+      "bytes": 36198
+    },
+    {
+      "path": "infra/product-preview/image-build-recipe.mjs",
+      "gitBlob": "22d7c32a159d279145f7292ba9e63478beeb0c20",
+      "sha256": "ab66ee505887c99a4a26d3865e5b8d48a7e27b9c64b99ac7b4274193187535d3",
+      "bytes": 30028
+    },
+    {
+      "path": "infra/product-preview/image-build-source.py",
+      "gitBlob": "2e11ef5c50f881ecac2f726cef3ec040a81bf525",
+      "sha256": "1fbfedcb4a42933a7d856cc1f8223a57e117e67f8710b1eb84baa15ed5d827a3",
+      "bytes": 17530
+    },
+    {
+      "path": "infra/product-preview/image-build.test.mjs",
+      "gitBlob": "3b2a6d06ceb49aa5a7521ee714dae16fa3388827",
+      "sha256": "3472f1021fcb644ea9da415b884af62f918426d913a5e61f9a0c97c74ed684e9",
+      "bytes": 36035
+    },
+    {
+      "path": "infra/product-preview/image-provenance.mjs",
+      "gitBlob": "39a6298b3762410d4015d2b161126056a4ea1442",
+      "sha256": "135be1323dfca2ae36b1a95aab4433832df2f9f3118aa63fc62f960ac3e3777c",
+      "bytes": 8075
+    },
+    {
+      "path": "infra/product-preview/image-provenance.test.mjs",
+      "gitBlob": "2d032c79038d4a8412db7d7f761015b0477767da",
+      "sha256": "03930482fbf0a8276f59c83c8f2957e308a7a3519569e25c530b521d55a3866f",
+      "bytes": 5764
+    },
+    {
+      "path": "infra/product-preview/runtime-base-fix-evidence.json",
+      "gitBlob": "1bf747b9980a03d46f38e8cc80098dd1ded013ad",
+      "sha256": "54fb4bf02716677386cb7e92938b5235d0f1ab2ac2cddec5030c964f01d96b4b",
+      "bytes": 7842
+    },
+    {
+      "path": "infra/product-preview/runtime-packages.lock.json",
+      "gitBlob": "44d1c57ab3e2f49be25b45a54290d347da724d94",
+      "sha256": "5c7724e6c9837dabc3146256aa55b3dce2230d10de5a2ff7c479f519aafb3ac9",
+      "bytes": 3459
+    },
+    {
+      "path": "infra/product-preview/test_image_build_diagnostics.py",
+      "gitBlob": "8e4ab2365f58e494b6c8771176911aac1f380851",
+      "sha256": "81539b8565037bcbf03f50e693a063cc60e68df9d3c01ca86481ff5fb4d7f2c9",
+      "bytes": 18057
+    }
+  ],
+  "portableFiles": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "b0cad24b2381699405f5947551764cf466b21c0664378dfbe9f700009f9be370",
+      "bytes": 8697
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/ACTIVATION-BINDINGS.md",
+      "sha256": "b8e528442c79a58a0c041629cf15fe7b38de5c2a11acaf87feb72a58a1003655",
+      "bytes": 27685
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/CONTRACT-REPRODUCTION.md",
+      "sha256": "de23eb5652e7ee24b6a7636fb4c2ce0595cbca6a58ce2d298693fab951b9c878",
+      "bytes": 10433
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/FABLE-SHIPPING-HANDOFF.md",
+      "sha256": "f6c022dec6e7e42601520928bd1f652eb35561ac7c0478c9799bac629607b15c",
+      "bytes": 42453
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/FINAL-LANE-INVENTORY.json",
+      "sha256": "d89e8edafdce1771d98a4240bbcc674d1883b01b3abfbe2bc7671e34f6112d59",
+      "bytes": 9693
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/jump-box-setup-snapshot.json",
+      "sha256": "08809d15b4fc4ea1ea51ed6060db2b9970b14340c5132dfdef68829cb6748431",
+      "bytes": 1656
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/MERI-CONTRACT-COMPATIBILITY.md",
+      "sha256": "f8f7729e761adbe8e6084d21016dcc4fdfcb613dc483fcfe72fd3222c48b98f8",
+      "bytes": 31231
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/MERI-CURRENT-QUALIFICATION.json",
+      "sha256": "45b569121474104973dce71019454b73918c82ae29118571c8389b3f20685edd",
+      "bytes": 4016
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/meri-paid-operation-checkpoint.json",
+      "sha256": "f267f864762518da8f230a03f5859c9a0dffae0c9599b28ded6931ba25ff863b",
+      "bytes": 2452
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/MERI-QUALIFICATION-CHECKPOINT.md",
+      "sha256": "34691b7ca7a8a7c74c5d1827b84987f21c6daac1eb11f8012e7db3b89cb4c1b8",
+      "bytes": 26455
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/MERI-SOURCE-AND-CONTEXT.md",
+      "sha256": "6aac5a447fc08a7991d06e11d14344faeec2ea386af3b73fb9def115c41e0e60",
+      "bytes": 28403
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/meri-source-inventory.json",
+      "sha256": "0fcc61a513ce6374056066e9cbd86d1ec4823740909f491a99d0f01acddd158e",
+      "bytes": 13127
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/MERI-TERMINAL-QUALIFICATION-20261017.md",
+      "sha256": "55dbb735c480641f86cbbe85e6f3631857f81dbdea142a5ce8ff02be15bc6d04",
+      "bytes": 4930
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/open-pr-inventory.json",
+      "sha256": "245071ccd9ec0c2d0841568e7b97bf66966588b3e7bcbfb4ca067c65feefa8c8",
+      "bytes": 102799
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/OWNER-HANDOFF-LINKS.json",
+      "sha256": "440bb11a75dfe6b56b0be7cd5d8624e639525960e664f7f27204cfa9a24f7c4b",
+      "bytes": 9337
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/PORTABLE-RESUME.md",
+      "sha256": "5921933480009b12f56b23b6b8e738b6b4806dcfc59bfc9c970be272646960f2",
+      "bytes": 19401
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/reproduce-contract-compatibility.py",
+      "sha256": "74498b5dbaefb443e1d5de924dca45cb2b8c96c7a8349b9d1735c2537e184f19",
+      "bytes": 16880
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/resource-baseline/kms-key-metadata.json",
+      "sha256": "8f107c03b87263673967f10986d28acb8e68a96ec040d4245163deccfb97f9e4",
+      "bytes": 425
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/resource-baseline/project.json",
+      "sha256": "06821a30de43fcbcabf8850e6578aa3735f925c01f7f08fe860a93605935b487",
+      "bytes": 1401
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/resource-baseline/README.md",
+      "sha256": "b2a933888f5ca227796dfd2040c1f446d0a3e2ea074fe56c38c1a511ccbd84fb",
+      "bytes": 873
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/resource-baseline/repository.json",
+      "sha256": "46bd62ed8a9913764c3b65eb2d10996981ca842001d88264033387d8931381b6",
+      "bytes": 496
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/resource-baseline/role-attached-policies.json",
+      "sha256": "37e64ed1e3db985e6323b5ab642a863ce6ad6773e398322fd00e5a985863b9d2",
+      "bytes": 71
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/resource-baseline/role-inline-policy-names.json",
+      "sha256": "f1221ad01baf965239d0760b6068d929db7685865ef0f785e80133714c63de9c",
+      "bytes": 108
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/resource-baseline/role-policy.json",
+      "sha256": "0bc629a72660e3e525ff301fdce865c6dabf8a6255df79715a5b42adc18cc7cc",
+      "bytes": 4662
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/resource-baseline/role-trust.json",
+      "sha256": "33f21c7a5463cbdc0599769443824876f049aeb905bdb1f2c0f344139328fc23",
+      "bytes": 900
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/RESUME-QUALIFICATION.md",
+      "sha256": "f9d9cb8dbfbd44ed226c920999d814c8fc7453ede3673e6900ef75e5d602e128",
+      "bytes": 15399
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/runtime-package-inputs/.gitattributes",
+      "sha256": "030f0faf00d3c4a46732967b4dae2b662aa6015a73fbe3c64b665e35319a9f17",
+      "bytes": 44
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/runtime-package-inputs/provenance.json",
+      "sha256": "6490d6491d6d2248623fc8739d7a4ef8af703456d70d788c26bc1f73a5de6980",
+      "bytes": 6905
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/runtime-package-inputs/public-signing-key.txt",
+      "sha256": "f0031424cf46f7db780ce63a45f0fd6aa6f85f601e6bb3b7a91fe3d4d5b7d2cc",
+      "bytes": 800
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/runtime-package-inputs/README.md",
+      "sha256": "b4dd9587dc0a3dd59de5d620300dd87a00ace1245c0771aa1260279b11d1f7c6",
+      "bytes": 6685
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/runtime-package-inputs/x86_64/APKINDEX.tar.gz",
+      "sha256": "01398efd4ae98d03bf5cb2c9c5fe397399bca61b81c8cb0cb36bd90e230137c6",
+      "bytes": 10635138
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/runtime-package-inputs/x86_64/bash-5.3-r14.apk",
+      "sha256": "28274b1abce489dd947e0b517935992a3b069647b7f3a4d8eb95bb262c0751d1",
+      "bytes": 784966
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/runtime-package-inputs/x86_64/libstdc++-16.2.0-r1.apk",
+      "sha256": "fc233c091aa551d6ba6da3e444d99a94e9947d53814d20183a0a7ded9a668f80",
+      "bytes": 1260650
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/runtime-package-inputs/x86_64/ncurses-6.6.20261010-r0.apk",
+      "sha256": "475d8c2ec463637844149030a9cc3fc607782cfe681e3c16f80d2a6bc940bb63",
+      "bytes": 625682
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/runtime-package-inputs/x86_64/ncurses-terminfo-base-6.6.20261010-r0.apk",
+      "sha256": "fac2c47f1e85175a8cb6842c374b5462aa8a10d548b5d602d28ee7829b00a751",
+      "bytes": 119342
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/scripts/aws-readonly-checkpoint.py",
+      "sha256": "9931b5307ef3b60952af20d8d0118272c7fd8020686fb7d562610372d968a2a9",
+      "bytes": 7944
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/scripts/check-product-buildspec.mjs",
+      "sha256": "313efe3aa54a965420c07d0a33273492ca25b3409bd4a49f5db075ec790b4583",
+      "bytes": 789
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/scripts/provenance-static-runner-loader.mjs",
+      "sha256": "7501acc47b72804028d31e9ce102207f977125fbdb96705c33a4b18bb7ed3f7f",
+      "bytes": 928
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/scripts/verify-public-index-signature.mjs",
+      "sha256": "4c7ec6ac7e6e83da04f86ede5a5bc3a28f983579cbde8957a79eb22e70b81312",
+      "bytes": 2221
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/SOURCE-CANDIDATE-CHECKS.md",
+      "sha256": "6c85d327cbcdd88ee5bef3f14b81ca35a79ee8c1cd0cbe9279330f91e989387e",
+      "bytes": 5924
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/source-review-receipts/independent-infra-candidate-review.json",
+      "sha256": "422f1393077be61b3bbeeff820b3f6ca152e71e693a4f36734fce10fc63bbeae",
+      "bytes": 4685
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/source-review-receipts/independent-runtime-helper-review.json",
+      "sha256": "3823f44461a2c16da20fedf6a56e504be4cd3d889a0276eb54a24d6711bd3897",
+      "bytes": 9790
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/templates/activation-bindings.worksheet.json",
+      "sha256": "4b0ced06e5c09a634e1155d4b94debde47afc080141d53ed1ebb51470d6cd2aa",
+      "bytes": 967
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/templates/image-request.template.json",
+      "sha256": "d8f09a1254bea13bf7696fa5cef2cf3368ac06228d9a259d859d306e53845c64",
+      "bytes": 1388
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/templates/start-build.template.json",
+      "sha256": "6b3378f53dc6e3de844e40131eec3b1cf2929e1a2e2da2c0184b54ff14ec3c33",
+      "bytes": 769
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/verify-runtime-package-inputs.py",
+      "sha256": "366d0901a365b4cb792a540cdcfcce5a6c3249a3ad79594a323b61ee33bb7c4d",
+      "bytes": 6005
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/W08-CHECK-MAP.md",
+      "sha256": "da72d6677e4bd5117af3d11d4c38adad344883c5f12d124920a6d94b75a901d9",
+      "bytes": 2895
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/w08-independent-source-review.json",
+      "sha256": "b73c989799c1e8d0f6356b37b9917359ccf7c8350d03ebdcab4b6f46f7956cfd",
+      "bytes": 3793
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/w08-local-proof.json",
+      "sha256": "3d8f3146162c3274ca3a3b8aab9984c18e28435cf7b0c9323376ebdebd1ecb96",
+      "bytes": 943
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/w08-source-qualification.json",
+      "sha256": "f1704b7a3480805fa0176eb4121c33edfb43a7ddb010b3a3efaf05fcab8e4708",
+      "bytes": 2360
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/w08-token-expectation-proof.json",
+      "sha256": "8e3a3eab85915c60aaf00e9b6269ced9a8303317d8eadcf7ce53cd2b106d1b81",
+      "bytes": 557
+    }
+  ],
+  "selfReference": "This manifest is excluded from its own byte list. The immutable completion URL and Git tree bind it.",
+  "ownedBuild": "5b67476a-5b30-43a7-9957-d83c72525aa2 freshly verified terminal FAILED/COMPLETED retry0/0",
+  "processCheck": "All known command sessions and bounded agents ended; OS process ownership read denied, shared unidentified processes untouched",
+  "noNewBuildUploadActivation": true
+}

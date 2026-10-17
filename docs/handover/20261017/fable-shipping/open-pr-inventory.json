@@ -1,0 +1,2152 @@
+{
+  "observedAtUtc": "2026-10-17T01:33:18.464195Z",
+  "assembledAtUtc": "2026-10-17T01:39:24.639090Z",
+  "asOf": "Local final snapshots captured before this documentation refresh; not a live API/deployment read.",
+  "kind": "Nonsecret open-PR metadata snapshot; not an integration allowlist",
+  "repositories": {
+    "capiro-frontend": {
+      "sourceSnapshotFile": "capiro-frontend-open-prs-final.json",
+      "sourceSnapshotSha256": "b19c5d562cfbd53d146174b561cc634716c97b0b17bc090cf9e6402a6e420916",
+      "snapshotFileModifiedAtUtc": "2026-10-17T01:33:17.422595Z",
+      "rowCount": 59,
+      "pullRequests": [
+        {
+          "baseRefName": "feat/meri-first-chat-bootstrap-preview-20261016",
+          "headRefName": "codex/meri-task-update-desktop-task6-20261016",
+          "headRefOid": "bd9e0d03c54ef4fbb57010c3b97cfb3d77bdf2b9",
+          "isDraft": true,
+          "number": 61,
+          "title": "Add desktop governed task update workflow",
+          "updatedAt": "2026-10-17T01:14:04Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/61"
+        },
+        {
+          "baseRefName": "feat/meri-non-meri-desktop-integration-20261016",
+          "headRefName": "feat/meri-first-chat-bootstrap-preview-20261016",
+          "headRefOid": "aae57e924e5812f331c76557f2b7ccaddd4ba0f9",
+          "isDraft": true,
+          "number": 60,
+          "title": "Add gated first-chat Core bootstrap and preview policy",
+          "updatedAt": "2026-10-17T01:30:56Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/60"
+        },
+        {
+          "baseRefName": "feat/non-meri-desktop-continuation-20261016",
+          "headRefName": "feat/meri-non-meri-desktop-integration-20261016",
+          "headRefOid": "2a6b817fb27aa9524ab5036a5b8e1bf0955a26c8",
+          "isDraft": true,
+          "number": 59,
+          "title": "Integrate Meri and non-Meri desktop preview at reviewed pins",
+          "updatedAt": "2026-10-16T17:32:03Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/59"
+        },
+        {
+          "baseRefName": "repair/capiro-desktop-closeout-20261014",
+          "headRefName": "fix/rich-document-boundary-keyboard",
+          "headRefOid": "4e1421054df0d32c564f7c9bc75cbd5e5366b428",
+          "isDraft": true,
+          "number": 58,
+          "title": "Integrate Planner drafts, Objective receiving, and document keyboard fix",
+          "updatedAt": "2026-10-16T17:32:55Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/58"
+        },
+        {
+          "baseRefName": "feat/non-meri-objective-plan-bindings",
+          "headRefName": "feat/non-meri-desktop-continuation-20261016",
+          "headRefOid": "d7b6d182356649214e956707e72672464320d699",
+          "isDraft": true,
+          "number": 57,
+          "title": "feat: continue non-Meri desktop Portfolio and Modules flows",
+          "updatedAt": "2026-10-16T16:50:29Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/57"
+        },
+        {
+          "baseRefName": "fix/engagement-workload-contract-closeout",
+          "headRefName": "feat/non-meri-objective-plan-bindings",
+          "headRefOid": "3ef15d9a8ae6a27a9c2f39ccd923b5e2e07797cd",
+          "isDraft": true,
+          "number": 56,
+          "title": "Add Objective linked-work views and manual Engagement plans",
+          "updatedAt": "2026-10-16T01:35:14Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/56"
+        },
+        {
+          "baseRefName": "fix/non-meri-settings-comment-closure",
+          "headRefName": "fix/selected-meeting-desktop-parity",
+          "headRefOid": "9b7e087ca1e7cc9c6dbbf60fe4e4c7eba4c1cb66",
+          "isDraft": true,
+          "number": 55,
+          "title": "Correct selected meeting desktop Prep layout",
+          "updatedAt": "2026-10-15T23:19:41Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/55"
+        },
+        {
+          "baseRefName": "fix/non-meri-settings-comment-closure",
+          "headRefName": "fix/engagement-workload-contract-closeout",
+          "headRefOid": "2758775ddf0e3b17898370be61540498344a9f57",
+          "isDraft": true,
+          "number": 54,
+          "title": "Fix Engagement Team workload grouping and disclose name lookup failures",
+          "updatedAt": "2026-10-15T23:14:43Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/54"
+        },
+        {
+          "baseRefName": "fix/rich-document-boundary-keyboard",
+          "headRefName": "fix/non-meri-settings-comment-closure",
+          "headRefOid": "e9df91d876eaad05d13fdd0707c1fe39d5affb62",
+          "isDraft": true,
+          "number": 53,
+          "title": "Validate Settings receipts and add safe comment formatting",
+          "updatedAt": "2026-10-15T22:24:19Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/53"
+        },
+        {
+          "baseRefName": "fix/planner-canonical-request-origin",
+          "headRefName": "repair/capiro-desktop-closeout-20261014",
+          "headRefOid": "0b6c7ecf2c3f0f66dee5a0e88cb67528a6cc5fc2",
+          "isDraft": false,
+          "number": 52,
+          "title": "Fix desktop task editing, Engagement navigation and time export lifetime",
+          "updatedAt": "2026-10-14T22:55:07Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/52"
+        },
+        {
+          "baseRefName": "integration/capiro-unified-desktop-20261014",
+          "headRefName": "fix/planner-canonical-request-origin",
+          "headRefOid": "0a73dd87d0430f07ac67d66e96457a4df304720c",
+          "isDraft": true,
+          "number": 51,
+          "title": "Preserve strict mutation origin checks behind standalone proxy",
+          "updatedAt": "2026-10-14T21:45:45Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/51"
+        },
+        {
+          "baseRefName": "repair/capiro-strategy-proposal-compatibility-20261014",
+          "headRefName": "integration/capiro-unified-desktop-20261014",
+          "headRefOid": "cc73ead8f591b31b2f2cfc8bb008913408d7a5e0",
+          "isDraft": true,
+          "number": 50,
+          "title": "Unify desktop fixes with Strategy and guard task detail writes",
+          "updatedAt": "2026-10-14T20:00:36Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/50"
+        },
+        {
+          "baseRefName": "repair/capiro-desktop-content-20261014",
+          "headRefName": "repair/capiro-desktop-detail-content-20261014",
+          "headRefOid": "7d7bf4c550e8d906c6ef3498ff79327820519daa",
+          "isDraft": true,
+          "number": 49,
+          "title": "Present desktop task detail and current Engagement navigation",
+          "updatedAt": "2026-10-14T18:48:37Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/49"
+        },
+        {
+          "baseRefName": "repair/capiro-desktop-details-20261014",
+          "headRefName": "repair/capiro-strategy-proposal-compatibility-20261014",
+          "headRefOid": "038ee79e93e9b4d1a371a5d38e17dd339b1af859",
+          "isDraft": true,
+          "number": 48,
+          "title": "fix(strategies): preserve unsupported stored proposal operations",
+          "updatedAt": "2026-10-14T18:32:46Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/48"
+        },
+        {
+          "baseRefName": "repair/capiro-desktop-details-20261014",
+          "headRefName": "repair/capiro-desktop-content-20261014",
+          "headRefOid": "882c7b51d79c6d20ace685fb32b5c76a1ef312bf",
+          "isDraft": true,
+          "number": 47,
+          "title": "Expose desktop task fields and canonical project sections",
+          "updatedAt": "2026-10-14T18:17:10Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/47"
+        },
+        {
+          "baseRefName": "repair/capiro-browser-release-20261014",
+          "headRefName": "repair/capiro-desktop-details-20261014",
+          "headRefOid": "462e7b554200f9b4a96c1589d55b6df7ce4a7df5",
+          "isDraft": true,
+          "number": 46,
+          "title": "fix(planner): qualify desktop drawers with pending-save guard",
+          "updatedAt": "2026-10-14T16:17:31Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/46"
+        },
+        {
+          "baseRefName": "integration/capiro-preview-candidate-20261014",
+          "headRefName": "repair/capiro-browser-release-20261014",
+          "headRefOid": "20568813c9dc9ce161962e159e0a3751a196195c",
+          "isDraft": true,
+          "number": 45,
+          "title": "fix(web): qualify desktop-first browser release repair",
+          "updatedAt": "2026-10-14T15:24:47Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/45"
+        },
+        {
+          "baseRefName": "integration/capiro-preview-candidate-20261014",
+          "headRefName": "repair/capiro-portfolio-modules-acceptance-20261014",
+          "headRefOid": "bded987746d1f1a263bb4209c90b21ac5c978f40",
+          "isDraft": true,
+          "number": 44,
+          "title": "Fix Planner pending draft controls and qualify existing Portfolio/Modules flows",
+          "updatedAt": "2026-10-14T13:03:04Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/44"
+        },
+        {
+          "baseRefName": "integration/capiro-preview-candidate-20261014",
+          "headRefName": "repair/capiro-meri-phone-parity-20261014",
+          "headRefOid": "d542239d13fd1af674c1fecf8130d68f3f6849ed",
+          "isDraft": true,
+          "number": 43,
+          "title": "Fix exact Meri phone Home parity and keyboard-visible draft actions",
+          "updatedAt": "2026-10-14T12:38:33Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/43"
+        },
+        {
+          "baseRefName": "repair/capiro-production-data-20261014",
+          "headRefName": "integration/capiro-preview-candidate-20261014",
+          "headRefOid": "ee9d872743f44f927fa924eebd764da8e093888c",
+          "isDraft": true,
+          "number": 42,
+          "title": "Qualify consolidated preview candidate with phone fixes and Strategy diagnostics",
+          "updatedAt": "2026-10-14T11:55:38Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/42"
+        },
+        {
+          "baseRefName": "repair/capiro-service-error-feedback-20261014",
+          "headRefName": "repair/capiro-figma-parity-20261014",
+          "headRefOid": "6dcb3923cec125be94fc72e80e31bec635687cd2",
+          "isDraft": true,
+          "number": 41,
+          "title": "Fix responsive Portfolio/Modules parity and bound Strategy validation diagnostics",
+          "updatedAt": "2026-10-14T11:37:19Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/41"
+        },
+        {
+          "baseRefName": "integration/capiro-receiving-20261014",
+          "headRefName": "repair/capiro-service-error-feedback-20261014",
+          "headRefOid": "d034866de50ac006a9cf49607f6d9e9d63c9b150",
+          "isDraft": true,
+          "number": 40,
+          "title": "Show Strategy proposal errors without inventing dependent counts",
+          "updatedAt": "2026-10-14T11:01:51Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/40"
+        },
+        {
+          "baseRefName": "repair/capiro-production-data-20261014",
+          "headRefName": "integration/capiro-receiving-20261014",
+          "headRefOid": "348c98dfe1962fac962157eb785732281a282d06",
+          "isDraft": true,
+          "number": 39,
+          "title": "Integrate governed Meri and saved Objective resource receiving",
+          "updatedAt": "2026-10-14T09:27:33Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/39"
+        },
+        {
+          "baseRefName": "repair/capiro-production-data-20261014",
+          "headRefName": "feat/capiro-objective-resource-choices-20261014",
+          "headRefOid": "6eacf3459d1191b5544b337ed00288bec55f257d",
+          "isDraft": true,
+          "number": 38,
+          "title": "Receive exact Objective Context Files and Calendar selections",
+          "updatedAt": "2026-10-14T09:06:02Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/38"
+        },
+        {
+          "baseRefName": "repair/capiro-production-data-20261014",
+          "headRefName": "feat/capiro-meri-conversations-20261014",
+          "headRefOid": "f8eadc87adb187fbb3d9593ef873f2520fcf2177",
+          "isDraft": true,
+          "number": 37,
+          "title": "Connect governed Meri conversation host through fixed public proxy",
+          "updatedAt": "2026-10-14T09:06:04Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/37"
+        },
+        {
+          "baseRefName": "repair/capiro-preview-favicon-20261014",
+          "headRefName": "repair/capiro-production-data-20261014",
+          "headRefOid": "7e170defb9442aa3ce0fd1d5b14060af831ce8d0",
+          "isDraft": true,
+          "number": 36,
+          "title": "Remove synthetic Meri data from ordinary production routes",
+          "updatedAt": "2026-10-14T07:09:03Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/36"
+        },
+        {
+          "baseRefName": "repair/capiro-preview-favicon-20261014",
+          "headRefName": "feat/capiro-directory-objective-20261014",
+          "headRefOid": "0a023523456a1f8fbaa61aec4f34a27a8d19a59a",
+          "isDraft": true,
+          "number": 35,
+          "title": "Reopen saved Directory targets for exact Objective versions",
+          "updatedAt": "2026-10-14T06:35:20Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/35"
+        },
+        {
+          "baseRefName": "integration/capiro-layout-received-candidate-20261014",
+          "headRefName": "repair/capiro-preview-favicon-20261014",
+          "headRefOid": "a2d210a728a8ec6d2f1f2137b1c3b8ea8dbb2b82",
+          "isDraft": true,
+          "number": 34,
+          "title": "Fix conventional favicon requests for the next preview",
+          "updatedAt": "2026-10-14T06:00:46Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/34"
+        },
+        {
+          "baseRefName": "review/capiro-sdk-015-20261014",
+          "headRefName": "repair/capiro-authorized-layout-20261014",
+          "headRefOid": "8f07bead475a186e470eb0b50f2e4fb03d4c40f5",
+          "isDraft": true,
+          "number": 33,
+          "title": "Bind saved layout ordering to authorized clients",
+          "updatedAt": "2026-10-14T04:52:09Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/33"
+        },
+        {
+          "baseRefName": "repair/capiro-workspace-admission-20261014",
+          "headRefName": "repair/capiro-auth-initialization-20261014",
+          "headRefOid": "6eeac2b95f5775447e9dd8ec25b9c556686d39e4",
+          "isDraft": true,
+          "number": 32,
+          "title": "Offer recovery guidance during prolonged sign-in loading",
+          "updatedAt": "2026-10-14T03:53:33Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/32"
+        },
+        {
+          "baseRefName": "repair/capiro-outreach-pending-20261014",
+          "headRefName": "repair/capiro-workspace-admission-20261014",
+          "headRefOid": "3059abec94e2d6b9790758bb9563afdb8091b143",
+          "isDraft": true,
+          "number": 31,
+          "title": "Bind Workspace document links and stabilize submitted section input",
+          "updatedAt": "2026-10-14T03:33:48Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/31"
+        },
+        {
+          "baseRefName": "repair/capiro-next-functional-20261014",
+          "headRefName": "repair/capiro-outreach-pending-20261014",
+          "headRefOid": "93ad8792a95bfc1a15a691c608b5fe98f0ca7956",
+          "isDraft": true,
+          "number": 30,
+          "title": "Keep ordinary Outreach drafts stable during pending saves",
+          "updatedAt": "2026-10-14T03:10:06Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/30"
+        },
+        {
+          "baseRefName": "repair/capiro-files-selection-20261014",
+          "headRefName": "repair/capiro-next-functional-20261014",
+          "headRefOid": "247de58f00a1fea50c25a3400463103885014f4f",
+          "isDraft": true,
+          "number": 29,
+          "title": "Reject mismatched client receipts in scoped Outreach lists",
+          "updatedAt": "2026-10-14T02:58:39Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/29"
+        },
+        {
+          "baseRefName": "repair/capiro-customize-entry-20261014",
+          "headRefName": "repair/capiro-files-selection-20261014",
+          "headRefOid": "38c53fb0c8f05f598d835122c0ce7fd0f30a04fc",
+          "isDraft": true,
+          "number": 28,
+          "title": "Repair Files folder navigation and filtered selection feedback",
+          "updatedAt": "2026-10-14T02:36:25Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/28"
+        },
+        {
+          "baseRefName": "repair/capiro-existing-api-feedback-20261014",
+          "headRefName": "repair/capiro-customize-entry-20261014",
+          "headRefOid": "4465f5f1cfb1b807c97106433b70a0ccd480c4a2",
+          "isDraft": true,
+          "number": 27,
+          "title": "Make Portfolio Customize work from filtered and list views",
+          "updatedAt": "2026-10-14T01:58:45Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/27"
+        },
+        {
+          "baseRefName": "integration/capiro-functional-preview-20261014",
+          "headRefName": "repair/capiro-existing-api-feedback-20261014",
+          "headRefOid": "348bf98481268a5f06e26a924f0985b242265cbb",
+          "isDraft": true,
+          "number": 26,
+          "title": "Report unavailable API actions and preserve failed owner reads",
+          "updatedAt": "2026-10-14T01:28:25Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/26"
+        },
+        {
+          "baseRefName": "integration/capiro-preview-receiving-20261013",
+          "headRefName": "integration/capiro-functional-preview-20261014",
+          "headRefOid": "257cf5b5db673b31c98264f9da33759c68066ba4",
+          "isDraft": true,
+          "number": 25,
+          "title": "Prepare functional preview configuration for existing services",
+          "updatedAt": "2026-10-14T00:32:59Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/25"
+        },
+        {
+          "baseRefName": "integration/capiro-preview-read-only-20261013",
+          "headRefName": "integration/capiro-preview-receiving-20261013",
+          "headRefOid": "23df0b04fe643ba7ab64395d7a471ddb20172db6",
+          "isDraft": true,
+          "number": 24,
+          "title": "Receive isolated preview API through bounded server adapter",
+          "updatedAt": "2026-10-14T00:18:17Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/24"
+        },
+        {
+          "baseRefName": "integration/capiro-input-accessibility-20261013",
+          "headRefName": "integration/capiro-preview-read-only-20261013",
+          "headRefOid": "6780c114a1d216fa857182a62f9b3610b9d76121",
+          "isDraft": true,
+          "number": 23,
+          "title": "Add fail-closed backend containment for restricted preview",
+          "updatedAt": "2026-10-13T23:26:48Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/23"
+        },
+        {
+          "baseRefName": "integration/capiro-preview-visual-20261013",
+          "headRefName": "integration/capiro-input-accessibility-20261013",
+          "headRefOid": "bbf1b1b42b213cf971681fde79931afade0804a9",
+          "isDraft": true,
+          "number": 22,
+          "title": "Fix Modules information activation for touch and keyboard",
+          "updatedAt": "2026-10-13T22:29:34Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/22"
+        },
+        {
+          "baseRefName": "integration/capiro-unified-20261013",
+          "headRefName": "integration/capiro-preview-visual-20261013",
+          "headRefOid": "c045668da6fc3b630e6d83432e608c9d20c86afe",
+          "isDraft": true,
+          "number": 21,
+          "title": "Constrain preview bindings and correct Modules visual accessibility",
+          "updatedAt": "2026-10-13T21:58:53Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/21"
+        },
+        {
+          "baseRefName": "main",
+          "headRefName": "integration/capiro-unified-20261013",
+          "headRefOid": "890a993a26dcee66ca3190ee6af4611e33171240",
+          "isDraft": true,
+          "number": 20,
+          "title": "Consolidate Capiro modes and governed Workspace/Meri workflows",
+          "updatedAt": "2026-10-13T21:01:05Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/20"
+        },
+        {
+          "baseRefName": "repair/capiro-shipping-browser-20261013",
+          "headRefName": "integration/capiro-meri-workflow-20261013",
+          "headRefOid": "fc6f8eef67353d166895146f8d83189a5cf0a05c",
+          "isDraft": true,
+          "number": 19,
+          "title": "Integrate governed Meri action workflow with current-session host",
+          "updatedAt": "2026-10-13T05:56:35Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/19"
+        },
+        {
+          "baseRefName": "repair/capiro-shipping-browser-20261013",
+          "headRefName": "integration/capiro-onboard-port-20261013",
+          "headRefOid": "a2ae5919fdb70523e67c49adbcc559cbae2b37e7",
+          "isDraft": true,
+          "number": 18,
+          "title": "Integrate Onboard with shared session and fixed-operation boundaries",
+          "updatedAt": "2026-10-13T05:43:15Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/18"
+        },
+        {
+          "baseRefName": "integration/capiro-remaining-20261012",
+          "headRefName": "repair/capiro-shipping-browser-20261013",
+          "headRefOid": "6dacdaca3507bf75a472f5860ac72fc483377248",
+          "isDraft": true,
+          "number": 17,
+          "title": "Fix shipping mail caret loss and profile layout readiness",
+          "updatedAt": "2026-10-13T03:28:26Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/17"
+        },
+        {
+          "baseRefName": "integration/capiro-remaining-20261012",
+          "headRefName": "integration/capiro-newsletter-port-20261012",
+          "headRefOid": "46ebdd448ef55e88c7a4083fb4586322757a14f8",
+          "isDraft": true,
+          "number": 16,
+          "title": "Add governed newsletter receiving and saved document lifecycle",
+          "updatedAt": "2026-10-13T04:57:07Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/16"
+        },
+        {
+          "baseRefName": "integration/capiro-followup-20261012",
+          "headRefName": "integration/capiro-remaining-20261012",
+          "headRefOid": "3a83e874383d9129726689bb8fc66438c2f18f18",
+          "isDraft": true,
+          "number": 15,
+          "title": "Integrate remaining frontend repairs and preserve Work in Docker context",
+          "updatedAt": "2026-10-13T01:47:03Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/15"
+        },
+        {
+          "baseRefName": "integration/capiro-p1-successor-20261012",
+          "headRefName": "integration/capiro-followup-20261012",
+          "headRefOid": "7aca86e7d64cfdb85d09d424a07e6186339fc24c",
+          "isDraft": true,
+          "number": 14,
+          "title": "Repair nine Calendar, mail, Work and file follow-up findings",
+          "updatedAt": "2026-10-12T19:14:33Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/14"
+        },
+        {
+          "baseRefName": "integration/capiro-visual-closeout-20261012",
+          "headRefName": "integration/capiro-p1-successor-20261012",
+          "headRefOid": "fd1176790a6fb31b7ae68587f965a22d4145d8a2",
+          "isDraft": true,
+          "number": 13,
+          "title": "Repair prioritized release blockers in the consolidated Capiro app",
+          "updatedAt": "2026-10-12T17:41:57Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/13"
+        },
+        {
+          "baseRefName": "integration/capiro-visual-closeout-20261012",
+          "headRefName": "integration/capiro-build-execution-20261012",
+          "headRefOid": "305180e53766387ff56b2689505b44272250217d",
+          "isDraft": true,
+          "number": 12,
+          "title": "Bound the frozen image attempt before push and supervise terminal state",
+          "updatedAt": "2026-10-12T15:27:34Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/12"
+        },
+        {
+          "baseRefName": "integration/capiro-visual-closeout-20261012",
+          "headRefName": "assessment/capiro-remaining-20261012",
+          "headRefOid": "e9ba4c32da8e9a499bf7fb3b1b34dad7acf913ac",
+          "isDraft": true,
+          "number": 11,
+          "title": "Assess remaining Capiro screens and preserve all native acceptance gaps",
+          "updatedAt": "2026-10-12T14:56:54Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/11"
+        },
+        {
+          "baseRefName": "integration/capiro-contracts-20261012",
+          "headRefName": "integration/capiro-visual-closeout-20261012",
+          "headRefOid": "3562618f73d7a1f9d620d7b7b28c9e8c2c1ac83d",
+          "isDraft": true,
+          "number": 10,
+          "title": "Repair seven scoped presentation findings and archive exact-source qualification",
+          "updatedAt": "2026-10-12T12:47:25Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/10"
+        },
+        {
+          "baseRefName": "integration/capiro-shared-20261012",
+          "headRefName": "integration/capiro-contracts-20261012",
+          "headRefOid": "a397d45c461b24eb741afcd3b7cf28ca354d1e96",
+          "isDraft": true,
+          "number": 9,
+          "title": "Integrate shared Capiro frontend and governed contract workflows",
+          "updatedAt": "2026-10-12T11:07:07Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/9"
+        },
+        {
+          "baseRefName": "main",
+          "headRefName": "integration/capiro-shared-20261012",
+          "headRefOid": "d393f08a551f00ee507636264a01657ff0f64655",
+          "isDraft": true,
+          "number": 8,
+          "title": "Integrate Portfolio, Meri and Modules in one shared frontend",
+          "updatedAt": "2026-10-12T04:45:54Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/8"
+        },
+        {
+          "baseRefName": "main",
+          "headRefName": "docs/portfolio-session-handover-20261012",
+          "headRefOid": "c953bc08a9cabc6e38fdacd019017d2e891a3284",
+          "isDraft": true,
+          "number": 7,
+          "title": "docs(portfolio): preserve cross-session handover and source recovery plan",
+          "updatedAt": "2026-10-12T01:31:00Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/7"
+        },
+        {
+          "baseRefName": "main",
+          "headRefName": "codex/portfolio-continuation-20261011",
+          "headRefOid": "c330cebbd021eb984b4bf64ae13dbb991ae6b1c0",
+          "isDraft": true,
+          "number": 6,
+          "title": "Preserve Portfolio continuation, Tracker work and complete session handover",
+          "updatedAt": "2026-10-12T02:24:51Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/6"
+        },
+        {
+          "baseRefName": "main",
+          "headRefName": "task/modules-settings-20261011",
+          "headRefOid": "50155cbbf0e4df1eecba22cbfc9b2c35bff87e0a",
+          "isDraft": true,
+          "number": 5,
+          "title": "Build Modules and Settings UI with reviewed Capiro service integrations",
+          "updatedAt": "2026-10-12T01:14:39Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/5"
+        },
+        {
+          "baseRefName": "main",
+          "headRefName": "task/meri-ui-publish-20261011",
+          "headRefOid": "3cc30ff3182e8050d563516607866cf07efe2aef",
+          "isDraft": true,
+          "number": 4,
+          "title": "Preserve Figma-based Meri Home, cited answer and run workspace in the shared frontend",
+          "updatedAt": "2026-10-12T01:12:00Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/4"
+        },
+        {
+          "baseRefName": "main",
+          "headRefName": "task/meri-cited-answer-20261011",
+          "headRefOid": "b697cfcba6589ef193de4e3bcb25aad773871125",
+          "isDraft": true,
+          "number": 1,
+          "title": "Add synthetic Meri cited-answer fixture from Figma",
+          "updatedAt": "2026-10-11T14:21:15Z",
+          "url": "https://github.com/neo-capiro/capiro-frontend/pull/1"
+        }
+      ]
+    },
+    "capiro-backend": {
+      "sourceSnapshotFile": "capiro-backend-open-prs-final.json",
+      "sourceSnapshotSha256": "0d85ad0d7e00762e4aef4d0a394aab4d3543b3d153ec24a04d7f9251db620c7b",
+      "snapshotFileModifiedAtUtc": "2026-10-17T01:33:17.862808Z",
+      "rowCount": 50,
+      "pullRequests": [
+        {
+          "baseRefName": "feat/objective-planner-continuation-20261016",
+          "headRefName": "feat/objective-planner-runtime-composition-20261016",
+          "headRefOid": "5591eac08428635bf911a0aa32acea859e2a5d95",
+          "isDraft": true,
+          "number": 50,
+          "title": "Wire Objective Planner continuation with verified applied accounting",
+          "updatedAt": "2026-10-17T01:33:01Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/50"
+        },
+        {
+          "baseRefName": "feat/objective-retained-result-bridge",
+          "headRefName": "feat/objective-planner-continuation-20261016",
+          "headRefOid": "db6ef0a617f4b570cadfa6e05bad7296017d0f70",
+          "isDraft": true,
+          "number": 49,
+          "title": "Prepare server-owned Objective Planner continuation",
+          "updatedAt": "2026-10-16T23:32:47Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/49"
+        },
+        {
+          "baseRefName": "feat/core-preview-image-remediation-20261016",
+          "headRefName": "feat/core-preview-alpine-amd64-qualification-20261016",
+          "headRefOid": "6542f5b089656b6d255465edd464d06c2a0b408f",
+          "isDraft": true,
+          "number": 48,
+          "title": "Qualify AMD64 Alpine runtime for Core preview",
+          "updatedAt": "2026-10-17T00:05:39Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/48"
+        },
+        {
+          "baseRefName": "chore/backend-report-labels-20261016",
+          "headRefName": "chore/backend-report-timeline-calendar-20261016",
+          "headRefOid": "a965777356c245dcfa0b0fe3690629a4128d1735",
+          "isDraft": true,
+          "number": 47,
+          "title": "Extract executive report timeline calendar",
+          "updatedAt": "2026-10-16T21:48:49Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/47"
+        },
+        {
+          "baseRefName": "feat/core-preview-first-chat-20261016",
+          "headRefName": "chore/backend-report-labels-20261016",
+          "headRefOid": "f16ba5209dbfe96bb5015b2bca2944b5f5655b0b",
+          "isDraft": true,
+          "number": 46,
+          "title": "Extract shared executive report labels",
+          "updatedAt": "2026-10-16T21:42:04Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/46"
+        },
+        {
+          "baseRefName": "feat/core-first-chat-bootstrap",
+          "headRefName": "feat/core-preview-image-remediation-20261016",
+          "headRefOid": "5baef67a0ce7d67ae96255022ec7c5beb5364f8a",
+          "isDraft": true,
+          "number": 45,
+          "title": "Upgrade Bookworm runtime Perl security packages",
+          "updatedAt": "2026-10-16T21:44:20Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/45"
+        },
+        {
+          "baseRefName": "feat/core-first-chat-bootstrap",
+          "headRefName": "feat/core-preview-first-chat-20261016",
+          "headRefOid": "06aa1bbe30f783f8bda9cff226824e907721598a",
+          "isDraft": true,
+          "number": 44,
+          "title": "Prepare held Core first-chat preview service",
+          "updatedAt": "2026-10-16T21:04:20Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/44"
+        },
+        {
+          "baseRefName": "feat/core-meri-membership-authority",
+          "headRefName": "feat/core-first-chat-bootstrap",
+          "headRefOid": "13d12a7d7bdbe0be021cb218dd4cf7690cc4420b",
+          "isDraft": true,
+          "number": 43,
+          "title": "Core first-chat conversation bootstrap with durable replay",
+          "updatedAt": "2026-10-16T19:32:19Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/43"
+        },
+        {
+          "baseRefName": "feat/core-meri-membership-authority",
+          "headRefName": "feat/objective-retained-result-bridge",
+          "headRefOid": "6d24414da975b52ab9802a883b22c868ad14fc92",
+          "isDraft": true,
+          "number": 42,
+          "title": "Prepare Objective retained-result bridge and workload authority contracts",
+          "updatedAt": "2026-10-16T19:32:07Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/42"
+        },
+        {
+          "baseRefName": "feat/objective-canonical-producer",
+          "headRefName": "feat/core-meri-membership-authority",
+          "headRefOid": "560e3068b67101b68d8675c55835bcc6521110f7",
+          "isDraft": true,
+          "number": 41,
+          "title": "Recover Objective successors and port PR33 membership owner",
+          "updatedAt": "2026-10-16T17:16:20Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/41"
+        },
+        {
+          "baseRefName": "feat/objective-background-evidence",
+          "headRefName": "feat/objective-canonical-producer",
+          "headRefOid": "5b3955b7c357f727835386b09db181125367a51f",
+          "isDraft": true,
+          "number": 40,
+          "title": "Bind canonical Objective generation and reconcile retained Planner outputs",
+          "updatedAt": "2026-10-16T07:21:24Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/40"
+        },
+        {
+          "baseRefName": "cleanup/backend-meri-loop-retirement-20261016",
+          "headRefName": "cleanup/backend-outreach-runtime-20261016",
+          "headRefOid": "8d3c7422bc5668e03da73f19a2bdff7ca7d1f94d",
+          "isDraft": true,
+          "number": 39,
+          "title": "Retire unreachable legacy outreach enrichment",
+          "updatedAt": "2026-10-16T05:14:00Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/39"
+        },
+        {
+          "baseRefName": "feat/core-retained-authority",
+          "headRefName": "docs/retained-read-producers-20261016",
+          "headRefOid": "384325afaaf7ad34aeb9ff9b2f183d667ee17343",
+          "isDraft": true,
+          "number": 38,
+          "title": "Publish retained read producer and trusted-context mapping",
+          "updatedAt": "2026-10-16T05:11:42Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/38"
+        },
+        {
+          "baseRefName": "feat/core-retained-authority",
+          "headRefName": "feat/core-retained-fixture-repair",
+          "headRefOid": "1b9fedc5bd476311d9234ca4b549ff3ebb14ab2d",
+          "isDraft": true,
+          "number": 37,
+          "title": "Correct retained Florida service composition fixtures",
+          "updatedAt": "2026-10-16T05:18:42Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/37"
+        },
+        {
+          "baseRefName": "cleanup/backend-meri-domain-20261016",
+          "headRefName": "cleanup/backend-meri-loop-retirement-20261016",
+          "headRefOid": "a2e3eee209dc82d7536f3fc318a9d952c80e628a",
+          "isDraft": true,
+          "number": 36,
+          "title": "Retire unreachable Meri raw chat loop and API V2 bridge",
+          "updatedAt": "2026-10-16T04:50:15Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/36"
+        },
+        {
+          "baseRefName": "feat/core-current-membership",
+          "headRefName": "feat/core-retained-authority",
+          "headRefOid": "b525032222515d636b0dae2d46e40c7c3d8b5528",
+          "isDraft": true,
+          "number": 35,
+          "title": "Add disabled Core and Intel retained authority sources",
+          "updatedAt": "2026-10-16T04:34:22Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/35"
+        },
+        {
+          "baseRefName": "cleanup/backend-runtime-simplification-20261016",
+          "headRefName": "cleanup/backend-meri-domain-20261016",
+          "headRefOid": "f3ede4fe8d88ba686a81c59f71e44319c0f45fd1",
+          "isDraft": true,
+          "number": 34,
+          "title": "Extract canonical Meri readers and retire unused Engagement builders",
+          "updatedAt": "2026-10-16T04:17:49Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/34"
+        },
+        {
+          "baseRefName": "feat/engagement-manual-plans",
+          "headRefName": "feat/core-current-membership",
+          "headRefOid": "68da33ac6ad9264c60d867dbaed41c1b8fdcf08f",
+          "isDraft": true,
+          "number": 33,
+          "title": "Add current native membership receipt for request-local Meri admission",
+          "updatedAt": "2026-10-16T03:50:07Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/33"
+        },
+        {
+          "baseRefName": "cleanup/backend-only-workspace-20261016",
+          "headRefName": "cleanup/backend-runtime-simplification-20261016",
+          "headRefOid": "0483963adc5382202408e8398d8b1601f53d8525",
+          "isDraft": true,
+          "number": 32,
+          "title": "Separate current backend qualification and extract Directory detail mappers",
+          "updatedAt": "2026-10-16T03:49:43Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/32"
+        },
+        {
+          "baseRefName": "feat/objective-operational-links",
+          "headRefName": "feat/objective-background-evidence",
+          "headRefOid": "3f75adfe5d1621ab9f6f0c1ddf01a6eae5b613d2",
+          "isDraft": true,
+          "number": 31,
+          "title": "Bind Objective evidence, consent and canonical Planner receiving",
+          "updatedAt": "2026-10-16T04:10:17Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/31"
+        },
+        {
+          "baseRefName": "cleanup/backend-retained-source-20261016",
+          "headRefName": "cleanup/backend-only-workspace-20261016",
+          "headRefOid": "7b6bda7ca75ea86afb36c76f013f550fdd79e42f",
+          "isDraft": true,
+          "number": 30,
+          "title": "Retire legacy Web source and consolidate Defense runtime ownership",
+          "updatedAt": "2026-10-16T03:19:33Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/30"
+        },
+        {
+          "baseRefName": "feat/engagement-manual-plans",
+          "headRefName": "cleanup/backend-retained-source-20261016",
+          "headRefOid": "4e0c189c5d0522098be1c4916a033bb681d11c0b",
+          "isDraft": true,
+          "number": 29,
+          "title": "Remove duplicate defense operator source copies",
+          "updatedAt": "2026-10-16T02:12:27Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/29"
+        },
+        {
+          "baseRefName": "feat/engagement-manual-plans",
+          "headRefName": "proposal/engagement-plan-preview-20261016",
+          "headRefOid": "51678e1297cb5146562bf20d52e97990f81e77fc",
+          "isDraft": true,
+          "number": 28,
+          "title": "Document inactive Engagement preview routing and ACL preflight",
+          "updatedAt": "2026-10-16T01:18:34Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/28"
+        },
+        {
+          "baseRefName": "fix/bookworm-clean-production-store",
+          "headRefName": "feat/engagement-manual-plans",
+          "headRefOid": "016e79b585c14f20d13669e13c987c01e3dd29dd",
+          "isDraft": true,
+          "number": 27,
+          "title": "Add versioned manual Engagement plans and waves",
+          "updatedAt": "2026-10-16T00:49:03Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/27"
+        },
+        {
+          "baseRefName": "codex/qualification-native-evidence-formats",
+          "headRefName": "codex/qualification-native-evidence-collection",
+          "headRefOid": "ae47e74f7b34c447f92d05d425940369731aaba9",
+          "isDraft": true,
+          "number": 26,
+          "title": "Collect complete native provider and vendor selection evidence before policy checks",
+          "updatedAt": "2026-10-14T21:37:26Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/26"
+        },
+        {
+          "baseRefName": "codex/qualification-native-owner-sharp",
+          "headRefName": "fix/preview-core-existing-database",
+          "headRefOid": "6949c5ab27e0c47dcc365d8af678d3a65c2c9c4e",
+          "isDraft": true,
+          "number": 25,
+          "title": "Prepare held Core preview using existing database",
+          "updatedAt": "2026-10-14T21:13:16Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/25"
+        },
+        {
+          "baseRefName": "codex/qualification-native-batch-diagnostics",
+          "headRefName": "codex/qualification-native-evidence-formats",
+          "headRefOid": "9e85dc1797541776f9b5af6aad97c438c0bc1138",
+          "isDraft": true,
+          "number": 24,
+          "title": "Preserve native failure evidence and classify retained binary formats",
+          "updatedAt": "2026-10-14T21:14:29Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/24"
+        },
+        {
+          "baseRefName": "codex/qualification-native-owner-sharp",
+          "headRefName": "codex/qualification-native-batch-diagnostics",
+          "headRefOid": "4978d8553af348645e7fdb2aa657095441604732",
+          "isDraft": true,
+          "number": 23,
+          "title": "Collect complete offline native diagnostics before admission",
+          "updatedAt": "2026-10-14T20:13:42Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/23"
+        },
+        {
+          "baseRefName": "codex/qualification-dumb-init-version-probe",
+          "headRefName": "codex/qualification-native-owner-sharp",
+          "headRefOid": "2875afa0cf65053b5faa2b29e742c81cba446931",
+          "isDraft": true,
+          "number": 22,
+          "title": "fix: qualify native package ABI and exercise Sharp on musl",
+          "updatedAt": "2026-10-14T19:49:05Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/22"
+        },
+        {
+          "baseRefName": "qualify/core-node22-alpine324",
+          "headRefName": "codex/qualification-dumb-init-version-probe",
+          "headRefOid": "91a8890e6fb4d577cdaf08e9db1c9735e82a6d4a",
+          "isDraft": true,
+          "number": 21,
+          "title": "Capture dumb-init stderr in the Alpine version probe",
+          "updatedAt": "2026-10-14T18:58:22Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/21"
+        },
+        {
+          "baseRefName": "codex/backend-runtime-candidate-20261014",
+          "headRefName": "qualify/core-node22-alpine324",
+          "headRefOid": "45aa8059f1a0e6451e5d0b9518b7543ed3e9254e",
+          "isDraft": true,
+          "number": 20,
+          "title": "Qualify Core on pinned Node22 Alpine ARM64 runtime",
+          "updatedAt": "2026-10-14T18:27:23Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/20"
+        },
+        {
+          "baseRefName": "codex/backend-runtime-candidate-20261014",
+          "headRefName": "fix/core-runtime-os-packages",
+          "headRefOid": "3b7affb158903069d220c89000d054c327d3c96d",
+          "isDraft": true,
+          "number": 19,
+          "title": "Require Core Perl security backport and document admission blockers",
+          "updatedAt": "2026-10-14T18:14:19Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/19"
+        },
+        {
+          "baseRefName": "codex/backend-successor-qualification-20261014",
+          "headRefName": "codex/backend-runtime-candidate-20261014",
+          "headRefOid": "f4f9e1361d92ac0afadd67c1cae3f5faefa829ec",
+          "isDraft": true,
+          "number": 18,
+          "title": "Retain runtime Prisma CLI and remove retired workflow seed",
+          "updatedAt": "2026-10-14T14:58:49Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/18"
+        },
+        {
+          "baseRefName": "codex/backend-objective-files-calendar-receiving-20261014",
+          "headRefName": "codex/backend-successor-qualification-20261014",
+          "headRefOid": "dd02f3ba0b4ab77e3725e83e4b9af27aecdc8eca",
+          "isDraft": true,
+          "number": 17,
+          "title": "Qualify successor builds and defer optional capture credentials",
+          "updatedAt": "2026-10-14T11:10:24Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/17"
+        },
+        {
+          "baseRefName": "codex/backend-managed-mcp-import-cleanup-20261014",
+          "headRefName": "codex/backend-objective-files-calendar-receiving-20261014",
+          "headRefOid": "d15bba2cd75a8d36743e5d7a10eda346e4e48e2a",
+          "isDraft": true,
+          "number": 16,
+          "title": "Qualify selected Objective Files and Planner Calendar receiving contracts",
+          "updatedAt": "2026-10-14T08:29:31Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/16"
+        },
+        {
+          "baseRefName": "codex/backend-prospect-shim-retirement-20261014",
+          "headRefName": "codex/backend-managed-mcp-import-cleanup-20261014",
+          "headRefOid": "65c4918042df0930d4ff46abd6994fbdd27538c5",
+          "isDraft": true,
+          "number": 15,
+          "title": "Remove three unused MeriModule connector imports",
+          "updatedAt": "2026-10-14T07:56:56Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/15"
+        },
+        {
+          "baseRefName": "codex/backend-directory-objective-20261014",
+          "headRefName": "codex/backend-prospect-shim-retirement-20261014",
+          "headRefOid": "a6d4ee9d5029994925d20815b3dae0f1e7b410e3",
+          "isDraft": true,
+          "number": 14,
+          "title": "Retire prospect authorization shim from Meri callers",
+          "updatedAt": "2026-10-14T07:09:35Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/14"
+        },
+        {
+          "baseRefName": "codex/backend-meetings-bundle-reuse-20261014",
+          "headRefName": "codex/backend-directory-objective-20261014",
+          "headRefOid": "917fed9be648dc4abfd6770e0e391ce2e3fe3928",
+          "isDraft": true,
+          "number": 13,
+          "title": "Observe saved Directory target under current Objective revision",
+          "updatedAt": "2026-10-14T06:17:57Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/13"
+        },
+        {
+          "baseRefName": "codex/backend-prune-script-syntax-20261014",
+          "headRefName": "codex/backend-meetings-bundle-reuse-20261014",
+          "headRefOid": "2090c6afb26795edcfb73c46b9f3add3512ecdd8",
+          "isDraft": true,
+          "number": 12,
+          "title": "Reuse canonical governed Meetings context",
+          "updatedAt": "2026-10-14T06:03:08Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/12"
+        },
+        {
+          "baseRefName": "codex/backend-portfolio-layout-registered-20261014",
+          "headRefName": "codex/backend-prune-script-syntax-20261014",
+          "headRefOid": "cc0cfaafe6f83c544b47c6e01559f29dc0953b84",
+          "isDraft": true,
+          "number": 11,
+          "title": "Fix retained assistance pruning script syntax",
+          "updatedAt": "2026-10-14T05:18:57Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/11"
+        },
+        {
+          "baseRefName": "codex/backend-prospect-authority-20261014",
+          "headRefName": "codex/backend-portfolio-layout-registered-20261014",
+          "headRefOid": "be12f4a2a2ecec43b5d02ea279d9448763415e24",
+          "isDraft": true,
+          "number": 10,
+          "title": "Save authorized portfolio layout through existing UsersModule",
+          "updatedAt": "2026-10-14T05:10:51Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/10"
+        },
+        {
+          "baseRefName": "codex/backend-core-source-startup-20261014",
+          "headRefName": "codex/backend-prospect-authority-20261014",
+          "headRefOid": "7239a4a4ace420492d8aace6c85e55773865be38",
+          "isDraft": true,
+          "number": 9,
+          "title": "Move prospect authority to its existing Business Development owner",
+          "updatedAt": "2026-10-14T04:47:40Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/9"
+        },
+        {
+          "baseRefName": "codex/backend-shared-feature-flags-20261014",
+          "headRefName": "codex/backend-core-source-startup-20261014",
+          "headRefOid": "afff08b0342985e3a8050a5fb4cd843741a720a5",
+          "isDraft": true,
+          "number": 8,
+          "title": "Repair retained Core provider wiring and verify source startup",
+          "updatedAt": "2026-10-14T04:15:52Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/8"
+        },
+        {
+          "baseRefName": "codex/backend-canonical-boundary-20261014",
+          "headRefName": "codex/backend-shared-feature-flags-20261014",
+          "headRefOid": "9b9f98d86aebe79721b3655e5a619b27be9a43e9",
+          "isDraft": true,
+          "number": 7,
+          "title": "Share existing tenant feature flags without broad Meri runtime imports",
+          "updatedAt": "2026-10-14T03:22:41Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/7"
+        },
+        {
+          "baseRefName": "codex/backend-successor-plan-20261014",
+          "headRefName": "codex/backend-canonical-boundary-20261014",
+          "headRefOid": "1f2655fe964cb2a01343d3bcb560de60fa5f69be",
+          "isDraft": true,
+          "number": 6,
+          "title": "Extract existing native authority routes from legacy Meri runtime DI",
+          "updatedAt": "2026-10-14T02:54:04Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/6"
+        },
+        {
+          "baseRefName": "codex/backend-cleanup-receiving-20261014",
+          "headRefName": "codex/backend-successor-plan-20261014",
+          "headRefOid": "22d0d043a3efbf22e4b2d8d7f881af66f983873b",
+          "isDraft": true,
+          "number": 5,
+          "title": "Publish executable selective-backend instructions for OpenAI/Codex workers",
+          "updatedAt": "2026-10-14T02:27:38Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/5"
+        },
+        {
+          "baseRefName": "codex/reviewed-backend-receiving-20261013",
+          "headRefName": "codex/backend-cleanup-receiving-20261014",
+          "headRefOid": "a65ae3c8a9f1f0cf96d4f7d2ae30aad2fff172ff",
+          "isDraft": true,
+          "number": 4,
+          "title": "Receive reviewed Watchlist and memo parser cleanup on backend integration",
+          "updatedAt": "2026-10-14T01:45:08Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/4"
+        },
+        {
+          "baseRefName": "codex/preview-readonly-api-20261013",
+          "headRefName": "codex/preview-readonly-native-20261013",
+          "headRefOid": "3509438f7f0c39c6da4db8a94b74c816211491b4",
+          "isDraft": true,
+          "number": 3,
+          "title": "Document ordinary API mode and optional preview qualification",
+          "updatedAt": "2026-10-14T00:43:26Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/3"
+        },
+        {
+          "baseRefName": "backend-import",
+          "headRefName": "codex/preview-readonly-api-20261013",
+          "headRefOid": "111f269d749cae0249c2141779bd6d7deb93f45c",
+          "isDraft": true,
+          "number": 2,
+          "title": "Add isolated read-only internal preview API",
+          "updatedAt": "2026-10-13T23:47:09Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/2"
+        },
+        {
+          "baseRefName": "backend-import",
+          "headRefName": "codex/reviewed-backend-receiving-20261013",
+          "headRefOid": "6efe59f24b4a711b7991bae4b2a255c667cbbf00",
+          "isDraft": true,
+          "number": 1,
+          "title": "Receive reviewed backend owners as inert checkpoint",
+          "updatedAt": "2026-10-13T23:32:23Z",
+          "url": "https://github.com/neo-capiro/capiro-backend/pull/1"
+        }
+      ]
+    },
+    "meri-greenfield": {
+      "sourceSnapshotFile": "meri-greenfield-open-prs-final.json",
+      "sourceSnapshotSha256": "66f7117e761fc3d5f296e24eab2065bbc44e56b6cd2164ee2670a8621ff9e5aa",
+      "snapshotFileModifiedAtUtc": "2026-10-17T01:33:18.464195Z",
+      "rowCount": 103,
+      "pullRequests": [
+        {
+          "baseRefName": "codex/meri-general-reads-remaining-next-20261017",
+          "headRefName": "codex/meri-read-resolution-next-20261017",
+          "headRefOid": "526b6be7c906c15298f13430fe5dd5a9db458e03",
+          "isDraft": true,
+          "number": 107,
+          "title": "Extend governed selectors and bind native prospect reads",
+          "updatedAt": "2026-10-17T01:24:33Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/107"
+        },
+        {
+          "baseRefName": "codex/meri-data-search-request-20261017",
+          "headRefName": "codex/meri-general-reads-remaining-next-20261017",
+          "headRefOid": "382f45ae695e271bf7433343d31486ac0d57184a",
+          "isDraft": true,
+          "number": 106,
+          "title": "Add governed read source slices with explicit partial coverage",
+          "updatedAt": "2026-10-17T00:57:59Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/106"
+        },
+        {
+          "baseRefName": "codex/meri-general-reads-governed-next-20261016",
+          "headRefName": "codex/meri-data-search-request-20261017",
+          "headRefOid": "f33ea1a8945444b5ad8d15d5d048377abf201959",
+          "isDraft": true,
+          "number": 105,
+          "title": "Separate governed search raw requests from normalized input",
+          "updatedAt": "2026-10-17T00:38:19Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/105"
+        },
+        {
+          "baseRefName": "codex/meri-general-reads-stored-next-20261016",
+          "headRefName": "codex/meri-general-reads-governed-next-20261016",
+          "headRefOid": "0724a744d73356a0e935d15dabc5889ab2337d4b",
+          "isDraft": true,
+          "number": 104,
+          "title": "Add governed read families with current private client visibility",
+          "updatedAt": "2026-10-17T00:20:53Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/104"
+        },
+        {
+          "baseRefName": "codex/meri-general-reads-civic-20261016",
+          "headRefName": "codex/meri-general-reads-stored-next-20261016",
+          "headRefOid": "8bb0b2945429e70cf0ae1e594ea55eb8c3fa7ada",
+          "isDraft": true,
+          "number": 103,
+          "title": "Add ten current-grant stored read tools and verify exact Zod",
+          "updatedAt": "2026-10-17T00:02:32Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/103"
+        },
+        {
+          "baseRefName": "codex/meri-product-features-task6-20261016",
+          "headRefName": "codex/meri-task-update-integration-task6-20261016",
+          "headRefOid": "cc43d0004be59f315658207405ff1aea126adad5",
+          "isDraft": true,
+          "number": 102,
+          "title": "Wire governed task updates through runtime and public contract",
+          "updatedAt": "2026-10-17T01:14:14Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/102"
+        },
+        {
+          "baseRefName": "codex/meri-product-preview-manifests-20261016",
+          "headRefName": "codex/meri-image-diagnostics-20261016",
+          "headRefOid": "38f52df94b1738649776792b2a28aac743801c19",
+          "isDraft": true,
+          "number": 101,
+          "title": "Retain exact W08 diagnostics and correct Linux qualification fixtures",
+          "updatedAt": "2026-10-17T01:15:02Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/101"
+        },
+        {
+          "baseRefName": "codex/meri-product-preview-manifests-20261016",
+          "headRefName": "codex/meri-product-features-task6-20261016",
+          "headRefOid": "78fbd3ae813fcf3fe286969e76102353c3a2eed2",
+          "isDraft": true,
+          "number": 100,
+          "title": "Add governed task-update intents and opt-in API composition",
+          "updatedAt": "2026-10-16T23:38:29Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/100"
+        },
+        {
+          "baseRefName": "codex/meri-product-preview-manifests-20261016",
+          "headRefName": "codex/meri-general-reads-civic-20261016",
+          "headRefOid": "81b3df7a0e9016e4dde8bb78418fb9901243ee54",
+          "isDraft": true,
+          "number": 99,
+          "title": "Add grant-bound legislative directory reads and reconcile remaining families",
+          "updatedAt": "2026-10-16T23:34:47Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/99"
+        },
+        {
+          "baseRefName": "codex/meri-initial-run-startup-mount-20261016",
+          "headRefName": "codex/meri-product-preview-manifests-20261016",
+          "headRefOid": "caa7810ff19c09c8f7ea1c2524c025f36f99ccd6",
+          "isDraft": true,
+          "number": 98,
+          "title": "Compose disabled Meri proxy startup and Temporal preview bindings",
+          "updatedAt": "2026-10-16T22:52:10Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/98"
+        },
+        {
+          "baseRefName": "codex/meri-ordinary-currentness-20261016",
+          "headRefName": "codex/meri-initial-run-startup-mount-20261016",
+          "headRefOid": "8652488f087a1efa4d49d2df19a553b7cd7b3b65",
+          "isDraft": true,
+          "number": 97,
+          "title": "Mount journal-backed initial runs in Meri control",
+          "updatedAt": "2026-10-16T19:46:11Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/97"
+        },
+        {
+          "baseRefName": "codex/meri-initial-run-binding-migration-20261016",
+          "headRefName": "codex/meri-initial-run-pg16-portability-20261016",
+          "headRefOid": "0787c92672ee1a0b88fc6f69489c261e773490a1",
+          "isDraft": true,
+          "number": 96,
+          "title": "Prepare isolated Windows PG16 test profile for initial-run binding",
+          "updatedAt": "2026-10-16T19:27:26Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/96"
+        },
+        {
+          "baseRefName": "codex/meri-initial-run-binding-migration-20261016",
+          "headRefName": "codex/meri-objective-reader-rs256-20261016",
+          "headRefOid": "5781c1150fbb3954c25ba245b26d325e06b4d82d",
+          "isDraft": true,
+          "number": 95,
+          "title": "Align unmounted Objective retained reader with proposed RS256 contract",
+          "updatedAt": "2026-10-16T19:20:58Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/95"
+        },
+        {
+          "baseRefName": "codex/meri-initial-run-binding-migration-20261016",
+          "headRefName": "codex/meri-ordinary-currentness-20261016",
+          "headRefOid": "0f82c8817e0155fd3bd1a95b7166ba2499451784",
+          "isDraft": true,
+          "number": 94,
+          "title": "Guard saved Meri history and model sends with current Core context",
+          "updatedAt": "2026-10-16T19:16:29Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/94"
+        },
+        {
+          "baseRefName": "codex/meri-initial-run-admission-20261016",
+          "headRefName": "codex/meri-initial-run-binding-migration-20261016",
+          "headRefOid": "d27c807bb5694cf84c73db5d647e2e8d13ba39f1",
+          "isDraft": true,
+          "number": 93,
+          "title": "Add reserved initial-run binding migration source",
+          "updatedAt": "2026-10-16T19:03:11Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/93"
+        },
+        {
+          "baseRefName": "codex/meri-ordinary-first-chat-20261016",
+          "headRefName": "codex/meri-initial-run-admission-20261016",
+          "headRefOid": "5850e858f9776ec5faa2902a90a1e90ea3903346",
+          "isDraft": true,
+          "number": 92,
+          "title": "Admit verified Core conversations into Meri initial runs",
+          "updatedAt": "2026-10-16T18:30:39Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/92"
+        },
+        {
+          "baseRefName": "codex/meri-objective-local-source-20261016",
+          "headRefName": "codex/meri-ordinary-first-chat-20261016",
+          "headRefOid": "268dfe4447a8e7ae8ece8f74a9b5b5479eb50f08",
+          "isDraft": true,
+          "number": 91,
+          "title": "Gate ordinary Meri chat on current membership",
+          "updatedAt": "2026-10-16T18:04:24Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/91"
+        },
+        {
+          "baseRefName": "codex/meri-recovered-source-20261016",
+          "headRefName": "codex/meri-objective-local-source-20261016",
+          "headRefOid": "5b166bf49bf4871138e3c02eebf04a8d6f04a5e2",
+          "isDraft": true,
+          "number": 90,
+          "title": "Add unmounted Objective workload source contracts",
+          "updatedAt": "2026-10-16T18:04:11Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/90"
+        },
+        {
+          "baseRefName": "dot/meri-reviewed-integration-20261016",
+          "headRefName": "codex/meri-recovered-source-20261016",
+          "headRefOid": "525aa22fb9cf207228f8d0a62d59f0cc9ba73820",
+          "isDraft": true,
+          "number": 89,
+          "title": "Recover exact local Meri continuation source",
+          "updatedAt": "2026-10-16T18:04:01Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/89"
+        },
+        {
+          "baseRefName": "dot/meri-reviewed-integration-20261016",
+          "headRefName": "dot/meri-durable-input-admission-20261016",
+          "headRefOid": "059b6338ece98c2b5217b85411b77517a0919988",
+          "isDraft": true,
+          "number": 88,
+          "title": "Add durable input admission and verified 0.1.7 recovery contract",
+          "updatedAt": "2026-10-16T04:49:09Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/88"
+        },
+        {
+          "baseRefName": "codex/qualification-swc-materialization-repair",
+          "headRefName": "docs/meri-fable-handoff-20261014",
+          "headRefOid": "aa09dd28d4a98252233090a20457f644cade279d",
+          "isDraft": true,
+          "number": 87,
+          "title": "docs: hand Meri implementation to Fable with full plan and evidence",
+          "updatedAt": "2026-10-14T19:35:56Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/87"
+        },
+        {
+          "baseRefName": "codex/qualification-native-cli-repair",
+          "headRefName": "codex/qualification-swc-materialization-repair",
+          "headRefOid": "c6053e24b465be677cc5980533009b4aab03beab",
+          "isDraft": true,
+          "number": 86,
+          "title": "Materialize native SWC at build time and restore image proof inputs",
+          "updatedAt": "2026-10-14T18:25:19Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/86"
+        },
+        {
+          "baseRefName": "codex/runtime-image-closure-20261014",
+          "headRefName": "codex/qualification-native-cli-repair",
+          "headRefOid": "258082eb5e1097812159045689c0131a8cbd6726",
+          "isDraft": true,
+          "number": 85,
+          "title": "Repair native SDK and Temporal image qualification probes",
+          "updatedAt": "2026-10-14T17:29:52Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/85"
+        },
+        {
+          "baseRefName": "codex/native-prepared-kickoff-20261014",
+          "headRefName": "codex/runtime-image-closure-20261014",
+          "headRefOid": "d741792b1672d6eac4c1c37835c3c3d1931e66a8",
+          "isDraft": true,
+          "number": 84,
+          "title": "Preserve complete runtime source closure in Docker context",
+          "updatedAt": "2026-10-14T12:53:45Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/84"
+        },
+        {
+          "baseRefName": "codex/native-prepared-kickoff-20261014",
+          "headRefName": "codex/first-chat-acceptance-20261014",
+          "headRefOid": "74f1fe794503499d4404ffb3252660220e140536",
+          "isDraft": true,
+          "number": 83,
+          "title": "Document bounded PR39 host and staged PR81 first-chat acceptance",
+          "updatedAt": "2026-10-14T12:07:32Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/83"
+        },
+        {
+          "baseRefName": "codex/native-prepared-kickoff-20261014",
+          "headRefName": "codex/native-conversation-continuation-20261014",
+          "headRefOid": "5a87ffd7f0a5441919c1b4a869295824f1a32d08",
+          "isDraft": true,
+          "number": 82,
+          "title": "Preserve borrowed continuation and approval owners in prepared control",
+          "updatedAt": "2026-10-14T12:06:02Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/82"
+        },
+        {
+          "baseRefName": "codex/native-remote-composition-20261014",
+          "headRefName": "codex/native-prepared-kickoff-20261014",
+          "headRefOid": "480944bae488932ab5dea5452d2d3dbdcb04a755",
+          "isDraft": true,
+          "number": 81,
+          "title": "Finish prepared Temporal kickoff and expiry-safe checkpoint inspection",
+          "updatedAt": "2026-10-14T11:26:06Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/81"
+        },
+        {
+          "baseRefName": "codex/native-single-query-20261014",
+          "headRefName": "codex/native-remote-composition-20261014",
+          "headRefOid": "d0ff0928509edf46cdda211622eb0037e2c098fa",
+          "isDraft": true,
+          "number": 80,
+          "title": "Compose prepared remote native process into conversation runner",
+          "updatedAt": "2026-10-14T10:09:12Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/80"
+        },
+        {
+          "baseRefName": "codex/native-runnable-runtime-20261014",
+          "headRefName": "codex/native-single-query-20261014",
+          "headRefOid": "47c28805fbfc560c0b556875f673c3211e4e6a96",
+          "isDraft": true,
+          "number": 79,
+          "title": "Retain one native SDK Query through admitted launch and task restore",
+          "updatedAt": "2026-10-14T08:10:08Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/79"
+        },
+        {
+          "baseRefName": "codex/native-runtime-recovery-20261014",
+          "headRefName": "codex/native-runnable-runtime-20261014",
+          "headRefOid": "ab0d7a2ac302f95869063a223d79a991662303a3",
+          "isDraft": true,
+          "number": 78,
+          "title": "Bind native allocation intents and restore verified SDK snapshots",
+          "updatedAt": "2026-10-14T06:40:33Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/78"
+        },
+        {
+          "baseRefName": "codex/native-execution-broker-20261014",
+          "headRefName": "codex/native-runtime-recovery-20261014",
+          "headRefOid": "eed08ddecde9974b689235cbd9084e0c4e15ee2e",
+          "isDraft": true,
+          "number": 77,
+          "title": "Recover admitted native tasks and validate persisted continuation runtime",
+          "updatedAt": "2026-10-14T05:06:43Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/77"
+        },
+        {
+          "baseRefName": "codex/native-task-verifier-20261014",
+          "headRefName": "codex/native-execution-broker-20261014",
+          "headRefOid": "f855af6e1096894909b201603b2f77e5e6230f5f",
+          "isDraft": true,
+          "number": 76,
+          "title": "Persist native execution claims and integrate independent supervisor runtime",
+          "updatedAt": "2026-10-14T03:59:31Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/76"
+        },
+        {
+          "baseRefName": "codex/native-session-launcher-20261014",
+          "headRefName": "codex/native-task-verifier-20261014",
+          "headRefOid": "dbe7ed6c1c5c4e728dfead4224479dc5b7d90a5e",
+          "isDraft": true,
+          "number": 75,
+          "title": "Verify current task grants and compose admitted native supervisor",
+          "updatedAt": "2026-10-14T03:05:59Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/75"
+        },
+        {
+          "baseRefName": "codex/native-session-supervisor-20261014",
+          "headRefName": "codex/native-session-launcher-20261014",
+          "headRefOid": "7481ba29973d853327c7975dbda30bf3a96ad6a7",
+          "isDraft": true,
+          "number": 74,
+          "title": "Bind native registration to an owned pinned process launcher",
+          "updatedAt": "2026-10-14T02:46:14Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/74"
+        },
+        {
+          "baseRefName": "codex/openai-worker-instructions-20261014",
+          "headRefName": "codex/native-session-supervisor-20261014",
+          "headRefOid": "104df6f09b000b8376bb4a5ff7b5a76fe1242b68",
+          "isDraft": true,
+          "number": 73,
+          "title": "Implement native supervisor session registration from stdout",
+          "updatedAt": "2026-10-14T02:26:23Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/73"
+        },
+        {
+          "baseRefName": "codex/native-runner-gateway-20261014",
+          "headRefName": "codex/openai-worker-instructions-20261014",
+          "headRefOid": "56ff23bef2adf1fe6b9126faffbf66548d65ea0c",
+          "isDraft": true,
+          "number": 72,
+          "title": "Use OpenAI Codex for current project worker instructions",
+          "updatedAt": "2026-10-14T02:05:30Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/72"
+        },
+        {
+          "baseRefName": "codex/first-run-runtime-wiring-20261014",
+          "headRefName": "codex/native-runner-gateway-20261014",
+          "headRefOid": "7e822a7cfe5150b2c8d8fc1d5984fd2348ae4866",
+          "isDraft": true,
+          "number": 71,
+          "title": "Implement fixed native runner relay and preserve backend integration boundary",
+          "updatedAt": "2026-10-14T01:56:46Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/71"
+        },
+        {
+          "baseRefName": "codex/first-session-local-qualification-20261014",
+          "headRefName": "codex/first-run-runtime-wiring-20261014",
+          "headRefOid": "742e57287db5294f84724b6c1878c113bff3bba8",
+          "isDraft": true,
+          "number": 70,
+          "title": "Mount first-run owners with control-owned runtime resources",
+          "updatedAt": "2026-10-14T01:20:19Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/70"
+        },
+        {
+          "baseRefName": "codex/native-first-run-adapters-20261014",
+          "headRefName": "codex/first-session-local-qualification-20261014",
+          "headRefOid": "a8655da564233e5a7b5ba4e53838ba923fb7f69d",
+          "isDraft": true,
+          "number": 69,
+          "title": "Qualify local native SDK first-session mechanics and preserve fixture state",
+          "updatedAt": "2026-10-14T01:04:55Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/69"
+        },
+        {
+          "baseRefName": "codex/native-docx-first-session-20261013",
+          "headRefName": "codex/native-first-run-adapters-20261014",
+          "headRefOid": "23707a621d960e6492f1deb963ecddaa22b3004b",
+          "isDraft": true,
+          "number": 68,
+          "title": "Join canonical first-run authority and SDK session adapters",
+          "updatedAt": "2026-10-14T00:16:10Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/68"
+        },
+        {
+          "baseRefName": "codex/native-docx-flow-20261013",
+          "headRefName": "codex/native-docx-first-session-20261013",
+          "headRefOid": "c87a7321db17091db4baac75182d4727ad8acd75",
+          "isDraft": true,
+          "number": 67,
+          "title": "Bootstrap first SDK session through native registration",
+          "updatedAt": "2026-10-13T23:43:05Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/67"
+        },
+        {
+          "baseRefName": "codex/assembled-runtime-integrated-20261013",
+          "headRefName": "codex/native-docx-flow-20261013",
+          "headRefOid": "53c845e2da5e3c038d05688f3bafbd634391f38f",
+          "isDraft": true,
+          "number": 66,
+          "title": "Mount governed SDK sessions and editable document runtime",
+          "updatedAt": "2026-10-13T22:38:13Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/66"
+        },
+        {
+          "baseRefName": "codex/original-runtime-20261013",
+          "headRefName": "codex/assembled-runtime-integrated-20261013",
+          "headRefOid": "efacbfd9b599e458250f9bb624a72626f4e769d2",
+          "isDraft": true,
+          "number": 65,
+          "title": "Assemble isolated control, Temporal poller and SDK task runtime",
+          "updatedAt": "2026-10-13T20:28:47Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/65"
+        },
+        {
+          "baseRefName": "codex/durable-skills-20261013",
+          "headRefName": "codex/original-runtime-20261013",
+          "headRefOid": "0c2b07d1a512324a3f5412ad5483243bc4649dcb",
+          "isDraft": true,
+          "number": 64,
+          "title": "Execute original research skills with approved editable output and recovery",
+          "updatedAt": "2026-10-13T19:14:47Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/64"
+        },
+        {
+          "baseRefName": "codex/workflow-batch-20261013",
+          "headRefName": "codex/durable-skills-20261013",
+          "headRefOid": "693372018f3aaaf01a5be11e5df9f797926888f8",
+          "isDraft": true,
+          "number": 63,
+          "title": "Add durable controls and editable original skill workflows",
+          "updatedAt": "2026-10-13T17:15:21Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/63"
+        },
+        {
+          "baseRefName": "codex/next-adapters-20261013",
+          "headRefName": "codex/workflow-batch-20261013",
+          "headRefOid": "6307e1b6661dab1b6b82ecda8659bf70bc0113ab",
+          "isDraft": true,
+          "number": 62,
+          "title": "Editable Mail History briefs and governed passive source reads",
+          "updatedAt": "2026-10-13T15:37:37Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/62"
+        },
+        {
+          "baseRefName": "codex/whole-plan-batch-20261013",
+          "headRefName": "codex/next-adapters-20261013",
+          "headRefOid": "1c79a912b6589ccd1004c12a9981bc146d79e8bc",
+          "isDraft": true,
+          "number": 61,
+          "title": "Add versioned chat receiver and scoped mail/meeting reads",
+          "updatedAt": "2026-10-13T13:34:19Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/61"
+        },
+        {
+          "baseRefName": "codex/document-replay-20261013",
+          "headRefName": "codex/whole-plan-batch-20261013",
+          "headRefOid": "a2aef4a5fcd3c19cec974dc62b69222836d71b3e",
+          "isDraft": true,
+          "number": 60,
+          "title": "Add usable Meri request and durable event lifecycle",
+          "updatedAt": "2026-10-13T12:10:28Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/60"
+        },
+        {
+          "baseRefName": "codex/n209-evidence-brief-20261013",
+          "headRefName": "codex/document-replay-20261013",
+          "headRefOid": "18adda2c5461b8d346277135aafd3972b4768802",
+          "isDraft": true,
+          "number": 59,
+          "title": "Recover completed document deliveries from verified immutable artifacts",
+          "updatedAt": "2026-10-13T10:49:26Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/59"
+        },
+        {
+          "baseRefName": "task/meri-workbook-drafting-20261013",
+          "headRefName": "codex/n209-evidence-brief-20261013",
+          "headRefOid": "398d599311a5f6c48e18d31b4928cf665de8dcb9",
+          "isDraft": true,
+          "number": 58,
+          "title": "Add evidence-linked congressional DOCX briefs and immutable revision",
+          "updatedAt": "2026-10-13T09:33:45Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/58"
+        },
+        {
+          "baseRefName": "task/meri-preservation-structure-integrated-20261013",
+          "headRefName": "task/meri-native-host-projection-20261013-root",
+          "headRefOid": "a72d130b26d39c99d9d87a524795cee15aca8efc",
+          "isDraft": true,
+          "number": 57,
+          "title": "Fix native PostgreSQL host-address projections",
+          "updatedAt": "2026-10-13T09:13:50Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/57"
+        },
+        {
+          "baseRefName": "task/meri-document-contract-integrated-20261013",
+          "headRefName": "task/meri-workbook-drafting-20261013",
+          "headRefOid": "25e0d29d6f0b6c3de284d13e86bc5f1aa0c00d21",
+          "isDraft": true,
+          "number": 56,
+          "title": "Complete editable workbook revisions and inspected local previews",
+          "updatedAt": "2026-10-13T08:08:10Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/56"
+        },
+        {
+          "baseRefName": "task/meri-preservation-size-integrated-20261013",
+          "headRefName": "task/meri-preservation-structure-integrated-20261013",
+          "headRefOid": "980c71b7941b7f13f3e1831009076f283aedbe71",
+          "isDraft": true,
+          "number": 55,
+          "title": "Repair complete preservation inventory structural bounds",
+          "updatedAt": "2026-10-13T08:07:21Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/55"
+        },
+        {
+          "baseRefName": "task/meri-capiro-endpoint-integrated-20261013",
+          "headRefName": "task/meri-document-contract-integrated-20261013",
+          "headRefOid": "70516e5c9681917ce493bbc50e3023494f2e1209",
+          "isDraft": true,
+          "number": 54,
+          "title": "Add public document contract and verified browser downloads",
+          "updatedAt": "2026-10-13T07:53:26Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/54"
+        },
+        {
+          "baseRefName": "task/meri-qualified-fixture-repair-20261013",
+          "headRefName": "task/meri-preservation-size-integrated-20261013",
+          "headRefOid": "67ccac716bd6cbce4ee04e439a085bab75ae21a5",
+          "isDraft": true,
+          "number": 53,
+          "title": "Admit complete bounded preservation inventory without relaxing ordinary queries",
+          "updatedAt": "2026-10-13T07:25:38Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/53"
+        },
+        {
+          "baseRefName": "task/meri-document-drafting-20261013",
+          "headRefName": "task/meri-capiro-endpoint-integrated-20261013",
+          "headRefOid": "4699fdea910ba25c809725630443198c8ae189e4",
+          "isDraft": true,
+          "number": 52,
+          "title": "Integrate pinned Capiro authority endpoints through Meri source fixture",
+          "updatedAt": "2026-10-13T07:01:54Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/52"
+        },
+        {
+          "baseRefName": "task/meri-qualified-assembly-20261013",
+          "headRefName": "task/meri-qualified-fixture-repair-20261013",
+          "headRefOid": "a16e52ef5bd8d570c995dff298facbc0d1969000",
+          "isDraft": true,
+          "number": 51,
+          "title": "fix: preserve qualified fixture schemas across mapped database endpoints",
+          "updatedAt": "2026-10-13T06:38:06Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/51"
+        },
+        {
+          "baseRefName": "task/meri-qualified-assembly-20261013",
+          "headRefName": "task/meri-document-drafting-20261013",
+          "headRefOid": "a0614e7e16d6f92d0ca6eaa192cea7c5def21ec8",
+          "isDraft": true,
+          "number": 50,
+          "title": "feat: connect Word drafting, immutable revision and downloads",
+          "updatedAt": "2026-10-13T06:03:46Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/50"
+        },
+        {
+          "baseRefName": "task/meri-admitted-run-20261013",
+          "headRefName": "task/meri-qualified-assembly-20261013",
+          "headRefOid": "b5243ae164f68c7591b039e8365d9897390543d2",
+          "isDraft": true,
+          "number": 49,
+          "title": "feat: assemble owned qualification activation and application recovery",
+          "updatedAt": "2026-10-13T05:35:04Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/49"
+        },
+        {
+          "baseRefName": "task/meri-application-adapters-20261013",
+          "headRefName": "task/meri-admitted-run-20261013",
+          "headRefOid": "3d34bf42983824327c63f96419abcfea8a587407",
+          "isDraft": true,
+          "number": 48,
+          "title": "Wire persisted run authority into the source-off action application",
+          "updatedAt": "2026-10-13T04:46:40Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/48"
+        },
+        {
+          "baseRefName": "task/meri-action-session-20261013",
+          "headRefName": "task/meri-application-adapters-20261013",
+          "headRefOid": "84c2ca01d0bce025a0003b6e724d675a05f2975a",
+          "isDraft": true,
+          "number": 47,
+          "title": "Compose application authority adapters and mounted action sessions",
+          "updatedAt": "2026-10-13T04:18:51Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/47"
+        },
+        {
+          "baseRefName": "task/meri-local-application-20261013",
+          "headRefName": "task/meri-action-session-20261013",
+          "headRefOid": "ad0bdfeb830fee11f1f39c4a8a7037215595c4cf",
+          "isDraft": true,
+          "number": 46,
+          "title": "Issue scoped action sessions and add unpaid six-case application baseline",
+          "updatedAt": "2026-10-13T03:56:22Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/46"
+        },
+        {
+          "baseRefName": "task/meri-action-host-20261013",
+          "headRefName": "task/meri-local-application-20261013",
+          "headRefOid": "658bb5c0f8c47b80904cbc5c7453b3f8c3dba79c",
+          "isDraft": true,
+          "number": 45,
+          "title": "Integrate shared allocation, reconstructed hosts and public HTTP receiving",
+          "updatedAt": "2026-10-13T03:23:48Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/45"
+        },
+        {
+          "baseRefName": "task/meri-action-wiring-20261013",
+          "headRefName": "task/meri-action-host-20261013",
+          "headRefOid": "c47d5c2815026b399624df5eb76db0bc460cbb7a",
+          "isDraft": true,
+          "number": 44,
+          "title": "Compose action host with durable owners and retained-state recovery",
+          "updatedAt": "2026-10-13T03:00:34Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/44"
+        },
+        {
+          "baseRefName": "task/meri-action-wiring-20261013",
+          "headRefName": "task/meri-action-wire-20261013",
+          "headRefOid": "83d1d8b2ae4604ca259be17461ae71ca60f5fb6e",
+          "isDraft": true,
+          "number": 43,
+          "title": "Add canonical browser receiver for action workflow",
+          "updatedAt": "2026-10-13T02:50:14Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/43"
+        },
+        {
+          "baseRefName": "task/meri-action-followthrough-20261013",
+          "headRefName": "task/meri-action-wiring-20261013",
+          "headRefOid": "f1df1bc20b8f5ef06495c50d885b18ce2af73eb1",
+          "isDraft": true,
+          "number": 42,
+          "title": "Wire recommendation API and approved local task flow over HTTP",
+          "updatedAt": "2026-10-13T02:04:31Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/42"
+        },
+        {
+          "baseRefName": "task/meri-action-local-20261013",
+          "headRefName": "task/meri-action-followthrough-20261013",
+          "headRefOid": "a385fed03b6700bbccb158643793d0be29ccc5ed",
+          "isDraft": true,
+          "number": 41,
+          "title": "Prepare task proposals from recommendations and capture typed task evaluations",
+          "updatedAt": "2026-10-13T01:16:57Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/41"
+        },
+        {
+          "baseRefName": "task/meri-task-slice-20261012",
+          "headRefName": "task/meri-action-local-20261013",
+          "headRefOid": "cacbe543941db52cc8dcf085bf96c1919e8c155f",
+          "isDraft": true,
+          "number": 40,
+          "title": "Wire synthetic authority and real-pool action persistence checks",
+          "updatedAt": "2026-10-13T00:43:09Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/40"
+        },
+        {
+          "baseRefName": "task/meri-vertical-source-20261012",
+          "headRefName": "task/meri-task-slice-20261012",
+          "headRefOid": "d68615c9861315ac1c6ee616697f7ad0093d9192",
+          "isDraft": true,
+          "number": 39,
+          "title": "Compose authorized action recommendation lookup and actual-observation evaluation",
+          "updatedAt": "2026-10-13T00:08:58Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/39"
+        },
+        {
+          "baseRefName": "task/meri-backend-execution-20261012",
+          "headRefName": "task/meri-vertical-source-20261012",
+          "headRefOid": "77cedb126d57a0223d2df42ad2f3fe988eb51759",
+          "isDraft": true,
+          "number": 38,
+          "title": "Complete selected source mappings and guarded execution paths",
+          "updatedAt": "2026-10-12T23:24:51Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/38"
+        },
+        {
+          "baseRefName": "task/meri-backend-next-20261012",
+          "headRefName": "task/meri-backend-execution-20261012",
+          "headRefOid": "e5fb3963de787bbd7b7663316c368f15814897da",
+          "isDraft": true,
+          "number": 37,
+          "title": "Add reviewed backend reads and governed execution adapters",
+          "updatedAt": "2026-10-12T21:55:02Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/37"
+        },
+        {
+          "baseRefName": "task/meri-plan-reconciliation-20261012",
+          "headRefName": "task/meri-current-receipts-20261012",
+          "headRefOid": "cbbd8c5a7fe94d977b7da896ff7d01c959815fac",
+          "isDraft": true,
+          "number": 36,
+          "title": "Join current receipts to all 53 Meri governing requirements",
+          "updatedAt": "2026-10-12T20:28:58Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/36"
+        },
+        {
+          "baseRefName": "task/meri-observed-reads-20261012",
+          "headRefName": "task/meri-backend-next-20261012",
+          "headRefOid": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+          "isDraft": true,
+          "number": 35,
+          "title": "Compose reviewed outreach and Program Elements contracts",
+          "updatedAt": "2026-10-12T20:12:47Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/35"
+        },
+        {
+          "baseRefName": "task/meri-observed-reads-20261012",
+          "headRefName": "task/meri-plan-reconciliation-20261012",
+          "headRefOid": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+          "isDraft": true,
+          "number": 34,
+          "title": "Reconcile the full Meri plan and recorded native deferrals",
+          "updatedAt": "2026-10-12T19:45:57Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/34"
+        },
+        {
+          "baseRefName": "task/meri-civic-reads-20261012",
+          "headRefName": "task/meri-command-contracts-20261012",
+          "headRefOid": "a838c3819ca01798d9175a1d07bef1eb81355808",
+          "isDraft": true,
+          "number": 33,
+          "title": "Add reviewed private task and artifact command payloads",
+          "updatedAt": "2026-10-12T19:33:04Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/33"
+        },
+        {
+          "baseRefName": "task/meri-civic-reads-20261012",
+          "headRefName": "task/meri-observed-reads-20261012",
+          "headRefOid": "ede7b56845816d38d0bbffab5a657aaa4f978739",
+          "isDraft": true,
+          "number": 32,
+          "title": "Add reviewed public-web, SAM and Florida read contracts",
+          "updatedAt": "2026-10-12T19:33:00Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/32"
+        },
+        {
+          "baseRefName": "task/meri-reference-reads-20261012",
+          "headRefName": "task/meri-civic-reads-20261012",
+          "headRefOid": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+          "isDraft": true,
+          "number": 31,
+          "title": "Add seven independently reviewed civic and tenant read contracts",
+          "updatedAt": "2026-10-12T18:55:15Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/31"
+        },
+        {
+          "baseRefName": "task/meri-selected-reads-next-20261012",
+          "headRefName": "task/meri-reference-reads-20261012",
+          "headRefOid": "c1c9bfde7dd466a0474589a224a99b44277adbc9",
+          "isDraft": true,
+          "number": 30,
+          "title": "Add ten reviewed private read boundaries and preserve qualification evidence",
+          "updatedAt": "2026-10-12T18:20:40Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/30"
+        },
+        {
+          "baseRefName": "task/meri-native-invocation-evidence-20261012",
+          "headRefName": "task/meri-native-sdk-loopback-status-20261012",
+          "headRefOid": "f355fe2811d2b172ab449faa3177701ec2aa3ed2",
+          "isDraft": true,
+          "number": 29,
+          "title": "Record reduced SDK loopback qualification status",
+          "updatedAt": "2026-10-12T18:03:43Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/29"
+        },
+        {
+          "baseRefName": "task/meri-read-continuation-20261012",
+          "headRefName": "task/meri-selected-reads-next-20261012",
+          "headRefOid": "a3e946c1fa264ae7b33205f5b87804ee1ef75773",
+          "isDraft": true,
+          "number": 28,
+          "title": "Add nine reviewed disclosure personnel and congressional read contracts",
+          "updatedAt": "2026-10-12T17:30:48Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/28"
+        },
+        {
+          "baseRefName": "task/meri-native-budget-container-evidence-20261012",
+          "headRefName": "task/meri-native-invocation-evidence-20261012",
+          "headRefOid": "7b2167834e624825d07a16950211c448a841865b",
+          "isDraft": true,
+          "number": 27,
+          "title": "Qualify trusted invocation production and reconciliation on PostgreSQL",
+          "updatedAt": "2026-10-12T17:22:17Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/27"
+        },
+        {
+          "baseRefName": "task/meri-capability-next-20261012",
+          "headRefName": "task/meri-read-continuation-20261012",
+          "headRefOid": "2aa0a33bdaf36af1224cfdb840bc493e53cea9f3",
+          "isDraft": true,
+          "number": 26,
+          "title": "Add sixteen independently reviewed selected read contracts",
+          "updatedAt": "2026-10-12T17:09:20Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/26"
+        },
+        {
+          "baseRefName": "task/meri-native-helper-integration-20261012",
+          "headRefName": "task/meri-native-budget-container-evidence-20261012",
+          "headRefOid": "ac549600d054751da74bde3cbcdadbb116efa17f",
+          "isDraft": true,
+          "number": 25,
+          "title": "Qualify budget tests against the prepared PostgreSQL container",
+          "updatedAt": "2026-10-12T16:27:22Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/25"
+        },
+        {
+          "baseRefName": "task/meri-capability-successor-20261012",
+          "headRefName": "task/meri-capability-next-20261012",
+          "headRefOid": "fd78590bff1b8551b145a7eafa0ed5f8e23d7bcc",
+          "isDraft": true,
+          "number": 24,
+          "title": "Add six reviewed private read contracts and canonical bindings",
+          "updatedAt": "2026-10-12T16:09:03Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/24"
+        },
+        {
+          "baseRefName": "task/meri-native-helper-integration-20261012",
+          "headRefName": "task/meri-native-rc1-33-evidence-20261012",
+          "headRefOid": "261410c4021b97cd63d3e876ddc9199a665c71bf",
+          "isDraft": true,
+          "number": 23,
+          "title": "Preserve verified RC1 33-case local database evidence",
+          "updatedAt": "2026-10-12T16:00:54Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/23"
+        },
+        {
+          "baseRefName": "release/meri-rc1-20261012",
+          "headRefName": "task/meri-capability-successor-20261012",
+          "headRefOid": "4cdabab9ae3ef5f44e2a1eb10ae1a8a6622fa640",
+          "isDraft": true,
+          "number": 22,
+          "title": "Add trusted mail continuation and partial action read binding",
+          "updatedAt": "2026-10-12T14:58:46Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/22"
+        },
+        {
+          "baseRefName": "task/meri-supervisor-predicate-20261012",
+          "headRefName": "task/meri-native-helper-integration-20261012",
+          "headRefOid": "2f06feccca731d6cd388612cd568185ecc29668f",
+          "isDraft": true,
+          "number": 21,
+          "title": "Refuse late canonical hash observations after exact helper review",
+          "updatedAt": "2026-10-12T09:11:47Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/21"
+        },
+        {
+          "baseRefName": "task/meri-g1-invocation-setup-20261012",
+          "headRefName": "task/meri-supervisor-predicate-20261012",
+          "headRefOid": "bf41cf69ebe892705cdd6f041dd2f1fb323048f5",
+          "isDraft": true,
+          "number": 20,
+          "title": "Preserve exact supervisor rejection and bound PostgreSQL prerequisites",
+          "updatedAt": "2026-10-12T08:35:25Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/20"
+        },
+        {
+          "baseRefName": "task/meri-g1-owner-continuation-20261012",
+          "headRefName": "task/meri-g1-invocation-setup-20261012",
+          "headRefOid": "15f671a65365e3401f0ce07b46deb4cf63538346",
+          "isDraft": true,
+          "number": 19,
+          "title": "Add trusted durable invocation production and accounting reconciliation",
+          "updatedAt": "2026-10-12T07:55:09Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/19"
+        },
+        {
+          "baseRefName": "task/meri-g1-native-path-20261012",
+          "headRefName": "task/meri-g1-owner-continuation-20261012",
+          "headRefOid": "6cfb1f9a4d8acd66c5bd8d38d892d656fa3cd89e",
+          "isDraft": true,
+          "number": 18,
+          "title": "Add canonical budget outcome reads and reviewed native writer",
+          "updatedAt": "2026-10-12T06:57:43Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/18"
+        },
+        {
+          "baseRefName": "task/meri-g1-recovery-sandbox-20261012",
+          "headRefName": "task/meri-g1-native-path-20261012",
+          "headRefOid": "263d0d174f9924a6030bb1c20100ff1115ffcda0",
+          "isDraft": true,
+          "number": 17,
+          "title": "Prepare reviewed supervisor and budget evidence for native qualification",
+          "updatedAt": "2026-10-12T06:15:28Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/17"
+        },
+        {
+          "baseRefName": "task/meri-g1-owner-budget-20261012",
+          "headRefName": "task/meri-g1-recovery-sandbox-20261012",
+          "headRefOid": "e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5",
+          "isDraft": true,
+          "number": 16,
+          "title": "Bind Temporal recovery and qualification probe cleanup",
+          "updatedAt": "2026-10-12T05:29:37Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/16"
+        },
+        {
+          "baseRefName": "task/meri-g1-executable-source-20261012",
+          "headRefName": "task/meri-g1-owner-budget-20261012",
+          "headRefOid": "14be9fc614568a74133b89f2b229e50c9b030322",
+          "isDraft": true,
+          "number": 15,
+          "title": "Wire G1 owner stop and durable tool-budget source",
+          "updatedAt": "2026-10-12T04:50:07Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/15"
+        },
+        {
+          "baseRefName": "task/meri-image-source-preparation-20261012",
+          "headRefName": "task/meri-g1-executable-source-20261012",
+          "headRefOid": "1e6d430cf9c239caca4198aea42a762f13021cd5",
+          "isDraft": true,
+          "number": 14,
+          "title": "Fix G1 revocation, cancellation and worker source guards",
+          "updatedAt": "2026-10-12T04:11:05Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/14"
+        },
+        {
+          "baseRefName": "task/meri-g1-source-continuation-20261012",
+          "headRefName": "task/meri-image-source-preparation-20261012",
+          "headRefOid": "690bac4cd44112b161d8e02818aeae7639ce237a",
+          "isDraft": true,
+          "number": 13,
+          "title": "Preserve image remediation evidence and clarify native ancestor refusal",
+          "updatedAt": "2026-10-12T03:36:45Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/13"
+        },
+        {
+          "baseRefName": "task/meri-memory-read-source-20261012",
+          "headRefName": "task/meri-g1-source-continuation-20261012",
+          "headRefOid": "90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73",
+          "isDraft": true,
+          "number": 12,
+          "title": "Compose trusted memory dispatch and prepare bounded runner diagnosis",
+          "updatedAt": "2026-10-12T03:07:05Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/12"
+        },
+        {
+          "baseRefName": "task/meri-source-continuation-20261012",
+          "headRefName": "task/meri-memory-read-source-20261012",
+          "headRefOid": "5db2714b6dcbd3109c528e0afafcb654216133ca",
+          "isDraft": true,
+          "number": 11,
+          "title": "Bind pending memory reads and clarify administrator approval policy",
+          "updatedAt": "2026-10-12T02:39:32Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/11"
+        },
+        {
+          "baseRefName": "task/codex-g1-publish-20261011",
+          "headRefName": "task/meri-source-continuation-20261012",
+          "headRefOid": "7ba0e9d10ebf684e162dcc7c143915afdbf00f32",
+          "isDraft": true,
+          "number": 10,
+          "title": "Accept repaired memory and source-disabled gateway boundaries",
+          "updatedAt": "2026-10-12T02:04:32Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/10"
+        },
+        {
+          "baseRefName": "task/codex-g1-publish-20261011",
+          "headRefName": "task/handover-preserve-candidates-20261012",
+          "headRefOid": "c57b7d26df7de2acbd8c7d8edc7098f7d495053a",
+          "isDraft": true,
+          "number": 9,
+          "title": "Preserve complete Meri handover, context inventories and unreviewed candidates",
+          "updatedAt": "2026-10-12T01:29:26Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/9"
+        },
+        {
+          "baseRefName": "task/codex-g1-publish-20261011",
+          "headRefName": "shipper/aws-preflight-20261011-r1",
+          "headRefOid": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+          "isDraft": true,
+          "number": 8,
+          "title": "Record Meri AWS preflight and immutable shipping evidence",
+          "updatedAt": "2026-10-12T00:30:06Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/8"
+        },
+        {
+          "baseRefName": "main",
+          "headRefName": "task/codex-g1-publish-20261011",
+          "headRefOid": "5ee46446b5f60034916f00b2a665b3e2bef9cf60",
+          "isDraft": true,
+          "number": 7,
+          "title": "Preserve Meri accepted source, qualification evidence and original handoff inputs",
+          "updatedAt": "2026-10-12T01:11:59Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/7"
+        },
+        {
+          "baseRefName": "task/handover-20261011",
+          "headRefName": "resume/meri-g1-review-20261011",
+          "headRefOid": "1eac54274223729d69a0d44456a3f090dc1a0b80",
+          "isDraft": true,
+          "number": 3,
+          "title": "G1 remote pickup: reviewed source candidates and coordination hold",
+          "updatedAt": "2026-10-11T16:54:53Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/3"
+        },
+        {
+          "baseRefName": "main",
+          "headRefName": "codex/sessionstore-recovery-20261011",
+          "headRefOid": "65d9c750639e0d370985827983f24019a3f585ab",
+          "isDraft": true,
+          "number": 2,
+          "title": "SessionStore: bounded run-scoped qualification candidate",
+          "updatedAt": "2026-10-11T04:48:17Z",
+          "url": "https://github.com/neo-capiro/meri-greenfield/pull/2"
+        }
+      ]
+    }
+  }
+}

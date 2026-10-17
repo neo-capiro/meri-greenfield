@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 2,
+  "sourceCommit": "REVIEWED_FULL_40_HEX_COMMIT",
+  "archive": {
+    "bucket": "meri-greenfield-qual-build-967807252336-us-east-1",
+    "key": "REVIEWED_NEW_ARCHIVE_KEY",
+    "versionId": "VERIFIED_NEW_VERSION",
+    "sha256": "VERIFIED_64_HEX"
+  },
+  "manifest": {
+    "bucket": "meri-greenfield-qual-build-967807252336-us-east-1",
+    "key": "REVIEWED_NEW_MANIFEST_KEY",
+    "versionId": "VERIFIED_NEW_VERSION",
+    "sha256": "VERIFIED_64_HEX"
+  },
+  "dockerfileSha256": "EXACT_ARCHIVED_MEMBER_SHA256",
+  "nodeImageUri": "public.ecr.aws/docker/library/node@sha256:c83040f7e24bacea68e58a0b96a484ba430bf24abb2973eab7ba4701144b7b63",
+  "nodeVersion": "v24.21.0",
+  "runtimeBaseImageUri": "cgr.dev/chainguard/wolfi-base@sha256:030e45cb37187dff322bbefe9658bcaec31b824a5d523380771a64864c9f45d4",
+  "runtimePackagesSha256": "5c7724e6c9837dabc3146256aa55b3dce2230d10de5a2ff7c479f519aafb3ac9",
+  "runnerSha256": "EXACT_ARCHIVED_MEMBER_SHA256",
+  "runtimeUser": "1000:1000",
+  "codeBuildProjectArn": "arn:aws:codebuild:us-east-1:967807252336:project/meri-greenfield-qualification-build",
+  "ecrRepositoryUri": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker",
+  "imageTag": "product-REVIEWED_FULL_COMMIT-NEW_APPROVED_32_HEX_ATTEMPT",
+  "verifierSha256": "EXACT_ARCHIVED_MEMBER_SHA256",
+  "producerSha256": "EXACT_ARCHIVED_MEMBER_SHA256"
+}

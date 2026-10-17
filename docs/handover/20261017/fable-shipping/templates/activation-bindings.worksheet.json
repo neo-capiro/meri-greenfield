@@ -1,0 +1,23 @@
+{
+  "status": "NON_EXECUTABLE_OWNER_WORKSHEET_NOT_A_PRODUCT_CONFIG",
+  "activationApproved": false,
+  "meriOwner": "Fable",
+  "coreFrontendCoordinationAndLiveE2E": "dot",
+  "requiredReviewedBindings": {
+    "acceptedMeriImageDigest": null,
+    "sourceCommit": null,
+    "exactConfigDigestAndFileDelivery": null,
+    "controlWorkerRunnerTaskDefinitions": null,
+    "executionControlRolesAndPolicies": null,
+    "vpcPrivateSubnetsSecurityGroups": null,
+    "controlTargetGroupListenerRuleDnsTls": null,
+    "taskBoundRunnerPrivateDnsTlsCa": null,
+    "existingAuroraDedicatedSchemasAppRolesAnd0017ManifestRestore": null,
+    "temporalEndpointStoreNamespaceQueueMtlsIssuer": null,
+    "nativeCapabilityIssuerAndCurrentIdentity": null,
+    "proxyOriginProviderModelBudgetObjectBucketKms": null,
+    "sameClerkApplicationIssuerTemplateMemberClientProof": null,
+    "oldPinStopCustodyAndConversationContinuity": null,
+    "boundedActivationApprovalAndRollback": null
+  }
+}

@@ -1,0 +1,172 @@
+{
+  "schemaVersion": 1,
+  "recordedAtUtc": "2026-10-17T02:22:00.158514+00:00",
+  "disposition": "ACCEPT_SOURCE",
+  "acceptanceScope": "Independent source review of assigned Dockerfile/runtime-base-probe/runtime-packages surfaces only; not image/build/deployment acceptance.",
+  "candidateRepository": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-16\\task\\capiro-rebuild\\repos\\meri-runtime-base-remediation",
+  "baseCommit": "6fd48c9c3d49962a111e7f801f9f71ad06a7f1c9",
+  "candidateCommitted": false,
+  "runtimePackagesSha256": "5c7724e6c9837dabc3146256aa55b3dce2230d10de5a2ff7c479f519aafb3ac9",
+  "reviewedFiles": [
+    {
+      "path": "capiro-rebuild/repos/meri-runtime-base-remediation/apps/runtime/Dockerfile",
+      "bytes": 3915,
+      "sha256": "77e676d85cab642d84d91ee7a0ef23d75e2b227016f0599697e288f964faae8b"
+    },
+    {
+      "path": "capiro-rebuild/repos/meri-runtime-base-remediation/apps/runtime/build/runtime-base-probe.mjs",
+      "bytes": 3963,
+      "sha256": "45e17cc3682285a0ee9793f2eb17dff21a2eb0e36ca99bf661ddbcd287fd9a11"
+    },
+    {
+      "path": "capiro-rebuild/repos/meri-runtime-base-remediation/apps/runtime/build/runtime-base-probe.test.mjs",
+      "bytes": 1786,
+      "sha256": "5115b4e78a01283a0f5f4e9bdc4fdf728e823b94d66d3e7a8e718a8e9a0c9dcb"
+    },
+    {
+      "path": "capiro-rebuild/repos/meri-runtime-base-remediation/apps/runtime/build/runtime-packages.mjs",
+      "bytes": 16981,
+      "sha256": "e1190fbdb7dafbbe1d43f109f90854581a182ec4e8d47e70d810c3037475e873"
+    },
+    {
+      "path": "capiro-rebuild/repos/meri-runtime-base-remediation/apps/runtime/build/runtime-packages.test.mjs",
+      "bytes": 19522,
+      "sha256": "1dd45e38fca70c5e7e4584ed8293278ab518d0e5c7664931063f0b785c0de631"
+    },
+    {
+      "path": "capiro-rebuild/repos/meri-runtime-base-remediation/infra/product-preview/runtime-packages.lock.json",
+      "bytes": 3459,
+      "sha256": "5c7724e6c9837dabc3146256aa55b3dce2230d10de5a2ff7c479f519aafb3ac9"
+    },
+    {
+      "path": "capiro-rebuild/repos/meri-runtime-base-remediation/apps/runtime/build/materialize-swc.mjs",
+      "bytes": 10415,
+      "sha256": "cd34a83e28ebbd70ff6acdfaf636938d30d609d86a1f509d8c0d8a7abda897fe"
+    }
+  ],
+  "retainedEvidence": [
+    {
+      "path": "base-remediation-20261017/APKINDEX.tar.gz",
+      "bytes": 10635138,
+      "sha256": "01398efd4ae98d03bf5cb2c9c5fe397399bca61b81c8cb0cb36bd90e230137c6"
+    },
+    {
+      "path": "base-remediation-20261017/index-signature-verification.json",
+      "bytes": 481,
+      "sha256": "d0162b3a2c4222e1d1f2fb8e53cd81b507d93157d7a30916b2f14c1505647916"
+    },
+    {
+      "path": "base-remediation-20261017/additional-apk-closure.json",
+      "bytes": 16806,
+      "sha256": "3663a6035814c5ac05312dbd68d2387d8c4f8dad8e6dc2166bf1a65b309703e8"
+    },
+    {
+      "path": "fable-shipping-handoff-20261017/wolfi-base-package-readback.json",
+      "bytes": 6706,
+      "sha256": "8e6d8a9b6bbad3436a1c0f3119538db065e108d7dfedf8b7506f894a278cebb6"
+    },
+    {
+      "path": "fable-shipping-handoff-20261017/wolfi-base-public-keys.json",
+      "bytes": 4017,
+      "sha256": "6fbdf6c069e9d93ea7e2f68095dac7ceb403903ae66493a7ee8f1aac9ac407c3"
+    }
+  ],
+  "checks": [
+    {
+      "id": "CURRENT_ROLE_SCOPE",
+      "status": "PASS",
+      "evidence": "Dockerfile retains all seven root/nested npm installations, every copied app/package, existing contracts/SDK/S3 aliases, exact Node builder /usr/local, GNU SWC materialization, nonroot UID/GID1000, /run/meri mode0700, entrypoint/help and run volume. No new activation of held artifact/Python/browser/Bash-sandbox ports."
+    },
+    {
+      "id": "SIGNED_OFFLINE_REPOSITORY",
+      "status": "PASS",
+      "evidence": "Independent Node crypto verification of RSA-SHA256 on exact second compressed index member passed using public key from retained pinned base. Index and all four APK full-file SHA256/lengths equal real lock. Dockerfile hashes the base key before apk add; full unmodified signed repository index is used. No allow-untrusted or synthesized unsigned index."
+    },
+    {
+      "id": "APK_CUSTODY_CHAIN",
+      "status": "PASS",
+      "evidence": "Independent in-memory Python gzip/tar inspection verified all four APK control SHA1/Q1 identities against authenticated index, exact name/version/x86_64 PKGINFO, and compressed data-member SHA256 against control datahash. No extraction/execution/install."
+    },
+    {
+      "id": "OFFLINE_INSTALL_AND_EXACT_FINAL_SET",
+      "status": "PASS",
+      "evidence": "Docker RUN --network=none; apk --repositories-file /dev/null --keys-dir /etc/apk/keys --repository /tmp/runtime-repo add --no-network --no-cache with four exact versions; helper compares complete sorted installed name/version set to 19 base + 4 additions, refusing missing/extra/duplicate/wrong versions."
+    },
+    {
+      "id": "ACTUAL_BASE_DB_AND_PATHS",
+      "status": "PASS",
+      "evidence": "Retained digest-checked base readback identifies usr/lib/apk/db/installed and 19 pairs exactly equal real lock. Helper realpaths the three supported DB locations, deduplicates canonical physical path strings, rejects distinct DB paths/escaped targets. Root /lib-style symlinks are followed within the selected root. Additional exact-real-lock synthetic lib/lib64/bin alias fixture passed. This is not actual final-image filesystem execution."
+    },
+    {
+      "id": "PUBLIC_DOWNLOAD_TLS_PRIVACY",
+      "status": "PASS",
+      "evidence": "Only exact fixed HTTPS packages.wolfi.dev x86_64 index/APK URLs parse. https.request uses GET, rejectUnauthorized:true, TLS>=1.2, agent:false, fixed public headers, no redirects/cookies/auth forwarding. Response status/redirect/url/length/encoding and content hashes are bounded; raw errors/remote bodies never propagate in CLI output."
+    },
+    {
+      "id": "DOWNLOAD_LIFETIME_CLEANUP",
+      "status": "PASS",
+      "evidence": "30-second per-object and 180-second total monotonic budget; 16MiB file/64MiB aggregate bounds; abort/cancel pending responses; bounded settlement; exclusive new directories/files; inode/device ownership checks preserve foreign files; unresolved cleanup returns CLEANUP_UNKNOWN. Failure-path tests cover late/hung responses, body cancellation, collision/interference and redaction."
+    },
+    {
+      "id": "REAL_NATIVE_PROBE_DESIGN",
+      "status": "PASS",
+      "evidence": "Probe requires Linux x64 Node v24.21.0/glibc, pins SWC1.16.18 GNU owner via canonical swcBinding, checks selected native ELF/hash, performs actual TypeScript transform/target check, requires both selected SWC and Temporal1.24.0 .node real paths in process sharedObjects and no other .node, checks build cache absent before/after. Core-bridge require only loads native exports; no Runtime/Worker/connection/service constructor called."
+    },
+    {
+      "id": "QUALIFICATION_CALLSITE",
+      "status": "PASS",
+      "evidence": "Bounded read of image-build-producer.py lines467-489 confirms final package/native probes run under Docker --network none, read-only, cap-drop ALL, no-new-privileges, bounded PIDs/memory and noexec tmpfs before registry credentials/push. Full producer/provenance review belongs to other owner."
+    }
+  ],
+  "findings": [],
+  "focusedVerification": {
+    "command": [
+      "C:/Users/Administrator/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe",
+      "--test",
+      "apps/runtime/build/runtime-base-probe.test.mjs",
+      "apps/runtime/build/runtime-packages.test.mjs"
+    ],
+    "workingDirectory": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-16\\task\\capiro-rebuild\\repos\\meri-runtime-base-remediation",
+    "exitCode": 0,
+    "tests": 23,
+    "passed": 23,
+    "failed": 0,
+    "skipped": 0,
+    "transport": "All test requests injected/mocked; no real network",
+    "additionalReadOnlyChecks": [
+      "Actual lock parsed by production parser with exact raw SHA preserved",
+      "Pinned-base public key and signed repository index independently verified",
+      "All pinned index/APK full hashes/lengths and signed-index control/data identities independently recomputed",
+      "19 real base DB pairs compared to lock",
+      "Exact real lock, 23 installed pairs and merged-path aliases verified in synthetic disposable filesystem; cleanup completed"
+    ],
+    "syntheticMergedPathInstalledSetSha256": "bb9518124385a605e1caaa2319af7ce8ec7f38a96973d811caa21977862b3cab"
+  },
+  "remainingQualificationGates": [
+    "Actual network-disabled apk installation in pinned Wolfi final stage remains UNRUN; source/signature/static closure does not replace it.",
+    "Actual selected Linux Node/SWC/Temporal/Claude native behavior in final image remains UNRUN by this review; the probe is a gate design, not a fabricated positive native result.",
+    "Final image exact UID/file permissions/read-only/noexec/native startup and full current-role behavior require allocated Linux qualification.",
+    "Exact final image fresh ECR scan COMPLETE with HIGH0/CRITICAL0 remains required. No scan exception or package relabeling accepted.",
+    "Held optional sandbox, artifact executor and dedicated browser/renderer gates remain separate and unchanged; no claim of installed/qualified capability."
+  ],
+  "actions": {
+    "sourceEdits": false,
+    "docker": false,
+    "network": false,
+    "installation": false,
+    "aws": false,
+    "gitCommit": false,
+    "publication": false,
+    "credentialsReadOrDisplayed": false,
+    "privateReportOnly": true,
+    "activeOwnedProcesses": false
+  },
+  "reviewedFilesUnchangedAtFreeze": true,
+  "changedAfterReview": [],
+  "safeStop": {
+    "requestedByParent": true,
+    "noNewBuildOrOperationalAction": true,
+    "frozenAtUtc": "2026-10-17T02:22:18.400381+00:00",
+    "activeOwnedProcessOrSession": null
+  }
+}

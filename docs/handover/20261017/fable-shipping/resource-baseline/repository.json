@@ -1,0 +1,14 @@
+[
+  {
+    "repositoryArn": "arn:aws:ecr:us-east-1:967807252336:repository/meri-greenfield/qualification-worker",
+    "repositoryUri": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker",
+    "imageTagMutability": "IMMUTABLE",
+    "imageScanningConfiguration": {
+      "scanOnPush": true
+    },
+    "encryptionConfiguration": {
+      "encryptionType": "KMS",
+      "kmsKey": "arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042"
+    }
+  }
+]

@@ -1,0 +1,14 @@
+{
+  "AWSAccountId": "967807252336",
+  "KeyId": "1cca74fc-d9ae-43a6-8bfd-b93107e90042",
+  "Arn": "arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042",
+  "Enabled": true,
+  "KeyState": "Enabled",
+  "KeyUsage": "ENCRYPT_DECRYPT",
+  "KeySpec": "SYMMETRIC_DEFAULT",
+  "KeyManager": "CUSTOMER",
+  "Origin": "AWS_KMS",
+  "MultiRegion": false,
+  "DeletionDate": null,
+  "PendingDeletionWindowInDays": null
+}

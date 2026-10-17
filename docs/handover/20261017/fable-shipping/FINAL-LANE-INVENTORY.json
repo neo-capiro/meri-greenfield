@@ -1,0 +1,168 @@
+{
+  "schemaVersion": 1,
+  "checkpoint": "2026-10-17T02:17:26Z safe-stop; final immutable lane references appended before publication",
+  "ownership": {
+    "meri": "Fable on another machine after this checkpoint",
+    "coreAndFrontendCoordination": "dot; explicitly coordinate any Core activation with dot",
+    "liveAuthenticatedE2E": "dot",
+    "newMeriBuildOrActivationAuthorized": false
+  },
+  "primary": {
+    "repository": "neo-capiro/meri-greenfield",
+    "branch": "handoff/meri-portable-fable-20261017",
+    "path": "docs/handover/20261017/fable-shipping/FABLE-SHIPPING-HANDOFF.md",
+    "handoffCommit": "Use immutable URL supplied at completion or git rev-parse HEAD; no self-referential hash is embedded",
+    "sourceCandidate": "31edd91a5762dd0a5909e541f815a25d7789fcc9",
+    "sourceCandidateTree": "7dd63badb808acd12716ea8269b70bf1bcaeb0ab",
+    "candidateParentPublishedScanFix": "6fd48c9c3d49962a111e7f801f9f71ad06a7f1c9",
+    "candidateStatus": "ACCEPT_SOURCE only; actual apk/native/image/clean scan UNRUN; mutable-index cache consumption unresolved",
+    "selectedPRStack": [
+      89,
+      90,
+      91,
+      92,
+      93,
+      94,
+      97,
+      98,
+      101
+    ],
+    "fullStackPins": "meri-source-inventory.json requiredStack; PR101 advances to6fd48c9; candidate31edd91 follows it",
+    "portedSidePR": 96,
+    "migration0017": {
+      "blob": "4fa941a215b3dac2f2a5cfbca190d7b73549b670",
+      "sha256": "e140cc489fc97ebb63a50406cea3e0b0db5755cdf461d92c0affe601b26900eb",
+      "qualification": "isolated Windows PostgreSQL16.15 9/9; Unix/live Aurora16.11 UNRUN",
+      "centralReservationHead": "082eb9f24b61c0813044fcf3a1b9a4cb41999a3c"
+    }
+  },
+  "frontend": {
+    "repository": "neo-capiro/capiro-frontend",
+    "branch": "feat/meri-first-chat-bootstrap-preview-20261016",
+    "pr": 60,
+    "readBindingBaseline": "8fd2c4c4556e5fed37da012293a4f1b4d2088d14",
+    "readBindingBaselineTree": "c52e8147d4d1087ac4a85b59343ffecaef0f6e77",
+    "baselineImaged": false,
+    "conditionalSourceSuccessorPR": 64,
+    "conditionalSourceSuccessor": "4f820f588386e6b023f55714c0e6c11091ecef63",
+    "conditionalSourceSuccessorTree": "bf797704f972a7d00a46f1a33cddffe2894161e7",
+    "portableHandoff": "https://github.com/neo-capiro/capiro-frontend/blob/4f820f588386e6b023f55714c0e6c11091ecef63/docs/non-meri-continuation-20261016/PR60-ISSUER-AND-IMAGE-HOLD-20261017.md",
+    "qualifiedImageSource": "e0b47a34d00b8c181420188ed39a1d849e25ec0a",
+    "qualifiedImageDigest": "sha256:185d6ab9f7a8a6395546be4ac2374de2e329ab6182627de18e1fca9732220bcc",
+    "qualifiedBuild": "capiro-portfolio-preview-build:f9c07a42-6404-4e6d-9a5c-dca834d42de4",
+    "qualifiedScan": "COMPLETE zero findings",
+    "issuerAndAdmission": "HOLD: Test Clerk vs held Core dev issuer; same-app keys, native capiro template, active tenant/member/client unproven"
+  },
+  "core": {
+    "repository": "neo-capiro/capiro-backend",
+    "branch": "feat/core-preview-alpine-amd64-qualification-20261016",
+    "pr": 48,
+    "imageSource": "6542f5b089656b6d255465edd464d06c2a0b408f",
+    "imageDigest": "sha256:722a483259ebb5e9162b9294c26895bafa890fcfee45dc927ff1d2ec35fa071b",
+    "build": "capiro-preview-first-chat-core-alpine-amd64-build:7d652626-deff-4f1d-b48f-96ecf04eddeb",
+    "scan": "COMPLETE zero findings",
+    "portableHandoffHead": "8b46d2df73f211ebdf09e5a138241539cb5dd922",
+    "portableHandoff": "https://github.com/neo-capiro/capiro-backend/blob/8b46d2df73f211ebdf09e5a138241539cb5dd922/docs/core-first-chat-fable-shipping-handoff-20261017.md",
+    "heldServiceLastRead": "about02:11 UTC desired/running/pending0/0/0; target group empty; priority3 retained guard;4 vacant but unreserved",
+    "nativeOrigin": "https://first-chat-preview.app-dev.capiro.ai",
+    "frontendApiBase": "https://first-chat-preview.app-dev.capiro.ai/api",
+    "issuer": "https://clerk.app.capiro.ai",
+    "receiptMigration": "PASS once ledger646->647; do not rerun",
+    "activation": "HOLD; dot coordination required"
+  },
+  "excludedReadLane": {
+    "shippingIntegration": "EXCLUDED; no automatic promotion from source acceptance",
+    "sourcePR": 110,
+    "source": "f7f4ed5b397fcd44576251739ed361aee6941d7a",
+    "sourceTree": "e5f752758583cc56a720c1b40093c1fb23a7372c",
+    "handoffPR": 112,
+    "handoffHead": "1b59b96a0f7cbaaeb611a07bd36cb72041d2538b",
+    "handoffTree": "e1a6cc9b55501191f56142bf684e3782d94534cd",
+    "handoff": "https://github.com/neo-capiro/meri-greenfield/blob/1b59b96a0f7cbaaeb611a07bd36cb72041d2538b/docs/coordination/handoffs/meri-read-lane-20261017/README.md",
+    "stack": "98->99->103->104->105->106->107->109->110, parallel100->102/101/108; all full pins and68 Git-backed evidence files in lane handoff",
+    "ledger": {
+      "complete": 58,
+      "partial": 13,
+      "absent": 11,
+      "total": 82,
+      "sdkOperations": 60,
+      "sdkFamilies": 36,
+      "live": 0
+    },
+    "sourceChecks": "1029/1029; independent ACCEPT_SOURCE/ACCEPT_HANDOFF; fresh clone restoration/install UNRUN",
+    "remainingOwnerChoices": "24operations/15families with exact proposed files/contracts in lane handoff; funding bridge withheld",
+    "historicalFixtures": "Four tiny original Git commit-object fixtures retained for unchanged ledger checks",
+    "fundingCandidate": {
+      "corePR": 52,
+      "head": "6bb17c00b610334e1aa354496d8a3acd152907d0",
+      "tree": "614c2219ec10fcb0f2c1fb8a649cdb87680a7dbc",
+      "status": "UNINTEGRATED/UNACCEPTED by read lane; source-only, no activation"
+    }
+  },
+  "excludedPreferencesAndTaskUpdates": {
+    "shippingIntegration": "EXCLUDED; no merge into ordinary first-chat candidate",
+    "meriSourcePRs": [
+      100,
+      102,
+      108,
+      111
+    ],
+    "meriLatestSource": "10da73795ab5789cb5724d0db45db50bdecb5da3",
+    "frontendSourcePRs": [
+      61,
+      62,
+      63
+    ],
+    "frontendHandoffPR": 65,
+    "frontendHandoffHead": "b12978025858aac65169661e3bf04f13c3ab3faa",
+    "frontendHandoffTree": "b66ace4b2f1443d2a9ead4c352a7dd47669e3231",
+    "frontendHandoffBase": "1c0c059466963a3a5b4757d05f44701eb2007347",
+    "frontendHandoff": "https://github.com/neo-capiro/capiro-frontend/blob/b12978025858aac65169661e3bf04f13c3ab3faa/docs/meri-product-features-20261017/FABLE-HANDOFF.md",
+    "meriPortableHandoff": "https://github.com/neo-capiro/meri-greenfield/blob/c296d1019f4a35d729798da08f78db486e7ca0b7/docs/handover/20261017/meri-product-features/FABLE-HANDOFF.md",
+    "pgOutcome": "one target guard pass;10 real database cases cancelled before hook by inet::text address guard; restore UNRUN",
+    "pgCleanup": "ownerPID15816 exited; task data/password file removed; port55436 free",
+    "diagnosticRetry": "DENIED before execution by automatic approval review: earlier no-schema/credentials restriction and absent trusted exact retry approval; no retry/workaround; window expired",
+    "futureWrapper": "REVIEWED_HOLD/DO NOT RUN: invocation-level absolute-window guard missing around direct PG connect/setup queries; repair instructions retained, no DB execution",
+    "memoryReviewContract": "Unstarted proposal only; no authority implied",
+    "meriHandoffPR": 113,
+    "meriHandoffHead": "c296d1019f4a35d729798da08f78db486e7ca0b7",
+    "meriHandoffTree": "e975414eb87800616a3924e1521956fb102edd45",
+    "meriHandoffBase": "10da73795ab5789cb5724d0db45db50bdecb5da3",
+    "fullPinsAndProposals": "SOURCE-PINS.json and PENDING-PROPOSALS.md at same immutable handoff folder; all source PRs and unimplemented proposals retained",
+    "pgSource": "69a61c36b1b98e5bc02591f2b4a4c32f14b828cf",
+    "handoffReview": "Documentation/history ACCEPT; future wrapper REVIEWED_HOLD/DO NOT RUN; no DB/test/feature execution in packaging"
+  },
+  "excludedPlannerObjective": {
+    "shippingIntegration": "EXCLUDED from ordinary first-chat; live issuer/SDK/browser/deployment unqualified",
+    "backendStack": [
+      {
+        "pr": 42,
+        "head": "6d24414da975b52ab9802a883b22c868ad14fc92"
+      },
+      {
+        "pr": 49,
+        "head": "db6ef0a617f4b570cadfa6e05bad7296017d0f70"
+      },
+      {
+        "pr": 50,
+        "head": "5591eac08428635bf911a0aa32acea859e2a5d95"
+      },
+      {
+        "pr": 51,
+        "head": "81dd0313760c0f18858cb8aa2ad73191da71f138"
+      }
+    ],
+    "meriObjectivePR": 95,
+    "meriObjectiveHead": "5781c1150fbb3954c25ba245b26d325e06b4d82d",
+    "nativeEvidence": "PR50 and51 each exact-head20/20, independent cleanup; not live qualification",
+    "portableHandoff": "Source/native checkpoint: https://github.com/neo-capiro/capiro-backend/blob/81dd0313760c0f18858cb8aa2ad73191da71f138/docs/objective-planner-continuation-20261016/COMPOSITION.md ; separate portable docs publication is finishing under its owner and does not change ordinary first-chat source.",
+    "laterRecoveryLane": "Draft Core PR53 published source57f8c8047a73df6d4a73351a98a5239f38240a24/treecb2ac7d883290741e95d4dffa0f67406ed8e87e4, native qualification pending; excluded from Meri/first-chat/shipping. Ordinary source/native PR51 remains distinct."
+  },
+  "safeStop": {
+    "ownedMeriBuild": "5b67476a-5b30-43a7-9957-d83c72525aa2 freshly read FAILED/COMPLETED with retry0/0",
+    "ownedCommandSessions": "All recorded commands ended; bounded agents report no owned process; no new Meri build/install/dev server/scheduler",
+    "systemProcessOwnership": "Win32_Process selected PID ownership read denied; shared unidentified Node/Python processes left untouched. No system permissions changed.",
+    "rawEvidence": "Retrieve exact authenticated AWS/S3 versions with portable helper and documented commands; not dependent on C: or /tmp",
+    "publication": "Git source/doc publication only; no AWS writes or activation"
+  }
+}

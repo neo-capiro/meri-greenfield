@@ -1,0 +1,47 @@
+[
+  {
+    "arn": "arn:aws:codebuild:us-east-1:967807252336:project/meri-greenfield-qualification-build",
+    "name": "meri-greenfield-qualification-build",
+    "serviceRole": "arn:aws:iam::967807252336:role/MeriGreenfield-QualificationBui-BuilderRoleBBEBFA71-8G97EeNmFM0H",
+    "source": {
+      "type": "S3",
+      "location": "meri-greenfield-qual-build-967807252336-us-east-1/inputs/qualification-source.zip",
+      "insecureSsl": false,
+      "buildspecSha256": "f2b85ee04a9bf77c71d1c5032e0b6152f1ac0fbb1bc161f08ce64c146ef97433"
+    },
+    "environment": {
+      "type": "LINUX_CONTAINER",
+      "image": "aws/codebuild/standard:7.0",
+      "computeType": "BUILD_GENERAL1_SMALL",
+      "privilegedMode": true,
+      "environmentVariableMetadata": [
+        {
+          "name": "REPOSITORY_URI",
+          "type": "PLAINTEXT"
+        },
+        {
+          "name": "REPOSITORY_NAME",
+          "type": "PLAINTEXT"
+        },
+        {
+          "name": "RESULT_BUCKET",
+          "type": "PLAINTEXT"
+        },
+        {
+          "name": "IMAGE_TAG",
+          "type": "PLAINTEXT"
+        }
+      ]
+    },
+    "timeoutInMinutes": 30,
+    "queuedTimeoutInMinutes": 5,
+    "vpcConfig": null,
+    "cache": {
+      "type": "NO_CACHE"
+    },
+    "artifacts": {
+      "type": "NO_ARTIFACTS"
+    },
+    "encryptionKey": "arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042"
+  }
+]

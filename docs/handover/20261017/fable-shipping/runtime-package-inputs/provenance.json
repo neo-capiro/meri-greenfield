@@ -1,0 +1,170 @@
+{
+  "schemaVersion": 1,
+  "status": "RETAINED_PUBLIC_INPUTS_ONLY",
+  "retainedAtUtc": "2026-10-17T02:25:25.863415Z",
+  "lockPath": "infra/product-preview/runtime-packages.lock.json",
+  "runtimePackagesSha256": "5c7724e6c9837dabc3146256aa55b3dce2230d10de5a2ff7c479f519aafb3ac9",
+  "runtimeBaseImageUri": "cgr.dev/chainguard/wolfi-base@sha256:030e45cb37187dff322bbefe9658bcaec31b824a5d523380771a64864c9f45d4",
+  "artifacts": [
+    {
+      "file": "APKINDEX.tar.gz",
+      "url": "https://packages.wolfi.dev/os/x86_64/APKINDEX.tar.gz",
+      "sha256": "01398efd4ae98d03bf5cb2c9c5fe397399bca61b81c8cb0cb36bd90e230137c6",
+      "bytes": 10635138
+    },
+    {
+      "file": "bash-5.3-r14.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/bash-5.3-r14.apk",
+      "sha256": "28274b1abce489dd947e0b517935992a3b069647b7f3a4d8eb95bb262c0751d1",
+      "bytes": 784966
+    },
+    {
+      "file": "libstdc++-16.2.0-r1.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/libstdc++-16.2.0-r1.apk",
+      "sha256": "fc233c091aa551d6ba6da3e444d99a94e9947d53814d20183a0a7ded9a668f80",
+      "bytes": 1260650
+    },
+    {
+      "file": "ncurses-6.6.20261010-r0.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/ncurses-6.6.20261010-r0.apk",
+      "sha256": "475d8c2ec463637844149030a9cc3fc607782cfe681e3c16f80d2a6bc940bb63",
+      "bytes": 625682
+    },
+    {
+      "file": "ncurses-terminfo-base-6.6.20261010-r0.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/ncurses-terminfo-base-6.6.20261010-r0.apk",
+      "sha256": "fac2c47f1e85175a8cb6842c374b5462aa8a10d548b5d602d28ee7829b00a751",
+      "bytes": 119342
+    }
+  ],
+  "publicSigningKey": {
+    "file": "public-signing-key.txt",
+    "bytes": 800,
+    "sha256": "f0031424cf46f7db780ce63a45f0fd6aa6f85f601e6bb3b7a91fe3d4d5b7d2cc",
+    "sourcePath": "/etc/apk/keys/wolfi-signing.rsa.pub",
+    "sourceImageUri": "cgr.dev/chainguard/wolfi-base@sha256:030e45cb37187dff322bbefe9658bcaec31b824a5d523380771a64864c9f45d4",
+    "materialType": "PUBLIC KEY ONLY; no private key or credential"
+  },
+  "packageProvenance": [
+    {
+      "name": "bash",
+      "version": "5.3-r14",
+      "license": "GPL-3.0-or-later",
+      "sourceRecipeCommit": "ac7b15dc2695924986372a27cd7d6c4e029c5efa",
+      "recipeUrl": "https://github.com/wolfi-dev/os/blob/ac7b15dc2695924986372a27cd7d6c4e029c5efa/bash.yaml",
+      "sbomSources": [
+        {
+          "name": "bash",
+          "version": "5.3-r14",
+          "downloadLocation": "NOASSERTION"
+        },
+        {
+          "name": "bash.yaml",
+          "version": "ac7b15dc2695924986372a27cd7d6c4e029c5efa",
+          "downloadLocation": "NOASSERTION"
+        },
+        {
+          "name": "bash",
+          "version": "5.3-r14",
+          "downloadLocation": "NOASSERTION"
+        },
+        {
+          "name": "bash",
+          "version": "5.3-r14",
+          "downloadLocation": "NOASSERTION"
+        }
+      ],
+      "indexControlChecksumVerified": "Q1CJBEpKoxYcrKWwAz0i/b9Z57GHk=",
+      "dataSha256Verified": "0d2a00a44d57a2185f4970f1dbb85c27a5ad9a4ea53114ffda9d98a67011a6a1",
+      "pkginfoSha256": "0643c768afaee38ef76b19f11a4e3dce26b29f7472100516bc094ec00766bd01",
+      "signaturesPresent": []
+    },
+    {
+      "name": "libstdc++",
+      "version": "16.2.0-r1",
+      "license": "GPL-3.0-or-later WITH GCC-exception-3.1",
+      "sourceRecipeCommit": "794cf72f88e1b408eca5da0dbf5c5ed25543606d",
+      "recipeUrl": "https://github.com/wolfi-dev/os/blob/794cf72f88e1b408eca5da0dbf5c5ed25543606d/gcc.yaml",
+      "sbomSources": [
+        {
+          "name": "gcc.yaml",
+          "version": "794cf72f88e1b408eca5da0dbf5c5ed25543606d",
+          "downloadLocation": "NOASSERTION"
+        },
+        {
+          "name": "gnutools/gcc",
+          "version": "releases/gcc-16.2.0",
+          "downloadLocation": "https://tarballs.cgr.dev/g/dc3e72361e36d33e861a0662815d63a4f1b8578521cc6935343a4aa87327bdec-78d4ac73dd391005b895a6148cd9831e28e1208b.tar.gz"
+        }
+      ],
+      "indexControlChecksumVerified": "Q1Gzz2sKOTKWmEe1Oih1l+g6LABMs=",
+      "dataSha256Verified": "a0d9469ed0caf00908c0ab62ee04a34a9baf43a7f6a424cdcd3c5183d50409bf",
+      "pkginfoSha256": "0d61d720f2189fbc7fa0456fe65c90e91ac33b7e0a0e4160d801eaba55d28256",
+      "signaturesPresent": []
+    },
+    {
+      "name": "ncurses",
+      "version": "6.6.20261010-r0",
+      "license": "MIT",
+      "sourceRecipeCommit": "a8ea2f5f5980ccf40a6f6f34c6aeb358dfccc815",
+      "recipeUrl": "https://github.com/wolfi-dev/os/blob/a8ea2f5f5980ccf40a6f6f34c6aeb358dfccc815/ncurses.yaml",
+      "sbomSources": [
+        {
+          "name": "ncurses",
+          "version": "6.6.20261010-r0",
+          "downloadLocation": "NOASSERTION"
+        },
+        {
+          "name": "ncurses.yaml",
+          "version": "a8ea2f5f5980ccf40a6f6f34c6aeb358dfccc815",
+          "downloadLocation": "NOASSERTION"
+        },
+        {
+          "name": "ncurses",
+          "version": "6.6.20261010-r0",
+          "downloadLocation": "NOASSERTION"
+        },
+        {
+          "name": "ncurses",
+          "version": "6.6.20261010-r0",
+          "downloadLocation": "NOASSERTION"
+        }
+      ],
+      "indexControlChecksumVerified": "Q1q3rcxpTF2dFNnsEs3+cCRQ9M7UM=",
+      "dataSha256Verified": "6cefaf835b10d41180c72176e728882dc4b7d42e450dddfb85888360a8d92c9f",
+      "pkginfoSha256": "6b4c25c0ad3678c5b732b55e3b4a13740eb0f7f53cf698a5ac80d3c0ba9f94ca",
+      "signaturesPresent": []
+    },
+    {
+      "name": "ncurses-terminfo-base",
+      "version": "6.6.20261010-r0",
+      "license": "MIT",
+      "sourceRecipeCommit": "a8ea2f5f5980ccf40a6f6f34c6aeb358dfccc815",
+      "recipeUrl": "https://github.com/wolfi-dev/os/blob/a8ea2f5f5980ccf40a6f6f34c6aeb358dfccc815/ncurses.yaml",
+      "sbomSources": [
+        {
+          "name": "ncurses.yaml",
+          "version": "a8ea2f5f5980ccf40a6f6f34c6aeb358dfccc815",
+          "downloadLocation": "NOASSERTION"
+        }
+      ],
+      "indexControlChecksumVerified": "Q1u9KHjNbaa8tVzi6ykLYlHiql3CA=",
+      "dataSha256Verified": "0f7e60120b78ac84b5c047df5537047981689f06fcfa369528151ccc260d0ec7",
+      "pkginfoSha256": "0ad63ef3b651eeb2ada1b99107f4c3a38762a0c05e1e60559486ed76fb089626",
+      "signaturesPresent": []
+    }
+  ],
+  "recordedIndexSignatureObservation": {
+    "schemaVersion": 1,
+    "indexSha256": "01398efd4ae98d03bf5cb2c9c5fe397399bca61b81c8cb0cb36bd90e230137c6",
+    "indexBytes": 10635138,
+    "keyPath": "etc/apk/keys/wolfi-signing.rsa.pub",
+    "keySha256": "f0031424cf46f7db780ce63a45f0fd6aa6f85f601e6bb3b7a91fe3d4d5b7d2cc",
+    "algorithm": "RSA-SHA256",
+    "signatureBytes": 512,
+    "compressedVerified": true,
+    "source": "Exact second compressed gzip member, matching apk-tools repository authentication",
+    "packagesInstalled": false
+  },
+  "qualification": "Byte retention only. No apk installation, native Linux/image qualification, service activation or build is claimed."
+}

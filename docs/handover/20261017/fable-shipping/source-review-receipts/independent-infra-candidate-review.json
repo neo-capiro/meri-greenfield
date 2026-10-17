@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "reviewer": "/root/base_remediation",
+  "status": "ACCEPT_SOURCE",
+  "scope": "Seven allocated infra files against exact parent; source review only",
+  "baseCommit": "6fd48c9c3d49962a111e7f801f9f71ad06a7f1c9",
+  "reviewedFiles": [
+    {
+      "path": "infra/product-preview/image-build-recipe.mjs",
+      "bytes": 30028,
+      "sha256": "ab66ee505887c99a4a26d3865e5b8d48a7e27b9c64b99ac7b4274193187535d3",
+      "baseBlob": "3d2664ac572f565002d2f44286916da3e5b49151"
+    },
+    {
+      "path": "infra/product-preview/image-build-source.py",
+      "bytes": 17530,
+      "sha256": "1fbfedcb4a42933a7d856cc1f8223a57e117e67f8710b1eb84baa15ed5d827a3",
+      "baseBlob": "7479f1c4c505be8fbe71584d30296abf7bbc5639"
+    },
+    {
+      "path": "infra/product-preview/image-build-producer.py",
+      "bytes": 36198,
+      "sha256": "9e4545549053a7c2a20ebb5006fcd9f0e12005d88ecfcd246d65923fa1cf852c",
+      "baseBlob": "7b6c27516a0a84c57fac90298af657ade5e9c36a"
+    },
+    {
+      "path": "infra/product-preview/image-build.test.mjs",
+      "bytes": 36035,
+      "sha256": "3472f1021fcb644ea9da415b884af62f918426d913a5e61f9a0c97c74ed684e9",
+      "baseBlob": "925d3e43adf841824ad9cc4e1b5520ecf5b6a14b"
+    },
+    {
+      "path": "infra/product-preview/image-provenance.mjs",
+      "bytes": 8075,
+      "sha256": "135be1323dfca2ae36b1a95aab4433832df2f9f3118aa63fc62f960ac3e3777c",
+      "baseBlob": "11fbdffda2ef8f955331acd65e0112974c0080aa"
+    },
+    {
+      "path": "infra/product-preview/image-provenance.test.mjs",
+      "bytes": 5764,
+      "sha256": "03930482fbf0a8276f59c83c8f2957e308a7a3519569e25c530b521d55a3866f",
+      "baseBlob": "eac4673fdb52ff48f64b7473f863597d8263bf87"
+    },
+    {
+      "path": "infra/product-preview/test_image_build_diagnostics.py",
+      "bytes": 18057,
+      "sha256": "81539b8565037bcbf03f50e693a063cc60e68df9d3c01ca86481ff5fb4d7f2c9",
+      "baseBlob": "94e56beb1a0dcf5f3b3df1f931d72c0c337e33b2"
+    }
+  ],
+  "findings": [],
+  "checked": [
+    "Revision-2 recipe and Python request close the exact runtimeBaseImageUri/runtimePackagesSha256 fields and reject revision 1/floating runtime bases.",
+    "Source verifier joins the exact raw runtime lock hash into the sealed archive/member manifest and bounds the lock at 65536 bytes.",
+    "Producer joins lock runtime image/Node to request, passes both immutable bases as build arguments, and checks final image runtime/Node/lock labels.",
+    "Final sandbox measures exact installed package-set hash, lock hash, Node and glibc; complete measurement retained in producer receipt.",
+    "GNU SWC and Temporal native hashes, cache-independent SWC flag and Temporal load flag are measured before registry auth/push and retained in receipt.",
+    "Metadata comparator closes revision-2 shapes and joins runtime base, raw lock, installed set, Node/glibc and independently supplied native measurement.",
+    "Existing source/runner, Linux fixture and noexec read-only sandbox gates remain in order before registry auth/push.",
+    "COMPLETE scan with HIGH 0/CRITICAL 0 remains required in producer and comparator; no exception/version-relabel path added.",
+    "Existing owned-resource preflight, finally cleanup, diagnostic retention and no-success-receipt-on-cleanup-failure are preserved.",
+    "New runtime failure codes are admitted into bounded producer/bootstrap diagnostic decoding; mocked mismatch paths retain no-auth/no-receipt expectations."
+  ],
+  "cheapChecks": {
+    "diffWhitespace": "PASS",
+    "buildspecCompaction": {
+      "status": "AST_EQUIVALENT",
+      "generatedBuildspecBytes": 25270,
+      "maximumBytes": 25600,
+      "renamedBindings": 26,
+      "scriptsExecuted": false,
+      "network": false
+    },
+    "detail": "Inert render plus Python AST comparison after alpha-normalizing the 26 local aliases; generated scripts were not executed."
+  },
+  "supportingContext": {
+    "helperOutputSignatures": "MATCHED_CONSUMERS",
+    "helperDockerIndependentReview": "Parent reports separate ACCEPT with 23/23; not re-executed here",
+    "dockerignore": "Observed narrow infra/product-preview/runtime-packages.lock.json re-inclusion; other infra children stay excluded"
+  },
+  "gates": {
+    "linuxNativeAbi": "UNRUN",
+    "offlineApkInstallation": "UNRUN",
+    "imageBuild": "UNRUN",
+    "imageSandbox": "UNRUN",
+    "finalEcrScan": "UNRUN",
+    "activation": "NOT_AUTHORIZED"
+  },
+  "limits": [
+    "Acceptance applies only to the measured file hashes.",
+    "This review does not claim runtime, image, native ABI, scan or deployment acceptance.",
+    "No network, install, build, AWS mutation, source edit, commit or publication was performed by this review."
+  ]
+}
