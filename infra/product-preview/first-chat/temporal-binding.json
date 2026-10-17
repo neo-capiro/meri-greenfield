@@ -1,0 +1,115 @@
+{
+ "account": "967807252336",
+ "region": "us-east-1",
+ "enabled": false,
+ "activation": "approved",
+ "placement": {
+  "kind": "existing-capiro-dev-vpc",
+  "reviewSha256": "5a30d14975b630718e6324b4ac720408042bd3fbf3317fd3f1b3049f9e4a4c64"
+ },
+ "clusterArn": "arn:aws:ecs:us-east-1:967807252336:cluster/capiro-dev",
+ "vpcId": "vpc-0ac26cfac7ed972be",
+ "subnets": [
+  {
+   "id": "subnet-0920665f91c905f01",
+   "availabilityZone": "us-east-1a"
+  },
+  {
+   "id": "subnet-0e38bd390f8961fef",
+   "availabilityZone": "us-east-1b"
+  },
+  {
+   "id": "subnet-06db79cd21239de19",
+   "availabilityZone": "us-east-1c"
+  }
+ ],
+ "privateDnsName": "temporal.meri.internal",
+ "serverImageUri": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:f73ce01ef4739a77fad6ace3fbfbbe1f1aeaa553b5c263d705053a2f5063cf2d",
+ "upstreamServerImageDigest": "sha256:2695f2564ec51aa84232bf3fa59b31e2cce99bec437a64f5bc487cbe21b2de0e",
+ "launchSourceCommit": "989a4227e6da6f176975d798826904d71c3a9f9c",
+ "launchContractSha256": "2605078e7369f51acec8f48d35800f8919b9124c67af660cb5a34b90a3750d6a",
+ "logGroupName": "/meri/product-preview/temporal",
+ "executionRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-temporal-execution",
+ "taskRoleArns": {
+  "frontend": "arn:aws:iam::967807252336:role/MeriPreview-temporal-frontend-task",
+  "history": "arn:aws:iam::967807252336:role/MeriPreview-temporal-history-task",
+  "matching": "arn:aws:iam::967807252336:role/MeriPreview-temporal-matching-task",
+  "internal-worker": "arn:aws:iam::967807252336:role/MeriPreview-temporal-worker-task",
+  "internal-frontend": "arn:aws:iam::967807252336:role/MeriPreview-temporal-internal-frontend-task"
+ },
+ "network": {
+  "clientSecurityGroupIds": [
+   "sg-05a350c100574b21f",
+   "sg-00111cd0e475badfa"
+  ],
+  "issuerSecurityGroupId": "sg-06fdc7ce3a117a478",
+  "interfaceEndpoints": {
+   "ecrApi": {
+    "endpointId": "vpce-05d276fd4858f600c",
+    "securityGroupId": "sg-01def4e5c0fe44d4a"
+   },
+   "ecrDkr": {
+    "endpointId": "vpce-066228cdabaad7a96",
+    "securityGroupId": "sg-01def4e5c0fe44d4a"
+   },
+   "secretsManager": {
+    "endpointId": "vpce-0cfdca671c055b395",
+    "securityGroupId": "sg-01def4e5c0fe44d4a"
+   },
+   "logs": {
+    "endpointId": "vpce-0cfc2d02372c83f41",
+    "securityGroupId": "sg-01def4e5c0fe44d4a"
+   },
+   "kms": {
+    "endpointId": "vpce-0129a64c28f36072a",
+    "securityGroupId": "sg-01def4e5c0fe44d4a"
+   }
+  },
+  "s3Gateway": {
+   "endpointId": "vpce-0cdaa6b79d616aa1c",
+   "prefixListId": "pl-63a5400a"
+  },
+  "taskRouteTableBySubnet": {
+   "subnet-0920665f91c905f01": "rtb-0fd87a52c9874418b",
+   "subnet-0e38bd390f8961fef": "rtb-0842be4973771d5c8",
+   "subnet-06db79cd21239de19": "rtb-06f93fcc04e2b4b03"
+  },
+  "migrationSecurityGroupId": "sg-0c9f0505c552ce469",
+  "issuerClientSecurityGroupId": "sg-0c3da023e9e8fb292",
+  "dbClientSecurityGroupId": "sg-0d5b5286baf28242e"
+ },
+ "auth": {
+  "issuer": "https://issuer.meri.internal:8445/",
+  "jwksUrl": "https://issuer.meri.internal:8445/.well-known/jwks.json",
+  "issuerCaSha256": "2853f61aa0e84b0efb937b0f290376bd7c2fcca86152392ec199cca0e8b37c88",
+  "audience": "meri-temporal",
+  "namespace": "meri",
+  "taskQueue": "meri-conversations",
+  "materialSecretVersionByRole": {
+   "frontend": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/frontend/material-QkE7eP:::3d8a43ba-a26a-4fd0-8cec-fada8f224346",
+   "history": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/history/material-fl67yL:::47fbc48a-be7b-446e-a74b-db9c438fcdc6",
+   "matching": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/matching/material-igTBBS:::adfab592-feb0-4630-8965-ebd407f8ab87",
+   "internal-worker": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/worker/material-1Qm4jB:::ec250dcf-1e9f-45bb-bee2-05e9b78c79b9",
+   "internal-frontend": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/internal-frontend/material-GGIaW1:::51b4be94-540d-4935-b48f-16f44177f37b"
+  }
+ },
+ "database": {
+  "primaryDatabase": "temporal",
+  "visibilityDatabase": "temporal_visibility",
+  "primarySecretVersionArn": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/db-default-uoHJhw:::6eb92912-90b2-4320-bba9-a15acc65389d",
+  "primaryUsername": "meri_temporal_primary_runtime",
+  "visibilitySecretVersionArn": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/db-visibility-L1SU3i:::b9f98e0a-3852-4ce9-9e41-5574724baa58",
+  "visibilityUsername": "meri_temporal_visibility_runtime",
+  "rdsCaSha256": "839eef936a95e8a5687f37f8ef4dc08bb72bb12adfafc9fde7b365fa36b40043",
+  "migrationPlanSha256": "b48ca90a3339da22ad3dee738574a7254ddfa1bc15e5af6a187c1e20c7e48e14",
+  "grantsSha256": "2d305021ec1c66de034b07d233bb534492f5896d2ed3ff16c7118cf78520f348",
+  "kind": "existing-aurora-postgresql",
+  "clusterArn": "arn:aws:rds:us-east-1:967807252336:cluster:capiro-dev-data-auroracluster23d869c0-ltmz40k47ewv",
+  "endpoint": "capiro-dev-data-auroracluster23d869c0-ltmz40k47ewv.cluster-csryw28ai752.us-east-1.rds.amazonaws.com",
+  "port": 5432,
+  "securityGroupId": "sg-059b4e4de0b1dcca5",
+  "databaseVpcId": "vpc-0ac26cfac7ed972be",
+  "engine": "aurora-postgresql",
+  "engineVersion": "16.11"
+ }
+}
