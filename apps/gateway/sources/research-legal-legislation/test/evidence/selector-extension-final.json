@@ -1,0 +1,18 @@
+{
+  "status": 0,
+  "rerunReason": "Map hostile inert-copy failure at the newly exported pure selector to INVALID_ARGUMENTS without running accessors.",
+  "executable": "C:/Users/Administrator/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe",
+  "cwd": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-16\\task-4\\meri-resolution-next",
+  "args": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "--test-name-pattern",
+    "delta|named clients|selected names",
+    "apps/gateway/sources/research-legal-legislation/test/selectors.test.mjs",
+    "apps/gateway/sources/research-legal-news/test/selectors.test.mjs",
+    "apps/gateway/sources/research-legal-legislation/test/handler.test.mjs",
+    "apps/gateway/sources/research-legal-news/test/handler.test.mjs"
+  ]
+}

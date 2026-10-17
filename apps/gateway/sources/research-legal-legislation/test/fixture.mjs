@@ -3,7 +3,7 @@ import schema from '../../../../../packages/contracts/retrieval-0.2/research-leg
 import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {billTextCase} from '../../bill-text/test/fixture.mjs';
 import {createResearchLegalLegislationHandlers} from '../handler.mjs';
-import {legalLegislationContext} from '../request-context.mjs';
+import {legalSliceContext} from '../request-context.mjs';
 
 export const ids=['search_legislative_research','get_legal_reference'];
 export const requests={search_legislative_research:{sessionKey:'2026'},get_legal_reference:{view:'rules',noticeId:'synthetic-notice'}};
@@ -43,20 +43,23 @@ export function storedPage(id,input,at){
  return {tool:id,generatedAt:stamp,result,authority:authorityNote};
 }
 export function storedCase(id=ids[0],options={}){
- const scene=billTextCase(),operation={id,version:'0.2.0'},contract=resolveOperationContract(operation),normalizationContext={...legalLegislationContext};
- const {authority,state,now,wire}=scene,request=options.request??requests[id],normalized=contract.normalizeInput(request,normalizationContext);
+ const scene=billTextCase(),operation={id,version:'0.2.0'},contract=resolveOperationContract(operation);
+ const {authority,state,now,wire}=scene,request=options.request??requests[id],normalizationContext=legalSliceContext(operation,request),normalized=contract.normalizeInput(request,normalizationContext);
+ const visibleClientIds=normalizationContext.clientResolution?[normalizationContext.clientResolution.clientId]:[];
+ if(visibleClientIds.length){const scope={tenantId:authority.binding.tenantId,kind:'client',resourceId:visibleClientIds[0],policyRevision:authority.policyRevision};
+  Object.assign(authority.subject,{kind:'client',entityType:'client',entityIds:[visibleClientIds[0]],scopes:[scope]});authority.claims.scopes=[scope];authority.decision.scopes=[scope];}
  authority.decision.operation=`${id}@0.2.0`;authority.sourceIds=[...new Set(contract.descriptor.sourceRequirements.map(source=>source.sourceId))];
  const page=options.page??storedPage(id,normalized.input,now()),transport={...scene.transport,async fetchImpl(url,configuration){
   wire.push({url,options:configuration,body:JSON.parse(configuration.body)});const value=structuredClone(state.page??page);
   state.nativeValue=value;state.resultMutator?.(value);state.afterSource?.();return state.responseFactory?state.responseFactory(value):Response.json(value);
  }};
- const nativeReadContextPorts={async readCurrent({request:ignored,deadlineMs,signal,...proof}){
-  if(signal?.aborted)throw Error('CANCELLED');return JSON.stringify({...proof,context:normalizationContext,checkedAtMs:now(),expiresAtMs:Math.min(deadlineMs,authority.deadlineMs)});
+ const nativeReadContextPorts={async readCurrent({request:raw,deadlineMs,signal,...proof}){
+  if(signal?.aborted)throw Error('CANCELLED');return JSON.stringify({...proof,context:legalSliceContext(operation,raw),checkedAtMs:now(),expiresAtMs:Math.min(deadlineMs,authority.deadlineMs)});
  }};
- const call=(args=request,current=authority,context=normalizationContext)=>{
+ const call=(args=request,current=authority,context=legalSliceContext(operation,args))=>{
   const selected=contract.normalizeInput(args,context);
   return {request:args,input:selected.input,argumentsSha256:selected.argumentsSha256,normalizationContext:context,authority:current};
  };
- return {...scene,family:'research-legal-legislation',operation,contract,arguments:request,normalizationContext,transport,page,nativeReadContextPorts,call,
+ return {...scene,family:'research-legal-legislation',operation,contract,arguments:request,normalizationContext,transport,page,nativeReadContextPorts,call,visibleClientIds,
   handler:(changes={})=>createResearchLegalLegislationHandlers({...transport,now,...changes},[operation])[0].execute};
 }

@@ -201,14 +201,14 @@ This is source reconciliation only. The historical proposal tables below retain 
 | --- | --- |
 | Selected capabilities / continued exclusions | 96 / 43 |
 | Selected source reads / separate product or governed capabilities | 82 / 14 |
-| Selected source adapter coverage | 56 complete + 8 partial input + 18 absent = 82 |
+| Selected source adapter coverage | 56 complete + 10 partial input + 16 absent = 82 |
 | Single meri_reads registry | 58 operations / 35 families |
 | Registry accounting | 56 selected source reads + 1 product-state read + 1 historical contract |
 | Selected source reads declared in skill manifests | 52 current contracts + 1 historical-only contract |
 | Selected source reads reachable through admitted skill source | 11 |
 | Complete source adapters lacking general-conversation registration | 0 |
-| Partial-input source adapters withheld from SDK exposure | 8 |
-| Selected source reads lacking complete adapters | 26 (8 partial input + 18 absent; 17 declared by skills; 9 without a skill declaration) |
+| Partial-input source adapters withheld from SDK exposure | 10 |
+| Selected source reads lacking complete adapters | 26 (10 partial input + 16 absent; 17 declared by skills; 9 without a skill declaration) |
 | Pinned actual Core producer mappings (not qualification) | 63 |
 | Live | 0 |
 
@@ -263,6 +263,7 @@ The following partial-input adapters implement restricted request branches. They
 
 | Partial-input adapter family | Restricted operations (not SDK-exposed) |
 | --- | --- |
+| `business-development` | `get_business_development_context`, `get_business_development_recent_changes` |
 | `outreach-query` | `query_outreach` |
 | `public-domain-hearings` | `search_committee_hearings` |
 | `research-legal-legislation` | `get_legal_reference`, `search_legislative_research` |

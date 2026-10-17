@@ -17,9 +17,9 @@ for(const id of ids){
   assert.equal(out.result.authority,authorityNote);assert.equal(Object.hasOwn(out.result,'complete'),false);
   for(const value of Object.values(f.contract.normalizeInput(f.arguments,legalLegislationContext).metadata))assert.equal(value,false);
  });
- test(`${id}: named/UUID clients and folders are UNAVAILABLE before credentials or native calls`,async()=>{
+ test(`${id}: named clients and folders are UNAVAILABLE before credentials or native calls`,async()=>{
   const f=storedCase(id);
-  for(const extra of [{clientId:'Client name'},{clientId:' Client name '},{clientId:'71000000-0000-4000-8000-000000000091'},
+  for(const extra of [{clientId:'Client name'},{clientId:' Client name '},
    {folderId:'private-folder'},{folderId:' '}]){
    const request={...f.arguments,...extra};assert.throws(()=>assertUnscopedLegalRequest(f.operation,request),{message:'UNAVAILABLE'});
    await assert.rejects(f.handler()({...f.call(),request}),{message:'UNAVAILABLE'});

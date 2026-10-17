@@ -29,19 +29,19 @@ function beforeSource(f){
  for(const invocation of f.state.produced.values()){assert.equal(invocation.reservation_id,null);assert.equal(invocation.arguments_sha256,null);assert.equal(invocation.completion,null);}
 }
 
-test('source slice fixtures enumerate ten native operations across eight families',()=>{
- assert.equal(SOURCE_SLICE_CASES.length,10);assert.equal(new Set(SOURCE_SLICE_CASES.map(([family])=>family)).size,8);
- assert.equal(new Set(SOURCE_SLICE_CASES.map(([,id])=>id)).size,10);
+test('source slice fixtures enumerate twelve native operations across nine families',()=>{
+ assert.equal(SOURCE_SLICE_CASES.length,12);assert.equal(new Set(SOURCE_SLICE_CASES.map(([family])=>family)).size,9);
+ assert.equal(new Set(SOURCE_SLICE_CASES.map(([,id])=>id)).size,12);
 });
 
 for(const [family,id,selectors] of [
  ['state-status-votes','get_state_bill_status',[{billId:'TX HB 1234'},{}]],
- ['state-status-votes','search_state_floor_votes',[{billId:'HB 1234',state:'TX'},{}]],
+ ['state-status-votes','search_state_floor_votes',[{billId:'HB 1234',state:'TX'}]],
  ['tracked-bills','search_tracked_bills',[{clientId:'Synthetic client'}]],
  ['public-domain-hearings','search_committee_hearings',[{clientId:'Synthetic client'}]],
- ['research-legal-legislation','search_legislative_research',[{folderId:'synthetic-folder'},{clientId}]],
- ['research-legal-legislation','get_legal_reference',[{folderId:'synthetic-folder'},{clientId},{citation:'Fla. Stat. 1.10'}]],
- ['research-legal-news','search_legiwatch_news',[{view:'source',kind:'news',id:'synthetic-source',clientId},{view:'source',kind:'news',id:'synthetic-source',folderId:' '},{view:'news'},{view:'monitors'},{},{view:'personnel'},{view:'personnel',year:null}]],
+ ['research-legal-legislation','search_legislative_research',[{folderId:'synthetic-folder'},{clientId:'Synthetic client'}]],
+ ['research-legal-legislation','get_legal_reference',[{folderId:'synthetic-folder'},{clientId:'Synthetic client'},{citation:'Fla. Stat. 1.10'}]],
+ ['research-legal-news','search_legiwatch_news',[{view:'source',kind:'news',id:'synthetic-source',clientId:'Synthetic client'},{view:'source',kind:'news',id:'synthetic-source',folderId:' '},{view:'news'},{view:'monitors'},{},{view:'personnel'},{view:'personnel',year:null}]],
 ])test(`${id}: unsupported source selectors refuse before native credentials, reservation and HTTP`,async()=>{
  for(const selector of selectors){
   const scene=nativeFamilyCase(family,id);scene.arguments={...selector};

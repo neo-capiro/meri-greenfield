@@ -2,9 +2,11 @@
 import {publicDomainDatasetRegistry} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {nativeReadFault} from '../../../../packages/contracts/runtime-0.2/reads.mjs';
 import {captureHearingClientSelection} from '../../../gateway/sources/public-domain-hearings/request-context.mjs';
-import {assertUnscopedLegalRequest,legalLegislationContext} from '../../../gateway/sources/research-legal-legislation/request-context.mjs';
-import {assertUnscopedNewsRequest,newsSliceContext} from '../../../gateway/sources/research-legal-news/request-context.mjs';
+import {assertLegalSliceRequest,legalSliceContext} from '../../../gateway/sources/research-legal-legislation/request-context.mjs';
+import {assertNewsSliceRequest,newsSliceContext} from '../../../gateway/sources/research-legal-news/request-context.mjs';
 import {captureOutreachListClientSelection} from '../../../gateway/sources/outreach-query/request-context.mjs';
+import {assertStoredStateRequest} from '../../../gateway/sources/state-status-votes/request-context.mjs';
+import {captureBusinessDevelopmentResource} from '../../../gateway/sources/business-development/request-context.mjs';
 
 const UUID=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u;
 const refuse=code=>{throw nativeReadFault(code);};
@@ -39,26 +41,25 @@ function visibleSelector(native,subject,id){
 }
 
 /** Reject unsupported source fallback before observing or disclosing any native credential. */
-export function assertSourceReadRequest(contract,request){
- if(contract.binding.group==='state-status-votes'&&contract.normalizeInput(request,{}).metadata.selector.kind!=='canonical')refuse('UNAVAILABLE');
+export function assertSourceReadRequest(contract,request,subject){
+ if(contract.binding.group==='state-status-votes')assertStoredStateRequest(contract.descriptor.operation,request);
  if(contract.binding.group==='tracked-bills'&&!UUID.test(request.clientId.trim().slice(0,80).trim().toLowerCase()))refuse('UNAVAILABLE');
  if(contract.binding.group==='public-domain-hearings')captureHearingClientSelection(request);
- if(contract.binding.group==='research-legal-legislation')assertUnscopedLegalRequest(contract.descriptor.operation,request);
- if(contract.binding.group==='research-legal-news')assertUnscopedNewsRequest(contract.descriptor.operation,request);
+ if(contract.binding.group==='research-legal-legislation')assertLegalSliceRequest(contract.descriptor.operation,request);
+ if(contract.binding.group==='research-legal-news')assertNewsSliceRequest(contract.descriptor.operation,request);
  if(contract.binding.group==='outreach-query')captureOutreachListClientSelection(request);
+ if(contract.binding.group==='business-development')captureBusinessDevelopmentResource(contract.descriptor.operation,request,subject);
 }
 
 export function createSourceReadContext({contract,proof,native,defaultCongress,now,priorContext}){
  const group=contract.binding.group;
  if(['bill-text','federal-legislation'].includes(group))return {defaultCongress};
  if(group==='acquisition-personnel')return {actorRole:native.actorRole};
- if(group==='research-legal-legislation'){
-  if(proof.subject.kind==='client'||proof.subject.entityType==='client')refuse('ACCESS_DENIED');
-  return legalLegislationContext;
- }
- if(group==='research-legal-news'){
-  if(proof.subject.kind==='client'||proof.subject.entityType==='client')refuse('ACCESS_DENIED');
-  return newsSliceContext(contract.descriptor.operation,proof.request);
+ if(group==='research-legal-legislation'||group==='research-legal-news'){
+  const context=group==='research-legal-legislation'?legalSliceContext(contract.descriptor.operation,proof.request):newsSliceContext(contract.descriptor.operation,proof.request);
+  if(context.clientResolution===null){if(proof.subject.kind==='client'||proof.subject.entityType==='client')refuse('ACCESS_DENIED');}
+  else if(context.clientResolution.clientId!==clientSubject(proof,native))refuse('ACCESS_DENIED');
+  return context;
  }
  if(group==='outreach-query'){
   const clientResolution=captureOutreachListClientSelection(proof.request);

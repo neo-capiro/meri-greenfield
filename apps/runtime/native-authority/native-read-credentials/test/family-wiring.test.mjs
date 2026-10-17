@@ -36,6 +36,11 @@ for(const [family,id] of NATIVE_FAMILY_CASES){
   const expectedBody=id==='get_acquisition_person'?normalized.input:family==='federal-legislation'&&normalized.input.billId!==null?{...f.request,billId:normalized.input.billId}:
    family==='public-domain-query'&&!Object.hasOwn(f.request,'asOfDate')&&normalized.input.asOfDate!==null?{...f.request,asOfDate:normalized.input.asOfDate}:f.request;
   assert.deepEqual(f.wire[0].body,expectedBody);
+  if(family==='business-development'){
+   const contexts=f.core.state.calls.filter(call=>call.path.endsWith('/context'));
+   assert.ok(contexts.length>0);assert.notEqual(f.request.conversationId,f.binding.conversationId);
+   assert.ok(contexts.every(call=>call.body.conversationId===f.nativeConversation.conversationId&&call.body.clientId===f.nativeConversation.clientId));
+  }
   assert.deepEqual(Object.keys(f.wire[0].options.headers).sort(),['authorization','accept','accept-encoding','x-meri-deadline-at','x-internal-service-secret','content-type'].sort());
   assert.equal(f.wire[0].options.headers.authorization,'Bearer SYNTHETIC_NATIVE');assert.equal(f.wire[0].options.headers['x-internal-service-secret'],'SYNTHETIC_SERVICE');
   assert.equal(r.state,'SETTLED');assert.equal(r.charged_micro_usd,1);assert.equal(r.output_bytes,Buffer.byteLength(raw));assert.equal(f.state.produced.size,1);
