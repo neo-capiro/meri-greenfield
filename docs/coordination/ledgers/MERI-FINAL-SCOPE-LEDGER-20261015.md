@@ -193,7 +193,7 @@ It ran no product code, model, database, browser or deployment. "Declared" means
 | Audit declared-read equation | 47 literal legacy-name read matches + 6 renamed read IDs - 1 historical query_action_items match = 52 declared current reads; + create_word = 53 |
 | Live | 0 |
 
-### Current selected read source exposure (16 October 2026)
+### Current selected read source exposure (17 October 2026)
 
 This is source reconciliation only. The historical proposal tables below retain their original status; current adapter/server presence is recorded here and in `scope-ledger.json.sourceExposure.rows`. No source receipt is repinned and live availability remains zero.
 
@@ -201,12 +201,14 @@ This is source reconciliation only. The historical proposal tables below retain 
 | --- | --- |
 | Selected capabilities / continued exclusions | 96 / 43 |
 | Selected source reads / separate product or governed capabilities | 82 / 14 |
-| Single meri_reads registry | 56 operations / 33 families |
-| Registry accounting | 54 selected source reads + 1 product-state read + 1 historical contract |
+| Selected source adapter coverage | 56 complete + 8 partial input + 18 absent = 82 |
+| Single meri_reads registry | 58 operations / 35 families |
+| Registry accounting | 56 selected source reads + 1 product-state read + 1 historical contract |
 | Selected source reads declared in skill manifests | 52 current contracts + 1 historical-only contract |
 | Selected source reads reachable through admitted skill source | 11 |
-| Existing source adapters lacking general-conversation registration | 0 |
-| Selected source reads lacking adapters | 28 (17 declared by skills; 11 without a skill declaration) |
+| Complete source adapters lacking general-conversation registration | 0 |
+| Partial-input source adapters withheld from SDK exposure | 8 |
+| Selected source reads lacking complete adapters | 26 (8 partial input + 18 absent; 17 declared by skills; 9 without a skill declaration) |
 | Pinned actual Core producer mappings (not qualification) | 63 |
 | Live | 0 |
 
@@ -226,6 +228,7 @@ Only `quick_skill.relationship_brief`, `quick_skill.commitments_audit` are admit
 | `client-knowledge-memory` | `search_memory` |
 | `client-knowledge-monday` | `read_monday_client_boards` |
 | `client-knowledge-profile` | `get_client_context` |
+| `client-knowledge-search` | `query_knowledge_graph` |
 | `client-registry` | `lookup_client_registry` |
 | `data-search` | `search_capiro_data` |
 | `dataset-metadata` | `list_global_datasets` |
@@ -243,6 +246,7 @@ Only `quick_skill.relationship_brief`, `quick_skill.commitments_audit` are admit
 | `memory-proposals` | `memory.list_own_proposals` |
 | `operational-reads` | `query_action_items`, `query_tasks` |
 | `pe-references` | `get_pe_bills`, `get_pe_contractors`, `get_pe_report_language` |
+| `public-data` | `query_economic_data` |
 | `public-domain-query` | `query_global_data` |
 | `public-reports` | `search_cbo_cost_estimates`, `search_crs_reports`, `search_gao_reports` |
 | `public-web` | `scrape_web_page`, `search_public_web` |
@@ -253,19 +257,30 @@ Only `quick_skill.relationship_brief`, `quick_skill.commitments_audit` are admit
 | `stored-intelligence` | `search_intel_articles` |
 | `tenant-contacts` | `find_contacts` |
 
-Every canonical source adapter already present is exposed.
+Every complete source adapter already present is SDK-exposed.
 
-The finite native families listed above retain their receiving-contract truth limits and require current task, tenant/user and native credentials. Research portfolio, portfolio changes and Florida budget project reads remain exposed through their existing retained-context path. These source paths are not qualified or live. The remaining selected source reads lack an adapter; producer mapping alone does not implement them. Their exact unresolved families and operations are:
+The following partial-input adapters implement restricted request branches. They remain outside the SDK registry and are included in the missing-complete inventory. Constructor or source-path presence does not establish complete request coverage:
 
-| Missing adapter family | Selected operations |
+| Partial-input adapter family | Restricted operations (not SDK-exposed) |
+| --- | --- |
+| `outreach-query` | `query_outreach` |
+| `public-domain-hearings` | `search_committee_hearings` |
+| `research-legal-legislation` | `get_legal_reference`, `search_legislative_research` |
+| `research-legal-news` | `search_legiwatch_news` |
+| `state-status-votes` | `get_state_bill_status`, `search_state_floor_votes` |
+| `tracked-bills` | `search_tracked_bills` |
+
+The finite native families listed above retain their receiving-contract truth limits and require current task, tenant/user and native credentials. Research portfolio, portfolio changes and Florida budget project reads remain exposed through their existing retained-context path. These source paths are not qualified or live. The remaining selected source reads lack complete adapters; producer mapping or a restricted request branch alone does not complete them. Their exact unresolved families and operations are:
+
+| Family lacking complete adapters | Selected operations (partial input or absent) |
 | --- | --- |
 | `business-development` | `get_business_development_context`, `get_business_development_evidence`, `get_business_development_recent_changes` |
 | `certification-status` | `get_certification_status` |
-| `client-knowledge-search` | `query_knowledge_graph`, `search_client_knowledge` |
+| `client-knowledge-search` | `search_client_knowledge` |
 | `funding-opportunities` | `get_funding_opportunity`, `get_funding_opportunity_requirements`, `get_opportunity_client_context`, `get_opportunity_government_landscape`, `search_funding_opportunities` |
 | `outreach-query` | `query_outreach` |
 | `program-elements` | `get_pe_budget_timeline`, `get_program_element`, `search_program_elements` |
-| `public-data` | `query_economic_data`, `search_federal_awards`, `search_federal_grants` |
+| `public-data` | `search_federal_awards`, `search_federal_grants` |
 | `public-domain-hearings` | `search_committee_hearings` |
 | `research-legal-candidates` | `search_research_sources` |
 | `research-legal-legislation` | `get_legal_reference`, `search_legislative_research` |
@@ -275,7 +290,7 @@ The finite native families listed above retain their receiving-contract truth li
 | `state-status-votes` | `get_state_bill_status`, `search_state_floor_votes` |
 | `tracked-bills` | `search_tracked_bills` |
 
-Canonical gateway family adapter and operation-specific trusted dispatch/current-resource context, plus an admitted exact producer/endpoint protocol. A schema/normalizer binding or skill declaration is not a producer. No guessed endpoint, default credential or permissive generic query is allocated.
+Missing complete coverage includes partial-input adapters and absent adapters. Complete the canonical gateway adapter and operation-specific trusted dispatch/current-resource context using an admitted exact producer/endpoint protocol. A schema/normalizer binding, skill declaration or restricted branch is not complete operation coverage. No guessed endpoint, default credential or permissive generic query is allocated.
 
 The 63 producer mappings pin Core `b525032222515d636b0dae2d46e40c7c3d8b5528` / tree `16723770a8e111fc66bcf70d36ff32ab71eb9928`. [Sanitized repository publication](https://github.com/neo-capiro/capiro-backend/blob/384325afaaf7ad34aeb9ff9b2f183d667ee17343/docs/retained-read-producer-mapping-20261016/MAPPING-HANDOFF-v2.json) is pinned at `384325afaaf7ad34aeb9ff9b2f183d667ee17343`. Its reviewed v2 index SHA is `c6ebaf2987015db466e88b9d4c550ab77878582ab7142ab256d298ae16ed0def`; publication review SHA `ceb7df958e5eb2f9971af7bd8ac093d6785d18543f5611d5149ebc1b8c4fb3ab`. Every mapped operation in JSON retains its exact scoped report hash/pointer, required receiving context and compatibility status. Original local v2 and superseded evidence remain preserved by their owner.
 

@@ -8,7 +8,7 @@
  * `clientScope`: `required` lists the family's tools only when the run carries an authorized client scope;
  * `optional` lists them regardless, and a model-supplied client grants nothing (the gateway's subject checks decide).
  * Data only, safe to import from the capability policy. */
-/** @typedef {{clientScope:'required'|'optional',requiredClientOperations?:readonly string[]}} ReadFamily */
+/** @typedef {{clientScope:'required'|'optional',requiredClientOperations?:readonly string[],operationIds?:readonly string[]}} ReadFamily */
 /** @type {Readonly<Record<string,Readonly<ReadFamily>>>} */
 export const READ_FAMILIES=Object.freeze({mail:Object.freeze({clientScope:'optional'}),
  'meeting-source':Object.freeze({clientScope:'optional',requiredClientOperations:Object.freeze(['meeting.read_client_meetings'])}),
@@ -43,6 +43,8 @@ export const READ_FAMILIES=Object.freeze({mail:Object.freeze({clientScope:'optio
  'district-nexus':Object.freeze({clientScope:'required'}),
  'client-registry':Object.freeze({clientScope:'optional'}),
  'federal-market':Object.freeze({clientScope:'optional'}),
+ 'public-data':Object.freeze({clientScope:'optional',operationIds:Object.freeze(['query_economic_data'])}),
+ 'client-knowledge-search':Object.freeze({clientScope:'optional',operationIds:Object.freeze(['query_knowledge_graph'])}),
 });
 /** The `readFamilies` policy universe (PROPOSAL P8). */
 export const READ_FAMILY_IDS=Object.freeze(Object.keys(READ_FAMILIES));

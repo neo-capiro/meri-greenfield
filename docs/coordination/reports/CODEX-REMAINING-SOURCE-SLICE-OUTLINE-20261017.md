@@ -1,0 +1,13 @@
+# Remaining read source slices — implementation outline
+
+Base: local74bf7032285ed83b17a67e2fc2b0f5308eb9862b, remote PR1040724a744d73356a0e935d15dabc5889ab2337d4b, identical tree118c29c8ac27df713896a803973616635e9343c0. Task-owned sparse branch `codex/meri-general-reads-remaining-next-20261017`. Release pin remains unchanged. The allocated data-search contract correction is implemented separately on `codex/meri-data-search-request-20261017` before source integration.
+
+Bounded authors own only public-data economic, client-knowledge-search graph and state-status-votes canonical-key adapter directories and their reports. Root owns finite operation eligibility and current context, integration and ledgers. A separate reviewer must accept the exact source before publication. No startup, locks, credentials, provider calls, SQL execution, AWS, migrations or deployment is authorized.
+
+Reuse the existing fixed native HTTP/credential mechanics and canonical input/output owners. Admit only actual source routes and current task/tenant/user grants. Public-data grants/awards and knowledge semantic search remain unconstructed pending their exact observations. State status/votes are an explicitly partial canonical-key slice; unsupported designation requests must refuse before tool HTTP/credential disclosure so live resolver fallback cannot run. Never count that restricted slice as a complete selected read.
+
+For graph, CONTROL admits valid client selectors only with current native visible-client membership and coherent selected subject. No selector is injected. A client-bound run cannot accidentally request a firm-wide graph. Native no-resource malformed-selector refusal may be preserved only where the pinned producer returns before any graph read. The actual Core graph owner retains current denied-client projection/filtering; no adapter redaction manufactures authorized data or absence.
+
+Verification: adapter receiving/authority/cancellation tests; operation eligibility negative cases for blocked siblings; current membership/selector owner checks and mounted durable receipt composition; exact source census distinguishing complete adapters, partial request coverage, exposure and qualification. Record initial failures, missing fixture boundaries and independent review. Source presence grants no installation or live access.
+
+The first attempt to create this owned worktree hit Windows path length in a historical archive. It failed and removed its partial checkout. A clean no-checkout worktree was then populated through explicit sparse patterns and verified clean at the exact base, without copying dependency trees. No release or other author's checkout was reset.

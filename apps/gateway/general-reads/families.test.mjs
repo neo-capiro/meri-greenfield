@@ -12,7 +12,8 @@ for(const [family,id] of CASES){
   assert.deepEqual(out.binding,f.binding);assert.deepEqual(out.subject,f.authority.subject);
   if(out.operation)assert.deepEqual(out.operation,f.operation);else assert.ok(out.data,'preserve the canonical family wrapper');
   assert.equal(out.result?.tool??out.result?.data?.tool??out.data?.tool??f.operation.id,id==='memory.list_own_proposals'?'list_memory_proposals':id);
-  if(['facility-representation','district-nexus'].includes(family))assert.deepEqual(out.result,{binding:f.binding,subject:f.authority.subject,data:JSON.parse(JSON.stringify(f.page))});
+  if(['facility-representation','district-nexus','tracked-bills'].includes(family))assert.deepEqual(out.result,{binding:f.binding,subject:f.authority.subject,data:JSON.parse(JSON.stringify(f.page))});
+  if(['public-data','client-knowledge-search','state-status-votes','public-domain-hearings','research-legal-legislation','research-legal-news','outreach-query'].includes(family))assert.deepEqual(out.result,JSON.parse(JSON.stringify(f.page)));
   const [reservation]=f.state.reservations.values();assert.equal(reservation.state,'SETTLED');assert.equal(reservation.charged_micro_usd,1);
   assert.equal(f.state.produced.size,1);const [invocation]=f.state.produced.values();
   assert.deepEqual(invocation.operation,f.operation);assert.equal(invocation.delivery.deliveryId,'synthetic:read');
@@ -52,7 +53,7 @@ for(const [family,id] of CASES){
  });
 }
 test('family registration is inert, closed and does not fabricate native installation receipts',async()=>{
- assert.equal(GENERAL_READ_ADAPTER_FAMILIES.length,32);
+ assert.equal(GENERAL_READ_ADAPTER_FAMILIES.length,40);
  assert.equal((await createGeneralReadFamilyHandlers({families:{},now:Date.now,newId:()=>''})).size,0);
  await assert.rejects(createGeneralReadFamilyHandlers({families:{'florida-budget':{}},now:Date.now,newId:()=>''}));
  let effects=0;const source={get origin(){effects++;return 'https://invalid.example';}};

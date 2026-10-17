@@ -21,6 +21,76 @@
   },
   "adapters": [
     {
+      "path": "apps/gateway/sources/outreach-query",
+      "family": "outreach-query",
+      "declaredIn": ["apps/gateway/sources/outreach-query/handler.mjs", "apps/gateway/sources/retained-reads/native-families.mjs", "apps/gateway/sources/outreach-query/request-context.mjs", "apps/gateway/general-reads/families/outreach-query.mjs"],
+      "operations": ["query_outreach"],
+      "partialOperations": ["query_outreach"],
+      "adapterChecks": ["PARTIAL_INPUT: campaign list with an explicit UUID client only", "any outreachId key refuses before source; no owned-detail branch", "exact client subject, resource and current membership before HTTP; native stored recipient counts and closed scalar DTO preserved"],
+      "subject": "current authorized one-client subject; exact UUID client resolution; names, unscoped campaigns and owned detail remain outside SDK exposure"
+    },
+    {
+      "path": "apps/gateway/sources/research-legal-news",
+      "family": "research-legal-news",
+      "declaredIn": ["apps/gateway/sources/research-legal-news/handler.mjs", "apps/gateway/sources/retained-reads/native-families.mjs", "apps/gateway/sources/research-legal-news/request-context.mjs", "apps/gateway/general-reads/families/research-legal-news.mjs"],
+      "operations": ["search_legiwatch_news"],
+      "partialOperations": ["search_legiwatch_news"],
+      "adapterChecks": ["PARTIAL_INPUT: exact typed source ID or explicit-year personnel only", "no selected client or truthy folder; branch-specific context is request-determined", "native fixed Intel bridge retains member/feature, source rights and personnel evidence owners"],
+      "subject": "current native tenant/user; exact source or explicit-year personnel; news windows, private monitors and implicit years remain outside SDK exposure"
+    },
+    {
+      "path": "apps/gateway/sources/public-data",
+      "family": "public-data",
+      "declaredIn": ["apps/gateway/sources/public-data/handler.mjs", "apps/gateway/sources/retained-reads/native-families.mjs"],
+      "operations": ["query_economic_data"],
+      "adapterChecks": ["only the finite economic stored-read operation is implemented", "fixed original native POST and current native credentials", "exact series, observations, units and receiving contract preserved"],
+      "subject": "current native tenant/user; global stored economic data; grants and awards remain unimplemented"
+    },
+    {
+      "path": "apps/gateway/sources/client-knowledge-search",
+      "family": "client-knowledge-search",
+      "declaredIn": ["apps/gateway/sources/client-knowledge-search/handler.mjs", "apps/gateway/sources/retained-reads/native-families.mjs"],
+      "operations": ["query_knowledge_graph"],
+      "adapterChecks": ["only the finite graph operation is implemented", "current explicit client selection and visible-client grant before source", "native denied-client graph filtering and malformed-selector refusal preserved"],
+      "subject": "current native tenant/user; authorized client or admitted general graph scope; embedding search remains unimplemented"
+    },
+    {
+      "path": "apps/gateway/sources/state-status-votes",
+      "family": "state-status-votes",
+      "declaredIn": ["apps/gateway/sources/state-status-votes/handler.mjs", "apps/gateway/sources/retained-reads/native-families.mjs", "apps/gateway/general-reads/families/state-status-votes.mjs"],
+      "operations": ["get_state_bill_status", "search_state_floor_votes"],
+      "partialOperations": ["get_state_bill_status", "search_state_floor_votes"],
+      "adapterChecks": ["PARTIAL_INPUT: canonical stored bill keys only", "frozen selector owner rejects unsupported branches before HTTP", "designation resolver provider/quota/write fallback cannot be reached"],
+      "subject": "current native tenant/user; stored public state evidence; incomplete request coverage is withheld from SDK"
+    },
+    {
+      "path": "apps/gateway/sources/tracked-bills",
+      "family": "tracked-bills",
+      "declaredIn": ["apps/gateway/sources/tracked-bills/handler.mjs", "apps/gateway/sources/retained-reads/native-families.mjs", "apps/gateway/general-reads/families/tracked-bills.mjs"],
+      "operations": ["search_tracked_bills"],
+      "partialOperations": ["search_tracked_bills"],
+      "adapterChecks": ["PARTIAL_INPUT: explicit UUID matching the authorized one-client subject", "current native visible-client membership before credentials and at release", "manual tracked rows and nullable stored bill enrichment wrapped in current Meri lineage"],
+      "subject": "current one-client subject; exact retained client reference; names are unsupported and SDK exposure is withheld"
+    },
+    {
+      "path": "apps/gateway/sources/public-domain-hearings",
+      "family": "public-domain-hearings",
+      "declaredIn": ["apps/gateway/sources/public-domain-hearings/handler.mjs", "apps/gateway/sources/retained-reads/native-families.mjs", "apps/gateway/sources/public-domain-hearings/request-context.mjs", "apps/gateway/general-reads/families/public-domain-hearings.mjs"],
+      "operations": ["search_committee_hearings"],
+      "partialOperations": ["search_committee_hearings"],
+      "adapterChecks": ["PARTIAL_INPUT: absent client or explicit current visible UUID", "exact tenant and optional client resolution checked before source", "native governed per-page authorization, published views, cursors and coverage preserved"],
+      "subject": "current native tenant/user and coherent general/client subject; named clients unsupported; SDK exposure withheld"
+    },
+    {
+      "path": "apps/gateway/sources/research-legal-legislation",
+      "family": "research-legal-legislation",
+      "declaredIn": ["apps/gateway/sources/research-legal-legislation/handler.mjs", "apps/gateway/sources/retained-reads/native-families.mjs", "apps/gateway/sources/research-legal-legislation/request-context.mjs", "apps/gateway/general-reads/families/research-legal-legislation.mjs"],
+      "operations": ["search_legislative_research", "get_legal_reference"],
+      "partialOperations": ["search_legislative_research", "get_legal_reference"],
+      "adapterChecks": ["PARTIAL_INPUT: no client/folder scope and no reference citation string", "shared frozen request admission refuses unsupported selectors before native source", "actual fixed Intel bridge retains feature/member, legal identity, version and cursor owners"],
+      "subject": "current native tenant/user; unscoped retained legal sources; null client/citation context; SDK exposure withheld"
+    },
+    {
       "path": "apps/gateway/sources/public-web",
       "family": "public-web",
       "declaredIn": ["apps/gateway/sources/public-web/handler.mjs"],
