@@ -14,6 +14,8 @@ const producer=fileURLToPath(new URL('./image-build-producer.py',import.meta.url
 const reporter=fileURLToPath(new URL('./image-build-test-reporter.mjs',import.meta.url));
 const linuxChecks=fileURLToPath(new URL('./image-build-linux-checks.py',import.meta.url));
 const runtimeLockPath='infra/product-preview/runtime-packages.lock.json';
+const rdsBundlePath='apps/runtime/certs/rds-global-bundle.pem',rdsLockPath='apps/runtime/certs/rds-global-bundle.lock.json';
+const repoFile=path=>readFileSync(fileURLToPath(new URL(`../../${path}`,import.meta.url)));
 const runtimeBaseImageUri='cgr.dev/chainguard/wolfi-base@sha256:'+'1'.repeat(64);
 const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
 const python=(args,options={})=>spawnSync(process.env.MERI_IMAGE_BUILD_TEST_PYTHON??(process.platform==='win32'?'python':'python3'),['-I','-B','-S',...args],{encoding:'utf8',timeout:30000,...options});
@@ -60,6 +62,7 @@ function fixture(t){
  writeFileSync(join(repo,'infra/product-preview/image-build-test-reporter.mjs'),readFileSync(reporter));
  writeFileSync(join(repo,'infra/product-preview/image-build-linux-checks.py'),readFileSync(linuxChecks));
  writeFileSync(join(repo,runtimeLockPath),JSON.stringify({runtimeImageUri:runtimeBaseImageUri,nodeVersion:'v24.21.0',glibcVersion:'2.41'})+'\n');
+ mkdirSync(join(repo,'apps/runtime/certs'),{recursive:true});writeFileSync(join(repo,rdsBundlePath),repoFile(rdsBundlePath));writeFileSync(join(repo,rdsLockPath),repoFile(rdsLockPath));
  for(const path of ['apps/control/conversations/test/application-fixture.mjs','apps/control/conversations/test/initial-input-fixture.mjs','apps/control/conversations/test/store-fixture.mjs','apps/gateway/test/fixtures.mjs','apps/runtime/native-authority/test/fixture.mjs','apps/runtime/test/prepared-candidate-bootstrap.test.mjs','apps/runtime/test/prepared-candidate-fixture.mjs','apps/runtime/test/remote-conversation-runner.test.mjs','apps/worker/conversation/continuation/test/fixtures.mjs','apps/runtime/temporal-product-token-writer.test.mjs']){mkdirSync(dirname(join(repo,path)),{recursive:true});writeFileSync(join(repo,path),'export const syntheticFixture=true;\n');}
  git(repo,'init','--quiet');git(repo,'add','.');git(repo,'-c','user.name=Offline Fixture','-c','user.email=fixture@invalid.example','commit','--quiet','-m','Synthetic source only');
  const sourceCommit=git(repo,'rev-parse','HEAD'),archive=join(root,'source.zip'),manifest=join(root,'members.json');
@@ -239,7 +242,7 @@ test('failure retention caps child CLI stdout while running and emits no child b
 });
 
 test('sealing proves ZIP file bytes and modes against exact Git objects; verification joins all sealed pins',t=>{
- const f=fixture(t),result=f.verify();assert.equal(result.status,0,result.stderr);assert.deepEqual(JSON.parse(result.stdout),{status:'VERIFIED_SOURCE_ONLY',sourceCommit:f.sourceCommit,archiveSha256:f.pin.archive.sha256,sourceManifestSha256:f.pin.manifest.sha256,runtimePackagesSha256:f.pin.runtimePackagesSha256,fileCount:17,runnerBytes:23});
+ const f=fixture(t),result=f.verify();assert.equal(result.status,0,result.stderr);assert.deepEqual(JSON.parse(result.stdout),{status:'VERIFIED_SOURCE_ONLY',sourceCommit:f.sourceCommit,archiveSha256:f.pin.archive.sha256,sourceManifestSha256:f.pin.manifest.sha256,runtimePackagesSha256:f.pin.runtimePackagesSha256,fileCount:19,runnerBytes:23});
  const uncommitted='uncommitted replacement';writeFileSync(join(f.repo,'apps/runtime/conversation-runner.mjs'),uncommitted);assert.equal(f.verify().status,0);
  const wrong=structuredClone(f.pin);wrong.runnerSha256='0'.repeat(64);writeFileSync(f.request,JSON.stringify(wrong));assert.equal(f.verify().status,2);
  const wrongLock=structuredClone(f.pin);wrongLock.runtimePackagesSha256='0'.repeat(64);writeFileSync(f.request,JSON.stringify(wrongLock));assert.equal(f.verify().status,2);
@@ -254,6 +257,36 @@ test('altered archive/manifest, extra, duplicate, unsafe and symlink members ref
   writeFileSync(f.archive,readFileSync(changed));f.pin.archive.sha256=hash(readFileSync(f.archive));writeFileSync(f.request,JSON.stringify(f.pin));const result=f.verify();assert.equal(result.status,2);assert.equal(result.stdout,'');assert.equal(result.stderr.trim(),'PRODUCT_IMAGE_CHECK_FAILED');
  });
  const f=fixture(t);writeFileSync(f.manifest,'{}');assert.equal(f.verify().status,2);
+});
+
+test('the sealed source admits exactly one certificate-only public CA bundle, pinned by its committed lock',async t=>{
+ const reseal=(f,label,mutate)=>{mutate(f.repo);git(f.repo,'add','-A');git(f.repo,'-c','user.name=Offline Fixture','-c','user.email=fixture@invalid.example','commit','--quiet','-m',label);const commit=git(f.repo,'rev-parse','HEAD');return python([verifier,'seal','--repository',f.repo,'--commit',commit,'--archive',join(f.root,label+'.zip'),'--output',join(f.root,label+'.json')]);};
+ const bundle=repoFile(rdsBundlePath),lock=JSON.parse(repoFile(rdsLockPath));
+ assert.equal(lock.sha256,hash(bundle));assert.equal(lock.bytes,bundle.length);assert.equal(lock.certificateCount,(bundle.toString('ascii').match(/-----BEGIN CERTIFICATE-----/gu)??[]).length);
+ assert.equal((bundle.toString('ascii').match(/-----BEGIN /gu)??[]).length,lock.certificateCount);
+ await t.test('another .pem stays a private member',t=>{const f=fixture(t);assert.equal(reseal(f,'stray',repo=>writeFileSync(join(repo,'apps/runtime/certs/other.pem'),bundle)).status,2);});
+ await t.test('a key block appended to the bundle refuses at seal',t=>{const f=fixture(t);assert.equal(reseal(f,'keyed',repo=>writeFileSync(join(repo,rdsBundlePath),Buffer.concat([bundle,Buffer.from('-----BEGIN PRIVATE KEY-----'+String.fromCharCode(10)+'AAAA'+String.fromCharCode(10)+'-----END PRIVATE KEY-----'+String.fromCharCode(10))]))).status,2);});
+ for(const mode of ['lock-digest','lock-count','missing-lock'])await t.test(mode,t=>{
+  const f=fixture(t),sealed=reseal(f,mode,repo=>{if(mode==='missing-lock'){rmSync(join(repo,rdsLockPath));return;}const changed={...lock};if(mode==='lock-digest')changed.sha256='0'.repeat(64);else changed.certificateCount+=1;writeFileSync(join(repo,rdsLockPath),JSON.stringify(changed));});
+  assert.equal(sealed.status,0,sealed.stderr);const seals=JSON.parse(sealed.stdout);
+  const pin={...f.pin,sourceCommit:git(f.repo,'rev-parse','HEAD'),archive:{...f.pin.archive,sha256:seals.archiveSha256},manifest:{...f.pin.manifest,sha256:seals.sourceManifestSha256}};pin.imageTag=`product-${pin.sourceCommit}-${'1'.repeat(32)}`;
+  writeFileSync(f.request,JSON.stringify(pin));const result=python([verifier,'verify','--request',f.request,'--archive',join(f.root,mode+'.zip'),'--manifest',join(f.root,mode+'.json')]);
+  assert.equal(result.status,2);assert.equal(result.stderr.trim(),'PRODUCT_IMAGE_CHECK_FAILED');
+ });
+});
+
+test('runtime Dockerfile bakes the locked RDS bundle read-only and points NODE_EXTRA_CA_CERTS at it',()=>{
+ const dockerfile=repoFile('apps/runtime/Dockerfile').toString('utf8'),lock=JSON.parse(repoFile(rdsLockPath));
+ const runtime=dockerfile.slice(dockerfile.indexOf('FROM ${RUNTIME_IMAGE} AS runtime'));assert.ok(runtime.length<dockerfile.length);
+ assert.ok(runtime.includes(`COPY --chown=0:0 --chmod=0444 ${lock.path} ${lock.imagePath}`));
+ assert.ok(runtime.includes(`'${lock.sha256}  ${lock.imagePath}' | sha256sum -c -`));
+ assert.ok(runtime.includes(`= ${lock.certificateCount} &&`));
+ assert.deepEqual(runtime.match(/^ENV NODE_EXTRA_CA_CERTS=.*$/gmu),[`ENV NODE_EXTRA_CA_CERTS=${lock.imagePath}`]);
+ assert.ok(runtime.indexOf('ENV NODE_EXTRA_CA_CERTS=')<runtime.indexOf('USER node'));
+ // The build context keeps every other .pem out; only this exact bundle is re-included after the blanket rule.
+ const ignore=repoFile('.dockerignore').toString('utf8').split(/\r?\n/u).map(line=>line.trim()).filter(line=>line&&!line.startsWith('#'));
+ assert.ok(ignore.indexOf('**/*.pem')>=0&&ignore.indexOf('**/*.pem')<ignore.indexOf('!'+lock.path));
+ assert.deepEqual(ignore.filter(line=>line.startsWith('!')&&/\.(pem|key|crt)$/u.test(line)),['!'+lock.path]);
 });
 
 test('Python entrypoint help/import/missing configuration are bounded and inert',()=>{
@@ -292,11 +325,11 @@ else:print('UNBOUNDED')
 });
 
 test('producer gates auth/push on measured image bytes and emits joined receipt only after clean scan',async t=>{
- for(const scenario of ['success','runner-mismatch','runtime-packages-mismatch','runtime-native-mismatch','linux-test-hold','scan-hold','source-mismatch','cleanup-unknown'])await t.test(scenario,t=>{
+ for(const scenario of ['success','rds-env-missing','rds-bundle-mismatch','runner-mismatch','runtime-packages-mismatch','runtime-native-mismatch','linux-test-hold','scan-hold','source-mismatch','cleanup-unknown'])await t.test(scenario,t=>{
   const f=fixture(t),output=join(f.root,'receipt.json');
   const harness=`import importlib.util,json,pathlib,shutil,sys,types,os
 s=importlib.util.spec_from_file_location('build_source',sys.argv[1]);m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
-p=json.loads(pathlib.Path(sys.argv[2]).read_text());archive,manifest,output,scenario=map(str,sys.argv[3:]);events=[]
+p=json.loads(pathlib.Path(sys.argv[2]).read_text());archive,manifest,output,scenario=map(str,sys.argv[3:7]);events=[];rds=json.loads(pathlib.Path(sys.argv[7]).read_text())
 m.sys.platform='linux';os.environ['CODEBUILD_PROJECT_ARN']=p['codeBuildProjectArn'];os.environ['CODEBUILD_BUILD_ID']='meri-product-preview-build:12345678-1234-1234-1234-123456789abc'
 def aws(*args):
  events.append('aws:'+args[0]+':'+args[1])
@@ -311,9 +344,9 @@ def run(args,timeout=30,input_bytes=None):
  if 'ls' in args:return b''
  if 'build' in args:
   events.append('docker-build');assert 'RUNTIME_IMAGE='+p['runtimeBaseImageUri'] in args and 'NODE_IMAGE='+p['nodeImageUri'] in args;return b''
- if 'inspect' in args:return json.dumps([{'Os':'linux','Architecture':'amd64','Size':1,'Config':{'Entrypoint':['node','apps/runtime/cli.mjs'],'Labels':{'org.opencontainers.image.revision':p['sourceCommit'],'org.opencontainers.image.base.name':p['runtimeBaseImageUri'],'io.meri.node.base':p['nodeImageUri'],'io.meri.runtime.packages.sha256':p['runtimePackagesSha256']}}}]).encode()
+ if 'inspect' in args:return json.dumps([{'Os':'linux','Architecture':'amd64','Size':1,'Config':{'Entrypoint':['node','apps/runtime/cli.mjs'],'Labels':{'org.opencontainers.image.revision':p['sourceCommit'],'org.opencontainers.image.base.name':p['runtimeBaseImageUri'],'io.meri.node.base':p['nodeImageUri'],'io.meri.runtime.packages.sha256':p['runtimePackagesSha256']},'Env':['PATH=/usr/bin','NODE_EXTRA_CA_CERTS=/opt/meri/certs/rds-global-bundle.pem','HOME=/home/node'] if scenario!='rds-env-missing' else ['PATH=/usr/bin','HOME=/home/node']}}]).encode()
  if 'run' in args and '--input-type=module' in args:
-  events.append('image-measurement');return json.dumps({'node':p['nodeVersion'],'runtimeUser':p['runtimeUser'],'executableSha256':'a'*64,'runner':{'contract':m.CONTRACT,'path':m.RUNNER,'runnerSha256':'0'*64 if scenario=='runner-mismatch' else p['runnerSha256'],'bytes':23}}).encode()
+  events.append('image-measurement');return json.dumps({'node':p['nodeVersion'],'runtimeUser':p['runtimeUser'],'executableSha256':'a'*64,'runner':{'contract':m.CONTRACT,'path':m.RUNNER,'runnerSha256':'0'*64 if scenario=='runner-mismatch' else p['runnerSha256'],'bytes':23},'rdsCaBundle':{'path':'/opt/meri/certs/rds-global-bundle.pem','sha256':'0'*64 if scenario=='rds-bundle-mismatch' else rds['sha256'],'mode':'444','uid':0}}).encode()
  if 'run' in args and 'runtime-packages.mjs' in ' '.join(args):
   events.append('runtime-packages');return json.dumps({'schemaVersion':1,'status':'RUNTIME_PACKAGES_VERIFIED','runtimeBaseImageUri':p['runtimeBaseImageUri'],'runtimePackagesSha256':'0'*64 if scenario=='runtime-packages-mismatch' else p['runtimePackagesSha256'],'installedPackageSetSha256':'3'*64,'nodeVersion':p['nodeVersion'],'glibcVersion':'2.41'}).encode()
  if 'run' in args and 'runtime-base-probe.mjs' in ' '.join(args):
@@ -338,9 +371,9 @@ try:result=m.produce(p,pathlib.Path(output));status='success'
 except Exception:status='refused'
 print(json.dumps({'status':status,'events':events,'receipt':json.loads(pathlib.Path(output).read_text()) if pathlib.Path(output).exists() else None}))
 `;
-  const result=python(['-c',harness,producer,f.request,f.archive,f.manifest,output,scenario]);assert.equal(result.status,0,result.stderr);assert.ok(!result.stdout.includes('never-log-this-value'));const observed=JSON.parse(result.stdout);
+  const result=python(['-c',harness,producer,f.request,f.archive,f.manifest,output,scenario,join(f.repo,rdsLockPath)]);assert.equal(result.status,0,result.stderr);assert.ok(!result.stdout.includes('never-log-this-value'));const observed=JSON.parse(result.stdout);
   const linuxTests='linux-tests:apps/runtime/test/prepared-candidate-bootstrap.test.mjs,apps/runtime/test/remote-conversation-runner.test.mjs,apps/runtime/temporal-product-token-writer.test.mjs';
   if(scenario==='success'){assert.equal(observed.status,'success');assert.ok(observed.events.indexOf('image-measurement')<observed.events.indexOf('runtime-packages'));assert.ok(observed.events.indexOf('runtime-packages')<observed.events.indexOf('runtime-native'));assert.ok(observed.events.indexOf('runtime-native')<observed.events.indexOf('fixture-preflight'));assert.ok(observed.events.indexOf('fixture-preflight')<observed.events.indexOf(linuxTests));assert.ok(observed.events.indexOf(linuxTests)<observed.events.indexOf('credentials'));assert.ok(observed.events.indexOf('credentials')<observed.events.indexOf('push'));assert.equal(observed.receipt.runnerMeasurement.runnerSha256,f.pin.runnerSha256);assert.equal(observed.receipt.runtimeBaseImageUri,f.pin.runtimeBaseImageUri);assert.equal(observed.receipt.runtimePackagesSha256,f.pin.runtimePackagesSha256);assert.equal(observed.receipt.installedPackageSetSha256,'3'.repeat(64));assert.equal(observed.receipt.glibcVersion,'2.41');assert.equal(observed.receipt.nativeCompatibility.status,'RUNTIME_NATIVE_VERIFIED');assert.equal(observed.receipt.sourceManifestSha256,f.pin.manifest.sha256);assert.equal(observed.receipt.scanStatus,'COMPLETE');}
-  else{assert.equal(observed.status,'refused');assert.equal(observed.receipt,null);if(['runner-mismatch','runtime-packages-mismatch','runtime-native-mismatch','linux-test-hold','source-mismatch'].includes(scenario))assert.equal(observed.events.includes('credentials'),false);if(['runner-mismatch','runtime-packages-mismatch','runtime-native-mismatch','linux-test-hold'].includes(scenario))assert.equal(observed.events.includes('image-measurement'),true);if(scenario==='runtime-packages-mismatch')assert.equal(observed.events.includes('runtime-native'),false);if(scenario==='linux-test-hold')assert.equal(observed.events.includes(linuxTests),true);if(['scan-hold','cleanup-unknown'].includes(scenario))assert.equal(observed.events.includes('push'),true);if(scenario==='source-mismatch')assert.equal(observed.events.includes('docker-build'),false);}
+  else{assert.equal(observed.status,'refused');assert.equal(observed.receipt,null);if(['rds-env-missing','rds-bundle-mismatch','runner-mismatch','runtime-packages-mismatch','runtime-native-mismatch','linux-test-hold','source-mismatch'].includes(scenario))assert.equal(observed.events.includes('credentials'),false);if(scenario==='rds-env-missing')assert.equal(observed.events.includes('image-measurement'),false);if(scenario==='rds-bundle-mismatch')assert.equal(observed.events.includes('runtime-packages'),false);if(['runner-mismatch','runtime-packages-mismatch','runtime-native-mismatch','linux-test-hold'].includes(scenario))assert.equal(observed.events.includes('image-measurement'),true);if(scenario==='runtime-packages-mismatch')assert.equal(observed.events.includes('runtime-native'),false);if(scenario==='linux-test-hold')assert.equal(observed.events.includes(linuxTests),true);if(['scan-hold','cleanup-unknown'].includes(scenario))assert.equal(observed.events.includes('push'),true);if(scenario==='source-mismatch')assert.equal(observed.events.includes('docker-build'),false);}
  });
 });

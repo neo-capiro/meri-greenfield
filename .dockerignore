@@ -65,6 +65,8 @@ scripts
 **/*.env
 **/.env*
 **/*.pem
+# The one public certificate the runtime image bakes in (pinned by its lock and the source verifier).
+!apps/runtime/certs/rds-global-bundle.pem
 **/*.key
 **/credentials
 **/config.json

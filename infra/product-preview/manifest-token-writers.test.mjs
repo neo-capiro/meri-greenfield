@@ -12,7 +12,7 @@ function fixture(){
   publicKey:{manifestFile:'/run/meri/issuer-jwks.json'},tls:{issuerCaFile:'/run/meri/issuer-ca.pem'},
   bootstrap:{clientCaFile:'/run/meri/bootstrap-client-ca.pem',identityDirectory:'/run/meri-temporal/identity',
    clientKeyFile:'/run/meri-temporal/identity/client-key.pem',clientCertFile:'/run/meri-temporal/identity/client-cert.pem',initialIdentityState:'absent'},
-  sha256ByPath:{'/run/meri/issuer-jwks.json':'d'.repeat(64),'/run/meri/issuer-ca.pem':'e'.repeat(64),'/run/meri/bootstrap-client-ca.pem':'f'.repeat(64)}});
+  sha256ByPath:{'/run/meri/issuer-jwks.json':'d'.repeat(64),'/run/meri/issuer-ca.pem':controlCaSha,'/run/meri/bootstrap-client-ca.pem':'f'.repeat(64)}});
  const temporalTokenWriters={control:writer(),temporalWorker:writer()};
  const envelope=role=>{
   const expected={schemaVersion:1,role:role==='control'?'control':'temporal-worker',runtimeUser:'1000:1000',sourceCommit,imageDigest:'sha256:'+sha,
@@ -108,4 +108,23 @@ test('shared public trust pins do not become a static client identity for either
   assert.equal(Object.hasOwn(input.materialDelivery[role].expected.sha256ByPath,writer.bootstrap.clientCertFile),false);
  }
  assert.equal(resources(synthesizeProductPreview(input),'AWS::ECS::Service').every(service=>service.DesiredCount===0),true);
+});
+
+test('the worker trusts the control private origin through its issuer server CA file; control and runner keep the image trust',()=>{
+ const input=fixture(),tasks=resources(synthesizeProductPreview(input),'AWS::ECS::TaskDefinition');
+ const env=family=>tasks.find(task=>task.Family==='meri-product-preview-'+family).ContainerDefinitions.at(-1).Environment;
+ const worker=env('temporal-worker');
+ assert.deepEqual(worker.filter(row=>row.Name==='NODE_EXTRA_CA_CERTS'),[{Name:'NODE_EXTRA_CA_CERTS',Value:input.temporalTokenWriters.temporalWorker.tls.issuerCaFile}]);
+ assert.match(worker.find(row=>row.Name==='NODE_EXTRA_CA_CERTS').Value,/^\/run\/meri\/[A-Za-z0-9._-]+\.pem$/u);
+ assert.equal(input.materialDelivery.temporalWorker.expected.sha256ByPath[input.temporalTokenWriters.temporalWorker.tls.issuerCaFile],input.runnerPoststart.controlCaSha256);
+ for(const family of ['control','runner'])assert.equal(env(family).some(row=>row.Name==='NODE_EXTRA_CA_CERTS'),false,family);
+ const without=fixture();delete without.temporalTokenWriters;
+ for(const task of resources(synthesizeProductPreview(without),'AWS::ECS::TaskDefinition'))assert.equal(task.ContainerDefinitions.some(c=>(c.Environment??[]).some(row=>row.Name==='NODE_EXTRA_CA_CERTS')),false);
+});
+
+test('a worker issuer CA that is not the CA pinned for the control private origin refuses',()=>{
+ const input=fixture(),other='9'.repeat(64);
+ input.temporalTokenWriters.temporalWorker.sha256ByPath['/run/meri/issuer-ca.pem']=other;
+ input.materialDelivery.temporalWorker.expected.sha256ByPath['/run/meri/issuer-ca.pem']=other;reseal(input,'temporalWorker');
+ assert.throws(()=>synthesizeProductPreview(input),refused);
 });

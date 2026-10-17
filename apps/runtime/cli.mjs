@@ -2,6 +2,10 @@
 import {pathToFileURL} from 'node:url';
 import {loadConfiguration} from './config.mjs';
 import {assertProductRunnerMeasurement} from './native-authority/ecs-prepared-task-proof.mjs';
+/** The product worker reaches control's private origin with global fetch, so Node's default store must also trust the one Meri
+ * preview server CA. That anchor is exactly its pinned issuer server CA file (same CA; serverCaSha256 pinned, written by
+ * material-init before this process starts), never another path. NODE_EXTRA_CA_CERTS is read once at process start. */
+export function productWorkerTrustsPinnedServerCa(c,environment=process.env){const file=c.temporal?.issuerBootstrap?.serverCaFile;return typeof file==='string'&&/^\/run\/meri\/[A-Za-z0-9][A-Za-z0-9._-]{0,119}\.pem$/u.test(file)&&environment.NODE_EXTRA_CA_CERTS===file;}
 export async function main(argv=process.argv.slice(2),{poststartTls,nativeFetch}={}){
  if(argv.length===1&&['--help','-h'].includes(argv[0])){process.stdout.write('Usage: node apps/runtime/cli.mjs <control|temporal-worker|conversation-runner> --config /absolute/config.json\nExit: 0 graceful completion; 2 configuration/startup timeout; 3 runtime/startup failure/shutdown timeout.\n');return 0;}
  if(argv.length!==3||argv[1]!=='--config'){process.stderr.write('RUNTIME_ARGUMENTS\n');return 2;}const [role,,path]=argv;let c;try{c=await loadConfiguration(path,role);
@@ -11,7 +15,7 @@ export async function main(argv=process.argv.slice(2),{poststartTls,nativeFetch}
      (process.env.MERI_PRODUCT_PREVIEW_REQUIRED!=='1'||c.privateHttp===undefined||c.nativeCandidate===undefined||c.taskRouter?.enabled!==true||c.taskRouter.poststart?.enabled!==true||c.temporal.authorization===undefined||c.temporal.tokenWriter?.enabled!==true||c.temporal.issuerDelivery===undefined||c.temporal.issuerBootstrap?.enabled!==true))throw Error('PRODUCT_LISTENER_REFUSED');
   if(role==='temporal-worker'&&process.env.MERI_PRODUCT_PREVIEW_REQUIRED!==undefined&&
      (process.env.MERI_PRODUCT_PREVIEW_REQUIRED!=='1'||c.native.preparedKickoff!==true||c.native.loopback!==false||
-      !c.native.origin.startsWith('https://')||c.http.port!==8081||c.temporal.authorization===undefined||c.temporal.tokenWriter?.enabled!==true||c.temporal.issuerDelivery===undefined||c.temporal.issuerBootstrap?.enabled!==true))throw Error('PRODUCT_WORKER_REFUSED');
+      !c.native.origin.startsWith('https://')||c.http.port!==8081||c.temporal.authorization===undefined||c.temporal.tokenWriter?.enabled!==true||c.temporal.issuerDelivery===undefined||c.temporal.issuerBootstrap?.enabled!==true||!productWorkerTrustsPinnedServerCa(c)))throw Error('PRODUCT_WORKER_REFUSED');
   if(role==='conversation-runner'&&process.env.MERI_PRODUCT_PREVIEW_REQUIRED!==undefined&&
      (process.env.MERI_PRODUCT_PREVIEW_REQUIRED!=='1'||c.bootstrap?.remote!==true||c.remoteTask!==undefined||poststartTls===undefined||typeof nativeFetch!=='function'))throw Error('PRODUCT_RUNNER_TLS_REFUSED');
   if(role==='conversation-runner'&&(c.remoteTask!==undefined||c.bootstrap?.remote===true)){
