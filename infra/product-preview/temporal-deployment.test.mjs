@@ -25,7 +25,7 @@ function binding(){return {
   s3Gateway:{endpointId:'vpce-99999999',prefixListId:'pl-11111111'},
   taskRouteTableBySubnet:{'subnet-1234abcd':'rtb-11111111','subnet-abcd1234':'rtb-22222222'},
   migrationSecurityGroupId:'sg-aaaaaaaa'},
- auth:{issuer:'https://issuer.meri.internal/',jwksUrl:'https://issuer.meri.internal/.well-known/jwks.json',issuerCaSha256:sha,audience:'meri-temporal',namespace:'meri',taskQueue:'meri-conversations',
+ auth:{issuer:'https://issuer.meri.internal:8445/',jwksUrl:'https://issuer.meri.internal:8445/.well-known/jwks.json',issuerCaSha256:sha,audience:'meri-temporal',namespace:'meri',taskQueue:'meri-conversations',
   materialSecretVersionByRole:Object.fromEntries(TEMPORAL_ROLES.map((r,i)=>[r,version(r,i+1)]))},
  database:{...TEMPORAL_EXISTING_DATABASE,primaryDatabase:'temporal',visibilityDatabase:'temporal_visibility',
   primarySecretVersionArn:version('primary',7),primaryUsername:'temporal_primary',
@@ -72,6 +72,7 @@ test('fully bound synthesis emits five stopped private roles using the approved 
   assert.equal(env.NUM_HISTORY_SHARDS,'128');assert.equal(env.DB,'postgres12');assert.equal(env.SQL_HOST_VERIFICATION,'true');
   assert.equal(env.TEMPORAL_TLS_REQUIRE_CLIENT_AUTH,'true');assert.equal(env.TEMPORAL_AUTH_AUTHORIZER,'default');
   assert.equal(env.TEMPORAL_AUTH_CLAIM_MAPPER,'default');assert.equal(env.TEMPORAL_JWT_KEY_SOURCE1,b.auth.jwksUrl);
+  assert.equal(env.TEMPORAL_AUTH_ISSUER,'https://issuer.meri.internal:8445/');
   assert.equal(env.TEMPORAL_JWT_KEY_REFRESH,'300s');assert.equal(env.MERI_TEMPORAL_RENDER_DIR,'/run/temporal');
   assert.equal(env.MERI_TEMPORAL_ACTIVATION,'disabled');assert.equal(env.MERI_TEMPORAL_SERVICE_NAME,role);
   assert.equal(env.MERI_TEMPORAL_PRIMARY_USERNAME_EXPECTED,b.database.primaryUsername);
@@ -133,10 +134,17 @@ test('migration plan binds the pinned ordered source stages without running SQL'
 });
 
 test('network creates role-specific security groups with no unrestricted egress',()=>{
- const t=synthesizeTemporalPreview(binding()),groups=resources(t,'AWS::EC2::SecurityGroup');
+ const b=binding(),t=synthesizeTemporalPreview(b),groups=resources(t,'AWS::EC2::SecurityGroup');
  assert.equal(groups.length,5);
  const egress=resources(t,'AWS::EC2::SecurityGroupEgress');
  assert(egress.length>0);
+ const issuerEgress=egress.filter(x=>x.DestinationSecurityGroupId===b.network.issuerSecurityGroupId);
+ assert.equal(issuerEgress.length,5);
+ assert(issuerEgress.every(x=>x.FromPort===8445&&x.ToPort===8445&&x.IpProtocol==='tcp'));
+ const endpointIds=Object.values(b.network.interfaceEndpoints).map(x=>x.securityGroupId);
+ const endpointEgress=egress.filter(x=>endpointIds.includes(x.DestinationSecurityGroupId));
+ assert.equal(endpointEgress.length,25);
+ assert(endpointEgress.every(x=>x.FromPort===443&&x.ToPort===443&&x.IpProtocol==='tcp'));
  assert(egress.some(x=>x.DestinationPrefixListId==='pl-11111111'&&x.FromPort===443));
  assert(!egress.some(x=>x.CidrIp==='0.0.0.0/0'||x.CidrIpv6==='::/0'));
  const ingress=resources(t,'AWS::EC2::SecurityGroupIngress');
@@ -148,6 +156,23 @@ test('network creates role-specific security groups with no unrestricted egress'
  assert(!groups.some(x=>x.GroupDescription==='Meri Temporal PostgreSQL only'));
  assert(ingress.some(x=>x.FromPort===7233&&x.ToPort===7233));
  assert(!ingress.some(x=>x.CidrIp==='0.0.0.0/0'||x.CidrIpv6==='::/0'));
+});
+
+test('issuer binding requires exact 8445 HTTPS issuer and same-origin fixed JWKS path',()=>{
+ assert.equal(validateTemporalPreviewBinding(binding()).auth.issuer,'https://issuer.meri.internal:8445/');
+ for(const suffix of ['',':443',':8443',':8446',':08445']){
+  const b=binding();b.auth.issuer=`https://issuer.meri.internal${suffix}/`;
+  b.auth.jwksUrl=`https://issuer.meri.internal${suffix}/.well-known/jwks.json`;
+  assert.throws(()=>validateTemporalPreviewBinding(b),/TEMPORAL_PREVIEW_BINDING_REFUSED/u);
+ }
+ for(const mutate of [
+  x=>{x.auth.issuer='https://issuer.meri.internal:8445';},
+  x=>{x.auth.issuer='https://issuer.meri.internal:8445/?extra=1';},
+  x=>{x.auth.jwksUrl='https://issuer.meri.internal/.well-known/jwks.json';},
+  x=>{x.auth.jwksUrl='https://issuer.meri.internal:8445/other';},
+  x=>{x.auth.jwksUrl='https://user@issuer.meri.internal:8445/.well-known/jwks.json';},
+  x=>{x.auth.jwksUrl='https://issuer.meri.internal:8445/.well-known/jwks.json?extra=1';}
+ ]){const b=binding();mutate(b);assert.throws(()=>validateTemporalPreviewBinding(b),/TEMPORAL_PREVIEW_BINDING_REFUSED/u);}
 });
 
 test('offline network readback joins exact private ECR, Logs, Secrets, KMS and S3 paths',()=>{
@@ -181,7 +206,7 @@ test('offline network readback joins exact private ECR, Logs, Secrets, KMS and S
 
 test('unmounted issuer renewal contract binds distinct write subjects to an external broker role',()=>{
  const b=binding(),a=b.auth,role=(name)=>({subject:`meri-temporal-${name}:v1`,namespaceRole:'write',
-  tokenFile:'/run/meri/temporal-token.json',workloadPrincipal:`meri-workload-${name}:v1`,
+  tokenFile:'/run/meri-temporal/token.json',workloadPrincipal:`meri-workload-${name}:v1`,
   delivery:'task-local-atomic-owner-only-file'});
  const spec={schemaVersion:1,status:'unmounted',issuer:a.issuer,jwksUrl:a.jwksUrl,audience:a.audience,
   namespace:a.namespace,taskQueue:a.taskQueue,maxTokenLifetimeMs:60000,refreshMs:10000,
@@ -195,6 +220,8 @@ test('unmounted issuer renewal contract binds distinct write subjects to an exte
   x=>{x.issuerServiceTaskRoleArn=b.taskRoleArns.frontend;},
   x=>{x.roles.control.namespaceRole='worker';},
   x=>{x.roles.control.tokenFile='/run/meri/static-token.json';},
+  x=>{x.roles.control.tokenFile='/run/meri/temporal-token.json';},
+  x=>{x.maxTokenLifetimeMs=60001;},
   x=>{x.maxTokenLifetimeMs=86400000;}
  ]){const copy=structuredClone(spec);mutate(copy);assert.throws(()=>validateTemporalIssuerRenewal(b,copy),/TEMPORAL_ISSUER_RENEWAL_REFUSED/u);}
 });

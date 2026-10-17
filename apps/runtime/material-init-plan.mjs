@@ -5,9 +5,10 @@ import {constants} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {posix} from 'node:path';
 import {validateConfiguration} from './config.mjs';
+import {parseTemporalIssuerRuntimeConfiguration} from './temporal-issuer-cli.mjs';
 
 const root='/run/meri', mode=0o600, maxBytes=32768;
-const names=Object.freeze({control:'control.json','temporal-worker':'worker.json'});
+const names=Object.freeze({control:'control.json','temporal-worker':'worker.json','temporal-issuer':'issuer.json'});
 export const productMaterialPolicy=Object.freeze({directory:root,maxBytes,configurationNames:names});
 const plans=new WeakSet();
 const hex64=/^[a-f0-9]{64}$/u;
@@ -30,6 +31,20 @@ function direct(path){
 export function compileProductMaterialPlan({role,configuration,runtimeUser}){
  if(!Object.hasOwn(names,role)||!own(configuration))refuse();
  const {uid,gid}=parseProductRuntimeUser(runtimeUser);
+ if(role==='temporal-issuer'){
+  if(uid!==1000)refuse();
+  let c;try{c=parseTemporalIssuerRuntimeConfiguration(configuration);}catch{refuse();}
+  const configurationPath=`${root}/${names[role]}`,paths=[
+   [configurationPath,'configuration'],[c.database.connectionFile,'database-connection'],
+   [c.issuer.tls.keyFile,'issuer-tls-key'],[c.issuer.tls.certFile,'issuer-tls-cert'],
+   [c.issuer.tls.caFile,'issuer-tls-ca'],[c.issuer.bootstrap.caKeyFile,'issuer-bootstrap-ca-key']
+  ];
+  if(new Set(paths.map(([path])=>direct(path))).size!==paths.length)refuse();
+  const requiredFiles=Object.freeze(paths.sort(([a],[b])=>a.localeCompare(b)).map(([path,purpose])=>Object.freeze({path,purposes:Object.freeze([purpose]),mode:'0600',maxBytes})));
+  const plan=Object.freeze({schemaVersion:1,role,containerName:role,configurationPath,materialDirectory:root,runtimeUser,uid,gid,
+   directoryMode:'0700',requiredFiles,requiresTokenRotation:false,dynamicMaterialDirectory:null});
+  plans.add(plan);return plan;
+ }
  let c;try{c=validateConfiguration(configuration,role);}catch{refuse();}
  if(c.http.hostname!=='0.0.0.0'||c.http.port!==(role==='control'?8080:8081))refuse();
  // Static product control must never fall back to the legacy shared listener:
@@ -42,7 +57,11 @@ export function compileProductMaterialPlan({role,configuration,runtimeUser}){
  }
  add(c.native.capabilityFile,'native-capability');
  add(c.temporal.tls.caFile,'temporal-ca');add(c.temporal.tls.certFile,'temporal-cert');add(c.temporal.tls.keyFile,'temporal-key');
- if(c.temporal.authorization)add(c.temporal.authorization.tokenFile,'temporal-authorization-token');
+ if(c.temporal.tokenWriter?.enabled===true){
+  const d=c.temporal.issuerDelivery;
+  add(d.publicKey.manifestFile,'temporal-issuer-jwk');add(d.tls.issuerCaFile,'temporal-issuer-ca');
+  add(c.temporal.issuerBootstrap.clientCaFile,'temporal-issuer-client-ca');
+ }else if(c.temporal.authorization)add(c.temporal.authorization.tokenFile,'temporal-authorization-token');
  if(role==='control'){
   add(c.database.connectionFile,'database-connection');
   if(c.downloadLinks?.enabled)add(c.downloadLinks.keyFile,'download-signing-key');
@@ -64,7 +83,7 @@ export function compileProductMaterialPlan({role,configuration,runtimeUser}){
  const requiredFiles=Object.freeze([...files].sort(([a],[b])=>a.localeCompare(b)).map(([path,purposes])=>Object.freeze({path,purposes:Object.freeze([...purposes].sort()),mode:'0600',maxBytes})));
  const plan=Object.freeze({schemaVersion:1,role,containerName:role,configurationPath,materialDirectory:root,runtimeUser,uid,gid,
   directoryMode:'0700',requiredFiles,requiresTokenRotation:!!c.temporal.authorization,
-  dynamicMaterialDirectory});
+  dynamicMaterialDirectory,...(c.temporal.tokenWriter?.enabled===true?{temporalTokenWriter:Object.freeze({directory:'/run/meri-temporal',tokenFile:'/run/meri-temporal/token.json',identityDirectory:'/run/meri-temporal/identity',role})}:{})});
  plans.add(plan);return plan;
 }
 

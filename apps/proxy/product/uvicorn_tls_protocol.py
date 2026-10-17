@@ -165,7 +165,7 @@ async def serve_product_proxy_with_owner(*, enabled=False, server_tls_context=No
         owner_policy=None, owner_tls_material=None, owner_ipv4=None, proxy_ipv4=None,
         deployment_expires_at_ms=None, deployment_revision=None, ecs_client=None, ec2_client=None,
         count_client=None, make_provider_transport=None, pricing_revision=None,
-        body_limits=None, bootstrap_seconds=5.0):
+        body_limits=None, bootstrap_seconds=5.0, service_pair_reader=None):
     """Actual opt-in caller for placement, fresh admission and session composition.
 
     Externally delivered reviewed TLS material/deployment pins and bounded AWS
@@ -180,7 +180,7 @@ async def serve_product_proxy_with_owner(*, enabled=False, server_tls_context=No
     from .socket_capture import DirectTlsSocketCapture
     exchange = ProductOwnerHttpsExchange(policy=owner_policy,material=owner_tls_material,
         owner_ipv4=owner_ipv4,proxy_ipv4=proxy_ipv4,expires_at_ms=deployment_expires_at_ms,
-        deployment_revision=deployment_revision)
+        deployment_revision=deployment_revision,service_pair_reader=service_pair_reader)
     startup = None
     try:
         startup = ProductOwnerStartup(policy=owner_policy,exchange=exchange,

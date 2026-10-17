@@ -5,11 +5,14 @@ import socket
 import ssl
 import time
 import unittest
+from types import SimpleNamespace
 from unittest.mock import patch
 
 from apps.proxy.product.owner_https import (ProductOwnerHttpsExchange,OwnerClientTlsMaterial,
     validate_owner_http_reply,load_owner_client_tls_material)
 from apps.proxy.product.owner_channel import OwnerPeerPolicy,OPERATION
+from apps.proxy.product.service_pair_discovery import compile_owner_peer
+from apps.proxy.product.test.test_service_pair_discovery import fixture, peer_template
 
 
 def policy():
@@ -18,14 +21,56 @@ def policy():
 
 
 def exchange():
+    f=fixture();f.configuration['ownerCertSha256']='a'*64;f.configuration['proxyCertSha256']='c'*64
+    template=peer_template();template.update(server_cert_sha256='a'*64,client_cert_sha256='c'*64)
+    reader=f.reader();peer=compile_owner_peer(template,reader.read(deadline_ms=f.at+3000))
     context=ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
     context.minimum_version=context.maximum_version=ssl.TLSVersion.TLSv1_3
-    return ProductOwnerHttpsExchange(policy=policy(),material=OwnerClientTlsMaterial(context,'c'*64),
-        owner_ipv4='10.1.2.3',proxy_ipv4='10.1.2.4',expires_at_ms=time.time_ns()//1000000+10000,
-        deployment_revision='reviewed-v1')
+    result=ProductOwnerHttpsExchange(policy=peer,material=OwnerClientTlsMaterial(context,'c'*64),
+        owner_ipv4='10.40.4.1',proxy_ipv4='10.40.4.2',expires_at_ms=f.configuration['expiresAtMs'],
+        deployment_revision='reviewed-v1',service_pair_reader=reader)
+    result.fixture=f
+    return result
 
 
 class HttpsTests(unittest.IsolatedAsyncioTestCase):
+    def test_observed_socket_addresses_must_match_selected_service_pair(self):
+        item=exchange()
+        class SocketBoundary:
+            def fileno(self): return 7
+            def version(self): return 'TLSv1.3'
+            def selected_alpn_protocol(self): return 'http/1.1'
+            def getpeername(self): return ('10.40.4.9',8444)
+            def getsockname(self): return ('10.40.4.2',32123)
+            def getpeercert(self,**_kwargs): raise AssertionError('foreign socket reached certificate projection')
+        with patch('apps.proxy.product.owner_https.ssl.SSLSocket',SocketBoundary):
+            with self.assertRaisesRegex(Exception,'PRODUCT_OWNER_HTTPS_DENIED'):
+                item._evidence(SocketBoundary())
+        item.abort()
+    def test_missing_or_arbitrary_discovery_cannot_make_product_transport(self):
+        context=ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+        context.minimum_version=context.maximum_version=ssl.TLSVersion.TLSv1_3
+        for reader in (None,SimpleNamespace(available=True)):
+            with self.assertRaisesRegex(Exception,'PRODUCT_OWNER_HTTPS_DENIED'):
+                ProductOwnerHttpsExchange(policy=policy(),material=OwnerClientTlsMaterial(context,'c'*64),
+                    owner_ipv4='10.1.2.3',proxy_ipv4='10.1.2.4',expires_at_ms=time.time_ns()//1000000+10000,
+                    deployment_revision='reviewed-v1',service_pair_reader=reader)
+
+    def test_actual_send_refreshes_service_pair_before_and_after_response(self):
+        item=exchange();f=item.fixture;sent=[]
+        response=SimpleNamespace(status=200,version=11,will_close=False,length=0,
+            getheaders=lambda:[('content-type','application/json'),('content-length','2'),('cache-control','no-store'),('x-meri-owner-revision','reviewed-v1')],
+            read=lambda _size:b'[]')
+        sock=SimpleNamespace(settimeout=lambda _value:None)
+        connection=SimpleNamespace(sock=sock,request=lambda *a,**kw:sent.append((a,kw)),getresponse=lambda:response)
+        with patch.object(item,'_connect',return_value=connection),patch.object(item,'_evidence',return_value='synthetic-peer-boundary-only'):
+            value=item._send('operation',OPERATION,b'[]',item.now_ms()+1000)
+        self.assertEqual(value.body,b'[]');self.assertEqual(len(f.calls),30);self.assertEqual(len(sent),1)
+        f.ids['proxy']='3'
+        with patch.object(item,'_connect',side_effect=AssertionError('stale socket attempted')):
+            with self.assertRaisesRegex(Exception,'PRODUCT_OWNER_HTTPS_DENIED'):
+                item._send('operation',OPERATION,b'[]',item.now_ms()+1000)
+        self.assertFalse(item.available);self.assertEqual(len(sent),1)
     def test_closed_http_response_framing(self):
         valid=[('content-type','application/json'),('content-length','2'),('cache-control','no-store'),
                ('x-meri-owner-revision','reviewed-v1')]

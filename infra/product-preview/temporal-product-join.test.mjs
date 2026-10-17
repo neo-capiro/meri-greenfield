@@ -26,7 +26,7 @@ function temporal(){return {
   s3Gateway:{endpointId:'vpce-99999999',prefixListId:'pl-11111111'},
   taskRouteTableBySubnet:{'subnet-11111111':'rtb-11111111','subnet-22222222':'rtb-22222222'},
   migrationSecurityGroupId:'sg-aaaaaaaa'},
- auth:{issuer:'https://issuer.meri.internal/',jwksUrl:'https://issuer.meri.internal/.well-known/jwks.json',
+ auth:{issuer:'https://issuer.meri.internal:8445/',jwksUrl:'https://issuer.meri.internal:8445/.well-known/jwks.json',
   issuerCaSha256:sha,audience:'meri-temporal',namespace:'meri',taskQueue:'meri-conversations',
   materialSecretVersionByRole:Object.fromEntries(TEMPORAL_ROLES.map((x,i)=>[x,roleSecret(x,i+1)]))},
  database:{...TEMPORAL_EXISTING_DATABASE,primaryDatabase:'temporal',visibilityDatabase:'temporal_visibility',
@@ -58,7 +58,7 @@ function product(){return {
   runner:{cpu:1024,memoryMiB:2048,ephemeralStorageGiB:50}}
 };}
 function renewal(t){const role=name=>({subject:`meri-${name}:v1`,namespaceRole:'write',
- tokenFile:'/run/meri/temporal-token.json',workloadPrincipal:`meri-workload-${name}:v1`,
+ tokenFile:'/run/meri-temporal/token.json',workloadPrincipal:`meri-workload-${name}:v1`,
  delivery:'task-local-atomic-owner-only-file'});
  return {schemaVersion:1,status:'unmounted',issuer:t.auth.issuer,jwksUrl:t.auth.jwksUrl,audience:t.auth.audience,
   namespace:t.auth.namespace,taskQueue:t.auth.taskQueue,maxTokenLifetimeMs:60000,refreshMs:10000,
@@ -69,7 +69,7 @@ function projection(p,t){return Object.fromEntries(['control','temporalWorker'].
  configSha256:p.materialDelivery[role].expected.sha256ByPath[`/run/meri/${role==='control'?'control':'worker'}.json`],
  address:`frontend.${t.privateDnsName}:7233`,namespace:t.auth.namespace,taskQueue:t.auth.taskQueue,
  tlsServerName:`frontend.${t.privateDnsName}`,tlsCaFile:'/run/meri/temporal-ca.pem',tlsCaSha256:'e'.repeat(64),
- issuer:t.auth.issuer,audience:t.auth.audience,tokenFile:'/run/meri/temporal-token.json',
+ issuer:t.auth.issuer,audience:t.auth.audience,tokenFile:'/run/meri-temporal/token.json',
  refreshMs:10000,maxLifetimeMs:60000}]));}
 
 test('same-VPC source join stays HOLD with exact cluster, subnet readback, SG, config, TLS and issuer pins',()=>{

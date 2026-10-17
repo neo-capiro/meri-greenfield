@@ -15,6 +15,7 @@ import {createProductProxyPersistedFacts} from './product-owner-facts.mjs';
 import {createProductOwnerPlacement} from './product-owner-placement.mjs';
 import {createProductOwnerNativeCurrentness} from './owner-native-currentness.mjs';
 import {createProductServiceTaskLeaseReader} from './service-task-leases.mjs';
+import {parseProductServicePairConfiguration} from './service-pair-discovery.mjs';
 import {createProductOwnerServiceGate} from './owner-channel.mjs';
 import {createProductOwnerHttpsServer} from './owner-https.mjs';
 
@@ -29,28 +30,14 @@ const prefix='arn:aws:ecs:us-east-1:967807252336:';
 const runtimeRequire=createRequire(new URL('../../runtime/package.json',import.meta.url));
 const frozenDisabled=()=>Object.freeze({available:false,async start(){fail();},async close(){}});
 
-function servicePin(v){
- const p=own(v,['clusterArn','taskArn','taskDefinitionArn','serviceName','containerName','imageDigest','createdAtMs','vpcId','subnetId','securityGroupIds']);
- const cluster=typeof p.clusterArn==='string'?p.clusterArn.slice((prefix+'cluster/').length):'';
- if(p.clusterArn!==prefix+'cluster/'+cluster||! /^[A-Za-z0-9_-]{1,255}$/u.test(cluster)||
-    p.taskArn!==prefix+'task/'+cluster+'/'+String(p.taskArn).split('/').at(-1)||! /^[a-f0-9]{32}$/u.test(String(p.taskArn).split('/').at(-1))||
-    typeof p.taskDefinitionArn!=='string'||!p.taskDefinitionArn.startsWith(prefix)||! /^task-definition\/[A-Za-z0-9_-]+:[1-9][0-9]*$/u.test(p.taskDefinitionArn.slice(prefix.length))||
-    ![p.serviceName,p.containerName].every(n=>typeof n==='string'&&/^[A-Za-z0-9_-]{1,255}$/u.test(n))||
-    typeof p.imageDigest!=='string'||! /^sha256:[a-f0-9]{64}$/u.test(p.imageDigest)||!integer(p.createdAtMs,Number.MAX_SAFE_INTEGER)||
-    ! /^vpc-[a-f0-9]{8,17}$/u.test(p.vpcId)||! /^subnet-[a-f0-9]{8,17}$/u.test(p.subnetId)||
-    !Array.isArray(p.securityGroupIds)||p.securityGroupIds.length<1||p.securityGroupIds.length>5||
-    p.securityGroupIds.some(n=>typeof n!=='string'||! /^sg-[a-f0-9]{8,17}$/u.test(n))||new Set(p.securityGroupIds).size!==p.securityGroupIds.length)fail();
- return p;
-}
-
 /** Closed data only. An omitted enabled flag is false, before any material IO. */
 export function validateProductOwnerConfiguration(raw){
  try{
   const c=data(own(raw,['schemaVersion','sourceEnabled','controlConfigurationFile','controlConfigurationSha256','nativeCredentialFileSha256',
    'tls','clientPolicy','serviceTasks','pricing','limits'],['enabled']));
   const t=own(c.tls,['origin','serverName','caFile','certFile','keyFile','certSha256','issuerSha256']),
-   p=own(c.clientPolicy,['clientCertSha256','clientSubject','deploymentRevision','issuerSha256','selectedClientId','ownerTaskArn','proxyTaskArn']),
-   s=own(c.serviceTasks,['schemaVersion','deploymentRevision','expiresAtMs','ownerCertSha256','proxyCertSha256','owner','proxy']),
+   p=own(c.clientPolicy,['clientCertSha256','clientSubject','deploymentRevision','issuerSha256','selectedClientId']),
+   s=parseProductServicePairConfiguration(c.serviceTasks),
    l=own(c.limits,['maxRequestMs','maxFactBytes','maxLeaseMs']),
    price=own(c.pricing,['modelId','profileId','revision','validUntilMs','actualInputMicroUSDPerK','reserveInputMicroUSDPerK','outputMicroUSDPerK','maxInputTokens','maxOutputTokens']);
   if(c.schemaVersion!==1||c.sourceEnabled!==false||typeof(c.enabled??false)!=='boolean'||
@@ -59,17 +46,14 @@ export function validateProductOwnerConfiguration(raw){
      t.origin!==`https://${t.serverName}:8444`||![t.caFile,t.certFile,t.keyFile].every(file)||
      ![t.certSha256,t.issuerSha256,p.clientCertSha256,p.issuerSha256,s.ownerCertSha256,s.proxyCertSha256].every(digest)||
      t.certSha256===p.clientCertSha256||t.issuerSha256!==p.issuerSha256||
-     !slot(p.clientSubject)||!slot(p.deploymentRevision)||!uuid(p.selectedClientId)||s.schemaVersion!==1||
+     !slot(p.clientSubject)||!slot(p.deploymentRevision)||!uuid(p.selectedClientId)||
      s.deploymentRevision!==p.deploymentRevision||s.ownerCertSha256!==t.certSha256||s.proxyCertSha256!==p.clientCertSha256||
      !integer(s.expiresAtMs,Number.MAX_SAFE_INTEGER)||!integer(l.maxRequestMs,3000)||!integer(l.maxFactBytes,131072)||!integer(l.maxLeaseMs,30000)||
      price.modelId!=='anthropic.claude-sonnet-4-6'||price.profileId!=='us.anthropic.claude-sonnet-4-6'||!digest(price.revision)||
      !integer(price.validUntilMs,Number.MAX_SAFE_INTEGER)||
      ![price.actualInputMicroUSDPerK,price.reserveInputMicroUSDPerK,price.outputMicroUSDPerK].every(n=>integer(n,1_000_000_000))||
      price.actualInputMicroUSDPerK>price.reserveInputMicroUSDPerK||!integer(price.maxInputTokens,8192)||!integer(price.maxOutputTokens,256))fail();
-  const owner=servicePin(s.owner),proxy=servicePin(s.proxy);
-  if(owner.taskArn!==p.ownerTaskArn||proxy.taskArn!==p.proxyTaskArn||owner.taskArn===proxy.taskArn||owner.serviceName===proxy.serviceName||
-     owner.clusterArn!==proxy.clusterArn||owner.vpcId!==proxy.vpcId||owner.createdAtMs>=s.expiresAtMs||proxy.createdAtMs>=s.expiresAtMs)fail();
-  return data({...c,enabled:c.enabled??false});
+  return data({...c,serviceTasks:s,enabled:c.enabled??false});
  }catch{fail();}
 }
 
@@ -153,9 +137,13 @@ export async function startProductOwner(raw,dependencies={}){
    now,limits,fetchImpl,enabled:true},{readMaterial});
   const taskLeaseReader=await life.run(()=>createProductServiceTaskLeaseReader({ecsClient:clients.ecsClient,ec2Client:clients.ec2Client,
    configuration:c.serviceTasks,now,limits:{maxRequestMs:c.limits.maxRequestMs,maxLeaseMs:c.limits.maxLeaseMs},enabled:true}));
+  // Raw configuration has no task ARN/IP. Only this fresh canonical pair may
+  // compile the existing internal channel policy. Later drift retires reader.
+  const pair=await life.run(signal=>taskLeaseReader.read({deadlineMs:at+c.limits.maxRequestMs,signal}));
+  const clientPolicy=data({...c.clientPolicy,ownerTaskArn:pair.ownerTaskArn,proxyTaskArn:pair.proxyTaskArn});
   const ca=await material(c.tls.caFile),cert=await material(c.tls.certFile),key=await material(c.tls.keyFile);
   server=createServer({enabled:true,tlsMaterial:{origin:c.tls.origin,serverName:c.tls.serverName,ca,cert,key,
-   certSha256:c.tls.certSha256,issuerSha256:c.tls.issuerSha256},clientPolicy:c.clientPolicy,persistedFacts,
+   certSha256:c.tls.certSha256,issuerSha256:c.tls.issuerSha256},clientPolicy,persistedFacts,
    ownerPorts:{pool,pricing:c.pricing,limits,checkCurrentConversation:nativeCurrentness.checkCurrentConversation},placement,taskLeaseReader,
    serviceGate,now,maxRequestMs:c.limits.maxRequestMs,nativeCurrentness});
   life.check();if(server?.available!==true||typeof server.listen!=='function'||typeof server.close!=='function')fail();

@@ -25,7 +25,7 @@ export function parseStaticProductMaterialExpected(raw){
   parseProductRuntimeUser(e.runtimeUser);
   if(e.schemaVersion!==1||!Object.hasOwn(configurationNames,e.role)||!/^[a-f0-9]{40}$/u.test(e.sourceCommit)||!/^sha256:[a-f0-9]{64}$/u.test(e.imageDigest)||!hex64.test(e.materialContractSha256))fail('EXPECTED_REFUSED');
   const paths=Object.keys(own(e.sha256ByPath,Object.keys(e.sha256ByPath)));
-  if(paths.length<1||paths.length>16||!paths.includes(`${root}/${configurationNames[e.role]}`)||paths.some(path=>posix.dirname(path)!==root||path.includes('\\')||path.includes('//')||!hex64.test(e.sha256ByPath[path])))fail('EXPECTED_REFUSED');
+  if(paths.length<1||paths.length>20||!paths.includes(`${root}/${configurationNames[e.role]}`)||paths.some(path=>posix.dirname(path)!==root||path.includes('\\')||path.includes('//')||!hex64.test(e.sha256ByPath[path])))fail('EXPECTED_REFUSED');
   const {materialContractSha256,...contract}=e;
   if(canonicalSha256(contract)!==materialContractSha256)fail('EXPECTED_REFUSED');
   return e;
@@ -37,7 +37,7 @@ function prepared(expected,bundle){
  try{
   const e=parseStaticProductMaterialExpected(expected),raw=own(bundle,['files']);
   // Bound the closed JSON before retaining its snapshot; one Secrets Manager SecretString is at most 65,536 bytes.
-  if(!Array.isArray(raw.files)||raw.files.length>16)fail('BUNDLE_REFUSED');
+  if(!Array.isArray(raw.files)||raw.files.length>20)fail('BUNDLE_REFUSED');
   const b=data(raw);if(Buffer.byteLength(JSON.stringify(b),'utf8')>65536)fail('BUNDLE_REFUSED');
   const paths=Object.keys(e.sha256ByPath),files=new Map();
   if(b.files.length!==paths.length)fail('INVENTORY_REFUSED');

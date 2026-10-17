@@ -9,7 +9,8 @@ import {createActionSessionOwner} from '../control/action-host/session/owner.mjs
 import {createActionSessionApplication} from '../control/action-host/session/http.mjs';
 import {createNativeCapabilityClient} from './native-client.mjs';
 import {readSecret,fault,compileControlTaskRouterConfiguration} from './config.mjs';
-import {createTemporalAuthorization,createTemporalTokenFileReader} from './temporal-authorization.mjs';
+import {startRuntimeTemporalAuthorization as temporalAuthorization,readRuntimeTemporalTls as temporalTls} from './temporal-product-runtime.mjs';
+import {createTemporalRuntimeFence,assertTemporalRuntimeCleanup,temporalCleanupUnknown} from './temporal-runtime-fence.mjs';
 import {listenRuntime} from './http-server.mjs';
 import {createControlRouteApplications,listenControlApplications} from './control-route-boundary.mjs';
 import {createWorkerRunApplication} from './worker-http.mjs';
@@ -49,8 +50,7 @@ function productBinding(options){
  return factory===undefined?{ports:captureRuntimePorts(c.productPorts)}:{factory};
 }
 /** Optional trusted-client authorization (S4): one token provider for the client (apiKey callback) and the worker (setApiKey). */
-export async function temporalAuthorization(configuration,{signal}={}){if(configuration.temporal.authorization===undefined)return null;const c=configuration.temporal.authorization,authorization=createTemporalAuthorization({configuration:c,reader:createTemporalTokenFileReader({tokenFile:c.tokenFile})});await authorization.refresh({signal});return authorization;}
-export async function temporalTls(config){const [serverRootCACertificate,crt,key]=await Promise.all([readSecret(config.caFile),readSecret(config.certFile),readSecret(config.keyFile)]);return {serverRootCACertificate,clientCertPair:{crt,key}};}
+export {temporalAuthorization,temporalTls};
 /** Retention serving over the control database (migrations conversations 0010 and artifacts 0002, plus the proposed recovered-watermark
  * table), composed only when the configuration declares it: the retention startup owner with its serving fence closed until a
  * reconciliation over the authoritative ledger (the trusted `retentionLedgerSink` port) records a watermark that reads back. Purge
@@ -100,26 +100,33 @@ export function multiRunOwners(configuration,pool){
 }
 export async function startControl(configuration,options={}){
  // Validate compiled bindings before secret reads, connections or owned allocation.
- const {signal,createReadsRuntime,generalReads,...binding}=own(options,[],['signal','productPorts','productPortsFactory','createReadsRuntime','generalReads']);nativeSignal(signal);const compiled=productBinding(binding),reads=captureReadRuntimeOptions({...(createReadsRuntime===undefined?{}:{createReadsRuntime}),...(generalReads===undefined?{}:{generalReads})});
+ const {signal:externalSignal,createReadsRuntime,generalReads,testOwners={},...binding}=own(options,[],['signal','productPorts','productPortsFactory','createReadsRuntime','generalReads','testOwners']);nativeSignal(externalSignal);const fence=createTemporalRuntimeFence(),signal=externalSignal?AbortSignal.any([externalSignal,fence.signal]):fence.signal;const owners=own(testOwners,[],['authorization','readMaterial','tls','createPool','connect','createClient','startCandidate','assemble','listen']);for(const value of Object.values(owners))if(typeof value!=='function')throw fault('CONTROL_CONFIGURATION');const compiled=productBinding(binding),reads=captureReadRuntimeOptions({...(createReadsRuntime===undefined?{}:{createReadsRuntime}),...(generalReads===undefined?{}:{generalReads})});
  if(configuration.nativeCandidate===undefined&&Object.keys(reads).length)throw fault('PREPARED_CANDIDATE_CONFIGURATION');
  if(configuration.nativeCandidate!==undefined){compilePreparedCandidateConfiguration(configuration.nativeCandidate,configuration.versions);if(configuration.native.capabilityFile!==configuration.nativeCandidate.controlCapabilityFile)throw fault('PREPARED_CANDIDATE_CONFIGURATION');}
  const routerPlan=compileControlTaskRouterConfiguration(configuration);
  const mounted=compiled.factory?{productPortsFactory:compiled.factory}:{productPorts:compiled.ports};
- let pool,connection,listener,privateListener,assembly,candidate,router,poststartAuthority,poststartApplication,routerClients,closing,authorization,telemetry;const close=()=>closing??=(async()=>{const errors=[];for(const method of [()=>listener?.close(),()=>privateListener?.close(),()=>poststartAuthority?.close(),()=>router?.close(),()=>candidate?.close(),()=>assembly?.close(),()=>connection?.close(),()=>authorization?.close(),()=>pool?.end(),()=>telemetry?.close(),()=>routerClients?.forEach(client=>client.destroy())])try{await method();}catch(error){errors.push(error);}if(errors.length)throw new AggregateError(errors,'CONTROL_CLEANUP_UNKNOWN');})();
+ const onExternalAbort=()=>fence.lose(externalSignal.reason);externalSignal?.addEventListener('abort',onExternalAbort,{once:true});if(externalSignal?.aborted)onExternalAbort();
+ let pool,connection,listener,privateListener,assembly,candidate,router,poststartAuthority,poststartApplication,routerClients,closing,authorization,telemetry,unwatchAuthorization,authorizationLost=false,rejectAuthorization;
+ const authorizationCompletion=new Promise((_,reject)=>{rejectAuthorization=reject;});authorizationCompletion.catch(()=>{});
+ const onAuthorizationUnavailable=reason=>{fence.lose(reason);if(!authorizationLost){authorizationLost=true;rejectAuthorization(fault('TEMPORAL_AUTHORIZATION_UNAVAILABLE'));}};
+ const checkAuthorization=()=>{fence.check();signal.throwIfAborted();};
+ const close=()=>closing??=(async()=>{fence.lose('RUNTIME_STOPPING');externalSignal?.removeEventListener('abort',onExternalAbort);const results=[];unwatchAuthorization?.();for(const method of [()=>listener?.close(),()=>privateListener?.close(),()=>poststartAuthority?.close(),()=>router?.close(),()=>candidate?.close(),()=>assembly?.close(),()=>connection?.close(),()=>authorization?.close(),()=>pool?.end(),()=>telemetry?.close(),()=>routerClients?.forEach(client=>client.destroy())])try{results.push({status:'fulfilled',value:await method()});}catch(reason){results.push({status:'rejected',reason});}assertTemporalRuntimeCleanup(results);})();
  try{
   signal?.throwIfAborted();
   // Declared telemetry starts first and closes last so every request span is flushed; the SDK is loaded only when enabled.
   if(configuration.telemetry?.enabled===true){const {startControlTelemetry}=await import('./telemetry/index.mjs');telemetry=startControlTelemetry({configuration});}
   signal?.throwIfAborted();
-  const [connectionBytes,capabilityBytes,tls]=await Promise.all([readSecret(configuration.database.connectionFile),readSecret(configuration.native.capabilityFile),temporalTls(configuration.temporal.tls)]);authorization=await temporalAuthorization(configuration,{signal});
+  authorization=await (owners.authorization??temporalAuthorization)(configuration,{signal,onUnavailable:onAuthorizationUnavailable});
+  if(authorization)unwatchAuthorization=authorization.watch(onAuthorizationUnavailable);checkAuthorization();
+  const [connectionBytes,capabilityBytes,tls]=await Promise.all([(owners.readMaterial??readSecret)(configuration.database.connectionFile),(owners.readMaterial??readSecret)(configuration.native.capabilityFile),(owners.tls??temporalTls)(configuration.temporal.tls)]);checkAuthorization();
   signal?.throwIfAborted();
   const connectionString=connectionBytes.toString('utf8').trim();let u;try{u=new URL(connectionString);}catch{throw fault('DATABASE_CONFIGURATION');}
   // URL.get() selects the first duplicate; pg's adopted parser selects the
   // last. Accept one closed TLS parameter before either client is allocated.
   if(!['postgres:','postgresql:'].includes(u.protocol)||u.hash||u.searchParams.getAll('sslmode').length!==1||u.searchParams.get('sslmode')!=='verify-full'||[...u.searchParams.keys()].some(key=>key!=='sslmode'))throw fault('DATABASE_CONFIGURATION');
-  pool=new Pool({connectionString,max:10,connectionTimeoutMillis:configuration.limits.requestMs,idleTimeoutMillis:10000,query_timeout:configuration.limits.requestMs});
-  connection=await Connection.connect({address:configuration.temporal.address,tls,connectTimeout:configuration.limits.startupMs,...(authorization?{apiKey:()=>authorization.apiKey()}:{})});signal?.throwIfAborted();const client=new Client({connection,namespace:configuration.temporal.namespace});
-  let native=createNativeCapabilityClient({configuration:configuration.native,credential:capabilityBytes.toString('utf8').trim()});signal?.throwIfAborted();if(configuration.nativeCandidate!==undefined){const {startPreparedCandidate}=await import('./prepared-candidate.mjs');candidate=await startPreparedCandidate({configuration,pool,signal,...multiRunOwners(configuration,pool),...reads});if(candidate.controlCapabilitySha256!==capabilityDigest(capabilityBytes.toString('utf8').trim()))throw fault('PREPARED_CANDIDATE_CONFIGURATION');native=candidate.native;}assembly=assembleControl({configuration,pool,client,native,...(telemetry?{telemetry}:{}),...mounted,...(candidate?{canonicalProductPorts:candidate.productPorts}:{})});candidate?.bindApplication(assembly.application);
+  pool=(owners.createPool??(options=>new Pool(options)))({connectionString,max:10,connectionTimeoutMillis:configuration.limits.requestMs,idleTimeoutMillis:10000,query_timeout:configuration.limits.requestMs});
+  connection=await (owners.connect??(options=>Connection.connect(options)))({address:configuration.temporal.address,tls,connectTimeout:configuration.limits.startupMs,...(authorization?{apiKey:()=>authorization.apiKey()}:{})});checkAuthorization();signal?.throwIfAborted();const client=(owners.createClient??(options=>new Client(options)))({connection,namespace:configuration.temporal.namespace});
+  let native=createNativeCapabilityClient({configuration:configuration.native,credential:capabilityBytes.toString('utf8').trim()});signal?.throwIfAborted();if(configuration.nativeCandidate!==undefined){const {startPreparedCandidate}=await import('./prepared-candidate.mjs');candidate=await (owners.startCandidate??startPreparedCandidate)({configuration,pool,signal,...multiRunOwners(configuration,pool),...reads});if(candidate.controlCapabilitySha256!==capabilityDigest(capabilityBytes.toString('utf8').trim()))throw fault('PREPARED_CANDIDATE_CONFIGURATION');native=candidate.native;}const unfencedNative=native;native=Object.freeze({...native,async call(operation,input,{signal:requestSignal}={}){if(operation==='execution/kickoff/stop')return unfencedNative.call(operation,input,{signal:requestSignal});fence.check();const joined=requestSignal?AbortSignal.any([requestSignal,fence.signal]):fence.signal;return unfencedNative.call(operation,input,{signal:joined});}});checkAuthorization();assembly=(owners.assemble??assembleControl)({configuration,pool,client,native,...(telemetry?{telemetry}:{}),...mounted,...(candidate?{canonicalProductPorts:candidate.productPorts}:{})});candidate?.bindApplication(fence.wrap(assembly.application));
   // The opt-in router is assembled from this control's durable candidate owners and a fresh AWS task/ENI readback.
   // The ingress marker is never derived from a request header or exposed by the public listener.
   let privateIngress=null;
@@ -144,16 +151,16 @@ export async function startControl(configuration,options={}){
    }
   }
   // The download-link gate opens only after its owners verify; a closed gate leaves every other route as composed.
-  const downloads=await assembly.downloads.open({signal});signal?.throwIfAborted();
+  checkAuthorization();const downloads=await assembly.downloads.open({signal});checkAuthorization();
   const mountedApplication=candidate?{async handle(request){return (await candidate.application.handle(request))??assembly.application.handle(request);}}:assembly.application;
   const separated=configuration.privateHttp===undefined?null:createControlRouteApplications({assembly:assembly.application,candidate:candidate?.application,...(router?{router,privateIngress}:{}),...(poststartApplication?{poststart:poststartApplication}:{})});
-  const publicApplication=separated?.public??mountedApplication,application=telemetry?telemetry.instrumentApplication(publicApplication):publicApplication;
-  const privateApplication=separated===null?null:telemetry?telemetry.instrumentApplication(separated.private):separated.private;
-  async function readiness({signal}){signal?.throwIfAborted();if(authorization&&!authorization.healthy())throw fault('TEMPORAL_AUTHORIZATION_UNAVAILABLE');await pool.query("SELECT to_regclass('meri_conversations.runs') AS runs, to_regclass('meri_conversations.events') AS events, to_regclass('meri_conversations.controls') AS controls, to_regclass('meri_conversations.selected_outputs') AS selected_outputs, to_regclass('meri_conversations.initial_inputs') AS initial_inputs").then(result=>{if(!result.rows[0]||typeof result.rows[0].initial_inputs!=='string'||Object.values(result.rows[0]).some(v=>v===null))throw fault('DATABASE_SCHEMA_UNAVAILABLE');});
+  const publicApplication=fence.wrap(separated?.public??mountedApplication),application=telemetry?telemetry.instrumentApplication(publicApplication):publicApplication;
+  const privateApplication=separated===null?null:telemetry?telemetry.instrumentApplication(fence.wrap(separated.private)):fence.wrap(separated.private);
+  async function readiness({signal}){fence.check();signal?.throwIfAborted();if(authorization&&!authorization.healthy())throw fault('TEMPORAL_AUTHORIZATION_UNAVAILABLE');await pool.query("SELECT to_regclass('meri_conversations.runs') AS runs, to_regclass('meri_conversations.events') AS events, to_regclass('meri_conversations.controls') AS controls, to_regclass('meri_conversations.selected_outputs') AS selected_outputs, to_regclass('meri_conversations.initial_inputs') AS initial_inputs").then(result=>{if(!result.rows[0]||typeof result.rows[0].initial_inputs!=='string'||Object.values(result.rows[0]).some(v=>v===null))throw fault('DATABASE_SCHEMA_UNAVAILABLE');});
    // Declared retention serving needs its projections present and a recovered watermark: a fenced or stale projection is reconciled from
    // the ledger here before serving, and a missing dependency is exposed, never bypassed.
    if(assembly.retention){const r=await pool.query('SELECT name,to_regclass(name) AS relation FROM unnest($1::text[]) AS names(name)',[assembly.retention.tables]);if(r.rows.length!==assembly.retention.tables.length||r.rows.some(row=>row.relation===null))throw fault('RETENTION_SCHEMA_UNAVAILABLE');await assembly.retention.startup.ensureServing();}await connection.withDeadline(Date.now()+configuration.limits.requestMs,()=>signal?connection.withAbortSignal(signal,()=>connection.workflowService.getSystemInfo({})):connection.workflowService.getSystemInfo({}));await native.readiness({signal});signal?.throwIfAborted();return {product:assembly.productReadiness()};}
-  await readiness({signal});({publicListener:listener,privateListener}=await listenControlApplications({configuration,publicApplication:application,privateApplication,readiness,signal:candidate?undefined:signal,listen:listenRuntime}));
-  return Object.freeze({address:listener.address,...(privateListener?{privateAddress:privateListener.address}:{}),downloads,close});
- }catch(error){await close().catch(()=>{});throw Object.assign(fault('CONTROL_STARTUP_FAILED'),{cause:error});}
+  await readiness({signal});({publicListener:listener,privateListener}=await listenControlApplications({configuration,publicApplication:application,privateApplication,readiness,signal:candidate?undefined:externalSignal,listen:owners.listen??listenRuntime,checkStartup:checkAuthorization}));
+  checkAuthorization();return Object.freeze({address:listener.address,...(privateListener?{privateAddress:privateListener.address}:{}),downloads,close,completion:authorizationCompletion});
+ }catch(error){try{await close();}catch(cleanup){throw temporalCleanupUnknown(new AggregateError([error,cleanup],'CONTROL_STARTUP_AND_CLEANUP_FAILED'));}if(error?.code==='TEMPORAL_PRODUCT_CLEANUP_UNKNOWN')throw error;throw Object.assign(fault('CONTROL_STARTUP_FAILED'),{cause:error});}
 }

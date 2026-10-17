@@ -1,3 +1,4 @@
+import {assertTemporalRuntimeCleanup,temporalCleanupUnknown} from './temporal-runtime-fence.mjs';
 /** Product control has distinct public and protected listener applications.
  * Listener placement supplies trust; request headers never select a listener. */
 const absent=()=>Response.json({error:{code:'ROUTE_NOT_FOUND'}},{status:404,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
@@ -21,16 +22,18 @@ export function createControlRouteApplications({assembly,candidate,router=null,p
 }
 
 /** Do not expose public first-chat routes until their private native route is listening. */
-export async function listenControlApplications({configuration,publicApplication,privateApplication,readiness,signal,listen}){
- if(typeof listen!=='function'||typeof publicApplication?.handle!=='function'||privateApplication!==null&&typeof privateApplication?.handle!=='function')throw Error('PRIVATE_CONTROL_CONFIGURATION');
+export async function listenControlApplications({configuration,publicApplication,privateApplication,readiness,signal,listen,checkStartup=()=>{}}){
+ if(typeof checkStartup!=='function'||typeof listen!=='function'||typeof publicApplication?.handle!=='function'||privateApplication!==null&&typeof privateApplication?.handle!=='function')throw Error('PRIVATE_CONTROL_CONFIGURATION');
  let publicListener,privateListener;
  try{
-  if(privateApplication!==null)privateListener=await listen({configuration:{...configuration,http:configuration.privateHttp},application:privateApplication,readiness,...(signal?{signal}:{})});
-  publicListener=await listen({configuration,application:publicApplication,readiness,...(signal?{signal}:{})});
+  checkStartup();
+  if(privateApplication!==null){privateListener=await listen({configuration:{...configuration,http:configuration.privateHttp},application:privateApplication,readiness,...(signal?{signal}:{})});checkStartup();}
+  publicListener=await listen({configuration,application:publicApplication,readiness,...(signal?{signal}:{})});checkStartup();
   return {publicListener,privateListener};
  }catch(error){
   // A failed public bind must retire the already-open private listener before startup returns.
-  await Promise.allSettled([publicListener?.close(),privateListener?.close()]);
+  const results=await Promise.allSettled([publicListener?.close(),privateListener?.close()]);
+  try{assertTemporalRuntimeCleanup(results);}catch(cleanup){throw temporalCleanupUnknown(new AggregateError([error,cleanup],'CONTROL_BIND_AND_CLEANUP_FAILED'));}
   throw error;
  }
 }

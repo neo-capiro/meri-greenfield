@@ -62,6 +62,31 @@ test('fail closed: the reader is bounded and aborted, a read that resolves after
  assert.deepEqual(calls,[['a','synthetic-token-1'],['b','synthetic-token-1'],['a','synthetic-token-2'],['b','synthetic-token-2']]);
  await rotating.refresh();assert.match(rotating.apiKey(),/^synthetic-token-3-/);assert.deepEqual(calls.slice(-2),[['a','synthetic-token-3'],['b','synthetic-token-3']],'every connection carries the latest token');await rotating.close();
 });
+test('optional complete refresh bound covers automatic serial rotation, quarantines unknown native work and discards late replies',async()=>{
+ const c=clock(),timers=fakeTimers();let reads=0,release;const held=new Promise(resolve=>{release=resolve;});
+ const reader={async read(){reads++;return {token:'synthetic-bound-token-'+reads+'x'.repeat(32),expiresAtMs:c.now()+20000,claims};}};
+ assert.throws(()=>createTemporalAuthorization({configuration:config,reader,refreshTimeoutMs:config.refreshMs+1}),/TEMPORAL_AUTHORIZATION_CONFIGURATION/u);
+ const auth=createTemporalAuthorization({configuration:config,reader,now:c.now,timers,refreshTimeoutMs:1000});
+ const events=[],calls=[];auth.watch(code=>events.push({code,healthy:auth.healthy()}));await auth.refresh();
+ auth.attach({async setApiKey(token){calls.push(['first',token]);await held;}});auth.attach({async setApiKey(token){calls.push(['second',token]);}});
+ c.advance(5000);timers.fire(h=>h.ms===5000);await new Promise(resolve=>setImmediate(resolve));assert.equal(calls.length,1);
+ c.advance(1000);timers.fire(h=>h.ms===1000);await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(auth.healthy(),false);assert.equal(auth.current(),null);assert.equal(auth.failure(),'TEMPORAL_AUTHORIZATION_IO_UNKNOWN');
+ assert.deepEqual(events,[{code:'TEMPORAL_AUTHORIZATION_IO_UNKNOWN',healthy:false}]);assert.deepEqual(timers.scheduled,[],'unknown native work has no retry');
+ await assert.rejects(auth.refresh(),/TEMPORAL_AUTHORIZATION_IO_UNKNOWN/u);assert.equal(reads,2);
+ release();await new Promise(resolve=>setImmediate(resolve));assert.equal(calls.length,1);assert.equal(auth.current(),null);await auth.close();
+});
+
+test('optional complete refresh bound preserves the shorter read timeout and tracks an abort-ignoring reader',async()=>{
+ const c=clock(),timers=fakeTimers();let calls=0,release;const held=new Promise(resolve=>{release=resolve;});
+ const auth=createTemporalAuthorization({configuration:config,reader:{async read(){calls++;await held;return {token:'x'.repeat(32),expiresAtMs:c.now()+20000,claims};}},now:c.now,timers,readTimeoutMs:10,refreshTimeoutMs:1000});
+ const pending=auth.refresh(),denied=assert.rejects(pending,/TEMPORAL_AUTHORIZATION_TIMEOUT/u);await new Promise(resolve=>setImmediate(resolve));
+ c.advance(10);timers.fire(h=>h.ms===10);await denied;
+ assert.equal(auth.failure(),'TEMPORAL_AUTHORIZATION_IO_UNKNOWN');assert.equal(auth.healthy(),false);assert.deepEqual(timers.scheduled,[]);
+ await assert.rejects(auth.refresh(),/TEMPORAL_AUTHORIZATION_IO_UNKNOWN/u);assert.equal(calls,1);
+ release();await new Promise(resolve=>setImmediate(resolve));assert.equal(auth.current(),null);await auth.close();
+});
+
 test('worker readiness and stop: readiness fails on unhealthy authorization before inspecting the poller; a fail-closed transition shuts the running worker down; the configuration requires the authorization namespace to equal the Temporal namespace',async()=>{
  const {createWorkerReadiness,stopWorkerOnAuthorizationFailure}=await import('../temporal-worker.mjs');const {validateConfiguration}=await import('../config.mjs');const {versions}=await import('../../control/conversations/test/application-fixture.mjs');
  const c=clock(),timers=fakeTimers();let failing=false;const reader={async read(){if(failing)throw Error('issuer down');return {token:'z'.repeat(32),expiresAtMs:c.now()+20000,claims};}};

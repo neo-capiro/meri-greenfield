@@ -48,8 +48,8 @@ RUN addgroup -g 1000 node && adduser -D -u 1000 -G node -h /home/node node
 ENV HOME=/home/node
 # ECS copies this exact image path into the task-local bind mount. The one-shot
 # material writer and application both run as the pinned non-root node UID/GID.
-RUN test "$(id -u node)" = 1000 && test "$(id -g node)" = 1000 && mkdir -p /run/meri && chown node:node /run/meri && chmod 0700 /run/meri
+RUN test "$(id -u node)" = 1000 && test "$(id -g node)" = 1000 && mkdir -p /run/meri /run/meri-temporal && chown node:node /run/meri /run/meri-temporal && chmod 0700 /run/meri /run/meri-temporal
 USER node
-VOLUME ["/run/meri"]
+VOLUME ["/run/meri", "/run/meri-temporal"]
 ENTRYPOINT ["node", "apps/runtime/cli.mjs"]
 CMD ["--help"]

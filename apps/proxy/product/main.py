@@ -162,7 +162,7 @@ def _clients(resources):
         use_fips_endpoint=False, use_dualstack_endpoint=False,
         ignore_configured_endpoint_urls=True)
     clients = []
-    for service, methods in (("ecs", ("describe_tasks",)),
+    for service, methods in (("ecs", ("describe_tasks", "describe_services", "list_tasks", "describe_task_definition")),
                              ("ec2", ("describe_network_interfaces",)),
                              ("bedrock-runtime", ("count_tokens",))):
         client = session.create_client(service, region_name="us-east-1", config=config, verify=True)
@@ -232,7 +232,7 @@ def _provider_factory(resources):
     return make
 
 
-def _tls(value):
+def _tls(value, policy):
     from .owner_https import load_owner_client_tls_material
     for section in ("serverTls", "ownerTls"):
         for key, ref in value[section].items():
@@ -248,7 +248,8 @@ def _tls(value):
     context.options |= ssl.OP_NO_TICKET
     context.set_alpn_protocols(["http/1.1"])
     context.load_cert_chain(server["certificateFile"]["path"], server["privateKeyFile"]["path"])
-    policy = OwnerPeerPolicy(**value["ownerPeer"])
+    if type(policy) is not OwnerPeerPolicy:
+        _deny()
     owner = value["ownerTls"]
     material = load_owner_client_tls_material(policy=policy, ca_file=owner["caFile"]["path"],
         certificate_file=owner["certificateFile"]["path"], private_key_file=owner["privateKeyFile"]["path"])
@@ -276,7 +277,6 @@ async def run_product_proxy(configuration):
     operation = None
     compatibility = None
     try:
-        context, policy, material = _tls(value)
         # Both native boto3 signing and the explicit read/count clients see
         # only the task-container credential chain, never a host profile.
         os.environ["AWS_SHARED_CREDENTIALS_FILE"] = os.devnull
@@ -285,10 +285,18 @@ async def run_product_proxy(configuration):
         os.environ["AWS_REGION"] = os.environ["AWS_DEFAULT_REGION"] = "us-east-1"
         compatibility = _native_bootstrap(resources)
         ecs, ec2, count = await _bounded_native(lambda: asyncio.to_thread(_clients, resources), resources)
+        from .service_pair_discovery import ProductServicePairDiscovery, compile_owner_peer
+        service_pair = ProductServicePairDiscovery(configuration=value["serviceTasks"], ecs_client=ecs, ec2_client=ec2, enabled=True)
+        resources.transports.append(service_pair)
+        pair = await _bounded_native(lambda: asyncio.to_thread(service_pair.read,
+            deadline_ms=min(value["expiresAtMs"], time.time_ns()//1000000+3000)), resources, 3)
+        policy = compile_owner_peer(value["ownerPeer"], pair)
+        context, policy, material = _tls(value, policy)
         from .uvicorn_tls_protocol import serve_product_proxy_with_owner
         operation = asyncio.create_task(serve_product_proxy_with_owner(
             enabled=True, server_tls_context=context, owner_policy=policy, owner_tls_material=material,
-            owner_ipv4=value["ownerIpv4"], proxy_ipv4=value["proxyIpv4"],
+            owner_ipv4=pair["owner"]["privateIpv4Address"], proxy_ipv4=pair["proxy"]["privateIpv4Address"],
+            service_pair_reader=service_pair,
             deployment_expires_at_ms=value["expiresAtMs"], deployment_revision=value["deploymentRevision"],
             ecs_client=ecs, ec2_client=ec2, count_client=count,
             make_provider_transport=_provider_factory(resources), pricing_revision=value["pricingRevision"]))

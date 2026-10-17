@@ -1,7 +1,6 @@
 """Closed startup data and read-only reviewed-file custody; no native imports."""
 from dataclasses import dataclass
 import hashlib
-import ipaddress
 import json
 import os
 from pathlib import Path, PurePosixPath
@@ -9,7 +8,7 @@ import re
 import stat
 import time
 from ..qualification.state.pricing import PRICING_REVISION, StateDenied
-from .owner_channel import OwnerPeerPolicy
+from .service_pair_discovery import parse_service_pair_configuration, parse_owner_peer_template
 
 _SHA = re.compile(r"[0-9a-f]{64}\Z")
 
@@ -57,7 +56,7 @@ def parse_product_proxy_startup(raw, expected_sha256, *, now_ms=None):
                            parse_constant=lambda _value: _deny())
         _closed(value, ("schemaVersion", "enabled", "deploymentRevision", "expiresAtMs",
                         "pricingRevision", "serverTls", "ownerPeer", "ownerTls",
-                        "ownerIpv4", "proxyIpv4"))
+                        "serviceTasks"))
         at = (now_ms or (lambda: time.time_ns()//1000000))()
         if (type(value["schemaVersion"]) is not int or value["schemaVersion"] != 1
                 or value["enabled"] is not True
@@ -79,19 +78,10 @@ def parse_product_proxy_startup(raw, expected_sha256, *, now_ms=None):
                             or ".." in PurePosixPath(path).parts or "\x00" in path
                             or str(PurePosixPath(path)) != path):
                         _deny()
-        fields = set(OwnerPeerPolicy.__dataclass_fields__)
-        _closed(value["ownerPeer"], fields)
-        policy = OwnerPeerPolicy(**value["ownerPeer"])
-        if policy.max_exchange_ms > 3000:
-            _deny()
-        addresses = []
-        for key in ("ownerIpv4", "proxyIpv4"):
-            addr = ipaddress.IPv4Address(value[key])
-            if str(addr) != value[key] or not any(addr in ipaddress.IPv4Network(network)
-                    for network in ("10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16")):
-                _deny()
-            addresses.append(addr)
-        if addresses[0] == addresses[1]:
+        peer = parse_owner_peer_template(value["ownerPeer"])
+        pair = parse_service_pair_configuration(value["serviceTasks"])
+        if (pair["deploymentRevision"] != value["deploymentRevision"] or pair["expiresAtMs"] != value["expiresAtMs"]
+                or pair["ownerCertSha256"] != peer["server_cert_sha256"] or pair["proxyCertSha256"] != peer["client_cert_sha256"]):
             _deny()
     except StateDenied:
         raise

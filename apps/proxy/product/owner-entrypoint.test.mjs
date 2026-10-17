@@ -9,6 +9,7 @@ import {compileNativeTaskRequest} from '../../runtime/native-authority/task-requ
 import {compilePreparedRunConfigurationSha256} from '../../runtime/prepared-run-configuration.mjs';
 import {createProductOwnerAdmissionChannel} from './owner-channel.mjs';
 import {validateProductOwnerConfiguration,startProductOwner,runProductOwnerMain} from './owner-entrypoint.mjs';
+import {servicePairFixture} from './test/service-pair-fixture.mjs';
 
 const sha=v=>createHash('sha256').update(v).digest('hex'),id=n=>'11111111-1111-4111-8111-'+String(n).padStart(12,'0');
 const refused={message:'PRODUCT_OWNER_STARTUP_UNAVAILABLE'},prefix='arn:aws:ecs:us-east-1:967807252336:';
@@ -60,12 +61,12 @@ function fixture(){
   assert.fail('Unexpected owner startup scripted SQL: '+sql);
  }
  const pool={async connect(){return {query,release(){}};},async end(){lifecycle.push('pool.end');}};
- const makePin=(role,digit)=>({clusterArn:prefix+'cluster/capiro-dev',taskArn:prefix+'task/capiro-dev/'+digit.repeat(32),taskDefinitionArn:prefix+'task-definition/meri-'+role+':4',serviceName:'meri-'+role,containerName:role,imageDigest:'sha256:'+digit.repeat(64),createdAtMs:NOW-10000,vpcId:'vpc-12345678',subnetId:'subnet-12345678',securityGroupIds:['sg-'+digit.repeat(8)]});
- const nativeBytes=Buffer.from('synthetic-existing-native-session\n'),controlBytes=Buffer.from(JSON.stringify(configuration)),owner=makePin('owner','1'),proxy=makePin('proxy','2');
+ const pair=servicePairFixture({now:NOW});
+ const nativeBytes=Buffer.from('synthetic-existing-native-session\n'),controlBytes=Buffer.from(JSON.stringify(configuration));
  const runtime={schemaVersion:1,sourceEnabled:false,enabled:true,controlConfigurationFile:resolve('synthetic-control.json'),controlConfigurationSha256:sha(controlBytes),nativeCredentialFileSha256:sha(nativeBytes),
   tls:{origin:'https://owner.synthetic.invalid:8444',serverName:'owner.synthetic.invalid',caFile:resolve('synthetic-root.pem'),certFile:resolve('synthetic-owner.pem'),keyFile:resolve('synthetic-owner-key.pem'),certSha256:'a'.repeat(64),issuerSha256:'b'.repeat(64)},
-  clientPolicy:{clientCertSha256:'c'.repeat(64),clientSubject:'proxy-task-v1',deploymentRevision:'preview-v1',issuerSha256:'b'.repeat(64),selectedClientId:clientId,ownerTaskArn:owner.taskArn,proxyTaskArn:proxy.taskArn},
-  serviceTasks:{schemaVersion:1,deploymentRevision:'preview-v1',expiresAtMs:NOW+60000,ownerCertSha256:'a'.repeat(64),proxyCertSha256:'c'.repeat(64),owner,proxy},
+  clientPolicy:{clientCertSha256:'c'.repeat(64),clientSubject:'proxy-task-v1',deploymentRevision:'preview-v1',issuerSha256:'b'.repeat(64),selectedClientId:clientId},
+  serviceTasks:{...pair.pins,deploymentRevision:'preview-v1',proxyCertSha256:'c'.repeat(64)},
   pricing:{modelId:'anthropic.claude-sonnet-4-6',profileId:'us.anthropic.claude-sonnet-4-6',revision:'d'.repeat(64),validUntilMs:NOW+60000,actualInputMicroUSDPerK:3300,reserveInputMicroUSDPerK:6600,outputMicroUSDPerK:16500,maxInputTokens:8192,maxOutputTokens:256},
   limits:{maxRequestMs:1000,maxFactBytes:131072,maxLeaseMs:30000}};
  const material=new Map([[runtime.controlConfigurationFile,controlBytes],[configuration.database.connectionFile,Buffer.from('postgres://synthetic:synthetic@database.synthetic.invalid/meri?sslmode=verify-full')],
@@ -73,11 +74,11 @@ function fixture(){
  const dependencies={now:()=>NOW,async readMaterial(path){reads.push(path);assert.ok(material.has(path),'known constructor material only');const bytes=Buffer.from(material.get(path));materialBuffers.push(bytes);return bytes;},
   createPool(options){lifecycle.push('pool.create');assert.equal(options.max,10);assert.equal(options.connectionTimeoutMillis,runtime.limits.maxRequestMs);return pool;},
   createAwsClients(options){lifecycle.push('clients.create');assert.deepEqual(options.ecs,{region:'us-east-1',maxAttempts:1,ignoreConfiguredEndpointUrls:true,useFipsEndpoint:false,useDualstackEndpoint:false,endpoint:'https://ecs.us-east-1.amazonaws.com'});assert.equal(options.ec2.endpoint,'https://ec2.us-east-1.amazonaws.com');
-   return Object.fromEntries(['ecs','ec2'].map(service=>[service+'Client',{async send(command){awsCalls.push({service,command});throw Error('synthetic AWS not observed');},destroy(){lifecycle.push(service+'.destroy');}}]));},
+   return Object.fromEntries(['ecs','ec2'].map(service=>[service+'Client',{async send(command,options){awsCalls.push({service,command});return pair.configuration[service+'Client'].send(command,options);},destroy(){lifecycle.push(service+'.destroy');}}]));},
   createServer(value){captured=value;lifecycle.push('server.create');if(serverFailure)throw serverFailure;return {available:true,async listen(address){lifecycle.push(['listen',address]);if(listenFailure)throw listenFailure;},async close(){lifecycle.push('server.close');return {listenerStopped:true,pendingRequests:0,physicalStopProven:false};}};},
   async fetchImpl(url,init){fetches.push({url,init});const body=JSON.parse(init.body),principal={tenantId:binding.tenantId,actorId:binding.actorId},identity={principal,identityRevision:'native-v1',checkedAtMs:NOW,expiresAtMs:NOW+5000};
    return Response.json(url.endsWith('/identity')?identity:{identitySha256:body.identitySha256,principal,identityRevision:identity.identityRevision,conversationId:body.conversationId,selectedClientId:body.clientId,contextRevision:'core-context-v1',checkedAtMs:NOW,expiresAtMs:NOW+5000});}};
- return {runtime,configuration,binding,clientId,model,state,pool,dependencies,material,materialBuffers,reads,calls,lifecycle,fetches,awsCalls,captured:()=>captured,
+ return {runtime,configuration,binding,clientId,model,state,pool,dependencies,material,materialBuffers,reads,calls,lifecycle,fetches,awsCalls,pair,captured:()=>captured,
   failServer:()=>{serverFailure=Error('synthetic-private-failure-detail');},failListen:()=>{listenFailure=Error('synthetic-private-listener-detail');}};
 }
 
@@ -90,7 +91,8 @@ test('runtime schema is closed and joins reviewed server/client/service/pricing 
  for(const change of [
   c=>{c.sourceEnabled=true;},c=>{c.enabled='true';},c=>{c.module='other';},c=>{c.controlConfigurationFile='relative';},
   c=>{c.controlConfigurationSha256='bad';},c=>{c.tls.origin+='?redirect=1';},c=>{c.tls.keyFile='relative';},
-  c=>{c.clientPolicy.selectedClientId='other';},c=>{c.serviceTasks.proxy.taskArn=c.serviceTasks.owner.taskArn;},
+  c=>{c.clientPolicy.selectedClientId='other';},c=>{c.serviceTasks.proxy.taskArn='prelaunch-task';},
+  c=>{c.clientPolicy.ownerTaskArn='prelaunch-task';},c=>{c.serviceTasks.schemaVersion=1;},
   c=>{c.serviceTasks.ownerCertSha256='f'.repeat(64);},c=>{c.serviceTasks.proxy.vpcId='vpc-ffffffff';},
   c=>{c.pricing.maxOutputTokens=257;},c=>{c.limits.maxLeaseMs=30001;},c=>{c.serviceTasks.proxy.endpoint='https://foreign.invalid';},
  ]){const f=fixture();change(f.runtime);await assert.rejects(startProductOwner(f.runtime,f.dependencies),refused);assert.deepEqual(f.reads,[]);assert.deepEqual(f.lifecycle,[]);}
@@ -113,7 +115,9 @@ test('verify-full-only DSN refuses duplicate and alternate parser controls befor
 
 test('actual assembly mounts genuine canonical owners against one pool and freshly joins native Core context',async()=>{
  const f=fixture(),runtime=await startProductOwner(f.runtime,f.dependencies),ports=f.captured();
- assert.equal(runtime.available,true);assert.equal(f.calls.length,0);assert.equal(f.fetches.length,0);assert.equal(f.awsCalls.length,0);assert.equal(ports.ownerPorts.pool,f.pool);
+ assert.equal(runtime.available,true);assert.equal(f.calls.length,0);assert.equal(f.fetches.length,0);assert.equal(f.awsCalls.length,10);assert.equal(ports.ownerPorts.pool,f.pool);
+ assert.equal(ports.clientPolicy.ownerTaskArn,f.pair.id('owner'));assert.equal(ports.clientPolicy.proxyTaskArn,f.pair.id('proxy'));
+ assert.equal('ownerTaskArn' in f.runtime.clientPolicy,false,'raw policy never contains observed task IDs');
  assert.equal(ports.serviceGate.available,true);assert.equal(ports.nativeCurrentness.available,true);assert.equal(ports.placement.available,true);assert.equal(ports.taskLeaseReader.available,true);
  assert.equal(f.reads.includes(f.configuration.nativeCandidate.identity.credentialFile),false,'native material is lazy, never loaded just for configuration hash');
  assert.ok(f.reads.every(path=>![f.configuration.nativeCandidate.controlCapabilityFile,f.configuration.nativeCandidate.taskCapabilityFile,f.configuration.nativeCandidate.proxyCredentialFile].includes(path)));
@@ -124,7 +128,7 @@ test('actual assembly mounts genuine canonical owners against one pool and fresh
  assert.equal(f.fetches.length,2);assert.ok(f.fetches.every(x=>x.init.headers.authorization==='Bearer synthetic-existing-native-session'&&x.init.cache==='no-store'));
  assert.ok(f.calls.some(x=>x.sql.includes('initial_run_bindings')));assert.ok(f.calls.some(x=>x.sql.includes('model_run_issuances')));
  const channel=createProductOwnerAdmissionChannel({clientPolicy:ports.clientPolicy,persistedFacts:ports.persistedFacts,ownerPorts:ports.ownerPorts,serviceGate:ports.serviceGate,now:ports.now,maxExchangeMs:1000});
- const peer={clientCertSha256:f.runtime.clientPolicy.clientCertSha256,clientSubject:f.runtime.clientPolicy.clientSubject,deploymentRevision:f.runtime.clientPolicy.deploymentRevision,issuerSha256:f.runtime.clientPolicy.issuerSha256,proxyTaskArn:f.runtime.clientPolicy.proxyTaskArn,tlsVersion:'TLSv1.3',connectionId:'direct-operation'};
+ const peer={clientCertSha256:f.runtime.clientPolicy.clientCertSha256,clientSubject:f.runtime.clientPolicy.clientSubject,deploymentRevision:f.runtime.clientPolicy.deploymentRevision,issuerSha256:f.runtime.clientPolicy.issuerSha256,proxyTaskArn:ports.clientPolicy.proxyTaskArn,tlsVersion:'TLSv1.3',connectionId:'direct-operation'};
  const response=JSON.parse(await channel.read(Buffer.from(JSON.stringify(['meri.proxy.admission-read/1','admission_A',f.model.capabilitySha256,null,NOW+900])),peer));assert.equal(response[0],'meri.proxy.admission/1');
  await runtime.start();assert.deepEqual(f.lifecycle.at(-1),['listen',{host:'0.0.0.0',port:8444}]);await runtime.close();await runtime.close();assert.equal(runtime.available,false);assert.equal(ports.nativeCurrentness.available,false);assert.equal(ports.serviceGate.available,false);
  assert.deepEqual(f.lifecycle.slice(-4),['server.close','pool.end','ecs.destroy','ec2.destroy']);assert.ok(f.materialBuffers.every(b=>b.every(n=>n===0)));

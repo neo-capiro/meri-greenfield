@@ -16,7 +16,7 @@ export function validateTemporalIssuerRenewal(binding,contract){
  if(c.schemaVersion!==1||c.status!=='unmounted'||c.issuer!==b.auth.issuer||
     c.jwksUrl!==b.auth.jwksUrl||c.audience!==b.auth.audience||
     c.namespace!==b.auth.namespace||c.taskQueue!==b.auth.taskQueue||
-    !Number.isSafeInteger(c.maxTokenLifetimeMs)||c.maxTokenLifetimeMs<30000||c.maxTokenLifetimeMs>300000||
+    !Number.isSafeInteger(c.maxTokenLifetimeMs)||c.maxTokenLifetimeMs<30000||c.maxTokenLifetimeMs>60000||
     !Number.isSafeInteger(c.refreshMs)||c.refreshMs<1000||c.refreshMs>=c.maxTokenLifetimeMs/2||
     typeof c.issuerServiceTaskRoleArn!=='string'||
     !new RegExp(`^arn:aws:iam::${b.account}:role/[A-Za-z0-9_+=,.@/-]{1,512}$`,'u').test(c.issuerServiceTaskRoleArn)||
@@ -26,7 +26,7 @@ export function validateTemporalIssuerRenewal(binding,contract){
  for(const role of Object.values(roles)){
   record(role,['subject','namespaceRole','tokenFile','workloadPrincipal','delivery']);
   if(typeof role.subject!=='string'||!/^[a-zA-Z0-9._:-]{1,128}$/u.test(role.subject)||
-     role.namespaceRole!=='write'||role.tokenFile!=='/run/meri/temporal-token.json'||
+     role.namespaceRole!=='write'||role.tokenFile!=='/run/meri-temporal/token.json'||
      typeof role.workloadPrincipal!=='string'||
      !/^[a-zA-Z0-9._:-]{1,128}$/u.test(role.workloadPrincipal)||
      role.delivery!=='task-local-atomic-owner-only-file')fail();

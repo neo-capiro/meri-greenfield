@@ -12,22 +12,21 @@ from unittest.mock import patch
 
 from apps.proxy.product.startup_config import parse_product_proxy_startup, read_reviewed_file, _environment
 from apps.proxy.qualification.state.pricing import PRICING_REVISION
+from apps.proxy.product.test.test_service_pair_discovery import service_configuration, peer_template
 
 
 def configuration():
     def ref(name):
         return {"path": "/run/meri/"+name, "sha256": "a"*64}
+    pair = service_configuration()
     return {"schemaVersion": 1, "enabled": True, "deploymentRevision": "reviewed-v1",
-        "expiresAtMs": time.time_ns()//1000000+60000, "pricingRevision": PRICING_REVISION,
+        "expiresAtMs": pair["expiresAtMs"], "pricingRevision": PRICING_REVISION,
         "serverTls": {"certificateFile": ref("server.pem"), "privateKeyFile": ref("server.key"),
                       "certificateSha256": "4"*64},
-        "ownerPeer": {"origin": "https://owner.invalid:8444", "server_name": "owner.invalid",
-            "owner_task_arn": "owner-task", "proxy_task_arn": "proxy-task", "server_cert_sha256": "1"*64,
-            "server_issuer_sha256": "2"*64, "client_cert_sha256": "3"*64,
-            "client_subject": "proxy-subject", "max_exchange_ms": 3000},
+        "ownerPeer": peer_template(),
         "ownerTls": {"caFile": ref("ca.pem"), "certificateFile": ref("client.pem"),
                      "privateKeyFile": ref("client.key")},
-        "ownerIpv4": "10.1.2.3", "proxyIpv4": "10.1.2.4"}
+        "serviceTasks": pair}
 
 
 def parse(value):
@@ -49,8 +48,11 @@ class ConfigurationTests(unittest.TestCase):
                 lambda v: v.update(expiresAtMs=1), lambda v: v.update(pricingRevision="f"*64),
                 lambda v: v["ownerPeer"].update(origin="http://owner.invalid:8444"),
                 lambda v: v["ownerPeer"].update(max_exchange_ms=3001),
-                lambda v: v.update(proxyIpv4=v["ownerIpv4"]),
-                lambda v: v.update(ownerIpv4="127.0.0.1"),
+                lambda v: v.update(ownerIpv4="10.40.4.1"),
+                lambda v: v["ownerPeer"].update(owner_task_arn="prelaunch-task"),
+                lambda v: v["serviceTasks"].update(schemaVersion=1),
+                lambda v: v["serviceTasks"].update(ownerCertSha256="f"*64),
+                lambda v: v["serviceTasks"].update(deploymentRevision="foreign"),
                 lambda v: v["ownerTls"].update(password="secret"),
                 lambda v: v["ownerTls"]["privateKeyFile"].update(path="/run/../outside")):
             value = configuration(); mutate(value)

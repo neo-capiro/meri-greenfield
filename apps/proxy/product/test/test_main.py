@@ -25,6 +25,8 @@ from apps.proxy.product.owner_https import OwnerClientTlsMaterial, ProductOwnerH
 from apps.proxy.product.test.test_startup_config import configuration, parse
 from apps.proxy.product.test.test_bearer_eni_admission import source
 from apps.proxy.product.test.test_owner_admission import Exchange
+from apps.proxy.product.test.test_service_pair_discovery import fixture as service_fixture
+from apps.proxy.product.service_pair_discovery import compile_owner_peer, ProductServicePairDiscovery
 
 
 class MainTests(unittest.IsolatedAsyncioTestCase):
@@ -113,8 +115,11 @@ class MainTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_executable_uses_actual_existing_owner_startup_with_synthetic_wire_only(self):
         value = configuration()
+        services = service_fixture()
+        value['serviceTasks'] = services.configuration
+        value['expiresAtMs'] = services.configuration['expiresAtMs']
         accepted = parse(value)
-        policy = OwnerPeerPolicy(**value["ownerPeer"])
+        policy = compile_owner_peer(value['ownerPeer'],services.reader().read(deadline_ms=services.at+3000))
         context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
         context.minimum_version = context.maximum_version = ssl.TLSVersion.TLSv1_3
         material = OwnerClientTlsMaterial(context, policy.client_cert_sha256)
@@ -141,6 +146,9 @@ class MainTests(unittest.IsolatedAsyncioTestCase):
             startup = kwargs["resolve_bearer_sha256"].__self__
             self.assertIs(type(startup), ProductOwnerStartup)
             self.assertIs(type(startup.exchange), ProductOwnerHttpsExchange)
+            self.assertIs(type(startup.exchange.service_pair_reader), ProductServicePairDiscovery)
+            self.assertEqual(startup.exchange.policy.owner_task_arn,services.task_id('owner'))
+            self.assertEqual(startup.exchange.proxy_ipv4,'10.40.4.2')
             resolved = await asyncio.to_thread(kwargs["resolve_bearer_sha256"], "a"*64)
             self.assertEqual(resolved.issued, issued)
             await asyncio.to_thread(resolved.authority.check)
@@ -158,7 +166,7 @@ class MainTests(unittest.IsolatedAsyncioTestCase):
              patch.object(main.sys, "version_info", (3,13,5)), \
              patch.object(main, "_tls", return_value=(server_tls,policy,material)), \
              patch.object(main, "_native_bootstrap", side_effect=completed_native_boundary), \
-             patch.object(main, "_clients", return_value=(Client(),Client(),Client())), \
+             patch.object(main, "_clients", return_value=(services.ecs,services.ec2,Client())), \
              patch.object(main, "_provider_factory", return_value=lambda: None), \
              patch.object(ProductOwnerHttpsExchange, "_send", wire), \
              patch("apps.proxy.product.uvicorn_tls_protocol.serve_product_proxy", side_effect=server_boundary):

@@ -5,10 +5,11 @@ import {Context} from '@temporalio/activity';
 import {validateShape,canonicalSha256} from '../../packages/contracts/validate.mjs';
 import {own,data} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createNativeCapabilityClient} from './native-client.mjs';
-import {temporalTls,temporalAuthorization} from './control.mjs';
+import {readRuntimeTemporalTls as temporalTls,startRuntimeTemporalAuthorization as temporalAuthorization} from './temporal-product-runtime.mjs';
 import {readSecret,fault} from './config.mjs';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 import {listenRuntime} from './http-server.mjs';
+import {createTemporalRuntimeFence,assertTemporalRuntimeCleanup,temporalCleanupUnknown} from './temporal-runtime-fence.mjs';
 async function sleep(signal,ms){signal.throwIfAborted();await new Promise((resolve,reject)=>{const abort=()=>{clearTimeout(timer);reject(fault('CANCELLED'));},timer=setTimeout(()=>{signal.removeEventListener('abort',abort);resolve();},ms);signal.addEventListener('abort',abort,{once:true});if(signal.aborted)abort();});}
 /**
  * The only admitted broker mode is the prepared original kickoff. Every exit after dispatch (terminal result, cancellation,
@@ -51,10 +52,43 @@ export function stopWorkerOnAuthorizationFailure({worker,authorization}){
  if(typeof worker?.getState!=='function'||typeof worker?.shutdown!=='function'||typeof authorization?.watch!=='function')throw fault('WORKER_CONFIGURATION');
  return authorization.watch(()=>{try{if(worker.getState()==='RUNNING')worker.shutdown();}catch{}});
 }
-export async function startTemporalWorker(configuration,{signal}={}){
- let connection,worker,listener,run,closing,authorization,unwatch;const close=()=>closing??=(async()=>{const errors=[];for(const step of [()=>listener?.close(),()=>{unwatch?.();if(worker?.getState()==='RUNNING')worker.shutdown();},()=>run?.catch(()=>{}),()=>connection?.close(),()=>authorization?.close()])try{await step();}catch(error){errors.push(error);}if(errors.length)throw new AggregateError(errors,'WORKER_CLEANUP_UNKNOWN');})();
- try{signal?.throwIfAborted();const [tls,bytes]=await Promise.all([temporalTls(configuration.temporal.tls),readSecret(configuration.native.capabilityFile)]);signal?.throwIfAborted();const native=createNativeCapabilityClient({configuration:configuration.native,credential:bytes.toString('utf8').trim()});await native.readiness({signal});signal?.throwIfAborted();
-  authorization=await temporalAuthorization(configuration,{signal});connection=await NativeConnection.connect({address:configuration.temporal.address,tls,...(authorization?{apiKey:authorization.apiKey()}:{})});if(authorization)authorization.attach(connection);worker=await Worker.create(workerOptions({configuration,connection,native}));if(authorization)unwatch=stopWorkerOnAuthorizationFailure({worker,authorization});run=worker.run();run.catch(()=>{});
-  listener=await listenRuntime({configuration,application:{handle:()=>Response.json({error:{code:'NOT_FOUND'}},{status:404})},readiness:createWorkerReadiness({worker,authorization}),signal});return Object.freeze({address:listener.address,close,completion:run});
- }catch{await close().catch(()=>{});throw fault('WORKER_STARTUP_FAILED');}
+/** Trusted test constructors are explicit function arguments, never configuration selectors. */
+export async function startTemporalWorker(configuration,{signal,testOwners={}}={}){
+ const owners=own(testOwners,[],['authorization','tls','readMaterial','nativeClient','connect','createWorker','listen']);
+ for(const value of Object.values(owners))if(typeof value!=='function')throw fault('WORKER_CONFIGURATION');
+ const fence=createTemporalRuntimeFence(),startupSignal=signal?AbortSignal.any([signal,fence.signal]):fence.signal;
+ const onExternalAbort=()=>{fence.lose(signal.reason);try{if(worker?.getState()==='RUNNING')worker.shutdown();}catch{}};
+ let connection,worker,listener,run,closing,authorization,unwatch,rejectAuthorization;
+ signal?.addEventListener('abort',onExternalAbort,{once:true});if(signal?.aborted)onExternalAbort();
+ const authorizationCompletion=new Promise((_,reject)=>{rejectAuthorization=reject;});authorizationCompletion.catch(()=>{});
+ const onAuthorizationUnavailable=reason=>{if(fence.lose(reason)){rejectAuthorization(fault('TEMPORAL_AUTHORIZATION_UNAVAILABLE'));try{if(worker?.getState()==='RUNNING')worker.shutdown();}catch{}}};
+ const checkAuthorization=()=>{fence.check();startupSignal.throwIfAborted();};
+ const close=()=>closing??=(async()=>{
+  fence.lose('RUNTIME_STOPPING');signal?.removeEventListener('abort',onExternalAbort);unwatch?.();const results=[];
+  try{if(worker?.getState()==='RUNNING')worker.shutdown();}catch(reason){results.push({status:'rejected',reason});}
+  for(const step of [()=>listener?.close(),()=>run,()=>connection?.close(),()=>authorization?.close()]){
+   try{results.push({status:'fulfilled',value:await step()});}catch(reason){results.push({status:'rejected',reason});}
+  }
+  // SDK 1.24 cannot publicly dispose an INITIALIZED worker. Do not run a stale
+  // poller or mutate its private refs to manufacture a cleanup receipt.
+  assertTemporalRuntimeCleanup(results,{...(worker?{workerState:worker.getState()}:{})});
+ })();
+ try{
+  checkAuthorization();
+  authorization=await (owners.authorization??temporalAuthorization)(configuration,{signal:startupSignal,onUnavailable:onAuthorizationUnavailable});
+  if(authorization)unwatch=authorization.watch(onAuthorizationUnavailable);checkAuthorization();
+  const [tls,bytes]=await Promise.all([(owners.tls??temporalTls)(configuration.temporal.tls),(owners.readMaterial??readSecret)(configuration.native.capabilityFile)]);checkAuthorization();
+  const native=(owners.nativeClient??createNativeCapabilityClient)({configuration:configuration.native,credential:bytes.toString('utf8').trim()});
+  await native.readiness({signal:startupSignal});checkAuthorization();
+  connection=await (owners.connect??(options=>NativeConnection.connect(options)))({address:configuration.temporal.address,tls,...(authorization?{apiKey:authorization.apiKey()}:{})});checkAuthorization();
+  if(authorization)authorization.attach(connection);
+  worker=await (owners.createWorker??(options=>Worker.create(options)))(workerOptions({configuration,connection,native}));checkAuthorization();
+  run=worker.run();run.catch(()=>{});
+  listener=await (owners.listen??listenRuntime)({configuration,application:fence.wrap({handle:()=>Response.json({error:{code:'NOT_FOUND'}},{status:404})}),readiness:createWorkerReadiness({worker,authorization}),signal});
+  checkAuthorization();return Object.freeze({address:listener.address,close,completion:Promise.race([run,authorizationCompletion])});
+ }catch(error){
+  try{await close();}catch(cleanup){throw temporalCleanupUnknown(new AggregateError([error,cleanup],'WORKER_STARTUP_AND_CLEANUP_FAILED'));}
+  if(error?.code==='TEMPORAL_PRODUCT_CLEANUP_UNKNOWN')throw error;
+  throw Object.assign(fault('WORKER_STARTUP_FAILED'),{cause:error});
+ }
 }

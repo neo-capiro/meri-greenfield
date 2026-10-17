@@ -18,6 +18,7 @@ import threading
 import time
 
 from .owner_channel import OwnerPeerPolicy, OwnerReply, OwnerTlsEvidence, OPEN, OPERATION, POLL, REPLY
+from .service_pair_discovery import ProductServicePairDiscovery
 from ..qualification.state.pricing import StateDenied
 
 
@@ -103,7 +104,7 @@ class ProductOwnerHttpsExchange:
     Native success requires pinned CPython >=3.13 public verified-chain API.
     """
     def __init__(self, *, policy, material, owner_ipv4, proxy_ipv4, expires_at_ms,
-                 deployment_revision, now_ms=None):
+                 deployment_revision, now_ms=None, service_pair_reader=None):
         if (type(policy) is not OwnerPeerPolicy or type(material) is not OwnerClientTlsMaterial
                 or not isinstance(material.context, ssl.SSLContext)
                 or material.context.protocol != ssl.PROTOCOL_TLS_CLIENT
@@ -119,12 +120,16 @@ class ProductOwnerHttpsExchange:
                 or type(expires_at_ms) is not int or expires_at_ms <= 0
                 or not callable(now_ms or time.time_ns)):
             _deny()
+        if type(service_pair_reader) is not ProductServicePairDiscovery:
+            _deny()
+        self.service_pair_reader = service_pair_reader
         self.policy, self.material = policy, material
         self.owner_ipv4, self.proxy_ipv4 = _ip(owner_ipv4), _ip(proxy_ipv4)
         if self.owner_ipv4 == self.proxy_ipv4:
             _deny()
         self.expires_at_ms = expires_at_ms
         self.deployment_revision = deployment_revision
+        service_pair_reader.assert_transport(policy,self.owner_ipv4,self.proxy_ipv4,expires_at_ms,deployment_revision)
         self.now_ms = now_ms or (lambda: time.time_ns() // 1000000)
         self._state = threading.RLock()
         self._locks = {name: threading.Lock() for name in ("operation", "capture")}
@@ -134,12 +139,13 @@ class ProductOwnerHttpsExchange:
     @property
     def available(self):
         context = self.material.context
-        return (not self._retired and self.now_ms() < self.expires_at_ms
+        return (not self._retired and self.service_pair_reader.available and self.now_ms() < self.expires_at_ms
                 and context.minimum_version == ssl.TLSVersion.TLSv1_3
                 and context.maximum_version == ssl.TLSVersion.TLSv1_3
                 and context.verify_mode == ssl.CERT_REQUIRED and context.check_hostname is True)
 
     def abort(self):
+        self.service_pair_reader.abort()
         with self._state:
             self._retired = True
             sockets = tuple(self._sockets)
@@ -223,6 +229,7 @@ class ProductOwnerHttpsExchange:
             acquired = self._locks[channel].acquire(timeout=self._remaining(cutoff))
             if not acquired:
                 _deny()
+            self._prove_pair(cutoff)
             connection = self._connections.get(channel) or self._connect(channel, cutoff)
             sock = connection.sock
             evidence = self._evidence(sock)
@@ -238,6 +245,7 @@ class ProductOwnerHttpsExchange:
             value = response.read(length+1)
             if len(value) != length or response.length not in (0, None):
                 _deny()
+            self._prove_pair(cutoff)
             self._remaining(cutoff)
             if self._evidence(sock) != evidence:
                 _deny()
@@ -248,6 +256,13 @@ class ProductOwnerHttpsExchange:
         finally:
             if acquired:
                 self._locks[channel].release()
+
+    def _prove_pair(self, cutoff):
+        self._remaining(cutoff)
+        self.service_pair_reader.read(deadline_ms=cutoff)
+        self.service_pair_reader.assert_transport(self.policy,self.owner_ipv4,self.proxy_ipv4,
+                                                  self.expires_at_ms,self.deployment_revision)
+        self._remaining(cutoff)
 
     async def __call__(self, channel, path, body, timeout):
         if (channel not in self._locks or path not in (OPEN, OPERATION, POLL, REPLY)
