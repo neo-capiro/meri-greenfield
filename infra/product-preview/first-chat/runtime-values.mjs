@@ -7,15 +7,17 @@
  *
  * Value definitions (each re-checked here; see the measurement module for where the runtime re-measures them):
  *  versions.skillsDigest  skillsDigest() over packages/skills; the receipt's image value must equal the source value.
- *  preparationIntent.*    receipt.launchTemplate / executable.sha256 / sdkOptions.sha256 / runner.sha256; directories from policy.runnerLayout.
+ *  preparationIntent.*    receipt.launchTemplate / executable.sha256 / sdkOptions.sha256 (run-invariant template, equal to the source
+ *                         template) / runner.sha256; directories from policy.runnerLayout.
  *  allocation             allocation.json verbatim, validated by apps/gateway/budget/tool-budget-binding.mjs allocation().
  *  runtime                policy.runtime {maxTurns, maxOutputBytes} (<= the allocation budgets, as prepared-candidate-config requires).
  *  qualification          {attempt: 1, policyRevision: canonicalSha256(policy.json)}.
  *
- * sdkOptionsSha256 is per run: runner-query.mjs hashes the run's real SDK options (cwd /workspace/<conversationId>,
- * CLAUDE_CONFIG_DIR <configParent>/sdk-<runId>, request-context system prompt) while prepared-run-bindings.mjs retargets only
- * workspace and authoritySha256. A static value therefore cannot match any real run; assembling one requires the explicit
- * acknowledgement flag so nobody mistakes the probe value for a working pin. */
+ * preparationIntent.sdkOptionsSha256 is the run-invariant SDK option template hash (apps/runtime/native-authority/sdk-option-template.mjs).
+ * runner-query.mjs reduces every run's options to that template after verifying the per-run values (cwd = the intent workspace,
+ * CLAUDE_CONFIG_DIR = <configParent>/sdk-<runId>, request-context scopes = the intent's authoritySha256 scopes), so the one
+ * configured value is valid for the static candidate and for every dynamic run prepared-run-bindings.mjs retargets. The receipt
+ * must prove it: two probe runs give the same hash (sdkOptions.runInvariant) and the runnerSdkOptions gate passed for both. */
 import {readFile,writeFile} from 'node:fs/promises';
 import {resolve,isAbsolute,posix} from 'node:path';
 import {brotliCompressSync,brotliDecompressSync,constants as zlib} from 'node:zlib';
@@ -24,12 +26,15 @@ import {pathToFileURL,fileURLToPath} from 'node:url';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {allocation as parseAllocation} from '../../../apps/gateway/budget/tool-budget-binding.mjs';
 import {RUNNER_SDK_CA_FILE} from '../../../apps/runtime/native-authority/preparation-intent.mjs';
+import {SDK_OPTIONS_TEMPLATE_SCHEMA} from '../../../apps/runtime/native-authority/sdk-option-template.mjs';
 import {PRODUCT_MAX_INPUT_TOKENS,PRODUCT_MAX_OUTPUT_TOKENS} from '../../../apps/gateway/model-proxy/product-envelope.mjs';
-import {RECEIPT_SCHEMA,PINNED_SDK,PINNED_CLI,WORKSPACE_ROOT,skillsDigest} from '../../../apps/runtime/build/first-chat-launch-measurement.mjs';
+import {RECEIPT_SCHEMA,PINNED_SDK,PINNED_CLI,WORKSPACE_ROOT,skillsDigest,probeTemplateSha256} from '../../../apps/runtime/build/first-chat-launch-measurement.mjs';
 import {parseRuntimeValues,SOURCE_ROOT} from './render-material.mjs';
 
 export const MEASUREMENT_MODULE='apps/runtime/build/first-chat-launch-measurement.mjs';
 export const POLICY_SCHEMA='meri.first-chat-policy.v1';
+/** Every launch gate first-chat-launch-measurement.mjs reports; all must PASS on the image (linux/x64, uid 1000). */
+export const RECEIPT_GATES=Object.freeze(['compileNativePreparationIntent','matchPreparedDescriptor','commandIsRealpath','executable','runnerCaTrust','secureStorage','runnerSdkOptions']);
 const hex64=/^[a-f0-9]{64}$/u;
 export const fail=(code,detail)=>{throw Object.assign(Error(detail?`${code}: ${detail}`:code),{code});};
 const refuse=detail=>fail('RUNTIME_VALUES_REFUSED',detail);
@@ -84,16 +89,25 @@ export async function parseAllocationFile(raw,policy,{sourceRoot=SOURCE_ROOT}={}
  return a;
 }
 
+/** The measurement inputs the receipt must have been taken with (and the source template is recomputed with). */
+export const measurementInputs=({policy,deployment,policyRevision})=>({proxyUrl:deployment.origins.proxyUrl,model:deployment.model.profileId,maxTurns:policy.runtime.maxTurns,
+ maxCostMicroUSD:deployment.model.perRunMaxCostMicroUSD,maxOutputBytes:policy.runtime.maxOutputBytes,configParentDirectory:policy.runnerLayout.configParentDirectory,
+ secureStorageDirectory:policy.runnerLayout.secureStorageDirectory,policyRevision});
 /** The in-image receipt, checked against the policy/deployment inputs it was taken with and the source skills digest. */
-export function parseReceipt(receipt,{policy,deployment,policyRevision,sourceSkillsDigest,requireLinux=true}){
+export function parseReceipt(receipt,{policy,deployment,policyRevision,sourceSkillsDigest,sourceSdkOptionsSha256,requireLinux=true}){
  const r=receipt;if(r?.schema!==RECEIPT_SCHEMA)refuse('receipt.schema');
  if(requireLinux&&(r.platform?.os!=='linux'||r.platform?.arch!=='x64'))refuse('receipt was not measured on linux/x64 (the CLI executable is platform-specific)');
  if(requireLinux&&r.platform?.uid!==1000)refuse('receipt was not measured as uid 1000');
- const expected={proxyUrl:deployment.origins.proxyUrl,model:deployment.model.profileId,maxTurns:policy.runtime.maxTurns,maxCostMicroUSD:deployment.model.perRunMaxCostMicroUSD,
-  maxOutputBytes:policy.runtime.maxOutputBytes,configParentDirectory:policy.runnerLayout.configParentDirectory,secureStorageDirectory:policy.runnerLayout.secureStorageDirectory,policyRevision};
+ const expected=measurementInputs({policy,deployment,policyRevision});
  for(const [k,v] of Object.entries(expected))if(r.inputs?.[k]!==v)refuse(`receipt.inputs.${k} differs from the policy/deployment value`);
  if(r.versions?.sdk!==PINNED_SDK||r.versions?.cli!==PINNED_CLI)refuse('receipt SDK/CLI versions are not the pinned pair');
  if(!hex64.test(r.executable?.sha256??'')||!hex64.test(r.runner?.sha256??'')||!hex64.test(r.sdkOptions?.sha256??''))refuse('receipt hashes must be 64 hex');
+ // The pin must be the run-invariant template: two probe runs with different conversation/run ids hash equal and the real
+ // runner-query gate admitted both. A per-run value would be refused SDK_OPTIONS_REFUSED by every real run.
+ if(r.sdkOptions.schema!==SDK_OPTIONS_TEMPLATE_SCHEMA||r.sdkOptions.runInvariant!==true||r.sdkOptions.secondProbeSha256!==r.sdkOptions.sha256)refuse('receipt sdkOptions is not the run-invariant SDK option template');
+ if(r.gates?.runnerSdkOptions!=='PASS')refuse('receipt runnerSdkOptions gate did not PASS');
+ // The template is platform-independent (per-run paths are placeholders), so the source options code must reproduce it exactly.
+ if(r.sdkOptions.sha256!==sourceSdkOptionsSha256)refuse('receipt sdkOptions template differs from the source options template for the same inputs');
  const t=record(r.launchTemplate,'receipt.launchTemplate',['command','args','env']);
  if(t.command!==r.executable.path)refuse('launch command must be the measured executable realpath');
  if(!Array.isArray(t.args)||t.args.some(a=>typeof a!=='string')||!t.env||typeof t.env!=='object'||Object.values(t.env).some(v=>typeof v!=='string'))refuse('launchTemplate args/env');
@@ -101,15 +115,14 @@ export function parseReceipt(receipt,{policy,deployment,policyRevision,sourceSki
  if(t.env.NODE_EXTRA_CA_CERTS!==RUNNER_SDK_CA_FILE||t.env.CLAUDE_SECURESTORAGE_CONFIG_DIR!==policy.runnerLayout.secureStorageDirectory)refuse('launchTemplate CA/secure storage env');
  if(t.env.ANTHROPIC_BASE_URL!==new URL(deployment.origins.proxyUrl).href)refuse('launchTemplate ANTHROPIC_BASE_URL is not the deployment proxy');
  if(!t.args.includes(`--max-turns=${policy.runtime.maxTurns}`)||!t.args.includes(`--model=${deployment.model.profileId}`))refuse('launchTemplate args do not carry the policy maxTurns/model');
- const failed=Object.entries(r.gates??{}).filter(([,v])=>v!=='PASS').map(([k])=>k);
- if(requireLinux&&(failed.length||!r.gates||Object.keys(r.gates).length<6))refuse(`receipt launch gates not all PASS: ${failed.join(',')}`);
+ const failed=RECEIPT_GATES.filter(k=>r.gates?.[k]!=='PASS');
+ if(JSON.stringify(Object.keys(r.gates??{}).sort())!==JSON.stringify([...RECEIPT_GATES].sort()))refuse('receipt launch gates are not exactly the measured set');
+ if(requireLinux&&failed.length)refuse(`receipt launch gates not all PASS: ${failed.join(',')}`);
  if(r.skills?.digest!==sourceSkillsDigest)refuse('receipt skills digest differs from the source skills digest');
  return r;
 }
 
-export function assembleRuntimeValues({receipt,allocation,policy,policyRevision,acknowledgePerRunSdkOptions=false}){
- if(receipt.sdkOptions.perRun!==false&&acknowledgePerRunSdkOptions!==true)
-  fail('RUNTIME_VALUES_SDK_OPTIONS_PER_RUN','sdkOptionsSha256 is the probe run\'s value; runner-query.mjs re-hashes every real run\'s options (cwd, CLAUDE_CONFIG_DIR, request context) and will refuse SDK_OPTIONS_REFUSED. Pass --acknowledge-per-run-sdk-options to assemble anyway.');
+export function assembleRuntimeValues({receipt,allocation,policy,policyRevision}){
  const runtime={schemaVersion:1,versions:{sdk:receipt.versions.sdk,cli:receipt.versions.cli,contracts:'0.1.0',skillsDigest:receipt.skills.digest,checkpointFormat:'0.1.0'},
   preparationIntent:{configParentDirectory:policy.runnerLayout.configParentDirectory,secureStorageDirectory:policy.runnerLayout.secureStorageDirectory,
    launchTemplate:structuredClone(receipt.launchTemplate),executableSha256:receipt.executable.sha256,sdkOptionsSha256:receipt.sdkOptions.sha256,runnerSha256:receipt.runner.sha256},
@@ -119,12 +132,13 @@ export function assembleRuntimeValues({receipt,allocation,policy,policyRevision,
 }
 
 /** Full pipeline from parsed JSON values. */
-export async function runtimeValues({receipt,allocation,policy,deployment,acknowledgePerRunSdkOptions=false,requireLinux=true,sourceRoot=SOURCE_ROOT}){
+export async function runtimeValues({receipt,allocation,policy,deployment,requireLinux=true,sourceRoot=SOURCE_ROOT}){
  const p=parsePolicy(policy,deployment),policyRevision=policyRevisionOf(policy);
  const a=await parseAllocationFile(allocation,p,{sourceRoot});
  const source=await skillsDigest({root:sourceRoot});
- const r=parseReceipt(receipt,{policy:p,deployment,policyRevision,sourceSkillsDigest:source.digest,requireLinux});
- return {runtime:assembleRuntimeValues({receipt:r,allocation:a,policy:p,policyRevision,acknowledgePerRunSdkOptions}),policyRevision,skillsDigest:source.digest};
+ const sourceSdkOptionsSha256=await probeTemplateSha256(measurementInputs({policy:p,deployment,policyRevision}),{root:sourceRoot});
+ const r=parseReceipt(receipt,{policy:p,deployment,policyRevision,sourceSkillsDigest:source.digest,sourceSdkOptionsSha256,requireLinux});
+ return {runtime:assembleRuntimeValues({receipt:r,allocation:a,policy:p,policyRevision}),policyRevision,skillsDigest:source.digest};
 }
 
 /** The one-shot measurement as the bash string for the meri-product-preview-d2-migrate container (entryPoint ["/bin/bash","-c"]).
@@ -163,14 +177,14 @@ export const decodeEmbeddedModule=command=>{const m=/ '([A-Za-z0-9+/=]{100,})' '
 
 const USAGE=`Usage:
   node infra/product-preview/first-chat/runtime-values.mjs assemble --receipt R.json --out runtime-values.json [--allocation allocation.json]
-    [--policy policy.json] [--deployment-inputs deployment-inputs.json] --acknowledge-per-run-sdk-options
+    [--policy policy.json] [--deployment-inputs deployment-inputs.json]
   node infra/product-preview/first-chat/runtime-values.mjs measurement-override [--shipped] [--policy ...] [--deployment-inputs ...]
   node infra/product-preview/first-chat/runtime-values.mjs policy-revision [--policy policy.json]
 Exit 0 written/printed; 2 arguments or values refused.`;
 export async function main(argv=process.argv.slice(2)){
  const [command,...rest]=argv,a={},flags=new Set();
- for(let i=0;i<rest.length;i++){if(['--acknowledge-per-run-sdk-options','--shipped'].includes(rest[i])){flags.add(rest[i]);continue;}
-  if(!rest[i].startsWith('--')||rest[i+1]===undefined){process.stderr.write(USAGE+'\n');return 2;}a[rest[i].slice(2)]=rest[++i];}
+ for(let i=0;i<rest.length;i++){if(rest[i]==='--shipped'){flags.add(rest[i]);continue;}
+  if(!['--receipt','--out','--allocation','--policy','--deployment-inputs'].includes(rest[i])||rest[i+1]===undefined){process.stderr.write(USAGE+'\n');return 2;}a[rest[i].slice(2)]=rest[++i];}
  const here=fileURLToPath(new URL('.',import.meta.url)),json=async p=>JSON.parse(await readFile(p,'utf8'));
  const policyPath=a.policy??resolve(here,'policy.json'),deploymentPath=a['deployment-inputs']??resolve(here,'deployment-inputs.json');
  try{
@@ -181,8 +195,7 @@ export async function main(argv=process.argv.slice(2)){
    process.stdout.write(JSON.stringify(measurementOverrides({moduleBytes,policy,deployment,policyRevision,mode:flags.has('--shipped')?'shipped':'embedded'}))+'\n');return 0;}
   if(command!=='assemble'||!a.receipt||!a.out){process.stderr.write(USAGE+'\n');return 2;}
   if(!isAbsolute(resolve(a.out)))refuse('--out');
-  const {runtime,policyRevision:revision}=await runtimeValues({receipt:await json(a.receipt),allocation:await json(a.allocation??resolve(here,'allocation.json')),policy,deployment,
-   acknowledgePerRunSdkOptions:flags.has('--acknowledge-per-run-sdk-options')});
+  const {runtime,policyRevision:revision}=await runtimeValues({receipt:await json(a.receipt),allocation:await json(a.allocation??resolve(here,'allocation.json')),policy,deployment});
   await writeFile(a.out,JSON.stringify(runtime,null,1)+'\n',{flag:'wx'});
   process.stdout.write(JSON.stringify({status:'MERI_FIRST_CHAT_RUNTIME_VALUES_WRITTEN',out:resolve(a.out),policyRevision:revision,skillsDigest:runtime.versions.skillsDigest})+'\n');return 0;
  }catch(error){process.stderr.write((typeof error?.code==='string'&&/^RUNTIME_VALUES_/u.test(error.code)?error.message:`RUNTIME_VALUES_REFUSED: ${error?.code??error?.message}`)+'\n');return 2;}

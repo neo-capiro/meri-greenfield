@@ -22,6 +22,8 @@
  *  core-values.json   {coreOrigin, frontendOrigin, tenantId, actorId, clientId (uuid), identityCredentialPath (local file, copied byte-exact)}
  *  runtime-values.json {schemaVersion:1, versions:{sdk,cli,contracts,skillsDigest,checkpointFormat},
  *    preparationIntent:{configParentDirectory, secureStorageDirectory, launchTemplate:{command,args,env}, executableSha256, sdkOptionsSha256, runnerSha256?},
+ *      sdkOptionsSha256 is the run-invariant SDK option template hash (apps/runtime/native-authority/sdk-option-template.mjs), carried
+ *      unchanged into the static candidate and every dynamic run (runner-query.mjs checks each run's per-run values against its intent).
  *    allocation:{manifest (SkillManifest incl. budgets), catalogSha256, scheduleRevision, operations:[{operation,chargeMicrousd}]},
  *    runtime:{maxTurns, maxOutputBytes}, qualification:{attempt, policyRevision (64 hex, Meri-owned)}, plan?, multiRun?:{runWindowMs}}
  *  stage3.json {schemaVersion:1, taskDefinitions:{control,'temporal-worker','temporal-issuer','model-owner','model-proxy',runner} (family:revision ARNs),

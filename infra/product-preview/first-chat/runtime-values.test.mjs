@@ -31,7 +31,7 @@ async function committed(){
   launchTemplate:{...host.launchTemplate,command:LINUX_CLI},gates:Object.fromEntries(Object.keys(host.gates).map(k=>[k,'PASS']))};
  base={policy,allocation,deployment,receipt,policyRevision};return structuredClone(base);
 }
-const assemble=async(change=x=>x,options={})=>{const v=await committed();change(v);return runtimeValues({...v,acknowledgePerRunSdkOptions:true,...options});};
+const assemble=async(change=x=>x,options={})=>{const v=await committed();change(v);return runtimeValues({...v,...options});};
 
 test('committed allocation.json and policy.json are self-consistent and admitted by the gateway allocation parser',async()=>{
  const {policy,allocation}=await committed();
@@ -58,9 +58,15 @@ test('assembled runtime.json renders all five roles through every render-materia
  withPosixPaths(()=>compilePreparedCandidateConfiguration(c,control.versions));
 });
 
-test('fail closed: per-run SDK option pin without acknowledgement, foreign platform, drifted inputs, skills, allocation or envelope',async()=>{
+test('fail closed: non-template SDK option pin, foreign platform, drifted inputs, skills, allocation or envelope',async()=>{
  const refused=(change,code='RUNTIME_VALUES_REFUSED',options={})=>assert.rejects(assemble(change,options),{code});
- await refused(x=>x,'RUNTIME_VALUES_SDK_OPTIONS_PER_RUN',{acknowledgePerRunSdkOptions:false});
+ // A per-run (probe) value, a template the runner gate did not admit, or one the source options code does not reproduce.
+ await refused(v=>{v.receipt.sdkOptions.runInvariant=false;v.receipt.sdkOptions.secondProbeSha256='a'.repeat(64);});
+ await refused(v=>{v.receipt.sdkOptions.schema=undefined;});
+ await refused(v=>{v.receipt.gates.runnerSdkOptions='FAIL: SDK_OPTIONS_REFUSED';});
+ await refused(v=>{delete v.receipt.gates.runnerSdkOptions;});
+ await refused(v=>{v.receipt.sdkOptions.sha256=v.receipt.sdkOptions.secondProbeSha256='b'.repeat(64);});
+ await refused(v=>{v.receipt.schema='meri.first-chat-launch-measurement.v1';});
  await refused(v=>{v.receipt.platform.os='win32';});
  await refused(v=>{v.receipt.platform.uid=0;});
  await refused(v=>{v.receipt.gates.matchPreparedDescriptor='FAIL: x';});
@@ -99,7 +105,7 @@ test('measurement override embeds the exact committed module, fits ECS limits, a
  }finally{await rm(dir,{recursive:true,force:true});}
 });
 
-test('CLI assemble writes runtime-values.json only with the acknowledgement; policy-revision prints canonicalSha256(policy.json)',async()=>{
+test('CLI assemble writes runtime-values.json, refuses the removed acknowledgement flag; policy-revision prints canonicalSha256(policy.json)',async()=>{
  const {receipt,policyRevision}=await committed(),dir=await mkdtemp(join(tmpdir(),'meri-runtime-values-'));
  const capture=async argv=>{const out=[],err=[],o=process.stdout.write.bind(process.stdout),e=process.stderr.write.bind(process.stderr);
   process.stdout.write=t=>{out.push(String(t));return true;};process.stderr.write=t=>{err.push(String(t));return true;};
@@ -107,9 +113,10 @@ test('CLI assemble writes runtime-values.json only with the acknowledgement; pol
  try{
   const {writeFile}=await import('node:fs/promises');const receiptFile=join(dir,'receipt.json'),deploymentFile=join(dir,'deployment.json');
   await writeFile(receiptFile,JSON.stringify(receipt));await writeFile(deploymentFile,JSON.stringify((await committed()).deployment));
-  const refused=await capture(['assemble','--receipt',receiptFile,'--deployment-inputs',deploymentFile,'--out',join(dir,'a.json')]);
-  assert.equal(refused.code,2);assert.match(refused.err,/RUNTIME_VALUES_SDK_OPTIONS_PER_RUN/u);
-  const ok=await capture(['assemble','--receipt',receiptFile,'--deployment-inputs',deploymentFile,'--out',join(dir,'b.json'),'--acknowledge-per-run-sdk-options']);
+  // The escape hatch is gone: the flag is now an unknown argument (usage, exit 2) and writes nothing.
+  const refused=await capture(['assemble','--receipt',receiptFile,'--deployment-inputs',deploymentFile,'--out',join(dir,'a.json'),'--acknowledge-per-run-sdk-options']);
+  assert.equal(refused.code,2);assert.match(refused.err,/Usage:/u);
+  const ok=await capture(['assemble','--receipt',receiptFile,'--deployment-inputs',deploymentFile,'--out',join(dir,'b.json')]);
   assert.equal(ok.code,0,ok.err);assert.equal(JSON.parse(ok.out).policyRevision,policyRevision);
   assert.equal(JSON.parse(await readFile(join(dir,'b.json'),'utf8')).qualification.policyRevision,policyRevision);
   const revision=await capture(['policy-revision']);assert.equal(revision.code,0);assert.equal(revision.out.trim(),policyRevision);

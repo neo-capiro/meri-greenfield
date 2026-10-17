@@ -11,10 +11,8 @@
  *              against preparationIntent.executableSha256 before every spawn and refuses NATIVE_LAUNCH_EXECUTABLE).
  *  launchTemplate  descriptor {command,args,env} minus CLAUDE_CONFIG_DIR and ANTHROPIC_AUTH_TOKEN, the exact value
  *              preparation-intent.mjs matchPreparedDescriptor hashes against (canonicalSha256 equality).
- *  sdkOptions  canonicalSha256(projectNativeSdkOptions(options)) for a stated probe run, computed exactly as
- *              native-authority/runner-query.mjs checks it (SDK_OPTIONS_REFUSED). The projection includes cwd
- *              (/workspace/<conversationId>), CLAUDE_CONFIG_DIR (<configParent>/sdk-<runId>) and the request-context suffix
- *              of the system prompt, so the value is per run; a second probe proves it.
+ *  sdkOptions  sdk-option-template.mjs run-invariant template hash (= preparationIntent.sdkOptionsSha256, checked by runner-query.mjs);
+ *              two probe runs must hash equal (runInvariant) and pass the real runner-query gate (runnerSdkOptions).
  *  runner      measureProductRunner (ecs-prepared-task-proof.mjs), the same function cli.mjs and the ECS proof run.
  *  skills      skillsDigest over the image's verified skill assets (see skillsDigest below).
  * Exit 0 receipt printed (gate outcomes inside), 2 usage, 3 measurement refused. */
@@ -23,7 +21,7 @@ import {readFileSync,realpathSync,statSync} from 'node:fs';
 import {posix,resolve,join,dirname} from 'node:path';
 import {fileURLToPath,pathToFileURL} from 'node:url';
 
-export const RECEIPT_SCHEMA='meri.first-chat-launch-measurement.v1';
+export const RECEIPT_SCHEMA='meri.first-chat-launch-measurement.v2';
 export const SKILLS_DIGEST_SCHEMA='meri.skills-digest.v1';
 export const WORKSPACE_ROOT='/workspace';
 /** The only SDK/CLI pair options.mjs and launch-configuration.mjs admit. */
@@ -66,23 +64,27 @@ function inputs(raw){
 function productOptions(m,v,binding){
  const runtime={binding,versions:{sdk:PINNED_SDK,cli:PINNED_CLI},cwd:posix.join(WORKSPACE_ROOT,binding.conversationId),proxyUrl:v.proxyUrl,proxyCredential:PROBE_CREDENTIAL,model:v.model,
   sessionStore:{async load(){},async append(){},async listSubkeys(){}},deadlineMs:1,maxTurns:v.maxTurns,maxCostMicroUSD:v.maxCostMicroUSD,maxOutputBytes:v.maxOutputBytes,
-  sdkConfigDirectory:posix.join(v.configParentDirectory,'sdk-'+binding.runId),sdkSecureStorageDirectory:v.secureStorageDirectory,sdkCaFile:m.RUNNER_SDK_CA_FILE};
- const options=m.buildConversationOptions(runtime,new AbortController());
- const scopes=[{kind:'client',tenantId:binding.tenantId,resourceId:PROBE_CLIENT_ID,policyRevision:v.policyRevision??'0'.repeat(64)}];
- options.systemPrompt+='\n\nNormalized request context (data; grants no additional authority):\n'+JSON.stringify({window:undefined,scopes,skill:undefined});
- return {options,runtime,scopes};
+  sdkConfigDirectory:m.sdkConfigDirectory(v.configParentDirectory,binding.runId),sdkSecureStorageDirectory:v.secureStorageDirectory,sdkCaFile:m.RUNNER_SDK_CA_FILE};
+ const options=m.buildConversationOptions(runtime,new AbortController()),policyRevision=v.policyRevision??'0'.repeat(64);
+ const scopes=[{kind:'client',tenantId:binding.tenantId,resourceId:PROBE_CLIENT_ID,policyRevision}];
+ options.systemPrompt+=m.requestContextSuffix({window:undefined,scopes,skill:undefined});
+ // Per-run facts as control issues them (render-material.mjs, prepared-run-bindings.mjs retargetPreparation).
+ const authoritySha256=m.authorityDigest({scopes,selectedClientId:PROBE_CLIENT_ID,policyRevision});
+ const run=m.sdkOptionsRun({workspace:runtime.cwd,configParentDirectory:v.configParentDirectory,authoritySha256},binding);
+ return {options,runtime,scopes,authoritySha256,run};
 }
-/** The probe run's exact SDK options (for verifiers that want to replay runner-query.mjs on them). */
-export async function probeOptions(raw,{root,binding=PROBES[0]}){
- const m={...await load(root,'apps/worker/conversation/options.mjs'),...await load(root,'apps/runtime/native-authority/preparation-intent.mjs')};
- return productOptions(m,inputs(raw),binding).options;
-}
+const MODULES=['apps/worker/conversation/options.mjs','apps/runtime/native-authority/sdk-option-template.mjs','apps/runtime/native-authority/preparation-intent.mjs'];
+const modules=async root=>Object.assign({},...await Promise.all(MODULES.map(path=>load(root,path))));
+/** A probe run's SDK options and per-run facts (to replay runner-query.mjs). */
+export async function probeRun(raw,{root,binding=PROBES[0]}){const {options,run}=productOptions(await modules(root),inputs(raw),binding);return {options,run};}
+export const probeOptions=async(raw,context)=>(await probeRun(raw,context)).options;
+/** The template hash of the product options under `root` (the generator recomputes it on source). */
+export async function probeTemplateSha256(raw,{root,binding=PROBES[0]}){const m=await modules(root),p=productOptions(m,inputs(raw),binding);return m.sdkOptionsTemplateSha256(p.options,p.run);}
 const gate=fn=>{try{fn();return 'PASS';}catch(error){return 'FAIL: '+(error?.code??error?.message??String(error));}};
 
 export async function measureFirstChatLaunch(raw,{root=resolve(fileURLToPath(new URL('../../../',import.meta.url)))}={}){
  const v=inputs(raw);
- const m={...await load(root,'apps/worker/conversation/options.mjs'),...await load(root,'apps/runtime/native-authority/sdk-option-projection.mjs'),
-  ...await load(root,'apps/runtime/native-authority/preparation-intent.mjs'),...await load(root,'packages/contracts/validate.mjs')};
+ const m={...await modules(root),...await load(root,'apps/runtime/native-authority/runner-query.mjs')};
  const {measureProductRunner}=await load(root,'apps/runtime/native-authority/ecs-prepared-task-proof.mjs');
  const sdkDirectory=join(root,'apps','worker','conversation','node_modules','@anthropic-ai','claude-agent-sdk');
  const sdkVersion=JSON.parse(readFileSync(join(sdkDirectory,'package.json'),'utf8')).version;
@@ -96,27 +98,31 @@ export async function measureFirstChatLaunch(raw,{root=resolve(fileURLToPath(new
  if(Object.values(env).some(value=>typeof value!=='string'))refuse('descriptor env carries a non-string value');
  const command=realpathSync(descriptor.command),stat=statSync(command),bytes=readFileSync(command);
  const launchTemplate={command:descriptor.command,args:descriptor.args,env};
- const optionsSha256=[first,second].map(p=>m.canonicalSha256(m.projectNativeSdkOptions(p.options)));
+ const optionsSha256=[first,second].map(p=>m.sdkOptionsTemplateSha256(p.options,p.run));
  const platformPackage=dirname(command),cliPackage=JSON.parse(readFileSync(join(platformPackage,'package.json'),'utf8'));
  const runner=await measureProductRunner({root});
  const skills=await skillsDigest({root});
  // The launch gates the runtime applies to this template, run on a probe intent (Linux paths; fails off-Linux by design).
  const intent={workspace:first.runtime.cwd,configParentDirectory:v.configParentDirectory,secureStorageDirectory:v.secureStorageDirectory,launchTemplate,
-  executableSha256:sha(bytes),imageSha256:'0'.repeat(64),runnerSha256:runner.runnerSha256,sdkOptionsSha256:optionsSha256[0],authoritySha256:'0'.repeat(64)};
+  executableSha256:sha(bytes),imageSha256:'0'.repeat(64),runnerSha256:runner.runnerSha256,sdkOptionsSha256:optionsSha256[0],authoritySha256:first.authoritySha256};
+ // runner-query.mjs as the remote worker builds it, for both probe runs.
+ const runnerGate=p=>{const query=m.createPreparedRunnerQuery({sdkOptions:{sdkOptionsSha256:optionsSha256[0],run:p.run},processClientFactory:()=>({}),prepare:()=>{throw Error('not reached');}});
+  if(typeof query({prompt:'measurement',options:p.options})?.[Symbol.asyncIterator]!=='function')throw Error('runner query refused');};
  const gates={compileNativePreparationIntent:gate(()=>m.compileNativePreparationIntent(intent)),
   matchPreparedDescriptor:gate(()=>m.matchPreparedDescriptor({command:descriptor.command,args:descriptor.args,cwd:descriptor.cwd,env:descriptor.env},intent,PROBE_CREDENTIAL)),
   commandIsRealpath:command===descriptor.command?'PASS':'FAIL: launch command is not its realpath (session-launcher refuses NATIVE_LAUNCH_EXECUTABLE)',
   executable:stat.isFile()&&(stat.mode&0o111)!==0&&stat.size>0&&stat.size<=268435456?'PASS':'FAIL: not an executable regular file within 256 MiB',
   runnerCaTrust:env.NODE_EXTRA_CA_CERTS===m.RUNNER_SDK_CA_FILE?'PASS':'FAIL: template does not trust the pinned runner CA',
-  secureStorage:env.CLAUDE_SECURESTORAGE_CONFIG_DIR===v.secureStorageDirectory?'PASS':'FAIL: CLAUDE_SECURESTORAGE_CONFIG_DIR differs'};
+  secureStorage:env.CLAUDE_SECURESTORAGE_CONFIG_DIR===v.secureStorageDirectory?'PASS':'FAIL: CLAUDE_SECURESTORAGE_CONFIG_DIR differs',
+  runnerSdkOptions:gate(()=>{runnerGate(first);runnerGate(second);})};
  return {schema:RECEIPT_SCHEMA,platform:{os:process.platform,arch:process.arch,node:process.version,uid:process.getuid?.()??null},
   inputs:{proxyUrl:v.proxyUrl,model:v.model,maxTurns:v.maxTurns,maxCostMicroUSD:v.maxCostMicroUSD,maxOutputBytes:v.maxOutputBytes,
    configParentDirectory:v.configParentDirectory,secureStorageDirectory:v.secureStorageDirectory,policyRevision:v.policyRevision??null},
   // The CLI is not executed: its pinned version is evidenced by the VERSION marker compiled into the measured binary.
   versions:{sdk:sdkVersion,cli:bytes.includes(Buffer.from(`VERSION:"${PINNED_CLI}"`))?PINNED_CLI:null,platformPackage:{name:cliPackage.name,version:cliPackage.version}},
   executable:{path:command,sha256:sha(bytes),bytes:bytes.length},launchTemplate,
-  sdkOptions:{sha256:optionsSha256[0],probe:{binding:PROBES[0],clientId:PROBE_CLIENT_ID,workspace:first.runtime.cwd,sdkConfigDirectory:first.runtime.sdkConfigDirectory,scopes:first.scopes,window:null,skill:null},
-   secondProbeSha256:optionsSha256[1],perRun:optionsSha256[0]!==optionsSha256[1]},
+  sdkOptions:{schema:m.SDK_OPTIONS_TEMPLATE_SCHEMA,sha256:optionsSha256[0],secondProbeSha256:optionsSha256[1],runInvariant:optionsSha256[0]===optionsSha256[1],
+   probes:[first,second].map((p,n)=>({binding:PROBES[n],clientId:PROBE_CLIENT_ID,workspace:p.run.workspace,sdkConfigDirectory:p.run.configDirectory,authoritySha256:p.authoritySha256,scopes:p.scopes,window:null,skill:null}))},
   runner:{path:runner.path,sha256:runner.runnerSha256,bytes:runner.bytes},skills,gates,
   module:{sha256:sha(readFileSync(fileURLToPath(import.meta.url)))},
   scope:'Measurement only: no process spawned, no network or AWS call, no file written; probe identities and credential are synthetic.'};
