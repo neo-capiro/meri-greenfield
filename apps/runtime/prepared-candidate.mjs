@@ -142,6 +142,8 @@ export async function startPreparedCandidate({configuration,pool,signal,issuance
    ...(config.approvedReads===undefined?{}:{approvedReads:config.approvedReads})});
  })();
  // Approved control workload role is resolved by the adopted SDK at future effects.
+ // The run issuer belongs to the poststart authority only; assemblePreparedCandidate's option record is closed.
+ const {issuer:_poststartIssuer,...candidateBindings}=bindings;
  const ecs=new ECSClient({region:'us-east-1',maxAttempts:1}),s3=new S3Client({region:'us-east-1',maxAttempts:1});let candidate;
- try{const objects=createS3ArtifactObjects({client:s3,...config.objects,now:Date.now,maxRequestMs:configuration.limits.requestMs});candidate=assemblePreparedCandidate({configuration,pool,ecs,objects,credentials:{identity:identity.toString('utf8').trim(),task:task.toString('utf8').trim(),control:control.toString('utf8').trim(),proxy:proxy.toString('utf8').trim()},...bindings,...reads});return Object.freeze({...candidate,...(taskRouterAuthority?{taskRouterAuthority}:{}),...(poststartOwners?{poststartOwners}:{}),async close(){try{await candidate.close();}finally{ecs.destroy();s3.destroy();}}});}catch(error){ecs.destroy();s3.destroy();throw error;}
+ try{const objects=createS3ArtifactObjects({client:s3,...config.objects,now:Date.now,maxRequestMs:configuration.limits.requestMs});candidate=assemblePreparedCandidate({configuration,pool,ecs,objects,credentials:{identity:identity.toString('utf8').trim(),task:task.toString('utf8').trim(),control:control.toString('utf8').trim(),proxy:proxy.toString('utf8').trim()},...candidateBindings,...reads});return Object.freeze({...candidate,...(taskRouterAuthority?{taskRouterAuthority}:{}),...(poststartOwners?{poststartOwners}:{}),async close(){try{await candidate.close();}finally{ecs.destroy();s3.destroy();}}});}catch(error){ecs.destroy();s3.destroy();throw error;}
 }
