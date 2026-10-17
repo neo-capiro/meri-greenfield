@@ -125,4 +125,14 @@ The host's commit memory was exhausted for much of the session (commit headroom 
 | `apps/runtime/test/schedule-service.test.mjs` | 17 pass / 0 fail |
 | `apps/runtime/test/routines-mount.test.mjs` | 7 pass / 0 fail |
 | `apps/control/schedules/test/scheduled-job-workflow.test.mjs` | 3 pass / 0 fail |
-| remaining: task-command-mount, task-update-services, product-readiness, first-run-mount, native-allocation-admission, product-envelope, memory, settings | pending host memory |
+| `apps/runtime/test/task-command-mount.test.mjs` | 5 pass / 0 fail |
+| `apps/control/intents/test/task-update-services.test.mjs` | 4 pass / 0 fail |
+| `apps/runtime/test/product-readiness.test.mjs` | 2 pass / 0 fail |
+| `apps/runtime/test/first-run-mount.test.mjs` | 5 pass / 4 fail — the same 4 tests fail identically on the untouched integration tip `c11323a4` (pre-existing: `native` reference wrapping, `INVALID_COMMAND`, `DATABASE_SCHEMA_UNAVAILABLE`). In the edited case the failure is the later `INVALID_COMMAND`, so the new `context.client` assertion executed and passed. |
+| `apps/gateway/budget/test/native-allocation-admission.test.mjs` | 11 pass / 0 fail |
+| `apps/gateway/model-proxy/product-envelope.test.mjs` | 3 pass / 0 fail |
+| `apps/control/memory/test/producer.test.mjs` | 22 pass / 0 fail |
+| `apps/control/memory/test/core-http.test.mjs` | 2 pass / 0 fail |
+| `apps/control/memory/test/command-source.test.mjs` | 5 pass / 0 fail |
+| `apps/control/settings/test/service.test.mjs` | 6 pass / 0 fail |
+| `apps/control/task-command-application/test/application.test.mjs` | 5 pass / 0 fail |
