@@ -1,0 +1,11 @@
+{
+  "recordType": "RECONSTRUCTED_FROM_RETAINED_TOOL_OUTPUT_NOT_ORIGINAL_RECEIPT",
+  "startedAt": "2026-10-17T02:15:00.526Z",
+  "finishedAt": "2026-10-17T02:15:05.246Z",
+  "sourceCommit": "69a61c36b1b98e5bc02591f2b4a4c32f14b828cf",
+  "failure": "INSUFFICIENT_DISK_HEADROOM",
+  "cause": "WindowsPowerShell5 child returned empty Get-PSDrive.Free; driver converted empty string to zero; independent pwsh and statfs showed sufficient space.",
+  "originalCleanupDiagnostic": "CLEANUP_UNCERTAIN due child listener command failure, before any database resource was allocated",
+  "databaseActionsStarted": false,
+  "sourceReceiptUnavailable": "Later original-driver copy behavior overwrote the initial raw receipt; no fabricated raw receipt is supplied."
+}
