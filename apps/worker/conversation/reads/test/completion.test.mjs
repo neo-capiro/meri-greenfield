@@ -16,8 +16,7 @@ import {mountReads,SESSION} from './fixture.mjs';
 
 const ids=[...stateIds,trackedId,hearingId],foreign=uuid('e'),referencePath='/api/clio/clients/check-ref';
 const families={'state-status-votes':stateIds,'tracked-bills':[trackedId],'public-domain-hearings':[hearingId]};
-const absent=['get_business_development_evidence','get_certification_status','search_program_elements','get_program_element','get_pe_budget_timeline',
- 'search_federal_grants','search_federal_awards','search_research_sources','get_state_rule_status','search_sam_opportunities'];
+const absent=['get_business_development_evidence','get_certification_status','search_research_sources','get_state_rule_status','search_sam_opportunities'];
 const reference='Synthetic Client';
 function personal(scene){const a=scene.authority,scope={tenantId:a.binding.tenantId,kind:'private-user',resourceId:a.binding.actorId,policyRevision:a.policyRevision};Object.assign(a.subject,{kind:'personal',entityType:'user',entityIds:[a.binding.actorId],scopes:[scope]});a.claims.scopes=[scope];a.decision.scopes=[scope];return scene;}
 function sceneFor(id,options={}){
@@ -59,8 +58,8 @@ function noSource(f){assert.equal(f.wire.length,0);assert.equal(f.stateOwner.sec
 function unknown(f){const [r]=f.state.reservations.values();assert.equal(r.state,'UNKNOWN');assert.equal(r.hold_micro_usd,1);assert.equal(r.output_bytes,null);assert.equal(r.charged_micro_usd,null);assert.equal(f.state.budget.consumed_micro_usd,0);assert.equal([...f.state.produced.values()][0].completion,null);}
 const expectedResult=f=>f.operation.id===trackedId?{binding:f.binding,subject:f.authority.subject,data:f.state.nativeValue}:f.state.nativeValue;
 
-test('completion SDK71/41: the first four completed reads retain the frozen tracked client requirement',()=>{
- assert.equal(familyReads().length,71);assert.equal(READ_FAMILY_IDS.length,41);
+test('completion SDK76/42: the first four completed reads retain the frozen tracked client requirement',()=>{
+ assert.equal(familyReads().length,76);assert.equal(READ_FAMILY_IDS.length,42);
  for(const [family,operations] of Object.entries(families)){
   const rows=familyReads().filter(row=>row.family===family);assert.deepEqual(rows.map(row=>row.operation.id),operations);assert.equal(READ_FAMILIES[family].operationIds,undefined);
   assert.equal(READ_FAMILIES[family].clientScope,family==='tracked-bills'?'required':'optional');
@@ -68,7 +67,7 @@ test('completion SDK71/41: the first four completed reads retain the frozen trac
   assert.deepEqual(select([{kind:'client'}]).available.map(row=>row.operation),refs);
   assert.deepEqual(select([{kind:'private-user'}]).available.map(row=>row.operation),family==='tracked-bills'?[]:refs);
  }
- const operations=absent.map(id=>({id,version:'0.2.0'}));assert.equal(absent.length,10);
+ const operations=absent.map(id=>({id,version:'0.2.0'}));assert.equal(absent.length,5);
  assert.deepEqual(resolveAvailableReads({policy:{generalReads:true,readFamilies:READ_FAMILY_IDS},installation:{operations},discovery:{operations},scopes:[{kind:'client'}]}).available,[]);
  for(const id of absent)assert.equal(familyReads().some(row=>row.operation.id===id),false,id);
 });

@@ -2,8 +2,10 @@
 import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {billTextCase} from '../../bill-text/test/fixture.mjs';
 import {createPublicDataHandlers} from '../handler.mjs';
+import {storedModeCase,modeIds} from './mode-fixture.mjs';
+export {storedModePage,modeRequests} from './mode-fixture.mjs';
 
-export const id='query_economic_data',ids=[id];
+export const id='query_economic_data',ids=[id,...modeIds];
 export function storedPage(input,at){
  const generatedAt=new Date(at).toISOString();
  if(input.source==='census')return {tool:id,source:'census',generatedAt,data:[{
@@ -22,7 +24,9 @@ export function storedPage(input,at){
  return {tool:id,error:`Unknown source "${input.source}". Use "census", "bls", or "bea".`};
 }
 
-export function storedCase(selected=id,{request={}}={}){
+export function storedCase(selected=id,options={}){
+ if(modeIds.includes(selected))return storedModeCase(selected,options);
+ const {request={}}=options;
  if(selected!==id)throw Error('SYNTHETIC_OPERATION_MISMATCH');
  const scene=billTextCase(),operation={id,version:'0.2.0'},contract=resolveOperationContract(operation),normalizationContext={};
  const {authority,state,now,wire}=scene;

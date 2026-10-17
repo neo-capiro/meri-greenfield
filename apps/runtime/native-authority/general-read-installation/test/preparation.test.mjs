@@ -9,6 +9,7 @@ import {familyOperations} from '../../../../gateway/general-reads/registration.m
 import {prepareGeneralReadFamilyHandlers,createGeneralReadFamilyHandlers,GENERAL_READ_ADAPTER_FAMILIES} from '../../../../gateway/general-reads/integration.mjs';
 import {CASES,familyCase} from '../../../../gateway/general-reads/test/family-cases.mjs';
 import {storedCase as fundingCase} from '../../../../gateway/sources/funding-opportunities/test/fixture.mjs';
+import {storedCase as programCase} from '../../../../gateway/sources/program-elements/test/fixture.mjs';
 import {createSelectedSkillInstallationOwner} from '../../../../gateway/catalog/selected-installation-owner.mjs';
 import {executionCatalogSha256} from '../../../../gateway/catalog/installed-catalog.mjs';
 import {setup as selectedFixture} from '../../../../gateway/selected-skills/fixture.mjs';
@@ -23,7 +24,7 @@ test('two-phase preparation preserves legacy source records/order/hash and canon
  const families={},ids=[...new Set(installationReadOperations().map(row=>row.family))];let externalCalls=0;
  for(const id of ids){
   if(id==='mail')families[id]={endpoints:Object.fromEntries(familyOperations(id).map(op=>[op.id,`https://mail.example.invalid/${op.id}`])),getCredentials:()=>{externalCalls++;throw Error('UNEXPECTED_CREDENTIAL');},fetchImpl:()=>{externalCalls++;throw Error('UNEXPECTED_FETCH');}};
-  else{const pair=CASES.find(([family])=>family===id),scene=id==='funding-opportunities'?fundingCase():familyCase(...pair);families[id]=scene.transport;}
+  else{const pair=CASES.find(([family])=>family===id),scene=id==='funding-opportunities'?fundingCase():id==='program-elements'?programCase():familyCase(...pair);families[id]=scene.transport;}
  }
  const now=()=>1800000000000,prepared=await prepareGeneralReadFamilyHandlers({familyIds:ids});assert.equal(externalCalls,0);
  const first=prepared.create({families,now,newId:randomUUID}),legacy=await createGeneralReadFamilyHandlers({families,now,newId:randomUUID});

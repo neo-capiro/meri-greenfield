@@ -34,7 +34,7 @@ export async function installationFixture({scene=billTextCase()}={}){
   state.taskPortsCalls++;state.tupleInputs.push(value);const {getCredentials,credentialsForCall,authorizeResultForCall,...transport}=f.transport;
   const p={gateway:{authority:f.gatewayConfiguration.authority,limits:f.gatewayConfiguration.limits,producerContext:grant,producer:{...f.gatewayConfiguration.producer,executionId:original.executionId},credential:tuple.taskCapability,sourceEnabled:true,
    async readCurrentInstallation(proof){state.qualifierCalls.push(proof);assert.deepEqual(proof.binding,f.binding);assert.deepEqual(proof.scopes,f.scopes);assert.equal(proof.policyRevision,f.policyRevision);return f.installationOwner.readCurrent({signal:proof.signal});},discoveryOwner:f.gatewayConfiguration.discoveryOwner},
-   families:{[f.family]:transport},nativeCredentials:{coreAuthority:f.core.client,getNativeCredential:f.configuration.getNativeCredential,getServiceSecret:f.configuration.getServiceSecret,defaultCongress:119},contextPorts:{memoryContextPorts:f.gatewayConfiguration.memoryContextPorts}};
+   families:{[f.family]:transport},nativeCredentials:{coreAuthority:f.core.client,getNativeCredential:f.configuration.getNativeCredential,getServiceSecret:f.configuration.getServiceSecret,...(f.configuration.getReadModeServiceSecret===undefined?{}:{getReadModeServiceSecret:f.configuration.getReadModeServiceSecret}),defaultCongress:119},contextPorts:{memoryContextPorts:f.gatewayConfiguration.memoryContextPorts}};
   state.portsMutator?.(p);return p;
  };
  const preparation=await prepareGeneralReadInstallation({familyIds:[f.family],newId:randomUUID,taskPorts});

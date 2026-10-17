@@ -7,7 +7,7 @@ import canonicalize from 'canonicalize';
 import proposal from '../../../../docs/coordination/proposals/native-kb-observation-20261017/golden.json' with {type:'json'};
 import {canonicalSha256} from '../../validate.mjs';
 import {createNativeReadObservation,assertNativeReadObservation,encodeNativeReadObservation,decodeNativeReadObservation,
- NATIVE_READ_OBSERVATION_OPERATIONS,FUNDING_READ_OPERATIONS} from '../validate.mjs';
+ NATIVE_READ_OBSERVATION_OPERATIONS,FUNDING_READ_OPERATIONS,MODE_READ_OPERATIONS} from '../validate.mjs';
 
 const vector=proposal.vectors[0],binding={operation:vector.operation,request:vector.request};
 const encoded=value=>Buffer.from(canonicalize(value),'utf8').toString('base64url');
@@ -26,8 +26,8 @@ test('KB literal is the exact independently reviewed PR118 fixture, with both or
 test('six finite operations preserve the exact original five funding fixture bytes',()=>{
  const bytes=readFileSync(new URL('./golden.json',import.meta.url));
  assert.equal(gitBlob(bytes),'9536c662f4abd3487b6bdb4000ff06a0250f44ae');
- assert.deepEqual(NATIVE_READ_OBSERVATION_OPERATIONS,[...FUNDING_READ_OPERATIONS,'search_client_knowledge']);
- assert.equal(new Set(NATIVE_READ_OBSERVATION_OPERATIONS).size,6);
+ assert.deepEqual(NATIVE_READ_OBSERVATION_OPERATIONS,[...FUNDING_READ_OPERATIONS,'search_client_knowledge',...MODE_READ_OPERATIONS]);
+ assert.equal(new Set(NATIVE_READ_OBSERVATION_OPERATIONS).size,11);
 });
 
 test('KB canonical request, literal carrier and receiving match in both directions without a new clock',()=>{

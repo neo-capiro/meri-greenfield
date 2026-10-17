@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "kind": "process-capture",
+  "node": "v24.19.0",
+  "executable": "C:\\Users\\Administrator\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe",
+  "args": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "--test-timeout=20000",
+    "--test-reporter=tap",
+    "apps/gateway/sources/outreach-query/test/handler.test.mjs",
+    "apps/gateway/sources/outreach-query/test/name-correction.test.mjs"
+  ],
+  "cwd": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-16\\task-4\\meri-resolution-next",
+  "startedAt": "2026-10-17T05:19:28.085Z",
+  "finishedAt": "2026-10-17T05:19:29.569Z",
+  "status": 0,
+  "signal": null,
+  "error": null,
+  "truncated": false,
+  "stdoutBytes": 7025,
+  "stderrBytes": 0,
+  "rerunReason": "Repair new synthetic identity principal and fixture failure translation, retaining initial21/27 output; production unchanged."
+}
