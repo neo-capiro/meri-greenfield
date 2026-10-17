@@ -1,5 +1,9 @@
 # Personal Meri preferences
 
+Continuation status: [runtime integration and migration inventory](CODEX-USER-PREFERENCES-RUNTIME-20261017.md) supersedes the original
+mount/allocation holds below. The existing centrally reserved settings `0001` is adopted unchanged; no new migration is allocated.
+Production frontend validation is recorded in its companion PR62 follow-up. Database setup/execution still requires this task's own window.
+
 Owner: Codex task-6. New independent branch `codex/meri-user-preferences-task6-20261017` starts at Meri PR98
 `caa7810ff19c09c8f7ea1c2524c025f36f99ccd6`; the frontend branch starts at PR60
 `e0b47a34d00b8c181420188ed39a1d849e25ec0a`. Previous task-update PR100/102/61 and their branches stay intact.

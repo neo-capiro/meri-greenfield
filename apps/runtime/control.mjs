@@ -8,7 +8,7 @@ import {createTemporalConversationDispatcher} from '../control/conversations/tem
 import {createActionSessionOwner} from '../control/action-host/session/owner.mjs';
 import {createActionSessionApplication} from '../control/action-host/session/http.mjs';
 import {createNativeCapabilityClient} from './native-client.mjs';
-import {readSecret,fault,compileControlTaskRouterConfiguration} from './config.mjs';
+import {readSecret,fault,compileControlTaskRouterConfiguration,compileControlUserPreferencesConfiguration} from './config.mjs';
 import {createTemporalAuthorization,createTemporalTokenFileReader} from './temporal-authorization.mjs';
 import {listenRuntime} from './http-server.mjs';
 import {createControlRouteApplications,listenControlApplications} from './control-route-boundary.mjs';
@@ -41,6 +41,7 @@ import {createRunnerPoststartAuthority} from './native-authority/runner-poststar
 import {createRunnerPoststartTaskReader} from './native-authority/runner-poststart-task-reader.mjs';
 import {createRunnerPoststartCertificateIssuer} from './native-authority/runner-poststart-certificate-issuer.mjs';
 import {createRunnerPoststartApplication} from './native-authority/runner-poststart-http.mjs';
+import {createRuntimeUserPreferences} from './user-preferences.mjs';
 function productBinding(options){
  const c=own(options,[],['productPorts','productPortsFactory']);
  if(c.productPorts!==undefined&&c.productPortsFactory!==undefined)throw fault('PRODUCT_PORTS_CONFIGURATION');
@@ -76,6 +77,7 @@ export function assembleControl(options){
   if(types.isPromise(supplied)){Promise.prototype.then.call(supplied,undefined,()=>{});throw fault('PRODUCT_PORTS_CONFIGURATION');}
  }
  const ports=composeRuntimePorts(canonical,captured.factory?captureRuntimePorts(supplied):captured.ports);
+ const userPreferences=createRuntimeUserPreferences({configuration,pool,ports,now});
  if(ports.transitionAuthority&&typeof ports.identityContext.resolveTransitionContext!=='function')throw fault('PRODUCT_PORTS_CONFIGURATION');
  const retention=retentionGate(configuration,pool,ports,artifactRecovery,now);
  const store=createPostgresConversationStore({pool,now,...(ports.transitionAuthority?{transitionAuthority:ports.transitionAuthority}:{})});
@@ -88,8 +90,8 @@ export function assembleControl(options){
  const port=operation=>({signal,...input})=>native.call(operation,input,{signal});
  const service=createConversationLifecycleService({service:basic,store,dispatcher,sessions,now,maxRequestMs:configuration.limits.requestMs,checkpoints:{read:port('checkpoint/read')},nativeAdmission:ports.continuationAdmission,approvals:ports.approvals});
  const conversation=createConversationLifecycleApplication({service,now,maxRequestBytes:configuration.limits.requestBytes,maxRequestMs:configuration.limits.requestMs}),input=createConversationInputApplication({service,now,maxRequestBytes:configuration.limits.requestBytes,maxRequestMs:configuration.limits.requestMs}),initialInput=createConversationInitialInputApplication({service,now,maxRequestBytes:configuration.limits.requestBytes,maxRequestMs:Math.min(configuration.limits.requestMs,conversationInitialInputMetadata.limits.maxRequestMs)}),issuance=createActionSessionApplication({owner:sessions,now,maxRequestMs:configuration.limits.requestMs}),worker=createWorkerRunApplication({service:telemetry?telemetry.observeRunOwner(service):service,sessions,native,configuration,now});
- const products=createRuntimeProductApplications({configuration,sessions,ports,now,conversationStore:store,...(retention?{retention:retention.gate,suppression:{journal:retention.journal,serving:retention.serving}}:{})});
- return Object.freeze({service,store,sessions,retention,productReadiness:()=>productReadiness({ports,retention,sourceEnabled:configuration.sourceEnabled}),downloads:products.downloads,application:{handle:request=>{const product=products.handle(request);if(product!==null)return product;const path=new URL(request.url).pathname;return path==='/api/action-followthrough/session'?issuance.handle(request):path==='/api/conversations/input/admit'?input.handle(request):path===conversationInitialInputMetadata.routes.allocate.path?initialInput.handle(request):path.startsWith('/internal/')?worker.handle(request):conversation.handle(request);}},close:()=>sessions.close()});
+ const products=createRuntimeProductApplications({configuration,sessions,ports,now,conversationStore:store,userPreferences,...(retention?{retention:retention.gate,suppression:{journal:retention.journal,serving:retention.serving}}:{})});
+ return Object.freeze({service,store,sessions,retention,userPreferences,productReadiness:()=>productReadiness({ports,retention,sourceEnabled:configuration.sourceEnabled,userPreferences:userPreferences.state()}),downloads:products.downloads,application:{handle:request=>{const product=products.handle(request);if(product!==null)return product;const path=new URL(request.url).pathname;return path==='/api/action-followthrough/session'?issuance.handle(request):path==='/api/conversations/input/admit'?input.handle(request):path===conversationInitialInputMetadata.routes.allocate.path?initialInput.handle(request):path.startsWith('/internal/')?worker.handle(request):conversation.handle(request);}},close(){userPreferences.close();return sessions.close();}});
 }
 /** Multi-run owners composed only by trusted startup (never named in configuration): the durable issuance store over the control
  * database (migration 0011) and the file-backed capability-material authority under the configured owner-only directory. A declared
@@ -104,6 +106,7 @@ export async function startControl(configuration,options={}){
  if(configuration.nativeCandidate===undefined&&Object.keys(reads).length)throw fault('PREPARED_CANDIDATE_CONFIGURATION');
  if(configuration.nativeCandidate!==undefined){compilePreparedCandidateConfiguration(configuration.nativeCandidate,configuration.versions);if(configuration.native.capabilityFile!==configuration.nativeCandidate.controlCapabilityFile)throw fault('PREPARED_CANDIDATE_CONFIGURATION');}
  const routerPlan=compileControlTaskRouterConfiguration(configuration);
+ compileControlUserPreferencesConfiguration(configuration);
  const mounted=compiled.factory?{productPortsFactory:compiled.factory}:{productPorts:compiled.ports};
  let pool,connection,listener,privateListener,assembly,candidate,router,poststartAuthority,poststartApplication,routerClients,closing,authorization,telemetry;const close=()=>closing??=(async()=>{const errors=[];for(const method of [()=>listener?.close(),()=>privateListener?.close(),()=>poststartAuthority?.close(),()=>router?.close(),()=>candidate?.close(),()=>assembly?.close(),()=>connection?.close(),()=>authorization?.close(),()=>pool?.end(),()=>telemetry?.close(),()=>routerClients?.forEach(client=>client.destroy())])try{await method();}catch(error){errors.push(error);}if(errors.length)throw new AggregateError(errors,'CONTROL_CLEANUP_UNKNOWN');})();
  try{
@@ -152,7 +155,7 @@ export async function startControl(configuration,options={}){
   async function readiness({signal}){signal?.throwIfAborted();if(authorization&&!authorization.healthy())throw fault('TEMPORAL_AUTHORIZATION_UNAVAILABLE');await pool.query("SELECT to_regclass('meri_conversations.runs') AS runs, to_regclass('meri_conversations.events') AS events, to_regclass('meri_conversations.controls') AS controls, to_regclass('meri_conversations.selected_outputs') AS selected_outputs, to_regclass('meri_conversations.initial_inputs') AS initial_inputs").then(result=>{if(!result.rows[0]||typeof result.rows[0].initial_inputs!=='string'||Object.values(result.rows[0]).some(v=>v===null))throw fault('DATABASE_SCHEMA_UNAVAILABLE');});
    // Declared retention serving needs its projections present and a recovered watermark: a fenced or stale projection is reconciled from
    // the ledger here before serving, and a missing dependency is exposed, never bypassed.
-   if(assembly.retention){const r=await pool.query('SELECT name,to_regclass(name) AS relation FROM unnest($1::text[]) AS names(name)',[assembly.retention.tables]);if(r.rows.length!==assembly.retention.tables.length||r.rows.some(row=>row.relation===null))throw fault('RETENTION_SCHEMA_UNAVAILABLE');await assembly.retention.startup.ensureServing();}await connection.withDeadline(Date.now()+configuration.limits.requestMs,()=>signal?connection.withAbortSignal(signal,()=>connection.workflowService.getSystemInfo({})):connection.workflowService.getSystemInfo({}));await native.readiness({signal});signal?.throwIfAborted();return {product:assembly.productReadiness()};}
+   if(assembly.retention){const r=await pool.query('SELECT name,to_regclass(name) AS relation FROM unnest($1::text[]) AS names(name)',[assembly.retention.tables]);if(r.rows.length!==assembly.retention.tables.length||r.rows.some(row=>row.relation===null))throw fault('RETENTION_SCHEMA_UNAVAILABLE');await assembly.retention.startup.ensureServing();}await connection.withDeadline(Date.now()+configuration.limits.requestMs,()=>signal?connection.withAbortSignal(signal,()=>connection.workflowService.getSystemInfo({})):connection.workflowService.getSystemInfo({}));await native.readiness({signal});await assembly.userPreferences.readiness({signal});signal?.throwIfAborted();return {product:assembly.productReadiness()};}
   await readiness({signal});({publicListener:listener,privateListener}=await listenControlApplications({configuration,publicApplication:application,privateApplication,readiness,signal:candidate?undefined:signal,listen:listenRuntime}));
   return Object.freeze({address:listener.address,...(privateListener?{privateAddress:privateListener.address}:{}),downloads,close});
  }catch(error){await close().catch(()=>{});throw Object.assign(fault('CONTROL_STARTUP_FAILED'),{cause:error});}
