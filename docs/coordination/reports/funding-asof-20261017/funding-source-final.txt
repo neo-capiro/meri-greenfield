@@ -1,0 +1,36 @@
+✔ search_funding_opportunities: fixed native POST preserves source JSON, original request and the exact trusted observation (206.3784ms)
+✔ get_funding_opportunity_requirements: fixed native POST preserves source JSON, original request and the exact trusted observation (28.5661ms)
+✔ get_funding_opportunity: fixed native POST preserves source JSON, original request and the exact trusted observation (13.8973ms)
+✔ get_opportunity_client_context: fixed native POST preserves source JSON, original request and the exact trusted observation (33.3248ms)
+✔ get_opportunity_government_landscape: fixed native POST preserves source JSON, original request and the exact trusted observation (21.9434ms)
+✔ search_funding_opportunities: a legacy or substituted result clock is rejected without rewriting or retry (13.1118ms)
+✔ get_funding_opportunity_requirements: a legacy or substituted result clock is rejected without rewriting or retry (4.4648ms)
+✔ get_funding_opportunity: a legacy or substituted result clock is rejected without rewriting or retry (4.2047ms)
+✔ get_opportunity_client_context: a legacy or substituted result clock is rejected without rewriting or retry (4.5825ms)
+✔ get_opportunity_government_landscape: a legacy or substituted result clock is rejected without rewriting or retry (5.6907ms)
+✔ all five require the frozen explicit client UUID; model clocks, unknown fields and coercion fail before native credentials (11.836ms)
+✔ capture is inert and case-equivalent identity does not rewrite the native request (7.5066ms)
+✔ one exact client subject/resource is required and shared tenant scope remains admissible (11.3847ms)
+✔ missing or revoked current owner cannot fall back to static credentials (13.2375ms)
+✔ trusted context is exact, pinned and never inferred from an output or ambient clock (6.6862ms)
+✔ search retains raw defaults, effective page clamp and independent source-generated clock (24.438ms)
+✔ detail preserves UTF-16 continuation and unknown money without mixing grant and contract channels (20.9029ms)
+✔ requirements retain pending/rejected/superseded extraction facts and UTF-16 quote spans (16.3552ms)
+✔ requirement exhausted pages preserve available coverage and no-documents stays distinct from no conditions (14.1875ms)
+✔ client context distinguishes broad match counts from sampled deadline counts and the sampled next deadline (17.3673ms)
+✔ landscape preserves inferred basis, full fingerprint, exact source coverage and original truncation counts (22.9833ms)
+✔ native feature, wall, unsupported-source and not-found refusals retain exact null data and no absence claim (67.3602ms)
+✔ whole DTO admission refuses unknown private fields, oversize envelopes and source identity changes (67.1969ms)
+✔ failed native HTTP never retries legacy mode and current credential proof remains tenant/request bound (19.5234ms)
+✔ revoked decisions, cancellation and expiry cannot release a stored reply (8.2329ms)
+✔ factory refuses nonread, foreign, duplicate, empty and wrong-version operation declarations (1.1303ms)
+✔ observation construction forbids request/result bridges, foreign families and missing or invented observation modes (0.7457ms)
+✔ unqualified delegated transport cannot silently discard a funding observation (0.607ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1571.233

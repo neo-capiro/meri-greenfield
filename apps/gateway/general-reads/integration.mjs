@@ -49,7 +49,8 @@ import * as f37 from './families/research-legal-legislation.mjs';
 import * as f38 from './families/research-legal-news.mjs';
 import * as f39 from './families/outreach-query.mjs';
 import * as f40 from './families/business-development.mjs';
-const modules=[f0,f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13,f14,f15,f16,f17,f18,f19,f20,f21,f22,f23,f24,f25,f26,f27,f28,f29,f30,f31,f32,f33,f34,f35,f36,f37,f38,f39,f40];
+import * as f41 from './families/funding-opportunities.mjs';
+const modules=[f0,f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13,f14,f15,f16,f17,f18,f19,f20,f21,f22,f23,f24,f25,f26,f27,f28,f29,f30,f31,f32,f33,f34,f35,f36,f37,f38,f39,f40,f41];
 const byFamily=new Map(modules.map(f=>[f.id,f]));
 export const GENERAL_READ_ADAPTER_FAMILIES=Object.freeze(modules.map(f=>f.id));
 const STORED_NATIVE_SOURCE_PATHS=Object.freeze([
@@ -64,6 +65,7 @@ const STORED_NATIVE_SOURCE_PATHS=Object.freeze([
  'apps/gateway/dispatch/tool-dispatch.mjs',
 ]);
 const SOURCE_PATHS=Object.freeze({
+ 'funding-opportunities':['apps/gateway/sources/funding-opportunities/handler.mjs','apps/gateway/sources/funding-opportunities/request-context.mjs',...STORED_NATIVE_SOURCE_PATHS],
  'public-data':['apps/gateway/sources/public-data/handler.mjs',...STORED_NATIVE_SOURCE_PATHS],
  'client-knowledge-search':['apps/gateway/sources/client-knowledge-search/handler.mjs',...STORED_NATIVE_SOURCE_PATHS],
  'state-status-votes':['apps/gateway/sources/state-status-votes/handler.mjs',...STORED_NATIVE_SOURCE_PATHS],
@@ -208,7 +210,11 @@ const SOURCE_PATHS=Object.freeze({
 });
 const COMMON=['apps/gateway/general-reads/integration.mjs','apps/gateway/general-reads/registration.mjs',
  'apps/gateway/sources/retained-reads/native-families.mjs',
- 'apps/gateway/sources/source-admission.mjs','apps/gateway/sources/json-response.mjs'];
+ 'apps/gateway/sources/source-admission.mjs','apps/gateway/sources/json-response.mjs',
+ // The integration module statically imports the new family, including its private wire, for every composition.
+ 'apps/gateway/general-reads/families/funding-opportunities.mjs',
+ 'apps/gateway/sources/funding-opportunities/handler.mjs','apps/gateway/sources/funding-opportunities/request-context.mjs',
+ 'packages/contracts/native-read-observation-0.2/schema.json','packages/contracts/native-read-observation-0.2/validate.mjs'];
 const TRANSPORT_FIELDS=['origin','endpoints','getCredentials','credentialsForCall','authorizeResultForCall','delegatedTransport','fetchImpl','maxRequestMs','maxResponseBytes','readMemoryEligibility','registry'];
 export async function createGeneralReadFamilyHandlers(configuration){
  const {families,now,newId}=ownFields(configuration,['families','now','newId']);
@@ -218,7 +224,7 @@ export async function createGeneralReadFamilyHandlers(configuration){
   const family=byFamily.get(id),usesIds=['action-items-complete','operational-reads'].includes(id);
   const values=assertFamilyHandlerSet(id,family.createHandlers({...ownFields(transport,[],TRANSPORT_FIELDS),now,...(usesIds?{newId}:{})}));
   const labels=[...COMMON,`apps/gateway/general-reads/families/${id}.mjs`,...SOURCE_PATHS[family.sourceDirectory],...(NATIVE_READ_FAMILIES.includes(id)?['apps/runtime/native-authority/native-read-credentials/source-read-context.mjs','apps/runtime/native-authority/native-read-credentials/conversation-authority.mjs','apps/gateway/sources/public-domain-hearings/request-context.mjs','apps/gateway/sources/research-legal-legislation/request-context.mjs','apps/gateway/sources/research-legal-news/request-context.mjs','apps/gateway/sources/outreach-query/request-context.mjs','apps/gateway/sources/state-status-votes/request-context.mjs','apps/gateway/sources/business-development/request-context.mjs']:[])];
-  const sourceFiles=await Promise.all(labels.map(async label=>({label,sha256:createHash('sha256').update(await readFile(new URL(`../../../${label}`,import.meta.url))).digest('hex')})));
+  const sourceFiles=await Promise.all([...new Set(labels)].map(async label=>({label,sha256:createHash('sha256').update(await readFile(new URL(`../../../${label}`,import.meta.url))).digest('hex')})));
   for(const {operation,execute} of values){const key=`${operation.id}@${operation.version}`;
    if(handlers.has(key))deny('GATEWAY_CONFIGURATION');
    handlers.set(key,Object.freeze({execute,sourceFiles,sourceSha256:canonicalSha256(sourceFiles)}));

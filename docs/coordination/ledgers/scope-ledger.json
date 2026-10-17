@@ -9803,7 +9803,7 @@
   ],
   "sourceExposure": {
     "schema": "meri-selected-source-exposure/1",
-    "note": "Source paths and manifest declarations are evidence only. Partial-input adapters remain missing complete coverage and cannot be SDK-exposed. No qualification, authority, credential, native producer or live availability is inferred.",
+    "note": "Source paths and manifest declarations are evidence only. Partial source adapters remain missing complete coverage and cannot be SDK-exposed. No qualification, authority, credential, native producer or live availability is inferred.",
     "provenance": {
       "packages/contracts/retrieval-0.2/catalog.json": "bac14e7e5dd740493914ff6a14b95cb5e6d7cbd09ee48b1cbd994d5eac728c08",
       "scripts/scope-ledger/backend-producers.json": "ad5fb22cb7f4ef3ffa78f4a730c74bb28e59c0a689a2cec7d5a74a45d7ef6ea4",
@@ -9811,8 +9811,8 @@
       "apps/worker/conversation/reads/families.mjs": "8545a57d8107f1ec31f7ec8ff12a547bdd7c1112668c97e76b60ae0e51faa6fa",
       "apps/worker/conversation/reads/server.mjs": "d3a28df432f44e20849ceeadf7a38e73bed3748f9f36057d1d22057d4ab829b5",
       "apps/gateway/general-reads/registration.mjs": "80c5a64e10f279ccf7201d85b04c7ded1739416b98d64eb84098ec8937a2300a",
-      "apps/gateway/general-reads/integration.mjs": "12c3a2f9352e1127a769c8d551186758114b9010c41f8cb673cf4477d58f11c9",
-      "scripts/general-reads/adapters.json": "89e4d43527512af2f4d5dd5cdfeabdec65980cbfc7108c26dcd14077d75aae90",
+      "apps/gateway/general-reads/integration.mjs": "753e55fe0ec3605558011477e990085b701f1e2cd545ccaea31b3137c1673d7e",
+      "scripts/general-reads/adapters.json": "f919958a7605195042684ea5e449ff743b12c1e332935f5d0168177ab13397f2",
       "apps/gateway/general-reads/families/meeting-source.mjs": "66ee8011d604721b5977ebb601199b4fdaf3149143effb79645898f41fb186b8",
       "apps/gateway/general-reads/families/action-items-complete.mjs": "abfd9f60479cb4c4cbe9d876d04bbebd9755227461673b026f4c6d74c02b7ceb",
       "apps/gateway/general-reads/families/operational-reads.mjs": "d19d6d3297c955b68d2b5048695493f62cc98e367a9469eb5abb8e86e4320563",
@@ -9847,10 +9847,15 @@
       "apps/gateway/general-reads/families/federal-market.mjs": "0e509b9b5b3517beb94a4c95f272aad6bdd74eff82b26f0923c94c01f9be22f1",
       "apps/gateway/general-reads/families/public-data.mjs": "1b8b94efa01f877f18a4567a55fc2be40bcb9773cea70968542265cd7b8ceda7",
       "apps/gateway/general-reads/families/client-knowledge-search.mjs": "5f4322df74dbe24fa353e7bec95163310aa984339c0b799b70c3ed31dbe44d4c",
+      "apps/gateway/general-reads/families/funding-opportunities.mjs": "056a354b15e9e96fdc25a8a6aed3c37c911f8435259b485c525a157e746a1530",
+      "apps/gateway/sources/funding-opportunities/handler.mjs": "de7e192577b676423a085249e6af23df76882444d4029f0d2d3e8896de473836",
+      "apps/gateway/sources/funding-opportunities/request-context.mjs": "fff73469a064a7b2db64b92e46b1734cd77f207f6f0c2bc96981000d13bbaddb",
+      "apps/gateway/sources/retained-reads/native-families.mjs": "c8aaab1d26fb94e4e07a8531b46c9261c5f04400ca8a4a25709b33ba0def2803",
+      "packages/contracts/native-read-observation-0.2/schema.json": "5bbe3c113adf2cd1b338ee432c2fb73ec368b0a336d0632fbcf4a929cb81d0de",
+      "packages/contracts/native-read-observation-0.2/validate.mjs": "f02d651c9d157428040473eba39dd899498a6acb811483522940f6115a7281fe",
       "apps/gateway/general-reads/families/business-development.mjs": "a3803cf3ff177c066141d18769f69bcbe8c848b4e8fd2c58abc5af09541ff73b",
       "apps/gateway/sources/business-development/handler.mjs": "c3b2bb330120dbdcdf977b2d6e130368882d1a6fe16c8e103062b2b1159fcaa8",
       "apps/gateway/sources/business-development/request-context.mjs": "9adc5306a39b2925c10ba43fc20f0fdb36a0b8242fe69d4634c72dbf54b9b46e",
-      "apps/gateway/sources/retained-reads/native-families.mjs": "3fc227ac1790df9aca09d9eead8743db9769d42c5e6b4a1ff422f184cbafc4c5",
       "apps/gateway/general-reads/families/outreach-query.mjs": "01c3a0dce192fd08031d95c298cfe7e2d5ad3f5d31143cd644df01baf03585ec",
       "apps/gateway/sources/outreach-query/handler.mjs": "2cdd52d577b139bfe1c3832cdd5e1b3f9b7f252d9b7bb5697061bfa5ecd232e5",
       "apps/gateway/sources/outreach-query/request-context.mjs": "6c9f038dc144600e72f434c730d52ece8a27a3b0837438f5364844aeb8a4e992",
@@ -10004,10 +10009,10 @@
       "sourceReadsWithHistoricalOnlySkillDeclaration": 1,
       "sourceReadsWithAdmittedSkillSourceRoute": 11,
       "completeSourceAdapters": 56,
-      "partialSourceAdapters": 10,
-      "absentSourceAdapters": 16,
+      "partialSourceAdapters": 15,
+      "absentSourceAdapters": 11,
       "existingSourceAdaptersWithoutGeneralExposure": 0,
-      "partialSourceAdaptersWithoutGeneralExposure": 10,
+      "partialSourceAdaptersWithoutGeneralExposure": 15,
       "missingSourceAdapters": 26,
       "missingAdaptersDeclaredBySkills": 17,
       "missingAdaptersWithoutSkillDeclaration": 9,
@@ -10263,6 +10268,16 @@
         ]
       },
       {
+        "family": "funding-opportunities",
+        "operations": [
+          "get_funding_opportunity",
+          "get_funding_opportunity_requirements",
+          "get_opportunity_client_context",
+          "get_opportunity_government_landscape",
+          "search_funding_opportunities"
+        ]
+      },
+      {
         "family": "outreach-query",
         "operations": [
           "query_outreach"
@@ -10404,7 +10419,7 @@
         ]
       }
     ],
-    "missingAdapterAction": "Missing complete coverage includes partial-input adapters and absent adapters. Complete the canonical gateway adapter and operation-specific trusted dispatch/current-resource context using an admitted exact producer/endpoint protocol. A schema/normalizer binding, skill declaration or restricted branch is not complete operation coverage. No guessed endpoint, default credential or permissive generic query is allocated.",
+    "missingAdapterAction": "Missing complete coverage includes partial source adapters and absent adapters. Complete the canonical gateway adapter and operation-specific trusted dispatch/current-resource context using an admitted exact producer/endpoint protocol. A schema/normalizer binding, skill declaration, restricted branch or pending native bridge is not complete operation coverage. No guessed endpoint, default credential or permissive generic query is allocated.",
     "rows": [
       {
         "id": "get_research_portfolio",
@@ -13323,11 +13338,18 @@
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
         "generalOperations": [],
-        "adapterPaths": [],
+        "adapterPaths": [
+          "apps/gateway/general-reads/families/funding-opportunities.mjs",
+          "apps/gateway/sources/funding-opportunities/handler.mjs",
+          "apps/gateway/sources/funding-opportunities/request-context.mjs",
+          "apps/gateway/sources/retained-reads/native-families.mjs",
+          "packages/contracts/native-read-observation-0.2/schema.json",
+          "packages/contracts/native-read-observation-0.2/validate.mjs"
+        ],
         "requiredContextKeys": [
           "asOf"
         ],
-        "state": "adapter-missing",
+        "state": "adapter-partial",
         "backendProducer": {
           "operation": "search_funding_opportunities",
           "family": "funding-opportunities",
@@ -13361,11 +13383,18 @@
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
         "generalOperations": [],
-        "adapterPaths": [],
+        "adapterPaths": [
+          "apps/gateway/general-reads/families/funding-opportunities.mjs",
+          "apps/gateway/sources/funding-opportunities/handler.mjs",
+          "apps/gateway/sources/funding-opportunities/request-context.mjs",
+          "apps/gateway/sources/retained-reads/native-families.mjs",
+          "packages/contracts/native-read-observation-0.2/schema.json",
+          "packages/contracts/native-read-observation-0.2/validate.mjs"
+        ],
         "requiredContextKeys": [
           "asOf"
         ],
-        "state": "adapter-missing",
+        "state": "adapter-partial",
         "backendProducer": {
           "operation": "get_funding_opportunity_requirements",
           "family": "funding-opportunities",
@@ -13398,11 +13427,18 @@
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
         "generalOperations": [],
-        "adapterPaths": [],
+        "adapterPaths": [
+          "apps/gateway/general-reads/families/funding-opportunities.mjs",
+          "apps/gateway/sources/funding-opportunities/handler.mjs",
+          "apps/gateway/sources/funding-opportunities/request-context.mjs",
+          "apps/gateway/sources/retained-reads/native-families.mjs",
+          "packages/contracts/native-read-observation-0.2/schema.json",
+          "packages/contracts/native-read-observation-0.2/validate.mjs"
+        ],
         "requiredContextKeys": [
           "asOf"
         ],
-        "state": "adapter-missing",
+        "state": "adapter-partial",
         "backendProducer": {
           "operation": "get_funding_opportunity",
           "family": "funding-opportunities",
@@ -13435,11 +13471,18 @@
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
         "generalOperations": [],
-        "adapterPaths": [],
+        "adapterPaths": [
+          "apps/gateway/general-reads/families/funding-opportunities.mjs",
+          "apps/gateway/sources/funding-opportunities/handler.mjs",
+          "apps/gateway/sources/funding-opportunities/request-context.mjs",
+          "apps/gateway/sources/retained-reads/native-families.mjs",
+          "packages/contracts/native-read-observation-0.2/schema.json",
+          "packages/contracts/native-read-observation-0.2/validate.mjs"
+        ],
         "requiredContextKeys": [
           "asOf"
         ],
-        "state": "adapter-missing",
+        "state": "adapter-partial",
         "backendProducer": {
           "operation": "get_opportunity_client_context",
           "family": "funding-opportunities",
@@ -13472,11 +13515,18 @@
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
         "generalOperations": [],
-        "adapterPaths": [],
+        "adapterPaths": [
+          "apps/gateway/general-reads/families/funding-opportunities.mjs",
+          "apps/gateway/sources/funding-opportunities/handler.mjs",
+          "apps/gateway/sources/funding-opportunities/request-context.mjs",
+          "apps/gateway/sources/retained-reads/native-families.mjs",
+          "packages/contracts/native-read-observation-0.2/schema.json",
+          "packages/contracts/native-read-observation-0.2/validate.mjs"
+        ],
         "requiredContextKeys": [
           "asOf"
         ],
-        "state": "adapter-missing",
+        "state": "adapter-partial",
         "backendProducer": {
           "operation": "get_opportunity_government_landscape",
           "family": "funding-opportunities",

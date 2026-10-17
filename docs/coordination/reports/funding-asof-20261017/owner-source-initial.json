@@ -1,0 +1,14 @@
+{
+  "args": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "apps/runtime/native-authority/test/funding-asof-context.test.mjs",
+    "apps/runtime/test/funding-source-integration.test.mjs"
+  ],
+  "scope": "New funding owner/source tests only; synthetic bridge and scripted SQL, no native qualification.",
+  "status": 1,
+  "executable": "C:/Users/Administrator/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe",
+  "cwd": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-16\\task-4\\meri-resolution-next"
+}

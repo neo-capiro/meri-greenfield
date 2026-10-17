@@ -7,6 +7,7 @@ import {assertNewsSliceRequest,newsSliceContext} from '../../../gateway/sources/
 import {captureOutreachListClientSelection} from '../../../gateway/sources/outreach-query/request-context.mjs';
 import {assertStoredStateRequest} from '../../../gateway/sources/state-status-votes/request-context.mjs';
 import {captureBusinessDevelopmentResource} from '../../../gateway/sources/business-development/request-context.mjs';
+import {captureFundingClientSelection,assertFundingClientSubject} from '../../../gateway/sources/funding-opportunities/request-context.mjs';
 
 const UUID=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u;
 const refuse=code=>{throw nativeReadFault(code);};
@@ -49,10 +50,18 @@ export function assertSourceReadRequest(contract,request,subject){
  if(contract.binding.group==='research-legal-news')assertNewsSliceRequest(contract.descriptor.operation,request);
  if(contract.binding.group==='outreach-query')captureOutreachListClientSelection(request);
  if(contract.binding.group==='business-development')captureBusinessDevelopmentResource(contract.descriptor.operation,request,subject);
+ if(contract.binding.group==='funding-opportunities')assertFundingClientSubject(subject,captureFundingClientSelection(contract.descriptor.operation,request));
 }
 
 export function createSourceReadContext({contract,proof,native,defaultCongress,now,priorContext}){
  const group=contract.binding.group;
+ if(group==='funding-opportunities'){
+  const selected=captureFundingClientSelection(contract.descriptor.operation,proof.request);
+  assertFundingClientSubject(proof.subject,selected);assertNativeVisibleClients(native,[selected.clientId]);
+  if(priorContext)return {asOf:priorContext.asOf};
+  const at=now();if(!Number.isSafeInteger(at)||at<0||at>8640000000000000)refuse('ACCESS_DENIED');
+  return {asOf:new Date(at).toISOString()};
+ }
  if(['bill-text','federal-legislation'].includes(group))return {defaultCongress};
  if(group==='acquisition-personnel')return {actorRole:native.actorRole};
  if(group==='research-legal-legislation'||group==='research-legal-news'){
