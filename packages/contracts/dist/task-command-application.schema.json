@@ -1,0 +1,622 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:task-command-application:0.1.0",
+  "$defs": {
+    "TaskUpdateRaw": {
+      "$ref": "#/$defs/Canonical_TaskUpdateRaw_549267ce"
+    },
+    "TaskUpdateArguments": {
+      "$ref": "#/$defs/Canonical_TaskUpdateArguments_48509a7a"
+    },
+    "TaskUpdateApprovalProposal": {
+      "$ref": "#/$defs/Canonical_TaskUpdateApprovalProposal_1f70e582"
+    },
+    "TaskUpdateResult": {
+      "$ref": "#/$defs/Canonical_TaskUpdateResult_029549a8"
+    },
+    "TaskCommandPrepareRequest": {
+      "type": "object",
+      "properties": {
+        "arguments": {
+          "$ref": "#/$defs/TaskUpdateRaw"
+        }
+      },
+      "required": [
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    "TaskCommandExecuteRequest": {
+      "type": "object",
+      "properties": {
+        "proposal": {
+          "$ref": "#/$defs/TaskUpdateApprovalProposal"
+        }
+      },
+      "required": [
+        "proposal"
+      ],
+      "additionalProperties": false
+    },
+    "TaskCommandPrepareResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "const": "approval_required"
+        },
+        "proposal": {
+          "$ref": "#/$defs/TaskUpdateApprovalProposal"
+        }
+      },
+      "required": [
+        "status",
+        "proposal"
+      ],
+      "additionalProperties": false
+    },
+    "TaskCommandExecuteResponse": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "observed"
+            },
+            "outcome": {
+              "type": "object",
+              "properties": {
+                "receipt": {
+                  "$ref": "#/$defs/Canonical_CommandReceipt_ac49ee1e"
+                },
+                "result": {
+                  "$ref": "#/$defs/TaskUpdateResult"
+                }
+              },
+              "required": [
+                "receipt",
+                "result"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "status",
+            "outcome"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "indeterminate"
+            },
+            "outcome": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "status",
+            "outcome"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "TaskCommandErrorResponse": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "string",
+              "enum": [
+                "ACCESS_DENIED",
+                "APPLICATION_CLOCK",
+                "APPLICATION_CONFIGURATION",
+                "CANCELLED",
+                "COMMAND_APPROVAL_REFUSED",
+                "COMMAND_AUTHORITY_REFUSED",
+                "COMMAND_COMMIT_UNCERTAIN",
+                "COMMAND_OUTCOME_UNKNOWN",
+                "COMMAND_PREPARATION_REFUSED",
+                "COMMAND_REFUSED",
+                "DEADLINE",
+                "EXECUTION_AUTHORITY_REFUSED",
+                "INVALID_BODY",
+                "INVALID_CONTENT_LENGTH",
+                "INVALID_JSON",
+                "INVALID_REQUEST",
+                "INVALID_UTF8",
+                "LOOKUP_REPLAY",
+                "LOOKUP_UNAVAILABLE",
+                "METHOD_NOT_ALLOWED",
+                "NOT_FOUND",
+                "REQUEST_FAILED",
+                "REQUEST_TOO_LARGE",
+                "RESPONSE_TOO_LARGE",
+                "SESSION_SCOPE_REFUSED",
+                "TASK_COMMAND_UNAVAILABLE",
+                "UNAUTHENTICATED",
+                "UNAVAILABLE",
+                "UNSUPPORTED_CONTENT_ENCODING",
+                "UNSUPPORTED_MEDIA_TYPE"
+              ]
+            },
+            "outcome": {
+              "type": "string",
+              "enum": [
+                "NOT_DISPATCHED",
+                "UNKNOWN",
+                "RESULT_NOT_RELEASED",
+                "STORED_NOT_RELEASED",
+                "NOT_STORED",
+                "READ_UNAVAILABLE"
+              ]
+            }
+          },
+          "required": [
+            "code",
+            "outcome"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "error"
+      ],
+      "additionalProperties": false
+    },
+    "TaskCommandExpectedBinding": {
+      "type": "object",
+      "properties": {
+        "tenantId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "actorId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "runId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "tenantId",
+        "actorId",
+        "conversationId",
+        "runId"
+      ],
+      "additionalProperties": false
+    },
+    "TaskUpdateContext": {
+      "$ref": "#/$defs/Canonical_TaskUpdateContext_90c41ed0"
+    },
+    "TaskUpdateCommand": {
+      "$ref": "#/$defs/Canonical_TaskUpdateCommand_b73e3ce0"
+    },
+    "RunBinding": {
+      "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+    },
+    "Canonical_TaskUpdateRaw_549267ce": {
+      "type": "object",
+      "properties": {
+        "taskId": {
+          "type": "string"
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "dueDate": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "taskId"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_TaskUpdateArguments_48509a7a": {
+      "type": "object",
+      "properties": {
+        "taskId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "mode": {
+          "const": "unconditional_patch"
+        },
+        "patch": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 240
+            },
+            "status": {
+              "enum": [
+                "todo",
+                "in_progress",
+                "done",
+                "blocked",
+                "canceled"
+              ]
+            },
+            "dueDate": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            }
+          },
+          "required": [],
+          "additionalProperties": false,
+          "minProperties": 1
+        }
+      },
+      "required": [
+        "taskId",
+        "mode",
+        "patch"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_RunBinding_84f2304c": {
+      "type": "object",
+      "properties": {
+        "tenantId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "actorId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "runId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "attemptId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "workerId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "writerFence": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "tenantId",
+        "actorId",
+        "conversationId",
+        "runId",
+        "attemptId",
+        "workerId",
+        "writerFence"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_Scope_f882edb5": {
+      "type": "object",
+      "properties": {
+        "tenantId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "tenant",
+            "client",
+            "mailbox",
+            "memory",
+            "document",
+            "private-user",
+            "public"
+          ]
+        },
+        "resourceId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "policyRevision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "tenantId",
+        "kind",
+        "resourceId",
+        "policyRevision"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_TaskUpdateCommand_b73e3ce0": {
+      "type": "object",
+      "properties": {
+        "contractVersion": {
+          "const": "0.2.0"
+        },
+        "commandId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "action": {
+          "const": "task.update"
+        },
+        "arguments": {
+          "$ref": "#/$defs/Canonical_TaskUpdateArguments_48509a7a"
+        },
+        "attachments": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "idempotencyKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "contractVersion",
+        "commandId",
+        "binding",
+        "action",
+        "arguments",
+        "attachments",
+        "scopes",
+        "idempotencyKey"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_Identity_aba0a4e9": {
+      "type": "object",
+      "properties": {
+        "tenantId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "actorId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "tenantId",
+        "actorId"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_TaskUpdateApprovalProposal_1f70e582": {
+      "type": "object",
+      "properties": {
+        "proposalId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "command": {
+          "$ref": "#/$defs/Canonical_TaskUpdateCommand_b73e3ce0"
+        },
+        "commandSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "requiredApprover": {
+          "$ref": "#/$defs/Canonical_Identity_aba0a4e9"
+        }
+      },
+      "required": [
+        "proposalId",
+        "command",
+        "commandSha256",
+        "createdAt",
+        "expiresAt",
+        "requiredApprover"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_TaskUpdateResult_029549a8": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "title": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "todo",
+            "in_progress",
+            "done",
+            "blocked",
+            "canceled"
+          ]
+        },
+        "dueDate": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "status",
+        "dueDate",
+        "clientId",
+        "updatedAt"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_CommandReceipt_ac49ee1e": {
+      "type": "object",
+      "properties": {
+        "receiptId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "commandId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "commandSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "idempotencyKey": {
+          "type": "string",
+          "minLength": 1
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "outcome": {
+          "type": "string",
+          "enum": [
+            "succeeded",
+            "denied",
+            "failed",
+            "indeterminate"
+          ]
+        },
+        "sourceTransactionId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "completedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "authorizationDecisionId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "receiptId",
+        "commandId",
+        "commandSha256",
+        "idempotencyKey",
+        "binding",
+        "outcome",
+        "sourceTransactionId",
+        "completedAt",
+        "scopes",
+        "authorizationDecisionId"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_TaskUpdateContext_90c41ed0": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        }
+      },
+      "required": [
+        "binding"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

@@ -15,7 +15,8 @@ function optionsData(options,allowed) {
   }return out;
 }
 export function createScheduleLifecycle(options) {
-  const {scheduleClient,workflowClient,scheduleOwner,authorize,clock=Date.now}=optionsData(options,['scheduleClient','workflowClient','scheduleOwner','authorize','clock']);
+  const {scheduleClient,workflowClient,scheduleOwner,authorize,runCancellation,clock=Date.now}=optionsData(options,['scheduleClient','workflowClient','scheduleOwner','authorize','clock','runCancellation']);
+  const cancelRuns=runCancellation===undefined?undefined:sdkMethod(runCancellation,'cancel');
   if(typeof authorize!=='function'||typeof clock!=='function')denySchedule('SCHEDULE_OPTIONS');
   const owner=Object.fromEntries(['claim','markDispatching','commitKnown','markUnknown','list'].map(k=>[k,sdkMethod(scheduleOwner,k)]));
   // Connections are explicitly trusted borrowed SDK objects; no client is created/closed.
@@ -53,7 +54,7 @@ export function createScheduleLifecycle(options) {
       receipt(await lifetime.run(()=>owner.claim(binding,lifetime.check)),'CLAIMED');claimed=true;
       await current('before_dispatch');
       receipt(await lifetime.run(()=>owner.markDispatching(binding,lifetime.check)),'DISPATCHING');
-      await mutateTemporalSchedule({scheduleClient,workflowClient,binding,lifetime,effect:(phase,fn)=>c.rpc(phase==='cancel_run'?workflowConnection:scheduleConnection,`before_${phase}`,fn)});
+      await mutateTemporalSchedule({scheduleClient,workflowClient,binding,lifetime,...(cancelRuns===undefined?{}:{cancelRuns:()=>cancelRuns({binding,signal:lifetime.signal,deadlineMs:c.deadline()})}),effect:(phase,fn)=>c.rpc(phase==='cancel_run'?workflowConnection:scheduleConnection,`before_${phase}`,fn)});
       receipt(await lifetime.run(()=>owner.commitKnown(binding,lifetime.check)),'ACKNOWLEDGED');acknowledged=true;
       await current('before_release');lifetime.check();
       return frozenScheduleData({operation:binding.intent.operation,intentId:binding.intent.intentId,generation:binding.intent.generation,projection:binding.intent.projection,outcome:'ACKNOWLEDGED',physicalStopProven:false});

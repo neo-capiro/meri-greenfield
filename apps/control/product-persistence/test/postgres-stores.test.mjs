@@ -32,11 +32,11 @@ test('real PostgreSQL journal and settings store over the proposed tables',{skip
   const listed=await journal.listOwn({tenantId:tenant,proposerActorId:'actor-1',clientIds:[],clientId:null,cursor:null,limit:5});
   assert.equal(listed.length,1);assert.deepEqual(listed[0].submission,{state:'SUBMITTED',reviewId});assert.equal(listed[0].candidateSha256,built.candidateSha256);
   await assert.rejects(pool.query('UPDATE meri_memory.candidates SET candidate_sha256=$3 WHERE tenant_id=$1 AND candidate_id=$2',[tenant,built.candidate.candidateId,'0'.repeat(64)]));
-  const store=createPostgresSettingsStore({pool}),audit=n=>({auditId:randomUUID(),actorId:'actor-1',platformSha256:null,changedFields:[`f${n}`]});
+  const store=createPostgresSettingsStore({pool}),audit=()=>({auditId:randomUUID(),actorId:'actor-1',platformSha256:null});
   assert.equal((await store.save({kind:'user',tenantId:tenant,actorId:'actor-1',expectedRevision:0,document:{theme:'dark'},audit:audit(1)})).revision,1);
   await assert.rejects(store.save({kind:'user',tenantId:tenant,actorId:'actor-1',expectedRevision:0,document:{theme:'light'},audit:audit(2)}),e=>productFailure(e)?.code==='SETTINGS_REVISION_CONFLICT');
   assert.deepEqual((await store.read({kind:'user',tenantId:tenant,actorId:'actor-1'})).document,{theme:'dark'});
-  assert.deepEqual((await store.listAudit({tenantId:tenant,beforeSequence:null,limit:5})).map(e=>e.changedFields),[['f1']]);
+  assert.deepEqual((await store.listAudit({tenantId:tenant,beforeSequence:null,limit:5})).map(e=>e.changedFields),[['theme']]);
  }finally{
   try{await pool.query('DELETE FROM meri_memory.candidates WHERE tenant_id=$1',[tenant]);await pool.query('DELETE FROM meri_settings.user_preferences WHERE tenant_id=$1',[tenant]);}finally{await pool.end();}
  }

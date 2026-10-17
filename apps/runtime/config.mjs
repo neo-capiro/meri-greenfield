@@ -12,6 +12,8 @@ import {parseTemporalProductTokenWriterConfiguration} from './temporal-product-t
 import {parseTemporalIssuerDeliveryConfiguration} from './temporal-issuer/client.mjs';
 import {parseTemporalProductBootstrapConfiguration} from './temporal-product-bootstrap-configuration.mjs';
 import {assertNativeReadConfiguration} from '../../packages/contracts/runtime-0.2/reads.mjs';
+import {compileControlUserPreferencesConfiguration} from './user-preferences.mjs';
+export {compileControlUserPreferencesConfiguration};
 export const fault=code=>Object.assign(new Error(code),{code});
 const requireValue=(condition,code='RUNTIME_CONFIGURATION')=>{if(!condition)throw fault(code);};
 const integer=(n,min,max)=>Number.isSafeInteger(n)&&n>=min&&n<=max;
@@ -53,7 +55,8 @@ export function compileControlTaskRouterConfiguration(configuration){
 export function validateConfiguration(raw,role){
  requireValue(['control','temporal-worker','conversation-runner'].includes(role));const c=data(raw);
  const common=['version','profile','sourceEnabled','limits','native'];
- own(c,[...common,...(role==='control'?['http','database','temporal','sessions','versions']:role==='temporal-worker'?['http','temporal']:['binding','versions','workspace','proxyOrigin'])],role==='conversation-runner'?['bootstrap','captureOwnsClose','remoteTask']:role==='control'?['nativeCandidate','retention','telemetry','downloadLinks','privateHttp','taskRouter']:[]);
+ own(c,[...common,...(role==='control'?['http','database','temporal','sessions','versions']:role==='temporal-worker'?['http','temporal']:['binding','versions','workspace','proxyOrigin'])],role==='conversation-runner'?['bootstrap','captureOwnsClose','remoteTask']:role==='control'?['nativeCandidate','retention','telemetry','downloadLinks','privateHttp','taskRouter','userPreferences']:[]);
+ if(c.userPreferences!==undefined){requireValue(role==='control','USER_PREFERENCES_CONFIGURATION');compileControlUserPreferencesConfiguration(c);}
  // Retention serving is an explicit declaration: when enabled, control composes the canonical read gate over its own database and
  // readiness requires the retention projections; when absent, no gate exists and nothing pretends otherwise.
  // Purge is an explicit switch that this source only accepts off: activation is a reviewed change, never a configuration value.

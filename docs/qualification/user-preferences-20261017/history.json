@@ -1,0 +1,86 @@
+{
+  "status": "HOLD",
+  "actualRunSource": {
+    "commit": "69a61c36b1b98e5bc02591f2b4a4c32f14b828cf",
+    "tree": "9f6df335b70b3c91a6ec1c9e71fd4a1dc0b9a1af",
+    "sameTreePublishedCommit": "10da73795ab5789cb5724d0db45db50bdecb5da3",
+    "reservedSqlBlob": "048a834c4335f97aa5f8691afc3c310188ec4388"
+  },
+  "pureGuardPassed": 1,
+  "realCasesPassed": 0,
+  "realCasesCancelled": 10,
+  "assertionFailuresReported": 0,
+  "setupHook": "scrubbed failure (unavailable)",
+  "dumpRestore": "UNRUN",
+  "clusterFootprintBytesAfterInitdb": 41086944,
+  "cleanup": {
+    "ownedClusterStopped": true,
+    "dataRemoved": true,
+    "passwordFileRemoved": true,
+    "port55436Free": true,
+    "confirmedAt": "2026-10-17T02:18:38.9384575Z",
+    "existing5432Untouched": true
+  },
+  "retry": {
+    "status": "AUTOMATIC_APPROVAL_REVIEW_DENIED_BEFORE_EXECUTION",
+    "furtherRetry": false
+  },
+  "portableWrapper": {
+    "status": "UNEXECUTED_NEW_HANDOFF_SOURCE",
+    "databaseExecution": false,
+    "productionFixtureChanged": false,
+    "sourceOnlyAddressFixProposal": "host(inet_server_addr()) AS address"
+  },
+  "receiptProvenance": [
+    {
+      "file": "receipts/02-sandbox-native-start.json",
+      "sourceFile": "native-start-attempt-1.json",
+      "originalSha256": "cf7acc96803b489c7be04320fed1ee2ef9f5f30fe295d9fbb2cdc9a3120c6955",
+      "sanitized": false
+    },
+    {
+      "file": "receipts/03-source-owner-preflight.json",
+      "sourceFile": "source-owner-preflight.json",
+      "originalSha256": "56f89078d1710ad96bc01fcc101afcad366b1ccddca8c8e358194fffff5852b3",
+      "sanitized": false
+    },
+    {
+      "file": "receipts/04-real-suite.json",
+      "sourceFile": "receipt.json",
+      "originalSha256": "6eff5f95826a8605298d680894708cfcc26cbea6da3f19a2114a27e0187a7b27",
+      "sanitized": false
+    },
+    {
+      "file": "receipts/05-diagnostic-rerun-denied.json",
+      "sourceFile": "diagnostic-rerun-denied.json",
+      "originalSha256": "1869b0710f035762631923aab3967b80d5905cd6fba42d144f7e24c1eadcaacd",
+      "sanitized": false
+    },
+    {
+      "file": "receipts/04-real-suite-output.txt",
+      "sourceFile": "tests.txt",
+      "originalSha256": "ece7e57906ca0c7364edc58e8d718c0f80eac9909584067804a781746e21f569",
+      "sanitized": true
+    },
+    {
+      "file": "receipts/02-sandbox-native-start.txt",
+      "sourceFile": "native-start-attempt-1.txt",
+      "originalSha256": "fd79cf928f8a5b0f62ca2bce7468160e3b0027d7457b81a468e6e1b263c91534",
+      "sanitized": false
+    }
+  ],
+  "omitted": [
+    "raw PostgreSQL log",
+    "raw account/SID diagnostic",
+    "raw driver",
+    "temporary credentials",
+    "database URL",
+    "data directory",
+    "dump file"
+  ],
+  "limitations": [
+    "Original initial disk-preflight receipt was overwritten and is explicitly reconstructed.",
+    "The local driver was edited after its real run; no raw-driver checksum is claimed as the executed driver identity.",
+    "Canonical source/test/migration identities and original receipt hashes are retained."
+  ]
+}

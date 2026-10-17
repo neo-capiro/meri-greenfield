@@ -9,7 +9,7 @@ const outcome=(value,code=null)=>({outcome:value,occurrenceKey:'k',binding:null,
 const attributes=(pairs=[{key:{name:'TemporalScheduledById',type:'KEYWORD'},value:'application/schedule-a'},{key:{name:'TemporalScheduledStartTime',type:'DATETIME'},value:at}])=>new TypedSearchAttributes(pairs);
 function fixture(typedSearchAttributes=attributes()){
  const a=new Activator({info:{workflowType:'meriScheduledDispatchWorkflow',workflowId:'schedule-a-2026-10-15T12:00:00Z',runId:'00000000-0000-4000-8000-000000000008',taskQueue:'meri-schedules',typedSearchAttributes,searchAttributes:{},unsafe:{isReplaying:false},historyLength:1,historySize:0},
-  now:0,randomnessSeed:new Uint8Array([1]),registeredActivityNames:new Set(['dispatchScheduledOccurrence','reconcileScheduledOccurrence']),getTimeOfDay:()=>0,stackTracesEnabled:false,showStackTraceSources:false});
+  now:0,randomnessSeed:new Uint8Array([1]),registeredActivityNames:new Set(['dispatchScheduledOccurrence','reconcileScheduledOccurrence','cancelScheduledOccurrence']),getTimeOfDay:()=>0,stackTracesEnabled:false,showStackTraceSources:false});
  setActivator(a);let settled=false;const result=meriScheduledDispatchWorkflow(firing);result.then(()=>settled=true,()=>settled=true);
  let seen=0;
  const next=()=>{const commands=a.commands.filter(c=>c.scheduleActivity||c.startTimer),command=commands[seen++];assert.ok(command,'expected a command');return command;};
@@ -45,5 +45,10 @@ test('UNKNOWN without evidence keeps the firing open and blocked; a failed activ
 });
 test('a firing without server-set schedule attributes is refused with no activity; cancellation ends the wait',async()=>{
  const f=fixture(attributes([]));try{assert.deepEqual(await f.result,{outcome:'REFUSED',occurrenceKey:null,binding:null,code:'SCHEDULE_OCCURRENCE_UNSCHEDULED',admitted:false});assert.equal(f.activities().length,0);}finally{setActivator(undefined);}
- const g=fixture();try{await g.resolve('dispatchScheduledOccurrence',outcome('UNKNOWN'));await turn();g.a.cancelWorkflow({});await assert.rejects(g.result,/cancel/i);assert.equal(g.activities().length,1);}finally{setActivator(undefined);}
+ const g=fixture();try{await g.resolve('dispatchScheduledOccurrence',outcome('UNKNOWN'));await turn();g.a.cancelWorkflow({});await turn();
+  // Intentional job semantics: cancellation asks the actual effect owner to retire work before this wrapper rejects.
+  const cleanup=g.activities().at(-1);assert.equal(cleanup.activityType,'cancelScheduledOccurrence');assert.equal(cleanup.retryPolicy.maximumAttempts,1);
+  g.a.resolveActivity({seq:cleanup.seq,result:{completed:{result:defaultPayloadConverter.toPayload(outcome('DISPATCHED'))}}});
+  await assert.rejects(g.result,/cancel/i);assert.equal(g.activities().length,2);
+ }finally{setActivator(undefined);}
 });

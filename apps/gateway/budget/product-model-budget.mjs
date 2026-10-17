@@ -6,8 +6,10 @@ import {validateShape} from '../../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {createPostgresAdmittedRunOwner} from './admitted-run-owner.mjs';
 import {parseAdmittedGrantSet} from './admitted-run-binding.mjs';
-import {digest,same} from './tool-budget-binding.mjs';
+import {digest,same,allocation} from './tool-budget-binding.mjs';
 import {refuse} from './postgres-budget-store.mjs';
+import {readOccurrenceCost} from './occurrence-cost-scope.mjs';
+import {budgetTables} from './namespace.mjs';
 
 const slot=/^[A-Za-z0-9_-]{1,128}$/u;
 const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u;
@@ -93,6 +95,8 @@ export function createProductModelReservation(configuration){
    if(existing.length)refuse('PRODUCT_MODEL_SLOT_USED');
    const totals=(await client.query("SELECT COALESCE(sum(CASE WHEN state='UNKNOWN' THEN hold_micro_usd ELSE 0 END),0) AS held, COALESCE(sum(CASE WHEN run_id=$1 THEN CASE WHEN state='UNKNOWN' THEN hold_micro_usd ELSE consumed_micro_usd END ELSE 0 END),0) AS run_total FROM meri_product_budget.budget_liabilities",[selected.binding.runId])).rows;
    if(totals.length!==1||money(budget.consumed_micro_usd)+money(totals[0].held)+observed.hold>money(budget.cap_micro_usd)||money(totals[0].run_total)+observed.hold>money(current.allocation.budgets.maxCostMicroUSD))refuse('PRODUCT_MODEL_BUDGET_EXHAUSTED');
+   const occurrence=await readOccurrenceCost({client,tables:budgetTables('product'),allocation:current.allocation,parseAllocation:allocation});
+   if(occurrence&&occurrence.totalMicroUSD+observed.hold>occurrence.maxCostMicroUSD)refuse('PRODUCT_MODEL_BUDGET_EXHAUSTED');
    // The first Core read prevented borrowing SQL for an archived conversation.
    // Repeat inside this lease immediately before recording the UNKNOWN hold.
    limitDeadline(await currentConversation(c.checkCurrentConversation,selected,c.selectedClientId,{...v,deadlineMs:Math.min(v.deadlineMs,current.deadlineMs)},c.now,c.limits.maxRequestMs));

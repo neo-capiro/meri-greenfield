@@ -5,25 +5,15 @@ import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {assertPlatformCapabilityLimits,resolveCapabilityPolicy} from '../../worker/conversation/capabilities/policy-resolution.mjs';
 import {ProductError,asProductError,refuse} from '../product-access/errors.mjs';
 import {closed,intIn} from '../product-access/shape.mjs';
-import {TENANT_SETTINGS_DEFAULTS,USER_PREFERENCE_DEFAULTS,releasedUserPreferences,tenantSettings,userPreferences} from './documents.mjs';
+import {TENANT_SETTINGS_DEFAULTS,tenantSettings} from './documents.mjs';
+import {createUserPreferencesService} from './user-service.mjs';
+import {settingsRevision,settingsAuditId} from './save-metadata.mjs';
+export {changedFields} from './save-metadata.mjs';
 export const TENANT_SETTINGS_PERMISSION='tenant.settings.manage';
-const UUID4=/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u;
-/** Dotted paths (two levels) whose values differ; content-free, for the audit trail. */
-export function changedFields(before,after){
- const out=[];
- for(const key of new Set([...Object.keys(before??{}),...Object.keys(after)])){
-  const a=before?.[key],b=after[key];if(canonicalSha256(a??null)===canonicalSha256(b??null))continue;
-  const nested=v=>v&&typeof v==='object'&&!Array.isArray(v);
-  if(nested(a)||nested(b)){for(const sub of new Set([...Object.keys(a??{}),...Object.keys(b??{})]))if(canonicalSha256(a?.[sub]??null)!==canonicalSha256(b?.[sub]??null))out.push(`${key}.${sub}`);}
-  else out.push(key);
- }
- return Object.freeze(out.sort());
-}
-const revisionOf=value=>{if(!intIn(value,0,Number.MAX_SAFE_INTEGER-1))refuse('SETTINGS_REQUEST_INVALID',null,'expectedRevision');return value;};
 export function createSettingsService(options){
  const {store,readPlatformLimits,newId}=options??{};
  if(['read','save','listAudit'].some(k=>typeof store?.[k]!=='function')||typeof readPlatformLimits!=='function'||typeof newId!=='function')throw new ProductError('PRODUCT_CONFIGURATION');
- const id=()=>{const v=newId();if(typeof v!=='string'||!UUID4.test(v))throw new ProductError('PRODUCT_CONFIGURATION');return v;};
+ const id=()=>settingsAuditId(newId),user=createUserPreferencesService({store,newId});
  async function platform(signal){
   try{return assertPlatformCapabilityLimits(await readPlatformLimits({signal}));}catch{refuse('SETTINGS_PLATFORM_UNAVAILABLE');}
  }
@@ -40,18 +30,7 @@ export function createSettingsService(options){
  }
  const guard=fn=>async(...args)=>{try{return await fn(...args);}catch(error){throw asProductError(error,'SETTINGS_UNAVAILABLE');}};
  return Object.freeze({
-  readUser:guard(async({principal,signal})=>{
-   const stored=await store.read({kind:'user',tenantId:principal.tenantId,actorId:principal.actorId,signal});
-   return Object.freeze({revision:stored?.revision??0,preferences:releasedUserPreferences(stored?.document??USER_PREFERENCE_DEFAULTS,principal)});
-  }),
-  saveUser:guard(async({principal,body,signal})=>{
-   const r=closed(body,['expectedRevision','preferences'],[],'SETTINGS_REQUEST_INVALID'),expectedRevision=revisionOf(r.expectedRevision);
-   const preferences=userPreferences(r.preferences,principal);
-   const stored=await store.read({kind:'user',tenantId:principal.tenantId,actorId:principal.actorId,signal});
-   const saved=await store.save({kind:'user',tenantId:principal.tenantId,actorId:principal.actorId,expectedRevision,document:preferences,signal,
-    audit:{auditId:id(),actorId:principal.actorId,platformSha256:null,changedFields:changedFields(stored?.document??USER_PREFERENCE_DEFAULTS,preferences)}});
-   return Object.freeze({revision:saved.revision,preferences});
-  }),
+  ...user,
   /** Every member sees the tenant default timezone and their own effective capabilities; admins also see the record and platform limits. */
   readTenant:guard(async({principal,signal})=>{
    const limits=await platform(signal),{revision,settings}=await tenantRecord(principal,signal);
@@ -61,12 +40,11 @@ export function createSettingsService(options){
   }),
   saveTenant:guard(async({principal,body,signal})=>{
    admin(principal);
-   const r=closed(body,['expectedRevision','settings'],[],'SETTINGS_REQUEST_INVALID'),expectedRevision=revisionOf(r.expectedRevision);
+   const r=closed(body,['expectedRevision','settings'],[],'SETTINGS_REQUEST_INVALID'),expectedRevision=settingsRevision(r.expectedRevision);
    const limits=await platform(signal),settings=tenantSettings(r.settings,limits);
-   // The store's revision compare-and-set is the conflict owner; a concurrent save between this read and the write refuses there.
-   const current=await tenantRecord(principal,signal);
-   const saved=await store.save({kind:'tenant',tenantId:principal.tenantId,expectedRevision,document:settings,signal,
-    audit:{auditId:id(),actorId:principal.actorId,platformSha256:canonicalSha256(limits),changedFields:changedFields(current.settings,settings)}});
+   // The store owns both CAS and audit differences from its actual locked revision.
+   const saved=await store.save({kind:'tenant',tenantId:principal.tenantId,expectedRevision,document:settings,initialDocument:TENANT_SETTINGS_DEFAULTS,signal,
+    audit:{auditId:id(),actorId:principal.actorId,platformSha256:canonicalSha256(limits)}});
    return Object.freeze({revision:saved.revision,defaultTimezone:settings.defaultTimezone,capabilityPolicy:settings.capabilityPolicy,...effective(limits,settings,principal)});
   }),
   readAudit:guard(async({principal,body,signal})=>{

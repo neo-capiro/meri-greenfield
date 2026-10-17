@@ -2,8 +2,8 @@
  * and its approval-metadata owner. It never calls `executeApproved`: the result is the owner's immutable
  * `approval_required` proposal, executable later only through the existing approval route with fresh authority.
  *
- * Only `create_task` is preparable: the approval-metadata owner persists task.create proposals only
- * (`createTaskCreateApprovalMetadataOwner`). Other command actions stay unavailable until their proposal owner exists.
+ * Task creation and task updates use their action-specific approval-metadata owners. Other command actions stay
+ * unavailable until their proposal owner exists.
  *
  * Effect classification for the replay journal: a refusal before the metadata owner was called, or the owner's own
  * NOT_STORED, is `none`; anything after the owner was called (UNKNOWN, STORED_NOT_RELEASED, a refused release) is
@@ -12,7 +12,7 @@ import {createCommandToolInterface} from '../commands/tool-interface.mjs';
 import {data,own} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {intentFault} from './faults.mjs';
-export const COMMAND_INTENT_OPERATIONS=Object.freeze({create_task:'task.create'});
+export const COMMAND_INTENT_OPERATIONS=Object.freeze({create_task:'task.create',update_task:'task.update'});
 /** @param {{commandOptions:object}} configuration the exact `createCommandToolInterface` options of the trusted composition */
 export function createCommandIntentPreparer(configuration){
  const {commandOptions}=own(configuration,['commandOptions']),options=own(commandOptions,['operation','action','outputShape','commandContext','validators','assertProposal','approvalMetadataOwner','executor','now','limits']);

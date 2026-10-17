@@ -1,0 +1,73 @@
+✔ PostgreSQL target guard is inert without opt-in and refuses wrong destinations before pg initialization (2.3416ms)
+▶ explicitly allocated task-6 real PostgreSQL user preferences
+  ✖ two simultaneous absent-row creators produce one revision and one audit
+  ✖ two simultaneous updates of the same existing revision produce one additional audit
+  ✖ real audit uniqueness failure rolls the document update and audit back atomically
+  ✖ cancellation after a real insert claim rolls back before audit and leaves the pool usable
+  ✖ reserved append-only trigger refuses audit UPDATE and preserves the stored evidence
+  ✖ actual native user API persists complete preferences and isolates actor and tenant documents
+  ✖ current membership loss before persistence refuses the write and acknowledged changed membership withholds release
+  ✖ real schema readiness opens the actual runtime preference adapter and complete save/readback
+  ✖ real committed write with withheld pg acknowledgement reports UNKNOWN and supports read-only recovery
+  ✖ provided app role has narrow user/audit/sequence privileges and no audit destruction, tenant access or schema administration
+✖ explicitly allocated task-6 real PostgreSQL user preferences (83.873ms)
+ℹ tests 11
+ℹ suites 1
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 10
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 702.7932
+
+✖ failing tests:
+
+test at apps\control\settings\user-application\test\postgres-qualification.test.mjs:17:26
+✖ two simultaneous absent-row creators produce one revision and one audit
+  'test did not finish before its parent and was cancelled'
+
+test at apps\control\settings\user-application\test\postgres-qualification.test.mjs:17:26
+✖ two simultaneous updates of the same existing revision produce one additional audit
+  'test did not finish before its parent and was cancelled'
+
+test at apps\control\settings\user-application\test\postgres-qualification.test.mjs:17:26
+✖ real audit uniqueness failure rolls the document update and audit back atomically
+  'test did not finish before its parent and was cancelled'
+
+test at apps\control\settings\user-application\test\postgres-qualification.test.mjs:17:26
+✖ cancellation after a real insert claim rolls back before audit and leaves the pool usable
+  'test did not finish before its parent and was cancelled'
+
+test at apps\control\settings\user-application\test\postgres-qualification.test.mjs:17:26
+✖ reserved append-only trigger refuses audit UPDATE and preserves the stored evidence
+  'test did not finish before its parent and was cancelled'
+
+test at apps\control\settings\user-application\test\postgres-qualification.test.mjs:17:26
+✖ actual native user API persists complete preferences and isolates actor and tenant documents
+  'test did not finish before its parent and was cancelled'
+
+test at apps\control\settings\user-application\test\postgres-qualification.test.mjs:17:26
+✖ current membership loss before persistence refuses the write and acknowledged changed membership withholds release
+  'test did not finish before its parent and was cancelled'
+
+test at apps\control\settings\user-application\test\postgres-qualification.test.mjs:17:26
+✖ real schema readiness opens the actual runtime preference adapter and complete save/readback
+  'test did not finish before its parent and was cancelled'
+
+test at apps\control\settings\user-application\test\postgres-qualification.test.mjs:17:26
+✖ real committed write with withheld pg acknowledgement reports UNKNOWN and supports read-only recovery
+  'test did not finish before its parent and was cancelled'
+
+test at apps\control\settings\user-application\test\postgres-qualification.test.mjs:132:2
+✖ provided app role has narrow user/audit/sequence privileges and no audit destruction, tenant access or schema administration
+  'test did not finish before its parent and was cancelled'
+
+test at apps\control\settings\user-application\test\postgres-qualification.test.mjs:52:1
+✖ explicitly allocated task-6 real PostgreSQL user preferences (83.873ms)
+  Error: PostgreSQL qualification failed (unavailable); private driver detail withheld
+      at scrubbed (<SOURCE>/apps/control/settings/user-application/test/postgres-qualification-fixture.mjs:20:299)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestHook.run (node:internal/test_runner/test:1389:7)
+      at async Suite.runHook (node:internal/test_runner/test:1269:9)
+      at async Suite.run (node:internal/test_runner/test:1863:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
