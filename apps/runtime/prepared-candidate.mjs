@@ -100,6 +100,15 @@ export function assemblePreparedCandidate(options){
   sdkSessionSnapshot:Object.freeze({readSnapshot:sessionCall('sdkSessionSnapshot','readSnapshot')})});
  return Object.freeze({original,controlCapabilitySha256:controlDigest,identityContext,productPorts,native:localNative,application,bindApplication(application){if(outerApplication)refuse();outerApplication=application;},readiness:localNative.readiness,async close(){try{await runRegistry?.close();}finally{await kickoff.close();}}});
 }
+/** The startup owners handed to assemblePreparedCandidate, the task router and the runner poststart authority. The
+ * poststart authority signs runner certificates against the durable run issuer, so `issuer` must travel with the
+ * multi-run ports: omitting it refused every control start whose taskRouter.poststart is enabled (observed live 2026-10-17). */
+export function composePreparedRunBindings(b,initialBindings){
+ if(!b||typeof b.issuer!=='object'||b.issuer===null||typeof b.admissionForBinding!=='function')refuse();
+ return {runIssuance:b.runIssuance,issuanceIntent:b.issuanceIntent,admissionForBinding:b.admissionForBinding,issuer:b.issuer,
+  ...(b.prepareOriginal?{prepareOriginal:b.prepareOriginal}:{}),
+  ...(initialBindings?{initialBindings,prepareInitial:b.prepareInitial,retireInitial:b.retireInitial,configurationSha256:b.configurationSha256,proposeInitialExpiry:b.proposeInitialExpiry}:{})};
+}
 /** CLI-owned clients use the approved control workload role; task receives no AWS credentials. */
 export async function startPreparedCandidate({configuration,pool,signal,issuanceStore,capabilityAuthority,modelGrants,initialBindings,createReadsRuntime,generalReads}){
  const config=compilePreparedCandidateConfiguration(configuration.nativeCandidate,configuration.versions),reads=captureReadRuntimeOptions({...(createReadsRuntime===undefined?{}:{createReadsRuntime}),...(generalReads===undefined?{}:{generalReads})});signal?.throwIfAborted();
@@ -107,7 +116,7 @@ export async function startPreparedCandidate({configuration,pool,signal,issuance
  const [identity,task,control,proxy]=await Promise.all([config.identity.credentialFile,config.taskCapabilityFile,config.controlCapabilityFile,config.proxyCredentialFile].map(readSecret));signal?.throwIfAborted();
  // Multi-run mode (S2): the three ports are composed from startup-supplied owners; a declared multi-run mode without them fails startup
  // here instead of advertising the fixed first-run path.
- const bindings=config.multiRun===undefined?{}:(()=>{const b=createPreparedRunBindings({configuration,pool,store:createPostgresConversationStore({pool}),credentials:{proxy:proxy.toString('utf8').trim(),control:control.toString('utf8').trim()},issuanceStore,capabilityAuthority,modelGrants,limits:{maxRequestMs:configuration.limits.requestMs,maxFactBytes:131072},...(initialBindings?{initialBindings}:{})});return {runIssuance:b.runIssuance,issuanceIntent:b.issuanceIntent,admissionForBinding:b.admissionForBinding,...(b.prepareOriginal?{prepareOriginal:b.prepareOriginal}:{}),...(initialBindings?{initialBindings,prepareInitial:b.prepareInitial,retireInitial:b.retireInitial,configurationSha256:b.configurationSha256,proposeInitialExpiry:b.proposeInitialExpiry}:{})};})();
+ const bindings=config.multiRun===undefined?{}:composePreparedRunBindings(createPreparedRunBindings({configuration,pool,store:createPostgresConversationStore({pool}),credentials:{proxy:proxy.toString('utf8').trim(),control:control.toString('utf8').trim()},issuanceStore,capabilityAuthority,modelGrants,limits:{maxRequestMs:configuration.limits.requestMs,maxFactBytes:131072},...(initialBindings?{initialBindings}:{})}),initialBindings);
  // The private router borrows exactly the durable issuance/allocation/admission owners already used for multi-run execution.
  // A configuration declaration alone never supplies authorization or a task route.
  const taskRouterAuthority=configuration.taskRouter===undefined?null:(()=>{
