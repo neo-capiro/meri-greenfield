@@ -58,7 +58,7 @@ class ProxyImageReceiptTests(unittest.TestCase):
             'set -Eeuo pipefail; source "$1"; '
             f'COMMIT={COMMIT}; ATTEMPT={ATTEMPT}; REPOSITORY_URI=111.dkr.ecr.us-east-1.amazonaws.com/r; REPOSITORY_NAME=r; '
             'RESULT_BUCKET=b; KMS_KEY_ARN=k; RESULTS=results/proxy-image/x/y; WORK="$2"; '
-            'ASSEMBLY_TAG=at; PRODUCT_TAG=pt; DIGEST[assembly]=sha256:' + "1" * 64 + '; DIGEST[product]=sha256:' + "2" * 64 + '; '
+            'ASSEMBLY_TAG=at; PRODUCT_TAG=pt; RUNTIME_IMAGE=cgr.dev/chainguard/wolfi-base@sha256:' + "3" * 64 + '; DIGEST[assembly]=sha256:' + "1" * 64 + '; DIGEST[product]=sha256:' + "2" * 64 + '; '
             'trap fail ERR; ')
         work = (self.tmp / "work").as_posix()
         return subprocess.run(["bash", "-c", prelude + snippet, "bash", SCRIPT.as_posix(), work],
@@ -80,6 +80,8 @@ class ProxyImageReceiptTests(unittest.TestCase):
         self.assertIn("receiptVersion=v-proxy-image-receipt.json", r.stdout)
         receipt = json.loads((self.tmp / "store" / "proxy-image-receipt.json").read_text())
         self.assertEqual((receipt["status"], receipt["commit"], receipt["product"]["scan"]), ("SUCCEEDED", COMMIT, {}))
+        self.assertEqual((receipt["assembly"]["role"], receipt["runtimeBase"]),
+                         ("builder-only", "cgr.dev/chainguard/wolfi-base@sha256:" + "3" * 64))
         self.assertIn("--checksum-sha256", self.log.read_text())
         self.assertNotIn("head-object", self.log.read_text())
 
@@ -112,6 +114,27 @@ class ProxyImageReceiptTests(unittest.TestCase):
                 self.assertNotIn("PROXY_IMAGE_SUCCEEDED", r.stdout)
                 self.assertIn("PROXY_IMAGE_FAILED phase=RECEIPT_UPLOAD", r.stderr)
                 self.assertIn("PROXY_IMAGE_FAILURE_RECORD_" + expect, r.stderr)
+
+    def test_only_the_product_scan_gates_and_the_builder_scan_is_recorded(self):
+        high = json.dumps(["COMPLETE", {"HIGH": 9, "MEDIUM": 2}])
+        for mode, code in (("record", 0), ("gate", 1)):
+            with self.subTest(mode=mode):
+                r = self.run_snippet(f"trap - ERR; scan_counts '{high}' {mode}")
+                self.assertEqual((r.returncode, json.loads(r.stdout)), (code, {"HIGH": 9, "MEDIUM": 2}))
+        for counts in ({}, {"MEDIUM": 4, "LOW": 1}, None):
+            with self.subTest(counts=counts):
+                r = self.run_snippet(f"trap - ERR; scan_counts '{json.dumps(['COMPLETE', counts])}' gate")
+                self.assertEqual(r.returncode, 0, r.stderr)
+        r = self.run_snippet(f"trap - ERR; scan_counts '{json.dumps(['COMPLETE', {'CRITICAL': 1}])}' gate")
+        self.assertEqual(r.returncode, 1)
+        r = self.run_snippet("trap - ERR; scan_counts '[\"COMPLETE\",{}]' skip")
+        self.assertNotEqual(r.returncode, 0)
+
+    def test_product_context_carries_the_snapshot_outside_copied_sources(self):
+        text = SCRIPT.read_text()
+        self.assertIn('scan assembly record; scan product gate', text)
+        self.assertIn('mv "$P/apps/proxy/product/runtime-packages" "$P/proxy-runtime-packages"', text)
+        self.assertIn('--build-arg "PROXY_RUNTIME_IMAGE=$RUNTIME_IMAGE"', text)
 
     def test_failure_record_generation_fallback_is_still_valid_json(self):
         r = self.run_snippet('python3() { return 1; }; false')

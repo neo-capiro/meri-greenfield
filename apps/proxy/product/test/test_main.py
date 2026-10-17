@@ -185,8 +185,21 @@ class MainTests(unittest.IsolatedAsyncioTestCase):
 
     def test_product_docker_recipe_preserves_pinned_separate_native_assembly(self):
         recipe = (Path(main.__file__).parent/"Dockerfile").read_text()
-        self.assertIn("ARG PROXY_ASSEMBLY_IMAGE\nFROM ${PROXY_ASSEMBLY_IMAGE}", recipe)
+        self.assertIn("ARG PROXY_ASSEMBLY_IMAGE\nARG PROXY_RUNTIME_IMAGE\n"
+                      "FROM ${PROXY_ASSEMBLY_IMAGE} AS assembly\nFROM ${PROXY_RUNTIME_IMAGE} AS product\n", recipe)
+        self.assertEqual(recipe.count("\nFROM "), 2)
         self.assertNotIn("ARG PROXY_ASSEMBLY_IMAGE=", recipe)
+        self.assertNotIn("ARG PROXY_RUNTIME_IMAGE=", recipe)
+        self.assertIn('os.environ["PROXY_RUNTIME_IMAGE"]==lock["runtimeImageUri"]', recipe)
+        # Wolfi packages only from the bind-mounted retained snapshot, never a layer or network.
+        self.assertIn("--repositories-file /dev/null", recipe)
+        self.assertIn("add --no-network --no-cache", recipe)
+        instructions = "\n".join(line for line in recipe.splitlines() if not line.lstrip().startswith("#"))
+        for forbidden in ("allow-untrusted", "apk upgrade", "apk update", "COPY proxy-runtime-packages",
+                          "dl-cdn", "packages.wolfi.dev"):
+            self.assertNotIn(forbidden, instructions)
+        self.assertIn("runtime_packages verify", recipe)
+        self.assertIn('"/usr/bin/dpkg","/var/lib/dpkg"', recipe)
         self.assertIn("@sha256:[0-9a-f]{64}", recipe)
         self.assertIn('"assembly-pins.json","requirements.lock"', recipe)
         self.assertIn('"boto3":"1.43.111"', recipe)
@@ -195,7 +208,8 @@ class MainTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("test_main.InstalledNativeStartup", recipe)
         self.assertIn('"-E", "-B", "-m", "apps.proxy.product.main"', recipe)
         self.assertNotIn("pip install", recipe)
-        self.assertNotIn("COPY --from=", recipe)
+        self.assertEqual({line.split()[1] for line in recipe.splitlines() if line.startswith("COPY --from=")},
+                         {"--from=assembly"})
 
 
 def _installed_native():
