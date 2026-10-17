@@ -7,7 +7,7 @@ export function productReadiness({ports,retention,sourceEnabled,userPreferences}
   owners.push({name,state:available.has(port)?'composed':'unavailable'});
  owners.push({name:'retention.startup',state:retention?'composed':'unavailable'},
   {name:'retention.ledgerSink',state:available.has('retentionLedgerSink')?'composed':'unavailable'},
-  {name:'tasks.commands',state:sourceEnabled!==true?'disabled':available.has('taskCommandApplication')?'composed':'unavailable'},
+  {name:'tasks.commands',state:sourceEnabled!==true?'disabled':available.has('taskCommandApplication')?'composed':available.has('taskCommandApplicationFactory')?ports.taskCommandApplicationFactory.state():'unavailable'},
   {name:'schedules.application',state:available.has('routinesApplicationFactory')?ports.routinesApplicationFactory.state():'unavailable'},
   {name:'schedules.inbox',state:available.has('routinesApplicationFactory')&&ports.routinesApplicationFactory.inboxState?ports.routinesApplicationFactory.inboxState():'unavailable'},
   {name:'sources.currentInstallation',state:sourceEnabled?'unavailable':'disabled'},
