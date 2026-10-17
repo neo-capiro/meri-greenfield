@@ -1,0 +1,22 @@
+Γ£ö durable update composition prepares then consumes one real budget invocation (150.8326ms)
+Γ£ö durable update composition prepares then consumes one real budget invocation with fresh resumed authority (31.8966ms)
+Γ£ö composition defaults source off and rejects a foreign producer binding without connecting (5.6197ms)
+Γ£ö explicit feature opt-in joins the same canonical intent preparer, approval executor and Fetch API; disabled is inert (28.2425ms)
+Γ£ö missing owners name the foreground application and separately supervised schedule worker (1.7046ms)
+Γ£ö composed owners do not conceal remaining source, model grant or placement gaps (1.3008ms)
+(node:22804) ExperimentalWarning: Module mocking is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:22804) DeprecationWarning: mock.module(): options.namedExports is deprecated. Use options.exports instead.
+Γ£ö task-command runtime defaults off and missing owners stay unavailable without invoking a configured application (10.0233ms)
+Γ£ö captured task application retains its receiver, cannot be replaced and rejects accessor/duplicate ownership (1.238ms)
+Γ£ö late task factory receives actual assembly sessions only after explicit source opt-in and retains captured methods (1.7368ms)
+Γ£ö static and late task owners cannot conflict; accessor and async factories do not become mounted authority (1.0732ms)
+Γ£ö runtime opt-in reaches the actual task-update API and existing separate approval gates before the fixed Core source (112.4449ms)
+Γä╣ tests 11
+Γä╣ suites 0
+Γä╣ pass 11
+Γä╣ fail 0
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 951.2328

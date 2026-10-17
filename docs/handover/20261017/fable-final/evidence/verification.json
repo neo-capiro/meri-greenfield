@@ -1,0 +1,55 @@
+{
+  "status": "SOURCE_HOLD_SAFE_STOP_NOT_ACCEPTED_OR_ACTIVATED",
+  "sourceBase": "6f315108ca9ec2b807048b07016c1a11b07ce848",
+  "baseTree": "6d96cb5420d85e6d39d5d19788eb871af1169f87",
+  "branch": "codex/meri-product-receiving-candidate-task6-20261017",
+  "checks": [
+    {
+      "command": "MERI_REVIEW_SOURCE_ROOT=<checkout> node --experimental-test-module-mocks --test apps/control/intents/test/task-update-services.test.mjs apps/runtime/test/task-command-mount.test.mjs apps/runtime/test/product-readiness.test.mjs",
+      "passed": 11,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "exitCode": 0
+    },
+    {
+      "command": "MERI_REVIEW_SOURCE_ROOT=<checkout> node --experimental-test-module-mocks --test --test-timeout=15000 apps/runtime/test/product-routines-flow.test.mjs",
+      "passed": 0,
+      "failed": 2,
+      "cancelled": 0,
+      "skipped": 0,
+      "exitCode": 1,
+      "failure": "Both flows receive HTTP502 SCHEDULE_TOOL_FAILED/UNKNOWN at cancellation approval; root cause unresolved. Assertions not weakened."
+    }
+  ],
+  "generation": {
+    "status": "PASS",
+    "backend": "recorded offline",
+    "changed": "Only task-command metadata source SHA/bytes; browser runtime/schema/declarations unchanged",
+    "metadataSha256": "e074056b972b3d91c0075122cd660bc8f4eabdc790174d0cb9fb8168abfe68a9"
+  },
+  "currentRuntimeTypecheck": "NOT_RERUN_AFTER_CONSOLIDATION",
+  "independentConsolidationReview": "NOT_COMPLETED: four worker lanes reported account usage limit",
+  "primaryReceivingPatch": "NOT_AUTHORED; prior pinned proposals remain UNRECEIVED",
+  "runtimeTaskWrapper": "NOT_AUTHORED; use canonical feature through new late factory port",
+  "processes": {
+    "knownToolSessions": "terminal",
+    "ownedBackgroundServicesStarted": 0,
+    "commandLineOwnershipInventory": "OS Access denied; no workaround/global process cleanup",
+    "sharedProcesses": "preserved"
+  },
+  "liveActions": 0,
+  "heldOperationsRetried": 0,
+  "receipts": [
+    {
+      "path": "evidence/product-freeze-focused.tap",
+      "bytes": 1756,
+      "sha256": "f6f12437234b56220269d2de1692fbbbef231b9bf16f8547e7bd6b5b82b3c51a"
+    },
+    {
+      "path": "evidence/product-freeze-flow-HOLD.tap",
+      "bytes": 2329,
+      "sha256": "4bb74f07c30346b8ddb7a335ef1dab4c8916711de5d7c280d09ee23c8b9e183d"
+    }
+  ]
+}

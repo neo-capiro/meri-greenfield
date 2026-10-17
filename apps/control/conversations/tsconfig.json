@@ -14,6 +14,7 @@
   "include": [
     "workflow.ts",
     "scheduled-dispatch-workflow.ts",
+    "objective-generation-workflow.ts",
     "../../worker/conversation/options.mjs"
   ]
 }

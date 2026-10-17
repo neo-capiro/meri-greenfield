@@ -1,6 +1,7 @@
 /** The activity builds SDK capabilities only from a declared policy; the default first-chat query is unchanged. Scripted SDK, no provider. */
 import test from 'node:test';import assert from 'node:assert/strict';
 import {createConversationActivity} from '../activity.mjs';
+import {BASH_EGRESS_SCHEMA,bashEgressDomainsSha256} from '../egress/bash-egress.mjs';
 import {applicationFixture,binding,versions,id} from '../../../control/conversations/test/application-fixture.mjs';
 const cwd=`/workspace/conversations/${binding.conversationId}`,SECRET='PRIVATE-TOKEN-9f8e',CONTENT='PRIVATE FILE CONTENT';
 const runtime=()=>({binding,versions,cwd,proxyUrl:'https://trusted-proxy.invalid',proxyCredential:'synthetic-task-capability',model:'qualified-model-pin',sessionStore:{async load(){return null;},async append(){}},deadlineMs:Date.now()+1000,maxTurns:2,maxCostMicroUSD:1000,maxOutputBytes:1024});
@@ -69,12 +70,14 @@ test('a latched failure after the last output still prevents completion; post-to
  }
 });
 
-test('Bash reaches the SDK only with explicit policy eligibility and the trusted sandbox attestation from runtime preparation',async()=>{
+const egressFact=domains=>({schema:BASH_EGRESS_SCHEMA,httpProxyPort:41001,socksProxyPort:41002,domainsSha256:bashEgressDomainsSha256(domains)});
+test('Bash reaches the SDK only with explicit policy eligibility and the trusted sandbox attestation from runtime preparation; networked Bash also needs the egress fact and the approval port',async()=>{
  const attested={available:true,sdk:'0.3.295',cli:'2.1.295',weakerNestedSandbox:false,outerIsolationBoundary:true};
- for(const [capabilities,runtimeFacts,admitted] of [[{workspaceTools:true},{bashSandbox:attested},false],[{bash:true},{},false],[{bash:true},{bashSandbox:{...attested,available:false}},false],[{bash:true,sandboxNetworkDomains:['pypi.org']},{bashSandbox:attested},true]]){
+ for(const [capabilities,runtimeFacts,admitted] of [[{workspaceTools:true},{bashSandbox:attested},false],[{bash:true},{},false],[{bash:true},{bashSandbox:{...attested,available:false}},false],[{bash:true,sandboxNetworkDomains:['pypi.org']},{bashSandbox:attested},false],[{bash:true,sandboxNetworkDomains:['pypi.org']},{bashSandbox:attested,bashEgress:egressFact(['pypi.org'])},false],[{bash:true,sandboxNetworkDomains:['pypi.org']},{bashSandbox:attested,bashEgress:egressFact(['pypi.org']),bashApprovals:{decide:async()=>null}},true],[{bash:true},{bashSandbox:attested},true]]){
   const f=await setup({capabilities,runtimeFacts});try{assert.deepEqual(await f.execute({binding}),{state:'completed'});const o=f.seen.options;
    assert.equal(o.tools.includes('Bash'),admitted,JSON.stringify([capabilities,runtimeFacts]));if(o.disallowedTools!==undefined)assert.equal(o.disallowedTools.includes('Bash'),!admitted);assert.equal(o.sandbox!==undefined,admitted);
-   if(admitted){assert.deepEqual(o.sandbox.network.allowedDomains,['pypi.org']);assert.equal(o.sandbox.failIfUnavailable,true);assert.equal(o.sandbox.allowUnsandboxedCommands,false);assert.equal(o.env.CLAUDE_CODE_SUBPROCESS_ENV_SCRUB,'1');assert.equal(o.env.ANTHROPIC_AUTH_TOKEN,'synthetic-task-capability');assert.equal(o.managedSettings.sandbox.failIfUnavailable,true);assert.ok(o.sandbox.credentials.envVars.some(e=>e.name==='ANTHROPIC_AUTH_TOKEN'&&e.mode==='deny'));}
+   if(admitted&&capabilities.sandboxNetworkDomains){assert.deepEqual(o.sandbox.network.allowedDomains,['pypi.org']);assert.equal(o.sandbox.autoAllowBashIfSandboxed,false,'networked Bash is approved per call');assert.equal(o.sandbox.network.httpProxyPort,runtimeFacts.bashEgress.httpProxyPort);}
+   if(admitted){assert.equal(o.sandbox.failIfUnavailable,true);assert.equal(o.sandbox.allowUnsandboxedCommands,false);assert.equal(o.env.CLAUDE_CODE_SUBPROCESS_ENV_SCRUB,'1');assert.equal(o.env.ANTHROPIC_AUTH_TOKEN,'synthetic-task-capability');assert.equal(o.managedSettings.sandbox.failIfUnavailable,true);assert.ok(o.sandbox.credentials.envVars.some(e=>e.name==='ANTHROPIC_AUTH_TOKEN'&&e.mode==='deny'));}
    else assert.equal(o.env.CLAUDE_CODE_SUBPROCESS_ENV_SCRUB,undefined);}finally{f.close();}
  }
  const f=await setup({capabilities:{bash:true},runtimeFacts:{bashSandbox:{...attested,weakerNestedSandbox:true,outerIsolationBoundary:false}}});try{await assert.rejects(f.execute({binding}),/EXECUTION_FAILED|BASH_SANDBOX_ATTESTATION_REFUSED/);assert.equal(f.calls(),0);}finally{f.close();}

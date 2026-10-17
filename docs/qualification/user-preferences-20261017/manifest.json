@@ -1,0 +1,100 @@
+{
+  "status": "REVIEWED_HOLD_DO_NOT_RUN_PORTABLE_WRAPPER",
+  "retainedHistory": "ACCEPT_HANDOFF_ONLY",
+  "remainingExecutionDefect": "Direct PostgreSQL connects and queries lack absolute invocation deadline checks; see REVIEW.md.",
+  "portableWrapperDatabaseExecution": "UNRUN",
+  "originalRunSourceCommit": "69a61c36b1b98e5bc02591f2b4a4c32f14b828cf",
+  "originalRunSourceTree": "9f6df335b70b3c91a6ec1c9e71fd4a1dc0b9a1af",
+  "files": [
+    {
+      "path": "docs/qualification/user-preferences-20261017/history.json",
+      "bytes": 3012,
+      "sha256": "1094d4bd8836fc18774057f19e6130e30c5a7555abb97a09245448b1de136d8c"
+    },
+    {
+      "path": "docs/qualification/user-preferences-20261017/README.md",
+      "bytes": 7700,
+      "sha256": "9a013d936ca0fb5e3ef1c75f8cc6fc3253212c15e32568adfbfb2491f3dcfefa"
+    },
+    {
+      "path": "docs/qualification/user-preferences-20261017/receipts/01-preflight-reconstructed.json",
+      "bytes": 748,
+      "sha256": "5f4f9ef8f43677ab41f2d9080ed3179f6a5ea66dadcbf0622f70af178f624ae7"
+    },
+    {
+      "path": "docs/qualification/user-preferences-20261017/receipts/02-sandbox-native-start.json",
+      "bytes": 989,
+      "sha256": "cf7acc96803b489c7be04320fed1ee2ef9f5f30fe295d9fbb2cdc9a3120c6955"
+    },
+    {
+      "path": "docs/qualification/user-preferences-20261017/receipts/02-sandbox-native-start.txt",
+      "bytes": 105,
+      "sha256": "fd79cf928f8a5b0f62ca2bce7468160e3b0027d7457b81a468e6e1b263c91534"
+    },
+    {
+      "path": "docs/qualification/user-preferences-20261017/receipts/03-source-owner-preflight.json",
+      "bytes": 689,
+      "sha256": "56f89078d1710ad96bc01fcc101afcad366b1ccddca8c8e358194fffff5852b3"
+    },
+    {
+      "path": "docs/qualification/user-preferences-20261017/receipts/03-source-owner-summary.txt",
+      "bytes": 240,
+      "sha256": "b26d366c036f6cd64e1c0a2aae117c09772e0e45fbd56984a5802d912d7ebdae"
+    },
+    {
+      "path": "docs/qualification/user-preferences-20261017/receipts/04-native-lifecycle-summary.json",
+      "bytes": 416,
+      "sha256": "353b2d2a21e9135eb54925046d751930c766ae1e386ecb0482717167bed5c7bb"
+    },
+    {
+      "path": "docs/qualification/user-preferences-20261017/receipts/04-real-suite-output.txt",
+      "bytes": 4622,
+      "sha256": "11db9ce0828e3f4da85574ff82347e376698dd72ec7605fef13b8dce0e7c5f56"
+    },
+    {
+      "path": "docs/qualification/user-preferences-20261017/receipts/04-real-suite.json",
+      "bytes": 1334,
+      "sha256": "6eff5f95826a8605298d680894708cfcc26cbea6da3f19a2114a27e0187a7b27"
+    },
+    {
+      "path": "docs/qualification/user-preferences-20261017/receipts/05-diagnostic-rerun-denied.json",
+      "bytes": 631,
+      "sha256": "1869b0710f035762631923aab3967b80d5905cd6fba42d144f7e24c1eadcaacd"
+    },
+    {
+      "path": "docs/qualification/user-preferences-20261017/REVIEW.md",
+      "bytes": 2628,
+      "sha256": "0f6f313b31a0a467514e07e2614135c25bddcbb5815bdb3958493a3a399d97cb"
+    },
+    {
+      "path": "docs/qualification/user-preferences-20261017/static-verification.json",
+      "bytes": 4699,
+      "sha256": "f68c00fa32b06c9343f61fc4eb8cf2576f82c5d3e2242d3bce178ee10cf8cba3"
+    },
+    {
+      "path": "scripts/qualification/user-preferences/cli.mjs",
+      "bytes": 718,
+      "sha256": "df358f43cc4b05f4748809477d327052143ad5aea0f88bbd109e3bf7df0efd7e"
+    },
+    {
+      "path": "scripts/qualification/user-preferences/configuration.mjs",
+      "bytes": 2984,
+      "sha256": "3432cb93463c9ceeb1f0342909629b589204873136abc9a9b4f92ce970bfb460"
+    },
+    {
+      "path": "scripts/qualification/user-preferences/host.mjs",
+      "bytes": 6396,
+      "sha256": "51648df66837dc231c43284716b48f4a9180288a9deb0bbcf1d6940b99e9e309"
+    },
+    {
+      "path": "scripts/qualification/user-preferences/README.md",
+      "bytes": 7008,
+      "sha256": "3d08e62cfae118855fded6323103173eeb440878cdf8dfdb117c230179c4b32f"
+    },
+    {
+      "path": "scripts/qualification/user-preferences/run.mjs",
+      "bytes": 14247,
+      "sha256": "9148776c0b4f85892a598ca2cf01753c7403e93a224225308eb451fe94d6b402"
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+Git refused the differing source-checkout owner before database setup. Workstation paths, local account names and SIDs are omitted. A command-local safe.directory override resolved the read-only source check; no global Git setting changed.

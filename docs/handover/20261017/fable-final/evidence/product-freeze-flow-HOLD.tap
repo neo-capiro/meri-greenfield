@@ -1,0 +1,51 @@
+(node:25640) ExperimentalWarning: Module mocking is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:25640) DeprecationWarning: mock.module(): options.namedExports is deprecated. Use options.exports instead.
+Γ£û one actual factory flow completes inbox output then cancels future firings without inventing an active target (796.9478ms)
+Γ£û one actual factory flow publishes partial inbox output then explicitly cancels and retires its real job (381.4455ms)
+Γä╣ tests 2
+Γä╣ suites 0
+Γä╣ pass 0
+Γä╣ fail 2
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 2874.7441
+
+Γ£û failing tests:
+
+test at apps\runtime\test\product-routines-flow.test.mjs:22:34
+Γ£û one actual factory flow completes inbox output then cancels future firings without inventing an active target (796.9478ms)
+  AssertionError [ERR_ASSERTION]: {"error":{"code":"SCHEDULE_TOOL_FAILED","outcome":"UNKNOWN"}}
+
+  502 !== 200
+
+      at successful (file:///<CHECKOUT>/apps/runtime/test/product-routines-flow.test.mjs:16:142)
+      at async TestContext.<anonymous> (file:///<CHECKOUT>/apps/runtime/test/product-routines-flow.test.mjs:38:15)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 502,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps\runtime\test\product-routines-flow.test.mjs:22:34
+Γ£û one actual factory flow publishes partial inbox output then explicitly cancels and retires its real job (381.4455ms)
+  AssertionError [ERR_ASSERTION]: {"error":{"code":"SCHEDULE_TOOL_FAILED","outcome":"UNKNOWN"}}
+
+  502 !== 200
+
+      at successful (file:///<CHECKOUT>/apps/runtime/test/product-routines-flow.test.mjs:16:142)
+      at async TestContext.<anonymous> (file:///<CHECKOUT>/apps/runtime/test/product-routines-flow.test.mjs:38:15)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 502,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

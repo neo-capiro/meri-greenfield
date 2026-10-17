@@ -1,0 +1,78 @@
+{
+  "status": "STATIC_ONLY_PASS_EXECUTION_REVIEWED_HOLD_DO_NOT_RUN",
+  "terminalReview": {"retainedHistory":"ACCEPT_HANDOFF_ONLY","wrapperExecution":"REVIEWED_HOLD_DO_NOT_RUN","remainingDefect":"Direct admin.connect(), owned client connect() and admin/setup/restored query() calls lack absolute invocation deadline checks and can issue later SQL after the approved cutoff.","furtherImplementation":"STOPPED_BY_PARENT","databaseExecution":"UNRUN"},
+  "at": "2026-10-17T02:30:27.002Z",
+  "checks": [
+    {
+      "check": "syntax cli.mjs",
+      "exit": 0
+    },
+    {
+      "check": "syntax configuration.mjs",
+      "exit": 0
+    },
+    {
+      "check": "syntax host.mjs",
+      "exit": 0
+    },
+    {
+      "check": "syntax run.mjs",
+      "exit": 0
+    },
+    {
+      "check": "help",
+      "exit": 0,
+      "expectedExit": 0,
+      "stdout": "Usage: node scripts/qualification/user-preferences/cli.mjs --help\n  --plan|--execute --repo ABS --out ABS [--pg-bin ABS]\n  --source-commit 40HEX --source-tree 40HEX\nExecution additionally requires future approval and:\n  --approval-ref NONSECRET --approved-until UTC_ISO\nFixed disposable target: 127.0.0.1:55436/meri_prefs_task6_qual_20261017\n--help/--plan perform no database/process/filesystem I/O.\nExit: 0 help/plan or fully verified run; 1 execution failed; 2 invalid arguments.\n",
+      "stderr": ""
+    },
+    {
+      "check": "missing arguments",
+      "exit": 2,
+      "expectedExit": 2,
+      "stdout": "",
+      "stderr": "CHOOSE_PLAN_OR_EXECUTE\nUsage: node scripts/qualification/user-preferences/cli.mjs --help\n  --plan|--execute --repo ABS --out ABS [--pg-bin ABS]\n  --source-commit 40HEX --source-tree 40HEX\nExecution additionally requires future approval and:\n  --approval-ref NONSECRET --approved-until UTC_ISO\nFixed disposable target: 127.0.0.1:55436/meri_prefs_task6_qual_20261017\n--help/--plan perform no database/process/filesystem I/O.\nExit: 0 help/plan or fully verified run; 1 execution failed; 2 invalid arguments.\n"
+    },
+    {
+      "check": "incomplete plan",
+      "exit": 2,
+      "expectedExit": 2,
+      "stdout": "",
+      "stderr": "EXPLICIT_ABSOLUTE_REPO_AND_OUT_REQUIRED\nUsage: node scripts/qualification/user-preferences/cli.mjs --help\n  --plan|--execute --repo ABS --out ABS [--pg-bin ABS]\n  --source-commit 40HEX --source-tree 40HEX\nExecution additionally requires future approval and:\n  --approval-ref NONSECRET --approved-until UTC_ISO\nFixed disposable target: 127.0.0.1:55436/meri_prefs_task6_qual_20261017\n--help/--plan perform no database/process/filesystem I/O.\nExit: 0 help/plan or fully verified run; 1 execution failed; 2 invalid arguments.\n"
+    },
+    {
+      "check": "incomplete execution refuses before lazy execution import",
+      "exit": 2,
+      "expectedExit": 2,
+      "stdout": "",
+      "stderr": "EXPLICIT_ABSOLUTE_REPO_AND_OUT_REQUIRED\nUsage: node scripts/qualification/user-preferences/cli.mjs --help\n  --plan|--execute --repo ABS --out ABS [--pg-bin ABS]\n  --source-commit 40HEX --source-tree 40HEX\nExecution additionally requires future approval and:\n  --approval-ref NONSECRET --approved-until UTC_ISO\nFixed disposable target: 127.0.0.1:55436/meri_prefs_task6_qual_20261017\n--help/--plan perform no database/process/filesystem I/O.\nExit: 0 help/plan or fully verified run; 1 execution failed; 2 invalid arguments.\n"
+    },
+    {
+      "check": "plan only",
+      "exit": 0,
+      "expectedExit": 0,
+      "stdout": "{\n  \"mode\": \"plan\",\n  \"repo\": \"<SOURCE>\",\n  \"out\": \"<PLAN_OUTPUT>\",\n  \"pgBin\": null,\n  \"sourceCommit\": \"69a61c36b1b98e5bc02591f2b4a4c32f14b828cf\",\n  \"sourceTree\": \"9f6df335b70b3c91a6ec1c9e71fd4a1dc0b9a1af\",\n  \"target\": {\n    \"host\": \"127.0.0.1\",\n    \"port\": 55436,\n    \"database\": \"meri_prefs_task6_qual_20261017\",\n    \"restoreDatabase\": \"meri_prefs_task6_restore_20261017\",\n    \"sqlBlob\": \"048a834c4335f97aa5f8691afc3c310188ec4388\"\n  },\n  \"status\": \"PLAN_ONLY_NO_AUTHORITY_NO_IO\",\n  \"executionRequiresFutureApproval\": true\n}\n",
+      "stderr": ""
+    }
+  ],
+  "planOutputAbsentAfter": true,
+  "productionOrTestSourceEdited": false,
+  "databaseExecution": false,
+  "postgresStart": false,
+  "dependencyInstall": false,
+  "portableWrapperExecutedAgainstDatabase": false,
+  "reviewRepairs": {
+    "boundedCleanup": true,
+    "lateWindowAlwaysHold": true,
+    "independentOSStartAndDataArgument": true,
+    "uncertainStartupPreserved": true,
+    "node24Guard": true,
+    "safeOutputPathMasking": true,
+    "executionValidation": "UNRUN"
+  },
+  "sanitization": {
+    "filesScanned": 18,
+    "forbiddenHostOrCredentialUrlMatches": 0,
+    "privatePostgresLogCopied": false
+  }
+}

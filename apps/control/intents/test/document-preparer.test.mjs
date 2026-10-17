@@ -8,6 +8,9 @@ import {createPostgresArtifactService} from '../../../artifacts/postgres-service
 import {createDocumentIntentPreparer} from '../document-preparer.mjs';
 import {mount,delivery,id,NOW} from './fixture.mjs';
 const python=process.env.MERI_DOCUMENT_PYTHON??'/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3';
+// The artifact entry (`apps/artifacts/python/entry.py`) sets POSIX rlimits through `resource`, which Windows Python lacks, so the
+// real-generation case needs Linux (the image gate) or an explicitly configured interpreter. It is skipped visibly, never passed.
+const posixGeneration=process.platform!=='win32'||process.env.MERI_DOCUMENT_PYTHON!==undefined?{}:{skip:'artifact generation needs POSIX rlimits (Linux); set MERI_DOCUMENT_PYTHON to run it here'};
 const WORD={id:'create_word',version:'0.2.0'},spec={operation:'create_word',format:'txt',title:'Draft',content:{text:'Hello\n'}};
 const code=c=>e=>e.code===c;
 const descriptor=op=>{const e=catalog.operations.find(o=>o.operation.id===op);return {operation:e.operation,requiredGrants:e.requiredGrants,sourceRequirements:e.sourceRequirements};};
@@ -17,7 +20,7 @@ async function real(t){
  const writes={execute:(call,signal)=>createPostgresArtifactService(f.artifactOptions).execute(call,f.credential,signal)};
  const b=f.artifactOptions.context.binding;return {f,...mount({binding:b,preparers:[createDocumentIntentPreparer({descriptor:f.artifactOptions.descriptor,writes,binding:b})],now:f.now,scopes:f.artifactOptions.context.scopes})};
 }
-test('create_word prepares an immutable draft version once; the same delivery is the owner\'s own replay',async t=>{
+test('create_word prepares an immutable draft version once; the same delivery is the owner\'s own replay',posixGeneration,async t=>{
  const s=await real(t),out=await s.mount.prepare({operation:WORD,arguments:spec,deliveryId:delivery(1)});
  assert.equal(out.status,'draft');assert.equal(out.version.generationStatus,'draft');assert.equal(out.version.parentVersionId,null);assert.equal(s.f.stats().generations,1);
  assert.deepEqual(await s.mount.prepare({operation:WORD,arguments:spec,deliveryId:delivery(1)}),out);assert.equal(s.f.stats().generations,1);
