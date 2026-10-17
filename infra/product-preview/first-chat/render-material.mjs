@@ -333,10 +333,14 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,ident
  const ownerDsn=Buffer.from(dsn(db.roles.owner,password(logins,'modelOwner',db.roles.owner),db.host,db.port,db.database));
  const issuerDsn=Buffer.from(dsn(db.roles.issuer,password(logins,'issuer',db.roles.issuer),db.host,db.port,db.database));
  const jwks=Buffer.from(JSON.stringify({keys:[d.issuer.publicJwk]}));
+ // allowPrimaryInProgress: control and worker bootstrap their Temporal identity during their own startup, while their
+ // service's PRIMARY deployment is still IN_PROGRESS. Control is attached to target groups, so ECS can only mark its
+ // rollout COMPLETED once control is healthy, which needs this certificate first; requiring COMPLETED deadlocks every
+ // fresh deployment (observed live 2026-10-17). Task identity, revision, image, roles and SGs are still exact.
  const issuerRolePin=role=>({subject:IDENTITIES[role].subject,workloadPrincipal:IDENTITIES[role].workloadPrincipal,...peer(role),
   serviceArn:s.services[role],taskDefinitionArn:s.taskDefinitions[role],containerName:CONTAINER_NAMES[role],imageUri:nodeImage,
   taskRoleArn:role==='control'?f.ControlTaskRoleArn:null,executionRoleArn:role==='control'?f.ControlExecutionRoleArn:f.WorkerExecutionRoleArn,revision:revisionLabel(role),
-  securityGroupIds:s.network[role].securityGroups});
+  securityGroupIds:s.network[role].securityGroups,allowPrimaryInProgress:true});
  const issuer={schemaVersion:1,database:{connectionFile:PATHS.issuerDatabase,connectionSha256:sha(issuerDsn)},
   issuer:{schemaVersion:1,service:{schemaVersion:1,issuerOrigin,kid:d.issuer.kid,namespace:d.temporal.namespace,audience:d.temporal.audience,maxRequestMs:5000,bootstrapMaxRequestMs:10000,maxBodyBytes:4096,currentnessLeaseMs:20000},
    taskAuthority:{schemaVersion:1,clusterArn:d.clusterArn,vpcId:d.vpcId,privateSubnetIds:issuerSubnets,maxLeaseMs:8000,

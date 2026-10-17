@@ -71,6 +71,8 @@ test('all five roles render from throwaway PKI and pass every repository validat
  assert.deepEqual(authority.roles.control.securityGroupIds,['sg-05a350c100574b21f','sg-0c3da023e9e8fb292','sg-0d5b5286baf28242e']);
  assert.deepEqual(authority.roles['temporal-worker'].securityGroupIds,['sg-00111cd0e475badfa','sg-0c3da023e9e8fb292']);
  assert.equal(authority.roles['temporal-worker'].taskRoleArn,null);assert.equal(authority.roles['temporal-worker'].containerName,'temporal-worker');
+ // Both roles bootstrap during their own service rollout; the issuer must not demand rolloutState COMPLETED.
+ assert.equal(authority.roles.control.allowPrimaryInProgress,true);assert.equal(authority.roles['temporal-worker'].allowPrimaryInProgress,true);
  assert.deepEqual(control.nativeCandidate.taskRequest.networkConfiguration.awsvpcConfiguration,{subnets:[inputs.deployment.privateSubnetIds[0]],securityGroups:['sg-098fc4f2ac89aa943'],assignPublicIp:'DISABLED'});
  // The summary carries no secret: no password, capability token, identity credential or private key.
  const text=JSON.stringify(summary);
