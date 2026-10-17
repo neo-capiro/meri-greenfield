@@ -11,6 +11,7 @@ import {createConversationHistoryService} from '../control/conversations/history
 import {createConversationHistoryApplication} from '../control/conversations/history/http.mjs';
 import {HISTORY_PATHS} from '../control/conversations/history/protocol.mjs';
 import {runtimeArtifactRecovery} from './artifacts/composition.mjs';
+import {USER_PREFERENCES_PATHS,userPreferencesUnavailable} from '../control/settings/user-application/protocol.mjs';
 // Provenance is process-private. Caller-authored configuredOwners fields remain unknown keys and never establish readiness.
 const capturedPorts=new WeakSet();
 const capturedArtifactRecovery=new WeakMap();
@@ -54,7 +55,7 @@ export function composeRuntimePorts(canonical,supplemental){
  return captureRuntimePorts(joined);
 }
 /** `suppression` is the retention serving `{journal,serving}` pair when declared; the download-link gate needs it to revoke links. */
-export function createRuntimeProductApplications({configuration,sessions,ports,now,retention,suppression,conversationStore}){
+export function createRuntimeProductApplications({configuration,sessions,ports,now,retention,suppression,conversationStore,userPreferences}){
  const history=ports.conversationMembership&&ports.conversationCurrentness&&conversationStore?createConversationHistoryApplication({
   service:createConversationHistoryService({store:conversationStore,gate:ports.conversationMembership,nextRunOwner:ports.conversationTurns,retention}),gate:ports.conversationMembership,currentness:ports.conversationCurrentness,now,
   limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes}}):null;
@@ -65,6 +66,7 @@ export function createRuntimeProductApplications({configuration,sessions,ports,n
  const unavailableSession=Object.fromEntries(['register','load','append','listSubkeys'].map(name=>[name,async()=>{throw fault('SDK_SESSION_UNAVAILABLE');}]));
  const sdkSessions=createNativeSdkSessionApplication({owner:ports.sdkSessionOwner??unavailableSession,...(ports.sdkSessionSnapshot===undefined?{}:{snapshot:ports.sdkSessionSnapshot}),now,maxRequestMs:configuration.limits.requestMs});
  return Object.freeze({downloads:Object.freeze({open:input=>downloads.open(input),state:()=>downloads.state()}),handle(request){const path=new URL(request.url).pathname;
+  if(Object.values(USER_PREFERENCES_PATHS).includes(path))return userPreferences?userPreferences.handle(request):userPreferencesUnavailable();
   if(Object.values(HISTORY_PATHS).includes(path))return history?history.handle(request):Response.json({error:{code:'CONVERSATION_UNAVAILABLE',outcome:'NOT_DISPATCHED'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
   if(/^\/api\/action-followthrough\/(query|draft|prepare|execute)$/u.test(path))return ports.actionApplication?ports.actionApplication.handle(request):Response.json({error:{code:'UNAVAILABLE'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
   if(path.startsWith('/api/documents/'))return downloads.handle(request);

@@ -20,16 +20,23 @@ loss reports `RESULT_NOT_RELEASED`. No automatic mutation or blind retry is prov
 
 ## Shipping integration handoff
 
-Current parent coordination assigns first-shipment image qualification, service deployment/integration and live acceptance to dot.
-The earlier proposed Fable transfer was canceled. This independent branch does not edit shared runtime bindings, shipping pins,
-gateways or image/deployment sources.
+Dot owns first-shipment image qualification, service deployment/integration and live acceptance. This continuation implements runtime
+source composition on its separate feature branch; shipping pins, deployment settings and image recipes remain untouched.
 
-The shipping integrator may compose this feature from its trusted product-ports factory using that factory's borrowed pool, clock and
-canonical `conversationMembership` gate. A later independently reviewed runtime change must capture an optional application handle
-and route only the two exact paths above, behind its source-enabled readiness gate. Absent or disabled composition must call the
-declared `userPreferencesUnavailable()` closed 503. The application itself still rejects query strings, non-POST, encoded/non-JSON,
-oversized input, stale native identity, changed membership and all tenant/admin settings paths.
+The control-only configuration declaration `userPreferences: {enabled: true}` composes the feature in `assembleControl` using the
+control's borrowed pool, clock and captured canonical `conversationMembership` gate. Absent/false declarations remain inert. A declared
+enabled feature without native membership or either required settings relation refuses startup before listeners open. The runtime
+adapter opens only after its bounded schema readiness check, preserves serving through healthy pending checks, closes on the latest
+failed check, and cannot reopen after retirement. It never closes the borrowed pool. Readiness names `settings.userPreferences` separately.
 
-The settings DDL remains proposal-only. Table allocation, migration, privileges, restore/retention and real PostgreSQL qualification
-are shipping prerequisites. This source neither allocates nor applies a migration and establishes no live persistence. Appearance
+Only the two exact paths above reach the public application; the private listener and neighboring tenant/admin paths exclude them.
+Absent, disabled or unready composition calls `userPreferencesUnavailable()` closed 503. The canonical application still rejects query
+strings, non-POST, encoded/non-JSON, oversized input, stale native identity and changed membership. The frontend separately requires
+`MERI_USER_PREFERENCES_ENABLED=true`; no flag or readiness row establishes deployed qualification or authority.
+
+The existing reserved migration `apps/control/settings/migrations/0001_settings.sql` is adopted byte-exact from owner B's source
+`cf639d4707df0060524218c65d941834ed7ea2e3`, blob `048a834c4335f97aa5f8691afc3c310188ec4388`; no duplicate ID/schema is invented.
+Applying it, runtime privileges, restore/retention and real PostgreSQL qualification remain separate prerequisites. This source neither
+allocates nor applies a migration and establishes no live persistence. The guarded qualification suite requires the separately allocated
+loopback task-owned PostgreSQL window before setup or execution; defaults skip explicitly. Appearance
 preview, notification delivery and default-client selection are separate consumers; stored values alone do not establish those effects.

@@ -1,5 +1,5 @@
-/** PostgreSQL settings store over the PROPOSED `meri_settings` tables
- * (docs/coordination/proposals/memory-settings-20261016/proposed-memory-settings.sql; no ID allocated, never applied by this source).
+/** PostgreSQL settings store over the reserved `meri_settings` migration
+ * (apps/control/settings/migrations/0001_settings.sql; adopted from its allocated owner, never applied by this source).
  * Each save is one transaction: a compare-and-set on the document revision plus its audit row. A revision conflict writes nothing. */
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {refuse} from '../product-access/errors.mjs';
