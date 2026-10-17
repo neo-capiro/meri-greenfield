@@ -9,7 +9,7 @@ import {fileURLToPath} from 'node:url';
 import https from 'node:https';
 import {Readable} from 'node:stream';
 import {EventEmitter} from 'node:events';
-import {parseRuntimePackageLock,fetchRuntimePackages,verifyInstalledPackages} from './runtime-packages.mjs';
+import {parseRuntimePackageLock,fetchRuntimePackages,verifyInstalledPackages,retainedFetch} from './runtime-packages.mjs';
 
 const helper=fileURLToPath(new URL('./runtime-packages.mjs',import.meta.url));
 const origin='https://packages.wolfi.dev/os/x86_64/';
@@ -189,4 +189,28 @@ test('import/help and invalid CLI are inert, bounded and redact private input',a
  for(const args of [[],['unknown','private-secret'],['fetch','--lock',path.join(root,'private-missing'),'--directory',path.join(root,'new')]]){
   const result=spawnSync(process.execPath,[helper,...args],{encoding:'utf8',timeout:10000});assert.equal(result.status,2);assert.equal(result.stdout,'');assert.match(result.stderr,/^RUNTIME_PACKAGES_[A-Z_]+\r?\n$/u);assert.ok(!result.stderr.includes('private'));await absent(path.join(root,'new'));
  }
+});
+
+test('retained snapshot stages the real lock offline through the same exact integrity path',async t=>{
+ const repo=fileURLToPath(new URL('../../../',import.meta.url)),lockFile=path.join(repo,'infra/product-preview/runtime-packages.lock.json'),retained=path.join(repo,'infra/product-preview/runtime-packages/x86_64');
+ const root=await temporary(t),out=path.join(root,'staged');
+ const run=spawnSync(process.execPath,['--input-type=module','-e',`import https from 'node:https';https.request=()=>{throw Error('network must not run')};globalThis.fetch=()=>{throw Error('network must not run')};process.argv=[process.execPath,${JSON.stringify(helper)},'fetch','--lock',${JSON.stringify(lockFile)},'--directory',${JSON.stringify(out)},'--from',${JSON.stringify(retained)}];await import(${JSON.stringify(new URL('./runtime-packages.mjs',import.meta.url).href)});`],{encoding:'utf8',timeout:30000});
+ assert.equal(run.status,0,run.stderr);
+ const lock=parseRuntimePackageLock(await fs.readFile(lockFile));
+ for(const item of [lock.repositoryIndex,...lock.additionalPackages]){const staged=await fs.readFile(path.join(out,'x86_64',item.file));assert.equal(staged.length,item.bytes);assert.equal(sha(staged),item.sha256);}
+ assert.deepEqual((await fs.readdir(path.join(out,'x86_64'))).sort(),[lock.repositoryIndex.file,...lock.additionalPackages.map(row=>row.file)].sort());
+});
+
+test('retained snapshot refuses tampered or missing bytes and non-origin or path-like URLs, leaving nothing behind',async t=>{
+ const f=fixture(),root=await temporary(t),retained=path.join(root,'retained');await fs.mkdir(retained);
+ for(const [file,payload] of f.payloads)await fs.writeFile(path.join(retained,file),payload);
+ const ok=path.join(root,'ok');await fetchRuntimePackages(f.raw,ok,{fetchImpl:retainedFetch(retained)});
+ for(const [file,payload] of f.payloads)assert.deepEqual(await fs.readFile(path.join(ok,'x86_64',file)),payload);
+ await fs.writeFile(path.join(retained,'bash-5.3-r14.apk'),'bash-apk-fixturX');
+ const bad=path.join(root,'bad');await assert.rejects(fetchRuntimePackages(f.raw,bad,{fetchImpl:retainedFetch(retained)}),/RUNTIME_PACKAGES_INTEGRITY/u);await absent(bad);
+ await fs.rm(path.join(retained,'bash-5.3-r14.apk'));
+ const missing=path.join(root,'missing');await assert.rejects(fetchRuntimePackages(f.raw,missing,{fetchImpl:retainedFetch(retained)}),/RUNTIME_PACKAGES_/u);await absent(missing);
+ const serve=retainedFetch(retained);
+ for(const url of ['https://example.com/x86_64/APKINDEX.tar.gz',origin+'../retained/APKINDEX.tar.gz',origin+'sub/APKINDEX.tar.gz',origin,origin+'.hidden'])await assert.rejects(serve(url),/RUNTIME_PACKAGES_FETCH/u);
+ assert.throws(()=>retainedFetch(''),/RUNTIME_PACKAGES_FETCH/u);
 });

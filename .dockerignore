@@ -57,6 +57,9 @@ infra/*
 !infra/product-preview/
 infra/product-preview/*
 !infra/product-preview/runtime-packages.lock.json
+!infra/product-preview/runtime-packages/
+infra/product-preview/runtime-packages/*
+!infra/product-preview/runtime-packages/x86_64/
 scripts
 *.env
 **/*.env

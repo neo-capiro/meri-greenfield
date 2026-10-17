@@ -92,6 +92,16 @@ function publicFetch(url,{signal}){
   request.on('error',reject);request.end();
  });
 }
+/** Serve exact lock URLs from a retained offline snapshot; same integrity path, no network. */
+export function retainedFetch(directory){
+ need(typeof directory==='string'&&directory.length>0&&!directory.includes('\0'),'FETCH');
+ return async(url,{signal}={})=>{
+  need(typeof url==='string'&&url.startsWith(ORIGIN)&&!signal?.aborted,'FETCH');
+  const name=url.slice(ORIGIN.length);need(/^[A-Za-z0-9][A-Za-z0-9+_.-]{0,255}$/u.test(name),'FETCH');
+  const root=await fs.realpath(directory),bytes=await boundedRead(path.join(root,name),FILE_LIMIT);
+  return new Response(bytes,{status:200,headers:{'content-length':String(bytes.length)}});
+ };
+}
 function lifetime({now=()=>performance.now(),setTimer=setTimeout,clearTimer=clearTimeout}={}){
  need(typeof now==='function'&&typeof setTimer==='function'&&typeof clearTimer==='function','FETCH');
  let last=now();need(Number.isFinite(last),'FETCH');const end=last+180000,pending=new Set();
@@ -212,12 +222,12 @@ export async function verifyInstalledPackages(input,{rootDirectory='/',measureRu
  }catch{fail('VERIFY');}
 }
 async function main(args){
- if(args.length===1&&['--help','-h'].includes(args[0])){console.log('Usage: runtime-packages.mjs fetch --lock FILE --directory NEW_DIRECTORY | verify --lock FILE\nExit: 0 success/help; 2 refused input, download, cleanup or verification. No automatic retries.');return 0;}
+ if(args.length===1&&['--help','-h'].includes(args[0])){console.log('Usage: runtime-packages.mjs fetch --lock FILE --directory NEW_DIRECTORY [--from RETAINED_DIRECTORY] | verify --lock FILE\nExit: 0 success/help; 2 refused input, download, cleanup or verification. No automatic retries.');return 0;}
  try{
-  const mode=args[0];need((mode==='fetch'&&args.length===5&&args[1]==='--lock'&&args[3]==='--directory')||(mode==='verify'&&args.length===3&&args[1]==='--lock'),'USAGE');
+  const mode=args[0];need((mode==='fetch'&&(args.length===5||args.length===7&&args[5]==='--from')&&args[1]==='--lock'&&args[3]==='--directory')||(mode==='verify'&&args.length===3&&args[1]==='--lock'),'USAGE');
   const bytes=await boundedRead(await fs.realpath(args[2]),LOCK_LIMIT);
   parseRuntimePackageLock(bytes);
-  if(mode==='fetch')await fetchRuntimePackages(bytes,args[4]);
+  if(mode==='fetch')await fetchRuntimePackages(bytes,args[4],args.length===7?{fetchImpl:retainedFetch(args[6])}:{});
   else console.log(JSON.stringify(await verifyInstalledPackages(bytes)));
   return 0;
  }catch(error){console.error(safe(error).message);return 2;}

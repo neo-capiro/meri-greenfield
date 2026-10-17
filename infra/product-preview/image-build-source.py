@@ -191,7 +191,7 @@ def bounded_command(args, timeout=30, input_bytes=None, report=None, scan_not_fo
             # Oversized, mixed, unrelated and malformed errors remain fatal.
             if (scan_not_found and process.returncode == 254 and not chunks and
                     0 < state["errorBytes"] <= 4096 and
-                    re.fullmatch(rb"\r?\n?An error occurred \(ScanNotFoundException\) when calling the DescribeImageScanFindings operation: [^\r\n]*\r?\n?", errors)):
+                    re.fullmatch(rb"\r?\n?(?:aws: \[ERROR\]: )?An error occurred \(ScanNotFoundException\) when calling the DescribeImageScanFindings operation: [^\r\n]*\r?\n?", errors)):
                 raise ScanNotFoundPending() from None
             mark("EXIT_NONZERO", process.returncode, state["bytes"])
         return process.returncode, b"".join(chunks)

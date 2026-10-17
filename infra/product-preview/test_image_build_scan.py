@@ -19,6 +19,8 @@ COMMAND = ["aws", "--region", "us-east-1", "--no-cli-pager", "ecr", "describe-im
            "--repository-name", "meri-greenfield/qualification-worker", "--image-id", "imageDigest=" + DIGEST,
            "--output", "json"]
 PENDING = b"\nAn error occurred (ScanNotFoundException) when calling the DescribeImageScanFindings operation: private-message-do-not-log\n"
+# Current AWS CLI v2 prefixes service errors; build 63c305c4 failed on this exact envelope.
+PREFIXED = b"\naws: [ERROR]: " + PENDING.lstrip(b"\n")
 
 
 class ScriptedProcess:
@@ -50,7 +52,8 @@ class ScanCommandTests(unittest.TestCase):
                 self.assertTrue(process.stdout.closed and process.stderr.closed)
 
     def test_only_exact_operation_digest_and_cli_envelope_yield_static_pending(self):
-        for error in (PENDING, PENDING.lstrip(b"\n"), PENDING.replace(b"\n", b"\r\n")):
+        for error in (PENDING, PENDING.lstrip(b"\n"), PENDING.replace(b"\n", b"\r\n"),
+                      PREFIXED, PREFIXED.lstrip(b"\n"), PREFIXED.replace(b"\n", b"\r\n")):
             with self.subTest(errorLength=len(error)):
                 report = []
                 with self.assertRaises(source.ScanNotFoundPending) as caught:
@@ -65,7 +68,11 @@ class ScanCommandTests(unittest.TestCase):
                   (b"AccessDeniedException", b"ImageNotFoundException", b"RepositoryNotFoundException", b"ThrottlingException")]
         errors += [PENDING.replace(b"DescribeImageScanFindings", b"DescribeImages"),
                    b"ScanNotFoundException", b"private-prefix" + PENDING,
-                   PENDING + b"another private error\n", b"private arbitrary error"]
+                   PENDING + b"another private error\n", b"private arbitrary error",
+                   PREFIXED.replace(b"ScanNotFoundException", b"AccessDeniedException"),
+                   PREFIXED.replace(b"ScanNotFoundException", b"ImageNotFoundException"),
+                   b"\naws: [ERROR]: aws: [ERROR]: " + PENDING.lstrip(b"\n"),
+                   b"\naws: [WARNING]: " + PENDING.lstrip(b"\n"), b"private-prefix" + PREFIXED]
         for error in errors:
             with self.subTest(errorLength=len(error)):
                 report = []
