@@ -10,10 +10,10 @@
   "subnet-06db79cd21239de19"
  ],
  "images": {
-  "nodeRuntime": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:9b8c5a96e86189eb7b0523893753c06900ea0a2cdfbfb1f3600ae7f6fd0cf51a",
-  "nodeRuntimeSourceCommit": "ba454fd07f8cd2bb5426f90f3608b59b97a2547c",
-  "proxy": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:a1266221e3be24a44f204b2d4d72a0237646fe717badce5a0a16b632b5871666",
-  "proxySourceCommit": "b7fc79ef978d4458c6aca618d74923310a1991c8",
+  "nodeRuntime": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:c2b6369d119ae499ed520e633edd6c3956abade8247cb1caa8109e8c4064f442",
+  "nodeRuntimeSourceCommit": "e2723ed895c3f3e03209a24d94ef12a09f0242c1",
+  "proxy": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:a628a22dfdc8f2f6b2353ec54e07e1c1a628f6f5a887f267947cea4bff7aa6b9",
+  "proxySourceCommit": "e2723ed895c3f3e03209a24d94ef12a09f0242c1",
   "temporalServer": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:f73ce01ef4739a77fad6ace3fbfbbe1f1aeaa553b5c263d705053a2f5063cf2d",
   "temporalServerSourceCommit": "989a4227e6da6f176975d798826904d71c3a9f9c"
  },
