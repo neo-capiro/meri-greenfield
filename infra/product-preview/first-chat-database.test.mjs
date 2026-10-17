@@ -429,3 +429,11 @@ test('PLAN is frozen and every entry is pinned to a 64-hex digest',()=>{
  assert.ok(PLAN.every(e=>/^[a-f0-9]{64}$/u.test(e.pinned)));
  assert.equal(new Set(PLAN.filter(e=>e.path===DATABASE_SCRIPT).map(e=>e.pinned)).size,1);
 });
+
+test('every infra file the runtime Dockerfile copies is re-included by .dockerignore',()=>{
+ const root=new URL('../../',import.meta.url),read=p=>readFileSync(new URL(p,root),'utf8');
+ const ignore=read('.dockerignore').split('\n'),docker=read('apps/runtime/Dockerfile');
+ const copied=[...docker.matchAll(/^COPY (?!--from)(?:--\S+ )*(.+) \S+$/gmu)].flatMap(m=>m[1].split(' ')).filter(p=>p.startsWith('infra/product-preview/')&&!p.startsWith('infra/product-preview/runtime-packages'));
+ assert.ok(copied.length>=3);
+ for(const path of copied)assert.ok(ignore.includes(`!${path}`),`${path} is excluded from the build context`);
+});
