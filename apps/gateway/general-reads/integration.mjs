@@ -48,7 +48,8 @@ import * as f36 from './families/public-domain-hearings.mjs';
 import * as f37 from './families/research-legal-legislation.mjs';
 import * as f38 from './families/research-legal-news.mjs';
 import * as f39 from './families/outreach-query.mjs';
-const modules=[f0,f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13,f14,f15,f16,f17,f18,f19,f20,f21,f22,f23,f24,f25,f26,f27,f28,f29,f30,f31,f32,f33,f34,f35,f36,f37,f38,f39];
+import * as f40 from './families/business-development.mjs';
+const modules=[f0,f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13,f14,f15,f16,f17,f18,f19,f20,f21,f22,f23,f24,f25,f26,f27,f28,f29,f30,f31,f32,f33,f34,f35,f36,f37,f38,f39,f40];
 const byFamily=new Map(modules.map(f=>[f.id,f]));
 export const GENERAL_READ_ADAPTER_FAMILIES=Object.freeze(modules.map(f=>f.id));
 const STORED_NATIVE_SOURCE_PATHS=Object.freeze([
@@ -71,6 +72,7 @@ const SOURCE_PATHS=Object.freeze({
  'research-legal-legislation':['apps/gateway/sources/research-legal-legislation/handler.mjs',...STORED_NATIVE_SOURCE_PATHS],
  'research-legal-news':['apps/gateway/sources/research-legal-news/handler.mjs',...STORED_NATIVE_SOURCE_PATHS],
  'outreach-query':['apps/gateway/sources/outreach-query/handler.mjs',...STORED_NATIVE_SOURCE_PATHS],
+ 'business-development':['apps/gateway/sources/business-development/handler.mjs',...STORED_NATIVE_SOURCE_PATHS],
  'public-web':['apps/gateway/sources/public-web/handler.mjs',...STORED_NATIVE_SOURCE_PATHS],
  'data-search':['apps/gateway/sources/data-search/handler.mjs',...STORED_NATIVE_SOURCE_PATHS],
  'public-domain-query':['apps/gateway/sources/public-domain-query/handler.mjs','apps/gateway/sources/public-domain-query/native-result.mjs',...STORED_NATIVE_SOURCE_PATHS],
@@ -215,7 +217,7 @@ export async function createGeneralReadFamilyHandlers(configuration){
  for(const [id,transport] of Object.entries(configured)){
   const family=byFamily.get(id),usesIds=['action-items-complete','operational-reads'].includes(id);
   const values=assertFamilyHandlerSet(id,family.createHandlers({...ownFields(transport,[],TRANSPORT_FIELDS),now,...(usesIds?{newId}:{})}));
-  const labels=[...COMMON,`apps/gateway/general-reads/families/${id}.mjs`,...SOURCE_PATHS[family.sourceDirectory],...(NATIVE_READ_FAMILIES.includes(id)?['apps/runtime/native-authority/native-read-credentials/source-read-context.mjs','apps/gateway/sources/public-domain-hearings/request-context.mjs','apps/gateway/sources/research-legal-legislation/request-context.mjs','apps/gateway/sources/research-legal-news/request-context.mjs','apps/gateway/sources/outreach-query/request-context.mjs']:[])];
+  const labels=[...COMMON,`apps/gateway/general-reads/families/${id}.mjs`,...SOURCE_PATHS[family.sourceDirectory],...(NATIVE_READ_FAMILIES.includes(id)?['apps/runtime/native-authority/native-read-credentials/source-read-context.mjs','apps/runtime/native-authority/native-read-credentials/conversation-authority.mjs','apps/gateway/sources/public-domain-hearings/request-context.mjs','apps/gateway/sources/research-legal-legislation/request-context.mjs','apps/gateway/sources/research-legal-news/request-context.mjs','apps/gateway/sources/outreach-query/request-context.mjs','apps/gateway/sources/state-status-votes/request-context.mjs','apps/gateway/sources/business-development/request-context.mjs']:[])];
   const sourceFiles=await Promise.all(labels.map(async label=>({label,sha256:createHash('sha256').update(await readFile(new URL(`../../../${label}`,import.meta.url))).digest('hex')})));
   for(const {operation,execute} of values){const key=`${operation.id}@${operation.version}`;
    if(handlers.has(key))deny('GATEWAY_CONFIGURATION');

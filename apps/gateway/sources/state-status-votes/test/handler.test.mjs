@@ -15,10 +15,11 @@ for(const id of ids){
   assert.equal(proof.requestSha256,hash(f.arguments));assert.equal(proof.argumentsSha256,call.argumentsSha256);assert.deepEqual(proof.normalizationContext,{});
   assert.equal(Object.hasOwn(out.result,'complete'),false);assert.equal(Object.hasOwn(out.result,'absenceEvidence'),false);
  });
- test(`${id}: every designation, invalid or omitted selector is UNAVAILABLE before credentials/native work`,async()=>{
-  for(const request of [{billId:'TX HB 1234'},{billId:'HB 1234',state:'TX'},{billId:'FL HB 1234',state:'TX'},
+ test(`${id}: designation/invalid selectors and unsupported status omissions remain UNAVAILABLE before credentials/native work`,async()=>{
+  const unsupported=[{billId:'TX HB 1234'},{billId:'HB 1234',state:'TX'},{billId:'FL HB 1234',state:'TX'},
    {billId:'71000000-0000-4000-8000-000000000091'},{billId:'tx-2025x-hb1234'},{billId:'not-a-bill'},
-   {billId:null},{billId:'   '},{},{state:'TX'},{query:'TX HB 1234',state:'TX'}]){
+   ...(id==='get_state_bill_status'?[{billId:null},{billId:'   '},{},{state:'TX'},{query:'TX HB 1234',state:'TX'}]:[])];
+  for(const request of unsupported){
    const f=storedCase(id,{request});await assert.rejects(f.handler()(f.call()),{message:'UNAVAILABLE'});
    assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
   }

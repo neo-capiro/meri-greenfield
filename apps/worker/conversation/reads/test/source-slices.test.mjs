@@ -73,8 +73,8 @@ for(const [family,id] of complete){
  });
 }
 
-test('eight partial-input operations remain absent from SDK policy and cannot be advertised by installation/discovery',async()=>{
- assert.equal(partial.length,8);assert.equal(new Set(partial.map(([family])=>family)).size,6);
+test('ten partial-input operations remain absent from SDK policy and cannot be advertised by installation/discovery',async()=>{
+ assert.equal(partial.length,10);assert.equal(new Set(partial.map(([family])=>family)).size,7);
  const operations=partial.map(([,id])=>({id,version:'0.2.0'})),families=[...new Set(partial.map(([family])=>family))];
  const gates=resolveAvailableReads({policy:{generalReads:true,readFamilies:[...READ_FAMILY_IDS,...families]},installation:{operations},discovery:{operations},scopes:[{kind:'client'}]});
  assert.deepEqual(gates.available,[]);

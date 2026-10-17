@@ -26,6 +26,7 @@ import {storedCase as hearingsCase,id as hearingsId} from '../../sources/public-
 import {storedCase as legalCase,ids as legalIds} from '../../sources/research-legal-legislation/test/fixture.mjs';
 import {storedCase as newsCase,ids as newsIds} from '../../sources/research-legal-news/test/fixture.mjs';
 import {storedCase as outreachCase,ids as outreachIds} from '../../sources/outreach-query/test/fixture.mjs';
+import {storedCase as businessCase,ids as businessIds} from '../../sources/business-development/test/fixture.mjs';
 
 export const DISCLOSURE_FAMILY_CASES=Object.freeze(['search_lda_filings','search_sec_filings','search_fara_registrations'].map(id=>['disclosures',id]));
 export const GOVERNED_NEXT_FAMILY_CASES=Object.freeze([
@@ -37,6 +38,7 @@ export const SOURCE_SLICE_CASES=Object.freeze([
  ['public-data',economicId],['client-knowledge-search',graphId],...statusIds.map(id=>['state-status-votes',id]),
  ['tracked-bills',trackedId],['public-domain-hearings',hearingsId],...legalIds.map(id=>['research-legal-legislation',id]),...newsIds.map(id=>['research-legal-news',id]),
  ...outreachIds.map(id=>['outreach-query',id]),
+ ...businessIds.map(id=>['business-development',id]),
 ]);
 
 export const NATIVE_FAMILY_CASES=Object.freeze([
@@ -52,7 +54,7 @@ export const NATIVE_FAMILY_CASES=Object.freeze([
 ]);
 const storedCases={'pe-references':peCase,'federal-legislation':federalCase,'state-legislation':stateCase,'stored-intelligence':intelligenceCase,'regulatory-dockets':docketCase,'intelligence-summary':summaryCase,
  'public-web':webCase,'data-search':dataCase,'public-domain-query':queryCase,'facility-representation':facilityCase,'district-nexus':districtCase,'client-registry':registryCase,'federal-market':marketCase,
- 'public-data':economicCase,'client-knowledge-search':graphCase,'state-status-votes':statusCase,'tracked-bills':trackedCase,'public-domain-hearings':hearingsCase,'research-legal-legislation':legalCase,'research-legal-news':newsCase,'outreach-query':outreachCase};
+ 'public-data':economicCase,'client-knowledge-search':graphCase,'state-status-votes':statusCase,'tracked-bills':trackedCase,'public-domain-hearings':hearingsCase,'research-legal-legislation':legalCase,'research-legal-news':newsCase,'outreach-query':outreachCase,'business-development':businessCase};
 export function nativeFamilyCase(family,id,options={}){
  if(Object.hasOwn(storedCases,family))return storedCases[family](id,options);
  const {request=directoryRequests[id]??(id==='get_acquisition_person'?{id:personId}:{}),actorRole='standard_user'}=options;

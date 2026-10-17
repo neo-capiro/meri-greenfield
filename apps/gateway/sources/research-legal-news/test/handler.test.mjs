@@ -23,9 +23,9 @@ for(const request of selections){
   assert.equal(out.result.authority,authorityNote);assert.equal(Object.hasOwn(out.result,'absenceEvidence'),false);
   for(const value of Object.values(f.contract.normalizeInput(request,f.normalizationContext).metadata))assert.equal(value,false);
  });
- test(`${request.view}/${request.kind}: selected names, UUID clients and folders are withheld before any native credential or HTTP`,async()=>{
+ test(`${request.view}/${request.kind}: selected names and folders are withheld before any native credential or HTTP`,async()=>{
   const f=storedCase(id,{request});
-  for(const extra of [{clientId:'Client name'},{clientId:' Client name '},{clientId:'71000000-0000-4000-8000-000000000091'},
+  for(const extra of [{clientId:'Client name'},{clientId:' Client name '},
    {folderId:'private-folder'},{folderId:' '}]){
    const raw={...request,...extra};assert.throws(()=>assertUnscopedNewsRequest(f.operation,raw),{message:'UNAVAILABLE'});
    await assert.rejects(f.handler()({...f.call(),request:raw}),{message:'UNAVAILABLE'});

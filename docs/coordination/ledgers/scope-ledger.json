@@ -9811,8 +9811,8 @@
       "apps/worker/conversation/reads/families.mjs": "8545a57d8107f1ec31f7ec8ff12a547bdd7c1112668c97e76b60ae0e51faa6fa",
       "apps/worker/conversation/reads/server.mjs": "d3a28df432f44e20849ceeadf7a38e73bed3748f9f36057d1d22057d4ab829b5",
       "apps/gateway/general-reads/registration.mjs": "80c5a64e10f279ccf7201d85b04c7ded1739416b98d64eb84098ec8937a2300a",
-      "apps/gateway/general-reads/integration.mjs": "681815c70114f158e5e24fcc22ca50a73362746d3424e8c3ffa41f9383f2a978",
-      "scripts/general-reads/adapters.json": "3b880a23377ddaaa43a36f02a72e9847c2b203853be80f171d706aaa2d984442",
+      "apps/gateway/general-reads/integration.mjs": "12c3a2f9352e1127a769c8d551186758114b9010c41f8cb673cf4477d58f11c9",
+      "scripts/general-reads/adapters.json": "89e4d43527512af2f4d5dd5cdfeabdec65980cbfc7108c26dcd14077d75aae90",
       "apps/gateway/general-reads/families/meeting-source.mjs": "66ee8011d604721b5977ebb601199b4fdaf3149143effb79645898f41fb186b8",
       "apps/gateway/general-reads/families/action-items-complete.mjs": "abfd9f60479cb4c4cbe9d876d04bbebd9755227461673b026f4c6d74c02b7ceb",
       "apps/gateway/general-reads/families/operational-reads.mjs": "d19d6d3297c955b68d2b5048695493f62cc98e367a9469eb5abb8e86e4320563",
@@ -9847,25 +9847,29 @@
       "apps/gateway/general-reads/families/federal-market.mjs": "0e509b9b5b3517beb94a4c95f272aad6bdd74eff82b26f0923c94c01f9be22f1",
       "apps/gateway/general-reads/families/public-data.mjs": "1b8b94efa01f877f18a4567a55fc2be40bcb9773cea70968542265cd7b8ceda7",
       "apps/gateway/general-reads/families/client-knowledge-search.mjs": "5f4322df74dbe24fa353e7bec95163310aa984339c0b799b70c3ed31dbe44d4c",
+      "apps/gateway/general-reads/families/business-development.mjs": "a3803cf3ff177c066141d18769f69bcbe8c848b4e8fd2c58abc5af09541ff73b",
+      "apps/gateway/sources/business-development/handler.mjs": "c3b2bb330120dbdcdf977b2d6e130368882d1a6fe16c8e103062b2b1159fcaa8",
+      "apps/gateway/sources/business-development/request-context.mjs": "9adc5306a39b2925c10ba43fc20f0fdb36a0b8242fe69d4634c72dbf54b9b46e",
+      "apps/gateway/sources/retained-reads/native-families.mjs": "3fc227ac1790df9aca09d9eead8743db9769d42c5e6b4a1ff422f184cbafc4c5",
       "apps/gateway/general-reads/families/outreach-query.mjs": "01c3a0dce192fd08031d95c298cfe7e2d5ad3f5d31143cd644df01baf03585ec",
       "apps/gateway/sources/outreach-query/handler.mjs": "2cdd52d577b139bfe1c3832cdd5e1b3f9b7f252d9b7bb5697061bfa5ecd232e5",
       "apps/gateway/sources/outreach-query/request-context.mjs": "6c9f038dc144600e72f434c730d52ece8a27a3b0837438f5364844aeb8a4e992",
-      "apps/gateway/sources/retained-reads/native-families.mjs": "9175814aa8f7f1c2dc3dcbe25e34cbc93fdfd593004703845d98d0f6234f6576",
       "apps/gateway/general-reads/families/research-legal-news.mjs": "3674c47d96a35318851edd78728d14780c577a6cd92e7bbc6dde5b777eebd9fe",
-      "apps/gateway/sources/research-legal-news/handler.mjs": "cba6f658a0f467bf7efe02f0aa51949a32c3c97d79d51452aed760c702831df1",
-      "apps/gateway/sources/research-legal-news/request-context.mjs": "78108bb5815fee22e30246817b17e4343f75ba6811d0946baceeaf1acf145e00",
+      "apps/gateway/sources/research-legal-news/handler.mjs": "06bcea61f129d6953a3763fe70ad59c49d8c4bfb1e732c1d7219b4bdc3044a78",
+      "apps/gateway/sources/research-legal-news/request-context.mjs": "7ae2d5eb80782962f09bbf59705b4e9e42825675b2ced6017e91b41297be2631",
       "apps/gateway/sources/public-data/handler.mjs": "5431d17688ab924b394f115f88adc968642809ba8519405fcd1e6dc0ff4c8689",
       "apps/gateway/sources/client-knowledge-search/handler.mjs": "1de373be4ce4fff8f25c18786486f084a934fe47cb86b388309933ec3d41157f",
       "apps/gateway/general-reads/families/state-status-votes.mjs": "d64b6f14a65d8cb81f9cadc957aa3cd1ee7cfdd9ac5381dbfde313ff8e8b9daa",
-      "apps/gateway/sources/state-status-votes/handler.mjs": "04c388e286e78eae1135634f0774710b55020aa9bc1ffc284a57166404b8cedf",
+      "apps/gateway/sources/state-status-votes/handler.mjs": "b673a24dba992238794c0c28ded8b1f3f8a8d3f968b016a4c22d32ee67fb72c8",
+      "apps/gateway/sources/state-status-votes/request-context.mjs": "919cf304e243f68f69dac4a1a5ee740cc9f762d31dc2911c88e3d7fb3aa6955a",
       "apps/gateway/general-reads/families/tracked-bills.mjs": "96a728442fef2587fdf50fe32e1d496a22c37ddac674c71773786cf662f0b214",
       "apps/gateway/sources/tracked-bills/handler.mjs": "ba9763ce24e1948881e5489df9ac7f6a06e65671f2582460f051599480ee6d87",
       "apps/gateway/general-reads/families/public-domain-hearings.mjs": "8ebc4840bedf92188b3e5deb5224c34b10a16fb3cc314dc2f37dea3c9cda9766",
       "apps/gateway/sources/public-domain-hearings/handler.mjs": "17bd6fcf3b6e0769c3d59473ac6925c2f8588a4bd8aeeed72f9a99b53f7166bf",
       "apps/gateway/sources/public-domain-hearings/request-context.mjs": "6953a38d2c838a85156dabe92569c3d141e72b7709390f34a798a25ccbfd38fb",
       "apps/gateway/general-reads/families/research-legal-legislation.mjs": "837fe8f3a420304047fd2dbf3be1ddde0a02edb3ae7c7a44888839eec284f9ba",
-      "apps/gateway/sources/research-legal-legislation/handler.mjs": "8633bdee8fca30a9808c098e06372c7b86c63752a00e9a381894b20dc0acca8b",
-      "apps/gateway/sources/research-legal-legislation/request-context.mjs": "4f73ac8b0761ac006fbaa616de38112a0d313220fb18915eb71ee30175245ebb",
+      "apps/gateway/sources/research-legal-legislation/handler.mjs": "75188d7536528d7be0c7e96eda584e403080162264e55033a93b593995d079ff",
+      "apps/gateway/sources/research-legal-legislation/request-context.mjs": "4ab6b914541b8c4f5a827f03d76e0b8520be04a1eadb85678a411f5faf46593c",
       "apps/gateway/sources/public-web/handler.mjs": "4eee716b638b6c68024788bd1cfe76d26e7510838f2d8039882cb91f265490fa",
       "apps/gateway/sources/data-search/handler.mjs": "bdfffffe3197ca2ca08cdf76c5b4380e0e6f64d9e0d0b3b36f1a256c6073e3db",
       "apps/gateway/sources/public-domain-query/handler.mjs": "413a53e1daadc155840e6db42a4e4222450924241acebd01faf107ef84109662",
@@ -10000,10 +10004,10 @@
       "sourceReadsWithHistoricalOnlySkillDeclaration": 1,
       "sourceReadsWithAdmittedSkillSourceRoute": 11,
       "completeSourceAdapters": 56,
-      "partialSourceAdapters": 8,
-      "absentSourceAdapters": 18,
+      "partialSourceAdapters": 10,
+      "absentSourceAdapters": 16,
       "existingSourceAdaptersWithoutGeneralExposure": 0,
-      "partialSourceAdaptersWithoutGeneralExposure": 8,
+      "partialSourceAdaptersWithoutGeneralExposure": 10,
       "missingSourceAdapters": 26,
       "missingAdaptersDeclaredBySkills": 17,
       "missingAdaptersWithoutSkillDeclaration": 9,
@@ -10251,6 +10255,13 @@
     ],
     "existingAdaptersWithoutGeneralExposure": [],
     "partialAdapterFamilies": [
+      {
+        "family": "business-development",
+        "operations": [
+          "get_business_development_context",
+          "get_business_development_recent_changes"
+        ]
+      },
       {
         "family": "outreach-query",
         "operations": [
@@ -11464,7 +11475,8 @@
         "adapterPaths": [
           "apps/gateway/general-reads/families/state-status-votes.mjs",
           "apps/gateway/sources/retained-reads/native-families.mjs",
-          "apps/gateway/sources/state-status-votes/handler.mjs"
+          "apps/gateway/sources/state-status-votes/handler.mjs",
+          "apps/gateway/sources/state-status-votes/request-context.mjs"
         ],
         "requiredContextKeys": [],
         "state": "adapter-partial",
@@ -11497,7 +11509,8 @@
         "adapterPaths": [
           "apps/gateway/general-reads/families/state-status-votes.mjs",
           "apps/gateway/sources/retained-reads/native-families.mjs",
-          "apps/gateway/sources/state-status-votes/handler.mjs"
+          "apps/gateway/sources/state-status-votes/handler.mjs",
+          "apps/gateway/sources/state-status-votes/request-context.mjs"
         ],
         "requiredContextKeys": [],
         "state": "adapter-partial",
@@ -13652,9 +13665,14 @@
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
         "generalOperations": [],
-        "adapterPaths": [],
+        "adapterPaths": [
+          "apps/gateway/general-reads/families/business-development.mjs",
+          "apps/gateway/sources/business-development/handler.mjs",
+          "apps/gateway/sources/business-development/request-context.mjs",
+          "apps/gateway/sources/retained-reads/native-families.mjs"
+        ],
         "requiredContextKeys": [],
-        "state": "adapter-missing",
+        "state": "adapter-partial",
         "backendProducer": {
           "operation": "get_business_development_context",
           "family": "business-development",
@@ -13751,9 +13769,14 @@
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
         "generalOperations": [],
-        "adapterPaths": [],
+        "adapterPaths": [
+          "apps/gateway/general-reads/families/business-development.mjs",
+          "apps/gateway/sources/business-development/handler.mjs",
+          "apps/gateway/sources/business-development/request-context.mjs",
+          "apps/gateway/sources/retained-reads/native-families.mjs"
+        ],
         "requiredContextKeys": [],
-        "state": "adapter-missing",
+        "state": "adapter-partial",
         "backendProducer": {
           "operation": "get_business_development_recent_changes",
           "family": "business-development",

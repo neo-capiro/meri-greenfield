@@ -1,15 +1,24 @@
-/** PARTIAL_INPUT: canonical stored keys only; designation resolution may reserve quota, fetch and write. */
-import {inspectStateBillSelector} from '../../../../packages/contracts/retrieval-0.2/state-bill-identity.mjs';
-import {deny} from '../../dispatch/operation-result.mjs';
+/** PARTIAL_INPUT: stored canonical keys or no-bill floor votes; designation resolution may fetch and write. */
+import {resolveOperationContract} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {deny,safeFailure} from '../../dispatch/operation-result.mjs';
+import {ownFields} from '../source-admission.mjs';
+import {retainedCall} from '../retained-reads/call-context.mjs';
 import {createStoredNativeReadHandlers} from '../retained-reads/native-handler.mjs';
+import {assertStoredStateRequest} from './request-context.mjs';
 
 const ROUTES=Object.freeze({
  get_state_bill_status:'/api/clio/tools/get_state_bill_status',
  search_state_floor_votes:'/api/clio/tools/search_state_floor_votes',
 });
-function storedRequest(current){
- if(inspectStateBillSelector(current.input.billId??null,current.input.state??null).kind!=='canonical')deny('UNAVAILABLE');
- return current.request;
+export function createStateStatusVotesHandlers(configuration,operations){
+ const handlers=createStoredNativeReadHandlers(configuration,operations,{family:'state-status-votes',routes:ROUTES,
+  requestBody:current=>assertStoredStateRequest(current.operation,current.request),
+ }),now=configuration.now;
+ return handlers.map(handler=>({operation:handler.operation,async execute(call){try{
+  const fields=ownFields(call,['input','request','authority','argumentsSha256','normalizationContext'],['signal']);
+  try{resolveOperationContract(handler.operation).normalizeInput(fields.request,fields.normalizationContext);}catch{deny('INVALID_ARGUMENTS');}
+  const current=retainedCall(handler.operation,call,now);
+  assertStoredStateRequest(handler.operation,current.request);
+  return await handler.execute(call);
+ }catch(error){throw safeFailure(error);}}}));
 }
-export const createStateStatusVotesHandlers=(configuration,operations)=>
- createStoredNativeReadHandlers(configuration,operations,{family:'state-status-votes',routes:ROUTES,requestBody:storedRequest});
