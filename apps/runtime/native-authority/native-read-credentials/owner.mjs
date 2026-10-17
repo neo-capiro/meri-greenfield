@@ -11,10 +11,9 @@ import {allocation} from '../../../gateway/budget/tool-budget-binding.mjs';
 import {retainedCall,credentialProof} from '../../../gateway/sources/retained-reads/call-context.mjs';
 import {GatewayDenied,safeFailure} from '../../../gateway/dispatch/operation-result.mjs';
 import {assertNativeToolAuthority} from './core-client.mjs';
-import {NATIVE_READ_FAMILIES} from '../../../gateway/sources/retained-reads/native-families.mjs';
-import {createSourceReadContext,sourceReadContextSelection,assertNativeVisibleClients,assertNativeResultClientIds} from './source-read-context.mjs';
+import {nativeReadOperationAllowed} from '../../../gateway/sources/retained-reads/native-families.mjs';
+import {createSourceReadContext,sourceReadContextSelection,assertNativeVisibleClients,assertNativeResultClientIds,assertSourceReadRequest} from './source-read-context.mjs';
 const same=(a,b)=>hash(a)===hash(b),refuse=code=>{throw nativeReadFault(code);};
-const GROUPS=new Set(NATIVE_READ_FAMILIES);
 const selection=({authorizationDecisionId,...rest})=>rest;
 const taskSelection=({operation,inputSha256,authorizationDecisionId,checkedAtMs,expiresAtMs,...rest})=>rest;
 const nativeSelection=({checkedAtMs,expiresAtMs,...rest})=>rest;
@@ -29,9 +28,10 @@ export function createNativeReadCredentialOwner(configuration){
  const available=Boolean(enabled&&c.store&&c.taskVerifier&&c.readCurrentEntry&&token(c.taskCapability)&&approved?.enabled&&allocated&&core?.available===true&&origin&&c.getNativeCredential&&c.getServiceSecret);
  const read=available?storageMethod(c.store,'read'):null,verify=available?storageMethod(c.taskVerifier,'verify'):null,currentCore=available?storageMethod(c.coreAuthority,'readCurrent'):null,pins=new WeakMap();
  function observation(raw){const v=data(own(raw,['binding','subject','operation','request','requestSha256','policyRevision','sourceIds','deadlineMs']));validateShape('RunBinding',v.binding);assertSubject(v.subject,v.binding);readShape('OperationRef',v.operation);
-  const contract=resolveOperationContract(v.operation);if(!GROUPS.has(contract.binding.group)||contract.descriptor.sideEffect!=='none'||contract.descriptor.approvalBoundary!=='none')refuse('ACCESS_DENIED');if(['bill-text','federal-legislation'].includes(contract.binding.group)&&c.defaultCongress===undefined)refuse('UNAVAILABLE');
-  // Data-search's frozen binding names its normalized shape; its canonical raw-selector normalizer owns admission.
+  const contract=resolveOperationContract(v.operation);if(!nativeReadOperationAllowed(contract.binding.group,v.operation.id)||contract.descriptor.sideEffect!=='none'||contract.descriptor.approvalBoundary!=='none')refuse('ACCESS_DENIED');if(['bill-text','federal-legislation'].includes(contract.binding.group)&&c.defaultCongress===undefined)refuse('UNAVAILABLE');
+  // Data-search's canonical raw-selector normalizer also validates its selector combination.
   if(contract.binding.group==='data-search')contract.normalizeInput(v.request,{});else readShape(contract.binding.input,v.request);
+  assertSourceReadRequest(contract,v.request);
   if(!same(v.binding,binding)||v.subject.policyRevision!==v.policyRevision||v.requestSha256!==hash(v.request)||!same([...v.sourceIds].sort(),[...new Set(contract.descriptor.sourceRequirements.map(s=>s.sourceId))].sort())||!Number.isSafeInteger(v.deadlineMs))refuse('ACCESS_DENIED');
   if(!approved.operations.some(op=>same(op,v.operation))||!allocated.manifest.allowedOperations.some(op=>same(op,v.operation)))refuse('ACCESS_DENIED');return v;}
  async function observe(proof,scopeSignal,signal){

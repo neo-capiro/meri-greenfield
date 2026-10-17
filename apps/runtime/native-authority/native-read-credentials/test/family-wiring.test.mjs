@@ -7,7 +7,7 @@ import {createGeneralReadFamilyHandlers} from '../../../../gateway/general-reads
 import {createControlGeneralReadRuntime} from '../../../general-read-runtime.mjs';
 import {createNativeReadCredentialOwner} from '../owner.mjs';
 import {ownerFixture} from './fixture.mjs';
-import {NATIVE_FAMILY_CASES,GOVERNED_NEXT_FAMILY_CASES} from '../../../../gateway/general-reads/test/native-family-cases.mjs';
+import {NATIVE_FAMILY_CASES,GOVERNED_NEXT_FAMILY_CASES,SOURCE_SLICE_CASES} from '../../../../gateway/general-reads/test/native-family-cases.mjs';
 
 async function wired(id,options={}){
  const f=await ownerFixture(id,options),{getCredentials,authorizeResultForCall,...transport}=f.transport,owner=options.owner?.(f)??f.owner;
@@ -24,11 +24,11 @@ for(const [family,id] of NATIVE_FAMILY_CASES){
   const f=await wired(id),raw=await f.invoke(),out=JSON.parse(raw),[r]=f.state.reservations.values();
   assert.deepEqual(Object.keys(out).sort(),['binding','subject','operation','argumentsSha256','result'].sort());
   assert.deepEqual(out.binding,f.binding);assert.deepEqual(out.subject,f.authority.subject);assert.deepEqual(out.operation,f.operation);
-  if(['facility-representation','district-nexus'].includes(family)){
+  if(['facility-representation','district-nexus','tracked-bills'].includes(family)){
    assert.deepEqual(out.result,{binding:f.binding,subject:f.authority.subject,data:JSON.parse(JSON.stringify(f.page))});
   }else{
    assert.deepEqual(out.result,JSON.parse(JSON.stringify(f.page)));
-   if(family!=='client-registry')assert.equal(out.result.tool,id);
+   if(!['client-registry','client-knowledge-search'].includes(family))assert.equal(out.result.tool,id);
   }
   const context=f.normalizationContext,normalized=f.contract.normalizeInput(f.request,context);
   assert.equal(out.argumentsSha256,normalized.argumentsSha256);assert.equal(f.stateOwner.secretProof.requestSha256,hash(f.request));assert.deepEqual(f.stateOwner.secretProof.normalizationContext,context);
@@ -62,7 +62,7 @@ test('CBO preserves original case and whitespace in native request and empty-not
  const f=await wired('search_cbo_cost_estimates',{request:{billId:' HR-1 ',congress:119}});f.state.empty=true;
  const out=JSON.parse(await f.invoke());assert.deepEqual(f.wire[0].body,{billId:' HR-1 ',congress:119});assert.match(out.result.note,/HR-1/);assert.equal(f.stateOwner.secretProof.requestSha256,hash(f.request));
 });
-for(const [family,id] of GOVERNED_NEXT_FAMILY_CASES){
+for(const [family,id] of [...GOVERNED_NEXT_FAMILY_CASES,...SOURCE_SLICE_CASES]){
  test(`${id}: current native membership drift after producer withholds new-family release`,async()=>{
   const f=await wired(id);f.state.afterSource=()=>f.core.state.membershipRevision='c'.repeat(64);
   // A response-identity guard fails inside the producer, whose failures the dispatcher reports as INVALID_RESULT.

@@ -9803,16 +9803,16 @@
   ],
   "sourceExposure": {
     "schema": "meri-selected-source-exposure/1",
-    "note": "Source paths and manifest declarations are evidence only. No qualification, authority, credential, native producer or live availability is inferred.",
+    "note": "Source paths and manifest declarations are evidence only. Partial-input adapters remain missing complete coverage and cannot be SDK-exposed. No qualification, authority, credential, native producer or live availability is inferred.",
     "provenance": {
       "packages/contracts/retrieval-0.2/catalog.json": "bac14e7e5dd740493914ff6a14b95cb5e6d7cbd09ee48b1cbd994d5eac728c08",
       "scripts/scope-ledger/backend-producers.json": "ad5fb22cb7f4ef3ffa78f4a730c74bb28e59c0a689a2cec7d5a74a45d7ef6ea4",
       "packages/contracts/retrieval-0.2/catalog-validation.mjs": "5717b6898ce56792a40b556748eeca68d377f4af4e544842bd618efc0b9f7bdc",
-      "apps/worker/conversation/reads/families.mjs": "cc51e2731b272a33f5538130b3f38530a8f22ea57ca6c038dd76e1605e58ca8d",
+      "apps/worker/conversation/reads/families.mjs": "8545a57d8107f1ec31f7ec8ff12a547bdd7c1112668c97e76b60ae0e51faa6fa",
       "apps/worker/conversation/reads/server.mjs": "d3a28df432f44e20849ceeadf7a38e73bed3748f9f36057d1d22057d4ab829b5",
-      "apps/gateway/general-reads/registration.mjs": "43c1b2661cc79bf2af78e062153d3546adb2a9114644770d383cfcf8521bf38d",
-      "apps/gateway/general-reads/integration.mjs": "80508930b49958c4283152f4f40d666793521bb29e20e0e9618d6fba93792555",
-      "scripts/general-reads/adapters.json": "36697d5df6da4c50bc64f038e7f6636ad25829d9e59eec59227f7f7dbf5d290f",
+      "apps/gateway/general-reads/registration.mjs": "80c5a64e10f279ccf7201d85b04c7ded1739416b98d64eb84098ec8937a2300a",
+      "apps/gateway/general-reads/integration.mjs": "681815c70114f158e5e24fcc22ca50a73362746d3424e8c3ffa41f9383f2a978",
+      "scripts/general-reads/adapters.json": "3b880a23377ddaaa43a36f02a72e9847c2b203853be80f171d706aaa2d984442",
       "apps/gateway/general-reads/families/meeting-source.mjs": "66ee8011d604721b5977ebb601199b4fdaf3149143effb79645898f41fb186b8",
       "apps/gateway/general-reads/families/action-items-complete.mjs": "abfd9f60479cb4c4cbe9d876d04bbebd9755227461673b026f4c6d74c02b7ceb",
       "apps/gateway/general-reads/families/operational-reads.mjs": "d19d6d3297c955b68d2b5048695493f62cc98e367a9469eb5abb8e86e4320563",
@@ -9845,6 +9845,27 @@
       "apps/gateway/general-reads/families/district-nexus.mjs": "2e9d6800a1fed73d7010af3fc8eef1775cff1a744e67ba2567662f8457fed52e",
       "apps/gateway/general-reads/families/client-registry.mjs": "94a57cbcdcbfee74b955df294c6a8331c65bb4f5469702c0ee3b047ffc65c61e",
       "apps/gateway/general-reads/families/federal-market.mjs": "0e509b9b5b3517beb94a4c95f272aad6bdd74eff82b26f0923c94c01f9be22f1",
+      "apps/gateway/general-reads/families/public-data.mjs": "1b8b94efa01f877f18a4567a55fc2be40bcb9773cea70968542265cd7b8ceda7",
+      "apps/gateway/general-reads/families/client-knowledge-search.mjs": "5f4322df74dbe24fa353e7bec95163310aa984339c0b799b70c3ed31dbe44d4c",
+      "apps/gateway/general-reads/families/outreach-query.mjs": "01c3a0dce192fd08031d95c298cfe7e2d5ad3f5d31143cd644df01baf03585ec",
+      "apps/gateway/sources/outreach-query/handler.mjs": "2cdd52d577b139bfe1c3832cdd5e1b3f9b7f252d9b7bb5697061bfa5ecd232e5",
+      "apps/gateway/sources/outreach-query/request-context.mjs": "6c9f038dc144600e72f434c730d52ece8a27a3b0837438f5364844aeb8a4e992",
+      "apps/gateway/sources/retained-reads/native-families.mjs": "9175814aa8f7f1c2dc3dcbe25e34cbc93fdfd593004703845d98d0f6234f6576",
+      "apps/gateway/general-reads/families/research-legal-news.mjs": "3674c47d96a35318851edd78728d14780c577a6cd92e7bbc6dde5b777eebd9fe",
+      "apps/gateway/sources/research-legal-news/handler.mjs": "cba6f658a0f467bf7efe02f0aa51949a32c3c97d79d51452aed760c702831df1",
+      "apps/gateway/sources/research-legal-news/request-context.mjs": "78108bb5815fee22e30246817b17e4343f75ba6811d0946baceeaf1acf145e00",
+      "apps/gateway/sources/public-data/handler.mjs": "5431d17688ab924b394f115f88adc968642809ba8519405fcd1e6dc0ff4c8689",
+      "apps/gateway/sources/client-knowledge-search/handler.mjs": "1de373be4ce4fff8f25c18786486f084a934fe47cb86b388309933ec3d41157f",
+      "apps/gateway/general-reads/families/state-status-votes.mjs": "d64b6f14a65d8cb81f9cadc957aa3cd1ee7cfdd9ac5381dbfde313ff8e8b9daa",
+      "apps/gateway/sources/state-status-votes/handler.mjs": "04c388e286e78eae1135634f0774710b55020aa9bc1ffc284a57166404b8cedf",
+      "apps/gateway/general-reads/families/tracked-bills.mjs": "96a728442fef2587fdf50fe32e1d496a22c37ddac674c71773786cf662f0b214",
+      "apps/gateway/sources/tracked-bills/handler.mjs": "ba9763ce24e1948881e5489df9ac7f6a06e65671f2582460f051599480ee6d87",
+      "apps/gateway/general-reads/families/public-domain-hearings.mjs": "8ebc4840bedf92188b3e5deb5224c34b10a16fb3cc314dc2f37dea3c9cda9766",
+      "apps/gateway/sources/public-domain-hearings/handler.mjs": "17bd6fcf3b6e0769c3d59473ac6925c2f8588a4bd8aeeed72f9a99b53f7166bf",
+      "apps/gateway/sources/public-domain-hearings/request-context.mjs": "6953a38d2c838a85156dabe92569c3d141e72b7709390f34a798a25ccbfd38fb",
+      "apps/gateway/general-reads/families/research-legal-legislation.mjs": "837fe8f3a420304047fd2dbf3be1ddde0a02edb3ae7c7a44888839eec284f9ba",
+      "apps/gateway/sources/research-legal-legislation/handler.mjs": "8633bdee8fca30a9808c098e06372c7b86c63752a00e9a381894b20dc0acca8b",
+      "apps/gateway/sources/research-legal-legislation/request-context.mjs": "4f73ac8b0761ac006fbaa616de38112a0d313220fb18915eb71ee30175245ebb",
       "apps/gateway/sources/public-web/handler.mjs": "4eee716b638b6c68024788bd1cfe76d26e7510838f2d8039882cb91f265490fa",
       "apps/gateway/sources/data-search/handler.mjs": "bdfffffe3197ca2ca08cdf76c5b4380e0e6f64d9e0d0b3b36f1a256c6073e3db",
       "apps/gateway/sources/public-domain-query/handler.mjs": "413a53e1daadc155840e6db42a4e4222450924241acebd01faf107ef84109662",
@@ -9969,19 +9990,23 @@
       "excludedCapabilities": 43,
       "selectedSourceReads": 82,
       "selectedProductOrGoverned": 14,
-      "registeredGeneralOperations": 56,
-      "registeredFamilies": 33,
-      "generalSelectedSourceReads": 54,
+      "registeredGeneralOperations": 58,
+      "registeredFamilies": 35,
+      "generalSelectedSourceReads": 56,
       "generalSelectedProductStateReads": 1,
       "generalHistoricalOperations": 1,
       "sourceReadsWithSkillDeclarations": 53,
       "sourceReadsWithCurrentContractDeclarations": 52,
       "sourceReadsWithHistoricalOnlySkillDeclaration": 1,
       "sourceReadsWithAdmittedSkillSourceRoute": 11,
+      "completeSourceAdapters": 56,
+      "partialSourceAdapters": 8,
+      "absentSourceAdapters": 18,
       "existingSourceAdaptersWithoutGeneralExposure": 0,
-      "missingSourceAdapters": 28,
+      "partialSourceAdaptersWithoutGeneralExposure": 8,
+      "missingSourceAdapters": 26,
       "missingAdaptersDeclaredBySkills": 17,
-      "missingAdaptersWithoutSkillDeclaration": 11,
+      "missingAdaptersWithoutSkillDeclaration": 9,
       "mappedBackendProducers": 63,
       "live": 0
     },
@@ -10032,6 +10057,12 @@
         "family": "client-knowledge-profile",
         "operations": [
           "get_client_context"
+        ]
+      },
+      {
+        "family": "client-knowledge-search",
+        "operations": [
+          "query_knowledge_graph"
         ]
       },
       {
@@ -10153,6 +10184,12 @@
         ]
       },
       {
+        "family": "public-data",
+        "operations": [
+          "query_economic_data"
+        ]
+      },
+      {
         "family": "public-domain-query",
         "operations": [
           "query_global_data"
@@ -10213,6 +10250,46 @@
       }
     ],
     "existingAdaptersWithoutGeneralExposure": [],
+    "partialAdapterFamilies": [
+      {
+        "family": "outreach-query",
+        "operations": [
+          "query_outreach"
+        ]
+      },
+      {
+        "family": "public-domain-hearings",
+        "operations": [
+          "search_committee_hearings"
+        ]
+      },
+      {
+        "family": "research-legal-legislation",
+        "operations": [
+          "get_legal_reference",
+          "search_legislative_research"
+        ]
+      },
+      {
+        "family": "research-legal-news",
+        "operations": [
+          "search_legiwatch_news"
+        ]
+      },
+      {
+        "family": "state-status-votes",
+        "operations": [
+          "get_state_bill_status",
+          "search_state_floor_votes"
+        ]
+      },
+      {
+        "family": "tracked-bills",
+        "operations": [
+          "search_tracked_bills"
+        ]
+      }
+    ],
     "missingAdapterFamilies": [
       {
         "family": "business-development",
@@ -10231,7 +10308,6 @@
       {
         "family": "client-knowledge-search",
         "operations": [
-          "query_knowledge_graph",
           "search_client_knowledge"
         ]
       },
@@ -10262,7 +10338,6 @@
       {
         "family": "public-data",
         "operations": [
-          "query_economic_data",
           "search_federal_awards",
           "search_federal_grants"
         ]
@@ -10318,7 +10393,7 @@
         ]
       }
     ],
-    "missingAdapterAction": "Canonical gateway family adapter and operation-specific trusted dispatch/current-resource context, plus an admitted exact producer/endpoint protocol. A schema/normalizer binding or skill declaration is not a producer. No guessed endpoint, default credential or permissive generic query is allocated.",
+    "missingAdapterAction": "Missing complete coverage includes partial-input adapters and absent adapters. Complete the canonical gateway adapter and operation-specific trusted dispatch/current-resource context using an admitted exact producer/endpoint protocol. A schema/normalizer binding, skill declaration or restricted branch is not complete operation coverage. No guessed endpoint, default credential or permissive generic query is allocated.",
     "rows": [
       {
         "id": "get_research_portfolio",
@@ -10690,10 +10765,16 @@
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
-        "generalOperations": [],
-        "adapterPaths": [],
+        "generalOperations": [
+          "query_knowledge_graph"
+        ],
+        "adapterPaths": [
+          "apps/gateway/general-reads/families/client-knowledge-search.mjs",
+          "apps/gateway/sources/client-knowledge-search/handler.mjs",
+          "apps/gateway/sources/retained-reads/native-families.mjs"
+        ],
         "requiredContextKeys": [],
-        "state": "adapter-missing",
+        "state": "adapter-present",
         "backendProducer": {
           "operation": "query_knowledge_graph",
           "family": "client-knowledge-search",
@@ -11380,9 +11461,13 @@
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
         "generalOperations": [],
-        "adapterPaths": [],
+        "adapterPaths": [
+          "apps/gateway/general-reads/families/state-status-votes.mjs",
+          "apps/gateway/sources/retained-reads/native-families.mjs",
+          "apps/gateway/sources/state-status-votes/handler.mjs"
+        ],
         "requiredContextKeys": [],
-        "state": "adapter-missing",
+        "state": "adapter-partial",
         "backendProducer": {
           "operation": "get_state_bill_status",
           "family": "state-status-votes",
@@ -11409,9 +11494,13 @@
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
         "generalOperations": [],
-        "adapterPaths": [],
+        "adapterPaths": [
+          "apps/gateway/general-reads/families/state-status-votes.mjs",
+          "apps/gateway/sources/retained-reads/native-families.mjs",
+          "apps/gateway/sources/state-status-votes/handler.mjs"
+        ],
         "requiredContextKeys": [],
-        "state": "adapter-missing",
+        "state": "adapter-partial",
         "backendProducer": {
           "operation": "search_state_floor_votes",
           "family": "state-status-votes",
@@ -11683,12 +11772,17 @@
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
         "generalOperations": [],
-        "adapterPaths": [],
+        "adapterPaths": [
+          "apps/gateway/general-reads/families/public-domain-hearings.mjs",
+          "apps/gateway/sources/public-domain-hearings/handler.mjs",
+          "apps/gateway/sources/public-domain-hearings/request-context.mjs",
+          "apps/gateway/sources/retained-reads/native-families.mjs"
+        ],
         "requiredContextKeys": [
           "tenantId",
           "clientResolution"
         ],
-        "state": "adapter-missing",
+        "state": "adapter-partial",
         "backendProducer": {
           "operation": "search_committee_hearings",
           "family": "public-domain-hearings",
@@ -11720,7 +11814,12 @@
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
         "generalOperations": [],
-        "adapterPaths": [],
+        "adapterPaths": [
+          "apps/gateway/general-reads/families/research-legal-news.mjs",
+          "apps/gateway/sources/research-legal-news/handler.mjs",
+          "apps/gateway/sources/research-legal-news/request-context.mjs",
+          "apps/gateway/sources/retained-reads/native-families.mjs"
+        ],
         "requiredContextKeys": [
           "clientResolution",
           "effectiveScope",
@@ -11728,7 +11827,7 @@
           "defaultYear",
           "owner"
         ],
-        "state": "adapter-missing",
+        "state": "adapter-partial",
         "backendProducer": {
           "operation": "search_legiwatch_news",
           "family": "research-legal-news",
@@ -11784,12 +11883,17 @@
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
         "generalOperations": [],
-        "adapterPaths": [],
+        "adapterPaths": [
+          "apps/gateway/general-reads/families/research-legal-legislation.mjs",
+          "apps/gateway/sources/research-legal-legislation/handler.mjs",
+          "apps/gateway/sources/research-legal-legislation/request-context.mjs",
+          "apps/gateway/sources/retained-reads/native-families.mjs"
+        ],
         "requiredContextKeys": [
           "clientResolution",
           "citationResolution"
         ],
-        "state": "adapter-missing",
+        "state": "adapter-partial",
         "backendProducer": {
           "operation": "search_legislative_research",
           "family": "research-legal-legislation",
@@ -11821,12 +11925,17 @@
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
         "generalOperations": [],
-        "adapterPaths": [],
+        "adapterPaths": [
+          "apps/gateway/general-reads/families/research-legal-legislation.mjs",
+          "apps/gateway/sources/research-legal-legislation/handler.mjs",
+          "apps/gateway/sources/research-legal-legislation/request-context.mjs",
+          "apps/gateway/sources/retained-reads/native-families.mjs"
+        ],
         "requiredContextKeys": [
           "clientResolution",
           "citationResolution"
         ],
-        "state": "adapter-missing",
+        "state": "adapter-partial",
         "backendProducer": {
           "operation": "get_legal_reference",
           "family": "research-legal-legislation",
@@ -11891,10 +12000,16 @@
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
-        "generalOperations": [],
-        "adapterPaths": [],
+        "generalOperations": [
+          "query_economic_data"
+        ],
+        "adapterPaths": [
+          "apps/gateway/general-reads/families/public-data.mjs",
+          "apps/gateway/sources/public-data/handler.mjs",
+          "apps/gateway/sources/retained-reads/native-families.mjs"
+        ],
         "requiredContextKeys": [],
-        "state": "adapter-missing",
+        "state": "adapter-present",
         "backendProducer": {
           "operation": "query_economic_data",
           "family": "public-data",
@@ -12794,13 +12909,17 @@
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
         "generalOperations": [],
-        "adapterPaths": [],
+        "adapterPaths": [
+          "apps/gateway/general-reads/families/tracked-bills.mjs",
+          "apps/gateway/sources/retained-reads/native-families.mjs",
+          "apps/gateway/sources/tracked-bills/handler.mjs"
+        ],
         "requiredContextKeys": [
           "binding",
           "subject",
           "clientReference"
         ],
-        "state": "adapter-missing",
+        "state": "adapter-partial",
         "backendProducer": {
           "operation": "search_tracked_bills",
           "family": "tracked-bills",
@@ -12997,11 +13116,16 @@
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
         "generalOperations": [],
-        "adapterPaths": [],
+        "adapterPaths": [
+          "apps/gateway/general-reads/families/outreach-query.mjs",
+          "apps/gateway/sources/outreach-query/handler.mjs",
+          "apps/gateway/sources/outreach-query/request-context.mjs",
+          "apps/gateway/sources/retained-reads/native-families.mjs"
+        ],
         "requiredContextKeys": [
           "clientResolution"
         ],
-        "state": "adapter-missing",
+        "state": "adapter-partial",
         "backendProducer": {
           "operation": "query_outreach",
           "family": "outreach-query",

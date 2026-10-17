@@ -6,7 +6,7 @@ import {ownFields,frozenData} from '../source-admission.mjs';
 import {deny,safeFailure} from '../../dispatch/operation-result.mjs';
 import {retainedCall} from './call-context.mjs';
 import {createRetainedHttpTransport} from './http-transport.mjs';
-import {NATIVE_READ_FAMILIES} from './native-families.mjs';
+import {NATIVE_READ_FAMILIES,nativeReadOperationAllowed} from './native-families.mjs';
 const same=(a,b)=>hash(a)===hash(b);
 
 function admitDecision(current,now){
@@ -27,7 +27,7 @@ export function createStoredNativeReadHandlers(configuration,operations,specific
  for(const [id,path] of Object.entries(fixed)){
   if(path!==`/api/clio/tools/${id}`)deny('GATEWAY_CONFIGURATION');
   let contract;try{contract=resolveOperationContract({id,version:'0.2.0'});}catch{deny('GATEWAY_CONFIGURATION');}
-  if(contract.binding.group!==family||contract.descriptor.sideEffect!=='none'||contract.descriptor.approvalBoundary!=='none')deny('GATEWAY_CONFIGURATION');
+  if(contract.binding.group!==family||!nativeReadOperationAllowed(family,id)||contract.descriptor.sideEffect!=='none'||contract.descriptor.approvalBoundary!=='none')deny('GATEWAY_CONFIGURATION');
  }
  const {credentialsForCall,...c}=ownFields(configuration,['origin','now'],['getCredentials','credentialsForCall','fetchImpl','maxRequestMs','maxResponseBytes']);
  if(credentialsForCall!==undefined&&(typeof credentialsForCall!=='function'||types.isProxy(credentialsForCall)||c.getCredentials!==undefined))deny('GATEWAY_CONFIGURATION');
