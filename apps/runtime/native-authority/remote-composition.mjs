@@ -27,6 +27,7 @@ import {createNativeCheckpointCapture} from './checkpoint-capture.mjs';
 import {createNativeCompletionCapture} from './completion-capture.mjs';
 import {createRemoteRunnerQuery} from './runner-query.mjs';
 import {sdkOptionsPin,sdkOptionsRestoration} from './sdk-option-template.mjs';
+import {sdkOptionsContinuation} from './continuation-pin.mjs';
 import {sdkSessionOperations} from '../../../packages/contracts/runtime-0.2/session.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {capabilityDigest,matchesCapability,compileNativeTaskAccess} from './task-verifier.mjs';
@@ -63,8 +64,10 @@ export function createRemoteNativeWorker(configuration){
  if(c.capture&&c.session)throw Error('REMOTE_CAPTURE_CONFIGURATION');
  const capture=c.session?createTaskCheckpointSource({original:c.original,workspace:i.workspace,session:c.session,native:{close:()=>nativeTask.close(),inspect:value=>nativeTask.inspect(value)},closeQuery:()=>activeQuery.close(),now:c.now??Date.now,maxRequestMs:c.limits?.maxRequestMs??8000}):c.capture;
  const application=createRemoteNativeTaskApplication({original:c.original,controlCapabilitySha256:c.controlCapabilitySha256,taskCapabilitySha256:c.taskCapabilitySha256,taskArn:c.taskArn,descriptorPolicy:{workspace:i.workspace,command:i.launchTemplate.command,configParentDirectory:i.configParentDirectory,secureStorageDirectory:i.secureStorageDirectory},preparationAuthorizer:createNativePreparationClient({native:c.native}),nativeFactory({original,descriptor}){
-  // Task-side shape check only; the preparation authority verifies the exact issued credential before any launch.
-  const d=matchPreparedDescriptorShape(descriptor,i),launchConfiguration={binding:original.binding,workspace:d.cwd,configDirectory:d.env.CLAUDE_CONFIG_DIR,secureStorageDirectory:i.secureStorageDirectory,versions:{sdk:original.versions.sdk,cli:original.versions.cli},expiresAtMs:original.expiresAtMs,executableSha256:i.executableSha256,launch:{command:d.command,args:d.args,env:d.env},enabled:c.enabled??false};
+  // Task-side shape check only; the preparation authority verifies the exact issued credential (and its own continuation) before any
+  // launch. A continuation run's arguments come from the restoration this task's SDK session mirror was initialized with; no mirror: fresh.
+  let continuation=null;if(c.session){try{continuation=sdkOptionsContinuation(storageMethod(c.session,'restoration')(),{binding:original.binding,workspace:i.workspace});}catch{throw executionFault('PREPARATION_REFUSED');}}
+  const d=matchPreparedDescriptorShape(descriptor,i,continuation),launchConfiguration={binding:original.binding,workspace:d.cwd,configDirectory:d.env.CLAUDE_CONFIG_DIR,secureStorageDirectory:i.secureStorageDirectory,versions:{sdk:original.versions.sdk,cli:original.versions.cli},expiresAtMs:original.expiresAtMs,executableSha256:i.executableSha256,launch:{command:d.command,args:d.args,env:d.env},enabled:c.enabled??false};
   nativeTask=createIndependentNativeTask({original,launchConfiguration,deferredSpawn:true});return {task:nativeTask,launchConfiguration};
  },parkedWorkspace:workspace,...(capture?{capture}:{}),enabled:c.enabled??false,now:c.now??Date.now,...(c.limits?{limits:c.limits}:{})});
  return Object.freeze({application,workspace,query,capture,close:()=>application.close()});
