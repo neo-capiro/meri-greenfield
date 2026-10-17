@@ -1,0 +1,235 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "6fd48c9c3d49962a111e7f801f9f71ad06a7f1c9",
+  "status": "SOURCE_REMEDIATION_EVIDENCE_ONLY",
+  "failedImage": {
+    "repository": "meri-greenfield/qualification-worker",
+    "digest": "sha256:e318ab002a9f1dfb86245c352d2f521f09c66086f31d9ffd92f08cbf39f0b236",
+    "sourceCommit": "38f52df94b1738649776792b2a28aac743801c19",
+    "scanStatus": "COMPLETE",
+    "high": 3
+  },
+  "findings": [
+    {
+      "cve": "CVE-2026-85091",
+      "package": "zlib",
+      "version": "1.3.dfsg+really1.3.1-1",
+      "fixedWolfiVersion": "1.3.2.1_rc20260601-r0",
+      "candidateName": "zlib",
+      "candidateVersion": "1.3.2.1_rc20260921-r0",
+      "upstreamFix": "df84af25dc1942490e1d1c899a07619152a46148",
+      "selectedUpstream": "767c4c947852e143f582c85f14cf573411df1b35",
+      "fixAncestryVerified": true,
+      "sourceUrls": [
+        "https://security-tracker.debian.org/tracker/CVE-2026-85091",
+        "https://api.osv.dev/v1/vulns/CGA-6ph6-75jp-484p",
+        "https://api.github.com/repos/madler/zlib/compare/df84af25dc1942490e1d1c899a07619152a46148...767c4c947852e143f582c85f14cf573411df1b35"
+      ]
+    },
+    {
+      "cve": "CVE-2026-19499",
+      "package": "glibc",
+      "version": "2.41-12+deb13u4",
+      "fixedWolfiVersion": "2.44-r4",
+      "candidateName": "glibc-2.44",
+      "candidateVersion": "2.44-r8",
+      "sourceUrls": [
+        "https://security-tracker.debian.org/tracker/CVE-2026-19499",
+        "https://api.osv.dev/v1/vulns/CGA-mmr3-52h6-3hmm"
+      ]
+    },
+    {
+      "cve": "CVE-2026-5435",
+      "package": "glibc",
+      "version": "2.41-12+deb13u4",
+      "fixedUpstreamRelease": "2.44",
+      "fixedWolfiVersion": null,
+      "candidateName": "glibc-2.44",
+      "candidateVersion": "2.44-r8",
+      "upstreamFix": "ca44a6609c29a683b03575fa035c6d17aa591e72",
+      "selectedUpstream": "34106fee698c83eb0af71d4d0381e66b399be746",
+      "fixAncestryVerified": false,
+      "evidenceKind": "GNU_RELEASE_RESOLVED_BUG_34033_AND_DISTRIBUTION_EXACT_SOURCE_FIX_RECORD",
+      "sourceUrls": [
+        "https://sourceware.org/pipermail/libc-alpha/2026-July/179159.html",
+        "https://github.com/bminor/glibc/commit/ca44a6609c29a683b03575fa035c6d17aa591e72",
+        "https://patchwork.yoctoproject.org/project/oe-core/patch/20261008061136.6429-1-peter.marko%40siemens.com/"
+      ]
+    }
+  ],
+  "builderImageUri": "public.ecr.aws/docker/library/node@sha256:c83040f7e24bacea68e58a0b96a484ba430bf24abb2973eab7ba4701144b7b63",
+  "runtimeImageUri": "cgr.dev/chainguard/wolfi-base@sha256:030e45cb37187dff322bbefe9658bcaec31b824a5d523380771a64864c9f45d4",
+  "nodeVersion": "v24.21.0",
+  "glibcVersion": "2.44",
+  "runtimePackagesSha256": "5c7724e6c9837dabc3146256aa55b3dce2230d10de5a2ff7c479f519aafb3ac9",
+  "basePackages": [
+    {
+      "name": "apk-tools",
+      "version": "2.14.10-r17"
+    },
+    {
+      "name": "busybox",
+      "version": "1.38.0-r3"
+    },
+    {
+      "name": "ca-certificates-bundle",
+      "version": "20260909-r2"
+    },
+    {
+      "name": "glibc-2.44",
+      "version": "2.44-r8"
+    },
+    {
+      "name": "glibc-2.44-locale-posix",
+      "version": "2.44-r8"
+    },
+    {
+      "name": "ld-linux-2.44",
+      "version": "2.44-r8"
+    },
+    {
+      "name": "libbrotlicommon1",
+      "version": "1.2.0-r6"
+    },
+    {
+      "name": "libbrotlidec1",
+      "version": "1.2.0-r6"
+    },
+    {
+      "name": "libbrotlienc1",
+      "version": "1.2.0-r6"
+    },
+    {
+      "name": "libcrypt1-2.44",
+      "version": "2.44-r8"
+    },
+    {
+      "name": "libgcc",
+      "version": "16.2.0-r1"
+    },
+    {
+      "name": "libxcrypt",
+      "version": "4.5.2-r6"
+    },
+    {
+      "name": "openssl-4.0-libcrypto",
+      "version": "4.0.3-r6"
+    },
+    {
+      "name": "openssl-4.0-libssl",
+      "version": "4.0.3-r6"
+    },
+    {
+      "name": "openssl-provider-legacy-allowed",
+      "version": "4.0.3-r1"
+    },
+    {
+      "name": "wolfi-base",
+      "version": "1-r7"
+    },
+    {
+      "name": "wolfi-baselayout",
+      "version": "20230201-r30"
+    },
+    {
+      "name": "wolfi-keys",
+      "version": "1-r13"
+    },
+    {
+      "name": "zlib",
+      "version": "1.3.2.1_rc20260921-r0"
+    }
+  ],
+  "additionalPackages": [
+    {
+      "name": "bash",
+      "version": "5.3-r14",
+      "file": "bash-5.3-r14.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/bash-5.3-r14.apk",
+      "sha256": "28274b1abce489dd947e0b517935992a3b069647b7f3a4d8eb95bb262c0751d1",
+      "bytes": 784966,
+      "license": "GPL-3.0-or-later",
+      "sourceRecipeCommit": "ac7b15dc2695924986372a27cd7d6c4e029c5efa",
+      "dependencies": [
+        "merged-bin",
+        "so:ld-linux-x86-64.so.2",
+        "so:libc.so.6",
+        "so:libtinfo.so.6",
+        "wolfi-baselayout"
+      ],
+      "indexControlChecksum": "Q1CJBEpKoxYcrKWwAz0i/b9Z57GHk=",
+      "dataSha256": "0d2a00a44d57a2185f4970f1dbb85c27a5ad9a4ea53114ffda9d98a67011a6a1"
+    },
+    {
+      "name": "libstdc++",
+      "version": "16.2.0-r1",
+      "file": "libstdc++-16.2.0-r1.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/libstdc++-16.2.0-r1.apk",
+      "sha256": "fc233c091aa551d6ba6da3e444d99a94e9947d53814d20183a0a7ded9a668f80",
+      "bytes": 1260650,
+      "license": "GPL-3.0-or-later WITH GCC-exception-3.1",
+      "sourceRecipeCommit": "794cf72f88e1b408eca5da0dbf5c5ed25543606d",
+      "dependencies": [
+        "so:ld-linux-x86-64.so.2",
+        "so:libc.so.6",
+        "so:libgcc_s.so.1",
+        "so:libm.so.6"
+      ],
+      "indexControlChecksum": "Q1Gzz2sKOTKWmEe1Oih1l+g6LABMs=",
+      "dataSha256": "a0d9469ed0caf00908c0ab62ee04a34a9baf43a7f6a424cdcd3c5183d50409bf"
+    },
+    {
+      "name": "ncurses",
+      "version": "6.6.20261010-r0",
+      "file": "ncurses-6.6.20261010-r0.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/ncurses-6.6.20261010-r0.apk",
+      "sha256": "475d8c2ec463637844149030a9cc3fc607782cfe681e3c16f80d2a6bc940bb63",
+      "bytes": 625682,
+      "license": "MIT",
+      "sourceRecipeCommit": "a8ea2f5f5980ccf40a6f6f34c6aeb358dfccc815",
+      "dependencies": [
+        "ncurses-terminfo-base=6.6.20261010-r0",
+        "so:ld-linux-x86-64.so.2",
+        "so:libc.so.6"
+      ],
+      "indexControlChecksum": "Q1q3rcxpTF2dFNnsEs3+cCRQ9M7UM=",
+      "dataSha256": "6cefaf835b10d41180c72176e728882dc4b7d42e450dddfb85888360a8d92c9f"
+    },
+    {
+      "name": "ncurses-terminfo-base",
+      "version": "6.6.20261010-r0",
+      "file": "ncurses-terminfo-base-6.6.20261010-r0.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/ncurses-terminfo-base-6.6.20261010-r0.apk",
+      "sha256": "fac2c47f1e85175a8cb6842c374b5462aa8a10d548b5d602d28ee7829b00a751",
+      "bytes": 119342,
+      "license": "MIT",
+      "sourceRecipeCommit": "a8ea2f5f5980ccf40a6f6f34c6aeb358dfccc815",
+      "dependencies": [],
+      "indexControlChecksum": "Q1u9KHjNbaa8tVzi6ykLYlHiql3CA=",
+      "dataSha256": "0f7e60120b78ac84b5c047df5537047981689f06fcfa369528151ccc260d0ec7"
+    }
+  ],
+  "repositoryIndex": {
+    "file": "APKINDEX.tar.gz",
+    "url": "https://packages.wolfi.dev/os/x86_64/APKINDEX.tar.gz",
+    "sha256": "01398efd4ae98d03bf5cb2c9c5fe397399bca61b81c8cb0cb36bd90e230137c6",
+    "bytes": 10635138,
+    "signingKeySha256": "f0031424cf46f7db780ce63a45f0fd6aa6f85f601e6bb3b7a91fe3d4d5b7d2cc",
+    "signatureAlgorithm": "RSA-SHA256",
+    "signatureVerified": true
+  },
+  "packageControlAndDataChecksumsVerified": true,
+  "expectedInstalledPackageCount": 23,
+  "runtimeInstallation": "UNRUN",
+  "nativeAbiChecks": "UNRUN",
+  "finalImageScan": "UNRUN",
+  "nodeBundledZlib": "UNRESOLVED_SOURCE_BUILD_CLOSURE_NOT_PROVEN_ARTIFACT_VULNERABILITY",
+  "highCriticalGate": {
+    "requiredScanStatus": "COMPLETE",
+    "maximumHigh": 0,
+    "maximumCritical": 0,
+    "exceptions": false
+  },
+  "additionalPaidBuildAllocated": false,
+  "activationAuthorized": false
+}

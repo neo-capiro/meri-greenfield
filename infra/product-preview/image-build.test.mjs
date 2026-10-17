@@ -13,6 +13,8 @@ const verifier=fileURLToPath(new URL('./image-build-source.py',import.meta.url))
 const producer=fileURLToPath(new URL('./image-build-producer.py',import.meta.url));
 const reporter=fileURLToPath(new URL('./image-build-test-reporter.mjs',import.meta.url));
 const linuxChecks=fileURLToPath(new URL('./image-build-linux-checks.py',import.meta.url));
+const runtimeLockPath='infra/product-preview/runtime-packages.lock.json';
+const runtimeBaseImageUri='cgr.dev/chainguard/wolfi-base@sha256:'+'1'.repeat(64);
 const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
 const python=(args,options={})=>spawnSync(process.env.MERI_IMAGE_BUILD_TEST_PYTHON??(process.platform==='win32'?'python':'python3'),['-I','-B','-S',...args],{encoding:'utf8',timeout:30000,...options});
 
@@ -57,13 +59,14 @@ function fixture(t){
  writeFileSync(join(repo,'infra/product-preview/image-build-producer.py'),readFileSync(producer));
  writeFileSync(join(repo,'infra/product-preview/image-build-test-reporter.mjs'),readFileSync(reporter));
  writeFileSync(join(repo,'infra/product-preview/image-build-linux-checks.py'),readFileSync(linuxChecks));
+ writeFileSync(join(repo,runtimeLockPath),JSON.stringify({runtimeImageUri:runtimeBaseImageUri,nodeVersion:'v24.21.0',glibcVersion:'2.41'})+'\n');
  for(const path of ['apps/control/conversations/test/application-fixture.mjs','apps/control/conversations/test/initial-input-fixture.mjs','apps/control/conversations/test/store-fixture.mjs','apps/gateway/test/fixtures.mjs','apps/runtime/native-authority/test/fixture.mjs','apps/runtime/test/prepared-candidate-bootstrap.test.mjs','apps/runtime/test/prepared-candidate-fixture.mjs','apps/runtime/test/remote-conversation-runner.test.mjs','apps/worker/conversation/continuation/test/fixtures.mjs','apps/runtime/temporal-product-token-writer.test.mjs']){mkdirSync(dirname(join(repo,path)),{recursive:true});writeFileSync(join(repo,path),'export const syntheticFixture=true;\n');}
  git(repo,'init','--quiet');git(repo,'add','.');git(repo,'-c','user.name=Offline Fixture','-c','user.email=fixture@invalid.example','commit','--quiet','-m','Synthetic source only');
  const sourceCommit=git(repo,'rev-parse','HEAD'),archive=join(root,'source.zip'),manifest=join(root,'members.json');
  const sealed=python([verifier,'seal','--repository',repo,'--commit',sourceCommit,'--archive',archive,'--output',manifest]);
  assert.equal(sealed.status,0,sealed.stderr);const seals=JSON.parse(sealed.stdout);
  const bucket='meri-greenfield-qual-build-967807252336-us-east-1';
- const pin={sourceCommit,archive:{bucket,key:'source/product.zip',versionId:'archive-version-1',sha256:seals.archiveSha256},manifest:{bucket,key:'source/product-members.json',versionId:'manifest-version-1',sha256:seals.sourceManifestSha256},dockerfileSha256:hash(readFileSync(join(repo,'apps/runtime/Dockerfile'))),nodeImageUri:'public.ecr.aws/docker/library/node@sha256:'+'e'.repeat(64),nodeVersion:'v24.21.0',runnerSha256:hash(readFileSync(join(repo,'apps/runtime/conversation-runner.mjs'))),runtimeUser:'1000:1000',codeBuildProjectArn:'arn:aws:codebuild:us-east-1:967807252336:project/meri-product-preview-build',ecrRepositoryUri:'967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/product-runtime',imageTag:`product-${sourceCommit}-${'1'.repeat(32)}`,verifierSha256:hash(readFileSync(verifier)),producerSha256:hash(readFileSync(producer))};
+ const pin={schemaVersion:2,sourceCommit,archive:{bucket,key:'source/product.zip',versionId:'archive-version-1',sha256:seals.archiveSha256},manifest:{bucket,key:'source/product-members.json',versionId:'manifest-version-1',sha256:seals.sourceManifestSha256},dockerfileSha256:hash(readFileSync(join(repo,'apps/runtime/Dockerfile'))),nodeImageUri:'public.ecr.aws/docker/library/node@sha256:'+'e'.repeat(64),nodeVersion:'v24.21.0',runtimeBaseImageUri,runtimePackagesSha256:hash(readFileSync(join(repo,runtimeLockPath))),runnerSha256:hash(readFileSync(join(repo,'apps/runtime/conversation-runner.mjs'))),runtimeUser:'1000:1000',codeBuildProjectArn:'arn:aws:codebuild:us-east-1:967807252336:project/meri-product-preview-build',ecrRepositoryUri:'967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/product-runtime',imageTag:`product-${sourceCommit}-${'1'.repeat(32)}`,verifierSha256:hash(readFileSync(verifier)),producerSha256:hash(readFileSync(producer))};
  const request=join(root,'request.json');writeFileSync(request,JSON.stringify(pin));
  const verify=()=>python([verifier,'verify','--request',request,'--archive',archive,'--manifest',manifest]);
  return {root,repo,sourceCommit,archive,manifest,pin,request,verify};
@@ -74,12 +77,13 @@ test('offline recipe produces deterministic reviewable override bytes with diges
  assert.equal(result.buildspecSha256,hash(result.buildspecJson));assert.deepEqual(result,createProductImageBuildRecipe(structuredClone(f.pin)));
  const spec=JSON.parse(result.buildspecJson);assert.equal(spec.version,0.2);assert.equal(spec.phases.build['on-failure'],'ABORT');
  const script=spec.phases.build.commands[0];assert.ok(script.indexOf(f.pin.verifierSha256)<script.indexOf('str(producer)'));assert.match(script,/timeout=1600/u);
+ assert.ok(script.includes("'--checksum-sha256'"));
  assert.deepEqual(spec.artifacts.files,['product-image-receipt.json','product-image-diagnostic.json']);
- for(const change of [p=>{p.nodeImageUri='node:24';},p=>{p.archive.versionId='null';},p=>{p.runtimeUser='root';},p=>{p.imageTag='latest';},p=>{p.runnerSha256='';},p=>{p.secret='unexpected';},p=>{p.archive.key='x\nprintenv';}]){const pin=structuredClone(f.pin);change(pin);assert.throws(()=>createProductImageBuildRecipe(pin),/PRODUCT_IMAGE_RECIPE_REFUSED/u);}
+ for(const change of [p=>{p.schemaVersion=1;},p=>{p.nodeImageUri='node:24';},p=>{p.runtimeBaseImageUri='wolfi:latest';},p=>{p.runtimePackagesSha256='';},p=>{p.archive.versionId='null';},p=>{p.runtimeUser='root';},p=>{p.imageTag='latest';},p=>{p.runnerSha256='';},p=>{p.secret='unexpected';},p=>{p.archive.key='x\nprintenv';}]){const pin=structuredClone(f.pin);change(pin);assert.throws(()=>createProductImageBuildRecipe(pin),/PRODUCT_IMAGE_RECIPE_REFUSED/u);}
 });
 
 test('bootstrap failures produce bounded artifact before and after producer import',async t=>{
- const scenarios=['source-hash','producer-import','request-decode','request-decode-cleanup','child-timeout','child-receipt-timeout','linux-failure','producer-check','bootstrap-cleanup'];
+ const scenarios=['source-hash','producer-import','request-decode','request-decode-cleanup','child-timeout','child-receipt-timeout','linux-failure','runtime-error','producer-check','bootstrap-cleanup'];
  for(const scenario of scenarios)await t.test(scenario,t=>{
   const f=fixture(t),producerFile=join(f.repo,'infra/product-preview/image-build-producer.py');
   if(scenario==='producer-import'){
@@ -101,6 +105,14 @@ time.sleep(5)
   if(scenario==='linux-failure'){
    writeFileSync(producerFile,`import json,os,pathlib,sys
 row={'schemaVersion':1,'status':'FAILED','phase':'LINUX_TESTS','diagnosticOwner':os.environ['MERI_PRODUCT_DIAGNOSTIC_OWNER'],'primary':{'phase':'LINUX_TESTS','category':'COMMAND','code':'PRODUCT_IMAGE_COMMAND_FAILED','detail':{'status':'EXIT_NONZERO','exitCode':1,'outputBytes':200,'elapsedMs':12}},'cleanup':{'status':'OK','failure':None,'additionalFailures':[]},'linuxTests':{'status':'COMPLETE','observedCases':24,'failedCaseIds':['W08'],'unknownFailures':0,'unknownOutcomes':0,'duplicateCases':0,'skippedCases':0,'fileCaseCounts':{'B':6,'R':6,'W':12},'fileFailureIds':['W'],'failureDetails':[{'id':'W08','stage':'FIRST_READ','code':'RUNTIME_SECRET_FILE','checkId':12,'exception':'Error','failureType':'testCodeFailure','exitCode':None,'signal':'NONE'}],'detailTruncated':False}}
+pathlib.Path('product-image-diagnostic.json').write_text(json.dumps(row))
+sys.exit(2)
+`);
+   f.pin.producerSha256=hash(readFileSync(producerFile));
+  }
+  if(scenario==='runtime-error'){
+   writeFileSync(producerFile,`import json,os,pathlib,sys
+row={'schemaVersion':1,'status':'FAILED','phase':'SANDBOX_MEASURE','diagnosticOwner':os.environ['MERI_PRODUCT_DIAGNOSTIC_OWNER'],'primary':{'phase':'SANDBOX_MEASURE','category':'CHECK','code':'PRODUCT_IMAGE_RUNTIME_PACKAGES_UNPROVEN','detail':{'errorType':'VALUE','errno':None}},'cleanup':{'status':'OK','failure':None,'additionalFailures':[]}}
 pathlib.Path('product-image-diagnostic.json').write_text(json.dumps(row))
 sys.exit(2)
 `);
@@ -135,9 +147,9 @@ atexit.register(retain_failure)`);
   const diagnostic=JSON.parse(readFileSync(join(f.repo,'product-image-diagnostic.json'),'utf8'));
   assert.equal(diagnostic.status,'FAILED');
   assert.equal(diagnostic.schemaVersion,1);
-  if(['producer-check','bootstrap-cleanup','child-receipt-timeout'].includes(scenario)){
+  if(['producer-check','bootstrap-cleanup','child-receipt-timeout','runtime-error'].includes(scenario)){
    assert.equal(diagnostic.primary.category,'CHECK');
-   assert.ok(['PRODUCT_IMAGE_PRODUCER_PLATFORM_OR_OUTPUT','PRODUCT_IMAGE_BUILD_IDENTITY','PRODUCT_IMAGE_CHECK_FAILED'].includes(diagnostic.primary.code));
+   assert.ok(['PRODUCT_IMAGE_PRODUCER_PLATFORM_OR_OUTPUT','PRODUCT_IMAGE_BUILD_IDENTITY','PRODUCT_IMAGE_CHECK_FAILED','PRODUCT_IMAGE_RUNTIME_PACKAGES_UNPROVEN'].includes(diagnostic.primary.code));
    assert.notEqual(diagnostic.primary.phase,'BOOTSTRAP_CHILD');
    assert.ok(result.stderr.includes(`PRODUCT_IMAGE_CHECK_FAILED phase=${diagnostic.primary.phase} category=CHECK code=${diagnostic.primary.code} errorType=${scenario==='child-receipt-timeout'?'UNEXPECTED':'VALUE'} errno=none`));
    if(scenario==='bootstrap-cleanup'){
@@ -161,7 +173,7 @@ atexit.register(retain_failure)`);
    assert.ok(result.stderr.includes('PRODUCT_IMAGE_CHECK_FAILED phase=LINUX_TESTS category=COMMAND code=PRODUCT_IMAGE_COMMAND_FAILED commandStatus=EXIT_NONZERO'));
   }else assert.equal(diagnostic.primary.category,'BOOTSTRAP');
   const expected={'source-hash':'PRODUCT_IMAGE_VERIFIER_SHA_MISMATCH','producer-import':'PRODUCT_IMAGE_BOOTSTRAP_CHILD_FAILED','request-decode':'PRODUCT_IMAGE_BOOTSTRAP_REQUEST_UNAVAILABLE','request-decode-cleanup':'PRODUCT_IMAGE_BOOTSTRAP_REQUEST_UNAVAILABLE','child-timeout':'PRODUCT_IMAGE_BOOTSTRAP_TIMEOUT'};
-  if(!['producer-check','bootstrap-cleanup','child-receipt-timeout','linux-failure'].includes(scenario))assert.equal(diagnostic.primary.code,expected[scenario]);
+  if(!['producer-check','bootstrap-cleanup','child-receipt-timeout','linux-failure','runtime-error'].includes(scenario))assert.equal(diagnostic.primary.code,expected[scenario]);
   if(scenario==='request-decode-cleanup'){
    assert.equal(diagnostic.bootstrapCleanup.code,'PRODUCT_IMAGE_BOOTSTRAP_CLEANUP_UNKNOWN');
    assert.ok(result.stderr.includes('phase=BOOTSTRAP_REQUEST category=BOOTSTRAP code=PRODUCT_IMAGE_BOOTSTRAP_REQUEST_UNAVAILABLE'));
@@ -214,7 +226,8 @@ test('failure retention caps child CLI stdout while running and emits no child b
  const f=fixture(t),recipe=createProductImageBuildRecipe(f.pin);
  const script=JSON.parse(recipe.buildspecJson).phases.build.commands[0];
  let body=script.slice(script.indexOf('\n')+1,script.lastIndexOf('\nMERI_PRODUCT_BUILD'));
- body=body.replace('exit_code,response=put_once(args,environment)',`exit_code,response=put_once([sys.executable,'-c','import sys;sys.stdout.buffer.write(b"s"*8192)'],environment)`);
+ body=body.replace(/exit_code,response=put_once\(args,[A-Za-z_]+\)/u,`exit_code,response=put_once([sys.executable,'-c','import sys;sys.stdout.buffer.write(b"s"*8192)'],dict(os.environ))`);
+ assert.ok(body.includes('sys.stdout.buffer.write(b"s"*8192)'));
  writeFileSync(join(f.repo,'infra/product-preview/image-build-source.py'),'secret=never-emit-this\n');
  const env={...process.env,CODEBUILD_PROJECT_ARN:f.pin.codeBuildProjectArn,CODEBUILD_BUILD_ID:'meri-product-preview-build:12345678-1234-1234-1234-123456789abc'};
  const result=python(['-c',body],{cwd:f.repo,env});assert.equal(result.status,2,result.stderr);
@@ -226,9 +239,11 @@ test('failure retention caps child CLI stdout while running and emits no child b
 });
 
 test('sealing proves ZIP file bytes and modes against exact Git objects; verification joins all sealed pins',t=>{
- const f=fixture(t),result=f.verify();assert.equal(result.status,0,result.stderr);assert.deepEqual(JSON.parse(result.stdout),{status:'VERIFIED_SOURCE_ONLY',sourceCommit:f.sourceCommit,archiveSha256:f.pin.archive.sha256,sourceManifestSha256:f.pin.manifest.sha256,fileCount:16,runnerBytes:23});
+ const f=fixture(t),result=f.verify();assert.equal(result.status,0,result.stderr);assert.deepEqual(JSON.parse(result.stdout),{status:'VERIFIED_SOURCE_ONLY',sourceCommit:f.sourceCommit,archiveSha256:f.pin.archive.sha256,sourceManifestSha256:f.pin.manifest.sha256,runtimePackagesSha256:f.pin.runtimePackagesSha256,fileCount:17,runnerBytes:23});
  const uncommitted='uncommitted replacement';writeFileSync(join(f.repo,'apps/runtime/conversation-runner.mjs'),uncommitted);assert.equal(f.verify().status,0);
  const wrong=structuredClone(f.pin);wrong.runnerSha256='0'.repeat(64);writeFileSync(f.request,JSON.stringify(wrong));assert.equal(f.verify().status,2);
+ const wrongLock=structuredClone(f.pin);wrongLock.runtimePackagesSha256='0'.repeat(64);writeFileSync(f.request,JSON.stringify(wrongLock));assert.equal(f.verify().status,2);
+ const floating=structuredClone(f.pin);floating.runtimeBaseImageUri='wolfi:latest';writeFileSync(f.request,JSON.stringify(floating));assert.equal(f.verify().status,2);
 });
 
 test('altered archive/manifest, extra, duplicate, unsafe and symlink members refuse even after outer archive hash is updated',async t=>{
@@ -277,7 +292,7 @@ else:print('UNBOUNDED')
 });
 
 test('producer gates auth/push on measured image bytes and emits joined receipt only after clean scan',async t=>{
- for(const scenario of ['success','runner-mismatch','linux-test-hold','scan-hold','source-mismatch','cleanup-unknown'])await t.test(scenario,t=>{
+ for(const scenario of ['success','runner-mismatch','runtime-packages-mismatch','runtime-native-mismatch','linux-test-hold','scan-hold','source-mismatch','cleanup-unknown'])await t.test(scenario,t=>{
   const f=fixture(t),output=join(f.root,'receipt.json');
   const harness=`import importlib.util,json,pathlib,shutil,sys,types,os
 s=importlib.util.spec_from_file_location('build_source',sys.argv[1]);m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
@@ -294,10 +309,15 @@ def download(pin,target,maximum):shutil.copyfile(archive if pin is p['archive'] 
 def run(args,timeout=30,input_bytes=None):
  if args[0]=='aws':events.append('credentials');return b'never-log-this-value'
  if 'ls' in args:return b''
- if 'build' in args:events.append('docker-build');return b''
- if 'inspect' in args:return json.dumps([{'Os':'linux','Architecture':'amd64','Size':1,'Config':{'Entrypoint':['node','apps/runtime/cli.mjs'],'Labels':{'org.opencontainers.image.revision':p['sourceCommit'],'org.opencontainers.image.base.name':p['nodeImageUri']}}}]).encode()
+ if 'build' in args:
+  events.append('docker-build');assert 'RUNTIME_IMAGE='+p['runtimeBaseImageUri'] in args and 'NODE_IMAGE='+p['nodeImageUri'] in args;return b''
+ if 'inspect' in args:return json.dumps([{'Os':'linux','Architecture':'amd64','Size':1,'Config':{'Entrypoint':['node','apps/runtime/cli.mjs'],'Labels':{'org.opencontainers.image.revision':p['sourceCommit'],'org.opencontainers.image.base.name':p['runtimeBaseImageUri'],'io.meri.node.base':p['nodeImageUri'],'io.meri.runtime.packages.sha256':p['runtimePackagesSha256']}}}]).encode()
  if 'run' in args and '--input-type=module' in args:
   events.append('image-measurement');return json.dumps({'node':p['nodeVersion'],'runtimeUser':p['runtimeUser'],'executableSha256':'a'*64,'runner':{'contract':m.CONTRACT,'path':m.RUNNER,'runnerSha256':'0'*64 if scenario=='runner-mismatch' else p['runnerSha256'],'bytes':23}}).encode()
+ if 'run' in args and 'runtime-packages.mjs' in ' '.join(args):
+  events.append('runtime-packages');return json.dumps({'schemaVersion':1,'status':'RUNTIME_PACKAGES_VERIFIED','runtimeBaseImageUri':p['runtimeBaseImageUri'],'runtimePackagesSha256':'0'*64 if scenario=='runtime-packages-mismatch' else p['runtimePackagesSha256'],'installedPackageSetSha256':'3'*64,'nodeVersion':p['nodeVersion'],'glibcVersion':'2.41'}).encode()
+ if 'run' in args and 'runtime-base-probe.mjs' in ' '.join(args):
+  events.append('runtime-native');return json.dumps({'schemaVersion':1,'status':'RUNTIME_NATIVE_VERIFIED','nodeVersion':p['nodeVersion'],'glibcVersion':'2.41','swcTarget':'x86_64-unknown-linux-gnu','swcNativeSha256':'4'*64,'temporalNativeSha256':'5'*64,'swcCacheIndependent':scenario!='runtime-native-mismatch','temporalNativeLoaded':True}).encode()
  if 'login' in args:events.append('login');assert input_bytes==b'never-log-this-value';return b''
  if 'push' in args:events.append('push');return b''
  if '--help' in args:return b'help'
@@ -320,7 +340,7 @@ print(json.dumps({'status':status,'events':events,'receipt':json.loads(pathlib.P
 `;
   const result=python(['-c',harness,producer,f.request,f.archive,f.manifest,output,scenario]);assert.equal(result.status,0,result.stderr);assert.ok(!result.stdout.includes('never-log-this-value'));const observed=JSON.parse(result.stdout);
   const linuxTests='linux-tests:apps/runtime/test/prepared-candidate-bootstrap.test.mjs,apps/runtime/test/remote-conversation-runner.test.mjs,apps/runtime/temporal-product-token-writer.test.mjs';
-  if(scenario==='success'){assert.equal(observed.status,'success');assert.ok(observed.events.indexOf('image-measurement')<observed.events.indexOf('fixture-preflight'));assert.ok(observed.events.indexOf('fixture-preflight')<observed.events.indexOf(linuxTests));assert.ok(observed.events.indexOf(linuxTests)<observed.events.indexOf('credentials'));assert.ok(observed.events.indexOf('credentials')<observed.events.indexOf('push'));assert.equal(observed.receipt.runnerMeasurement.runnerSha256,f.pin.runnerSha256);assert.equal(observed.receipt.sourceManifestSha256,f.pin.manifest.sha256);assert.equal(observed.receipt.scanStatus,'COMPLETE');}
-  else{assert.equal(observed.status,'refused');assert.equal(observed.receipt,null);if(['runner-mismatch','linux-test-hold','source-mismatch'].includes(scenario))assert.equal(observed.events.includes('credentials'),false);if(['runner-mismatch','linux-test-hold'].includes(scenario))assert.equal(observed.events.includes('image-measurement'),true);if(scenario==='linux-test-hold')assert.equal(observed.events.includes(linuxTests),true);if(['scan-hold','cleanup-unknown'].includes(scenario))assert.equal(observed.events.includes('push'),true);if(scenario==='source-mismatch')assert.equal(observed.events.includes('docker-build'),false);}
+  if(scenario==='success'){assert.equal(observed.status,'success');assert.ok(observed.events.indexOf('image-measurement')<observed.events.indexOf('runtime-packages'));assert.ok(observed.events.indexOf('runtime-packages')<observed.events.indexOf('runtime-native'));assert.ok(observed.events.indexOf('runtime-native')<observed.events.indexOf('fixture-preflight'));assert.ok(observed.events.indexOf('fixture-preflight')<observed.events.indexOf(linuxTests));assert.ok(observed.events.indexOf(linuxTests)<observed.events.indexOf('credentials'));assert.ok(observed.events.indexOf('credentials')<observed.events.indexOf('push'));assert.equal(observed.receipt.runnerMeasurement.runnerSha256,f.pin.runnerSha256);assert.equal(observed.receipt.runtimeBaseImageUri,f.pin.runtimeBaseImageUri);assert.equal(observed.receipt.runtimePackagesSha256,f.pin.runtimePackagesSha256);assert.equal(observed.receipt.installedPackageSetSha256,'3'.repeat(64));assert.equal(observed.receipt.glibcVersion,'2.41');assert.equal(observed.receipt.nativeCompatibility.status,'RUNTIME_NATIVE_VERIFIED');assert.equal(observed.receipt.sourceManifestSha256,f.pin.manifest.sha256);assert.equal(observed.receipt.scanStatus,'COMPLETE');}
+  else{assert.equal(observed.status,'refused');assert.equal(observed.receipt,null);if(['runner-mismatch','runtime-packages-mismatch','runtime-native-mismatch','linux-test-hold','source-mismatch'].includes(scenario))assert.equal(observed.events.includes('credentials'),false);if(['runner-mismatch','runtime-packages-mismatch','runtime-native-mismatch','linux-test-hold'].includes(scenario))assert.equal(observed.events.includes('image-measurement'),true);if(scenario==='runtime-packages-mismatch')assert.equal(observed.events.includes('runtime-native'),false);if(scenario==='linux-test-hold')assert.equal(observed.events.includes(linuxTests),true);if(['scan-hold','cleanup-unknown'].includes(scenario))assert.equal(observed.events.includes('push'),true);if(scenario==='source-mismatch')assert.equal(observed.events.includes('docker-build'),false);}
  });
 });

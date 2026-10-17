@@ -13,10 +13,11 @@ function object(value){const v=exact(value,['bucket','key','versionId','sha256']
 /** All pins are nonsecret owner-reviewed data. Archive and member manifest must
  * already exist as immutable S3 versions before this override is finalized. */
 export function createProductImageBuildRecipe(value){
- const p=exact(value,['sourceCommit','archive','manifest','dockerfileSha256','nodeImageUri','nodeVersion','runnerSha256','runtimeUser','codeBuildProjectArn','ecrRepositoryUri','imageTag','verifierSha256','producerSha256']);
+ const p=exact(value,['schemaVersion','sourceCommit','archive','manifest','dockerfileSha256','nodeImageUri','nodeVersion','runtimeBaseImageUri','runtimePackagesSha256','runnerSha256','runtimeUser','codeBuildProjectArn','ecrRepositoryUri','imageTag','verifierSha256','producerSha256']);
  object(p.archive);object(p.manifest);
- if(Object.entries(p).some(([k,v])=>!['archive','manifest'].includes(k)&&typeof v!=='string')||!commit.test(p.sourceCommit)||!['dockerfileSha256','runnerSha256','verifierSha256','producerSha256'].every(k=>sha.test(p[k]))||
+ if(p.schemaVersion!==2||Object.entries(p).some(([k,v])=>!['schemaVersion','archive','manifest'].includes(k)&&typeof v!=='string')||!commit.test(p.sourceCommit)||!['dockerfileSha256','runtimePackagesSha256','runnerSha256','verifierSha256','producerSha256'].every(k=>sha.test(p[k]))||
     !/^public\.ecr\.aws\/docker\/library\/node@sha256:[a-f0-9]{64}$/u.test(p.nodeImageUri)||!/^v24\.[0-9]+\.[0-9]+$/u.test(p.nodeVersion)||
+    !/^cgr\.dev\/chainguard\/wolfi-base@sha256:[a-f0-9]{64}$/u.test(p.runtimeBaseImageUri)||
     !/^[1-9][0-9]*:[1-9][0-9]*$/u.test(p.runtimeUser)||!/^arn:aws:codebuild:us-east-1:967807252336:project\/[A-Za-z0-9_-]+$/u.test(p.codeBuildProjectArn)||
     !/^967807252336\.dkr\.ecr\.us-east-1\.amazonaws\.com\/[a-z0-9._/-]+$/u.test(p.ecrRepositoryUri)||
     !new RegExp(`^product-${p.sourceCommit}-[a-f0-9]{32}$`,'u').test(p.imageTag)||p.archive.bucket!==resultBucket||p.manifest.bucket!==resultBucket)refuse();
@@ -56,7 +57,7 @@ def child_receipt():
         phases=set('REQUEST BUILD_IDENTITY BUILD_READBACK REPOSITORY_READBACK WORKDIR SOURCE_ARCHIVE SOURCE_MANIFEST SOURCE_VERIFY SOURCE_EXTRACT DOCKER_PREFLIGHT DOCKER_BUILD IMAGE_INSPECT SANDBOX_HELP SANDBOX_MEASURE LINUX_TESTS ECR_AUTH ECR_PUSH ECR_READBACK ECR_SCAN CLEANUP WORKDIR_CLEANUP RECEIPT'.split())
         types=set('MISSING_FILE PERMISSION OS JSON IMPORT KEY TYPE VALUE TIMEOUT UNEXPECTED'.split())
         categories=types|{'COMMAND','CHECK'}
-        codes={'PRODUCT_IMAGE_CHECK_FAILED'}|{'PRODUCT_IMAGE_'+name for name in 'ARCHIVE_BOUND ARCHIVE_SHA_MISMATCH BUILD_IDENTITY BUILD_SOURCE CLEANUP_UNKNOWN COMMAND_BOUND COMMAND_FAILED COMMAND_UNAVAILABLE_OR_TIMEOUT DUPLICATE_KEY DUPLICATE_MEMBER FILE_BOUND IMAGE_IDENTITY IMAGE_MEASUREMENT IMAGE_READBACK LINUX_CASES_UNPROVEN LINUX_REPORTER_UNPROVEN LINUX_FIXTURE_UNPROVEN LOCAL_IMAGE_EXISTS LOCAL_PROBE_EXISTS MANIFEST_BOUND MANIFEST_ORDER MANIFEST_SHA_MISMATCH MANIFEST_SHAPE MEMBER_ANCESTOR MEMBER_PATH MEMBER_TYPE NODE_PIN OBJECT_BINDING OBJECT_BOUND PRIVATE_MEMBER PRODUCER_DEADLINE PRODUCER_PLATFORM_OR_OUTPUT PROJECT_PIN REPOSITORY_PIN REPOSITORY_POLICY REQUEST_OBJECT REQUEST_PIN RUNNER_BOUND RUNTIME_USER SCAN_FINDINGS_HOLD SCAN_INCOMPLETE SHAPE_REFUSED SOURCE_COMMIT SOURCE_MEMBERS_MISMATCH SOURCE_PIN_MISMATCH TAG_PIN'.split()}
+        codes={'PRODUCT_IMAGE_CHECK_FAILED'}|{'PRODUCT_IMAGE_'+name for name in 'ARCHIVE_BOUND ARCHIVE_SHA_MISMATCH BUILD_IDENTITY BUILD_SOURCE CLEANUP_UNKNOWN COMMAND_BOUND COMMAND_FAILED COMMAND_UNAVAILABLE_OR_TIMEOUT DUPLICATE_KEY DUPLICATE_MEMBER FILE_BOUND IMAGE_IDENTITY IMAGE_MEASUREMENT IMAGE_READBACK LINUX_CASES_UNPROVEN LINUX_REPORTER_UNPROVEN LINUX_FIXTURE_UNPROVEN LOCAL_IMAGE_EXISTS LOCAL_PROBE_EXISTS MANIFEST_BOUND MANIFEST_ORDER MANIFEST_SHA_MISMATCH MANIFEST_SHAPE MEMBER_ANCESTOR MEMBER_PATH MEMBER_TYPE NODE_PIN OBJECT_BINDING OBJECT_BOUND PRIVATE_MEMBER PRODUCER_DEADLINE PRODUCER_PLATFORM_OR_OUTPUT PROJECT_PIN REPOSITORY_PIN REPOSITORY_POLICY REQUEST_OBJECT REQUEST_PIN RUNNER_BOUND RUNTIME_USER RUNTIME_BASE_PIN RUNTIME_PACKAGES_UNPROVEN RUNTIME_NATIVE_UNPROVEN SCAN_FINDINGS_HOLD SCAN_INCOMPLETE SHAPE_REFUSED SOURCE_COMMIT SOURCE_MEMBERS_MISMATCH SOURCE_PIN_MISMATCH TAG_PIN'.split()}
         statuses={'EXIT_NONZERO','TIMEOUT','BOUND','UNAVAILABLE'}
         def checked(record):
             if type(record) is not dict or set(record)!={'phase','category','code','detail'}:
@@ -375,7 +376,7 @@ raise SystemExit(0)
 MERI_PRODUCT_BUILD`;
  // Keep authored names readable while fitting CodeBuild's fixed override limit.
  // Only these private Python bindings are shortened; protocol strings stay exact.
- const bindings={file_failures:'ff',per_file:'pf',bootstrap_receipt:'br',child_receipt:'cr',result_bucket:'rb',result_key:'rk',result_kms:'rm',error_codes:'ec',failure_types:'ft',bootstrap_codes:'bc'};
+ const bindings={file_failures:'ff',per_file:'pf',bootstrap_receipt:'br',child_receipt:'cr',result_bucket:'rb',result_key:'rk',result_kms:'rm',error_codes:'ec',failure_types:'ft',bootstrap_codes:'bc',record:'rc',payload:'pl',environment:'ev',temporary:'tp',statuses:'ss',result:'rs',answer:'an',candidate:'cd',cleanup_status:'ct',lines:'ln',first:'fi',source_hash:'sh',producer_hash:'ph',checked:'ck',categories:'cg',child:'ch'};
  const identifiers=new RegExp(`\\b(?:${Object.keys(bindings).join('|')})\\b`,'gu');
  if(new RegExp(`['"](?:${Object.keys(bindings).join('|')})['"]`,'u').test(bootstrap))refuse();
  const command=bootstrap.replace(identifiers,name=>bindings[name]).replace(/^ +/gmu,spaces=>{if(spaces.length%4)refuse();return ' '.repeat(spaces.length/4);});

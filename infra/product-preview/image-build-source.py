@@ -21,6 +21,7 @@ COMMIT = re.compile(r"[a-f0-9]{40}\Z")
 RUNNER = "apps/runtime/conversation-runner.mjs"
 VERIFIER = "infra/product-preview/image-build-source.py"
 PRODUCER = "infra/product-preview/image-build-producer.py"
+RUNTIME_LOCK = "infra/product-preview/runtime-packages.lock.json"
 CONTRACT = "meri.runner-entrypoint.v1"
 
 
@@ -278,16 +279,18 @@ def verify(archive, manifest_path, pin):
     need(list(expected) == sorted(expected), "MANIFEST_ORDER")
     measured = archive_members(archive)
     need(measured == expected, "SOURCE_MEMBERS_MISMATCH")
-    for path, digest in [("apps/runtime/Dockerfile", pin["dockerfileSha256"]), (RUNNER, pin["runnerSha256"]), (VERIFIER, pin["verifierSha256"]), (PRODUCER, pin["producerSha256"])]:
+    for path, digest in [("apps/runtime/Dockerfile", pin["dockerfileSha256"]), (RUNNER, pin["runnerSha256"]), (VERIFIER, pin["verifierSha256"]), (PRODUCER, pin["producerSha256"]), (RUNTIME_LOCK, pin["runtimePackagesSha256"])]:
         need(path in measured and measured[path]["sha256"] == digest, "SOURCE_PIN_MISMATCH")
     need(0 < measured[RUNNER]["bytes"] <= 1024**2, "RUNNER_BOUND")
-    return {"status": "VERIFIED_SOURCE_ONLY", "sourceCommit": pin["sourceCommit"], "archiveSha256": pin["archive"]["sha256"], "sourceManifestSha256": pin["manifest"]["sha256"], "fileCount": len(measured), "runnerBytes": measured[RUNNER]["bytes"]}
+    need(0 < measured[RUNTIME_LOCK]["bytes"] <= 65536, "SOURCE_PIN_MISMATCH")
+    return {"status": "VERIFIED_SOURCE_ONLY", "sourceCommit": pin["sourceCommit"], "archiveSha256": pin["archive"]["sha256"], "sourceManifestSha256": pin["manifest"]["sha256"], "runtimePackagesSha256": pin["runtimePackagesSha256"], "fileCount": len(measured), "runnerBytes": measured[RUNNER]["bytes"]}
 
 
 def validate_request(value):
-    p = exact(value, ["sourceCommit", "archive", "manifest", "dockerfileSha256", "nodeImageUri", "nodeVersion", "runnerSha256", "runtimeUser", "codeBuildProjectArn", "ecrRepositoryUri", "imageTag", "verifierSha256", "producerSha256"])
+    p = exact(value, ["schemaVersion", "sourceCommit", "archive", "manifest", "dockerfileSha256", "nodeImageUri", "nodeVersion", "runtimeBaseImageUri", "runtimePackagesSha256", "runnerSha256", "runtimeUser", "codeBuildProjectArn", "ecrRepositoryUri", "imageTag", "verifierSha256", "producerSha256"])
+    need(type(p["schemaVersion"]) is int and p["schemaVersion"] == 2, "REQUEST_PIN")
     need(COMMIT.fullmatch(p["sourceCommit"]), "REQUEST_PIN")
-    for key in ["dockerfileSha256", "runnerSha256", "verifierSha256", "producerSha256"]:
+    for key in ["dockerfileSha256", "runtimePackagesSha256", "runnerSha256", "verifierSha256", "producerSha256"]:
         need(type(p[key]) is str and SHA.fullmatch(p[key]), "REQUEST_PIN")
     for key in ["archive", "manifest"]:
         item = exact(p[key], ["bucket", "key", "versionId", "sha256"])
@@ -295,6 +298,7 @@ def validate_request(value):
         need(all(type(item[k]) is str and 0 < len(item[k]) <= 1024 and not re.search(r"[\x00-\x20\x7f]", item[k]) for k in ["key", "versionId"]), "REQUEST_OBJECT")
         need(item["versionId"] != "null" and not item["key"].startswith("-"), "REQUEST_OBJECT")
     need(re.fullmatch(r"public\.ecr\.aws/docker/library/node@sha256:[a-f0-9]{64}", p["nodeImageUri"]) and re.fullmatch(r"v24\.[0-9]+\.[0-9]+", p["nodeVersion"]), "NODE_PIN")
+    need(type(p["runtimeBaseImageUri"]) is str and re.fullmatch(r"cgr\.dev/chainguard/wolfi-base@sha256:[a-f0-9]{64}", p["runtimeBaseImageUri"]), "RUNTIME_BASE_PIN")
     need(re.fullmatch(r"[1-9][0-9]*:[1-9][0-9]*", p["runtimeUser"]), "RUNTIME_USER")
     need(re.fullmatch(r"arn:aws:codebuild:us-east-1:967807252336:project/[A-Za-z0-9_-]+", p["codeBuildProjectArn"]), "PROJECT_PIN")
     need(re.fullmatch(r"967807252336\.dkr\.ecr\.us-east-1\.amazonaws\.com/[a-z0-9._/-]+", p["ecrRepositoryUri"]), "REPOSITORY_PIN")

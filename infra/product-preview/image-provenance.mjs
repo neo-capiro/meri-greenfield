@@ -13,6 +13,9 @@ const sha=/^[a-f0-9]{64}$/u;
 const imageDigest=/^sha256:[a-f0-9]{64}$/u;
 const commit=/^[a-f0-9]{40}$/u;
 const digestUri=/^[^@\s]+@sha256:[a-f0-9]{64}$/u;
+const runtimeDigestUri=/^cgr\.dev\/chainguard\/wolfi-base@sha256:[a-f0-9]{64}$/u;
+const nodeVersion=/^v24\.[0-9]+\.[0-9]+$/u;
+const glibcVersion=/^[0-9]+\.[0-9]+(?:\.[0-9]+)?$/u;
 const ecrUri=/^967807252336\.dkr\.ecr\.us-east-1\.amazonaws\.com\/[a-z0-9._/-]+$/u;
 const projectArn=/^arn:aws:codebuild:us-east-1:967807252336:project\/[A-Za-z0-9_-]+$/u;
 const refuse=reason=>{throw Error(`PRODUCT_IMAGE_${reason}`);};
@@ -23,21 +26,23 @@ function exact(value,keys){
 }
 function same(left,right,reason){if(left!==right)refuse(reason);}
 function measured(value){const v=exact(value,['contract','path','runnerSha256','bytes']);if(v.contract!==productRunnerMeasurement.contract||v.path!==productRunnerMeasurement.path||!sha.test(v.runnerSha256)||!Number.isSafeInteger(v.bytes)||v.bytes<1||v.bytes>1024*1024)refuse('RUNNER_MEASUREMENT_REFUSED');return v;}
+function runtimeMeasured(value){const v=exact(value,['schemaVersion','status','runtimeBaseImageUri','runtimePackagesSha256','installedPackageSetSha256','nodeVersion','glibcVersion']);if(v.schemaVersion!==1||v.status!=='RUNTIME_PACKAGES_VERIFIED'||!runtimeDigestUri.test(v.runtimeBaseImageUri)||!sha.test(v.runtimePackagesSha256)||!sha.test(v.installedPackageSetSha256)||!nodeVersion.test(v.nodeVersion)||!glibcVersion.test(v.glibcVersion))refuse('RUNTIME_MEASUREMENT_REFUSED');return v;}
+function nativeMeasured(value){const v=exact(value,['schemaVersion','status','nodeVersion','glibcVersion','swcTarget','swcNativeSha256','temporalNativeSha256','swcCacheIndependent','temporalNativeLoaded']);if(v.schemaVersion!==1||v.status!=='RUNTIME_NATIVE_VERIFIED'||!nodeVersion.test(v.nodeVersion)||!glibcVersion.test(v.glibcVersion)||v.swcTarget!=='x86_64-unknown-linux-gnu'||!sha.test(v.swcNativeSha256)||!sha.test(v.temporalNativeSha256)||v.swcCacheIndependent!==true||v.temporalNativeLoaded!==true)refuse('NATIVE_MEASUREMENT_REFUSED');return v;}
 
 /**
  * All arguments are narrow, nonsecret projections supplied by the review owner.
  * A matching result is a metadata join only, not an image or deployment admission.
  */
 export function compareProductImageMetadata(evidence){
- const {pin,build,producer,ecr,manifest,measurement}=exact(evidence,['pin','build','producer','ecr','manifest','measurement']);
- const p=exact(pin,['sourceCommit','archiveSha256','dockerfileSha256','nodeImageUri','sourceVersion','codeBuildProjectArn','ecrRepositoryUri']);
+ const {pin,build,producer,ecr,manifest,measurement,nativeMeasurement}=exact(evidence,['pin','build','producer','ecr','manifest','measurement','nativeMeasurement']);
+ const p=exact(pin,['schemaVersion','sourceCommit','archiveSha256','dockerfileSha256','nodeImageUri','nodeVersion','runtimeBaseImageUri','runtimePackagesSha256','sourceVersion','codeBuildProjectArn','ecrRepositoryUri']);
  const b=exact(build,['id','projectArn','status','sourceVersion']);
- const r=exact(producer,['buildId','sourceVersion','sourceCommit','archiveSha256','dockerfileSha256','nodeImageUri','imageDigest','runnerSha256','runnerMeasurement']);
- const observed=measured(measurement),produced=measured(r.runnerMeasurement);
+ const r=exact(producer,['buildId','sourceVersion','sourceCommit','archiveSha256','dockerfileSha256','nodeImageUri','nodeVersion','runtimeBaseImageUri','runtimePackagesSha256','installedPackageSetSha256','glibcVersion','runtimePackageMeasurement','nativeCompatibility','imageDigest','runnerSha256','runnerMeasurement']);
+ const observed=measured(measurement),produced=measured(r.runnerMeasurement),runtime=runtimeMeasured(r.runtimePackageMeasurement),native=nativeMeasured(r.nativeCompatibility),independentNative=nativeMeasured(nativeMeasurement);
  const e=exact(ecr,['repositoryUri','imageDigest','scanStatus','findingSeverityCounts']);
  const m=exact(manifest,['imageUri','runnerSha256']);
- if(!commit.test(p.sourceCommit)||![p.archiveSha256,p.dockerfileSha256,r.runnerSha256].every(v=>sha.test(v))||!imageDigest.test(r.imageDigest)||
-    !digestUri.test(p.nodeImageUri)||!projectArn.test(p.codeBuildProjectArn)||!ecrUri.test(p.ecrRepositoryUri)||
+ if(p.schemaVersion!==2||!commit.test(p.sourceCommit)||![p.archiveSha256,p.dockerfileSha256,p.runtimePackagesSha256,r.runnerSha256,r.installedPackageSetSha256].every(v=>sha.test(v))||!imageDigest.test(r.imageDigest)||
+    !digestUri.test(p.nodeImageUri)||!runtimeDigestUri.test(p.runtimeBaseImageUri)||!nodeVersion.test(p.nodeVersion)||!glibcVersion.test(r.glibcVersion)||!projectArn.test(p.codeBuildProjectArn)||!ecrUri.test(p.ecrRepositoryUri)||
     typeof p.sourceVersion!=='string'||p.sourceVersion.length<1||p.sourceVersion.length>256||/[\x00-\x1f\x7f]/u.test(p.sourceVersion)||
     typeof b.id!=='string'||!b.id.startsWith(p.codeBuildProjectArn.split('/')[1]+':')||!/^.+:[a-f0-9-]{36}$/u.test(b.id)||
     !imageDigest.test(e.imageDigest)||!ecrUri.test(e.repositoryUri)||!digestUri.test(m.imageUri)||!sha.test(m.runnerSha256))refuse('BINDING_REFUSED');
@@ -50,6 +55,17 @@ export function compareProductImageMetadata(evidence){
  same(r.archiveSha256,p.archiveSha256,'ARCHIVE_SHA_MISMATCH');
  same(r.dockerfileSha256,p.dockerfileSha256,'DOCKERFILE_SHA_MISMATCH');
  same(r.nodeImageUri,p.nodeImageUri,'NODE_BASE_MISMATCH');
+ same(r.nodeVersion,p.nodeVersion,'NODE_VERSION_MISMATCH');
+ same(r.runtimeBaseImageUri,p.runtimeBaseImageUri,'RUNTIME_BASE_MISMATCH');
+ same(r.runtimePackagesSha256,p.runtimePackagesSha256,'RUNTIME_PACKAGES_SHA_MISMATCH');
+ same(runtime.runtimeBaseImageUri,r.runtimeBaseImageUri,'RUNTIME_MEASURED_BASE_MISMATCH');
+ same(runtime.runtimePackagesSha256,r.runtimePackagesSha256,'RUNTIME_MEASURED_LOCK_MISMATCH');
+ same(runtime.installedPackageSetSha256,r.installedPackageSetSha256,'RUNTIME_PACKAGE_SET_MISMATCH');
+ same(runtime.nodeVersion,r.nodeVersion,'RUNTIME_MEASURED_NODE_MISMATCH');
+ same(runtime.glibcVersion,r.glibcVersion,'RUNTIME_GLIBC_MISMATCH');
+ same(native.nodeVersion,r.nodeVersion,'NATIVE_NODE_MISMATCH');
+ same(native.glibcVersion,r.glibcVersion,'NATIVE_GLIBC_MISMATCH');
+ for(const field of ['nodeVersion','glibcVersion','swcTarget','swcNativeSha256','temporalNativeSha256','swcCacheIndependent','temporalNativeLoaded'])same(independentNative[field],native[field],'INDEPENDENT_NATIVE_MISMATCH');
  same(e.repositoryUri,p.ecrRepositoryUri,'REPOSITORY_MISMATCH');
  same(e.imageDigest,r.imageDigest,'ECR_DIGEST_MISMATCH');
  same(m.imageUri,`${p.ecrRepositoryUri}@${e.imageDigest}`,'MANIFEST_IMAGE_MISMATCH');
@@ -62,5 +78,5 @@ export function compareProductImageMetadata(evidence){
  if(counts===null||typeof counts!=='object'||Array.isArray(counts)||Object.getPrototypeOf(counts)!==Object.prototype||
     Object.values(counts).some(n=>!Number.isSafeInteger(n)||n<0)||
     (counts.CRITICAL??0)>0||(counts.HIGH??0)>0)refuse('SCAN_FINDINGS_HOLD');
- return Object.freeze({status:'METADATA_MATCH_ONLY',sourceCommit:p.sourceCommit,archiveSha256:p.archiveSha256,imageUri:m.imageUri,runnerSha256:m.runnerSha256});
+ return Object.freeze({status:'METADATA_MATCH_ONLY',sourceCommit:p.sourceCommit,archiveSha256:p.archiveSha256,imageUri:m.imageUri,runnerSha256:m.runnerSha256,runtimeBaseImageUri:p.runtimeBaseImageUri,runtimePackagesSha256:p.runtimePackagesSha256,installedPackageSetSha256:r.installedPackageSetSha256,swcNativeSha256:native.swcNativeSha256,temporalNativeSha256:native.temporalNativeSha256});
 }

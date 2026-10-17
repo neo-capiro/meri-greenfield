@@ -24,6 +24,7 @@ _spec.loader.exec_module(_source)
 need, decode, encoded = _source.need, _source.decode, _source.encoded
 validate_request, verify, file_sha = _source.validate_request, _source.verify, _source.file_sha
 SHA, RUNNER, CONTRACT = _source.SHA, _source.RUNNER, _source.CONTRACT
+RUNTIME_LOCK = _source.RUNTIME_LOCK
 REGION = "us-east-1"
 LINUX_ONLY_TESTS = (
     "apps/runtime/test/prepared-candidate-bootstrap.test.mjs",
@@ -56,7 +57,7 @@ _ERROR_CODES = frozenset("PRODUCT_IMAGE_" + name for name in (
     "OBJECT_BINDING", "OBJECT_BOUND", "PRIVATE_MEMBER", "PRODUCER_DEADLINE",
     "PRODUCER_PLATFORM_OR_OUTPUT", "PROJECT_PIN", "REPOSITORY_PIN",
     "REPOSITORY_POLICY", "REQUEST_OBJECT", "REQUEST_PIN", "RUNNER_BOUND",
-    "RUNTIME_USER", "SCAN_FINDINGS_HOLD", "SCAN_INCOMPLETE", "SHAPE_REFUSED",
+    "RUNTIME_USER", "RUNTIME_BASE_PIN", "RUNTIME_PACKAGES_UNPROVEN", "RUNTIME_NATIVE_UNPROVEN", "SCAN_FINDINGS_HOLD", "SCAN_INCOMPLETE", "SHAPE_REFUSED",
     "SOURCE_COMMIT", "SOURCE_MEMBERS_MISMATCH", "SOURCE_PIN_MISMATCH",
     "TAG_PIN",
 ))
@@ -442,6 +443,12 @@ def _produce(pin, output, diagnostic):
                 with target.open("xb") as stream:
                     stream.write(source.read(row["path"]))
                 target.chmod(0o755 if row["mode"] == "100755" else 0o644)
+        runtime_lock = decode((context / RUNTIME_LOCK).read_bytes())
+        need(runtime_lock.get("runtimeImageUri") == p["runtimeBaseImageUri"] and
+             runtime_lock.get("nodeVersion") == p["nodeVersion"] and
+             type(runtime_lock.get("glibcVersion")) is str and
+             re.fullmatch(r"[0-9]+\.[0-9]+(?:\.[0-9]+)?", runtime_lock["glibcVersion"]),
+             "RUNTIME_PACKAGES_UNPROVEN")
         docker = ["docker", "--config", str(auth)]
         owned_image, owned_probe, authenticated = False, False, False
         probe_name = "meri-product-probe-" + p["imageTag"].rsplit("-", 1)[1]
@@ -449,14 +456,14 @@ def _produce(pin, output, diagnostic):
             diagnostic["phase"] = "DOCKER_PREFLIGHT"
             need(not run(docker + ["image", "ls", "--filter", "reference=" + image, "--quiet"]).strip(), "LOCAL_IMAGE_EXISTS")
             need(not run(docker + ["container", "ls", "--all", "--filter", "name=^/" + probe_name + "$", "--quiet"]).strip(), "LOCAL_PROBE_EXISTS")
-            # No build args except the separately reviewed immutable Node base.
+            # Both bases are pinned by digest and joined to the verified source lock.
             owned_image = True
             diagnostic["phase"] = "DOCKER_BUILD"
-            run(docker + ["build", "--platform", "linux/amd64", "--build-arg", "NODE_IMAGE=" + p["nodeImageUri"], "--label", "org.opencontainers.image.revision=" + p["sourceCommit"], "--label", "org.opencontainers.image.base.name=" + p["nodeImageUri"], "-f", str(context / "apps/runtime/Dockerfile"), "-t", image, str(context)], timeout=900)
+            run(docker + ["build", "--platform", "linux/amd64", "--build-arg", "NODE_IMAGE=" + p["nodeImageUri"], "--build-arg", "RUNTIME_IMAGE=" + p["runtimeBaseImageUri"], "--label", "org.opencontainers.image.revision=" + p["sourceCommit"], "--label", "org.opencontainers.image.base.name=" + p["runtimeBaseImageUri"], "--label", "io.meri.node.base=" + p["nodeImageUri"], "--label", "io.meri.runtime.packages.sha256=" + p["runtimePackagesSha256"], "-f", str(context / "apps/runtime/Dockerfile"), "-t", image, str(context)], timeout=900)
             diagnostic["phase"] = "IMAGE_INSPECT"
             inspection = decode(run(docker + ["image", "inspect", image]))[0]
             config = inspection["Config"]
-            need(inspection["Os"] == "linux" and inspection["Architecture"] == "amd64" and config["Entrypoint"] == ["node", "apps/runtime/cli.mjs"] and config["Labels"]["org.opencontainers.image.revision"] == p["sourceCommit"] and config["Labels"]["org.opencontainers.image.base.name"] == p["nodeImageUri"] and inspection["Size"] <= 3 * 1024**3, "IMAGE_IDENTITY")
+            need(inspection["Os"] == "linux" and inspection["Architecture"] == "amd64" and config["Entrypoint"] == ["node", "apps/runtime/cli.mjs"] and config["Labels"]["org.opencontainers.image.revision"] == p["sourceCommit"] and config["Labels"]["org.opencontainers.image.base.name"] == p["runtimeBaseImageUri"] and config["Labels"]["io.meri.node.base"] == p["nodeImageUri"] and config["Labels"]["io.meri.runtime.packages.sha256"] == p["runtimePackagesSha256"] and inspection["Size"] <= 3 * 1024**3, "IMAGE_IDENTITY")
             sandbox = docker + ["run", "--rm", "--name", probe_name, "--init", "--network", "none", "--read-only", "--cap-drop", "ALL", "--security-opt", "no-new-privileges", "--pids-limit", "128", "--memory", "2g", "--tmpfs", "/tmp:rw,nosuid,nodev,noexec,size=128m", "--entrypoint", "/usr/local/bin/node", image]
             owned_probe = True
             diagnostic["phase"] = "SANDBOX_HELP"
@@ -465,6 +472,22 @@ def _produce(pin, output, diagnostic):
             diagnostic["phase"] = "SANDBOX_MEASURE"
             measured = decode(run(sandbox + ["--input-type=module", "-e", probe], timeout=90))
             need(measured["node"] == p["nodeVersion"] and measured["runtimeUser"] == p["runtimeUser"] and measured["runner"] == {"contract": CONTRACT, "path": RUNNER, "runnerSha256": p["runnerSha256"], "bytes": verified["runnerBytes"]} and SHA.fullmatch(measured["executableSha256"]), "IMAGE_MEASUREMENT")
+            runtime_packages = decode(run(sandbox + ["apps/runtime/build/runtime-packages.mjs", "verify", "--lock", RUNTIME_LOCK], timeout=90))
+            need(type(runtime_packages) is dict and set(runtime_packages) == {"schemaVersion", "status", "runtimeBaseImageUri", "runtimePackagesSha256", "installedPackageSetSha256", "nodeVersion", "glibcVersion"} and
+                 type(runtime_packages["schemaVersion"]) is int and runtime_packages["schemaVersion"] == 1 and runtime_packages["status"] == "RUNTIME_PACKAGES_VERIFIED" and
+                 runtime_packages["runtimeBaseImageUri"] == p["runtimeBaseImageUri"] and runtime_packages["runtimePackagesSha256"] == p["runtimePackagesSha256"] and
+                 type(runtime_packages["installedPackageSetSha256"]) is str and SHA.fullmatch(runtime_packages["installedPackageSetSha256"]) and
+                 runtime_packages["nodeVersion"] == measured["node"] and runtime_packages["glibcVersion"] == runtime_lock["glibcVersion"],
+                 "RUNTIME_PACKAGES_UNPROVEN")
+            native = decode(run(sandbox + ["apps/runtime/build/runtime-base-probe.mjs", "--measure"], timeout=90))
+            need(type(native) is dict and set(native) == {"schemaVersion", "status", "nodeVersion", "glibcVersion", "swcTarget", "swcNativeSha256", "temporalNativeSha256", "swcCacheIndependent", "temporalNativeLoaded"} and
+                 type(native["schemaVersion"]) is int and native["schemaVersion"] == 1 and native["status"] == "RUNTIME_NATIVE_VERIFIED" and
+                 native["nodeVersion"] == p["nodeVersion"] and native["glibcVersion"] == runtime_packages["glibcVersion"] and
+                 native["swcTarget"] == "x86_64-unknown-linux-gnu" and
+                 type(native["swcNativeSha256"]) is str and SHA.fullmatch(native["swcNativeSha256"]) and
+                 type(native["temporalNativeSha256"]) is str and SHA.fullmatch(native["temporalNativeSha256"]) and
+                 native["swcCacheIndependent"] is True and native["temporalNativeLoaded"] is True,
+                 "RUNTIME_NATIVE_UNPROVEN")
             # These fixtures require POSIX path and owner semantics. Qualify them
             # inside the exact nonroot image before obtaining registry credentials.
             diagnostic["phase"] = "LINUX_TESTS"
@@ -485,7 +508,7 @@ def _produce(pin, output, diagnostic):
             image_digest = details[0]["imageDigest"]
             diagnostic["phase"] = "ECR_SCAN"
             status, counts = wait_for_scan(repository, image_digest)
-            receipt = {"buildId": build_id, "sourceVersion": p["archive"]["versionId"], "sourceCommit": p["sourceCommit"], "archiveSha256": verified["archiveSha256"], "dockerfileSha256": p["dockerfileSha256"], "nodeImageUri": p["nodeImageUri"], "imageDigest": image_digest, "runnerSha256": measured["runner"]["runnerSha256"], "runnerMeasurement": measured["runner"], "runtimeUser": measured["runtimeUser"], "executableSha256": measured["executableSha256"], "sourceManifestSha256": verified["sourceManifestSha256"], "verifierSha256": p["verifierSha256"], "producerSha256": p["producerSha256"], "scanStatus": status, "findingSeverityCounts": counts}
+            receipt = {"buildId": build_id, "sourceVersion": p["archive"]["versionId"], "sourceCommit": p["sourceCommit"], "archiveSha256": verified["archiveSha256"], "dockerfileSha256": p["dockerfileSha256"], "nodeImageUri": p["nodeImageUri"], "nodeVersion": measured["node"], "runtimeBaseImageUri": p["runtimeBaseImageUri"], "runtimePackagesSha256": p["runtimePackagesSha256"], "installedPackageSetSha256": runtime_packages["installedPackageSetSha256"], "glibcVersion": runtime_packages["glibcVersion"], "runtimePackageMeasurement": runtime_packages, "nativeCompatibility": native, "imageDigest": image_digest, "runnerSha256": measured["runner"]["runnerSha256"], "runnerMeasurement": measured["runner"], "runtimeUser": measured["runtimeUser"], "executableSha256": measured["executableSha256"], "sourceManifestSha256": verified["sourceManifestSha256"], "verifierSha256": p["verifierSha256"], "producerSha256": p["producerSha256"], "scanStatus": status, "findingSeverityCounts": counts}
         except Exception as error:
             _record_primary(diagnostic, error)
             raise

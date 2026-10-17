@@ -52,6 +52,11 @@ apps/runtime/test/*
 docs
 evals
 infra
+!infra/
+infra/*
+!infra/product-preview/
+infra/product-preview/*
+!infra/product-preview/runtime-packages.lock.json
 scripts
 *.env
 **/*.env

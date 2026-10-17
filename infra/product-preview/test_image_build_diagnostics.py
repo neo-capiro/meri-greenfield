@@ -20,12 +20,14 @@ spec.loader.exec_module(producer)
 def request():
     commit = "a" * 40
     return {
+        "schemaVersion": 2,
         "sourceCommit": commit,
         "archive": {"bucket": "example-build-bucket", "key": "inputs/source.zip", "versionId": "version-one", "sha256": "b" * 64},
         "manifest": {"bucket": "example-build-bucket", "key": "inputs/members.json", "versionId": "version-two", "sha256": "c" * 64},
         "dockerfileSha256": "d" * 64,
         "nodeImageUri": "public.ecr.aws/docker/library/node@sha256:" + "e" * 64,
-        "nodeVersion": "v24.21.0", "runnerSha256": "f" * 64,
+        "nodeVersion": "v24.21.0", "runtimeBaseImageUri": "cgr.dev/chainguard/wolfi-base@sha256:" + "1" * 64,
+        "runtimePackagesSha256": "4" * 64, "runnerSha256": "f" * 64,
         "runtimeUser": "1000:1000",
         "codeBuildProjectArn": "arn:aws:codebuild:us-east-1:967807252336:project/meri-greenfield-qualification-build",
         "ecrRepositoryUri": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker",
@@ -112,7 +114,7 @@ class ProducerDiagnosticTests(unittest.TestCase):
                                           "imageScanningConfiguration": {"scanOnPush": True}}]}
             raise AssertionError("unexpected mocked AWS operation")
         def download(pin, target, maximum):
-            target.write_bytes(b'{"files":[]}' if target.name == "members.json" else b"not-a-real-archive")
+            target.write_bytes(b'{"files":[{"path":"infra/product-preview/runtime-packages.lock.json","mode":"100644"}]}' if target.name == "members.json" else b"not-a-real-archive")
         def run(args, **kwargs):
             if "build" in args:
                 raise ValueError("PRODUCT_IMAGE_COMMAND_FAILED")
@@ -133,13 +135,15 @@ class ProducerDiagnosticTests(unittest.TestCase):
                     owned.cleanup()
                     raise OSError("secret=never-print-this")
             return FailingRemoval()
+        fake_zip = mock.MagicMock()
+        fake_zip.__enter__.return_value.read.return_value = json.dumps({"runtimeImageUri": value["runtimeBaseImageUri"], "nodeVersion": value["nodeVersion"], "glibcVersion": "2.41"}).encode()
         with real_temp(dir=HERE) as work, \
                 mock.patch.object(producer.sys, "platform", "linux"), \
                 mock.patch.dict(os.environ, {"CODEBUILD_BUILD_ID": build_id, "CODEBUILD_PROJECT_ARN": value["codeBuildProjectArn"]}), \
                 mock.patch.object(producer, "aws", side_effect=aws), \
                 mock.patch.object(producer, "download", side_effect=download), \
                 mock.patch.object(producer, "verify", return_value={}), \
-                mock.patch.object(producer.zipfile, "ZipFile", return_value=mock.MagicMock()), \
+                mock.patch.object(producer.zipfile, "ZipFile", return_value=fake_zip), \
                 mock.patch.object(producer, "run", side_effect=run), \
                 mock.patch.object(producer, "cleanup", side_effect=cleanup), \
                 mock.patch.object(producer.tempfile, "TemporaryDirectory", side_effect=temporary):
