@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "meri-focused-test-run/1",
+  "cwd": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-16\\task-4\\meri-resolution-next",
+  "executable": "C:\\Users\\Administrator\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe",
+  "arguments": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "apps/runtime/native-authority/test/business-development-personal.test.mjs",
+    "apps/worker/conversation/reads/test/business-development.test.mjs"
+  ],
+  "startedAt": "2026-10-17T02:00:22.5078813Z",
+  "completedAt": "2026-10-17T02:00:29.5454623Z",
+  "exitCode": 1,
+  "scope": "New BD personal owner and SDK tests only; synthetic SQL/native HTTP, no live calls"
+}

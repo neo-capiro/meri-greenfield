@@ -1,0 +1,46 @@
+Γ£ö funding SDK: the complete five-operation family requires a task client scope despite forged inventories (7.5523ms)
+Γ£ö funding SDK search_funding_opportunities: canonical literal arguments admit no model context, authority or header (12.6539ms)
+Γ£ö funding SDK search_funding_opportunities: normal hook/source execution retains raw arguments, captured anchor, delivery hashes and settled receipts (1139.7796ms)
+Γ£ö funding SDK search_funding_opportunities: personal task authority cannot become a client grant through installed or discovered operations (145.4577ms)
+Γ£ö funding SDK search_funding_opportunities: a foreign literal client or revoked native client visibility releases no source credential (363.9471ms)
+Γ£ö funding SDK search_funding_opportunities: missing installation, discovery, source, policy or exact handler measurement cannot mount a tool (80.2895ms)
+Γ£ö funding SDK search_funding_opportunities: current availability revocation after listing refuses before gateway execution (115.0897ms)
+Γ£ö funding SDK search_funding_opportunities: current membership drift after source withholds result bytes and keeps UNKNOWN (148.1402ms)
+Γ£ö funding SDK get_funding_opportunity_requirements: canonical literal arguments admit no model context, authority or header (5.0019ms)
+Γ£ö funding SDK get_funding_opportunity_requirements: normal hook/source execution retains raw arguments, captured anchor, delivery hashes and settled receipts (169.3403ms)
+Γ£ö funding SDK get_funding_opportunity_requirements: personal task authority cannot become a client grant through installed or discovered operations (34.6961ms)
+Γ£ö funding SDK get_funding_opportunity_requirements: a foreign literal client or revoked native client visibility releases no source credential (187.0979ms)
+Γ£ö funding SDK get_funding_opportunity_requirements: missing installation, discovery, source, policy or exact handler measurement cannot mount a tool (66.5675ms)
+Γ£ö funding SDK get_funding_opportunity_requirements: current availability revocation after listing refuses before gateway execution (100.225ms)
+Γ£ö funding SDK get_funding_opportunity_requirements: current membership drift after source withholds result bytes and keeps UNKNOWN (121.9473ms)
+Γ£ö funding SDK get_funding_opportunity: canonical literal arguments admit no model context, authority or header (4.3923ms)
+Γ£ö funding SDK get_funding_opportunity: normal hook/source execution retains raw arguments, captured anchor, delivery hashes and settled receipts (168.3258ms)
+Γ£ö funding SDK get_funding_opportunity: personal task authority cannot become a client grant through installed or discovered operations (59.1087ms)
+Γ£ö funding SDK get_funding_opportunity: a foreign literal client or revoked native client visibility releases no source credential (378.9148ms)
+Γ£ö funding SDK get_funding_opportunity: missing installation, discovery, source, policy or exact handler measurement cannot mount a tool (116.2998ms)
+Γ£ö funding SDK get_funding_opportunity: current availability revocation after listing refuses before gateway execution (249.1818ms)
+Γ£ö funding SDK get_funding_opportunity: current membership drift after source withholds result bytes and keeps UNKNOWN (271.0339ms)
+Γ£ö funding SDK get_opportunity_client_context: canonical literal arguments admit no model context, authority or header (2.3343ms)
+Γ£ö funding SDK get_opportunity_client_context: normal hook/source execution retains raw arguments, captured anchor, delivery hashes and settled receipts (279.7999ms)
+Γ£ö funding SDK get_opportunity_client_context: personal task authority cannot become a client grant through installed or discovered operations (72.2083ms)
+Γ£ö funding SDK get_opportunity_client_context: a foreign literal client or revoked native client visibility releases no source credential (273.5949ms)
+Γ£ö funding SDK get_opportunity_client_context: missing installation, discovery, source, policy or exact handler measurement cannot mount a tool (99.5292ms)
+Γ£ö funding SDK get_opportunity_client_context: current availability revocation after listing refuses before gateway execution (159.9404ms)
+Γ£ö funding SDK get_opportunity_client_context: current membership drift after source withholds result bytes and keeps UNKNOWN (155.4346ms)
+Γ£ö funding SDK get_opportunity_government_landscape: canonical literal arguments admit no model context, authority or header (4.7618ms)
+Γ£ö funding SDK get_opportunity_government_landscape: normal hook/source execution retains raw arguments, captured anchor, delivery hashes and settled receipts (174.7686ms)
+Γ£ö funding SDK get_opportunity_government_landscape: personal task authority cannot become a client grant through installed or discovered operations (37.9622ms)
+Γ£ö funding SDK get_opportunity_government_landscape: a foreign literal client or revoked native client visibility releases no source credential (194.1259ms)
+Γ£ö funding SDK get_opportunity_government_landscape: missing installation, discovery, source, policy or exact handler measurement cannot mount a tool (61.3875ms)
+Γ£ö funding SDK get_opportunity_government_landscape: current availability revocation after listing refuses before gateway execution (125.6761ms)
+Γ£ö funding SDK get_opportunity_government_landscape: current membership drift after source withholds result bytes and keeps UNKNOWN (131.9913ms)
+Γ£ö funding SDK: invocation token and original arguments remain required before a source call (39.1692ms)
+Γ£ö funding SDK: an admitted one-call budget settles once and refuses another source dispatch (153.6211ms)
+Γä╣ tests 38
+Γä╣ suites 0
+Γä╣ pass 38
+Γä╣ fail 0
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 7282.2717

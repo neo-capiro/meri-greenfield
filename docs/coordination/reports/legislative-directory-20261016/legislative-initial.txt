@@ -1,0 +1,106 @@
+Γ£ö get_committee_roster: fixed original flat native POST and exact private carrier (65.5163ms)
+Γ£ö get_committee_roster: denied actor, source, decision and grant coherence prevents credential IO (7.6354ms)
+Γ£ö get_committee_roster: model authority, context and digest substitution cannot reach credentials (2.7285ms)
+Γ£ö get_committee_roster: every credential correlation and both native credentials are required (13.5824ms)
+Γ£ö get_committee_roster: limits, abort and expired authority withhold bytes (4.3269ms)
+Γ£ö get_committee_roster: raw domain errors, foreign DTOs and invented completeness are rejected (7.2312ms)
+Γ£ö get_committee_roster: per-call credential composition is exact and cannot use a static fallback (2.0597ms)
+Γ£ö list_members: fixed original flat native POST and exact private carrier (9.9789ms)
+Γ£ö list_members: denied actor, source, decision and grant coherence prevents credential IO (4.7879ms)
+Γ£ö list_members: model authority, context and digest substitution cannot reach credentials (1.708ms)
+Γ£ö list_members: every credential correlation and both native credentials are required (9.8884ms)
+Γ£ö list_members: limits, abort and expired authority withhold bytes (3.2103ms)
+Γ£ö list_members: raw domain errors, foreign DTOs and invented completeness are rejected (4.9512ms)
+Γ£ö list_members: per-call credential composition is exact and cannot use a static fallback (1.4236ms)
+Γ£ö committee original trim/clip boundary is preserved for one native normalization pass (1.7609ms)
+Γ£ö state roster stays separate, retains nullable district/chamber and no inferred ranking member (2.9984ms)
+Γ£ö missing committee jurisdiction and state remain explicit unresolved results (2.6868ms)
+Γ£ö federal roster refuses inferred district, wrong leadership, wrong code, duplicate IDs and rank disorder (8.2141ms)
+Γ£ö roster retains complete stored response beyond list limit without inventing source completeness (4.021ms)
+Γ£ö one-senator response preserves incompleteness, limits and House-only district receiving (6.3434ms)
+Γ£ö member missing/invalid selector preserves explicit refusal instead of broadening the roster (2.5769ms)
+Γ£ö constructor refuses duplicate, foreign, malformed and wrong-version operations without effects (0.4446ms)
+Γ£ö search_cbo_cost_estimates: mounted native JSON, scoped credentials and complete carrier bytes settle once (302.0896ms)
+Γ£ö search_cbo_cost_estimates: absent native context and genuine credential producer refuse before reservation or native IO (86.4993ms)
+Γ£ö search_cbo_cost_estimates: model authority, revoked installation and pre-abort cannot reach native source (40.8207ms)
+Γ£ö search_cbo_cost_estimates: missing real service secret stays unavailable without fallback and retains UNKNOWN hold (61.7625ms)
+Γ£ö search_gao_reports: mounted native JSON, scoped credentials and complete carrier bytes settle once (138.4423ms)
+Γ£ö search_gao_reports: absent native context and genuine credential producer refuse before reservation or native IO (100.4202ms)
+Γ£ö search_gao_reports: model authority, revoked installation and pre-abort cannot reach native source (46.9603ms)
+Γ£ö search_gao_reports: missing real service secret stays unavailable without fallback and retains UNKNOWN hold (83.79ms)
+Γ£ö search_crs_reports: mounted native JSON, scoped credentials and complete carrier bytes settle once (129.3853ms)
+Γ£ö search_crs_reports: absent native context and genuine credential producer refuse before reservation or native IO (73.2511ms)
+Γ£ö search_crs_reports: model authority, revoked installation and pre-abort cannot reach native source (39.6771ms)
+Γ£ö search_crs_reports: missing real service secret stays unavailable without fallback and retains UNKNOWN hold (72.298ms)
+Γ£ö search_acquisition_personnel: mounted native JSON, scoped credentials and complete carrier bytes settle once (151.5413ms)
+Γ£ö search_acquisition_personnel: absent native context and genuine credential producer refuse before reservation or native IO (87.6257ms)
+Γ£ö search_acquisition_personnel: model authority, revoked installation and pre-abort cannot reach native source (36.1467ms)
+Γ£ö search_acquisition_personnel: missing real service secret stays unavailable without fallback and retains UNKNOWN hold (60.8164ms)
+Γ£ö get_acquisition_person: mounted native JSON, scoped credentials and complete carrier bytes settle once (150.0308ms)
+Γ£ö get_acquisition_person: absent native context and genuine credential producer refuse before reservation or native IO (74.4485ms)
+Γ£ö get_acquisition_person: model authority, revoked installation and pre-abort cannot reach native source (35.2274ms)
+Γ£ö get_acquisition_person: missing real service secret stays unavailable without fallback and retains UNKNOWN hold (60.122ms)
+Γ£ö get_committee_roster: mounted native JSON, scoped credentials and complete carrier bytes settle once (135.9351ms)
+Γ£ö get_committee_roster: absent native context and genuine credential producer refuse before reservation or native IO (68.7212ms)
+Γ£ö get_committee_roster: model authority, revoked installation and pre-abort cannot reach native source (43.5754ms)
+Γ£ö get_committee_roster: missing real service secret stays unavailable without fallback and retains UNKNOWN hold (57.7687ms)
+Γ£ö list_members: mounted native JSON, scoped credentials and complete carrier bytes settle once (126.7072ms)
+Γ£ö list_members: absent native context and genuine credential producer refuse before reservation or native IO (71.2884ms)
+Γ£ö list_members: model authority, revoked installation and pre-abort cannot reach native source (31.3543ms)
+Γ£ö list_members: missing real service secret stays unavailable without fallback and retains UNKNOWN hold (55.1601ms)
+Γ£ö CBO preserves original case and whitespace in native request and empty-note receiving (92.1696ms)
+Γ£ö acquisition search service: preserve one native trim/clip pass at trailing-space boundary (84.1458ms)
+Γ£ö acquisition search organization: preserve one native trim/clip pass at trailing-space boundary (82.1449ms)
+Γ£ö acquisition search role: preserve one native trim/clip pass at trailing-space boundary (85.8256ms)
+Γ£ö acquisition search peCode: preserve one native trim/clip pass at trailing-space boundary (94.0423ms)
+Γ£ö acquisition standard_user: model role filter never establishes PII authority (60.7239ms)
+Γ£ö acquisition user_admin: model role filter never establishes PII authority (66.1038ms)
+Γ£ö acquisition capiro_admin: model role filter never establishes PII authority (88.3204ms)
+Γ£ö acquisition membership role drift before reserve rejects without audit-producing source call (47.7078ms)
+Γ£ö acquisition identityRevision drift after producer withholds release and holds UNKNOWN (71.6363ms)
+Γ£ö acquisition membershipRevision drift after producer withholds release and holds UNKNOWN (71.0833ms)
+Γ£ö acquisition role drift after producer withholds release and holds UNKNOWN (73.7936ms)
+Γ£ö get_committee_roster: current native identityRevision drift after source withholds release (63.5675ms)
+Γ£ö get_committee_roster: current native membershipRevision drift after source withholds release (68.1703ms)
+Γ£ö get_committee_roster: current native role drift after source withholds release (65.2048ms)
+Γ£ö get_committee_roster: foreign native principal and unallocated operation refuse before reservation (77.3974ms)
+Γ£ö list_members: current native identityRevision drift after source withholds release (70.2359ms)
+Γ£ö list_members: current native membershipRevision drift after source withholds release (65.373ms)
+Γ£ö list_members: current native role drift after source withholds release (75.4965ms)
+Γ£ö list_members: foreign native principal and unallocated operation refuse before reservation (74.2029ms)
+Γ£ö public-reports: static plus per-call credential configuration is refused (8.8748ms)
+Γ£ö acquisition-personnel: static plus per-call credential configuration is refused (8.4294ms)
+node:internal/modules/package_json_reader:301
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'zod' imported from C:\Users\Administrator\Documents\Codex\2026-10-16\task-4\meri-general-reads\apps\worker\conversation\reads\schema.mjs
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)
+    at packageResolve (node:internal/modules/esm/resolve:768:81)
+    at moduleResolve (node:internal/modules/esm/resolve:859:18)
+    at defaultResolve (node:internal/modules/esm/resolve:992:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+    at #resolve (node:internal/modules/esm/loader:683:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v24.19.0
+Γ£û apps\worker\conversation\reads\test\legislative-directory.test.mjs (107.1447ms)
+Γä╣ tests 73
+Γä╣ suites 0
+Γä╣ pass 72
+Γä╣ fail 1
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 8538.3286
+
+Γ£û failing tests:
+
+test at apps\worker\conversation\reads\test\legislative-directory.test.mjs:1:1
+Γ£û apps\worker\conversation\reads\test\legislative-directory.test.mjs (107.1447ms)
+  'test failed'

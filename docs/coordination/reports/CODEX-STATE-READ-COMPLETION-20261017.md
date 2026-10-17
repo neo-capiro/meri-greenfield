@@ -1,0 +1,37 @@
+# State status and floor-vote source completion
+
+Implementation outline before source changes: task branch `codex/meri-reads-installation-20261017`, local base `546a8ad45e48539c3f0fc832018269cabadbf1ee`, published PR119 parent. Owned paths are only `apps/gateway/sources/state-status-votes/{handler.mjs,request-context.mjs,test/**}` and this report. Root owns receiving-contract decisions, native context, shared integration, SDK exposure, ledgers, review and publication. No native/Core source, contract, dependency, startup or installation edits are allocated.
+
+Retain `createStateStatusVotesHandlers` and the two fixed authenticated POST routes. Change the pure `assertStoredStateRequest` admission boundary to accept every request admitted by the existing family normalizer under exact `{}` context. Preserve inert original-body snapshots, preflight before credentials, normalized-input/hash coherence, shared current tenant/user/operation/source grants, bounded transport, complete receiving, cancellation and safe failures. Do not parse a designation again, choose a session, implement a provider/cache/quota loop, rewrite a native note or invent stored-only/no-fetch fields.
+
+Extend synthetic native JSON fixtures and focused checks to cover canonical, designation, malformed and missing selector branches; status billId/query precedence; floor-query independence; stored designation hit and native live found/not-found/not-configured/quota/provider-failure returned rails; wrong resolution, broadened votes, malformed DTOs, raw-body/context/credential correlation and cancellation. Provider/SQL work remains synthetic. Preserve existing failure evidence and narrow source/contract checks. Full acceptance awaits independent review and root's contract/integration disposition.
+
+## Verified native behavior and effects
+
+Read-only GitHub source at Core PR59 head `59efe08f2f3429918758eef30539e9dde4dbb868`, tree `c2babd8e0d386b1c9f18ed32ebcd4472d5ebf486`, has `meri-tools.service.ts` blob `4c74eb5cd3311d8ce947528b77df39e871c6d0cc`. The resolver, status producer, floor-vote producer and `stateBillLiveNote` blocks are byte-identical to audited `b525032222515d636b0dae2d46e40c7c3d8b5528` blob `32a7a744ba9ab812337baaf6093a37540864333b`. Core59 `meri-state-bill-live.ts` blob `01c312dfa17bfa0838c06e1ee2bc59fa6c58187f` and `external/legiscan/legiscan.client.ts` blob `c274fb604ea0eec416d986b42ebcdbff3ff87d89` are unchanged too.
+
+Existing `POST /api/clio/tools/get_state_bill_status` and `/api/clio/tools/search_state_floor_votes` dispatch through the authenticated generic tool endpoint, user context and internal service secret. Core owns raw trim/clip and canonical/designation resolution. Canonical keys return before designation lookup. Missing/invalid status selectors return exact notes. Supplied unresolved floor-vote selectors return zero votes immediately rather than broadening into a state query. No-bill floor queries retain state/chamber/motion and bounded limit selection.
+
+Designations first select the newest stored matching state/bill number by `syncedAt DESC`, `take:1`. Only a miss invokes existing live lookup. No API key returns not-configured; an in-process miss within one hour returns cached not-found before quota reservation. Otherwise Core reserves cost **4** under the existing advisory-locked monthly quota transaction, accounting in `meri-live-<state>`. Defaults are shared soft budget 28,000 bounded by the hard cap and a separate live budget 1,000. Quota refusal does not call the provider. Current sessions exclude prior sessions, prefer regular over special, sort newest first and take at most two. The native provider path makes one bounded attempt per operation (10 seconds each), up to session-list + two masterlists + bill; a found bill uses the existing normalizer/upsert and then ordinary stored reads. Provider/persistence failure returns its distinct reason; a completed miss is cached. These existing native domain effects are activated by full delegation; Meri adds no provider, credentials, quota writer, cache, ingestion algorithm or new route. Gateway cancellation/timeout does not prove physical rollback or provider cancellation.
+
+## Literal audit and verification
+
+No receiving literal mismatch was found. Initial PowerShell `Get-Content` rendering displayed em dashes and the curly apostrophe as ASCII; a UTF-8 Node codepoint probe established the actual existing bytes before any contract edit. The frozen validator has U+2014 in invalid-without-state and resolved-database-absence notes, and U+2019 in the quota suffix, matching the native producer. Parsed schema constants preserve the actual missing-selector, no-bill-votes, dead-session and empty-floor-search text. Focused checks cover the following native rails without a gateway output rewrite:
+
+| Native returned rail | Receiving result |
+| --- | --- |
+| Missing status selector | Exact `MissingStateBillNote`, `found:false`, no invented bill key |
+| Invalid selector with/without state | Exact request-derived parse reason, including native U+2014 where present |
+| Designation miss, provider not configured | Exact native prefix with no added suffix |
+| Completed live lookup miss, including native remembered miss | Native current-session not-found suffix; no generic current-world absence claim |
+| Quota refusal | Exact skipped-budget suffix with U+2019; remains distinct from not-found |
+| Provider/persistence failure | Exact could-not-check suffix; remains distinct from no such bill |
+| Resolved key absent from stored database | Exact database-scoped absence note with U+2014 |
+| Found bill with no votes/dead session | Exact canonical caveat concatenation and native status-label bytes |
+| Empty floor-vote result | Exact `NoStateVotesNote`; no member/outcome inference |
+
+Node 24 used the existing dependency overlay with `--preserve-symlinks --max-old-space-size=256 --test --test-concurrency=1`; no install or build occurred. The bounded five-file final run passed **100/100**: 47 source tests (27 existing adapter checks, 8 existing no-bill checks updated only for the intentionally expanded admission, and 12 new completion checks) plus 53 unchanged frozen-contract tests. Full console and executable/argv/timing/exit metadata are retained in `apps/gateway/sources/state-status-votes/test/evidence/state-completion-final.{txt,json}`.
+
+The initial run passed **99/100**, retained in `state-completion-initial.{txt,json}` in the same directory. Its sole failure was the new synthetic credential-denial fixture throwing ordinary `Error('ACCESS_DENIED')`, which correctly sanitized to `INTERNAL_ERROR`. The fixture now calls canonical `deny('ACCESS_DENIED')`; no production code changed to repair the failure. No tests were removed, skipped or weakened. The source checks preserve wrong-row/unresolved broadening refusal, supported designation-session correlation without choosing the current session, original body/normalized digest coherence, current exact grants before per-call credentials, complete DTO admission, HTTP-error/no-retry behavior, response bounds and cancellation/deadline withholding.
+
+Production source is frozen for independent review. Root still owns source/integration acceptance, any separately justified receiving change, SDK/ledger promotion and draft publication. Native lookup effects are explicitly disclosed above. No live/provider/database operation has been performed; no installed capability, provider cancellation or deployment qualification is claimed.

@@ -1,0 +1,39 @@
+{
+  "type": "object",
+  "properties": {
+    "query": {"type": "string", "maxLength": 4000},
+    "domains": {"type": "array", "items": {"$ref": "#/$defs/DataSearchDomain"}, "minItems": 1, "maxItems": 18},
+    "queryClass": {"anyOf": [{"$ref": "#/$defs/DataSearchQueryClass"}, {"type": "null"}]},
+    "pageSize": {"anyOf": [{"type": "integer", "minimum": 1, "maximum": 100}, {"type": "null"}]},
+    "clientId": {"$ref": "#/$defs/CanonicalUuid"},
+    "memoryItemId": {"$ref": "#/$defs/CanonicalUuid"},
+    "cursors": {
+      "type": "object",
+      "properties": {
+        "clients": {"type": "string", "minLength": 1, "maxLength": 8192},
+        "contacts": {"type": "string", "minLength": 1, "maxLength": 8192},
+        "mail": {"type": "string", "minLength": 1, "maxLength": 8192},
+        "meetings": {"type": "string", "minLength": 1, "maxLength": 8192},
+        "tasks": {"type": "string", "minLength": 1, "maxLength": 8192},
+        "monday": {"type": "string", "minLength": 1, "maxLength": 8192},
+        "action_recommendations": {"type": "string", "minLength": 1, "maxLength": 8192},
+        "outreach": {"type": "string", "minLength": 1, "maxLength": 8192},
+        "strategies_work": {"type": "string", "minLength": 1, "maxLength": 8192},
+        "program_elements": {"type": "string", "minLength": 1, "maxLength": 8192},
+        "legiwatch_bills": {"type": "string", "minLength": 1, "maxLength": 8192},
+        "hearings": {"type": "string", "minLength": 1, "maxLength": 8192},
+        "grants": {"type": "string", "minLength": 1, "maxLength": 8192},
+        "contracts_opportunities": {"type": "string", "minLength": 1, "maxLength": 8192},
+        "federal_awards": {"type": "string", "minLength": 1, "maxLength": 8192},
+        "directory": {"type": "string", "minLength": 1, "maxLength": 8192},
+        "district_nexus": {"type": "string", "minLength": 1, "maxLength": 8192},
+        "institutional_knowledge": {"type": "string", "minLength": 1, "maxLength": 8192}
+      },
+      "additionalProperties": false
+    },
+    "windowStart": {"$ref": "#/$defs/DataSearchInstant"},
+    "windowEnd": {"$ref": "#/$defs/DataSearchInstant"}
+  },
+  "required": ["query", "domains"],
+  "additionalProperties": false
+}

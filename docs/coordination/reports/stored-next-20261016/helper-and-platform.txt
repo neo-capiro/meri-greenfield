@@ -1,0 +1,42 @@
+Γ£ö finite mechanics preserve native request, frozen result and exact private carrier (71.0596ms)
+Γ£ö fixed route, family, side-effect and operation mismatch refuse at construction (0.7619ms)
+Γ£ö foreign, duplicate, wrong-version, getter and proxy operations cannot cause effects (0.867ms)
+Γ£ö current decision, actor, policy, source and action coherence precede credentials (9.2303ms)
+Γ£ö model authority, normalization context, digest and input substitutions refuse (2.8634ms)
+Γ£ö missing broker and malformed credential correlation never fall back to source (14.3966ms)
+Γ£ö request bridges change only native body while credential proof and result digest retain original selection (2.1697ms)
+Γ£ö per-call credentials retain exact call and forbid static or proxy fallback (2.4464ms)
+Γ£ö bounded response and native HTTP error cannot release invented or raw provider payloads (7.3141ms)
+Γ£ö pre-abort, expired authority and cancellation after source withhold effects or bytes (2.5781ms)
+Γ£ö the exclusion list is the owner's 43 distinct names (0.8912ms)
+Γ£ö every excluded name is deferred in the catalog originals and absent from catalog operations and aliases (0.4691ms)
+Γ£ö no original skill manifest allows an excluded name, and the operation resolver refuses each one (12.7864ms)
+Γ£û no excluded name can enter the SDK tool surface the worker builds (4.5519ms)
+Γ£ö the only browser code on this branch (the qualification probe) calls no excluded name; no product browser tool list exists here (17.5458ms)
+Γ£ö the general read server derives its never-register list from the same 43 catalog originals (0.8918ms)
+Γ£ö the governed intent surface never names an excluded tool, including the three direct canonical-memory writes (0.2255ms)
+Γä╣ tests 17
+Γä╣ suites 0
+Γä╣ pass 16
+Γä╣ fail 1
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 2951.4722
+
+Γ£û failing tests:
+
+test at apps\worker\conversation\test\legacy-tools-excluded.test.mjs:39:1
+Γ£û no excluded name can enter the SDK tool surface the worker builds (4.5519ms)
+  Error: WORKSPACE_ROOT_REFUSED
+      at assertWorkspaceRoot (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-stored-next/apps/worker/conversation/capabilities/workspace-tools.mjs:16:215)
+      at createSdkCapabilities (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-stored-next/apps/worker/conversation/capabilities/index.mjs:24:171)
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-stored-next/apps/worker/conversation/test/legacy-tools-excluded.test.mjs:41:13)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'WORKSPACE_ROOT_REFUSED'
+  }

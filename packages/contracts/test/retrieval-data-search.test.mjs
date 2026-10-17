@@ -7,6 +7,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, realpathSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
+import { expectedExistingDescriptor, priorExistingDescriptor } from './backend-execution-expectations.mjs';
 import {
   DATA_SEARCH_OPERATION_ID,
   DATA_SEARCH_DOMAINS,
@@ -152,9 +153,96 @@ test('normalizes a minimal selector with the frozen defaults and omits an empty 
   const blank = normalizeDataSearchInput({ query: '   ', domains: ['mail'] });
   assert.equal(blank.input.query, '');
   assert.equal(blank.retrievalRequest.queryOmitted, true);
-  // The normalized object is the only shape the private schema accepts.
+  // The normalized definition stays distinct from the raw request definition.
   assert.throws(() => validateDataSearchShape('DataSearchInput', { query: 'x', domains: ['mail'] }), /DataSearchInput/);
   assert.equal(validateDataSearchShape('DataSearchInput', normalized.input), normalized.input);
+});
+
+test('raw request has its own closed grammar while the normalized eight-field shape stays intact', () => {
+  const raw = schema.$defs.DataSearchRequest;
+  assert.deepEqual(raw.required, ['query', 'domains']);
+  assert.deepEqual(Object.keys(raw.properties), ['query', 'domains', 'queryClass', 'pageSize', 'clientId', 'memoryItemId', 'cursors', 'windowStart', 'windowEnd']);
+  assert.equal(raw.additionalProperties, false);
+  assert.equal(Object.hasOwn(raw.properties.domains, 'uniqueItems'), false);
+  assert.deepEqual(schema.$defs.DataSearchInput.required, ['query', 'domains', 'queryClass', 'pageSize', 'clientId', 'memoryItemId', 'cursors', 'window']);
+  assert.equal(schema.$defs.DataSearchInput.properties.domains.uniqueItems, true);
+  assert.equal(schema.$defs.DataSearchInput.allOf.length, 1);
+  const request = {query: '  bridge work  ', domains: ['mail', 'tasks', 'mail']}, saved = structuredClone(request);
+  assert.equal(validateDataSearchShape('DataSearchRequest', request), request);
+  const {input} = normalizeDataSearchInput(request);
+  assert.deepEqual(input, {query: 'bridge work', domains: ['mail', 'tasks'], queryClass: 'lookup', pageSize: 50, clientId: null, memoryItemId: null, cursors: {}, window: null});
+  assert.equal(validateDataSearchShape('DataSearchInput', input), input);
+  assert.throws(() => validateDataSearchShape('DataSearchRequest', input), /DataSearchRequest/);
+  assert.deepEqual(request, saved);
+});
+
+test('raw nullish defaults remain accepted while null client and memory selectors remain refused', () => {
+  for (const request of [{query: '', domains: ['mail']}, {query: '', domains: ['mail'], queryClass: null, pageSize: null}]) {
+    validateDataSearchShape('DataSearchRequest', request);
+    const {input} = normalizeDataSearchInput(request);
+    assert.equal(input.queryClass, 'lookup'); assert.equal(input.pageSize, 50);
+  }
+  for (const extra of [{clientId: null}, {memoryItemId: null}, {window: null}, {pageSize: '50'}, {queryClass: 'portfolio_scan'}, {tenantId: 'other'}]) {
+    const request = {query: 'q', domains: ['mail'], ...extra};
+    assert.throws(() => validateDataSearchShape('DataSearchRequest', request), /DataSearchRequest/);
+    assert.throws(() => normalizeDataSearchInput(request));
+  }
+});
+
+test('historical data-search descriptor transition pins both old and current schema hashes exactly', () => {
+  const catalog = JSON.parse(readFileSync(new URL('../retrieval-0.2/catalog.json', import.meta.url), 'utf8'));
+  const current = catalog.operations.find(row => row.operation.id === 'search_capiro_data');
+  const beforeHash = '96e5d1ebc461dc53db86e2fd14e2863d93d5c651e134382a2da5daefd3836fec';
+  const previous = {...current, inputSchema: {id: `${schema.$id}#/$defs/DataSearchInput`, sha256: beforeHash}, outputSchema: {...current.outputSchema, sha256: beforeHash}};
+  assert.deepEqual(expectedExistingDescriptor(previous), current);
+  assert.deepEqual(priorExistingDescriptor(current), previous);
+  for (const field of ['inputSchema', 'outputSchema']) {
+    assert.throws(() => expectedExistingDescriptor({...previous, [field]: {...previous[field], sha256: '0'.repeat(64)}}));
+    assert.throws(() => priorExistingDescriptor({...current, [field]: {...current[field], sha256: '0'.repeat(64)}}));
+  }
+});
+
+test('raw cursors use a finite eighteen-domain map without changing normalized cursor admission', () => {
+  const cursors = schema.$defs.DataSearchRequest.properties.cursors;
+  assert.deepEqual(Object.keys(cursors.properties), FROZEN_DOMAINS);
+  assert.equal(cursors.additionalProperties, false); assert.equal(Object.hasOwn(cursors, 'propertyNames'), false);
+  assert.deepEqual(schema.$defs.DataSearchCursors.propertyNames, {$ref: '#/$defs/DataSearchDomain'});
+  const request = {query: 'q', domains: [...FROZEN_DOMAINS], cursors: Object.fromEntries(FROZEN_DOMAINS.map(domain => [domain, 'opaque']))};
+  validateDataSearchShape('DataSearchRequest', request); normalizeDataSearchInput(request);
+  validateDataSearchShape('DataSearchRequest', {query: 'q', domains: ['mail'], cursors: {mail: 'x'.repeat(8192)}});
+  for (const cursor of [{unknown: 'opaque'}, {mail: ''}, {mail: 'x'.repeat(8193)}, {mail: null}]) {
+    assert.throws(() => validateDataSearchShape('DataSearchRequest', {query: 'q', domains: ['mail'], cursors: cursor}), /DataSearchRequest/);
+  }
+});
+
+test('raw window, memory and cursor cross-field rules remain owned by normalization', () => {
+  const requests = [
+    {query: 'q', domains: ['mail'], cursors: {tasks: 'opaque'}},
+    {query: 'q', domains: ['mail'], memoryItemId: MEMORY_UUID},
+    {query: 'q', domains: ['institutional_knowledge'], queryClass: 'comparison', memoryItemId: MEMORY_UUID},
+    {query: 'q', domains: ['mail'], windowStart: '2026-01-01T00:00:00Z'},
+    {query: 'q', domains: ['mail'], windowStart: '2026-02-01T00:00:00Z', windowEnd: '2026-01-01T00:00:00Z'},
+  ];
+  for (const request of requests) {
+    validateDataSearchShape('DataSearchRequest', request);
+    assert.throws(() => normalizeDataSearchInput(request));
+  }
+  const request = {query: 'q', domains: ['institutional_knowledge', 'institutional_knowledge'], queryClass: 'semantic_recall', memoryItemId: MEMORY_UUID,
+    windowStart: '2026-01-01T00:00:00Z', windowEnd: '2026-01-02T00:00:00+00:00'};
+  validateDataSearchShape('DataSearchRequest', request);
+  const {input} = normalizeDataSearchInput(request);
+  assert.deepEqual(input.domains, ['institutional_knowledge']); assert.equal(input.memoryItemId, MEMORY_UUID);
+  assert.deepEqual(input.window, {startInclusive: request.windowStart, endExclusive: request.windowEnd});
+});
+
+test('raw query, raw domain count and scalar boundaries remain enforced before normalization', () => {
+  for (const request of [{query: 'x'.repeat(4000), domains: Array(18).fill('mail'), pageSize: 100}, {query: '', domains: ['clients'], clientId: CLIENT_UUID.toUpperCase(), pageSize: 1}]) {
+    validateDataSearchShape('DataSearchRequest', request); normalizeDataSearchInput(request);
+  }
+  for (const request of [{query: 'x'.repeat(4001), domains: ['mail']}, {query: '', domains: Array(19).fill('mail')}, {query: '', domains: []}, {query: '', domains: ['mail'], clientId: 'urn:uuid:'+CLIENT_UUID},
+    {query: '', domains: ['mail'], pageSize: 1.5}, {query: '', domains: ['mail'], windowStart: '2026-01-01'}]) {
+    assert.throws(() => validateDataSearchShape('DataSearchRequest', request), /DataSearchRequest/); assert.throws(() => normalizeDataSearchInput(request));
+  }
 });
 
 test('normalizes a full selector and derives the frozen retrieval request selectors', () => {
@@ -440,7 +528,7 @@ test('declares every schema reference locally and closes every result shape', ()
   const descriptor = catalog.operations.find(row => row.operation.id === 'search_capiro_data');
   assert.equal(descriptor.handler, null); assert.equal(descriptor.availability, 'unimplemented');
   assert.equal(descriptor.qualification, 'pending');
-  assert.equal(descriptor.inputSchema.id, `${schema.$id}#/$defs/DataSearchInput`);
+  assert.equal(descriptor.inputSchema.id, `${schema.$id}#/$defs/DataSearchRequest`);
   assert.equal(descriptor.outputSchema.id, `${schema.$id}#/$defs/SearchCapiroDataResult`);
   assert.equal(JSON.stringify(catalog).includes('data-search.schema.json'), false);
 });

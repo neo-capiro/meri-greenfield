@@ -1,0 +1,73 @@
+Γ£ö search_legislative_research: named clients and folders are UNAVAILABLE before credentials or native calls (28.5137ms)
+Γ£ö get_legal_reference: named clients and folders are UNAVAILABLE before credentials or native calls (7.6416ms)
+Γ£ö delta search_legislative_research: explicit UUID retains original raw request, exact client context and source scope (88.5265ms)
+Γ£ö delta search_legislative_research: names, truthy folders and unsupported citations remain closed before credential factories (2.4267ms)
+Γ£ö delta search_legislative_research: a UUID context cannot borrow a foreign client or a mismatched/nonclient resource subject (8.2313ms)
+Γ£ö delta search_legislative_research: fabricated client resolution or extra context cannot acquire native credentials (2.9303ms)
+Γ£ö delta search_legislative_research: native scope failure and foreign-client receiving never become successful results (5.6165ms)
+Γ£ö delta get_legal_reference: explicit UUID retains original raw request, exact client context and source scope (32.7654ms)
+Γ£ö delta get_legal_reference: names, truthy folders and unsupported citations remain closed before credential factories (1.6434ms)
+Γ£ö delta get_legal_reference: a UUID context cannot borrow a foreign client or a mismatched/nonclient resource subject (5.7414ms)
+Γ£ö delta get_legal_reference: fabricated client resolution or extra context cannot acquire native credentials (2.0836ms)
+Γ£ö delta get_legal_reference: native scope failure and foreign-client receiving never become successful results (4.7664ms)
+Γ£û delta legal pure capture, strict legacy preflight and inactive branches retain their exact boundary (2.0942ms)
+Γ£ö source/news: selected names and folders are withheld before any native credential or HTTP (24.7385ms)
+Γ£ö source/budget: selected names and folders are withheld before any native credential or HTTP (2.6386ms)
+Γ£ö source/personnel: selected names and folders are withheld before any native credential or HTTP (3.8874ms)
+Γ£ö source/research: selected names and folders are withheld before any native credential or HTTP (3.1079ms)
+Γ£ö personnel/registration: selected names and folders are withheld before any native credential or HTTP (2.4672ms)
+Γ£ö delta source/news: UUID client preserves raw selectors, native context and unchanged typed source (119.0071ms)
+Γ£ö delta source/budget: UUID client preserves raw selectors, native context and unchanged typed source (8.1807ms)
+Γ£ö delta source/personnel: UUID client preserves raw selectors, native context and unchanged typed source (8.914ms)
+Γ£ö delta source/research: UUID client preserves raw selectors, native context and unchanged typed source (7.3674ms)
+Γ£ö delta personnel/registration: UUID client preserves raw selectors, native context and unchanged typed source (4.7037ms)
+Γ£ö delta news UUID clipping matches the Core bridge without clipping or rewriting the transport request (3.7555ms)
+Γ£ö delta news names, folders, clocks and monitor branches remain unavailable before credential factories (4.0385ms)
+Γ£ö delta news current client subject and matching resource remain mandatory, including on exact-source branches (9.8769ms)
+Γ£ö delta news no fabricated client resolution, folder result, clock or owner can replace request-determined context (5.2379ms)
+Γ£ö delta news strict old API stays unscoped and native wall/feature failures remain failures (7.4467ms)
+Γä╣ tests 28
+Γä╣ suites 0
+Γä╣ pass 27
+Γä╣ fail 1
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 2621.7981
+
+Γ£û failing tests:
+
+test at apps\gateway\sources\research-legal-legislation\test\selectors.test.mjs:56:1
+Γ£û delta legal pure capture, strict legacy preflight and inactive branches retain their exact boundary (2.0942ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+    Comparison {
+  +   message: 'Operation contract accessor or hidden property'
+  -   message: 'INVALID_ARGUMENTS'
+    }
+
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/gateway/sources/research-legal-legislation/test/selectors.test.mjs:62:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: Operation contract accessor or hidden property
+        at fail (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+        at copyDataWithLimits (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/packages/contracts/retrieval-0.2/operation-contracts.mjs:44:7)
+        at copyData (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/packages/contracts/retrieval-0.2/operation-contracts.mjs:9:10)
+        at frozenData (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/gateway/sources/source-admission.mjs:15:16)
+        at captureResearchClientSelection (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/gateway/sources/research-legal-legislation/request-context.mjs:10:12)
+        at assert.throws.message (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/gateway/sources/research-legal-legislation/test/selectors.test.mjs:62:20)
+        at getActual (node:assert:611:5)
+        at strict.throws (node:assert:759:24)
+        at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/gateway/sources/research-legal-legislation/test/selectors.test.mjs:62:9)
+        at Test.runInAsyncScope (node:async_hooks:227:14),
+    expected: { message: 'INVALID_ARGUMENTS' },
+    operator: 'throws',
+    diff: 'simple'
+  }

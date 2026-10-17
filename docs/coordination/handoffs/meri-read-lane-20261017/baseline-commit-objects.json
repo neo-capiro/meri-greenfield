@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "meri-read-historical-commit-fixture/1",
+  "purpose": "Exact four original commit objects needed by unchanged source-exposure historical file checks. They are fixture aliases with published tree equivalents, not public ancestors or release pins.",
+  "requiredPaths": [
+    "docs/coordination/ledgers/scope-ledger.json",
+    "docs/coordination/ledgers/MERI-FINAL-SCOPE-LEDGER-20261015.md",
+    "docs/coordination/ledgers/TOOL-COVERAGE-96.csv",
+    "docs/coordination/proposals/general-reads/inventory.json"
+  ],
+  "objects": [
+    {
+      "sha": "a945196efcd417a2ed09bcbacfae876acbefd2c3",
+      "publishedEquivalent": "b4daa4adf6e8269e7c341751db9a02bf6d4f062b",
+      "tree": "2826443929c4ef797ff52e15e0bb4b296eb4e678",
+      "encoding": "base64",
+      "payload": "dHJlZSAyODI2NDQzOTI5YzRlZjc5N2ZmNTJlMTVlMGJiNGIyOTZlYjRlNjc4CnBhcmVudCA2MTVhNTQ2N2ZmYTU1NWY5MTNhZDQ5MjU4YjM5MTk3MjNlY2YyMDdkCmF1dGhvciBDb2RleCA8Y29kZXhAb3BlbmFpLmNvbT4gMTc5MjIwMTQ0NSArMDAwMApjb21taXR0ZXIgQ29kZXggPGNvZGV4QG9wZW5haS5jb20+IDE3OTIyMDE0NDUgKzAwMDAKCkFkZCBmdW5kaW5nIHJlYWQgYWRhcHRlcnMgYW5kIHRydXN0ZWQgb2JzZXJ2YXRpb24gdHJhbnNwb3J0Cg==",
+      "bytes": 256
+    },
+    {
+      "sha": "615a5467ffa555f913ad49258b3919723ecf207d",
+      "publishedEquivalent": "526b6be7c906c15298f13430fe5dd5a9db458e03",
+      "tree": "fe07e12c2539b39604317c7f48b670e8e5818849",
+      "encoding": "base64",
+      "payload": "dHJlZSBmZTA3ZTEyYzI1MzliMzk2MDQzMTdjN2Y0OGI2NzBlOGU1ODE4ODQ5CnBhcmVudCBlMTg0NWMzYjBkN2NhYThmZDMzMDlhZDk2ZjZjYjRlMTdmMjVjY2NlCmF1dGhvciBDb2RleCA8Y29kZXhAb3BlbmFpLmNvbT4gMTc5MjIwMDA5NiArMDAwMApjb21taXR0ZXIgQ29kZXggPGNvZGV4QG9wZW5haS5jb20+IDE3OTIyMDAwOTYgKzAwMDAKCkV4dGVuZCBnb3Zlcm5lZCBzZWxlY3RvcnMgYW5kIGJpbmQgbmF0aXZlIHByb3NwZWN0IHJlYWQgYXV0aG9yaXR5Cg==",
+      "bytes": 262
+    },
+    {
+      "sha": "e1845c3b0d7caa8fd3309ad96f6cb4e17f25ccce",
+      "publishedEquivalent": "382f45ae695e271bf7433343d31486ac0d57184a",
+      "tree": "9f3e147d6853fe975ba53e3c65b55f32419401b8",
+      "encoding": "base64",
+      "payload": "dHJlZSA5ZjNlMTQ3ZDY4NTNmZTk3NWJhNTNlM2M2NWI1NWYzMjQxOTQwMWI4CnBhcmVudCAwOGY2NWE3OWI5OWU1YjI2OWE4YzdmN2U4MmI2YjhkZTIyNWNhYWU4CmF1dGhvciBDb2RleCA8Y29kZXhAb3BlbmFpLmNvbT4gMTc5MjE5ODQzMyArMDAwMApjb21taXR0ZXIgQ29kZXggPGNvZGV4QG9wZW5haS5jb20+IDE3OTIxOTg0MzMgKzAwMDAKCkFkZCBnb3Zlcm5lZCByZW1haW5pbmcgcmVhZCBzb3VyY2Ugc2xpY2VzIHdpdGggZXhwbGljaXQgcGFydGlhbCBjb3ZlcmFnZQo=",
+      "bytes": 269
+    },
+    {
+      "sha": "08f65a79b99e5b269a8c7f7e82b6b8de225caae8",
+      "publishedEquivalent": "f33ea1a8945444b5ad8d15d5d048377abf201959",
+      "tree": "f573e12b9d682e63e9c0a00082510cbf090963d7",
+      "encoding": "base64",
+      "payload": "dHJlZSBmNTczZTEyYjlkNjgyZTYzZTljMGEwMDA4MjUxMGNiZjA5MDk2M2Q3CnBhcmVudCA3NGJmNzAzMjI4NWVkODNiMTdhNjdlMmZjMmIwZjUzMDhlYjk4NjJiCmF1dGhvciBDb2RleCA8Y29kZXhAb3BlbmFpLmNvbT4gMTc5MjE5NzMyNyArMDAwMApjb21taXR0ZXIgQ29kZXggPGNvZGV4QG9wZW5haS5jb20+IDE3OTIxOTc0NjIgKzAwMDAKClNlcGFyYXRlIGdvdmVybmVkIHNlYXJjaCByYXcgcmVxdWVzdHMgZnJvbSBub3JtYWxpemVkIGlucHV0Cg==",
+      "bytes": 256
+    }
+  ]
+}

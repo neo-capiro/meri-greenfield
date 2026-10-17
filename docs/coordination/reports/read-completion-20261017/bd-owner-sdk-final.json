@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "meri-focused-test-run/1",
+  "cwd": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-16\\task-4\\meri-resolution-next",
+  "executable": "C:\\Users\\Administrator\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe",
+  "arguments": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "apps/runtime/native-authority/test/business-development-personal.test.mjs",
+    "apps/worker/conversation/reads/test/business-development.test.mjs"
+  ],
+  "startedAt": "2026-10-17T02:01:14.8719461Z",
+  "completedAt": "2026-10-17T02:01:21.9148283Z",
+  "exitCode": 0,
+  "scope": "New BD personal owner and SDK tests only; synthetic SQL/native HTTP, no live calls",
+  "rerunReason": "Initial 33/35: two test-only HTTP403 classifier assertions corrected to the existing strict JSON boundary INVALID_RESULT; added two mounted static-credential fallback refusals. Production unchanged by this lane."
+}

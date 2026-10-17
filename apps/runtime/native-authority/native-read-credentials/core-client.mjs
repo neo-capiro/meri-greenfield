@@ -6,6 +6,8 @@ import {assertCorePrincipal,retainedOrigin} from '../../../../packages/contracts
 import {nativeReadFault,nativeReadFailureCode} from '../../../../packages/contracts/runtime-0.2/reads.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {createCapiroApplicationAuthorityClient} from '../../../control/action-host/application-adapters/authority-http.mjs';
+import {createConversationAuthorityReader} from './conversation-authority.mjs';
+import {createClientReferenceReader} from './client-reference.mjs';
 import {readJsonResponse,responseBody,cancelBody} from '../../../gateway/sources/json-response.mjs';
 import {safeFailure} from '../../../gateway/dispatch/operation-result.mjs';
 const same=(a,b)=>hash(a)===hash(b),SHA=/^[a-f0-9]{64}$/u,UUID=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u;
@@ -14,9 +16,11 @@ const refuse=code=>{throw nativeReadFault(code);};
 const failure=error=>nativeReadFault(nativeReadFailureCode(error)??(safeFailure(error).message==='INTERNAL_ERROR'?'UNAVAILABLE':safeFailure(error).message));
 function clocks(v,{started,now}){const at=now();if(!Number.isSafeInteger(v.checkedAtMs)||v.checkedAtMs<started||v.checkedAtMs>at||!Number.isSafeInteger(v.expiresAtMs)||v.expiresAtMs<=at)refuse('ACCESS_DENIED');}
 export function assertNativeToolAuthority(raw,{started,now}){
- const v=data(own(raw,['principal','identityRevision','actorRole','membershipRevision','checkedAtMs','expiresAtMs']));
+ const v=data(own(raw,['principal','identityRevision','actorRole','membershipRevision','checkedAtMs','expiresAtMs'],['clientIds']));
  assertCorePrincipal(v.principal);clocks(v,{started,now});
  if(!SHA.test(v.identityRevision)||!SHA.test(v.membershipRevision)||!ROLES.has(v.actorRole))refuse('ACCESS_DENIED');
+ // Optional only for older trusted fake ports. The real membership client below always carries this current roster.
+ if(Object.hasOwn(v,'clientIds')&&(!Array.isArray(v.clientIds)||v.clientIds.length>4096||new Set(v.clientIds).size!==v.clientIds.length||v.clientIds.some(id=>typeof id!=='string'||!UUID.test(id))))refuse('ACCESS_DENIED');
  return v;
 }
 export function createNativeToolAuthorityClient(configuration={}){
@@ -37,7 +41,9 @@ export function createNativeToolAuthorityClient(configuration={}){
   if(!same({tenantId:m.tenantId,actorId:m.actorId},before.principal)||m.status!=='active'||!ROLES.has(m.role)||!SHA.test(m.membershipRevision)||!Array.isArray(m.permissions)||m.permissions.length!==0||!Array.isArray(m.clientIds)||m.clientIds.length>4096||new Set(m.clientIds).size!==m.clientIds.length||m.clientIds.some(id=>typeof id!=='string'||!UUID.test(id)))refuse('ACCESS_DENIED');
   const after=await identify();if(!same(before.principal,after.principal)||before.identityRevision!==after.identityRevision)refuse('ACCESS_DENIED');life.check();
   // Core confirmed this equality ONLY for this fixed no-tenant/no-impersonation/no-cookie client.
-  return assertNativeToolAuthority({principal:after.principal,identityRevision:after.identityRevision,actorRole:m.role,membershipRevision:m.membershipRevision,checkedAtMs:Math.min(before.checkedAtMs,m.checkedAtMs,after.checkedAtMs),expiresAtMs:Math.min(v.deadlineMs,before.expiresAtMs,m.expiresAtMs,after.expiresAtMs)},{started:began,now});
+  return assertNativeToolAuthority({principal:after.principal,identityRevision:after.identityRevision,actorRole:m.role,clientIds:m.clientIds,membershipRevision:m.membershipRevision,checkedAtMs:Math.min(before.checkedAtMs,m.checkedAtMs,after.checkedAtMs),expiresAtMs:Math.min(v.deadlineMs,before.expiresAtMs,m.expiresAtMs,after.expiresAtMs)},{started:began,now});
  }catch(error){throw failure(error);}finally{try{if(acquired)cancelBody(responseBody(acquired));}catch{}life?.close();}}
- return Object.freeze({available,origin,readCurrent});
+ const readConversation=createConversationAuthorityReader({available,authorityClient:identity,now,maxRequestMs});
+ const readClientReference=createClientReferenceReader({available,origin,fetchImpl:c.fetchImpl,authorityClient:identity,now,maxRequestMs});
+ return Object.freeze({available,origin,readCurrent,readConversation,readClientReference});
 }

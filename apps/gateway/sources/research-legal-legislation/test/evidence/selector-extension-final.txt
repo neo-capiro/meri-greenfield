@@ -1,0 +1,36 @@
+Γ£ö search_legislative_research: named clients and folders are UNAVAILABLE before credentials or native calls (21.6066ms)
+Γ£ö get_legal_reference: named clients and folders are UNAVAILABLE before credentials or native calls (7.0203ms)
+Γ£ö delta search_legislative_research: explicit UUID retains original raw request, exact client context and source scope (89.9573ms)
+Γ£ö delta search_legislative_research: names, truthy folders and unsupported citations remain closed before credential factories (2.4704ms)
+Γ£ö delta search_legislative_research: a UUID context cannot borrow a foreign client or a mismatched/nonclient resource subject (8.0192ms)
+Γ£ö delta search_legislative_research: fabricated client resolution or extra context cannot acquire native credentials (2.7954ms)
+Γ£ö delta search_legislative_research: native scope failure and foreign-client receiving never become successful results (5.3553ms)
+Γ£ö delta get_legal_reference: explicit UUID retains original raw request, exact client context and source scope (34.4968ms)
+Γ£ö delta get_legal_reference: names, truthy folders and unsupported citations remain closed before credential factories (1.5444ms)
+Γ£ö delta get_legal_reference: a UUID context cannot borrow a foreign client or a mismatched/nonclient resource subject (5.64ms)
+Γ£ö delta get_legal_reference: fabricated client resolution or extra context cannot acquire native credentials (1.9928ms)
+Γ£ö delta get_legal_reference: native scope failure and foreign-client receiving never become successful results (4.4885ms)
+Γ£ö delta legal pure capture, strict legacy preflight and inactive branches retain their exact boundary (1.0249ms)
+Γ£ö source/news: selected names and folders are withheld before any native credential or HTTP (25.3148ms)
+Γ£ö source/budget: selected names and folders are withheld before any native credential or HTTP (2.3858ms)
+Γ£ö source/personnel: selected names and folders are withheld before any native credential or HTTP (2.556ms)
+Γ£ö source/research: selected names and folders are withheld before any native credential or HTTP (2.4257ms)
+Γ£ö personnel/registration: selected names and folders are withheld before any native credential or HTTP (2.7651ms)
+Γ£ö delta source/news: UUID client preserves raw selectors, native context and unchanged typed source (145.3233ms)
+Γ£ö delta source/budget: UUID client preserves raw selectors, native context and unchanged typed source (9.1337ms)
+Γ£ö delta source/personnel: UUID client preserves raw selectors, native context and unchanged typed source (9.6951ms)
+Γ£ö delta source/research: UUID client preserves raw selectors, native context and unchanged typed source (6.4138ms)
+Γ£ö delta personnel/registration: UUID client preserves raw selectors, native context and unchanged typed source (4.0758ms)
+Γ£ö delta news UUID clipping matches the Core bridge without clipping or rewriting the transport request (3.7595ms)
+Γ£ö delta news names, folders, clocks and monitor branches remain unavailable before credential factories (4.9758ms)
+Γ£ö delta news current client subject and matching resource remain mandatory, including on exact-source branches (10.1197ms)
+Γ£ö delta news no fabricated client resolution, folder result, clock or owner can replace request-determined context (4.98ms)
+Γ£ö delta news strict old API stays unscoped and native wall/feature failures remain failures (8.1852ms)
+Γä╣ tests 28
+Γä╣ suites 0
+Γä╣ pass 28
+Γä╣ fail 0
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 2530.7033

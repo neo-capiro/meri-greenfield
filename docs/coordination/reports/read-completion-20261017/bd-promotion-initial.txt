@@ -1,0 +1,23 @@
+Γ£ö funding is absent from SDK60/36 and the real native runtime refuses forged approved/install/discovery inventories (197.7637ms)
+Γ£ö all thirty-six constructible families remain unavailable without installation or discovery (12.6804ms)
+Γ£ö per-operation client prefilter preserves personal meetings/tasks while withholding required-client reads (2.0983ms)
+Γ£ö synthetic get_business_development_context: advertised arguments retain canonical constraints (6.6207ms)
+Γ£ö synthetic get_business_development_recent_changes: advertised arguments retain canonical constraints (2.7199ms)
+Γ£ö business-development: finite SDK family operation list excludes every unsupported canonical sibling even with forged installation/discovery (5.9089ms)
+Γ£ö get_business_development_context: SDK arguments use the frozen raw contract and refuse model authority or normalization context (15.1617ms)
+Γ£ö get_business_development_context: actual mounted owner and MCP tool preserve exact source bytes and durable receipt (372.3006ms)
+Γ£ö get_business_development_context: current native revision revocation after source withholds SDK bytes and receipt (145.4043ms)
+Γ£ö get_business_development_context: missing measured installation, discovery, source or family policy creates no MCP tool (60.812ms)
+Γ£ö get_business_development_recent_changes: SDK arguments use the frozen raw contract and refuse model authority or normalization context (4.1094ms)
+Γ£ö get_business_development_recent_changes: actual mounted owner and MCP tool preserve exact source bytes and durable receipt (173.0806ms)
+Γ£ö get_business_development_recent_changes: current native revision revocation after source withholds SDK bytes and receipt (145.6466ms)
+Γ£ö get_business_development_recent_changes: missing measured installation, discovery, source or family policy creates no MCP tool (60.3708ms)
+Γ£ö eight partial-input operations remain absent from SDK policy and cannot be advertised by installation/discovery (370.9009ms)
+Γä╣ tests 15
+Γä╣ suites 0
+Γä╣ pass 15
+Γä╣ fail 0
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 4956.6311

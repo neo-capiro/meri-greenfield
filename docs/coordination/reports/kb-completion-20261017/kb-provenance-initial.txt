@@ -1,0 +1,11 @@
+✔ dataset-metadata: changed static KB and shared imports are measured exactly once before any credential/source call (12.9837ms)
+✔ research-portfolio: changed static KB and shared imports are measured exactly once before any credential/source call (8.3121ms)
+✔ client-knowledge-search: changed static KB and shared imports are measured exactly once before any credential/source call (11.9863ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 603.1427

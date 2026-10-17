@@ -1,0 +1,4 @@
+# Preserve raw process evidence and diagnostic whitespace exactly.
+search-completion-initial.txt -text -whitespace
+search-completion-initial.json -text whitespace=cr-at-eol
+search-completion-frozen-files.json -text whitespace=cr-at-eol

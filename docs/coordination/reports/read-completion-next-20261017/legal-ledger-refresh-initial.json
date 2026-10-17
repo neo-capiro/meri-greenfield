@@ -1,0 +1,13 @@
+{
+  "executable": "C:/Users/Administrator/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe",
+  "argv": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "scripts/scope-ledger/cli.mjs",
+    "--refresh-exposure"
+  ],
+  "startedAt": "2026-10-17T04:59:47.7126807Z",
+  "finishedAt": "2026-10-17T04:59:47.9926478Z",
+  "exitCode": 0,
+  "classification": "Phase2 legal-search accounting; historical first4 receipts immutable; no native or live qualification"
+}

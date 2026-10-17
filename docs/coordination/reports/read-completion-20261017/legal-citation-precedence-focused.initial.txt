@@ -1,0 +1,26 @@
+Γ£ö citation precedence: rules ignores citation preserves original JSON and null parser context (93.6026ms)
+Γ£ö citation precedence: versions ignores citation preserves original JSON and null parser context (14.0663ms)
+Γ£ö citation precedence: explicit reference with absent edition preserves original JSON and null parser context (12.3447ms)
+Γ£ö citation precedence: explicit reference with empty edition preserves original JSON and null parser context (10.3512ms)
+Γ£ö citation precedence: explicit reference with null edition preserves original JSON and null parser context (9.5801ms)
+Γ£ö citation precedence: explicit reference with statute filter and no edition preserves original JSON and null parser context (11.0298ms)
+Γ£ö citation precedence: explicit constitution suppresses edition preserves original JSON and null parser context (9.9136ms)
+Γ£ö citation precedence: explicit constitution ignores invalid edition preserves original JSON and null parser context (9.4479ms)
+Γ£ö citation precedence: unknown view falls through to explicit references preserves original JSON and null parser context (8.9532ms)
+Γ£ö citation precedence: whitespace reference is natively truthy preserves original JSON and null parser context (9.5179ms)
+Γ£ö citation precedence: the frozen reference selector is identical for every possible parse code (7.3085ms)
+Γ£ö citation precedence: implicit identity and effective edition stay unavailable before credential factories (6.8639ms)
+Γ£ö citation precedence: accepted citations cannot relax client name, folder or current UUID resource authority (9.4559ms)
+Γ£ö citation precedence: canonical bounds, branch requirements and inert raw data still reject before source IO (5.6099ms)
+Γ£ö citation precedence: native parser/source errors and receiving substitutions remain failures (12.2423ms)
+Γ£ö parser-dependent reference citations remain UNAVAILABLE with implicit identity or an effective edition (30.6849ms)
+Γ£ö delta search_legislative_research: names, truthy folders and unsupported citations remain closed before credential factories (24.1682ms)
+Γ£ö delta get_legal_reference: names, truthy folders and unsupported citations remain closed before credential factories (7.1597ms)
+Γä╣ tests 18
+Γä╣ suites 0
+Γä╣ pass 18
+Γä╣ fail 0
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 1963.6018

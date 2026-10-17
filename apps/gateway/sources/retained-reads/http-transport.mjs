@@ -5,6 +5,8 @@ import {deny,safeFailure} from '../../dispatch/operation-result.mjs';
 import {ownFields,frozenData} from '../source-admission.mjs';
 import {readJsonResponse,cancelBody,responseBody} from '../json-response.mjs';
 import {credentialProof} from './call-context.mjs';
+import {createNativeReadObservation,encodeNativeReadObservation,NATIVE_READ_OBSERVATION_HEADER} from '../../../../packages/contracts/native-read-observation-0.2/validate.mjs';
+import {FUNDING_OPPORTUNITY_OPERATION_IDS} from '../../../../packages/contracts/retrieval-0.2/funding-opportunities-validation.mjs';
 const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const token=value=>typeof value==='string'&&/^[\x21-\x7e]{1,8192}$/.test(value);
 export function createRetainedHttpTransport(configuration){
@@ -17,8 +19,14 @@ export function createRetainedHttpTransport(configuration){
   !Number.isSafeInteger(maxResponseBytes)||maxResponseBytes<1||maxResponseBytes>16777216)deny('GATEWAY_CONFIGURATION');
  const delegated=delegatedTransport===undefined?null:ownFields(delegatedTransport,['read']);
  if(delegated&&(typeof delegated.read!=='function'||getCredentials!==undefined))deny('GATEWAY_CONFIGURATION');
- return Object.freeze({async read(c,{path,method,body,serviceSecret=false}){
+ return Object.freeze({async read(c,specification){
+  const {path,method,body,serviceSecret=false,observation}=ownFields(specification,['path','method'],['body','serviceSecret','observation']);
+  const fundingObservation=observation==='funding-asof'&&c.contract.binding.group==='funding-opportunities'&&FUNDING_OPPORTUNITY_OPERATION_IDS.includes(c.operation.id);
+  const knowledgeObservation=observation==='client-knowledge-asof'&&c.contract.binding.group==='client-knowledge-search'&&c.operation.id==='search_client_knowledge';
+  if(observation!==undefined&&(!(fundingObservation||knowledgeObservation)||c.operation.version!=='0.2.0'||
+   method!=='POST'||path!==`/api/clio/tools/${c.operation.id}`||!serviceSecret||!same(body,c.request)))deny('GATEWAY_CONFIGURATION');
   // Explicit trusted composition only. New-mode failure never reaches legacy credentials or transport.
+  if(observation&&delegated)deny('UNAVAILABLE');
   if(delegated)return delegated.read.call(delegatedTransport,c,{path,method,...(body===undefined?{}:{body})});
   if(!getCredentials)deny('UNAVAILABLE');
   let cutoff=Math.min(c.deadlineMs,now()+maxRequestMs);
@@ -31,10 +39,12 @@ export function createRetainedHttpTransport(configuration){
    if(Object.keys(proof).some(key=>!same(credentials[key],proof[key]))||!token(credentials.bearerToken)||
     serviceSecret&&!token(credentials.serviceSecret)||!Number.isSafeInteger(credentials.expiresAtMs)||credentials.expiresAtMs<=now())deny('ACCESS_DENIED');
    cutoff=Math.min(cutoff,credentials.expiresAtMs);lifetime.limitDeadline(cutoff);
+   const observationHeader=observation?encodeNativeReadObservation(createNativeReadObservation({operation:c.operation,request:c.request,context:c.normalizationContext}),{operation:c.operation,request:c.request}):undefined;
    const response=await lifetime.run(async signal=>{
     const result=await fetchImpl(new URL(path,origin).href,{method,redirect:'error',credentials:'omit',cache:'no-store',signal,
      headers:{authorization:`Bearer ${credentials.bearerToken}`,accept:'application/json','accept-encoding':'identity',
       'x-meri-deadline-at':String(cutoff),
+      ...(observationHeader?{[NATIVE_READ_OBSERVATION_HEADER]:observationHeader}:{}),
       ...(serviceSecret?{'x-internal-service-secret':credentials.serviceSecret}:{}),...(body===undefined?{}:{'content-type':'application/json'})},
      ...(body===undefined?{}:{body:JSON.stringify(body)})});
     acquired=result;

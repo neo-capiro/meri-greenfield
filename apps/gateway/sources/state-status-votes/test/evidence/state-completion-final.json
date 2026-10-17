@@ -1,0 +1,19 @@
+{
+  "executable": "C:/Users/Administrator/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe",
+  "argv": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "apps/gateway/sources/state-status-votes/test/handler.test.mjs",
+    "apps/gateway/sources/state-status-votes/test/no-bill-delta.test.mjs",
+    "apps/gateway/sources/state-status-votes/test/completion.test.mjs",
+    "packages/contracts/test/retrieval-state-status-votes.test.mjs",
+    "packages/contracts/test/retrieval-state-status-votes-independent.test.mjs"
+  ],
+  "startedAt": "2026-10-17T04:37:22.9839439Z",
+  "finishedAt": "2026-10-17T04:37:25.7153183Z",
+  "exitCode": 0,
+  "reason": "Canonical denial fixture replaces ordinary Error; production unchanged since initial run",
+  "classification": "Synthetic HTTP native branches plus unchanged frozen contracts; no provider or live qualification"
+}

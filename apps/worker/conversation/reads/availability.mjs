@@ -26,8 +26,12 @@ export const DEFERRED_ORIGINALS=Object.freeze(catalog.originals.filter(o=>o.disp
 /** Catalog rows of the constructible families, in catalog order: `{operation, family, descriptor}`.
  * @param {Readonly<Record<string,import('./families.mjs').ReadFamily>>} [families] @returns {AvailableRead[]} */
 export function familyReads(families=READ_FAMILIES){
+ for(const [family,configuration] of Object.entries(families))if(configuration.operationIds!==undefined){
+  const ids=configuration.operationIds;
+  if(!Array.isArray(ids)||ids.length===0||new Set(ids).size!==ids.length||ids.some(id=>typeof id!=='string'||!catalog.operations.some(d=>d.operation.id===id&&d.sideEffect==='none'&&d.approvalBoundary==='none'&&resolveOperationContract(d.operation).binding?.group===family)))throw Error('READ_FAMILY_CONFIGURATION');
+ }
  return catalog.operations.flatMap(descriptor=>{const family=resolveOperationContract(descriptor.operation).binding?.group;
-  return typeof family==='string'&&Object.hasOwn(families,family)?[{operation:descriptor.operation,family,descriptor}]:[];});
+  return typeof family==='string'&&Object.hasOwn(families,family)&&(!families[family].operationIds||families[family].operationIds.includes(descriptor.operation.id))?[{operation:descriptor.operation,family,descriptor}]:[];});
 }
 /** @param {{policy:{generalReads?:boolean,readFamilies?:readonly string[]},installation:{operations:readonly OperationRef[]},
  *  discovery:{operations:readonly OperationRef[]},scopes:readonly {kind:string}[],families?:Readonly<Record<string,import('./families.mjs').ReadFamily>>,

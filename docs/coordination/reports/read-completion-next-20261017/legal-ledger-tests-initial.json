@@ -1,0 +1,15 @@
+{
+  "executable": "C:/Users/Administrator/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe",
+  "argv": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "--test-timeout=20000",
+    "scripts/scope-ledger/source-exposure.test.mjs"
+  ],
+  "startedAt": "2026-10-17T04:59:48.0360535Z",
+  "finishedAt": "2026-10-17T04:59:51.8421014Z",
+  "exitCode": 0,
+  "classification": "Phase2 legal-search accounting; historical first4 receipts immutable; no native or live qualification"
+}
