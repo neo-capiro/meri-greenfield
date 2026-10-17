@@ -55,7 +55,9 @@ export function validateTemporalPreviewBinding(value){
  validateTemporalFixture();
  const b=closed(value,['account','region','enabled','placement','clusterArn','vpcId','subnets','privateDnsName','serverImageUri','upstreamServerImageDigest','launchSourceCommit','launchContractSha256','logGroupName','executionRoleArn','taskRoleArns','network','auth','database']);
  const placement=closed(b.placement,['kind','reviewSha256']);
- if(placement.kind!=='independent-meri-vpc'||!hex64.test(placement.reviewSha256)||b.vpcId==='vpc-0ac26cfac7ed972be')fail();
+ if(placement.kind!=='existing-capiro-dev-vpc'||!hex64.test(placement.reviewSha256)||
+    b.vpcId!==TEMPORAL_EXISTING_DATABASE.databaseVpcId||
+    b.clusterArn!=='arn:aws:ecs:us-east-1:967807252336:cluster/capiro-dev')fail();
  if(b.account!=='967807252336'||b.region!=='us-east-1'||b.enabled!==false||
     !/^arn:aws:ecs:us-east-1:967807252336:cluster\/[a-zA-Z0-9_-]{1,255}$/u.test(b.clusterArn)||
     !/^vpc-[a-f0-9]{8,17}$/u.test(b.vpcId)||!/^([a-z0-9-]+\.)+[a-z]{2,}$/u.test(b.privateDnsName)||

@@ -18,7 +18,7 @@ export function inspectTemporalProductJoin({productBinding,temporalBinding,runti
  let t,p;
  try{t=validateTemporalPreviewBinding(temporalBinding);synthesizeProductPreview(productBinding);p=productBinding;
   validateTemporalIssuerRenewal(t,issuerRenewal);}catch{fail();}
- if(p.account!==t.account||p.region!==t.region||
+ if(p.account!==t.account||p.region!==t.region||p.clusterArn!==t.clusterArn||
     issuerRenewal.issuerServiceTaskRoleArn===p.controlTaskRoleArn||
     issuerRenewal.issuerServiceTaskRoleArn===p.executionRoleArn||
     !Array.isArray(t.network.clientSecurityGroupIds)||
@@ -27,7 +27,7 @@ export function inspectTemporalProductJoin({productBinding,temporalBinding,runti
      .every(x=>t.network.clientSecurityGroupIds.includes(x))||
     t.subnets.some(x=>x.id===p.network.privateSubnetId))fail();
  const subnet=record(productSubnetReadback,['SubnetId','VpcId','RouteTableId']);
- if(subnet.SubnetId!==p.network.privateSubnetId||subnet.VpcId===t.vpcId||
+ if(subnet.SubnetId!==p.network.privateSubnetId||subnet.VpcId!==t.vpcId||
     !/^vpc-[a-f0-9]{8,17}$/u.test(subnet.VpcId)||
     !/^rtb-[a-f0-9]{8,17}$/u.test(subnet.RouteTableId))fail();
  const projections=record(runtimeProjection,['control','temporalWorker']);
@@ -49,6 +49,6 @@ export function inspectTemporalProductJoin({productBinding,temporalBinding,runti
  }
  return Object.freeze({schemaVersion:1,status:'HOLD',frontendAddress:address,
   productVpcId:subnet.VpcId,temporalVpcId:t.vpcId,
-  pending:Object.freeze(['independent-config-decoding','cross-vpc-route-and-sg-readback',
+  pending:Object.freeze(['independent-config-decoding','same-vpc-route-and-sg-readback',
    'issuer-writer-and-required-auth-composition','Linux-mTLS-and-token-expiry-qualification'])});
 }

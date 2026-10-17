@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {readFileSync} from 'node:fs';
 import {synthesizeTemporalPreview} from './temporal-deployment.mjs';
-import {TEMPORAL_ROLES,TEMPORAL_PORTS,TEMPORAL_INTERFACE_ENDPOINTS,TEMPORAL_EXISTING_DATABASE,validateTemporalFixture} from './temporal-binding.mjs';
+import {TEMPORAL_ROLES,TEMPORAL_PORTS,TEMPORAL_INTERFACE_ENDPOINTS,TEMPORAL_EXISTING_DATABASE,validateTemporalFixture,validateTemporalPreviewBinding} from './temporal-binding.mjs';
 import {TEMPORAL_MIGRATION_PLAN,TEMPORAL_MIGRATION_PLAN_SHA256} from './temporal-migration-plan.mjs';
 import {validateTemporalNetworkReadback} from './temporal-network-readback.mjs';
 import {validateTemporalIssuerRenewal} from './temporal-issuer-renewal.mjs';
@@ -14,7 +14,7 @@ const account='967807252336',region='us-east-1',sha='a'.repeat(64);
 const rendererSha=createHash('sha256').update(readFileSync(new URL('./temporal-launch-render.mjs',import.meta.url))).digest('hex');
 const version=(name,n)=>`arn:aws:secretsmanager:${region}:${account}:secret:meri/temporal/${name}-ABC123:::${String(n).repeat(32)}`;
 function binding(){return {
- account,region,enabled:false,placement:{kind:'independent-meri-vpc',reviewSha256:sha},clusterArn:`arn:aws:ecs:${region}:${account}:cluster/meri-product-preview`,vpcId:'vpc-1234abcd',
+ account,region,enabled:false,placement:{kind:'existing-capiro-dev-vpc',reviewSha256:sha},clusterArn:`arn:aws:ecs:${region}:${account}:cluster/capiro-dev`,vpcId:'vpc-0ac26cfac7ed972be',
  subnets:[{id:'subnet-1234abcd',availabilityZone:'us-east-1a'},{id:'subnet-abcd1234',availabilityZone:'us-east-1b'}],
  privateDnsName:'temporal.meri.internal',serverImageUri:`${account}.dkr.ecr.${region}.amazonaws.com/meri/temporal-server@sha256:${sha}`,
  upstreamServerImageDigest:pins.server.imageAmd64Digest,launchSourceCommit:'c'.repeat(40),launchContractSha256:rendererSha,logGroupName:'/meri/temporal-preview',
@@ -51,6 +51,7 @@ test('fully bound synthesis emits five stopped private roles using the approved 
  assert.equal(JSON.stringify(t).includes('MasterUser'),false);
  assert.equal(JSON.stringify(t).includes('resolve:secretsmanager'),false);
  for(const s of resources(t,'AWS::ECS::Service')){
+  assert.equal(s.Cluster,'arn:aws:ecs:us-east-1:967807252336:cluster/capiro-dev');
   assert.equal(s.DesiredCount,0);assert.equal(s.PlatformVersion,'1.4.0');assert.equal(s.EnableExecuteCommand,false);
   assert.equal(s.NetworkConfiguration.AwsvpcConfiguration.AssignPublicIp,'DISABLED');
   assert.deepEqual(s.NetworkConfiguration.AwsvpcConfiguration.Subnets,b.subnets.map(x=>x.id));
@@ -84,6 +85,23 @@ test('fully bound synthesis emits five stopped private roles using the approved 
   assert.equal(Number(env.SQL_MAX_CONNS)+Number(env.SQL_VIS_MAX_CONNS),role==='history'?40:20);
  }
  assert.equal(JSON.stringify(t).includes('password":"'),false,'no plaintext credential in source template');
+});
+
+test('existing capiro-dev placement requires its exact VPC, cluster and closed review receipt while disabled',()=>{
+ const b=binding();
+ assert.equal(validateTemporalPreviewBinding(b),b);
+ assert.equal(b.enabled,false);
+ const t=synthesizeTemporalPreview(b);
+ assert.equal(resources(t,'AWS::ServiceDiscovery::PrivateDnsNamespace')[0].Vpc,'vpc-0ac26cfac7ed972be');
+ assert(resources(t,'AWS::EC2::SecurityGroup').every(group=>group.VpcId==='vpc-0ac26cfac7ed972be'));
+ for(const mutate of [
+  x=>{x.placement.kind='independent-meri-vpc';},
+  x=>{x.vpcId='vpc-1234abcd';},
+  x=>{x.clusterArn=`arn:aws:ecs:${region}:${account}:cluster/meri-product-preview`;},
+  x=>{delete x.placement;},x=>{delete x.placement.reviewSha256;},
+  x=>{x.placement.reviewSha256='';},x=>{x.placement.reviewSha256='not-a-review-receipt';},
+  x=>{x.placement.approved=true;},x=>{delete x.enabled;},x=>{x.enabled=true;}
+ ]){const copy=structuredClone(b);mutate(copy);assert.throws(()=>synthesizeTemporalPreview(copy),/TEMPORAL_PREVIEW_BINDING_REFUSED/u);}
 });
 
 test('the exact reviewed fixture refuses changes to role and trust decisions',()=>{
@@ -184,7 +202,7 @@ test('unmounted issuer renewal contract binds distinct write subjects to an exte
 test('missing or contradictory authority and network inputs refuse before synthesis',()=>{
  const changes=[
   x=>{x.enabled=true;},x=>{delete x.enabled;},x=>{x.account='000000000000';},
-  x=>{x.placement.kind='reuse-capiro-dev';},x=>{x.vpcId='vpc-0ac26cfac7ed972be';},
+  x=>{x.placement.kind='reuse-capiro-dev';},x=>{x.vpcId='vpc-1234abcd';},
   x=>{x.subnets[1].availabilityZone=x.subnets[0].availabilityZone;},x=>{x.subnets=[x.subnets[0]];},
   x=>{x.serverImageUri=x.serverImageUri.replace('@sha256:','-mutable:');},
   x=>{x.upstreamServerImageDigest='sha256:'+sha;},x=>{x.launchSourceCommit='';},
@@ -204,7 +222,7 @@ test('missing or contradictory authority and network inputs refuse before synthe
   x=>{x.database.kind='new-rds-postgresql';},x=>{x.database.clusterArn=x.database.clusterArn+'-foreign';},
   x=>{x.database.endpoint=x.database.endpoint.replace('.cluster-','.cluster-ro-');},
   x=>{x.database.port=5433;},x=>{x.database.securityGroupId='sg-deadbeef';},
-  x=>{x.database.databaseVpcId=x.vpcId;},x=>{x.database.engine='postgres';},
+  x=>{x.database.databaseVpcId='vpc-deadbeef';},x=>{x.database.engine='postgres';},
   x=>{x.database.engineVersion='16.15';},x=>{x.database.primaryDatabase='capiro';},
   x=>{x.database.visibilityDatabase='temporal';},x=>{x.database.grantsSha256='';},
   x=>{x.network.issuerSecurityGroupId=x.network.clientSecurityGroupIds[0];},
