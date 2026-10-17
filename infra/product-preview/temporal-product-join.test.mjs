@@ -11,7 +11,7 @@ const account='967807252336',region='us-east-1',sha='a'.repeat(64),sourceCommit=
 const roleSecret=(name,n)=>`arn:aws:secretsmanager:${region}:${account}:secret:meri/temporal/${name}-ABC123:::${String(n).repeat(32)}`;
 const controlCa=Buffer.from('synthetic public CA'),controlCaSha=createHash('sha256').update(controlCa).digest('hex');
 function temporal(){return {
- account,region,enabled:false,placement:{kind:'existing-capiro-dev-vpc',reviewSha256:sha},
+ account,region,enabled:false,activation:'disabled',placement:{kind:'existing-capiro-dev-vpc',reviewSha256:sha},
  clusterArn:`arn:aws:ecs:${region}:${account}:cluster/capiro-dev`,vpcId:'vpc-0ac26cfac7ed972be',
  subnets:[{id:'subnet-11111111',availabilityZone:'us-east-1a'},{id:'subnet-22222222',availabilityZone:'us-east-1b'}],
  privateDnsName:'temporal.meri.internal',serverImageUri:`${account}.dkr.ecr.${region}.amazonaws.com/meri/temporal@sha256:${sha}`,
@@ -25,7 +25,7 @@ function temporal(){return {
    {endpointId:`vpce-${String(i+1).repeat(8)}`,securityGroupId:`sg-${String(i+4).repeat(8)}`}])) ,
   s3Gateway:{endpointId:'vpce-99999999',prefixListId:'pl-11111111'},
   taskRouteTableBySubnet:{'subnet-11111111':'rtb-11111111','subnet-22222222':'rtb-22222222'},
-  migrationSecurityGroupId:'sg-aaaaaaaa'},
+  migrationSecurityGroupId:'sg-aaaaaaaa',issuerClientSecurityGroupId:'sg-bbbbbbbb',dbClientSecurityGroupId:'sg-cccccccc'},
  auth:{issuer:'https://issuer.meri.internal:8445/',jwksUrl:'https://issuer.meri.internal:8445/.well-known/jwks.json',
   issuerCaSha256:sha,audience:'meri-temporal',namespace:'meri',taskQueue:'meri-conversations',
   materialSecretVersionByRole:Object.fromEntries(TEMPORAL_ROLES.map((x,i)=>[x,roleSecret(x,i+1)]))},

@@ -1,4 +1,11 @@
-# Private product model proxy: disabled change-set contract
+# Private product model proxy: change-set contract
+
+> **Superseded in part, 17 Oct 2026** by [FIRST-CHAT-CHANGE-SET.md](../../docs/shipping/20261017/FIRST-CHAT-CHANGE-SET.md). `model-proxy-plan.mjs` (schema `meri.product-model-proxy.plan/2`) and `model-proxy-template.mjs` (`synthesizeModelProxyTemplate`) now render:
+> - **no NLB, no new Bedrock VPCE, no new S3 gateway, no false condition.** Runner→proxy is direct TCP 8443 to Cloud Map `proxy.meri.internal`; the proxy reaches Bedrock and the ECS/EC2 API through the existing NAT on 443 (an existing bedrock-runtime endpoint in the binding adds an endpoint path); the existing S3 gateway `vpce-0cdaa6b79d616aa1c` / `pl-63a5400a` and the shared interface-endpoint SG are reused;
+> - two services at desired count 0, `meri-product-preview-proxy` (proxy image, user `10001:10001`, port 8443) and `meri-product-preview-owner` (Node runtime image, `node apps/proxy/product/owner-entrypoint.mjs`, user `1000:1000`, port 8444, Cloud Map `owner.meri.internal`), each with a `material-init` container and a `SUCCESS` gate, Fargate 1.4.0, 0.5 vCPU / 1 GiB;
+> - managed policies only, attached to foundation-owned roles: Bedrock invoke/CountTokens on the proxy task role (no `GetInferenceProfile`), scoped ECS/EC2 observer reads on both task roles, ECR/Logs/exact-secret reads on both execution roles.
+>
+> SGs, SG rules, roles, log groups and Cloud Map services are foundation-owned inputs; the plan lists the rules they must hold as `network.foundationOwnedRules`. The NLB, VPCE, `1000:1000` and false-condition text below is historical.
 
 Source pin: Meri product proxy modules and `model-proxy-plan.mjs` in this review
 branch. The source plan is **disabled** (`enabled:false`, ECS desired count zero)
