@@ -55,7 +55,7 @@ Rollback: drop only the new `meri_*` schemas, the two Temporal databases and the
 |---|---|---|
 | KMS RSA-2048 sign key + alias `alias/meri/temporal-issuer-preview` | new | Retain on delete. Key policy grants the issuer task role `GetPublicKey` and `Sign` only in Stage 3 |
 | IAM roles | new | Issuer task/exec, control task/exec, worker exec, runner exec (no task role), proxy task/exec (Bedrock invoke on the one profile), owner task/exec, Temporal exec. Exact actions from `AWS-CHANGESET-20261017.md` and `CAPIRO-DEV-CHANGE-SET-20261016.md`; IAM simulation before attach |
-| Security groups | new | control, worker, runner, issuer, proxy, owner, five Temporal role SGs. Exact peer rules: issuer:8445 from control/worker/Temporal; Temporal frontend:7233 from control/worker; runner→control:8082; runner→proxy:8443; proxy→owner:8444; Aurora:5432 from control, owner, issuer, Temporal and migrator only (added to `sg-059b4e4de0b1dcca5`) |
+| Security groups | new | control, worker, runner, issuer, proxy, owner, five Temporal role SGs. **Public path:** ingress TCP 8080 on the Meri control SG from the existing ALB SG `sg-0dc7236a6d67e4340` (`Capiro-dev-Network-AlbSg…`, which already allows all egress, so no change on the shared SG). Exact peer rules: issuer:8445 from control/worker/Temporal; Temporal frontend:7233 from control/worker; runner→control:8082; runner→proxy:8443; proxy→owner:8444; Aurora:5432 from control, owner, issuer, Temporal and migrator only (added to `sg-059b4e4de0b1dcca5`) |
 | Cloud Map | new | Private namespaces `meri.internal` (issuer, control-private, proxy, owner) and `temporal.meri.internal` (five roles) |
 | Log groups | new | `/meri/product-preview/*`, 30-day retention |
 | Secrets | new | Exact-version bundles: control, worker, issuer, proxy, owner and Temporal role TLS; DB logins; CA keys (D4) |
@@ -74,20 +74,21 @@ Register digest-pinned task definitions and create ECS services, all with **Desi
 - five Temporal roles
 - the runner, which is a task definition only, with no service
 
+**Target group (Meri-owned, created here):** `meri-preview-control-8080`, IP type, HTTP 8080, VPC `vpc-0ac26cfac7ed972be`, health `GET /health/live`. The public control listener serves liveness only; readiness detail stays on private 8082 (`42dd06cb`). Its ARN is the reviewed `controlTargetGroupArn` binding in `infra/product-preview/manifest.mjs` (lines 135-142), which attaches control only when that ARN is supplied. ECS will not attach a service to a target group that no listener rule uses yet, so the service is created **without** `loadBalancers` here and is attached in Stage 6 (see the ordering note there).
+
 Each service has a material-init container with a `SUCCESS` gate, a read-only root, user 1000 (10001 for the proxy), and no public IP. Requires D1–D6 closed, Build B qualified and D3 built.
 
 Rollback: delete the stack. Nothing ran.
 
-## Stage 4: public route (dot owns the listener and zone; Neo approves; follows dot's immutable map)
+## Stage 4: install the Meri host deny (dot executes; Neo approves)
 
-The shared-listener map is capiro-backend PR78 at `bcdd689956e1aff3fa316103e75ec60ebe024fda` ([operator procedure](https://github.com/neo-capiro/capiro-backend/blob/bcdd689956e1aff3fa316103e75ec60ebe024fda/docs/core-meri-shared-listener-reconciliation-20261017.md)). It is source-accepted only; no listener write is approved. This stage receives that map with no conflict.
+Under capiro-backend PR78 `bcdd689956e1aff3fa316103e75ec60ebe024fda` ([operator procedure](https://github.com/neo-capiro/capiro-backend/blob/bcdd689956e1aff3fa316103e75ec60ebe024fda/docs/core-meri-shared-listener-reconciliation-20261017.md)):
+1. dot relocates `9→16`, `8→9`, `7→8`, `6→7`. Core keeps 1–2, its proposed GET at 3 and the retained guard at 4; rules 5 and 10–15 are unchanged.
+2. dot creates the **Meri rule at priority 6**: exactly `meri-preview.capiro.ai`, host-only, all methods and paths, **fixed JSON 404**, retained. Its ARN, host and action are read back and the Meri-host negative matrix is run.
 
-- Relocations run first, by dot: `9→16`, `8→9`, `7→8`, `6→7`. Core keeps 1–2, its proposed GET at 3 and the retained guard at 4. Rules 5 and 10–15 are unchanged.
-- **Meri rule at priority 6**: exactly `meri-preview.capiro.ai`, host-only, all methods and paths, created as a **fixed JSON 404 with retention**. Its ARN, host and action are read back and the Meri-host negative matrix is tested before any DNS alias exists.
-- Qualification (separate approval) changes **only that rule's action** to forward to the one reviewed Meri control target group (IP, HTTP 8080, health `/health/live`), with the same ARN and priority. Meri control's public boundary still returns 404 for everything except `/api/conversations*` and `/api/action-followthrough/session`. Target health is not admission proof.
-- Route 53 alias `meri-preview.capiro.ai` → `capiro-prod-alb` is published only after the deny boundary and target gates pass.
-- **Rollback is action-first.** Change rule 6 back to fixed JSON 404 and read back the same ARN and action, then drain or stop the Meri targets, then remove DNS under its own approval. **The priority-6 deny stays in place while the host can reach this ALB**, because an explicit `Host` header bypasses DNS and TTL. Removing it would expose Meri-host `/api/*` to production rule 10.
-## Stage 5: bounded activation smoke (approval: Neo plus dot for Core)
+No forward, target and DNS exist in this stage. **The deny stays installed from here on while the host can reach this ALB** (an explicit `Host` header bypasses DNS and TTL).
+
+## Stage 5: private activation with the deny installed (approval: Neo plus dot for Core)
 
 | Order | Service | Count | Size (vCPU/GiB) | $/hour |
 |---|---|---|---|---|
@@ -100,7 +101,7 @@ The shared-listener map is capiro-backend PR78 at `bcdd689956e1aff3fa316103e75ec
 
 Fargate x86 at $0.04048 per vCPU-hour and $0.004445 per GB-hour gives **about $0.26/hour (about $190/month)** if left up. Proposed smoke window: **2 hours, ceiling $5** including Bedrock, so with D1 caps a handful of real prompts costs well under $1. Fixed monthly additions: KMS key $1, about 12 secrets ≈ $5, two private hosted zones $1, Cloud Map instances ≈ $1, logs under $1. Aurora, NAT and the ALB already exist; NAT data processing is about $0.045/GB and small.
 
-Gate sequence: private readiness for each tier, then a real native Core identity/context call with a real bearer (never logged), then a private first prompt, and only then the frontend flags. Health alone is never acceptance.
+Targets are validated **privately** while rule 6 still returns 404. Gate sequence: private readiness for each tier (control readiness on private 8082), then a real native Core identity/context call with a real bearer (never logged), then a private first prompt through the private path. Health alone is never acceptance.
 
 Rollback, at any failure or at the end of the window:
 1. Fence new admissions and kickoffs.
@@ -108,6 +109,22 @@ Rollback, at any failure or at the end of the window:
 3. Set every new service to 0; Core goes back to 0 via dot.
 4. Reconcile journal, runs, allocations, Temporal and ECS until zero UNKNOWN.
 5. Keep config A, and its saved conversations, for continuity.
+
+## Stage 6: qualified public forward and DNS (dot executes the listener and DNS; Neo approves)
+
+Only after Stage 5's private gates pass:
+1. **Attach the target group.** ECS needs the target group associated with a listener rule before `UpdateService` can add `loadBalancers`, and rule 6 is still a fixed 404. **Dot chooses one:**
+   - (a) **Anchor rule:** a never-matching anchor rule (for example host `meri-preview-anchor.invalid`) forwards to `meri-preview-control-8080`, using a priority from dot's map. The service is attached and targets are healthy before any real traffic.
+   - (b) **Same-change attach (no extra priority):** change rule 6's action to forward and immediately `UpdateService` with the reviewed `loadBalancers` binding. Explicit-Host requests can meet registering targets for one health-check window. DNS is not yet published.
+2. Read back the same rule-6 ARN, priority, exact host and forward target. Wait for healthy `/health/live` targets, then run the Meri-host positive and negative matrix.
+3. Publish the Route 53 alias `meri-preview.capiro.ai` → `capiro-prod-alb` under its own approval. Then dot switches the frontend flags.
+
+**Teardown and rollback, action-first:**
+1. Change rule 6 back to fixed JSON 404 and read back the same ARN and action.
+2. Only then drain and stop the Meri targets and services.
+3. Remove DNS under its own approval.
+
+The rule-6 deny stays while the host can reach this ALB.
 
 ## Hand-off to dot (step 3)
 
@@ -123,6 +140,6 @@ Fable returns the release packet: every source, image, config, secret **referenc
 2. One more qualification build for the Temporal server image (about $4), plus Build B once dot lifts its hold.
 3. Stage 0 + 1 (snapshot, then the reviewed SQL).
 4. Stage 2 (security/network), then Stage 3 (zero-count services).
-5. Stage 4 under PR78's map (dot executes the listener writes), then the Stage 5 smoke window ($5 ceiling, 2 hours).
+5. Stage 4 (deny, by dot under PR78), Stage 5 private activation (2-hour window, $5 ceiling), then Stage 6 public forward and DNS (dot).
 
 Each approval is consumed by its stage; a failure never grants a retry.
