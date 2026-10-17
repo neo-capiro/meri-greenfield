@@ -3,27 +3,15 @@
  * `policy-resolution.mjs` owner, so a tenant value that would widen the platform maximum or a role ceiling refuses with its codes. */
 import {assertTenantCapabilitySettings} from '../../worker/conversation/capabilities/policy-resolution.mjs';
 import {ProductError,refuse} from '../product-access/errors.mjs';
-import {closed,lowerUuid} from '../product-access/shape.mjs';
-const THEMES=['system','light','dark'],DENSITIES=['comfortable','compact'];
-const NOTIFICATIONS=['runCompleted','approvalRequested','memoryReviewed'];
-const field=name=>refuse('SETTINGS_FIELD_INVALID',null,name);
-export function timezone(value,name){
- if(typeof value!=='string'||value.length>64)field(name);
- let resolved;try{resolved=new Intl.DateTimeFormat('en-US',{timeZone:value}).resolvedOptions().timeZone;}catch{field(name);}
- if(resolved!==value&&!(value==='UTC'&&resolved==='UTC'))field(name);
- return value;
-}
-export const USER_PREFERENCE_DEFAULTS=Object.freeze({theme:'system',density:'comfortable',timezone:null,notifications:Object.freeze({runCompleted:true,approvalRequested:true,memoryReviewed:true}),defaultClientId:null});
+import {closed} from '../product-access/shape.mjs';
+import {USER_PREFERENCE_FIELDS,USER_PREFERENCE_DEFAULTS,userPreferencesDocument,userPreferencesTimezone,userPreferencesDocumentFailure} from '../../../packages/contracts/user-preferences-application/document.mjs';
+export {USER_PREFERENCE_DEFAULTS};
+const documentCall=operation=>{try{return operation();}catch(error){const failure=userPreferencesDocumentFailure(error);if(failure)refuse(failure.code,null,failure.field);throw error;}};
+export const timezone=(value,name)=>documentCall(()=>userPreferencesTimezone(value,name===undefined?null:name));
 /** User preferences. `timezone:null` follows the tenant default. `defaultClientId` must be one of the member's current clients. */
 export function userPreferences(value,principal){
- const p=closed(value,['theme','density','timezone','notifications','defaultClientId'],[],'SETTINGS_DOCUMENT_INVALID');
- if(!THEMES.includes(p.theme))field('theme');if(!DENSITIES.includes(p.density))field('density');
- const tz=p.timezone===null?null:timezone(p.timezone,'timezone');
- let n;try{n=closed(p.notifications,NOTIFICATIONS,[],'SETTINGS_FIELD_INVALID');}catch{field('notifications');}
- for(const k of NOTIFICATIONS)if(typeof n[k]!=='boolean')field(`notifications.${k}`);
- let client=null;
- if(p.defaultClientId!==null){try{client=lowerUuid(p.defaultClientId,'SETTINGS_FIELD_INVALID');}catch{field('defaultClientId');}if(!principal.clientIds.includes(client))refuse('SETTINGS_CLIENT_REFUSED');}
- return Object.freeze({theme:p.theme,density:p.density,timezone:tz,notifications:Object.freeze({...n}),defaultClientId:client});
+ const input=closed(value,USER_PREFERENCE_FIELDS,[],'SETTINGS_DOCUMENT_INVALID'),preferences=documentCall(()=>userPreferencesDocument(input));
+ if(preferences.defaultClientId!==null&&!principal.clientIds.includes(preferences.defaultClientId))refuse('SETTINGS_CLIENT_REFUSED');return preferences;
 }
 /** Stored preferences as released now: a default client the member no longer holds is withheld rather than disclosed. */
 export function releasedUserPreferences(stored,principal){

@@ -12,6 +12,7 @@ import {createCoreReview} from '../../memory/core-review.mjs';
 import {createCoreMemoryReads} from '../../memory/core-memory.mjs';
 import {createCoreDouble,createJournalDouble,ids} from '../../memory/test/fixtures.mjs';
 import {directory,id} from './fixtures.mjs';
+import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 const deferred=()=>Promise.withResolvers();
 function application(routes){const d=directory();return createProductApplication({gate:d.gate,now:()=>d.now,routes,
  limits:{maxRequestMs:100,maxRequestBytes:65536,maxResponseBytes:1048576}});}
@@ -24,6 +25,7 @@ for(const mode of ['deadline','cancel'])test(`pending settings COMMIT after ${mo
  const pool={async connect(){return {async query(sql){
   if(sql==='BEGIN')writing=true;
   if(sql==='COMMIT'&&writing){entered.resolve();await release.promise;commits++;settled.resolve();}
+  if(sql.startsWith('INSERT INTO meri_settings.user_preferences'))return {rows:[{revision:'1',document:USER_PREFERENCE_DEFAULTS,document_sha256:canonicalSha256(USER_PREFERENCE_DEFAULTS)}]};
   return {rows:[]};},release(){}};}};
  const service=createSettingsService({store:createPostgresSettingsStore({pool}),readPlatformLimits:async()=>{},newId:ids()});
  const app=application(createSettingsRoutes({service})),controller=new AbortController();
