@@ -1,0 +1,37 @@
+[
+  {
+    "path": "apps/gateway/sources/research-legal-legislation/handler.mjs",
+    "sha256": "5579bd55c7624083b48d5dad3703fcc1407bf219a8d8d1ff879ebb709c18167c",
+    "bytes": 2217
+  },
+  {
+    "path": "apps/gateway/sources/research-legal-legislation/request-context.mjs",
+    "sha256": "1c6144b050768ce3ab00aed7e7f73c01eb28638637c404c797d35a1fb142be16",
+    "bytes": 4419
+  },
+  {
+    "path": "apps/gateway/sources/research-legal-legislation/test/fixture.mjs",
+    "sha256": "b4b3e0dcc28a5954727e29b6d8a073dfbf658bb04dd230300394991ab3e6f5d3",
+    "bytes": 6332
+  },
+  {
+    "path": "apps/gateway/sources/research-legal-legislation/test/handler.test.mjs",
+    "sha256": "23dd6ebbaadc0d4e1d9130ffcd70fbba85f1bc517a1196ceb0f9b25028f53b85",
+    "bytes": 16886
+  },
+  {
+    "path": "apps/gateway/sources/research-legal-legislation/test/selectors.test.mjs",
+    "sha256": "f54e430d3a2d5571dd41349db48364dbc3e3a495a18e3cbb0b69d8eb55f86980",
+    "bytes": 6364
+  },
+  {
+    "path": "apps/gateway/sources/research-legal-legislation/test/search-completion.test.mjs",
+    "sha256": "bb5f50d3c083828bf072e3fb6297b61d02a8316631dffb771bd5da5c7c00112e",
+    "bytes": 11902
+  },
+  {
+    "path": "docs/coordination/reports/CODEX-LEGAL-SEARCH-COMPLETION-20261017.md",
+    "sha256": "d61ad67e41b3775d72034040a6e02a1de02964af4141a3a302a2ec192cb35396",
+    "bytes": 8271
+  }
+]

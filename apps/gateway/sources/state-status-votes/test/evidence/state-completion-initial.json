@@ -1,0 +1,18 @@
+{
+  "executable": "C:/Users/Administrator/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe",
+  "argv": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "apps/gateway/sources/state-status-votes/test/handler.test.mjs",
+    "apps/gateway/sources/state-status-votes/test/no-bill-delta.test.mjs",
+    "apps/gateway/sources/state-status-votes/test/completion.test.mjs",
+    "packages/contracts/test/retrieval-state-status-votes.test.mjs",
+    "packages/contracts/test/retrieval-state-status-votes-independent.test.mjs"
+  ],
+  "startedAt": "2026-10-17T04:36:47.3321443Z",
+  "finishedAt": "2026-10-17T04:36:50.1238084Z",
+  "exitCode": 1,
+  "classification": "Synthetic HTTP native branches plus unchanged frozen contracts; no provider or live qualification"
+}

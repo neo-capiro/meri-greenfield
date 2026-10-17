@@ -1,0 +1,16 @@
+✔ legal source kernel retains both handlers while the installation Map and actual prepared runtime contain search only (453.6846ms)
+✔ current qualification claiming the held legal-reference sibling fails against the filtered measured handler registry (50.752ms)
+✔ approved legal-reference read and overclaimed current inventories cannot bypass exact SDK operation eligibility (116.4132ms)
+✔ every SDK runtime reference maps to the canonical composed families, including the existing mail constructor (3.4119ms)
+✔ two-phase preparation preserves legacy source records/order/hash and canonical source siblings without granting SDK eligibility (506.1594ms)
+✔ prepared family allowlist is finite; partial-only families cannot inherit SDK installation eligibility (14.1237ms)
+✔ selected skills consume their own current context and qualification over the canonical prepared handlers (25.8803ms)
+✔ a general installation receipt cannot be relabeled into selected-skill qualification (4.1062ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3045.3674

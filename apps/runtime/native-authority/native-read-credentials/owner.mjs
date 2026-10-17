@@ -14,7 +14,8 @@ import {assertNativeToolAuthority} from './core-client.mjs';
 import {nativeReadOperationAllowed} from '../../../gateway/sources/retained-reads/native-families.mjs';
 import {captureBusinessDevelopmentResource} from '../../../gateway/sources/business-development/request-context.mjs';
 import {assertNativeConversationAuthority} from './conversation-authority.mjs';
-import {createSourceReadContext,sourceReadContextSelection,assertNativeVisibleClients,assertNativeResultClientIds,assertSourceReadRequest} from './source-read-context.mjs';
+import {assertNativeClientReferenceObservation,CLIENT_REFERENCE_MAX_REQUEST_MS} from './client-reference.mjs';
+import {createSourceReadContext,sourceReadContextSelection,assertNativeVisibleClients,assertNativeResultClientIds,assertSourceReadRequest,sourceReadClientReference,assertSourceReadReferenceSubject} from './source-read-context.mjs';
 const same=(a,b)=>hash(a)===hash(b),refuse=code=>{throw nativeReadFault(code);};
 const selection=({authorizationDecisionId,...rest})=>rest;
 const taskSelection=({operation,inputSha256,authorizationDecisionId,checkedAtMs,expiresAtMs,...rest})=>rest;
@@ -25,16 +26,18 @@ export function createNativeReadCredentialOwner(configuration){
  const c=own(configuration,['binding','expiresAtMs'],['store','taskVerifier','readCurrentEntry','taskCapability','allocationJson','approvedReads','coreAuthority','getNativeCredential','getServiceSecret','defaultCongress','now','enabled']),binding=data(c.binding),now=c.now??Date.now,enabled=c.enabled??false;
  validateShape('RunBinding',binding);if(typeof now!=='function'||typeof enabled!=='boolean'||!Number.isSafeInteger(c.expiresAtMs)||c.defaultCongress!==undefined&&(!Number.isSafeInteger(c.defaultCongress)||c.defaultCongress<1||c.defaultCongress>2147483647))refuse('CONFIGURATION');
  for(const name of ['getNativeCredential','getServiceSecret','readCurrentEntry'])if(c[name]!==undefined&&(typeof c[name]!=='function'||types.isProxy(c[name])))refuse('CONFIGURATION');
- const core=c.coreAuthority===undefined?undefined:own(c.coreAuthority,['available','origin','readCurrent'],['readConversation']),origin=core?.origin===undefined?undefined:retainedOrigin(core.origin);
+ const core=c.coreAuthority===undefined?undefined:own(c.coreAuthority,['available','origin','readCurrent'],['readConversation','readClientReference']),origin=core?.origin===undefined?undefined:retainedOrigin(core.origin);
  const approved=c.approvedReads===undefined?undefined:assertNativeReadConfiguration(c.approvedReads),allocated=c.allocationJson===undefined?undefined:allocation(c.allocationJson);
  const available=Boolean(enabled&&c.store&&c.taskVerifier&&c.readCurrentEntry&&token(c.taskCapability)&&approved?.enabled&&allocated&&core?.available===true&&origin&&c.getNativeCredential&&c.getServiceSecret);
  const read=available?storageMethod(c.store,'read'):null,verify=available?storageMethod(c.taskVerifier,'verify'):null,currentCore=available?storageMethod(c.coreAuthority,'readCurrent'):null,
-  readConversation=available&&typeof core.readConversation==='function'?storageMethod(c.coreAuthority,'readConversation'):null,pins=new WeakMap();
+  readConversation=available&&typeof core.readConversation==='function'?storageMethod(c.coreAuthority,'readConversation'):null,
+  readClientReference=available&&typeof core.readClientReference==='function'?storageMethod(c.coreAuthority,'readClientReference'):null,pins=new WeakMap();
  function observation(raw){const v=data(own(raw,['binding','subject','operation','request','requestSha256','policyRevision','sourceIds','deadlineMs']));validateShape('RunBinding',v.binding);assertSubject(v.subject,v.binding);readShape('OperationRef',v.operation);
   const contract=resolveOperationContract(v.operation);if(!nativeReadOperationAllowed(contract.binding.group,v.operation.id)||contract.descriptor.sideEffect!=='none'||contract.descriptor.approvalBoundary!=='none')refuse('ACCESS_DENIED');if(['bill-text','federal-legislation'].includes(contract.binding.group)&&c.defaultCongress===undefined)refuse('UNAVAILABLE');
   // Data-search's canonical raw-selector normalizer also validates its selector combination.
   if(contract.binding.group==='data-search')contract.normalizeInput(v.request,{});else if(contract.binding.group!=='state-status-votes')readShape(contract.binding.input,v.request);
   assertSourceReadRequest(contract,v.request,v.subject);
+  if(sourceReadClientReference(contract,v.request)!==null&&!readClientReference)refuse('UNAVAILABLE');
   if(contract.binding.group==='business-development'&&!readConversation&&captureBusinessDevelopmentResource(v.operation,v.request,v.subject).clientId!==null)refuse('UNAVAILABLE');
   if(!same(v.binding,binding)||v.subject.policyRevision!==v.policyRevision||v.requestSha256!==hash(v.request)||!same([...v.sourceIds].sort(),[...new Set(contract.descriptor.sourceRequirements.map(s=>s.sourceId))].sort())||!Number.isSafeInteger(v.deadlineMs))refuse('ACCESS_DENIED');
   if(!approved.operations.some(op=>same(op,v.operation))||!allocated.manifest.allowedOperations.some(op=>same(op,v.operation)))refuse('ACCESS_DENIED');return v;}
@@ -55,7 +58,7 @@ export function createNativeReadCredentialOwner(configuration){
    const began=now(),native=assertNativeToolAuthority(await life.run(signal=>currentCore({credential,signal,deadlineMs:cutoff})),{started:began,now});limit(native.expiresAtMs);
    // Equality is permitted only for the canonical Core UUID principal already captured by native startup. No conversion/mapping.
    if(native.principal.tenantId!==binding.tenantId||native.principal.actorId!==binding.actorId)refuse('UNAVAILABLE');
-   const contract=resolveOperationContract(proof.operation);let conversation=null;
+   const contract=resolveOperationContract(proof.operation);let conversation=null,clientReferenceObservation=null;
    if(contract.binding.group==='business-development'){
     const resource=captureBusinessDevelopmentResource(proof.operation,proof.request,proof.subject);
     // Client tasks retain their exact private resource upper bound. Personal tasks use the native
@@ -66,10 +69,26 @@ export function createNativeReadCredentialOwner(configuration){
      if(!same(conversation.principal,native.principal)||conversation.identityRevision!==native.identityRevision)refuse('ACCESS_DENIED');limit(conversation.expiresAtMs);
     }
    }
-   const context=createSourceReadContext({contract,proof,native,defaultCongress:c.defaultCongress,now,priorContext:pins.get(scopeSignal)?.context});
+   const reference=sourceReadClientReference(contract,proof.request);
+   if(reference!==null){
+    const selectedClientId=assertSourceReadReferenceSubject(contract,proof,native);
+    if(!readClientReference)refuse('UNAVAILABLE');
+    const started=now(),referenceDeadline=Math.min(cutoff,started+CLIENT_REFERENCE_MAX_REQUEST_MS);
+    clientReferenceObservation=assertNativeClientReferenceObservation(await life.run(signal=>readClientReference({credential,reference,signal,deadlineMs:referenceDeadline})),{started,now,reference});
+    if(!same(clientReferenceObservation.principal,native.principal)||clientReferenceObservation.identityRevision!==native.identityRevision||selectedClientId!==null&&clientReferenceObservation.clientId!==selectedClientId)refuse('ACCESS_DENIED');
+    assertNativeVisibleClients(native,[clientReferenceObservation.clientId]);
+    limit(clientReferenceObservation.expiresAtMs);
+    // Resolution itself is an await. Recheck the current client wall before any service secret/source use.
+    const checked=now(),afterReference=assertNativeToolAuthority(await life.run(signal=>currentCore({credential,signal,deadlineMs:cutoff})),{started:checked,now});
+    limit(afterReference.expiresAtMs);
+    if(!same(nativeSelection(afterReference),nativeSelection(native)))refuse('ACCESS_DENIED');
+    assertNativeVisibleClients(afterReference,[clientReferenceObservation.clientId]);
+   }
+   const context=createSourceReadContext({contract,proof,native,defaultCongress:c.defaultCongress,now,priorContext:pins.get(scopeSignal)?.context,
+    ...(clientReferenceObservation?{clientReferenceObservation:{reference:clientReferenceObservation.reference,clientId:clientReferenceObservation.clientId}}:{})});
    contract.normalizeInput(proof.request,context);
    const after=await admission();if(!same(taskSelection(before),taskSelection(after)))refuse('ACCESS_DENIED');
-   const vector={task:taskSelection(after),native:nativeSelection(native),...(conversation?{conversation:nativeSelection(conversation)}:{}),credentialSha256:hash(credential),context:sourceReadContextSelection(contract.binding.group,context)},latest=pins.get(scopeSignal);if(latest&&(!same(latest.selected,selected)||!same(latest.vector,vector)))refuse('ACCESS_DENIED');if(latest)limit(latest.expiresAtMs);life.check();
+   const vector={task:taskSelection(after),native:nativeSelection(native),...(conversation?{conversation:nativeSelection(conversation)}:{}),...(clientReferenceObservation?{clientReference:nativeSelection(clientReferenceObservation)}:{}),credentialSha256:hash(credential),context:sourceReadContextSelection(contract.binding.group,context)},latest=pins.get(scopeSignal);if(latest&&(!same(latest.selected,selected)||!same(latest.vector,vector)))refuse('ACCESS_DENIED');if(latest)limit(latest.expiresAtMs);life.check();
    pins.set(scopeSignal,{selected,vector,context,expiresAtMs:cutoff});return {credential,context,native,checkedAtMs:Math.min(before.checkedAtMs,native.checkedAtMs,after.checkedAtMs),expiresAtMs:cutoff};
   }finally{life.close();}
  }

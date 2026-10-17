@@ -9,12 +9,14 @@ import {nativeFamilyCase,SOURCE_SLICE_CASES} from '../../../../gateway/general-r
 import {prepareNativeReadContext} from '../../../../gateway/dispatch/native-read-context.mjs';
 import {createControlGeneralReadRuntime} from '../../../general-read-runtime.mjs';
 import {ownerFixture,uuid} from './fixture.mjs';
+import {createNativeReadCredentialOwner} from '../owner.mjs';
 
 const clientId='99999999-9999-4999-8999-999999999999',foreign=uuid('a');
 const read=async f=>JSON.parse(await f.owner.nativeReadContextPorts.readCurrent(f.proof())).context;
 const make=scene=>ownerFixture(scene.operation.id,{scene});
-async function mounted(scene){
+async function mounted(scene,{missingNameReader=false}={}){
  const f=await make(scene),{getCredentials,authorizeResultForCall,...transport}=f.transport;
+ if(missingNameReader){const {readClientReference,...coreAuthority}=f.configuration.coreAuthority;f.owner=createNativeReadCredentialOwner({...f.configuration,coreAuthority});}
  const handlers=await createGeneralReadFamilyHandlers({families:{[f.family]:{...transport,credentialsForCall:f.owner.credentialsForCall}},now:f.now,newId:randomUUID});
  const {installationOwner,...gateway}=f.gatewayConfiguration;
  const mount=createControlGeneralReadRuntime({...gateway,handlers,scopes:f.scopes,readCurrentInstallation:({signal})=>installationOwner.readCurrent({signal}),nativeReadContextPorts:f.owner.nativeReadContextPorts});
@@ -35,17 +37,15 @@ test('source slice fixtures enumerate twelve native operations across nine famil
 });
 
 for(const [family,id,selectors] of [
- ['state-status-votes','get_state_bill_status',[{billId:'TX HB 1234'},{}]],
- ['state-status-votes','search_state_floor_votes',[{billId:'HB 1234',state:'TX'}]],
  ['tracked-bills','search_tracked_bills',[{clientId:'Synthetic client'}]],
  ['public-domain-hearings','search_committee_hearings',[{clientId:'Synthetic client'}]],
- ['research-legal-legislation','search_legislative_research',[{folderId:'synthetic-folder'},{clientId:'Synthetic client'}]],
+ ['research-legal-legislation','search_legislative_research',[{clientId:'Synthetic client'}]],
  ['research-legal-legislation','get_legal_reference',[{folderId:'synthetic-folder'},{clientId:'Synthetic client'},{citation:'Fla. Stat. 1.10'}]],
  ['research-legal-news','search_legiwatch_news',[{view:'source',kind:'news',id:'synthetic-source',clientId:'Synthetic client'},{view:'source',kind:'news',id:'synthetic-source',folderId:' '},{view:'news'},{view:'monitors'},{},{view:'personnel'},{view:'personnel',year:null}]],
 ])test(`${id}: unsupported source selectors refuse before native credentials, reservation and HTTP`,async()=>{
  for(const selector of selectors){
   const scene=nativeFamilyCase(family,id);scene.arguments={...selector};
-  const f=await mounted(scene);
+  const f=await mounted(scene,{missingNameReader:['tracked-bills','public-domain-hearings'].includes(family)||id==='search_legislative_research'});
   try{
    await assert.rejects(read(f),{message:'UNAVAILABLE'});
    // The current business-authority fixture rejects a name under an already selected UUID before CONTROL is called.

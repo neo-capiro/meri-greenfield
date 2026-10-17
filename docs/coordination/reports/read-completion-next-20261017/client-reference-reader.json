@@ -1,0 +1,31 @@
+{
+  "schema": "meri-check-evidence/1",
+  "status": "PASS",
+  "captureKind": "direct-subprocess-capture",
+  "nodeVersion": "v24.19.0",
+  "executable": "C:\\Users\\Administrator\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe",
+  "arguments": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "--test-timeout=20000",
+    "apps/runtime/native-authority/native-read-credentials/test/client-reference.test.mjs"
+  ],
+  "portableCommand": "node --preserve-symlinks --max-old-space-size=256 --test --test-concurrency=1 --test-timeout=20000 apps/runtime/native-authority/native-read-credentials/test/client-reference.test.mjs",
+  "repositoryRelativeWorkingDirectory": ".",
+  "startedAt": "2026-10-17T04:37:58.523Z",
+  "finishedAt": "2026-10-17T04:37:59.278Z",
+  "exitCode": 0,
+  "signal": null,
+  "error": null,
+  "outputTruncated": false,
+  "maxBufferBytes": 8388608,
+  "stdoutBytes": 4423,
+  "stderrBytes": 0,
+  "streamLayout": "stdout followed by stderr, each preserved without alteration",
+  "outputArtifact": "docs/coordination/reports/read-completion-next-20261017/client-reference-reader.txt",
+  "outputSha256": "fe25fc53dd5a68db3ddf924156d377543270b4bc7b031516e8eb73f098f970b3",
+  "sourceBase": "546a8ad45e48539c3f0fc832018269cabadbf1ee",
+  "scope": "Synthetic fixed HTTP/current identity mechanics only; no native grants, database, provider or live calls."
+}

@@ -7,6 +7,7 @@ import {nativeReadFault,nativeReadFailureCode} from '../../../../packages/contra
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {createCapiroApplicationAuthorityClient} from '../../../control/action-host/application-adapters/authority-http.mjs';
 import {createConversationAuthorityReader} from './conversation-authority.mjs';
+import {createClientReferenceReader} from './client-reference.mjs';
 import {readJsonResponse,responseBody,cancelBody} from '../../../gateway/sources/json-response.mjs';
 import {safeFailure} from '../../../gateway/dispatch/operation-result.mjs';
 const same=(a,b)=>hash(a)===hash(b),SHA=/^[a-f0-9]{64}$/u,UUID=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u;
@@ -43,5 +44,6 @@ export function createNativeToolAuthorityClient(configuration={}){
   return assertNativeToolAuthority({principal:after.principal,identityRevision:after.identityRevision,actorRole:m.role,clientIds:m.clientIds,membershipRevision:m.membershipRevision,checkedAtMs:Math.min(before.checkedAtMs,m.checkedAtMs,after.checkedAtMs),expiresAtMs:Math.min(v.deadlineMs,before.expiresAtMs,m.expiresAtMs,after.expiresAtMs)},{started:began,now});
  }catch(error){throw failure(error);}finally{try{if(acquired)cancelBody(responseBody(acquired));}catch{}life?.close();}}
  const readConversation=createConversationAuthorityReader({available,authorityClient:identity,now,maxRequestMs});
- return Object.freeze({available,origin,readCurrent,readConversation});
+ const readClientReference=createClientReferenceReader({available,origin,fetchImpl:c.fetchImpl,authorityClient:identity,now,maxRequestMs});
+ return Object.freeze({available,origin,readCurrent,readConversation,readClientReference});
 }

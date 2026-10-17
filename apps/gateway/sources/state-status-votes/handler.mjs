@@ -1,4 +1,4 @@
-/** PARTIAL_INPUT: stored canonical keys or no-bill floor votes; designation resolution may fetch and write. */
+/** Full native status/vote delegation; Core retains designation resolution, quota, cache and ingestion. */
 import {resolveOperationContract} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {deny,safeFailure} from '../../dispatch/operation-result.mjs';
 import {ownFields} from '../source-admission.mjs';

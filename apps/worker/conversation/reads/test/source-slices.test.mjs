@@ -17,7 +17,8 @@ import {mountReads} from './fixture.mjs';
 
 const complete=[['public-data',['query_economic_data']],['client-knowledge-search',['query_knowledge_graph']],
  ['business-development',['get_business_development_context','get_business_development_recent_changes']]];
-const partial=SOURCE_SLICE_CASES.filter(([family,id])=>!complete.some(([selected,ids])=>selected===family&&ids.includes(id)));
+const completedSourceOperations=new Set(['get_state_bill_status','search_state_floor_votes','search_tracked_bills','search_committee_hearings','search_legislative_research']);
+const partial=SOURCE_SLICE_CASES.filter(([family,id])=>!completedSourceOperations.has(id)&&!complete.some(([selected,ids])=>selected===family&&ids.includes(id)));
 const familyOperations=family=>catalog.operations.filter(row=>resolveOperationContract(row.operation).binding.group===family).map(row=>row.operation);
 async function mounted(id,options={}){
  const f=await ownerFixture(id,options),{getCredentials,authorizeResultForCall,...transport}=f.transport;
@@ -87,17 +88,19 @@ for(const [family,ids] of complete){
  }
 }
 
-test('eight partial-input operations remain absent from SDK policy and cannot be advertised by installation/discovery',async()=>{
- assert.equal(partial.length,8);
- assert.deepEqual([...new Set(partial.map(([family])=>family))].sort(),['outreach-query','public-domain-hearings',
-  'research-legal-legislation','research-legal-news','state-status-votes','tracked-bills']);
+test('three remaining partial-input operations remain absent from SDK policy and cannot be advertised by installation/discovery',async()=>{
+ assert.equal(partial.length,3);
+ assert.deepEqual([...new Set(partial.map(([family])=>family))].sort(),['outreach-query','research-legal-legislation','research-legal-news']);
  assert.equal(partial.some(([family])=>family==='funding-opportunities'),false,'funding uses its complete-family SDK coverage, separate from SOURCE_SLICE_CASES');
  const operations=partial.map(([,id])=>({id,version:'0.2.0'})),families=[...new Set(partial.map(([family])=>family))];
  const gates=resolveAvailableReads({policy:{generalReads:true,readFamilies:[...READ_FAMILY_IDS,...families]},installation:{operations},discovery:{operations},scopes:[{kind:'client'}]});
  assert.deepEqual(gates.available,[]);
  for(const [family,id] of partial){
-  assert.equal(Object.hasOwn(READ_FAMILIES,family),false);assert.equal(familyReads().some(row=>row.operation.id===id),false);
-  assert.throws(()=>assertCapabilityPolicy({generalReads:true,readFamilies:[family]}),{code:'CAPABILITY_POLICY_REFUSED'});
+  assert.equal(familyReads().some(row=>row.operation.id===id),false);
+  if(Object.hasOwn(READ_FAMILIES,family)){
+   assert.equal(family,'research-legal-legislation');assert.deepEqual(READ_FAMILIES[family].operationIds,['search_legislative_research']);
+   assert.equal(READ_FAMILIES[family].operationIds.includes(id),false);assertCapabilityPolicy({generalReads:true,readFamilies:[family]});
+  }else assert.throws(()=>assertCapabilityPolicy({generalReads:true,readFamilies:[family]}),{code:'CAPABILITY_POLICY_REFUSED'});
   const f=await mounted(id);try{assert.equal(await mountReads(f,{port:f.port}),null);assert.equal(f.wire.length,0);assert.equal(f.state.reservations.size,0);}finally{f.scope.abort();}
  }
 });

@@ -47,6 +47,10 @@ export const READ_FAMILIES=Object.freeze({mail:Object.freeze({clientScope:'optio
  'public-data':Object.freeze({clientScope:'optional',operationIds:Object.freeze(['query_economic_data'])}),
  'client-knowledge-search':Object.freeze({clientScope:'optional',requiredClientOperations:Object.freeze(['search_client_knowledge'])}),
  'business-development':Object.freeze({clientScope:'optional',operationIds:Object.freeze(['get_business_development_context','get_business_development_recent_changes'])}),
+ 'state-status-votes':Object.freeze({clientScope:'optional'}),
+ 'tracked-bills':Object.freeze({clientScope:'required'}),
+ 'public-domain-hearings':Object.freeze({clientScope:'optional'}),
+ 'research-legal-legislation':Object.freeze({clientScope:'optional',operationIds:Object.freeze(['search_legislative_research'])}),
 });
 /** The `readFamilies` policy universe (PROPOSAL P8). */
 export const READ_FAMILY_IDS=Object.freeze(Object.keys(READ_FAMILIES));

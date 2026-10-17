@@ -1,0 +1,18 @@
+{
+  "rerunReason": "Initial62/64. Two tracked-context assertions sorted actual keys but not the expected literal. Correct exact expected3-key order only; no source/authority/assertion removal.",
+  "exitCode": 0,
+  "startedAt": "2026-10-17T04:45:11.6337134Z",
+  "cwd": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-16\\task-4\\meri-resolution-next",
+  "finishedAt": "2026-10-17T04:45:16.2163833Z",
+  "executable": "C:/Users/Administrator/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe",
+  "qualification": "Actual MCP/CONTROL/gateway/task/native-reader owners with scripted SQL and synthetic HTTP/source DTOs only.",
+  "argv": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "--test-timeout=20000",
+    "--test-name-pattern=completion SDK search_tracked_bills: (actual hook|native name observation)",
+    "apps/worker/conversation/reads/test/completion.test.mjs"
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "captureKind": "process-stdio",
+  "captureIncomplete": false,
+  "scope": "Phase2 legal eligibility filter only; offline canonical-owner fixtures and synthetic current qualification; no live installation.",
+  "executable": "C:\\Users\\Administrator\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe",
+  "nodeVersion": "v24.19.0",
+  "cwd": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-16\\task-4\\meri-resolution-next",
+  "argv": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "--test-timeout=30000",
+    "apps/runtime/native-authority/general-read-installation/test/preparation.test.mjs",
+    "apps/runtime/native-authority/general-read-installation/test/phase2-legal.test.mjs"
+  ],
+  "startedAt": "2026-10-17T04:57:07.205Z",
+  "endedAt": "2026-10-17T04:57:10.318Z",
+  "status": 0,
+  "signal": null,
+  "error": null,
+  "stdout": {
+    "bytes": 1118,
+    "sha256": "8a2df251f4e0b89c6730d4a91fb5409a9ea0c18a4e6299a7c33286cd80f06778"
+  },
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "sourceFiles": [
+    {
+      "path": "apps/runtime/native-authority/general-read-installation/runtime.mjs",
+      "sha256": "288bb0a89c1eb601ff51a955d7977e5152d2ae810987d77fbe1829b253f08fd2"
+    },
+    {
+      "path": "apps/runtime/native-authority/general-read-installation/configuration.mjs",
+      "sha256": "2c9472b150243f52ffb599f3b56ddf4d64cdc666ddde4e4c01017f6d3437ba85"
+    },
+    {
+      "path": "apps/runtime/native-authority/general-read-installation/test/fixture.mjs",
+      "sha256": "0f84e4d2ccffa20d10dc4ade70c5dca21e5cd4611cbb5310471d5b08d84ef354"
+    },
+    {
+      "path": "apps/runtime/native-authority/general-read-installation/test/preparation.test.mjs",
+      "sha256": "a21b85b392be4cf61c05f7205de36bb9214e55e494795211c15a1f87b45f84a7"
+    },
+    {
+      "path": "apps/runtime/native-authority/general-read-installation/test/phase2-legal.test.mjs",
+      "sha256": "097f01ecd183d2682c02e2954547c0c76c6d37e54f40788cf593792cb780e2bc"
+    },
+    {
+      "path": "apps/gateway/general-reads/integration.mjs",
+      "sha256": "5250169fb7c5673f4bec6cfa48a19065fabdd711fd50ebaf63726c48b8e058c5"
+    },
+    {
+      "path": "apps/worker/conversation/reads/families.mjs",
+      "sha256": "fdec4d24970a267544fa3d82cade3bd2dbe1bda81b4fd50f2e97a7e8928ec15c"
+    },
+    {
+      "path": "apps/runtime/native-authority/native-read-credentials/client-reference.mjs",
+      "sha256": "e91f2152b115534250833b3a583d40123c768c25c2b2d9987c0be18f4b922305"
+    },
+    {
+      "path": "apps/runtime/native-authority/native-read-credentials/owner.mjs",
+      "sha256": "25958ed882128ae47433dd1ba56e09ffaf5265a4979f9c17eeda896b287e8fb8"
+    },
+    {
+      "path": "apps/runtime/native-authority/native-read-credentials/source-read-context.mjs",
+      "sha256": "af4afef63c89c206f6891c6806d3822ad54656c526fe0eeb3c21a0687ec7d6c9"
+    },
+    {
+      "path": "apps/gateway/sources/research-legal-legislation/handler.mjs",
+      "sha256": "5579bd55c7624083b48d5dad3703fcc1407bf219a8d8d1ff879ebb709c18167c"
+    },
+    {
+      "path": "apps/gateway/sources/research-legal-legislation/request-context.mjs",
+      "sha256": "1c6144b050768ce3ab00aed7e7f73c01eb28638637c404c797d35a1fb142be16"
+    }
+  ]
+}

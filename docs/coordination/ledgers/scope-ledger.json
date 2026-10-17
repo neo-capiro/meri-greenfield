@@ -9808,11 +9808,11 @@
       "packages/contracts/retrieval-0.2/catalog.json": "bac14e7e5dd740493914ff6a14b95cb5e6d7cbd09ee48b1cbd994d5eac728c08",
       "scripts/scope-ledger/backend-producers.json": "ad5fb22cb7f4ef3ffa78f4a730c74bb28e59c0a689a2cec7d5a74a45d7ef6ea4",
       "packages/contracts/retrieval-0.2/catalog-validation.mjs": "5717b6898ce56792a40b556748eeca68d377f4af4e544842bd618efc0b9f7bdc",
-      "apps/worker/conversation/reads/families.mjs": "46bda22685d2be656541fef3f892a8861285470c0e502c0bc5d8ae1310557d5d",
+      "apps/worker/conversation/reads/families.mjs": "fdec4d24970a267544fa3d82cade3bd2dbe1bda81b4fd50f2e97a7e8928ec15c",
       "apps/worker/conversation/reads/server.mjs": "d3a28df432f44e20849ceeadf7a38e73bed3748f9f36057d1d22057d4ab829b5",
       "apps/gateway/general-reads/registration.mjs": "80c5a64e10f279ccf7201d85b04c7ded1739416b98d64eb84098ec8937a2300a",
-      "apps/gateway/general-reads/integration.mjs": "621d1a7d3ffe23011d2ae1eef4b2bce9e84ed975c794855c449f81b73702a694",
-      "scripts/general-reads/adapters.json": "6fcbfb05e5e3309adeac39fea316c7faa993641e34f56c47db162194318efab2",
+      "apps/gateway/general-reads/integration.mjs": "197f201d223b942aca0d72df7a493725c4cab3cec8c8b0eccbf240cad030951e",
+      "scripts/general-reads/adapters.json": "93f589a6f176e3e765d8e4ad79cf032363b91cc2b3ffaac752a4de22d10a2e47",
       "apps/gateway/general-reads/families/meeting-source.mjs": "66ee8011d604721b5977ebb601199b4fdaf3149143effb79645898f41fb186b8",
       "apps/gateway/general-reads/families/action-items-complete.mjs": "abfd9f60479cb4c4cbe9d876d04bbebd9755227461673b026f4c6d74c02b7ceb",
       "apps/gateway/general-reads/families/operational-reads.mjs": "d19d6d3297c955b68d2b5048695493f62cc98e367a9469eb5abb8e86e4320563",
@@ -9849,9 +9849,13 @@
       "apps/gateway/general-reads/families/public-data.mjs": "1b8b94efa01f877f18a4567a55fc2be40bcb9773cea70968542265cd7b8ceda7",
       "apps/gateway/general-reads/families/client-knowledge-search.mjs": "d6ca1a2ad25449dd02a987cb4eb7c986153aef704ba69e3fe3eae5bfff53cad3",
       "apps/gateway/general-reads/families/business-development.mjs": "a3803cf3ff177c066141d18769f69bcbe8c848b4e8fd2c58abc5af09541ff73b",
+      "apps/gateway/general-reads/families/state-status-votes.mjs": "d64b6f14a65d8cb81f9cadc957aa3cd1ee7cfdd9ac5381dbfde313ff8e8b9daa",
+      "apps/gateway/general-reads/families/tracked-bills.mjs": "96a728442fef2587fdf50fe32e1d496a22c37ddac674c71773786cf662f0b214",
+      "apps/gateway/general-reads/families/public-domain-hearings.mjs": "8ebc4840bedf92188b3e5deb5224c34b10a16fb3cc314dc2f37dea3c9cda9766",
+      "apps/gateway/general-reads/families/research-legal-legislation.mjs": "837fe8f3a420304047fd2dbf3be1ddde0a02edb3ae7c7a44888839eec284f9ba",
       "apps/gateway/sources/funding-opportunities/handler.mjs": "de7e192577b676423a085249e6af23df76882444d4029f0d2d3e8896de473836",
       "apps/gateway/sources/funding-opportunities/request-context.mjs": "fff73469a064a7b2db64b92e46b1734cd77f207f6f0c2bc96981000d13bbaddb",
-      "apps/gateway/sources/retained-reads/native-families.mjs": "7fb134a5af3afc4e75e72bbaf698ae39853d814767b79db134df64c982acc7c4",
+      "apps/gateway/sources/retained-reads/native-families.mjs": "8bdc40374d4232a54b3441709638785a98796865f5dd12829f35a71e4d4a8fb3",
       "packages/contracts/native-read-observation-0.2/schema.json": "8ed34b0d48db3a8e3fc18acbacd8cde36754a016c174b6d6d24c255800cf4df7",
       "packages/contracts/native-read-observation-0.2/validate.mjs": "cebbaf6ffa578647dc8b5f7306bf8c0bbd008358d4d6c04b77547dc0d3c7924b",
       "apps/gateway/sources/business-development/handler.mjs": "1b01f1881ed3708aa46a3cb4ad9197e30b717769b3860a703f9dc8a1325bee4e",
@@ -9866,18 +9870,14 @@
       "apps/gateway/sources/client-knowledge-search/handler.mjs": "ca34df9e6f00ba3b899015274a061067c910efece1b916076e02f1fdfcc723b8",
       "apps/gateway/sources/client-knowledge-search/request-context.mjs": "58620b9ca1991105d0d5688324d170a336251e63d8bd61595abd810f74c9f803",
       "apps/gateway/sources/retained-reads/http-transport.mjs": "3a0fb801aa0ae686fd699f775c351b46c1e8e7f06ffc0c59c934fbc9702c6f51",
-      "apps/gateway/sources/retained-reads/native-handler.mjs": "929328312c20f459bff51e8702ef258ed2366f0ba75673e2e506203757b5a83d",
-      "apps/gateway/general-reads/families/state-status-votes.mjs": "d64b6f14a65d8cb81f9cadc957aa3cd1ee7cfdd9ac5381dbfde313ff8e8b9daa",
-      "apps/gateway/sources/state-status-votes/handler.mjs": "b673a24dba992238794c0c28ded8b1f3f8a8d3f968b016a4c22d32ee67fb72c8",
-      "apps/gateway/sources/state-status-votes/request-context.mjs": "919cf304e243f68f69dac4a1a5ee740cc9f762d31dc2911c88e3d7fb3aa6955a",
-      "apps/gateway/general-reads/families/tracked-bills.mjs": "96a728442fef2587fdf50fe32e1d496a22c37ddac674c71773786cf662f0b214",
-      "apps/gateway/sources/tracked-bills/handler.mjs": "ba9763ce24e1948881e5489df9ac7f6a06e65671f2582460f051599480ee6d87",
-      "apps/gateway/general-reads/families/public-domain-hearings.mjs": "8ebc4840bedf92188b3e5deb5224c34b10a16fb3cc314dc2f37dea3c9cda9766",
-      "apps/gateway/sources/public-domain-hearings/handler.mjs": "17bd6fcf3b6e0769c3d59473ac6925c2f8588a4bd8aeeed72f9a99b53f7166bf",
-      "apps/gateway/sources/public-domain-hearings/request-context.mjs": "6953a38d2c838a85156dabe92569c3d141e72b7709390f34a798a25ccbfd38fb",
-      "apps/gateway/general-reads/families/research-legal-legislation.mjs": "837fe8f3a420304047fd2dbf3be1ddde0a02edb3ae7c7a44888839eec284f9ba",
-      "apps/gateway/sources/research-legal-legislation/handler.mjs": "75188d7536528d7be0c7e96eda584e403080162264e55033a93b593995d079ff",
-      "apps/gateway/sources/research-legal-legislation/request-context.mjs": "e1b9f927b372add3c65d7be078951eac8bb5940c7514f07f12bb26cd33a63614",
+      "apps/gateway/sources/retained-reads/native-handler.mjs": "9ec0556e3f5817312ed7f0a5b3fe0e13f803c3d4de57b93e3e73fd8b19ec4946",
+      "apps/gateway/sources/state-status-votes/handler.mjs": "7efd5c17cbf07c8468648f7fe19189e685d1b4670fa3c3634f25109e5f16117a",
+      "apps/gateway/sources/state-status-votes/request-context.mjs": "69b8f962f081171664863e5cb8c4f782700c430551e9238a1f4bfb6f69ce87ca",
+      "apps/gateway/sources/tracked-bills/handler.mjs": "7e189f6ac3a7925f663b3955a64478331ac806c27eafc8a0c931b7775990c054",
+      "apps/gateway/sources/public-domain-hearings/handler.mjs": "734901e47b53aefcb0abf42898e6f927a3c687482df7bcfa524fac1296c0bddf",
+      "apps/gateway/sources/public-domain-hearings/request-context.mjs": "1d0484171a1325fa17e843062e07972b149f3c261c71e41262f21f68a2008ad5",
+      "apps/gateway/sources/research-legal-legislation/handler.mjs": "5579bd55c7624083b48d5dad3703fcc1407bf219a8d8d1ff879ebb709c18167c",
+      "apps/gateway/sources/research-legal-legislation/request-context.mjs": "1c6144b050768ce3ab00aed7e7f73c01eb28638637c404c797d35a1fb142be16",
       "apps/gateway/sources/public-web/handler.mjs": "4eee716b638b6c68024788bd1cfe76d26e7510838f2d8039882cb91f265490fa",
       "apps/gateway/sources/data-search/handler.mjs": "bdfffffe3197ca2ca08cdf76c5b4380e0e6f64d9e0d0b3b36f1a256c6073e3db",
       "apps/gateway/sources/public-domain-query/handler.mjs": "413a53e1daadc155840e6db42a4e4222450924241acebd01faf107ef84109662",
@@ -10002,23 +10002,23 @@
       "excludedCapabilities": 43,
       "selectedSourceReads": 82,
       "selectedProductOrGoverned": 14,
-      "registeredGeneralOperations": 66,
-      "registeredFamilies": 37,
-      "generalSelectedSourceReads": 64,
+      "registeredGeneralOperations": 71,
+      "registeredFamilies": 41,
+      "generalSelectedSourceReads": 69,
       "generalSelectedProductStateReads": 1,
       "generalHistoricalOperations": 1,
       "sourceReadsWithSkillDeclarations": 53,
       "sourceReadsWithCurrentContractDeclarations": 52,
       "sourceReadsWithHistoricalOnlySkillDeclaration": 1,
       "sourceReadsWithAdmittedSkillSourceRoute": 11,
-      "completeSourceAdapters": 64,
-      "partialSourceAdapters": 8,
+      "completeSourceAdapters": 69,
+      "partialSourceAdapters": 3,
       "absentSourceAdapters": 10,
       "existingSourceAdaptersWithoutGeneralExposure": 0,
-      "partialSourceAdaptersWithoutGeneralExposure": 8,
-      "missingSourceAdapters": 18,
-      "missingAdaptersDeclaredBySkills": 11,
-      "missingAdaptersWithoutSkillDeclaration": 7,
+      "partialSourceAdaptersWithoutGeneralExposure": 3,
+      "missingSourceAdapters": 13,
+      "missingAdaptersDeclaredBySkills": 9,
+      "missingAdaptersWithoutSkillDeclaration": 4,
       "mappedBackendProducers": 63,
       "live": 0
     },
@@ -10220,6 +10220,12 @@
         ]
       },
       {
+        "family": "public-domain-hearings",
+        "operations": [
+          "search_committee_hearings"
+        ]
+      },
+      {
         "family": "public-domain-query",
         "operations": [
           "query_global_data"
@@ -10247,6 +10253,12 @@
         ]
       },
       {
+        "family": "research-legal-legislation",
+        "operations": [
+          "search_legislative_research"
+        ]
+      },
+      {
         "family": "research-portfolio",
         "operations": [
           "get_research_portfolio",
@@ -10267,6 +10279,13 @@
         ]
       },
       {
+        "family": "state-status-votes",
+        "operations": [
+          "get_state_bill_status",
+          "search_state_floor_votes"
+        ]
+      },
+      {
         "family": "stored-intelligence",
         "operations": [
           "search_intel_articles"
@@ -10276,6 +10295,12 @@
         "family": "tenant-contacts",
         "operations": [
           "find_contacts"
+        ]
+      },
+      {
+        "family": "tracked-bills",
+        "operations": [
+          "search_tracked_bills"
         ]
       }
     ],
@@ -10288,35 +10313,15 @@
         ]
       },
       {
-        "family": "public-domain-hearings",
-        "operations": [
-          "search_committee_hearings"
-        ]
-      },
-      {
         "family": "research-legal-legislation",
         "operations": [
-          "get_legal_reference",
-          "search_legislative_research"
+          "get_legal_reference"
         ]
       },
       {
         "family": "research-legal-news",
         "operations": [
           "search_legiwatch_news"
-        ]
-      },
-      {
-        "family": "state-status-votes",
-        "operations": [
-          "get_state_bill_status",
-          "search_state_floor_votes"
-        ]
-      },
-      {
-        "family": "tracked-bills",
-        "operations": [
-          "search_tracked_bills"
         ]
       }
     ],
@@ -10355,12 +10360,6 @@
         ]
       },
       {
-        "family": "public-domain-hearings",
-        "operations": [
-          "search_committee_hearings"
-        ]
-      },
-      {
         "family": "research-legal-candidates",
         "operations": [
           "search_research_sources"
@@ -10369,8 +10368,7 @@
       {
         "family": "research-legal-legislation",
         "operations": [
-          "get_legal_reference",
-          "search_legislative_research"
+          "get_legal_reference"
         ]
       },
       {
@@ -10389,19 +10387,6 @@
         "family": "sam-opportunities",
         "operations": [
           "search_sam_opportunities"
-        ]
-      },
-      {
-        "family": "state-status-votes",
-        "operations": [
-          "get_state_bill_status",
-          "search_state_floor_votes"
-        ]
-      },
-      {
-        "family": "tracked-bills",
-        "operations": [
-          "search_tracked_bills"
         ]
       }
     ],
@@ -11488,7 +11473,9 @@
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
-        "generalOperations": [],
+        "generalOperations": [
+          "get_state_bill_status"
+        ],
         "adapterPaths": [
           "apps/gateway/general-reads/families/state-status-votes.mjs",
           "apps/gateway/sources/retained-reads/native-families.mjs",
@@ -11496,7 +11483,7 @@
           "apps/gateway/sources/state-status-votes/request-context.mjs"
         ],
         "requiredContextKeys": [],
-        "state": "adapter-partial",
+        "state": "adapter-present",
         "backendProducer": {
           "operation": "get_state_bill_status",
           "family": "state-status-votes",
@@ -11522,7 +11509,9 @@
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
-        "generalOperations": [],
+        "generalOperations": [
+          "search_state_floor_votes"
+        ],
         "adapterPaths": [
           "apps/gateway/general-reads/families/state-status-votes.mjs",
           "apps/gateway/sources/retained-reads/native-families.mjs",
@@ -11530,7 +11519,7 @@
           "apps/gateway/sources/state-status-votes/request-context.mjs"
         ],
         "requiredContextKeys": [],
-        "state": "adapter-partial",
+        "state": "adapter-present",
         "backendProducer": {
           "operation": "search_state_floor_votes",
           "family": "state-status-votes",
@@ -11801,7 +11790,9 @@
         ],
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
-        "generalOperations": [],
+        "generalOperations": [
+          "search_committee_hearings"
+        ],
         "adapterPaths": [
           "apps/gateway/general-reads/families/public-domain-hearings.mjs",
           "apps/gateway/sources/public-domain-hearings/handler.mjs",
@@ -11812,7 +11803,7 @@
           "tenantId",
           "clientResolution"
         ],
-        "state": "adapter-partial",
+        "state": "adapter-present",
         "backendProducer": {
           "operation": "search_committee_hearings",
           "family": "public-domain-hearings",
@@ -11912,7 +11903,9 @@
         "declaredBySkills": [],
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
-        "generalOperations": [],
+        "generalOperations": [
+          "search_legislative_research"
+        ],
         "adapterPaths": [
           "apps/gateway/general-reads/families/research-legal-legislation.mjs",
           "apps/gateway/sources/research-legal-legislation/handler.mjs",
@@ -11923,7 +11916,7 @@
           "clientResolution",
           "citationResolution"
         ],
-        "state": "adapter-partial",
+        "state": "adapter-present",
         "backendProducer": {
           "operation": "search_legislative_research",
           "family": "research-legal-legislation",
@@ -12938,7 +12931,9 @@
         ],
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
-        "generalOperations": [],
+        "generalOperations": [
+          "search_tracked_bills"
+        ],
         "adapterPaths": [
           "apps/gateway/general-reads/families/tracked-bills.mjs",
           "apps/gateway/sources/retained-reads/native-families.mjs",
@@ -12949,7 +12944,7 @@
           "subject",
           "clientReference"
         ],
-        "state": "adapter-partial",
+        "state": "adapter-present",
         "backendProducer": {
           "operation": "search_tracked_bills",
           "family": "tracked-bills",

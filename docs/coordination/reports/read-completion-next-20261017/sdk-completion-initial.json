@@ -1,0 +1,31 @@
+{
+  "qualification": "Actual MCP/CONTROL/gateway/task/native-reader owners with scripted SQL and synthetic fixed HTTP/source DTOs; no installed native build, provider, live or PostgreSQL qualification.",
+  "startedAt": "2026-10-17T04:44:01.1557252Z",
+  "executable": "C:/Users/Administrator/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe",
+  "exitCode": 1,
+  "sourceHashesBeforeRun": [
+    {
+      "path": "apps/worker/conversation/reads/families.mjs",
+      "sha256": "525d40fa0ee446a0a766a17806bea1a060421b64d58866be0a46f7822aaaafe7"
+    },
+    {
+      "path": "apps/worker/conversation/reads/test/completion.test.mjs",
+      "sha256": "d6855f8741e4d1d5499e593ca3b5b12ec458f19d7ccf249d6e66597a00c32123"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/read-family-subsets.test.mjs",
+      "sha256": "06c93737750213f34d53d906acdb89c0045ca5c914374dca3455c2520d43057f"
+    }
+  ],
+  "argv": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "--test-timeout=20000",
+    "apps/worker/conversation/reads/test/completion.test.mjs",
+    "apps/runtime/native-authority/test/read-family-subsets.test.mjs"
+  ],
+  "cwd": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-16\\task-4\\meri-resolution-next",
+  "finishedAt": "2026-10-17T04:44:26.1975249Z"
+}

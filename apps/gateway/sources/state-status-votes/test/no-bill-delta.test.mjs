@@ -1,4 +1,4 @@
-/** DELTA only: no-bill stored floor-vote selection and unchanged refusal of designation/provider paths. */
+/** No-bill stored floor-vote selection and full native resolution admission remain distinct. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {canonicalSha256 as hash} from '../../../../../packages/contracts/validate.mjs';
@@ -13,7 +13,7 @@ test('shared preflight preserves canonical case/dot/clip aliases while classifyi
   const raw=assertStoredStateRequest(selected,request);assert.deepEqual(raw,request);assert.notEqual(raw,request);assert.ok(Object.isFrozen(raw));
  }
  for(const request of [{billId:null},{billId:'   '},{state:' tx '}])assert.deepEqual(assertStoredStateRequest(operation,request),request);
- assert.throws(()=>assertStoredStateRequest({id:'get_state_bill_status',version:'0.2.0'},{billId:'TX HB 9',query:billKey}),{message:'UNAVAILABLE'});
+ assert.deepEqual(assertStoredStateRequest({id:'get_state_bill_status',version:'0.2.0'},{billId:'TX HB 9',query:billKey}),{billId:'TX HB 9',query:billKey});
 });
 test('absent/null/empty/blank effective bill selector admits the stored floor-vote branch without a resolution observation',async()=>{
  for(const request of [{},{billId:null},{billId:''},{billId:'   '},{state:'TX'},{billId:null,state:' tx ',query:'pass',chamber:' LOWER ',limit:'1.9'}]){
@@ -32,7 +32,7 @@ test('floor-vote query remains a motion selector even when it resembles a bill, 
   assert.deepEqual(f.wire[0].body,request);assert.equal(out.result.votesFound,1);
  }
  const status={id:'get_state_bill_status',version:'0.2.0'};
- assert.throws(()=>assertStoredStateRequest(status,{query:'TX HB 1234'}),{message:'UNAVAILABLE'});
+ assert.deepEqual(assertStoredStateRequest(status,{query:'TX HB 1234'}),{query:'TX HB 1234'});
  assert.doesNotThrow(()=>assertStoredStateRequest(status,{query:billKey}));
 });
 
@@ -68,16 +68,18 @@ test('no-bill selection still requires current exact actor/tenant/operation/sour
  await assert.rejects(f.handler()(f.call()),{message:'ACCESS_DENIED'});assert.equal(f.wire.length,0);
 });
 
-test('supplied designation, malformed and UUID selectors cannot fall through to broad stored votes or run credential factories',async()=>{
+test('supplied designation, malformed and UUID selectors delegate once and cannot broaden unresolved votes',async()=>{
  for(const request of [{billId:'TX HB 1234',state:'TX'},{billId:'HB 1234',state:'TX'},{billId:'not-a-bill',state:'TX'},
   {billId:'71000000-0000-4000-8000-000000000091'},{billId:'X'.repeat(60)+billKey},{billId:'TX HB 1',query:billKey}]){
   const f=storedCase(id,{request}),{getCredentials,...configuration}=f.transport;let factories=0;
   const [handler]=createStateStatusVotesHandlers({...configuration,now:f.now,credentialsForCall:()=>{factories++;return getCredentials;}},[operation]);
-  assert.throws(()=>assertStoredStateRequest(operation,request),{message:'UNAVAILABLE'});
-  await assert.rejects(handler.execute(f.call()),{message:'UNAVAILABLE'});assert.equal(factories,0);assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
+  assert.deepEqual(assertStoredStateRequest(operation,request),request);
+  const out=JSON.parse(await handler.execute(f.call()));assert.deepEqual(out.result,f.page);assert.deepEqual(f.wire[0].body,request);
+  if(f.contract.normalizeInput(request,{}).metadata.selector.kind==='invalid'){assert.equal(out.result.votesFound,0);assert.deepEqual(out.result.votes,[]);}
+  assert.equal(factories,1);assert.equal(f.credentialCalls.length,1);assert.equal(f.wire.length,1);
  }
  for(const request of [{},{billId:null},{billId:''},{billId:'   '},{state:'TX'}])
-  assert.throws(()=>assertStoredStateRequest({id:'get_state_bill_status',version:'0.2.0'},request),{message:'UNAVAILABLE'});
+  assert.deepEqual(assertStoredStateRequest({id:'get_state_bill_status',version:'0.2.0'},request),request);
 });
 
 test('pure stored-state preflight rejects extra trust/no-fetch fields and hostile objects without executing hooks',async()=>{

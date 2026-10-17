@@ -1,0 +1,23 @@
+✔ every SDK runtime reference maps to the canonical composed families, including the existing mail constructor (3.5368ms)
+✔ two-phase preparation preserves legacy source records/order/hash and constructs all SDK-complete family handlers without source IO (465.5153ms)
+✔ prepared family allowlist is finite; partial-only families cannot inherit SDK installation eligibility (5.446ms)
+✔ selected skills consume their own current context and qualification over the canonical prepared handlers (25.8137ms)
+✔ a general installation receipt cannot be relabeled into selected-skill qualification (4.2328ms)
+✔ real prepared reads synchronously receives the admitted tuple and traverses current qualifier/native credentials/settlement (456.6874ms)
+✔ prepared handlers and native credential closures are fresh on every task construction (34.7779ms)
+✔ missing trusted owners or disabled source is unavailable without native credentials or source IO (174.8159ms)
+✔ local tuple, producer, capability, scopes and configuration correlation cannot manufacture task authority (195.6953ms)
+✔ native static or dynamic credential/context substitutes are refused before source effects (75.5847ms)
+✔ async or incomplete task-port composition is refused rather than escaping the synchronous prepared hook (23.7014ms)
+✔ current qualifier revocation, discovery revocation and current task/entry expiry cannot release source data (203.4584ms)
+✔ current native authority drift and uncertain source retain UNKNOWN without retry or completed bytes (374.3694ms)
+✔ installation source/receipt drift after the source effect withholds release without redispatch (206.6557ms)
+✔ prepared source hashes cannot bypass the canonical final measurement of actual installed bytes (223.7513ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4399.4166
