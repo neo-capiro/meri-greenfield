@@ -61,20 +61,27 @@
       "types": "./dist/user-preferences-application.d.ts",
       "default": "./dist/user-preferences-application.mjs"
     },
-    "./user-preferences-application/schema": "./dist/user-preferences-application.schema.json"
+    "./user-preferences-application/schema": "./dist/user-preferences-application.schema.json",
+    "./task-command-application": {
+      "types": "./dist/task-command-application.d.ts",
+      "default": "./dist/task-command-application.mjs"
+    },
+    "./task-command-application/schema": "./dist/task-command-application.schema.json"
   },
   "scripts": {
-    "build": "node generate.mjs && node generate-actions.mjs && node generate-documents.mjs && node generate-conversations.mjs && node generate-lifecycle.mjs && node generate-history.mjs && node generate-input.mjs && node generate-user-preferences.mjs",
+    "build": "node generate.mjs && node generate-actions.mjs && node generate-documents.mjs && node generate-conversations.mjs && node generate-lifecycle.mjs && node generate-history.mjs && node generate-input.mjs && node generate-user-preferences.mjs && node generate-task-commands.mjs",
     "build:input": "node generate-input.mjs",
     "build:history": "node generate-history.mjs",
-    "check:generated": "node generate.mjs --check && node generate-actions.mjs --check && node generate-documents.mjs --check && node generate-conversations.mjs --check && node generate-lifecycle.mjs --check && node generate-history.mjs --check && node generate-input.mjs --check && node generate-user-preferences.mjs --check",
+    "check:generated": "node generate.mjs --check && node generate-actions.mjs --check && node generate-documents.mjs --check && node generate-conversations.mjs --check && node generate-lifecycle.mjs --check && node generate-history.mjs --check && node generate-input.mjs --check && node generate-user-preferences.mjs --check && node generate-task-commands.mjs --check",
     "check:input": "node generate-input.mjs --check",
     "check:history": "node generate-history.mjs --check",
-    "typecheck": "tsc --noEmit --strict --skipLibCheck --target ES2022 --module NodeNext --moduleResolution NodeNext test/public-types.ts test/action-application-public-types.ts test/document-application-public-types.ts test/conversation-application-public-types.ts test/conversation-lifecycle-public-types.ts test/conversation-history-public-types.ts test/conversation-input-public-types.ts test/user-preferences-application-public-types.ts",
-    "test:public": "node --test test/public-package.test.mjs test/action-application-public.test.mjs test/document-application-public.test.mjs test/conversation-application-public.test.mjs test/conversation-lifecycle-public.test.mjs test/conversation-history-public.test.mjs test/conversation-history-source.test.mjs test/conversation-input-public.test.mjs test/user-preferences-application-public.test.mjs",
+    "typecheck": "tsc --noEmit --strict --skipLibCheck --target ES2022 --module NodeNext --moduleResolution NodeNext test/public-types.ts test/action-application-public-types.ts test/document-application-public-types.ts test/conversation-application-public-types.ts test/conversation-lifecycle-public-types.ts test/conversation-history-public-types.ts test/conversation-input-public-types.ts test/user-preferences-application-public-types.ts test/task-command-application-public-types.ts",
+    "test:public": "node --test test/public-package.test.mjs test/action-application-public.test.mjs test/document-application-public.test.mjs test/conversation-application-public.test.mjs test/conversation-lifecycle-public.test.mjs test/conversation-history-public.test.mjs test/conversation-history-source.test.mjs test/conversation-input-public.test.mjs test/user-preferences-application-public.test.mjs test/task-command-application-public.test.mjs",
     "check": "npm run check:generated && npm run typecheck && npm run test:public",
     "build:user-preferences": "node generate-user-preferences.mjs",
-    "check:user-preferences": "node generate-user-preferences.mjs --check"
+    "check:user-preferences": "node generate-user-preferences.mjs --check",
+    "build:task-commands": "node generate-task-commands.mjs",
+    "check:task-commands": "node generate-task-commands.mjs --check"
   },
   "dependencies": {
     "ajv": "8.20.0",
