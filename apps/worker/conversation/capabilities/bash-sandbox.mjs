@@ -8,7 +8,8 @@
  * which honours `strictAllowlist` and holds `allowUnsandboxedCommands:false` against lower tiers), and as
  * restrictive-only locks in `Options.managedSettings` (the parent policy tier). `settingSources: []` loads no
  * user/project/local file, so nothing writable by a sandboxed command can widen them. */
-import {isAbsolute,resolve} from 'node:path';
+import {posix} from 'node:path';
+const {isAbsolute,resolve}=posix;
 import {own} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {isSandboxNetworkDomain,MAX_SANDBOX_NETWORK_DOMAINS} from './policy.mjs';
 export const BASH_TOOL='Bash';

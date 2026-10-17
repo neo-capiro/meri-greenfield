@@ -67,8 +67,8 @@ test('conversation options keep the fixed base: settings and env are extended, n
  const c=createSdkCapabilities({bash:true,workspaceTools:true,workspaceToolNames:['Read']},facts({bashSandbox:attested,sdkConfigDirectory:r.sdkConfigDirectory,sdkSecureStorageDirectory:r.sdkSecureStorageDirectory}));
  const o=buildConversationOptions(r,new AbortController(),undefined,undefined,c.options);
  assert.deepEqual(o.settingSources,[]);assert.equal(o.permissionMode,'default');assert.equal(o.settings.autoMemoryEnabled,false);assert.equal(o.settings.permissions.blockReadsOutsideWorkingDirectories,true);
- assert.deepEqual(Object.keys(o.env),['ANTHROPIC_BASE_URL','ANTHROPIC_AUTH_TOKEN','CLAUDE_CONFIG_DIR','CLAUDE_SECURESTORAGE_CONFIG_DIR','CLAUDE_CODE_SUBPROCESS_ENV_SCRUB']);assert.equal(o.env.ANTHROPIC_AUTH_TOKEN,'synthetic-task-capability');
- for(const key of Object.keys(o.env).filter(k=>/TOKEN|KEY|SECRET|PASSWORD|CREDENTIAL/u.test(k)))assert.ok(SANDBOX_DENIED_ENV.includes(key),`credential ${key} is unset for sandboxed commands`);
+ assert.deepEqual(Object.keys(o.env),['ANTHROPIC_BASE_URL','ANTHROPIC_AUTH_TOKEN','CLAUDE_CONFIG_DIR','CLAUDE_SECURESTORAGE_CONFIG_DIR','CLAUDE_CODE_SUBPROCESS_ENV_SCRUB','CLAUDE_CODE_MAX_OUTPUT_TOKENS','MAX_THINKING_TOKENS']);assert.equal(o.env.ANTHROPIC_AUTH_TOKEN,'synthetic-task-capability');
+ for(const key of Object.keys(o.env).filter(k=>/(?:TOKEN|KEY|SECRET|PASSWORD|CREDENTIAL)(?:_|$)/u.test(k)))assert.ok(SANDBOX_DENIED_ENV.includes(key),`credential ${key} is unset for sandboxed commands`);
  assert.deepEqual(o.sandbox.filesystem.denyRead,['/run/meri/sdk/secure']);assert.deepEqual(o.sandbox.credentials.files,[{path:'/run/meri/sdk/config/.credentials.json',mode:'deny'}]);
  assert.deepEqual(o.tools,['Read','Bash']);assert.equal(o.managedSettings.sandbox.allowUnsandboxedCommands,false);assert.equal(o.managedSettings.permissions.blockReadsOutsideWorkingDirectories,true,'policy-tier locks from both pieces merge');
  assert.throws(()=>buildConversationOptions(runtime({bashSandbox:{...attested,weakerNestedSandbox:true,outerIsolationBoundary:false}}),new AbortController()),/BASH_SANDBOX_ATTESTATION_REFUSED/);
