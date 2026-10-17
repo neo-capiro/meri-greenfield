@@ -78,14 +78,14 @@ Each service has a material-init container with a `SUCCESS` gate, a read-only ro
 
 Rollback: delete the stack. Nothing ran.
 
-## Stage 4: public route (approval: dot owns the listener and zone; Neo approves)
+## Stage 4: public route (approval: dot owns the listener and zone; Neo approves; HELD for priority reconciliation)
 
+- **Priority conflict (dot, 17 Oct 11:06 UTC).** Priority 4 is the only free slot below the host-agnostic `/api/*` at 10. Core PR62 also reserves it, to move Core's guard 3 to 4 when it adds Core GET at 3. Priorities are listener-wide, so Meri needs a slot in the **single reconciled priority map** that dot's Core owner is preparing. No listener write happens until that map is agreed.
 - Target group: IP, HTTP 8080 to control, health `/health/live`.
-- Listener rule at **priority 4** (the only free slot below the host-agnostic `/api/*` at 10, requested on backend PR #48): host `meri-preview.capiro.ai` only, forwarding all paths. Meri control's public boundary returns 404 for everything except `/api/conversations*` and `/api/action-followthrough/session`.
+- One host-only rule for `meri-preview.capiro.ai` that forwards all paths. Meri control's public boundary returns 404 for everything except `/api/conversations*` and `/api/action-followthrough/session`. The rule must sit **below 10**, otherwise Meri-host `/api/*` misses fall through to production Core.
 - Route 53 alias `meri-preview.capiro.ai` → `capiro-prod-alb`.
-- Core rules 1–3 and the guard are unchanged.
-- Rollback: delete the rule, the record and the target group.
-
+- Core rules and the guard are unchanged.
+- **Rollback keeps a host-deny boundary.** Change the Meri rule's action in place to a fixed JSON 404 for the Meri host, never delete it, so cached clients can never reach production `/api/*`. Only after the DNS record is removed and its TTL has passed may the deny rule be retired, in a separately approved step.
 ## Stage 5: bounded activation smoke (approval: Neo plus dot for Core)
 
 | Order | Service | Count | Size (vCPU/GiB) | $/hour |
@@ -122,6 +122,6 @@ Fable returns the release packet: every source, image, config, secret **referenc
 2. One more qualification build for the Temporal server image (about $4), plus Build B once dot lifts its hold.
 3. Stage 0 + 1 (snapshot, then the reviewed SQL).
 4. Stage 2 (security/network), then Stage 3 (zero-count services).
-5. Stage 4 with dot, then the Stage 5 smoke window ($5 ceiling, 2 hours).
+5. Stage 4 after dot's reconciled priority map, then the Stage 5 smoke window ($5 ceiling, 2 hours).
 
 Each approval is consumed by its stage; a failure never grants a retry.
