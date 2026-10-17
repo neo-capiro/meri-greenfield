@@ -37,9 +37,13 @@ function executionPolicy(service,images){
   {Effect:'Allow',Action:'secretsmanager:GetSecretValue',Resource:secretArn(service.material.valueFrom)}]};
 }
 /** Same init shape as manifest.mjs: one-shot writer, SUCCESS gate, read-only main mount. */
+// The model-proxy app runs as 10001 on a volume Fargate creates root-owned, so its init runs as root and keeps
+// only CHOWN to hand the written files to 10001 (material-init.mjs model-proxy role); every other init drops all.
+const chownOnly={Capabilities:{Drop:['AUDIT_WRITE','DAC_OVERRIDE','FOWNER','FSETID','KILL','MKNOD','NET_BIND_SERVICE','NET_RAW','SETFCAP','SETGID','SETPCAP','SETUID','SYS_CHROOT']}};
 function materialInit(service){
- return {Name:'material-init',Image:service.initImage,Essential:false,User:service.runtimeUser,Privileged:false,ReadonlyRootFilesystem:true,
-  EntryPoint:['node','apps/runtime/material-init-cli.mjs'],Command:['write'],LinuxParameters:dropAll,
+ const proxy=service.material.expected.role==='model-proxy';
+ return {Name:'material-init',Image:service.initImage,Essential:false,User:proxy?'0:0':service.runtimeUser,Privileged:false,ReadonlyRootFilesystem:true,
+  EntryPoint:['node','apps/runtime/material-init-cli.mjs'],Command:['write'],LinuxParameters:proxy?chownOnly:dropAll,
   Environment:[{Name:'MERI_STATIC_MATERIAL_EXPECTED',Value:JSON.stringify(service.material.expected)}],
   Secrets:[{Name:'MERI_STATIC_MATERIAL_BUNDLE',ValueFrom:service.material.valueFrom}],
   MountPoints:[{SourceVolume:'material',ContainerPath:'/run/meri',ReadOnly:false}],
@@ -80,8 +84,7 @@ export function synthesizeModelProxyTemplate(binding){
    NodeRuntimeSourceCommit:plan.images.nodeRuntime.sourceCommit,NodeRuntimeScanSha256:plan.images.nodeRuntime.reviewedScanSha256,
    BedrockPath:plan.network.bedrockPath,ReusedS3Gateway:plan.network.s3Gateway,
    FoundationOwnedSecurityGroupRules:plan.network.foundationOwnedRules,
-   RequiredBeforeDesiredCountOne:['material-init roles model-proxy and model-owner in apps/runtime/material-init-plan.mjs',
-    'proxy material-init writes /run/meri as 10001:10001 from the Node runtime image',
+   RequiredBeforeDesiredCountOne:['Node runtime image containing the model-proxy/model-owner material roles (8e4b5926)',
     'startup configs pin these task-definition ARNs, service ARNs, images and exact SG sets',
     'Cloud Map service names proxy and owner in meri.internal',
     'IAM policy simulation, including DescribeTasks include=TAGS',

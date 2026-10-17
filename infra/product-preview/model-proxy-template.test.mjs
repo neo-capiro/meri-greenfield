@@ -44,7 +44,11 @@ test('task definitions gate the app on material-init SUCCESS with read-only mate
   assert.equal(t.Cpu,'512');assert.equal(t.Memory,'1024');assert.equal(t.NetworkMode,'awsvpc');
   assert.deepEqual(t.Volumes,[{Name:'material'},{Name:'tmp'}]);
   assert.equal(t.ContainerDefinitions.length,2);
-  assert.equal(init.Name,'material-init');assert.equal(init.Essential,false);assert.equal(init.User,user);
+  assert.equal(init.Name,'material-init');assert.equal(init.Essential,false);
+  // model-proxy: root init keeping only CHOWN, so it can hand the files to 10001; model-owner: same user, all dropped.
+  if(container==='model-proxy'){assert.equal(init.User,'0:0');assert.ok(!init.LinuxParameters.Capabilities.Drop.includes('CHOWN'));
+   assert.ok(['DAC_OVERRIDE','SETUID','SETGID','FOWNER'].every(c=>init.LinuxParameters.Capabilities.Drop.includes(c)));}
+  else{assert.equal(init.User,user);assert.deepEqual(init.LinuxParameters,{Capabilities:{Drop:['ALL']}});}
   assert.equal(init.Image,b.images.nodeRuntime.uri);
   assert.deepEqual(init.EntryPoint,['node','apps/runtime/material-init-cli.mjs']);assert.deepEqual(init.Command,['write']);
   assert.deepEqual(JSON.parse(init.Environment[0].Value),material.expected);
