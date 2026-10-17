@@ -111,3 +111,15 @@ test('CLI has import-safe help, closed arguments, bounded material refusal and n
  const help=spawnSync(process.execPath,['apps/runtime/material-init-cli.mjs','--help'],{encoding:'utf8',timeout:5000});
  assert.equal(help.status,0);assert.match(help.stdout,/Usage:/);assert.equal(help.stderr,'');
 });
+
+test('a deadline crossed during file open/stat writes no material bytes and leaves no owned path',{skip:!(process.platform==='linux'&&process.getuid?.()===1000&&process.getgid?.()===1000)&&'UNRUN: requires nonroot Linux UID/GID 1000 and a writable /run without /run/meri'},async()=>{
+ const {existsSync,statSync}=await import('node:fs');
+ assert.equal(existsSync('/run/meri'),false,'test owns /run/meri only when it is absent');
+ const f=staticMaterialFixture(),first=Object.keys(f.expected.sha256ByPath).sort()[0],sizes=[];
+ const delivery={async fetch(){return f.bundle;}};let crossed=false;
+ // The clock advances only after the first file exists, i.e. between open/stat and its write.
+ const now=()=>{if(!crossed&&existsSync(first)){crossed=true;sizes.push(statSync(first).size);}return crossed?Number.MAX_SAFE_INTEGER:1;};
+ await assert.rejects(materializeStaticProductMaterial({expected:f.expected,delivery,now,maxRequestMs:30000}),{code:'STATIC_INIT_INTERRUPTED'});
+ assert.equal(crossed,true);assert.deepEqual(sizes,[0]);
+ assert.equal(existsSync(first),false);assert.equal(existsSync('/run/meri'),false);
+});

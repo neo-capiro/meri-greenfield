@@ -7,10 +7,12 @@ import uuid
 import unittest
 from unittest.mock import patch
 from apps.proxy.product.owner_startup import decode_product_placement,ProductOwnerStartup
-from apps.proxy.product.owner_channel import OwnerPeerPolicy,OwnerHostGate
+from apps.proxy.product.owner_channel import OwnerHostGate
 from apps.proxy.product.owner_https import ProductOwnerHttpsExchange,OwnerClientTlsMaterial
 from apps.proxy.product.test.test_bearer_eni_admission import source
 from apps.proxy.product.test.test_owner_admission import Exchange
+from apps.proxy.product.service_pair_discovery import compile_owner_peer
+from apps.proxy.product.test.test_service_pair_discovery import fixture,peer_template
 
 
 class StartupTests(unittest.TestCase):
@@ -33,13 +35,19 @@ class StartupTests(unittest.TestCase):
 class StartupCompositionTests(unittest.IsolatedAsyncioTestCase):
     async def test_real_startup_joins_placement_and_fresh_admission_without_native_import(self):
         issued=source()[0].issued
-        policy=OwnerPeerPolicy('https://owner.invalid:8444','owner.invalid','owner-task',
-            'proxy-'+uuid.uuid4().hex,'1'*64,'2'*64,'3'*64,'proxy-client')
+        # The service-pair reader is mandatory: the owner/proxy peer policy and both
+        # IPv4s come from the scripted discovery of exactly one owner/proxy pair.
+        pair=fixture();reader=pair.reader()
+        # The process-global owner gate is keyed by origin and task pair, so this test
+        # uses its own origin instead of colliding with other scripted pairs.
+        host='owner-'+uuid.uuid4().hex+'.invalid';template=peer_template()
+        template.update(origin='https://'+host+':8444',server_name=host)
+        policy=compile_owner_peer(template,reader.read(deadline_ms=pair.at+3000))
         context=ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
         context.minimum_version=context.maximum_version=ssl.TLSVersion.TLSv1_3
         transport=ProductOwnerHttpsExchange(policy=policy,material=OwnerClientTlsMaterial(context,'3'*64),
-            owner_ipv4='10.1.2.3',proxy_ipv4='10.1.2.4',expires_at_ms=issued.expires_at_ms,
-            deployment_revision='reviewed-v1')
+            owner_ipv4='10.40.4.1',proxy_ipv4='10.40.4.2',expires_at_ms=pair.configuration['expiresAtMs'],
+            deployment_revision='reviewed-v1',service_pair_reader=reader)
         synthetic=Exchange(policy,issued)
         loop=asyncio.get_running_loop();gate=OwnerHostGate()
         startup=ProductOwnerStartup(policy=policy,exchange=transport,host_gate=gate,owner_loop=loop,

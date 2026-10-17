@@ -85,6 +85,9 @@ async function writeFile(state,path,bytes,check){
   handle=await open(path,constants.O_WRONLY|constants.O_CREAT|constants.O_EXCL|constants.O_NOFOLLOW,0o600);
   const first=await handle.stat(),file={path,...identity(first)};state.files.push(file);
   if(!first.isFile()||first.uid!==state.plan.uid||first.gid!==state.plan.gid||(first.mode&0o777)!==0o600)fail('FILE_REFUSED');
+  // A delayed open/stat must not reach a write after the deadline. The empty
+  // file is already tracked, so owned-path cleanup removes it.
+  check();
   await handle.writeFile(bytes);await handle.sync();
   const after=await handle.stat();
   if(!after.isFile()||!sameIdentity(first,after)||after.size!==bytes.length||(after.mode&0o777)!==0o600||after.nlink!==1)fail('FILE_REFUSED');

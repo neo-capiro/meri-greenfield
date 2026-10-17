@@ -144,7 +144,7 @@ test('INITIALIZED worker cleanup is unknown; no run or private SDK disposal is i
 
 test('actual issuer delivery close receipt with active work cannot masquerade as successful cleanup',async()=>{
  let release,materialEntered;const held=new Promise(resolve=>{release=resolve;}),entered=new Promise(resolve=>{materialEntered=resolve;});
- const configuration={schemaVersion:1,issuerOrigin:'https://issuer.synthetic.invalid',audience:'meri-temporal',namespace:'meri',
+ const configuration={schemaVersion:1,issuerOrigin:'https://issuer.synthetic.invalid:8445',audience:'meri-temporal',namespace:'meri',
   identity:{role:'control',subject:'meri-temporal-control:v1',workloadPrincipal:'meri-workload-control:v1'},
   publicKey:{kid:'synthetic-public-pin',alg:'RS256',jwkSha256:'a'.repeat(64),manifestFile:'/run/meri/issuer-jwks.json'},
   tls:{serverName:'issuer.synthetic.invalid',issuerCaFile:'/run/meri/issuer-ca.pem',clientCertFile:'/run/meri/issuer-client.crt',clientKeyFile:'/run/meri/issuer-client.key'},requestTimeoutMs:1000,maxReplyBytes:4096};

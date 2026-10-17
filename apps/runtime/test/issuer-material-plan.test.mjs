@@ -22,7 +22,7 @@ function configuration(){
   containerName:name,imageUri:`${account}.dkr.ecr.${region}.amazonaws.com/synthetic/${name}@sha256:${'b'.repeat(64)}`,
   taskRoleArn:`arn:aws:iam::${account}:role/synthetic-${name}`,executionRoleArn:`arn:aws:iam::${account}:role/synthetic-${name}-execution`,revision:'synthetic-v1'};}
  return {schemaVersion:1,database:{connectionFile:'/run/meri/issuer-database.uri',connectionSha256:sha(database)},issuer:{schemaVersion:1,registrationRole:'meri_temporal_issuer',startupTimeoutMs:1000,
-  service:{schemaVersion:1,issuerOrigin:'https://issuer.synthetic.invalid',kid,namespace:'meri',audience:'meri-temporal',maxRequestMs:5000,bootstrapMaxRequestMs:10000,maxBodyBytes:4096,currentnessLeaseMs:20000},
+  service:{schemaVersion:1,issuerOrigin:'https://issuer.synthetic.invalid:8445',kid,namespace:'meri',audience:'meri-temporal',maxRequestMs:5000,bootstrapMaxRequestMs:10000,maxBodyBytes:4096,currentnessLeaseMs:20000},
   taskAuthority:{schemaVersion:1,clusterArn:`arn:aws:ecs:${region}:${account}:cluster/${cluster}`,vpcId:'vpc-0ac26cfac7ed972be',privateSubnetIds:['subnet-12345678'],securityGroupIds:['sg-12345678'],maxLeaseMs:10000,
    roles:{control:pin(false),'temporal-worker':pin(true)}},
   signer:{schemaVersion:1,keyArn:`arn:aws:kms:${region}:${account}:key/11111111-1111-4111-8111-111111111111`,kid,publicJwk,publicJwkSha256:sha(Buffer.from(JSON.stringify(publicJwk)))},
