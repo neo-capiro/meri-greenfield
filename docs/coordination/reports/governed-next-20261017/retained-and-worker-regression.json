@@ -1,0 +1,25 @@
+{
+  "executable": "C:\\Users\\Administrator\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe",
+  "version": "v24.19.0",
+  "args": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "apps/gateway/general-reads/retained.test.mjs",
+    "apps/gateway/general-reads/registration.test.mjs",
+    "apps/gateway/general-reads/mount.test.mjs",
+    "apps/worker/conversation/reads/test/admission.test.mjs",
+    "apps/worker/conversation/reads/test/availability.test.mjs",
+    "apps/worker/conversation/reads/test/bill-text.test.mjs",
+    "apps/worker/conversation/reads/test/disclosures.test.mjs",
+    "apps/worker/conversation/reads/test/legislative-directory.test.mjs",
+    "apps/worker/conversation/reads/test/native-families.test.mjs",
+    "apps/worker/conversation/reads/test/options.test.mjs",
+    "apps/worker/conversation/reads/test/server.test.mjs",
+    "apps/worker/conversation/reads/test/stored-next.test.mjs"
+  ],
+  "status": 1,
+  "signal": null,
+  "error": null
+}

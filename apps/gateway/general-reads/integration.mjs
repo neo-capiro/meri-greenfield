@@ -33,7 +33,14 @@ import * as f21 from './families/state-legislation.mjs';
 import * as f22 from './families/stored-intelligence.mjs';
 import * as f23 from './families/regulatory-dockets.mjs';
 import * as f24 from './families/intelligence-summary.mjs';
-const modules=[f0,f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13,f14,f15,f16,f17,f18,f19,f20,f21,f22,f23,f24];
+import * as f25 from './families/public-web.mjs';
+import * as f26 from './families/data-search.mjs';
+import * as f27 from './families/public-domain-query.mjs';
+import * as f28 from './families/facility-representation.mjs';
+import * as f29 from './families/district-nexus.mjs';
+import * as f30 from './families/client-registry.mjs';
+import * as f31 from './families/federal-market.mjs';
+const modules=[f0,f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13,f14,f15,f16,f17,f18,f19,f20,f21,f22,f23,f24,f25,f26,f27,f28,f29,f30,f31];
 const byFamily=new Map(modules.map(f=>[f.id,f]));
 export const GENERAL_READ_ADAPTER_FAMILIES=Object.freeze(modules.map(f=>f.id));
 const STORED_NATIVE_SOURCE_PATHS=Object.freeze([
@@ -48,6 +55,13 @@ const STORED_NATIVE_SOURCE_PATHS=Object.freeze([
  'apps/gateway/dispatch/tool-dispatch.mjs',
 ]);
 const SOURCE_PATHS=Object.freeze({
+ 'public-web':['apps/gateway/sources/public-web/handler.mjs',...STORED_NATIVE_SOURCE_PATHS],
+ 'data-search':['apps/gateway/sources/data-search/handler.mjs',...STORED_NATIVE_SOURCE_PATHS],
+ 'public-domain-query':['apps/gateway/sources/public-domain-query/handler.mjs','apps/gateway/sources/public-domain-query/native-result.mjs',...STORED_NATIVE_SOURCE_PATHS],
+ 'facility-representation':['apps/gateway/sources/facility-representation/handler.mjs',...STORED_NATIVE_SOURCE_PATHS],
+ 'district-nexus':['apps/gateway/sources/district-nexus/handler.mjs',...STORED_NATIVE_SOURCE_PATHS],
+ 'client-registry':['apps/gateway/sources/client-registry/handler.mjs',...STORED_NATIVE_SOURCE_PATHS],
+ 'federal-market':['apps/gateway/sources/federal-market/handler.mjs',...STORED_NATIVE_SOURCE_PATHS],
  'pe-references':['apps/gateway/sources/pe-references/handler.mjs',...STORED_NATIVE_SOURCE_PATHS],
  'federal-legislation':['apps/gateway/sources/federal-legislation/handler.mjs',...STORED_NATIVE_SOURCE_PATHS],
  'state-legislation':['apps/gateway/sources/state-legislation/handler.mjs',...STORED_NATIVE_SOURCE_PATHS],
@@ -176,7 +190,7 @@ const SOURCE_PATHS=Object.freeze({
 });
 const COMMON=['apps/gateway/general-reads/integration.mjs','apps/gateway/general-reads/registration.mjs',
  'apps/gateway/sources/source-admission.mjs','apps/gateway/sources/json-response.mjs'];
-const TRANSPORT_FIELDS=['origin','endpoints','getCredentials','credentialsForCall','delegatedTransport','fetchImpl','maxRequestMs','maxResponseBytes','readMemoryEligibility','registry'];
+const TRANSPORT_FIELDS=['origin','endpoints','getCredentials','credentialsForCall','authorizeResultForCall','delegatedTransport','fetchImpl','maxRequestMs','maxResponseBytes','readMemoryEligibility','registry'];
 export async function createGeneralReadFamilyHandlers(configuration){
  const {families,now,newId}=ownFields(configuration,['families','now','newId']);
  if(typeof now!=='function'||typeof newId!=='function')deny('GATEWAY_CONFIGURATION');
@@ -184,7 +198,7 @@ export async function createGeneralReadFamilyHandlers(configuration){
  for(const [id,transport] of Object.entries(configured)){
   const family=byFamily.get(id),usesIds=['action-items-complete','operational-reads'].includes(id);
   const values=assertFamilyHandlerSet(id,family.createHandlers({...ownFields(transport,[],TRANSPORT_FIELDS),now,...(usesIds?{newId}:{})}));
-  const labels=[...COMMON,`apps/gateway/general-reads/families/${id}.mjs`,...SOURCE_PATHS[family.sourceDirectory],...(NATIVE_READ_FAMILIES.includes(id)?['apps/gateway/sources/retained-reads/native-families.mjs']:[])];
+  const labels=[...COMMON,`apps/gateway/general-reads/families/${id}.mjs`,...SOURCE_PATHS[family.sourceDirectory],...(NATIVE_READ_FAMILIES.includes(id)?['apps/gateway/sources/retained-reads/native-families.mjs','apps/runtime/native-authority/native-read-credentials/source-read-context.mjs']:[])];
   const sourceFiles=await Promise.all(labels.map(async label=>({label,sha256:createHash('sha256').update(await readFile(new URL(`../../../${label}`,import.meta.url))).digest('hex')})));
   for(const {operation,execute} of values){const key=`${operation.id}@${operation.version}`;
    if(handlers.has(key))deny('GATEWAY_CONFIGURATION');

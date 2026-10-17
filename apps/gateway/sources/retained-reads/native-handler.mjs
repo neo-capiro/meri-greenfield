@@ -20,8 +20,8 @@ function admitDecision(current,now){
 }
 
 export function createStoredNativeReadHandlers(configuration,operations,specification){
- const {family,routes,requestBody}=ownFields(specification,['family','routes'],['requestBody']);
- if(!NATIVE_READ_FAMILIES.includes(family)||requestBody!==undefined&&(typeof requestBody!=='function'||types.isProxy(requestBody)))deny('GATEWAY_CONFIGURATION');
+ const {family,routes,requestBody,resultBody}=ownFields(specification,['family','routes'],['requestBody','resultBody']);
+ if(!NATIVE_READ_FAMILIES.includes(family)||[requestBody,resultBody].some(value=>value!==undefined&&(typeof value!=='function'||types.isProxy(value))))deny('GATEWAY_CONFIGURATION');
  const fixed=frozenData(routes);
  if(!fixed||Array.isArray(fixed)||typeof fixed!=='object'||!Object.keys(fixed).length)deny('GATEWAY_CONFIGURATION');
  for(const [id,path] of Object.entries(fixed)){
@@ -45,9 +45,10 @@ export function createStoredNativeReadHandlers(configuration,operations,specific
    const selected=credentialsForCall?createRetainedHttpTransport({...c,getCredentials:credentialsForCall(operation,call)}):transport;
    const body=requestBody?frozenData(requestBody(current)):current.request;
    const result=await selected.read(current,{path:fixed[operation.id],method:'POST',body,serviceSecret:true});
-   try{contract.assertOutput(result,{request:current.request,...current.normalizationContext});}catch{deny('INVALID_RESULT');}
+   const received=resultBody?frozenData(await resultBody(current,result,call)):result;
+   try{contract.assertOutput(received,{request:current.request,...current.normalizationContext});}catch{deny('INVALID_RESULT');}
    if(current.signal?.aborted)deny('CANCELLED');if(c.now()>=current.deadlineMs)deny('DEADLINE');
-   return JSON.stringify({binding:current.authority.binding,subject:current.authority.subject,operation,argumentsSha256:current.argumentsSha256,result});
+   return JSON.stringify({binding:current.authority.binding,subject:current.authority.subject,operation,argumentsSha256:current.argumentsSha256,result:received});
   }catch(error){throw safeFailure(error);}}};
  });
 }
