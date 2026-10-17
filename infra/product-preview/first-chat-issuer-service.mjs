@@ -159,7 +159,7 @@ export function synthesizeFirstChatIssuerServiceTemplate(binding){
     'issuer KMS signing key policy (GetPublicKey, Sign) naming the issuer task role',
     'log group /meri/product-preview/issuer','Cloud Map A-record service issuer.meri.internal'],
    RequiredBeforeDesiredCountOne:['Node runtime image (PENDING_N4) with apps/runtime/temporal-issuer-cli.mjs, pg and the AWS SDK ECS/EC2/KMS clients',
-    'issuer.json taskAuthority pins the control and temporal-worker task-definition ARNs (with revision), service ARNs, container names and images',
+    'issuer.json taskAuthority pins the control and temporal-worker task-definition ARNs (with revision), service ARNs, container names, images and each role\'s exact ENI security-group set',
     'issuer material secret version holding the six files the expected inventory pins','shipping approval']},
   Resources:{TemporalIssuerTask:taskDefinition(b),TemporalIssuerService:ecsService(b)},
   Outputs:{TemporalIssuerTaskDefinitionArn:{Value:{Ref:'TemporalIssuerTask'}},

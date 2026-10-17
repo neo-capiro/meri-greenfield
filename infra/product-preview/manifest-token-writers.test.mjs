@@ -25,7 +25,9 @@ function fixture(){
   runnerPoststart:{controlOrigin:'https://control.synthetic.invalid',controlCaFile:'/run/meri/control-ca.pem',controlCaBase64:controlCa.toString('base64'),controlCaSha256:controlCaSha},
   clusterArn:`arn:aws:ecs:us-east-1:${account}:cluster/capiro-dev`,imageUri:`${account}.dkr.ecr.us-east-1.amazonaws.com/meri/product@sha256:${sha}`,
   logGroupName:'/meri/product',executionRoleArn:`arn:aws:iam::${account}:role/meri-execution`,controlTaskRoleArn:`arn:aws:iam::${account}:role/meri-control`,runtimeUser:'1000:1000',runnerSha256:sha,
-  network:{privateSubnetId:'subnet-1234abcd',controlSecurityGroupId:'sg-1234abcd',workerSecurityGroupId:'sg-5678abcd',runnerSecurityGroupIds:['sg-abcd1234']},
+  network:{privateSubnetIds:['subnet-0920665f91c905f01','subnet-0e38bd390f8961fef','subnet-06db79cd21239de19'],
+  controlSecurityGroupIds:['sg-05a350c100574b21f','sg-0c3da023e9e8fb292','sg-0d5b5286baf28242e'],
+  workerSecurityGroupIds:['sg-00111cd0e475badfa','sg-0c3da023e9e8fb292'],runnerSecurityGroupIds:['sg-abcd1234']},
   sizing:{control:{cpu:512,memoryMiB:1024,ephemeralStorageGiB:21},temporalWorker:{cpu:512,memoryMiB:1024,ephemeralStorageGiB:21},runner:{cpu:1024,memoryMiB:2048,ephemeralStorageGiB:50}}};
 }
 function reseal(binding,role){
