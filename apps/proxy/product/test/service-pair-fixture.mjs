@@ -18,8 +18,11 @@ export function servicePairFixture({now=PAIR_NOW}={}){
   taskRoleArn:p.taskRoleArn,executionRoleArn:p.executionRoleArn,containerDefinitions:[{name:p.containerName,image:p.imageUri,essential:true}]};};
  const task=role=>{const p=pins[role],index=role==='owner'?1:2;return {taskArn:id(role),clusterArn,taskDefinitionArn:p.taskDefinitionArn,
   group:'service:meri-'+role,startedBy:'ecs-svc/'+index,createdAt:new Date(now-10000),launchType:'FARGATE',platformFamily:'Linux',platformVersion:'1.4.0',
-  enableExecuteCommand:false,lastStatus:'RUNNING',desiredStatus:'RUNNING',overrides:{containerOverrides:[{name:role}]},
-  containers:[{name:role,taskArn:id(role),lastStatus:'RUNNING',image:p.imageUri,imageDigest:p.imageUri.split('@')[1],
+  enableExecuteCommand:false,lastStatus:'RUNNING',desiredStatus:'RUNNING',
+  // Live DescribeTasks shape: one name-only entry per task container and an empty accelerator list.
+  overrides:{containerOverrides:[{name:'material-init'},{name:role}],inferenceAcceleratorOverrides:[]},
+  containers:[{name:'material-init',taskArn:id(role),lastStatus:'STOPPED',exitCode:0},
+   {name:role,taskArn:id(role),lastStatus:'RUNNING',image:p.imageUri,imageDigest:p.imageUri.split('@')[1],
    containerArn:PAIR_PREFIX+'container/capiro-dev/'+ids[role].repeat(32)+'/11111111-1111-4111-8111-111111111111',networkInterfaces:[{privateIpv4Address:'10.40.4.'+index}]}],
   attachments:[{type:'ElasticNetworkInterface',status:'ATTACHED',details:[{name:'networkInterfaceId',value:'eni-'+String(index).repeat(8)},
    {name:'subnetId',value:p.subnetIds[0]},{name:'privateIPv4Address',value:'10.40.4.'+index}]}]};};

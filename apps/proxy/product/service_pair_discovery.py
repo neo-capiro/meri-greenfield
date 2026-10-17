@@ -141,11 +141,17 @@ def _task(t, p, task_id, deployment, at):
             or t.get('launchType') != 'FARGATE' or t.get('platformFamily') != 'Linux' or t.get('platformVersion') != '1.4.0'
             or t.get('enableExecuteCommand') is not False or t.get('lastStatus') != 'RUNNING' or t.get('desiredStatus') != 'RUNNING'):
         _deny()
-    o = _closed(t.get('overrides', {}), (), ('taskRoleArn', 'executionRoleArn', 'containerOverrides'))
+    # Live DescribeTasks always reports `inferenceAcceleratorOverrides: []` and one name-only containerOverrides
+    # entry per task container (material-init included). Name-only entries for the task's own containers and an
+    # empty accelerator list override nothing; any field beyond `name`, a foreign name or an accelerator still denies.
+    o = _closed(t.get('overrides', {}), (), ('taskRoleArn', 'executionRoleArn', 'containerOverrides', 'inferenceAcceleratorOverrides'))
     if any(k in o and o[k] != p[k] for k in ('taskRoleArn', 'executionRoleArn')):
         _deny()
+    if 'inferenceAcceleratorOverrides' in o and o['inferenceAcceleratorOverrides'] != []:
+        _deny()
     if 'containerOverrides' in o:
-        if type(o['containerOverrides']) is not list or any(_closed(v, ('name',))['name'] != p['containerName'] for v in o['containerOverrides']):
+        own_names = {v.get('name') for v in t.get('containers') or () if type(v) is dict}
+        if type(o['containerOverrides']) is not list or any(_closed(v, ('name',))['name'] not in own_names for v in o['containerOverrides']):
             _deny()
     rows = t.get('containers')
     if type(rows) is not list or any(not _matches(r'[A-Za-z0-9_-]{1,255}', v.get('name')) for v in rows) or len({v['name'] for v in rows}) != len(rows):

@@ -72,12 +72,16 @@ function taskObservation(task,p,id,deploymentId,started){
     !(task.createdAt instanceof Date)||!instant(task.createdAt.getTime())||task.createdAt.getTime()>started||
     task.launchType!=='FARGATE'||task.platformFamily!=='Linux'||task.platformVersion!=='1.4.0'||task.enableExecuteCommand!==false||
     task.lastStatus!=='RUNNING'||task.desiredStatus!=='RUNNING'||!Array.isArray(task.containers))fail();
- const o=task.overrides;
+ // Live DescribeTasks always reports `inferenceAcceleratorOverrides: []` and one name-only containerOverrides entry
+ // per task container (material-init included). Those override nothing; any field beyond `name`, a foreign name or
+ // an accelerator still fails.
+ const o=task.overrides,ownNames=new Set(task.containers.map(v=>v?.name));
  if(o!==undefined){
-  own(o,[],['taskRoleArn','executionRoleArn','containerOverrides']);
+  own(o,[],['taskRoleArn','executionRoleArn','containerOverrides','inferenceAcceleratorOverrides']);
   if(o.taskRoleArn!==undefined&&o.taskRoleArn!==p.taskRoleArn||o.executionRoleArn!==undefined&&o.executionRoleArn!==p.executionRoleArn||
+     o.inferenceAcceleratorOverrides!==undefined&&(!Array.isArray(o.inferenceAcceleratorOverrides)||o.inferenceAcceleratorOverrides.length!==0)||
      o.containerOverrides!==undefined&&(!Array.isArray(o.containerOverrides)||o.containerOverrides.some(v=>{
-      try{return own(v,['name']).name!==p.containerName;}catch{return true;}
+      try{return !ownNames.has(own(v,['name']).name);}catch{return true;}
      })))fail();
  }
  const names=task.containers.map(v=>v?.name),matched=task.containers.filter(v=>v?.name===p.containerName);
