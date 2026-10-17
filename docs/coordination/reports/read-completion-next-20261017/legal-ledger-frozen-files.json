@@ -1,0 +1,22 @@
+[
+  {
+    "path": "scripts/scope-ledger/source-exposure.test.mjs",
+    "sha256": "7df1b848399e07c5ca5d6445c084bde0e76a44b187de9f498df9a5d03c92efd6",
+    "bytes": 48497
+  },
+  {
+    "path": "docs/coordination/ledgers/scope-ledger.json",
+    "sha256": "4e975ee21f5fc3e0fd7933372d053aa2e2c71e7a5f90ae1952b3f552d1cb6bb1",
+    "bytes": 509305
+  },
+  {
+    "path": "docs/coordination/ledgers/MERI-FINAL-SCOPE-LEDGER-20261015.md",
+    "sha256": "5dddf86badb03152fdedeca8f0eb8dd4b658b5df0e421d1d4d6db13287435664",
+    "bytes": 112338
+  },
+  {
+    "path": "docs/coordination/reports/CODEX-LEGAL-SEARCH-LEDGER-20261017.md",
+    "sha256": "f4ecf88f87c8e687dca0b8f5ebb54b9ee610bf94f1700b6cdbc9059749c6d33a",
+    "bytes": 8067
+  }
+]

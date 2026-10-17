@@ -1,0 +1,24 @@
+{
+  "executable": "C:\\Users\\Administrator\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe",
+  "version": "v24.19.0",
+  "args": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "--test-timeout=30000",
+    "apps/runtime/native-authority/native-read-credentials/test/client-reference-context.test.mjs",
+    "apps/runtime/native-authority/native-read-credentials/test/core-client.test.mjs",
+    "apps/runtime/native-authority/native-read-credentials/test/owner.test.mjs"
+  ],
+  "startedAt": "2026-10-17T04:40:22.447Z",
+  "endedAt": "2026-10-17T04:40:27.340Z",
+  "status": 0,
+  "signal": null,
+  "error": null,
+  "outputBytes": 8991,
+  "outputSha256": "8edec505fdcda16e45f1233e76c05ab50bb084792847771bfce7e91e9e7e2cc5",
+  "capture": "raw UTF-8 stdout followed by stderr; no trimming or truncation",
+  "stdoutBytes": 8991,
+  "stderrBytes": 0
+}

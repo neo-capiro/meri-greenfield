@@ -6,12 +6,14 @@ import {createNativeReadsOwner} from '../reads-owner.mjs';
 import {readsFixture} from './reads-fixture.mjs';
 import {ownerFixture} from '../native-read-credentials/test/fixture.mjs';
 import {storedCase as kbCase} from '../../../gateway/sources/client-knowledge-search/test/fixture.mjs';
+import {nativeFamilyCase} from '../../../gateway/general-reads/test/native-family-cases.mjs';
 import {NATIVE_READS_SCHEMA_VERSION as schemaVersion} from '../../../../packages/contracts/runtime-0.2/reads.mjs';
 
 const ref=id=>({id,version:'0.2.0'});
 const semantic=ref('search_client_knowledge'),selected=[ref('query_economic_data'),semantic,ref('query_knowledge_graph')];
-const excluded=['search_federal_grants','search_federal_awards'].map(ref);
-const forged=[excluded[0],selected[0],excluded[1],semantic,selected[2]];
+const excluded=['search_federal_grants','search_federal_awards','get_business_development_evidence','get_certification_status',
+ 'search_program_elements','get_program_element','get_pe_budget_timeline','search_research_sources','get_state_rule_status','search_sam_opportunities'].map(ref);
+const forged=[excluded[0],selected[0],excluded[1],semantic,selected[2],...excluded.slice(2)];
 const args={query_economic_data:{source:'census',state:'TX',limit:1},search_client_knowledge:{query:'synthetic'},query_knowledge_graph:{depth:1}};
 const ids=operations=>operations.map(op=>op.id);
 const code=expected=>error=>error.message===expected;
@@ -55,13 +57,31 @@ test('all selected economic/semantic/graph operations execute through the actual
  assert.equal(x.wire.length,0);assert.equal(x.state.reservations.size,0,'borrowed synthetic gateway results do not claim source execution or settlement');
 });
 
-test('public grant/award siblings never reach gateway execution despite all three inventories claiming them',async()=>{
+test('all ten absent source reads never reach gateway execution despite all three inventories claiming them',async()=>{
  const x=await subsetFixture();
  for(const operation of excluded){
   const before=x.subset.snapshots;await assert.rejects(x.owner.handle('execute',x.executeRequest(operation),x.credential),code('UNAVAILABLE'));
   assert.equal(x.subset.snapshots,before+1);assert.equal(x.subset.executions.length,0);
  }
  assert.equal(x.wire.length,0);assert.equal(x.state.reservations.size,0);
+});
+
+for(const [family,id] of [['state-status-votes','get_state_bill_status'],['state-status-votes','search_state_floor_votes'],
+ ['tracked-bills','search_tracked_bills'],['public-domain-hearings','search_committee_hearings']])test(`complete ${id} is eligible through the actual native runtime task owner without advertising absent reads`,async()=>{
+ const x=await ownerFixture(id,{scene:nativeFamilyCase(family,id)}),gateway=x.mount(),executions=[],operation=ref(id),overclaimed=[operation,...excluded];
+ const owner=createNativeReadsOwner({binding:x.binding,approvedReads:x.configuration.approvedReads,taskVerifier:x.configuration.taskVerifier,
+  allocationSha256:x.entry.allocationSha256,policyRevision:x.policyRevision,scopes:x.scopes,now:x.now,gateway:{
+   async readAvailability(options){const snapshot=await gateway.readAvailability(options);return {...snapshot,installation:{...snapshot.installation,operations:overclaimed},discovery:{...snapshot.discovery,operations:overclaimed}};},
+   async execute(call){const value={synthetic:'runtime-eligibility-only',operation:call.operation,arguments:call.arguments,deliveryId:call.deliveryId};executions.push(value);return JSON.stringify(value);},
+  }});
+ try{
+  const request={schemaVersion,binding:x.binding},snapshot=await owner.handle('availability',request,x.gatewayConfiguration.credential);
+  assert.deepEqual(snapshot.installation.operations,[operation]);assert.deepEqual(snapshot.discovery.operations,[operation]);
+  assert.equal(x.scopes.some(scope=>scope.kind==='client'),family==='tracked-bills');
+  const execution={...request,operation,arguments:x.request,deliveryId:`complete:${id}`,installationId:snapshot.installation.installationId,executionCatalogSha256:snapshot.installation.executionCatalogSha256},out=await owner.handle('execute',execution,x.gatewayConfiguration.credential);
+  assert.equal(out.inputSha256,hash(execution));assert.equal(out.deliveryId,execution.deliveryId);assert.deepEqual(out.operation,operation);assert.equal(out.resultSha256,hash(executions[0]));assert.equal(out.outputBytes,Buffer.byteLength(out.resultJson));
+  assert.equal(executions.length,1);assert.equal(x.wire.length,0);assert.equal(x.state.reservations.size,0,'runtime eligibility-only results do not establish source or settlement');
+ }finally{x.scope.abort();}
 });
 
 test('semantic KB is complete but remains unavailable to the actual no-client task despite overclaimed inventories',async()=>{
@@ -136,4 +156,18 @@ test('post-dispatch discovery removal withholds selected bytes and never falls b
  await assert.rejects(x.owner.handle('execute',x.executeRequest(selected[1]),x.credential),code('UNAVAILABLE'));
  assert.equal(x.subset.executions.length,1);assert.deepEqual(x.subset.executions[0].operation,selected[1]);assert.equal(x.subset.snapshots,2);
  assert.equal(x.wire.length,0);assert.equal(x.state.reservations.size,0);
+});
+
+test('legal native runtime exposes only complete search while approved/install/discovery inventories overclaim the reference sibling',async()=>{
+ const operation=ref('search_legislative_research'),sibling=ref('get_legal_reference'),operations=[sibling,operation];
+ const x=await readsFixture({config:{operations}}),gateway=x.ownerConfiguration.gateway,executions=[];
+ const owner=createNativeReadsOwner({...x.ownerConfiguration,gateway:{
+  async readAvailability(options){const snapshot=await gateway.readAvailability(options);return {...snapshot,installation:{...snapshot.installation,operations},discovery:{...snapshot.discovery,operations}};},
+  async execute(call){const result={synthetic:'runtime-eligibility-only',operation:call.operation,arguments:call.arguments,deliveryId:call.deliveryId};executions.push(result);return JSON.stringify(result);},
+ }});
+ const snapshot=await owner.handle('availability',x.request,x.credential);assert.deepEqual(x.config.operations,operations);assert.deepEqual(snapshot.installation.operations,[operation]);assert.deepEqual(snapshot.discovery.operations,[operation]);
+ const request={...x.executeRequest,operation,arguments:{sessionKey:'2026'},deliveryId:'legal:runtime-search'},out=await owner.handle('execute',request,x.credential);
+ assert.equal(out.inputSha256,hash(request));assert.deepEqual(out.operation,operation);assert.equal(out.deliveryId,request.deliveryId);assert.equal(out.resultSha256,hash(executions[0]));assert.equal(out.outputBytes,Buffer.byteLength(out.resultJson));
+ await assert.rejects(owner.handle('execute',{...request,operation:sibling,arguments:{view:'rules',noticeId:'synthetic-notice'},deliveryId:'legal:held-reference'},x.credential),code('UNAVAILABLE'));
+ assert.equal(executions.length,1);assert.equal(x.wire.length,0);assert.equal(x.state.reservations.size,0,'eligibility-only fake gateway results do not establish source execution or settlement');
 });

@@ -201,14 +201,14 @@ This is source reconciliation only. The historical proposal tables below retain 
 | --- | --- |
 | Selected capabilities / continued exclusions | 96 / 43 |
 | Selected source reads / separate product or governed capabilities | 82 / 14 |
-| Selected source adapter coverage | 64 complete + 8 partial + 10 absent = 82 |
-| Single meri_reads registry | 66 operations / 37 families |
-| Registry accounting | 64 selected source reads + 1 product-state read + 1 historical contract |
+| Selected source adapter coverage | 69 complete + 3 partial + 10 absent = 82 |
+| Single meri_reads registry | 71 operations / 41 families |
+| Registry accounting | 69 selected source reads + 1 product-state read + 1 historical contract |
 | Selected source reads declared in skill manifests | 52 current contracts + 1 historical-only contract |
 | Selected source reads reachable through admitted skill source | 11 |
 | Complete source adapters lacking general-conversation registration | 0 |
-| Partial source adapters withheld from SDK exposure | 8 |
-| Selected source reads lacking complete adapters | 18 (8 partial + 10 absent; 11 declared by skills; 7 without a skill declaration) |
+| Partial source adapters withheld from SDK exposure | 3 |
+| Selected source reads lacking complete adapters | 13 (3 partial + 10 absent; 9 declared by skills; 4 without a skill declaration) |
 | Pinned actual Core producer mappings (not qualification) | 63 |
 | Live | 0 |
 
@@ -249,15 +249,19 @@ Only `quick_skill.relationship_brief`, `quick_skill.commitments_audit` are admit
 | `operational-reads` | `query_action_items`, `query_tasks` |
 | `pe-references` | `get_pe_bills`, `get_pe_contractors`, `get_pe_report_language` |
 | `public-data` | `query_economic_data` |
+| `public-domain-hearings` | `search_committee_hearings` |
 | `public-domain-query` | `query_global_data` |
 | `public-reports` | `search_cbo_cost_estimates`, `search_crs_reports`, `search_gao_reports` |
 | `public-web` | `scrape_web_page`, `search_public_web` |
 | `regulatory-dockets` | `query_regulatory_dockets` |
+| `research-legal-legislation` | `search_legislative_research` |
 | `research-portfolio` | `get_research_portfolio`, `get_research_portfolio_changes` |
 | `research-portfolio-evidence` | `get_research_evidence` |
 | `state-legislation` | `get_state_legislator`, `search_state_bills` |
+| `state-status-votes` | `get_state_bill_status`, `search_state_floor_votes` |
 | `stored-intelligence` | `search_intel_articles` |
 | `tenant-contacts` | `find_contacts` |
+| `tracked-bills` | `search_tracked_bills` |
 
 Every complete source adapter already present is SDK-exposed.
 
@@ -266,11 +270,8 @@ The following incomplete source adapters have restricted input/resource coverage
 | Partial adapter family | Incomplete operations (not SDK-exposed) |
 | --- | --- |
 | `outreach-query` | `query_outreach` |
-| `public-domain-hearings` | `search_committee_hearings` |
-| `research-legal-legislation` | `get_legal_reference`, `search_legislative_research` |
+| `research-legal-legislation` | `get_legal_reference` |
 | `research-legal-news` | `search_legiwatch_news` |
-| `state-status-votes` | `get_state_bill_status`, `search_state_floor_votes` |
-| `tracked-bills` | `search_tracked_bills` |
 
 The finite native families listed above retain their receiving-contract truth limits and require current task, tenant/user and native credentials. Research portfolio, portfolio changes and Florida budget project reads remain exposed through their existing retained-context path. These source paths are not qualified or live. The remaining selected source reads lack complete adapters; producer mapping or a restricted request branch alone does not complete them. Their exact unresolved families and operations are:
 
@@ -281,14 +282,11 @@ The finite native families listed above retain their receiving-contract truth li
 | `outreach-query` | `query_outreach` |
 | `program-elements` | `get_pe_budget_timeline`, `get_program_element`, `search_program_elements` |
 | `public-data` | `search_federal_awards`, `search_federal_grants` |
-| `public-domain-hearings` | `search_committee_hearings` |
 | `research-legal-candidates` | `search_research_sources` |
-| `research-legal-legislation` | `get_legal_reference`, `search_legislative_research` |
+| `research-legal-legislation` | `get_legal_reference` |
 | `research-legal-news` | `search_legiwatch_news` |
 | `rule-status` | `get_state_rule_status` |
 | `sam-opportunities` | `search_sam_opportunities` |
-| `state-status-votes` | `get_state_bill_status`, `search_state_floor_votes` |
-| `tracked-bills` | `search_tracked_bills` |
 
 Missing complete coverage includes partial source adapters and absent adapters. Complete the canonical gateway adapter and operation-specific trusted dispatch/current-resource context using an admitted exact producer/endpoint protocol. A schema/normalizer binding, skill declaration, restricted branch or pending native bridge is not complete operation coverage. No guessed endpoint, default credential or permissive generic query is allocated.
 

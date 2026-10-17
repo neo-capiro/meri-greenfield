@@ -38,7 +38,7 @@ function noSource(f){assert.equal(f.wire.length,0);assert.equal(f.stateOwner.sec
 function unknown(f){const [r]=f.state.reservations.values();assert.equal(r.state,'UNKNOWN');assert.equal(r.hold_micro_usd,1);assert.equal(r.output_bytes,null);assert.equal(r.charged_micro_usd,null);assert.equal(f.state.budget.consumed_micro_usd,0);assert.equal([...f.state.produced.values()][0].completion,null);}
 
 test('KB SDK: complete family keeps optional graph and requires a current task client scope only for semantic search',()=>{
- assert.equal(familyReads().length,66);assert.equal(READ_FAMILY_IDS.length,37);assert.equal(READ_FAMILIES[family].clientScope,'optional');
+ assert.equal(familyReads().length,71);assert.equal(READ_FAMILY_IDS.length,41);assert.equal(READ_FAMILIES[family].clientScope,'optional');
  assert.equal(READ_FAMILIES[family].operationIds,undefined);assert.deepEqual(READ_FAMILIES[family].requiredClientOperations,[searchId]);
  assert.deepEqual(familyReads().filter(row=>row.family===family).map(row=>row.operation),operations);
  const overclaimed=[...operations,{id:'get_business_development_evidence',version:'0.2.0'}];

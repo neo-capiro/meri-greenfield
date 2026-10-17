@@ -1,0 +1,61 @@
+Γ£ö 96 selected and43 excluded are reconciled separately from70 registered operations (1.3668ms)
+Γ£ö missing complete coverage counts four incomplete adapters and ten absent adapters exactly once (1.2286ms)
+Γ£ö economic subset and complete semantic/graph SDK family require actual canonical adapters (0.3294ms)
+Γ£û bounded curated source declarations name eighteen operations and four partial input/resource reads (3.1311ms)
+Γ£ö the four incomplete input/resource operations keep source evidence outside SDK exposure (0.3531ms)
+Γ£ö only complete BD context and recent changes are promoted; evidence remains absent and SDK-held (3.1001ms)
+Γ£ö all five complete funding sources are SDK-exposed only under the actual required-client family policy (12.7402ms)
+Γ£ö funding completion projection preserves other incomplete reads and does not promote current source (6.3247ms)
+Γ£ö semantic KB completion projection preserves graph, funding and all other read coverage (67.6956ms)
+Γ£ö actual complete semantic and graph rows retain distinct clock and SDK client-scope policies (2.4923ms)
+Γ£ö PR119 projection promotes exactly the four state/tracked/hearing reads and preserves every other row field (62.8899ms)
+Γ£ö complete state/tracked/hearing registration preserves exact client policies and canonical helper ownership (1.1213ms)
+Γ£ö 43 canonical constructors include explicit mail composition and measured native helper source without credential effects (31.736ms)
+Γ£ö named tracked/hearing adapters require per-call ownership and retain original proof while forwarding only the selected UUID (147.3611ms)
+Γ£ö governed data adapter and corrected raw SDK selector are exposed as source only (0.166ms)
+Γ£ö only source-admitted original skills can establish a source route (0.1841ms)
+Γ£ö historical action-items contract is an additional route for one selected successor (0.134ms)
+Γ£ö read-only product state is counted separately; writes and other product operations stay outside meri_reads (0.2224ms)
+Γ£ö all43 exclusions remain absent from both selected mappings and general registration (0.258ms)
+Γ£ö all63 reviewed producer records correlate exact operations, context keys and immutable report pointers (10.6415ms)
+Γ£ö current source provenance measures declared canonical paths without claiming qualification (9.8608ms)
+Γ£ö directory source is exposed while retained research/Florida scope and zero-live gates remain explicit (0.1929ms)
+Γ£ö registering a governed write family refuses instead of expanding the read server (1.6236ms)
+Γ£ö registered family without adapter fails closed (1.5675ms)
+Γ£ö wrong, foreign, duplicate, nonstring and empty SDK operationIds refuse (12.6723ms)
+Γ£ö partialOperations must be unique nonempty IDs contained in that adapter declaration (8.5588ms)
+Γ£ö registering an incomplete operation refuses even with a valid canonical operationIds subset (2.7958ms)
+Γ£ö renderer calls partial coverage missing complete implementation and never calls it exposed (50.6706ms)
+Γ£ö a manifest declaration alone never manufactures an adapter or source route (2.6999ms)
+Γ£ö duplicate adapter claims and changed selected scope refuse (2.3594ms)
+Γ£ö a duplicate canonical binding refuses rather than choosing an arbitrary adapter family (1.1801ms)
+Γ£ö targeted refresh preserves all eight historical fields from current base, PR107, PR106 and earlier base08f65a79 (2009.2175ms)
+Γ£ö committed current exposure regenerates exactly with a scoped drift check (77.5043ms)
+Γä╣ tests 33
+Γä╣ suites 0
+Γä╣ pass 32
+Γä╣ fail 1
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 3194.4402
+
+Γ£û failing tests:
+
+test at scripts\scope-ledger\source-exposure.test.mjs:51:1
+Γ£û bounded curated source declarations name eighteen operations and four partial input/resource reads (3.1311ms)
+  AssertionError [ERR_ASSERTION]: apps/gateway/sources/state-status-votes: get_state_bill_status
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/scripts/scope-ledger/source-exposure.test.mjs:57:45)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

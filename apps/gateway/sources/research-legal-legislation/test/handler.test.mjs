@@ -17,12 +17,14 @@ for(const id of ids){
   assert.equal(out.result.authority,authorityNote);assert.equal(Object.hasOwn(out.result,'complete'),false);
   for(const value of Object.values(f.contract.normalizeInput(f.arguments,legalLegislationContext).metadata))assert.equal(value,false);
  });
- test(`${id}: named clients and folders are UNAVAILABLE before credentials or native calls`,async()=>{
+ test(`${id}: names need a coherent trusted context; folders expand only for complete search`,async()=>{
   const f=storedCase(id);
   for(const extra of [{clientId:'Client name'},{clientId:' Client name '},
    {folderId:'private-folder'},{folderId:' '}]){
    const request={...f.arguments,...extra};assert.throws(()=>assertUnscopedLegalRequest(f.operation,request),{message:'UNAVAILABLE'});
-   await assert.rejects(f.handler()({...f.call(),request}),{message:'UNAVAILABLE'});
+   if(id==='search_legislative_research'&&extra.folderId){const selected=storedCase(id,{request});
+    assert.deepEqual(JSON.parse(await selected.handler()(selected.call())).result,selected.page);assert.deepEqual(selected.wire[0].body,request);
+   }else await assert.rejects(f.handler()({...f.call(),request}),{message:id==='search_legislative_research'?'INVALID_ARGUMENTS':'UNAVAILABLE'});
   }
   assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
  });
@@ -184,10 +186,10 @@ test('cancellation, deadline, missing credential owner and bounded response stop
  await assert.rejects(k.handler()({...k.call(),signal:controller.signal}),{message:'CANCELLED'});
 });
 
-test('per-call credential factory cannot run for unsupported named scope before raw canonical normalization',async()=>{
+test('per-call credential factory cannot run for a name with an unrelated retained null context',async()=>{
  const f=storedCase(),{getCredentials,...configuration}=f.transport;let factories=0;
  const [handler]=createResearchLegalLegislationHandlers({...configuration,now:f.now,credentialsForCall:()=>{factories++;return getCredentials;}},[f.operation]);
- await assert.rejects(handler.execute({...f.call(),request:{...f.arguments,clientId:'Client name'}}),{message:'UNAVAILABLE'});
+ await assert.rejects(handler.execute({...f.call(),request:{...f.arguments,clientId:'Client name'}}),{message:'INVALID_ARGUMENTS'});
  assert.equal(factories,0);assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
  await handler.execute(f.call());assert.equal(factories,1);assert.equal(f.wire.length,1);
 });

@@ -75,36 +75,33 @@
       "family": "state-status-votes",
       "declaredIn": ["apps/gateway/sources/state-status-votes/handler.mjs", "apps/gateway/sources/state-status-votes/request-context.mjs", "apps/gateway/sources/retained-reads/native-families.mjs", "apps/gateway/general-reads/families/state-status-votes.mjs"],
       "operations": ["get_state_bill_status", "search_state_floor_votes"],
-      "partialOperations": ["get_state_bill_status", "search_state_floor_votes"],
-      "adapterChecks": ["PARTIAL_INPUT: canonical stored bill keys or no-bill stored floor-vote queries", "frozen selector owner rejects unsupported designation/invalid branches before HTTP", "native no-bill state/chamber/query filters preserved; provider/quota/write fallback cannot be reached"],
-      "subject": "current native tenant/user; stored public state evidence; incomplete request coverage is withheld from SDK"
+      "adapterChecks": ["all frozen canonical, designation, missing and invalid selector branches delegate the original raw body once", "native lookup/refusal/absence notes and frozen receiving remain unchanged", "existing native quota reservation, optional provider calls and public ingestion/cache effects require separate qualification; no physical cancellation or rollback claim"],
+      "subject": "current native tenant/user; public state evidence under actual native lookup, quota and ingestion owners"
     },
     {
       "path": "apps/gateway/sources/tracked-bills",
       "family": "tracked-bills",
       "declaredIn": ["apps/gateway/sources/tracked-bills/handler.mjs", "apps/gateway/sources/retained-reads/native-families.mjs", "apps/gateway/general-reads/families/tracked-bills.mjs"],
       "operations": ["search_tracked_bills"],
-      "partialOperations": ["search_tracked_bills"],
-      "adapterChecks": ["PARTIAL_INPUT: explicit UUID matching the authorized one-client subject", "current native visible-client membership before credentials and at release", "manual tracked rows and nullable stored bill enrichment wrapped in current Meri lineage"],
-      "subject": "current one-client subject; exact retained client reference; names are unsupported and SDK exposure is withheld"
+      "adapterChecks": ["UUID or actual native check-ref name must select the authorized current one-client subject", "exact clipped reference and first expiry pinned; native identity, membership and resolution rechecked across awaits before credentials and release", "named execution requires per-call credentials and sends the admitted UUID while preserving original raw request/proof; tenant-wide ambiguity remains native", "manual tracked rows and nullable stored bill enrichment wrapped in current Meri lineage"],
+      "subject": "current one-client task/resource and native client grant; name resolution is identity selection and never creates authority"
     },
     {
       "path": "apps/gateway/sources/public-domain-hearings",
       "family": "public-domain-hearings",
       "declaredIn": ["apps/gateway/sources/public-domain-hearings/handler.mjs", "apps/gateway/sources/retained-reads/native-families.mjs", "apps/gateway/sources/public-domain-hearings/request-context.mjs", "apps/gateway/general-reads/families/public-domain-hearings.mjs"],
       "operations": ["search_committee_hearings"],
-      "partialOperations": ["search_committee_hearings"],
-      "adapterChecks": ["PARTIAL_INPUT: absent client or explicit current visible UUID", "exact tenant and optional client resolution checked before source", "native governed per-page authorization, published views, cursors and coverage preserved"],
-      "subject": "current native tenant/user and coherent general/client subject; named clients unsupported; SDK exposure withheld"
+      "adapterChecks": ["absent client, UUID and actual check-ref name use the same current native client wall and task upper bounds", "exact tenant/reference/context and first expiry retained; identity, membership and name resolution rechecked before per-call credentials and release", "native tenant-wide ambiguity remains a failure; personal name selection follows existing personal UUID admission without inferring a client task", "native governed per-page authorization, published views, cursors and coverage preserved"],
+      "subject": "current native tenant/user and coherent general/client subject; resolved names never create a client grant"
     },
     {
       "path": "apps/gateway/sources/research-legal-legislation",
       "family": "research-legal-legislation",
       "declaredIn": ["apps/gateway/sources/research-legal-legislation/handler.mjs", "apps/gateway/sources/retained-reads/native-families.mjs", "apps/gateway/sources/research-legal-legislation/request-context.mjs", "apps/gateway/general-reads/families/research-legal-legislation.mjs"],
       "operations": ["search_legislative_research", "get_legal_reference"],
-      "partialOperations": ["search_legislative_research", "get_legal_reference"],
-      "adapterChecks": ["PARTIAL_INPUT: absent client or exact current visible client UUID; no folder and no reference citation string", "shared frozen request admission and current exact client subject/grant before native source", "actual fixed Intel bridge retains feature/member, current client wall, legal identity, version and cursor owners"],
-      "subject": "current native tenant/user and coherent general/client subject; UUID resolution or null, null citation context; names/folders/citation parsing unsupported; SDK exposure withheld"
+      "partialOperations": ["get_legal_reference"],
+      "adapterChecks": ["complete legislative search preserves raw folder/query arguments and native pre-search membership, folder/client equality and public-corpus query ownership", "named search requires actual current check-ref resolution, exact task/native client grant, pinned expiry and per-call UUID bridge with original raw proof", "PARTIAL_INPUT reference sibling retains absent/UUID client, no folder and parser-independent rules/versions or controlling explicit-reference citations; parser-dependent references stay SDK-withheld", "actual fixed Intel bridge retains feature/member, current client wall, legal identity, version and cursor owners"],
+      "subject": "current native tenant/user and coherent general/client subject; search resolves actual names and delegates existing folder authorization; reference sibling remains partial and SDK-withheld"
     },
     {
       "path": "apps/gateway/sources/public-web",

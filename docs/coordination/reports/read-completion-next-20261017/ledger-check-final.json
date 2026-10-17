@@ -1,0 +1,14 @@
+{
+  "executable": "C:/Users/Administrator/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe",
+  "argv": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "scripts/scope-ledger/cli.mjs",
+    "--check-exposure"
+  ],
+  "startedAt": "2026-10-17T04:50:25.3772472Z",
+  "finishedAt": "2026-10-17T04:50:25.6492377Z",
+  "exitCode": 0,
+  "reason": "Recognize exact unquoted fixed native route declarations after partial subset removal; production unchanged",
+  "classification": "Bounded source accounting, canonical synthetic composition and immutable history; no live qualification"
+}

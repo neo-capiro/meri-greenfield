@@ -1,0 +1,41 @@
+✖ real prepared reads synchronously receives the admitted tuple and traverses current qualifier/native credentials/settlement (471.4867ms)
+✔ prepared handlers and native credential closures are fresh on every task construction (34.8445ms)
+✔ missing trusted owners or disabled source is unavailable without native credentials or source IO (171.6385ms)
+✔ local tuple, producer, capability, scopes and configuration correlation cannot manufacture task authority (195.9504ms)
+✔ native static or dynamic credential/context substitutes are refused before source effects (76.115ms)
+✔ async or incomplete task-port composition is refused rather than escaping the synchronous prepared hook (22.8796ms)
+✔ current qualifier revocation, discovery revocation and current task/entry expiry cannot release source data (196.3919ms)
+✔ current native authority drift and uncertain source retain UNKNOWN without retry or completed bytes (392.5022ms)
+✔ installation source/receipt drift after the source effect withholds release without redispatch (208.1332ms)
+✔ prepared source hashes cannot bypass the canonical final measurement of actual installed bytes (68.9347ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 9
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2825.9078
+
+✖ failing tests:
+
+test at apps\runtime\native-authority\general-read-installation\test\runtime.test.mjs:12:1
+✖ real prepared reads synchronously receives the admitted tuple and traverses current qualifier/native credentials/settlement (471.4867ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   billId: '119-hr-1'
+  -   billId: 'H.R. 1'
+    }
+  
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/runtime/native-authority/general-read-installation/test/runtime.test.mjs:18:95)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { billId: '119-hr-1' },
+    expected: { billId: 'H.R. 1' },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

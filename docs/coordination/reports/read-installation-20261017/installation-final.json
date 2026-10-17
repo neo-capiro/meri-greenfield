@@ -1,0 +1,71 @@
+{
+  "captureKind": "process-stdio",
+  "captureIncomplete": false,
+  "executable": "C:\\Users\\Administrator\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe",
+  "nodeVersion": "v24.19.0",
+  "cwd": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-16\\task-4\\meri-resolution-next",
+  "argv": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "--test-timeout=30000",
+    "apps/runtime/native-authority/general-read-installation/test/preparation.test.mjs",
+    "apps/runtime/native-authority/general-read-installation/test/runtime.test.mjs"
+  ],
+  "startedAt": "2026-10-17T04:42:45.553Z",
+  "finishedAt": "2026-10-17T04:42:50.027Z",
+  "exitCode": 0,
+  "signal": null,
+  "error": null,
+  "stdout": {
+    "path": "installation-final.stdout.txt",
+    "bytes": 1898,
+    "sha256": "0b047f6118c6094ec809bb96c0786ce84b242ad7a124f7e648cce56ea7862664"
+  },
+  "stderr": {
+    "path": "installation-final.stderr.txt",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "sourceFiles": [
+    {
+      "path": "apps/gateway/general-reads/integration.mjs",
+      "sha256": "05730055c1b0ba038516fae020aefcf7db6586261546ccf3823e4a58353d79f4"
+    },
+    {
+      "path": "apps/gateway/general-reads/families/mail.mjs",
+      "sha256": "23442b41652196f7681ff44dadf02643edd0207499a990a8eef71bbc76be40bd"
+    },
+    {
+      "path": "apps/runtime/native-authority/general-read-installation/configuration.mjs",
+      "sha256": "2c9472b150243f52ffb599f3b56ddf4d64cdc666ddde4e4c01017f6d3437ba85"
+    },
+    {
+      "path": "apps/runtime/native-authority/general-read-installation/runtime.mjs",
+      "sha256": "dd560173deb4d5ffc0c1b3dd2ee54611c8a47c8c2da94e0da4252495c8732705"
+    },
+    {
+      "path": "apps/runtime/native-authority/general-read-installation/test/fixture.mjs",
+      "sha256": "c187dacf37e960dd8266a00326378445a66220e031e1bf0d112000127fc72eb6"
+    },
+    {
+      "path": "apps/runtime/native-authority/general-read-installation/test/preparation.test.mjs",
+      "sha256": "6dc7a982435e20d9c9095541ff08b1ba46601a8b2f815aa257356b8df7a3c4b3"
+    },
+    {
+      "path": "apps/runtime/native-authority/general-read-installation/test/runtime.test.mjs",
+      "sha256": "d76c6853ecf6b8dbafeb3dcff111d5b7b2552a8d03091bfa57d35fe1e287a746"
+    }
+  ],
+  "priorEvidence": [
+    "installation-initial.json",
+    "installation-runtime-repair1.json"
+  ],
+  "rerunReason": [
+    "Fixture uses canonical closed prepared-read config and full tuple only inside actual synchronous hook.",
+    "Bill-text source request is its established canonical normalized designation; original request/digest remain asserted unchanged.",
+    "Add final installed-byte drift refusal and measure both new production composition modules in every canonical handler manifest."
+  ],
+  "scope": "Synthetic current-admission/qualification/source protocol tests only; no live credentials, source qualification or startup activation"
+}

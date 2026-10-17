@@ -1,4 +1,4 @@
-/** PARTIAL_INPUT stored-key adapter controls. Source-shaped JSON only; no Core/provider/quota execution. */
+/** Full-family adapter controls. Source-shaped JSON only; no Core/provider/quota execution. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {canonicalSha256 as hash} from '../../../../../packages/contracts/validate.mjs';
@@ -15,13 +15,13 @@ for(const id of ids){
   assert.equal(proof.requestSha256,hash(f.arguments));assert.equal(proof.argumentsSha256,call.argumentsSha256);assert.deepEqual(proof.normalizationContext,{});
   assert.equal(Object.hasOwn(out.result,'complete'),false);assert.equal(Object.hasOwn(out.result,'absenceEvidence'),false);
  });
- test(`${id}: designation/invalid selectors and unsupported status omissions remain UNAVAILABLE before credentials/native work`,async()=>{
-  const unsupported=[{billId:'TX HB 1234'},{billId:'HB 1234',state:'TX'},{billId:'FL HB 1234',state:'TX'},
+ test(`${id}: designation/invalid selectors and status omissions delegate unchanged to native result branches`,async()=>{
+  const requests=[{billId:'TX HB 1234'},{billId:'HB 1234',state:'TX'},{billId:'FL HB 1234',state:'TX'},
    {billId:'71000000-0000-4000-8000-000000000091'},{billId:'tx-2025x-hb1234'},{billId:'not-a-bill'},
    ...(id==='get_state_bill_status'?[{billId:null},{billId:'   '},{},{state:'TX'},{query:'TX HB 1234',state:'TX'}]:[])];
-  for(const request of unsupported){
-   const f=storedCase(id,{request});await assert.rejects(f.handler()(f.call()),{message:'UNAVAILABLE'});
-   assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
+  for(const request of requests){
+   const f=storedCase(id,{request}),out=JSON.parse(await f.handler()(f.call()));assert.deepEqual(out.result,f.page);
+   assert.deepEqual(f.wire[0].body,request);assert.equal(f.credentialCalls.length,1);assert.equal(f.wire.length,1);
   }
  });
  test(`${id}: canonical case/dot/whitespace/special-session aliases preserve one native normalization pass`,async()=>{
@@ -34,7 +34,7 @@ for(const id of ids){
   const request={billId:billKey+' '.repeat(70)+'TX HB 9'},f=storedCase(id,{request});
   const out=JSON.parse(await f.handler()(f.call()));assert.equal(f.wire[0].body.billId,request.billId);
   assert.equal(f.call().input.billId.length,60);assert.equal(id==='get_state_bill_status'?out.result.billId:out.result.votes[0].billKey,billKey);
-  const g=storedCase(id,{request:{billId:'X'.repeat(60)+billKey}});await assert.rejects(g.handler()(g.call()),{message:'UNAVAILABLE'});assert.equal(g.credentialCalls.length,0);
+  const g=storedCase(id,{request:{billId:'X'.repeat(60)+billKey}});assert.deepEqual(JSON.parse(await g.handler()(g.call())).result,g.page);assert.equal(g.credentialCalls.length,1);
  });
  test(`${id}: current actor, tenant, operation and source grants remain required before credentials`,async()=>{
   for(const mutate of [a=>a.claims.audience='other',a=>a.claims.actions=[],a=>a.binding.tenantId='other',
@@ -79,14 +79,14 @@ for(const id of ids){
  });
 }
 
-test('status canonical query fallback preserves billId precedence and never promotes a designation',async()=>{
+test('status query fallback preserves billId precedence while native resolution receives the exact designation',async()=>{
  for(const request of [{query:' T.X.-2025-H.B.1234 '},{billId:null,query:billKey},{billId:' ',query:billKey},
   {billId:billKey,query:'TX HB 9',state:'FL'}]){
   const f=storedCase('get_state_bill_status',{request}),out=JSON.parse(await f.handler()(f.call()));
   assert.deepEqual(f.wire[0].body,request);assert.equal(out.result.billId,billKey);
  }
  const f=storedCase('get_state_bill_status',{request:{billId:'TX HB 9',query:billKey}});
- await assert.rejects(f.handler()(f.call()),{message:'UNAVAILABLE'});assert.equal(f.credentialCalls.length,0);
+ const out=JSON.parse(await f.handler()(f.call()));assert.equal(out.result.billId,'tx-2025-hb9');assert.deepEqual(f.wire[0].body,f.arguments);assert.equal(f.credentialCalls.length,1);
 });
 
 test('absent canonical stored bill preserves explicit database-scoped honesty and makes one request only',async()=>{
@@ -143,11 +143,13 @@ test('vote null dates precede descending dated rows and ascending source rows ar
  await assert.rejects(f.handler()(f.call()),{message:'INVALID_RESULT'});
 });
 
-test('per-call credential composition cannot bypass the stored-selector effect boundary',async()=>{
+test('per-call credential composition retains original designation authority and does not bypass grammar checks',async()=>{
  const f=storedCase(),{getCredentials,...configuration}=f.transport;
  const [handler]=createStateStatusVotesHandlers({...configuration,now:f.now,credentialsForCall:()=>getCredentials},[f.operation]);
- await assert.rejects(handler.execute(f.call({billId:'TX HB 1234'})),{message:'UNAVAILABLE'});
- assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);await handler.execute(f.call());assert.equal(f.wire.length,1);
+ await assert.rejects(handler.execute({...f.call(),request:{billId:'TX HB 1234',noFetch:true}}),{message:'INVALID_ARGUMENTS'});
+ assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
+ await handler.execute(f.call({billId:'TX HB 1234'}));assert.equal(f.credentialCalls[0].requestSha256,hash({billId:'TX HB 1234'}));
+ await handler.execute(f.call());assert.equal(f.wire.length,2);
 });
 
 test('constructor allows exactly two fixed read producers, no caller route or unsupported no-fetch configuration',()=>{

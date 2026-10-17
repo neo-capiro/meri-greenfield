@@ -1,13 +1,16 @@
-/** Hearing name selection remains unavailable under the actual ID-only owner. */
+/** Missing native name observation cannot be replaced by the current roster or selected client. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {ownerFixture,uuid} from '../../../../runtime/native-authority/native-read-credentials/test/fixture.mjs';
 import {storedCase,id,clientId} from './fixture.mjs';
+import {createNativeReadCredentialOwner} from '../../../../runtime/native-authority/native-read-credentials/owner.mjs';
 
-test('authorized client IDs and a selected task client cannot turn a hearing name into authority',async()=>{
+test('authorized IDs and selected task client cannot replace a missing native reference reader',async()=>{
  for(const reference of ['Synthetic client','  SYNTHETIC CLIENT  ',clientId+'suffix','Synthetic client'+' '.repeat(80)+'ignored']){
   const scene=storedCase(id,{request:{clientId}});scene.arguments={clientId:reference};
   const f=await ownerFixture(id,{scene,clientIds:[clientId,uuid('d')]});
+  const {readClientReference,...coreAuthority}=f.configuration.coreAuthority;
+  f.owner=createNativeReadCredentialOwner({...f.configuration,coreAuthority});
   try{
    await assert.rejects(f.owner.nativeReadContextPorts.readCurrent(f.proof()),{message:'UNAVAILABLE'});
    assert.equal(f.stateOwner.nativeCredentials,0);assert.equal(f.stateOwner.secrets,0);

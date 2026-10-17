@@ -27,13 +27,21 @@ test('the 80-unit retained reference preserves clipping whitespace before native
  assert.equal(f.credentialCalls[0].normalizationContext.clientReference.length,80);
 });
 
-test('names and UUID-like prefixes outside the native UUID branch are refused without resolving or fetching',async()=>{
+test('names and UUID-like prefixes require per-call native resolution rather than static credentials',async()=>{
  for(const reference of ['Synthetic named client',clientId+'suffix','https://client.example.invalid/']){
-  // The frozen contract can represent a future trusted name resolver. This slice must still refuse it.
+  // A selected UUID/context and static credential do not prove actual native name resolution.
   const f=storedCase(id,{request:{clientId:reference}});
-  await assert.rejects(f.handler()(f.call()),{message:'INVALID_ARGUMENTS'});
+  await assert.rejects(f.handler()(f.call()),{message:'UNAVAILABLE'});
   assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
  }
+});
+
+test('a per-call name context forwards only the resolved UUID while preserving original reference/proof',async()=>{
+ const f=storedCase(id,{request:{clientId:'  Synthetic named client  '}}),{getCredentials,...configuration}=f.transport;
+ const [handler]=createTrackedBillsHandlers({...configuration,now:f.now,credentialsForCall:()=>getCredentials},[f.operation]);
+ await handler.execute(f.call());assert.deepEqual(f.wire[0].body,{clientId});
+ assert.equal(f.credentialCalls[0].requestSha256,hash(f.arguments));
+ assert.equal(f.credentialCalls[0].normalizationContext.clientReference,'Synthetic named client');
 });
 
 test('missing, blank, malformed and model-supplied authority selectors refuse before source effects',async()=>{
