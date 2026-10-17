@@ -198,15 +198,5 @@
   "actorId": "PENDING_CORE",
   "clientId": "PENDING_CORE",
   "identityCredentialFile": "PENDING_CORE (Clerk capiro-template bearer; private)"
- },
- "imageScans": {
-  "nodeRuntime": {
-   "receipt": "infra/product-preview/first-chat/n6-build-receipt.json",
-   "sha256": "7ccac0e84dc6411c356d5989ab70999e04ba9197152789444c061e5c2714c30f"
-  },
-  "proxy": {
-   "receipt": "infra/product-preview/first-chat/b6-build-receipt.json",
-   "sha256": "ccfe547efefab6bb4ff305fa7048a4f748f0221bff17f04dd787f7eb04402446"
-  }
  }
 }
