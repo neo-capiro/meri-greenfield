@@ -27,10 +27,9 @@ for(const source of ['census','bls','bea']){
  });
 }
 
-test('constructor admits only the economic operation and never constructs policy-dependent siblings',()=>{
+test('constructor remains finite and rejects empty, duplicate, foreign or old-version selections',()=>{
  const f=storedCase();
- for(const operations of [[],[f.operation,f.operation],[{id:'search_federal_grants',version:'0.2.0'}],
-  [{id:'search_federal_awards',version:'0.2.0'}],[{id,version:'0.1.0'}],[{id:'query_global_data',version:'0.2.0'}]]){
+ for(const operations of [[],[f.operation,f.operation],[{id,version:'0.1.0'}],[{id:'query_global_data',version:'0.2.0'}]]){
   assert.throws(()=>createPublicDataHandlers({...f.transport,now:f.now},operations),{message:'GATEWAY_CONFIGURATION'});
  }
  let effects=0;assert.throws(()=>createPublicDataHandlers({...f.transport,now:f.now},[{get id(){effects++;return id;},version:'0.2.0'}]));

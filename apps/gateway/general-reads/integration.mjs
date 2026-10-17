@@ -51,7 +51,8 @@ import * as f39 from './families/outreach-query.mjs';
 import * as f40 from './families/business-development.mjs';
 import * as f41 from './families/funding-opportunities.mjs';
 import * as f42 from './families/mail.mjs';
-const modules=[f0,f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13,f14,f15,f16,f17,f18,f19,f20,f21,f22,f23,f24,f25,f26,f27,f28,f29,f30,f31,f32,f33,f34,f35,f36,f37,f38,f39,f40,f41,f42];
+import * as f43 from './families/program-elements.mjs';
+const modules=[f0,f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13,f14,f15,f16,f17,f18,f19,f20,f21,f22,f23,f24,f25,f26,f27,f28,f29,f30,f31,f32,f33,f34,f35,f36,f37,f38,f39,f40,f41,f42,f43];
 const byFamily=new Map(modules.map(f=>[f.id,f]));
 export const GENERAL_READ_ADAPTER_FAMILIES=Object.freeze(modules.map(f=>f.id));
 const STORED_NATIVE_SOURCE_PATHS=Object.freeze([
@@ -68,7 +69,8 @@ const STORED_NATIVE_SOURCE_PATHS=Object.freeze([
 const SOURCE_PATHS=Object.freeze({
  'mail':['apps/gateway/sources/mail/handler.mjs','apps/gateway/sources/mail/http-adapter.mjs','apps/gateway/sources/mail/request-context.mjs'],
  'funding-opportunities':['apps/gateway/sources/funding-opportunities/handler.mjs','apps/gateway/sources/funding-opportunities/request-context.mjs',...STORED_NATIVE_SOURCE_PATHS],
- 'public-data':['apps/gateway/sources/public-data/handler.mjs',...STORED_NATIVE_SOURCE_PATHS],
+ 'public-data':['apps/gateway/sources/public-data/handler.mjs','apps/gateway/sources/public-data/request-context.mjs',...STORED_NATIVE_SOURCE_PATHS],
+ 'program-elements':['apps/gateway/sources/program-elements/handler.mjs','apps/gateway/sources/program-elements/request-context.mjs',...STORED_NATIVE_SOURCE_PATHS],
  'client-knowledge-search':['apps/gateway/sources/client-knowledge-search/handler.mjs','apps/gateway/sources/client-knowledge-search/request-context.mjs',...STORED_NATIVE_SOURCE_PATHS],
  'state-status-votes':['apps/gateway/sources/state-status-votes/handler.mjs',...STORED_NATIVE_SOURCE_PATHS],
  'tracked-bills':['apps/gateway/sources/tracked-bills/handler.mjs',...STORED_NATIVE_SOURCE_PATHS],
@@ -212,6 +214,11 @@ const SOURCE_PATHS=Object.freeze({
 });
 const COMMON=['apps/gateway/general-reads/integration.mjs','apps/gateway/general-reads/registration.mjs',
  'apps/runtime/native-authority/native-read-credentials/client-reference.mjs',
+ 'apps/runtime/native-authority/native-read-credentials/read-mode-observation.mjs',
+ 'apps/gateway/general-reads/families/program-elements.mjs',
+ 'apps/gateway/sources/program-elements/handler.mjs','apps/gateway/sources/program-elements/request-context.mjs',
+ 'apps/gateway/sources/public-data/handler.mjs','apps/gateway/sources/public-data/request-context.mjs',
+ 'apps/gateway/sources/outreach-query/handler.mjs','apps/gateway/sources/outreach-query/request-context.mjs',
  // Changed modules are statically loaded by family/installation composition even for another selected family.
  'apps/runtime/native-authority/native-read-credentials/owner.mjs','apps/runtime/native-authority/native-read-credentials/core-client.mjs','apps/runtime/native-authority/native-read-credentials/source-read-context.mjs',
  'apps/gateway/sources/state-status-votes/handler.mjs','apps/gateway/sources/state-status-votes/request-context.mjs',

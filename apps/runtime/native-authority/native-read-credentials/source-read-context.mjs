@@ -1,10 +1,11 @@
 /** Finite CONTROL contexts over current native facts. Selectors never create a client grant. */
 import {publicDomainDatasetRegistry} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {nativeReadFault} from '../../../../packages/contracts/runtime-0.2/reads.mjs';
+import {MODE_READ_OPERATIONS} from '../../../../packages/contracts/native-read-observation-0.2/validate.mjs';
 import {captureHearingClientReference,captureHearingClientSelection} from '../../../gateway/sources/public-domain-hearings/request-context.mjs';
 import {assertLegalSliceRequest,assertLegalSearchRequest,captureResearchClientReference,legalSliceContext} from '../../../gateway/sources/research-legal-legislation/request-context.mjs';
 import {assertNewsSliceRequest,newsSliceContext} from '../../../gateway/sources/research-legal-news/request-context.mjs';
-import {captureOutreachListClientSelection} from '../../../gateway/sources/outreach-query/request-context.mjs';
+import {captureOutreachListClientReference,captureOutreachListClientSelection} from '../../../gateway/sources/outreach-query/request-context.mjs';
 import {assertStoredStateRequest} from '../../../gateway/sources/state-status-votes/request-context.mjs';
 import {captureBusinessDevelopmentResource} from '../../../gateway/sources/business-development/request-context.mjs';
 import {captureFundingClientSelection,assertFundingClientSubject} from '../../../gateway/sources/funding-opportunities/request-context.mjs';
@@ -55,6 +56,7 @@ export function sourceReadClientReference(contract,request){
   if(!reference.trim())refuse('INVALID_ARGUMENTS');
  }else if(contract.binding.group==='public-domain-hearings')reference=captureHearingClientReference(request);
  else if(contract.binding.group==='research-legal-legislation'&&contract.descriptor.operation.id==='search_legislative_research')reference=captureResearchClientReference(request);
+ else if(contract.binding.group==='outreach-query')reference=captureOutreachListClientReference(request);
  return reference!==null&&!UUID.test(reference.trim().toLowerCase())?reference:null;
 }
 
@@ -72,14 +74,20 @@ export function assertSourceReadRequest(contract,request,subject){
   else assertLegalSliceRequest(contract.descriptor.operation,request);
  }
  if(contract.binding.group==='research-legal-news')assertNewsSliceRequest(contract.descriptor.operation,request);
- if(contract.binding.group==='outreach-query')captureOutreachListClientSelection(request);
+ if(contract.binding.group==='outreach-query')captureOutreachListClientReference(request);
  if(contract.binding.group==='business-development')captureBusinessDevelopmentResource(contract.descriptor.operation,request,subject);
  if(contract.binding.group==='funding-opportunities')assertFundingClientSubject(subject,captureFundingClientSelection(contract.descriptor.operation,request));
  if(contract.binding.group==='client-knowledge-search'&&contract.descriptor.operation.id==='search_client_knowledge')assertClientKnowledgeSearchSubject(subject,captureClientKnowledgeSearchSelection(contract.descriptor.operation,request));
 }
 
-export function createSourceReadContext({contract,proof,native,defaultCongress,now,priorContext,clientReferenceObservation}){
+export function createSourceReadContext({contract,proof,native,defaultCongress,now,priorContext,clientReferenceObservation,modeObservation}){
  const group=contract.binding.group;
+ if(MODE_READ_OPERATIONS.includes(contract.descriptor.operation.id)){
+  if(!modeObservation||!['off','shadow','enforce'].includes(modeObservation.evidenceAccuracyMode))refuse('UNAVAILABLE');
+  const context={evidenceAccuracyMode:modeObservation.evidenceAccuracyMode};
+  if(priorContext&&priorContext.evidenceAccuracyMode!==context.evidenceAccuracyMode)refuse('ACCESS_DENIED');
+  return context;
+ }
  if(group==='client-knowledge-search'&&contract.descriptor.operation.id==='search_client_knowledge'){
   const selected=captureClientKnowledgeSearchSelection(contract.descriptor.operation,proof.request);
   assertClientKnowledgeSearchSubject(proof.subject,selected);
@@ -104,7 +112,7 @@ export function createSourceReadContext({contract,proof,native,defaultCongress,n
   return context;
  }
  if(group==='outreach-query'){
-  const clientResolution=captureOutreachListClientSelection(proof.request);
+  const clientResolution=captureOutreachListClientSelection(proof.request,clientReferenceObservation);
   if(clientResolution.clientId!==clientSubject(proof,native))refuse('ACCESS_DENIED');
   return {clientResolution};
  }

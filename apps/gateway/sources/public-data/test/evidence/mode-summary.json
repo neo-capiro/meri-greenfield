@@ -1,0 +1,67 @@
+{
+  "sourceFreeze": "2026-10-17",
+  "status": "SOURCE_IMPLEMENTED_PENDING_INDEPENDENT_REVIEW_AND_CORE_BRIDGE",
+  "testResult": {
+    "pass": 66,
+    "durationMs": 2371.7126,
+    "programElementCases": 28,
+    "publicDataModeCases": 17,
+    "skipped": 0,
+    "tests": 66,
+    "economicCases": 21,
+    "cancelled": 0,
+    "fail": 0
+  },
+  "evidence": {
+    "initial": "mode-initial.json",
+    "console": "mode-initial.txt"
+  },
+  "files": [
+    {
+      "path": "apps/gateway/sources/public-data/handler.mjs",
+      "sha256": "1a32c7b6684da95ba25b98465b8f85e23a86287626824ec8a59f1957efa62e55"
+    },
+    {
+      "path": "apps/gateway/sources/public-data/request-context.mjs",
+      "sha256": "e6406ed7b35c907e53220e4b9b5e643a21752419958fcc744d35798a24bced86"
+    },
+    {
+      "path": "apps/gateway/sources/public-data/test/fixture.mjs",
+      "sha256": "2a1f865c488814945965bfd81c7aef4d39ac2050f0ad0188e187f64d0d511894"
+    },
+    {
+      "path": "apps/gateway/sources/public-data/test/handler.test.mjs",
+      "sha256": "c97e29a691997aec29ac88620b8ba798bb12773aba00c051d8bae27ac80f54a4"
+    },
+    {
+      "path": "apps/gateway/sources/public-data/test/mode-fixture.mjs",
+      "sha256": "0d550c9b378ca63a8ba01e5e700b96090dd3eab56fb2b07a759ad58c308eb42c"
+    },
+    {
+      "path": "apps/gateway/sources/public-data/test/mode-handler.test.mjs",
+      "sha256": "9fddfcec7ce4ec18396d8263ed38851919e15a36fb71158f7cc80c3d4ce1f3e3"
+    },
+    {
+      "path": "apps/gateway/sources/program-elements/handler.mjs",
+      "sha256": "4fb9efac9d8d3be152830bed5ce34dd32889d479aeb9ce1affbefd63fa390fa1"
+    },
+    {
+      "path": "apps/gateway/sources/program-elements/request-context.mjs",
+      "sha256": "1b63c7479f92977234ce0945bf6d940515cb8619673665c22131e7b2e282f250"
+    },
+    {
+      "path": "apps/gateway/sources/program-elements/test/fixture.mjs",
+      "sha256": "dda60eabf8db2fd7c82c4bdedeb931b1564500c343e5f14b36cabfebf5b95ff3"
+    },
+    {
+      "path": "apps/gateway/sources/program-elements/test/pages.mjs",
+      "sha256": "86bbdc27c8747bbbc809e8d7d7447515da9daba7aee69a058d592c726dbda599"
+    },
+    {
+      "path": "apps/gateway/sources/program-elements/test/handler.test.mjs",
+      "sha256": "7912ba67dd608df4c5936e15cfd98009eb8f1216d4c95806d5c4afb34939f282"
+    }
+  ],
+  "qualification": "Offline source-only synthetic HTTP; no current native mode, Core bridge or live installation qualification",
+  "sourceExposure": "No SDK or curated metadata promotion in this packet"
+}

@@ -29,8 +29,8 @@ export async function prepareGeneralReadInstallation(configuration){
   const families=own(ports.families,[],ids),nativeIds=Object.keys(families).filter(id=>NATIVE_READ_FAMILIES.includes(id));let credentials;
   if(nativeIds.length){
    if(ports.nativeCredentials===undefined)return {gateway:unavailable(),handlers:new Map()};
-   const n=own(ports.nativeCredentials,['coreAuthority','getNativeCredential','getServiceSecret'],['defaultCongress']);
-   credentials=createNativeReadCredentialOwner({binding:tuple.binding,expiresAtMs:tuple.original.expiresAtMs,store:createPostgresConversationStore({pool:tuple.pool,now:tuple.now}),taskVerifier:tuple.taskVerifier,readCurrentEntry:tuple.readCurrentEntry,taskCapability:tuple.taskCapability,allocationJson:tuple.allocationJson,approvedReads:tuple.approvedReads,coreAuthority:n.coreAuthority,getNativeCredential:n.getNativeCredential,getServiceSecret:n.getServiceSecret,...(n.defaultCongress===undefined?{}:{defaultCongress:n.defaultCongress}),now:tuple.now,enabled:true});
+   const n=own(ports.nativeCredentials,['coreAuthority','getNativeCredential','getServiceSecret'],['defaultCongress','getReadModeServiceSecret']);
+   credentials=createNativeReadCredentialOwner({binding:tuple.binding,expiresAtMs:tuple.original.expiresAtMs,store:createPostgresConversationStore({pool:tuple.pool,now:tuple.now}),taskVerifier:tuple.taskVerifier,readCurrentEntry:tuple.readCurrentEntry,taskCapability:tuple.taskCapability,allocationJson:tuple.allocationJson,approvedReads:tuple.approvedReads,coreAuthority:n.coreAuthority,getNativeCredential:n.getNativeCredential,getServiceSecret:n.getServiceSecret,...(n.getReadModeServiceSecret===undefined?{}:{getReadModeServiceSecret:n.getReadModeServiceSecret}),...(n.defaultCongress===undefined?{}:{defaultCongress:n.defaultCongress}),now:tuple.now,enabled:true});
    if(!credentials.available)return {gateway:unavailable(),handlers:new Map()};
   }
   const configured={};

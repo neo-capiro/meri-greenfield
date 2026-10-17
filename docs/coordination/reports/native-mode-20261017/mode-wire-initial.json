@@ -1,0 +1,24 @@
+{
+  "executable": "C:\\Users\\Administrator\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe",
+  "version": "v24.19.0",
+  "args": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "--test-timeout=30000",
+    "packages/contracts/native-read-observation-0.2/test/validate.test.mjs",
+    "packages/contracts/native-read-observation-0.2/test/kb.test.mjs",
+    "packages/contracts/native-read-observation-0.2/test/mode.test.mjs"
+  ],
+  "startedAt": "2026-10-17T05:22:17.459Z",
+  "endedAt": "2026-10-17T05:22:18.347Z",
+  "status": 0,
+  "signal": null,
+  "error": null,
+  "outputBytes": 12203,
+  "outputSha256": "0ce5460ee638df83fe25dd600015bf151f2aba3d3eb080eef6d78cbf55751f73",
+  "capture": "raw UTF-8 stdout followed by stderr; no trimming or truncation",
+  "stdoutBytes": 12203,
+  "stderrBytes": 0
+}

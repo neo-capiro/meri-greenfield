@@ -4,10 +4,10 @@ import {billTextCase} from '../../bill-text/test/fixture.mjs';
 import {createOutreachQueryHandlers} from '../handler.mjs';
 import {captureOutreachListClientSelection} from '../request-context.mjs';
 export const id='query_outreach',ids=[id],clientId='a1234567-b123-4c12-8d12-e123456789ab';
-export function storedCase(selected=id,{request={clientId,status:'draft',limit:2}}={}){
+export function storedCase(selected=id,{request={clientId,status:'draft',limit:2},resolution}={}){
  if(selected!==id)throw Error('SYNTHETIC_OPERATION_MISMATCH');
  const scene=billTextCase(),operation={id,version:'0.2.0'},contract=resolveOperationContract(operation),{authority,state,now,wire}=scene;
- const normalizationContext={clientResolution:captureOutreachListClientSelection(request)},selectedClient=normalizationContext.clientResolution.clientId;
+ const normalizationContext={clientResolution:captureOutreachListClientSelection(request,resolution)},selectedClient=normalizationContext.clientResolution.clientId;
  const scope={tenantId:authority.binding.tenantId,kind:'client',resourceId:selectedClient,policyRevision:authority.policyRevision};
  Object.assign(authority.subject,{kind:'client',entityType:'client',entityIds:[selectedClient],scopes:[scope]});
  authority.claims.scopes=[scope];authority.decision.scopes=[scope];authority.decision.operation=`${id}@0.2.0`;
