@@ -25,6 +25,24 @@ Integration branch: `fable/meri-first-chat-receiving-20261017` (PR #133), on roo
 | 8 | Browser and Bash: sandbox readiness, destination enforcement, approvals, runtime qualification | lane-8 session | root `59856683` (worker sandbox, gateway) | to inventory | Linux runtime qualification (image gate) |
 | 9 | Post-shipment: browser takeover, authenticated website workflows, Office editor, device/browser bridge | lane-9 session | to inventory | preparation | owner decisions awaiting Neo, preserved |
 
+## Lane 1: Stage 2–6 approval packet, source gaps (17 Oct survey)
+
+Status: **source not started**. Nothing renders Stage 2 today, and Stage 3 is partial. Until these exist, the single approval Neo asked for cannot be exact.
+1. **New composing renderer** (CFN, digest-pinned):
+   - KMS RSA-2048 sign key and alias;
+   - all Meri IAM roles and policies (issuer, control, worker, runner, owner, proxy, Temporal; per-role execution roles, because `manifest.mjs:131` shares one);
+   - control/worker/runner/issuer/proxy/owner SGs and the exact peer rules (ALB→8080, runner→8082/8443, proxy→8444, issuer 8445, Aurora 5432 adds, D6 443 egress);
+   - `meri.internal` plus four discovery services;
+   - `/meri/product-preview/*` log groups at 30 days;
+   - secret resources and the S3/KMS policy delta;
+   - issuer and owner task definitions and services at count 0;
+   - target group `meri-preview-control-8080`.
+2. **Fix `temporal-binding.mjs:84` and `temporal-network-readback.mjs:65`.** Both require five distinct VPC-endpoint SGs, but all live endpoints share `sg-01def4e5c0fe44d4a`, so real values are refused.
+3. **Reconcile `model-proxy-template.mjs`** with the change set. It currently builds an internal NLB and a duplicate S3 gateway endpoint, and runs as user `1000:1000`. The proxy image runs as 10001, and runner→proxy:8443 should go via Cloud Map.
+4. **Re-cost Stage 5.** The Temporal renderer sizes roles at 1 vCPU / 2 GiB and history at 2 / 4, not 0.5 / 1, so the change set's $0.26/hour is low.
+5. **Remove stale docs:** `CAPIRO-DEV-CHANGE-SET-20261016.md` (own VPC, internal ALB) and `temporal-deployment.md` (capiro-dev refused) contradict the code.
+6. **Still open:** D2 grants SQL, D3 Temporal server image build, and Neo's D4–D6 decisions.
+
 ## Rules for every lane
 
 - Inspect existing source before building anything new. No duplicate implementations; remove dead code only when it is verified dead.
@@ -49,3 +67,5 @@ Integration branch: `fable/meri-first-chat-receiving-20261017` (PR #133), on roo
 | 17 Oct ~13:20 | Host commit memory exhausted (no pagefile): lane 6 turn stopped; lane 3 idle but not archivable (background work) |
 | 17 Oct 13:06 | Neo approved option A (builder-only assembly scan recorded, product gated), PR121 #issuecomment-6234223586 |
 | 17 Oct 13:13 | **Proxy B4 `4e4c7888` SUCCEEDED**: product `sha256:0f60986b…3b80` scan zero findings; Wolfi smoke OK as 10001; assembly `abbd11d2…` builder-only HIGH 9 recorded; receipt `J_qGI4eN…`; ledger 363/600 |
+| 17 Oct ~13:55 | Neo approved D1 (64k/8k, $2/run, $25/day); source `d375d43d`; B5 proxy `40c3dab2` started |
+| 17 Oct ~14:05 | Lane 4 PR #134 received at `588bd87e` (60/60 focused; full conversations suite 111 fail vs 197 pre-merge, no new); N2 sealed `4e46db4f…`, starts after B5 |
