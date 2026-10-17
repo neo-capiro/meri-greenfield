@@ -4,7 +4,8 @@
 |---|---|
 | Owner | Fable, lane-3 session |
 | meri-greenfield branch | `fable/meri-lane3-write-intents-20261017`, base `ce2da186` (PR #133 head; root `59856683`) |
-| Draft PR | into `fable/meri-first-chat-receiving-20261017`; held out of integration until the first shipment is live (as lanes 2 and 5) |
+| Draft PR | [#137](https://github.com/neo-capiro/meri-greenfield/pull/137) into `fable/meri-first-chat-receiving-20261017`; held out of integration until the first shipment is live (as lanes 2 and 5) |
+| Source commit | `c7ef9e9b` (code and tests; this file is updated after it) |
 | Status vocabulary | as in `../BACKLOG.md`. Everything here is **source**. Nothing is integrated, qualified, deployed or live-verified by this lane. |
 
 ## Scope
