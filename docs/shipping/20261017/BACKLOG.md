@@ -43,6 +43,19 @@ Status: **source not started**. Nothing renders Stage 2 today, and Stage 3 is pa
 5. **Remove stale docs:** `CAPIRO-DEV-CHANGE-SET-20261016.md` (own VPC, internal ALB) and `temporal-deployment.md` (capiro-dev refused) contradict the code.
 6. **Still open:** D2 grants SQL, D3 Temporal server image build, and Neo's D4–D6 decisions.
 
+## Lane PRs (17 Oct evening): all draft, held out of integration until the first shipment is live
+
+| Lane | PR | Branch tip | Source status | Blocked on |
+|---|---|---|---|---|
+| 2 reads/skills | #135 | e8def62b | 74 complete / 3 partial / 5 absent of 82 | Core read handlers (dot) |
+| 3 write intents | #137 | 8cf6b6f0 | proposal → approval → execution → result → history complete | Core `approval/record`, `approval/decision`, intent capability issuer; lane-1 wiring (compose.mjs, P-INT-9); intents/commands/approval-metadata migrations |
+| 4 lifecycle | merged #134 (second turn, Stop) + 6e19e23d/a02dd3be (second-turn path) | — | history paging, reconnect, pause/resume still to finish | none for source |
+| 5 memory/tasks/settings/schedules | #136 | b60078ab | routine flow 2/2; schedules, budget pass | Core memory parser (denied), settings/schedules migrations |
+| 6 documents | #138 | 7d9ce8cf | generation, revision (HTTP), previews, downloads, signed links, renderer qualification owner | Core artifact authority; chat revision contract; image Office libs; sandboxed renderer task; meri_artifacts 0001–0003 |
+| 7 Objective → Strategy → Planner | #140 | 0caa9eb9 | workflow, Core client, custody adapter | run-start migration ID or Temporal alternative (Neo); Core Ed25519 issuer keys; Strategy authority |
+| 8 browser/Bash | #139 | 8a9c20f1 | egress proxy, Bash approvals, Linux harness | Fargate cannot sandbox: D005 host; image/lockfile; approval owner |
+| 9 post-shipment | in progress | — | inventory + preparation | Neo decisions |
+
 ## Rules for every lane
 
 - Inspect existing source before building anything new. No duplicate implementations; remove dead code only when it is verified dead.
