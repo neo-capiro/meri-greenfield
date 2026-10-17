@@ -4,8 +4,8 @@
 |---|---|
 | Owner | Fable, lane-6 session |
 | meri-greenfield branch | `fable/meri-lane6-documents-20261017`, base `ce2da186` (integration head of `fable/meri-first-chat-receiving-20261017`, PR #133; root `59856683`) |
-| Commits | `271d6cab` (document-preparer test), `199b5df1` (renderer qualification owner), plus this file; the branch head is in the draft PR |
-| Draft PR | into `fable/meri-first-chat-receiving-20261017`; **held out of integration until the first shipment is live** |
+| Commits | `271d6cab` (document-preparer test), `199b5df1` (renderer qualification owner), `5ff517eb` (this file), then the PR-number record |
+| Draft PR | [#138](https://github.com/neo-capiro/meri-greenfield/pull/138) into `fable/meri-first-chat-receiving-20261017`; **held out of integration until the first shipment is live** |
 | Status vocabulary | as in `../BACKLOG.md`. Everything here is **source** unless marked. Nothing in lane 6 is integrated, qualified, deployed or live-verified. |
 | Files owned | `apps/artifacts/**`, `apps/control/document-application/**`, `apps/runtime/artifacts/**`, `apps/control/intents/document-preparer.mjs` and its test. Not touched: `infra/product-preview/**`, material/issuer files, `apps/runtime/conversation-runner.mjs`, contracts, migrations, lockfiles, frontend. |
 
