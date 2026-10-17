@@ -6,6 +6,7 @@ by an arbitrary callback is not TLS authentication. No client, credential,
 listener or network request is created by this module.
 """
 import asyncio
+from contextvars import ContextVar
 from dataclasses import dataclass
 import hashlib
 import hmac
@@ -14,12 +15,12 @@ import json
 import re
 import threading
 import time
+from weakref import WeakKeyDictionary
 
 from ..qualification.state.pricing import StateDenied
 from .boundary_codec import (_binding, _wire, encode_complete_capture,
                              encode_reservation, encode_settlement)
-from .host_observation import _binding as _host_binding
-from .response_settlement import SettlementCommitUncertain
+from .binding import _binding as _host_binding
 
 
 OPEN = "/v1/internal/product-model/owner/session/open"
@@ -32,6 +33,8 @@ _SHA = re.compile(r"[0-9a-f]{64}\Z")
 _ORIGIN = re.compile(r"https://[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?:8444\Z")
 _SERVICE_GATES = {}
 _SERVICE_GATES_LOCK = threading.Lock()
+_EXCHANGE_STATES = WeakKeyDictionary()
+_CAPTURE_ADMISSION = ContextVar("product_owner_capture_admission", default=None)
 
 
 def _deny():
@@ -133,6 +136,40 @@ class OwnerReply:
     content_type: str = "application/json"
 
 
+def validate_owner_reply(policy, reply, channel, connections):
+    """Shared source validator, NOT a TLS transport or authentication issuer.
+
+    Only trusted startup's reviewed mTLS exchange may construct this evidence.
+    Keep one connections mapping with that exchange, including capture identity.
+    """
+    if (type(policy) is not OwnerPeerPolicy or type(reply) is not OwnerReply
+            or reply.status != 200 or reply.content_type != "application/json"
+            or type(connections) is not dict or set(connections) != {"operation", "capture"}
+            or channel not in connections):
+        _deny()
+    evidence = reply.evidence
+    if (type(evidence) is not OwnerTlsEvidence
+            or any(type(v) is not str for v in vars(evidence).values())
+            or evidence.origin != policy.origin or evidence.server_name != policy.server_name
+            or evidence.owner_task_arn != policy.owner_task_arn
+            or evidence.proxy_task_arn != policy.proxy_task_arn
+            or evidence.client_subject != policy.client_subject
+            or evidence.tls_version != "TLSv1.3" or evidence.alpn != "http/1.1"):
+        _deny()
+    for actual, expected in ((evidence.server_cert_sha256, policy.server_cert_sha256),
+                             (evidence.server_issuer_sha256, policy.server_issuer_sha256),
+                             (evidence.client_cert_sha256, policy.client_cert_sha256)):
+        if not hmac.compare_digest(_sha(actual), expected):
+            _deny()
+    ident = _slot(evidence.connection_id)
+    other = "capture" if channel == "operation" else "operation"
+    if (connections[channel] is not None and connections[channel] != ident
+            or connections[other] == ident):
+        _deny()
+    connections[channel] = ident
+    return _frame(reply.body)
+
+
 class OwnerHostGate:
     """One shared, process-lifetime fail-closed gate for all host sessions."""
 
@@ -145,6 +182,63 @@ class OwnerHostGate:
 
     def poison(self):
         self._available = False
+
+
+def owner_exchange_state(exchange, policy, host_gate):
+    """One loop-owned operation lock and peer binding for one borrowed exchange."""
+    if type(policy) is not OwnerPeerPolicy or type(host_gate) is not OwnerHostGate or not host_gate.available:
+        _deny()
+    key = (policy.origin, policy.owner_task_arn, policy.proxy_task_arn)
+    with _SERVICE_GATES_LOCK:
+        existing = _SERVICE_GATES.get(key)
+        if existing is not None and existing is not host_gate:
+            _deny()
+        _SERVICE_GATES[key] = host_gate
+    loop = asyncio.get_running_loop()
+    try:
+        state = _EXCHANGE_STATES.get(exchange)
+        if state is None:
+            state = (loop, policy, host_gate,
+                     {"operation": asyncio.Lock(), "capture": asyncio.Lock()},
+                     {"operation": None, "capture": None}, {})
+            _EXCHANGE_STATES[exchange] = state
+        if state[0] is not loop or state[1] != policy or state[2] is not host_gate:
+            _deny()
+        return state
+    except TypeError:
+        _deny()
+
+
+class _CaptureAdmissionLease:
+    """Revocable private context, created only by the bridge around its callback."""
+    def __init__(self, bridge, token):
+        self.bridge, self.token, self.active = bridge, token, True
+        state = owner_exchange_state(bridge.exchange, bridge.policy, bridge.host_gate)
+        self.source = state[5].get(bridge.capability_sha256)
+        self.deadline_ms = bridge.deadline_ms
+
+
+def validate_capture_admission_lease(lease, exchange, host_gate, expected_source):
+    if lease is None:
+        return "operation"
+    if (type(lease) is not _CaptureAdmissionLease or not lease.active
+            or lease.bridge.exchange is not exchange or lease.bridge.host_gate is not host_gate
+            or lease.bridge._capture_token is not lease.token or not host_gate.available
+            or expected_source is None or lease.source is None or expected_source != lease.source):
+        _deny()
+    source = json.loads(expected_source)
+    if (source[0] != _binding(lease.bridge.binding)
+            or source[1] != lease.bridge.grant_id or source[2] != lease.bridge.capability_sha256
+            or lease.deadline_ms != lease.bridge.deadline_ms
+            or lease.deadline_ms > source[4][3]
+            or lease.bridge.now_ms() >= lease.deadline_ms):
+        _deny()
+    return "capture"
+
+
+def admission_carrier(exchange, host_gate, expected_source):
+    lease = _CAPTURE_ADMISSION.get()
+    return validate_capture_admission_lease(lease, exchange, host_gate, expected_source), lease
 
 
 class ProductOwnerBridge:
@@ -216,38 +310,10 @@ class ProductOwnerBridge:
         return min(self.policy.max_exchange_ms, self.deadline_ms - at) / 1000
 
     def _peer(self, evidence, channel):
-        p = self.policy
-        if type(evidence) is not OwnerTlsEvidence or any((
-                type(value) is not str for value in vars(evidence).values())):
-            _deny()
-        if (evidence.origin != p.origin or evidence.server_name != p.server_name
-                or evidence.owner_task_arn != p.owner_task_arn
-                or evidence.proxy_task_arn != p.proxy_task_arn
-                or evidence.client_subject != p.client_subject
-                or evidence.tls_version != "TLSv1.3" or evidence.alpn != "http/1.1"):
-            _deny()
-        for actual, expected in ((evidence.server_cert_sha256, p.server_cert_sha256),
-                                 (evidence.server_issuer_sha256, p.server_issuer_sha256),
-                                 (evidence.client_cert_sha256, p.client_cert_sha256)):
-            if not hmac.compare_digest(_sha(actual), expected):
-                _deny()
-        ident = _slot(evidence.connection_id)
-        if channel == "operation":
-            if self._operation_connection is None:
-                self._operation_connection = ident
-            elif self._operation_connection != ident:
-                _deny()
-            if ident == self._capture_connection:
-                _deny()
-        elif channel == "capture":
-            if self._capture_connection is None:
-                self._capture_connection = ident
-            elif self._capture_connection != ident:
-                _deny()
-            if ident == self._operation_connection:
-                _deny()
-        else:
-            _deny()
+        connections = owner_exchange_state(self.exchange, self.policy, self.host_gate)[4]
+        validate_owner_reply(self.policy, OwnerReply(b"[]", evidence), channel, connections)
+        self._operation_connection = connections["operation"]
+        self._capture_connection = connections["capture"]
 
     async def _exchange(self, channel, path, body):
         if (path not in (OPEN, OPERATION, POLL, REPLY)
@@ -255,7 +321,11 @@ class ProductOwnerBridge:
                 or type(body) is not bytes or not 1 <= len(body) <= _WIRE_MAX):
             _deny()
         timeout = self._remaining()
-        task = asyncio.create_task(self.exchange(channel, path, body, timeout))
+        async def dispatch():
+            lock = owner_exchange_state(self.exchange, self.policy, self.host_gate)[3][channel]
+            async with lock:
+                return await self.exchange(channel, path, body, self._remaining())
+        task = asyncio.create_task(dispatch())
         try:
             done, _ = await asyncio.wait({task}, timeout=timeout)
             if not done:
@@ -307,12 +377,9 @@ class ProductOwnerBridge:
                     or challenge[1:] != [self.request_id, _binding(self.binding),
                                           self.deadline_ms]):
                 _deny()
-            source = self.capture_call({"requestId": self.request_id,
-                                        "binding": self.binding.copy(),
-                                        "deadlineMs": self.deadline_ms})
-            if not inspect.isawaitable(source):
-                _deny()
-            captured = await source
+            captured = await self._capture_callback(self.capture_call,
+                {"requestId": self.request_id, "binding": self.binding.copy(),
+                 "deadlineMs": self.deadline_ms}, token)
             if self._capture_token is not token:
                 _deny()
             value = {"requestId": self.request_id, "binding": self.binding,
@@ -323,12 +390,9 @@ class ProductOwnerBridge:
                     or challenge[1:] != [self.request_id, _binding(self.binding), self.grant_id]
                     or not callable(self._complete_capture)):
                 _deny()
-            source = self._complete_capture({"requestId": self.request_id,
-                                             "binding": self.binding.copy(),
-                                             "grantId": self.grant_id})
-            if not inspect.isawaitable(source):
-                _deny()
-            captured = await source
+            captured = await self._capture_callback(self._complete_capture,
+                {"requestId": self.request_id, "binding": self.binding.copy(),
+                 "grantId": self.grant_id}, token)
             if self._capture_token is not token:
                 _deny()
             frame = encode_complete_capture(self.request_id, captured)
@@ -342,6 +406,21 @@ class ProductOwnerBridge:
         if acknowledgement != ["meri.proxy.capture-ack/1", self.session_id,
                                self.request_id, kind]:
             _deny()
+
+    async def _capture_callback(self, callback, request, token):
+        lease = _CaptureAdmissionLease(self, token)
+        context = _CAPTURE_ADMISSION.set(lease)
+        try:
+            source = callback(request)
+            if not inspect.isawaitable(source):
+                _deny()
+            result = await source
+            if not lease.active or self._capture_token is not token:
+                _deny()
+            return result
+        finally:
+            lease.active = False
+            _CAPTURE_ADMISSION.reset(context)
 
     async def _operation(self, claim, kind):
         token = object()
@@ -410,6 +489,7 @@ class ProductOwnerBridge:
         self._complete_capture = capture
 
     async def settle_complete(self, request_id, result):
+        from .response_settlement import SettlementCommitUncertain
         if (self._state != "HELD" or self._complete_capture is None
                 or request_id != self.request_id):
             _deny()
