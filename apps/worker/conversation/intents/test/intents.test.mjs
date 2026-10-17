@@ -80,7 +80,7 @@ test('cross-tenant: a foreign availability snapshot mounts nothing; a foreign-te
 });
 
 test('operations without an owner, deferred names and reads are never registered, whatever the port offers',async()=>{
- const f=intentFixture(),extra=['update_task','save_memory','save_chat_attachments','create_powerpoint','run_analysis','list_scheduled_tasks',...DEFERRED_ORIGINALS.slice(0,2)].map(id=>({id,version:'0.2.0'}));
+ const f=intentFixture(),extra=['save_memory','save_chat_attachments','create_powerpoint','run_analysis','list_scheduled_tasks',...DEFERRED_ORIGINALS.slice(0,2)].map(id=>({id,version:'0.2.0'}));
  const m=await mountIntents(f,{port:withPort(f,s=>({...s,operations:[...s.operations,...extra]}))});
  try{assert.deepEqual((await m.client.listTools()).tools.map(t=>t.name),['propose_task']);assert.deepEqual(m.runtime.available.map(o=>o.id),['create_task']);}finally{await m.close();}
  assert.equal(await mountIntents(f,{port:withPort(f,s=>({...s,operations:extra.slice(0,7)}))}),null,'nothing owner-backed: no server');

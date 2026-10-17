@@ -1,6 +1,7 @@
 /** Canonical createIntentJournal store adapter. Sole table meri_intents.preparations; no public fallback or DDL execution.
  * Parent released exact DDL source authoring in central allocation 0b0b7abd; SQL execution/integration qualification remain pending. */
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
+import {validateShape as validateToolShape} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {data,own,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {assertPool,transact} from '../product-persistence/transaction.mjs';
 import {refuse,productFailure} from '../product-access/errors.mjs';
@@ -31,13 +32,20 @@ function entry(row){
  if(!row)refuse('INTENT_JOURNAL_STATE');const r=record(row.record);
  if(row.record_sha256!==hash(r))refuse('INTENT_JOURNAL_STATE');return data({record:r,state:row.state,outcome:outcome(row.state,row.outcome)});
 }
-export function createPostgresIntentJournalStore({pool}){
+function journalTransaction(pool){
  assertPool(pool);
- async function tx(signal,body){
+ return async function tx(signal,body,{readOnly=false}={}){
   nativeSignal(signal);
-  try{return await transact(pool,body,{check:()=>{if(signal?.aborted)refuse('CANCELLED');},unavailable:'INTENT_JOURNAL_UNAVAILABLE',uncertain:'INTENT_JOURNAL_UNKNOWN'});}
+  const check=()=>{if(signal?.aborted)refuse('CANCELLED');};
+  try{
+   const result=await transact(pool,body,{check,readOnly,unavailable:'INTENT_JOURNAL_UNAVAILABLE',uncertain:'INTENT_JOURNAL_UNKNOWN'});
+   if(readOnly)check();return result;
+  }
   catch(error){const code=productFailure(error)?.code;throw intentFault(code==='CANCELLED'?'CANCELLED':code==='INTENT_JOURNAL_UNAVAILABLE'?'UNAVAILABLE':'UNKNOWN');}
- }
+ };
+}
+export function createPostgresIntentJournalStore({pool}){
+ const tx=journalTransaction(pool);
  return Object.freeze({
   async claim({key:rawKey,record:rawRecord,signal}){
    const params=key(rawKey),r=record(rawRecord),sha=hash(r);
@@ -58,4 +66,42 @@ export function createPostgresIntentJournalStore({pool}){
    });
   },
  });
+}
+
+function preparedSchedule(raw,s,instructionsOnly){
+ try{
+  const row=data(raw),storedKey=data({tenantId:row.tenant_id,actorId:row.actor_id,conversationId:row.conversation_id,deliveryId:row.delivery_id});key(storedKey);
+  const retained=entry(row);
+  if(storedKey.tenantId!==s.tenantId||retained.state!=='PREPARED')refuse('INTENT_JOURNAL_STATE');
+  const custody=own(retained.outcome,['result','release']),result=own(custody.result,['status','proposal']);
+  const proposal=validateToolShape('ScheduleMutationOutput',result.proposal);
+  const operations=instructionsOnly?['schedule_task','update_scheduled_task']:['schedule_task','update_scheduled_task','cancel_scheduled_task'];
+  if(result.status!=='approval_required'||proposal.status!=='approval_required'||!operations.includes(proposal.operation)||retained.record.operation.id!==proposal.operation||proposal.proposalId!==s.proposalId||proposal.intentSha256!==s.intentSha256||proposal.projection.owner.tenantId!==s.tenantId)refuse('INTENT_JOURNAL_STATE');
+  if(custody.release.binding.tenantId!==storedKey.tenantId||custody.release.binding.actorId!==storedKey.actorId||custody.release.binding.conversationId!==storedKey.conversationId)refuse('INTENT_JOURNAL_STATE');
+  const originalScopes=new Set(custody.release.scopes.map(hash)),proposalScopes=proposal.projection.scopes.map(hash);
+  if(custody.release.scopes.length>100||originalScopes.size!==custody.release.scopes.length||!proposalScopes.length||proposalScopes.length>100||new Set(proposalScopes).size!==proposalScopes.length||proposal.projection.scopes.some(scope=>scope.tenantId!==s.tenantId)||proposalScopes.some(scope=>!originalScopes.has(scope)))refuse('INTENT_JOURNAL_STATE');
+  return data({key:storedKey,...retained});
+ }catch{refuse('INTENT_JOURNAL_STATE');}
+}
+
+/** Read-only custody facet over the same canonical table. PREPARED is retained proposal text, never firing authority.
+ * Select every row for the tenant/proposal before checking its hash/state/operation: ambiguity or corrupt custody cannot be
+ * hidden by a narrower SQL filter. Original release expiry is historical evidence, not a capability renewed by this read. */
+function scheduleReader(pool,instructionsOnly){
+ const tx=journalTransaction(pool);
+ return Object.freeze({async readPreparedSchedule(selection){
+  const {signal,...raw}=own(selection,['tenantId','proposalId','intentSha256'],['signal']),s=data(raw);nativeSignal(signal);
+  if(typeof s.tenantId!=='string'||!s.tenantId||s.tenantId.length>128||typeof s.proposalId!=='string'||!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/iu.test(s.proposalId)||typeof s.intentSha256!=='string'||!digest.test(s.intentSha256))throw intentFault('INVALID_ARGUMENTS');
+  return tx(signal,async client=>{
+   const rows=(await client.query(`SELECT tenant_id,actor_id,conversation_id,delivery_id,${COLUMNS} FROM ${TABLE} WHERE tenant_id=$1 AND outcome->'result'->'proposal'->>'proposalId'=$2 LIMIT 2`,[s.tenantId,s.proposalId])).rows;
+   if(!Array.isArray(rows)||rows.length>1)refuse('INTENT_JOURNAL_STATE');
+   if(rows.length===0)return null;
+   return preparedSchedule(rows[0],s,instructionsOnly);
+  },{readOnly:true});
+ }});
+}
+export function createPostgresPreparedScheduleReader({pool}){return scheduleReader(pool,true);}
+/** Human approval reads all canonical schedule proposals, including cancellation. It confers no approval or firing authority. */
+export function createPostgresScheduleProposalReader({pool}){
+ const reader=scheduleReader(pool,false);return Object.freeze({readProposal:reader.readPreparedSchedule});
 }

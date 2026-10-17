@@ -1,0 +1,52 @@
+{
+  "startedAt": "2026-10-17T02:16:50.030Z",
+  "cutoff": "2026-10-17T02:33:23.000Z",
+  "head": "69a61c36b1b98e5bc02591f2b4a4c32f14b828cf",
+  "tree": "9f6df335b70b3c91a6ec1c9e71fd4a1dc0b9a1af",
+  "port": 55436,
+  "database": "meri_prefs_task6_qual_20261017",
+  "steps": [
+    {
+      "step": "preflight",
+      "at": "2026-10-17T02:16:50.264Z",
+      "freeBytes": 5356523520,
+      "migrationBlob": "048a834c4335f97aa5f8691afc3c310188ec4388"
+    },
+    {
+      "step": "initialized",
+      "at": "2026-10-17T02:16:55.274Z",
+      "clusterBytes": 41086944
+    },
+    {
+      "step": "started",
+      "at": "2026-10-17T02:17:20.801Z",
+      "postmasterPid": 15816,
+      "startedAtEpoch": "1792203415"
+    },
+    {
+      "step": "provisioned",
+      "at": "2026-10-17T02:17:21.723Z",
+      "databaseOid": "16384",
+      "settingsOnly": true,
+      "narrowApplicationRole": true
+    },
+    {
+      "step": "failure",
+      "at": "2026-10-17T02:17:22.507Z",
+      "reason": "PREFERENCES_TEST_SUITE_FAILED"
+    }
+  ],
+  "testExit": "CHILD_FAILED_node.exe_EXIT_1",
+  "restore": null,
+  "cleanup": {
+    "stopped": true,
+    "dataRemoved": true,
+    "portFree": true,
+    "finishedBeforeDeadline": true
+  },
+  "failures": [
+    "PREFERENCES_TEST_SUITE_FAILED"
+  ],
+  "finishedAt": "2026-10-17T02:17:24.632Z",
+  "freeBytesAfter": 5354930176
+}

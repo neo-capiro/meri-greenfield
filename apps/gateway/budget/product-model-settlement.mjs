@@ -5,9 +5,10 @@
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {parseAdmittedGrantSet,integer,dbTime,assertRun} from './admitted-run-binding.mjs';
-import {digest,same} from './tool-budget-binding.mjs';
+import {digest,same,allocation} from './tool-budget-binding.mjs';
 import {PostgresBudgetStore,refuse} from './postgres-budget-store.mjs';
 import {PRODUCT_MAX_INPUT_TOKENS,PRODUCT_MAX_OUTPUT_TOKENS} from '../model-proxy/product-envelope.mjs';
+import {readOccurrenceCost} from './occurrence-cost-scope.mjs';
 
 const slot=/^[A-Za-z0-9_-]{1,128}$/u;
 const decimal=/^(0|[1-9][0-9]*)$/u;
@@ -103,7 +104,9 @@ export function createProductModelSettlement(configuration){
     const runRemaining=(await client.query(`SELECT COALESCE(sum(CASE WHEN state='UNKNOWN' THEN hold_micro_usd ELSE consumed_micro_usd END),0) AS total FROM ${t.budget_liabilities} WHERE run_id=$1 AND NOT (kind='model' AND slot=$2)`,[selected.binding.runId,id])).rows;
     if(remaining.length!==1||runRemaining.length!==1)refuse('PRODUCT_MODEL_ACCOUNTING_REFUSED');
     const inconsistent=observed.usage.inputTokens!==integer(row.input_tokens)||observed.usage.outputTokens>integer(row.max_output_tokens);
-    const quarantine=inconsistent||actual>money(row.hold_micro_usd)||money(budget.consumed_micro_usd)+money(remaining[0].held)+actual>money(budget.cap_micro_usd)||money(runRemaining[0].total)+actual>money(a.budgets.maxCostMicroUSD);
+    const occurrence=await readOccurrenceCost({client,tables:t,allocation:a,parseAllocation:allocation,exclude:{kind:'model',slot:id}});
+    const quarantine=inconsistent||actual>money(row.hold_micro_usd)||money(budget.consumed_micro_usd)+money(remaining[0].held)+actual>money(budget.cap_micro_usd)||money(runRemaining[0].total)+actual>money(a.budgets.maxCostMicroUSD)||
+     occurrence!==null&&occurrence.totalMicroUSD+actual>occurrence.maxCostMicroUSD;
     const budgetChange=await client.query(`UPDATE ${t.budget} SET consumed_micro_usd=consumed_micro_usd+$1,quarantined=quarantined OR $2 WHERE id=1`,[actual.toString(),quarantine]);
     if(budgetChange.rowCount!==1)refuse('PRODUCT_MODEL_ACCOUNTING_REFUSED');
     const requestChange=await client.query(`UPDATE ${t.requests} SET state='SETTLED',actual_micro_usd=$2,evidence_sha256=$3,settled_at=clock_timestamp() WHERE request_id=$1 AND state='UNKNOWN'`,[id,actual.toString(),observed.evidenceSha256]);

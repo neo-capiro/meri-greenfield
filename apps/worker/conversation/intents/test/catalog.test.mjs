@@ -22,8 +22,8 @@ test('every row is a catalog non-read behind an approval or draft boundary; read
 });
 
 test('owner-backed rows and explicit unavailability reasons',()=>{
- assert.deepEqual(INTENT_ROWS.filter(r=>r.unavailable===null).map(r=>r.operation.id),['create_word','create_excel','schedule_task','update_scheduled_task','cancel_scheduled_task','create_task']);
+ assert.deepEqual(INTENT_ROWS.filter(r=>r.unavailable===null).map(r=>r.operation.id),['create_word','create_excel','schedule_task','update_scheduled_task','cancel_scheduled_task','create_task','update_task']);
  const reasons=Object.fromEntries(INTENT_ROWS.filter(r=>r.unavailable!==null).map(r=>[r.operation.id,r.unavailable]));
- assert.deepEqual(Object.keys(reasons).sort(),['create_powerpoint','run_analysis','save_chat_attachments','save_memory','update_task']);
+ assert.deepEqual(Object.keys(reasons).sort(),['create_powerpoint','run_analysis','save_chat_attachments','save_memory']);
  for(const [id,reason] of Object.entries(reasons))assert.match(reason,/^(ROUTE_GAP|OWNER_MISSING): /u,id);
 });

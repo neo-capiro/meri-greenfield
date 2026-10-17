@@ -86,7 +86,8 @@ test('cross-tenant denial: foreign preparers are refused, journal entries never 
 
 test('only owner-backed operations mount; disabled, unknown and malformed calls prepare nothing',async()=>{
  const c=commandComposition();
- for(const action of ['task.update','memory.propose','artifact.file'])assert.throws(()=>createCommandIntentPreparer({commandOptions:{...c.commandOptions,action,operation:{id:'update_task',version:'0.2.0'}}}),code('INTENT_CONFIGURATION'),action);
+ for(const action of ['memory.propose','artifact.file'])assert.throws(()=>createCommandIntentPreparer({commandOptions:{...c.commandOptions,action,operation:{id:'update_task',version:'0.2.0'}}}),code('INTENT_CONFIGURATION'),action);
+ assert.throws(()=>createCommandIntentPreparer({commandOptions:{...c.commandOptions,operation:{id:'update_task',version:'0.2.0'}}}),code('INTENT_CONFIGURATION'),'operation/action mismatch');
  assert.throws(()=>createIntentMount({binding:c.binding,preparers:[c.preparer(),c.preparer()],journalStore:createMemoryJournalStore().port,now:()=>NOW,limits:{maxRequestMs:1000}}),code('INTENT_CONFIGURATION'));
  const off=mount({binding:c.binding,preparers:[c.preparer()],enabled:false}).mount;
  await assert.rejects(off.readAvailability(),code('UNAVAILABLE'));await assert.rejects(call(off),code('UNAVAILABLE'));
