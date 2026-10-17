@@ -49,6 +49,32 @@ export function createPostgresIntentJournalStore({pool}){
     if(rows.length!==1)refuse('INTENT_JOURNAL_STATE');return {claimed:false,entry:entry(rows[0])};
    });
   },
+  /** One delivery of this tenant/actor/conversation, or null. Read-only; never claims. */
+  async read({key:rawKey,signal}){
+   const params=key(rawKey);
+   return tx(signal,async client=>{
+    const rows=(await client.query(`SELECT ${COLUMNS} FROM ${TABLE} WHERE tenant_id=$1 AND actor_id=$2 AND conversation_id=$3 AND delivery_id=$4`,params)).rows;
+    if(rows.length>1)refuse('INTENT_JOURNAL_STATE');return rows.length===0?null:entry(rows[0]);
+   });
+  },
+  /** One conversation's deliveries in creation order (keyset after an existing delivery), at most `limit` (1..50). Read-only. */
+  async list({conversation:rawConversation,after=null,limit,signal}){
+   const [tenantId,actorId,conversationId]=key({...data(own(rawConversation,['tenantId','actorId','conversationId'])),deliveryId:'sdk:'+'0'.repeat(64)});
+   if(after!==null&&(typeof after!=='string'||!/^sdk:[a-f0-9]{64}$/u.test(after))||!Number.isSafeInteger(limit)||limit<1||limit>50)refuse('INTENT_JOURNAL_STATE');
+   return tx(signal,async client=>{
+    const scope='tenant_id=$1 AND actor_id=$2 AND conversation_id=$3';
+    if(after!==null&&(await client.query(`SELECT delivery_id FROM ${TABLE} WHERE ${scope} AND delivery_id=$4`,[tenantId,actorId,conversationId,after])).rows.length!==1)refuse('INTENT_JOURNAL_CURSOR');
+    const cursor=after===null?'':` AND (created_at,delivery_id) > (SELECT created_at,delivery_id FROM ${TABLE} WHERE ${scope} AND delivery_id=$4)`;
+    const rows=(await client.query(`SELECT delivery_id,created_at,${COLUMNS} FROM ${TABLE} WHERE ${scope}${cursor} ORDER BY created_at,delivery_id LIMIT ${limit+1}`,
+     after===null?[tenantId,actorId,conversationId]:[tenantId,actorId,conversationId,after])).rows;
+    const page=rows.slice(0,limit).map(row=>{
+     const created=row.created_at instanceof Date?row.created_at:new Date(row.created_at);
+     if(typeof row.delivery_id!=='string'||!/^sdk:[a-f0-9]{64}$/u.test(row.delivery_id)||!Number.isFinite(created.getTime()))refuse('INTENT_JOURNAL_STATE');
+     return data({deliveryId:row.delivery_id,createdAt:created.toISOString(),...entry(row)});
+    });
+    return data({entries:page,next:rows.length>limit?page.at(-1).deliveryId:null});
+   });
+  },
   async settle({key:rawKey,record:rawRecord,state,outcome:rawOutcome,signal}){
    const params=key(rawKey),r=record(rawRecord);if(state==='PENDING')refuse('INTENT_JOURNAL_STATE');const o=outcome(state,rawOutcome);
    if(state==='PREPARED'&&o.release===undefined)refuse('INTENT_JOURNAL_STATE');

@@ -22,14 +22,20 @@ export function createMemoryJournalStore(){
    rows.set(at,{record:structuredClone(record),state:'PENDING',outcome:null});if(state.loseClaimAck){state.loseClaimAck=false;throw Error('synthetic lost claim ACK');}return {claimed:true};},
   async settle({key,record,state:next,outcome}){state.settles++;const at=k(key),row=rows.get(at);
    if(!row||row.state!=='PENDING'||canonicalSha256(row.record)!==canonicalSha256(record))throw Error('synthetic settle refused');
-   row.state=next;row.outcome=structuredClone(outcome);if(state.loseSettleAck){state.loseSettleAck=false;throw Error('synthetic lost settle ACK');}return structuredClone(row);}}};
+   row.state=next;row.outcome=structuredClone(outcome);if(state.loseSettleAck){state.loseSettleAck=false;throw Error('synthetic lost settle ACK');}return structuredClone(row);},
+  async read({key}){if(state.readDown)throw Error('synthetic store unavailable');const row=rows.get(k(key));return row?structuredClone({record:row.record,state:row.state,outcome:row.outcome}):null;},
+  async list({conversation:c,after=null,limit}){if(state.readDown)throw Error('synthetic store unavailable');
+   const mine=[...rows].map(([at,row])=>[JSON.parse(at),row]).filter(([[t,a,conv]])=>t===c.tenantId&&a===c.actorId&&conv===c.conversationId);
+   const start=after===null?0:mine.findIndex(([[,,,d]])=>d===after)+1;if(after!==null&&start===0)throw Error('synthetic cursor refused');
+   const page=mine.slice(start,start+limit).map(([[,,,deliveryId],row],i)=>structuredClone({deliveryId,createdAt:new Date(NOW+start+i).toISOString(),record:row.record,state:row.state,outcome:row.outcome}));
+   return {entries:page,next:mine.length>start+limit?page.at(-1).deliveryId:null};}}};
 }
 /** A task.create composition: real metadata owner + real command interface/executor, approvals held by `approvals`. */
-export function commandComposition({tenantId='tenant'}={}){
+export function commandComposition({tenantId='tenant',approverActorId='reviewer',approvalStore:currentApprovals}={}){
  const f=commandFixture('task.create');
  const binding={...f.binding,tenantId},scopes=f.scopes.map(s=>({...s,tenantId}));
  const commandContext={binding,clientResolution:null},sql=createMetadataPoolFixture(),metadataCalls={prepare:0};
- const policy=createMetadataPolicyFixture({binding,scopes,requiredApprover:{tenantId,actorId:'reviewer'},expiresAt:new Date(NOW+45000).toISOString(),now:()=>f.state.now});
+ const policy=createMetadataPolicyFixture({binding,scopes,requiredApprover:{tenantId,actorId:approverActorId},expiresAt:new Date(NOW+45000).toISOString(),now:()=>f.state.now});
  let n=100;const metadataOwner=createTaskCreateApprovalMetadataOwner({store:createPostgresApprovalMetadataStore({pool:sql.pool}),commandContext,preparePolicy:policy.preparePolicy,now:()=>f.state.now,newId:()=>id(n++)});
  const hooks={};
  const approvalMetadataOwner={async prepare(v){metadataCalls.prepare++;if(hooks.prepare)return hooks.prepare(v,metadataOwner);return metadataOwner.prepare(v);},read:v=>metadataOwner.read(v)};
@@ -38,7 +44,7 @@ export function commandComposition({tenantId='tenant'}={}){
  const approvalStore={async getCurrent({proposalId}){const d=approvals.get(proposalId);if(!d)throw Error('no current approval');return JSON.stringify({decision:d,checkedAtMs:f.state.now,revoked:f.state.approvalRevoked});}};
  const approve=proposal=>approvals.set(proposal.proposalId,{proposalId:proposal.proposalId,commandSha256:proposal.commandSha256,decision:'approved',decidedAt:proposal.createdAt,expiresAt:new Date(NOW+40000).toISOString(),approver:proposal.requiredApprover,policyRevision:'p1'});
  const commandOptions={operation:{id:'create_task',version:'0.2.0'},action:'task.create',outputShape:'TaskCreateToolResult',commandContext,validators:commandToolValidators,assertProposal:assertProposalIntegrity,
-  approvalMetadataOwner,executor:f.create({approvalStore}),now:()=>f.state.now,limits:{maxRequestMs:1000,maxFactBytes:65536}};
+  approvalMetadataOwner,executor:f.create({approvalStore:currentApprovals??approvalStore}),now:()=>f.state.now,limits:{maxRequestMs:1000,maxFactBytes:65536}};
  /** The existing approved-execution path (`executeApproved`) with an execution request for exactly this proposal. */
  const executeApproved=proposal=>createCommandToolInterface(commandOptions).executeApproved(proposal,{...f.execution,proposalId:proposal.proposalId,commandSha256:proposal.commandSha256,idempotencyKey:proposal.command.idempotencyKey},'synthetic');
  return {f,binding,scopes,commandOptions,metadataCalls,hooks,sql,policy,approve,executeApproved,preparer:()=>createCommandIntentPreparer({commandOptions})};
@@ -47,6 +53,6 @@ export const delivery=n=>'sdk:'+String(n).padStart(64,'0');
 /** @param {{binding:object,preparers:object[],store?:object,now?:()=>number,enabled?:boolean,scopes?:any[],resultRelease?:object}} c */
 export function mount({binding,preparers,store=createMemoryJournalStore(),now=()=>NOW,enabled=true,scopes=commandFixture('task.create').scopes.map(s=>({...s,tenantId:binding.tenantId})),resultRelease}){
  // Synthetic current-authority boundary only; production must supply its canonical owner, never this fixture.
- const authority=resultRelease??{async check({selection,selectionSha256}){return {authorized:true,selectionSha256,binding:selection.binding,scopes,checkedAtMs:now(),expiresAtMs:NOW+60000};}};
+ const authority=resultRelease??{async check({selection,selectionSha256}){return {authorized:true,selectionSha256,binding:selection.binding,scopes,checkedAtMs:now(),expiresAtMs:now()+60000};}};
  return {store,mount:createIntentMount({binding,preparers,journalStore:store.port,now,limits:{maxRequestMs:5000},enabled,resultRelease:authority})};
 }
