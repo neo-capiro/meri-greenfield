@@ -7,7 +7,7 @@ import {binding,scopes,id,versions} from './lifecycle-fixture.mjs';
 import {fixture,check,at} from './next-run-recovery-fixture.mjs';
 import {hash} from '../boundary.mjs';
 const row=(x,b)=>x.f.state.allocations.get([b.tenantId,b.conversationId,b.runId].join(':'));
-const submit=x=>x.f.service.submit({credential:x.f.credential,input:x.f.input});
+const submit=async x=>{await x.f.service.allocateInput({credential:x.f.credential,input:x.f.input});return x.f.service.submit({credential:x.f.credential,input:x.f.input});};
 const history=x=>x.f.store.read(binding,{after:0,limit:100},check);
 const reserveFacts=(x,source,facts,n=1)=>x.f.store.nextRuns.reserve({source,target:{...source,runId:id(960+n),attemptId:id(970+n),workerId:id(980+n),writerFence:source.writerFence+1},facts,scopes,versions,policyRevision:'policy1',reservedAt:at},check);
 const turns=async n=>{for(let i=0;i<n;i++)await new Promise(resolve=>setImmediate(resolve));};

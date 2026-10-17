@@ -31,7 +31,8 @@ export function createConversationHistoryService({store,nextRunOwner,gate,retent
    catch(error){throw new ProductError(productFailure(error)?.code??'CONVERSATION_UNAVAILABLE','NOT_DISPATCHED');}
    try{await current(recheckConversation,saved.conversation);}catch(error){throw new ProductError(productFailure(error)?.code??'CONVERSATION_UNAVAILABLE','NOT_DISPATCHED');}
    let admitted;try{admitted=await nextRunOwner.admitTurn({principal:{tenantId:principal.tenantId,actorId:principal.actorId},...request,signal});}
-   catch(error){throw asProductError(error,'CONVERSATION_UNAVAILABLE','UNKNOWN');}
+   // A source not yet settled (or still live) refuses before any reservation write: a definite, retryable conflict, never UNKNOWN.
+   catch(error){if(['NEXT_RUN_SOURCE_UNSETTLED','NEXT_RUN_SOURCE_NOT_TERMINAL'].includes(error?.code))throw new ProductError('CONVERSATION_TURN_CONFLICT','NOT_DISPATCHED');throw asProductError(error,'CONVERSATION_UNAVAILABLE','UNKNOWN');}
    try{await servable(principal,request.conversationId);await current(recheckConversation,saved.conversation);}catch(error){throw new ProductError(productFailure(error)?.code??'CONVERSATION_UNAVAILABLE','RESULT_NOT_RELEASED');}
    return {schema:TURN_SCHEMA,...admitted};
   }),
