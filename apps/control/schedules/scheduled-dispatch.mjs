@@ -19,7 +19,7 @@ import {sdkMethod} from './temporal-schedule-mutations.mjs';
 import {snapshotOccurrence,occurrenceIdentity} from './scheduled-occurrence.mjs';
 import {workflowId} from '../conversations/temporal-dispatch.mjs';
 
-const PORTS=['scheduleOwner','store','dispatcher','runs','authority','taskInstructions','versions','now','maxRequestMs'];
+const PORTS=['scheduleOwner','store','dispatcher','runs','authority','taskInstructions','versions','now','maxRequestMs','runAdmission'];
 function optionsData(value,allowed,required=allowed) {
  if(!value||typeof value!=='object'||types.isProxy(value)||Object.getPrototypeOf(value)!==Object.prototype)denySchedule('SCHEDULE_DISPATCH_OPTIONS');
  const out={};for(const key of Reflect.ownKeys(value)){const d=Object.getOwnPropertyDescriptor(value,key);if(!allowed.includes(key)||!d.enumerable||!Object.hasOwn(d,'value'))denySchedule('SCHEDULE_DISPATCH_OPTIONS');out[key]=d.value;}
@@ -33,6 +33,7 @@ export function createScheduledDispatch(options) {
  const o=optionsData(options,PORTS,PORTS.slice(0,7)),now=o.now??Date.now,maxRequestMs=o.maxRequestMs??10000;
  const readFiring=sdkMethod(o.scheduleOwner,'readFiring'),openOccurrence=sdkMethod(o.scheduleOwner,'openOccurrence'),settleOccurrence=sdkMethod(o.scheduleOwner,'settleOccurrence'),accept=sdkMethod(o.store,'accept'),readOptional=sdkMethod(o.store,'readOptional');
  const start=sdkMethod(o.dispatcher,'start'),describeRun=sdkMethod(o.runs,'describe'),authorize=sdkMethod(o.authority,'authorize'),readInstruction=sdkMethod(o.taskInstructions,'read');
+ const admit=o.runAdmission===undefined?null:sdkMethod(o.runAdmission,'admit');
  try{validateShape('RuntimeVersions',o.versions);}catch{denySchedule('SCHEDULE_DISPATCH_OPTIONS');}
  const versions=frozenScheduleData(o.versions);
  if(typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)denySchedule('SCHEDULE_DISPATCH_OPTIONS');
@@ -129,12 +130,25 @@ export function createScheduledDispatch(options) {
   }
   return 'SCHEDULE_OCCURRENCE_UNRESOLVED';
  }
- function admission(c,scopes,prompt) {
-  const b=c.id.binding,createdAt=new Date(now()).toISOString(),policyRevision=scopes[0].policyRevision;
+ function admission(c,scopes,prompt,saved=null) {
+  const b=c.id.binding,createdAt=saved?.run.createdAt??new Date(now()).toISOString(),policyRevision=scopes[0].policyRevision;
   return {conversation:{conversationId:b.conversationId,owner:{tenantId:b.tenantId,actorId:b.actorId},scopes,createdAt,policyRevision},
-   run:{binding:b,state:'queued',scopes,createdAt,policyRevision,versions},
-   request:{requestId:c.id.requestId,prompt,skill:null,window:null,windowRequest:null},
+   run:saved?.run??{binding:b,state:'queued',scopes,createdAt,policyRevision,versions},
+   request:saved?.request??{requestId:c.id.requestId,prompt,skill:null,window:null,windowRequest:null},
    event:{contractVersion:'0.1.0',eventId:c.id.eventId,binding:b,sequence:1,createdAt,scopes,type:'run.status',data:{state:'queued',reasonCode:null}}};
+ }
+ /** The runtime facet must prove durable original admission, then the canonical store must independently show the same request.
+  * Receipt text alone never permits a native start. The low-level direct-accept path remains compatible for existing callers. */
+ async function nativeAdmission(c,input) {
+  const raw=await c.life.run(signal=>admit({occurrence:c.occ,occurrenceKey:c.id.occurrenceKey,effect:c.effect,input,signal,deadlineMs:c.deadline()}));
+  const r=frozenScheduleData(raw);
+  if(!r||Object.keys(r).length!==4||!['binding','requestSha256','expiresAtMs','replayed'].every(k=>Object.hasOwn(r,k))||
+   canonicalSha256(r.binding)!==canonicalSha256(c.id.binding)||r.requestSha256!==canonicalSha256(input.request)||
+   !Number.isSafeInteger(r.expiresAtMs)||r.expiresAtMs<=now()||typeof r.replayed!=='boolean')denySchedule('SCHEDULE_ADMISSION_RECEIPT');
+  c.limit(r.expiresAtMs);
+  const saved=await existing(c);
+  if(saved===null||canonicalSha256(saved.request)!==r.requestSha256||canonicalSha256(saved.run.versions)!==canonicalSha256(input.run.versions)||
+   canonicalSha256(saved.run.scopes)!==canonicalSha256(input.run.scopes)||saved.run.policyRevision!==input.run.policyRevision)denySchedule('SCHEDULE_ADMISSION_RECEIPT');
  }
 
  async function dispatch(request) {
@@ -155,7 +169,10 @@ export function createScheduledDispatch(options) {
    }
    const blocked=await barrier(c);
    if(blocked)return result('REFUSED',c.id,blocked,admitted);
-   if(!admitted){admitted=null;await c.life.run(()=>accept(admission(c,receipt.scopes,prompt),c.life.check));admitted=true;}
+   if(!admitted){admitted=null;const input=admission(c,receipt.scopes,prompt);if(admit)await nativeAdmission(c,input);else await c.life.run(()=>accept(input,c.life.check));admitted=true;}
+   // A committed request is evidence of admission, not of a successfully released native proof. UNKNOWN recovery and legacy
+   // queued rows must pass the required runtime facet again, with the saved request/time unchanged, before any workflow start.
+   else if(admit)await nativeAdmission(c,admission(c,saved.run.scopes,saved.request.prompt,saved));
    if(await current(c,'before_start')===null)return await settled(c,'REFUSED',true,'SCHEDULE_AUTHORITY_REFUSED');
    // The canonical dispatcher starts the exact workflow ID with REJECT_DUPLICATE/USE_EXISTING; a lost acknowledgement is UNKNOWN.
    await c.life.run(signal=>start({binding:c.id.binding,signal,deadlineMs:c.deadline()}));

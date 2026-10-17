@@ -99,5 +99,5 @@ export function createScheduleToolValidators({validateShape,schema}) {
     return out;
   }
   function outputDefinition(id) {stem(id);return id==='list_scheduled_tasks'?'ListScheduledTasksOutput':'ScheduleMutationOutput';}
-  return Object.freeze({normalizeInput,assertResult,prepare,inputDefinition:id=>stem(id)+'Input',requestDefinition:id=>stem(id)+'Request',outputDefinition});
+  return Object.freeze({normalizeRequest:normalized,normalizeInput,assertResult,prepare,inputDefinition:id=>stem(id)+'Input',requestDefinition:id=>stem(id)+'Request',outputDefinition});
 }
