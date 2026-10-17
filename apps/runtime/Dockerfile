@@ -21,8 +21,11 @@ RUN npm ci --prefix apps/artifacts/storage --omit=dev --ignore-scripts --no-audi
 COPY apps ./apps
 COPY packages ./packages
 COPY infra/product-preview/runtime-packages.lock.json ./infra/product-preview/runtime-packages.lock.json
-# Fetch only reviewed public index/APK bytes. The final install has no network.
-RUN node apps/runtime/build/runtime-packages.mjs fetch --lock infra/product-preview/runtime-packages.lock.json --directory /opt/meri-runtime-packages
+# Stage the retained public index/APK snapshot through the same exact size/hash
+# checks. The upstream index URL rotates; the build never downloads it. Kept
+# outside /opt/meri so the snapshot is not copied into the runtime image.
+COPY infra/product-preview/runtime-packages/x86_64 /opt/meri-runtime-input/x86_64
+RUN --network=none node apps/runtime/build/runtime-packages.mjs fetch --lock infra/product-preview/runtime-packages.lock.json --directory /opt/meri-runtime-packages --from /opt/meri-runtime-input/x86_64
 # Bake the pinned, upstream-verified SWC raw addon while the image layer is writable.
 # Runtime retains the read-only root and non-executable temporary mount.
 RUN --network=none node apps/runtime/build/materialize-swc.mjs
