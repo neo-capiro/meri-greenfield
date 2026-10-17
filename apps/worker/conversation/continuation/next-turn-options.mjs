@@ -1,7 +1,7 @@
 /** Next-prompt lineage is distinct from lifecycle resume/fork. No credentials or SDK codec. */
 import {validateShape,assertWorkspacePaths,canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 import {own,data} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
-import {continuationContextSha256} from './options.mjs';
+import {continuationContextSha256,lineageResumeOptions} from './options.mjs';
 import {selectSkill} from '../../../../packages/skills/index.mjs';
 import AjvModule from 'ajv/dist/2020.js';
 import formatsModule from 'ajv-formats';
@@ -36,5 +36,5 @@ export function buildNextTurnOptions(value,target){
  if(!same(n.sourceRequest,t.sourceRequest)||!same(cp.scopes,t.scopes)||!same(cp.versions,t.versions)||t.versions.sdk!=='0.3.295'||t.versions.cli!=='2.1.295'||
   continuationContextSha256(t.request,t.scopes)!==n.contextSha256||!same(t.sourceRequest.windowRequest,t.request.windowRequest)||t.sourceRequest.requestId===t.request.requestId)fail();
  if(t.request.skill!==null&&!same(selectSkill(t.request.skill.skillId,t.request.skill.skillVersion).pin,t.request.skill))fail();
- return Object.freeze({resume:cp.sessionId,...(n.resumeSessionAt===null?{}:{resumeSessionAt:n.resumeSessionAt})});
+ return lineageResumeOptions({sessionId:cp.sessionId,resumeSessionAt:n.resumeSessionAt,targetSessionId:null});
 }

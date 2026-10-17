@@ -4,7 +4,7 @@ import {own,data} from '../../../packages/contracts/commands-0.2/execution-bound
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {executionFault} from './execution-broker.mjs';
 const callbacks=new Set(['abortController','sessionStore','canUseTool','mcpServers','hooks']);
-const fields=['cwd','settingSources','settings','skills','allowedTools','tools','permissionMode','includePartialMessages','systemPrompt','model','maxTurns','maxBudgetUsd','sessionStoreFlush','env','resume','forkSession','resumeSessionAt','outputFormat'];
+const fields=['cwd','settingSources','settings','skills','allowedTools','tools','permissionMode','includePartialMessages','systemPrompt','model','maxTurns','maxBudgetUsd','sessionStoreFlush','env','resume','forkSession','resumeSessionAt','sessionId','outputFormat'];
 const singleton=value=>{if(types.isProxy(value)||!Array.isArray(value)||Object.getPrototypeOf(value)!==Array.prototype)refuse();const d=Object.getOwnPropertyDescriptors(value);if(Reflect.ownKeys(d).length!==2||d.length?.value!==1||!Object.hasOwn(d['0']??{},'value'))refuse();return d['0'].value;};
 const refuse=()=>{throw executionFault('SDK_OPTIONS_REFUSED');};
 export function projectNativeSdkOptions(options){

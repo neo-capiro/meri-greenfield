@@ -87,11 +87,13 @@ async function composeRun(t,plane,objects,run,receipt,lineage){
  const probe=buildConversationOptions({...runtime,cwd:workspace,sessionStore:{async load(){},async append(){},async listSubkeys(){}},sdkConfigDirectory,sdkSecureStorageDirectory:secureStorageDirectory},new AbortController());
  // The qualification route's one launch change joins the descriptor probe here, the runner query below and the fixture's launch plan identically.
  probe.env=withQualificationEnvironment(probe.env,trust);
- if(lineage)probe.resume=lineage.resume; // the next-turn options of a completion checkpoint carry only `resume`
  probe.systemPrompt+=requestContextSuffix({window:saved.request.window,scopes,skill:saved.request.skill});
- // The runner pins the run-invariant template (sdk-option-template.mjs); `resume` stays in it, so run 2's template differs from run 1's.
+ // The runner pins the run-invariant template (sdk-option-template.mjs). Continuation fields are not in it: the runner checks them exactly
+ // against the restoration its SDK session mirror was initialized with, so run 2's pin is computed like run 1's, before `resume`. (This
+ // harness gives each run its own secure-storage root, a literal template value, so the two hashes still differ here.)
  const authoritySha256=hash({scopes,selectedClientId:CLIENT_ID,policyRevision:plane.policyRevision});
  const sdkOptionsSha256=sdkOptionsTemplateSha256(probe,{workspace,configDirectory:sdkConfigDirectory,authoritySha256});
+ if(lineage)probe.resume=lineage.resume; // the next-turn options of a completion checkpoint carry `resume` (the descriptor below needs it)
  let descriptor=null;try{sdkQuery({prompt:saved.request.prompt,options:{...probe,spawnClaudeCodeProcess(r){descriptor={command:r.command,args:[...r.args],cwd:r.cwd,env:{...r.env}};throw Error('DESCRIPTOR_CAPTURED_NO_SPAWN');}}});}catch{}
  assert.ok(descriptor,label+': the SDK produced a launch descriptor');const {CLAUDE_CONFIG_DIR:configDir,ANTHROPIC_AUTH_TOKEN:issued,...templateEnv}=descriptor.env;assert.equal(configDir,sdkConfigDirectory);assert.equal(issued,runtime.proxyCredential);
  const launchTemplate={command:descriptor.command,args:descriptor.args,env:templateEnv},executableSha256=sha(readFileSync(descriptor.command));
@@ -165,7 +167,7 @@ test('composed next turn: a second prompt in the same conversation restores the 
   const h2=await run2.facts();receipt.run2.conversation=h2;
   assert.equal(h2.runState,'completed');assert.equal(h2.events[0].sequence,1);assert.deepEqual(h2.events.map(e=>e.type),['run.status','run.status','run.status','message.delta','checkpoint.verified','run.status']);
   assert.equal(h2.completion.state,'PUBLISHED');assert.deepEqual(h2.restorations.map(r=>r.state),['RESTORED'],'the first turn\'s checkpoint was restored for the second run');assert.equal(h2.durableSdkSessions.length,1);assert.ok(h2.routes['/v1/runner/checkpoint/complete']>=1);
-  assert.equal(receipt.run2.launchTemplate.resumeArgument,true,'the second launch resumes the first turn\'s SDK session');assert.notEqual(receipt.run2.sdkOptionsSha256,receipt.run1.sdkOptionsSha256);
+  assert.equal(receipt.run2.launchTemplate.resumeArgument,true,'the second launch resumes the first turn\'s SDK session');
   const runs=await plane.store.nextRuns.listRuns({tenantId:f.binding.tenantId,conversationId:f.binding.conversationId},check);
   assert.deepEqual(runs.runs.map(r=>[r.binding.writerFence,r.state,r.sequenceBase,r.lastSequence]),[[1,'completed',0,h1.lastSequence],[2,'completed',h1.lastSequence,h2.lastSequence]]);assert.deepEqual(runs.reservations.map(r=>r.state),['ACCEPTED']);
   receipt.conversation={runs:runs.runs.map(r=>({writerFence:r.binding.writerFence,runId:r.binding.runId,state:r.state,sequenceBase:r.sequenceBase,lastSequence:r.lastSequence})),reservations:runs.reservations,immutableObjects:objects.size(),starts:plane.counters.starts,revocations:plane.counters.revocations};

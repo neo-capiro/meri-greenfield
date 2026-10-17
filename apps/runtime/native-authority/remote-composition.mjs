@@ -26,7 +26,7 @@ import {createTaskCheckpointSource} from './task-checkpoint-source.mjs';
 import {createNativeCheckpointCapture} from './checkpoint-capture.mjs';
 import {createNativeCompletionCapture} from './completion-capture.mjs';
 import {createRemoteRunnerQuery} from './runner-query.mjs';
-import {sdkOptionsPin} from './sdk-option-template.mjs';
+import {sdkOptionsPin,sdkOptionsRestoration} from './sdk-option-template.mjs';
 import {sdkSessionOperations} from '../../../packages/contracts/runtime-0.2/session.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {capabilityDigest,matchesCapability,compileNativeTaskAccess} from './task-verifier.mjs';
@@ -54,9 +54,11 @@ export function createRemoteNativeController(configuration){
 export function createRemoteNativeWorker(configuration){
  const c=own(configuration,['original','preparationIntent','controlCapabilitySha256','taskCapabilitySha256','taskArn','native','processTransport'],['capture','session','enabled','now','limits']);
  exactOriginal(c.processTransport.original,c.original);if(!matchesCapability(c.processTransport.credential,c.taskCapabilitySha256))throw Error('REMOTE_TASK_BINDING_REFUSED');
- // The SDK options pin is the configured run-invariant template plus this run's facts from the same intent and original binding.
+ // The SDK options pin is the configured run-invariant template plus this run's facts from the same intent and original binding. A
+ // continuation run's resume fields are checked against the restoration the runner initialized this task's SDK session mirror with
+ // (remote-conversation-runner.mjs hands the same mirror's session here and its factory to the runner); without a mirror a run is fresh.
  const i=compileNativePreparationIntent(c.preparationIntent);
- let nativeTask,activeQuery;const remoteQuery=createRemoteRunnerQuery({...c.processTransport,sdkOptions:sdkOptionsPin(i,c.original.binding)}),query=input=>{activeQuery=remoteQuery(input);return activeQuery;};
+ let nativeTask,activeQuery;const remoteQuery=createRemoteRunnerQuery({...c.processTransport,sdkOptions:sdkOptionsPin(i,c.original.binding),...(c.session?{restoration:sdkOptionsRestoration(c.original.binding,c.session)}:{})}),query=input=>{activeQuery=remoteQuery(input);return activeQuery;};
  const workspace=createSupervisorWorkspace({binding:c.original.binding,workspace:i.workspace,expiresAtMs:c.original.expiresAtMs,now:c.now??Date.now});
  if(c.capture&&c.session)throw Error('REMOTE_CAPTURE_CONFIGURATION');
  const capture=c.session?createTaskCheckpointSource({original:c.original,workspace:i.workspace,session:c.session,native:{close:()=>nativeTask.close(),inspect:value=>nativeTask.inspect(value)},closeQuery:()=>activeQuery.close(),now:c.now??Date.now,maxRequestMs:c.limits?.maxRequestMs??8000}):c.capture;
