@@ -78,14 +78,15 @@ Each service has a material-init container with a `SUCCESS` gate, a read-only ro
 
 Rollback: delete the stack. Nothing ran.
 
-## Stage 4: public route (approval: dot owns the listener and zone; Neo approves; HELD for priority reconciliation)
+## Stage 4: public route (dot owns the listener and zone; Neo approves; follows dot's immutable map)
 
-- **Priority conflict (dot, 17 Oct 11:06 UTC).** Priority 4 is the only free slot below the host-agnostic `/api/*` at 10. Core PR62 also reserves it, to move Core's guard 3 to 4 when it adds Core GET at 3. Priorities are listener-wide, so Meri needs a slot in the **single reconciled priority map** that dot's Core owner is preparing. No listener write happens until that map is agreed.
-- Target group: IP, HTTP 8080 to control, health `/health/live`.
-- One host-only rule for `meri-preview.capiro.ai` that forwards all paths. Meri control's public boundary returns 404 for everything except `/api/conversations*` and `/api/action-followthrough/session`. The rule must sit **below 10**, otherwise Meri-host `/api/*` misses fall through to production Core.
-- Route 53 alias `meri-preview.capiro.ai` → `capiro-prod-alb`.
-- Core rules and the guard are unchanged.
-- **Rollback keeps a host-deny boundary.** Change the Meri rule's action in place to a fixed JSON 404 for the Meri host, never delete it, so cached clients can never reach production `/api/*`. Only after the DNS record is removed and its TTL has passed may the deny rule be retired, in a separately approved step.
+The shared-listener map is capiro-backend PR78 at `bcdd689956e1aff3fa316103e75ec60ebe024fda` ([operator procedure](https://github.com/neo-capiro/capiro-backend/blob/bcdd689956e1aff3fa316103e75ec60ebe024fda/docs/core-meri-shared-listener-reconciliation-20261017.md)). It is source-accepted only; no listener write is approved. This stage receives that map with no conflict.
+
+- Relocations run first, by dot: `9→16`, `8→9`, `7→8`, `6→7`. Core keeps 1–2, its proposed GET at 3 and the retained guard at 4. Rules 5 and 10–15 are unchanged.
+- **Meri rule at priority 6**: exactly `meri-preview.capiro.ai`, host-only, all methods and paths, created as a **fixed JSON 404 with retention**. Its ARN, host and action are read back and the Meri-host negative matrix is tested before any DNS alias exists.
+- Qualification (separate approval) changes **only that rule's action** to forward to the one reviewed Meri control target group (IP, HTTP 8080, health `/health/live`), with the same ARN and priority. Meri control's public boundary still returns 404 for everything except `/api/conversations*` and `/api/action-followthrough/session`. Target health is not admission proof.
+- Route 53 alias `meri-preview.capiro.ai` → `capiro-prod-alb` is published only after the deny boundary and target gates pass.
+- **Rollback is action-first.** Change rule 6 back to fixed JSON 404 and read back the same ARN and action, then drain or stop the Meri targets, then remove DNS under its own approval. **The priority-6 deny stays in place while the host can reach this ALB**, because an explicit `Host` header bypasses DNS and TTL. Removing it would expose Meri-host `/api/*` to production rule 10.
 ## Stage 5: bounded activation smoke (approval: Neo plus dot for Core)
 
 | Order | Service | Count | Size (vCPU/GiB) | $/hour |
@@ -122,6 +123,6 @@ Fable returns the release packet: every source, image, config, secret **referenc
 2. One more qualification build for the Temporal server image (about $4), plus Build B once dot lifts its hold.
 3. Stage 0 + 1 (snapshot, then the reviewed SQL).
 4. Stage 2 (security/network), then Stage 3 (zero-count services).
-5. Stage 4 after dot's reconciled priority map, then the Stage 5 smoke window ($5 ceiling, 2 hours).
+5. Stage 4 under PR78's map (dot executes the listener writes), then the Stage 5 smoke window ($5 ceiling, 2 hours).
 
 Each approval is consumed by its stage; a failure never grants a retry.
