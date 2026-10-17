@@ -4,6 +4,7 @@ Source sealing and archive verification belong to image-build-source.py. The exa
 reviewed buildspec authenticates both module byte hashes before executing this file.
 """
 import argparse
+import base64
 from contextlib import contextmanager
 from contextvars import ContextVar
 import importlib.util
@@ -48,6 +49,7 @@ _ERROR_CODES = frozenset("PRODUCT_IMAGE_" + name for name in (
     "COMMAND_UNAVAILABLE_OR_TIMEOUT", "DUPLICATE_KEY", "DUPLICATE_MEMBER",
     "FILE_BOUND", "IMAGE_IDENTITY", "IMAGE_MEASUREMENT", "IMAGE_READBACK",
     "LOCAL_IMAGE_EXISTS", "LOCAL_PROBE_EXISTS", "MANIFEST_BOUND",
+    "LINUX_CASES_UNPROVEN", "LINUX_REPORTER_UNPROVEN",
     "MANIFEST_ORDER", "MANIFEST_SHA_MISMATCH", "MANIFEST_SHAPE",
     "MEMBER_ANCESTOR", "MEMBER_PATH", "MEMBER_TYPE", "NODE_PIN",
     "OBJECT_BINDING", "OBJECT_BOUND", "PRIVATE_MEMBER", "PRODUCER_DEADLINE",
@@ -58,6 +60,9 @@ _ERROR_CODES = frozenset("PRODUCT_IMAGE_" + name for name in (
     "TAG_PIN",
 ))
 _COMMAND_STATUSES = frozenset(("EXIT_NONZERO", "TIMEOUT", "BOUND", "UNAVAILABLE"))
+_LINUX_CASE_IDS = frozenset((*(f"B{i:02}" for i in range(1, 7)),
+                            *(f"R{i:02}" for i in range(1, 7)),
+                            *(f"W{i:02}" for i in range(1, 13))))
 _EXCEPTION_TYPES = {FileNotFoundError: "MISSING_FILE", PermissionError: "PERMISSION", OSError: "OS",
                     json.JSONDecodeError: "JSON", ImportError: "IMPORT", KeyError: "KEY",
                     TypeError: "TYPE", ValueError: "VALUE", TimeoutError: "TIMEOUT"}
@@ -118,9 +123,57 @@ def _report_command(diagnostic, detail):
 
 
 def _diagnostic_receipt(diagnostic, status):
-    return {"schemaVersion": 1, "status": status, "phase": _phase(diagnostic),
+    receipt = {"schemaVersion": 1, "status": status, "phase": _phase(diagnostic),
             "diagnosticOwner": diagnostic.get("diagnosticOwner"), "primary": diagnostic.get("primary"),
             "cleanup": diagnostic.get("cleanup", {"status": "NOT_RUN", "failure": None, "additionalFailures": []})}
+    if status == "FAILED" and (diagnostic.get("primary") or {}).get("phase") == "LINUX_TESTS":
+        receipt["linuxTests"] = diagnostic.get("linuxTests", {"status": "UNAVAILABLE", "observedCases": 0,
+            "failedCaseIds": [], "unknownFailures": 0, "unknownOutcomes": 0, "duplicateCases": 0,
+            "skippedCases": 0})
+    return receipt
+
+
+def _read_linux_reporter(data):
+    """Accept only reporter-owned bounded IDs, never child TAP or error text."""
+    if len(data) > 4096:
+        return None
+    try:
+        row = json.loads(data.decode("ascii"))
+    except (UnicodeError, ValueError):
+        return None
+    if type(row) is not dict or set(row) != {"schemaVersion", "observedCases", "failedCaseIds", "unknownFailures", "unknownOutcomes", "duplicateCases", "skippedCases"} or row["schemaVersion"] != 1:
+        return None
+    count, failures = row["observedCases"], row["failedCaseIds"]
+    unknown, duplicate = row["unknownFailures"], row["duplicateCases"]
+    unknown_outcomes, skipped = row["unknownOutcomes"], row["skippedCases"]
+    if type(count) is not int or not 0 <= count <= 24 or type(failures) is not list or len(failures) > 24 or \
+            any(type(case) is not str or case not in _LINUX_CASE_IDS for case in failures) or len(set(failures)) != len(failures) or \
+            type(unknown) is not int or not 0 <= unknown <= 25 or type(unknown_outcomes) is not int or not 0 <= unknown_outcomes <= 25 or \
+            type(duplicate) is not int or not 0 <= duplicate <= 25 or type(skipped) is not int or not 0 <= skipped <= 25:
+        return None
+    return {"status": "COMPLETE", "observedCases": count, "failedCaseIds": sorted(failures),
+            "unknownFailures": unknown, "unknownOutcomes": unknown_outcomes,
+            "duplicateCases": duplicate, "skippedCases": skipped}
+
+
+def _run_linux_tests(sandbox, context, diagnostic):
+    reporter = context / "infra/product-preview/image-build-test-reporter.mjs"
+    need(reporter.is_file() and 0 < reporter.stat().st_size <= 8192, "LINUX_REPORTER_UNPROVEN")
+    reporter_url = "data:text/javascript;base64," + base64.b64encode(reporter.read_bytes()).decode("ascii")
+    timeout = min(180, _deadline - time.monotonic()) if _deadline is not None else 180
+    need(timeout > 0, "PRODUCER_DEADLINE")
+    diagnostic["linuxTests"] = {"status": "UNAVAILABLE", "observedCases": 0,
+        "failedCaseIds": [], "unknownFailures": 0, "unknownOutcomes": 0,
+        "duplicateCases": 0, "skippedCases": 0}
+    code, output = _source.bounded_command(sandbox + ["--test", "--test-reporter=" + reporter_url,
+        *LINUX_ONLY_TESTS], timeout=timeout, report=lambda detail: _report_command(diagnostic, detail))
+    parsed = _read_linux_reporter(output)
+    if parsed is not None:
+        diagnostic["linuxTests"] = parsed
+    need(code == 0, "COMMAND_FAILED")
+    need(parsed is not None and parsed["observedCases"] == 24 and not parsed["failedCaseIds"] and
+         parsed["unknownFailures"] == 0 and parsed["unknownOutcomes"] == 0 and
+         parsed["duplicateCases"] == 0 and parsed["skippedCases"] == 0, "LINUX_CASES_UNPROVEN")
 
 
 def _save_diagnostic(diagnostic, status):
@@ -327,7 +380,7 @@ def _produce(pin, output, diagnostic):
             # These fixtures require POSIX path and owner semantics. Qualify them
             # inside the exact nonroot image before obtaining registry credentials.
             diagnostic["phase"] = "LINUX_TESTS"
-            run(sandbox + ["--test", *LINUX_ONLY_TESTS], timeout=180)
+            _run_linux_tests(sandbox, context, diagnostic)
             # No registry credentials exist until all source and image checks pass.
             diagnostic["phase"] = "ECR_AUTH"
             password = run(["aws", "--region", REGION, "ecr", "get-login-password"])

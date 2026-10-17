@@ -7,11 +7,31 @@ import {join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createHash} from 'node:crypto';
 import {createProductImageBuildRecipe} from './image-build-recipe.mjs';
+import productImageTestReporter from './image-build-test-reporter.mjs';
 
 const verifier=fileURLToPath(new URL('./image-build-source.py',import.meta.url));
 const producer=fileURLToPath(new URL('./image-build-producer.py',import.meta.url));
+const reporter=fileURLToPath(new URL('./image-build-test-reporter.mjs',import.meta.url));
 const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
 const python=(args,options={})=>spawnSync(process.env.MERI_IMAGE_BUILD_TEST_PYTHON??(process.platform==='win32'?'python':'python3'),['-I','-B','-S',...args],{encoding:'utf8',timeout:30000,...options});
+
+test('inline reporter emits only fixed case IDs and counts for foreign, skipped and failed outcomes',async()=>{
+ const file='/opt/meri/apps/runtime/test/prepared-candidate-bootstrap.test.mjs';
+ const name='standard task bootstrap polls only existing capability route and returns validated original gated binding';
+ async function render(events){async function* source(){yield* events;}let output='';for await(const row of productImageTestReporter(source()))output+=row;return JSON.parse(output);}
+ assert.deepEqual(await render([{type:'test:pass',data:{file,name}}]),{schemaVersion:1,observedCases:1,failedCaseIds:[],unknownFailures:0,unknownOutcomes:0,duplicateCases:0,skippedCases:0});
+ const unsafe=await render([{type:'test:pass',data:{file,name,skip:'secret skip reason'}},{type:'test:pass',data:{file:'/opt/meri/foreign.test.mjs',name:'secret test name'}},{type:'test:fail',data:{file,name:'secret dynamic error'}}]);
+ assert.equal(unsafe.skippedCases,1);assert.equal(unsafe.unknownOutcomes,2);assert.equal(unsafe.unknownFailures,1);assert.ok(!JSON.stringify(unsafe).includes('secret'));
+ assert.deepEqual((await render([{type:'test:fail',data:{file,name}}])).failedCaseIds,['B01']);
+ assert.equal((await render([{type:'test:pass',data:{file,name,todo:'secret todo'}}])).skippedCases,1);
+ const files=['apps/runtime/test/prepared-candidate-bootstrap.test.mjs','apps/runtime/test/remote-conversation-runner.test.mjs','apps/runtime/temporal-product-token-writer.test.mjs'];
+ const all=files.flatMap(path=>[...readFileSync(fileURLToPath(new URL(`../../${path}`,import.meta.url)),'utf8').matchAll(/^test\('([^']+)'/gmu)].map(match=>({type:'test:pass',data:{file:`/opt/meri/${path}`,name:match[1]}})));
+ assert.equal(all.length,24);
+ const complete=await render(all);
+ assert.deepEqual(complete,{schemaVersion:1,observedCases:24,failedCaseIds:[],unknownFailures:0,unknownOutcomes:0,duplicateCases:0,skippedCases:0});
+ assert.equal((await render([...all,all[0]])).duplicateCases,1);
+ assert.equal((await render(all.slice(1))).observedCases,23);
+});
 const git=(root,...args)=>execFileSync('git',['-C',root,...args],{encoding:'utf8',stdio:['pipe','pipe','pipe']}).trim();
 function fixture(t){
  const root=mkdtempSync(join(tmpdir(),'meri-image-source-'));t.after(()=>rmSync(root,{recursive:true,force:true}));
@@ -20,11 +40,13 @@ function fixture(t){
  writeFileSync(join(repo,'apps/runtime/conversation-runner.mjs'),'export const runner=7;\n');
  writeFileSync(join(repo,'infra/product-preview/image-build-source.py'),readFileSync(verifier));
  writeFileSync(join(repo,'infra/product-preview/image-build-producer.py'),readFileSync(producer));
+ writeFileSync(join(repo,'infra/product-preview/image-build-test-reporter.mjs'),readFileSync(reporter));
  git(repo,'init','--quiet');git(repo,'add','.');git(repo,'-c','user.name=Offline Fixture','-c','user.email=fixture@invalid.example','commit','--quiet','-m','Synthetic source only');
  const sourceCommit=git(repo,'rev-parse','HEAD'),archive=join(root,'source.zip'),manifest=join(root,'members.json');
  const sealed=python([verifier,'seal','--repository',repo,'--commit',sourceCommit,'--archive',archive,'--output',manifest]);
  assert.equal(sealed.status,0,sealed.stderr);const seals=JSON.parse(sealed.stdout);
- const pin={sourceCommit,archive:{bucket:'meri-synthetic-input',key:'source/product.zip',versionId:'archive-version-1',sha256:seals.archiveSha256},manifest:{bucket:'meri-synthetic-input',key:'source/product-members.json',versionId:'manifest-version-1',sha256:seals.sourceManifestSha256},dockerfileSha256:hash(readFileSync(join(repo,'apps/runtime/Dockerfile'))),nodeImageUri:'public.ecr.aws/docker/library/node@sha256:'+'e'.repeat(64),nodeVersion:'v24.21.0',runnerSha256:hash(readFileSync(join(repo,'apps/runtime/conversation-runner.mjs'))),runtimeUser:'1000:1000',codeBuildProjectArn:'arn:aws:codebuild:us-east-1:967807252336:project/meri-product-preview-build',ecrRepositoryUri:'967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/product-runtime',imageTag:`product-${sourceCommit}-${'1'.repeat(32)}`,verifierSha256:hash(readFileSync(verifier)),producerSha256:hash(readFileSync(producer))};
+ const bucket='meri-greenfield-qual-build-967807252336-us-east-1';
+ const pin={sourceCommit,archive:{bucket,key:'source/product.zip',versionId:'archive-version-1',sha256:seals.archiveSha256},manifest:{bucket,key:'source/product-members.json',versionId:'manifest-version-1',sha256:seals.sourceManifestSha256},dockerfileSha256:hash(readFileSync(join(repo,'apps/runtime/Dockerfile'))),nodeImageUri:'public.ecr.aws/docker/library/node@sha256:'+'e'.repeat(64),nodeVersion:'v24.21.0',runnerSha256:hash(readFileSync(join(repo,'apps/runtime/conversation-runner.mjs'))),runtimeUser:'1000:1000',codeBuildProjectArn:'arn:aws:codebuild:us-east-1:967807252336:project/meri-product-preview-build',ecrRepositoryUri:'967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/product-runtime',imageTag:`product-${sourceCommit}-${'1'.repeat(32)}`,verifierSha256:hash(readFileSync(verifier)),producerSha256:hash(readFileSync(producer))};
  const request=join(root,'request.json');writeFileSync(request,JSON.stringify(pin));
  const verify=()=>python([verifier,'verify','--request',request,'--archive',archive,'--manifest',manifest]);
  return {root,repo,sourceCommit,archive,manifest,pin,request,verify};
@@ -40,7 +62,7 @@ test('offline recipe produces deterministic reviewable override bytes with diges
 });
 
 test('bootstrap failures produce bounded artifact before and after producer import',async t=>{
- const scenarios=['source-hash','producer-import','request-decode','request-decode-cleanup','child-timeout','child-receipt-timeout','producer-check','bootstrap-cleanup'];
+ const scenarios=['source-hash','producer-import','request-decode','request-decode-cleanup','child-timeout','child-receipt-timeout','linux-failure','producer-check','bootstrap-cleanup'];
  for(const scenario of scenarios)await t.test(scenario,t=>{
   const f=fixture(t),producerFile=join(f.repo,'infra/product-preview/image-build-producer.py');
   if(scenario==='producer-import'){
@@ -56,6 +78,14 @@ test('bootstrap failures produce bounded artifact before and after producer impo
 row={'schemaVersion':1,'status':'FAILED','phase':'DOCKER_BUILD','diagnosticOwner':os.environ['MERI_PRODUCT_DIAGNOSTIC_OWNER'],'primary':{'phase':'DOCKER_BUILD','category':'CHECK','code':'PRODUCT_IMAGE_CHECK_FAILED','detail':{'errorType':'UNEXPECTED','errno':None}},'cleanup':{'status':'NOT_RUN','failure':None,'additionalFailures':[]}}
 pathlib.Path('product-image-diagnostic.json').write_text(json.dumps(row))
 time.sleep(5)
+`);
+   f.pin.producerSha256=hash(readFileSync(producerFile));
+  }
+  if(scenario==='linux-failure'){
+   writeFileSync(producerFile,`import json,os,pathlib,sys
+row={'schemaVersion':1,'status':'FAILED','phase':'LINUX_TESTS','diagnosticOwner':os.environ['MERI_PRODUCT_DIAGNOSTIC_OWNER'],'primary':{'phase':'LINUX_TESTS','category':'COMMAND','code':'PRODUCT_IMAGE_COMMAND_FAILED','detail':{'status':'EXIT_NONZERO','exitCode':1,'outputBytes':200,'elapsedMs':12}},'cleanup':{'status':'OK','failure':None,'additionalFailures':[]},'linuxTests':{'status':'COMPLETE','observedCases':24,'failedCaseIds':['W08'],'unknownFailures':0,'unknownOutcomes':0,'duplicateCases':0,'skippedCases':0}}
+pathlib.Path('product-image-diagnostic.json').write_text(json.dumps(row))
+sys.exit(2)
 `);
    f.pin.producerSha256=hash(readFileSync(producerFile));
   }
@@ -94,9 +124,14 @@ tempfile.TemporaryDirectory=FailingTemp`);
     assert.equal(diagnostic.childCleanupStatus,'UNKNOWN');
     assert.ok(result.stderr.includes('PRODUCT_IMAGE_CHILD_CLEANUP_UNKNOWN phase=BOOTSTRAP_CHILD'));
    }
+  }else if(scenario==='linux-failure'){
+   assert.equal(diagnostic.primary.category,'COMMAND');
+   assert.deepEqual(diagnostic.linuxTests.failedCaseIds,['W08']);
+   assert.ok(result.stderr.includes('PRODUCT_IMAGE_LINUX_TESTS status=COMPLETE observedCases=24 failedCaseIds=W08'));
+   assert.ok(result.stderr.includes('PRODUCT_IMAGE_CHECK_FAILED phase=LINUX_TESTS category=COMMAND code=PRODUCT_IMAGE_COMMAND_FAILED commandStatus=EXIT_NONZERO'));
   }else assert.equal(diagnostic.primary.category,'BOOTSTRAP');
   const expected={'source-hash':'PRODUCT_IMAGE_VERIFIER_SHA_MISMATCH','producer-import':'PRODUCT_IMAGE_BOOTSTRAP_CHILD_FAILED','request-decode':'PRODUCT_IMAGE_BOOTSTRAP_REQUEST_UNAVAILABLE','request-decode-cleanup':'PRODUCT_IMAGE_BOOTSTRAP_REQUEST_UNAVAILABLE','child-timeout':'PRODUCT_IMAGE_BOOTSTRAP_TIMEOUT'};
-  if(!['producer-check','bootstrap-cleanup','child-receipt-timeout'].includes(scenario))assert.equal(diagnostic.primary.code,expected[scenario]);
+  if(!['producer-check','bootstrap-cleanup','child-receipt-timeout','linux-failure'].includes(scenario))assert.equal(diagnostic.primary.code,expected[scenario]);
   if(scenario==='request-decode-cleanup'){
    assert.equal(diagnostic.bootstrapCleanup.code,'PRODUCT_IMAGE_BOOTSTRAP_CLEANUP_UNKNOWN');
    assert.ok(result.stderr.includes('phase=BOOTSTRAP_REQUEST category=BOOTSTRAP code=PRODUCT_IMAGE_BOOTSTRAP_REQUEST_UNAVAILABLE'));
@@ -110,8 +145,58 @@ tempfile.TemporaryDirectory=FailingTemp`);
  });
 });
 
+test('controlled bootstrap failure retains one bounded diagnostic with conditional encrypted Put',async t=>{
+ for(const mode of ['ack','uncertain'])await t.test(mode,t=>{
+  const f=fixture(t),recipe=createProductImageBuildRecipe(f.pin);
+  const script=JSON.parse(recipe.buildspecJson).phases.build.commands[0];
+  let body=script.slice(script.indexOf('\n')+1,script.lastIndexOf('\nMERI_PRODUCT_BUILD'));
+  body=body.replace('atexit.register(retain_failure)',`put_calls=[]
+def fake_put_once(args,environment):
+ assert args[0]=='aws' and '--if-none-match' in args and args[args.index('--if-none-match')+1]=='*'
+ assert args[args.index('--key')+1].endswith('/product-image-failure.json')
+ assert environment['AWS_MAX_ATTEMPTS']=='1'
+ put_calls.append(args)
+ pathlib.Path('retained-fixture.json').write_bytes(diagnostic.read_bytes())
+ answer={'VersionId':'version-one','ChecksumSHA256':args[args.index('--checksum-sha256')+1],'ServerSideEncryption':'aws:kms','SSEKMSKeyId':args[args.index('--ssekms-key-id')+1]}
+ return 0,json.dumps(answer if '${mode}'=='ack' else {'VersionId':'null'}).encode()
+put_once=fake_put_once
+atexit.register(retain_failure)`);
+  writeFileSync(join(f.repo,'infra/product-preview/image-build-source.py'),'secret=never-emit-this\n');
+  const env={...process.env,CODEBUILD_PROJECT_ARN:f.pin.codeBuildProjectArn,CODEBUILD_BUILD_ID:'meri-product-preview-build:12345678-1234-1234-1234-123456789abc'};
+  const result=python(['-c',body],{cwd:f.repo,env});assert.equal(result.status,2,result.stderr);
+  assert.ok(!result.stderr.includes('secret'));
+  const uploaded=JSON.parse(readFileSync(join(f.repo,'retained-fixture.json'),'utf8'));
+  const local=JSON.parse(readFileSync(join(f.repo,'product-image-diagnostic.json'),'utf8'));
+  assert.equal(uploaded.primary.code,'PRODUCT_IMAGE_VERIFIER_SHA_MISMATCH');
+  assert.equal(uploaded.retention.status,'ATTEMPTED');
+  assert.equal(local.retention.status,mode==='ack'?'CONFIRMED':'UNCONFIRMED');
+  assert.equal(local.retention.code,mode==='ack'?'PUT_ACK':'ACK_INVALID');
+  assert.equal(local.retention.versionId,mode==='ack'?'version-one':null);
+  assert.equal(local.retention.bytes,Buffer.byteLength(readFileSync(join(f.repo,'retained-fixture.json'))));
+  assert.ok(result.stderr.includes(`PRODUCT_IMAGE_RETENTION status=${local.retention.status} code=${local.retention.code}`));
+  if(mode==='ack')assert.ok(result.stderr.includes('versionIdBase64=dmVyc2lvbi1vbmU='));
+  assert.ok(!JSON.stringify(local).includes('secret'));
+  assert.ok(readFileSync(join(f.repo,'product-image-diagnostic.retention.intent'),'utf8').includes('results/product-image/'));
+ });
+});
+
+test('failure retention caps child CLI stdout while running and emits no child bytes',t=>{
+ const f=fixture(t),recipe=createProductImageBuildRecipe(f.pin);
+ const script=JSON.parse(recipe.buildspecJson).phases.build.commands[0];
+ let body=script.slice(script.indexOf('\n')+1,script.lastIndexOf('\nMERI_PRODUCT_BUILD'));
+ body=body.replace('exit_code,response=put_once(args,environment)',`exit_code,response=put_once([sys.executable,'-c','import sys;sys.stdout.buffer.write(b"s"*8192)'],environment)`);
+ writeFileSync(join(f.repo,'infra/product-preview/image-build-source.py'),'secret=never-emit-this\n');
+ const env={...process.env,CODEBUILD_PROJECT_ARN:f.pin.codeBuildProjectArn,CODEBUILD_BUILD_ID:'meri-product-preview-build:12345678-1234-1234-1234-123456789abc'};
+ const result=python(['-c',body],{cwd:f.repo,env});assert.equal(result.status,2,result.stderr);
+ const local=JSON.parse(readFileSync(join(f.repo,'product-image-diagnostic.json'),'utf8'));
+ assert.equal(local.primary.code,'PRODUCT_IMAGE_VERIFIER_SHA_MISMATCH');
+ assert.deepEqual(local.retention,{status:'UNCONFIRMED',code:'ACK_UNBOUNDED',versionId:null,checksumSha256:local.retention.checksumSha256,bytes:local.retention.bytes});
+ assert.ok(result.stderr.includes('PRODUCT_IMAGE_RETENTION status=UNCONFIRMED code=ACK_UNBOUNDED'));
+ assert.ok(!result.stderr.includes('ssssssss'));
+});
+
 test('sealing proves ZIP file bytes and modes against exact Git objects; verification joins all sealed pins',t=>{
- const f=fixture(t),result=f.verify();assert.equal(result.status,0,result.stderr);assert.deepEqual(JSON.parse(result.stdout),{status:'VERIFIED_SOURCE_ONLY',sourceCommit:f.sourceCommit,archiveSha256:f.pin.archive.sha256,sourceManifestSha256:f.pin.manifest.sha256,fileCount:4,runnerBytes:23});
+ const f=fixture(t),result=f.verify();assert.equal(result.status,0,result.stderr);assert.deepEqual(JSON.parse(result.stdout),{status:'VERIFIED_SOURCE_ONLY',sourceCommit:f.sourceCommit,archiveSha256:f.pin.archive.sha256,sourceManifestSha256:f.pin.manifest.sha256,fileCount:5,runnerBytes:23});
  const uncommitted='uncommitted replacement';writeFileSync(join(f.repo,'apps/runtime/conversation-runner.mjs'),uncommitted);assert.equal(f.verify().status,0);
  const wrong=structuredClone(f.pin);wrong.runnerSha256='0'.repeat(64);writeFileSync(f.request,JSON.stringify(wrong));assert.equal(f.verify().status,2);
 });
@@ -181,10 +266,6 @@ def run(args,timeout=30,input_bytes=None):
  if 'ls' in args:return b''
  if 'build' in args:events.append('docker-build');return b''
  if 'inspect' in args:return json.dumps([{'Os':'linux','Architecture':'amd64','Size':1,'Config':{'Entrypoint':['node','apps/runtime/cli.mjs'],'Labels':{'org.opencontainers.image.revision':p['sourceCommit'],'org.opencontainers.image.base.name':p['nodeImageUri']}}}]).encode()
- if 'run' in args and '--test' in args:
-  events.append('linux-tests:'+','.join(args[args.index('--test')+1:]))
-  if scenario=='linux-test-hold':raise ValueError('scripted Linux test failure')
-  return b''
  if 'run' in args and '--input-type=module' in args:
   events.append('image-measurement');return json.dumps({'node':p['nodeVersion'],'runtimeUser':p['runtimeUser'],'executableSha256':'a'*64,'runner':{'contract':m.CONTRACT,'path':m.RUNNER,'runnerSha256':'0'*64 if scenario=='runner-mismatch' else p['runnerSha256'],'bytes':23}}).encode()
  if 'login' in args:events.append('login');assert input_bytes==b'never-log-this-value';return b''
@@ -193,6 +274,11 @@ def run(args,timeout=30,input_bytes=None):
  raise AssertionError('unexpected subprocess')
 m.aws=aws;m.download=download;m.run=run
 def cleanup(args,**kwargs):
+ if '--test' in args:
+  events.append('linux-tests:'+','.join(case for case in args if case in m.LINUX_ONLY_TESTS))
+  failures=['W08'] if scenario=='linux-test-hold' else []
+  if failures:kwargs['report']({'status':'EXIT_NONZERO','exitCode':1,'outputBytes':200,'elapsedMs':12})
+  return (1 if failures else 0,json.dumps({'schemaVersion':1,'observedCases':24,'failedCaseIds':failures,'unknownFailures':0,'unknownOutcomes':0,'duplicateCases':0,'skippedCases':0}).encode())
  events.append('cleanup');assert not pathlib.Path(output).exists();return (1 if scenario=='cleanup-unknown' else 0,b'')
 m._source.bounded_command=cleanup
 if scenario=='source-mismatch':p['runnerSha256']='0'*64

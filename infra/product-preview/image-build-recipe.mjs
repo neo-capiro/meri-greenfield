@@ -4,6 +4,7 @@
 import {createHash} from 'node:crypto';
 
 const sha=/^[a-f0-9]{64}$/u,commit=/^[a-f0-9]{40}$/u;
+const resultBucket='meri-greenfield-qual-build-967807252336-us-east-1';
 const refuse=()=>{throw Error('PRODUCT_IMAGE_RECIPE_REFUSED');};
 function exact(value,keys){if(value===null||typeof value!=='object'||Array.isArray(value)||Object.getPrototypeOf(value)!==Object.prototype||Object.keys(value).length!==keys.length||keys.some(k=>!Object.hasOwn(value,k)||!Object.hasOwn(Object.getOwnPropertyDescriptor(value,k),'value')))refuse();return value;}
 const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
@@ -18,16 +19,19 @@ export function createProductImageBuildRecipe(value){
     !/^public\.ecr\.aws\/docker\/library\/node@sha256:[a-f0-9]{64}$/u.test(p.nodeImageUri)||!/^v24\.[0-9]+\.[0-9]+$/u.test(p.nodeVersion)||
     !/^[1-9][0-9]*:[1-9][0-9]*$/u.test(p.runtimeUser)||!/^arn:aws:codebuild:us-east-1:967807252336:project\/[A-Za-z0-9_-]+$/u.test(p.codeBuildProjectArn)||
     !/^967807252336\.dkr\.ecr\.us-east-1\.amazonaws\.com\/[a-z0-9._/-]+$/u.test(p.ecrRepositoryUri)||
-    !new RegExp(`^product-${p.sourceCommit}-[a-f0-9]{32}$`,'u').test(p.imageTag))refuse();
+    !new RegExp(`^product-${p.sourceCommit}-[a-f0-9]{32}$`,'u').test(p.imageTag)||p.archive.bucket!==resultBucket||p.manifest.bucket!==resultBucket)refuse();
  // Freeze request bytes through serialization before constructing the executable
  // command. Only base64 and validated hex are interpolated into the bootstrap.
  const requestJson=JSON.stringify(p),packet=Buffer.from(requestJson).toString('base64');
  const bootstrap=`python3 -I -B -S - <<'MERI_PRODUCT_BUILD'
-import base64,hashlib,json,os,pathlib,subprocess,sys,tempfile
+import atexit,base64,hashlib,json,os,pathlib,re,subprocess,sys,tempfile
 source=pathlib.Path('infra/product-preview/image-build-source.py')
 producer=pathlib.Path('infra/product-preview/image-build-producer.py')
 diagnostic=pathlib.Path('product-image-diagnostic.json')
 owner=os.urandom(16).hex()
+result_bucket='${p.archive.bucket}'
+result_key='results/product-image/${p.sourceCommit}/${p.imageTag.slice(p.sourceCommit.length+9)}/product-image-failure.json'
+result_kms='arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042'
 def save(status,phase,code=None,detail=None):
     primary=None if code is None else {'phase':phase,'category':'BOOTSTRAP','code':code,'detail':detail}
     cleanup_status='UNKNOWN' if phase=='BOOTSTRAP_CHILD' else 'NOT_RUN'
@@ -52,7 +56,7 @@ def child_receipt():
         phases=set('REQUEST BUILD_IDENTITY BUILD_READBACK REPOSITORY_READBACK WORKDIR SOURCE_ARCHIVE SOURCE_MANIFEST SOURCE_VERIFY SOURCE_EXTRACT DOCKER_PREFLIGHT DOCKER_BUILD IMAGE_INSPECT SANDBOX_HELP SANDBOX_MEASURE LINUX_TESTS ECR_AUTH ECR_PUSH ECR_READBACK ECR_SCAN CLEANUP WORKDIR_CLEANUP RECEIPT'.split())
         types=set('MISSING_FILE PERMISSION OS JSON IMPORT KEY TYPE VALUE TIMEOUT UNEXPECTED'.split())
         categories=types|{'COMMAND','CHECK'}
-        codes={'PRODUCT_IMAGE_CHECK_FAILED'}|{'PRODUCT_IMAGE_'+name for name in 'ARCHIVE_BOUND ARCHIVE_SHA_MISMATCH BUILD_IDENTITY BUILD_SOURCE CLEANUP_UNKNOWN COMMAND_BOUND COMMAND_FAILED COMMAND_UNAVAILABLE_OR_TIMEOUT DUPLICATE_KEY DUPLICATE_MEMBER FILE_BOUND IMAGE_IDENTITY IMAGE_MEASUREMENT IMAGE_READBACK LOCAL_IMAGE_EXISTS LOCAL_PROBE_EXISTS MANIFEST_BOUND MANIFEST_ORDER MANIFEST_SHA_MISMATCH MANIFEST_SHAPE MEMBER_ANCESTOR MEMBER_PATH MEMBER_TYPE NODE_PIN OBJECT_BINDING OBJECT_BOUND PRIVATE_MEMBER PRODUCER_DEADLINE PRODUCER_PLATFORM_OR_OUTPUT PROJECT_PIN REPOSITORY_PIN REPOSITORY_POLICY REQUEST_OBJECT REQUEST_PIN RUNNER_BOUND RUNTIME_USER SCAN_FINDINGS_HOLD SCAN_INCOMPLETE SHAPE_REFUSED SOURCE_COMMIT SOURCE_MEMBERS_MISMATCH SOURCE_PIN_MISMATCH TAG_PIN'.split()}
+        codes={'PRODUCT_IMAGE_CHECK_FAILED'}|{'PRODUCT_IMAGE_'+name for name in 'ARCHIVE_BOUND ARCHIVE_SHA_MISMATCH BUILD_IDENTITY BUILD_SOURCE CLEANUP_UNKNOWN COMMAND_BOUND COMMAND_FAILED COMMAND_UNAVAILABLE_OR_TIMEOUT DUPLICATE_KEY DUPLICATE_MEMBER FILE_BOUND IMAGE_IDENTITY IMAGE_MEASUREMENT IMAGE_READBACK LINUX_CASES_UNPROVEN LINUX_REPORTER_UNPROVEN LOCAL_IMAGE_EXISTS LOCAL_PROBE_EXISTS MANIFEST_BOUND MANIFEST_ORDER MANIFEST_SHA_MISMATCH MANIFEST_SHAPE MEMBER_ANCESTOR MEMBER_PATH MEMBER_TYPE NODE_PIN OBJECT_BINDING OBJECT_BOUND PRIVATE_MEMBER PRODUCER_DEADLINE PRODUCER_PLATFORM_OR_OUTPUT PROJECT_PIN REPOSITORY_PIN REPOSITORY_POLICY REQUEST_OBJECT REQUEST_PIN RUNNER_BOUND RUNTIME_USER SCAN_FINDINGS_HOLD SCAN_INCOMPLETE SHAPE_REFUSED SOURCE_COMMIT SOURCE_MEMBERS_MISMATCH SOURCE_PIN_MISMATCH TAG_PIN'.split()}
         statuses={'EXIT_NONZERO','TIMEOUT','BOUND','UNAVAILABLE'}
         def checked(record):
             if type(record) is not dict or set(record)!={'phase','category','code','detail'}:
@@ -76,7 +80,7 @@ def child_receipt():
                 safe_detail={'errorType':detail['errorType'],'errno':errno}
             return {'phase':phase,'category':category,'code':code,'detail':safe_detail}
         base={'schemaVersion','status','phase','diagnosticOwner','primary','cleanup'}
-        extras={'bootstrapFailure','bootstrapCleanup','childCleanupStatus'}
+        extras={'bootstrapFailure','bootstrapCleanup','childCleanupStatus','linuxTests'}
         if type(row) is not dict or not base<=set(row) or set(row)-base-extras or row['schemaVersion']!=1 or row['status']!='FAILED' or row['diagnosticOwner']!=owner or type(row['phase']) is not str or row['phase'] not in phases:
             return None
         primary=checked(row['primary'])
@@ -93,12 +97,24 @@ def child_receipt():
                 return None
             first,more=None,[]
         safe={'schemaVersion':1,'status':'FAILED','phase':row['phase'],'diagnosticOwner':owner,'primary':primary,'cleanup':{'status':cleanup['status'],'failure':first,'additionalFailures':more}}
+        if ('linuxTests' in row)!=(primary['phase']=='LINUX_TESTS'):
+            return None
+        if 'linuxTests' in row:
+            linux=row['linuxTests']
+            case_ids={'B'+str(i).zfill(2) for i in range(1,7)}|{'R'+str(i).zfill(2) for i in range(1,7)}|{'W'+str(i).zfill(2) for i in range(1,13)}
+            if type(linux) is not dict or set(linux)!={'status','observedCases','failedCaseIds','unknownFailures','unknownOutcomes','duplicateCases','skippedCases'} or linux['status'] not in ('COMPLETE','UNAVAILABLE') or type(linux['observedCases']) is not int or not 0<=linux['observedCases']<=24 or type(linux['failedCaseIds']) is not list or len(linux['failedCaseIds'])>24 or any(type(case) is not str or case not in case_ids for case in linux['failedCaseIds']) or len(set(linux['failedCaseIds']))!=len(linux['failedCaseIds']):
+                return None
+            if any(type(linux[name]) is not int or not 0<=linux[name]<=25 for name in ('unknownFailures','unknownOutcomes','duplicateCases','skippedCases')):
+                return None
+            if linux['status']=='UNAVAILABLE' and (linux['observedCases'] or linux['failedCaseIds'] or any(linux[name] for name in ('unknownFailures','unknownOutcomes','duplicateCases','skippedCases'))):
+                return None
+            safe['linuxTests']={'status':linux['status'],'observedCases':linux['observedCases'],'failedCaseIds':sorted(linux['failedCaseIds']),'unknownFailures':linux['unknownFailures'],'unknownOutcomes':linux['unknownOutcomes'],'duplicateCases':linux['duplicateCases'],'skippedCases':linux['skippedCases']}
         if 'childCleanupStatus' in row:
             if row['childCleanupStatus']!='UNKNOWN':
                 return None
             safe['childCleanupStatus']='UNKNOWN'
         bootstrap_codes={'PRODUCT_IMAGE_BOOTSTRAP_TIMEOUT','PRODUCT_IMAGE_BOOTSTRAP_CHILD_UNAVAILABLE','PRODUCT_IMAGE_BOOTSTRAP_CLEANUP_UNKNOWN'}
-        for name in set(row)-base-{'childCleanupStatus'}:
+        for name in set(row)-base-{'childCleanupStatus','linuxTests'}:
             extra=row[name]
             if type(extra) is not dict or set(extra)!={'phase','category','code','detail'} or extra['category']!='BOOTSTRAP' or extra['phase'] not in ('BOOTSTRAP_CHILD','BOOTSTRAP_CLEANUP') or extra['code'] not in bootstrap_codes:
                 return None
@@ -116,6 +132,9 @@ def child_receipt():
         lines=[line('PRODUCT_IMAGE_CHECK_FAILED',primary)]
         if first is not None:
             lines.extend(line('PRODUCT_IMAGE_CLEANUP_FAILED',item) for item in (first,*more))
+        if 'linuxTests' in safe:
+            row=safe['linuxTests']
+            lines.append('PRODUCT_IMAGE_LINUX_TESTS status='+row['status']+' observedCases='+str(row['observedCases'])+' failedCaseIds='+(','.join(row['failedCaseIds']) or 'none')+' unknownOutcomes='+str(row['unknownOutcomes'])+' skippedCases='+str(row['skippedCases'])+' duplicateCases='+str(row['duplicateCases']))
         if safe.get('childCleanupStatus')=='UNKNOWN':
             lines.append('PRODUCT_IMAGE_CHILD_CLEANUP_UNKNOWN phase=BOOTSTRAP_CHILD')
         return safe,lines
@@ -126,12 +145,13 @@ def bootstrap_receipt():
         if diagnostic.is_symlink() or diagnostic.stat().st_size>2048:
             return None
         row=json.loads(diagnostic.read_text(encoding='ascii'))
-        if type(row) is not dict or set(row)!={'schemaVersion','status','phase','diagnosticOwner','primary','cleanup'} or row['schemaVersion']!=1 or row['status']!='FAILED' or row['diagnosticOwner']!=owner:
+        base={'schemaVersion','status','phase','diagnosticOwner','primary','cleanup'}
+        if type(row) is not dict or not base<=set(row) or set(row)-base-{'bootstrapCleanup'} or row['schemaVersion']!=1 or row['status']!='FAILED' or row['diagnosticOwner']!=owner:
             return None
         primary=row['primary']
         if type(primary) is not dict or set(primary)!={'phase','category','code','detail'} or primary['category']!='BOOTSTRAP' or row['phase']!=primary['phase']:
             return None
-        codes={'BOOTSTRAP_REQUEST':{'PRODUCT_IMAGE_BOOTSTRAP_REQUEST_UNAVAILABLE'},'BOOTSTRAP_CHILD':{'PRODUCT_IMAGE_BOOTSTRAP_TIMEOUT','PRODUCT_IMAGE_BOOTSTRAP_CHILD_UNAVAILABLE','PRODUCT_IMAGE_BOOTSTRAP_CHILD_FAILED','PRODUCT_IMAGE_BOOTSTRAP_CHILD_INCOMPLETE'}}
+        codes={'BOOTSTRAP_SOURCE':{'PRODUCT_IMAGE_BOOTSTRAP_SOURCE_UNAVAILABLE','PRODUCT_IMAGE_VERIFIER_SHA_MISMATCH','PRODUCT_IMAGE_PRODUCER_SHA_MISMATCH'},'BOOTSTRAP_REQUEST':{'PRODUCT_IMAGE_BOOTSTRAP_REQUEST_UNAVAILABLE'},'BOOTSTRAP_CHILD':{'PRODUCT_IMAGE_BOOTSTRAP_TIMEOUT','PRODUCT_IMAGE_BOOTSTRAP_CHILD_UNAVAILABLE','PRODUCT_IMAGE_BOOTSTRAP_CHILD_FAILED','PRODUCT_IMAGE_BOOTSTRAP_CHILD_INCOMPLETE'},'BOOTSTRAP_CLEANUP':{'PRODUCT_IMAGE_BOOTSTRAP_CLEANUP_UNKNOWN'}}
         phase,code,detail=primary['phase'],primary['code'],primary['detail']
         if type(phase) is not str or type(code) is not str or code not in codes.get(phase,set()):
             return None
@@ -145,8 +165,14 @@ def bootstrap_receipt():
         if type(cleanup) is not dict or cleanup!={'status':expected,'failure':None,'additionalFailures':[]}:
             return None
         safe={'schemaVersion':1,'status':'FAILED','phase':phase,'diagnosticOwner':owner,'primary':{'phase':phase,'category':'BOOTSTRAP','code':code,'detail':detail},'cleanup':cleanup}
+        if 'bootstrapCleanup' in row:
+            extra=row['bootstrapCleanup']
+            if type(extra) is not dict or extra!={'phase':'BOOTSTRAP_CLEANUP','category':'BOOTSTRAP','code':'PRODUCT_IMAGE_BOOTSTRAP_CLEANUP_UNKNOWN','detail':None}:
+                return None
+            safe['bootstrapCleanup']=extra
         lines=['PRODUCT_IMAGE_CHECK_FAILED phase='+phase+' category=BOOTSTRAP code='+code]
         if expected=='UNKNOWN':lines.append('PRODUCT_IMAGE_CHILD_CLEANUP_UNKNOWN phase=BOOTSTRAP_CHILD')
+        if 'bootstrapCleanup' in safe:lines.append('PRODUCT_IMAGE_CHECK_FAILED phase=BOOTSTRAP_CLEANUP category=BOOTSTRAP code=PRODUCT_IMAGE_BOOTSTRAP_CLEANUP_UNKNOWN')
         return safe,lines
     except Exception:
         return None
@@ -169,6 +195,111 @@ def fail(phase,code,detail=None,preserve_child=False):
     if phase=='BOOTSTRAP_CHILD':
         print('PRODUCT_IMAGE_CHILD_CLEANUP_UNKNOWN phase=BOOTSTRAP_CHILD',file=sys.stderr)
     raise SystemExit(2)
+def write_owned(row):
+    temporary=pathlib.Path('product-image-diagnostic.retention.tmp')
+    created=False
+    try:
+        if diagnostic.is_symlink() or temporary.exists() or temporary.is_symlink():return None
+        old=json.loads(diagnostic.read_text(encoding='ascii'))
+        if type(old) is not dict or old.get('diagnosticOwner')!=owner:return None
+        payload=(json.dumps(row,sort_keys=True,separators=(',',':'))+'\\n').encode('ascii')
+        if not 0<len(payload)<=4096:return None
+        with temporary.open('xb') as stream:
+            created=True
+            stream.write(payload);stream.flush();os.fsync(stream.fileno())
+        os.replace(temporary,diagnostic)
+        return payload
+    except Exception:
+        if created:
+            try:temporary.unlink(missing_ok=True)
+            except Exception:pass
+        return None
+def put_once(args,environment):
+    import threading,time
+    process=subprocess.Popen(args,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,env=environment)
+    output=bytearray();deadline=time.monotonic()+15;state={'overflow':False,'error':False}
+    def read_bounded():
+        try:
+            while True:
+                block=os.read(process.stdout.fileno(),min(1024,4097-len(output)))
+                if not block:return
+                output.extend(block)
+                if len(output)>4096:
+                    state['overflow']=True;return
+        except Exception:
+            state['error']=True
+    reader=threading.Thread(target=read_bounded,daemon=True);reader.start()
+    try:
+        reader.join(timeout=max(0.001,deadline-time.monotonic()))
+        if reader.is_alive():raise TimeoutError()
+        if state['overflow']:raise BufferError()
+        if state['error']:raise OSError()
+        return process.wait(timeout=max(0.001,deadline-time.monotonic())),bytes(output)
+    except BaseException:
+        if process.poll() is None:process.kill()
+        process.wait(timeout=2)
+        raise
+    finally:
+        process.stdout.close()
+        reader.join(timeout=2)
+def retain_failure():
+    try:
+        if diagnostic.is_symlink() or diagnostic.stat().st_size>2048:
+            print('PRODUCT_IMAGE_RETENTION status=FAILED code=ARTIFACT_UNAVAILABLE',file=sys.stderr);return
+        original=json.loads(diagnostic.read_text(encoding='ascii'))
+        if type(original) is dict and original.get('diagnosticOwner')==owner and original.get('status')=='SUCCEEDED':return
+        accepted=child_receipt() or bootstrap_receipt()
+        if accepted is None:
+            print('PRODUCT_IMAGE_RETENTION status=FAILED code=ARTIFACT_UNAVAILABLE',file=sys.stderr);return
+        safe,_=accepted
+        build_id=os.environ.get('CODEBUILD_BUILD_ID','')
+        project='${p.codeBuildProjectArn.split('/')[1]}'
+        if os.environ.get('CODEBUILD_PROJECT_ARN')!='${p.codeBuildProjectArn}' or re.fullmatch(re.escape(project)+r':[a-f0-9-]{36}',build_id) is None:
+            safe['retention']={'status':'FAILED','code':'BUILD_IDENTITY_UNAVAILABLE'}
+            write_owned(safe)
+            print('PRODUCT_IMAGE_RETENTION status=FAILED code=BUILD_IDENTITY_UNAVAILABLE',file=sys.stderr);return
+        safe['retention']={'status':'ATTEMPTED','code':'ONE_SHOT_PUT'}
+        payload=write_owned(safe)
+        if payload is None:
+            print('PRODUCT_IMAGE_RETENTION status=FAILED code=ARTIFACT_WRITE_FAILED',file=sys.stderr);return
+        digest=hashlib.sha256(payload).digest()
+        checksum=base64.b64encode(digest).decode('ascii')
+        intent=pathlib.Path('product-image-diagnostic.retention.intent')
+        try:
+            with intent.open('xb') as stream:
+                stream.write((json.dumps({'key':result_key,'sha256':digest.hex(),'bytes':len(payload)},sort_keys=True,separators=(',',':'))+'\\n').encode('ascii'))
+                stream.flush();os.fsync(stream.fileno())
+        except Exception:
+            safe['retention']={'status':'FAILED','code':'INTENT_WRITE_FAILED'}
+            write_owned(safe)
+            print('PRODUCT_IMAGE_RETENTION status=FAILED code=INTENT_WRITE_FAILED',file=sys.stderr);return
+        environment=dict(os.environ,AWS_MAX_ATTEMPTS='1',AWS_RETRY_MODE='standard')
+        args=['aws','--region','us-east-1','--no-cli-pager','s3api','put-object','--bucket',result_bucket,'--key',result_key,'--body',str(diagnostic),'--if-none-match','*','--checksum-sha256',checksum,'--server-side-encryption','aws:kms','--ssekms-key-id',result_kms,'--query','{VersionId:VersionId,ChecksumSHA256:ChecksumSHA256,ServerSideEncryption:ServerSideEncryption,SSEKMSKeyId:SSEKMSKeyId}','--output','json']
+        version=None
+        try:
+            exit_code,response=put_once(args,environment)
+            if exit_code!=0:
+                status,code='FAILED','PUT_FAILED'
+            else:
+                answer=json.loads(response)
+                candidate=answer.get('VersionId') if type(answer) is dict else None
+                correct=type(candidate) is str and candidate!='null' and re.fullmatch(r'[A-Za-z0-9._~+/=-]{1,1024}',candidate) is not None and answer.get('ChecksumSHA256')==checksum and answer.get('ServerSideEncryption')=='aws:kms' and answer.get('SSEKMSKeyId')==result_kms
+                if correct:version=candidate
+                status,code=('CONFIRMED','PUT_ACK') if correct else ('UNCONFIRMED','ACK_INVALID')
+        except BufferError:
+            status,code='UNCONFIRMED','ACK_UNBOUNDED'
+        except (TimeoutError,subprocess.TimeoutExpired):
+            status,code='UNCONFIRMED','PUT_TIMEOUT'
+        except Exception:
+            status,code='UNCONFIRMED','PUT_UNAVAILABLE'
+        safe['retention']={'status':status,'code':code,'versionId':version,'checksumSha256':checksum,'bytes':len(payload)}
+        if write_owned(safe) is None:
+            print('PRODUCT_IMAGE_RETENTION status=UNCONFIRMED code=ARTIFACT_WRITE_FAILED',file=sys.stderr)
+        suffix=(' versionIdBase64='+base64.b64encode(version.encode('ascii')).decode('ascii')+' checksumSha256='+checksum+' bytes='+str(len(payload))) if version is not None else ''
+        print('PRODUCT_IMAGE_RETENTION status='+status+' code='+code+suffix,file=sys.stderr)
+    except Exception:
+        print('PRODUCT_IMAGE_RETENTION status=FAILED code=UNEXPECTED',file=sys.stderr)
+atexit.register(retain_failure)
 if not save('STARTED','BOOTSTRAP_SOURCE'):
     raise SystemExit(2)
 try:
@@ -216,6 +347,7 @@ if state!='SUCCEEDED':
 raise SystemExit(0)
 MERI_PRODUCT_BUILD`;
  const buildspec={version:0.2,env:{shell:'bash'},phases:{build:{'on-failure':'ABORT',commands:[bootstrap]}},artifacts:{files:['product-image-receipt.json','product-image-diagnostic.json'],'discard-paths':'yes'}};
- const buildspecJson=JSON.stringify(buildspec,null,2)+'\n';
+ const buildspecJson=JSON.stringify(buildspec)+'\n';
+ if(Buffer.byteLength(buildspecJson)>25600)refuse();
  return Object.freeze({status:'OFFLINE_RECIPE_ONLY',buildspecJson,buildspecSha256:hash(buildspecJson),requestSha256:hash(requestJson)});
 }

@@ -8,9 +8,11 @@ test('foreign bootstrap proof refuses before returning executable configuration'
 test('poststart TLS files are joined only to the validated remote task and a remote TLS override refuses',async()=>{
  const f=fixture(),tls={zone:'runner.private.invalid',caFile:'/run/meri/poststart/tls/runner-ca.pem',certFile:'/run/meri/poststart/tls/runner-cert.pem',keyFile:'/run/meri/poststart/tls/runner-key.pem',candidateFile:'/run/meri/poststart/tls/candidate.json',metadataFile:'/run/meri/poststart/tls/metadata.json'};
  const native={async call(){return f.remote;}};
- const resolved=await loadRemoteTaskBinding({configuration:f.runner,native,poststartTls:tls});
+ await assert.rejects(loadRemoteTaskBinding({configuration:f.runner,native,poststartTls:tls}),/TASK_BOOTSTRAP_REFUSED/);
+ const coherentRunner={...f.runner,native:{...f.runner.native,origin:f.remote.processOrigin}};
+ const resolved=await loadRemoteTaskBinding({configuration:coherentRunner,native,poststartTls:tls});
  assert.deepEqual(resolved.remoteTask.tls,tls);
- await assert.rejects(loadRemoteTaskBinding({configuration:f.runner,native:{async call(){return {...f.remote,tls};}},poststartTls:tls}),/TASK_BOOTSTRAP_REFUSED/);
+ await assert.rejects(loadRemoteTaskBinding({configuration:coherentRunner,native:{async call(){return {...f.remote,tls};}},poststartTls:tls}),/TASK_BOOTSTRAP_REFUSED/);
 });
 test('cancelled bootstrap invokes no transport or execution',async()=>{const f=fixture(),signal=AbortSignal.abort();let calls=0;await assert.rejects(loadRemoteTaskBinding({configuration:f.runner,signal,native:{call(){calls++;}}}));assert.equal(calls,0);});
 
