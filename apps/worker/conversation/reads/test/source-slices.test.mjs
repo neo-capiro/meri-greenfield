@@ -38,6 +38,13 @@ for(const [family,ids] of complete){
   assert.deepEqual(select([{kind:'client'}]).available.map(row=>row.operation.id),expected);
   assert.deepEqual(select([{kind:'private-user'}]).available.map(row=>row.operation.id),['query_knowledge_graph']);
  });
+ else if(family==='public-data')test('public-data: the complete PR132 family admits economic and both mode reads with no operation filter',()=>{
+  const operations=familyOperations(family),expected=operations.map(row=>row.id);
+  assert.deepEqual([...expected].sort(),['query_economic_data','search_federal_awards','search_federal_grants']);assert.equal(READ_FAMILIES[family].operationIds,undefined);
+  assert.deepEqual(familyReads().filter(row=>row.family===family).map(row=>row.operation.id),expected);
+  const gates=resolveAvailableReads({policy:{generalReads:true,readFamilies:[family]},installation:{operations},discovery:{operations},scopes:[{kind:'private-user'}]});
+  assert.deepEqual(gates.available.map(row=>row.operation.id),expected);
+ });
  else{
  test(`${family}: finite SDK family operation list excludes every unsupported canonical sibling even with forged installation/discovery`,()=>{
   const operations=familyOperations(family),siblings=operations.filter(row=>!ids.includes(row.id));
