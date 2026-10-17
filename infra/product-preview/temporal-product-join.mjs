@@ -23,7 +23,7 @@ export function inspectTemporalProductJoin({productBinding,temporalBinding,runti
   validateTemporalIssuerRenewal(t,issuerRenewal);}catch{fail();}
  if(p.account!==t.account||p.region!==t.region||p.clusterArn!==t.clusterArn||
     issuerRenewal.issuerServiceTaskRoleArn===p.controlTaskRoleArn||
-    issuerRenewal.issuerServiceTaskRoleArn===p.executionRoleArn||
+    [p.executionRoleArn,...Object.values(p.executionRoleArns??{})].includes(issuerRenewal.issuerServiceTaskRoleArn)||
     !Array.isArray(t.network.clientSecurityGroupIds))fail();
  const clientGroups=[p.network.controlSecurityGroupIds,p.network.workerSecurityGroupIds]
   .map(groups=>groups.filter(x=>t.network.clientSecurityGroupIds.includes(x)));

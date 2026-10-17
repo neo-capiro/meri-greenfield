@@ -204,3 +204,33 @@ test('missing inventory, foreign refs, runnable state and claimed material deliv
  ];
  for(const change of variants){const x=binding();change(x);assert.throws(()=>synthesizeProductPreview(x),/PRODUCT_PREVIEW_BINDING_REFUSED/);}
 });
+
+test('per-role execution roles and log groups: each task definition gets its own role and awslogs group',()=>{
+ const input=binding();delete input.executionRoleArn;delete input.logGroupName;
+ input.executionRoleArns={control:'arn:aws:iam::967807252336:role/MeriPreview-control-execution',
+  temporalWorker:'arn:aws:iam::967807252336:role/MeriPreview-worker-execution',runner:'arn:aws:iam::967807252336:role/MeriPreview-runner-execution'};
+ input.logGroupNames={control:'/meri/product-preview/control',temporalWorker:'/meri/product-preview/worker',runner:'/meri/product-preview/runner'};
+ const template=synthesizeProductPreview(input),tasks=byType(template,'AWS::ECS::TaskDefinition');
+ for(const [role,family] of [['control','control'],['temporalWorker','temporal-worker'],['runner','runner']]){
+  const task=byFamily(tasks,family);
+  assert.equal(task.ExecutionRoleArn,input.executionRoleArns[role]);
+  for(const container of task.ContainerDefinitions)assert.equal(container.LogConfiguration.Options['awslogs-group'],input.logGroupNames[role]);
+ }
+ assert.deepEqual(Object.keys(template.Outputs).filter(k=>k.endsWith('TaskDefinitionArn')).sort(),['ControlTaskDefinitionArn','RunnerTaskDefinitionArn','TemporalWorkerTaskDefinitionArn']);
+ const variants=[
+  x=>{x.executionRoleArn=x.executionRoleArns.control;},
+  x=>{x.logGroupName='/meri/product-preview/control';},
+  x=>{delete x.executionRoleArns;},
+  x=>{delete x.logGroupNames;},
+  x=>{delete x.executionRoleArns.runner;},
+  x=>{x.executionRoleArns.extra=x.executionRoleArns.runner;},
+  x=>{x.executionRoleArns.runner=x.executionRoleArns.control;},
+  x=>{x.executionRoleArns.temporalWorker=x.controlTaskRoleArn;},
+  x=>{x.executionRoleArns.runner='arn:aws:iam::000000000000:role/MeriPreview-runner-execution';},
+  x=>{x.logGroupNames.runner=x.logGroupNames.temporalWorker;},
+  x=>{x.logGroupNames.control='meri/product-preview/control';},
+  x=>{x.logGroupNames=['/a','/b','/c'];}
+ ];
+ for(const change of variants){const x=structuredClone(input);change(x);assert.throws(()=>synthesizeProductPreview(x),/PRODUCT_PREVIEW_BINDING_REFUSED/);}
+ const legacy=binding();legacy.executionRoleArn=legacy.controlTaskRoleArn;assert.throws(()=>synthesizeProductPreview(legacy),/PRODUCT_PREVIEW_BINDING_REFUSED/);
+});

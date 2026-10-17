@@ -34,7 +34,7 @@ export const MODEL_PROXY_SERVICES=Object.freeze({
 });
 // Stage 5 sizing in the approved change set: owner and proxy 0.5 vCPU / 1 GiB each.
 const SIZING=Object.freeze({cpu:512,memoryMiB:1024,ephemeralStorageGiB:21});
-const LITELLM=Object.freeze({version:'1.104.2',upstreamDigest:'sha256:3d88bd757134a00e8c00237b85a021ab1f6d54abb9c1df750f411dbe7256a500'});
+export const LITELLM=Object.freeze({version:'1.104.2',upstreamDigest:'sha256:3d88bd757134a00e8c00237b85a021ab1f6d54abb9c1df750f411dbe7256a500'});
 
 const fail=()=>{throw Error('PRODUCT_MODEL_PROXY_BINDING_REFUSED');};
 function object(value,keys){
