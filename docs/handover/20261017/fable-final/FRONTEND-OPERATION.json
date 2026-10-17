@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "asOf": "2026-10-17T07:06:11Z",
+  "asOf": "2026-10-17T07:14:08Z",
   "source": "Frontend owner's trusted handoff message; no fresh AWS call by root",
   "ownerThread": "01a14534-18b7-7234-b9c6-9e34393c20e9",
   "owner": "Dot/frontend lane; not transferred to Fable",
@@ -12,7 +12,9 @@
   "coordinatorReservationsUsd": 343,
   "budgetCeilingUsd": 400,
   "autoRetries": 0,
-  "stage": "CODEBUILD_IN_PROGRESS_DOWNLOAD_SOURCE_OWNER_BATCHGET_CONFIRMED",
+  "stage": "TERMINAL_FAILED_IMAGE_SCAN_GATE_PENDING_EXACT_DIGEST_AND_COMPLETE_FINDINGS",
+  "terminalAt": "2026-10-17T07:12:55Z",
+  "allocationState": "CONSUMED_NO_RETRY_OR_NEW_ALLOCATION",
   "archive": {
     "trackedFiles": 21800,
     "sourceMarker": true,
@@ -31,5 +33,5 @@
   "queuedTimeoutMinutes": 10,
   "imageDigest": null,
   "scan": null,
-  "required": "Do not duplicate/retry upload or build. Owner must check uncertain outcome and monitor the single allocated attempt to terminal, then publish exact input/build/digest/scan. No deployment authorized."
+  "required": "Do not duplicate/retry upload or build. Dot/frontend owner must publish exact terminal ECR digest and COMPLETE scan findings before classifying failure; no qualified successor image is claimed. No new attempt or deployment authorized."
 }

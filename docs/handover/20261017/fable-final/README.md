@@ -8,6 +8,8 @@
 
 Root Meri implementation stopped at **2026-10-17 06:47:33 UTC**. Only source preservation, exact PR130 reception, handoff writing and verification followed. Feature owners' individual final cuts are recorded in their supplements. No owned install, build, browser, DB, provider, archive or service process is being handed over. Unattributed shared Node/Python processes were left untouched. No global process/permission change was attempted.
 
+**Documentation/status cutoff:2026-10-17 07:14:08 UTC.** This includes dot's reported frontend build terminal failure at07:12:55; digest/complete scan diagnostics remain pending with that owner. No later cloud state is asserted.
+
 The immutable URL supplied with this document identifies the **documentation seal**. The product source it preserves is separately fixed at:
 
 - **`59856683e07efde3e04772f6b5229faa931c4b85`**, tree **`d2120719e83132a2d62dce9d6ad3342d801725c1`**.
@@ -33,7 +35,7 @@ Final feature supplements: [read tools PR132](https://github.com/neo-capiro/meri
 | Meri root integration | Source `59856683…`, with PR130 source received exactly | No successor image, final combined acceptance, live SQL/material/issuer/proxy/Temporal mount or real prompt. |
 | Existing Meri image | Source `f005f77316bb8735e60f16c3ac99a5c8e3d71a34`; digest `sha256:6a03d5367c22a95db1fbc95a08b2bb1237164bfdf3b6f215f076a38833fffb8d` | Image build/scan passed for those older bytes only. It contains none of this runtime integration. |
 | Core ordinary API | PR48 `6542f5b089656b6d255465edd464d06c2a0b408f`; digest `sha256:722a483259ebb5e9162b9294c26895bafa890fcfee45dc927ff1d2ec35fa071b` | Historical service 0/0/0; no current native admission. GET routing PR62/67 source-qualified, unapplied. |
-| Frontend first-chat source | PR70 `31a140cddf798c32b5cc45ad22e7b672312b3ca3`; architecture-only successor PR81 `01cf1df981250841d40df5fe0389f47168593cce` | PR70 $4 build FAILED architecture before Docker/ECR. Parent has now allocated one PR81 successor attempt up to$4, owned solely by dot's frontend lane; no successor image claim yet. Fable must not duplicate it. |
+| Frontend first-chat source | PR70 `31a140cddf798c32b5cc45ad22e7b672312b3ca3`; architecture-only successor PR81 `01cf1df981250841d40df5fe0389f47168593cce` | PR70 failed architecture. The one allocated PR81 up-to$4 build5e2c6878 is now FAILED at image-scan07:12:55; digest/complete findings pending. Dot owns diagnosis, no qualified successor image or retry. Fable must not duplicate it. |
 | Existing frontend image | Source `e0b47a34d00b8c181420188ed39a1d849e25ec0a`; digest `sha256:185d6ab9f7a8a6395546be4ac2374de2e329ab6182627de18e1fca9732220bcc` | Historical qualified image; newer native session/archived-client/first-chat sources are absent. |
 
 **Neo confirmed the private same-application Clerk key pairing at 05:17 UTC.** Earlier documents saying that yes/no pairing remains unresolved are historical. This is owner attestation, not disclosure of key material or proof of current native session claims, active tenant membership, actor/client admission or conversation authority. Those live checks are **UNRUN**. No bearer, private key, connection string or user session belongs in Git or this handoff.

@@ -53,3 +53,5 @@ Core Objective stack/latest receiving: PR64 **806a0939267806e7481bb2bbfe260f5a5a
 - Backend cleanupPR65 **e305dfbee638023bf51596e576e83fd06144c6d4** remains unrelated, Jest/TSUNRUN; not a Meri shipping input.
 
 No essential source in these published lanes requires a local Windows path. Lane supplements retain portable source commands and limitations; Windows-specific native harnesses require receiving-host review before execution. Missing/denied publication is explicitly reported rather than bypassed through this packet.
+
+Latest frontend status at07:14:08 cutoff: the separately dot-owned PR81 one-shot build `5e2c6878-970b-4dc4-8a82-7947272f71b5` is terminalFAILED07:12:55 at image-scan. Exact digest and complete findings are pending diagnostic, not qualified image evidence. Its one up-to$4 allocation is consumed; no automatic retry/new attempt/deployment. FRONTEND-OPERATION.json preserves the exact source/S3/build/bounds and diagnostic owner.
