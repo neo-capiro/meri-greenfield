@@ -68,6 +68,7 @@ _LINUX_CODES = frozenset(("OTHER ERR_ASSERTION ERR_MODULE_NOT_FOUND MODULE_NOT_F
     " ".join("TEMPORAL_PRODUCT_TOKEN_" + code for code in "CONFIGURATION DELIVERY PLATFORM DIRECTORY OWNERSHIP PATH_OCCUPIED CLEANUP_UNKNOWN IO_UNKNOWN CURRENTNESS EXPIRY CLOCK CLOSED INTERRUPTED REVOKED UNAVAILABLE REFUSED".split())).split())
 _LINUX_TYPES = frozenset("UNKNOWN testCodeFailure subtestsFailed hookFailed cancelledByParent testTimeoutFailure testAborted uncaughtException unhandledRejection".split())
 _LINUX_SIGNALS = frozenset("NONE OTHER SIGABRT SIGSEGV SIGKILL SIGTERM SIGBUS".split())
+_LINUX_EXCEPTIONS = frozenset("NONE Error AssertionError TypeError RangeError SyntaxError OTHER".split())
 _EXCEPTION_TYPES = {FileNotFoundError: "MISSING_FILE", PermissionError: "PERMISSION", OSError: "OS",
                     json.JSONDecodeError: "JSON", ImportError: "IMPORT", KeyError: "KEY",
                     TypeError: "TYPE", ValueError: "VALUE", TimeoutError: "TIMEOUT"}
@@ -169,13 +170,16 @@ def _read_linux_reporter(data):
         return None
     detail_ids = set()
     for item in details:
-        if type(item) is not dict or set(item) != {"id", "stage", "code", "failureType", "exitCode", "signal"}:
+        if type(item) is not dict or set(item) != {"id", "stage", "code", "checkId", "exception", "failureType", "exitCode", "signal"}:
             return None
         key = item["id"]
         if type(key) is not str or key not in _LINUX_CASE_IDS | {"B_FILE", "R_FILE", "W_FILE", "UNMAPPED"} or key in detail_ids:
             return None
         detail_ids.add(key)
-        if any(type(item[name]) is not str or item[name] not in allowed for name, allowed in (("stage", _LINUX_STAGES), ("code", _LINUX_CODES), ("failureType", _LINUX_TYPES), ("signal", _LINUX_SIGNALS))) or key != "W08" and item["stage"] != "NONE":
+        if any(type(item[name]) is not str or item[name] not in allowed for name, allowed in (("stage", _LINUX_STAGES), ("code", _LINUX_CODES), ("exception", _LINUX_EXCEPTIONS), ("failureType", _LINUX_TYPES), ("signal", _LINUX_SIGNALS))) or key != "W08" and item["stage"] != "NONE":
+            return None
+        point = item["checkId"]
+        if type(point) is not int or not 0 <= point <= 30 or (point == 0) != (item["exception"] == "NONE") or point and (key != "W08" or item["stage"] == "NONE"):
             return None
         if item["exitCode"] is not None and (type(item["exitCode"]) is not int or not -255 <= item["exitCode"] <= 255):
             return None

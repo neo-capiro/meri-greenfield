@@ -43,6 +43,7 @@ const codes = new Set(('ERR_ASSERTION ERR_MODULE_NOT_FOUND MODULE_NOT_FOUND ERR_
   'TEMPORAL_PRODUCT_TOKEN_CONFIGURATION TEMPORAL_PRODUCT_TOKEN_DELIVERY TEMPORAL_PRODUCT_TOKEN_PLATFORM TEMPORAL_PRODUCT_TOKEN_DIRECTORY TEMPORAL_PRODUCT_TOKEN_OWNERSHIP TEMPORAL_PRODUCT_TOKEN_PATH_OCCUPIED TEMPORAL_PRODUCT_TOKEN_CLEANUP_UNKNOWN TEMPORAL_PRODUCT_TOKEN_IO_UNKNOWN TEMPORAL_PRODUCT_TOKEN_CURRENTNESS TEMPORAL_PRODUCT_TOKEN_EXPIRY TEMPORAL_PRODUCT_TOKEN_CLOCK TEMPORAL_PRODUCT_TOKEN_CLOSED TEMPORAL_PRODUCT_TOKEN_INTERRUPTED TEMPORAL_PRODUCT_TOKEN_REVOKED TEMPORAL_PRODUCT_TOKEN_UNAVAILABLE TEMPORAL_PRODUCT_TOKEN_REFUSED').split(' '));
 const types = new Set('testCodeFailure subtestsFailed hookFailed cancelledByParent testTimeoutFailure testAborted uncaughtException unhandledRejection'.split(' '));
 const signals = new Set('SIGABRT SIGSEGV SIGKILL SIGTERM SIGBUS'.split(' '));
+const exceptions = new Set('Error AssertionError TypeError RangeError SyntaxError OTHER'.split(' '));
 
 export default async function* productImageTestReporter(source) {
   const seen = new Set();
@@ -72,15 +73,22 @@ export default async function* productImageTestReporter(source) {
       if (fileId) fileFailureIds.add(fileId);
       const detailId = id ?? (fileId ? `${fileId}_FILE` : 'UNMAPPED');
       if (!details.has(detailId)) {
-        if (details.size >= 4) detailTruncated = true;
-        else {
+        if (details.size >= 4) {
+          detailTruncated = true;
+          if (detailId === 'W08') details.delete(details.keys().next().value);
+        }
+        if (details.size < 4) {
           const error = data?.details?.error;
           let stage = 'NONE', code = stderrCodes.get(fileId) ?? 'OTHER', current = error;
+          let checkId = 0, exception = 'NONE', capturedCode;
           for (let depth = 0; current && depth < 4; depth++, current = current.cause) {
             if (id === 'W08' && typeof current.message === 'string') for (const value of stages) if (current.message === `PRODUCT_IMAGE_W08_${value}`) stage = value;
             if (codes.has(current.code)) code = current.code;
+            if (id === 'W08' && Number.isInteger(current.checkId) && current.checkId >= 1 && current.checkId <= 30 && exceptions.has(current.checkException) && (codes.has(current.checkCode) || current.checkCode === 'OTHER')) {
+              checkId = current.checkId; exception = current.checkException; capturedCode = current.checkCode;
+            }
           }
-          details.set(detailId, {id: detailId, stage, code,
+          details.set(detailId, {id: detailId, stage, code: capturedCode ?? code, checkId, exception,
             failureType: types.has(error?.failureType) ? error.failureType : 'UNKNOWN',
             exitCode: Number.isInteger(error?.exitCode) && error.exitCode >= -255 && error.exitCode <= 255 ? error.exitCode : null,
             signal: signals.has(error?.signal) ? error.signal : error?.signal === undefined ? 'NONE' : 'OTHER'});

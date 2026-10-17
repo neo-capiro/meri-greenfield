@@ -16,13 +16,38 @@ const inspect=(c,v)=>inspectTemporalProductTokenDelivery({configuration:c,value:
 function timers(){const pending=new Set();return {pending,setTimeout(fn,ms){const t={fn,ms,unref(){}};pending.add(t);return t;},clearTimeout(t){pending.delete(t);},fire(ms){const t=[...pending].find(t=>t.ms===ms);assert.ok(t,`timer ${ms} exists`);pending.delete(t);t.fn();}};}
 const native=process.platform==='linux'&&process.getuid?.()>0&&process.getgid?.()>0;
 const linux={skip:native?false:'UNRUN: requires non-root Linux owner/mode/atomic-rename semantics'};
-async function fixture(t){const dir=await mkdtemp(join(tmpdir(),'meri-temporal-writer-'));t.after(()=>rm(dir,{recursive:true,force:true}));const c=configuration();c.authorization.tokenFile=join(dir,'token.json');return {dir,c};}
+async function fixture(t,cleanup){const dir=await mkdtemp(join(tmpdir(),'meri-temporal-writer-'));t.after(cleanup?()=>cleanup(()=>rm(dir,{recursive:true,force:true})):()=>rm(dir,{recursive:true,force:true}));const c=configuration();c.authorization.tokenFile=join(dir,'token.json');return {dir,c};}
 async function missing(path){try{await lstat(path);return false;}catch(error){if(error.code==='ENOENT')return true;throw error;}}
 async function until(check){const deadline=Date.now()+2000;while(!await check()){if(Date.now()>=deadline)assert.fail('bounded condition did not settle');await new Promise(resolve=>setTimeout(resolve,5));}}
 const w08Stages=new Set(['START','FIRST_METADATA','FIRST_READ','REFRESH','SECOND_METADATA','SECOND_READ','STATUS','CLOSE','CLEANUP']);
-async function w08Stage(name,work){
+const w08Codes=new Set(('ERR_ASSERTION ENOENT EACCES EPERM RUNTIME_SECRET_FILE ' +
+ 'TEMPORAL_PRODUCT_TOKEN_CONFIGURATION TEMPORAL_PRODUCT_TOKEN_DELIVERY TEMPORAL_PRODUCT_TOKEN_PLATFORM ' +
+ 'TEMPORAL_PRODUCT_TOKEN_DIRECTORY TEMPORAL_PRODUCT_TOKEN_OWNERSHIP TEMPORAL_PRODUCT_TOKEN_PATH_OCCUPIED ' +
+ 'TEMPORAL_PRODUCT_TOKEN_CLEANUP_UNKNOWN TEMPORAL_PRODUCT_TOKEN_IO_UNKNOWN TEMPORAL_PRODUCT_TOKEN_CURRENTNESS ' +
+ 'TEMPORAL_PRODUCT_TOKEN_EXPIRY TEMPORAL_PRODUCT_TOKEN_CLOCK TEMPORAL_PRODUCT_TOKEN_CLOSED ' +
+ 'TEMPORAL_PRODUCT_TOKEN_INTERRUPTED TEMPORAL_PRODUCT_TOKEN_REVOKED TEMPORAL_PRODUCT_TOKEN_UNAVAILABLE ' +
+ 'TEMPORAL_PRODUCT_TOKEN_REFUSED').split(' '));
+function w08Failure(error,id){
+ const checkException=error instanceof assert.AssertionError?'AssertionError':error instanceof TypeError?'TypeError':
+  error instanceof RangeError?'RangeError':error instanceof SyntaxError?'SyntaxError':error instanceof Error?'Error':'OTHER';
+ let checkCode='OTHER';
+ try{if(w08Codes.has(error?.code))checkCode=error.code;}catch{}
+ return Object.freeze({checkId:id,checkException,checkCode});
+}
+function w08Check(state,id,work){
+ if(!Number.isInteger(id)||id<1||id>30)throw new TypeError('Unknown W08 check');
+ const record=error=>{state.failure??=w08Failure(error,id);throw error;};
+ try{const value=work();return value&&typeof value.then==='function'?value.catch(record):value;}
+ catch(error){return record(error);}
+}
+async function w08Stage(name,state,work){
  if(!w08Stages.has(name))throw new TypeError('Unknown W08 stage');
- try{return await work();}catch(cause){throw new Error(`PRODUCT_IMAGE_W08_${name}`,{cause});}
+ try{return await work();}catch(cause){
+  const error=new Error(`PRODUCT_IMAGE_W08_${name}`,{cause});
+  const detail=state.failure??{checkId:0,checkException:'NONE',checkCode:'OTHER'};
+  error.checkId=detail.checkId;error.checkException=detail.checkException;error.checkCode=detail.checkCode;
+  throw error;
+ }
 }
 
 test('writer configuration defaults disabled and is closed before resource allocation',()=>{
@@ -100,32 +125,56 @@ test('enabled construction is inert and unsupported native platform refuses befo
 });
 
 test('Linux: atomic owner-only replacement stays compatible with the existing reader and closes only owned files',linux,async t=>{
- const {dir,c,clock,scheduled,writer}=await w08Stage('START',async()=>{
-  const {dir,c}=await fixture(t),clock={now:at},scheduled=timers();let serial=0;
-  const writer=createTemporalProductTokenWriter({configuration:c,now:()=>clock.now,timers:scheduled,delivery:{async read(request){
-   assert.deepEqual(Object.keys(request).sort(),['schemaVersion','role','subject','workloadPrincipal','namespace','audience','issuer','signal'].sort());
-   assert.ok(request.signal instanceof AbortSignal);return response(c,clock.now,++serial);
-  }}});t.after(()=>writer.close());await writer.start();return {dir,c,clock,scheduled,writer};
+ const state={failure:null};
+ const {dir,c,clock,scheduled,writer}=await w08Stage('START',state,async()=>{
+  const {dir,c}=await w08Check(state,1,()=>fixture(t,work=>{
+   const hookState={failure:null};
+   return w08Stage('CLEANUP',hookState,()=>w08Check(hookState,30,work));
+  })),clock={now:at},scheduled=timers();let serial=0;
+  const writer=w08Check(state,2,()=>createTemporalProductTokenWriter({configuration:c,now:()=>clock.now,timers:scheduled,delivery:{async read(request){
+   w08Check(state,5,()=>assert.deepEqual(Object.keys(request).sort(),['schemaVersion','role','subject','workloadPrincipal','namespace','audience','issuer','signal'].sort()));
+   w08Check(state,6,()=>assert.ok(request.signal instanceof AbortSignal));
+   return w08Check(state,7,()=>response(c,clock.now,++serial));
+  }}}));
+  w08Check(state,3,()=>t.after(()=>{
+   const hookState={failure:null};
+   return w08Stage('CLEANUP',hookState,()=>w08Check(hookState,29,()=>writer.close()));
+  }));
+  await w08Check(state,4,()=>writer.start());return {dir,c,clock,scheduled,writer};
  });
- const first=await w08Stage('FIRST_METADATA',async()=>{
-  const value=await lstat(c.authorization.tokenFile);assert.equal(value.mode&0o777,0o600);assert.equal(value.uid,process.getuid());assert.equal(value.nlink,1);return value;
+ const first=await w08Stage('FIRST_METADATA',state,async()=>{
+  const value=await w08Check(state,8,()=>lstat(c.authorization.tokenFile));
+  w08Check(state,9,()=>assert.equal(value.mode&0o777,0o600));
+  w08Check(state,10,()=>assert.equal(value.uid,process.getuid()));
+  w08Check(state,11,()=>assert.equal(value.nlink,1));return value;
  });
- await w08Stage('FIRST_READ',async()=>{
-  assert.equal((await createTemporalTokenFileReader({tokenFile:c.authorization.tokenFile}).read()).token,response(c,at,1).token);
+ await w08Stage('FIRST_READ',state,async()=>{
+  const value=await w08Check(state,12,()=>createTemporalTokenFileReader({tokenFile:c.authorization.tokenFile}).read());
+  w08Check(state,13,()=>assert.equal(value.token,response(c,at,1).token.token));
  });
- await w08Stage('REFRESH',async()=>{clock.now+=1000;await writer.refresh();});
- await w08Stage('SECOND_METADATA',async()=>{
-  const second=await lstat(c.authorization.tokenFile);assert.notEqual(second.ino,first.ino);
+ await w08Stage('REFRESH',state,async()=>{
+  w08Check(state,14,()=>{clock.now+=1000;});await w08Check(state,15,()=>writer.refresh());
  });
- await w08Stage('SECOND_READ',async()=>{
-  assert.equal((await createTemporalTokenFileReader({tokenFile:c.authorization.tokenFile}).read()).token,response(c,clock.now,2).token);
+ await w08Stage('SECOND_METADATA',state,async()=>{
+  const second=await w08Check(state,16,()=>lstat(c.authorization.tokenFile));
+  w08Check(state,17,()=>assert.notEqual(second.ino,first.ino));
  });
- await w08Stage('STATUS',async()=>{
-  assert.equal(writer.healthy(),true);assert.doesNotMatch(JSON.stringify(writer.status()),/synthetic-token|claims|principal/u);
+ await w08Stage('SECOND_READ',state,async()=>{
+  const value=await w08Check(state,18,()=>createTemporalTokenFileReader({tokenFile:c.authorization.tokenFile}).read());
+  w08Check(state,19,()=>assert.equal(value.token,response(c,clock.now,2).token.token));
  });
- await w08Stage('CLOSE',()=>writer.close());
- await w08Stage('CLEANUP',async()=>{
-  assert.equal(await missing(c.authorization.tokenFile),true);assert.deepEqual(await readdir(dir),[]);assert.equal(scheduled.pending.size,0);
+ await w08Stage('STATUS',state,async()=>{
+  const healthy=w08Check(state,20,()=>writer.healthy());
+  w08Check(state,21,()=>assert.equal(healthy,true));
+  w08Check(state,22,()=>assert.doesNotMatch(JSON.stringify(writer.status()),/synthetic-token|claims|principal/u));
+ });
+ await w08Stage('CLOSE',state,()=>w08Check(state,23,()=>writer.close()));
+ await w08Stage('CLEANUP',state,async()=>{
+  const gone=await w08Check(state,24,()=>missing(c.authorization.tokenFile));
+  w08Check(state,25,()=>assert.equal(gone,true));
+  const entries=await w08Check(state,26,()=>readdir(dir));
+  w08Check(state,27,()=>assert.deepEqual(entries,[]));
+  w08Check(state,28,()=>assert.equal(scheduled.pending.size,0));
  });
 });
 

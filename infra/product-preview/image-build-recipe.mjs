@@ -118,13 +118,16 @@ def child_receipt():
             signals=set('NONE OTHER SIGABRT SIGSEGV SIGKILL SIGTERM SIGBUS'.split())
             seen=set()
             for item in details:
-                if type(item) is not dict or set(item)!={'id','stage','code','failureType','exitCode','signal'}:
+                if type(item) is not dict or set(item)!={'id','stage','code','checkId','exception','failureType','exitCode','signal'}:
                     return None
                 key=item['id']
                 if type(key) is not str or key not in case_ids|{'B_FILE','R_FILE','W_FILE','UNMAPPED'} or key in seen:
                     return None
                 seen.add(key)
                 if any(type(item[name]) is not str or item[name] not in allowed for name,allowed in (('stage',stages),('code',error_codes),('failureType',failure_types),('signal',signals))) or key!='W08' and item['stage']!='NONE':
+                    return None
+                point=item['checkId']
+                if type(point) is not int or not 0<=point<=30 or type(item['exception']) is not str or item['exception'] not in ('NONE','Error','AssertionError','TypeError','RangeError','SyntaxError','OTHER') or (point==0)!=(item['exception']=='NONE') or point and (key!='W08' or item['stage']=='NONE'):
                     return None
                 if item['exitCode'] is not None and (type(item['exitCode']) is not int or not -255<=item['exitCode']<=255):
                     return None
@@ -158,7 +161,7 @@ def child_receipt():
             lines.append('PRODUCT_IMAGE_LINUX_TESTS status='+row['status']+' observedCases='+str(row['observedCases'])+' failedCaseIds='+(','.join(row['failedCaseIds']) or 'none')+' unknownOutcomes='+str(row['unknownOutcomes'])+' skippedCases='+str(row['skippedCases'])+' duplicateCases='+str(row['duplicateCases']))
             lines.append('PRODUCT_IMAGE_LINUX_FILES B='+str(row['fileCaseCounts']['B'])+' R='+str(row['fileCaseCounts']['R'])+' W='+str(row['fileCaseCounts']['W'])+' failedFiles='+(','.join(row['fileFailureIds']) or 'none'))
             for detail in row['failureDetails']:
-                lines.append('PRODUCT_IMAGE_LINUX_FAILURE caseId='+detail['id']+' stage='+detail['stage']+' code='+detail['code']+' type='+detail['failureType']+' exitCode='+(str(detail['exitCode']) if detail['exitCode'] is not None else 'none')+' signal='+detail['signal'])
+                lines.append('PRODUCT_IMAGE_LINUX_FAILURE caseId='+detail['id']+' stage='+detail['stage']+' checkId='+str(detail['checkId'])+' exception='+detail['exception']+' code='+detail['code']+' type='+detail['failureType']+' exitCode='+(str(detail['exitCode']) if detail['exitCode'] is not None else 'none')+' signal='+detail['signal'])
         if safe.get('childCleanupStatus')=='UNKNOWN':
             lines.append('PRODUCT_IMAGE_CHILD_CLEANUP_UNKNOWN phase=BOOTSTRAP_CHILD')
         return safe,lines
@@ -370,7 +373,12 @@ if state!='SUCCEEDED':
     fail('BOOTSTRAP_CHILD','PRODUCT_IMAGE_BOOTSTRAP_CHILD_INCOMPLETE')
 raise SystemExit(0)
 MERI_PRODUCT_BUILD`;
- const command=bootstrap.replace(/^ +/gmu,spaces=>{if(spaces.length%4)refuse();return ' '.repeat(spaces.length/4);});
+ // Keep authored names readable while fitting CodeBuild's fixed override limit.
+ // Only these private Python bindings are shortened; protocol strings stay exact.
+ const bindings={file_failures:'ff',per_file:'pf',bootstrap_receipt:'br',child_receipt:'cr',result_bucket:'rb',result_key:'rk',result_kms:'rm',error_codes:'ec',failure_types:'ft',bootstrap_codes:'bc'};
+ const identifiers=new RegExp(`\\b(?:${Object.keys(bindings).join('|')})\\b`,'gu');
+ if(new RegExp(`['"](?:${Object.keys(bindings).join('|')})['"]`,'u').test(bootstrap))refuse();
+ const command=bootstrap.replace(identifiers,name=>bindings[name]).replace(/^ +/gmu,spaces=>{if(spaces.length%4)refuse();return ' '.repeat(spaces.length/4);});
  const buildspec={version:0.2,env:{shell:'bash'},phases:{build:{'on-failure':'ABORT',commands:[command]}},artifacts:{files:['product-image-receipt.json','product-image-diagnostic.json'],'discard-paths':'yes'}};
  const buildspecJson=JSON.stringify(buildspec)+'\n';
  if(Buffer.byteLength(buildspecJson)>25600)refuse();

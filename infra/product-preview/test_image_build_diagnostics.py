@@ -202,6 +202,13 @@ class ProducerDiagnosticTests(unittest.TestCase):
                     "fileCaseCounts": {"B": 6, "R": 6, "W": 12}, "fileFailureIds": [], "failureDetails": [], "detailTruncated": False}
         self.assertEqual(producer._read_linux_reporter(json.dumps(complete).encode())["status"], "COMPLETE")
         self.assertIsNone(producer._read_linux_reporter(b'{"secret":"do-not-echo"}'))
+        detail = {"id": "W08", "stage": "FIRST_METADATA", "code": "ERR_ASSERTION", "checkId": 9,
+                  "exception": "AssertionError", "failureType": "testCodeFailure", "exitCode": None, "signal": "NONE"}
+        failed = {**complete, "failedCaseIds": ["W08"], "fileFailureIds": ["W"], "failureDetails": [detail]}
+        self.assertEqual(producer._read_linux_reporter(json.dumps(failed).encode())["failureDetails"], [detail])
+        for changed in ({"checkId": True}, {"checkId": 31}, {"checkId": 0}, {"exception": "private-name"},
+                        {"exception": "NONE"}, {"id": "B01"}, {"stage": "NONE"}):
+            self.assertIsNone(producer._read_linux_reporter(json.dumps({**failed, "failureDetails": [{**detail, **changed}]}).encode()))
         with tempfile.TemporaryDirectory(dir=HERE) as work:
             reporter = Path(work) / "infra/product-preview/image-build-test-reporter.mjs"
             reporter.parent.mkdir(parents=True)

@@ -33,10 +33,18 @@ test('inline reporter emits only fixed case IDs and counts for foreign, skipped 
  assert.equal((await render([...all,all[0]])).duplicateCases,1);
  assert.equal((await render(all.slice(1))).observedCases,23);
  const writer='/opt/meri/apps/runtime/temporal-product-token-writer.test.mjs',writerName=all.find(row=>row.data.file===writer&&row.data.name.startsWith('Linux: atomic')).data.name;
- const localized=await render([{type:'test:stderr',data:{file,message:'never-print-this-secret ERR_MODULE_NOT_FOUND'}},{type:'test:fail',data:{file,name:file,details:{error:{failureType:'testCodeFailure',exitCode:1}}}},{type:'test:fail',data:{file:writer,name:writerName,details:{error:{message:'PRODUCT_IMAGE_W08_FIRST_READ',code:'ERR_ASSERTION',cause:{message:'never-print-this-secret',code:'RUNTIME_SECRET_FILE'}}}}}]);
+ const localized=await render([{type:'test:stderr',data:{file,message:'never-print-this-secret ERR_MODULE_NOT_FOUND'}},{type:'test:fail',data:{file,name:file,details:{error:{failureType:'testCodeFailure',exitCode:1}}}},{type:'test:fail',data:{file:writer,name:writerName,details:{error:{message:'PRODUCT_IMAGE_W08_FIRST_READ',code:'ERR_ASSERTION',cause:{message:'PRODUCT_IMAGE_W08_FIRST_READ',checkId:12,checkException:'Error',checkCode:'RUNTIME_SECRET_FILE',cause:{message:'never-print-this-secret'}}}}}}]);
  assert.deepEqual(localized.fileCaseCounts,{B:0,R:0,W:1});assert.deepEqual(localized.fileFailureIds,['B','W']);
  assert.equal(localized.failureDetails[0].id,'B_FILE');assert.equal(localized.failureDetails[0].code,'ERR_MODULE_NOT_FOUND');
  assert.equal(localized.failureDetails[1].stage,'FIRST_READ');assert.equal(localized.failureDetails[1].code,'RUNTIME_SECRET_FILE');
+ assert.equal(localized.failureDetails[1].checkId,12);assert.equal(localized.failureDetails[1].exception,'Error');
+ const earlier=all.slice(0,4).map(row=>({...row,type:'test:fail'}));
+ for(const checkId of [9,10,11]){
+  const reserved=await render([...earlier,{type:'test:fail',data:{file:writer,name:writerName,details:{error:{cause:{message:'PRODUCT_IMAGE_W08_FIRST_METADATA',checkId,checkException:'AssertionError',checkCode:'ERR_ASSERTION',cause:{message:'never-print-this-secret',actual:'private',expected:'private'}}}}}}]);
+  assert.equal(reserved.failureDetails.length,4);assert.equal(reserved.detailTruncated,true);
+  assert.deepEqual(reserved.failureDetails.find(row=>row.id==='W08'),{id:'W08',stage:'FIRST_METADATA',code:'ERR_ASSERTION',checkId,exception:'AssertionError',failureType:'UNKNOWN',exitCode:null,signal:'NONE'});
+  assert.ok(!JSON.stringify(reserved).includes('private'));assert.ok(!JSON.stringify(reserved).includes('never-print-this-secret'));
+ }
  assert.ok(!JSON.stringify(localized).includes('never-print-this-secret'));
 });
 const git=(root,...args)=>execFileSync('git',['-C',root,...args],{encoding:'utf8',stdio:['pipe','pipe','pipe']}).trim();
@@ -92,7 +100,7 @@ time.sleep(5)
   }
   if(scenario==='linux-failure'){
    writeFileSync(producerFile,`import json,os,pathlib,sys
-row={'schemaVersion':1,'status':'FAILED','phase':'LINUX_TESTS','diagnosticOwner':os.environ['MERI_PRODUCT_DIAGNOSTIC_OWNER'],'primary':{'phase':'LINUX_TESTS','category':'COMMAND','code':'PRODUCT_IMAGE_COMMAND_FAILED','detail':{'status':'EXIT_NONZERO','exitCode':1,'outputBytes':200,'elapsedMs':12}},'cleanup':{'status':'OK','failure':None,'additionalFailures':[]},'linuxTests':{'status':'COMPLETE','observedCases':24,'failedCaseIds':['W08'],'unknownFailures':0,'unknownOutcomes':0,'duplicateCases':0,'skippedCases':0,'fileCaseCounts':{'B':6,'R':6,'W':12},'fileFailureIds':['W'],'failureDetails':[{'id':'W08','stage':'FIRST_READ','code':'RUNTIME_SECRET_FILE','failureType':'testCodeFailure','exitCode':None,'signal':'NONE'}],'detailTruncated':False}}
+row={'schemaVersion':1,'status':'FAILED','phase':'LINUX_TESTS','diagnosticOwner':os.environ['MERI_PRODUCT_DIAGNOSTIC_OWNER'],'primary':{'phase':'LINUX_TESTS','category':'COMMAND','code':'PRODUCT_IMAGE_COMMAND_FAILED','detail':{'status':'EXIT_NONZERO','exitCode':1,'outputBytes':200,'elapsedMs':12}},'cleanup':{'status':'OK','failure':None,'additionalFailures':[]},'linuxTests':{'status':'COMPLETE','observedCases':24,'failedCaseIds':['W08'],'unknownFailures':0,'unknownOutcomes':0,'duplicateCases':0,'skippedCases':0,'fileCaseCounts':{'B':6,'R':6,'W':12},'fileFailureIds':['W'],'failureDetails':[{'id':'W08','stage':'FIRST_READ','code':'RUNTIME_SECRET_FILE','checkId':12,'exception':'Error','failureType':'testCodeFailure','exitCode':None,'signal':'NONE'}],'detailTruncated':False}}
 pathlib.Path('product-image-diagnostic.json').write_text(json.dumps(row))
 sys.exit(2)
 `);
@@ -112,7 +120,15 @@ class FailingTemp:
  def __enter__(self):return self.inner.__enter__()
  def __exit__(self,*args):self.inner.__exit__(*args);raise OSError('secret=never-log-this')
 tempfile.TemporaryDirectory=FailingTemp`);
-  const result=python(['-c',body],{cwd:f.repo});
+  if(scenario==='linux-failure')body=body.replace('atexit.register(retain_failure)',`def fake_put_once(args,environment):
+ assert args[0]=='aws' and environment['AWS_MAX_ATTEMPTS']=='1'
+ assert args[args.index('--if-none-match')+1]=='*'
+ pathlib.Path('retained-fixture.json').write_bytes(diagnostic.read_bytes())
+ return 0,json.dumps({'VersionId':'version-one','ChecksumSHA256':args[args.index('--checksum-sha256')+1],'ServerSideEncryption':'aws:kms','SSEKMSKeyId':args[args.index('--ssekms-key-id')+1]}).encode()
+put_once=fake_put_once
+atexit.register(retain_failure)`);
+  const env=scenario==='linux-failure'?{...process.env,CODEBUILD_PROJECT_ARN:f.pin.codeBuildProjectArn,CODEBUILD_BUILD_ID:'meri-product-preview-build:12345678-1234-1234-1234-123456789abc'}:process.env;
+  const result=python(['-c',body],{cwd:f.repo,env});
   assert.equal(result.status,2,result.stderr);
   assert.equal(result.stdout,'');
   assert.ok(!result.stderr.includes('top-secret'));
@@ -136,6 +152,11 @@ tempfile.TemporaryDirectory=FailingTemp`);
   }else if(scenario==='linux-failure'){
    assert.equal(diagnostic.primary.category,'COMMAND');
    assert.deepEqual(diagnostic.linuxTests.failedCaseIds,['W08']);
+   assert.deepEqual(diagnostic.linuxTests.failureDetails[0],{id:'W08',stage:'FIRST_READ',code:'RUNTIME_SECRET_FILE',checkId:12,exception:'Error',failureType:'testCodeFailure',exitCode:null,signal:'NONE'});
+   const uploaded=JSON.parse(readFileSync(join(f.repo,'retained-fixture.json'),'utf8'));
+   assert.deepEqual(uploaded.linuxTests.failureDetails,diagnostic.linuxTests.failureDetails);
+   assert.equal(uploaded.retention.status,'ATTEMPTED');assert.equal(diagnostic.retention.status,'CONFIRMED');
+   assert.ok(result.stderr.includes('PRODUCT_IMAGE_LINUX_FAILURE caseId=W08 stage=FIRST_READ checkId=12 exception=Error code=RUNTIME_SECRET_FILE'));
    assert.ok(result.stderr.includes('PRODUCT_IMAGE_LINUX_TESTS status=COMPLETE observedCases=24 failedCaseIds=W08'));
    assert.ok(result.stderr.includes('PRODUCT_IMAGE_CHECK_FAILED phase=LINUX_TESTS category=COMMAND code=PRODUCT_IMAGE_COMMAND_FAILED commandStatus=EXIT_NONZERO'));
   }else assert.equal(diagnostic.primary.category,'BOOTSTRAP');
