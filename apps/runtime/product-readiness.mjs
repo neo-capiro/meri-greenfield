@@ -7,6 +7,7 @@ export function productReadiness({ports,retention,sourceEnabled,userPreferences}
   owners.push({name,state:available.has(port)?'composed':'unavailable'});
  owners.push({name:'retention.startup',state:retention?'composed':'unavailable'},
   {name:'retention.ledgerSink',state:available.has('retentionLedgerSink')?'composed':'unavailable'},
+  {name:'tasks.commands',state:sourceEnabled!==true?'disabled':available.has('taskCommandApplication')?'composed':'unavailable'},
   {name:'sources.currentInstallation',state:sourceEnabled?'unavailable':'disabled'},
   {name:'proxy.modelGrants',state:'unavailable'},
   {name:'schedules.dispatchWorker',state:'unregistered-placement-pending'});

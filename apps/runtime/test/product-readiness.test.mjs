@@ -10,5 +10,5 @@ test('missing owners are individually named and schedule registration remains pl
 });
 test('composed owners do not conceal remaining source, model grant or placement gaps',()=>{
  const result=productReadiness({ports:{configuredOwners:['identityContext','transitionAuthority','continuationAdmission','approvals','artifactOptionsOwner','artifactStore','actionApplication','selectedController','sdkSessionOwner','sdkSessionSnapshot','conversationMembership','conversationTurns','retentionLedgerSink']},retention:{},sourceEnabled:true});
- assert.equal(result.ready,false);assert.deepEqual(result.missingOwners,['sources.currentInstallation','proxy.modelGrants','schedules.dispatchWorker']);
+ assert.equal(result.ready,false);assert.deepEqual(result.missingOwners,['tasks.commands','sources.currentInstallation','proxy.modelGrants','schedules.dispatchWorker']);
 });
