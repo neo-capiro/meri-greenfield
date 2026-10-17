@@ -22,7 +22,7 @@ COPY apps ./apps
 COPY packages ./packages
 COPY infra/product-preview/runtime-packages.lock.json ./infra/product-preview/runtime-packages.lock.json
 # Stage 1 one-shot database runner (D2). Its migrations already arrive through `COPY apps`.
-COPY infra/product-preview/first-chat-migrate.mjs infra/product-preview/first-chat-database.sql infra/product-preview/first-chat-seed-budget.sql ./infra/product-preview/
+COPY infra/product-preview/first-chat-migrate.mjs infra/product-preview/first-chat-database.sql infra/product-preview/first-chat-database-temporal.sql infra/product-preview/first-chat-seed-budget.sql ./infra/product-preview/
 # Stage the retained public index/APK snapshot through the same exact size/hash
 # checks. The upstream index URL rotates; the build never downloads it. Kept
 # outside /opt/meri so the snapshot is not copied into the runtime image.

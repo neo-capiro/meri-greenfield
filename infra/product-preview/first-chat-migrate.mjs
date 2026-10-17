@@ -19,6 +19,8 @@ import {fileURLToPath} from 'node:url';
 
 export const ROOT=resolve(dirname(fileURLToPath(import.meta.url)),'../..');
 export const DATABASE_SCRIPT='infra/product-preview/first-chat-database.sql';
+// Supersedes DATABASE_SCRIPT's temporal_grants section (that file stays byte-identical: its sha is ledgered).
+export const TEMPORAL_SCRIPT='infra/product-preview/first-chat-database-temporal.sql';
 export const LEDGER='meri_migration_ledger.applied';
 export const OWNER='meri_product_migrator';
 
@@ -48,7 +50,7 @@ export const PLAN=Object.freeze([
  ['migration','apps/runtime/temporal-issuer/migrations/0001_service_task_registrations.sql','59b0e32eac16764bc0d22cb85509b7e9ea1e51c2a50882ed95d9cf14406e0041'],
  ['migration','infra/product-preview/first-chat-seed-budget.sql','adfdbb8590e5c69ccf30c3cecf42bdc483a061ae6639c1db01e952389a39ff3a'],
  ['phase:meri_grants',DATABASE_SCRIPT,'c6e2b5edf6b88030c677cf326c83d8e4f17a0b413808072eae1d1dab3d8814d5'],
- ['phase:temporal_grants',DATABASE_SCRIPT,'c6e2b5edf6b88030c677cf326c83d8e4f17a0b413808072eae1d1dab3d8814d5']
+ ['phase:temporal_grants',TEMPORAL_SCRIPT,'2d305021ec1c66de034b07d233bb534492f5896d2ed3ff16c7118cf78520f348']
 ].map(([kind,path,pinned],index)=>Object.freeze({ordinal:index+1,kind,path,pinned,
  name:kind==='migration'?path:`${path}#${kind.slice(6)}`,
  stage:kind==='phase:temporal_grants'?'temporal':'meri'})));
@@ -279,7 +281,7 @@ export async function runStage({stage,plan,variables,connect,log=()=>{}}){
   for(const entry of plan.slice(applied)){
    if(entry.stage!==stage)break;
    if(entry.kind==='migration')await applyMigration(main,entry);
-   else{await phase(entry.kind.slice(6));await recordPhase(main,entry);}
+   else{await runPsqlScript({text:entry.text,variables:{[`phase_${entry.kind.slice(6)}`]:'1'},connect,log});await recordPhase(main,entry);}
    log({event:'applied',ordinal:entry.ordinal,name:entry.name,sha256:entry.sha256});
   }
   for(const entry of plan.slice(0,applied))if(entry.stage===stage)log({event:'skipped',ordinal:entry.ordinal,name:entry.name});

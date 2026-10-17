@@ -60,6 +60,7 @@ infra/product-preview/*
 # Stage 1 one-shot database runner (D2), copied by apps/runtime/Dockerfile.
 !infra/product-preview/first-chat-migrate.mjs
 !infra/product-preview/first-chat-database.sql
+!infra/product-preview/first-chat-database-temporal.sql
 !infra/product-preview/first-chat-seed-budget.sql
 !infra/product-preview/runtime-packages/
 infra/product-preview/runtime-packages/*

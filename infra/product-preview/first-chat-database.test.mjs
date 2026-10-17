@@ -297,7 +297,7 @@ test('plan pins the change-set order, real paths and current bytes; 0012 and 001
   '0006_native_executions.sql','0007_native_preparation.sql','0008_native_prepared_launch.sql','0009_next_runs.sql',
   '0010_retention.sql','0011_run_issuance.sql','0013_retention_recovery_watermark.sql','0015_model_run_issuance.sql',
   '0016_initial_inputs.sql','0017_initial_run_bindings.sql','0001_product_budget.sql','0002_tenant_budgets.sql',
-  '0001_service_task_registrations.sql','first-chat-seed-budget.sql','first-chat-database.sql#meri_grants','first-chat-database.sql#temporal_grants']);
+  '0001_service_task_registrations.sql','first-chat-seed-budget.sql','first-chat-database.sql#meri_grants','first-chat-database-temporal.sql#temporal_grants']);
  assert.ok(!plan.some(e=>/00(12|14)_/u.test(e.name)));
  assert.equal(plan.find(e=>e.name.includes('temporal-issuer')).path,'apps/runtime/temporal-issuer/migrations/0001_service_task_registrations.sql');
  assert.throws(()=>loadPlan({read:path=>Buffer.from(read(path)+(path.endsWith('0009_next_runs.sql')?'\n':''))}),/MERI_D2_SOURCE_CHANGED/u);
@@ -305,7 +305,7 @@ test('plan pins the change-set order, real paths and current bytes; 0012 and 001
  assert.match(seed,/INSERT INTO meri_product_budget\.budget \(id, cap_micro_usd, consumed_micro_usd, quarantined\)\nVALUES \(1, 25000000, 0, false\)/u);
  const budget=read('apps/gateway/budget/migrations/0001_product_budget.sql');
  for(const column of ['id integer PRIMARY KEY CHECK (id=1)','cap_micro_usd bigint','consumed_micro_usd bigint','quarantined boolean'])assert.ok(budget.includes(column));
- assert.match(read('apps/runtime/Dockerfile'),/^COPY infra\/product-preview\/first-chat-migrate\.mjs infra\/product-preview\/first-chat-database\.sql infra\/product-preview\/first-chat-seed-budget\.sql \.\/infra\/product-preview\/$/mu);
+ assert.match(read('apps/runtime/Dockerfile'),/^COPY infra\/product-preview\/first-chat-migrate\.mjs infra\/product-preview\/first-chat-database\.sql infra\/product-preview\/first-chat-database-temporal\.sql infra\/product-preview\/first-chat-seed-budget\.sql \.\/infra\/product-preview\/$/mu);
  assert.match(read('apps/runtime/package-lock.json'),/"node_modules\/pg": \{\n\s+"version": "8\.23\.1"/u);
 });
 
@@ -365,7 +365,8 @@ function fakeDatabase({failOn}={}){
    if(text==='COMMIT'){state.ledger.push(...pending);pending=null;return {rows:[]};}
    if(text==='ROLLBACK'){pending=null;return {rows:[]};}
    if(/^INSERT INTO meri_migration_ledger/u.test(text)){assert.ok(pending,'ledger write outside a transaction');pending.push({ordinal:params[0],name:params[1],sha256:params[2]});return {rows:[]};}
-   if(/^SELECT CASE WHEN \(TRUE\)::int/u.test(text)){state.phases.push('bootstrap');}
+   if(/^SELECT CASE WHEN \(TRUE\)::int\s*\+/u.test(text)){state.phases.push('bootstrap');}
+   if(/^SELECT CASE WHEN \(TRUE\)::int = 1 THEN 'ok'/u.test(text))state.phases.push('temporal_grants');
    if(/^SELECT CASE WHEN \(FALSE\)::int \+ \(TRUE\)::int \+ \(FALSE\)::int/u.test(text))state.phases.push('meri_grants');
    if(/^SELECT CASE WHEN \(FALSE\)::int \+ \(FALSE\)::int \+ \(TRUE\)::int/u.test(text))state.phases.push('temporal_grants');
    if(/^SELECT CASE WHEN \(FALSE\)::int \+ \(FALSE\)::int \+ \(FALSE\)::int \+ \(TRUE\)::int/u.test(text))state.phases.push('release');
@@ -436,4 +437,15 @@ test('every infra file the runtime Dockerfile copies is re-included by .dockerig
  const copied=[...docker.matchAll(/^COPY (?!--from)(?:--\S+ )*(.+) \S+$/gmu)].flatMap(m=>m[1].split(' ')).filter(p=>p.startsWith('infra/product-preview/')&&!p.startsWith('infra/product-preview/runtime-packages'));
  assert.ok(copied.length>=3);
  for(const path of copied)assert.ok(ignore.includes(`!${path}`),`${path} is excluded from the build context`);
+});
+
+test('the superseding Temporal grants file pins the live 1.32.1 catalog, including legacy cluster_metadata',()=>{
+ // Observed on Aurora after temporal-sql-tool (admin-tools 4fdaf912) on 17 Oct: 40 primary tables.
+ const text=readFileSync(new URL('./first-chat-database-temporal.sql',import.meta.url),'utf8');
+ const expected=/DECLARE expected text\[\] := ARRAY\[([^\]]+)\]/u.exec(text)[1].match(/'([a-z_0-9]+)'/gu).map(s=>s.slice(1,-1));
+ assert.equal(expected.length,40);assert.ok(expected.includes('cluster_metadata')&&expected.includes('cluster_metadata_info'));
+ assert.match(text,/public\.cluster_metadata_info, public\.cluster_metadata, public\.cluster_membership/u);
+ assert.equal(text.match(/^\\if /gmu).length,1);assert.match(text,/^\\if :\{\?phase_temporal_grants\}$/mu);
+ const code=text.split('\n').filter(line=>!line.trimStart().startsWith('--')).join('\n');
+ assert.ok(!/phase_(bootstrap|meri_grants|release)/u.test(code),'only the Temporal grants phase lives here');
 });
