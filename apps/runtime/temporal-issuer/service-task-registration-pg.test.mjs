@@ -264,3 +264,10 @@ test('input/proof errors fail before writes, and source SQL locks permanence and
   'proofValidUntilMs','TEMPORAL_ISSUER_REGISTRATION_COMMIT_UNKNOWN'])
   assert.ok(source.includes(term),term);
 });
+
+test('membership probe tolerates only the PG16 creator auto-grant (ADMIN, no INHERIT/SET, bootstrap grantor)',()=>{
+ // Aurora's master is not a true superuser, so PG16 records it as an ADMIN member of every role it creates.
+ // That single shape is tolerated; the issuer being a member of anything, or any INHERIT/SET grant, still refuses.
+ const source=readFileSync(new URL('./service-task-registration-pg.mjs',import.meta.url),'utf8').replace(/\s+/gu,' ');
+ assert.match(source,/EXISTS\(SELECT 1 FROM pg_auth_members m WHERE m\.member=r\.oid OR \(m\.roleid=r\.oid AND NOT \(m\.grantor=10 AND m\.admin_option AND NOT m\.inherit_option AND NOT m\.set_option\)\)\) AS role_membership/u);
+});

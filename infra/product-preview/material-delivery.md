@@ -11,8 +11,8 @@ The init owner uses the existing role configuration validator, canonical SHA-256
 ```
 {
   schemaVersion: 1,
-  role: 'control' | 'temporal-worker',
-  runtimeUser: '<nonroot numeric uid>:<nonroot numeric gid>',
+  role: 'control' | 'temporal-worker' | 'temporal-issuer' | 'model-owner' | 'model-proxy',
+  runtimeUser: '<nonroot numeric uid>:<nonroot numeric gid>',   // reader identity; see role-bound users below
   sourceCommit: '<40 lowercase hex>',
   imageDigest: 'sha256:<64 lowercase hex>',
   materialContractSha256: '<64 lowercase hex>',
@@ -25,6 +25,35 @@ The init owner uses the existing role configuration validator, canonical SHA-256
 The closed bundle is `{files:[{path,base64},...]}`. It must contain exactly the independently pinned files, once each, with canonical base64 encoding, decoded sizes 1 through 32,768 bytes and a maximum serialized bundle size of 65,536 UTF-8 bytes. Configuration bytes must match their exact SHA before parsing, pass the canonical role validator and reproduce the complete pinned inventory. No material, parsed configuration or per-file digest map is returned in the startup receipt.
 
 `validateStaticProductDelivery({expected,bundle})` performs pure offline validation. `materializeStaticProductMaterial({expected,delivery,now,signal,maxRequestMs})` obtains one bundle through the injected trusted `delivery.fetch` port within a bounded lifetime. It accepts no ambient credential or network fallback. It refuses outside Linux or with the wrong effective UID/GID before invoking delivery. The directory must be absent and createable or already empty, private, non-symlinked and owned by that same UID/GID. Files are created with `O_EXCL | O_NOFOLLOW`, mode `0600`, synced and checked by the existing read-only preflight. The directory is `0700` and its identity is rechecked around writes. A failure rolls back only the owned filesystem instance. Replacement files/directories or foreign entries refuse cleanup and report `STATIC_INIT_CLEANUP_FAILED` with a content-free original failure code. `releaseStaticProductMaterial(receipt)` performs explicit same-process rollback; the receipt cannot be forged or serialized into later authority. ECS owns final task-volume disposal after init exits.
+
+## Model budget owner and model proxy roles
+
+Two further fixed-inventory roles serve the product model-proxy pair. Their configuration validators run inside the plan, and every `{path,sha256}` or `*Sha256` reference a configuration makes to another delivered file must equal that file's independent pin (`STATIC_INIT_CONTENT_REFUSED` otherwise). `runtimeUser` is the **reader** identity and is role-bound: `model-owner` and `temporal-issuer` accept only `1000:1000`, `model-proxy` accepts only `10001:10001`, and no other role may use uid or gid `10001`. The envelope parser refuses a wrong pair before delivery.
+
+| Role / container | Process | Exact inventory (all direct children of `/run/meri`, `0600`) | Validation inside the plan |
+| --- | --- | --- | --- |
+| `model-owner` | `node apps/proxy/product/owner-entrypoint.mjs --config /run/meri/owner.json`, `MERI_PRODUCT_OWNER_REQUIRED=1`, `MERI_PRODUCT_OWNER_CONFIG_SHA256=<pin of owner.json>`, user `1000:1000` | `owner.json`; `control.json` (control's exact bytes); control's `database.connectionFile`; control's `nativeCandidate.identity.credentialFile`; owner `tls.caFile`, `certFile`, `keyFile` (7 files) | `validateProductOwnerConfiguration` plus `enabled:true`, `controlConfigurationFile` exactly `/run/meri/control.json`; the copy must compile as a static `control` plan, have `multiRun.dynamicInitialRuns:true` and the owner's `selectedClientId`. `controlConfigurationSha256` and `nativeCredentialFileSha256` must equal the delivered pins. |
+| `model-proxy` | `python -m apps.proxy.product.main --config /run/meri/proxy.json --config-sha256 <pin of proxy.json>`, user `10001:10001` | `proxy.json`; `serverTls.certificateFile`, `privateKeyFile`; `ownerTls.caFile`, `certificateFile`, `privateKeyFile` (6 files) | `apps/proxy/product/startup-config.mjs`, a structural mirror of `startup_config.parse_product_proxy_startup` (closed keys, pricing revision, owner peer, service pair). The Python parser stays authoritative for duplicate keys, float/NaN and expiry against its clock. A Python test runs both parsers on its existing fixture. |
+
+The owner reads the database connection and identity credential at the absolute paths named inside `control.json`, so those paths must already be direct `/run/meri` children in control's own configuration; the owner task receives that same subset of control's material.
+
+### model-proxy volume ownership
+
+The proxy image has no Node, so `material-init` runs from the Node runtime image. A task-local ECS bind volume without an image `VOLUME` seed is `root:root` mode `0755` on Fargate; the Node image seeds `/run/meri` as `1000:1000 0700`, and which container's image seeds a shared volume is not something this source can prove. Neither state is writable by uid 10001. The `model-proxy` writer is therefore root (`writerUser` `0:0` in the plan) and needs only `CAP_CHOWN`:
+
+1. Adopt the existing empty directory: `lchown` to `0:0`, open it `O_DIRECTORY|O_NOFOLLOW`, `fchmod 0700`, recheck dev/inode/owner/mode. A non-empty directory still refuses.
+2. Write each file root-owned `0600` with `O_EXCL|O_NOFOLLOW`, then run the same read-only preflight as root.
+3. Hand over: `lchown` each file, then the directory, to `10001:10001`, rechecking dev/inode, `0600`/`0700`, `nlink 1` and size.
+
+After handover, root without `DAC_OVERRIDE` cannot read the files, so explicit same-process rollback refuses (`STATIC_INIT_CLEANUP_REFUSED`) and ECS disposes the volume. A failure during handover reports `STATIC_INIT_CLEANUP_FAILED`. The reader checks still hold in the proxy: `read_reviewed_file` accepts owner uid `0` or its euid, no group/other write and `&077 == 0` for keys.
+
+ECS wiring for `meri-product-preview-proxy` (deviates from the shared init shape only in user and capabilities):
+
+- volume `material` (task-local, no host path); `material-init` mounts it at `/run/meri` writable; container `model-proxy` mounts it at `/run/meri` with `readOnly: true` and `dependsOn [{containerName:'material-init',condition:'SUCCESS'}]`.
+- `material-init`: Node runtime image, `user: "0:0"`, `essential: false`, `readonlyRootFilesystem: true`, no privileged mode. Fargate cannot add capabilities other than `SYS_PTRACE`, so keep `CHOWN` by dropping every other default instead of `drop: ['ALL']`: `drop: ['AUDIT_WRITE','DAC_OVERRIDE','FOWNER','FSETID','KILL','MKNOD','NET_BIND_SERVICE','NET_RAW','SETFCAP','SETGID','SETPCAP','SETUID','SYS_CHROOT']`.
+- `MERI_STATIC_MATERIAL_EXPECTED` has `role:'model-proxy'`, `runtimeUser:'10001:10001'`; the init refuses to run as anything other than `0:0`.
+
+`meri-product-preview-owner` uses the unchanged shape: Node image for both containers, init `user: "1000:1000"`, `drop: ['ALL']`, writable init mount, `readOnly: true` app mount, `SUCCESS` dependency, and `role:'model-owner'`, `runtimeUser:'1000:1000'`.
 
 ## Disabled ECS composition
 

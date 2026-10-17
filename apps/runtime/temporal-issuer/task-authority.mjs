@@ -29,8 +29,8 @@ function string(value, pattern) {
   return value;
 }
 
-function unique(values, pattern, min = 1) {
-  if (!Array.isArray(values) || values.length < min || values.some(value => typeof value !== 'string' || !pattern.test(value)) ||
+function unique(values, pattern, min = 1, max = Number.MAX_SAFE_INTEGER) {
+  if (!Array.isArray(values) || values.length < min || values.length > max || values.some(value => typeof value !== 'string' || !pattern.test(value)) ||
       new Set(values).size !== values.length) throw fault('TEMPORAL_ISSUER_TASK_AUTHORITY_CONFIGURATION');
   return Object.freeze([...values]);
 }
@@ -110,9 +110,15 @@ function pendingOperations() {
   return Object.freeze({run, assertLive, close});
 }
 
-/** Closed, static pins. A durable binding source supplies the live task ARN and revocation state. */
+/**
+ * Closed, static pins. A durable binding source supplies the live task ARN and revocation state.
+ * `privateSubnetIds` is shared: a peer ENI's subnet must be a member of it. Each role carries its own
+ * `securityGroupIds` (1-5 distinct), and a peer ENI's groups must equal that role's set exactly:
+ * control and temporal-worker legitimately carry different marker groups (for example only control
+ * carries the database-client marker), so one shared set cannot describe both.
+ */
 export function parseTemporalIssuerTaskAuthorityConfiguration(raw) {
-  const c = object(raw, ['schemaVersion', 'clusterArn', 'vpcId', 'privateSubnetIds', 'securityGroupIds', 'maxLeaseMs', 'roles']);
+  const c = object(raw, ['schemaVersion', 'clusterArn', 'vpcId', 'privateSubnetIds', 'maxLeaseMs', 'roles']);
   if (c.schemaVersion !== 1 || !/^arn:aws:ecs:[a-z0-9-]+:[0-9]{12}:cluster\/[A-Za-z0-9_-]{1,255}$/u.test(c.clusterArn) ||
       typeof c.vpcId !== 'string' || !/^vpc-[a-f0-9]{8,17}$/u.test(c.vpcId) ||
       !Number.isSafeInteger(c.maxLeaseMs) || c.maxLeaseMs < 1000 || c.maxLeaseMs > 30000) {
@@ -120,11 +126,10 @@ export function parseTemporalIssuerTaskAuthorityConfiguration(raw) {
   }
   const [, region, account, cluster] = /^arn:aws:ecs:([a-z0-9-]+):([0-9]{12}):cluster\/([A-Za-z0-9_-]{1,255})$/u.exec(c.clusterArn);
   const privateSubnetIds = unique(c.privateSubnetIds, SUBNET);
-  const securityGroupIds = unique(c.securityGroupIds, SECURITY_GROUP);
   const roles = object(c.roles, ROLES);
   const parsedRoles = {};
   for (const role of ROLES) {
-    const r = object(roles[role], ['subject', 'workloadPrincipal', 'peerSubjectCn', 'peerUriBase', 'serviceArn', 'taskDefinitionArn', 'containerName', 'imageUri', 'taskRoleArn', 'executionRoleArn', 'revision'], ['allowPrimaryInProgress']);
+    const r = object(roles[role], ['subject', 'workloadPrincipal', 'peerSubjectCn', 'peerUriBase', 'serviceArn', 'taskDefinitionArn', 'containerName', 'imageUri', 'taskRoleArn', 'executionRoleArn', 'revision', 'securityGroupIds'], ['allowPrimaryInProgress']);
     if (r.subject !== IDENTITIES[role].subject ||
         r.workloadPrincipal !== IDENTITIES[role].workloadPrincipal ||
         (Object.hasOwn(r, 'allowPrimaryInProgress') && typeof r.allowPrimaryInProgress !== 'boolean') ||
@@ -153,6 +158,7 @@ export function parseTemporalIssuerTaskAuthorityConfiguration(raw) {
         arn(r.taskRoleArn, 'iam', account, region, /^role\/[A-Za-z0-9+=,.@_/-]{1,512}$/u),
       executionRoleArn: arn(r.executionRoleArn, 'iam', account, region, /^role\/[A-Za-z0-9+=,.@_/-]{1,512}$/u),
       revision: string(r.revision, /^[A-Za-z0-9._:-]{1,128}$/u),
+      securityGroupIds: unique(r.securityGroupIds, SECURITY_GROUP, 1, 5),
       allowPrimaryInProgress: r.allowPrimaryInProgress === true,
     });
   }
@@ -162,11 +168,12 @@ export function parseTemporalIssuerTaskAuthorityConfiguration(raw) {
       parsedRoles.control.peerSubjectCn === parsedRoles['temporal-worker'].peerSubjectCn ||
       parsedRoles.control.serviceArn === parsedRoles['temporal-worker'].serviceArn ||
       parsedRoles.control.taskDefinitionArn === parsedRoles['temporal-worker'].taskDefinitionArn ||
-      parsedRoles.control.taskRoleArn === parsedRoles['temporal-worker'].taskRoleArn) {
+      parsedRoles.control.taskRoleArn === parsedRoles['temporal-worker'].taskRoleArn ||
+      sameSet(parsedRoles.control.securityGroupIds, parsedRoles['temporal-worker'].securityGroupIds)) {
     throw fault('TEMPORAL_ISSUER_TASK_AUTHORITY_CONFIGURATION');
   }
   return Object.freeze({schemaVersion: 1, clusterArn: c.clusterArn, vpcId: c.vpcId,
-    privateSubnetIds, securityGroupIds, maxLeaseMs: c.maxLeaseMs, roles: Object.freeze(parsedRoles)});
+    privateSubnetIds, maxLeaseMs: c.maxLeaseMs, roles: Object.freeze(parsedRoles)});
 }
 
 function authenticatedPeer(peer, roleConfig, nowMs) {
@@ -294,6 +301,7 @@ export function createTemporalIssuerAwsTaskProof({configuration, ecs, ec2, now =
         checkSignal(signal);
         const attachment = attachmentDetails(task);
         // This proof uses the server-observed source of the direct private TLS connection.
+        // Subnet is per-ENI membership in the shared list; security groups are an exact per-role set below.
         if (!attachment || !c.privateSubnetIds.includes(attachment.subnetId) ||
             peerIPv4 !== attachment.privateIPv4Address) return result('REVOKED');
         const definitionReply = await ecs.describeTaskDefinition({taskDefinition: pin.taskDefinitionArn, signal});
@@ -310,7 +318,7 @@ export function createTemporalIssuerAwsTaskProof({configuration, ecs, ec2, now =
         const eni = one(eniReply?.NetworkInterfaces, item => item?.NetworkInterfaceId === attachment.networkInterfaceId &&
           item.VpcId === c.vpcId && item.SubnetId === attachment.subnetId && item.Status === 'in-use' &&
           item.PrivateIpAddress === attachment.privateIPv4Address && item.Association == null &&
-          sameSet(item.Groups?.map(group => group.GroupId), c.securityGroupIds));
+          sameSet(item.Groups?.map(group => group.GroupId), pin.securityGroupIds));
         if (!eni) return result('REVOKED');
         checkSignal(signal);
         const finishedAtMs = now();

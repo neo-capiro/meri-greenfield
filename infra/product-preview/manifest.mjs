@@ -5,8 +5,14 @@ import {parseStaticProductMaterialExpected} from '../../apps/runtime/material-in
 import {createHash} from 'node:crypto';
 
 const ACCOUNT='967807252336', REGION='us-east-1';
-const hex64=/^[a-f0-9]{64}$/u;
+const hex64=/^[a-f0-9]{64}$/u,SUBNET=/^subnet-[a-f0-9]{8,17}$/u,SECURITY_GROUP=/^sg-[a-f0-9]{8,17}$/u;
 const fail=()=>{throw Error('PRODUCT_PREVIEW_BINDING_REFUSED');};
+function ids(value,pattern,max){
+ if(!Array.isArray(value)||value.length<1||value.length>max||new Set(value).size!==value.length||
+    !value.every(x=>typeof x==='string'&&pattern.test(x)))fail();
+ return value;
+}
+const sameSet=(left,right)=>left.length===right.length&&left.every(x=>right.includes(x));
 function record(value,required,optional=[]){
  if(value===null||typeof value!=='object'||Array.isArray(value)||Object.getPrototypeOf(value)!==Object.prototype||
     required.some(key=>!Object.hasOwn(value,key))||Object.keys(value).some(key=>![...required,...optional].includes(key)))fail();
@@ -69,6 +75,11 @@ function tokenWriters(value,b){
   const pins=record(writer.sha256ByPath,paths);
   if(paths.some(path=>!hex64.test(pins[path])||pins[path]!==expected[path]))fail();
  }
+ // One Meri preview server CA signs the control private origin (internal ALB), the model proxy and the issuer server
+ // certificates. The worker trusts the control private origin through its issuer server CA file (NODE_EXTRA_CA_CERTS
+ // below), so that file must be exactly the CA the runner poststart pins for the same origin.
+ const worker=writers.temporalWorker;
+ if(worker.sha256ByPath[worker.tls.issuerCaFile]!==b.runnerPoststart.controlCaSha256)fail();
  return writers;
 }
 function validate(value){
@@ -85,12 +96,12 @@ function validate(value){
  const targetGroup=/^arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup\/[A-Za-z0-9_-]{1,32}\/[a-f0-9]{16}$/u;
  if([b.controlTargetGroupArn,b.controlPrivateTargetGroupArn].some(arn=>arn!==undefined&&!targetGroup.test(arn))||
     b.controlTargetGroupArn!==undefined&&b.controlTargetGroupArn===b.controlPrivateTargetGroupArn)fail();
- const n=record(b.network,['privateSubnetId','controlSecurityGroupId','workerSecurityGroupId','runnerSecurityGroupIds']);
- if(!/^subnet-[a-f0-9]+$/u.test(n.privateSubnetId)||
-    ![n.controlSecurityGroupId,n.workerSecurityGroupId].every(x=>/^sg-[a-f0-9]+$/u.test(x))||
-    !Array.isArray(n.runnerSecurityGroupIds)||n.runnerSecurityGroupIds.length<1||n.runnerSecurityGroupIds.length>5||
-    new Set(n.runnerSecurityGroupIds).size!==n.runnerSecurityGroupIds.length||
-    !n.runnerSecurityGroupIds.every(x=>/^sg-[a-f0-9]+$/u.test(x)))fail();
+ // Each service's awsvpcConfiguration uses these lists verbatim. Control and worker ENIs legitimately differ
+ // (e.g. control also carries the db-client marker), so each role has its own set; identical sets refuse.
+ const n=record(b.network,['privateSubnetIds','controlSecurityGroupIds','workerSecurityGroupIds','runnerSecurityGroupIds']);
+ ids(n.privateSubnetIds,SUBNET,3);
+ for(const key of ['controlSecurityGroupIds','workerSecurityGroupIds','runnerSecurityGroupIds'])ids(n[key],SECURITY_GROUP,5);
+ if(sameSet(n.controlSecurityGroupIds,n.workerSecurityGroupIds))fail();
  const s=record(b.sizing,['control','temporalWorker','runner']);
  for(const value of Object.values(s))sized(value);
  material(b.materialDelivery,b);
@@ -111,7 +122,9 @@ function task(stack,b,role,port){
   environment:role==='runner'?[{name:'MERI_RUNNER_SHA256',value:b.runnerSha256},{name:'MERI_PRODUCT_PREVIEW_REQUIRED',value:'1'},
    {name:'MERI_POSTSTART_CONTROL_ORIGIN',value:b.runnerPoststart.controlOrigin},
    {name:'MERI_POSTSTART_CA_BASE64',value:b.runnerPoststart.controlCaBase64},
-   {name:'MERI_POSTSTART_CA_SHA256',value:b.runnerPoststart.controlCaSha256}]:[{name:'MERI_PRODUCT_PREVIEW_REQUIRED',value:'1'}],
+   {name:'MERI_POSTSTART_CA_SHA256',value:b.runnerPoststart.controlCaSha256}]:[{name:'MERI_PRODUCT_PREVIEW_REQUIRED',value:'1'},
+   // Replaces the image's RDS bundle (the worker has no database): Node reads it once at start, after material-init SUCCESS.
+   ...(role==='temporalWorker'&&tokenWriter?[{name:'NODE_EXTRA_CA_CERTS',value:tokenWriter.tls.issuerCaFile}]:[])],
   portMappings,linuxParameters:{capabilities:{drop:['ALL']}},
   mountPoints:[{sourceVolume:'workspace',containerPath:'/workspace',readOnly:false},{sourceVolume:'tmp',containerPath:'/tmp',readOnly:false},
    ...(delivery?[{sourceVolume:'material',containerPath:'/run/meri',readOnly:true}]:role==='runner'?[{sourceVolume:'material',containerPath:'/run/meri',readOnly:false}]:[]),
@@ -132,13 +145,16 @@ function task(stack,b,role,port){
   ...(role==='control'?{taskRoleArn:b.controlTaskRoleArn}:{}),
   volumes:[{name:'workspace'},{name:'tmp'},...(delivery||role==='runner'?[{name:'material'}]:[]),...(tokenWriter?[{name:'temporal-token'}]:[])],containerDefinitions:[...(init?[init]:[]),c]});
 }
-function service(stack,b,role,definition,securityGroupId){
+function service(stack,b,role,definition,securityGroupIds){
  const name=role==='temporalWorker'?'temporal-worker':role;
+ // The internal ALB's 8082 target group (controlPrivateTargetGroupArn) is how runner poststart and the worker
+ // reach control-private, so control needs no Cloud Map registration. The public 8080 target group is optional
+ // and is supplied only at Stage 6 (public exposure); either may be absent independently.
  const targets=role==='control'?[b.controlTargetGroupArn&&{containerName:'control',containerPort:8080,targetGroupArn:b.controlTargetGroupArn},
   b.controlPrivateTargetGroupArn&&{containerName:'control',containerPort:8082,targetGroupArn:b.controlPrivateTargetGroupArn}].filter(Boolean):[];
  return new ecs.CfnService(stack,`${role}Service`,{serviceName:`meri-product-preview-${name}`,cluster:b.clusterArn,taskDefinition:definition.ref,
   desiredCount:0,launchType:'FARGATE',platformVersion:'1.4.0',enableExecuteCommand:false,
-  networkConfiguration:{awsvpcConfiguration:{subnets:[b.network.privateSubnetId],securityGroups:[securityGroupId],assignPublicIp:'DISABLED'}},
+  networkConfiguration:{awsvpcConfiguration:{subnets:[...b.network.privateSubnetIds],securityGroups:[...securityGroupIds],assignPublicIp:'DISABLED'}},
   ...(targets.length?{loadBalancers:targets}:{})});
 }
 
@@ -146,11 +162,14 @@ function service(stack,b,role,definition,securityGroupId){
 export function synthesizeProductPreview(binding){
  const b=validate(binding),app=new App({context:{'aws:cdk:version-reporting':false}}),stack=new Stack(app,'MeriProductPreview',{env:{account:ACCOUNT,region:REGION},synthesizer:new BootstraplessSynthesizer()});
  const control=task(stack,b,'control',8080),worker=task(stack,b,'temporalWorker',8081),runner=task(stack,b,'runner',8080);
- service(stack,b,'control',control,b.network.controlSecurityGroupId);
- service(stack,b,'temporalWorker',worker,b.network.workerSecurityGroupId);
+ service(stack,b,'control',control,b.network.controlSecurityGroupIds);
+ service(stack,b,'temporalWorker',worker,b.network.workerSecurityGroupIds);
  new CfnOutput(stack,'RunnerTaskDefinitionArn',{value:runner.ref});
  new CfnOutput(stack,'RunnerClusterArn',{value:b.clusterArn});
- new CfnOutput(stack,'RunnerPrivateSubnetId',{value:b.network.privateSubnetId});
+ // The runner is a one-off RunTask, not a service: control's nativeCandidate.taskRequest names exactly one
+ // subnet (apps/runtime/config.mjs takes subnets[0]). This output is that one subnet, the first of
+ // privateSubnetIds, for comparison with the reviewed control config; it is not admission authority.
+ new CfnOutput(stack,'RunnerPrivateSubnetId',{value:b.network.privateSubnetIds[0]});
  new CfnOutput(stack,'RunnerSecurityGroupIds',{value:b.network.runnerSecurityGroupIds.join(',')});
  return Template.fromStack(stack).toJSON();
 }

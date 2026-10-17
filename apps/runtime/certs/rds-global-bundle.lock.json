@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "contract": "meri.rds-ca-bundle.v1",
+  "source": "https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem",
+  "retrievedOn": "2026-10-17",
+  "path": "apps/runtime/certs/rds-global-bundle.pem",
+  "imagePath": "/opt/meri/certs/rds-global-bundle.pem",
+  "sha256": "90a6f1a7978a1b1b096dca6c57511ca48d3b8cf052f8e704baf358f34ea2f21b",
+  "bytes": 174560,
+  "certificateCount": 114,
+  "requiredSubjects": [
+    "Amazon RDS us-east-1 Root CA RSA2048 G1",
+    "Amazon RDS us-east-1 Root CA RSA4096 G1",
+    "Amazon RDS us-east-1 Root CA ECC384 G1"
+  ]
+}

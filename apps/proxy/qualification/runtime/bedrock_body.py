@@ -9,6 +9,10 @@ import json
 import math
 import re
 
+# D1 (Neo, 2026-10-17): one admitted model envelope for every proxy check.
+ENVELOPE_MAX_INPUT_TOKENS = 65536
+ENVELOPE_MAX_OUTPUT_TOKENS = 8192
+
 PROFILE_ID = "us.anthropic.claude-sonnet-4-6"
 COUNT_MODEL_ID = "anthropic.claude-sonnet-4-6"
 RUNTIME_HOST = "bedrock-runtime.us-east-1.amazonaws.com"
@@ -26,15 +30,15 @@ class AdmissionDenied(ValueError):
 @dataclass(frozen=True)
 class BodyLimits:
     max_body_bytes: int = 4 * 1024 * 1024
-    max_input_tokens: int = 8192
-    max_output_tokens: int = 256
+    max_input_tokens: int = ENVELOPE_MAX_INPUT_TOKENS
+    max_output_tokens: int = ENVELOPE_MAX_OUTPUT_TOKENS
     allowed_tool_names: frozenset = frozenset({"local_echo"})
 
     def __post_init__(self):
         for value in (self.max_body_bytes, self.max_input_tokens, self.max_output_tokens):
             if type(value) is not int or value <= 0:
                 raise AdmissionDenied("INVALID_LIMITS")
-        if self.max_body_bytes > 4 * 1024 * 1024 or self.max_input_tokens > 8192 or self.max_output_tokens > 256:
+        if self.max_body_bytes > 4 * 1024 * 1024 or self.max_input_tokens > ENVELOPE_MAX_INPUT_TOKENS or self.max_output_tokens > ENVELOPE_MAX_OUTPUT_TOKENS:
             raise AdmissionDenied("LIMITS_OUTSIDE_SPIKE_ENVELOPE")
         if type(self.allowed_tool_names) is not frozenset or len(self.allowed_tool_names) > 8:
             raise AdmissionDenied("INVALID_TOOL_ALLOWLIST")

@@ -24,6 +24,15 @@ const digest = `sha256:${'b'.repeat(64)}`;
 const role = 'control';
 const raw = Buffer.from('test-only-authenticated-peer-certificate');
 const fingerprint = createHash('sha256').update(raw).digest('hex');
+// The deployed ENI sets: control carries the issuer-client and db-client markers, the worker only the issuer-client marker.
+const CONTROL_SG = 'sg-05a350c100574b21f';
+const WORKER_SG = 'sg-00111cd0e475badfa';
+const ISSUER_CLIENT_SG = 'sg-0c3da023e9e8fb292';
+const DB_CLIENT_SG = 'sg-0d5b5286baf28242e';
+const ROLE_SECURITY_GROUPS = Object.freeze({
+  control: [CONTROL_SG, ISSUER_CLIENT_SG, DB_CLIENT_SG],
+  'temporal-worker': [WORKER_SG, ISSUER_CLIENT_SG],
+});
 
 function rolePin(name) {
   const prefix = name === 'control' ? 'control' : 'worker';
@@ -39,20 +48,21 @@ function rolePin(name) {
     taskRoleArn: `arn:aws:iam::${account}:role/meri-${prefix}-task`,
     executionRoleArn: `arn:aws:iam::${account}:role/meri-${prefix}-execution`,
     revision: 'revision-17',
+    securityGroupIds: [...ROLE_SECURITY_GROUPS[name]],
   };
 }
 
-function fixture() {
+function fixture(role = 'control') {
+  const prefix = role === 'control' ? 'control' : 'worker';
   const config = {
     schemaVersion: 1,
     clusterArn: cluster,
     vpcId: 'vpc-12345678',
     privateSubnetIds: ['subnet-12345678'],
-    securityGroupIds: ['sg-12345678'],
     maxLeaseMs: 10000,
     roles: {control: rolePin('control'), 'temporal-worker': rolePin('temporal-worker')},
   };
-  const pin = config.roles.control;
+  const pin = config.roles[role];
   const peerSanUri = pin.peerUriBase + encodeURIComponent(taskArn);
   const peer = {authorized: true, remoteAddress: '10.0.1.4', certificate: {
     raw, fingerprint256: fingerprint.toUpperCase().match(/../gu).join(':'),
@@ -63,10 +73,10 @@ function fixture() {
   const binding = {schemaVersion: 1, state: 'CURRENT', certificateSha256: fingerprint,
     role, peerSanUri, taskArn, revision: pin.revision, expiresAtMs: 1790000020000};
   const service = {serviceArn: pin.serviceArn, clusterArn: cluster, status: 'ACTIVE',
-    taskDefinition: pin.taskDefinitionArn, desiredCount: 1, runningCount: 1, serviceName: 'meri-control',
+    taskDefinition: pin.taskDefinitionArn, desiredCount: 1, runningCount: 1, serviceName: `meri-${prefix}`,
     deployments: [{status: 'PRIMARY', taskDefinition: pin.taskDefinitionArn, rolloutState: 'COMPLETED'}]};
   const task = {taskArn, clusterArn: cluster, taskDefinitionArn: pin.taskDefinitionArn,
-    lastStatus: 'RUNNING', desiredStatus: 'RUNNING', launchType: 'FARGATE', group: 'service:meri-control',
+    lastStatus: 'RUNNING', desiredStatus: 'RUNNING', launchType: 'FARGATE', group: `service:meri-${prefix}`,
     containers: [{name: pin.containerName, lastStatus: 'RUNNING', imageDigest: digest}],
     attachments: [{type: 'ElasticNetworkInterface', status: 'ATTACHED', details: [
       {name: 'networkInterfaceId', value: 'eni-12345678'},
@@ -79,7 +89,8 @@ function fixture() {
     containerDefinitions: [{name: pin.containerName, image: pin.imageUri}]};
   const networkInterface = {NetworkInterfaceId: 'eni-12345678', VpcId: config.vpcId,
     SubnetId: 'subnet-12345678', Status: 'in-use', PrivateIpAddress: '10.0.1.4',
-    Groups: [{GroupId: 'sg-12345678'}]};
+    // Order-insensitive: the ENI reports the role's set in reverse.
+    Groups: [...pin.securityGroupIds].reverse().map(GroupId => ({GroupId}))};
   const calls = [];
   let bindingRead = 0;
   const ports = {
@@ -102,7 +113,7 @@ function fixture() {
       },
       async listTasks(request) {
         calls.push('serviceTasks');
-        assert.equal(request.serviceName, 'meri-control');
+        assert.equal(request.serviceName, `meri-${prefix}`);
         assert.equal(request.desiredStatus, 'RUNNING');
         return {taskArns: [taskArn]};
       },
@@ -132,6 +143,85 @@ test('closed pins are reusable after parsing, and current task is checked with f
   assert.deepEqual(result, {state: 'CURRENT', identity: f.identity, observedAtMs: f.nowMs,
     validUntilMs: f.nowMs + 10000, revision: f.pin.revision});
   assert.deepEqual(f.calls, ['binding', 'service', 'task', 'serviceTasks', 'definition', 'eni', 'binding']);
+});
+
+test('each role matches only its own exact ENI security-group set', async () => {
+  for (const role of ['control', 'temporal-worker']) {
+    const f = fixture(role);
+    const parsed = parseTemporalIssuerTaskAuthorityConfiguration(f.config);
+    assert.equal(Object.hasOwn(parsed, 'securityGroupIds'), false);
+    assert.deepEqual(parsed.roles[role].securityGroupIds, ROLE_SECURITY_GROUPS[role]);
+    assert.ok(Object.isFrozen(parsed.roles[role].securityGroupIds));
+    assert.equal((await f.authority.readCurrent({peer: f.peer, identity: f.identity})).state, 'CURRENT');
+  }
+  for (const role of ['control', 'temporal-worker']) {
+    const other = role === 'control' ? 'temporal-worker' : 'control';
+    // A peer ENI presenting the other role's set is refused, in both directions.
+    const f = fixture(role);
+    f.networkInterface.Groups = ROLE_SECURITY_GROUPS[other].map(GroupId => ({GroupId}));
+    assert.equal((await f.authority.readCurrent({peer: f.peer, identity: f.identity})).state, 'REVOKED');
+    // Swapping the configured sets refuses the otherwise unchanged, correctly placed ENI.
+    const g = fixture(role);
+    g.config.roles.control.securityGroupIds = [...ROLE_SECURITY_GROUPS['temporal-worker']];
+    g.config.roles['temporal-worker'].securityGroupIds = [...ROLE_SECURITY_GROUPS.control];
+    const swapped = createTemporalIssuerTaskAuthority({configuration: g.config, ecs: g.ports.ecs,
+      ec2: g.ports.ec2, bindings: g.ports.bindings, now: () => g.nowMs});
+    assert.equal((await swapped.readCurrent({peer: g.peer, identity: g.identity})).state, 'REVOKED');
+  }
+});
+
+test('an extra, missing, duplicated or foreign ENI security group revokes', async () => {
+  for (const [role, change] of [
+    ['control', groups => [...groups, 'sg-0123456789abcdef0']],
+    ['control', groups => groups.slice(0, 2)],
+    ['control', groups => groups.filter(group => group !== ISSUER_CLIENT_SG)],
+    ['control', () => []],
+    ['temporal-worker', groups => [...groups, DB_CLIENT_SG]],
+    ['temporal-worker', groups => groups.filter(group => group !== ISSUER_CLIENT_SG)],
+    ['temporal-worker', groups => [groups[0], groups[0]]],
+    ['temporal-worker', groups => [groups[0], 'sg-0123456789abcdef0']],
+  ]) {
+    const f = fixture(role);
+    f.networkInterface.Groups = change(f.pin.securityGroupIds).map(GroupId => ({GroupId}));
+    assert.equal((await f.authority.readCurrent({peer: f.peer, identity: f.identity})).state, 'REVOKED');
+    assert.deepEqual(f.calls, ['binding', 'service', 'task', 'serviceTasks', 'definition', 'eni']);
+  }
+});
+
+test('per-role security-group sets are required, 1-5 distinct ids, distinct per role and never top-level', () => {
+  for (const change of [
+    c => { delete c.roles.control.securityGroupIds; },
+    c => { delete c.roles['temporal-worker'].securityGroupIds; },
+    c => { c.roles.control.securityGroupIds = []; },
+    c => { c.roles.control.securityGroupIds = [CONTROL_SG, CONTROL_SG]; },
+    c => { c.roles['temporal-worker'].securityGroupIds =
+      ['sg-00000001', 'sg-00000002', 'sg-00000003', 'sg-00000004', 'sg-00000005', 'sg-00000006']; },
+    c => { c.roles['temporal-worker'].securityGroupIds = ['not-a-group']; },
+    c => { c.roles['temporal-worker'].securityGroupIds = WORKER_SG; },
+    c => { c.roles['temporal-worker'].securityGroupIds = [...c.roles.control.securityGroupIds].reverse(); },
+    c => { c.securityGroupIds = [CONTROL_SG]; },
+  ]) {
+    const f = fixture();
+    change(f.config);
+    assert.throws(() => parseTemporalIssuerTaskAuthorityConfiguration(f.config),
+      {code: 'TEMPORAL_ISSUER_TASK_AUTHORITY_CONFIGURATION'});
+  }
+  const f = fixture();
+  f.config.roles['temporal-worker'].securityGroupIds =
+    ['sg-00000001', 'sg-00000002', 'sg-00000003', 'sg-00000004', 'sg-00000005'];
+  assert.equal(parseTemporalIssuerTaskAuthorityConfiguration(f.config).roles['temporal-worker'].securityGroupIds.length, 5);
+});
+
+test('subnet is per-ENI membership in the shared private subnet list', async () => {
+  const f = fixture('temporal-worker');
+  f.config.privateSubnetIds = ['subnet-0920665f91c905f01', 'subnet-12345678', 'subnet-06db79cd21239de19'];
+  const authority = createTemporalIssuerTaskAuthority({configuration: f.config, ecs: f.ports.ecs,
+    ec2: f.ports.ec2, bindings: f.ports.bindings, now: () => f.nowMs});
+  assert.equal((await authority.readCurrent({peer: f.peer, identity: f.identity})).state, 'CURRENT');
+  f.config.privateSubnetIds = ['subnet-0920665f91c905f01', 'subnet-06db79cd21239de19'];
+  const outside = createTemporalIssuerTaskAuthority({configuration: f.config, ecs: f.ports.ecs,
+    ec2: f.ports.ec2, bindings: f.ports.bindings, now: () => f.nowMs});
+  assert.equal((await outside.readCurrent({peer: f.peer, identity: f.identity})).state, 'REVOKED');
 });
 
 test('control and worker cannot share the task role or service authority pin', () => {

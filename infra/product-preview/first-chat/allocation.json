@@ -1,0 +1,72 @@
+{
+ "manifest": {
+  "contractVersion": "0.2.0",
+  "skillId": "quick_skill.client_changes",
+  "skillVersion": "1.0.0",
+  "prose": {
+   "id": "urn:meri:original:client-changes:1.0.0",
+   "sha256": "e81c3692348c9bfc7f9655d703823e785c1b7eb0b77fb394cbecb4a062cd0ee8"
+  },
+  "requiredSources": [
+   {
+    "sourceId": "client_knowledge_profile",
+    "authority": "derived",
+    "purpose": "evidence"
+   }
+  ],
+  "allowedOperations": [
+   {
+    "id": "get_client_context",
+    "version": "0.2.0"
+   }
+  ],
+  "subjectKinds": [
+   "client"
+  ],
+  "windowBases": [
+   "calendar-week",
+   "calendar-month",
+   "explicit"
+  ],
+  "completion": {
+   "requireAllSources": true,
+   "allowDisclosedPartial": true,
+   "negativeClaims": "complete-covered-only",
+   "rubric": [
+    {
+     "id": "first-chat-no-tools",
+     "requirement": "First-chat preview: no tool is mounted; any evidence gap is disclosed, never asserted complete.",
+     "evidenceRequired": true
+    }
+   ]
+  },
+  "approval": {
+   "mutations": "separate-immutable-proposal",
+   "autoCreateTasks": false
+  },
+  "budgets": {
+   "maxTurns": 3,
+   "maxToolCalls": 1,
+   "maxRecoveryAttempts": 0,
+   "maxRuntimeSeconds": 900,
+   "maxCostMicroUSD": 2000000,
+   "maxOutputBytes": 262144
+  },
+  "versionPolicy": {
+   "existingRuns": "pin-immutable",
+   "resume": "exact-or-explicit-migration",
+   "fork": "preserve-unless-explicit-reselection"
+  }
+ },
+ "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968",
+ "scheduleRevision": "417b82d518b30bfd16356f9ef5f64adba647c9ac722c11aaa857f679d74d0f0f",
+ "operations": [
+  {
+   "operation": {
+    "id": "get_client_context",
+    "version": "0.2.0"
+   },
+   "chargeMicrousd": 1
+  }
+ ]
+}

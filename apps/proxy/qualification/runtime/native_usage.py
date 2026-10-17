@@ -9,7 +9,7 @@ import hashlib
 import json
 import re
 
-from .bedrock_body import _bounded_json_tree, _pairs
+from .bedrock_body import ENVELOPE_MAX_INPUT_TOKENS, ENVELOPE_MAX_OUTPUT_TOKENS, _bounded_json_tree, _pairs
 
 _HASH = re.compile(r"[a-f0-9]{64}\Z")
 _NAME = re.compile(r"[A-Za-z0-9_-]{1,128}\Z")
@@ -33,7 +33,7 @@ class UsageBinding:
             raise ValueError("INVALID_USAGE_BINDING")
         for x in (self.native_body_sha256, self.raw_request_sha256, self.pricing_revision):
             if type(x) is not str or not _HASH.fullmatch(x):raise ValueError("INVALID_USAGE_BINDING")
-        _integer(self.counted_input_tokens, 1, 8192); _integer(self.max_output_tokens, 1, 256)
+        _integer(self.counted_input_tokens, 1, ENVELOPE_MAX_INPUT_TOKENS); _integer(self.max_output_tokens, 1, ENVELOPE_MAX_OUTPUT_TOKENS)
         if (type(self.allowed_tool_names) is not frozenset or len(self.allowed_tool_names) > 8
                 or any(type(x) is not str or not _NAME.fullmatch(x) for x in self.allowed_tool_names)):
             raise ValueError("INVALID_USAGE_BINDING")
@@ -75,7 +75,7 @@ def _usage(value, binding, *, delta=False):
     for name in ("cache_creation_input_tokens", "cache_read_input_tokens"):
         if name in value:_integer(value[name], 0, 0)
     output = _integer(value["output_tokens"], 0, binding.max_output_tokens)
-    if not delta and _integer(value["input_tokens"], 1, 8192) != binding.counted_input_tokens:
+    if not delta and _integer(value["input_tokens"], 1, ENVELOPE_MAX_INPUT_TOKENS) != binding.counted_input_tokens:
         raise ValueError("COUNT_USAGE_MISMATCH")
     return output
 

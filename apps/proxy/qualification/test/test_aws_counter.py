@@ -134,7 +134,7 @@ class CounterTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_bad_response_never_returns_observation(self):
         bad=[{}, {"inputTokens":7}, {**response(),"extra":1}]
-        for n in (True,-1,0,8193,7.0):bad.append({**response(),"inputTokens":n})
+        for n in (True,-1,0,65537,7.0):bad.append({**response(),"inputTokens":n})
         for key,value in (("HTTPStatusCode",500),("HTTPStatusCode",True),("RetryAttempts",1),("RetryAttempts",False),("RequestId",None)):
             r=response();r["ResponseMetadata"][key]=value;bad.append(r)
         for value in (False,"true",1,None,[]):

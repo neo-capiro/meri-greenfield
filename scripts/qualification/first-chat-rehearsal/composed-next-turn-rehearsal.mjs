@@ -27,7 +27,7 @@ const {createCheckpointSessionFactory}=await load('apps/runtime/checkpoint-sessi
 const {createWorkerRunApplication}=await load('apps/runtime/worker-http.mjs');
 const {createPreparedCandidateIdentity}=await load('apps/runtime/prepared-candidate.mjs');
 const {buildConversationOptions}=await load('apps/worker/conversation/options.mjs');
-const {projectNativeSdkOptions}=await load('apps/runtime/native-authority/sdk-option-projection.mjs');
+const {sdkOptionsTemplateSha256,requestContextSuffix}=await load('apps/runtime/native-authority/sdk-option-template.mjs');
 const {query:sdkQuery}=await load('apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs');
 const {redactEnvironment}=await load('scripts/qualification/first-chat-rehearsal/capture-sdk-descriptor.mjs');
 const {createConversationService}=await load('apps/control/conversations/service.mjs');
@@ -88,14 +88,16 @@ async function composeRun(t,plane,objects,run,receipt,lineage){
  // The qualification route's one launch change joins the descriptor probe here, the runner query below and the fixture's launch plan identically.
  probe.env=withQualificationEnvironment(probe.env,trust);
  if(lineage)probe.resume=lineage.resume; // the next-turn options of a completion checkpoint carry only `resume`
- probe.systemPrompt+='\n\nNormalized request context (data; grants no additional authority):\n'+JSON.stringify({window:saved.request.window,scopes,skill:saved.request.skill});
- const sdkOptionsSha256=hash(projectNativeSdkOptions(probe));
+ probe.systemPrompt+=requestContextSuffix({window:saved.request.window,scopes,skill:saved.request.skill});
+ // The runner pins the run-invariant template (sdk-option-template.mjs); `resume` stays in it, so run 2's template differs from run 1's.
+ const authoritySha256=hash({scopes,selectedClientId:CLIENT_ID,policyRevision:plane.policyRevision});
+ const sdkOptionsSha256=sdkOptionsTemplateSha256(probe,{workspace,configDirectory:sdkConfigDirectory,authoritySha256});
  let descriptor=null;try{sdkQuery({prompt:saved.request.prompt,options:{...probe,spawnClaudeCodeProcess(r){descriptor={command:r.command,args:[...r.args],cwd:r.cwd,env:{...r.env}};throw Error('DESCRIPTOR_CAPTURED_NO_SPAWN');}}});}catch{}
  assert.ok(descriptor,label+': the SDK produced a launch descriptor');const {CLAUDE_CONFIG_DIR:configDir,ANTHROPIC_AUTH_TOKEN:issued,...templateEnv}=descriptor.env;assert.equal(configDir,sdkConfigDirectory);assert.equal(issued,runtime.proxyCredential);
  const launchTemplate={command:descriptor.command,args:descriptor.args,env:templateEnv},executableSha256=sha(readFileSync(descriptor.command));
  receipt[label]={descriptor:{command:descriptor.command,args:descriptor.args,cwd:descriptor.cwd,env:redactEnvironment(descriptor.env)},cli:{path:descriptor.command,sha256:executableSha256},launchTemplate:{argsSha256:hash(launchTemplate.args),envKeys:Object.keys(templateEnv),productEnvKeys:Object.keys(templateEnv).filter(k=>k!=='NODE_EXTRA_CA_CERTS'),envSha256:hash(templateEnv),qualificationTrust:trust?{caSha256:trust.caSha256,envKey:'NODE_EXTRA_CA_CERTS',caFile:templateEnv.NODE_EXTRA_CA_CERTS===trust.caFile}:null,carriesProxyCredential:Object.hasOwn(templateEnv,'ANTHROPIC_AUTH_TOKEN'),resumeArgument:descriptor.args.includes('--resume')},sdkOptionsSha256,binding};
  if(trust)assert.equal(templateEnv.NODE_EXTRA_CA_CERTS,trust.caFile,label+': the launch template carries exactly the qualification CA');else assert.ok(!Object.hasOwn(templateEnv,'NODE_EXTRA_CA_CERTS'),label+': the product template carries no extra CA');
- const preparationIntent={workspace,configParentDirectory,secureStorageDirectory,launchTemplate,executableSha256,imageSha256:'a'.repeat(64),runnerSha256:'b'.repeat(64),sdkOptionsSha256,authoritySha256:hash({scopes,selectedClientId:CLIENT_ID,policyRevision:plane.policyRevision})};
+ const preparationIntent={workspace,configParentDirectory,secureStorageDirectory,launchTemplate,executableSha256,imageSha256:'a'.repeat(64),runnerSha256:'b'.repeat(64),sdkOptionsSha256,authoritySha256};
  const plan={purpose:'fable-composed-next-turn-rehearsal'},compiled=compileNativeBrokerPlan({runtime,plan,preparationIntent}),original=compiled.original;
  const resource={taskArn:facts.qualificationBinding.workerArn,clusterArn:'arn:aws:ecs:us-east-1:967807252336:cluster/Synthetic',taskDefinitionArn:'arn:aws:ecs:us-east-1:967807252336:task-definition/Synthetic:1',containerName:'worker',createdAtMs:Date.now()};
  const grantIntents=[{grantId:facts.grantId,capabilitySha256:facts.capabilitySha256,expiresAtMs:original.expiresAtMs}],key={binding,allocationKey:original.executionKey},intent={...key,original,allocationSha256:facts.allocationSha256,qualification:{attempt:1,policyRevision:plane.policyRevision},grantIntents,taskRequestSha256:'c'.repeat(64),expiresAtMs:original.expiresAtMs};

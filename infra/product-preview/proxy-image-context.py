@@ -34,12 +34,17 @@ def main():
             elif not m.isdir():
                 sys.exit("PROXY_CONTEXT_MEMBER_TYPE")
     pins = json.loads(repo["repo/apps/proxy/qualification/linux/assembly-pins.json"][0])
-    art = {}
-    for p in pins["artifacts"]:
+    # Artifacts are verified here and re-read (and re-verified) one at a time while
+    # writing, so peak memory stays at one artifact rather than the whole set.
+    def artifact(p):
         data = (Path(o.artifacts) / p["path"]).read_bytes()
         if len(data) != p["bytes"] or hashlib.sha256(data).hexdigest() != p["sha256"]:
             sys.exit("PROXY_CONTEXT_ARTIFACT " + p["path"])
-        art["artifacts/" + p["path"]] = (data, 0o644)
+        return data
+    art = {}
+    for p in pins["artifacts"]:
+        artifact(p)
+        art["artifacts/" + p["path"]] = (p, 0o644)
     extra = [f for f in Path(o.artifacts).rglob("*") if f.is_file()
              and "artifacts/" + f.relative_to(o.artifacts).as_posix() not in art]
     if len(art) != 331 or extra:
@@ -51,10 +56,12 @@ def main():
         for name in sorted(members):
             info = zipfile.ZipInfo(name, STAMP); info.external_attr = members[name][1] << 16
             info.compress_type = zipfile.ZIP_DEFLATED
-            z.writestr(info, members[name][0])
-    data = out.read_bytes()
-    print(json.dumps({"status": "PROXY_CONTEXT_SEALED", "commit": o.commit, "zipBytes": len(data),
-                      "zipSha256": hashlib.sha256(data).hexdigest(), "repoFiles": len(repo), "artifacts": len(art),
+            body = members[name][0]
+            z.writestr(info, artifact(body) if name in art else body)
+    with open(out, "rb") as f:
+        zip_sha = hashlib.file_digest(f, "sha256").hexdigest()
+    print(json.dumps({"status": "PROXY_CONTEXT_SEALED", "commit": o.commit, "zipBytes": out.stat().st_size,
+                      "zipSha256": zip_sha, "repoFiles": len(repo), "artifacts": len(art),
                       "buildScriptSha256": manifest["files"]["repo/infra/product-preview/proxy-image-build.sh"]}))
 
 

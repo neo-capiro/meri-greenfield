@@ -16,3 +16,7 @@ export async function applicationFixture({scopes:configuredScopes=scopes,binding
  const runOwner={load:({binding,signal})=>service.loadForExecution({credential,binding,signal}),append:({binding,event,signal})=>service.publish({credential,binding,event,signal})};
  return {...f,state,sessions,credential,store,dispatcher,service,app,input,runOwner,close:()=>sessions.close(),post:(route,body=input)=>app.handle(new Request(`https://meri.invalid/api/conversations/${route}`,{method:'POST',headers:{authorization:`Bearer ${credential}`,'content-type':'application/json'},body:JSON.stringify(body)}))};
 }
+/** Writer-fence-1 submit requires its canonical initial-input allocation (0016). Each submit first allocates the same wire body through
+ * the canonical owner; a refused allocation leaves the submit to report its own refusal. */
+export async function allocatedApplicationFixture(options={}){const f=await applicationFixture({...options,initialInput:true}),post=f.post;
+ f.post=async(route,body=f.input)=>{if(route==='submit')await f.service.allocateInput({credential:f.credential,input:JSON.parse(JSON.stringify(body))}).catch(()=>{});return post(route,body);};return f;}

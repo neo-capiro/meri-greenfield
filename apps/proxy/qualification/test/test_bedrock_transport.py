@@ -319,7 +319,7 @@ class TransportTests(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(ledger.holds[guard.request_id]["state"], "UNKNOWN")
 
     async def test_count_failures_and_forged_observations_prevent_send(self):
-        mutations = [("tokens", 0), ("tokens", True), ("tokens", 8193),
+        mutations = [("tokens", 0), ("tokens", True), ("tokens", 65537),
                      ("origin", "aws-counttokens"), ("model_id", "foreign-model"),
                      ("digest_override", "0" * 64), ("error", RuntimeError("synthetic count unavailable"))]
         for attr, value in mutations:
@@ -504,7 +504,7 @@ class BodyTests(unittest.TestCase):
         bad = []
         for key, value in (("model", "foreign"), ("stream", True), ("thinking", {"type": "enabled"}),
                            ("anthropic_beta", ["unknown"]), ("cache_control", {"type": "ephemeral"}),
-                           ("max_tokens", 257), ("max_tokens", True), ("max_tokens", 0),
+                           ("max_tokens", 8193), ("max_tokens", True), ("max_tokens", 0),
                            ("messages", []), ("anthropic_version", "foreign"), ("temperature", 1)):
             bad.append({**native_body(), key: value})
         bad.extend([
@@ -531,7 +531,7 @@ class BodyTests(unittest.TestCase):
                     inspect_native_request("POST", URL, raw, BodyLimits())
 
     def test_qualification_limits_refuse_widening_or_malformed_names(self):
-        for kwargs in ({"max_input_tokens": 8193}, {"max_output_tokens": 257},
+        for kwargs in ({"max_input_tokens": 65537}, {"max_output_tokens": 8193},
                        {"max_body_bytes": True}, {"allowed_tool_names": {"local_echo"}},
                        {"allowed_tool_names": frozenset({"bad.name"})}):
             with self.subTest(kwargs=str(kwargs)):

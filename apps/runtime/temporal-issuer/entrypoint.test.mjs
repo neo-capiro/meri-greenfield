@@ -43,7 +43,8 @@ function rolePin(role){
   containerName:`meri-${name}`,
   imageUri:`${ACCOUNT}.dkr.ecr.${REGION}.amazonaws.com/meri/${name}@sha256:${'b'.repeat(64)}`,
   taskRoleArn:`arn:aws:iam::${ACCOUNT}:role/meri-${name}-task`,
-  executionRoleArn:`arn:aws:iam::${ACCOUNT}:role/meri-${name}-execution`,revision:'revision-17'};
+  executionRoleArn:`arn:aws:iam::${ACCOUNT}:role/meri-${name}-execution`,revision:'revision-17',
+  securityGroupIds:role==='control'?['sg-05a350c100574b21f','sg-0c3da023e9e8fb292','sg-0d5b5286baf28242e']:['sg-00111cd0e475badfa','sg-0c3da023e9e8fb292']};
 }
 function configuration(){
  return {schemaVersion:1,startupTimeoutMs:30000,registrationRole:'test_issuer_role',
@@ -51,7 +52,7 @@ function configuration(){
    audience:'meri-temporal',maxRequestMs:5000,bootstrapMaxRequestMs:10000,
    maxBodyBytes:4096,currentnessLeaseMs:20000},
   taskAuthority:{schemaVersion:1,clusterArn:cluster,vpcId:'vpc-12345678',
-   privateSubnetIds:['subnet-12345678'],securityGroupIds:['sg-12345678'],maxLeaseMs:10000,
+   privateSubnetIds:['subnet-12345678'],maxLeaseMs:10000,
    roles:{control:rolePin('control'),'temporal-worker':rolePin('temporal-worker')}},
   signer:{schemaVersion:1,keyArn:KEY_ARN,kid:KID,publicJwk,publicJwkSha256},
   listen:{host:'0.0.0.0',port:8445},
@@ -117,6 +118,10 @@ test('closed configuration joins exact KMS kid, private bind, lease, and owner-o
   {...configuration(),service:{...configuration().service,issuerOrigin:'https://issuer.meri.internal:443'}},
   {...configuration(),signer:{...configuration().signer,kid:'wrong-kid'}},
   {...configuration(),taskAuthority:{...configuration().taskAuthority,maxLeaseMs:20001}},
+  // Security groups are per role; the retired shared top-level list and a missing role set both refuse.
+  {...configuration(),taskAuthority:{...configuration().taskAuthority,securityGroupIds:['sg-05a350c100574b21f']}},
+  {...configuration(),taskAuthority:{...configuration().taskAuthority,roles:{...configuration().taskAuthority.roles,
+   'temporal-worker':{...rolePin('temporal-worker'),securityGroupIds:undefined}}}},
   {...configuration(),taskAuthority:{...configuration().taskAuthority,
    clusterArn:cluster.replace(ACCOUNT,'123456789012'),
    roles:Object.fromEntries(Object.entries(configuration().taskAuthority.roles).map(([role,pin])=>
