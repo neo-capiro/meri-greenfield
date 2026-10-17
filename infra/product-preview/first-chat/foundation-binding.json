@@ -1,0 +1,72 @@
+{
+ "account": "967807252336",
+ "region": "us-east-1",
+ "vpcId": "vpc-0ac26cfac7ed972be",
+ "vpcCidr": "10.40.0.0/16",
+ "privateSubnetIds": [
+  "subnet-0920665f91c905f01",
+  "subnet-0e38bd390f8961fef",
+  "subnet-06db79cd21239de19"
+ ],
+ "clusterArn": "arn:aws:ecs:us-east-1:967807252336:cluster/capiro-dev",
+ "ecrRepositoryArn": "arn:aws:ecr:us-east-1:967807252336:repository/meri-greenfield/qualification-worker",
+ "albSecurityGroupId": "sg-0dc7236a6d67e4340",
+ "auroraSecurityGroupId": "sg-059b4e4de0b1dcca5",
+ "endpointSecurityGroupId": "sg-01def4e5c0fe44d4a",
+ "s3PrefixListId": "pl-63a5400a",
+ "checkpoint": {
+  "bucket": "meri-greenfield-qual-checkpoint-967807252336-us-east-1",
+  "prefix": "product-preview/checkpoints",
+  "kmsKeyArn": "arn:aws:kms:us-east-1:967807252336:key/3a04f062-40de-4ed8-9a24-dad87c488e0c"
+ },
+ "secretArns": {
+  "control": [
+   "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/control/material-OhIfMV"
+  ],
+  "worker": [
+   "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/worker/material-1tudsv"
+  ],
+  "issuer": [
+   "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/issuer/material-MYhacb"
+  ],
+  "owner": [
+   "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/owner/material-05kED4"
+  ],
+  "proxy": [
+   "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/proxy/material-kpYYOE"
+  ],
+  "temporal": [
+   "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/frontend/material-QkE7eP",
+   "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/history/material-fl67yL",
+   "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/matching/material-igTBBS",
+   "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/worker/material-1Qm4jB",
+   "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/internal-frontend/material-GGIaW1",
+   "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/db-default-uoHJhw",
+   "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/db-visibility-L1SU3i"
+  ],
+  "migrator": [
+   "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/migrator/logins-4XlR74",
+   "arn:aws:secretsmanager:us-east-1:967807252336:secret:/capiro/dev/aurora/master-P4z1Vo"
+  ]
+ },
+ "secretKmsKeyArns": {
+  "control": [],
+  "worker": [],
+  "issuer": [],
+  "owner": [],
+  "proxy": [],
+  "temporal": [],
+  "migrator": [
+   "arn:aws:kms:us-east-1:967807252336:key/efe8a18d-192e-4f30-8eea-b3f65ae7755e"
+  ]
+ },
+ "bedrock": {
+  "inferenceProfileArn": "arn:aws:bedrock:us-east-1:967807252336:inference-profile/us.anthropic.claude-sonnet-4-6",
+  "foundationModelArns": [
+   "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-sonnet-4-6",
+   "arn:aws:bedrock:us-east-2::foundation-model/anthropic.claude-sonnet-4-6",
+   "arn:aws:bedrock:us-west-2::foundation-model/anthropic.claude-sonnet-4-6"
+  ],
+  "countTokensModelArn": "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-sonnet-4-6"
+ }
+}

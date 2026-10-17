@@ -16,14 +16,15 @@ Account `967807252336`, region `us-east-1`, cluster `capiro-dev`, VPC `vpc-0ac26
 - Clerk: frontend, Core and Meri resolve to one instance, `ins_3CPnW3zHGlQuLXj2bJpDpmo9fVB`, issuer `https://clerk.app.capiro.ai` (see frontend PR #64 comment).
 - Images:
   - Meri Node runtime: `meri-greenfield/qualification-worker@sha256:6617b23650cc8cce973beac90c13f7c8231ccf3fbab4d4b4c44b26aea35c180c`, build `398713a3`, zero findings. Control, Temporal worker, runner and the issuer all run from this image.
-  - Proxy assembly and product images: Build B, pending dot's technical-hold review.
+  - Proxy product image: **qualified at the image gate**, `sha256:0f60986be72a6d90340e8994f54cad18ffde91db7510ad73598dec865fc73b80` (B4 `4e4c7888`, source `ab590d9f`, Wolfi runtime, zero findings). The Debian assembly `abbd11d2…` is builder-only and never deployed (Neo's option A).
+  - **D1 rebuilds in progress** at source `d375d43d`: proxy B5 and Node runtime N2. Their digests replace both images above once qualified; until then neither D1 image exists.
   - Temporal server derivative image (`temporal-launch.Dockerfile`): **unbuilt**.
 
 ## Blocking decisions and source gaps (must close before Stage 3)
 
 | # | Item | Why it blocks | Recommendation |
 |---|---|---|---|
-| D1 | **Model envelope.** `apps/proxy/qualification/runtime/bedrock_body.py:29-37` caps each call at 8,192 input / 256 output tokens with no thinking | The Claude Agent SDK's own system prompt exceeds 8k tokens, so every real first-chat call would be refused | Raise to 64k in / 8k out on the pinned Sonnet profile, still without thinking. Enforce a per-run cap of **$2** and a preview-wide cap of **$25/day** in the canonical `meri_product_budget` store. This is a source change plus tests; Neo picks the numbers |
+| D1 | **CLOSED (Neo, 17 Oct): 64k input / 8k output per request, no thinking, $2 per run, $25 per day.** Source `d375d43d` | — | Code: one envelope constant per language (`bedrock_body.py`, `apps/gateway/model-proxy/product-envelope.mjs`), worker SDK pinned to `CLAUDE_CODE_MAX_OUTPUT_TOKENS=8192`, `MAX_THINKING_TOKENS=0`. Config: run allocation `maxCostMicroUSD=2000000`; Stage 1 seed `meri_product_budget.budget(id=1, cap_micro_usd=25000000)` (non-resetting, so at most $25 in any day; a later day needs a reviewed cap update). Owner pricing `maxInputTokens=65536`, `maxOutputTokens=8192`. Worst-case hold per call 567,706 µUSD |
 | D2 | Grants SQL. `infra/product-preview/existing-database-grants.sql` is comments only | There are no executable role or grant statements for the `meri_*` schemas | Fable writes the exact SQL (roles NOLOGIN plus three LOGIN users) for review before Stage 1 |
 | D3 | Temporal server image. `temporal-launch.Dockerfile` is unbuilt | The five Temporal roles have no image | One more qualification build (about $4), same envelope as Build A |
 | D4 | Certificate authority custody | Runner, issuer clientAuth, control HTTPS, Temporal mTLS and proxy↔owner mTLS each need a CA and leaves | Use **self-managed CAs**: keys generated offline by Fable, stored only as exact-version Secrets Manager values, never in Git or logs. AWS Private CA costs $400/CA-month (general) or $50 (short-lived), so it is not proposed. Neo approves key generation explicitly |
@@ -42,7 +43,7 @@ All of this runs in one Fargate one-shot migration task on the Build A image, wi
 | Object | Detail |
 |---|---|
 | Schemas | `meri_conversations`, `meri_product_budget`, `meri_service_identity` |
-| Migrations, in order | Conversations `0001–0011, 0013, 0015, 0016, 0017` (0012 and 0014 stay held); budget `0001_product_budget`, `0002_tenant_budgets` plus seed row `budget id=1` with the D1 cap; issuer `apps/runtime/temporal-issuer/migrations/0001_service_task_registrations.sql` (blob `607929b1…`) |
+| Migrations, in order | Conversations `0001–0011, 0013, 0015, 0016, 0017` (0012 and 0014 stay held); budget `0001_product_budget`, `0002_tenant_budgets` plus seed row `budget id=1, cap_micro_usd=25000000` (D1); issuer `apps/runtime/temporal-issuer/migrations/0001_service_task_registrations.sql` (blob `607929b1…`) |
 | Temporal stores | Logical databases `temporal` and `temporal_visibility`; Temporal 1.32.1 schemas primary 1.19 and visibility 1.14 with `CREATE EXTENSION btree_gin` (Aurora 16 supports it) |
 | Roles | `meri_product_migrator` (owner of the `meri_*` schemas), `meri_control_runtime`, `meri_model_budget_owner`, `meri_temporal_issuer_service`, plus two Temporal runtime logins. Each login password is a new exact-version secret. No role gets `public`/Core grants, BYPASSRLS or superuser |
 | Untouched | Every existing Core table, the Core receipt migration (never rerun), `public` grants |
@@ -136,8 +137,8 @@ Fable returns the release packet: every source, image, config, secret **referenc
 
 ## Approvals requested from Neo, in order
 
-1. D1 caps (numbers), D4 CA key generation, D5 and D6 network decisions.
-2. One more qualification build for the Temporal server image (about $4), plus Build B once dot lifts its hold.
+1. ~~D1 caps~~ (approved 17 Oct); D4 CA key generation, D5 and D6 network decisions.
+2. One more qualification build for the Temporal server image (about $4). Build B is done (B4); the D1 rebuilds B5/N2 are recorded on PR121.
 3. Stage 0 + 1 (snapshot, then the reviewed SQL).
 4. Stage 2 (security/network), then Stage 3 (zero-count services).
 5. Stage 4 (deny, by dot under PR78), Stage 5 private activation (2-hour window, $5 ceiling), then Stage 6 public forward and DNS (dot).

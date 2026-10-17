@@ -1,0 +1,21 @@
+{
+ "kid": "meri-preview-issuer-1",
+ "publicJwk": {
+  "kty": "RSA",
+  "kid": "meri-preview-issuer-1",
+  "alg": "RS256",
+  "use": "sig",
+  "n": "pACvSrwHnkjbejj3y0hHH-iByRpeQMEDwrxXT9hBGguZZMua9gZuAzGi4e5SbiDuMR2NhWNqORDmnPN0wMc689a-nhtGnlB1R-ypGg72SYrgQ4lTpmKmqjTngZXY_tEMnDK1sX8vFA9flw4PVabmm-BbxUXeyweIw-pW_GM6LppV2boROlc0wfXFn9lu4whG5-CMaclh3g2HQuHyj8c_ySbVDb-T0MXf3FpUBEy_xPP7xjwlMUHoNiqp-rEYdIPp_SD2MIw6yeo1BCGDdERRCdPfh2V7Q-6BPOeeRKFwxn2QFpRcYzPY_CKWiKQNHDMkEqoee6TJWMymWlVBGBorYQ",
+  "e": "AQAB"
+ },
+ "publicJwkSha256": "d415a9ac5c5af50ca0d5ebcee62d50ca82b582309ad80e21f50f390731950497",
+ "keySpec": "RSA_2048",
+ "algs": [
+  "RSASSA_PKCS1_V1_5_SHA_256",
+  "RSASSA_PKCS1_V1_5_SHA_384",
+  "RSASSA_PKCS1_V1_5_SHA_512",
+  "RSASSA_PSS_SHA_256",
+  "RSASSA_PSS_SHA_384",
+  "RSASSA_PSS_SHA_512"
+ ]
+}

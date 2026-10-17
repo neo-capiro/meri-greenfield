@@ -8,6 +8,7 @@ import catalog from '../../../packages/contracts/retrieval-0.2/catalog.json' wit
 import {selectSkill} from '../../../packages/skills/index.mjs';
 import {createTextProjector} from './text-projector.mjs';
 import {buildConversationOptions} from './options.mjs';
+import {requestContextSuffix} from './request-context.mjs';
 import {createConversationInput} from './continuation/input.mjs';
 import {createActivityLifecycle,assertLifecycleConfiguration,HOLD_CHECKPOINT_FAILED} from './continuation/activity-lifecycle.mjs';
 import {readCapabilityPolicy} from './capabilities/policy.mjs';
@@ -61,7 +62,8 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
    const options=buildConversationOptions(runtime,controller,lineage?{...lineage,request:saved.request,
     sourceRequest,scopes:saved.run.scopes,started:prepareStarted,now}:undefined,skillRuntime?.sdkOptions,capabilities?.options,readRuntime?.sdkOptions??undefined,intentRuntime?.sdkOptions??undefined,browserRun?.fragment,objectiveRuntime?.outputFormat);if(lineage)life.limitDeadline(runtime.restoreReceipt.expiresAtMs);let selected;
    if(saved.request.skill){selected=selectSkill(saved.request.skill.skillId,saved.request.skill.skillVersion);if(!same(selected.pin,saved.request.skill))throw fault('SKILL_PIN_REFUSED');if(skillRuntime){if(!same(skillRuntime.selected,selected)||typeof skillRuntime.finish!=='function'||typeof skillRuntime.close!=='function')throw fault('SKILL_RUNTIME_REFUSED');}else assertSkillManifest(selected.manifest,catalog);options.maxTurns=Math.min(options.maxTurns,selected.manifest.budgets.maxTurns);options.maxBudgetUsd=Math.min(options.maxBudgetUsd,selected.manifest.budgets.maxCostMicroUSD/1000000);life.limitDeadline(now()+selected.manifest.budgets.maxRuntimeSeconds*1000);options.systemPrompt=selected.prose;}
-   options.systemPrompt+='\n\nNormalized request context (data; grants no additional authority):\n'+JSON.stringify({window:saved.request.window,scopes:saved.run.scopes,skill:saved.request.skill});
+   // The one per-run prompt suffix; sdk-option-template.mjs parses exactly these bytes back for the runner's options pin.
+   options.systemPrompt+=requestContextSuffix({window:saved.request.window,scopes:saved.run.scopes,skill:saved.request.skill});
    await publish('run.status',{state:'running',reasonCode:null});
    heartbeatTimer=setInterval(()=>{try{heartbeat({runId:binding.runId});}catch{controller.abort();}},5000);heartbeatTimer.unref?.();
    // query owns tool selection, compaction and the model loop. Its returned stream is consumed once.

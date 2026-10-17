@@ -188,7 +188,8 @@ export function createTemporalIssuerServiceTaskRegistrationPg({pool,expectedRole
     pg_has_role(current_user,n.nspowner,'MEMBER') AS schema_owner_member,
     pg_has_role(current_user,c.relowner,'SET') AS table_owner_set,
     pg_has_role(current_user,n.nspowner,'SET') AS schema_owner_set,
-    EXISTS(SELECT 1 FROM pg_auth_members m WHERE m.member=r.oid OR m.roleid=r.oid)
+    EXISTS(SELECT 1 FROM pg_auth_members m WHERE m.member=r.oid OR (m.roleid=r.oid AND NOT
+      (m.grantor=10 AND m.admin_option AND NOT m.inherit_option AND NOT m.set_option)))
       AS role_membership,
     EXISTS(SELECT 1 FROM aclexplode(coalesce(n.nspacl,acldefault('n',n.nspowner))) acl
       WHERE acl.grantee=0) AS public_schema_acl,

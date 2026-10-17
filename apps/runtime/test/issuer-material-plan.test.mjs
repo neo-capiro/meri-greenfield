@@ -20,10 +20,11 @@ function configuration(){
   peerSubjectCn:'meri-temporal-'+name,peerUriBase:'spiffe://issuer.synthetic.invalid/temporal/'+name+'/',
   serviceArn:`arn:aws:ecs:${region}:${account}:service/${cluster}/synthetic-${name}`,taskDefinitionArn:`arn:aws:ecs:${region}:${account}:task-definition/synthetic-${name}:1`,
   containerName:name,imageUri:`${account}.dkr.ecr.${region}.amazonaws.com/synthetic/${name}@sha256:${'b'.repeat(64)}`,
-  taskRoleArn:`arn:aws:iam::${account}:role/synthetic-${name}`,executionRoleArn:`arn:aws:iam::${account}:role/synthetic-${name}-execution`,revision:'synthetic-v1'};}
+  taskRoleArn:`arn:aws:iam::${account}:role/synthetic-${name}`,executionRoleArn:`arn:aws:iam::${account}:role/synthetic-${name}-execution`,revision:'synthetic-v1',
+  securityGroupIds:worker?['sg-00111cd0e475badfa','sg-0c3da023e9e8fb292']:['sg-05a350c100574b21f','sg-0c3da023e9e8fb292','sg-0d5b5286baf28242e']};}
  return {schemaVersion:1,database:{connectionFile:'/run/meri/issuer-database.uri',connectionSha256:sha(database)},issuer:{schemaVersion:1,registrationRole:'meri_temporal_issuer',startupTimeoutMs:1000,
   service:{schemaVersion:1,issuerOrigin:'https://issuer.synthetic.invalid:8445',kid,namespace:'meri',audience:'meri-temporal',maxRequestMs:5000,bootstrapMaxRequestMs:10000,maxBodyBytes:4096,currentnessLeaseMs:20000},
-  taskAuthority:{schemaVersion:1,clusterArn:`arn:aws:ecs:${region}:${account}:cluster/${cluster}`,vpcId:'vpc-0ac26cfac7ed972be',privateSubnetIds:['subnet-12345678'],securityGroupIds:['sg-12345678'],maxLeaseMs:10000,
+  taskAuthority:{schemaVersion:1,clusterArn:`arn:aws:ecs:${region}:${account}:cluster/${cluster}`,vpcId:'vpc-0ac26cfac7ed972be',privateSubnetIds:['subnet-12345678'],maxLeaseMs:10000,
    roles:{control:pin(false),'temporal-worker':pin(true)}},
   signer:{schemaVersion:1,keyArn:`arn:aws:kms:${region}:${account}:key/11111111-1111-4111-8111-111111111111`,kid,publicJwk,publicJwkSha256:sha(Buffer.from(JSON.stringify(publicJwk)))},
   listen:{host:'0.0.0.0',port:8445},tls:{keyFile:'/run/meri/issuer-server.key',certFile:'/run/meri/issuer-server.crt',caFile:'/run/meri/issuer-client-ca.pem'},
@@ -87,5 +88,6 @@ test('authenticated issuer inventory cannot omit or add a file outside the canon
 test('issuer configuration and receiving runtime user are rechecked even with recomputed bundle hashes',()=>{
  const bad=configuration();bad.database.connectionFile='/run/meri/issuer.json';
  assert.throws(()=>validateStaticProductDelivery(delivery({configurationBytes:Buffer.from(JSON.stringify(bad))})),{code:'STATIC_INIT_REFUSED'});
- const d=delivery();d.expected.runtimeUser='1001:1000';repin(d.expected);assert.throws(()=>validateStaticProductDelivery(d),{code:'STATIC_INIT_REFUSED'});
+ // The role-bound reader identity is now refused in the expected envelope, before any delivery.
+ const d=delivery();d.expected.runtimeUser='1001:1000';repin(d.expected);assert.throws(()=>validateStaticProductDelivery(d),{code:'STATIC_INIT_EXPECTED_REFUSED'});
 });

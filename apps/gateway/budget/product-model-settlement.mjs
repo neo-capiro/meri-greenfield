@@ -7,6 +7,7 @@ import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {parseAdmittedGrantSet,integer,dbTime,assertRun} from './admitted-run-binding.mjs';
 import {digest,same} from './tool-budget-binding.mjs';
 import {PostgresBudgetStore,refuse} from './postgres-budget-store.mjs';
+import {PRODUCT_MAX_INPUT_TOKENS,PRODUCT_MAX_OUTPUT_TOKENS} from '../model-proxy/product-envelope.mjs';
 
 const slot=/^[A-Za-z0-9_-]{1,128}$/u;
 const decimal=/^(0|[1-9][0-9]*)$/u;
@@ -23,7 +24,7 @@ function price(value){
  if(typeof p.modelId!=='string'||!p.modelId||typeof p.profileId!=='string'||!p.profileId||!Number.isSafeInteger(p.validUntilMs)||p.validUntilMs<1)refuse('PRODUCT_MODEL_CONFIGURATION');
  digest(p.revision);
  positive(p.reserveInputMicroUSDPerK,1_000_000_000);positive(p.actualInputMicroUSDPerK,1_000_000_000);positive(p.outputMicroUSDPerK,1_000_000_000);
- positive(p.maxInputTokens,8192);positive(p.maxOutputTokens,256);
+ positive(p.maxInputTokens,PRODUCT_MAX_INPUT_TOKENS);positive(p.maxOutputTokens,PRODUCT_MAX_OUTPUT_TOKENS);
  if(p.actualInputMicroUSDPerK>p.reserveInputMicroUSDPerK)refuse('PRODUCT_MODEL_CONFIGURATION');
  return p;
 }

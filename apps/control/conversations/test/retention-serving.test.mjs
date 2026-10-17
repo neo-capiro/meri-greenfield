@@ -3,7 +3,7 @@
  * release after an authorized transition, closed recovery barrier, unreadable journal, event stream and reconnect, lifecycle and
  * execution-load refusal, and cancellation that still stops work without releasing content. Synthetic identities only. */
 import test from 'node:test';import assert from 'node:assert/strict';
-import {applicationFixture,binding,id} from './application-fixture.mjs';
+import {allocatedApplicationFixture,binding,id} from './application-fixture.mjs';
 import {lifecycleFixture} from './lifecycle-fixture.mjs';
 import {createConversationEventSource} from '../events.mjs';
 import {createRetentionLedger,createMemoryLedgerSink} from '../../retention/ledger.mjs';
@@ -20,7 +20,7 @@ export function retentionFixture(){
 }
 const refused=async(response,code='CONVERSATION_UNAVAILABLE')=>{assert.equal(response.status,502);const body=await response.json();assert.equal(body.error.code,code);assert.equal(Object.keys(body).join(),'error','no content accompanies a refusal');};
 test('unsuppressed serving is unchanged and consults the gate with the trusted conversation identity; another conversation\'s suppression does not touch this one',async()=>{
- const r=retentionFixture(),f=await applicationFixture({retention:r.port});try{
+ const r=retentionFixture(),f=await allocatedApplicationFixture({retention:r.port});try{
   assert.equal((await f.post('submit')).status,200);const history=await f.post('history',{after:0,limit:10});assert.equal(history.status,200);assert.equal((await history.json()).request.prompt,'Hello');
   assert.ok(r.state.calls.length>=2,'the gate ran before exposure and before release');assert.ok(r.state.calls.every(s=>s.tenantId===binding.tenantId&&s.kind==='conversation'&&s.subjectId===binding.conversationId),'the subject is the authenticated binding, never a request claim');
   await r.suppress(r.subject(id(77)));assert.equal((await f.post('history',{})).status,200,'a different conversation\'s suppression is irrelevant');
@@ -28,7 +28,7 @@ test('unsuppressed serving is unchanged and consults the gate with the trusted c
  }finally{f.close();}
 });
 test('suppression refuses history, replay submit, execution load and worker publication, releases nothing, and lets trusted cancellation still stop the run; release restores serving and exact replay',async()=>{
- const r=retentionFixture(),f=await applicationFixture({retention:r.port});try{
+ const r=retentionFixture(),f=await allocatedApplicationFixture({retention:r.port});try{
   await f.post('submit');await r.suppress();
   await refused(await f.post('history',{}));await refused(await f.post('submit'));
   await assert.rejects(f.runOwner.load({binding}),/RETENTION_SUPPRESSED/,'no relaunch or prompt recovery for a suppressed subject');
@@ -39,7 +39,7 @@ test('suppression refuses history, replay submit, execution load and worker publ
  }finally{f.close();}
 });
 test('a suppression that lands during an awaited read is caught before release; a closed recovery barrier or an unreadable journal refuses rather than serving',async()=>{
- const r=retentionFixture(),f=await applicationFixture({retention:r.port});try{
+ const r=retentionFixture(),f=await allocatedApplicationFixture({retention:r.port});try{
   await f.post('submit');const before=r.state.calls.length;r.state.suppressAfter=before+2;await refused(await f.post('history',{}));assert.ok(r.state.calls.length>=before+2,'the gate ran again after the awaited read');
   await r.release();assert.equal((await f.post('history',{})).status,200);
   r.serving.disable();await refused(await f.post('history',{}));await assert.rejects(f.runOwner.load({binding}),/RETENTION_RECOVERY_BARRIER/);r.serving.enable();
@@ -48,7 +48,7 @@ test('a suppression that lands during an awaited read is caught before release; 
  }finally{f.close();}
 });
 test('an open event stream and a reconnect stop exposing events after suppression or barrier closure',async()=>{
- const r=retentionFixture(),f=await applicationFixture({retention:r.port});try{
+ const r=retentionFixture(),f=await allocatedApplicationFixture({retention:r.port});try{
   await f.post('submit');const source=createConversationEventSource({service:f.service,credential:f.credential,after:0}),reader=source.getReader();assert.equal((await reader.read()).value.sequence,1);
   // The event source keeps its existing public failure (SUBSCRIPTION_UNAVAILABLE); the gate's refusal is what closed it.
   await r.suppress();await assert.rejects(reader.read(),/SUBSCRIPTION_UNAVAILABLE/,'the open stream stops');reader.releaseLock();

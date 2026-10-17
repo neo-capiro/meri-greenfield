@@ -40,7 +40,7 @@ class PricingTests(unittest.TestCase):
         self.assertEqual(CAP_MICRO_USD,10000000)
 
     def test_invalid_counts_and_revision(self):
-        for counts in ((True,1),(8193,1),(1,257),(0,1),(-1,1),(1.0,1)):
+        for counts in ((True,1),(65537,1),(1,8193),(0,1),(-1,1),(1.0,1)):
             with self.subTest(counts=counts),self.assertRaises(StateDenied):liability(*counts,reserve=True)
         with self.assertRaises(StateDenied):Pricing(NOW()+timedelta(hours=1),'a'*64)
         with self.assertRaises(StateDenied):Pricing(datetime.now())

@@ -11,7 +11,7 @@ const account='967807252336',region='us-east-1',sha='a'.repeat(64),sourceCommit=
 const roleSecret=(name,n)=>`arn:aws:secretsmanager:${region}:${account}:secret:meri/temporal/${name}-ABC123:::${String(n).repeat(32)}`;
 const controlCa=Buffer.from('synthetic public CA'),controlCaSha=createHash('sha256').update(controlCa).digest('hex');
 function temporal(){return {
- account,region,enabled:false,placement:{kind:'existing-capiro-dev-vpc',reviewSha256:sha},
+ account,region,enabled:false,activation:'disabled',placement:{kind:'existing-capiro-dev-vpc',reviewSha256:sha},
  clusterArn:`arn:aws:ecs:${region}:${account}:cluster/capiro-dev`,vpcId:'vpc-0ac26cfac7ed972be',
  subnets:[{id:'subnet-11111111',availabilityZone:'us-east-1a'},{id:'subnet-22222222',availabilityZone:'us-east-1b'}],
  privateDnsName:'temporal.meri.internal',serverImageUri:`${account}.dkr.ecr.${region}.amazonaws.com/meri/temporal@sha256:${sha}`,
@@ -25,7 +25,7 @@ function temporal(){return {
    {endpointId:`vpce-${String(i+1).repeat(8)}`,securityGroupId:`sg-${String(i+4).repeat(8)}`}])) ,
   s3Gateway:{endpointId:'vpce-99999999',prefixListId:'pl-11111111'},
   taskRouteTableBySubnet:{'subnet-11111111':'rtb-11111111','subnet-22222222':'rtb-22222222'},
-  migrationSecurityGroupId:'sg-aaaaaaaa'},
+  migrationSecurityGroupId:'sg-aaaaaaaa',issuerClientSecurityGroupId:'sg-bbbbbbbb',dbClientSecurityGroupId:'sg-cccccccc'},
  auth:{issuer:'https://issuer.meri.internal:8445/',jwksUrl:'https://issuer.meri.internal:8445/.well-known/jwks.json',
   issuerCaSha256:sha,audience:'meri-temporal',namespace:'meri',taskQueue:'meri-conversations',
   materialSecretVersionByRole:Object.fromEntries(TEMPORAL_ROLES.map((x,i)=>[x,roleSecret(x,i+1)]))},
@@ -51,8 +51,9 @@ function product(){return {
  imageUri:`${account}.dkr.ecr.${region}.amazonaws.com/meri/product@sha256:${sha}`,
  logGroupName:'/meri/product',executionRoleArn:`arn:aws:iam::${account}:role/product-execution`,
  controlTaskRoleArn:`arn:aws:iam::${account}:role/product-control`,runtimeUser:'1000:1000',runnerSha256:sha,
- network:{privateSubnetId:'subnet-abcdef12',controlSecurityGroupId:'sg-1234abcd',
-  workerSecurityGroupId:'sg-5678abcd',runnerSecurityGroupIds:['sg-abcd1234']},
+ network:{privateSubnetIds:['subnet-abcdef12','subnet-abcdef34'],
+  controlSecurityGroupIds:['sg-1234abcd','sg-0c3da023e9e8fb292','sg-0d5b5286baf28242e'],
+  workerSecurityGroupIds:['sg-5678abcd','sg-0c3da023e9e8fb292'],runnerSecurityGroupIds:['sg-abcd1234']},
  sizing:{control:{cpu:512,memoryMiB:1024,ephemeralStorageGiB:21},
   temporalWorker:{cpu:512,memoryMiB:1024,ephemeralStorageGiB:21},
   runner:{cpu:1024,memoryMiB:2048,ephemeralStorageGiB:50}}
@@ -74,7 +75,7 @@ function projection(p,t){return Object.fromEntries(['control','temporalWorker'].
 
 test('same-VPC source join stays HOLD with exact cluster, subnet readback, SG, config, TLS and issuer pins',()=>{
  const p=product(),t=temporal(),input={productBinding:p,temporalBinding:t,runtimeProjection:projection(p,t),
-  productSubnetReadback:{SubnetId:p.network.privateSubnetId,VpcId:'vpc-0ac26cfac7ed972be',RouteTableId:'rtb-abcdef12'},
+  productSubnetReadbacks:p.network.privateSubnetIds.map(SubnetId=>({SubnetId,VpcId:'vpc-0ac26cfac7ed972be',RouteTableId:'rtb-abcdef12'})),
   issuerRenewal:renewal(t)};
  const receipt=inspectTemporalProductJoin(input);
  assert.equal(receipt.status,'HOLD');assert.equal(receipt.frontendAddress,'frontend.temporal.meri.internal:7233');
@@ -82,15 +83,30 @@ test('same-VPC source join stays HOLD with exact cluster, subnet readback, SG, c
  assert(receipt.pending.includes('same-vpc-route-and-sg-readback'));
  assert(!receipt.pending.includes('cross-vpc-route-and-sg-readback'));
  for(const mutate of [
-  x=>{x.productBinding.network.workerSecurityGroupId='sg-99999999';},
-  x=>{x.productSubnetReadback.VpcId='vpc-abcdef12';},
+  x=>{x.productBinding.network.workerSecurityGroupIds[0]='sg-99999999';},
+  x=>{x.productBinding.network.workerSecurityGroupIds[0]='sg-1234abcd';},
+  x=>{x.productBinding.network.controlSecurityGroupIds.push('sg-5678abcd');},
+  x=>{x.productSubnetReadbacks[1].VpcId='vpc-abcdef12';},
+  x=>{x.productSubnetReadbacks.pop();},
+  x=>{x.productSubnetReadbacks[1]=x.productSubnetReadbacks[0];},
   x=>{x.productBinding.clusterArn=`arn:aws:ecs:${region}:${account}:cluster/meri-product`;},
-  x=>{x.productSubnetReadback.SubnetId='subnet-deadbeef';},
-  x=>{x.productSubnetReadback.RouteTableId='';},
+  x=>{x.productSubnetReadbacks[0].SubnetId='subnet-deadbeef';},
+  x=>{x.productSubnetReadbacks[1].RouteTableId='';},
   x=>{x.runtimeProjection.control.audience='other';},
   x=>{x.runtimeProjection.temporalWorker.tlsCaSha256='f'.repeat(64);},
   x=>{x.issuerRenewal.issuerServiceTaskRoleArn=x.productBinding.controlTaskRoleArn;},
   x=>{x.issuerRenewal.issuerServiceTaskRoleArn=x.productBinding.executionRoleArn;},
   x=>{x.issuerRenewal.roles.control.namespaceRole='worker';}
  ]){const copy=structuredClone(input);mutate(copy);assert.throws(()=>inspectTemporalProductJoin(copy),/TEMPORAL_PRODUCT_JOIN_REFUSED/u);}
+});
+
+test('shared capiro-dev subnets are admitted only when product and Temporal agree on each shared route table',()=>{
+ const p=product(),t=temporal();
+ t.subnets=p.network.privateSubnetIds.map((id,i)=>({id,availabilityZone:`us-east-1${'ab'[i]}`}));
+ t.network.taskRouteTableBySubnet=Object.fromEntries(p.network.privateSubnetIds.map((id,i)=>[id,`rtb-0000000${i+1}`]));
+ const input={productBinding:p,temporalBinding:t,runtimeProjection:projection(p,t),issuerRenewal:renewal(t),
+  productSubnetReadbacks:p.network.privateSubnetIds.map((SubnetId,i)=>({SubnetId,VpcId:'vpc-0ac26cfac7ed972be',RouteTableId:`rtb-0000000${i+1}`}))};
+ assert.equal(inspectTemporalProductJoin(input).status,'HOLD');
+ const swapped=structuredClone(input);swapped.productSubnetReadbacks[0].RouteTableId='rtb-00000002';
+ assert.throws(()=>inspectTemporalProductJoin(swapped),/TEMPORAL_PRODUCT_JOIN_REFUSED/u);
 });

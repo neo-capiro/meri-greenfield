@@ -85,6 +85,14 @@ class ConfigurationTests(unittest.TestCase):
             _environment()
         with patch.dict(os.environ, {**base, "LITELLM_LOCAL_MODEL_COST_MAP": "True"}, clear=True):
             _environment()
+        # The exact environment Fargate injects into every container.
+        fargate = {"AWS_EXECUTION_ENV": "AWS_ECS_FARGATE", "AWS_REGION": "us-east-1", "AWS_DEFAULT_REGION": "us-east-1",
+                   "ECS_CONTAINER_METADATA_URI": "http://169.254.170.2/v3/x", "ECS_CONTAINER_METADATA_URI_V4": "http://169.254.170.2/v4/x"}
+        with patch.dict(os.environ, {**base, **fargate}, clear=True):
+            _environment()
+        for value in ("AWS_ECS_EC2", "", "aws_ecs_fargate"):
+            with patch.dict(os.environ, {**base, "AWS_EXECUTION_ENV": value}, clear=True), self.assertRaises(Exception):
+                _environment()
         for key, value in {"AWS_ACCESS_KEY_ID": "synthetic", "AWS_PROFILE": "host",
                 "AWS_CONTAINER_CREDENTIALS_FULL_URI": "http://foreign.invalid",
                 "HTTP_PROXY": "http://foreign.invalid", "LITELLM_MASTER_KEY": "synthetic",

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {mkdtemp,writeFile,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
-import {main} from '../cli.mjs';
+import {main,productWorkerTrustsPinnedServerCa} from '../cli.mjs';
 import {validateConfiguration} from '../config.mjs';
 import {binding,versions} from '../../control/conversations/test/application-fixture.mjs';
 import {candidateFixture} from './prepared-candidate-fixture.mjs';
@@ -91,4 +91,13 @@ test('product Temporal poller refuses missing issuer token configuration before 
   assert.equal(await main(['temporal-worker','--config',file]),2);
   assert.equal(diagnostic,'RUNTIME_CONFIGURATION\n');
  }finally{process.stderr.write=write;if(previous===undefined)delete process.env.MERI_PRODUCT_PREVIEW_REQUIRED;else process.env.MERI_PRODUCT_PREVIEW_REQUIRED=previous;await rm(directory,{recursive:true,force:true});}
+});
+test('product Temporal poller trusts the control private origin only through its pinned issuer server CA file',()=>{
+ const c={temporal:{issuerBootstrap:{enabled:true,serverCaFile:'/run/meri/issuer-ca.pem'}}};
+ assert.equal(productWorkerTrustsPinnedServerCa(c,{NODE_EXTRA_CA_CERTS:'/run/meri/issuer-ca.pem'}),true);
+ for(const value of [undefined,'','/opt/meri/certs/rds-global-bundle.pem','/run/meri/issuer-client-ca.pem','/tmp/issuer-ca.pem'])
+  assert.equal(productWorkerTrustsPinnedServerCa(c,value===undefined?{}:{NODE_EXTRA_CA_CERTS:value}),false,String(value));
+ for(const serverCaFile of [undefined,'/run/meri/../etc/ca.pem','/run/meri/nested/ca.pem','/run/meri/ca.crt'])
+  assert.equal(productWorkerTrustsPinnedServerCa({temporal:{issuerBootstrap:{enabled:true,serverCaFile}}},{NODE_EXTRA_CA_CERTS:serverCaFile}),false,String(serverCaFile));
+ assert.equal(productWorkerTrustsPinnedServerCa({temporal:{}},{NODE_EXTRA_CA_CERTS:'/run/meri/issuer-ca.pem'}),false);
 });

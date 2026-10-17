@@ -60,12 +60,18 @@ fail() {
 # uploaded and read back. ERR handling stays armed until the stored version is proved.
 finish_success() {
   PHASE=RECEIPT_GENERATE
-  python3 -I -B -c 'import json,sys;print(json.dumps({"schemaVersion":1,"status":"SUCCEEDED","commit":sys.argv[1],"attempt":sys.argv[2],"repository":sys.argv[3],"assembly":{"tag":sys.argv[4],"digest":sys.argv[5],"scan":json.load(open(sys.argv[8]))},"product":{"tag":sys.argv[6],"digest":sys.argv[7],"scan":json.load(open(sys.argv[9]))},"nodeBase":sys.argv[10]},sort_keys=True))'     "$COMMIT" "$ATTEMPT" "$REPOSITORY_URI" "$ASSEMBLY_TAG" "${DIGEST[assembly]}" "$PRODUCT_TAG" "${DIGEST[product]}"     "$WORK/assembly.counts" "$WORK/product.counts" "$NODE_BASE" > "$WORK/proxy-image-receipt.json"
+  python3 -I -B -c 'import json,sys;print(json.dumps({"schemaVersion":1,"status":"SUCCEEDED","commit":sys.argv[1],"attempt":sys.argv[2],"repository":sys.argv[3],"assembly":{"role":"builder-only","tag":sys.argv[4],"digest":sys.argv[5],"scan":json.load(open(sys.argv[8]))},"product":{"tag":sys.argv[6],"digest":sys.argv[7],"scan":json.load(open(sys.argv[9]))},"nodeBase":sys.argv[10],"runtimeBase":sys.argv[11]},sort_keys=True))'     "$COMMIT" "$ATTEMPT" "$REPOSITORY_URI" "$ASSEMBLY_TAG" "${DIGEST[assembly]}" "$PRODUCT_TAG" "${DIGEST[product]}"     "$WORK/assembly.counts" "$WORK/product.counts" "$NODE_BASE" "$RUNTIME_IMAGE" > "$WORK/proxy-image-receipt.json"
   PHASE=RECEIPT_UPLOAD
   RECEIPT_VERSION="$(record_file proxy-image-receipt.json "$WORK/proxy-image-receipt.json")"
   [[ -n "$RECEIPT_VERSION" ]]
   trap - ERR
   echo "PROXY_IMAGE_SUCCEEDED assembly=${DIGEST[assembly]} product=${DIGEST[product]} receiptVersion=$RECEIPT_VERSION"
+}
+
+# Writes the completed severity counts; "gate" fails on any HIGH/CRITICAL, "record" never does.
+scan_counts() { # $1 = [status, counts] JSON, $2 = gate|record
+  [[ "$2" == gate || "$2" == record ]]
+  python3 -I -B -c 'import json,sys;c=json.loads(sys.argv[1])[1] or {};print(json.dumps(c,sort_keys=True));sys.exit(1 if sys.argv[2]=="gate" and (c.get("HIGH",0) or c.get("CRITICAL",0)) else 0)' "$1" "$2"
 }
 
 main() {
@@ -131,17 +137,23 @@ push assembly "$ASSEMBLY_TAG"
 PHASE=PRODUCT_BUILD
 P="$WORK/product"; mkdir -p "$P/apps/proxy/qualification/test" "$P/apps/proxy/qualification/linux"
 cp -R "$ROOT/repo/apps/proxy/product" "$P/apps/proxy/product"
+# The retained Wolfi snapshot is bind-mounted into the one apk step, never copied into a layer.
+mv "$P/apps/proxy/product/runtime-packages" "$P/proxy-runtime-packages"
+RUNTIME_IMAGE="$(python3 -I -B -c 'import json,sys;print(json.load(open(sys.argv[1]))["runtimeImageUri"])' "$P/apps/proxy/product/runtime-packages.lock.json")"
+[[ "$RUNTIME_IMAGE" =~ ^cgr\.dev/chainguard/wolfi-base@sha256:[0-9a-f]{64}$ ]]
 cp -R "$ROOT/repo/apps/proxy/qualification/runtime" "$ROOT/repo/apps/proxy/qualification/state" "$P/apps/proxy/qualification/"
 cp "$ROOT/repo/apps/proxy/qualification/test/test_ingress.py" "$P/apps/proxy/qualification/test/"
 cp "$L/assembly-pins.json" "$L/requirements.lock" "$P/apps/proxy/qualification/linux/"
 docker buildx build --load --platform linux/amd64 \
-  --build-arg "PROXY_ASSEMBLY_IMAGE=$REPOSITORY_URI@${DIGEST[assembly]}" \
+  --build-arg "PROXY_ASSEMBLY_IMAGE=$REPOSITORY_URI@${DIGEST[assembly]}" --build-arg "PROXY_RUNTIME_IMAGE=$RUNTIME_IMAGE" \
   -f "$P/apps/proxy/product/Dockerfile" -t "$REPOSITORY_URI:$PRODUCT_TAG" "$P"
 push product "$PRODUCT_TAG"
 docker logout "${REPOSITORY_URI%%/*}" >/dev/null
 
-# 4. Both scans must COMPLETE with zero HIGH/CRITICAL within 300 s.
-scan() { # $1 = role
+# 4. Both scans must COMPLETE within 300 s. The product image (deployable, Wolfi)
+# must have zero HIGH/CRITICAL. The Debian assembly is a builder-only intermediate,
+# never deployed; its completed counts are recorded as evidence, not gated.
+scan() { # $1 = role, $2 = gate|record
   PHASE="${1^^}_SCAN"; local deadline=$((SECONDS+300)) out status
   while :; do
     if out="$(aws --region "$REGION" ecr describe-image-scan-findings --repository-name "$REPOSITORY_NAME" \
@@ -155,9 +167,9 @@ scan() { # $1 = role
     (( SECONDS < deadline )) || return 1
     sleep 10
   done
-  python3 -c 'import json,sys;c=json.loads(sys.argv[1])[1] or {};print(json.dumps(c,sort_keys=True));sys.exit(1 if c.get("HIGH",0) or c.get("CRITICAL",0) else 0)' "$out" > "$WORK/$1.counts"
+  scan_counts "$out" "$2" > "$WORK/$1.counts"
 }
-scan assembly; scan product
+scan assembly record; scan product gate
 
 finish_success
 }

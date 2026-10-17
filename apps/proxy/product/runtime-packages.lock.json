@@ -1,0 +1,238 @@
+{
+  "schemaVersion": 1,
+  "platform": "linux/amd64",
+  "runtimeImageUri": "cgr.dev/chainguard/wolfi-base@sha256:030e45cb37187dff322bbefe9658bcaec31b824a5d523380771a64864c9f45d4",
+  "pythonPackage": "python-3.13",
+  "pythonPackageVersion": "3.13.16_git20261016-r0",
+  "pythonMinor": "3.13",
+  "glibcVersion": "2.44",
+  "basePackages": [
+    {
+      "name": "apk-tools",
+      "version": "2.14.10-r17"
+    },
+    {
+      "name": "busybox",
+      "version": "1.38.0-r3"
+    },
+    {
+      "name": "ca-certificates-bundle",
+      "version": "20260909-r2"
+    },
+    {
+      "name": "glibc-2.44",
+      "version": "2.44-r8"
+    },
+    {
+      "name": "glibc-2.44-locale-posix",
+      "version": "2.44-r8"
+    },
+    {
+      "name": "ld-linux-2.44",
+      "version": "2.44-r8"
+    },
+    {
+      "name": "libbrotlicommon1",
+      "version": "1.2.0-r6"
+    },
+    {
+      "name": "libbrotlidec1",
+      "version": "1.2.0-r6"
+    },
+    {
+      "name": "libbrotlienc1",
+      "version": "1.2.0-r6"
+    },
+    {
+      "name": "libcrypt1-2.44",
+      "version": "2.44-r8"
+    },
+    {
+      "name": "libgcc",
+      "version": "16.2.0-r1"
+    },
+    {
+      "name": "libxcrypt",
+      "version": "4.5.2-r6"
+    },
+    {
+      "name": "openssl-4.0-libcrypto",
+      "version": "4.0.3-r6"
+    },
+    {
+      "name": "openssl-4.0-libssl",
+      "version": "4.0.3-r6"
+    },
+    {
+      "name": "openssl-provider-legacy-allowed",
+      "version": "4.0.3-r1"
+    },
+    {
+      "name": "wolfi-base",
+      "version": "1-r7"
+    },
+    {
+      "name": "wolfi-baselayout",
+      "version": "20230201-r30"
+    },
+    {
+      "name": "wolfi-keys",
+      "version": "1-r13"
+    },
+    {
+      "name": "zlib",
+      "version": "1.3.2.1_rc20260921-r0"
+    }
+  ],
+  "additionalPackages": [
+    {
+      "name": "gdbm",
+      "version": "1.26-r7",
+      "file": "gdbm-1.26-r7.apk",
+      "bytes": 280622,
+      "sha256": "b353e1fb3f7702fe2faba2fd6800bbfd3db63a726e17d294a626aacbf239629b",
+      "indexChecksum": "Q130XEa78ss5wFp3M/3qjGLEUjq/4="
+    },
+    {
+      "name": "libbz2-1",
+      "version": "1.0.8-r25",
+      "file": "libbz2-1-1.0.8-r25.apk",
+      "bytes": 50263,
+      "sha256": "52d98e5a8b0ea3e1f301d565bf8c8fed6b106f881d9d120dbde0d38fbd4f9fb8",
+      "indexChecksum": "Q1QODzmN2RZyehQwsKz3LkRFbLu5U="
+    },
+    {
+      "name": "libcrypto3",
+      "version": "3.6.5-r2",
+      "file": "libcrypto3-3.6.5-r2.apk",
+      "bytes": 2440933,
+      "sha256": "16c94b04de2329a99b873d22f868aa71d1b23a7788d7035b2d528c7cfe5e8940",
+      "indexChecksum": "Q1QGirPfFiIRUV8XehQIeCaJvZMic="
+    },
+    {
+      "name": "libexpat1",
+      "version": "2.9.0-r0",
+      "file": "libexpat1-2.9.0-r0.apk",
+      "bytes": 113449,
+      "sha256": "49291dad97f2292a5796c2cdb766f6476b274332ae2bbd3c35447d7f305f81a8",
+      "indexChecksum": "Q1BC65V0Hv+gnJNyw/bhPXBGDFang="
+    },
+    {
+      "name": "libffi",
+      "version": "3.8.0-r2",
+      "file": "libffi-3.8.0-r2.apk",
+      "bytes": 47462,
+      "sha256": "93fe2f937802653775e8537c7a2840c6de8a1d83c396559be200c0d5d86375f6",
+      "indexChecksum": "Q1Xv/AsO+lsjORCxdKxyfkMMLLkO0="
+    },
+    {
+      "name": "libssl3",
+      "version": "3.6.5-r2",
+      "file": "libssl3-3.6.5-r2.apk",
+      "bytes": 533489,
+      "sha256": "4e43402567bfbac732f9eb1005ffa220f41792cf8f9ad6dd576bca44eefef84d",
+      "indexChecksum": "Q1il14v6kmTST7ngVhku5rLCzlSQU="
+    },
+    {
+      "name": "libstdc++",
+      "version": "16.2.0-r1",
+      "file": "libstdc++-16.2.0-r1.apk",
+      "bytes": 1260650,
+      "sha256": "fc233c091aa551d6ba6da3e444d99a94e9947d53814d20183a0a7ded9a668f80",
+      "indexChecksum": "Q1Gzz2sKOTKWmEe1Oih1l+g6LABMs="
+    },
+    {
+      "name": "libuuid",
+      "version": "2.42.4-r0",
+      "file": "libuuid-2.42.4-r0.apk",
+      "bytes": 33422,
+      "sha256": "e1f5d85296afc0074e4d69fb3bdf7cb12b82233768ea5ad38330d53c76724785",
+      "indexChecksum": "Q1Z33H4kleklOdSEEQXYwk0G2KPmg="
+    },
+    {
+      "name": "mpdecimal",
+      "version": "4.0.1-r4",
+      "file": "mpdecimal-4.0.1-r4.apk",
+      "bytes": 131249,
+      "sha256": "823156afdf095874d8e386ab453e69bf5677ab76dd249da7f6451929e6f9ccd4",
+      "indexChecksum": "Q1rdaAdpsvD9gID1uSqjotINagTIQ="
+    },
+    {
+      "name": "ncurses",
+      "version": "6.6.20261010-r0",
+      "file": "ncurses-6.6.20261010-r0.apk",
+      "bytes": 625682,
+      "sha256": "475d8c2ec463637844149030a9cc3fc607782cfe681e3c16f80d2a6bc940bb63",
+      "indexChecksum": "Q1q3rcxpTF2dFNnsEs3+cCRQ9M7UM="
+    },
+    {
+      "name": "ncurses-terminfo-base",
+      "version": "6.6.20261010-r0",
+      "file": "ncurses-terminfo-base-6.6.20261010-r0.apk",
+      "bytes": 119342,
+      "sha256": "fac2c47f1e85175a8cb6842c374b5462aa8a10d548b5d602d28ee7829b00a751",
+      "indexChecksum": "Q1u9KHjNbaa8tVzi6ykLYlHiql3CA="
+    },
+    {
+      "name": "py3-pip-wheel",
+      "version": "26.2.1-r4",
+      "file": "py3-pip-wheel-26.2.1-r4.apk",
+      "bytes": 1814451,
+      "sha256": "9e7ff37eeaa621df6d066b9904a91555848c5c13db95dab7efd2ad67c11fae7a",
+      "indexChecksum": "Q1l4xLb87aScYF5aJnBtuS+ej/YvY="
+    },
+    {
+      "name": "python-3.13",
+      "version": "3.13.16_git20261016-r0",
+      "file": "python-3.13-3.13.16_git20261016-r0.apk",
+      "bytes": 15007,
+      "sha256": "4db25fbf46a7cb8772bbfecb027206f83f9d043ab9681d88d9f91c6ba9559a4b",
+      "indexChecksum": "Q1DxXQmZ4rpTbHagi8r+NHcVBNpPA="
+    },
+    {
+      "name": "python-3.13-base",
+      "version": "3.13.16_git20261016-r0",
+      "file": "python-3.13-base-3.13.16_git20261016-r0.apk",
+      "bytes": 12199161,
+      "sha256": "081235dc7cc8a68e0896b80cd6b0ec27d9c0f38cdd6dcfd8df052e083735881d",
+      "indexChecksum": "Q1XHCVfHWDAC4miHcx3nd2svJPCCo="
+    },
+    {
+      "name": "readline",
+      "version": "8.3-r3",
+      "file": "readline-8.3-r3.apk",
+      "bytes": 349087,
+      "sha256": "bc694bcbfcf3d3d48c890b2701714269c9c0851a85c44bb5bf38347e4999f80b",
+      "indexChecksum": "Q1DpD7gaJW7NfhS6UXgOqJ/d9LlBc="
+    },
+    {
+      "name": "sqlite-libs",
+      "version": "3.54.1-r0",
+      "file": "sqlite-libs-3.54.1-r0.apk",
+      "bytes": 989586,
+      "sha256": "5ea68a7dad00791dbc5eff42aad9022b0984f82e271058811a4d72181e450144",
+      "indexChecksum": "Q1VRLw0RR5HoAu1uTfKALfMDoAMco="
+    },
+    {
+      "name": "xz",
+      "version": "5.8.4-r0",
+      "file": "xz-5.8.4-r0.apk",
+      "bytes": 397390,
+      "sha256": "d015b40af8b300a0a33e710573e1e7d6cdc31ae5124bcac2fd299bea90a8506a",
+      "indexChecksum": "Q1krKZR0I/kPCVPgULCI8yz9N3BZc="
+    }
+  ],
+  "repositoryIndex": {
+    "file": "APKINDEX.tar.gz",
+    "bytes": 10635138,
+    "sha256": "01398efd4ae98d03bf5cb2c9c5fe397399bca61b81c8cb0cb36bd90e230137c6",
+    "signingKeySha256": "f0031424cf46f7db780ce63a45f0fd6aa6f85f601e6bb3b7a91fe3d4d5b7d2cc"
+  },
+  "requiredPaths": [
+    "/usr/bin/python3.13",
+    "/usr/lib/libssl.so.3",
+    "/usr/lib/libcrypto.so.3",
+    "/usr/lib/libstdc++.so.6",
+    "/etc/ssl/certs/ca-certificates.crt"
+  ]
+}

@@ -135,6 +135,8 @@ def _environment():
         upper = key.upper()
         if key == "LITELLM_LOCAL_MODEL_COST_MAP" and os.environ[key] == "True":
             continue  # The unchanged pinned Linux assembly's offline-cost setting.
+        if key == "AWS_EXECUTION_ENV" and os.environ[key] == "AWS_ECS_FARGATE":
+            continue  # Injected by Fargate into every container; carries no credential or endpoint.
         if ((upper.startswith("AWS_") and key not in allowed_aws)
                 or upper.startswith(("ANTHROPIC_", "OPENAI_", "AZURE_", "LITELLM_"))
                 or upper in {"DATABASE_URL", "LITELLM_DATABASE_URL", "CONFIG_FILE_PATH", "WORKER_CONFIG",

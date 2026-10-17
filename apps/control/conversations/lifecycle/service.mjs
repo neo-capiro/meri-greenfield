@@ -9,7 +9,7 @@ const receipt=(p,replayed=p.replayed)=>assertLifecycleReceipt({controlId:p.input
 import {cleanupRead} from '../service.mjs';
 export function createConversationLifecycleService({service,store,dispatcher,checkpoints,nativeAdmission,approvals,sessions,now=Date.now,newId=randomUUID,maxRequestMs=3000}){
  const journal=store?.lifecycle;
- if(['authenticateSession','readCurrentState'].some(k=>typeof sessions?.[k]!=='function')||['history','loadForExecution','publish'].some(k=>typeof service?.[k]!=='function')||['begin','change','get','controls','claim','checkpoint','readCheckpoint','execution','continuation'].some(k=>typeof journal?.[k]!=='function')||typeof dispatcher?.signal!=='function'||typeof checkpoints?.read!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('LIFECYCLE_CONFIGURATION');
+ if(['authenticateSession','readCurrentState'].some(k=>typeof sessions?.[k]!=='function')||['history','loadForExecution','publish'].some(k=>typeof service?.[k]!=='function')||['begin','change','get','controls','claim','checkpoint','readCheckpoint','execution','continuation','cancel'].some(k=>typeof journal?.[k]!=='function')||['signal','cancel'].some(k=>typeof dispatcher?.[k]!=='function')||typeof checkpoints?.read!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('LIFECYCLE_CONFIGURATION');
  const event=(type,data)=>({contractVersion:'0.1.0',eventId:newId(),createdAt:new Date(now()).toISOString(),type,data});
  /** Every lifecycle operation reads the conversation through the gated history (retention serving gate included); cancellation uses
   * the cleanup-only read so a suppressed subject can still be stopped without any content release. */
@@ -92,6 +92,13 @@ export function createConversationLifecycleService({service,store,dispatcher,che
   return assertCheckpointInspectionReceipt({checkpointId:i.checkpointId,checkpointSha256:verified.checkpointSha256,sourceBinding:saved.run.binding,lastEventSequence:verified.checkpoint.lastEventSequence});
  });}
  async function loadForExecution(args){const saved=await service.loadForExecution(args);return operation(args.credential,args.signal,async(current,life,fresh)=>{if(!same(current.run.binding,args.binding))fail('STALE_WRITER');const extra=await life.run(()=>journal.execution({binding:args.binding,scopes:current.run.scopes,selectedClientId:current.selectedClientId},life.check));await fresh();if(extra&&saved.nextTurn)fail('EXECUTION_LINEAGE_AMBIGUOUS');return extra?{...saved,...extra}:{...saved};});}
- async function cancel({credential,signal}){return operation(credential,signal,async(saved,life,fresh)=>{if(!['completed','failed','cancelled'].includes(saved.run.state)){await fresh();await life.run(()=>journal.cancel(saved.run.binding,event('run.status',{state:'cancelled',reasonCode:'USER_CANCELLED'}),life.check,saved.run.scopes));await fresh();}await effect(life,fresh,signal=>dispatcher.cancel({binding:saved.run.binding,signal}));return {state:['completed','failed','cancelled'].includes(saved.run.state)?saved.run.state:'cancelled'};},{cleanup:true});}
+ /** Stop commits the durable terminal fence before asking Temporal to cancel, and is idempotent: a repeat (after a lost reply or a
+  * control restart) finds the run terminal and asks again. A refused write is re-read through the same session; a run that turned
+  * terminal on its own meanwhile (completion racing Stop) or whose own cancel committed behind a lost acknowledgement is reported as
+  * that terminal state, never as a second cancellation. Temporal NOT_FOUND (no open workflow) is definitive; an unknown cancel throws. */
+ async function cancel({credential,signal}){return operation(credential,signal,async(saved,life,fresh)=>{const terminal=s=>['completed','failed','cancelled'].includes(s);let state=saved.run.state;
+  if(!terminal(state)){await fresh();try{await life.run(()=>journal.cancel(saved.run.binding,event('run.status',{state:'cancelled',reasonCode:'USER_CANCELLED'}),life.check,saved.run.scopes));state='cancelled';}
+   catch(error){life.check();const current=await fresh();if(!terminal(current.run.state))throw error;state=current.run.state;}await fresh();}
+  await effect(life,fresh,signal=>dispatcher.cancel({binding:saved.run.binding,signal}));return {state};},{cleanup:true});}
  return Object.freeze({...service,cancel,control,inspectCheckpoint,nextControls,claimControl,ackControl,recordCheckpoint,loadForExecution});
 }
