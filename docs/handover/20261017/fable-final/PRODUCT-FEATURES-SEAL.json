@@ -1,0 +1,121 @@
+{
+  "status": "SOURCE_HOLD_INCOMPLETE_UNREVIEWED_HANDOFF_ONLY",
+  "ownerAtSeal": "Fable: sole Meri shipping/source owner; Dot: Core/frontend coordination and live E2E",
+  "branch": "codex/meri-product-receiving-candidate-task6-20261017",
+  "publishedBase": "6f315108ca9ec2b807048b07016c1a11b07ce848",
+  "localEquivalentBase": "2c738c0c2778c2aca6407c30239143ffced5b832",
+  "baseTree": "6d96cb5420d85e6d39d5d19788eb871af1169f87",
+  "firstChatReceivingBase": {
+    "commit": "0d6ba1590b41e3bc911e8c50f7c7407632101832",
+    "tree": "76c2028796552ca20fae3a0103bcb22e1325fa0a",
+    "received": false,
+    "finalSuccessorUnknown": true
+  },
+  "liveActions": 0,
+  "heldOperationsRetried": 0,
+  "protectedOwnerFilesChanged": [],
+  "checks": {
+    "targetedPassed": 11,
+    "targetedFailed": 0,
+    "actualFlowPassed": 0,
+    "actualFlowFailed": 2,
+    "actualFlowDisposition": "SCHEDULE_TOOL_FAILED/UNKNOWN at cancellation approval; unresolved",
+    "generation": "PASS provenance-only metadata",
+    "freshIndependentReview": "NOT COMPLETED: usage limit",
+    "currentTypechecks": "NOT RERUN after consolidation"
+  },
+  "closureEncoding": "sha256(JSON.stringify(files)) in listed key/order; UTF-8. This seal file excluded to avoid self-reference.",
+  "closureSha256": "6730e9f46e5450150aa599065241e370c887fd2512dfc5b48e460cf47a4967ef",
+  "files": [
+    {
+      "path": "apps/control/intents/test/task-update-services-fixture.mjs",
+      "bytes": 3627,
+      "sha256": "848529d2f73af6c59e3426ab45f11f4ff5ef8c22b9d0d2a676b9ed9c6b5167d9",
+      "gitBlob": "9ef828079944d54922ccf25dd5bd556d951b0cc5"
+    },
+    {
+      "path": "apps/control/intents/test/task-update-services.test.mjs",
+      "bytes": 4248,
+      "sha256": "34073e5fc753eca1a2c743d3c9910e5b1e99679aa1ee71a77051b4c7b894b770",
+      "gitBlob": "e913f18ac231b239fc28c819bf662bb3d0f11c42"
+    },
+    {
+      "path": "apps/runtime/product-applications.mjs",
+      "bytes": 11523,
+      "sha256": "632e32d502317b7d9a491f3082cd62f263a16028b4280f2f0cd5eb2c1fce1f33",
+      "gitBlob": "936e60cd0abe6a103743f8d8bf5a0844f2f76642"
+    },
+    {
+      "path": "apps/runtime/product-readiness.mjs",
+      "bytes": 2322,
+      "sha256": "e52a18f854da15dc1a6be9b40bedc9356fef02bfa1a0b02b97786cf698753a3c",
+      "gitBlob": "4a6bf17ca7ab4114e3ee8d3d2eaab8d3e61a4f34"
+    },
+    {
+      "path": "apps/runtime/test/product-routines-flow-fixture.mjs",
+      "bytes": 13420,
+      "sha256": "798d49aff0871b423e29fb52ad0605fe2db8e7f4545bacb764aa000530111a15",
+      "gitBlob": "0000036ec2de2cc4239b721730c6e9e7d95ed5e1"
+    },
+    {
+      "path": "apps/runtime/test/product-routines-flow.test.mjs",
+      "bytes": 6724,
+      "sha256": "62ce7bb1f2ff6686b50f0d24cbff5ffb9ce49a55447c4fba276f1cddff43023b",
+      "gitBlob": "476ede4c71d33e28f795119b574e802a47aace42"
+    },
+    {
+      "path": "apps/runtime/test/task-command-mount.test.mjs",
+      "bytes": 7050,
+      "sha256": "362e29b26beef639fb1e8f963144821fc86992276c45a534f040d10ba7aa9b32",
+      "gitBlob": "62de4215fe10ea933f16d381d7d2ba59761fca23"
+    },
+    {
+      "path": "docs/coordination/contracts/CODEX-ROUTINE-GRANT-PROPOSAL-20261017.md",
+      "bytes": 23062,
+      "sha256": "11e41ed4cadcf498140f7cc279167a36db4e4d7e376f222786032accbfa8aa04",
+      "gitBlob": "4aee5364e1db3734b40909769e5d301455515c01"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-PRODUCT-RECEIVING-CANDIDATE-20261017.md",
+      "bytes": 4487,
+      "sha256": "de1f031c4c638a2ca2fc0d2a27f6b8317fd328a9064908319c0844bb2079c012",
+      "gitBlob": "60723275b302338930fd24d78647855836f36b76"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-PRODUCT-RECEIVING-DEPENDENCIES-20261017.md",
+      "bytes": 9832,
+      "sha256": "73ad23cad8a230214f32d0b6a610259391a8043429ef375c2bd62e0d0871a8a0",
+      "gitBlob": "a06afcf72b93412f1f7ab236d53087d7b550c070"
+    },
+    {
+      "path": "docs/handover/20261017/fable-final/PRODUCT-FEATURES.md",
+      "bytes": 28054,
+      "sha256": "de38d2c11c5bebdf6fe0e5d856cfa4141e6c795b51b1597d101390f6f1c9247c",
+      "gitBlob": "b84c743ae2af08e8bb331d72a75e6e3bd03077ef"
+    },
+    {
+      "path": "docs/handover/20261017/fable-final/evidence/product-freeze-flow-HOLD.tap",
+      "bytes": 2329,
+      "sha256": "4bb74f07c30346b8ddb7a335ef1dab4c8916711de5d7c280d09ee23c8b9e183d",
+      "gitBlob": "3769304c4544ca9b48edcff82a5ff76b948a3cdd"
+    },
+    {
+      "path": "docs/handover/20261017/fable-final/evidence/product-freeze-focused.tap",
+      "bytes": 1756,
+      "sha256": "f6f12437234b56220269d2de1692fbbbef231b9bf16f8547e7bd6b5b82b3c51a",
+      "gitBlob": "d2c9dd4df2cb3c28ea655fe5303b66fed6415bc8"
+    },
+    {
+      "path": "docs/handover/20261017/fable-final/evidence/verification.json",
+      "bytes": 2326,
+      "sha256": "12ad296b0036390f51f86d9f12f3533b145910f5c062897bc10e858d902e5368",
+      "gitBlob": "25a504a18493204ea7360ca8d174c330fc94ee40"
+    },
+    {
+      "path": "packages/contracts/dist/task-command-application.metadata.json",
+      "bytes": 6354,
+      "sha256": "e074056b972b3d91c0075122cd660bc8f4eabdc790174d0cb9fb8168abfe68a9",
+      "gitBlob": "c13ecc7d6faccc7a6d9a32730f02c885c561fde2"
+    }
+  ]
+}

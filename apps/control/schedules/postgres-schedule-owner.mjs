@@ -1,4 +1,5 @@
 import {canonicalSha256, frozenScheduleData, denySchedule,scheduleErrorCode} from '../../../packages/contracts/schedules-0.2/lifecycle-validation.mjs';
+import {snapshotScheduledJobSelection} from './scheduled-job-lineage.mjs';
 
 // Borrow a pg 8.23.1-compatible pool configured by its owner with finite
 // connectionTimeoutMillis/query_timeout. Source cancellation is not wire cancellation.
@@ -98,6 +99,42 @@ export function createPostgresScheduleOwner({pool}) {
     if(!row||canonicalSha256(row.effect)!==row.effect_sha256||!['OPEN','DISPATCHED','REFUSED'].includes(row.state))denySchedule('SCHEDULE_CORRUPT');
     return frozenScheduleData({occurrenceKey:row.occurrence_key,scheduleId:row.schedule_id,occurrence:row.occurrence,effect:row.effect,effectSha256:row.effect_sha256,state:row.state});
   }
+  function originOccurrence(row,tenantId) {
+    const record=storedOccurrence(row),{occurrence,effect,identity}=snapshotScheduledJobSelection({occurrence:record.occurrence,effect:record.effect});
+    if(row.tenant_id!==tenantId||Number(row.generation)!==occurrence.generation||record.scheduleId!==occurrence.projection.scheduleId||
+      record.occurrenceKey!==identity.occurrenceKey||effect.binding.tenantId!==tenantId)denySchedule('SCHEDULE_CORRUPT');
+    return frozenScheduleData({...record,occurrence,effect});
+  }
+  /** Positive local conversation-origin proof. Absence is distinct from corrupt/ambiguous custody; neither a UUID pattern nor
+   * failure of another authority source establishes scheduled origin. No current projection join: historical output survives
+   * later schedule updates/cancellation, subject to the reader's current native membership and client wall. */
+  async function readOccurrenceForConversation(selection,check) {
+    const s=frozenScheduleData(selection);
+    if(!s||Object.keys(s).length!==2||typeof s.tenantId!=='string'||!s.tenantId||s.tenantId.length>128||
+      typeof s.conversationId!=='string'||!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(s.conversationId))denySchedule('SCHEDULE_OCCURRENCE');
+    return transaction(async c=>{
+      const rows=(await c.query("SELECT tenant_id,generation,occurrence_key,schedule_id,occurrence,effect,effect_sha256,state FROM meri_schedules.occurrences WHERE tenant_id=$1 AND effect->'binding'->>'conversationId'=$2 LIMIT 2",[s.tenantId,s.conversationId])).rows;check();
+      if(!Array.isArray(rows)||rows.length>1)denySchedule('SCHEDULE_CORRUPT');
+      if(!rows.length)return null;
+      const record=originOccurrence(rows[0],s.tenantId);
+      if(record.effect.binding.conversationId!==s.conversationId)denySchedule('SCHEDULE_CORRUPT');
+      return record;
+    },check);
+  }
+  /** Same immutable custody facet for cancellation of the one OPEN occurrence; no mutation or current generation inference. */
+  async function readOpenOccurrenceForSchedule(selection,check) {
+    const s=frozenScheduleData(selection);
+    if(!s||Object.keys(s).length!==2||typeof s.tenantId!=='string'||!s.tenantId||s.tenantId.length>128||
+      typeof s.scheduleId!=='string'||!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(s.scheduleId))denySchedule('SCHEDULE_OCCURRENCE');
+    return transaction(async c=>{
+      const rows=(await c.query("SELECT tenant_id,generation,occurrence_key,schedule_id,occurrence,effect,effect_sha256,state FROM meri_schedules.occurrences WHERE tenant_id=$1 AND schedule_id=$2 AND state='OPEN' LIMIT 2",[s.tenantId,s.scheduleId])).rows;check();
+      if(!Array.isArray(rows)||rows.length>1)denySchedule('SCHEDULE_CORRUPT');
+      if(!rows.length)return null;
+      const record=originOccurrence(rows[0],s.tenantId);
+      if(record.scheduleId!==s.scheduleId||record.state!=='OPEN')denySchedule('SCHEDULE_CORRUPT');
+      return record;
+    },check);
+  }
   async function openOccurrence(record,check) {
     const r=frozenScheduleData(record),effectSha256=canonicalSha256(r.effect);
     return transaction(async c=>{
@@ -134,5 +171,5 @@ export function createPostgresScheduleOwner({pool}) {
       return frozenScheduleData({rows:rows.slice(0,s.limit).map(r=>({projection:r.projection,generation:Number(r.generation),unresolved:r.active_intent!==null})),hasMore:rows.length>s.limit});
     },check);
   }
-  return Object.freeze({claim,markDispatching:(b,c)=>transition(b,'DISPATCHING',c),commitKnown:(b,c)=>transition(b,'ACKNOWLEDGED',c),markUnknown:(b,c)=>transition(b,'UNKNOWN',c),list,readFiring,readIntent,acknowledgeReconciled,openOccurrence,settleOccurrence});
+  return Object.freeze({claim,markDispatching:(b,c)=>transition(b,'DISPATCHING',c),commitKnown:(b,c)=>transition(b,'ACKNOWLEDGED',c),markUnknown:(b,c)=>transition(b,'UNKNOWN',c),list,readFiring,readIntent,acknowledgeReconciled,openOccurrence,settleOccurrence,readOccurrenceForConversation,readOpenOccurrenceForSchedule});
 }

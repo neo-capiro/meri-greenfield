@@ -26,9 +26,10 @@ async function admitted(f){const owner=createPostgresToolBudget({pool:f.pool,all
 function resources(f){events.length=0;connectHook=listenHook=undefined;ownedPool={...f.pool,async query(){events.push('db-ready');return {rows:[{runs:'runs',events:'events',controls:'controls',selected_outputs:'selected_outputs'}]};},async end(){events.push('pool-end');}};ownedNative={async readiness(){events.push('native-ready');},async call(){throw Error('not part of session issuance');}};}
 test('mount captures original preadmitted data and issues an actual action session through canonical product SQL',async()=>{
  const x=wiring();await admitted(x.f);resources(x.f);let calls=0;
- const factory=context=>{calls++;assert.ok(Object.isFrozen(context));assert.equal(context.pool,ownedPool);assert.equal(context.native,ownedNative);assert.equal(context.configuration,configuration);assert.equal(context.now,x.f.now);return x.factory(context);};
+ const client={workflow:{start:async()=>{},getHandle:()=>({})}};
+ const factory=context=>{calls++;assert.ok(Object.isFrozen(context));assert.equal(context.pool,ownedPool);assert.equal(context.client,client);assert.equal(context.native,ownedNative);assert.equal(context.configuration,configuration);assert.equal(context.now,x.f.now);return x.factory(context);};
  x.input.grantFactsJsons[0]='caller mutation';x.input.identity.commandContext.binding={...x.binding,writerFence:99};
- const assembly=assembleControl({configuration,pool:ownedPool,client:{workflow:{start:async()=>{},getHandle:()=>({})}},native:ownedNative,now:x.f.now,productPortsFactory:factory});
+ const assembly=assembleControl({configuration,pool:ownedPool,client,native:ownedNative,now:x.f.now,productPortsFactory:factory});
  assert.equal(calls,1);assert.equal(x.f.commands.length,0);assert.deepEqual(events,[]);
  try{const response=await assembly.application.handle(request('/api/action-followthrough/session',{}));assert.equal(response.status,200);const receipt=await response.json();assert.deepEqual(receipt.context,{tenantId:x.binding.tenantId,actorId:x.binding.actorId,conversationId:x.binding.conversationId,runId:x.binding.runId,selectedClientId:x.clientId});assert.match(receipt.credential,/^action_session_/);assert.ok(x.f.commands.some(c=>c.sql.includes('meri_product_budget.tool_grant_bindings')));assert.equal(x.f.releases.every(e=>e===undefined),true);}finally{assembly.close();}assert.deepEqual(events,['/api/clio/application-authority/identity','/api/clio/application-authority/context']);assert.equal(assembly.sessions.status().closed,true);
 });

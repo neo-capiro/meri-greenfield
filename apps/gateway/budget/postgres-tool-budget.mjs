@@ -10,6 +10,7 @@ import { outcomeExpectation, assertHistoricalGrant, outcomeSnapshot } from './to
 import {createPostgresAdmittedRunOwner} from './admitted-run-owner.mjs';
 import {deliveryRecord} from './tool-invocation-record.mjs';
 import {own} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {readOccurrenceCost} from './occurrence-cost-scope.mjs';
 
 const n = value => { try { if (!((typeof value === 'string' && /^(0|[1-9][0-9]*)$/.test(value)) || (Number.isSafeInteger(value) && value >= 0))) throw Error(); return BigInt(value); } catch { refuse('INVALID_STORED_MONEY'); } };
 const receipt = (reservationId, decision) => JSON.stringify({ reservationId, decision });
@@ -106,6 +107,8 @@ function assembleBudget({ pool, allocationJson, now = Date.now, namespace }) {
           const count = (await client.query(`SELECT count(*) AS calls FROM ${store.tables.tool_reservations} WHERE run_id=$1`, [i.binding.runId])).rows[0];
           if (n(count.calls) >= n(a.budgets.maxToolCalls) || n(budget.consumed_micro_usd)+n(totals.held)+n(charge) > n(budget.cap_micro_usd) ||
               n(totals.run_total)+n(charge) > n(Math.min(a.budgets.maxCostMicroUSD, call.budgets.maxCostMicrousd))) refuse('BUDGET_EXHAUSTED');
+          const occurrence=await readOccurrenceCost({client,tables:store.tables,allocation:a,parseAllocation:allocation});
+          if(occurrence&&occurrence.totalMicroUSD+n(charge)>occurrence.maxCostMicroUSD)refuse('BUDGET_EXHAUSTED');
           await client.query(`INSERT INTO ${store.tables.tool_reservations}(invocation_id,reservation_id,grant_id,run_id,facts,operation,arguments_sha256,hold_micro_usd,max_output_bytes,state) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,'UNKNOWN')`, [i.invocationId, call.reservationId, i.grantId, i.binding.runId, facts, operation, argumentsSha256, charge, Math.min(a.budgets.maxOutputBytes,call.budgets.maxOutputBytes)]);
           if (claim) await claim(client, call, budget);
           return receipt(call.reservationId, 'reserved');

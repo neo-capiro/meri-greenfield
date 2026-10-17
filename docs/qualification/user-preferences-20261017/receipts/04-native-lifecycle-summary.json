@@ -1,0 +1,13 @@
+{
+  "recordType": "SANITIZED_METADATA_EXTRACT_FROM_PRIVATE_POSTGRES_LOG",
+  "postgresVersion": "16.15",
+  "host": "127.0.0.1",
+  "port": 55436,
+  "postmasterPid": 15816,
+  "startLoggedAt": "2026-10-17T02:16:55.440Z",
+  "readyLoggedAt": "2026-10-17T02:16:55.515Z",
+  "fastShutdownAt": "2026-10-17T02:17:22.976Z",
+  "shutdownCompleteAt": "2026-10-17T02:17:24.355Z",
+  "rawLogIncluded": false,
+  "sqlIncluded": false
+}
