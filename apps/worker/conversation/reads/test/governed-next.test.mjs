@@ -15,20 +15,21 @@ test('new read fixtures enumerate exactly thirteen operations across seven canon
  assert.equal(new Set(GOVERNED_NEXT_FAMILY_CASES.map(([,id])=>id)).size,13);
 });
 
-test('data-search remains unexposed while the frozen normalized schema conflicts with the raw request grammar',()=>{
+test('data-search advertises raw requests while preserving its separate normalized input boundary',()=>{
  const f=nativeFamilyCase('data-search','search_capiro_data');
  const normalized=f.contract.normalizeInput(f.arguments,{}),canonical=canonicalInputSchema(f.contract.descriptor.inputSchema);
- assert.ok(canonical.required.includes('window'));assert.equal(Object.hasOwn(f.arguments,'window'),false);
+ assert.deepEqual(canonical.required,['query','domains']);assert.equal(Object.hasOwn(f.arguments,'window'),false);
  assert.equal(Object.hasOwn(normalized.input,'window'),true);
- assert.throws(()=>validateReadShape(f.contract.binding.input,f.arguments));
- assert.doesNotThrow(()=>validateReadShape(f.contract.binding.input,normalized.input));
+ assert.doesNotThrow(()=>validateReadShape(f.contract.binding.input,f.arguments));
+ assert.doesNotThrow(()=>validateReadShape('DataSearchInput',normalized.input));
+ assert.throws(()=>validateReadShape(f.contract.binding.input,normalized.input));
  assert.throws(()=>f.contract.normalizeInput({...f.arguments,window:normalized.input.window},{}));
  assert.throws(()=>f.contract.normalizeInput(normalized.input,{}));
- assert.throws(()=>advertisedArguments(f.contract.descriptor.inputSchema),{code:'READ_SCHEMA_CONFIGURATION'});
- assert.equal(familyReads().some(row=>row.operation.id==='search_capiro_data'),false);
+ assert.deepEqual(advertisedArguments(f.contract.descriptor.inputSchema).arguments.parse(f.arguments),f.arguments);
+ assert.equal(familyReads().some(row=>row.operation.id==='search_capiro_data'),true);
 });
 
-for(const [family,id] of GOVERNED_NEXT_FAMILY_CASES.filter(([family])=>family!=='data-search')){
+for(const [family,id] of GOVERNED_NEXT_FAMILY_CASES){
  test(`${id}: SDK schema preserves original literal selectors and refuses model authority/context`,()=>{
   const f=nativeFamilyCase(family,id),schema=advertisedArguments(f.contract.descriptor.inputSchema);
   assert.equal(schema.mode,'canonical');assert.deepEqual(schema.arguments.parse(f.arguments),f.arguments);

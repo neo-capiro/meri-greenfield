@@ -9805,10 +9805,10 @@
     "schema": "meri-selected-source-exposure/1",
     "note": "Source paths and manifest declarations are evidence only. No qualification, authority, credential, native producer or live availability is inferred.",
     "provenance": {
-      "packages/contracts/retrieval-0.2/catalog.json": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+      "packages/contracts/retrieval-0.2/catalog.json": "bac14e7e5dd740493914ff6a14b95cb5e6d7cbd09ee48b1cbd994d5eac728c08",
       "scripts/scope-ledger/backend-producers.json": "ad5fb22cb7f4ef3ffa78f4a730c74bb28e59c0a689a2cec7d5a74a45d7ef6ea4",
-      "packages/contracts/retrieval-0.2/catalog-validation.mjs": "ac6881b7abd5e4ecb91f8975d28efbbab3bd04128336a0ef90645067466cb56d",
-      "apps/worker/conversation/reads/families.mjs": "832b9ea6ae33d367f5445c8cc7c52950e67e1777c33d27ee5cc5ed587c97d3d7",
+      "packages/contracts/retrieval-0.2/catalog-validation.mjs": "5717b6898ce56792a40b556748eeca68d377f4af4e544842bd618efc0b9f7bdc",
+      "apps/worker/conversation/reads/families.mjs": "cc51e2731b272a33f5538130b3f38530a8f22ea57ca6c038dd76e1605e58ca8d",
       "apps/worker/conversation/reads/server.mjs": "d3a28df432f44e20849ceeadf7a38e73bed3748f9f36057d1d22057d4ab829b5",
       "apps/gateway/general-reads/registration.mjs": "43c1b2661cc79bf2af78e062153d3546adb2a9114644770d383cfcf8521bf38d",
       "apps/gateway/general-reads/integration.mjs": "80508930b49958c4283152f4f40d666793521bb29e20e0e9618d6fba93792555",
@@ -9839,6 +9839,7 @@
       "apps/gateway/general-reads/families/regulatory-dockets.mjs": "985be0f18a4d77f145f86c55dc998e5f93b82982ade3de763d820ef9666da2c8",
       "apps/gateway/general-reads/families/intelligence-summary.mjs": "9f816aae25e883c2407337ca3906e07cf8d5bd2125b9b9618b63dc95c353705f",
       "apps/gateway/general-reads/families/public-web.mjs": "40f5d234a58344e617068526e89b6963ef0b03156f9d49c9348d25bd1b92b252",
+      "apps/gateway/general-reads/families/data-search.mjs": "c723148bacfc6d959de56a59d8aa03bf6a753299d1e612e303ade4986c4f758f",
       "apps/gateway/general-reads/families/public-domain-query.mjs": "354e253e567398ed531aa24032de55e5375e65aa0dbe87da0eb54f1035f12745",
       "apps/gateway/general-reads/families/facility-representation.mjs": "921afc34864dd43888188797ea86f93eb652738a8b24be7d2903074cf05836ed",
       "apps/gateway/general-reads/families/district-nexus.mjs": "2e9d6800a1fed73d7010af3fc8eef1775cff1a744e67ba2567662f8457fed52e",
@@ -9883,7 +9884,7 @@
       "apps/gateway/sources/public-reports/handler.mjs": "3c212f7fcf4448b043499a934e08bbafab34be9be389cdbceda3ab304bce8af4",
       "apps/gateway/sources/acquisition-personnel/handler.mjs": "3cb660401c6df53c571cfba35288c98a3ee7623ffaee5dd0962d49cd12d89d3f",
       "apps/gateway/sources/disclosures/handler.mjs": "e475938b9ace4dc95478ebf1046ddc27b82087f03ea85357ae1172a44e48b34b",
-      "packages/skills/assets.json": "ebe456d0cc4b9dc34fbbc4467e2411ccccebeab424a45b1357007720342a56a5",
+      "packages/skills/assets.json": "2617603da51339bf38e90446f577fc9d1329aa12b57c7689bc0c821c4f192a72",
       "apps/control/document-application/research-brief/manifest.json": "fbc7e2708ef41d5d28adec9dcb7f5dd7240b69567f996f676b576f68a0e4b64b",
       "packages/skills/originals/client_changes/1.0.0/manifest.json": "ea9b6fcb18bb51f3a5568f33bd515fda6adeea719d420aacce6a8b5a192ebcd7",
       "packages/skills/originals/commitments_audit/1.0.0/manifest.json": "8e1d487efdfc71ce4858e081f4432f650dd0b9749bf859a9d9d9c6a5944ab955",
@@ -9968,16 +9969,16 @@
       "excludedCapabilities": 43,
       "selectedSourceReads": 82,
       "selectedProductOrGoverned": 14,
-      "registeredGeneralOperations": 55,
-      "registeredFamilies": 32,
-      "generalSelectedSourceReads": 53,
+      "registeredGeneralOperations": 56,
+      "registeredFamilies": 33,
+      "generalSelectedSourceReads": 54,
       "generalSelectedProductStateReads": 1,
       "generalHistoricalOperations": 1,
       "sourceReadsWithSkillDeclarations": 53,
       "sourceReadsWithCurrentContractDeclarations": 52,
       "sourceReadsWithHistoricalOnlySkillDeclaration": 1,
       "sourceReadsWithAdmittedSkillSourceRoute": 11,
-      "existingSourceAdaptersWithoutGeneralExposure": 1,
+      "existingSourceAdaptersWithoutGeneralExposure": 0,
       "missingSourceAdapters": 28,
       "missingAdaptersDeclaredBySkills": 17,
       "missingAdaptersWithoutSkillDeclaration": 11,
@@ -10037,6 +10038,12 @@
         "family": "client-registry",
         "operations": [
           "lookup_client_registry"
+        ]
+      },
+      {
+        "family": "data-search",
+        "operations": [
+          "search_capiro_data"
         ]
       },
       {
@@ -10205,9 +10212,7 @@
         ]
       }
     ],
-    "existingAdaptersWithoutGeneralExposure": [
-      "search_capiro_data"
-    ],
+    "existingAdaptersWithoutGeneralExposure": [],
     "missingAdapterFamilies": [
       {
         "family": "business-development",
@@ -10443,8 +10448,11 @@
         ],
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
-        "generalOperations": [],
+        "generalOperations": [
+          "search_capiro_data"
+        ],
         "adapterPaths": [
+          "apps/gateway/general-reads/families/data-search.mjs",
           "apps/gateway/sources/data-search/handler.mjs"
         ],
         "requiredContextKeys": [],

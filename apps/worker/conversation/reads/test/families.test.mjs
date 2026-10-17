@@ -13,12 +13,12 @@ import {assertCapabilityPolicy} from '../../capabilities/policy.mjs';
 import {CASES,familyCase} from '../../../../gateway/general-reads/test/family-cases.mjs';
 import {durableFamilyFixture} from '../../../../gateway/general-reads/test/durable-fixture.mjs';
 const operations=familyReads().map(r=>r.operation),policy=assertCapabilityPolicy({generalReads:true});
-test('all thirty-two constructible families remain unavailable without installation or discovery',()=>{
- assert.equal(READ_FAMILY_IDS.length,32);assert.equal(operations.length,55);
+test('all thirty-three constructible families remain unavailable without installation or discovery',()=>{
+ assert.equal(READ_FAMILY_IDS.length,33);assert.equal(operations.length,56);
  for(const [installation,discovery] of [[[],operations],[operations,[]],[[],[]]])
   assert.deepEqual(resolveAvailableReads({policy,installation:{operations:installation},discovery:{operations:discovery},scopes:[{kind:'client'}]}).available,[]);
  const all=resolveAvailableReads({policy,installation:{operations},discovery:{operations},scopes:[{kind:'client'}]});
- assert.equal(all.available.length,55);assert.deepEqual(all.unavailable,[]);
+ assert.equal(all.available.length,56);assert.deepEqual(all.unavailable,[]);
  for(const id of ['get_research_portfolio','get_research_portfolio_changes','get_florida_budget_project'])assert.ok(operations.some(o=>o.id===id));
 });
 test('per-operation client prefilter preserves personal meetings/tasks while withholding required-client reads',()=>{
