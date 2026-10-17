@@ -1,0 +1,123 @@
+{
+  "schemaVersion": 1,
+  "scope": "Source evidence at safe stop; no sum of overlapping subsets; no combined exact-59856683 acceptance",
+  "finalCombinedRootStatus": "UNRUN",
+  "handoffPerformedApplicationTests": false,
+  "checks": [
+    {
+      "surface": "Original runner placement compiler + control synthetic custody",
+      "result": "61 focused passed",
+      "evidence": "Accepted component before4850d3d; synthetic authority only"
+    },
+    {
+      "surface": "Native Core currentness owner",
+      "result": "6/6 passed",
+      "evidence": "Accepted source subset before8ac28317; no native bearer/live HTTP"
+    },
+    {
+      "surface": "Model owner executable",
+      "result": "12/12 passed",
+      "evidence": "Prior independent source review; superseded pair selection receiving separately checked"
+    },
+    {
+      "surface": "Product Python native-auth/lifecycle baseline",
+      "result": "91 passed,1 installed-native skipped",
+      "evidence": "Author controls; independent narrow34 passed,1 skipped; baseline ce459f5 before new service-pair configuration"
+    },
+    {
+      "surface": "Service-pair Node discovery, lease and owner entrypoint",
+      "result": "62/62 passed",
+      "evidence": "Root and independent reviewer; actual AWS/EC2 UNRUN; source hashes PROXY-REVIEW.md"
+    },
+    {
+      "surface": "Service-pair Python affected five files",
+      "result": "39 passed,1 installed-native skipped",
+      "evidence": "Independent reviewer; not a full proxy suite"
+    },
+    {
+      "surface": "Additional affected test_owner_startup.py",
+      "result": "1 passed,1 ERROR",
+      "failure": "ProductOwnerHttpsExchange fixture at line40 omits required canonical service_pair_reader; PRODUCT_OWNER_HTTPS_DENIED at owner_https.py:124",
+      "status": "UNFIXED; preserve real constructor guard"
+    },
+    {
+      "surface": "Temporal provider/authorization",
+      "result": "9 passed,1 Linux-specific skipped; portable canonical6 passed",
+      "evidence": "Component controls; subset counts not additive"
+    },
+    {
+      "surface": "Control/poller HTTP fencing and owned cleanup",
+      "result": "55 focused passed",
+      "evidence": "Independent prior component review; generic concrete issuer receipt expansion not final-root requalified"
+    },
+    {
+      "surface": "Task-local bootstrap/rotation",
+      "result": "16/16 passed",
+      "evidence": "Author + independent before tiny8445 parser update; author16/16 after; no Linux FS/native TLS"
+    },
+    {
+      "surface": "Root product Temporal startup",
+      "result": "6/6 passed",
+      "evidence": "Root source check after fixture repairs; preceding short synthetic-token/fake-writer and old-port fixture failures retained in history; not final PR130 joined run"
+    },
+    {
+      "surface": "Issuer CLI",
+      "result": "11/11 baseline controls passed",
+      "evidence": "Synthetic owned Pool/entrypoint and child help/termination/timeout; changed strict-path/8445 parser joined rerun NOT completed"
+    },
+    {
+      "surface": "Root issuer static material plan",
+      "result": "Source authored; joined tests held pending parser receiving",
+      "status": "UNRUN at final source; now PR130 exact bytes received without test rerun"
+    },
+    {
+      "surface": "Manifest task-local public/static vs generated material",
+      "result": "Author18 and independent4 selected passed",
+      "evidence": "Source-only template, no mount/Secret/Fargate receipt"
+    },
+    {
+      "surface": "Strict8445 binding/renderer/deployment slice",
+      "result": "17/17 passed",
+      "evidence": "Author serial source tests; independent review interrupted by usage limit"
+    },
+    {
+      "surface": "PR130 frozen issuer source",
+      "result": "100/100 in9 Node24 files",
+      "evidence": "Issuer owner final run; qualifier Node syntax + PowerShell AST + staged whitespace pass; final exact-tree independent acceptance and native PG UNRUN"
+    },
+    {
+      "surface": "Root PR130 receiving",
+      "result": "23/23 published Git blobs downloaded and byte-hash matched",
+      "evidence": "ISSUER130-RECEIVING.json; no app tests rerun"
+    },
+    {
+      "surface": "Root safe-stop source",
+      "result": "git diff --check passed before source commits",
+      "evidence": "1cc71ba6 preserves51 paths;59856683 receives23 PR130 paths"
+    },
+    {
+      "surface": "Current Core GET source",
+      "result": "CDK2.271.0 focused2/2,TS0,independent synth/comparison PASS",
+      "evidence": "BackendPR67 supplement and exact normalized comparison SHA2562febd452b423b647d050970db67810326454ad359a69294431222ca79ba7c242"
+    },
+    {
+      "surface": "FrontendPR81 architecture correction",
+      "result": "Node24 architecture0errors/0blockers,first-chat40/40",
+      "evidence": "Frontend owner supplement; preceding remotePR70 architectureFAILED/noimage"
+    }
+  ],
+  "unrun": [
+    "Final combined root compiler/typecheck/test closure",
+    "Clean frozen dependency byte qualification, including new KMS dependency",
+    "Installed LiteLLM1.104.2/CPython3.13.5/native verified chain",
+    "Real owner/proxy ECS/EC2/mTLS/provider/model envelope",
+    "Issuer isolatedPG16 registration/trigger/role/concurrency/restore",
+    "Root task-local Linux ownership/atomic material/rotation/cleanup",
+    "KMS/CA/JWKS/task proof and actual Temporal stock auth",
+    "Live target Aurora apply/grants/current registration and revocation",
+    "New root source/image build/scan/runtime mount",
+    "Live Clerk native session/member/client/conversation authority",
+    "Real prompt/stream/save/reload/cancel/orphan acceptance"
+  ],
+  "evidenceLimit": "Some prior runs are reported component-review evidence from conversation history, without newly exported raw logs. Do not treat this summary as raw test output. Existing source tests and lane Git receipts are portable; exact final checks must be rerun."
+}

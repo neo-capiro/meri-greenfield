@@ -1,0 +1,122 @@
+{
+  "source": "eb603f28023c5fcbfcdbf42953e86411a1a83bca",
+  "tree": "0f8160b7e362460b18b51eb9afe7ca7af7a5cc71",
+  "parent": "5a979d13dd9c3eae6a3a5fa160b5f0b4423081c4",
+  "files": [
+    {
+      "path": "apps/runtime/temporal-issuer/bootstrap-client.mjs",
+      "sha": "e0edbd289a9343dc9f46a46bd05f936ef33e3ed8",
+      "sha256": "3a0c0a93dac733cc6d8ae4faa620fa5bd83c555fc827e53db0344e0787bf6caf"
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/bootstrap-client.test.mjs",
+      "sha": "e44c9f4308c214f06a1851c2db9c4d54bc4e716e",
+      "sha256": "7d13850b6bdef6c643f846abbc90dc6700ed949c638ec66b0fc32025c58f5766"
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/bootstrap-owner.mjs",
+      "sha": "342b6362c11d2ffd28057afa1c5b8430344d6bef",
+      "sha256": "72d7f6cd967faca3b48a1611f6a406065fe7baa9eeba00986a944ab47a822b23"
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/bootstrap-owner.test.mjs",
+      "sha": "e117a0beb38e0bf8eabf8c7ccea8f368cc77d34a",
+      "sha256": "22e4055bfcf7aebf0855284ca4a0b23735b372b5cc4a1c6a9e7b6b4fbfa8c49b"
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/client.mjs",
+      "sha": "6fa9ccc0f0929c3b50894953af11e97a15323600",
+      "sha256": "0ebeb460fb7a6a35244b06c0081b2a1dc5e838774d0df4bbe7aa95831eaf0cb2"
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/client.test.mjs",
+      "sha": "db477b00eee50e34dccef5e5a14dc1b8b560f868",
+      "sha256": "5f6a21ea87f36a176967fec37f62f67161a42973981d0035a875f7b5212a602d"
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/entrypoint.mjs",
+      "sha": "4a1074dca6ff4b1a120a16174e1dcf9821431341",
+      "sha256": "65bd74240043af3ba9c21ed80604bdc6f4cec0c73bda929a072315852a976a04"
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/entrypoint.test.mjs",
+      "sha": "0a3173c2cc004097080fc9476851d98ab5fafeff",
+      "sha256": "c8e3da601bfc26dcb51cc1ca2f52ca6b925d104939226b4b981937490ec82735"
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/kms-signer.mjs",
+      "sha": "d8ff868de97130cf85680ec78bc55f71dc37ea32",
+      "sha256": "49146119e8593c4ecb2e747ae128e21d10e583d24657fd6cc5b048f4cf26c376"
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/kms-signer.test.mjs",
+      "sha": "1265b3a127494d7286f8c872adc590017ae78183",
+      "sha256": "60c0b7465702803d9ca06eb744f5ee958d244d4ca3e62fd4884b633a96dc314c"
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/protocol.mjs",
+      "sha": "b594fa993408f692de509765658f65a1e5f79066",
+      "sha256": "d454af91aa36ae2869149e47cc04df724b0036661b7e2c18ceb5958ffb4ab7b9"
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/protocol.test.mjs",
+      "sha": "e000f43c0e89f4e0461abfbf3258befb4a89527a",
+      "sha256": "ecaa9e29c6e14e70e73c935daacf01ae41fcf37043d91ede7df7e3d593169e11"
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/qualification/AWS-CHANGESET-20261017.md",
+      "sha": "544de3cb22194fea343d6fdafb05335c26bded76",
+      "sha256": "40bcc37f0d808a9394ab26ba6345e6815ec05f9bdf3737c15a4a2ec6707c03e9"
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/qualification/FABLE-HANDOFF-20261017.md",
+      "sha": "df5228a1a8c6caa0e9af1a0d493e1141845e70dd",
+      "sha256": "c8a28abfe5de7886f633e30c99a5536684b5432fc7dac884833d349467da3953"
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/qualification/README.md",
+      "sha": "595872e81304eda0d8b04fc4eb7f0b13b907ef64",
+      "sha256": "a998cf4fb80e738fd99e863840bbee7d77e212d2fce92d8d77c26f27fee8bc62"
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/qualification/qualify.mjs",
+      "sha": "68816e0e1e9b2b996e2c8d65351e09b6edf20243",
+      "sha256": "bbe09c2b0a061839a94adab5fe9cbc491940f661517341288888c77645b4edda"
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/qualification/run-isolated.ps1",
+      "sha": "1e113766bd185063e693edfc94b89f1d6367c3c5",
+      "sha256": "a69fc7964209346a7afc6148bbfecea807c2fe24e8813f002bb243496f6e0b5c"
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/service-task-registration-pg.mjs",
+      "sha": "94937b6ee0dca7d3d7d0fb0ee306ebd0604e99ba",
+      "sha256": "8934d5eb084c45c83061475eb465dec4e9f7c509a8bf2512a026b40db3544c3d"
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/service-task-registration-pg.test.mjs",
+      "sha": "3d4de981591a7b5df561a9c02c3bc0d61e089dc7",
+      "sha256": "4c080f27d722cfa269eef80a6bf600526bfdcd86e366dba7e6e144ba354d62d8"
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/service.mjs",
+      "sha": "496080a60c4d3e834e7c42b4e123d9e533437956",
+      "sha256": "3f5f69aedd5edfc09f48e5fa1b762f549c6ea22eb2ece6448db813d475dda212"
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/service.test.mjs",
+      "sha": "ff63495ba84265229323a36113fdd5bde64bc17a",
+      "sha256": "64023f4fae24b6ec646727830bb055fd442a87f014968f142633d2aac6a4a49d"
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/task-authority.mjs",
+      "sha": "09d802621c01dde796e71a10ff2c49e5af007c7e",
+      "sha256": "f23f845815cea4f8ab32b8c290ff4df2372f964b7299bac2f3614de98413f4c6"
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/task-authority.test.mjs",
+      "sha": "c0e63f5fe72fd7d451123f7ac5dcf6866741631a",
+      "sha256": "c06a0b45fd3cdfc563baeba5e5d1ad77872ca7500dfcfba1d7ebd0c5be253385"
+    }
+  ]
+}

@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "scope": "Immutable source references; none confers live activation or a combined integration pass",
+  "references": [
+    {
+      "id": "issuer-final",
+      "repo": "meri-greenfield",
+      "commit": "eb603f28023c5fcbfcdbf42953e86411a1a83bca",
+      "tree": "0f8160b7e362460b18b51eb9afe7ca7af7a5cc71",
+      "pr": 130,
+      "path": "apps/runtime/temporal-issuer/qualification/FABLE-HANDOFF-20261017.md",
+      "status": "SOURCE_ONLY_FINAL_COMBINED_AND_NATIVE_UNQUALIFIED"
+    },
+    {
+      "id": "product-final",
+      "repo": "meri-greenfield",
+      "commit": "2a247510e7fa477466579971ca4e9a2366b2127f",
+      "tree": "c2ca012a55ec2f45291cfc6f319d3bb0a3b0452e",
+      "pr": 131,
+      "path": "docs/handover/20261017/fable-final/PRODUCT-FEATURES.md",
+      "status": "SOURCE_HOLD_INCOMPLETE_UNREVIEWED"
+    },
+    {
+      "id": "objective-final",
+      "repo": "meri-greenfield",
+      "commit": "047526c7022d04af6fd0f8faaae011171ef1eca2",
+      "tree": "8a39d235a9cda53af0a7d591f5931829c701132b",
+      "pr": 129,
+      "path": "docs/objective-source-reader-v2-20261017/FABLE-BOUNDARY-SUPPLEMENT.md",
+      "status": "REVIEWED_HOLD_INCOMPLETE_UNQUALIFIED_CUSTODY"
+    },
+    {
+      "id": "reads-accepted",
+      "repo": "meri-greenfield",
+      "commit": "6968836486738cab4ba62a39e799356914cd7c85",
+      "tree": "aa31607522e34df3bca96b9e381caae0d599d398",
+      "pr": 125,
+      "path": "docs/coordination/reports/CODEX-READ-INSTALLATION-REMAINING-20261017.md",
+      "status": "ACCEPT_SOURCE_69_3_10_LIVE_ZERO"
+    },
+    {
+      "id": "core-get-final",
+      "repo": "capiro-backend",
+      "commit": "2c344e91b05da1717d53341ad04989d997c2f817",
+      "tree": "3a0a1680671ccf27ab9fb178cffbfd66b6973be0",
+      "pr": 67,
+      "path": "docs/core-first-chat-get-qualified-source-supplement-20261017.md",
+      "status": "SOURCE_QUALIFIED_UNAPPLIED"
+    },
+    {
+      "id": "core-shipping-baseline",
+      "repo": "capiro-backend",
+      "commit": "8b46d2df73f211ebdf09e5a138241539cb5dd922",
+      "path": "docs/core-first-chat-fable-shipping-handoff-20261017.md",
+      "status": "HISTORICAL_QUALIFIED_IMAGE_STOPPED_SERVICE"
+    },
+    {
+      "id": "core-runtime-context",
+      "repo": "capiro-backend",
+      "commit": "83b9136565a45ed1148add8a1d05bcb5252b7fe2",
+      "path": "docs/core-meri-runtime-context-addendum-20261017.md",
+      "status": "SOURCE_CONTEXT_ONLY"
+    },
+    {
+      "id": "frontend-final",
+      "repo": "capiro-frontend",
+      "commit": "01cf1df981250841d40df5fe0389f47168593cce",
+      "tree": "f72cb34644e118933964f9f5b81bec2e11d533e9",
+      "pr": 81,
+      "path": "docs/non-meri-continuation-20261016/PR70-FIRST-CHAT-FABLE-SUPPLEMENT-20261017.md",
+      "status": "SOURCE_ONLY_NEW_SINGLE_IMAGE_ATTEMPT_DOT_OWNED"
+    },
+    {
+      "id": "frontend-failure",
+      "repo": "capiro-frontend",
+      "commit": "01cf1df981250841d40df5fe0389f47168593cce",
+      "path": "docs/non-meri-continuation-20261016/PR70-CODEBUILD-TERMINAL-RECEIPT.json",
+      "status": "PR70_TERMINAL_FAILED_NO_IMAGE"
+    },
+    {
+      "id": "central-allocation",
+      "repo": "meri-greenfield",
+      "commit": "93838193c46a13b2fdda9dee9c142d1af0e60cba",
+      "path": "docs/coordination/tasks/CODEX-PACKAGE4-CENTRAL-MIGRATION-ALLOCATIONS-20261016.md",
+      "status": "SOURCE_ALLOCATION_ONLY"
+    }
+  ],
+  "pending": [
+    {
+      "id": "reads-final",
+      "status": "OWNER_FINISHING_PUBLISHED_SUPPLEMENT_WITH_DENIED_LEDGER_EXCLUDED",
+      "deniedPath": "docs/coordination/ledgers/scope-ledger.json",
+      "localHeldCommit": "4081b2129c4f243eb6f41c17e064e0b96a73bc91",
+      "heldTree": "7832848cc0f7e7ab8a0281b6f0ed9124fdbd5b23",
+      "heldBlob": "28865e43d10740fe7515f2109e7d619529340ccf",
+      "heldSha256": "0a97c45b959d8181290fea4fe1c87a89c00509c68da361ae013089dc737ab26b",
+      "outcome": "AUTOMATIC_APPROVAL_REJECTED_BEFORE_EXECUTION; NO_INDIRECT_PAYLOAD_IN_THIS_HANDOFF"
+    }
+  ]
+}

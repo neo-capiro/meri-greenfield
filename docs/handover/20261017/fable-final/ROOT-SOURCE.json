@@ -1,0 +1,743 @@
+{
+  "schemaVersion": 1,
+  "implementationCutoffUtc": "2026-10-17T06:47:33Z",
+  "sourceCommit": "59856683e07efde3e04772f6b5229faa931c4b85",
+  "sourceTree": "d2120719e83132a2d62dce9d6ad3342d801725c1",
+  "publicPredecessor": "0d6ba1590b41e3bc911e8c50f7c7407632101832",
+  "branch": "codex/meri-first-chat-runtime-integration-20261017",
+  "pr": 121,
+  "status": "PRESERVED_SOURCE_HOLD_NOT_FINAL_INTEGRATION_ACCEPTED",
+  "sourceOnly": true,
+  "commits": [
+    {
+      "commit": "4850d3d9b7361eded16082616b27f382660d104d",
+      "parents": [
+        "0d6ba1590b41e3bc911e8c50f7c7407632101832"
+      ],
+      "tree": "0b4b198ff70acd6e8df10a38e456f4cfa407b995",
+      "subject": "Derive original proxy placement from canonical admitted custody"
+    },
+    {
+      "commit": "9431e4886bad9c306fd2f042aee74225cefdfa81",
+      "parents": [
+        "4850d3d9b7361eded16082616b27f382660d104d"
+      ],
+      "tree": "51508bcdd577a9b569950fef509b06102dec7491",
+      "subject": "Integrate reviewed Temporal issuer source from PR122"
+    },
+    {
+      "commit": "8ac28317df32f76d242b97df9606104c1519437b",
+      "parents": [
+        "9431e4886bad9c306fd2f042aee74225cefdfa81"
+      ],
+      "tree": "823cba0f453876ad19c3a8686479370d64cd875d",
+      "subject": "Compose task-bound mTLS model owner and native currentness"
+    },
+    {
+      "commit": "ce459f5b5491acb4b08b94b4e788ecf85341653a",
+      "parents": [
+        "8ac28317df32f76d242b97df9606104c1519437b"
+      ],
+      "tree": "249165897e8572b969a806c614903aef133c536d",
+      "subject": "Mount product model proxy with pinned native authentication and lifecycle"
+    },
+    {
+      "commit": "75d5e57359dc6e906c50d8d6d225a7024ea9dddd",
+      "parents": [
+        "ce459f5b5491acb4b08b94b4e788ecf85341653a"
+      ],
+      "tree": "fe38ded273abcb744e2f9800054f6e3bbac16913",
+      "subject": "Integrate reviewed task-bound Temporal issuer and registration source"
+    },
+    {
+      "commit": "28180b22846ff47e4c6986dbbe0f056117ce581b",
+      "parents": [
+        "75d5e57359dc6e906c50d8d6d225a7024ea9dddd"
+      ],
+      "tree": "d726e33770881631fec229af9ab401c28ad0e236",
+      "subject": "Record exclusive Temporal service identity migration allocation"
+    },
+    {
+      "commit": "301b2105e48056c55a19f57a047ca3b60f005bbd",
+      "parents": [
+        "28180b22846ff47e4c6986dbbe0f056117ce581b"
+      ],
+      "tree": "d4b873691d9b6ec812ad875dac79b4b593ac08bb",
+      "subject": "Reserve independent Objective custody source migration"
+    },
+    {
+      "commit": "1cc71ba6c2b039962a2213e178e6d208b706240b",
+      "parents": [
+        "301b2105e48056c55a19f57a047ca3b60f005bbd"
+      ],
+      "tree": "878f613e059bc04c2a501a4808293ef35d4f33d5",
+      "subject": "Preserve incomplete first-chat runtime composition at Fable safe stop"
+    },
+    {
+      "commit": "59856683e07efde3e04772f6b5229faa931c4b85",
+      "parents": [
+        "1cc71ba6c2b039962a2213e178e6d208b706240b"
+      ],
+      "tree": "d2120719e83132a2d62dce9d6ad3342d801725c1",
+      "subject": "Receive frozen PR130 issuer source for portable Fable checkpoint"
+    }
+  ],
+  "changedFiles": [
+    {
+      "path": "apps/proxy/product/Dockerfile",
+      "gitBlob": "f4edf4f0ca389c8f952f2b536039215137cb686d",
+      "sha256": "e1edbfa9cd532a46e8b1d11a3310e4d16e0fdd7a9cd86ce3c1d73e6c1fb711d5",
+      "bytes": 2625
+    },
+    {
+      "path": "apps/proxy/product/litellm-product-config.yaml",
+      "gitBlob": "b7422d3c3134d2749b4a7962d36d14e909b04197",
+      "sha256": "64860d829d7c022f6640b1a75eb48ad05dc2421d8e5e2bcdfdda50b421754d19",
+      "bytes": 845
+    },
+    {
+      "path": "apps/proxy/product/main.py",
+      "gitBlob": "78a97c9f08f12672cf23dcdb5ea7f4a60905bbba",
+      "sha256": "11d764b5c95314effca7167af08f163bdc2dafc6840e707af0b3ed4399fb1b66",
+      "bytes": 15053
+    },
+    {
+      "path": "apps/proxy/product/native_auth.py",
+      "gitBlob": "27bb51b31a369e0ef776324a1365e2380505f307",
+      "sha256": "d09406c8f9eefd04eb12ad8d195cbeb2a03354883253dbb24b1bad199d65966a",
+      "bytes": 6075
+    },
+    {
+      "path": "apps/proxy/product/native_compatibility.py",
+      "gitBlob": "3776ba02d14c0f69b4c71cbc61e0a08bae47de64",
+      "sha256": "551563e1644082985e2e541cd6f7e8236c1f5de6ad7483e2e6deb13e4aa314c3",
+      "bytes": 6587
+    },
+    {
+      "path": "apps/proxy/product/owner-entrypoint.mjs",
+      "gitBlob": "3276758f814809ec2836ce65b09458a7d64fd1c6",
+      "sha256": "54d17bcc773b47c9e167f8e68f95fafc8931bffece91ef9c8d3bfffc6db089a2",
+      "bytes": 14692
+    },
+    {
+      "path": "apps/proxy/product/owner-entrypoint.test.mjs",
+      "gitBlob": "49e208aa17bad0d25022362d0b75bc87f57970f8",
+      "sha256": "503365a5e60fa900dc7f3486da0870bd10deaecc67ab6638ec1571e7e60143cf",
+      "bytes": 24035
+    },
+    {
+      "path": "apps/proxy/product/owner-https.mjs",
+      "gitBlob": "ae9c2c8d375feff687a9e69e53852f23e7103b8e",
+      "sha256": "e2a4dc067a941de8036df9f0afc0087808221f8941bd3ad471418d393e1a76dd",
+      "bytes": 15499
+    },
+    {
+      "path": "apps/proxy/product/owner-https.test.mjs",
+      "gitBlob": "e9cd2a81d727ab51e3e6c69f4c584cf43d293df5",
+      "sha256": "cad7b1078ff5d477c73c9adfea7d76a282dc7cd4f3015bf7a40b28f07b717d4a",
+      "bytes": 6895
+    },
+    {
+      "path": "apps/proxy/product/owner-native-currentness.mjs",
+      "gitBlob": "b099ef3343bee8165c258d66c21a0b3726985318",
+      "sha256": "576f8b0ec8d54f07ae195265c25f5ef9b9023288f42ad74c0dca6a89c50e7c5f",
+      "bytes": 9315
+    },
+    {
+      "path": "apps/proxy/product/owner-native-currentness.test.mjs",
+      "gitBlob": "336de5675d3bd876c06ab3419ac0cfbb89a7b217",
+      "sha256": "ae49b5b6e7c924834cda1baf78f8621c496b292b68c65ba24545860befea6ced",
+      "bytes": 9914
+    },
+    {
+      "path": "apps/proxy/product/owner_admission.py",
+      "gitBlob": "51b1ff9837c5bb9f113d3a9899f6de2f3aff3ee3",
+      "sha256": "5c75a9a76c4cdae6c19dd1beeceafc3d92b99dbcafeee1fa5c1b6196b816070c",
+      "bytes": 13288
+    },
+    {
+      "path": "apps/proxy/product/owner_channel.py",
+      "gitBlob": "40c99022e0b73387ccb0f8d15b06f237d043e3a1",
+      "sha256": "7ec8278885bdbc1e4d14d81de97ab7b0c6c570d5798bdcb08fe125bde935677c",
+      "bytes": 24164
+    },
+    {
+      "path": "apps/proxy/product/owner_https.py",
+      "gitBlob": "fbd454f9cbe03f8f110fd941884ef7cb82e1850f",
+      "sha256": "6c4a62ddc78d589db38c0f12ea7929cfe082457204698b9b9141a162b0da5b0d",
+      "bytes": 13276
+    },
+    {
+      "path": "apps/proxy/product/owner_startup.py",
+      "gitBlob": "22f1272b43306d7308bdb915dd62fa8eb691d705",
+      "sha256": "573a49043a0aaccbccc1642d586675e2dc902d66e347abc95bf3c6d5c0d404e8",
+      "bytes": 7529
+    },
+    {
+      "path": "apps/proxy/product/product-owner-placement.mjs",
+      "gitBlob": "d7455d5e17bc2d516edd5bdee399b627b0859362",
+      "sha256": "98a447dbe909be78ed11fe8d739376e0e46435a62ed7441e184a7b654c277891",
+      "bytes": 10537
+    },
+    {
+      "path": "apps/proxy/product/product-owner-placement.test.mjs",
+      "gitBlob": "b28a683f5118dbae227524ed3631d3b5a4854f60",
+      "sha256": "2f3f45874359d386649c38b859da7af58c1bb5b1069cc4559f1b044d87df0937",
+      "bytes": 17115
+    },
+    {
+      "path": "apps/proxy/product/service-pair-discovery.mjs",
+      "gitBlob": "9ee82c9905f22a88a862eb35ed85ec92586643bd",
+      "sha256": "2873865c4a71ce5c024c329fa6c5d1aaac917b9a2773ac4dbd5406a1b59b28e6",
+      "bytes": 14174
+    },
+    {
+      "path": "apps/proxy/product/service-pair-discovery.test.mjs",
+      "gitBlob": "6b0b1fba508c6a07c496e8dbbf0154cfaaa5cb42",
+      "sha256": "2d63f91b2f097b5624c22d650cfcf6b8af2d649493be5dbcc1abdafb94707348",
+      "bytes": 9581
+    },
+    {
+      "path": "apps/proxy/product/service-task-leases.mjs",
+      "gitBlob": "d6860542cbedb39e87216387adf951eaddf389cd",
+      "sha256": "fda09e6bb8cf8a14844bfe7fed3a0393b91fffb867ed11c91df3edf8cfac26ea",
+      "bytes": 1485
+    },
+    {
+      "path": "apps/proxy/product/service-task-leases.test.mjs",
+      "gitBlob": "3700d93710936ac3a3f908cfc829b728ec3e4c6d",
+      "sha256": "88de4a82ea306fce36a685abff0f0e52f7183fd5936de2038deae0e342fc4cf1",
+      "bytes": 2736
+    },
+    {
+      "path": "apps/proxy/product/service_pair_discovery.py",
+      "gitBlob": "87c6e212fd1b8a2e0ae4efa710f573ffcecccf4f",
+      "sha256": "76c12cee0e9685d452f56ec8bec5bf0e9c949749407ece9a3c77e2d1366c565d",
+      "bytes": 19141
+    },
+    {
+      "path": "apps/proxy/product/startup_config.py",
+      "gitBlob": "b87c7795a76d15cddab75f3f6ecc1963b8e78095",
+      "sha256": "03003aa0693cd5ee51e0a3644970aa7aefefef597d18662e7b8ab7f6635e38df",
+      "bytes": 6200
+    },
+    {
+      "path": "apps/proxy/product/test/control-fixture.mjs",
+      "gitBlob": "287a4b4834f4eea67261f88c01726c54243a79ae",
+      "sha256": "9934bfb9359eef9221387c6deb3e4610177d81490986de86a54c0847bbbbce67",
+      "bytes": 5258
+    },
+    {
+      "path": "apps/proxy/product/test/service-pair-fixture.mjs",
+      "gitBlob": "d533bc308175613c049bf30bb30ce44abf1ee911",
+      "sha256": "41cd03138575e349ffd0eee374abf9773e075e7c2b760f88da6246b0bd1f16b8",
+      "bytes": 4562
+    },
+    {
+      "path": "apps/proxy/product/test/test_main.py",
+      "gitBlob": "3b1c3d8960bf80d18ab491064b3c652e503712f3",
+      "sha256": "88cecd1ac73ac81488e2bac07d38c0c894eda02fe548d2a4602258bd9feee324",
+      "bytes": 15034
+    },
+    {
+      "path": "apps/proxy/product/test/test_native_auth.py",
+      "gitBlob": "61867d1d6548c99a4034c55643826826b4c2701e",
+      "sha256": "6f99d81418e317e72b1e4ae110d2f36d5409fb95ccc1778bfe235e4f7fe28af8",
+      "bytes": 7125
+    },
+    {
+      "path": "apps/proxy/product/test/test_native_compatibility.py",
+      "gitBlob": "93d94907c04b6e81095a24306f3a2a15fe04a7ad",
+      "sha256": "e73a63f22b5115b87a257c838b08585d4feb2b8182fcfdc26ff60acd4080b6a9",
+      "bytes": 6830
+    },
+    {
+      "path": "apps/proxy/product/test/test_owner_admission.py",
+      "gitBlob": "692b5a7fe7801ede65de77fcd1fbbd73a7c4b187",
+      "sha256": "035b7e87f9022af938e32b1642453231644ecfc913ef59f031ef65ba488f61f5",
+      "bytes": 23307
+    },
+    {
+      "path": "apps/proxy/product/test/test_owner_https.py",
+      "gitBlob": "201727fc4acbf01208f698c0d48b00d091837829",
+      "sha256": "8bb598fadd54841be6b7f7ded582afa9cc57292f0cbf109472342d13eb188466",
+      "bytes": 7911
+    },
+    {
+      "path": "apps/proxy/product/test/test_owner_startup.py",
+      "gitBlob": "33d7c7ba412b4716bd203385ce187ad64e01a1cd",
+      "sha256": "d43b028005b293c5d29f9bc987949a02b8ce30cf4137f28b71efd4220e15f658",
+      "bytes": 4884
+    },
+    {
+      "path": "apps/proxy/product/test/test_service_pair_discovery.py",
+      "gitBlob": "4b7d6993eaca832e05b355aac9310bcc5340e26a",
+      "sha256": "0021491b2991870675fc714775184544d6bd3fdc5dcc8027959ec2a54863e4ad",
+      "bytes": 14133
+    },
+    {
+      "path": "apps/proxy/product/test/test_startup_config.py",
+      "gitBlob": "0ecbe56176448a455e4e22d9a028d74215736402",
+      "sha256": "9fe4bd41df2bd6c129eb04c22252338d02822b58f971115f7aa22518f9c9929b",
+      "bytes": 6265
+    },
+    {
+      "path": "apps/proxy/product/test/test_uvicorn_tls_protocol.py",
+      "gitBlob": "7a0e6a19a114f3aaefc35963deb2919e0277d061",
+      "sha256": "4a00ac72b6f8106d2270cf3121034bceb5e08305b3b65c0c9f5f48225ded4d12",
+      "bytes": 10723
+    },
+    {
+      "path": "apps/proxy/product/uvicorn_tls_protocol.py",
+      "gitBlob": "901328d75658f24d41b14f9b7894af55dc9afaeb",
+      "sha256": "844973080d2410d3c4e530347bfdaac66b8b0962abd8be43f9a57b75e87b5aa5",
+      "bytes": 9274
+    },
+    {
+      "path": "apps/runtime/Dockerfile",
+      "gitBlob": "54a55fb17c61eb1a46e5c1293c44a1355bb91eff",
+      "sha256": "7da53211160e5e01a79eede28b097a7582400ccfe8cb6771f60e96d4061bb74c",
+      "bytes": 4280
+    },
+    {
+      "path": "apps/runtime/cli.mjs",
+      "gitBlob": "01467e770b23e41af1ecd2c720a8aceeb983bcde",
+      "sha256": "fe5184681886335f85ba33f709eb1058fb2f07d9cb4c668c8159d07849dc4c25",
+      "bytes": 4742
+    },
+    {
+      "path": "apps/runtime/config.mjs",
+      "gitBlob": "1f9cea4c199e77424ae8a9047d0eef35b1899003",
+      "sha256": "588f4432dcdb65f398948bd178c6af217a6eb4cf8b39f74db7bb3d5757f16a2c",
+      "bytes": 14824
+    },
+    {
+      "path": "apps/runtime/control-route-boundary.mjs",
+      "gitBlob": "8238fa6653e5866c9732fb0ca0723d8af2bca502",
+      "sha256": "951fc94547dbc3d8afd608b675925119fb1c77136e9b4f73c3114259c537ea04",
+      "bytes": 3273
+    },
+    {
+      "path": "apps/runtime/control.mjs",
+      "gitBlob": "64ada5c65d4b18e130b619d5be71424873a5e44f",
+      "sha256": "fe97c7b46882d16bf13e71467da5fc51e04a75d47e07de2b51705985d1b9e1a4",
+      "bytes": 23547
+    },
+    {
+      "path": "apps/runtime/http-server.mjs",
+      "gitBlob": "849858dbed1c06c7f63c6ed1795d445cbe5082ea",
+      "sha256": "901384ee00dc311717b426963f809cefbb760c502ab8f531c3aad7bc95fc2a1f",
+      "bytes": 4045
+    },
+    {
+      "path": "apps/runtime/material-init-plan.mjs",
+      "gitBlob": "5a00c653435b0af2e729b06d7f47cc2047b003d0",
+      "sha256": "e7a09ef0de30124bbda84b4313fb7eb19c71e5166e814a7e749074ee018b9115",
+      "bytes": 8724
+    },
+    {
+      "path": "apps/runtime/material-init.mjs",
+      "gitBlob": "44eaef726aa651d24306dd2921de274681983032",
+      "sha256": "4484bcf7a4bfe98eee8cf9f1e04ee859905be4e5da6d1b2ed316c38bb260c803",
+      "bytes": 10275
+    },
+    {
+      "path": "apps/runtime/native-authority/task-allocator.mjs",
+      "gitBlob": "1a57d2dafb33c8a50a5dbe7bc10301d623115f7a",
+      "sha256": "0a86930a1943b2ff672db46d8b60eea8c36b72b7e6a138bf793b7adfb571788d",
+      "bytes": 8976
+    },
+    {
+      "path": "apps/runtime/native-authority/task-request.mjs",
+      "gitBlob": "3f81b7791858d1e3df7c42cb1816ff7b3d5eb404",
+      "sha256": "8876b3bff8f3d94df2d7d995a1bcee70b68a4b7d895095bd2098bcb917a4d1b2",
+      "bytes": 3088
+    },
+    {
+      "path": "apps/runtime/native-authority/test/task-request.test.mjs",
+      "gitBlob": "4ba7f019d91a1d933c4bfa96b423a3e26d2bb066",
+      "sha256": "f5aeaf5ea743f02fd5f32a84e2b7dc6711e1ee0a5e360af500e799541cbf882a",
+      "bytes": 3697
+    },
+    {
+      "path": "apps/runtime/package-lock.json",
+      "gitBlob": "b2481cede45da976b38c17aab1cb50a4368ce10a",
+      "sha256": "4de8254a956ef18c4de43becdb3544a56013c2be0421884636739dcaa03c23c9",
+      "bytes": 125833
+    },
+    {
+      "path": "apps/runtime/package.json",
+      "gitBlob": "aa61b0521a2c6c3b9e0f0460828a3198463c5b69",
+      "sha256": "e534607a7ea1d81430a30c9d962e453dc96bb0fdbdb178e6cc4f48377f4b91db",
+      "bytes": 1032
+    },
+    {
+      "path": "apps/runtime/prepared-run-bindings.mjs",
+      "gitBlob": "159b59c39c3e6ade9b15fac88e66beb5088740a8",
+      "sha256": "ccc5ab92d7439705a107309e3a285dcc190346d3880c4dafd4c21930825e64ca",
+      "bytes": 16271
+    },
+    {
+      "path": "apps/runtime/prepared-run-configuration.mjs",
+      "gitBlob": "4660feb2eb760666866d48fa344ed924abf26ba9",
+      "sha256": "6f10565b3ca71cbf3145eee2373d14a6adb280b65409c3f77385cf67f3381743",
+      "bytes": 1807
+    },
+    {
+      "path": "apps/runtime/temporal-authorization.mjs",
+      "gitBlob": "434f968f8f4596d2c1c72c6cc9bec6ee6bb3b1ce",
+      "sha256": "fba167fd408a949002c1241dcbdffec5f96fc23498f5e4b17cb083b493b75cfb",
+      "bytes": 8870
+    },
+    {
+      "path": "apps/runtime/temporal-issuer-cli.mjs",
+      "gitBlob": "ee411d373c90a577eb8f33daf7b10a396c324c46",
+      "sha256": "2496b427ade286a1aeb3813d7f3301bb041f38d9e5fea0f2d3a333bf86257647",
+      "bytes": 10338
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/AWS-ACTIVATION-PROPOSAL.md",
+      "gitBlob": "eb0f9953605229fd9b45a2e046819927d99546ba",
+      "sha256": "43d68765e624f02352f8c67c3aac8825cd3f97fb8bbeb95b35f37dcd60868ca1",
+      "bytes": 17756
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/SECURITY-ACTION-PACKET.md",
+      "gitBlob": "0a14559c2c2a26ef476a9afd6b98e494fd356682",
+      "sha256": "09eb812ae01fb8a9e33771e63475685699c6ca5f0410845272bd3b1820c777c9",
+      "bytes": 6111
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/SOURCE-QUALIFICATION-20261017.md",
+      "gitBlob": "7ab9d5d62c76f6a52dd09c618914d1a0d951f5d0",
+      "sha256": "114dcd0f2f43617e9a9dcca128bd5c60313f30ec2872a96ca1d8bc983a54f6cb",
+      "bytes": 4898
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/bootstrap-client.mjs",
+      "gitBlob": "e0edbd289a9343dc9f46a46bd05f936ef33e3ed8",
+      "sha256": "3a0c0a93dac733cc6d8ae4faa620fa5bd83c555fc827e53db0344e0787bf6caf",
+      "bytes": 15101
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/bootstrap-client.test.mjs",
+      "gitBlob": "e44c9f4308c214f06a1851c2db9c4d54bc4e716e",
+      "sha256": "7d13850b6bdef6c643f846abbc90dc6700ed949c638ec66b0fc32025c58f5766",
+      "bytes": 12310
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/bootstrap-owner.mjs",
+      "gitBlob": "342b6362c11d2ffd28057afa1c5b8430344d6bef",
+      "sha256": "72d7f6cd967faca3b48a1611f6a406065fe7baa9eeba00986a944ab47a822b23",
+      "bytes": 13703
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/bootstrap-owner.test.mjs",
+      "gitBlob": "e117a0beb38e0bf8eabf8c7ccea8f368cc77d34a",
+      "sha256": "22e4055bfcf7aebf0855284ca4a0b23735b372b5cc4a1c6a9e7b6b4fbfa8c49b",
+      "bytes": 13226
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/bootstrap-task-proof.mjs",
+      "gitBlob": "cc83e9380753fa4ea9a94029da15fc7b0ba42ad3",
+      "sha256": "23ed1572274134845efdb149d6f5766795c97d9bb3c57076ab1ea3fb6bb3f303",
+      "bytes": 490
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/bootstrap-task-proof.test.mjs",
+      "gitBlob": "f745b69441b2fbc9cd6ffb8901a2368ae202007b",
+      "sha256": "10c537050c97cee4c5db0e71a8b40ccb4e0f9451ee3b6b9f44d24a8f2c462206",
+      "bytes": 8423
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/client.mjs",
+      "gitBlob": "6fa9ccc0f0929c3b50894953af11e97a15323600",
+      "sha256": "0ebeb460fb7a6a35244b06c0081b2a1dc5e838774d0df4bbe7aa95831eaf0cb2",
+      "bytes": 13003
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/client.test.mjs",
+      "gitBlob": "db477b00eee50e34dccef5e5a14dc1b8b560f868",
+      "sha256": "5f6a21ea87f36a176967fec37f62f67161a42973981d0035a875f7b5212a602d",
+      "bytes": 11905
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/entrypoint.mjs",
+      "gitBlob": "4a1074dca6ff4b1a120a16174e1dcf9821431341",
+      "sha256": "65bd74240043af3ba9c21ed80604bdc6f4cec0c73bda929a072315852a976a04",
+      "bytes": 17313
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/entrypoint.test.mjs",
+      "gitBlob": "0a3173c2cc004097080fc9476851d98ab5fafeff",
+      "sha256": "c8e3da601bfc26dcb51cc1ca2f52ca6b925d104939226b4b981937490ec82735",
+      "bytes": 22774
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/kms-signer.mjs",
+      "gitBlob": "d8ff868de97130cf85680ec78bc55f71dc37ea32",
+      "sha256": "49146119e8593c4ecb2e747ae128e21d10e583d24657fd6cc5b048f4cf26c376",
+      "bytes": 9062
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/kms-signer.test.mjs",
+      "gitBlob": "1265b3a127494d7286f8c872adc590017ae78183",
+      "sha256": "60c0b7465702803d9ca06eb744f5ee958d244d4ca3e62fd4884b633a96dc314c",
+      "bytes": 8216
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/migrations/0001_service_task_registrations.sql",
+      "gitBlob": "607929b14678283f62ef4945cf350f3427ec7917",
+      "sha256": "59b0e32eac16764bc0d22cb85509b7e9ea1e51c2a50882ed95d9cf14406e0041",
+      "bytes": 5927
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/protocol.mjs",
+      "gitBlob": "b594fa993408f692de509765658f65a1e5f79066",
+      "sha256": "d454af91aa36ae2869149e47cc04df724b0036661b7e2c18ceb5958ffb4ab7b9",
+      "bytes": 6390
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/protocol.test.mjs",
+      "gitBlob": "e000f43c0e89f4e0461abfbf3258befb4a89527a",
+      "sha256": "ecaa9e29c6e14e70e73c935daacf01ae41fcf37043d91ede7df7e3d593169e11",
+      "bytes": 6050
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/qualification/AWS-CHANGESET-20261017.md",
+      "gitBlob": "544de3cb22194fea343d6fdafb05335c26bded76",
+      "sha256": "40bcc37f0d808a9394ab26ba6345e6815ec05f9bdf3737c15a4a2ec6707c03e9",
+      "bytes": 34741
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/qualification/FABLE-HANDOFF-20261017.md",
+      "gitBlob": "df5228a1a8c6caa0e9af1a0d493e1141845e70dd",
+      "sha256": "c8a28abfe5de7886f633e30c99a5536684b5432fc7dac884833d349467da3953",
+      "bytes": 5978
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/qualification/README.md",
+      "gitBlob": "595872e81304eda0d8b04fc4eb7f0b13b907ef64",
+      "sha256": "a998cf4fb80e738fd99e863840bbee7d77e212d2fce92d8d77c26f27fee8bc62",
+      "bytes": 8750
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/qualification/qualify.mjs",
+      "gitBlob": "68816e0e1e9b2b996e2c8d65351e09b6edf20243",
+      "sha256": "bbe09c2b0a061839a94adab5fe9cbc491940f661517341288888c77645b4edda",
+      "bytes": 16548
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/qualification/run-isolated.ps1",
+      "gitBlob": "1e113766bd185063e693edfc94b89f1d6367c3c5",
+      "sha256": "a69fc7964209346a7afc6148bbfecea807c2fe24e8813f002bb243496f6e0b5c",
+      "bytes": 21600
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/service-client-certificate.mjs",
+      "gitBlob": "5d284547a947b3691f843293d25ba6e4c48da28f",
+      "sha256": "dfb9ab7ba1d7220d9d8afa9b8da1f286b0b2d6efa781071d65beca3ecfcaf729",
+      "bytes": 9349
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/service-client-certificate.test.mjs",
+      "gitBlob": "ef7454e985c812cfaf1f8e7ce4d5c1e10ae859c8",
+      "sha256": "04601a97769ea21435fe76a53b23c4ed4bd4a9887dc4214f7f96d359e087be48",
+      "bytes": 6540
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/service-task-registration-pg.mjs",
+      "gitBlob": "94937b6ee0dca7d3d7d0fb0ee306ebd0604e99ba",
+      "sha256": "8934d5eb084c45c83061475eb465dec4e9f7c509a8bf2512a026b40db3544c3d",
+      "bytes": 21876
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/service-task-registration-pg.test.mjs",
+      "gitBlob": "3d4de981591a7b5df561a9c02c3bc0d61e089dc7",
+      "sha256": "4c080f27d722cfa269eef80a6bf600526bfdcd86e366dba7e6e144ba354d62d8",
+      "bytes": 15459
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/service.mjs",
+      "gitBlob": "496080a60c4d3e834e7c42b4e123d9e533437956",
+      "sha256": "3f5f69aedd5edfc09f48e5fa1b762f549c6ea22eb2ece6448db813d475dda212",
+      "bytes": 17435
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/service.test.mjs",
+      "gitBlob": "ff63495ba84265229323a36113fdd5bde64bc17a",
+      "sha256": "64023f4fae24b6ec646727830bb055fd442a87f014968f142633d2aac6a4a49d",
+      "bytes": 18752
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/task-authority.mjs",
+      "gitBlob": "09d802621c01dde796e71a10ff2c49e5af007c7e",
+      "sha256": "f23f845815cea4f8ab32b8c290ff4df2372f964b7299bac2f3614de98413f4c6",
+      "bytes": 25243
+    },
+    {
+      "path": "apps/runtime/temporal-issuer/task-authority.test.mjs",
+      "gitBlob": "c0e63f5fe72fd7d451123f7ac5dcf6866741631a",
+      "sha256": "c06a0b45fd3cdfc563baeba5e5d1ad77872ca7500dfcfba1d7ebd0c5be253385",
+      "bytes": 18134
+    },
+    {
+      "path": "apps/runtime/temporal-product-authorization.mjs",
+      "gitBlob": "6a4699c8473598ee321b29c01d2863d89d3e2cdb",
+      "sha256": "7806a8e83c03de03a1ca0195b8574149219deac86615d66e5e8a9bca3a5020de",
+      "bytes": 7467
+    },
+    {
+      "path": "apps/runtime/temporal-product-authorization.test.mjs",
+      "gitBlob": "2ce06d8e116a6c6a1ff9382c52f599023e643616",
+      "sha256": "049485f38de069f17598ec1bff88c8f9b9f1f86cd40a7da1ab369d813beae3d8",
+      "bytes": 11943
+    },
+    {
+      "path": "apps/runtime/temporal-product-bootstrap-configuration.mjs",
+      "gitBlob": "6cbae8cf198c932c635f0648587c26e6b44c1b55",
+      "sha256": "f0a9b85b1704311c0cb77b3a9f2591279a62cf7b23dcf23ccc7c93af33d34e80",
+      "bytes": 3211
+    },
+    {
+      "path": "apps/runtime/temporal-product-bootstrap.mjs",
+      "gitBlob": "5103d01bac786cd6a0c699656c256557041e9faf",
+      "sha256": "832277c3cbe0fbb2399963802578886d640671d7f170a955b9d00dca6b097d7f",
+      "bytes": 18773
+    },
+    {
+      "path": "apps/runtime/temporal-product-bootstrap.test.mjs",
+      "gitBlob": "4a5fb216ba3adae0e3a5a2d8ef919bb221dc8af9",
+      "sha256": "4132dab09d463b94864b65ee224f3ec4b85757aff5af74e64ebd76ae271def8d",
+      "bytes": 21647
+    },
+    {
+      "path": "apps/runtime/temporal-product-runtime.mjs",
+      "gitBlob": "e12fc51842d667b7587f336f21e8d20e57fa529b",
+      "sha256": "9bd634c0c2f708fd6fa2a067c5d0d94c2590826428c45e6eb6da985a66d660af",
+      "bytes": 4543
+    },
+    {
+      "path": "apps/runtime/temporal-runtime-fence.mjs",
+      "gitBlob": "0d62adda5abe3e936be678f595ffbca291db4516",
+      "sha256": "1b42876a01d9f3f51e20e90671ca47235008d5aaa2c7dd68b62f3dd22a7f4a88",
+      "bytes": 5265
+    },
+    {
+      "path": "apps/runtime/temporal-runtime-fence.test.mjs",
+      "gitBlob": "483296b805ef094708a4c9846b44d8cd1acb646f",
+      "sha256": "e965e87988b3bf66ca98e3d89eb8cc09a3093e934d81a1919588fa6cc01a7ba1",
+      "bytes": 14539
+    },
+    {
+      "path": "apps/runtime/temporal-worker.mjs",
+      "gitBlob": "6a520b37b7667ba93b78b491ecbd1cdca54ce7be",
+      "sha256": "69bf45d60c6027f970c6d07ba3da8bd1b8966d8a6df9bbd3190ba5c0b96a39d1",
+      "bytes": 11088
+    },
+    {
+      "path": "apps/runtime/test/control-temporal-startup.test.mjs",
+      "gitBlob": "8500a7655fd684223880233818ba317968cc3334",
+      "sha256": "76e66aa677b9c7418271f956018f86fc8f77c0ff9c228bd1059c7447b7164460",
+      "bytes": 13743
+    },
+    {
+      "path": "apps/runtime/test/http-cleanup-ownership.test.mjs",
+      "gitBlob": "6af80ccfa4ad237cf7c924d3507d29f18c47699b",
+      "sha256": "32c159bfddc6410b8c4a5912c87a1a48f809e5c4438414af25a05267e95f8fa6",
+      "bytes": 1588
+    },
+    {
+      "path": "apps/runtime/test/issuer-material-plan.test.mjs",
+      "gitBlob": "4d2779d9caabf12fe7d07437652dd9eb28d73ad2",
+      "sha256": "3e0a708d103fb4d964f933d61a84a55d102df31ca585f41c6e51f6c45c5ca38f",
+      "bytes": 8479
+    },
+    {
+      "path": "apps/runtime/test/product-temporal-startup.test.mjs",
+      "gitBlob": "b2a1427aabc527b15a260a4a5ca8cbf4b0237b5b",
+      "sha256": "b13a19d0a54f4fae4f94fd194c0dda0caed17459b7ccde08e8f94f7b710869b2",
+      "bytes": 11693
+    },
+    {
+      "path": "apps/runtime/test/temporal-authorization.test.mjs",
+      "gitBlob": "b77c1ce8554fb939ea186b66239d373a7a1e939f",
+      "sha256": "2a27baf43c9975a56b2d5d2c82cae9b9e2a293f27a46471a70dcc6b5f38ab8f5",
+      "bytes": 15956
+    },
+    {
+      "path": "apps/runtime/test/temporal-issuer-cli.test.mjs",
+      "gitBlob": "9673ed8e0bc1466ffa0f91863302cb81d473ebfc",
+      "sha256": "d36320d8c4f52c413f1e54a4caf5bac9f3ec646106f1625962cbf35625e7c79f",
+      "bytes": 13804
+    },
+    {
+      "path": "apps/runtime/test/temporal-worker-startup.test.mjs",
+      "gitBlob": "018d543266294ab9188635b0196a0e58c56846b0",
+      "sha256": "397f3b0d763e1fa4cf32fc5d5f8be20d78985fee66d3483ad52c7961d6c17c96",
+      "bytes": 3447
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-PACKAGE4-CENTRAL-MIGRATION-ALLOCATIONS-20261016.md",
+      "gitBlob": "03ad26a0c11e0a34fcc577ed568a8c8b5990cd7d",
+      "sha256": "11888433fc5584b2c40402167edce2743448d8cbdb44936b141a7898488c3663",
+      "bytes": 29949
+    },
+    {
+      "path": "infra/product-preview/manifest-token-writers.test.mjs",
+      "gitBlob": "72f508d935d28880a240cc7f56e50ed20a1c2b11",
+      "sha256": "90fba05c674805f35e65aef76e2651dc52887eea2a05b10a07dc5f16f397aed6",
+      "bytes": 10507
+    },
+    {
+      "path": "infra/product-preview/manifest.mjs",
+      "gitBlob": "79df41f71112e7c5f62b1eaa5832043085bab579",
+      "sha256": "45be25d62bb6acf024f2a45432a4081b8257ef77ba58ba80ca98bcdb5c75d0a8",
+      "bytes": 12854
+    },
+    {
+      "path": "infra/product-preview/temporal-binding.mjs",
+      "gitBlob": "272021332056a5b589d8924ba4487c4383176bc1",
+      "sha256": "866fdc3847e9bb9f5a2ac322d30426a8f67a601ebc349ca05aeea6f44576aa91",
+      "bytes": 9914
+    },
+    {
+      "path": "infra/product-preview/temporal-deployment.mjs",
+      "gitBlob": "3b972a899975670b2c376d63c68d63d7bb0f57ad",
+      "sha256": "6f0cf66744f9bcb87b62d671c2b418c4ac1b89b7c50d684743813c866ccc1722",
+      "bytes": 9726
+    },
+    {
+      "path": "infra/product-preview/temporal-deployment.test.mjs",
+      "gitBlob": "3b07f00c35fd1171dfc02f54b20b600444ff9a6f",
+      "sha256": "5f8354da1b29b92afccd31ec4fa91a02b7e891b0a98d946d95f4c24e5eda78a8",
+      "bytes": 20197
+    },
+    {
+      "path": "infra/product-preview/temporal-issuer-renewal.mjs",
+      "gitBlob": "13e6120f402ac36bb08a2e7db805ced366fc3672",
+      "sha256": "ba1ad56c68cbbc3384da2426c54aff32c75651ee7619bff65fd9b24d2955c587",
+      "bytes": 2519
+    },
+    {
+      "path": "infra/product-preview/temporal-launch-render.mjs",
+      "gitBlob": "c97350ba1d9f79c37870ef9cddecbc5826b2c098",
+      "sha256": "2605078e7369f51acec8f48d35800f8919b9124c67af660cb5a34b90a3750d6a",
+      "bytes": 8497
+    },
+    {
+      "path": "infra/product-preview/temporal-launch.test.mjs",
+      "gitBlob": "bdc33f9706222cd25d38ceaa805d2671681653d3",
+      "sha256": "900f7134a89079c518eb91c5fc80f47fa70e11cbfb311425b4f82764bd445eb0",
+      "bytes": 10314
+    },
+    {
+      "path": "infra/product-preview/temporal-product-join.test.mjs",
+      "gitBlob": "98e1440838cd22cdc63de0ff6af809d286eb23c3",
+      "sha256": "f34562826bed93e4113d390b5e8ed39f8e2e74a8eed67b5bd92981c443b9d4c0",
+      "bytes": 7389
+    }
+  ],
+  "dependencies": "node_modules and local junctions excluded; clean frozen dependency qualification is not established",
+  "liveActionsDuringHandoff": 0
+}

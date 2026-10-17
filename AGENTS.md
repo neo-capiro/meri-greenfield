@@ -1,5 +1,14 @@
 # Meri greenfield integration rules
 
+## Latest Meri safe stop and shipping owner — 17 October 2026
+
+The latest parent instruction transfers **single Meri source/integration/image/shipping ownership to Fable**. Outgoing Meri implementation is stopped. Start with [the new final portable handoff](docs/handover/20261017/fable-final/README.md), its root source manifest and lane supplements. It preserves all current root source and separate feature lanes without claiming they are integrated or live-qualified. Dot retains Core/shared frontend coordination and live authenticated E2E; coordinate every shared-resource activation explicitly.
+
+The source-only root checkpoint is `59856683e07efde3e04772f6b5229faa931c4b85`; the immutable handoff URL identifies its separate documentation seal. Newer issuer source uses8445 and task-local certificates. Clerk same-application pairing was owner-confirmed05:17, while native current member/client admission is unrun. Operational reservations343/400 include one separately owned dot/frontend PR81 image attempt; Fable must not duplicate that build. No Meri successor build, keys, grants, SQL or deployment is authorized by this transfer.
+
+Dated operational states and earlier transfer/resumption records below are historical where superseded by the final packet. The ongoing ownership, architecture, security and implementation rules still apply. Preserve earlier receipts rather than editing them to describe newer outcomes.
+
+
 ## Final ownership and first milestone
 
 Fable owns **all Meri runtime/services/tools/documents/memory/settings/routines and Meri-specific UI**, including the remaining accepted Meri backlog. The first milestone is a **deployed, connected preview with usable desktop chat**, returning full source/image/config pins and health evidence to dot. Mobile and previously deferred advanced capabilities remain in Fable's accepted backlog; they are not gates for that first milestone.
