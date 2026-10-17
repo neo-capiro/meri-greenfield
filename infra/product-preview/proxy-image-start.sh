@@ -14,7 +14,7 @@ set -euo pipefail
 [[ $# -eq 3 && "$1" =~ ^[0-9a-f]{40}$ && "$3" =~ ^[0-9a-f]{64}$ ]] || { echo 'usage: proxy-image-start.sh COMMIT INPUTS_DIR ZIP_SHA256' >&2; exit 2; }
 C="$1"; O="$(cd "$2" && pwd)"; EXPECTED_ZIP="$3"
 command -v cygpath >/dev/null && O="$(cygpath -m "$O")"
-REPO="${MERI_REPO:?set the repository checkout}"
+REPO="$(cd "${MERI_REPO:?set the repository checkout}" && pwd)"; command -v cygpath >/dev/null && REPO="$(cygpath -m "$REPO")"
 export AWS_PAGER='' AWS_MAX_ATTEMPTS=1 MSYS_NO_PATHCONV=1
 PROJECT=meri-greenfield-qualification-build
 B=meri-greenfield-qual-build-967807252336-us-east-1
@@ -37,7 +37,7 @@ with zipfile.ZipFile("proxy-context.zip") as z:
     assert m["commit"] == commit, "MANIFEST_COMMIT_MISMATCH"
     assert m["files"]["repo/" + path] == script, "SCRIPT_SHA256_MISMATCH"
     assert hashlib.sha256(z.read("repo/" + path)).hexdigest() == script, "SCRIPT_MEMBER_MISMATCH"
-print(json.dumps({"zipBytes": len(data), "zipSha256": expected, "commit": commit, "buildScriptSha256": script}))
+print(json.dumps({"zipBytes": len(data), "zipSha256": expected, "commit": commit, "buildScriptSha256": script}), file=sys.stderr)
 EOF
 
 request() { # $1 = attempt, $2 = source VersionId -> exact StartBuild JSON on stdout
