@@ -4,7 +4,7 @@
 |---|---|
 | Owner | Fable (Claude Code), lane-8 session |
 | meri-greenfield branch | `fable/meri-lane8-browser-bash-20261017`, base `0bab8e34` (tip of `fable/meri-first-chat-receiving-20261017`) |
-| Draft PR | into `fable/meri-first-chat-receiving-20261017` (link added on the PR itself) |
+| Draft PR | [#139](https://github.com/neo-capiro/meri-greenfield/pull/139) into `fable/meri-first-chat-receiving-20261017` |
 | Status vocabulary | **source complete** = code and offline tests in this branch; **integrated** = received into PR #133 and wired by the runtime owner; **qualified** = measured on the real Linux target; **live** = serving users. Everything this lane added is **source complete** only. Nothing is integrated, qualified or live. |
 | Shared files touched | None of the lane-1 pinned files, contracts, migrations or lockfiles. `apps/worker/conversation/{activity,options}.mjs` gain two optional trusted runtime facts (`bashEgress`, `bashApprovals`); absent facts leave every option unchanged. |
 | First-chat pin | `sdkOptionsSha256` `af7f07b8…5431b` recomputed from this branch's source with `probeTemplateSha256` (policy.json + deployment-inputs.json): **equal** to `runtime-values.json` and the launch receipt. `apps/runtime/test/dynamic-sdk-options.test.mjs` 8/8. `runtime-values.test.mjs` 4/5, the same failure as the base (`RENDER_INPUT_REFUSED: deployment.imageScans`, lane 1). |
