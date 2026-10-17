@@ -5,12 +5,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {spawnSync} from 'node:child_process';
-import {mkdtemp,readFile,writeFile,rm,readdir} from 'node:fs/promises';
-import {tmpdir} from 'node:os';
+import {mkdtemp,readFile,writeFile,readdir} from 'node:fs/promises';
 import {join} from 'node:path';
-import {fileURLToPath} from 'node:url';
-import {renderMaterial,readPrivateDirectory,writeRendered,main,withPosixPaths,SOURCE_ROOT,ROLES,RUNTIME_USERS,PATHS} from './render-material.mjs';
-import {productControlFixture} from '../../../apps/proxy/product/test/control-fixture.mjs';
+import {writeRendered,main,withPosixPaths,SOURCE_ROOT,ROLES,RUNTIME_USERS,PATHS} from './render-material.mjs';
+import {createRenderFixture,TD,FAKE_PASSWORDS,IDENTITY,python} from './render-material.fixture.mjs';
 import {validateConfiguration} from '../../../apps/runtime/config.mjs';
 import {productWorkerTrustsPinnedServerCa} from '../../../apps/runtime/cli.mjs';
 import {compilePreparedCandidateConfiguration} from '../../../apps/runtime/prepared-candidate-config.mjs';
@@ -21,50 +19,12 @@ import {assertFirstRunGrantBindings} from '../../../apps/runtime/prepared-candid
 import {validateProductOwnerConfiguration} from '../../../apps/proxy/product/owner-entrypoint.mjs';
 import {parseProductProxyStartupConfiguration} from '../../../apps/proxy/product/startup-config.mjs';
 
-const here=fileURLToPath(new URL('.',import.meta.url)),sha=b=>createHash('sha256').update(b).digest('hex');
-const python=process.env.MERI_TEST_PYTHON??'python';
-const TD=name=>`arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-${name}:1`;
-const SVC=name=>`arn:aws:ecs:us-east-1:967807252336:service/capiro-dev/meri-product-preview-${name}`;
-const FAKE_PASSWORDS={control:'synthetic-control:p@ss/word?#',modelOwner:'synthetic-owner-pass',issuer:'synthetic-issuer-pass'};
-const IDENTITY='synthetic-core-identity-bearer-not-real';
-
+const sha=b=>createHash('sha256').update(b).digest('hex');
+const fixture=createRenderFixture();
 let work,pkiDir,inputs;
-async function setup(){
- if(inputs)return inputs;
- work=await mkdtemp(join(tmpdir(),'meri-render-test-'));pkiDir=join(work,'pki');
- const generated=spawnSync(python,['-I',join(here,'pki.py'),pkiDir,'--days','30'],{encoding:'utf8',timeout:120000});
- assert.equal(generated.status,0,'throwaway pki.py run');
- await writeFile(join(pkiDir,'db-logins.json'),JSON.stringify(FAKE_PASSWORDS));
- await writeFile(join(work,'identity'),IDENTITY);
- const pins=JSON.parse(await readFile(join(pkiDir,'pins.json'),'utf8')).certificates;
- const deployment=JSON.parse(await readFile(join(here,'deployment-inputs.json'),'utf8'));
- deployment.images.nodeRuntime='967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:'+'7'.repeat(64);
- deployment.pinsDer=Object.fromEntries(Object.entries(pins).map(([k,v])=>[k,v.der]));deployment.pinsPem=Object.fromEntries(Object.entries(pins).map(([k,v])=>[k,v.pem]));
- const core={coreOrigin:'https://core.synthetic.invalid',frontendOrigin:'https://frontend.synthetic.invalid',tenantId:'synthetic-tenant',actorId:'synthetic-actor',
-  clientId:'11111111-1111-4111-8111-000000000005',identityCredentialPath:join(work,'identity')};
- const seed=productControlFixture().seed.allocation;
- const budgets={maxTurns:20,maxToolCalls:20,maxRecoveryAttempts:0,maxRuntimeSeconds:3600,maxCostMicroUSD:2000000,maxOutputBytes:1048576};
- const runtime={schemaVersion:1,versions:{sdk:'0.3.295',cli:'2.1.295',contracts:'0.1.0',skillsDigest:'b'.repeat(64),checkpointFormat:'0.1.0'},
-  preparationIntent:{configParentDirectory:'/tmp/sdk-config',secureStorageDirectory:'/tmp/sdk-secure',launchTemplate:{command:'/usr/local/bin/node',args:['/app/synthetic-cli.js'],env:{}},
-   executableSha256:'c'.repeat(64),sdkOptionsSha256:'d'.repeat(64)},
-  allocation:{manifest:{...structuredClone(seed.manifest),budgets},catalogSha256:seed.catalogSha256,scheduleRevision:'e'.repeat(64),operations:seed.schedule.operations},
-  runtime:{maxTurns:20,maxOutputBytes:1048576},qualification:{attempt:1,policyRevision:'f'.repeat(64)}};
- const subnets=deployment.privateSubnetIds;
- const stage3={schemaVersion:1,
-  taskDefinitions:{control:TD('control'),'temporal-worker':TD('temporal-worker'),'temporal-issuer':TD('issuer'),'model-owner':TD('owner'),'model-proxy':TD('proxy'),runner:TD('runner')},
-  services:{control:SVC('control'),'temporal-worker':SVC('temporal-worker'),'temporal-issuer':SVC('issuer'),'model-owner':SVC('owner'),'model-proxy':SVC('proxy')},
-  network:{control:{subnets:[...subnets],securityGroups:['sg-05a350c100574b21f','sg-0c3da023e9e8fb292','sg-0d5b5286baf28242e']},
-   'temporal-worker':{subnets:[...subnets],securityGroups:['sg-00111cd0e475badfa','sg-0c3da023e9e8fb292']},
-   'model-owner':{subnets:[...subnets],securityGroups:['sg-05f76fcb9a014a73e','sg-0d5b5286baf28242e']},
-   'model-proxy':{subnets:[...subnets],securityGroups:['sg-02c3cc26b435e2516']},
-   runner:{subnet:subnets[0],securityGroups:['sg-098fc4f2ac89aa943']}}};
- inputs={deployment,core,runtime,stage3};return inputs;
-}
-async function render(change=x=>x,options={}){
- const i=structuredClone(await setup());change(i);
- return renderMaterial({...i,private:await readPrivateDirectory(pkiDir),identityCredential:Buffer.from(IDENTITY),...options});
-}
-test.after(async()=>{if(work)await rm(work,{recursive:true,force:true});});
+async function setup(){inputs=await fixture.setup();work=fixture.work;pkiDir=fixture.pkiDir;return inputs;}
+async function render(change,options){await setup();return fixture.render(change,options);}
+test.after(()=>fixture.cleanup());
 
 test('all five roles render from throwaway PKI and pass every repository validator and material plan',async t=>{
  const {roles,summary}=await render();
