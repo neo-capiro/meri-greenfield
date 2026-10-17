@@ -1,0 +1,31 @@
+{
+  "model_list": [
+    {
+      "model_name": "meri-sonnet-qualification",
+      "litellm_params": {
+        "model": "bedrock/invoke/us.anthropic.claude-sonnet-4-6",
+        "aws_region_name": "us-east-1"
+      },
+      "model_info": {"id": "meri-sonnet-qualification"}
+    }
+  ],
+  "router_settings": {
+    "num_retries": 0,
+    "allowed_fails": 0,
+    "fallbacks": [],
+    "context_window_fallbacks": []
+  },
+  "general_settings": {
+    "custom_auth": "apps.proxy.product.native_auth.authenticate_product_request",
+    "custom_auth_run_common_checks": true,
+    "fail_closed_budget_enforcement": true,
+    "disable_budget_reservation": false
+  },
+  "litellm_settings": {
+    "drop_params": false,
+    "callbacks": [],
+    "turn_off_message_logging": true,
+    "redact_messages_in_exceptions": true,
+    "redact_user_api_key_info": true
+  }
+}

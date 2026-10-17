@@ -41,6 +41,7 @@ class FakeConfig:
 class FakeServer:
     config = None
     served = False
+    started = True
 
     def __init__(self, config):
         type(self).config = config
@@ -236,6 +237,16 @@ class UvicornTlsProtocolTests(unittest.IsolatedAsyncioTestCase):
         self.assertIs(FakeServer.config.options["app"], self.service)
         self.assertIs(compose.call_args.kwargs["direct_tls_capture"], self.capture)
         self.assertIs(FakeServer.config.options["ssl_context_factory"](None, None), tls)
+
+    async def test_normal_return_without_started_listener_is_not_success(self):
+        tls = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+        with self.pinned(), patch.object(FakeServer, "started", False), patch(
+            "apps.proxy.product.uvicorn_tls_protocol.create_product_proxy_service",
+            return_value=self.service):
+            with self.assertRaises(StateDenied):
+                await serve_product_proxy(enabled=True, server_tls_context=tls,
+                    direct_tls_capture=self.capture, resolve_bearer_sha256=lambda _value: None,
+                    ecs_client=object(), ec2_client=object(), resolve_session=lambda _life: None)
 
 
 if __name__ == "__main__":
