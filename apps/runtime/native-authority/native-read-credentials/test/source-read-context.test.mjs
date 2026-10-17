@@ -10,6 +10,7 @@ import {storedCase as districtCase} from '../../../../gateway/sources/district-n
 import {storedCase as marketCase,ids as marketIds} from '../../../../gateway/sources/federal-market/test/fixture.mjs';
 import {storedCase as queryCase} from '../../../../gateway/sources/public-domain-query/test/fixture.mjs';
 import {storedCase as dataSearchCase} from '../../../../gateway/sources/data-search/test/fixture.mjs';
+import {storedCase as graphCase} from '../../../../gateway/sources/client-knowledge-search/test/fixture.mjs';
 import {coreFixture,ownerFixture,uuid} from './fixture.mjs';
 
 const read=async(f,proof=f.proof(),owner=f.owner)=>JSON.parse(await owner.nativeReadContextPorts.readCurrent(proof));
@@ -105,4 +106,10 @@ test('implicit global-query as-of is captured once; rechecks and credentials can
 
 for(const request of [{dataset:'federal_grants',select:[{field:'agency'}]},{dataset:'lda_registrations',select:[{field:'client_name'}],asOfDate:'2026-01-01T00:00:00Z'}])test('explicit or unsupported global-query default remains null',async()=>{
  const f=await make(queryCase(undefined,{request}));assert.deepEqual((await read(f)).context,{defaultAsOf:null});
+});
+
+test('graph retains its empty context without acquiring the semantic observation clock',async()=>{
+ const f=await make(graphCase(undefined,{request:{clientId}}));
+ try{const first=await read(f);assert.deepEqual(first.context,{});f.state.now+=37;assert.deepEqual((await read(f)).context,{});const credentials=await f.owner.getCredentials(f.credentials({}));assert.deepEqual(credentials.normalizationContext,{});}
+ finally{f.scope.abort();}
 });

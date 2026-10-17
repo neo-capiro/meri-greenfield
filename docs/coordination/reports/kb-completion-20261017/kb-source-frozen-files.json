@@ -1,0 +1,47 @@
+[
+  {
+    "path": "apps/gateway/sources/client-knowledge-search/handler.mjs",
+    "sha256": "ca34df9e6f00ba3b899015274a061067c910efece1b916076e02f1fdfcc723b8",
+    "bytes": 2101
+  },
+  {
+    "path": "apps/gateway/sources/client-knowledge-search/request-context.mjs",
+    "sha256": "58620b9ca1991105d0d5688324d170a336251e63d8bd61595abd810f74c9f803",
+    "bytes": 2419
+  },
+  {
+    "path": "apps/gateway/general-reads/families/client-knowledge-search.mjs",
+    "sha256": "d6ca1a2ad25449dd02a987cb4eb7c986153aef704ba69e3fe3eae5bfff53cad3",
+    "bytes": 358
+  },
+  {
+    "path": "apps/gateway/sources/retained-reads/native-families.mjs",
+    "sha256": "7fb134a5af3afc4e75e72bbaf698ae39853d814767b79db134df64c982acc7c4",
+    "bytes": 1732
+  },
+  {
+    "path": "apps/gateway/sources/retained-reads/native-handler.mjs",
+    "sha256": "929328312c20f459bff51e8702ef258ed2366f0ba75673e2e506203757b5a83d",
+    "bytes": 5564
+  },
+  {
+    "path": "apps/gateway/sources/retained-reads/http-transport.mjs",
+    "sha256": "3a0fb801aa0ae686fd699f775c351b46c1e8e7f06ffc0c59c934fbc9702c6f51",
+    "bytes": 5223
+  },
+  {
+    "path": "apps/gateway/sources/client-knowledge-search/test/fixture.mjs",
+    "sha256": "3aa0cbe2fb75e347a6bded1e6aaa8234c947cb3b3f869d00dc758406af37145a",
+    "bytes": 5138
+  },
+  {
+    "path": "apps/gateway/sources/client-knowledge-search/test/semantic-handler.test.mjs",
+    "sha256": "4f357ea8847e2f187ae2e011de576f3e498fb2a29d77f3f68b5fc714bd01cd01",
+    "bytes": 16458
+  },
+  {
+    "path": "apps/gateway/sources/client-knowledge-search/test/EVIDENCE.md",
+    "sha256": "bf3f1bc37ea4c7bf68f4a1922e20e7b9311158c26eb8ab494cd5a7a9d16de105",
+    "bytes": 3421
+  }
+]

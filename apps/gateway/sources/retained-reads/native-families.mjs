@@ -8,7 +8,6 @@ export const NATIVE_READ_FAMILIES=Object.freeze([
 /** Only these reviewed source slices exist in otherwise incomplete families. No sibling inherits eligibility. */
 export const NATIVE_READ_OPERATION_SUBSETS=Object.freeze({
  'public-data':Object.freeze(['query_economic_data']),
- 'client-knowledge-search':Object.freeze(['query_knowledge_graph']),
  'state-status-votes':Object.freeze(['get_state_bill_status','search_state_floor_votes']),
  'tracked-bills':Object.freeze(['search_tracked_bills']),
  'public-domain-hearings':Object.freeze(['search_committee_hearings']),

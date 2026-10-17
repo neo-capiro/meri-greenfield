@@ -8,6 +8,7 @@ import {captureOutreachListClientSelection} from '../../../gateway/sources/outre
 import {assertStoredStateRequest} from '../../../gateway/sources/state-status-votes/request-context.mjs';
 import {captureBusinessDevelopmentResource} from '../../../gateway/sources/business-development/request-context.mjs';
 import {captureFundingClientSelection,assertFundingClientSubject} from '../../../gateway/sources/funding-opportunities/request-context.mjs';
+import {captureClientKnowledgeSearchSelection,assertClientKnowledgeSearchSubject} from '../../../gateway/sources/client-knowledge-search/request-context.mjs';
 
 const UUID=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u;
 const refuse=code=>{throw nativeReadFault(code);};
@@ -51,10 +52,19 @@ export function assertSourceReadRequest(contract,request,subject){
  if(contract.binding.group==='outreach-query')captureOutreachListClientSelection(request);
  if(contract.binding.group==='business-development')captureBusinessDevelopmentResource(contract.descriptor.operation,request,subject);
  if(contract.binding.group==='funding-opportunities')assertFundingClientSubject(subject,captureFundingClientSelection(contract.descriptor.operation,request));
+ if(contract.binding.group==='client-knowledge-search'&&contract.descriptor.operation.id==='search_client_knowledge')assertClientKnowledgeSearchSubject(subject,captureClientKnowledgeSearchSelection(contract.descriptor.operation,request));
 }
 
 export function createSourceReadContext({contract,proof,native,defaultCongress,now,priorContext}){
  const group=contract.binding.group;
+ if(group==='client-knowledge-search'&&contract.descriptor.operation.id==='search_client_knowledge'){
+  const selected=captureClientKnowledgeSearchSelection(contract.descriptor.operation,proof.request);
+  assertClientKnowledgeSearchSubject(proof.subject,selected);
+  if(selected.clientId!==null)assertNativeVisibleClients(native,[selected.clientId]);
+  if(priorContext)return {asOf:priorContext.asOf};
+  const at=now();if(!Number.isSafeInteger(at)||at<0||at>8640000000000000)refuse('ACCESS_DENIED');
+  return {asOf:new Date(at).toISOString()};
+ }
  if(group==='funding-opportunities'){
   const selected=captureFundingClientSelection(contract.descriptor.operation,proof.request);
   assertFundingClientSubject(proof.subject,selected);assertNativeVisibleClients(native,[selected.clientId]);

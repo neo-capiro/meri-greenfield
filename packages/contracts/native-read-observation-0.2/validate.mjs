@@ -11,6 +11,7 @@ export const NATIVE_READ_OBSERVATION_SCHEMA_VERSION='meri-native-read-observatio
 export const NATIVE_READ_OBSERVATION_HEADER='x-meri-read-observation';
 export const NATIVE_READ_OBSERVATION_MAX_BYTES=2048;
 export {FUNDING_READ_OPERATIONS};
+export const NATIVE_READ_OBSERVATION_OPERATIONS=Object.freeze([...FUNDING_READ_OPERATIONS,'search_client_knowledge']);
 const ajv=new Ajv({strict:true,allErrors:false}),valid=ajv.compile(schema);
 const refuse=()=>{throw Error('NATIVE_READ_OBSERVATION_REFUSED');};
 const bytes=value=>Buffer.from(canonicalize(value),'utf8');
@@ -18,7 +19,7 @@ const bytes=value=>Buffer.from(canonicalize(value),'utf8');
 function expected(raw){
  const {operation,request}=data(own(raw,['operation','request']));
  own(operation,['id','version']);
- if(operation.version!=='0.2.0'||!FUNDING_READ_OPERATIONS.includes(operation.id)||!request||typeof request!=='object'||Array.isArray(request))refuse();
+ if(operation.version!=='0.2.0'||!NATIVE_READ_OBSERVATION_OPERATIONS.includes(operation.id)||!request||typeof request!=='object'||Array.isArray(request))refuse();
  // Original unwrapped tool JSON. No defaults, trimming, context merge or family normalization here.
  return {operation,requestSha256:canonicalSha256(request)};
 }

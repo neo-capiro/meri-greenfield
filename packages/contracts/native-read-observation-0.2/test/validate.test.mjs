@@ -8,18 +8,20 @@ import golden from './golden.json' with {type:'json'};
 import {canonicalSha256 as hash} from '../../validate.mjs';
 import {FUNDING_OPPORTUNITY_OPERATION_IDS} from '../../retrieval-0.2/funding-opportunities-validation.mjs';
 import {fundingInstant} from '../../retrieval-0.2/funding-envelope-validation.mjs';
-import {NATIVE_READ_OBSERVATION_SCHEMA_VERSION,NATIVE_READ_OBSERVATION_HEADER,NATIVE_READ_OBSERVATION_MAX_BYTES,FUNDING_READ_OPERATIONS,
+import {NATIVE_READ_OBSERVATION_SCHEMA_VERSION,NATIVE_READ_OBSERVATION_HEADER,NATIVE_READ_OBSERVATION_MAX_BYTES,FUNDING_READ_OPERATIONS,NATIVE_READ_OBSERVATION_OPERATIONS,
  createNativeReadObservation,assertNativeReadObservation,encodeNativeReadObservation,decodeNativeReadObservation} from '../validate.mjs';
 
 const first=golden.vectors[0],correlation=({operation,request})=>({operation,request}),proof=correlation(first);
 const carrier=json=>Buffer.from(json,'utf8').toString('base64url');
 const refused=run=>assert.throws(run,{message:'NATIVE_READ_OBSERVATION_REFUSED'});
 
-test('the private schema is finite, closed and matches the existing five funding reads',()=>{
+test('the private schema is finite, closed and preserves the existing five funding reads plus semantic KB',()=>{
  assert.equal(schema.$id,'urn:meri:native-read-observation:0.2.0');assert.equal(NATIVE_READ_OBSERVATION_SCHEMA_VERSION,'meri-native-read-observation/1');
  assert.equal(NATIVE_READ_OBSERVATION_HEADER,'x-meri-read-observation');assert.equal(NATIVE_READ_OBSERVATION_MAX_BYTES,2048);
  assert.deepEqual(FUNDING_READ_OPERATIONS,FUNDING_OPPORTUNITY_OPERATION_IDS);assert.ok(Object.isFrozen(FUNDING_READ_OPERATIONS));
- assert.equal(schema.$defs.FundingReadObservation.additionalProperties,false);assert.equal(schema.$defs.FundingReadContext.additionalProperties,false);
+ assert.deepEqual(NATIVE_READ_OBSERVATION_OPERATIONS,[...FUNDING_READ_OPERATIONS,'search_client_knowledge']);assert.ok(Object.isFrozen(NATIVE_READ_OBSERVATION_OPERATIONS));
+ assert.deepEqual(schema.$defs.NativeReadOperationRef.properties.id.enum,NATIVE_READ_OBSERVATION_OPERATIONS);
+ assert.equal(schema.$defs.NativeReadObservation.additionalProperties,false);assert.equal(schema.$defs.NativeReadContext.additionalProperties,false);
  assert.equal(golden.vectors.length,5);assert.deepEqual(golden.vectors.map(v=>v.operation.id),FUNDING_READ_OPERATIONS);
 });
 

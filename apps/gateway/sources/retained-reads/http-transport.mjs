@@ -6,6 +6,7 @@ import {ownFields,frozenData} from '../source-admission.mjs';
 import {readJsonResponse,cancelBody,responseBody} from '../json-response.mjs';
 import {credentialProof} from './call-context.mjs';
 import {createNativeReadObservation,encodeNativeReadObservation,NATIVE_READ_OBSERVATION_HEADER} from '../../../../packages/contracts/native-read-observation-0.2/validate.mjs';
+import {FUNDING_OPPORTUNITY_OPERATION_IDS} from '../../../../packages/contracts/retrieval-0.2/funding-opportunities-validation.mjs';
 const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const token=value=>typeof value==='string'&&/^[\x21-\x7e]{1,8192}$/.test(value);
 export function createRetainedHttpTransport(configuration){
@@ -20,7 +21,9 @@ export function createRetainedHttpTransport(configuration){
  if(delegated&&(typeof delegated.read!=='function'||getCredentials!==undefined))deny('GATEWAY_CONFIGURATION');
  return Object.freeze({async read(c,specification){
   const {path,method,body,serviceSecret=false,observation}=ownFields(specification,['path','method'],['body','serviceSecret','observation']);
-  if(observation!==undefined&&(observation!=='funding-asof'||c.contract.binding.group!=='funding-opportunities'||
+  const fundingObservation=observation==='funding-asof'&&c.contract.binding.group==='funding-opportunities'&&FUNDING_OPPORTUNITY_OPERATION_IDS.includes(c.operation.id);
+  const knowledgeObservation=observation==='client-knowledge-asof'&&c.contract.binding.group==='client-knowledge-search'&&c.operation.id==='search_client_knowledge';
+  if(observation!==undefined&&(!(fundingObservation||knowledgeObservation)||c.operation.version!=='0.2.0'||
    method!=='POST'||path!==`/api/clio/tools/${c.operation.id}`||!serviceSecret||!same(body,c.request)))deny('GATEWAY_CONFIGURATION');
   // Explicit trusted composition only. New-mode failure never reaches legacy credentials or transport.
   if(observation&&delegated)deny('UNAVAILABLE');

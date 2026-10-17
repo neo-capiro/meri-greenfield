@@ -1,0 +1,9 @@
+Γ£ö KB SDK semantic: native membership revision changes before-credential leave UNKNOWN without result or retry (317.6183ms)
+Γä╣ tests 1
+Γä╣ suites 0
+Γä╣ pass 1
+Γä╣ fail 0
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 1417.2562
