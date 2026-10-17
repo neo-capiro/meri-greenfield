@@ -4,6 +4,7 @@ import {own,data} from '../../../packages/contracts/commands-0.2/execution-bound
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {createHash,timingSafeEqual} from 'node:crypto';
 import {executionFault} from './execution-broker.mjs';
+import {continuationLaunchArgs} from './continuation-pin.mjs';
 const refuse=()=>{throw executionFault('PREPARATION_REFUSED');};
 /** The one extra trust anchor the SDK subprocess may load: the pinned control/server CA the runner poststart owner writes
  * (MERI_POSTSTART_CA_SHA256) to /run/meri/poststart + bootstrap/control-ca.pem. It signs the model proxy's server certificate. */
@@ -21,14 +22,18 @@ export function compileNativePreparationIntent(value){
 }
 const credential=value=>typeof value==='string'&&/^\S{1,8192}$/u.test(value);
 const sameSecret=(a,b)=>credential(a)&&credential(b)&&timingSafeEqual(createHash('sha256').update(a).digest(),createHash('sha256').update(b).digest());
-function match(value,intent,verify){
+/** The launch this run must present: the configured fresh template with exactly the run's SDK continuation arguments where the SDK
+ * emits them (continuation-pin.mjs continuationLaunchArgs). `continuation` is null for a fresh run, else the continuation option set
+ * the CALLER derived from its own source (control: its saved lineage; task: its session mirror's restoration), never the descriptor. */
+export function preparedLaunchTemplate(intent,continuation=null){const i=compileNativePreparationIntent(intent);return data({...i.launchTemplate,args:continuationLaunchArgs(i.launchTemplate.args,continuation)});}
+function match(value,intent,verify,continuation){
  const i=compileNativePreparationIntent(intent),d=data(own(value,['command','args','cwd','env'])),env=d.env;
  if(!env||Array.isArray(env)||!absolute(env.CLAUDE_CONFIG_DIR)||dirname(env.CLAUDE_CONFIG_DIR)!==i.configParentDirectory||d.cwd!==i.workspace||!verify(env.ANTHROPIC_AUTH_TOKEN))refuse();
  const {CLAUDE_CONFIG_DIR:ignored,ANTHROPIC_AUTH_TOKEN:verified,...fixed}=env;
- if(hash({command:d.command,args:d.args,env:fixed})!==hash(i.launchTemplate))refuse();
+ if(hash({command:d.command,args:d.args,env:fixed})!==hash(preparedLaunchTemplate(i,continuation)))refuse();
  return d;
 }
 /** Trusted preparation: the per-task proxy credential is excluded from the static template and verified only against the issuer's exact value supplied by the caller; the configured template never carries it. */
-export function matchPreparedDescriptor(value,intent,proxyCredential){if(!credential(proxyCredential))refuse();return match(value,intent,presented=>sameSecret(presented,proxyCredential));}
+export function matchPreparedDescriptor(value,intent,proxyCredential,continuation=null){if(!credential(proxyCredential))refuse();return match(value,intent,presented=>sameSecret(presented,proxyCredential),continuation);}
 /** Untrusted task-side pre-check before the preparation authority sees the descriptor: the same shape checks with only a well-formed credential value present; exactness is the authority's check. */
-export function matchPreparedDescriptorShape(value,intent){return match(value,intent,credential);}
+export function matchPreparedDescriptorShape(value,intent,continuation=null){return match(value,intent,credential,continuation);}
