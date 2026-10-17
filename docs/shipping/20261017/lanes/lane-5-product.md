@@ -65,7 +65,7 @@ What this proves: the receiving composition (actual foreground factory, public r
 
 ## Tests (this host: Windows, Node 24.19; see host notes in the lane brief)
 
-The results below were measured on the lane tree **before** the `3fa0325a`/`c11323a4` merges. After the merges the host's commit memory dropped to about 0.2 GB and `node` could not start (exit 127), so post-merge focused reruns are listed separately in "Post-merge focused results" as they complete. Until a row appears there, treat the merged tree as unverified.
+The results below were measured on the lane tree **before** the `3fa0325a`/`c11323a4` merges. After the merges the host's commit memory dropped to about 0.2 GB and `node` could not start (exit 127), so post-merge focused reruns are listed separately in "Post-merge focused results" as they complete. Files without a row there are unverified on the merged tree.
 
 | Set | Result |
 |---|---|
@@ -115,4 +115,14 @@ The host's commit memory was exhausted for much of the session (commit headroom 
 
 | File | Result |
 |---|---|
-| (pending host memory) | |
+| `apps/runtime/test/product-routines-flow.test.mjs` | 2 pass / 0 fail |
+| `apps/control/test/schedule-lifecycle.test.mjs` | 35 pass / 0 fail |
+| `apps/control/schedules/test/occurrence-migration-source.test.mjs` | 2 pass / 0 fail |
+| `apps/runtime/test/schedule-worker-role.test.mjs` | 3 pass / 0 fail |
+| `apps/gateway/budget/product-model-budget.test.mjs` | 12 pass / 0 fail |
+| `apps/gateway/budget/product-model-settlement.test.mjs` | 6 pass / 0 fail |
+| `apps/gateway/budget/test/occurrence-cost-scope.test.mjs` | 36 pass / 0 fail |
+| `apps/runtime/test/schedule-service.test.mjs` | 17 pass / 0 fail |
+| `apps/runtime/test/routines-mount.test.mjs` | 7 pass / 0 fail |
+| `apps/control/schedules/test/scheduled-job-workflow.test.mjs` | 3 pass / 0 fail |
+| remaining: task-command-mount, task-update-services, product-readiness, first-run-mount, native-allocation-admission, product-envelope, memory, settings | pending host memory |
