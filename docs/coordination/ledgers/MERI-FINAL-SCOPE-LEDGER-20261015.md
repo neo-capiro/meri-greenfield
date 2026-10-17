@@ -201,11 +201,11 @@ This is source reconciliation only. The historical proposal tables below retain 
 | --- | --- |
 | Selected capabilities / continued exclusions | 96 / 43 |
 | Selected source reads / separate product or governed capabilities | 82 / 14 |
-| Single meri_reads registry | 55 operations / 32 families |
-| Registry accounting | 53 selected source reads + 1 product-state read + 1 historical contract |
+| Single meri_reads registry | 56 operations / 33 families |
+| Registry accounting | 54 selected source reads + 1 product-state read + 1 historical contract |
 | Selected source reads declared in skill manifests | 52 current contracts + 1 historical-only contract |
 | Selected source reads reachable through admitted skill source | 11 |
-| Existing source adapters lacking general-conversation registration | 1 |
+| Existing source adapters lacking general-conversation registration | 0 |
 | Selected source reads lacking adapters | 28 (17 declared by skills; 11 without a skill declaration) |
 | Pinned actual Core producer mappings (not qualification) | 63 |
 | Live | 0 |
@@ -227,6 +227,7 @@ Only `quick_skill.relationship_brief`, `quick_skill.commitments_audit` are admit
 | `client-knowledge-monday` | `read_monday_client_boards` |
 | `client-knowledge-profile` | `get_client_context` |
 | `client-registry` | `lookup_client_registry` |
+| `data-search` | `search_capiro_data` |
 | `dataset-metadata` | `list_global_datasets` |
 | `disclosures` | `search_fara_registrations`, `search_lda_filings`, `search_sec_filings` |
 | `district-nexus` | `get_district_nexus_changes`, `get_district_nexus_context` |
@@ -252,7 +253,7 @@ Only `quick_skill.relationship_brief`, `quick_skill.commitments_audit` are admit
 | `stored-intelligence` | `search_intel_articles` |
 | `tenant-contacts` | `find_contacts` |
 
-Implemented source adapters awaiting general exposure: `search_capiro_data`. Implementation does not establish a usable SDK input contract or availability.
+Every canonical source adapter already present is exposed.
 
 The finite native families listed above retain their receiving-contract truth limits and require current task, tenant/user and native credentials. Research portfolio, portfolio changes and Florida budget project reads remain exposed through their existing retained-context path. These source paths are not qualified or live. The remaining selected source reads lack an adapter; producer mapping alone does not implement them. Their exact unresolved families and operations are:
 
