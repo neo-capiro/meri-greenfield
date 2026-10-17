@@ -7,6 +7,7 @@ import {assertScheduleIntent} from '../../../packages/contracts/schedules-0.2/li
 import {allocation} from '../../gateway/budget/tool-budget-binding.mjs';
 import {createRequestCurrent} from '../action-host/current.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
+import {SCHEDULED_MERI_INBOX_DESTINATION} from './scheduled-conversation-currentness.mjs';
 
 const same=(a,b)=>hash(a)===hash(b),uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u;
 const limitKeys=['maxCostMicrousd','maxRuntimeSeconds','retryLimit'];
@@ -26,9 +27,9 @@ function native(value,binding){
  * Destination and limits are null for list/cancel. Every receipt is fresh and binds the complete request and native selection.
  * template is one explicit generic task identity matching the actual allocation manifest, never a named-skill coercion. */
 export function createScheduleRuntimeContext(configuration){
- let c,a,template,workflow,bounds,ports,checkPolicy,readFiring,commandContext;
+ let c,a,template,workflow,bounds,ports,checkPolicy,readFiring,commandContext,prepareCancellation;
  try{
-  c=own(configuration,['sessions','commandContext','allocationJson','template','workflow','scheduleOwner','policy','now','newId','limits']);
+  c=own(configuration,['sessions','commandContext','allocationJson','template','workflow','scheduleOwner','policy','now','newId','limits'],['runCancellation']);
   commandContext=data(own(c.commandContext,['binding','clientResolution']));validateShape('RunBinding',commandContext.binding);
   template=data(own(c.template,['taskId','version','manifestSha256']));workflow=data(own(c.workflow,['taskQueue','workflowIdPrefix']));
   bounds=data(own(c.limits,['maxRequestMs','maxFactBytes','retryLimit']));a=allocation(c.allocationJson);
@@ -38,6 +39,7 @@ export function createScheduleRuntimeContext(configuration){
    typeof workflow.taskQueue!=='string'||!/^[a-zA-Z0-9._-]{1,128}$/u.test(workflow.taskQueue)||typeof workflow.workflowIdPrefix!=='string'||!/^[a-zA-Z0-9._/-]{1,128}$/u.test(workflow.workflowIdPrefix))fail('CONFIGURATION');
   ports=Object.freeze({authenticateSession:storageMethod(c.sessions,'authenticateSession'),readCurrentState:storageMethod(c.sessions,'readCurrentState')});
   checkPolicy=storageMethod(c.policy,'check');readFiring=storageMethod(c.scheduleOwner,'readFiring');
+  prepareCancellation=c.runCancellation===undefined?null:storageMethod(c.runCancellation,'prepare');
  }catch{throw fault('CONFIGURATION');}
 
  async function policy({phase,operation,request,currentSchedule,proposal,current,scheduleBinding,life}){
@@ -49,7 +51,7 @@ export function createScheduleRuntimeContext(configuration){
   if(['list_scheduled_tasks','cancel_scheduled_task'].includes(operation)){if(r.destinationResolution!==null||r.limits!==null)fail('POLICY');}
   else{
    const d=own(r.destinationResolution,['reference','destinationId']);
-   if(d.reference!==request.destinationReference||typeof d.destinationId!=='string'||!d.destinationId||d.destinationId.length>256)fail('POLICY');limits(r.limits);
+   if(d.reference!==request.destinationReference||d.destinationId!==SCHEDULED_MERI_INBOX_DESTINATION)fail('POLICY');limits(r.limits);
   }
   life.limitDeadline(r.expiresAtMs);life.check();return r;
  }
@@ -108,7 +110,8 @@ export function createScheduleRuntimeContext(configuration){
  async function resolve(value){
   const call=own(value,['credential','operation','request','deadlineMs'],['signal','proposal']);nativeSignal(call.signal);
   if(!Number.isSafeInteger(call.deadlineMs))fail('REQUEST');
-  const request=validators.normalizeRequest(call.operation,call.request),proposal=call.proposal===undefined?null:data(toolShape('ScheduleMutationOutput',call.proposal));
+  let request=validators.normalizeRequest(call.operation,call.request);const proposal=call.proposal===undefined?null:data(toolShape('ScheduleMutationOutput',call.proposal));
+  if(call.operation==='cancel_scheduled_task'&&request.runs.length)fail('REQUEST');
   if(proposal&&(proposal.status!=='approval_required'||proposal.operation!==call.operation))fail('REQUEST');
   const current=requestCurrent(call);
   return current.run(call.signal,async life=>{
@@ -116,7 +119,13 @@ export function createScheduleRuntimeContext(configuration){
    const scheduleId=list?null:proposal?.projection.scheduleId??request.scheduleId??c.newId(),intentId=list?null:proposal?.proposalId??c.newId();
    if(!list&&(!uuid.test(scheduleId)||!uuid.test(intentId)||scheduleId===intentId))fail('CONFIGURATION');
    const read=async()=>list?null:saved(await life.run(()=>readFiring({tenantId:identity.tenantId,scheduleId},life.check)),call.operation,first,scheduleId);
-   const before=await read(),receipt=await policy({phase:'resolve',operation:call.operation,request,currentSchedule:before,proposal,current:first,scheduleBinding:null,life});
+   const before=await read();
+   if(call.operation==='cancel_scheduled_task'&&request.running==='request_cancel'){
+    if(!prepareCancellation)fail('UNAVAILABLE');
+    const runs=await life.run(signal=>prepareCancellation({callerIdentity:identity,scopes:first.scopes,request,signal,deadlineMs:current.deadline()}));
+    request=validators.normalizeRequest(call.operation,{...request,runs});
+   }
+   const receipt=await policy({phase:'resolve',operation:call.operation,request,currentSchedule:before,proposal,current:first,scheduleBinding:null,life});
    let scheduleContext={callerIdentity:identity,requestSha256:hash(request),nowMs:c.now(),deadlineMs:Math.min(current.deadline(),receipt.expiresAtMs)};
    if(list)scheduleContext={...scheduleContext,owner:identity};
    else{

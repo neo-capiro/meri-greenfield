@@ -13,6 +13,7 @@ import {prepareOriginalInputFacts} from '../../control/conversations/initial-inp
 import {snapshotOccurrence,occurrenceIdentity} from '../../control/schedules/scheduled-occurrence.mjs';
 import {sdkMethod} from '../../control/schedules/temporal-schedule-mutations.mjs';
 import {workflowId} from '../../control/conversations/temporal-dispatch.mjs';
+import {SCHEDULED_MERI_INBOX_DESTINATION} from '../../control/schedules/scheduled-conversation-currentness.mjs';
 
 const errors=new WeakSet(),same=(a,b)=>hash(a)===hash(b),integer=v=>Number.isSafeInteger(v)&&v>=0;
 const digest=v=>typeof v==='string'&&/^[a-f0-9]{64}$/u.test(v);
@@ -38,7 +39,7 @@ export function createScheduledNativeAdmission(options){
    !/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(t.task.taskId)||
    !integer(t.task.version)||t.task.version<1||t.task.manifestSha256!==a.manifestSha256||!digest(t.configurationSha256)||
    a.run.tenantId!==t.principal.tenantId||a.run.actorId!==t.principal.actorId||!integer(t.runWindowMs)||t.runWindowMs<1||
-   typeof t.destinationId!=='string'||!t.destinationId||t.destinationId.length>256)fail('CONFIGURATION');
+   t.destinationId!==SCHEDULED_MERI_INBOX_DESTINATION)fail('CONFIGURATION');
   now=o.now??Date.now;maxRequestMs=o.maxRequestMs??10000;
   if(typeof now!=='function'||!integer(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('CONFIGURATION');
  }catch{throw fault('CONFIGURATION');}

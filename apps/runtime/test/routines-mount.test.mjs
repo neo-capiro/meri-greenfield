@@ -12,6 +12,10 @@ import {productReadiness} from '../product-readiness.mjs';
 import {createControlRouteApplications} from '../control-route-boundary.mjs';
 import {ROUTINE_PATHS} from '../../control/schedules/application-http.mjs';
 import {applicationFixture,routineRequest} from '../../control/schedules/test/application-fixture.mjs';
+import {scheduledConversationFixture} from '../../control/schedules/test/scheduled-conversation-fixture.mjs';
+import {NOW as inboxNow} from '../../control/schedules/test/scheduled-dispatch-harness.mjs';
+import {id} from '../../control/conversations/test/store-fixture.mjs';
+import {receiveConversationHistoryRequest,receiveConversationHistoryResponse} from '../../../packages/contracts/dist/conversation-history.mjs';
 const configuration={sourceEnabled:false,limits:{requestMs:100,requestBytes:131072},native:{maxResponseBytes:131072}};
 const request=path=>new Request('https://synthetic.invalid'+path,{method:'POST',headers:{authorization:'Bearer synthetic','content-type':'application/json'},body:'{}'});
 test('fixed routines routes are public only and absent owner is unavailable',async()=>{
@@ -32,13 +36,19 @@ test('trusted factory receives actual assembly sessions once and retains origina
 test('routines kill switch avoids dependencies and reports disabled separately',async()=>{
  let inspected=0;const poison=new Proxy({},{get(){inspected++;throw Error('unexpected');}});
  const feature=createRuntimeRoutinesFeature({enabled:false,pool:poison,client:poison,context:poison});assert.equal(feature.state(),'disabled');
+ assert.equal(feature.inboxState(),'disabled');
  const ports=captureRuntimePorts({routinesApplicationFactory:feature}),app=createRuntimeProductApplications({configuration,sessions:poison,ports,now:Date.now});
  assert.equal((await app.handle(request(ROUTINE_PATHS.approve))).status,503);assert.equal(inspected,0);
  assert.equal(productReadiness({ports,sourceEnabled:false}).owners.find(x=>x.name==='schedules.application').state,'disabled');
+ assert.equal(productReadiness({ports,sourceEnabled:false}).owners.find(x=>x.name==='schedules.inbox').state,'disabled');
 });
 test('capture rejects accessor or unknown authority selectors without invoking them',()=>{
  let touched=0;assert.throws(()=>captureRuntimePorts({routinesApplicationFactory:{get create(){touched++;return ()=>{};},state(){return 'composed';}}}));
  assert.throws(()=>captureRuntimePorts({routinesApplicationFactoryModule:'forged'}));assert.equal(touched,0);
+ for(const name of ['historyCurrentness','inboxState']){
+  const feature={create(){},state(){return 'pending';}};Object.defineProperty(feature,name,{get(){touched++;throw Error('unexpected');}});
+  assert.throws(()=>captureRuntimePorts({routinesApplicationFactory:feature}));assert.equal(touched,0);
+ }
 });
 test('actual compiled feature joins actual canonical sessions and native context through public preparation and approval',async()=>{
  const f=await applicationFixture();try{
@@ -50,4 +60,31 @@ test('actual compiled feature joins actual canonical sessions and native context
   const approved=await send(ROUTINE_PATHS.approve,{...f.body(prepared),decision:'approved'});assert.equal(approved.status,200);assert.equal((await approved.json()).status,'acknowledged');assert.equal(f.temporal.calls.create,1);
   f.state.revoked=true;const denied=await send(ROUTINE_PATHS.approve,{...f.body(prepared),decision:'approved'});assert.notEqual(denied.status,200);assert.equal(f.temporal.calls.create,1);
  }finally{f.close();}
+});
+
+test('actual enabled feature mounts canonical scheduled history and rechecks native client removal without a Core row',async()=>{
+ const f=await applicationFixture(),h=await scheduledConversationFixture(),now=()=>inboxNow;try{
+  const {commandContext,allocationJson,template,workflow,policy,limits}=f.contextConfiguration;
+  const feature=createRuntimeRoutinesFeature({enabled:true,pool:h.schedules.pool,client:f.client,context:{commandContext,allocationJson,template,workflow,policy,limits},now,newId:f.newId,limits:{maxRequestMs:5000,maxRequestBytes:131072,maxResponseBytes:131072}});
+  assert.equal(feature.inboxState(),'pending');const ports=captureRuntimePorts({routinesApplicationFactory:feature,conversationMembership:h.gate,conversationCurrentness:h.core});
+  const app=createRuntimeProductApplications({configuration,sessions:f.sessions,ports,conversationStore:h.store,retention:h.retention,now});
+  assert.equal(feature.state(),'composed');assert.equal(feature.inboxState(),'composed');assert.equal(productReadiness({ports,sourceEnabled:false}).owners.find(o=>o.name==='schedules.inbox').state,'composed');
+  const routes=createControlRouteApplications({assembly:app,candidate:{handle(){throw Error('private');}}});
+  const send=(route,body)=>routes.public.handle(new Request('https://synthetic.invalid/api/conversations/'+route,{method:'POST',headers:{authorization:'Bearer native','content-type':'application/json'},body:JSON.stringify(body)}));
+  await h.publish('run.status',{state:'starting',reasonCode:null});await h.publish('run.status',{state:'running',reasonCode:null});
+  await h.publish('message.delta',{messageId:id(191),text:'Routine result through the actual mounted history owner.'});await h.publish('run.status',{state:'completed',reasonCode:null});
+  const list=await send('list',{});assert.equal(list.status,200);assert.equal((await list.json()).conversations[0].conversationId,h.call.conversationId);
+  const body={conversationId:h.call.conversationId},transcript=await send('transcript',body);assert.equal(transcript.status,200);
+  const admitted=receiveConversationHistoryRequest('transcript',Buffer.from(JSON.stringify(body)));
+  const saved=await receiveConversationHistoryResponse('transcript',200,new Uint8Array(await transcript.arrayBuffer()),admitted);
+  assert.equal(saved.latestRun.state,'completed');assert.equal(saved.events.find(e=>e.event.type==='message.delta').event.data.text,'Routine result through the actual mounted history owner.');assert.equal(h.state.coreReads,0);
+  h.member.clientIds=[];const hidden=await send('transcript',body);assert.notEqual(hidden.status,200);assert.equal(h.state.coreReads,0);assert.equal(h.runCount(),1);assert.equal(h.temporal.calls.start,1);
+ }finally{f.close();}
+});
+
+test('captured optional history/inbox methods retain the borrowed receiver and cannot be replaced after admission',()=>{
+ let currentCalls=0;const expected={assertCurrent:async()=>{}};
+ const feature={marker:'owner',create(){return {handle(){return null;}};},state(){return 'composed';},historyCurrentness(value){assert.equal(this.marker,'owner');assert.deepEqual(value,{gate:'gate',core:'core'});currentCalls++;return expected;},inboxState(){assert.equal(this.marker,'owner');return 'composed';}};
+ const ports=captureRuntimePorts({routinesApplicationFactory:feature});feature.historyCurrentness=()=>{throw Error('replaced');};feature.inboxState=()=>{throw Error('replaced');};
+ assert.equal(ports.routinesApplicationFactory.historyCurrentness({gate:'gate',core:'core'}),expected);assert.equal(ports.routinesApplicationFactory.inboxState(),'composed');assert.equal(currentCalls,1);
 });

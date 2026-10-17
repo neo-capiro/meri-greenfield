@@ -51,7 +51,8 @@ function routedPool(schedules,preparations){return {async connect(){
  },release(error){client?.release(error);}};
 }};}
 
-export async function applicationFixture(){
+/** Optional cancellation is a trusted private boundary; defaults and every canonical application owner remain unchanged. */
+export async function applicationFixture({runCancellation}={}){
  const state={now:NOW,ids:100,fetches:[],policies:[],scheduleQueries:[],allowed:true,refusePhase:null,revoked:false,actorId:binding.actorId,policyRevision:'p1',membershipRevision:'m1',policyHook:null,scheduleQueryHook:null,loseCreateAck:false,failCreateBefore:false,loseScheduleCommit:false};
  const now=()=>state.now,newId=()=>id(state.ids++),scopes=()=>[{tenantId:binding.tenantId,kind:'client',resourceId:clientId,policyRevision:state.policyRevision}],commandContext={binding,clientResolution:{reference:clientId,clientId}};
  const fetchImpl=async(url,init)=>{
@@ -77,14 +78,14 @@ export async function applicationFixture(){
    destinationResolution:mutation?{reference:selection.request.destinationReference,destinationId:'meri-inbox'}:null,limits:mutation?{maxCostMicrousd:2000,maxRuntimeSeconds:90,retryLimit:1}:null,checkedAtMs:now(),expiresAtMs:NOW+10000};
   await state.policyHook?.(call);return receipt;
  }};
- const contextConfiguration={sessions,commandContext,allocationJson,template:{taskId:id(20),version:1,manifestSha256:hash(manifest)},workflow:{taskQueue:'meri-schedules',workflowIdPrefix:'meri/schedules'},scheduleOwner:owner,policy,now,newId,limits:{maxRequestMs:5000,maxFactBytes:65536,retryLimit:0}};
+ const contextConfiguration={sessions,commandContext,allocationJson,template:{taskId:id(20),version:1,manifestSha256:hash(manifest)},workflow:{taskQueue:'meri-schedules',workflowIdPrefix:'meri/schedules'},scheduleOwner:owner,policy,now,newId,limits:{maxRequestMs:5000,maxFactBytes:65536,retryLimit:0},...(runCancellation===undefined?{}:{runCancellation})};
  const context=createScheduleRuntimeContext(contextConfiguration),temporal=temporalScheduleService();
  const scheduleClient={connection:temporal.scheduleClient.connection,getHandle:temporal.scheduleClient.getHandle.bind(temporal.scheduleClient),async create(options){
   if(state.failCreateBefore)throw Error('synthetic create unavailable before provider effect');
   const result=await temporal.scheduleClient.create(options);if(state.loseCreateAck){state.loseCreateAck=false;throw Error('synthetic provider acknowledgement lost');}return result;
  }};
  const workflowClient={connection:temporal.scheduleClient.connection,getHandle(){throw Error('unexpected workflow history reference');}};
- const config={contextOwner:context,journalStore:createPostgresIntentJournalStore({pool}),proposalReader:createPostgresScheduleProposalReader({pool}),scheduleOwner:owner,scheduleClient,workflowClient,scheduleNotFoundError:ScheduleNotFoundError,now,maxRequestMs:5000};
+ const config={contextOwner:context,journalStore:createPostgresIntentJournalStore({pool}),proposalReader:createPostgresScheduleProposalReader({pool}),scheduleOwner:owner,scheduleClient,workflowClient,scheduleNotFoundError:ScheduleNotFoundError,now,maxRequestMs:5000,...(runCancellation===undefined?{}:{runCancellation})};
  const service=createRoutinesService(config),call=(method,request,credential=session.credential)=>service[method]({credential,request,deadlineMs:now()+4500});
  const prepare=(request=routineRequest(),operation='schedule_task',requestId='request-one')=>call('prepare',{requestId,operation,request});
  const body=(prepared,request=routineRequest(),operation=prepared.proposal.operation)=>({operation,request,proposalId:prepared.proposal.proposalId,intentSha256:prepared.proposal.intentSha256});

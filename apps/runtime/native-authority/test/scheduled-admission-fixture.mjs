@@ -46,7 +46,7 @@ export async function scheduledAdmissionFixture({nativeCandidate,clockMs}={}){
   schedule:{revision:'b'.repeat(64),expiresAt:new Date(now()+120000).toISOString(),operations:[{operation:manifest.allowedOperations[0],chargeMicrousd:10}]}};
  const task={taskId:id(9),manifestSha256:allocation.manifestSha256,version:1};
  const selectedVersions=nativeCandidate?.runtime.versions??versions;
- const template={principal,selectedClientId,policyRevision,versions:selectedVersions,task,configurationSha256:'c'.repeat(64),allocationJson:JSON.stringify(allocation),runWindowMs:60000,destinationId:'policy-owned-meri-inbox'};
+ const template={principal,selectedClientId,policyRevision,versions:selectedVersions,task,configurationSha256:'c'.repeat(64),allocationJson:JSON.stringify(allocation),runWindowMs:60000,destinationId:'meri-inbox'};
  const intent={...createIntent(),projection:projection({owner:principal,scopes,maxCostMicrousd:manifest.budgets.maxCostMicroUSD,maxRuntimeSeconds:20,retryLimit:0,destinationId:template.destinationId,createdAt:new Date(now()-1000).toISOString()}),configuration:configuration({task,catchupWindowMs:60000})};
  const occurrence={workflowId:'synthetic-native-schedule-firing',temporalScheduleId:intent.projection.temporalScheduleId,scheduledAt:new Date(now()).toISOString(),projection:intent.projection,generation:1,task};
  const identity=occurrenceIdentity(occurrence),effect={binding:identity.binding,requestId:identity.requestId,eventId:identity.eventId,workflowId:workflowId(identity.binding)};

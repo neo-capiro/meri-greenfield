@@ -17,7 +17,7 @@ const same=(a,b)=>hash(a)===hash(b),digest=/^[a-f0-9]{64}$/u,uuid=/^[a-f0-9]{8}-
 const deny=(code='ACCESS_DENIED',outcome='NOT_DISPATCHED')=>{throw Object.assign(Error('ROUTINES_'+code),{code:'ROUTINES_'+code,outcome});};
 const mutation=operation=>{if(!SCHEDULE_INTENT_OPERATIONS.includes(operation))deny('INVALID_REQUEST');return operation;};
 export function createRoutinesService(configuration){
- const c=own(configuration,['contextOwner','journalStore','proposalReader','scheduleOwner','scheduleClient','workflowClient','scheduleNotFoundError','now','maxRequestMs']);
+ const c=own(configuration,['contextOwner','journalStore','proposalReader','scheduleOwner','scheduleClient','workflowClient','scheduleNotFoundError','now','maxRequestMs'],['runCancellation']);
  const resolve=storageMethod(c.contextOwner,'resolve'),authorizeRequest=storageMethod(c.contextOwner,'authorizeRequest'),readProposal=storageMethod(c.proposalReader,'readProposal'),readIntent=storageMethod(c.scheduleOwner,'readIntent');
  if(typeof c.now!=='function'||!Number.isSafeInteger(c.maxRequestMs)||c.maxRequestMs<1||c.maxRequestMs>30000)deny('INVALID_REQUEST');
  function call(value){const v=own(value,['credential','request','deadlineMs'],['signal']);nativeSignal(v.signal);if(!Number.isSafeInteger(v.deadlineMs))deny('INVALID_REQUEST');return v;}
@@ -25,7 +25,7 @@ export function createRoutinesService(configuration){
  function life(v){return createOperationLifetime({deadlineMs:Math.min(v.deadlineMs,c.now()+c.maxRequestMs),now:c.now,signal:v.signal,errorFactory:code=>Object.assign(Error(code),{code,outcome:'UNKNOWN'})});}
  function contextCall(v,body,l,extra={}){return {credential:v.credential,operation:body.operation,request:body.request,deadlineMs:Math.min(v.deadlineMs,c.now()+c.maxRequestMs),signal:l.signal,...extra};}
  function tools(resolved){
-  const lifecycle=createScheduleLifecycle({scheduleOwner:c.scheduleOwner,scheduleClient:c.scheduleClient,workflowClient:c.workflowClient,authorize:resolved.authorize,clock:c.now});
+  const lifecycle=createScheduleLifecycle({scheduleOwner:c.scheduleOwner,scheduleClient:c.scheduleClient,workflowClient:c.workflowClient,authorize:resolved.authorize,clock:c.now,...(c.runCancellation===undefined?{}:{runCancellation:c.runCancellation})});
   return createScheduleToolInterface({lifecycle,validators,authorize:resolved.authorize,clock:c.now});
  }
  async function current(v,body,l){const r=await l.run(()=>authorizeRequest(contextCall(v,body,l)));l.limitDeadline(r.expiresAtMs);l.check();return r;}
@@ -40,6 +40,7 @@ export function createRoutinesService(configuration){
  }
  function decisionBody(raw,approval){
   const b=data(own(raw,['operation','request','proposalId','intentSha256',...(approval?['decision']:[])]));mutation(b.operation);validators.normalizeRequest(b.operation,b.request);
+  if(b.operation==='cancel_scheduled_task'&&b.request.runs.length)deny('INVALID_REQUEST');
   if(!uuid.test(b.proposalId)||!digest.test(b.intentSha256)||approval&&b.decision!=='approved')deny('INVALID_REQUEST');return b;
  }
  function intent(row,body,tenantId){
@@ -50,6 +51,7 @@ export function createRoutinesService(configuration){
  return Object.freeze({
   async prepare(value){
    const {v,b}=input(value,raw=>{const body=data(own(raw,['requestId','operation','request']));mutation(body.operation);validators.normalizeRequest(body.operation,body.request);
+    if(body.operation==='cancel_scheduled_task'&&body.request.runs.length)deny('INVALID_REQUEST');
     if(typeof body.requestId!=='string'||!/^[A-Za-z0-9._-]{1,128}$/u.test(body.requestId))deny('INVALID_REQUEST');return body;});
    const l=life(v);try{
     const auth=await current(v,b,l),deliveryId='sdk:'+hash({protocol:'meri.routines.delivery/1',requestId:b.requestId,operation:b.operation});
@@ -57,7 +59,7 @@ export function createRoutinesService(configuration){
     const preparer={operation:{id:b.operation,version:'0.2.0'},owner:'schedule',binding:auth.binding,async prepare(input){
      let resolved;try{resolved=await l.run(()=>resolve(contextCall(v,b,l)));if(!same(resolved.current.binding,auth.binding))deny();}
      catch(error){throw intentFault(['DEADLINE','CANCELLED'].includes(error?.code)?error.code:'REFUSED','none');}
-     return createScheduleIntentPreparer({operation:b.operation,binding:auth.binding,tool:tools(resolved),resolveContext:async()=>resolved.context}).prepare(input);
+     return createScheduleIntentPreparer({operation:b.operation,binding:auth.binding,tool:tools(resolved),resolveContext:async()=>resolved.context}).prepare({...input,arguments:resolved.prepared.input});
     }};
     const resultRelease={async check({selection,selectionSha256,signal,limitDeadline}){
      if(selectionSha256!==hash(selection)||!same(selection.binding,auth.binding)||selection.operation.id!==b.operation||selection.operation.version!=='0.2.0'||selection.deliveryId!==deliveryId||selection.argumentsSha256!==hash(b.request))deny();
@@ -81,7 +83,7 @@ export function createRoutinesService(configuration){
     if(!same(resolved.current.binding,auth.binding)||resolved.prepared.intentSha256!==b.intentSha256)deny();
     const at=c.now(),expires=Math.min(v.deadlineMs,at+c.maxRequestMs,saved.release.expiresAtMs,resolved.current.expiresAtMs);
     const approval={proposalId:b.proposalId,commandSha256:b.intentSha256,decision:'approved',approver:{tenantId:auth.binding.tenantId,actorId:auth.binding.actorId},policyRevision:auth.scopes[0].policyRevision,decidedAt:new Date(at).toISOString(),expiresAt:new Date(expires).toISOString()};
-    return await l.run(async signal=>{const result=await tools(resolved).execute({operation:b.operation,request:b.request,context:{scheduleContext:{...resolved.context.scheduleContext,approval}},signal});known=result.status==='acknowledged';return result;});
+    return await l.run(async signal=>{const result=await tools(resolved).execute({operation:b.operation,request:resolved.prepared.input,context:{scheduleContext:{...resolved.context.scheduleContext,approval}},signal});known=result.status==='acknowledged';return result;});
    }catch(error){if(known)throw Object.assign(Error('ROUTINES_RESULT_NOT_RELEASED'),{code:'ROUTINES_ACCESS_DENIED',outcome:'ACKNOWLEDGED_NOT_RELEASED'});throw error;}finally{l.close();}
   },
   async list(value){
