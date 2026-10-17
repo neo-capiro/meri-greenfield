@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-10-17T07:04:04.750294+00:00",
+  "capturedAt": "2026-10-17T07:08:38.258034+00:00",
   "scope": "Authenticated GitHub exact commit/tree/document content retrieval; no AWS/app action",
   "references": [
     {
@@ -171,6 +171,27 @@
       "gitBlob": "03ad26a0c11e0a34fcc577ed568a8c8b5990cd7d",
       "bytes": 29949,
       "sha256": "11888433fc5584b2c40402167edce2743448d8cbdb44936b141a7898488c3663"
+    },
+    {
+      "id": "reads-final",
+      "repo": "meri-greenfield",
+      "commit": "bba4ef68682812f303653f391df9ca586f41da57",
+      "tree": "00f950391354f21b07fc8497be00dbaddf9e9b87",
+      "pr": 132,
+      "path": "docs/coordination/handoffs/meri-read-tools-final-20261017/README.md",
+      "status": "INCOMPLETE_MODE_HOLD_TESTS_ACCEPTED_BASELINE_PR125_UNCHANGED",
+      "retrievedTree": "00f950391354f21b07fc8497be00dbaddf9e9b87",
+      "gitBlob": "b16848b3cf382ef6691c2c58d5cd0e1fe10dd02d",
+      "bytes": 32953,
+      "sha256": "5c36f7376eea3685748472353367ebb10602c3cf19d5116b96be5d4bc15b9c67",
+      "currentPR": {
+        "head": "bba4ef68682812f303653f391df9ca586f41da57",
+        "branch": "codex/meri-read-native-next-20261017",
+        "base": "6968836486738cab4ba62a39e799356914cd7c85",
+        "baseBranch": "codex/meri-reads-installation-20261017",
+        "state": "open",
+        "draft": true
+      }
     }
   ]
 }

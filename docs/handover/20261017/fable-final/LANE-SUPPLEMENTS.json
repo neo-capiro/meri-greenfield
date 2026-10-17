@@ -83,12 +83,21 @@
       "commit": "93838193c46a13b2fdda9dee9c142d1af0e60cba",
       "path": "docs/coordination/tasks/CODEX-PACKAGE4-CENTRAL-MIGRATION-ALLOCATIONS-20261016.md",
       "status": "SOURCE_ALLOCATION_ONLY"
+    },
+    {
+      "id": "reads-final",
+      "repo": "meri-greenfield",
+      "commit": "bba4ef68682812f303653f391df9ca586f41da57",
+      "tree": "00f950391354f21b07fc8497be00dbaddf9e9b87",
+      "pr": 132,
+      "path": "docs/coordination/handoffs/meri-read-tools-final-20261017/README.md",
+      "status": "INCOMPLETE_MODE_HOLD_TESTS_ACCEPTED_BASELINE_PR125_UNCHANGED"
     }
   ],
   "pending": [
     {
       "id": "reads-final",
-      "status": "OWNER_FINISHING_PUBLISHED_SUPPLEMENT_WITH_DENIED_LEDGER_EXCLUDED",
+      "status": "EXACT_LEDGER_PAYLOAD_PUBLICATION_DENIED_FRESH_APPROVAL_ABSENT",
       "deniedPath": "docs/coordination/ledgers/scope-ledger.json",
       "localHeldCommit": "4081b2129c4f243eb6f41c17e064e0b96a73bc91",
       "heldTree": "7832848cc0f7e7ab8a0281b6f0ed9124fdbd5b23",

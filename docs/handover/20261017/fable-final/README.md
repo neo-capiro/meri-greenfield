@@ -24,6 +24,8 @@ Read [ROOT-SOURCE.json](ROOT-SOURCE.json) for every new commit, parent, tree and
 4. [All lanes and immutable pickup links](LANES.md). Fable receives **all Meri source**, but these independent trees are not silently merged into the first-chat checkpoint.
 5. [Root source inventory](ROOT-SOURCE.json), [PR metadata snapshot](REMOTE-PRS.json), [exact PR130 receiving proof](ISSUER130-RECEIVING.json) and `verify_handoff.py`.
 
+Final feature supplements: [read tools PR132](https://github.com/neo-capiro/meri-greenfield/blob/bba4ef68682812f303653f391df9ca586f41da57/docs/coordination/handoffs/meri-read-tools-final-20261017/README.md), [product/routines PR131](https://github.com/neo-capiro/meri-greenfield/blob/2a247510e7fa477466579971ca4e9a2366b2127f/docs/handover/20261017/fable-final/PRODUCT-FEATURES.md), [Objective custody PR129](https://github.com/neo-capiro/meri-greenfield/blob/047526c7022d04af6fd0f8faaae011171ef1eca2/docs/objective-source-reader-v2-20261017/FABLE-BOUNDARY-SUPPLEMENT.md), and [issuer PR130](https://github.com/neo-capiro/meri-greenfield/blob/eb603f28023c5fcbfcdbf42953e86411a1a83bca/apps/runtime/temporal-issuer/qualification/FABLE-HANDOFF-20261017.md). All preserve incomplete/unqualified boundaries. The read supplement provides a65-file partial tooling recovery excluding one **denied ledger payload**; exact local-only identifiers and pending authorization are in LANES. No indirect publication or retry of that payload occurred.
+
 ## Current cross-service truth
 
 | Component | Source / image | Present limit |
