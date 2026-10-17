@@ -39,7 +39,7 @@ def save(status,phase,code=None,detail=None):
         if diagnostic.is_symlink():
             raise ValueError()
         if diagnostic.exists():
-            if diagnostic.stat().st_size>2048 or json.loads(diagnostic.read_text(encoding='ascii')).get('diagnosticOwner')!=owner:
+            if diagnostic.stat().st_size>4096 or json.loads(diagnostic.read_text(encoding='ascii')).get('diagnosticOwner')!=owner:
                 raise ValueError()
         payload=json.dumps({'schemaVersion':1,'status':status,'phase':phase,'diagnosticOwner':owner,'primary':primary,'cleanup':{'status':cleanup_status,'failure':None,'additionalFailures':[]}},sort_keys=True,separators=(',',':'))+'\\n'
         with diagnostic.open('w' if diagnostic.exists() else 'x',encoding='ascii') as stream:
@@ -50,13 +50,13 @@ def save(status,phase,code=None,detail=None):
         return False
 def child_receipt():
     try:
-        if diagnostic.is_symlink() or diagnostic.stat().st_size>2048:
+        if diagnostic.is_symlink() or diagnostic.stat().st_size>4096:
             return None
         row=json.loads(diagnostic.read_text(encoding='ascii'))
         phases=set('REQUEST BUILD_IDENTITY BUILD_READBACK REPOSITORY_READBACK WORKDIR SOURCE_ARCHIVE SOURCE_MANIFEST SOURCE_VERIFY SOURCE_EXTRACT DOCKER_PREFLIGHT DOCKER_BUILD IMAGE_INSPECT SANDBOX_HELP SANDBOX_MEASURE LINUX_TESTS ECR_AUTH ECR_PUSH ECR_READBACK ECR_SCAN CLEANUP WORKDIR_CLEANUP RECEIPT'.split())
         types=set('MISSING_FILE PERMISSION OS JSON IMPORT KEY TYPE VALUE TIMEOUT UNEXPECTED'.split())
         categories=types|{'COMMAND','CHECK'}
-        codes={'PRODUCT_IMAGE_CHECK_FAILED'}|{'PRODUCT_IMAGE_'+name for name in 'ARCHIVE_BOUND ARCHIVE_SHA_MISMATCH BUILD_IDENTITY BUILD_SOURCE CLEANUP_UNKNOWN COMMAND_BOUND COMMAND_FAILED COMMAND_UNAVAILABLE_OR_TIMEOUT DUPLICATE_KEY DUPLICATE_MEMBER FILE_BOUND IMAGE_IDENTITY IMAGE_MEASUREMENT IMAGE_READBACK LINUX_CASES_UNPROVEN LINUX_REPORTER_UNPROVEN LOCAL_IMAGE_EXISTS LOCAL_PROBE_EXISTS MANIFEST_BOUND MANIFEST_ORDER MANIFEST_SHA_MISMATCH MANIFEST_SHAPE MEMBER_ANCESTOR MEMBER_PATH MEMBER_TYPE NODE_PIN OBJECT_BINDING OBJECT_BOUND PRIVATE_MEMBER PRODUCER_DEADLINE PRODUCER_PLATFORM_OR_OUTPUT PROJECT_PIN REPOSITORY_PIN REPOSITORY_POLICY REQUEST_OBJECT REQUEST_PIN RUNNER_BOUND RUNTIME_USER SCAN_FINDINGS_HOLD SCAN_INCOMPLETE SHAPE_REFUSED SOURCE_COMMIT SOURCE_MEMBERS_MISMATCH SOURCE_PIN_MISMATCH TAG_PIN'.split()}
+        codes={'PRODUCT_IMAGE_CHECK_FAILED'}|{'PRODUCT_IMAGE_'+name for name in 'ARCHIVE_BOUND ARCHIVE_SHA_MISMATCH BUILD_IDENTITY BUILD_SOURCE CLEANUP_UNKNOWN COMMAND_BOUND COMMAND_FAILED COMMAND_UNAVAILABLE_OR_TIMEOUT DUPLICATE_KEY DUPLICATE_MEMBER FILE_BOUND IMAGE_IDENTITY IMAGE_MEASUREMENT IMAGE_READBACK LINUX_CASES_UNPROVEN LINUX_REPORTER_UNPROVEN LINUX_FIXTURE_UNPROVEN LOCAL_IMAGE_EXISTS LOCAL_PROBE_EXISTS MANIFEST_BOUND MANIFEST_ORDER MANIFEST_SHA_MISMATCH MANIFEST_SHAPE MEMBER_ANCESTOR MEMBER_PATH MEMBER_TYPE NODE_PIN OBJECT_BINDING OBJECT_BOUND PRIVATE_MEMBER PRODUCER_DEADLINE PRODUCER_PLATFORM_OR_OUTPUT PROJECT_PIN REPOSITORY_PIN REPOSITORY_POLICY REQUEST_OBJECT REQUEST_PIN RUNNER_BOUND RUNTIME_USER SCAN_FINDINGS_HOLD SCAN_INCOMPLETE SHAPE_REFUSED SOURCE_COMMIT SOURCE_MEMBERS_MISMATCH SOURCE_PIN_MISMATCH TAG_PIN'.split()}
         statuses={'EXIT_NONZERO','TIMEOUT','BOUND','UNAVAILABLE'}
         def checked(record):
             if type(record) is not dict or set(record)!={'phase','category','code','detail'}:
@@ -70,15 +70,13 @@ def child_receipt():
                 exit_code,count,elapsed=(detail[key] for key in ('exitCode','outputBytes','elapsedMs'))
                 if exit_code is not None and (type(exit_code) is not int or not -255<=exit_code<=255) or type(count) is not int or not 0<=count<=17*1024**2 or type(elapsed) is not int or not 0<=elapsed<=1600000:
                     return None
-                safe_detail={'status':detail['status'],'exitCode':exit_code,'outputBytes':count,'elapsedMs':elapsed}
             else:
                 if set(detail)!={'errorType','errno'} or type(detail['errorType']) is not str or detail['errorType'] not in types:
                     return None
                 errno=detail['errno']
                 if errno is not None and (type(errno) is not int or not 0<=errno<=255):
                     return None
-                safe_detail={'errorType':detail['errorType'],'errno':errno}
-            return {'phase':phase,'category':category,'code':code,'detail':safe_detail}
+            return record
         base={'schemaVersion','status','phase','diagnosticOwner','primary','cleanup'}
         extras={'bootstrapFailure','bootstrapCleanup','childCleanupStatus','linuxTests'}
         if type(row) is not dict or not base<=set(row) or set(row)-base-extras or row['schemaVersion']!=1 or row['status']!='FAILED' or row['diagnosticOwner']!=owner or type(row['phase']) is not str or row['phase'] not in phases:
@@ -96,23 +94,46 @@ def child_receipt():
             if cleanup['failure'] is not None or cleanup['additionalFailures']:
                 return None
             first,more=None,[]
-        safe={'schemaVersion':1,'status':'FAILED','phase':row['phase'],'diagnosticOwner':owner,'primary':primary,'cleanup':{'status':cleanup['status'],'failure':first,'additionalFailures':more}}
+        safe=dict(row)
+        safe['schemaVersion']=1
         if ('linuxTests' in row)!=(primary['phase']=='LINUX_TESTS'):
             return None
         if 'linuxTests' in row:
             linux=row['linuxTests']
             case_ids={'B'+str(i).zfill(2) for i in range(1,7)}|{'R'+str(i).zfill(2) for i in range(1,7)}|{'W'+str(i).zfill(2) for i in range(1,13)}
-            if type(linux) is not dict or set(linux)!={'status','observedCases','failedCaseIds','unknownFailures','unknownOutcomes','duplicateCases','skippedCases'} or linux['status'] not in ('COMPLETE','UNAVAILABLE') or type(linux['observedCases']) is not int or not 0<=linux['observedCases']<=24 or type(linux['failedCaseIds']) is not list or len(linux['failedCaseIds'])>24 or any(type(case) is not str or case not in case_ids for case in linux['failedCaseIds']) or len(set(linux['failedCaseIds']))!=len(linux['failedCaseIds']):
+            if type(linux) is not dict or set(linux)!={'status','observedCases','failedCaseIds','unknownFailures','unknownOutcomes','duplicateCases','skippedCases','fileCaseCounts','fileFailureIds','failureDetails','detailTruncated'} or linux['status'] not in ('COMPLETE','UNAVAILABLE') or type(linux['observedCases']) is not int or not 0<=linux['observedCases']<=24 or type(linux['failedCaseIds']) is not list or len(linux['failedCaseIds'])>24 or any(type(case) is not str or case not in case_ids for case in linux['failedCaseIds']) or len(set(linux['failedCaseIds']))!=len(linux['failedCaseIds']):
                 return None
-            if any(type(linux[name]) is not int or not 0<=linux[name]<=25 for name in ('unknownFailures','unknownOutcomes','duplicateCases','skippedCases')):
+            if any(type(linux[name]) is not int or not 0<=linux[name]<=25 for name in ('unknownFailures','unknownOutcomes','duplicateCases','skippedCases')) or linux['unknownFailures']>linux['unknownOutcomes'] or len(linux['failedCaseIds'])>linux['observedCases']:
                 return None
-            if linux['status']=='UNAVAILABLE' and (linux['observedCases'] or linux['failedCaseIds'] or any(linux[name] for name in ('unknownFailures','unknownOutcomes','duplicateCases','skippedCases'))):
+            per_file,file_failures,details=linux['fileCaseCounts'],linux['fileFailureIds'],linux['failureDetails']
+            if type(per_file) is not dict or set(per_file)!={'B','R','W'} or any(type(per_file[key]) is not int or not 0<=per_file[key]<=maximum for key,maximum in (('B',6),('R',6),('W',12))) or sum(per_file.values())!=linux['observedCases']:
                 return None
-            safe['linuxTests']={'status':linux['status'],'observedCases':linux['observedCases'],'failedCaseIds':sorted(linux['failedCaseIds']),'unknownFailures':linux['unknownFailures'],'unknownOutcomes':linux['unknownOutcomes'],'duplicateCases':linux['duplicateCases'],'skippedCases':linux['skippedCases']}
+            if type(file_failures) is not list or len(file_failures)>3 or any(type(key) is not str or key not in per_file for key in file_failures) or len(set(file_failures))!=len(file_failures) or any(case[0] not in file_failures for case in linux['failedCaseIds']):
+                return None
+            if type(details) is not list or len(details)>4 or type(linux['detailTruncated']) is not bool:
+                return None
+            stages=set('NONE START FIRST_METADATA FIRST_READ REFRESH SECOND_METADATA SECOND_READ STATUS CLOSE CLEANUP'.split())
+            error_codes=set('OTHER ERR_ASSERTION ERR_MODULE_NOT_FOUND MODULE_NOT_FOUND ERR_WORKER_INIT_FAILED ERR_WORKER_OUT_OF_MEMORY EAGAIN ENOENT EACCES EPERM RUNTIME_SECRET_FILE TASK_BOOTSTRAP_REFUSED'.split())|{'TEMPORAL_PRODUCT_TOKEN_'+name for name in 'CONFIGURATION DELIVERY PLATFORM DIRECTORY OWNERSHIP PATH_OCCUPIED CLEANUP_UNKNOWN IO_UNKNOWN CURRENTNESS EXPIRY CLOCK CLOSED INTERRUPTED REVOKED UNAVAILABLE REFUSED'.split()}
+            failure_types=set('UNKNOWN testCodeFailure subtestsFailed hookFailed cancelledByParent testTimeoutFailure testAborted uncaughtException unhandledRejection'.split())
+            signals=set('NONE OTHER SIGABRT SIGSEGV SIGKILL SIGTERM SIGBUS'.split())
+            seen=set()
+            for item in details:
+                if type(item) is not dict or set(item)!={'id','stage','code','failureType','exitCode','signal'}:
+                    return None
+                key=item['id']
+                if type(key) is not str or key not in case_ids|{'B_FILE','R_FILE','W_FILE','UNMAPPED'} or key in seen:
+                    return None
+                seen.add(key)
+                if any(type(item[name]) is not str or item[name] not in allowed for name,allowed in (('stage',stages),('code',error_codes),('failureType',failure_types),('signal',signals))) or key!='W08' and item['stage']!='NONE':
+                    return None
+                if item['exitCode'] is not None and (type(item['exitCode']) is not int or not -255<=item['exitCode']<=255):
+                    return None
+            if linux['status']=='UNAVAILABLE' and (linux['observedCases'] or linux['failedCaseIds'] or file_failures or details or linux['detailTruncated'] or any(linux[name] for name in ('unknownFailures','unknownOutcomes','duplicateCases','skippedCases'))):
+                return None
+            safe['linuxTests']=dict(linux,failedCaseIds=sorted(linux['failedCaseIds']),fileFailureIds=sorted(file_failures))
         if 'childCleanupStatus' in row:
             if row['childCleanupStatus']!='UNKNOWN':
                 return None
-            safe['childCleanupStatus']='UNKNOWN'
         bootstrap_codes={'PRODUCT_IMAGE_BOOTSTRAP_TIMEOUT','PRODUCT_IMAGE_BOOTSTRAP_CHILD_UNAVAILABLE','PRODUCT_IMAGE_BOOTSTRAP_CLEANUP_UNKNOWN'}
         for name in set(row)-base-{'childCleanupStatus','linuxTests'}:
             extra=row[name]
@@ -121,7 +142,7 @@ def child_receipt():
             detail=extra['detail']
             if detail is not None and not (type(detail) is dict and (detail=={'timeoutSeconds':1600} or set(detail)=={'exitCode'} and type(detail['exitCode']) is int and -255<=detail['exitCode']<=255)):
                 return None
-            safe[name]={'phase':extra['phase'],'category':'BOOTSTRAP','code':extra['code'],'detail':detail}
+            safe[name]=extra
         def line(prefix,record):
             detail=record['detail']
             if record['category']=='COMMAND':
@@ -135,6 +156,9 @@ def child_receipt():
         if 'linuxTests' in safe:
             row=safe['linuxTests']
             lines.append('PRODUCT_IMAGE_LINUX_TESTS status='+row['status']+' observedCases='+str(row['observedCases'])+' failedCaseIds='+(','.join(row['failedCaseIds']) or 'none')+' unknownOutcomes='+str(row['unknownOutcomes'])+' skippedCases='+str(row['skippedCases'])+' duplicateCases='+str(row['duplicateCases']))
+            lines.append('PRODUCT_IMAGE_LINUX_FILES B='+str(row['fileCaseCounts']['B'])+' R='+str(row['fileCaseCounts']['R'])+' W='+str(row['fileCaseCounts']['W'])+' failedFiles='+(','.join(row['fileFailureIds']) or 'none'))
+            for detail in row['failureDetails']:
+                lines.append('PRODUCT_IMAGE_LINUX_FAILURE caseId='+detail['id']+' stage='+detail['stage']+' code='+detail['code']+' type='+detail['failureType']+' exitCode='+(str(detail['exitCode']) if detail['exitCode'] is not None else 'none')+' signal='+detail['signal'])
         if safe.get('childCleanupStatus')=='UNKNOWN':
             lines.append('PRODUCT_IMAGE_CHILD_CLEANUP_UNKNOWN phase=BOOTSTRAP_CHILD')
         return safe,lines
@@ -142,7 +166,7 @@ def child_receipt():
         return None
 def bootstrap_receipt():
     try:
-        if diagnostic.is_symlink() or diagnostic.stat().st_size>2048:
+        if diagnostic.is_symlink() or diagnostic.stat().st_size>4096:
             return None
         row=json.loads(diagnostic.read_text(encoding='ascii'))
         base={'schemaVersion','status','phase','diagnosticOwner','primary','cleanup'}
@@ -164,12 +188,12 @@ def bootstrap_receipt():
         expected='UNKNOWN' if phase=='BOOTSTRAP_CHILD' else 'NOT_RUN'
         if type(cleanup) is not dict or cleanup!={'status':expected,'failure':None,'additionalFailures':[]}:
             return None
-        safe={'schemaVersion':1,'status':'FAILED','phase':phase,'diagnosticOwner':owner,'primary':{'phase':phase,'category':'BOOTSTRAP','code':code,'detail':detail},'cleanup':cleanup}
+        safe=dict(row)
+        safe['schemaVersion']=1
         if 'bootstrapCleanup' in row:
             extra=row['bootstrapCleanup']
             if type(extra) is not dict or extra!={'phase':'BOOTSTRAP_CLEANUP','category':'BOOTSTRAP','code':'PRODUCT_IMAGE_BOOTSTRAP_CLEANUP_UNKNOWN','detail':None}:
                 return None
-            safe['bootstrapCleanup']=extra
         lines=['PRODUCT_IMAGE_CHECK_FAILED phase='+phase+' category=BOOTSTRAP code='+code]
         if expected=='UNKNOWN':lines.append('PRODUCT_IMAGE_CHILD_CLEANUP_UNKNOWN phase=BOOTSTRAP_CHILD')
         if 'bootstrapCleanup' in safe:lines.append('PRODUCT_IMAGE_CHECK_FAILED phase=BOOTSTRAP_CLEANUP category=BOOTSTRAP code=PRODUCT_IMAGE_BOOTSTRAP_CLEANUP_UNKNOWN')
@@ -203,7 +227,7 @@ def write_owned(row):
         old=json.loads(diagnostic.read_text(encoding='ascii'))
         if type(old) is not dict or old.get('diagnosticOwner')!=owner:return None
         payload=(json.dumps(row,sort_keys=True,separators=(',',':'))+'\\n').encode('ascii')
-        if not 0<len(payload)<=4096:return None
+        if not 0<len(payload)<=6144:return None
         with temporary.open('xb') as stream:
             created=True
             stream.write(payload);stream.flush();os.fsync(stream.fileno())
@@ -244,7 +268,7 @@ def put_once(args,environment):
         reader.join(timeout=2)
 def retain_failure():
     try:
-        if diagnostic.is_symlink() or diagnostic.stat().st_size>2048:
+        if diagnostic.is_symlink() or diagnostic.stat().st_size>4096:
             print('PRODUCT_IMAGE_RETENTION status=FAILED code=ARTIFACT_UNAVAILABLE',file=sys.stderr);return
         original=json.loads(diagnostic.read_text(encoding='ascii'))
         if type(original) is dict and original.get('diagnosticOwner')==owner and original.get('status')=='SUCCEEDED':return
@@ -346,7 +370,8 @@ if state!='SUCCEEDED':
     fail('BOOTSTRAP_CHILD','PRODUCT_IMAGE_BOOTSTRAP_CHILD_INCOMPLETE')
 raise SystemExit(0)
 MERI_PRODUCT_BUILD`;
- const buildspec={version:0.2,env:{shell:'bash'},phases:{build:{'on-failure':'ABORT',commands:[bootstrap]}},artifacts:{files:['product-image-receipt.json','product-image-diagnostic.json'],'discard-paths':'yes'}};
+ const command=bootstrap.replace(/^ +/gmu,spaces=>{if(spaces.length%4)refuse();return ' '.repeat(spaces.length/4);});
+ const buildspec={version:0.2,env:{shell:'bash'},phases:{build:{'on-failure':'ABORT',commands:[command]}},artifacts:{files:['product-image-receipt.json','product-image-diagnostic.json'],'discard-paths':'yes'}};
  const buildspecJson=JSON.stringify(buildspec)+'\n';
  if(Buffer.byteLength(buildspecJson)>25600)refuse();
  return Object.freeze({status:'OFFLINE_RECIPE_ONLY',buildspecJson,buildspecSha256:hash(buildspecJson),requestSha256:hash(requestJson)});

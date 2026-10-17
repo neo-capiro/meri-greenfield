@@ -37,6 +37,12 @@ const files = [
 const cases = new Map(files.flatMap(([file, names, prefix]) => names.map((name, index) => [
   `/opt/meri/${file}\0${name}`, `${prefix}${String(index + 1).padStart(2, '0')}`,
 ])));
+const fileIds = new Map(files.flatMap(([file, , id]) => [[`/opt/meri/${file}`, id], [file, id]]));
+const stages = new Set('START FIRST_METADATA FIRST_READ REFRESH SECOND_METADATA SECOND_READ STATUS CLOSE CLEANUP'.split(' '));
+const codes = new Set(('ERR_ASSERTION ERR_MODULE_NOT_FOUND MODULE_NOT_FOUND ERR_WORKER_INIT_FAILED ERR_WORKER_OUT_OF_MEMORY EAGAIN ENOENT EACCES EPERM RUNTIME_SECRET_FILE TASK_BOOTSTRAP_REFUSED ' +
+  'TEMPORAL_PRODUCT_TOKEN_CONFIGURATION TEMPORAL_PRODUCT_TOKEN_DELIVERY TEMPORAL_PRODUCT_TOKEN_PLATFORM TEMPORAL_PRODUCT_TOKEN_DIRECTORY TEMPORAL_PRODUCT_TOKEN_OWNERSHIP TEMPORAL_PRODUCT_TOKEN_PATH_OCCUPIED TEMPORAL_PRODUCT_TOKEN_CLEANUP_UNKNOWN TEMPORAL_PRODUCT_TOKEN_IO_UNKNOWN TEMPORAL_PRODUCT_TOKEN_CURRENTNESS TEMPORAL_PRODUCT_TOKEN_EXPIRY TEMPORAL_PRODUCT_TOKEN_CLOCK TEMPORAL_PRODUCT_TOKEN_CLOSED TEMPORAL_PRODUCT_TOKEN_INTERRUPTED TEMPORAL_PRODUCT_TOKEN_REVOKED TEMPORAL_PRODUCT_TOKEN_UNAVAILABLE TEMPORAL_PRODUCT_TOKEN_REFUSED').split(' '));
+const types = new Set('testCodeFailure subtestsFailed hookFailed cancelledByParent testTimeoutFailure testAborted uncaughtException unhandledRejection'.split(' '));
+const signals = new Set('SIGABRT SIGSEGV SIGKILL SIGTERM SIGBUS'.split(' '));
 
 export default async function* productImageTestReporter(source) {
   const seen = new Set();
@@ -45,22 +51,55 @@ export default async function* productImageTestReporter(source) {
   let unknownOutcomes = 0;
   let duplicateCases = 0;
   let skippedCases = 0;
+  const fileCaseCounts = {B: 0, R: 0, W: 0};
+  const fileFailureIds = new Set();
+  const stderrCodes = new Map();
+  const details = new Map();
+  let detailTruncated = false;
   for await (const event of source) {
+    if (event?.type === 'test:stderr') {
+      const fileId = fileIds.get(event.data?.file);
+      const message = typeof event.data?.message === 'string' ? event.data.message.slice(0, 8192) : '';
+      if (fileId) for (const code of codes) if (message.includes(code)) { stderrCodes.set(fileId, code); break; }
+      continue;
+    }
     if (event?.type !== 'test:pass' && event?.type !== 'test:fail') continue;
     const data = event.data;
+    const fileId = fileIds.get(data?.file) ?? fileIds.get(data?.name);
     const id = typeof data?.file === 'string' && typeof data?.name === 'string'
       ? cases.get(`${data.file}\0${data.name}`) : undefined;
+    if (event.type === 'test:fail') {
+      if (fileId) fileFailureIds.add(fileId);
+      const detailId = id ?? (fileId ? `${fileId}_FILE` : 'UNMAPPED');
+      if (!details.has(detailId)) {
+        if (details.size >= 4) detailTruncated = true;
+        else {
+          const error = data?.details?.error;
+          let stage = 'NONE', code = stderrCodes.get(fileId) ?? 'OTHER', current = error;
+          for (let depth = 0; current && depth < 4; depth++, current = current.cause) {
+            if (id === 'W08' && typeof current.message === 'string') for (const value of stages) if (current.message === `PRODUCT_IMAGE_W08_${value}`) stage = value;
+            if (codes.has(current.code)) code = current.code;
+          }
+          details.set(detailId, {id: detailId, stage, code,
+            failureType: types.has(error?.failureType) ? error.failureType : 'UNKNOWN',
+            exitCode: Number.isInteger(error?.exitCode) && error.exitCode >= -255 && error.exitCode <= 255 ? error.exitCode : null,
+            signal: signals.has(error?.signal) ? error.signal : error?.signal === undefined ? 'NONE' : 'OTHER'});
+        }
+      }
+    }
     if (id === undefined) {
       unknownOutcomes = Math.min(25, unknownOutcomes + 1);
       if (event.type === 'test:fail') unknownFailures = Math.min(25, unknownFailures + 1);
       continue;
     }
     if (seen.has(id)) duplicateCases = Math.min(25, duplicateCases + 1);
+    else fileCaseCounts[id[0]]++;
     seen.add(id);
     if (data.skip || data.todo) skippedCases = Math.min(25, skippedCases + 1);
     if (event.type === 'test:fail') failed.add(id);
   }
   yield `${JSON.stringify({schemaVersion: 1, observedCases: seen.size,
     failedCaseIds: [...failed].sort(), unknownFailures, unknownOutcomes,
-    duplicateCases, skippedCases})}\n`;
+    duplicateCases, skippedCases, fileCaseCounts, fileFailureIds: [...fileFailureIds].sort(),
+    failureDetails: [...details.values()], detailTruncated})}\n`;
 }

@@ -19,6 +19,11 @@ const linux={skip:native?false:'UNRUN: requires non-root Linux owner/mode/atomic
 async function fixture(t){const dir=await mkdtemp(join(tmpdir(),'meri-temporal-writer-'));t.after(()=>rm(dir,{recursive:true,force:true}));const c=configuration();c.authorization.tokenFile=join(dir,'token.json');return {dir,c};}
 async function missing(path){try{await lstat(path);return false;}catch(error){if(error.code==='ENOENT')return true;throw error;}}
 async function until(check){const deadline=Date.now()+2000;while(!await check()){if(Date.now()>=deadline)assert.fail('bounded condition did not settle');await new Promise(resolve=>setTimeout(resolve,5));}}
+const w08Stages=new Set(['START','FIRST_METADATA','FIRST_READ','REFRESH','SECOND_METADATA','SECOND_READ','STATUS','CLOSE','CLEANUP']);
+async function w08Stage(name,work){
+ if(!w08Stages.has(name))throw new TypeError('Unknown W08 stage');
+ try{return await work();}catch(cause){throw new Error(`PRODUCT_IMAGE_W08_${name}`,{cause});}
+}
 
 test('writer configuration defaults disabled and is closed before resource allocation',()=>{
  assert.deepEqual(parseTemporalProductTokenWriterConfiguration(),{enabled:false});
@@ -95,17 +100,33 @@ test('enabled construction is inert and unsupported native platform refuses befo
 });
 
 test('Linux: atomic owner-only replacement stays compatible with the existing reader and closes only owned files',linux,async t=>{
- const {dir,c}=await fixture(t),clock={now:at},scheduled=timers();let serial=0;
- const writer=createTemporalProductTokenWriter({configuration:c,now:()=>clock.now,timers:scheduled,delivery:{async read(request){
-  assert.deepEqual(Object.keys(request).sort(),['schemaVersion','role','subject','workloadPrincipal','namespace','audience','issuer','signal'].sort());
-  assert.ok(request.signal instanceof AbortSignal);return response(c,clock.now,++serial);
- }}});t.after(()=>writer.close());
- await writer.start();const first=await lstat(c.authorization.tokenFile);assert.equal(first.mode&0o777,0o600);assert.equal(first.uid,process.getuid());assert.equal(first.nlink,1);
- assert.equal((await createTemporalTokenFileReader({tokenFile:c.authorization.tokenFile}).read()).token,response(c,at,1).token);
- clock.now+=1000;await writer.refresh();const second=await lstat(c.authorization.tokenFile);assert.notEqual(second.ino,first.ino);
- assert.equal((await createTemporalTokenFileReader({tokenFile:c.authorization.tokenFile}).read()).token,response(c,clock.now,2).token);
- assert.equal(writer.healthy(),true);assert.doesNotMatch(JSON.stringify(writer.status()),/synthetic-token|claims|principal/u);
- await writer.close();assert.equal(await missing(c.authorization.tokenFile),true);assert.deepEqual(await readdir(dir),[]);assert.equal(scheduled.pending.size,0);
+ const {dir,c,clock,scheduled,writer}=await w08Stage('START',async()=>{
+  const {dir,c}=await fixture(t),clock={now:at},scheduled=timers();let serial=0;
+  const writer=createTemporalProductTokenWriter({configuration:c,now:()=>clock.now,timers:scheduled,delivery:{async read(request){
+   assert.deepEqual(Object.keys(request).sort(),['schemaVersion','role','subject','workloadPrincipal','namespace','audience','issuer','signal'].sort());
+   assert.ok(request.signal instanceof AbortSignal);return response(c,clock.now,++serial);
+  }}});t.after(()=>writer.close());await writer.start();return {dir,c,clock,scheduled,writer};
+ });
+ const first=await w08Stage('FIRST_METADATA',async()=>{
+  const value=await lstat(c.authorization.tokenFile);assert.equal(value.mode&0o777,0o600);assert.equal(value.uid,process.getuid());assert.equal(value.nlink,1);return value;
+ });
+ await w08Stage('FIRST_READ',async()=>{
+  assert.equal((await createTemporalTokenFileReader({tokenFile:c.authorization.tokenFile}).read()).token,response(c,at,1).token);
+ });
+ await w08Stage('REFRESH',async()=>{clock.now+=1000;await writer.refresh();});
+ await w08Stage('SECOND_METADATA',async()=>{
+  const second=await lstat(c.authorization.tokenFile);assert.notEqual(second.ino,first.ino);
+ });
+ await w08Stage('SECOND_READ',async()=>{
+  assert.equal((await createTemporalTokenFileReader({tokenFile:c.authorization.tokenFile}).read()).token,response(c,clock.now,2).token);
+ });
+ await w08Stage('STATUS',async()=>{
+  assert.equal(writer.healthy(),true);assert.doesNotMatch(JSON.stringify(writer.status()),/synthetic-token|claims|principal/u);
+ });
+ await w08Stage('CLOSE',()=>writer.close());
+ await w08Stage('CLEANUP',async()=>{
+  assert.equal(await missing(c.authorization.tokenFile),true);assert.deepEqual(await readdir(dir),[]);assert.equal(scheduled.pending.size,0);
+ });
 });
 
 test('Linux: renewal, expiry and revocation remove published authorization and notify the application',linux,async t=>{

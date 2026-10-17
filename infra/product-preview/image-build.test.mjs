@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {spawnSync,execFileSync} from 'node:child_process';
 import {mkdtempSync,mkdirSync,readFileSync,writeFileSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
-import {join} from 'node:path';
+import {join,dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createHash} from 'node:crypto';
 import {createProductImageBuildRecipe} from './image-build-recipe.mjs';
@@ -12,6 +12,7 @@ import productImageTestReporter from './image-build-test-reporter.mjs';
 const verifier=fileURLToPath(new URL('./image-build-source.py',import.meta.url));
 const producer=fileURLToPath(new URL('./image-build-producer.py',import.meta.url));
 const reporter=fileURLToPath(new URL('./image-build-test-reporter.mjs',import.meta.url));
+const linuxChecks=fileURLToPath(new URL('./image-build-linux-checks.py',import.meta.url));
 const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
 const python=(args,options={})=>spawnSync(process.env.MERI_IMAGE_BUILD_TEST_PYTHON??(process.platform==='win32'?'python':'python3'),['-I','-B','-S',...args],{encoding:'utf8',timeout:30000,...options});
 
@@ -19,7 +20,7 @@ test('inline reporter emits only fixed case IDs and counts for foreign, skipped 
  const file='/opt/meri/apps/runtime/test/prepared-candidate-bootstrap.test.mjs';
  const name='standard task bootstrap polls only existing capability route and returns validated original gated binding';
  async function render(events){async function* source(){yield* events;}let output='';for await(const row of productImageTestReporter(source()))output+=row;return JSON.parse(output);}
- assert.deepEqual(await render([{type:'test:pass',data:{file,name}}]),{schemaVersion:1,observedCases:1,failedCaseIds:[],unknownFailures:0,unknownOutcomes:0,duplicateCases:0,skippedCases:0});
+ assert.deepEqual(await render([{type:'test:pass',data:{file,name}}]),{schemaVersion:1,observedCases:1,failedCaseIds:[],unknownFailures:0,unknownOutcomes:0,duplicateCases:0,skippedCases:0,fileCaseCounts:{B:1,R:0,W:0},fileFailureIds:[],failureDetails:[],detailTruncated:false});
  const unsafe=await render([{type:'test:pass',data:{file,name,skip:'secret skip reason'}},{type:'test:pass',data:{file:'/opt/meri/foreign.test.mjs',name:'secret test name'}},{type:'test:fail',data:{file,name:'secret dynamic error'}}]);
  assert.equal(unsafe.skippedCases,1);assert.equal(unsafe.unknownOutcomes,2);assert.equal(unsafe.unknownFailures,1);assert.ok(!JSON.stringify(unsafe).includes('secret'));
  assert.deepEqual((await render([{type:'test:fail',data:{file,name}}])).failedCaseIds,['B01']);
@@ -28,9 +29,15 @@ test('inline reporter emits only fixed case IDs and counts for foreign, skipped 
  const all=files.flatMap(path=>[...readFileSync(fileURLToPath(new URL(`../../${path}`,import.meta.url)),'utf8').matchAll(/^test\('([^']+)'/gmu)].map(match=>({type:'test:pass',data:{file:`/opt/meri/${path}`,name:match[1]}})));
  assert.equal(all.length,24);
  const complete=await render(all);
- assert.deepEqual(complete,{schemaVersion:1,observedCases:24,failedCaseIds:[],unknownFailures:0,unknownOutcomes:0,duplicateCases:0,skippedCases:0});
+ assert.deepEqual(complete,{schemaVersion:1,observedCases:24,failedCaseIds:[],unknownFailures:0,unknownOutcomes:0,duplicateCases:0,skippedCases:0,fileCaseCounts:{B:6,R:6,W:12},fileFailureIds:[],failureDetails:[],detailTruncated:false});
  assert.equal((await render([...all,all[0]])).duplicateCases,1);
  assert.equal((await render(all.slice(1))).observedCases,23);
+ const writer='/opt/meri/apps/runtime/temporal-product-token-writer.test.mjs',writerName=all.find(row=>row.data.file===writer&&row.data.name.startsWith('Linux: atomic')).data.name;
+ const localized=await render([{type:'test:stderr',data:{file,message:'never-print-this-secret ERR_MODULE_NOT_FOUND'}},{type:'test:fail',data:{file,name:file,details:{error:{failureType:'testCodeFailure',exitCode:1}}}},{type:'test:fail',data:{file:writer,name:writerName,details:{error:{message:'PRODUCT_IMAGE_W08_FIRST_READ',code:'ERR_ASSERTION',cause:{message:'never-print-this-secret',code:'RUNTIME_SECRET_FILE'}}}}}]);
+ assert.deepEqual(localized.fileCaseCounts,{B:0,R:0,W:1});assert.deepEqual(localized.fileFailureIds,['B','W']);
+ assert.equal(localized.failureDetails[0].id,'B_FILE');assert.equal(localized.failureDetails[0].code,'ERR_MODULE_NOT_FOUND');
+ assert.equal(localized.failureDetails[1].stage,'FIRST_READ');assert.equal(localized.failureDetails[1].code,'RUNTIME_SECRET_FILE');
+ assert.ok(!JSON.stringify(localized).includes('never-print-this-secret'));
 });
 const git=(root,...args)=>execFileSync('git',['-C',root,...args],{encoding:'utf8',stdio:['pipe','pipe','pipe']}).trim();
 function fixture(t){
@@ -41,6 +48,8 @@ function fixture(t){
  writeFileSync(join(repo,'infra/product-preview/image-build-source.py'),readFileSync(verifier));
  writeFileSync(join(repo,'infra/product-preview/image-build-producer.py'),readFileSync(producer));
  writeFileSync(join(repo,'infra/product-preview/image-build-test-reporter.mjs'),readFileSync(reporter));
+ writeFileSync(join(repo,'infra/product-preview/image-build-linux-checks.py'),readFileSync(linuxChecks));
+ for(const path of ['apps/control/conversations/test/application-fixture.mjs','apps/control/conversations/test/initial-input-fixture.mjs','apps/control/conversations/test/store-fixture.mjs','apps/gateway/test/fixtures.mjs','apps/runtime/native-authority/test/fixture.mjs','apps/runtime/test/prepared-candidate-bootstrap.test.mjs','apps/runtime/test/prepared-candidate-fixture.mjs','apps/runtime/test/remote-conversation-runner.test.mjs','apps/worker/conversation/continuation/test/fixtures.mjs','apps/runtime/temporal-product-token-writer.test.mjs']){mkdirSync(dirname(join(repo,path)),{recursive:true});writeFileSync(join(repo,path),'export const syntheticFixture=true;\n');}
  git(repo,'init','--quiet');git(repo,'add','.');git(repo,'-c','user.name=Offline Fixture','-c','user.email=fixture@invalid.example','commit','--quiet','-m','Synthetic source only');
  const sourceCommit=git(repo,'rev-parse','HEAD'),archive=join(root,'source.zip'),manifest=join(root,'members.json');
  const sealed=python([verifier,'seal','--repository',repo,'--commit',sourceCommit,'--archive',archive,'--output',manifest]);
@@ -83,7 +92,7 @@ time.sleep(5)
   }
   if(scenario==='linux-failure'){
    writeFileSync(producerFile,`import json,os,pathlib,sys
-row={'schemaVersion':1,'status':'FAILED','phase':'LINUX_TESTS','diagnosticOwner':os.environ['MERI_PRODUCT_DIAGNOSTIC_OWNER'],'primary':{'phase':'LINUX_TESTS','category':'COMMAND','code':'PRODUCT_IMAGE_COMMAND_FAILED','detail':{'status':'EXIT_NONZERO','exitCode':1,'outputBytes':200,'elapsedMs':12}},'cleanup':{'status':'OK','failure':None,'additionalFailures':[]},'linuxTests':{'status':'COMPLETE','observedCases':24,'failedCaseIds':['W08'],'unknownFailures':0,'unknownOutcomes':0,'duplicateCases':0,'skippedCases':0}}
+row={'schemaVersion':1,'status':'FAILED','phase':'LINUX_TESTS','diagnosticOwner':os.environ['MERI_PRODUCT_DIAGNOSTIC_OWNER'],'primary':{'phase':'LINUX_TESTS','category':'COMMAND','code':'PRODUCT_IMAGE_COMMAND_FAILED','detail':{'status':'EXIT_NONZERO','exitCode':1,'outputBytes':200,'elapsedMs':12}},'cleanup':{'status':'OK','failure':None,'additionalFailures':[]},'linuxTests':{'status':'COMPLETE','observedCases':24,'failedCaseIds':['W08'],'unknownFailures':0,'unknownOutcomes':0,'duplicateCases':0,'skippedCases':0,'fileCaseCounts':{'B':6,'R':6,'W':12},'fileFailureIds':['W'],'failureDetails':[{'id':'W08','stage':'FIRST_READ','code':'RUNTIME_SECRET_FILE','failureType':'testCodeFailure','exitCode':None,'signal':'NONE'}],'detailTruncated':False}}
 pathlib.Path('product-image-diagnostic.json').write_text(json.dumps(row))
 sys.exit(2)
 `);
@@ -196,7 +205,7 @@ test('failure retention caps child CLI stdout while running and emits no child b
 });
 
 test('sealing proves ZIP file bytes and modes against exact Git objects; verification joins all sealed pins',t=>{
- const f=fixture(t),result=f.verify();assert.equal(result.status,0,result.stderr);assert.deepEqual(JSON.parse(result.stdout),{status:'VERIFIED_SOURCE_ONLY',sourceCommit:f.sourceCommit,archiveSha256:f.pin.archive.sha256,sourceManifestSha256:f.pin.manifest.sha256,fileCount:5,runnerBytes:23});
+ const f=fixture(t),result=f.verify();assert.equal(result.status,0,result.stderr);assert.deepEqual(JSON.parse(result.stdout),{status:'VERIFIED_SOURCE_ONLY',sourceCommit:f.sourceCommit,archiveSha256:f.pin.archive.sha256,sourceManifestSha256:f.pin.manifest.sha256,fileCount:16,runnerBytes:23});
  const uncommitted='uncommitted replacement';writeFileSync(join(f.repo,'apps/runtime/conversation-runner.mjs'),uncommitted);assert.equal(f.verify().status,0);
  const wrong=structuredClone(f.pin);wrong.runnerSha256='0'.repeat(64);writeFileSync(f.request,JSON.stringify(wrong));assert.equal(f.verify().status,2);
 });
@@ -274,11 +283,13 @@ def run(args,timeout=30,input_bytes=None):
  raise AssertionError('unexpected subprocess')
 m.aws=aws;m.download=download;m.run=run
 def cleanup(args,**kwargs):
+ if '--input-type=module' in args and 'PRESENT' in args[-2]:
+  events.append('fixture-preflight');assert args.count('--mount')==10;return (0,b'{"schemaVersion":1,"status":"PRESENT","count":10}\\n')
  if '--test' in args:
   events.append('linux-tests:'+','.join(case for case in args if case in m.LINUX_ONLY_TESTS))
   failures=['W08'] if scenario=='linux-test-hold' else []
   if failures:kwargs['report']({'status':'EXIT_NONZERO','exitCode':1,'outputBytes':200,'elapsedMs':12})
-  return (1 if failures else 0,json.dumps({'schemaVersion':1,'observedCases':24,'failedCaseIds':failures,'unknownFailures':0,'unknownOutcomes':0,'duplicateCases':0,'skippedCases':0}).encode())
+  return (1 if failures else 0,json.dumps({'schemaVersion':1,'observedCases':24,'failedCaseIds':failures,'unknownFailures':0,'unknownOutcomes':0,'duplicateCases':0,'skippedCases':0,'fileCaseCounts':{'B':6,'R':6,'W':12},'fileFailureIds':['W'] if failures else [],'failureDetails':[],'detailTruncated':False}).encode())
  events.append('cleanup');assert not pathlib.Path(output).exists();return (1 if scenario=='cleanup-unknown' else 0,b'')
 m._source.bounded_command=cleanup
 if scenario=='source-mismatch':p['runnerSha256']='0'*64
@@ -288,7 +299,7 @@ print(json.dumps({'status':status,'events':events,'receipt':json.loads(pathlib.P
 `;
   const result=python(['-c',harness,producer,f.request,f.archive,f.manifest,output,scenario]);assert.equal(result.status,0,result.stderr);assert.ok(!result.stdout.includes('never-log-this-value'));const observed=JSON.parse(result.stdout);
   const linuxTests='linux-tests:apps/runtime/test/prepared-candidate-bootstrap.test.mjs,apps/runtime/test/remote-conversation-runner.test.mjs,apps/runtime/temporal-product-token-writer.test.mjs';
-  if(scenario==='success'){assert.equal(observed.status,'success');assert.ok(observed.events.indexOf('image-measurement')<observed.events.indexOf(linuxTests));assert.ok(observed.events.indexOf(linuxTests)<observed.events.indexOf('credentials'));assert.ok(observed.events.indexOf('credentials')<observed.events.indexOf('push'));assert.equal(observed.receipt.runnerMeasurement.runnerSha256,f.pin.runnerSha256);assert.equal(observed.receipt.sourceManifestSha256,f.pin.manifest.sha256);assert.equal(observed.receipt.scanStatus,'COMPLETE');}
+  if(scenario==='success'){assert.equal(observed.status,'success');assert.ok(observed.events.indexOf('image-measurement')<observed.events.indexOf('fixture-preflight'));assert.ok(observed.events.indexOf('fixture-preflight')<observed.events.indexOf(linuxTests));assert.ok(observed.events.indexOf(linuxTests)<observed.events.indexOf('credentials'));assert.ok(observed.events.indexOf('credentials')<observed.events.indexOf('push'));assert.equal(observed.receipt.runnerMeasurement.runnerSha256,f.pin.runnerSha256);assert.equal(observed.receipt.sourceManifestSha256,f.pin.manifest.sha256);assert.equal(observed.receipt.scanStatus,'COMPLETE');}
   else{assert.equal(observed.status,'refused');assert.equal(observed.receipt,null);if(['runner-mismatch','linux-test-hold','source-mismatch'].includes(scenario))assert.equal(observed.events.includes('credentials'),false);if(['runner-mismatch','linux-test-hold'].includes(scenario))assert.equal(observed.events.includes('image-measurement'),true);if(scenario==='linux-test-hold')assert.equal(observed.events.includes(linuxTests),true);if(['scan-hold','cleanup-unknown'].includes(scenario))assert.equal(observed.events.includes('push'),true);if(scenario==='source-mismatch')assert.equal(observed.events.includes('docker-build'),false);}
  });
 });

@@ -198,20 +198,23 @@ class ProducerDiagnosticTests(unittest.TestCase):
 
     def test_reporter_denies_skipped_foreign_and_malformed_case_results(self):
         complete = {"schemaVersion": 1, "observedCases": 24, "failedCaseIds": [],
-                    "unknownFailures": 0, "unknownOutcomes": 0, "duplicateCases": 0, "skippedCases": 0}
+                    "unknownFailures": 0, "unknownOutcomes": 0, "duplicateCases": 0, "skippedCases": 0,
+                    "fileCaseCounts": {"B": 6, "R": 6, "W": 12}, "fileFailureIds": [], "failureDetails": [], "detailTruncated": False}
         self.assertEqual(producer._read_linux_reporter(json.dumps(complete).encode())["status"], "COMPLETE")
         self.assertIsNone(producer._read_linux_reporter(b'{"secret":"do-not-echo"}'))
         with tempfile.TemporaryDirectory(dir=HERE) as work:
             reporter = Path(work) / "infra/product-preview/image-build-test-reporter.mjs"
             reporter.parent.mkdir(parents=True)
             reporter.write_text("export default function* (){}", encoding="ascii")
+            members = {"infra/product-preview/image-build-test-reporter.mjs": {"sha256": producer.file_sha(reporter, 16384)}}
             for changed in ({"observedCases": 23}, {"skippedCases": 1}, {"unknownOutcomes": 1}, {"duplicateCases": 1},
                             {"failedCaseIds": ["W08"]}):
                 row = {**complete, **changed}
                 diagnostic = {"phase": "LINUX_TESTS"}
-                with mock.patch.object(producer._source, "bounded_command", return_value=(0, json.dumps(row).encode())):
+                with mock.patch.object(producer, "_prepare_linux_fixture_sandbox", return_value=(["docker", "run"], members)), \
+                        mock.patch.object(producer._source, "bounded_command", return_value=(0, json.dumps(row).encode())):
                     with self.assertRaisesRegex(ValueError, "PRODUCT_IMAGE_LINUX_CASES_UNPROVEN"):
-                        producer._run_linux_tests(["docker", "run"], Path(work), diagnostic)
+                        producer._run_linux_tests(["docker", "run"], Path(work), Path(work) / "unused.json", diagnostic)
                 self.assertNotIn("secret", json.dumps(diagnostic))
 
     def test_diagnostic_serialization_failure_is_static_and_stops_before_work(self):

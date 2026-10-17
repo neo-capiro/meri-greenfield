@@ -49,7 +49,7 @@ _ERROR_CODES = frozenset("PRODUCT_IMAGE_" + name for name in (
     "COMMAND_UNAVAILABLE_OR_TIMEOUT", "DUPLICATE_KEY", "DUPLICATE_MEMBER",
     "FILE_BOUND", "IMAGE_IDENTITY", "IMAGE_MEASUREMENT", "IMAGE_READBACK",
     "LOCAL_IMAGE_EXISTS", "LOCAL_PROBE_EXISTS", "MANIFEST_BOUND",
-    "LINUX_CASES_UNPROVEN", "LINUX_REPORTER_UNPROVEN",
+    "LINUX_CASES_UNPROVEN", "LINUX_REPORTER_UNPROVEN", "LINUX_FIXTURE_UNPROVEN",
     "MANIFEST_ORDER", "MANIFEST_SHA_MISMATCH", "MANIFEST_SHAPE",
     "MEMBER_ANCESTOR", "MEMBER_PATH", "MEMBER_TYPE", "NODE_PIN",
     "OBJECT_BINDING", "OBJECT_BOUND", "PRIVATE_MEMBER", "PRODUCER_DEADLINE",
@@ -63,6 +63,11 @@ _COMMAND_STATUSES = frozenset(("EXIT_NONZERO", "TIMEOUT", "BOUND", "UNAVAILABLE"
 _LINUX_CASE_IDS = frozenset((*(f"B{i:02}" for i in range(1, 7)),
                             *(f"R{i:02}" for i in range(1, 7)),
                             *(f"W{i:02}" for i in range(1, 13))))
+_LINUX_STAGES = frozenset("NONE START FIRST_METADATA FIRST_READ REFRESH SECOND_METADATA SECOND_READ STATUS CLOSE CLEANUP".split())
+_LINUX_CODES = frozenset(("OTHER ERR_ASSERTION ERR_MODULE_NOT_FOUND MODULE_NOT_FOUND ERR_WORKER_INIT_FAILED ERR_WORKER_OUT_OF_MEMORY EAGAIN ENOENT EACCES EPERM RUNTIME_SECRET_FILE TASK_BOOTSTRAP_REFUSED " +
+    " ".join("TEMPORAL_PRODUCT_TOKEN_" + code for code in "CONFIGURATION DELIVERY PLATFORM DIRECTORY OWNERSHIP PATH_OCCUPIED CLEANUP_UNKNOWN IO_UNKNOWN CURRENTNESS EXPIRY CLOCK CLOSED INTERRUPTED REVOKED UNAVAILABLE REFUSED".split())).split())
+_LINUX_TYPES = frozenset("UNKNOWN testCodeFailure subtestsFailed hookFailed cancelledByParent testTimeoutFailure testAborted uncaughtException unhandledRejection".split())
+_LINUX_SIGNALS = frozenset("NONE OTHER SIGABRT SIGSEGV SIGKILL SIGTERM SIGBUS".split())
 _EXCEPTION_TYPES = {FileNotFoundError: "MISSING_FILE", PermissionError: "PERMISSION", OSError: "OS",
                     json.JSONDecodeError: "JSON", ImportError: "IMPORT", KeyError: "KEY",
                     TypeError: "TYPE", ValueError: "VALUE", TimeoutError: "TIMEOUT"}
@@ -127,10 +132,14 @@ def _diagnostic_receipt(diagnostic, status):
             "diagnosticOwner": diagnostic.get("diagnosticOwner"), "primary": diagnostic.get("primary"),
             "cleanup": diagnostic.get("cleanup", {"status": "NOT_RUN", "failure": None, "additionalFailures": []})}
     if status == "FAILED" and (diagnostic.get("primary") or {}).get("phase") == "LINUX_TESTS":
-        receipt["linuxTests"] = diagnostic.get("linuxTests", {"status": "UNAVAILABLE", "observedCases": 0,
-            "failedCaseIds": [], "unknownFailures": 0, "unknownOutcomes": 0, "duplicateCases": 0,
-            "skippedCases": 0})
+        receipt["linuxTests"] = diagnostic.get("linuxTests", _linux_unavailable())
     return receipt
+
+
+def _linux_unavailable():
+    return {"status": "UNAVAILABLE", "observedCases": 0, "failedCaseIds": [],
+        "unknownFailures": 0, "unknownOutcomes": 0, "duplicateCases": 0, "skippedCases": 0,
+        "fileCaseCounts": {"B": 0, "R": 0, "W": 0}, "fileFailureIds": [], "failureDetails": [], "detailTruncated": False}
 
 
 def _read_linux_reporter(data):
@@ -141,7 +150,7 @@ def _read_linux_reporter(data):
         row = json.loads(data.decode("ascii"))
     except (UnicodeError, ValueError):
         return None
-    if type(row) is not dict or set(row) != {"schemaVersion", "observedCases", "failedCaseIds", "unknownFailures", "unknownOutcomes", "duplicateCases", "skippedCases"} or row["schemaVersion"] != 1:
+    if type(row) is not dict or set(row) != {"schemaVersion", "observedCases", "failedCaseIds", "unknownFailures", "unknownOutcomes", "duplicateCases", "skippedCases", "fileCaseCounts", "fileFailureIds", "failureDetails", "detailTruncated"} or type(row["schemaVersion"]) is not int or row["schemaVersion"] != 1:
         return None
     count, failures = row["observedCases"], row["failedCaseIds"]
     unknown, duplicate = row["unknownFailures"], row["duplicateCases"]
@@ -149,22 +158,59 @@ def _read_linux_reporter(data):
     if type(count) is not int or not 0 <= count <= 24 or type(failures) is not list or len(failures) > 24 or \
             any(type(case) is not str or case not in _LINUX_CASE_IDS for case in failures) or len(set(failures)) != len(failures) or \
             type(unknown) is not int or not 0 <= unknown <= 25 or type(unknown_outcomes) is not int or not 0 <= unknown_outcomes <= 25 or \
-            type(duplicate) is not int or not 0 <= duplicate <= 25 or type(skipped) is not int or not 0 <= skipped <= 25:
+            type(duplicate) is not int or not 0 <= duplicate <= 25 or type(skipped) is not int or not 0 <= skipped <= 25 or unknown > unknown_outcomes or len(failures) > count:
         return None
+    per_file, file_failures, details = row["fileCaseCounts"], row["fileFailureIds"], row["failureDetails"]
+    if type(per_file) is not dict or set(per_file) != {"B", "R", "W"} or any(type(per_file[key]) is not int or not 0 <= per_file[key] <= maximum for key, maximum in (("B", 6), ("R", 6), ("W", 12))) or sum(per_file.values()) != count:
+        return None
+    if type(file_failures) is not list or len(file_failures) > 3 or any(type(key) is not str or key not in per_file for key in file_failures) or len(set(file_failures)) != len(file_failures) or any(case[0] not in file_failures for case in failures):
+        return None
+    if type(details) is not list or len(details) > 4 or type(row["detailTruncated"]) is not bool:
+        return None
+    detail_ids = set()
+    for item in details:
+        if type(item) is not dict or set(item) != {"id", "stage", "code", "failureType", "exitCode", "signal"}:
+            return None
+        key = item["id"]
+        if type(key) is not str or key not in _LINUX_CASE_IDS | {"B_FILE", "R_FILE", "W_FILE", "UNMAPPED"} or key in detail_ids:
+            return None
+        detail_ids.add(key)
+        if any(type(item[name]) is not str or item[name] not in allowed for name, allowed in (("stage", _LINUX_STAGES), ("code", _LINUX_CODES), ("failureType", _LINUX_TYPES), ("signal", _LINUX_SIGNALS))) or key != "W08" and item["stage"] != "NONE":
+            return None
+        if item["exitCode"] is not None and (type(item["exitCode"]) is not int or not -255 <= item["exitCode"] <= 255):
+            return None
     return {"status": "COMPLETE", "observedCases": count, "failedCaseIds": sorted(failures),
             "unknownFailures": unknown, "unknownOutcomes": unknown_outcomes,
-            "duplicateCases": duplicate, "skippedCases": skipped}
+            "duplicateCases": duplicate, "skippedCases": skipped, "fileCaseCounts": per_file,
+            "fileFailureIds": sorted(file_failures), "failureDetails": details, "detailTruncated": row["detailTruncated"]}
 
 
-def _run_linux_tests(sandbox, context, diagnostic):
+def _prepare_linux_fixture_sandbox(sandbox, context, manifest, diagnostic):
+    members = {row["path"]: row for row in decode(manifest.read_bytes())["files"]}
+    helper_path = "infra/product-preview/image-build-linux-checks.py"
+    helper = context / helper_path
+    need(helper_path in members and helper.is_file() and not helper.is_symlink() and
+         file_sha(helper, 32768) == members[helper_path]["sha256"], "LINUX_FIXTURE_UNPROVEN")
+    spec = importlib.util.spec_from_file_location("meri_verified_linux_checks", helper)
+    checks = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(checks)
+    timeout = min(180, _deadline - time.monotonic()) if _deadline is not None else 180
+    need(timeout > 0, "PRODUCER_DEADLINE")
+    sandbox = checks.prepare_fixture_sandbox(sandbox, context, members, _source.bounded_command,
+        timeout, lambda detail: _report_command(diagnostic, detail))
+    return sandbox, members
+
+
+def _run_linux_tests(sandbox, context, manifest, diagnostic):
+    diagnostic["linuxTests"] = _linux_unavailable()
+    sandbox, members = _prepare_linux_fixture_sandbox(sandbox, context, manifest, diagnostic)
     reporter = context / "infra/product-preview/image-build-test-reporter.mjs"
-    need(reporter.is_file() and 0 < reporter.stat().st_size <= 8192, "LINUX_REPORTER_UNPROVEN")
+    need(reporter.is_file() and not reporter.is_symlink() and 0 < reporter.stat().st_size <= 16384 and
+         file_sha(reporter, 16384) == members["infra/product-preview/image-build-test-reporter.mjs"]["sha256"], "LINUX_REPORTER_UNPROVEN")
     reporter_url = "data:text/javascript;base64," + base64.b64encode(reporter.read_bytes()).decode("ascii")
     timeout = min(180, _deadline - time.monotonic()) if _deadline is not None else 180
     need(timeout > 0, "PRODUCER_DEADLINE")
-    diagnostic["linuxTests"] = {"status": "UNAVAILABLE", "observedCases": 0,
-        "failedCaseIds": [], "unknownFailures": 0, "unknownOutcomes": 0,
-        "duplicateCases": 0, "skippedCases": 0}
+    diagnostic["commandFailure"] = None
     code, output = _source.bounded_command(sandbox + ["--test", "--test-reporter=" + reporter_url,
         *LINUX_ONLY_TESTS], timeout=timeout, report=lambda detail: _report_command(diagnostic, detail))
     parsed = _read_linux_reporter(output)
@@ -173,7 +219,9 @@ def _run_linux_tests(sandbox, context, diagnostic):
     need(code == 0, "COMMAND_FAILED")
     need(parsed is not None and parsed["observedCases"] == 24 and not parsed["failedCaseIds"] and
          parsed["unknownFailures"] == 0 and parsed["unknownOutcomes"] == 0 and
-         parsed["duplicateCases"] == 0 and parsed["skippedCases"] == 0, "LINUX_CASES_UNPROVEN")
+         parsed["duplicateCases"] == 0 and parsed["skippedCases"] == 0 and
+         parsed["fileCaseCounts"] == {"B": 6, "R": 6, "W": 12} and not parsed["fileFailureIds"] and
+         not parsed["failureDetails"] and not parsed["detailTruncated"], "LINUX_CASES_UNPROVEN")
 
 
 def _save_diagnostic(diagnostic, status):
@@ -188,7 +236,7 @@ def _save_diagnostic(diagnostic, status):
                 expected = diagnostic.get("diagnosticOwner")
                 if type(expected) is not str or not re.fullmatch(r"[a-f0-9]{32}", expected):
                     return False
-            if DIAGNOSTIC_FILE.stat().st_size > 2048:
+            if DIAGNOSTIC_FILE.stat().st_size > 4096:
                 return False
             prior = json.loads(DIAGNOSTIC_FILE.read_text(encoding="ascii"))
             if type(prior) is not dict or prior.get("diagnosticOwner") != diagnostic.get("diagnosticOwner"):
@@ -196,7 +244,7 @@ def _save_diagnostic(diagnostic, status):
         elif diagnostic.get("diagnosticOwner") and not diagnostic.get("_ownsDiagnostic"):
             return False
         payload = (json.dumps(_diagnostic_receipt(diagnostic, status), sort_keys=True, separators=(",", ":")) + "\n").encode("ascii")
-        if len(payload) > 2048:
+        if len(payload) > 4096:
             return False
         with temporary.open("xb") as output:
             created = True
@@ -380,7 +428,7 @@ def _produce(pin, output, diagnostic):
             # These fixtures require POSIX path and owner semantics. Qualify them
             # inside the exact nonroot image before obtaining registry credentials.
             diagnostic["phase"] = "LINUX_TESTS"
-            _run_linux_tests(sandbox, context, diagnostic)
+            _run_linux_tests(sandbox, context, manifest, diagnostic)
             # No registry credentials exist until all source and image checks pass.
             diagnostic["phase"] = "ECR_AUTH"
             password = run(["aws", "--region", REGION, "ecr", "get-login-password"])
