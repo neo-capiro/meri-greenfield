@@ -22,7 +22,13 @@ export function createMemoryJournalStore(){
    rows.set(at,{record:structuredClone(record),state:'PENDING',outcome:null});if(state.loseClaimAck){state.loseClaimAck=false;throw Error('synthetic lost claim ACK');}return {claimed:true};},
   async settle({key,record,state:next,outcome}){state.settles++;const at=k(key),row=rows.get(at);
    if(!row||row.state!=='PENDING'||canonicalSha256(row.record)!==canonicalSha256(record))throw Error('synthetic settle refused');
-   row.state=next;row.outcome=structuredClone(outcome);if(state.loseSettleAck){state.loseSettleAck=false;throw Error('synthetic lost settle ACK');}return structuredClone(row);}}};
+   row.state=next;row.outcome=structuredClone(outcome);if(state.loseSettleAck){state.loseSettleAck=false;throw Error('synthetic lost settle ACK');}return structuredClone(row);},
+  async read({key}){if(state.readDown)throw Error('synthetic store unavailable');const row=rows.get(k(key));return row?structuredClone({record:row.record,state:row.state,outcome:row.outcome}):null;},
+  async list({conversation:c,after=null,limit}){if(state.readDown)throw Error('synthetic store unavailable');
+   const mine=[...rows].map(([at,row])=>[JSON.parse(at),row]).filter(([[t,a,conv]])=>t===c.tenantId&&a===c.actorId&&conv===c.conversationId);
+   const start=after===null?0:mine.findIndex(([[,,,d]])=>d===after)+1;if(after!==null&&start===0)throw Error('synthetic cursor refused');
+   const page=mine.slice(start,start+limit).map(([[,,,deliveryId],row],i)=>structuredClone({deliveryId,createdAt:new Date(NOW+start+i).toISOString(),record:row.record,state:row.state,outcome:row.outcome}));
+   return {entries:page,next:mine.length>start+limit?page.at(-1).deliveryId:null};}}};
 }
 /** A task.create composition: real metadata owner + real command interface/executor, approvals held by `approvals`. */
 export function commandComposition({tenantId='tenant'}={}){
