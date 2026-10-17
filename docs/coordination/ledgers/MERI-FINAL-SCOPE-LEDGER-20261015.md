@@ -201,14 +201,14 @@ This is source reconciliation only. The historical proposal tables below retain 
 | --- | --- |
 | Selected capabilities / continued exclusions | 96 / 43 |
 | Selected source reads / separate product or governed capabilities | 82 / 14 |
-| Selected source adapter coverage | 58 complete + 13 partial + 11 absent = 82 |
-| Single meri_reads registry | 60 operations / 36 families |
-| Registry accounting | 58 selected source reads + 1 product-state read + 1 historical contract |
+| Selected source adapter coverage | 63 complete + 8 partial + 11 absent = 82 |
+| Single meri_reads registry | 65 operations / 37 families |
+| Registry accounting | 63 selected source reads + 1 product-state read + 1 historical contract |
 | Selected source reads declared in skill manifests | 52 current contracts + 1 historical-only contract |
 | Selected source reads reachable through admitted skill source | 11 |
 | Complete source adapters lacking general-conversation registration | 0 |
-| Partial source adapters withheld from SDK exposure | 13 |
-| Selected source reads lacking complete adapters | 24 (13 partial + 11 absent; 16 declared by skills; 8 without a skill declaration) |
+| Partial source adapters withheld from SDK exposure | 8 |
+| Selected source reads lacking complete adapters | 19 (8 partial + 11 absent; 11 declared by skills; 8 without a skill declaration) |
 | Pinned actual Core producer mappings (not qualification) | 63 |
 | Live | 0 |
 
@@ -240,6 +240,7 @@ Only `quick_skill.relationship_brief`, `quick_skill.commitments_audit` are admit
 | `federal-legislation` | `get_bill_status`, `search_floor_votes` |
 | `federal-market` | `get_district_federal_market`, `search_contract_vehicles`, `search_federal_contract_awards`, `search_federal_subawards`, `search_procurement_forecasts` |
 | `florida-budget` | `get_florida_budget_project` |
+| `funding-opportunities` | `get_funding_opportunity`, `get_funding_opportunity_requirements`, `get_opportunity_client_context`, `get_opportunity_government_landscape`, `search_funding_opportunities` |
 | `intelligence-summary` | `query_intelligence` |
 | `legislative-directory` | `get_committee_roster`, `list_members` |
 | `mail` | `mail.list_messages`, `mail.read_thread`, `mail.search_messages` |
@@ -264,7 +265,6 @@ The following incomplete source adapters have restricted input/resource coverage
 
 | Partial adapter family | Incomplete operations (not SDK-exposed) |
 | --- | --- |
-| `funding-opportunities` | `get_funding_opportunity`, `get_funding_opportunity_requirements`, `get_opportunity_client_context`, `get_opportunity_government_landscape`, `search_funding_opportunities` |
 | `outreach-query` | `query_outreach` |
 | `public-domain-hearings` | `search_committee_hearings` |
 | `research-legal-legislation` | `get_legal_reference`, `search_legislative_research` |
@@ -279,7 +279,6 @@ The finite native families listed above retain their receiving-contract truth li
 | `business-development` | `get_business_development_evidence` |
 | `certification-status` | `get_certification_status` |
 | `client-knowledge-search` | `search_client_knowledge` |
-| `funding-opportunities` | `get_funding_opportunity`, `get_funding_opportunity_requirements`, `get_opportunity_client_context`, `get_opportunity_government_landscape`, `search_funding_opportunities` |
 | `outreach-query` | `query_outreach` |
 | `program-elements` | `get_pe_budget_timeline`, `get_program_element`, `search_program_elements` |
 | `public-data` | `search_federal_awards`, `search_federal_grants` |

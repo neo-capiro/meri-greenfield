@@ -77,7 +77,10 @@ for(const [family,ids] of complete){
 }
 
 test('eight partial-input operations remain absent from SDK policy and cannot be advertised by installation/discovery',async()=>{
- assert.equal(partial.length,8);assert.equal(new Set(partial.map(([family])=>family)).size,6);
+ assert.equal(partial.length,8);
+ assert.deepEqual([...new Set(partial.map(([family])=>family))].sort(),['outreach-query','public-domain-hearings',
+  'research-legal-legislation','research-legal-news','state-status-votes','tracked-bills']);
+ assert.equal(partial.some(([family])=>family==='funding-opportunities'),false,'funding uses its complete-family SDK coverage, separate from SOURCE_SLICE_CASES');
  const operations=partial.map(([,id])=>({id,version:'0.2.0'})),families=[...new Set(partial.map(([family])=>family))];
  const gates=resolveAvailableReads({policy:{generalReads:true,readFamilies:[...READ_FAMILY_IDS,...families]},installation:{operations},discovery:{operations},scopes:[{kind:'client'}]});
  assert.deepEqual(gates.available,[]);

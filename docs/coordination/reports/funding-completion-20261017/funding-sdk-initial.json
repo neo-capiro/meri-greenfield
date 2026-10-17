@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "meri-focused-test-run/1",
+  "cwd": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-16\\task-4\\meri-resolution-next",
+  "executable": "C:\\Users\\Administrator\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe",
+  "arguments": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "apps/worker/conversation/reads/test/funding.test.mjs"
+  ],
+  "startedAt": "2026-10-17T03:32:45.0330479Z",
+  "completedAt": "2026-10-17T03:32:52.7329055Z",
+  "exitCode": 0,
+  "scope": "New funding MCP/SDK tests only; actual CONTROL/gateway/task owners over synthetic native bridge and SQL. No current Core/server qualification or promotion acceptance claimed."
+}

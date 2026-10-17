@@ -9808,11 +9808,11 @@
       "packages/contracts/retrieval-0.2/catalog.json": "bac14e7e5dd740493914ff6a14b95cb5e6d7cbd09ee48b1cbd994d5eac728c08",
       "scripts/scope-ledger/backend-producers.json": "ad5fb22cb7f4ef3ffa78f4a730c74bb28e59c0a689a2cec7d5a74a45d7ef6ea4",
       "packages/contracts/retrieval-0.2/catalog-validation.mjs": "5717b6898ce56792a40b556748eeca68d377f4af4e544842bd618efc0b9f7bdc",
-      "apps/worker/conversation/reads/families.mjs": "64fed993299072d2c72679e535aba2208dff71e04301b87ac04777feaab137bc",
+      "apps/worker/conversation/reads/families.mjs": "3a1b3a535a6ed83af3d1f5367719d5eca5088d8a8e6384149bc53b908820305b",
       "apps/worker/conversation/reads/server.mjs": "d3a28df432f44e20849ceeadf7a38e73bed3748f9f36057d1d22057d4ab829b5",
       "apps/gateway/general-reads/registration.mjs": "80c5a64e10f279ccf7201d85b04c7ded1739416b98d64eb84098ec8937a2300a",
       "apps/gateway/general-reads/integration.mjs": "980e0f0f4777b768c80ae844cf9fdda32283a2afea00977a50bd0aa7494bc141",
-      "scripts/general-reads/adapters.json": "c2b550caa58a448878586cf393e7a3fd350ae36d29be210587f7ad6bd3f3ea71",
+      "scripts/general-reads/adapters.json": "5187d08c2f0fb4583b654def701bcc3d43ecfad306b3001d176765a62e377f97",
       "apps/gateway/general-reads/families/meeting-source.mjs": "66ee8011d604721b5977ebb601199b4fdaf3149143effb79645898f41fb186b8",
       "apps/gateway/general-reads/families/action-items-complete.mjs": "abfd9f60479cb4c4cbe9d876d04bbebd9755227461673b026f4c6d74c02b7ceb",
       "apps/gateway/general-reads/families/operational-reads.mjs": "d19d6d3297c955b68d2b5048695493f62cc98e367a9469eb5abb8e86e4320563",
@@ -9845,10 +9845,10 @@
       "apps/gateway/general-reads/families/district-nexus.mjs": "2e9d6800a1fed73d7010af3fc8eef1775cff1a744e67ba2567662f8457fed52e",
       "apps/gateway/general-reads/families/client-registry.mjs": "94a57cbcdcbfee74b955df294c6a8331c65bb4f5469702c0ee3b047ffc65c61e",
       "apps/gateway/general-reads/families/federal-market.mjs": "0e509b9b5b3517beb94a4c95f272aad6bdd74eff82b26f0923c94c01f9be22f1",
+      "apps/gateway/general-reads/families/funding-opportunities.mjs": "056a354b15e9e96fdc25a8a6aed3c37c911f8435259b485c525a157e746a1530",
       "apps/gateway/general-reads/families/public-data.mjs": "1b8b94efa01f877f18a4567a55fc2be40bcb9773cea70968542265cd7b8ceda7",
       "apps/gateway/general-reads/families/client-knowledge-search.mjs": "5f4322df74dbe24fa353e7bec95163310aa984339c0b799b70c3ed31dbe44d4c",
       "apps/gateway/general-reads/families/business-development.mjs": "a3803cf3ff177c066141d18769f69bcbe8c848b4e8fd2c58abc5af09541ff73b",
-      "apps/gateway/general-reads/families/funding-opportunities.mjs": "056a354b15e9e96fdc25a8a6aed3c37c911f8435259b485c525a157e746a1530",
       "apps/gateway/sources/funding-opportunities/handler.mjs": "de7e192577b676423a085249e6af23df76882444d4029f0d2d3e8896de473836",
       "apps/gateway/sources/funding-opportunities/request-context.mjs": "fff73469a064a7b2db64b92e46b1734cd77f207f6f0c2bc96981000d13bbaddb",
       "apps/gateway/sources/retained-reads/native-families.mjs": "c8aaab1d26fb94e4e07a8531b46c9261c5f04400ca8a4a25709b33ba0def2803",
@@ -9999,22 +9999,22 @@
       "excludedCapabilities": 43,
       "selectedSourceReads": 82,
       "selectedProductOrGoverned": 14,
-      "registeredGeneralOperations": 60,
-      "registeredFamilies": 36,
-      "generalSelectedSourceReads": 58,
+      "registeredGeneralOperations": 65,
+      "registeredFamilies": 37,
+      "generalSelectedSourceReads": 63,
       "generalSelectedProductStateReads": 1,
       "generalHistoricalOperations": 1,
       "sourceReadsWithSkillDeclarations": 53,
       "sourceReadsWithCurrentContractDeclarations": 52,
       "sourceReadsWithHistoricalOnlySkillDeclaration": 1,
       "sourceReadsWithAdmittedSkillSourceRoute": 11,
-      "completeSourceAdapters": 58,
-      "partialSourceAdapters": 13,
+      "completeSourceAdapters": 63,
+      "partialSourceAdapters": 8,
       "absentSourceAdapters": 11,
       "existingSourceAdaptersWithoutGeneralExposure": 0,
-      "partialSourceAdaptersWithoutGeneralExposure": 13,
-      "missingSourceAdapters": 24,
-      "missingAdaptersDeclaredBySkills": 16,
+      "partialSourceAdaptersWithoutGeneralExposure": 8,
+      "missingSourceAdapters": 19,
+      "missingAdaptersDeclaredBySkills": 11,
       "missingAdaptersWithoutSkillDeclaration": 8,
       "mappedBackendProducers": 63,
       "live": 0
@@ -10150,6 +10150,16 @@
         ]
       },
       {
+        "family": "funding-opportunities",
+        "operations": [
+          "get_funding_opportunity",
+          "get_funding_opportunity_requirements",
+          "get_opportunity_client_context",
+          "get_opportunity_government_landscape",
+          "search_funding_opportunities"
+        ]
+      },
+      {
         "family": "intelligence-summary",
         "operations": [
           "query_intelligence"
@@ -10268,16 +10278,6 @@
     "existingAdaptersWithoutGeneralExposure": [],
     "partialAdapterFamilies": [
       {
-        "family": "funding-opportunities",
-        "operations": [
-          "get_funding_opportunity",
-          "get_funding_opportunity_requirements",
-          "get_opportunity_client_context",
-          "get_opportunity_government_landscape",
-          "search_funding_opportunities"
-        ]
-      },
-      {
         "family": "outreach-query",
         "operations": [
           "query_outreach"
@@ -10333,16 +10333,6 @@
         "family": "client-knowledge-search",
         "operations": [
           "search_client_knowledge"
-        ]
-      },
-      {
-        "family": "funding-opportunities",
-        "operations": [
-          "get_funding_opportunity",
-          "get_funding_opportunity_requirements",
-          "get_opportunity_client_context",
-          "get_opportunity_government_landscape",
-          "search_funding_opportunities"
         ]
       },
       {
@@ -13335,7 +13325,9 @@
         ],
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
-        "generalOperations": [],
+        "generalOperations": [
+          "search_funding_opportunities"
+        ],
         "adapterPaths": [
           "apps/gateway/general-reads/families/funding-opportunities.mjs",
           "apps/gateway/sources/funding-opportunities/handler.mjs",
@@ -13347,7 +13339,7 @@
         "requiredContextKeys": [
           "asOf"
         ],
-        "state": "adapter-partial",
+        "state": "adapter-present",
         "backendProducer": {
           "operation": "search_funding_opportunities",
           "family": "funding-opportunities",
@@ -13380,7 +13372,9 @@
         ],
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
-        "generalOperations": [],
+        "generalOperations": [
+          "get_funding_opportunity_requirements"
+        ],
         "adapterPaths": [
           "apps/gateway/general-reads/families/funding-opportunities.mjs",
           "apps/gateway/sources/funding-opportunities/handler.mjs",
@@ -13392,7 +13386,7 @@
         "requiredContextKeys": [
           "asOf"
         ],
-        "state": "adapter-partial",
+        "state": "adapter-present",
         "backendProducer": {
           "operation": "get_funding_opportunity_requirements",
           "family": "funding-opportunities",
@@ -13424,7 +13418,9 @@
         ],
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
-        "generalOperations": [],
+        "generalOperations": [
+          "get_funding_opportunity"
+        ],
         "adapterPaths": [
           "apps/gateway/general-reads/families/funding-opportunities.mjs",
           "apps/gateway/sources/funding-opportunities/handler.mjs",
@@ -13436,7 +13432,7 @@
         "requiredContextKeys": [
           "asOf"
         ],
-        "state": "adapter-partial",
+        "state": "adapter-present",
         "backendProducer": {
           "operation": "get_funding_opportunity",
           "family": "funding-opportunities",
@@ -13468,7 +13464,9 @@
         ],
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
-        "generalOperations": [],
+        "generalOperations": [
+          "get_opportunity_client_context"
+        ],
         "adapterPaths": [
           "apps/gateway/general-reads/families/funding-opportunities.mjs",
           "apps/gateway/sources/funding-opportunities/handler.mjs",
@@ -13480,7 +13478,7 @@
         "requiredContextKeys": [
           "asOf"
         ],
-        "state": "adapter-partial",
+        "state": "adapter-present",
         "backendProducer": {
           "operation": "get_opportunity_client_context",
           "family": "funding-opportunities",
@@ -13512,7 +13510,9 @@
         ],
         "sourceAdmittedSkills": [],
         "sourceAdmittedOperations": [],
-        "generalOperations": [],
+        "generalOperations": [
+          "get_opportunity_government_landscape"
+        ],
         "adapterPaths": [
           "apps/gateway/general-reads/families/funding-opportunities.mjs",
           "apps/gateway/sources/funding-opportunities/handler.mjs",
@@ -13524,7 +13524,7 @@
         "requiredContextKeys": [
           "asOf"
         ],
-        "state": "adapter-partial",
+        "state": "adapter-present",
         "backendProducer": {
           "operation": "get_opportunity_government_landscape",
           "family": "funding-opportunities",

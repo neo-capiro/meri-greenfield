@@ -6,16 +6,14 @@ import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs'
 import {decodeNativeReadObservation,NATIVE_READ_OBSERVATION_HEADER as HEADER} from '../../../packages/contracts/native-read-observation-0.2/validate.mjs';
 import {storedCase,storedPage,ids} from '../../gateway/sources/funding-opportunities/test/fixture.mjs';
 import {createGeneralReadFamilyHandlers} from '../../gateway/general-reads/integration.mjs';
-import {ownerFixture} from '../native-authority/native-read-credentials/test/fixture.mjs';
-import {createNativeReadsOwner} from '../native-authority/reads-owner.mjs';
-import {readsFixture} from '../native-authority/test/reads-fixture.mjs';
+import {ownerFixture,uuid} from '../native-authority/native-read-credentials/test/fixture.mjs';
 import {createControlGeneralReadRuntime} from '../general-read-runtime.mjs';
 import {familyReads} from '../../worker/conversation/reads/availability.mjs';
 import {READ_FAMILY_IDS} from '../../worker/conversation/reads/families.mjs';
 import {mountReads} from '../../worker/conversation/reads/test/fixture.mjs';
 
-async function wired(id,{staticCredentials=false,missingContext=false}={}){
- const scene=storedCase(id),nativeFetch=scene.transport.fetchImpl;
+async function wired(id,{staticCredentials=false,missingContext=false,scene=storedCase(id)}={}){
+ const nativeFetch=scene.transport.fetchImpl;
  // This explicit offline stand-in consumes the verified carrier. It is not evidence that current Core consumes it.
  scene.transport={...scene.transport,async fetchImpl(url,options){
   scene.state.bridgeCalls=(scene.state.bridgeCalls??0)+1;
@@ -37,6 +35,7 @@ function unknown(f){
  const [r]=f.state.reservations.values();assert.equal(r.state,'UNKNOWN');assert.equal(r.hold_micro_usd,1);assert.equal(r.output_bytes,null);assert.equal(r.charged_micro_usd,null);
  assert.equal(f.state.budget.consumed_micro_usd,0);assert.equal([...f.state.produced.values()][0].completion,null);
 }
+function beforeSource(f){assert.equal(f.wire.length,0);assert.equal(f.stateOwner.secrets,0);assert.equal(f.state.reservations.size,0);assert.equal(f.state.budget.consumed_micro_usd,0);}
 
 for(const id of ids){
  test(`${id}: synthetic governed source consumes the private observation and settles exact original request/result bytes`,async()=>{
@@ -55,17 +54,49 @@ for(const id of ids){
    for(const suffix of ['native-read-observation-0.2/schema.json','native-read-observation-0.2/validate.mjs','funding-opportunities/request-context.mjs'])assert.ok(f.handlers.get(`${id}@0.2.0`).sourceFiles.some(row=>row.label.endsWith(suffix)));
   }finally{f.scope.abort();}
  });
+ test(`${id}: synthetic bridge read succeeds through actual MCP with current client authority and durable settlement`,async()=>{
+  const f=await wired(id),m=await mountReads(f,{port:f.port});assert.notEqual(m,null);
+  try{
+   assert.deepEqual((await m.client.listTools()).tools.map(tool=>tool.name),[id]);
+   const result=await m.call(id,f.request);assert.equal(result.isError,undefined);assert.equal(result.denied,undefined);
+   const raw=result.content[0].text,out=JSON.parse(raw),[observation]=f.state.observations;
+   assert.deepEqual(out.subject,f.authority.subject);assert.equal(out.subject.kind,'client');assert.deepEqual(out.binding,f.binding);assert.deepEqual(out.operation,f.operation);
+   assert.equal(out.result.asOf,observation.context.asOf);assert.equal(observation.requestSha256,hash(f.request));assert.equal(f.wire.length,1);assert.deepEqual(f.wire[0].body,f.request);
+   assert.equal(m.runtime.receipts().length,1);assert.equal(m.runtime.receipts()[0].resultSha256,hash(out));
+   const [reservation]=f.state.reservations.values(),[receipt]=f.state.produced.values();assert.equal(reservation.state,'SETTLED');assert.equal(reservation.output_bytes,Buffer.byteLength(raw));assert.equal(receipt.completion.resultSha256,hash(out));
+  }finally{await m.close();f.scope.abort();}
+ });
  test(`${id}: missing governed installation, disabled source or missing current context cannot reach the bridge`,async()=>{
   const f=await wired(id);
   try{
-   f.state.installRevoked=true;await assert.rejects(f.invoke(),{message:'UNAVAILABLE'});f.state.installRevoked=false;
+   f.state.installRevoked=true;await assert.rejects(f.invoke(),{message:'UNAVAILABLE'});assert.equal(await mountReads(f,{port:f.port}),null);f.state.installRevoked=false;
+   // Discovery is a worker/native RPC availability gate; raw CONTROL execute owns a different current-authority boundary.
+   f.state.discoveryMutator=row=>row.operations=[];assert.equal(await mountReads(f,{port:f.port}),null);f.state.discoveryMutator=undefined;
    await assert.rejects(f.disabledPort().execute({operation:f.operation,arguments:f.request,deliveryId:'funding-disabled'}),{message:'UNAVAILABLE'});
+   assert.equal(await mountReads(f,{port:f.disabledPort()}),null);
    await assert.rejects(f.invoke({arguments:{...f.request,asOf:f.normalizationContext.asOf}}));
-   assert.equal(await mountReads(f,{port:f.port}),null);assert.equal(f.wire.length,0);assert.equal(f.stateOwner.secrets,0);assert.equal(f.state.reservations.size,0);
+   beforeSource(f);
   }finally{f.scope.abort();}
   const missing=await wired(id,{missingContext:true});
   try{await assert.rejects(missing.invoke(),{message:'UNAVAILABLE'});assert.equal(missing.wire.length,0);assert.equal(missing.state.reservations.size,0);}
   finally{missing.scope.abort();}
+ });
+ test(`${id}: personal, foreign-client and absent native grant cannot acquire funding source credentials`,async()=>{
+  for(const mode of ['personal','foreign-subject','foreign-resource','invisible','foreign-request']){
+   const scene=storedCase(id),a=scene.authority,foreign=uuid('e');
+   if(mode==='personal'){
+    const scope={tenantId:a.binding.tenantId,kind:'tenant',resourceId:a.binding.tenantId,policyRevision:a.policyRevision};
+    Object.assign(a.subject,{kind:'personal',entityType:'user',entityIds:[a.binding.actorId],scopes:[scope]});a.claims.scopes=[scope];a.decision.scopes=[scope];
+   }
+   if(mode==='foreign-subject')a.subject.entityIds=[foreign];
+   if(mode==='foreign-resource'){const scope={...a.subject.scopes[0],resourceId:foreign};a.subject.scopes=[scope];a.claims.scopes=[scope];a.decision.scopes=[scope];}
+   const f=await wired(id,{scene});if(mode==='invisible')f.core.state.clientIds=[];
+   try{
+    await assert.rejects(f.invoke(mode==='foreign-request'?{arguments:{...f.request,clientId:foreign}}:{}));beforeSource(f);
+    if(mode==='personal')assert.equal(await mountReads(f,{port:f.port}),null);
+    if(!['invisible','foreign-request'].includes(mode))assert.equal(f.stateOwner.nativeCredentials,0);
+   }finally{f.scope.abort();}
+  }
  });
 }
 
@@ -93,15 +124,51 @@ test('funding current native membership revocation after source withholds result
  finally{f.scope.abort();}
 });
 
-test('funding is absent from SDK60/36 and the real native runtime refuses forged approved/install/discovery inventories',async()=>{
- const operations=ids.map(id=>({id,version:'0.2.0'})),x=await readsFixture({config:{operations}});let dispatched=0;
- const gateway=x.ownerConfiguration.gateway,owner=createNativeReadsOwner({...x.ownerConfiguration,gateway:{
-  async readAvailability(options){const value=await gateway.readAvailability(options);return {...value,installation:{...value.installation,operations},discovery:{...value.discovery,operations}};},
-  async execute(){dispatched++;throw Error('UNQUALIFIED_FUNDING_DISPATCH');},
- }});
- assert.equal(familyReads().length,60);assert.equal(READ_FAMILY_IDS.length,36);assert.equal(READ_FAMILY_IDS.includes('funding-opportunities'),false);
- assert.equal(familyReads().some(row=>ids.includes(row.operation.id)),false);
- const snapshot=await owner.handle('availability',x.request,x.credential);assert.deepEqual(snapshot.installation.operations,[]);assert.deepEqual(snapshot.discovery.operations,[]);
- for(const operation of operations)await assert.rejects(owner.handle('execute',{...x.executeRequest,operation,arguments:storedCase(operation.id).arguments,deliveryId:`funding-unqualified:${operation.id}`},x.credential),{message:'UNAVAILABLE'});
- assert.equal(dispatched,0);assert.equal(x.wire.length,0);assert.equal(x.state.reservations.size,0);
+test('funding SDK65/37 contains all five source operations while every current installation gate stays separate',()=>{
+ assert.equal(familyReads().length,65);assert.equal(READ_FAMILY_IDS.length,37);assert.equal(READ_FAMILY_IDS.includes('funding-opportunities'),true);
+ assert.deepEqual(familyReads().filter(row=>row.family==='funding-opportunities').map(row=>row.operation.id),ids);
+});
+
+test('funding durable grant and current native principal/role revocation refuse before source reservation',async()=>{
+ for(const mode of ['task','principal','role']){
+  const f=await wired(ids[0]);if(mode==='task')f.state.grant.state='REVOKED';if(mode==='principal')f.core.state.principal={...f.core.principal,actorId:uuid('e')};if(mode==='role')f.core.state.role='client_portal_user';
+  try{await assert.rejects(f.invoke());beforeSource(f);if(mode==='task')assert.equal(f.stateOwner.nativeCredentials,0);}
+  finally{f.scope.abort();}
+ }
+});
+
+test('funding native identity, task or client visibility changes after source withhold bytes and keep UNKNOWN',async()=>{
+ for(const mode of ['identity','task','client']){
+  const f=await wired(ids[0]);f.state.afterSource=()=>{if(mode==='identity')f.core.state.identityRevision='e'.repeat(64);if(mode==='task')f.state.grant.state='REVOKED';if(mode==='client')f.core.state.clientIds=[];};
+  try{await assert.rejects(f.invoke());assert.equal(f.wire.length,1);unknown(f);}
+  finally{f.scope.abort();}
+ }
+});
+
+test('funding credential-time membership or original expiry drift cannot dispatch source and preserves UNKNOWN',async()=>{
+ for(const mode of ['membership','expiry']){
+  const f=await wired(ids[0]);if(mode==='expiry')f.core.state.nativeExpiry=f.now()+1;
+  f.stateOwner.beforeSecret=()=>{if(mode==='membership')f.core.state.membershipRevision='e'.repeat(64);else f.state.now+=2;};
+  try{await assert.rejects(f.invoke());assert.equal(f.wire.length,0);assert.equal(f.stateOwner.secrets,1);unknown(f);}
+  finally{f.scope.abort();}
+ }
+});
+
+test('funding native DTO client substitution and response uncertainty withhold the whole result without retry',async()=>{
+ for(const mode of ['client','uncertain']){
+  const f=await wired(ids[0]);if(mode==='client')f.state.resultMutator=page=>page.data.clientId=uuid('e');else f.state.responseFactory=()=>{throw Error('SYNTHETIC_SOURCE_CONNECTION_UNCERTAIN');};
+  try{await assert.rejects(f.invoke(),{message:'INVALID_RESULT'});assert.equal(f.wire.length,1);assert.equal(f.state.bridgeCalls,1);unknown(f);}
+  finally{f.scope.abort();}
+ }
+});
+
+test('funding pre-cancelled lifetime refuses as DEADLINE while in-flight cancellation/expiry retain UNKNOWN',async()=>{
+ const before=await wired(ids[0]),aborted=new AbortController();aborted.abort();
+ try{await assert.rejects(before.invoke({signal:aborted.signal}),{message:'DEADLINE'});beforeSource(before);}
+ finally{before.scope.abort();}
+ for(const mode of ['cancel','expiry']){
+  const f=await wired(ids[0]),controller=new AbortController();f.state.afterSource=()=>{if(mode==='cancel')controller.abort();else f.state.now=f.deadlineMs;};
+  try{await assert.rejects(f.invoke({signal:controller.signal}),{message:mode==='cancel'?'CANCELLED':'DEADLINE'});assert.equal(f.wire.length,1);unknown(f);}
+  finally{f.scope.abort();}
+ }
 });

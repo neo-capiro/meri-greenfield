@@ -43,6 +43,7 @@ export const READ_FAMILIES=Object.freeze({mail:Object.freeze({clientScope:'optio
  'district-nexus':Object.freeze({clientScope:'required'}),
  'client-registry':Object.freeze({clientScope:'optional'}),
  'federal-market':Object.freeze({clientScope:'optional'}),
+ 'funding-opportunities':Object.freeze({clientScope:'required'}),
  'public-data':Object.freeze({clientScope:'optional',operationIds:Object.freeze(['query_economic_data'])}),
  'client-knowledge-search':Object.freeze({clientScope:'optional',operationIds:Object.freeze(['query_knowledge_graph'])}),
  'business-development':Object.freeze({clientScope:'optional',operationIds:Object.freeze(['get_business_development_context','get_business_development_recent_changes'])}),
