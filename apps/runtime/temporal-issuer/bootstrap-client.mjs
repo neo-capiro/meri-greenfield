@@ -179,15 +179,17 @@ export function createTemporalIssuerBootstrapClient({configuration,serverCaPem,c
  try{certificate(serverCa,c.serverCaSha256,now());
   clientCa=certificate(clientCaBytes,c.clientCaSha256,now());}
  catch{serverCa.fill(0);clientCaBytes.fill(0);throw refused();}
- let state='new',controller=null,closeReceipt=null;
- const physical=new Set();
+ let state='new',controller=null,closeReceipt=null,issuance=false;
+ const physical=new Set(),settling=new Set();
+ const settled=()=>physical.size===0&&controller===null;
+ const notify=()=>{if(settled())for(const waiter of [...settling])waiter();};
  const trackRequest=call=>{
   physical.add(call);
-  call.once('close',()=>physical.delete(call));
+  call.once('close',()=>{physical.delete(call);notify();});
   // A completed ClientRequest can precede actual TLS/TCP socket retirement.
   call.once('socket',socket=>{
    physical.add(socket);
-   socket.once('close',()=>physical.delete(socket));
+   socket.once('close',()=>{physical.delete(socket);notify();});
    // A transport can deliver its assigned socket after the abort race has
    // released the caller and after close walked the old request set.
    if(state==='closed'||controller?.signal.aborted)try{socket.destroy?.();}catch{}
@@ -208,6 +210,22 @@ export function createTemporalIssuerBootstrapClient({configuration,serverCaPem,c
  return Object.freeze({
   available:()=>state==='new',
   close,
+  /** True once a redeem request may have reached the issuer, so a certificate
+   * may exist issuer-side for this attempt. False means nothing was issued:
+   * a refused attempt that never got this far leaves no certificate behind. */
+  issuanceRequested:()=>issuance,
+  /** Resolves once every tracked request and socket has emitted close and no
+   * bootstrap is running, i.e. when close() would report CLEAN. Rejects on
+   * abort. Proves transport settlement only, never issuer-side state. */
+  settle({signal}={}){
+   return new Promise((resolve,reject)=>{
+    if(signal?.aborted){reject(refused());return;}
+    const waiter=()=>{settling.delete(waiter);signal?.removeEventListener('abort',abort);resolve();};
+    const abort=()=>{settling.delete(waiter);reject(refused());};
+    if(settled()){resolve();return;}
+    settling.add(waiter);signal?.addEventListener('abort',abort,{once:true});
+   });
+  },
   async bootstrap({signal}={}){
    if(state!=='new'||signal?.aborted)throw refused();
    state='running';controller=new AbortController();let keyPem,delivered=false;
@@ -231,6 +249,8 @@ export function createTemporalIssuerBootstrapClient({configuration,serverCaPem,c
     if(controller.signal.aborted||challengeReply.expiresAtMs<=now())throw refused();
     const redeem={...body,challengeId:challengeReply.challengeId,
      proofBase64:csr.signProof(proofMessage)};
+    // From here the issuer may hold a registered certificate for this attempt.
+    issuance=true;
     const resultBytes=await readHttp({request,url:new URL('/v1/internal/temporal/bootstrap/redeem',c.issuerOrigin),
      method:'POST',body:Buffer.from(JSON.stringify(redeem),'utf8'),configuration:c,
      ca:serverCa,signal:controller.signal,secure:true,trackRequest});
@@ -243,7 +263,7 @@ export function createTemporalIssuerBootstrapClient({configuration,serverCaPem,c
    }catch{state='closed';throw refused();}
    finally{if(!delivered)keyPem?.fill(0);clearTimeout(deadline);
     signal?.removeEventListener('abort',abort);controller=null;
-    serverCa.fill(0);clientCaBytes.fill(0);}
+    serverCa.fill(0);clientCaBytes.fill(0);notify();}
   },
  });
 }

@@ -2,7 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {constants} from 'node:fs';
 import {posix} from 'node:path';
-import {parseTemporalProductBootstrapConfiguration,startTemporalProductBootstrap} from './temporal-product-bootstrap.mjs';
+import {parseTemporalProductBootstrapConfiguration,startTemporalProductBootstrap,temporalBootstrapStartupWindowMs,
+ TEMPORAL_BOOTSTRAP_STARTUP_WINDOW_MS,TEMPORAL_BOOTSTRAP_RETRY_INTERVAL_MS,TEMPORAL_BOOTSTRAP_STARTUP_RESERVE_MS} from './temporal-product-bootstrap.mjs';
 import {parseTemporalIssuerDeliveryConfiguration} from './temporal-issuer/client.mjs';
 
 const NOW=1800000000000,ROOT='/run/meri-temporal',ID=ROOT+'/identity',LOCK=ROOT+'/.identity.bootstrap.lock';
@@ -14,8 +15,8 @@ const ticks=async()=>{for(let n=0;n<20;n++)await Promise.resolve();};
 /** Deterministic Node fs protocol model. No native files, crypto/key generation,
  * listeners, metadata requests or issuer communication occur in these tests. */
 function fixture(){
- let at=NOW,serial=1,clientCount=0,generation=0,boot=0,readHook=async()=>{},bootstrapHook=null,closeReply=undefined,fsHook=async()=>{};
- const nodes=new Map(),calls=[],clients=[],keys=[],certs=[],material=[],fences=[],events=[],timed=new Set();
+ let at=NOW,serial=1,clientCount=0,generation=0,boot=0,readHook=async()=>{},bootstrapHook=null,settleHook=null,closeReply=undefined,fsHook=async()=>{};
+ const nodes=new Map(),calls=[],clients=[],keys=[],certs=[],material=[],fences=[],events=[],timed=new Set(),scheduled=[];
  function node(path,kind='dir',bytes=Buffer.alloc(0),extra={}){const v={kind,bytes:Buffer.from(bytes),dev:1,ino:serial++,uid:1000,gid:1000,mode:kind==='dir'?0o700:0o600,nlink:1,...extra};nodes.set(path,v);return v;}
  node(ROOT);
  const get=path=>{const v=nodes.get(path);if(!v)throw missing();return v;};
@@ -38,7 +39,7 @@ function fixture(){
     async read(buffer,offset,length,position){assert.equal(closed,false);const n=Math.max(0,Math.min(length,value.bytes.length-position));value.bytes.copy(buffer,offset,position,position+n);return {bytesRead:n};}};
   },
  };
- const timers={setTimeout(fn,ms){const timer={fn,due:at+ms,unref(){}};timed.add(timer);return timer;},clearTimeout(timer){timed.delete(timer);}};
+ const timers={setTimeout(fn,ms){scheduled.push(ms);const timer={fn,ms,due:at+ms,unref(){}};timed.add(timer);return timer;},clearTimeout(timer){timed.delete(timer);}};
  function advance(ms){at+=ms;for(const timer of [...timed].sort((a,b)=>a.due-b.due))if(timer.due<=at&&timed.delete(timer))timer.fn();}
  const issuerDelivery={schemaVersion:1,issuerOrigin:'https://issuer.synthetic.invalid:8445',audience:'meri-temporal',namespace:'meri',identity:{role:'control',subject:'meri-temporal-control:v1',workloadPrincipal:'meri-workload-control:v1'},
   publicKey:{kid:'synthetic-key',alg:'RS256',jwkSha256:'a'.repeat(64),manifestFile:'/run/meri/issuer-jwks.json'},
@@ -52,15 +53,32 @@ function fixture(){
    registration:{schemaVersion:1,state:'CURRENT',certificateSha256:'d'.repeat(64),role:'control',peerSanUri:issuerBootstrap.configuration.peerUriBase+encodeURIComponent(TASK),taskArn:TASK,revision:'reviewed-v1',expiresAtMs:at+300000}};}
  const clientModule={parseTemporalIssuerBootstrapClientConfiguration(raw){events.push('parse-client');assert.equal(raw.metadataUri,'http://169.254.170.2/v4/synthetic');assert.equal(Object.isFrozen(raw),false);return Object.freeze(raw);},
   createTemporalIssuerBootstrapClient({configuration:c,serverCaPem,clientCaPem,now}){events.push('create-client');assert.equal(c.role,'control');assert.equal(now(),at);assert.ok(serverCaPem.equals(Buffer.from('synthetic-server-ca')));assert.ok(clientCaPem.equals(Buffer.from('synthetic-client-ca')));
-   const index=++clientCount,client={available:()=>true,async bootstrap({signal}){events.push('bootstrap-'+index);assert.ok(signal instanceof AbortSignal);return bootstrapHook?bootstrapHook({signal,index,reply}):reply();},close(){events.push('client-close-'+index);return closeReply;}};clients.push(client);return client;}};
+   const index=++clientCount;let issued=false;
+   const client={available:()=>true,issuanceRequested:()=>issued,
+    async bootstrap({signal}){events.push('bootstrap-'+index);assert.ok(signal instanceof AbortSignal);
+     const value=bootstrapHook?await bootstrapHook({signal,index,reply,issue:()=>{issued=true;}}):reply();issued=true;return value;},
+    settle({signal}){events.push('settle-'+index);assert.ok(signal instanceof AbortSignal);return settleHook?settleHook({signal,index}):Promise.resolve();},
+    close(){events.push('client-close-'+index);return closeReply;}};clients.push(client);return client;}};
  const testOwners={filesystem:fs,runtimeIdentity:{platform:'linux',uid:1000,gid:1000},environment:{ECS_CONTAINER_METADATA_URI_V4:'http://169.254.170.2/v4/synthetic'},
   stagingId:()=> '11111111-1111-4111-8111-'+String(++generation).padStart(12,'0'),
   async readMaterial(path){events.push('public-read');assert.ok([issuerBootstrap.serverCaFile,issuerBootstrap.clientCaFile].includes(path),'no private file read');await readHook(path);const bytes=Buffer.from(path===issuerBootstrap.serverCaFile?'synthetic-server-ca':'synthetic-client-ca');material.push(bytes);return bytes;},
   async loadClient(){events.push('load-client');return clientModule;}};
  const options={now:()=>at,timers,testOwners,onUnavailable:code=>{fences.push(code);events.push('fence');}};
  return {configuration,options,fs,nodes,calls,clients,keys,certs,material,fences,events,timed,reply,advance,node,now:()=>at,
-  readHook:fn=>{readHook=fn;},bootstrapHook:fn=>{bootstrapHook=fn;},fsHook:fn=>{fsHook=fn;},closeReply:value=>{closeReply=value;}};
+  sleeps:()=>scheduled.filter(ms=>ms===TEMPORAL_BOOTSTRAP_RETRY_INTERVAL_MS),
+  readHook:fn=>{readHook=fn;},bootstrapHook:fn=>{bootstrapHook=fn;},settleHook:fn=>{settleHook=fn;},fsHook:fn=>{fsHook=fn;},closeReply:value=>{closeReply=value;}};
 }
+const refusedByIssuer=()=>Object.assign(Error('TEMPORAL_ISSUER_BOOTSTRAP_CLIENT_REFUSED'),{code:'TEMPORAL_ISSUER_BOOTSTRAP_CLIENT_REFUSED'});
+/** Drives a startup through the scripted clock: each retry sleep is the only
+ * timer due at now+interval, and advancing fires it. Nothing else advances. */
+async function drive(f,promise,limit=600){
+ let done=false;promise.then(()=>{done=true;},()=>{done=true;});
+ for(let n=0;n<limit&&!done;n++){await ticks();if(done)break;
+  const sleeper=[...f.timed].find(timer=>timer.ms===TEMPORAL_BOOTSTRAP_RETRY_INTERVAL_MS&&timer.due===f.now()+TEMPORAL_BOOTSTRAP_RETRY_INTERVAL_MS);
+  if(sleeper)f.advance(TEMPORAL_BOOTSTRAP_RETRY_INTERVAL_MS);}
+ assert.equal(done,true,'startup settled under the scripted clock');return promise;
+}
+const lockCreations=f=>f.calls.filter(call=>call[0]==='open'&&call[1]===LOCK&&(call[2]&constants.O_CREAT)).length;
 
 test('closed pure bootstrap config defaults off, joins delivery templates, and never accepts JSON metadata or identities',async()=>{
  assert.deepEqual(parseTemporalProductBootstrapConfiguration(),{enabled:false});assert.deepEqual(parseTemporalProductBootstrapConfiguration({enabled:false}),{enabled:false});
@@ -200,4 +218,143 @@ test('directory and already-issued rename completing at cutoff retain ownership 
   assert.deepEqual([...f.nodes.keys()],[ROOT]);assert.ok(f.keys.every(bytes=>bytes.every(n=>n===0)));
   assert.equal(f.calls.filter(call=>call[0]==='rename').length,phase==='rename'?1:0,'an issued rename may settle late; no generation is returned or adopted');
  }
+});
+
+test('startup window constants follow cli.mjs limits.startupMs with a reserve for the rest of startup',()=>{
+ assert.equal(temporalBootstrapStartupWindowMs(undefined),TEMPORAL_BOOTSTRAP_STARTUP_WINDOW_MS);
+ assert.equal(temporalBootstrapStartupWindowMs({startupMs:'30000'}),TEMPORAL_BOOTSTRAP_STARTUP_WINDOW_MS);
+ assert.equal(temporalBootstrapStartupWindowMs({startupMs:30000}),30000-TEMPORAL_BOOTSTRAP_STARTUP_RESERVE_MS);
+ assert.ok(temporalBootstrapStartupWindowMs({startupMs:5000})<=0,'a startup budget inside the reserve leaves no retry window');
+ assert.ok(TEMPORAL_BOOTSTRAP_RETRY_INTERVAL_MS<30000-TEMPORAL_BOOTSTRAP_STARTUP_RESERVE_MS,'the live 30s startupMs admits retries');
+});
+
+test('issuer refusals before any issuance are retried on fresh clients until the issuer accepts',async()=>{
+ const f=fixture();let refusals=2;
+ f.bootstrapHook(({reply})=>{if(refusals-->0)throw refusedByIssuer();return reply();});
+ const owner=await drive(f,startTemporalProductBootstrap(f.configuration,f.options)),current=await owner.ensureCurrent();
+ assert.equal(owner.healthy(),true);assert.equal(current.revision,1);assert.deepEqual(f.fences,[]);
+ assert.deepEqual(f.sleeps(),[TEMPORAL_BOOTSTRAP_RETRY_INTERVAL_MS,TEMPORAL_BOOTSTRAP_RETRY_INTERVAL_MS]);
+ assert.equal(f.clients.length,3,'every attempt uses a fresh client');
+ assert.deepEqual(f.events.filter(e=>/^(bootstrap|settle|client-close)-/u.test(e)),
+  ['bootstrap-1','settle-1','client-close-1','bootstrap-2','settle-2','client-close-2','bootstrap-3','client-close-3'],'a refused client settles, then closes, before the next attempt');
+ assert.equal(f.events.filter(e=>e==='public-read').length,6,'CA material is re-read for each fresh client');
+ assert.ok(f.material.every(bytes=>bytes.every(n=>n===0)),'material buffers of every attempt are zeroed');
+ assert.equal(lockCreations(f),1,'the lock and identity root are acquired once');assert.equal(f.calls.filter(c=>c[0]==='rename').length,1);
+ assert.equal(f.keys.length,1);assert.ok(f.keys.every(bytes=>bytes.every(n=>n===0)));
+ assert.equal(f.now(),NOW+2*TEMPORAL_BOOTSTRAP_RETRY_INTERVAL_MS);
+ assert.deepEqual(await owner.close(),{closed:true,unsettledOperations:0,physicalStopProven:false});assert.deepEqual([...f.nodes.keys()],[ROOT]);
+ // The generic unavailable code from the client path is retried the same way.
+ const g=fixture();let once=true;g.bootstrapHook(({reply})=>{if(once){once=false;throw Object.assign(Error('TEMPORAL_PRODUCT_BOOTSTRAP_UNAVAILABLE'),{code:'TEMPORAL_PRODUCT_BOOTSTRAP_UNAVAILABLE'});}return reply();});
+ const second=await drive(g,startTemporalProductBootstrap(g.configuration,g.options));assert.equal(second.healthy(),true);assert.equal(g.sleeps().length,1);await second.close();
+});
+
+test('an exhausted startup window keeps the same content-free terminal refusal and cleanup',async()=>{
+ const f=fixture();f.bootstrapHook(()=>{throw refusedByIssuer();});
+ await assert.rejects(drive(f,startTemporalProductBootstrap(f.configuration,f.options)),unavailable);
+ const attempts=f.events.filter(e=>e.startsWith('bootstrap-')).length;
+ assert.equal(attempts,f.sleeps().length+1);assert.ok(attempts>1);assert.equal(f.clients.length,attempts);
+ assert.ok(f.now()-NOW<TEMPORAL_BOOTSTRAP_STARTUP_WINDOW_MS,'no attempt starts after the window');
+ assert.ok(f.now()-NOW+TEMPORAL_BOOTSTRAP_RETRY_INTERVAL_MS>=TEMPORAL_BOOTSTRAP_STARTUP_WINDOW_MS,'the whole window was used');
+ assert.deepEqual(f.fences,['TEMPORAL_PRODUCT_BOOTSTRAP_UNAVAILABLE']);assert.deepEqual([...f.nodes.keys()],[ROOT],'lock and identity root are released');
+ assert.equal(f.keys.length,0);assert.equal(f.timed.size,0);assert.equal(f.events.filter(e=>e.startsWith('client-close-')).length,attempts);
+ // cli.mjs ends startup at limits.startupMs: the window shrinks to fit under it.
+ const g=fixture();g.configuration.limits={startupMs:30000,shutdownMs:10000,requestMs:3000,requestBytes:131072};g.bootstrapHook(()=>{throw refusedByIssuer();});
+ await assert.rejects(drive(g,startTemporalProductBootstrap(g.configuration,g.options)),unavailable);
+ const window=30000-TEMPORAL_BOOTSTRAP_STARTUP_RESERVE_MS;
+ assert.ok(g.now()-NOW<window);assert.ok(g.now()-NOW+TEMPORAL_BOOTSTRAP_RETRY_INTERVAL_MS>=window);assert.ok(g.sleeps().length<f.sleeps().length);
+ assert.deepEqual([...g.nodes.keys()],[ROOT]);
+ // A startup budget inside the reserve keeps the one-shot behaviour.
+ const h=fixture();h.configuration.limits={startupMs:5000,shutdownMs:1000,requestMs:1000,requestBytes:131072};h.bootstrapHook(()=>{throw refusedByIssuer();});
+ await assert.rejects(drive(h,startTemporalProductBootstrap(h.configuration,h.options)),unavailable);
+ assert.deepEqual(h.sleeps(),[]);assert.equal(h.clients.length,1);assert.deepEqual([...h.nodes.keys()],[ROOT]);
+});
+
+test('startup attempts never outlive the window: the attempt deadline is capped at its end',async()=>{
+ const f=fixture();f.configuration.limits={startupMs:30000,shutdownMs:10000,requestMs:3000,requestBytes:131072};
+ f.configuration.temporal.issuerBootstrap.configuration.totalTimeoutMs=25000;
+ let reached;const hanging=new Promise(resolve=>{reached=resolve;});f.bootstrapHook(()=>{reached();return new Promise(()=>{});});
+ const pending=startTemporalProductBootstrap(f.configuration,f.options);await hanging;
+ const window=30000-TEMPORAL_BOOTSTRAP_STARTUP_RESERVE_MS;
+ assert.ok([...f.timed].some(timer=>timer.due===NOW+window),'the attempt lifetime ends with the window, not at totalTimeoutMs');
+ assert.ok(![...f.timed].some(timer=>timer.due===NOW+25000));
+ f.advance(window);await assert.rejects(pending,unknown);assert.deepEqual(f.sleeps(),[]);assert.equal(f.clients.length,1);
+ // Rotations are never capped by the startup window.
+ const g=fixture();g.configuration.limits={startupMs:30000,shutdownMs:10000,requestMs:3000,requestBytes:131072};
+ g.configuration.temporal.issuerBootstrap.configuration.totalTimeoutMs=25000;
+ const owner=await startTemporalProductBootstrap(g.configuration,g.options);g.advance(298000);
+ let rotating;const rotation=new Promise(resolve=>{rotating=resolve;});g.bootstrapHook(()=>{rotating();return new Promise(()=>{});});
+ const refresh=owner.ensureCurrent({beforeRotation:()=>({unsettledOperations:0,physicalStopProven:false})});await rotation;
+ assert.ok([...g.timed].some(timer=>timer.due===g.now()+2000),'a rotation is bounded by the remaining certificate lifetime only');
+ g.advance(2000);await assert.rejects(refresh,unknown);
+});
+
+test('material and configuration refusals fail before any retry',async()=>{
+ const cases=[
+  ['readMaterial throws',f=>f.readHook(()=>{throw Error('synthetic read refused');})],
+  ['identity root already present',f=>f.node(ID)],
+  ['foreign lock present',f=>f.node(LOCK,'file',Buffer.from('foreign-lock'))],
+ ];
+ for(const [name,change]of cases){
+  const f=fixture();change(f);f.bootstrapHook(()=>{throw refusedByIssuer();});
+  await assert.rejects(drive(f,startTemporalProductBootstrap(f.configuration,f.options)),undefined,name);
+  assert.deepEqual(f.sleeps(),[],name);assert.equal(f.events.filter(e=>e.startsWith('bootstrap-')).length,0,name+': the issuer is never asked');
+  assert.equal(f.events.filter(e=>e==='load-client').length,1,name);assert.ok(f.material.every(bytes=>bytes.every(n=>n===0)),name);
+ }
+ // Empty material is refused by the owner itself, before a client exists.
+ const f=fixture();const original=f.options.testOwners.readMaterial;
+ f.options.testOwners.readMaterial=async path=>{const bytes=await original(path);return path===f.configuration.temporal.issuerBootstrap.clientCaFile?Buffer.alloc(0):bytes;};
+ await assert.rejects(drive(f,startTemporalProductBootstrap(f.configuration,f.options)),unavailable);assert.deepEqual(f.sleeps(),[]);assert.equal(f.clients.length,0);
+ // A client constructor refusal (CA pin mismatch) is a material refusal too.
+ const g=fixture();const module=await g.options.testOwners.loadClient();const create=module.createTemporalIssuerBootstrapClient;
+ module.createTemporalIssuerBootstrapClient=()=>{throw refusedByIssuer();};
+ try{await assert.rejects(drive(g,startTemporalProductBootstrap(g.configuration,g.options)),unavailable);}finally{module.createTemporalIssuerBootstrapClient=create;}
+ assert.deepEqual(g.sleeps(),[]);assert.equal(g.clients.length,0);assert.deepEqual(g.fences,['TEMPORAL_PRODUCT_BOOTSTRAP_UNAVAILABLE']);
+});
+
+test('a stop request during the retry wait, or during an attempt, ends startup at once',async()=>{
+ const f=fixture(),stopping=new AbortController();f.options.signal=stopping.signal;f.bootstrapHook(()=>{throw refusedByIssuer();});
+ const pending=startTemporalProductBootstrap(f.configuration,f.options);
+ for(let n=0;n<50&&![...f.timed].some(timer=>timer.ms===TEMPORAL_BOOTSTRAP_RETRY_INTERVAL_MS);n++)await ticks();
+ assert.equal(f.sleeps().length,1,'startup is waiting for the next attempt');
+ stopping.abort();await assert.rejects(pending,unavailable);
+ assert.equal(f.timed.size,0,'the wait timer is cleared');assert.equal(f.clients.length,1);assert.deepEqual(f.fences,['TEMPORAL_PRODUCT_BOOTSTRAP_UNAVAILABLE']);
+ assert.deepEqual([...f.nodes.keys()],[ROOT]);assert.equal(f.now(),NOW,'no clock advanced: the stop did not wait out the interval');
+ // During an attempt the stop cancels it; a cancelled attempt is terminal, not retried.
+ const g=fixture(),stop=new AbortController();g.options.signal=stop.signal;let reached;const started=new Promise(resolve=>{reached=resolve;});
+ g.bootstrapHook(({signal})=>{reached();return new Promise((_,reject)=>signal.addEventListener('abort',()=>reject(refusedByIssuer()),{once:true}));});
+ const attempt=startTemporalProductBootstrap(g.configuration,g.options);await started;stop.abort();
+ await assert.rejects(attempt);assert.deepEqual(g.sleeps(),[]);assert.equal(g.clients.length,1);assert.deepEqual([...g.nodes.keys()],[ROOT]);
+ // An already stopped startup never asks the issuer.
+ const h=fixture(),done=new AbortController();done.abort();h.options.signal=done.signal;
+ await assert.rejects(startTemporalProductBootstrap(h.configuration,h.options),unavailable);assert.equal(h.clients.length,0);assert.deepEqual(h.sleeps(),[]);
+});
+
+test('an attempt that requested issuance, delivered material, or left unsettled transport is never retried',async()=>{
+ // The redeem request was sent: the issuer may hold a certificate for this task.
+ const f=fixture();f.bootstrapHook(({issue})=>{issue();throw refusedByIssuer();});
+ await assert.rejects(drive(f,startTemporalProductBootstrap(f.configuration,f.options)),unavailable);
+ assert.deepEqual(f.sleeps(),[]);assert.equal(f.clients.length,1);assert.deepEqual(f.fences,['TEMPORAL_PRODUCT_BOOTSTRAP_UNAVAILABLE']);assert.deepEqual([...f.nodes.keys()],[ROOT]);
+ assert.equal(f.events.includes('settle-1'),false);
+ // Delivered material that fails verification is erased and terminal.
+ const g=fixture();g.bootstrapHook(({reply})=>{const value=reply();value.role='temporal-worker';return value;});
+ await assert.rejects(drive(g,startTemporalProductBootstrap(g.configuration,g.options)),unavailable);
+ assert.deepEqual(g.sleeps(),[]);assert.equal(g.clients.length,1);assert.ok(g.keys[0].every(n=>n===0));
+ // A refused client whose transport never settles is cut by the attempt deadline: cleanup unknown, as before.
+ const h=fixture();let reached;const settling=new Promise(resolve=>{reached=resolve;});h.bootstrapHook(()=>{throw refusedByIssuer();});h.settleHook(()=>{reached();return new Promise(()=>{});});
+ const pending=startTemporalProductBootstrap(h.configuration,h.options);await settling;h.advance(2000);
+ await assert.rejects(pending,unknown);assert.deepEqual(h.sleeps(),[]);assert.equal(h.clients.length,1);
+ // A settled client whose receipt is still UNKNOWN is terminal through the fence.
+ const i=fixture();i.bootstrapHook(()=>{throw refusedByIssuer();});i.closeReply({schemaVersion:1,state:'CLEANUP_UNKNOWN',pendingOperations:1});
+ await assert.rejects(drive(i,startTemporalProductBootstrap(i.configuration,i.options)),unknown);assert.deepEqual(i.sleeps(),[]);assert.equal(i.clients.length,1);
+ // Only the two client-path codes are retried.
+ const j=fixture();j.bootstrapHook(()=>{throw new TypeError('synthetic client defect');});
+ await assert.rejects(drive(j,startTemporalProductBootstrap(j.configuration,j.options)),unavailable);assert.deepEqual(j.sleeps(),[]);assert.equal(j.clients.length,1);
+});
+
+test('rotation refusals are terminal: only the initial bootstrap is retried',async()=>{
+ const f=fixture(),owner=await startTemporalProductBootstrap(f.configuration,f.options);f.advance(298000);
+ f.bootstrapHook(()=>{throw refusedByIssuer();});
+ await assert.rejects(owner.ensureCurrent({beforeRotation:()=>({unsettledOperations:0,physicalStopProven:false})}),unavailable);
+ assert.deepEqual(f.sleeps(),[]);assert.equal(f.clients.length,2);assert.equal(owner.healthy(),false);assert.deepEqual(f.fences,['TEMPORAL_PRODUCT_BOOTSTRAP_UNAVAILABLE']);
+ assert.equal(f.events.includes('settle-2'),false);await assert.rejects(owner.ensureCurrent(),unavailable);
 });
