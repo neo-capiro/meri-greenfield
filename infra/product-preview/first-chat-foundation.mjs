@@ -70,6 +70,8 @@ export function synthesizeFirstChatFoundation(binding){
  }
  // D6 (approved): NAT 443 for ECS/EC2 APIs, Core and Clerk (control, owner, issuer) and Bedrock (proxy); no endpoint exists for them.
  for(const key of ['control','worker','issuer','owner','proxy'])g[key].addEgressRule(ec2.Peer.anyIpv4(),ec2.Port.tcp(443),'NAT 443: AWS APIs without endpoints, Core, Clerk, Bedrock');
+ // One-shot Temporal schema task pulls the digest-pinned temporalio/admin-tools image from Docker Hub.
+ g.migrator.addEgressRule(ec2.Peer.anyIpv4(),ec2.Port.tcp(443),'NAT 443: digest-pinned admin-tools image pull');
  g.control.addIngressRule(alb,ec2.Port.tcp(8080),'public ALB to control 8080 (Meri host rule only)');
  g.control.addIngressRule(g.runner,ec2.Port.tcp(8082),'runner poststart to private control');
  g.runner.addEgressRule(g.control,ec2.Port.tcp(8082),'runner poststart to private control');

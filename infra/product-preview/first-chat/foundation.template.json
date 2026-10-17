@@ -467,6 +467,15 @@
    "Properties": {
     "GroupDescription": "Meri preview one-shot migrator",
     "GroupName": "meri-preview-migrator",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "NAT 443: digest-pinned admin-tools image pull",
+      "FromPort": 443,
+      "IpProtocol": "tcp",
+      "ToPort": 443
+     }
+    ],
     "VpcId": "vpc-0ac26cfac7ed972be"
    }
   },

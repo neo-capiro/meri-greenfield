@@ -34,13 +34,13 @@ test('only the shared Aurora SG is touched, by one marker-sourced 5432 rule; pub
  assert.equal(sgs.length,9);assert.ok(sgs.every(p=>!(p.SecurityGroupEgress||[]).some(e=>e.CidrIp==='0.0.0.0/0'&&e.IpProtocol==='-1')),'no allow-all egress');
 });
 
-test('D6 NAT 443 egress exists only on control, worker, issuer, owner and proxy',()=>{
+test('D6 NAT 443 egress exists only on control, worker, issuer, owner, proxy and the one-shot migrator',()=>{
  const t=synthesizeFirstChatFoundation(foundationBinding());
  // CDK inlines CIDR egress on the group itself; separate egress resources only reference groups or prefix lists.
  assert.ok(ofType(t,'AWS::EC2::SecurityGroupEgress').every(([,r])=>r.Properties.CidrIp===undefined));
  const anywhere=ofType(t,'AWS::EC2::SecurityGroup').flatMap(([id,r])=>(r.Properties.SecurityGroupEgress||[]).filter(e=>e.CidrIp==='0.0.0.0/0').map(e=>({id,...e})));
- assert.equal(anywhere.length,5);assert.ok(anywhere.every(p=>p.FromPort===443&&p.ToPort===443&&p.IpProtocol==='tcp'));
- assert.deepEqual(anywhere.map(p=>p.id.replace(/Sg[A-F0-9]+$/u,'')).sort(),['Control','Issuer','Owner','Proxy','Worker']);
+ assert.equal(anywhere.length,6);assert.ok(anywhere.every(p=>p.FromPort===443&&p.ToPort===443&&p.IpProtocol==='tcp'));
+ assert.deepEqual(anywhere.map(p=>p.id.replace(/Sg[A-F0-9]+$/u,'')).sort(),['Control','Issuer','Migrator','Owner','Proxy','Worker']);
 });
 
 test('IAM: runner has no task role; control may run only the runner family with the four required tags and pass only the runner execution role',()=>{
