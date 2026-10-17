@@ -19,7 +19,8 @@ const capturedArtifactRecovery=new WeakMap();
 export function readRuntimeArtifactRecovery(ports){if(!capturedPorts.has(ports))throw fault('PRODUCT_PORTS_CONFIGURATION');return capturedArtifactRecovery.get(ports.artifactStore)??null;}
 export function captureRuntimePorts(value={}){
  if(capturedPorts.has(value))return value;
- const c=own(value,[],['identityContext','transitionAuthority','continuationAdmission','approvals','actionApplication','taskCommandApplication','routinesApplicationFactory','conversationMembership','conversationCurrentness','conversationTurns','artifactOptionsOwner','selectedController','sdkSessionOwner','sdkSessionSnapshot','selectedSkillAdmission','selectedOutputPublication','artifactStore','retentionLedgerSink']);
+ const c=own(value,[],['identityContext','transitionAuthority','continuationAdmission','approvals','actionApplication','taskCommandApplication','taskCommandApplicationFactory','routinesApplicationFactory','conversationMembership','conversationCurrentness','conversationTurns','artifactOptionsOwner','selectedController','sdkSessionOwner','sdkSessionSnapshot','selectedSkillAdmission','selectedOutputPublication','artifactStore','retentionLedgerSink']);
+ if(c.taskCommandApplication!==undefined&&c.taskCommandApplicationFactory!==undefined)throw fault('PRODUCT_PORTS_CONFIGURATION');
  const methods=(port,names)=>Object.freeze(Object.fromEntries(names.map(name=>[name,storageMethod(port,name)])));
  const optionalMethod=(port,name)=>{let cursor=port;for(let depth=0;cursor!==null&&depth<32;depth++){if(types.isProxy(cursor))throw fault('PRODUCT_PORTS_CONFIGURATION');if(Object.getOwnPropertyDescriptor(cursor,name))return storageMethod(port,name);cursor=Object.getPrototypeOf(cursor);}if(cursor!==null)throw fault('PRODUCT_PORTS_CONFIGURATION');};
  const identity=c.identityContext===undefined?Object.freeze({verifyIdentity:async()=>{throw fault('NATIVE_AUTHORITY_UNAVAILABLE');},resolveContext:async()=>{throw fault('NATIVE_AUTHORITY_UNAVAILABLE');}}):methods(c.identityContext,['verifyIdentity','resolveContext']);
@@ -36,6 +37,7 @@ export function captureRuntimePorts(value={}){
   ...(c.approvals===undefined?{}:{approvals:methods(c.approvals,['read','readDecision'])}),
   ...(c.actionApplication===undefined?{}:{actionApplication:methods(c.actionApplication,['handle'])}),
   ...(c.taskCommandApplication===undefined?{}:{taskCommandApplication:methods(c.taskCommandApplication,['handle'])}),
+  ...(c.taskCommandApplicationFactory===undefined?{}:{taskCommandApplicationFactory:methods(c.taskCommandApplicationFactory,['create','state'])}),
   ...(routineFactory===undefined?{}:{routinesApplicationFactory:Object.freeze({...routineFactory,...(routineHistory===undefined?{}:{historyCurrentness:routineHistory}),...(routineInboxState===undefined?{}:{inboxState:routineInboxState})})}),
   ...(c.conversationMembership===undefined?{}:{conversationMembership:methods(c.conversationMembership,['admit','recheck'])}),
   ...(c.conversationCurrentness===undefined?{}:{conversationCurrentness:methods(c.conversationCurrentness,['assertCurrent'])}),
@@ -61,6 +63,9 @@ export function composeRuntimePorts(canonical,supplemental){
 }
 /** `suppression` is the retention serving `{journal,serving}` pair when declared; the download-link gate needs it to revoke links. */
 export function createRuntimeProductApplications({configuration,sessions,ports,now,retention,suppression,conversationStore,userPreferences}){
+ const taskApplication=configuration.sourceEnabled===true?(ports.taskCommandApplication??ports.taskCommandApplicationFactory?.create({sessions})):null;
+ if(types.isPromise(taskApplication)){Promise.prototype.then.call(taskApplication,undefined,()=>{});throw fault('PRODUCT_PORTS_CONFIGURATION');}
+ const handleTask=taskApplication==null?null:storageMethod(taskApplication,'handle');
  const routines=ports.routinesApplicationFactory?ports.routinesApplicationFactory.create({sessions}):null;
  const historyCurrentness=ports.routinesApplicationFactory?.historyCurrentness&&ports.conversationMembership&&ports.conversationCurrentness?ports.routinesApplicationFactory.historyCurrentness({gate:ports.conversationMembership,core:ports.conversationCurrentness}):ports.conversationCurrentness;
  const history=ports.conversationMembership&&ports.conversationCurrentness&&conversationStore?createConversationHistoryApplication({
@@ -77,7 +82,7 @@ export function createRuntimeProductApplications({configuration,sessions,ports,n
   if(Object.values(ROUTINE_PATHS).includes(path))return routines?routines.handle(request):routinesUnavailable();
   if(Object.values(HISTORY_PATHS).includes(path))return history?history.handle(request):Response.json({error:{code:'CONVERSATION_UNAVAILABLE',outcome:'NOT_DISPATCHED'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
   if(/^\/api\/action-followthrough\/(query|draft|prepare|execute)$/u.test(path))return ports.actionApplication?ports.actionApplication.handle(request):Response.json({error:{code:'UNAVAILABLE'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
-  if(/^\/api\/task-commands\/(prepare|execute)$/u.test(path))return configuration.sourceEnabled===true&&ports.taskCommandApplication?ports.taskCommandApplication.handle(request):Response.json({error:{code:'TASK_COMMAND_UNAVAILABLE',outcome:'NOT_DISPATCHED'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
+  if(/^\/api\/task-commands\/(prepare|execute)$/u.test(path))return handleTask?handleTask(request):Response.json({error:{code:'TASK_COMMAND_UNAVAILABLE',outcome:'NOT_DISPATCHED'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
   if(path.startsWith('/api/documents/'))return downloads.handle(request);
   if(path.startsWith('/internal/conversations/selected/'))return selected.handle(request);
   if(path.startsWith('/v1/runner/session/'))return sdkSessions.handle(request);

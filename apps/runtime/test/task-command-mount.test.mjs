@@ -2,6 +2,7 @@
 import test,{mock} from 'node:test';import assert from 'node:assert/strict';
 import {createTaskCommandApplication} from '../../control/task-command-application/index.mjs';
 import {commandComposition,id} from '../../control/intents/test/fixture.mjs';
+import {productReadiness} from '../product-readiness.mjs';
 // The unrelated startup compiler imports AWS clients. This route test borrows only its inert error constructor.
 mock.module('../config.mjs',{namedExports:{fault:code=>Object.assign(Error(code),{code}),readSecret(){throw Error('No artifact secret access in task-command tests');}}});
 mock.module('../artifacts/composition.mjs',{namedExports:{runtimeArtifactRecovery:()=>null}});
@@ -23,6 +24,25 @@ test('captured task application retains its receiver, cannot be replaced and rej
  assert.throws(()=>captureRuntimePorts({taskCommandApplication:{get handle(){traps++;return ()=>{};}}}));assert.equal(traps,0);
  const ports=captureRuntimePorts({taskCommandApplication:owner});owner.handle=()=>{throw Error('replacement');};
  assert.throws(()=>composeRuntimePorts(ports,ports));assert.equal((await runtime(ports,true).handle(request('prepare'))).status,200);assert.equal(calls,1);
+});
+
+test('late task factory receives actual assembly sessions only after explicit source opt-in and retains captured methods',async()=>{
+ const sessions={},seen=[],application={marker:'application',handle(){assert.equal(this.marker,'application');return new Response('late');}};
+ let state='pending';const factory={marker:'factory',create(input){assert.equal(this.marker,'factory');assert.equal(input.sessions,sessions);seen.push(input.sessions);state='composed';return application;},state(){assert.equal(this.marker,'factory');return state;}};
+ const ports=captureRuntimePorts({taskCommandApplicationFactory:factory});factory.create=()=>assert.fail('replaced');factory.state=()=>assert.fail('replaced');
+ const disabled=createRuntimeProductApplications({configuration,sessions,ports,now:Date.now});assert.equal((await disabled.handle(request('prepare'))).status,503);assert.equal(seen.length,0);
+ assert.equal(productReadiness({ports,sourceEnabled:false}).owners.find(o=>o.name==='tasks.commands').state,'disabled');
+ const enabled=createRuntimeProductApplications({configuration:{...configuration,sourceEnabled:true},sessions,ports,now:Date.now});application.handle=()=>assert.fail('replaced');
+ assert.equal((await enabled.handle(request('prepare'))).status,200);assert.equal((await enabled.handle(request('execute'))).status,200);assert.deepEqual(seen,[sessions]);
+ assert.equal(productReadiness({ports,sourceEnabled:true}).owners.find(o=>o.name==='tasks.commands').state,'composed');
+});
+
+test('static and late task owners cannot conflict; accessor and async factories do not become mounted authority',()=>{
+ const application={handle(){}},factory={create(){return application;},state(){return 'pending';}};let traps=0;
+ assert.throws(()=>captureRuntimePorts({taskCommandApplication:application,taskCommandApplicationFactory:factory}));
+ assert.throws(()=>composeRuntimePorts({taskCommandApplication:application},{taskCommandApplicationFactory:factory}));
+ assert.throws(()=>captureRuntimePorts({taskCommandApplicationFactory:{get create(){traps++;return ()=>application;},state(){return 'pending';}}}));assert.equal(traps,0);
+ assert.throws(()=>runtime(captureRuntimePorts({taskCommandApplicationFactory:{create(){return Promise.reject(Error('synthetic'));},state(){return 'pending';}}}),true),e=>e.code==='PRODUCT_PORTS_CONFIGURATION');
 });
 test('runtime opt-in reaches the actual task-update API and existing separate approval gates before the fixed Core source',async()=>{
  const c=commandComposition({action:'task.update'}),api=createTaskCommandApplication({now:()=>c.f.state.now,limits:{maxRequestMs:1000,maxRequestBytes:65536,maxResponseBytes:65536},
