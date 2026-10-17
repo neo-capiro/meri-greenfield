@@ -5,6 +5,7 @@
  * never as verification, which belongs to the server. A missing, expired, unreadable or rejected token is a fail-closed state
  * (no stale token is ever served, pollers are told to stop, readiness fails) with bounded retries; refresh stops on close. */
 import {own,data} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 import {readSecret,fault} from './config.mjs';
 const name=/^[a-zA-Z0-9._:\/\-]{1,256}$/u;
 const integer=(n,min,max)=>Number.isSafeInteger(n)&&n>=min&&n<=max;
@@ -24,11 +25,13 @@ export function createTemporalTokenFileReader({tokenFile}){
  * failure, timeout, claim or expiry fault, close during a read, or worker rotation failure drops the current token (no stale reuse),
  * notifies watchers (the worker stops polling; readiness fails) and schedules a bounded retry until close. Reads are bounded by
  * `readTimeoutMs`; the reader receives an abort signal. `current` moves only after every attached worker connection accepted the
- * new key. Timers are injectable for tests. */
-export function createTemporalAuthorization({configuration,reader,now=Date.now,timers={setTimeout,clearTimeout},readTimeoutMs=null}){
+ * new key. Optional `refreshTimeoutMs` bounds the complete read and serial native
+ * rotation, including automatic refresh; unsettled work quarantines that provider.
+ * Timers are injectable for tests. */
+export function createTemporalAuthorization({configuration,reader,now=Date.now,timers={setTimeout,clearTimeout},readTimeoutMs=null,refreshTimeoutMs=null}){
  const c=parseTemporalAuthorizationConfiguration(configuration);if(typeof reader?.read!=='function'||typeof now!=='function'||typeof timers?.setTimeout!=='function'||typeof timers?.clearTimeout!=='function')throw fault('TEMPORAL_AUTHORIZATION_CONFIGURATION');
- const readBound=readTimeoutMs===null?Math.min(c.refreshMs,5000):readTimeoutMs;if(!integer(readBound,1,c.refreshMs))throw fault('TEMPORAL_AUTHORIZATION_CONFIGURATION');const retryMs=Math.min(c.refreshMs,1000);
- let current=null,timer=null,expiry=null,closed=false,attached=[],refreshing=null,failure=null;const watchers=new Set();
+ const readBound=readTimeoutMs===null?Math.min(c.refreshMs,5000):readTimeoutMs;if(!integer(readBound,1,c.refreshMs)||refreshTimeoutMs!==null&&!integer(refreshTimeoutMs,1,c.refreshMs))throw fault('TEMPORAL_AUTHORIZATION_CONFIGURATION');const retryMs=Math.min(c.refreshMs,1000);
+ let current=null,timer=null,expiry=null,closed=false,quarantined=false,attached=[],refreshing=null,activeRefresh=null,failure=null;const watchers=new Set();
  const validate=raw=>{const t=own(data(raw),['token','expiresAtMs','claims']),claims=own(t.claims,['namespace','audience','issuer']);
   if(typeof t.token!=='string'||!/^[A-Za-z0-9._\-+/=]{16,8192}$/u.test(t.token)||!Number.isSafeInteger(t.expiresAtMs))throw fault('TEMPORAL_AUTHORIZATION_TOKEN');
   if(claims.namespace!==c.namespace||claims.audience!==c.audience||claims.issuer!==c.issuer)throw fault('TEMPORAL_AUTHORIZATION_CLAIMS');
@@ -37,24 +40,32 @@ export function createTemporalAuthorization({configuration,reader,now=Date.now,t
  const notify=code=>{for(const w of [...watchers])try{w(code);}catch{}};
  /** Drops the token, tells watchers, and (unless closed) retries after a bounded delay. The worker keeps whatever key the native
   * connection last accepted, which is why watchers stop the worker. */
- function failClosed(error){current=null;failure=typeof error?.code==='string'?error:Object.assign(fault('TEMPORAL_AUTHORIZATION_FAILED'),{cause:error});clear();notify(failure.code);if(!closed){timer=timers.setTimeout(()=>{refresh().catch(()=>{});},retryMs);timer.unref?.();}}
- async function readBounded(signal){const controller=new AbortController(),onAbort=()=>controller.abort();signal?.addEventListener('abort',onAbort,{once:true});let t;
+ function failClosed(error){current=null;failure=typeof error?.code==='string'?error:Object.assign(fault('TEMPORAL_AUTHORIZATION_FAILED'),{cause:error});clear();notify(failure.code);if(!closed&&!quarantined){timer=timers.setTimeout(()=>{refresh().catch(()=>{});},retryMs);timer.unref?.();}}
+ async function readBounded(signal,life){const controller=new AbortController(),onAbort=()=>controller.abort();signal?.addEventListener('abort',onAbort,{once:true});let t;
   const timeout=new Promise((_,reject)=>{t=timers.setTimeout(()=>{controller.abort();reject(fault('TEMPORAL_AUTHORIZATION_TIMEOUT'));},readBound);t.unref?.();});
-  try{return await Promise.race([reader.read({signal:controller.signal}),timeout]);}finally{timers.clearTimeout(t);signal?.removeEventListener('abort',onAbort);}}
- async function refresh({signal}={}){if(closed)throw fault('TEMPORAL_AUTHORIZATION_CLOSED');signal?.throwIfAborted();
-  return refreshing??=(async()=>{try{
-   let next;try{const raw=await readBounded(signal);if(closed)throw fault('TEMPORAL_AUTHORIZATION_CLOSED');next=validate(raw);}catch(error){if(!closed)failClosed(error);throw error;}
-   for(const connection of attached){try{await connection.setApiKey(next.token);}catch(error){const f=Object.assign(fault('TEMPORAL_AUTHORIZATION_ROTATION'),{cause:error});failClosed(f);throw f;}if(closed)throw fault('TEMPORAL_AUTHORIZATION_CLOSED');}
-   current=next;failure=null;schedule();return next;}finally{refreshing=null;}})();}
+  try{return await Promise.race([life?life.run(()=>reader.read({signal:controller.signal})):reader.read({signal:controller.signal}),timeout]);}finally{timers.clearTimeout(t);signal?.removeEventListener('abort',onAbort);}}
+ async function refresh({signal}={}){if(closed)throw fault('TEMPORAL_AUTHORIZATION_CLOSED');if(quarantined)throw fault('TEMPORAL_AUTHORIZATION_IO_UNKNOWN');signal?.throwIfAborted();
+  return refreshing??=(async()=>{let life;try{
+   if(refreshTimeoutMs!==null)life=activeRefresh=createOperationLifetime({now,signal,deadlineMs:now()+refreshTimeoutMs,schedule:timers.setTimeout,unschedule:timers.clearTimeout,errorFactory:()=>fault('TEMPORAL_AUTHORIZATION_TIMEOUT')});
+   const check=()=>{if(closed)throw fault('TEMPORAL_AUTHORIZATION_CLOSED');life?.check();};
+   const raw=await (life?life.run(signal=>readBounded(signal,life)):readBounded(signal));check();const next=validate(raw);
+   for(const connection of attached){try{await (life?life.run(()=>connection.setApiKey(next.token)):connection.setApiKey(next.token));}catch(error){if(life?.signal.aborted)throw error;throw Object.assign(fault('TEMPORAL_AUTHORIZATION_ROTATION'),{cause:error});}check();}
+   check();current=next;failure=null;schedule();return next;
+  }catch(error){
+   // A deadline can stop waiting, but cannot revoke a native call already made.
+   // Never overlap it with a retry or let a late reply publish another key.
+   if(life?.pendingOperations()>0)quarantined=true;
+   if(!closed)failClosed(quarantined?fault('TEMPORAL_AUTHORIZATION_IO_UNKNOWN'):error);throw error;
+  }finally{life?.close();activeRefresh=null;refreshing=null;}})();}
  function schedule(){clear();if(closed||!current)return;const wait=Math.max(1000,Math.min(c.refreshMs,current.expiresAtMs-now()-c.refreshMs));timer=timers.setTimeout(()=>{refresh().catch(()=>{});},wait);timer.unref?.();
   const held=current;expiry=timers.setTimeout(()=>{if(current===held&&!closed)failClosed(fault('TEMPORAL_AUTHORIZATION_EXPIRY'));},Math.max(1,held.expiresAtMs-now()));expiry.unref?.();}
- const healthy=()=>!closed&&failure===null&&current!==null&&current.expiresAtMs>now();
+ const healthy=()=>!closed&&!quarantined&&failure===null&&current!==null&&current.expiresAtMs>now();
  /** Synchronous accessor for ConnectionOptions.apiKey; fails closed when no valid token is held. Never returns a stale or expired token. */
  function apiKey(){if(!healthy())throw fault('TEMPORAL_AUTHORIZATION_UNAVAILABLE');return current.token;}
  /** Worker connections receive refreshed tokens through NativeConnection.setApiKey. */
  function attach(connection){if(closed||typeof connection?.setApiKey!=='function')throw fault('TEMPORAL_AUTHORIZATION_CONFIGURATION');attached.push(connection);}
  /** Watchers learn of every fail-closed transition (read failure, timeout, bad claims, expiry, rotation failure) so pollers stop. */
  function watch(listener){if(typeof listener!=='function')throw fault('TEMPORAL_AUTHORIZATION_CONFIGURATION');watchers.add(listener);return ()=>watchers.delete(listener);}
- async function close(){closed=true;clear();attached=[];current=null;watchers.clear();}
+ async function close(){closed=true;clear();if(activeRefresh?.close().unsettledOperations>0){quarantined=true;failure=fault('TEMPORAL_AUTHORIZATION_IO_UNKNOWN');}attached=[];current=null;watchers.clear();}
  return Object.freeze({refresh,apiKey,attach,watch,healthy,close,current:()=>current?{expiresAtMs:current.expiresAtMs,readAtMs:current.readAtMs}:null,failure:()=>failure?.code??null,configuration:c});
 }

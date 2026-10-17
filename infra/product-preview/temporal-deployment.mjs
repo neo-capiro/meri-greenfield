@@ -2,7 +2,7 @@
 import {App,Stack,CfnOutput,BootstraplessSynthesizer,aws_ec2 as ec2,aws_ecs as ecs,aws_servicediscovery as discovery} from 'aws-cdk-lib';
 import {Template} from 'aws-cdk-lib/assertions';
 import fixture from '../../apps/control/qualification-temporal/deployment.fixture.json' with {type:'json'};
-import {TEMPORAL_ROLES,TEMPORAL_PORTS,validateTemporalPreviewBinding,versionedSecretKey} from './temporal-binding.mjs';
+import {TEMPORAL_ROLES,TEMPORAL_PORTS,TEMPORAL_ISSUER_PORT,validateTemporalPreviewBinding,versionedSecretKey} from './temporal-binding.mjs';
 
 const env=(name,value)=>({name,value:String(value)});
 const secret=(name,arn,key)=>({name,valueFrom:versionedSecretKey(arn,key)});
@@ -20,7 +20,7 @@ function security(stack,b,vpc){
   group.addEgressRule(db,ec2.Port.tcp(b.database.port),'dedicated Temporal stores on approved Aurora');
   for(const endpoint of endpoints)group.addEgressRule(endpoint,ec2.Port.tcp(443),'reviewed AWS image/secret/log endpoint');
   group.addEgressRule(ec2.Peer.prefixList(b.network.s3Gateway.prefixListId),ec2.Port.tcp(443),'S3 gateway for private ECR image layers');
-  group.addEgressRule(issuer,ec2.Port.tcp(443),'dedicated JWKS issuer');
+  group.addEgressRule(issuer,ec2.Port.tcp(TEMPORAL_ISSUER_PORT),'dedicated JWKS issuer');
   new ec2.CfnSecurityGroupIngress(stack,`${roleName(role)}AuroraIngress`,{
    groupId:db.securityGroupId,ipProtocol:'tcp',fromPort:b.database.port,toPort:b.database.port,
    sourceSecurityGroupId:group.securityGroupId,description:`Meri Temporal ${role} store access`});

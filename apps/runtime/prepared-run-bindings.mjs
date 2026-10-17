@@ -11,6 +11,7 @@ import {createNativeAllocationAdmission} from '../gateway/budget/native-allocati
 import {allocation} from '../gateway/budget/tool-budget-binding.mjs';
 import {capabilityDigest} from './native-authority/task-verifier.mjs';
 import {compilePreparedCandidateConfiguration} from './prepared-candidate-config.mjs';
+import {compilePreparedRunConfigurationSha256} from './prepared-run-configuration.mjs';
 import {issueRunModelGrant} from './run-model-grant.mjs';
 import {createOriginalRunPreparation} from './original-run-preparation.mjs';
 import {createNativeTaskAllocator} from './native-authority/task-allocator.mjs';
@@ -28,11 +29,10 @@ export function createPreparedRunBindings(options){
  if((config.multiRun.dynamicInitialRuns===true)!==(readInitial!==null))fail('INITIAL_BINDING_UNAVAILABLE');
  // This digest describes the reviewed, retargetable workload. A new Core conversation supplies only its UUID and the journal's
  // writer-fenced binding; the startup UUID, fixed deadline and credential locations cannot decide a later run's identity.
- const {run:_,...allocationSemantics}=a,{binding:__,deadlineMs:___,...runtimeSemantics}=config.runtime;
- const {workspace,authoritySha256:____,...preparationSemantics}=config.preparationIntent;
+ const {workspace}=config.preparationIntent;
  const workspaceMatch=/^(.*[\\/])([0-9a-f-]{36})$/u.exec(workspace);
  if(readInitial&&(!workspaceMatch||workspaceMatch[2]!==configuredBinding.conversationId))fail('WORKSPACE');
- const workspaceParent=workspaceMatch?.[1],configurationSha256=hash({schemaVersion:1,multiRun:config.multiRun,identity:{origin:config.identity.origin,clientResolution:config.identity.commandContext.clientResolution},runtime:runtimeSemantics,allocation:allocationSemantics,plan:config.plan,preparationIntent:readInitial?{...preparationSemantics,workspaceParent}:config.preparationIntent,qualification:config.qualification,grantIntents:config.grantIntents,grantId:config.grantId,operations:config.operations,approvedReads:config.approvedReads??null,taskRequest:config.taskRequest,containerName:config.containerName,taskOrigin:config.taskOrigin,taskHttp:config.taskHttp,objects:config.objects});
+ const workspaceParent=workspaceMatch?.[1],configurationSha256=compilePreparedRunConfigurationSha256(o.configuration);
  const exactInitialScopes=(scopes,binding,policyRevision)=>Array.isArray(scopes)&&hash(scopes)===hash([{kind:'client',tenantId:binding.tenantId,resourceId:selectedClientId,policyRevision}]);
  const initialRecord=async(binding,check,cleanup=false)=>{
   validateShape('RunBinding',binding);if(!readInitial||binding.writerFence!==1||hash(binding)===hash(configuredBinding)||binding.tenantId!==configuredBinding.tenantId||binding.actorId!==configuredBinding.actorId)fail('INITIAL_BINDING_UNAVAILABLE');

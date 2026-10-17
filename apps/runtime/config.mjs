@@ -8,6 +8,9 @@ import {remoteOriginal} from './native-authority/remote-task-boundary.mjs';
 import {compileNativePreparationIntent} from './native-authority/preparation-intent.mjs';
 import {compilePreparedCandidateConfiguration} from './prepared-candidate-config.mjs';
 import {parseTemporalAuthorizationConfiguration} from './temporal-authorization.mjs';
+import {parseTemporalProductTokenWriterConfiguration} from './temporal-product-token-writer.mjs';
+import {parseTemporalIssuerDeliveryConfiguration} from './temporal-issuer/client.mjs';
+import {parseTemporalProductBootstrapConfiguration} from './temporal-product-bootstrap-configuration.mjs';
 import {assertNativeReadConfiguration} from '../../packages/contracts/runtime-0.2/reads.mjs';
 export const fault=code=>Object.assign(new Error(code),{code});
 const requireValue=(condition,code='RUNTIME_CONFIGURATION')=>{if(!condition)throw fault(code);};
@@ -71,7 +74,18 @@ export function validateConfiguration(raw,role){
  if(c.downloadLinks!==undefined){requireValue(role==='control','DOWNLOAD_LINK_CONFIGURATION');own(c.downloadLinks,['enabled'],['keyFile','ttlMs']);requireValue(typeof c.downloadLinks.enabled==='boolean'&&(c.downloadLinks.enabled===false||c.downloadLinks.keyFile!==undefined)&&(c.downloadLinks.ttlMs===undefined||integer(c.downloadLinks.ttlMs,1000,300000)),'DOWNLOAD_LINK_CONFIGURATION');if(c.downloadLinks.keyFile!==undefined)file(c.downloadLinks.keyFile);}
  if(role!=='conversation-runner'){
   own(c.http,['hostname','port','frontendOrigin']);requireValue(['127.0.0.1','0.0.0.0','::1','::'].includes(c.http.hostname)&&integer(c.http.port,0,65535)&&c.http.frontendOrigin===endpoint(c.http.frontendOrigin,c.native.loopback));
-  own(c.temporal,['address','namespace','taskQueue','tls'],['authorization']);if(c.temporal.authorization!==undefined)requireValue(parseTemporalAuthorizationConfiguration(c.temporal.authorization).namespace===c.temporal.namespace,'TEMPORAL_AUTHORIZATION_CONFIGURATION');requireValue(typeof c.temporal.address==='string'&&/^[a-zA-Z0-9.\-]+:[1-9][0-9]{0,4}$/u.test(c.temporal.address)&&Number(c.temporal.address.split(':').at(-1))<=65535);for(const k of ['namespace','taskQueue'])requireValue(typeof c.temporal[k]==='string'&&/^[a-zA-Z0-9._\-]{1,128}$/u.test(c.temporal[k]));own(c.temporal.tls,['caFile','certFile','keyFile']);Object.values(c.temporal.tls).forEach(file);
+  own(c.temporal,['address','namespace','taskQueue','tls'],['authorization','tokenWriter','issuerDelivery','issuerBootstrap']);if(c.temporal.authorization!==undefined)requireValue(parseTemporalAuthorizationConfiguration(c.temporal.authorization).namespace===c.temporal.namespace,'TEMPORAL_AUTHORIZATION_CONFIGURATION');requireValue(typeof c.temporal.address==='string'&&/^[a-zA-Z0-9.\-]+:[1-9][0-9]{0,4}$/u.test(c.temporal.address)&&Number(c.temporal.address.split(':').at(-1))<=65535);for(const k of ['namespace','taskQueue'])requireValue(typeof c.temporal[k]==='string'&&/^[a-zA-Z0-9._\-]{1,128}$/u.test(c.temporal[k]));own(c.temporal.tls,['caFile','certFile','keyFile']);Object.values(c.temporal.tls).forEach(file);
+  if(c.temporal.tokenWriter!==undefined){
+   const w=parseTemporalProductTokenWriterConfiguration(c.temporal.tokenWriter);
+   requireValue(w.enabled===true&&w.role===role&&c.temporal.authorization!==undefined&&
+    hash(w.authorization)===hash(parseTemporalAuthorizationConfiguration(c.temporal.authorization))&&
+    w.authorization.tokenFile==='/run/meri-temporal/token.json'&&c.temporal.issuerDelivery!==undefined,'TEMPORAL_PRODUCT_CONFIGURATION');
+   const d=parseTemporalIssuerDeliveryConfiguration(c.temporal.issuerDelivery);
+   requireValue(w.authorization.issuer===d.issuer&&d.namespace===c.temporal.namespace&&
+    d.audience===w.authorization.audience&&d.identity.role===role&&d.identity.subject===w.subject&&
+    d.identity.workloadPrincipal===w.workloadPrincipal&&d.requestTimeoutMs<=w.maxRequestMs&&
+    parseTemporalProductBootstrapConfiguration(c.temporal.issuerBootstrap,c.temporal.issuerDelivery).enabled===true,'TEMPORAL_PRODUCT_CONFIGURATION');
+  }else requireValue(c.temporal.issuerDelivery===undefined&&(c.temporal.issuerBootstrap===undefined||parseTemporalProductBootstrapConfiguration(c.temporal.issuerBootstrap).enabled===false),'TEMPORAL_PRODUCT_CONFIGURATION');
  }
  if(role==='control'){
   if(c.privateHttp!==undefined){own(c.privateHttp,['hostname','port','frontendOrigin']);requireValue(c.nativeCandidate!==undefined&&c.http.port===8080&&c.privateHttp.hostname==='0.0.0.0'&&c.privateHttp.port===8082&&c.privateHttp.frontendOrigin===endpoint(c.privateHttp.frontendOrigin)&&c.privateHttp.frontendOrigin===c.native.origin&&c.privateHttp.frontendOrigin!==c.http.frontendOrigin,'PRIVATE_CONTROL_CONFIGURATION');}

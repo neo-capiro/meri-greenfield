@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {readFileSync} from 'node:fs';
 import {synthesizeTemporalPreview} from './temporal-deployment.mjs';
-import {TEMPORAL_ROLES,TEMPORAL_PORTS,TEMPORAL_INTERFACE_ENDPOINTS,TEMPORAL_EXISTING_DATABASE,validateTemporalFixture} from './temporal-binding.mjs';
+import {TEMPORAL_ROLES,TEMPORAL_PORTS,TEMPORAL_INTERFACE_ENDPOINTS,TEMPORAL_EXISTING_DATABASE,validateTemporalFixture,validateTemporalPreviewBinding} from './temporal-binding.mjs';
 import {TEMPORAL_MIGRATION_PLAN,TEMPORAL_MIGRATION_PLAN_SHA256} from './temporal-migration-plan.mjs';
 import {validateTemporalNetworkReadback} from './temporal-network-readback.mjs';
 import {validateTemporalIssuerRenewal} from './temporal-issuer-renewal.mjs';
@@ -14,7 +14,7 @@ const account='967807252336',region='us-east-1',sha='a'.repeat(64);
 const rendererSha=createHash('sha256').update(readFileSync(new URL('./temporal-launch-render.mjs',import.meta.url))).digest('hex');
 const version=(name,n)=>`arn:aws:secretsmanager:${region}:${account}:secret:meri/temporal/${name}-ABC123:::${String(n).repeat(32)}`;
 function binding(){return {
- account,region,enabled:false,placement:{kind:'independent-meri-vpc',reviewSha256:sha},clusterArn:`arn:aws:ecs:${region}:${account}:cluster/meri-product-preview`,vpcId:'vpc-1234abcd',
+ account,region,enabled:false,placement:{kind:'existing-capiro-dev-vpc',reviewSha256:sha},clusterArn:`arn:aws:ecs:${region}:${account}:cluster/capiro-dev`,vpcId:'vpc-0ac26cfac7ed972be',
  subnets:[{id:'subnet-1234abcd',availabilityZone:'us-east-1a'},{id:'subnet-abcd1234',availabilityZone:'us-east-1b'}],
  privateDnsName:'temporal.meri.internal',serverImageUri:`${account}.dkr.ecr.${region}.amazonaws.com/meri/temporal-server@sha256:${sha}`,
  upstreamServerImageDigest:pins.server.imageAmd64Digest,launchSourceCommit:'c'.repeat(40),launchContractSha256:rendererSha,logGroupName:'/meri/temporal-preview',
@@ -25,7 +25,7 @@ function binding(){return {
   s3Gateway:{endpointId:'vpce-99999999',prefixListId:'pl-11111111'},
   taskRouteTableBySubnet:{'subnet-1234abcd':'rtb-11111111','subnet-abcd1234':'rtb-22222222'},
   migrationSecurityGroupId:'sg-aaaaaaaa'},
- auth:{issuer:'https://issuer.meri.internal/',jwksUrl:'https://issuer.meri.internal/.well-known/jwks.json',issuerCaSha256:sha,audience:'meri-temporal',namespace:'meri',taskQueue:'meri-conversations',
+ auth:{issuer:'https://issuer.meri.internal:8445/',jwksUrl:'https://issuer.meri.internal:8445/.well-known/jwks.json',issuerCaSha256:sha,audience:'meri-temporal',namespace:'meri',taskQueue:'meri-conversations',
   materialSecretVersionByRole:Object.fromEntries(TEMPORAL_ROLES.map((r,i)=>[r,version(r,i+1)]))},
  database:{...TEMPORAL_EXISTING_DATABASE,primaryDatabase:'temporal',visibilityDatabase:'temporal_visibility',
   primarySecretVersionArn:version('primary',7),primaryUsername:'temporal_primary',
@@ -51,6 +51,7 @@ test('fully bound synthesis emits five stopped private roles using the approved 
  assert.equal(JSON.stringify(t).includes('MasterUser'),false);
  assert.equal(JSON.stringify(t).includes('resolve:secretsmanager'),false);
  for(const s of resources(t,'AWS::ECS::Service')){
+  assert.equal(s.Cluster,'arn:aws:ecs:us-east-1:967807252336:cluster/capiro-dev');
   assert.equal(s.DesiredCount,0);assert.equal(s.PlatformVersion,'1.4.0');assert.equal(s.EnableExecuteCommand,false);
   assert.equal(s.NetworkConfiguration.AwsvpcConfiguration.AssignPublicIp,'DISABLED');
   assert.deepEqual(s.NetworkConfiguration.AwsvpcConfiguration.Subnets,b.subnets.map(x=>x.id));
@@ -71,6 +72,7 @@ test('fully bound synthesis emits five stopped private roles using the approved 
   assert.equal(env.NUM_HISTORY_SHARDS,'128');assert.equal(env.DB,'postgres12');assert.equal(env.SQL_HOST_VERIFICATION,'true');
   assert.equal(env.TEMPORAL_TLS_REQUIRE_CLIENT_AUTH,'true');assert.equal(env.TEMPORAL_AUTH_AUTHORIZER,'default');
   assert.equal(env.TEMPORAL_AUTH_CLAIM_MAPPER,'default');assert.equal(env.TEMPORAL_JWT_KEY_SOURCE1,b.auth.jwksUrl);
+  assert.equal(env.TEMPORAL_AUTH_ISSUER,'https://issuer.meri.internal:8445/');
   assert.equal(env.TEMPORAL_JWT_KEY_REFRESH,'300s');assert.equal(env.MERI_TEMPORAL_RENDER_DIR,'/run/temporal');
   assert.equal(env.MERI_TEMPORAL_ACTIVATION,'disabled');assert.equal(env.MERI_TEMPORAL_SERVICE_NAME,role);
   assert.equal(env.MERI_TEMPORAL_PRIMARY_USERNAME_EXPECTED,b.database.primaryUsername);
@@ -84,6 +86,23 @@ test('fully bound synthesis emits five stopped private roles using the approved 
   assert.equal(Number(env.SQL_MAX_CONNS)+Number(env.SQL_VIS_MAX_CONNS),role==='history'?40:20);
  }
  assert.equal(JSON.stringify(t).includes('password":"'),false,'no plaintext credential in source template');
+});
+
+test('existing capiro-dev placement requires its exact VPC, cluster and closed review receipt while disabled',()=>{
+ const b=binding();
+ assert.equal(validateTemporalPreviewBinding(b),b);
+ assert.equal(b.enabled,false);
+ const t=synthesizeTemporalPreview(b);
+ assert.equal(resources(t,'AWS::ServiceDiscovery::PrivateDnsNamespace')[0].Vpc,'vpc-0ac26cfac7ed972be');
+ assert(resources(t,'AWS::EC2::SecurityGroup').every(group=>group.VpcId==='vpc-0ac26cfac7ed972be'));
+ for(const mutate of [
+  x=>{x.placement.kind='independent-meri-vpc';},
+  x=>{x.vpcId='vpc-1234abcd';},
+  x=>{x.clusterArn=`arn:aws:ecs:${region}:${account}:cluster/meri-product-preview`;},
+  x=>{delete x.placement;},x=>{delete x.placement.reviewSha256;},
+  x=>{x.placement.reviewSha256='';},x=>{x.placement.reviewSha256='not-a-review-receipt';},
+  x=>{x.placement.approved=true;},x=>{delete x.enabled;},x=>{x.enabled=true;}
+ ]){const copy=structuredClone(b);mutate(copy);assert.throws(()=>synthesizeTemporalPreview(copy),/TEMPORAL_PREVIEW_BINDING_REFUSED/u);}
 });
 
 test('the exact reviewed fixture refuses changes to role and trust decisions',()=>{
@@ -115,10 +134,17 @@ test('migration plan binds the pinned ordered source stages without running SQL'
 });
 
 test('network creates role-specific security groups with no unrestricted egress',()=>{
- const t=synthesizeTemporalPreview(binding()),groups=resources(t,'AWS::EC2::SecurityGroup');
+ const b=binding(),t=synthesizeTemporalPreview(b),groups=resources(t,'AWS::EC2::SecurityGroup');
  assert.equal(groups.length,5);
  const egress=resources(t,'AWS::EC2::SecurityGroupEgress');
  assert(egress.length>0);
+ const issuerEgress=egress.filter(x=>x.DestinationSecurityGroupId===b.network.issuerSecurityGroupId);
+ assert.equal(issuerEgress.length,5);
+ assert(issuerEgress.every(x=>x.FromPort===8445&&x.ToPort===8445&&x.IpProtocol==='tcp'));
+ const endpointIds=Object.values(b.network.interfaceEndpoints).map(x=>x.securityGroupId);
+ const endpointEgress=egress.filter(x=>endpointIds.includes(x.DestinationSecurityGroupId));
+ assert.equal(endpointEgress.length,25);
+ assert(endpointEgress.every(x=>x.FromPort===443&&x.ToPort===443&&x.IpProtocol==='tcp'));
  assert(egress.some(x=>x.DestinationPrefixListId==='pl-11111111'&&x.FromPort===443));
  assert(!egress.some(x=>x.CidrIp==='0.0.0.0/0'||x.CidrIpv6==='::/0'));
  const ingress=resources(t,'AWS::EC2::SecurityGroupIngress');
@@ -130,6 +156,23 @@ test('network creates role-specific security groups with no unrestricted egress'
  assert(!groups.some(x=>x.GroupDescription==='Meri Temporal PostgreSQL only'));
  assert(ingress.some(x=>x.FromPort===7233&&x.ToPort===7233));
  assert(!ingress.some(x=>x.CidrIp==='0.0.0.0/0'||x.CidrIpv6==='::/0'));
+});
+
+test('issuer binding requires exact 8445 HTTPS issuer and same-origin fixed JWKS path',()=>{
+ assert.equal(validateTemporalPreviewBinding(binding()).auth.issuer,'https://issuer.meri.internal:8445/');
+ for(const suffix of ['',':443',':8443',':8446',':08445']){
+  const b=binding();b.auth.issuer=`https://issuer.meri.internal${suffix}/`;
+  b.auth.jwksUrl=`https://issuer.meri.internal${suffix}/.well-known/jwks.json`;
+  assert.throws(()=>validateTemporalPreviewBinding(b),/TEMPORAL_PREVIEW_BINDING_REFUSED/u);
+ }
+ for(const mutate of [
+  x=>{x.auth.issuer='https://issuer.meri.internal:8445';},
+  x=>{x.auth.issuer='https://issuer.meri.internal:8445/?extra=1';},
+  x=>{x.auth.jwksUrl='https://issuer.meri.internal/.well-known/jwks.json';},
+  x=>{x.auth.jwksUrl='https://issuer.meri.internal:8445/other';},
+  x=>{x.auth.jwksUrl='https://user@issuer.meri.internal:8445/.well-known/jwks.json';},
+  x=>{x.auth.jwksUrl='https://issuer.meri.internal:8445/.well-known/jwks.json?extra=1';}
+ ]){const b=binding();mutate(b);assert.throws(()=>validateTemporalPreviewBinding(b),/TEMPORAL_PREVIEW_BINDING_REFUSED/u);}
 });
 
 test('offline network readback joins exact private ECR, Logs, Secrets, KMS and S3 paths',()=>{
@@ -163,7 +206,7 @@ test('offline network readback joins exact private ECR, Logs, Secrets, KMS and S
 
 test('unmounted issuer renewal contract binds distinct write subjects to an external broker role',()=>{
  const b=binding(),a=b.auth,role=(name)=>({subject:`meri-temporal-${name}:v1`,namespaceRole:'write',
-  tokenFile:'/run/meri/temporal-token.json',workloadPrincipal:`meri-workload-${name}:v1`,
+  tokenFile:'/run/meri-temporal/token.json',workloadPrincipal:`meri-workload-${name}:v1`,
   delivery:'task-local-atomic-owner-only-file'});
  const spec={schemaVersion:1,status:'unmounted',issuer:a.issuer,jwksUrl:a.jwksUrl,audience:a.audience,
   namespace:a.namespace,taskQueue:a.taskQueue,maxTokenLifetimeMs:60000,refreshMs:10000,
@@ -177,6 +220,8 @@ test('unmounted issuer renewal contract binds distinct write subjects to an exte
   x=>{x.issuerServiceTaskRoleArn=b.taskRoleArns.frontend;},
   x=>{x.roles.control.namespaceRole='worker';},
   x=>{x.roles.control.tokenFile='/run/meri/static-token.json';},
+  x=>{x.roles.control.tokenFile='/run/meri/temporal-token.json';},
+  x=>{x.maxTokenLifetimeMs=60001;},
   x=>{x.maxTokenLifetimeMs=86400000;}
  ]){const copy=structuredClone(spec);mutate(copy);assert.throws(()=>validateTemporalIssuerRenewal(b,copy),/TEMPORAL_ISSUER_RENEWAL_REFUSED/u);}
 });
@@ -184,7 +229,7 @@ test('unmounted issuer renewal contract binds distinct write subjects to an exte
 test('missing or contradictory authority and network inputs refuse before synthesis',()=>{
  const changes=[
   x=>{x.enabled=true;},x=>{delete x.enabled;},x=>{x.account='000000000000';},
-  x=>{x.placement.kind='reuse-capiro-dev';},x=>{x.vpcId='vpc-0ac26cfac7ed972be';},
+  x=>{x.placement.kind='reuse-capiro-dev';},x=>{x.vpcId='vpc-1234abcd';},
   x=>{x.subnets[1].availabilityZone=x.subnets[0].availabilityZone;},x=>{x.subnets=[x.subnets[0]];},
   x=>{x.serverImageUri=x.serverImageUri.replace('@sha256:','-mutable:');},
   x=>{x.upstreamServerImageDigest='sha256:'+sha;},x=>{x.launchSourceCommit='';},
@@ -204,7 +249,7 @@ test('missing or contradictory authority and network inputs refuse before synthe
   x=>{x.database.kind='new-rds-postgresql';},x=>{x.database.clusterArn=x.database.clusterArn+'-foreign';},
   x=>{x.database.endpoint=x.database.endpoint.replace('.cluster-','.cluster-ro-');},
   x=>{x.database.port=5433;},x=>{x.database.securityGroupId='sg-deadbeef';},
-  x=>{x.database.databaseVpcId=x.vpcId;},x=>{x.database.engine='postgres';},
+  x=>{x.database.databaseVpcId='vpc-deadbeef';},x=>{x.database.engine='postgres';},
   x=>{x.database.engineVersion='16.15';},x=>{x.database.primaryDatabase='capiro';},
   x=>{x.database.visibilityDatabase='temporal';},x=>{x.database.grantsSha256='';},
   x=>{x.network.issuerSecurityGroupId=x.network.clientSecurityGroupIds[0];},

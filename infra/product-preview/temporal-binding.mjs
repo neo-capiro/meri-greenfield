@@ -7,6 +7,7 @@ import {TEMPORAL_MIGRATION_PLAN_SHA256} from './temporal-migration-plan.mjs';
 
 export const TEMPORAL_ROLES=Object.freeze(['frontend','history','matching','internal-worker','internal-frontend']);
 export const TEMPORAL_PORTS=Object.freeze({frontend:[7233,6933,7243],history:[7234,6934],matching:[7235,6935],'internal-worker':[7239,6939],'internal-frontend':[7236,6936,7246]});
+export const TEMPORAL_ISSUER_PORT=8445;
 export const TEMPORAL_INTERFACE_ENDPOINTS=Object.freeze({
  ecrApi:'com.amazonaws.us-east-1.ecr.api',ecrDkr:'com.amazonaws.us-east-1.ecr.dkr',
  secretsManager:'com.amazonaws.us-east-1.secretsmanager',logs:'com.amazonaws.us-east-1.logs',kms:'com.amazonaws.us-east-1.kms'
@@ -55,7 +56,9 @@ export function validateTemporalPreviewBinding(value){
  validateTemporalFixture();
  const b=closed(value,['account','region','enabled','placement','clusterArn','vpcId','subnets','privateDnsName','serverImageUri','upstreamServerImageDigest','launchSourceCommit','launchContractSha256','logGroupName','executionRoleArn','taskRoleArns','network','auth','database']);
  const placement=closed(b.placement,['kind','reviewSha256']);
- if(placement.kind!=='independent-meri-vpc'||!hex64.test(placement.reviewSha256)||b.vpcId==='vpc-0ac26cfac7ed972be')fail();
+ if(placement.kind!=='existing-capiro-dev-vpc'||!hex64.test(placement.reviewSha256)||
+    b.vpcId!==TEMPORAL_EXISTING_DATABASE.databaseVpcId||
+    b.clusterArn!=='arn:aws:ecs:us-east-1:967807252336:cluster/capiro-dev')fail();
  if(b.account!=='967807252336'||b.region!=='us-east-1'||b.enabled!==false||
     !/^arn:aws:ecs:us-east-1:967807252336:cluster\/[a-zA-Z0-9_-]{1,255}$/u.test(b.clusterArn)||
     !/^vpc-[a-f0-9]{8,17}$/u.test(b.vpcId)||!/^([a-z0-9-]+\.)+[a-z]{2,}$/u.test(b.privateDnsName)||
@@ -89,8 +92,9 @@ export function validateTemporalPreviewBinding(value){
     new Set([...n.clientSecurityGroupIds,...endpoints.map(value=>value.securityGroupId),n.issuerSecurityGroupId,n.migrationSecurityGroupId]).size!==n.clientSecurityGroupIds.length+endpoints.length+2)fail();
  const a=closed(b.auth,['issuer','jwksUrl','issuerCaSha256','audience','namespace','taskQueue','materialSecretVersionByRole']);
  let issuer,jwks;try{issuer=new URL(a.issuer);jwks=new URL(a.jwksUrl);}catch{fail();}
- if(issuer.protocol!=='https:'||issuer.username||issuer.password||issuer.search||issuer.hash||issuer.pathname!=='/'||!hex64.test(a.issuerCaSha256)||
-    jwks.protocol!=='https:'||jwks.origin!==issuer.origin||jwks.pathname!=='/.well-known/jwks.json'||jwks.search||jwks.hash||
+ if(issuer.protocol!=='https:'||issuer.username||issuer.password||issuer.search||issuer.hash||issuer.pathname!=='/'||
+    issuer.port!==String(TEMPORAL_ISSUER_PORT)||a.issuer!==issuer.origin+'/'||!hex64.test(a.issuerCaSha256)||
+    jwks.protocol!=='https:'||a.jwksUrl!==issuer.origin+'/.well-known/jwks.json'||
     a.audience!==fixture.roles.frontend.externalAudience||a.namespace!==fixture.namespaces.primary||!id.test(a.taskQueue))fail();
  closed(a.materialSecretVersionByRole,TEMPORAL_ROLES);
  for(const role of TEMPORAL_ROLES)secret(a.materialSecretVersionByRole[role],b.account,b.region);

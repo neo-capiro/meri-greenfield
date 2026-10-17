@@ -1,0 +1,197 @@
+{
+  "capturedAt": "2026-10-17T07:08:38.258034+00:00",
+  "scope": "Authenticated GitHub exact commit/tree/document content retrieval; no AWS/app action",
+  "references": [
+    {
+      "id": "issuer-final",
+      "repo": "meri-greenfield",
+      "commit": "eb603f28023c5fcbfcdbf42953e86411a1a83bca",
+      "tree": "0f8160b7e362460b18b51eb9afe7ca7af7a5cc71",
+      "pr": 130,
+      "path": "apps/runtime/temporal-issuer/qualification/FABLE-HANDOFF-20261017.md",
+      "status": "SOURCE_ONLY_FINAL_COMBINED_AND_NATIVE_UNQUALIFIED",
+      "retrievedTree": "0f8160b7e362460b18b51eb9afe7ca7af7a5cc71",
+      "gitBlob": "df5228a1a8c6caa0e9af1a0d493e1141845e70dd",
+      "bytes": 5978,
+      "sha256": "c8a28abfe5de7886f633e30c99a5536684b5432fc7dac884833d349467da3953",
+      "currentPR": {
+        "head": "eb603f28023c5fcbfcdbf42953e86411a1a83bca",
+        "branch": "feat/meri-temporal-issuer-qualification-20261017",
+        "base": "5a979d13dd9c3eae6a3a5fa160b5f0b4423081c4",
+        "baseBranch": "feat/meri-temporal-issuer-binding-20261017",
+        "state": "open",
+        "draft": true
+      }
+    },
+    {
+      "id": "product-final",
+      "repo": "meri-greenfield",
+      "commit": "2a247510e7fa477466579971ca4e9a2366b2127f",
+      "tree": "c2ca012a55ec2f45291cfc6f319d3bb0a3b0452e",
+      "pr": 131,
+      "path": "docs/handover/20261017/fable-final/PRODUCT-FEATURES.md",
+      "status": "SOURCE_HOLD_INCOMPLETE_UNREVIEWED",
+      "retrievedTree": "c2ca012a55ec2f45291cfc6f319d3bb0a3b0452e",
+      "gitBlob": "b84c743ae2af08e8bb331d72a75e6e3bd03077ef",
+      "bytes": 28054,
+      "sha256": "de38d2c11c5bebdf6fe0e5d856cfa4141e6c795b51b1597d101390f6f1c9247c",
+      "currentPR": {
+        "head": "2a247510e7fa477466579971ca4e9a2366b2127f",
+        "branch": "codex/meri-product-receiving-candidate-task6-20261017",
+        "base": "6f315108ca9ec2b807048b07016c1a11b07ce848",
+        "baseBranch": "codex/meri-routines-occurrence-semantics-task6-20261017",
+        "state": "open",
+        "draft": true
+      }
+    },
+    {
+      "id": "objective-final",
+      "repo": "meri-greenfield",
+      "commit": "047526c7022d04af6fd0f8faaae011171ef1eca2",
+      "tree": "8a39d235a9cda53af0a7d591f5931829c701132b",
+      "pr": 129,
+      "path": "docs/objective-source-reader-v2-20261017/FABLE-BOUNDARY-SUPPLEMENT.md",
+      "status": "REVIEWED_HOLD_INCOMPLETE_UNQUALIFIED_CUSTODY",
+      "retrievedTree": "8a39d235a9cda53af0a7d591f5931829c701132b",
+      "gitBlob": "ba38b99cf7887430f1927f3ef77fbd0a86620266",
+      "bytes": 15079,
+      "sha256": "f7ed8973232487775292cf632d76d9db0c2ee0068b863fa5354d05a152a645a8",
+      "currentPR": {
+        "head": "047526c7022d04af6fd0f8faaae011171ef1eca2",
+        "branch": "feat/objective-source-custody-postgres-20261017",
+        "base": "d1512708859f97b6aa7369dfcc8dd9f6448de911",
+        "baseBranch": "feat/objective-source-reader-v2-20261017",
+        "state": "open",
+        "draft": true
+      }
+    },
+    {
+      "id": "reads-accepted",
+      "repo": "meri-greenfield",
+      "commit": "6968836486738cab4ba62a39e799356914cd7c85",
+      "tree": "aa31607522e34df3bca96b9e381caae0d599d398",
+      "pr": 125,
+      "path": "docs/coordination/reports/CODEX-READ-INSTALLATION-REMAINING-20261017.md",
+      "status": "ACCEPT_SOURCE_69_3_10_LIVE_ZERO",
+      "retrievedTree": "aa31607522e34df3bca96b9e381caae0d599d398",
+      "gitBlob": "64822b83a025868b4dcc0a6701e9317f94caaa8f",
+      "bytes": 11690,
+      "sha256": "ea793ad48baedbceaf38baa97e277d16b346557bc784b403b3d098a10d748405",
+      "currentPR": {
+        "head": "6968836486738cab4ba62a39e799356914cd7c85",
+        "branch": "codex/meri-reads-installation-20261017",
+        "base": "36ec54b54c8caa91c8c90f037b65ee2863d6c907",
+        "baseBranch": "codex/meri-kb-completion-20261017",
+        "state": "open",
+        "draft": true
+      }
+    },
+    {
+      "id": "core-get-final",
+      "repo": "capiro-backend",
+      "commit": "2c344e91b05da1717d53341ad04989d997c2f817",
+      "tree": "3a0a1680671ccf27ab9fb178cffbfd66b6973be0",
+      "pr": 67,
+      "path": "docs/core-first-chat-get-qualified-source-supplement-20261017.md",
+      "status": "SOURCE_QUALIFIED_UNAPPLIED",
+      "retrievedTree": "3a0a1680671ccf27ab9fb178cffbfd66b6973be0",
+      "gitBlob": "3ad42e15a196571263ae2ea3fe7c99e2d0084c77",
+      "bytes": 3867,
+      "sha256": "cd1050ebbeb244d7943380aa3bef15aa8b28c03ae3c84a353e5cbfbadb0307bd",
+      "currentPR": {
+        "head": "2c344e91b05da1717d53341ad04989d997c2f817",
+        "branch": "docs/core-first-chat-get-pinned-evidence-20261017",
+        "base": "4e6c84ec64613ac2f0e9ccd275869833b6fbfd8d",
+        "baseBranch": "feat/core-first-chat-get-route-packet-20261017",
+        "state": "open",
+        "draft": true
+      }
+    },
+    {
+      "id": "core-shipping-baseline",
+      "repo": "capiro-backend",
+      "commit": "8b46d2df73f211ebdf09e5a138241539cb5dd922",
+      "path": "docs/core-first-chat-fable-shipping-handoff-20261017.md",
+      "status": "HISTORICAL_QUALIFIED_IMAGE_STOPPED_SERVICE",
+      "retrievedTree": "75481a2e452399848d64bcc5e5f700ee9291745d",
+      "gitBlob": "88023bb1bab5e6b80b11e00df039620537abc72a",
+      "bytes": 28467,
+      "sha256": "a4c9f6beb290e945aa4c5228529e4a70fc35b6621efc29d79c3a2bb83979e044"
+    },
+    {
+      "id": "core-runtime-context",
+      "repo": "capiro-backend",
+      "commit": "83b9136565a45ed1148add8a1d05bcb5252b7fe2",
+      "path": "docs/core-meri-runtime-context-addendum-20261017.md",
+      "status": "SOURCE_CONTEXT_ONLY",
+      "retrievedTree": "6c7d4c6f8643c9874dda0ae3d9165bc8d33688ea",
+      "gitBlob": "50624393027c1846eae3b7aa0bb27b324656ae19",
+      "bytes": 13461,
+      "sha256": "f3efd1cae640d1af6508175f7619ea53ca2ee4faa81a44d1718ad00993f6525e"
+    },
+    {
+      "id": "frontend-final",
+      "repo": "capiro-frontend",
+      "commit": "01cf1df981250841d40df5fe0389f47168593cce",
+      "tree": "f72cb34644e118933964f9f5b81bec2e11d533e9",
+      "pr": 81,
+      "path": "docs/non-meri-continuation-20261016/PR70-FIRST-CHAT-FABLE-SUPPLEMENT-20261017.md",
+      "status": "SOURCE_ONLY_NEW_SINGLE_IMAGE_ATTEMPT_DOT_OWNED",
+      "retrievedTree": "f72cb34644e118933964f9f5b81bec2e11d533e9",
+      "gitBlob": "9725f102f5494173150f266cb1911b57337db3f7",
+      "bytes": 8903,
+      "sha256": "321106591f55e549ec6bc34b19db0c75123d32dc2c99b9721c3fff08ed832edc",
+      "currentPR": {
+        "head": "01cf1df981250841d40df5fe0389f47168593cce",
+        "branch": "feat/pr70-first-chat-architecture-recovery-20261017",
+        "base": "31a140cddf798c32b5cc45ad22e7b672312b3ca3",
+        "baseBranch": "fable/meri-host-archived-client-guard-20261017",
+        "state": "open",
+        "draft": true
+      }
+    },
+    {
+      "id": "frontend-failure",
+      "repo": "capiro-frontend",
+      "commit": "01cf1df981250841d40df5fe0389f47168593cce",
+      "path": "docs/non-meri-continuation-20261016/PR70-CODEBUILD-TERMINAL-RECEIPT.json",
+      "status": "PR70_TERMINAL_FAILED_NO_IMAGE",
+      "retrievedTree": "f72cb34644e118933964f9f5b81bec2e11d533e9",
+      "gitBlob": "9d693f6b1f6903afbb49971bd5165f9a0ec8786c",
+      "bytes": 1761,
+      "sha256": "2efdf5b77f77fc5aded5425127eab4590434b02842259beaec5ea666a9984af6"
+    },
+    {
+      "id": "central-allocation",
+      "repo": "meri-greenfield",
+      "commit": "93838193c46a13b2fdda9dee9c142d1af0e60cba",
+      "path": "docs/coordination/tasks/CODEX-PACKAGE4-CENTRAL-MIGRATION-ALLOCATIONS-20261016.md",
+      "status": "SOURCE_ALLOCATION_ONLY",
+      "retrievedTree": "d77c9a6c5c0f11ac1ce013956270cd5c7ada822b",
+      "gitBlob": "03ad26a0c11e0a34fcc577ed568a8c8b5990cd7d",
+      "bytes": 29949,
+      "sha256": "11888433fc5584b2c40402167edce2743448d8cbdb44936b141a7898488c3663"
+    },
+    {
+      "id": "reads-final",
+      "repo": "meri-greenfield",
+      "commit": "bba4ef68682812f303653f391df9ca586f41da57",
+      "tree": "00f950391354f21b07fc8497be00dbaddf9e9b87",
+      "pr": 132,
+      "path": "docs/coordination/handoffs/meri-read-tools-final-20261017/README.md",
+      "status": "INCOMPLETE_MODE_HOLD_TESTS_ACCEPTED_BASELINE_PR125_UNCHANGED",
+      "retrievedTree": "00f950391354f21b07fc8497be00dbaddf9e9b87",
+      "gitBlob": "b16848b3cf382ef6691c2c58d5cd0e1fe10dd02d",
+      "bytes": 32953,
+      "sha256": "5c36f7376eea3685748472353367ebb10602c3cf19d5116b96be5d4bc15b9c67",
+      "currentPR": {
+        "head": "bba4ef68682812f303653f391df9ca586f41da57",
+        "branch": "codex/meri-read-native-next-20261017",
+        "base": "6968836486738cab4ba62a39e799356914cd7c85",
+        "baseBranch": "codex/meri-reads-installation-20261017",
+        "state": "open",
+        "draft": true
+      }
+    }
+  ]
+}

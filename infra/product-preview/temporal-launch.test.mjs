@@ -23,7 +23,7 @@ function env(service='frontend'){
   TEMPORAL_JWT_KEY_REFRESH:'300s',USE_INTERNAL_FRONTEND:'true',TEMPORAL_NAMESPACE:'meri',TEMPORAL_TASK_QUEUE:'meri-conversations',
   POSTGRES_SEEDS:'temporal-db.meri.internal',VISIBILITY_POSTGRES_SEEDS:'temporal-db.meri.internal',SQL_HOST_NAME:'temporal-db.meri.internal',
   TEMPORAL_TLS_FRONTEND_SERVER_NAME:'frontend.temporal.meri.internal',TEMPORAL_TLS_INTERNODE_SERVER_NAME:'internode.temporal.meri.internal',
-  TEMPORAL_AUTH_ISSUER:'https://issuer.meri.internal/',TEMPORAL_JWT_KEY_SOURCE1:'https://issuer.meri.internal/.well-known/jwks.json',
+  TEMPORAL_AUTH_ISSUER:'https://issuer.meri.internal:8445/',TEMPORAL_JWT_KEY_SOURCE1:'https://issuer.meri.internal:8445/.well-known/jwks.json',
   SQL_MAX_CONNS:conns,SQL_MAX_IDLE_CONNS:conns,SQL_VIS_MAX_CONNS:conns,SQL_VIS_MAX_IDLE_CONNS:conns,
   POSTGRES_USER:'temporal_user',POSTGRES_PWD:'synthetic-primary',VISIBILITY_POSTGRES_USER:'visibility_user',VISIBILITY_POSTGRES_PWD:'synthetic-visibility',
   MERI_TEMPORAL_PRIMARY_USERNAME_EXPECTED:'temporal_user',MERI_TEMPORAL_VISIBILITY_USERNAME_EXPECTED:'visibility_user',
@@ -52,10 +52,26 @@ test('complete frontend config binds two SQL stores, ENI membership, reachable f
  assert.equal(c.global.authorization.audience,'meri-temporal');
  assert.equal(c.global.authorization.authorizer,'default');
  assert.equal(c.global.authorization.claimMapper,'default');
+ assert.deepEqual(c.global.authorization.jwtKeyProvider.keySourceURIs,['https://issuer.meri.internal:8445/.well-known/jwks.json']);
  assert.deepEqual(c.global.tls.frontend.server.clientCaFiles,[files().clientCa,files().internodeCa]);
  assert.equal(c.global.tls.internode.server.requireClientAuth,true);
  assert.equal(c.archival.history.state,'disabled');assert.equal(c.archival.visibility.state,'disabled');
  assert(!JSON.stringify(c).includes('127.0.0.1'));
+});
+
+test('launcher accepts only exact issuer port 8445 and fixed issuer/JWKS paths',()=>{
+ for(const suffix of ['',':443',':8443',':8446',':08445']){
+  const e=env();e.TEMPORAL_AUTH_ISSUER=`https://issuer.meri.internal${suffix}/`;
+  e.TEMPORAL_JWT_KEY_SOURCE1=`https://issuer.meri.internal${suffix}/.well-known/jwks.json`;
+  assert.throws(()=>renderTemporalConfig(e,['frontend'],'10.4.8.12',files()),/TEMPORAL_LAUNCH_REFUSED/u);
+ }
+ for(const mutate of [
+  x=>{x.TEMPORAL_AUTH_ISSUER='https://issuer.meri.internal:8445';},
+  x=>{x.TEMPORAL_JWT_KEY_SOURCE1='https://issuer.meri.internal/.well-known/jwks.json';},
+  x=>{x.TEMPORAL_JWT_KEY_SOURCE1='https://issuer.meri.internal:8445/other';},
+  x=>{x.TEMPORAL_JWT_KEY_SOURCE1='https://issuer.meri.internal:8445/.well-known/jwks.json?extra=1';},
+  x=>{x.TEMPORAL_JWT_KEY_SOURCE1='https://foreign.internal:8445/.well-known/jwks.json';}
+ ]){const e=env();mutate(e);assert.throws(()=>renderTemporalConfig(e,['frontend'],'10.4.8.12',files()),/TEMPORAL_LAUNCH_REFUSED/u);}
 });
 
 test('internal worker renders only internode server key and exact worker role',()=>{

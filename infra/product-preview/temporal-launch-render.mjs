@@ -47,8 +47,8 @@ export function validateTemporalLaunch(env,argv){
  const frontendName=required(env,'TEMPORAL_TLS_FRONTEND_SERVER_NAME',dns);
  const internodeName=required(env,'TEMPORAL_TLS_INTERNODE_SERVER_NAME',dns);
  if(!frontendName.startsWith('frontend.')||internodeName!==`internode.${frontendName.slice('frontend.'.length)}`)fail();
- const issuer=required(env,'TEMPORAL_AUTH_ISSUER',/^https:\/\/[a-z0-9.-]+\/$/u);
- const jwks=required(env,'TEMPORAL_JWT_KEY_SOURCE1',/^https:\/\/[a-z0-9.-]+\/\.well-known\/jwks\.json$/u);
+ const issuer=required(env,'TEMPORAL_AUTH_ISSUER',/^https:\/\/[a-z0-9.-]+:8445\/$/u);
+ const jwks=required(env,'TEMPORAL_JWT_KEY_SOURCE1',/^https:\/\/[a-z0-9.-]+:8445\/\.well-known\/jwks\.json$/u);
  if(new URL(jwks).origin!==new URL(issuer).origin)fail();
  const conns=service==='history'?20:10;
  for(const key of ['SQL_MAX_CONNS','SQL_MAX_IDLE_CONNS','SQL_VIS_MAX_CONNS','SQL_VIS_MAX_IDLE_CONNS'])exact(env,key,String(conns));

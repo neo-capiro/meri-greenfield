@@ -155,4 +155,45 @@ async def serve_product_proxy(*, enabled=False, server_tls_context=None,
         server_type = import_module("uvicorn").Server
     except (ImportError, AttributeError):
         _deny()
-    await server_type(config).serve()
+    server = server_type(config)
+    await server.serve()
+    if getattr(server, "started", None) is not True:
+        _deny()
+
+
+async def serve_product_proxy_with_owner(*, enabled=False, server_tls_context=None,
+        owner_policy=None, owner_tls_material=None, owner_ipv4=None, proxy_ipv4=None,
+        deployment_expires_at_ms=None, deployment_revision=None, ecs_client=None, ec2_client=None,
+        count_client=None, make_provider_transport=None, pricing_revision=None,
+        body_limits=None, bootstrap_seconds=5.0, service_pair_reader=None):
+    """Actual opt-in caller for placement, fresh admission and session composition.
+
+    Externally delivered reviewed TLS material/deployment pins and bounded AWS
+    clients are mandatory. This opens only the existing explicit proxy server;
+    imports/default calls never activate a listener or create credentials.
+    """
+    if enabled is not True:
+        _deny()
+    from .owner_channel import OwnerHostGate
+    from .owner_https import ProductOwnerHttpsExchange
+    from .owner_startup import ProductOwnerStartup
+    from .socket_capture import DirectTlsSocketCapture
+    exchange = ProductOwnerHttpsExchange(policy=owner_policy,material=owner_tls_material,
+        owner_ipv4=owner_ipv4,proxy_ipv4=proxy_ipv4,expires_at_ms=deployment_expires_at_ms,
+        deployment_revision=deployment_revision,service_pair_reader=service_pair_reader)
+    startup = None
+    try:
+        startup = ProductOwnerStartup(policy=owner_policy,exchange=exchange,
+            host_gate=OwnerHostGate(),owner_loop=asyncio.get_running_loop(),
+            count_client=count_client,make_provider_transport=make_provider_transport,
+            pricing_revision=pricing_revision,body_limits=body_limits)
+        await serve_product_proxy(enabled=True,server_tls_context=server_tls_context,
+            direct_tls_capture=DirectTlsSocketCapture(),
+            resolve_bearer_sha256=startup.resolve_bearer_sha256,
+            resolve_session=startup.resolve_session,ecs_client=ecs_client,
+            ec2_client=ec2_client,bootstrap_seconds=bootstrap_seconds)
+    finally:
+        if startup is not None:
+            startup.close()
+        else:
+            exchange.abort()

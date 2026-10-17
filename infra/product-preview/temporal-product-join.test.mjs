@@ -11,8 +11,8 @@ const account='967807252336',region='us-east-1',sha='a'.repeat(64),sourceCommit=
 const roleSecret=(name,n)=>`arn:aws:secretsmanager:${region}:${account}:secret:meri/temporal/${name}-ABC123:::${String(n).repeat(32)}`;
 const controlCa=Buffer.from('synthetic public CA'),controlCaSha=createHash('sha256').update(controlCa).digest('hex');
 function temporal(){return {
- account,region,enabled:false,placement:{kind:'independent-meri-vpc',reviewSha256:sha},
- clusterArn:`arn:aws:ecs:${region}:${account}:cluster/meri-temporal`,vpcId:'vpc-1234abcd',
+ account,region,enabled:false,placement:{kind:'existing-capiro-dev-vpc',reviewSha256:sha},
+ clusterArn:`arn:aws:ecs:${region}:${account}:cluster/capiro-dev`,vpcId:'vpc-0ac26cfac7ed972be',
  subnets:[{id:'subnet-11111111',availabilityZone:'us-east-1a'},{id:'subnet-22222222',availabilityZone:'us-east-1b'}],
  privateDnsName:'temporal.meri.internal',serverImageUri:`${account}.dkr.ecr.${region}.amazonaws.com/meri/temporal@sha256:${sha}`,
  upstreamServerImageDigest:'sha256:2695f2564ec51aa84232bf3fa59b31e2cce99bec437a64f5bc487cbe21b2de0e',
@@ -26,7 +26,7 @@ function temporal(){return {
   s3Gateway:{endpointId:'vpce-99999999',prefixListId:'pl-11111111'},
   taskRouteTableBySubnet:{'subnet-11111111':'rtb-11111111','subnet-22222222':'rtb-22222222'},
   migrationSecurityGroupId:'sg-aaaaaaaa'},
- auth:{issuer:'https://issuer.meri.internal/',jwksUrl:'https://issuer.meri.internal/.well-known/jwks.json',
+ auth:{issuer:'https://issuer.meri.internal:8445/',jwksUrl:'https://issuer.meri.internal:8445/.well-known/jwks.json',
   issuerCaSha256:sha,audience:'meri-temporal',namespace:'meri',taskQueue:'meri-conversations',
   materialSecretVersionByRole:Object.fromEntries(TEMPORAL_ROLES.map((x,i)=>[x,roleSecret(x,i+1)]))},
  database:{...TEMPORAL_EXISTING_DATABASE,primaryDatabase:'temporal',visibilityDatabase:'temporal_visibility',
@@ -47,7 +47,7 @@ function product(){return {
   temporalWorker:{valueFrom:roleSecret('product-worker',1),expected:expected('temporalWorker')}},
  runnerPoststart:{controlOrigin:'https://private-control.example.invalid',controlCaFile:'/run/meri/control-ca.pem',
   controlCaBase64:controlCa.toString('base64'),controlCaSha256:controlCaSha},
- clusterArn:`arn:aws:ecs:${region}:${account}:cluster/meri-product`,
+ clusterArn:`arn:aws:ecs:${region}:${account}:cluster/capiro-dev`,
  imageUri:`${account}.dkr.ecr.${region}.amazonaws.com/meri/product@sha256:${sha}`,
  logGroupName:'/meri/product',executionRoleArn:`arn:aws:iam::${account}:role/product-execution`,
  controlTaskRoleArn:`arn:aws:iam::${account}:role/product-control`,runtimeUser:'1000:1000',runnerSha256:sha,
@@ -58,7 +58,7 @@ function product(){return {
   runner:{cpu:1024,memoryMiB:2048,ephemeralStorageGiB:50}}
 };}
 function renewal(t){const role=name=>({subject:`meri-${name}:v1`,namespaceRole:'write',
- tokenFile:'/run/meri/temporal-token.json',workloadPrincipal:`meri-workload-${name}:v1`,
+ tokenFile:'/run/meri-temporal/token.json',workloadPrincipal:`meri-workload-${name}:v1`,
  delivery:'task-local-atomic-owner-only-file'});
  return {schemaVersion:1,status:'unmounted',issuer:t.auth.issuer,jwksUrl:t.auth.jwksUrl,audience:t.auth.audience,
   namespace:t.auth.namespace,taskQueue:t.auth.taskQueue,maxTokenLifetimeMs:60000,refreshMs:10000,
@@ -69,18 +69,24 @@ function projection(p,t){return Object.fromEntries(['control','temporalWorker'].
  configSha256:p.materialDelivery[role].expected.sha256ByPath[`/run/meri/${role==='control'?'control':'worker'}.json`],
  address:`frontend.${t.privateDnsName}:7233`,namespace:t.auth.namespace,taskQueue:t.auth.taskQueue,
  tlsServerName:`frontend.${t.privateDnsName}`,tlsCaFile:'/run/meri/temporal-ca.pem',tlsCaSha256:'e'.repeat(64),
- issuer:t.auth.issuer,audience:t.auth.audience,tokenFile:'/run/meri/temporal-token.json',
+ issuer:t.auth.issuer,audience:t.auth.audience,tokenFile:'/run/meri-temporal/token.json',
  refreshMs:10000,maxLifetimeMs:60000}]));}
 
-test('cross-template source join stays HOLD with exact SG, config, TLS and issuer pins',()=>{
+test('same-VPC source join stays HOLD with exact cluster, subnet readback, SG, config, TLS and issuer pins',()=>{
  const p=product(),t=temporal(),input={productBinding:p,temporalBinding:t,runtimeProjection:projection(p,t),
-  productSubnetReadback:{SubnetId:p.network.privateSubnetId,VpcId:'vpc-abcdef12',RouteTableId:'rtb-abcdef12'},
+  productSubnetReadback:{SubnetId:p.network.privateSubnetId,VpcId:'vpc-0ac26cfac7ed972be',RouteTableId:'rtb-abcdef12'},
   issuerRenewal:renewal(t)};
  const receipt=inspectTemporalProductJoin(input);
  assert.equal(receipt.status,'HOLD');assert.equal(receipt.frontendAddress,'frontend.temporal.meri.internal:7233');
+ assert.equal(receipt.productVpcId,'vpc-0ac26cfac7ed972be');assert.equal(receipt.temporalVpcId,receipt.productVpcId);
+ assert(receipt.pending.includes('same-vpc-route-and-sg-readback'));
+ assert(!receipt.pending.includes('cross-vpc-route-and-sg-readback'));
  for(const mutate of [
   x=>{x.productBinding.network.workerSecurityGroupId='sg-99999999';},
-  x=>{x.productSubnetReadback.VpcId=x.temporalBinding.vpcId;},
+  x=>{x.productSubnetReadback.VpcId='vpc-abcdef12';},
+  x=>{x.productBinding.clusterArn=`arn:aws:ecs:${region}:${account}:cluster/meri-product`;},
+  x=>{x.productSubnetReadback.SubnetId='subnet-deadbeef';},
+  x=>{x.productSubnetReadback.RouteTableId='';},
   x=>{x.runtimeProjection.control.audience='other';},
   x=>{x.runtimeProjection.temporalWorker.tlsCaSha256='f'.repeat(64);},
   x=>{x.issuerRenewal.issuerServiceTaskRoleArn=x.productBinding.controlTaskRoleArn;},

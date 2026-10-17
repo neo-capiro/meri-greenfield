@@ -46,8 +46,33 @@ function poststart(value,b){
     b.materialDelivery.control.expected.sha256ByPath[p.controlCaFile]!==p.controlCaSha256)fail();
  return p;
 }
+/** Held filesystem ownership only. The issuer identity, public-key contents,
+ * task-bound certificate and decoded runtime config still require independent
+ * post-placement qualification. A descriptor never proves that authority. */
+function tokenWriters(value,b){
+ if(value===undefined)return null;
+ const writers=record(value,['control','temporalWorker']);
+ const dynamicRoot='/run/meri-temporal',obsoleteStatic=new Set(['/run/meri/temporal-token.json',
+  '/run/meri/issuer-client.crt','/run/meri/issuer-client.key','/run/meri/issuer-client-cert.pem','/run/meri/issuer-client-key.pem']);
+ for(const [role,value] of Object.entries(writers)){
+  const writer=record(value,['status','initialTokenState','tokenFile','publicKey','tls','bootstrap','sha256ByPath']),
+   publicKey=record(writer.publicKey,['manifestFile']),tls=record(writer.tls,['issuerCaFile']),
+   bootstrap=record(writer.bootstrap,['clientCaFile','identityDirectory','clientKeyFile','clientCertFile','initialIdentityState']),
+   paths=[publicKey.manifestFile,tls.issuerCaFile,bootstrap.clientCaFile],
+   expected=b.materialDelivery[role].expected.sha256ByPath;
+  if(writer.status!=='HOLD'||writer.initialTokenState!=='absent'||writer.tokenFile!=='/run/meri-temporal/token.json'||
+     bootstrap.initialIdentityState!=='absent'||bootstrap.identityDirectory!=='/run/meri-temporal/identity'||
+     bootstrap.clientKeyFile!=='/run/meri-temporal/identity/client-key.pem'||bootstrap.clientCertFile!=='/run/meri-temporal/identity/client-cert.pem'||
+     paths.some(path=>typeof path!=='string'||!/^\/run\/meri\/[A-Za-z0-9._-]{1,128}$/u.test(path)||
+      ['/run/meri/.','/run/meri/..','/run/meri/control.json','/run/meri/worker.json'].includes(path)||obsoleteStatic.has(path))||
+     new Set(paths).size!==3||Object.keys(expected).some(path=>path===dynamicRoot||path.startsWith(dynamicRoot+'/')||obsoleteStatic.has(path)))fail();
+  const pins=record(writer.sha256ByPath,paths);
+  if(paths.some(path=>!hex64.test(pins[path])||pins[path]!==expected[path]))fail();
+ }
+ return writers;
+}
 function validate(value){
- const b=record(value,['account','region','enabled','materialDelivery','runnerPoststart','clusterArn','imageUri','logGroupName','executionRoleArn','controlTaskRoleArn','runtimeUser','network','sizing','runnerSha256'],['controlTargetGroupArn','controlPrivateTargetGroupArn','sourceCommit']);
+ const b=record(value,['account','region','enabled','materialDelivery','runnerPoststart','clusterArn','imageUri','logGroupName','executionRoleArn','controlTaskRoleArn','runtimeUser','network','sizing','runnerSha256'],['controlTargetGroupArn','controlPrivateTargetGroupArn','sourceCommit','temporalTokenWriters']);
  if(b.account!==ACCOUNT||b.region!==REGION||b.enabled!==false||
     !/^arn:aws:ecs:us-east-1:967807252336:cluster\/[A-Za-z0-9_-]{1,255}$/u.test(b.clusterArn)||
     !new RegExp(`^${ACCOUNT}\\.dkr\\.ecr\\.${REGION}\\.amazonaws\\.com\\/[a-z0-9._/-]+@sha256:[a-f0-9]{64}$`).test(b.imageUri)||
@@ -70,6 +95,7 @@ function validate(value){
  for(const value of Object.values(s))sized(value);
  material(b.materialDelivery,b);
  poststart(b.runnerPoststart,b);
+ tokenWriters(b.temporalTokenWriters,b);
  return b;
 }
 
@@ -78,6 +104,7 @@ function health(port){return {command:['CMD','node','-e',`fetch('http://127.0.0.
 function task(stack,b,role,port){
  const name=role==='temporalWorker'?'temporal-worker':role;
  const delivery=role==='runner'?null:material(b.materialDelivery,b)[role];
+ const tokenWriter=role==='runner'?null:b.temporalTokenWriters?.[role];
  const portMappings=role==='control'?[{containerPort:8080,protocol:'tcp'},{containerPort:8082,protocol:'tcp'}]:[{containerPort:port,protocol:'tcp'}];
  const c={name:role==='runner'?'worker':name,image:b.imageUri,essential:true,user:b.runtimeUser,privileged:false,readonlyRootFilesystem:true,stopTimeout:60,
   entryPoint:['node',role==='runner'?'apps/runtime/runner-poststart-cli.mjs':'apps/runtime/cli.mjs'],command:command[role],
@@ -87,7 +114,8 @@ function task(stack,b,role,port){
    {name:'MERI_POSTSTART_CA_SHA256',value:b.runnerPoststart.controlCaSha256}]:[{name:'MERI_PRODUCT_PREVIEW_REQUIRED',value:'1'}],
   portMappings,linuxParameters:{capabilities:{drop:['ALL']}},
   mountPoints:[{sourceVolume:'workspace',containerPath:'/workspace',readOnly:false},{sourceVolume:'tmp',containerPath:'/tmp',readOnly:false},
-   ...(delivery?[{sourceVolume:'material',containerPath:'/run/meri',readOnly:true}]:role==='runner'?[{sourceVolume:'material',containerPath:'/run/meri',readOnly:false}]:[])],
+   ...(delivery?[{sourceVolume:'material',containerPath:'/run/meri',readOnly:true}]:role==='runner'?[{sourceVolume:'material',containerPath:'/run/meri',readOnly:false}]:[]),
+   ...(tokenWriter?[{sourceVolume:'temporal-token',containerPath:'/run/meri-temporal',readOnly:false}]:[])],
   ...(delivery?{dependsOn:[{containerName:'material-init',condition:'SUCCESS'}]}:{}),
   logConfiguration:{logDriver:'awslogs',options:{'awslogs-group':b.logGroupName,'awslogs-region':REGION,'awslogs-stream-prefix':`product-preview-${name}`,'mode':'blocking'}},
   ...(role==='runner'?{}:{healthCheck:health(port)})};
@@ -102,7 +130,7 @@ function task(stack,b,role,port){
   cpu:String(size.cpu),memory:String(size.memoryMiB),ephemeralStorage:{sizeInGiB:size.ephemeralStorageGiB},
   runtimePlatform:{cpuArchitecture:'X86_64',operatingSystemFamily:'LINUX'},executionRoleArn:b.executionRoleArn,
   ...(role==='control'?{taskRoleArn:b.controlTaskRoleArn}:{}),
-  volumes:[{name:'workspace'},{name:'tmp'},...(delivery||role==='runner'?[{name:'material'}]:[])],containerDefinitions:[...(init?[init]:[]),c]});
+  volumes:[{name:'workspace'},{name:'tmp'},...(delivery||role==='runner'?[{name:'material'}]:[]),...(tokenWriter?[{name:'temporal-token'}]:[])],containerDefinitions:[...(init?[init]:[]),c]});
 }
 function service(stack,b,role,definition,securityGroupId){
  const name=role==='temporalWorker'?'temporal-worker':role;

@@ -10,6 +10,9 @@
  */
 import {randomBytes,timingSafeEqual} from 'node:crypto';
 import {isDeepStrictEqual} from 'node:util';
+import {canonicalSha256,validateShape} from '../../../packages/contracts/validate.mjs';
+import {data,own} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {parseAdmittedGrantSet} from '../../gateway/budget/admitted-run-binding.mjs';
 import {BudgetCommitUncertain} from '../../gateway/budget/postgres-budget-store.mjs';
 import {createProductProxyOwnerComposition} from './product-owner-composition.mjs';
 import {captureCallRequest,captureCompleteRequest,decodeCompleteCaptureFrame,
@@ -34,6 +37,15 @@ const bytes=value=>{const result=Buffer.from(JSON.stringify(value));return raw(r
 const equalDigest=(a,b)=>timingSafeEqual(Buffer.from(digest(a),'hex'),Buffer.from(digest(b),'hex'));
 const serviceGates=new WeakSet();
 const poolGates=new WeakMap(),factsGates=new WeakMap();
+const admissionReads=new WeakMap();
+const channelPeers=new WeakMap();
+
+function bindServiceGate(serviceGate,persistedFacts,pool){
+ if(!serviceGates.has(serviceGate)||!serviceGate.available||
+    (poolGates.has(pool)&&poolGates.get(pool)!==serviceGate)||
+    (factsGates.has(persistedFacts)&&factsGates.get(persistedFacts)!==serviceGate))deny();
+ poolGates.set(pool,serviceGate);factsGates.set(persistedFacts,serviceGate);
+}
 
 /** Share ONE gate across all sessions of a service revision. A timed out
  * database/capture promise may still finish; only process retirement or an
@@ -66,6 +78,18 @@ function principal(policy,peer){
     !equalDigest(peer.clientCertSha256,policy.clientCertSha256)||
     !equalDigest(peer.issuerSha256,policy.issuerSha256))deny();
  return slot(peer.connectionId);
+}
+
+function channelPeer(serviceGate,policy,peer,carrier){
+ if(!['operation','capture'].includes(carrier))deny();
+ const id=principal(policy,peer),key=JSON.stringify([policy.ownerTaskArn,policy.proxyTaskArn]);
+ if(!channelPeers.has(serviceGate))channelPeers.set(serviceGate,new Map());
+ const policies=channelPeers.get(serviceGate),pin=canonicalSha256(policy);
+ if(!policies.has(key))policies.set(key,{pin,roles:new Map()});
+ const state=policies.get(key);
+ if(state.pin!==pin||state.roles.has(id)&&state.roles.get(id)!==carrier)deny();
+ if(!state.roles.has(id)&&state.roles.size>=4096){serviceGate.poison();deny();}
+ state.roles.set(id,carrier);return id;
 }
 
 function policyCheck(value){
@@ -107,10 +131,7 @@ export function createProductOwnerChannel({clientPolicy,persistedFacts,ownerPort
     typeof ownerPorts.checkCurrentConversation!=='function'||
     typeof now!=='function'||
     !Number.isSafeInteger(maxExchangeMs)||maxExchangeMs<1||maxExchangeMs>30000)deny();
- if((poolGates.has(ownerPorts.pool)&&poolGates.get(ownerPorts.pool)!==serviceGate)||
-    (factsGates.has(persistedFacts)&&factsGates.get(persistedFacts)!==serviceGate))deny();
- poolGates.set(ownerPorts.pool,serviceGate);
- factsGates.set(persistedFacts,serviceGate);
+ bindServiceGate(serviceGate,persistedFacts,ownerPorts.pool);
  let state='NEW',id=null,requestId=null,binding=null,deadlineMs=null,grantId=null;
  let operationConnection=null,captureConnection=null,owner=null;
  let challenge=null,challengeDelivered=false,pollWaiter=null,replyWaiter=null,requestKind=null;
@@ -123,7 +144,7 @@ export function createProductOwnerChannel({clientPolicy,persistedFacts,ownerPort
   return Math.min(maxExchangeMs,deadlineMs-at);
  }
  function checkPeer(peer,channel){
-  const connection=principal(policy,peer);
+  const connection=channelPeer(serviceGate,policy,peer,channel);
   if(channel==='operation'){
    if(operationConnection===null)operationConnection=connection;
    if(connection!==operationConnection||connection===captureConnection)deny();
@@ -314,4 +335,90 @@ export function createProductOwnerChannel({clientPolicy,persistedFacts,ownerPort
   },
  });
 
+}
+
+/** Read-only frame on OWNER_PATHS.operation, before or between one-send exchanges.
+ * The future mount supplies freshly authenticated TLS/task evidence, exactly as
+ * for createProductOwnerChannel. No listener or transport is supplied here.
+ */
+export function createProductOwnerAdmissionChannel({clientPolicy,persistedFacts,ownerPorts,
+ serviceGate,now,maxExchangeMs=3000}){
+ const policy=policyCheck(clientPolicy);
+ if(typeof persistedFacts?.resolve!=='function'||persistedFacts.available!==true||
+    typeof ownerPorts?.pool?.connect!=='function'||typeof ownerPorts.checkCurrentConversation!=='function'||
+    typeof now!=='function'||!Number.isSafeInteger(maxExchangeMs)||maxExchangeMs<1||maxExchangeMs>30000)deny();
+ bindServiceGate(serviceGate,persistedFacts,ownerPorts.pool);
+ if(!admissionReads.has(serviceGate))admissionReads.set(serviceGate,new Set());
+ const consumed=admissionReads.get(serviceGate);
+ const connections={operation:null,capture:null};
+ const bindingTuple=b=>['tenantId','actorId','conversationId','runId','attemptId','workerId','writerFence'].map(k=>b[k]);
+ function source(value,capabilitySha256){
+  const f=data(own(value,['binding','allocationJson','grantFactsJsons','modelGrantId','selectedClientId','original','resource','requestSha256','expiresAtMs']));
+  validateShape('RunBinding',f.binding);digest(f.requestSha256);
+  if(f.selectedClientId!==policy.selectedClientId||!UUID.test(f.modelGrantId)||
+     !Array.isArray(f.grantFactsJsons)||f.grantFactsJsons.length<1||f.grantFactsJsons.length>16)deny();
+  const selected=parseAdmittedGrantSet(f).facts
+   .filter(v=>v.grantId===f.modelGrantId);
+  if(selected.length!==1)deny();
+  const grant=own(selected[0],['grantId','binding','qualificationBinding','capabilitySha256','allocationSha256']);
+  const q=own(grant.qualificationBinding,['runId','attempt','workerArn','fence','policyRevision']);
+  digest(grant.allocationSha256);digest(q.policyRevision);
+  if(!equalDigest(grant.capabilitySha256,capabilitySha256)||!isDeepStrictEqual(grant.binding,f.binding)||
+     q.runId!==f.binding.runId||q.fence!==f.binding.writerFence||!Number.isSafeInteger(q.attempt)||q.attempt<1)deny();
+  const o=own(f.original,['binding','executionKey','executionId','planSha256','expiresAtMs','versions']);
+  validateShape('RuntimeVersions',o.versions);digest(o.planSha256);
+  const r=own(f.resource,['taskArn','createdAtMs','clusterArn','taskDefinitionArn','containerName']);
+  if(!isDeepStrictEqual(o.binding,f.binding)||o.executionKey!==canonicalSha256(f.binding)||o.executionId!==o.executionKey||
+     !Number.isSafeInteger(o.expiresAtMs)||!Number.isSafeInteger(f.expiresAtMs)||f.expiresAtMs>o.expiresAtMs||
+     r.taskArn!==q.workerArn||typeof r.clusterArn!=='string'||typeof r.taskDefinitionArn!=='string'||
+     typeof r.containerName!=='string'||!SLOT.test(r.containerName)||!Number.isSafeInteger(r.createdAtMs)||r.createdAtMs<1||r.createdAtMs>=o.expiresAtMs)deny();
+  return {facts:f,tuple:[bindingTuple(f.binding),f.modelGrantId,capabilitySha256,
+   [q.runId,q.attempt,q.workerArn,q.fence,q.policyRevision],
+   [o.executionKey,o.executionId,o.planSha256,o.expiresAtMs,o.versions.imageDigest],
+   [r.taskArn,r.createdAtMs,r.clusterArn,r.taskDefinitionArn,r.containerName],f.requestSha256,f.selectedClientId]};
+ }
+ function current(value,facts,started,at){
+  const c=data(own(value,['identitySha256','binding','scopes','selectedClientId','contextRevision','checkedAtMs','expiresAtMs']));
+  digest(c.identitySha256);digest(c.contextRevision);
+  const grant=facts.grantFactsJsons.map(v=>JSON.parse(v)).find(v=>v.grantId===facts.modelGrantId);
+  const scopes=[{kind:'client',tenantId:facts.binding.tenantId,resourceId:policy.selectedClientId,policyRevision:grant.qualificationBinding.policyRevision}];
+  if(!isDeepStrictEqual(c.binding,facts.binding)||!isDeepStrictEqual(c.scopes,scopes)||c.selectedClientId!==policy.selectedClientId||
+     !Number.isSafeInteger(c.checkedAtMs)||c.checkedAtMs<started||c.checkedAtMs>at||
+     !Number.isSafeInteger(c.expiresAtMs)||c.expiresAtMs<=at)deny();
+  return {value:c,tuple:[c.identitySha256,bindingTuple(c.binding),
+   c.scopes.map(s=>[s.kind,s.tenantId,s.resourceId,s.policyRevision]),c.selectedClientId,c.contextRevision,c.checkedAtMs,c.expiresAtMs]};
+ }
+ return Object.freeze({get available(){return serviceGate.available&&persistedFacts.available===true;},async read(body,peer,carrier='operation'){
+  if(!serviceGate.available||persistedFacts.available!==true)deny();
+  if(!Buffer.isBuffer(body)||body.length>16384)deny();
+  // Carrier is supplied only by the future mount's known physical TLS
+  // connection/session role, never a body, header or query selector.
+  const connection=channelPeer(serviceGate,policy,peer,carrier),other=carrier==='operation'?'capture':'operation';
+  if(connections[carrier]!==null&&connections[carrier]!==connection||connections[other]===connection)deny();
+  connections[carrier]=connection;
+  const frame=tuple(parseOwnerWire(raw(body)),5);
+  if(frame[0]!=='meri.proxy.admission-read/1')deny();
+  const readId=slot(frame[1]),capabilitySha256=digest(frame[2]),expected=frame[3],deadline=frame[4],started=now();
+  if(expected!==null)digest(expected);
+  if(!Number.isSafeInteger(started)||started<0||!Number.isSafeInteger(deadline)||deadline<=started||deadline-started>900000||consumed.has(readId))deny();
+  if(consumed.size>=4096){serviceGate.poison();deny();}consumed.add(readId);
+  const cutoff=Math.min(deadline,started+maxExchangeMs),abort=new AbortController(),finish=serviceGate.begin();
+  let settled=false,timer;
+  const check=()=>{const at=now();if(!serviceGate.available||persistedFacts.available!==true||!Number.isSafeInteger(at)||at<started||at>=cutoff)deny();return at;};
+  const work=Promise.resolve().then(async()=>{
+   check();const first=source(await persistedFacts.resolve({capabilitySha256,deadlineMs:cutoff,signal:abort.signal}),capabilitySha256);check();
+   const sourceSha256=canonicalSha256(first.tuple);if(expected!==null&&expected!==sourceSha256)deny();
+   const firstCurrent=current(await ownerPorts.checkCurrentConversation({binding:first.facts.binding,deadlineMs:cutoff,signal:abort.signal}),first.facts,started,check());
+   const last=source(await persistedFacts.resolve({capabilitySha256,deadlineMs:cutoff,signal:abort.signal}),capabilitySha256);check();
+   if(canonicalSha256(last.tuple)!==sourceSha256)deny();
+   const lastCurrent=current(await ownerPorts.checkCurrentConversation({binding:last.facts.binding,deadlineMs:cutoff,signal:abort.signal}),last.facts,started,check());
+   const expiresAtMs=Math.min(deadline,first.facts.expiresAtMs,last.facts.expiresAtMs,firstCurrent.value.expiresAtMs,lastCurrent.value.expiresAtMs);
+   const at=check();if(expiresAtMs<=at)deny();
+   return bytes(['meri.proxy.admission/1',readId,capabilitySha256,sourceSha256,last.tuple,lastCurrent.tuple,at,expiresAtMs]);
+  });
+  work.then(()=>{settled=true;finish();},()=>{settled=true;finish();});
+  try{return await Promise.race([work,new Promise((_,reject)=>{timer=setTimeout(()=>{
+   if(!settled){serviceGate.poison();abort.abort();}reject(Error('PRODUCT_OWNER_ADMISSION_DEADLINE'));
+  },Math.max(1,cutoff-now()));})]);}finally{clearTimeout(timer);}
+ }});
 }

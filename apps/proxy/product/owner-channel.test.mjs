@@ -3,7 +3,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {productFixture,NOW} from '../../gateway/budget/product-scripted-fixture.mjs';
-import {createProductOwnerChannel,createProductOwnerServiceGate} from './owner-channel.mjs';
+import {createProductOwnerChannel,createProductOwnerServiceGate,createProductOwnerAdmissionChannel} from './owner-channel.mjs';
+import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
+import {versions} from '../../control/conversations/test/store-fixture.mjs';
 
 const sha=value=>createHash('sha256').update(value).digest('hex');
 const wire=value=>Buffer.from(JSON.stringify(value));
@@ -65,6 +67,104 @@ function fixture(){
   reservation,sql:()=>sql,clientPolicy,persistedFacts,ownerPorts,serviceGate,
   ownerTaskArn,proxyTaskArn,workerTaskArn:selected.qualificationBinding.workerArn};
 }
+
+function admissionFixture(){
+ const f=fixture(),originalExpiry=NOW+60000;
+ f.facts.original={binding:f.facts.binding,executionKey:canonicalSha256(f.facts.binding),
+  executionId:canonicalSha256(f.facts.binding),planSha256:'d'.repeat(64),
+  expiresAtMs:originalExpiry,versions};
+ f.facts.resource={taskArn:f.selected.qualificationBinding.workerArn,createdAtMs:NOW-1000,
+  clusterArn:'arn:aws:ecs:us-east-1:967807252336:cluster/Synthetic',
+  taskDefinitionArn:'arn:aws:ecs:us-east-1:967807252336:task-definition/Synthetic:1',containerName:'worker'};
+ let coreReads=0,at=NOW;
+ const current=f.ownerPorts.checkCurrentConversation;
+ f.ownerPorts.checkCurrentConversation=async value=>{coreReads++;return current(value);};
+ const channel=createProductOwnerAdmissionChannel({...f,now:()=>at});
+ return {...f,channel,coreReads:()=>coreReads,setNow:value=>{at=value;},
+  read:(readId='admission_A',expected=null)=>wire(['meri.proxy.admission-read/1',readId,sha(credential),expected,NOW+5000])};
+}
+
+test('read-only admission joins two fresh source and Core reads without budget mutation',async()=>{
+ const f=admissionFixture(),answer=JSON.parse(await f.channel.read(f.read(),f.operationPeer));
+ assert.equal(answer[0],'meri.proxy.admission/1');assert.equal(answer[1],'admission_A');
+ assert.equal(answer[3],canonicalSha256(answer[4]));assert.equal(answer[4][1],f.selected.grantId);
+ assert.equal(answer[4][4][3],NOW+60000);assert.equal(answer[7],NOW+5000);
+ assert.equal(f.lookedUp.length,2);assert.equal(f.coreReads(),2);assert.equal(f.sql(),0);
+ assert.equal(JSON.stringify(answer).includes(credential),false);
+ assert.equal(JSON.stringify(answer).includes('allocationJson'),false);
+ await assert.rejects(f.channel.read(f.read(),f.operationPeer));
+ const second=JSON.parse(await f.channel.read(f.read('admission_B',answer[3]),f.operationPeer));
+ assert.equal(second[3],answer[3]);
+});
+
+test('effective lease changes leave immutable source hash stable and never extend original cap',async()=>{
+ const f=admissionFixture();let n=0;
+ f.persistedFacts.resolve=async()=>({...f.facts,expiresAtMs:NOW+(++n%2?2000:4000)});
+ const a=JSON.parse(await f.channel.read(f.read(),f.operationPeer));
+ const b=JSON.parse(await f.channel.read(f.read('fresh',a[3]),f.operationPeer));
+ assert.equal(a[3],b[3]);assert.equal(a[7],NOW+2000);assert.equal(b[7],NOW+2000);
+});
+
+test('fresh Core receipt hashes may renew without changing original source identity',async()=>{
+ const f=admissionFixture(),read=f.ownerPorts.checkCurrentConversation;let n=0;
+ f.ownerPorts.checkCurrentConversation=async v=>({...await read(v),identitySha256:String(++n).repeat(64),contextRevision:String(n).repeat(64)});
+ const result=JSON.parse(await f.channel.read(f.read(),f.operationPeer));
+ assert.equal(result[5][0],'2'.repeat(64));
+ assert.equal(canonicalSha256(['ténant😀',1]),'75dc0f8791835c10492de8c87c9306f1a0a247c98852230fce029bd6edff587c');
+});
+
+test('admission carriers share distinct physical connection roles with budget channel instances',async()=>{
+ const f=admissionFixture();
+ await f.channel.read(f.read('operation-read'),f.operationPeer);
+ await f.channel.read(f.read('capture-read'),f.capturePeer,'capture');
+ await assert.rejects(f.channel.read(f.read('same-id'),f.operationPeer,'capture'));
+ await assert.rejects(f.channel.read(f.read('swap-id'),f.capturePeer,'operation'));
+ const budget=createProductOwnerChannel({...f,now:()=>NOW});
+ await assert.rejects(budget.open(f.open,f.capturePeer));
+ const fresh=createProductOwnerChannel({...f,now:()=>NOW});
+ await fresh.open(f.open,f.operationPeer);
+ const session='unused';
+ await assert.rejects(fresh.poll(wire(['meri.proxy.capture-poll/1',session,id,'call']),f.operationPeer));
+ const second=createProductOwnerAdmissionChannel({...f,now:()=>NOW});
+ await assert.rejects(second.read(f.read('instance-swap'),f.operationPeer,'capture'));
+ await assert.rejects(second.read(f.read('invalid-carrier'),f.capturePeer,'header-selected'));
+ await second.read(f.read('next-pair-operation'),{...f.operationPeer,connectionId:'operation-B'});
+ await second.read(f.read('next-pair-capture'),{...f.capturePeer,connectionId:'capture-B'},'capture');
+ const next=createProductOwnerChannel({...f,now:()=>NOW});
+ await next.open(f.open,{...f.operationPeer,connectionId:'operation-B'});
+});
+
+test('read IDs remain single-use across admission carriers',async()=>{
+ const f=admissionFixture();
+ await f.channel.read(f.read(),f.operationPeer);
+ await assert.rejects(f.channel.read(f.read(),f.capturePeer,'capture'));
+ assert.equal(f.lookedUp.length,2);
+});
+
+test('foreign source, archived Core, bad peer and stale/currentness contradictions refuse reads',async()=>{
+ for(const kind of ['source','archive','peer','stale','client','original']){
+  const f=admissionFixture();let reads=0;
+  if(kind==='source')f.persistedFacts.resolve=async()=>{const v=structuredClone(f.facts);if(++reads===2)v.requestSha256='f'.repeat(64);return v;};
+  if(kind==='archive')f.ownerPorts.checkCurrentConversation=async()=>{throw Error('archived');};
+  if(kind==='stale'||kind==='client'){
+   const read=f.ownerPorts.checkCurrentConversation;
+   f.ownerPorts.checkCurrentConversation=async v=>({...await read(v),...(kind==='stale'?{checkedAtMs:NOW-1}:{selectedClientId:'99999999-9999-4999-8999-999999999999'})});
+  }
+  if(kind==='original')f.facts.original.executionId='e'.repeat(64);
+  await assert.rejects(f.channel.read(f.read(),kind==='peer'?{...f.operationPeer,tlsVersion:'TLSv1.2'}:f.operationPeer),undefined,kind);
+  assert.equal(f.sql(),0);
+ }
+});
+
+test('hung owner read poisons the shared service before and after a late completion',async()=>{
+ const f=admissionFixture();let release;
+ f.persistedFacts.resolve=()=>new Promise(resolve=>{release=resolve;});
+ const channel=createProductOwnerAdmissionChannel({...f,now:()=>NOW,maxExchangeMs:10});
+ await assert.rejects(channel.read(f.read(),f.operationPeer),/DEADLINE/);
+ assert.equal(f.serviceGate.available,false);release(f.facts);await new Promise(resolve=>setTimeout(resolve,0));
+ await assert.rejects(channel.read(f.read('later'),f.operationPeer));
+ assert.throws(()=>createProductOwnerAdmissionChannel({...f,now:()=>NOW}),/PRODUCT_OWNER_CHANNEL_DENIED/);
+});
 
 test('open selects current persisted facts by observed bearer digest and reveals no facts',async()=>{
  const f=fixture(),channel=f.channel();
