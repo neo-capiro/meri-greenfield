@@ -1,0 +1,151 @@
+{
+  "schema": "meri.product-feature-handoff.source-pins.v1",
+  "asOf": "2026-10-17",
+  "publicationMethod": "Connected GitHub API; exact reviewed local tree equality verified. Local and remote commit metadata differ.",
+  "primary": {
+    "branch": "handoff/meri-portable-fable-20261017",
+    "url": "https://github.com/neo-capiro/meri-greenfield/blob/handoff/meri-portable-fable-20261017/docs/handover/20261017/fable-shipping/FABLE-SHIPPING-HANDOFF.md",
+    "status": "publication pending when authored; check primary immutable pin at final coordinator readback",
+    "historicalHead": "88620c95ce19d6ec9dd6b34b3cf8b4160bcd3ed5",
+    "plannedBase": "6fd48c9c3d49962a111e7f801f9f71ad06a7f1c9"
+  },
+  "prs": [
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "pr": 100,
+      "branch": "codex/meri-product-features-task6-20261016",
+      "head": "78fbd3ae813fcf3fe286969e76102353c3a2eed2",
+      "baseBranch": "codex/meri-product-preview-manifests-20261016",
+      "reviewedBase": "caa7810ff19c09c8f7ea1c2524c025f36f99ccd6",
+      "baseAtReadback": "caa7810ff19c09c8f7ea1c2524c025f36f99ccd6",
+      "tree": "9dc1b7a7040dc24cb289cea531c527ad957077fe",
+      "localReviewed": "de17699d73c65e32eb718192c77c1e9cc97dae75",
+      "purpose": "governed task-update intents and opt-in API",
+      "url": "https://github.com/neo-capiro/meri-greenfield/pull/100",
+      "status": "open draft; not merged"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "pr": 102,
+      "branch": "codex/meri-task-update-integration-task6-20261016",
+      "head": "cc43d0004be59f315658207405ff1aea126adad5",
+      "baseBranch": "codex/meri-product-features-task6-20261016",
+      "reviewedBase": "78fbd3ae813fcf3fe286969e76102353c3a2eed2",
+      "baseAtReadback": "78fbd3ae813fcf3fe286969e76102353c3a2eed2",
+      "tree": "07c333a2e0bd1374386813ccc44fafb2c3d577ec",
+      "localReviewed": "7c29d0a841a9491320703ac50ed2d651c9958903",
+      "purpose": "task runtime mount, native opaque-session adapter and additive public receiver",
+      "url": "https://github.com/neo-capiro/meri-greenfield/pull/102",
+      "status": "open draft; not merged"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "pr": 108,
+      "branch": "codex/meri-user-preferences-task6-20261017",
+      "head": "9fe0b0857f0284cf460effab34b17fda21c5621d",
+      "baseBranch": "codex/meri-product-preview-manifests-20261016",
+      "reviewedBase": "caa7810ff19c09c8f7ea1c2524c025f36f99ccd6",
+      "baseAtReadback": "caa7810ff19c09c8f7ea1c2524c025f36f99ccd6",
+      "tree": "5c135fb138aef4128898e756bdbf94af1c0254a9",
+      "localReviewed": "2185e70792f6b33d500a9d76fb45d62593b9bc2c",
+      "purpose": "native user-only preferences API, atomic CAS/audit and additive public receiver",
+      "url": "https://github.com/neo-capiro/meri-greenfield/pull/108",
+      "status": "open draft; not merged"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "pr": 111,
+      "branch": "codex/meri-user-preferences-runtime-task6-20261017",
+      "head": "10da73795ab5789cb5724d0db45db50bdecb5da3",
+      "baseBranch": "codex/meri-user-preferences-task6-20261017",
+      "reviewedBase": "9fe0b0857f0284cf460effab34b17fda21c5621d",
+      "baseAtReadback": "9fe0b0857f0284cf460effab34b17fda21c5621d",
+      "tree": "9f6df335b70b3c91a6ec1c9e71fd4a1dc0b9a1af",
+      "localReviewed": "69a61c36b1b98e5bc02591f2b4a4c32f14b828cf",
+      "purpose": "actual preferences runtime startup/readiness, exact reserved SQL and guarded PG suite",
+      "url": "https://github.com/neo-capiro/meri-greenfield/pull/111",
+      "status": "open draft; not merged"
+    },
+    {
+      "repository": "neo-capiro/capiro-frontend",
+      "pr": 61,
+      "branch": "codex/meri-task-update-desktop-task6-20261016",
+      "head": "bd9e0d03c54ef4fbb57010c3b97cfb3d77bdf2b9",
+      "baseBranch": "feat/meri-first-chat-bootstrap-preview-20261016",
+      "reviewedBase": "ba95f63b4ec98078547958e32833e791be77a656",
+      "baseAtReadback": "e0b47a34d00b8c181420188ed39a1d849e25ec0a",
+      "tree": "37ab9023296ee8d8f548c072223d9617eea2b3b8",
+      "localReviewed": "e88be229bb5521d9d5968a235cf8cd292f9b8697",
+      "purpose": "desktop explicit task prepare/approval-status/execute workflow",
+      "url": "https://github.com/neo-capiro/capiro-frontend/pull/61",
+      "status": "open draft; not merged"
+    },
+    {
+      "repository": "neo-capiro/capiro-frontend",
+      "pr": 62,
+      "branch": "codex/meri-user-preferences-task6-20261017",
+      "head": "9e6d80843b0a46a862f7613b4ab9b08d925d7b17",
+      "baseBranch": "feat/meri-first-chat-bootstrap-preview-20261016",
+      "reviewedBase": "e0b47a34d00b8c181420188ed39a1d849e25ec0a",
+      "baseAtReadback": "aae57e924e5812f331c76557f2b7ccaddd4ba0f9",
+      "tree": "678bb9a6ac507abbd091d4fd236bd162d4cfca8b",
+      "localReviewed": "056b562694df7bbca4a45aef1221d9a3a12bf057",
+      "purpose": "native desktop preferences read/save/reconciliation",
+      "url": "https://github.com/neo-capiro/capiro-frontend/pull/62",
+      "status": "open draft; not merged"
+    },
+    {
+      "repository": "neo-capiro/capiro-frontend",
+      "pr": 63,
+      "branch": "codex/meri-user-preferences-production-task6-20261017",
+      "head": "1c0c059466963a3a5b4757d05f44701eb2007347",
+      "baseBranch": "codex/meri-user-preferences-task6-20261017",
+      "reviewedBase": "9e6d80843b0a46a862f7613b4ab9b08d925d7b17",
+      "baseAtReadback": "9e6d80843b0a46a862f7613b4ab9b08d925d7b17",
+      "tree": "d29530ed95672c7e600577d42cd22bbbfc16aed9",
+      "localReviewed": "9a1fb2ed256dda520b9ee36c4da6ac588e5c308e",
+      "purpose": "complete vendor/package verification and passing Webpack source-build evidence",
+      "url": "https://github.com/neo-capiro/capiro-frontend/pull/63",
+      "status": "open draft; not merged"
+    }
+  ],
+  "migration": {
+    "path": "apps/control/settings/migrations/0001_settings.sql",
+    "ownerSource": "cf639d4707df0060524218c65d941834ed7ea2e3",
+    "blob": "048a834c4335f97aa5f8691afc3c310188ec4388",
+    "allocationSource": "082eb9f24b61c0813044fcf3a1b9a4cb41999a3c",
+    "allocationPath": "docs/coordination/tasks/CODEX-PACKAGE4-CENTRAL-MIGRATION-ALLOCATIONS-20261016.md",
+    "status": "existing reserved source adopted byte-exact; applied only to cleaned task-owned disposable cluster, no application database"
+  },
+  "postgres": {
+    "executedSource": "69a61c36b1b98e5bc02591f2b4a4c32f14b828cf",
+    "executedTree": "9f6df335b70b3c91a6ec1c9e71fd4a1dc0b9a1af",
+    "publishedEquivalent": "10da73795ab5789cb5724d0db45db50bdecb5da3",
+    "target": "127.0.0.1:55436",
+    "status": "HOLD; pure guard1 passed; real PostgreSQL10 cancelled in before hook; dump/restore unrun",
+    "rerun": "DENIED before execution by automatic approval review; no retry/workaround; original window expired",
+    "cleanup": "owned postmaster stopped; data/password file removed; fixed port verified free; existing5432 untouched"
+  },
+  "readOnlyCore": {
+    "membershipSource": "06aa1bbe30f783f8bda9cff226824e907721598a",
+    "memoryInspection": "635486fd21f0fb0f6893241f47dbfef7d343d849",
+    "memoryCanonicalPublished": "5b3955b7c357f727835386b09db181125367a51f",
+    "publicMemoryDTO": "absent; proposed allocation canceled before implementation"
+  },
+  "handoffPublication": {
+    "frontend": {
+      "pr": 65,
+      "url": "https://github.com/neo-capiro/capiro-frontend/pull/65",
+      "head": "b12978025858aac65169661e3bf04f13c3ab3faa",
+      "tree": "b66ace4b2f1443d2a9ead4c352a7dd47669e3231",
+      "base": "1c0c059466963a3a5b4757d05f44701eb2007347",
+      "localReviewed": "196a985fe362ca62269b242a15dab5e3f55cbc83",
+      "status": "open draft; exact tree and parent read back"
+    }
+  },
+  "shipmentObservation": {
+    "frontendPr60Head": "8fd2c4c4556e5fed37da012293a4f1b4d2088d14",
+    "frontendPr60Base": "2a6b817fb27aa9524ab5036a5b8e1bf0955a26c8",
+    "note": "read-only observation, not a pin changed or accepted by this lane; release owner controls later advancement"
+  }
+}
