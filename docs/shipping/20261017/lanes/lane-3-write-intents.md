@@ -59,3 +59,148 @@ All paths are in meri-greenfield. "Complete" means complete as source with focus
 `apps/control/commands/approval-metadata/migrations/0001_approval_metadata.sql`: all source-only, **none applied** (applied are
 conversations 0001–0011, 0013, 0015–0017 and budget 0001–0002). The write path cannot be durable in capiro-dev until all three are
 applied under lane 1's approved change.
+
+## What this lane built (source)
+
+The missing Meri half of the path is now source with focused tests: the user's decision on a prepared proposal, its approved
+execution under the existing approval control and fresh authority, and a history read over the durable owners. **No new migration,
+contract, lockfile or shared file was needed or changed**: the decision lives with Core, the result in the existing command journal,
+the proposal in the existing intent journal.
+
+```
+model --meri_intents tool--> worker server --port--> control mount --> command preparer --> approval-metadata owner
+                                                       (journal PREPARED)                     (immutable proposal, unchanged)
+user --POST /api/conversations/intents/decide--> approval owner   (membership gate: fresh admission, recheck before release)
+   1 read the PREPARED proposal under the caller's own tenant/actor/conversation
+   2 exact ids, unexpired, client scopes still visible, approver = requiredApprover
+   3 Core approval/record (Meri never writes an ApprovalDecision)
+   4 rejected: stop.  approved: issueExecution (fresh capability, same run)
+   5 executeApproved -> executor: CURRENT decision (Core approval/decision) + fresh command.execute authority at every phase
+   6 result = meri_command_journal OUTCOME (durable)
+user --POST /api/conversations/intents/list--> preparations + Core decision + command journal -> phase per intent
+```
+
+| File | Change |
+|---|---|
+| `apps/control/intents/approval.mjs` (new) | `createIntentApprovalOwner({journal,decisions,issueExecution,commandOptionsFor,outcomes,now,limits,enabled})` returns `{decide,list}`. Every refusal before an owner call is `NOT_DISPATCHED`; a lost decision ACK is `APPROVAL_DECISION_UNKNOWN`/`UNKNOWN`; executor failures are mapped by where they happened (before the executor; inside it before its claim; `COMMAND_OUTCOME_UNKNOWN`; or after it returned, `RESULT_NOT_RELEASED`). Disabled by default. |
+| `apps/control/intents/http.mjs` (new) | Two routes on the existing membership-gated product HTTP owner (`product-access/http.mjs`): `POST /api/conversations/intents/list` and `POST /api/conversations/intents/decide` (effect route). Identity, tenant and clients come only from the gate. |
+| `apps/control/intents/native-approvals.mjs` (new) | `createNativeIntentApprovals({call})`: `record` calls native `approval/record`; `readDecision`/`getCurrent` call native `approval/decision`, so the executor's approval guard and the lifecycle's approval-wait read the same Core decision. `createCommandJournalOutcomes({journal,contextFor})`: read-only command-journal result per proposal. |
+| `apps/control/intents/compose.mjs` (new) | `composeIntentApprovals(...)`: inert production wiring (PostgreSQL intent journal store, native decisions, outcomes, HTTP app, and the `approvalStore` the executor must use) for lane 1's control startup. |
+| `apps/control/intents/postgres-journal.mjs` | `read({key})` (one delivery or null, never claims) and `list({conversation,after,limit})` (creation order, keyset cursor, at most 50) on `meri_intents.preparations`. |
+| `apps/control/intents/journal.mjs` | The store port admits the optional `read`/`list` methods (one line). |
+| `apps/control/intents/test/fixture.mjs` | Memory store `read`/`list`; `commandComposition` takes `approverActorId` and `approvalStore`; the synthetic result-release authority now expires relative to the caller's clock. It used the command fixture's `NOW`, which made `schedule-preparer.test.mjs` fail 0/7 at base. |
+| `apps/control/intents/test/approval.test.mjs` (new), `postgres-journal.test.mjs` | 10 new cases plus 2 new store cases (see Tests). |
+
+Not touched: `document-preparer.mjs` and its test (lane 6), `apps/runtime/**`, infra, material/issuer files, contracts, migrations,
+lockfiles and frontend.
+
+## Capability status after this branch
+
+| Capability | Source | Integrated | Qualified | Live |
+|---|---|---|---|---|
+| Prepare (`create_task` proposal; Word/Excel draft) | complete | no (PR held) | no | no |
+| Decide route (approve/reject, own conversation) | complete | no | no | no |
+| Approved execution under the current decision and fresh authority | complete (the existing executor, now reachable from a conversation intent) | no | no | no |
+| Durable result | complete (existing command journal) | no | no (migration unapplied) | no |
+| History of intents, decisions and results | complete (list route) | no | no | no |
+| Schedule intents | preparer only; no approval/execution path (P-INT-6) | no | no | no |
+| task.update / memory / attachment-filing intents | absent (P-INT-7) | | | |
+| Independent-reviewer approval (approver is not the conversation owner) | refused (`APPROVER_REFUSED`) by design | | | |
+| Approval after the preparing run ended, executed in a successor run | refused (`INTENT_CROSS_RUN`): the command journal binds a command to its original run | | | |
+
+## Core dependencies (dot), exact
+
+None of these exists in capiro-backend today (checked `feat/core-preview-cleanup-integration-20261017`,
+`feat/core-preview-native-gets-20261017` and `dot/app-remaining-deployment-plan-20261017`). Nothing here is stubbed as live: without
+them the routes answer `APPROVAL_OWNER_UNAVAILABLE` or `EXECUTION_OWNER_UNAVAILABLE` with `NOT_DISPATCHED`.
+
+1. **P-INT-10: `approval/record` (new native provider operation).** Input `{proposal: ApprovalProposal, decision: "approved" or
+   "rejected", approver: Identity, binding: RunBinding}`; output `{decision: ApprovalDecision, checkedAtMs, revoked: false}`. Core must:
+   - verify that the approver is the authenticated current user and an eligible approver under current policy;
+   - verify the proposal against the stored approval metadata (`meri_approval_metadata`, by `proposalId` and `commandSha256`);
+   - set `policyRevision` to the current command policy revision (the executor's guard compares it with the fresh `command.execute`
+     authority);
+   - be **idempotent per proposal**: a repeat answers the stored decision, never a second or flipped one.
+2. **`approval/decision`** (already a required provider contract, `apps/runtime/README.md:47`). Input `{proposalId, commandSha256,
+   binding}`; output `{decision: ApprovalDecision or null, checkedAtMs, revoked}`. The executor's approval guard reads it at every
+   phase; the lifecycle's approval-wait and the history route read it too.
+3. **Execution broker for conversation intents (`issueExecution`).** `({proposal, principal})` returns `{execution:
+   CommandExecutionRequest, credential, checkedAtMs, expiresAtMs}`. The `executorBinding` must be on the proposal's own
+   tenant/actor/conversation/run (a fresh attempt and fence are allowed), with a current `command.execute` capability for exactly that
+   proposal. The semantics match the action host's `issueExecution` (`apps/control/action-host/README.md`), but for the conversation
+   owner rather than an action session.
+4. **Existing:** `POST /api/clio/tools/create_task` (the Core route exists) behind `commands/source-http.mjs`, and the current-authority
+   ports the executor already requires (`verifyCapability`, `currentRun`, `authorizeBusiness`, `authorizeSources`).
+
+## Other dependencies
+
+- **Lane 1 (composition, live):**
+  - call `composeIntentApprovals` in the control startup and mount `app` on the application origin;
+  - give the command executor `intents.approvalStore`;
+  - build the per-run intent mount and the runner-to-control port for `readAvailability`/`prepare` (P-INT-9). This is lane 1's change
+    because `apps/runtime/conversation-runner.mjs` is pinned;
+  - turn on `governedIntents` per tenant;
+  - apply `intents/0001`, `commands/0001` and `approval-metadata/0001` under the approved change (all centrally allocated, none applied).
+- **dot (frontend):** the approval card and history UI against the two routes (wire shapes in `apps/control/intents/http.mjs`, local
+  proposal P-INT-11), and the frontend proxy allow-list for `/api/conversations/intents/*`. UIEvent surfacing (P-INT-8) remains an
+  option, but the card no longer needs it: the list route provides the proposals.
+- **Migrations:** none requested; this lane allocated no migration ID.
+
+## Tests
+
+Host: Windows 11, Node 24, no PostgreSQL; node_modules via junctions to `C:\dev\fable\meri-source`. One file at a time:
+`MERI_REVIEW_SOURCE_ROOT=<worktree> node --test --test-concurrency=1 <file>`. All synthetic: no PostgreSQL, Core, SDK or network.
+
+| File | Base `ce2da186` | This branch |
+|---|---|---|
+| `apps/control/intents/test/approval.test.mjs` (new) | — | 10/10 |
+| `apps/control/intents/test/postgres-journal.test.mjs` | 8/8 | 10/10 |
+| `apps/control/intents/test/mount.test.mjs` | 10/10 | 10/10 |
+| `apps/control/intents/test/result-release.test.mjs` | not run | 13/13 |
+| `apps/control/intents/test/schedule-preparer.test.mjs` | 0/7 (fixture clock) | 7/7 |
+| `apps/control/intents/test/migration-source.test.mjs` | not run | 2/2 |
+| `apps/control/intents/test/document-preparer.test.mjs` (lane 6) | 2/4 | 3/4 (the remaining failure is lane 6's and unrelated) |
+| `apps/worker/conversation/intents/test/intents.test.mjs` (uses the control fixture) | not run | 10/10 |
+
+`approval.test.mjs` covers:
+- **Approved end to end:** one Core record; the executor re-reads the current decision at every phase; one effect; the durable result
+  appears in history; a repeat replays with no second effect.
+- **Rejected:** no execution, and the decision cannot be flipped.
+- **No execution without an approved, current authority:** no decision owner, revoked decision, revoked capability, stale fence and
+  broker refusal each leave zero fetches and zero journal rows.
+- **Refusals before any owner call:** wrong ids; another actor, tenant or conversation; identity in the body; expired; another
+  approver; disabled; not prepared.
+- **Cross-run** execution is refused.
+- **UNKNOWN handling:** a lost decision ACK is UNKNOWN, then exactly one effect; an indeterminate executor is UNKNOWN and history still
+  shows the durable result.
+- **History:** paging, an unavailable decision owner, and content withheld after lost client access.
+- **HTTP:** gate, content-free errors and the UNKNOWN outcome.
+- **Composition:** inert and disabled by default; the native adapter refuses foreign or absent decisions.
+
+Reverted-guard proofs (guard removed, `approval.test.mjs` fails; restored, 10/10): cross-run guard 9/10, approver guard 9/10,
+exact proposal-id/hash guard 9/10.
+
+## Acceptance (live gate, lane 1 / dot)
+
+1. With `governedIntents` on for one tenant, ask Meri to create a task. The reply says a proposal awaits approval; no task exists.
+2. After a reload, the list route shows the proposal as `awaiting_approval`.
+3. Reject it: no task, and history shows `rejected`. Approve a second proposal: exactly one task in Capiro, and history shows
+   `completed` with the receipt.
+4. Approve again, or retry after a dropped reply: still one task.
+5. Revoke the user's client access between prepare and approve: approval is refused and no task is created.
+
+## Remaining tasks
+
+1. Core (dot): P-INT-10 `approval/record`, `approval/decision`, and the conversation-intent execution broker.
+2. Lane 1: composition and port (P-INT-9), migrations, the policy flag, then the acceptance above.
+3. dot: approval card and history UI, proxy allow-list.
+4. Later source:
+   - schedule approval path (P-INT-6);
+   - metadata owners for task.update, memory and filing (P-INT-7);
+   - independent-reviewer approval;
+   - cross-run approval (needs a command-journal binding change, so a migration and dot's review).
+
+## Status
+
+**Source complete** on the Meri side for proposal → decision → approved execution → durable result → history. Not integrated (the PR
+is held until the first shipment is live), not qualified, not deployed, not live-verified.
