@@ -1,0 +1,52 @@
+{
+  "captureKind": "process-stdio",
+  "captureIncomplete": false,
+  "executable": "C:\\Users\\Administrator\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe",
+  "nodeVersion": "v24.19.0",
+  "cwd": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-16\\task-4\\meri-resolution-next",
+  "argv": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "--test-timeout=30000",
+    "apps/runtime/native-authority/native-read-credentials/test/source-read-context.test.mjs",
+    "apps/runtime/native-authority/test/kb-asof-context.test.mjs",
+    "apps/runtime/test/kb-source-integration.test.mjs",
+    "apps/runtime/native-authority/test/funding-asof-context.test.mjs"
+  ],
+  "startedAt": "2026-10-17T04:02:20.412Z",
+  "finishedAt": "2026-10-17T04:02:31.099Z",
+  "exitCode": 1,
+  "signal": null,
+  "error": null,
+  "stdout": {
+    "path": "kb-context-runtime-initial.stdout.txt",
+    "bytes": 11837,
+    "sha256": "4c26535b58e0cd50bb82f888f6e67550eeeb73f31cdaf7e4fda26a65a2e82068"
+  },
+  "stderr": {
+    "path": "kb-context-runtime-initial.stderr.txt",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "sourceFiles": [
+    {
+      "path": "apps/runtime/native-authority/native-read-credentials/test/source-read-context.test.mjs",
+      "sha256": "f2fda3bb6c646e3ec4acc37dca8f1590cfde4da2ad028cb0603d537b9844ab18"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/kb-asof-context.test.mjs",
+      "sha256": "a9589eaa8738c841e6b55a7aa9f801a1abea3f22318c964c101201877bce37fd"
+    },
+    {
+      "path": "apps/runtime/test/kb-source-integration.test.mjs",
+      "sha256": "074ee3d21485785687e59af9b93d49b73a3439e0497a88530c17b7018eddb579"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/funding-asof-context.test.mjs",
+      "sha256": "bc66a21c532485e2c9e7c10cbfe49f8a8aa5da6f52b2d776fe6df38ed9d1828b"
+    }
+  ],
+  "scope": "Synthetic bridge/current-owner context tests and unchanged funding context regression; no live source qualification"
+}

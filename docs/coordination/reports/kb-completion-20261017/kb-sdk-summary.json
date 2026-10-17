@@ -1,0 +1,78 @@
+{
+  "frozenSources": [
+    {
+      "sha256": "46bda22685d2be656541fef3f892a8861285470c0e502c0bc5d8ae1310557d5d",
+      "path": "apps/worker/conversation/reads/families.mjs"
+    },
+    {
+      "sha256": "870f235d7d000f329498ce540872189b94020dbcd2070726ba18f59cf4034545",
+      "path": "apps/worker/conversation/reads/test/kb.test.mjs"
+    },
+    {
+      "sha256": "4e1431e841f9b1abe6f3be4891f3c24069b0c0fdef9224f73ad543217fa9a454",
+      "path": "apps/worker/conversation/reads/test/families.test.mjs"
+    },
+    {
+      "sha256": "77f727d0503107a727f42faade6594fcafd6a6775831b4beda6e6bc6bd010f44",
+      "path": "apps/worker/conversation/reads/test/source-slices.test.mjs"
+    },
+    {
+      "sha256": "f9c2c4db5137793fce4ab50f34e646a3e5fc79f7803478f72647b73da1090d82",
+      "path": "apps/worker/conversation/reads/test/funding.test.mjs"
+    },
+    {
+      "sha256": "f7ef25989c5172e1967aaf0ecfc5465f7a1b0cefdb2cfd702e19c548ea754e17",
+      "path": "apps/runtime/native-authority/test/read-family-subsets.test.mjs"
+    }
+  ],
+  "capturedAt": "2026-10-17T04:06:56.5725255Z",
+  "secondFailureClassification": "A tightened classifier expectation assumed ACCESS_DENIED before source credential acquisition. Actual source boundary projects INVALID_RESULT there, with zero HTTP and UNKNOWN. The focused changed delta pins INVALID_RESULT before credentials and ACCESS_DENIED after source; no production changes.",
+  "initialFailureClassification": [
+    "Four runtime test expectations incorrectly treated the tenant-contacts task fixture as personal. It has a real client scope, so complete semantic KB correctly becomes eligible. Existing selected-operation tests now include semantic; a separate real semantic-approved personal/no-client fixture proves UNAVAILABLE despite overclaimed inventories.",
+    "The revoked durable task safely projects INTERNAL_ERROR through MCP. Exact error projection is retained and zero source HTTP, service-secret releases, reservations and accepted receipts remain asserted."
+  ],
+  "runs": [
+    {
+      "output": "kb-sdk-initial.txt",
+      "passed": 25,
+      "metadata": "kb-sdk-initial.json",
+      "failed": 5,
+      "tests": 30
+    },
+    {
+      "note": "Filename retained with its failure; not a successful final run.",
+      "failed": 1,
+      "metadata": "kb-sdk-final.json",
+      "output": "kb-sdk-final.txt",
+      "passed": 29,
+      "tests": 30
+    },
+    {
+      "output": "kb-sdk-phase-delta.txt",
+      "passed": 1,
+      "metadata": "kb-sdk-phase-delta.json",
+      "failed": 0,
+      "tests": 1
+    }
+  ],
+  "policy": {
+    "sdkOperations": 66,
+    "canonicalOperations": [
+      "search_client_knowledge",
+      "query_knowledge_graph"
+    ],
+    "family": "client-knowledge-search",
+    "requiredClientOperations": [
+      "search_client_knowledge"
+    ],
+    "clientScope": "optional",
+    "sdkFamilies": 37
+  },
+  "schemaVersion": "meri-kb-sdk-test-evidence/1",
+  "pending": [
+    "Affected existing policy/graph/registration checks await coordinated metadata acceptance.",
+    "Root owns coherent frozen integration and immutable Core/source acceptance."
+  ],
+  "qualification": "Scripted SQL and synthetic native carrier consumption through actual MCP/CONTROL/gateway/current-task owners only. No deployed Core/provider/installation qualification.",
+  "diffCheck": "git diff --check PASS"
+}

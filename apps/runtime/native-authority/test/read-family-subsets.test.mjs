@@ -4,12 +4,15 @@ import assert from 'node:assert/strict';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 import {createNativeReadsOwner} from '../reads-owner.mjs';
 import {readsFixture} from './reads-fixture.mjs';
+import {ownerFixture} from '../native-read-credentials/test/fixture.mjs';
+import {storedCase as kbCase} from '../../../gateway/sources/client-knowledge-search/test/fixture.mjs';
+import {NATIVE_READS_SCHEMA_VERSION as schemaVersion} from '../../../../packages/contracts/runtime-0.2/reads.mjs';
 
 const ref=id=>({id,version:'0.2.0'});
-const selected=['query_economic_data','query_knowledge_graph'].map(ref);
-const excluded=['search_federal_grants','search_federal_awards','search_client_knowledge'].map(ref);
-const forged=[excluded[0],selected[0],excluded[1],excluded[2],selected[1]];
-const args={query_economic_data:{source:'census',state:'TX',limit:1},query_knowledge_graph:{depth:1}};
+const semantic=ref('search_client_knowledge'),selected=[ref('query_economic_data'),semantic,ref('query_knowledge_graph')];
+const excluded=['search_federal_grants','search_federal_awards'].map(ref);
+const forged=[excluded[0],selected[0],excluded[1],semantic,selected[2]];
+const args={query_economic_data:{source:'census',state:'TX',limit:1},search_client_knowledge:{query:'synthetic'},query_knowledge_graph:{depth:1}};
 const ids=operations=>operations.map(op=>op.id);
 const code=expected=>error=>error.message===expected;
 
@@ -32,7 +35,7 @@ async function subsetFixture(){
  return {...x,owner,subset:state,executeRequest};
 }
 
-test('runtime availability intersects forged approved/install/discovery family inventories with the two explicit operation subsets',async()=>{
+test('runtime availability intersects forged inventories with the public-data subset and current KB client requirement',async()=>{
  const x=await subsetFixture(),out=await x.owner.handle('availability',x.request,x.credential);
  assert.deepEqual(ids(x.config.operations),ids(forged));assert.deepEqual(ids(x.subset.installed),ids(forged));assert.deepEqual(ids(x.subset.discovered),ids(forged));
  assert.deepEqual(out.installation.operations,selected);assert.deepEqual(out.discovery.operations,selected);
@@ -40,7 +43,7 @@ test('runtime availability intersects forged approved/install/discovery family i
  assert.equal(x.wire.length,0);assert.equal(x.state.reservations.size,0);assert.ok(x.commands.every(sql=>!sql.includes('FOR UPDATE')));
 });
 
-test('both selected economic/graph operations execute through the actual runtime owner with exact request/delivery binding',async()=>{
+test('all selected economic/semantic/graph operations execute through the actual client runtime owner with exact request/delivery binding',async()=>{
  const x=await subsetFixture();
  for(const operation of selected){
   const request=x.executeRequest(operation),out=await x.owner.handle('execute',request,x.credential);
@@ -52,13 +55,48 @@ test('both selected economic/graph operations execute through the actual runtime
  assert.equal(x.wire.length,0);assert.equal(x.state.reservations.size,0,'borrowed synthetic gateway results do not claim source execution or settlement');
 });
 
-test('public grant/award and semantic-search siblings never reach gateway execution despite all three inventories claiming them',async()=>{
+test('public grant/award siblings never reach gateway execution despite all three inventories claiming them',async()=>{
  const x=await subsetFixture();
  for(const operation of excluded){
   const before=x.subset.snapshots;await assert.rejects(x.owner.handle('execute',x.executeRequest(operation),x.credential),code('UNAVAILABLE'));
   assert.equal(x.subset.snapshots,before+1);assert.equal(x.subset.executions.length,0);
  }
  assert.equal(x.wire.length,0);assert.equal(x.state.reservations.size,0);
+});
+
+test('semantic KB is complete but remains unavailable to the actual no-client task despite overclaimed inventories',async()=>{
+ const x=await ownerFixture(semantic.id,{scene:kbCase(semantic.id,{request:{query:'synthetic'}})}),gateway=x.mount(),executions=[];
+ const owner=createNativeReadsOwner({binding:x.binding,approvedReads:x.configuration.approvedReads,taskVerifier:x.configuration.taskVerifier,
+  allocationSha256:x.entry.allocationSha256,policyRevision:x.policyRevision,scopes:x.scopes,now:x.now,gateway:{
+   async readAvailability(options){const snapshot=await gateway.readAvailability(options);return {...snapshot,installation:{...snapshot.installation,operations:forged},discovery:{...snapshot.discovery,operations:forged}};},
+   async execute(call){executions.push(call);throw Error('UNREACHABLE_SYNTHETIC_GATEWAY');},
+  }});
+ try{
+  assert.equal(x.scopes.some(scope=>scope.kind==='client'),false);assert.deepEqual(x.configuration.approvedReads.operations,[semantic]);
+  const request={schemaVersion,binding:x.binding},snapshot=await owner.handle('availability',request,x.gatewayConfiguration.credential);
+  assert.deepEqual(snapshot.installation.operations,[]);assert.deepEqual(snapshot.discovery.operations,[]);
+  await assert.rejects(owner.handle('execute',{...request,operation:semantic,arguments:x.request,deliveryId:'subset:semantic-personal',
+   installationId:snapshot.installation.installationId,executionCatalogSha256:snapshot.installation.executionCatalogSha256},x.gatewayConfiguration.credential),code('UNAVAILABLE'));
+  assert.equal(executions.length,0);assert.equal(x.wire.length,0);assert.equal(x.state.reservations.size,0);
+ }finally{x.scope.abort();}
+});
+
+test('semantic KB with a real client-task verifier reaches the native runtime gateway with exact request and result hashes',async()=>{
+ const x=await ownerFixture(semantic.id,{scene:kbCase(semantic.id)}),executions=[];
+ const gateway=x.mount(),owner=createNativeReadsOwner({binding:x.binding,approvedReads:x.configuration.approvedReads,taskVerifier:x.configuration.taskVerifier,
+  allocationSha256:x.entry.allocationSha256,policyRevision:x.policyRevision,scopes:x.scopes,now:x.now,gateway:{
+   async readAvailability(options){const snapshot=await gateway.readAvailability(options);return {...snapshot,installation:{...snapshot.installation,operations:forged},discovery:{...snapshot.discovery,operations:forged}};},
+   async execute(call){const result={operation:call.operation,arguments:call.arguments,deliveryId:call.deliveryId,synthetic:'runtime-eligibility-only'};executions.push(result);return JSON.stringify(result);},
+  }});
+ try{
+  const request={schemaVersion,binding:x.binding},snapshot=await owner.handle('availability',request,x.gatewayConfiguration.credential);
+  assert.deepEqual(snapshot.installation.operations,[semantic]);assert.deepEqual(snapshot.discovery.operations,[semantic]);
+  const execution={...request,operation:semantic,arguments:x.request,deliveryId:'subset:semantic-client',installationId:snapshot.installation.installationId,executionCatalogSha256:snapshot.installation.executionCatalogSha256};
+  const result=await owner.handle('execute',execution,x.gatewayConfiguration.credential);
+  assert.equal(result.inputSha256,hash(execution));assert.deepEqual(result.operation,semantic);assert.equal(result.deliveryId,execution.deliveryId);
+  assert.deepEqual(JSON.parse(result.resultJson),executions[0]);assert.equal(result.resultSha256,hash(executions[0]));assert.equal(result.outputBytes,Buffer.byteLength(result.resultJson));
+  assert.equal(executions.length,1);assert.equal(x.wire.length,0);assert.equal(x.state.reservations.size,0,'this eligibility-only synthetic gateway is not source settlement proof');
+ }finally{x.scope.abort();}
 });
 
 for(const inventory of ['discovered','installed'])test(`selected operations still require current ${inventory} membership`,async()=>{

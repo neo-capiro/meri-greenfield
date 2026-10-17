@@ -65,10 +65,10 @@
     {
       "path": "apps/gateway/sources/client-knowledge-search",
       "family": "client-knowledge-search",
-      "declaredIn": ["apps/gateway/sources/client-knowledge-search/handler.mjs", "apps/gateway/sources/retained-reads/native-families.mjs"],
-      "operations": ["query_knowledge_graph"],
-      "adapterChecks": ["only the finite graph operation is implemented", "current explicit client selection and visible-client grant before source", "native denied-client graph filtering and malformed-selector refusal preserved"],
-      "subject": "current native tenant/user; authorized client or admitted general graph scope; embedding search remains unimplemented"
+      "declaredIn": ["apps/gateway/sources/client-knowledge-search/handler.mjs", "apps/gateway/sources/client-knowledge-search/request-context.mjs", "apps/gateway/general-reads/families/client-knowledge-search.mjs", "apps/gateway/sources/retained-reads/native-families.mjs", "apps/gateway/sources/retained-reads/native-handler.mjs", "apps/gateway/sources/retained-reads/http-transport.mjs", "packages/contracts/native-read-observation-0.2/validate.mjs", "packages/contracts/native-read-observation-0.2/schema.json"],
+      "operations": ["search_client_knowledge", "query_knowledge_graph"],
+      "adapterChecks": ["complete semantic and graph operations; semantic requires reviewed Core PR59 head 59efe08f2f3429918758eef30539e9dde4dbb868 / tree c2babd8e0d386b1c9f18ed32ebcd4472d5ebf486, based on funding Core51c; graph retains its independent context and wire", "semantic carries one trusted asOf through the finite six-operation private carrier and exact original request hash; all admitted native generatedAt branches consume that anchor without output rewriting or legacy fallback", "truthy canonical UUID client selectors require the current exact one-client subject/resource and native visibility before credentials; no-client note branches preserve current trusted personal or client authority without inferring a selector; malformed truthy selectors and names fail closed", "SDK family stays optional and requires client scope only for search_client_knowledge; existing denied-client graph filtering remains unchanged", "the trusted qualification issuer must bind reviewed Core source to the actual native build, origin/configuration and consumption evidence; opaque installation receipts do not automatically detect Core protocol/build compatibility or establish live availability"],
+      "subject": "current native tenant/user with current per-call authority; exact authorized one-client selection for semantic client search, admitted current no-client note or independent graph scope; complete source/SDK registration only, with native server qualification separately required"
     },
     {
       "path": "apps/gateway/sources/state-status-votes",

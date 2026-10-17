@@ -14,20 +14,20 @@ import {CASES,familyCase} from '../../../../gateway/general-reads/test/family-ca
 import {durableFamilyFixture} from '../../../../gateway/general-reads/test/durable-fixture.mjs';
 const operations=familyReads().map(r=>r.operation),policy=assertCapabilityPolicy({generalReads:true});
 test('all thirty-seven constructible families remain unavailable without installation or discovery',()=>{
- assert.equal(READ_FAMILY_IDS.length,37);assert.equal(operations.length,65);
+ assert.equal(READ_FAMILY_IDS.length,37);assert.equal(operations.length,66);
  for(const [installation,discovery] of [[[],operations],[operations,[]],[[],[]]])
   assert.deepEqual(resolveAvailableReads({policy,installation:{operations:installation},discovery:{operations:discovery},scopes:[{kind:'client'}]}).available,[]);
  const all=resolveAvailableReads({policy,installation:{operations},discovery:{operations},scopes:[{kind:'client'}]});
- assert.equal(all.available.length,65);assert.deepEqual(all.unavailable,[]);
+ assert.equal(all.available.length,66);assert.deepEqual(all.unavailable,[]);
  for(const id of ['get_research_portfolio','get_research_portfolio_changes','get_florida_budget_project'])assert.ok(operations.some(o=>o.id===id));
 });
 test('per-operation client prefilter preserves personal meetings/tasks while withholding required-client reads',()=>{
  const result=resolveAvailableReads({policy,installation:{operations},discovery:{operations},scopes:[{kind:'private-user'}]}),ids=result.available.map(r=>r.operation.id);
  for(const id of ['meeting.list_upcoming_meetings','meeting.query_debriefs','query_tasks','search_memory',
-  'get_business_development_context','get_business_development_recent_changes'])assert.ok(ids.includes(id),id);
+  'get_business_development_context','get_business_development_recent_changes','query_knowledge_graph'])assert.ok(ids.includes(id),id);
  for(const id of ['meeting.read_client_meetings','query_action_items','actions.query','get_client_context','read_client_documents','read_monday_client_boards',
   'get_representation','get_district_nexus_context','get_district_nexus_changes','search_funding_opportunities','get_funding_opportunity_requirements',
-  'get_funding_opportunity','get_opportunity_client_context','get_opportunity_government_landscape'])assert.ok(!ids.includes(id),id);
+  'get_funding_opportunity','get_opportunity_client_context','get_opportunity_government_landscape','search_client_knowledge'])assert.ok(!ids.includes(id),id);
 });
 for(const row of familyReads())test(`synthetic ${row.operation.id}: advertised arguments retain canonical constraints`,()=>{
  const schema=advertisedArguments(row.descriptor.inputSchema);assert.equal(schema.mode,'canonical');

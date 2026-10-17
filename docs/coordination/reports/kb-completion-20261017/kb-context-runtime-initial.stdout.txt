@@ -1,0 +1,123 @@
+✔ real native client carries an immutable current visible roster; old private fake-port shape remains admitted (10.9232ms)
+✔ get_representation: current native client visibility joins original client subject without leaking roster (132.2288ms)
+✔ get_district_nexus_context: current native client visibility joins original client subject without leaking roster (47.864ms)
+✔ get_district_nexus_changes: current native client visibility joins original client subject without leaking roster (45.0933ms)
+✔ facility missing-selector note remains possible without injecting a client (31.2145ms)
+✔ facility absent visibility refuses before credentials or source (28.1225ms)
+✔ facility foreign subject refuses before credentials or source (23.0665ms)
+✔ a legacy fake port without client proof cannot admit a scoped family (16.7439ms)
+✔ lineage decision IDs refresh while stable current client identity remains pinned (50.0471ms)
+✔ gateway lineage refresh rejects stale context decisions but accepts fresh same-selection decisions (35.9112ms)
+✔ client set or membership revision drift cannot renew scoped credentials (25.8601ms)
+✔ client set or membership revision drift cannot renew scoped credentials (23.5847ms)
+✔ client set or membership revision drift cannot renew scoped credentials (27.4199ms)
+✔ search_federal_contract_awards: explicit market client is a current resource selector, never a visibility grant (22.6695ms)
+✔ search_federal_subawards: explicit market client is a current resource selector, never a visibility grant (24.4471ms)
+✔ search_contract_vehicles: explicit market client is a current resource selector, never a visibility grant (31.9487ms)
+✔ search_procurement_forecasts: explicit market client is a current resource selector, never a visibility grant (37.2611ms)
+✔ get_district_federal_market: explicit market client is a current resource selector, never a visibility grant (28.0525ms)
+✔ forecast rows remain global while any supplied client selector still requires current visibility (35.9234ms)
+✔ search_federal_contract_awards: omitted client selector keeps the canonical global branch under a current client subject (23.7352ms)
+✔ search_federal_subawards: omitted client selector keeps the canonical global branch under a current client subject (24.7828ms)
+✔ search_contract_vehicles: omitted client selector keeps the canonical global branch under a current client subject (29.3737ms)
+✔ search_procurement_forecasts: omitted client selector keeps the canonical global branch under a current client subject (23.9541ms)
+✔ get_district_federal_market: omitted client selector keeps the canonical global branch under a current client subject (30.7167ms)
+✔ market selector cannot borrow an alternate or multiple client subject (13.0428ms)
+✔ market selector cannot borrow an alternate or multiple client subject (18.6753ms)
+✔ data-search canonical raw selector is admitted without substituting a normalized request (51.9703ms)
+✔ implicit global-query as-of is captured once; rechecks and credentials cannot advance it (79.1147ms)
+✔ explicit or unsupported global-query default remains null (15.7621ms)
+✔ explicit or unsupported global-query default remains null (16.0772ms)
+✔ graph retains its empty context without acquiring the semantic observation clock (36.431ms)
+✔ search_funding_opportunities: one trusted asOf survives advancing native identity/membership and credential rechecks (196.5468ms)
+✔ search_funding_opportunities: changed context, original body, operation or digest cannot reuse an observed credential scope (143.8036ms)
+✔ search_funding_opportunities: client selectors require current native visibility and a coherent client resource before source credentials (87.1004ms)
+✔ get_funding_opportunity_requirements: one trusted asOf survives advancing native identity/membership and credential rechecks (59.9237ms)
+✔ get_funding_opportunity_requirements: changed context, original body, operation or digest cannot reuse an observed credential scope (136.6553ms)
+✔ get_funding_opportunity_requirements: client selectors require current native visibility and a coherent client resource before source credentials (76.0852ms)
+✔ get_funding_opportunity: one trusted asOf survives advancing native identity/membership and credential rechecks (44.8881ms)
+✔ get_funding_opportunity: changed context, original body, operation or digest cannot reuse an observed credential scope (110.8554ms)
+✔ get_funding_opportunity: client selectors require current native visibility and a coherent client resource before source credentials (62.1504ms)
+✔ get_opportunity_client_context: one trusted asOf survives advancing native identity/membership and credential rechecks (40.0571ms)
+✔ get_opportunity_client_context: changed context, original body, operation or digest cannot reuse an observed credential scope (113.5547ms)
+✔ get_opportunity_client_context: client selectors require current native visibility and a coherent client resource before source credentials (58.4352ms)
+✔ get_opportunity_government_landscape: one trusted asOf survives advancing native identity/membership and credential rechecks (47.5232ms)
+✔ get_opportunity_government_landscape: changed context, original body, operation or digest cannot reuse an observed credential scope (102.869ms)
+✔ get_opportunity_government_landscape: client selectors require current native visibility and a coherent client resource before source credentials (84.0125ms)
+✔ funding context cannot be supplied from source output or an unobserved model-selected timestamp (18.7974ms)
+✔ funding current membership drift across service-secret await withholds the correlated credential pair (36.6473ms)
+✔ semantic KB captures one trusted instant across advancing native checks and correlated credentials (183.3114ms)
+✔ semantic KB omitted selector retains the no-client branch under a current personal task (45.297ms)
+✔ semantic KB null selector retains the no-client branch under a current personal task (38.6244ms)
+✔ semantic KB empty selector retains the no-client branch under a current personal task (32.8972ms)
+✔ semantic KB omitted selector retains the no-client branch under a current client task (36.3215ms)
+✔ semantic KB null selector retains the no-client branch under a current client task (38.1612ms)
+✔ semantic KB empty selector retains the no-client branch under a current client task (38.0106ms)
+✔ semantic KB selected client identity compares canonically while raw request spelling and normalization remain intact (32.6348ms)
+✔ semantic KB malformed truthy selectors fail before any current native credential or service secret (43.4916ms)
+✖ semantic KB selected client requires exact one-client task/resource and current native visibility (48.2072ms)
+✔ semantic KB clock/context/body/operation proof substitution cannot reuse the observed scope (85.8404ms)
+✔ semantic KB credentials require the private observation rather than a source/model clock (10.0214ms)
+✔ semantic KB current membership, visibility or original expiry drift cannot renew credentials (81.5699ms)
+✔ semantic KB success consumes one retained observation and settles unchanged native result bytes (347.9238ms)
+✔ semantic KB ordinary-empty consumes one retained observation and settles unchanged native result bytes (173.1768ms)
+✔ semantic KB caught-unavailable consumes one retained observation and settles unchanged native result bytes (195.9373ms)
+✔ semantic KB omitted client selector preserves native no-client note under current personal authority (170.8227ms)
+✔ semantic KB null client selector preserves native no-client note under current personal authority (146.8894ms)
+✔ semantic KB empty client selector preserves native no-client note under current personal authority (166.7123ms)
+✔ semantic KB omitted client selector preserves native no-client note under current client authority (140.7226ms)
+✔ semantic KB null client selector preserves native no-client note under current client authority (146.2755ms)
+✖ semantic KB empty client selector preserves native no-client note under current client authority (70.5292ms)
+✔ semantic KB missing installation, source, trusted context or model-injected clock refuses before source (149.5933ms)
+✔ semantic KB static credentials cannot bypass the retained per-call observation (107.3742ms)
+✔ semantic KB malformed/foreign selectors, personal selected-client and current native revocation cannot dispatch source (425.9814ms)
+✔ semantic KB native generatedAt/client/query substitution and uncertain response withhold the whole result without retry (442.6439ms)
+✔ semantic KB thrown source validation/not-found failures remain one failure and UNKNOWN, never unavailable success (220.822ms)
+✔ semantic KB authority drift after source or across credential await retains UNKNOWN without output completion (470.7217ms)
+✔ semantic KB pre-aborted lifetime and in-flight cancel/expiry preserve canonical errors and UNKNOWN (232.7321ms)
+ℹ tests 77
+ℹ suites 0
+ℹ pass 75
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10606.4694
+
+✖ failing tests:
+
+test at apps\runtime\native-authority\test\kb-asof-context.test.mjs:55:1
+✖ semantic KB selected client requires exact one-client task/resource and current native visibility (48.2072ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    Comparison {
+  +   message: 'UNAVAILABLE'
+  -   message: 'ACCESS_DENIED'
+    }
+  
+      at async TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/runtime/native-authority/test/kb-asof-context.test.mjs:62:7)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: GatewayDenied: UNAVAILABLE
+        at failure (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/runtime/native-authority/native-read-credentials/owner.mjs:22:98)
+        at Object.readCurrent (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/runtime/native-authority/native-read-credentials/owner.mjs:76:461)
+        at read (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/runtime/native-authority/test/kb-asof-context.test.mjs:8:86)
+        at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/runtime/native-authority/test/kb-asof-context.test.mjs:62:28)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    expected: { message: 'ACCESS_DENIED' },
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps\runtime\test\kb-source-integration.test.mjs:46:90
+✖ semantic KB empty client selector preserves native no-client note under current client authority (70.5292ms)
+  GatewayDenied: ACCESS_DENIED
+      at safeFailure (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/gateway/general-reads/mount.mjs:46:23)
+      at async TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/runtime/test/kb-source-integration.test.mjs:49:13)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

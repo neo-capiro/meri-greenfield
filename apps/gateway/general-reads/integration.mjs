@@ -67,7 +67,7 @@ const STORED_NATIVE_SOURCE_PATHS=Object.freeze([
 const SOURCE_PATHS=Object.freeze({
  'funding-opportunities':['apps/gateway/sources/funding-opportunities/handler.mjs','apps/gateway/sources/funding-opportunities/request-context.mjs',...STORED_NATIVE_SOURCE_PATHS],
  'public-data':['apps/gateway/sources/public-data/handler.mjs',...STORED_NATIVE_SOURCE_PATHS],
- 'client-knowledge-search':['apps/gateway/sources/client-knowledge-search/handler.mjs',...STORED_NATIVE_SOURCE_PATHS],
+ 'client-knowledge-search':['apps/gateway/sources/client-knowledge-search/handler.mjs','apps/gateway/sources/client-knowledge-search/request-context.mjs',...STORED_NATIVE_SOURCE_PATHS],
  'state-status-votes':['apps/gateway/sources/state-status-votes/handler.mjs',...STORED_NATIVE_SOURCE_PATHS],
  'tracked-bills':['apps/gateway/sources/tracked-bills/handler.mjs',...STORED_NATIVE_SOURCE_PATHS],
  'public-domain-hearings':['apps/gateway/sources/public-domain-hearings/handler.mjs',...STORED_NATIVE_SOURCE_PATHS],
@@ -215,6 +215,10 @@ const COMMON=['apps/gateway/general-reads/integration.mjs','apps/gateway/general
  'apps/gateway/general-reads/families/funding-opportunities.mjs',
  'apps/gateway/sources/funding-opportunities/handler.mjs','apps/gateway/sources/funding-opportunities/request-context.mjs',
  'packages/contracts/native-read-observation-0.2/schema.json','packages/contracts/native-read-observation-0.2/validate.mjs',
+ // Semantic KB is likewise statically composed; selection and both family paths are measured for every composition.
+ 'apps/gateway/general-reads/families/client-knowledge-search.mjs',
+ 'apps/gateway/sources/client-knowledge-search/handler.mjs','apps/gateway/sources/client-knowledge-search/request-context.mjs',
+ 'apps/gateway/sources/retained-reads/native-handler.mjs','apps/gateway/sources/retained-reads/http-transport.mjs',
  // These changed source modules are likewise loaded by static family imports in every composition.
  'apps/gateway/sources/business-development/handler.mjs','apps/gateway/sources/business-development/request-context.mjs',
  'apps/gateway/sources/research-legal-legislation/request-context.mjs'];

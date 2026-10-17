@@ -28,6 +28,16 @@ async function mounted(id,options={}){
 }
 
 for(const [family,ids] of complete){
+ if(family==='client-knowledge-search')test('client-knowledge-search: complete family preserves graph and requires client scope only for semantic search',()=>{
+  const operations=familyOperations(family),expected=['search_client_knowledge','query_knowledge_graph'];
+  assert.deepEqual(operations.map(row=>row.id),expected);assert.equal(READ_FAMILIES[family].operationIds,undefined);
+  assert.deepEqual(READ_FAMILIES[family].requiredClientOperations,['search_client_knowledge']);
+  assert.deepEqual(familyReads().filter(row=>row.family===family).map(row=>row.operation.id),expected);
+  const select=scopes=>resolveAvailableReads({policy:{generalReads:true,readFamilies:[family]},installation:{operations},discovery:{operations},scopes});
+  assert.deepEqual(select([{kind:'client'}]).available.map(row=>row.operation.id),expected);
+  assert.deepEqual(select([{kind:'private-user'}]).available.map(row=>row.operation.id),['query_knowledge_graph']);
+ });
+ else{
  test(`${family}: finite SDK family operation list excludes every unsupported canonical sibling even with forged installation/discovery`,()=>{
   const operations=familyOperations(family),siblings=operations.filter(row=>!ids.includes(row.id));
   assert.ok(siblings.length>0);assert.deepEqual(READ_FAMILIES[family].operationIds,ids);
@@ -36,6 +46,7 @@ for(const [family,ids] of complete){
   assert.deepEqual(gates.available.map(row=>row.operation.id),ids);
   for(const sibling of siblings)assert.equal(familyReads().some(row=>row.operation.id===sibling.id),false);
  });
+ }
  for(const id of ids){
  test(`${id}: SDK arguments use the frozen raw contract and refuse model authority or normalization context`,()=>{
   const f=nativeFamilyCase(family,id),schema=advertisedArguments(f.contract.descriptor.inputSchema);

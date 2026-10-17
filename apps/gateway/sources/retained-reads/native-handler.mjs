@@ -22,10 +22,13 @@ function admitDecision(current,now){
 export function createStoredNativeReadHandlers(configuration,operations,specification){
  const {family,routes,requestBody,resultBody,observation}=ownFields(specification,['family','routes'],['requestBody','resultBody','observation']);
  if(!NATIVE_READ_FAMILIES.includes(family)||[requestBody,resultBody].some(value=>value!==undefined&&(typeof value!=='function'||types.isProxy(value))))deny('GATEWAY_CONFIGURATION');
- if(observation!==undefined&&(observation!=='funding-asof'||family!=='funding-opportunities'||requestBody!==undefined||resultBody!==undefined))deny('GATEWAY_CONFIGURATION');
+ const fundingObservation=observation==='funding-asof'&&family==='funding-opportunities',knowledgeObservation=observation==='client-knowledge-asof'&&family==='client-knowledge-search';
+ if(observation!==undefined&&(!(fundingObservation||knowledgeObservation)||requestBody!==undefined||resultBody!==undefined))deny('GATEWAY_CONFIGURATION');
  if(family==='funding-opportunities'&&observation!=='funding-asof')deny('GATEWAY_CONFIGURATION');
  const fixed=frozenData(routes);
  if(!fixed||Array.isArray(fixed)||typeof fixed!=='object'||!Object.keys(fixed).length)deny('GATEWAY_CONFIGURATION');
+ if(knowledgeObservation&&(Object.keys(fixed).length!==1||!Object.hasOwn(fixed,'search_client_knowledge'))||
+  family==='client-knowledge-search'&&Object.hasOwn(fixed,'search_client_knowledge')&&!knowledgeObservation)deny('GATEWAY_CONFIGURATION');
  for(const [id,path] of Object.entries(fixed)){
   if(path!==`/api/clio/tools/${id}`)deny('GATEWAY_CONFIGURATION');
   let contract;try{contract=resolveOperationContract({id,version:'0.2.0'});}catch{deny('GATEWAY_CONFIGURATION');}
