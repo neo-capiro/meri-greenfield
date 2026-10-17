@@ -8,6 +8,7 @@ import {createOperationLifetime} from '../../../../packages/runtime/operation-li
 import {createCapiroApplicationAuthorityClient} from '../../../control/action-host/application-adapters/authority-http.mjs';
 import {createConversationAuthorityReader} from './conversation-authority.mjs';
 import {createClientReferenceReader} from './client-reference.mjs';
+import {createReadModeObservationReader} from './read-mode-observation.mjs';
 import {readJsonResponse,responseBody,cancelBody} from '../../../gateway/sources/json-response.mjs';
 import {safeFailure} from '../../../gateway/dispatch/operation-result.mjs';
 const same=(a,b)=>hash(a)===hash(b),SHA=/^[a-f0-9]{64}$/u,UUID=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u;
@@ -45,5 +46,6 @@ export function createNativeToolAuthorityClient(configuration={}){
  }catch(error){throw failure(error);}finally{try{if(acquired)cancelBody(responseBody(acquired));}catch{}life?.close();}}
  const readConversation=createConversationAuthorityReader({available,authorityClient:identity,now,maxRequestMs});
  const readClientReference=createClientReferenceReader({available,origin,fetchImpl:c.fetchImpl,authorityClient:identity,now,maxRequestMs});
- return Object.freeze({available,origin,readCurrent,readConversation,readClientReference});
+ const readModeObservation=createReadModeObservationReader({available,origin,fetchImpl:c.fetchImpl,authorityClient:identity,now,maxRequestMs});
+ return Object.freeze({available,origin,readCurrent,readConversation,readClientReference,readModeObservation});
 }

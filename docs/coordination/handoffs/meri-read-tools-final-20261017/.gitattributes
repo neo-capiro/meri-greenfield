@@ -1,0 +1,2 @@
+packets/*.patch -text
+packets/*.json -text

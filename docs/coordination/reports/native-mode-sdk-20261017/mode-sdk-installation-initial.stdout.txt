@@ -1,0 +1,363 @@
+✔ mode installation source checkpoint derives76eligible/42families and77canonical handlers with the legal sibling still held (17.2442ms)
+✔ mode installation search_federal_grants/off: prepared task forwards actual owner ports and settles exact private-mode source (656.6558ms)
+✔ mode installation search_federal_grants/shadow: prepared task forwards actual owner ports and settles exact private-mode source (346.3116ms)
+✔ mode installation search_federal_grants/enforce: prepared task forwards actual owner ports and settles exact private-mode source (333.3702ms)
+✖ mode installation search_federal_grants: missing mode-secret never reaches a credential or native source (357.2889ms)
+✖ mode installation search_federal_grants: missing mode-reader never reaches a credential or native source (352.5869ms)
+✔ mode installation search_federal_grants: wrong current qualification bytes deny before native observation and source IO (48.6561ms)
+✔ mode installation search_federal_grants: current task revocation denies before mode secret or tool HTTP (24.5054ms)
+✔ mode installation search_federal_grants: a substituted native mode operation cannot authorize a tool request (226.9511ms)
+✔ mode installation search_federal_grants: post-source native mode drift withholds completion and preserves UNKNOWN (313.166ms)
+✖ mode installation search_federal_awards/off: prepared task forwards actual owner ports and settles exact private-mode source (3190.6742ms)
+✖ mode installation search_federal_awards/shadow: prepared task forwards actual owner ports and settles exact private-mode source (3106.6146ms)
+✔ mode installation search_federal_awards/enforce: prepared task forwards actual owner ports and settles exact private-mode source (2479.4903ms)
+✖ mode installation search_federal_awards: missing mode-secret never reaches a credential or native source (480.557ms)
+✖ mode installation search_federal_awards: missing mode-reader never reaches a credential or native source (409.4668ms)
+✔ mode installation search_federal_awards: wrong current qualification bytes deny before native observation and source IO (34.0108ms)
+✔ mode installation search_federal_awards: current task revocation denies before mode secret or tool HTTP (28.9031ms)
+✔ mode installation search_federal_awards: a substituted native mode operation cannot authorize a tool request (234.7334ms)
+✔ mode installation search_federal_awards: post-source native mode drift withholds completion and preserves UNKNOWN (286.2952ms)
+✔ mode installation search_program_elements/off: prepared task forwards actual owner ports and settles exact private-mode source (465.9226ms)
+✔ mode installation search_program_elements/shadow: prepared task forwards actual owner ports and settles exact private-mode source (467.8654ms)
+✔ mode installation search_program_elements/enforce: prepared task forwards actual owner ports and settles exact private-mode source (368.9628ms)
+✖ mode installation search_program_elements: missing mode-secret never reaches a credential or native source (359.9352ms)
+✖ mode installation search_program_elements: missing mode-reader never reaches a credential or native source (358.711ms)
+✔ mode installation search_program_elements: wrong current qualification bytes deny before native observation and source IO (26.3622ms)
+✔ mode installation search_program_elements: current task revocation denies before mode secret or tool HTTP (22.9724ms)
+✔ mode installation search_program_elements: a substituted native mode operation cannot authorize a tool request (192.581ms)
+✔ mode installation search_program_elements: post-source native mode drift withholds completion and preserves UNKNOWN (244.5605ms)
+✔ mode installation get_program_element/off: prepared task forwards actual owner ports and settles exact private-mode source (375.0199ms)
+✔ mode installation get_program_element/shadow: prepared task forwards actual owner ports and settles exact private-mode source (352.1088ms)
+✔ mode installation get_program_element/enforce: prepared task forwards actual owner ports and settles exact private-mode source (358.9524ms)
+✖ mode installation get_program_element: missing mode-secret never reaches a credential or native source (376.7306ms)
+✖ mode installation get_program_element: missing mode-reader never reaches a credential or native source (340.6812ms)
+✔ mode installation get_program_element: wrong current qualification bytes deny before native observation and source IO (25.7521ms)
+✔ mode installation get_program_element: current task revocation denies before mode secret or tool HTTP (25.3507ms)
+✔ mode installation get_program_element: a substituted native mode operation cannot authorize a tool request (187.726ms)
+✔ mode installation get_program_element: post-source native mode drift withholds completion and preserves UNKNOWN (258.4582ms)
+✔ mode installation get_pe_budget_timeline/off: prepared task forwards actual owner ports and settles exact private-mode source (408.8505ms)
+✔ mode installation get_pe_budget_timeline/shadow: prepared task forwards actual owner ports and settles exact private-mode source (372.7801ms)
+✔ mode installation get_pe_budget_timeline/enforce: prepared task forwards actual owner ports and settles exact private-mode source (401.4731ms)
+✖ mode installation get_pe_budget_timeline: missing mode-secret never reaches a credential or native source (390.8955ms)
+✖ mode installation get_pe_budget_timeline: missing mode-reader never reaches a credential or native source (409.0212ms)
+✔ mode installation get_pe_budget_timeline: wrong current qualification bytes deny before native observation and source IO (42.0544ms)
+✔ mode installation get_pe_budget_timeline: current task revocation denies before mode secret or tool HTTP (31.3102ms)
+✔ mode installation get_pe_budget_timeline: a substituted native mode operation cannot authorize a tool request (227.5012ms)
+✔ mode installation get_pe_budget_timeline: post-source native mode drift withholds completion and preserves UNKNOWN (268.9617ms)
+✔ mode installation: supplied normalization owner cannot replace the canonical private native context (23.3908ms)
+✔ every SDK runtime reference maps to the canonical composed families, including the existing mail constructor (3.4741ms)
+✔ two-phase preparation preserves legacy source records/order/hash and canonical source siblings without granting SDK eligibility (670.4498ms)
+✔ prepared family allowlist is finite; partial-only families cannot inherit SDK installation eligibility (6.6427ms)
+✔ selected skills consume their own current context and qualification over the canonical prepared handlers (45.5648ms)
+✔ a general installation receipt cannot be relabeled into selected-skill qualification (5.2735ms)
+✔ mode SDK source policy derives76/42 and keeps public/program families optional with exact canonical operations (11.5211ms)
+✔ mode SDK search_federal_grants: literal schema excludes caller mode, context, private carrier and authority (16.7082ms)
+✔ mode SDK search_federal_grants/off: actual hook/MCP preserves raw body, private mode and settled receipts (537.355ms)
+✔ mode SDK search_federal_grants/shadow: actual hook/MCP preserves raw body, private mode and settled receipts (295.1512ms)
+✔ mode SDK search_federal_grants/enforce: actual hook/MCP preserves raw body, private mode and settled receipts (325.7609ms)
+✔ mode SDK search_federal_grants: an actual personal task retains native mode authority without an invented client grant (284.4842ms)
+✔ mode SDK search_federal_grants: missing current installation, discovery, source or family policy prevents mounting (109.9102ms)
+✔ mode SDK search_federal_grants: current availability revocation after listing denies before dispatch (185.6492ms)
+✖ mode SDK search_federal_grants: a mode change during source-secret acquisition prevents tool HTTP (202.8278ms)
+✔ mode SDK search_federal_grants: post-source mode drift withholds the whole output and retains UNKNOWN (202.4895ms)
+✔ mode SDK search_federal_awards: literal schema excludes caller mode, context, private carrier and authority (5.8981ms)
+✔ mode SDK search_federal_awards/off: actual hook/MCP preserves raw body, private mode and settled receipts (262.5409ms)
+✔ mode SDK search_federal_awards/shadow: actual hook/MCP preserves raw body, private mode and settled receipts (263.3303ms)
+✔ mode SDK search_federal_awards/enforce: actual hook/MCP preserves raw body, private mode and settled receipts (256.2195ms)
+✔ mode SDK search_federal_awards: an actual personal task retains native mode authority without an invented client grant (272.2713ms)
+✔ mode SDK search_federal_awards: missing current installation, discovery, source or family policy prevents mounting (88.9269ms)
+✔ mode SDK search_federal_awards: current availability revocation after listing denies before dispatch (158.9124ms)
+✖ mode SDK search_federal_awards: a mode change during source-secret acquisition prevents tool HTTP (193.2528ms)
+✔ mode SDK search_federal_awards: post-source mode drift withholds the whole output and retains UNKNOWN (187.1904ms)
+✔ mode SDK search_program_elements: literal schema excludes caller mode, context, private carrier and authority (9.6935ms)
+✔ mode SDK search_program_elements/off: actual hook/MCP preserves raw body, private mode and settled receipts (278.2573ms)
+✔ mode SDK search_program_elements/shadow: actual hook/MCP preserves raw body, private mode and settled receipts (243.71ms)
+✔ mode SDK search_program_elements/enforce: actual hook/MCP preserves raw body, private mode and settled receipts (259.9678ms)
+✔ mode SDK search_program_elements: an actual personal task retains native mode authority without an invented client grant (237.1491ms)
+✔ mode SDK search_program_elements: missing current installation, discovery, source or family policy prevents mounting (79.3741ms)
+✔ mode SDK search_program_elements: current availability revocation after listing denies before dispatch (164.6008ms)
+✖ mode SDK search_program_elements: a mode change during source-secret acquisition prevents tool HTTP (191.2179ms)
+✔ mode SDK search_program_elements: post-source mode drift withholds the whole output and retains UNKNOWN (177.7199ms)
+✔ mode SDK get_program_element: literal schema excludes caller mode, context, private carrier and authority (4.2419ms)
+✔ mode SDK get_program_element/off: actual hook/MCP preserves raw body, private mode and settled receipts (262.7158ms)
+✔ mode SDK get_program_element/shadow: actual hook/MCP preserves raw body, private mode and settled receipts (253.1109ms)
+✔ mode SDK get_program_element/enforce: actual hook/MCP preserves raw body, private mode and settled receipts (256.8859ms)
+✔ mode SDK get_program_element: an actual personal task retains native mode authority without an invented client grant (271.2482ms)
+✔ mode SDK get_program_element: missing current installation, discovery, source or family policy prevents mounting (88.4708ms)
+✔ mode SDK get_program_element: current availability revocation after listing denies before dispatch (156.0719ms)
+✖ mode SDK get_program_element: a mode change during source-secret acquisition prevents tool HTTP (209.6982ms)
+✔ mode SDK get_program_element: post-source mode drift withholds the whole output and retains UNKNOWN (197.8605ms)
+✔ mode SDK get_pe_budget_timeline: literal schema excludes caller mode, context, private carrier and authority (3.6474ms)
+✔ mode SDK get_pe_budget_timeline/off: actual hook/MCP preserves raw body, private mode and settled receipts (281.1784ms)
+✔ mode SDK get_pe_budget_timeline/shadow: actual hook/MCP preserves raw body, private mode and settled receipts (262.5949ms)
+✔ mode SDK get_pe_budget_timeline/enforce: actual hook/MCP preserves raw body, private mode and settled receipts (240.8129ms)
+✔ mode SDK get_pe_budget_timeline: an actual personal task retains native mode authority without an invented client grant (260.1328ms)
+✔ mode SDK get_pe_budget_timeline: missing current installation, discovery, source or family policy prevents mounting (94.5743ms)
+✔ mode SDK get_pe_budget_timeline: current availability revocation after listing denies before dispatch (173.6835ms)
+✖ mode SDK get_pe_budget_timeline: a mode change during source-secret acquisition prevents tool HTTP (185.2543ms)
+✔ mode SDK get_pe_budget_timeline: post-source mode drift withholds the whole output and retains UNKNOWN (207.3092ms)
+✔ mode SDK: invocation token and exact original argument hash reject direct or substituted calls before source (73.2167ms)
+✔ mode SDK: canonical receiving does not let an off-mode source page masquerade as enforce (186.2438ms)
+✔ mode SDK: the existing economic operation keeps its empty context and omits mode observation and carrier (221.5901ms)
+ℹ tests 101
+ℹ suites 0
+ℹ pass 84
+ℹ fail 17
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 33691.4128
+
+✖ failing tests:
+
+test at apps\runtime\native-authority\general-read-installation\test\phase3-mode.test.mjs:38:53
+✖ mode installation search_federal_grants: missing mode-secret never reaches a credential or native source (357.2889ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/runtime/native-authority/general-read-installation/test/phase3-mode.test.mjs:40:7)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: { message: 'UNAVAILABLE' },
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps\runtime\native-authority\general-read-installation\test\phase3-mode.test.mjs:38:53
+✖ mode installation search_federal_grants: missing mode-reader never reaches a credential or native source (352.5869ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/runtime/native-authority/general-read-installation/test/phase3-mode.test.mjs:40:7)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: { message: 'UNAVAILABLE' },
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps\runtime\native-authority\general-read-installation\test\phase3-mode.test.mjs:28:47
+✖ mode installation search_federal_awards/off: prepared task forwards actual owner ports and settles exact private-mode source (3190.6742ms)
+  Error: DEADLINE
+      at nativeReadFault (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/packages/contracts/runtime-0.2/reads.mjs:10:105)
+      at call (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/runtime/native-authority/reads-client.mjs:25:23)
+      at async Object.execute (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/runtime/native-authority/reads-client.mjs:32:16)
+      at async TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/runtime/native-authority/general-read-installation/test/phase3-mode.test.mjs:32:14)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'DEADLINE'
+  }
+
+test at apps\runtime\native-authority\general-read-installation\test\phase3-mode.test.mjs:28:47
+✖ mode installation search_federal_awards/shadow: prepared task forwards actual owner ports and settles exact private-mode source (3106.6146ms)
+  Error: DEADLINE
+      at nativeReadFault (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/packages/contracts/runtime-0.2/reads.mjs:10:105)
+      at call (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/runtime/native-authority/reads-client.mjs:25:23)
+      at runNextTicks (node:internal/process/task_queues:65:5)
+      at listOnTimeout (node:internal/timers:597:9)
+      at process.processTimers (node:internal/timers:571:7)
+      at async Object.readAvailability (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/runtime/native-authority/reads-client.mjs:28:87)
+      at async TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/runtime/native-authority/general-read-installation/test/phase3-mode.test.mjs:30:20)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'DEADLINE'
+  }
+
+test at apps\runtime\native-authority\general-read-installation\test\phase3-mode.test.mjs:38:53
+✖ mode installation search_federal_awards: missing mode-secret never reaches a credential or native source (480.557ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/runtime/native-authority/general-read-installation/test/phase3-mode.test.mjs:40:7)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: { message: 'UNAVAILABLE' },
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps\runtime\native-authority\general-read-installation\test\phase3-mode.test.mjs:38:53
+✖ mode installation search_federal_awards: missing mode-reader never reaches a credential or native source (409.4668ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/runtime/native-authority/general-read-installation/test/phase3-mode.test.mjs:40:7)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: { message: 'UNAVAILABLE' },
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps\runtime\native-authority\general-read-installation\test\phase3-mode.test.mjs:38:53
+✖ mode installation search_program_elements: missing mode-secret never reaches a credential or native source (359.9352ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/runtime/native-authority/general-read-installation/test/phase3-mode.test.mjs:40:7)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: { message: 'UNAVAILABLE' },
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps\runtime\native-authority\general-read-installation\test\phase3-mode.test.mjs:38:53
+✖ mode installation search_program_elements: missing mode-reader never reaches a credential or native source (358.711ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/runtime/native-authority/general-read-installation/test/phase3-mode.test.mjs:40:7)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: { message: 'UNAVAILABLE' },
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps\runtime\native-authority\general-read-installation\test\phase3-mode.test.mjs:38:53
+✖ mode installation get_program_element: missing mode-secret never reaches a credential or native source (376.7306ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/runtime/native-authority/general-read-installation/test/phase3-mode.test.mjs:40:7)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: { message: 'UNAVAILABLE' },
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps\runtime\native-authority\general-read-installation\test\phase3-mode.test.mjs:38:53
+✖ mode installation get_program_element: missing mode-reader never reaches a credential or native source (340.6812ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/runtime/native-authority/general-read-installation/test/phase3-mode.test.mjs:40:7)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: { message: 'UNAVAILABLE' },
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps\runtime\native-authority\general-read-installation\test\phase3-mode.test.mjs:38:53
+✖ mode installation get_pe_budget_timeline: missing mode-secret never reaches a credential or native source (390.8955ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/runtime/native-authority/general-read-installation/test/phase3-mode.test.mjs:40:7)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: { message: 'UNAVAILABLE' },
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps\runtime\native-authority\general-read-installation\test\phase3-mode.test.mjs:38:53
+✖ mode installation get_pe_budget_timeline: missing mode-reader never reaches a credential or native source (409.0212ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/runtime/native-authority/general-read-installation/test/phase3-mode.test.mjs:40:7)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: { message: 'UNAVAILABLE' },
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps\worker\conversation\reads\test\newmode.test.mjs:81:2
+✖ mode SDK search_federal_grants: a mode change during source-secret acquisition prevents tool HTTP (202.8278ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /^ACCESS_DENIED:/u. Input:
+  
+  'INVALID_RESULT: mcp__meri_reads__search_federal_grants returned a result that failed validation and was withheld. No evidence, absence or completeness is established.'
+  
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/worker/conversation/reads/test/newmode.test.mjs:83:149)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'INVALID_RESULT: mcp__meri_reads__search_federal_grants returned a result that failed validation and was withheld. No evidence, absence or completeness is established.',
+    expected: /^ACCESS_DENIED:/u,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at apps\worker\conversation\reads\test\newmode.test.mjs:81:2
+✖ mode SDK search_federal_awards: a mode change during source-secret acquisition prevents tool HTTP (193.2528ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /^ACCESS_DENIED:/u. Input:
+  
+  'INVALID_RESULT: mcp__meri_reads__search_federal_awards returned a result that failed validation and was withheld. No evidence, absence or completeness is established.'
+  
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/worker/conversation/reads/test/newmode.test.mjs:83:149)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'INVALID_RESULT: mcp__meri_reads__search_federal_awards returned a result that failed validation and was withheld. No evidence, absence or completeness is established.',
+    expected: /^ACCESS_DENIED:/u,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at apps\worker\conversation\reads\test\newmode.test.mjs:81:2
+✖ mode SDK search_program_elements: a mode change during source-secret acquisition prevents tool HTTP (191.2179ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /^ACCESS_DENIED:/u. Input:
+  
+  'INVALID_RESULT: mcp__meri_reads__search_program_elements returned a result that failed validation and was withheld. No evidence, absence or completeness is established.'
+  
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/worker/conversation/reads/test/newmode.test.mjs:83:149)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'INVALID_RESULT: mcp__meri_reads__search_program_elements returned a result that failed validation and was withheld. No evidence, absence or completeness is established.',
+    expected: /^ACCESS_DENIED:/u,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at apps\worker\conversation\reads\test\newmode.test.mjs:81:2
+✖ mode SDK get_program_element: a mode change during source-secret acquisition prevents tool HTTP (209.6982ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /^ACCESS_DENIED:/u. Input:
+  
+  'INVALID_RESULT: mcp__meri_reads__get_program_element returned a result that failed validation and was withheld. No evidence, absence or completeness is established.'
+  
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/worker/conversation/reads/test/newmode.test.mjs:83:149)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'INVALID_RESULT: mcp__meri_reads__get_program_element returned a result that failed validation and was withheld. No evidence, absence or completeness is established.',
+    expected: /^ACCESS_DENIED:/u,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at apps\worker\conversation\reads\test\newmode.test.mjs:81:2
+✖ mode SDK get_pe_budget_timeline: a mode change during source-secret acquisition prevents tool HTTP (185.2543ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /^ACCESS_DENIED:/u. Input:
+  
+  'INVALID_RESULT: mcp__meri_reads__get_pe_budget_timeline returned a result that failed validation and was withheld. No evidence, absence or completeness is established.'
+  
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/worker/conversation/reads/test/newmode.test.mjs:83:149)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'INVALID_RESULT: mcp__meri_reads__get_pe_budget_timeline returned a result that failed validation and was withheld. No evidence, absence or completeness is established.',
+    expected: /^ACCESS_DENIED:/u,
+    operator: 'match',
+    diff: 'simple'
+  }

@@ -1,0 +1,16 @@
+{
+  "executable": "C:/Users/Administrator/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe",
+  "arguments": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "--test-timeout=20000",
+    "apps/gateway/sources/public-data/test/handler.test.mjs",
+    "apps/gateway/sources/public-data/test/mode-handler.test.mjs",
+    "apps/gateway/sources/program-elements/test/handler.test.mjs"
+  ],
+  "exitCode": 0,
+  "log": "apps/gateway/sources/public-data/test/evidence/mode-initial.txt",
+  "qualification": "Offline source-only synthetic HTTP; no native mode or live installation qualification"
+}

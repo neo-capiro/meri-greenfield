@@ -11,7 +11,8 @@ export const NATIVE_READ_OBSERVATION_SCHEMA_VERSION='meri-native-read-observatio
 export const NATIVE_READ_OBSERVATION_HEADER='x-meri-read-observation';
 export const NATIVE_READ_OBSERVATION_MAX_BYTES=2048;
 export {FUNDING_READ_OPERATIONS};
-export const NATIVE_READ_OBSERVATION_OPERATIONS=Object.freeze([...FUNDING_READ_OPERATIONS,'search_client_knowledge']);
+export const MODE_READ_OPERATIONS=Object.freeze(['search_federal_grants','search_federal_awards','search_program_elements','get_program_element','get_pe_budget_timeline']);
+export const NATIVE_READ_OBSERVATION_OPERATIONS=Object.freeze([...FUNDING_READ_OPERATIONS,'search_client_knowledge',...MODE_READ_OPERATIONS]);
 const ajv=new Ajv({strict:true,allErrors:false}),valid=ajv.compile(schema);
 const refuse=()=>{throw Error('NATIVE_READ_OBSERVATION_REFUSED');};
 const bytes=value=>Buffer.from(canonicalize(value),'utf8');
@@ -28,7 +29,7 @@ export function assertNativeReadObservation(raw,correlation){
  try{
   const value=data(raw),binding=expected(correlation);
   if(!valid(value)||canonicalSha256(value.operation)!==canonicalSha256(binding.operation)||value.requestSha256!==binding.requestSha256)refuse();
-  fundingInstant(value.context.asOf);
+  if(!MODE_READ_OPERATIONS.includes(value.operation.id))fundingInstant(value.context.asOf);
   if(bytes(value).byteLength>NATIVE_READ_OBSERVATION_MAX_BYTES)refuse();
   return value;
  }catch{refuse();}

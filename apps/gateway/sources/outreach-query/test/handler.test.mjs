@@ -27,8 +27,8 @@ test('any own outreachId property refuses detail and malformed/empty fallback be
   await assert.rejects(f.handler()(f.call(request,f.authority,context)),{message:'UNAVAILABLE'});assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
  }
 });
-test('unscoped, blank, null and named client list selectors refuse before credentials',async()=>{
- for(const request of [{},{clientId:null},{clientId:''},{clientId:'  '},{clientId:'Synthetic name'}]){
+test('unscoped, blank and null client list selectors refuse before credentials',async()=>{
+ for(const request of [{},{clientId:null},{clientId:''},{clientId:'  '}]){
   const f=storedCase(),reference=request.clientId?.trim()||null,context={clientResolution:reference===null?null:{reference,clientId}};
   assert.throws(()=>captureOutreachListClientSelection(request),{message:'UNAVAILABLE'});
   await assert.rejects(f.handler()(f.call(request,f.authority,context)),{message:'UNAVAILABLE'});assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);

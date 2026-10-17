@@ -40,8 +40,8 @@ async function mounted({branch='global',scene=sceneFor(branch)}={}){
 function noSource(f){assert.equal(f.wire.length,0);assert.equal(f.stateOwner.secrets,0);assert.equal(f.state.reservations.size,0);assert.equal(f.state.budget.consumed_micro_usd,0);}
 function unknown(f){const [r]=f.state.reservations.values();assert.equal(r.state,'UNKNOWN');assert.equal(r.hold_micro_usd,1);assert.equal(r.output_bytes,null);assert.equal(r.charged_micro_usd,null);assert.equal(f.state.budget.consumed_micro_usd,0);assert.equal([...f.state.produced.values()][0].completion,null);}
 
-test('legal SDK71/41: optional public search is the only exposed family operation despite forged sibling inventories',()=>{
- assert.equal(familyReads().length,71);assert.equal(READ_FAMILY_IDS.length,41);assert.equal(READ_FAMILIES[family].clientScope,'optional');assert.deepEqual(READ_FAMILIES[family].operationIds,[id]);
+test('legal SDK76/42: optional public search is the only exposed family operation despite forged sibling inventories',()=>{
+ assert.equal(familyReads().length,76);assert.equal(READ_FAMILY_IDS.length,42);assert.equal(READ_FAMILIES[family].clientScope,'optional');assert.deepEqual(READ_FAMILIES[family].operationIds,[id]);
  assert.deepEqual(familyReads().filter(row=>row.family===family).map(row=>row.operation),[operation]);
  for(const scopes of [[{kind:'private-user'}],[{kind:'client'}]]){
   const result=resolveAvailableReads({policy:{generalReads:true,readFamilies:[family]},installation:{operations:[operation,sibling]},discovery:{operations:[sibling,operation]},scopes});

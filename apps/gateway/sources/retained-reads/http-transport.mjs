@@ -5,7 +5,7 @@ import {deny,safeFailure} from '../../dispatch/operation-result.mjs';
 import {ownFields,frozenData} from '../source-admission.mjs';
 import {readJsonResponse,cancelBody,responseBody} from '../json-response.mjs';
 import {credentialProof} from './call-context.mjs';
-import {createNativeReadObservation,encodeNativeReadObservation,NATIVE_READ_OBSERVATION_HEADER} from '../../../../packages/contracts/native-read-observation-0.2/validate.mjs';
+import {createNativeReadObservation,encodeNativeReadObservation,NATIVE_READ_OBSERVATION_HEADER,MODE_READ_OPERATIONS} from '../../../../packages/contracts/native-read-observation-0.2/validate.mjs';
 import {FUNDING_OPPORTUNITY_OPERATION_IDS} from '../../../../packages/contracts/retrieval-0.2/funding-opportunities-validation.mjs';
 const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const token=value=>typeof value==='string'&&/^[\x21-\x7e]{1,8192}$/.test(value);
@@ -23,8 +23,10 @@ export function createRetainedHttpTransport(configuration){
   const {path,method,body,serviceSecret=false,observation}=ownFields(specification,['path','method'],['body','serviceSecret','observation']);
   const fundingObservation=observation==='funding-asof'&&c.contract.binding.group==='funding-opportunities'&&FUNDING_OPPORTUNITY_OPERATION_IDS.includes(c.operation.id);
   const knowledgeObservation=observation==='client-knowledge-asof'&&c.contract.binding.group==='client-knowledge-search'&&c.operation.id==='search_client_knowledge';
-  if(observation!==undefined&&(!(fundingObservation||knowledgeObservation)||c.operation.version!=='0.2.0'||
+  const modeObservation=observation==='evidence-mode'&&['public-data','program-elements'].includes(c.contract.binding.group)&&MODE_READ_OPERATIONS.includes(c.operation.id);
+  if(observation!==undefined&&(!(fundingObservation||knowledgeObservation||modeObservation)||c.operation.version!=='0.2.0'||
    method!=='POST'||path!==`/api/clio/tools/${c.operation.id}`||!serviceSecret||!same(body,c.request)))deny('GATEWAY_CONFIGURATION');
+  if(MODE_READ_OPERATIONS.includes(c.operation.id)&&!modeObservation)deny('GATEWAY_CONFIGURATION');
   // Explicit trusted composition only. New-mode failure never reaches legacy credentials or transport.
   if(observation&&delegated)deny('UNAVAILABLE');
   if(delegated)return delegated.read.call(delegatedTransport,c,{path,method,...(body===undefined?{}:{body})});

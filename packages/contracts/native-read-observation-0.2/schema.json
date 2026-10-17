@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:meri:native-read-observation:0.2.0",
-  "title": "Private finite funding and semantic KB observation carrier; never an authority grant",
+  "title": "Private finite funding, semantic KB and evidence-mode observation carrier; never an authority grant",
   "$ref": "#/$defs/NativeReadObservation",
   "$defs": {
     "NativeReadOperationRef": {
@@ -15,7 +15,12 @@
             "get_funding_opportunity",
             "get_opportunity_client_context",
             "get_opportunity_government_landscape",
-            "search_client_knowledge"
+            "search_client_knowledge",
+            "search_federal_grants",
+            "search_federal_awards",
+            "search_program_elements",
+            "get_program_element",
+            "get_pe_budget_timeline"
           ]
         },
         "version": { "const": "0.2.0" }
@@ -36,6 +41,14 @@
       },
       "required": ["asOf"]
     },
+    "NativeReadModeContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "evidenceAccuracyMode": { "enum": ["off", "shadow", "enforce"] }
+      },
+      "required": ["evidenceAccuracyMode"]
+    },
     "NativeReadObservation": {
       "type": "object",
       "additionalProperties": false,
@@ -43,9 +56,30 @@
         "schemaVersion": { "const": "meri-native-read-observation/1" },
         "operation": { "$ref": "#/$defs/NativeReadOperationRef" },
         "requestSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
-        "context": { "$ref": "#/$defs/NativeReadContext" }
+        "context": {
+          "oneOf": [
+            { "$ref": "#/$defs/NativeReadContext" },
+            { "$ref": "#/$defs/NativeReadModeContext" }
+          ]
+        }
       },
-      "required": ["schemaVersion", "operation", "requestSha256", "context"]
+      "required": ["schemaVersion", "operation", "requestSha256", "context"],
+      "allOf": [{
+        "if": {
+          "properties": {
+            "operation": {
+              "type": "object",
+              "properties": {
+                "id": { "enum": ["search_federal_grants", "search_federal_awards", "search_program_elements", "get_program_element", "get_pe_budget_timeline"] }
+              },
+              "required": ["id"]
+            }
+          },
+          "required": ["operation"]
+        },
+        "then": { "properties": { "context": { "$ref": "#/$defs/NativeReadModeContext" } } },
+        "else": { "properties": { "context": { "$ref": "#/$defs/NativeReadContext" } } }
+      }]
     }
   }
 }
