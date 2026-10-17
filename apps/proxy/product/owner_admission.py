@@ -82,6 +82,7 @@ class _VerifiedAdmission:
     checked_at_ms: int
     expires_at_ms: int
     capture_lease: object
+    currentness_bytes: bytes
 
 
 class ProductOwnerAdmissionReader:
@@ -180,7 +181,7 @@ class ProductOwnerAdmissionReader:
                     or frame[7] > _integer(current[6], 1) or frame[7] > frame[4][4][3]):
                 _deny()
             check_carrier()
-            result = _VerifiedAdmission(read_id, _json(frame[4]), frame[6], frame[7], lease)
+            result = _VerifiedAdmission(read_id, _json(frame[4]), frame[6], frame[7], lease, _json(current))
             self._receipts[id(result)] = result
             return result
         except BaseException:
@@ -269,3 +270,15 @@ class ProductOwnerAdmissionReader:
         receipt = self._sync_read(expected[2], expected, expires_at_ms)
         self._consume(receipt, expected)
         return None
+
+    def read_current_conversation_sync(self, expected_source, expires_at_ms):
+        """Fresh seven-field Core receipt, never a cached authorization result."""
+        expected = json.loads(expected_source)
+        receipt = self._sync_read(expected[2], expected, expires_at_ms)
+        self._consume(receipt, expected)
+        value = json.loads(receipt.currentness_bytes)
+        return {"identitySha256": value[0], "binding": _binding(value[1]),
+                "scopes": [dict(zip(("kind", "tenantId", "resourceId", "policyRevision"), row))
+                           for row in value[2]], "selectedClientId": value[3],
+                "contextRevision": value[4], "checkedAtMs": value[5],
+                "expiresAtMs": min(value[6], receipt.expires_at_ms)}

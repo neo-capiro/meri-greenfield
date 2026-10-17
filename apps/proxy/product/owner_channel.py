@@ -200,7 +200,7 @@ def owner_exchange_state(exchange, policy, host_gate):
         if state is None:
             state = (loop, policy, host_gate,
                      {"operation": asyncio.Lock(), "capture": asyncio.Lock()},
-                     {"operation": None, "capture": None}, {})
+                     {"operation": None, "capture": None}, {}, asyncio.Lock())
             _EXCHANGE_STATES[exchange] = state
         if state[0] is not loop or state[1] != policy or state[2] is not host_gate:
             _deny()
@@ -452,10 +452,31 @@ class ProductOwnerBridge:
         finally:
             self._capture_token = None
 
+    async def _claim(self):
+        """Serialize a logical owner claim before OPEN or a capture poll starts.
+
+        Admission may still use the capture carrier during the active callback.
+        A queued claim has performed no I/O and expiry must not abort another
+        bridge's live claim. Release after confirmed UNKNOWN, not provider EOF.
+        """
+        lock = owner_exchange_state(self.exchange, self.policy, self.host_gate)[6]
+        at = self.now_ms()
+        if not self.host_gate.available or type(at) is not int or at >= self.deadline_ms:
+            _deny()
+        try:
+            await asyncio.wait_for(lock.acquire(), (self.deadline_ms-at)/1000)
+        except asyncio.TimeoutError:
+            _deny()
+        if not self.host_gate.available or self.now_ms() >= self.deadline_ms:
+            lock.release()
+            _deny()
+        return lock
+
     async def reserve(self, value, observation):
         if self._state != "NEW" or not self.host_gate.available or not self._matches(value):
             _deny()
         self._state = "FAILED"
+        claim_lock = await self._claim()
         try:
             claim = encode_reservation(value, observation)
             # The open selector is derived from the host-observed credential;
@@ -482,6 +503,8 @@ class ProductOwnerBridge:
         except Exception:
             self._abort()
             _deny()
+        finally:
+            claim_lock.release()
 
     def bind_complete_capture(self, capture):
         if self._state != "HELD" or self._complete_capture is not None or not callable(capture):
@@ -494,6 +517,7 @@ class ProductOwnerBridge:
                 or request_id != self.request_id):
             _deny()
         self._state = "FAILED"
+        claim_lock = await self._claim()
         try:
             result_frame = await self._operation(encode_settlement(request_id, result),
                                                  "complete")
@@ -513,11 +537,14 @@ class ProductOwnerBridge:
         except Exception:
             self._abort()
             _deny()
+        finally:
+            claim_lock.release()
 
     async def read_outcome(self, request_id):
         if self._state != "UNCERTAIN" or request_id != self.request_id:
             _deny()
         self._state = "FAILED"
+        claim_lock = await self._claim()
         try:
             result = await self._exchange("operation", OPERATION, _wire([
                 "meri.proxy.operation/1", self.session_id,
@@ -539,6 +566,8 @@ class ProductOwnerBridge:
         except Exception:
             self._abort()
             _deny()
+        finally:
+            claim_lock.release()
 
 
 def make_product_owner_bridge(*, policy, exchange, host_gate, request_id, binding,

@@ -121,6 +121,47 @@ class ReservationExchange(Exchange):
         return self.reply(answer, channel)
 
 
+class TwoReservationExchange(Exchange):
+    """One actual pair of carrier locks with two independently captured sessions."""
+    def __init__(self, policy, issued, requests, observation):
+        super().__init__(policy, issued)
+        self.source[2] = SHA
+        self.requests, self.observation = requests, observation
+        self.allow_first_open, self.first_open = asyncio.Event(), asyncio.Event()
+        self.entered = {key: asyncio.Event() for key in requests}
+        self.replied = {key: asyncio.Event() for key in requests}
+        self.trace = []
+
+    async def __call__(self, channel, path, body, timeout):
+        frame = json.loads(body)
+        if frame[0] == "meri.proxy.admission-read/1":
+            self.trace.append(("admission",channel))
+            return await super().__call__(channel,path,body,timeout)
+        if path == OPEN:
+            request_id = frame[1]
+            self.trace.append(("open",request_id))
+            if request_id == "request_A":
+                self.first_open.set()
+                await self.allow_first_open.wait()
+            return self.reply(["meri.proxy.session/1",request_id,request_id,frame[2]],channel)
+        request_id = frame[1]
+        request = self.requests[request_id]
+        if path == POLL:
+            self.trace.append(("poll",request_id))
+            await self.entered[request_id].wait()
+            answer = ["meri.proxy.capture-call/1",request_id,self.source[0],request["deadlineMs"]]
+        elif path == REPLY:
+            self.replied[request_id].set()
+            answer = ["meri.proxy.capture-ack/1",request_id,request_id,"call"]
+        else:
+            self.trace.append(("claim",request_id))
+            self.entered[request_id].set()
+            await self.replied[request_id].wait()
+            answer = ["meri.proxy.reservation-receipt/1",request_id,[request_id,
+                hashlib.sha256(self.observation["nativeRequest"]["body"]).hexdigest(),"UNKNOWN"]]
+        return self.reply(answer,channel)
+
+
 class AdmissionTests(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         self.issued = issued_fixture()[0].issued
@@ -304,6 +345,75 @@ class AdmissionTests(unittest.IsolatedAsyncioTestCase):
             late_ready.set()
             if copied: await asyncio.gather(*copied)
             await life.close()
+
+    async def test_two_real_bridges_serialize_open_and_capture_while_each_refreshes_fresh_authority(self):
+        deadline=milliseconds()+2000
+        template,observation=reservation()
+        template.update(binding=dict(self.issued.execution_binding),deadlineMs=deadline)
+        observation.update(proxyCredential=KEY.decode())
+        observation["peer"].update(binding=dict(self.issued.execution_binding),
+            taskArn=self.issued.binding.worker_arn,grantId=self.issued.grant_id)
+        requests={key:{**template,"requestId":key} for key in ("request_A","request_B")}
+        exchange=TwoReservationExchange(self.policy,self.issued,requests,observation)
+        reader=ProductOwnerAdmissionReader(policy=self.policy,exchange=exchange,
+            host_gate=self.gate,owner_loop=asyncio.get_running_loop())
+        source=await asyncio.to_thread(reader.resolve_for_issued_sync,
+            issued=self.issued,capability_sha256=SHA,deadline_ms=deadline)
+        peer=PeerLease("10.77.0.9",time.monotonic(),source.authority.binding,source.authority.grant_id)
+        async def observe():return replace(peer,observed_at=time.monotonic())
+        lives={key:RequestLifetime(IngressAdmission(source.authority,peer),observe,
+            time.monotonic()+2,LifetimeLimits(),PendingWork()) for key in requests}
+        callback_entered,continue_first=asyncio.Event(),asyncio.Event()
+        bridges={}
+        for key in requests:
+            async def capture(request, key=key):
+                self.assertEqual(request,requests[key])
+                if key=="request_A":
+                    callback_entered.set();await continue_first.wait()
+                await lives[key].refresh()
+                return {**observation,"requestId":key}
+            bridges[key]=ProductOwnerBridge(policy=self.policy,exchange=exchange,capture_call=capture,
+                host_gate=self.gate,request_id=key,binding=template["binding"],deadline_ms=deadline,
+                grant_id=self.issued.grant_id,capability_sha256=SHA)
+        tasks=[]
+        try:
+            for life in lives.values():await life.start(ingress_fixture()[2])
+            tasks.append(asyncio.create_task(bridges["request_A"].reserve(requests["request_A"],{**observation,"requestId":"request_A"})))
+            await asyncio.wait_for(exchange.first_open.wait(),.5)
+            tasks.append(asyncio.create_task(bridges["request_B"].reserve(requests["request_B"],{**observation,"requestId":"request_B"})))
+            await asyncio.sleep(0);exchange.allow_first_open.set()
+            await asyncio.wait_for(callback_entered.wait(),.5)
+            await asyncio.sleep(0)
+            self.assertNotIn(("open","request_B"),exchange.trace,
+                "the second bridge must not open or poll ahead of the active capture refresh")
+            continue_first.set()
+            results=await asyncio.wait_for(asyncio.gather(*tasks),1)
+            self.assertEqual([item["state"] for item in results],["UNKNOWN","UNKNOWN"])
+            self.assertEqual([item for item in exchange.trace if item[0]=="admission"],
+                [("admission","operation")]*3+[("admission","capture")]*2)
+            self.assertTrue(self.gate.available)
+        finally:
+            exchange.allow_first_open.set();continue_first.set()
+            for task in tasks:
+                if not task.done():task.cancel()
+            if tasks:await asyncio.gather(*tasks,return_exceptions=True)
+            for life in lives.values():await life.close()
+
+    async def test_expired_queued_claim_never_polls_or_aborts_another_bridge(self):
+        from apps.proxy.product.owner_channel import owner_exchange_state
+        lock=owner_exchange_state(self.exchange,self.policy,self.gate)[6]
+        await lock.acquire()
+        value,observation=reservation();deadline=milliseconds()+30
+        value.update(binding=dict(self.issued.execution_binding),deadlineMs=deadline)
+        async def capture(_request):raise AssertionError("expired claim captured")
+        bridge=ProductOwnerBridge(policy=self.policy,exchange=self.exchange,capture_call=capture,
+            host_gate=self.gate,request_id=value["requestId"],binding=value["binding"],deadline_ms=deadline,
+            grant_id=self.issued.grant_id,capability_sha256=SHA)
+        try:
+            with self.assertRaises(Exception):await bridge.reserve(value,observation)
+            self.assertEqual(self.exchange.calls,[])
+            self.assertFalse(self.exchange.aborted);self.assertTrue(self.gate.available)
+        finally:lock.release()
 
     def test_factory_rejects_boolean_callback_and_binding_validator_preserves_unicode_rules(self):
         with self.assertRaises(Exception):
