@@ -11,7 +11,7 @@ const account='967807252336',region='us-east-1',sha='a'.repeat(64),sourceCommit=
 const roleSecret=(name,n)=>`arn:aws:secretsmanager:${region}:${account}:secret:meri/temporal/${name}-ABC123:::${String(n).repeat(32)}`;
 const controlCa=Buffer.from('synthetic public CA'),controlCaSha=createHash('sha256').update(controlCa).digest('hex');
 function temporal(){return {
- account,region,enabled:false,placement:{kind:'existing-capiro-dev-vpc',reviewSha256:sha},
+ account,region,enabled:false,activation:'disabled',placement:{kind:'existing-capiro-dev-vpc',reviewSha256:sha},
  clusterArn:`arn:aws:ecs:${region}:${account}:cluster/capiro-dev`,vpcId:'vpc-0ac26cfac7ed972be',
  subnets:[{id:'subnet-11111111',availabilityZone:'us-east-1a'},{id:'subnet-22222222',availabilityZone:'us-east-1b'}],
  privateDnsName:'temporal.meri.internal',serverImageUri:`${account}.dkr.ecr.${region}.amazonaws.com/meri/temporal@sha256:${sha}`,

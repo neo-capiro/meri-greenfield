@@ -14,7 +14,7 @@ const account='967807252336',region='us-east-1',sha='a'.repeat(64);
 const rendererSha=createHash('sha256').update(readFileSync(new URL('./temporal-launch-render.mjs',import.meta.url))).digest('hex');
 const version=(name,n)=>`arn:aws:secretsmanager:${region}:${account}:secret:meri/temporal/${name}-ABC123:::${String(n).repeat(32)}`;
 function binding(){return {
- account,region,enabled:false,placement:{kind:'existing-capiro-dev-vpc',reviewSha256:sha},clusterArn:`arn:aws:ecs:${region}:${account}:cluster/capiro-dev`,vpcId:'vpc-0ac26cfac7ed972be',
+ account,region,enabled:false,activation:'disabled',placement:{kind:'existing-capiro-dev-vpc',reviewSha256:sha},clusterArn:`arn:aws:ecs:${region}:${account}:cluster/capiro-dev`,vpcId:'vpc-0ac26cfac7ed972be',
  subnets:[{id:'subnet-1234abcd',availabilityZone:'us-east-1a'},{id:'subnet-abcd1234',availabilityZone:'us-east-1b'}],
  privateDnsName:'temporal.meri.internal',serverImageUri:`${account}.dkr.ecr.${region}.amazonaws.com/meri/temporal-server@sha256:${sha}`,
  upstreamServerImageDigest:pins.server.imageAmd64Digest,launchSourceCommit:'c'.repeat(40),launchContractSha256:rendererSha,logGroupName:'/meri/temporal-preview',
@@ -277,6 +277,21 @@ test('missing or contradictory authority and network inputs refuse before synthe
   x=>{x.extra='unexpected';}
  ];
  for(const change of changes){const b=binding();change(b);assert.throws(()=>synthesizeTemporalPreview(b),/TEMPORAL_PREVIEW_BINDING_REFUSED/u);}
+});
+
+test('activation is a required binding value rendered verbatim into every role',()=>{
+ for(const activation of ['approved','disabled']){
+  const b=binding();b.activation=activation;
+  const t=synthesizeTemporalPreview(b);
+  for(const role of TEMPORAL_ROLES){
+   const env=Object.fromEntries(task(t,role).ContainerDefinitions[0].Environment.map(x=>[x.Name,x.Value]));
+   assert.equal(env.MERI_TEMPORAL_ACTIVATION,activation);
+  }
+ }
+ for(const mutate of [x=>{delete x.activation;},x=>{x.activation='';},x=>{x.activation='Approved';},
+  x=>{x.activation=true;},x=>{x.activation=null;},x=>{x.activation='enabled';}]){
+  const b=binding();mutate(b);assert.throws(()=>synthesizeTemporalPreview(b),/TEMPORAL_PREVIEW_BINDING_REFUSED/u);
+ }
 });
 
 // Live capiro-dev inventory, 17 Oct 2026: every interface endpoint shares one SG.
