@@ -1,0 +1,14 @@
+Γ£ö get_committee_roster: canonical schema retains optional literal selectors and excludes authority (7.242ms)
+Γ£ö get_committee_roster: installed/discovered MCP tool returns exact carrier and durable receipt (208.0132ms)
+Γ£ö get_committee_roster: absent installation/discovery/policy and disabled source create no server (18.917ms)
+Γ£ö list_members: canonical schema retains optional literal selectors and excludes authority (2.4777ms)
+Γ£ö list_members: installed/discovered MCP tool returns exact carrier and durable receipt (83.5524ms)
+Γ£ö list_members: absent installation/discovery/policy and disabled source create no server (16.1112ms)
+Γä╣ tests 6
+Γä╣ suites 0
+Γä╣ pass 6
+Γä╣ fail 0
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 3804.8512

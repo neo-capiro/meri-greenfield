@@ -1,0 +1,18 @@
+Γ£ö funding SDK70/40 contains all five source operations while every current installation gate stays separate (3.4756ms)
+Γ£ö all forty constructible families remain unavailable without installation or discovery (8.368ms)
+Γ£ö per-operation client prefilter preserves personal meetings/tasks while withholding required-client reads (1.7626ms)
+Γ£ö synthetic get_state_bill_status: advertised arguments retain canonical constraints (6.6289ms)
+Γ£ö synthetic search_state_floor_votes: advertised arguments retain canonical constraints (2.7508ms)
+Γ£ö synthetic search_tracked_bills: advertised arguments retain canonical constraints (1.8736ms)
+Γ£ö synthetic search_committee_hearings: advertised arguments retain canonical constraints (2.83ms)
+Γ£ö funding SDK: the complete five-operation family requires a task client scope despite forged inventories (7.8545ms)
+Γ£ö KB SDK: complete family keeps optional graph and requires a current task client scope only for semantic search (7.5283ms)
+Γ£ö four remaining partial-input operations remain absent from SDK policy and cannot be advertised by installation/discovery (373.1137ms)
+Γä╣ tests 10
+Γä╣ suites 0
+Γä╣ pass 10
+Γä╣ fail 0
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 6045.3554

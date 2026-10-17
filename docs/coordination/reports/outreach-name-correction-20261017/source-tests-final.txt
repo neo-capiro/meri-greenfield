@@ -1,0 +1,172 @@
+TAP version 13
+# Subtest: explicit client list uses fixed original native POST and exact private receiving carrier
+ok 1 - explicit client list uses fixed original native POST and exact private receiving carrier
+  ---
+  duration_ms: 86.993
+  type: 'test'
+  ...
+# Subtest: client UUID capture preserves native trim/clip/trim and case while the raw request is sent unchanged
+ok 2 - client UUID capture preserves native trim/clip/trim and case while the raw request is sent unchanged
+  ---
+  duration_ms: 3.2186
+  type: 'test'
+  ...
+# Subtest: any own outreachId property refuses detail and malformed/empty fallback before credentials
+ok 3 - any own outreachId property refuses detail and malformed/empty fallback before credentials
+  ---
+  duration_ms: 5.8968
+  type: 'test'
+  ...
+# Subtest: unscoped, blank and null client list selectors refuse before credentials
+ok 4 - unscoped, blank and null client list selectors refuse before credentials
+  ---
+  duration_ms: 4.2559
+  type: 'test'
+  ...
+# Subtest: malformed raw scalars, authority fields and hostile objects never execute coercion or credential IO
+ok 5 - malformed raw scalars, authority fields and hostile objects never execute coercion or credential IO
+  ---
+  duration_ms: 2.9316
+  type: 'test'
+  ...
+# Subtest: canonical resolution and normalized client cannot be substituted before source access
+ok 6 - canonical resolution and normalized client cannot be substituted before source access
+  ---
+  duration_ms: 2.2171
+  type: 'test'
+  ...
+# Subtest: client subject and matching resource are mandatory even with an otherwise coherent operation decision
+ok 7 - client subject and matching resource are mandatory even with an otherwise coherent operation decision
+  ---
+  duration_ms: 3.7823
+  type: 'test'
+  ...
+# Subtest: native list serializes dates and preserves scalar campaign metadata without private nested rows
+ok 8 - native list serializes dates and preserves scalar campaign metadata without private nested rows
+  ---
+  duration_ms: 2.0791
+  type: 'test'
+  ...
+# Subtest: campaign total binds the fetched selected-client window, including empty and limited results
+ok 9 - campaign total binds the fetched selected-client window, including empty and limited results
+  ---
+  duration_ms: 3.7192
+  type: 'test'
+  ...
+# Subtest: receiving refuses cross-client/status rows, count substitution, duplicates and nested source details
+ok 10 - receiving refuses cross-client/status rows, count substitution, duplicates and nested source details
+  ---
+  duration_ms: 15.7917
+  type: 'test'
+  ...
+# Subtest: native detail/foreign errors cannot become an accepted list response
+ok 11 - native detail/foreign errors cannot become an accepted list response
+  ---
+  duration_ms: 6.4132
+  type: 'test'
+  ...
+# Subtest: source decision/credential revocation, response ceiling and cancelled authority withhold campaign bytes
+ok 12 - source decision/credential revocation, response ceiling and cancelled authority withhold campaign bytes
+  ---
+  duration_ms: 7.3366
+  type: 'test'
+  ...
+# Subtest: list factory refuses foreign, duplicate and wrong-version operation mappings
+ok 13 - list factory refuses foreign, duplicate and wrong-version operation mappings
+  ---
+  duration_ms: 0.6963
+  type: 'test'
+  ...
+# Subtest: canonical reference capture admits names without manufacturing a selected client or expanding the partial boundary
+ok 14 - canonical reference capture admits names without manufacturing a selected client or expanding the partial boundary
+  ---
+  duration_ms: 7.6182
+  type: 'test'
+  ...
+# Subtest: named selection accepts only the exact inert closed reference and lowercase UUID; UUID stays independent of an observation
+ok 15 - named selection accepts only the exact inert closed reference and lowercase UUID; UUID stays independent of an observation
+  ---
+  duration_ms: 1.4725
+  type: 'test'
+  ...
+# Subtest: named campaign list needs per-call credentials and rewrites only the domain client while private proof stays raw
+ok 16 - named campaign list needs per-call credentials and rewrites only the domain client while private proof stays raw
+  ---
+  duration_ms: 77.0892
+  type: 'test'
+  ...
+# Subtest: named clipping and Unicode use the canonical reference while every other raw selector is retained
+ok 17 - named clipping and Unicode use the canonical reference while every other raw selector is retained
+  ---
+  duration_ms: 8.0664
+  type: 'test'
+  ...
+# Subtest: named and UUID calls cannot combine a static credential fallback with a per-call port
+ok 18 - named and UUID calls cannot combine a static credential fallback with a per-call port
+  ---
+  duration_ms: 0.8857
+  type: 'test'
+  ...
+# Subtest: foreign selection, personal/multiple-client subjects and missing client resources refuse before credentials or campaign reads
+ok 19 - foreign selection, personal/multiple-client subjects and missing client resources refuse before credentials or campaign reads
+  ---
+  duration_ms: 7.4765
+  type: 'test'
+  ...
+# Subtest: raw/client context substitution and per-call credential proof drift never reach the campaign endpoint
+ok 20 - raw/client context substitution and per-call credential proof drift never reach the campaign endpoint
+  ---
+  duration_ms: 4.0015
+  type: 'test'
+  ...
+# Subtest: existing check-ref accepts Nest201 and passes the exact captured name before campaign UUID projection
+ok 21 - existing check-ref accepts Nest201 and passes the exact captured name before campaign UUID projection
+  ---
+  duration_ms: 4.8533
+  type: 'test'
+  ...
+# Subtest: native false remains opaque UNAVAILABLE: ambiguous
+ok 22 - native false remains opaque UNAVAILABLE: ambiguous
+  ---
+  duration_ms: 1.9923
+  type: 'test'
+  ...
+# Subtest: native false remains opaque UNAVAILABLE: missing
+ok 23 - native false remains opaque UNAVAILABLE: missing
+  ---
+  duration_ms: 1.8355
+  type: 'test'
+  ...
+# Subtest: absent reference reader and native HTTP failures cannot borrow static campaign credentials
+ok 24 - absent reference reader and native HTTP failures cannot borrow static campaign credentials
+  ---
+  duration_ms: 3.0168
+  type: 'test'
+  ...
+# Subtest: malformed closed native resolver results never become a campaign lookup or successful empty list
+ok 25 - malformed closed native resolver results never become a campaign lookup or successful empty list
+  ---
+  duration_ms: 9.47
+  type: 'test'
+  ...
+# Subtest: legacy UUID uses the original case/whitespace body with either credential composition and no name observation
+ok 26 - legacy UUID uses the original case/whitespace body with either credential composition and no name observation
+  ---
+  duration_ms: 3.4944
+  type: 'test'
+  ...
+# Subtest: named receiving keeps client/status/count barriers and cancellation/deadline/resource limits
+ok 27 - named receiving keeps client/status/count barriers and cancellation/deadline/resource limits
+  ---
+  duration_ms: 12.3476
+  type: 'test'
+  ...
+1..27
+# tests 27
+# suites 0
+# pass 27
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1416.3015

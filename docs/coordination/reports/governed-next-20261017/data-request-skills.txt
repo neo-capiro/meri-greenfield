@@ -1,0 +1,76 @@
+node:internal/modules/esm/resolve:271
+    throw new ERR_MODULE_NOT_FOUND(
+          ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module 'C:\Users\Administrator\Documents\Codex\2026-10-16\task-4\meri-governed-next\docs\coordination\r2\skills.json' imported from C:\Users\Administrator\Documents\Codex\2026-10-16\task-4\meri-governed-next\packages\skills\test\assets.test.mjs
+    at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+    at moduleResolve (node:internal/modules/esm/resolve:865:10)
+    at defaultResolve (node:internal/modules/esm/resolve:992:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+    at #resolve (node:internal/modules/esm/loader:683:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33)
+    at ModuleJob.link (node:internal/modules/esm/module_job:253:17) {
+  code: 'ERR_MODULE_NOT_FOUND',
+  url: 'file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-governed-next/docs/coordination/r2/skills.json'
+}
+
+Node.js v24.19.0
+✖ packages\skills\test\assets.test.mjs (135.2082ms)
+✔ exact original promise is bound with scope/version/hash and visible six-source coverage; no task mutation (63.6676ms)
+✔ suggestions remain separate and exact duplicate promise origins merge without semantic merging (4.155ms)
+✔ conflicting owner/date evidence stays conflicting, including contradictions from related tracking (4.3303ms)
+✔ completed native task and free-form delivery claim cannot establish delivery or acceptance (3.3824ms)
+✔ unread sources and unmapped Monday are visible and never support absence (2.407ms)
+✔ disconnected/unavailable mapped Monday retains source failure and continuation (3.2962ms)
+✔ refuses foreign tenant without a ledger (2.152ms)
+✔ refuses foreign actor without a ledger (1.9124ms)
+✔ refuses different conversation without a ledger (2.2269ms)
+✔ refuses different run without a ledger (2.1954ms)
+✔ refuses different attempt without a ledger (2.0544ms)
+✔ refuses obsolete fence without a ledger (2.0891ms)
+✔ refuses different decision without a ledger (2.1905ms)
+✔ refuses substituted bytes without a ledger (3.3233ms)
+✔ refuses substituted hash without a ledger (1.6672ms)
+✔ refuses snippet without a ledger (1.6696ms)
+✔ refuses future read without a ledger (1.6962ms)
+✔ refuses unknown operation without a ledger (1.6396ms)
+✔ refuses other window without a ledger (17.9004ms)
+✔ refuses unmapped Monday read without a ledger (2.6013ms)
+✔ refuses wrong Monday boards without a ledger (2.5284ms)
+✔ refuses record-version substitution without a ledger (2.7031ms)
+✔ refuses quote mismatch without a ledger (2.5027ms)
+✔ refuses quote range without a ledger (2.5427ms)
+✔ refuses invented tracking source without a ledger (2.6372ms)
+✔ refuses orphan delivery link without a ledger (2.6384ms)
+✔ refuses invalid due date without a ledger (2.5026ms)
+✔ refuses duplicate ID without a ledger (2.5921ms)
+✔ refuses duplicate source without a ledger (3.8841ms)
+✔ refuses model-completed property without a ledger (2.7444ms)
+✔ accessors and extra options do not run during input admission (0.3333ms)
+✔ actual native scalar-safe body pages feed existing Commitments compiler without invented envelopes (66.3888ms)
+✔ missing first source body remains incomplete and has no eligible passage (2.4458ms)
+✔ refuses result digest substitution (1.9517ms)
+✔ refuses current binding substitution (2.521ms)
+✔ refuses scope substitution (2.6071ms)
+✔ refuses immutable body hash substitution (3.083ms)
+✔ refuses future source clock substitution (2.113ms)
+✔ refuses unknown receipt field substitution (1.439ms)
+✔ native meeting locator gets a stable disclosed Meri UUID without upgrading semantics (48.1847ms)
+✔ approved native memory keeps salted source hash separate from material plaintext SHA (62.7945ms)
+ℹ tests 42
+ℹ suites 0
+ℹ pass 41
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1543.9119
+
+✖ failing tests:
+
+test at packages\skills\test\assets.test.mjs:1:1
+✖ packages\skills\test\assets.test.mjs (135.2082ms)
+  'test failed'

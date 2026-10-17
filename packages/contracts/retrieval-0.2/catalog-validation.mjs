@@ -360,7 +360,7 @@ export const CATALOG_OPERATION_BINDINGS = Object.freeze([
   Object.freeze({id: 'query_tasks', nativeId: 'query_tasks', group: 'operational-reads', input: 'TaskReadInput', output: 'TaskReadPage', version: '0.2.0',
     normalize: (v, request, context, binding) => selected(v.assertTaskReadInput(request, clock(context, ['nowMs', 'actorId']))),
     outputAssert: (v, page, request, context, binding) => v.assertTaskReadPage(page, request, clock(context, ['nowMs', 'actorId']))}),
-  Object.freeze({id: 'search_capiro_data', nativeId: 'search_capiro_data', group: 'data-search', input: 'DataSearchInput', output: 'SearchCapiroDataResult', version: '0.2.0',
+  Object.freeze({id: 'search_capiro_data', nativeId: 'search_capiro_data', group: 'data-search', input: 'DataSearchRequest', output: 'SearchCapiroDataResult', version: '0.2.0',
     normalize: (v, request, context, binding) => searched(v.normalizeDataSearchInput(request)),
     outputAssert: (v, page, request, context, binding) => v.assertDataSearchResult(page)}),
   Object.freeze({id: 'search_federal_contract_awards', nativeId: 'search_federal_contract_awards', group: 'federal-market', input: 'SearchFederalContractAwardsInput', output: 'SearchFederalContractAwardsOutput', version: '0.2.0',

@@ -1,0 +1,138 @@
+Γ£ö get_state_bill_status: every frozen selector class delegates the original flat body under the same {} context (85.9055ms)
+Γ£ö search_state_floor_votes: every frozen selector class delegates the original flat body under the same {} context (24.2565ms)
+Γ£ö get_state_bill_status: native live lookup outcome notes retain exact reason/Unicode with no retry or generic absence (8.2027ms)
+Γ£ö search_state_floor_votes: native live lookup outcome notes retain exact reason/Unicode with no retry or generic absence (6.897ms)
+Γ£ö missing and invalid native status branches preserve billId/query precedence and precise request-derived text (12.8585ms)
+Γ£ö native stored and live-found designation keys are received without choosing or manufacturing a session (17.2994ms)
+Γ£ö invalid supplied floor bill cannot broaden to stored rows or substitute another failure; designations stay key-bound (15.9837ms)
+Γ£ö resolved native empty status/votes stay separate from unresolved designation and retain actual caveats (6.5285ms)
+Γ£ö designation selection retains current exact actor/tenant/operation/source grants before credential factories (7.8333ms)
+Γ£ö raw designation and retained hash/context cannot be replaced by a canonical request or model trust keys (2.7508ms)
+Γ£û native HTTP failure, denial, response limits, cancellation and timeout cannot synthesize or retry a result (19.4896ms)
+Γ£ö fixture unresolved notes are literal native outcomes and no receiving branch rewrites malformed source bytes (1.6599ms)
+Γ£ö get_state_bill_status: canonical stored-key fixed POST, original raw request and exact private carrier (63.5514ms)
+Γ£ö get_state_bill_status: designation/invalid selectors and status omissions delegate unchanged to native result branches (25.3122ms)
+Γ£ö get_state_bill_status: canonical case/dot/whitespace/special-session aliases preserve one native normalization pass (2.1483ms)
+Γ£ö get_state_bill_status: effective trim/clip before canonical inspection matches the native parser (3.7898ms)
+Γ£ö get_state_bill_status: current actor, tenant, operation and source grants remain required before credentials (6.6681ms)
+Γ£ö get_state_bill_status: argument authority, fake no-fetch options, context and digest substitution are invalid (2.5802ms)
+Γ£ö get_state_bill_status: correlated credentials and both native secrets remain mandatory (17.0205ms)
+Γ£ö get_state_bill_status: original deadline, abort and response bounds withhold bytes (3.8974ms)
+Γ£ö get_state_bill_status: malformed native errors, new completeness fields and foreign selected keys cannot be released (8.9535ms)
+Γ£ö search_state_floor_votes: canonical stored-key fixed POST, original raw request and exact private carrier (9.3741ms)
+Γ£ö search_state_floor_votes: designation/invalid selectors and status omissions delegate unchanged to native result branches (10.2075ms)
+Γ£ö search_state_floor_votes: canonical case/dot/whitespace/special-session aliases preserve one native normalization pass (2.8115ms)
+Γ£ö search_state_floor_votes: effective trim/clip before canonical inspection matches the native parser (2.9747ms)
+Γ£ö search_state_floor_votes: current actor, tenant, operation and source grants remain required before credentials (4.9248ms)
+Γ£ö search_state_floor_votes: argument authority, fake no-fetch options, context and digest substitution are invalid (1.8412ms)
+Γ£ö search_state_floor_votes: correlated credentials and both native secrets remain mandatory (14.551ms)
+Γ£ö search_state_floor_votes: original deadline, abort and response bounds withhold bytes (3.448ms)
+Γ£ö search_state_floor_votes: malformed native errors, new completeness fields and foreign selected keys cannot be released (7.4427ms)
+Γ£ö status query fallback preserves billId precedence while native resolution receives the exact designation (9.2719ms)
+Γ£ö absent canonical stored bill preserves explicit database-scoped honesty and makes one request only (3.1303ms)
+Γ£ö status keeps no-vote/dead-session caveats and independent companion status facts (3.3145ms)
+Γ£ö status nullable/negative stored vote facts and inherited-label omission survive JSON receiving (1.7624ms)
+Γ£ö vote response preserves empty honesty, limit/chamber predicates and canonical SQL-date ordering (10.9005ms)
+Γ£ö native dates cross actual JSON bytes and no result bridge changes the stored projection (1.7253ms)
+Γ£ö vote null dates precede descending dated rows and ascending source rows are refused (3.3456ms)
+Γ£ö per-call credential composition retains original designation authority and does not bypass grammar checks (3.1987ms)
+Γ£ö constructor allows exactly two fixed read producers, no caller route or unsupported no-fetch configuration (0.7139ms)
+Γ£ö shared preflight preserves canonical case/dot/clip aliases while classifying only effective no-bill selection as missing (9.4915ms)
+Γ£ö absent/null/empty/blank effective bill selector admits the stored floor-vote branch without a resolution observation (65.0752ms)
+Γ£ö floor-vote query remains a motion selector even when it resembles a bill, unlike status query fallback (4.7917ms)
+Γ£ö no-bill state prefix correlates every row and unscoped stored votes may span states (7.3623ms)
+Γ£ö no-bill result retains chamber/motion/limit/date predicates and actual empty-source honesty (13.177ms)
+Γ£ö no-bill selection still requires current exact actor/tenant/operation/source grants and correlated credentials (6.3779ms)
+Γ£ö supplied designation, malformed and UUID selectors delegate once and cannot broaden unresolved votes (12.2811ms)
+Γ£ö pure stored-state preflight rejects extra trust/no-fetch fields and hostile objects without executing hooks (2.4913ms)
+Γ£ö syntax helper canonical normalization and hint precedence (2.0452ms)
+Γ£ö syntax helper refuses effectful scalar coercion (0.3048ms)
+Γ£ö status bill precedence and query fallback retain trimmed UTF16 caps (4.1676ms)
+Γ£ö vote query is motion query, never alias for bill selection (3.0734ms)
+Γ£ö limits preserve primitive numeric coercion and default semantics (0.7293ms)
+Γ£ö options closed and no caller actor/tenant/source context accepted (0.2931ms)
+Γ£ö unknown operation cannot invoke coercion (0.1549ms)
+Γ£ö missing status selection carries no fabricated id or found payload (17.6135ms)
+Γ£ö unparseable status preserves reason and cannot become absent resolved result (0.6611ms)
+Γ£ö direct key absent preserves exact identity and cannot pretend unresolved (0.5159ms)
+Γ£ö direct found does not derive stored tuple from canonical id (0.7126ms)
+Γ£ö designation permits historical session but requires selected state and bill (0.7991ms)
+Γ£ö ordinary unknown and empty status labels are retained (0.6847ms)
+Γ£ö inherited status metadata retains omission instead of fabricated label (1.0452ms)
+Γ£ö source date instants and SQLDate distinctions (0.8833ms)
+Γ£ö action 15-window allows ties, signed importance and rejects ascending (0.8678ms)
+Γ£ö status votes nullable dates first, ties allowed, no tally inference (0.898ms)
+Γ£ö empty rollcall and dead status caveats must be exact and cumulative (0.4959ms)
+Γ£ö companion null enrichment differs from present row null status (1.1152ms)
+Γ£ö companion inherited status may omit label while other fields remain required (0.3328ms)
+Γ£ö unresolved requested vote bill cannot broaden to state or motion search (4.6208ms)
+Γ£ö designation vote unresolved note is empty only, successful rows share one selected key (0.5858ms)
+Γ£ö direct bill votes override state hint but never allow nullable or foreign keys (0.3405ms)
+Γ£ö state-wide prefix is SQL prefix only, no invented bill grammar (0.2955ms)
+Γ£ö unsupported chamber remains no-filter; supported chamber exact (0.4584ms)
+Γ£ö query excludes null motion but SQL owns substring/collation semantics (0.2169ms)
+Γ£ö votesFound equals returned window, no total or member-level fields invented (0.4469ms)
+Γ£ö nonempty vote response cannot carry unavailable note (0.2165ms)
+Γ£ö hostile own-data admission causes no getter, proxy, symbol or coercion effects (0.2279ms)
+Γ£ö result snapshots refuse effects and close all nested fields (0.6018ms)
+Γ£ö normalization and assertions preserve caller-owned data (0.4965ms)
+Γ£ö state helper is primitive-only, inert and clock-free (1.9992ms)
+Γ£ö canonical key normalization overrides state hint and retains special-session suffix (4.1833ms)
+Γ£ö designation hint first, prefix fallback and DC hyphen normalization (0.3252ms)
+Γ£ö status alias precedence and blank/null fallback preserve source selectors (0.3685ms)
+Γ£ö source clamp and UTF16 trimming/caps remain numeric/string compatible (0.9904ms)
+Γ£ö closed request and context cannot carry authority or member selectors (0.6298ms)
+Γ£ö hostile getters/proxies/selectors are rejected without execution (0.261ms)
+Γ£ö missing and syntactically invalid status cannot return successful data (0.8734ms)
+Γ£ö all four live lookup refusal suffixes retain unavailable versus not-found wording (1.8018ms)
+Γ£ö resolved absent branch and direct canonical key equality (0.6862ms)
+Γ£ö found projection keeps raw nullable fields and no invented key-to-stored-field CHECK (0.8196ms)
+Γ£ö known, empty and unknown labels and inherited-name omission are distinct (1.0045ms)
+Γ£ö companions keep missing versus present-null status and inherited label omission (0.5622ms)
+Γ£ö source caveats follow empty vote history and dead-by-deadline status (0.6207ms)
+Γ£ö unresolved supplied bill never broadens to state-wide floor votes (0.5615ms)
+Γ£ö floor votes bind one selected session without claiming which session is current (0.4956ms)
+Γ£ö state prefix, effective chamber and query null predicate preserve filter boundaries (0.5688ms)
+Γ£ö empty floor search retains precise note and no member outcome claim (0.3034ms)
+Γ£ö signed Int tallies remain independent and raw IDs/URLs have no invented format (0.3904ms)
+Γ£ö counts and 15/25 windows are enforced without completeness invention (1.9133ms)
+Γ£ö canonical instants, SQLDate midnight and descending null/tie ordering (0.757ms)
+Γ£ö closed output rejects injected authority, private columns and wrong operation (0.7145ms)
+Γä╣ tests 100
+Γä╣ suites 0
+Γä╣ pass 99
+Γä╣ fail 1
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 2694.9746
+
+Γ£û failing tests:
+
+test at apps\gateway\sources\state-status-votes\test\completion.test.mjs:102:1
+Γ£û native HTTP failure, denial, response limits, cancellation and timeout cannot synthesize or retry a result (19.4896ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    Comparison {
+  +   message: 'INTERNAL_ERROR'
+  -   message: 'ACCESS_DENIED'
+    }
+  
+      at async TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/gateway/sources/state-status-votes/test/completion.test.mjs:107:61)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: GatewayDenied: INTERNAL_ERROR
+        at safeFailure (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/gateway/dispatch/operation-result.mjs:55:10)
+        at execute (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/gateway/sources/state-status-votes/handler.mjs:23:22)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/gateway/sources/state-status-votes/test/completion.test.mjs:107:61)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    expected: { message: 'ACCESS_DENIED' },
+    operator: 'rejects',
+    diff: 'simple'
+  }

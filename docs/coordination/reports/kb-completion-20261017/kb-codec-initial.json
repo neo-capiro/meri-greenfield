@@ -1,0 +1,18 @@
+{
+  "executable": "C:\\Users\\Administrator\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe",
+  "version": "v24.19.0",
+  "args": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "--test-timeout=30000",
+    "packages/contracts/native-read-observation-0.2/test/validate.test.mjs",
+    "packages/contracts/native-read-observation-0.2/test/kb.test.mjs"
+  ],
+  "startedAt": "2026-10-17T04:00:12.527Z",
+  "endedAt": "2026-10-17T04:00:13.234Z",
+  "status": 0,
+  "signal": null,
+  "error": null
+}

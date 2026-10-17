@@ -1,0 +1,30 @@
+{
+  "capture": "Original raw exec_command output copied from tool results without rerunning the checks.",
+  "cwd": "C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next",
+  "executable": "C:/Users/Administrator/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe",
+  "arguments": ["--preserve-symlinks", "--max-old-space-size=256", "--test", "--test-concurrency=1", "apps/gateway/sources/funding-opportunities/test/handler.test.mjs"],
+  "initial": {
+    "output": "funding-source-initial.txt",
+    "toolChunkId": "e179af",
+    "exitCode": 1,
+    "toolWallSeconds": 1.252714422,
+    "tests": 26,
+    "passed": 25,
+    "failed": 1
+  },
+  "final": {
+    "output": "funding-source-final.txt",
+    "toolChunkId": "1be91f",
+    "exitCode": 0,
+    "toolWallSeconds": 1.94384056,
+    "tests": 28,
+    "passed": 28,
+    "failed": 0
+  },
+  "changesBetweenRuns": [
+    "Preserved the malformed request assertion and fixed adapter capture order.",
+    "Added explicit UUID validation to the subject selection guard.",
+    "Added coordinator-requested generic observation bridge/mode guards and delegated-transport refusal assertions."
+  ],
+  "liveCalls": 0
+}

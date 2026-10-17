@@ -1,0 +1,3 @@
+# Process receipts retain exact bytes across machines; diagnostic spaces are evidence.
+*.txt -text -whitespace
+*.json -text whitespace=cr-at-eol

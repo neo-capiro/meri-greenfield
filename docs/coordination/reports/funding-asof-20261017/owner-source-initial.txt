@@ -1,0 +1,127 @@
+Γ£û search_funding_opportunities: one trusted asOf survives advancing native identity/membership and credential rechecks (173.3267ms)
+Γ£ö search_funding_opportunities: changed context, original body, operation or digest cannot reuse an observed credential scope (152.9718ms)
+Γ£ö search_funding_opportunities: client selectors require current native visibility and a coherent client resource before source credentials (64.661ms)
+Γ£û get_funding_opportunity_requirements: one trusted asOf survives advancing native identity/membership and credential rechecks (37.7968ms)
+Γ£ö get_funding_opportunity_requirements: changed context, original body, operation or digest cannot reuse an observed credential scope (136.3842ms)
+Γ£ö get_funding_opportunity_requirements: client selectors require current native visibility and a coherent client resource before source credentials (62.3223ms)
+Γ£û get_funding_opportunity: one trusted asOf survives advancing native identity/membership and credential rechecks (52.2805ms)
+Γ£ö get_funding_opportunity: changed context, original body, operation or digest cannot reuse an observed credential scope (131.2972ms)
+Γ£ö get_funding_opportunity: client selectors require current native visibility and a coherent client resource before source credentials (60.8463ms)
+Γ£û get_opportunity_client_context: one trusted asOf survives advancing native identity/membership and credential rechecks (33.5194ms)
+Γ£ö get_opportunity_client_context: changed context, original body, operation or digest cannot reuse an observed credential scope (120.7455ms)
+Γ£ö get_opportunity_client_context: client selectors require current native visibility and a coherent client resource before source credentials (61.1486ms)
+Γ£û get_opportunity_government_landscape: one trusted asOf survives advancing native identity/membership and credential rechecks (53.2818ms)
+Γ£ö get_opportunity_government_landscape: changed context, original body, operation or digest cannot reuse an observed credential scope (168.5892ms)
+Γ£ö get_opportunity_government_landscape: client selectors require current native visibility and a coherent client resource before source credentials (66.4961ms)
+Γ£ö funding context cannot be supplied from source output or an unobserved model-selected timestamp (16.7984ms)
+Γ£ö funding current membership drift across service-secret await withholds the correlated credential pair (34.292ms)
+Γ£ö search_funding_opportunities: synthetic governed source consumes the private observation and settles exact original request/result bytes (658.5055ms)
+Γ£ö search_funding_opportunities: missing governed installation, disabled source or missing current context cannot reach the bridge (202.9454ms)
+Γ£ö get_funding_opportunity_requirements: synthetic governed source consumes the private observation and settles exact original request/result bytes (201.7991ms)
+Γ£ö get_funding_opportunity_requirements: missing governed installation, disabled source or missing current context cannot reach the bridge (156.8812ms)
+Γ£ö get_funding_opportunity: synthetic governed source consumes the private observation and settles exact original request/result bytes (188.1623ms)
+Γ£ö get_funding_opportunity: missing governed installation, disabled source or missing current context cannot reach the bridge (139.7791ms)
+Γ£ö get_opportunity_client_context: synthetic governed source consumes the private observation and settles exact original request/result bytes (157.02ms)
+Γ£ö get_opportunity_client_context: missing governed installation, disabled source or missing current context cannot reach the bridge (145.1255ms)
+Γ£ö get_opportunity_government_landscape: synthetic governed source consumes the private observation and settles exact original request/result bytes (142.329ms)
+Γ£ö get_opportunity_government_landscape: missing governed installation, disabled source or missing current context cannot reach the bridge (156.2802ms)
+Γ£ö funding observation never falls back to static native credentials or an unobserved legacy call (76.53ms)
+Γ£ö a bridge HTTP refusal remains a single failed source attempt with UNKNOWN hold and no legacy retry (94.4868ms)
+Γ£ö funding native output cannot substitute its own asOf for the captured observation (106.6679ms)
+Γ£ö funding current native membership revocation after source withholds result bytes and completion (107.6034ms)
+Γ£ö funding is absent from SDK58/35 and the real native runtime refuses forged approved/install/discovery inventories (98.1873ms)
+Γä╣ tests 32
+Γä╣ suites 0
+Γä╣ pass 27
+Γä╣ fail 5
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 6692.3406
+
+Γ£û failing tests:
+
+test at apps\runtime\native-authority\test\funding-asof-context.test.mjs:13:2
+Γ£û search_funding_opportunities: one trusted asOf survives advancing native identity/membership and credential rechecks (173.3267ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+    assert.ok(f.core.state.calls.filter(call=>call.path.endsWith('/membership')).length>=5)
+
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/runtime/native-authority/test/funding-asof-context.test.mjs:24:11)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at apps\runtime\native-authority\test\funding-asof-context.test.mjs:13:2
+Γ£û get_funding_opportunity_requirements: one trusted asOf survives advancing native identity/membership and credential rechecks (37.7968ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+    assert.ok(f.core.state.calls.filter(call=>call.path.endsWith('/membership')).length>=5)
+
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/runtime/native-authority/test/funding-asof-context.test.mjs:24:11)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at apps\runtime\native-authority\test\funding-asof-context.test.mjs:13:2
+Γ£û get_funding_opportunity: one trusted asOf survives advancing native identity/membership and credential rechecks (52.2805ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+    assert.ok(f.core.state.calls.filter(call=>call.path.endsWith('/membership')).length>=5)
+
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/runtime/native-authority/test/funding-asof-context.test.mjs:24:11)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at apps\runtime\native-authority\test\funding-asof-context.test.mjs:13:2
+Γ£û get_opportunity_client_context: one trusted asOf survives advancing native identity/membership and credential rechecks (33.5194ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+    assert.ok(f.core.state.calls.filter(call=>call.path.endsWith('/membership')).length>=5)
+
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/runtime/native-authority/test/funding-asof-context.test.mjs:24:11)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at apps\runtime\native-authority\test\funding-asof-context.test.mjs:13:2
+Γ£û get_opportunity_government_landscape: one trusted asOf survives advancing native identity/membership and credential rechecks (53.2818ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+    assert.ok(f.core.state.calls.filter(call=>call.path.endsWith('/membership')).length>=5)
+
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/runtime/native-authority/test/funding-asof-context.test.mjs:24:11)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

@@ -1,0 +1,53 @@
+✖ without general reads the default prompt sentence and options are unchanged (1.3079ms)
+✖ mounted reads add one server, exact pre-approved names, the correlation hook and a chained permission callback (66.2473ms)
+✖ the skill and general servers may never expose the same operation; malformed read options are refused (22.9971ms)
+✖ the activity mounts meri_reads only when policy enables general reads and a read is available (8.8066ms)
+✔ the activity refuses a malformed general-read port before any run state changes (0.3154ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 1
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1545.6066
+
+✖ failing tests:
+
+test at apps\worker\conversation\reads\test\options.test.mjs:16:1
+✖ without general reads the default prompt sentence and options are unchanged (1.3079ms)
+  Error: RUNTIME_CONFIGURATION
+      at fail (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-stored-next/apps/worker/conversation/options.mjs:18:23)
+      at buildConversationOptions (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-stored-next/apps/worker/conversation/options.mjs:25:457)
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-stored-next/apps/worker/conversation/reads/test/options.test.mjs:17:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+
+test at apps\worker\conversation\reads\test\options.test.mjs:21:1
+✖ mounted reads add one server, exact pre-approved names, the correlation hook and a chained permission callback (66.2473ms)
+  Error: WORKSPACE_ROOT_REFUSED
+      at assertWorkspaceRoot (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-stored-next/apps/worker/conversation/capabilities/workspace-tools.mjs:16:215)
+      at createSdkCapabilities (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-stored-next/apps/worker/conversation/capabilities/index.mjs:24:171)
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-stored-next/apps/worker/conversation/reads/test/options.test.mjs:23:21)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'WORKSPACE_ROOT_REFUSED'
+  }
+
+test at apps\worker\conversation\reads\test\options.test.mjs:34:1
+✖ the skill and general servers may never expose the same operation; malformed read options are refused (22.9971ms)
+  Error: RUNTIME_CONFIGURATION
+      at fail (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-stored-next/apps/worker/conversation/options.mjs:18:23)
+      at buildConversationOptions (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-stored-next/apps/worker/conversation/options.mjs:25:457)
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-stored-next/apps/worker/conversation/reads/test/options.test.mjs:37:14)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps\worker\conversation\reads\test\options.test.mjs:58:1
+✖ the activity mounts meri_reads only when policy enables general reads and a read is available (8.8066ms)
+  Error: STORE_UNAVAILABLE
+      at tx (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-stored-next/apps/control/conversations/postgres-store.mjs:18:68) {
+    code: 'STORE_UNAVAILABLE'
+  }

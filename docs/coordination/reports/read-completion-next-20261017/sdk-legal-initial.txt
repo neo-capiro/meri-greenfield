@@ -1,0 +1,35 @@
+Γ£ö legal native runtime exposes only complete search while approved/install/discovery inventories overclaim the reference sibling (131.5803ms)
+Γ£ö funding SDK71/41 contains all five source operations while every current installation gate stays separate (3.3367ms)
+Γ£ö completion SDK71/41: the first four completed reads retain the frozen tracked client requirement (15.6676ms)
+Γ£ö all forty-one constructible families remain unavailable without installation or discovery (8.0835ms)
+Γ£ö per-operation client prefilter preserves personal meetings/tasks while withholding required-client reads (1.645ms)
+Γ£ö synthetic search_legislative_research: advertised arguments retain canonical constraints (10.8866ms)
+Γ£ö funding SDK: the complete five-operation family requires a task client scope despite forged inventories (9.2049ms)
+Γ£ö KB SDK: complete family keeps optional graph and requires a current task client scope only for semantic search (11.8729ms)
+Γ£ö legal SDK71/41: optional public search is the only exposed family operation despite forged sibling inventories (5.8528ms)
+Γ£ö legal SDK: literal search schema admits no model resolution, current authority or nested request (24.7766ms)
+Γ£ö legal SDK global: actual hook preserves raw selectors, admitted context, source results and durable receipts (396.6191ms)
+Γ£ö legal SDK client: actual hook preserves raw selectors, admitted context, source results and durable receipts (188.9992ms)
+Γ£ö legal SDK named: actual hook preserves raw selectors, admitted context, source results and durable receipts (189.7848ms)
+Γ£ö legal SDK: a constructor may hold both private handlers while overclaimed snapshots still mount search alone (60.0143ms)
+Γ£ö legal SDK named ambiguous: actual native reference cannot widen the current client grant (107.043ms)
+Γ£ö legal SDK named hidden: actual native reference cannot widen the current client grant (103.4516ms)
+Γ£ö legal SDK named foreign: actual native reference cannot widen the current client grant (106.1868ms)
+Γ£ö legal SDK: UUID selection and native visibility remain bounded by the actual current task client (232.5418ms)
+Γ£ö legal SDK: native folder/client refusal remains a failed call with UNKNOWN and no fabricated legal result (135.3151ms)
+Γ£ö legal SDK: source scope substitution cannot settle or release whole-result bytes (145.2762ms)
+Γ£ö legal SDK: current installation, discovery, measured source and family policy remain separate gates (70.8878ms)
+Γ£ö legal SDK: current task, capability and native principal are checked before source credentials (323.2716ms)
+Γ£ö legal SDK named membership change after source releases no bytes and keeps UNKNOWN (149.8654ms)
+Γ£ö legal SDK named task change after source releases no bytes and keeps UNKNOWN (152.4455ms)
+Γ£ö legal SDK named reference change after source releases no bytes and keeps UNKNOWN (156.6159ms)
+Γ£ö legal SDK: invocation proof binds the original query and folder before a source call (45.7239ms)
+Γ£ö three remaining partial-input operations remain absent from SDK policy and cannot be advertised by installation/discovery (312.762ms)
+Γä╣ tests 27
+Γä╣ suites 0
+Γä╣ pass 27
+Γä╣ fail 0
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 11387.7243

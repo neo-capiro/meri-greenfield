@@ -1,0 +1,16 @@
+{
+  "executable": "C:\\Users\\Administrator\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe",
+  "version": "v24.19.0",
+  "args": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "packages/skills/test/assets.test.mjs",
+    "packages/skills/test/typed-reads.test.mjs",
+    "packages/skills/test/commitments.test.mjs"
+  ],
+  "status": 1,
+  "signal": null,
+  "error": null
+}

@@ -1,0 +1,1 @@
+Wrote docs/coordination/ledgers/scope-ledger.json and docs/coordination/ledgers/MERI-FINAL-SCOPE-LEDGER-20261015.md

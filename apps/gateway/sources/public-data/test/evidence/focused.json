@@ -1,0 +1,13 @@
+{
+  "version": "v24.19.0",
+  "args": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "apps/gateway/sources/public-data/test/handler.test.mjs",
+    "packages/contracts/test/retrieval-public-data.test.mjs"
+  ],
+  "executable": "C:/Users/Administrator/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe",
+  "status": 0
+}

@@ -1,0 +1,10 @@
+Γ£ö completion SDK search_tracked_bills: actual hook, source bytes, delivery hashes and durable receipts settle once (428.6703ms)
+Γ£ö completion SDK search_tracked_bills: native name observation preserves original raw hashes and dispatches only the admitted UUID (212.6714ms)
+Γä╣ tests 2
+Γä╣ suites 0
+Γä╣ pass 2
+Γä╣ fail 0
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 1821.8575

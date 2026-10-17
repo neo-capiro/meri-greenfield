@@ -1,0 +1,120 @@
+Γ£ö runtime availability intersects forged inventories with the public-data subset and current KB client requirement (89.4795ms)
+Γ£ö all selected economic/semantic/graph operations execute through the actual client runtime owner with exact request/delivery binding (144.3195ms)
+Γ£ö all ten absent source reads never reach gateway execution despite all three inventories claiming them (516.3658ms)
+Γ£ö complete get_state_bill_status is eligible through the actual native runtime task owner without advertising absent reads (719.5027ms)
+Γ£ö complete search_state_floor_votes is eligible through the actual native runtime task owner without advertising absent reads (301.6753ms)
+Γ£ö complete search_tracked_bills is eligible through the actual native runtime task owner without advertising absent reads (123.622ms)
+Γ£ö complete search_committee_hearings is eligible through the actual native runtime task owner without advertising absent reads (108.8599ms)
+Γ£ö semantic KB is complete but remains unavailable to the actual no-client task despite overclaimed inventories (82.408ms)
+Γ£ö semantic KB with a real client-task verifier reaches the native runtime gateway with exact request and result hashes (95.793ms)
+Γ£ö selected operations still require current discovered membership (226.7649ms)
+Γ£ö selected operations still require current installed membership (723.9252ms)
+Γ£ö empty discovery exposes nothing and cannot execute an otherwise selected operation (558.2298ms)
+Γ£ö current committed task grant/entry revocation denies availability and selected execution before the gateway (56.4486ms)
+Γ£ö post-dispatch task revocation withholds selected bytes without another gateway execution (38.1694ms)
+Γ£ö post-dispatch discovery removal withholds selected bytes and never falls back to a withheld sibling (65.6979ms)
+Γ£ö completion SDK70/40: complete families expose exactly four operations with the frozen tracked client requirement (191.2043ms)
+Γ£ö completion SDK get_state_bill_status: canonical literal schema rejects model authority or normalization context (77.4955ms)
+Γ£ö completion SDK get_state_bill_status: actual hook, source bytes, delivery hashes and durable receipts settle once (2892.9515ms)
+Γ£ö completion SDK get_state_bill_status: current installation, discovery, source and policy remain required (91.1971ms)
+Γ£ö completion SDK get_state_bill_status: current task, capability and native principal are required before source credentials (369.5316ms)
+Γ£ö completion SDK get_state_bill_status: current availability removal after listing prevents gateway execution (293.01ms)
+Γ£ö completion SDK get_state_bill_status: native revision drift after source preserves UNKNOWN and withholds bytes and receipts (643.3902ms)
+Γ£ö completion SDK get_state_bill_status: uncertain source response cannot settle, retry or fall back (621.0333ms)
+Γ£ö completion SDK search_state_floor_votes: canonical literal schema rejects model authority or normalization context (5.7281ms)
+Γ£ö completion SDK search_state_floor_votes: actual hook, source bytes, delivery hashes and durable receipts settle once (214.015ms)
+Γ£ö completion SDK search_state_floor_votes: current installation, discovery, source and policy remain required (80ms)
+Γ£ö completion SDK search_state_floor_votes: current task, capability and native principal are required before source credentials (366.8392ms)
+Γ£ö completion SDK search_state_floor_votes: current availability removal after listing prevents gateway execution (127.7071ms)
+Γ£ö completion SDK search_state_floor_votes: native revision drift after source preserves UNKNOWN and withholds bytes and receipts (196.0723ms)
+Γ£ö completion SDK search_state_floor_votes: uncertain source response cannot settle, retry or fall back (555.3758ms)
+Γ£ö completion SDK search_tracked_bills: canonical literal schema rejects model authority or normalization context (12.0537ms)
+Γ£û completion SDK search_tracked_bills: actual hook, source bytes, delivery hashes and durable receipts settle once (219.3547ms)
+Γ£ö completion SDK search_tracked_bills: current installation, discovery, source and policy remain required (72.2884ms)
+Γ£ö completion SDK search_tracked_bills: current task, capability and native principal are required before source credentials (363.8808ms)
+Γ£ö completion SDK search_tracked_bills: current availability removal after listing prevents gateway execution (130.4273ms)
+Γ£ö completion SDK search_tracked_bills: native revision drift after source preserves UNKNOWN and withholds bytes and receipts (166.9009ms)
+Γ£ö completion SDK search_tracked_bills: uncertain source response cannot settle, retry or fall back (516.6985ms)
+Γ£ö completion SDK search_committee_hearings: canonical literal schema rejects model authority or normalization context (33.6087ms)
+Γ£ö completion SDK search_committee_hearings: actual hook, source bytes, delivery hashes and durable receipts settle once (939.371ms)
+Γ£ö completion SDK search_committee_hearings: current installation, discovery, source and policy remain required (74.1402ms)
+Γ£ö completion SDK search_committee_hearings: current task, capability and native principal are required before source credentials (349.6905ms)
+Γ£ö completion SDK search_committee_hearings: current availability removal after listing prevents gateway execution (131.0679ms)
+Γ£ö completion SDK search_committee_hearings: native revision drift after source preserves UNKNOWN and withholds bytes and receipts (160.3664ms)
+Γ£ö completion SDK search_committee_hearings: uncertain source response cannot settle, retry or fall back (147.2307ms)
+Γ£ö completion SDK get_state_bill_status: native designation not-configured remains an honest received result (181.9813ms)
+Γ£ö completion SDK get_state_bill_status: native designation quota remains an honest received result (1213.8164ms)
+Γ£ö completion SDK get_state_bill_status: native designation provider-error remains an honest received result (412.7818ms)
+Γ£ö completion SDK search_state_floor_votes: native designation not-configured remains an honest received result (190.3211ms)
+Γ£ö completion SDK search_state_floor_votes: native designation quota remains an honest received result (192.5389ms)
+Γ£ö completion SDK search_state_floor_votes: native designation provider-error remains an honest received result (192.7777ms)
+Γ£ö completion SDK tracked: a personal task never gains a tracked client grant from operation inventories (57.3233ms)
+Γ£ö completion SDK search_tracked_bills: a selected UUID needs the matching current task and native client visibility (237.191ms)
+Γ£ö completion SDK search_committee_hearings: a selected UUID needs the matching current task and native client visibility (2163.4484ms)
+Γ£û completion SDK search_tracked_bills: native name observation preserves original raw hashes and dispatches only the admitted UUID (230.9692ms)
+Γ£ö completion SDK search_committee_hearings: native name observation preserves original raw hashes and dispatches only the admitted UUID (195.1763ms)
+Γ£ö completion SDK search_tracked_bills: ambiguous name resolution is denied before credentials or domain reads (118.7086ms)
+Γ£ö completion SDK search_tracked_bills: hidden name resolution is denied before credentials or domain reads (130.8553ms)
+Γ£ö completion SDK search_tracked_bills: foreign-resolution name resolution is denied before credentials or domain reads (106.0328ms)
+Γ£ö completion SDK search_committee_hearings: ambiguous name resolution is denied before credentials or domain reads (139.1967ms)
+Γ£ö completion SDK search_committee_hearings: hidden name resolution is denied before credentials or domain reads (1047.573ms)
+Γ£ö completion SDK search_committee_hearings: foreign-resolution name resolution is denied before credentials or domain reads (419.9219ms)
+Γ£ö completion SDK search_tracked_bills: a native name change after source withholds all bytes and keeps UNKNOWN (172.9553ms)
+Γ£ö completion SDK search_committee_hearings: a native name change after source withholds all bytes and keeps UNKNOWN (171.6315ms)
+Γ£ö completion SDK cancellation reaches the native source and leaves UNKNOWN without an accepted receipt (145.6784ms)
+Γä╣ tests 64
+Γä╣ suites 0
+Γä╣ pass 62
+Γä╣ fail 2
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 23829.8846
+
+Γ£û failing tests:
+
+test at apps\worker\conversation\reads\test\completion.test.mjs:81:2
+Γ£û completion SDK search_tracked_bills: actual hook, source bytes, delivery hashes and durable receipts settle once (219.3547ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      'binding',
+  +   'clientReference',
+      'subject',
+  -   'clientReference'
+    ]
+  
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/worker/conversation/reads/test/completion.test.mjs:90:30)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'binding', 'clientReference', 'subject' ],
+    expected: [ 'binding', 'subject', 'clientReference' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at apps\worker\conversation\reads\test\completion.test.mjs:154:39
+Γ£û completion SDK search_tracked_bills: native name observation preserves original raw hashes and dispatches only the admitted UUID (230.9692ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      'binding',
+  +   'clientReference',
+      'subject',
+  -   'clientReference'
+    ]
+  
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/worker/conversation/reads/test/completion.test.mjs:161:80)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'binding', 'clientReference', 'subject' ],
+    expected: [ 'binding', 'subject', 'clientReference' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

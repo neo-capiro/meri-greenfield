@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "captureKind": "console-transcript",
+  "captureScope": "retained-metadata-only",
+  "captureIncomplete": true,
+  "rawOutputUnavailable": true,
+  "outputTruncated": null,
+  "normalization": "none; no stdout or stack text reconstructed",
+  "toolChunkIds": [
+    "6b16bf",
+    "077538",
+    "fd91b3"
+  ],
+  "execSessionId": 57066,
+  "exitCode": 1,
+  "counts": {
+    "tests": 44,
+    "pass": 36,
+    "fail": 8
+  },
+  "exactExecutable": null,
+  "exactArgv": null,
+  "exactCommand": null,
+  "startedAt": null,
+  "finishedAt": null,
+  "durationMs": null,
+  "unrecoveredFields": [
+    "exact command/argv and timing",
+    "all initial stdout",
+    "all eight failure assertions and stacks"
+  ],
+  "retainedDiagnosis": [
+    {
+      "failures": 1,
+      "reason": "The initial purported personal fixture actually carried a client scope; corrected to an explicit canonical personal subject and actual task verifier."
+    },
+    {
+      "failures": 5,
+      "reason": "Discovery was incorrectly tested as a direct CONTROL execute gate; corrected to actual native RPC/MCP availability with zero dispatch."
+    },
+    {
+      "failures": 2,
+      "reason": "Already-aborted lifetime construction uses canonical DEADLINE; corrected separately from in-flight CANCELLED."
+    }
+  ],
+  "limitation": "Initial counts, exit status, chunk references and diagnosis survived compaction. Raw chunks were not recoverable from current context or local session logs. The old failure state was not rerun or reconstructed."
+}

@@ -1,0 +1,27 @@
+# Existing-route read completion increment
+
+Base: local `a945196efcd417a2ed09bcbacfae876acbefd2c3`, published PR109 `b4daa4adf6e8269e7c341751db9a02bf6d4f062b`, identical reviewed tree `2826443929c4ef797ff52e15e0bb4b296eb4e678`. Clean task-owned worktree reused on separate branch `codex/meri-read-completion-next-20261017`. No dependency installation/archive; shared-host disk dipped from about 2.1 GiB to 0.91 GiB during discovery, so work remains narrow and uses borrowed dependencies.
+
+Latest parent direction gives the PR109 Core bridge to its existing Core owner. This lane must not edit Core concurrently. Dot owns shipping/acceptance; shipping pins, startup, migrations, lockfiles and frozen retrieval contracts remain outside this increment.
+
+## Implementable compatible selector change
+
+The existing legal adapter rejects every nonempty citation. Actual native branch precedence and the frozen normalizer permit parser-independent citations in rules/versions, and in reference lookup when an explicit reference ID controls selection and edition cannot depend on parsing. Extend only the pure legal selector owner and focused tests, preserving the original raw request, exact canonical context with `citationResolution:null`, current UUID client/resource checks and unchanged native receiving. Do not implement/copy a citation parser, fabricate resolution, accept names/folders or change public contracts.
+
+Allocated source paths: `apps/gateway/sources/research-legal-legislation/request-context.mjs` and its `test/` directory. Root owns the narrow provenance refresh, reports, integration check and publication. Independent reviewer verifies the exact native/frozen precedence, available and held cases, unchanged raw body/hash and existing client authority.
+
+## Completion feasibility and owner decisions
+
+Parallel read-only audits recheck all remaining families against verified existing routes, including alternatives omitted by earlier proposals. Prefer completing an existing operation/family over introducing another partial constructor. New Core routes, producer clock/locale/mode inputs and access-policy choices are not allocated to this lane. Record each real dependency as the smallest owner decision, with exact producer and Meri paths and the family completion gained.
+
+The broad conversation GET candidate is rejected: it returns rolling summaries and is not a bounded authority observation. Independent review accepts a better existing-owner design for complete `get_business_development_context` and `get_business_development_recent_changes` operation coverage. Their actual native `authorizeScope` checks the exact current tenant/user-owned unarchived conversation and canonical persisted prospect scope before reading basic prospect/history/stored alerts. Those are tenant-role/domain facts; a linked-client identity is not a grant to that client's profile or dossier. No additional GET, local authority receipt or new Core wire is needed for an actor-bound personal task. This does not establish dossier authority or whole three-operation family completion.
+
+Allocate `apps/gateway/sources/business-development/{request-context,handler}.mjs` and local fixture/tests to support a strict personal/user subject, with only coherent tenant or private-user scopes and no client-task downgrade. Preserve the existing exact-client private conversation receipt and whole-result linked-client check for client tasks. Root owns conditional private `readConversation` acquisition in `native-read-credentials/owner.mjs`, unchanged context `{}`, the finite two-operation SDK registration and source integration/provenance. The existing current task/native identity/membership/credential vectors and expiry remain mandatory for both modes. No broad metadata fetch or fabricated consumed-revision claim is introduced. Source results retain the native read's stated snapshot limits.
+
+After independent source acceptance and mounted tests, promote only those two complete operations; keep business-development evidence absent. Exact SDK `operationIds` excludes that sibling. New owner/SDK regression tests must prove personal bound-actor access, no client-to-personal downgrade, retained client receipt/revision/expiry behavior, current task/member revocation, missing installation/discovery/source denial and no static credential fallback. Root owns ledger counts and reports; no live qualification is inferred.
+
+Root also owns the minimal source-manifest update in `apps/gateway/general-reads/integration.mjs`: its static family imports load the changed BD handler/helper and legal helper for every composition. Include those three existing changed modules in COMMON and preserve source-label deduplication, including retained portfolio/Florida paths. This changes fingerprints and requires fresh installation/source qualification; it performs no startup, loader or old dependency-closure refactor.
+
+## Verification
+
+Record source evidence at pinned Core `b525032222515d636b0dae2d46e40c7c3d8b5528` and verify whether any relevant newer published source exists. Use focused selector/authority tests while editing, preserve failed outcomes, then run one coherent affected integration/SDK/ledger check after source freeze. Keep existing incomplete counts and SDK exposure honest unless whole operation coverage is independently accepted. Obtain independent source/staged acceptance before a draft PR, with immutable tree/blob readback. No live provider, Core, database, AWS, credentials or deployment calls.

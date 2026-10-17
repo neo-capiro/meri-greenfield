@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "meri-focused-test-run/1",
+  "cwd": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-16\\task-4\\meri-resolution-next",
+  "executable": "C:\\Users\\Administrator\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe",
+  "arguments": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "--test-name-pattern=BD native runtime:",
+    "apps/runtime/native-authority/test/business-development-personal.test.mjs"
+  ],
+  "startedAt": "2026-10-17T02:05:02.6490677Z",
+  "completedAt": "2026-10-17T02:05:04.0546578Z",
+  "exitCode": 0,
+  "scope": "One new native RPC eligibility test only: actual reads owner and real task verifier over overclaimed inventories; synthetic gateway, not source settlement proof"
+}

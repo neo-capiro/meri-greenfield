@@ -1,0 +1,40 @@
+Γ£ö resolution delta state no-bill votes preserve absent/null/blank raw selectors and empty native context (629.4964ms)
+Γ£ö resolution delta state unfiltered stored votes preserve null/blank source metadata without an invented selector (225.151ms)
+Γ£ö resolution delta search_legislative_research: current UUID client context joins the exact native grant and settles raw request bytes (152.5043ms)
+Γ£ö resolution delta search_legislative_research: visibility, client identity and client resource cannot be supplied by a UUID selector (144.947ms)
+Γ£ö resolution delta search_legislative_research: selected-client visibility drift after source withholds the private result (79.9612ms)
+Γ£ö resolution delta get_legal_reference: current UUID client context joins the exact native grant and settles raw request bytes (123.7679ms)
+Γ£ö resolution delta get_legal_reference: visibility, client identity and client resource cannot be supplied by a UUID selector (159.0421ms)
+Γ£ö resolution delta get_legal_reference: selected-client visibility drift after source withholds the private result (81.1165ms)
+Γ£ö resolution delta search_legiwatch_news: current UUID client context joins the exact native grant and settles raw request bytes (170.6467ms)
+Γ£ö resolution delta search_legiwatch_news: visibility, client identity and client resource cannot be supplied by a UUID selector (144.4805ms)
+Γ£ö resolution delta search_legiwatch_news: selected-client visibility drift after source withholds the private result (89.0962ms)
+Γ£ö resolution delta get_business_development_context: actual Core conversation proof uses the selected resource, not the Meri run conversation (139.358ms)
+Γ£ö resolution delta get_business_development_context: missing native resource reader is unavailable before credentials or reservation (53.3284ms)
+Γ£ö resolution delta get_business_development_context: exact client-only subject and current native membership precede private conversation context (202.3979ms)
+Γ£ö resolution delta get_business_development_recent_changes: actual Core conversation proof uses the selected resource, not the Meri run conversation (126.1263ms)
+Γ£ö resolution delta get_business_development_recent_changes: missing native resource reader is unavailable before credentials or reservation (45.0328ms)
+Γ£ö resolution delta get_business_development_recent_changes: exact client-only subject and current native membership precede private conversation context (213.9255ms)
+Γ£ö resolution delta BD principal: changed native resource fact refuses before source credentials/reservation (50.3163ms)
+Γ£ö resolution delta BD identity: changed native resource fact refuses before source credentials/reservation (57.6408ms)
+Γ£ö resolution delta BD conversation selector: changed native resource fact refuses before source credentials/reservation (52.0995ms)
+Γ£ö resolution delta BD client selector: changed native resource fact refuses before source credentials/reservation (51.8667ms)
+Γ£ö resolution delta BD identity hash: changed native resource fact refuses before source credentials/reservation (79.4001ms)
+Γ£ö resolution delta BD expired receipt: changed native resource fact refuses before source credentials/reservation (55.0023ms)
+Γ£ö resolution delta BD principal: post-source drift preserves UNKNOWN and releases no completion (99.2843ms)
+Γ£ö resolution delta BD identity: post-source drift preserves UNKNOWN and releases no completion (77.6814ms)
+Γ£ö resolution delta BD conversation selector: post-source drift preserves UNKNOWN and releases no completion (90.7779ms)
+Γ£ö resolution delta BD client selector: post-source drift preserves UNKNOWN and releases no completion (78.6782ms)
+Γ£ö resolution delta BD identity hash: post-source drift preserves UNKNOWN and releases no completion (105.9642ms)
+Γ£ö resolution delta BD expired receipt: post-source drift preserves UNKNOWN and releases no completion (91.9011ms)
+Γ£ö resolution delta BD context revision: post-source drift preserves UNKNOWN and releases no completion (130.5205ms)
+Γ£ö resolution delta BD context revision changes across service-secret await withhold source HTTP and hold UNKNOWN (108.5454ms)
+Γ£ö resolution delta BD first native context expiry cannot be renewed by later receipts or a longer caller deadline (45.0272ms)
+Γä╣ tests 32
+Γä╣ suites 0
+Γä╣ pass 32
+Γä╣ fail 0
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 4790.8612

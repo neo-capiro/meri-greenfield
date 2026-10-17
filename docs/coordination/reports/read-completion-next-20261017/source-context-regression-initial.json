@@ -1,0 +1,28 @@
+{
+  "executable": "C:\\Users\\Administrator\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe",
+  "version": "v24.19.0",
+  "args": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "--test-timeout=30000",
+    "apps/gateway/sources/tracked-bills/test/handler.test.mjs",
+    "apps/gateway/sources/public-domain-hearings/test/handler.test.mjs",
+    "apps/gateway/sources/public-domain-hearings/test/request-context.test.mjs",
+    "apps/gateway/sources/public-domain-hearings/test/client-selector-seam.test.mjs",
+    "apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs",
+    "apps/runtime/native-authority/native-read-credentials/test/source-read-context.test.mjs",
+    "apps/runtime/native-authority/native-read-credentials/test/resolution-slices.test.mjs"
+  ],
+  "startedAt": "2026-10-17T04:41:57.009Z",
+  "endedAt": "2026-10-17T04:42:12.235Z",
+  "status": 0,
+  "signal": null,
+  "error": null,
+  "outputBytes": 16605,
+  "outputSha256": "f6021fc91b52f0bcc814ae521480de177a0ec59e26dc08a39d41b688ccf85b9d",
+  "capture": "raw UTF-8 stdout followed by stderr; no trimming or truncation",
+  "stdoutBytes": 16605,
+  "stderrBytes": 0
+}
