@@ -23,7 +23,7 @@ function record(value,keys){
 function origin(value){
  if(typeof value!=='string')fail('ISSUER');
  let parsed;try{parsed=new URL(value);}catch{fail('ISSUER');}
- if(parsed.protocol!=='https:'||parsed.origin!==value||parsed.pathname!=='/'||parsed.search||parsed.hash||parsed.username||parsed.password)fail('ISSUER');
+ if(parsed.protocol!=='https:'||parsed.port!=='8445'||parsed.origin!==value||parsed.pathname!=='/'||parsed.search||parsed.hash||parsed.username||parsed.password)fail('ISSUER');
  return value;
 }
 function identity({issuerOrigin,kid,role,subject,audience,namespace,nowMs}){

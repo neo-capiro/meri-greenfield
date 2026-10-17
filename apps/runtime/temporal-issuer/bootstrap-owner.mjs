@@ -78,8 +78,14 @@ export function createTemporalIssuerBootstrapOwner({configuration,taskProof,regi
     typeof certificateIssuer?.issue!=='function'||typeof now!=='function'||
     !integer(maxRequestMs,1,30000)||!integer(maxChallenges,1,4096)||
     !integer(challengeLifetimeMs,1000,15000)||!integer(certificateLifetimeMs,30000,3600000))throw refused();
- let closed=false;const challenges=new Map(),active=new Set();
+ let closed=false,closeReceipt=null;const challenges=new Map(),active=new Set(),physical=new Set();
  const check=signal=>{if(closed||signal?.aborted)throw unavailable();};
+ function trackPhysical(work){
+  const pending=Promise.resolve().then(work);
+  physical.add(pending);
+  pending.finally(()=>physical.delete(pending)).catch(()=>{});
+  return pending;
+ }
  async function bounded(external,operation){
   if(closed||external?.aborted)throw unavailable();
   const controller=new AbortController();active.add(controller);
@@ -89,7 +95,8 @@ export function createTemporalIssuerBootstrapOwner({configuration,taskProof,regi
   const stopped=new Promise((_,reject)=>{
    interrupt=()=>reject(unavailable());controller.signal.addEventListener('abort',interrupt,{once:true});
   });
-  try{check(controller.signal);return await Promise.race([Promise.resolve().then(()=>operation(controller.signal)),stopped]);}
+  try{check(controller.signal);return await Promise.race([
+   trackPhysical(()=>{check(controller.signal);return operation(controller.signal);}),stopped]);}
   finally{clearTimeout(timer);external?.removeEventListener('abort',abort);
    controller.signal.removeEventListener('abort',interrupt);active.delete(controller);}
  }
@@ -196,6 +203,15 @@ export function createTemporalIssuerBootstrapOwner({configuration,taskProof,regi
    return Object.freeze({schemaVersion:1,certPem:certificate.certPem,registration:receipt});
   });
  }
- function close(){closed=true;challenges.clear();for(const controller of active)controller.abort();}
+ function close(){
+  // A late registration completion may have committed. Preserve the first
+  // UNKNOWN receipt until the durable owner explicitly reconciles that task.
+  if(closeReceipt)return closeReceipt;
+  closed=true;challenges.clear();for(const controller of active)controller.abort();
+  const pendingOperations=physical.size+active.size;
+  closeReceipt=Object.freeze({schemaVersion:1,
+   state:pendingOperations===0?'CLEAN':'CLEANUP_UNKNOWN',pendingOperations});
+  return closeReceipt;
+ }
  return Object.freeze({challenge,redeem,close,available:()=>!closed});
 }

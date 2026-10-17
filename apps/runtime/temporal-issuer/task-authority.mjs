@@ -64,6 +64,52 @@ function checkSignal(signal) {
   if (signal?.aborted) throw fault('TEMPORAL_ISSUER_TASK_AUTHORITY_UNAVAILABLE');
 }
 
+// Aborting an AWS request does not prove that its import, SDK send, or borrowed
+// binding read has physically settled. Keep the raw promise until settlement and
+// return a sticky close receipt for the caller's retirement decision.
+function pendingOperations() {
+  let closed = false;
+  let receipt;
+  const pending = new Set();
+  const controllers = new Set();
+  function assertLive(signal) {
+    if (closed || signal?.aborted) throw fault('TEMPORAL_ISSUER_TASK_AUTHORITY_UNAVAILABLE');
+  }
+  function run(action, callerSignal, onPreAborted) {
+    if (closed) return Promise.reject(fault('TEMPORAL_ISSUER_TASK_AUTHORITY_UNAVAILABLE'));
+    // Proof/authority reads historically return an UNAVAILABLE fact for an
+    // already-aborted caller. Their parsers stop before I/O; SDK reader ports
+    // continue to reject. There is no raw operation to track in this case.
+    if (callerSignal?.aborted) return onPreAborted ? onPreAborted() :
+      Promise.reject(fault('TEMPORAL_ISSUER_TASK_AUTHORITY_UNAVAILABLE'));
+    const controller = new AbortController();
+    const abort = () => controller.abort();
+    callerSignal?.addEventListener?.('abort', abort, {once: true});
+    controllers.add(controller);
+    const operation = Promise.resolve().then(() => {
+      assertLive(controller.signal);
+      return action(controller.signal);
+    });
+    pending.add(operation);
+    const settle = () => {
+      pending.delete(operation);
+      controllers.delete(controller);
+      callerSignal?.removeEventListener?.('abort', abort);
+    };
+    operation.then(settle, settle);
+    return operation;
+  }
+  function close() {
+    if (receipt) return receipt;
+    closed = true;
+    for (const controller of controllers) controller.abort();
+    receipt = Object.freeze({schemaVersion: 1, state: pending.size === 0 ? 'CLEAN' : 'CLEANUP_UNKNOWN',
+      pendingOperations: pending.size});
+    return receipt;
+  }
+  return Object.freeze({run, assertLive, close});
+}
+
 /** Closed, static pins. A durable binding source supplies the live task ARN and revocation state. */
 export function parseTemporalIssuerTaskAuthorityConfiguration(raw) {
   const c = object(raw, ['schemaVersion', 'clusterArn', 'vpcId', 'privateSubnetIds', 'securityGroupIds', 'maxLeaseMs', 'roles']);
@@ -199,7 +245,8 @@ export function createTemporalIssuerAwsTaskProof({configuration, ecs, ec2, now =
       !ec2 || typeof ec2.describeNetworkInterfaces !== 'function' || typeof now !== 'function') {
     throw fault('TEMPORAL_ISSUER_TASK_AUTHORITY_CONFIGURATION');
   }
-  return Object.freeze({
+  const lifetime = pendingOperations();
+  const port = Object.freeze({
     async readCurrent({role, taskArn, peerIPv4, signal} = {}) {
       const result = state => {
         let observedAtMs = null;
@@ -279,6 +326,13 @@ export function createTemporalIssuerAwsTaskProof({configuration, ecs, ec2, now =
       }
     },
   });
+  return Object.freeze({
+    readCurrent(request = {}) {
+      return lifetime.run(signal => port.readCurrent({...request, signal}), request.signal,
+        () => port.readCurrent(request));
+    },
+    close: lifetime.close,
+  });
 }
 
 /**
@@ -294,7 +348,8 @@ export function createTemporalIssuerTaskAuthority({configuration, ecs, ec2, bind
     throw fault('TEMPORAL_ISSUER_TASK_AUTHORITY_CONFIGURATION');
   }
   const awsProof = createTemporalIssuerAwsTaskProof({configuration: c, ecs, ec2, now});
-  return Object.freeze({
+  const lifetime = pendingOperations();
+  const port = Object.freeze({
     async readCurrent({peer, identity, signal} = {}) {
       const observedAtMs = now();
       const echo = identity && typeof identity === 'object' ?
@@ -317,6 +372,9 @@ export function createTemporalIssuerTaskAuthority({configuration, ecs, ec2, bind
         if (!current || certificate.peerSanUri !== current.peerSanUri) return result('REVOKED');
         const taskProof = await awsProof.readCurrent({role: echo.role, taskArn: current.taskArn,
           peerIPv4: peer.remoteAddress, signal});
+        // The authority can close after the nested cloud proof resolves but
+        // before this continuation runs. Never begin a fresh binding read then.
+        checkSignal(signal);
         if (taskProof.state !== 'CURRENT' || taskProof.revision !== current.revision) {
           return result(taskProof.state === 'UNAVAILABLE' ? 'UNAVAILABLE' : 'REVOKED');
         }
@@ -337,42 +395,58 @@ export function createTemporalIssuerTaskAuthority({configuration, ecs, ec2, bind
       }
     },
   });
+  return Object.freeze({
+    readCurrent(request = {}) {
+      return lifetime.run(signal => port.readCurrent({...request, signal}), request.signal,
+        () => port.readCurrent(request));
+    },
+    close() {
+      awsProof.close();
+      return lifetime.close();
+    },
+  });
 }
 
 /** Real AWS SDK v3 adapters; clients are injected with their own workload credentials. */
-export function createTemporalIssuerAwsReaders({ecsClient, ec2Client}) {
+export function createTemporalIssuerAwsReaders({ecsClient, ec2Client, loadModule = name => import(name)}) {
   if (typeof ecsClient?.send !== 'function' || typeof ec2Client?.send !== 'function') {
     throw fault('TEMPORAL_ISSUER_TASK_AUTHORITY_CONFIGURATION');
   }
+  if (typeof loadModule !== 'function') throw fault('TEMPORAL_ISSUER_TASK_AUTHORITY_CONFIGURATION');
+  const lifetime = pendingOperations();
   let ecsCommands;
   let ec2Commands;
-  const loadEcs = () => (ecsCommands ??= import('@aws-sdk/client-ecs'));
-  const loadEc2 = () => (ec2Commands ??= import('@aws-sdk/client-ec2'));
+  const loadEcs = () => (ecsCommands ??= loadModule('@aws-sdk/client-ecs'));
+  const loadEc2 = () => (ec2Commands ??= loadModule('@aws-sdk/client-ec2'));
+  function invoke(loader, client, commandName, input, signal) {
+    return lifetime.run(async currentSignal => {
+      const commands = await loader();
+      // A dynamic import may complete after close. Never start a late SDK send.
+      lifetime.assertLive(currentSignal);
+      return client.send(new commands[commandName](input), {abortSignal: currentSignal});
+    }, signal);
+  }
   return Object.freeze({
     ecs: Object.freeze({
-      async describeServices({cluster, services, signal}) {
-        const {DescribeServicesCommand} = await loadEcs();
-        return ecsClient.send(new DescribeServicesCommand({cluster, services}), {abortSignal: signal});
+      describeServices({cluster, services, signal}) {
+        return invoke(loadEcs, ecsClient, 'DescribeServicesCommand', {cluster, services}, signal);
       },
-      async describeTasks({cluster, tasks, signal}) {
-        const {DescribeTasksCommand} = await loadEcs();
-        return ecsClient.send(new DescribeTasksCommand({cluster, tasks}), {abortSignal: signal});
+      describeTasks({cluster, tasks, signal}) {
+        return invoke(loadEcs, ecsClient, 'DescribeTasksCommand', {cluster, tasks}, signal);
       },
-      async listTasks({cluster, serviceName, desiredStatus, maxResults, nextToken, signal}) {
-        const {ListTasksCommand} = await loadEcs();
-        return ecsClient.send(new ListTasksCommand({cluster, serviceName, desiredStatus,
-          maxResults, ...(nextToken === undefined ? {} : {nextToken})}), {abortSignal: signal});
+      listTasks({cluster, serviceName, desiredStatus, maxResults, nextToken, signal}) {
+        return invoke(loadEcs, ecsClient, 'ListTasksCommand', {cluster, serviceName, desiredStatus,
+          maxResults, ...(nextToken === undefined ? {} : {nextToken})}, signal);
       },
-      async describeTaskDefinition({taskDefinition, signal}) {
-        const {DescribeTaskDefinitionCommand} = await loadEcs();
-        return ecsClient.send(new DescribeTaskDefinitionCommand({taskDefinition}), {abortSignal: signal});
+      describeTaskDefinition({taskDefinition, signal}) {
+        return invoke(loadEcs, ecsClient, 'DescribeTaskDefinitionCommand', {taskDefinition}, signal);
       },
     }),
     ec2: Object.freeze({
-      async describeNetworkInterfaces({NetworkInterfaceIds, signal}) {
-        const {DescribeNetworkInterfacesCommand} = await loadEc2();
-        return ec2Client.send(new DescribeNetworkInterfacesCommand({NetworkInterfaceIds}), {abortSignal: signal});
+      describeNetworkInterfaces({NetworkInterfaceIds, signal}) {
+        return invoke(loadEc2, ec2Client, 'DescribeNetworkInterfacesCommand', {NetworkInterfaceIds}, signal);
       },
     }),
+    close: lifetime.close,
   });
 }
