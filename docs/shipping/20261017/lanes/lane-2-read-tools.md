@@ -7,7 +7,8 @@
 | Receives into | `fable/meri-first-chat-receiving-20261017` (PR #133), merged at its tip `3fa0325a` |
 | Source pins received | PR125 `69688364` (accepted), PR132 `bba4ef68` (was HOLD_TESTS) |
 | Core pins read (read-only) | PR52 `51c15744`, PR59 `59efe08f`, PR68 `8d6733c3`; default branch `backend-import` `c76f5fc0` |
-| Exact lane commit | recorded in the PR description and the latest PR #121 comment (this file cannot contain its own commit) |
+| Exact lane code commit | `96f484259e5238bb7437a9fc512a2784ebcea483` (all source and tests; later commits change only this file) |
+| PR | [neo-capiro/meri-greenfield#135](https://github.com/neo-capiro/meri-greenfield/pull/135) (draft) |
 
 Status vocabulary is BACKLOG.md's: `source` → `integrated` → `qualified` → `deployed` → `live-verified`. Nothing in this lane is past `source`. No read is integrated (PR #133 has not received this branch), qualified, deployed or live-verified.
 
@@ -90,11 +91,36 @@ Skill assets load and validate. No skill workflow is runtime-qualified.
 
 ## Tests
 
-Focused only (host commit memory is about 2 GB): Node 24.19, serial, one file per process, `--max-old-space-size=256`. Results are in the PR description; failures are listed there by name, not hidden.
+Focused only (host commit memory is about 2 GB): Node 24.19, serial, one file per process, `--max-old-space-size=256`. No dependency installs.
+
+The selection is 59 files: every PR132 test file; the legislation, news, tracked-bills, hearings and outreach source tests; registration; and all of `native-read-credentials/test`, `general-read-installation/test` and `apps/worker/conversation/reads/test`.
+
+First run at `1fc1b0cf`: **1,996 passed / 3 failed**.
+- Two failures were stale assertions, fixed and re-run file by file:
+  - BD SDK total 60 → 76 (`9fc229ef`): 15/15.
+  - public-data complete family (`96f48425`): 21/21.
+- One file, `reads/test/options.test.mjs`, cannot load here: `packages/window-resolution`'s own dependency (`@js-temporal/polyfill`) is not installed, and installs are not allowed on this host. It is not counted as passing.
+
+At `96f48425` that is 1,998 passed and 0 failed across 58 loadable files. There is no single combined run; files were run one at a time.
 
 Known host-only failures, unrelated to this lane:
 - `public-domain-query` "explicit supported as-of" depends on the host time zone; it passes with `TZ=UTC`.
 - `apps/gateway/test/mail-history-gateway-flow.test.mjs` also fails at the pre-receiving base `0e38ef49` (`ARTIFACT_BUDGET_SETTLEMENT_UNKNOWN`).
+
+## Remaining read families (ledger: 3 partial + 10 absent)
+
+| Operation | Lane-2 source now | Exact remaining dependency |
+|---|---|---|
+| `search_federal_grants`, `search_federal_awards` | complete (candidate) | Core PR68 mode observation: Jest/TS, merge, deploy (dot) |
+| `search_program_elements`, `get_program_element`, `get_pe_budget_timeline` | complete (candidate) | Core PR68 as above (dot) |
+| `get_legal_reference` | partial | Core citation observation endpoint for parser-dependent branches (dot) |
+| `search_legiwatch_news` | partial | Core: news-window `asOf`, folder→client observation, `clerkUserId` in identity receipt; implicit-year decision (dot/Neo) |
+| `query_outreach` | partial | Core walls for the unscoped list and exact record; unscoped-scope product decision (dot/Neo) |
+| `search_research_sources` | absent | Core: fix the meetings `OR` override, add client walls before content (dot) |
+| `get_business_development_evidence` | absent | Core: `samEnabled:false` option, wall the footprint client (dot) |
+| `get_state_rule_status` | absent | Arm `{stageAsOf,commentAsOf}` in Core decoder + Meri codec (dot ack, then lane 2) |
+| `search_sam_opportunities` | absent | Arm `{asOf,sourceStatusAsOf,sourceHealthAsOf,evidenceAccuracyMode}` (dot ack, then lane 2) |
+| `get_certification_status` | absent | Arm `{comparisonLocale}` plus a Core locale report (dot ack, then lane 2) |
 
 ## Remaining tasks and acceptance
 
