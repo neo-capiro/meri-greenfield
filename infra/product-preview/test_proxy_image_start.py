@@ -28,10 +28,11 @@ case "$*" in
   *batch-get-builds*)
     case "$STUB_BATCH" in
       complete) echo '{"builds": [{"id":"p:1","buildComplete":true,"buildStatus":"SUCCEEDED"},{"id":"p:2","buildComplete":true,"buildStatus":"FAILED"}], "buildsNotFound": []}';;
-      echo-complete|echo-old-active) python3 - "$STUB_BATCH" "$@" <<'PY'
+      echo-complete|echo-old-active|echo-large) python3 - "$STUB_BATCH" "$@" <<'PY'
 import json,sys
 mode=sys.argv[1]; a=sys.argv[2:]; ids=a[a.index("--ids")+1:a.index("--output")]
-print(json.dumps({"builds":[{"id":i,"buildComplete":not(mode=="echo-old-active" and i=="p:150"),"buildStatus":"IN_PROGRESS" if (mode=="echo-old-active" and i=="p:150") else "SUCCEEDED"} for i in ids],"buildsNotFound":[]}))
+pad="x"*8192 if mode=="echo-large" else ""  # real batch reads carry full buildspecs (hundreds of KB)
+print(json.dumps({"builds":[{"id":i,"buildComplete":not(mode=="echo-old-active" and i=="p:150"),"buildStatus":"IN_PROGRESS" if (mode=="echo-old-active" and i=="p:150") else "SUCCEEDED","buildspec":pad} for i in ids],"buildsNotFound":[]}))
 PY
       ;;
       active) echo '{"builds": [{"id":"p:1","buildComplete":false,"buildStatus":"IN_PROGRESS"},{"id":"p:2","buildComplete":true,"buildStatus":"FAILED"}], "buildsNotFound": []}';;
@@ -87,6 +88,8 @@ class StartPreflightTests(unittest.TestCase):
         calls = [line for line in self.log.read_text().splitlines() if "batch-get-builds" in line]
         self.assertEqual([len(line.split("--ids ")[1].split(" --output")[0].split()) for line in calls], [100, 100, 5])
         self.assertNotIn("--max-items", self.log.read_text())
+        # About 800 KB per batch read must not depend on command-line argument limits.
+        self.assertEqual(self.check("require_project_idle --profile p", STUB_LIST="many", STUB_BATCH="echo-large"), "PROVEN")
 
     def test_tag_absent_only_on_exact_image_not_found(self):
         for mode in ("notfound", "legacy"):

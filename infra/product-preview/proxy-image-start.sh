@@ -18,20 +18,21 @@ PROJECT=meri-greenfield-qualification-build
 require_project_idle() { # $@ = aws profile/region args
   # Every build of the project, not just the newest: the CLI paginates the full
   # list (no --max-items), then each chunk of <=100 IDs is read back and checked.
+  # JSON goes to Python on stdin: a full batch read (hundreds of KB) exceeds argv limits.
   local listed chunks chunk builds
   listed="$(aws "$@" codebuild list-builds-for-project --project-name "$PROJECT" --sort-order DESCENDING --output json)" || return 1
-  chunks="$(python3 -I -B -c 'import json,sys
-d=json.loads(sys.argv[1]); ids=d.get("ids")
+  chunks="$(printf '%s' "$listed" | python3 -I -B -c 'import json,sys
+d=json.load(sys.stdin); ids=d.get("ids")
 assert type(ids) is list and all(type(i) is str and i and " " not in i for i in ids) and len(ids)==len(set(ids))
 assert "nextToken" not in d and "NextToken" not in d
-for k in range(0,len(ids),100): print(" ".join(ids[k:k+100]))' "$listed")" || return 1
+for k in range(0,len(ids),100): print(" ".join(ids[k:k+100]))')" || return 1
   [[ -z "$chunks" ]] && return 0
   while IFS= read -r chunk; do chunk="${chunk%$'\r'}"
     builds="$(aws "$@" codebuild batch-get-builds --ids $chunk --output json)" || return 1
-    python3 -I -B -c 'import json,sys
-d=json.loads(sys.argv[1]); b=d.get("builds"); n=sys.argv[2].split()
+    printf '%s' "$builds" | python3 -I -B -c 'import json,sys
+d=json.load(sys.stdin); b=d.get("builds"); n=sys.argv[1].split()
 assert type(b) is list and sorted(x.get("id") for x in b)==sorted(n) and not d.get("buildsNotFound")
-assert all(x.get("buildComplete") is True and x.get("buildStatus") not in (None,"IN_PROGRESS") for x in b)' "$builds" "$chunk" || return 1
+assert all(x.get("buildComplete") is True and x.get("buildStatus") not in (None,"IN_PROGRESS") for x in b)' "$chunk" || return 1
   done <<< "$chunks"
 }
 require_tag_absent() { # $1 = tag, rest = aws profile/region args; only ImageNotFoundException proves absence
