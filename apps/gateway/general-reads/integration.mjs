@@ -7,6 +7,7 @@ import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {ownFields} from '../sources/source-admission.mjs';
 import {deny} from '../dispatch/operation-result.mjs';
 import {assertFamilyHandlerSet} from './registration.mjs';
+import {NATIVE_READ_FAMILIES} from '../sources/retained-reads/native-families.mjs';
 import * as f0 from './families/meeting-source.mjs';
 import * as f1 from './families/action-items-complete.mjs';
 import * as f2 from './families/operational-reads.mjs';
@@ -26,10 +27,33 @@ import * as f15 from './families/public-reports.mjs';
 import * as f16 from './families/acquisition-personnel.mjs';
 import * as f17 from './families/disclosures.mjs';
 import * as f18 from './families/legislative-directory.mjs';
-const modules=[f0,f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13,f14,f15,f16,f17,f18];
+import * as f19 from './families/pe-references.mjs';
+import * as f20 from './families/federal-legislation.mjs';
+import * as f21 from './families/state-legislation.mjs';
+import * as f22 from './families/stored-intelligence.mjs';
+import * as f23 from './families/regulatory-dockets.mjs';
+import * as f24 from './families/intelligence-summary.mjs';
+const modules=[f0,f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13,f14,f15,f16,f17,f18,f19,f20,f21,f22,f23,f24];
 const byFamily=new Map(modules.map(f=>[f.id,f]));
 export const GENERAL_READ_ADAPTER_FAMILIES=Object.freeze(modules.map(f=>f.id));
+const STORED_NATIVE_SOURCE_PATHS=Object.freeze([
+ 'apps/gateway/sources/retained-reads/native-handler.mjs',
+ 'apps/gateway/sources/retained-reads/call-context.mjs',
+ 'apps/gateway/sources/retained-reads/http-transport.mjs',
+ 'apps/gateway/dispatch/native-read-context.mjs',
+ 'apps/runtime/native-authority/native-read-credentials/core-client.mjs',
+ 'apps/runtime/native-authority/native-read-credentials/owner.mjs',
+ 'apps/gateway/dispatch/operation-context.mjs',
+ 'apps/gateway/dispatch/read-result-envelope.mjs',
+ 'apps/gateway/dispatch/tool-dispatch.mjs',
+]);
 const SOURCE_PATHS=Object.freeze({
+ 'pe-references':['apps/gateway/sources/pe-references/handler.mjs',...STORED_NATIVE_SOURCE_PATHS],
+ 'federal-legislation':['apps/gateway/sources/federal-legislation/handler.mjs',...STORED_NATIVE_SOURCE_PATHS],
+ 'state-legislation':['apps/gateway/sources/state-legislation/handler.mjs',...STORED_NATIVE_SOURCE_PATHS],
+ 'stored-intelligence':['apps/gateway/sources/stored-intelligence/handler.mjs',...STORED_NATIVE_SOURCE_PATHS],
+ 'regulatory-dockets':['apps/gateway/sources/regulatory-dockets/handler.mjs',...STORED_NATIVE_SOURCE_PATHS],
+ 'intelligence-summary':['apps/gateway/sources/intelligence-summary/handler.mjs',...STORED_NATIVE_SOURCE_PATHS],
  "legislative-directory": [
   "apps/gateway/sources/legislative-directory/handler.mjs",
   "apps/gateway/sources/retained-reads/call-context.mjs",
@@ -160,7 +184,7 @@ export async function createGeneralReadFamilyHandlers(configuration){
  for(const [id,transport] of Object.entries(configured)){
   const family=byFamily.get(id),usesIds=['action-items-complete','operational-reads'].includes(id);
   const values=assertFamilyHandlerSet(id,family.createHandlers({...ownFields(transport,[],TRANSPORT_FIELDS),now,...(usesIds?{newId}:{})}));
-  const labels=[...COMMON,`apps/gateway/general-reads/families/${id}.mjs`,...SOURCE_PATHS[family.sourceDirectory]];
+  const labels=[...COMMON,`apps/gateway/general-reads/families/${id}.mjs`,...SOURCE_PATHS[family.sourceDirectory],...(NATIVE_READ_FAMILIES.includes(id)?['apps/gateway/sources/retained-reads/native-families.mjs']:[])];
   const sourceFiles=await Promise.all(labels.map(async label=>({label,sha256:createHash('sha256').update(await readFile(new URL(`../../../${label}`,import.meta.url))).digest('hex')})));
   for(const {operation,execute} of values){const key=`${operation.id}@${operation.version}`;
    if(handlers.has(key))deny('GATEWAY_CONFIGURATION');

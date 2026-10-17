@@ -21,6 +21,54 @@
   },
   "adapters": [
     {
+      "path": "apps/gateway/sources/pe-references",
+      "family": "pe-references",
+      "declaredIn": ["apps/gateway/sources/pe-references/handler.mjs"],
+      "operations": ["get_pe_bills", "get_pe_contractors", "get_pe_report_language"],
+      "adapterChecks": ["finite native stored-handler admission", "fixed original flat POST and both current native credentials", "unchanged provenance, attribution, evidence buckets and receiving caps"],
+      "subject": "current authorized native tenant/user; global stored PE evidence; empty context"
+    },
+    {
+      "path": "apps/gateway/sources/federal-legislation",
+      "family": "federal-legislation",
+      "declaredIn": ["apps/gateway/sources/federal-legislation/handler.mjs"],
+      "operations": ["get_bill_status", "search_floor_votes"],
+      "adapterChecks": ["finite native stored-handler admission", "captured server defaultCongress selects explicit native billId; original request proof retained", "unchanged bill status, direct versus rule votes, member resolution and receiving"],
+      "subject": "current authorized native tenant/user; global stored federal evidence; server-owned defaultCongress"
+    },
+    {
+      "path": "apps/gateway/sources/state-legislation",
+      "family": "state-legislation",
+      "declaredIn": ["apps/gateway/sources/state-legislation/handler.mjs"],
+      "operations": ["search_state_bills", "get_state_legislator"],
+      "adapterChecks": ["finite native stored-handler admission", "original flat request retains native normalization once", "unchanged stored state selector, ambiguity/refusal and receiving"],
+      "subject": "current authorized native tenant/user; stored state bill and legislator rows; empty context"
+    },
+    {
+      "path": "apps/gateway/sources/stored-intelligence",
+      "family": "stored-intelligence",
+      "declaredIn": ["apps/gateway/sources/stored-intelligence/handler.mjs"],
+      "operations": ["search_intel_articles"],
+      "adapterChecks": ["finite native stored-handler admission", "fixed original flat POST and exact current grants", "unchanged excerpts, ordering, independently observed count and receiving"],
+      "subject": "current authorized native tenant/user; public stored articles; empty context"
+    },
+    {
+      "path": "apps/gateway/sources/regulatory-dockets",
+      "family": "regulatory-dockets",
+      "declaredIn": ["apps/gateway/sources/regulatory-dockets/handler.mjs"],
+      "operations": ["query_regulatory_dockets"],
+      "adapterChecks": ["finite native stored-handler admission", "fixed original flat POST", "unchanged ordinary/upcoming stored docket projections and receiving"],
+      "subject": "current authorized native tenant/user; global stored dockets; empty context"
+    },
+    {
+      "path": "apps/gateway/sources/intelligence-summary",
+      "family": "intelligence-summary",
+      "declaredIn": ["apps/gateway/sources/intelligence-summary/handler.mjs"],
+      "operations": ["query_intelligence"],
+      "adapterChecks": ["finite native stored-handler admission", "fixed original flat POST delegates actual stored Core aggregate", "unchanged opaque source prose, partial omissions and receiving"],
+      "subject": "current authorized native tenant/user; public stored intelligence; clientName is public contractor text"
+    },
+    {
       "path": "apps/gateway/sources/legislative-directory",
       "family": "legislative-directory",
       "declaredIn": ["apps/gateway/sources/legislative-directory/handler.mjs"],

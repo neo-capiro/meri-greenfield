@@ -1,0 +1,24 @@
+Γ£ö 96 selected and43 excluded are reconciled separately from43 registered operations (1.0719ms)
+Γ£ö every existing selected source adapter already has general exposure; remaining41 are genuine adapter gaps (1.0637ms)
+Γ£ö only source-admitted original skills can establish a source route (0.2757ms)
+Γ£ö historical action-items contract is an additional route for one selected successor (0.1528ms)
+Γ£ö read-only product state is counted separately; writes and other product operations stay outside meri_reads (0.2789ms)
+Γ£ö all43 exclusions remain absent from both selected mappings and general registration (0.2707ms)
+Γ£ö all63 reviewed producer records correlate exact operations, context keys and immutable report pointers (11.0959ms)
+Γ£ö current source provenance measures declared canonical paths without claiming qualification (6.273ms)
+Γ£ö directory source is exposed while retained research/Florida scope and zero-live gates remain explicit (0.2645ms)
+Γ£ö registering a governed write family refuses instead of expanding the read server (1.6281ms)
+Γ£ö registered family without adapter fails closed (1.5748ms)
+Γ£ö a manifest declaration alone never manufactures an adapter or source route (3.2033ms)
+Γ£ö duplicate adapter claims and changed selected scope refuse (2.6175ms)
+Γ£ö a duplicate canonical binding refuses rather than choosing an arbitrary adapter family (1.3807ms)
+Γ£ö targeted refresh preserves all139 historical rows, exclusions, source provenance and gates (38.1601ms)
+Γ£ö committed current exposure regenerates exactly with a scoped drift check (47.3877ms)
+Γä╣ tests 16
+Γä╣ suites 0
+Γä╣ pass 16
+Γä╣ fail 0
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 358.5706

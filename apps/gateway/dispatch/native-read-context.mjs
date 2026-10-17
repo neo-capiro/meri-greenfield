@@ -2,8 +2,9 @@
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {frozenData,ownFields} from '../sources/source-admission.mjs';
 import {deny,parseRawJson} from './operation-result.mjs';
+import {NATIVE_READ_FAMILIES} from '../sources/retained-reads/native-families.mjs';
 const same=(a,b)=>hash(a)===hash(b);
-export const nativeReadGroup=entry=>['bill-text','public-reports','acquisition-personnel','disclosures','legislative-directory'].includes(entry.contract.binding?.group);
+export const nativeReadGroup=entry=>NATIVE_READ_FAMILIES.includes(entry.contract.binding?.group);
 export async function prepareNativeReadContext({entry,request,authority,ports,lifetime,readDeadline,now,maxBytes}){
  if(!ports)deny('UNAVAILABLE');const {readCurrent}=ownFields(ports,['readCurrent']);if(typeof readCurrent!=='function')deny('GATEWAY_CONFIGURATION');let options;
  async function observeAuthority(current){

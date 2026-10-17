@@ -11,6 +11,7 @@ import {storeFixture,versions} from '../../../../control/conversations/test/stor
 import {createReadTaskVerifier} from '../../read-task-verifier.mjs';
 import {createNativeToolAuthorityClient} from '../core-client.mjs';
 import {createNativeReadCredentialOwner} from '../owner.mjs';
+import {NATIVE_READ_FAMILIES} from '../../../../gateway/sources/retained-reads/native-families.mjs';
 export const uuid=d=>`${d.repeat(8)}-${d.repeat(4)}-4${d.repeat(3)}-8${d.repeat(3)}-${d.repeat(12)}`;
 export const origin='https://native-core.example.invalid';
 export function coreFixture(options={}){
@@ -26,8 +27,8 @@ export function coreFixture(options={}){
 function retarget(value,old,seen=new Set()){if(!value||typeof value!=='object'||seen.has(value))return;seen.add(value);for(const [key,v] of Object.entries(value)){if(v===old.tenantId)value[key]=uuid('b');else if(v===old.actorId)value[key]=uuid('c');else retarget(v,old,seen);}}
 export async function ownerFixture(id='read_bill_text',options={}){
  const operation={id,version:'0.2.0'},contract=resolveOperationContract(operation),group=contract.binding.group;
- const scene=['public-reports','acquisition-personnel','disclosures','legislative-directory'].includes(group)?nativeFamilyCase(group,id,options):billTextCase(['read_bill_text','search_congress_bills'].includes(id)?id:'read_bill_text');retarget(scene,{...scene.binding});
- const request=['bill-text','public-reports','acquisition-personnel','disclosures','legislative-directory'].includes(group)?scene.arguments:{};
+ const scene=NATIVE_READ_FAMILIES.includes(group)&&group!=='bill-text'?nativeFamilyCase(group,id,options):billTextCase(['read_bill_text','search_congress_bills'].includes(id)?id:'read_bill_text');retarget(scene,{...scene.binding});
+ const request=NATIVE_READ_FAMILIES.includes(group)?scene.arguments:{};
  scene.operation=operation;scene.authority.sourceIds=[...new Set(contract.descriptor.sourceRequirements.map(s=>s.sourceId))];scene.authority.decision.operation=`${id}@0.2.0`;scene.arguments=request;
  const f=await durableFamilyFixture(scene),grant=[...f.state.bindings.values()][0].facts,allocated=[...f.state.allocations.values()][0].allocation;
  const sf=storeFixture(),store=createPostgresConversationStore({pool:sf.pool,now:f.now}),runRequest={requestId:uuid('e'),prompt:'Offline native read'},run={binding:f.binding,state:'queued',scopes:f.scopes,createdAt:new Date(f.now()).toISOString(),policyRevision:f.policyRevision,versions},conversation={conversationId:f.binding.conversationId,owner:{tenantId:f.binding.tenantId,actorId:f.binding.actorId},scopes:f.scopes,createdAt:run.createdAt,policyRevision:f.policyRevision};
@@ -39,7 +40,7 @@ export async function ownerFixture(id='read_bill_text',options={}){
  const readCurrentEntry=async()=>{state.entryReads++;const row={...entry,checkedAtMs:f.now()};state.entryMutator?.(row);return row;};
  const taskVerifier=createReadTaskVerifier({allocationJson:JSON.stringify(allocated),grantFactsJsons:[JSON.stringify(grant)],grantId:grant.grantId,currentOwner,readCurrentEntry,taskArn:entry.taskArn,issuanceFactsSha256:entry.issuanceFactsSha256,runRequestSha256:entry.runRequestSha256,scopes:f.scopes,approvedReads,expiresAtMs:f.deadlineMs,enabled:true,now:f.now});
  const core=coreFixture({now:f.now});core.state.nativeExpiry=f.now()+60000;if(options.actorRole)core.state.role=options.actorRole;const coreAuthority=core.client;
- const configuration={binding:f.binding,expiresAtMs:f.deadlineMs,store,taskVerifier,readCurrentEntry,taskCapability:'synthetic-opaque',allocationJson:JSON.stringify(allocated),approvedReads,coreAuthority,defaultCongress:119,now:f.now,enabled:true,
+ const configuration={binding:f.binding,expiresAtMs:f.deadlineMs,store,taskVerifier,readCurrentEntry,taskCapability:'synthetic-opaque',allocationJson:JSON.stringify(allocated),approvedReads,coreAuthority,defaultCongress:options.defaultCongress??119,now:f.now,enabled:true,
   getNativeCredential:async()=>{state.nativeCredentials++;return state.credential===undefined?'SYNTHETIC_NATIVE':state.credential;},getServiceSecret:async proof=>{state.secrets++;state.secretProof=proof;await state.beforeSecret?.();return state.secret===undefined?'SYNTHETIC_SERVICE':state.secret;}};
  const owner=createNativeReadCredentialOwner(configuration),scope=new AbortController();
  const proof=()=>({binding:f.binding,subject:f.authority.subject,operation,request,requestSha256:hash(request),policyRevision:f.policyRevision,sourceIds:scene.authority.sourceIds,deadlineMs:f.deadlineMs,signal:scope.signal});

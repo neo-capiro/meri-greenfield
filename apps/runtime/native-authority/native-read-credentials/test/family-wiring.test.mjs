@@ -23,10 +23,11 @@ for(const [family,id] of NATIVE_FAMILY_CASES){
   const f=await wired(id),raw=await f.invoke(),out=JSON.parse(raw),[r]=f.state.reservations.values();
   assert.deepEqual(Object.keys(out).sort(),['binding','subject','operation','argumentsSha256','result'].sort());
   assert.deepEqual(out.binding,f.binding);assert.deepEqual(out.subject,f.authority.subject);assert.deepEqual(out.operation,f.operation);assert.equal(out.result.tool,id);
-  const context=family==='acquisition-personnel'?{actorRole:'standard_user'}:{},normalized=f.contract.normalizeInput(f.request,context);
+  const context=family==='acquisition-personnel'?{actorRole:'standard_user'}:family==='federal-legislation'?{defaultCongress:119}:{},normalized=f.contract.normalizeInput(f.request,context);
   assert.equal(out.argumentsSha256,normalized.argumentsSha256);assert.equal(f.stateOwner.secretProof.requestSha256,hash(f.request));assert.deepEqual(f.stateOwner.secretProof.normalizationContext,context);
   assert.equal(f.wire.length,1);assert.equal(f.wire[0].url,`https://native-core.example.invalid/api/clio/tools/${id}`);
-  assert.deepEqual(f.wire[0].body,id==='get_acquisition_person'?normalized.input:f.request);
+  const expectedBody=id==='get_acquisition_person'?normalized.input:family==='federal-legislation'&&normalized.input.billId!==null?{...f.request,billId:normalized.input.billId}:f.request;
+  assert.deepEqual(f.wire[0].body,expectedBody);
   assert.deepEqual(Object.keys(f.wire[0].options.headers).sort(),['authorization','accept','accept-encoding','x-meri-deadline-at','x-internal-service-secret','content-type'].sort());
   assert.equal(f.wire[0].options.headers.authorization,'Bearer SYNTHETIC_NATIVE');assert.equal(f.wire[0].options.headers['x-internal-service-secret'],'SYNTHETIC_SERVICE');
   assert.equal(r.state,'SETTLED');assert.equal(r.charged_micro_usd,1);assert.equal(r.output_bytes,Buffer.byteLength(raw));assert.equal(f.state.produced.size,1);

@@ -1,5 +1,15 @@
 # Meri final scope ledger
 
+Stored-source continuation after reviewed PR99: ten more selected reads now have
+fixed native adapters and current grant/context/credential wiring across six
+families (PE references, federal/state legislation, stored intelligence, regulatory
+dockets and intelligence summary). Current source is **43 operations / 26 worker
+families**, **41 of 82 source reads implemented/exposed**, **41 still missing across
+22 families**, and **live zero**. The exact Zod 4.6.7 worker check supersedes only
+the earlier local dependency mismatch; qualification/live gates remain open.
+Earlier increment counts below are historical. See
+[the continuation report](../reports/CODEX-STORED-READ-CONTINUATION-20261016.md).
+
 16 October 2026 legislative-directory increment, release base `caa7810ff19c09c8f7ea1c2524c025f36f99ccd6`:
 `get_committee_roster` and `list_members` now have fixed native gateway adapters,
 current task/tenant/user grant and credential-owner wiring, and `meri_reads`
@@ -191,12 +201,12 @@ This is source reconciliation only. The historical proposal tables below retain 
 | --- | --- |
 | Selected capabilities / continued exclusions | 96 / 43 |
 | Selected source reads / separate product or governed capabilities | 82 / 14 |
-| Single meri_reads registry | 33 operations / 20 families |
-| Registry accounting | 31 selected source reads + 1 product-state read + 1 historical contract |
+| Single meri_reads registry | 43 operations / 26 families |
+| Registry accounting | 41 selected source reads + 1 product-state read + 1 historical contract |
 | Selected source reads declared in skill manifests | 52 current contracts + 1 historical-only contract |
 | Selected source reads reachable through admitted skill source | 11 |
 | Existing source adapters lacking general-conversation registration | 0 |
-| Selected source reads lacking adapters | 51 (33 declared by skills; 18 without a skill declaration) |
+| Selected source reads lacking adapters | 41 (27 declared by skills; 14 without a skill declaration) |
 | Pinned actual Core producer mappings (not qualification) | 63 |
 | Live | 0 |
 
@@ -219,18 +229,24 @@ Only `quick_skill.relationship_brief`, `quick_skill.commitments_audit` are admit
 | `dataset-metadata` | `list_global_datasets` |
 | `disclosures` | `search_fara_registrations`, `search_lda_filings`, `search_sec_filings` |
 | `entity-candidates` | `resolve_entity` |
+| `federal-legislation` | `get_bill_status`, `search_floor_votes` |
 | `florida-budget` | `get_florida_budget_project` |
+| `intelligence-summary` | `query_intelligence` |
 | `legislative-directory` | `get_committee_roster`, `list_members` |
 | `mail` | `mail.list_messages`, `mail.read_thread`, `mail.search_messages` |
 | `meeting-source` | `meeting.list_upcoming_meetings`, `meeting.query_debriefs`, `meeting.read_client_meetings` |
 | `memory-proposals` | `memory.list_own_proposals` |
 | `operational-reads` | `query_action_items`, `query_tasks` |
+| `pe-references` | `get_pe_bills`, `get_pe_contractors`, `get_pe_report_language` |
 | `public-reports` | `search_cbo_cost_estimates`, `search_crs_reports`, `search_gao_reports` |
+| `regulatory-dockets` | `query_regulatory_dockets` |
 | `research-portfolio` | `get_research_portfolio`, `get_research_portfolio_changes` |
 | `research-portfolio-evidence` | `get_research_evidence` |
+| `state-legislation` | `get_state_legislator`, `search_state_bills` |
+| `stored-intelligence` | `search_intel_articles` |
 | `tenant-contacts` | `find_contacts` |
 
-Every canonical source adapter already present is exposed. Finite native bill, public-report, acquisition, disclosure and legislative-directory families retain their receiving-contract truth limits and require current task, tenant/user and native credentials. Research portfolio, portfolio changes and Florida budget project reads remain exposed through their existing retained-context path. These source paths are not qualified or live. The remaining selected source reads lack an adapter; producer mapping alone does not implement them. Their exact unresolved families and operations are:
+Every canonical source adapter already present is exposed. The finite native families listed above retain their receiving-contract truth limits and require current task, tenant/user and native credentials. Research portfolio, portfolio changes and Florida budget project reads remain exposed through their existing retained-context path. These source paths are not qualified or live. The remaining selected source reads lack an adapter; producer mapping alone does not implement them. Their exact unresolved families and operations are:
 
 | Missing adapter family | Selected operations |
 | --- | --- |
@@ -241,26 +257,20 @@ Every canonical source adapter already present is exposed. Finite native bill, p
 | `data-search` | `search_capiro_data` |
 | `district-nexus` | `get_district_nexus_changes`, `get_district_nexus_context` |
 | `facility-representation` | `get_representation` |
-| `federal-legislation` | `get_bill_status`, `search_floor_votes` |
 | `federal-market` | `get_district_federal_market`, `search_contract_vehicles`, `search_federal_contract_awards`, `search_federal_subawards`, `search_procurement_forecasts` |
 | `funding-opportunities` | `get_funding_opportunity`, `get_funding_opportunity_requirements`, `get_opportunity_client_context`, `get_opportunity_government_landscape`, `search_funding_opportunities` |
-| `intelligence-summary` | `query_intelligence` |
 | `outreach-query` | `query_outreach` |
-| `pe-references` | `get_pe_bills`, `get_pe_contractors`, `get_pe_report_language` |
 | `program-elements` | `get_pe_budget_timeline`, `get_program_element`, `search_program_elements` |
 | `public-data` | `query_economic_data`, `search_federal_awards`, `search_federal_grants` |
 | `public-domain-hearings` | `search_committee_hearings` |
 | `public-domain-query` | `query_global_data` |
 | `public-web` | `scrape_web_page`, `search_public_web` |
-| `regulatory-dockets` | `query_regulatory_dockets` |
 | `research-legal-candidates` | `search_research_sources` |
 | `research-legal-legislation` | `get_legal_reference`, `search_legislative_research` |
 | `research-legal-news` | `search_legiwatch_news` |
 | `rule-status` | `get_state_rule_status` |
 | `sam-opportunities` | `search_sam_opportunities` |
-| `state-legislation` | `get_state_legislator`, `search_state_bills` |
 | `state-status-votes` | `get_state_bill_status`, `search_state_floor_votes` |
-| `stored-intelligence` | `search_intel_articles` |
 | `tracked-bills` | `search_tracked_bills` |
 
 Canonical gateway family adapter and operation-specific trusted dispatch/current-resource context, plus an admitted exact producer/endpoint protocol. A schema/normalizer binding or skill declaration is not a producer. No guessed endpoint, default credential or permissive generic query is allocated.
