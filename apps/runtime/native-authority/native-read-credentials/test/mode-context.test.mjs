@@ -11,13 +11,14 @@ import {createControlGeneralReadRuntime} from '../../../general-read-runtime.mjs
 import {createNativeReadCredentialOwner} from '../owner.mjs';
 import {ownerFixture} from './fixture.mjs';
 
-async function setup(id,{mode='off',configuration}={}){
+async function setup(id,{mode='off',configuration,requestMs}={}){
  const family=id.includes('program_element')||id==='get_pe_budget_timeline'?'program-elements':'public-data';
  const scene=(family==='public-data'?publicCase:programCase)(id,{evidenceAccuracyMode:mode}),f=await ownerFixture(id,{scene});f.core.state.mode=mode;
  const owner=configuration?createNativeReadCredentialOwner(configuration(f)):f.owner;
  const {getCredentials,credentialsForCall,authorizeResultForCall,...transport}=f.transport;
- const handlers=await createGeneralReadFamilyHandlers({families:{[family]:{...transport,credentialsForCall:owner.credentialsForCall}},now:f.now,newId:randomUUID});
- const {installationOwner,...gateway}=f.gatewayConfiguration;
+ // Shared fixtures use short 1s source / 3s gateway budgets; a case may raise both to an existing approved lifetime.
+ const handlers=await createGeneralReadFamilyHandlers({families:{[family]:{...transport,...(requestMs===undefined?{}:{maxRequestMs:requestMs}),credentialsForCall:owner.credentialsForCall}},now:f.now,newId:randomUUID});
+ const {installationOwner,...gateway}=f.gatewayConfiguration;if(requestMs!==undefined)gateway.limits={...gateway.limits,maxRequestMs:requestMs};
  const mount=createControlGeneralReadRuntime({...gateway,handlers,scopes:f.scopes,readCurrentInstallation:({signal})=>installationOwner.readCurrent({signal}),nativeReadContextPorts:owner.nativeReadContextPorts});
  return {...f,family,owner,handlers,mount,invoke:()=>mount.execute({operation:f.operation,arguments:f.request,deliveryId:'native-mode'})};
 }
@@ -63,7 +64,7 @@ for(const id of MODE_READ_OPERATIONS){
   const f=await setup(id);try{const first=await read(f);assert.equal(first.expiresAtMs,f.now()+f.configuration.approvedReads.maxExecuteMs);f.state.now+=25;assert.equal((await read(f)).expiresAtMs,first.expiresAtMs);f.state.now=first.expiresAtMs;await assert.rejects(read(f));assert.equal(f.stateOwner.secrets,0);}finally{f.scope.abort();}
  });
  test(`${id}: a source exceeding the HTTP observation window retains the existing native/operation lifetime`,async()=>{
-  const f=await setup(id);f.state.afterSource=()=>{f.state.now+=3500;};
+  const f=await setup(id,{requestMs:10000});assert.ok(3500<f.configuration.approvedReads.maxExecuteMs);f.state.afterSource=()=>{f.state.now+=3500;};
   try{assert.deepEqual(JSON.parse(await f.invoke()).result,f.page);assert.equal([...f.state.reservations.values()][0].state,'SETTLED');}finally{f.scope.abort();}
  });
  test(`${id}: actual mounted gateway settles the mode-bound source result`,async()=>{
