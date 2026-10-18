@@ -1,4 +1,7 @@
-/** Fixed-route source transport. Missing broker stays unavailable; no ambient credentials. */
+/** Fixed-route source transport. Missing broker stays unavailable; no ambient credentials. The credential owner receives the
+ * exact target (method, path, sha256 of the body bytes sent) so a run-bound read delegation (option B) can bind its single-use
+ * tool token to this request; such a token is sent with its own `CapiroMeriRead` scheme, never as a Bearer. */
+import {createHash} from 'node:crypto';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {createDispatchLifetime} from '../../dispatch/dispatch-lifetime.mjs';
 import {deny,safeFailure} from '../../dispatch/operation-result.mjs';
@@ -35,20 +38,22 @@ export function createRetainedHttpTransport(configuration){
   const lifetime=createDispatchLifetime({deadlineMs:cutoff,now,signal:c.signal});
   let acquired;
   try{
+   const bytes=body===undefined?undefined:JSON.stringify(body),target=Object.freeze({method,path,bodySha256:createHash('sha256').update(bytes??'','utf8').digest('hex')});
    const proof=credentialProof(c,origin),credentials=frozenData(await lifetime.run(signal=>getCredentials(Object.freeze({
-    ...proof,input:c.input,deadlineMs:cutoff,signal}))));
-   ownFields(credentials,[...Object.keys(proof),'bearerToken','expiresAtMs',...(serviceSecret?['serviceSecret']:[])]);
+    ...proof,input:c.input,deadlineMs:cutoff,target,signal}))));
+   ownFields(credentials,[...Object.keys(proof),'bearerToken','expiresAtMs',...(serviceSecret?['serviceSecret']:[])],['authorizationScheme','target']);
+   if(Object.hasOwn(credentials,'target')&&!same(credentials.target,target)||![undefined,'Bearer','CapiroMeriRead'].includes(credentials.authorizationScheme))deny('ACCESS_DENIED');
    if(Object.keys(proof).some(key=>!same(credentials[key],proof[key]))||!token(credentials.bearerToken)||
     serviceSecret&&!token(credentials.serviceSecret)||!Number.isSafeInteger(credentials.expiresAtMs)||credentials.expiresAtMs<=now())deny('ACCESS_DENIED');
    cutoff=Math.min(cutoff,credentials.expiresAtMs);lifetime.limitDeadline(cutoff);
    const observationHeader=observation?encodeNativeReadObservation(createNativeReadObservation({operation:c.operation,request:c.request,context:c.normalizationContext}),{operation:c.operation,request:c.request}):undefined;
    const response=await lifetime.run(async signal=>{
     const result=await fetchImpl(new URL(path,origin).href,{method,redirect:'error',credentials:'omit',cache:'no-store',signal,
-     headers:{authorization:`Bearer ${credentials.bearerToken}`,accept:'application/json','accept-encoding':'identity',
+     headers:{authorization:`${credentials.authorizationScheme??'Bearer'} ${credentials.bearerToken}`,accept:'application/json','accept-encoding':'identity',
       'x-meri-deadline-at':String(cutoff),
       ...(observationHeader?{[NATIVE_READ_OBSERVATION_HEADER]:observationHeader}:{}),
       ...(serviceSecret?{'x-internal-service-secret':credentials.serviceSecret}:{}),...(body===undefined?{}:{'content-type':'application/json'})},
-     ...(body===undefined?{}:{body:JSON.stringify(body)})});
+     ...(bytes===undefined?{}:{body:bytes})});
     acquired=result;
     try{lifetime.check();return result;}catch(error){try{cancelBody(responseBody(result));}catch{}throw error;}
    });

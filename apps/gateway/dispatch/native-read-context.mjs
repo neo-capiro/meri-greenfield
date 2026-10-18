@@ -5,6 +5,12 @@ import {deny,parseRawJson} from './operation-result.mjs';
 import {NATIVE_READ_FAMILIES} from '../sources/retained-reads/native-families.mjs';
 const same=(a,b)=>hash(a)===hash(b);
 export const nativeReadGroup=entry=>NATIVE_READ_FAMILIES.includes(entry.contract.binding?.group);
+const invocationAware=new WeakSet();
+/** Opt-in: a native context port that accepts the durable dispatch's trusted invocation id (run-bound read delegation's call slot). */
+export const acceptsInvocationId=ports=>{invocationAware.add(ports);return ports;};
+/** The port for one durable call: an invocation-aware port receives `invocationId` on every read; any other port is unchanged. */
+export const nativeContextPortsFor=(ports,invocationId)=>invocationId===undefined||ports===undefined||!invocationAware.has(ports)?ports:
+ Object.freeze({readCurrent:raw=>ports.readCurrent.call(ports,{...raw,invocationId})});
 export async function prepareNativeReadContext({entry,request,authority,ports,lifetime,readDeadline,now,maxBytes}){
  if(!ports)deny('UNAVAILABLE');const {readCurrent}=ownFields(ports,['readCurrent']);if(typeof readCurrent!=='function')deny('GATEWAY_CONFIGURATION');let options;
  const keys=entry.contract.binding.contextKeys??[],lineage=keys.includes('binding')&&keys.includes('subject');
