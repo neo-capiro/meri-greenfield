@@ -6,7 +6,8 @@
 | Owner | Reads lane (rt-reads), per R0 after dot's 6246093575 ("continue the operation tariff/allocation wiring") |
 | Review | dot (contracts); R0 (startup composition and render keys) |
 | Basis | `FABLE-GENERAL-READ-TOOLS-20261015.md` §2.3, §2.7 and table §7 (P1, P2, P3, P5); `DECISIONS.md` D016 and D016-A |
-| B1 (decided) | D016 3, refined by D016-A 3: the **default** integration run profile is 20 turns / 20 tool calls / 900 s / $2 (`GENERAL_READ_DEFAULT_RUN_BUDGETS`). It is a default, not a ceiling: per-tenant and per-run values come from the existing budget owners. The base allocation's `maxToolCalls` is the run's own `maxToolCalls`, and the $2 (or configured) cost cap bounds it. |
+| B1 (decided) | D016 3, refined by D016-A 3: the **default** integration run profile is 20 turns / 20 tool calls / 900 s / $2 (`GENERAL_READ_DEFAULT_RUN_BUDGETS`). It is a default, not a ceiling: per-tenant and per-run values come from the existing budget owners. The base allocation's `maxToolCalls` is the run's own `maxToolCalls`. Admission is "one worst-case hold fits" (D016 3); spend is enforced per call by the reservation and the typed budget-exhausted stop. |
+| Follow-up (dot 6247557126, 6247571077, 6247587388) | Closed in source: admission semantics, a configurable read-bytes profile, the effective output hold, evidence-bound tariff assumptions carried in the allocation, and evidence-priced `read_client_documents`. Section "P3 follow-up" below. |
 | G2 (decided) | D016 2: the run capability policy's `readFamilies` are the lane 2 families (`PROPOSED_PREVIEW_CAPABILITY_PLATFORM`), so P1's family filter admits all 76 registered reads before the allocation and approved-reads intersection. |
 
 ## Summary
@@ -97,8 +98,10 @@ Other properties:
 
 ```json
 {"contractVersion":"0.2.0","profile":"meri.general_reads","profileVersion":"1.0.0","allowedOperations":[OperationRef ×1..128],
- "budgets":{"maxTurns":…,"maxToolCalls":"the run's maxToolCalls (default 20)","maxRecoveryAttempts":0,"maxRuntimeSeconds":…,"maxCostMicroUSD":…,"maxOutputBytes":"≤1048576"},
- "maxAggregateOutputBytes":"maxOutputBytes…2097152"}
+ "budgets":{"maxTurns":…,"maxToolCalls":"the run's maxToolCalls (default 20)","maxRecoveryAttempts":0,"maxRuntimeSeconds":…,"maxCostMicroUSD":…,"maxOutputBytes":"profile, default 1 MiB, ≤16 MiB"},
+ "maxAggregateOutputBytes":"profile, default 2 MiB, maxOutputBytes…256 MiB",
+ "tariffAssumptions":[evidence …]  (only when an allocated tariff needs it),
+ "documentPricing":{vision, transcription}  (only when read_client_documents is allocated)}
 ```
 
 Every operation must be read-only (`sideEffect:none`, `approvalBoundary:none`).
@@ -107,13 +110,13 @@ Every operation must be read-only (`sideEffect:none`, `approvalBoundary:none`).
 
 **Spend:** Meri is the sole owner.
 - `postgres-tool-budget.mjs` reserve already enforces `maxToolCalls`, the per-result `maxOutputBytes`, the run `maxCostMicroUSD` and the shared ledger cap.
-- New for general-read manifests: settled output bytes plus all unsettled holds plus this call's hold must be ≤ `maxAggregateOutputBytes`, or `BUDGET_EXHAUSTED`.
+- New for general-read manifests: settled output bytes plus all unsettled holds plus this call's hold must be ≤ `maxAggregateOutputBytes`, or `BUDGET_EXHAUSTED`. The hold is computed once as `min(allocation maxOutputBytes, capability maxOutputBytes)` and used for both that check and the stored `max_output_bytes`, so a narrowed allocation never falsely exhausts (dot 6247587388).
 - Model spend keeps its own reservation against the same ledger. No tool or model call can exceed the cap.
 
 **Composition:** `composeGeneralReadAllocation({run, operations, runBudgets, catalogSha256, scheduleRevision, expiresAt})`.
 - `maxToolCalls` is the run's own `maxToolCalls` (default 20, D016 3; configurable per D016-A 3).
-- 1 MiB per result, 2 MiB aggregate, zero recovery; runtime, turns and cost come from the run's measured policy caps.
-- It refuses unless `maxToolCalls × max(tariff) ≤ maxCostMicroUSD`. `allocation()` re-checks this on every parse of a general-read allocation, so a hand-built or re-pinned allocation can't break it either.
+- Read bytes come from a validated, configurable profile (`readBytes`, default 1 MiB per result and 2 MiB per run; at most 16 MiB per result, the gateway's response cap, and 256 MiB per run). Zero recovery; runtime, turns and cost come from the run's configured caps.
+- Admission (D016 3): one worst-case hold fits, `max(tariff) ≤ maxCostMicroUSD`. `allocation()` applies the same rule on every parse. There is no product-of-maximums check: each call is reserved, or refused with the typed `BUDGET_EXHAUSTED` stop.
 - The output is parsed by `allocation()` before it is returned.
 
 **Narrowing:** `assertSkillNarrowsBase(skill, base)` refuses any skill operation outside the base or any budget above it. `narrowedSkillBudgets` gives the field-wise minimum.
@@ -131,28 +134,45 @@ Every operation must be read-only (`sideEffect:none`, `approvalBoundary:none`).
 | Conditional embedding | `search_capiro_data` | 165 µUSD (worst case) | Titan only for `institutional_knowledge` with `semantic_recall` |
 | Rerank-conditional | `search_memory`, `search_capiro_data`, `search_committee_hearings` | as above, **only with `rerankDisabled`** | The NVIDIA hosted rerank is called only if `RETRIEVAL_RERANK_ENABLED` (default false); its price isn't in source |
 | Paid if configured | `search_public_web` | 1 µUSD, **only with `webSearchProviderDuckDuckGo`** | The default provider is a free DuckDuckGo fetch. Tavily or Serper, if configured, are paid and unpriced here |
-| **Unknown, never allocated** | `read_client_documents` | none | Audio/video goes to OpenAI whisper-1 and image-only PDF pages to OpenAI vision. Cost scales with length and page count, and there is no per-call bound in source |
+| **Priced from evidence** | `read_client_documents` | 1 + max(vision, transcription) | Core #84 @ `aabe0f17`: one document, one section, at most one paid call. See "Document reads" below |
 
-**Assumptions:**
-- An assumption-gated read is allocated only when the render asserts that Core configuration (`assumptions: ['rerankDisabled','webSearchProviderDuckDuckGo']`) from a reviewed Core config.
-- Without the assertion, the base allocation has **71** reads; with it, **75**.
+**Assumptions (bound to evidence):**
+- An assumption-gated read is allocated only with evidence of the measured Core setting:
+  - shape: `{id, configKey, configValue, coreSourceCommit, coreImageDigest, configurationSha256}`;
+  - `rerankDisabled` must be `RETRIEVAL_RERANK_ENABLED=false`, and `webSearchProviderDuckDuckGo` must be `CLIO_WEB_SEARCH_PROVIDER=duckduckgo`.
+- The evidence an allocated tariff needs is carried in the manifest as `tariffAssumptions`, so it stays in the emitted allocation and its sha256. The parser refuses a dropped or invented entry.
+- Without evidence, the base allocation has **71** reads; with it, **75**. The four gated entries stay gated in the proposal until the render supplies that evidence.
 
 **Cost cap:**
-- With the default 20 calls and the highest tariff (165), tool cost is at most 3,300 µUSD, far below the run's 2,000,000 µUSD cap.
-- A configured run is bounded the same way: at $2, at most 12,121 calls at 165 µUSD.
-- `composeGeneralReadAllocation` and `allocation()` both refuse any general-read allocation where `maxToolCalls × max(tariff) > maxCostMicroUSD`.
+- Per call: the budget owner reserves each call's tariff against the run's `maxCostMicroUSD`, the capability cap and the shared ledger, and refuses with `BUDGET_EXHAUSTED` when it can't.
+- Admission only requires that one worst-case hold fits.
+
+**Document reads** (`read_client_documents`, Core #84 @ `aabe0f17`, traced in full). One call reads one document section and makes at most **one** paid call.
+- **Text:** listing and plain text, docx, xlsx, pptx, and PDFs with a text layer parse locally, with no paid call. Images are rejected.
+- **Vision** (`AttachmentPdfVisionReader`): only when the selected PDF page has no text layer.
+  - Bounds: one page of at most 5 MiB (file at most 20 MiB), at most 8,192 output tokens (8,000 requested; raised for `gpt-6-astra`), zero retries, 30 s.
+  - Model: `OPENAI_MODEL`, default `gpt-6-astra`.
+- **Transcription:** audio/video goes to `whisper-1` with no duration, cost or cache bound in Core (only the 25 MiB upload limit).
+- **Charge:** `1 + max(vision, transcription)`, computed by `documentReadCharge` from `documentPricing` evidence. The evidence is the vision model's prices and a one-page input-token bound, plus whisper's per-minute price and **Core's transcription duration cap** (`maxAudioSeconds`), each bound to the measured Core.
+- **Carried:** the evidence travels in the manifest. The parser refuses a schedule charge that differs from the evidence price.
+- **Required Core work, not a deferral:** Core must cap whisper-1 duration. Until that cap and the prices are in the render, the operation stays out of the allocation, because Meri can't bound an uncapped transcription.
 
 **`allocation.json` entries (proposal for R0's re-pin):** `docs/coordination/proposals/general-reads/allocation-read-tariffs.proposal.json`, generated by `generalReadTariffProposal()` and pinned to the tariff module by a test.
 - `operations`: 71 entries in `allocation.json`'s closed `{operation, chargeMicrousd}` shape, priced unconditionally. They are exactly the schedule `composeGeneralReadAllocation` produces without assumptions.
 - `assumptionGated`: 4 entries that join the schedule only when the render asserts the Core configuration.
-- `excluded`: `read_client_documents`.
-- `defaultRunBudgets`: the D016 profile. The committed pins are not edited here.
+- `excluded`: `read_client_documents`, until its `documentPricing` evidence exists (`documentPricingRequired` lists the fields and the Core cap).
+- `defaultRunBudgets` and `defaultReadBytes`: the D016 profile and the default read-bytes profile.
+- `assumptionEvidenceRequired`: the evidence each assumption needs.
+- The committed pins are not edited here.
 
-**Worker early ledger** (`apps/worker/conversation/reads/budget.mjs`): never spending authority, it only refuses earlier. It now follows the run's `maxToolCalls` through an optional `runBudgets` input to `createGeneralReadRuntime`, defaulting to 20. Its old fixed 24 would have cut off a run configured above it. The worker activity (outside this lane) should pass the run allocation's budgets.
+**Worker early ledger** (`apps/worker/conversation/reads/budget.mjs`): never spending authority, it only refuses earlier.
+- **Bounds:** it follows the run's `maxToolCalls`, `maxOutputBytes` and `maxAggregateOutputBytes` through an optional `runBudgets` input to `createGeneralReadRuntime`.
+- **Defaults:** 20 calls, 1 MiB and 2 MiB.
+- **Pass-through:** the run-budget pass-through PR (service → activity → mounts) supplies them.
 
-**Open item (Core):** `read_client_documents` needs a per-call bound from Core before it can be allocated:
-- a Whisper duration cap, plus an OCR page count × `maxTokens` cap with the model price;
-- until then, a skill that declares it cannot narrow from the base (`assertSkillNarrowsBase`). Narrowing isn't wired into the selected-skill path yet (composed disabled), so no skill changes behaviour today.
+**Open item (Core):** `read_client_documents` needs a whisper-1 duration cap in Core. The vision branch is already bounded.
+- **Render evidence:** the render supplies `documentPricing`: vision model prices and an input-token bound, whisper's price, and that cap.
+- **Until then:** a skill that declares the operation cannot narrow from the base (`assertSkillNarrowsBase`). Narrowing isn't wired into the selected-skill path yet (composed disabled), so no skill changes behaviour today.
 
 ## Tests
 
@@ -168,7 +188,14 @@ Node 24.19, serial, one file per process, no POSIX shim:
   - the grant is the intersection, in the runtime snapshot shape;
   - empty grants are valid;
   - binding and policy-revision mismatches refuse before any policy read.
-- `apps/gateway/budget/test/general-read-allocation.test.mjs`: 10/10 (P3):
+- `apps/gateway/budget/test/general-read-allocation.test.mjs`: 13/13 after the follow-up (P3). The follow-up adds:
+  - one-hold admission, in compose and the parser;
+  - the configurable read-bytes profile;
+  - evidence-bound assumptions carried in the allocation;
+  - evidence-priced document reads;
+  - the narrowed-allocation effective hold. A mutation back to the raw capability bound fails that test.
+
+  Earlier cases (some superseded by the follow-up):
   - the tariff table covers exactly the 76 reads with evidence;
   - the proposal file equals the tariff module, and its entries are exactly the composed schedule;
   - `maxToolCalls` follows the run cap: default 20, and 1 or 100 when configured;

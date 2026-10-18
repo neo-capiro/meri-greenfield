@@ -91,6 +91,8 @@ function assembleBudget({ pool, allocationJson, now = Date.now, namespace }) {
         if (!same(call.binding, i.binding) || !same(call.claims?.binding, i.binding) || call.claims.policyRevision !== i.qualificationBinding.policyRevision || !same(call.budgets, call.claims.budgets)) refuse('CAPABILITY_BINDING_MISMATCH');
         const charge = a.schedule.operations.find(item => same(item.operation, call.operation))?.chargeMicrousd;
         integer(charge); integer(call.budgets.maxCostMicrousd); integer(call.budgets.maxOutputBytes);
+        // The one effective output hold: checked against the aggregate bound and stored as the reservation's max_output_bytes.
+        const outputHold = Math.min(a.budgets.maxOutputBytes, call.budgets.maxOutputBytes);
         if (!Number.isSafeInteger(call.deadlineMs)) refuse('INVALID_DEADLINE');
         shorten(Math.min(call.deadlineMs, Date.parse(a.schedule.expiresAt), Date.parse(call.claims.expiresAt), Date.parse(call.claims.issuedAt)+call.budgets.maxRuntimeSeconds*1000), call.limitDeadline);
         const facts = i; const operation = JSON.parse(JSON.stringify(call.operation)); const argumentsSha256 = call.argumentsSha256;
@@ -111,11 +113,11 @@ function assembleBudget({ pool, allocationJson, now = Date.now, namespace }) {
           // P3 aggregate read bytes: settled actual output plus every unsettled hold, plus this call's hold, within the manifest bound.
           if (isGeneralReadManifest(a.manifest)) {
             const used = (await client.query(`SELECT COALESCE(sum(CASE WHEN state='SETTLED' THEN output_bytes ELSE max_output_bytes END),0) AS read_bytes FROM ${store.tables.tool_reservations} WHERE run_id=$1`, [i.binding.runId])).rows[0];
-            if (n(used.read_bytes) + n(call.budgets.maxOutputBytes) > n(a.manifest.maxAggregateOutputBytes)) refuse('BUDGET_EXHAUSTED');
+            if (n(used.read_bytes) + n(outputHold) > n(a.manifest.maxAggregateOutputBytes)) refuse('BUDGET_EXHAUSTED');
           }
           const occurrence=await readOccurrenceCost({client,tables:store.tables,allocation:a,parseAllocation:allocation});
           if(occurrence&&occurrence.totalMicroUSD+n(charge)>occurrence.maxCostMicroUSD)refuse('BUDGET_EXHAUSTED');
-          await client.query(`INSERT INTO ${store.tables.tool_reservations}(invocation_id,reservation_id,grant_id,run_id,facts,operation,arguments_sha256,hold_micro_usd,max_output_bytes,state) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,'UNKNOWN')`, [i.invocationId, call.reservationId, i.grantId, i.binding.runId, facts, operation, argumentsSha256, charge, Math.min(a.budgets.maxOutputBytes,call.budgets.maxOutputBytes)]);
+          await client.query(`INSERT INTO ${store.tables.tool_reservations}(invocation_id,reservation_id,grant_id,run_id,facts,operation,arguments_sha256,hold_micro_usd,max_output_bytes,state) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,'UNKNOWN')`, [i.invocationId, call.reservationId, i.grantId, i.binding.runId, facts, operation, argumentsSha256, charge, outputHold]);
           if (claim) await claim(client, call, budget);
           return receipt(call.reservationId, 'reserved');
         }, transactionCheck ? () => transactionCheck(call) : undefined);
