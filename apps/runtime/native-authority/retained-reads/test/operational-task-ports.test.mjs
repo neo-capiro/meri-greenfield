@@ -13,25 +13,38 @@ const CLIENT=uuid('9'),ORIGIN='https://core.synthetic.invalid',DEADLINE=NOW+5000
 const TOKEN='LIVE_USER',SECRET='CURRENT_SERVICE';
 const ref=id=>({id,version:'0.2.0'});
 function setup(changes={}){
- const f=fixture(),state={bearers:0,secrets:0,wire:[],now:NOW};
+ const f=fixture(),state={bearers:0,secrets:0,signed:[],wire:[],now:NOW};
  Object.assign(f.claims.scopes[0],{kind:'client',resourceId:CLIENT});
  Object.assign(f.subject,{kind:'client',entityType:'client',entityIds:[CLIENT],rosterVersionId:null});
  const task={binding:f.binding,original:{binding:f.binding,expiresAtMs:NOW+7000},scopes:f.claims.scopes,
   grant:{binding:f.binding,qualificationBinding:{policyRevision:f.claims.policyRevision}}};
  const getNativeCredentialWithExpiry=async()=>{state.bearers++;return {credential:TOKEN,expiresAtMs:NOW+3000};};
  const getServiceSecret=async()=>{state.secrets++;return SECRET;};
+ const getSignedSourceCredentials=async pins=>{state.signed.push(pins);
+  const {input:ignoredInput,signal:ignoredSignal,deadlineMs:ignoredDeadline,...echo}=pins;
+  return {...echo,authorizationScheme:'CapiroMeriRead',bearerToken:'SIGNED_ACTION_TOKEN',
+   serviceSecret:SECRET,expiresAtMs:NOW+2500};};
  const fetchImpl=async(url,options)=>{state.wire.push({url,options});return new Response(JSON.stringify(state.native),{headers:{'content-type':'application/json'}});};
  const producer=createOperationalTaskPorts({coreOrigin:ORIGIN,fetchImpl,now:()=>state.now,enabled:true});
- const ports=producer({task,getNativeCredentialWithExpiry,getServiceSecret,
+ const ports=producer({task,getNativeCredentialWithExpiry,getServiceSecret,getSignedSourceCredentials,
   getNativeCredential(){throw Error('STRING_BEARER_MUST_NOT_BE_USED');},...changes});
- return {f,state,task,producer,ports,getNativeCredentialWithExpiry,getServiceSecret};
+ return {f,state,task,producer,ports,getNativeCredentialWithExpiry,getServiceSecret,getSignedSourceCredentials};
 }
 function originalPins(x,id='query_tasks'){
  const operation=ref(id),sourceIdentity=resolveOperationContract(operation).descriptor.sourceRequirements[0];
  return {operation,sourceIdentity,binding:x.f.binding,subject:x.f.subject,policyRevision:x.f.claims.policyRevision,
   sourceIds:[sourceIdentity.sourceId],argumentsSha256:'a'.repeat(64),deadlineMs:DEADLINE,signal:new AbortController().signal};
 }
-function successorPins(x){return {binding:x.f.binding,subject:x.f.subject,deadlineMs:DEADLINE,signal:new AbortController().signal};}
+function successorPins(x){
+ const operation=ref('actions.query'),input=sourceCall(x,'actions.query',{clientId:CLIENT,sort:'priority'}).input,
+  metadata=null,body=JSON.stringify({input,metadata});
+ return {operation,input,metadata,argumentsSha256:canonicalSha256(input),
+  requestSha256:canonicalSha256({input,metadata}),binding:x.f.binding,subject:x.f.subject,
+  policyRevision:x.f.claims.policyRevision,sourceIds:['action_items_complete'],invocationId:'action_call_1',
+  deadlineMs:DEADLINE,target:{method:'POST',path:'/api/clio/tools/actions.query',
+   bodySha256:createHash('sha256').update(body,'utf8').digest('hex')},correlationSha256:'a'.repeat(64),
+  signal:new AbortController().signal};
+}
 const coverage={sourceStatus:'healthy',sourceReason:null,complete:true,partial:false,paginationComplete:true,hasMore:false,
  nextCursor:null,totalIsExactForScope:true,absenceSupported:true,note:'Synthetic Core page.'};
 function nativePage(id,input,f){
@@ -56,8 +69,7 @@ function sourceCall(x,id,args){
 
 for(const [id,args,expectedBody] of [
  ['query_tasks',{clientId:CLIENT,assignedToMe:true,status:'overdue'},input=>({limit:input.limit,clientId:CLIENT,
-  status:input.status,dueBefore:input.dueBefore,assignedToMe:true})],
- ['actions.query',{clientId:CLIENT,sort:'priority'},input=>({limit:input.selection.limit,sort:'priority',clientId:CLIENT})]
+  status:input.status,dueBefore:input.dueBefore,assignedToMe:true})]
 ])test(`${id}: task port calls the existing Core adapter with selected-client body and bounded live credentials`,async()=>{
  const x=setup(),call=sourceCall(x,id,args);x.state.native=nativePage(id,call.input,x.f);
  const family=id==='actions.query'?'action-items-complete':'operational-reads';
@@ -72,6 +84,24 @@ for(const [id,args,expectedBody] of [
  assert.equal(wire.options.headers.authorization,`Bearer ${TOKEN}`);
  assert.equal(wire.options.headers['x-internal-service-secret'],SECRET);
  assert.equal(wire.options.credentials,'omit');assert.equal(wire.options.redirect,'error');
+});
+
+test('actions.query: task port forwards the signed alias body after the gateway invocation',async()=>{
+ const x=setup(),id='actions.query',args={clientId:CLIENT,sort:'priority'},call={...sourceCall(x,id,args),invocationId:'action_call_1'};
+ x.state.native=nativePage(id,call.input,x.f);
+ const handler=successorHandlers({...x.ports.families['action-items-complete'],now:()=>x.state.now,newId:()=>uuid('7')})[0];
+ const result=JSON.parse(await handler.execute(call));
+ assert.equal(result.operation.id,id);assert.equal(result.subject.entityIds[0],CLIENT);
+ assert.equal(x.state.bearers,0);assert.equal(x.state.secrets,0);assert.equal(x.state.signed.length,1);
+ const wire=x.state.wire[0],body=JSON.stringify({input:call.input,metadata:null});
+ assert.equal(wire.url,`${ORIGIN}/api/clio/tools/actions.query`);
+ assert.equal(wire.options.body,body);
+ assert.equal(wire.options.headers.authorization,'CapiroMeriRead SIGNED_ACTION_TOKEN');
+ assert.equal(wire.options.headers['x-internal-service-secret'],SECRET);
+ assert.ok(typeof wire.options.headers['x-meri-read-correlation']==='string');
+ assert.equal(x.state.signed[0].argumentsSha256,call.argumentsSha256);
+ assert.equal(x.state.signed[0].invocationId,call.invocationId);
+ assert.equal(x.state.signed[0].target.bodySha256,createHash('sha256').update(body,'utf8').digest('hex'));
 });
 
 test('query_action_items: original body and reservation use a single-use Option B token',async()=>{
@@ -154,13 +184,13 @@ test('original credential pins require exact operation, source identity, digest,
 
 test('successor credential pins require accepted full binding and selected-client subject',async()=>{
  const x=setup(),get=x.ports.families['action-items-complete'].getCredentials;
- const credential=await get(successorPins(x));assert.equal(credential.expiresAtMs,NOW+3000);
+ const credential=await get(successorPins(x));assert.equal(credential.expiresAtMs,NOW+2500);
  for(const mutate of [p=>p.binding.writerFence++,p=>p.subject.entityIds=[uuid('8')],
   p=>p.subject.scopes[0].resourceId=uuid('8')]){
   const altered=structuredClone({...successorPins(x),signal:undefined});altered.signal=new AbortController().signal;mutate(altered);
   await assert.rejects(get(altered));
  }
- assert.equal(x.state.bearers,2);assert.equal(x.state.secrets,1);
+ assert.equal(x.state.bearers,0);assert.equal(x.state.secrets,0);assert.equal(x.state.signed.length,1);
 });
 
 test('task original and expiry are required at setup; selected client is required before source effect',async()=>{
@@ -201,9 +231,6 @@ test('portfolio query_tasks and source credential expiry/session changes fail cl
  assert.equal(stringOnly.state.secrets,0);
  const bounded=setup({getNativeCredentialWithExpiry:async()=>({credential:TOKEN,expiresAtMs:NOW+9000})});
  assert.equal((await bounded.ports.families['operational-reads'].getCredentials({...originalPins(bounded),deadlineMs:NOW+8000})).expiresAtMs,NOW+7000);
- const replaced=setup({getNativeCredentialWithExpiry:async()=>({credential:++replaced.state.bearers===1?TOKEN:'REPLACED',expiresAtMs:NOW+3000})});
- await assert.rejects(replaced.ports.families['action-items-complete'].getCredentials(successorPins(replaced)));
- assert.equal(replaced.state.secrets,1);assert.equal(replaced.state.wire.length,0);
  const cancelled=setup(),controller=new AbortController();controller.abort();
  await assert.rejects(cancelled.ports.families['action-items-complete'].getCredentials({...successorPins(cancelled),signal:controller.signal}));
  assert.equal(cancelled.state.bearers,0);assert.equal(cancelled.state.secrets,0);

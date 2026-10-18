@@ -28,9 +28,12 @@ export function createOperationalTaskPorts(configuration={}){
  const origin=retainedOrigin(c.coreOrigin);
 
  return function retainedTaskPorts(raw){
-  const ports=own(raw,['task','getNativeCredentialWithExpiry','getServiceSecret'],['getNativeCredential','getToolCredential']);
+  const ports=own(raw,['task','getNativeCredentialWithExpiry','getServiceSecret'],
+   ['getNativeCredential','getToolCredential','getSignedSourceCredentials']);
   if([ports.getNativeCredentialWithExpiry,ports.getServiceSecret].some(fn=>typeof fn!=='function'||types.isProxy(fn)))refuse();
   if(ports.getToolCredential!==undefined&&(typeof ports.getToolCredential!=='function'||types.isProxy(ports.getToolCredential)))refuse();
+  if(ports.getSignedSourceCredentials!==undefined&&
+   (typeof ports.getSignedSourceCredentials!=='function'||types.isProxy(ports.getSignedSourceCredentials)))refuse();
   const task=own(ports.task,['binding','original','scopes','grant'],['pool','allocationJson','grantFactsJsons','grantId','taskArn',
    'issuanceFactsSha256','runRequestSha256','readCurrentEntry','currentOwner','sourceEnabled','limits','now','taskVerifier',
    'taskCapability','approvedReads','signal','allocation']);
@@ -125,11 +128,14 @@ export function createOperationalTaskPorts(configuration={}){
     sourceIds:data(p.sourceIds),argumentsSha256:p.argumentsSha256,...credentials});
   }
   async function successorCredentials(rawPins){
-   const p=own(rawPins,['binding','subject','deadlineMs','signal']);
+   const p=own(rawPins,['operation','input','metadata','argumentsSha256','requestSha256','binding','subject',
+    'policyRevision','sourceIds','invocationId','deadlineMs','target','correlationSha256','signal']);
+   if(typeof ports.getSignedSourceCredentials!=='function')refuse();
    subjectFor(p.subject);
-   if(!same(data(p.binding),binding))refuse();
-   const credentials=await currentCredentials(p.deadlineMs,p.signal,{id:'actions.query',version:'0.2.0'},null);
-   return Object.freeze({binding,...credentials});
+   if(!same(data(p.binding),binding)||!same(data(p.operation),{id:'actions.query',version:'0.2.0'})||
+    p.policyRevision!==selectedClient().policyRevision)refuse();
+   active(p.deadlineMs,p.signal);
+   return ports.getSignedSourceCredentials(p);
   }
   const family=getCredentials=>Object.freeze({origin,getCredentials,fetchImpl:c.fetchImpl});
   const available=Object.freeze({'operational-reads':family(originalCredentials),'action-items-complete':family(successorCredentials)});

@@ -9,6 +9,7 @@ import {COMPOSABLE_RETAINED_FAMILIES,createSelectedRetainedTaskPorts} from '../s
 const origin='https://core.synthetic.invalid';
 const signed=async()=>{throw Error('NO_TOKEN_BEFORE_GATEWAY_CALL');};
 const native=async()=>{throw Error('NO_BEARER_BEFORE_GATEWAY_CALL');};
+const tool=async()=>{throw Error('NO_TOOL_TOKEN_BEFORE_GATEWAY_CALL');};
 const secret=async()=>{throw Error('NO_SECRET_BEFORE_GATEWAY_CALL');};
 const fetchImpl=async()=>{throw Error('NO_SOURCE_BEFORE_GATEWAY_CALL');};
 
@@ -20,7 +21,8 @@ test('one task-local selection composes only its reviewed signed, action, and lo
  const task={binding:f.binding,original:{binding:f.binding,expiresAtMs:NOW+5000},scopes:f.claims.scopes,
   grant:{binding:f.binding,qualificationBinding:{policyRevision:f.claims.policyRevision}},approvedReads};
  const create=createSelectedRetainedTaskPorts({familyIds,coreOrigin:origin,fetchImpl,now:()=>NOW});
- const {families}=create({task,getSignedSourceCredentials:signed,getNativeCredentialWithExpiry:native,getServiceSecret:secret});
+ const {families}=create({task,getSignedSourceCredentials:signed,getNativeCredentialWithExpiry:native,
+  getToolCredential:tool,getServiceSecret:secret});
  assert.deepEqual(Object.keys(families),familyIds);
  assert.equal(families['action-items-complete'].getCredentials instanceof Function,true);
  assert.equal(families['client-documents'].getCredentials,signed);
@@ -44,8 +46,22 @@ test('local dataset slice remains callable through its canonical handler without
  assert.ok(result.result.datasets.length>0);
 });
 
+test('historical action family requires its exact receipt ref and a task-bound token port',async()=>{
+ const f=fixture(),familyIds=['operational-reads'],action={id:'query_action_items',version:'0.2.0'};
+ const task={binding:f.binding,original:{binding:f.binding,expiresAtMs:NOW+5000},scopes:f.claims.scopes,
+  grant:{binding:f.binding,qualificationBinding:{policyRevision:f.claims.policyRevision}}};
+ const create=createSelectedRetainedTaskPorts({familyIds,operationRefs:[action],coreOrigin:origin,fetchImpl,now:()=>NOW});
+ const {families}=create({task,getNativeCredentialWithExpiry:native,getToolCredential:tool,getServiceSecret:secret});
+ assert.deepEqual(Object.keys(families),familyIds);
+ assert.equal(typeof families['operational-reads'].getCredentials,'function');
+ await assert.rejects(families['operational-reads'].getCredentials({operation:action}));
+ for(const operationRefs of [[],[{id:'query_tasks',version:'0.2.0'}],
+  [action,{id:'query_tasks',version:'0.2.0'}]])
+  assert.throws(()=>createSelectedRetainedTaskPorts({familyIds,operationRefs,coreOrigin:origin,fetchImpl,now:()=>NOW}));
+});
+
 test('unlisted, duplicate, and originless remote families refuse before task or source access',()=>{
- for(const familyIds of [[],['action-items-complete','action-items-complete'],['operational-reads'],['mail'],
+ for(const familyIds of [[],['action-items-complete','action-items-complete'],['mail'],
   [...COMPOSABLE_RETAINED_FAMILIES,'mail']])
   assert.throws(()=>createSelectedRetainedTaskPorts({familyIds,coreOrigin:origin,fetchImpl,now:()=>NOW}));
  assert.throws(()=>createSelectedRetainedTaskPorts({familyIds:['action-items-complete'],fetchImpl,now:()=>NOW}));

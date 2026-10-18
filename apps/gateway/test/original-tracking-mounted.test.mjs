@@ -47,18 +47,22 @@ function setup(id,args={clientId:CLIENT}) {
   const native={tool:id,generatedAt:T,clientId:input.clientId,total,returned:1,[rows]:[task?nativeTask(input):nativeAction(input)],scope,
     coverage:{sourceStatus:'healthy',sourceReason:null,complete,partial:!complete,paginationComplete:!hasMore,hasMore,nextCursor:hasMore?'OPAQUE-NEXT':null,
       totalIsExactForScope:true,absenceSupported:false,note:'Synthetic source assertion only.'}};
-  const credential=pins=>{const {deadlineMs,signal,...value}=pins;return {...value,bearerToken:'SYNTHETIC_USER',serviceSecret:'SYNTHETIC_SERVICE',expiresAtMs:NOW+10000};};
+  const credential=pins=>{const {deadlineMs,signal,...value}=pins;return {...value,
+    ...(id==='query_action_items'?{authorizationScheme:'CapiroMeriRead'}:{}),
+    bearerToken:'SYNTHETIC_USER',serviceSecret:'SYNTHETIC_SERVICE',expiresAtMs:NOW+10000};};
   const config={operation,sourceIdentity:contract.descriptor.sourceRequirements[0],origin:'https://original.example.invalid',now:()=>f.state.now,newId:()=>uuid('7'),
     maxRequestMs:300,maxResponseBytes:65536,getCredentials:async pins=>{f.calls.push('credentials');return credential(pins);},
     fetchImpl:async(url,options)=>{f.calls.push('http');wire.push({url,options});return new Response(JSON.stringify(native),{headers:{'content-type':'application/json'}});}};
   const direct=()=>({input:normalized.input,request:args,argumentsSha256:normalized.argumentsSha256,normalizationContext,
+    ...(id==='query_action_items'?{invocationId:'original_action_call_1'}:{}),
     authority:{binding:f.binding,subject:f.subject,claims:f.claims,policyRevision:f.claims.policyRevision,sourceIds:[config.sourceIdentity.sourceId],deadlineMs:NOW+10000,
       decision:{decisionId:f.subject.authorizationDecisionId,actor:{tenantId:f.binding.tenantId,actorId:f.binding.actorId},operation:`${id}@0.2.0`,scopes:f.subject.scopes,
         policyRevision:f.claims.policyRevision,evaluatedAt:T,decision:'allowed',reasonCode:'SYNTHETIC_ONLY'}}});
-  const create=(changes={})=>{const mount=createOriginalTrackingSourceMount({...config,...changes});
+  const create=(changes={},withInvocation=true)=>{const mount=createOriginalTrackingSourceMount({...config,...changes});
     const entry={descriptor:contract.descriptor,contract,execute:mount.execute};
     return createToolDispatch({catalog:{entry:ref=>canonicalSha256(ref)===canonicalSha256(operation)?entry:null,discoverable:()=>[]},
-      authority:f.authority,budget:f.budget,limits,now:()=>f.state.now,newId:()=>uuid('7'),sourceEnabled:true});};
+      authority:f.authority,budget:f.budget,limits,now:()=>f.state.now,newId:()=>uuid('7'),sourceEnabled:true,
+      ...(id==='query_action_items'&&withInvocation?{invocationId:'original_action_call_1'}:{})});};
   return {...f,operation,contract,config,native,wire,credential,direct,create,rows,run:(changes={},signal)=>create(changes).execute(JSON.stringify({operation,arguments:args}),'WORKER_CREDENTIAL',signal)};
 }
 for(const id of operations) {
@@ -205,4 +209,10 @@ test('original action: signed invocation binds the exact flat body and refuses a
   }}).execute(altered));
   assert.equal(rejected.wire.length,0);
  }
+});
+test('original action: durable dispatch requires its trusted invocation before reservation',async()=>{
+ const f=setup('query_action_items',{clientId:CLIENT,sort:'priority'});
+ await assert.rejects(f.create({},false).execute(JSON.stringify({operation:f.operation,arguments:{clientId:CLIENT,sort:'priority'}}),
+  'WORKER_CREDENTIAL'),/UNAVAILABLE/);
+ assert.ok(!f.calls.includes('reserve'));assert.ok(!f.calls.includes('credentials'));
 });

@@ -169,6 +169,7 @@ export async function createControlReadsComposer(options){
    getNativeCredential:async request=>(await bearer({binding:t.binding,...request})).credential,
    getNativeCredentialWithExpiry:request=>nativeCredentials.getNativeCredential({...request,binding:t.binding}),
    getSignedSourceCredentials:signedCredentials,
+   getToolCredential:nativeCredentials.toolCredential,
    getServiceSecret:broker.getServiceSecret}))),['families'],['contextPorts']):{families:{},contextPorts:{}};
   const retainedFamilies=own(supplied.families,retainedIds),contextPorts=own(supplied.contextPorts??{},[],['memoryContextPorts','mailContextPorts','retainedContextPorts']);
   if(retainedIds.includes('mail')&&contextPorts.mailContextPorts===undefined||retainedIds.includes('memory-proposals')&&contextPorts.memoryContextPorts===undefined||

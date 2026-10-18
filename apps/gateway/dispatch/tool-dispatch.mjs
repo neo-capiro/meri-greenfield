@@ -40,7 +40,9 @@ export function createToolDispatch({ catalog, authority, budget, limits, now, ne
     if (!sourceEnabled || entry === null) deny('UNAVAILABLE');
     if (canonicalSha256(entry.descriptor.operation) !== canonicalSha256(request.operation)) deny('GATEWAY_CONFIGURATION');
     const signedSource=signedRetainedSourceId(request.operation.id);
-    if(signedSource&&(!signedRetainedSourceOperation(request.operation)||invocationId===undefined))deny('UNAVAILABLE');
+    const originalAction=request.operation.id==='query_action_items'&&request.operation.version==='0.2.0';
+    if((signedSource&&!signedRetainedSourceOperation(request.operation))||
+       (signedSource||originalAction)&&invocationId===undefined)deny('UNAVAILABLE');
     assertOperationArguments(entry, request.arguments);
     let deadlineMs = now()+limits.maxRequestMs;
     const ownedLifetime = createDispatchLifetime({ deadlineMs, now, signal });
@@ -84,7 +86,7 @@ export function createToolDispatch({ catalog, authority, budget, limits, now, ne
       try { outputJson = await lifetime.run(signal => entry.execute({ input: normalized.input,
         request: normalized.request, authority: effect, argumentsSha256: normalized.argumentsSha256,
         ...(projection || context.handlerNormalization ? {normalizationContext:context.options(effect)} : {}),
-        ...(signedSource?{invocationId}:{}),signal })); }
+        ...(signedSource||originalAction?{invocationId}:{}),signal })); }
       catch (error) {
         const failure = safeFailure(error);
         if (['DEADLINE', 'CANCELLED'].includes(failure.message)) throw failure;

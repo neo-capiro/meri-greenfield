@@ -84,6 +84,41 @@ test('a signed selected-client receipt composes only its genuine task port when 
  }finally{state.bytes=saved;}
 });
 
+test('reviewed local dataset and selected action families reach the task port without enabling unrelated retained families',async()=>{
+ const saved=state.bytes;
+ const dataset={...MEASUREMENT.operations[0],operation:{id:'list_global_datasets',version:'0.2.0'},family:'dataset-metadata'};
+ const action={...MEASUREMENT.operations[0],operation:{id:'actions.query',version:'0.2.0'},family:'action-items-complete'};
+ try{
+  const measurement={...MEASUREMENT,operations:[dataset,action]};state.bytes=material(measurement);
+  const r=await start({enabled:true,serviceSecretFile:SERVICE,delegation:{enabled:true},
+   installation:{enabled:true,measurementSha256:canonicalSha256(measurement),measurementFile:FILE}});
+  assert.equal(r.code,0,r.err);assert.deepEqual(r.composer[0].familyIds,['dataset-metadata','action-items-complete']);
+  assert.equal(typeof r.composer[0].retainedTaskPorts,'function');
+  const noActionDelegation=await start({enabled:true,serviceSecretFile:SERVICE,
+   installation:{enabled:true,measurementSha256:canonicalSha256(measurement),measurementFile:FILE}});
+  assert.equal(noActionDelegation.code,0,noActionDelegation.err);
+  assert.equal(noActionDelegation.composer[0].retainedTaskPorts,undefined);
+  const local={...MEASUREMENT,operations:[dataset]};state.bytes=material(local);
+  const onlyLocal=await start({enabled:true,serviceSecretFile:SERVICE,
+   installation:{enabled:true,measurementSha256:canonicalSha256(local),measurementFile:FILE}});
+  assert.equal(onlyLocal.code,0,onlyLocal.err);
+  const supplied=onlyLocal.composer[0].retainedTaskPorts({task:{}});
+  assert.deepEqual(Object.keys(supplied.families),['dataset-metadata']);
+  assert.ok(supplied.families['dataset-metadata'].registry.listDatasetMetadata().length>0);
+  const signed={...MEASUREMENT.operations[0],operation:{id:'get_client_context',version:'0.3.0'},family:'client-knowledge-profile'};
+  const mixed={...MEASUREMENT,operations:[dataset,signed]};state.bytes=material(mixed);
+  const withoutDelegation=await start({enabled:true,serviceSecretFile:SERVICE,
+   installation:{enabled:true,measurementSha256:canonicalSha256(mixed),measurementFile:FILE}});
+  assert.equal(withoutDelegation.code,0,withoutDelegation.err);
+  assert.equal(withoutDelegation.composer[0].retainedTaskPorts,undefined);
+  const unknown={...MEASUREMENT,operations:[{...MEASUREMENT.operations[0],operation:{id:'mail.list_messages',version:'0.2.0'},family:'mail'}]};
+  state.bytes=material(unknown);
+  const held=await start({enabled:true,serviceSecretFile:SERVICE,
+   installation:{enabled:true,measurementSha256:canonicalSha256(unknown),measurementFile:FILE}});
+  assert.equal(held.code,0,held.err);assert.equal(held.composer[0].retainedTaskPorts,undefined);
+ }finally{state.bytes=saved;}
+});
+
 test('disabled installation and discovery pass their toggles only; absent blocks pass no key; discovery without capabilityPlatform is refused by configuration',async()=>{
  const off=await start({enabled:true,serviceSecretFile:SERVICE,installation:{enabled:false},discovery:{enabled:false}});
  assert.equal(off.code,0,off.err);assert.deepEqual(off.composer[0].installation,{enabled:false});assert.deepEqual(off.composer[0].discovery,{enabled:false});assert.deepEqual(off.secrets,[]);
