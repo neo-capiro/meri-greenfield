@@ -6,7 +6,7 @@ import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {familyReads} from '../../../worker/conversation/reads/availability.mjs';
 import {selectSkill} from '../../../../packages/skills/index.mjs';
 import {allocation} from '../tool-budget-binding.mjs';
-import {GENERAL_READ_DEFAULT_RUN_BUDGETS,GENERAL_READ_DEFAULT_READ_BYTES,GENERAL_READ_CEILINGS,assertGeneralReadManifest} from '../general-read-manifest.mjs';
+import {GENERAL_READ_DEFAULT_RUN_BUDGETS,GENERAL_READ_DEFAULT_READ_BYTES,GENERAL_READ_CEILINGS,GENERAL_READ_TEXT_ONLY_PROFILE_VERSION,assertGeneralReadManifest,DOCUMENT_TEXT_ONLY_MODE,DOCUMENT_TEXT_ONLY_ROUTE} from '../general-read-manifest.mjs';
 import {GENERAL_READ_TARIFFS,GENERAL_READ_TARIFF_ASSUMPTION_KEYS} from '../general-read-tariffs.mjs';
 import {readFileSync} from 'node:fs';
 import {composeGeneralReadAllocation,generalReadTariff,assertSkillNarrowsBase,narrowedSkillBudgets,generalReadTariffProposal} from '../general-read-allocation.mjs';
@@ -153,6 +153,35 @@ const price={coreSourceCommit:'a'.repeat(40),coreImageDigest:`sha256:${'b'.repea
 // under a one-hour Core cap. Vision = 10,000×2 + 8,192×8 = 85,536 µUSD; transcription = 60 × 6,000 = 360,000 µUSD.
 const documentPricing={vision:{model:'gpt-6-astra',inputMicrousdPerMillionTokens:2000000,outputMicrousdPerMillionTokens:8000000,maxInputTokens:10000,...price},
  transcription:{model:'whisper-1',microusdPerMinute:6000,maxAudioSeconds:3600,...price}};
+const sourceTextOnlyPricing={mode:DOCUMENT_TEXT_ONLY_MODE,route:DOCUMENT_TEXT_ONLY_ROUTE,...price};
+
+test('document text-only allocation requires pinned no-provider route evidence and its own manifest revision',()=>{
+ const {allocation:a,excluded}=compose({documentPricing:sourceTextOnlyPricing,assumptions:both});
+ assert.deepEqual(excluded,[]);assert.equal(a.manifest.allowedOperations.length,76);
+ assert.equal(a.manifest.profileVersion,GENERAL_READ_TEXT_ONLY_PROFILE_VERSION);
+ assert.deepEqual(a.manifest.documentPricing,sourceTextOnlyPricing);
+ assert.equal(a.schedule.operations.find(item=>item.operation.id==='read_client_documents').chargeMicrousd,1);
+ assert.doesNotThrow(()=>allocation(JSON.stringify(a)));
+ for(const bad of [
+  {...sourceTextOnlyPricing,coreSourceCommit:'not-a-commit'},
+  {...sourceTextOnlyPricing,coreImageDigest:'latest'},
+  {...sourceTextOnlyPricing,configurationSha256:'not-a-digest'},
+  {...sourceTextOnlyPricing,route:'/api/clio/tools/read_client_documents/other'},
+  {...sourceTextOnlyPricing,extra:true},
+  {...sourceTextOnlyPricing,mode:'paid'},
+  {mode:DOCUMENT_TEXT_ONLY_MODE,route:DOCUMENT_TEXT_ONLY_ROUTE}
+ ])refused(()=>compose({documentPricing:bad}),'INVALID_DOCUMENT_PRICING');
+ const old=structuredClone(a);old.manifest.profileVersion='1.0.0';old.manifestSha256=canonicalSha256(old.manifest);
+ refused(()=>allocation(JSON.stringify(old)),'INVALID_GENERAL_READ_MANIFEST');
+ const noDocument=structuredClone(compose().allocation.manifest);noDocument.profileVersion=GENERAL_READ_TEXT_ONLY_PROFILE_VERSION;
+ refused(()=>assertGeneralReadManifest(noDocument),'INVALID_GENERAL_READ_MANIFEST');
+ const paidAtTextVersion=structuredClone(compose({documentPricing}).allocation.manifest);paidAtTextVersion.profileVersion=GENERAL_READ_TEXT_ONLY_PROFILE_VERSION;
+ refused(()=>assertGeneralReadManifest(paidAtTextVersion),'INVALID_GENERAL_READ_MANIFEST');
+ const repriced=structuredClone(a);repriced.schedule.operations.find(i=>i.operation.id==='read_client_documents').chargeMicrousd=2;
+ refused(()=>allocation(JSON.stringify(repriced)),'INVALID_CHARGE_SCHEDULE');
+ const dropped=structuredClone(a);delete dropped.manifest.documentPricing;dropped.manifestSha256=canonicalSha256(dropped.manifest);
+ refused(()=>allocation(JSON.stringify(dropped)),'INVALID_GENERAL_READ_MANIFEST');
+});
 
 test('read_client_documents is priced from evidence as text plus the worse paid branch, and allocated only then',()=>{
  const document={id:'read_client_documents',version:'0.2.0'};

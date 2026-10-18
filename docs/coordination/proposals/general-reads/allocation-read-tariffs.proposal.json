@@ -1,5 +1,5 @@
 {
- "schema": "meri.allocation-read-tariffs.proposal.v1",
+ "schema": "meri.allocation-read-tariffs.proposal.v2",
  "source": "apps/gateway/budget/general-read-tariffs.mjs",
  "defaultRunBudgets": {
   "maxTurns": 20,
@@ -49,7 +49,19 @@
    "coreImageDigest",
    "configurationSha256"
   ],
-  "coreWork": "Core must cap whisper-1 transcription duration (maxAudioSeconds) before read_client_documents can be allocated"
+  "sourceTextOnly": {
+   "mode": "source_text_only",
+   "route": "/api/clio/tools/read_client_documents",
+   "profileVersion": "1.1.0",
+   "chargeMicrousd": 1,
+   "evidence": [
+    "coreSourceCommit",
+    "coreImageDigest",
+    "configurationSha256"
+   ],
+   "coreWork": "Core retained route must unconditionally block vision and Whisper before any provider call; current deployed source, image and configuration must be measured before allocation"
+  },
+  "paidCoreWork": "Core must cap whisper-1 transcription duration (maxAudioSeconds) and bind actual vision model pricing before paid extraction can be allocated"
  },
  "assumptionEvidenceRequired": {
   "rerankDisabled": {

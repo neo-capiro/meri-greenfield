@@ -16,7 +16,10 @@ export const GENERAL_READ_TARIFF_ASSUMPTIONS=Object.freeze(['rerankDisabled','we
  *    gpt-6-astra). Priced from evidence of the model's input/output prices and an input-token bound for one page.
  *  - transcription: audio/video goes to whisper-1 with no duration, cost or cache bound in Core (only the 25 MiB upload
  *    limit). It is priced only once Core supplies a duration cap (evidence `maxAudioSeconds`); until then the document read
- *    is not allocated. That Core cap is required work, not a deferral.
+ *    cannot use the paid-branch tariff. That Core cap is required before paid extraction is allocated.
+ *  - a separately measured Core route that unconditionally sets allowPaidExtraction:false before both provider branches may
+ *    use the source_text_only documentPricing variant and the 1 µUSD local-read floor. It must disclose unsupported pages
+ *    honestly. The unconditional tariff remains null; no source/image/config evidence means no document allocation.
  * The charge is 1 + max(vision, transcription), because Meri cannot tell from the operation which branch a call takes. */
 export const GENERAL_READ_DOCUMENT_BOUNDS=Object.freeze({textChargeMicrousd:1,
  vision:Object.freeze({pages:1,maxPageBytes:5242880,maxFileBytes:20971520,maxOutputTokens:8192,retries:0,timeoutMs:30000}),
