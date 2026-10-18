@@ -329,6 +329,42 @@ test('integration grants only the schedule consent reference update column to co
   /UPDATE meri_schedules\.projections SET read_consent=\$4 WHERE tenant_id=\$1 AND schedule_id=\$2 AND generation=\$3/u);
 });
 
+test('Core admission snapshot installs as its restricted definer and removes temporary privileges',async()=>{
+ const statements=[];
+ await runPsqlScript({
+  text:read(INTEGRATION_SCRIPT),variables:{phase_integration_grants:'1'},
+  connect:async()=>({async query(q){if(typeof q==='string')statements.push(q.replace(/\s+/gu,' ').trim());return {rows:[]};},async end(){}})
+ });
+ const start=statements.findIndex(s=>s.startsWith('DO $install$'));
+ const end=statements.findIndex((s,i)=>i>start&&s==='COMMIT;');
+ assert.ok(start>0&&end>start);
+ const block=statements.slice(start-1,end+1),at=pattern=>block.findIndex(s=>pattern.test(s));
+ const order=[
+  /^BEGIN;$/u,/^DO \$install\$.*current_user <> session_user/u,
+  /^CREATE ROLE meri_core_admission_reader NOLOGIN NOINHERIT NOSUPERUSER/u,
+  /^GRANT meri_core_admission_reader TO SESSION_USER WITH SET TRUE, INHERIT FALSE, ADMIN FALSE;$/u,
+  /^SET ROLE meri_product_migrator;$/u,/^GRANT USAGE ON SCHEMA meri_product_budget TO meri_core_admission_reader;$/u,
+  /^SET ROLE NONE;$/u,/^CREATE SCHEMA meri_core_authority;$/u,
+  /^GRANT USAGE, CREATE ON SCHEMA meri_core_authority TO meri_core_admission_reader;$/u,
+  /^GRANT USAGE ON SCHEMA meri_core_authority TO capiro_app;$/u,
+  /^SET ROLE meri_core_admission_reader;$/u,/^CREATE FUNCTION meri_core_authority\.current_admission_v1/u,
+  /^REVOKE EXECUTE ON FUNCTION meri_core_authority\.current_admission_v1/u,
+  /^GRANT EXECUTE ON FUNCTION meri_core_authority\.current_admission_v1/u,
+  /^SET ROLE NONE;$/u,/^REVOKE CREATE ON SCHEMA meri_core_authority FROM meri_core_admission_reader;$/u,
+  /^REVOKE meri_core_admission_reader FROM SESSION_USER;$/u,/^COMMIT;$/u
+ ];
+ let cursor=0;
+ for(const expected of order){
+  const index=block.findIndex((s,i)=>i>=cursor&&expected.test(s));
+  assert.ok(index>=cursor,`missing or out of order: ${expected}`);cursor=index+1;
+ }
+ assert.equal(block[at(/^CREATE FUNCTION/u)].match(/FOR SHARE/gu)?.length,1);
+ assert.doesNotMatch(block.join(' '),/CREATE OR REPLACE FUNCTION|ALTER FUNCTION .* OWNER TO/u);
+ const sql=read(INTEGRATION_SCRIPT);
+ assert.match(sql,/has_schema_privilege\('meri_core_admission_reader', 'meri_core_authority', 'CREATE'\)/u);
+ assert.match(sql,/m\.member = session_user::regrole AND m\.set_option/u);
+});
+
 test('migration bodies: one outer BEGIN/COMMIT is stripped, bare files run whole, anything else is refused',()=>{
  for(const e of loadPlan().filter(e=>e.kind==='migration')){
   const body=migrationBody(e.text);
