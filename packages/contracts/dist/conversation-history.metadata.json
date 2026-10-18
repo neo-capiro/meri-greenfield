@@ -20,8 +20,8 @@
     },
     {
       "path": "../../apps/control/conversations/history/service.mjs",
-      "sha256": "fcc24a974296e3a8cf94a87ec7cb461d8348fcec2fd658000b4b3146fc4d97c4",
-      "bytes": 6462
+      "sha256": "54bb82beb8605f9ad72d565296629cd9e0b7f5ebecae8f131c1d5d268ae9abfa",
+      "bytes": 6554
     },
     {
       "path": "../../apps/control/conversations/history/store.mjs",

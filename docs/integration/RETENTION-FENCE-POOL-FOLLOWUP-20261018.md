@@ -60,3 +60,44 @@ are inherited gates, not qualified by this focused result. No real PostgreSQL
 server or bounded production database pool was exercised. This source fix
 does not provide an atomic final decision with independent Core writes; that
 requires a separate Core-owned batch authorization contract.
+
+## Routines-enabled scheduled-currentness correction
+
+An independent composition review found another checkout inside the fenced
+release: when routines are enabled, the history currentness owner reads local
+occurrence custody twice through the schedule owner's ordinary transaction.
+The runtime gives the schedule owner and retention journal the same pool. A
+disposable one-connection reproduction on the first PR181 commit returned
+`CONVERSATION_UNAVAILABLE` after 91 ms: two checkouts, one queued, zero
+publications. This also affected ordinary Core-owned rows because absent
+custody must be established before Core fallback.
+
+The schedule owner still owns its fixed occurrence SQL, row decoding and
+immutable-custody checks. For final response release only, the PostgreSQL
+retention journal lends a callback-scoped read of that exact SELECT on its
+held session, restricted to the page's locked conversation subjects. The
+watermarked journal and retention gate preserve that capability through the
+release callback. HTTP forwards it only to an in-process registered
+scheduled-currentness owner; a Core-only currentness port receives its
+original one-argument request. Both first and last custody reads remain,
+including absence-to-presence/drift refusal. If a scoped read remains in
+flight when the callback returns, the journal drains it and refuses the
+response before unlocking or reusing the session.
+
+The new routines-enabled HTTP composition checks use the real retention,
+schedule, scheduled-currentness and history owners over one bounded scripted
+pool. Absent custody routes to Core, positive custody stays with the
+scheduled owner, both final custody reads use the fenced session, and neither
+case queues another checkout. A separate Core-only HTTP check proves the
+scoped reader is never passed to Core. The focused release-fence checks also
+cover locked-subject and post-release refusal plus detached-read cleanup.
+The final six-file focused run passed **128/128** tests; the history-only
+generator check and staged diff whitespace check passed. Independent review
+found no remaining source blocker in the Core capability route or lease drain.
+The history generator changed only the service source fingerprint; browser
+bundle, types, schema and wire version stayed byte-identical.
+
+The local pool is a scripted PostgreSQL-compatible fixture, not a real
+database. Whole-page Core history authorization still requires the separate
+Core-owned batch decision; this correction does not qualify a live response,
+image or deployment.

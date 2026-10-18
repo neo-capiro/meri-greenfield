@@ -5,6 +5,7 @@ import {types} from 'node:util';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {jsonBody,response,serializedResponse} from '../action-application/http.mjs';
 import {ProductError,productFailure,refuse} from './errors.mjs';
+import {acceptsServingReader} from './currentness-serving-reader.mjs';
 const getters=Object.fromEntries(['url','method','headers','signal','body'].map(k=>[k,Object.getOwnPropertyDescriptor(Request.prototype,k).get]));
 /** Transport and membership statuses shared by every product route; routes add their own domain codes. */
 export const PRODUCT_ERROR_STATUSES=Object.freeze({INVALID_REQUEST:400,UNAUTHENTICATED:401,ACCESS_DENIED:403,MEMBERSHIP_REVOKED:403,NOT_FOUND:404,
@@ -56,7 +57,11 @@ export function createProductApplication(options){
    const accessDeadline=Math.min(deadlineMs,expiresAtMs);lifetime.limitDeadline(accessDeadline);
    // The native bearer stays in this request closure. Domain owners receive only a bounded recheck callback, never the token.
    const recheckMembership=()=>lifetime.run(signal=>gate.recheck({principal,credential:auth.slice(7),signal,deadlineMs:accessDeadline}));
-   const recheckConversation=conversationCurrentness===undefined?undefined:({conversationId,scopes})=>lifetime.run(signal=>conversationCurrentness.assertCurrent({credential:auth.slice(7),principal,conversationId,scopes,signal,deadlineMs:accessDeadline}));
+   const recheckConversation=conversationCurrentness===undefined?undefined:({conversationId,scopes},readScheduleOriginRows)=>lifetime.run(signal=>{
+    const call={credential:auth.slice(7),principal,conversationId,scopes,signal,deadlineMs:accessDeadline};
+    return readScheduleOriginRows!==undefined&&acceptsServingReader(conversationCurrentness)?
+     conversationCurrentness.assertCurrent(call,readScheduleOriginRows):conversationCurrentness.assertCurrent(call);
+   });
    let result=await lifetime.run(async signal=>{started=true;const result=await route.handle({principal,body,signal,deadlineMs:accessDeadline,recheckMembership,recheckConversation});handled=true;return result;});
    // Materialize bytes synchronously inside the domain fence, after its final authorization.
    let published,releaseMembershipChecked=false;const finalMembership=async()=>{await recheckMembership();releaseMembershipChecked=true;};
