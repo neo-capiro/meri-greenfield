@@ -27,15 +27,15 @@ export function continuationSessionId(lineage){
 /**
  * @param {{binding:unknown,scopes:any[],policy:{generalReads:boolean,readFamilies:readonly string[]},port:{readAvailability:Function,execute:Function},
  *  now:()=>number,deadlineMs:number,timeoutMs?:number,expectedSessionId?:string,skill?:{allowedOperations:{id:string,version:string}[],budgets:{maxToolCalls:number,maxOutputBytes:number}},
- *  exclude?:{id:string,version:string}[],signal?:AbortSignal}} configuration
+ *  exclude?:{id:string,version:string}[],runBudgets?:{maxToolCalls:number},signal?:AbortSignal}} configuration
  */
 export async function createGeneralReadRuntime(configuration){
- const c=own(configuration,['binding','scopes','policy','port','now','deadlineMs'],['timeoutMs','expectedSessionId','skill','exclude','signal']);
+ const c=own(configuration,['binding','scopes','policy','port','now','deadlineMs'],['timeoutMs','expectedSessionId','skill','exclude','runBudgets','signal']);
  const binding=data(c.binding),scopes=data(c.scopes),port=own(c.port,['readAvailability','execute']);nativeSignal(c.signal);validateShape('RunBinding',binding);
  if(!Array.isArray(scopes)||!scopes.length||typeof port.readAvailability!=='function'||typeof port.execute!=='function'||typeof c.now!=='function'||!Number.isSafeInteger(c.deadlineMs))throw fault('READ_CONFIGURATION');
  scopes.forEach(s=>validateShape('Scope',s));const policyRevision=scopes[0].policyRevision;
  if(c.policy?.generalReads!==true)return null;
- const timeoutMs=Math.min(c.timeoutMs??READ_TIMEOUT_MS.max,READ_TIMEOUT_MS.max),budgets=effectiveReadBudgets(c.skill?.budgets);
+ const timeoutMs=Math.min(c.timeoutMs??READ_TIMEOUT_MS.max,READ_TIMEOUT_MS.max),budgets=effectiveReadBudgets(c.skill?.budgets,c.runBudgets);
  /** Fresh snapshot within a bounded wait; any failure is "not available". @param {AbortSignal|undefined} signal */
  const read=async signal=>{const life=createOperationLifetime({deadlineMs:c.now()+SNAPSHOT_MS,now:c.now,signal,errorFactory:fault});
   try{return assertAvailabilitySnapshot(await life.run(s=>port.readAvailability.call(c.port,{signal:s})),{binding,policyRevision,catalogSha256:CATALOG_SHA256,now:c.now});}finally{life.close();}};

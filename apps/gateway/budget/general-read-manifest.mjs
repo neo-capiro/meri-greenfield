@@ -7,10 +7,18 @@ import {validateShape as privateShape,resolveOperationContract} from '../../../p
 import {refuse} from './postgres-budget-store.mjs';
 
 export const GENERAL_READ_PROFILE='meri.general_reads',GENERAL_READ_PROFILE_VERSION='1.0.0';
-/** Upper bounds of any base general-read allocation (proposal §2.7; unqualified until approved). */
-export const GENERAL_READ_CEILINGS=Object.freeze({maxToolCalls:24,maxOutputBytes:1048576,maxAggregateOutputBytes:2097152,maxRecoveryAttempts:0,maxOperations:128});
+/** Fixed bounds of any base general-read allocation. The tool-call count is not one of them: it is the run's own configured
+ * `maxToolCalls` (D016-A 3), and `allocation()` refuses any general-read allocation whose calls at the highest tariff exceed the
+ * run's `maxCostMicroUSD`. */
+export const GENERAL_READ_CEILINGS=Object.freeze({maxOutputBytes:1048576,maxAggregateOutputBytes:2097152,maxRecoveryAttempts:0,maxOperations:128});
+/** D016 3 / D016-A 3: the default integration run profile (20 turns, 20 tool calls, 900 s, $2). Per-tenant and per-run values come
+ * from the existing budget owners; this is the default, not a ceiling. */
+export const GENERAL_READ_DEFAULT_RUN_BUDGETS=Object.freeze({maxTurns:20,maxToolCalls:20,maxRuntimeSeconds:900,maxCostMicroUSD:2000000});
 const KEYS=['contractVersion','profile','profileVersion','allowedOperations','budgets','maxAggregateOutputBytes'];
 const integer=(value,min,max)=>Number.isSafeInteger(value)&&value>=min&&value<=max;
+
+/** Every admitted call fits the run cap even at the highest tariff: maxToolCalls × max(charge) ≤ maxCostMicroUSD. */
+export function assertCallsFitCostCap(budgets,charges){if(!charges.length||budgets.maxToolCalls*Math.max(...charges)>budgets.maxCostMicroUSD)refuse('BUDGET_EXHAUSTED');}
 
 export const isGeneralReadManifest=manifest=>Boolean(manifest&&typeof manifest==='object'&&!Array.isArray(manifest)&&Object.hasOwn(manifest,'profile'));
 
@@ -23,7 +31,7 @@ export function assertGeneralReadManifest(manifest){
  for(const op of ops){privateShape('OperationRef',op);const d=resolveOperationContract(op).descriptor,key=canonicalSha256(op);
   if(seen.has(key)||d.sideEffect!=='none'||d.approvalBoundary!=='none')refuse('INVALID_GENERAL_READ_MANIFEST');seen.add(key);}
  privateShape('Budgets',b);
- if(b.maxRecoveryAttempts!==GENERAL_READ_CEILINGS.maxRecoveryAttempts||!integer(b.maxToolCalls,1,GENERAL_READ_CEILINGS.maxToolCalls)||
+ if(b.maxRecoveryAttempts!==GENERAL_READ_CEILINGS.maxRecoveryAttempts||!integer(b.maxToolCalls,1,Number.MAX_SAFE_INTEGER)||
   !integer(b.maxOutputBytes,1,GENERAL_READ_CEILINGS.maxOutputBytes)||
   !integer(manifest.maxAggregateOutputBytes,b.maxOutputBytes,GENERAL_READ_CEILINGS.maxAggregateOutputBytes))refuse('INVALID_GENERAL_READ_MANIFEST');
  return manifest;

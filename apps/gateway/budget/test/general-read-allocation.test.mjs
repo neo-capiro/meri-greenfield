@@ -6,15 +6,17 @@ import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {familyReads} from '../../../worker/conversation/reads/availability.mjs';
 import {selectSkill} from '../../../../packages/skills/index.mjs';
 import {allocation} from '../tool-budget-binding.mjs';
-import {GENERAL_READ_CEILINGS,assertGeneralReadManifest} from '../general-read-manifest.mjs';
+import {GENERAL_READ_DEFAULT_RUN_BUDGETS,assertGeneralReadManifest} from '../general-read-manifest.mjs';
 import {GENERAL_READ_TARIFFS} from '../general-read-tariffs.mjs';
-import {composeGeneralReadAllocation,generalReadTariff,assertSkillNarrowsBase,narrowedSkillBudgets} from '../general-read-allocation.mjs';
+import {readFileSync} from 'node:fs';
+import {composeGeneralReadAllocation,generalReadTariff,assertSkillNarrowsBase,narrowedSkillBudgets,generalReadTariffProposal} from '../general-read-allocation.mjs';
 import {durableFamilyFixture} from '../../general-reads/test/durable-fixture.mjs';
 import {familyCase} from '../../general-reads/test/family-cases.mjs';
 
 const reads=familyReads().map(row=>({id:row.operation.id,version:row.operation.version}));
 const run={tenantId:'tenant',actorId:'actor',conversationId:'11111111-1111-4111-8111-111111111111',runId:'22222222-2222-4222-8222-222222222222'};
-const preview={maxTurns:3,maxToolCalls:1,maxRuntimeSeconds:900,maxCostMicroUSD:2000000};
+// D016 3: the default integration run profile, 20 turns / 20 tool calls / 900 s / $2.
+const preview=GENERAL_READ_DEFAULT_RUN_BUDGETS;
 const compose=(overrides={})=>composeGeneralReadAllocation({run,operations:reads,runBudgets:preview,catalogSha256:'c'.repeat(64),scheduleRevision:'d'.repeat(64),expiresAt:'2026-10-18T06:00:00.000Z',...overrides});
 const refused=(work,code)=>assert.throws(work,error=>error.code===code||error.message===code);
 
@@ -27,15 +29,27 @@ test('the tariff table covers exactly the 76 registered reads with evidence; onl
  for(const id of ['search_client_knowledge','search_memory','search_capiro_data'])assert.equal(GENERAL_READ_TARIFFS[`${id}@0.2.0`].chargeMicrousd,165);
 });
 
-test('the base allocation follows the pinned run cap (B1: maxToolCalls 1 today) and the ceilings, and parses as an allocation',()=>{
+test('the base allocation follows the run caps (default 20 tool calls, D016 3) and the byte ceilings, and parses as an allocation',()=>{
+ assert.deepEqual({...preview},{maxTurns:20,maxToolCalls:20,maxRuntimeSeconds:900,maxCostMicroUSD:2000000});
  const {allocation:a,excluded}=compose();
- assert.equal(a.manifest.budgets.maxToolCalls,1);assert.equal(a.manifest.budgets.maxOutputBytes,1048576);assert.equal(a.manifest.maxAggregateOutputBytes,2097152);
+ assert.equal(a.manifest.budgets.maxToolCalls,20);assert.equal(a.manifest.budgets.maxTurns,20);assert.equal(a.manifest.budgets.maxOutputBytes,1048576);assert.equal(a.manifest.maxAggregateOutputBytes,2097152);
  assert.equal(a.manifest.budgets.maxRecoveryAttempts,0);assert.equal(a.manifest.budgets.maxCostMicroUSD,2000000);
  assert.doesNotThrow(()=>allocation(JSON.stringify(a)));
  assert.deepEqual(excluded.map(op=>op.id).sort(),['read_client_documents','search_capiro_data','search_committee_hearings','search_memory','search_public_web']);
  assert.equal(a.manifest.allowedOperations.length,71);
- assert.equal(compose({runBudgets:{...preview,maxToolCalls:20}}).allocation.manifest.budgets.maxToolCalls,20);
- assert.equal(compose({runBudgets:{...preview,maxToolCalls:100}}).allocation.manifest.budgets.maxToolCalls,GENERAL_READ_CEILINGS.maxToolCalls);
+ // Per-tenant or per-run configuration (D016-A 3) moves the run cap; the base follows it in both directions.
+ assert.equal(compose({runBudgets:{...preview,maxToolCalls:1}}).allocation.manifest.budgets.maxToolCalls,1);
+ assert.equal(compose({runBudgets:{...preview,maxToolCalls:100}}).allocation.manifest.budgets.maxToolCalls,100);
+});
+
+test('the allocation.json tariff proposal is exactly the tariff module, and its entries compose a valid schedule',()=>{
+ const file=JSON.parse(readFileSync(new URL('../../../../docs/coordination/proposals/general-reads/allocation-read-tariffs.proposal.json',import.meta.url),'utf8'));
+ const proposal=generalReadTariffProposal();assert.deepEqual(file,JSON.parse(JSON.stringify(proposal)));
+ assert.equal(proposal.operations.length,71);assert.equal(proposal.assumptionGated.length,4);assert.deepEqual(proposal.excluded.map(e=>e.operation.id),['read_client_documents']);
+ for(const entry of proposal.operations)assert.deepEqual(Object.keys(entry),['operation','chargeMicrousd']);
+ const full=compose({assumptions:['rerankDisabled','webSearchProviderDuckDuckGo']}).allocation.schedule.operations;
+ assert.deepEqual(full,[...proposal.operations,...proposal.assumptionGated.map(({operation,chargeMicrousd})=>({operation,chargeMicrousd}))].sort((x,y)=>`${x.operation.id}@${x.operation.version}`.localeCompare(`${y.operation.id}@${y.operation.version}`)));
+ assert.deepEqual(compose().allocation.schedule.operations,proposal.operations);
 });
 
 test('Core-configuration assumptions price the conditional reads only when asserted; unknown cost is never priced',()=>{
@@ -46,20 +60,33 @@ test('Core-configuration assumptions price the conditional reads only when asser
 });
 
 test('every admitted call fits the run cost cap at the highest tariff, or the allocation is refused',()=>{
- refused(()=>compose({runBudgets:{...preview,maxToolCalls:24,maxCostMicroUSD:3000},assumptions:['rerankDisabled']}),'BUDGET_EXHAUSTED');
- assert.doesNotThrow(()=>compose({runBudgets:{...preview,maxToolCalls:24,maxCostMicroUSD:3960},assumptions:['rerankDisabled']}));
+ // 20 calls × 165 µUSD = 3,300 µUSD.
+ refused(()=>compose({runBudgets:{...preview,maxCostMicroUSD:3299},assumptions:['rerankDisabled']}),'BUDGET_EXHAUSTED');
+ assert.doesNotThrow(()=>compose({runBudgets:{...preview,maxCostMicroUSD:3300},assumptions:['rerankDisabled']}));
+ // A configured tool-call count is still bounded by the $2 cap: 12,121 × 165 ≤ 2,000,000 < 12,122 × 165.
+ assert.doesNotThrow(()=>compose({runBudgets:{...preview,maxToolCalls:12121},assumptions:['rerankDisabled']}));
+ refused(()=>compose({runBudgets:{...preview,maxToolCalls:12122},assumptions:['rerankDisabled']}),'BUDGET_EXHAUSTED');
+});
+
+test('the allocation parser itself refuses a general-read allocation whose calls at the highest tariff exceed its cost cap',()=>{
+ const {allocation:a}=compose({assumptions:['rerankDisabled']});
+ const widened=structuredClone(a);for(const b of [widened.budgets,widened.manifest.budgets])b.maxToolCalls=12122;widened.manifestSha256=canonicalSha256(widened.manifest);
+ refused(()=>allocation(JSON.stringify(widened)),'BUDGET_EXHAUSTED');
+ const repriced=structuredClone(a);repriced.schedule.operations[0].chargeMicrousd=100001;
+ refused(()=>allocation(JSON.stringify(repriced)),'BUDGET_EXHAUSTED');
+ assert.doesNotThrow(()=>allocation(JSON.stringify(a)));
 });
 
 test('the closed general-read manifest refuses widening, writes, recovery and unknown fields',()=>{
  const base=compose().allocation.manifest;
- for(const mutate of [m=>m.budgets.maxToolCalls=25,m=>m.budgets.maxOutputBytes=1048577,m=>m.maxAggregateOutputBytes=2097153,m=>m.maxAggregateOutputBytes=m.budgets.maxOutputBytes-1,
+ for(const mutate of [m=>m.budgets.maxToolCalls=0,m=>m.budgets.maxOutputBytes=1048577,m=>m.maxAggregateOutputBytes=2097153,m=>m.maxAggregateOutputBytes=m.budgets.maxOutputBytes-1,
   m=>m.budgets.maxRecoveryAttempts=1,m=>m.extra=true,m=>m.profile='meri.other',m=>m.allowedOperations.push({id:'create_word',version:'0.2.0'}),m=>m.allowedOperations.push({...m.allowedOperations[0]})]){
   const m=structuredClone(base);mutate(m);assert.throws(()=>assertGeneralReadManifest(m));
  }
 });
 
 test('a selected skill may only narrow the base; effective budgets are the field-wise minimum',()=>{
- const base=compose({runBudgets:{...preview,maxToolCalls:20},assumptions:['rerankDisabled','webSearchProviderDuckDuckGo']}).allocation.manifest;
+ const base=compose({assumptions:['rerankDisabled','webSearchProviderDuckDuckGo']}).allocation.manifest;
  const skill=selectSkill('quick_skill.relationship_brief','1.0.0').manifest;
  const inside={...structuredClone(skill),allowedOperations:skill.allowedOperations.filter(op=>base.allowedOperations.some(b=>b.id===op.id)),budgets:{...skill.budgets,maxToolCalls:1,maxOutputBytes:1024,maxCostMicroUSD:1000,maxRuntimeSeconds:60,maxTurns:1}};
  assert.doesNotThrow(()=>assertSkillNarrowsBase(inside,base));

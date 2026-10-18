@@ -3,7 +3,7 @@ import { canonicalSha256, validateShape as publicShape } from '../../../packages
 import { validateShape as privateShape } from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import { refuse } from './postgres-budget-store.mjs';
 import {assertOccurrenceCostScope} from './occurrence-cost-scope.mjs';
-import {isGeneralReadManifest,assertGeneralReadManifest} from './general-read-manifest.mjs';
+import {isGeneralReadManifest,assertGeneralReadManifest,assertCallsFitCostCap} from './general-read-manifest.mjs';
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 export const digest = value => { if (typeof value !== 'string' || !/^[0-9a-f]{64}$/.test(value)) refuse('INVALID_DIGEST'); return value; };
@@ -35,6 +35,8 @@ export function allocation(raw) {
     if (!a.manifest.allowedOperations.some(op => same(op,item.operation))) refuse('MANIFEST_OPERATION_MISMATCH');
     const key = canonicalSha256(item.operation); if (seen.has(key)) refuse('DUPLICATE_OPERATION_CHARGE'); seen.add(key);
   }
+  // P3: a general-read run's tool calls are bounded by its cost cap at the highest tariff, so no call can exceed the run cap.
+  if (isGeneralReadManifest(a.manifest)) assertCallsFitCostCap(a.budgets, a.schedule.operations.map(item => item.chargeMicrousd));
   return a;
 }
 function validateGrantBinding(i, a) {
