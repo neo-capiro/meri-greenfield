@@ -8,11 +8,10 @@
  * composition supplies it yet, and without a current native installation receipt the snapshot installs nothing, so
  * zero reads are available today.
  *
- * `mount:'profile'` (G3, the product path through `capabilities/mounts.mjs`): the server is mounted whenever the policy enables
- * general reads and the profile names at least one read (`profileReads`), with every one of those tools, whatever this run's
- * availability. The initial snapshot decides only which mounted reads are exposed for the run (never widened mid-run, exactly as
- * before); a mounted read that is not exposed, or no longer available, answers a typed UNAVAILABLE without reaching the port. A
- * failing or absent snapshot exposes nothing. The SDK options are then a function of the profile alone. */
+ * `mount:'profile'` (G3, the product path through `capabilities/mounts.mjs`): the server registers only the profile's fixed
+ * `activeReadOperations` that survive family/skill exclusions. The initial snapshot decides which of those may execute for this
+ * run; a later current check can only remove them. A failing or absent snapshot exposes nothing for execution. The registered
+ * tool list and SDK options remain a function of the measured profile alone. */
 import catalog from '../../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
 import {own,data,nativeSignal} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256,validateShape} from '../../../../packages/contracts/validate.mjs';
@@ -31,7 +30,7 @@ export function continuationSessionId(lineage){
  return undefined;
 }
 /**
- * @param {{binding:unknown,scopes:any[],policy:{generalReads:boolean,readFamilies:readonly string[]},port:{readAvailability:Function,execute:Function},
+ * @param {{binding:unknown,scopes:any[],policy:{generalReads:boolean,readFamilies:readonly string[],activeReadOperations?:readonly {id:string,version:string}[]},port:{readAvailability:Function,execute:Function},
  *  now:()=>number,deadlineMs:number,timeoutMs?:number,expectedSessionId?:string,skill?:{allowedOperations:{id:string,version:string}[],budgets:{maxToolCalls:number,maxOutputBytes:number}},
  *  exclude?:{id:string,version:string}[],runBudgets?:{maxToolCalls:number,maxOutputBytes?:number,maxAggregateOutputBytes?:number},signal?:AbortSignal,mount?:'available'|'profile'}} configuration
  */
@@ -47,9 +46,10 @@ export async function createGeneralReadRuntime(configuration){
  const read=async signal=>{const life=createOperationLifetime({deadlineMs:c.now()+SNAPSHOT_MS,now:c.now,signal,errorFactory:fault});
   try{return assertAvailabilitySnapshot(await life.run(s=>port.readAvailability.call(c.port,{signal:s})),{binding,policyRevision,catalogSha256:CATALOG_SHA256,now:c.now});}finally{life.close();}};
  const narrowing={...(c.skill?{narrowTo:c.skill.allowedOperations}:{}),exclude:c.exclude??[]};
- const gates=(/** @type {ReturnType<typeof assertAvailabilitySnapshot>} */snapshot)=>resolveAvailableReads({policy:c.policy,installation:snapshot.installation,discovery:snapshot.discovery,scopes,...narrowing});
- // Profile mount: the tools are fixed by the profile before any availability is read.
+ // Profile mount: the exact active tool list is fixed by the profile before any availability is read.
  const mounted=profile?profileReads({policy:c.policy,...narrowing}):undefined;if(mounted&&!mounted.length)return null;
+ const gates=(/** @type {ReturnType<typeof assertAvailabilitySnapshot>} */snapshot)=>resolveAvailableReads({policy:c.policy,installation:snapshot.installation,discovery:snapshot.discovery,scopes,
+  ...(profile?{narrowTo:mounted?.map(row=>row.operation)??[],exclude:narrowing.exclude}:narrowing)});
  /** @type {ReturnType<typeof assertAvailabilitySnapshot>|undefined} */let initial;try{initial=await read(c.signal);}catch{if(!profile)return null;}
  const {available,unavailable}=initial?gates(initial):{available:[],unavailable:[]};if(!profile&&!available.length)return null;
  const exposed=new Set(available.map(row=>canonicalSha256(row.operation)));

@@ -80,3 +80,32 @@ test('generalReadInstallation is the deterministic P2 measurement over the catal
  assert.equal(JSON.stringify(r).includes('\n'),false);
  for(const key of ['schema','platform','inputs','versions','executable','launchTemplate','launchTemplateRunInvariant','sdkOptions','runner','skills','gates','module','scope'])assert.ok(Object.hasOwn(r,key),key);
 });
+
+test('explicit active P2 operations measure an exact canonical subset while preserving the full desired inventory',async()=>{
+ const rows=installationReadOperations(),activeReadOperations=[rows.at(-1).operation,rows[0].operation];
+ const full=await generalReadInstallation({root}),active=await generalReadInstallation({root,activeReadOperations});
+ const direct=await measureGeneralReadInstallation({catalogJson:JSON.stringify(catalog),operations:[rows[0],rows.at(-1)]});
+ assert.equal(full.measurement.operations.length,rows.length);assert.equal(active.measurement.operations.length,2);
+ assert.deepEqual(active.measurement.operations.map(row=>row.operation),[rows[0].operation,rows.at(-1).operation].sort((a,b)=>`${a.id}@${a.version}`.localeCompare(`${b.id}@${b.version}`)));
+ assert.equal(active.measurementSha256,direct.measurementSha256);assert.notEqual(active.measurementSha256,full.measurementSha256);
+ assert.equal((await generalReadInstallation({root,activeReadOperations:activeReadOperations.toReversed()})).measurementSha256,active.measurementSha256);
+ for(const rejected of [[],[rows[0].operation,rows[0].operation],[{...rows[0].operation,version:'9.9.9'}],[{id:'not_an_installable_read',version:'0.2.0'}],[{...rows[0].operation,family:rows[0].family}]])
+  await assert.rejects(generalReadInstallation({root,activeReadOperations:rejected}),/MEASUREMENT_REFUSED/u);
+});
+
+test('a measured general-read profile requires the reviewed exact active operation list',async()=>{
+ const [first,second]=installationReadOperations().slice(0,2).map(row=>row.operation);
+ await assert.rejects(measureFirstChatLaunch({...inputs,capabilityProfile:{generalReads:true,activeReadOperations:[first]}},{root}),/active read operations required/u);
+ await assert.rejects(measureFirstChatLaunch({...inputs,capabilityProfile:{generalReads:true,activeReadOperations:[first]},activeReadOperations:[second]},{root}),/active read operations differ/u);
+ const malformed=run([fileURLToPath(module),'--active-read-operations','not=base64']);assert.equal(malformed.status,2);assert.equal(malformed.stdout,'');
+});
+
+test('an explicit active measurement pins its selected rows and retains the complete inventory separately',async()=>{
+ const activeReadOperations=[installationReadOperations()[0].operation],r=await measureFirstChatLaunch({...inputs,activeReadOperations},{root});
+ assert.equal(r.inputs.activeReadOperationsSha256,canonicalSha256(activeReadOperations));
+ assert.deepEqual(r.generalReadInstallation.measurement.operations.map(row=>row.operation),activeReadOperations);
+ assert.equal(r.generalReadInventory.measurement.operations.length,installationReadOperations().length);
+ assert.equal(r.generalReadInventory.measurementSha256,(await generalReadInstallation({root})).measurementSha256);
+ assert.notEqual(r.generalReadInventory.measurementSha256,r.generalReadInstallation.measurementSha256);
+ const legacy=await measured();assert.equal(Object.hasOwn(legacy.inputs,'activeReadOperationsSha256'),false);assert.equal(Object.hasOwn(legacy,'generalReadInventory'),false);
+});

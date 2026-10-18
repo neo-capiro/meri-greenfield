@@ -14,8 +14,9 @@
  *              G3: --capability-profile (base64url CapabilityPolicy JSON) adds its parts (capabilities/measured-options.mjs).
  *  runner      measureProductRunner (ecs-prepared-task-proof.mjs), the same function cli.mjs and the ECS proof run.
  *  skills      skillsDigest over the image's verified skill assets (see skillsDigest below).
- *  generalReadInstallation  P2 measurement (installation-issuer.mjs measureGeneralReadInstallation) over the image's retrieval catalog and
- *              installable read operations; the render pins its measurementSha256 and ships the measurement bytes (see generalReadInstallation).
+ *  generalReadInstallation  P2 measurement (installation-issuer.mjs measureGeneralReadInstallation) over the explicitly reviewed active
+ *              operations, when supplied; the render pins its measurementSha256 and ships the measurement bytes.
+ *  generalReadInventory  the full installable read inventory, separately measured when an active subset is supplied.
  * Exit 0 receipt printed (gate outcomes inside), 2 usage, 3 measurement refused. */
 import {createHash} from 'node:crypto';
 import {readFileSync,realpathSync,statSync} from 'node:fs';
@@ -49,12 +50,22 @@ export async function skillsDigest({root}){
  for(const {skillId,skillVersion} of listed)skills.selectSkill(skillId,skillVersion);
  return {digest:canonicalSha256({schema:SKILLS_DIGEST_SCHEMA,catalogSha256:assets.catalogSha256,skills:listed}),catalogSha256:assets.catalogSha256,count:listed.length};
 }
-/** P2: `{measurement, measurementSha256}` of the general-read installation under `root`: exactly what the control issuer restates and
- * re-measures (apps/gateway/general-reads/installation-issuer.mjs over general-read-installation/runtime.mjs installationReadOperations()).
- * The same function runs on source (runtime-values.mjs refuses a receipt that differs) and in the image (receipt). */
-export async function generalReadInstallation({root}){
- const [issuer,runtime]=await Promise.all([load(root,'apps/gateway/general-reads/installation-issuer.mjs'),load(root,'apps/runtime/native-authority/general-read-installation/runtime.mjs')]);
- return issuer.measureGeneralReadInstallation({catalogJson:readFileSync(join(root,'packages','contracts','retrieval-0.2','catalog.json'),'utf8'),operations:runtime.installationReadOperations()});
+/** The full inventory remains the canonical desired scope. An explicit active set selects only exact canonical refs for P2; it never
+ * accepts a caller-supplied family, descriptor hash, or source hash. An omitted set preserves the historical full measurement. */
+export async function generalReadInstallation({root,activeReadOperations}){
+ const [issuer,runtime,validation]=await Promise.all([load(root,'apps/gateway/general-reads/installation-issuer.mjs'),load(root,'apps/runtime/native-authority/general-read-installation/runtime.mjs'),load(root,'packages/contracts/validate.mjs')]);
+ const rows=runtime.installationReadOperations(),inventory=await issuer.measureGeneralReadInstallation({catalogJson:readFileSync(join(root,'packages','contracts','retrieval-0.2','catalog.json'),'utf8'),operations:rows});
+ if(activeReadOperations===undefined)return inventory;
+ if(!Array.isArray(activeReadOperations)||activeReadOperations.length<1||activeReadOperations.length>rows.length)refuse('active read operations must be a nonempty subset of the installable inventory');
+ const canonical=new Set(rows.map(row=>`${row.operation.id}@${row.operation.version}`)),selected=new Set();
+ for(const op of activeReadOperations){
+  if(op===null||typeof op!=='object'||Array.isArray(op)||Object.getPrototypeOf(op)!==Object.prototype||
+   Object.keys(op).sort().join(',')!=='id,version'||typeof op.id!=='string'||typeof op.version!=='string')refuse('active read operation is not an exact OperationRef');
+  const key=`${op.id}@${op.version}`;if(!canonical.has(key)||selected.has(key))refuse('active read operation is unknown or duplicated');selected.add(key);
+ }
+ const measurement={...inventory.measurement,operations:inventory.measurement.operations.filter(row=>selected.has(`${row.operation.id}@${row.operation.version}`))};
+ if(measurement.operations.length!==selected.size)refuse('active read installation omits a selected operation');
+ return {measurement,measurementSha256:validation.canonicalSha256(measurement)};
 }
 
 function inputs(raw){
@@ -90,6 +101,13 @@ const gate=fn=>{try{fn();return 'PASS';}catch(error){return 'FAIL: '+(error?.cod
 
 export async function measureFirstChatLaunch(raw,{root=resolve(fileURLToPath(new URL('../../../',import.meta.url)))}={}){
  const v=inputs(raw);
+ if(v.capabilityProfile?.generalReads===true){
+  if(v.activeReadOperations===undefined)refuse('active read operations required for a general-read capability profile');
+  const {canonicalSha256}=await load(root,'packages/contracts/validate.mjs');
+  if(!Array.isArray(v.capabilityProfile.activeReadOperations)||canonicalSha256(v.capabilityProfile.activeReadOperations)!==canonicalSha256(v.activeReadOperations))
+   refuse('active read operations differ from the capability profile');
+ }
+ const inventory=await generalReadInstallation({root}),installation=v.activeReadOperations===undefined?inventory:await generalReadInstallation({root,activeReadOperations:v.activeReadOperations});
  const m={...await modules(root),...await load(root,'apps/runtime/native-authority/runner-query.mjs')};
  const {measureProductRunner}=await load(root,'apps/runtime/native-authority/ecs-prepared-task-proof.mjs');
  const sdkDirectory=join(root,'apps','worker','conversation','node_modules','@anthropic-ai','claude-agent-sdk');
@@ -104,7 +122,7 @@ export async function measureFirstChatLaunch(raw,{root=resolve(fileURLToPath(new
  const optionsSha256=[first,second].map(p=>m.sdkOptionsTemplateSha256(p.options,p.run));
  const platformPackage=dirname(command),cliPackage=JSON.parse(readFileSync(join(platformPackage,'package.json'),'utf8'));
  const runner=await measureProductRunner({root});
- const skills=await skillsDigest({root}),installation=await generalReadInstallation({root});
+ const skills=await skillsDigest({root});
  // The launch gates the runtime applies to this template, run on a probe intent (Linux paths; fails off-Linux by design).
  const intent={workspace:first.runtime.cwd,configParentDirectory:v.configParentDirectory,secureStorageDirectory:v.secureStorageDirectory,launchTemplate,
   executableSha256:sha(bytes),imageSha256:'0'.repeat(64),runnerSha256:runner.runnerSha256,sdkOptionsSha256:optionsSha256[0],authoritySha256:first.authoritySha256};
@@ -121,13 +139,15 @@ export async function measureFirstChatLaunch(raw,{root=resolve(fileURLToPath(new
  return {schema:RECEIPT_SCHEMA,platform:{os:process.platform,arch:process.arch,node:process.version,uid:process.getuid?.()??null},
   inputs:{proxyUrl:v.proxyUrl,model:v.model,maxTurns:v.maxTurns,maxCostMicroUSD:v.maxCostMicroUSD,maxOutputBytes:v.maxOutputBytes,
    configParentDirectory:v.configParentDirectory,secureStorageDirectory:v.secureStorageDirectory,policyRevision:v.policyRevision??null,
-   capabilityProfileSha256:v.capabilityProfile===undefined?null:m.capabilityProfileSha256(v.capabilityProfile)},
+   capabilityProfileSha256:v.capabilityProfile===undefined?null:m.capabilityProfileSha256(v.capabilityProfile),
+   ...(v.activeReadOperations===undefined?{}:{activeReadOperationsSha256:(await load(root,'packages/contracts/validate.mjs')).canonicalSha256(v.activeReadOperations)})},
   // The CLI is not executed: its pinned version is evidenced by the VERSION marker compiled into the measured binary.
   versions:{sdk:sdkVersion,cli:bytes.includes(Buffer.from(`VERSION:"${PINNED_CLI}"`))?PINNED_CLI:null,platformPackage:{name:cliPackage.name,version:cliPackage.version}},
   executable:{path:command,sha256:sha(bytes),bytes:bytes.length},launchTemplate,launchTemplateRunInvariant,
   sdkOptions:{schema:m.SDK_OPTIONS_TEMPLATE_SCHEMA,sha256:optionsSha256[0],secondProbeSha256:optionsSha256[1],runInvariant:optionsSha256[0]===optionsSha256[1],
    probes:[first,second].map((p,n)=>({binding:PROBES[n],clientId:PROBE_CLIENT_ID,workspace:p.run.workspace,sdkConfigDirectory:p.run.configDirectory,authoritySha256:p.authoritySha256,scopes:p.scopes,window:null,skill:null}))},
-  runner:{path:runner.path,sha256:runner.runnerSha256,bytes:runner.bytes},skills,generalReadInstallation:{measurement:installation.measurement,measurementSha256:installation.measurementSha256},gates,
+  runner:{path:runner.path,sha256:runner.runnerSha256,bytes:runner.bytes},skills,generalReadInstallation:{measurement:installation.measurement,measurementSha256:installation.measurementSha256},
+  ...(v.activeReadOperations===undefined?{}:{generalReadInventory:{measurement:inventory.measurement,measurementSha256:inventory.measurementSha256}}),gates,
   module:{sha256:sha(readFileSync(fileURLToPath(import.meta.url)))},
   scope:'Measurement only: no process spawned, no network or AWS call, no file written; probe identities and credential are synthetic.'};
  }finally{for(const p of probes)await p.close();}
@@ -143,15 +163,21 @@ function captureDescriptor(query,probe){
 }
 
 const USAGE=`Usage: node apps/runtime/build/first-chat-launch-measurement.mjs --proxy-url URL --model PROFILE --max-turns N --max-cost-micro-usd N
-  --max-output-bytes N --config-parent DIR --secure-storage DIR [--policy-revision HEX64] [--capability-profile B64URL-JSON] [--root /opt/meri]
+  --max-output-bytes N --config-parent DIR --secure-storage DIR [--policy-revision HEX64] [--capability-profile B64URL-JSON]
+  [--active-read-operations B64URL-JSON] [--root /opt/meri]
 Exit0 receipt printed; exit2 usage; exit3 measurement refused.\n`;
 const FLAGS={'--proxy-url':'proxyUrl','--model':'model','--max-turns':'maxTurns','--max-cost-micro-usd':'maxCostMicroUSD','--max-output-bytes':'maxOutputBytes',
- '--config-parent':'configParentDirectory','--secure-storage':'secureStorageDirectory','--policy-revision':'policyRevision','--capability-profile':'capabilityProfile','--root':'root'};
+ '--config-parent':'configParentDirectory','--secure-storage':'secureStorageDirectory','--policy-revision':'policyRevision','--capability-profile':'capabilityProfile','--active-read-operations':'activeReadOperations','--root':'root'};
 export async function main(argv=process.argv.slice(2)){
  if(argv.includes('--help')){process.stdout.write(USAGE);return 0;}
  const v={};for(let i=0;i<argv.length;i+=2){const key=FLAGS[argv[i]];if(!key||argv[i+1]===undefined||Object.hasOwn(v,key)){process.stderr.write(USAGE);return 2;}v[key]=argv[i+1];}
  for(const k of ['maxTurns','maxCostMicroUSD','maxOutputBytes'])if(v[k]!==undefined)v[k]=Number(v[k]);
- if(v.capabilityProfile!==undefined)try{v.capabilityProfile=JSON.parse(Buffer.from(v.capabilityProfile,'base64url').toString('utf8'));}catch{process.stderr.write(USAGE);return 2;}
+ for(const field of ['capabilityProfile','activeReadOperations'])if(v[field]!==undefined)try{
+  const encoded=v[field],bytes=Buffer.from(encoded,'base64url');
+  if(!/^[A-Za-z0-9_-]{1,131072}$/u.test(encoded)||bytes.length>65536||bytes.toString('base64url')!==encoded)throw Error();
+  v[field]=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));
+  if(JSON.stringify(v[field])!==bytes.toString('utf8'))throw Error();
+ }catch{process.stderr.write(USAGE);return 2;}
  const {root,...rest}=v;scrubEnvironment();
  try{const receipt=await measureFirstChatLaunch(rest,root===undefined?{}:{root:resolve(root)});process.stdout.write(JSON.stringify(receipt)+'\n');return 0;}
  catch(error){process.stderr.write((error?.code==='MEASUREMENT_REFUSED'?error.message:'MEASUREMENT_REFUSED: '+(error?.code??error?.message??'unknown'))+'\n');return error?.code==='MEASUREMENT_REFUSED'&&/required|must be/u.test(error.message)?2:3;}

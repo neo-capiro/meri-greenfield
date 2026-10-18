@@ -116,15 +116,27 @@ export async function createControlReadsComposer(options){
  const broker=await createNativeReadCredentialBroker({configuration:c.configuration,secretFiles:c.secretFiles,now,
   ...(c.readSecret===undefined?{}:{readSecret:c.readSecret}),...(c.nativeCredentials===undefined?{}:{nativeCredentials:c.nativeCredentials})});
  const coreAuthority=createNativeToolAuthorityClient({origin:c.configuration.nativeCandidate.identity.origin,fetchImpl,now,enabled:broker.available});
- const availableFamilies=[...new Set(installationReadOperations().map(row=>row.family))];
- const familyIds=c.familyIds===undefined?availableFamilies:data(c.familyIds);
+ const installation=c.installation===undefined?{}:own(c.installation,[],['enabled','measurement','measurementSha256','ttlMs','revokedOperations']);
+ const discovery=c.discovery===undefined?{}:own(c.discovery,[],['enabled','capabilityPolicy','ttlMs']);
+ if(installation.enabled!==undefined&&typeof installation.enabled!=='boolean'||discovery.enabled!==undefined&&typeof discovery.enabled!=='boolean')refuse('CONFIGURATION');
+ const rows=installationReadOperations(),availableFamilies=[...new Set(rows.map(row=>row.family))];
+ let measuredFamilies;
+ if(installation.enabled===true){
+  if(!Array.isArray(installation.measurement?.operations)||!installation.measurement.operations.length||
+    canonicalSha256(installation.measurement)!==installation.measurementSha256)refuse('CONFIGURATION');
+  const source=new Map(rows.map(row=>[`${row.operation.id}@${row.operation.version}`,row.family]));
+  measuredFamilies=[];
+  for(const row of installation.measurement.operations){
+   const family=source.get(`${row?.operation?.id}@${row?.operation?.version}`);
+   if(family===undefined||family!==row.family)refuse('CONFIGURATION');
+   if(!measuredFamilies.includes(family))measuredFamilies.push(family);
+  }
+ }
+ const familyIds=c.familyIds===undefined?(measuredFamilies??availableFamilies):data(c.familyIds);
  if(!Array.isArray(familyIds)||!familyIds.length||new Set(familyIds).size!==familyIds.length||familyIds.some(id=>!availableFamilies.includes(id)))refuse('CONFIGURATION');
  const retainedIds=familyIds.filter(id=>!NATIVE_READ_FAMILIES.includes(id));
  if(c.retainedTaskPorts!==undefined&&(typeof c.retainedTaskPorts!=='function'||types.isProxy(c.retainedTaskPorts)))refuse('CONFIGURATION');
  const gateway=c.gateway===undefined?{}:own(c.gateway,[],[...READ_GATEWAY_INPUTS,'namespace']);
- const installation=c.installation===undefined?{}:own(c.installation,[],['enabled','measurement','measurementSha256','ttlMs','revokedOperations']);
- const discovery=c.discovery===undefined?{}:own(c.discovery,[],['enabled','capabilityPolicy','ttlMs']);
- if(installation.enabled!==undefined&&typeof installation.enabled!=='boolean'||discovery.enabled!==undefined&&typeof discovery.enabled!=='boolean')refuse('CONFIGURATION');
  const omittedMeasuredFamilies=installation.enabled===true&&Array.isArray(installation.measurement?.operations)?
   [...new Set(installation.measurement.operations.map(row=>row?.family).filter(id=>typeof id==='string'))].filter(id=>!familyIds.includes(id)):[];
  // P2: one issuer per process; an enabled issuer refuses construction unless its pinned measurement matches this source.
@@ -148,8 +160,11 @@ export async function createControlReadsComposer(options){
   const t=taskTuple(raw);
   const bearer=broker.bearerFor({binding:t.binding,scopes:t.scopes});
   const nativeCredentials=nativeCredentialsFor(t,bearer);
-  const signedCredentials=createRetainedReadCredentialRelay({task:t,nativeCredentials,
-   getServiceSecret:broker.getServiceSecret,now});
+  // A native or unrelated retained task must not require a client-only signed
+  // source relay. Construct it on its first actual source call for this task.
+  let signedRelay;
+  const signedCredentials=request=>(signedRelay??=createRetainedReadCredentialRelay({task:t,nativeCredentials,
+   getServiceSecret:broker.getServiceSecret,now}))(request);
   const supplied=retainedIds.length?own(synchronous(c.retainedTaskPorts(Object.freeze({task:t,
    getNativeCredential:async request=>(await bearer({binding:t.binding,...request})).credential,
    getNativeCredentialWithExpiry:request=>nativeCredentials.getNativeCredential({...request,binding:t.binding}),
