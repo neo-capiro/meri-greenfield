@@ -11,6 +11,8 @@ import {projectionToken} from './memory-journal.mjs';
 export const workflowIdentity=({tenantId,classes,objectId,versionId,policyVersion})=>hash({tenantId,classes,objectId,versionId,policyVersion});
 export const rowWorkflowIdentity=({tenantId,subjectId,target,policyVersion})=>hash({tenantId,subjectId,target,policyVersion});
 const hold=value=>{const h=own(data(value),['objectLockRetainUntilMs','legalHold']);if(h.objectLockRetainUntilMs!==null&&!Number.isSafeInteger(h.objectLockRetainUntilMs)||typeof h.legalHold!=='boolean')fail('RETENTION_INVALID_REQUEST');return h;};
+const unpublished=inventory=>{const rows=inventory?.unpublishedCompletionCheckpoints;
+ if(!Array.isArray(rows)||rows.length>65536)fail('RETENTION_INVALID_REQUEST');return rows;};
 export const stepFacts=st=>({workflowId:st.workflowId,classes:st.classes,objectId:st.objectId,versionId:st.versionId,sha256:st.sha256,artifactVersionIds:st.artifactVersionIds});
 export const rowStepFacts=st=>({workflowId:st.workflowId,className:st.className,target:st.target});
 /** Eligibility of this subject as a holder: every obligation on every object it binds must be clear. Used by other subjects' shared-reference checks. */
@@ -18,6 +20,7 @@ export function holderEligibility({journalState,policy,inventory,holds,liabiliti
  const reasons=new Set();if(!journalState||journalState.state!=='SUPPRESSED'){reasons.add(journalState?.state==='RELEASED'?'HOLDER_RELEASED':'HOLDER_NOT_SUPPRESSED');return {eligible:false,reasons:[...reasons]};}
  let p;try{p=requirePurgePolicy(policy);}catch{reasons.add('HOLDER_POLICY_REQUIRED');return {eligible:false,reasons:[...reasons]};}
  for(const l of liabilities??[])reasons.add('HOLDER_UNKNOWN_LIABILITY');
+ if(unpublished(inventory).length)reasons.add('HOLDER_UNPUBLISHED_COMPLETION');
  for(const o of inventory.objects){for(const c of o.classes){if(externalClasses.includes(c))continue;for(const r of purgeEligibility({policy:p,className:c,suppressedAtMs:journalState.suppressedAtMs,lastActivityAtMs,nowMs}).reasons)reasons.add('HOLDER_'+r);}
   const h=hold(holds(o));if(h.legalHold)reasons.add('HOLDER_LEGAL_HOLD');if(h.objectLockRetainUntilMs!==null&&h.objectLockRetainUntilMs>nowMs)reasons.add('HOLDER_OBJECT_LOCK');}
  return {eligible:reasons.size===0,reasons:[...reasons].sort()};
@@ -30,6 +33,9 @@ export function planPurge({subject:rawSubject,journalState,policy,inventory,shar
  const p=requirePurgePolicy(policy);if(!Number.isSafeInteger(nowMs)||typeof holds!=='function'||!Array.isArray(shared)||!Array.isArray(liabilities))fail('RETENTION_INVALID_REQUEST');
  const blocks=[],steps=[],rowSteps=[];const sharedByKey=new Map(shared.map(x=>[`${x.object.objectId}@${x.object.versionId}`,x]));
  for(const l of liabilities){const v=own(data(l),['runId','kind']);blocks.push({reason:'UNKNOWN_LIABILITY',detail:v});}
+ for(const value of unpublished(inventory)){const row=own(data(value),['className','checkpointId','runId','state']);
+  if(row.className!=='completionCheckpoints'||!['CAPTURING','UNKNOWN'].includes(row.state))fail('RETENTION_INVALID_REQUEST');
+  blocks.push({reason:'UNPUBLISHED_COMPLETION',detail:{checkpointId:row.checkpointId,runId:row.runId,state:row.state}});}
  // Data owned outside Meri (memory proposals) leaves only through its owner; with no deletion port the plan stays BLOCKED naming it.
  for(const r of inventory.rows??[])if(externalRequestClasses.includes(r.className))blocks.push({reason:'EXTERNAL_DELETION_UNAVAILABLE',detail:{className:r.className,key:r.key}});
  const eligible=(className,detail)=>{const e=purgeEligibility({policy:p,className,suppressedAtMs:journalState.suppressedAtMs,lastActivityAtMs,nowMs});for(const r of e.reasons)blocks.push({reason:r,detail:{...detail,className}});return e.eligible;};

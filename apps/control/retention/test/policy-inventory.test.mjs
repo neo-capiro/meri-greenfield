@@ -1,8 +1,9 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {parseRetentionPolicy,requirePurgePolicy,purgeEligibility} from '../policy.mjs';
 import {enumerateReferences,createReferenceIndex,sharedReferences,classes} from '../inventory.mjs';
+import {holderEligibility} from '../purge.mjs';
 import {subjectKey} from '../boundary.mjs';
-import {policy,snapshot,subjectOf,object} from './fixture.mjs';
+import {policy,snapshot,subjectOf,object,compose,planFrom} from './fixture.mjs';
 test('a policy is explicit required configuration: every class, a positive cooling period and a version; nothing is defaulted',()=>{
  const p=parseRetentionPolicy(policy());assert.equal(p.version,3);assert.equal(Object.keys(p.classes).length,classes.length);
  const missing=policy();delete missing.classes.logs;assert.throws(()=>parseRetentionPolicy(missing),/INVALID_COMMAND|RETENTION_POLICY_INVALID/);
@@ -26,7 +27,53 @@ test('the inventory enumerates exact object versions per class, deduplicates acr
  const sharedA=sharedReferences(inventoryA,index,subjectKey(a),()=>({eligible:false,reasons:['HOLDER_NOT_SUPPRESSED']}));assert.equal(sharedA.length,1);assert.equal(sharedA[0].object.objectId,shared.objectId);assert.deepEqual(sharedA[0].heldBy,[subjectKey(b)]);assert.deepEqual(sharedA[0].blocking,[{holder:subjectKey(b),reasons:['HOLDER_NOT_SUPPRESSED']}]);
  assert.equal(sharedReferences(inventoryA,index,subjectKey(a),k=>({eligible:k===subjectKey(b),reasons:[]})).length,0,'once the fork holder is itself purge-eligible the version is no longer shared-blocked');
  assert.deepEqual(inventoryA.objects.find(o=>o.objectId===shared.objectId).classes,['lifecycle'],'classes are carried per exact object');
- assert.throws(()=>enumerateReferences({...snapshot(a),checkpoints:[{checkpointId:'x',checkpoint:{opaqueSession:{objectId:'bad',versionId:'v',sha256:'1'.repeat(64)},workspace:{entries:[]}}}]}),/RETENTION_INVALID_REQUEST/);
+ const malformed=snapshot(a);malformed.checkpoints[0].checkpoint.opaqueSession.objectId='bad';
+ assert.throws(()=>enumerateReferences(malformed),/RETENTION_INVALID_REQUEST/);
+});
+test('conversation row inventory refuses incomplete or duplicate owner event and control identities',()=>{
+ const s=snapshot(subjectOf()),event=s.eventRows[0],control=s.controls[0];
+ const inventory=enumerateReferences(s);
+ assert.deepEqual(inventory.rowTargets.filter(row=>row.className==='events'),[{
+  className:'events',table:'events',...event}]);
+ assert.deepEqual(inventory.rowTargets.filter(row=>row.table==='controls'),[{
+  className:'conversation',table:'controls',...control}]);
+ for(const partial of [
+  {...s,runs:[],eventRows:[],controls:[],checkpoints:[],completionCheckpoints:[]},
+  {...s,eventRows:[]},
+  {...s,eventRows:[event,event]},
+  {...s,eventRows:[{...event,runId:subjectOf().subjectId}]},
+  {...s,controls:[]},
+  {...s,controls:[control,control]},
+  {...s,controls:[{...control,runId:subjectOf().subjectId}]},
+ ])assert.throws(()=>enumerateReferences(partial),/RETENTION_INVALID_REQUEST/);
+ const artifact=snapshot(subjectOf('artifact'));
+ assert.throws(()=>enumerateReferences({...artifact,eventRows:[event]}),/RETENTION_INVALID_REQUEST/);
+ assert.throws(()=>enumerateReferences({...artifact,controls:[control]}),/RETENTION_INVALID_REQUEST/);
+});
+test('unpublished completion rows retain exact targets and block both plans and shared-holder eligibility',()=>{
+ const s=snapshot(subjectOf()),f=compose(),nowMs=f.clock.now(),day=86400000,
+  journalState={state:'SUPPRESSED',suppressedAtMs:nowMs-8*day,ledgerSequence:1,entrySha256:'a'.repeat(64)},
+  holds=()=>({objectLockRetainUntilMs:null,legalHold:false});
+ for(const state of ['CAPTURING','UNKNOWN']){
+  const pending={...s,completionCheckpoints:[{...s.completionCheckpoints[0],state,checkpoint:null}]},
+   inventory=enumerateReferences(pending),completion=pending.completionCheckpoints[0];
+  assert.deepEqual(inventory.unpublishedCompletionCheckpoints,[{className:'completionCheckpoints',
+   checkpointId:completion.checkpointId,runId:completion.runId,state}]);
+  assert.deepEqual(inventory.rows.find(row=>row.className==='completionCheckpoints').objects,[],
+   'unpublished completion supplies no proven object-version reference');
+  const plan=planFrom(f,s.subject,journalState,{inventory});
+  assert.equal(plan.state,'BLOCKED');
+  assert.deepEqual(plan.blocks.filter(block=>block.reason==='UNPUBLISHED_COMPLETION'),[{
+   reason:'UNPUBLISHED_COMPLETION',detail:{checkpointId:completion.checkpointId,runId:completion.runId,state}}]);
+  assert.deepEqual(holderEligibility({journalState,policy:policy(),inventory,holds,liabilities:[],
+   lastActivityAtMs:nowMs-30*day,nowMs}),{eligible:false,reasons:['HOLDER_UNPUBLISHED_COMPLETION']});
+  assert.deepEqual(inventory.rowTargets.filter(row=>row.className==='completionCheckpoints'),[{
+   className:'completionCheckpoints',checkpointId:completion.checkpointId,runId:completion.runId,state}]);
+  assert.throws(()=>planFrom(f,s.subject,journalState,{inventory:{...inventory,
+   unpublishedCompletionCheckpoints:undefined}}),/RETENTION_INVALID_REQUEST/);
+ }
+ const wrong={...s,completionCheckpoints:[{...s.completionCheckpoints[0],state:'CAPTURING'}]};
+ assert.throws(()=>enumerateReferences(wrong),/RETENTION_INVALID_REQUEST/);
 });
 test('local proposal continuation rows retain distinct conversation purge targets',()=>{
  const s=snapshot(subjectOf()),runId=s.runs[0].runId,

@@ -36,6 +36,9 @@ test('missing active class, spoofed continuation source and wrong subject refuse
   (({memoryProposals:discard,...rest})=>rest)(f.complete),
   (({budgetRuns:discard,...rest})=>rest)(f.complete),
   (({schedules:discard,...rest})=>rest)(f.complete),
+  (({eventRows:discard,...rest})=>rest)(f.complete),
+  (({controls:discard,...rest})=>rest)(f.complete),
+  {...f.complete,inventorySha256:'a'.repeat(64)},
   {...f.complete,memoryContinuations:[]},
   {...f.complete,subject:subjectOf()},
  ]){
