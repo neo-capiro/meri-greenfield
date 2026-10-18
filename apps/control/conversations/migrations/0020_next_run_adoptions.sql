@@ -222,7 +222,8 @@ END $$;
 
 CREATE FUNCTION meri_conversations.guard_conversation_claim_transition() RETURNS trigger
 LANGUAGE plpgsql SECURITY DEFINER SET search_path = pg_catalog AS $$
-DECLARE adopted_versions jsonb; reserved_binding jsonb; reserved_state text;
+DECLARE adopted_versions jsonb; adopted_scopes jsonb; adopted_policy text;
+        reserved_binding jsonb; reserved_state text;
 BEGIN
  IF TG_OP='DELETE' THEN RAISE EXCEPTION 'NEXT_RUN_ADOPTION_CLAIM_DELETE_REFUSED'; END IF;
  IF TG_OP='UPDATE' THEN
@@ -233,7 +234,9 @@ BEGIN
   END IF;
   IF TG_TABLE_NAME='runs' THEN
    IF NEW.projection->'binding' IS DISTINCT FROM OLD.projection->'binding'
-      OR NEW.projection->'versions' IS DISTINCT FROM OLD.projection->'versions' THEN
+      OR NEW.projection->'versions' IS DISTINCT FROM OLD.projection->'versions'
+      OR NEW.projection->'scopes' IS DISTINCT FROM OLD.projection->'scopes'
+      OR NEW.projection->'policyRevision' IS DISTINCT FROM OLD.projection->'policyRevision' THEN
     RAISE EXCEPTION 'NEXT_RUN_ADOPTION_CLAIM_BINDING_IMMUTABLE';
    END IF;
   END IF;
@@ -265,11 +268,15 @@ BEGIN
   END IF;
  END IF;
  IF TG_TABLE_NAME='runs' AND NEW.transition_sha256 IS NOT NULL THEN
-  SELECT a.receipt->'toVersions' INTO adopted_versions
+  -- This receipt is inherited by all descendants, not only its direct target.
+  SELECT a.receipt->'toVersions',a.receipt->'scopes',a.receipt->>'policyRevision'
+   INTO adopted_versions,adopted_scopes,adopted_policy
    FROM meri_conversations.next_run_adoptions a
-   WHERE a.receipt_sha256=NEW.transition_sha256 AND a.target_run_id=NEW.run_id;
-  IF adopted_versions IS NOT NULL AND NEW.projection->'versions' IS DISTINCT FROM adopted_versions THEN
-   RAISE EXCEPTION 'NEXT_RUN_ADOPTION_VERSIONS_REFUSED';
+   WHERE a.receipt_sha256=NEW.transition_sha256;
+  IF NOT FOUND OR NEW.projection->'versions' IS DISTINCT FROM adopted_versions
+     OR NEW.projection->'scopes' IS DISTINCT FROM adopted_scopes
+     OR NEW.projection->>'policyRevision' IS DISTINCT FROM adopted_policy THEN
+   RAISE EXCEPTION 'NEXT_RUN_ADOPTION_ACCEPTED_FACTS_REFUSED';
   END IF;
  END IF;
  RETURN NEW;
@@ -300,7 +307,22 @@ BEGIN
    IF NEW.tenant_id IS DISTINCT FROM OLD.tenant_id THEN
     RAISE EXCEPTION 'NEXT_RUN_ADOPTION_CLAIM_LOCATOR_IMMUTABLE';
    END IF;
-  ELSIF TG_TABLE_NAME='grants' OR TG_TABLE_NAME='tool_grant_bindings' THEN
+   IF OLD.state<>'HELD' AND NEW.state='HELD' THEN
+    RAISE EXCEPTION 'NEXT_RUN_ADOPTION_BUDGET_STATE_REVIVAL';
+   END IF;
+  ELSIF TG_TABLE_NAME='grants' THEN
+   IF NEW.grant_id IS DISTINCT FROM OLD.grant_id THEN
+    RAISE EXCEPTION 'NEXT_RUN_ADOPTION_CLAIM_LOCATOR_IMMUTABLE';
+   END IF;
+   -- A revoked source grant cannot regain effect after physical Stop or
+   -- supersession. PENDING/ACTIVE to REVOKED remains available for cleanup.
+   IF OLD.state='REVOKED' AND NEW.state IS DISTINCT FROM 'REVOKED' THEN
+    RAISE EXCEPTION 'NEXT_RUN_ADOPTION_REVOKED_GRANT_TERMINAL';
+   END IF;
+   IF OLD.state<>'ACTIVE' AND NEW.state='ACTIVE' THEN
+    PERFORM meri_conversations.guard_adopted_product_claim(NEW.run_id,NEW.transition_sha256);
+   END IF;
+  ELSIF TG_TABLE_NAME='tool_grant_bindings' THEN
    IF NEW.grant_id IS DISTINCT FROM OLD.grant_id THEN
     RAISE EXCEPTION 'NEXT_RUN_ADOPTION_CLAIM_LOCATOR_IMMUTABLE';
    END IF;
@@ -309,11 +331,17 @@ BEGIN
       OR NEW.grant_id IS DISTINCT FROM OLD.grant_id THEN
     RAISE EXCEPTION 'NEXT_RUN_ADOPTION_CLAIM_LOCATOR_IMMUTABLE';
    END IF;
+   IF OLD.state<>'UNKNOWN' AND NEW.state='UNKNOWN' THEN
+    RAISE EXCEPTION 'NEXT_RUN_ADOPTION_BUDGET_STATE_REVIVAL';
+   END IF;
   ELSIF TG_TABLE_NAME='tool_reservations' THEN
    IF NEW.invocation_id IS DISTINCT FROM OLD.invocation_id
       OR NEW.reservation_id IS DISTINCT FROM OLD.reservation_id
       OR NEW.grant_id IS DISTINCT FROM OLD.grant_id THEN
     RAISE EXCEPTION 'NEXT_RUN_ADOPTION_CLAIM_LOCATOR_IMMUTABLE';
+   END IF;
+   IF OLD.state<>'UNKNOWN' AND NEW.state='UNKNOWN' THEN
+    RAISE EXCEPTION 'NEXT_RUN_ADOPTION_BUDGET_STATE_REVIVAL';
    END IF;
   ELSIF TG_TABLE_NAME='tool_invocations' THEN
    IF NEW.invocation_id IS DISTINCT FROM OLD.invocation_id THEN

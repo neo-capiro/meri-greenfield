@@ -26,6 +26,8 @@ test('0020 source names every independent first-write fence and rejects missing 
  assert.match(sql,/NEXT_RUN_ADOPTION_TARGET_ALREADY_CLAIMED/);
  assert.match(sql,/NEXT_RUN_ADOPTION_SOURCE_GRANT_ACTIVE/);
  assert.match(sql,/NEXT_RUN_ADOPTION_ACCEPTANCE_REFUSED/);
+ assert.match(sql,/NEXT_RUN_ADOPTION_ACCEPTED_FACTS_REFUSED/);
+ assert.match(sql,/NEXT_RUN_ADOPTION_BUDGET_STATE_REVIVAL/);
  assert.match(sql,/NEXT_RUN_ADOPTION_CLAIM_LOCATOR_IMMUTABLE/);
  assert.match(sql,/NEXT_RUN_ADOPTION_CLAIM_DELETE_REFUSED/);
  assert.match(sql,/Source UNKNOWN model\/tool reservations/);
@@ -92,7 +94,7 @@ async function fixture(t){
  return {client,connect,admin,syntheticAppRole};
 }
 
-async function seed(client,{retired=false,sourceUnknown=false,missingGrant=false}={}){
+async function seed(client,{retired=false,sourceUnknown=false,missingGrant=false,pendingGrant=false}={}){
  const tenantId=`adoption-${randomUUID()}`,conversationId=randomUUID(),actorId='synthetic-actor',clientId=randomUUID(),policyRevision='synthetic-policy';
  const source={tenantId,conversationId,actorId,runId:randomUUID(),attemptId:randomUUID(),workerId:randomUUID(),writerFence:1};
  const target={...source,runId:randomUUID(),attemptId:randomUUID(),workerId:randomUUID(),writerFence:2};
@@ -110,9 +112,9 @@ async function seed(client,{retired=false,sourceUnknown=false,missingGrant=false
   allocation={binding:source,allocationKey:sha(source),original:{binding:source},state:'RETIRED',grantIntents:[{grantId}],resource:{physicalStopProven:true}};
   facts={checkpoint:null,retirement:{physicalStopProven:true},revocation:{receiptSha256:'e'.repeat(64),grantIds:[grantId]}};
   await client.query('INSERT INTO meri_product_budget.runs(run_id,attempt,worker_arn,fence,policy_revision) VALUES($1,1,$2,1,$3)',[source.runId,'arn:aws:ecs:us-east-1:967807252336:task/Synthetic/'+randomUUID().replaceAll('-',''),'f'.repeat(64)]);
-  if(!missingGrant)await client.query("INSERT INTO meri_product_budget.grants(grant_id,run_id,attempt,worker_arn,fence,policy_revision,capability_sha256,expires_at,state) VALUES($1,$2,1,'synthetic',1,$3,$4,now()+interval '1 hour','ACTIVE')",[grantId,source.runId,'f'.repeat(64),'a'.repeat(64)]);
+  if(!missingGrant)await client.query("INSERT INTO meri_product_budget.grants(grant_id,run_id,attempt,worker_arn,fence,policy_revision,capability_sha256,expires_at,state) VALUES($1,$2,1,'synthetic',1,$3,$4,now()+interval '1 hour',$5)",[grantId,source.runId,'f'.repeat(64),sha(grantId),pendingGrant?'PENDING':'ACTIVE']);
   if(sourceUnknown)await client.query("INSERT INTO meri_product_budget.requests(request_id,grant_id,run_id,attempt,worker_arn,fence,policy_revision,native_body_sha256,raw_request_sha256,model_id,profile_id,pricing_revision,pricing_valid_until,input_tokens,max_output_tokens,hold_micro_usd,state) VALUES($1,$2,$3,1,'synthetic',1,$4,$5,$5,'model','profile',$5,now()+interval '1 hour',1,1,5,'UNKNOWN')",['source-unknown-'+randomUUID(),grantId,source.runId,'f'.repeat(64),'a'.repeat(64)]);
-  if(!missingGrant)await client.query("UPDATE meri_product_budget.grants SET state='REVOKED' WHERE grant_id=$1",[grantId]);
+  if(!missingGrant&&!pendingGrant)await client.query("UPDATE meri_product_budget.grants SET state='REVOKED' WHERE grant_id=$1",[grantId]);
  }else{
   allocation={binding:source,allocationKey:sha(source),state:'FORECLOSED',foreclosure:{eventId:randomUUID(),eventSha256:'a'.repeat(64),state:'failed'}};
   facts={checkpoint:null,noAuthority:{foreclosureSha256:sha(allocation)}};
@@ -229,6 +231,48 @@ test('0020 narrow conversation app role inserts and reads adoption through defin
   assert.equal((await f.client.query('SELECT receipt_sha256 FROM meri_conversations.next_run_adoptions WHERE target_run_id=$1',
    [x.target.runId])).rows[0].receipt_sha256,x.receiptSha256);
  }finally{await f.client.query('RESET ROLE');}
+});
+
+test('0020 inherited Run facts stay pinned through descendants and accepted Run updates', {skip:!pgEnabled},async t=>{
+ const f=await fixture(t),x=await seed(f.client);
+ await x.adopt();await x.accept();
+ const saved=(await f.client.query('SELECT projection FROM meri_conversations.runs WHERE run_id=$1',[x.target.runId])).rows[0].projection;
+ for(const changed of [{...saved,scopes:[]},{...saved,policyRevision:'changed-policy'}])
+  await assert.rejects(f.client.query('UPDATE meri_conversations.runs SET projection=$1,projection_sha256=$2 WHERE run_id=$3',
+   [changed,sha(changed),x.target.runId]),/NEXT_RUN_ADOPTION_CLAIM_BINDING_IMMUTABLE/);
+ const terminal={...saved,state:'failed'};
+ await f.client.query('UPDATE meri_conversations.runs SET projection=$1,projection_sha256=$2,sequence_end=0 WHERE run_id=$3',
+  [terminal,sha(terminal),x.target.runId]);
+ const child={...x.target,runId:randomUUID(),attemptId:randomUUID(),workerId:randomUUID(),writerFence:3};
+ const reservation={source:x.target,target:child,facts:{checkpoint:null,noAuthority:{foreclosureSha256:'a'.repeat(64)}},
+  scopes:x.receipt.scopes,versions:x.receipt.toVersions,policyRevision:x.receipt.policyRevision,reservedAt:new Date().toISOString()};
+ await f.client.query("INSERT INTO meri_conversations.next_runs(tenant_id,conversation_id,source_run_id,target_run_id,reservation,reservation_sha256,state) VALUES($1,$2,$3,$4,$5,$6,'RESERVED')",
+  [x.tenantId,x.conversationId,x.target.runId,child.runId,reservation,sha(reservation)]);
+ const request={requestId:randomUUID(),prompt:'synthetic descendant input',skill:null,window:null,windowRequest:null};
+ const insert=projection=>f.client.query('INSERT INTO meri_conversations.runs(tenant_id,conversation_id,run_id,projection,projection_sha256,request_id,request,request_sha256,last_sequence,sequence_base,transition_sha256) VALUES($1,$2,$3,$4,$5,$6,$7,$8,0,0,$9)',
+  [x.tenantId,x.conversationId,child.runId,projection,sha(projection),request.requestId,request,sha(request),x.receiptSha256]);
+ const good={binding:child,state:'queued',scopes:x.receipt.scopes,policyRevision:x.receipt.policyRevision,
+  createdAt:new Date().toISOString(),versions:x.receipt.toVersions};
+ await assert.rejects(insert({...good,versions:{...good.versions,imageDigest:`sha256:${'e'.repeat(64)}`}}),/NEXT_RUN_ADOPTION_ACCEPTED_FACTS_REFUSED/);
+ await assert.rejects(insert({...good,scopes:[]}),/NEXT_RUN_ADOPTION_ACCEPTED_FACTS_REFUSED/);
+ await assert.rejects(insert({...good,policyRevision:'changed-policy'}),/NEXT_RUN_ADOPTION_ACCEPTED_FACTS_REFUSED/);
+ await insert(good);
+ await f.client.query("UPDATE meri_conversations.next_runs SET state='ACCEPTED' WHERE tenant_id=$1 AND conversation_id=$2 AND target_run_id=$3",
+  [x.tenantId,x.conversationId,child.runId]);
+});
+
+test('0020 terminal budget states and superseded grants cannot regain effect', {skip:!pgEnabled},async t=>{
+ const f=await fixture(t),x=await seed(f.client,{retired:true,sourceUnknown:true});
+ await x.adopt();
+ await assert.rejects(f.client.query("UPDATE meri_product_budget.grants SET state='ACTIVE' WHERE grant_id=$1",[x.grantId]),
+  /NEXT_RUN_ADOPTION_REVOKED_GRANT_TERMINAL/);
+ await f.client.query("UPDATE meri_product_budget.requests SET state='NO_DISPATCH',actual_micro_usd=0,evidence_sha256=$1,settled_at=clock_timestamp() WHERE run_id=$2",
+  ['f'.repeat(64),x.source.runId]);
+ await assert.rejects(f.client.query("UPDATE meri_product_budget.requests SET state='UNKNOWN',actual_micro_usd=NULL,evidence_sha256=NULL,settled_at=NULL WHERE run_id=$1",
+  [x.source.runId]),/NEXT_RUN_ADOPTION_BUDGET_STATE_REVIVAL/);
+ const y=await seed(f.client,{retired:true,pendingGrant:true});
+ await assert.rejects(f.client.query("UPDATE meri_product_budget.grants SET state='ACTIVE' WHERE grant_id=$1",[y.grantId]),
+  /NEXT_RUN_ADOPTION_SOURCE_SUPERSEDED/);
 });
 
 test('0020 existing task claim wins before adoption; rolled-back budget claim does not', {skip:!pgEnabled},async t=>{
