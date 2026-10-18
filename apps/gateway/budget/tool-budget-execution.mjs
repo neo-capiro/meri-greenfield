@@ -36,7 +36,8 @@ export function composeBudgetExecution({owner,producer,allocationJson,authority:
    // Available only on a trusted producer-owned invocation, never model arguments.
    ...(produced?{observe:protect(call=>bound.observe(call)),recheck:protect(call=>bound.recheck(call))}:{}),
   };
-  const executor=createExecutor({authority,budget});
+  // The trusted invocation id (the budget reservation's key) is the executor's call slot; it never comes from a request.
+  const executor=createExecutor({authority,budget},{invocationId:i.invocationId});
   return executor.execute(requestJson,credential,signal);
  }
  async function owned(requestJson,credential,deliveryJson,signal,dispatch){

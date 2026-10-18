@@ -5,5 +5,5 @@ import {composeBudgetExecution} from './tool-budget-execution.mjs';
 export function composeToolBudgetDispatch({owner,producer,allocationJson,...options}){
  if(Object.hasOwn(options,'budget'))deny('GATEWAY_CONFIGURATION');
  return composeBudgetExecution({owner,producer,allocationJson,authority:options.authority,limits:options.limits,now:options.now,
-  createExecutor:ports=>createToolDispatch({...options,...ports})});
+  createExecutor:(ports,call)=>createToolDispatch({...options,...ports,...(call?.invocationId===undefined?{}:{invocationId:call.invocationId})})});
 }

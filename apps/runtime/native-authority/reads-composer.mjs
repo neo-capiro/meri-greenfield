@@ -15,7 +15,13 @@
  * clients/check-ref) take the native read bearer and, for tools/* and read-mode-observation, the internal service secret.
  * Service secret files must differ from every candidate credential file by path and by bytes at startup and on every call.
  * Every relayed bearer is refused when it is any candidate credential or the current service secret. Only digests of the
- * candidate credentials are kept. */
+ * candidate credentials are kept.
+ *
+ * Option B (D016-A 4, `delegation.enabled`, default false): each run gets a run-bound Core read delegation
+ * (`read-delegation/`). Attended runs create it from the live session and keep reading after that session ends, up to 30
+ * minutes from issuance and the run deadline; unattended occurrence runs (reported by the trusted `delegation.readOccurrence`
+ * port) get one per occurrence under an active consent, at most 15 minutes. Option A stays the attended fallback when Core
+ * delegation is unavailable. `readDelegation.stopRun` is the Stop hook: refuse locally, abort in flight, then revoke. */
 import {createHash,randomUUID} from 'node:crypto';
 import {isAbsolute} from 'node:path';
 import {types} from 'node:util';
@@ -30,6 +36,10 @@ import {taskTuple} from './general-read-installation/configuration.mjs';
 import catalog from '../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
 import {createGeneralReadInstallationIssuer} from '../../gateway/general-reads/installation-issuer.mjs';
 import {createGeneralReadDiscoveryProducer} from '../../gateway/general-reads/discovery-producer.mjs';
+import {createReadDelegationCoreClient} from './read-delegation/core-client.mjs';
+import {createRunReadDelegation} from './read-delegation/delegation.mjs';
+import {composeDelegatedNativeCredentials} from './read-delegation/native-credentials.mjs';
+import {createReadDelegationConsents} from './read-delegation/consent.mjs';
 
 /** Server-side secret files the control role renders for reads (absolute paths). `readModeServiceSecret` may name the same
  * file as `serviceSecret`. There is no bearer file: the bearer comes from the live-session relay. */
@@ -95,7 +105,7 @@ export async function createNativeReadCredentialBroker(options){
  * P2 (`installation`) and P1 (`discovery`) producers are composed here and stay DISABLED unless their `enabled` is true; an
  * explicit `gateway.readCurrentInstallation` / `gateway.discoveryOwner` port takes precedence (tests, future owners). */
 export async function createControlReadsComposer(options){
- const c=own(options,['configuration','secretFiles'],['now','newId','fetchImpl','gateway','nativeCredentials','defaultCongress','familyIds','readSecret','sourceRoot','installation','discovery']);
+ const c=own(options,['configuration','secretFiles'],['now','newId','fetchImpl','gateway','nativeCredentials','defaultCongress','familyIds','readSecret','sourceRoot','installation','discovery','delegation']);
  const now=c.now??Date.now,newId=c.newId??randomUUID,fetchImpl=c.fetchImpl??globalThis.fetch;
  if(typeof now!=='function'||typeof newId!=='function'||typeof fetchImpl!=='function'||types.isProxy(fetchImpl)||
   c.defaultCongress!==undefined&&(!Number.isSafeInteger(c.defaultCongress)||c.defaultCongress<1))refuse('CONFIGURATION');
@@ -113,22 +123,53 @@ export async function createControlReadsComposer(options){
  const issuer=gateway.readCurrentInstallation===undefined?createGeneralReadInstallationIssuer({catalogJson:JSON.stringify(catalog),now,...installation}):null;
  const readCurrentInstallation=gateway.readCurrentInstallation??(issuer.enabled?issuer.readCurrentInstallation:undefined);
  const discoveryEnabled=gateway.discoveryOwner===undefined&&discovery.enabled===true;
- const missing=Object.freeze([...(c.nativeCredentials===undefined?['nativeCredentials.nativeCredentialFor']:[]),...(broker.getServiceSecret===undefined?['secretFiles.serviceSecret']:[]),
+ // Option B: composed only when enabled and the service identity exists; nothing is created at startup.
+ const delegationOptions=c.delegation===undefined?{}:own(c.delegation,[],['enabled','readOccurrence']);
+ if(delegationOptions.enabled!==undefined&&typeof delegationOptions.enabled!=='boolean'||delegationOptions.readOccurrence!==undefined&&(typeof delegationOptions.readOccurrence!=='function'||types.isProxy(delegationOptions.readOccurrence)))refuse('CONFIGURATION');
+ const delegationClient=delegationOptions.enabled===true?createReadDelegationCoreClient({origin:c.configuration.nativeCandidate.identity.origin,fetchImpl,now,enabled:broker.getServiceSecret!==undefined,...(broker.getServiceSecret===undefined?{}:{getServiceSecret:broker.getServiceSecret})}):null;
+ const unattendedReads=Boolean(delegationClient?.available&&delegationOptions.readOccurrence);
+ const delegations=new Map();
+ const missing=Object.freeze([...(c.nativeCredentials===undefined&&!unattendedReads?['nativeCredentials.nativeCredentialFor']:[]),...(broker.getServiceSecret===undefined?['secretFiles.serviceSecret']:[]),
   ...['authority','limits'].filter(key=>gateway[key]===undefined).map(key=>`gateway.${key}`),
   ...(readCurrentInstallation===undefined?['installation.enabled']:[]),...(gateway.discoveryOwner===undefined&&!discoveryEnabled?['discovery.enabled']:[])]);
  function taskPorts(raw){
   // An empty gateway makes the installation runtime return its unavailable gateway for this task.
   if(missing.length)return {gateway:{},families:{}};
   const t=taskTuple(raw);
+  const bearer=broker.bearerFor({binding:t.binding,scopes:t.scopes});
   // P1: per task, over this run's own allocation and approved reads.
   const discoveryOwner=gateway.discoveryOwner??createGeneralReadDiscoveryProducer({binding:t.binding,policyRevision:t.grant.qualificationBinding.policyRevision,
    allocationJson:t.allocationJson,approvedReads:t.approvedReads,now,enabled:true,capabilityPolicy:discovery.capabilityPolicy,...(discovery.ttlMs===undefined?{}:{ttlMs:discovery.ttlMs})});
   return {gateway:{authority:gateway.authority,limits:gateway.limits,readCurrentInstallation,discoveryOwner,
     producerContext:t.grant,producer:{namespace:'general-reads',executionId:t.original.executionId},credential:t.taskCapability,sourceEnabled:true,...(gateway.namespace===undefined?{}:{namespace:gateway.namespace})},
    families:Object.fromEntries(familyIds.map(id=>[id,{origin:coreAuthority.origin,fetchImpl}])),
-   nativeCredentials:{coreAuthority,getNativeCredential:broker.bearerFor({binding:t.binding,scopes:t.scopes}),getServiceSecret:broker.getServiceSecret,
+   nativeCredentials:{...nativeCredentialsFor(t,bearer),getServiceSecret:broker.getServiceSecret,
     ...(broker.getReadModeServiceSecret===undefined?{}:{getReadModeServiceSecret:broker.getReadModeServiceSecret}),...(c.defaultCongress===undefined?{}:{defaultCongress:c.defaultCongress})}};
  }
+ /** Option A only, or option B with A as the attended fallback. One delegation per run attempt (binding), reused across its tasks. */
+ function nativeCredentialsFor(t,bearer){
+  const fallback=broker.available?{coreAuthority,getNativeCredential:bearer}:undefined;
+  if(!delegationClient?.available)return {coreAuthority,getNativeCredential:bearer};
+  const key=canonicalSha256(t.binding);let entry=delegations.get(key);
+  if(!entry){
+   // A stopped run keeps its (refusing) entry until its deadline, so a later task of the same run never creates a new delegation.
+   for(const [k,old] of delegations)if(old.runDeadlineMs<=now())delegations.delete(k);
+   if(delegations.size>=4096)refuse('RESOURCE_LIMIT');
+   const runDeadlineMs=t.original.expiresAtMs;
+   const delegation=createRunReadDelegation({binding:t.binding,scopes:t.scopes,allocationJson:t.allocationJson,runDeadlineMs,client:delegationClient,now,
+    ...(broker.available?{liveCredentialFor:({signal})=>bearer({binding:t.binding,...(signal===undefined?{}:{signal})})}:{}),
+    ...(delegationOptions.readOccurrence?{readOccurrence:delegationOptions.readOccurrence}:{})});
+   entry={delegation,runDeadlineMs,credentials:composeDelegatedNativeCredentials({delegation,client:delegationClient,now,...(fallback?{fallback}:{})})};
+   delegations.set(key,entry);
+  }
+  return {coreAuthority:entry.credentials.coreAuthority,getNativeCredential:entry.credentials.getNativeCredential,toolCredential:entry.credentials.toolCredential};
+ }
+ /** Stop hook for the run owner, called after it records the run terminal in its own store. The entry stays as a tombstone. */
+ async function stopRun({binding,reason='run_terminal'}){
+  const entry=delegations.get(canonicalSha256(data(binding)));if(!entry)return Object.freeze({stopped:false,revoked:false});
+  return entry.delegation.stop(reason);
+ }
  const preparation=await prepareGeneralReadInstallation({familyIds,newId,taskPorts,...(c.sourceRoot===undefined?{}:{sourceRoot:c.sourceRoot})});
- return Object.freeze({createReadsRuntime:preparation.createReadsRuntime,familyIds:Object.freeze([...familyIds]),missing});
+ return Object.freeze({createReadsRuntime:preparation.createReadsRuntime,familyIds:Object.freeze([...familyIds]),missing,
+  readDelegation:Object.freeze({enabled:Boolean(delegationClient?.available),stopRun,...(delegationClient?.available?{consents:createReadDelegationConsents({client:delegationClient,now})}:{})})});
 }

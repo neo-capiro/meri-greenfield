@@ -10,6 +10,7 @@ import {storageMethod} from '../../../artifacts/storage/boundary.mjs';
 import {allocation} from '../../../gateway/budget/tool-budget-binding.mjs';
 import {retainedCall,credentialProof} from '../../../gateway/sources/retained-reads/call-context.mjs';
 import {GatewayDenied,safeFailure} from '../../../gateway/dispatch/operation-result.mjs';
+import {acceptsInvocationId} from '../../../gateway/dispatch/native-read-context.mjs';
 import {assertNativeToolAuthority} from './core-client.mjs';
 import {nativeReadOperationAllowed} from '../../../gateway/sources/retained-reads/native-families.mjs';
 import {captureBusinessDevelopmentResource} from '../../../gateway/sources/business-development/request-context.mjs';
@@ -30,9 +31,9 @@ const nativeBearer=issued=>{if(typeof issued==='string')return token(issued)?{cr
  let v;try{v=data(own(issued,['credential','expiresAtMs']));}catch{refuse('UNAVAILABLE');}
  if(!token(v.credential)||!Number.isSafeInteger(v.expiresAtMs))refuse('UNAVAILABLE');return v;};
 export function createNativeReadCredentialOwner(configuration){
- const c=own(configuration,['binding','expiresAtMs'],['store','taskVerifier','readCurrentEntry','taskCapability','allocationJson','approvedReads','coreAuthority','getNativeCredential','getServiceSecret','getReadModeServiceSecret','defaultCongress','now','enabled']),binding=data(c.binding),now=c.now??Date.now,enabled=c.enabled??false;
+ const c=own(configuration,['binding','expiresAtMs'],['store','taskVerifier','readCurrentEntry','taskCapability','allocationJson','approvedReads','coreAuthority','getNativeCredential','getServiceSecret','getReadModeServiceSecret','toolCredential','defaultCongress','now','enabled']),binding=data(c.binding),now=c.now??Date.now,enabled=c.enabled??false;
  validateShape('RunBinding',binding);if(typeof now!=='function'||typeof enabled!=='boolean'||!Number.isSafeInteger(c.expiresAtMs)||c.defaultCongress!==undefined&&(!Number.isSafeInteger(c.defaultCongress)||c.defaultCongress<1||c.defaultCongress>2147483647))refuse('CONFIGURATION');
- for(const name of ['getNativeCredential','getServiceSecret','getReadModeServiceSecret','readCurrentEntry'])if(c[name]!==undefined&&(typeof c[name]!=='function'||types.isProxy(c[name])))refuse('CONFIGURATION');
+ for(const name of ['getNativeCredential','getServiceSecret','getReadModeServiceSecret','readCurrentEntry','toolCredential'])if(c[name]!==undefined&&(typeof c[name]!=='function'||types.isProxy(c[name])))refuse('CONFIGURATION');
  const core=c.coreAuthority===undefined?undefined:own(c.coreAuthority,['available','origin','readCurrent'],['readConversation','readClientReference','readModeObservation']),origin=core?.origin===undefined?undefined:retainedOrigin(core.origin);
  const approved=c.approvedReads===undefined?undefined:assertNativeReadConfiguration(c.approvedReads),allocated=c.allocationJson===undefined?undefined:allocation(c.allocationJson);
  const available=Boolean(enabled&&c.store&&c.taskVerifier&&c.readCurrentEntry&&token(c.taskCapability)&&approved?.enabled&&allocated&&core?.available===true&&origin&&c.getNativeCredential&&c.getServiceSecret);
@@ -50,9 +51,12 @@ export function createNativeReadCredentialOwner(configuration){
   if(contract.binding.group==='business-development'&&!readConversation&&captureBusinessDevelopmentResource(v.operation,v.request,v.subject).clientId!==null)refuse('UNAVAILABLE');
   if(!same(v.binding,binding)||v.subject.policyRevision!==v.policyRevision||v.requestSha256!==hash(v.request)||!same([...v.sourceIds].sort(),[...new Set(contract.descriptor.sourceRequirements.map(s=>s.sourceId))].sort())||!Number.isSafeInteger(v.deadlineMs))refuse('ACCESS_DENIED');
   if(!approved.operations.some(op=>same(op,v.operation))||!allocated.manifest.allowedOperations.some(op=>same(op,v.operation)))refuse('ACCESS_DENIED');return v;}
- async function observe(proof,scopeSignal,signal){
+ async function observe(proof,scopeSignal,signal,invocationId){
   if(!available)refuse('UNAVAILABLE');nativeSignal(scopeSignal);nativeSignal(signal);if(!scopeSignal)refuse('ACCESS_DENIED');if(scopeSignal.aborted||signal?.aborted)refuse('CANCELLED');
   const selected={...proof,subject:selection(proof.subject)};delete selected.deadlineMs;const prior=pins.get(scopeSignal);if(prior&&!same(prior.selected,selected))refuse('ACCESS_DENIED');
+  // Option B: one call slot per dispatched invocation, fixed at the first observation and never changed within the call.
+  if(invocationId!==undefined&&(typeof invocationId!=='string'||!/^[A-Za-z0-9_-]{1,128}$/u.test(invocationId)||prior&&prior.callKey!==invocationId))refuse('ACCESS_DENIED');
+  const callKey=prior?prior.callKey:invocationId;
   let cutoff=Math.min(c.expiresAtMs,proof.deadlineMs,prior?.expiresAtMs??now()+approved.maxExecuteMs),life=createOperationLifetime({now,signal:signal?AbortSignal.any([scopeSignal,signal]):scopeSignal,deadlineMs:cutoff,errorFactory:nativeReadFault});
   const limit=expiry=>{cutoff=Math.min(cutoff,expiry);life.limitDeadline(cutoff);};
   async function admission(){const started=now(),operation='runner/reads/execute',inputSha256=hash(proof),r=assertNativeReadTaskAssertion(await life.run(signal=>verify({capability:c.taskCapability,binding,operation,inputSha256,deadlineMs:cutoff,signal})),{binding,operation,inputSha256,started,now});
@@ -63,7 +67,7 @@ export function createNativeReadCredentialOwner(configuration){
   try{
    const before=await admission(),row=data(await life.run(()=>read(binding,{},life.check)));validateShape('Run',row.run);
    if(!same(row.run.binding,binding)||!['queued','starting','running'].includes(row.run.state)||row.run.policyRevision!==proof.policyRevision||!same(row.run.scopes,before.scopes)||hash(row.request)!==before.runRequestSha256)refuse('ACCESS_DENIED');
-   const bearer=nativeBearer(await life.run(signal=>c.getNativeCredential({binding,operation:proof.operation,requestSha256:proof.requestSha256,signal,deadlineMs:cutoff}))),credential=bearer.credential;
+   const bearer=nativeBearer(await life.run(signal=>c.getNativeCredential({binding,operation:proof.operation,requestSha256:proof.requestSha256,...(callKey===undefined?{}:{callKey}),signal,deadlineMs:cutoff}))),credential=bearer.credential;
    if(bearer.expiresAtMs!==undefined)limit(bearer.expiresAtMs);
    const began=now(),native=assertNativeToolAuthority(await life.run(signal=>currentCore({credential,signal,deadlineMs:cutoff})),{started:began,now});limit(native.expiresAtMs);
    // Equality is permitted only for the canonical Core UUID principal already captured by native startup. No conversion/mapping.
@@ -116,25 +120,28 @@ export function createNativeReadCredentialOwner(configuration){
    contract.normalizeInput(proof.request,context);
    const after=await admission();if(!same(taskSelection(before),taskSelection(after)))refuse('ACCESS_DENIED');
    const vector={task:taskSelection(after),native:nativeSelection(native),...(conversation?{conversation:nativeSelection(conversation)}:{}),...(clientReferenceObservation?{clientReference:nativeSelection(clientReferenceObservation)}:{}),...(modeObservation?{modeObservation:nativeSelection(modeObservation)}:{}),credentialSha256:hash(credential),context:sourceReadContextSelection(contract.binding.group,context)},latest=pins.get(scopeSignal);if(latest&&(!same(latest.selected,selected)||!same(latest.vector,vector)))refuse('ACCESS_DENIED');if(latest)limit(latest.expiresAtMs);life.check();
-   pins.set(scopeSignal,{selected,vector,context,expiresAtMs:cutoff});return {credential,context,native,checkedAtMs:Math.min(before.checkedAtMs,native.checkedAtMs,after.checkedAtMs),expiresAtMs:cutoff};
+   pins.set(scopeSignal,{selected,vector,context,expiresAtMs:cutoff,callKey});return {credential,context,native,callKey,checkedAtMs:Math.min(before.checkedAtMs,native.checkedAtMs,after.checkedAtMs),expiresAtMs:cutoff};
   }finally{life.close();}
  }
- async function readCurrent(raw){try{if(!available)refuse('UNAVAILABLE');const {signal,...fields}=own(raw,['binding','subject','operation','request','requestSha256','policyRevision','sourceIds','deadlineMs'],['signal']),proof=observation(fields),result=await observe(proof,signal);const {request,deadlineMs,...echo}=proof;return JSON.stringify({...echo,context:result.context,checkedAtMs:result.checkedAtMs,expiresAtMs:result.expiresAtMs});}catch(error){throw failure(error);}}
+ async function readCurrent(raw){try{if(!available)refuse('UNAVAILABLE');const {signal,invocationId,...fields}=own(raw,['binding','subject','operation','request','requestSha256','policyRevision','sourceIds','deadlineMs'],['signal','invocationId']),proof=observation(fields),result=await observe(proof,signal,undefined,invocationId);const {request,deadlineMs,...echo}=proof;return JSON.stringify({...echo,context:result.context,checkedAtMs:result.checkedAtMs,expiresAtMs:result.expiresAtMs});}catch(error){throw failure(error);}}
  async function getCredentials(raw){let life;try{
-  if(!available)refuse('UNAVAILABLE');const {signal,scopeSignal,...fields}=own(raw,['binding','subject','operation','policyRevision','sourceIds','argumentsSha256','requestSha256','normalizationContext','origin','request','input','scopeSignal','deadlineMs'],['signal']);nativeSignal(signal);nativeSignal(scopeSignal);const v=data(fields),pinned=pins.get(scopeSignal);
+  if(!available)refuse('UNAVAILABLE');const {signal,scopeSignal,target,...fields}=own(raw,['binding','subject','operation','policyRevision','sourceIds','argumentsSha256','requestSha256','normalizationContext','origin','request','input','scopeSignal','deadlineMs'],['signal','target']);nativeSignal(signal);nativeSignal(scopeSignal);const v=data(fields),pinned=pins.get(scopeSignal);
   if(!pinned||v.origin!==origin)refuse('ACCESS_DENIED');const proof=observation(Object.fromEntries(['binding','subject','operation','request','requestSha256','policyRevision','sourceIds','deadlineMs'].map(key=>[key,v[key]]))),normalized=resolveOperationContract(v.operation).normalizeInput(v.request,v.normalizationContext);
   if(!same(normalized.input,v.input)||normalized.argumentsSha256!==v.argumentsSha256)refuse('ACCESS_DENIED');const before=await observe(proof,scopeSignal,signal);if(!same(before.context,v.normalizationContext))refuse('ACCESS_DENIED');
   const cutoff=Math.min(v.deadlineMs,before.expiresAtMs);life=createOperationLifetime({now,signal:signal?AbortSignal.any([scopeSignal,signal]):scopeSignal,deadlineMs:cutoff,errorFactory:nativeReadFault});const secret=await life.run(signal=>c.getServiceSecret({binding,operation:v.operation,origin,requestSha256:v.requestSha256,argumentsSha256:v.argumentsSha256,normalizationContext:v.normalizationContext,signal,deadlineMs:cutoff}));if(!token(secret))refuse('UNAVAILABLE');
   const after=await observe({...proof,deadlineMs:cutoff},scopeSignal,signal);life.check();
   // Last check before dispatch: the same bearer must still be current; its expiry (if any) caps the transport.
-  const final=nativeBearer(await life.run(signal=>c.getNativeCredential({binding,operation:v.operation,requestSha256:v.requestSha256,signal,deadlineMs:Math.min(cutoff,after.expiresAtMs)})));
+  const final=nativeBearer(await life.run(signal=>c.getNativeCredential({binding,operation:v.operation,requestSha256:v.requestSha256,...(after.callKey===undefined?{}:{callKey:after.callKey}),signal,deadlineMs:Math.min(cutoff,after.expiresAtMs)})));
   if(final.credential!==before.credential)refuse('ACCESS_DENIED');life.check();
-  const expiresAtMs=Math.min(cutoff,after.expiresAtMs,final.expiresAtMs??Infinity);if(expiresAtMs<=now())refuse('UNAVAILABLE');
-  const {request,input,deadlineMs,...echo}=v;return data({...echo,bearerToken:before.credential,serviceSecret:secret,expiresAtMs});
+  let expiresAtMs=Math.min(cutoff,after.expiresAtMs,final.expiresAtMs??Infinity);if(expiresAtMs<=now())refuse('UNAVAILABLE');
+  // Option B: the per-call handle never leaves; the transport gets one tool token bound to its exact method, path and body.
+  const tool=c.toolCredential?await life.run(signal=>c.toolCredential({credential:before.credential,operation:v.operation,argumentsSha256:v.argumentsSha256,...(target===undefined?{}:{target:data(target)}),signal,deadlineMs:expiresAtMs})):null;
+  if(tool!==null){own(tool,['bearerToken','authorizationScheme','expiresAtMs']);if(!token(tool.bearerToken)||tool.authorizationScheme!=='CapiroMeriRead'||!Number.isSafeInteger(tool.expiresAtMs))refuse('UNAVAILABLE');expiresAtMs=Math.min(expiresAtMs,tool.expiresAtMs);life.check();if(expiresAtMs<=now())refuse('UNAVAILABLE');}
+  const {request,input,deadlineMs,...echo}=v;return data({...echo,bearerToken:tool?.bearerToken??before.credential,...(tool?{authorizationScheme:tool.authorizationScheme}:{}),serviceSecret:secret,expiresAtMs});
  }catch(error){throw failure(error);}finally{life?.close();}}
  // Trusted per-invocation composition binds the original request and gateway lifetime; the existing source callback stays unchanged.
  function credentialsForCall(operation,call){if(!available)throw failure(nativeReadFault('UNAVAILABLE'));const current=retainedCall(operation,call,now),expected=credentialProof(current,origin),scopeSignal=call.signal;
-  return async raw=>{const {signal,deadlineMs,...fields}=own(raw,[...Object.keys(expected),'input','deadlineMs'],['signal']);if(!same(fields,{...expected,input:current.input}))throw failure(nativeReadFault('ACCESS_DENIED'));return getCredentials({...fields,request:current.request,scopeSignal,deadlineMs,signal});};}
+  return async raw=>{const {signal,deadlineMs,target,...fields}=own(raw,[...Object.keys(expected),'input','deadlineMs'],['signal','target']);if(!same(fields,{...expected,input:current.input}))throw failure(nativeReadFault('ACCESS_DENIED'));return getCredentials({...fields,request:current.request,scopeSignal,deadlineMs,signal,...(target===undefined?{}:{target})});};}
  /** Private response-identity gate. It emits no roster, receipt or credential. */
  function authorizeResultForCall(operation,call){try{
   if(!available)refuse('UNAVAILABLE');const current=retainedCall(operation,call,now),scopeSignal=call.signal;
@@ -147,5 +154,5 @@ export function createNativeReadCredentialOwner(configuration){
    const after=await observe({...proof,deadlineMs:Math.min(proof.deadlineMs,before.expiresAtMs)},scopeSignal);assertNativeVisibleClients(after.native,clientIds);
   }catch(error){throw failure(error);}};
  }catch(error){throw failure(error);}}
- return Object.freeze({available,nativeReadContextPorts:Object.freeze({readCurrent}),getCredentials,credentialsForCall,authorizeResultForCall});
+ return Object.freeze({available,nativeReadContextPorts:acceptsInvocationId(Object.freeze({readCurrent})),getCredentials,credentialsForCall,authorizeResultForCall});
 }
