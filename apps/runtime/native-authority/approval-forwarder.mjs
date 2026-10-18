@@ -173,8 +173,8 @@ export function createCoreApprovalForwarder(options){
  /** The approver revokes their own recorded approval (Core `POST .../native/revoke`: the approver's native bearer plus the service
   * identity; append-only under the proposal lock, idempotent). Bound to Meri custody like `record`; the receipt must answer
   * `revoked:true` for the same proposal, command digest, approver and policy revision. Nothing here is automatic: a run ending
-  * never revokes (Core needs the approver's live bearer). Body `{proposalId,commandSha256,approver,binding}` (record minus the
-  * proposal and decision; Core's exact body is unconfirmed, see the lane RD report). */
+  * never revokes (Core needs the approver's live bearer). Core's native approval contract requires the exact revoke body
+  * `{proposalId,commandSha256,approver,binding}`. */
  async function revoke(value){
   const {signal,deadlineMs,...raw}=own(value,['proposalId','commandSha256','approver','binding'],['signal','deadlineMs']);nativeSignal(signal);
   let v;try{v=data(raw);own(v.approver,['tenantId','actorId']);validateShape('RunBinding',v.binding);}catch{refuse('INVALID_ARGUMENTS');}
