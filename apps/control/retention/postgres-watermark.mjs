@@ -11,10 +11,12 @@ const decode=row=>{if(!row)return {sequence:0,entrySha256:null};const sequence=N
 export function createPostgresWatermarkStore({journal}){
  if(typeof journal?.tx!=='function'||typeof journal?.assertProjection!=='function'||typeof journal?.readProjection!=='function')fail('RETENTION_CONFIGURATION');
  const mode=options=>({exclusive:options?.exclusive===true});
+ const decodeSnapshot=snapshot=>({projection:snapshot.projection,watermark:decode(snapshot.watermarkRow)});
  async function read(options){return journal.tx(async c=>decode((await c.query(`SELECT sequence,entry_sha256 FROM ${TABLE} WHERE singleton`)).rows[0]),mode(options));}
  /** The canonical journal supplies both values in ONE statement after its shared recovery lock is acquired. */
- async function readProjection(key){return journal.tx(async c=>{const snapshot=await journal.readProjection(c,key);
-  return {projection:snapshot.projection,watermark:decode(snapshot.watermarkRow)};},{readCommitted:true});}
+ async function readProjection(key){return journal.tx(async c=>decodeSnapshot(await journal.readProjection(c,key)),{readCommitted:true});}
+ /** The serving journal already holds its bounded lease and recovery exclusion; decode that same joined snapshot. */
+ async function readProjectionFromServingLease(key,read){if(typeof read!=='function')fail('RETENTION_CONFIGURATION');return decodeSnapshot(await read(key));}
  /** Monotonic: a lower or equal position leaves the row unchanged; a higher one clears the recorded entry hash (only recovery records it). */
  async function advanceProjection(raw,options){const {key,projectionSha256,sequence,minimumSequence}=advanceProof(raw);
   return journal.tx(async c=>{
@@ -27,5 +29,5 @@ export function createPostgresWatermarkStore({journal}){
  /** Exact position recorded by a completed reconciliation pass. */
  async function record(position,options){if(!Number.isSafeInteger(position?.sequence)||position.sequence<0||position.entrySha256!==null&&!/^[a-f0-9]{64}$/u.test(position.entrySha256??''))fail('RETENTION_INVALID_REQUEST');
   return journal.tx(async c=>decode((await c.query(`INSERT INTO ${TABLE}(singleton,sequence,entry_sha256) VALUES(true,$1,$2) ON CONFLICT (singleton) DO UPDATE SET sequence=EXCLUDED.sequence,entry_sha256=EXCLUDED.entry_sha256 RETURNING sequence,entry_sha256`,[position.sequence,position.entrySha256])).rows[0]),mode(options));}
- return Object.freeze({read,readProjection,advanceProjection,record,table:TABLE});
+ return Object.freeze({read,readProjection,readProjectionFromServingLease,advanceProjection,record,table:TABLE});
 }
