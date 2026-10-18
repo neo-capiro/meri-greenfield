@@ -34,7 +34,7 @@ export function createLocalActionCaseFactory(configuration){
     return {binding,bearerToken:token,serviceSecret:secret,expiresAtMs:cutoff};},
    fetchImpl:async(url,init)=>{
     active();await identity.authorityPorts.verifyCapability(issued.credential,{signal:init.signal});
-    if(url!=='https://local-action.invalid/clio/tools/query_action_items'||init.method!=='POST'||init.headers.authorization!==`Bearer ${token}`||init.headers['x-internal-service-secret']!==secret)deny('ACCESS_DENIED');
+    if(url!=='https://local-action.invalid/api/clio/tools/query_action_items'||init.method!=='POST'||init.headers.authorization!==`Bearer ${token}`||init.headers['x-internal-service-secret']!==secret)deny('ACCESS_DENIED');
     const raw=JSON.parse(init.body),n=contract.normalizeInput(raw,{binding,clientResolution:{reference:clientId,clientId}}).input;
     if(n.cursor!==null)deny('UNAVAILABLE');calls++;
     const result={tool:'query_action_items',generatedAt:new Date(now()).toISOString(),clientId,total:0,returned:0,actions:[],scope:{actionItemId:n.selection.actionItemId,status:n.selection.status,sort:n.selection.sort,page:1,limit:n.selection.limit,cursorApplied:false},coverage:{sourceStatus:'healthy',sourceReason:null,complete:true,partial:false,paginationComplete:true,hasMore:false,nextCursor:null,totalIsExactForScope:true,absenceSupported:true,note:'Synthetic empty source snapshot only'}};
