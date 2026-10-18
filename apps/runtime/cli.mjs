@@ -39,7 +39,11 @@ export async function main(argv=process.argv.slice(2),{poststartTls,nativeFetch}
    const [{createProductPortsFactory,PRODUCT_FAMILIES},{composeDocumentsFamily}]=await Promise.all([import('./product-ports/index.mjs'),import('./artifacts/authority-composition.mjs')]);
    const documents=await composeDocumentsFamily({configuration:c});
    if(c.artifacts?.enabled===true&&documents.missing.length)process.stderr.write(JSON.stringify({event:'runtime.documents.unavailable',missing:documents.missing})+'\n');
-   productPorts={productPortsFactory:createProductPortsFactory({families:PRODUCT_FAMILIES.map(([name,factory])=>[name,name==='documents'?documents.family:factory])})};
+   // Write-intent execution (lane E): the intents family and the per-run intent mount share one composition; both stay inert
+   // unless control declares intents.execution and its Core owners exist.
+   const [{createControlIntentExecution},{readSecret}]=await Promise.all([import('./native-authority/execution-composition.mjs'),import('./config.mjs')]);
+   const execution=createControlIntentExecution({readSecret});
+   productPorts={productPortsFactory:createProductPortsFactory({families:PRODUCT_FAMILIES.map(([name,factory])=>[name,name==='documents'?documents.family:name==='intents'?execution.family:factory])}),intentMountFor:execution.intentMountFor};
   }
   // General reads (lane 2), only when declared: the composer is built before control (it prepares and measures handlers) and
   // gets the live-session relay, which startControl binds to this control's own action-session owner (RC1 option A).
