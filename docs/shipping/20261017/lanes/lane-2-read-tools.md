@@ -212,7 +212,7 @@ await startControl(configuration,{signal,createReadsRuntime:reads.createReadsRun
 - Each read resolves it at call time through `relay.port.nativeCredentialFor({binding, selectedClientId})`. The selected client is the run's single client scope.
 - It is never read from a file, cached or persisted. The rule is the same for every refusal reason: an unbound or closed relay, no live session for the run's tenant/actor/conversation/run and client, an expired or revoked session, a caller binding drift, or any scope shape other than one client scope. Each of these refuses with `UNAVAILABLE` before any Core request.
 - Revocation is still checked on every read through Core `identity` and `membership`, which re-check the Clerk session by `sid`.
-- Unattended runs get no reads; option B (a Core run-bound read delegation) is the durable path.
+- **Limitation (recorded per dot's ack 6245772555):** reads work only while the user has a live action session for that run, at most 300 s after the session was issued (the frontend re-issues while the page is open). Unattended runs get no reads. Option A cannot satisfy accepted schedules, the planner or long-running reads by itself; option B (a Core run-bound read delegation) is the durable path. Any persistent delegation goes to Neo before it is created or enabled. A static user's token is never substituted.
 
 **Credential invariant (Core #83), pinned by `apps/runtime/native-authority/test/read-composer.test.mjs`, 33/33:**
 - The marked control credential reaches only `application-authority/{identity,context,membership}`.
