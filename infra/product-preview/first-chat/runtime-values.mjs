@@ -12,11 +12,11 @@
  *  allocation             allocation.json verbatim, validated by apps/gateway/budget/tool-budget-binding.mjs allocation().
  *  runtime                policy.runtime {maxTurns, maxOutputBytes} (<= the allocation budgets, as prepared-candidate-config requires).
  *  qualification          {attempt: 1, policyRevision: canonicalSha256(policy.json)}.
- *  generalReadInstallation  receipt.generalReadInstallation {measurement, measurementSha256} (P2, installation-issuer.mjs): the in-image
- *                         measurement must hash to its sha256 and equal the SAME function run on this source tree (handler source bytes,
- *                         descriptors, catalog), exactly as the SDK options pin is checked; render-material pins the sha256 in control
- *                         `reads.installation` and ships the bytes. A receipt from a module that predates the field assembles without it
- *                         (the render then refuses to enable installation).
+ *  generalReadInstallation  receipt.generalReadInstallation {measurement, measurementSha256} (P2, installation-issuer.mjs): an enabled
+ *                         installation names its reviewed activeOperations in deployment features. The in-image measurement of exactly
+ *                         those operations must equal the SAME function run on this source tree. The separate generalReadInventory
+ *                         proves the full desired 76-row source inventory without claiming all rows are active. A receipt from a
+ *                         module that predates P2 assembles only while installation is disabled (render refuses to enable it).
  *
  * preparationIntent.sdkOptionsSha256 is the run-invariant SDK option template hash (apps/runtime/native-authority/sdk-option-template.mjs).
  * runner-query.mjs reduces every run's options to that template after verifying the per-run values (cwd = the intent workspace,
@@ -105,20 +105,34 @@ export function measuredCapabilityProfile(deployment){
  let features;try{features=parseFeatures(deployment?.features,{secrets:deployment?.secrets,checkpoint:deployment?.checkpoint});}catch(error){refuse(`deployment features ${error.message}`);}
  return capabilityProfileOf(features?.capabilityPlatform);
 }
+/** Explicit reviewed active P2 set. A disabled installation may retain an inventory-only legacy measurement. */
+export function activeReadOperationsOf(deployment){
+ let features;try{features=parseFeatures(deployment?.features,{secrets:deployment?.secrets,checkpoint:deployment?.checkpoint});}catch(error){refuse(`deployment features ${error.message}`);}
+ const installation=features?.reads?.installation;
+ if(installation?.enabled!==true)return null;
+ if(!Array.isArray(installation.activeOperations)||!installation.activeOperations.length)refuse('enabled reads installation needs reviewed activeOperations');
+ const profile=capabilityProfileOf(features?.capabilityPlatform)?.profile;
+ if(profile?.generalReads===true&&canonicalSha256(profile.activeReadOperations)!==canonicalSha256(installation.activeOperations))
+  refuse('capability profile active read operations differ from reviewed reads installation activeOperations');
+ return structuredClone(installation.activeOperations);
+}
 /** The measurement inputs the receipt must have been taken with (and the source template is recomputed with). */
-export const measurementInputs=({policy,deployment,policyRevision})=>{const capability=measuredCapabilityProfile(deployment);
+export const measurementInputs=({policy,deployment,policyRevision})=>{const capability=measuredCapabilityProfile(deployment),activeReadOperations=activeReadOperationsOf(deployment);
  return {proxyUrl:deployment.origins.proxyUrl,model:deployment.model.profileId,maxTurns:policy.runtime.maxTurns,
  maxCostMicroUSD:deployment.model.perRunMaxCostMicroUSD,maxOutputBytes:policy.runtime.maxOutputBytes,configParentDirectory:policy.runnerLayout.configParentDirectory,
- secureStorageDirectory:policy.runnerLayout.secureStorageDirectory,policyRevision,...(capability?{capabilityProfileSha256:capability.profileSha256}:{})};};
+ secureStorageDirectory:policy.runnerLayout.secureStorageDirectory,policyRevision,...(capability?{capabilityProfileSha256:capability.profileSha256}:{}),
+ ...(activeReadOperations===null?{}:{activeReadOperationsSha256:canonicalSha256(activeReadOperations)})};};
 /** --capability-profile value: the exact profile JSON, base64url (one shell-safe word). */
 export const encodeCapabilityProfile=profile=>Buffer.from(JSON.stringify(profile),'utf8').toString('base64url');
 /** The in-image receipt, checked against the policy/deployment inputs it was taken with and the source skills digest. */
-export function parseReceipt(receipt,{policy,deployment,policyRevision,sourceSkillsDigest,sourceSdkOptionsSha256,sourceInstallation=null,requireLinux=true}){
+export function parseReceipt(receipt,{policy,deployment,policyRevision,sourceSkillsDigest,sourceSdkOptionsSha256,sourceInstallation=null,sourceInventory=null,requireLinux=true}){
  const r=receipt;if(r?.schema!==RECEIPT_SCHEMA)refuse('receipt.schema');
  if(requireLinux&&(r.platform?.os!=='linux'||r.platform?.arch!=='x64'))refuse('receipt was not measured on linux/x64 (the CLI executable is platform-specific)');
  if(requireLinux&&r.platform?.uid!==1000)refuse('receipt was not measured as uid 1000');
  const expected=measurementInputs({policy,deployment,policyRevision});
  for(const [k,v] of Object.entries(expected))if(r.inputs?.[k]!==v)refuse(`receipt.inputs.${k} differs from the policy/deployment value`);
+ const active=activeReadOperationsOf(deployment);
+ if(Object.hasOwn(r.inputs??{},'activeReadOperationsSha256')!==(active!==null))refuse('receipt active read operations mode differs from reviewed deployment features');
  if(r.versions?.sdk!==PINNED_SDK||r.versions?.cli!==PINNED_CLI)refuse('receipt SDK/CLI versions are not the pinned pair');
  if(!hex64.test(r.executable?.sha256??'')||!hex64.test(r.runner?.sha256??'')||!hex64.test(r.sdkOptions?.sha256??''))refuse('receipt hashes must be 64 hex');
  // The pin must be the run-invariant template: two probe runs with different conversation/run ids hash equal and the real
@@ -144,6 +158,14 @@ export function parseReceipt(receipt,{policy,deployment,policyRevision,sourceSki
   if(!hex64.test(g.measurementSha256)||canonicalSha256(g.measurement)!==g.measurementSha256)refuse('receipt generalReadInstallation.measurementSha256 is not the canonical sha256 of its measurement');
   if(sourceInstallation===null||g.measurementSha256!==sourceInstallation.measurementSha256)refuse('receipt generalReadInstallation differs from the source general-read installation measurement (handler source, descriptor or catalog drift since the image was measured)');
  }
+ if(active!==null){
+  if(r.generalReadInstallation===undefined)refuse('enabled reads installation has no active P2 measurement');
+  const measured=r.generalReadInstallation.measurement.operations.map(row=>row.operation),ordered=ops=>ops.map(op=>`${op.id}@${op.version}`).sort();
+  if(JSON.stringify(ordered(measured))!==JSON.stringify(ordered(active)))refuse('receipt active P2 operation refs differ from reviewed deployment features');
+  const inventory=record(r.generalReadInventory,'receipt.generalReadInventory',['measurement','measurementSha256']);
+  if(!hex64.test(inventory.measurementSha256)||canonicalSha256(inventory.measurement)!==inventory.measurementSha256)refuse('receipt generalReadInventory.measurementSha256 is not the canonical sha256 of its measurement');
+  if(sourceInventory===null||inventory.measurementSha256!==sourceInventory.measurementSha256)refuse('receipt full general-read inventory differs from the source tree');
+ }else if(r.generalReadInventory!==undefined)refuse('receipt carries an active P2 inventory without reviewed active operations');
  return r;
 }
 
@@ -171,8 +193,11 @@ export async function runtimeValues({receipt,allocation,policy,deployment,requir
  if(capability&&sourceSdkOptionsSha256===await probeTemplateSha256(measurementInputs({policy:p,deployment:{...deployment,features:undefined},policyRevision}),{root:sourceRoot}))
   refuse(`${MEASUREMENT_MODULE} does not project capability profiles (G3 runtime change pending): no measurement can pin capability profile ${capability.profileSha256}`);
  // P2: the same in-image function on this source tree; a receipt that carries the measurement must reproduce it exactly.
- const sourceInstallation=await generalReadInstallation({root:sourceRoot});
- const r=parseReceipt(receipt,{policy:p,deployment,policyRevision,sourceSkillsDigest:source.digest,sourceSdkOptionsSha256,sourceInstallation,requireLinux});
+ const activeReadOperations=activeReadOperationsOf(deployment);
+ const [sourceInstallation,sourceInventory]=await Promise.all([
+  generalReadInstallation({root:sourceRoot,...(activeReadOperations===null?{}:{activeReadOperations})}),
+  activeReadOperations===null?null:generalReadInstallation({root:sourceRoot})]);
+ const r=parseReceipt(receipt,{policy:p,deployment,policyRevision,sourceSkillsDigest:source.digest,sourceSdkOptionsSha256,sourceInstallation,sourceInventory,requireLinux});
  return {runtime:assembleRuntimeValues({receipt:r,allocation:a,policy:p,policyRevision,capabilityProfileSha256:capability?.profileSha256??null}),policyRevision,skillsDigest:source.digest,
   generalReadInstallationSha256:r.generalReadInstallation?.measurementSha256??null};
 }
@@ -190,11 +215,12 @@ mkdirSync(directory,{recursive:true,mode:0o700});const file=join(directory,"firs
 const m=await import(pathToFileURL(file).href);process.exitCode=await m.main(args);`;
 const quote=value=>`'${String(value).replaceAll("'","'\\''")}'`;
 export function measurementArguments({policy,deployment,policyRevision,root=IMAGE_ROOT}){
- const capability=measuredCapabilityProfile(deployment);
+ const capability=measuredCapabilityProfile(deployment),activeReadOperations=activeReadOperationsOf(deployment);
  return ['--proxy-url',deployment.origins.proxyUrl,'--model',deployment.model.profileId,'--max-turns',String(policy.runtime.maxTurns),
   '--max-cost-micro-usd',String(deployment.model.perRunMaxCostMicroUSD),'--max-output-bytes',String(policy.runtime.maxOutputBytes),
   '--config-parent',policy.runnerLayout.configParentDirectory,'--secure-storage',policy.runnerLayout.secureStorageDirectory,'--policy-revision',policyRevision,
-  ...(capability?['--capability-profile',encodeCapabilityProfile(capability.profile)]:[]),'--root',root];
+  ...(capability?['--capability-profile',encodeCapabilityProfile(capability.profile)]:[]),
+  ...(activeReadOperations===null?[]:['--active-read-operations',Buffer.from(JSON.stringify(activeReadOperations),'utf8').toString('base64url')]),'--root',root];
 }
 /** node argv (after the executable) of the embedded form; the bash command is exactly these, quoted. */
 export function embeddedNodeArguments({moduleBytes,policy,deployment,policyRevision,root=IMAGE_ROOT,directory=MEASURE_DIRECTORY}){
