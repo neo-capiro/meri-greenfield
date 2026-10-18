@@ -8,6 +8,10 @@ import {parseProductServicePairConfiguration} from './service-pair-discovery.mjs
 /** Must equal apps/proxy/qualification/state/pricing.py PRICING_REVISION; a
  * Python cross-check test pins the two values together. */
 export const PRODUCT_PROXY_PRICING_REVISION='b21cfc4941e346275d9503700a094dc892f838172c41bc2e14c8284d91b1677a';
+/** SDK-facing LiteLLM model name. Bedrock profileId/modelId remain separate
+ * fixed provider and pricing identities. Keep equal to the pinned product
+ * config's sole model_name and native_auth.MODEL. */
+export const PRODUCT_PROXY_MODEL_ALIAS='meri-sonnet-qualification';
 const fail=()=>{throw Error('PRODUCT_PROXY_STARTUP_DENIED');};
 const sha=v=>typeof v==='string'&&/^[0-9a-f]{64}$/u.test(v);
 const instant=v=>Number.isSafeInteger(v)&&v>0;
