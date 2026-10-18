@@ -299,7 +299,7 @@ test('plan pins the change-set order, real paths and current bytes; 0012 and 001
   '0016_initial_inputs.sql','0017_initial_run_bindings.sql','0001_product_budget.sql','0002_tenant_budgets.sql',
   '0001_service_task_registrations.sql','first-chat-seed-budget.sql','first-chat-database.sql#meri_grants','first-chat-database-temporal.sql#temporal_grants',
   '0001_settings.sql','0001_commands.sql','0001_approval_metadata.sql','0001_intent_preparations.sql','0001_schedule_owner.sql','0002_occurrences.sql','0003_run_cancel_proofs.sql',
-  '0001_task_lookup.sql','0001_objective_custody.sql','0002_objective_run_starts.sql','0003_objective_reader_replays.sql','0001_versions.sql','0002_retention.sql','0003_previews.sql','0001_memory_candidates.sql','first-chat-database-integration.sql#integration_grants']);
+  '0001_task_lookup.sql','0001_objective_custody.sql','0002_objective_run_starts.sql','0003_objective_reader_replays.sql','0001_versions.sql','0002_retention.sql','0003_previews.sql','0001_memory_candidates.sql','0001_read_delegation_facts.sql','first-chat-database-integration.sql#integration_grants']);
  assert.ok(!plan.some(e=>/00(12|14)_/u.test(e.name)));
  assert.equal(plan.find(e=>e.name.includes('temporal-issuer')).path,'apps/runtime/temporal-issuer/migrations/0001_service_task_registrations.sql');
  assert.throws(()=>loadPlan({read:path=>Buffer.from(read(path)+(path.endsWith('0009_next_runs.sql')?'\n':''))}),/MERI_D2_SOURCE_CHANGED/u);
@@ -405,7 +405,7 @@ test('runner applies the meri stage in order, one transaction and ledger row eac
 
 test('integration stage runs only after meri and temporal are ledgered; earlier stages never reach its entries',async()=>{
  const plan=loadPlan(),integration=plan.filter(e=>e.stage==='integration');
- assert.equal(integration.length,16);assert.equal(integration.at(-1).kind,'phase:integration_grants');
+ assert.equal(integration.length,17);assert.equal(integration.at(-1).kind,'phase:integration_grants');
  const early=fakeDatabase();
  await assert.rejects(runStage({stage:'integration',plan,variables,connect:early.connect}),/MERI_D2_PRIOR_STAGE_INCOMPLETE/u);
  assert.equal(early.state.executed.length,0);
@@ -414,7 +414,7 @@ test('integration stage runs only after meri and temporal are ledgered; earlier 
  assert.equal(ready.state.executed.length,0);
  await runStage({stage:'integration',plan,variables,connect:ready.connect});
  assert.deepEqual(ready.state.ledger.map(r=>r.ordinal),plan.map(e=>e.ordinal));
- assert.equal(ready.state.executed.length,15);assert.ok(ready.state.phases.includes('integration_grants'));
+ assert.equal(ready.state.executed.length,16);assert.ok(ready.state.phases.includes('integration_grants'));
 });
 test('runner refuses a changed applied file, a ledger gap and an early temporal stage before any bootstrap',async()=>{
  const plan=loadPlan();
