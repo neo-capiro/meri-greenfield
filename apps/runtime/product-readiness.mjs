@@ -12,6 +12,8 @@ export function productReadiness({ports,retention,sourceEnabled,userPreferences}
   {name:'schedules.inbox',state:available.has('routinesApplicationFactory')&&ports.routinesApplicationFactory.inboxState?ports.routinesApplicationFactory.inboxState():'unavailable'},
   {name:'sources.currentInstallation',state:sourceEnabled?'unavailable':'disabled'},
   {name:'proxy.modelGrants',state:'unavailable'},
+  // Memory composes no port until Core M2 routes, the parser and an allocated migration exist (product-ports/memory.mjs).
+  {name:'memory.producer',state:'unavailable'},
   {name:'schedules.dispatchWorker',state:'separate-service-required'});
  const recovery=retention?.artifactRecovery?.();if(recovery?.required)owners.push({name:'retention.artifactRecovery',state:recovery.state});
  if(userPreferences!==undefined)owners.push({name:'settings.userPreferences',state:userPreferences});
