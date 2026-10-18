@@ -84,9 +84,10 @@ export function createRunnerPoststartAuthority(configuration){
   certificate(csr,certPem,c.runnerCa.toString('utf8'),taskName,now(),original.expiresAtMs);
   const after=await current({...v,life:l});if(pin(after)!==entry.pin||entry.expiresAtMs<=now())fail();check(l);
   const origin=new URL(c.transport.origin),taskRevision=Number(before.resource.taskDefinitionArn.split(':').at(-1));
-  const expected={binding:original.binding,taskArn:v.taskArn,taskRevision,expiresAtMs:original.expiresAtMs,versions:original.versions,origin:origin.origin,san:[origin.hostname],caSha256:createHash('sha256').update(c.controlCa).digest('hex'),capabilitySha256:issued.capabilitySha256,materialRef:issued.materialRef,bootstrapRef:hash({schemaVersion:1,executionKey:original.executionKey,taskArn:v.taskArn,factsSha256:issued.factsSha256,resource:before.resource})};
+  const deliveryFields={binding:original.binding,taskArn:v.taskArn,taskRevision,expiresAtMs:original.expiresAtMs,versions:original.versions,origin:origin.origin,san:[origin.hostname],capabilitySha256:issued.capabilitySha256,materialRef:issued.materialRef,bootstrapRef:hash({schemaVersion:1,executionKey:original.executionKey,taskArn:v.taskArn,factsSha256:issued.factsSha256,resource:before.resource})};
+  const expected={...deliveryFields,caSha256:createHash('sha256').update(c.controlCa).digest('hex')};
   if(!Number.isSafeInteger(taskRevision)||taskRevision<1||typeof capability!=='string'||!/^\S{1,8192}$/u.test(capability)||createHash('sha256').update(capability).digest('hex')!==issued.capabilitySha256)fail();
-  return Object.freeze({schemaVersion:1,original,expected,delivery:{...expected,capability,config,ca:c.controlCa.toString('base64')},tls:{zone:c.zone,ca:c.runnerCa.toString('base64'),cert:Buffer.from(certPem).toString('base64'),candidate:before.candidate}});
+  return Object.freeze({schemaVersion:1,original,expected,delivery:{...deliveryFields,capability,config,ca:c.controlCa.toString('base64')},tls:{zone:c.zone,ca:c.runnerCa.toString('base64'),cert:Buffer.from(certPem).toString('base64'),candidate:before.candidate}});
  }finally{l.close();}}
  return Object.freeze({challenge,redeem,close(){closed=true;challenges.clear();}});
 }
