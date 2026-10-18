@@ -2,10 +2,17 @@
 -- create, token issue, token use and response release (FABLE-RUN-BOUND-READ-DELEGATION-20261018.md §4; dot 6246089074 #1).
 -- Core never trusts a caller digest for allocation, operations, deadline, allowance, fence or run state: it reads these
 -- read-only views of Meri's own owner tables in the same transaction as each check. Row existence is never authority: Core
--- requires `admitted` (the DB-checkable part of Meri's canonical current-admission predicate, admitted-run-current.mjs: the
--- budget is not quarantined and an ACTIVE, unexpired grant of this run's attempt, fence and policy is bound to the run) and
--- now < `admitted_until` (the earlier of the run deadline and that grant's expiry). A revoked grant (Meri admission revoke
--- sets grants.state = 'REVOKED') or a quarantined budget ends delegated authority at the next issue, use or release.
+-- requires `admitted` and now < `admitted_until` (dot 6249255722).
+--  - `admitted` is Meri's canonical current-admission predicate (admitted-run-current.mjs readCurrentAdmission) over the EXACT
+--    ORIGINAL admitted set: the run's saved ADMITTED allocation record (meri_conversations.native_allocations) declares every
+--    original grant (record.grantIntents) and its exact stored facts (record.resource.grantFactsJsons, bound to the launched
+--    task ARN). Every declared grant must be ACTIVE, unexpired, of this run's attempt, fence, policy, capability digest and
+--    worker ARN, and bound to the run by a tool_grant_bindings row whose facts equal the stored facts; the budget must not be
+--    quarantined and the record's allocation digest must be the installed allocation's. Any other grant (a later execution
+--    grant, or a surviving sibling) never substitutes for a missing, revoked or expired declared grant.
+--  - `admitted_until` is the earliest of the run deadline, the record's own expiry and every declared grant's expiry.
+-- A revoked grant (Meri admission revoke sets grants.state = 'REVOKED') or a quarantined budget ends delegated authority at the
+-- next issue, use or release.
 --  - run_facts_v1: the run's installed allocation (sha256, allowed operations, call allowance, deadline), Meri's reserved-call
 --    count (the same count the budget owner checks before every reservation), the attempt/fence/policy of the run's grant
 --    owner, and the run's current state, binding and scopes.
@@ -33,9 +40,9 @@ SELECT a.run_id,
        r.attempt,
        r.fence,
        r.policy_revision,
-       NOT (SELECT b.quarantined FROM meri_product_budget.budget b WHERE b.id = 1) AND g.grant_id IS NOT NULL AS admitted,
+       COALESCE((SELECT NOT b.quarantined FROM meri_product_budget.budget b WHERE b.id = 1), false) AND COALESCE(adm.admitted, false) AS admitted,
        LEAST(a.started_at + make_interval(secs => (a.allocation->'budgets'->>'maxRuntimeSeconds')::double precision),
-             (a.allocation->'schedule'->>'expiresAt')::timestamptz, g.expires_at) AS admitted_until,
+             (a.allocation->'schedule'->>'expiresAt')::timestamptz, adm.record_until, adm.grants_until) AS admitted_until,
        c.projection->>'state' AS run_state,
        c.projection->'binding' AS run_binding,
        c.projection->'scopes' AS run_scopes
@@ -43,11 +50,29 @@ SELECT a.run_id,
   JOIN meri_product_budget.runs r ON r.run_id = a.run_id
   JOIN meri_conversations.runs c ON c.run_id = a.run_id
   LEFT JOIN LATERAL (
-   SELECT gr.grant_id, gr.expires_at FROM meri_product_budget.grants gr
-     JOIN meri_product_budget.tool_grant_bindings gb ON gb.grant_id = gr.grant_id AND gb.run_id = a.run_id
-    WHERE gr.run_id = a.run_id AND gr.state = 'ACTIVE' AND gr.attempt = r.attempt AND gr.fence = r.fence
-      AND gr.policy_revision = r.policy_revision AND gr.expires_at > clock_timestamp()
-    ORDER BY gr.expires_at DESC LIMIT 1) g ON true;
+   SELECT n.record->>'state' = 'ADMITTED'
+          AND n.record->>'allocationSha256' = a.allocation_sha256
+          AND (n.record->'qualification'->>'attempt')::integer = r.attempt
+          AND (n.record->'binding'->>'writerFence')::integer = r.fence
+          AND n.record->'qualification'->>'policyRevision' = r.policy_revision
+          AND jsonb_array_length(n.record->'grantIntents') >= 1
+          AND jsonb_array_length(n.record->'resource'->'grantFactsJsons') = jsonb_array_length(n.record->'grantIntents')
+          AND NOT EXISTS (
+           SELECT 1 FROM jsonb_array_elements(n.record->'grantIntents') gi
+            WHERE NOT EXISTS (
+             SELECT 1 FROM meri_product_budget.grants g
+               JOIN meri_product_budget.tool_grant_bindings gb ON gb.grant_id = g.grant_id AND gb.run_id = a.run_id
+              WHERE g.grant_id::text = gi->>'grantId' AND g.run_id = a.run_id AND g.state = 'ACTIVE'
+                AND g.capability_sha256 = gi->>'capabilitySha256' AND g.attempt = r.attempt AND g.fence = r.fence
+                AND g.policy_revision = r.policy_revision AND g.worker_arn = n.record->'resource'->>'taskArn'
+                AND g.expires_at > clock_timestamp()
+                AND EXISTS (SELECT 1 FROM jsonb_array_elements_text(n.record->'resource'->'grantFactsJsons') f(fact)
+                             WHERE f.fact::jsonb->>'grantId' = gi->>'grantId' AND f.fact::jsonb = gb.facts))) AS admitted,
+          to_timestamp((n.record->>'expiresAtMs')::double precision / 1000) AS record_until,
+          (SELECT min(g.expires_at) FROM meri_product_budget.grants g
+            WHERE g.grant_id::text IN (SELECT gi->>'grantId' FROM jsonb_array_elements(n.record->'grantIntents') gi)) AS grants_until
+     FROM meri_conversations.native_allocations n
+    WHERE n.tenant_id = c.tenant_id AND n.conversation_id = c.conversation_id AND n.run_id = a.run_id) adm ON true;
 CREATE VIEW meri_read_delegation_facts.reservations_v1 WITH (security_barrier = true) AS
 SELECT invocation_id, run_id, operation, arguments_sha256, state
   FROM meri_product_budget.tool_reservations;
