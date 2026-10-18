@@ -1,9 +1,8 @@
--- NOT A REGISTERED MIGRATION. Migration identifier and source pin require central Meri allocation.
--- SOURCE-ONLY PROPOSAL. Extend the existing, already granted run facts view with a bounded
+-- SOURCE-ONLY allocated integration migration. Extend the existing, already granted run facts view with a bounded
 -- projection of Meri's original prepared approval metadata. Requires 0001 and the Meri
 -- approval-metadata table. No new role, grant, function or Core admission predicate.
--- This file is not in first-chat-migrate.mjs PLAN and must not be executed as an ad hoc patch.
--- Meri owner will allocate, install under migrations/, pin, and qualify before any apply.
+-- Registered in first-chat-migrate.mjs PLAN after facts 0001 and approval metadata 0001.
+-- No live SQL apply or runtime readback is implied by source registration.
 BEGIN;
 CREATE INDEX approval_metadata_run_facts_idx
   ON meri_commands.approval_metadata

@@ -1,9 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
 import {readFileSync} from 'node:fs';
+import {PLAN, migrationBody} from '../../../../../infra/product-preview/first-chat-migrate.mjs';
 
 const original = readFileSync(new URL('../migrations/0001_read_delegation_facts.sql', import.meta.url), 'utf8').replaceAll('\r\n', '\n');
-const extension = readFileSync(new URL('../proposals/PROPOSED_prepared_approval_facts.sql', import.meta.url), 'utf8').replaceAll('\r\n', '\n');
+const extension = readFileSync(new URL('../migrations/0002_prepared_approval_facts.sql', import.meta.url), 'utf8').replaceAll('\r\n', '\n');
 const columns = text => text.slice(text.indexOf('SELECT a.run_id,'), text.indexOf("c.projection->'scopes' AS run_scopes") + "c.projection->'scopes' AS run_scopes".length);
 const admission = text => text.slice(text.indexOf('  FROM meri_product_budget.tool_run_allocations a'), text.indexOf(') adm ON true') + ') adm ON true'.length);
 
@@ -32,4 +34,16 @@ test('correlated approval projection is bounded and contains only the agreed ori
     ['binding', 'binding'], ['scopes', 'scopes'],
   ]);
   assert.doesNotMatch(record, /request|inputSha256|commandContext|arguments|attachments/u);
+});
+
+test('allocated source is pinned after original facts and before integration grants', () => {
+  const source = readFileSync(new URL('../migrations/0002_prepared_approval_facts.sql', import.meta.url));
+  const index = PLAN.findIndex(e => e.path.endsWith('/0002_prepared_approval_facts.sql'));
+  assert.ok(index > 0);
+  assert.ok(PLAN[index - 1].path.endsWith('/0001_read_delegation_facts.sql'));
+  assert.equal(PLAN[index + 1].kind, 'phase:integration_grants');
+  assert.equal(PLAN[index].stage, 'integration');
+  assert.equal(PLAN[index].pinned, createHash('sha256').update(source).digest('hex'));
+  assert.equal(migrationBody(extension).includes('CREATE OR REPLACE VIEW meri_read_delegation_facts.run_facts_v1'), true);
+  assert.match(extension, /CREATE INDEX approval_metadata_run_facts_idx\s+ON meri_commands\.approval_metadata/u);
 });
