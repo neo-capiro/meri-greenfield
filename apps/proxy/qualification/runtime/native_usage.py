@@ -105,7 +105,9 @@ def _terminal_metrics(event, binding, output):
 
 
 def _message(value, binding, *, start=False):
-    _object(value, ("id", "type", "role", "model", "content", "stop_reason", "stop_sequence", "usage"))
+    _object(value, ("id", "type", "role", "model", "content", "stop_reason", "stop_sequence", "usage"),
+            ("context_management",))
+    _context_observation(value.get("context_management"))
     if (type(value["id"]) is not str or not 1 <= len(value["id"]) <= 256
             or value["type"] != "message" or value["role"] != "assistant"
             or type(value["model"]) is not str or value["model"] not in _MODELS
@@ -116,6 +118,15 @@ def _message(value, binding, *, start=False):
     elif type(value["stop_reason"]) is not str or value["stop_reason"] not in _STOPS:
         raise ValueError("INCOMPLETE_NATIVE_MESSAGE")
     return _usage(value["usage"], binding)
+
+
+def _context_observation(value):
+    # Context edits can affect billing and continuation semantics. Only an
+    # explicit observation of no edits belongs to this qualified envelope.
+    if value is not None:
+        _object(value, ("applied_edits",))
+        if type(value["applied_edits"]) is not list or value["applied_edits"] != []:
+            raise ValueError("UNQUALIFIED_CONTEXT_EDITS")
 
 
 def _block(value, binding):
@@ -207,7 +218,9 @@ class NativeStreamUsage:
                 row["json"]+=value["partial_json"].encode("utf-8")
             return
         if kind=="message_delta" and self.phase in ("BLOCKS","DELTA"):
-            _object(event,("type","delta","usage"));_object(event["delta"],("stop_reason","stop_sequence"))
+            _object(event,("type","delta","usage"),("context_management",))
+            _context_observation(event.get("context_management"))
+            _object(event["delta"],("stop_reason","stop_sequence"))
             if (any(not r["closed"] for r in self.blocks.values()) or event["delta"]["stop_sequence"] is not None
                     or type(event["delta"]["stop_reason"]) is not str or event["delta"]["stop_reason"] not in _STOPS):raise ValueError("INVALID_MESSAGE_DELTA")
             output=_usage(event["usage"],self.binding,delta=True)
