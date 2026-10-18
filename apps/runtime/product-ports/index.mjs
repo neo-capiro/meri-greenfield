@@ -7,9 +7,12 @@
  * composeRuntimePorts. */
 import {types} from 'node:util';
 import {fault} from '../config.mjs';
+import {createSettingsFamily} from './settings.mjs';
+import {createRoutinesFamily} from './routines.mjs';
+import {createMemoryFamily} from './memory.mjs';
 
 /** Ordered production family factories. Each entry is `[name, factory]`; the name is used only in refusals. */
-export const PRODUCT_FAMILIES=Object.freeze([]);
+export const PRODUCT_FAMILIES=Object.freeze([['settings',createSettingsFamily],['routines',createRoutinesFamily],['memory',createMemoryFamily]]);
 
 const ordinary=fn=>typeof fn==='function'&&!types.isProxy(fn)&&!types.isAsyncFunction(fn)&&!types.isGeneratorFunction(fn);
 

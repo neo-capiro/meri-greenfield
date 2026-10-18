@@ -43,6 +43,7 @@ import {createRunnerPoststartTaskReader} from './native-authority/runner-poststa
 import {createRunnerPoststartCertificateIssuer} from './native-authority/runner-poststart-certificate-issuer.mjs';
 import {createRunnerPoststartApplication} from './native-authority/runner-poststart-http.mjs';
 import {createRuntimeUserPreferences} from './user-preferences.mjs';
+import {createConfiguredRunCapabilityPolicy} from './product-ports/capability-policy.mjs';
 function productBinding(options){
  const c=own(options,[],['productPorts','productPortsFactory']);
  if(c.productPorts!==undefined&&c.productPortsFactory!==undefined)throw fault('PRODUCT_PORTS_CONFIGURATION');
@@ -86,7 +87,8 @@ export function assembleControl(options){
   resolveTransitionContext:ports.identityContext.resolveTransitionContext,
  }:{}),limits:{maxSessions:configuration.sessions.maxSessions,maxRequestMs:configuration.limits.requestMs,maxTtlMs:configuration.sessions.maxTtlMs,maxFactBytes:131072}});
  const dispatcher=createTemporalConversationDispatcher({client,taskQueue:configuration.temporal.taskQueue,lifecycle:true,now,maxRequestMs:configuration.limits.requestMs});
- const basic=createConversationService({sessions,store,dispatcher,versions:configuration.versions,now,maxRequestMs:configuration.limits.requestMs,...(ports.selectedSkillAdmission?{selectedSkillAdmission:ports.selectedSkillAdmission}:{}),...(ports.selectedOutputPublication?{selectedOutputPublication:ports.selectedOutputPublication}:{}),...(retention?{retention:retention.gate}:{})});
+ const capabilityPolicy=configuration.capabilityPlatform===undefined?undefined:createConfiguredRunCapabilityPolicy(configuration);
+ const basic=createConversationService({sessions,store,dispatcher,versions:configuration.versions,now,maxRequestMs:configuration.limits.requestMs,...(capabilityPolicy?{capabilityPolicy}:{}),...(ports.selectedSkillAdmission?{selectedSkillAdmission:ports.selectedSkillAdmission}:{}),...(ports.selectedOutputPublication?{selectedOutputPublication:ports.selectedOutputPublication}:{}),...(retention?{retention:retention.gate}:{})});
  const port=operation=>({signal,...input})=>native.call(operation,input,{signal});
  const service=createConversationLifecycleService({service:basic,store,dispatcher,sessions,now,maxRequestMs:configuration.limits.requestMs,checkpoints:{read:port('checkpoint/read')},nativeAdmission:ports.continuationAdmission,approvals:ports.approvals});
  const conversation=createConversationLifecycleApplication({service,now,maxRequestBytes:configuration.limits.requestBytes,maxRequestMs:configuration.limits.requestMs}),input=createConversationInputApplication({service,now,maxRequestBytes:configuration.limits.requestBytes,maxRequestMs:configuration.limits.requestMs}),initialInput=createConversationInitialInputApplication({service,now,maxRequestBytes:configuration.limits.requestBytes,maxRequestMs:Math.min(configuration.limits.requestMs,conversationInitialInputMetadata.limits.maxRequestMs)}),issuance=createActionSessionApplication({owner:sessions,now,maxRequestMs:configuration.limits.requestMs}),worker=createWorkerRunApplication({service:telemetry?telemetry.observeRunOwner(service):service,sessions,native,configuration,now});
