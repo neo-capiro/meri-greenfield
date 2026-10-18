@@ -26,9 +26,14 @@ export async function actionLookupSlice(){
   };
   h.f.ports.authorizeSources=async()=>JSON.stringify({sourceIds:descriptor.sourceRequirements.map(s=>s.sourceId),enabled:h.f.state.sourceEnabled,policyRevision:h.f.claims.policyRevision,checkedAtMs:h.f.state.now});
   const adapter=createActionItemsHttpAdapter({origin:'https://synthetic.invalid',now:()=>h.f.state.now,
-    getCredentials:async()=>({binding:h.f.binding,bearerToken:'SYNTHETIC_USER',serviceSecret:'SYNTHETIC_SERVICE',expiresAtMs:NOW+10000}),
+    getCredentials:async pins=>{const {input,deadlineMs,signal,...echo}=pins;return {...structuredClone(echo),
+      authorizationScheme:'CapiroMeriRead',bearerToken:'SYNTHETIC_USER',serviceSecret:'SYNTHETIC_SERVICE',expiresAtMs:NOW+10000};},
     fetchImpl:async(url,options)=>{http.push({url:String(url),method:options.method});
-      const native=nativeScopedPage(JSON.parse(options.body));h.afterHttp?.();
+      const {input}=JSON.parse(options.body),selection=input.selection;
+      const native=nativeScopedPage({clientId:selection.clientId,sort:selection.sort,limit:selection.limit,
+        ...(selection.status===null?{}:{status:selection.status}),
+        ...(selection.actionItemId===null?{}:{actionItemId:selection.actionItemId}),
+        ...(input.cursor===null?{}:{cursor:input.cursor})});h.afterHttp?.();
       return new Response(JSON.stringify(native),{status:200,headers:{'content-type':'application/json'}});
     }});
   h.f.entry.contract=contract;h.f.entry.descriptor=descriptor;

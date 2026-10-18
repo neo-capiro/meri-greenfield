@@ -35,6 +35,31 @@ function setup(options={}){
 async function refuse(f,raw={clientId:client},signal){let error;try{await f.run(raw,signal);}catch(e){error=e;}assert.ok(error,'expected refusal');assert.doesNotMatch(String(error),/synthetic-action-jwt|synthetic-action-secret|private-diagnostic/);return error;}
 test('action source independent: actual canonical dispatch reaches signed alias and validated scoped projection',async()=>{const f=setup(),out=JSON.parse(await f.run());assert.deepEqual(out.binding,f.binding);assert.deepEqual(out.subject,f.subject);assert.deepEqual(out.operation,operation);assert.equal(out.argumentsSha256,f.contract.normalizeInput({clientId:client},f.context()).argumentsSha256);assert.deepEqual(out.result.actions,f.page.actions);assert.deepEqual(out.result.pageCoverage,f.page.coverage);assert.equal(out.result.evidenceReady,false);assert.deepEqual(out.result.negativeAssertion,{kind:'none'});assert.equal(out.result.coverage.enumeration,'unknown');assert.equal(out.result.sources[0].freshness,'unknown');assert.equal(out.result.sources[0].snapshotVersionId,null);assert.equal(f.calls.filter(x=>x==='fetch').length,1);assert.equal(f.calls.filter(x=>x==='settle').length,1);assert.equal(f.calls.includes('uncertain'),false);const {url,init}=f.source.fetchArgs;assert.equal(String(url),origin+'/api/clio/tools/actions.query');assert.equal(init.method,'POST');assert.equal(init.redirect,'error');assert.equal(init.credentials,'omit');const headers=new Headers(init.headers);assert.equal(headers.get('authorization'),'CapiroMeriRead synthetic-action-jwt');assert.equal(headers.get('x-internal-service-secret'),'synthetic-action-secret');for(const key of ['x-tenant-id','x-user-id','x-actor-id'])assert.equal(headers.has(key),false);assert.deepEqual(JSON.parse(init.body),{input:f.contract.normalizeInput({clientId:client},f.context()).input,metadata:null});assert.equal(f.source.credentialArgs.argumentsSha256,out.argumentsSha256);assert.equal(f.source.credentialArgs.invocationId,'synthetic_action_call');assert.equal(f.source.credentialArgs.target.bodySha256,createHash('sha256').update(init.body).digest('hex'));});
 test('action source independent: actual production catalog remains disabled before any ports',async()=>{const f=fixture(),g=createSourceDisabledGateway({authorityPorts:f.ports,budget:f.budget,limits,now:()=>NOW,newId:()=>uuid('7')});await assert.rejects(g.execute(JSON.stringify({operation,arguments:{clientId:client}}),'synthetic'));assert.deepEqual(f.calls,[]);assert.equal(resolveOperationContract(operation).descriptor.handler,null);assert.equal(resolveOperationContract(operation).descriptor.availability,'unimplemented');});
+test('action source independent: exact body, original digest and four-field correlation bind one token',async()=>{
+ const f=setup(),out=JSON.parse(await f.run()),pins=f.source.credentialArgs,{init}=f.source.fetchArgs;
+ const hash=text=>createHash('sha256').update(text,'utf8').digest('hex');
+ assert.equal(f.calls.filter(value=>value==='credentials').length,1);
+ assert.equal(pins.argumentsSha256,out.argumentsSha256);
+ assert.equal(pins.requestSha256,canonicalSha256(JSON.parse(init.body)));
+ assert.deepEqual(pins.target,{method:'POST',path:'/api/clio/tools/actions.query',bodySha256:hash(init.body)});
+ assert.equal(pins.invocationId,'synthetic_action_call');
+ const correlation=Buffer.from(init.headers['x-meri-read-correlation'],'base64url').toString('utf8');
+ assert.equal(pins.correlationSha256,hash(correlation));
+ assert.deepEqual(JSON.parse(correlation),{binding:pins.binding,subject:pins.subject,
+  policyRevision:pins.policyRevision,normalizationContext:null});
+ assert.deepEqual(pins.sourceIds,['action_items_complete']);
+});
+test('action source independent: bearer and changed token pins refuse before Core HTTP',async()=>{
+ for(const change of [c=>c.authorizationScheme='Bearer',c=>c.target.path='/api/clio/tools/query_action_items',
+  c=>c.target.bodySha256='a'.repeat(64),c=>c.correlationSha256='a'.repeat(64),
+  c=>c.argumentsSha256='a'.repeat(64),c=>c.requestSha256='a'.repeat(64),
+  c=>c.invocationId='another_call',c=>c.metadata={},c=>c.sourceIds=['other'],
+  c=>c.serviceSecret=c.bearerToken]){
+  const f=setup();f.source.credentialChange=receipt=>{change(receipt);return receipt;};
+  await refuse(f);assert.equal(f.calls.filter(value=>value==='credentials').length,1);
+  assert.equal(f.calls.filter(value=>value==='fetch').length,0);
+ }
+});
 test('action source independent: model cannot supply authority/context or transport options',async()=>{for(const extra of [{tenantId:uuid('a')},{binding:{}},{clientResolution:{}},{headers:{}},{url:'https://other.invalid'},{page:2},{limit:'20'},{operation:{id:'x'}}]){const f=setup();await refuse(f,{clientId:client,...extra});assert.equal(f.calls.includes('credentials'),false);assert.equal(f.calls.includes('fetch'),false);}});
 test('action source independent: connected unscoped and names refuse, UUID must equal current selected subject',async()=>{for(const raw of [{},{clientId:'Synthetic client'},{clientId:uuid('9')}]){const f=setup();await refuse(f,raw);assert.equal(f.calls.includes('fetch'),false);}const f=setup();assert.ok(await f.run({clientId:` ${client.toUpperCase()} `}));});
 test('action source independent: exact origin admission precedes allocation',()=>{for(const origin of ['http://source.invalid','https://source.invalid/path','https://source.invalid/','https://u:p@source.invalid','https://source.invalid?x=1','file:///tmp/x'])assert.throws(()=>setup({origin}));});
