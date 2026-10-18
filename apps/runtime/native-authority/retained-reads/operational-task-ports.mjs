@@ -13,13 +13,17 @@ const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const token=value=>typeof value==='string'&&/^[\x21-\x7e]{1,8192}$/u.test(value);
 const references=Object.freeze(['query_tasks','query_action_items'].map(id=>Object.freeze({id,version:'0.2.0'})));
 const requiredSources=new Map(references.map(ref=>[ref.id,resolveOperationContract(ref).descriptor.sourceRequirements]));
+export const OPERATIONAL_TASK_FAMILIES=Object.freeze(['operational-reads','action-items-complete']);
 
 /** Returns a synchronous retainedTaskPorts slice. Its two families are merged by the
  * existing task composer with the other source owners' slices. */
 export function createOperationalTaskPorts(configuration={}){
- const c=own(configuration,[],['coreOrigin','fetchImpl','now','enabled']),enabled=c.enabled??false;
+ const c=own(configuration,[],['coreOrigin','fetchImpl','now','enabled','familyIds']),enabled=c.enabled??false;
  if(typeof enabled!=='boolean')refuse();
  if(!enabled)return ()=>refuse();
+ const familyIds=data(c.familyIds??OPERATIONAL_TASK_FAMILIES);
+ if(!Array.isArray(familyIds)||!familyIds.length||new Set(familyIds).size!==familyIds.length||
+  familyIds.some(id=>!OPERATIONAL_TASK_FAMILIES.includes(id)))refuse();
  if(typeof c.now!=='function'||types.isProxy(c.now)||typeof c.fetchImpl!=='function'||types.isProxy(c.fetchImpl))refuse();
  const origin=retainedOrigin(c.coreOrigin);
 
@@ -32,20 +36,25 @@ export function createOperationalTaskPorts(configuration={}){
   const binding=data(task.binding),original=data(task.original),scopes=data(task.scopes),grant=data(task.grant);
   validateShape('RunBinding',binding);
   if(!same(original.binding,binding)||!same(grant.binding,binding)||!Number.isSafeInteger(original.expiresAtMs)||
-   original.expiresAtMs<=c.now()||!Array.isArray(scopes)||scopes.length!==1)refuse();
-  const scope=scopes[0];validateShape('Scope',scope);
-  if(scope.kind!=='client'||scope.tenantId!==binding.tenantId||!scope.resourceId||
-   scope.policyRevision!==grant.qualificationBinding?.policyRevision)refuse();
-  const clientId=scope.resourceId,policyRevision=scope.policyRevision;
+   original.expiresAtMs<=c.now()||!Array.isArray(scopes))refuse();
+  for(const scope of scopes)validateShape('Scope',scope);
+  function selectedClient(){
+   if(scopes.length!==1)refuse();
+   const scope=scopes[0];
+   if(scope.kind!=='client'||scope.tenantId!==binding.tenantId||!scope.resourceId||
+    scope.policyRevision!==grant.qualificationBinding?.policyRevision)refuse();
+   return scope;
+  }
   function active(deadlineMs,signal){
    nativeSignal(signal);
    if(signal?.aborted||!Number.isSafeInteger(deadlineMs)||!Number.isSafeInteger(c.now())||
     c.now()>=Math.min(deadlineMs,original.expiresAtMs))refuse();
   }
   function subjectFor(value){
+   const scope=selectedClient();
    const subject=data(value);assertSubject(subject,binding);
-   if(subject.kind!=='client'||subject.entityType!=='client'||subject.entityIds[0]!==clientId||
-    subject.policyRevision!==policyRevision||!same(subject.scopes,scopes))refuse();
+   if(subject.kind!=='client'||subject.entityType!=='client'||subject.entityIds[0]!==scope.resourceId||
+    subject.policyRevision!==scope.policyRevision||!same(subject.scopes,scopes))refuse();
    return subject;
   }
   async function currentCredentials(deadlineMs,signal,operation,requestSha256){
@@ -70,7 +79,7 @@ export function createOperationalTaskPorts(configuration={}){
   }
   async function originalCredentials(rawPins){
    const p=own(rawPins,['operation','sourceIdentity','binding','subject','policyRevision','sourceIds','argumentsSha256','deadlineMs','signal']);
-   const operation=data(p.operation),required=requiredSources.get(operation.id),subject=subjectFor(p.subject);
+   const operation=data(p.operation),required=requiredSources.get(operation.id),subject=subjectFor(p.subject),policyRevision=selectedClient().policyRevision;
    if(!required||!same(operation,{id:operation.id,version:'0.2.0'})||required.length!==1||
     !same(data(p.binding),binding)||!same(data(p.sourceIdentity),required[0])||
     !same(data(p.sourceIds),required.map(row=>row.sourceId))||p.policyRevision!==policyRevision||
@@ -87,9 +96,7 @@ export function createOperationalTaskPorts(configuration={}){
    return Object.freeze({binding,...credentials});
   }
   const family=getCredentials=>Object.freeze({origin,getCredentials,fetchImpl:c.fetchImpl});
-  return Object.freeze({families:Object.freeze({
-   'operational-reads':family(originalCredentials),
-   'action-items-complete':family(successorCredentials)
-  })});
+  const available=Object.freeze({'operational-reads':family(originalCredentials),'action-items-complete':family(successorCredentials)});
+  return Object.freeze({families:Object.freeze(Object.fromEntries(familyIds.map(id=>[id,available[id]])))});
  };
 }

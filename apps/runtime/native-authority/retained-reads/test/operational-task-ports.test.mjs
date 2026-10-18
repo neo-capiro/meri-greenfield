@@ -6,7 +6,7 @@ import {resolveOperationContract} from '../../../../../packages/contracts/retrie
 import {createHandlers as originalHandlers} from '../../../../gateway/general-reads/families/operational-reads.mjs';
 import {createHandlers as successorHandlers} from '../../../../gateway/general-reads/families/action-items-complete.mjs';
 import {fixture,NOW,uuid} from '../../../../gateway/test/fixtures.mjs';
-import {createOperationalTaskPorts} from '../operational-task-ports.mjs';
+import {createOperationalTaskPorts,OPERATIONAL_TASK_FAMILIES} from '../operational-task-ports.mjs';
 
 const CLIENT=uuid('9'),ORIGIN='https://core.synthetic.invalid',DEADLINE=NOW+5000;
 const TOKEN='LIVE_USER',SECRET='CURRENT_SERVICE';
@@ -100,14 +100,29 @@ test('successor credential pins require accepted full binding and selected-clien
  assert.equal(x.state.bearers,2);assert.equal(x.state.secrets,1);
 });
 
-test('task original, selected scope and expiry are required before any source effect',async()=>{
+test('task original and expiry are required at setup; selected client is required before source effect',async()=>{
  const x=setup(),task=x.task,base={task,getNativeCredentialWithExpiry:x.getNativeCredentialWithExpiry,getServiceSecret:x.getServiceSecret};
  for(const changed of [{...task,original:{...task.original,binding:{...task.binding,actorId:'foreign'}}},
-  {...task,original:{...task.original,expiresAtMs:NOW}},
-  {...task,scopes:[{...task.scopes[0],kind:'tenant',resourceId:task.binding.tenantId}]},
-  {...task,grant:{...task.grant,qualificationBinding:{policyRevision:'old-policy'}}}])
+  {...task,original:{...task.original,expiresAtMs:NOW}}])
   assert.throws(()=>x.producer({...base,task:changed}));
+ const staleGrant=x.producer({...base,task:{...task,grant:{...task.grant,qualificationBinding:{policyRevision:'old-policy'}}}});
+ await assert.rejects(staleGrant.families['action-items-complete'].getCredentials(successorPins(x)));
+ const unselected=x.producer({...base,task:{...task,scopes:[{...task.scopes[0],kind:'tenant',resourceId:task.binding.tenantId}]}});
+ await assert.rejects(unselected.families['action-items-complete'].getCredentials(successorPins(x)));
  assert.throws(()=>x.producer({task,getNativeCredential:x.getNativeCredentialWithExpiry,getServiceSecret:x.getServiceSecret}));
+ assert.equal(x.state.bearers,0);assert.equal(x.state.secrets,0);assert.equal(x.state.wire.length,0);
+});
+
+test('reviewed action family is the only constructed port and unrelated tasks stay inert',async()=>{
+ const x=setup(),producer=createOperationalTaskPorts({coreOrigin:ORIGIN,fetchImpl:async()=>{throw Error('NO_FETCH');},
+  now:()=>NOW,enabled:true,familyIds:['action-items-complete']});
+ const task={...x.task,scopes:[{...x.task.scopes[0],kind:'tenant',resourceId:x.task.binding.tenantId}]};
+ const supplied=producer({task,getNativeCredentialWithExpiry:x.getNativeCredentialWithExpiry,getServiceSecret:x.getServiceSecret});
+ assert.deepEqual(Object.keys(supplied.families),['action-items-complete']);
+ await assert.rejects(supplied.families['action-items-complete'].getCredentials(successorPins(x)));
+ assert.deepEqual(OPERATIONAL_TASK_FAMILIES,['operational-reads','action-items-complete']);
+ for(const familyIds of [[],['action-items-complete','action-items-complete'],['mail']])
+  assert.throws(()=>createOperationalTaskPorts({coreOrigin:ORIGIN,fetchImpl:async()=>{},now:()=>NOW,enabled:true,familyIds}));
  assert.equal(x.state.bearers,0);assert.equal(x.state.secrets,0);assert.equal(x.state.wire.length,0);
 });
 
