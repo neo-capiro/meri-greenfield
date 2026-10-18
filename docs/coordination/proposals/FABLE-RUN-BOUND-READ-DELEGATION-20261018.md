@@ -80,13 +80,20 @@ Core never trusts caller digests for allocation, operations, deadline, allowance
 | Run state, binding, scopes | `meri_conversations.runs.projection` (the Run object: `state`, `binding`, `scopes`) | `run_state`, `run_binding`, `run_scopes` |
 
 At every check Core requires all of the following, or it refuses and records the reason. **A view row's existence is never authority** (dot 6248061000):
-- `admitted` is true: the DB-checkable part of Meri's canonical current-admission predicate (`admitted-run-current.mjs` `readCurrentAdmission`). The budget is not quarantined, and an `ACTIVE`, unexpired grant of the run's attempt, fence and policy is bound to the run. Meri's admission revoke sets the grant `REVOKED`, which ends delegated authority at the next issue, use or release. This is the same revocation predicate the execution receiver must consume, so the two lanes map one owner;
+- `admitted` is true: Meri's canonical current-admission predicate (`admitted-run-current.mjs` `readCurrentAdmission`) over the **exact original admitted set** (dot 6249255722):
+  - **Source:** the run's saved ADMITTED allocation record (`meri_conversations.native_allocations`) declares every original grant (`record.grantIntents`) and its exact stored facts (`record.resource.grantFactsJsons`, bound to the launched task ARN).
+  - **Every declared grant** must be `ACTIVE` and unexpired, and match the run's attempt, fence, policy, capability digest and worker ARN. It must also be bound to the run by a `tool_grant_bindings` row whose facts equal the stored facts.
+  - **Executor binding:** the record's binding equals the run's binding, and the run's worker ARN equals the record's task ARN.
+  - **Allocation and budget:** the record's allocation digest is the installed allocation's, and the budget is not quarantined.
+  - **Core's authoritative read:** Core reads currentness through `meri_core_authority.current_admission_v1` (Core lane 6249249387), which applies the same declared set and also requires every *undeclared* grant on the run to be Core-issued. The view mirrors it and never relaxes that check.
+  - **No substitutes:** a later execution grant or a surviving sibling never stands in for a missing, revoked or expired declared grant.
+  - **Revocation:** Meri's admission revoke sets a grant `REVOKED`, which ends delegated authority at the next issue, use or release. This is the same original-set derivation dot asked of the execution receiver (6248171459), so the two lanes map one owner;
 - `run_state ∈ {queued, starting, running}`;
 - `fence` and `attempt` equal the delegation's;
 - `policy_revision` equals the delegation's;
 - `run_scopes` is exactly one client scope equal to the delegated client;
 - `allocation_sha256` equals the delegation's, and the token's operation is in `allowed_operations`;
-- `now < admitted_until` (the earlier of the run deadline and the admitting grant's expiry);
+- `now < admitted_until`: the earliest of the run deadline, the ADMITTED record's own expiry and every declared grant's expiry;
 - for `tool` tokens, a `reservations_v1` row with `invocation_id = callKey`, `state = 'UNKNOWN'` and an equal operation and arguments hash.
 
 Meri's budget owner reserves before dispatch, so **Core only ever authorizes a tool call Meri has already counted and held**. Core is never a spend owner.
@@ -275,10 +282,10 @@ Rollback is `DROP TABLE` of these four tables, which hold no other data. Take a 
 
 ### 11.2 Meri migration: run-facts views (CREATE-only; created as the owner of the base schemas, `meri_product_migrator` per the grants proposal)
 
-In source: `apps/runtime/native-authority/read-delegation/migrations/0001_read_delegation_facts.sql`, sha256 `700663d7b788ba594c2ebd3df7c197949a471e6382ce4a98d94ce038fa9b03eb` (pinned by `read-delegation/test/core-client.test.mjs`). It needs the meri stage plus schedules 0001–0002, so its plan line goes in the `integration` stage after `apps/artifacts/migrations/0003_previews.sql` and before `phase:integration_grants` (R0 edits `infra/product-preview/first-chat-migrate.mjs`; not edited here):
+In source: `apps/runtime/native-authority/read-delegation/migrations/0001_read_delegation_facts.sql`, sha256 `bc3ec0314839d953909ffd9eda5c9235da0fbf966ff28d46e19d7e76f7702745` (pinned by `read-delegation/test/core-client.test.mjs`). It needs the meri stage plus schedules 0001–0002, so its plan line goes in the `integration` stage after `apps/artifacts/migrations/0003_previews.sql` and before `phase:integration_grants` (R0 edits `infra/product-preview/first-chat-migrate.mjs`; not edited here):
 
 ```js
-['migration','apps/runtime/native-authority/read-delegation/migrations/0001_read_delegation_facts.sql','700663d7b788ba594c2ebd3df7c197949a471e6382ce4a98d94ce038fa9b03eb','integration'],
+['migration','apps/runtime/native-authority/read-delegation/migrations/0001_read_delegation_facts.sql','bc3ec0314839d953909ffd9eda5c9235da0fbf966ff28d46e19d7e76f7702745','integration'],
 ```
 
 The file's SQL, verbatim:
@@ -300,9 +307,9 @@ SELECT a.run_id,
        r.attempt,
        r.fence,
        r.policy_revision,
-       NOT (SELECT b.quarantined FROM meri_product_budget.budget b WHERE b.id = 1) AND g.grant_id IS NOT NULL AS admitted,
+       COALESCE((SELECT NOT b.quarantined FROM meri_product_budget.budget b WHERE b.id = 1), false) AND COALESCE(adm.admitted, false) AS admitted,
        LEAST(a.started_at + make_interval(secs => (a.allocation->'budgets'->>'maxRuntimeSeconds')::double precision),
-             (a.allocation->'schedule'->>'expiresAt')::timestamptz, g.expires_at) AS admitted_until,
+             (a.allocation->'schedule'->>'expiresAt')::timestamptz, adm.record_until, adm.grants_until) AS admitted_until,
        c.projection->>'state' AS run_state,
        c.projection->'binding' AS run_binding,
        c.projection->'scopes' AS run_scopes
@@ -310,11 +317,31 @@ SELECT a.run_id,
   JOIN meri_product_budget.runs r ON r.run_id = a.run_id
   JOIN meri_conversations.runs c ON c.run_id = a.run_id
   LEFT JOIN LATERAL (
-   SELECT gr.grant_id, gr.expires_at FROM meri_product_budget.grants gr
-     JOIN meri_product_budget.tool_grant_bindings gb ON gb.grant_id = gr.grant_id AND gb.run_id = a.run_id
-    WHERE gr.run_id = a.run_id AND gr.state = 'ACTIVE' AND gr.attempt = r.attempt AND gr.fence = r.fence
-      AND gr.policy_revision = r.policy_revision AND gr.expires_at > clock_timestamp()
-    ORDER BY gr.expires_at DESC LIMIT 1) g ON true;
+   SELECT n.record->>'state' = 'ADMITTED'
+          AND n.record->'binding' = c.projection->'binding'
+          AND r.worker_arn = n.record->'resource'->>'taskArn'
+          AND n.record->>'allocationSha256' = a.allocation_sha256
+          AND (n.record->'qualification'->>'attempt')::integer = r.attempt
+          AND (n.record->'binding'->>'writerFence')::integer = r.fence
+          AND n.record->'qualification'->>'policyRevision' = r.policy_revision
+          AND jsonb_array_length(n.record->'grantIntents') >= 1
+          AND jsonb_array_length(n.record->'resource'->'grantFactsJsons') = jsonb_array_length(n.record->'grantIntents')
+          AND NOT EXISTS (
+           SELECT 1 FROM jsonb_array_elements(n.record->'grantIntents') gi
+            WHERE NOT EXISTS (
+             SELECT 1 FROM meri_product_budget.grants g
+               JOIN meri_product_budget.tool_grant_bindings gb ON gb.grant_id = g.grant_id AND gb.run_id = a.run_id
+              WHERE g.grant_id::text = gi->>'grantId' AND g.run_id = a.run_id AND g.state = 'ACTIVE'
+                AND g.capability_sha256 = gi->>'capabilitySha256' AND g.attempt = r.attempt AND g.fence = r.fence
+                AND g.policy_revision = r.policy_revision AND g.worker_arn = n.record->'resource'->>'taskArn'
+                AND g.expires_at > clock_timestamp()
+                AND EXISTS (SELECT 1 FROM jsonb_array_elements_text(n.record->'resource'->'grantFactsJsons') f(fact)
+                             WHERE f.fact::jsonb->>'grantId' = gi->>'grantId' AND f.fact::jsonb = gb.facts))) AS admitted,
+          to_timestamp((n.record->>'expiresAtMs')::double precision / 1000) AS record_until,
+          (SELECT min(g.expires_at) FROM meri_product_budget.grants g
+            WHERE g.grant_id::text IN (SELECT gi->>'grantId' FROM jsonb_array_elements(n.record->'grantIntents') gi)) AS grants_until
+     FROM meri_conversations.native_allocations n
+    WHERE n.tenant_id = c.tenant_id AND n.conversation_id = c.conversation_id AND n.run_id = a.run_id) adm ON true;
 CREATE VIEW meri_read_delegation_facts.reservations_v1 WITH (security_barrier = true) AS
 SELECT invocation_id, run_id, operation, arguments_sha256, state
   FROM meri_product_budget.tool_reservations;
@@ -413,6 +440,7 @@ Shared changes:
 | 6246089074 #4: atomic counting, idempotency, lost responses, local stop, pre-release checks | **Retries:** a lost response is retried as `retryOf` the same request, at most 2 per slot and kind; refusals are never retried. **Idempotency:** create is single-flight and Core-idempotent. **Stop order:** refuse locally → abort in flight → bounded best-effort revoke. A stopped run keeps a tombstone, so a later task cannot re-create it. **Release:** the dispatch's release observation is a delegated `current`, and Core re-checks before release; a change withholds the result |
 | 6246089074 #5: consent duration, occurrence expiry, scope change, pause/revoke, the renewal contradiction | **Durations:** consent ≤ 30 days; occurrence ≤ min(start + 15 min, consent, run). **Scope:** any client, operations, policy or binding change refuses. **Pause/revoke:** paused, revoked or expired consent refuses before Core. **Renewal:** attended renewal by live login only; unattended never renewed |
 
+| 6249255722: one surviving ACTIVE grant was accepted as proof | `admitted` now verifies the exact original admitted set from the saved ADMITTED allocation record: every declared grant, with its stored facts, worker ARN, attempt, fence, policy and digest. `admitted_until` is the earliest of all their expiries, the record's and the run deadline. No `LIMIT 1` survivor and no other grant substitutes |
 | 6248061000 #1: the view exposed no canonical admission | `run_facts_v1.admitted` / `admitted_until` (quarantine plus an ACTIVE, unexpired, bound grant of the run's attempt, fence and policy); §4 requires them and never treats row existence as authority |
 | 6248061000 #2: Stop must abort target calls and the tool transport | The per-run Stop signal joins the reads mount's lifetime (every dispatch, credential and transport call of the run) and every delegated target call. Composed and unit tests abort an in-flight request at Stop, and mutation-check both paths |
 | 6248070410: SQL constants and retry hashing | §11.1 CHECKs are 35/7/7/1 with reissues ≤ 8. The canonical request digest normalizes `retryOf` to null; the fixture now uses it, and a composed lost-response read completes with one superseded predecessor and one reissue |

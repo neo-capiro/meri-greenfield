@@ -49,13 +49,20 @@ test('bounded bodies; the service secret is never sent as a bearer; no client wi
 });
 
 const MIGRATION=new URL('../migrations/0001_read_delegation_facts.sql',import.meta.url);
-const READ_DELEGATION_FACTS_SHA256='700663d7b788ba594c2ebd3df7c197949a471e6382ce4a98d94ce038fa9b03eb';
+const READ_DELEGATION_FACTS_SHA256='bc3ec0314839d953909ffd9eda5c9235da0fbf966ff28d46e19d7e76f7702745';
 test('the facts-view migration is CREATE-only over the product namespace and matches its plan pin',()=>{
  const bytes=readFileSync(MIGRATION),sql=bytes.toString('utf8'),code=sql.split('\n').filter(line=>!line.startsWith('--')).join('\n');
  assert.match(code,/^BEGIN;/mu);assert.match(code,/COMMIT;\s*$/u);
  for(const forbidden of [/\bDROP\b/iu,/\bALTER\b/iu,/\bGRANT\b/iu,/\bINSERT\b/iu,/\bUPDATE\b/iu,/\bDELETE\b/iu,/\bTRUNCATE\b/iu,/meri_qualification/iu])assert.doesNotMatch(code,forbidden,String(forbidden));
  assert.equal((code.match(/CREATE VIEW meri_read_delegation_facts\.\w+ WITH \(security_barrier = true\)/gu)??[]).length,4);
  // Row existence is never authority: the canonical admission predicate is exposed for Core to require.
- assert.match(code,/AS admitted,/u);assert.match(code,/AS admitted_until,/u);assert.match(code,/gr\.state = 'ACTIVE'/u);assert.match(code,/quarantined/u);
+ assert.match(code,/AS admitted,/u);assert.match(code,/AS admitted_until,/u);assert.match(code,/quarantined/u);
+ // dot 6249255722: the EXACT original admitted set from the saved ADMITTED allocation record, every declared member verified
+ // (state, digest, attempt/fence/policy, worker ARN, stored facts), never one surviving grant; the earliest expiry applies.
+ assert.match(code,/FROM meri_conversations\.native_allocations n/u);assert.match(code,/n\.record->>'state' = 'ADMITTED'/u);
+ assert.match(code,/NOT EXISTS \(\s*SELECT 1 FROM jsonb_array_elements\(n\.record->'grantIntents'\) gi\s*WHERE NOT EXISTS/u,'every declared grant');
+ for(const predicate of ["g.state = 'ACTIVE'","g.capability_sha256 = gi->>'capabilitySha256'",'g.attempt = r.attempt','g.fence = r.fence','g.policy_revision = r.policy_revision',
+  "g.worker_arn = n.record->'resource'->>'taskArn'","n.record->'binding' = c.projection->'binding'","r.worker_arn = n.record->'resource'->>'taskArn'",'g.expires_at > clock_timestamp()','f.fact::jsonb = gb.facts',"n.record->>'allocationSha256' = a.allocation_sha256"])assert.ok(code.includes(predicate),predicate);
+ assert.doesNotMatch(code,/LIMIT 1/u,'no single surviving grant');assert.match(code,/adm\.record_until, adm\.grants_until\) AS admitted_until/u);
  assert.equal(createHash('sha256').update(bytes).digest('hex'),READ_DELEGATION_FACTS_SHA256);
 });
