@@ -176,6 +176,7 @@ const SOURCE_PATHS=Object.freeze({
  "client-knowledge": [
   "apps/gateway/sources/client-knowledge/handler.mjs",
   "apps/gateway/sources/client-knowledge/http-adapter.mjs",
+  "apps/gateway/sources/client-knowledge/memory-signed-http-adapter.mjs",
   "apps/gateway/sources/client-knowledge/memory-eligibility.mjs",
   "apps/gateway/sources/client-knowledge/monday-mapping.mjs",
   "apps/gateway/sources/client-knowledge/monday-signed-adapter.mjs",
@@ -247,6 +248,7 @@ const COMMON=['apps/gateway/general-reads/integration.mjs','apps/gateway/general
  'apps/runtime/cli.mjs','apps/runtime/native-authority/reads-composer.mjs','apps/runtime/native-authority/retained-read-credential-relay.mjs',
  'apps/runtime/native-authority/retained-reads/client-scoped-source-task-ports.mjs',
  'apps/runtime/native-authority/retained-reads/selected-task-ports.mjs',
+ 'apps/runtime/native-authority/retained-reads/memory-task-ports.mjs',
  'apps/runtime/native-authority/retained-reads/operational-task-ports.mjs',
  'apps/runtime/native-authority/retained-reads/dataset-metadata-port.mjs',
  'packages/contracts/retrieval-0.2/public-domain-registry.mjs',
@@ -268,8 +270,18 @@ const COMMON=['apps/gateway/general-reads/integration.mjs','apps/gateway/general
  'apps/gateway/sources/retained-reads/native-handler.mjs','apps/gateway/sources/retained-reads/http-transport.mjs',
  // These changed source modules are likewise loaded by static family imports in every composition.
  'apps/gateway/sources/business-development/handler.mjs','apps/gateway/sources/business-development/request-context.mjs',
- 'apps/gateway/sources/research-legal-legislation/request-context.mjs'];
-const TRANSPORT_FIELDS=['origin','endpoints','getCredentials','credentialsForCall','authorizeResultForCall','delegatedTransport','fetchImpl','maxRequestMs','maxResponseBytes','readMemoryEligibility','registry'];
+ 'apps/gateway/sources/research-legal-legislation/request-context.mjs',
+ // Static family imports load both memory paths for every selected family.
+ // Bind their changed admission/transport bytes even when a different family is installed.
+ 'apps/gateway/general-reads/families/client-knowledge-memory.mjs',
+ 'apps/gateway/sources/client-knowledge/handler.mjs',
+ 'apps/gateway/sources/client-knowledge/request-context.mjs',
+ 'apps/gateway/sources/client-knowledge/memory-eligibility.mjs',
+ 'apps/gateway/sources/client-knowledge/memory-signed-http-adapter.mjs',
+ 'apps/gateway/sources/memory-proposals/handler.mjs',
+ 'apps/gateway/sources/memory-proposals/request-context.mjs',
+ 'apps/gateway/sources/memory-proposals/http-adapter.mjs'];
+const TRANSPORT_FIELDS=['origin','endpoints','getCredentials','getEligibilityCredentials','credentialsForCall','authorizeResultForCall','delegatedTransport','fetchImpl','maxRequestMs','maxResponseBytes','readMemoryEligibility','registry'];
 function constructFamilyHandlers(configuration,allowed=GENERAL_READ_ADAPTER_FAMILIES){
  const {families,now,newId}=ownFields(configuration,['families','now','newId']);
  if(typeof now!=='function'||typeof newId!=='function')deny('GATEWAY_CONFIGURATION');

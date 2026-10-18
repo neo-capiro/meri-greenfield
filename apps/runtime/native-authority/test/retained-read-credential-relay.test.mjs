@@ -18,7 +18,7 @@ function sourcePins(f){
  const metadata=Object.hasOwn(f,'metadata')?f.metadata:
   typeof f.normalize==='function'?f.normalize().metadata:f.normalized().metadata;
  const context=f.normalizationContext,withContext=new Set(['read_monday_client_boards','get_client_context',
-  'read_client_documents','resolve_entity','find_contacts']).has(operation.id);
+  'read_client_documents','resolve_entity','find_contacts','search_memory']).has(operation.id);
  const binding=f.authority.binding,subject=f.authority.subject,policyRevision=f.authority.policyRevision;
  const normalizationContext=operation.id==='find_contacts'||!withContext?null:context;
  const correlation=canonicalize({binding,subject,policyRevision,normalizationContext});
@@ -54,6 +54,19 @@ function actionFixture(){
  return {operation,input:structuredClone(normalized.input),metadata:normalized.metadata,
   authority:{...base.authority,decision:{...base.authority.decision,operation:'actions.query@0.2.0'},
    sourceIds:contract.descriptor.sourceRequirements.map(row=>row.sourceId)}};
+}
+
+function memoryHelperPins(x){
+ const p=x.pins,result=x.f.page(p.input);
+ const records=result.records.map(record=>({memoryItemId:record.recordId,recordSha256:canonicalSha256(record)}));
+ const resultSha256=canonicalSha256(result),recordsSha256=canonicalSha256(records);
+ const bodyJson=JSON.stringify({operation:p.operation,input:p.input,metadata:p.metadata,
+  normalizationContext:p.normalizationContext,argumentsSha256:p.argumentsSha256,
+  requestSha256:p.requestSha256,binding:p.binding,subject:p.subject,
+  policyRevision:p.policyRevision,sourceIds:p.sourceIds,resultSha256,records,deadlineMs:p.deadlineMs});
+ return {...p,pageProof:'synthetic-signed-page-proof',pageBodySha256:p.target.bodySha256,
+  pageRequestSha256:p.requestSha256,resultSha256,recordsSha256,bodyJson,
+  target:{method:'POST',path:'/api/clio/tools/search_memory_eligibility',bodySha256:sha(bodyJson)}};
 }
 
 test('actions.query relay binds the original reservation, one call slot and exact signed alias bytes',async()=>{
@@ -103,6 +116,83 @@ test('document and selected-client contacts use their exact different correlatio
   assert.equal(receipt.correlationSha256,x.pins.correlationSha256);
   assert.equal(x.calls.tool.length,1);
  }
+});
+
+test('selected-client memory page receives one signed parent token bound to the original request',async()=>{
+ const x=relayFixture(createClientKnowledgeFixture('search_memory',{client:true}));
+ const receipt=await x.create()(x.pins);
+ assert.equal(receipt.authorizationScheme,'CapiroMeriRead');
+ assert.equal(receipt.serviceSecret,'synthetic-service-secret');
+ assert.equal(receipt.bearerToken,'synthetic-single-use-token');
+ assert.deepEqual(receipt.normalizationContext,{tenantId:x.pins.binding.tenantId,userId:x.pins.binding.actorId});
+ assert.equal(x.calls.secret,1);assert.equal(x.calls.handle.length,1);assert.equal(x.calls.tool.length,1);
+ assert.equal(x.calls.handle[0].callKey,x.pins.invocationId);
+ assert.deepEqual(x.calls.tool[0].operation,{id:'search_memory',version:'0.2.0'});
+ assert.equal(x.calls.tool[0].argumentsSha256,canonicalSha256(x.pins.input));
+ assert.deepEqual(x.calls.tool[0].target,{method:'POST',path:'/api/clio/tools/search_memory',
+  bodySha256:sha(JSON.stringify({input:x.pins.input,metadata:x.pins.metadata}))});
+ assert.equal(x.calls.tool[0].correlationSha256,x.pins.correlationSha256);
+});
+
+test('memory eligibility uses a distinct one-use credential with exact proof and callback bytes',async()=>{
+ const x=relayFixture(createClientKnowledgeFixture('search_memory',{client:true}));
+ const helperCalls=[];
+ x.nativeCredentials.memoryEligibilityCredential=async request=>{
+  helperCalls.push(request);return {bearerToken:'synthetic-helper-token',authorizationScheme:'CapiroMeriRead',
+   expiresAtMs:x.pins.deadlineMs-3000};
+ };
+ const getServiceSecret=async()=>{x.calls.secret++;return `synthetic-service-secret-${x.calls.secret}`;};
+ const relay=x.create({getServiceSecret}),parent=await relay(x.pins),pins=memoryHelperPins(x);
+ const helper=await relay.getMemoryEligibilityCredentials(pins);
+ assert.equal(x.calls.tool.length,1,'the helper must not consume a second ordinary tool slot');
+ assert.equal(helperCalls.length,1);
+ assert.equal(x.calls.handle.length,2);
+ assert.deepEqual(x.calls.handle.map(row=>row.callKey),[pins.invocationId,pins.invocationId]);
+ assert.equal(x.calls.secret,2,'service identity is read again for the helper request');
+ assert.equal(parent.serviceSecret,'synthetic-service-secret-1');
+ assert.equal(helper.serviceSecret,'synthetic-service-secret-2');
+ assert.notEqual(parent.bearerToken,helper.bearerToken);
+ assert.equal(helper.authorizationScheme,'CapiroMeriRead');
+ assert.equal(helper.expiresAtMs,pins.deadlineMs-3000);
+ assert.equal(helper.pageProof,pins.pageProof);
+ assert.equal(helper.recordsSha256,canonicalSha256(JSON.parse(pins.bodyJson).records));
+ assert.equal(helperCalls[0].pageBodySha256,pins.pageBodySha256);
+ assert.equal(helperCalls[0].pageRequestSha256,pins.requestSha256);
+ assert.equal(helperCalls[0].resultSha256,pins.resultSha256);
+ assert.equal(helperCalls[0].recordsSha256,pins.recordsSha256);
+ assert.equal(helperCalls[0].pageProof,pins.pageProof);
+ assert.equal(helperCalls[0].correlationSha256,pins.correlationSha256);
+ assert.deepEqual(helperCalls[0].target,{method:'POST',path:'/api/clio/tools/search_memory_eligibility',
+  bodySha256:sha(pins.bodyJson)});
+});
+
+test('memory helper refuses changed page, body, subject and proof before acquiring credentials',async()=>{
+ const x=relayFixture(createClientKnowledgeFixture('search_memory',{client:true})),base=memoryHelperPins(x);
+ const altered=[
+  {...base,pageProof:''},
+  {...base,pageBodySha256:'0'.repeat(64)},
+  {...base,pageRequestSha256:'0'.repeat(64)},
+  {...base,resultSha256:'0'.repeat(64)},
+  {...base,recordsSha256:'0'.repeat(64)},
+  {...base,target:{...base.target,bodySha256:'0'.repeat(64)}},
+  {...base,bodyJson:`${base.bodyJson} `},
+  {...base,subject:{...base.subject,entityIds:['bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb']}},
+  {...base,input:{...base.input,clientId:'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb'}},
+ ];
+ const relay=x.create();
+ for(const [index,value] of altered.entries())await assert.rejects(
+  relay.getMemoryEligibilityCredentials(value),{message:'ACCESS_DENIED'},`altered helper case ${index}`);
+ assert.equal(x.calls.secret,0);assert.equal(x.calls.handle.length,0);assert.equal(x.calls.tool.length,0);
+});
+
+test('memory helper has no ambient bearer or service-secret substitution path',async()=>{
+ const x=relayFixture(createClientKnowledgeFixture('search_memory',{client:true})),pins=memoryHelperPins(x);
+ await assert.rejects(x.create().getMemoryEligibilityCredentials(pins),{message:'UNAVAILABLE'});
+ assert.equal(x.calls.tool.length,0);
+ const nativeCredentials={...x.nativeCredentials,memoryEligibilityCredential:async()=>({
+  bearerToken:'synthetic-service-secret',authorizationScheme:'CapiroMeriRead',expiresAtMs:pins.deadlineMs-1000})};
+ await assert.rejects(x.create({nativeCredentials}).getMemoryEligibilityCredentials(pins),{message:'UNAVAILABLE'});
+ assert.equal(x.calls.tool.length,0);
 });
 
 test('wrong task, operation, input and signed target pins refuse before any token or secret',async()=>{

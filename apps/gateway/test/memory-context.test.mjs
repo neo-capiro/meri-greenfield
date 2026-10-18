@@ -49,7 +49,7 @@ function memoryFixture() {
   };
   const create = changes => createToolDispatch({ catalog: { entry: () => f.entry, discoverable: () => [] },
     authority: f.authority, budget: f.budget, limits, now: () => f.state.now, newId: () => uuid('7'),
-    sourceEnabled: true, memoryContextPorts: ports, ...changes });
+    sourceEnabled: true, memoryContextPorts: ports, invocationId: 'synthetic_memory_call_1', ...changes });
   const partial = () => { page.nextCursor = 'synthetic-next'; page.coverage.complete = false;
     page.coverage.reason = 'unread_pages_restricted_or_truncated_content'; };
   return { ...f, page, row, records, contextPorts: ports, create, partial };
@@ -58,10 +58,17 @@ function memoryFixture() {
 test('memory dispatch consumes canonical raw DTO inside current request/lineage wrapper', async () => {
   const f = memoryFixture(); const output = JSON.parse(await f.create().execute(request({}), 'synthetic-opaque'));
   assert.deepEqual(f.state.handlerCall.input, { clientId: null, cursor: null, limit: 5 });
+  assert.equal(f.state.handlerCall.invocationId, 'synthetic_memory_call_1');
   assert.deepEqual(output.result, f.page); assert.equal(output.result.claimsAreApprovedFacts, false);
   assert.equal(output.argumentsSha256, canonicalSha256(f.state.handlerCall.input));
   assert.equal(f.calls.filter(c => c === 'policy').length, 5);
   assert.equal(f.calls.includes('load-previous'), false); assert.equal(f.calls.includes('retain'), false);
+});
+
+test('proposal dispatch requires the trusted invocation before authority or budget effects', async () => {
+  const f = memoryFixture();
+  await assert.rejects(f.create({ invocationId: undefined }).execute(request({}), 'synthetic-opaque'), /UNAVAILABLE/);
+  assert.deepEqual(f.calls, []);
 });
 
 test('memory shape rejects model supplied subject/previous and legacy context before business ports', async () => {

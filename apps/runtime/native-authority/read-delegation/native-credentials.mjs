@@ -118,8 +118,26 @@ export function composeDelegatedNativeCredentials(configuration){
    ...(v.correlationSha256===undefined?{}:{correlationSha256:v.correlationSha256}),signal:v.signal,deadlineMs:v.deadlineMs});
   return Object.freeze({bearerToken:issued.token,authorizationScheme:READ_TOKEN_SCHEME,expiresAtMs:Math.min(issued.expiresAtMs,delegation.hardExpiry())});
  }
+ /** A separate one-use eligibility slot for an already consumed signed memory page. Core verifies the opaque page proof,
+  * original UNKNOWN reservation, selected client and current run before issuing this helper credential. */
+ async function memoryEligibilityCredential(raw){
+  const h=slotOf(raw?.credential);if(!h)refuse('UNAVAILABLE');
+  const v=call(raw,['credential','operation','argumentsSha256','pageBodySha256','pageRequestSha256','resultSha256',
+   'recordsSha256','correlationSha256','pageProof','target','deadlineMs']);
+  const operation=data(own(v.operation,['id','version'])),target=data(own(v.target,['method','path','bodySha256']));
+  if(operation.id!=='search_memory'||operation.version!=='0.2.0'||target.method!=='POST'||
+   target.path!=='/api/clio/tools/search_memory_eligibility'||!SHA.test(target.bodySha256))refuse('ACCESS_DENIED');
+  delegation.assertReleasable();
+  const issued=await delegation.token({kind:'memory_eligibility',callKey:h.callKey,path:target.path,bodySha256:target.bodySha256,
+   operation,argumentsSha256:v.argumentsSha256,pageBodySha256:v.pageBodySha256,pageRequestSha256:v.pageRequestSha256,
+   resultSha256:v.resultSha256,recordsSha256:v.recordsSha256,correlationSha256:v.correlationSha256,
+   pageProof:v.pageProof,signal:v.signal,deadlineMs:v.deadlineMs});
+  return Object.freeze({bearerToken:issued.token,authorizationScheme:READ_TOKEN_SCHEME,
+   expiresAtMs:Math.min(issued.expiresAtMs,delegation.hardExpiry(),v.deadlineMs)});
+ }
  /** Before a delegated result is released: the delegation is still current, unexpired and not stopped. */
  const assertReleasable=credential=>{if(slotOf(credential))delegation.assertReleasable();};
  const coreAuthority=Object.freeze({available:true,origin:client.origin,readCurrent,readConversation,readClientReference,readModeObservation});
- return Object.freeze({coreAuthority,getNativeCredential,toolCredential,assertReleasable,isDelegated:credential=>slotOf(credential)!==null});
+ return Object.freeze({coreAuthority,getNativeCredential,toolCredential,memoryEligibilityCredential,assertReleasable,
+  isDelegated:credential=>slotOf(credential)!==null});
 }

@@ -165,10 +165,13 @@ export async function createControlReadsComposer(options){
   let signedRelay;
   const signedCredentials=request=>(signedRelay??=createRetainedReadCredentialRelay({task:t,nativeCredentials,
    getServiceSecret:broker.getServiceSecret,now}))(request);
+  const signedMemoryEligibilityCredentials=request=>(signedRelay??=createRetainedReadCredentialRelay({task:t,nativeCredentials,
+   getServiceSecret:broker.getServiceSecret,now})).getMemoryEligibilityCredentials(request);
   const supplied=retainedIds.length?own(synchronous(c.retainedTaskPorts(Object.freeze({task:t,
    getNativeCredential:async request=>(await bearer({binding:t.binding,...request})).credential,
    getNativeCredentialWithExpiry:request=>nativeCredentials.getNativeCredential({...request,binding:t.binding}),
    getSignedSourceCredentials:signedCredentials,
+   getMemoryEligibilityCredentials:signedMemoryEligibilityCredentials,
    getToolCredential:nativeCredentials.toolCredential,
    getServiceSecret:broker.getServiceSecret}))),['families'],['contextPorts']):{families:{},contextPorts:{}};
   const retainedFamilies=own(supplied.families,retainedIds),contextPorts=own(supplied.contextPorts??{},[],['memoryContextPorts','mailContextPorts','retainedContextPorts']);
@@ -200,7 +203,9 @@ export async function createControlReadsComposer(options){
    entry={delegation,runDeadlineMs,credentials:composeDelegatedNativeCredentials({delegation,client:delegationClient,now,...(fallback?{fallback}:{})})};
    delegations.set(key,entry);
   }
-  return {coreAuthority:entry.credentials.coreAuthority,getNativeCredential:entry.credentials.getNativeCredential,toolCredential:entry.credentials.toolCredential,stopSignal:entry.delegation.signal};
+  return {coreAuthority:entry.credentials.coreAuthority,getNativeCredential:entry.credentials.getNativeCredential,
+   toolCredential:entry.credentials.toolCredential,
+   memoryEligibilityCredential:entry.credentials.memoryEligibilityCredential,stopSignal:entry.delegation.signal};
  }
  /** Stop hook for the run owner, called after it records the run terminal in its own store. The entry stays as a tombstone. */
  async function stopRun({binding,reason='run_terminal'}){
