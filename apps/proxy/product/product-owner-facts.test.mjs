@@ -181,8 +181,56 @@ test('stalled canonical issuance SELECT quarantines once; late reply rolls back 
  await assert.rejects(resolver.resolve(f.query()),refused);assert.equal(f.acquisitions(),acquisitions);
 });
 
-test('later sibling expiry extension cannot widen the immutable returned grant window',async()=>{
+/** An execution-capability grant installed on the same run (lane X, `gateway/budget/execution-grant-admission.mjs`): bound to the
+ * run's exact binding, qualification and allocation, never a model grant and never part of the admitted set. */
+function executionGrant(f,{grantId='77777777-7777-4777-8777-777777777777',capabilitySha256='9'.repeat(64),expiresAtMs=NOW+120000,state='ACTIVE',facts={}}={}){
+ const q=f.model.qualificationBinding,fact={...structuredClone(f.model),grantId,capabilitySha256,...facts};
+ f.state.grants.push({grant_id:grantId,run_id:q.runId,attempt:q.attempt,worker_arn:q.workerArn,fence:q.fence,policy_revision:q.policyRevision,capability_sha256:capabilitySha256,state,expires_at:new Date(expiresAtMs)});
+ f.state.facts.push({grant_id:grantId,run_id:f.model.binding.runId,facts:fact});
+ return fact;
+}
+test('a run with an installed (ACTIVE) execution grant still admits model calls; the admitted set and the model window are unchanged',async()=>{
+ const f=fixture();executionGrant(f);
+ const result=await f.resolver().resolve(f.query());
+ assert.equal(result.expiresAtMs,NOW+8000);assert.equal(result.modelGrantId,f.model.grantId);
+ assert.deepEqual(result.grantFactsJsons.map(raw=>JSON.parse(raw).grantId).sort(),[f.model.grantId,f.task.grantId].sort(),'the admitted set only');
+ assert.deepEqual([...result.grantFactsJsons].sort(),[...f.state.native.record.resource.grantFactsJsons].sort());
+ const shorter=fixture();executionGrant(shorter,{expiresAtMs:NOW+2000});
+ assert.equal((await shorter.resolver().resolve(shorter.query())).expiresAtMs,NOW+8000,'a shorter execution grant never bounds the model lease');
+ const two=fixture();executionGrant(two);executionGrant(two,{grantId:'99999999-9999-4999-8999-999999999999',capabilitySha256:'8'.repeat(64)});
+ assert.equal((await two.resolver().resolve(two.query())).grantFactsJsons.length,2);
+ assert.equal(two.calls.some(c=>c.sql.includes('FROM meri_conversations.native_allocations'))&&two.calls.findIndex(c=>c.sql.includes('FROM meri_conversations.native_allocations'))<two.calls.findIndex(c=>c.sql.startsWith('SELECT * FROM meri_product_budget.grants WHERE run_id=')),true,'the record is read before the run-wide grant set');
+});
+test('an expired or revoked execution grant does not deny model calls',async()=>{
+ const expired=fixture();executionGrant(expired,{expiresAtMs:NOW-1});
+ assert.equal((await expired.resolver().resolve(expired.query())).expiresAtMs,NOW+8000);
+ const revoked=fixture();executionGrant(revoked,{state:'REVOKED'});
+ assert.equal((await revoked.resolver().resolve(revoked.query())).expiresAtMs,NOW+8000);
+ const both=fixture();executionGrant(both,{expiresAtMs:NOW-1});executionGrant(both,{grantId:'99999999-9999-4999-8999-999999999999',capabilitySha256:'8'.repeat(64),state:'REVOKED'});
+ assert.equal((await both.resolver().resolve(both.query())).grantFactsJsons.length,2);
+});
+for(const [label,change] of [
+ ['grant row without a binding row',f=>{executionGrant(f);f.state.facts.pop();}],
+ ['binding row without a grant row',f=>{executionGrant(f);f.state.grants.pop();}],
+ ['grant row bound to another run',f=>{executionGrant(f);f.state.facts.at(-1).run_id='66666666-6666-4666-8666-666666666666';}],
+ ['grant row bound to another qualification',f=>{executionGrant(f,{facts:{qualificationBinding:{...f.model.qualificationBinding,attempt:f.model.qualificationBinding.attempt+1}}});}],
+ ['grant row bound to another allocation digest',f=>{executionGrant(f,{facts:{allocationSha256:'f'.repeat(64)}});}],
+ ['grant row bound to another executor binding',f=>{executionGrant(f,{facts:{binding:{...f.model.binding,writerFence:f.model.binding.writerFence+1}}});}],
+ ['grant row whose digest is not its binding digest',f=>{executionGrant(f);f.state.grants.at(-1).capability_sha256='e'.repeat(64);}],
+ ['grant row with a foreign fence',f=>{executionGrant(f);f.state.grants.at(-1).fence++;}],
+ ['pending grant row',f=>{executionGrant(f,{state:'PENDING'});}],
+ ['execution grant claimed as an admitted intent',f=>{const x=executionGrant(f);f.state.native.record.grantIntents.push({grantId:x.grantId,capabilitySha256:x.capabilitySha256,expiresAtMs:NOW+8000});f.state.native.record_sha256=hash(f.state.native.record);}],
+ ['admitted intent without its grant row',f=>{f.state.grants.splice(1,1);}],
+])test(`persisted resolver still refuses a foreign grant row: ${label}`,async()=>{
+ const f=fixture();change(f);await assert.rejects(f.resolver().resolve(f.query()),refused);
+});
+
+test('later sibling expiry extension cannot widen the immutable returned grant window, and a replay observes the contradiction',async()=>{
+ // The run-wide grant set is read right after the allocation record; an extension that lands after that read (here, during the
+ // accepted-request read that follows) is not observed by this resolve and cannot widen the window. The next resolve sees rows
+ // that contradict the record's immutable intents and refuses.
  const f=fixture();let changed=false;
- f.before(sql=>{if(!changed&&sql.includes('FROM meri_conversations.model_run_issuances')){changed=true;f.state.grants[1].expires_at=new Date(NOW+9000);}});
- const result=await f.resolver().resolve(f.query());assert.equal(changed,true);assert.equal(result.expiresAtMs,NOW+8000);
+ f.before(sql=>{if(!changed&&sql.startsWith('SELECT * FROM meri_conversations.events WHERE')){changed=true;f.state.grants[1].expires_at=new Date(NOW+9000);}});
+ const resolver=f.resolver(),result=await resolver.resolve(f.query());assert.equal(changed,true);assert.equal(result.expiresAtMs,NOW+8000);
+ await assert.rejects(resolver.resolve(f.query()),refused);
 });
