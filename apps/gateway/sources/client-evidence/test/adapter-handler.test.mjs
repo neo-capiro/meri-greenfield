@@ -33,6 +33,16 @@ test('broker whole-request digest equals the exact canonical UTF-8 bytes emitted
   assert.equal(sha(f.wire[0].options.body),f.credentialRequests[0].requestSha256);
  }
 });
+for(const [operation,request] of [[operations.profile,rawProfile],[operations.documents,rawDocument]])
+ test(`${operation.id} accepts only its configured endpoint and refuses a missing route before credentials`,async()=>{
+  const f=setup(operation,request),ownEndpoint={[operation.id]:endpoints[operation.id]};
+  await f.create({endpoints:ownEndpoint})(f.call);
+  assert.equal(f.wire.at(-1).url,endpoints[operation.id]);
+  const otherId=Object.keys(endpoints).find(id=>id!==operation.id);
+  const missing=setup(operation,request);
+  await assert.rejects(missing.create({endpoints:{[otherId]:endpoints[otherId]}})(missing.call),/UNAVAILABLE/);
+  assert.equal(missing.credentialRequests.length,0);assert.equal(missing.wire.length,0);
+ });
 test('profile overview preserves all requested and unavailable sections without equating a gap to empty',async()=>{
  const f=setup(operations.profile,{clientId}),section=f.page.profileSections.people;
  Object.assign(section,{status:'unavailable',total:null,truncated:null,error:'section_unavailable'});

@@ -6,12 +6,21 @@ import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {createIdentityContactsHttpAdapter} from '../http-adapter.mjs';
 import {createIdentityContactsReadHandler} from '../handler.mjs';
 import {readContext} from '../request-context.mjs';
-import {createIdentityContactsFixture,member,committee,bill,contact,NOW,id} from './fixtures.mjs';
+import {createIdentityContactsFixture,member,committee,bill,contact,NOW,id,endpoints} from './fixtures.mjs';
 const handler=(f,adapter=createIdentityContactsHttpAdapter(f.config))=>createIdentityContactsReadHandler({operation:f.operation,adapter,now:f.config.now});
 const withRaw=(f,raw)=>createIdentityContactsHttpAdapter({...f.config,fetchImpl:async()=>new Response(JSON.stringify({...f.page(),result:raw}),{headers:{'content-type':'application/json'}})});
 const assertCode=code=>error=>error.message===code;
 
 for(const operation of['resolve_entity','find_contacts'])test(`${operation}: real Fetch bytes and canonical handler preserve exact passive result`,async()=>{const f=createIdentityContactsFixture(operation),result=JSON.parse(await handler(f)(f.call()));assert.deepEqual(result,f.page());assert.deepEqual(Object.keys(result),['binding','subject','operation','argumentsSha256','result']);assert.equal(f.wire[0].request.method,'POST');assert.equal(f.wire[0].options.credentials,'omit');assert.equal(f.wire[0].options.cache,'no-store');assert.equal(f.wire[0].options.redirect,'error');assert.equal(f.wire[0].request.headers.get('authorization'),'Bearer SYNTHETIC_IDENTITY_TOKEN');const body=JSON.parse(await f.wire[0].request.text());assert.deepEqual(body,{input:f.input(),metadata:f.normalize().metadata});assert.equal(JSON.stringify(body).includes('SYNTHETIC_IDENTITY_TOKEN'),false);assert.equal(JSON.stringify(result).includes('SYNTHETIC_SERVICE_SECRET'),false);assert.deepEqual(f.credentialCalls[0].normalizationContext,f.normalizationContext);assert.equal(f.credentialCalls[0].requestSha256,canonicalSha256(body));assert.equal(createHash('sha256').update(f.wire[0].options.body,'utf8').digest('hex'),f.credentialCalls[0].requestSha256);});
+
+for(const operation of['resolve_entity','find_contacts'])test(`${operation}: one configured endpoint remains task bound`,async()=>{
+ const f=createIdentityContactsFixture(operation),adapter=createIdentityContactsHttpAdapter({...f.config,endpoints:{[operation]:endpoints[operation]}});
+ assert.deepEqual(JSON.parse(await handler(f,adapter)(f.call())),f.page());assert.equal(f.wire[0].url,endpoints[operation]);
+ const other=Object.keys(endpoints).find(id=>id!==operation),missing=createIdentityContactsFixture(operation);
+ const unavailable=createIdentityContactsHttpAdapter({...missing.config,endpoints:{[other]:endpoints[other]}});
+ await assert.rejects(handler(missing,unavailable)(missing.call()),assertCode('UNAVAILABLE'));
+ assert.equal(missing.credentialCalls.length,0);assert.equal(missing.wire.length,0);
+});
 
 test('trusted Congress controls implicit bill ID; explicit Congress and stored fields remain unchanged',async()=>{const f=createIdentityContactsFixture('resolve_entity',{defaultCongress:118}),call=f.call({query:'H.R. 1'}),result=JSON.parse(await handler(f)(call));assert.equal(result.result.matches[0].canonicalId,'118-hr-1');assert.equal(f.credentialCalls[0].metadata.defaultCongress,118);assert.equal(f.credentialCalls[0].metadata.billId,'118-hr-1');assert.deepEqual(JSON.parse(f.wire[0].options.body),{input:call.input,metadata:f.normalize(call.request).metadata});const explicit=f.call({query:'119-HR-00001'});assert.equal(JSON.parse(await handler(f)(explicit)).result.matches[0].canonicalId,'119-hr-00001');});
 
