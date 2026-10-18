@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {NATIVE_READS_SCHEMA_VERSION} from '../../../../../packages/contracts/runtime-0.2/reads.mjs';
 import {createGeneralReadFamilyHandlers} from '../../../../gateway/general-reads/integration.mjs';
-import {createClientScopedSourceTaskPorts} from '../client-scoped-source-task-ports.mjs';
+import {createClientScopedSourceTaskPorts,CLIENT_SCOPED_SOURCE_FAMILIES} from '../client-scoped-source-task-ports.mjs';
 
 const ORIGIN='https://core.synthetic.invalid';
 const operations=Object.freeze([
@@ -44,4 +44,14 @@ test('source slice refuses an untrusted origin, absent signed relay, or malforme
  assert.throws(()=>create({task:{approvedReads},getSignedSourceCredentials:undefined}),{message:'CONFIGURATION'});
  assert.throws(()=>create({task:{approvedReads:{...approvedReads,enabled:false}},getSignedSourceCredentials:issue}),{message:'UNAVAILABLE'});
  assert.throws(()=>create({task:{approvedReads:{...approvedReads,maxExecuteMs:30001}},getSignedSourceCredentials:issue}),{message:'CONFIGURATION'});
+});
+
+test('a reviewed partial installation constructs only its selected genuine source families',async()=>{
+ const create=createClientScopedSourceTaskPorts({coreOrigin:ORIGIN,fetchImpl,familyIds:['client-knowledge-profile','meeting-source']});
+ const {families}=create({task:{approvedReads},getSignedSourceCredentials:issue});
+ assert.deepEqual(Object.keys(families),['client-knowledge-profile','meeting-source']);
+ assert.deepEqual([...await createGeneralReadFamilyHandlers({families,now:()=>123,newId:()=> 'synthetic'})].map(([key])=>key).sort(),
+  operations.filter(op=>op.id==='get_client_context'||op.id.startsWith('meeting.')).map(op=>`${op.id}@${op.version}`).sort());
+ for(const familyIds of [[],['client-documents','client-documents'],['mail'],[...CLIENT_SCOPED_SOURCE_FAMILIES,'mail']])
+  assert.throws(()=>createClientScopedSourceTaskPorts({coreOrigin:ORIGIN,fetchImpl,familyIds}),{message:'CONFIGURATION'});
 });

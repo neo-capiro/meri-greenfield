@@ -8,6 +8,7 @@ import {generateKeyPairSync} from 'node:crypto';
 import {mkdtemp,writeFile,rm} from 'node:fs/promises';import {tmpdir} from 'node:os';import {join,normalize} from 'node:path';import {brotliCompressSync} from 'node:zlib';
 import * as configurationModule from '../config.mjs';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
+import {NATIVE_READS_SCHEMA_VERSION} from '../../../packages/contracts/runtime-0.2/reads.mjs';
 import {candidateFixture} from './prepared-candidate-fixture.mjs';
 import {PROPOSED_PREVIEW_CAPABILITY_PLATFORM,createConfiguredRunCapabilityPolicy} from '../product-ports/capability-policy.mjs';
 
@@ -55,15 +56,32 @@ test('cli passes exactly installation {enabled, measurement, measurementSha256, 
  const r=await start({enabled:true,serviceSecretFile:SERVICE,installation:{enabled:true,measurementSha256:PIN,measurementFile:FILE,revokedOperations:[OP]},discovery:{enabled:true}},{capabilityPlatform:PROPOSED_PREVIEW_CAPABILITY_PLATFORM});
  assert.equal(r.code,0,r.err);assert.match(r.out,/runtime\.listening/u);assert.equal(r.composer.length,1);
  const o=r.composer[0];
- assert.deepEqual(Object.keys(o),['configuration','secretFiles','nativeCredentials','gateway','installation','discovery']);
+ assert.deepEqual(Object.keys(o),['configuration','secretFiles','nativeCredentials','gateway','installation','discovery','familyIds']);
  assert.deepEqual(o.secretFiles,{serviceSecret:SERVICE});assert.equal(typeof o.nativeCredentials.nativeCredentialFor,'function');
  assert.equal(typeof o.gateway.authority.identify,'function');assert.equal(typeof o.gateway.authority.check,'function');assert.equal(typeof o.gateway.limits.maxRequestMs,'number');
  assert.deepEqual(o.installation,{enabled:true,measurement:MEASUREMENT,measurementSha256:PIN,revokedOperations:[OP]});
+ assert.deepEqual(o.familyIds,['bill-text']);
  assert.deepEqual(Object.keys(o.discovery),['enabled','capabilityPolicy']);assert.equal(o.discovery.enabled,true);
  assert.equal(typeof o.discovery.capabilityPolicy.forRun,'function');
  assert.equal(o.discovery.capabilityPolicy.profileSha256,createConfiguredRunCapabilityPolicy({capabilityPlatform:PROPOSED_PREVIEW_CAPABILITY_PLATFORM}).profileSha256);
  // The measurement bytes come from the configured material file only, and the composer's runtime factory reaches control.
  assert.deepEqual(r.secrets,[FILE]);assert.equal(state.control.at(-1).createReadsRuntime,state.returned.at(-1).createReadsRuntime);
+});
+
+test('a signed selected-client receipt composes only its genuine task port when Option B is enabled',async()=>{
+ const saved=state.bytes,operation={id:'get_client_context',version:'0.3.0'};
+ const measurement={...MEASUREMENT,operations:[{...MEASUREMENT.operations[0],operation,family:'client-knowledge-profile'}]};
+ state.bytes=material(measurement);
+ try{
+  const r=await start({enabled:true,serviceSecretFile:SERVICE,delegation:{enabled:true},
+   installation:{enabled:true,measurementSha256:canonicalSha256(measurement),measurementFile:FILE}});
+  assert.equal(r.code,0,r.err);assert.equal(r.composer.length,1);
+  assert.deepEqual(r.composer[0].familyIds,['client-knowledge-profile']);
+  assert.equal(typeof r.composer[0].retainedTaskPorts,'function');
+  const selected=r.composer[0].retainedTaskPorts({task:{approvedReads:{schemaVersion:NATIVE_READS_SCHEMA_VERSION,enabled:true,operations:[operation],maxExecuteMs:1000,maxRequestBytes:65536,maxResponseBytes:65536}},
+   getSignedSourceCredentials:async()=>{throw Error('NO_LIVE_CALL');}});
+  assert.deepEqual(Object.keys(selected.families),['client-knowledge-profile']);
+ }finally{state.bytes=saved;}
 });
 
 test('disabled installation and discovery pass their toggles only; absent blocks pass no key; discovery without capabilityPlatform is refused by configuration',async()=>{

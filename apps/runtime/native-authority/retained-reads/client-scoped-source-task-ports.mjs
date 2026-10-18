@@ -7,15 +7,16 @@ import {retainedOrigin} from '../../../../packages/contracts/runtime-0.2/retaine
 import {familyOperations} from '../../../gateway/general-reads/registration.mjs';
 import {signedRetainedSourceOperation} from '../../../gateway/sources/retained-reads/signed-source-operations.mjs';
 
-const families=Object.freeze(['client-knowledge-profile','client-documents','entity-candidates','tenant-contacts','meeting-source']);
+export const CLIENT_SCOPED_SOURCE_FAMILIES=Object.freeze(['client-knowledge-profile','client-documents','entity-candidates','tenant-contacts','meeting-source']);
 const refuse=code=>{throw nativeReadFault(code);};
 
-/** A task-local slice for the existing `retainedTaskPorts` callback. Its caller must
- * merge it with the other genuine retained owners before passing it to the reads
- * composer, which requires all fifteen selected families. */
+/** A task-local slice for exactly the retained families present in the reviewed
+ * installation. Other retained families need their own genuine task ports. */
 export function createClientScopedSourceTaskPorts(configuration){
- const c=own(configuration,['coreOrigin','fetchImpl']);
+ const c=own(configuration,['coreOrigin','fetchImpl'],['familyIds']);
  if(typeof c.fetchImpl!=='function'||types.isProxy(c.fetchImpl))refuse('CONFIGURATION');
+ const families=c.familyIds===undefined?CLIENT_SCOPED_SOURCE_FAMILIES:c.familyIds;
+ if(!Array.isArray(families)||!families.length||new Set(families).size!==families.length||families.some(family=>!CLIENT_SCOPED_SOURCE_FAMILIES.includes(family)))refuse('CONFIGURATION');
  const origin=retainedOrigin(c.coreOrigin),endpoints=Object.freeze(Object.fromEntries(families.map(family=>{
   const operations=familyOperations(family);
   if(!operations.length||operations.some(operation=>!signedRetainedSourceOperation(operation)))refuse('CONFIGURATION');

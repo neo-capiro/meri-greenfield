@@ -252,7 +252,7 @@ test('the full P2 measurement needs all 21 retained handlers; task-bound ports c
  const narrowed=await createControlReadsComposer({...base,familyIds:[f.family]});
  assert.equal(narrowed.missing.filter(name=>name.startsWith('familyIds.')).length,41,'a 55-handler override cannot silently accept the 76-row receipt');
  const absent=await createControlReadsComposer(base);
- assert.deepEqual(absent.missing,retained.map(id=>`retainedTaskPorts.${id}`));
+ assert.deepEqual([...absent.missing].sort(),retained.map(id=>`retainedTaskPorts.${id}`).sort());
  await assert.rejects(absent.createReadsRuntime(f.tuple).readAvailability(),code('UNAVAILABLE'));
  let retainedPorts;
  const composer=await createControlReadsComposer({...base,retainedTaskPorts(ports){retainedPorts=ports;return {families:sourcePorts,contextPorts:{
@@ -260,12 +260,31 @@ test('the full P2 measurement needs all 21 retained handlers; task-bound ports c
   memoryContextPorts:f.gatewayConfiguration.memoryContextPorts,
   retainedContextPorts:{async readCurrent(){throw Error('UNREACHABLE_RETAINED_CONTEXT');}}
  }};}});
- assert.deepEqual(composer.missing,[]);assert.deepEqual(composer.familyIds,families);
+ assert.deepEqual(composer.missing,[]);assert.deepEqual([...composer.familyIds].sort(),families.sort());
  const available=await composer.createReadsRuntime(f.tuple).readAvailability();
  assert.equal(typeof retainedPorts.getNativeCredentialWithExpiry,'function');
  assert.equal(typeof retainedPorts.getSignedSourceCredentials,'function');
  assert.deepEqual(available.installation.operations,[f.operation],'all 76 source hashes pass before run eligibility narrows to one');
  f.scope.abort();
+});
+
+test('an exact partial P2 receipt selects only its measured families without hiding the full desired inventory',async()=>{
+ const f=await installationFixture({scene:nativeFamilyCase('tracked-bills','search_tracked_bills')}),s=secretFixture();
+ try{
+  const all=installationReadOperations(),selected=all.filter(row=>row.family==='client-knowledge-profile'||row.family===f.family);
+  assert.equal(all.length,76);assert.equal(selected.length,2);
+  const {measurement,measurementSha256}=await measureGeneralReadInstallation({catalogJson:JSON.stringify(catalog),operations:selected});
+  const base={configuration:s.configuration,secretFiles:READ,readSecret:s.readSecret,now:f.now,
+   nativeCredentials:{nativeCredentialFor(){throw Error('UNREACHABLE_NATIVE_CREDENTIAL');}},
+   gateway:{authority:f.gatewayConfiguration.authority,limits:f.gatewayConfiguration.limits,discoveryOwner:f.gatewayConfiguration.discoveryOwner},
+   installation:{enabled:true,measurement,measurementSha256}};
+  const absent=await createControlReadsComposer(base);
+  assert.deepEqual(absent.familyIds,['client-knowledge-profile',f.family]);
+  assert.deepEqual(absent.missing,['retainedTaskPorts.client-knowledge-profile']);
+  const narrowed=await createControlReadsComposer({...base,familyIds:[f.family]});
+  assert.deepEqual(narrowed.missing,['familyIds.client-knowledge-profile']);
+  assert.equal(installationReadOperations().length,76,'the desired inventory remains unchanged');
+ }finally{f.scope.abort();}
 });
 
 test('the real P1/P2 producers stay disabled by default and keep the runtime unavailable',async()=>{

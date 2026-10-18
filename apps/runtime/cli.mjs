@@ -77,7 +77,21 @@ export async function main(argv=process.argv.slice(2),{poststartTls,nativeFetch}
      if(canonicalSha256(measurement)!==i.measurementSha256)throw Error('READS_INSTALLATION_PIN_REFUSED');
      installation={enabled:true,measurement,measurementSha256:i.measurementSha256,...(i.revokedOperations===undefined?{}:{revokedOperations:structuredClone(i.revokedOperations)})};}}
    if(c.reads.discovery!==undefined)discovery=c.reads.discovery.enabled===true&&c.capabilityPlatform!==undefined?{enabled:true,capabilityPolicy:(await import('./product-ports/capability-policy.mjs')).createConfiguredRunCapabilityPolicy(c)}:{enabled:false};
-   const reads=await createControlReadsComposer({configuration:c,secretFiles:{serviceSecret:c.reads.serviceSecretFile,...(c.reads.readModeServiceSecretFile===undefined?{}:{readModeServiceSecret:c.reads.readModeServiceSecretFile})},nativeCredentials:relay.port,...(authority?{gateway:{authority:authority.gateway.authority,limits:authority.gateway.limits}}:{}),...(c.reads.delegation===undefined?{}:{delegation:{enabled:c.reads.delegation.enabled===true,readOccurrence:occurrences.port.readOccurrence}}),...(c.reads.defaultCongress===undefined?{}:{defaultCongress:c.reads.defaultCongress}),...(installation===undefined?{}:{installation}),...(discovery===undefined?{}:{discovery})});
+   // Only the families in the pinned P2 receipt are candidates for this
+   // process. The signed source slice covers seven selected-client reads; an
+   // unowned retained family leaves the composer unavailable rather than
+   // advertising a placeholder. Option B must exist before those ports can
+   // request a task-bound Core tool credential.
+   let familyIds,retainedTaskPorts;
+   if(installation?.enabled===true){
+    const [{NATIVE_READ_FAMILIES},{CLIENT_SCOPED_SOURCE_FAMILIES,createClientScopedSourceTaskPorts}]=await Promise.all([
+     import('../gateway/sources/retained-reads/native-families.mjs'),import('./native-authority/retained-reads/client-scoped-source-task-ports.mjs')]);
+    familyIds=[...new Set(installation.measurement.operations.map(row=>row.family))];
+    const retained=familyIds.filter(id=>!NATIVE_READ_FAMILIES.includes(id));
+    if(retained.length&&retained.every(id=>CLIENT_SCOPED_SOURCE_FAMILIES.includes(id))&&c.reads.delegation?.enabled===true&&c.nativeCandidate?.identity?.origin)
+     retainedTaskPorts=createClientScopedSourceTaskPorts({coreOrigin:c.nativeCandidate.identity.origin,fetchImpl:globalThis.fetch,familyIds:retained});
+   }
+   const reads=await createControlReadsComposer({configuration:c,secretFiles:{serviceSecret:c.reads.serviceSecretFile,...(c.reads.readModeServiceSecretFile===undefined?{}:{readModeServiceSecret:c.reads.readModeServiceSecretFile})},nativeCredentials:relay.port,...(authority?{gateway:{authority:authority.gateway.authority,limits:authority.gateway.limits}}:{}),...(c.reads.delegation===undefined?{}:{delegation:{enabled:c.reads.delegation.enabled===true,readOccurrence:occurrences.port.readOccurrence}}),...(c.reads.defaultCongress===undefined?{}:{defaultCongress:c.reads.defaultCongress}),...(installation===undefined?{}:{installation}),...(discovery===undefined?{}:{discovery}),...(familyIds===undefined?{}:{familyIds}),...(retainedTaskPorts===undefined?{}:{retainedTaskPorts})});
    if(reads.missing.length)process.stderr.write(JSON.stringify({event:'runtime.reads.unavailable',missing:reads.missing})+'\n');
    Object.assign(productPorts,{createReadsRuntime:reads.createReadsRuntime,...(reads.readDelegation?.runOptions?{readDelegationRunOptions:reads.readDelegation.runOptions}:{})});
    readDelegationConsents=reads.readDelegation?.consents;
