@@ -66,17 +66,19 @@ export function admitBash(policy,attestation,{egress,approvals}={}){
  if(egress===undefined||!isApprovalPort(approvals))return false;
  assertBashEgressFact(egress,policy.sandboxNetworkDomains);return true;
 }
-/** @typedef {{sdkConfigDirectory?:string,sdkSecureStorageDirectory?:string}} ProtectedPaths */
+/** @typedef {{sdkConfigDirectory?:string,sdkSecureStorageDirectory?:string,brokerSocketDirectory?:string}} ProtectedPaths */
 /** The SDK sandbox settings for one task. Also used verbatim by the readiness check, so the host is qualified with
  * the settings the product will run. With domains, `egress` (the run's egress fact) is required: its ports replace
  * the CLI's own proxy and auto-allow is off (every networked call is approved first).
  * @param {{cwd:string,domains:readonly string[],weakerNestedSandbox:boolean,protectedPaths?:ProtectedPaths,egress?:BashEgressFact}} input */
 export function buildBashSandboxSettings({cwd,domains,weakerNestedSandbox,protectedPaths={},egress}){
- const {sdkConfigDirectory,sdkSecureStorageDirectory}=protectedPaths;
- if(!absolute(cwd)||[sdkConfigDirectory,sdkSecureStorageDirectory].some(p=>p!==undefined&&!absolute(p)))fail('BASH_SANDBOX_CONFIGURATION');
+ const {sdkConfigDirectory,sdkSecureStorageDirectory,brokerSocketDirectory}=protectedPaths;
+ if(!absolute(cwd)||[sdkConfigDirectory,sdkSecureStorageDirectory].some(p=>p!==undefined&&!absolute(p))||
+  brokerSocketDirectory!==undefined&&brokerSocketDirectory!=='/run/meri-launch')fail('BASH_SANDBOX_CONFIGURATION');
  const networked=domains.length>0;if(networked!==(egress!==undefined))fail('BASH_SANDBOX_CONFIGURATION');
  const proxy=networked?assertBashEgressFact(egress,domains):undefined;
- const denyRead=sdkSecureStorageDirectory!==undefined&&sdkSecureStorageDirectory!==sdkConfigDirectory?[sdkSecureStorageDirectory]:[];
+ const denyRead=[...new Set([...(sdkSecureStorageDirectory!==undefined&&sdkSecureStorageDirectory!==sdkConfigDirectory?[sdkSecureStorageDirectory]:[]),
+  ...(brokerSocketDirectory===undefined?[]:[brokerSocketDirectory])])];
  return {enabled:true,failIfUnavailable:true,autoAllowBashIfSandboxed:!networked,allowUnsandboxedCommands:false,
   network:{allowedDomains:[...domains],strictAllowlist:true,allowAllUnixSockets:false,allowLocalBinding:false,...(proxy?{httpProxyPort:proxy.httpProxyPort,socksProxyPort:proxy.socksProxyPort}:{})},
   filesystem:{allowWrite:[cwd],denyRead,disabled:false},
@@ -108,7 +110,8 @@ export function assertSandboxSettings(value){
  const networked=n.allowedDomains.length>0;
  if(s.autoAllowBashIfSandboxed!==!networked||(networked?!port(n.httpProxyPort)||!port(n.socksProxyPort)||n.httpProxyPort===n.socksProxyPort:n.httpProxyPort!==undefined||n.socksProxyPort!==undefined))fail('CAPABILITY_FRAGMENT_REFUSED');
  const f=own(s.filesystem,['allowWrite','denyRead','disabled']);fixed(f,{disabled:false});
- if(!Array.isArray(f.allowWrite)||f.allowWrite.length!==1||!absolute(f.allowWrite[0])||!Array.isArray(f.denyRead)||f.denyRead.length>1||!f.denyRead.every(absolute))fail('CAPABILITY_FRAGMENT_REFUSED');
+ if(!Array.isArray(f.allowWrite)||f.allowWrite.length!==1||!absolute(f.allowWrite[0])||!Array.isArray(f.denyRead)||
+  f.denyRead.length>2||new Set(f.denyRead).size!==f.denyRead.length||!f.denyRead.every(absolute))fail('CAPABILITY_FRAGMENT_REFUSED');
  const c=own(s.credentials,['envVars','files']);deniedEnv(c.envVars);
  if(!Array.isArray(c.files)||c.files.length!==1)fail('CAPABILITY_FRAGMENT_REFUSED');const file=own(c.files[0],['path','mode']);if(file.mode!=='deny'||typeof file.path!=='string'||!/^~?\/(?:[^\0]*\/)?\.credentials\.json$/u.test(file.path)||file.path.includes('/../'))fail('CAPABILITY_FRAGMENT_REFUSED');
  return value;

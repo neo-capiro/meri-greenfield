@@ -14,11 +14,11 @@ const allocation=Object.freeze({schema:HOST_ALLOCATION_SCHEMA,tenantId:binding.t
 const hostIdentity=Object.freeze({schema:D005_HOST_IDENTITY_SCHEMA,instanceId:'i-0123456789abcdef0',bootId:'00000001-0000-4000-8000-000000000000',conversationId:binding.conversationId,hostId:allocation.hostId});
 const receipt=(over={})=>({schema:D005_ISOLATION_RECEIPT_SCHEMA,verified:true,hostKind:'d005-isolated-ec2',outerIsolationBoundary:true,
  allocationSha256:canonicalSha256(allocation),bindingSha256:canonicalSha256(binding),hostIdentitySha256:canonicalSha256(hostIdentity),observedAtMs:clock(),expiresAtMs:deadline,...over});
-function hostPorts({bwrap=true,closeFails=false}={}){
+function hostPorts({bwrap=true,closeFails=false,freshProc=true}={}){
  const seen={made:0,removed:0,closed:0,queries:0,userMessages:0};
- const ports={findExecutable:name=>name==='bwrap'&&!bwrap?undefined:`/usr/bin/${name}`,runProbe:async()=>true,exists:()=>false,
+ const ports={findExecutable:name=>name==='bwrap'&&!bwrap?undefined:`/usr/bin/${name}`,runProbe:async(_command,args)=>freshProc||!args.includes('--proc'),exists:()=>false,
   makeTempDir:label=>{seen.made++;return `/tmp/meri-host-${label}-${seen.made}`;},removeDir:()=>{seen.removed++;},
-  query:args=>{seen.queries++;let release;const done=new Promise(resolve=>{release=resolve;});
+  query:args=>{seen.queries++;seen.sandboxSettings=args.options.sandbox;let release;const done=new Promise(resolve=>{release=resolve;});
    (async()=>{for await(const _ of args.prompt)seen.userMessages++;})();
    return {initializationResult:async()=>({}),close(){release();},async *[Symbol.asyncIterator](){await done;}};},
   sdkVersion:'0.3.295',nodePath:'/usr/local/bin/node',pathEnv:'/usr/bin',close(){seen.closed++;if(closeFails)throw Error('cleanup failed');}};
@@ -83,12 +83,14 @@ test('canonical no-model SDK probe produces only a sandbox attestation for netwo
  assert.equal(Object.hasOwn(prepared.runtimeFacts,'bashEgress'),false);assert.equal(Object.hasOwn(prepared.runtimeFacts,'bashApprovals'),false);
  const composed=createSdkCapabilities({bash:true},{runOwner:{async append(){}},binding,cwd:`/workspace/${binding.conversationId}`,now:clock,newId:()=>binding.runId,...prepared.runtimeFacts});
  assert.equal(composed.bashAdmitted,true);assert.deepEqual(composed.options.tools,['Bash']);assert.equal(composed.options.sandbox.network.allowedDomains.length,0);
+ assert.deepEqual(composed.options.sandbox.filesystem.denyRead,['/run/meri-launch']);
+ assert.deepEqual(f.probes.seen.sandboxSettings.filesystem.denyRead,['/run/meri-launch'],'the host supplies the same protected path to its readiness probe');
  assert.deepEqual([f.probes.seen.queries,f.probes.seen.userMessages,f.probes.seen.closed,f.probes.seen.made,f.probes.seen.removed],[1,0,1,2,2]);
  assert.deepEqual(await prepared.close(),{closed:true});
 });
 
 test('an unavailable SDK sandbox or failed readiness cleanup admits no Bash and starts no proxy',async()=>{
- for(const [probes,code] of [[hostPorts({bwrap:false}),'BASH_SANDBOX_UNAVAILABLE'],[hostPorts({closeFails:true}),'BASH_READINESS_CLEANUP_UNKNOWN']]){
+ for(const [probes,code] of [[hostPorts({bwrap:false}),'BASH_SANDBOX_UNAVAILABLE'],[hostPorts({freshProc:false}),'BASH_SANDBOX_UNAVAILABLE'],[hostPorts({closeFails:true}),'BASH_READINESS_CLEANUP_UNKNOWN']]){
   let egress=0;const f=input({createReadinessPorts:probes.createReadinessPorts,startEgress:async()=>{egress++;throw Error('must not start');}});
   await assert.rejects(prepareHostBashRuntimeFacts(f.configuration),refuses(code));
   assert.equal(probes.seen.closed,1);assert.equal(egress,0);

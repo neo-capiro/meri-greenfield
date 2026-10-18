@@ -66,13 +66,18 @@ export async function prepareHostBashRuntimeFacts({binding,policy,verifyOuterIso
  if(expiresAtMs>allocation.leaseDeadlineMs||now()>=allocation.leaseDeadlineMs)fail('BASH_HOST_BINDING_REFUSED');
  const identity=assertD005HostIdentity(proof.hostIdentity,binding,allocation);
  const receipt=assertD005IsolationReceipt(proof.receipt,{binding,allocation,hostIdentity:identity,now,expiresAtMs});checkSignals();
+ const confinedPaths={...(protectedPaths??{}),brokerSocketDirectory:'/run/meri-launch'};
+ if(protectedPaths?.brokerSocketDirectory!==undefined&&protectedPaths.brokerSocketDirectory!=='/run/meri-launch')fail('BASH_HOST_CONFIGURATION');
  let ports,report,probeError,portCleanupError;
  try{ports=await createReadinessPorts({pathEnv});if(typeof ports?.close!=='function')fail('BASH_READINESS_INCOMPLETE');
-  report=await checkSandboxReadiness(ports,{...(protectedPaths===undefined?{}:{protectedPaths}),deadlineMs:30000});}
+  report=await checkSandboxReadiness(ports,{protectedPaths:confinedPaths,deadlineMs:30000});}
  catch{probeError=fault('BASH_READINESS_INCOMPLETE');}
  finally{try{await ports?.close?.();}catch{portCleanupError=fault('BASH_READINESS_CLEANUP_UNKNOWN');}}
  if(portCleanupError)throw portCleanupError;
  if(probeError)throw probeError;
+ // The D005 SDK parent holds a model capability on this same host. Without a fresh nested /proc, a same-UID Bash
+ // command may read parent process details despite filesystem deny rules; this topology has no weaker-mode proof.
+ if(report.weakerNestedSandboxRequired===true)fail('BASH_SANDBOX_UNAVAILABLE');
  const attestation=toBashSandboxAttestation(report,{outerIsolationBoundary:true});
  if(!attestation.available)fail('BASH_SANDBOX_UNAVAILABLE');
  current(now,expiresAtMs);checkSignals();
@@ -104,6 +109,7 @@ export async function prepareHostBashRuntimeFacts({binding,policy,verifyOuterIso
   if(!Number.isFinite(left)||left<=0){onAbort();return;}
   expiryTimer=setTimeout(scheduleExpiry,Math.max(1,Math.ceil(Math.min(left,1000))));expiryTimer.unref?.();};
  if(networked)scheduleExpiry();if(closing){await closing;fail('BASH_HOST_REVOKED');}
- const runtimeFacts=Object.freeze({bashSandbox:attestation,...(started?{bashEgress:egressFact,bashApprovals:approvals}:{})});
+ const runtimeFacts=Object.freeze({bashSandbox:attestation,brokerSocketDirectory:'/run/meri-launch',
+  ...(started?{bashEgress:egressFact,bashApprovals:approvals}:{})});
  return Object.freeze({runtimeFacts,allocation,hostIdentity:identity,isolationReceipt:receipt,close});
 }

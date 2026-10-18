@@ -55,9 +55,10 @@ test('a host that only runs bubblewrap without a fresh /proc needs the weaker ne
 test('the CLI documents usage and exit codes and refuses bad arguments before allocating anything',async()=>{
  let out='',err='',created=0;const deps={createPorts:async()=>{created++;throw Error('never');},write:t=>{out+=t;},error:t=>{err+=t;}};
  assert.equal(await main(['--help'],deps),0);assert.match(out,/Exit: 0 ready/);
- for(const argv of [['--bogus'],['--timeout-ms','5'],['--sdk-config-directory','/a'],['--sdk-config-directory','rel','--sdk-secure-storage-directory','/b'],['--outer-isolation-boundary','--outer-isolation-boundary']])assert.equal(await main(argv,deps),2,argv.join(' '));
+ for(const argv of [['--bogus'],['--timeout-ms','5'],['--sdk-config-directory','/a'],['--sdk-config-directory','rel','--sdk-secure-storage-directory','/b'],['--broker-socket-directory','/tmp/other'],['--outer-isolation-boundary','--outer-isolation-boundary']])assert.equal(await main(argv,deps),2,argv.join(' '));
  assert.equal(created,0);assert.match(err,/READINESS_ARGUMENTS/);
  assert.deepEqual(parseArguments(['--outer-isolation-boundary','--timeout-ms','5000','--sdk-config-directory','/c','--sdk-secure-storage-directory','/s']),{outerIsolationBoundary:true,protectedPaths:{sdkConfigDirectory:'/c',sdkSecureStorageDirectory:'/s'},deadlineMs:5000});
+ assert.deepEqual(parseArguments(['--broker-socket-directory','/run/meri-launch']),{outerIsolationBoundary:false,protectedPaths:{brokerSocketDirectory:'/run/meri-launch'},deadlineMs:30000});
  assert.equal(await main([],deps),3,'a port failure is an incomplete check, never a ready verdict');
  let closed=0;const {ports:p}=ports();out='';assert.equal(await main(['--outer-isolation-boundary'],{...deps,createPorts:async()=>({...p,close:()=>{closed++;}})}),0);assert.equal(closed,1);assert.equal(JSON.parse(out).attestation.available,true);
 });

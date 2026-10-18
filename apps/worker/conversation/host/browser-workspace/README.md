@@ -1,0 +1,15 @@
+# Browser workspace boundary
+
+## Implementation outline
+
+The native launcher owns the browser child's private mount namespace and the pre-exec pause. This module owns a readback while that child is paused; the composition owner calls `readBrowserWorkspaceIsolation` in `onBrowserPrepared` before returning `G` to the launcher. The existing `browserPaths(cwd)` remains the source of browser profile, output and HOME paths. The existing host teardown remains the state-disposal owner.
+
+The native browser mount plan is deliberately narrow:
+
+1. Before the SDK or browser starts, create the exact conversation `cwd` as root:`sdkGid`, mode `01770` (sticky; no other access). Create `cwd/.browser/{profile,output,home}` as `browserUid`:`browserGid`, mode `0700`. The sticky parent prevents the SDK UID from renaming the browser-owned state entry. No SDK source file or permission is changed.
+2. In the browser child only, after `CLONE_NEWNS` and before dropping credentials, open the original `.browser` with `O_PATH|O_DIRECTORY|O_NOFOLLOW`. Mount a new private `tmpfs` over the exact `cwd`, mode `0700`, owned by the browser UID/GID, with `nosuid,nodev,noexec`. Create `.browser` there, bind the pinned original directory to it, and remount the bind `nosuid,nodev,noexec`. Close the original directory FD before GO. The browser sees exactly `.browser` at `cwd`; the SDK sees its own workspace and cannot read the browser-owned state. Every ancestor of `cwd` must already be root-owned, nonwritable by other UIDs and searchable by the browser UID; refuse a host image/layout that does not provide this. Do not widen the SDK cwd ACL or modes.
+3. During the pre-exec pause, `readBrowserWorkspaceIsolation` reads the child's real `/proc` status, cgroup, mount namespace and mount table, and stats/lists its mounted `cwd` through `/proc/<pid>/root`. It requires the browser-only tmpfs overlay, the `.browser` bind of the original private state inode, no other cwd entries, exact UID/GID/no capabilities, and stable PID start time. An absent mount, different inode, extra entry, mutable parent, stale PID or uncertain readback rejects before the child executes.
+
+The input is trusted host allocation/run identity, exact UIDs/GIDs, browser paths and the paused native child PID. No tool argument or boolean attestation is accepted. The returned receipt is evidence for the host composition; it is not a control-plane grant. Network and source authorization retain their separate owners. The function is import-safe and performs reads only.
+
+**Current activation blocker:** the native launcher has a private mount namespace but does not yet make this cwd overlay/bind. Until that source and the pinned image implement it, this readback returns `HOST_BROWSER_WORKSPACE_UNPROVEN`; browser activation stays held. Host/image qualification must also prove Chromium/renderer sandbox and no escape through `/proc` on the real host. Focused synthetic readback tests establish parser and refusal behavior, not a live sandbox.

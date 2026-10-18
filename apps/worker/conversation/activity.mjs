@@ -22,7 +22,7 @@ import {attemptCleanup,cleanupConversation,CLEANUP_ATTEMPT_MS} from './cleanup.m
 const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const fault=code=>Object.assign(new Error(code),{code});
 // Trusted runtime-preparation facts the capability layer consumes; run data never supplies them.
-const CAPABILITY_RUNTIME_FACTS=Object.freeze(['skillPluginDirectory','bashSandbox','bashEgress','bashApprovals','sdkConfigDirectory','sdkSecureStorageDirectory']);
+const CAPABILITY_RUNTIME_FACTS=Object.freeze(['skillPluginDirectory','bashSandbox','bashEgress','bashApprovals','sdkConfigDirectory','sdkSecureStorageDirectory','brokerSocketDirectory']);
 /** Acknowledgement bound for one terminal publication attempt: the control service's default per-request bound. Terminal
  * settlement makes at most two rounds over the (at most two) candidate events, so it is finite (here at most 12 s). */
 export const TERMINAL_ATTEMPT_MS=3000;

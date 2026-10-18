@@ -20,6 +20,13 @@ export async function startBrowserHostEgressService({allocation,binding,readCurr
  const host=assertHostAllocation(allocation),run=assertHostRunBinding(host,binding);
  if(typeof readCurrent!=='function'||typeof resolve!=='function'||typeof now!=='function'||!Number.isSafeInteger(maxFreshMs)||maxFreshMs<2||maxFreshMs>MAX_HOST_CURRENTNESS_MS||!Number.isSafeInteger(refreshEveryMs)||refreshEveryMs<1||refreshEveryMs>Math.floor(maxFreshMs/2)||onDecision!==undefined&&typeof onDecision!=='function')throw fault('HOST_EGRESS_CONFIGURATION');
  let proxy,control,grantDigest,grantExpiresAtMs=0,untilMs=0,leaseMonoDeadline=0,revoked=false,closing,refreshTimer,expiryTimer,refreshInFlight;
+ // A wall-clock rollback cannot add time to a lease after the control read. Keep the largest observed wall time
+ // advancing by elapsed monotonic time, including the interval between receipt validation and timer scheduling.
+ let wallFloor,wallMono;
+ const effectiveNow=()=>{const mono=performance.now(),wall=now();
+  if(!Number.isSafeInteger(wall))throw fault('HOST_CURRENTNESS_REFUSED');
+  wallFloor=wallFloor===undefined?wall:Math.max(wall,wallFloor+Math.max(0,mono-wallMono));wallMono=mono;
+  const at=Math.ceil(wallFloor);if(!Number.isSafeInteger(at))throw fault('HOST_CURRENTNESS_REFUSED');return at;};
  const lifetime=new AbortController();
  const clearTimers=()=>{clearTimeout(refreshTimer);clearTimeout(expiryTimer);};
  const monoExpired=()=>leaseMonoDeadline>0&&performance.now()>=leaseMonoDeadline;
@@ -28,16 +35,16 @@ export async function startBrowserHostEgressService({allocation,binding,readCurr
   closing=proxy.close();closing.catch(()=>{});return closing;};
  const gate=Object.freeze({
   async admitProxyRequest(request,options){if(revoked||!control)return refuse('BROWSER_EGRESS_REVOKED');
-   if(now()>=untilMs||monoExpired()){terminate();return refuse('HOST_CURRENTNESS_EXPIRED');}
+   if(effectiveNow()>=untilMs||monoExpired()){terminate();return refuse('HOST_CURRENTNESS_EXPIRED');}
    const decision=await control.admitProxyRequest(request,options);
-   if(revoked||now()>=untilMs||monoExpired()){terminate();return refuse('HOST_CURRENTNESS_EXPIRED');}
+   if(revoked||effectiveNow()>=untilMs||monoExpired()){terminate();return refuse('HOST_CURRENTNESS_EXPIRED');}
    return decision;},
   revoke(){control?.revoke();},
  });
  proxy=await startEgressProxy({control:gate,httpPort:0,...(onDecision?{onDecision}:{})});
  const endpoint=`http://127.0.0.1:${proxy.ports.http}`;
  const current=async(policySha256,signal)=>{
-  const at=now(),deadline=Math.min(maxFreshMs,host.leaseDeadlineMs-at,grantExpiresAtMs-at,
+  const at=effectiveNow(),deadline=Math.min(maxFreshMs,host.leaseDeadlineMs-at,grantExpiresAtMs-at,
    leaseMonoDeadline?Math.ceil(leaseMonoDeadline-performance.now()):Infinity);
   if(revoked||!Number.isSafeInteger(at)||!Number.isSafeInteger(deadline)||deadline<1||signal?.aborted)throw fault('HOST_CURRENTNESS_REFUSED');
   const readMonoDeadline=performance.now()+deadline;
@@ -45,11 +52,11 @@ export async function startBrowserHostEgressService({allocation,binding,readCurr
   const stopped=new Promise((_,reject)=>combined.addEventListener('abort',()=>reject(fault('HOST_CURRENTNESS_REFUSED')),{once:true}));
   const receipt=await Promise.race([readCurrent({allocation:structuredClone(host),binding:structuredClone(run),policySha256,signal:combined}),stopped]);
   if(revoked||combined.aborted||performance.now()>=readMonoDeadline||monoExpired())throw fault('HOST_CURRENTNESS_REFUSED');
-  return assertBrowserHostCurrent({allocation:host,binding:run,policySha256,current:receipt,nowMs:now(),maxFreshMs});
+  return assertBrowserHostCurrent({allocation:host,binding:run,policySha256,current:receipt,nowMs:effectiveNow(),maxFreshMs});
  };
  const schedule=()=>{
   clearTimers();if(revoked||!control)return;
-  const left=untilMs-now();if(!Number.isSafeInteger(left)||left<=0||monoExpired()){terminate();return;}
+  const left=untilMs-effectiveNow();if(!Number.isSafeInteger(left)||left<=0||monoExpired()){terminate();return;}
   // A wall-clock rollback must not extend the last authenticated lease in elapsed time.
   leaseMonoDeadline=performance.now()+left;
   expiryTimer=setTimeout(()=>terminate(),left);expiryTimer.unref?.();
@@ -58,8 +65,8 @@ export async function startBrowserHostEgressService({allocation,binding,readCurr
  async function refresh({signal}={}){
   if(revoked||!control||!grantDigest)throw fault('HOST_CURRENTNESS_REFUSED');
   if(refreshInFlight)return refreshInFlight;
-  refreshInFlight=(async()=>{try{if(now()>=untilMs||monoExpired())throw fault('HOST_CURRENTNESS_REFUSED');
-    const receipt=await current(grantDigest,signal);if(revoked||now()>=untilMs||monoExpired())throw fault('HOST_CURRENTNESS_REFUSED');
+  refreshInFlight=(async()=>{try{if(effectiveNow()>=untilMs||monoExpired())throw fault('HOST_CURRENTNESS_REFUSED');
+    const receipt=await current(grantDigest,signal);if(revoked||effectiveNow()>=untilMs||monoExpired())throw fault('HOST_CURRENTNESS_REFUSED');
     untilMs=Math.min(receipt.currentUntilMs,grantExpiresAtMs,host.leaseDeadlineMs);schedule();return Object.freeze({currentUntilMs:untilMs});}
    catch(error){terminate();throw error;}
    finally{refreshInFlight=undefined;}})();
@@ -69,7 +76,7 @@ export async function startBrowserHostEgressService({allocation,binding,readCurr
   async grant(grant,{signal}={}){
    if(revoked||control||grantDigest)throw fault('HOST_GRANT_REFUSED');
    let candidate,pinned;try{pinned=data(grant);candidate=createEgressControl({grant:pinned,resolve,now});}catch{terminate();throw fault('HOST_GRANT_REFUSED');}
-   if(!same(candidate.binding,run)||pinned.expiresAtMs<=now()||pinned.expiresAtMs>host.leaseDeadlineMs){terminate();throw fault('HOST_GRANT_REFUSED');}
+   if(!same(candidate.binding,run)||pinned.expiresAtMs<=effectiveNow()||pinned.expiresAtMs>host.leaseDeadlineMs){terminate();throw fault('HOST_GRANT_REFUSED');}
    grantDigest=candidate.policySha256;grantExpiresAtMs=pinned.expiresAtMs;
    try{const receipt=await current(grantDigest,signal);if(revoked||signal?.aborted)throw fault('HOST_GRANT_REFUSED');
     control=candidate;untilMs=Math.min(receipt.currentUntilMs,grantExpiresAtMs,host.leaseDeadlineMs);schedule();

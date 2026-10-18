@@ -27,9 +27,10 @@ export function createSdkCapabilities(policy,facts){return compose(policy,facts,
 export function projectSdkCapabilities(policy,facts){return compose(policy,facts,assertSkillPluginPath);}
 /** @param {unknown} policy @param {unknown} facts @param {(directory:unknown,cwd:string)=>string} verifyPlugin */
 function compose(policy,facts,verifyPlugin){
- const requested=assertCapabilityPolicy(policy),f=own(facts,['runOwner','binding','cwd','now','newId'],['skillPluginDirectory','bashSandbox','bashEgress','bashApprovals','sdkConfigDirectory','sdkSecureStorageDirectory']);
+ const requested=assertCapabilityPolicy(policy),f=own(facts,['runOwner','binding','cwd','now','newId'],['skillPluginDirectory','bashSandbox','bashEgress','bashApprovals','sdkConfigDirectory','sdkSecureStorageDirectory','brokerSocketDirectory']);
  if(typeof f.runOwner?.append!=='function'||typeof f.now!=='function'||typeof f.newId!=='function')fail('CAPABILITY_CONFIGURATION');validateShape('RunBinding',f.binding);assertWorkspaceRoot(f.cwd);
- const protectedPaths={...(f.sdkConfigDirectory===undefined?{}:{sdkConfigDirectory:f.sdkConfigDirectory}),...(f.sdkSecureStorageDirectory===undefined?{}:{sdkSecureStorageDirectory:f.sdkSecureStorageDirectory})};
+ const protectedPaths={...(f.sdkConfigDirectory===undefined?{}:{sdkConfigDirectory:f.sdkConfigDirectory}),...(f.sdkSecureStorageDirectory===undefined?{}:{sdkSecureStorageDirectory:f.sdkSecureStorageDirectory}),
+  ...(f.brokerSocketDirectory===undefined?{}:{brokerSocketDirectory:f.brokerSocketDirectory})};
  // Networked Bash also needs the run's egress proxy fact and the approval port (bash-sandbox.mjs); both are trusted runtime facts.
  const bash=createBashSandbox(requested,{cwd:f.cwd,attestation:f.bashSandbox,protectedPaths,egress:f.bashEgress,approvals:f.bashApprovals,binding:f.binding,now:f.now}),p=bash?requested:withoutBash(requested);
  /** @type {Error|undefined} */let failure;

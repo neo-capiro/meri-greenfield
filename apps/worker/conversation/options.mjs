@@ -20,7 +20,7 @@ import {RUNNER_SDK_CA_FILE} from '../../runtime/native-authority/preparation-int
 const fail=()=>{throw Error('RUNTIME_CONFIGURATION');};
 /** @param {any} value @param {AbortController} abortController @param {unknown} [continuationContext] @param {unknown} [skillOptions] @param {unknown} [capabilityFragment] @param {unknown} [readOptions] @param {unknown} [intentOptions] @param {unknown} [browserFragment] @param {unknown} [objectiveOutputFormat] @returns {import('@anthropic-ai/claude-agent-sdk').Options} */
 export function buildConversationOptions(value,abortController,continuationContext,skillOptions,capabilityFragment,readOptions,intentOptions,browserFragment,objectiveOutputFormat){
- const r=own(value,['binding','versions','cwd','proxyUrl','proxyCredential','model','sessionStore','deadlineMs','maxTurns','maxCostMicroUSD','maxOutputBytes'],[...(continuationContext===undefined?[]:['restoreReceipt']),'sdkConfigDirectory','sdkSecureStorageDirectory','sdkCaFile','skillPluginDirectory','bashSandbox','bashEgress','bashApprovals']);
+ const r=own(value,['binding','versions','cwd','proxyUrl','proxyCredential','model','sessionStore','deadlineMs','maxTurns','maxCostMicroUSD','maxOutputBytes'],[...(continuationContext===undefined?[]:['restoreReceipt']),'sdkConfigDirectory','sdkSecureStorageDirectory','sdkCaFile','skillPluginDirectory','bashSandbox','bashEgress','bashApprovals','brokerSocketDirectory']);
  // Per-task SDK configuration directories come only from the admitted preparation intent (remote task path); both or neither.
  const directories=[r.sdkConfigDirectory,r.sdkSecureStorageDirectory];if(directories.some(d=>d!==undefined)){if(directories.some(d=>typeof d!=='string'||!isAbsolute(d)||d.includes('/../')||d.endsWith('/')||d.includes('\0'))||r.sdkConfigDirectory===r.sdkSecureStorageDirectory||r.sdkConfigDirectory.startsWith(r.sdkSecureStorageDirectory+'/')||r.sdkSecureStorageDirectory.startsWith(r.sdkConfigDirectory+'/'))fail();}
  if(r.versions.sdk!=='0.3.295'||r.versions.cli!=='2.1.295')fail();
@@ -32,6 +32,7 @@ export function buildConversationOptions(value,abortController,continuationConte
  if(r.skillPluginDirectory!==undefined)assertSkillPluginDirectory(r.skillPluginDirectory,r.cwd);
  // The Bash sandbox attestation is a runtime-preparation fact consumed by the capability layer (bash-sandbox.mjs).
  if(r.bashSandbox!==undefined)assertBashSandboxAttestation(r.bashSandbox);
+ if(r.brokerSocketDirectory!==undefined&&r.brokerSocketDirectory!=='/run/meri-launch')fail();
  let url;try{url=new URL(r.proxyUrl);}catch{fail();}if(url.protocol!=='https:'||url.username||url.password||url.search||url.hash)fail();
  let continuation={};if(continuationContext!==undefined){const c=own(continuationContext,['request','sourceRequest','scopes','started','now'],['continuation','nextTurn']);if((c.continuation===undefined)===(c.nextTurn===undefined))fail();
   continuation=c.nextTurn===undefined?buildContinuationOptions(c.continuation,{binding:r.binding,versions:r.versions,scopes:c.scopes,request:c.request,sourceRequest:c.sourceRequest}):buildNextTurnOptions(c.nextTurn,{binding:r.binding,versions:r.versions,scopes:c.scopes,request:c.request,sourceRequest:c.sourceRequest});

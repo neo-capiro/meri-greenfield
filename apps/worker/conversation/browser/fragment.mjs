@@ -19,7 +19,7 @@ const fail=()=>{throw Object.assign(new Error('BROWSER_CONFIGURATION'),{code:'BR
  * approvals only for interaction tools (without it every interaction is denied). `approvalDeadlineMs` is an optional
  * trusted runtime setting inside APPROVAL_DEADLINE_MS (default 120 s). */
 export function buildOpenBrowserFragment({binding,cwd,policy,installation:rawInstallation,sourceScopes:rawScopes,artifacts,receipts,approvals,approvalDeadlineMs,now}){
- const installation=validateBrowserInstallation(rawInstallation);
+ const installation=validateBrowserInstallation(rawInstallation,binding);
  if(policy?.enabled!==true||typeof receipts?.record!=='function'||policy.downloads.enabled&&typeof artifacts?.ingest!=='function')fail();
  const sourceScopes=policy.downloads.enabled?validateSourceScopes(rawScopes,binding):Object.freeze([]),paths=browserPaths(cwd);
  const name=t=>`mcp__${BROWSER_SERVER_NAME}__${t}`,policySha256=canonicalSha256(policy),pages=createPageContext();

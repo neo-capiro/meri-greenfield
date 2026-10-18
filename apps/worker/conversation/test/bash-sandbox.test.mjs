@@ -49,6 +49,11 @@ test('the SDK sandbox settings lock every escape hatch, scrub every worker crede
  assert.deepEqual(weaker.sandbox.credentials.files,[{path:'~/.claude/.credentials.json',mode:'deny'}]);assert.equal(weaker.sandbox.autoAllowBashIfSandboxed,true,'network-less Bash stays auto-allowed');
  for(const key of ['httpProxyPort','socksProxyPort'])assert.equal(Object.hasOwn(weaker.sandbox.network,key),false,key);assert.deepEqual(weaker.sandbox.filesystem.denyRead,[]);
  assert.deepEqual(buildBashSandboxSettings({cwd,domains:[],weakerNestedSandbox:false,protectedPaths:{sdkConfigDirectory:'/c',sdkSecureStorageDirectory:'/c'}}).filesystem.denyRead,[],'one shared directory is protected through the credentials file entry');
+ assert.deepEqual(buildBashSandboxSettings({cwd,domains:[],weakerNestedSandbox:false,
+  protectedPaths:{sdkConfigDirectory:'/c',sdkSecureStorageDirectory:'/s',brokerSocketDirectory:'/run/meri-launch'}}).filesystem.denyRead,
+ ['/s','/run/meri-launch'],'the isolated host hides the broker socket as well as SDK secure storage');
+ assert.throws(()=>buildBashSandboxSettings({cwd,domains:[],weakerNestedSandbox:false,
+  protectedPaths:{brokerSocketDirectory:'/run/other'}}),/BASH_SANDBOX_CONFIGURATION/);
  for(const bad of [{cwd:'relative',domains:[],weakerNestedSandbox:false},{cwd,domains:[],weakerNestedSandbox:false,protectedPaths:{sdkConfigDirectory:'rel'}}])assert.throws(()=>buildBashSandboxSettings(bad),/BASH_SANDBOX_CONFIGURATION/);
 });
 
@@ -73,6 +78,12 @@ test('conversation options keep the fixed base: settings and env are extended, n
  assert.deepEqual(Object.keys(o.env),['ANTHROPIC_BASE_URL','ANTHROPIC_AUTH_TOKEN','CLAUDE_CONFIG_DIR','CLAUDE_SECURESTORAGE_CONFIG_DIR','CLAUDE_CODE_SUBPROCESS_ENV_SCRUB','CLAUDE_CODE_MAX_OUTPUT_TOKENS','MAX_THINKING_TOKENS']);assert.equal(o.env.ANTHROPIC_AUTH_TOKEN,'synthetic-task-capability');
  for(const key of Object.keys(o.env).filter(k=>/(?:TOKEN|KEY|SECRET|PASSWORD|CREDENTIAL)(?:_|$)/u.test(k)))assert.ok(SANDBOX_DENIED_ENV.includes(key),`credential ${key} is unset for sandboxed commands`);
  assert.deepEqual(o.sandbox.filesystem.denyRead,['/run/meri/sdk/secure']);assert.deepEqual(o.sandbox.credentials.files,[{path:'/run/meri/sdk/config/.credentials.json',mode:'deny'}]);
+ const hostFacts={...r,brokerSocketDirectory:'/run/meri-launch'};
+ const hostCapabilities=createSdkCapabilities({bash:true},facts({bashSandbox:attested,sdkConfigDirectory:r.sdkConfigDirectory,
+  sdkSecureStorageDirectory:r.sdkSecureStorageDirectory,brokerSocketDirectory:hostFacts.brokerSocketDirectory}));
+ assert.deepEqual(buildConversationOptions(hostFacts,new AbortController(),undefined,undefined,hostCapabilities.options).sandbox.filesystem.denyRead,
+  ['/run/meri/sdk/secure','/run/meri-launch']);
+ assert.throws(()=>buildConversationOptions({...r,brokerSocketDirectory:'/tmp/not-broker'},new AbortController()),/RUNTIME_CONFIGURATION/);
  assert.deepEqual(o.tools,['Read','Bash']);assert.equal(o.managedSettings.sandbox.allowUnsandboxedCommands,false);assert.equal(o.managedSettings.permissions.blockReadsOutsideWorkingDirectories,true,'policy-tier locks from both pieces merge');
  assert.throws(()=>buildConversationOptions(runtime({bashSandbox:{...attested,weakerNestedSandbox:true,outerIsolationBoundary:false}}),new AbortController()),/BASH_SANDBOX_ATTESTATION_REFUSED/);
 });

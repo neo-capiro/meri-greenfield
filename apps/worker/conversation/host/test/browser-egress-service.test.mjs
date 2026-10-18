@@ -89,6 +89,24 @@ test('a wall-clock rollback cannot extend the last authenticated lease',async()=
  }finally{await service.close();}
 });
 
+test('a rollback between receipt validation and timer scheduling cannot lengthen the lease',async()=>{
+ const baseline=Date.now(),a=allocation(baseline+10000);
+ const grant=createEgressGrant({binding,policy:enabledPolicy(),expiresAtMs:baseline+5000});
+ let afterReceipt=false,postReadClocks=0,reads=0;
+ const service=await startBrowserHostEgressService({allocation:a,binding,
+  now:()=>afterReceipt&&++postReadClocks>1?baseline-60000:baseline,
+  maxFreshMs:1000,refreshEveryMs:100,resolve:async()=>[],
+  readCurrent:async()=>{if(++reads>1)return new Promise(()=>{});afterReceipt=true;
+   return {allocation:a,binding,policySha256:grant.policySha256,phase:'active',
+    checkedAtMs:baseline,currentUntilMs:baseline+80};}});
+ try{
+  await service.grant(grant);const u=new URL(service.endpoint);
+  const socket=connect({host:u.hostname,port:Number(u.port)});await once(socket,'connect');
+  await once(socket,'close',{signal:AbortSignal.timeout(400)});
+  await assert.rejects(httpStatus(service.endpoint,'http://unlisted.example/'),{code:'ECONNREFUSED'});
+ }finally{await service.close();}
+});
+
 test('a late refresh cannot replace an elapsed lease before its timer callback runs',async()=>{
  let time=Date.now(),reads=0,reply;const a=allocation(time+5000),grant=createEgressGrant({binding,policy:enabledPolicy(),expiresAtMs:time+1000});
  const service=await startBrowserHostEgressService({allocation:a,binding,now:()=>time,maxFreshMs:200,refreshEveryMs:20,resolve:async()=>[],

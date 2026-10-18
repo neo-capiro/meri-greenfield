@@ -3,7 +3,7 @@
 import {pathToFileURL} from 'node:url';
 import {isAbsolute} from 'node:path';
 import {checkSandboxReadiness,toBashSandboxAttestation} from './readiness.mjs';
-export const USAGE=`Usage: node apps/worker/conversation/sandbox-readiness/cli.mjs [--outer-isolation-boundary] [--sdk-config-directory /abs --sdk-secure-storage-directory /abs] [--timeout-ms 1000-120000]
+export const USAGE=`Usage: node apps/worker/conversation/sandbox-readiness/cli.mjs [--outer-isolation-boundary] [--sdk-config-directory /abs --sdk-secure-storage-directory /abs] [--broker-socket-directory /run/meri-launch] [--timeout-ms 1000-120000]
 Measures bubblewrap/socat presence, bubblewrap namespaces and the Claude Agent SDK's own sandbox startup (failIfUnavailable)
 with the product settings and NO model request. Prints {report, attestation} JSON. --outer-isolation-boundary is the runtime
 preparation owner's assertion that the disposable worker is the isolation boundary; it is not measured.
@@ -16,6 +16,7 @@ export function parseArguments(argv){
  for(let i=0;i<argv.length;i++){const flag=String(argv[i]);if(seen.has(flag))return undefined;seen.add(flag);
   if(flag==='--outer-isolation-boundary')out.outerIsolationBoundary=true;
   else if(flag==='--sdk-config-directory'||flag==='--sdk-secure-storage-directory'){const value=argv[++i];if(typeof value!=='string'||!isAbsolute(value)||value.endsWith('/')||value.includes('\0'))return undefined;out.protectedPaths[flag==='--sdk-config-directory'?'sdkConfigDirectory':'sdkSecureStorageDirectory']=value;}
+  else if(flag==='--broker-socket-directory'){const value=argv[++i];if(value!=='/run/meri-launch')return undefined;out.protectedPaths.brokerSocketDirectory=value;}
   else if(flag==='--timeout-ms'){const n=Number(argv[++i]);if(!Number.isSafeInteger(n)||n<1000||n>120000)return undefined;out.deadlineMs=n;}
   else return undefined;}
  if(seen.has('--sdk-config-directory')!==seen.has('--sdk-secure-storage-directory'))return undefined;
