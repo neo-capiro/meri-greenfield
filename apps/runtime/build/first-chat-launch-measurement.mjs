@@ -57,6 +57,7 @@ function inputs(raw){
  for(const k of ['maxTurns','maxCostMicroUSD','maxOutputBytes'])if(!Number.isSafeInteger(v[k])||v[k]<1)refuse(`--${k} must be a positive integer`);
  for(const k of ['configParentDirectory','secureStorageDirectory'])if(!posix.isAbsolute(v[k])||posix.normalize(v[k])!==v[k]||v[k].endsWith('/'))refuse(`${k} must be a normalized absolute POSIX path`);
  if(v.policyRevision!==undefined&&!/^[a-f0-9]{64}$/u.test(v.policyRevision))refuse('policyRevision must be 64 hex');
+ if(v.capabilityProfile!==undefined&&(v.capabilityProfile===null||typeof v.capabilityProfile!=='object'||Array.isArray(v.capabilityProfile)))refuse('capabilityProfile must be a CapabilityPolicy object');
  return v;
 }
 /** The product option set of a first chat with no skill, capability policy, reads, intents, browser or objective: exactly what
@@ -65,7 +66,10 @@ function productOptions(m,v,binding){
  const runtime={binding,versions:{sdk:PINNED_SDK,cli:PINNED_CLI},cwd:posix.join(WORKSPACE_ROOT,binding.conversationId),proxyUrl:v.proxyUrl,proxyCredential:PROBE_CREDENTIAL,model:v.model,
   sessionStore:{async load(){},async append(){},async listSubkeys(){}},deadlineMs:1,maxTurns:v.maxTurns,maxCostMicroUSD:v.maxCostMicroUSD,maxOutputBytes:v.maxOutputBytes,
   sdkConfigDirectory:m.sdkConfigDirectory(v.configParentDirectory,binding.runId),sdkSecureStorageDirectory:v.secureStorageDirectory,sdkCaFile:m.RUNNER_SDK_CA_FILE};
- const options=m.buildConversationOptions(runtime,new AbortController()),policyRevision=v.policyRevision??'0'.repeat(64);
+ // G3: the run's capability fragment (activity.mjs createSdkCapabilities) under the one profile every preview run resolves to.
+ const capabilities=v.capabilityProfile===undefined?undefined:m.createSdkCapabilities(v.capabilityProfile,{runOwner:{async append(){}},binding,cwd:runtime.cwd,
+  sdkConfigDirectory:runtime.sdkConfigDirectory,sdkSecureStorageDirectory:runtime.sdkSecureStorageDirectory,now:()=>0,newId:()=>id(99)});
+ const options=m.buildConversationOptions(runtime,new AbortController(),undefined,undefined,capabilities?.options),policyRevision=v.policyRevision??'0'.repeat(64);
  const scopes=[{kind:'client',tenantId:binding.tenantId,resourceId:PROBE_CLIENT_ID,policyRevision}];
  options.systemPrompt+=m.requestContextSuffix({window:undefined,scopes,skill:undefined});
  // Per-run facts as control issues them (render-material.mjs, prepared-run-bindings.mjs retargetPreparation).
@@ -73,7 +77,7 @@ function productOptions(m,v,binding){
  const run=m.sdkOptionsRun({workspace:runtime.cwd,configParentDirectory:v.configParentDirectory,authoritySha256},binding);
  return {options,runtime,scopes,authoritySha256,run};
 }
-const MODULES=['apps/worker/conversation/options.mjs','apps/runtime/native-authority/sdk-option-template.mjs','apps/runtime/native-authority/preparation-intent.mjs'];
+const MODULES=['apps/worker/conversation/options.mjs','apps/runtime/native-authority/sdk-option-template.mjs','apps/runtime/native-authority/preparation-intent.mjs','apps/worker/conversation/capabilities/index.mjs'];
 const modules=async root=>Object.assign({},...await Promise.all(MODULES.map(path=>load(root,path))));
 /** A probe run's SDK options and per-run facts (to replay runner-query.mjs). */
 export async function probeRun(raw,{root,binding=PROBES[0]}){const {options,run}=productOptions(await modules(root),inputs(raw),binding);return {options,run};}
@@ -117,7 +121,8 @@ export async function measureFirstChatLaunch(raw,{root=resolve(fileURLToPath(new
   runnerSdkOptions:gate(()=>{runnerGate(first);runnerGate(second);})};
  return {schema:RECEIPT_SCHEMA,platform:{os:process.platform,arch:process.arch,node:process.version,uid:process.getuid?.()??null},
   inputs:{proxyUrl:v.proxyUrl,model:v.model,maxTurns:v.maxTurns,maxCostMicroUSD:v.maxCostMicroUSD,maxOutputBytes:v.maxOutputBytes,
-   configParentDirectory:v.configParentDirectory,secureStorageDirectory:v.secureStorageDirectory,policyRevision:v.policyRevision??null},
+   configParentDirectory:v.configParentDirectory,secureStorageDirectory:v.secureStorageDirectory,policyRevision:v.policyRevision??null,
+   capabilityProfileSha256:v.capabilityProfile===undefined?null:(await load(root,'packages/contracts/validate.mjs')).canonicalSha256(v.capabilityProfile)},
   // The CLI is not executed: its pinned version is evidenced by the VERSION marker compiled into the measured binary.
   versions:{sdk:sdkVersion,cli:bytes.includes(Buffer.from(`VERSION:"${PINNED_CLI}"`))?PINNED_CLI:null,platformPackage:{name:cliPackage.name,version:cliPackage.version}},
   executable:{path:command,sha256:sha(bytes),bytes:bytes.length},launchTemplate,
@@ -132,11 +137,12 @@ const USAGE=`Usage: node apps/runtime/build/first-chat-launch-measurement.mjs --
   --max-output-bytes N --config-parent DIR --secure-storage DIR [--policy-revision HEX64] [--root /opt/meri]
 Exit0 receipt printed; exit2 usage; exit3 measurement refused.\n`;
 const FLAGS={'--proxy-url':'proxyUrl','--model':'model','--max-turns':'maxTurns','--max-cost-micro-usd':'maxCostMicroUSD','--max-output-bytes':'maxOutputBytes',
- '--config-parent':'configParentDirectory','--secure-storage':'secureStorageDirectory','--policy-revision':'policyRevision','--root':'root'};
+ '--config-parent':'configParentDirectory','--secure-storage':'secureStorageDirectory','--policy-revision':'policyRevision','--capability-profile':'capabilityProfile','--root':'root'};
 export async function main(argv=process.argv.slice(2)){
  if(argv.includes('--help')){process.stdout.write(USAGE);return 0;}
  const v={};for(let i=0;i<argv.length;i+=2){const key=FLAGS[argv[i]];if(!key||argv[i+1]===undefined||Object.hasOwn(v,key)){process.stderr.write(USAGE);return 2;}v[key]=argv[i+1];}
  for(const k of ['maxTurns','maxCostMicroUSD','maxOutputBytes'])if(v[k]!==undefined)v[k]=Number(v[k]);
+ if(v.capabilityProfile!==undefined)try{v.capabilityProfile=JSON.parse(Buffer.from(v.capabilityProfile,'base64url').toString('utf8'));}catch{process.stderr.write(USAGE);return 2;}
  const {root,...rest}=v;scrubEnvironment();
  try{const receipt=await measureFirstChatLaunch(rest,root===undefined?{}:{root:resolve(root)});process.stdout.write(JSON.stringify(receipt)+'\n');return 0;}
  catch(error){process.stderr.write((error?.code==='MEASUREMENT_REFUSED'?error.message:'MEASUREMENT_REFUSED: '+(error?.code??error?.message??'unknown'))+'\n');return error?.code==='MEASUREMENT_REFUSED'&&/required|must be/u.test(error.message)?2:3;}
