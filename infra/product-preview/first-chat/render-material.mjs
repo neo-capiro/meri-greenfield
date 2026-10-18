@@ -74,7 +74,7 @@ import {productRunnerMeasurement} from '../../../apps/runtime/native-authority/e
 import {runOwnerOperations} from '../../../packages/contracts/runtime-0.2/validate.mjs';
 import {sdkSessionOperations} from '../../../packages/contracts/runtime-0.2/session.mjs';
 import {validateProductOwnerConfiguration} from '../../../apps/proxy/product/owner-entrypoint.mjs';
-import {parseProductProxyStartupConfiguration,PRODUCT_PROXY_PRICING_REVISION} from '../../../apps/proxy/product/startup-config.mjs';
+import {parseProductProxyStartupConfiguration,PRODUCT_PROXY_PRICING_REVISION,PRODUCT_PROXY_MODEL_ALIAS} from '../../../apps/proxy/product/startup-config.mjs';
 import {compileCapabilityPlatform,createConfiguredRunCapabilityPolicy} from '../../../apps/runtime/product-ports/capability-policy.mjs';
 import {compileRuntimeArtifactsConfiguration} from '../../../apps/runtime/artifacts/configuration.mjs';
 import {assertNativeReadConfiguration} from '../../../packages/contracts/runtime-0.2/reads.mjs';
@@ -532,7 +532,7 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,ident
   authoritySha256:canonicalSha256({scopes:[{kind:'client',tenantId:binding.tenantId,resourceId:k.clientId,policyRevision}],selectedClientId:k.clientId,policyRevision})};
  const nativeCandidate={
   identity:{origin:k.coreOrigin,credentialFile:PATHS.identity,commandContext:{binding,clientResolution:{reference:k.clientId,clientId:k.clientId}}},
-  runtime:{binding,versions,proxyUrl:o.proxyUrl,model:d.model.profileId,deadlineMs:grantExpiresAtMs,maxTurns:r.runtime.maxTurns,maxCostMicroUSD:d.model.perRunMaxCostMicroUSD,maxOutputBytes:r.runtime.maxOutputBytes},
+  runtime:{binding,versions,proxyUrl:o.proxyUrl,model:PRODUCT_PROXY_MODEL_ALIAS,deadlineMs:grantExpiresAtMs,maxTurns:r.runtime.maxTurns,maxCostMicroUSD:d.model.perRunMaxCostMicroUSD,maxOutputBytes:r.runtime.maxOutputBytes},
   proxyCredentialFile:PATHS.proxyCapability,plan:r.plan,preparationIntent,allocationJson:JSON.stringify(allocation),
   qualification:{attempt:r.qualification.attempt,policyRevision},grantIntents,grantId:taskGrantId,
   operations:[...Object.keys(runOwnerOperations),...sdkSessionOperations.map(op=>'runner/session/'+op)],

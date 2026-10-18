@@ -17,6 +17,7 @@ import {createRenderFixture} from './render-material.fixture.mjs';
 import {compilePreparedCandidateConfiguration} from '../../../apps/runtime/prepared-candidate-config.mjs';
 import {allocation as parseAllocation} from '../../../apps/gateway/budget/tool-budget-binding.mjs';
 import {PROPOSED_PREVIEW_CAPABILITY_PLATFORM} from '../../../apps/runtime/product-ports/capability-policy.mjs';
+import {PRODUCT_PROXY_MODEL_ALIAS} from '../../../apps/proxy/product/startup-config.mjs';
 
 const here=fileURLToPath(new URL('.',import.meta.url)),json=async name=>JSON.parse(await readFile(join(here,name),'utf8'));
 const fixture=createRenderFixture();test.after(()=>fixture.cleanup());
@@ -25,7 +26,7 @@ let base;
 async function committed(){
  if(base)return structuredClone(base);
  const policy=await json('policy.json'),allocation=await json('allocation.json'),deployment=(await fixture.setup()).deployment,policyRevision=policyRevisionOf(policy);
- const host=await measureFirstChatLaunch({proxyUrl:deployment.origins.proxyUrl,model:deployment.model.profileId,maxTurns:policy.runtime.maxTurns,maxCostMicroUSD:deployment.model.perRunMaxCostMicroUSD,
+ const host=await measureFirstChatLaunch({proxyUrl:deployment.origins.proxyUrl,model:PRODUCT_PROXY_MODEL_ALIAS,maxTurns:policy.runtime.maxTurns,maxCostMicroUSD:deployment.model.perRunMaxCostMicroUSD,
   maxOutputBytes:policy.runtime.maxOutputBytes,configParentDirectory:policy.runnerLayout.configParentDirectory,secureStorageDirectory:policy.runnerLayout.secureStorageDirectory,policyRevision},{root:SOURCE_ROOT});
  // SYNTHETIC Linux facts only; every other receipt value is the host measurement.
  const receipt={...host,platform:{os:'linux',arch:'x64',node:host.platform.node,uid:1000},executable:{path:LINUX_CLI,sha256:'9'.repeat(64),bytes:host.executable.bytes},
@@ -33,6 +34,18 @@ async function committed(){
  base={policy,allocation,deployment,receipt,policyRevision};return structuredClone(base);
 }
 const assemble=async(change=x=>x,options={})=>{const v=await committed();change(v);return runtimeValues({...v,...options});};
+
+test('SDK alias equals the sole pinned product proxy route while provider and pricing identities stay fixed',async()=>{
+ const product=JSON.parse(await readFile(join(SOURCE_ROOT,'apps/proxy/product/litellm-product-config.yaml'),'utf8'));
+ const policy=await json('policy.json');
+ assert.equal(product.model_list.length,1);
+ assert.equal(product.model_list[0].model_name,PRODUCT_PROXY_MODEL_ALIAS);
+ assert.equal(product.model_list[0].model_info.id,PRODUCT_PROXY_MODEL_ALIAS);
+ assert.equal(product.model_list[0].litellm_params.model,`bedrock/invoke/${policy.model.profileId}`);
+ const args=measurementArguments({policy,deployment:(await fixture.setup()).deployment,policyRevision:policyRevisionOf(policy)});
+ assert.equal(args[args.indexOf('--model')+1],PRODUCT_PROXY_MODEL_ALIAS);
+ assert.notEqual(PRODUCT_PROXY_MODEL_ALIAS,policy.model.profileId);
+});
 
 test('committed allocation.json and policy.json are self-consistent and admitted by the gateway allocation parser',async()=>{
  const {policy,allocation}=await committed();
@@ -48,11 +61,17 @@ test('committed allocation.json and policy.json are self-consistent and admitted
 
 test('assembled runtime.json renders all five roles through every render-material validator with throwaway PKI',async()=>{
  const {runtime,policyRevision,skillsDigest}=await assemble();
- const {roles,summary}=await fixture.render(i=>{i.runtime=runtime;});
+ const {roles,summary}=await fixture.render(i=>{i.runtime=runtime;
+  // This throwaway image has a synthetic digest; select the reviewed source
+  // commit so the renderer still verifies the runner blob without claiming an N21 image remeasure.
+  i.deployment.images.nodeRuntimeSourceCommit='a1876afaeaa59d9da47729487d490cba8cfc9d9c';
+ });
  const control=JSON.parse(roles.control.configBytes.toString('utf8')),c=control.nativeCandidate,{receipt}=await committed();
  assert.equal(c.qualification.policyRevision,policyRevision);assert.equal(control.versions.skillsDigest,skillsDigest);
  assert.equal(c.preparationIntent.executableSha256,receipt.executable.sha256);assert.equal(c.preparationIntent.sdkOptionsSha256,receipt.sdkOptions.sha256);
  assert.equal(c.preparationIntent.runnerSha256,receipt.runner.sha256);assert.deepEqual(c.preparationIntent.launchTemplate,receipt.launchTemplate);
+ assert.equal(c.runtime.model,PRODUCT_PROXY_MODEL_ALIAS);assert.equal(receipt.inputs.model,PRODUCT_PROXY_MODEL_ALIAS);
+ assert.ok(receipt.launchTemplate.args.includes(`--model=${PRODUCT_PROXY_MODEL_ALIAS}`));
  assert.equal(c.preparationIntent.configParentDirectory,'/run/meri');assert.equal(c.preparationIntent.secureStorageDirectory,'/run/meri/sdk-secure');
  assert.deepEqual(JSON.parse(c.allocationJson).budgets,runtime.allocation.manifest.budgets);assert.equal(c.runtime.maxTurns,3);assert.equal(c.runtime.maxOutputBytes,262144);
  assert.equal(c.runtime.maxCostMicroUSD,2000000);assert.equal(c.multiRun.runWindowMs,900000);assert.equal(summary.staticCandidate.policyRevision,policyRevision);
@@ -117,6 +136,8 @@ test('fail closed: non-template SDK option pin, foreign platform, drifted inputs
  await refused(v=>{v.receipt.platform.uid=0;});
  await refused(v=>{v.receipt.gates.matchPreparedDescriptor='FAIL: x';});
  await refused(v=>{v.receipt.inputs.maxTurns=4;});
+ await refused(v=>{v.receipt.inputs.model=v.policy.model.profileId;});
+ await refused(v=>{v.receipt.launchTemplate.args=v.receipt.launchTemplate.args.map(arg=>arg===`--model=${PRODUCT_PROXY_MODEL_ALIAS}`?`--model=${v.policy.model.profileId}`:arg);});
  await refused(v=>{v.receipt.inputs.policyRevision='0'.repeat(64);});
  await refused(v=>{v.receipt.skills.digest='a'.repeat(64);});
  await refused(v=>{v.receipt.launchTemplate.env.ANTHROPIC_AUTH_TOKEN='leak';});

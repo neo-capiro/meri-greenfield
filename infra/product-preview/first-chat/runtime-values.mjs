@@ -39,6 +39,7 @@ import {allocation as parseAllocation} from '../../../apps/gateway/budget/tool-b
 import {RUNNER_SDK_CA_FILE} from '../../../apps/runtime/native-authority/preparation-intent.mjs';
 import {SDK_OPTIONS_TEMPLATE_SCHEMA} from '../../../apps/runtime/native-authority/sdk-option-template.mjs';
 import {PRODUCT_MAX_INPUT_TOKENS,PRODUCT_MAX_OUTPUT_TOKENS} from '../../../apps/gateway/model-proxy/product-envelope.mjs';
+import {PRODUCT_PROXY_MODEL_ALIAS} from '../../../apps/proxy/product/startup-config.mjs';
 import {RECEIPT_SCHEMA,PINNED_SDK,PINNED_CLI,WORKSPACE_ROOT,skillsDigest,probeTemplateSha256,generalReadInstallation} from '../../../apps/runtime/build/first-chat-launch-measurement.mjs';
 import {parseRuntimeValues,parseFeatures,capabilityProfileOf,SOURCE_ROOT} from './render-material.mjs';
 
@@ -118,7 +119,7 @@ export function activeReadOperationsOf(deployment){
 }
 /** The measurement inputs the receipt must have been taken with (and the source template is recomputed with). */
 export const measurementInputs=({policy,deployment,policyRevision})=>{const capability=measuredCapabilityProfile(deployment),activeReadOperations=activeReadOperationsOf(deployment);
- return {proxyUrl:deployment.origins.proxyUrl,model:deployment.model.profileId,maxTurns:policy.runtime.maxTurns,
+ return {proxyUrl:deployment.origins.proxyUrl,model:PRODUCT_PROXY_MODEL_ALIAS,maxTurns:policy.runtime.maxTurns,
  maxCostMicroUSD:deployment.model.perRunMaxCostMicroUSD,maxOutputBytes:policy.runtime.maxOutputBytes,configParentDirectory:policy.runnerLayout.configParentDirectory,
  secureStorageDirectory:policy.runnerLayout.secureStorageDirectory,policyRevision,...(capability?{capabilityProfileSha256:capability.profileSha256}:{}),
  ...(activeReadOperations===null?{}:{activeReadOperationsSha256:canonicalSha256(activeReadOperations)})};};
@@ -147,7 +148,7 @@ export function parseReceipt(receipt,{policy,deployment,policyRevision,sourceSki
  if(Object.hasOwn(t.env,'CLAUDE_CONFIG_DIR')||Object.hasOwn(t.env,'ANTHROPIC_AUTH_TOKEN'))refuse('launchTemplate must not carry the per-run config dir or credential');
  if(t.env.NODE_EXTRA_CA_CERTS!==RUNNER_SDK_CA_FILE||t.env.CLAUDE_SECURESTORAGE_CONFIG_DIR!==policy.runnerLayout.secureStorageDirectory)refuse('launchTemplate CA/secure storage env');
  if(t.env.ANTHROPIC_BASE_URL!==new URL(deployment.origins.proxyUrl).href)refuse('launchTemplate ANTHROPIC_BASE_URL is not the deployment proxy');
- if(!t.args.includes(`--max-turns=${policy.runtime.maxTurns}`)||!t.args.includes(`--model=${deployment.model.profileId}`))refuse('launchTemplate args do not carry the policy maxTurns/model');
+ if(!t.args.includes(`--max-turns=${policy.runtime.maxTurns}`)||!t.args.includes(`--model=${PRODUCT_PROXY_MODEL_ALIAS}`))refuse('launchTemplate args do not carry the policy maxTurns/model');
  const failed=RECEIPT_GATES.filter(k=>r.gates?.[k]!=='PASS');
  if(JSON.stringify(Object.keys(r.gates??{}).sort())!==JSON.stringify([...RECEIPT_GATES].sort()))refuse('receipt launch gates are not exactly the measured set');
  if(requireLinux&&failed.length)refuse(`receipt launch gates not all PASS: ${failed.join(',')}`);
@@ -216,7 +217,7 @@ const m=await import(pathToFileURL(file).href);process.exitCode=await m.main(arg
 const quote=value=>`'${String(value).replaceAll("'","'\\''")}'`;
 export function measurementArguments({policy,deployment,policyRevision,root=IMAGE_ROOT}){
  const capability=measuredCapabilityProfile(deployment),activeReadOperations=activeReadOperationsOf(deployment);
- return ['--proxy-url',deployment.origins.proxyUrl,'--model',deployment.model.profileId,'--max-turns',String(policy.runtime.maxTurns),
+ return ['--proxy-url',deployment.origins.proxyUrl,'--model',PRODUCT_PROXY_MODEL_ALIAS,'--max-turns',String(policy.runtime.maxTurns),
   '--max-cost-micro-usd',String(deployment.model.perRunMaxCostMicroUSD),'--max-output-bytes',String(policy.runtime.maxOutputBytes),
   '--config-parent',policy.runnerLayout.configParentDirectory,'--secure-storage',policy.runnerLayout.secureStorageDirectory,'--policy-revision',policyRevision,
   ...(capability?['--capability-profile',encodeCapabilityProfile(capability.profile)]:[]),
