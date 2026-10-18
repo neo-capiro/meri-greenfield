@@ -55,7 +55,7 @@ function syntheticIssuance(fx){
 }
 /** The production composition shape of assembleControl: store with the continuation authority, the session owner over the real
  * candidate identity context and the journal's transition reader, basic + lifecycle services, the registry over the same store. */
-async function composition({retire}={}){
+async function composition({retire,onStart}={}){
  const fx=candidateFixture(),c=fx.configuration.nativeCandidate;
  for(const k of ['workspace','configParentDirectory','secureStorageDirectory'])c.preparationIntent[k]=normalize(c.preparationIntent[k]);c.preparationIntent.launchTemplate.command=normalize(c.preparationIntent.launchTemplate.command);c.preparationIntent.launchTemplate.env.CLAUDE_SECURESTORAGE_CONFIG_DIR=c.preparationIntent.secureStorageDirectory;
  c.multiRun={runWindowMs:60000,materialDirectory:resolve('synthetic-meri-material'),dynamicInitialRuns:true};
@@ -73,10 +73,10 @@ async function composition({retire}={}){
  const sessions=createActionSessionOwner({mode:'process-local',limits:{maxSessions:20,maxRequestMs:3000,maxTtlMs:30000,maxFactBytes:65536},verifyIdentity:identityContext.verifyIdentity,resolveContext:identityContext.resolveContext,
   readTransition:({signal,...input})=>store.lifecycle.readTransition({...input,signal},()=>signal?.throwIfAborted()),resolveTransitionContext:identityContext.resolveTransitionContext});
  const session=async hints=>(await sessions.issue({identityCredential:NATIVE,...(hints?{hints:{...hints,clientId:id(5)}}:{})})).credential,credential=await session();
- const dispatcher={async start(v){calls.starts.push(v.binding);},async cancel(){},async continued(v){calls.continued.push(v.input);},async signal(){}};
+ const dispatcher={async start(v){calls.starts.push(v.binding);await onStart?.({binding:v.binding,store});},async cancel(){},async continued(v){calls.continued.push(v.input);},async signal(){}};
  const basic=createConversationService({sessions,store,dispatcher,versions,newId:()=>id(n++)});
  const nativeAdmission={admit:v=>authority.continuationAdmission.admit(v),retire:retire??(v=>authority.continuationAdmission.retire(v))};
- const service=createConversationLifecycleService({service:basic,store,dispatcher,checkpoints:f.checkpoints,nativeAdmission,approvals:f.approvals,sessions,newId:()=>id(n++)});
+ const service=createConversationLifecycleService({service:basic,store,dispatcher,reconcileOriginal:f.reconcileOriginal,checkpoints:f.checkpoints,nativeAdmission,approvals:f.approvals,sessions,newId:()=>id(n++)});
  const {issuance,stats}=syntheticIssuance(fx);
  const prepareInitial=async({binding:b})=>{const record=await journal.read({binding:b},check),saved=await base.readOptional(b,{},check);if(!record||!saved)throw Error('not an admitted dynamic original');return issuance.prepare({binding:b,requestSha256:hash(saved.request),expiresAtMs:record.expiresAtMs});};
  const registry=createPreparedRunRegistry({issuance,issuanceIntent:async()=>({expiresAtMs:c.runtime.deadlineMs}),store:base,pool:{connect(){assert.fail('No database');}},client:{send(){assert.fail('No AWS');}},identity:{origin:c.identity.origin,credential:fx.secret.identity,commandContext:c.identity.commandContext,fetchImpl(){assert.fail('No authority network');}},controlCapability:fx.secret.control,objects:{},limits:{maxRequestMs:1000,maxFactBytes:131072,cleanupMs:1000},now:Date.now,allocate(){assert.fail('No physical allocation in this suite');},initialBindings:journal,prepareInitial,retireInitial(){assert.fail('No initial retirement in this suite');},configurationSha256});
@@ -92,10 +92,26 @@ async function composition({retire}={}){
  }
  const continuation=(intent,controlId,proof)=>control({controlId,intent,checkpointId:proof.checkpoint.checkpointId,checkpointSha256:proof.checkpointSha256});
  const row=b=>[...f.state.runs.values()].find(r=>r.run_id===b.runId),projection=controlId=>f.state.controls.get(`${binding.tenantId}:${controlId}`)?.projection;
- return {f,base,store,journal,registry,issuance:stats,sessions,credential,core,stops,state,calls,service,basic,POLICY,scopes,paused,session,row,projection,
+ return {f,base,store,journal,registry,authority,issuance:stats,sessions,credential,core,stops,state,calls,service,basic,POLICY,scopes,paused,session,row,projection,
   resume:(controlId,proof)=>continuation('resume',controlId,proof),fork:(controlId,proof)=>continuation('fork',controlId,proof),
   async close(){await registry.close();sessions.close();f.close();}};
 }
+for(const mode of ['resume','fork'])for(const terminal of ['completed','failed'])test(`${mode}: a naturally ${terminal} successor finishes the committed transition through the production authority`,async t=>{
+ const c=await composition({async onStart({binding:target,store}){if(target.runId===binding.runId)return;for(const [i,state] of ['starting','running',terminal].entries())await store.append(target,{...status(980+i,state),data:{state,reasonCode:state==='failed'?'EXECUTION_FAILED':null}},check);}});t.after(c.close);
+ const proof=await c.paused(),controlId=id(800),receipt=await c[mode](controlId,proof),target=receipt.targetBinding;
+ assert.equal(receipt.state,'APPLIED');assert.equal(c.projection(controlId).state,'APPLIED');assert.equal(c.row(target).projection.state,terminal);
+ assert.deepEqual(c.calls.starts,[binding,target]);assert.equal(c.calls.continued.length,mode==='resume'?1:0);
+ // A finished target provides receipt authority only for its persisted transition, never generic authority to initiate new work.
+ const current={binding:target,scopes:c.scopes,selectedClientId:id(5),policyRevision:c.POLICY,deadlineMs:Date.now()+1000};
+ await assert.rejects(c.authority.transitionAuthority.readCurrent(current),{code:'CONTINUATION_REFUSED'});
+ const verified=await c.authority.transitionAuthority.readCurrent({...current,committedContinuation:{sourceBinding:binding,controlId}});assert.deepEqual(verified.binding,target);
+ for(const reference of [{sourceBinding:binding,controlId:id(801)},{sourceBinding:{...binding,runId:id(802)},controlId}])await assert.rejects(c.authority.transitionAuthority.readCurrent({...current,committedContinuation:reference}),{code:'CONTINUATION_REFUSED'});
+});
+test('a cancelled successor cannot finish the committed transition through the production authority',async t=>{
+ const c=await composition({async onStart({binding:target,store}){if(target.runId!==binding.runId)await store.lifecycle.cancel(target,{...status(990,'cancelled'),data:{state:'cancelled',reasonCode:'USER_CANCELLED'}},check);}});t.after(c.close);
+ const proof=await c.paused(),controlId=id(803);await assert.rejects(c.resume(controlId,proof),{code:'LIFECYCLE_EFFECT_UNKNOWN'});
+ const projection=c.projection(controlId);assert.equal(projection.state,'UNKNOWN');assert.equal(c.row(projection.target.binding).projection.state,'cancelled');assert.equal(c.calls.continued.length,0);assert.equal(c.calls.starts.length,2);
+});
 test('fork: admitted in a new conversation through the dynamic owner, verified by the real transition context, served by the registry over the initial-run binding journal',async t=>{
  const c=await composition();t.after(c.close);const proof=await c.paused();
  const F=id(760),receipt=await c.fork(F,proof),t2=receipt.targetBinding;

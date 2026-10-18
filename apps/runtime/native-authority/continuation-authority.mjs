@@ -2,12 +2,15 @@
  * existing durable run owners. It supplies the two lifecycle product ports `apps/runtime/product-applications.mjs` captures and
  * `apps/control/conversations/lifecycle/{service,journal,authority}.mjs` verify:
  *
- *  transitionAuthority.readCurrent({binding,scopes,selectedClientId,policyRevision,deadlineMs,signal})
+ *  transitionAuthority.readCurrent({binding,scopes,selectedClientId,policyRevision,deadlineMs,signal,committedContinuation?})
  *    -> {binding,scopes,selectedClientId,policyRevision,checkedAtMs,expiresAtMs}
  *    The fresh canonical currentness of exactly that run, read outside the journal's own SQL locks: the durable run record
  *    (binding, scopes, versions, policy revision, not terminal) and the conversation's current-run join (`store.nextRuns.current`:
  *    the live latest run, never a reservation). Used by the journal before it closes a source range (source) and for the
- *    post-commit target checks (target). The fact is Meri-stamped and valid for `authorityWindowMs`.
+ *    post-commit target checks (target). Only those checks pass the trusted {sourceBinding,controlId} reference: its persisted
+ *    DISPATCHING/APPLIED control must name this exact target before a completed/failed run can supply receipt authority.
+ *    Cancellation always refuses, and admission/retirement still require a nonterminal source. The fact is Meri-stamped and
+ *    valid for `authorityWindowMs`.
  *  continuationAdmission.admit({controlId,mode,sourceBinding,checkpoint,checkpointSha256,request,scopes,selectedClientId,versions,signal})
  *    -> {binding,scopes,selectedClientId,admissionReceiptId,targetSessionId,expiresAtMs}
  *    Nominates the target run of one lifecycle control after verifying the source against the durable record it was captured
@@ -69,10 +72,10 @@ export function createContinuationAuthority(configuration){
   const clients=scopes.filter(s=>s.kind==='client');
   if(clients.length!==1||clients[0].resourceId!==selectedClientId||selectedClientId!==c.selectedClientId)refuse('REFUSED');
  }
- /** The durable run record of a binding, exactly as captured: scopes, versions and policy revision pinned, not terminal. */
- async function record(life,binding,scopes){
+ /** New work needs a nonterminal run. Only an independently verified committed continuation may use a naturally finished target. */
+ async function record(life,binding,scopes,allowFinished=false){
   const saved=await durable(life,()=>read(binding,{},life.check));
-  if(saved===null||!same(saved.run.binding,binding)||!same(saved.run.scopes,scopes)||saved.run.policyRevision!==c.policyRevision||!same(saved.run.versions,versions)||TERMINAL.includes(saved.run.state))refuse('REFUSED');
+  if(saved===null||!same(saved.run.binding,binding)||!same(saved.run.scopes,scopes)||saved.run.policyRevision!==c.policyRevision||!same(saved.run.versions,versions)||saved.run.state==='cancelled'||!allowFinished&&TERMINAL.includes(saved.run.state))refuse('REFUSED');
   return saved;
  }
  /** The conversation's current-run join: this binding is its live latest run (never a reservation) with the same scopes. */
@@ -82,12 +85,19 @@ export function createContinuationAuthority(configuration){
   return selected;
  }
  async function readCurrent(value){
-  const {signal,...raw}=own(value,['binding','scopes','selectedClientId','policyRevision','deadlineMs'],['signal']);nativeSignal(signal);
+  const {signal,...raw}=own(value,['binding','scopes','selectedClientId','policyRevision','deadlineMs'],['signal','committedContinuation']);nativeSignal(signal);
   let v;try{v=data(raw);validateShape('RunBinding',v.binding);}catch{refuse('REFUSED');}
   if(v.policyRevision!==c.policyRevision||!Number.isSafeInteger(v.deadlineMs))refuse('REFUSED');clientScopes(v.scopes,v.selectedClientId,v.binding.tenantId);
   const life=lifetime(signal,v.deadlineMs),started=now();
   try{
-   await record(life,v.binding,v.scopes);await latest(life,v.binding,v.scopes);
+   const reference=v.committedContinuation;
+   if(reference!==undefined){
+    try{own(reference,['sourceBinding','controlId']);validateShape('RunBinding',reference.sourceBinding);uuid(reference.controlId);}catch{refuse('REFUSED');}
+    const control=await durable(life,()=>getControl({binding:reference.sourceBinding,scopes:v.scopes,selectedClientId:v.selectedClientId,controlId:reference.controlId},life.check));
+    if(!['DISPATCHING','APPLIED'].includes(control.state)||!['resume','fork'].includes(control.input.intent)||!control.target||!same(control.target.binding,v.binding)||!same(control.target.scopes,v.scopes)||control.target.selectedClientId!==v.selectedClientId)refuse('REFUSED');
+   }
+   await record(life,v.binding,v.scopes,reference!==undefined);
+   await latest(life,v.binding,v.scopes);
    const checkedAtMs=now(),expiresAtMs=started+limits.authorityWindowMs;
    if(!Number.isSafeInteger(checkedAtMs)||checkedAtMs<started||expiresAtMs<=checkedAtMs)refuse('REFUSED');life.check();
    return data({binding:v.binding,scopes:v.scopes,selectedClientId:v.selectedClientId,policyRevision:v.policyRevision,checkedAtMs,expiresAtMs});

@@ -10,23 +10,23 @@ import {createContinuationAuthority,derivedUuid} from '../continuation-authority
 const check=()=>{},code=c=>e=>e?.code===c,UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u;
 const status=(n,state)=>({eventId:id(n),createdAt:new Date().toISOString(),type:'run.status',data:{state,reasonCode:null}});
 /** A paused original with its claimed allocation, as the prepared kickoff leaves it; `stopMode` scripts the native stop owner. */
-export async function pausedSource({pause=true,fork}={}){
+export async function pausedSource({pause=true,fork,now=Date.now}={}){
  const f=await lifecycleFixture(),base=createPostgresConversationStore({pool:f.pool}),stops=[],state={stopMode:'record'};
  await f.service.allocateInput({credential:f.credential,input:f.input});await f.service.submit({credential:f.credential,input:f.input});
  const allocation=await allocateOriginal(base,binding);
  let n=600;for(const s of ['starting','running'])await f.service.publish({credential:f.credential,binding,event:status(n++,s)});
  if(pause){await f.control({controlId:id(610),intent:'pause'});await f.claim(id(610));await f.checkpoint(id(610));}
  const stop=async({binding:b,signal})=>{stops.push({binding:b,aborted:signal?.aborted===true});if(state.stopMode==='record')await recordRetired(base,allocation);if(state.stopMode==='throw')throw Error('native stop uncertain');};
- const authority=createContinuationAuthority({store:base,stop,selectedClientId:id(5),policyRevision:'policy1',versions,now:Date.now,limits:{maxRequestMs:3000,authorityWindowMs:30000,admissionWindowMs:120000},...(fork?{fork}:{})});
+ const authority=createContinuationAuthority({store:base,stop,selectedClientId:id(5),policyRevision:'policy1',versions,now,limits:{maxRequestMs:3000,authorityWindowMs:30000,admissionWindowMs:120000},...(fork?{fork}:{})});
  const proof=pause?f.proofs.get(id(220)):null,saved=await base.read(binding,{after:0,limit:1},check);
  const admitInput=(controlId,mode='resume')=>({controlId,mode,sourceBinding:binding,checkpoint:proof.checkpoint,checkpointSha256:proof.checkpointSha256,request:saved.request,scopes,selectedClientId:id(5),versions});
  return {f,base,allocation,stops,state,authority,proof,saved,admitInput,close:f.close};
 }
 test('readCurrent answers the durable currentness of the exact run with a Meri-stamped bounded fact',async t=>{
- const h=await pausedSource();t.after(h.close);const {readCurrent}=h.authority.transitionAuthority;
- const started=Date.now(),fact=await readCurrent({binding,scopes,selectedClientId:id(5),policyRevision:'policy1',deadlineMs:started+1000});
+ const started=Date.now(),h=await pausedSource({now:()=>started});t.after(h.close);const {readCurrent}=h.authority.transitionAuthority;
+ const fact=await readCurrent({binding,scopes,selectedClientId:id(5),policyRevision:'policy1',deadlineMs:started+1000});
  assert.deepEqual(Object.keys(fact),['binding','scopes','selectedClientId','policyRevision','checkedAtMs','expiresAtMs']);assert.ok(Object.isFrozen(fact));
- assert.deepEqual(fact.binding,binding);assert.deepEqual(fact.scopes,scopes);assert.ok(fact.checkedAtMs>=started);assert.ok(fact.expiresAtMs>fact.checkedAtMs&&fact.expiresAtMs<=started+30000);
+ assert.deepEqual(fact.binding,binding);assert.deepEqual(fact.scopes,scopes);assert.equal(fact.checkedAtMs,started);assert.equal(fact.expiresAtMs,started+30000);
  for(const [name,expected] of [
   ['stale fence',{binding:{...binding,writerFence:2}}],['other scopes',{scopes:[{...scopes[0],resourceId:id(9)}]}],['other policy',{policyRevision:'policy2'}],
   ['other client',{selectedClientId:id(9)}],['scope revision drift',{scopes:[{...scopes[0],policyRevision:'policy2'}]}],['no deadline',{deadlineMs:undefined}],

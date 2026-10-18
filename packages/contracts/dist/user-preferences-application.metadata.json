@@ -69,8 +69,8 @@
     },
     {
       "path": "../../apps/control/product-access/http.mjs",
-      "sha256": "b0603665c72569ccc266e99ffec15e66885bf4e7c66072a6d07ce0c28adb0ddf",
-      "bytes": 6951
+      "sha256": "2b071243be9ea1094812ecaaba711145761df89dd2ab5e4cab4a880c991cfc48",
+      "bytes": 7362
     },
     {
       "path": "../../apps/control/settings/documents.mjs",

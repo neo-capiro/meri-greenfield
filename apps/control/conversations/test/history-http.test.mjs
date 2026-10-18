@@ -30,7 +30,7 @@ async function fixture({lifecycle=false,extraClient=false}={}){
  const store=createPostgresConversationStore({pool}),owner=createNextRunOwner({store,versions,newId:()=>id(serial++),retirement:{async verifyRetired(){throw Error('not admitted');}},revocation:{async verifyRevoked(){throw Error('not admitted');}}});
  state.member={tenantId:binding.tenantId,actorId:binding.actorId,status:'active',role:'member',permissions:[],clientIds:extraClient?[id(5),id(7)]:[id(5)],membershipRevision:'m1'};
  state.memberCredentialReads=[];const gate=createMembershipGate({now:Date.now,limits:{maxRequestMs:1000,maxFactBytes:65536},verifyToken:async({credential})=>{if(credential!=='native')throw Error('invalid');return {tenantId:state.member.tenantId,actorId:state.member.actorId,checkedAtMs:Date.now(),expiresAtMs:Date.now()+30000};},
-  readMembership:async({credential})=>{state.memberCredentialReads.push(credential);return {...state.member,checkedAtMs:Date.now(),expiresAtMs:Date.now()+30000};}});
+  readMembership:async({credential})=>{state.memberCredentialReads.push(credential);await state.onMembershipRead?.(state.memberCredentialReads.length);return {...state.member,checkedAtMs:Date.now(),expiresAtMs:Date.now()+30000};}});
  state.retentionChecks=0;const retention={async assertServable(){state.retentionChecks++;if(state.suppressed)throw Object.assign(Error('RETENTION_SUPPRESSED'),{code:'RETENTION_SUPPRESSED'});}};
  state.coreState='active';state.coreClientId=id(5);state.coreReads=[];
  const currentness={async assertCurrent({credential,principal,conversationId,scopes,signal,deadlineMs}){
@@ -243,6 +243,20 @@ for(const field of ['actor','client'])for(const suppressed of [false,true])test(
 test('membership revision changed during canonical read withholds the page with canonical409',async()=>{
  const f=await fixture();try{await f.turn(1);f.state.onHistoryRead=()=>{f.state.member.membershipRevision='m2';};const response=await f.post('transcript',{conversationId:binding.conversationId});
   assert.equal(response.status,409);assert.deepEqual(await response.json(),{error:{code:'MEMBERSHIP_CHANGED'}});
+ }finally{f.close();}
+});
+
+for(const path of ['transcript','list','next-turn'])test(`suppression during final membership recheck withholds ${path} result`,async()=>{
+ const f=await fixture();try{
+  if(path==='next-turn')await f.turn(1);else await f.service.submit({credential:f.credential,input:f.input});
+  const reservations=f.state.nextRuns.size;
+  f.state.onMembershipRead=count=>{if(count===(path==='next-turn'?3:2))f.state.suppressed=true;};
+  const response=await f.post(path,path==='list'?{}:{conversationId:binding.conversationId,...(path==='next-turn'?{sourceRunId:binding.runId}:{})});
+  assert.equal(f.state.suppressed,true,'suppression occurs after the service has returned its result');
+  const body=await response.json();
+  if(path==='list'){assert.equal(response.status,200);assert.deepEqual(body.conversations,[]);}
+  else{assert.equal(response.status,503);assert.deepEqual(body,{error:{code:'CONVERSATION_UNAVAILABLE',...(path==='next-turn'?{outcome:'RESULT_NOT_RELEASED'}:{})}});}
+  assert.equal(f.state.nextRuns.size,reservations,'the final release check never redispatches or repeats admission');
  }finally{f.close();}
 });
 

@@ -5,7 +5,7 @@ import {createPostgresConversationStore} from '../../../control/conversations/po
 import {createSelectedOutputRetention} from '../../../control/conversations/skills/retention.mjs';
 import {storeFixture} from '../../../control/conversations/test/store-fixture.mjs';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
-export async function fixture({queued=false}={}){const f=runtimeFixture(),base=storeFixture(),store=createPostgresConversationStore({pool:base.pool}),c=f.configuration,binding=c.binding,scopes=c.scopes,createdAt=new Date(c.now()).toISOString();
+export async function fixture({queued=false,skillId='quick_skill.commitments_audit'}={}){const f=runtimeFixture(skillId),base=storeFixture(),store=createPostgresConversationStore({pool:base.pool}),c=f.configuration,binding=c.binding,scopes=c.scopes,createdAt=new Date(c.now()).toISOString();
  const run={binding,state:'queued',scopes,createdAt,policyRevision:scopes[0].policyRevision,versions:c.versions},conversation={conversationId:binding.conversationId,owner:{tenantId:binding.tenantId,actorId:binding.actorId},scopes,createdAt,policyRevision:run.policyRevision};
  const event={contractVersion:'0.1.0',eventId:randomUUID(),binding,sequence:1,createdAt,scopes,type:'run.status',data:{state:'queued',reasonCode:null}};
  await store.accept({conversation,run,request:c.request,event},()=>{});for(const state of queued?[]:['starting','running'])await store.append(binding,{eventId:randomUUID(),createdAt,type:'run.status',data:{state,reasonCode:null}},()=>{});

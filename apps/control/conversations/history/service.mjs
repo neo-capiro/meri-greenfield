@@ -26,6 +26,19 @@ export function createConversationHistoryService({store,nextRunOwner,gate,retent
    return {...result,conversations:visible};
   }),
   transcript:guard(transcript),
+  // The HTTP owner awaits membership after the domain call. Recheck subject serving after that await, too.
+  recheckRelease:guard(async({principal,request,result,operation,signal})=>{
+   check(signal)();
+   if(operation==='list'){
+    const visible=[];
+    for(const conversation of result.conversations){
+     try{await servable(principal,conversation.conversationId);}catch(error){if(error?.code==='RETENTION_SUPPRESSED')continue;throw error;}
+     check(signal)();visible.push(conversation);
+    }
+    return {...result,conversations:visible};
+   }
+   await servable(principal,request.conversationId);check(signal)();return result;
+  }),
   nextTurn:guard(async({principal,request,signal,deadlineMs,recheckMembership,recheckConversation})=>{
    if(typeof nextRunOwner?.admitTurn!=='function')refuse('CONVERSATION_TURN_UNAVAILABLE','NOT_DISPATCHED');
    let saved;try{saved=await transcript({principal,request:{conversationId:request.conversationId,after:0,limit:1},signal,recheckConversation});}
