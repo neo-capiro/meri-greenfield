@@ -17,7 +17,14 @@ export const testPublic=createPublicKey(testPrivate),testJwk=testPublic.export({
 const uuid=d=>`${d.repeat(8)}-${d.repeat(4)}-4${d.repeat(3)}-8${d.repeat(3)}-${d.repeat(12)}`;
 function retarget(value,oldTenant,oldActor,seen=new Set()){if(!value||typeof value!=='object'||seen.has(value))return;seen.add(value);for(const [k,v] of Object.entries(value)){if(v===oldTenant)value[k]=uuid('b');else if(v===oldActor)value[k]=uuid('c');else retarget(v,oldTenant,oldActor,seen);}}
 export async function retainedControlFixture(id='get_research_portfolio',options={}){
+ const {floridaSelectedClientId,...controlOptions}=options;
  const scene=retainedCase(id),old={...scene.authority.binding};retarget(scene,old.tenantId,old.actorId);let delegated,control;
+ if(floridaSelectedClientId!==undefined){
+  assert.equal(id,'get_florida_budget_project');
+  const scope={tenantId:scene.authority.binding.tenantId,kind:'client',resourceId:floridaSelectedClientId,policyRevision:scene.authority.policyRevision};
+  Object.assign(scene.authority.subject,{kind:'client',entityType:'client',entityIds:[floridaSelectedClientId],scopes:[scope]});
+  scene.authority.claims.scopes=[scope];scene.authority.decision.scopes=[scope];
+ }
  const recipients=Object.fromEntries(retainedOperationIds.map(op=>[op,op==='get_florida_budget_project'?'https://intel.synthetic.invalid':'https://core.synthetic.invalid'])),origin=recipients[id];
  scene.transport={origin,delegatedTransport:{read:(...args)=>delegated.read(...args)}};scene.retainedContextPorts={readCurrent:p=>control.retainedContextPorts.readCurrent(p)};
  const f=await durableFamilyFixture(scene),grant=[...f.state.bindings.values()][0].facts,allocation=[...f.state.allocations.values()][0].allocation,credential='synthetic-opaque';
@@ -41,7 +48,7 @@ export async function retainedControlFixture(id='get_research_portfolio',options
   assert.equal(new URL(url).origin,origin);assert.equal(path,retainedRoutes[id].data);assert.equal(init.method,'POST');assert.ok(init.headers.authorization.startsWith('CapiroRetained '));const encoded=init.headers.authorization.slice('CapiroRetained '.length),envelope=assertRetainedPrincipalEnvelope(JSON.parse(Buffer.from(encoded,'base64url').toString('utf8')));assert.equal(verify(null,retainedPrincipalPayload(envelope),testPublic,Buffer.from(envelope.signature,'base64url')),true);
   assertCoreDelegatedRequest(body);assert.equal(envelope.rawRequestSha256,hash(body.request));assert.equal(envelope.normalizationContextSha256,hash(body.context));assert.equal(envelope.resourceRevision,state.resourceRevision);state.dataCalls.push({path,body,envelope});await state.afterData?.();return Response.json(scene.page);
  };
- const configuration={binding:f.binding,expiresAtMs:f.deadlineMs,store,taskVerifier,taskCapability:credential,coreOrigin:'https://core.synthetic.invalid',getNativeCredential:async()=>{state.nativeCredentials++;return state.requestRevoked?undefined:'SYNTHETIC_CURRENT_NATIVE';},fetchImpl,issuerId,keyId,publicKeyJwk:testJwk,recipients,enabled:true,now:f.now,...options};
+ const configuration={binding:f.binding,expiresAtMs:f.deadlineMs,store,taskVerifier,taskCapability:credential,coreOrigin:'https://core.synthetic.invalid',getNativeCredential:async()=>{state.nativeCredentials++;return state.requestRevoked?undefined:'SYNTHETIC_CURRENT_NATIVE';},fetchImpl,issuerId,keyId,publicKeyJwk:testJwk,recipients,enabled:true,now:f.now,...controlOptions};
  control=createRetainedReadControl(configuration);delegated=createRetainedDelegatedTransport({origin,getCredentials:control.getCredentials,now:f.now,fetchImpl});
  return {...f,control,configuration,stateCore:state,conversationStore:store,conversationState:sf.state,reads,entry,runRequest,grant,allocation,approvedReads,fetchImpl,taskVerifier,origin,recipients,proof:signal=>({binding:f.binding,subject:f.authority.subject,operation:f.operation,requestSha256:hash(scene.arguments),policyRevision:f.policyRevision,sourceIds:f.authority.sourceIds,request:scene.arguments,observationAt:id==='get_florida_budget_project'?new Date(f.now()).toISOString():null,deadlineMs:f.deadlineMs,signal})};
 }

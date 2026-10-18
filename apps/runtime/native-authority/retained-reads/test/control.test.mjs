@@ -30,6 +30,44 @@ test('revoked request-lifetime native material does not use a cached bearer or s
 test('resource pin is per canonical dispatch lifetime and does not become a reusable lease',async()=>{const x=await retainedControlFixture(),one=new AbortController(),two=new AbortController();await x.control.retainedContextPorts.readCurrent(x.proof(one.signal));x.stateCore.resourceRevision='1'.repeat(64);await assert.rejects(x.control.retainedContextPorts.readCurrent(x.proof(one.signal)),code('ACCESS_DENIED'));const fresh=JSON.parse(await x.control.retainedContextPorts.readCurrent(x.proof(two.signal)));assert.equal(fresh.requestSha256,hash(x.arguments));one.abort();two.abort();});
 test('unrelated repeat of principal/resource clocks does not manufacture resource drift',async()=>{const x=await retainedControlFixture(),controller=new AbortController();const a=JSON.parse(await x.control.retainedContextPorts.readCurrent(x.proof(controller.signal)));x.state.now+=1;const b=JSON.parse(await x.control.retainedContextPorts.readCurrent(x.proof(controller.signal)));assert.equal(a.context.subject.entityIds[0],b.context.subject.entityIds[0]);assert.ok(b.expiresAtMs<=a.expiresAtMs);controller.abort();});
 test('Florida keeps canonical empty session and exact nulls; UUID/name/foreign scope remain checked',async()=>{const x=await retainedControlFixture('get_florida_budget_project'),selector=coreRetainedSelector(x.operation,{},x.authority.subject);assert.deepEqual(selector,{schemaVersion:1,sessionKey:'',folderId:null,clientSelector:null});x.stateCore.resourceMutator=r=>{r.effectiveScope.clientId='11111111-1111-4111-8111-111111111111';};await assert.rejects(x.execute('fl-scope'));assert.equal(x.stateCore.issuances.length,0);assert.equal(x.state.reservations.size,0);});
+test('Florida folder-only client scope is released only for the admitted selected client',async()=>{
+ const client='99999999-9999-4999-8999-999999999999',folder='77777777-7777-4777-8777-777777777777';
+ const x=await retainedControlFixture('get_florida_budget_project',{floridaSelectedClientId:client});
+ x.arguments.folderId=folder;x.page.result.scope={...x.page.result.scope,folderId:folder,clientId:client};
+ x.stateCore.resourceMutator=r=>{r.effectiveScope.clientId=client;};
+ const out=JSON.parse(await x.execute('fl-selected-folder'));
+ assert.equal(out.result.result.scope.clientId,client);assert.equal(out.result.result.scope.folderId,folder);
+ assert.equal(x.stateCore.issuances.length,1);assert.equal(x.stateCore.dataCalls.length,1);
+});
+test('Florida selected client reference and truthful folder-only null scope remain distinct',async()=>{
+ const client='99999999-9999-4999-8999-999999999999',folder='77777777-7777-4777-8777-777777777777';
+ const selected=await retainedControlFixture('get_florida_budget_project',{floridaSelectedClientId:client});
+ selected.arguments.clientId=client;selected.page.result.scope.clientId=client;
+ selected.stateCore.resourceMutator=r=>{r.effectiveScope.clientId=client;r.clientResolution={selector:client,clientId:client};};
+ const clientPage=JSON.parse(await selected.execute('fl-selected-reference'));
+ assert.equal(clientPage.result.result.scope.clientId,client);
+ const folderOnly=await retainedControlFixture('get_florida_budget_project');
+ folderOnly.arguments.folderId=folder;folderOnly.page.result.scope.folderId=folder;
+ const folderPage=JSON.parse(await folderOnly.execute('fl-folder-null-client'));
+ assert.equal(folderPage.result.result.scope.folderId,folder);assert.equal(folderPage.result.result.scope.clientId,null);
+});
+test('Florida folder-only foreign or unadmitted client receipt refuses before issuer',async()=>{
+ const selected='99999999-9999-4999-8999-999999999999',foreign='88888888-8888-4888-8888-888888888888',folder='77777777-7777-4777-8777-777777777777';
+ for(const admitted of [selected,null]){
+  const x=await retainedControlFixture('get_florida_budget_project',admitted?{floridaSelectedClientId:admitted}:{});
+  x.arguments.folderId=folder;x.stateCore.resourceMutator=r=>{r.effectiveScope.clientId=admitted?foreign:selected;};
+  await assert.rejects(x.execute('fl-foreign-folder'),code('ACCESS_DENIED'));
+  assert.equal(x.stateCore.issuances.length,0);assert.equal(x.stateCore.dataCalls.length,0);
+ }
+});
+test('Florida fresh selected-client receipt drift refuses before delegated data',async()=>{
+ const selected='99999999-9999-4999-8999-999999999999',foreign='88888888-8888-4888-8888-888888888888';
+ const x=await retainedControlFixture('get_florida_budget_project',{floridaSelectedClientId:selected});
+ x.arguments.folderId='77777777-7777-4777-8777-777777777777';let checks=0;
+ x.stateCore.resourceMutator=r=>{r.effectiveScope.clientId=++checks===1?selected:foreign;};
+ await assert.rejects(x.execute('fl-drift'),code('ACCESS_DENIED'));
+ assert.ok(checks>=2);assert.equal(x.stateCore.issuances.length,0);assert.equal(x.stateCore.dataCalls.length,0);
+});
 test('current Core receipt substitution and future clocks refuse before issuer',async()=>{for(const field of ['selectorSha256','resourceRevision','identityRevision','operation','checkedAtMs','expiresAtMs']){const x=await retainedControlFixture();x.stateCore.resourceMutator=r=>{if(field==='checkedAtMs')r[field]++;else if(field==='expiresAtMs')r[field]=x.now();else r[field]='wrong';};await assert.rejects(x.execute(field));assert.equal(x.stateCore.issuances.length,0);assert.equal(x.state.reservations.size,0);}});
 test('legacy transport remains explicit; new mode cannot request or fall back to a service secret',async()=>{let legacy=0,delegated=0;assert.throws(()=>createRetainedHttpTransport({origin:'https://synthetic.invalid',now:Date.now,getCredentials:()=>{legacy++;},delegatedTransport:{read(){delegated++;}}}));const transport=createRetainedHttpTransport({origin:'https://synthetic.invalid',now:Date.now,delegatedTransport:{read(){delegated++;throw Error('synthetic delegated refusal');}},fetchImpl:()=>{legacy++;}});await assert.rejects(transport.read({operation:{id:'get_florida_budget_project',version:'0.2.0'},contract:{binding:{group:'florida-budget'}}}, {path:'/api/clio/tools/get_florida_budget_project',method:'POST',body:{},serviceSecret:true}));assert.equal(delegated,1);assert.equal(legacy,0);});
 test('pre-cancel refuses before Core or SQL observation',async()=>{const x=await retainedControlFixture(),controller=new AbortController();controller.abort();await assert.rejects(x.control.retainedContextPorts.readCurrent(x.proof(controller.signal)));assert.equal(x.stateCore.coreCalls.length,0);assert.equal(x.reads.length,0);});
