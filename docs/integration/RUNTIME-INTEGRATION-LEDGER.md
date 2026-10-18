@@ -36,9 +36,9 @@ Upstream codex stacks reach this branch through the lane PRs: product/task6 chai
 
 | Id | Item | Owner / decision |
 |---|---|---|
-| D14 | First chat: runner container exits 2 ~13 s after RUNNING, before `cli.main`; log empty | Fable, after integration (runner diagnostic entrypoint prepared: `scratchpad/diagr.mjs`, `patch-runner-diag.mjs`) |
-| D11 | An admitted conversation whose unused 15-min binding expired is refused forever (`select()`/`claim()`) | Fable; frontend rotates once as mitigation |
-| H1 | `history` 502 for a conversation with no run row yet (`STORE_CORRUPT`); `transcript` 404 (route not mounted) | Fable |
+| D14 | First chat: runner container exits 2 ~13 s after RUNNING, before `cli.main`; log empty. **Ruled out:** the pinned poststart CA matches and verifies the private ALB certificate. **Now observable:** `ac2d2a7a` makes the runner write `RUNNER_STARTUP_FAILED stage=… step=… code=…` (constants only); the first chat on the integrated candidate will name the step | Fable |
+| D11 | An admitted conversation whose unused 15-min binding expired is refused forever (`select()`/`claim()`) | **Mitigated:** only conversations with no turn are affected; frontend rotates once to a new chat (nothing is lost). Runtime renewal deferred |
+| H1 | `history` 502 for a conversation with no run row yet; `transcript` 404 (route not mounted) | **Control fixed** `00076b0a` (404 `NOT_FOUND`); frontend lane asked to treat it as an empty state; transcript route still open |
 | T1 | ~9/s client TLS negotiation errors on `meri-preview-control-private` since 03:32 UTC, source unidentified | Fable |
 | K1 | Kickoff cancellation signal dropped between `prepared-run-registry` allocateNative and `allocateRemoteNativeController` / `allocate()` (pre-existing) | Fable |
 | S1 | Session owner re-fetches every Core fact per stage (~20 Core round trips per first send, ~36 s) | Fable + dot design |
@@ -50,7 +50,8 @@ Upstream codex stacks reach this branch through the lane PRs: product/task6 chai
 | L7 | Objective: KMS Ed25519 key (D7-2), run-start migration (D7-4), custody SQL unexecuted | Fable |
 | L8 | Bash on the isolated browser host (D005/D015 #8); networked-Bash approvals | Fable |
 | L9 | Post-shipment N1–N7 (takeover, bridge, WOPI) | Fable, later |
-| X1 | Pre-existing test debt: `start-control-port-boundary` pg mock lacks `initial_inputs`; `image-closure` fails on Windows; generators `generate-user-preferences`/`generate-task-commands` need the offline bundle toolchain env | Fable |
+| R2 | Lane 2 read tools: 17 new failures on the integrated tree (read-family availability gate, `search_federal_grants` adapter, SDK tool count 76 vs 71) | Fable session `rt-reads` → PR into this branch |
+| X1 | Pre-existing test debt: `apps/worker/conversation/test/activity-capabilities.test.mjs` fails all 8 cases in this Windows environment (STORE_UNAVAILABLE; lane 8's new Bash case included); `start-control-port-boundary` pg mock lacks `initial_inputs`; `image-closure` fails on Windows; generators `generate-user-preferences`/`generate-task-commands` need the offline bundle toolchain env | Fable |
 
 ## 5. Wiring inventory
 
