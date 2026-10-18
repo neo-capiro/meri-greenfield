@@ -4,6 +4,7 @@
  * The journal is the producer's outbox: the immutable candidate and its hash are written once; only the submission state moves
  * PREPARED → SUBMITTED | SUBMISSION_UNKNOWN → SUBMITTED. Review status is never stored here; Core owns it. */
 import {refuse} from '../product-access/errors.mjs';
+import {UUID} from '../product-access/shape.mjs';
 import {assertPool,transact} from '../product-persistence/transaction.mjs';
 import {assertCandidate} from './candidate.mjs';
 const table='meri_memory.candidates';
@@ -57,6 +58,20 @@ export function createPostgresMemoryJournal({pool}){
      AND ($5::timestamptz IS NULL OR (created_at,candidate_id) < ($5::timestamptz,$6::uuid))
      ORDER BY created_at DESC, candidate_id DESC LIMIT $7`,[tenantId,proposerActorId,[...clientIds],clientId,cursor?.createdAt??null,cursor?.candidateId??null,limit])).rows;
     return Object.freeze(rows.map(record));
+   },true);
+  },
+  /** Exact local payload IDs for a conversation retention inventory. This is the Meri outbox, separate from Core's received
+   * candidates. A fixed keyset bound prevents a large conversation from being silently truncated by a one-shot inventory query.
+   * The central retention owner must still bind this port, suppression and guarded row deletion before claiming purge coverage. */
+  async listConversationCandidateIds({tenantId,conversationId,afterCandidateId=null,limit=500,signal}){
+   if(typeof tenantId!=='string'||tenantId.length<1||tenantId.length>128||typeof conversationId!=='string'||!UUID.test(conversationId)||
+    afterCandidateId!==null&&(typeof afterCandidateId!=='string'||!UUID.test(afterCandidateId))||!Number.isSafeInteger(limit)||limit<1||limit>500)refuse('MEMORY_JOURNAL_STATE');
+   return tx(signal,async client=>{
+    const rows=(await client.query(`SELECT candidate_id FROM ${table} WHERE tenant_id=$1 AND candidate->'origin'->>'kind'='conversation'
+     AND candidate->'origin'->>'conversationId'=$2 AND ($3::uuid IS NULL OR candidate_id>$3::uuid)
+     ORDER BY candidate_id LIMIT $4`,[tenantId,conversationId,afterCandidateId,limit])).rows;
+    if(rows.some(row=>typeof row.candidate_id!=='string'||!UUID.test(row.candidate_id)))refuse('MEMORY_JOURNAL_STATE');
+    return Object.freeze(rows.map(row=>row.candidate_id));
    },true);
   },
  });

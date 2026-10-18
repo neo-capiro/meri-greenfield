@@ -147,3 +147,18 @@ GRANT UPDATE (submission_state,review_id,submitted_at) ON meri_memory.candidates
 
 Known limit: the command executor folds every post-claim source failure into `COMMAND_OUTCOME_UNKNOWN`, so a definite Core refusal of a
 run-originated candidate leaves the command indeterminate and the candidate PREPARED (visible as `submission_unknown`).
+
+## PR #121 memory audit repair outline (source only)
+
+The producer owns candidate visibility and submission. An injected canonical retention read gate checks the trusted conversation
+identity in a conversation-origin candidate before writing, resubmitting, listing, reading status or forwarding a decision. A
+suppressed conversation's candidate is hidden; an unavailable gate fails the request closed. The gate comes from the existing
+retention owner, not from a new memory state store. The shared control composer must bind that exact gate when retention is declared;
+until it does, this memory-owned seam is not active in the product. Surface-origin candidates have no conversation subject, so an
+actor/client subject policy is needed before claiming their suppression or deletion is covered.
+
+The local `meri_memory.candidates` payload is separate from Core's canonical memory proposal. Its row owner can enumerate exact
+conversation-origin candidate IDs for retention inventory. The central retention registry, purge row owner, and migration/grants
+owner must add the local class and guarded deletion under the same suppression generation before any purge can claim coverage.
+Core remains responsible for its received candidate copy and publication; neither owner can delete the other's payload. Focused
+verification covers gate denials, gate outages, and the review inbox's partial/unavailable status without a live migration or purge.

@@ -30,6 +30,12 @@ export function createMemoryPoolFixture(){
     .sort((a,b)=>b.created_at.localeCompare(a.created_at)||b.candidate_id.localeCompare(a.candidate_id)).slice(0,limit);
    return {rows:out.map(project),rowCount:out.length};
   }
+  if(sql.startsWith('SELECT candidate_id FROM meri_memory.candidates')){
+   const [tenantId,conversationId,afterCandidateId,limit]=params;
+   const out=rows.filter(r=>r.tenant_id===tenantId&&r.candidate.origin.kind==='conversation'&&r.candidate.origin.conversationId===conversationId&&
+    (afterCandidateId===null||r.candidate_id>afterCandidateId)).sort((a,b)=>a.candidate_id.localeCompare(b.candidate_id)).slice(0,limit);
+   return {rows:out.map(r=>({candidate_id:r.candidate_id})),rowCount:out.length};
+  }
   if(sql.includes('AND idempotency_key=$3')){const row=byKey(params[0],params[1],params[2]);return {rows:row?[project(row)]:[],rowCount:row?1:0};}
   if(sql.includes('AND candidate_id=$3')){const row=rows.find(r=>r.tenant_id===params[0]&&r.proposer_actor_id===params[1]&&r.candidate_id===params[2]);return {rows:row?[project(row)]:[],rowCount:row?1:0};}
   throw Error('unexpected statement: '+sql);
