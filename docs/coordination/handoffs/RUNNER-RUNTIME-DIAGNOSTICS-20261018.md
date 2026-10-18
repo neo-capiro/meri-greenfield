@@ -51,7 +51,7 @@ RUNNER_RUNTIME_FAILED stage=runtime-admission code=NATIVE_UNAVAILABLE
 RUNTIME_UNAVAILABLE
 ```
 
-The new line originates in `apps/runtime/runner-runtime-diagnostics.mjs:35`, inside
+The new line originates in `apps/runtime/runner-runtime-diagnostics.mjs:40`, inside
 the diagnostic wrapper called at `apps/runtime/cli.mjs:31`. Existing exit codes and
 the existing RUNTIME_UNAVAILABLE line are preserved. The diagnostic identifies the
 first failing stage; later cleanup errors may still be the exception ultimately
@@ -82,3 +82,56 @@ synthetic queued run port, retaining the canonical runner and activity under tes
 All source syntax checks and git diff whitespace checks passed. These are source
 checks only; the historical runtime cause and any future image/live behavior remain
 unverified. Parent owns independent review, publication and operational decisions.
+
+## Activity-stage successor above 51b758aa
+
+Parent review requested that load, status publication and later activity failures
+retain their original stage before the activity's generic error translation.
+This successor extends the existing diagnostic context through optional trusted
+`diagnostics.stage` and `diagnostics.failure` callbacks on the canonical activity.
+Runtime composition supplies the callbacks; no product/native contract exposes
+them. Calls are best effort, are never awaited, and contain synchronous exceptions
+and rejected promises from the observers.
+
+Fixed activity stages now cover input validation, load, policy, setup, starting,
+running, query creation, stream iteration, display publication, result validation,
+finalization, completion publication, terminal settlement and cleanup. The existing
+more specific runtime preparation stages remain intact. Original failures are
+captured at the first statement of the activity catch, before abort, cleanup,
+terminal publication and the generic EXECUTION_FAILED/EXECUTION_STOPPED throw.
+
+The existing bounded cleanup helper accepts an optional failure observer. It
+reports the first cleanup error before returning false; the activity still returns
+SDK_CLEANUP_UNKNOWN when cleanup is uncertain. An earlier activity failure remains
+the recorded cause if cleanup subsequently fails. The fixed stage is
+activity-cleanup; this successor does not identify individual cleanup owners.
+
+Example added distinction:
+
+```text
+RUNNER_RUNTIME_FAILED stage=activity-starting code=STORE_COMMIT_UNKNOWN
+RUNTIME_UNAVAILABLE
+```
+
+Validation on Node 24.19.0: **39/39 passed** across the following two commands:
+
+```text
+node --test apps/runtime/test/activity-runtime-diagnostics.test.mjs apps/runtime/test/runner-runtime-diagnostics.test.mjs apps/runtime/test/runner-poststart-cli.test.mjs apps/runtime/test/cli-product-runner-pin.test.mjs
+node --experimental-test-module-mocks --test apps/worker/conversation/test/cleanup-activity.test.mjs
+```
+
+The 13 new cases exercise the actual canonical activity with synthetic ports:
+load; starting/running/output/completion publication; Query construction; stream
+failure; missing-result finalization; cleanup-only failure; an earlier stream
+failure followed by cleanup uncertainty; successful silence; observer failure
+containment. Assertions cover exact stage/code, original returned error contract,
+publication order, Query count, and idempotent close count. The 12 existing cleanup
+cases confirm failed or hanging owners cannot skip query close or browser
+settlement. No SDK provider request, process spawn, network, database, or secret
+read occurs in these added cases. Syntax and whitespace checks passed. No failed
+successor test run occurred; the earlier setup/fixture failures above remain part
+of the initial diagnostics record.
+
+The historical runtime cause remains unknown. This commit is source-only,
+unpublished, and awaits parent independent review. No image build or deployment was
+performed.
