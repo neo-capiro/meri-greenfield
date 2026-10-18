@@ -16,7 +16,8 @@ export function createNativeTaskAllocator(configuration){
  const intent=data({binding:original.binding,allocationKey:original.executionKey,original,allocationSha256:c.allocationSha256,qualification:c.qualification,grantIntents:c.grantIntents,taskRequestSha256,expiresAtMs:original.expiresAtMs});
  const send=storageMethod(c.client,'send'),verify=storageMethod(c.authority,'verify'),claim=storageMethod(c.journal,'claim'),read=storageMethod(c.journal,'read'),record=storageMethod(c.journal,'record'),admit=storageMethod(c.admission,'admit'),readAdmission=storageMethod(c.admission,'read'),revoke=storageMethod(c.admission,'revoke');
  async function operation(signal,body,budgetMs=maxRequestMs){nativeSignal(signal);if(!enabled)throw executionFault('ALLOCATION_UNAVAILABLE');const life=createOperationLifetime({now,signal,deadlineMs:now()+budgetMs,errorFactory:()=>executionFault('ALLOCATION_UNKNOWN')});try{return await body(life);}finally{life.close();}}
- const call=(life,command)=>life.run(signal=>send(command,{abortSignal:signal}));
+ // Each ECS API call keeps its own maxRequestMs bound even inside allocate()'s longer startup lifetime.
+ const call=(life,command)=>life.run(signal=>send(command,{abortSignal:AbortSignal.any([signal,AbortSignal.timeout(maxRequestMs)])}));
  const key={binding:intent.binding,allocationKey:intent.allocationKey};
  async function fresh(life){if(now()>=original.expiresAtMs)throw executionFault('ALLOCATION_EXPIRED');await life.run(signal=>verify({signal}));life.check();}
  function metadata(task){if(!task||typeof task.taskArn!=='string'||!(task.createdAt instanceof Date)||task.createdAt.getTime()>now()+1000)throw executionFault('ALLOCATION_UNKNOWN');const m={taskArn:task.taskArn,createdAtMs:task.createdAt.getTime(),clusterArn:request.cluster,taskDefinitionArn:request.taskDefinition,containerName:c.containerName};return {m,p:compileEcsTaskBinding({...m,original,enabled:true,now})};}
