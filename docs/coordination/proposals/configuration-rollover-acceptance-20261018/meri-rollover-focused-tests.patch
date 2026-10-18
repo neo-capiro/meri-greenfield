@@ -1,0 +1,193 @@
+diff --git a/apps/control/action-host/application-adapters/context-independent.test.mjs b/apps/control/action-host/application-adapters/context-independent.test.mjs
+index dd9da09..0b82014 100644
+--- a/apps/control/action-host/application-adapters/context-independent.test.mjs
++++ b/apps/control/action-host/application-adapters/context-independent.test.mjs
+@@ -96,3 +96,22 @@ test('absent selector refuses transition to another binding while ordinary fixed
+ test('transition backend revocation and expired original identity refuse context release',async()=>{for(const kind of ['revoked','expired']){const f=await transitionSetup();if(kind==='revoked')f.selectionState.selectHook=v=>{f.state.revoked=true;return v;};else f.state.identityHook=v=>({...v,expiresAtMs:f.now()});await assert.rejects(f.resolveTransition());}});
+ test('transition context parked native read aborts at caller cutoff',async()=>{const f=await transitionSetup(),g=gate(),abort=new AbortController();let signal;f.state.contextHook=async(v,body,options)=>{signal=options.signal;g.enter();await g.blocked;return v;};const work=f.resolveTransition({signal:abort.signal});await g.entered;abort.abort();await assert.rejects(work);assert.equal(signal.aborted,true);g.release();await turn();});
+ test('transition source-context getters are not evaluated',async()=>{const f=await transitionSetup();let reads=0;await assert.rejects(f.resolveTransition({sourceContext:{...f.sourceContext,get contextRevision(){reads++;throw Error('getter');}}}));assert.equal(reads,0);assert.equal(f.state.runCalls.length,0);});
++
++test('version-gated current-run fact binds the effective descriptor into context revision and refuses drift',async()=>{
++ const f=await setup(),digest='a'.repeat(64);let currentDigest=digest;
++ const currentRun=async(...args)=>JSON.stringify({...JSON.parse(await f.currentRun(...args)),schemaVersion:2,effectiveAdmissionSha256:currentDigest});
++ const adapters=createApplicationContextAdapters({...f.config,currentRun,requireEffectiveAdmission:true});
++ const resolve=async()=>{const deadlineMs=f.now()+450,identity=await adapters.verifyIdentity({credential:'native-private',deadlineMs});return adapters.resolveContext({identityCredential:'native-private',identity,identitySha256:canonicalSha256(identity),hints:{},deadlineMs});};
++ const issued=await resolve();assert.equal(issued.contextRevision,canonicalSha256({identityRevision:'identity-1',nativeContextRevision:'context-1',binding:f.binding,policyRevision:f.h.t.scopes[0].policyRevision,effectiveAdmissionSha256:digest}));
++ f.state.contextHook=value=>{currentDigest='b'.repeat(64);return value;};currentDigest=digest;
++ await assert.rejects(resolve(),/APPLICATION_CONTEXT_REFUSED/u);
++ const v1=createApplicationContextAdapters({...f.config,requireEffectiveAdmission:true});
++ const deadlineMs=f.now()+450,identity=await v1.verifyIdentity({credential:'native-private',deadlineMs});
++ await assert.rejects(v1.resolveContext({identityCredential:'native-private',identity,identitySha256:canonicalSha256(identity),hints:{},deadlineMs}),/APPLICATION_CONTEXT_REFUSED/u);
++});
++
++test('version-gated transition context refuses until the source descriptor is bound',async()=>{
++ const f=await transitionSetup(),adapters=createApplicationContextAdapters({...f.config,selectRun:async()=>JSON.stringify({schemaVersion:2,binding:f.selected,policyRevision:f.h.t.scopes[0].policyRevision,effectiveAdmissionSha256:'a'.repeat(64),checkedAtMs:f.now(),deadlineMs:f.now()+3000}),requireEffectiveAdmission:true});
++ const deadlineMs=f.now()+450,identity=await adapters.verifyIdentity({credential:'native-private',deadlineMs});
++ await assert.rejects(adapters.resolveTransitionContext({identityCredential:'native-private',identity,identitySha256:canonicalSha256(identity),sourceContext:f.sourceContext,transition:f.transition,deadlineMs}),/APPLICATION_CONTEXT_REFUSED/u);
++});
+diff --git a/apps/control/conversations/test/configuration-rollover-acceptance.test.mjs b/apps/control/conversations/test/configuration-rollover-acceptance.test.mjs
+new file mode 100644
+index 0000000..88b6fb6
+--- /dev/null
++++ b/apps/control/conversations/test/configuration-rollover-acceptance.test.mjs
+@@ -0,0 +1,85 @@
++/** Focused scripted transaction for the next-run adoption junction; no live SQL or Core calls. */
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import {createNextRunJournal} from '../next-run-journal.mjs';
++import {hash} from '../boundary.mjs';
++import {binding,id,scopes,versions} from './store-fixture.mjs';
++
++const at=1800000000000,oldSha='c'.repeat(64),newSha='d'.repeat(64),newVersions={...versions,imageDigest:`sha256:${'f'.repeat(64)}`,sdk:'0.3.296'};
++const target={...binding,runId:id(11),attemptId:id(12),workerId:id(13),writerFence:2};
++const descendant={...binding,runId:id(21),attemptId:id(22),workerId:id(23),writerFence:3};
++const time=offset=>new Date(at+offset).toISOString(),check=()=>{};
++const originalRecord={schemaVersion:1,state:'ADMITTED',binding,selectedClientId:id(5),policyRevision:'policy1',versions,configurationSha256:oldSha,createdAtMs:at-1000,expiresAtMs:at+60000};
++const originalRow={tenant_id:binding.tenantId,conversation_id:binding.conversationId,run_id:binding.runId,record:originalRecord,record_sha256:hash(originalRecord)};
++const reserve=(source,destination,pins)=>{const reservation={source,target:destination,facts:{checkpoint:null,noAuthority:{foreclosureSha256:'a'.repeat(64)}},scopes,versions:pins,policyRevision:'policy1',reservedAt:time(1000)};return {tenant_id:binding.tenantId,conversation_id:binding.conversationId,source_run_id:source.runId,target_run_id:destination.runId,reservation,reservation_sha256:hash(reservation),state:'RESERVED'};};
++const first=reserve(binding,target,versions);
++const receipt={schemaVersion:1,source:binding,target,originalAdmissionSha256:originalRow.record_sha256,reservationSha256:first.reservation_sha256,selectedClientId:id(5),scopes,policyRevision:'policy1',fromConfigurationSha256:oldSha,fromVersions:versions,toConfigurationSha256:newSha,toVersions:newVersions,authorityDecisionSha256:'b'.repeat(64),authorityCheckedAtMs:at+1000,authorityExpiresAtMs:at+30000,adoptedAtMs:at+2000,validUntilMs:at+5000};
++const adoptionRow={tenant_id:binding.tenantId,conversation_id:binding.conversationId,target_run_id:target.runId,receipt,receipt_sha256:hash(receipt)};
++const conversation={conversationId:binding.conversationId,owner:{tenantId:binding.tenantId,actorId:binding.actorId},scopes,createdAt:time(0),policyRevision:'policy1'};
++const request=(b,n)=>({requestId:id(n),prompt:`prompt ${n}`,skill:null,window:null,windowRequest:null});
++const projection=(b,pins,state,createdAt)=>({binding:b,state,scopes,createdAt,policyRevision:'policy1',versions:pins});
++function runRow(run,sourceRequest,transitionSha256=null,sequenceBase=0){return {tenant_id:run.binding.tenantId,conversation_id:run.binding.conversationId,run_id:run.binding.runId,projection:run,projection_sha256:hash(run),transition_sha256:transitionSha256,request_id:sourceRequest.requestId,request:sourceRequest,request_sha256:hash(sourceRequest),last_sequence:1,sequence_base:sequenceBase,sequence_end:null};}
++const inputFor=(b,pins,n,offset)=>{const run=projection(b,pins,'queued',time(offset)),sourceRequest=request(b,n);return {conversation,run,request:sourceRequest,event:{contractVersion:'0.1.0',eventId:id(n+100),binding:b,sequence:1,createdAt:time(offset),scopes,type:'run.status',data:{state:'queued',reasonCode:null}},selectedClientId:id(5)};};
++function fixture(){
++ const state={clock:at+3000,original:[structuredClone(originalRow)],next:[structuredClone(first)],adoptions:[structuredClone(adoptionRow)],runs:[runRow(projection(binding,versions,'failed',time(0)),request(binding,6))],events:[],inserts:[]};
++ const client={async query(sql,args=[]){
++  if(sql.startsWith('SELECT * FROM meri_conversations.conversations'))return {rows:[{tenant_id:binding.tenantId,conversation_id:binding.conversationId,owner_actor_id:binding.actorId,projection:conversation,projection_sha256:hash(conversation)}]};
++  if(sql.startsWith('SELECT * FROM meri_conversations.initial_run_bindings'))return {rows:structuredClone(state.original)};
++  if(sql.startsWith('SELECT * FROM meri_conversations.next_run_adoptions'))return {rows:structuredClone(state.adoptions)};
++  if(sql.startsWith('SELECT * FROM meri_conversations.next_runs'))return {rows:structuredClone(sql.includes('target_run_id=$3')?state.next.filter(row=>row.target_run_id===args[2]):state.next)};
++  if(sql.startsWith('SELECT * FROM meri_conversations.runs')){
++   const rows=sql.includes('run_id=ANY')?state.runs.filter(row=>args[2].includes(row.run_id)):
++    sql.includes('(request_id=$3 OR run_id=$4)')?state.runs.filter(row=>row.request_id===args[2]||row.run_id===args[3]):
++    sql.includes('run_id=$3')?state.runs.filter(row=>row.run_id===args[2]):state.runs;
++   return {rows:structuredClone(rows)};
++  }
++  if(sql.startsWith('UPDATE meri_conversations.runs SET sequence_end')){const source=state.runs.find(row=>row.run_id===args[2]);source.sequence_end=args[3];return {rows:[]};}
++  if(sql.startsWith('INSERT INTO meri_conversations.runs')){
++   assert.match(sql,/transition_sha256/u,'the adopted or inherited first writer must declare the transition');
++   const row=runRow(args[3],args[6],args[9],args[8]);state.runs.push(row);state.inserts.push({sql,transitionSha256:args[9]});return {rows:[]};
++  }
++  if(sql.startsWith('INSERT INTO meri_conversations.events')){state.events.push({event:structuredClone(args[5])});return {rows:[]};}
++  if(sql.startsWith('UPDATE meri_conversations.next_runs')){const row=state.next.find(value=>value.target_run_id===args[2]);row.state='ACCEPTED';return {rows:[]};}
++  throw Error(`Unexpected SQL: ${sql}`);
++ }};
++ const tx=async(_binding,assertCurrent,body)=>{assertCurrent();const before=structuredClone({next:state.next,runs:state.runs,events:state.events,inserts:state.inserts});try{return await body(client);}catch(error){Object.assign(state,before);throw error;}};
++ const rowRun=row=>{if(!row||row.projection_sha256!==hash(row.projection)||row.request_sha256!==hash(row.request))throw Error('CORRUPT_TEST_ROW');return row;};
++ const journal=createNextRunJournal({tx,rowRun,configurationAdoption:true,now:()=>state.clock});
++ return {state,journal,firstInput:inputFor(target,newVersions,16,3000)};
++}
++
++test('adopted first acceptance persists the exact transition; accepted replay survives decision expiry',async()=>{
++ const f=fixture(),reserved=await f.journal.current(target,check);
++ assert.equal(reserved.reserved,true);assert.equal(reserved.expiresAtMs,receipt.validUntilMs);assert.equal(reserved.effectiveAdmission.transitionSha256,adoptionRow.receipt_sha256);
++ const accepted=await f.journal.accept({...f.firstInput,effectiveAdmissionSha256:reserved.effectiveAdmission.descriptorSha256},check);
++ assert.equal(accepted.replayed,false);assert.equal(f.state.runs[0].transition_sha256,null);assert.equal(f.state.runs[1].transition_sha256,adoptionRow.receipt_sha256);
++ assert.equal(f.state.inserts.length,1);assert.equal(f.state.inserts[0].transitionSha256,adoptionRow.receipt_sha256);
++ f.state.clock=receipt.validUntilMs+1;
++ const current=await f.journal.current(target,check);assert.equal(current.reserved,false);assert.equal(Object.hasOwn(current,'expiresAtMs'),false);
++ assert.equal((await f.journal.accept({...f.firstInput,effectiveAdmissionSha256:current.effectiveAdmission.descriptorSha256},check)).replayed,true);
++ assert.equal(f.state.inserts.length,1);assert.equal(await f.journal.execution({binding:target,scopes,selectedClientId:id(5)},check),null);
++ f.state.runs[1].transition_sha256='0'.repeat(64);
++ await assert.rejects(f.journal.current(target,check),/NEXT_RUN_ADOPTION_CORRUPT/u);
++});
++
++test('expired RESERVED adoption refuses current and first acceptance without a Run write',async()=>{
++ const f=fixture();f.state.clock=receipt.validUntilMs;
++ await assert.rejects(f.journal.current(target,check),/NEXT_RUN_ADOPTION_EXPIRED/u);
++ await assert.rejects(f.journal.accept({...f.firstInput,effectiveAdmissionSha256:'0'.repeat(64)},check),/NEXT_RUN_ADOPTION_EXPIRED/u);
++ assert.equal(f.state.runs.length,1);assert.equal(f.state.inserts.length,0);
++});
++
++test('accepted child inherits the transition digest while keeping its own reservation and current versions',async()=>{
++ const f=fixture(),selected=await f.journal.current(target,check);
++ await f.journal.accept({...f.firstInput,effectiveAdmissionSha256:selected.effectiveAdmission.descriptorSha256},check);
++ const accepted=f.state.runs[1];accepted.projection.state='failed';accepted.projection_sha256=hash(accepted.projection);
++ const second=reserve(target,descendant,newVersions);f.state.next.push(second);
++ const child=await f.journal.current(descendant,check);
++ assert.equal(child.effectiveAdmission.transitionSha256,adoptionRow.receipt_sha256);
++ assert.equal(child.effectiveAdmission.reservationSha256,second.reservation_sha256);
++ assert.notEqual(child.effectiveAdmission.descriptorSha256,selected.effectiveAdmission.descriptorSha256);
++ const input=inputFor(descendant,newVersions,26,4000);
++ const acceptedChild=await f.journal.accept({...input,effectiveAdmissionSha256:child.effectiveAdmission.descriptorSha256},check);
++ assert.equal(acceptedChild.replayed,false);assert.equal(f.state.runs[2].transition_sha256,adoptionRow.receipt_sha256);
++ assert.equal(f.state.runs[2].projection.versions.sdk,newVersions.sdk);
++});
+diff --git a/apps/control/conversations/test/effective-admission.test.mjs b/apps/control/conversations/test/effective-admission.test.mjs
+index 9e124bd..005fb05 100644
+--- a/apps/control/conversations/test/effective-admission.test.mjs
++++ b/apps/control/conversations/test/effective-admission.test.mjs
+@@ -72,3 +72,15 @@ test('identical receipt replay is stable; a second conflicting adoption is an ex
+  const conflicting={...adoptedReceipt,toConfigurationSha256:laterConfigurationSha256};
+  assert.throws(()=>resolve(target,[first],[adoption,{receipt:conflicting,receiptSha256:hash(conflicting)}]),{code:'EFFECTIVE_ADMISSION_HOLD'});
+ });
++
++test('acceptance changes reservation state without changing inherited descriptor pins or original history',()=>{
++ const before=resolve(target,[first],[adoption]);
++ const accepted=resolve(target,[{...first,state:'ACCEPTED'}],[adoption]);
++ assert.equal(accepted.descriptorSha256,before.descriptorSha256);
++ assert.equal(accepted.transitionSha256,adoption.receiptSha256);
++ const child=resolve(next,[{...first,state:'ACCEPTED'},reserved(target,next,newVersions)],[adoption]);
++ assert.equal(child.transitionSha256,accepted.transitionSha256);
++ assert.notEqual(child.reservationSha256,accepted.reservationSha256);
++ const historical=resolve();assert.equal(historical.transitionSha256,null);
++ assert.equal(historical.configurationSha256,oldConfigurationSha256);assert.deepEqual(historical.versions,versions);
++});
+diff --git a/apps/runtime/test/dynamic-candidate-identity.test.mjs b/apps/runtime/test/dynamic-candidate-identity.test.mjs
+index 83c006c..ff08d4c 100644
+--- a/apps/runtime/test/dynamic-candidate-identity.test.mjs
++++ b/apps/runtime/test/dynamic-candidate-identity.test.mjs
+@@ -2,18 +2,19 @@ import test from 'node:test';
+ import assert from 'node:assert/strict';
+ import {createPreparedCandidateIdentity} from '../prepared-candidate.mjs';
+ import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
++import {resolveEffectiveAdmissionFromRows} from '../../control/conversations/effective-admission.mjs';
+ import {binding,id,versions} from '../../control/conversations/test/application-fixture.mjs';
+ 
+ const at=Date.now(),clientId=id(5),conversationId=id(730),policyRevision='a'.repeat(64),configurationSha256='b'.repeat(64);
+ const dynamicBinding={...binding,conversationId,runId:id(731),attemptId:id(732),workerId:id(733)};
+ const principal={tenantId:binding.tenantId,actorId:binding.actorId};
+ 
+-function setup({factWindowMs}={}){
+- const state={record:null,claims:0,contexts:0,revoked:false,saved:null,selections:0};
++function setup({factWindowMs,requireEffectiveAdmission=false,activeConfigurationSha256=configurationSha256,activeVersions=versions}={}){
++ const state={record:null,claims:0,contexts:0,revoked:false,saved:null,selections:0,current:null,clock:at};
+  const initialBindings={async readConversation(){return state.record;},async claim(input){state.claims++;assert.equal(input.conversationId,conversationId);assert.equal(input.selectedClientId,clientId);state.record={schemaVersion:1,state:'ADMITTED',binding:dynamicBinding,selectedClientId:clientId,policyRevision,versions,configurationSha256,createdAtMs:at,expiresAtMs:input.proposedExpiresAtMs};return {record:state.record,created:true};}};
+  const successor={...dynamicBinding,runId:id(734),attemptId:id(735),workerId:id(736),writerFence:2},scopes=[{kind:'client',tenantId:principal.tenantId,resourceId:clientId,policyRevision}];
+- const identityContext=createPreparedCandidateIdentity({store:{async readOptional(){return state.saved;}},identity:{origin:'https://authority.synthetic.invalid',commandContext:{binding,clientResolution:{reference:clientId,clientId}},async fetchImpl(url,options){if(state.revoked)return Response.json({error:'denied'},{status:403});const input=JSON.parse(options.body),base={principal,identityRevision:'native-1',checkedAtMs:at,expiresAtMs:at+1000};if(url.endsWith('/identity'))return Response.json(base);state.contexts++;return Response.json({...base,identitySha256:input.identitySha256,conversationId,selectedClientId:clientId,contextRevision:'native-context-1'});}},qualification:{policyRevision},now:()=>at,limits:{maxRequestMs:500,maxFactBytes:131072},nextRunOwner:{async selectRun(){state.selections++;return {binding:successor};},async currentRun(request){assert.deepEqual(request,successor);return {binding:successor,policyRevision,scopes};}},initialBindings,configurationSha256,versions,proposeInitialExpiry(){return at+800;},...(factWindowMs===undefined?{}:{factWindowMs})});
+- const resolve=async()=>{const identity=await identityContext.verifyIdentity({credential:'native-bearer',deadlineMs:at+500});return identityContext.resolveContext({identityCredential:'native-bearer',identity,identitySha256:canonicalSha256(identity),hints:{conversationId,clientId},deadlineMs:at+500});};
++ const identityContext=createPreparedCandidateIdentity({store:{async readOptional(){return state.saved;}},identity:{origin:'https://authority.synthetic.invalid',commandContext:{binding,clientResolution:{reference:clientId,clientId}},async fetchImpl(url,options){if(state.revoked)return Response.json({error:'denied'},{status:403});const input=JSON.parse(options.body),base={principal,identityRevision:'native-1',checkedAtMs:state.clock,expiresAtMs:at+1000};if(url.endsWith('/identity'))return Response.json(base);state.contexts++;return Response.json({...base,identitySha256:input.identitySha256,conversationId,selectedClientId:clientId,contextRevision:'native-context-1'});}},qualification:{policyRevision},now:()=>state.clock,limits:{maxRequestMs:500,maxFactBytes:131072},nextRunOwner:{async selectRun(){state.selections++;return {binding:successor};},async currentRun(request){assert.deepEqual(request,successor);return state.current??{binding:successor,policyRevision,scopes};}},initialBindings,configurationSha256:activeConfigurationSha256,versions:activeVersions,proposeInitialExpiry(){return at+800;},requireEffectiveAdmission,...(factWindowMs===undefined?{}:{factWindowMs})});
++ const resolve=async()=>{const identity=await identityContext.verifyIdentity({credential:'native-bearer',deadlineMs:state.clock+500});return identityContext.resolveContext({identityCredential:'native-bearer',identity,identitySha256:canonicalSha256(identity),hints:{conversationId,clientId},deadlineMs:state.clock+500});};
+  return {state,resolve,acceptOriginal(){state.saved={run:{binding:dynamicBinding,policyRevision,versions,scopes}};},successor};
+ }
+ 
+@@ -29,3 +30,26 @@ test('run facts bound the context expiry by run validity, not by the request bud
+  f.acceptOriginal();const selected=await f.resolve();assert.equal(selected.expiresAtMs,at+1000);              // Core receipt expiry
+  assert.throws(()=>setup({factWindowMs:0}),/PREPARED_CANDIDATE_REFUSED/);
+ });
++
++
++test('adopted target uses current image pins while its saved original keeps historical pins',async()=>{
++ const nextVersions={...versions,imageDigest:`sha256:${'f'.repeat(64)}`,sdk:'0.3.296'},nextConfigurationSha256='d'.repeat(64);
++ const f=setup({requireEffectiveAdmission:true,activeConfigurationSha256:nextConfigurationSha256,activeVersions:nextVersions});
++ const record={schemaVersion:1,state:'ADMITTED',binding:dynamicBinding,selectedClientId:clientId,policyRevision,versions,configurationSha256,createdAtMs:at-1000,expiresAtMs:at+800};
++ f.state.record=record;f.acceptOriginal();
++ const reservation={source:dynamicBinding,target:f.successor,facts:{checkpoint:null,noAuthority:{foreclosureSha256:'a'.repeat(64)}},scopes:[{kind:'client',tenantId:principal.tenantId,resourceId:clientId,policyRevision}],versions,policyRevision,reservedAt:new Date(at-500).toISOString()};
++ const reservationSha256=canonicalSha256(reservation),adoption={schemaVersion:1,source:dynamicBinding,target:f.successor,originalAdmissionSha256:canonicalSha256(record),reservationSha256,selectedClientId:clientId,scopes:reservation.scopes,policyRevision,fromConfigurationSha256:configurationSha256,fromVersions:versions,toConfigurationSha256:nextConfigurationSha256,toVersions:nextVersions,authorityDecisionSha256:'b'.repeat(64),authorityCheckedAtMs:at-100,authorityExpiresAtMs:at+1000,adoptedAtMs:at-100,validUntilMs:at+200};
++ const effectiveAdmission=resolveEffectiveAdmissionFromRows({binding:f.successor,original:{record,recordSha256:canonicalSha256(record)},reservations:[{reservation,reservationSha256,state:'RESERVED'}],adoptions:[{receipt:adoption,receiptSha256:canonicalSha256(adoption)}]});
++ f.state.current={binding:f.successor,policyRevision,scopes:reservation.scopes,effectiveAdmission,expiresAtMs:adoption.validUntilMs};
++ const selected=await f.resolve();assert.deepEqual(selected.binding,f.successor);assert.equal(selected.expiresAtMs,adoption.validUntilMs);assert.equal(f.state.claims,0);
++ f.state.clock=adoption.validUntilMs+1;delete f.state.current.expiresAtMs; // canonical currentRun's ACCEPTED receipt has no decision expiry
++ assert.deepEqual((await f.resolve()).binding,f.successor);
++ f.state.current.effectiveAdmission=resolveEffectiveAdmissionFromRows({binding:f.successor,original:{record,recordSha256:canonicalSha256(record)},reservations:[{reservation,reservationSha256,state:'RESERVED'}],adoptions:[]});
++ await assert.rejects(f.resolve(),/NATIVE_AUTHORITY_UNAVAILABLE/u);
++});
++
++test('gated unsaved historical original cannot be reissued by a newer image',async()=>{
++ const f=setup({requireEffectiveAdmission:true,activeConfigurationSha256:'d'.repeat(64),activeVersions:{...versions,sdk:'0.3.296'}});
++ f.state.record={schemaVersion:1,state:'ADMITTED',binding:dynamicBinding,selectedClientId:clientId,policyRevision,versions,configurationSha256,createdAtMs:at-1000,expiresAtMs:at+800};
++ await assert.rejects(f.resolve(),/NATIVE_AUTHORITY_UNAVAILABLE/u);assert.equal(f.state.claims,0);
++});

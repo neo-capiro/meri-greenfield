@@ -1,0 +1,174 @@
+diff --git a/apps/control/action-host/application-adapters/context-adapter.mjs b/apps/control/action-host/application-adapters/context-adapter.mjs
+index 1973dad..d5bb147 100644
+--- a/apps/control/action-host/application-adapters/context-adapter.mjs
++++ b/apps/control/action-host/application-adapters/context-adapter.mjs
+@@ -7,10 +7,11 @@ const refuse=()=>{throw Error('APPLICATION_CONTEXT_REFUSED');};
+ const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b),uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u;
+ export function createApplicationContextAdapters(configuration){
+  // Optional trusted port: selectRun({principal,conversationId,signal,deadlineMs}) returns
+- // JSON {binding,policyRevision,deadlineMs,checkedAtMs}; browser hints are never selectors.
+- const {client,currentRun,commandContext,now,limits,selectRun,admitInitialConversation}=own(configuration,['client','currentRun','commandContext','now','limits'],['selectRun','admitInitialConversation']);
++ // JSON {binding,policyRevision,deadlineMs,checkedAtMs}; schemaVersion 2 also binds effectiveAdmissionSha256.
++ // Browser hints are never selectors.
++ const {client,currentRun,commandContext,now,limits,selectRun,admitInitialConversation,requireEffectiveAdmission=false}=own(configuration,['client','currentRun','commandContext','now','limits'],['selectRun','admitInitialConversation','requireEffectiveAdmission']);
+  const ports=own(client,['readIdentity','readContext']),context=data(commandContext),l=data(own(limits,['maxRequestMs','maxFactBytes']));own(context,['binding','clientResolution']);own(context.clientResolution,['reference','clientId']);validateShape('RunBinding',context.binding);
+- if(Object.values(ports).some(p=>typeof p!=='function')||typeof currentRun!=='function'||(selectRun!==undefined&&typeof selectRun!=='function')||(admitInitialConversation!==undefined&&typeof admitInitialConversation!=='function')||typeof now!=='function'||!Number.isSafeInteger(l.maxRequestMs)||l.maxRequestMs<1||l.maxRequestMs>30000||!Number.isSafeInteger(l.maxFactBytes)||l.maxFactBytes<1||l.maxFactBytes>131072||typeof context.clientResolution.clientId!=='string'||!uuid.test(context.clientResolution.clientId)||context.clientResolution.reference!==context.clientResolution.clientId)refuse();
++ if(typeof requireEffectiveAdmission!=='boolean'||Object.values(ports).some(p=>typeof p!=='function')||typeof currentRun!=='function'||(selectRun!==undefined&&typeof selectRun!=='function')||(admitInitialConversation!==undefined&&typeof admitInitialConversation!=='function')||typeof now!=='function'||!Number.isSafeInteger(l.maxRequestMs)||l.maxRequestMs<1||l.maxRequestMs>30000||!Number.isSafeInteger(l.maxFactBytes)||l.maxFactBytes<1||l.maxFactBytes>131072||typeof context.clientResolution.clientId!=='string'||!uuid.test(context.clientResolution.clientId)||context.clientResolution.reference!==context.clientResolution.clientId)refuse();
+  const principal=data({tenantId:context.binding.tenantId,actorId:context.binding.actorId});
+  function start(call){nativeSignal(call.signal);const at=now();if(!Number.isSafeInteger(at)||at<0||!Number.isSafeInteger(call.deadlineMs))refuse();let cutoff=Math.min(call.deadlineMs,at+l.maxRequestMs);const timer=createOperationLifetime({deadlineMs:cutoff,now,signal:call.signal,errorFactory:()=>Error('APPLICATION_CONTEXT_REFUSED')});return {...timer,deadline:()=>cutoff,limitDeadline(next){cutoff=Math.min(cutoff,next);timer.limitDeadline(cutoff);}};}
+  function snapshot(value){if(typeof value==='string'){if(Buffer.byteLength(value)>l.maxFactBytes)refuse();value=JSON.parse(value);}const out=data(value);if(Buffer.byteLength(JSON.stringify(out))>l.maxFactBytes)refuse();return out;}
+@@ -22,8 +23,8 @@ export function createApplicationContextAdapters(configuration){
+   const conversationId=hints.conversationId??context.binding.conversationId,dynamic=conversationId!==context.binding.conversationId;
+   if(call.identitySha256!==canonicalSha256(original)||typeof conversationId!=='string'||!uuid.test(conversationId)||hints.clientId!==undefined&&hints.clientId!==context.clientResolution.clientId||dynamic&&!admitInitialConversation||!dynamic&&!selectRun&&Object.hasOwn(hints,'runId')&&hints.runId!==context.binding.runId)refuse();
+   const life=start(call);let cutoff=Math.min(life.deadline(),original.expiresAtMs),binding=context.binding,selected,preflight;
+-  function runFact(raw,started){if(typeof raw!=='string')refuse();const r=snapshot(raw);own(r,['binding','policyRevision','deadlineMs','checkedAtMs']);validateShape('RunBinding',r.binding);const at=now();life.check();if(typeof r.policyRevision!=='string'||!r.policyRevision||r.policyRevision.length>256||!Number.isSafeInteger(r.checkedAtMs)||r.checkedAtMs<started||r.checkedAtMs>at||!Number.isSafeInteger(r.deadlineMs)||r.deadlineMs<=at)refuse();cutoff=Math.min(cutoff,r.deadlineMs);life.limitDeadline(cutoff);return r;}
+-  async function run(){const started=now(),r=runFact(await life.run(signal=>currentRun(binding,{signal})),started);if(!same(r.binding,binding)||(selected&&r.policyRevision!==selected.policyRevision))refuse();return r;}
++  function runFact(raw,started){if(typeof raw!=='string')refuse();const r=snapshot(raw);own(r,requireEffectiveAdmission?['schemaVersion','binding','policyRevision','effectiveAdmissionSha256','deadlineMs','checkedAtMs']:['binding','policyRevision','deadlineMs','checkedAtMs']);validateShape('RunBinding',r.binding);const at=now();life.check();if(requireEffectiveAdmission&&(r.schemaVersion!==2||typeof r.effectiveAdmissionSha256!=='string'||!/^[a-f0-9]{64}$/u.test(r.effectiveAdmissionSha256))||typeof r.policyRevision!=='string'||!r.policyRevision||r.policyRevision.length>256||!Number.isSafeInteger(r.checkedAtMs)||r.checkedAtMs<started||r.checkedAtMs>at||!Number.isSafeInteger(r.deadlineMs)||r.deadlineMs<=at)refuse();cutoff=Math.min(cutoff,r.deadlineMs);life.limitDeadline(cutoff);return r;}
++  async function run(){const started=now(),r=runFact(await life.run(signal=>currentRun(binding,{signal})),started);if(!same(r.binding,binding)||(selected&&(r.policyRevision!==selected.policyRevision||requireEffectiveAdmission&&r.effectiveAdmissionSha256!==selected.effectiveAdmissionSha256)))refuse();return r;}
+   try{
+    life.limitDeadline(original.expiresAtMs);
+    if(dynamic){
+@@ -33,17 +34,20 @@ export function createApplicationContextAdapters(configuration){
+    }else if(selectRun){const started=now();selected=runFact(await life.run(signal=>selectRun({principal,conversationId,signal,deadlineMs:cutoff})),started);binding=selected.binding;}
+    if(selected&&(binding.tenantId!==principal.tenantId||binding.actorId!==principal.actorId||binding.conversationId!==conversationId||Object.hasOwn(hints,'runId')&&hints.runId!==binding.runId))refuse();
+    const before=await run(),started=now();const native=fact(await life.run(signal=>ports.readContext({credential:call.identityCredential,identitySha256:call.identitySha256,conversationId:binding.conversationId,clientId:context.clientResolution.clientId,signal,deadlineMs:cutoff})),assertAuthorityContextReceipt,started,life);identity(native);
+-   if(native.identitySha256!==call.identitySha256||native.identityRevision!==original.identityRevision||native.conversationId!==binding.conversationId||native.selectedClientId!==context.clientResolution.clientId||typeof native.contextRevision!=='string'||!native.contextRevision||native.contextRevision.length>256||preflight&&preflight.contextRevision!==native.contextRevision)refuse();cutoff=Math.min(cutoff,native.expiresAtMs);const after=await run();if(before.policyRevision!==after.policyRevision)refuse();
++   if(native.identitySha256!==call.identitySha256||native.identityRevision!==original.identityRevision||native.conversationId!==binding.conversationId||native.selectedClientId!==context.clientResolution.clientId||typeof native.contextRevision!=='string'||!native.contextRevision||native.contextRevision.length>256||preflight&&preflight.contextRevision!==native.contextRevision)refuse();cutoff=Math.min(cutoff,native.expiresAtMs);const after=await run();if(before.policyRevision!==after.policyRevision||requireEffectiveAdmission&&before.effectiveAdmissionSha256!==after.effectiveAdmissionSha256)refuse();
+    const scopes=[{kind:'client',tenantId:principal.tenantId,resourceId:native.selectedClientId,policyRevision:after.policyRevision}];validateShape('Scope',scopes[0]);
+    if(retained){const {sourceContext,transition}=retained;
+     const sourceRevision=canonicalSha256({identityRevision:original.identityRevision,nativeContextRevision:native.contextRevision,binding:sourceContext.binding,policyRevision:after.policyRevision});
+     if(!same(binding,transition.targetBinding)||after.policyRevision!==transition.policyRevision||!same(scopes,sourceContext.scopes)||!same(scopes,transition.scopes)||sourceRevision!==sourceContext.contextRevision)refuse();
+    }
+-   const result=data({identitySha256:call.identitySha256,binding,scopes,selectedClientId:native.selectedClientId,contextRevision:canonicalSha256({identityRevision:original.identityRevision,nativeContextRevision:native.contextRevision,binding,policyRevision:after.policyRevision}),checkedAtMs:now(),expiresAtMs:Math.min(original.expiresAtMs,native.expiresAtMs,before.deadlineMs,after.deadlineMs,selected?.deadlineMs??Infinity)});life.check();if(call.signal?.aborted)refuse();return result;
++   const result=data({identitySha256:call.identitySha256,binding,scopes,selectedClientId:native.selectedClientId,contextRevision:canonicalSha256({identityRevision:original.identityRevision,nativeContextRevision:native.contextRevision,binding,policyRevision:after.policyRevision,...(requireEffectiveAdmission?{effectiveAdmissionSha256:after.effectiveAdmissionSha256}:{})}),checkedAtMs:now(),expiresAtMs:Math.min(original.expiresAtMs,native.expiresAtMs,before.deadlineMs,after.deadlineMs,selected?.deadlineMs??Infinity)});life.check();if(call.signal?.aborted)refuse();return result;
+   }catch{refuse();}finally{life.close();}
+  }
+  const resolveContext=value=>resolve(value);
+  async function resolveTransitionContext(value){
++  // The closed sourceContext receipt has no source descriptor digest yet. Do not approve a rollover transition
++  // from a target-only digest; the session/transition owner must bind both source and target explicitly.
++  if(requireEffectiveAdmission)refuse();
+   const call=own(value,['identityCredential','identity','identitySha256','sourceContext','transition','deadlineMs'],['signal']),sourceContext=snapshot(call.sourceContext),transition=snapshot(call.transition);
+   own(sourceContext,['binding','scopes','selectedClientId','contextRevision']);validateShape('RunBinding',sourceContext.binding);validateShape('RunBinding',transition.sourceBinding);validateShape('RunBinding',transition.targetBinding);
+   const source=sourceContext.binding,target=transition.targetBinding;
+diff --git a/apps/runtime/native-authority/identity-context.mjs b/apps/runtime/native-authority/identity-context.mjs
+index c9a3bb4..9627afb 100644
+--- a/apps/runtime/native-authority/identity-context.mjs
++++ b/apps/runtime/native-authority/identity-context.mjs
+@@ -4,10 +4,10 @@ import {createCapiroApplicationAuthorityClient} from '../../control/action-host/
+ import {createApplicationContextAdapters} from '../../control/action-host/application-adapters/context-adapter.mjs';
+ import {storageMethod} from '../../artifacts/storage/boundary.mjs';
+ export function createNativeIdentityContext(configuration){
+- const {origin,currentOwner,commandContext,fetchImpl,now,limits,enabled=false,selectRun,admitInitialConversation}=own(configuration,['origin','currentOwner','commandContext','fetchImpl','now','limits'],['enabled','selectRun','admitInitialConversation']);
++ const {origin,currentOwner,commandContext,fetchImpl,now,limits,enabled=false,selectRun,admitInitialConversation,requireEffectiveAdmission=false}=own(configuration,['origin','currentOwner','commandContext','fetchImpl','now','limits'],['enabled','selectRun','admitInitialConversation','requireEffectiveAdmission']);
+  const l=data(own(limits,['maxRequestMs','maxFactBytes'])),currentRun=storageMethod(currentOwner,'currentRun');
+  const client=createCapiroApplicationAuthorityClient({origin,fetchImpl,now,enabled,limits:{maxRequestMs:l.maxRequestMs,maxResponseBytes:l.maxFactBytes}});
+- const mapped=createApplicationContextAdapters({client,currentRun,commandContext,now,limits:l,...(selectRun?{selectRun}:{}),...(admitInitialConversation?{admitInitialConversation}:{})});
++ const mapped=createApplicationContextAdapters({client,currentRun,commandContext,now,limits:l,requireEffectiveAdmission,...(selectRun?{selectRun}:{}),...(admitInitialConversation?{admitInitialConversation}:{})});
+  const unavailable=()=>{throw Object.assign(Error('NATIVE_AUTHORITY_UNAVAILABLE'),{code:'NATIVE_AUTHORITY_UNAVAILABLE',status:503});};
+  return Object.freeze({
+   async verifyIdentity(call){if(!enabled)unavailable();try{return await mapped.verifyIdentity(call);}catch{unavailable();}},
+diff --git a/apps/runtime/prepared-candidate.mjs b/apps/runtime/prepared-candidate.mjs
+index 8231330..7a44fb8 100644
+--- a/apps/runtime/prepared-candidate.mjs
++++ b/apps/runtime/prepared-candidate.mjs
+@@ -4,6 +4,7 @@ import {S3Client} from '../artifacts/storage/s3-sdk.mjs';
+ import {own} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
+ import {canonicalSha256 as hash} from '../../packages/contracts/validate.mjs';
+ import {createPostgresConversationStore} from '../control/conversations/postgres-store.mjs';
++import {assertEffectiveAdmissionDescriptor,resolveEffectiveAdmissionFromRows} from '../control/conversations/effective-admission.mjs';
+ import {budgetTables} from '../gateway/budget/namespace.mjs';
+ import {createS3ArtifactObjects} from '../artifacts/storage/s3-objects.mjs';
+ import {jsonBody} from '../control/action-application/http.mjs';
+@@ -38,33 +39,57 @@ export function assertFirstRunGrantBindings(grantIntents,taskGrantId,secrets){
+  return Object.freeze({controlDigest,taskDigest});
+ }
+ /** Fresh native authority; only absence permits the approved fixed first-run input. */
+-export function createPreparedCandidateIdentity({store,identity,qualification,now=Date.now,limits,nextRunOwner,initialBindings,configurationSha256,versions,proposeInitialExpiry,factWindowMs}){
++export function createPreparedCandidateIdentity({store,identity,qualification,now=Date.now,limits,nextRunOwner,initialBindings,configurationSha256,versions,proposeInitialExpiry,factWindowMs,requireEffectiveAdmission=false}){
+  const binding=identity.commandContext.binding,scopes=[{kind:'client',tenantId:binding.tenantId,resourceId:identity.commandContext.clientResolution.clientId,policyRevision:qualification.policyRevision}];
+  // A run fact's deadlineMs is how long the selected run may be relied on, not this call's request budget: the context
+  // adapter folds it into the context expiry and the action-session owner inherits that as the session lifetime. Stamping
+  // the request budget here expired every session ~3s after issue (observed live 2026-10-17). The window is the reviewed
+  // run window; without one (static first-run profile) the request budget remains the bound.
+- if(factWindowMs!==undefined&&(!Number.isSafeInteger(factWindowMs)||factWindowMs<1))refuse();
++ if(factWindowMs!==undefined&&(!Number.isSafeInteger(factWindowMs)||factWindowMs<1)||typeof requireEffectiveAdmission!=='boolean'||requireEffectiveAdmission&&!initialBindings)refuse();
+  const factUntil=()=>now()+(factWindowMs??limits.maxRequestMs);
+  if(initialBindings){
+   if(!nextRunOwner||typeof initialBindings.claim!=='function'||typeof initialBindings.readConversation!=='function'||typeof proposeInitialExpiry!=='function'||typeof configurationSha256!=='string'||!/^[a-f0-9]{64}$/u.test(configurationSha256)||!versions)refuse();
+   const selectedClientId=identity.commandContext.clientResolution.clientId;
+   const check=signal=>()=>{if(signal?.aborted)refuse();};
+-  const valid=(record,principal,conversationId)=>{if(!record||record.schemaVersion!==1||record.state!=='ADMITTED'||principal.tenantId!==binding.tenantId||principal.actorId!==binding.actorId||record.binding.tenantId!==principal.tenantId||record.binding.actorId!==principal.actorId||record.binding.conversationId!==conversationId||record.binding.writerFence!==1||record.selectedClientId!==selectedClientId||record.policyRevision!==qualification.policyRevision||record.configurationSha256!==configurationSha256||!same(record.versions,versions)||!Number.isSafeInteger(record.expiresAtMs))refuse();return record;};
+-  const fact=selected=>JSON.stringify({binding:selected.binding,policyRevision:selected.policyRevision,checkedAtMs:now(),deadlineMs:Math.min(selected.expiresAtMs??factUntil(),factUntil())});
++  // Historical root pins must remain historical. Only an unsaved original may be claimed under this image's pins.
++  const valid=(record,principal,conversationId)=>{if(!record||record.schemaVersion!==1||record.state!=='ADMITTED'||principal.tenantId!==binding.tenantId||principal.actorId!==binding.actorId||record.binding.tenantId!==principal.tenantId||record.binding.actorId!==principal.actorId||record.binding.conversationId!==conversationId||record.binding.writerFence!==1||record.selectedClientId!==selectedClientId||record.policyRevision!==qualification.policyRevision||!requireEffectiveAdmission&&(record.configurationSha256!==configurationSha256||!same(record.versions,versions))||!Number.isSafeInteger(record.expiresAtMs))refuse();return record;};
++  const originalScopes=principal=>[{kind:'client',tenantId:principal.tenantId,resourceId:selectedClientId,policyRevision:qualification.policyRevision}];
++  const savedOriginal=(saved,record,principal)=>{if(!saved||!same(saved.run.binding,record.binding)||saved.run.policyRevision!==record.policyRevision||!same(saved.run.versions,record.versions)||!same(saved.run.scopes,originalScopes(principal)))refuse();};
++  const rootDescriptor=record=>resolveEffectiveAdmissionFromRows({binding:record.binding,original:{record,recordSha256:hash(record)},reservations:[],adoptions:[]});
++  const descriptor=(selected,record)=>{
++   const effective=assertEffectiveAdmissionDescriptor(selected.effectiveAdmission===undefined?(record&&same(selected.binding,record.binding)?rootDescriptor(record):refuse()):selected.effectiveAdmission);
++   if(!same(effective.binding,selected.binding)||effective.policyRevision!==selected.policyRevision||effective.selectedClientId!==selectedClientId||!same(effective.scopes,scopes)||effective.configurationSha256!==configurationSha256||!same(effective.versions,versions)||record&&effective.originalAdmissionSha256!==hash(record))refuse();
++   return effective;
++  };
++  const fact=(selected,record)=>{const checkedAtMs=now(),deadlineMs=Math.min(selected.expiresAtMs??factUntil(),factUntil());if(!requireEffectiveAdmission)return JSON.stringify({binding:selected.binding,policyRevision:selected.policyRevision,checkedAtMs,deadlineMs});const effective=descriptor(selected,record);return JSON.stringify({schemaVersion:2,binding:selected.binding,policyRevision:selected.policyRevision,effectiveAdmissionSha256:effective.descriptorSha256,checkedAtMs,deadlineMs});};
++  async function readRoot(principal,conversationId,signal){const record=await initialBindings.readConversation({principal,conversationId,selectedClientId},check(signal));check(signal)();return valid(record,principal,conversationId);}
+   async function original(principal,conversationId,signal){const query={principal,conversationId,selectedClientId};let record=await initialBindings.readConversation(query,check(signal));check(signal)();
+    if(!record){const proposedExpiresAtMs=proposeInitialExpiry({signal});const claimed=await initialBindings.claim({...query,policyRevision:qualification.policyRevision,versions,configurationSha256,proposedExpiresAtMs},check(signal));record=claimed.record;check(signal)();}
+    return valid(record,principal,conversationId);}
+   async function select(record,principal,conversationId,signal){const saved=await store.readOptional(record.binding,{},check(signal));check(signal)();
+-   if(!saved){if(record.expiresAtMs<=now())refuse();return {binding:record.binding,policyRevision:record.policyRevision,expiresAtMs:record.expiresAtMs};}
+-   if(!same(saved.run.binding,record.binding)||saved.run.policyRevision!==record.policyRevision||!same(saved.run.versions,versions)||!same(saved.run.scopes,[{kind:'client',tenantId:principal.tenantId,resourceId:selectedClientId,policyRevision:record.policyRevision}]))refuse();
++   if(!saved){if(record.expiresAtMs<=now()||requireEffectiveAdmission&&(record.configurationSha256!==configurationSha256||!same(record.versions,versions)))refuse();return {binding:record.binding,policyRevision:record.policyRevision,expiresAtMs:record.expiresAtMs};}
++   savedOriginal(saved,record,principal);
+    const chosen=await nextRunOwner.selectRun({principal,conversationId,signal}),current=await nextRunOwner.currentRun(chosen.binding,{signal});check(signal)();
+-   if(!same(current.binding,chosen.binding)||current.policyRevision!==record.policyRevision||!same(current.scopes,saved.run.scopes))refuse();return {binding:current.binding,policyRevision:current.policyRevision};}
+-  const currentOwner={async currentRun(request,{signal}){if(request.conversationId===binding.conversationId){const saved=await store.readOptional(binding,{},check(signal));check(signal)();if(!saved){if(!same(request,binding))refuse();return fact({binding,policyRevision:qualification.policyRevision});}if(!same(saved.run.binding,binding)||saved.run.policyRevision!==qualification.policyRevision||!same(saved.run.scopes,scopes))refuse();const selected=await nextRunOwner.currentRun(request,{signal});return fact(selected);}
+-   const principal={tenantId:request.tenantId,actorId:request.actorId},record=valid(await initialBindings.readConversation({principal,conversationId:request.conversationId,selectedClientId},check(signal)),principal,request.conversationId);check(signal)();
+-   const saved=await store.readOptional(record.binding,{},check(signal));check(signal)();if(!saved){if(!same(request,record.binding)||record.expiresAtMs<=now())refuse();return fact({binding:record.binding,policyRevision:record.policyRevision,expiresAtMs:record.expiresAtMs});}
+-   if(!same(saved.run.binding,record.binding)||saved.run.policyRevision!==record.policyRevision||!same(saved.run.versions,versions)||!same(saved.run.scopes,[{kind:'client',tenantId:principal.tenantId,resourceId:selectedClientId,policyRevision:record.policyRevision}]))refuse();const selected=await nextRunOwner.currentRun(request,{signal});check(signal)();if(!same(selected.binding,request)||selected.policyRevision!==record.policyRevision||!same(selected.scopes,saved.run.scopes))refuse();return fact(selected);}};
+-  return createNativeIdentityContext({...identity,currentOwner,selectRun:async({principal,conversationId,signal})=>{if(conversationId!==binding.conversationId)refuse();const saved=await store.readOptional(binding,{},check(signal));if(!saved)return fact({binding,policyRevision:qualification.policyRevision});if(!same(saved.run.binding,binding)||saved.run.policyRevision!==qualification.policyRevision||!same(saved.run.scopes,scopes))refuse();const selected=await nextRunOwner.selectRun({principal,conversationId,signal});return fact(await nextRunOwner.currentRun(selected.binding,{signal}));},admitInitialConversation:async({principal,conversationId,selectedClientId:requestedClient,signal})=>{if(requestedClient!==selectedClientId)refuse();return fact(await select(await original(principal,conversationId,signal),principal,conversationId,signal));},now,limits,enabled:true});
++   if(!same(current.binding,chosen.binding)||current.policyRevision!==record.policyRevision||!same(current.scopes,saved.run.scopes))refuse();return requireEffectiveAdmission?current:{binding:current.binding,policyRevision:current.policyRevision};}
++  const currentOwner={async currentRun(request,{signal}){
++   const principal={tenantId:request.tenantId,actorId:request.actorId};
++   if(request.conversationId===binding.conversationId){const record=requireEffectiveAdmission?await readRoot(principal,request.conversationId,signal):null,saved=await store.readOptional(binding,{},check(signal));check(signal)();
++    if(!saved){if(!same(request,binding)||requireEffectiveAdmission&&(!same(record.binding,binding)||record.expiresAtMs<=now()))refuse();return fact({binding,policyRevision:qualification.policyRevision,...(record?{expiresAtMs:record.expiresAtMs}:{})},record);}
++    if(requireEffectiveAdmission)savedOriginal(saved,record,principal);else if(!same(saved.run.binding,binding)||saved.run.policyRevision!==qualification.policyRevision||!same(saved.run.scopes,scopes))refuse();
++    const selected=await nextRunOwner.currentRun(request,{signal});check(signal)();return fact(selected,record);
++   }
++   const record=await readRoot(principal,request.conversationId,signal),saved=await store.readOptional(record.binding,{},check(signal));check(signal)();
++   if(!saved){if(!same(request,record.binding)||record.expiresAtMs<=now()||requireEffectiveAdmission&&(record.configurationSha256!==configurationSha256||!same(record.versions,versions)))refuse();return fact({binding:record.binding,policyRevision:record.policyRevision,expiresAtMs:record.expiresAtMs},record);}
++   savedOriginal(saved,record,principal);const selected=await nextRunOwner.currentRun(request,{signal});check(signal)();
++   if(!same(selected.binding,request)||selected.policyRevision!==record.policyRevision||!same(selected.scopes,saved.run.scopes))refuse();return fact(selected,record);
++  }};
++  return createNativeIdentityContext({...identity,currentOwner,selectRun:async({principal,conversationId,signal})=>{
++   if(conversationId!==binding.conversationId||principal.tenantId!==binding.tenantId||principal.actorId!==binding.actorId)refuse();
++   const record=requireEffectiveAdmission?await readRoot(principal,conversationId,signal):null,saved=await store.readOptional(binding,{},check(signal));check(signal)();
++   if(!saved){if(requireEffectiveAdmission&&(!same(record.binding,binding)||record.expiresAtMs<=now()||record.configurationSha256!==configurationSha256||!same(record.versions,versions)))refuse();return fact({binding,policyRevision:qualification.policyRevision,...(record?{expiresAtMs:record.expiresAtMs}:{})},record);}
++   if(requireEffectiveAdmission)savedOriginal(saved,record,principal);else if(!same(saved.run.binding,binding)||saved.run.policyRevision!==qualification.policyRevision||!same(saved.run.scopes,scopes))refuse();
++   const selected=await nextRunOwner.selectRun({principal,conversationId,signal}),current=await nextRunOwner.currentRun(selected.binding,{signal});check(signal)();return fact(current,record);
++  },admitInitialConversation:async({principal,conversationId,selectedClientId:requestedClient,signal})=>{if(requestedClient!==selectedClientId)refuse();const record=await original(principal,conversationId,signal);return fact(await select(record,principal,conversationId,signal),record);},now,limits,enabled:true,requireEffectiveAdmission});
+  }
+  const currentOwner={async currentRun(request,{signal}){if(!same(request,binding))refuse();const check=()=>{if(signal?.aborted)refuse();};const saved=await store.readOptional(binding,{},check);check();if(saved&&(!same(saved.run.binding,binding)||saved.run.policyRevision!==qualification.policyRevision||!same(saved.run.scopes,scopes)))refuse();return JSON.stringify({binding,policyRevision:qualification.policyRevision,checkedAtMs:now(),deadlineMs:factUntil()});}};
+  if(nextRunOwner){
+@@ -76,17 +101,17 @@ export function createPreparedCandidateIdentity({store,identity,qualification,no
+ }
+ /** Borrowed dependencies remain caller-owned; allocation starts only at Temporal kickoff. */
+ export function assemblePreparedCandidate(options){
+- const c=own(options,['configuration','pool','ecs','objects','credentials'],['fetchImpl','now','allocate','retireOriginal','runIssuance','issuanceIntent','admissionForBinding','prepareOriginal','prepareInitial','retireInitial','initialBindings','configurationSha256','proposeInitialExpiry','createReadsRuntime','generalReads']),config=compilePreparedCandidateConfiguration(c.configuration.nativeCandidate,c.configuration.versions),fetchImpl=c.fetchImpl??fetch,now=c.now??Date.now,limits={maxRequestMs:c.configuration.limits.requestMs,maxFactBytes:131072},secrets=own(c.credentials,['identity','task','control','proxy']);
++ const c=own(options,['configuration','pool','ecs','objects','credentials'],['fetchImpl','now','allocate','retireOriginal','runIssuance','issuanceIntent','admissionForBinding','prepareOriginal','prepareInitial','retireInitial','initialBindings','configurationSha256','proposeInitialExpiry','createReadsRuntime','generalReads','requireEffectiveAdmission']),config=compilePreparedCandidateConfiguration(c.configuration.nativeCandidate,c.configuration.versions),fetchImpl=c.fetchImpl??fetch,now=c.now??Date.now,limits={maxRequestMs:c.configuration.limits.requestMs,maxFactBytes:131072},secrets=own(c.credentials,['identity','task','control','proxy']);
+  const reads=captureReadRuntimeOptions(Object.fromEntries(['createReadsRuntime','generalReads'].filter(k=>c[k]!==undefined).map(k=>[k,c[k]])));
+- if((config.multiRun?.dynamicInitialRuns===true)!==(c.initialBindings!==undefined))refuse();
++ if((config.multiRun?.dynamicInitialRuns===true)!==(c.initialBindings!==undefined)||c.requireEffectiveAdmission!==undefined&&typeof c.requireEffectiveAdmission!=='boolean'||c.requireEffectiveAdmission===true&&!c.initialBindings)refuse();
+  if([secrets.identity,secrets.task,secrets.control,secrets.proxy].some(v=>typeof v!=='string'||!/^\S{1,8192}$/u.test(v))||new Set(Object.values(secrets)).size!==4||c.retireOriginal!==undefined&&typeof c.retireOriginal!=='function')refuse();
+- const runtime={...config.runtime,proxyCredential:secrets.proxy},compiled=compileNativeBrokerPlan({runtime,plan:config.plan,preparationIntent:config.preparationIntent}),original=compiled.original,store=createPostgresConversationStore({pool:c.pool}),identity={origin:config.identity.origin,credential:secrets.identity,commandContext:config.identity.commandContext,fetchImpl};
++ const runtime={...config.runtime,proxyCredential:secrets.proxy},compiled=compileNativeBrokerPlan({runtime,plan:config.plan,preparationIntent:config.preparationIntent}),original=compiled.original,store=createPostgresConversationStore({pool:c.pool,configurationAdoption:c.requireEffectiveAdmission===true,now}),identity={origin:config.identity.origin,credential:secrets.identity,commandContext:config.identity.commandContext,fetchImpl};
+  const {controlDigest,taskDigest}=assertFirstRunGrantBindings(config.grantIntents,config.grantId,secrets),multi=[c.runIssuance,c.issuanceIntent,c.admissionForBinding].some(v=>v!==undefined);
+  if(multi&&(!c.runIssuance||typeof c.issuanceIntent!=='function'||typeof c.admissionForBinding!=='function')||c.initialBindings&&(!multi||typeof c.prepareInitial!=='function'||typeof c.retireInitial!=='function'||typeof c.proposeInitialExpiry!=='function'||typeof c.configurationSha256!=='string'))refuse();
+  const nextRunOwner=multi?createPreparedNextRunOwner({store,versions:c.configuration.versions,admissionForBinding:c.admissionForBinding,now}):undefined;
+  const runRegistry=multi?createPreparedRunRegistry({issuance:c.runIssuance,issuanceIntent:c.issuanceIntent,store,pool:c.pool,client:c.ecs,identity,controlCapability:secrets.control,objects:c.objects,limits:{...limits,cleanupMs:c.configuration.limits.shutdownMs},now,sourceEnabled:c.configuration.sourceEnabled,...reads,...(c.configuration.intents===undefined?{}:{intents:c.configuration.intents}),...(config.approvedReads===undefined?{}:{approvedReads:config.approvedReads}),...(c.prepareOriginal?{prepareOriginal:c.prepareOriginal}:{}),...(c.initialBindings?{initialBindings:c.initialBindings,configurationSha256:c.configurationSha256,prepareInitial:c.prepareInitial,retireInitial:c.retireInitial}:{}),...(c.allocate?{allocate:c.allocate}:{})}):null;
+  const unavailableReads=createPreparedNativeReads({binding:original.binding,...(config.approvedReads===undefined?{}:{approvedReads:config.approvedReads}),now}).application;
+- const identityContext=createPreparedCandidateIdentity({store,identity:{origin:identity.origin,commandContext:identity.commandContext,fetchImpl},qualification:config.qualification,now,limits,...(config.multiRun?{factWindowMs:config.multiRun.runWindowMs}:{}),...(nextRunOwner?{nextRunOwner}:{}),...(c.initialBindings?{initialBindings:c.initialBindings,configurationSha256:c.configurationSha256,versions:c.configuration.versions,proposeInitialExpiry:c.proposeInitialExpiry}:{})});
++ const identityContext=createPreparedCandidateIdentity({store,identity:{origin:identity.origin,commandContext:identity.commandContext,fetchImpl},qualification:config.qualification,now,limits,...(config.multiRun?{factWindowMs:config.multiRun.runWindowMs}:{}),...(nextRunOwner?{nextRunOwner}:{}),...(c.initialBindings?{initialBindings:c.initialBindings,configurationSha256:c.configurationSha256,versions:c.configuration.versions,proposeInitialExpiry:c.proposeInitialExpiry}:{}),requireEffectiveAdmission:c.requireEffectiveAdmission===true});
+  const conversationMembership=createCoreMembershipGate({origin:identity.origin,identityContext,fetchImpl,now,limits:{maxRequestMs:limits.maxRequestMs,maxFactBytes:262144}});
+  const conversationCurrentness=createCoreConversationCurrentness({origin:identity.origin,fetchImpl,now,limits,selectedClientId:config.identity.commandContext.clientResolution.clientId});
+  let controller,pending,closed=false,outerApplication;
