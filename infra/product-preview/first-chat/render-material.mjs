@@ -320,7 +320,9 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,ident
  // requestMs is the per-request budget for every authority round trip. A session recheck performs about eight serial
  // Core calls (identity, membership twice, context twice plus the run facts) at ~250ms each through the public ALB, and
  // Core itself consults Clerk on every one; 3000ms overran on the first live `history` (408 DEADLINE, session dropped).
- const limits={startupMs:30000,shutdownMs:10000,requestMs:12000,requestBytes:131072};
+ // `input/admit` re-runs that recheck about five times (~2.4 s each), so 12000ms cancelled the first admit mid-flight
+ // (control aborted its own Core call; ALB 460). 25000ms stays inside the frontend proxy's 30 s request budget.
+ const limits={startupMs:30000,shutdownMs:10000,requestMs:25000,requestBytes:131072};
  const control={version:1,profile:'isolated-preview',sourceEnabled:false,limits,
   native:{origin:controlPrivate,capabilityFile:PATHS.controlCapability,loopback:false,maxResponseBytes:2097152},
   http:{hostname:'0.0.0.0',port:8080,frontendOrigin:k.frontendOrigin},database:{connectionFile:PATHS.database},temporal:temporal('control'),
