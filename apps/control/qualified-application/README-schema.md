@@ -42,7 +42,7 @@ Initial installation additionally observes zero rows in every application/author
 
 Errors expose only `code:'QUALIFICATION_SCHEMA_REFUSED'`, fixed `stage`, `outcome`, and pending-operation count. Before any DDL submission the installation outcome is `NOT_INSTALLED`. After submission any failure is conservatively `UNKNOWN`, including validation failure, cancellation, uncertain COMMIT or client release. There is no automatic lookup/retry that turns UNKNOWN into success. Verification errors use `READ_UNAVAILABLE`. Never automatically reapply an unknown installation.
 
-The transaction-local search path controls these six migration applications only. It **does not secure later pool connections** used by existing unqualified metadata/journal SQL, nor prevent another connection's temporary relation from shadowing public. The application assembly must establish that separate resolution boundary; this module does not alter those owners.
+The transaction-local search path controls these six migration applications only. The approval-metadata and command-journal tables live in the Meri-owned `meri_commands` schema (`meri_commands.approval_metadata`, `meri_commands.command_journal`; each of the two command migrations runs `CREATE SCHEMA IF NOT EXISTS meri_commands` first) and their stores address them schema-qualified, so nothing is created in, or resolved through, Core's shared `public` schema.
 
 Canonical owner dependencies are `PostgresBudgetStore`, `createOperationLifetime` and the existing inert command/data boundary. No additional packages or installation are needed for the focused source test:
 
@@ -86,9 +86,10 @@ inferred and no networking is configured here.
 
 Without `schemaScope`, strict unrelated-namespace refusal is unchanged. With it,
 all non-system namespaces must be exactly the supplied set (maximum128) plus the
-two canonical namespaces after installation. Canonical namespace ownership is
-checked. All public relations must still be absent before installation, and the
-two public target row-type names must not collide. This is not a general public
+three canonical namespaces (`meri_qualification`, `meri_task_lookup`, `meri_commands`)
+after installation; none of them may pre-exist or be declared as evidence. Canonical
+namespace ownership is checked. All public relations must still be absent before
+installation; nothing is created in public. This is not a general public
 schema installer. Retain the returned `schemaSha256` in the exact same fixture
 for reconstruction; do not rerun prepare or reset a failed/uncertain fixture.
 

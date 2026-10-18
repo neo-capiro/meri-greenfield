@@ -2,7 +2,7 @@
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {requireSchema,sha256,preservationData} from './schema-contract.mjs';
 export const namespaceSQL="SELECT nspname AS name,oid::pg_catalog.text AS oid,pg_catalog.pg_get_userbyid(nspowner) AS owner,nspacl::pg_catalog.text AS acl FROM pg_catalog.pg_namespace WHERE nspname NOT IN ('public','information_schema') AND left(nspname,3)<>'pg_' ORDER BY nspname";
-const targets=['meri_qualification','meri_task_lookup'];
+const targets=['meri_qualification','meri_task_lookup','meri_commands'];
 export function assertNamespaces(rows,fixture,prepared){
  const allowed=fixture.schemaScope?.namespaces??[],expected=[...allowed,...(prepared?targets.map(name=>({name,owner:fixture.user})):[])];
  requireSchema(rows.length===expected.length&&new Set(rows.map(r=>r.name)).size===rows.length);

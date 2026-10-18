@@ -15,7 +15,7 @@ const catalogSQL=`SELECT n.nspname||'.'||c.relname AS name,c.relkind::text AS ki
  COALESCE((SELECT jsonb_agg(jsonb_build_object('name',k.conname,'kind',k.contype::text,'definition',pg_catalog.pg_get_constraintdef(k.oid,false),'validated',k.convalidated,'deferrable',k.condeferrable,'deferred',k.condeferred) ORDER BY k.conname) FROM pg_catalog.pg_constraint k WHERE k.conrelid=c.oid),'[]'::jsonb) AS constraints,
  COALESCE((SELECT jsonb_agg(jsonb_build_object('name',ic.relname,'definition',pg_catalog.pg_get_indexdef(i.indexrelid),'unique',i.indisunique,'valid',i.indisvalid,'ready',i.indisready,'predicate',pg_catalog.pg_get_expr(i.indpred,i.indrelid)) ORDER BY ic.relname) FROM pg_catalog.pg_index i JOIN pg_catalog.pg_class ic ON ic.oid=i.indexrelid WHERE i.indrelid=c.oid),'[]'::jsonb) AS indexes,
  CASE WHEN c.relkind='v' THEN pg_catalog.pg_get_viewdef(c.oid,false) ELSE NULL END AS view
- FROM pg_catalog.pg_class c JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname IN ('public','meri_qualification','meri_task_lookup') AND c.relkind NOT IN ('i','I') ORDER BY n.nspname,c.relname`;
+ FROM pg_catalog.pg_class c JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname IN ('public','meri_qualification','meri_task_lookup','meri_commands') AND c.relkind NOT IN ('i','I') ORDER BY n.nspname,c.relname`;
 const countSQL=relations.filter(([name])=>!name.endsWith('.budget_liabilities')).map(([name])=>`SELECT '${name}' AS name,count(*)::text AS count FROM ${name}`).join(' UNION ALL ');
 function denied(install,submitted,stage,life){
  const error=new Error('QUALIFICATION_SCHEMA_REFUSED');error.code='QUALIFICATION_SCHEMA_REFUSED';
@@ -55,7 +55,8 @@ async function execute(value,install){
    stage='ownership';
    if(install){
     requireSchema((await query(catalogSQL)).length===0);
-    requireSchema((await query("SELECT t.typname FROM pg_catalog.pg_type t JOIN pg_catalog.pg_namespace n ON n.oid=t.typnamespace WHERE n.nspname='public' AND t.typname IN ('meri_approval_metadata','meri_command_journal')")).length===0);
+    // Nothing is created in public: the command tables live in meri_commands, a target namespace that must not pre-exist
+    // (assertNamespaces above admits only the declared evidence namespaces before install), so no name can collide there.
     stage='migration';
     for(const file of files){life.check();submitted=true;await client.query(file.bytes.toString('utf8'));life.check();}
    }

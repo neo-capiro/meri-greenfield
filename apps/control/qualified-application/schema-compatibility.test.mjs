@@ -25,7 +25,7 @@ for(const fields of [{serverAddress:'172.17.0.2'},{serverPort:5432},{serverAddre
 for(const change of [ns=>ns.slice(1),ns=>[...ns,{name:'extra_evidence',owner:'qualification_owner'}],ns=>ns.map((n,i)=>i? n:{...n,owner:'other'}),ns=>[...ns,{name:'meri_qualification',owner:'qualification_owner'}]])test('declared evidence namespace set/owner/target mismatch refuses before DDL',async()=>{
  const s=scripted({fixture:{schemaScope:scope},namespaces:change(namespaces)});await refuse(s,'ownership');assert.equal(s.log.filter(r=>ddl.includes(r.text)).length,0);
 });
-for(const ns of [[...namespaces,namespaces[0]],[{name:'public',owner:'qualification_owner'}],[{name:'pg_evidence',owner:'qualification_owner'}],[{name:'evidence',owner:'wrong owner'}],[]])test('closed scope refuses duplicates reserved names and invalid owners',async()=>{
+for(const ns of [[...namespaces,namespaces[0]],[{name:'public',owner:'qualification_owner'}],[{name:'meri_commands',owner:'qualification_owner'}],[{name:'pg_evidence',owner:'qualification_owner'}],[{name:'evidence',owner:'wrong owner'}],[]])test('closed scope refuses duplicates reserved names and invalid owners',async()=>{
  const s=scripted({fixture:{schemaScope:{...scope,namespaces:ns}}});await refuse(s,'admission');assert.equal(s.log.length,0);
 });
 test('legacy strict mode still refuses unrelated declared-looking namespaces',async()=>{const s=scripted({namespaces});await refuse(s,'ownership');assert.equal(s.log.filter(r=>ddl.includes(r.text)).length,0);});
@@ -49,7 +49,10 @@ test('mapped schema digest cannot be reused for changed mapped identity even whe
  const s=scripted({fixture:mapped}),r=await prepareOwnedApplicationSchema(s.args());s.f.serverPort=5433;
  await assert.rejects(verifyOwnedApplicationSchema({...s.args(),fixture:{...s.f,schemaSha256:r.schemaSha256}}),e=>e.outcome==='READ_UNAVAILABLE');
 });
-test('public target type collision refuses before any DDL',async()=>{const s=scripted({fixture:{schemaScope:scope},namespaces,publicTypeCollision:[{typname:'meri_approval_metadata'}]});await refuse(s,'ownership');assert.equal(s.log.filter(r=>ddl.includes(r.text)).length,0);});
+test('pre-existing meri_commands target namespace refuses before any DDL; command tables are created only there',async()=>{
+ const s=scripted({fixture:{schemaScope:scope},namespaces:[...namespaces,{name:'meri_commands',owner:'qualification_owner'}]});await refuse(s,'ownership');assert.equal(s.log.filter(r=>ddl.includes(r.text)).length,0);
+ for(const sql of ddl.slice(-2)){assert.ok(sql.includes('CREATE SCHEMA IF NOT EXISTS meri_commands;'));assert.doesNotMatch(sql,/CREATE TABLE (?!meri_commands\.)/u);assert.doesNotMatch(sql,/\bpublic\./u);}
+});
 test('target namespace ownership is checked after install',async()=>{
  const s=scripted(),connect=s.pool.connect.bind(s.pool);s.pool.connect=async()=>{const c=await connect(),query=c.query.bind(c);c.query=async cfg=>{const r=await query(cfg);if(cfg.text.startsWith('SELECT nspname')&&s.state.installed)r.rows[0].owner='other';return r;};return c;};
  await assert.rejects(prepareOwnedApplicationSchema(s.args()),e=>e.outcome==='UNKNOWN');assert.equal(s.state.commits,0);

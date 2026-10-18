@@ -13,7 +13,7 @@ function combinedFixturePool(t){
  return {options:{connectionTimeoutMillis:1000,query_timeout:1000},async connect(){let client,pending=[];
   return {async query(sql,args){const text=typeof sql==='string'?sql:sql.text;
    if(!client&&(text==='BEGIN'||text.startsWith('SET LOCAL'))){pending.push([sql,args]);return {rows:[]};}
-   if(!client){const pool=text.includes('meri_approval_metadata')?t.metadata.pool:text.includes('meri_command_journal')?t.journal.pool:text.includes('meri_task_lookup')?t.lookup.pool:t.h.pool;client=await pool.connect();for(const q of pending)await client.query(...q);pending=[];}
+   if(!client){const pool=text.includes('meri_commands.approval_metadata')?t.metadata.pool:text.includes('meri_commands.command_journal')?t.journal.pool:text.includes('meri_task_lookup')?t.lookup.pool:t.h.pool;client=await pool.connect();for(const q of pending)await client.query(...q);pending=[];}
    return client.query(sql,args);
   },release(error){client?.release(error);}};
  }};

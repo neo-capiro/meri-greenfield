@@ -8,7 +8,7 @@
  * - An approval reaches an effect only through the existing approved-execution path: `commands/tool-interface.mjs`
  *   `executeApproved`, whose executor rechecks the CURRENT decision (approval guard) and fresh `command.execute` authority
  *   before claim, before effect, at effect, release, settlement and completion. A recorded approval alone executes nothing.
- * - The durable result is the command journal row (`meri_command_journal`) the executor writes; history reads it back.
+ * - The durable result is the command journal row (`meri_commands.command_journal`) the executor writes; history reads it back.
  *
  * Ports (all supplied by the trusted composition; see docs/shipping/20261017/lanes/lane-3-write-intents.md):
  *  journal            {read({key,signal}), list({conversation,after,limit,signal})}  the intent journal store

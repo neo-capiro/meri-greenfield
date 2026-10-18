@@ -11,8 +11,8 @@ export const migrations=data([
  ['budget','apps/proxy/qualification/state/migrations/0002_tool_budget.sql','53d3933a440ed0801411d3ed544f4c554f397b3338acaad1ce1addcce4ef5809'],
  ['invocation','apps/proxy/qualification/state/migrations/0003_tool_invocations.sql','8d0c6ab5e3027b637f7905bd19ac1d830095f1565f745d4e2954294b115137e5'],
  ['lookup','apps/control/task-lookup/migrations/0001_task_lookup.sql','ae3197c4f898c5a8a493b2bee4cd6c5da16c62730ad3447e4f07ebfeaf1c100f'],
- ['metadata','apps/control/commands/approval-metadata/migrations/0001_approval_metadata.sql','3270e42c779bbe5a367506142a45b31ed3d9ccbe90b88658d52ba3bcf5543e3b'],
- ['command','apps/control/commands/migrations/0001_commands.sql','252683e2db8ffd36dbc7b3cfdada9a28f59a0f192522253a852686369560704b'],
+ ['metadata','apps/control/commands/approval-metadata/migrations/0001_approval_metadata.sql','448678c2241e40e28190987c1f60c3492f39f9a43da8bc6ae6f0708efdd2d1a5'],
+ ['command','apps/control/commands/migrations/0001_commands.sql','64f679e434dbc9d54d700af83357296ba3f4cb2c52e382c72e0d7c1caad7c936'],
 ]);
 // Column order and constraint cardinalities come from those exact migrations.
 // Full server definitions (including CHECKs/defaults/index predicates/view) are
@@ -29,8 +29,8 @@ export const relations=data([
  ['meri_qualification.budget_liabilities','kind,slot,run_id,grant_id,state,hold_micro_usd,consumed_micro_usd',{}],
  ['meri_task_lookup.lookups','tenant_id,lookup_id,result_reference,payload,state,record',{p:1,u:1,c:2}],
  ['meri_task_lookup.events','tenant_id,run_id,sequence,event_id,lookup_id,kind,event',{p:1,u:2,f:1,c:2}],
- ['public.meri_approval_metadata','tenant_id,actor_id,proposal_id,command_id,idempotency_key,command_sha256,payload_sha256,payload', {p:1,u:2,c:3}],
- ['public.meri_command_journal','tenant_id,actor_id,idempotency_key,command_id,command_sha256,proposal_sha256,payload_sha256,payload,executor,state,outcome,created_at,updated_at',{p:1,u:1,c:8}],
+ ['meri_commands.approval_metadata','tenant_id,actor_id,proposal_id,command_id,idempotency_key,command_sha256,payload_sha256,payload', {p:1,u:2,c:3}],
+ ['meri_commands.command_journal','tenant_id,actor_id,idempotency_key,command_id,command_sha256,proposal_sha256,payload_sha256,payload,executor,state,outcome,created_at,updated_at',{p:1,u:1,c:8}],
 ]);
 const columnTypes=[
  'int,big,big,bool', 'uuid,int,text,int,hash', 'uuid,uuid,int,text,int,hash,hash,time,text',
@@ -56,7 +56,7 @@ export function fixtureDescriptor(value,allowUnprepared=false){
  if(paired)requireSchema(typeof f.serverAddress==='string'&&isIP(f.serverAddress)!==0&&!f.serverAddress.includes('%')&&Number.isSafeInteger(f.serverPort)&&f.serverPort>=1&&f.serverPort<=65535);
  if(Object.hasOwn(f,'schemaScope')){
   const scope=own(f.schemaScope,['mode','namespaces']);requireSchema(scope.mode==='preserve-declared-evidence'&&Array.isArray(scope.namespaces)&&scope.namespaces.length>=1&&scope.namespaces.length<=128);
-  for(const n of scope.namespaces){own(n,['name','owner']);requireSchema(typeof n.name==='string'&&/^[a-z_][a-z0-9_]{0,62}$/.test(n.name)&&!n.name.startsWith('pg_')&&!['public','information_schema','meri_qualification','meri_task_lookup'].includes(n.name)&&typeof n.owner==='string'&&/^[a-z_][a-z0-9_]{0,62}$/.test(n.owner));}
+  for(const n of scope.namespaces){own(n,['name','owner']);requireSchema(typeof n.name==='string'&&/^[a-z_][a-z0-9_]{0,62}$/.test(n.name)&&!n.name.startsWith('pg_')&&!['public','information_schema','meri_qualification','meri_task_lookup','meri_commands'].includes(n.name)&&typeof n.owner==='string'&&/^[a-z_][a-z0-9_]{0,62}$/.test(n.owner));}
   requireSchema(new Set(scope.namespaces.map(n=>n.name)).size===scope.namespaces.length);
  }
  return f;

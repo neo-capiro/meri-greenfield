@@ -17,8 +17,8 @@ const definitions=[
  ['meri_qualification.budget_liabilities','kind:t? slot:t? run_id:u? grant_id:u? state:t? hold_micro_usd:b? consumed_micro_usd:b?',{}],
  ['meri_task_lookup.lookups','tenant_id:t lookup_id:u result_reference:u payload:j state:t record:j?',{p:1,u:1,c:2}],
  ['meri_task_lookup.events','tenant_id:t run_id:u sequence:b event_id:u lookup_id:u kind:t event:j?',{p:1,u:2,f:1,c:2}],
- ['public.meri_approval_metadata','tenant_id:t actor_id:t proposal_id:u command_id:u idempotency_key:v command_sha256:h payload_sha256:h payload:j',{p:1,u:2,c:3}],
- ['public.meri_command_journal','tenant_id:t actor_id:t idempotency_key:t command_id:u command_sha256:t proposal_sha256:t payload_sha256:t payload:j executor:j state:t outcome:j? created_at:z= updated_at:z=',{p:1,u:1,c:8}],
+ ['meri_commands.approval_metadata','tenant_id:t actor_id:t proposal_id:u command_id:u idempotency_key:v command_sha256:h payload_sha256:h payload:j',{p:1,u:2,c:3}],
+ ['meri_commands.command_journal','tenant_id:t actor_id:t idempotency_key:t command_id:u command_sha256:t proposal_sha256:t payload_sha256:t payload:j executor:j state:t outcome:j? created_at:z= updated_at:z=',{p:1,u:1,c:8}],
 ];
 function catalog(){return definitions.map(([name,fields,counts])=>{
  const view=name.endsWith('.budget_liabilities'),partial=['meri_qualification.requests','meri_qualification.tool_reservations'].includes(name),indexes=[];
@@ -39,13 +39,12 @@ function scripted(options={}){
    else if(text==='ROLLBACK'){if(state.locked===id)state.locked=null;}
    else if(text.startsWith('SELECT current_database()'))result={rows:[{database:f.database,username:f.user,address:f.serverAddress??f.host,port:f.serverPort??f.port,version:f.serverVersion,start_ms:String(Date.parse(f.serverStartTime)),fsync:'on',synchronous_commit:'on',system_identifier:f.systemIdentifier,search_path:'public',...options.identity}]};
    else if(text.startsWith('SELECT pg_catalog.pg_try')){const acquired=state.locked===null;state.locked??=id;result={rows:[{acquired}]};}
-   else if(text.startsWith('SELECT nspname'))result={rows:[...(options.namespaces??[]).map((n,i)=>({owner:'qualification_owner',acl:null,oid:String(30000+i),...n})),...(state.installed?[{name:'meri_qualification',owner:'qualification_owner',acl:null},{name:'meri_task_lookup',owner:'qualification_owner',acl:null}]:[])]};
+   else if(text.startsWith('SELECT nspname'))result={rows:[...(options.namespaces??[]).map((n,i)=>({owner:'qualification_owner',acl:null,oid:String(30000+i),...n})),...(state.installed?[{name:'meri_qualification',owner:'qualification_owner',acl:null},{name:'meri_task_lookup',owner:'qualification_owner',acl:null},{name:'meri_commands',owner:'qualification_owner',acl:null}]:[])]};
    else if(text.startsWith('WITH ns AS'))result={rows:[{unsupported:options.unsupported??0,metadata:options.preservedMetadata??Object.fromEntries(['relations','columns','defaults','constraints','indexes','views','types','sequences','triggers','dependencies','comments','labels'].map(k=>[k,[]]))}]};
-   else if(text.startsWith('SELECT t.typname'))result={rows:options.publicTypeCollision??[]};
    else if(text.startsWith('SELECT n.nspname'))result={rows:state.installed?structuredClone(state.catalog):options.preexisting??[]};
    else if(ddl.includes(text)){if(text===ddl.at(-1))state.installed=true;result=[{rows:[]},{rows:[]}];}
    else if(text.startsWith('SELECT id,cap_'))result={rows:[{...state.budget}]};
-   else if(text.startsWith("SELECT 'meri_qualification.budget'"))result={rows:definitions.filter(([n])=>!n.endsWith('.budget_liabilities')).map(([name])=>({name,count:name==='meri_qualification.budget'?'1':'0'})).map(row=>options.dirty&&row.name==='public.meri_command_journal'?{...row,count:'1'}:row)};
+   else if(text.startsWith("SELECT 'meri_qualification.budget'"))result={rows:definitions.filter(([n])=>!n.endsWith('.budget_liabilities')).map(([name])=>({name,count:name==='meri_qualification.budget'?'1':'0'})).map(row=>options.dirty&&row.name==='meri_commands.command_journal'?{...row,count:'1'}:row)};
    return result;
   },release(error){releases.push(error);if(options.releaseFails)throw Error('PASSWORD-CANARY');}};
  },end(){state.ended++;}};
