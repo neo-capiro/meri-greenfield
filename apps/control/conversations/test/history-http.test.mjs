@@ -37,7 +37,10 @@ async function fixture({lifecycle=false,extraClient=false}={}){
   readMembership:async({credential})=>{state.memberCredentialReads.push(credential);await state.onMembershipRead?.(state.memberCredentialReads.length);return {...state.member,checkedAtMs:Date.now(),expiresAtMs:Date.now()+30000};}});
  state.retentionChecks=0;const memoryJournal=createMemoryRetentionJournal(),journal={...memoryJournal,withTransition(key,fn){state.onRetentionTransition?.(key);return memoryJournal.withTransition(key,fn);}},serving=createServingGate();
  const retentionGate=createRetentionReadGate({journal:{...journal,async get(key){return state.suppressed?{state:'SUPPRESSED'}:journal.get(key);}},serving});
- const retention={...retentionGate,async assertServable(subject){state.retentionChecks++;await state.onRetentionRead?.(subject);return retentionGate.assertServable(subject);}};
+ const observeRetention=async(subject,assert)=>{state.retentionChecks++;await state.onRetentionRead?.(subject);return assert(subject);};
+ const retention={...retentionGate,
+  assertServable:subject=>observeRetention(subject,retentionGate.assertServable),
+  withRelease:(subjects,release,options)=>retentionGate.withRelease(subjects,(signal,assertLocked)=>release(signal,subject=>observeRetention(subject,assertLocked)),options)};
  const retentionOwner=createSuppressionOwner({journal,serving,ledger:createRetentionLedger({sink:createMemoryLedgerSink(),now:Date.now}),ownership:{async ownerOf(){return binding.actorId;}},now:Date.now});
  state.coreState='active';state.coreClientId=id(5);state.coreReads=[];
  const currentness={async assertCurrent({credential,principal,conversationId,scopes,signal,deadlineMs}){

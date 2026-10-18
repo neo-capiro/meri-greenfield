@@ -7,7 +7,7 @@ export function createConversationHistoryService({store,nextRunOwner,gate,retent
  const guard=fn=>async value=>{try{return await fn(value);}catch(error){throw asProductError(error,'CONVERSATION_UNAVAILABLE');}};
  const check=signal=>()=>signal?.throwIfAborted();
  async function servable(principal,conversationId){if(retention)await retention.assertServable({tenantId:principal.tenantId,kind:'conversation',subjectId:conversationId});}
- async function current(recheckConversation,conversation){if(typeof recheckConversation!=='function')refuse('CONVERSATION_UNAVAILABLE');await recheckConversation({conversationId:conversation.conversationId,scopes:conversation.scopes});}
+ async function current(recheckConversation,conversation,readScheduleOriginRows){if(typeof recheckConversation!=='function')refuse('CONVERSATION_UNAVAILABLE');await recheckConversation({conversationId:conversation.conversationId,scopes:conversation.scopes},readScheduleOriginRows);}
  async function transcript({principal,request,signal,recheckConversation}){
   // Subject ownership/client authorization precedes subject-specific retention observations.
   const result=await store.history.transcript({principal,...request},check(signal));
@@ -33,14 +33,16 @@ export function createConversationHistoryService({store,nextRunOwner,gate,retent
    // Turn receipts do not carry scopes: re-read the trusted saved owner record for release authorization.
    if(operation==='nextTurn'){const saved=await store.history.transcript({principal,conversationId:request.conversationId,after:0,limit:1},check(signal));conversations=[saved.conversation];}
    const subjects=conversations.map(c=>({tenantId:principal.tenantId,kind:'conversation',subjectId:c.conversationId}));
-   const release=async fenceSignal=>{
+   const release=async(fenceSignal,assertReleaseServable,readScheduleOriginRows)=>{
+    if(retention&&typeof assertReleaseServable!=='function')refuse('PRODUCT_CONFIGURATION');
+    const releaseServable=conversationId=>retention?assertReleaseServable({tenantId:principal.tenantId,kind:'conversation',subjectId:conversationId}):Promise.resolve();
     check(signal)();await recheckMembership();
-    for(const conversation of conversations)await current(recheckConversation,conversation);
+    for(const conversation of conversations)await current(recheckConversation,conversation,readScheduleOriginRows);
     if(operation==='list'){const visible=[];
-     for(const conversation of conversations){try{await servable(principal,conversation.conversationId);}catch(error){if(error?.code==='RETENTION_SUPPRESSED')continue;throw error;}visible.push(conversation);}
+     for(const conversation of conversations){try{await releaseServable(conversation.conversationId);}catch(error){if(error?.code==='RETENTION_SUPPRESSED')continue;throw error;}visible.push(conversation);}
      check(signal)();check(fenceSignal)();return publish({...result,conversations:visible});
     }
-    await servable(principal,request.conversationId);check(signal)();check(fenceSignal)();return publish(result);
+    await releaseServable(request.conversationId);check(signal)();check(fenceSignal)();return publish(result);
    };
    return retention?retention.withRelease(subjects,release,{signal,deadlineMs}):release();
   }),

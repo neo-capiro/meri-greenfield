@@ -1,6 +1,7 @@
 import {canonicalSha256, frozenScheduleData, denySchedule,scheduleErrorCode} from '../../../packages/contracts/schedules-0.2/lifecycle-validation.mjs';
 import {snapshotScheduledJobSelection} from './scheduled-job-lineage.mjs';
 import {storedReadConsent,occurrenceReadConsentFacts} from './occurrence-read-consent.mjs';
+import {SCHEDULED_ORIGIN_SQL} from './scheduled-origin-query.mjs';
 
 // Borrow a pg 8.23.1-compatible pool configured by its owner with finite
 // connectionTimeoutMillis/query_timeout. Source cancellation is not wire cancellation.
@@ -115,16 +116,18 @@ export function createPostgresScheduleOwner({pool}) {
   /** Positive local conversation-origin proof. Absence is distinct from corrupt/ambiguous custody; neither a UUID pattern nor
    * failure of another authority source establishes scheduled origin. No current projection join: historical output survives
    * later schedule updates/cancellation, subject to the reader's current native membership and client wall. */
-  async function readOccurrenceForConversation(selection,check) {
+  async function readOccurrenceForConversation(selection,check,readOnServingLease) {
     const s=conversationSelection(selection);
-    return transaction(async c=>{
-      const rows=(await c.query("SELECT tenant_id,generation,occurrence_key,schedule_id,occurrence,effect,effect_sha256,state FROM meri_schedules.occurrences WHERE tenant_id=$1 AND effect->'binding'->>'conversationId'=$2 LIMIT 2",[s.tenantId,s.conversationId])).rows;check();
+    if(readOnServingLease!==undefined&&typeof readOnServingLease!=='function')denySchedule('SCHEDULE_OCCURRENCE');
+    const decode=rows=>{
       if(!Array.isArray(rows)||rows.length>1)denySchedule('SCHEDULE_CORRUPT');
       if(!rows.length)return null;
       const record=originOccurrence(rows[0],s.tenantId);
       if(record.effect.binding.conversationId!==s.conversationId)denySchedule('SCHEDULE_CORRUPT');
       return record;
-    },check);
+    };
+    if(readOnServingLease!==undefined){check();const rows=await readOnServingLease(s);check();return decode(rows);}
+    return transaction(async c=>{const rows=(await c.query(SCHEDULED_ORIGIN_SQL,[s.tenantId,s.conversationId])).rows;check();return decode(rows);},check);
   }
   /** One statement sees the occurrence, its current projection and the locally recorded consent together. LEFT JOIN preserves
    * an occurrence whose projection is missing so that it is refused rather than mistaken for an attended run. */

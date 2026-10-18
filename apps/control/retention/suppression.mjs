@@ -15,13 +15,19 @@ export const refusingOwnerMediation=Object.freeze({async ownerMediated(){fail('R
 export function createRetentionReadGate({journal,serving}){
  if(typeof journal?.get!=='function'||typeof serving?.isEnabled!=='function')fail('RETENTION_CONFIGURATION');
  const barrier=()=>{if(!serving.isEnabled())fail('RETENTION_RECOVERY_BARRIER');};
- async function isSuppressed(rawSubject){barrier();const s=subject(rawSubject);let current;try{current=await journal.get(subjectKey(s));}catch(error){if(!serving.isEnabled()||error?.code==='RETENTION_RECOVERY_BARRIER')fail('RETENTION_RECOVERY_BARRIER');fail('RETENTION_READ_UNAVAILABLE');}barrier();return Boolean(current&&current.state!=='RELEASED');}
- async function assertServable(rawSubject){if(await isSuppressed(rawSubject))fail('RETENTION_SUPPRESSED');}
+ async function isSuppressed(rawSubject,read=journal.get){barrier();const s=subject(rawSubject);let current;try{current=await read(subjectKey(s));}catch(error){if(!serving.isEnabled()||error?.code==='RETENTION_RECOVERY_BARRIER')fail('RETENTION_RECOVERY_BARRIER');fail('RETENTION_READ_UNAVAILABLE');}barrier();return Boolean(current&&current.state!=='RELEASED');}
+ async function assertServable(rawSubject,read=journal.get){if(await isSuppressed(rawSubject,read))fail('RETENTION_SUPPRESSED');}
  /** Serving owners provide authenticated subject identities and serialize their response inside this transition exclusion. */
  async function withRelease(rawSubjects,release,options){
   if(!Array.isArray(rawSubjects)||rawSubjects.length>100||typeof release!=='function'||typeof journal.withServing!=='function')fail('RETENTION_CONFIGURATION');
-  barrier();const keys=[...new Set(rawSubjects.map(s=>subjectKey(subject(s))))].sort();
-  return journal.withServing(keys,async signal=>{barrier();const result=await release(signal);barrier();return result;},options);
+  barrier();const keys=[...new Set(rawSubjects.map(s=>subjectKey(subject(s))))].sort(),locked=new Set(keys);
+  return journal.withServing(keys,async(signal,scoped)=>{if(scoped!==undefined&&typeof scoped?.get!=='function')fail('RETENTION_CONFIGURATION');
+   let active=true;const assertLockedServable=raw=>{if(!active)fail('RETENTION_READ_UNAVAILABLE');const s=subject(raw);
+    if(!locked.has(subjectKey(s)))fail('RETENTION_INVALID_REQUEST');return assertServable(s,scoped?.get??journal.get);};
+   const readScheduleOriginRows=scoped?.readScheduleOriginRows&&((selection)=>{
+    if(!active)fail('RETENTION_READ_UNAVAILABLE');return scoped.readScheduleOriginRows(selection);
+   });
+   try{barrier();const result=await release(signal,assertLockedServable,readScheduleOriginRows);barrier();return result;}finally{active=false;}},options);
  }
  return Object.freeze({isSuppressed,assertServable,withRelease});
 }
