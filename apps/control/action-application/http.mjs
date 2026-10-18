@@ -28,7 +28,8 @@ export async function jsonBody(info,limit,lifetime,check){
   try{return JSON.parse(text);}catch{fail('INVALID_JSON');}
  }finally{if(!complete){try{Promise.resolve(reader.cancel()).catch(()=>{});}catch{}}try{reader.releaseLock();}catch{}}
 }
-export function response(value,status=200){return new Response(JSON.stringify(value),{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff'}});}
+export function response(value,status=200){return serializedResponse(JSON.stringify(value),status);}
+export function serializedResponse(text,status=200){return new Response(text,{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff'}});}
 const codes=new Set(['ACCESS_DENIED','DEADLINE','CANCELLED','LOOKUP_REPLAY','LOOKUP_UNAVAILABLE','COMMAND_APPROVAL_REFUSED','COMMAND_AUTHORITY_REFUSED','COMMAND_PREPARATION_REFUSED','COMMAND_REFUSED','COMMAND_OUTCOME_UNKNOWN','COMMAND_COMMIT_UNCERTAIN','UNAVAILABLE']);
 const outcomes=new Set(['NOT_DISPATCHED','UNKNOWN','RESULT_NOT_RELEASED','STORED_NOT_RELEASED','NOT_STORED','READ_UNAVAILABLE']);
 // Read only inert own data after excluding proxies; rejection objects are not trusted.

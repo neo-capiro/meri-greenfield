@@ -8,6 +8,10 @@ import {ProductError} from '../../product-access/errors.mjs';
 import {createConversationHistoryService} from '../history/service.mjs';
 import {createConversationHistoryApplication} from '../history/http.mjs';
 import {hash} from '../boundary.mjs';
+import {createMemoryRetentionJournal} from '../../retention/memory-journal.mjs';
+import {createRetentionReadGate,createSuppressionOwner} from '../../retention/suppression.mjs';
+import {createServingGate} from '../../retention/reconciliation.mjs';
+import {createRetentionLedger,createMemoryLedgerSink} from '../../retention/ledger.mjs';
 import {lifecycleFixture} from './lifecycle-fixture.mjs';
 import {allocateOriginal} from './terminal-settlement-harness.mjs';
 import {assertConversationHistoryResponse} from '../../../../packages/contracts/conversation-history/validate.mjs';
@@ -31,7 +35,10 @@ async function fixture({lifecycle=false,extraClient=false}={}){
  state.member={tenantId:binding.tenantId,actorId:binding.actorId,status:'active',role:'member',permissions:[],clientIds:extraClient?[id(5),id(7)]:[id(5)],membershipRevision:'m1'};
  state.memberCredentialReads=[];const gate=createMembershipGate({now:Date.now,limits:{maxRequestMs:1000,maxFactBytes:65536},verifyToken:async({credential})=>{if(credential!=='native')throw Error('invalid');return {tenantId:state.member.tenantId,actorId:state.member.actorId,checkedAtMs:Date.now(),expiresAtMs:Date.now()+30000};},
   readMembership:async({credential})=>{state.memberCredentialReads.push(credential);await state.onMembershipRead?.(state.memberCredentialReads.length);return {...state.member,checkedAtMs:Date.now(),expiresAtMs:Date.now()+30000};}});
- state.retentionChecks=0;const retention={async assertServable(){state.retentionChecks++;if(state.suppressed)throw Object.assign(Error('RETENTION_SUPPRESSED'),{code:'RETENTION_SUPPRESSED'});}};
+ state.retentionChecks=0;const memoryJournal=createMemoryRetentionJournal(),journal={...memoryJournal,withTransition(key,fn){state.onRetentionTransition?.(key);return memoryJournal.withTransition(key,fn);}},serving=createServingGate();
+ const retentionGate=createRetentionReadGate({journal:{...journal,async get(key){return state.suppressed?{state:'SUPPRESSED'}:journal.get(key);}},serving});
+ const retention={...retentionGate,async assertServable(subject){state.retentionChecks++;await state.onRetentionRead?.(subject);return retentionGate.assertServable(subject);}};
+ const retentionOwner=createSuppressionOwner({journal,serving,ledger:createRetentionLedger({sink:createMemoryLedgerSink(),now:Date.now}),ownership:{async ownerOf(){return binding.actorId;}},now:Date.now});
  state.coreState='active';state.coreClientId=id(5);state.coreReads=[];
  const currentness={async assertCurrent({credential,principal,conversationId,scopes,signal,deadlineMs}){
   state.coreReads.push({credential,principal,conversationId,scopes,signal,deadlineMs});await state.onCoreRead?.();
@@ -49,7 +56,7 @@ async function fixture({lifecycle=false,extraClient=false}={}){
   const admitted=await owner.admitTurn({principal:{tenantId:binding.tenantId,actorId:binding.actorId},conversationId:binding.conversationId,sourceRunId:source.runId});
   state.context.binding=admitted.targetBinding;return {source,admitted};
  }
- return {...f,store,owner,post,turn,gate,currentness,historyService:service};
+ return {...f,store,owner,post,turn,gate,currentness,historyService:service,retentionOwner};
 }
 test('history enforces its public byte caps when startup permits larger transport limits',async()=>{
  const f=await fixture();try{let calls=0,retained;const app=createConversationHistoryApplication({gate:f.gate,currentness:f.currentness,now:Date.now,limits:{maxRequestMs:2000,maxRequestBytes:1048576,maxResponseBytes:8388608},service:{async list(call){assert.equal(Object.hasOwn(call,'credential'),false);assert.equal(typeof call.recheckConversation,'function');retained=call.recheckConversation;calls++;return {oversized:'x'.repeat(2097152)};}}});
@@ -91,7 +98,7 @@ test('history requires a read-only currentness owner and confines the native bea
   assert.throws(()=>createConversationHistoryApplication({service:f.historyService,gate:f.gate,now:Date.now,limits:{maxRequestMs:2000,maxRequestBytes:131072,maxResponseBytes:2097152}}),/PRODUCT_CONFIGURATION/);
   await f.service.submit({credential:f.credential,input:f.input});
   const response=await f.post('transcript',{conversationId:binding.conversationId});assert.equal(response.status,200);
-  assert.equal(f.state.coreReads.length,1);assert.equal(f.state.coreReads[0].credential,'native');assert.deepEqual(f.state.coreReads[0].scopes,scopes);
+  assert.equal(f.state.coreReads.length,2,'domain read and fenced release both recheck Core');assert.equal(f.state.coreReads[0].credential,'native');assert.deepEqual(f.state.coreReads[0].scopes,scopes);
  }finally{f.close();}
 });
 test('archived or unavailable Core context withholds saved pages and cannot admit a next turn',async()=>{
@@ -306,4 +313,35 @@ for(const corrupt of ['digest','request','source-binding','context'])test(`resum
   if(corrupt!=='digest')row.continuation_sha256=hash(row.continuation);
   const response=await f.post('transcript',{conversationId:binding.conversationId});assert.equal(response.status,500);assert.deepEqual(await response.json(),{error:{code:'CONVERSATION_STORE_CORRUPT'}});
  }finally{f.close();}
+});
+
+for(const path of ['transcript','list','next-turn'])test(`Core archive during final membership withholds ${path} at release`,async()=>{
+ const f=await fixture();try{
+  if(path==='next-turn')await f.turn(1);else await f.service.submit({credential:f.credential,input:f.input});
+  const reservations=f.state.nextRuns.size;f.state.onMembershipRead=count=>{if(count===(path==='next-turn'?3:2))f.state.coreState='archived';};
+  const response=await f.post(path,path==='list'?{}:{conversationId:binding.conversationId,...(path==='next-turn'?{sourceRunId:binding.runId}:{})});
+  assert.equal(response.status,503);assert.deepEqual(await response.json(),{error:{code:'CONVERSATION_UNAVAILABLE',...(path==='next-turn'?{outcome:'RESULT_NOT_RELEASED'}:{})}});
+  assert.equal(f.state.nextRuns.size,reservations);
+ }finally{f.close();}
+});
+
+test('one list release fence holds every subject through final authorization and response serialization',async()=>{
+ const f=await fixture();let suppression;try{await f.turn(1);
+  const other={...binding,conversationId:id(2500),runId:id(2501),attemptId:id(2502),workerId:id(2503)},createdAt='2026-10-15T00:00:00.000Z';
+  const conversation={conversationId:other.conversationId,owner:{tenantId:other.tenantId,actorId:other.actorId},scopes,createdAt,policyRevision:'policy1'},run={binding:other,versions,scopes,createdAt,policyRevision:'policy1',state:'queued'};
+  await f.store.accept({conversation,run,request:{requestId:id(2504),prompt:'older',skill:null,window:null,windowRequest:null},event:{contractVersion:'0.1.0',eventId:id(2505),binding:other,scopes,sequence:1,createdAt,type:'run.status',data:{state:'queued',reasonCode:null}}},()=>{});
+  let releasing=false,acknowledged=false,serialized=false,acknowledgedDuringB,transitionQueued;const queued=new Promise(resolve=>{transitionQueued=resolve;});
+  f.state.onRetentionTransition=()=>transitionQueued();
+  f.state.onMembershipRead=count=>{if(count===2)releasing=true;};
+  f.state.onRetentionRead=async subject=>{if(releasing&&subject.subjectId===other.conversationId&&!suppression){
+   suppression=f.retentionOwner.suppress({principal:{tenantId:binding.tenantId,actorId:binding.actorId},subject:{tenantId:binding.tenantId,kind:'conversation',subjectId:binding.conversationId},reason:'suppress A while B waits'}).then(()=>{acknowledged=true;});
+   await queued;await new Promise(setImmediate);acknowledgedDuringB=acknowledged;
+  }};
+  const original=f.historyService.recheckRelease;
+  const service={...f.historyService,recheckRelease:call=>original({...call,publish:value=>{assert.equal(acknowledged,false);const response=call.publish(value);serialized=true;return response;}})};
+  const app=createConversationHistoryApplication({service,gate:f.gate,currentness:f.currentness,limits:{maxRequestMs:2000,maxRequestBytes:131072,maxResponseBytes:2097152}});
+  const response=await app.handle(new Request('https://meri.invalid/api/conversations/list',{method:'POST',headers:{authorization:'Bearer native','content-type':'application/json'},body:'{}'}));
+  assert.equal(response.status,200);assert.equal(acknowledgedDuringB,false,'suppression of A remains queued while row B awaits');assert.equal(serialized,true);assert.equal((await response.json()).conversations.length,2);await suppression;assert.equal(acknowledged,true);
+  f.state.onRetentionRead=null;const after=await f.post('list',{});assert.equal(after.status,200);assert.deepEqual((await after.json()).conversations.map(c=>c.conversationId),[other.conversationId]);
+ }finally{await suppression?.catch(()=>{});f.close();}
 });

@@ -50,7 +50,8 @@ export function watermarkedJournal({journal,watermark,fence,ledger}){
   const minimumSequence=options.exclusive===true?0:Math.max(0,fence.state().highWater,sequence-1);
   try{await watermark.advanceProjection({key,projectionSha256,sequence,minimumSequence},{exclusive:options.exclusive===true});fence.observe(sequence);}catch(error){fence.disable(['RETENTION_WATERMARK_STALE','RETENTION_PROJECTION_UNVERIFIED'].includes(error?.code)?error.code:'RETENTION_WATERMARK_UNKNOWN');}return result;}
  return Object.freeze({get,set,keys:options=>journal.keys(options),exclusive:fn=>journal.exclusive(fn),
-  withTransition:(key,fn)=>journal.withTransition(key,fn)});
+  withTransition:(key,fn)=>journal.withTransition(key,fn),
+  withServing:(keys,fn,options)=>{if(typeof journal.withServing!=='function')fail('RETENTION_CONFIGURATION');return journal.withServing(keys,fn,options);}});
 }
 /** The ledger every transition owner appends through: an append whose acknowledgement is missing may still be durable, so the decision
  * it carries is UNKNOWN to the projection; the fence closes until reconciliation replays the ledger. */

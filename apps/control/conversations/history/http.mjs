@@ -8,7 +8,7 @@ export function createConversationHistoryApplication({service,gate,now,limits,cu
  if(typeof currentness?.assertCurrent!=='function')throw new ProductError('PRODUCT_CONFIGURATION');
  const route=(method,parse,effect=false)=>({errors:HISTORY_ERRORS,effect,
   handle:({principal,body,signal,deadlineMs,recheckMembership,recheckConversation})=>service[method]({principal,request:parse(body),signal,deadlineMs,recheckMembership,recheckConversation}),
-  ...(typeof service.recheckRelease==='function'?{release:({principal,body,result,signal})=>service.recheckRelease({principal,request:parse(body),result,operation:method,signal})}:{})});
+  ...(typeof service.recheckRelease==='function'?{release:({principal,body,result,signal,deadlineMs,recheckMembership,recheckConversation,publish})=>service.recheckRelease({principal,request:parse(body),result,operation:method,signal,deadlineMs,recheckMembership,recheckConversation,publish})}:{})});
  const boundedLimits={...limits,maxRequestBytes:Math.min(limits?.maxRequestBytes,conversationHistoryMetadata.limits.requestBytes),maxResponseBytes:Math.min(limits?.maxResponseBytes,conversationHistoryMetadata.limits.responseBytes)};
  return createProductApplication({gate,now,limits:boundedLimits,conversationCurrentness:currentness,routes:{[HISTORY_PATHS.list]:route('list',listRequest),[HISTORY_PATHS.transcript]:route('transcript',transcriptRequest),[HISTORY_PATHS.nextTurn]:route('nextTurn',turnRequest,true)}});
 }
