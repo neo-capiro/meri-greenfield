@@ -33,7 +33,11 @@ export async function main(argv=process.argv.slice(2),{poststartTls,nativeFetch}
   const module=await import(file);
   // Control receives the production product-port composition (G4); the other roles take no product ports.
   let productPorts={};
+  // The live-session relay (RC1 option A) serves reads and the memory run path; startControl binds it to its own session owner.
+  const relay=role==='control'&&(c.reads?.enabled===true||c.memory?.enabled===true)?(await import('./read-credential-relay.mjs')).createReadCredentialRelay():null;
   if(role==='control'){
+   const {createMemoryFamilyWith}=await import('./product-ports/memory.mjs');
+   const memoryFamily=createMemoryFamilyWith(relay?{nativeCredentials:relay.port}:{});
    // Documents (D31): the Core artifact authority composes only with every input present; otherwise the store-only family stays
    // and `missing` names the gaps by key (runOptions and executor are Meri-local owners not yet composed).
    const [{createProductPortsFactory,PRODUCT_FAMILIES},{composeDocumentsFamily}]=await Promise.all([import('./product-ports/index.mjs'),import('./artifacts/authority-composition.mjs')]);
@@ -43,16 +47,15 @@ export async function main(argv=process.argv.slice(2),{poststartTls,nativeFetch}
    // unless control declares intents.execution and its Core owners exist.
    const [{createControlIntentExecution},{readSecret}]=await Promise.all([import('./native-authority/execution-composition.mjs'),import('./config.mjs')]);
    const execution=createControlIntentExecution({readSecret});
-   productPorts={productPortsFactory:createProductPortsFactory({families:PRODUCT_FAMILIES.map(([name,factory])=>[name,name==='documents'?documents.family:name==='intents'?execution.family:factory])}),intentMountFor:execution.intentMountFor};
+   productPorts={productPortsFactory:createProductPortsFactory({families:PRODUCT_FAMILIES.map(([name,factory])=>[name,name==='documents'?documents.family:name==='intents'?execution.family:name==='memory'?memoryFamily:factory])}),intentMountFor:execution.intentMountFor,...(relay?{readCredentialRelay:relay}:{})};
   }
   // General reads (lane 2), only when declared: the composer is built before control (it prepares and measures handlers) and
   // gets the live-session relay, which startControl binds to this control's own action-session owner (RC1 option A).
   if(role==='control'&&c.reads?.enabled===true){
-   const [{createControlReadsComposer},{createReadCredentialRelay}]=await Promise.all([import('./native-authority/reads-composer.mjs'),import('./read-credential-relay.mjs')]);
-   const relay=createReadCredentialRelay();
+   const {createControlReadsComposer}=await import('./native-authority/reads-composer.mjs');
    const reads=await createControlReadsComposer({configuration:c,secretFiles:{serviceSecret:c.reads.serviceSecretFile,...(c.reads.readModeServiceSecretFile===undefined?{}:{readModeServiceSecret:c.reads.readModeServiceSecretFile})},nativeCredentials:relay.port,...(c.reads.defaultCongress===undefined?{}:{defaultCongress:c.reads.defaultCongress})});
    if(reads.missing.length)process.stderr.write(JSON.stringify({event:'runtime.reads.unavailable',missing:reads.missing})+'\n');
-   Object.assign(productPorts,{createReadsRuntime:reads.createReadsRuntime,readCredentialRelay:relay});
+   Object.assign(productPorts,{createReadsRuntime:reads.createReadsRuntime});
   }
   runtime=await module[start](c,{signal:controller.signal,...productPorts});clearTimeout(startupTimer);if(controller.signal.aborted){retire();await runtime.close();}else{process.stdout.write(JSON.stringify({event:'runtime.listening',role,address:runtime.address,profile:c.profile,...(runtime.downloads?{downloads:runtime.downloads.reason}:{})})+'\n');await Promise.race([new Promise(resolve=>controller.signal.addEventListener('abort',resolve,{once:true})),...(runtime.completion?[runtime.completion]:[])]);retire();await runtime.close();}return 0;
  }catch(error){process.stderr.write('RUNTIME_UNAVAILABLE\n');retire();controller.abort();cleanupUnknown=error?.code==='TEMPORAL_PRODUCT_CLEANUP_UNKNOWN';

@@ -5,11 +5,12 @@ import {USER_PREFERENCES_PATHS} from '../control/settings/user-application/proto
 import {taskCommandPaths} from '../../packages/contracts/task-command-application/protocol.mjs';
 import {ROUTINE_PATHS} from '../control/schedules/application-http.mjs';
 import {TENANT_SETTINGS_PATHS} from '../control/settings/tenant-application/protocol.mjs';
+import {MEMORY_PATHS} from '../control/memory/protocol.mjs';
 import {OBJECTIVE_READER_PREFIX} from './product-ports/objective.mjs';
 import {OBJECTIVE_RUNS_PREFIX} from './native-authority/objective-runs-http.mjs';
 import {OBJECTIVE_GENERATION_START_PATH} from './objective-generation/start-application.mjs';
 const absent=()=>Response.json({error:{code:'ROUTE_NOT_FOUND'}},{status:404,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
-const publicPath=path=>path==='/api/conversations'||path.startsWith('/api/conversations/')||path==='/api/action-followthrough/session'||Object.values(USER_PREFERENCES_PATHS).includes(path)||Object.values(taskCommandPaths).includes(path)||Object.values(ROUTINE_PATHS).includes(path)||Object.values(TENANT_SETTINGS_PATHS).includes(path)||path.startsWith('/api/documents/');
+const publicPath=path=>path==='/api/conversations'||path.startsWith('/api/conversations/')||path==='/api/action-followthrough/session'||Object.values(USER_PREFERENCES_PATHS).includes(path)||Object.values(taskCommandPaths).includes(path)||Object.values(ROUTINE_PATHS).includes(path)||Object.values(TENANT_SETTINGS_PATHS).includes(path)||Object.values(MEMORY_PATHS).includes(path)||path.startsWith('/api/documents/');
 const privatePath=path=>path.startsWith('/v1/')||path.startsWith('/internal/conversations/')||path.startsWith(OBJECTIVE_READER_PREFIX);
 
 export function createControlRouteApplications({assembly,candidate,router=null,poststart=null,privateIngress=null,objectiveReader=null,objectiveRuns=null,objectiveStart=null}){

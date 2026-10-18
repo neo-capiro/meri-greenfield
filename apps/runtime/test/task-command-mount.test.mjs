@@ -53,7 +53,7 @@ test('runtime opt-in reaches the actual task-update API and existing separate ap
  const {proposal}=await prepared.json();assert.equal(c.f.state.fetches,0);
  assert.notEqual((await app.handle(request('execute',{proposal}))).status,200);assert.equal(c.f.state.fetches,0);
  c.approve(proposal);const response=await app.handle(request('execute',{proposal}));assert.equal(response.status,200);assert.equal((await response.json()).status,'observed');
- assert.equal(c.f.state.http.url,'https://source.invalid/clio/tools/update_task');assert.deepEqual(JSON.parse(c.f.state.http.options.body),{taskId:id(21),title:'Updated',status:'todo'});
+ assert.equal(c.f.state.http.url,'https://source.invalid/api/clio/tools/update_task');assert.deepEqual(JSON.parse(c.f.state.http.options.body),{taskId:id(21),title:'Updated',status:'todo'});
  assert.equal((await app.handle(request('execute',{proposal}))).status,200);assert.equal(c.f.state.fetches,1);
  assert.equal((await app.handle(request('prepare?unexpected=1',{arguments:{taskId:id(21),title:'Updated'}}))).status,404);
 });

@@ -42,7 +42,7 @@ Last pinned runtime: N21 `176a8811`, `sha256:5534edfe…`, measured without a pr
 }
 ```
 
-Plus `--feature-secrets` with the exact VersionId of each secret at render time. `memory {enabled, origin, serviceSecretFile}` and `intents.execution` join once lanes M and X land.
+Plus `--feature-secrets` with the exact VersionId of each secret at render time, and `"memory": {"enabled": true}` (renders `memory {enabled, origin: core.coreOrigin, serviceSecretFile: the reads secret}`). `"intents": {"enabled": true, "execution": {"issuer", "keys": [Ed25519 public JWKs with kid]}}` and `"routines": {"enabled": true, "core": {"cancellationProof": {issuer, kid, publicKey}, "unattendedGrant": {issuer, kid, publicKey}}}` render the Core origin and the reads service secret file into `intents.execution` / `routines.core`; the public JWKs come from the packet's KMS keys (`GetPublicKey` readback).
 
 Budget pins (B1): `allocation.json` `budgets.maxTurns 20`, `maxToolCalls 20`, `maxCostMicroUSD 2000000`, `maxRuntimeSeconds 900`; `policy.json` `runtime.maxTurns 20`; read operations with tariffs (P3).
 
@@ -54,8 +54,8 @@ Budget pins (B1): `allocation.json` `budgets.maxTurns 20`, `maxToolCalls 20`, `m
 | KMS key, execution capability | `ECC_NIST_EDWARDS25519`, sign/verify, Core signer role only | intents execution (Core-side signer) |
 | KMS key, routines cancellation proof | same spec, separate key and `kid` | routines |
 | KMS keys ×3, Objective (D7-2) | same spec, one per purpose | Objective activation (keys ready; activation when Core phases land) |
-| Core `INTERNAL_SERVICE_SECRET` | existing Secrets Manager secret, exact ARN + VersionId | reads, artifacts, approvals, memory |
-| IAM | control task role: `s3:GetBucket*`, `Put/Get/HeadObject` on the artifacts bucket; `kms:GenerateDataKey/Decrypt` on the Meri key; Core task role: `kms:Sign/GetPublicKey` on its keys | least privilege |
+| Core `INTERNAL_SERVICE_SECRET` | **new** secret `meri/preview/core/internal-service-secret` (read back 18 Oct: the preview Core task `capiro-preview-first-chat-core:2` carries no such secret, and `capiro/dev/internal-jwt-secret` is Core's JWT secret, unrelated). Generated at packet execution (32 random bytes, base64url), stored once, never in git; its exact ARN + VersionId go to the Core preview task (`secrets: INTERNAL_SERVICE_SECRET`) and to Meri's `features.reads.serviceSecretArn` / `--feature-secrets` | reads, artifacts, approvals, memory, routines |
+| IAM (roles read back 18 Oct) | control task role `MeriPreview-control-task`: `s3:GetBucket*`, `Put/Get/HeadObject` on the artifacts bucket; `kms:GenerateDataKey/Decrypt` on the Meri key `1cca74fc…`. Core preview task role `Capiro-Preview-First-Chat-ServeTaskTaskRoleD6B44EC7-…`: `kms:Sign/GetPublicKey` on the execution and routines keys. Secret reads: `MeriPreview-control-execution` (the new service secret, via the control material bundle) and `Capiro-Preview-First-Chat-ServeExecutionRole9B512BD-…` (the same secret for `INTERNAL_SERVICE_SECRET`). The temporal worker task has no task role and needs none. | least privilege |
 
 ## 4. Database (D016 #1)
 
@@ -67,7 +67,7 @@ Budget pins (B1): `allocation.json` `budgets.maxTurns 20`, `maxToolCalls 20`, `m
 
 ## 5. Core preview rev 3
 
-- Image from #84 `TBD`; task template: `INTERNAL_SERVICE_SECRET` by exact ARN; `MERI_TOOL_ALLOWLIST` exact 65 names (fail closed); `MEMORY_GOVERNANCE_LIFECYCLE=enforce` + preview tenant in `MEMORY_GOVERNANCE_TENANTS` (preview task only); `PREVIEW_NATIVE_GETS_ENABLED=true`; KMS key ARNs for the signers.
+- Current: `capiro-preview-first-chat-core:2`, image `…preview-core@sha256:46acfc07…` (secrets today: DB_USER, DB_PASSWORD, CLERK_SECRET_KEY, CLERK_WEBHOOK_SIGNING_SECRET). Target: image from #84 `TBD`; task template adds `INTERNAL_SERVICE_SECRET` by the new exact ARN (§3); `MERI_TOOL_ALLOWLIST` exact 65 names (fail closed); `MEMORY_GOVERNANCE_LIFECYCLE=enforce` + preview tenant in `MEMORY_GOVERNANCE_TENANTS` (preview task only); `PREVIEW_NATIVE_GETS_ENABLED=true`; KMS key ARNs for the signers.
 
 ## 6. Listener (coordinated action with dot)
 

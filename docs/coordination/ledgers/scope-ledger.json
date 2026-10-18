@@ -10925,7 +10925,6 @@
         "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.bill_watch",
-          "quick_skill.bill_watch",
           "quick_skill.client_changes",
           "quick_skill.hearing_watch",
           "quick_skill.meeting_prep",
@@ -10971,7 +10970,6 @@
         "kind": "source-read",
         "currentContractDeclared": true,
         "declaredBySkills": [
-          "quick_skill.bill_watch",
           "quick_skill.bill_watch",
           "quick_skill.hearing_watch",
           "quick_skill.pe_deep_dive",
@@ -12556,7 +12554,6 @@
         "currentContractDeclared": true,
         "declaredBySkills": [
           "quick_skill.bill_watch",
-          "quick_skill.bill_watch",
           "quick_skill.pe_deep_dive",
           "quick_skill.research_company"
         ],
@@ -12789,7 +12786,6 @@
         "kind": "product-or-governed",
         "currentContractDeclared": true,
         "declaredBySkills": [
-          "quick_skill.bill_watch",
           "quick_skill.bill_watch"
         ],
         "sourceAdmittedSkills": [],

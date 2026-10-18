@@ -13,9 +13,9 @@ export function coreSigner({issuer=ISSUER,kid=KID}={}){
  const {publicKey,privateKey}=generateKeyPairSync('ed25519'),jwk=publicKey.export({format:'jwk'});
  const pin={issuer,kid,publicKey:{kty:'OKP',crv:'Ed25519',x:jwk.x}};
  /** Core's issuance: header JSON.stringify({alg,typ,kid}), RFC 8785 payload {iss,aud,iat,nbf,exp,jti,cancel}, pure Ed25519. */
- function sign(cancel,{nowMs,ttl=30,jti=randomUUID(),header,payload,key=privateKey,headerKid=kid,iss=issuer,aud='meri-schedule-run-control',nbfOffset=0}={}){
-  const iat=Math.floor(nowMs/1000),body=payload??{iss,aud,iat,nbf:iat+nbfOffset,exp:iat+ttl,jti,cancel};
-  const input=`${b64(header??JSON.stringify({alg:'EdDSA',typ:'capiro-meri-routine-cancel+jwt',kid:headerKid}))}.${b64(typeof body==='string'?body:canonicalize(body))}`;
+ function sign(cancel,{nowMs,ttl=30,jti=randomUUID(),header,payload,key=privateKey,headerKid=kid,iss=issuer,aud='meri-schedule-run-control',typ='capiro-meri-routine-cancel+jwt',nbfOffset=0}={}){
+  const iat=Math.floor(nowMs/1000),claimsKey=typ==='capiro-meri-routine-fire+jwt'?'fire':'cancel',body=payload??{iss,aud,iat,nbf:iat+nbfOffset,exp:iat+ttl,jti,[claimsKey]:cancel};
+  const input=`${b64(header??JSON.stringify({alg:'EdDSA',typ,kid:headerKid}))}.${b64(typeof body==='string'?body:canonicalize(body))}`;
   return {proof:`${input}.${signBytes(null,Buffer.from(input,'ascii'),key).toString('base64url')}`,jti,iat,exp:iat+ttl};
  }
  return {pin,sign,privateKey};

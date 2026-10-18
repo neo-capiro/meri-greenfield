@@ -129,12 +129,18 @@ export function loadSourceExposure(root){
  if(directories.some(directory=>!adapters.some(adapter=>adapter.directory===directory)))fail('Canonical source directory missing from reconciliation');
  for(const adapter of adapters){adapter.paths=unique(adapter.paths);for(const path of adapter.paths)read(path);}
  const assets=JSON.parse(read('packages/skills/assets.json'));
- const skills=assets.assets.map(asset=>{
+ // One row per skill identity: a skill with several immutable versions (bill_watch 1.0.0 and the plugin-admissible 1.0.1)
+ // declares the union of its versions' operations once, so projections never list the same skill twice.
+ const bySkill=new Map();
+ for(const asset of assets.assets){
   const path=relative(root,resolve(root,'packages/skills',asset.manifestPath)).replaceAll('\\','/'),text=read(path);
   const manifest=JSON.parse(text);
   if(canonicalSha256(manifest)!==asset.manifestSha256)fail(`Skill manifest pin changed ${asset.skillId}`);
-  return {id:manifest.skillId,operations:manifest.allowedOperations.map(operation=>operation.id)};
- });
+  const row=bySkill.get(manifest.skillId)??{id:manifest.skillId,operations:[]};
+  for(const operation of manifest.allowedOperations)if(!row.operations.includes(operation.id))row.operations.push(operation.id);
+  bySkill.set(manifest.skillId,row);
+ }
+ const skills=[...bySkill.values()];
  const admittedSkills=parseAdmittedSkills(read('apps/worker/conversation/skills/mcp.mjs'));
  return reconcileSourceExposure({catalog,bindings:CATALOG_OPERATION_BINDINGS,families:READ_FAMILIES,adapters,skills,admittedSkills,provenance,backendMapping});
 }

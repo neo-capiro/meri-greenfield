@@ -9,6 +9,13 @@ export const REVIEW_STATUSES=Object.freeze(['pending','approved','rejected','exp
 /** Statuses a listing can show: Core's review statuses plus the producer's own honest non-answers. */
 export const VIEW_STATUSES=Object.freeze([...REVIEW_STATUSES,'submission_unknown','review_missing','unavailable']);
 const MAX_SOURCES=16;
+/** Core memory ids are SCOPED (capiro-backend #84 `0304b0ef`, meri-memory-receiving.service.ts): `clio:<uuid>` is a clio_memory row,
+ * `item:<uuid>` an immutable memory_items version. Meri carries them opaquely (never minted, never rewritten); a bare UUID is not a
+ * memory Core can find. */
+export const MEMORY_ID=/^(?:clio|item):[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u;
+/** Core's storage key for an unkeyed Meri addition (`clio_memory.key` is NOT NULL). It is never a logical key: Core refuses it as a
+ * candidate key (400 "Reserved memory key") and `find_by_key` never answers it, so the surface refuses it before any Core call. */
+export const RESERVED_KEY=/^meri:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u;
 /** A citation the proposer relied on. `reference` is an opaque identifier or an https URL (web_page); `sha256` pins exact bytes when
  * the source owner supplies them. Sources are carried immutably; they are evidence for the reviewer, not proof of truth. */
 export function sourceRef(value){
@@ -27,7 +34,7 @@ function sources(value,min){
  return Object.freeze(out);
 }
 const content=value=>trimmed(value,4000,BAD);
-const key=value=>value===undefined||value===null?null:trimmed(value,120,BAD);
+const key=value=>{if(value===undefined||value===null)return null;const k=trimmed(value,120,BAD);if(RESERVED_KEY.test(k))refuse(BAD,undefined,'key');return k;};
 function ttl(value){if(value===undefined||value===null)return null;if(!intIn(value,1,365))refuse(BAD);return value;}
 /** POST /api/memory/proposals/propose */
 export function proposeRequest(value){
@@ -51,6 +58,14 @@ export function listRequest(value){
 }
 /** POST /api/memory/proposals/status */
 export function statusRequest(value){const r=closed(value,['candidateId'],[],BAD);return Object.freeze({candidateId:lowerUuid(r.candidateId,BAD)});}
+/** POST /api/memory/review/approve `{candidateId}` and /api/memory/review/reject `{candidateId, reason}` (Core requires a non-blank
+ * rejection reason; an approval carries none). The decision itself is the route, never a body field. */
+export function reviewDecisionRequest(value,decision){
+ if(decision==='approved'){const r=closed(value,['candidateId'],[],BAD);return Object.freeze({candidateId:lowerUuid(r.candidateId,BAD),reason:null});}
+ if(decision!=='rejected')refuse(BAD);
+ const r=closed(value,['candidateId','reason'],[],BAD);
+ return Object.freeze({candidateId:lowerUuid(r.candidateId,BAD),reason:trimmed(r.reason,1000,BAD)});
+}
 /** Opaque keyset cursor over (createdAt desc, candidateId desc). It selects a position only; visibility is re-evaluated per page. */
 export function encodeCursor(record){return Buffer.from(JSON.stringify([record.createdAt,record.candidateId])).toString('base64url');}
 function decodeCursor(value){
