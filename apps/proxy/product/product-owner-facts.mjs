@@ -6,6 +6,14 @@
  * chooses no pricing and creates no reservation, grant, task or second ledger.
  * A future :8444 service must separately authenticate both operation and host
  * capture channels before passing these facts to product-owner-composition.
+ *
+ * Execution-capability grants (lane X, `gateway/budget/execution-grant-admission.mjs`)
+ * share the run's `grants`/`tool_grant_bindings` rows with the admitted set. They are
+ * never model grants and never part of the admitted set this resolver reconstructs:
+ * the admitted set is exactly the allocation record's own `grantIntents` (read before
+ * the grant-set check), and every other row on the run must prove itself an execution
+ * grant bound to this exact run, allocation and qualification; its state and expiry
+ * never bound the model lease. Any other row on the run still refuses.
  */
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
@@ -14,6 +22,7 @@ import {createPostgresConversationStore} from '../../control/conversations/postg
 import {createPostgresModelGrantStore} from '../../runtime/prepared-run-issuance-postgres.mjs';
 import {createPostgresAdmittedRunOwner} from '../../gateway/budget/admitted-run-owner.mjs';
 import {parseAdmittedGrantSet,assertRun,dbTime} from '../../gateway/budget/admitted-run-binding.mjs';
+import {assertExecutionGrantBinding} from '../../gateway/budget/execution-grant-admission.mjs';
 import {PostgresBudgetStore,refuse} from '../../gateway/budget/postgres-budget-store.mjs';
 import {digest,same} from '../../gateway/budget/tool-budget-binding.mjs';
 
@@ -38,6 +47,7 @@ export function createProductProxyPersistedFacts(configuration){
  const conversations=createPostgresConversationStore({pool:c.pool,now:c.now});
  let quarantined=false;
 
+ /** The model grant the digest locates: its own binding facts and the run's installed allocation. No run-wide grant set yet. */
  async function locate(capabilitySha256,life){
   return life.run(()=>budget.transact(async client=>{
    const grants=(await client.query('SELECT * FROM meri_product_budget.grants WHERE capability_sha256=$1',[capabilitySha256])).rows;
@@ -47,29 +57,56 @@ export function createProductProxyPersistedFacts(configuration){
    life.check();if(selectedRows.length!==1)deny();
    const allocations=(await client.query('SELECT * FROM meri_product_budget.tool_run_allocations WHERE run_id=$1',[grant.run_id])).rows;
    life.check();if(allocations.length!==1)deny();const installed=allocations[0];
-   const rows=(await client.query('SELECT * FROM meri_product_budget.tool_grant_bindings WHERE run_id=$1 ORDER BY grant_id',[grant.run_id])).rows;
-   life.check();if(rows.length<1||rows.length>16)deny();
-   const allocationJson=JSON.stringify(installed.allocation),grantFactsJsons=rows.map(row=>JSON.stringify(row.facts));
-   if(Buffer.byteLength(allocationJson)+Buffer.byteLength(JSON.stringify(grantFactsJsons))>limits.maxFactBytes)deny();
-   const parsed=parseAdmittedGrantSet({allocationJson,grantFactsJsons});
-   const selected=parsed.facts.find(fact=>fact.grantId===grant.grant_id);
-   if(!selected||selected.capabilitySha256!==capabilitySha256||
-      selectedRows[0].grant_id!==selected.grantId||selectedRows[0].run_id!==selected.binding.runId||
-      !same(selectedRows[0].facts,selected)||installed.run_id!==selected.binding.runId||
-      installed.allocation_sha256!==hash(parsed.allocation)||
-      rows.some((row,index)=>row.grant_id!==parsed.facts[index].grantId||row.run_id!==selected.binding.runId))deny();
-   const persisted=(await client.query('SELECT * FROM meri_product_budget.grants WHERE run_id=$1 ORDER BY grant_id',[grant.run_id])).rows;
-   life.check();if(persisted.length!==parsed.facts.length)deny();
-   const grantIntents=persisted.map(row=>{
+   const allocationJson=JSON.stringify(installed.allocation),selectedJson=JSON.stringify(selectedRows[0].facts);
+   if(Buffer.byteLength(allocationJson)+Buffer.byteLength(selectedJson)>limits.maxFactBytes)deny();
+   const {allocation,facts:[selected]}=parseAdmittedGrantSet({allocationJson,grantFactsJsons:[selectedJson]});
+   if(selected.grantId!==grant.grant_id||selected.capabilitySha256!==capabilitySha256||
+      selectedRows[0].run_id!==selected.binding.runId||grant.run_id!==selected.binding.runId||installed.run_id!==selected.binding.runId||
+      installed.allocation_sha256!==hash(allocation))deny();
+   assertRun(grant,selected);const grantExpiresAtMs=dbTime(grant.expires_at);life.limitDeadline(grantExpiresAtMs);
+   return {allocationJson,allocation,selected,grantExpiresAtMs};
+  },life.check,undefined,true));
+ }
+ /** The run's grant set, AFTER the allocation record is known: the admitted set is exactly the record's own grant intents;
+  * every other grant/binding row on the run must be an execution-capability grant bound to this exact run, allocation and
+  * qualification (`assertExecutionGrantBinding`), and neither its state nor its expiry bounds the model lease. */
+ async function grantSet(located,record,life){
+  const intents=record?.grantIntents;
+  if(!Array.isArray(intents)||intents.length<1||intents.length>16||intents.some(i=>typeof i?.grantId!=='string'))deny();
+  const admittedIds=new Set(intents.map(i=>i.grantId));if(admittedIds.size!==intents.length||!admittedIds.has(located.selected.grantId))deny();
+  const runId=located.selected.binding.runId,mapping=located.selected.qualificationBinding;
+  return life.run(()=>budget.transact(async client=>{
+   const rows=(await client.query('SELECT * FROM meri_product_budget.tool_grant_bindings WHERE run_id=$1 ORDER BY grant_id',[runId])).rows;
+   life.check();if(rows.length<1||rows.length>64)deny();
+   const persisted=(await client.query('SELECT * FROM meri_product_budget.grants WHERE run_id=$1 ORDER BY grant_id',[runId])).rows;
+   life.check();if(persisted.length<1||persisted.length>64)deny();
+   const admittedRows=rows.filter(row=>admittedIds.has(row.grant_id)),otherRows=rows.filter(row=>!admittedIds.has(row.grant_id));
+   if(admittedRows.length!==admittedIds.size)deny();
+   const grantFactsJsons=admittedRows.map(row=>JSON.stringify(row.facts));
+   if(Buffer.byteLength(located.allocationJson)+Buffer.byteLength(JSON.stringify(grantFactsJsons))>limits.maxFactBytes)deny();
+   const parsed=parseAdmittedGrantSet({allocationJson:located.allocationJson,grantFactsJsons});
+   const selected=parsed.facts.find(fact=>fact.grantId===located.selected.grantId);
+   if(!selected||!same(selected,located.selected)||hash(parsed.allocation)!==hash(located.allocation)||
+      admittedRows.some((row,index)=>row.grant_id!==parsed.facts[index].grantId||row.run_id!==runId))deny();
+   const admittedGrants=persisted.filter(row=>admittedIds.has(row.grant_id)),otherGrants=persisted.filter(row=>!admittedIds.has(row.grant_id));
+   if(admittedGrants.length!==parsed.facts.length)deny();
+   const grantIntents=admittedGrants.map(row=>{
     const fact=parsed.facts.find(fact=>fact.grantId===row.grant_id);
     if(!fact||row.state!=='ACTIVE'||row.capability_sha256!==fact.capabilitySha256)deny();
     assertRun(row,fact);const expiresAtMs=dbTime(row.expires_at);life.limitDeadline(expiresAtMs);
     return {grantId:fact.grantId,capabilitySha256:fact.capabilitySha256,expiresAtMs};
    });
    if(new Set(grantIntents.map(grant=>grant.grantId)).size!==grantIntents.length)deny();
-   assertRun(grant,selected);const grantExpiresAtMs=dbTime(grant.expires_at);life.limitDeadline(grantExpiresAtMs);
-   if(grantIntents.find(grant=>grant.grantId===selected.grantId)?.expiresAtMs!==grantExpiresAtMs)deny();
-   return {allocationJson,grantFactsJsons,selected,grantExpiresAtMs,grantIntents};
+   if(grantIntents.find(grant=>grant.grantId===selected.grantId)?.expiresAtMs!==located.grantExpiresAtMs)deny();
+   // Every other row is an execution-capability grant of this run, or the run is refused: one binding row per grant row,
+   // bound to this run, allocation and qualification, with the row's own digest; an orphan binding row refuses too.
+   if(otherRows.length!==otherGrants.length)deny();
+   for(const grant of otherGrants){
+    const bound=otherRows.filter(row=>row.grant_id===grant.grant_id);
+    if(bound.length!==1||grant.capability_sha256===selected.capabilitySha256)deny();
+    assertExecutionGrantBinding({grant,bound:bound[0],allocation:parsed.allocation,mapping});
+   }
+   return {grantFactsJsons,grantIntents};
   },life.check,undefined,true));
  }
 
@@ -99,8 +136,12 @@ export function createProductProxyPersistedFacts(configuration){
    life.limitDeadline(issued.expiresAtMs);
    const saved=await life.run(()=>conversations.allocations.read({binding,allocationKey:issuanceKey},life.check));life.check();
    const record=saved?.record;
-   const modelIntent=record?.grantIntents?.find(grant=>grant.grantId===selected.grantId);
-   if(!record||record.state!=='ADMITTED'||!active(saved.run)||!modelIntent||
+   if(!record||record.state!=='ADMITTED')deny();
+   // The record's own grant intents name the admitted set; the run-wide grant set is read only now, against them.
+   const set=await grantSet(located,record,life);life.check();
+   Object.assign(located,set);
+   const modelIntent=record.grantIntents.find(grant=>grant.grantId===selected.grantId);
+   if(!active(saved.run)||!modelIntent||
       modelIntent.capabilitySha256!==issued.capabilitySha256||modelIntent.expiresAtMs!==issued.expiresAtMs||
       record.allocationSha256!==selected.allocationSha256||
       record.original.expiresAtMs!==issued.expiresAtMs||record.expiresAtMs!==issued.expiresAtMs||
