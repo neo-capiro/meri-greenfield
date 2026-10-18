@@ -23,7 +23,8 @@ conflict or manual content resolution occurred. PR186's separate published
 evidence records 4,391/4,391 standard tests, 20/20 focused worker tests and
 zero runtime/control TypeScript diagnostics on its exact code tree
 `859f84abf40d0ed565088b621f5c26a6f824877d`. Those counts do not qualify
-this combined tree. PR186's retained scrubbed evidence files contain trailing
+this combined tree, and PR186 source acceptance is now **HOLD** for the date
+regression below. PR186's retained scrubbed evidence files contain trailing
 whitespace, so a full PR186 diff whitespace check reports notices even though
 its code-path check passes.
 
@@ -39,6 +40,14 @@ build has run on this combined tree at this handoff.
 
 ## Remaining receiving work
 
+- Independent PR186 review found a regression in
+  `packages/contracts/retrieval-0.2/public-domain-query-validation.mjs:14–28`:
+  explicit legacy offsets can be treated as unzoned. On Node 24.19 across
+  UTC, Toronto and Tokyo, `January 1, 2020 12:30 PM -0500` yielded 12:30Z
+  instead of 17:30Z; `Jan 1 12:30:00 -0500 2020` and AM with +0530 also
+  mis-normalize. Public schema admits these strings. The source owner has the
+  minimal repair and three-timezone regression; do not accept PR186 or this
+  combined tree until that fix is received and checked. No repair is made here.
 - Four inherited retention/history fixture failures from PR186 remain:
   `postgres-watermark.test.mjs:50` lacks `journal.withTransition` in its inner
   synthetic fixture; three `startup-history.test.mjs` cases return 503 because
