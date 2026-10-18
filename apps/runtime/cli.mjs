@@ -65,8 +65,19 @@ export async function main(argv=process.argv.slice(2),{poststartTls,nativeFetch}
   // General reads (lane 2), only when declared: the composer is built before control (it prepares and measures handlers) and
   // gets the live-session relay, which startControl binds to this control's own action-session owner (RC1 option A).
   if(role==='control'&&c.reads?.enabled===true){
-   const {createControlReadsComposer}=await import('./native-authority/reads-composer.mjs');
-   const reads=await createControlReadsComposer({configuration:c,secretFiles:{serviceSecret:c.reads.serviceSecretFile,...(c.reads.readModeServiceSecretFile===undefined?{}:{readModeServiceSecret:c.reads.readModeServiceSecretFile})},nativeCredentials:relay.port,...(authority?{gateway:{authority:authority.gateway.authority,limits:authority.gateway.limits}}:{}),...(c.reads.delegation===undefined?{}:{delegation:{enabled:c.reads.delegation.enabled===true,readOccurrence:occurrences.port.readOccurrence}}),...(c.reads.defaultCongress===undefined?{}:{defaultCongress:c.reads.defaultCongress})});
+   const [{createControlReadsComposer},{readSecret},{canonicalSha256}]=await Promise.all([import('./native-authority/reads-composer.mjs'),import('./config.mjs'),import('../../packages/contracts/validate.mjs')]);
+   // P2: the pinned installation measurement comes from its byte-pinned material file (brotli JSON; material-init verified the digest, the
+   // decompression is bounded) and must still hash to the configured pin here; the composer's issuer then refuses it unless it matches this
+   // image's catalog and contracts (fail closed).
+   // P1: discovery runs only with the trusted platform record (G2 producer, capability-policy.mjs); without `capabilityPlatform` it stays disabled.
+   let installation,discovery;
+   if(c.reads.installation!==undefined){const i=c.reads.installation;
+    if(!i.enabled)installation={enabled:false};
+    else{let measurement;try{const {brotliDecompressSync}=await import('node:zlib');measurement=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(brotliDecompressSync(await readSecret(i.measurementFile),{maxOutputLength:262144})));}catch{throw Error('READS_INSTALLATION_MATERIAL_REFUSED');}
+     if(canonicalSha256(measurement)!==i.measurementSha256)throw Error('READS_INSTALLATION_PIN_REFUSED');
+     installation={enabled:true,measurement,measurementSha256:i.measurementSha256,...(i.revokedOperations===undefined?{}:{revokedOperations:structuredClone(i.revokedOperations)})};}}
+   if(c.reads.discovery!==undefined)discovery=c.reads.discovery.enabled===true&&c.capabilityPlatform!==undefined?{enabled:true,capabilityPolicy:(await import('./product-ports/capability-policy.mjs')).createConfiguredRunCapabilityPolicy(c)}:{enabled:false};
+   const reads=await createControlReadsComposer({configuration:c,secretFiles:{serviceSecret:c.reads.serviceSecretFile,...(c.reads.readModeServiceSecretFile===undefined?{}:{readModeServiceSecret:c.reads.readModeServiceSecretFile})},nativeCredentials:relay.port,...(authority?{gateway:{authority:authority.gateway.authority,limits:authority.gateway.limits}}:{}),...(c.reads.delegation===undefined?{}:{delegation:{enabled:c.reads.delegation.enabled===true,readOccurrence:occurrences.port.readOccurrence}}),...(c.reads.defaultCongress===undefined?{}:{defaultCongress:c.reads.defaultCongress}),...(installation===undefined?{}:{installation}),...(discovery===undefined?{}:{discovery})});
    if(reads.missing.length)process.stderr.write(JSON.stringify({event:'runtime.reads.unavailable',missing:reads.missing})+'\n');
    Object.assign(productPorts,{createReadsRuntime:reads.createReadsRuntime});
   }

@@ -113,7 +113,9 @@ export function compileProductMaterialPlan({role,configuration,runtimeUser,contr
  if(role==='control'){
   add(c.database.connectionFile,'database-connection');
   if(c.downloadLinks?.enabled)add(c.downloadLinks.keyFile,'download-signing-key');
-  if(c.reads?.enabled===true){add(c.reads.serviceSecretFile,'reads-service-secret');if(c.reads.readModeServiceSecretFile!==undefined)add(c.reads.readModeServiceSecretFile,'reads-read-mode-service-secret');}
+  if(c.reads?.enabled===true){add(c.reads.serviceSecretFile,'reads-service-secret');if(c.reads.readModeServiceSecretFile!==undefined)add(c.reads.readModeServiceSecretFile,'reads-read-mode-service-secret');
+   // P2: the pinned general-read installation measurement, brotli-compressed JSON (not a secret; byte-exact, digest-pinned like every other material file).
+   if(c.reads.installation?.enabled===true)add(c.reads.installation.measurementFile,'reads-installation-measurement');}
   if(c.nativeCandidate){
    add(c.nativeCandidate.identity.credentialFile,'identity-capability');
    add(c.nativeCandidate.taskCapabilityFile,'task-capability');

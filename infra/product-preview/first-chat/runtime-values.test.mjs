@@ -10,9 +10,9 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
-import {measureFirstChatLaunch} from '../../../apps/runtime/build/first-chat-launch-measurement.mjs';
-import {runtimeValues,policyRevisionOf,measurementOverrides,embeddedNodeArguments,decodeEmbeddedModule,measurementArguments,MEASUREMENT_MODULE,CONTAINER,main} from './runtime-values.mjs';
-import {SOURCE_ROOT,withPosixPaths} from './render-material.mjs';
+import {measureFirstChatLaunch,generalReadInstallation} from '../../../apps/runtime/build/first-chat-launch-measurement.mjs';
+import {runtimeValues,policyRevisionOf,measurementOverrides,measurementCommand,embeddedNodeArguments,decodeEmbeddedModule,measurementArguments,MEASUREMENT_MODULE,CONTAINER,main} from './runtime-values.mjs';
+import {SOURCE_ROOT,withPosixPaths,parseRuntimeValues} from './render-material.mjs';
 import {createRenderFixture} from './render-material.fixture.mjs';
 import {compilePreparedCandidateConfiguration} from '../../../apps/runtime/prepared-candidate-config.mjs';
 import {allocation as parseAllocation} from '../../../apps/gateway/budget/tool-budget-binding.mjs';
@@ -56,6 +56,22 @@ test('assembled runtime.json renders all five roles through every render-materia
  assert.deepEqual(JSON.parse(c.allocationJson).budgets,runtime.allocation.manifest.budgets);assert.equal(c.runtime.maxTurns,3);assert.equal(c.runtime.maxOutputBytes,262144);
  assert.equal(c.runtime.maxCostMicroUSD,2000000);assert.equal(c.multiRun.runWindowMs,900000);assert.equal(summary.staticCandidate.policyRevision,policyRevision);
  withPosixPaths(()=>compilePreparedCandidateConfiguration(c,control.versions));
+ // P2: the receipt's installation measurement is carried verbatim (the render pins it only under features.reads.installation).
+ assert.deepEqual(runtime.generalReadInstallation,receipt.generalReadInstallation);
+ assert.equal(runtime.generalReadInstallation.measurementSha256,(await generalReadInstallation({root:SOURCE_ROOT})).measurementSha256);
+ assert.equal(Object.hasOwn(control,'reads'),false);
+});
+
+test('P2: a receipt that predates generalReadInstallation assembles without it; a drifted or inconsistent measurement refuses',async()=>{
+ const {runtime}=await assemble(v=>{delete v.receipt.generalReadInstallation;});
+ assert.equal(Object.hasOwn(runtime,'generalReadInstallation'),false);assert.equal(parseRuntimeValues(runtime).generalReadInstallation,null);
+ const refused=(change,pattern)=>assert.rejects(assemble(change),{code:'RUNTIME_VALUES_REFUSED',message:pattern});
+ await refused(v=>{v.receipt.generalReadInstallation.measurementSha256='a'.repeat(64);},/canonical sha256/u);
+ await refused(v=>{v.receipt.generalReadInstallation.measurement.operations.pop();},/canonical sha256/u);
+ await refused(v=>{v.receipt.generalReadInstallation={measurementSha256:'a'.repeat(64)};},/exactly/u);
+ // Internally consistent but not what this source tree measures (a handler, descriptor or catalog changed since the image was measured).
+ await refused(v=>{const g=v.receipt.generalReadInstallation;g.measurement.operations[0].handlerSourceSha256='0'.repeat(64);g.measurementSha256=canonicalSha256(g.measurement);},/differs from the source general-read installation measurement/u);
+ await refused(v=>{const g=v.receipt.generalReadInstallation;g.measurement.operations.pop();g.measurementSha256=canonicalSha256(g.measurement);},/differs from the source/u);
 });
 
 test('fail closed: non-template SDK option pin, foreign platform, drifted inputs, skills, allocation or envelope',async()=>{
@@ -83,13 +99,17 @@ test('fail closed: non-template SDK option pin, foreign platform, drifted inputs
  await refused(v=>{const a=v.allocation;a.manifest.budgets.maxCostMicroUSD=1000000;v.policy.allocationSha256=canonicalSha256(a);});
 });
 
-test('measurement override embeds the exact committed module, fits ECS limits, and its loader produces a receipt for the policy inputs',async()=>{
+test('measurement override: the embedded form embeds the exact module but no longer fits ECS (refuses with --shipped); the shipped form fits; the loader produces a receipt for the policy inputs',async()=>{
  const {policy,deployment,policyRevision}=await committed(),moduleBytes=await readFile(join(SOURCE_ROOT,MEASUREMENT_MODULE));
- const overrides=measurementOverrides({moduleBytes,policy,deployment,policyRevision});
- assert.ok(Buffer.byteLength(JSON.stringify(overrides))<=8192);assert.equal(overrides.containerOverrides[0].name,CONTAINER);
- const command=overrides.containerOverrides[0].command[0],decoded=decodeEmbeddedModule(command);
+ // The P2 installation measurement grew the committed module past the 8192-byte embedded override (8184 bytes at ec8d3bd0), so the
+ // embedded form (images that predate the module) refuses exactly as it does for a capability profile; the image ships the module.
+ assert.throws(()=>measurementOverrides({moduleBytes,policy,deployment,policyRevision}),{code:'RUNTIME_VALUES_REFUSED',message:/use --shipped/u});
+ const command=measurementCommand({moduleBytes,policy,deployment,policyRevision}),decoded=decodeEmbeddedModule(command);
+ assert.ok(Buffer.byteLength(JSON.stringify({containerOverrides:[{name:CONTAINER,command:[command]}]}))>8192);
  assert.ok(decoded.bytes.equals(moduleBytes));assert.match(command,/^set -euo pipefail; umask 077; exec -c \/usr\/local\/bin\/node /u);
- const shipped=measurementOverrides({moduleBytes,policy,deployment,policyRevision,mode:'shipped'}).containerOverrides[0].command[0];
+ const shippedOverrides=measurementOverrides({moduleBytes,policy,deployment,policyRevision,mode:'shipped'});
+ assert.ok(Buffer.byteLength(JSON.stringify(shippedOverrides))<=8192);assert.equal(shippedOverrides.containerOverrides[0].name,CONTAINER);
+ const shipped=shippedOverrides.containerOverrides[0].command[0];
  assert.match(shipped,/exec -c \/usr\/local\/bin\/node 'apps\/runtime\/build\/first-chat-launch-measurement\.mjs'/u);
  // The embedded loader end to end on this host: write directory and image root redirected, injected secret dropped.
  const dir=await mkdtemp(join(tmpdir(),'meri-measure-'));
@@ -101,6 +121,7 @@ test('measurement override embeds the exact committed module, fits ECS limits, a
    [receipt.inputs.proxyUrl,receipt.inputs.model,String(receipt.inputs.maxTurns),String(receipt.inputs.maxCostMicroUSD),String(receipt.inputs.maxOutputBytes),
     receipt.inputs.configParentDirectory,receipt.inputs.secureStorageDirectory,receipt.inputs.policyRevision,SOURCE_ROOT]);
   assert.equal(r.stdout.includes('synthetic-secret'),false);
+  assert.equal(receipt.generalReadInstallation.measurementSha256,(await generalReadInstallation({root:SOURCE_ROOT})).measurementSha256);
   const tampered=[...args];tampered[4]='0'.repeat(64);assert.equal(spawnSync(process.execPath,tampered,{encoding:'utf8',timeout:60000}).status,3);
  }finally{await rm(dir,{recursive:true,force:true});}
 });
@@ -118,6 +139,7 @@ test('CLI assemble writes runtime-values.json, refuses the removed acknowledgeme
   assert.equal(refused.code,2);assert.match(refused.err,/Usage:/u);
   const ok=await capture(['assemble','--receipt',receiptFile,'--deployment-inputs',deploymentFile,'--out',join(dir,'b.json')]);
   assert.equal(ok.code,0,ok.err);assert.equal(JSON.parse(ok.out).policyRevision,policyRevision);
+  assert.equal(JSON.parse(ok.out).generalReadInstallationSha256,receipt.generalReadInstallation.measurementSha256);
   assert.equal(JSON.parse(await readFile(join(dir,'b.json'),'utf8')).qualification.policyRevision,policyRevision);
   const revision=await capture(['policy-revision']);assert.equal(revision.code,0);assert.equal(revision.out.trim(),policyRevision);
  }finally{await rm(dir,{recursive:true,force:true});}

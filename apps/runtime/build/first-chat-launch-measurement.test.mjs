@@ -6,9 +6,13 @@ import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {resolve} from 'node:path';
-import {measureFirstChatLaunch,probeRun,scrubEnvironment,skillsDigest,PROBES,RECEIPT_SCHEMA} from './first-chat-launch-measurement.mjs';
+import {measureFirstChatLaunch,probeRun,scrubEnvironment,skillsDigest,generalReadInstallation,PROBES,RECEIPT_SCHEMA} from './first-chat-launch-measurement.mjs';
 import {createPreparedRunnerQuery} from '../native-authority/runner-query.mjs';
 import {measureProductRunner} from '../native-authority/ecs-prepared-task-proof.mjs';
+import {measureGeneralReadInstallation,createGeneralReadInstallationIssuer,GENERAL_READ_INSTALLATION_MEASUREMENT_SCHEMA} from '../../gateway/general-reads/installation-issuer.mjs';
+import {installationReadOperations} from '../native-authority/general-read-installation/runtime.mjs';
+import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
+import catalog from '../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
 
 const root=resolve(fileURLToPath(new URL('../../../',import.meta.url))),module=new URL('./first-chat-launch-measurement.mjs',import.meta.url);
 const inputs={proxyUrl:'https://proxy.meri.internal:8443',model:'us.anthropic.claude-sonnet-4-6',maxTurns:3,maxCostMicroUSD:2000000,maxOutputBytes:262144,
@@ -56,4 +60,23 @@ test('runner and skills values equal the repository measurement functions; the e
  assert.deepEqual(r.skills,await skillsDigest({root}));assert.equal(r.skills.count,14);
  const env={PGPASSWORD:'x',PGUSER:'u',MERI_D2_CONTROL_PASSWORD:'y',AWS_SESSION_TOKEN:'z',DATABASE_URL:'d',ANTHROPIC_API_KEY:'k',PATH:'/usr/bin',HOME:'/home/node'};
  scrubEnvironment(env);assert.deepEqual(env,{PATH:'/usr/bin',HOME:'/home/node'});
+});
+
+test('generalReadInstallation is the deterministic P2 measurement over the catalog and installable operations, and the control issuer accepts exactly it',async()=>{
+ const r=await measured(),g=r.generalReadInstallation,again=await generalReadInstallation({root});
+ assert.deepEqual(Object.keys(g),['measurement','measurementSha256']);assert.match(g.measurementSha256,/^[a-f0-9]{64}$/u);
+ assert.equal(canonicalSha256(g.measurement),g.measurementSha256);assert.deepEqual(again,{measurement:g.measurement,measurementSha256:g.measurementSha256});
+ // The same value the composer's issuer re-measures: the runtime catalog and installationReadOperations() of this tree.
+ const direct=await measureGeneralReadInstallation({catalogJson:JSON.stringify(catalog),operations:installationReadOperations()});
+ assert.equal(direct.measurementSha256,g.measurementSha256);
+ assert.equal(g.measurement.schema,GENERAL_READ_INSTALLATION_MEASUREMENT_SCHEMA);assert.equal(g.measurement.baseCatalogSha256,r.skills.catalogSha256);
+ assert.equal(g.measurement.operations.length,installationReadOperations().length);assert.ok(g.measurement.operations.length>=1&&g.measurement.operations.length<=128);
+ const keys=g.measurement.operations.map(o=>`${o.operation.id}@${o.operation.version}`);assert.deepEqual(keys,[...keys].sort((a,b)=>a.localeCompare(b)));
+ for(const row of g.measurement.operations){assert.deepEqual(Object.keys(row),['operation','family','descriptorSha256','handlerSourceSha256']);assert.match(row.handlerSourceSha256,/^[a-f0-9]{64}$/u);assert.match(row.descriptorSha256,/^[a-f0-9]{64}$/u);}
+ const issuer=createGeneralReadInstallationIssuer({catalogJson:JSON.stringify(catalog),now:Date.now,enabled:true,measurement:g.measurement,measurementSha256:g.measurementSha256});
+ assert.equal(issuer.enabled,true);assert.match(issuer.installationId,/^[a-f0-9-]{36}$/u);
+ assert.throws(()=>createGeneralReadInstallationIssuer({catalogJson:JSON.stringify(catalog),now:Date.now,enabled:true,measurement:g.measurement,measurementSha256:'0'.repeat(64)}),/GENERAL_READ_INSTALLATION_REFUSED/u);
+ // Still one JSON line, and the field is additive: every pre-existing receipt key keeps its value.
+ assert.equal(JSON.stringify(r).includes('\n'),false);
+ for(const key of ['schema','platform','inputs','versions','executable','launchTemplate','launchTemplateRunInvariant','sdkOptions','runner','skills','gates','module','scope'])assert.ok(Object.hasOwn(r,key),key);
 });
