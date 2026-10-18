@@ -30,9 +30,9 @@ ALTER TABLE meri_conversations.retention_purge_targets
       AND run_id IS NOT NULL AND session_id IS NOT NULL AND subpath IS NOT NULL AND sequence IS NOT NULL
       AND candidate_id IS NULL AND proposal_id IS NULL AND command_id IS NULL AND delivery_id IS NULL AND actor_id IS NULL)
     OR (class = 'meriMemoryCandidates'
-      AND candidate_id IS NOT NULL
+      AND candidate_id IS NOT NULL AND actor_id IS NOT NULL AND length(actor_id) BETWEEN 1 AND 128
       AND run_id IS NULL AND session_id IS NULL AND subpath IS NULL AND sequence IS NULL
-      AND proposal_id IS NULL AND command_id IS NULL AND delivery_id IS NULL AND actor_id IS NULL)
+      AND proposal_id IS NULL AND command_id IS NULL AND delivery_id IS NULL)
     OR (class = 'meriMemoryApprovalMetadata'
       AND proposal_id IS NOT NULL AND actor_id IS NOT NULL AND length(actor_id) BETWEEN 1 AND 128
       AND run_id IS NULL AND session_id IS NULL AND subpath IS NULL AND sequence IS NULL
@@ -51,7 +51,7 @@ ALTER TABLE meri_conversations.retention_purge_targets
 -- A row may legitimately recur in a new suppression plan. These are lookup indexes, not uniqueness
 -- constraints; workflow_id remains the target journal's unique identity.
 CREATE INDEX retention_purge_targets_memory_candidate ON meri_conversations.retention_purge_targets
-  (tenant_id, conversation_id, candidate_id) WHERE class = 'meriMemoryCandidates';
+  (tenant_id, conversation_id, actor_id, candidate_id) WHERE class = 'meriMemoryCandidates';
 CREATE INDEX retention_purge_targets_memory_approval_metadata ON meri_conversations.retention_purge_targets
   (tenant_id, conversation_id, actor_id, proposal_id) WHERE class = 'meriMemoryApprovalMetadata';
 CREATE INDEX retention_purge_targets_memory_command_journal ON meri_conversations.retention_purge_targets
