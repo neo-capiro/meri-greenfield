@@ -13,7 +13,7 @@ const originalRow={tenant_id:binding.tenantId,conversation_id:binding.conversati
 const reservation=(source,destination,pins)=>({source,target:destination,facts:{checkpoint:null,noAuthority:{foreclosureSha256:'a'.repeat(64)}},scopes,versions:pins,policyRevision:'policy1',reservedAt:new Date(at+1000).toISOString()});
 const nextRow=(source,destination,pins,state)=>{const value=reservation(source,destination,pins);return {tenant_id:binding.tenantId,conversation_id:binding.conversationId,source_run_id:source.runId,target_run_id:destination.runId,reservation:value,reservation_sha256:hash(value),state};};
 const first=nextRow(binding,target,versions,'ACCEPTED'),second=nextRow(target,successor,newVersions,'RESERVED');
-const runRow=(b,pins)=>{const projection={binding:b,state:'queued',scopes,createdAt:new Date(at).toISOString(),policyRevision:'policy1',versions:pins};return {tenant_id:b.tenantId,conversation_id:b.conversationId,run_id:b.runId,projection,projection_sha256:hash(projection)};};
+const runRow=(b,pins)=>{const projection={binding:b,state:'queued',scopes,createdAt:new Date(at+(b.writerFence-1)*3000).toISOString(),policyRevision:'policy1',versions:pins};return {tenant_id:b.tenantId,conversation_id:b.conversationId,run_id:b.runId,projection,projection_sha256:hash(projection)};};
 const adoptionReceipt={schemaVersion:1,source:binding,target,originalAdmissionSha256:originalRow.record_sha256,reservationSha256:first.reservation_sha256,selectedClientId:id(5),scopes,policyRevision:'policy1',fromConfigurationSha256:oldConfigurationSha256,fromVersions:versions,toConfigurationSha256:newConfigurationSha256,toVersions:newVersions,authorityDecisionSha256:'b'.repeat(64),authorityCheckedAtMs:at+1000,authorityExpiresAtMs:at+30000,adoptedAtMs:at+2000,validUntilMs:at+20000};
 const adoptionRow={tenant_id:binding.tenantId,conversation_id:binding.conversationId,target_run_id:target.runId,receipt:adoptionReceipt,receipt_sha256:hash(adoptionReceipt)};
 
@@ -66,6 +66,13 @@ test('accepted projection must carry adopted pins; reserved target cannot have a
  await assert.rejects(f.journal.readEffective({binding:target},check),{code:'NEXT_RUN_ADOPTION_CORRUPT'});
  f.state.runs[1]=runRow(target,newVersions);f.state.runs.push(runRow(successor,newVersions));
  await assert.rejects(f.journal.readEffective({binding:successor},check),{code:'NEXT_RUN_ADOPTION_CORRUPT'});
+});
+
+test('an accepted target cannot be adopted after its saved creation instant',async()=>{
+ const f=fixture(),accepted=f.state.runs[1];accepted.projection.createdAt=new Date(at+1500).toISOString();accepted.projection_sha256=hash(accepted.projection);
+ await assert.rejects(f.journal.readEffective({binding:target},check),{code:'NEXT_RUN_ADOPTION_CORRUPT'});
+ accepted.projection.createdAt=new Date(adoptionReceipt.adoptedAtMs).toISOString();accepted.projection_sha256=hash(accepted.projection);
+ await assert.rejects(f.journal.readEffective({binding:target},check),{code:'NEXT_RUN_ADOPTION_CORRUPT'});
 });
 
 test('historical original remains readable when a later descendant is corrupt',async()=>{

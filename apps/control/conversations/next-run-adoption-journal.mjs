@@ -56,7 +56,11 @@ export function createNextRunAdoptionJournal({tx}){
    let effectiveVersions=root.versions;for(const row of path){
     const adopted=adoptions.find(a=>same(a.receipt.target,row.reservation.target));if(adopted)effectiveVersions=adopted.receipt.toVersions;
     const saved=byRun.get(row.reservation.target.runId);
-    if(row.state==='ACCEPTED')projection(saved,row.reservation.target,effectiveVersions);
+    if(row.state==='ACCEPTED'){
+     projection(saved,row.reservation.target,effectiveVersions);
+     const createdAtMs=Date.parse(saved.projection.createdAt),reservedAtMs=Date.parse(row.reservation.reservedAt);
+     if(!Number.isSafeInteger(createdAtMs)||!Number.isSafeInteger(reservedAtMs)||createdAtMs<reservedAtMs||adopted&&adopted.receipt.adoptedAtMs>=createdAtMs)refuse('CORRUPT');
+    }
     else if(saved||row.state!=='RESERVED')refuse('CORRUPT');
    }
    return descriptor;
