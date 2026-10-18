@@ -42,7 +42,7 @@ Last pinned runtime: N21 `176a8811`, `sha256:5534edfe…`, measured without a pr
 }
 ```
 
-Plus `--feature-secrets` with the exact VersionId of each secret at render time, and `"memory": {"enabled": true}` (renders `memory {enabled, origin: core.coreOrigin, serviceSecretFile: the reads secret}`). `intents.execution` and `routines.core` join once lanes X and B3 land.
+Plus `--feature-secrets` with the exact VersionId of each secret at render time, and `"memory": {"enabled": true}` (renders `memory {enabled, origin: core.coreOrigin, serviceSecretFile: the reads secret}`). `"intents": {"enabled": true, "execution": {"issuer", "keys": [Ed25519 public JWKs with kid]}}` and `"routines": {"enabled": true, "core": {"cancellationProof": {issuer, kid, publicKey}, "unattendedGrant": {issuer, kid, publicKey}}}` render the Core origin and the reads service secret file into `intents.execution` / `routines.core`; the public JWKs come from the packet's KMS keys (`GetPublicKey` readback).
 
 Budget pins (B1): `allocation.json` `budgets.maxTurns 20`, `maxToolCalls 20`, `maxCostMicroUSD 2000000`, `maxRuntimeSeconds 900`; `policy.json` `runtime.maxTurns 20`; read operations with tariffs (P3).
 

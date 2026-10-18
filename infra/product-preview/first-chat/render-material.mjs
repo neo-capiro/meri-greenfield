@@ -39,6 +39,8 @@
  *   retention?: {enabled: true},                              // artifacts tenantId (= core tenantId) and download links need it
  *   artifacts?: {enabled:false} | {enabled:true, region:'us-east-1', bucket, prefix, expectedBucketOwner:'967807252336', kmsKeyId (key ARN), authority?: {enabled:true} (needs reads)},
  *   memory?: {enabled: bool} (enabled needs reads: it reuses the Core service secret file),
+ *   intents?: {enabled, execution?: {issuer, keys: [Ed25519 public JWK with kid]}} (execution needs reads),
+ *   routines?: {enabled, core?: {cancellationProof: {issuer, kid, publicKey}, unattendedGrant?: {issuer, kid, publicKey}}} (core needs reads),
  *   downloadLinks?: {enabled:false} | {enabled:true, ttlMs?},  // signing key generated per render -> /run/meri/download-link.key
  *   capabilityPlatform?: {maximum, defaults, roleCeilings},   // verbatim; runtime values must carry the matching capabilityProfileSha256 (G3)
  *   reads?: {enabled:false} | {enabled:true, serviceSecretArn, readModeServiceSecretArn?, defaultCongress?, approvedReads?}
@@ -69,6 +71,8 @@ import {parseProductProxyStartupConfiguration,PRODUCT_PROXY_PRICING_REVISION} fr
 import {compileCapabilityPlatform,createConfiguredRunCapabilityPolicy} from '../../../apps/runtime/product-ports/capability-policy.mjs';
 import {compileRuntimeArtifactsConfiguration} from '../../../apps/runtime/artifacts/configuration.mjs';
 import {assertNativeReadConfiguration} from '../../../packages/contracts/runtime-0.2/reads.mjs';
+import {compileIntentsConfiguration} from '../../../apps/runtime/product-ports/intents.mjs';
+import {compileRoutinesCoreConfiguration} from '../../../apps/runtime/native-authority/routines-configuration.mjs';
 
 export const SOURCE_ROOT=resolve(fileURLToPath(new URL('../../../',import.meta.url)));
 const ACCOUNT='967807252336',REGION='us-east-1',ECS=`arn:aws:ecs:${REGION}:${ACCOUNT}:`;
@@ -192,7 +196,18 @@ export function parseFeatures(raw,{secrets={},checkpoint}={}){
  const bool=(v,name)=>{if(typeof v!=='boolean')fail('RENDER_INPUT_REFUSED',`${name} must be a boolean`);return v;};
  const toggle=key=>{const v=record(f[key],`features.${key}`,['enabled']);return {enabled:bool(v.enabled,`features.${key}.enabled`)};};
  if(f.sourceEnabled!==undefined)out.sourceEnabled=bool(f.sourceEnabled,'features.sourceEnabled');
- for(const key of ['userPreferences','tenantSettings','intents','routines'])if(f[key]!==undefined)out[key]=toggle(key);
+ for(const key of ['userPreferences','tenantSettings'])if(f[key]!==undefined)out[key]=toggle(key);
+ // Write-intent execution trust (lane E): the Core issuer and its Ed25519 public JWKs; validated by the control compiler against a
+ // placeholder origin and secret path (the rendered values are the Core origin and the reads service secret file).
+ if(f.intents!==undefined){const v=record(f.intents,'features.intents',['enabled'],['execution']);const enabled=bool(v.enabled,'features.intents.enabled');
+  if(v.execution!==undefined){if(!enabled)fail('RENDER_INPUT_REFUSED','features.intents.execution needs features.intents.enabled true');const e=record(v.execution,'features.intents.execution',['issuer','keys']);
+   try{compileIntentsConfiguration({intents:{enabled:true,execution:{coreOrigin:'https://placeholder.invalid',issuer:e.issuer,keys:structuredClone(e.keys),serviceSecretFile:'/run/meri/placeholder'}}});}catch{fail('RENDER_INPUT_REFUSED','features.intents.execution (apps/runtime/native-authority/execution-capability.mjs compileExecutionTrust)');}
+   out.intents={enabled:true,execution:{issuer:e.issuer,keys:structuredClone(e.keys)}};}else out.intents={enabled};}
+ // Routines Core owners (lane B2): the policy-check origin and the Ed25519 pins for the cancellation proof and the unattended grant.
+ if(f.routines!==undefined){const v=record(f.routines,'features.routines',['enabled'],['core']);const enabled=bool(v.enabled,'features.routines.enabled');
+  if(v.core!==undefined){if(!enabled)fail('RENDER_INPUT_REFUSED','features.routines.core needs features.routines.enabled true');const c=record(v.core,'features.routines.core',[],['cancellationProof','unattendedGrant']);
+   try{if(compileRoutinesCoreConfiguration({routines:{enabled:true,core:{origin:'https://placeholder.invalid',serviceSecretFile:'/run/meri/placeholder',...structuredClone(c)}}})===null)throw Error();}catch{fail('RENDER_INPUT_REFUSED','features.routines.core (apps/runtime/native-authority/routines-configuration.mjs)');}
+   out.routines={enabled:true,core:structuredClone(c)};}else out.routines={enabled};}
  if(f.retention!==undefined){if(toggle('retention').enabled!==true)fail('RENDER_INPUT_REFUSED','features.retention.enabled must be true (omit retention to leave it undeclared)');out.retention={enabled:true};}
  if(f.artifacts!==undefined){
   const storage=['region','bucket','prefix','expectedBucketOwner','kmsKeyId'],a=record(f.artifacts,'features.artifacts',['enabled'],[...storage,'authority']);
@@ -242,6 +257,8 @@ export function parseFeatures(raw,{secrets={},checkpoint}={}){
  if(f.memory!==undefined){const m=record(f.memory,'features.memory',['enabled']);out.memory={enabled:bool(m.enabled,'features.memory.enabled')};}
  if(out.artifacts?.authority===true&&out.reads?.enabled!==true)fail('RENDER_INPUT_REFUSED','features.artifacts.authority reuses the reads Core service secret: it needs features.reads enabled');
  if(out.memory?.enabled===true&&out.reads?.enabled!==true)fail('RENDER_INPUT_REFUSED','features.memory reuses the reads Core service secret: it needs features.reads enabled');
+ if(out.intents?.execution!==undefined&&out.reads?.enabled!==true)fail('RENDER_INPUT_REFUSED','features.intents.execution reuses the reads Core service secret: it needs features.reads enabled');
+ if(out.routines?.core!==undefined&&out.reads?.enabled!==true)fail('RENDER_INPUT_REFUSED','features.routines.core reuses the reads Core service secret: it needs features.reads enabled');
  return out;
 }
 /** The single capability profile every run resolves to under `capabilityPlatform` (G3), or null when the platform is absent or
@@ -447,7 +464,9 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,ident
  // Product families, each rendered as exactly its own control key, in a fixed order after every first-chat key (absent: none).
  const downloadLinkKey=features.downloadLinks?.enabled===true?Buffer.from(randomBytes(32).toString('base64url'),'utf8'):null;
  const featureKeys={};
- for(const key of ['userPreferences','tenantSettings','intents','routines','retention'])if(features[key]!==undefined)featureKeys[key]={...features[key]};
+ for(const key of ['userPreferences','tenantSettings','retention'])if(features[key]!==undefined)featureKeys[key]={...features[key]};
+ if(features.intents!==undefined)featureKeys.intents=features.intents.execution===undefined?{enabled:features.intents.enabled}:{enabled:true,execution:{coreOrigin:k.coreOrigin,issuer:features.intents.execution.issuer,keys:structuredClone(features.intents.execution.keys),serviceSecretFile:PATHS.readsServiceSecret}};
+ if(features.routines!==undefined)featureKeys.routines=features.routines.core===undefined?{enabled:features.routines.enabled}:{enabled:true,core:{origin:k.coreOrigin,serviceSecretFile:PATHS.readsServiceSecret,...structuredClone(features.routines.core)}};
  // artifacts/configuration.mjs: tenantId (publication custody) exactly when retention is declared; the preview has one tenant.
  if(features.artifacts!==undefined){const {authority,...store}=features.artifacts;featureKeys.artifacts=store.enabled?{...store,...(features.retention?{tenantId:k.tenantId}:{}),
   ...(authority?{authority:{origin:k.coreOrigin,serviceSecretFile:PATHS.readsServiceSecret}}:{})}:{enabled:false};}
