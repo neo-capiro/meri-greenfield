@@ -270,6 +270,12 @@ function measuredHandlers(rows,manifests){
  }
  return handlers;
 }
+/** P2 measurement input: the exact source-file manifest per family that the installation owner re-measures on every read. */
+export async function measureGeneralReadFamilySources(configuration){
+ const {familyIds}=ownFields(configuration,['familyIds']),ids=frozenData(familyIds);
+ if(!Array.isArray(ids)||!ids.length||new Set(ids).size!==ids.length||ids.some(id=>typeof id!=='string'||!byFamily.has(id)))deny('GATEWAY_CONFIGURATION');
+ return prepareFamilyManifests(ids);
+}
 /** Prepare immutable source records once; every synchronous create constructs fresh task-owned adapters. */
 export async function prepareGeneralReadFamilyHandlers(configuration){
  const {familyIds}=ownFields(configuration,['familyIds']),ids=frozenData(familyIds);

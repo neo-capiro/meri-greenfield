@@ -11,6 +11,8 @@ import {createNativeReadCredentialBroker,createControlReadsComposer,selectedClie
 import {installationFixture} from '../general-read-installation/test/fixture.mjs';
 import {nativeFamilyCase} from '../../../gateway/general-reads/test/native-family-cases.mjs';
 import {origin as coreOrigin} from '../native-read-credentials/test/fixture.mjs';
+import catalog from '../../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
+import {measureGeneralReadInstallation} from '../../../gateway/general-reads/installation-issuer.mjs';
 
 const CONTROL='MARKED_CONTROL_SYNTHETIC',CANDIDATE={identity:'/run/meri/identity',task:'/run/meri/task-capability',control:'/run/meri/control-capability',proxy:'/run/meri/proxy-capability'};
 const READ={serviceSecret:'/run/meri/core-tool-service-secret',readModeServiceSecret:'/run/meri/core-read-mode-service-secret'};
@@ -125,7 +127,7 @@ test('a live session whose token is a candidate credential or the service secret
  }finally{x.session.close();}
 });
 
-async function composed({bind=true,secretFiles=READ,gateway,nativeCredentials=true,ttlMs,hangTools=false}={}){
+async function composed({bind=true,secretFiles=READ,gateway,nativeCredentials=true,ttlMs,hangTools=false,producers}={}){
  const f=await installationFixture({scene:nativeFamilyCase('tracked-bills','search_tracked_bills')}),s=secretFixture(),outbound=[];
  const session=sessionFixture({binding:f.binding,scopes:f.scopes,now:f.now,...(ttlMs===undefined?{}:{ttlMs})});if(bind)session.relay.bind(session.owner);
  const inflight=[];
@@ -138,7 +140,8 @@ async function composed({bind=true,secretFiles=READ,gateway,nativeCredentials=tr
   return new Promise((_,reject)=>init.signal.addEventListener('abort',()=>{entry.abortedAt=Date.now();reject(init.signal.reason??Error('aborted'));},{once:true}));};
  const ports=gateway??{authority:f.gatewayConfiguration.authority,limits:f.gatewayConfiguration.limits,discoveryOwner:f.gatewayConfiguration.discoveryOwner,
   readCurrentInstallation:proof=>f.installationOwner.readCurrent({signal:proof.signal})};
- const composer=await createControlReadsComposer({configuration:s.configuration,secretFiles,readSecret:s.readSecret,now:f.now,fetchImpl,gateway:ports,
+ const extra=producers?await producers(f):{};
+ const composer=await createControlReadsComposer({configuration:s.configuration,secretFiles,readSecret:s.readSecret,now:f.now,fetchImpl,gateway:extra.gateway??ports,...(extra.installation?{installation:extra.installation}:{}),...(extra.discovery?{discovery:extra.discovery}:{}),
   ...(nativeCredentials?{nativeCredentials:session.relay.port}:{}),familyIds:[f.family]});
  const mounted=f.prepared({createReadsRuntime:inner=>composer.createReadsRuntime({...f.tuple,...inner})});
  const client=createNativeReadsClient({origin:'https://native.synthetic.invalid',credential:f.tuple.taskCapability,binding:f.binding,approvedReads:f.tuple.approvedReads,fetchImpl:(url,init)=>mounted.application.handle(new Request(url,init)),now:f.now});
@@ -214,11 +217,44 @@ test('missing relay port or service secret composes the unavailable runtime and 
  }
 });
 
+test('a composed read runs through the real P2 installation issuer and P1 discovery producer (no fixture ports)',async()=>{
+ const policyCalls=[];
+ const x=await composed({producers:async f=>{
+  const {measurement,measurementSha256}=await measureGeneralReadInstallation({catalogJson:JSON.stringify(catalog),operations:[{operation:f.operation,family:f.family}]});
+  return {gateway:{authority:f.gatewayConfiguration.authority,limits:f.gatewayConfiguration.limits},installation:{enabled:true,measurement,measurementSha256},
+   discovery:{enabled:true,capabilityPolicy:{async forRun(input){policyCalls.push(input);return {generalReads:true,readFamilies:[f.family]};}}}};
+ }});
+ try{
+  assert.deepEqual(x.composer.missing,[]);await x.session.issue('SYNTHETIC_NATIVE');
+  const availability=await x.client.readAvailability();assert.deepEqual(availability.installation.operations,[x.f.operation]);assert.deepEqual(availability.discovery.operations,[x.f.operation]);
+  const raw=await x.execute();assert.deepEqual(JSON.parse(raw).binding,x.f.binding);assert.equal(x.f.wire.length,1);assert.ok(policyCalls.length>0);noCandidate(x);
+ }finally{x.close();}
+});
+
+test('the real P1/P2 producers stay disabled by default and keep the runtime unavailable',async()=>{
+ const x=await composed({producers:async f=>({gateway:{authority:f.gatewayConfiguration.authority,limits:f.gatewayConfiguration.limits}})});
+ try{assert.deepEqual(x.composer.missing,['installation.enabled','discovery.enabled']);await x.session.issue('SYNTHETIC_NATIVE');
+  await assert.rejects(x.client.readAvailability());await assert.rejects(x.execute());assert.equal(x.outbound.length,0);assert.equal(x.f.wire.length,0);}
+ finally{x.close();}
+});
+
+test('a P1 policy without the read family exposes and executes nothing',async()=>{
+ const x=await composed({producers:async f=>{
+  const {measurement,measurementSha256}=await measureGeneralReadInstallation({catalogJson:JSON.stringify(catalog),operations:[{operation:f.operation,family:f.family}]});
+  return {gateway:{authority:f.gatewayConfiguration.authority,limits:f.gatewayConfiguration.limits},installation:{enabled:true,measurement,measurementSha256},
+   discovery:{enabled:true,capabilityPolicy:{async forRun(){return {generalReads:true,readFamilies:['mail']};}}}};
+ }});
+ try{
+  await x.session.issue('SYNTHETIC_NATIVE');const availability=await x.client.readAvailability();assert.deepEqual(availability.discovery.operations,[]);assert.deepEqual(availability.installation.operations,[]);
+  await assert.rejects(x.execute());assert.equal(x.f.wire.length,0);
+ }finally{x.close();}
+});
+
 for(const omit of READ_GATEWAY_INPUTS)test(`missing gateway.${omit} composes the unavailable runtime without credentials or source IO`,async()=>{
  const f0=await installationFixture({scene:nativeFamilyCase('tracked-bills','search_tracked_bills')}),ports={authority:f0.gatewayConfiguration.authority,limits:f0.gatewayConfiguration.limits,discoveryOwner:f0.gatewayConfiguration.discoveryOwner,readCurrentInstallation:()=>{throw Error('UNREACHABLE');}};
  f0.scope.abort();delete ports[omit];const x=await composed({gateway:ports});
  try{
-  assert.deepEqual(x.composer.missing,[`gateway.${omit}`]);await x.session.issue('SYNTHETIC_NATIVE');
+  assert.deepEqual(x.composer.missing,[{readCurrentInstallation:"installation.enabled",discoveryOwner:"discovery.enabled"}[omit]??`gateway.${omit}`]);await x.session.issue('SYNTHETIC_NATIVE');
   await assert.rejects(x.client.readAvailability());await assert.rejects(x.execute());
   assert.equal(x.outbound.length,0);assert.equal(x.f.wire.length,0);
  }finally{x.close();}
