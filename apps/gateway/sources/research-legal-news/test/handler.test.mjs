@@ -242,6 +242,12 @@ test('cancellation, deadline, missing credential owner and bounded bytes stop or
  await assert.rejects(k.handler()({...k.call(),signal:controller.signal}),{message:'CANCELLED'});
 });
 
+test('the current capability output budget bounds source bytes without truncation or a fallback request',async()=>{
+ const f=storedCase();f.authority.claims.budgets.maxOutputBytes=256;
+ await assert.rejects(f.handler()(f.call()),{message:'RESOURCE_LIMIT'});
+ assert.equal(f.wire.length,1);assert.equal(f.credentialCalls.length,1);
+});
+
 test('constructor permits only fixed versioned native news reads and no configurable read/apply bridge',()=>{
  const f=storedCase(),configuration={...f.transport,now:f.now};
  for(const operations of [[],[f.operation,f.operation],[{id:'prepare_legiwatch_briefing',version:'0.2.0'}],[{id,version:'0.1.0'}]])

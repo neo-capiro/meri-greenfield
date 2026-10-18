@@ -1,9 +1,10 @@
 /** Delta: UUID selection adds no lookup/parser and does not widen the admitted news views. Synthetic JSON only. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
 import {canonicalSha256 as hash} from '../../../../../packages/contracts/validate.mjs';
 import {createResearchLegalNewsHandlers} from '../handler.mjs';
-import {assertNewsSliceRequest,assertUnscopedNewsRequest,newsSliceContext} from '../request-context.mjs';
+import {assertNewsRawRequest,assertNewsSliceRequest,assertUnscopedNewsRequest,newsSliceContext} from '../request-context.mjs';
 import {storedCase} from './fixture.mjs';
 
 const clientId='a1234567-b123-4c12-8d12-e123456789ab',foreign='d1234567-b123-4c12-8d12-e123456789ab';
@@ -38,6 +39,40 @@ test('delta news names, folders, clocks and monitor branches remain unavailable 
   await assert.rejects(handler.execute({...f.call(),request}),{message:'UNAVAILABLE'});
  }
  assert.equal(factories,0);assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
+});
+
+test('raw named-client preflight rejects invalid typed selectors before any resolution is needed',()=>{
+ const operation={id:'search_legiwatch_news',version:'0.2.0'};
+ const invalid=[{view:'source',kind:'unknown',id:'source'},{view:'source',kind:'news'},
+  {view:'source',kind:'news',id:''},{view:'source',kind:'news',id:'x'.repeat(201)},
+  {view:'source',kind:'news',id:'source',folderId:'x'.repeat(101)},
+  {view:'personnel',year:'not a year'},{view:'personnel',year:2026.1},
+  {view:'personnel',year:2147483648},{view:'personnel',year:2026,kind:'unknown'},
+  {view:'personnel',year:2026,branch:'unknown'},{view:'personnel',year:2026,offset:10001}];
+ for(const request of invalid)for(const selected of ['Synthetic client',clientId])
+  assert.throws(()=>assertNewsRawRequest(operation,{...request,clientId:selected}),{message:'INVALID_ARGUMENTS'});
+ // A valid name remains unresolved until the current native owner observes it.
+ const request={view:'source',kind:'budget',id:'source',clientId:' Synthetic client ',folderId:'private-folder',sessionKey:'2026'};
+ const {raw}=assertNewsRawRequest(operation,request);
+ assert.deepEqual(raw,request);assert.ok(Object.isFrozen(raw));assert.equal(Object.isFrozen(request),false);
+ assert.throws(()=>assertNewsSliceRequest(operation,request),{message:'UNAVAILABLE'});
+});
+
+for(const request of selections)test(`${request.view}/${request.kind}: native name resolution pins the client and exact transport target`,async()=>{
+ const raw={...request,clientId:' Synthetic client ',folderId:'private-folder',sessionKey:'2026'},operation={id:'search_legiwatch_news',version:'0.2.0'};
+ const context=newsSliceContext(operation,raw,{reference:'Synthetic client',clientId}),f=storedCase(undefined,{request:raw,context});
+ // A matching static proof cannot substitute for a per-call native owner.
+ await assert.rejects(f.handler()(f.call()),{message:'UNAVAILABLE'});
+ assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
+ const {getCredentials,...transport}=f.transport;
+ const [handler]=createResearchLegalNewsHandlers({...transport,now:f.now,credentialsForCall:()=>getCredentials},[operation]);
+ const result=JSON.parse(await handler.execute(f.call())),body={...raw,clientId},[proof]=f.credentialCalls;
+ assert.deepEqual(result.result,JSON.parse(JSON.stringify(f.page)));assert.deepEqual(f.wire[0].body,body);
+ assert.deepEqual(proof.normalizationContext,context);assert.equal(proof.requestSha256,hash(raw));
+ assert.deepEqual(proof.target,{method:'POST',path:'/api/clio/tools/search_legiwatch_news',
+  bodySha256:createHash('sha256').update(JSON.stringify(body),'utf8').digest('hex')});
+ assert.equal(f.wire[0].options.body,JSON.stringify(body));assert.equal(raw.clientId,' Synthetic client ');
+ assert.equal(f.credentialCalls.length,1);assert.equal(f.wire.length,1);
 });
 
 test('delta news current client subject and matching resource remain mandatory, including on exact-source branches',async()=>{

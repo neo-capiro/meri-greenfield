@@ -21,6 +21,10 @@ export function assertNewsRawRequest(operation,request){
  catch{deny('INVALID_ARGUMENTS');}
  if(raw.folderId&&captureResearchClientReference(raw)===null||
   raw.view!=='source'&&(raw.view!=='personnel'||raw.year===undefined||raw.year===null))deny('UNAVAILABLE');
+ // Validate request-owned selectors before CONTROL can perform a named-client lookup. The
+ // client-free validation copy supplies no authority and never replaces the original request.
+ const selectors={...raw,clientId:null};
+ try{contract.normalizeInput(selectors,requestContext(selectors));}catch{deny('INVALID_ARGUMENTS');}
  return {contract,raw};
 }
 export function assertNewsSliceRequest(operation,request,resolution){

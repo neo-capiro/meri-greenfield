@@ -20,18 +20,22 @@ test('client UUID capture preserves native trim/clip/trim and case while the raw
  assert.deepEqual(captureOutreachListClientSelection(request),{reference:clientId.toUpperCase(),clientId});
  const out=JSON.parse(await f.handler()(f.call()));assert.deepEqual(f.wire[0].body,request);assert.equal(f.call().input.status,'s'.repeat(39));assert.equal(f.call().input.limit,2);assert.equal(out.result.campaigns[0].clientId,clientId);
 });
-test('any own outreachId property refuses detail and malformed/empty fallback before credentials',async()=>{
+test('any own outreachId property refuses detail and malformed/empty fallback before credential factories',async()=>{
  for(const outreachId of [clientId,'not-a-uuid','', '   ',null]){
   const f=storedCase(),request={clientId,outreachId},context=typeof outreachId==='string'&&outreachId.trim()?{clientResolution:null}:f.normalizationContext;
   assert.throws(()=>captureOutreachListClientSelection(request),{message:'UNAVAILABLE'});
   await assert.rejects(f.handler()(f.call(request,f.authority,context)),{message:'UNAVAILABLE'});assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
+  let factories=0;const execute=f.handler({getCredentials:undefined,credentialsForCall:()=>{factories++;return f.transport.getCredentials;}});
+  await assert.rejects(execute(f.call(request,f.authority,context)),{message:'UNAVAILABLE'});assert.equal(factories,0);assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
  }
 });
-test('unscoped, blank and null client list selectors refuse before credentials',async()=>{
+test('unscoped, blank and null client list selectors refuse before credential factories',async()=>{
  for(const request of [{},{clientId:null},{clientId:''},{clientId:'  '}]){
   const f=storedCase(),reference=request.clientId?.trim()||null,context={clientResolution:reference===null?null:{reference,clientId}};
   assert.throws(()=>captureOutreachListClientSelection(request),{message:'UNAVAILABLE'});
   await assert.rejects(f.handler()(f.call(request,f.authority,context)),{message:'UNAVAILABLE'});assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
+  let factories=0;const execute=f.handler({getCredentials:undefined,credentialsForCall:()=>{factories++;return f.transport.getCredentials;}});
+  await assert.rejects(execute(f.call(request,f.authority,context)),{message:'UNAVAILABLE'});assert.equal(factories,0);assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
  }
 });
 test('malformed raw scalars, authority fields and hostile objects never execute coercion or credential IO',async()=>{
@@ -59,6 +63,8 @@ test('client subject and matching resource are mandatory even with an otherwise 
   if(change==='no-client-resource')for(const scopes of [a.subject.scopes,a.claims.scopes,a.decision.scopes])Object.assign(scopes[0],{kind:'tenant',resourceId:a.binding.tenantId});
   if(change==='multiple-clients')a.subject.entityIds.push(otherClient);
   await assert.rejects(f.handler()(call));assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
+  let factories=0;const execute=f.handler({getCredentials:undefined,credentialsForCall:()=>{factories++;return f.transport.getCredentials;}});
+  await assert.rejects(execute(call));assert.equal(factories,0);assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
  }
 });
 test('native list serializes dates and preserves scalar campaign metadata without private nested rows',async()=>{
