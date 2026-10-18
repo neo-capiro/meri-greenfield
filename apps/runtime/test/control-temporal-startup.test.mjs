@@ -34,7 +34,7 @@ function fixture({authorizationError,initialLoss=false,onListen,cleanup={}}={}){
   runs:'meri_conversations.runs',events:'meri_conversations.events',controls:'meri_conversations.controls',selected_outputs:'meri_conversations.selected_outputs',initial_inputs:'meri_conversations.initial_inputs'}]};},end:close('pool')};
  const connection={async withDeadline(_at,operation){return operation();},async withAbortSignal(signal,operation){signal.throwIfAborted();return operation();},
   workflowService:{async getSystemInfo(){events.push('temporal-health');return {};}},close:close('connection')};
- const assembly={application:{async handle(request){request.signal.throwIfAborted();return Response.json({synthetic:true});}},
+ const assembly={userPreferences:{state:()=>'disabled',async readiness(){events.push('user-preferences-readiness');}},application:{async handle(request){request.signal.throwIfAborted();return Response.json({synthetic:true});}},
   downloads:{async open({signal}){signal.throwIfAborted();events.push('downloads');return {reason:'synthetic-only'};}},
   retention:null,productReadiness:()=>({ready:true}),close:close('assembly')};
  const owners={
