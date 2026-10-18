@@ -1,11 +1,13 @@
-/** Routines Core wiring (control only), validated without I/O: `configuration.routines.core`
- *   {origin, serviceSecretFile, cancellationProof:{issuer, kid, publicKey:{kty:'OKP', crv:'Ed25519', x}}}
- * `origin` is Core's HTTPS origin for wire A (`POST /api/clio/routines/policy/check`) and wire B
- * (`POST /api/clio/routines/cancellation-proof`); `serviceSecretFile` holds the internal service secret Core's
- * ToolServiceSecretGuard verifies (read per call, never a native candidate credential file); `cancellationProof` pins the ONE
- * Ed25519 public key, issuer and kid of Core's routine-cancellation signer (D7-2 packet; the purpose shares no key or kid).
- * Absent `core`, policy and run control remain trusted in-process owners. JSON configuration never supplies an owner: these are
- * public facts only, and every authority decision stays with Core's live answer and the routines owners. */
+/** Routines Core wiring (control and schedule-worker roles), validated without I/O: `configuration.routines.core`
+ *   {origin, serviceSecretFile, cancellationProof?:{issuer, kid, publicKey:{kty:'OKP', crv:'Ed25519', x}}, unattendedGrant?:{same}}
+ * `origin` is Core's HTTPS origin for wire A (`POST /api/clio/routines/policy/check`), wire B
+ * (`POST /api/clio/routines/cancellation-proof`) and wire C (`POST /api/clio/routines/unattended-grant`); `serviceSecretFile`
+ * holds the internal service secret Core's ToolServiceSecretGuard verifies (read per call, never a native candidate credential
+ * file). `cancellationProof` pins the ONE Ed25519 public key, issuer and kid of Core's routine-cancellation signer (control:
+ * attended cancel, D016 item 9); `unattendedGrant` pins the firing-grant signer (schedule worker: D016-A item 5). The two purposes
+ * never share a key or kid; at least one must be pinned. Absent `core`, policy and run control remain trusted in-process owners.
+ * JSON configuration never supplies an owner: these are public facts only, and every authority decision stays with Core's live
+ * answer and the routines owners. */
 import {createPublicKey} from 'node:crypto';
 import {isAbsolute} from 'node:path';
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
@@ -36,11 +38,17 @@ export function compileRoutinesCoreConfiguration(configuration){
  try{
   const routines=configuration?.routines;if(routines===undefined||routines===null||typeof routines!=='object')return null;
   if(!Object.hasOwn(routines,'core'))return null;
-  const core=own(routines.core,['origin','serviceSecretFile','cancellationProof']);
+  const core=own(routines.core,['origin','serviceSecretFile'],['cancellationProof','unattendedGrant']);
   const origin=retainedOrigin(core.origin),serviceSecretFile=filePath(core.serviceSecretFile);
   if(routinesReservedSecretFiles(configuration).some(path=>path===serviceSecretFile))throw fault();
-  const pin=own(core.cancellationProof,['issuer','kid','publicKey']);
-  if(!exactMatch(ROUTINE_CANCEL_ISSUER,pin.issuer)||!exactMatch(ROUTINE_CANCEL_KID,pin.kid))throw fault();
-  return Object.freeze({origin,serviceSecretFile,cancellationProof:Object.freeze({issuer:pin.issuer,kid:pin.kid,publicKey:routineCancellationPublicJwk(pin.publicKey)})});
+  const pins={};
+  for(const purpose of ['cancellationProof','unattendedGrant']){
+   if(core[purpose]===undefined)continue;const pin=own(core[purpose],['issuer','kid','publicKey']);
+   if(!exactMatch(ROUTINE_CANCEL_ISSUER,pin.issuer)||!exactMatch(ROUTINE_CANCEL_KID,pin.kid))throw fault();
+   pins[purpose]=Object.freeze({issuer:pin.issuer,kid:pin.kid,publicKey:routineCancellationPublicJwk(pin.publicKey)});
+  }
+  const [a,b]=[pins.cancellationProof,pins.unattendedGrant];
+  if(!a&&!b||a&&b&&(a.kid===b.kid||a.publicKey.x===b.publicKey.x))throw fault();
+  return Object.freeze({origin,serviceSecretFile,...pins});
  }catch{throw fault();}
 }
