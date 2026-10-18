@@ -31,7 +31,7 @@ test('actual resolver authority dispatch handler adapter completes nonempty reco
  const f=setup();const out=JSON.parse(await f.create().execute(request(raw),'WORKER_CREDENTIAL_NEVER_FORWARD'));
  assert.deepEqual(out.result.actions,f.native.actions);assert.equal(out.result.kind,'action-item-client-scoped-page');assert.equal(out.argumentsSha256,canonicalSha256(f.direct().input));
  assert.equal(out.result.argumentsSha256,canonicalSha256(f.direct().input.selection));assert.deepEqual(out.binding,f.binding);assert.deepEqual(out.subject,f.subject);
- assert.equal(f.wire[0].url,'https://source.example.invalid/clio/tools/query_action_items');assert.deepEqual(JSON.parse(f.wire[0].options.body),{limit:20,sort:'deadline',clientId:id(9)});
+ assert.equal(f.wire[0].url,'https://source.example.invalid/api/clio/tools/query_action_items');assert.deepEqual(JSON.parse(f.wire[0].options.body),{limit:20,sort:'deadline',clientId:id(9)});
  assert.equal(f.wire[0].options.redirect,'error');assert.equal(f.wire[0].options.credentials,'omit');assert.ok(!JSON.stringify(f.wire).includes('WORKER_CREDENTIAL'));
  assert.ok(f.calls.indexOf('reserve')<f.calls.indexOf('credentials'));assert.ok(f.calls.includes('settle'));
 });

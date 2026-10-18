@@ -31,7 +31,7 @@ test('actual bounded HTTP loopback preserves four routes and cancels owned serve
   try {
     const result=JSON.parse(await f.create({fetchImpl:(url,options)=>fetch(`http://127.0.0.1:${server.address().port}${new URL(url).pathname}${new URL(url).search}`,options)}).execute(request(f.raw),'synthetic'));
     assert.equal(result.data.id,recordId);
-    assert.deepEqual(seen,['mine','team','deferred','resolved'].map(l=>`/research-portfolios/${portfolioId}/reviews?lane=${l}`));
+    assert.deepEqual(seen,['mine','team','deferred','resolved'].map(l=>`/api/research-portfolios/${portfolioId}/reviews?lane=${l}`));
   } finally {server.closeAllConnections();await new Promise(resolve=>server.close(resolve));assert.equal(server.listening,false);}
 });
 test('all four lanes are required, duplicate identical observation allowed, missing never means absence', async () => {
@@ -46,7 +46,7 @@ test('UUID selectors normalize accepted uppercase spelling before exact source s
   const selected=setup('snapshot');selected.subject.entityIds=[portfolioId.toUpperCase()];
   const snapshot=JSON.parse(await selected.create().execute(request(selected.raw),'synthetic'));
   assert.equal(snapshot.data.portfolioId,portfolioId);
-  assert.equal(selected.wire[0].url,`https://source.example.invalid/research-portfolios/${portfolioId}/snapshots/${recordId}`);
+  assert.equal(selected.wire[0].url,`https://source.example.invalid/api/research-portfolios/${portfolioId}/snapshots/${recordId}`);
 });
 test('foreign tenant, Portfolio, conflicting stance and incomplete snapshots refuse', async () => {
   for (const kind of ['tenant','portfolio','stance','snapshot-parent','snapshot-missing','continuity-count']) {

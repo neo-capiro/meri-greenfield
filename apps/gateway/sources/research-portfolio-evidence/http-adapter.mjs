@@ -24,7 +24,7 @@ export function createResearchPortfolioEvidenceHttpAdapter(options) {
     try {
       const context = evidenceContext(call,now), {input,authority} = context;
       lifetime = createDispatchLifetime({deadlineMs:Math.min(context.deadlineMs,now()+maxRequestMs),now,signal:context.signal});
-      const route = `/research-portfolios/${encodeURIComponent(input.portfolioId)}`;
+      const route = `/api/research-portfolios/${encodeURIComponent(input.portfolioId)}`;
       const paths = input.origin === 'review' ? ['mine','team','deferred','resolved'].map(lane => `${route}/reviews?lane=${lane}`)
         : [input.origin === 'snapshot' ? `${route}/snapshots/${encodeURIComponent(input.recordId)}` : `${route}/annual-review`];
       const responses = [];

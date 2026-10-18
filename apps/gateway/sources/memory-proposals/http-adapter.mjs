@@ -7,7 +7,7 @@ import { frozenData, ownFields, readContext } from './request-context.mjs';
 
 import { cancelBody as cancel, responseBody, readJsonResponse } from '../json-response.mjs';
 
-const route='/clio/tools/list_memory_proposals';
+const route='/api/clio/tools/list_memory_proposals';
 export function createMemoryProposalHttpAdapter(options) {
   const {origin,getCredentials,fetchImpl=globalThis.fetch,now,maxResponseBytes,maxRequestMs}=ownFields(options,
     ['origin','getCredentials','now','maxResponseBytes','maxRequestMs'],['fetchImpl']);

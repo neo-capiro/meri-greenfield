@@ -68,7 +68,7 @@ for(const id of operations) {
     assert.equal(page.sources[0].sourceId,f.config.sourceIdentity.sourceId);assert.equal(page.sources[0].authority,'authoritative');assert.equal(page.sources[0].status,'partial');
     assert.equal(page.evidenceReady,false);assert.deepEqual(page.negativeAssertion,{kind:'none'});assert.equal(page.coverage.enumeration,'unknown');
     assert.equal(page.coverage.enumerableTotal,null);assert.equal(page.snapshotVersionId,null);assert.equal(page.sources[0].freshness,'unknown');assert.equal(page.sources[0].asOf,null);
-    assert.equal(f.wire[0].url,`https://original.example.invalid/clio/tools/${id}`);assert.ok(!JSON.stringify(f.wire).includes('WORKER_CREDENTIAL'));
+    assert.equal(f.wire[0].url,`https://original.example.invalid/api/clio/tools/${id}`);assert.ok(!JSON.stringify(f.wire).includes('WORKER_CREDENTIAL'));
     assert.equal(f.wire[0].options.redirect,'error');assert.equal(f.wire[0].options.credentials,'omit');assert.ok(f.calls.indexOf('reserve')<f.calls.indexOf('credentials'));
     assert.equal(f.calls.filter(x=>x==='settle').length,1);
   });

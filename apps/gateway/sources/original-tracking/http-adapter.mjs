@@ -11,7 +11,7 @@ export function createOriginalTrackingHttpAdapter(options) {
   if(typeof getCredentials!=='function'||typeof now!=='function'||typeof fetchImpl!=='function'||!Number.isSafeInteger(maxRequestMs)||
       maxRequestMs<1||maxRequestMs>3600000||!Number.isSafeInteger(maxResponseBytes)||maxResponseBytes<1||maxResponseBytes>16777216)deny('GATEWAY_CONFIGURATION');
   let endpoint;try{const url=new URL(origin);if(typeof origin!=='string'||url.protocol!=='https:'||url.origin!==origin||url.username||url.password)deny('GATEWAY_CONFIGURATION');
-    endpoint=new URL(`/clio/tools/${operation.id}`,url).href;}catch{deny('GATEWAY_CONFIGURATION');}
+    endpoint=new URL(`/api/clio/tools/${operation.id}`,url).href;}catch{deny('GATEWAY_CONFIGURATION');}
   async function read(call) {
     let lifetime,acquired;
     try {

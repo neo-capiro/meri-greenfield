@@ -43,7 +43,7 @@ for(const origin of ['review','snapshot','current_continuity']) test(`independen
  if(origin==='snapshot'){assert.deepEqual(out.data.clientAccessRequirements,snapshot().clientAccessRequirements);assert.equal(out.data.contributions[0].value,'9007199254740993.999999');assert.deepEqual(out.data.versions,snapshot().versions);}
  if(origin==='current_continuity'){assert.equal(out.data.items[0].persisted,false);assert.deepEqual(out.data.items[0].originalEvidence,continuity().items[0].originalEvidence);assert.equal(out.data.coverage.sourceView,'current_derived_projection');}
  assert.ok(f.calls.indexOf('reserve')<f.calls.indexOf('credential'));assert.ok(f.calls.includes('settle'));
- const paths=origin==='review'?['mine','team','deferred','resolved'].map(l=>`/research-portfolios/${portfolioId}/reviews?lane=${l}`):[origin==='snapshot'?`/research-portfolios/${portfolioId}/snapshots/${recordId}`:`/research-portfolios/${portfolioId}/annual-review`];
+ const paths=origin==='review'?['mine','team','deferred','resolved'].map(l=>`/api/research-portfolios/${portfolioId}/reviews?lane=${l}`):[origin==='snapshot'?`/api/research-portfolios/${portfolioId}/snapshots/${recordId}`:`/api/research-portfolios/${portfolioId}/annual-review`];
  assert.deepEqual(f.wire.map(x=>new URL(x.url).pathname+new URL(x.url).search),paths);
  for(const {options} of f.wire){assert.equal(options.method,'GET');assert.equal(options.body,undefined);assert.equal(options.redirect,'error');assert.equal(options.credentials,'omit');assert.equal(options.headers.authorization,'Bearer SYNTHETIC_ONLY');assert.equal(JSON.stringify(options).includes('NEVER_FORWARD'),false);}
 });

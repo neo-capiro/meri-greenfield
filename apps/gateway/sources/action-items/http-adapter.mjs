@@ -13,7 +13,7 @@ export function createActionItemsHttpAdapter(options) {
       !Number.isSafeInteger(maxResponseBytes)||maxResponseBytes<1||maxResponseBytes>16777216)deny('GATEWAY_CONFIGURATION');
   let endpoint;
   try {const url=new URL(origin);if(url.protocol!=='https:'||url.origin!==origin||url.username||url.password)deny('GATEWAY_CONFIGURATION');
-    endpoint=new URL('/clio/tools/query_action_items',url).href;}catch{deny('GATEWAY_CONFIGURATION');}
+    endpoint=new URL('/api/clio/tools/query_action_items',url).href;}catch{deny('GATEWAY_CONFIGURATION');}
   async function read(call) {
     let lifetime,acquired;
     try {
