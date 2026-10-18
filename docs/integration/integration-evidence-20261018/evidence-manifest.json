@@ -2,7 +2,7 @@
   "initialPublishedCodeCommit": "88026e7e5ff5a568b9c2c250c6ebb1573abe09b3",
   "latestPublishedCodeCommit": "0d3388a88aa575fba2bf9ee9c1c219053ea09418",
   "latestReviewedCompleteCodeTree": "be5ece2d8ff81d6112fb55c29e60beb69c8c4c09",
-  "scrubbing": "localworkspacepathsonly; source-time manifests retained as source-time evidence",
+  "scrubbing": "copiedlogsarepath-scrubbedunlessretainedasexactimmutableCoretransferpayload; source-time manifests retained",
   "files": [
     {
       "path": "BEFORE-AFTER.json",
@@ -263,6 +263,66 @@
       "path": "core-proposal/tests/native-identity-proposal.test.mjs",
       "bytes": 18768,
       "sha256": "7ed7912bb2b7062072ee3cdccb4f3a2d0421de53fc67cc678119e266cb1e5852"
+    },
+    {
+      "path": "core-transfer-for-dot/README.md",
+      "bytes": 1466,
+      "sha256": "a13b082fffc7fcb274f528a096ea879aa854d712f55704a9b4aafb61c0f18374"
+    },
+    {
+      "path": "core-transfer-for-dot/TRANSFER-MANIFEST.json",
+      "bytes": 3147,
+      "sha256": "07d9237bf03382afbac2cb6b1c163fb0033691c3b7445960a37684bdba211462"
+    },
+    {
+      "path": "core-transfer-for-dot/files/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs",
+      "bytes": 18479,
+      "sha256": "77dabab03b627a260a78ebdfd11d20b2890c9289c7f160dd11c213bd5231f5dc"
+    },
+    {
+      "path": "core-transfer-for-dot/files/apps/api/src/tenant/tenant-context.middleware.ts",
+      "bytes": 50985,
+      "sha256": "d9931a98db2de9ca10cbd2aa161983747c159773e30bbc04bcb36474530095e0"
+    },
+    {
+      "path": "core-transfer-for-dot/files/docs/integration/core-history-native-20261019/MANIFEST.json",
+      "bytes": 4858,
+      "sha256": "44cbd1a482f9abc4ac1b4c066e88a3220a640e48921a0a2b0e7742d6255e00ae"
+    },
+    {
+      "path": "core-transfer-for-dot/files/docs/integration/core-history-native-20261019/REPORT.md",
+      "bytes": 7846,
+      "sha256": "7fa37ffb873bc12d9a45fa5c7ad358b95a49ac32d3ff27908cc0ecea432b443c"
+    },
+    {
+      "path": "core-transfer-for-dot/files/docs/integration/core-history-native-20261019/baseline.tap",
+      "bytes": 105811,
+      "sha256": "f94155a206bd57ce816759285a0a951cd9b69898b83f13a0f116175d39768f0c"
+    },
+    {
+      "path": "core-transfer-for-dot/files/docs/integration/core-history-native-20261019/native-focused.tap",
+      "bytes": 7408,
+      "sha256": "7f9ab81c029ca817b5d72d5df2b57968b1952b3e8ad3c7d622c3b3c72d3732d7"
+    },
+    {
+      "path": "core-transfer-for-dot/files/docs/integration/core-history-native-20261019/published-focused.tap",
+      "bytes": 2927,
+      "sha256": "e383ed31247faa959bb22ea529d993ae584a2a411f19bb6aef8dac18fb0ce8e4"
+    },
+    {
+      "path": "core-transfer-for-dot/independent-review/REVIEW-RECEIPT.json",
+      "bytes": 2752,
+      "sha256": "fd55dc7d24a8ed5a2c6816b1bf340092769d7bb195d27c3f204ec2a6eabf95a9"
+    },
+    {
+      "path": "core-transfer-for-dot/independent-review/REVIEW-RECEIPT.md",
+      "bytes": 2583,
+      "sha256": "0b9a2b841ab3067599b83103614c1a30a9570692eaf46a7f6bedf00f3f93d393"
+    },
+    {
+      "path": "core-transfer-for-dot/net-against-78ceaf9.patch",
+      "bytes": 155872,
+      "sha256": "1290eab77c72d9459d8966bf3086567fe1b46d0636cb4cc51bccdb8d9881ebca"
     },
     {
       "path": "final/combined-focused.json",

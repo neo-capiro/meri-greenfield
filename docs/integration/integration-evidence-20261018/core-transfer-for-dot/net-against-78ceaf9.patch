@@ -1,0 +1,1365 @@
+diff --git a/apps/api/src/tenant/tenant-context.middleware.ts b/apps/api/src/tenant/tenant-context.middleware.ts
+--- a/apps/api/src/tenant/tenant-context.middleware.ts
++++ b/apps/api/src/tenant/tenant-context.middleware.ts
+@@ -157,6 +157,7 @@
+   async use(req: Request, res: Response, next: NextFunction): Promise<void> {
+     // Also cover authentication/authorization denials before the controller.
+     const authorityPaths = [
++      '/api/clio/application-authority/history-release', '/clio/application-authority/history-release',
+       '/api/clio/application-authority/identity', '/api/clio/application-authority/context',
+       '/clio/application-authority/identity', '/clio/application-authority/context',
+       '/api/clio/application-authority/membership', '/clio/application-authority/membership',
+@@ -701,6 +702,66 @@
+     return { ...evidence, recheckCurrent: () => this.readCurrentApplicationAuthority(provenance, ctx, session) };
+   }
+ 
++  /** Unmounted history-release identity leaf. The request must already carry
++   * this middleware's exact native provenance; selectors never choose a user,
++   * membership, tenant or a different session. Impersonation is unsupported by
++   * the first history batch slice only; ordinary authentication is unchanged. */
++  private historyReleaseProvenance(req: Request, ctx: TenantContext): ApplicationAuthorityRequestProvenance {
++    const provenance = applicationAuthorityRequests.get(req);
++    const path = req.path;
++    const target = req.originalUrl ?? req.url ?? '';
++    const authorization = req.headers.authorization;
++    if (!provenance || provenance.context !== ctx || ctx.clerkUserId !== provenance.claims.sub ||
++        provenance.claims.meri_control_credential === true || provenance.impersonationId !== null ||
++        provenance.membershipTenantId !== ctx.tenantId ||
++        req.header('x-capiro-impersonate-tenant') !== undefined || req.method !== 'POST' ||
++        typeof path !== 'string' || target !== path ||
++        (path.startsWith('/api/') ? path.slice(4) : path) !== '/clio/application-authority/history-release' ||
++        typeof authorization !== 'string' || !/^Bearer \S+$/.test(authorization) ||
++        typeof provenance.claims.sid !== 'string' || provenance.claims.sid.length === 0) {
++      throw new ForbiddenException('Application authority unavailable');
++    }
++    return provenance;
++  }
++
++  /** Caller owns the one REPEATABLE READ transaction. These locks remain held
++   * through the batch owner's final online observation and transaction commit.
++   * Bare SQL does not inherit Prisma's tenant predicate: pin every local fact. */
++  async lockOriginalApplicationAuthorityInTransaction(
++    req: Request, ctx: TenantContext, tx: Prisma.TransactionClient,
++  ): Promise<void> {
++    const provenance = this.historyReleaseProvenance(req, ctx);
++    const denied = () => new ForbiddenException('Application authority unavailable');
++    const users = await tx.$queryRaw<Array<{ id: string }>>`
++      SELECT id::text AS "id" FROM users
++       WHERE id = ${ctx.userId}::uuid AND clerk_user_id = ${provenance.claims.sub}
++       FOR SHARE
++    `;
++    if (users.length !== 1 || users[0]?.id !== ctx.userId) throw denied();
++    const tenants = await tx.$queryRaw<Array<{ id: string }>>`
++      SELECT id::text AS "id" FROM tenants WHERE id = ${ctx.tenantId}::uuid FOR SHARE
++    `;
++    if (tenants.length !== 1 || tenants[0]?.id !== ctx.tenantId) throw denied();
++    const memberships = await tx.$queryRaw<Array<{ id: string }>>`
++      SELECT id::text AS "id" FROM tenant_memberships
++       WHERE id = ${provenance.membershipId}::uuid
++         AND tenant_id = ${provenance.membershipTenantId}::uuid
++         AND user_id = ${ctx.userId}::uuid
++       FOR SHARE
++    `;
++    if (memberships.length !== 1 || memberships[0]?.id !== provenance.membershipId) throw denied();
++  }
++
++  /** A NEW same-session Clerk observation under the caller's held local locks.
++   * Read local identity on that same transaction; no nested withSystem lease. */
++  async readFreshApplicationAuthorityInTransaction(
++    req: Request, ctx: TenantContext, tx: Prisma.TransactionClient,
++  ): Promise<ApplicationAuthorityIdentityEvidence> {
++    const provenance = this.historyReleaseProvenance(req, ctx);
++    const session = await this.clerk.assertActiveApplicationAuthoritySession(provenance.claims);
++    return this.readCurrentApplicationAuthority(provenance, ctx, session, tx);
++  }
++
+   /** Core-only capture from an actual natively authenticated request/context pair. */
+   async captureRetainedNativeAuthority(req: Request, ctx: TenantContext): Promise<RetainedNativeAuthorityCapture> {
+     const provenance = applicationAuthorityRequests.get(req);
+@@ -727,11 +788,12 @@
+     provenance: ApplicationAuthorityRequestProvenance,
+     ctx: TenantContext,
+     session: ActiveApplicationAuthoritySession,
++    transaction?: Prisma.TransactionClient,
+   ): Promise<ApplicationAuthorityIdentityEvidence> {
+     const denied = () => new ForbiddenException('Application authority unavailable');
+     if (provenance.context !== ctx || ctx.clerkUserId !== provenance.claims.sub) throw denied();
+     try {
+-      return await this.prisma.withSystem(async (tx) => {
++      const read = async (tx: Prisma.TransactionClient) => {
+         const user = await tx.user.findFirst({
+           where: { id: ctx.userId, clerkUserId: provenance.claims.sub }, select: { id: true, clerkUserId: true },
+         });
+@@ -778,7 +840,8 @@
+           ]),
+           expiresAtMs,
+         };
+-      });
++      };
++      return transaction ? await read(transaction) : await this.prisma.withSystem(read);
+     } catch {
+       throw denied();
+     }
+diff --git a/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs b/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs
+new file mode 100644
+--- /dev/null
++++ b/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs
+@@ -0,0 +1,100 @@
++/** Focused native-identity checks against the actual middleware and published history owner.
++ * External Nest/Clerk/Prisma dependencies are synthetic. Private provenance is seeded only
++ * in the in-memory test module; a separate use() case records it through actual admission.
++ * These checks do not exercise live Clerk, PostgreSQL locks or a full Nest application. */
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import {readFile} from 'node:fs/promises';
++import {createRequire,stripTypeScriptTypes} from 'node:module';
++import {isAbsolute} from 'node:path';
++import * as vm from 'node:vm';
++const require=createRequire(import.meta.url);
++const explicitTypeScript=process.env.CORE_PROPOSAL_TYPESCRIPT_MODULE;
++if(explicitTypeScript!==undefined&&!isAbsolute(explicitTypeScript))throw Error('CORE_PROPOSAL_TYPESCRIPT_MODULE must be an absolute module path');
++const ts=require(explicitTypeScript??'typescript');
++assert.equal(ts.version,'5.9.3','Focused native identity checks require exactly TypeScript 5.9.3');
++const root=new URL('../../../../',import.meta.url);
++const source=await readFile(new URL('./tenant-context.middleware.ts',import.meta.url),'utf8');
++const authority=await readFile(new URL('../auth/application-authority.ts',import.meta.url),'utf8');
++const clock={value:null};
++class ClockDate extends Date {constructor(...args){super(...(args.length?args:[clock.value??Date.now()]));}static now(){return clock.value??Date.now();}}
++const context=vm.createContext({Date:ClockDate,Buffer,console,setTimeout,clearTimeout,process:{env:{}}});
++const cache=new Map();
++class Refusal extends Error {}
++const exportsByName={
++ ForbiddenException:Refusal,UnauthorizedException:Refusal,ServiceUnavailableException:Refusal,BadRequestException:Refusal,
++ Injectable:()=>()=>{},Logger:class {warn(){} error(){} log(){}},
++ isMeriExecutionCapabilityPost:()=>false,isMeriRoutineUnattendedGrantPost:()=>false,isMeriReadTokenRequest:()=>false,isMeriReadDelegationServicePost:()=>false,isPreviewNativeReadRoute:()=>false,
++ ROLE_RANK:{standard_user:1,user_admin:2,capiro_admin:3},TENANT_HEADER:'x-tenant',authDeniedEvent:x=>x,
++};
++function compile(s){const r=ts.transpileModule(s,{reportDiagnostics:true,compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext,experimentalDecorators:true}});assert.equal((r.diagnostics??[]).filter(x=>x.category===ts.DiagnosticCategory.Error).length,0);return r.outputText;}
++function imports(s){const ast=ts.createSourceFile('module.mjs',s,ts.ScriptTarget.ES2022,true,ts.ScriptKind.JS);const result=new Map();for(const statement of ast.statements){if(!ts.isImportDeclaration(statement))continue;const names=statement.importClause?.namedBindings;result.set(statement.moduleSpecifier.text,names&&ts.isNamedImports(names)?names.elements.map(x=>(x.propertyName??x.name).text):[]);}return result;}
++async function load(id,s){const code=compile(s),required=imports(code),m=new vm.SourceTextModule(code,{context,identifier:id});cache.set(id,m);await m.link(async spec=>{
++ if(spec==='../auth/application-authority.js')return cache.get('authority')??load('authority',authority);
++ const key='stub:'+spec+':'+required.get(spec)?.join(',');if(cache.has(key))return cache.get(key);
++ const names=required.get(spec)??[];const actual=spec.startsWith('node:')?await import(spec):null;
++ const stub=new vm.SyntheticModule(names,function(){for(const name of names)this.setExport(name,actual?.[name]??exportsByName[name]??class {});},{context,identifier:key});cache.set(key,stub);return stub;
++ });return m;}
++const module=await load('middleware',source+'\nexport function seedProvenance(req, value) { applicationAuthorityRequests.set(req,value); }\n');await module.evaluate();
++const {TenantContextMiddleware,seedProvenance}=module.namespace;
++const id=n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
++const plain=v=>JSON.parse(JSON.stringify(v));
++function harness({record=true,changes={},fresh=()=>{},missing=null,withSystemAllowed=false}={}){
++ const at=Date.now(),events=[],ctx={tenantId:id(1),userId:id(2),clerkUserId:'user_1',tenantSlug:'tenant',role:'standard_user'},claims={sub:'user_1',sid:'sess_1',exp:Math.floor(at/1000)+120,capiro_tenant_id:id(1),capiro_tenant_slug:'tenant',org_id:'org_1'};
++ const req={method:'POST',path:'/api/clio/application-authority/history-release',originalUrl:'/api/clio/application-authority/history-release',headers:{authorization:'Bearer native_fixture'},header(name){return this.headers[name];}};
++ const provenance={context:ctx,claims,membershipId:id(3),membershipTenantId:id(1),requestedSlug:undefined,impersonationId:null,...changes};
++ const row={id:id(3),tenantId:id(1),userId:id(2),status:'active',role:'standard_user',updatedAt:new Date(at-10000),tenant:{id:id(1),status:'active',slug:'tenant',clerkOrgId:'org_1'}};
++ const state={row,systemCalls:0,online:0,sessionExpiresAt:at+60000,sessionId:'sess_1'};
++ const tx={$queryRaw:async(strings,...args)=>{const sql=strings.join('?');const table=/FROM\s+(\w+)/u.exec(sql)?.[1];events.push('lock:'+table);assert.match(sql,/FOR SHARE/u);if(table==='users'){assert.match(sql,/WHERE\s+id\s*=\s*\?::uuid\s+AND\s+clerk_user_id\s*=\s*\?/u);}if(table==='tenants'){assert.match(sql,/WHERE\s+id\s*=\s*\?::uuid/u);}if(table==='tenant_memberships'){assert.match(sql,/WHERE\s+id\s*=\s*\?::uuid\s+AND\s+tenant_id\s*=\s*\?::uuid\s+AND\s+user_id\s*=\s*\?::uuid/u);}if(table==='users'){assert.deepEqual(args,[ctx.userId,claims.sub]);return missing==='user'?[]:[{id:ctx.userId}];}if(table==='tenants'){assert.deepEqual(args,[ctx.tenantId]);return missing==='tenant'?[]:[{id:ctx.tenantId}];}if(table==='tenant_memberships'){assert.deepEqual(args,[provenance.membershipId,provenance.membershipTenantId,ctx.userId]);return missing==='membership'?[]:[{id:provenance.membershipId}];}throw Error('unexpected SQL');},user:{findFirst:async args=>{events.push('read:user');await state.onRead?.('user');assert.deepEqual(plain(args.where),{id:ctx.userId,clerkUserId:claims.sub});return {id:ctx.userId,clerkUserId:claims.sub};}},tenantMembership:{findFirst:async args=>{events.push('read:membership');await state.onRead?.('membership');assert.deepEqual(plain(args.where),{id:provenance.membershipId,tenantId:provenance.membershipTenantId,userId:ctx.userId,status:'active'});return state.row;}}};
++ const clerk={async assertActiveApplicationAuthoritySession(selectedClaims){state.online++;assert.deepEqual(plain(selectedClaims),claims);events.push('Clerk:online');await fresh({state,events,ctx});return {id:state.sessionId,userId:'user_1',status:'active',createdAt:at-20000,expireAt:state.sessionExpiresAt,abandonAt:state.sessionExpiresAt,actor:null,expiresAtMs:state.sessionExpiresAt};},async assertActiveMeriControlCredentialSession(){throw Error('marked owner must not run');}};
++ const prisma={async withSystem(run){state.systemCalls++;if(!withSystemAllowed)throw Error('nested system lease prohibited');return run(tx);}};
++ const middleware=new TenantContextMiddleware(clerk,prisma,{});if(record)seedProvenance(req,provenance);
++ return {middleware,req,ctx,provenance,tx,clerk,prisma,state,events,at,claims};
++}
++const denied=e=>e?.message==='Application authority unavailable';
++test('provides the two exact batch-native interface methods',()=>{assert.equal(typeof TenantContextMiddleware.prototype.lockOriginalApplicationAuthorityInTransaction,'function');assert.equal(typeof TenantContextMiddleware.prototype.readFreshApplicationAuthorityInTransaction,'function');});
++test('locks exact original native user, tenant and selected membership before new online observation on caller transaction',async()=>{const h=harness();await h.middleware.lockOriginalApplicationAuthorityInTransaction(h.req,h.ctx,h.tx);const receipt=await h.middleware.readFreshApplicationAuthorityInTransaction(h.req,h.ctx,h.tx);assert.deepEqual(plain(receipt.principal),{tenantId:h.ctx.tenantId,actorId:h.ctx.userId});assert.deepEqual(h.events,['lock:users','lock:tenants','lock:tenant_memberships','Clerk:online','read:user','read:membership']);assert.equal(h.state.systemCalls,0);assert.equal(h.state.online,1);});
++for(const missing of ['user','tenant','membership'])test(`missing original ${missing} refuses; no online call or alternate membership`,async()=>{const h=harness({missing});await assert.rejects(h.middleware.lockOriginalApplicationAuthorityInTransaction(h.req,h.ctx,h.tx),denied);assert.equal(h.state.online,0);assert.equal(h.state.systemCalls,0);});
++for(const name of ['unrecorded','different context object','different principal','marked control','impersonation','membership tenant','missing sid','wrong method','trailing slash','rewritten target','query string','delegated scheme'])test(`unqualified ${name} refuses before SQL or online observation`,async()=>{const h=harness({record:name!=='unrecorded'});let ctx=h.ctx;if(name==='different context object')ctx={...ctx};if(name==='different principal')h.ctx.clerkUserId='user_other';if(name==='marked control')h.provenance.claims.meri_control_credential=true;if(name==='impersonation')h.provenance.impersonationId=id(91);if(name==='membership tenant')h.provenance.membershipTenantId=id(92);if(name==='missing sid')delete h.provenance.claims.sid;if(name==='wrong method')h.req.method='GET';if(name==='trailing slash')h.req.path=h.req.originalUrl+=' /'.trim();if(name==='rewritten target')h.req.originalUrl='/api/other';if(name==='query string')h.req.originalUrl+='?a=1';if(name==='delegated scheme')h.req.headers.authorization='CapiroMeriRead fixture';await assert.rejects(h.middleware.lockOriginalApplicationAuthorityInTransaction(h.req,ctx,h.tx),denied);await assert.rejects(h.middleware.readFreshApplicationAuthorityInTransaction(h.req,ctx,h.tx),denied);assert.deepEqual(h.events,[]);assert.equal(h.state.systemCalls,0);});
++test('a NEW online Clerk denial is not replaced by initial or cached session evidence',async()=>{const h=harness({fresh:()=>{throw Error('fixture revoked');}});await h.middleware.lockOriginalApplicationAuthorityInTransaction(h.req,h.ctx,h.tx);await assert.rejects(h.middleware.readFreshApplicationAuthorityInTransaction(h.req,h.ctx,h.tx),/fixture revoked/);assert.equal(h.state.online,1);assert.equal(h.events.includes('read:user'),false);assert.equal(h.state.systemCalls,0);});
++for(const name of ['member removed','role changed','tenant inactive','org changed'])test(`current locked ${name} refuses after online observation`,async()=>{const h=harness({fresh:({state})=>{if(name==='member removed')state.row={...state.row,status:'removed'};if(name==='role changed')state.row={...state.row,role:'user_admin'};if(name==='tenant inactive')state.row={...state.row,tenant:{...state.row.tenant,status:'inactive'}};if(name==='org changed')state.row={...state.row,tenant:{...state.row.tenant,clerkOrgId:'org_other'}};}});await h.middleware.lockOriginalApplicationAuthorityInTransaction(h.req,h.ctx,h.tx);await assert.rejects(h.middleware.readFreshApplicationAuthorityInTransaction(h.req,h.ctx,h.tx),denied);assert.equal(h.state.systemCalls,0);});
++test('ordinary existing authority default retains its separate system owner and current receipt recheck',async()=>{const h=harness({withSystemAllowed:true});h.req.path=h.req.originalUrl='/api/clio/application-authority/identity';const receipt=await h.middleware.readApplicationAuthority(h.req,h.ctx);assert.equal(h.state.systemCalls,1);const current=await receipt.recheckCurrent();assert.deepEqual(plain(current.principal),{tenantId:h.ctx.tenantId,actorId:h.ctx.userId});assert.equal(h.state.systemCalls,2);assert.equal(h.state.online,1);});
++test('ordinary existing impersonation remains supported',async()=>{
++ const h=harness({withSystemAllowed:true});const now=Date.now();h.ctx.role='capiro_admin';h.ctx.tenantId=id(99);h.ctx.tenantSlug='target';h.state.row.role='capiro_admin';h.provenance.impersonationId=id(88);h.req.path=h.req.originalUrl='/api/clio/application-authority/identity';
++ h.tx.impersonationSession={findFirst:async args=>{assert.deepEqual(plain({...args.where,expiresAt:undefined}),{id:id(88),actorUserId:id(2),tenantId:id(99),endedAt:null});return {id:id(88),actorUserId:id(2),tenantId:id(99),startedAt:new Date(now-1000),expiresAt:new Date(now+30000),endedAt:null,tenant:{id:id(99),status:'active',slug:'target',clerkOrgId:'org_target'}};}};
++ const receipt=await h.middleware.readApplicationAuthority(h.req,h.ctx);assert.equal(receipt.principal.tenantId,id(99));assert.equal(receipt.principal.actorId,id(2));assert.equal(h.state.systemCalls,1);
++});
++
++// Import the unchanged published batch/wire/leaf, not a reimplementation of them.
++async function moduleUrl(relative,replacements={}){let s=await readFile(new URL(relative,root),'utf8');for(const[from,to]of Object.entries(replacements))s=s.replaceAll(`from '${from}'`,`from '${to}'`);return 'data:text/javascript;base64,'+Buffer.from(stripTypeScriptTypes(s)).toString('base64');}
++const jcsUrl=await moduleUrl('packages/shared/src/core-retained-jcs.ts');
++const wireUrl=await moduleUrl('apps/api/src/auth/history-release-source.ts',{'@capiro/shared/core-retained-jcs':jcsUrl});
++const leafUrl=await moduleUrl('apps/api/src/auth/history-release-selected-client-owner.ts');
++const batchUrl=await moduleUrl('apps/api/src/auth/history-release-batch-owner.ts',{'./history-release-source.js':wireUrl,'./history-release-selected-client-owner.js':leafUrl});
++const {readHistoryReleaseSource,HistoryReleaseSourceError}=await import(wireUrl);
++const {createHistoryReleaseBatchPort}=await import(batchUrl);
++const batchDenied=e=>e instanceof HistoryReleaseSourceError&&e.code==='UNAVAILABLE';
++const selectedSubject={conversationId:id(4),clientId:id(5),scopes:[{tenantId:id(1),kind:'client',resourceId:id(5),policyRevision:'pinned'}]};
++function composition({commitError=false,onCommit=()=>{},onStart=()=>{},fresh=()=>{}}={}){
++ const h=harness({withSystemAllowed:true,fresh});let inTransaction=false;
++ const raw=h.tx.$queryRaw;
++ h.tx.$queryRaw=async(strings,...args)=>{const sql=strings.join('?');if(sql.includes('FROM clio_conversations')){h.events.push('lock:conversation');assert.match(sql,/tenant_id\s*=\s*\?::uuid\s+AND\s+user_id\s*=\s*\?::uuid\s+AND\s+id\s*=\s*\?::uuid/u);assert.deepEqual(args,[id(1),id(2),id(4)]);return[{id:id(4),tenantId:id(1),userId:id(2),clientId:id(5),status:'active',archivedAt:null,metadata:{}}];}if(sql.includes('FROM clients')){h.events.push('lock:client');assert.match(sql,/WHERE\s+tenant_id\s*=\s*\?::uuid\s+AND\s+id\s*=\s*\?::uuid/u);assert.deepEqual(args,[id(1),id(5)]);return[{id:id(5),tenantId:id(1),status:'active',memoryWall:false}];}return raw(strings,...args);};
++ const system=h.prisma.withSystem;h.prisma.withSystem=async run=>{assert.equal(inTransaction,false,'must not borrow a second lease under the RR locks');return system(run);};
++ const transactionOwner={async withTenant(tenant,run,options){assert.equal(tenant,id(1));assert.deepEqual(options,{timeoutMs:4000,isolationLevel:'RepeatableRead'});h.events.push('RR:start');inTransaction=true;await onStart(h);try{const result=await run(h.tx);await onCommit(h);if(commitError)throw Error('fixture commit failed');h.events.push('RR:commit');return result;}finally{inTransaction=false;}}};
++ const now=()=>clock.value??Date.now();const port=createHistoryReleaseBatchPort({req:h.req,ctx:h.ctx,native:h.middleware,prisma:transactionOwner,now});
++ const read=(subjects=[])=>readHistoryReleaseSource({schemaVersion:1,observationId:id(9),route:'list',responseSha256:'a'.repeat(64),subjects},{tenantId:id(1),actorId:id(2)},port,now);
++ return {...h,read};
++}
++for(const subjects of [[],[selectedSubject]])test(`real native middleware composes with published batch for ${subjects.length?'selected subject':'empty list'}`,async()=>{const h=composition();const receipt=await h.read(subjects);assert.equal(receipt.responseSha256,'a'.repeat(64));assert.equal(h.state.online,2);assert.equal(h.state.systemCalls,1);const native=['Clerk:online','read:user','read:membership'];assert.deepEqual(h.events,[...native,'RR:start','lock:users','lock:tenants','lock:tenant_memberships',...(subjects.length?['lock:conversation','lock:client']:[]),...native,'RR:commit']);});
++for(const mode of ['commit failure','commit expiry','fresh session expiry','local-read expiry','changed session revision','replacement membership'])test(`real native/batch/wire refuses ${mode}`,async t=>{
++ t.after(()=>{clock.value=null;});
++ const h=composition({commitError:mode==='commit failure',onCommit:state=>{if(mode==='commit expiry')clock.value=state.state.sessionExpiresAt;},onStart:state=>{if(mode==='replacement membership')state.state.row={...state.state.row,id:id(99)};if(mode==='local-read expiry')state.state.onRead=phase=>{if(phase==='membership')clock.value=state.state.sessionExpiresAt;};},fresh:({state})=>{if(state.online===2){if(mode==='fresh session expiry')state.sessionExpiresAt=Date.now()-1;if(mode==='changed session revision')state.sessionId='sess_other';}}});
++ await assert.rejects(h.read([selectedSubject]),batchDenied);assert.equal(h.state.systemCalls,1);assert.equal(h.events.includes('RR:commit'),mode==='commit expiry');
++});
++test('ordinary native use() records actual private provenance for the new unmounted owner',async()=>{
++ const h=harness({record:false,withSystemAllowed:true});h.req.hostname='app.capiro.ai';h.req.baseUrl='';h.clerk.verifySessionToken=async()=>({...h.claims});h.tx.user.findUnique=async()=>({id:id(2),clerkUserId:'user_1'});h.tx.user.update=async()=>({id:id(2)});h.tx.tenantMembership.findMany=async()=>[h.state.row];h.middleware.store.run=(_ctx,run)=>run();const headers={};let next=0;
++ await h.middleware.use(h.req,{setHeader:(name,value)=>{headers[name]=value;}},()=>{next++;});assert.equal(next,1);const ctx=h.req.tenantContext;assert.equal(ctx.userId,id(2));await h.middleware.lockOriginalApplicationAuthorityInTransaction(h.req,ctx,h.tx);await h.middleware.readFreshApplicationAuthorityInTransaction(h.req,ctx,h.tx);assert.equal(headers['Cache-Control'],'no-store');assert.equal(h.state.online,1);
++});
++test('history-release pre-auth denials receive no-store without extending marked credential admission',async()=>{
++ const h=harness({record:false,withSystemAllowed:true});h.clerk.verifySessionToken=async()=>({...h.claims,meri_control_credential:true});const headers={};let next=0;await assert.rejects(h.middleware.use(h.req,{setHeader:(k,v)=>{headers[k]=v;}},()=>{next++;}),denied);assert.equal(next,0);assert.equal(h.state.systemCalls,0);assert.equal(h.state.online,0);assert.equal(headers['Cache-Control'],'no-store');
++});
+diff --git a/docs/integration/core-history-native-20261019/MANIFEST.json b/docs/integration/core-history-native-20261019/MANIFEST.json
+new file mode 100644
+--- /dev/null
++++ b/docs/integration/core-history-native-20261019/MANIFEST.json
+@@ -0,0 +1,130 @@
++{
++  "repository": "neo-capiro/capiro-backend",
++  "parentCommit": "78ceaf9bdfe00c8f013aac15eb8483312ae4f803",
++  "parentTree": "6cae619af4ad0d67a6693c57a6721fc775037172",
++  "proposalPacketRepository": "neo-capiro/meri-greenfield",
++  "proposalPacketCommit": "b3611559582be27f4545509d9c2f03dc3b1332cd",
++  "proposalPacketPath": "docs/integration/integration-evidence-20261018/core-proposal",
++  "approvedMiddlewareDiff": {
++    "additions": 65,
++    "deletions": 2,
++    "target": "apps/api/src/tenant/tenant-context.middleware.ts",
++    "sha256": "9f4ded7f8a111154cf32dea7888fb145c7bcb72b73b4eef1d7f3870a6e7f4043",
++    "proposedSha256": "d9931a98db2de9ca10cbd2aa161983747c159773e30bbc04bcb36474530095e0"
++  },
++  "basisFiles": [
++    {
++      "path": "apps/api/src/auth/application-authority.ts",
++      "gitBlob": "b97c75ed273def1facec907e305507745d8f2c4c",
++      "sha256": "9e24228be90fb021a7501a61dd1eb27195cffdc8bb4341b3494bd8864afd9b3f",
++      "bytes": 14925
++    },
++    {
++      "path": "apps/api/src/auth/history-release-batch-owner.focused.test.mjs",
++      "gitBlob": "4027ab8b9ffccb725452437bf49de27513f51bac",
++      "sha256": "e12cb6b7353b0c31b20e815b15fc16ce8c7e9538a9b61f39dfe03c123022548e",
++      "bytes": 7394
++    },
++    {
++      "path": "apps/api/src/auth/history-release-batch-owner.ts",
++      "gitBlob": "3f83d8186004330c3d2ce4b956530f3067d3fa1e",
++      "sha256": "a20094b33d1ce4f65f4083cd4fe7a612f414457b5052722864caf0c99c86e869",
++      "bytes": 6945
++    },
++    {
++      "path": "apps/api/src/auth/history-release-selected-client-owner.ts",
++      "gitBlob": "342708fa912a580dd60fac0ea816cd10596e43af",
++      "sha256": "ec8b3ea0c2ecb2098aa23fc5e16884165c79d2115e32ceda5e0c113b192520ac",
++      "bytes": 6597
++    },
++    {
++      "path": "apps/api/src/auth/history-release-source.focused.test.mjs",
++      "gitBlob": "30a39a0ddc4d0667fdf57796084b95568b4df46c",
++      "sha256": "47d54394503d9c23ace390ef76b640d94b5a30871bd78fa09dbc9a4eca24edae",
++      "bytes": 10101
++    },
++    {
++      "path": "apps/api/src/auth/history-release-source.ts",
++      "gitBlob": "8bb0e388fcc5c48d70c9d873610e189ba30fa717",
++      "sha256": "4135dc4740ca41c13560c244bf1cc6fb5342b3e991f04746dff75c74b96b33d4",
++      "bytes": 9768
++    },
++    {
++      "path": "apps/api/src/tenant/tenant-context.middleware.ts",
++      "gitBlob": "dda870eedf9efb389e0f120029cdf8a69b78f15d",
++      "sha256": "cad811e48368c01519aa720d419a281f03190907966819feca9276d3852fcaa9",
++      "bytes": 47280
++    },
++    {
++      "path": "packages/shared/src/core-retained-jcs.ts",
++      "gitBlob": "899e9f00705adffe34d1cfbb35c93af8edc84e1b",
++      "sha256": "f3a64c78d9f00776c75b7b0645b523fb141b39d659b0b9e6c630fdce48b27b20",
++      "bytes": 3260
++    }
++  ],
++  "payloadFiles": [
++    {
++      "path": "apps/api/src/tenant/tenant-context.middleware.ts",
++      "bytes": 50985,
++      "gitBlob": "b43e9102b955ea18bd1920002118d8e3d767c596",
++      "sha256": "d9931a98db2de9ca10cbd2aa161983747c159773e30bbc04bcb36474530095e0"
++    },
++    {
++      "path": "apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs",
++      "bytes": 18479,
++      "gitBlob": "2a037ca1dca198365752d64ad37cc664e55b4dab",
++      "sha256": "77dabab03b627a260a78ebdfd11d20b2890c9289c7f160dd11c213bd5231f5dc"
++    },
++    {
++      "path": "docs/integration/core-history-native-20261019/REPORT.md",
++      "bytes": 7846,
++      "gitBlob": "74bd36fd54e0ef735d681379d723d0582655cea2",
++      "sha256": "7fa37ffb873bc12d9a45fa5c7ad358b95a49ac32d3ff27908cc0ecea432b443c"
++    },
++    {
++      "path": "docs/integration/core-history-native-20261019/baseline.tap",
++      "bytes": 105811,
++      "gitBlob": "955f50f0645dd4c7c9deef435b51d63c53159c57",
++      "sha256": "f94155a206bd57ce816759285a0a951cd9b69898b83f13a0f116175d39768f0c"
++    },
++    {
++      "path": "docs/integration/core-history-native-20261019/native-focused.tap",
++      "bytes": 7408,
++      "gitBlob": "f9e148cc8b83cbbac9029adbd747c37d39859cbe",
++      "sha256": "7f9ab81c029ca817b5d72d5df2b57968b1952b3e8ad3c7d622c3b3c72d3732d7"
++    },
++    {
++      "path": "docs/integration/core-history-native-20261019/published-focused.tap",
++      "bytes": 2927,
++      "gitBlob": "5e2072b352b6de6b0c4b32cc8d5f36443d073c0c",
++      "sha256": "e383ed31247faa959bb22ea529d993ae584a2a411f19bb6aef8dac18fb0ce8e4"
++    }
++  ],
++  "manifestSelfExcluded": true,
++  "checks": {
++    "before": {
++      "pass": 2,
++      "fail": 32,
++      "exitCode": 1
++    },
++    "nativeFocused": {
++      "pass": 34,
++      "fail": 0,
++      "exitCode": 0
++    },
++    "publishedFocused": {
++      "pass": 10,
++      "fail": 0,
++      "exitCode": 0
++    },
++    "jsSyntax": "pass",
++    "semanticTypecheck": "UNRUN: supported Core dependency/generated-client graph absent"
++  },
++  "environment": {
++    "node": "24.19.0",
++    "npm": "11.9.0",
++    "typescript": "5.9.3",
++    "coreDeclaredNode": ">=20.11.0",
++    "coreDeclaredPackageManager": "pnpm@9.12.0"
++  }
++}
+diff --git a/docs/integration/core-history-native-20261019/REPORT.md b/docs/integration/core-history-native-20261019/REPORT.md
+new file mode 100644
+--- /dev/null
++++ b/docs/integration/core-history-native-20261019/REPORT.md
+@@ -0,0 +1,58 @@
++# Core history native identity implementation
++
++Applies the exact Neo-approved middleware proposal from [Meri PR188](https://github.com/neo-capiro/meri-greenfield/pull/188), packet pin `b3611559582be27f4545509d9c2f03dc3b1332cd`, to the existing [Core handoff](https://github.com/neo-capiro/capiro-backend/commit/78ceaf9bdfe00c8f013aac15eb8483312ae4f803). Neo explicitly approved that 65-addition/2-deletion proposal with “yes i am approve”; this implements only that approved scope. The protected source header remains intact. [Core PR96](https://github.com/neo-capiro/capiro-backend/pull/96) is the receiving ancestor.
++
++## Source and custody
++
++- Exact parent: `78ceaf9bdfe00c8f013aac15eb8483312ae4f803`; parent tree `6cae619af4ad0d67a6693c57a6721fc775037172`.
++- Published handoff branch remained `codex/core-history-release-safe-handoff-20261018` at that parent. PR96 remained `784b1c3a91eb6d78f16d92c42e71f05c12c5b5bb`. Ownership comments showed the existing transfer and proposal publication, with no successor history-release PR found before implementation.
++- Independent follow-up branch: `fix/core-history-native-identity-20261019`. No other branch is changed.
++- Original middleware blob: `dda870eedf9efb389e0f120029cdf8a69b78f15d`; SHA256 `cad811e48368c01519aa720d419a281f03190907966819feca9276d3852fcaa9`.
++- Approved patch SHA256: `9f4ded7f8a111154cf32dea7888fb145c7bcb72b73b4eef1d7f3870a6e7f4043`; resulting middleware SHA256: `d9931a98db2de9ca10cbd2aa161983747c159773e30bbc04bcb36474530095e0`. The implementation is byte-identical to the reviewed result.
++- Work was performed on an isolated eight-file API materialization, without a full clone or dependency installation. The follow-up Git tree is based on the complete published parent tree, preserving all untouched files. `MANIFEST.json` records the exact basis and published payload hashes. The `20261019` path/branch label is a work label; checks ran at `2026-10-18T23:37Z` UTC.
++
++## Exact behavior
++
++The two existing batch-native interface methods now lock the original native user, tenant and selected membership in that order on the caller's transaction, then obtain a new online observation of the same original Clerk session and read identity facts through that transaction. A private provenance guard binds the request/context, session and exact native history target. The first history slice refuses marked credentials, impersonation and alternate membership selection. The existing identity reader accepts an optional transaction; its ordinary default still uses `withSystem` and ordinary impersonation keeps its existing behavior.
++
++The exact two history-release path spellings join the pre-auth response `no-store` list. Credential admission lists, provisioning, ordinary authentication and route mounting are unchanged. The batch remains unmounted. No integration route, migration, deployment or chat attempt was performed.
++
++## Checks and commands
++
++Runtime: Linux, Node `24.19.0`, npm `11.9.0`, TypeScript `5.9.3`. The compiler was reused read-only from an existing dependency installation via the explicit absolute `CORE_PROPOSAL_TYPESCRIPT_MODULE` override; no dependency installation or shared dependency mutation occurred. Core declares Node `>=20.11.0` and pnpm `9.12.0`; A pnpm fallback executable exists on the host, but the supported Core dependency/generated-client graph was absent from this sparse workarea; no package-manager install was attempted.
++
++From the repository root, with TypeScript exactly `5.9.3` locally resolvable or an existing absolute compiler module path exported:
++
++```sh
++export CORE_PROPOSAL_TYPESCRIPT_MODULE=/absolute/existing/node_modules/typescript/lib/typescript.js
++node --experimental-vm-modules --test --test-reporter=tap apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs
++node --test --test-reporter=tap apps/api/src/auth/history-release-source.focused.test.mjs apps/api/src/auth/history-release-batch-owner.focused.test.mjs
++node --check apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs
++```
++
++The before check used the identical new focused test over the unchanged eight-file parent materialization, before applying the approved patch. Patch application commands were `git apply --check <approved-packet>/tenant-context.patch` then `git apply <approved-packet>/tenant-context.patch`. `cmp` against the prepared approved result passed; an independent no-index diff reports exactly `65` additions and `2` deletions. Applying the same test to a full checkout of the exact parent reproduces the before check without changing production source:
++
++```sh
++# Run in an isolated checkout of 78ceaf9bdfe00c8f013aac15eb8483312ae4f803.
++# Copy only this follow-up's new focused test into its same relative path.
++node --experimental-vm-modules --test --test-reporter=tap apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs
++```
++
++| Check | Before exact parent | Approved implementation | Evidence |
++| --- | --- | --- | --- |
++| New native interface, guards, native-to-canonical-batch composition, expiry/commit/provenance cases | 2 pass / 32 fail | 34 pass / 0 fail | `baseline.tap`, `native-focused.tap` |
++| Existing unchanged published wire/batch tests | Previously packet-qualified 10/10 | Fresh 10 pass / 0 fail | `published-focused.tap` |
++| JS syntax; exact approved result; diff whitespace | — | Pass | Commands above; manifest |
++| Full Core semantic TypeScript / Nest suite | **UNRUN** | **UNRUN** | Required Core dependencies/generated Prisma graph absent; no install under disk hold |
++
++All executed test groups have zero skips/cancellations/todos. Baseline 32 failures are the absence of these newly proposed interfaces/header behavior in Core78, **not Meri's original 32 backend failures**. Full assertions, errors and stacks are retained in `baseline.tap`; only host workspace prefixes and process IDs are scrubbed. The before fixture has 34 cases; no existing assertion was removed or weakened to obtain green.
++
++The tests execute the actual middleware class and unchanged published batch/wire/selected-client owner with synthetic external Nest/Clerk/Prisma dependencies. Most direct cases seed private provenance only in an in-memory instrumented test module; a separate case invokes actual ordinary `use()` and consumes the real recorded provenance. They check exact SQL predicates/values/order, no nested system lease under the held transaction, fresh online observation, empty/selected subject vectors, commit failure and expiry, fresh/local read expiry, changed session revision, original-membership replacement, wrong request/context/credential targets, ordinary authority/impersonation and pre-auth no-store refusal. Transpilation diagnostics check syntax; **they do not establish semantic type correctness**. No semantic TypeScript pass is claimed.
++
++## Remaining integration limits
++
++Live Clerk freshness, real PostgreSQL lock/snapshot/RLS/pool behavior and a complete Nest admission regression suite remain unrun. The new native methods rely on the existing canonical batch owner to supply the intended RepeatableRead transaction; these synthetic checks do not prove real database isolation.
++
++The published wire/owner remains intentionally narrow: transcript requires exactly one subject; at most100 scopes; one client scope and active owned Core conversation per selected-client leaf. Scheduled positive Meri occurrence custody without a Core conversation, multiclient/special scope owners, complete cursor/fork subject sets, and the final frozen-byte Meri consumer still require the same canonical owner/integration work. None is bypassed here. Unsupported subjects continue to refuse. Ordinary admission still has its existing provisioning/self-heal/lastSeenAt behavior.
++
++Deployment, chat and merge holds remain active. No route is mounted by this change.
+diff --git a/docs/integration/core-history-native-20261019/baseline.tap b/docs/integration/core-history-native-20261019/baseline.tap
+new file mode 100644
+--- /dev/null
++++ b/docs/integration/core-history-native-20261019/baseline.tap
+@@ -0,0 +1,654 @@
++TAP version 13
++# (node:<PID>) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
++# (Use `node --trace-warnings ...` to show where the warning was created)
++# Subtest: provides the two exact batch-native interface methods
++not ok 1 - provides the two exact batch-native interface methods
++  ---
++  duration_ms: 1.831827
++  type: 'test'
++  location: '<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:55:1'
++  failureType: 'testCodeFailure'
++  error: |-
++    Expected values to be strictly equal:
++    + actual - expected
++    
++    + 'undefined'
++    - 'function'
++    
++  code: 'ERR_ASSERTION'
++  name: 'AssertionError'
++  expected: 'function'
++  actual: 'undefined'
++  operator: 'strictEqual'
++  stack: |-
++    TestContext.<anonymous> (file:///<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:55:74)
++    Test.runInAsyncScope (node:async_hooks:227:14)
++    Test.run (node:internal/test_runner/test:1382:25)
++    Test.start (node:internal/test_runner/test:1242:17)
++    startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
++  ...
++# Subtest: locks exact original native user, tenant and selected membership before new online observation on caller transaction
++not ok 2 - locks exact original native user, tenant and selected membership before new online observation on caller transaction
++  ---
++  duration_ms: 0.58496
++  type: 'test'
++  location: '<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:56:1'
++  failureType: 'testCodeFailure'
++  error: 'h.middleware.lockOriginalApplicationAuthorityInTransaction is not a function'
++  code: 'ERR_TEST_FAILURE'
++  name: 'TypeError'
++  stack: |-
++    TestContext.<anonymous> (file:///<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:56:172)
++    Test.runInAsyncScope (node:async_hooks:227:14)
++    Test.run (node:internal/test_runner/test:1382:25)
++    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
++    Test.postRun (node:internal/test_runner/test:1522:19)
++    Test.run (node:internal/test_runner/test:1447:12)
++    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
++  ...
++# Subtest: missing original user refuses; no online call or alternate membership
++not ok 3 - missing original user refuses; no online call or alternate membership
++  ---
++  duration_ms: 0.209586
++  type: 'test'
++  location: '<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:57:53'
++  failureType: 'testCodeFailure'
++  error: 'h.middleware.lockOriginalApplicationAuthorityInTransaction is not a function'
++  code: 'ERR_TEST_FAILURE'
++  name: 'TypeError'
++  stack: |-
++    TestContext.<anonymous> (file:///<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:57:207)
++    Test.runInAsyncScope (node:async_hooks:227:14)
++    Test.run (node:internal/test_runner/test:1382:25)
++    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
++    Test.postRun (node:internal/test_runner/test:1522:19)
++    Test.run (node:internal/test_runner/test:1447:12)
++    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
++  ...
++# Subtest: missing original tenant refuses; no online call or alternate membership
++not ok 4 - missing original tenant refuses; no online call or alternate membership
++  ---
++  duration_ms: 0.145028
++  type: 'test'
++  location: '<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:57:53'
++  failureType: 'testCodeFailure'
++  error: 'h.middleware.lockOriginalApplicationAuthorityInTransaction is not a function'
++  code: 'ERR_TEST_FAILURE'
++  name: 'TypeError'
++  stack: |-
++    TestContext.<anonymous> (file:///<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:57:207)
++    Test.runInAsyncScope (node:async_hooks:227:14)
++    Test.run (node:internal/test_runner/test:1382:25)
++    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
++    Test.postRun (node:internal/test_runner/test:1522:19)
++    Test.run (node:internal/test_runner/test:1447:12)
++    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
++  ...
++# Subtest: missing original membership refuses; no online call or alternate membership
++not ok 5 - missing original membership refuses; no online call or alternate membership
++  ---
++  duration_ms: 0.187722
++  type: 'test'
++  location: '<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:57:53'
++  failureType: 'testCodeFailure'
++  error: 'h.middleware.lockOriginalApplicationAuthorityInTransaction is not a function'
++  code: 'ERR_TEST_FAILURE'
++  name: 'TypeError'
++  stack: |-
++    TestContext.<anonymous> (file:///<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:57:207)
++    Test.runInAsyncScope (node:async_hooks:227:14)
++    Test.run (node:internal/test_runner/test:1382:25)
++    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
++    Test.postRun (node:internal/test_runner/test:1522:19)
++    Test.run (node:internal/test_runner/test:1447:12)
++    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
++  ...
++# Subtest: unqualified unrecorded refuses before SQL or online observation
++not ok 6 - unqualified unrecorded refuses before SQL or online observation
++  ---
++  duration_ms: 0.325891
++  type: 'test'
++  location: '<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:58:235'
++  failureType: 'testCodeFailure'
++  error: 'h.middleware.lockOriginalApplicationAuthorityInTransaction is not a function'
++  code: 'ERR_TEST_FAILURE'
++  name: 'TypeError'
++  stack: |-
++    TestContext.<anonymous> (file:///<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:58:1088)
++    Test.runInAsyncScope (node:async_hooks:227:14)
++    Test.run (node:internal/test_runner/test:1382:25)
++    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
++    Test.postRun (node:internal/test_runner/test:1522:19)
++    Test.run (node:internal/test_runner/test:1447:12)
++    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
++  ...
++# Subtest: unqualified different context object refuses before SQL or online observation
++not ok 7 - unqualified different context object refuses before SQL or online observation
++  ---
++  duration_ms: 0.150957
++  type: 'test'
++  location: '<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:58:235'
++  failureType: 'testCodeFailure'
++  error: 'h.middleware.lockOriginalApplicationAuthorityInTransaction is not a function'
++  code: 'ERR_TEST_FAILURE'
++  name: 'TypeError'
++  stack: |-
++    TestContext.<anonymous> (file:///<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:58:1088)
++    Test.runInAsyncScope (node:async_hooks:227:14)
++    Test.run (node:internal/test_runner/test:1382:25)
++    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
++    Test.postRun (node:internal/test_runner/test:1522:19)
++    Test.run (node:internal/test_runner/test:1447:12)
++    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
++  ...
++# Subtest: unqualified different principal refuses before SQL or online observation
++not ok 8 - unqualified different principal refuses before SQL or online observation
++  ---
++  duration_ms: 0.13319
++  type: 'test'
++  location: '<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:58:235'
++  failureType: 'testCodeFailure'
++  error: 'h.middleware.lockOriginalApplicationAuthorityInTransaction is not a function'
++  code: 'ERR_TEST_FAILURE'
++  name: 'TypeError'
++  stack: |-
++    TestContext.<anonymous> (file:///<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:58:1088)
++    Test.runInAsyncScope (node:async_hooks:227:14)
++    Test.run (node:internal/test_runner/test:1382:25)
++    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
++    Test.postRun (node:internal/test_runner/test:1522:19)
++    Test.run (node:internal/test_runner/test:1447:12)
++    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
++  ...
++# Subtest: unqualified marked control refuses before SQL or online observation
++not ok 9 - unqualified marked control refuses before SQL or online observation
++  ---
++  duration_ms: 0.295515
++  type: 'test'
++  location: '<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:58:235'
++  failureType: 'testCodeFailure'
++  error: 'h.middleware.lockOriginalApplicationAuthorityInTransaction is not a function'
++  code: 'ERR_TEST_FAILURE'
++  name: 'TypeError'
++  stack: |-
++    TestContext.<anonymous> (file:///<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:58:1088)
++    Test.runInAsyncScope (node:async_hooks:227:14)
++    Test.run (node:internal/test_runner/test:1382:25)
++    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
++    Test.postRun (node:internal/test_runner/test:1522:19)
++    Test.run (node:internal/test_runner/test:1447:12)
++    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
++  ...
++# Subtest: unqualified impersonation refuses before SQL or online observation
++not ok 10 - unqualified impersonation refuses before SQL or online observation
++  ---
++  duration_ms: 0.396747
++  type: 'test'
++  location: '<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:58:235'
++  failureType: 'testCodeFailure'
++  error: 'h.middleware.lockOriginalApplicationAuthorityInTransaction is not a function'
++  code: 'ERR_TEST_FAILURE'
++  name: 'TypeError'
++  stack: |-
++    TestContext.<anonymous> (file:///<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:58:1088)
++    Test.runInAsyncScope (node:async_hooks:227:14)
++    Test.run (node:internal/test_runner/test:1382:25)
++    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
++    Test.postRun (node:internal/test_runner/test:1522:19)
++    Test.run (node:internal/test_runner/test:1447:12)
++    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
++  ...
++# Subtest: unqualified membership tenant refuses before SQL or online observation
++not ok 11 - unqualified membership tenant refuses before SQL or online observation
++  ---
++  duration_ms: 0.635336
++  type: 'test'
++  location: '<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:58:235'
++  failureType: 'testCodeFailure'
++  error: 'h.middleware.lockOriginalApplicationAuthorityInTransaction is not a function'
++  code: 'ERR_TEST_FAILURE'
++  name: 'TypeError'
++  stack: |-
++    TestContext.<anonymous> (file:///<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:58:1088)
++    Test.runInAsyncScope (node:async_hooks:227:14)
++    Test.run (node:internal/test_runner/test:1382:25)
++    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
++    Test.postRun (node:internal/test_runner/test:1522:19)
++    Test.run (node:internal/test_runner/test:1447:12)
++    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
++  ...
++# Subtest: unqualified missing sid refuses before SQL or online observation
++not ok 12 - unqualified missing sid refuses before SQL or online observation
++  ---
++  duration_ms: 0.36551
++  type: 'test'
++  location: '<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:58:235'
++  failureType: 'testCodeFailure'
++  error: 'h.middleware.lockOriginalApplicationAuthorityInTransaction is not a function'
++  code: 'ERR_TEST_FAILURE'
++  name: 'TypeError'
++  stack: |-
++    TestContext.<anonymous> (file:///<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:58:1088)
++    Test.runInAsyncScope (node:async_hooks:227:14)
++    Test.run (node:internal/test_runner/test:1382:25)
++    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
++    Test.postRun (node:internal/test_runner/test:1522:19)
++    Test.run (node:internal/test_runner/test:1447:12)
++    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
++  ...
++# Subtest: unqualified wrong method refuses before SQL or online observation
++not ok 13 - unqualified wrong method refuses before SQL or online observation
++  ---
++  duration_ms: 0.190436
++  type: 'test'
++  location: '<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:58:235'
++  failureType: 'testCodeFailure'
++  error: 'h.middleware.lockOriginalApplicationAuthorityInTransaction is not a function'
++  code: 'ERR_TEST_FAILURE'
++  name: 'TypeError'
++  stack: |-
++    TestContext.<anonymous> (file:///<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:58:1088)
++    Test.runInAsyncScope (node:async_hooks:227:14)
++    Test.run (node:internal/test_runner/test:1382:25)
++    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
++    Test.postRun (node:internal/test_runner/test:1522:19)
++    Test.run (node:internal/test_runner/test:1447:12)
++    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
++  ...
++# Subtest: unqualified trailing slash refuses before SQL or online observation
++not ok 14 - unqualified trailing slash refuses before SQL or online observation
++  ---
++  duration_ms: 0.274523
++  type: 'test'
++  location: '<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:58:235'
++  failureType: 'testCodeFailure'
++  error: 'h.middleware.lockOriginalApplicationAuthorityInTransaction is not a function'
++  code: 'ERR_TEST_FAILURE'
++  name: 'TypeError'
++  stack: |-
++    TestContext.<anonymous> (file:///<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:58:1088)
++    Test.runInAsyncScope (node:async_hooks:227:14)
++    Test.run (node:internal/test_runner/test:1382:25)
++    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
++    Test.postRun (node:internal/test_runner/test:1522:19)
++    Test.run (node:internal/test_runner/test:1447:12)
++    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
++  ...
++# Subtest: unqualified rewritten target refuses before SQL or online observation
++not ok 15 - unqualified rewritten target refuses before SQL or online observation
++  ---
++  duration_ms: 0.190226
++  type: 'test'
++  location: '<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:58:235'
++  failureType: 'testCodeFailure'
++  error: 'h.middleware.lockOriginalApplicationAuthorityInTransaction is not a function'
++  code: 'ERR_TEST_FAILURE'
++  name: 'TypeError'
++  stack: |-
++    TestContext.<anonymous> (file:///<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:58:1088)
++    Test.runInAsyncScope (node:async_hooks:227:14)
++    Test.run (node:internal/test_runner/test:1382:25)
++    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
++    Test.postRun (node:internal/test_runner/test:1522:19)
++    Test.run (node:internal/test_runner/test:1447:12)
++    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
++  ...
++# Subtest: unqualified query string refuses before SQL or online observation
++not ok 16 - unqualified query string refuses before SQL or online observation
++  ---
++  duration_ms: 0.178028
++  type: 'test'
++  location: '<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:58:235'
++  failureType: 'testCodeFailure'
++  error: 'h.middleware.lockOriginalApplicationAuthorityInTransaction is not a function'
++  code: 'ERR_TEST_FAILURE'
++  name: 'TypeError'
++  stack: |-
++    TestContext.<anonymous> (file:///<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:58:1088)
++    Test.runInAsyncScope (node:async_hooks:227:14)
++    Test.run (node:internal/test_runner/test:1382:25)
++    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
++    Test.postRun (node:internal/test_runner/test:1522:19)
++    Test.run (node:internal/test_runner/test:1447:12)
++    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
++  ...
++# Subtest: unqualified delegated scheme refuses before SQL or online observation
++not ok 17 - unqualified delegated scheme refuses before SQL or online observation
++  ---
++  duration_ms: 0.234693
++  type: 'test'
++  location: '<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:58:235'
++  failureType: 'testCodeFailure'
++  error: 'h.middleware.lockOriginalApplicationAuthorityInTransaction is not a function'
++  code: 'ERR_TEST_FAILURE'
++  name: 'TypeError'
++  stack: |-
++    TestContext.<anonymous> (file:///<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:58:1088)
++    Test.runInAsyncScope (node:async_hooks:227:14)
++    Test.run (node:internal/test_runner/test:1382:25)
++    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
++    Test.postRun (node:internal/test_runner/test:1522:19)
++    Test.run (node:internal/test_runner/test:1447:12)
++    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
++  ...
++# Subtest: a NEW online Clerk denial is not replaced by initial or cached session evidence
++not ok 18 - a NEW online Clerk denial is not replaced by initial or cached session evidence
++  ---
++  duration_ms: 0.261072
++  type: 'test'
++  location: '<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:59:1'
++  failureType: 'testCodeFailure'
++  error: 'h.middleware.lockOriginalApplicationAuthorityInTransaction is not a function'
++  code: 'ERR_TEST_FAILURE'
++  name: 'TypeError'
++  stack: |-
++    TestContext.<anonymous> (file:///<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:59:180)
++    Test.runInAsyncScope (node:async_hooks:227:14)
++    Test.run (node:internal/test_runner/test:1382:25)
++    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
++    Test.postRun (node:internal/test_runner/test:1522:19)
++    Test.run (node:internal/test_runner/test:1447:12)
++    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
++  ...
++# Subtest: current locked member removed refuses after online observation
++not ok 19 - current locked member removed refuses after online observation
++  ---
++  duration_ms: 0.248273
++  type: 'test'
++  location: '<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:60:85'
++  failureType: 'testCodeFailure'
++  error: 'h.middleware.lockOriginalApplicationAuthorityInTransaction is not a function'
++  code: 'ERR_TEST_FAILURE'
++  name: 'TypeError'
++  stack: |-
++    TestContext.<anonymous> (file:///<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:60:554)
++    Test.runInAsyncScope (node:async_hooks:227:14)
++    Test.run (node:internal/test_runner/test:1382:25)
++    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
++    Test.postRun (node:internal/test_runner/test:1522:19)
++    Test.run (node:internal/test_runner/test:1447:12)
++    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
++  ...
++# Subtest: current locked role changed refuses after online observation
++not ok 20 - current locked role changed refuses after online observation
++  ---
++  duration_ms: 0.098408
++  type: 'test'
++  location: '<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:60:85'
++  failureType: 'testCodeFailure'
++  error: 'h.middleware.lockOriginalApplicationAuthorityInTransaction is not a function'
++  code: 'ERR_TEST_FAILURE'
++  name: 'TypeError'
++  stack: |-
++    TestContext.<anonymous> (file:///<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:60:554)
++    Test.runInAsyncScope (node:async_hooks:227:14)
++    Test.run (node:internal/test_runner/test:1382:25)
++    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
++    Test.postRun (node:internal/test_runner/test:1522:19)
++    Test.run (node:internal/test_runner/test:1447:12)
++    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
++  ...
++# Subtest: current locked tenant inactive refuses after online observation
++not ok 21 - current locked tenant inactive refuses after online observation
++  ---
++  duration_ms: 0.084207
++  type: 'test'
++  location: '<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:60:85'
++  failureType: 'testCodeFailure'
++  error: 'h.middleware.lockOriginalApplicationAuthorityInTransaction is not a function'
++  code: 'ERR_TEST_FAILURE'
++  name: 'TypeError'
++  stack: |-
++    TestContext.<anonymous> (file:///<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:60:554)
++    Test.runInAsyncScope (node:async_hooks:227:14)
++    Test.run (node:internal/test_runner/test:1382:25)
++    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
++    Test.postRun (node:internal/test_runner/test:1522:19)
++    Test.run (node:internal/test_runner/test:1447:12)
++    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
++  ...
++# Subtest: current locked org changed refuses after online observation
++not ok 22 - current locked org changed refuses after online observation
++  ---
++  duration_ms: 0.134693
++  type: 'test'
++  location: '<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:60:85'
++  failureType: 'testCodeFailure'
++  error: 'h.middleware.lockOriginalApplicationAuthorityInTransaction is not a function'
++  code: 'ERR_TEST_FAILURE'
++  name: 'TypeError'
++  stack: |-
++    TestContext.<anonymous> (file:///<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:60:554)
++    Test.runInAsyncScope (node:async_hooks:227:14)
++    Test.run (node:internal/test_runner/test:1382:25)
++    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
++    Test.postRun (node:internal/test_runner/test:1522:19)
++    Test.run (node:internal/test_runner/test:1447:12)
++    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
++  ...
++# Subtest: ordinary existing authority default retains its separate system owner and current receipt recheck
++ok 23 - ordinary existing authority default retains its separate system owner and current receipt recheck
++  ---
++  duration_ms: 2.096616
++  type: 'test'
++  ...
++# Subtest: ordinary existing impersonation remains supported
++ok 24 - ordinary existing impersonation remains supported
++  ---
++  duration_ms: 0.447454
++  type: 'test'
++  ...
++# (node:<PID>) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
++# Subtest: real native middleware composes with published batch for empty list
++not ok 25 - real native middleware composes with published batch for empty list
++  ---
++  duration_ms: 1.538164
++  type: 'test'
++  location: '<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:88:46'
++  failureType: 'testCodeFailure'
++  error: 'History release unavailable'
++  code: 'UNAVAILABLE'
++  name: 'HistoryReleaseSourceError'
++  stack: |-
++    unavailable (data:text/javascript;base64,aW1wb3J0IHsgY3JlYXRlSGFzaCB9IGZyb20gJ25vZGU6Y3J5cHRvJzsKaW1wb3J0IHsgdHlwZXMgYXMgbm9kZVR5cGVzIH0gZnJvbSAnbm9kZTp1dGlsJzsKaW1wb3J0IHsgY2Fub25pY2FsaXplQ29yZVJldGFpbmVkSnNvbiB9IGZyb20gJ2RhdGE6dGV4dC9qYXZhc2NyaXB0O2Jhc2U2NCxhVzF3YjNKMElIc2dkSGx3WlhNZ1lYTWdibTlrWlZSNWNHVnpJSDBnWm5KdmJTQW5ibTlrWlRwMWRHbHNKenNLQ2k4cUtnb2dLaUJTUmtNZ09EYzROU0JLVTA5T0lFTmhibTl1YVdOaGJHbDZZWFJwYjI0Z1UyTm9aVzFsSUdadmNpQjBhR1VnYzJWeWRtVnlMVzl1YkhrZ2NtVjBZV2x1WldRdGNtVmhaQW9nS2lCamIyUmxZM011SUVsdWNIVjBJRzExYzNRZ1lXeHlaV0ZrZVNCaVpTQmhJRXBUVDA0Z2RtRnNkV1U2SUhCc1lXbHVJRzlpYW1WamRITXNJR0Z5Y21GNWN5d2djM1J5YVc1bmN5d0tJQ29nWm1sdWFYUmxJRzUxYldKbGNuTXNJR0p2YjJ4bFlXNXpJR0Z1WkNCdWRXeHNMaUJCYm5sMGFHbHVaeUJoSUVwVFQwNGdjbTkxYm1RZ2RISnBjQ0IzYjNWc1pDQmphR0Z1WjJVZ2IzSUtJQ29nWkhKdmNDQW9kVzVrWldacGJtVmtMQ0JtZFc1amRHbHZibk1zSUhONWJXSnZiSE1zSUdKcFoybHVkQ3dnYm05dUxYQnNZV2x1SUc5aWFtVmpkSE1zSUhOd1lYSnpaUW9nS2lCaGNuSmhlWE1zSUd4dmJtVWdjM1Z5Y205bllYUmxjeXdnWTNsamJHVnpLU0JwY3lCeVpXWjFjMlZrSUdsdWMzUmxZV1FnYjJZZ2MybHNaVzUwYkhrZ1kyOWxjbU5sWkM0S0lDb0tJQ29nVG5WdFltVnljeUIxYzJVZ1JVTk5RVk5qY21sd2RDQk9kVzFpWlhJNk9uUnZVM1J5YVc1bklIUm9jbTkxWjJnZ1NsTlBUaTV6ZEhKcGJtZHBabmtzSUhkb2FXTm9JR2x6Q2lBcUlIZG9ZWFFnVWtaRElEZzNPRFVnd3FjekxqSXVNaTR6SUhOd1pXTnBabWxsY3pzZ2MzUnlhVzVuY3lCMWMyVWdTbE5QVGk1emRISnBibWRwWm5rZ1pYTmpZWEJwYm1jS0lDb2dLTUtuTXk0eUxqSXVNaWs3SUc5aWFtVmpkQ0J0WlcxaVpYSnpJR0Z5WlNCemIzSjBaV1FnWW5rZ1ZWUkdMVEUySUdOdlpHVWdkVzVwZEhNZ0tNS25NeTR5TGpNcExDQjNhR2xqYUFvZ0tpQnBjeUIwYUdVZ1pHVm1ZWFZzZENCQmNuSmhlUzV3Y205MGIzUjVjR1V1YzI5eWRDQnZjbVJsY2lCbWIzSWdjM1J5YVc1bmN5NEtJQ292Q21WNGNHOXlkQ0JqYkdGemN5QkRiM0psVW1WMFlXbHVaV1JLWTNORmNuSnZjaUJsZUhSbGJtUnpJRVZ5Y205eUlIc0tJQ0FnSUNBZ0lDQWdJQ0JqYjJSbElEMGdKME5QVWtWZlVrVlVRVWxPUlVSZlNrTlRYMGxPVmtGTVNVUW5Pd29nSUdOdmJuTjBjblZqZEc5eUtHMWxjM05oWjJVZ0lDQWdJQ0FnSUNrZ2V5QnpkWEJsY2lodFpYTnpZV2RsS1RzZ2RHaHBjeTV1WVcxbElEMGdKME52Y21WU1pYUmhhVzVsWkVwamMwVnljbTl5SnpzZ2ZRcDlDZ3BqYjI1emRDQk1UMDVGWDFOVlVsSlBSMEZVUlNBOUlDOWJYSFZFT0RBd0xWeDFSRUpHUmwwb1B5RmJYSFZFUXpBd0xWeDFSRVpHUmwwcGZDZy9QQ0ZiWEhWRU9EQXdMVngxUkVKR1JsMHBXMXgxUkVNd01DMWNkVVJHUmtaZEx6c0tDbVY0Y0c5eWRDQm1kVzVqZEdsdmJpQmpZVzV2Ym1sallXeHBlbVZEYjNKbFVtVjBZV2x1WldSS2MyOXVLSFpoYkhWbElDQWdJQ0FnSUNBZ0tTQWdJQ0FnSUNBZ0lIc0tJQ0J5WlhSMWNtNGdjMlZ5YVdGc2FYcGxLSFpoYkhWbExDQnVaWGNnVTJWMEtDa3BPd3A5Q2dwbWRXNWpkR2x2YmlCelpYSnBZV3hwZW1Vb2RtRnNkV1VnSUNBZ0lDQWdJQ0FzSUhOMFlXTnJJQ0FnSUNBZ0lDQWdJQ0FnSUNrZ0lDQWdJQ0FnSUNCN0NpQWdhV1lnS0haaGJIVmxJRDA5UFNCdWRXeHNLU0J5WlhSMWNtNGdKMjUxYkd3bk93b2dJSE4zYVhSamFDQW9kSGx3Wlc5bUlIWmhiSFZsS1NCN0NpQWdJQ0JqWVhObElDZGliMjlzWldGdUp6b0tJQ0FnSUNBZ2NtVjBkWEp1SUhaaGJIVmxJRDhnSjNSeWRXVW5JRG9nSjJaaGJITmxKenNLSUNBZ0lHTmhjMlVnSjI1MWJXSmxjaWM2Q2lBZ0lDQWdJR2xtSUNnaFRuVnRZbVZ5TG1selJtbHVhWFJsS0haaGJIVmxLU2tnZEdoeWIzY2dibVYzSUVOdmNtVlNaWFJoYVc1bFpFcGpjMFZ5Y205eUtDZE9iMjR0Wm1sdWFYUmxJRzUxYldKbGNpY3BPd29nSUNBZ0lDQnlaWFIxY200Z1NsTlBUaTV6ZEhKcGJtZHBabmtvZG1Gc2RXVXBPd29nSUNBZ1kyRnpaU0FuYzNSeWFXNW5Kem9LSUNBZ0lDQWdjbVYwZFhKdUlITjBjbWx1WnloMllXeDFaU2s3Q2lBZ0lDQmpZWE5sSUNkdlltcGxZM1FuT2dvZ0lDQWdJQ0JpY21WaGF6c0tJQ0FnSUdSbFptRjFiSFE2Q2lBZ0lDQWdJSFJvY205M0lHNWxkeUJEYjNKbFVtVjBZV2x1WldSS1kzTkZjbkp2Y2loZ1ZXNXpkWEJ3YjNKMFpXUWdKSHQwZVhCbGIyWWdkbUZzZFdWOUlIWmhiSFZsWUNrN0NpQWdmUW9nSUdOdmJuTjBJRzlpYW1WamRDQTlJSFpoYkhWbElDQWdJQ0FnSUNBZ0lEc0tJQ0JwWmlBb2JtOWtaVlI1Y0dWekxtbHpVSEp2ZUhrb2IySnFaV04wS1NrZ2RHaHliM2NnYm1WM0lFTnZjbVZTWlhSaGFXNWxaRXBqYzBWeWNtOXlLQ2RRY205NGVTQjJZV3gxWlNjcE93b2dJR2xtSUNoemRHRmpheTVvWVhNb2IySnFaV04wS1NrZ2RHaHliM2NnYm1WM0lFTnZjbVZTWlhSaGFXNWxaRXBqYzBWeWNtOXlLQ2REZVdOc2FXTWdkbUZzZFdVbktUc0tJQ0J6ZEdGamF5NWhaR1FvYjJKcVpXTjBLVHNLSUNCMGNua2dld29nSUNBZ2FXWWdLRUZ5Y21GNUxtbHpRWEp5WVhrb2IySnFaV04wS1NrZ2V3b2dJQ0FnSUNCcFppQW9UMkpxWldOMExtZGxkRkJ5YjNSdmRIbHdaVTltS0c5aWFtVmpkQ2tnSVQwOUlFRnljbUY1TG5CeWIzUnZkSGx3WlNrZ2RHaHliM2NnYm1WM0lFTnZjbVZTWlhSaGFXNWxaRXBqYzBWeWNtOXlLQ2RPYjI0dGNHeGhhVzRnWVhKeVlYa25LVHNLSUNBZ0lDQWdZMjl1YzNRZ2NHRnlkSE1nSUNBZ0lDQWdJQ0FnSUQwZ1cxMDdDaUFnSUNBZ0lHWnZjaUFvYkdWMElHbHVaR1Y0SUQwZ01Ec2dhVzVrWlhnZ1BDQnZZbXBsWTNRdWJHVnVaM1JvT3lCcGJtUmxlQ0FyUFNBeEtTQjdDaUFnSUNBZ0lDQWdhV1lnS0NGUFltcGxZM1F1Y0hKdmRHOTBlWEJsTG1oaGMwOTNibEJ5YjNCbGNuUjVMbU5oYkd3b2IySnFaV04wTENCcGJtUmxlQ2twSUhSb2NtOTNJRzVsZHlCRGIzSmxVbVYwWVdsdVpXUktZM05GY25KdmNpZ25VM0JoY25ObElHRnljbUY1SnlrN0NpQWdJQ0FnSUNBZ2NHRnlkSE11Y0hWemFDaHpaWEpwWVd4cGVtVW9iMkpxWldOMFcybHVaR1Y0WFN3Z2MzUmhZMnNwS1RzS0lDQWdJQ0FnZlFvZ0lDQWdJQ0J5WlhSMWNtNGdZRnNrZTNCaGNuUnpMbXB2YVc0b0p5d25LWDFkWURzS0lDQWdJSDBLSUNBZ0lHTnZibk4wSUhCeWIzUnZkSGx3WlNBOUlFOWlhbVZqZEM1blpYUlFjbTkwYjNSNWNHVlBaaWh2WW1wbFkzUXBPd29nSUNBZ2FXWWdLSEJ5YjNSdmRIbHdaU0FoUFQwZ1QySnFaV04wTG5CeWIzUnZkSGx3WlNBbUppQndjbTkwYjNSNWNHVWdJVDA5SUc1MWJHd3BJSFJvY205M0lHNWxkeUJEYjNKbFVtVjBZV2x1WldSS1kzTkZjbkp2Y2lnblRtOXVMWEJzWVdsdUlHOWlhbVZqZENjcE93b2dJQ0FnWTI5dWMzUWdhMlY1Y3lBOUlGSmxabXhsWTNRdWIzZHVTMlY1Y3lodlltcGxZM1FwT3dvZ0lDQWdhV1lnS0d0bGVYTXVjMjl0WlNnb2EyVjVLU0E5UGlCMGVYQmxiMllnYTJWNUlDRTlQU0FuYzNSeWFXNW5KeWtwSUhSb2NtOTNJRzVsZHlCRGIzSmxVbVYwWVdsdVpXUktZM05GY25KdmNpZ25VM2x0WW05c0lHdGxlU2NwT3dvZ0lDQWdZMjl1YzNRZ2JXVnRZbVZ5Y3lBZ0lDQWdJQ0FnSUNBZ1BTQmJYVHNLSUNBZ0lHWnZjaUFvWTI5dWMzUWdhMlY1SUc5bUlDaHJaWGx6SUNBZ0lDQWdJQ0FnSUNBZ0tTNXpiM0owS0NrcElIc0tJQ0FnSUNBZ1kyOXVjM1FnWkdWelkzSnBjSFJ2Y2lBOUlFOWlhbVZqZEM1blpYUlBkMjVRY205d1pYSjBlVVJsYzJOeWFYQjBiM0lvYjJKcVpXTjBMQ0JyWlhrcE93b2dJQ0FnSUNCcFppQW9JV1JsYzJOeWFYQjBiM0lnZkh3Z0lXUmxjMk55YVhCMGIzSXVaVzUxYldWeVlXSnNaU0I4ZkNBaEtDZDJZV3gxWlNjZ2FXNGdaR1Z6WTNKcGNIUnZjaWtwSUhzS0lDQWdJQ0FnSUNCMGFISnZkeUJ1WlhjZ1EyOXlaVkpsZEdGcGJtVmtTbU56UlhKeWIzSW9KMEZqWTJWemMyOXlJRzl5SUc1dmJpMWxiblZ0WlhKaFlteGxJRzFsYldKbGNpY3BPd29nSUNBZ0lDQjlDaUFnSUNBZ0lHMWxiV0psY25NdWNIVnphQ2hnSkh0emRISnBibWNvYTJWNUtYMDZKSHR6WlhKcFlXeHBlbVVvWkdWelkzSnBjSFJ2Y2k1MllXeDFaU3dnYzNSaFkyc3BmV0FwT3dvZ0lDQWdmUW9nSUNBZ2NtVjBkWEp1SUdCN0pIdHRaVzFpWlhKekxtcHZhVzRvSnl3bktYMTlZRHNLSUNCOUlHWnBibUZzYkhrZ2V3b2dJQ0FnYzNSaFkyc3VaR1ZzWlhSbEtHOWlhbVZqZENrN0NpQWdmUXA5Q2dwbWRXNWpkR2x2YmlCemRISnBibWNvZG1Gc2RXVWdJQ0FnSUNBZ0lDa2dJQ0FnSUNBZ0lDQjdDaUFnYVdZZ0tFeFBUa1ZmVTFWU1VrOUhRVlJGTG5SbGMzUW9kbUZzZFdVcEtTQjBhSEp2ZHlCdVpYY2dRMjl5WlZKbGRHRnBibVZrU21OelJYSnliM0lvSjB4dmJtVWdjM1Z5Y205bllYUmxKeWs3Q2lBZ2NtVjBkWEp1SUVwVFQwNHVjM1J5YVc1bmFXWjVLSFpoYkhWbEtUc0tmUW89JzsKCi8qKiBVbm1vdW50ZWQgQ29yZS9NZXJpIHNhdmVkLWhpc3Rvcnkgd2lyZS4gUGFyc2luZyBhbmQgaGFzaGluZyBkbyBub3QgYXV0aG9yaXplIGEgcmVhZC4gKi8KZXhwb3J0IGNvbnN0IEhJU1RPUllfUkVMRUFTRV9NQVhfU1VCSkVDVFMgPSAxMDA7CmV4cG9ydCBjb25zdCBISVNUT1JZX1JFTEVBU0VfTUFYX1NDT1BFUyA9IDEwMDsKZXhwb3J0IGNvbnN0IEhJU1RPUllfUkVMRUFTRV9SRUNFSVBUX1RUTF9NUyA9IDVfMDAwOwoKY29uc3QgVVVJRCA9IC9eWzAtOWEtZl17OH0tWzAtOWEtZl17NH0tWzAtOWEtZl17NH0tWzAtOWEtZl17NH0tWzAtOWEtZl17MTJ9JC87CmNvbnN0IFNIQTI1NiA9IC9eWzAtOWEtZl17NjR9JC87CmNvbnN0IFNDT1BFX0tJTkRTID0gbmV3IFNldChbCiAgJ3RlbmFudCcsICdjbGllbnQnLCAnbWFpbGJveCcsICdtZW1vcnknLCAnZG9jdW1lbnQnLCAncHJpdmF0ZS11c2VyJywgJ3B1YmxpYycsCl0gICAgICAgICApOwoKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKCi8qKiBUaGUgZnV0dXJlIG93bmVyIG11c3QgcmV0dXJuIG9uZSBkZWNpc2lvbiBmb3IgdGhlIHdob2xlIG9yZGVyZWQgdmVjdG9yLiAqLwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgIAogCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgCiAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAKCmV4cG9ydCBjbGFzcyBIaXN0b3J5UmVsZWFzZVNvdXJjZUVycm9yIGV4dGVuZHMgRXJyb3IgewogICAgICAgICAgIGNvZGUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDsKICBjb25zdHJ1Y3Rvcihjb2RlICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICApIHsKICAgIHN1cGVyKCdIaXN0b3J5IHJlbGVhc2UgdW5hdmFpbGFibGUnKTsKICAgIHRoaXMubmFtZSA9ICdIaXN0b3J5UmVsZWFzZVNvdXJjZUVycm9yJzsKICAgIHRoaXMuY29kZSA9IGNvZGU7CiAgfQp9CmZ1bmN0aW9uIGludmFsaWQoKSAgICAgICAgeyB0aHJvdyBuZXcgSGlzdG9yeVJlbGVhc2VTb3VyY2VFcnJvcignSU5WQUxJRF9SRVFVRVNUJyk7IH0KZnVuY3Rpb24gdW5hdmFpbGFibGUoKSAgICAgICAgeyB0aHJvdyBuZXcgSGlzdG9yeVJlbGVhc2VTb3VyY2VFcnJvcignVU5BVkFJTEFCTEUnKTsgfQoKZnVuY3Rpb24gY2xvc2VkKHZhbHVlICAgICAgICAgLCBrZXlzICAgICAgICAgICAgICAgICAgICkgICAgICAgICAgICAgICAgICAgICAgICAgIHsKICBpZiAoIXZhbHVlIHx8IHR5cGVvZiB2YWx1ZSAhPT0gJ29iamVjdCcgfHwgbm9kZVR5cGVzLmlzUHJveHkodmFsdWUpIHx8IEFycmF5LmlzQXJyYXkodmFsdWUpIHx8CiAgICAgIChPYmplY3QuZ2V0UHJvdG90eXBlT2YodmFsdWUpICE9PSBPYmplY3QucHJvdG90eXBlICYmIE9iamVjdC5nZXRQcm90b3R5cGVPZih2YWx1ZSkgIT09IG51bGwpKSBpbnZhbGlkKCk7CiAgY29uc3QgYWN0dWFsID0gUmVmbGVjdC5vd25LZXlzKHZhbHVlKTsKICBpZiAoYWN0dWFsLmxlbmd0aCAhPT0ga2V5cy5sZW5ndGggfHwgYWN0dWFsLnNvbWUoKGtleSkgPT4gdHlwZW9mIGtleSAhPT0gJ3N0cmluZycgfHwgIWtleXMuaW5jbHVkZXMoa2V5KSkpIGludmFsaWQoKTsKICBjb25zdCByZXN1bHQgICAgICAgICAgICAgICAgICAgICAgICAgID0gT2JqZWN0LmNyZWF0ZShudWxsKTsKICBmb3IgKGNvbnN0IGtleSBvZiBrZXlzKSB7CiAgICBjb25zdCBwcm9wZXJ0eSA9IE9iamVjdC5nZXRPd25Qcm9wZXJ0eURlc2NyaXB0b3IodmFsdWUsIGtleSk7CiAgICBpZiAoIXByb3BlcnR5IHx8ICFwcm9wZXJ0eS5lbnVtZXJhYmxlIHx8ICEoJ3ZhbHVlJyBpbiBwcm9wZXJ0eSkpIGludmFsaWQoKTsKICAgIHJlc3VsdFtrZXldID0gcHJvcGVydHkudmFsdWU7CiAgfQogIHJldHVybiByZXN1bHQ7Cn0KCmZ1bmN0aW9uIGJvdW5kZWRBcnJheSh2YWx1ZSAgICAgICAgICwgbWluICAgICAgICAsIG1heCAgICAgICAgKSAgICAgICAgICAgIHsKICBpZiAoIUFycmF5LmlzQXJyYXkodmFsdWUpIHx8IG5vZGVUeXBlcy5pc1Byb3h5KHZhbHVlKSB8fCBPYmplY3QuZ2V0UHJvdG90eXBlT2YodmFsdWUpICE9PSBBcnJheS5wcm90b3R5cGUgfHwKICAgICAgdmFsdWUubGVuZ3RoIDwgbWluIHx8IHZhbHVlLmxlbmd0aCA+IG1heCB8fCBSZWZsZWN0Lm93bktleXModmFsdWUpLmxlbmd0aCAhPT0gdmFsdWUubGVuZ3RoICsgMSkgaW52YWxpZCgpOwogIGNvbnN0IHJlc3VsdCAgICAgICAgICAgID0gW107CiAgZm9yIChsZXQgaW5kZXggPSAwOyBpbmRleCA8IHZhbHVlLmxlbmd0aDsgaW5kZXggKz0gMSkgewogICAgY29uc3QgcHJvcGVydHkgPSBPYmplY3QuZ2V0T3duUHJvcGVydHlEZXNjcmlwdG9yKHZhbHVlLCBTdHJpbmcoaW5kZXgpKTsKICAgIGlmICghcHJvcGVydHkgfHwgIXByb3BlcnR5LmVudW1lcmFibGUgfHwgISgndmFsdWUnIGluIHByb3BlcnR5KSkgaW52YWxpZCgpOwogICAgcmVzdWx0LnB1c2gocHJvcGVydHkudmFsdWUpOwogIH0KICByZXR1cm4gcmVzdWx0Owp9CgpmdW5jdGlvbiB0ZXh0KHZhbHVlICAgICAgICAgLCBtYXggICAgICAgICkgICAgICAgICB7CiAgaWYgKHR5cGVvZiB2YWx1ZSAhPT0gJ3N0cmluZycgfHwgdmFsdWUubGVuZ3RoIDwgMSB8fCB2YWx1ZS5sZW5ndGggPiBtYXgpIGludmFsaWQoKTsKICByZXR1cm4gdmFsdWU7Cn0KZnVuY3Rpb24gdXVpZCh2YWx1ZSAgICAgICAgICkgICAgICAgICB7CiAgaWYgKHR5cGVvZiB2YWx1ZSAhPT0gJ3N0cmluZycgfHwgIVVVSUQudGVzdCh2YWx1ZSkpIGludmFsaWQoKTsKICByZXR1cm4gdmFsdWU7Cn0KZnVuY3Rpb24gZGlnZXN0KHZhbHVlICAgICAgICAgKSAgICAgICAgIHsKICBpZiAodHlwZW9mIHZhbHVlICE9PSAnc3RyaW5nJyB8fCAhU0hBMjU2LnRlc3QodmFsdWUpKSBpbnZhbGlkKCk7CiAgcmV0dXJuIHZhbHVlOwp9CmZ1bmN0aW9uIHByaW5jaXBhbCh2YWx1ZSAgICAgICAgICkgICAgICAgICAgICAgICAgICAgICAgICAgIHsKICBjb25zdCBwID0gY2xvc2VkKHZhbHVlLCBbJ3RlbmFudElkJywgJ2FjdG9ySWQnXSk7CiAgcmV0dXJuIE9iamVjdC5mcmVlemUoeyB0ZW5hbnRJZDogdXVpZChwLnRlbmFudElkKSwgYWN0b3JJZDogdXVpZChwLmFjdG9ySWQpIH0pOwp9CgpleHBvcnQgZnVuY3Rpb24gcGFyc2VIaXN0b3J5UmVsZWFzZVJlcXVlc3QodmFsdWUgICAgICAgICApICAgICAgICAgICAgICAgICAgICAgICAgewogIGNvbnN0IHJlcXVlc3QgPSBjbG9zZWQodmFsdWUsIFsnc2NoZW1hVmVyc2lvbicsICdvYnNlcnZhdGlvbklkJywgJ3JvdXRlJywgJ3Jlc3BvbnNlU2hhMjU2JywgJ3N1YmplY3RzJ10pOwogIGlmIChyZXF1ZXN0LnNjaGVtYVZlcnNpb24gIT09IDEgfHwgKHJlcXVlc3Qucm91dGUgIT09ICdsaXN0JyAmJiByZXF1ZXN0LnJvdXRlICE9PSAndHJhbnNjcmlwdCcpKSBpbnZhbGlkKCk7CiAgY29uc3Qgcm93cyA9IGJvdW5kZWRBcnJheShyZXF1ZXN0LnN1YmplY3RzLCByZXF1ZXN0LnJvdXRlID09PSAndHJhbnNjcmlwdCcgPyAxIDogMCwKICAgIHJlcXVlc3Qucm91dGUgPT09ICd0cmFuc2NyaXB0JyA/IDEgOiBISVNUT1JZX1JFTEVBU0VfTUFYX1NVQkpFQ1RTKTsKICBjb25zdCBzZWVuQ29udmVyc2F0aW9ucyA9IG5ldyBTZXQgICAgICAgICgpOwogIGxldCB0b3RhbFNjb3BlcyA9IDA7CiAgY29uc3Qgc3ViamVjdHMgICAgICAgICAgICAgICAgICAgICAgICAgID0gcm93cy5tYXAoKHZhbHVlKSA9PiB7CiAgICBjb25zdCByb3cgPSBjbG9zZWQodmFsdWUsIFsnY29udmVyc2F0aW9uSWQnLCAnY2xpZW50SWQnLCAnc2NvcGVzJ10pOwogICAgY29uc3QgY29udmVyc2F0aW9uSWQgPSB1dWlkKHJvdy5jb252ZXJzYXRpb25JZCk7CiAgICBpZiAoc2VlbkNvbnZlcnNhdGlvbnMuaGFzKGNvbnZlcnNhdGlvbklkKSkgaW52YWxpZCgpOwogICAgc2VlbkNvbnZlcnNhdGlvbnMuYWRkKGNvbnZlcnNhdGlvbklkKTsKICAgIGNvbnN0IHNjb3BlcyA9IE9iamVjdC5mcmVlemUoYm91bmRlZEFycmF5KHJvdy5zY29wZXMsIDEsIEhJU1RPUllfUkVMRUFTRV9NQVhfU0NPUEVTKS5tYXAoKHZhbHVlKSA9PiB7CiAgICAgIGNvbnN0IHNjb3BlID0gY2xvc2VkKHZhbHVlLCBbJ3RlbmFudElkJywgJ2tpbmQnLCAncmVzb3VyY2VJZCcsICdwb2xpY3lSZXZpc2lvbiddKTsKICAgICAgaWYgKHR5cGVvZiBzY29wZS5raW5kICE9PSAnc3RyaW5nJyB8fCAhU0NPUEVfS0lORFMuaGFzKHNjb3BlLmtpbmQgICAgICAgICAgICAgICAgICAgICAgICAgICApKSBpbnZhbGlkKCk7CiAgICAgIHJldHVybiBPYmplY3QuZnJlZXplKHsgdGVuYW50SWQ6IHRleHQoc2NvcGUudGVuYW50SWQsIDEyOCksIGtpbmQ6IHNjb3BlLmtpbmQgICAgICAgICAgICAgICAgICAgICAgICAgICAsCiAgICAgICAgcmVzb3VyY2VJZDogdGV4dChzY29wZS5yZXNvdXJjZUlkLCAyNTYpLCBwb2xpY3lSZXZpc2lvbjogdGV4dChzY29wZS5wb2xpY3lSZXZpc2lvbiwgMTI4KSB9KTsKICAgIH0pKTsKICAgIHRvdGFsU2NvcGVzICs9IHNjb3Blcy5sZW5ndGg7CiAgICBpZiAodG90YWxTY29wZXMgPiBISVNUT1JZX1JFTEVBU0VfTUFYX1NDT1BFUykgaW52YWxpZCgpOwogICAgY29uc3Qgc2VlblNjb3BlcyA9IG5ldyBTZXQgICAgICAgICgpOwogICAgZm9yIChjb25zdCBzY29wZSBvZiBzY29wZXMpIHsKICAgICAgbGV0IGNhbm9uaWNhbCAgICAgICAgOwogICAgICB0cnkgeyBjYW5vbmljYWwgPSBjYW5vbmljYWxpemVDb3JlUmV0YWluZWRKc29uKHNjb3BlKTsgfSBjYXRjaCB7IHJldHVybiBpbnZhbGlkKCk7IH0KICAgICAgaWYgKHNlZW5TY29wZXMuaGFzKGNhbm9uaWNhbCkpIGludmFsaWQoKTsKICAgICAgc2VlblNjb3Blcy5hZGQoY2Fub25pY2FsKTsKICAgIH0KICAgIHJldHVybiBPYmplY3QuZnJlZXplKHsgY29udmVyc2F0aW9uSWQsIGNsaWVudElkOiByb3cuY2xpZW50SWQgPT09IG51bGwgPyBudWxsIDogdXVpZChyb3cuY2xpZW50SWQpLCBzY29wZXMgfSk7CiAgfSk7CiAgcmV0dXJuIE9iamVjdC5mcmVlemUoeyBzY2hlbWFWZXJzaW9uOiAxLCBvYnNlcnZhdGlvbklkOiB1dWlkKHJlcXVlc3Qub2JzZXJ2YXRpb25JZCksIHJvdXRlOiByZXF1ZXN0LnJvdXRlLAogICAgcmVzcG9uc2VTaGEyNTY6IGRpZ2VzdChyZXF1ZXN0LnJlc3BvbnNlU2hhMjU2KSwgc3ViamVjdHM6IE9iamVjdC5mcmVlemUoc3ViamVjdHMpIH0pOwp9CgovKiogUkZDIDg3ODUgb2YgdGhlIG9yZGVyZWQgc3ViamVjdCB2ZWN0b3I7IG9yZGVyIG9mIHN1YmplY3RzIGFuZCBzY29wZXMgaXMgcmV0YWluZWQuICovCmV4cG9ydCBmdW5jdGlvbiBoaXN0b3J5UmVsZWFzZVN1YmplY3RzU2hhMjU2KHN1YmplY3RzICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICkgICAgICAgICB7CiAgdHJ5IHsKICAgIHJldHVybiBjcmVhdGVIYXNoKCdzaGEyNTYnKS51cGRhdGUoY2Fub25pY2FsaXplQ29yZVJldGFpbmVkSnNvbihzdWJqZWN0cyksICd1dGY4JykuZGlnZXN0KCdoZXgnKTsKICB9IGNhdGNoIHsgcmV0dXJuIHVuYXZhaWxhYmxlKCk7IH0KfQoKZnVuY3Rpb24gdmFsaWRUaW1lKGNoZWNrZWRBdE1zICAgICAgICAgLCBleHBpcmVzQXRNcyAgICAgICAgICwgbm93TXMgICAgICAgICkgICAgICAgICAgewogIHJldHVybiBOdW1iZXIuaXNTYWZlSW50ZWdlcihub3dNcykgJiYgbm93TXMgPj0gMCAmJgogICAgTnVtYmVyLmlzU2FmZUludGVnZXIoY2hlY2tlZEF0TXMpICYmIChjaGVja2VkQXRNcyAgICAgICAgICApIDw9IG5vd01zICYmCiAgICBub3dNcyAtIChjaGVja2VkQXRNcyAgICAgICAgICApIDw9IEhJU1RPUllfUkVMRUFTRV9SRUNFSVBUX1RUTF9NUyAmJgogICAgTnVtYmVyLmlzU2FmZUludGVnZXIoZXhwaXJlc0F0TXMpICYmIChleHBpcmVzQXRNcyAgICAgICAgICApID4gbm93TXMgJiYKICAgIChleHBpcmVzQXRNcyAgICAgICAgICApIDw9IChjaGVja2VkQXRNcyAgICAgICAgICApICsgSElTVE9SWV9SRUxFQVNFX1JFQ0VJUFRfVFRMX01TOwp9CgovKiogRXhhY3QgZWNobyBjaGVjayBvbmx5LiBUaGUgYmF0Y2ggcG9ydCBpcyByZXNwb25zaWJsZSBmb3IgdGhlIGFjdHVhbCBhdXRob3JpdHkgZGVjaXNpb24uICovCmV4cG9ydCBmdW5jdGlvbiBidWlsZEhpc3RvcnlSZWxlYXNlUmVjZWlwdCgKICByZXF1ZXN0ICAgICAgICAgICAgICAgICAgICAgICAsIGV4cGVjdGVkUHJpbmNpcGFsICAgICAgICAgICAgICAgICAgICAgICAgICwKICBzdWJqZWN0c1NoYTI1NiAgICAgICAgLCB2YWx1ZSAgICAgICAgICwgbm93TXMgICAgICAgICwKKSAgICAgICAgICAgICAgICAgICAgICAgIHsKICBjb25zdCBkZWNpc2lvbiA9IGNsb3NlZCh2YWx1ZSwgWydhdXRob3JpemVkJywgJ29ic2VydmF0aW9uSWQnLCAncm91dGUnLCAncHJpbmNpcGFsJywgJ3N1YmplY3RzU2hhMjU2JywKICAgICdyZXNwb25zZVNoYTI1NicsICdjaGVja2VkQXRNcycsICdleHBpcmVzQXRNcyddKTsKICBjb25zdCBkZWNpZGVkUHJpbmNpcGFsID0gcHJpbmNpcGFsKGRlY2lzaW9uLnByaW5jaXBhbCk7CiAgaWYgKGRlY2lzaW9uLmF1dGhvcml6ZWQgIT09IHRydWUgfHwgZGVjaXNpb24ub2JzZXJ2YXRpb25JZCAhPT0gcmVxdWVzdC5vYnNlcnZhdGlvbklkIHx8CiAgICAgIGRlY2lzaW9uLnJvdXRlICE9PSByZXF1ZXN0LnJvdXRlIHx8IGRlY2lzaW9uLnN1YmplY3RzU2hhMjU2ICE9PSBzdWJqZWN0c1NoYTI1NiB8fAogICAgICBkZWNpc2lvbi5yZXNwb25zZVNoYTI1NiAhPT0gcmVxdWVzdC5yZXNwb25zZVNoYTI1NiB8fAogICAgICBkZWNpZGVkUHJpbmNpcGFsLnRlbmFudElkICE9PSBleHBlY3RlZFByaW5jaXBhbC50ZW5hbnRJZCB8fAogICAgICBkZWNpZGVkUHJpbmNpcGFsLmFjdG9ySWQgIT09IGV4cGVjdGVkUHJpbmNpcGFsLmFjdG9ySWQgfHwKICAgICAgIXZhbGlkVGltZShkZWNpc2lvbi5jaGVja2VkQXRNcywgZGVjaXNpb24uZXhwaXJlc0F0TXMsIG5vd01zKSkgdW5hdmFpbGFibGUoKTsKICByZXR1cm4geyBzY2hlbWFWZXJzaW9uOiAxLCBvYnNlcnZhdGlvbklkOiByZXF1ZXN0Lm9ic2VydmF0aW9uSWQsIHJvdXRlOiByZXF1ZXN0LnJvdXRlLAogICAgcHJpbmNpcGFsOiBkZWNpZGVkUHJpbmNpcGFsLCBzdWJqZWN0c1NoYTI1NiwgcmVzcG9uc2VTaGEyNTY6IHJlcXVlc3QucmVzcG9uc2VTaGEyNTYsCiAgICBjaGVja2VkQXRNczogZGVjaXNpb24uY2hlY2tlZEF0TXMgICAgICAgICAgLCBleHBpcmVzQXRNczogZGVjaXNpb24uZXhwaXJlc0F0TXMgICAgICAgICAgIH07Cn0KCi8qKiBQdXJlIGluZ3Jlc3Mgc2VhbS4gQSBmdXR1cmUgbmF0aXZlLW9ubHkgSFRUUCByb3V0ZSBtdXN0IHN1cHBseSB0aGUgYXV0aGVudGljYXRlZCBwcmluY2lwYWwgYW5kIHF1YWxpZmllZCBwb3J0LiAqLwpleHBvcnQgYXN5bmMgZnVuY3Rpb24gcmVhZEhpc3RvcnlSZWxlYXNlU291cmNlKAogIGJvZHkgICAgICAgICAsIGF1dGhlbnRpY2F0ZWRQcmluY2lwYWwgICAgICAgICAsIHBvcnQgICAgICAgICAgICAgICAgICAgICAgICAgLAogIG5vdyAgICAgICAgICAgICAgID0gRGF0ZS5ub3csCikgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB7CiAgY29uc3QgcmVxdWVzdCA9IHBhcnNlSGlzdG9yeVJlbGVhc2VSZXF1ZXN0KGJvZHkpOwogIGxldCBleHBlY3RlZFByaW5jaXBhbCAgICAgICAgICAgICAgICAgICAgICAgICA7CiAgdHJ5IHsgZXhwZWN0ZWRQcmluY2lwYWwgPSBwcmluY2lwYWwoYXV0aGVudGljYXRlZFByaW5jaXBhbCk7IH0gY2F0Y2ggeyByZXR1cm4gdW5hdmFpbGFibGUoKTsgfQogIGNvbnN0IHN1YmplY3RzU2hhMjU2ID0gaGlzdG9yeVJlbGVhc2VTdWJqZWN0c1NoYTI1NihyZXF1ZXN0LnN1YmplY3RzKTsKICBsZXQgZGVjaXNpb24gICAgICAgICA7CiAgdHJ5IHsgZGVjaXNpb24gPSBhd2FpdCBwb3J0LmRlY2lkZUFsbChyZXF1ZXN0LCBleHBlY3RlZFByaW5jaXBhbCwgc3ViamVjdHNTaGEyNTYpOyB9CiAgY2F0Y2ggeyByZXR1cm4gdW5hdmFpbGFibGUoKTsgfQogIHRyeSB7IHJldHVybiBidWlsZEhpc3RvcnlSZWxlYXNlUmVjZWlwdChyZXF1ZXN0LCBleHBlY3RlZFByaW5jaXBhbCwgc3ViamVjdHNTaGEyNTYsIGRlY2lzaW9uLCBub3coKSk7IH0KICBjYXRjaCB7IHJldHVybiB1bmF2YWlsYWJsZSgpOyB9Cn0K:73:39)
++    readHistoryReleaseSource (data:text/javascript;base64,aW1wb3J0IHsgY3JlYXRlSGFzaCB9IGZyb20gJ25vZGU6Y3J5cHRvJzsKaW1wb3J0IHsgdHlwZXMgYXMgbm9kZVR5cGVzIH0gZnJvbSAnbm9kZTp1dGlsJzsKaW1wb3J0IHsgY2Fub25pY2FsaXplQ29yZVJldGFpbmVkSnNvbiB9IGZyb20gJ2RhdGE6dGV4dC9qYXZhc2NyaXB0O2Jhc2U2NCxhVzF3YjNKMElIc2dkSGx3WlhNZ1lYTWdibTlrWlZSNWNHVnpJSDBnWm5KdmJTQW5ibTlrWlRwMWRHbHNKenNLQ2k4cUtnb2dLaUJTUmtNZ09EYzROU0JLVTA5T0lFTmhibTl1YVdOaGJHbDZZWFJwYjI0Z1UyTm9aVzFsSUdadmNpQjBhR1VnYzJWeWRtVnlMVzl1YkhrZ2NtVjBZV2x1WldRdGNtVmhaQW9nS2lCamIyUmxZM011SUVsdWNIVjBJRzExYzNRZ1lXeHlaV0ZrZVNCaVpTQmhJRXBUVDA0Z2RtRnNkV1U2SUhCc1lXbHVJRzlpYW1WamRITXNJR0Z5Y21GNWN5d2djM1J5YVc1bmN5d0tJQ29nWm1sdWFYUmxJRzUxYldKbGNuTXNJR0p2YjJ4bFlXNXpJR0Z1WkNCdWRXeHNMaUJCYm5sMGFHbHVaeUJoSUVwVFQwNGdjbTkxYm1RZ2RISnBjQ0IzYjNWc1pDQmphR0Z1WjJVZ2IzSUtJQ29nWkhKdmNDQW9kVzVrWldacGJtVmtMQ0JtZFc1amRHbHZibk1zSUhONWJXSnZiSE1zSUdKcFoybHVkQ3dnYm05dUxYQnNZV2x1SUc5aWFtVmpkSE1zSUhOd1lYSnpaUW9nS2lCaGNuSmhlWE1zSUd4dmJtVWdjM1Z5Y205bllYUmxjeXdnWTNsamJHVnpLU0JwY3lCeVpXWjFjMlZrSUdsdWMzUmxZV1FnYjJZZ2MybHNaVzUwYkhrZ1kyOWxjbU5sWkM0S0lDb0tJQ29nVG5WdFltVnljeUIxYzJVZ1JVTk5RVk5qY21sd2RDQk9kVzFpWlhJNk9uUnZVM1J5YVc1bklIUm9jbTkxWjJnZ1NsTlBUaTV6ZEhKcGJtZHBabmtzSUhkb2FXTm9JR2x6Q2lBcUlIZG9ZWFFnVWtaRElEZzNPRFVnd3FjekxqSXVNaTR6SUhOd1pXTnBabWxsY3pzZ2MzUnlhVzVuY3lCMWMyVWdTbE5QVGk1emRISnBibWRwWm5rZ1pYTmpZWEJwYm1jS0lDb2dLTUtuTXk0eUxqSXVNaWs3SUc5aWFtVmpkQ0J0WlcxaVpYSnpJR0Z5WlNCemIzSjBaV1FnWW5rZ1ZWUkdMVEUySUdOdlpHVWdkVzVwZEhNZ0tNS25NeTR5TGpNcExDQjNhR2xqYUFvZ0tpQnBjeUIwYUdVZ1pHVm1ZWFZzZENCQmNuSmhlUzV3Y205MGIzUjVjR1V1YzI5eWRDQnZjbVJsY2lCbWIzSWdjM1J5YVc1bmN5NEtJQ292Q21WNGNHOXlkQ0JqYkdGemN5QkRiM0psVW1WMFlXbHVaV1JLWTNORmNuSnZjaUJsZUhSbGJtUnpJRVZ5Y205eUlIc0tJQ0FnSUNBZ0lDQWdJQ0JqYjJSbElEMGdKME5QVWtWZlVrVlVRVWxPUlVSZlNrTlRYMGxPVmtGTVNVUW5Pd29nSUdOdmJuTjBjblZqZEc5eUtHMWxjM05oWjJVZ0lDQWdJQ0FnSUNrZ2V5QnpkWEJsY2lodFpYTnpZV2RsS1RzZ2RHaHBjeTV1WVcxbElEMGdKME52Y21WU1pYUmhhVzVsWkVwamMwVnljbTl5SnpzZ2ZRcDlDZ3BqYjI1emRDQk1UMDVGWDFOVlVsSlBSMEZVUlNBOUlDOWJYSFZFT0RBd0xWeDFSRUpHUmwwb1B5RmJYSFZFUXpBd0xWeDFSRVpHUmwwcGZDZy9QQ0ZiWEhWRU9EQXdMVngxUkVKR1JsMHBXMXgxUkVNd01DMWNkVVJHUmtaZEx6c0tDbVY0Y0c5eWRDQm1kVzVqZEdsdmJpQmpZVzV2Ym1sallXeHBlbVZEYjNKbFVtVjBZV2x1WldSS2MyOXVLSFpoYkhWbElDQWdJQ0FnSUNBZ0tTQWdJQ0FnSUNBZ0lIc0tJQ0J5WlhSMWNtNGdjMlZ5YVdGc2FYcGxLSFpoYkhWbExDQnVaWGNnVTJWMEtDa3BPd3A5Q2dwbWRXNWpkR2x2YmlCelpYSnBZV3hwZW1Vb2RtRnNkV1VnSUNBZ0lDQWdJQ0FzSUhOMFlXTnJJQ0FnSUNBZ0lDQWdJQ0FnSUNrZ0lDQWdJQ0FnSUNCN0NpQWdhV1lnS0haaGJIVmxJRDA5UFNCdWRXeHNLU0J5WlhSMWNtNGdKMjUxYkd3bk93b2dJSE4zYVhSamFDQW9kSGx3Wlc5bUlIWmhiSFZsS1NCN0NpQWdJQ0JqWVhObElDZGliMjlzWldGdUp6b0tJQ0FnSUNBZ2NtVjBkWEp1SUhaaGJIVmxJRDhnSjNSeWRXVW5JRG9nSjJaaGJITmxKenNLSUNBZ0lHTmhjMlVnSjI1MWJXSmxjaWM2Q2lBZ0lDQWdJR2xtSUNnaFRuVnRZbVZ5TG1selJtbHVhWFJsS0haaGJIVmxLU2tnZEdoeWIzY2dibVYzSUVOdmNtVlNaWFJoYVc1bFpFcGpjMFZ5Y205eUtDZE9iMjR0Wm1sdWFYUmxJRzUxYldKbGNpY3BPd29nSUNBZ0lDQnlaWFIxY200Z1NsTlBUaTV6ZEhKcGJtZHBabmtvZG1Gc2RXVXBPd29nSUNBZ1kyRnpaU0FuYzNSeWFXNW5Kem9LSUNBZ0lDQWdjbVYwZFhKdUlITjBjbWx1WnloMllXeDFaU2s3Q2lBZ0lDQmpZWE5sSUNkdlltcGxZM1FuT2dvZ0lDQWdJQ0JpY21WaGF6c0tJQ0FnSUdSbFptRjFiSFE2Q2lBZ0lDQWdJSFJvY205M0lHNWxkeUJEYjNKbFVtVjBZV2x1WldSS1kzTkZjbkp2Y2loZ1ZXNXpkWEJ3YjNKMFpXUWdKSHQwZVhCbGIyWWdkbUZzZFdWOUlIWmhiSFZsWUNrN0NpQWdmUW9nSUdOdmJuTjBJRzlpYW1WamRDQTlJSFpoYkhWbElDQWdJQ0FnSUNBZ0lEc0tJQ0JwWmlBb2JtOWtaVlI1Y0dWekxtbHpVSEp2ZUhrb2IySnFaV04wS1NrZ2RHaHliM2NnYm1WM0lFTnZjbVZTWlhSaGFXNWxaRXBqYzBWeWNtOXlLQ2RRY205NGVTQjJZV3gxWlNjcE93b2dJR2xtSUNoemRHRmpheTVvWVhNb2IySnFaV04wS1NrZ2RHaHliM2NnYm1WM0lFTnZjbVZTWlhSaGFXNWxaRXBqYzBWeWNtOXlLQ2REZVdOc2FXTWdkbUZzZFdVbktUc0tJQ0J6ZEdGamF5NWhaR1FvYjJKcVpXTjBLVHNLSUNCMGNua2dld29nSUNBZ2FXWWdLRUZ5Y21GNUxtbHpRWEp5WVhrb2IySnFaV04wS1NrZ2V3b2dJQ0FnSUNCcFppQW9UMkpxWldOMExtZGxkRkJ5YjNSdmRIbHdaVTltS0c5aWFtVmpkQ2tnSVQwOUlFRnljbUY1TG5CeWIzUnZkSGx3WlNrZ2RHaHliM2NnYm1WM0lFTnZjbVZTWlhSaGFXNWxaRXBqYzBWeWNtOXlLQ2RPYjI0dGNHeGhhVzRnWVhKeVlYa25LVHNLSUNBZ0lDQWdZMjl1YzNRZ2NHRnlkSE1nSUNBZ0lDQWdJQ0FnSUQwZ1cxMDdDaUFnSUNBZ0lHWnZjaUFvYkdWMElHbHVaR1Y0SUQwZ01Ec2dhVzVrWlhnZ1BDQnZZbXBsWTNRdWJHVnVaM1JvT3lCcGJtUmxlQ0FyUFNBeEtTQjdDaUFnSUNBZ0lDQWdhV1lnS0NGUFltcGxZM1F1Y0hKdmRHOTBlWEJsTG1oaGMwOTNibEJ5YjNCbGNuUjVMbU5oYkd3b2IySnFaV04wTENCcGJtUmxlQ2twSUhSb2NtOTNJRzVsZHlCRGIzSmxVbVYwWVdsdVpXUktZM05GY25KdmNpZ25VM0JoY25ObElHRnljbUY1SnlrN0NpQWdJQ0FnSUNBZ2NHRnlkSE11Y0hWemFDaHpaWEpwWVd4cGVtVW9iMkpxWldOMFcybHVaR1Y0WFN3Z2MzUmhZMnNwS1RzS0lDQWdJQ0FnZlFvZ0lDQWdJQ0J5WlhSMWNtNGdZRnNrZTNCaGNuUnpMbXB2YVc0b0p5d25LWDFkWURzS0lDQWdJSDBLSUNBZ0lHTnZibk4wSUhCeWIzUnZkSGx3WlNBOUlFOWlhbVZqZEM1blpYUlFjbTkwYjNSNWNHVlBaaWh2WW1wbFkzUXBPd29nSUNBZ2FXWWdLSEJ5YjNSdmRIbHdaU0FoUFQwZ1QySnFaV04wTG5CeWIzUnZkSGx3WlNBbUppQndjbTkwYjNSNWNHVWdJVDA5SUc1MWJHd3BJSFJvY205M0lHNWxkeUJEYjNKbFVtVjBZV2x1WldSS1kzTkZjbkp2Y2lnblRtOXVMWEJzWVdsdUlHOWlhbVZqZENjcE93b2dJQ0FnWTI5dWMzUWdhMlY1Y3lBOUlGSmxabXhsWTNRdWIzZHVTMlY1Y3lodlltcGxZM1FwT3dvZ0lDQWdhV1lnS0d0bGVYTXVjMjl0WlNnb2EyVjVLU0E5UGlCMGVYQmxiMllnYTJWNUlDRTlQU0FuYzNSeWFXNW5KeWtwSUhSb2NtOTNJRzVsZHlCRGIzSmxVbVYwWVdsdVpXUktZM05GY25KdmNpZ25VM2x0WW05c0lHdGxlU2NwT3dvZ0lDQWdZMjl1YzNRZ2JXVnRZbVZ5Y3lBZ0lDQWdJQ0FnSUNBZ1BTQmJYVHNLSUNBZ0lHWnZjaUFvWTI5dWMzUWdhMlY1SUc5bUlDaHJaWGx6SUNBZ0lDQWdJQ0FnSUNBZ0tTNXpiM0owS0NrcElIc0tJQ0FnSUNBZ1kyOXVjM1FnWkdWelkzSnBjSFJ2Y2lBOUlFOWlhbVZqZEM1blpYUlBkMjVRY205d1pYSjBlVVJsYzJOeWFYQjBiM0lvYjJKcVpXTjBMQ0JyWlhrcE93b2dJQ0FnSUNCcFppQW9JV1JsYzJOeWFYQjBiM0lnZkh3Z0lXUmxjMk55YVhCMGIzSXVaVzUxYldWeVlXSnNaU0I4ZkNBaEtDZDJZV3gxWlNjZ2FXNGdaR1Z6WTNKcGNIUnZjaWtwSUhzS0lDQWdJQ0FnSUNCMGFISnZkeUJ1WlhjZ1EyOXlaVkpsZEdGcGJtVmtTbU56UlhKeWIzSW9KMEZqWTJWemMyOXlJRzl5SUc1dmJpMWxiblZ0WlhKaFlteGxJRzFsYldKbGNpY3BPd29nSUNBZ0lDQjlDaUFnSUNBZ0lHMWxiV0psY25NdWNIVnphQ2hnSkh0emRISnBibWNvYTJWNUtYMDZKSHR6WlhKcFlXeHBlbVVvWkdWelkzSnBjSFJ2Y2k1MllXeDFaU3dnYzNSaFkyc3BmV0FwT3dvZ0lDQWdmUW9nSUNBZ2NtVjBkWEp1SUdCN0pIdHRaVzFpWlhKekxtcHZhVzRvSnl3bktYMTlZRHNLSUNCOUlHWnBibUZzYkhrZ2V3b2dJQ0FnYzNSaFkyc3VaR1ZzWlhSbEtHOWlhbVZqZENrN0NpQWdmUXA5Q2dwbWRXNWpkR2x2YmlCemRISnBibWNvZG1Gc2RXVWdJQ0FnSUNBZ0lDa2dJQ0FnSUNBZ0lDQjdDaUFnYVdZZ0tFeFBUa1ZmVTFWU1VrOUhRVlJGTG5SbGMzUW9kbUZzZFdVcEtTQjBhSEp2ZHlCdVpYY2dRMjl5WlZKbGRHRnBibVZrU21OelJYSnliM0lvSjB4dmJtVWdjM1Z5Y205bllYUmxKeWs3Q2lBZ2NtVjBkWEp1SUVwVFQwNHVjM1J5YVc1bmFXWjVLSFpoYkhWbEtUc0tmUW89JzsKCi8qKiBVbm1vdW50ZWQgQ29yZS9NZXJpIHNhdmVkLWhpc3Rvcnkgd2lyZS4gUGFyc2luZyBhbmQgaGFzaGluZyBkbyBub3QgYXV0aG9yaXplIGEgcmVhZC4gKi8KZXhwb3J0IGNvbnN0IEhJU1RPUllfUkVMRUFTRV9NQVhfU1VCSkVDVFMgPSAxMDA7CmV4cG9ydCBjb25zdCBISVNUT1JZX1JFTEVBU0VfTUFYX1NDT1BFUyA9IDEwMDsKZXhwb3J0IGNvbnN0IEhJU1RPUllfUkVMRUFTRV9SRUNFSVBUX1RUTF9NUyA9IDVfMDAwOwoKY29uc3QgVVVJRCA9IC9eWzAtOWEtZl17OH0tWzAtOWEtZl17NH0tWzAtOWEtZl17NH0tWzAtOWEtZl17NH0tWzAtOWEtZl17MTJ9JC87CmNvbnN0IFNIQTI1NiA9IC9eWzAtOWEtZl17NjR9JC87CmNvbnN0IFNDT1BFX0tJTkRTID0gbmV3IFNldChbCiAgJ3RlbmFudCcsICdjbGllbnQnLCAnbWFpbGJveCcsICdtZW1vcnknLCAnZG9jdW1lbnQnLCAncHJpdmF0ZS11c2VyJywgJ3B1YmxpYycsCl0gICAgICAgICApOwoKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKCi8qKiBUaGUgZnV0dXJlIG93bmVyIG11c3QgcmV0dXJuIG9uZSBkZWNpc2lvbiBmb3IgdGhlIHdob2xlIG9yZGVyZWQgdmVjdG9yLiAqLwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgIAogCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgCiAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAKCmV4cG9ydCBjbGFzcyBIaXN0b3J5UmVsZWFzZVNvdXJjZUVycm9yIGV4dGVuZHMgRXJyb3IgewogICAgICAgICAgIGNvZGUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDsKICBjb25zdHJ1Y3Rvcihjb2RlICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICApIHsKICAgIHN1cGVyKCdIaXN0b3J5IHJlbGVhc2UgdW5hdmFpbGFibGUnKTsKICAgIHRoaXMubmFtZSA9ICdIaXN0b3J5UmVsZWFzZVNvdXJjZUVycm9yJzsKICAgIHRoaXMuY29kZSA9IGNvZGU7CiAgfQp9CmZ1bmN0aW9uIGludmFsaWQoKSAgICAgICAgeyB0aHJvdyBuZXcgSGlzdG9yeVJlbGVhc2VTb3VyY2VFcnJvcignSU5WQUxJRF9SRVFVRVNUJyk7IH0KZnVuY3Rpb24gdW5hdmFpbGFibGUoKSAgICAgICAgeyB0aHJvdyBuZXcgSGlzdG9yeVJlbGVhc2VTb3VyY2VFcnJvcignVU5BVkFJTEFCTEUnKTsgfQoKZnVuY3Rpb24gY2xvc2VkKHZhbHVlICAgICAgICAgLCBrZXlzICAgICAgICAgICAgICAgICAgICkgICAgICAgICAgICAgICAgICAgICAgICAgIHsKICBpZiAoIXZhbHVlIHx8IHR5cGVvZiB2YWx1ZSAhPT0gJ29iamVjdCcgfHwgbm9kZVR5cGVzLmlzUHJveHkodmFsdWUpIHx8IEFycmF5LmlzQXJyYXkodmFsdWUpIHx8CiAgICAgIChPYmplY3QuZ2V0UHJvdG90eXBlT2YodmFsdWUpICE9PSBPYmplY3QucHJvdG90eXBlICYmIE9iamVjdC5nZXRQcm90b3R5cGVPZih2YWx1ZSkgIT09IG51bGwpKSBpbnZhbGlkKCk7CiAgY29uc3QgYWN0dWFsID0gUmVmbGVjdC5vd25LZXlzKHZhbHVlKTsKICBpZiAoYWN0dWFsLmxlbmd0aCAhPT0ga2V5cy5sZW5ndGggfHwgYWN0dWFsLnNvbWUoKGtleSkgPT4gdHlwZW9mIGtleSAhPT0gJ3N0cmluZycgfHwgIWtleXMuaW5jbHVkZXMoa2V5KSkpIGludmFsaWQoKTsKICBjb25zdCByZXN1bHQgICAgICAgICAgICAgICAgICAgICAgICAgID0gT2JqZWN0LmNyZWF0ZShudWxsKTsKICBmb3IgKGNvbnN0IGtleSBvZiBrZXlzKSB7CiAgICBjb25zdCBwcm9wZXJ0eSA9IE9iamVjdC5nZXRPd25Qcm9wZXJ0eURlc2NyaXB0b3IodmFsdWUsIGtleSk7CiAgICBpZiAoIXByb3BlcnR5IHx8ICFwcm9wZXJ0eS5lbnVtZXJhYmxlIHx8ICEoJ3ZhbHVlJyBpbiBwcm9wZXJ0eSkpIGludmFsaWQoKTsKICAgIHJlc3VsdFtrZXldID0gcHJvcGVydHkudmFsdWU7CiAgfQogIHJldHVybiByZXN1bHQ7Cn0KCmZ1bmN0aW9uIGJvdW5kZWRBcnJheSh2YWx1ZSAgICAgICAgICwgbWluICAgICAgICAsIG1heCAgICAgICAgKSAgICAgICAgICAgIHsKICBpZiAoIUFycmF5LmlzQXJyYXkodmFsdWUpIHx8IG5vZGVUeXBlcy5pc1Byb3h5KHZhbHVlKSB8fCBPYmplY3QuZ2V0UHJvdG90eXBlT2YodmFsdWUpICE9PSBBcnJheS5wcm90b3R5cGUgfHwKICAgICAgdmFsdWUubGVuZ3RoIDwgbWluIHx8IHZhbHVlLmxlbmd0aCA+IG1heCB8fCBSZWZsZWN0Lm93bktleXModmFsdWUpLmxlbmd0aCAhPT0gdmFsdWUubGVuZ3RoICsgMSkgaW52YWxpZCgpOwogIGNvbnN0IHJlc3VsdCAgICAgICAgICAgID0gW107CiAgZm9yIChsZXQgaW5kZXggPSAwOyBpbmRleCA8IHZhbHVlLmxlbmd0aDsgaW5kZXggKz0gMSkgewogICAgY29uc3QgcHJvcGVydHkgPSBPYmplY3QuZ2V0T3duUHJvcGVydHlEZXNjcmlwdG9yKHZhbHVlLCBTdHJpbmcoaW5kZXgpKTsKICAgIGlmICghcHJvcGVydHkgfHwgIXByb3BlcnR5LmVudW1lcmFibGUgfHwgISgndmFsdWUnIGluIHByb3BlcnR5KSkgaW52YWxpZCgpOwogICAgcmVzdWx0LnB1c2gocHJvcGVydHkudmFsdWUpOwogIH0KICByZXR1cm4gcmVzdWx0Owp9CgpmdW5jdGlvbiB0ZXh0KHZhbHVlICAgICAgICAgLCBtYXggICAgICAgICkgICAgICAgICB7CiAgaWYgKHR5cGVvZiB2YWx1ZSAhPT0gJ3N0cmluZycgfHwgdmFsdWUubGVuZ3RoIDwgMSB8fCB2YWx1ZS5sZW5ndGggPiBtYXgpIGludmFsaWQoKTsKICByZXR1cm4gdmFsdWU7Cn0KZnVuY3Rpb24gdXVpZCh2YWx1ZSAgICAgICAgICkgICAgICAgICB7CiAgaWYgKHR5cGVvZiB2YWx1ZSAhPT0gJ3N0cmluZycgfHwgIVVVSUQudGVzdCh2YWx1ZSkpIGludmFsaWQoKTsKICByZXR1cm4gdmFsdWU7Cn0KZnVuY3Rpb24gZGlnZXN0KHZhbHVlICAgICAgICAgKSAgICAgICAgIHsKICBpZiAodHlwZW9mIHZhbHVlICE9PSAnc3RyaW5nJyB8fCAhU0hBMjU2LnRlc3QodmFsdWUpKSBpbnZhbGlkKCk7CiAgcmV0dXJuIHZhbHVlOwp9CmZ1bmN0aW9uIHByaW5jaXBhbCh2YWx1ZSAgICAgICAgICkgICAgICAgICAgICAgICAgICAgICAgICAgIHsKICBjb25zdCBwID0gY2xvc2VkKHZhbHVlLCBbJ3RlbmFudElkJywgJ2FjdG9ySWQnXSk7CiAgcmV0dXJuIE9iamVjdC5mcmVlemUoeyB0ZW5hbnRJZDogdXVpZChwLnRlbmFudElkKSwgYWN0b3JJZDogdXVpZChwLmFjdG9ySWQpIH0pOwp9CgpleHBvcnQgZnVuY3Rpb24gcGFyc2VIaXN0b3J5UmVsZWFzZVJlcXVlc3QodmFsdWUgICAgICAgICApICAgICAgICAgICAgICAgICAgICAgICAgewogIGNvbnN0IHJlcXVlc3QgPSBjbG9zZWQodmFsdWUsIFsnc2NoZW1hVmVyc2lvbicsICdvYnNlcnZhdGlvbklkJywgJ3JvdXRlJywgJ3Jlc3BvbnNlU2hhMjU2JywgJ3N1YmplY3RzJ10pOwogIGlmIChyZXF1ZXN0LnNjaGVtYVZlcnNpb24gIT09IDEgfHwgKHJlcXVlc3Qucm91dGUgIT09ICdsaXN0JyAmJiByZXF1ZXN0LnJvdXRlICE9PSAndHJhbnNjcmlwdCcpKSBpbnZhbGlkKCk7CiAgY29uc3Qgcm93cyA9IGJvdW5kZWRBcnJheShyZXF1ZXN0LnN1YmplY3RzLCByZXF1ZXN0LnJvdXRlID09PSAndHJhbnNjcmlwdCcgPyAxIDogMCwKICAgIHJlcXVlc3Qucm91dGUgPT09ICd0cmFuc2NyaXB0JyA/IDEgOiBISVNUT1JZX1JFTEVBU0VfTUFYX1NVQkpFQ1RTKTsKICBjb25zdCBzZWVuQ29udmVyc2F0aW9ucyA9IG5ldyBTZXQgICAgICAgICgpOwogIGxldCB0b3RhbFNjb3BlcyA9IDA7CiAgY29uc3Qgc3ViamVjdHMgICAgICAgICAgICAgICAgICAgICAgICAgID0gcm93cy5tYXAoKHZhbHVlKSA9PiB7CiAgICBjb25zdCByb3cgPSBjbG9zZWQodmFsdWUsIFsnY29udmVyc2F0aW9uSWQnLCAnY2xpZW50SWQnLCAnc2NvcGVzJ10pOwogICAgY29uc3QgY29udmVyc2F0aW9uSWQgPSB1dWlkKHJvdy5jb252ZXJzYXRpb25JZCk7CiAgICBpZiAoc2VlbkNvbnZlcnNhdGlvbnMuaGFzKGNvbnZlcnNhdGlvbklkKSkgaW52YWxpZCgpOwogICAgc2VlbkNvbnZlcnNhdGlvbnMuYWRkKGNvbnZlcnNhdGlvbklkKTsKICAgIGNvbnN0IHNjb3BlcyA9IE9iamVjdC5mcmVlemUoYm91bmRlZEFycmF5KHJvdy5zY29wZXMsIDEsIEhJU1RPUllfUkVMRUFTRV9NQVhfU0NPUEVTKS5tYXAoKHZhbHVlKSA9PiB7CiAgICAgIGNvbnN0IHNjb3BlID0gY2xvc2VkKHZhbHVlLCBbJ3RlbmFudElkJywgJ2tpbmQnLCAncmVzb3VyY2VJZCcsICdwb2xpY3lSZXZpc2lvbiddKTsKICAgICAgaWYgKHR5cGVvZiBzY29wZS5raW5kICE9PSAnc3RyaW5nJyB8fCAhU0NPUEVfS0lORFMuaGFzKHNjb3BlLmtpbmQgICAgICAgICAgICAgICAgICAgICAgICAgICApKSBpbnZhbGlkKCk7CiAgICAgIHJldHVybiBPYmplY3QuZnJlZXplKHsgdGVuYW50SWQ6IHRleHQoc2NvcGUudGVuYW50SWQsIDEyOCksIGtpbmQ6IHNjb3BlLmtpbmQgICAgICAgICAgICAgICAgICAgICAgICAgICAsCiAgICAgICAgcmVzb3VyY2VJZDogdGV4dChzY29wZS5yZXNvdXJjZUlkLCAyNTYpLCBwb2xpY3lSZXZpc2lvbjogdGV4dChzY29wZS5wb2xpY3lSZXZpc2lvbiwgMTI4KSB9KTsKICAgIH0pKTsKICAgIHRvdGFsU2NvcGVzICs9IHNjb3Blcy5sZW5ndGg7CiAgICBpZiAodG90YWxTY29wZXMgPiBISVNUT1JZX1JFTEVBU0VfTUFYX1NDT1BFUykgaW52YWxpZCgpOwogICAgY29uc3Qgc2VlblNjb3BlcyA9IG5ldyBTZXQgICAgICAgICgpOwogICAgZm9yIChjb25zdCBzY29wZSBvZiBzY29wZXMpIHsKICAgICAgbGV0IGNhbm9uaWNhbCAgICAgICAgOwogICAgICB0cnkgeyBjYW5vbmljYWwgPSBjYW5vbmljYWxpemVDb3JlUmV0YWluZWRKc29uKHNjb3BlKTsgfSBjYXRjaCB7IHJldHVybiBpbnZhbGlkKCk7IH0KICAgICAgaWYgKHNlZW5TY29wZXMuaGFzKGNhbm9uaWNhbCkpIGludmFsaWQoKTsKICAgICAgc2VlblNjb3Blcy5hZGQoY2Fub25pY2FsKTsKICAgIH0KICAgIHJldHVybiBPYmplY3QuZnJlZXplKHsgY29udmVyc2F0aW9uSWQsIGNsaWVudElkOiByb3cuY2xpZW50SWQgPT09IG51bGwgPyBudWxsIDogdXVpZChyb3cuY2xpZW50SWQpLCBzY29wZXMgfSk7CiAgfSk7CiAgcmV0dXJuIE9iamVjdC5mcmVlemUoeyBzY2hlbWFWZXJzaW9uOiAxLCBvYnNlcnZhdGlvbklkOiB1dWlkKHJlcXVlc3Qub2JzZXJ2YXRpb25JZCksIHJvdXRlOiByZXF1ZXN0LnJvdXRlLAogICAgcmVzcG9uc2VTaGEyNTY6IGRpZ2VzdChyZXF1ZXN0LnJlc3BvbnNlU2hhMjU2KSwgc3ViamVjdHM6IE9iamVjdC5mcmVlemUoc3ViamVjdHMpIH0pOwp9CgovKiogUkZDIDg3ODUgb2YgdGhlIG9yZGVyZWQgc3ViamVjdCB2ZWN0b3I7IG9yZGVyIG9mIHN1YmplY3RzIGFuZCBzY29wZXMgaXMgcmV0YWluZWQuICovCmV4cG9ydCBmdW5jdGlvbiBoaXN0b3J5UmVsZWFzZVN1YmplY3RzU2hhMjU2KHN1YmplY3RzICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICkgICAgICAgICB7CiAgdHJ5IHsKICAgIHJldHVybiBjcmVhdGVIYXNoKCdzaGEyNTYnKS51cGRhdGUoY2Fub25pY2FsaXplQ29yZVJldGFpbmVkSnNvbihzdWJqZWN0cyksICd1dGY4JykuZGlnZXN0KCdoZXgnKTsKICB9IGNhdGNoIHsgcmV0dXJuIHVuYXZhaWxhYmxlKCk7IH0KfQoKZnVuY3Rpb24gdmFsaWRUaW1lKGNoZWNrZWRBdE1zICAgICAgICAgLCBleHBpcmVzQXRNcyAgICAgICAgICwgbm93TXMgICAgICAgICkgICAgICAgICAgewogIHJldHVybiBOdW1iZXIuaXNTYWZlSW50ZWdlcihub3dNcykgJiYgbm93TXMgPj0gMCAmJgogICAgTnVtYmVyLmlzU2FmZUludGVnZXIoY2hlY2tlZEF0TXMpICYmIChjaGVja2VkQXRNcyAgICAgICAgICApIDw9IG5vd01zICYmCiAgICBub3dNcyAtIChjaGVja2VkQXRNcyAgICAgICAgICApIDw9IEhJU1RPUllfUkVMRUFTRV9SRUNFSVBUX1RUTF9NUyAmJgogICAgTnVtYmVyLmlzU2FmZUludGVnZXIoZXhwaXJlc0F0TXMpICYmIChleHBpcmVzQXRNcyAgICAgICAgICApID4gbm93TXMgJiYKICAgIChleHBpcmVzQXRNcyAgICAgICAgICApIDw9IChjaGVja2VkQXRNcyAgICAgICAgICApICsgSElTVE9SWV9SRUxFQVNFX1JFQ0VJUFRfVFRMX01TOwp9CgovKiogRXhhY3QgZWNobyBjaGVjayBvbmx5LiBUaGUgYmF0Y2ggcG9ydCBpcyByZXNwb25zaWJsZSBmb3IgdGhlIGFjdHVhbCBhdXRob3JpdHkgZGVjaXNpb24uICovCmV4cG9ydCBmdW5jdGlvbiBidWlsZEhpc3RvcnlSZWxlYXNlUmVjZWlwdCgKICByZXF1ZXN0ICAgICAgICAgICAgICAgICAgICAgICAsIGV4cGVjdGVkUHJpbmNpcGFsICAgICAgICAgICAgICAgICAgICAgICAgICwKICBzdWJqZWN0c1NoYTI1NiAgICAgICAgLCB2YWx1ZSAgICAgICAgICwgbm93TXMgICAgICAgICwKKSAgICAgICAgICAgICAgICAgICAgICAgIHsKICBjb25zdCBkZWNpc2lvbiA9IGNsb3NlZCh2YWx1ZSwgWydhdXRob3JpemVkJywgJ29ic2VydmF0aW9uSWQnLCAncm91dGUnLCAncHJpbmNpcGFsJywgJ3N1YmplY3RzU2hhMjU2JywKICAgICdyZXNwb25zZVNoYTI1NicsICdjaGVja2VkQXRNcycsICdleHBpcmVzQXRNcyddKTsKICBjb25zdCBkZWNpZGVkUHJpbmNpcGFsID0gcHJpbmNpcGFsKGRlY2lzaW9uLnByaW5jaXBhbCk7CiAgaWYgKGRlY2lzaW9uLmF1dGhvcml6ZWQgIT09IHRydWUgfHwgZGVjaXNpb24ub2JzZXJ2YXRpb25JZCAhPT0gcmVxdWVzdC5vYnNlcnZhdGlvbklkIHx8CiAgICAgIGRlY2lzaW9uLnJvdXRlICE9PSByZXF1ZXN0LnJvdXRlIHx8IGRlY2lzaW9uLnN1YmplY3RzU2hhMjU2ICE9PSBzdWJqZWN0c1NoYTI1NiB8fAogICAgICBkZWNpc2lvbi5yZXNwb25zZVNoYTI1NiAhPT0gcmVxdWVzdC5yZXNwb25zZVNoYTI1NiB8fAogICAgICBkZWNpZGVkUHJpbmNpcGFsLnRlbmFudElkICE9PSBleHBlY3RlZFByaW5jaXBhbC50ZW5hbnRJZCB8fAogICAgICBkZWNpZGVkUHJpbmNpcGFsLmFjdG9ySWQgIT09IGV4cGVjdGVkUHJpbmNpcGFsLmFjdG9ySWQgfHwKICAgICAgIXZhbGlkVGltZShkZWNpc2lvbi5jaGVja2VkQXRNcywgZGVjaXNpb24uZXhwaXJlc0F0TXMsIG5vd01zKSkgdW5hdmFpbGFibGUoKTsKICByZXR1cm4geyBzY2hlbWFWZXJzaW9uOiAxLCBvYnNlcnZhdGlvbklkOiByZXF1ZXN0Lm9ic2VydmF0aW9uSWQsIHJvdXRlOiByZXF1ZXN0LnJvdXRlLAogICAgcHJpbmNpcGFsOiBkZWNpZGVkUHJpbmNpcGFsLCBzdWJqZWN0c1NoYTI1NiwgcmVzcG9uc2VTaGEyNTY6IHJlcXVlc3QucmVzcG9uc2VTaGEyNTYsCiAgICBjaGVja2VkQXRNczogZGVjaXNpb24uY2hlY2tlZEF0TXMgICAgICAgICAgLCBleHBpcmVzQXRNczogZGVjaXNpb24uZXhwaXJlc0F0TXMgICAgICAgICAgIH07Cn0KCi8qKiBQdXJlIGluZ3Jlc3Mgc2VhbS4gQSBmdXR1cmUgbmF0aXZlLW9ubHkgSFRUUCByb3V0ZSBtdXN0IHN1cHBseSB0aGUgYXV0aGVudGljYXRlZCBwcmluY2lwYWwgYW5kIHF1YWxpZmllZCBwb3J0LiAqLwpleHBvcnQgYXN5bmMgZnVuY3Rpb24gcmVhZEhpc3RvcnlSZWxlYXNlU291cmNlKAogIGJvZHkgICAgICAgICAsIGF1dGhlbnRpY2F0ZWRQcmluY2lwYWwgICAgICAgICAsIHBvcnQgICAgICAgICAgICAgICAgICAgICAgICAgLAogIG5vdyAgICAgICAgICAgICAgID0gRGF0ZS5ub3csCikgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB7CiAgY29uc3QgcmVxdWVzdCA9IHBhcnNlSGlzdG9yeVJlbGVhc2VSZXF1ZXN0KGJvZHkpOwogIGxldCBleHBlY3RlZFByaW5jaXBhbCAgICAgICAgICAgICAgICAgICAgICAgICA7CiAgdHJ5IHsgZXhwZWN0ZWRQcmluY2lwYWwgPSBwcmluY2lwYWwoYXV0aGVudGljYXRlZFByaW5jaXBhbCk7IH0gY2F0Y2ggeyByZXR1cm4gdW5hdmFpbGFibGUoKTsgfQogIGNvbnN0IHN1YmplY3RzU2hhMjU2ID0gaGlzdG9yeVJlbGVhc2VTdWJqZWN0c1NoYTI1NihyZXF1ZXN0LnN1YmplY3RzKTsKICBsZXQgZGVjaXNpb24gICAgICAgICA7CiAgdHJ5IHsgZGVjaXNpb24gPSBhd2FpdCBwb3J0LmRlY2lkZUFsbChyZXF1ZXN0LCBleHBlY3RlZFByaW5jaXBhbCwgc3ViamVjdHNTaGEyNTYpOyB9CiAgY2F0Y2ggeyByZXR1cm4gdW5hdmFpbGFibGUoKTsgfQogIHRyeSB7IHJldHVybiBidWlsZEhpc3RvcnlSZWxlYXNlUmVjZWlwdChyZXF1ZXN0LCBleHBlY3RlZFByaW5jaXBhbCwgc3ViamVjdHNTaGEyNTYsIGRlY2lzaW9uLCBub3coKSk7IH0KICBjYXRjaCB7IHJldHVybiB1bmF2YWlsYWJsZSgpOyB9Cn0K:196:18)
++    async TestContext.<anonymous> (file:///<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:88:207)
++    async Test.run (node:internal/test_runner/test:1389:7)
++    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
++  ...
++# Subtest: real native middleware composes with published batch for selected subject
++not ok 26 - real native middleware composes with published batch for selected subject
++  ---
++  duration_ms: 0.426592
++  type: 'test'
++  location: '<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:88:46'
++  failureType: 'testCodeFailure'
++  error: 'History release unavailable'
++  code: 'UNAVAILABLE'
++  name: 'HistoryReleaseSourceError'
++  stack: |-
++    unavailable (data:text/javascript;base64,aW1wb3J0IHsgY3JlYXRlSGFzaCB9IGZyb20gJ25vZGU6Y3J5cHRvJzsKaW1wb3J0IHsgdHlwZXMgYXMgbm9kZVR5cGVzIH0gZnJvbSAnbm9kZTp1dGlsJzsKaW1wb3J0IHsgY2Fub25pY2FsaXplQ29yZVJldGFpbmVkSnNvbiB9IGZyb20gJ2RhdGE6dGV4dC9qYXZhc2NyaXB0O2Jhc2U2NCxhVzF3YjNKMElIc2dkSGx3WlhNZ1lYTWdibTlrWlZSNWNHVnpJSDBnWm5KdmJTQW5ibTlrWlRwMWRHbHNKenNLQ2k4cUtnb2dLaUJTUmtNZ09EYzROU0JLVTA5T0lFTmhibTl1YVdOaGJHbDZZWFJwYjI0Z1UyTm9aVzFsSUdadmNpQjBhR1VnYzJWeWRtVnlMVzl1YkhrZ2NtVjBZV2x1WldRdGNtVmhaQW9nS2lCamIyUmxZM011SUVsdWNIVjBJRzExYzNRZ1lXeHlaV0ZrZVNCaVpTQmhJRXBUVDA0Z2RtRnNkV1U2SUhCc1lXbHVJRzlpYW1WamRITXNJR0Z5Y21GNWN5d2djM1J5YVc1bmN5d0tJQ29nWm1sdWFYUmxJRzUxYldKbGNuTXNJR0p2YjJ4bFlXNXpJR0Z1WkNCdWRXeHNMaUJCYm5sMGFHbHVaeUJoSUVwVFQwNGdjbTkxYm1RZ2RISnBjQ0IzYjNWc1pDQmphR0Z1WjJVZ2IzSUtJQ29nWkhKdmNDQW9kVzVrWldacGJtVmtMQ0JtZFc1amRHbHZibk1zSUhONWJXSnZiSE1zSUdKcFoybHVkQ3dnYm05dUxYQnNZV2x1SUc5aWFtVmpkSE1zSUhOd1lYSnpaUW9nS2lCaGNuSmhlWE1zSUd4dmJtVWdjM1Z5Y205bllYUmxjeXdnWTNsamJHVnpLU0JwY3lCeVpXWjFjMlZrSUdsdWMzUmxZV1FnYjJZZ2MybHNaVzUwYkhrZ1kyOWxjbU5sWkM0S0lDb0tJQ29nVG5WdFltVnljeUIxYzJVZ1JVTk5RVk5qY21sd2RDQk9kVzFpWlhJNk9uUnZVM1J5YVc1bklIUm9jbTkxWjJnZ1NsTlBUaTV6ZEhKcGJtZHBabmtzSUhkb2FXTm9JR2x6Q2lBcUlIZG9ZWFFnVWtaRElEZzNPRFVnd3FjekxqSXVNaTR6SUhOd1pXTnBabWxsY3pzZ2MzUnlhVzVuY3lCMWMyVWdTbE5QVGk1emRISnBibWRwWm5rZ1pYTmpZWEJwYm1jS0lDb2dLTUtuTXk0eUxqSXVNaWs3SUc5aWFtVmpkQ0J0WlcxaVpYSnpJR0Z5WlNCemIzSjBaV1FnWW5rZ1ZWUkdMVEUySUdOdlpHVWdkVzVwZEhNZ0tNS25NeTR5TGpNcExDQjNhR2xqYUFvZ0tpQnBjeUIwYUdVZ1pHVm1ZWFZzZENCQmNuSmhlUzV3Y205MGIzUjVjR1V1YzI5eWRDQnZjbVJsY2lCbWIzSWdjM1J5YVc1bmN5NEtJQ292Q21WNGNHOXlkQ0JqYkdGemN5QkRiM0psVW1WMFlXbHVaV1JLWTNORmNuSnZjaUJsZUhSbGJtUnpJRVZ5Y205eUlIc0tJQ0FnSUNBZ0lDQWdJQ0JqYjJSbElEMGdKME5QVWtWZlVrVlVRVWxPUlVSZlNrTlRYMGxPVmtGTVNVUW5Pd29nSUdOdmJuTjBjblZqZEc5eUtHMWxjM05oWjJVZ0lDQWdJQ0FnSUNrZ2V5QnpkWEJsY2lodFpYTnpZV2RsS1RzZ2RHaHBjeTV1WVcxbElEMGdKME52Y21WU1pYUmhhVzVsWkVwamMwVnljbTl5SnpzZ2ZRcDlDZ3BqYjI1emRDQk1UMDVGWDFOVlVsSlBSMEZVUlNBOUlDOWJYSFZFT0RBd0xWeDFSRUpHUmwwb1B5RmJYSFZFUXpBd0xWeDFSRVpHUmwwcGZDZy9QQ0ZiWEhWRU9EQXdMVngxUkVKR1JsMHBXMXgxUkVNd01DMWNkVVJHUmtaZEx6c0tDbVY0Y0c5eWRDQm1kVzVqZEdsdmJpQmpZVzV2Ym1sallXeHBlbVZEYjNKbFVtVjBZV2x1WldSS2MyOXVLSFpoYkhWbElDQWdJQ0FnSUNBZ0tTQWdJQ0FnSUNBZ0lIc0tJQ0J5WlhSMWNtNGdjMlZ5YVdGc2FYcGxLSFpoYkhWbExDQnVaWGNnVTJWMEtDa3BPd3A5Q2dwbWRXNWpkR2x2YmlCelpYSnBZV3hwZW1Vb2RtRnNkV1VnSUNBZ0lDQWdJQ0FzSUhOMFlXTnJJQ0FnSUNBZ0lDQWdJQ0FnSUNrZ0lDQWdJQ0FnSUNCN0NpQWdhV1lnS0haaGJIVmxJRDA5UFNCdWRXeHNLU0J5WlhSMWNtNGdKMjUxYkd3bk93b2dJSE4zYVhSamFDQW9kSGx3Wlc5bUlIWmhiSFZsS1NCN0NpQWdJQ0JqWVhObElDZGliMjlzWldGdUp6b0tJQ0FnSUNBZ2NtVjBkWEp1SUhaaGJIVmxJRDhnSjNSeWRXVW5JRG9nSjJaaGJITmxKenNLSUNBZ0lHTmhjMlVnSjI1MWJXSmxjaWM2Q2lBZ0lDQWdJR2xtSUNnaFRuVnRZbVZ5TG1selJtbHVhWFJsS0haaGJIVmxLU2tnZEdoeWIzY2dibVYzSUVOdmNtVlNaWFJoYVc1bFpFcGpjMFZ5Y205eUtDZE9iMjR0Wm1sdWFYUmxJRzUxYldKbGNpY3BPd29nSUNBZ0lDQnlaWFIxY200Z1NsTlBUaTV6ZEhKcGJtZHBabmtvZG1Gc2RXVXBPd29nSUNBZ1kyRnpaU0FuYzNSeWFXNW5Kem9LSUNBZ0lDQWdjbVYwZFhKdUlITjBjbWx1WnloMllXeDFaU2s3Q2lBZ0lDQmpZWE5sSUNkdlltcGxZM1FuT2dvZ0lDQWdJQ0JpY21WaGF6c0tJQ0FnSUdSbFptRjFiSFE2Q2lBZ0lDQWdJSFJvY205M0lHNWxkeUJEYjNKbFVtVjBZV2x1WldSS1kzTkZjbkp2Y2loZ1ZXNXpkWEJ3YjNKMFpXUWdKSHQwZVhCbGIyWWdkbUZzZFdWOUlIWmhiSFZsWUNrN0NpQWdmUW9nSUdOdmJuTjBJRzlpYW1WamRDQTlJSFpoYkhWbElDQWdJQ0FnSUNBZ0lEc0tJQ0JwWmlBb2JtOWtaVlI1Y0dWekxtbHpVSEp2ZUhrb2IySnFaV04wS1NrZ2RHaHliM2NnYm1WM0lFTnZjbVZTWlhSaGFXNWxaRXBqYzBWeWNtOXlLQ2RRY205NGVTQjJZV3gxWlNjcE93b2dJR2xtSUNoemRHRmpheTVvWVhNb2IySnFaV04wS1NrZ2RHaHliM2NnYm1WM0lFTnZjbVZTWlhSaGFXNWxaRXBqYzBWeWNtOXlLQ2REZVdOc2FXTWdkbUZzZFdVbktUc0tJQ0J6ZEdGamF5NWhaR1FvYjJKcVpXTjBLVHNLSUNCMGNua2dld29nSUNBZ2FXWWdLRUZ5Y21GNUxtbHpRWEp5WVhrb2IySnFaV04wS1NrZ2V3b2dJQ0FnSUNCcFppQW9UMkpxWldOMExtZGxkRkJ5YjNSdmRIbHdaVTltS0c5aWFtVmpkQ2tnSVQwOUlFRnljbUY1TG5CeWIzUnZkSGx3WlNrZ2RHaHliM2NnYm1WM0lFTnZjbVZTWlhSaGFXNWxaRXBqYzBWeWNtOXlLQ2RPYjI0dGNHeGhhVzRnWVhKeVlYa25LVHNLSUNBZ0lDQWdZMjl1YzNRZ2NHRnlkSE1nSUNBZ0lDQWdJQ0FnSUQwZ1cxMDdDaUFnSUNBZ0lHWnZjaUFvYkdWMElHbHVaR1Y0SUQwZ01Ec2dhVzVrWlhnZ1BDQnZZbXBsWTNRdWJHVnVaM1JvT3lCcGJtUmxlQ0FyUFNBeEtTQjdDaUFnSUNBZ0lDQWdhV1lnS0NGUFltcGxZM1F1Y0hKdmRHOTBlWEJsTG1oaGMwOTNibEJ5YjNCbGNuUjVMbU5oYkd3b2IySnFaV04wTENCcGJtUmxlQ2twSUhSb2NtOTNJRzVsZHlCRGIzSmxVbVYwWVdsdVpXUktZM05GY25KdmNpZ25VM0JoY25ObElHRnljbUY1SnlrN0NpQWdJQ0FnSUNBZ2NHRnlkSE11Y0hWemFDaHpaWEpwWVd4cGVtVW9iMkpxWldOMFcybHVaR1Y0WFN3Z2MzUmhZMnNwS1RzS0lDQWdJQ0FnZlFvZ0lDQWdJQ0J5WlhSMWNtNGdZRnNrZTNCaGNuUnpMbXB2YVc0b0p5d25LWDFkWURzS0lDQWdJSDBLSUNBZ0lHTnZibk4wSUhCeWIzUnZkSGx3WlNBOUlFOWlhbVZqZEM1blpYUlFjbTkwYjNSNWNHVlBaaWh2WW1wbFkzUXBPd29nSUNBZ2FXWWdLSEJ5YjNSdmRIbHdaU0FoUFQwZ1QySnFaV04wTG5CeWIzUnZkSGx3WlNBbUppQndjbTkwYjNSNWNHVWdJVDA5SUc1MWJHd3BJSFJvY205M0lHNWxkeUJEYjNKbFVtVjBZV2x1WldSS1kzTkZjbkp2Y2lnblRtOXVMWEJzWVdsdUlHOWlhbVZqZENjcE93b2dJQ0FnWTI5dWMzUWdhMlY1Y3lBOUlGSmxabXhsWTNRdWIzZHVTMlY1Y3lodlltcGxZM1FwT3dvZ0lDQWdhV1lnS0d0bGVYTXVjMjl0WlNnb2EyVjVLU0E5UGlCMGVYQmxiMllnYTJWNUlDRTlQU0FuYzNSeWFXNW5KeWtwSUhSb2NtOTNJRzVsZHlCRGIzSmxVbVYwWVdsdVpXUktZM05GY25KdmNpZ25VM2x0WW05c0lHdGxlU2NwT3dvZ0lDQWdZMjl1YzNRZ2JXVnRZbVZ5Y3lBZ0lDQWdJQ0FnSUNBZ1BTQmJYVHNLSUNBZ0lHWnZjaUFvWTI5dWMzUWdhMlY1SUc5bUlDaHJaWGx6SUNBZ0lDQWdJQ0FnSUNBZ0tTNXpiM0owS0NrcElIc0tJQ0FnSUNBZ1kyOXVjM1FnWkdWelkzSnBjSFJ2Y2lBOUlFOWlhbVZqZEM1blpYUlBkMjVRY205d1pYSjBlVVJsYzJOeWFYQjBiM0lvYjJKcVpXTjBMQ0JyWlhrcE93b2dJQ0FnSUNCcFppQW9JV1JsYzJOeWFYQjBiM0lnZkh3Z0lXUmxjMk55YVhCMGIzSXVaVzUxYldWeVlXSnNaU0I4ZkNBaEtDZDJZV3gxWlNjZ2FXNGdaR1Z6WTNKcGNIUnZjaWtwSUhzS0lDQWdJQ0FnSUNCMGFISnZkeUJ1WlhjZ1EyOXlaVkpsZEdGcGJtVmtTbU56UlhKeWIzSW9KMEZqWTJWemMyOXlJRzl5SUc1dmJpMWxiblZ0WlhKaFlteGxJRzFsYldKbGNpY3BPd29nSUNBZ0lDQjlDaUFnSUNBZ0lHMWxiV0psY25NdWNIVnphQ2hnSkh0emRISnBibWNvYTJWNUtYMDZKSHR6WlhKcFlXeHBlbVVvWkdWelkzSnBjSFJ2Y2k1MllXeDFaU3dnYzNSaFkyc3BmV0FwT3dvZ0lDQWdmUW9nSUNBZ2NtVjBkWEp1SUdCN0pIdHRaVzFpWlhKekxtcHZhVzRvSnl3bktYMTlZRHNLSUNCOUlHWnBibUZzYkhrZ2V3b2dJQ0FnYzNSaFkyc3VaR1ZzWlhSbEtHOWlhbVZqZENrN0NpQWdmUXA5Q2dwbWRXNWpkR2x2YmlCemRISnBibWNvZG1Gc2RXVWdJQ0FnSUNBZ0lDa2dJQ0FnSUNBZ0lDQjdDaUFnYVdZZ0tFeFBUa1ZmVTFWU1VrOUhRVlJGTG5SbGMzUW9kbUZzZFdVcEtTQjBhSEp2ZHlCdVpYY2dRMjl5WlZKbGRHRnBibVZrU21OelJYSnliM0lvSjB4dmJtVWdjM1Z5Y205bllYUmxKeWs3Q2lBZ2NtVjBkWEp1SUVwVFQwNHVjM1J5YVc1bmFXWjVLSFpoYkhWbEtUc0tmUW89JzsKCi8qKiBVbm1vdW50ZWQgQ29yZS9NZXJpIHNhdmVkLWhpc3Rvcnkgd2lyZS4gUGFyc2luZyBhbmQgaGFzaGluZyBkbyBub3QgYXV0aG9yaXplIGEgcmVhZC4gKi8KZXhwb3J0IGNvbnN0IEhJU1RPUllfUkVMRUFTRV9NQVhfU1VCSkVDVFMgPSAxMDA7CmV4cG9ydCBjb25zdCBISVNUT1JZX1JFTEVBU0VfTUFYX1NDT1BFUyA9IDEwMDsKZXhwb3J0IGNvbnN0IEhJU1RPUllfUkVMRUFTRV9SRUNFSVBUX1RUTF9NUyA9IDVfMDAwOwoKY29uc3QgVVVJRCA9IC9eWzAtOWEtZl17OH0tWzAtOWEtZl17NH0tWzAtOWEtZl17NH0tWzAtOWEtZl17NH0tWzAtOWEtZl17MTJ9JC87CmNvbnN0IFNIQTI1NiA9IC9eWzAtOWEtZl17NjR9JC87CmNvbnN0IFNDT1BFX0tJTkRTID0gbmV3IFNldChbCiAgJ3RlbmFudCcsICdjbGllbnQnLCAnbWFpbGJveCcsICdtZW1vcnknLCAnZG9jdW1lbnQnLCAncHJpdmF0ZS11c2VyJywgJ3B1YmxpYycsCl0gICAgICAgICApOwoKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKCi8qKiBUaGUgZnV0dXJlIG93bmVyIG11c3QgcmV0dXJuIG9uZSBkZWNpc2lvbiBmb3IgdGhlIHdob2xlIG9yZGVyZWQgdmVjdG9yLiAqLwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgIAogCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgCiAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAKCmV4cG9ydCBjbGFzcyBIaXN0b3J5UmVsZWFzZVNvdXJjZUVycm9yIGV4dGVuZHMgRXJyb3IgewogICAgICAgICAgIGNvZGUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDsKICBjb25zdHJ1Y3Rvcihjb2RlICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICApIHsKICAgIHN1cGVyKCdIaXN0b3J5IHJlbGVhc2UgdW5hdmFpbGFibGUnKTsKICAgIHRoaXMubmFtZSA9ICdIaXN0b3J5UmVsZWFzZVNvdXJjZUVycm9yJzsKICAgIHRoaXMuY29kZSA9IGNvZGU7CiAgfQp9CmZ1bmN0aW9uIGludmFsaWQoKSAgICAgICAgeyB0aHJvdyBuZXcgSGlzdG9yeVJlbGVhc2VTb3VyY2VFcnJvcignSU5WQUxJRF9SRVFVRVNUJyk7IH0KZnVuY3Rpb24gdW5hdmFpbGFibGUoKSAgICAgICAgeyB0aHJvdyBuZXcgSGlzdG9yeVJlbGVhc2VTb3VyY2VFcnJvcignVU5BVkFJTEFCTEUnKTsgfQoKZnVuY3Rpb24gY2xvc2VkKHZhbHVlICAgICAgICAgLCBrZXlzICAgICAgICAgICAgICAgICAgICkgICAgICAgICAgICAgICAgICAgICAgICAgIHsKICBpZiAoIXZhbHVlIHx8IHR5cGVvZiB2YWx1ZSAhPT0gJ29iamVjdCcgfHwgbm9kZVR5cGVzLmlzUHJveHkodmFsdWUpIHx8IEFycmF5LmlzQXJyYXkodmFsdWUpIHx8CiAgICAgIChPYmplY3QuZ2V0UHJvdG90eXBlT2YodmFsdWUpICE9PSBPYmplY3QucHJvdG90eXBlICYmIE9iamVjdC5nZXRQcm90b3R5cGVPZih2YWx1ZSkgIT09IG51bGwpKSBpbnZhbGlkKCk7CiAgY29uc3QgYWN0dWFsID0gUmVmbGVjdC5vd25LZXlzKHZhbHVlKTsKICBpZiAoYWN0dWFsLmxlbmd0aCAhPT0ga2V5cy5sZW5ndGggfHwgYWN0dWFsLnNvbWUoKGtleSkgPT4gdHlwZW9mIGtleSAhPT0gJ3N0cmluZycgfHwgIWtleXMuaW5jbHVkZXMoa2V5KSkpIGludmFsaWQoKTsKICBjb25zdCByZXN1bHQgICAgICAgICAgICAgICAgICAgICAgICAgID0gT2JqZWN0LmNyZWF0ZShudWxsKTsKICBmb3IgKGNvbnN0IGtleSBvZiBrZXlzKSB7CiAgICBjb25zdCBwcm9wZXJ0eSA9IE9iamVjdC5nZXRPd25Qcm9wZXJ0eURlc2NyaXB0b3IodmFsdWUsIGtleSk7CiAgICBpZiAoIXByb3BlcnR5IHx8ICFwcm9wZXJ0eS5lbnVtZXJhYmxlIHx8ICEoJ3ZhbHVlJyBpbiBwcm9wZXJ0eSkpIGludmFsaWQoKTsKICAgIHJlc3VsdFtrZXldID0gcHJvcGVydHkudmFsdWU7CiAgfQogIHJldHVybiByZXN1bHQ7Cn0KCmZ1bmN0aW9uIGJvdW5kZWRBcnJheSh2YWx1ZSAgICAgICAgICwgbWluICAgICAgICAsIG1heCAgICAgICAgKSAgICAgICAgICAgIHsKICBpZiAoIUFycmF5LmlzQXJyYXkodmFsdWUpIHx8IG5vZGVUeXBlcy5pc1Byb3h5KHZhbHVlKSB8fCBPYmplY3QuZ2V0UHJvdG90eXBlT2YodmFsdWUpICE9PSBBcnJheS5wcm90b3R5cGUgfHwKICAgICAgdmFsdWUubGVuZ3RoIDwgbWluIHx8IHZhbHVlLmxlbmd0aCA+IG1heCB8fCBSZWZsZWN0Lm93bktleXModmFsdWUpLmxlbmd0aCAhPT0gdmFsdWUubGVuZ3RoICsgMSkgaW52YWxpZCgpOwogIGNvbnN0IHJlc3VsdCAgICAgICAgICAgID0gW107CiAgZm9yIChsZXQgaW5kZXggPSAwOyBpbmRleCA8IHZhbHVlLmxlbmd0aDsgaW5kZXggKz0gMSkgewogICAgY29uc3QgcHJvcGVydHkgPSBPYmplY3QuZ2V0T3duUHJvcGVydHlEZXNjcmlwdG9yKHZhbHVlLCBTdHJpbmcoaW5kZXgpKTsKICAgIGlmICghcHJvcGVydHkgfHwgIXByb3BlcnR5LmVudW1lcmFibGUgfHwgISgndmFsdWUnIGluIHByb3BlcnR5KSkgaW52YWxpZCgpOwogICAgcmVzdWx0LnB1c2gocHJvcGVydHkudmFsdWUpOwogIH0KICByZXR1cm4gcmVzdWx0Owp9CgpmdW5jdGlvbiB0ZXh0KHZhbHVlICAgICAgICAgLCBtYXggICAgICAgICkgICAgICAgICB7CiAgaWYgKHR5cGVvZiB2YWx1ZSAhPT0gJ3N0cmluZycgfHwgdmFsdWUubGVuZ3RoIDwgMSB8fCB2YWx1ZS5sZW5ndGggPiBtYXgpIGludmFsaWQoKTsKICByZXR1cm4gdmFsdWU7Cn0KZnVuY3Rpb24gdXVpZCh2YWx1ZSAgICAgICAgICkgICAgICAgICB7CiAgaWYgKHR5cGVvZiB2YWx1ZSAhPT0gJ3N0cmluZycgfHwgIVVVSUQudGVzdCh2YWx1ZSkpIGludmFsaWQoKTsKICByZXR1cm4gdmFsdWU7Cn0KZnVuY3Rpb24gZGlnZXN0KHZhbHVlICAgICAgICAgKSAgICAgICAgIHsKICBpZiAodHlwZW9mIHZhbHVlICE9PSAnc3RyaW5nJyB8fCAhU0hBMjU2LnRlc3QodmFsdWUpKSBpbnZhbGlkKCk7CiAgcmV0dXJuIHZhbHVlOwp9CmZ1bmN0aW9uIHByaW5jaXBhbCh2YWx1ZSAgICAgICAgICkgICAgICAgICAgICAgICAgICAgICAgICAgIHsKICBjb25zdCBwID0gY2xvc2VkKHZhbHVlLCBbJ3RlbmFudElkJywgJ2FjdG9ySWQnXSk7CiAgcmV0dXJuIE9iamVjdC5mcmVlemUoeyB0ZW5hbnRJZDogdXVpZChwLnRlbmFudElkKSwgYWN0b3JJZDogdXVpZChwLmFjdG9ySWQpIH0pOwp9CgpleHBvcnQgZnVuY3Rpb24gcGFyc2VIaXN0b3J5UmVsZWFzZVJlcXVlc3QodmFsdWUgICAgICAgICApICAgICAgICAgICAgICAgICAgICAgICAgewogIGNvbnN0IHJlcXVlc3QgPSBjbG9zZWQodmFsdWUsIFsnc2NoZW1hVmVyc2lvbicsICdvYnNlcnZhdGlvbklkJywgJ3JvdXRlJywgJ3Jlc3BvbnNlU2hhMjU2JywgJ3N1YmplY3RzJ10pOwogIGlmIChyZXF1ZXN0LnNjaGVtYVZlcnNpb24gIT09IDEgfHwgKHJlcXVlc3Qucm91dGUgIT09ICdsaXN0JyAmJiByZXF1ZXN0LnJvdXRlICE9PSAndHJhbnNjcmlwdCcpKSBpbnZhbGlkKCk7CiAgY29uc3Qgcm93cyA9IGJvdW5kZWRBcnJheShyZXF1ZXN0LnN1YmplY3RzLCByZXF1ZXN0LnJvdXRlID09PSAndHJhbnNjcmlwdCcgPyAxIDogMCwKICAgIHJlcXVlc3Qucm91dGUgPT09ICd0cmFuc2NyaXB0JyA/IDEgOiBISVNUT1JZX1JFTEVBU0VfTUFYX1NVQkpFQ1RTKTsKICBjb25zdCBzZWVuQ29udmVyc2F0aW9ucyA9IG5ldyBTZXQgICAgICAgICgpOwogIGxldCB0b3RhbFNjb3BlcyA9IDA7CiAgY29uc3Qgc3ViamVjdHMgICAgICAgICAgICAgICAgICAgICAgICAgID0gcm93cy5tYXAoKHZhbHVlKSA9PiB7CiAgICBjb25zdCByb3cgPSBjbG9zZWQodmFsdWUsIFsnY29udmVyc2F0aW9uSWQnLCAnY2xpZW50SWQnLCAnc2NvcGVzJ10pOwogICAgY29uc3QgY29udmVyc2F0aW9uSWQgPSB1dWlkKHJvdy5jb252ZXJzYXRpb25JZCk7CiAgICBpZiAoc2VlbkNvbnZlcnNhdGlvbnMuaGFzKGNvbnZlcnNhdGlvbklkKSkgaW52YWxpZCgpOwogICAgc2VlbkNvbnZlcnNhdGlvbnMuYWRkKGNvbnZlcnNhdGlvbklkKTsKICAgIGNvbnN0IHNjb3BlcyA9IE9iamVjdC5mcmVlemUoYm91bmRlZEFycmF5KHJvdy5zY29wZXMsIDEsIEhJU1RPUllfUkVMRUFTRV9NQVhfU0NPUEVTKS5tYXAoKHZhbHVlKSA9PiB7CiAgICAgIGNvbnN0IHNjb3BlID0gY2xvc2VkKHZhbHVlLCBbJ3RlbmFudElkJywgJ2tpbmQnLCAncmVzb3VyY2VJZCcsICdwb2xpY3lSZXZpc2lvbiddKTsKICAgICAgaWYgKHR5cGVvZiBzY29wZS5raW5kICE9PSAnc3RyaW5nJyB8fCAhU0NPUEVfS0lORFMuaGFzKHNjb3BlLmtpbmQgICAgICAgICAgICAgICAgICAgICAgICAgICApKSBpbnZhbGlkKCk7CiAgICAgIHJldHVybiBPYmplY3QuZnJlZXplKHsgdGVuYW50SWQ6IHRleHQoc2NvcGUudGVuYW50SWQsIDEyOCksIGtpbmQ6IHNjb3BlLmtpbmQgICAgICAgICAgICAgICAgICAgICAgICAgICAsCiAgICAgICAgcmVzb3VyY2VJZDogdGV4dChzY29wZS5yZXNvdXJjZUlkLCAyNTYpLCBwb2xpY3lSZXZpc2lvbjogdGV4dChzY29wZS5wb2xpY3lSZXZpc2lvbiwgMTI4KSB9KTsKICAgIH0pKTsKICAgIHRvdGFsU2NvcGVzICs9IHNjb3Blcy5sZW5ndGg7CiAgICBpZiAodG90YWxTY29wZXMgPiBISVNUT1JZX1JFTEVBU0VfTUFYX1NDT1BFUykgaW52YWxpZCgpOwogICAgY29uc3Qgc2VlblNjb3BlcyA9IG5ldyBTZXQgICAgICAgICgpOwogICAgZm9yIChjb25zdCBzY29wZSBvZiBzY29wZXMpIHsKICAgICAgbGV0IGNhbm9uaWNhbCAgICAgICAgOwogICAgICB0cnkgeyBjYW5vbmljYWwgPSBjYW5vbmljYWxpemVDb3JlUmV0YWluZWRKc29uKHNjb3BlKTsgfSBjYXRjaCB7IHJldHVybiBpbnZhbGlkKCk7IH0KICAgICAgaWYgKHNlZW5TY29wZXMuaGFzKGNhbm9uaWNhbCkpIGludmFsaWQoKTsKICAgICAgc2VlblNjb3Blcy5hZGQoY2Fub25pY2FsKTsKICAgIH0KICAgIHJldHVybiBPYmplY3QuZnJlZXplKHsgY29udmVyc2F0aW9uSWQsIGNsaWVudElkOiByb3cuY2xpZW50SWQgPT09IG51bGwgPyBudWxsIDogdXVpZChyb3cuY2xpZW50SWQpLCBzY29wZXMgfSk7CiAgfSk7CiAgcmV0dXJuIE9iamVjdC5mcmVlemUoeyBzY2hlbWFWZXJzaW9uOiAxLCBvYnNlcnZhdGlvbklkOiB1dWlkKHJlcXVlc3Qub2JzZXJ2YXRpb25JZCksIHJvdXRlOiByZXF1ZXN0LnJvdXRlLAogICAgcmVzcG9uc2VTaGEyNTY6IGRpZ2VzdChyZXF1ZXN0LnJlc3BvbnNlU2hhMjU2KSwgc3ViamVjdHM6IE9iamVjdC5mcmVlemUoc3ViamVjdHMpIH0pOwp9CgovKiogUkZDIDg3ODUgb2YgdGhlIG9yZGVyZWQgc3ViamVjdCB2ZWN0b3I7IG9yZGVyIG9mIHN1YmplY3RzIGFuZCBzY29wZXMgaXMgcmV0YWluZWQuICovCmV4cG9ydCBmdW5jdGlvbiBoaXN0b3J5UmVsZWFzZVN1YmplY3RzU2hhMjU2KHN1YmplY3RzICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICkgICAgICAgICB7CiAgdHJ5IHsKICAgIHJldHVybiBjcmVhdGVIYXNoKCdzaGEyNTYnKS51cGRhdGUoY2Fub25pY2FsaXplQ29yZVJldGFpbmVkSnNvbihzdWJqZWN0cyksICd1dGY4JykuZGlnZXN0KCdoZXgnKTsKICB9IGNhdGNoIHsgcmV0dXJuIHVuYXZhaWxhYmxlKCk7IH0KfQoKZnVuY3Rpb24gdmFsaWRUaW1lKGNoZWNrZWRBdE1zICAgICAgICAgLCBleHBpcmVzQXRNcyAgICAgICAgICwgbm93TXMgICAgICAgICkgICAgICAgICAgewogIHJldHVybiBOdW1iZXIuaXNTYWZlSW50ZWdlcihub3dNcykgJiYgbm93TXMgPj0gMCAmJgogICAgTnVtYmVyLmlzU2FmZUludGVnZXIoY2hlY2tlZEF0TXMpICYmIChjaGVja2VkQXRNcyAgICAgICAgICApIDw9IG5vd01zICYmCiAgICBub3dNcyAtIChjaGVja2VkQXRNcyAgICAgICAgICApIDw9IEhJU1RPUllfUkVMRUFTRV9SRUNFSVBUX1RUTF9NUyAmJgogICAgTnVtYmVyLmlzU2FmZUludGVnZXIoZXhwaXJlc0F0TXMpICYmIChleHBpcmVzQXRNcyAgICAgICAgICApID4gbm93TXMgJiYKICAgIChleHBpcmVzQXRNcyAgICAgICAgICApIDw9IChjaGVja2VkQXRNcyAgICAgICAgICApICsgSElTVE9SWV9SRUxFQVNFX1JFQ0VJUFRfVFRMX01TOwp9CgovKiogRXhhY3QgZWNobyBjaGVjayBvbmx5LiBUaGUgYmF0Y2ggcG9ydCBpcyByZXNwb25zaWJsZSBmb3IgdGhlIGFjdHVhbCBhdXRob3JpdHkgZGVjaXNpb24uICovCmV4cG9ydCBmdW5jdGlvbiBidWlsZEhpc3RvcnlSZWxlYXNlUmVjZWlwdCgKICByZXF1ZXN0ICAgICAgICAgICAgICAgICAgICAgICAsIGV4cGVjdGVkUHJpbmNpcGFsICAgICAgICAgICAgICAgICAgICAgICAgICwKICBzdWJqZWN0c1NoYTI1NiAgICAgICAgLCB2YWx1ZSAgICAgICAgICwgbm93TXMgICAgICAgICwKKSAgICAgICAgICAgICAgICAgICAgICAgIHsKICBjb25zdCBkZWNpc2lvbiA9IGNsb3NlZCh2YWx1ZSwgWydhdXRob3JpemVkJywgJ29ic2VydmF0aW9uSWQnLCAncm91dGUnLCAncHJpbmNpcGFsJywgJ3N1YmplY3RzU2hhMjU2JywKICAgICdyZXNwb25zZVNoYTI1NicsICdjaGVja2VkQXRNcycsICdleHBpcmVzQXRNcyddKTsKICBjb25zdCBkZWNpZGVkUHJpbmNpcGFsID0gcHJpbmNpcGFsKGRlY2lzaW9uLnByaW5jaXBhbCk7CiAgaWYgKGRlY2lzaW9uLmF1dGhvcml6ZWQgIT09IHRydWUgfHwgZGVjaXNpb24ub2JzZXJ2YXRpb25JZCAhPT0gcmVxdWVzdC5vYnNlcnZhdGlvbklkIHx8CiAgICAgIGRlY2lzaW9uLnJvdXRlICE9PSByZXF1ZXN0LnJvdXRlIHx8IGRlY2lzaW9uLnN1YmplY3RzU2hhMjU2ICE9PSBzdWJqZWN0c1NoYTI1NiB8fAogICAgICBkZWNpc2lvbi5yZXNwb25zZVNoYTI1NiAhPT0gcmVxdWVzdC5yZXNwb25zZVNoYTI1NiB8fAogICAgICBkZWNpZGVkUHJpbmNpcGFsLnRlbmFudElkICE9PSBleHBlY3RlZFByaW5jaXBhbC50ZW5hbnRJZCB8fAogICAgICBkZWNpZGVkUHJpbmNpcGFsLmFjdG9ySWQgIT09IGV4cGVjdGVkUHJpbmNpcGFsLmFjdG9ySWQgfHwKICAgICAgIXZhbGlkVGltZShkZWNpc2lvbi5jaGVja2VkQXRNcywgZGVjaXNpb24uZXhwaXJlc0F0TXMsIG5vd01zKSkgdW5hdmFpbGFibGUoKTsKICByZXR1cm4geyBzY2hlbWFWZXJzaW9uOiAxLCBvYnNlcnZhdGlvbklkOiByZXF1ZXN0Lm9ic2VydmF0aW9uSWQsIHJvdXRlOiByZXF1ZXN0LnJvdXRlLAogICAgcHJpbmNpcGFsOiBkZWNpZGVkUHJpbmNpcGFsLCBzdWJqZWN0c1NoYTI1NiwgcmVzcG9uc2VTaGEyNTY6IHJlcXVlc3QucmVzcG9uc2VTaGEyNTYsCiAgICBjaGVja2VkQXRNczogZGVjaXNpb24uY2hlY2tlZEF0TXMgICAgICAgICAgLCBleHBpcmVzQXRNczogZGVjaXNpb24uZXhwaXJlc0F0TXMgICAgICAgICAgIH07Cn0KCi8qKiBQdXJlIGluZ3Jlc3Mgc2VhbS4gQSBmdXR1cmUgbmF0aXZlLW9ubHkgSFRUUCByb3V0ZSBtdXN0IHN1cHBseSB0aGUgYXV0aGVudGljYXRlZCBwcmluY2lwYWwgYW5kIHF1YWxpZmllZCBwb3J0LiAqLwpleHBvcnQgYXN5bmMgZnVuY3Rpb24gcmVhZEhpc3RvcnlSZWxlYXNlU291cmNlKAogIGJvZHkgICAgICAgICAsIGF1dGhlbnRpY2F0ZWRQcmluY2lwYWwgICAgICAgICAsIHBvcnQgICAgICAgICAgICAgICAgICAgICAgICAgLAogIG5vdyAgICAgICAgICAgICAgID0gRGF0ZS5ub3csCikgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB7CiAgY29uc3QgcmVxdWVzdCA9IHBhcnNlSGlzdG9yeVJlbGVhc2VSZXF1ZXN0KGJvZHkpOwogIGxldCBleHBlY3RlZFByaW5jaXBhbCAgICAgICAgICAgICAgICAgICAgICAgICA7CiAgdHJ5IHsgZXhwZWN0ZWRQcmluY2lwYWwgPSBwcmluY2lwYWwoYXV0aGVudGljYXRlZFByaW5jaXBhbCk7IH0gY2F0Y2ggeyByZXR1cm4gdW5hdmFpbGFibGUoKTsgfQogIGNvbnN0IHN1YmplY3RzU2hhMjU2ID0gaGlzdG9yeVJlbGVhc2VTdWJqZWN0c1NoYTI1NihyZXF1ZXN0LnN1YmplY3RzKTsKICBsZXQgZGVjaXNpb24gICAgICAgICA7CiAgdHJ5IHsgZGVjaXNpb24gPSBhd2FpdCBwb3J0LmRlY2lkZUFsbChyZXF1ZXN0LCBleHBlY3RlZFByaW5jaXBhbCwgc3ViamVjdHNTaGEyNTYpOyB9CiAgY2F0Y2ggeyByZXR1cm4gdW5hdmFpbGFibGUoKTsgfQogIHRyeSB7IHJldHVybiBidWlsZEhpc3RvcnlSZWxlYXNlUmVjZWlwdChyZXF1ZXN0LCBleHBlY3RlZFByaW5jaXBhbCwgc3ViamVjdHNTaGEyNTYsIGRlY2lzaW9uLCBub3coKSk7IH0KICBjYXRjaCB7IHJldHVybiB1bmF2YWlsYWJsZSgpOyB9Cn0K:73:39)
++    readHistoryReleaseSource (data:text/javascript;base64,aW1wb3J0IHsgY3JlYXRlSGFzaCB9IGZyb20gJ25vZGU6Y3J5cHRvJzsKaW1wb3J0IHsgdHlwZXMgYXMgbm9kZVR5cGVzIH0gZnJvbSAnbm9kZTp1dGlsJzsKaW1wb3J0IHsgY2Fub25pY2FsaXplQ29yZVJldGFpbmVkSnNvbiB9IGZyb20gJ2RhdGE6dGV4dC9qYXZhc2NyaXB0O2Jhc2U2NCxhVzF3YjNKMElIc2dkSGx3WlhNZ1lYTWdibTlrWlZSNWNHVnpJSDBnWm5KdmJTQW5ibTlrWlRwMWRHbHNKenNLQ2k4cUtnb2dLaUJTUmtNZ09EYzROU0JLVTA5T0lFTmhibTl1YVdOaGJHbDZZWFJwYjI0Z1UyTm9aVzFsSUdadmNpQjBhR1VnYzJWeWRtVnlMVzl1YkhrZ2NtVjBZV2x1WldRdGNtVmhaQW9nS2lCamIyUmxZM011SUVsdWNIVjBJRzExYzNRZ1lXeHlaV0ZrZVNCaVpTQmhJRXBUVDA0Z2RtRnNkV1U2SUhCc1lXbHVJRzlpYW1WamRITXNJR0Z5Y21GNWN5d2djM1J5YVc1bmN5d0tJQ29nWm1sdWFYUmxJRzUxYldKbGNuTXNJR0p2YjJ4bFlXNXpJR0Z1WkNCdWRXeHNMaUJCYm5sMGFHbHVaeUJoSUVwVFQwNGdjbTkxYm1RZ2RISnBjQ0IzYjNWc1pDQmphR0Z1WjJVZ2IzSUtJQ29nWkhKdmNDQW9kVzVrWldacGJtVmtMQ0JtZFc1amRHbHZibk1zSUhONWJXSnZiSE1zSUdKcFoybHVkQ3dnYm05dUxYQnNZV2x1SUc5aWFtVmpkSE1zSUhOd1lYSnpaUW9nS2lCaGNuSmhlWE1zSUd4dmJtVWdjM1Z5Y205bllYUmxjeXdnWTNsamJHVnpLU0JwY3lCeVpXWjFjMlZrSUdsdWMzUmxZV1FnYjJZZ2MybHNaVzUwYkhrZ1kyOWxjbU5sWkM0S0lDb0tJQ29nVG5WdFltVnljeUIxYzJVZ1JVTk5RVk5qY21sd2RDQk9kVzFpWlhJNk9uUnZVM1J5YVc1bklIUm9jbTkxWjJnZ1NsTlBUaTV6ZEhKcGJtZHBabmtzSUhkb2FXTm9JR2x6Q2lBcUlIZG9ZWFFnVWtaRElEZzNPRFVnd3FjekxqSXVNaTR6SUhOd1pXTnBabWxsY3pzZ2MzUnlhVzVuY3lCMWMyVWdTbE5QVGk1emRISnBibWRwWm5rZ1pYTmpZWEJwYm1jS0lDb2dLTUtuTXk0eUxqSXVNaWs3SUc5aWFtVmpkQ0J0WlcxaVpYSnpJR0Z5WlNCemIzSjBaV1FnWW5rZ1ZWUkdMVEUySUdOdlpHVWdkVzVwZEhNZ0tNS25NeTR5TGpNcExDQjNhR2xqYUFvZ0tpQnBjeUIwYUdVZ1pHVm1ZWFZzZENCQmNuSmhlUzV3Y205MGIzUjVjR1V1YzI5eWRDQnZjbVJsY2lCbWIzSWdjM1J5YVc1bmN5NEtJQ292Q21WNGNHOXlkQ0JqYkdGemN5QkRiM0psVW1WMFlXbHVaV1JLWTNORmNuSnZjaUJsZUhSbGJtUnpJRVZ5Y205eUlIc0tJQ0FnSUNBZ0lDQWdJQ0JqYjJSbElEMGdKME5QVWtWZlVrVlVRVWxPUlVSZlNrTlRYMGxPVmtGTVNVUW5Pd29nSUdOdmJuTjBjblZqZEc5eUtHMWxjM05oWjJVZ0lDQWdJQ0FnSUNrZ2V5QnpkWEJsY2lodFpYTnpZV2RsS1RzZ2RHaHBjeTV1WVcxbElEMGdKME52Y21WU1pYUmhhVzVsWkVwamMwVnljbTl5SnpzZ2ZRcDlDZ3BqYjI1emRDQk1UMDVGWDFOVlVsSlBSMEZVUlNBOUlDOWJYSFZFT0RBd0xWeDFSRUpHUmwwb1B5RmJYSFZFUXpBd0xWeDFSRVpHUmwwcGZDZy9QQ0ZiWEhWRU9EQXdMVngxUkVKR1JsMHBXMXgxUkVNd01DMWNkVVJHUmtaZEx6c0tDbVY0Y0c5eWRDQm1kVzVqZEdsdmJpQmpZVzV2Ym1sallXeHBlbVZEYjNKbFVtVjBZV2x1WldSS2MyOXVLSFpoYkhWbElDQWdJQ0FnSUNBZ0tTQWdJQ0FnSUNBZ0lIc0tJQ0J5WlhSMWNtNGdjMlZ5YVdGc2FYcGxLSFpoYkhWbExDQnVaWGNnVTJWMEtDa3BPd3A5Q2dwbWRXNWpkR2x2YmlCelpYSnBZV3hwZW1Vb2RtRnNkV1VnSUNBZ0lDQWdJQ0FzSUhOMFlXTnJJQ0FnSUNBZ0lDQWdJQ0FnSUNrZ0lDQWdJQ0FnSUNCN0NpQWdhV1lnS0haaGJIVmxJRDA5UFNCdWRXeHNLU0J5WlhSMWNtNGdKMjUxYkd3bk93b2dJSE4zYVhSamFDQW9kSGx3Wlc5bUlIWmhiSFZsS1NCN0NpQWdJQ0JqWVhObElDZGliMjlzWldGdUp6b0tJQ0FnSUNBZ2NtVjBkWEp1SUhaaGJIVmxJRDhnSjNSeWRXVW5JRG9nSjJaaGJITmxKenNLSUNBZ0lHTmhjMlVnSjI1MWJXSmxjaWM2Q2lBZ0lDQWdJR2xtSUNnaFRuVnRZbVZ5TG1selJtbHVhWFJsS0haaGJIVmxLU2tnZEdoeWIzY2dibVYzSUVOdmNtVlNaWFJoYVc1bFpFcGpjMFZ5Y205eUtDZE9iMjR0Wm1sdWFYUmxJRzUxYldKbGNpY3BPd29nSUNBZ0lDQnlaWFIxY200Z1NsTlBUaTV6ZEhKcGJtZHBabmtvZG1Gc2RXVXBPd29nSUNBZ1kyRnpaU0FuYzNSeWFXNW5Kem9LSUNBZ0lDQWdjbVYwZFhKdUlITjBjbWx1WnloMllXeDFaU2s3Q2lBZ0lDQmpZWE5sSUNkdlltcGxZM1FuT2dvZ0lDQWdJQ0JpY21WaGF6c0tJQ0FnSUdSbFptRjFiSFE2Q2lBZ0lDQWdJSFJvY205M0lHNWxkeUJEYjNKbFVtVjBZV2x1WldSS1kzTkZjbkp2Y2loZ1ZXNXpkWEJ3YjNKMFpXUWdKSHQwZVhCbGIyWWdkbUZzZFdWOUlIWmhiSFZsWUNrN0NpQWdmUW9nSUdOdmJuTjBJRzlpYW1WamRDQTlJSFpoYkhWbElDQWdJQ0FnSUNBZ0lEc0tJQ0JwWmlBb2JtOWtaVlI1Y0dWekxtbHpVSEp2ZUhrb2IySnFaV04wS1NrZ2RHaHliM2NnYm1WM0lFTnZjbVZTWlhSaGFXNWxaRXBqYzBWeWNtOXlLQ2RRY205NGVTQjJZV3gxWlNjcE93b2dJR2xtSUNoemRHRmpheTVvWVhNb2IySnFaV04wS1NrZ2RHaHliM2NnYm1WM0lFTnZjbVZTWlhSaGFXNWxaRXBqYzBWeWNtOXlLQ2REZVdOc2FXTWdkbUZzZFdVbktUc0tJQ0J6ZEdGamF5NWhaR1FvYjJKcVpXTjBLVHNLSUNCMGNua2dld29nSUNBZ2FXWWdLRUZ5Y21GNUxtbHpRWEp5WVhrb2IySnFaV04wS1NrZ2V3b2dJQ0FnSUNCcFppQW9UMkpxWldOMExtZGxkRkJ5YjNSdmRIbHdaVTltS0c5aWFtVmpkQ2tnSVQwOUlFRnljbUY1TG5CeWIzUnZkSGx3WlNrZ2RHaHliM2NnYm1WM0lFTnZjbVZTWlhSaGFXNWxaRXBqYzBWeWNtOXlLQ2RPYjI0dGNHeGhhVzRnWVhKeVlYa25LVHNLSUNBZ0lDQWdZMjl1YzNRZ2NHRnlkSE1nSUNBZ0lDQWdJQ0FnSUQwZ1cxMDdDaUFnSUNBZ0lHWnZjaUFvYkdWMElHbHVaR1Y0SUQwZ01Ec2dhVzVrWlhnZ1BDQnZZbXBsWTNRdWJHVnVaM1JvT3lCcGJtUmxlQ0FyUFNBeEtTQjdDaUFnSUNBZ0lDQWdhV1lnS0NGUFltcGxZM1F1Y0hKdmRHOTBlWEJsTG1oaGMwOTNibEJ5YjNCbGNuUjVMbU5oYkd3b2IySnFaV04wTENCcGJtUmxlQ2twSUhSb2NtOTNJRzVsZHlCRGIzSmxVbVYwWVdsdVpXUktZM05GY25KdmNpZ25VM0JoY25ObElHRnljbUY1SnlrN0NpQWdJQ0FnSUNBZ2NHRnlkSE11Y0hWemFDaHpaWEpwWVd4cGVtVW9iMkpxWldOMFcybHVaR1Y0WFN3Z2MzUmhZMnNwS1RzS0lDQWdJQ0FnZlFvZ0lDQWdJQ0J5WlhSMWNtNGdZRnNrZTNCaGNuUnpMbXB2YVc0b0p5d25LWDFkWURzS0lDQWdJSDBLSUNBZ0lHTnZibk4wSUhCeWIzUnZkSGx3WlNBOUlFOWlhbVZqZEM1blpYUlFjbTkwYjNSNWNHVlBaaWh2WW1wbFkzUXBPd29nSUNBZ2FXWWdLSEJ5YjNSdmRIbHdaU0FoUFQwZ1QySnFaV04wTG5CeWIzUnZkSGx3WlNBbUppQndjbTkwYjNSNWNHVWdJVDA5SUc1MWJHd3BJSFJvY205M0lHNWxkeUJEYjNKbFVtVjBZV2x1WldSS1kzTkZjbkp2Y2lnblRtOXVMWEJzWVdsdUlHOWlhbVZqZENjcE93b2dJQ0FnWTI5dWMzUWdhMlY1Y3lBOUlGSmxabXhsWTNRdWIzZHVTMlY1Y3lodlltcGxZM1FwT3dvZ0lDQWdhV1lnS0d0bGVYTXVjMjl0WlNnb2EyVjVLU0E5UGlCMGVYQmxiMllnYTJWNUlDRTlQU0FuYzNSeWFXNW5KeWtwSUhSb2NtOTNJRzVsZHlCRGIzSmxVbVYwWVdsdVpXUktZM05GY25KdmNpZ25VM2x0WW05c0lHdGxlU2NwT3dvZ0lDQWdZMjl1YzNRZ2JXVnRZbVZ5Y3lBZ0lDQWdJQ0FnSUNBZ1BTQmJYVHNLSUNBZ0lHWnZjaUFvWTI5dWMzUWdhMlY1SUc5bUlDaHJaWGx6SUNBZ0lDQWdJQ0FnSUNBZ0tTNXpiM0owS0NrcElIc0tJQ0FnSUNBZ1kyOXVjM1FnWkdWelkzSnBjSFJ2Y2lBOUlFOWlhbVZqZEM1blpYUlBkMjVRY205d1pYSjBlVVJsYzJOeWFYQjBiM0lvYjJKcVpXTjBMQ0JyWlhrcE93b2dJQ0FnSUNCcFppQW9JV1JsYzJOeWFYQjBiM0lnZkh3Z0lXUmxjMk55YVhCMGIzSXVaVzUxYldWeVlXSnNaU0I4ZkNBaEtDZDJZV3gxWlNjZ2FXNGdaR1Z6WTNKcGNIUnZjaWtwSUhzS0lDQWdJQ0FnSUNCMGFISnZkeUJ1WlhjZ1EyOXlaVkpsZEdGcGJtVmtTbU56UlhKeWIzSW9KMEZqWTJWemMyOXlJRzl5SUc1dmJpMWxiblZ0WlhKaFlteGxJRzFsYldKbGNpY3BPd29nSUNBZ0lDQjlDaUFnSUNBZ0lHMWxiV0psY25NdWNIVnphQ2hnSkh0emRISnBibWNvYTJWNUtYMDZKSHR6WlhKcFlXeHBlbVVvWkdWelkzSnBjSFJ2Y2k1MllXeDFaU3dnYzNSaFkyc3BmV0FwT3dvZ0lDQWdmUW9nSUNBZ2NtVjBkWEp1SUdCN0pIdHRaVzFpWlhKekxtcHZhVzRvSnl3bktYMTlZRHNLSUNCOUlHWnBibUZzYkhrZ2V3b2dJQ0FnYzNSaFkyc3VaR1ZzWlhSbEtHOWlhbVZqZENrN0NpQWdmUXA5Q2dwbWRXNWpkR2x2YmlCemRISnBibWNvZG1Gc2RXVWdJQ0FnSUNBZ0lDa2dJQ0FnSUNBZ0lDQjdDaUFnYVdZZ0tFeFBUa1ZmVTFWU1VrOUhRVlJGTG5SbGMzUW9kbUZzZFdVcEtTQjBhSEp2ZHlCdVpYY2dRMjl5WlZKbGRHRnBibVZrU21OelJYSnliM0lvSjB4dmJtVWdjM1Z5Y205bllYUmxKeWs3Q2lBZ2NtVjBkWEp1SUVwVFQwNHVjM1J5YVc1bmFXWjVLSFpoYkhWbEtUc0tmUW89JzsKCi8qKiBVbm1vdW50ZWQgQ29yZS9NZXJpIHNhdmVkLWhpc3Rvcnkgd2lyZS4gUGFyc2luZyBhbmQgaGFzaGluZyBkbyBub3QgYXV0aG9yaXplIGEgcmVhZC4gKi8KZXhwb3J0IGNvbnN0IEhJU1RPUllfUkVMRUFTRV9NQVhfU1VCSkVDVFMgPSAxMDA7CmV4cG9ydCBjb25zdCBISVNUT1JZX1JFTEVBU0VfTUFYX1NDT1BFUyA9IDEwMDsKZXhwb3J0IGNvbnN0IEhJU1RPUllfUkVMRUFTRV9SRUNFSVBUX1RUTF9NUyA9IDVfMDAwOwoKY29uc3QgVVVJRCA9IC9eWzAtOWEtZl17OH0tWzAtOWEtZl17NH0tWzAtOWEtZl17NH0tWzAtOWEtZl17NH0tWzAtOWEtZl17MTJ9JC87CmNvbnN0IFNIQTI1NiA9IC9eWzAtOWEtZl17NjR9JC87CmNvbnN0IFNDT1BFX0tJTkRTID0gbmV3IFNldChbCiAgJ3RlbmFudCcsICdjbGllbnQnLCAnbWFpbGJveCcsICdtZW1vcnknLCAnZG9jdW1lbnQnLCAncHJpdmF0ZS11c2VyJywgJ3B1YmxpYycsCl0gICAgICAgICApOwoKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKCi8qKiBUaGUgZnV0dXJlIG93bmVyIG11c3QgcmV0dXJuIG9uZSBkZWNpc2lvbiBmb3IgdGhlIHdob2xlIG9yZGVyZWQgdmVjdG9yLiAqLwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgIAogCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgCiAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAKCmV4cG9ydCBjbGFzcyBIaXN0b3J5UmVsZWFzZVNvdXJjZUVycm9yIGV4dGVuZHMgRXJyb3IgewogICAgICAgICAgIGNvZGUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDsKICBjb25zdHJ1Y3Rvcihjb2RlICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICApIHsKICAgIHN1cGVyKCdIaXN0b3J5IHJlbGVhc2UgdW5hdmFpbGFibGUnKTsKICAgIHRoaXMubmFtZSA9ICdIaXN0b3J5UmVsZWFzZVNvdXJjZUVycm9yJzsKICAgIHRoaXMuY29kZSA9IGNvZGU7CiAgfQp9CmZ1bmN0aW9uIGludmFsaWQoKSAgICAgICAgeyB0aHJvdyBuZXcgSGlzdG9yeVJlbGVhc2VTb3VyY2VFcnJvcignSU5WQUxJRF9SRVFVRVNUJyk7IH0KZnVuY3Rpb24gdW5hdmFpbGFibGUoKSAgICAgICAgeyB0aHJvdyBuZXcgSGlzdG9yeVJlbGVhc2VTb3VyY2VFcnJvcignVU5BVkFJTEFCTEUnKTsgfQoKZnVuY3Rpb24gY2xvc2VkKHZhbHVlICAgICAgICAgLCBrZXlzICAgICAgICAgICAgICAgICAgICkgICAgICAgICAgICAgICAgICAgICAgICAgIHsKICBpZiAoIXZhbHVlIHx8IHR5cGVvZiB2YWx1ZSAhPT0gJ29iamVjdCcgfHwgbm9kZVR5cGVzLmlzUHJveHkodmFsdWUpIHx8IEFycmF5LmlzQXJyYXkodmFsdWUpIHx8CiAgICAgIChPYmplY3QuZ2V0UHJvdG90eXBlT2YodmFsdWUpICE9PSBPYmplY3QucHJvdG90eXBlICYmIE9iamVjdC5nZXRQcm90b3R5cGVPZih2YWx1ZSkgIT09IG51bGwpKSBpbnZhbGlkKCk7CiAgY29uc3QgYWN0dWFsID0gUmVmbGVjdC5vd25LZXlzKHZhbHVlKTsKICBpZiAoYWN0dWFsLmxlbmd0aCAhPT0ga2V5cy5sZW5ndGggfHwgYWN0dWFsLnNvbWUoKGtleSkgPT4gdHlwZW9mIGtleSAhPT0gJ3N0cmluZycgfHwgIWtleXMuaW5jbHVkZXMoa2V5KSkpIGludmFsaWQoKTsKICBjb25zdCByZXN1bHQgICAgICAgICAgICAgICAgICAgICAgICAgID0gT2JqZWN0LmNyZWF0ZShudWxsKTsKICBmb3IgKGNvbnN0IGtleSBvZiBrZXlzKSB7CiAgICBjb25zdCBwcm9wZXJ0eSA9IE9iamVjdC5nZXRPd25Qcm9wZXJ0eURlc2NyaXB0b3IodmFsdWUsIGtleSk7CiAgICBpZiAoIXByb3BlcnR5IHx8ICFwcm9wZXJ0eS5lbnVtZXJhYmxlIHx8ICEoJ3ZhbHVlJyBpbiBwcm9wZXJ0eSkpIGludmFsaWQoKTsKICAgIHJlc3VsdFtrZXldID0gcHJvcGVydHkudmFsdWU7CiAgfQogIHJldHVybiByZXN1bHQ7Cn0KCmZ1bmN0aW9uIGJvdW5kZWRBcnJheSh2YWx1ZSAgICAgICAgICwgbWluICAgICAgICAsIG1heCAgICAgICAgKSAgICAgICAgICAgIHsKICBpZiAoIUFycmF5LmlzQXJyYXkodmFsdWUpIHx8IG5vZGVUeXBlcy5pc1Byb3h5KHZhbHVlKSB8fCBPYmplY3QuZ2V0UHJvdG90eXBlT2YodmFsdWUpICE9PSBBcnJheS5wcm90b3R5cGUgfHwKICAgICAgdmFsdWUubGVuZ3RoIDwgbWluIHx8IHZhbHVlLmxlbmd0aCA+IG1heCB8fCBSZWZsZWN0Lm93bktleXModmFsdWUpLmxlbmd0aCAhPT0gdmFsdWUubGVuZ3RoICsgMSkgaW52YWxpZCgpOwogIGNvbnN0IHJlc3VsdCAgICAgICAgICAgID0gW107CiAgZm9yIChsZXQgaW5kZXggPSAwOyBpbmRleCA8IHZhbHVlLmxlbmd0aDsgaW5kZXggKz0gMSkgewogICAgY29uc3QgcHJvcGVydHkgPSBPYmplY3QuZ2V0T3duUHJvcGVydHlEZXNjcmlwdG9yKHZhbHVlLCBTdHJpbmcoaW5kZXgpKTsKICAgIGlmICghcHJvcGVydHkgfHwgIXByb3BlcnR5LmVudW1lcmFibGUgfHwgISgndmFsdWUnIGluIHByb3BlcnR5KSkgaW52YWxpZCgpOwogICAgcmVzdWx0LnB1c2gocHJvcGVydHkudmFsdWUpOwogIH0KICByZXR1cm4gcmVzdWx0Owp9CgpmdW5jdGlvbiB0ZXh0KHZhbHVlICAgICAgICAgLCBtYXggICAgICAgICkgICAgICAgICB7CiAgaWYgKHR5cGVvZiB2YWx1ZSAhPT0gJ3N0cmluZycgfHwgdmFsdWUubGVuZ3RoIDwgMSB8fCB2YWx1ZS5sZW5ndGggPiBtYXgpIGludmFsaWQoKTsKICByZXR1cm4gdmFsdWU7Cn0KZnVuY3Rpb24gdXVpZCh2YWx1ZSAgICAgICAgICkgICAgICAgICB7CiAgaWYgKHR5cGVvZiB2YWx1ZSAhPT0gJ3N0cmluZycgfHwgIVVVSUQudGVzdCh2YWx1ZSkpIGludmFsaWQoKTsKICByZXR1cm4gdmFsdWU7Cn0KZnVuY3Rpb24gZGlnZXN0KHZhbHVlICAgICAgICAgKSAgICAgICAgIHsKICBpZiAodHlwZW9mIHZhbHVlICE9PSAnc3RyaW5nJyB8fCAhU0hBMjU2LnRlc3QodmFsdWUpKSBpbnZhbGlkKCk7CiAgcmV0dXJuIHZhbHVlOwp9CmZ1bmN0aW9uIHByaW5jaXBhbCh2YWx1ZSAgICAgICAgICkgICAgICAgICAgICAgICAgICAgICAgICAgIHsKICBjb25zdCBwID0gY2xvc2VkKHZhbHVlLCBbJ3RlbmFudElkJywgJ2FjdG9ySWQnXSk7CiAgcmV0dXJuIE9iamVjdC5mcmVlemUoeyB0ZW5hbnRJZDogdXVpZChwLnRlbmFudElkKSwgYWN0b3JJZDogdXVpZChwLmFjdG9ySWQpIH0pOwp9CgpleHBvcnQgZnVuY3Rpb24gcGFyc2VIaXN0b3J5UmVsZWFzZVJlcXVlc3QodmFsdWUgICAgICAgICApICAgICAgICAgICAgICAgICAgICAgICAgewogIGNvbnN0IHJlcXVlc3QgPSBjbG9zZWQodmFsdWUsIFsnc2NoZW1hVmVyc2lvbicsICdvYnNlcnZhdGlvbklkJywgJ3JvdXRlJywgJ3Jlc3BvbnNlU2hhMjU2JywgJ3N1YmplY3RzJ10pOwogIGlmIChyZXF1ZXN0LnNjaGVtYVZlcnNpb24gIT09IDEgfHwgKHJlcXVlc3Qucm91dGUgIT09ICdsaXN0JyAmJiByZXF1ZXN0LnJvdXRlICE9PSAndHJhbnNjcmlwdCcpKSBpbnZhbGlkKCk7CiAgY29uc3Qgcm93cyA9IGJvdW5kZWRBcnJheShyZXF1ZXN0LnN1YmplY3RzLCByZXF1ZXN0LnJvdXRlID09PSAndHJhbnNjcmlwdCcgPyAxIDogMCwKICAgIHJlcXVlc3Qucm91dGUgPT09ICd0cmFuc2NyaXB0JyA/IDEgOiBISVNUT1JZX1JFTEVBU0VfTUFYX1NVQkpFQ1RTKTsKICBjb25zdCBzZWVuQ29udmVyc2F0aW9ucyA9IG5ldyBTZXQgICAgICAgICgpOwogIGxldCB0b3RhbFNjb3BlcyA9IDA7CiAgY29uc3Qgc3ViamVjdHMgICAgICAgICAgICAgICAgICAgICAgICAgID0gcm93cy5tYXAoKHZhbHVlKSA9PiB7CiAgICBjb25zdCByb3cgPSBjbG9zZWQodmFsdWUsIFsnY29udmVyc2F0aW9uSWQnLCAnY2xpZW50SWQnLCAnc2NvcGVzJ10pOwogICAgY29uc3QgY29udmVyc2F0aW9uSWQgPSB1dWlkKHJvdy5jb252ZXJzYXRpb25JZCk7CiAgICBpZiAoc2VlbkNvbnZlcnNhdGlvbnMuaGFzKGNvbnZlcnNhdGlvbklkKSkgaW52YWxpZCgpOwogICAgc2VlbkNvbnZlcnNhdGlvbnMuYWRkKGNvbnZlcnNhdGlvbklkKTsKICAgIGNvbnN0IHNjb3BlcyA9IE9iamVjdC5mcmVlemUoYm91bmRlZEFycmF5KHJvdy5zY29wZXMsIDEsIEhJU1RPUllfUkVMRUFTRV9NQVhfU0NPUEVTKS5tYXAoKHZhbHVlKSA9PiB7CiAgICAgIGNvbnN0IHNjb3BlID0gY2xvc2VkKHZhbHVlLCBbJ3RlbmFudElkJywgJ2tpbmQnLCAncmVzb3VyY2VJZCcsICdwb2xpY3lSZXZpc2lvbiddKTsKICAgICAgaWYgKHR5cGVvZiBzY29wZS5raW5kICE9PSAnc3RyaW5nJyB8fCAhU0NPUEVfS0lORFMuaGFzKHNjb3BlLmtpbmQgICAgICAgICAgICAgICAgICAgICAgICAgICApKSBpbnZhbGlkKCk7CiAgICAgIHJldHVybiBPYmplY3QuZnJlZXplKHsgdGVuYW50SWQ6IHRleHQoc2NvcGUudGVuYW50SWQsIDEyOCksIGtpbmQ6IHNjb3BlLmtpbmQgICAgICAgICAgICAgICAgICAgICAgICAgICAsCiAgICAgICAgcmVzb3VyY2VJZDogdGV4dChzY29wZS5yZXNvdXJjZUlkLCAyNTYpLCBwb2xpY3lSZXZpc2lvbjogdGV4dChzY29wZS5wb2xpY3lSZXZpc2lvbiwgMTI4KSB9KTsKICAgIH0pKTsKICAgIHRvdGFsU2NvcGVzICs9IHNjb3Blcy5sZW5ndGg7CiAgICBpZiAodG90YWxTY29wZXMgPiBISVNUT1JZX1JFTEVBU0VfTUFYX1NDT1BFUykgaW52YWxpZCgpOwogICAgY29uc3Qgc2VlblNjb3BlcyA9IG5ldyBTZXQgICAgICAgICgpOwogICAgZm9yIChjb25zdCBzY29wZSBvZiBzY29wZXMpIHsKICAgICAgbGV0IGNhbm9uaWNhbCAgICAgICAgOwogICAgICB0cnkgeyBjYW5vbmljYWwgPSBjYW5vbmljYWxpemVDb3JlUmV0YWluZWRKc29uKHNjb3BlKTsgfSBjYXRjaCB7IHJldHVybiBpbnZhbGlkKCk7IH0KICAgICAgaWYgKHNlZW5TY29wZXMuaGFzKGNhbm9uaWNhbCkpIGludmFsaWQoKTsKICAgICAgc2VlblNjb3Blcy5hZGQoY2Fub25pY2FsKTsKICAgIH0KICAgIHJldHVybiBPYmplY3QuZnJlZXplKHsgY29udmVyc2F0aW9uSWQsIGNsaWVudElkOiByb3cuY2xpZW50SWQgPT09IG51bGwgPyBudWxsIDogdXVpZChyb3cuY2xpZW50SWQpLCBzY29wZXMgfSk7CiAgfSk7CiAgcmV0dXJuIE9iamVjdC5mcmVlemUoeyBzY2hlbWFWZXJzaW9uOiAxLCBvYnNlcnZhdGlvbklkOiB1dWlkKHJlcXVlc3Qub2JzZXJ2YXRpb25JZCksIHJvdXRlOiByZXF1ZXN0LnJvdXRlLAogICAgcmVzcG9uc2VTaGEyNTY6IGRpZ2VzdChyZXF1ZXN0LnJlc3BvbnNlU2hhMjU2KSwgc3ViamVjdHM6IE9iamVjdC5mcmVlemUoc3ViamVjdHMpIH0pOwp9CgovKiogUkZDIDg3ODUgb2YgdGhlIG9yZGVyZWQgc3ViamVjdCB2ZWN0b3I7IG9yZGVyIG9mIHN1YmplY3RzIGFuZCBzY29wZXMgaXMgcmV0YWluZWQuICovCmV4cG9ydCBmdW5jdGlvbiBoaXN0b3J5UmVsZWFzZVN1YmplY3RzU2hhMjU2KHN1YmplY3RzICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICkgICAgICAgICB7CiAgdHJ5IHsKICAgIHJldHVybiBjcmVhdGVIYXNoKCdzaGEyNTYnKS51cGRhdGUoY2Fub25pY2FsaXplQ29yZVJldGFpbmVkSnNvbihzdWJqZWN0cyksICd1dGY4JykuZGlnZXN0KCdoZXgnKTsKICB9IGNhdGNoIHsgcmV0dXJuIHVuYXZhaWxhYmxlKCk7IH0KfQoKZnVuY3Rpb24gdmFsaWRUaW1lKGNoZWNrZWRBdE1zICAgICAgICAgLCBleHBpcmVzQXRNcyAgICAgICAgICwgbm93TXMgICAgICAgICkgICAgICAgICAgewogIHJldHVybiBOdW1iZXIuaXNTYWZlSW50ZWdlcihub3dNcykgJiYgbm93TXMgPj0gMCAmJgogICAgTnVtYmVyLmlzU2FmZUludGVnZXIoY2hlY2tlZEF0TXMpICYmIChjaGVja2VkQXRNcyAgICAgICAgICApIDw9IG5vd01zICYmCiAgICBub3dNcyAtIChjaGVja2VkQXRNcyAgICAgICAgICApIDw9IEhJU1RPUllfUkVMRUFTRV9SRUNFSVBUX1RUTF9NUyAmJgogICAgTnVtYmVyLmlzU2FmZUludGVnZXIoZXhwaXJlc0F0TXMpICYmIChleHBpcmVzQXRNcyAgICAgICAgICApID4gbm93TXMgJiYKICAgIChleHBpcmVzQXRNcyAgICAgICAgICApIDw9IChjaGVja2VkQXRNcyAgICAgICAgICApICsgSElTVE9SWV9SRUxFQVNFX1JFQ0VJUFRfVFRMX01TOwp9CgovKiogRXhhY3QgZWNobyBjaGVjayBvbmx5LiBUaGUgYmF0Y2ggcG9ydCBpcyByZXNwb25zaWJsZSBmb3IgdGhlIGFjdHVhbCBhdXRob3JpdHkgZGVjaXNpb24uICovCmV4cG9ydCBmdW5jdGlvbiBidWlsZEhpc3RvcnlSZWxlYXNlUmVjZWlwdCgKICByZXF1ZXN0ICAgICAgICAgICAgICAgICAgICAgICAsIGV4cGVjdGVkUHJpbmNpcGFsICAgICAgICAgICAgICAgICAgICAgICAgICwKICBzdWJqZWN0c1NoYTI1NiAgICAgICAgLCB2YWx1ZSAgICAgICAgICwgbm93TXMgICAgICAgICwKKSAgICAgICAgICAgICAgICAgICAgICAgIHsKICBjb25zdCBkZWNpc2lvbiA9IGNsb3NlZCh2YWx1ZSwgWydhdXRob3JpemVkJywgJ29ic2VydmF0aW9uSWQnLCAncm91dGUnLCAncHJpbmNpcGFsJywgJ3N1YmplY3RzU2hhMjU2JywKICAgICdyZXNwb25zZVNoYTI1NicsICdjaGVja2VkQXRNcycsICdleHBpcmVzQXRNcyddKTsKICBjb25zdCBkZWNpZGVkUHJpbmNpcGFsID0gcHJpbmNpcGFsKGRlY2lzaW9uLnByaW5jaXBhbCk7CiAgaWYgKGRlY2lzaW9uLmF1dGhvcml6ZWQgIT09IHRydWUgfHwgZGVjaXNpb24ub2JzZXJ2YXRpb25JZCAhPT0gcmVxdWVzdC5vYnNlcnZhdGlvbklkIHx8CiAgICAgIGRlY2lzaW9uLnJvdXRlICE9PSByZXF1ZXN0LnJvdXRlIHx8IGRlY2lzaW9uLnN1YmplY3RzU2hhMjU2ICE9PSBzdWJqZWN0c1NoYTI1NiB8fAogICAgICBkZWNpc2lvbi5yZXNwb25zZVNoYTI1NiAhPT0gcmVxdWVzdC5yZXNwb25zZVNoYTI1NiB8fAogICAgICBkZWNpZGVkUHJpbmNpcGFsLnRlbmFudElkICE9PSBleHBlY3RlZFByaW5jaXBhbC50ZW5hbnRJZCB8fAogICAgICBkZWNpZGVkUHJpbmNpcGFsLmFjdG9ySWQgIT09IGV4cGVjdGVkUHJpbmNpcGFsLmFjdG9ySWQgfHwKICAgICAgIXZhbGlkVGltZShkZWNpc2lvbi5jaGVja2VkQXRNcywgZGVjaXNpb24uZXhwaXJlc0F0TXMsIG5vd01zKSkgdW5hdmFpbGFibGUoKTsKICByZXR1cm4geyBzY2hlbWFWZXJzaW9uOiAxLCBvYnNlcnZhdGlvbklkOiByZXF1ZXN0Lm9ic2VydmF0aW9uSWQsIHJvdXRlOiByZXF1ZXN0LnJvdXRlLAogICAgcHJpbmNpcGFsOiBkZWNpZGVkUHJpbmNpcGFsLCBzdWJqZWN0c1NoYTI1NiwgcmVzcG9uc2VTaGEyNTY6IHJlcXVlc3QucmVzcG9uc2VTaGEyNTYsCiAgICBjaGVja2VkQXRNczogZGVjaXNpb24uY2hlY2tlZEF0TXMgICAgICAgICAgLCBleHBpcmVzQXRNczogZGVjaXNpb24uZXhwaXJlc0F0TXMgICAgICAgICAgIH07Cn0KCi8qKiBQdXJlIGluZ3Jlc3Mgc2VhbS4gQSBmdXR1cmUgbmF0aXZlLW9ubHkgSFRUUCByb3V0ZSBtdXN0IHN1cHBseSB0aGUgYXV0aGVudGljYXRlZCBwcmluY2lwYWwgYW5kIHF1YWxpZmllZCBwb3J0LiAqLwpleHBvcnQgYXN5bmMgZnVuY3Rpb24gcmVhZEhpc3RvcnlSZWxlYXNlU291cmNlKAogIGJvZHkgICAgICAgICAsIGF1dGhlbnRpY2F0ZWRQcmluY2lwYWwgICAgICAgICAsIHBvcnQgICAgICAgICAgICAgICAgICAgICAgICAgLAogIG5vdyAgICAgICAgICAgICAgID0gRGF0ZS5ub3csCikgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB7CiAgY29uc3QgcmVxdWVzdCA9IHBhcnNlSGlzdG9yeVJlbGVhc2VSZXF1ZXN0KGJvZHkpOwogIGxldCBleHBlY3RlZFByaW5jaXBhbCAgICAgICAgICAgICAgICAgICAgICAgICA7CiAgdHJ5IHsgZXhwZWN0ZWRQcmluY2lwYWwgPSBwcmluY2lwYWwoYXV0aGVudGljYXRlZFByaW5jaXBhbCk7IH0gY2F0Y2ggeyByZXR1cm4gdW5hdmFpbGFibGUoKTsgfQogIGNvbnN0IHN1YmplY3RzU2hhMjU2ID0gaGlzdG9yeVJlbGVhc2VTdWJqZWN0c1NoYTI1NihyZXF1ZXN0LnN1YmplY3RzKTsKICBsZXQgZGVjaXNpb24gICAgICAgICA7CiAgdHJ5IHsgZGVjaXNpb24gPSBhd2FpdCBwb3J0LmRlY2lkZUFsbChyZXF1ZXN0LCBleHBlY3RlZFByaW5jaXBhbCwgc3ViamVjdHNTaGEyNTYpOyB9CiAgY2F0Y2ggeyByZXR1cm4gdW5hdmFpbGFibGUoKTsgfQogIHRyeSB7IHJldHVybiBidWlsZEhpc3RvcnlSZWxlYXNlUmVjZWlwdChyZXF1ZXN0LCBleHBlY3RlZFByaW5jaXBhbCwgc3ViamVjdHNTaGEyNTYsIGRlY2lzaW9uLCBub3coKSk7IH0KICBjYXRjaCB7IHJldHVybiB1bmF2YWlsYWJsZSgpOyB9Cn0K:196:18)
++    async TestContext.<anonymous> (file:///<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:88:207)
++    async Test.run (node:internal/test_runner/test:1389:7)
++    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
++  ...
++# Subtest: real native/batch/wire refuses commit failure
++not ok 27 - real native/batch/wire refuses commit failure
++  ---
++  duration_ms: 1.088037
++  type: 'test'
++  location: '<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:89:149'
++  failureType: 'testCodeFailure'
++  error: |-
++    Expected values to be strictly equal:
++    
++    0 !== 1
++    
++  code: 'ERR_ASSERTION'
++  name: 'AssertionError'
++  expected: 1
++  actual: 0
++  operator: 'strictEqual'
++  stack: |-
++    TestContext.<anonymous> (file:///<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:92:69)
++    async Test.run (node:internal/test_runner/test:1389:7)
++    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
++  ...
++# Subtest: real native/batch/wire refuses commit expiry
++not ok 28 - real native/batch/wire refuses commit expiry
++  ---
++  duration_ms: 0.361894
++  type: 'test'
++  location: '<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:89:149'
++  failureType: 'testCodeFailure'
++  error: |-
++    Expected values to be strictly equal:
++    
++    0 !== 1
++    
++  code: 'ERR_ASSERTION'
++  name: 'AssertionError'
++  expected: 1
++  actual: 0
++  operator: 'strictEqual'
++  stack: |-
++    TestContext.<anonymous> (file:///<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:92:69)
++    async Test.run (node:internal/test_runner/test:1389:7)
++    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
++  ...
++# Subtest: real native/batch/wire refuses fresh session expiry
++not ok 29 - real native/batch/wire refuses fresh session expiry
++  ---
++  duration_ms: 0.273552
++  type: 'test'
++  location: '<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:89:149'
++  failureType: 'testCodeFailure'
++  error: |-
++    Expected values to be strictly equal:
++    
++    0 !== 1
++    
++  code: 'ERR_ASSERTION'
++  name: 'AssertionError'
++  expected: 1
++  actual: 0
++  operator: 'strictEqual'
++  stack: |-
++    TestContext.<anonymous> (file:///<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:92:69)
++    async Test.run (node:internal/test_runner/test:1389:7)
++    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
++  ...
++# Subtest: real native/batch/wire refuses local-read expiry
++not ok 30 - real native/batch/wire refuses local-read expiry
++  ---
++  duration_ms: 0.35219
++  type: 'test'
++  location: '<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:89:149'
++  failureType: 'testCodeFailure'
++  error: |-
++    Expected values to be strictly equal:
++    
++    0 !== 1
++    
++  code: 'ERR_ASSERTION'
++  name: 'AssertionError'
++  expected: 1
++  actual: 0
++  operator: 'strictEqual'
++  stack: |-
++    TestContext.<anonymous> (file:///<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:92:69)
++    async Test.run (node:internal/test_runner/test:1389:7)
++    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
++  ...
++# Subtest: real native/batch/wire refuses changed session revision
++not ok 31 - real native/batch/wire refuses changed session revision
++  ---
++  duration_ms: 0.315865
++  type: 'test'
++  location: '<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:89:149'
++  failureType: 'testCodeFailure'
++  error: |-
++    Expected values to be strictly equal:
++    
++    0 !== 1
++    
++  code: 'ERR_ASSERTION'
++  name: 'AssertionError'
++  expected: 1
++  actual: 0
++  operator: 'strictEqual'
++  stack: |-
++    TestContext.<anonymous> (file:///<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:92:69)
++    async Test.run (node:internal/test_runner/test:1389:7)
++    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
++  ...
++# Subtest: real native/batch/wire refuses replacement membership
++not ok 32 - real native/batch/wire refuses replacement membership
++  ---
++  duration_ms: 0.336676
++  type: 'test'
++  location: '<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:89:149'
++  failureType: 'testCodeFailure'
++  error: |-
++    Expected values to be strictly equal:
++    
++    0 !== 1
++    
++  code: 'ERR_ASSERTION'
++  name: 'AssertionError'
++  expected: 1
++  actual: 0
++  operator: 'strictEqual'
++  stack: |-
++    TestContext.<anonymous> (file:///<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:92:69)
++    async Test.run (node:internal/test_runner/test:1389:7)
++    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
++  ...
++# Subtest: ordinary native use() records actual private provenance for the new unmounted owner
++not ok 33 - ordinary native use() records actual private provenance for the new unmounted owner
++  ---
++  duration_ms: 1.04313
++  type: 'test'
++  location: '<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:94:1'
++  failureType: 'testCodeFailure'
++  error: 'h.middleware.lockOriginalApplicationAuthorityInTransaction is not a function'
++  code: 'ERR_TEST_FAILURE'
++  name: 'TypeError'
++  stack: |-
++    TestContext.<anonymous> (file:///<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:96:196)
++    async Test.run (node:internal/test_runner/test:1389:7)
++    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
++  ...
++# Subtest: history-release pre-auth denials receive no-store without extending marked credential admission
++not ok 34 - history-release pre-auth denials receive no-store without extending marked credential admission
++  ---
++  duration_ms: 0.304458
++  type: 'test'
++  location: '<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:98:1'
++  failureType: 'testCodeFailure'
++  error: |-
++    Expected values to be strictly equal:
++    + actual - expected
++    
++    + undefined
++    - 'no-store'
++    
++  code: 'ERR_ASSERTION'
++  name: 'AssertionError'
++  expected: 'no-store'
++  operator: 'strictEqual'
++  stack: |-
++    TestContext.<anonymous> (file:///<CORE>/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs:99:363)
++    async Test.run (node:internal/test_runner/test:1389:7)
++    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
++  ...
++1..34
++# tests 34
++# suites 0
++# pass 2
++# fail 32
++# cancelled 0
++# skipped 0
++# todo 0
++# duration_ms 571.704433
+diff --git a/docs/integration/core-history-native-20261019/native-focused.tap b/docs/integration/core-history-native-20261019/native-focused.tap
+new file mode 100644
+--- /dev/null
++++ b/docs/integration/core-history-native-20261019/native-focused.tap
+@@ -0,0 +1,217 @@
++TAP version 13
++# (node:<PID>) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
++# (Use `node --trace-warnings ...` to show where the warning was created)
++# Subtest: provides the two exact batch-native interface methods
++ok 1 - provides the two exact batch-native interface methods
++  ---
++  duration_ms: 0.945072
++  type: 'test'
++  ...
++# Subtest: locks exact original native user, tenant and selected membership before new online observation on caller transaction
++ok 2 - locks exact original native user, tenant and selected membership before new online observation on caller transaction
++  ---
++  duration_ms: 2.886914
++  type: 'test'
++  ...
++# Subtest: missing original user refuses; no online call or alternate membership
++ok 3 - missing original user refuses; no online call or alternate membership
++  ---
++  duration_ms: 0.598942
++  type: 'test'
++  ...
++# Subtest: missing original tenant refuses; no online call or alternate membership
++ok 4 - missing original tenant refuses; no online call or alternate membership
++  ---
++  duration_ms: 0.3123
++  type: 'test'
++  ...
++# Subtest: missing original membership refuses; no online call or alternate membership
++ok 5 - missing original membership refuses; no online call or alternate membership
++  ---
++  duration_ms: 0.308735
++  type: 'test'
++  ...
++# Subtest: unqualified unrecorded refuses before SQL or online observation
++ok 6 - unqualified unrecorded refuses before SQL or online observation
++  ---
++  duration_ms: 0.347433
++  type: 'test'
++  ...
++# Subtest: unqualified different context object refuses before SQL or online observation
++ok 7 - unqualified different context object refuses before SQL or online observation
++  ---
++  duration_ms: 0.229526
++  type: 'test'
++  ...
++# Subtest: unqualified different principal refuses before SQL or online observation
++ok 8 - unqualified different principal refuses before SQL or online observation
++  ---
++  duration_ms: 0.245329
++  type: 'test'
++  ...
++# Subtest: unqualified marked control refuses before SQL or online observation
++ok 9 - unqualified marked control refuses before SQL or online observation
++  ---
++  duration_ms: 0.236165
++  type: 'test'
++  ...
++# Subtest: unqualified impersonation refuses before SQL or online observation
++ok 10 - unqualified impersonation refuses before SQL or online observation
++  ---
++  duration_ms: 0.363698
++  type: 'test'
++  ...
++# Subtest: unqualified membership tenant refuses before SQL or online observation
++ok 11 - unqualified membership tenant refuses before SQL or online observation
++  ---
++  duration_ms: 0.216025
++  type: 'test'
++  ...
++# Subtest: unqualified missing sid refuses before SQL or online observation
++ok 12 - unqualified missing sid refuses before SQL or online observation
++  ---
++  duration_ms: 0.135524
++  type: 'test'
++  ...
++# Subtest: unqualified wrong method refuses before SQL or online observation
++ok 13 - unqualified wrong method refuses before SQL or online observation
++  ---
++  duration_ms: 0.085338
++  type: 'test'
++  ...
++# Subtest: unqualified trailing slash refuses before SQL or online observation
++ok 14 - unqualified trailing slash refuses before SQL or online observation
++  ---
++  duration_ms: 0.143176
++  type: 'test'
++  ...
++# Subtest: unqualified rewritten target refuses before SQL or online observation
++ok 15 - unqualified rewritten target refuses before SQL or online observation
++  ---
++  duration_ms: 0.10032
++  type: 'test'
++  ...
++# Subtest: unqualified query string refuses before SQL or online observation
++ok 16 - unqualified query string refuses before SQL or online observation
++  ---
++  duration_ms: 0.074422
++  type: 'test'
++  ...
++# Subtest: unqualified delegated scheme refuses before SQL or online observation
++ok 17 - unqualified delegated scheme refuses before SQL or online observation
++  ---
++  duration_ms: 0.078779
++  type: 'test'
++  ...
++# Subtest: a NEW online Clerk denial is not replaced by initial or cached session evidence
++ok 18 - a NEW online Clerk denial is not replaced by initial or cached session evidence
++  ---
++  duration_ms: 0.300442
++  type: 'test'
++  ...
++# Subtest: current locked member removed refuses after online observation
++ok 19 - current locked member removed refuses after online observation
++  ---
++  duration_ms: 0.39863
++  type: 'test'
++  ...
++# Subtest: current locked role changed refuses after online observation
++ok 20 - current locked role changed refuses after online observation
++  ---
++  duration_ms: 0.185439
++  type: 'test'
++  ...
++# Subtest: current locked tenant inactive refuses after online observation
++ok 21 - current locked tenant inactive refuses after online observation
++  ---
++  duration_ms: 0.254744
++  type: 'test'
++  ...
++# Subtest: current locked org changed refuses after online observation
++ok 22 - current locked org changed refuses after online observation
++  ---
++  duration_ms: 0.234914
++  type: 'test'
++  ...
++# Subtest: ordinary existing authority default retains its separate system owner and current receipt recheck
++ok 23 - ordinary existing authority default retains its separate system owner and current receipt recheck
++  ---
++  duration_ms: 0.725166
++  type: 'test'
++  ...
++# Subtest: ordinary existing impersonation remains supported
++ok 24 - ordinary existing impersonation remains supported
++  ---
++  duration_ms: 0.421184
++  type: 'test'
++  ...
++# (node:<PID>) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
++# Subtest: real native middleware composes with published batch for empty list
++ok 25 - real native middleware composes with published batch for empty list
++  ---
++  duration_ms: 2.446812
++  type: 'test'
++  ...
++# Subtest: real native middleware composes with published batch for selected subject
++ok 26 - real native middleware composes with published batch for selected subject
++  ---
++  duration_ms: 1.085924
++  type: 'test'
++  ...
++# Subtest: real native/batch/wire refuses commit failure
++ok 27 - real native/batch/wire refuses commit failure
++  ---
++  duration_ms: 1.267958
++  type: 'test'
++  ...
++# Subtest: real native/batch/wire refuses commit expiry
++ok 28 - real native/batch/wire refuses commit expiry
++  ---
++  duration_ms: 0.617469
++  type: 'test'
++  ...
++# Subtest: real native/batch/wire refuses fresh session expiry
++ok 29 - real native/batch/wire refuses fresh session expiry
++  ---
++  duration_ms: 0.401053
++  type: 'test'
++  ...
++# Subtest: real native/batch/wire refuses local-read expiry
++ok 30 - real native/batch/wire refuses local-read expiry
++  ---
++  duration_ms: 0.485921
++  type: 'test'
++  ...
++# Subtest: real native/batch/wire refuses changed session revision
++ok 31 - real native/batch/wire refuses changed session revision
++  ---
++  duration_ms: 0.439862
++  type: 'test'
++  ...
++# Subtest: real native/batch/wire refuses replacement membership
++ok 32 - real native/batch/wire refuses replacement membership
++  ---
++  duration_ms: 0.376938
++  type: 'test'
++  ...
++# Subtest: ordinary native use() records actual private provenance for the new unmounted owner
++ok 33 - ordinary native use() records actual private provenance for the new unmounted owner
++  ---
++  duration_ms: 1.06994
++  type: 'test'
++  ...
++# Subtest: history-release pre-auth denials receive no-store without extending marked credential admission
++ok 34 - history-release pre-auth denials receive no-store without extending marked credential admission
++  ---
++  duration_ms: 0.254873
++  type: 'test'
++  ...
++1..34
++# tests 34
++# suites 0
++# pass 34
++# fail 0
++# cancelled 0
++# skipped 0
++# todo 0
++# duration_ms 558.613365
+diff --git a/docs/integration/core-history-native-20261019/published-focused.tap b/docs/integration/core-history-native-20261019/published-focused.tap
+new file mode 100644
+--- /dev/null
++++ b/docs/integration/core-history-native-20261019/published-focused.tap
+@@ -0,0 +1,74 @@
++TAP version 13
++# (node:<PID>) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
++# (Use `node --trace-warnings ...` to show where the warning was created)
++# Subtest: one RR tenant transaction locks native facts, all selected subjects, then observes Clerk before commit
++ok 1 - one RR tenant transaction locks native facts, all selected subjects, then observes Clerk before commit
++  ---
++  duration_ms: 3.318775
++  type: 'test'
++  ...
++# Subtest: empty list still locks original native facts and makes final online observation
++ok 2 - empty list still locks original native facts and makes final online observation
++  ---
++  duration_ms: 0.427723
++  type: 'test'
++  ...
++# Subtest: native target, impersonation and absent exact-provenance method refuse before transaction
++ok 3 - native target, impersonation and absent exact-provenance method refuse before transaction
++  ---
++  duration_ms: 1.542511
++  type: 'test'
++  ...
++# Subtest: identity drift, expiry, subject refusal and failed commit never return a receipt
++ok 4 - identity drift, expiry, subject refusal and failed commit never return a receipt
++  ---
++  duration_ms: 3.249891
++  type: 'test'
++  ...
++# (node:<PID>) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
++# (Use `node --trace-warnings ...` to show where the warning was created)
++# Subtest: pins ordered RFC 8785 subject SHA across the wire, including an independent literal vector
++ok 5 - pins ordered RFC 8785 subject SHA across the wire, including an independent literal vector
++  ---
++  duration_ms: 4.044787
++  type: 'test'
++  ...
++# Subtest: empty list, list and transcript each use exactly one all-subject decision and exact receipt
++ok 6 - empty list, list and transcript each use exactly one all-subject decision and exact receipt
++  ---
++  duration_ms: 2.328414
++  type: 'test'
++  ...
++# Subtest: the batch port receives a detached frozen vector and principal
++ok 7 - the batch port receives a detached frozen vector and principal
++  ---
++  duration_ms: 1.022789
++  type: 'test'
++  ...
++# Subtest: closed request and nested Scope parser refuses malformed, duplicated and oversized vectors before calling owner
++ok 8 - closed request and nested Scope parser refuses malformed, duplicated and oversized vectors before calling owner
++  ---
++  duration_ms: 5.014826
++  type: 'test'
++  ...
++# Subtest: all seven Meri Scope kinds parse, but the owner must decide their authority
++ok 9 - all seven Meri Scope kinds parse, but the owner must decide their authority
++  ---
++  duration_ms: 0.483427
++  type: 'test'
++  ...
++# Subtest: decision exceptions, partial grants, wrong echoes and stale time yield no receipt
++ok 10 - decision exceptions, partial grants, wrong echoes and stale time yield no receipt
++  ---
++  duration_ms: 2.391599
++  type: 'test'
++  ...
++1..10
++# tests 10
++# suites 0
++# pass 10
++# fail 0
++# cancelled 0
++# skipped 0
++# todo 0
++# duration_ms 155.916496

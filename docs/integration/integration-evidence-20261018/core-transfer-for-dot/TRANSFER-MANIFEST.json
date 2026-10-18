@@ -1,0 +1,71 @@
+{
+  "status": "STOPPED \u2014 transfer only; dot exclusively owns Core integration",
+  "repository": "neo-capiro/capiro-backend",
+  "basisCommit": "78ceaf9bdfe00c8f013aac15eb8483312ae4f803",
+  "dotRosterCommit": "b5071e8156899c1a5d01c19e64d647cb44e40789",
+  "sourceMaterialization": "/workspace/scratch/f840037f8c71/core-history-native-20261019",
+  "remoteMutations": [],
+  "publishedBranch": null,
+  "publishedCommit": null,
+  "publishedPullRequest": null,
+  "localGitCommitCreated": false,
+  "currentFilesUncommitted": true,
+  "approvedMiddlewareDiff": {
+    "additions": 65,
+    "deletions": 2,
+    "sha256": "d9931a98db2de9ca10cbd2aa161983747c159773e30bbc04bcb36474530095e0"
+  },
+  "sevenFiles": [
+    {
+      "path": "apps/api/src/tenant/tenant-context.middleware.ts",
+      "bytes": 50985,
+      "sha256": "d9931a98db2de9ca10cbd2aa161983747c159773e30bbc04bcb36474530095e0",
+      "gitBlob": "b43e9102b955ea18bd1920002118d8e3d767c596"
+    },
+    {
+      "path": "apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs",
+      "bytes": 18479,
+      "sha256": "77dabab03b627a260a78ebdfd11d20b2890c9289c7f160dd11c213bd5231f5dc",
+      "gitBlob": "2a037ca1dca198365752d64ad37cc664e55b4dab"
+    },
+    {
+      "path": "docs/integration/core-history-native-20261019/MANIFEST.json",
+      "bytes": 4858,
+      "sha256": "44cbd1a482f9abc4ac1b4c066e88a3220a640e48921a0a2b0e7742d6255e00ae",
+      "gitBlob": "62e74ff0bc340f2a7008b18d7d2338f9afc6333c"
+    },
+    {
+      "path": "docs/integration/core-history-native-20261019/REPORT.md",
+      "bytes": 7846,
+      "sha256": "7fa37ffb873bc12d9a45fa5c7ad358b95a49ac32d3ff27908cc0ecea432b443c",
+      "gitBlob": "74bd36fd54e0ef735d681379d723d0582655cea2"
+    },
+    {
+      "path": "docs/integration/core-history-native-20261019/baseline.tap",
+      "bytes": 105811,
+      "sha256": "f94155a206bd57ce816759285a0a951cd9b69898b83f13a0f116175d39768f0c",
+      "gitBlob": "955f50f0645dd4c7c9deef435b51d63c53159c57"
+    },
+    {
+      "path": "docs/integration/core-history-native-20261019/native-focused.tap",
+      "bytes": 7408,
+      "sha256": "7f9ab81c029ca817b5d72d5df2b57968b1952b3e8ad3c7d622c3b3c72d3732d7",
+      "gitBlob": "f9e148cc8b83cbbac9029adbd747c37d39859cbe"
+    },
+    {
+      "path": "docs/integration/core-history-native-20261019/published-focused.tap",
+      "bytes": 2927,
+      "sha256": "e383ed31247faa959bb22ea529d993ae584a2a411f19bb6aef8dac18fb0ce8e4",
+      "gitBlob": "5e2072b352b6de6b0c4b32cc8d5f36443d073c0c"
+    }
+  ],
+  "transferPatchSha256": "1290eab77c72d9459d8966bf3086567fe1b46d0636cb4cc51bccdb8d9881ebca",
+  "verification": {
+    "baselineNewCases": "2 pass / 32 fail; exact78 before patch",
+    "nativeFocused": "34 pass / 0 fail",
+    "publishedFocused": "10 pass / 0 fail",
+    "semanticCoreTypecheck": "UNRUN: no supported dependency/generated-client graph",
+    "fullNestLiveClerkRealPostgres": "UNRUN"
+  },
+  "handoffLimit": "Preserve this uncommitted result for dot to review and combine with its roster change. The proposed branch named in the historical report was never created. No further Core work/publication is authorized to this lane."
+}
