@@ -28,3 +28,16 @@ test('the inventory enumerates exact object versions per class, deduplicates acr
  assert.deepEqual(inventoryA.objects.find(o=>o.objectId===shared.objectId).classes,['lifecycle'],'classes are carried per exact object');
  assert.throws(()=>enumerateReferences({...snapshot(a),checkpoints:[{checkpointId:'x',checkpoint:{opaqueSession:{objectId:'bad',versionId:'v',sha256:'1'.repeat(64)},workspace:{entries:[]}}}]}),/RETENTION_INVALID_REQUEST/);
 });
+test('local proposal continuation rows retain distinct conversation purge targets',()=>{
+ const s=snapshot(subjectOf()),runId=s.runs[0].runId,
+  memoryContinuations=[{runId,keySha256:'a'.repeat(64)},{runId,keySha256:'b'.repeat(64)}];
+ const {memoryContinuations:missing,...incomplete}=s;
+ assert.throws(()=>enumerateReferences(incomplete),/INVALID_COMMAND/);
+ const inventory=enumerateReferences({...s,memoryContinuations});
+ const targets=inventory.rowTargets.filter(row=>row.table==='memory_proposal_contexts');
+ assert.deepEqual(targets,[...memoryContinuations].map(row=>({className:'conversation',
+  table:'memory_proposal_contexts',...row})).sort((a,b)=>JSON.stringify(a).localeCompare(JSON.stringify(b))));
+ assert.equal(inventory.rows.filter(row=>row.key.startsWith('memory-proposal:')).length,2);
+ assert.throws(()=>enumerateReferences({...s,memoryContinuations:[{runId,keySha256:'wrong'}]}),
+  /RETENTION_INVALID_REQUEST/);
+});

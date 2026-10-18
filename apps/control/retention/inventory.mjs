@@ -23,7 +23,7 @@ const keyTarget=(className,key)=>Object.freeze({className,key:uuid(key)});
  * row, events) are enumerated only for a conversation subject; rows a snapshot carries for another kind stay targets and block the
  * plan as a subject mismatch. A planned class (editor drafts) has no owner yet and is refused rather than silently ignored. */
 export function enumerateReferences(snapshot){
- const s=own(data(snapshot),['subject','runs','checkpoints','completionCheckpoints','nextRuns','sdkSessionEntries','selectedOutputs','artifactVersions','nativeJournalRows','uploads'],['schedules','receipts','memoryProposals','budgetRuns','editorDrafts']);
+ const s=own(data(snapshot),['subject','runs','checkpoints','completionCheckpoints','nextRuns','sdkSessionEntries','selectedOutputs','artifactVersions','nativeJournalRows','memoryContinuations','uploads'],['schedules','receipts','memoryProposals','budgetRuns','editorDrafts']);
  const list=v=>{if(v===undefined)return [];if(!Array.isArray(v)||v.length>65536)fail('RETENTION_INVALID_REQUEST');return v;};
  if(list(s.editorDrafts).length)fail('RETENTION_CLASS_PLANNED');
  const rows=[],objects=new Map(),rowTargets=[],conversation=s.subject?.kind==='conversation';
@@ -33,6 +33,15 @@ export function enumerateReferences(snapshot){
  const keyed=(className,key,refs)=>{rowTargets.push(keyTarget(className,key));add(className,key,refs);};
  if(conversation)keyed('conversation',s.subject.subjectId,[]);
  for(const r of list(s.runs))keyed('conversation',r.runId,r.continuation?.checkpoint?[r.continuation.checkpoint.opaqueSession,...r.continuation.checkpoint.workspace.entries.map(e=>e.object)]:[]);
+ // Each local proposal continuation is a distinct conversation row, not an
+ // external Core memory proposal. A purge owner must consume this exact target
+ // before a conversation plan may report deletion complete.
+ for(const value of list(s.memoryContinuations)){
+  const row=own(value,['runId','keySha256']);uuid(row.runId);digest(row.keySha256);
+  rowTargets.push(Object.freeze({className:'conversation',table:'memory_proposal_contexts',
+   runId:row.runId,keySha256:row.keySha256}));
+  add('conversation',`memory-proposal:${row.runId}:${row.keySha256}`,[]);
+ }
  if(conversation)keyed('events',s.subject.subjectId,[]);
  for(const c of list(s.checkpoints))keyed('lifecycle',c.checkpointId,[c.checkpoint.opaqueSession,...c.checkpoint.workspace.entries.map(e=>e.object)]);
  for(const c of list(s.completionCheckpoints))keyed('completionCheckpoints',c.checkpointId,[c.checkpoint.opaqueSession,...c.checkpoint.workspace.entries.map(e=>e.object)]);

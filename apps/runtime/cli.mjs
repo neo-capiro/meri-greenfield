@@ -35,7 +35,7 @@ export async function main(argv=process.argv.slice(2),{poststartTls,nativeFetch}
   const [file,start]={control:['./control.mjs','startControl'],'temporal-worker':['./temporal-worker.mjs','startTemporalWorker'],'schedule-worker':['./schedule-service.mjs','startScheduleWorker']}[role];
   const module=await import(file);
   // Control receives the production product-port composition (G4); the other roles take no product ports.
-  let productPorts={},routinesOwners=null,readDelegationConsents;
+  let productPorts={},routinesOwners=null,readDelegationConsents,memoryContextRelay;
   // The live-session relay (RC1 option A) serves reads and the memory run path; startControl binds it to its own session owner.
   const relay=role==='control'?(await import('./read-credential-relay.mjs')).createReadCredentialRelay():null;
   let authority=null;
@@ -88,13 +88,22 @@ export async function main(argv=process.argv.slice(2),{poststartTls,nativeFetch}
     familyIds=[...new Set(installation.measurement.operations.map(row=>row.family))];
     const retained=familyIds.filter(id=>!NATIVE_READ_FAMILIES.includes(id));
     if(retained.length&&retained.every(id=>COMPOSABLE_RETAINED_FAMILIES.includes(id))&&
-      (!retained.some(id=>id!=='dataset-metadata')||c.reads.delegation?.enabled===true)&&c.nativeCandidate?.identity?.origin)
+      (!retained.some(id=>id!=='dataset-metadata')||c.reads.delegation?.enabled===true)&&c.nativeCandidate?.identity?.origin){
+     // Control binds this inert relay to its own conversation store at startup.
+     if(retained.includes('memory-proposals')){
+      const {createMemoryContextRelay}=await import('./memory-context-relay.mjs');
+      memoryContextRelay=createMemoryContextRelay();
+     }
      retainedTaskPorts=createSelectedRetainedTaskPorts({coreOrigin:c.nativeCandidate.identity.origin,fetchImpl:globalThis.fetch,
-      now:Date.now,familyIds:retained,operationRefs:installation.measurement.operations.map(row=>row.operation)});
+      now:Date.now,familyIds:retained,operationRefs:installation.measurement.operations.map(row=>row.operation),
+      ...(memoryContextRelay?{memoryContextPortsForTask:memoryContextRelay.forTask}:{})});
+    }
    }
    const reads=await createControlReadsComposer({configuration:c,secretFiles:{serviceSecret:c.reads.serviceSecretFile,...(c.reads.readModeServiceSecretFile===undefined?{}:{readModeServiceSecret:c.reads.readModeServiceSecretFile})},nativeCredentials:relay.port,...(authority?{gateway:{authority:authority.gateway.authority,limits:authority.gateway.limits}}:{}),...(c.reads.delegation===undefined?{}:{delegation:{enabled:c.reads.delegation.enabled===true,readOccurrence:occurrences.port.readOccurrence}}),...(c.reads.defaultCongress===undefined?{}:{defaultCongress:c.reads.defaultCongress}),...(installation===undefined?{}:{installation}),...(discovery===undefined?{}:{discovery}),...(familyIds===undefined?{}:{familyIds}),...(retainedTaskPorts===undefined?{}:{retainedTaskPorts})});
    if(reads.missing.length)process.stderr.write(JSON.stringify({event:'runtime.reads.unavailable',missing:reads.missing})+'\n');
-   Object.assign(productPorts,{createReadsRuntime:reads.createReadsRuntime,...(reads.readDelegation?.runOptions?{readDelegationRunOptions:reads.readDelegation.runOptions}:{})});
+   Object.assign(productPorts,{createReadsRuntime:reads.createReadsRuntime,
+    ...(memoryContextRelay?{memoryContextRelay}:{}),
+    ...(reads.readDelegation?.runOptions?{readDelegationRunOptions:reads.readDelegation.runOptions}:{})});
    readDelegationConsents=reads.readDelegation?.consents;
   }
   if(role==='control'&&c.routines?.enabled===true){

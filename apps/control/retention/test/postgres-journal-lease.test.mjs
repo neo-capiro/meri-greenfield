@@ -67,3 +67,16 @@ test('DA-4 uncertain unlock: a failed, denied or stalled advisory unlock and an 
  await assert.rejects(jc.exclusive(async()=>{throw Object.assign(new Error('x'),{code:'RETENTION_RECOVERY_UNSETTLED'});}),/RETENTION_RECOVERY_UNSETTLED/);assert.ok(reused(clean.made[0]),'a failing pass with a confirmed unlock keeps the session');
 });
 
+test('subject transition interlock spans its callback and retires an uncertain unlock',async()=>{
+ const subject=key(),pool=syntheticPool(),journal=createPostgresRetentionJournal({pool,maxRequestMs:100});
+ const observed=await journal.withTransition(subject,async()=>{
+  assert.equal(pool.made[0].queries.at(-1),'SELECT pg_advisory_lock(hashtextextended($1,0))');
+  return 'projected';
+ });
+ assert.equal(observed,'projected');assert.ok(reused(pool.made[0]));
+ assert.equal(pool.made[0].queries.at(-1),'SELECT pg_advisory_unlock(hashtextextended($1,0))');
+ const denied=syntheticPool({faults:{'SELECT pg_advisory_unlock':{rows:[{unlocked:false}],rowCount:1}}}),unsafe=createPostgresRetentionJournal({pool:denied,maxRequestMs:100});
+ await assert.rejects(unsafe.withTransition(subject,async()=>null),/RETENTION_UNLOCK_UNKNOWN/);
+ assert.ok(retired(denied.made[0]));
+});
+

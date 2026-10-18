@@ -61,6 +61,17 @@ test('memory page can compose alone without a proposal continuation store',()=>{
  assert.equal(composed.contextPorts,undefined);
 });
 
+test('proposal continuation receives the validated production task tuple without losing selected-client pins',()=>{
+ const production=task({pool:{connect(){}},allocationJson:'{}',grantFactsJsons:[],grantId:'synthetic',
+  taskArn:'arn:synthetic',issuanceFactsSha256:'a'.repeat(64),runRequestSha256:'b'.repeat(64),
+  readCurrentEntry(){},currentOwner:{},sourceEnabled:true,limits:{},now:()=>NOW,
+  taskVerifier(){},taskCapability:'synthetic',allocation:{}});
+ const create=createMemoryTaskPorts({familyIds:['memory-proposals'],coreOrigin:origin,fetchImpl,
+  now:()=>NOW,memoryContextPortsForTask:contextFactory});
+ const composed=create({task:production,getSignedSourceCredentials:signed});
+ assert.equal(typeof composed.contextPorts.memoryContextPorts.loadPrevious,'function');
+});
+
 test('proposals refuse without a trusted task-bound durable context owner',()=>{
  assert.throws(()=>createMemoryTaskPorts({familyIds:['memory-proposals'],coreOrigin:origin,fetchImpl,now:()=>NOW}),
   {message:'CONFIGURATION'});

@@ -7,7 +7,7 @@
  * Every lease is returned for reuse only when its transaction or session lock is known to be closed (committed, rolled back, or
  * confirmed unlocked); a lost COMMIT acknowledgement, a failed or slow ROLLBACK or unlock, a client-side deadline, or a lease that
  * arrives after its deadline is discarded through `release(error)` so no later borrower inherits an unknown transaction or lock. */
-import {fail,hash,uuid,text,subject as parseSubject,subjectKey} from './boundary.mjs';
+import {fail,hash,uuid,digest,text,own,subject as parseSubject,subjectKey} from './boundary.mjs';
 import {rowClassSubjectKind} from './inventory.mjs';
 import {assertExactProjection} from './projection-proof.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
@@ -15,9 +15,10 @@ const RECOVERY_LOCK="hashtextextended('meri_retention_recovery',0)";
 const tables={conversation:{schema:'meri_conversations',id:'conversation_id'},artifact:{schema:'meri_artifacts',id:'artifact_id'}};
 function parseKey(key){if(typeof key!=='string')fail('RETENTION_INVALID_REQUEST');const parts=key.split(':');if(parts.length<3)fail('RETENTION_INVALID_REQUEST');const kind=parts.at(-2),subjectId=parts.at(-1),tenantId=parts.slice(0,-2).join(':');if(!tables[kind])fail('RETENTION_INVALID_REQUEST');return {tenantId,kind,subjectId};}
 /** `maxRequestMs` bounds every client-side wait (lease acquisition and each statement) independently of the server-side statement and
- * lock timeouts; `now` is the clock those bounds read. */
-export function createPostgresRetentionJournal({pool,now=Date.now,maxRequestMs=10000}){
- if(typeof pool?.connect!=='function'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>60000)fail('RETENTION_CONFIGURATION');
+ * lock timeouts; `now` is the clock those bounds read. The proposal-continuation target route is source-qualified only against an
+ * explicitly marked synthetic pool until its exact-target table and same-transaction trigger receive a central migration. */
+export function createPostgresRetentionJournal({pool,now=Date.now,maxRequestMs=10000,memoryContinuationPurgeSourceQualified=false}){
+ if(typeof pool?.connect!=='function'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>60000||typeof memoryContinuationPurgeSourceQualified!=='boolean'||memoryContinuationPurgeSourceQualified&&pool?.retentionSourceQualificationOnly!==true)fail('RETENTION_CONFIGURATION');
  const storeError=(code,cause)=>Object.assign(new Error(code),{code,cause});
  const wrap=e=>storeError(e?.code&&String(e.code).startsWith('RETENTION_')?e.code:'RETENTION_STORE_UNAVAILABLE',e);
  /** One client-side bounded wait; a deadline leaves the lease's state unknown (`deadline` marks it), and the late result is discarded. */
@@ -74,15 +75,18 @@ export function createPostgresRetentionJournal({pool,now=Date.now,maxRequestMs=1
    if(existing){const r=await c.query(`UPDATE ${t.schema}.retention_subjects SET owner_actor_id=$3,state=$4,suppressed_at=$5,released_at=$6,ledger_sequence=$7,entry_sha256=$8,projection=$9,projection_sha256=$10 WHERE tenant_id=$1 AND ${t.id}=$2 AND projection_sha256=$11`,[...args,existing.projection_sha256]);if(r.rowCount!==1)fail('RETENTION_STALE_WRITE');}
    else{const r=await c.query(`INSERT INTO ${t.schema}.retention_subjects(tenant_id,${t.id},owner_actor_id,state,suppressed_at,released_at,ledger_sequence,entry_sha256,projection,projection_sha256) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) ON CONFLICT DO NOTHING`,args);if(r.rowCount!==1)fail('RETENTION_STALE_WRITE');}
    await c.query(`DELETE FROM ${t.schema}.retention_purges WHERE tenant_id=$1 AND ${t.id}=$2`,[k.tenantId,k.subjectId]);
-   if(k.kind==='conversation')await c.query('DELETE FROM meri_conversations.retention_purge_targets WHERE tenant_id=$1 AND conversation_id=$2',[k.tenantId,k.subjectId]);
+   if(k.kind==='conversation'){
+    await c.query('DELETE FROM meri_conversations.retention_purge_targets WHERE tenant_id=$1 AND conversation_id=$2',[k.tenantId,k.subjectId]);
+    if(memoryContinuationPurgeSourceQualified)await c.query('DELETE FROM meri_conversations.memory_proposal_retention_targets WHERE tenant_id=$1 AND conversation_id=$2',[k.tenantId,k.subjectId]);}
    const purge=value.purge;if(!purge)return projection;
    const rowState=new Map((purge.rowSteps??[]).map(r=>[r.workflowId,['EXECUTED','UNKNOWN'].includes(r.state)?r.state:'PLANNED'])),versionState=new Map((purge.rowSteps??[]).filter(r=>r.className==='artifactVersions').map(r=>[r.target.artifactVersionId,rowState.get(r.workflowId)]));
    for(const st of purge.steps??[]){const stepState=st.state==='EXECUTED'?'EXECUTED':st.state==='UNKNOWN'?'UNKNOWN':purge.state==='BLOCKED'?'BLOCKED':'PLANNED';const receipt=st.requested||st.readback?{requested:st.requested??null,readback:st.readback??null}:null;
     if(k.kind==='conversation')await c.query('INSERT INTO meri_conversations.retention_purges(workflow_id,tenant_id,conversation_id,class,object_id,version_id,sha256,plan_sha256,state,receipt,receipt_sha256,ledger_sequence) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)',[st.workflowId,k.tenantId,k.subjectId,(st.classes??[]).join(','),st.objectId,st.versionId,st.sha256,purge.planSha256,stepState,receipt,receipt?hash(receipt):null,purge.ledgerSequence]);
     else for(const [i,artifactVersionId] of (st.artifactVersionIds?.length?st.artifactVersionIds:[null]).entries())await c.query('INSERT INTO meri_artifacts.retention_purges(workflow_id,tenant_id,artifact_id,version_id,object_id,object_version_id,sha256,plan_sha256,state,receipt,receipt_sha256,ledger_sequence) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)',[i?hash({w:st.workflowId,artifactVersionId}):st.workflowId,k.tenantId,k.subjectId,artifactVersionId,st.objectId,st.versionId,st.sha256,purge.planSha256,artifactVersionId&&versionState.get(artifactVersionId)==='UNKNOWN'?'UNKNOWN':stepState,receipt,receipt?hash(receipt):null,purge.ledgerSequence]);}
    // Executed or unverifiable row targets are projected with their outcome; a PLANNED projection records no target (planRows does, inside the deleting transaction).
-   if(k.kind==='conversation')for(const r of purge.rowSteps??[]){if(r.className!=='sdkSession'||!['EXECUTED','UNKNOWN'].includes(r.state))continue;const g=r.target;
-    await c.query('INSERT INTO meri_conversations.retention_purge_targets(workflow_id,tenant_id,conversation_id,class,run_id,session_id,subpath,sequence,plan_sha256,state,ledger_sequence) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)',[r.workflowId,k.tenantId,k.subjectId,'sdkSession',g.runId,g.sessionId,g.subpath,g.sequence,purge.planSha256,r.state,purge.ledgerSequence]);}
+   if(k.kind==='conversation')for(const r of purge.rowSteps??[]){if(!['EXECUTED','UNKNOWN'].includes(r.state))continue;const w=rowTarget(k,r),g=r.target;
+    if(r.className==='sdkSession')await c.query('INSERT INTO meri_conversations.retention_purge_targets(workflow_id,tenant_id,conversation_id,class,run_id,session_id,subpath,sequence,plan_sha256,state,ledger_sequence) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)',[r.workflowId,k.tenantId,k.subjectId,'sdkSession',g.runId,g.sessionId,g.subpath,g.sequence,purge.planSha256,r.state,purge.ledgerSequence]);
+    else if(w===memoryContinuationWhere)await c.query('INSERT INTO meri_conversations.memory_proposal_retention_targets(workflow_id,tenant_id,conversation_id,run_id,key_sha256,plan_sha256,state,ledger_sequence) VALUES($1,$2,$3,$4,$5,$6,$7,$8)',[r.workflowId,k.tenantId,k.subjectId,g.runId,g.keySha256,purge.planSha256,r.state,purge.ledgerSequence]);}
    return projection;},{exclusive});
  }
  async function keys({exclusive=false}={}){return tx(async c=>{const out=[];for(const [kind,t] of Object.entries(tables)){const rows=(await c.query(`SELECT tenant_id,${t.id} AS subject_id FROM ${t.schema}.retention_subjects`)).rows;for(const r of rows)out.push(subjectKey({tenantId:r.tenant_id,kind,subjectId:r.subject_id}));}return out;},{shared:!exclusive});}
@@ -95,23 +99,38 @@ export function createPostgresRetentionJournal({pool,now=Date.now,maxRequestMs=1
    const unlocked=await bounded(()=>c.query(`SELECT pg_advisory_unlock(${RECOVERY_LOCK}) AS unlocked`));if(unlocked?.rows?.[0]?.unlocked!==true)fail('RETENTION_UNLOCK_UNKNOWN');reusable=true;}
   catch(error){failure=wrap(outcome??error);}
   if(!failure&&outcome)failure=wrap(outcome);failure=retire(c,acquiring,reusable,failure);if(failure)throw failure;return result;}
+ /** Serialize a subject's external retention decision with proposal continuation
+  * transactions. The session lock spans the authoritative ledger append and
+  * projection, but no database transaction stays open during external IO. */
+ async function withTransition(key,fn){parseKey(key);if(typeof fn!=='function')fail('RETENTION_INVALID_REQUEST');
+  let c,reusable=false,failure,outcome,result;const acquiring=Promise.resolve().then(()=>pool.connect());
+  try{c=await bounded(()=>acquiring);
+   await bounded(()=>c.query('SELECT pg_advisory_lock(hashtextextended($1,0))',[`meri_retention_transition:${key}`]));
+   try{result=await fn();}catch(error){outcome=error;}
+   const unlocked=await bounded(()=>c.query('SELECT pg_advisory_unlock(hashtextextended($1,0)) AS unlocked',[`meri_retention_transition:${key}`]));
+   if(unlocked?.rows?.[0]?.unlocked!==true)fail('RETENTION_UNLOCK_UNKNOWN');reusable=true;}
+  catch(error){failure=wrap(outcome??error);}
+  if(!failure&&outcome)failure=wrap(outcome);failure=retire(c,acquiring,reusable,failure);if(failure)throw failure;return result;
+ }
  /** Records the exact row and version targets a purge may delete, inside the caller's transaction, under the subject lock, only when the
   * subject is currently SUPPRESSED under the plan's suppression generation and the plan is the subject's current recorded plan. */
  async function planRows(c,key,plan){
   const k=parseKey(key),t=tables[k.kind];await subjectLock(c,key);const row=await readRow(c,k);if(!row||row.state!=='SUPPRESSED')fail('RETENTION_NOT_SUPPRESSED');
   const current=rowValue(row);if(plan.suppression&&(current.ledgerSequence!==plan.suppression.ledgerSequence||current.entrySha256!==plan.suppression.entrySha256))fail('RETENTION_SUPPRESSION_GENERATION_REFUSED');
   if(current.purge?.planSha256!==plan.planSha256||!['PLANNED','UNKNOWN'].includes(current.purge?.state))fail('RETENTION_PURGE_PLAN_MISMATCH');
-  if(k.kind==='conversation'){for(const st of plan.rowSteps??[]){if(st.className!=='sdkSession')continue;const g=st.target;
-    await c.query('INSERT INTO meri_conversations.retention_purge_targets(workflow_id,tenant_id,conversation_id,class,run_id,session_id,subpath,sequence,plan_sha256,state,ledger_sequence) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,\'PLANNED\',$10) ON CONFLICT (workflow_id) DO UPDATE SET state=\'PLANNED\',plan_sha256=EXCLUDED.plan_sha256,ledger_sequence=EXCLUDED.ledger_sequence',[st.workflowId,k.tenantId,k.subjectId,'sdkSession',g.runId,g.sessionId,g.subpath,g.sequence,plan.planSha256,current.purge.ledgerSequence]);}}
+  if(k.kind==='conversation'){for(const st of plan.rowSteps??[]){const w=rowTarget(k,st),g=st.target;
+    if(st.className==='sdkSession')await c.query('INSERT INTO meri_conversations.retention_purge_targets(workflow_id,tenant_id,conversation_id,class,run_id,session_id,subpath,sequence,plan_sha256,state,ledger_sequence) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,\'PLANNED\',$10) ON CONFLICT (workflow_id) DO UPDATE SET state=\'PLANNED\',plan_sha256=EXCLUDED.plan_sha256,ledger_sequence=EXCLUDED.ledger_sequence',[st.workflowId,k.tenantId,k.subjectId,'sdkSession',g.runId,g.sessionId,g.subpath,g.sequence,plan.planSha256,current.purge.ledgerSequence]);
+    else if(w===memoryContinuationWhere)await c.query('INSERT INTO meri_conversations.memory_proposal_retention_targets(workflow_id,tenant_id,conversation_id,run_id,key_sha256,plan_sha256,state,ledger_sequence) VALUES($1,$2,$3,$4,$5,$6,\'PLANNED\',$7) ON CONFLICT (workflow_id) DO UPDATE SET state=\'PLANNED\',plan_sha256=EXCLUDED.plan_sha256,ledger_sequence=EXCLUDED.ledger_sequence',[st.workflowId,k.tenantId,k.subjectId,g.runId,g.keySha256,plan.planSha256,current.purge.ledgerSequence]);}}
   else{for(const st of plan.rowSteps??[]){if(st.className!=='artifactVersions')continue;const versionId=st.target.artifactVersionId;const step=(plan.steps??[]).find(x=>x.artifactVersionIds?.includes(versionId));
     await c.query('INSERT INTO meri_artifacts.retention_purges(workflow_id,tenant_id,artifact_id,version_id,object_id,object_version_id,sha256,plan_sha256,state,receipt,receipt_sha256,ledger_sequence) VALUES($1,$2,$3,$4,$5,$6,$7,$8,\'PLANNED\',NULL,NULL,$9) ON CONFLICT (workflow_id) DO UPDATE SET state=\'PLANNED\',plan_sha256=EXCLUDED.plan_sha256,ledger_sequence=EXCLUDED.ledger_sequence',[st.workflowId,k.tenantId,k.subjectId,versionId,step?.objectId??'00000000-0000-4000-8000-000000000000',step?.versionId??'none',step?.sha256??'0'.repeat(64),plan.planSha256,current.purge.ledgerSequence]);}}
  }
+ const memoryContinuationWhere={table:'meri_conversations.memory_proposal_contexts',where:'tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND key_sha256=$4',args:(k,g)=>{let v;try{v=own(g,['className','table','runId','keySha256']);}catch{fail('RETENTION_INVALID_REQUEST');}if(v.className!=='conversation'||v.table!=='memory_proposal_contexts')fail('RETENTION_INVALID_REQUEST');return [k.tenantId,k.subjectId,uuid(v.runId),digest(v.keySha256)];}};
  const rowWhere={sdkSession:{table:'meri_conversations.sdk_session_entries',where:'tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND session_id=$4 AND subpath=$5 AND sequence=$6',args:(k,g)=>[k.tenantId,k.subjectId,uuid(g.runId),uuid(g.sessionId),text(g.subpath,1024),Number.isSafeInteger(g.sequence)&&g.sequence>0?g.sequence:fail('RETENTION_INVALID_REQUEST')]},
   artifactVersions:{table:'meri_artifacts.versions',where:'tenant_id=$1 AND artifact_id=$2 AND version_id=$3',args:(k,g)=>[k.tenantId,k.subjectId,uuid(g.artifactVersionId)]}};
  /** Routing for one row target: the class must belong to this subject kind and the exact target must be well formed. A registered row
  * class whose deletion the schema does not admit yet (no trigger amendment allocated: every row class other than the SDK mirror and
  * artifact versions) refuses with RETENTION_ROW_CLASS_UNSUPPORTED, so a plan carrying it fails preflight with zero effects. */
- const rowTarget=(k,st)=>{if(rowClassSubjectKind[st?.className]!==k.kind||!st.target||typeof st.target!=='object')fail('RETENTION_INVALID_REQUEST');const w=rowWhere[st.className];if(!w)fail('RETENTION_ROW_CLASS_UNSUPPORTED');w.args(k,st.target);return w;};
+ const rowTarget=(k,st)=>{if(rowClassSubjectKind[st?.className]!==k.kind||!st.target||typeof st.target!=='object')fail('RETENTION_INVALID_REQUEST');const w=st.className==='conversation'&&memoryContinuationPurgeSourceQualified?memoryContinuationWhere:rowWhere[st.className];if(!w)fail('RETENTION_ROW_CLASS_UNSUPPORTED');w.args(k,st.target);return w;};
  /** Validates every row target of a plan against this routing with no database access, so a purge refuses before any effect. */
  async function preflightRows(key,plan){const k=parseKey(key);if(!Array.isArray(plan?.rowSteps))fail('RETENTION_INVALID_REQUEST');for(const st of plan.rowSteps)rowTarget(k,st);return true;}
  /** The database-row purge port. `purge` deletes every row target of the plan in one transaction that first records the exact targets
@@ -123,7 +142,7 @@ export function createPostgresRetentionJournal({pool,now=Date.now,maxRequestMs=1
    if(k.kind==='artifact'){const versions=(plan.rowSteps??[]).filter(st=>st.className==='artifactVersions').map(st=>st.target.artifactVersionId);if(versions.length)await c.query('DELETE FROM meri_artifacts.heads WHERE tenant_id=$1 AND artifact_id=$2 AND version_id=ANY($3::uuid[])',[k.tenantId,k.subjectId,versions]);}
    for(const st of plan.rowSteps??[]){const w=rowTarget(k,st),args=w.args(k,st.target);
     const deleted=(await c.query(`DELETE FROM ${w.table} WHERE ${w.where}`,args)).rowCount;const present=(await c.query(`SELECT 1 FROM ${w.table} WHERE ${w.where}`,args)).rowCount>0;const state=present?'UNKNOWN':'EXECUTED';
-    if(k.kind==='conversation')await c.query('UPDATE meri_conversations.retention_purge_targets SET state=$2 WHERE workflow_id=$1',[st.workflowId,state]);else await c.query('UPDATE meri_artifacts.retention_purges SET state=$2 WHERE workflow_id=$1',[st.workflowId,state]);
+    if(k.kind==='conversation')await c.query(w===memoryContinuationWhere?'UPDATE meri_conversations.memory_proposal_retention_targets SET state=$2 WHERE workflow_id=$1':'UPDATE meri_conversations.retention_purge_targets SET state=$2 WHERE workflow_id=$1',[st.workflowId,state]);else await c.query('UPDATE meri_artifacts.retention_purges SET state=$2 WHERE workflow_id=$1',[st.workflowId,state]);
     out.push({workflowId:st.workflowId,className:st.className,target:st.target,deleted,state});}
    return out;});}
  /** Whether an exact row target still exists (recovery re-verification). */
@@ -133,6 +152,6 @@ export function createPostgresRetentionJournal({pool,now=Date.now,maxRequestMs=1
  async function ownerOf({tenantId,kind,subjectId}){if(!tables[kind])fail('RETENTION_INVALID_REQUEST');
   const rows=kind==='conversation'?(await pool.query('SELECT owner_actor_id AS owner FROM meri_conversations.conversations WHERE tenant_id=$1 AND conversation_id=$2',[tenantId,subjectId])).rows:(await pool.query('SELECT actor_id AS owner FROM meri_artifacts.heads WHERE tenant_id=$1 AND artifact_id=$2',[tenantId,subjectId])).rows;
   return rows[0]?.owner??null;}
- return Object.freeze({get,set,keys,exclusive,planRows,rows,tx,readProjection,assertProjection,ownerOf,rowClasses:Object.freeze(Object.keys(rowWhere))});
+ return Object.freeze({get,set,keys,exclusive,withTransition,planRows,rows,tx,readProjection,assertProjection,ownerOf,rowClasses:Object.freeze([...Object.keys(rowWhere),...(memoryContinuationPurgeSourceQualified?['conversation']:[])])});
 }
 export {parseSubject};

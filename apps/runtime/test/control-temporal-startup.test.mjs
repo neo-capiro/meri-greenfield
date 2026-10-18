@@ -6,6 +6,7 @@ import {createPreparedKickoffApplication} from '../native-authority/prepared-kic
 import {capabilityDigest} from '../native-authority/task-verifier.mjs';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {temporalCleanupUnknown} from '../temporal-runtime-fence.mjs';
+import {createMemoryContextRelay} from '../memory-context-relay.mjs';
 
 const credential='synthetic-control-startup-only';
 const cleanupCode='TEMPORAL_PRODUCT_CLEANUP_UNKNOWN';
@@ -13,7 +14,7 @@ const stopPath='/v1/execution/kickoff/stop';
 
 /** Actual startup composition, fence and listener boundary; synthetic owned
  * resources only. Every side-effecting default has a trusted factory override. */
-function fixture({authorizationError,initialLoss=false,onListen,cleanup={}}={}){
+function fixture({authorizationError,initialLoss=false,onListen,cleanup={},memoryContext=false}={}){
  const configuration=structuredClone(productControlFixture().configuration);delete configuration.taskRouter;
  const binding=configuration.nativeCandidate.runtime.binding,executionId=canonicalSha256(binding),events=[],closed=[],watchers=new Set();
  const state={lost:false,authorizationOptions:null,assemblyOptions:null,privateApplication:null,publicApplication:null,readiness:null,stopRequests:[],nativeCalls:[]};
@@ -30,13 +31,22 @@ function fixture({authorizationError,initialLoss=false,onListen,cleanup={}}={}){
  },enabled:true,controlCapabilitySha256:capabilityDigest(credential)});
  const candidate={controlCapabilitySha256:capabilityDigest(credential),native,productPorts:Object.freeze({}),application:kickoff,
   bindApplication(application){events.push('candidate-bind');state.boundAssembly=application;},close:close('candidate')};
- const pool={async connect(){assert.fail('no transaction or native PostgreSQL client is allocated');},async query(sql){events.push('schema');assert.ok(sql.startsWith("SELECT to_regclass('meri_conversations.runs')"));return {rows:[{
+ const pool={async connect(){assert.fail('no transaction or native PostgreSQL client is allocated');},async query(sql){events.push('schema');
+  if(memoryContext===true&&sql.startsWith("SELECT to_regclass('meri_conversations.memory_proposal_contexts')"))
+   return {rows:[{relation:'meri_conversations.memory_proposal_contexts'}]};
+  if(memoryContext===true&&sql.startsWith('SELECT name,to_regclass(name)'))return {rows:[]};
+  assert.ok(sql.startsWith("SELECT to_regclass('meri_conversations.runs')"));return {rows:[{
   runs:'meri_conversations.runs',events:'meri_conversations.events',controls:'meri_conversations.controls',selected_outputs:'meri_conversations.selected_outputs',initial_inputs:'meri_conversations.initial_inputs'}]};},end:close('pool')};
  const connection={async withDeadline(_at,operation){return operation();},async withAbortSignal(signal,operation){signal.throwIfAborted();return operation();},
   workflowService:{async getSystemInfo(){events.push('temporal-health');return {};}},close:close('connection')};
+ const memoryContextRelay=memoryContext?createMemoryContextRelay():null;
+ const memoryPorts=Object.freeze({loadPrevious(){},retain(){}});
+ const memoryStore=Object.freeze({forTask(task){assert.deepEqual(task,{clientId:'selected'});return memoryPorts;}});
  const assembly={userPreferences:{state:()=>'disabled',async readiness(){events.push('user-preferences-readiness');}},application:{async handle(request){request.signal.throwIfAborted();return Response.json({synthetic:true});}},
   downloads:{async open({signal}){signal.throwIfAborted();events.push('downloads');return {reason:'synthetic-only'};}},
-  retention:null,productReadiness:()=>({ready:true}),close:close('assembly')};
+  retention:memoryContext===true?{tables:[],startup:{async ensureServing(){events.push('retention-serving');}}}:null,
+  ...(memoryContext===true?{store:{memoryProposalContexts:memoryStore}}:{}),
+  productReadiness:()=>({ready:true}),close:close('assembly')};
  const owners={
   async authorization(c,options){events.push('authorization');assert.equal(c,configuration);state.authorizationOptions=options;if(authorizationError)throw authorizationError;if(initialLoss)lose();return authorization;},
   async readMaterial(path){events.push('material');if(path===configuration.database.connectionFile)return Buffer.from('postgresql://database.synthetic.invalid/meri?sslmode=verify-full');
@@ -54,8 +64,25 @@ function fixture({authorizationError,initialLoss=false,onListen,cleanup={}}={}){
    return {address:{address:'127.0.0.1',port:options.configuration.http.port},close:close(role+'-listener')};
   },
  };
- return {configuration,binding,executionId,events,closed,state,lose,owners,start:()=>startControl(configuration,{testOwners:owners})};
+ return {configuration,binding,executionId,events,closed,state,lose,owners,memoryContextRelay,memoryPorts,
+  start:()=>startControl(configuration,{testOwners:owners,...(memoryContextRelay?{memoryContextRelay}:{})})};
 }
+
+test('control binds the selected proposal continuation relay only to its own ready store',async()=>{
+ const f=fixture({memoryContext:true}),runtime=await f.start();
+ try{
+  assert.equal(f.memoryContextRelay.state(),'bound');
+  assert.equal(f.memoryContextRelay.forTask({clientId:'selected'}),f.memoryPorts);
+  assert.ok(f.events.includes('retention-serving'));
+  assert.deepEqual(f.events.filter(event=>event.startsWith('listen:')),['listen:private','listen:public']);
+ }finally{await runtime.close();}
+ assert.equal(f.memoryContextRelay.state(),'closed');
+ const absent=fixture({memoryContext:'missing-retention'});
+ await assert.rejects(absent.start(),error=>error.code==='CONTROL_STARTUP_FAILED'&&
+  error.cause?.code==='MEMORY_CONTEXT_UNAVAILABLE');
+ assert.equal(absent.memoryContextRelay.state(),'closed');
+ assert.equal(absent.events.some(event=>event.startsWith('listen:')),false);
+});
 
 function request(configuration,path,auth,body){return new Request(configuration.native.origin+path,{method:'POST',headers:{'content-type':'application/json',...(auth===undefined?{}:{authorization:auth})},body:JSON.stringify(body)});}
 

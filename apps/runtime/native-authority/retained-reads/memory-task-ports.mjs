@@ -39,7 +39,12 @@ export function createMemoryTaskPorts(configuration){
   if(typeof ports.getSignedSourceCredentials!=='function'||types.isProxy(ports.getSignedSourceCredentials)||
    ids.includes('client-knowledge-memory')&&
     (typeof ports.getMemoryEligibilityCredentials!=='function'||types.isProxy(ports.getMemoryEligibilityCredentials)))refuse('CONFIGURATION');
-  const task=own(ports.task,['binding','original','scopes','grant','approvedReads'],['signal']);
+  // The reads composer supplies its already validated full task tuple. Accept
+  // those transport facts without letting them redefine this selected client.
+  const task=own(ports.task,['binding','original','scopes','grant','approvedReads'],
+   ['pool','allocationJson','grantFactsJsons','grantId','taskArn','issuanceFactsSha256',
+    'runRequestSha256','readCurrentEntry','currentOwner','sourceEnabled','limits','now',
+    'taskVerifier','taskCapability','signal','allocation']);
   const binding=data(task.binding),original=data(task.original),scopes=data(task.scopes),grant=data(task.grant);
   validateShape('RunBinding',binding);
   const scope=Array.isArray(scopes)&&scopes.length===1?scopes[0]:null;

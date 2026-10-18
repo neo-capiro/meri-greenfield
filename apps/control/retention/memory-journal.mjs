@@ -15,7 +15,7 @@ export function createRecoveryLock(){
  });
 }
 export function createMemoryRetentionJournal(){
- let state=new Map();const lock=createRecoveryLock();
+ let state=new Map();const lock=createRecoveryLock(),transitions=new Map();
  const copy=m=>new Map([...m].map(([k,v])=>[k,structuredClone(v)]));
  return Object.freeze({
   async get(key){const v=state.get(key);return v?structuredClone(v):null;},
@@ -31,6 +31,10 @@ export function createMemoryRetentionJournal(){
   assertProjection(proof){assertExactProjection(state.get(proof.key)??null,proof);return true;},
   /** Recovery runs here: every in-flight transition completes first and none starts until the pass ends. */
   exclusive(fn){return lock.exclusive(fn);},
+  /** Contract adapter for the PostgreSQL per-subject transition advisory lock. */
+  withTransition(key,fn){if(typeof key!=='string'||!key||typeof fn!=='function')fail('RETENTION_INVALID_REQUEST');
+   let transition=transitions.get(key);if(!transition){transition=createRecoveryLock();transitions.set(key,transition);}
+   return transition.exclusive(fn);},
   lock,
   /** A backup at this moment. */
   snapshot(){return copy(state);},
