@@ -6,7 +6,7 @@ const frames=[{type:'assistant',parent_tool_use_id:null,message:{id:'msg_1',cont
 const terminal=event=>event.type==='run.status'&&['failed','cancelled'].includes(event.data.state);
 const unavailable=()=>Object.assign(Error('NATIVE_UNAVAILABLE'),{code:'NATIVE_UNAVAILABLE'});
 const wait=(ms,signal)=>new Promise((resolve,reject)=>{const t=setTimeout(resolve,ms);signal?.addEventListener('abort',()=>{clearTimeout(t);reject(signal.reason);},{once:true});});
-async function setup(append,options={}){const f=await applicationFixture();await f.service.submit({credential:f.credential,input:f.input});let n=300;const attempts=[];
+async function setup(append,options={}){const f=await applicationFixture({initialInput:true});await f.service.allocateInput({credential:f.credential,input:f.input});await f.service.submit({credential:f.credential,input:f.input});let n=300;const attempts=[];
  const runOwner={...f.runOwner,async append(args){if(!terminal(args.event))return f.runOwner.append(args);attempts.push(args.event);return append(args,()=>f.runOwner.append(args).catch(()=>{throw unavailable();}));}};
  const execute=createConversationActivity({runOwner,prepareRuntime:async()=>runtime(),query:()=>({async *[Symbol.asyncIterator](){yield* frames;},close(){}}),newId:()=>id(n++),...options});
  return {f,attempts,execute,state:async()=>(await f.service.history({credential:f.credential})).run.state,terminals:async()=>(await f.service.history({credential:f.credential})).events.filter(terminal)};}

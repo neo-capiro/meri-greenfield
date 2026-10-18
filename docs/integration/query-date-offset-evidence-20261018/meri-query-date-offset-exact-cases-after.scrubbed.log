@@ -1,0 +1,10 @@
+Repaired actual public normalizer probe; same six timezone/case pairs.
+{"timezone":"UTC","selector":"January 1, 2020 12:30 PM -0500","expected":"2020-01-01T17:30:00.000Z","asOf":"2020-01-01T17:30:00.000Z","filter":"2020-01-01T17:30:00.000Z","pass":true}
+{"timezone":"UTC","selector":"Jan 1 12:30:00 -0500 2020","expected":"2020-01-01T17:30:00.000Z","asOf":"2020-01-01T17:30:00.000Z","filter":"2020-01-01T17:30:00.000Z","pass":true}
+exit=0
+{"timezone":"America/Toronto","selector":"January 1, 2020 12:30 PM -0500","expected":"2020-01-01T17:30:00.000Z","asOf":"2020-01-01T17:30:00.000Z","filter":"2020-01-01T17:30:00.000Z","pass":true}
+{"timezone":"America/Toronto","selector":"Jan 1 12:30:00 -0500 2020","expected":"2020-01-01T17:30:00.000Z","asOf":"2020-01-01T17:30:00.000Z","filter":"2020-01-01T17:30:00.000Z","pass":true}
+exit=0
+{"timezone":"Asia/Tokyo","selector":"January 1, 2020 12:30 PM -0500","expected":"2020-01-01T17:30:00.000Z","asOf":"2020-01-01T17:30:00.000Z","filter":"2020-01-01T17:30:00.000Z","pass":true}
+{"timezone":"Asia/Tokyo","selector":"Jan 1 12:30:00 -0500 2020","expected":"2020-01-01T17:30:00.000Z","asOf":"2020-01-01T17:30:00.000Z","filter":"2020-01-01T17:30:00.000Z","pass":true}
+exit=0

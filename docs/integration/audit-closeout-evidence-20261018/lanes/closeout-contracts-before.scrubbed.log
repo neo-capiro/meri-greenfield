@@ -1,0 +1,390 @@
+✔ initial-input metadata preserves the allocate route, bounded limits and closed error outcomes (2.508133ms)
+✔ allocation receipt agrees across internal server assertion and public receiver (49.667524ms)
+✔ allocation errors are admitted only with their canonical status and outcome (1.587349ms)
+✔ admitted input after allocation must carry the allocation proof and the same binding (5.713036ms)
+✖ initial-input generation records exact canonical provenance and one shared browser import (33.315005ms)
+✔ offline public package resolves the allocation entrypoint and its schema only through declared exports (99.124721ms)
+✔ actual txt create/inspect/download accepted without authority claims (943.681538ms)
+✔ actual docx create/inspect/download accepted without authority claims (0.85679ms)
+✔ actual xlsx create/inspect/download accepted without authority claims (0.880666ms)
+✔ actual XLSX admits canonical 125-character filename (0.153041ms)
+✔ actual TXT preserves exact multibyte whitespace and newline bytes (0.120211ms)
+✔ actual revision correlates immutable parent and retains original (0.123526ms)
+✔ closed request refuses browser authority injection (0.423047ms)
+✔ wrong operation and format pair refuses (0.240032ms)
+✔ PDF remains outside document application (0.223347ms)
+✔ request rejects invalid UTF8 (0.147442ms)
+✔ request rejects parsed objects without getters or proxy traps (0.144667ms)
+✔ request rejects proxy over byte view without traps (0.115794ms)
+✔ JSON byte access ignores hostile own iterator/getter (0.159891ms)
+✔ request bound counts UTF8 bytes not characters (12.222389ms)
+✔ request deeply nested JSON refuses boundedly (0.215324ms)
+✔ unknown dangerous JSON key refuses (0.226311ms)
+✔ request snapshots bytes and returns frozen values (0.212611ms)
+✔ shape-like unbranded request cannot admit response (0.322927ms)
+✔ wrong route request brand refuses (0.154512ms)
+✔ response refuses unknown response field (0.412841ms)
+✔ response refuses format/MIME mismatch (0.3385ms)
+✔ response refuses bad filename (0.214914ms)
+✔ response refuses oversize filename (0.363328ms)
+✔ response refuses hash mismatch (0.2122ms)
+✔ response refuses byte length mismatch (0.173341ms)
+✔ response refuses inspection format (0.163216ms)
+✔ response refuses rendered claim (0.311009ms)
+✔ response refuses native qualification claim (0.166891ms)
+✔ response refuses preview claim (0.143617ms)
+✔ response refuses generation claim (0.142104ms)
+✔ response refuses foreign object scope (0.275365ms)
+✔ response refuses unexpected parent (0.229606ms)
+✔ inspect expected version correlation refuses substitute (0.356917ms)
+✔ revision parent correlation refuses substituted prior version (0.214213ms)
+✔ valid content-free error returned, status mismatch rejected (0.485201ms)
+✔ error with source/private body rejected (0.12576ms)
+✔ download refuses wrong mime (0.238219ms)
+✔ download refuses wrong filename (0.178379ms)
+✔ download refuses missing length (0.171478ms)
+✔ download refuses wrong length (0.135585ms)
+✔ download refuses no-store missing (0.178158ms)
+✔ download refuses nosniff missing (0.146471ms)
+✔ download refuses encoded content (0.166411ms)
+✔ download rejects altered bytes despite matching headers (6.027369ms)
+✔ download rejects shortened EOF (0.339291ms)
+✔ download refuses redirect and error status (0.252821ms)
+✔ download refuses unbranded version without proxy traps (0.334864ms)
+✔ download rejects Response proxy without traps (0.198889ms)
+✔ download configured byte limit refuses (0.151808ms)
+✔ download consumes bounded stream EOF and cancels stalled body (21.181483ms)
+✔ download respects already cancelled caller (0.740165ms)
+✔ received binary is detached from source buffer (0.665222ms)
+✖ standalone browser module works with no Node or private graph (2.254436ms)
+✔ native fetch followed redirect200 is refused despite exact bytes and headers (21.715618ms)
+✔ stream read error never yields verified bytes (0.646214ms)
+✔ extra byte after exact version bytes refuses (0.550239ms)
+✔ hostile route and status do not coerce unknown objects (0.181404ms)
+✔ request refuses escaped lone surrogate and concatenated JSON (0.17254ms)
+✔ partial action binding does not declare full native parity or activate a handler (21.522382ms)
+✔ partial binding refuses original mapping, aliases and executable/retry promotion (99.696922ms)
+✔ scoped canonical defaults and digest preserve a frozen original request plus opaque cursor (6.020078ms)
+✔ binding refuses unscoped mode while unchanged family keeps it explicitly pending (0.599272ms)
+✔ trusted actor is mandatory and model authority cannot replace it (1.187026ms)
+✔ family mode bounds and closed JSON admission retain strict behavior (0.999443ms)
+✖ all fourteen original descriptors and all139 native rows remain exact (5.523601ms)
+✔ independent literal recommendation and outcome source proofs satisfy unchanged family (125.003849ms)
+✖ partial binding preserves every original row and fourteen descriptors (17.34763ms)
+✔ canonical binding defaults, raw ownership and digest use existing selection (0.908908ms)
+✔ client-less, missing actor and shape/coercion attempts refuse (1.461108ms)
+✔ hostile objects never invoke accessor/proxy/toJSON and unknown context refuses (0.552912ms)
+✔ opaque cursor boundary and page disclosure remain bounded but unqualified (5.006053ms)
+✔ catalog mutants cannot promote partial parity, aliases, availability or source pins (91.926039ms)
+✔ bound pages preserve recommendation semantics for a reported outcome (5.026381ms)
+✔ exact proof and content substitutions fail through canonical resolver (7.88712ms)
+✔ unlinked evidence and forged linked source owner fail despite valid row digest (2.645685ms)
+✔ bounded page completeness never becomes source evidence, history or absence proof (5.571602ms)
+✔ upcoming calendar inventory materializes verified defaults without mutating strict input (6.91207ms)
+✔ upcoming calendar inventory rejects coercion, extra authority, bounds and missing trusted clock (1.271964ms)
+✔ bounded calendar page counts returned rows and never claims whole history (67.970517ms)
+✔ debrief list and exact-body modes keep distinct normalized selections and defaults (4.538248ms)
+✔ debrief inputs refuse missing client, foreign fields, mode confusion and cursor substitution (0.543608ms)
+✔ debrief exact body windows, hashes and decisive reads stay exact (66.732429ms)
+✔ debrief list pages cannot claim complete history without a completed body pass (3.128487ms)
+✔ meeting reads keep inventory and exact-source-body modes separate (4.741533ms)
+✔ meeting inputs refuse missing/foreign client scope and mode substitution (0.819844ms)
+✔ meeting inventory discloses restricted, omitted and paginated coverage (70.47929ms)
+✔ exact meeting source bodies bind hash, byte and window provenance (56.259059ms)
+✔ cursor reuse is disclosed but never authenticated by this pending contract (1.192937ms)
+✔ meeting external DTO accessors, cycles and non-finite values refuse before executing getters (0.495616ms)
+✔ shared collaborators are delegated, not re-implemented, and still have teeth (2.473205ms)
+✔ meeting pages enforce canonical single-subject cardinality and roster rules (1.453789ms)
+✔ meeting pages enforce canonical timezone and calendar-week boundaries (18.834999ms)
+✔ meeting source observations retain their pending timestamp boundary (1.06857ms)
+✖ meeting schema objects stay closed and package public exports stay 0.1 only (2.275357ms)
+✔ private meeting catalog registration exposes no live handler, public export or skill (36.321569ms)
+✔ normalizes defaults/nulls and binds the server-selected client (16.417151ms)
+✔ strict raw input bounds, numeric coercion and model authority keys refuse (1.446456ms)
+✔ requires canonical trusted actor/subject and rejects client substitution (0.534824ms)
+✔ complete/empty producer queue metadata never becomes approved evidence or absence (10.957647ms)
+✔ selected client permits own firm/private rows and the selected client, rejects another client (1.789433ms)
+✔ result actor/tenant/client and pending-fact constants cannot be substituted (1.286585ms)
+✔ restricted proposals redact text/title and remain partial (1.194408ms)
+✔ truncated/null-text pages cannot claim complete producer coverage (0.550819ms)
+✔ disabled review is unavailable, including continued-request firstPage semantics (0.609106ms)
+✔ continuation requires retained scope, exact cursor and unchanged page limit (1.213125ms)
+✔ final continued page remains partial and must advance beyond prior key (0.852603ms)
+✔ UTF-16 preview caps, date order, duplicates and requested count are enforced (2.239389ms)
+✔ inert admission refuses getters/proxies/cycles/sparse data without invocation (0.33208ms)
+✖ operation is mapped but unavailable and public exports stay separate (26.735086ms)
+✔ family factory import has no process/network/timer effect (119.974639ms)
+✔ nonfinite proposal timestamps cannot claim complete or restricted coverage (1.114498ms)
+✔ nonfinite timestamps refuse in either position before within-page ordering (0.981338ms)
+✔ nonfinite retained or current timestamps cannot advance a continuation (0.831603ms)
+✔ finite timestamps preserve offset-aware ordering and equal-instant identity ties (0.738192ms)
+✔ task read materializes verified defaults without mutating strict input (9.188496ms)
+✔ task read rejects coercion, extra authority, bounds, unknown status and missing trusted context (2.114822ms)
+✔ client-scoped task page pins scope, identity, provenance and honest coverage (101.945283ms)
+✔ authorized-tasks page derives overdue only when unscoped and never invents client scope (2.008846ms)
+✔ task pagination resumes only by a disclosed cursor and never claims complete absence (2.946799ms)
+✔ action-item read keeps the client-scoped exact read distinct from the pending unscoped list (6.534574ms)
+✔ client-scoped action-item page pins scope, order, identity and provenance (70.76729ms)
+✔ action-item page resumes page >= 2 only with a cursor and binds linked evidence (1.728333ms)
+✔ operational-read DTO accessors, cycles and non-finite values refuse before executing getters (1.484025ms)
+✔ shared collaborators are delegated, not re-implemented, and still have teeth (1.454311ms)
+✔ task pages enforce canonical single-subject and authorized-roster identities (1.867754ms)
+✔ task pages enforce canonical timezone and calendar-month boundaries (20.557545ms)
+✔ operational source observations retain their pending timestamp boundary (0.854106ms)
+✖ operational-read schema objects stay closed and package public exports stay 0.1 only (1.886311ms)
+✔ private task and partial action registration preserve the full native successor without a live handler or skill (34.555908ms)
+✔ one immutable provider supplies all12 datasets and88 fields without physical expressions (7.135195ms)
+✔ unknown or decorative provider refuses instead of adopting arbitrary field maps (0.455455ms)
+✔ exact family exports and normalization bind selected immutable snapshot (12.536638ms)
+✔ model SQL/table/alias/registry authority is refused at closed boundaries (2.206013ms)
+✔ selectors reject coercion hooks, hidden fields, proxies and callbacks (0.430609ms)
+✔ typed requests exclude legacy nonarray ignoring and broad Number coercion (0.861147ms)
+✔ positive finite row limit preserves floor/default and per-dataset maximum (3.582096ms)
+✔ all six aggregates preserve source type/group capabilities (2.262518ms)
+✔ bare count and alias collision rules remain exact (1.038244ms)
+✔ grouped mixed projections retain ordinary fields and groupable flags (3.946114ms)
+✔ ordering is limited to selected aliases and preserves legacy desc-exact default (0.634676ms)
+✔ every closed filter operator is admitted with its actual value contract (1.835084ms)
+✔ numeric boolean and date filters remain type-correct without invented ordering (1.119997ms)
+✔ filter windows and nonfilterable arrays fail closed (1.351075ms)
+✖ trusted default as-of is distinct from explicit date and generatedAt (1.982787ms)
+✔ all twelve dataset projections accept their complete field selection windows (6.713382ms)
+✔ success omits SQL and retains exact aliases, dataset and pretrim count (7.201637ms)
+✔ counts retain exact unsafe integer strings and refuse fractional or null values (2.599675ms)
+✔ numbers preserve decimal strings and nullable stored/aggregate results (2.253204ms)
+✔ array scalars preserve null elements; dates and booleans retain source types (1.696545ms)
+✔ truncation reports whole-row prefix and original fetched count, including zero retained (0.867126ms)
+✔ legacy256Ki ceiling counts UTF16 not UTF8 and never silently drops half a row (7.911987ms)
+✔ error envelope remains explicit and never doubles as empty success (1.153338ms)
+✔ result observation is independent; validator never claims audit or role admission (1.052756ms)
+✔ snapshots cannot mutate provider, requests, normalized tuples or returned siblings (0.822149ms)
+✖ actual prepare/approve/execute API wire admits canonical normalization and immutable correlated result (109.95153ms)
+✔ current resumed attempt is allowed while selected original proposal stays fixed (25.308299ms)
+✔ due-day and nullable/blank raw input use the canonical normalizer (17.360649ms)
+✔ unknown native effect preserves error outcome and repeated execution reports indeterminate without a second dispatch (20.140746ms)
+✔ HTTP vocabulary/status and default-off availability are precise (7.005802ms)
+✔ prepare rejects hash mismatch (5.09932ms)
+✔ prepare rejects unknown key (5.230768ms)
+✔ prepare rejects required approver tenant (4.980772ms)
+✔ prepare rejects scope tenant (6.478037ms)
+✔ prepare rejects task mismatch (5.869111ms)
+✔ prepare rejects patch mismatch (5.079551ms)
+✔ prepare rejects wrong stable binding (4.730695ms)
+✔ prepare rejects reversed expiry (4.637174ms)
+✔ prepare rejects noncanonical instant (6.51263ms)
+✔ prepare rejects nonday due date (6.127379ms)
+✔ prepare rejects noncanonical title (5.127563ms)
+✔ execute rejects wrong command id (15.050248ms)
+✔ execute rejects wrong command hash (15.855302ms)
+✔ execute rejects wrong idempotency key (15.231521ms)
+✔ execute rejects wrong tenant (16.041994ms)
+✔ execute rejects wrong run (15.261546ms)
+✔ execute rejects foreign scope (15.475199ms)
+✔ execute rejects changed scope (13.957262ms)
+✔ execute rejects failed receipt (15.279715ms)
+✔ execute rejects wrong task (15.088446ms)
+✔ execute rejects wrong patch title (14.698199ms)
+✔ execute rejects wrong patch status (14.034489ms)
+✔ execute rejects bad completed time (15.390572ms)
+✔ execute rejects bad result time (13.642518ms)
+✔ execute rejects non-day result due date (16.369536ms)
+✔ execute rejects unknown output key (13.676829ms)
+✔ the selected original proposal is required even for indeterminate output (5.239692ms)
+✔ request receiver admits only closed raw prepare or canonical execute proposals (4.910387ms)
+✔ bounded primitive JSON rejects hostile bytes, keys, depth, unicode and nonfinite numbers (0.840076ms)
+✔ independent stable context is mandatory and cannot be substituted with full worker authority (6.332538ms)
+✔ public browser artifact has no external imports and metadata binds canonical owners (1.889656ms)
+ℹ tests 196
+ℹ suites 0
+ℹ pass 187
+ℹ fail 9
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1875.52637
+
+✖ failing tests:
+
+test at packages/contracts/test/conversation-initial-input-public.test.mjs:50:1
+✖ initial-input generation records exact canonical provenance and one shared browser import (33.315005ms)
+  AssertionError [ERR_ASSERTION]: ../../apps/control/conversations/postgres-store.mjs
+  + actual - expected
+  
+  + '3943e94931fc0843faa6dac8c10c7083178996182804abe8f28f8cfedfb53a79'
+  - '96002cc66ed5658273af0cd4035e027efaaaa94708e020f28b79c22f1fc355a0'
+  
+      at TestContext.<anonymous> (file://<contracts-worktree>/packages/contracts/test/conversation-initial-input-public.test.mjs:53:110)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: '3943e94931fc0843faa6dac8c10c7083178996182804abe8f28f8cfedfb53a79',
+    expected: '96002cc66ed5658273af0cd4035e027efaaaa94708e020f28b79c22f1fc355a0',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/document-application-independent.test.mjs:76:1
+✖ standalone browser module works with no Node or private graph (2.254436ms)
+  TypeError: vm.SourceTextModule is not a constructor
+      at TestContext.<anonymous> (file://<contracts-worktree>/packages/contracts/test/document-application-independent.test.mjs:76:384)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-action-item-binding.test.mjs:88:1
+✖ all fourteen original descriptors and all139 native rows remain exact (5.523601ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+      id: 'get_client_context',
+  +   version: '0.3.0'
+  -   version: '0.2.0'
+    }
+  
+      at TestContext.<anonymous> (file://<contracts-worktree>/packages/contracts/test/retrieval-action-item-binding.test.mjs:95:43)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { id: 'get_client_context', version: '0.3.0' },
+    expected: { id: 'get_client_context', version: '0.2.0' },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-action-item-independent.test.mjs:26:1
+✖ partial binding preserves every original row and fourteen descriptors (17.34763ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+      id: 'get_client_context',
+  +   version: '0.3.0'
+  -   version: '0.2.0'
+    }
+  
+      at TestContext.<anonymous> (file://<contracts-worktree>/packages/contracts/test/retrieval-action-item-independent.test.mjs:32:46)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { id: 'get_client_context', version: '0.3.0' },
+    expected: { id: 'get_client_context', version: '0.2.0' },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-meeting-source.test.mjs:361:1
+✖ meeting schema objects stay closed and package public exports stay 0.1 only (2.275357ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  '0.1.10' !== '0.1.5'
+  
+      at TestContext.<anonymous> (file://<contracts-worktree>/packages/contracts/test/retrieval-meeting-source.test.mjs:365:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '0.1.10',
+    expected: '0.1.5',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-memory-proposals.test.mjs:120:1
+✖ operation is mapped but unavailable and public exports stay separate (26.735086ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  '0.1.10' !== '0.1.5'
+  
+      at TestContext.<anonymous> (file://<contracts-worktree>/packages/contracts/test/retrieval-memory-proposals.test.mjs:127:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '0.1.10',
+    expected: '0.1.5',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-operational-reads.test.mjs:394:1
+✖ operational-read schema objects stay closed and package public exports stay 0.1 only (1.886311ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  '0.1.10' !== '0.1.5'
+  
+      at TestContext.<anonymous> (file://<contracts-worktree>/packages/contracts/test/retrieval-operational-reads.test.mjs:398:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '0.1.10',
+    expected: '0.1.5',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-public-domain-query.test.mjs:101:1
+✖ trusted default as-of is distinct from explicit date and generatedAt (1.982787ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + '2020-01-01T05:00:00.000Z'
+  - '2020-01-01T00:00:00.000Z'
+                 ^
+  
+      at TestContext.<anonymous> (file://<contracts-worktree>/packages/contracts/test/retrieval-public-domain-query.test.mjs:104:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '2020-01-01T05:00:00.000Z',
+    expected: '2020-01-01T00:00:00.000Z',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/task-command-application-public.test.mjs:25:1
+✖ actual prepare/approve/execute API wire admits canonical normalization and immutable correlated result (109.95153ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'https://source.invalid/api/clio/tools/update_task'
+  - 'https://source.invalid/clio/tools/update_task'
+  
+      at TestContext.<anonymous> (file://<contracts-worktree>/packages/contracts/test/task-command-application-public.test.mjs:28:119)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'https://source.invalid/api/clio/tools/update_task',
+    expected: 'https://source.invalid/clio/tools/update_task',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

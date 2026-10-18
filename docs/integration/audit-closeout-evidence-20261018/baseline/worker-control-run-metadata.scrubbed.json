@@ -1,0 +1,100 @@
+{
+  "note": "Mixed capture phases are labeled per record. Initial setup attempts are preserved and excluded from the 48-failure inventory. Canonical worker results are the 4-pass/16-fail logs and master inventory. Hashes refer to the named published scrubbed logs; original raw hashes are historical receipts.",
+  "records": [
+    {
+      "pin": "candidate",
+      "name": "focused-worker",
+      "cwd": "<candidate-worktree>",
+      "argv": [
+        "node",
+        "--test",
+        "apps/worker/conversation/test/options-trust.test.mjs",
+        "apps/worker/conversation/test/activity.test.mjs",
+        "apps/worker/conversation/test/terminal-settlement.test.mjs"
+      ],
+      "exitCode": 1,
+      "log": "candidate-focused-worker.missing-zod-setup-attempt.scrubbed.log",
+      "originalRawLogName": "candidate-focused-worker.missing-zod-setup-attempt.raw.log",
+      "originalRawLogSha256": "a4ff87e7890b83e92eafc8a90ecf6e162f5b8c1ca2fada8fbe91a3f07f6c58b1",
+      "bytes": 3924,
+      "sha256": "0277304444138b3cedd1f598f354747208393b07d997a00ff72efc3857274761",
+      "capturePhase": "initial missing-Zod dependency setup attempt; not canonical worker result"
+    },
+    {
+      "pin": "immediate-parent",
+      "name": "focused-worker",
+      "cwd": "<immediate-parent-worktree>",
+      "argv": [
+        "node",
+        "--test",
+        "apps/worker/conversation/test/options-trust.test.mjs",
+        "apps/worker/conversation/test/activity.test.mjs",
+        "apps/worker/conversation/test/terminal-settlement.test.mjs"
+      ],
+      "exitCode": 1,
+      "log": "immediate-parent-focused-worker.missing-zod-setup-attempt.scrubbed.log",
+      "originalRawLogName": "immediate-parent-focused-worker.missing-zod-setup-attempt.raw.log",
+      "originalRawLogSha256": "fc255310aa5f3b421d8ec8df99d7a5e6809cd4bac85902e3a16842a4e47b7fc7",
+      "bytes": 3949,
+      "sha256": "3e1a12b1078bcf146659f96e71a3df1d2bf799b2e7bc63a0bf81a2053e3423f8",
+      "capturePhase": "initial missing-Zod dependency setup attempt; not canonical worker result"
+    },
+    {
+      "pin": "receiving-parent",
+      "name": "focused-worker",
+      "cwd": "<receiving-parent-worktree>",
+      "argv": [
+        "node",
+        "--test",
+        "apps/worker/conversation/test/options-trust.test.mjs",
+        "apps/worker/conversation/test/activity.test.mjs",
+        "apps/worker/conversation/test/terminal-settlement.test.mjs"
+      ],
+      "exitCode": 1,
+      "log": "receiving-parent-focused-worker.scrubbed.log",
+      "originalRawLogName": "receiving-parent-focused-worker.raw.log",
+      "originalRawLogSha256": "5bd6764d86951bdee179b5eb85b870023f3cc2ee3786fd7e3e55b18a231b763c",
+      "bytes": 7283,
+      "sha256": "6d87ab502028927efb1effc3150ae59a48cfaf6546c7a47dadbe664a626f15dc",
+      "capturePhase": "canonical focused-worker result"
+    },
+    {
+      "pin": "receiving-parent",
+      "name": "environment-control",
+      "cwd": "<receiving-parent-worktree>",
+      "argv": [
+        "node",
+        "--experimental-vm-modules",
+        "--test",
+        "packages/contracts/test/document-application-independent.test.mjs",
+        "packages/contracts/test/retrieval-public-domain-query.test.mjs"
+      ],
+      "exitCode": 0,
+      "log": "receiving-parent-environment-control.scrubbed.log",
+      "originalRawLogName": "receiving-parent-environment-control.raw.log",
+      "originalRawLogSha256": "4032024cd0c2b360bc9263b6a78d304824f2d3851d736171d65d1e479624c5e6",
+      "bytes": 6205,
+      "sha256": "4032024cd0c2b360bc9263b6a78d304824f2d3851d736171d65d1e479624c5e6",
+      "capturePhase": "UTC plus experimental VM diagnostic control; not standard acceptance"
+    },
+    {
+      "pin": "candidate",
+      "name": "environment-control",
+      "cwd": "<candidate-worktree>",
+      "argv": [
+        "node",
+        "--experimental-vm-modules",
+        "--test",
+        "packages/contracts/test/document-application-independent.test.mjs",
+        "packages/contracts/test/retrieval-public-domain-query.test.mjs"
+      ],
+      "exitCode": 0,
+      "log": "candidate-environment-control.scrubbed.log",
+      "originalRawLogName": "candidate-environment-control.raw.log",
+      "originalRawLogSha256": "7931588f9f4bd86328bf331c096ebacc9cbd9850d009ef99f223a0b10e551df7",
+      "bytes": 6197,
+      "sha256": "7931588f9f4bd86328bf331c096ebacc9cbd9850d009ef99f223a0b10e551df7",
+      "capturePhase": "UTC plus experimental VM diagnostic control; not standard acceptance"
+    }
+  ]
+}

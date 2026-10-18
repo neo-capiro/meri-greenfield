@@ -25,7 +25,7 @@ async function observed(c){
 test('actual prepare/approve/execute API wire admits canonical normalization and immutable correlated result',async()=>{
  const c=await prepared();assert.equal(c.f.state.fetches,0);assert.deepEqual(c.proposal.command.arguments,{taskId:id(21),mode:'unconditional_patch',patch:{title:'Updated',status:'todo'}});
  const refused=await c.call('execute',{proposal:c.proposal}),refusal=await receive('execute',refused.status,await refused.text(),{binding:c.binding,proposal:c.proposal});assert('error'in refusal);assert.equal(c.f.state.fetches,0);
- const d=await observed(c);assert.equal(d.observed.outcome.result.id,id(21));assert.equal(d.f.state.fetches,1);assert.equal(d.f.state.http.url,'https://source.invalid/clio/tools/update_task');
+ const d=await observed(c);assert.equal(d.observed.outcome.result.id,id(21));assert.equal(d.f.state.fetches,1);assert.equal(d.f.state.http.url,'https://source.invalid/api/clio/tools/update_task');
  assert(Object.isFrozen(d.observed.outcome.result));assert(Object.isFrozen(c.proposal.command.arguments.patch));assert.throws(()=>{d.observed.outcome.result.title='changed';},TypeError);
 });
 test('current resumed attempt is allowed while selected original proposal stays fixed',async()=>{

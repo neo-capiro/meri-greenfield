@@ -1,0 +1,22 @@
+✔ no tenant record: platform defaults bounded by the role ceiling (4.763917ms)
+✔ tenant admins enable and restrict inside the platform maximum (1.101868ms)
+✔ a tenant setting that would widen the platform maximum is refused with a stable code naming the field, never clipped (2.282404ms)
+✔ the user role ceiling narrows the effective policy and a tenant may only narrow it further (2.411379ms)
+✔ empty intersections switch the scoped capability off and still validate (0.911251ms)
+✔ intersection: flags AND, allowlists intersect (wildcards cover sub-domains, not the apex), parallelism takes the minimum (0.382886ms)
+✔ resolution is idempotent and monotone (5.454758ms)
+✔ platform limits are validated: defaults and role ceilings must sit inside the maximum (0.992984ms)
+✔ the canonical prepared plugin directory is accepted and returned unchanged (8.690488ms)
+✔ aliases are refused: a symlink to the plugin, a symlinked parent, a missing path and a file (4.874274ms)
+✔ symlinks into the writable conversation workspace are refused wherever they appear (18.119104ms)
+✔ an options fragment whose plugin path differs from the trusted prepared path is refused (29.920953ms)
+✔ dot P2a-R2: a missing workspace is refused, so an aliased existing parent cannot hide an overlap with the plugin (1.803073ms)
+✔ dot P2a-R2: options built for a missing workspace refuse the plugin fact before any SDK option is produced (7.224922ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1117.940174

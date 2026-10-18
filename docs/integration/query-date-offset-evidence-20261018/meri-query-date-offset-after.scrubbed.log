@@ -1,0 +1,35 @@
+✔ one immutable provider supplies all12 datasets and88 fields without physical expressions (3.980287ms)
+✔ unknown or decorative provider refuses instead of adopting arbitrary field maps (0.771631ms)
+✔ exact family exports and normalization bind selected immutable snapshot (12.981606ms)
+✔ model SQL/table/alias/registry authority is refused at closed boundaries (1.90861ms)
+✔ selectors reject coercion hooks, hidden fields, proxies and callbacks (0.241773ms)
+✔ typed requests exclude legacy nonarray ignoring and broad Number coercion (0.836017ms)
+✔ positive finite row limit preserves floor/default and per-dataset maximum (4.489643ms)
+✔ all six aggregates preserve source type/group capabilities (3.311741ms)
+✔ bare count and alias collision rules remain exact (3.678704ms)
+✔ grouped mixed projections retain ordinary fields and groupable flags (0.815066ms)
+✔ ordering is limited to selected aliases and preserves legacy desc-exact default (0.612711ms)
+✔ every closed filter operator is admitted with its actual value contract (3.375056ms)
+✔ numeric boolean and date filters remain type-correct without invented ordering (2.246239ms)
+✔ filter windows and nonfilterable arrays fail closed (1.111502ms)
+✔ trusted default as-of is distinct from explicit date and generatedAt (5.447524ms)
+✔ legacy explicit query dates preserve the native UTC parser reference (126.784873ms)
+✔ query date normalization preserves UTC semantics in multiple host timezones (1618.176848ms)
+✔ all twelve dataset projections accept their complete field selection windows (4.151377ms)
+✔ success omits SQL and retains exact aliases, dataset and pretrim count (8.760289ms)
+✔ counts retain exact unsafe integer strings and refuse fractional or null values (1.374779ms)
+✔ numbers preserve decimal strings and nullable stored/aggregate results (1.670408ms)
+✔ array scalars preserve null elements; dates and booleans retain source types (0.607193ms)
+✔ truncation reports whole-row prefix and original fetched count, including zero retained (0.685421ms)
+✔ legacy256Ki ceiling counts UTF16 not UTF8 and never silently drops half a row (4.508974ms)
+✔ error envelope remains explicit and never doubles as empty success (0.589917ms)
+✔ result observation is independent; validator never claims audit or role admission (0.475756ms)
+✔ snapshots cannot mutate provider, requests, normalized tuples or returned siblings (0.447703ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2116.889035

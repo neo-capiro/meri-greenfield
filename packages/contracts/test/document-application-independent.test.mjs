@@ -1,10 +1,9 @@
 // Independent receiving controls, frozen before candidate implementation inspection.
 import test,{before,after} from 'node:test';
 import assert from 'node:assert/strict';
-import vm from 'node:vm';
+import {execFileSync} from 'node:child_process';
 import {createServer} from 'node:http';
 import {readFile} from 'node:fs/promises';
-import {webcrypto} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 import {receiveDocumentRequest,receiveDocumentResponse,receiveDocumentDownload,DocumentResponseError} from '../dist/document-application.mjs';
 import {createDocumentApplication} from '../../../apps/control/document-application/index.mjs';
@@ -73,7 +72,27 @@ test('download configured byte limit refuses',()=>rejects(()=>receiveDocumentDow
 test('download consumes bounded stream EOF and cancels stalled body',async()=>{let cancelled=false;const stream=new ReadableStream({cancel(){cancelled=true;}}),response=new Response(stream,{headers:downloads.txt.headers});await rejects(()=>receiveDocumentDownload(response,success.txt.version,{timeoutMs:20}));assert.equal(cancelled,true);});
 test('download respects already cancelled caller',async()=>{const c=new AbortController();c.abort();await rejects(()=>receiveDocumentDownload(binary('txt'),success.txt.version,{signal:c.signal}));});
 test('received binary is detached from source buffer',async()=>{const b=downloads.txt.bytes.slice(),r=binary('txt',()=>{},b),out=await receiveDocumentDownload(r,success.txt.version);b.fill(0);assert.deepEqual(out.bytes,downloads.txt.bytes);});
-test('standalone browser module works with no Node or private graph',async()=>{const source=await readFile(new URL('../dist/document-application.mjs',import.meta.url),'utf8');const ctx=vm.createContext({TextEncoder,TextDecoder,Uint8Array,ArrayBuffer,DataView,Response,Request,Headers,ReadableStream,AbortController,AbortSignal,setTimeout,clearTimeout,crypto:webcrypto});const module=new vm.SourceTextModule(source,{context:ctx});await module.link(()=>{throw Error('External module forbidden');});await module.evaluate();const r=module.namespace.receiveDocumentRequest('create',encode({deliveryId:'browser',request:specs.txt}));assert.equal(r.request.format,'txt');const out=await module.namespace.receiveDocumentResponse('create',200,raws.txt,r);assert.equal(out.version.previewStatus,'pending');});
+test('standalone browser module works with no Node or private graph',async()=>{
+ const source=await readFile(new URL('../dist/document-application.mjs',import.meta.url),'utf8');
+ // VM modules are experimental in supported Node24. Enable them only for the
+ // bounded isolation probe; the standard suite itself needs no ambient flag.
+ const probe=`
+  import assert from 'node:assert/strict';
+  import vm from 'node:vm';
+  import {readFileSync} from 'node:fs';
+  import {webcrypto} from 'node:crypto';
+  const input=JSON.parse(readFileSync(0,'utf8')),encode=x=>new TextEncoder().encode(typeof x==='string'?x:JSON.stringify(x));
+  const ctx=vm.createContext({TextEncoder,TextDecoder,Uint8Array,ArrayBuffer,DataView,Response,Request,Headers,ReadableStream,AbortController,AbortSignal,setTimeout,clearTimeout,crypto:webcrypto});
+  const module=new vm.SourceTextModule(input.source,{context:ctx});
+  await module.link(()=>{throw Error('External module forbidden');});await module.evaluate();
+  const r=module.namespace.receiveDocumentRequest('create',encode(input.request));assert.equal(r.request.format,'txt');
+  const out=await module.namespace.receiveDocumentResponse('create',200,encode(input.response),r);assert.equal(out.version.previewStatus,'pending');
+ `;
+ execFileSync(process.execPath,['--experimental-vm-modules','--input-type=module','--eval',probe],{
+  input:JSON.stringify({source,request:{deliveryId:'browser',request:specs.txt},response:new TextDecoder().decode(raws.txt)}),
+  encoding:'utf8',timeout:10000,maxBuffer:1048576,
+ });
+});
 
 test('native fetch followed redirect200 is refused despite exact bytes and headers',async()=>{
  const server=createServer((req,res)=>{if(req.url==='/redirect'){res.writeHead(302,{location:'/file'});res.end();}else{res.writeHead(200,downloads.txt.headers);res.end(downloads.txt.bytes);}});

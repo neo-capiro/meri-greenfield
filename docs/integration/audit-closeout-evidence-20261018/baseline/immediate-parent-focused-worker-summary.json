@@ -1,0 +1,110 @@
+{
+  "source": "baseline-reproduction-inventory.json runs.immediate-parent.focused-worker",
+  "counts": {
+    "tests": 20,
+    "suites": 0,
+    "pass": 4,
+    "fail": 16,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "failures": [
+    {
+      "location": "apps/worker/conversation/test/activity.test.mjs:5:1",
+      "name": "one SDK query persists streamed text once, hides reasoning and completes durable run",
+      "error": "Error: STORE_UNAVAILABLE",
+      "diagnostic": "Error: STORE_UNAVAILABLE\n      at tx (file://<immediate-parent-worktree>/apps/control/conversations/postgres-store.mjs:24:68) {\n    code: 'STORE_UNAVAILABLE'\n  }"
+    },
+    {
+      "location": "apps/worker/conversation/test/activity.test.mjs:6:1",
+      "name": "nonstreamed final assistant text is displayed with a valid generated UUID",
+      "error": "Error: STORE_UNAVAILABLE",
+      "diagnostic": "Error: STORE_UNAVAILABLE\n      at tx (file://<immediate-parent-worktree>/apps/control/conversations/postgres-store.mjs:24:68) {\n    code: 'STORE_UNAVAILABLE'\n  }"
+    },
+    {
+      "location": "apps/worker/conversation/test/activity.test.mjs:7:437",
+      "name": "SDK mirror never leaks diagnostics or makes a duplicate model query",
+      "error": "Error: STORE_UNAVAILABLE",
+      "diagnostic": "Error: STORE_UNAVAILABLE\n      at tx (file://<immediate-parent-worktree>/apps/control/conversations/postgres-store.mjs:24:68) {\n    code: 'STORE_UNAVAILABLE'\n  }"
+    },
+    {
+      "location": "apps/worker/conversation/test/activity.test.mjs:7:437",
+      "name": "SDK missing never leaks diagnostics or makes a duplicate model query",
+      "error": "Error: STORE_UNAVAILABLE",
+      "diagnostic": "Error: STORE_UNAVAILABLE\n      at tx (file://<immediate-parent-worktree>/apps/control/conversations/postgres-store.mjs:24:68) {\n    code: 'STORE_UNAVAILABLE'\n  }"
+    },
+    {
+      "location": "apps/worker/conversation/test/activity.test.mjs:7:437",
+      "name": "SDK sdkFailure never leaks diagnostics or makes a duplicate model query",
+      "error": "Error: STORE_UNAVAILABLE",
+      "diagnostic": "Error: STORE_UNAVAILABLE\n      at tx (file://<immediate-parent-worktree>/apps/control/conversations/postgres-store.mjs:24:68) {\n    code: 'STORE_UNAVAILABLE'\n  }"
+    },
+    {
+      "location": "apps/worker/conversation/test/activity.test.mjs:7:437",
+      "name": "SDK duplicate never leaks diagnostics or makes a duplicate model query",
+      "error": "Error: STORE_UNAVAILABLE",
+      "diagnostic": "Error: STORE_UNAVAILABLE\n      at tx (file://<immediate-parent-worktree>/apps/control/conversations/postgres-store.mjs:24:68) {\n    code: 'STORE_UNAVAILABLE'\n  }"
+    },
+    {
+      "location": "apps/worker/conversation/test/activity.test.mjs:7:437",
+      "name": "SDK subagent never leaks diagnostics or makes a duplicate model query",
+      "error": "Error: STORE_UNAVAILABLE",
+      "diagnostic": "Error: STORE_UNAVAILABLE\n      at tx (file://<immediate-parent-worktree>/apps/control/conversations/postgres-store.mjs:24:68) {\n    code: 'STORE_UNAVAILABLE'\n  }"
+    },
+    {
+      "location": "apps/worker/conversation/test/activity.test.mjs:8:1",
+      "name": "revocation during query stops publication and closes SDK before another result",
+      "error": "Error: STORE_UNAVAILABLE",
+      "diagnostic": "Error: STORE_UNAVAILABLE\n      at tx (file://<immediate-parent-worktree>/apps/control/conversations/postgres-store.mjs:24:68) {\n    code: 'STORE_UNAVAILABLE'\n  }"
+    },
+    {
+      "location": "apps/worker/conversation/test/activity.test.mjs:9:1",
+      "name": "output limit fails instead of truncating a completed response",
+      "error": "Error: STORE_UNAVAILABLE",
+      "diagnostic": "Error: STORE_UNAVAILABLE\n      at tx (file://<immediate-parent-worktree>/apps/control/conversations/postgres-store.mjs:24:68) {\n    code: 'STORE_UNAVAILABLE'\n  }"
+    },
+    {
+      "location": "apps/worker/conversation/test/activity.test.mjs:10:1",
+      "name": "late SDK iterator is bounded by deadline and closed without a second query",
+      "error": "Error: STORE_UNAVAILABLE",
+      "diagnostic": "Error: STORE_UNAVAILABLE\n      at tx (file://<immediate-parent-worktree>/apps/control/conversations/postgres-store.mjs:24:68) {\n    code: 'STORE_UNAVAILABLE'\n  }"
+    },
+    {
+      "location": "apps/worker/conversation/test/activity.test.mjs:12:1",
+      "name": "final assistant frame repairs a missing streamed suffix without duplicate prefix",
+      "error": "Error: STORE_UNAVAILABLE",
+      "diagnostic": "Error: STORE_UNAVAILABLE\n      at tx (file://<immediate-parent-worktree>/apps/control/conversations/postgres-store.mjs:24:68) {\n    code: 'STORE_UNAVAILABLE'\n  }"
+    },
+    {
+      "location": "apps/worker/conversation/test/activity.test.mjs:13:1",
+      "name": "a conflicting final text refuses completion instead of silently dropping the mismatch",
+      "error": "Error: STORE_UNAVAILABLE",
+      "diagnostic": "Error: STORE_UNAVAILABLE\n      at tx (file://<immediate-parent-worktree>/apps/control/conversations/postgres-store.mjs:24:68) {\n    code: 'STORE_UNAVAILABLE'\n  }"
+    },
+    {
+      "location": "apps/worker/conversation/test/activity.test.mjs:14:1",
+      "name": "runtime preparation mismatch records a failed run without invoking SDK",
+      "error": "Error: STORE_UNAVAILABLE",
+      "diagnostic": "Error: STORE_UNAVAILABLE\n      at tx (file://<immediate-parent-worktree>/apps/control/conversations/postgres-store.mjs:24:68) {\n    code: 'STORE_UNAVAILABLE'\n  }"
+    },
+    {
+      "location": "apps/worker/conversation/test/terminal-settlement.test.mjs:14:1",
+      "name": "terminal recording slower than 30 ms is acknowledged on the first attempt",
+      "error": "Error: STORE_UNAVAILABLE",
+      "diagnostic": "Error: STORE_UNAVAILABLE\n      at tx (file://<immediate-parent-worktree>/apps/control/conversations/postgres-store.mjs:24:68) {\n    code: 'STORE_UNAVAILABLE'\n  }"
+    },
+    {
+      "location": "apps/worker/conversation/test/terminal-settlement.test.mjs:16:1",
+      "name": "a lost acknowledgement is read back by replaying the same event ID; no second terminal event",
+      "error": "Error: STORE_UNAVAILABLE",
+      "diagnostic": "Error: STORE_UNAVAILABLE\n      at tx (file://<immediate-parent-worktree>/apps/control/conversations/postgres-store.mjs:24:68) {\n    code: 'STORE_UNAVAILABLE'\n  }"
+    },
+    {
+      "location": "apps/worker/conversation/test/terminal-settlement.test.mjs:19:1",
+      "name": "never acknowledged: settlement is finite (two rounds over two fixed event IDs) and leaves the run nonterminal for the reconciler",
+      "error": "Error: STORE_UNAVAILABLE",
+      "diagnostic": "Error: STORE_UNAVAILABLE\n      at tx (file://<immediate-parent-worktree>/apps/control/conversations/postgres-store.mjs:24:68) {\n    code: 'STORE_UNAVAILABLE'\n  }"
+    }
+  ]
+}

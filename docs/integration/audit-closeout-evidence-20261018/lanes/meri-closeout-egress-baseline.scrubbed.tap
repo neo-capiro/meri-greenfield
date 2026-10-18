@@ -1,0 +1,21 @@
+✔ an allowlisted name is admitted, dialled only at its checked address, and the Host and proxy headers are normalized (25.474178ms)
+✔ a redirect is relayed, never followed: the next hop is a new request decided on its own and an unlisted target is refused (8.913221ms)
+✔ IP literals, non-public answers, rebinding answers, IPv4-mapped loopback and non-web ports are refused before any dial (17.296295ms)
+✔ the Host header must name the target authority, so an admitted address cannot be asked for another site (2.850213ms)
+✔ a DNS answer that changes after admission cannot move the admitted connection; the next admission is decided afresh (5.673366ms)
+✔ CONNECT admits only allowlisted names on 443/80; wildcard entries admit subdomains, never the apex (6.804591ms)
+✔ SOCKS5 admits only CONNECT by allowlisted name; address-type requests, other commands and auth-only clients are refused (8.306503ms)
+✔ revocation refuses every later admission and destroys tunnels that are already open; expiry refuses too (3.665902ms)
+✔ revocation at an admitted decision never dials an HTTP or CONNECT upstream (5.139142ms)
+✔ the browser run control is enforced by the same proxy: allowlisted origins tunnel, unlisted and non-public ones do not (7.604806ms)
+✔ the proxy listens on loopback only, dials IP literals only, and the Bash runtime fact binds its ports to the domain list (1.185316ms)
+✔ a stalled or failed upstream connect returns a refusal and leaves no late timeout crash (64.797464ms)
+✔ failure to bind the SOCKS listener closes the already-bound HTTP listener (1.954594ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 769.548188

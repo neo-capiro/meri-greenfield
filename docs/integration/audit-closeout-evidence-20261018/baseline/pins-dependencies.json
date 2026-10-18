@@ -1,0 +1,46 @@
+[
+  {
+    "worktree": "<workspace>/meri-pr180-baseline",
+    "sha": "a1876afaeaa59d9da47729487d490cba8cfc9d9c",
+    "tree": "e0f5f34d81b1dfdbe59539195a8098bbba2526a0",
+    "locksEqual": true,
+    "lockfiles": {
+      "package-lock.json": "4a18a2e5eeb672758df381eba55653da2dc0d9e9ab26e3f6f7943ad19120753c",
+      "packages/ui-stream/package-lock.json": "520adf386172f23b99204aa0802a8b61f64381d3c8e9207e8e8f8683760d0d0d",
+      "packages/contracts/package-lock.json": "418a5af3b8673d9cdd2faed654b0d94586b03afdca4b23a1a7995462686e54e3",
+      "packages/window-resolution/package-lock.json": "9076beeb56b6f98772b013a7d7dbe50126d994c87443738c706bb66eb386293d",
+      "apps/runtime/package-lock.json": "4de8254a956ef18c4de43becdb3544a56013c2be0421884636739dcaa03c23c9",
+      "apps/worker/conversation/package-lock.json": "7a85d62634bb74c0cb861c91f24d73478d0f1ed8d45590055de969a723d1dcd8",
+      "apps/worker/qualification/package-lock.json": "93e3c41b6c1663e3bdcae9243f5939ba435f7feb640e8665ddcc8fe1aa261def",
+      "apps/artifacts/storage/package-lock.json": "eff11f1590db3b5a44d2e992d9e5ed97e6a6336723f59224089ff514916688cc",
+      "apps/artifacts/storage/test/evidence/package-lock.json": "3ad21e10b19ce1f7db7d2fe46ca3cb51c9759d515129c4222f1922d1905707c6",
+      "apps/control/qualification-temporal/package-lock.json": "2f51fc50d101aa3650b295a3d4e72bef36e4047b2bc784b6ee1136578ab13673",
+      "apps/control/conversations/package-lock.json": "3225d67c562631322a1ca6a6ef74f8f246975cdad2120e107acd9840670e98e2",
+      "apps/control/qualification-sdk-fixture/service/package-lock.json": "83cab595ad62ffcb42bb63622df5be81e161835b4dbfdc9f58b19b2a42f006cd",
+      "apps/control/qualification-sdk-fixture/state/package-lock.json": "c5ab764dcd9dcd8dee88d2cab3e7412fb9752e3a869c0a1693839c0567d3973a",
+      "apps/proxy/qualification/package-lock.json": "3adcc8ce92814f5e198c773b20f7b80a5e2cd78c429bd5ba6ee2483fce15f885"
+    }
+  },
+  {
+    "worktree": "<workspace>/meri-pr180-parent",
+    "sha": "1aa5c66e9283024e78ad6f26f5450cbc61a37659",
+    "tree": "735c275a1b0151df57060e7dc98189be91be4b59",
+    "locksEqual": true,
+    "lockfiles": {
+      "package-lock.json": "4a18a2e5eeb672758df381eba55653da2dc0d9e9ab26e3f6f7943ad19120753c",
+      "packages/ui-stream/package-lock.json": "520adf386172f23b99204aa0802a8b61f64381d3c8e9207e8e8f8683760d0d0d",
+      "packages/contracts/package-lock.json": "418a5af3b8673d9cdd2faed654b0d94586b03afdca4b23a1a7995462686e54e3",
+      "packages/window-resolution/package-lock.json": "9076beeb56b6f98772b013a7d7dbe50126d994c87443738c706bb66eb386293d",
+      "apps/runtime/package-lock.json": "4de8254a956ef18c4de43becdb3544a56013c2be0421884636739dcaa03c23c9",
+      "apps/worker/conversation/package-lock.json": "7a85d62634bb74c0cb861c91f24d73478d0f1ed8d45590055de969a723d1dcd8",
+      "apps/worker/qualification/package-lock.json": "93e3c41b6c1663e3bdcae9243f5939ba435f7feb640e8665ddcc8fe1aa261def",
+      "apps/artifacts/storage/package-lock.json": "eff11f1590db3b5a44d2e992d9e5ed97e6a6336723f59224089ff514916688cc",
+      "apps/artifacts/storage/test/evidence/package-lock.json": "3ad21e10b19ce1f7db7d2fe46ca3cb51c9759d515129c4222f1922d1905707c6",
+      "apps/control/qualification-temporal/package-lock.json": "2f51fc50d101aa3650b295a3d4e72bef36e4047b2bc784b6ee1136578ab13673",
+      "apps/control/conversations/package-lock.json": "3225d67c562631322a1ca6a6ef74f8f246975cdad2120e107acd9840670e98e2",
+      "apps/control/qualification-sdk-fixture/service/package-lock.json": "83cab595ad62ffcb42bb63622df5be81e161835b4dbfdc9f58b19b2a42f006cd",
+      "apps/control/qualification-sdk-fixture/state/package-lock.json": "c5ab764dcd9dcd8dee88d2cab3e7412fb9752e3a869c0a1693839c0567d3973a",
+      "apps/proxy/qualification/package-lock.json": "3adcc8ce92814f5e198c773b20f7b80a5e2cd78c429bd5ba6ee2483fce15f885"
+    }
+  }
+]

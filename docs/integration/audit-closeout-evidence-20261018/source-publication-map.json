@@ -1,0 +1,54 @@
+{
+  "base": "a1876afaeaa59d9da47729487d490cba8cfc9d9c",
+  "branch": "fix/remaining-audit-failures-20261018",
+  "commits": [
+    {
+      "localCommit": "3e6e12636c58b55514d4b640680e6085a5b4dcb7",
+      "publishedCommit": "1ec3c56a51be5fdd5973ca459f30c3dc59aa0d1f",
+      "tree": "7755d446e2332e063f2007c27525855b55644740",
+      "message": "Repair worker activity fixtures with canonical initial input allocation"
+    },
+    {
+      "localCommit": "32000910ae0ad60c3fc10d1d2f2a08095ed47750",
+      "publishedCommit": "f205fb6bdfed3f0e07118aec70d714bcc72c1c43",
+      "tree": "9e884abff011b735fe3c7e8548862d398e117da9",
+      "message": "Align synthetic action demo with task-bound signed source contract"
+    },
+    {
+      "localCommit": "e52eb92623d24e4d0e04c7dfa45c570c21061ce6",
+      "publishedCommit": "e2dba6dd3e8ea40fac29fdc73fc98a8f94c49cf4",
+      "tree": "233994ccf1e25305b9d0b2416078e80d78058610",
+      "message": "Correct egress socket and SOCKS reader type boundaries"
+    },
+    {
+      "localCommit": "75bc0a3841e41deb564d3fb95df77ffd79d7b9da",
+      "publishedCommit": "f8ecabc14847925391c923e979650248e21008c4",
+      "tree": "cbd97b9214251662411c3420de7a0888e6ea2b57",
+      "message": "Type validated capability policy and skill plugin boundaries"
+    },
+    {
+      "localCommit": "5a046ceb48de0b970d9ff4451269b353231707cc",
+      "publishedCommit": "74a1c9de931d203e66d045beff5c83c7fe7ac35a",
+      "tree": "c22359e421162f1ab15c1da2c1647bdd674b6b1c",
+      "message": "Align independent contract fixtures with accepted versions and task route"
+    },
+    {
+      "localCommit": "a87b8b10605fc006629f8183150449a09213320f",
+      "publishedCommit": "d912ab77a978ab11a4852b49ba78704fbf12a30d",
+      "tree": "11f9c91001f602ee79d7a69fcea1f61aa4de52de",
+      "message": "Run standalone document receiver isolation in bounded VM subprocess"
+    },
+    {
+      "localCommit": "23a515445a3b5f8610e35cf469b9d8848d2b51b6",
+      "publishedCommit": "49a2f2a72263dafafc1ce919bc73f3861ec57b6c",
+      "tree": "bd2fc7de35b90f22b0ea917bae4899ed14df7b42",
+      "message": "Refresh audited initial-input PostgreSQL provenance only"
+    },
+    {
+      "localCommit": "e79ceba058343f2a78c655c50c82006604dda4e7",
+      "publishedCommit": "3ce470a28be602499406359f40fd2b5998d0c58e",
+      "tree": "859f84abf40d0ed565088b621f5c26a6f824877d",
+      "message": "Normalize unzoned query dates in UTC while preserving explicit instants"
+    }
+  ]
+}

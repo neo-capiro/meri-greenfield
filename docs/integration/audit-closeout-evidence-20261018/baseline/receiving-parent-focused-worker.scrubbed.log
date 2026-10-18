@@ -1,0 +1,142 @@
+✖ one SDK query persists streamed text once, hides reasoning and completes durable run (214.70478ms)
+✖ nonstreamed final assistant text is displayed with a valid generated UUID (14.734548ms)
+✖ SDK mirror never leaks diagnostics or makes a duplicate model query (17.637271ms)
+✖ SDK missing never leaks diagnostics or makes a duplicate model query (31.911005ms)
+✖ SDK sdkFailure never leaks diagnostics or makes a duplicate model query (51.788872ms)
+✖ SDK duplicate never leaks diagnostics or makes a duplicate model query (46.104949ms)
+✖ SDK subagent never leaks diagnostics or makes a duplicate model query (15.414252ms)
+✖ revocation during query stops publication and closes SDK before another result (2.334196ms)
+✖ output limit fails instead of truncating a completed response (9.017335ms)
+✖ late SDK iterator is bounded by deadline and closed without a second query (5.943895ms)
+✔ SDK options reject ambient config, wrong workspace and upstream keys (18.933053ms)
+✖ final assistant frame repairs a missing streamed suffix without duplicate prefix (17.771784ms)
+✖ a conflicting final text refuses completion instead of silently dropping the mismatch (12.763589ms)
+✖ runtime preparation mismatch records a failed run without invoking SDK (1.71189ms)
+✔ the pinned runner CA reaches the SDK subprocess env exactly once and is covered by the SDK options digest (31.08456ms)
+✔ any other CA path, or a CA without the admitted per-task SDK directories, refuses (2.251392ms)
+✔ the per-attempt acknowledgement bound is the control service request bound, not 30 ms (21.870459ms)
+✖ terminal recording slower than 30 ms is acknowledged on the first attempt (72.317489ms)
+✖ a lost acknowledgement is read back by replaying the same event ID; no second terminal event (16.53483ms)
+✖ never acknowledged: settlement is finite (two rounds over two fixed event IDs) and leaves the run nonterminal for the reconciler (10.845689ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 4
+ℹ fail 16
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7683.438464
+
+✖ failing tests:
+
+test at apps/worker/conversation/test/activity.test.mjs:5:1
+✖ one SDK query persists streamed text once, hides reasoning and completes durable run (214.70478ms)
+  Error: STORE_UNAVAILABLE
+      at tx (file://<receiving-parent-worktree>/apps/control/conversations/postgres-store.mjs:24:68) {
+    code: 'STORE_UNAVAILABLE'
+  }
+
+test at apps/worker/conversation/test/activity.test.mjs:6:1
+✖ nonstreamed final assistant text is displayed with a valid generated UUID (14.734548ms)
+  Error: STORE_UNAVAILABLE
+      at tx (file://<receiving-parent-worktree>/apps/control/conversations/postgres-store.mjs:24:68) {
+    code: 'STORE_UNAVAILABLE'
+  }
+
+test at apps/worker/conversation/test/activity.test.mjs:7:437
+✖ SDK mirror never leaks diagnostics or makes a duplicate model query (17.637271ms)
+  Error: STORE_UNAVAILABLE
+      at tx (file://<receiving-parent-worktree>/apps/control/conversations/postgres-store.mjs:24:68) {
+    code: 'STORE_UNAVAILABLE'
+  }
+
+test at apps/worker/conversation/test/activity.test.mjs:7:437
+✖ SDK missing never leaks diagnostics or makes a duplicate model query (31.911005ms)
+  Error: STORE_UNAVAILABLE
+      at tx (file://<receiving-parent-worktree>/apps/control/conversations/postgres-store.mjs:24:68) {
+    code: 'STORE_UNAVAILABLE'
+  }
+
+test at apps/worker/conversation/test/activity.test.mjs:7:437
+✖ SDK sdkFailure never leaks diagnostics or makes a duplicate model query (51.788872ms)
+  Error: STORE_UNAVAILABLE
+      at tx (file://<receiving-parent-worktree>/apps/control/conversations/postgres-store.mjs:24:68) {
+    code: 'STORE_UNAVAILABLE'
+  }
+
+test at apps/worker/conversation/test/activity.test.mjs:7:437
+✖ SDK duplicate never leaks diagnostics or makes a duplicate model query (46.104949ms)
+  Error: STORE_UNAVAILABLE
+      at tx (file://<receiving-parent-worktree>/apps/control/conversations/postgres-store.mjs:24:68) {
+    code: 'STORE_UNAVAILABLE'
+  }
+
+test at apps/worker/conversation/test/activity.test.mjs:7:437
+✖ SDK subagent never leaks diagnostics or makes a duplicate model query (15.414252ms)
+  Error: STORE_UNAVAILABLE
+      at tx (file://<receiving-parent-worktree>/apps/control/conversations/postgres-store.mjs:24:68) {
+    code: 'STORE_UNAVAILABLE'
+  }
+
+test at apps/worker/conversation/test/activity.test.mjs:8:1
+✖ revocation during query stops publication and closes SDK before another result (2.334196ms)
+  Error: STORE_UNAVAILABLE
+      at tx (file://<receiving-parent-worktree>/apps/control/conversations/postgres-store.mjs:24:68) {
+    code: 'STORE_UNAVAILABLE'
+  }
+
+test at apps/worker/conversation/test/activity.test.mjs:9:1
+✖ output limit fails instead of truncating a completed response (9.017335ms)
+  Error: STORE_UNAVAILABLE
+      at tx (file://<receiving-parent-worktree>/apps/control/conversations/postgres-store.mjs:24:68) {
+    code: 'STORE_UNAVAILABLE'
+  }
+
+test at apps/worker/conversation/test/activity.test.mjs:10:1
+✖ late SDK iterator is bounded by deadline and closed without a second query (5.943895ms)
+  Error: STORE_UNAVAILABLE
+      at tx (file://<receiving-parent-worktree>/apps/control/conversations/postgres-store.mjs:24:68) {
+    code: 'STORE_UNAVAILABLE'
+  }
+
+test at apps/worker/conversation/test/activity.test.mjs:12:1
+✖ final assistant frame repairs a missing streamed suffix without duplicate prefix (17.771784ms)
+  Error: STORE_UNAVAILABLE
+      at tx (file://<receiving-parent-worktree>/apps/control/conversations/postgres-store.mjs:24:68) {
+    code: 'STORE_UNAVAILABLE'
+  }
+
+test at apps/worker/conversation/test/activity.test.mjs:13:1
+✖ a conflicting final text refuses completion instead of silently dropping the mismatch (12.763589ms)
+  Error: STORE_UNAVAILABLE
+      at tx (file://<receiving-parent-worktree>/apps/control/conversations/postgres-store.mjs:24:68) {
+    code: 'STORE_UNAVAILABLE'
+  }
+
+test at apps/worker/conversation/test/activity.test.mjs:14:1
+✖ runtime preparation mismatch records a failed run without invoking SDK (1.71189ms)
+  Error: STORE_UNAVAILABLE
+      at tx (file://<receiving-parent-worktree>/apps/control/conversations/postgres-store.mjs:24:68) {
+    code: 'STORE_UNAVAILABLE'
+  }
+
+test at apps/worker/conversation/test/terminal-settlement.test.mjs:14:1
+✖ terminal recording slower than 30 ms is acknowledged on the first attempt (72.317489ms)
+  Error: STORE_UNAVAILABLE
+      at tx (file://<receiving-parent-worktree>/apps/control/conversations/postgres-store.mjs:24:68) {
+    code: 'STORE_UNAVAILABLE'
+  }
+
+test at apps/worker/conversation/test/terminal-settlement.test.mjs:16:1
+✖ a lost acknowledgement is read back by replaying the same event ID; no second terminal event (16.53483ms)
+  Error: STORE_UNAVAILABLE
+      at tx (file://<receiving-parent-worktree>/apps/control/conversations/postgres-store.mjs:24:68) {
+    code: 'STORE_UNAVAILABLE'
+  }
+
+test at apps/worker/conversation/test/terminal-settlement.test.mjs:19:1
+✖ never acknowledged: settlement is finite (two rounds over two fixed event IDs) and leaves the run nonterminal for the reconciler (10.845689ms)
+  Error: STORE_UNAVAILABLE
+      at tx (file://<receiving-parent-worktree>/apps/control/conversations/postgres-store.mjs:24:68) {
+    code: 'STORE_UNAVAILABLE'
+  }

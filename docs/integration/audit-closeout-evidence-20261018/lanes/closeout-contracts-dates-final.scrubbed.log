@@ -1,0 +1,40 @@
+(node:21) Warning: node:test run() is being called recursively within a test file. skipping running files.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:28) Warning: node:test run() is being called recursively within a test file. skipping running files.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:35) Warning: node:test run() is being called recursively within a test file. skipping running files.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ one immutable provider supplies all12 datasets and88 fields without physical expressions (5.037975ms)
+✔ unknown or decorative provider refuses instead of adopting arbitrary field maps (0.381835ms)
+✔ exact family exports and normalization bind selected immutable snapshot (9.56515ms)
+✔ model SQL/table/alias/registry authority is refused at closed boundaries (1.111202ms)
+✔ selectors reject coercion hooks, hidden fields, proxies and callbacks (0.271198ms)
+✔ typed requests exclude legacy nonarray ignoring and broad Number coercion (0.581465ms)
+✔ positive finite row limit preserves floor/default and per-dataset maximum (3.721702ms)
+✔ all six aggregates preserve source type/group capabilities (3.950136ms)
+✔ bare count and alias collision rules remain exact (2.703876ms)
+✔ grouped mixed projections retain ordinary fields and groupable flags (1.379657ms)
+✔ ordering is limited to selected aliases and preserves legacy desc-exact default (0.542396ms)
+✔ every closed filter operator is admitted with its actual value contract (1.490634ms)
+✔ numeric boolean and date filters remain type-correct without invented ordering (1.275139ms)
+✔ filter windows and nonfilterable arrays fail closed (0.980627ms)
+✔ trusted default as-of is distinct from explicit date and generatedAt (4.260844ms)
+✔ query date normalization preserves UTC semantics in multiple host timezones (205.38805ms)
+✔ all twelve dataset projections accept their complete field selection windows (4.678213ms)
+✔ success omits SQL and retains exact aliases, dataset and pretrim count (6.399284ms)
+✔ counts retain exact unsafe integer strings and refuse fractional or null values (2.033141ms)
+✔ numbers preserve decimal strings and nullable stored/aggregate results (1.942004ms)
+✔ array scalars preserve null elements; dates and booleans retain source types (1.012124ms)
+✔ truncation reports whole-row prefix and original fetched count, including zero retained (0.712202ms)
+✔ legacy256Ki ceiling counts UTF16 not UTF8 and never silently drops half a row (5.538087ms)
+✔ error envelope remains explicit and never doubles as empty success (0.753404ms)
+✔ result observation is independent; validator never claims audit or role admission (0.581165ms)
+✔ snapshots cannot mutate provider, requests, normalized tuples or returned siblings (0.659302ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 508.791834

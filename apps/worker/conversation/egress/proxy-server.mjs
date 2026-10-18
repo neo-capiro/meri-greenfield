@@ -60,7 +60,7 @@ function forwardHeaders(headers,authority,{keepUpgrade=false}={}){
 /** @param {import('node:stream').Duplex} socket @param {number} status @param {string} reason @param {string} code */
 function refuseRaw(socket,status,reason,code){
  try{socket.end(`HTTP/1.1 ${status} ${reason}\r\n${PROXY_REFUSAL_HEADER}: ${code}\r\ncontent-length: 0\r\nconnection: close\r\n\r\n`);}catch{}
- socket.destroySoon?.();
+ if('destroySoon' in socket&&typeof socket.destroySoon==='function')socket.destroySoon();
 }
 /** Starts the proxy on loopback. `httpPort`/`socksPort` 0 picks a free port; `socksPort` undefined starts no SOCKS
  * listener (it is also refused when the control has no `admitSocks`). `dial` is injected only by tests and the
@@ -73,7 +73,7 @@ export async function startEgressProxy({control,dial=dialAddress,host='127.0.0.1
  for(const v of Object.values(L))if(!Number.isSafeInteger(v)||v<1)fail('EGRESS_PROXY_CONFIGURATION');
  /** @type {Set<import('node:stream').Duplex>} */const live=new Set();let revoked=false;
  const lifetime=new AbortController();
- /** @param {import('node:stream').Duplex} s */
+ /** @template {import('node:stream').Duplex} T @param {T} s @returns {T} */
  const track=s=>{live.add(s);s.once('close',()=>live.delete(s));s.on('error',()=>{});if('setTimeout' in s&&typeof s.setTimeout==='function')s.setTimeout(L.idleMs,()=>s.destroy());return s;};
  /** @param {ProxyDecision} d */
  const record=d=>{try{onDecision(Object.freeze({...d}));}catch{}};
@@ -88,14 +88,14 @@ export async function startEgressProxy({control,dial=dialAddress,host='127.0.0.1
    return {ok:false,code:typeof a?.code==='string'&&/^[A-Z0-9_]{1,64}$/u.test(a.code)?a.code:'EGRESS_REFUSED'};
   }catch(error){return {ok:false,code:/** @type {any} */(error)?.code==='EGRESS_ADMISSION_TIMEOUT'?'EGRESS_ADMISSION_TIMEOUT':'EGRESS_REFUSED'};}
  }
- /** Dials the checked address; resolves the connected socket or rejects. @param {{address:string,port:number}} target */
+ /** Dials the checked address; resolves the connected socket or rejects. @param {{address:string,port:number}} target @returns {Promise<import('node:net').Socket>} */
  const open=target=>new Promise((resolve,reject)=>{
   if(revoked){reject(fault('EGRESS_REVOKED'));return;}
   let s;try{s=track(dial(target));}catch(e){reject(e);return;}
   let settled=false;
-  const finish=(error)=>{if(settled)return;settled=true;clearTimeout(timer);s.off('connect',connected);s.off('error',errored);s.off('close',closed);
+  const finish=(/** @type {Error|null} */error)=>{if(settled)return;settled=true;clearTimeout(timer);s.off('connect',connected);s.off('error',errored);s.off('close',closed);
    if(error){s.destroy();reject(error);}else resolve(s);};
-  const connected=()=>finish(null),errored=error=>finish(error),closed=()=>finish(fault('EGRESS_CONNECT_CLOSED'));
+  const connected=()=>finish(null),errored=(/** @type {Error} */error)=>finish(error),closed=()=>finish(fault('EGRESS_CONNECT_CLOSED'));
   const timer=setTimeout(()=>finish(fault('EGRESS_CONNECT_TIMEOUT')),L.connectMs);
   s.once('connect',connected);s.once('error',errored);s.once('close',closed);
  });
@@ -164,8 +164,8 @@ export async function startEgressProxy({control,dial=dialAddress,host='127.0.0.1
   * @param {import('node:net').Socket} socket */
  async function handleSocks(socket){
   const reader=bufferedReader(socket,L.connectMs);
-  const greeting=await reader.take(2);if(greeting[0]!==5||greeting[1]<1){socket.destroy();return;}
-  const methods=await reader.take(greeting[1]);if(!methods.includes(0)){socket.end(Buffer.from([5,0xff]));return;}
+  const greeting=await reader.take(2),methodCount=greeting.readUInt8(1);if(greeting[0]!==5||methodCount<1){socket.destroy();return;}
+  const methods=await reader.take(methodCount);if(!methods.includes(0)){socket.end(Buffer.from([5,0xff]));return;}
   socket.write(Buffer.from([5,0]));
   const head=await reader.take(4);
   const reply=(/** @type {number} */rep)=>Buffer.from([5,rep,0,1,0,0,0,0,0,0]);
@@ -188,7 +188,7 @@ export async function startEgressProxy({control,dial=dialAddress,host='127.0.0.1
  }
  const destroyAll=()=>{for(const s of live)s.destroy();live.clear();};
  /** @param {import('node:net').Server|import('node:http').Server} server @param {number} port @returns {Promise<number>} */
- const listen=(server,port)=>new Promise((resolve,reject)=>{const onError=error=>{server.off('error',onError);reject(error);};server.once('error',onError);
+ const listen=(server,port)=>new Promise((resolve,reject)=>{const onError=(/** @type {Error} */error)=>{server.off('error',onError);reject(error);};server.once('error',onError);
   try{server.listen({host,port,exclusive:true},()=>{server.off('error',onError);resolve(/** @type {import('node:net').AddressInfo} */(server.address()).port);});}
   catch(error){server.off('error',onError);reject(error);}});
  /** A failed second bind must not leave the first listener accepting requests. */
@@ -205,7 +205,8 @@ export async function startEgressProxy({control,dial=dialAddress,host='127.0.0.1
 /** Exact-length reads from a socket, bounded by `timeoutMs` per read; `release()` returns unread bytes.
  * @param {import('node:net').Socket} socket @param {number} timeoutMs */
 function bufferedReader(socket,timeoutMs){
- let buffer=Buffer.alloc(0);/** @type {(()=>void)|undefined} */let wake;
+ let buffer=Buffer.alloc(0);
+ /** @type {(()=>void)|undefined} */let wake=undefined;
  const onData=(/** @type {Buffer} */chunk)=>{buffer=Buffer.concat([buffer,chunk]);if(buffer.length>4096)socket.destroy();wake?.();};
  const onEnd=()=>wake?.();
  socket.on('data',onData);socket.once('end',onEnd);socket.once('close',onEnd);

@@ -1,0 +1,265 @@
+{
+  "base": "a1876afaeaa59d9da47729487d490cba8cfc9d9c",
+  "commit": "49046c7723b8d9c873a1eaef581502762452896a",
+  "branch": "fix/closeout-action-fixtures-20261018",
+  "environment": {
+    "node": "v24.19.0",
+    "npm": "11.9.0",
+    "TZ": "America/Toronto",
+    "NODE_OPTIONS": "unset",
+    "dependencies": "Root package-lock equal to existing meri-greenfield; own per-package readonly links, own @capiro/meri-contracts points to this worktree."
+  },
+  "commands": {
+    "red": "TZ=America/Toronto node --test --test-reporter=tap packages/contracts/test/action-application-independent.test.mjs",
+    "green": "MERI_REVIEW_SOURCE_ROOT=<checkout> TZ=America/Toronto node --test --test-reporter=tap packages/contracts/test/action-application-independent.test.mjs apps/control/action-application/local/local.test.mjs apps/control/action-application/local/local-independent.test.mjs apps/gateway/local-action/test/identity.test.mjs apps/gateway/local-action/test/gateway-independent.test.mjs apps/gateway/test/action-items-source-independent.test.mjs",
+    "syntax": "node --check apps/control/action-application/local/demo.mjs",
+    "diff": "git diff --check"
+  },
+  "results": {
+    "red": {
+      "pass": 21,
+      "fail": 23,
+      "total": 44
+    },
+    "green": {
+      "pass": 162,
+      "fail": 0,
+      "total": 162
+    },
+    "setupFailure": "Initial gateway source-contract run omitted required MERI_REVIEW_SOURCE_ROOT: 2 suite setup failures, 32 passes; same unchanged suites rerun with required environment passed 64/64.",
+    "intermediateFailure": "Initial repaired demo decoded only clientId and lost requested limit; 12/118 broader local tests rejected mismatched synthetic page scope. Corrected complete selector/cursor decode, final162/162pass.",
+    "newFailures": 0
+  },
+  "originalFailures": [
+    {
+      "name": "independent public receiver actual PR42 query/read",
+      "classification": "test setup/environment problem: stale synthetic source fixture contract",
+      "candidate": "a1876afaeaa59d9da47729487d490cba8cfc9d9c",
+      "before": "LOCAL_FLOW_REFUSED; synthetic query refused before receiver assertions",
+      "cause": "Synthetic demo supplied obsolete unsigned source credentials, /query_action_items route and raw body instead of task-bound signed receipt, /actions.query and {input,metadata}.",
+      "fixCommit": "49046c7723b8d9c873a1eaef581502762452896a",
+      "after": "PASS; original receiver assertion unchanged",
+      "verificationLog": "closeout-action-green-final.scrubbed.tap"
+    },
+    {
+      "name": "independent public receiver actual PR42 draft/draft",
+      "classification": "test setup/environment problem: stale synthetic source fixture contract",
+      "candidate": "a1876afaeaa59d9da47729487d490cba8cfc9d9c",
+      "before": "LOCAL_FLOW_REFUSED; synthetic query refused before receiver assertions",
+      "cause": "Synthetic demo supplied obsolete unsigned source credentials, /query_action_items route and raw body instead of task-bound signed receipt, /actions.query and {input,metadata}.",
+      "fixCommit": "49046c7723b8d9c873a1eaef581502762452896a",
+      "after": "PASS; original receiver assertion unchanged",
+      "verificationLog": "closeout-action-green-final.scrubbed.tap"
+    },
+    {
+      "name": "independent public receiver actual PR42 prepare/pending",
+      "classification": "test setup/environment problem: stale synthetic source fixture contract",
+      "candidate": "a1876afaeaa59d9da47729487d490cba8cfc9d9c",
+      "before": "LOCAL_FLOW_REFUSED; synthetic query refused before receiver assertions",
+      "cause": "Synthetic demo supplied obsolete unsigned source credentials, /query_action_items route and raw body instead of task-bound signed receipt, /actions.query and {input,metadata}.",
+      "fixCommit": "49046c7723b8d9c873a1eaef581502762452896a",
+      "after": "PASS; original receiver assertion unchanged",
+      "verificationLog": "closeout-action-green-final.scrubbed.tap"
+    },
+    {
+      "name": "independent public receiver actual PR42 execute/executed",
+      "classification": "test setup/environment problem: stale synthetic source fixture contract",
+      "candidate": "a1876afaeaa59d9da47729487d490cba8cfc9d9c",
+      "before": "LOCAL_FLOW_REFUSED; synthetic query refused before receiver assertions",
+      "cause": "Synthetic demo supplied obsolete unsigned source credentials, /query_action_items route and raw body instead of task-bound signed receipt, /actions.query and {input,metadata}.",
+      "fixCommit": "49046c7723b8d9c873a1eaef581502762452896a",
+      "after": "PASS; original receiver assertion unchanged",
+      "verificationLog": "closeout-action-green-final.scrubbed.tap"
+    },
+    {
+      "name": "independent public receiver actual PR42 execute/replay",
+      "classification": "test setup/environment problem: stale synthetic source fixture contract",
+      "candidate": "a1876afaeaa59d9da47729487d490cba8cfc9d9c",
+      "before": "LOCAL_FLOW_REFUSED; synthetic query refused before receiver assertions",
+      "cause": "Synthetic demo supplied obsolete unsigned source credentials, /query_action_items route and raw body instead of task-bound signed receipt, /actions.query and {input,metadata}.",
+      "fixCommit": "49046c7723b8d9c873a1eaef581502762452896a",
+      "after": "PASS; original receiver assertion unchanged",
+      "verificationLog": "closeout-action-green-final.scrubbed.tap"
+    },
+    {
+      "name": "independent actual pending approval error and indeterminate accounting remain non-success",
+      "classification": "test setup/environment problem: stale synthetic source fixture contract",
+      "candidate": "a1876afaeaa59d9da47729487d490cba8cfc9d9c",
+      "before": "LOCAL_FLOW_REFUSED; synthetic query refused before receiver assertions",
+      "cause": "Synthetic demo supplied obsolete unsigned source credentials, /query_action_items route and raw body instead of task-bound signed receipt, /actions.query and {input,metadata}.",
+      "fixCommit": "49046c7723b8d9c873a1eaef581502762452896a",
+      "after": "PASS; original receiver assertion unchanged",
+      "verificationLog": "closeout-action-green-final.scrubbed.tap"
+    },
+    {
+      "name": "independent receiving refusal accepted recommendation",
+      "classification": "test setup/environment problem: stale synthetic source fixture contract",
+      "candidate": "a1876afaeaa59d9da47729487d490cba8cfc9d9c",
+      "before": "LOCAL_FLOW_REFUSED; synthetic query refused before receiver assertions",
+      "cause": "Synthetic demo supplied obsolete unsigned source credentials, /query_action_items route and raw body instead of task-bound signed receipt, /actions.query and {input,metadata}.",
+      "fixCommit": "49046c7723b8d9c873a1eaef581502762452896a",
+      "after": "PASS; original receiver assertion unchanged",
+      "verificationLog": "closeout-action-green-final.scrubbed.tap"
+    },
+    {
+      "name": "independent receiving refusal unknown query field",
+      "classification": "test setup/environment problem: stale synthetic source fixture contract",
+      "candidate": "a1876afaeaa59d9da47729487d490cba8cfc9d9c",
+      "before": "LOCAL_FLOW_REFUSED; synthetic query refused before receiver assertions",
+      "cause": "Synthetic demo supplied obsolete unsigned source credentials, /query_action_items route and raw body instead of task-bound signed receipt, /actions.query and {input,metadata}.",
+      "fixCommit": "49046c7723b8d9c873a1eaef581502762452896a",
+      "after": "PASS; original receiver assertion unchanged",
+      "verificationLog": "closeout-action-green-final.scrubbed.tap"
+    },
+    {
+      "name": "independent receiving refusal query digest",
+      "classification": "test setup/environment problem: stale synthetic source fixture contract",
+      "candidate": "a1876afaeaa59d9da47729487d490cba8cfc9d9c",
+      "before": "LOCAL_FLOW_REFUSED; synthetic query refused before receiver assertions",
+      "cause": "Synthetic demo supplied obsolete unsigned source credentials, /query_action_items route and raw body instead of task-bound signed receipt, /actions.query and {input,metadata}.",
+      "fixCommit": "49046c7723b8d9c873a1eaef581502762452896a",
+      "after": "PASS; original receiver assertion unchanged",
+      "verificationLog": "closeout-action-green-final.scrubbed.tap"
+    },
+    {
+      "name": "independent receiving refusal event binding",
+      "classification": "test setup/environment problem: stale synthetic source fixture contract",
+      "candidate": "a1876afaeaa59d9da47729487d490cba8cfc9d9c",
+      "before": "LOCAL_FLOW_REFUSED; synthetic query refused before receiver assertions",
+      "cause": "Synthetic demo supplied obsolete unsigned source credentials, /query_action_items route and raw body instead of task-bound signed receipt, /actions.query and {input,metadata}.",
+      "fixCommit": "49046c7723b8d9c873a1eaef581502762452896a",
+      "after": "PASS; original receiver assertion unchanged",
+      "verificationLog": "closeout-action-green-final.scrubbed.tap"
+    },
+    {
+      "name": "independent receiving refusal event result ref",
+      "classification": "test setup/environment problem: stale synthetic source fixture contract",
+      "candidate": "a1876afaeaa59d9da47729487d490cba8cfc9d9c",
+      "before": "LOCAL_FLOW_REFUSED; synthetic query refused before receiver assertions",
+      "cause": "Synthetic demo supplied obsolete unsigned source credentials, /query_action_items route and raw body instead of task-bound signed receipt, /actions.query and {input,metadata}.",
+      "fixCommit": "49046c7723b8d9c873a1eaef581502762452896a",
+      "after": "PASS; original receiver assertion unchanged",
+      "verificationLog": "closeout-action-green-final.scrubbed.tap"
+    },
+    {
+      "name": "independent receiving refusal draft digest",
+      "classification": "test setup/environment problem: stale synthetic source fixture contract",
+      "candidate": "a1876afaeaa59d9da47729487d490cba8cfc9d9c",
+      "before": "LOCAL_FLOW_REFUSED; synthetic query refused before receiver assertions",
+      "cause": "Synthetic demo supplied obsolete unsigned source credentials, /query_action_items route and raw body instead of task-bound signed receipt, /actions.query and {input,metadata}.",
+      "fixCommit": "49046c7723b8d9c873a1eaef581502762452896a",
+      "after": "PASS; original receiver assertion unchanged",
+      "verificationLog": "closeout-action-green-final.scrubbed.tap"
+    },
+    {
+      "name": "independent receiving refusal recommendation hash",
+      "classification": "test setup/environment problem: stale synthetic source fixture contract",
+      "candidate": "a1876afaeaa59d9da47729487d490cba8cfc9d9c",
+      "before": "LOCAL_FLOW_REFUSED; synthetic query refused before receiver assertions",
+      "cause": "Synthetic demo supplied obsolete unsigned source credentials, /query_action_items route and raw body instead of task-bound signed receipt, /actions.query and {input,metadata}.",
+      "fixCommit": "49046c7723b8d9c873a1eaef581502762452896a",
+      "after": "PASS; original receiver assertion unchanged",
+      "verificationLog": "closeout-action-green-final.scrubbed.tap"
+    },
+    {
+      "name": "independent receiving refusal prepare approval confusion",
+      "classification": "test setup/environment problem: stale synthetic source fixture contract",
+      "candidate": "a1876afaeaa59d9da47729487d490cba8cfc9d9c",
+      "before": "LOCAL_FLOW_REFUSED; synthetic query refused before receiver assertions",
+      "cause": "Synthetic demo supplied obsolete unsigned source credentials, /query_action_items route and raw body instead of task-bound signed receipt, /actions.query and {input,metadata}.",
+      "fixCommit": "49046c7723b8d9c873a1eaef581502762452896a",
+      "after": "PASS; original receiver assertion unchanged",
+      "verificationLog": "closeout-action-green-final.scrubbed.tap"
+    },
+    {
+      "name": "independent receiving refusal proposal digest",
+      "classification": "test setup/environment problem: stale synthetic source fixture contract",
+      "candidate": "a1876afaeaa59d9da47729487d490cba8cfc9d9c",
+      "before": "LOCAL_FLOW_REFUSED; synthetic query refused before receiver assertions",
+      "cause": "Synthetic demo supplied obsolete unsigned source credentials, /query_action_items route and raw body instead of task-bound signed receipt, /actions.query and {input,metadata}.",
+      "fixCommit": "49046c7723b8d9c873a1eaef581502762452896a",
+      "after": "PASS; original receiver assertion unchanged",
+      "verificationLog": "closeout-action-green-final.scrubbed.tap"
+    },
+    {
+      "name": "independent receiving refusal proposal task substitution",
+      "classification": "test setup/environment problem: stale synthetic source fixture contract",
+      "candidate": "a1876afaeaa59d9da47729487d490cba8cfc9d9c",
+      "before": "LOCAL_FLOW_REFUSED; synthetic query refused before receiver assertions",
+      "cause": "Synthetic demo supplied obsolete unsigned source credentials, /query_action_items route and raw body instead of task-bound signed receipt, /actions.query and {input,metadata}.",
+      "fixCommit": "49046c7723b8d9c873a1eaef581502762452896a",
+      "after": "PASS; original receiver assertion unchanged",
+      "verificationLog": "closeout-action-green-final.scrubbed.tap"
+    },
+    {
+      "name": "independent receiving refusal prepare client substitution",
+      "classification": "test setup/environment problem: stale synthetic source fixture contract",
+      "candidate": "a1876afaeaa59d9da47729487d490cba8cfc9d9c",
+      "before": "LOCAL_FLOW_REFUSED; synthetic query refused before receiver assertions",
+      "cause": "Synthetic demo supplied obsolete unsigned source credentials, /query_action_items route and raw body instead of task-bound signed receipt, /actions.query and {input,metadata}.",
+      "fixCommit": "49046c7723b8d9c873a1eaef581502762452896a",
+      "after": "PASS; original receiver assertion unchanged",
+      "verificationLog": "closeout-action-green-final.scrubbed.tap"
+    },
+    {
+      "name": "independent receiving refusal execute approval confusion",
+      "classification": "test setup/environment problem: stale synthetic source fixture contract",
+      "candidate": "a1876afaeaa59d9da47729487d490cba8cfc9d9c",
+      "before": "LOCAL_FLOW_REFUSED; synthetic query refused before receiver assertions",
+      "cause": "Synthetic demo supplied obsolete unsigned source credentials, /query_action_items route and raw body instead of task-bound signed receipt, /actions.query and {input,metadata}.",
+      "fixCommit": "49046c7723b8d9c873a1eaef581502762452896a",
+      "after": "PASS; original receiver assertion unchanged",
+      "verificationLog": "closeout-action-green-final.scrubbed.tap"
+    },
+    {
+      "name": "independent receiving refusal execute unknown key",
+      "classification": "test setup/environment problem: stale synthetic source fixture contract",
+      "candidate": "a1876afaeaa59d9da47729487d490cba8cfc9d9c",
+      "before": "LOCAL_FLOW_REFUSED; synthetic query refused before receiver assertions",
+      "cause": "Synthetic demo supplied obsolete unsigned source credentials, /query_action_items route and raw body instead of task-bound signed receipt, /actions.query and {input,metadata}.",
+      "fixCommit": "49046c7723b8d9c873a1eaef581502762452896a",
+      "after": "PASS; original receiver assertion unchanged",
+      "verificationLog": "closeout-action-green-final.scrubbed.tap"
+    },
+    {
+      "name": "independent receiving refusal execute tenant-scope mismatch",
+      "classification": "test setup/environment problem: stale synthetic source fixture contract",
+      "candidate": "a1876afaeaa59d9da47729487d490cba8cfc9d9c",
+      "before": "LOCAL_FLOW_REFUSED; synthetic query refused before receiver assertions",
+      "cause": "Synthetic demo supplied obsolete unsigned source credentials, /query_action_items route and raw body instead of task-bound signed receipt, /actions.query and {input,metadata}.",
+      "fixCommit": "49046c7723b8d9c873a1eaef581502762452896a",
+      "after": "PASS; original receiver assertion unchanged",
+      "verificationLog": "closeout-action-green-final.scrubbed.tap"
+    },
+    {
+      "name": "independent route and status cannot reclassify an actual payload",
+      "classification": "test setup/environment problem: stale synthetic source fixture contract",
+      "candidate": "a1876afaeaa59d9da47729487d490cba8cfc9d9c",
+      "before": "LOCAL_FLOW_REFUSED; synthetic query refused before receiver assertions",
+      "cause": "Synthetic demo supplied obsolete unsigned source credentials, /query_action_items route and raw body instead of task-bound signed receipt, /actions.query and {input,metadata}.",
+      "fixCommit": "49046c7723b8d9c873a1eaef581502762452896a",
+      "after": "PASS; original receiver assertion unchanged",
+      "verificationLog": "closeout-action-green-final.scrubbed.tap"
+    },
+    {
+      "name": "independent generated browser receiver has no external/private/Node imports",
+      "classification": "test setup/environment problem: stale synthetic source fixture contract",
+      "candidate": "a1876afaeaa59d9da47729487d490cba8cfc9d9c",
+      "before": "LOCAL_FLOW_REFUSED; synthetic query refused before receiver assertions",
+      "cause": "Synthetic demo supplied obsolete unsigned source credentials, /query_action_items route and raw body instead of task-bound signed receipt, /actions.query and {input,metadata}.",
+      "fixCommit": "49046c7723b8d9c873a1eaef581502762452896a",
+      "after": "PASS; original receiver assertion unchanged",
+      "verificationLog": "closeout-action-green-final.scrubbed.tap"
+    },
+    {
+      "name": "independent receiving accepts canonical nonconsecutive reserved event sequence",
+      "classification": "test setup/environment problem: stale synthetic source fixture contract",
+      "candidate": "a1876afaeaa59d9da47729487d490cba8cfc9d9c",
+      "before": "LOCAL_FLOW_REFUSED; synthetic query refused before receiver assertions",
+      "cause": "Synthetic demo supplied obsolete unsigned source credentials, /query_action_items route and raw body instead of task-bound signed receipt, /actions.query and {input,metadata}.",
+      "fixCommit": "49046c7723b8d9c873a1eaef581502762452896a",
+      "after": "PASS; original receiver assertion unchanged",
+      "verificationLog": "closeout-action-green-final.scrubbed.tap"
+    }
+  ]
+}

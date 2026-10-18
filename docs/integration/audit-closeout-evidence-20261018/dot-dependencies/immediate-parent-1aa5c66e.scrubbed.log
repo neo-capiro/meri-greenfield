@@ -1,0 +1,194 @@
+TAP version 13
+# Subtest: read, monotonic advance and exact record round-trip through bounded transactions that return clean leases
+ok 1 - read, monotonic advance and exact record round-trip through bounded transactions that return clean leases
+  ---
+  duration_ms: 8.546699
+  type: 'test'
+  ...
+# Subtest: lease faults: a lost COMMIT acknowledgement is unknown and retires the lease; a failed statement rolls back and returns it clean
+ok 2 - lease faults: a lost COMMIT acknowledgement is unknown and retires the lease; a failed statement rolls back and returns it clean
+  ---
+  duration_ms: 1.336361
+  type: 'test'
+  ...
+# Subtest: through the watermarked journal, an advance whose commit is unknown leaves the projection standing and closes the serving fence
+not ok 3 - through the watermarked journal, an advance whose commit is unknown leaves the projection standing and closes the serving fence
+  ---
+  duration_ms: 0.488165
+  type: 'test'
+  location: '<immediate-parent-1aa5c66e-worktree>/apps/control/retention/test/postgres-watermark.test.mjs:50:1'
+  failureType: 'testCodeFailure'
+  error: 'RETENTION_CONFIGURATION'
+  code: 'RETENTION_CONFIGURATION'
+  stack: |-
+    fail (file://<immediate-parent-1aa5c66e-worktree>/apps/control/retention/boundary.mjs:5:48)
+    watermarkedJournal (file://<immediate-parent-1aa5c66e-worktree>/apps/control/retention/recovery-watermark.mjs:32:405)
+    TestContext.<anonymous> (file://<immediate-parent-1aa5c66e-worktree>/apps/control/retention/test/postgres-watermark.test.mjs:53:16)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: synthetic SQL: a guarded advance refuses a restored row in the same locked transaction
+ok 4 - synthetic SQL: a guarded advance refuses a restored row in the same locked transaction
+  ---
+  duration_ms: 1.135829
+  type: 'test'
+  ...
+# Subtest: synthetic SQL: missing, changed or wrong-sequence projections cannot advance; exact proof and advance share one transaction
+ok 5 - synthetic SQL: missing, changed or wrong-sequence projections cannot advance; exact proof and advance share one transaction
+  ---
+  duration_ms: 1.823965
+  type: 'test'
+  ...
+# Subtest: synthetic SQL snapshot: one joined data statement follows the shared recovery lock in the same clean transaction
+ok 6 - synthetic SQL snapshot: one joined data statement follows the shared recovery lock in the same clean transaction
+  ---
+  duration_ms: 1.34249
+  type: 'test'
+  ...
+# Subtest: synthetic SQL snapshot: another owner completing recovery before the shared lock grants is observed by the data snapshot
+ok 7 - synthetic SQL snapshot: another owner completing recovery before the shared lock grants is observed by the data snapshot
+  ---
+  duration_ms: 0.662957
+  type: 'test'
+  ...
+# Subtest: synthetic SQL snapshot: malformed data or lost commit returns no snapshot and retires unknown leases
+ok 8 - synthetic SQL snapshot: malformed data or lost commit returns no snapshot and retires unknown leases
+  ---
+  duration_ms: 1.255339
+  type: 'test'
+  ...
+# Subtest: trusted startup composes canonical session, submit and membership history, with missing lifecycle owners refused before writes
+not ok 9 - trusted startup composes canonical session, submit and membership history, with missing lifecycle owners refused before writes
+  ---
+  duration_ms: 151.988237
+  type: 'test'
+  location: '<immediate-parent-1aa5c66e-worktree>/apps/runtime/test/startup-history.test.mjs:29:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    503 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 503
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file://<immediate-parent-1aa5c66e-worktree>/apps/runtime/test/startup-history.test.mjs:35:107)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: actual readiness response names composition gaps and keeps release held
+ok 10 - actual readiness response names composition gaps and keeps release held
+  ---
+  duration_ms: 27.957644
+  type: 'test'
+  ...
+# Subtest: removed member cannot obtain an action session at assembled startup
+ok 11 - removed member cannot obtain an action session at assembled startup
+  ---
+  duration_ms: 2.915456
+  type: 'test'
+  ...
+# Subtest: client removed cannot obtain an action session at assembled startup
+ok 12 - client removed cannot obtain an action session at assembled startup
+  ---
+  duration_ms: 2.224627
+  type: 'test'
+  ...
+# Subtest: removed member after allocation refuses input admission and submit before a run or dispatch
+ok 13 - removed member after allocation refuses input admission and submit before a run or dispatch
+  ---
+  duration_ms: 18.231941
+  type: 'test'
+  ...
+# Subtest: membership revision after allocation refuses input admission and submit before a run or dispatch
+ok 14 - membership revision after allocation refuses input admission and submit before a run or dispatch
+  ---
+  duration_ms: 10.212465
+  type: 'test'
+  ...
+# Subtest: client roster after allocation refuses input admission and submit before a run or dispatch
+ok 15 - client roster after allocation refuses input admission and submit before a run or dispatch
+  ---
+  duration_ms: 9.256497
+  type: 'test'
+  ...
+# Subtest: removed member after dispatch refuses the old session's event stream and reload page
+ok 16 - removed member after dispatch refuses the old session's event stream and reload page
+  ---
+  duration_ms: 29.203799
+  type: 'test'
+  ...
+# Subtest: membership revision after dispatch refuses the old session's event stream and reload page
+ok 17 - membership revision after dispatch refuses the old session's event stream and reload page
+  ---
+  duration_ms: 16.928951
+  type: 'test'
+  ...
+# Subtest: client roster after dispatch refuses the old session's event stream and reload page
+ok 18 - client roster after dispatch refuses the old session's event stream and reload page
+  ---
+  duration_ms: 16.322819
+  type: 'test'
+  ...
+# Subtest: membership revision changing during assembled transcript read withholds reload response
+not ok 19 - membership revision changing during assembled transcript read withholds reload response
+  ---
+  duration_ms: 15.681033
+  type: 'test'
+  location: '<immediate-parent-1aa5c66e-worktree>/apps/runtime/test/startup-history.test.mjs:80:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    503 !== 409
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 409
+  actual: 503
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file://<immediate-parent-1aa5c66e-worktree>/apps/runtime/test/startup-history.test.mjs:85:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: scripted worker delta streams publicly and reloads from the membership transcript
+not ok 20 - scripted worker delta streams publicly and reloads from the membership transcript
+  ---
+  duration_ms: 70.178309
+  type: 'test'
+  location: '<immediate-parent-1aa5c66e-worktree>/apps/runtime/test/startup-history.test.mjs:90:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    503 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 503
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file://<immediate-parent-1aa5c66e-worktree>/apps/runtime/test/startup-history.test.mjs:100:109)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 16
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1745.326338

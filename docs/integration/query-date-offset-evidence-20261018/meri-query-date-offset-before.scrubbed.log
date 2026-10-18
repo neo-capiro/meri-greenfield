@@ -1,0 +1,91 @@
+(node:29) Warning: node:test run() is being called recursively within a test file. skipping running files.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:36) Warning: node:test run() is being called recursively within a test file. skipping running files.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:43) Warning: node:test run() is being called recursively within a test file. skipping running files.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ one immutable provider supplies all12 datasets and88 fields without physical expressions (2.744312ms)
+✔ unknown or decorative provider refuses instead of adopting arbitrary field maps (0.482695ms)
+✔ exact family exports and normalization bind selected immutable snapshot (8.520266ms)
+✔ model SQL/table/alias/registry authority is refused at closed boundaries (2.104831ms)
+✔ selectors reject coercion hooks, hidden fields, proxies and callbacks (0.243706ms)
+✔ typed requests exclude legacy nonarray ignoring and broad Number coercion (0.62605ms)
+✔ positive finite row limit preserves floor/default and per-dataset maximum (2.3168ms)
+✔ all six aggregates preserve source type/group capabilities (2.568173ms)
+✔ bare count and alias collision rules remain exact (0.741313ms)
+✔ grouped mixed projections retain ordinary fields and groupable flags (0.747743ms)
+✔ ordering is limited to selected aliases and preserves legacy desc-exact default (1.171509ms)
+✔ every closed filter operator is admitted with its actual value contract (1.455235ms)
+✔ numeric boolean and date filters remain type-correct without invented ordering (1.051119ms)
+✔ filter windows and nonfilterable arrays fail closed (0.901604ms)
+✖ trusted default as-of is distinct from explicit date and generatedAt (2.166394ms)
+✖ legacy explicit query dates preserve the native UTC parser reference (69.734579ms)
+✔ query date normalization preserves UTC semantics in multiple host timezones (193.462237ms)
+✔ all twelve dataset projections accept their complete field selection windows (4.94076ms)
+✔ success omits SQL and retains exact aliases, dataset and pretrim count (3.809382ms)
+✔ counts retain exact unsafe integer strings and refuse fractional or null values (1.254494ms)
+✔ numbers preserve decimal strings and nullable stored/aggregate results (1.627424ms)
+✔ array scalars preserve null elements; dates and booleans retain source types (0.835135ms)
+✔ truncation reports whole-row prefix and original fetched count, including zero retained (0.668034ms)
+✔ legacy256Ki ceiling counts UTF16 not UTF8 and never silently drops half a row (4.486328ms)
+✔ error envelope remains explicit and never doubles as empty success (0.954304ms)
+✔ result observation is independent; validator never claims audit or role admission (0.585269ms)
+✔ snapshots cannot mutate provider, requests, normalized tuples or returned siblings (0.527782ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 25
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 578.196687
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-public-domain-query.test.mjs:103:1
+✖ trusted default as-of is distinct from explicit date and generatedAt (2.166394ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + '2020-01-01T12:30:00.000Z'
+  - '2020-01-01T17:30:00.000Z'
+                 ^
+  
+      at TestContext.<anonymous> (file://<query-date-worktree>/packages/contracts/test/retrieval-public-domain-query.test.mjs:124:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '2020-01-01T12:30:00.000Z',
+    expected: '2020-01-01T17:30:00.000Z',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-public-domain-query.test.mjs:134:1
+✖ legacy explicit query dates preserve the native UTC parser reference (69.734579ms)
+  AssertionError [ERR_ASSERTION]: January 1, 2020 12:30 PM +05
+  + actual - expected
+  
+  + '2020-01-01T12:30:00.000Z'
+  - '2020-01-01T07:30:00.000Z'
+                ^
+  
+      at TestContext.<anonymous> (file://<query-date-worktree>/packages/contracts/test/retrieval-public-domain-query.test.mjs:151:52)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: '2020-01-01T12:30:00.000Z',
+    expected: '2020-01-01T07:30:00.000Z',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

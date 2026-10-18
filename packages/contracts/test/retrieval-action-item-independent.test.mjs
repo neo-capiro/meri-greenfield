@@ -1,6 +1,7 @@
 import {priorVerticalOriginal} from './vertical-continuation-expectations.mjs';
 import {fullActionReference} from './backend-execution-expectations.mjs';
 // Explicit reviewed continuation allowlist; historical baseline hashes stay unchanged.
+// get_client_context is the accepted full-profile 0.3.0 successor; other continuations stay 0.2.0.
 const continuationIds = ["search_cbo_cost_estimates", "search_federal_grants", "search_federal_awards", "search_gao_reports", "search_state_bills", "get_state_legislator", "search_crs_reports", "query_economic_data", "get_district_nexus_context", "get_district_nexus_changes", "read_client_documents", "search_funding_opportunities", "get_funding_opportunity_requirements", "get_funding_opportunity", "get_opportunity_client_context", "get_opportunity_government_landscape", "search_sec_filings", "search_fara_registrations", "search_lda_filings", "search_acquisition_personnel", "get_acquisition_person", "get_bill_status", "search_floor_votes", "search_congress_bills", "read_bill_text", "get_committee_roster", "list_members", "get_pe_contractors", "get_pe_bills", "get_pe_report_language", "get_state_rule_status", "get_certification_status", "search_intel_articles", "list_global_datasets", "get_representation", "get_state_bill_status", "search_state_floor_votes", "query_regulatory_dockets", "find_contacts", "resolve_entity", "search_tracked_bills", "query_intelligence", "search_public_web", "scrape_web_page", "search_sam_opportunities", "get_florida_budget_project", "query_outreach", "search_program_elements", "get_program_element", "get_pe_budget_timeline", "search_client_knowledge", "query_knowledge_graph", "read_monday_client_boards", "read_chat_attachments", "search_memory", "get_client_context", "search_research_sources", "query_global_data", "search_legislative_research", "get_legal_reference", "search_legiwatch_news", "search_committee_hearings"];
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -29,7 +30,7 @@ test('partial binding preserves every original row and fourteen descriptors',()=
   for (const id of ['lookup_client_registry','get_business_development_context','get_business_development_evidence',
     'get_business_development_recent_changes','get_research_portfolio','get_research_portfolio_changes',...continuationIds]) {
     const row = priorRows.find(row => row.id === id);
-    assert.equal(row.state,'mapped'); assert.deepEqual(row.replacement,{id,version:'0.2.0'});
+    assert.equal(row.state,'mapped'); assert.deepEqual(row.replacement,{id,version:id==='get_client_context'?'0.3.0':'0.2.0'});
     // Undo only the six prior and16 explicit reviewed continuation mappings for the unchanged historical hash.
     row.state='pending'; row.replacement=null;
   }

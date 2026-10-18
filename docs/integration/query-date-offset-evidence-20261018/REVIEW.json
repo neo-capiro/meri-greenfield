@@ -1,0 +1,266 @@
+{
+  "base": "4d82147624cba329ffc5ade1bb027838a4e37474",
+  "commit": "497b5358a7f64da312e52400fa7d1770535fc28e",
+  "branch": "fix/query-date-offset-recovery-20261019",
+  "paths": [
+    "packages/contracts/retrieval-0.2/public-domain-query-validation.mjs",
+    "packages/contracts/test/retrieval-public-domain-query.test.mjs"
+  ],
+  "environment": {
+    "node": "v24.19.0",
+    "npm": "11.9.0",
+    "TZ": "America/Toronto",
+    "NODE_OPTIONS": null,
+    "packageLockSHA256": "418a5af3b8673d9cdd2faed654b0d94586b03afdca4b23a1a7995462686e54e3",
+    "dependencies": "borrowed exact matching installed contracts packages; no dependency/lock changes"
+  },
+  "commands": {
+    "query": "TZ=America/Toronto node --test packages/contracts/test/retrieval-public-domain-query.test.mjs",
+    "focused": "TZ=America/Toronto node --test packages/contracts/test/retrieval-public-domain-query.test.mjs apps/gateway/sources/public-domain-query/test/handler.test.mjs apps/gateway/sources/public-domain-query/test/native-result.test.mjs",
+    "exactCases": "TZ=<UTC|America/Toronto|Asia/Tokyo> node <scratch>/meri-query-date-offset-probe.mjs <workspace>/meri-query-date-offsets"
+  },
+  "before": {
+    "originalSource": "4d82147624cba329ffc5ade1bb027838a4e37474",
+    "expandedRegressionSuite": "24passed/3failed; original timezone child marker defect repaired before this run",
+    "exactCases": "Both requested strings normalize to12:30Z inas-of+filters underall3TZ; expected17:30Z"
+  },
+  "after": {
+    "query": "27passed/0failed",
+    "focused": "47passed/0failed at497b5358a7f64da312e52400fa7d1770535fc28e",
+    "exactCases": "Bothrequestedstrings17:30Z inas-of+filters underall3TZ",
+    "matrix": "900 nativeUTC-reference explicit-zone strings; namedprefix/digitadjacent/signedyear/comment/invalidcontrols; selected2testsactuallyrunineachUTC/Toronto/Tokyochild,TAP2pass/0fail/0skip",
+    "independent": "104/104 actualpublicnormalizerassertionsineachUTC/Toronto/Tokyo; fullquery27/27; directrealchildTAP2/2each"
+  },
+  "rootCause": "Numeric offset requiredclockdirectlybefore itandstringend. New detectorsearchesremainingclocktokensafteroptionalmeridiem, allowingyearafteroffsetandotheracceptedplacementswhileexcludinghyphenateddatefields. Originalnativeparsevaliditygate/UTCdefault/namedzones/comments unchanged. ReviewclosedacceptedAMPMcommaoffsetboundariesandsignedsix-digitISOyearswhichold4digityearmatcherexcluded. Theas-ofRFC3339formatstillrefusesnegativeyears;datefiltersretaincanonicalnegativeISOyearstrings. Furtherconfirmednativelexercontrolsrequireignoredzoneprefixesbeforefirstnumber, alpha-tokenboundariesallowingdigitadjacency, andcommentseparators. Commenttextisusedonlyfordetection;UTCinsertionpreservesrawclosedcommentsandcutsunclosedtail.",
+  "testSetupRepair": "DeleteonlyNODE_TEST_CONTEXT fromchildenvironment. Priorchild--test runsrecursivelyskippedfileswithwarningandexit0; nowexplicitTAPexecutioncounterspreventfalsegreen.",
+  "newRemainingFailures": [],
+  "limits": "No fullstandard/typecheckruninthisurgentslice; rootownscombinedverification. NoAWS/model/provider/build/push/migration actions.",
+  "logs": {
+    "meri-query-date-offset-focused.scrubbed.log": {
+      "bytes": 4788,
+      "sha256": "2cb4e55e9de5ea1fb988ffa4d453e17125bb45108c852596663220cbdfe47540"
+    },
+    "meri-query-date-offset-toronto.scrubbed.log": {
+      "bytes": 535,
+      "sha256": "5fba099164b2d60f0ad2ea28f230685c540a98fd7e4fa6730650fb953df865ff"
+    },
+    "meri-query-date-offset-filter-before.scrubbed.log": {
+      "bytes": 2295,
+      "sha256": "fc937f84f27f373ab4ef51acc00ba2a73da9c10a4dba400c0aa1144daf52b4b2"
+    },
+    "meri-query-date-offset-before.scrubbed.log": {
+      "bytes": 5237,
+      "sha256": "b6128ada6fe980e7f2458c0f591b6ac3beaa7bdfc22b16f605baee5e291676de"
+    },
+    "meri-query-date-offset-after.scrubbed.log": {
+      "bytes": 2563,
+      "sha256": "b4181395ea3ff227cf2c60b4c5f7760bf92a9c077eeae288eb57e6a707bb47cb"
+    },
+    "meri-query-date-offset-before-effective-timezones.scrubbed.log": {
+      "bytes": 10836,
+      "sha256": "89b64cd3c1f24e32216631573a2ba0fb15727bf70c8c8969dd0bf10c682b345f"
+    },
+    "meri-query-date-offset-exact-cases-after.scrubbed.log": {
+      "bytes": 1213,
+      "sha256": "1cf8a300a2b4c4e132aca645036e4b075e66d40f11de081d942c69738209ad63"
+    },
+    "meri-query-date-offset-exact-cases-before.scrubbed.log": {
+      "bytes": 1274,
+      "sha256": "5f7297254da777901b5f8c40234ccd7958cac31853ae38e38551bc50f11c8a23"
+    },
+    "meri-query-date-offset-focused-final.scrubbed.log": {
+      "bytes": 4795,
+      "sha256": "061471c5c75a283b234d8b6e9342dd97dcbce2856aec3faf0a5b3a2936f5d737"
+    },
+    "meri-query-date-offset-focused-final-grammar.scrubbed.log": {
+      "bytes": 4788,
+      "sha256": "8b7359a3b1d7cfebf1396f43c1442d61168c5b79ae855ea2a828fb3cef0d62cf"
+    },
+    "meri-query-date-offset-focused-final-reviewed.scrubbed.log": {
+      "bytes": 4793,
+      "sha256": "337940187413276e0844a6f022d7e16b337cdcdf20eeb3fbf5d55e941f181ebc"
+    },
+    "meri-query-date-offset-focused-approval.scrubbed.log": {
+      "bytes": 4795,
+      "sha256": "cdd0c50933fb13110e8dd2d836a02c7a853fd72b9e042d5ceb5a2dfdaeb06b48"
+    },
+    "meri-query-date-offset-focused-complete.scrubbed.log": {
+      "bytes": 4791,
+      "sha256": "ed6ed045b84568657c8fa23c28ca47209583cccc97abe14f6a566c7f3b99eace"
+    },
+    "meri-query-date-offset-exact-cases-final.scrubbed.log": {
+      "bytes": 1270,
+      "sha256": "023270a16a80ad7514c1aeccecfd70d5a1706fa4fbd4afb94ba4a7d195e88c24"
+    },
+    "meri-query-date-public-review-UTC-497b-final.scrubbed.log": {
+      "bytes": 13933,
+      "sha256": "6e1fdefa0a37be6e79cb4d830ad1fc6c7e6c6e641099bc5eb1238380b8a75401"
+    },
+    "meri-query-date-public-review-Asia-Tokyo-497b-final.scrubbed.log": {
+      "bytes": 13940,
+      "sha256": "c623b3b08c642d41b082b1e3307c3b0711cdd3b9f2b0675de50d751db1f4630a"
+    },
+    "meri-query-date-public-review-America-Toronto-497b-final.scrubbed.log": {
+      "bytes": 13945,
+      "sha256": "ddff34033c06759c5d5a3bf75578b8fa1bb395c517b01e98b2059aa0f4ad304b"
+    },
+    "meri-date-offsets-real-child-Asia-Tokyo-497b-final.scrubbed.tap": {
+      "bytes": 533,
+      "sha256": "402fbe94774db122fcb55d096043c485df86556fd6d92c1052efb89a727d0e37"
+    },
+    "meri-date-offsets-real-child-America-Toronto-497b-final.scrubbed.tap": {
+      "bytes": 536,
+      "sha256": "32a4ca1faedee062202b6c691b203f94705a273ff90b106b28b54c2af1b55227"
+    },
+    "meri-date-offsets-review-497b-focused-final.scrubbed.tap": {
+      "bytes": 5966,
+      "sha256": "7bd0ab8e3c6c4f169691a82b49a54b70bdefd56eaa014c8f795665c36963f6f4"
+    },
+    "meri-date-offsets-real-child-UTC-497b-final.scrubbed.tap": {
+      "bytes": 535,
+      "sha256": "d92f18087ebe61be04b1355ed964fbf8e19ae3970ef4fdd384b9aed9ef42a966"
+    },
+    "meri-date-offsets-real-child-America-Toronto-706e-final.scrubbed.tap": {
+      "bytes": 535,
+      "sha256": "d310f91ce7b55e1d80f8e90b48aa41dadfa45eb6df71da0cd5338b0c28eab78c"
+    },
+    "meri-date-offsets-real-child-America-Toronto.scrubbed.tap": {
+      "bytes": 535,
+      "sha256": "2af19c1c3f9f16387c14e5f176c9ab79b7de7784b66dacd51519efdd87bd7f07"
+    },
+    "meri-date-offsets-real-child-Asia-Tokyo-706e-final.scrubbed.tap": {
+      "bytes": 536,
+      "sha256": "cee7ded1d8057c51bdf6a7782230e0c9dd50a168094347a51a05e916080605ad"
+    },
+    "meri-date-offsets-real-child-Asia-Tokyo.scrubbed.tap": {
+      "bytes": 536,
+      "sha256": "43b9f552e4c032525e56ed4d12ab5ca6fee43d994f43f5062e51ef8d9548c44b"
+    },
+    "meri-date-offsets-real-child-UTC-706e-final.scrubbed.tap": {
+      "bytes": 534,
+      "sha256": "b8700e12f793b134fee6defb590dd0c0dada318cccb43a7d88c1a3019ef85912"
+    },
+    "meri-date-offsets-real-child-UTC.scrubbed.tap": {
+      "bytes": 535,
+      "sha256": "5eda5cc6a3918034321ccaba183fc10f6f31ddd6ee20b68d133a357e50e835a3"
+    },
+    "meri-date-offsets-review-706e-focused-final.scrubbed.tap": {
+      "bytes": 5970,
+      "sha256": "ebb960c3ffd568b377d47a443ddd2ce8ee8161ac07f2750567ee794eefd4c194"
+    },
+    "meri-date-offsets-review-focused.scrubbed.log": {
+      "bytes": 1622,
+      "sha256": "a1d524e14323ea82cbaa0b5ad6b2283a2260154ea6191a2f87b11623c0cc11fd"
+    },
+    "meri-date-offsets-review-focused2.scrubbed.log": {
+      "bytes": 5966,
+      "sha256": "dce63ed4c92073805b52a6a658978da34724e366c6827ec8b11b9a6cc06aa30e"
+    },
+    "meri-query-date-public-review-America-Toronto-706e-final.scrubbed.log": {
+      "bytes": 13185,
+      "sha256": "d1d2ae6fbc1ae80adad725e2a532c49ef8e3615345579b8934055a4dddf9151a"
+    },
+    "meri-query-date-public-review-America-Toronto-9c9e.scrubbed.log": {
+      "bytes": 9231,
+      "sha256": "0e1af666704325cd9d2535a32a76c0b1aee99258870168d238cad05cce600c1e"
+    },
+    "meri-query-date-public-review-America-Toronto-before-final.scrubbed.log": {
+      "bytes": 6304,
+      "sha256": "585dfd448f997e7f71d22b5f530c6673b7d2884f48963488ddbf76f21b906bda"
+    },
+    "meri-query-date-public-review-America-Toronto-broad.scrubbed.log": {
+      "bytes": 8295,
+      "sha256": "d90b63389bccabf22d3707515a285751aa3106a2cac0750a0387492de3a8276d"
+    },
+    "meri-query-date-public-review-America-Toronto-delimiter-before.scrubbed.log": {
+      "bytes": 15058,
+      "sha256": "667893ce0f783773e42ab5fbffb9f81607398b6299f28cb371dd0a5abf0e0805"
+    },
+    "meri-query-date-public-review-America-Toronto-named-final.scrubbed.log": {
+      "bytes": 10727,
+      "sha256": "a7efaed3dbcbdb0d6c0eab98d0b0d270ee27115ea3cec4e628613e8b48de526a"
+    },
+    "meri-query-date-public-review-America-Toronto-prefix-before.scrubbed.log": {
+      "bytes": 10329,
+      "sha256": "f6e869c920c53ecb88aa82b6e52bb044d8798f73f9a3fafe8e46065539c99b03"
+    },
+    "meri-query-date-public-review-Asia-Tokyo-706e-final.scrubbed.log": {
+      "bytes": 13180,
+      "sha256": "2c8456c641bd9212153e0e6b9971875dbee461ea0a2ab8576c8dbf521693024d"
+    },
+    "meri-query-date-public-review-Asia-Tokyo-9c9e.scrubbed.log": {
+      "bytes": 9226,
+      "sha256": "4a0a0aa34f6b366fc4fa6c71e4af4ea920e95a33fd974ae7f0e14f4e62d78b7c"
+    },
+    "meri-query-date-public-review-Asia-Tokyo-before-final.scrubbed.log": {
+      "bytes": 6299,
+      "sha256": "7ec026c258f37281c93ea224253394c6a4990e013819d3884564002619631c13"
+    },
+    "meri-query-date-public-review-Asia-Tokyo-broad.scrubbed.log": {
+      "bytes": 8290,
+      "sha256": "a9afd2ca0ceaf009cdbc349618929e3e3afd73bb799535ee351ba979ee923935"
+    },
+    "meri-query-date-public-review-Asia-Tokyo-delimiter-before.scrubbed.log": {
+      "bytes": 15053,
+      "sha256": "1c51daecced0249f9aa1499ae26d538813470fc4a01e89c853ba62ff4d5373f1"
+    },
+    "meri-query-date-public-review-Asia-Tokyo-named-final.scrubbed.log": {
+      "bytes": 10722,
+      "sha256": "2ef193e2e673e4e29a09eeff6b40c5c56cd50bb36b90e689474d7c77aea509ff"
+    },
+    "meri-query-date-public-review-Asia-Tokyo-prefix-before.scrubbed.log": {
+      "bytes": 10318,
+      "sha256": "4b3045ef59d0e9837bfadba881019d88af68b30a3d11af35b4180662d282f766"
+    },
+    "meri-query-date-public-review-UTC-706e-final.scrubbed.log": {
+      "bytes": 13173,
+      "sha256": "818d5cd1bf7371cae7e925198ab25246a0be992a2425d513d77e0db3448029ca"
+    },
+    "meri-query-date-public-review-UTC-9c9e.scrubbed.log": {
+      "bytes": 9219,
+      "sha256": "61e50fb83353a7ac28d1f68f9213c3a652f168e5ffe6f31463a2b2e5992dadeb"
+    },
+    "meri-query-date-public-review-UTC-before-final.scrubbed.log": {
+      "bytes": 6292,
+      "sha256": "dd557c7b9c3734f3585c9df404540a2e97efb01598822e45391bd8d9fea06ebc"
+    },
+    "meri-query-date-public-review-UTC-broad.scrubbed.log": {
+      "bytes": 8283,
+      "sha256": "e3ed6526f2dbe5018c8da7312c8fb8d40beb18bb531ea98237e6c08712eb6326"
+    },
+    "meri-query-date-public-review-UTC-delimiter-before.scrubbed.log": {
+      "bytes": 15046,
+      "sha256": "82ead44a749b82f704f06331a0f3b48ef4c8898d3afef9507ec4401cc4b6eeb3"
+    },
+    "meri-query-date-public-review-UTC-named-final.scrubbed.log": {
+      "bytes": 10715,
+      "sha256": "b75cdfe9705452eaa1e976a74aa4f0a6df4cb055b2b9cf7d8bb5215a92f45671"
+    },
+    "meri-query-date-public-review-UTC-prefix-before.scrubbed.log": {
+      "bytes": 9381,
+      "sha256": "6d26b9e3d659bc61a5820a959b1165b7d729412fb2933a3c8ef5e2489cf1d5de"
+    }
+  },
+  "commits": [
+    "be47d31798fdcd0eaeb430cb48d41694107427ca",
+    "9c9e92440e0bd358fad04456c2955603f4512a20",
+    "a420b6612be52fb605ec151bf0b04ecad0d36fcc",
+    "b239682eb4a086ffbf38a9fcccc820dfefabb59d",
+    "706e501db5529f36c5beb49072c22be3bc80fd6b",
+    "497b5358a7f64da312e52400fa7d1770535fc28e"
+  ],
+  "reviewStatus": "Independent read-only APPROVAL exact497b;104/104publicassertionsineach3TZ,query27/27,actualselectedTAP2/2each",
+  "tree": "1bffb4eb1efd7361f870931f4e7702a37bcd6490",
+  "publishedEquivalent": {
+    "commit": "3e0dbe243f734602ad9df0264939d3b8cd4fea9a",
+    "tree": "1bffb4eb1efd7361f870931f4e7702a37bcd6490",
+    "parent": "4d82147624cba329ffc5ade1bb027838a4e37474",
+    "publicationOwner": "root",
+    "equivalence": "Local final full tree independentlyequalsrootpublishedtree; only2allocatedpaths differfromparent"
+  },
+  "evidenceNotes": [
+    "All intermediate current-task actual public-normalizer controls are retained, including initial missing-AJV setup failure caused by root dependency reclamation, recursive NODE_TEST_CONTEXT no-op warning, expanded regression 24/3, shortclock/oddminute, ignored namedprefix and punctuation cases.",
+    "Public-review log headers record both gitHEAD and actual sourceSHA where the reviewer caught a transient uncommitted delta. These are actual normalizer runs, not reconstructed full-suite claims.",
+    "Earlier general contractlane reconstructed pure-function controls remain separatelylabeled in theiroriginal <scratch>/meri-contracts-review files and priorreport; no newclaim abouttheirtestscope."
+  ]
+}

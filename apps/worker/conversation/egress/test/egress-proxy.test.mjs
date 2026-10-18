@@ -118,6 +118,19 @@ test('SOCKS5 admits only CONNECT by allowlisted name; address-type requests, oth
  assert.deepEqual(dials,['93.184.215.14:443']);
 });
 
+test('SOCKS5 reads the complete greeting before its method count and refuses truncated or empty method lists',async t=>{
+ const {proxy,dials,decisions}=await fixture(t);
+ const open=async()=>{const s=connect({host:'127.0.0.1',port:proxy.ports.socks});t.after(()=>s.destroy());await once(s,'connect');return s;};
+ const fragmented=await open(),hello=once(fragmented,'data');
+ fragmented.write(Buffer.from([5]));await new Promise(resolve=>setImmediate(resolve));
+ fragmented.write(Buffer.from([1,0]));assert.deepEqual((await hello)[0],Buffer.from([5,0]));fragmented.destroy();
+ for(const greeting of [[5],[5,0]]){
+  const client=await open(),closed=once(client,'close');client.end(Buffer.from(greeting));await closed;
+ }
+ assert.deepEqual(dials,[],'invalid or incomplete greetings never open a destination');
+ assert.deepEqual(decisions,[],'no destination is admitted before a complete CONNECT request');
+});
+
 test('revocation refuses every later admission and destroys tunnels that are already open; expiry refuses too',async t=>{
  const {proxy,dials}=await fixture(t);
  const open=await tunnel(proxy,'records.example:443');assert.equal(open.status,200);

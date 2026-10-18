@@ -1,0 +1,121 @@
+{
+  "nodeVersion": "v24.19.0",
+  "npmVersion": "11.9.0",
+  "TZ": "America/Toronto",
+  "NODE_OPTIONS": null,
+  "dependencyStrategy": "Matching immutable dependency installs linked from previous repair environment. Each pinned tree has its own @capiro/meri-contracts resolution. All package-lock.json bytes equal between parent and current.",
+  "tasks": [
+    {
+      "pin": "baseline",
+      "sha": "141f2ada6378382f2bf7462d8a2c5dc7758230d0",
+      "name": "runtime-typecheck",
+      "cwd": "<workspace>/meri-baseline-inventory",
+      "argv": [
+        "node",
+        "apps/runtime/node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--pretty",
+        "false",
+        "-p",
+        "apps/runtime/tsconfig.json"
+      ],
+      "startedAt": "2026-10-18T21:20:34.512762+00:00",
+      "log": "<scratch>/meri-failure-inventory-20261018/baseline-runtime-typecheck.raw.log",
+      "exitCode": 2,
+      "endedAt": "2026-10-18T21:20:48.278925+00:00",
+      "sha256": "f288361ede5079e593ded80e09b577ab897c5a0b6229de63f576d7a4662def8d"
+    },
+    {
+      "pin": "current",
+      "sha": "43db1dfac9663962efb0e49fa24ec7ddea10f9d0",
+      "name": "runtime-typecheck",
+      "cwd": "<workspace>/meri-current-inventory",
+      "argv": [
+        "node",
+        "apps/runtime/node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--pretty",
+        "false",
+        "-p",
+        "apps/runtime/tsconfig.json"
+      ],
+      "startedAt": "2026-10-18T21:20:34.514128+00:00",
+      "log": "<scratch>/meri-failure-inventory-20261018/current-runtime-typecheck.raw.log",
+      "exitCode": 2,
+      "endedAt": "2026-10-18T21:20:48.524874+00:00",
+      "sha256": "f288361ede5079e593ded80e09b577ab897c5a0b6229de63f576d7a4662def8d"
+    },
+    {
+      "pin": "current",
+      "sha": "43db1dfac9663962efb0e49fa24ec7ddea10f9d0",
+      "name": "control-typecheck",
+      "cwd": "<workspace>/meri-current-inventory",
+      "argv": [
+        "node",
+        "apps/runtime/node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--pretty",
+        "false",
+        "-p",
+        "apps/control/conversations/tsconfig.json"
+      ],
+      "startedAt": "2026-10-18T21:20:34.514420+00:00",
+      "log": "<scratch>/meri-failure-inventory-20261018/current-control-typecheck.raw.log",
+      "exitCode": 2,
+      "endedAt": "2026-10-18T21:20:51.493977+00:00",
+      "sha256": "0516385759864540947ba7cfdc4d3daf706deab55b44293d8f8f29ae24e37096"
+    },
+    {
+      "pin": "baseline",
+      "sha": "141f2ada6378382f2bf7462d8a2c5dc7758230d0",
+      "name": "control-typecheck",
+      "cwd": "<workspace>/meri-baseline-inventory",
+      "argv": [
+        "node",
+        "apps/runtime/node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--pretty",
+        "false",
+        "-p",
+        "apps/control/conversations/tsconfig.json"
+      ],
+      "startedAt": "2026-10-18T21:20:34.513323+00:00",
+      "log": "<scratch>/meri-failure-inventory-20261018/baseline-control-typecheck.raw.log",
+      "exitCode": 2,
+      "endedAt": "2026-10-18T21:20:52.105963+00:00",
+      "sha256": "0516385759864540947ba7cfdc4d3daf706deab55b44293d8f8f29ae24e37096"
+    },
+    {
+      "pin": "current",
+      "sha": "43db1dfac9663962efb0e49fa24ec7ddea10f9d0",
+      "name": "standard-check",
+      "cwd": "<workspace>/meri-current-inventory",
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "startedAt": "2026-10-18T21:20:34.513537+00:00",
+      "log": "<scratch>/meri-failure-inventory-20261018/current-standard-check.raw.log",
+      "exitCode": 1,
+      "endedAt": "2026-10-18T21:21:14.171533+00:00",
+      "sha256": "bb02bb7fafd75bfdd4ce6beba145f9e4c9d9dd8a272e0eb1f75fbf8f004bd7f1"
+    },
+    {
+      "pin": "baseline",
+      "sha": "141f2ada6378382f2bf7462d8a2c5dc7758230d0",
+      "name": "standard-check",
+      "cwd": "<workspace>/meri-baseline-inventory",
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "startedAt": "2026-10-18T21:20:34.512391+00:00",
+      "log": "<scratch>/meri-failure-inventory-20261018/baseline-standard-check.raw.log",
+      "exitCode": 1,
+      "endedAt": "2026-10-18T21:21:14.335822+00:00",
+      "sha256": "a985212527759f59c73839b6cb6d97936a78db876c87d96e87ed912a95e4a41d"
+    }
+  ]
+}

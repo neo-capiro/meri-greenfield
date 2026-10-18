@@ -25,8 +25,8 @@
     },
     {
       "path": "../../apps/control/conversations/postgres-store.mjs",
-      "sha256": "96002cc66ed5658273af0cd4035e027efaaaa94708e020f28b79c22f1fc355a0",
-      "bytes": 12152
+      "sha256": "3943e94931fc0843faa6dac8c10c7083178996182804abe8f28f8cfedfb53a79",
+      "bytes": 12659
     },
     {
       "path": "../../apps/control/conversations/service.mjs",

@@ -1,5 +1,7 @@
 # Exact backend failures and TypeScript baseline comparison
 
+> These are preserved historical failure receipts. The [remaining-failure follow-up](../FAILURE-CLOSEOUT-20261018.md) reproduces the exact newer candidate and both parents, resolves all **48** original failures (32 standard + 16 worker) and **21** TypeScript occurrences, and provides a complete [before/after mapping](../audit-closeout-evidence-20261018/BEFORE-AFTER-INVENTORY.md). Its final checks pass; four additional dot-owned integration dependencies remain separately recorded.
+
 The published PR180 source tree (local commit `43db1dfac9663962efb0e49fa24ec7ddea10f9d0`, published prefix `7e4e7582`, tree `ca3f3a59e556e191a2a76c74c5deb87cc356af5a`) was compared with its exact receiving parent PR179 `141f2ada6378382f2bf7462d8a2c5dc7758230d0`. Both were checked from separate detached worktrees. These pinned comparison runs precede the history-release and composer corrections; the post-fix verification is appended below. They do not claim release acceptance.
 
 ## Measured comparison

@@ -1,0 +1,19 @@
+✔ policy defaults every capability off and bounds every allowlist (4.54134ms)
+✔ workspace file tools are confined by SDK permission rules, not a textual gate; Bash is never a file tool (1.306436ms)
+✔ subagent definitions use declared SDK fields and the Agent gate bounds type, options and parallelism (1.574749ms)
+✔ audit, compaction and subagent hooks publish hashes and names only, never raw input, output, errors or summaries (1.86098ms)
+✔ skill plugin binds the immutable image path and the original names; cwd discovery is refused (38.70507ms)
+✔ progress projector displays only admitted one-line summaries (0.582367ms)
+✔ composition yields an all-off empty fragment and per-capability additive fragments that only use declared option names (27.470322ms)
+✔ a refused capability event is remembered and fails the run after the loop (0.744831ms)
+✔ profile mounts only exact active reads, with a stable list across changing run availability (91.900703ms)
+✔ profile availability is capped by exact active operations; disabled or empty active profiles mount nothing (22.984951ms)
+✔ G2 carries an exact, immutable active operation set and rejects unqualified or widened refs (4.171758ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 948.333429
