@@ -54,7 +54,7 @@ Budget pins (B1): `allocation.json` `budgets.maxTurns 20`, `maxToolCalls 20`, `m
 | KMS key, execution capability | `ECC_NIST_EDWARDS25519`, sign/verify, Core signer role only | intents execution (Core-side signer) |
 | KMS key, routines cancellation proof | same spec, separate key and `kid` | routines |
 | KMS keys ×3, Objective (D7-2) | same spec, one per purpose | Objective activation (keys ready; activation when Core phases land) |
-| Core `INTERNAL_SERVICE_SECRET` | existing Secrets Manager secret, exact ARN + VersionId | reads, artifacts, approvals, memory |
+| Core `INTERNAL_SERVICE_SECRET` | **new** secret `meri/preview/core/internal-service-secret` (read back 18 Oct: the preview Core task `capiro-preview-first-chat-core:2` carries no such secret, and `capiro/dev/internal-jwt-secret` is Core's JWT secret, unrelated). Generated at packet execution (32 random bytes, base64url), stored once, never in git; its exact ARN + VersionId go to the Core preview task (`secrets: INTERNAL_SERVICE_SECRET`) and to Meri's `features.reads.serviceSecretArn` / `--feature-secrets` | reads, artifacts, approvals, memory, routines |
 | IAM | control task role: `s3:GetBucket*`, `Put/Get/HeadObject` on the artifacts bucket; `kms:GenerateDataKey/Decrypt` on the Meri key; Core task role: `kms:Sign/GetPublicKey` on its keys | least privilege |
 
 ## 4. Database (D016 #1)
@@ -67,7 +67,7 @@ Budget pins (B1): `allocation.json` `budgets.maxTurns 20`, `maxToolCalls 20`, `m
 
 ## 5. Core preview rev 3
 
-- Image from #84 `TBD`; task template: `INTERNAL_SERVICE_SECRET` by exact ARN; `MERI_TOOL_ALLOWLIST` exact 65 names (fail closed); `MEMORY_GOVERNANCE_LIFECYCLE=enforce` + preview tenant in `MEMORY_GOVERNANCE_TENANTS` (preview task only); `PREVIEW_NATIVE_GETS_ENABLED=true`; KMS key ARNs for the signers.
+- Current: `capiro-preview-first-chat-core:2`, image `…preview-core@sha256:46acfc07…` (secrets today: DB_USER, DB_PASSWORD, CLERK_SECRET_KEY, CLERK_WEBHOOK_SIGNING_SECRET). Target: image from #84 `TBD`; task template adds `INTERNAL_SERVICE_SECRET` by the new exact ARN (§3); `MERI_TOOL_ALLOWLIST` exact 65 names (fail closed); `MEMORY_GOVERNANCE_LIFECYCLE=enforce` + preview tenant in `MEMORY_GOVERNANCE_TENANTS` (preview task only); `PREVIEW_NATIVE_GETS_ENABLED=true`; KMS key ARNs for the signers.
 
 ## 6. Listener (coordinated action with dot)
 
