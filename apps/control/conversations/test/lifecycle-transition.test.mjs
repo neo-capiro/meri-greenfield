@@ -21,12 +21,25 @@ async function fixture(mode='resume'){
  const mapping=()=>{const p=saved();return {credential:f.credential,controlId,sourceBinding:binding,targetBinding:p.target.binding,admissionReceiptId:p.target.admissionReceiptId,retirementReceiptId:p.retirement?.retirementReceiptId??null};};
  return {...f,calls,hooks,service,run,saved,mapping,input};
 }
+async function finishTarget(f,terminal){const target=f.saved().target.binding;for(const [sequence,state] of ['starting','running',terminal].entries())await f.store.append(target,{eventId:id(980+sequence),createdAt:new Date().toISOString(),type:'run.status',data:{state,reasonCode:state==='failed'?'EXECUTION_FAILED':null}},check);}
 test('composed canonical session, journal and Temporal dispatcher resume one successor and read APPLIED without effects',async()=>{
  const f=await fixture();try{const result=await f.run();assert.equal(result.state,'APPLIED');assert.equal(f.state.runs.size,2);assert.equal(f.calls.starts.length,1);assert.equal(f.calls.continued.length,1);assert.equal(f.saved().state,'APPLIED');
   const verified=await f.sessions.verifyTransition({...f.mapping(),purpose:'receipt-readback',deadlineMs:Date.now()+1000});assert.match(verified.transitionSha256,/^[a-f0-9]{64}$/);assert.equal(f.calls.starts.length,1);assert.equal(f.calls.continued.length,1);
   await assert.rejects(f.sessions.verifyTransition({...f.mapping(),purpose:'dispatch-start',deadlineMs:Date.now()+1000}),/SESSION_REFUSED/);assert.equal(f.saved().state,'APPLIED');
   await assert.rejects(f.run(),/SESSION_REFUSED/);assert.equal(f.calls.starts.length,1,'historical-source retry never dispatches');assert.equal(f.calls.continued.length,1);
  }finally{f.close();}
+});
+for(const terminal of ['completed','failed'])test(`successor ${terminal} before start acknowledgement still signals source and commits the transition`,async()=>{
+ const f=await fixture();try{
+  f.hooks.start=()=>finishTarget(f,terminal);
+  const result=await f.run();assert.equal(result.state,'APPLIED');assert.equal(f.saved().state,'APPLIED');assert.equal(f.calls.starts.length,1);assert.equal(f.calls.continued.length,1);assert.equal((await f.store.read(result.targetBinding,{},check)).run.state,terminal);
+ }finally{f.close();}
+});
+test('a completed successor does not turn a lost start acknowledgement into an accepted transition',async()=>{
+ const f=await fixture();try{f.hooks.start=async()=>{await finishTarget(f,'completed');throw Error('synthetic lost start acknowledgement');};await assert.rejects(f.run(),/LIFECYCLE_EFFECT_UNKNOWN/);assert.equal(f.saved().state,'UNKNOWN');assert.equal(f.calls.starts.length,1);assert.equal(f.calls.continued.length,0);}finally{f.close();}
+});
+test('target cancellation before start acknowledgement still fences the continuation signal',async()=>{
+ const f=await fixture();try{f.hooks.start=async()=>{await f.store.append(f.saved().target.binding,{eventId:id(985),createdAt:new Date().toISOString(),type:'run.status',data:{state:'cancelled',reasonCode:'USER_CANCELLED'}},check);};await assert.rejects(f.run(),/LIFECYCLE_EFFECT_UNKNOWN/);assert.equal(f.saved().state,'UNKNOWN');assert.equal(f.calls.starts.length,1);assert.equal(f.calls.continued.length,0);}finally{f.close();}
 });
 for(const effect of ['start','continued'])for(const shorter of ['target','admission','retirement'])test(`parked ${effect} RPC receives the shorter ${shorter} deadline and no later effect dispatches`,{timeout:5000},async()=>{
  const f=await fixture();let release;try{

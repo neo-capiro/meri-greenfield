@@ -100,7 +100,9 @@ export function createLifecycleJournal({tx,rowRun,cancelAppend,transitionAuthori
    if(t.tenantId!==b.tenantId||t.actorId!==b.actorId||t.runId===b.runId||t.attemptId===b.attemptId||t.workerId===b.workerId||p.input.intent==='resume'&&(t.conversationId!==b.conversationId||t.writerFence!==b.writerFence+1||p.target.targetSessionId!==null)||p.input.intent==='fork'&&(t.conversationId===b.conversationId||t.writerFence!==1))fail('LIFECYCLE_TRANSITION_REFUSED');
    if(p.input.intent==='fork'){uuid(p.target.targetSessionId);if(p.target.targetSessionId===p.proof.checkpoint.sessionId)fail('LIFECYCLE_TRANSITION_REFUSED');}
    const target=await verifyRun(c,t,p.scopes);check();
-   if(['completed','failed','cancelled'].includes(target.projection.state)||!same(target.projection.versions,p.versions)||target.projection.policyRevision!==source.projection.policyRevision||current.policyRevision!==target.projection.policyRevision)fail('LIFECYCLE_TRANSITION_REFUSED');
+   // A successor can finish while its Temporal start acknowledgement is in flight. Its completed/failed run still has the exact
+   // committed lineage checked below, and the source must receive its continuation signal. Cancellation remains a stop fence.
+   if(target.projection.state==='cancelled'||!same(target.projection.versions,p.versions)||target.projection.policyRevision!==source.projection.policyRevision||current.policyRevision!==target.projection.policyRevision)fail('LIFECYCLE_TRANSITION_REFUSED');
    const latest=async binding=>{const runs=(await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE',[binding.tenantId,binding.conversationId])).rows.map(rowRun).sort((a,z)=>a.projection.binding.writerFence-z.projection.binding.writerFence);check();if(!runs.length||!same(runs.at(-1).projection.binding,binding)||runs.some((r,i)=>i&&r.projection.binding.writerFence===runs[i-1].projection.binding.writerFence))fail('LIFECYCLE_TRANSITION_REFUSED');};
    await latest(t);if(p.input.intent==='fork')await latest(b);
    for(const binding of new Map([b,t].map(binding=>[binding.conversationId,binding])).values()){
@@ -118,5 +120,17 @@ export function createLifecycleJournal({tx,rowRun,cancelAppend,transitionAuthori
   });
  }
  const readTransition=(value,check)=>transitionFacts(value,check),finishTransition=(value,check)=>transitionFacts(value,check,true);
- return Object.freeze({begin,change,get,controls,claim,checkpoint,readCheckpoint,execution,continuation,readTransition,finishTransition,requireTransitionAuthority:()=>requireTransitionAuthority(transitionAuthority),failUncheckpointedHold,cancel:cancelAppend});
+ /** Cleanup-only readback of this request's terminal fence. An absent event may coincide with another terminal writer, but does
+  * not prove that this request's cancelled event committed. The caller supplies binding/scopes verified before disconnection. */
+ async function readStopFence(value,check){const {binding:b,scopes,eventId}=own(value,['binding','scopes','eventId']);validateShape('RunBinding',b);uuid(eventId);
+  return tx(b,check,async c=>{
+   const r=await verifyRun(c,b,scopes);check();
+   const rows=(await c.query('SELECT * FROM meri_conversations.events WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND event_id=$4',[b.tenantId,b.conversationId,b.runId,eventId])).rows;check();
+   if(rows.length>1)fail('STORE_CORRUPT');const row=rows[0];
+   if(row){const e=row.event;validateShape('UIEvent',e);
+    if(row.event_id!==eventId||e.eventId!==eventId||hash(e)!==row.event_sha256||Number(row.sequence)!==Number(r.last_sequence)||e.sequence!==Number(row.sequence)||!same(e.binding,b)||!same(e.scopes,scopes)||e.type!=='run.status'||e.data.state!=='cancelled'||e.data.reasonCode!=='USER_CANCELLED'||r.projection.state!=='cancelled')fail('STORE_CORRUPT');
+   }
+   return {state:r.projection.state,cancelCommitted:!!row};
+  });}
+ return Object.freeze({begin,change,get,controls,claim,checkpoint,readCheckpoint,execution,continuation,readTransition,finishTransition,readStopFence,requireTransitionAuthority:()=>requireTransitionAuthority(transitionAuthority),failUncheckpointedHold,cancel:cancelAppend});
 }
