@@ -3,6 +3,8 @@
 Branch `fable/meri-integration-20261018`, draft PR to `main`. Owner: Fable (implementation and deployment). Review: dot, read-only, via PR #121.
 Started 2026-10-18 03:52 UTC on Neo's instruction to stop the preview first-chat loop and consolidate everything already built (PR #121 comment 6245271467).
 
+**Plans and precedence** (full reconciliation and the three-repo checklist: `PLAN-RECONCILIATION-20261018.md`): later owner decisions (D015, D016, D016-A; Neo 18 Oct 03:38 and 07:51 UTC) > the remaining plan `capiro-backend@5f719149 docs/deployment/CAPIRO-REMAINING-DEPLOYMENT-PLAN-20261017.md` (17 Oct, current cross-repo scope) > the R2 baseline `docs/plans/MERI-DEPLOYMENT.md@e14564e6` (10 Oct). Conflicts are listed with exact passages in that file (§4); none is resolved by dropping a requirement.
+
 Status words: **received** = merged here with provenance; **mounted** = reachable from the real startup composition; **held** = present but default-off or blocked on a named decision; **open** = known defect.
 
 ## 1. Merged inputs
