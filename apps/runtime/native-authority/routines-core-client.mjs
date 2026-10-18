@@ -24,7 +24,8 @@ import {createOperationLifetime} from '../../../packages/runtime/operation-lifet
 import {readJsonResponse,responseBody,cancelBody} from '../../gateway/sources/json-response.mjs';
 import {SCHEDULED_MERI_INBOX_DESTINATION} from '../../control/schedules/scheduled-conversation-currentness.mjs';
 
-export const ROUTINES_CORE_ROUTES=Object.freeze({policy:'/api/clio/routines/policy/check',cancellationProof:'/api/clio/routines/cancellation-proof'});
+export const ROUTINES_CORE_ROUTES=Object.freeze({policy:'/api/clio/routines/policy/check',cancellationProof:'/api/clio/routines/cancellation-proof',unattendedGrant:'/api/clio/routines/unattended-grant'});
+const FIRE_PHASES=['before_admission','before_start','before_stop'],HEX64=/^[a-f0-9]{64}$/u;
 /** Core's receipt ceiling: Meri's own request bound (`maxRequestMs` ≤ 30000 across the routines owners). */
 export const ROUTINE_RECEIPT_MAX_MS=30000;
 const RECEIPT_KEYS=['authorized','selectionSha256','binding','scopes','selectedClientId','destinationResolution','limits','checkedAtMs','expiresAtMs'];
@@ -55,11 +56,14 @@ export function createRoutinesServiceSecret(configuration){
 export function createRoutinesCoreClient(configuration){
  let c,origin,nativeCredentialFor;
  try{
-  c=own(configuration,['origin','nativeCredentials','getServiceSecret','now'],['fetchImpl','maxRequestMs']);origin=retainedOrigin(c.origin);
+  c=own(configuration,['origin','getServiceSecret','now'],['nativeCredentials','fetchImpl','maxRequestMs']);origin=retainedOrigin(c.origin);
   // The relay port (read-credential-relay.mjs) or the action-session owner itself: only its own `nativeCredentialFor` is borrowed.
-  if(!c.nativeCredentials||typeof c.nativeCredentials!=='object'||types.isProxy(c.nativeCredentials))throw Error();
-  const method=Object.getOwnPropertyDescriptor(c.nativeCredentials,'nativeCredentialFor');if(!method||!Object.hasOwn(method,'value'))throw Error();nativeCredentialFor=method.value;
-  for(const fn of [nativeCredentialFor,c.getServiceSecret,c.now,c.fetchImpl??globalThis.fetch])if(typeof fn!=='function'||types.isProxy(fn))throw Error();
+  // Absent (the schedule worker has no sessions), the attended wires refuse and only the service-identity wire C is reachable.
+  if(c.nativeCredentials!==undefined){
+   if(!c.nativeCredentials||typeof c.nativeCredentials!=='object'||types.isProxy(c.nativeCredentials))throw Error();
+   const method=Object.getOwnPropertyDescriptor(c.nativeCredentials,'nativeCredentialFor');if(!method||!Object.hasOwn(method,'value'))throw Error();nativeCredentialFor=method.value;
+  }
+  for(const fn of [nativeCredentialFor??(()=>{}),c.getServiceSecret,c.now,c.fetchImpl??globalThis.fetch])if(typeof fn!=='function'||types.isProxy(fn))throw Error();
   if(c.maxRequestMs!==undefined&&(!Number.isSafeInteger(c.maxRequestMs)||c.maxRequestMs<1||c.maxRequestMs>30000))throw Error();
  }catch{throw Object.assign(Error('ROUTINES_CONFIGURATION'),{code:'ROUTINES_CONFIGURATION'});}
  const now=c.now,fetchImpl=c.fetchImpl??globalThis.fetch,maxRequestMs=c.maxRequestMs??10000;
@@ -69,6 +73,7 @@ export function createRoutinesCoreClient(configuration){
  }
  /** One live-session lookup: the exact run binding and selected client, a well-formed token, unexpired. */
  function bearer(selected,signal){
+  if(nativeCredentialFor===undefined)refuse('SESSION_UNAVAILABLE');
   let issued;try{issued=data(own(Reflect.apply(nativeCredentialFor,c.nativeCredentials,[{binding:selected.binding,selectedClientId:selected.selectedClientId,...(signal===undefined?{}:{signal})}]),['credential','expiresAtMs']));}catch{refuse('SESSION_UNAVAILABLE');}
   if(typeof issued.credential!=='string'||!TOKEN.test(issued.credential)||!Number.isSafeInteger(issued.expiresAtMs)||issued.expiresAtMs<=now())refuse('SESSION_UNAVAILABLE');
   return issued;
@@ -78,20 +83,21 @@ export function createRoutinesCoreClient(configuration){
   try{
    const began=now();if(!Number.isSafeInteger(began))refuse('UNAVAILABLE');
    life=createOperationLifetime({now,signal,deadlineMs:Math.min(deadlineMs??Infinity,began+maxRequestMs),errorFactory:code=>fault(code)});
-   const first=bearer(selected,signal);life.limitDeadline(first.expiresAtMs);
+   // `selected === null` is the service-identity-only call (wire C): no user bearer exists for an unattended occurrence.
+   const first=selected===null?null:bearer(selected,signal);if(first)life.limitDeadline(first.expiresAtMs);
    const secret=await life.run(()=>c.getServiceSecret());
-   if(typeof secret!=='string'||!TOKEN.test(secret)||secret===first.credential)refuse('UNAVAILABLE');
+   if(typeof secret!=='string'||!TOKEN.test(secret)||secret===first?.credential)refuse('UNAVAILABLE');
    // The secret read is an await: the same session must still be live (not expired, revoked or replaced).
-   if(bearer(selected,signal).credential!==first.credential)refuse('SESSION_UNAVAILABLE');
+   if(first&&bearer(selected,signal).credential!==first.credential)refuse('SESSION_UNAVAILABLE');
    const started=now();
    acquired=await life.run(s=>{const pending=Promise.resolve(fetchImpl(origin+route,{method:'POST',redirect:'error',credentials:'omit',cache:'no-store',signal:s,
-    headers:{authorization:'Bearer '+first.credential,'x-internal-service-secret':secret,'content-type':'application/json',accept:'application/json','accept-encoding':'identity'},body:JSON.stringify(body)}));
+    headers:{...(first?{authorization:'Bearer '+first.credential}:{}),'x-internal-service-secret':secret,'content-type':'application/json',accept:'application/json','accept-encoding':'identity'},body:JSON.stringify(body)}));
     pending.then(r=>{if(life.signal.aborted)try{cancelBody(responseBody(r));}catch{}},()=>{});return pending;});
    if(!(acquired instanceof Response)||types.isProxy(acquired))refuse('INVALID_RESULT');
    if(acquired.status!==200)refuse([400,401,403,409].includes(acquired.status)?'REFUSED':'UNAVAILABLE');
    const value=await readJsonResponse(acquired,{lifetime:life,maxResponseBytes});
-   const last=bearer(selected,signal);if(last.credential!==first.credential)refuse('SESSION_UNAVAILABLE');life.check();
-   return {value,started,sessionExpiresAtMs:Math.min(first.expiresAtMs,last.expiresAtMs)};
+   const last=first?bearer(selected,signal):null;if(first&&last.credential!==first.credential)refuse('SESSION_UNAVAILABLE');life.check();
+   return {value,started,sessionExpiresAtMs:first?Math.min(first.expiresAtMs,last.expiresAtMs):Infinity};
   }catch(error){throw owned(error)?error:fault(['DEADLINE','CANCELLED'].includes(error?.code)?error.code:'UNAVAILABLE');}
   finally{try{if(acquired)cancelBody(responseBody(acquired));}catch{}life?.close();}
  }
@@ -136,5 +142,19 @@ export function createRoutinesCoreClient(configuration){
   if(typeof r.proof!=='string'||r.proof.length>8192||!JWS.test(r.proof)||typeof r.jti!=='string'||!UUID_V4.test(r.jti)||!Number.isSafeInteger(r.expiresAtMs))refuse('INVALID_RESULT');
   return data({proof:r.proof,jti:r.jti});
  }
- return Object.freeze({origin,policyCheck,cancellationProof});
+ /** Wire C (unattended, D016-A item 5; Core route proposed, absent at 32cf3ca7 → UNAVAILABLE). Service identity only: Core answers
+  * from the owner's stored signed-in consent and current membership, never from a user bearer. Returns `{grant, jti, requestedAtMs}`;
+  * the grant is verified and bound by routines-firing-authority.mjs. 403 (no consent, paused/deleted, membership or scope change)
+  * is REFUSED; a missing route, 5xx or malformed answer is UNAVAILABLE. */
+ async function unattendedGrant(value){
+  let v;try{const {signal,...rest}=own(value,['tenantId','ownerActorId','scheduleId','generation','intentSha256','projectionSha256','occurrenceKey','phase','deadlineMs'],['signal']);nativeSignal(signal);v={...data(rest),signal};}catch{refuse('REQUEST');}
+  if(typeof v.tenantId!=='string'||!v.tenantId||typeof v.ownerActorId!=='string'||!v.ownerActorId||!UUID.test(v.scheduleId)||!Number.isSafeInteger(v.generation)||v.generation<1||
+   [v.intentSha256,v.projectionSha256,v.occurrenceKey].some(d=>typeof d!=='string'||!HEX64.test(d))||!FIRE_PHASES.includes(v.phase)||!Number.isSafeInteger(v.deadlineMs))refuse('REQUEST');
+  const {signal,deadlineMs,...body}=v;
+  const answer=await post(ROUTINES_CORE_ROUTES.unattendedGrant,{selected:null,body,signal,deadlineMs,maxResponseBytes:16384});
+  let r;try{r=data(own(answer.value,['grant','jti','expiresAtMs']));}catch{refuse('INVALID_RESULT');}
+  if(typeof r.grant!=='string'||r.grant.length>8192||!JWS.test(r.grant)||typeof r.jti!=='string'||!UUID_V4.test(r.jti)||!Number.isSafeInteger(r.expiresAtMs))refuse('INVALID_RESULT');
+  return data({grant:r.grant,jti:r.jti,requestedAtMs:answer.started});
+ }
+ return Object.freeze({origin,attended:nativeCredentialFor!==undefined,policyCheck,cancellationProof,unattendedGrant});
 }
