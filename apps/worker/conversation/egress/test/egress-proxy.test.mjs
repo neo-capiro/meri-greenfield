@@ -130,6 +130,18 @@ test('revocation refuses every later admission and destroys tunnels that are alr
  expiring.revoke();assert.deepEqual(await expiring.admit({host:'records.example',port:443}),{ok:false,code:'BASH_EGRESS_REVOKED'});
 });
 
+test('revocation at an admitted decision never dials an HTTP or CONNECT upstream',async t=>{
+ for(const kind of ['http','connect']){
+  let proxy,dials=0;
+  const control={async admitProxyRequest(){return {ok:true,connect:{address:'93.184.215.14',port:80}};},revoke(){return {revoked:true};}};
+  proxy=await startEgressProxy({control,dial:()=>{dials++;return new Socket();},onDecision:decision=>{if(decision.ok)proxy.revoke();}});
+  t.after(()=>proxy.close());
+  if(kind==='http')await get(proxy,'http://records.example/').catch(()=>{});
+  else await tunnel(proxy,'records.example:443').catch(()=>{});
+  assert.equal(dials,0,`${kind} must not connect after revocation`);
+ }
+});
+
 test('the browser run control is enforced by the same proxy: allowlisted origins tunnel, unlisted and non-public ones do not',async t=>{
  const policy=validateBrowserPolicy(enabledPolicy({allowedOrigins:['https://records.example']}));
  const grant=createEgressGrant({binding,policy,expiresAtMs:clock()+60000});
