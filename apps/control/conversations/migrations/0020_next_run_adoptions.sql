@@ -36,9 +36,12 @@ DO $$ BEGIN
   RAISE EXCEPTION 'NEXT_RUN_ADOPTION_DEPENDENCY_MISSING';
  END IF;
 END $$;
--- Drain in-flight pre-trigger INSERTs. These locks are held through trigger
--- registration, so no writer can commit in the unchecked installation interval.
-LOCK TABLE meri_conversations.next_runs, meri_conversations.runs,
+-- Drain in-flight pre-trigger INSERTs. These locks are held through index
+-- builds and trigger registration, so no writer can commit in the unchecked
+-- installation interval. Nonconcurrent index builds are deliberate: 0020 is
+-- one atomic installation and needs a controlled write pause/lock-timeout plan.
+LOCK TABLE meri_conversations.next_runs, meri_conversations.initial_run_bindings,
+ meri_conversations.runs,
  meri_conversations.run_issuances, meri_conversations.model_run_issuances,
  meri_conversations.native_allocations, meri_conversations.native_executions,
  meri_conversations.native_restorations,
@@ -47,6 +50,29 @@ LOCK TABLE meri_conversations.next_runs, meri_conversations.runs,
  meri_product_budget.tool_grant_bindings,
  meri_product_budget.requests, meri_product_budget.tool_reservations,
  meri_product_budget.tool_invocations IN SHARE ROW EXCLUSIVE MODE;
+
+-- Product budget 0001 identifies a run by UUID alone. Its first-write guard
+-- resolves that UUID against all three conversation locators; leading tenant
+-- indexes cannot bound these lookups. The INCLUDE fields avoid a second heap
+-- read when visibility permits without imposing a new global-UUID uniqueness
+-- rule on historical rows.
+CREATE INDEX next_run_adoption_next_target_uuid_idx
+ ON meri_conversations.next_runs (target_run_id) INCLUDE (tenant_id,conversation_id);
+CREATE INDEX next_run_adoption_run_uuid_idx
+ ON meri_conversations.runs (run_id) INCLUDE (tenant_id,conversation_id);
+CREATE INDEX next_run_adoption_initial_uuid_idx
+ ON meri_conversations.initial_run_bindings (run_id) INCLUDE (tenant_id,conversation_id);
+-- The adoption absence and source-grant census use run_id alone. Budget 0001
+-- already has run_id PRIMARY KEY on runs/tool_run_allocations and a leading
+-- run_id UNIQUE index on tool_invocations(run_id,producer_key_sha256).
+CREATE INDEX next_run_adoption_tenant_reservation_run_idx
+ ON meri_product_budget.tenant_run_reservations (run_id);
+CREATE INDEX next_run_adoption_grant_run_idx ON meri_product_budget.grants (run_id);
+CREATE INDEX next_run_adoption_tool_grant_binding_run_idx
+ ON meri_product_budget.tool_grant_bindings (run_id);
+CREATE INDEX next_run_adoption_request_run_idx ON meri_product_budget.requests (run_id);
+CREATE INDEX next_run_adoption_tool_reservation_run_idx
+ ON meri_product_budget.tool_reservations (run_id);
 
 CREATE TABLE meri_conversations.next_run_adoptions (
  tenant_id text NOT NULL, conversation_id uuid NOT NULL, target_run_id uuid NOT NULL,

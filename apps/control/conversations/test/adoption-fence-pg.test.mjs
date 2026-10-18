@@ -13,6 +13,11 @@ const versions={imageDigest:`sha256:${'a'.repeat(64)}`,sdk:'0.3.295',cli:'2.1.29
 const newVersions={...versions,imageDigest:`sha256:${'c'.repeat(64)}`};
 
 test('0020 source names every independent first-write fence and rejects missing budget dependencies',()=>{
+ for(const [table,column] of [['next_runs','target_run_id'],['runs','run_id'],['initial_run_bindings','run_id']])
+  assert.match(sql,new RegExp(`CREATE INDEX next_run_adoption_[a-z_]+_uuid_idx\\s+ON meri_conversations\\.${table} \\(${column}\\) INCLUDE \\(tenant_id,conversation_id\\)`));
+ for(const table of ['tenant_run_reservations','grants','tool_grant_bindings','requests','tool_reservations'])
+  assert.match(sql,new RegExp(`CREATE INDEX next_run_adoption_[a-z_]+_run_idx\\s+ON meri_product_budget\\.${table} \\(run_id\\)`));
+ assert.match(sql,/tool_invocations\(run_id,producer_key_sha256\)/);
  for(const table of ['runs','run_issuances','model_run_issuances','native_allocations','native_executions','native_restorations'])
   assert.match(sql,new RegExp(`CREATE TRIGGER adoption_[a-z_]+ BEFORE INSERT OR UPDATE OR DELETE ON meri_conversations\\.${table}\\b`));
  for(const table of ['runs','tenant_run_reservations','tool_run_allocations','grants','requests','tool_reservations','tool_invocations','tool_grant_bindings'])
