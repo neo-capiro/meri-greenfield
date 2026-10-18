@@ -1,5 +1,5 @@
 {
-  "packageVersion": "0.1.9",
+  "packageVersion": "0.1.10",
   "initialInputVersion": "1.0.0",
   "schemaId": "urn:meri:conversation-initial-input:1.0.0",
   "sources": [
@@ -35,8 +35,8 @@
     },
     {
       "path": "conversation-initial-input/protocol.mjs",
-      "sha256": "ff8dd2a8295688cf60c3e33ffd453d7ef877968227258002b401059057ca60ba",
-      "bytes": 2308
+      "sha256": "54cce5a649a63f4b41a6860c00c4894551f01956ec635329a72c494635e36f2a",
+      "bytes": 2309
     },
     {
       "path": "conversation-initial-input/receive.mjs",

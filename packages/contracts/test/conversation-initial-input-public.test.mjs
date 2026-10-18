@@ -14,9 +14,9 @@ const NOW=Date.now(),now=()=>NOW;
 const allocated=(admitted,overrides={})=>({allocation:{binding:structuredClone(binding),scopes:structuredClone(scopes),versions:structuredClone(versions),selectedClientId:id(5),requestId:admitted.requestId,inputSha256:sha(canonicalize(admitted)),requestSha256:'c'.repeat(64),allocatedAtMs:NOW-1000,expiresAtMs:NOW+60000,...overrides},state:'RESERVED',created:true});
 
 test('initial-input metadata preserves the allocate route, bounded limits and closed error outcomes',()=>{
- assert.equal(metadata.packageVersion,'0.1.9');assert.equal(metadata.initialInputVersion,'1.0.0');assert.equal(metadata.schemaId,'urn:meri:conversation-initial-input:1.0.0');
+ assert.equal(metadata.packageVersion,'0.1.10');assert.equal(metadata.initialInputVersion,'1.0.0');assert.equal(metadata.schemaId,'urn:meri:conversation-initial-input:1.0.0');
  assert.equal(metadata.routes.allocate.path,'/api/conversations/input/allocate');assert.equal(metadata.routes.allocate.method,'POST');assert.equal(conversationInitialInputPath,metadata.routes.allocate.path);
- assert.deepEqual(metadata.limits,{requestBytes:131072,responseBytes:131072,maxRequestMs:12000});assert.equal(metadata.bridge.responseBytes,conversationInputMetadata.limits.responseBytes);
+ assert.deepEqual(metadata.limits,{requestBytes:131072,responseBytes:131072,maxRequestMs:25000});assert.equal(metadata.bridge.responseBytes,conversationInputMetadata.limits.responseBytes);
  assert.deepEqual(metadata.authentication,conversationInputMetadata.authentication);assert.equal(metadata.authentication.validationGrantsAuthority,false);
  assert.deepEqual(metadata.errorOutcomes,['NOT_DISPATCHED','UNKNOWN']);assert.equal(metadata.errorOutcomeByCode.SESSION_REFUSED,'NOT_DISPATCHED');assert.equal(metadata.errorOutcomeByCode.DEADLINE,'UNKNOWN');
  for(const [code,outcome] of Object.entries(metadata.errorOutcomeByCode))assert.ok(Object.hasOwn(metadata.errorStatuses,code),code),assert.ok(metadata.errorOutcomes.includes(outcome),code);
@@ -49,7 +49,7 @@ test('admitted input after allocation must carry the allocation proof and the sa
 });
 test('initial-input generation records exact canonical provenance and one shared browser import',async()=>{
  const source=await readFile(new URL('../dist/conversation-initial-input.mjs',import.meta.url),'utf8');assert.match(source,/from ["']\.\/conversation-input\.mjs["']/u);assert.doesNotMatch(source,/from ["']node:|require\(["']node:/u);
- const evidence=JSON.parse(await readFile(new URL('../dist/conversation-initial-input.metadata.json',import.meta.url),'utf8'));assert.equal(evidence.packageVersion,'0.1.9');assert.equal(evidence.browserImports.length,1);assert.equal(evidence.browserImports[0].path,'./conversation-input.mjs');
+ const evidence=JSON.parse(await readFile(new URL('../dist/conversation-initial-input.metadata.json',import.meta.url),'utf8'));assert.equal(evidence.packageVersion,'0.1.10');assert.equal(evidence.browserImports.length,1);assert.equal(evidence.browserImports[0].path,'./conversation-input.mjs');
  for(const row of evidence.sources){const raw=await readFile(new URL('../'+row.path,import.meta.url));assert.equal(createHash('sha256').update(raw).digest('hex'),row.sha256,row.path);}
  assert.equal(evidence.browserImports[0].sha256,evidence.sources.find(row=>row.path==='dist/conversation-input.mjs').sha256);
 });
@@ -58,7 +58,7 @@ test('offline public package resolves the allocation entrypoint and its schema o
   const pkg=join(root,'node_modules/@capiro/meri-contracts');await mkdir(pkg,{recursive:true});for(const path of ['package.json','dist'])await cp(new URL('../'+path,import.meta.url),join(pkg,path),{recursive:true});
   const resolver=createRequire(pathToFileURL(join(root,'consumer.cjs'))),installed=await import(pathToFileURL(resolver.resolve('@capiro/meri-contracts/conversation-initial-input')));
   const admitted=installed.receiveConversationInitialInputRequest(bytes(input)),body=allocated(admitted);assert.deepEqual(await installed.receiveConversationInitialInputResponse(200,bytes(body),admitted,context),body);
-  assert.equal(installed.conversationInitialInputMetadata.packageVersion,'0.1.9');assert.equal(resolver.resolve('@capiro/meri-contracts/conversation-initial-input/schema'),join(pkg,'dist','conversation-initial-input.schema.json'));
+  assert.equal(installed.conversationInitialInputMetadata.packageVersion,'0.1.10');assert.equal(resolver.resolve('@capiro/meri-contracts/conversation-initial-input/schema'),join(pkg,'dist','conversation-initial-input.schema.json'));
   assert.throws(()=>resolver.resolve('@capiro/meri-contracts/conversation-initial-input/semantics.mjs'));assert.throws(()=>resolver.resolve('@capiro/meri-contracts/dist/conversation-initial-input.mjs'));
  }finally{if(!resolve(root).startsWith(resolve(tmpdir())+sep))throw Error('Unexpected cleanup target');await rm(root,{recursive:true,force:true});}
 });

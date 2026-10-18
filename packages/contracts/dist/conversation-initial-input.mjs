@@ -1172,12 +1172,12 @@ var initialInputErrorStatuses = freeze({
 var initialInputUnknownCodes = Object.freeze(["DEADLINE", "CANCELLED", "INITIAL_INPUT_UNAVAILABLE", "INITIAL_INPUT_CORRUPT", "INITIAL_INPUT_REQUIRED"]);
 var initialInputErrorOutcomes = freeze(Object.fromEntries(Object.keys(initialInputErrorStatuses).map((code) => [code, initialInputUnknownCodes.includes(code) ? "UNKNOWN" : "NOT_DISPATCHED"])));
 var conversationInitialInputMetadata = freeze({
-  packageVersion: "0.1.9",
+  packageVersion: "0.1.10",
   initialInputVersion: conversationInitialInputVersion,
   schemaId: "urn:meri:conversation-initial-input:1.0.0",
   routes: { allocate: { method: "POST", path: conversationInitialInputPath, response: "json" } },
   authentication: { ...conversationInputMetadata.authentication },
-  limits: { requestBytes: 131072, responseBytes: 131072, maxRequestMs: 12e3 },
+  limits: { requestBytes: 131072, responseBytes: 131072, maxRequestMs: 25e3 },
   bridge: { owner: "accepted conversation-input receiver", responseBytes: conversationInputMetadata.limits.responseBytes, viewOwner: "conversationInputView" },
   recovery: "only the exact retained immutable request with its genuine allocation proof; digests, UNKNOWN and absence do not create input authority",
   errorOutcomes: ["NOT_DISPATCHED", "UNKNOWN"],
