@@ -15,8 +15,10 @@ import httpx
 from apps.proxy.product.test.test_host_observation import (
     BINDING, CLIENT_ID, GRANT, Inner, MESSAGE, NATIVE, RAW, RUN, URL,
     _request_lifetime, fixture, LifetimeLimits, PendingWork,
-    RequestLifetime, PeerLease,
+    RequestLifetime, PeerLease, streamed_message,
 )
+from apps.proxy.product.upstream_callback import create_product_litellm_invoker
+from apps.proxy.product.response_settlement import SettlementCommitUncertain
 from apps.proxy.qualification.runtime.server import TrustedRequest
 
 
@@ -27,6 +29,11 @@ class _Handler:
 
     async def close(self):
         await self.client.aclose()
+
+
+class _DeploymentHook:
+    async def async_pre_call_deployment_hook(self, kwargs, call_type):
+        return kwargs
 
 
 names = ["litellm", "litellm.llms", "litellm.llms.custom_httpx",
@@ -145,6 +152,40 @@ class HostCompositionTests(unittest.IsolatedAsyncioTestCase):
             "a" * 64, object(), lambda: self.inner,
             bridge_factory or make_bridge, self.current)
 
+    async def invoke_native_stream(self, wire, *, bridge_factory=None):
+        self.inner = Inner([wire], content_type="application/vnd.amazon.eventstream")
+        with patch.object(PRODUCT, "AwsNativeCounter", return_value=self.counter):
+            handler = await PRODUCT.create_guarded_product_handler(
+                self.life, self.session(bridge_factory=bridge_factory))
+        module = types.SimpleNamespace(callbacks=[])
+        sent = []
+        self.native_sent = sent
+
+        async def collect(event):
+            sent.append(event)
+
+        async def native(_scope, _receive, send):
+            routed = await module.callbacks[0].async_pre_call_deployment_hook(
+                {"model": "meri-sonnet-qualification"}, "anthropic_messages")
+            self.assertIs(routed["client"], handler)
+            async with handler.client.stream(
+                    "POST", URL.replace("/invoke", "/invoke-with-response-stream"),
+                    content=NATIVE, headers={"content-type": "application/json"}) as response:
+                body = b"".join([part async for part in response.aiter_raw()])
+            await send({"type": "http.response.start", "status": 200, "headers": []})
+            await send({"type": "http.response.body", "body": body, "more_body": False})
+
+        invoke = create_product_litellm_invoker(
+            native_app=native, litellm_module=module, callback_base=_DeploymentHook)
+        scope = {"type": "http", "scheme": "https", "method": "POST",
+                 "path": "/v1/messages", "raw_path": b"/v1/messages",
+                 "query_string": b"beta=true"}
+        try:
+            await invoke(handler, scope, lambda: None, collect)
+        finally:
+            await handler.close()
+        return sent
+
     async def test_single_final_native_send_and_complete_eof_settlement(self):
         with patch.object(PRODUCT, "AwsNativeCounter", return_value=self.counter):
             handler = await PRODUCT.create_guarded_product_handler(self.life, self.session())
@@ -162,6 +203,78 @@ class HostCompositionTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(self.inner.calls, 1)
         finally:
             await handler.close()
+
+    async def test_native_callback_final_body_requires_valid_bedrock_metrics_settlement(self):
+        valid = streamed_message()
+        sent = await self.invoke_native_stream(valid)
+        self.assertEqual([event["type"] for event in sent],
+                         ["http.response.start", "http.response.body"])
+        self.assertEqual(sent[-1]["body"], valid)
+        self.assertEqual((self.counter.calls, self.inner.calls,
+                          self.bridge.reservations, self.bridge.settlements), (1, 1, 1, 1))
+
+    async def test_native_callback_suppresses_final_body_for_invalid_terminal_metrics(self):
+        cases = (
+            ("malformed", {"type": "message_stop", "amazon-bedrock-invocationMetrics": []}),
+            ("missing", {"type": "message_stop"}),
+            ("count-mismatch", {"type": "message_stop", "amazon-bedrock-invocationMetrics": {
+                "inputTokenCount": 13, "outputTokenCount": 3,
+                "invocationLatency": 9240, "firstByteLatency": 500}}),
+        )
+        for label, terminal in cases:
+            with self.subTest(label=label):
+                with self.assertRaisesRegex(Exception, "PRODUCT_NATIVE_LITELLM_REFUSED"):
+                    await self.invoke_native_stream(streamed_message(terminal))
+                self.assertEqual((self.counter.calls, self.inner.calls,
+                                  self.bridge.reservations, self.bridge.settlements),
+                                 (1, 1, 1, 0))
+                self.assertEqual([event["type"] for event in self.native_sent],
+                                 ["http.response.start"])
+                self.counter = _Counter()
+        with self.assertRaisesRegex(Exception, "PRODUCT_NATIVE_LITELLM_REFUSED"):
+            await self.invoke_native_stream(streamed_message()[:-1])
+        self.assertEqual((self.counter.calls, self.inner.calls,
+                          self.bridge.reservations, self.bridge.settlements), (1, 1, 1, 0))
+        self.assertEqual([event["type"] for event in self.native_sent],
+                         ["http.response.start"])
+
+    async def test_native_callback_lost_settlement_ack_uses_one_committed_readback(self):
+        class LostAckBridge(_Bridge):
+            def __init__(self, capture, state):
+                super().__init__(capture)
+                self.state = state
+                self.reads = 0
+
+            async def settle_complete(self, request_id, claim):
+                await super().settle_complete(request_id, claim)
+                raise SettlementCommitUncertain("synthetic lost acknowledgement")
+
+            async def read_outcome(self, request_id):
+                self.reads += 1
+                return {"requestId": request_id, "state": self.state,
+                        "actualMicroUSD": "42" if self.state == "SETTLED" else None}
+
+        for state in ("SETTLED", "UNKNOWN"):
+            with self.subTest(readback=state):
+                def make_bridge(capture):
+                    self.bridge = LostAckBridge(capture, state)
+                    return self.bridge
+
+                if state == "SETTLED":
+                    sent = await self.invoke_native_stream(
+                        streamed_message(), bridge_factory=make_bridge)
+                    self.assertEqual([event["type"] for event in sent],
+                                     ["http.response.start", "http.response.body"])
+                else:
+                    with self.assertRaisesRegex(SettlementCommitUncertain,
+                                                "synthetic lost acknowledgement"):
+                        await self.invoke_native_stream(
+                            streamed_message(), bridge_factory=make_bridge)
+                    self.assertEqual(self.native_sent, [])
+                self.assertEqual((self.counter.calls, self.inner.calls,
+                                  self.bridge.reservations, self.bridge.settlements,
+                                  self.bridge.reads), (1, 1, 1, 1, 1))
+                self.counter = _Counter()
 
     async def test_missing_owner_capture_refuses_before_count_or_provider(self):
         with patch.object(PRODUCT, "AwsNativeCounter", return_value=self.counter):
