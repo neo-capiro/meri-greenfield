@@ -42,7 +42,9 @@ def events():
             {"type": "content_block_stop", "index": 0},
             {"type": "message_delta", "delta": {"stop_reason": "end_turn", "stop_sequence": None},
              "usage": {"output_tokens": 3}},
-            {"type": "message_stop"}]
+            {"type": "message_stop", "amazon-bedrock-invocationMetrics": {
+                "inputTokenCount": 7, "outputTokenCount": 3,
+                "invocationLatency": 9240, "firstByteLatency": 500}}]
 
 
 def frame(event):
@@ -155,8 +157,43 @@ class SettlementTests(unittest.IsolatedAsyncioTestCase):
         payload = b"".join(frame(event) for event in events())
         # Split inside preludes, headers and JSON chunks, not only at frames.
         parts = [payload[i:i + 11] for i in range(0, len(payload), 11)]
-        _, transport = self.setup_transport(parts, headers={"content-type": "application/vnd.amazon.eventstream"})
+        inner, transport = self.setup_transport(parts, headers={"content-type": "application/vnd.amazon.eventstream"})
         self.assertEqual((await self.call(transport)).content, payload)
+        self.assertEqual(inner.sends, 1)
+        self.assertEqual(len(self.calls), 1)
+        self.assertEqual((self.calls[0][1].input_tokens, self.calls[0][1].output_tokens), (7, 3))
+
+    async def test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown(self):
+        for field, value in (("inputTokenCount", 8), ("outputTokenCount", 2),
+                             ("invocationLatency", True), ("cacheReadInputTokenCount", 1),
+                             ("cacheWriteInputTokenCount", 1), ("unexpectedCost", 0)):
+            with self.subTest(field=field):
+                invalid = events()
+                invalid[-1]["amazon-bedrock-invocationMetrics"][field] = value
+                payload = b"".join(frame(event) for event in invalid)
+                inner, transport = self.setup_transport([payload], headers={
+                    "content-type": "application/vnd.amazon.eventstream"})
+                await self.call(transport)
+                self.assertEqual(inner.sends, 1)
+                self.assertEqual(self.calls, [])
+        missing = events()
+        missing[-1] = {"type": "message_stop"}
+        del missing[-2]["usage"]
+        inner, transport = self.setup_transport(
+            [b"".join(frame(event) for event in missing)],
+            headers={"content-type": "application/vnd.amazon.eventstream"})
+        await self.call(transport)
+        self.assertEqual(inner.sends, 1)
+        self.assertEqual(self.calls, [])
+
+    async def test_bare_stop_with_bound_start_and_delta_usage_settles_once(self):
+        native = events()
+        native[-1] = {"type": "message_stop"}
+        payload = b"".join(frame(event) for event in native)
+        inner, transport = self.setup_transport(
+            [payload], headers={"content-type": "application/vnd.amazon.eventstream"})
+        self.assertEqual((await self.call(transport)).content, payload)
+        self.assertEqual(inner.sends, 1)
         self.assertEqual(len(self.calls), 1)
         self.assertEqual((self.calls[0][1].input_tokens, self.calls[0][1].output_tokens), (7, 3))
 
@@ -225,12 +262,18 @@ class SettlementTests(unittest.IsolatedAsyncioTestCase):
         async def read_outcome(slot):
             reads.append(slot)
             return {"requestId": slot, "state": "SETTLED", "actualMicroUSD": "42"}
-        inner, transport = self.setup_transport([raw(message())], callback=lost_ack,
-                                                 read_outcome=read_outcome)
-        self.assertEqual((await self.call(transport)).status_code, 200)
-        self.assertEqual(reads, [BINDING.request_id])
-        self.assertEqual(inner.sends, 1)
-        self.assertEqual(len(self.calls), 1)
+        for payload, content_type in ((raw(message()), "application/json"),
+                                      (b"".join(frame(event) for event in events()),
+                                       "application/vnd.amazon.eventstream")):
+            with self.subTest(content_type=content_type):
+                reads.clear()
+                inner, transport = self.setup_transport([payload], callback=lost_ack,
+                                                         read_outcome=read_outcome,
+                                                         headers={"content-type": content_type})
+                self.assertEqual((await self.call(transport)).status_code, 200)
+                self.assertEqual(reads, [BINDING.request_id])
+                self.assertEqual(inner.sends, 1)
+                self.assertEqual(len(self.calls), 1)
 
     async def test_unresolved_or_mismatched_read_outcome_preserves_failure(self):
         async def lost_ack():

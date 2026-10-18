@@ -16,6 +16,7 @@ _NAME = re.compile(r"[A-Za-z0-9_-]{1,128}\Z")
 _MODELS = frozenset({"anthropic.claude-sonnet-4-6", "claude-sonnet-4-6"})
 _STOPS = frozenset({"end_turn", "max_tokens", "tool_use", "refusal", "model_context_window_exceeded"})
 MAX_BYTES = 4 * 1024 * 1024
+MAX_SAFE_JSON_INTEGER = 9007199254740991
 
 
 @dataclass(frozen=True)
@@ -78,6 +79,29 @@ def _usage(value, binding, *, delta=False):
     if not delta and _integer(value["input_tokens"], 1, ENVELOPE_MAX_INPUT_TOKENS) != binding.counted_input_tokens:
         raise ValueError("COUNT_USAGE_MISMATCH")
     return output
+
+
+def _terminal_metrics(event, binding, output):
+    # Anthropic's bound start and cumulative delta carry the required usage.
+    # Bedrock's optional stop extension must agree whenever it is present.
+    _object(event, ("type",), ("amazon-bedrock-invocationMetrics",))
+    if "amazon-bedrock-invocationMetrics" not in event:
+        return
+    metrics = event["amazon-bedrock-invocationMetrics"]
+    _object(metrics, ("inputTokenCount", "outputTokenCount", "invocationLatency", "firstByteLatency"),
+            ("cacheReadInputTokenCount", "cacheWriteInputTokenCount"))
+    if (_integer(metrics["inputTokenCount"], 1, ENVELOPE_MAX_INPUT_TOKENS) != binding.counted_input_tokens
+            or _integer(metrics["outputTokenCount"], 0, binding.max_output_tokens) != output):
+        raise ValueError("TERMINAL_USAGE_MISMATCH")
+    latency = _integer(metrics["invocationLatency"], 0, MAX_SAFE_JSON_INTEGER)
+    first_byte = _integer(metrics["firstByteLatency"], 0, MAX_SAFE_JSON_INTEGER)
+    if first_byte > latency:
+        raise ValueError("TERMINAL_LATENCY_ORDER")
+    # Cache prices are a separate budget dimension; this source can only
+    # complete when the observed native request did not use a cache tier.
+    for name in ("cacheReadInputTokenCount", "cacheWriteInputTokenCount"):
+        if name in metrics:
+            _integer(metrics[name], 0, 0)
 
 
 def _message(value, binding, *, start=False):
@@ -190,7 +214,7 @@ class NativeStreamUsage:
             if output<self.output:raise ValueError("USAGE_REGRESSION")
             self.output=output;self.phase="DELTA";return
         if kind=="message_stop" and self.phase=="DELTA":
-            _object(event,("type",));self.phase="STOP";return
+            _terminal_metrics(event,self.binding,self.output);self.phase="STOP";return
         raise ValueError("UNSUPPORTED_OR_OUT_OF_ORDER_EVENT")
 
     def finish(self, *, transport_complete, cancelled=False):

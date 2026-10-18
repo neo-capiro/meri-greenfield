@@ -126,9 +126,13 @@ def stream_frame(event):
     return before_crc + struct.pack(">I", zlib.crc32(before_crc))
 
 
-def streamed_message():
+def streamed_message(terminal=None, *, delta_usage=True):
     start = json.loads(MESSAGE)
     start.update(content=[], stop_reason=None, usage={"input_tokens": 12, "output_tokens": 0})
+    if terminal is None:
+        terminal = {"type": "message_stop", "amazon-bedrock-invocationMetrics": {
+            "inputTokenCount": 12, "outputTokenCount": 3,
+            "invocationLatency": 9240, "firstByteLatency": 500}}
     events = [{"type": "message_start", "message": start},
               {"type": "content_block_start", "index": 0,
                "content_block": {"type": "text", "text": ""}},
@@ -137,7 +141,9 @@ def streamed_message():
               {"type": "content_block_stop", "index": 0},
               {"type": "message_delta", "delta": {"stop_reason": "end_turn", "stop_sequence": None},
                "usage": {"output_tokens": 3}},
-              {"type": "message_stop"}]
+              terminal]
+    if not delta_usage:
+        del events[-2]["usage"]
     return b"".join(stream_frame(event) for event in events)
 
 
