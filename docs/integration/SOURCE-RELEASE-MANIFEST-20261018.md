@@ -27,10 +27,11 @@ separate repositories and remain referenced source candidates.
 | --- | --- | --- |
 | `neo-capiro/meri-greenfield` [PR179](https://github.com/neo-capiro/meri-greenfield/pull/179), integrated A8, Florida, first chat, memory, and seven audit repairs | `141f2ada6378382f2bf7462d8a2c5dc7758230d0` | Accepted Meri receiving base, descended from `main` `8b123bea4c90794dc2d766814b6ddbdbfe0928bc`. |
 | `neo-capiro/meri-greenfield` [PR180](https://github.com/neo-capiro/meri-greenfield/pull/180), first audit follow-up | `7e4e75828abcd870137ea8f72ff5fbea08fa25a6` | Parent is exact PR179 pin above; received by fast-forward on this manifest branch. Closes the awaited history-membership and rapid-successor gaps. |
-| `neo-capiro/meri-greenfield` [PR180](https://github.com/neo-capiro/meri-greenfield/pull/180), later retention fence/evidence candidate | `a1876afaeaa59d9da47729487d490cba8cfc9d9c` | **Not received** here. The source fence is direct child `1aa5c66e9283024e78ad6f26f5450cbc61a37659`; this head adds evidence/docs only. A finite PostgreSQL pool can starve while the fence holds a lease and a nested retention read requests another; owner repair/review is pending. |
+| `neo-capiro/meri-greenfield` [PR180](https://github.com/neo-capiro/meri-greenfield/pull/180), later retention fence/evidence candidate | `a1876afaeaa59d9da47729487d490cba8cfc9d9c` | **Not received** here. The source fence is direct child `1aa5c66e9283024e78ad6f26f5450cbc61a37659`; this head adds evidence/docs only. A finite PostgreSQL pool can starve while the fence holds a lease and a nested retention read requests another. |
+| `neo-capiro/meri-greenfield` [PR181](https://github.com/neo-capiro/meri-greenfield/pull/181), held-lease retention follow-up | `a50ce248337f3ce1ab7103e045bb8ab826ca92dc` | Draft direct child of PR180 `a1876afa`; **not received** here. Focused finite-pool source repair is published for review. Real PostgreSQL qualification and the separate consistent Core authorization decision remain open. |
 | `neo-capiro/meri-greenfield` document-executor image lane, [PR121 handoff](https://github.com/neo-capiro/meri-greenfield/pull/121) | `d2f054362521f622b9dd63c65ef5eaa3bdde8d5a` | Separate successor to lane I `94b692648c47fd509e62a621cc5b612e0d356ed3`; **not received** in PR179/PR180 or this manifest branch. The final Meri source must receive its owned image/package/wheel closure before image qualification. |
-| `neo-capiro/capiro-frontend` [PR97](https://github.com/neo-capiro/capiro-frontend/pull/97), receiving Meri, Modules/Settings, Portfolio, and Portfolio Core source | `a0a542d5eff162bef572564ff0397e460d74ed77` | Open receiving candidate against frontend `main` `02c02d95bdf3949662b9123f425271c6491ffdab`; not a Meri-tree merge. |
-| `neo-capiro/capiro-frontend` [PR98](https://github.com/neo-capiro/capiro-frontend/pull/98), session renewal and cross-run composer guard | `5c784e3e46114816ba57db17ad7a2c2013a8d81a` | Open draft stacked on exact PR97 pin. The cross-run guard is in its second code commit `d626bb080d7774ba5fc8167661d21893d9f1e3c8`; this head adds docs/evidence only. Pending frontend receiving review and release qualification. |
+| `neo-capiro/capiro-frontend` [PR97](https://github.com/neo-capiro/capiro-frontend/pull/97), receiving Meri, Modules/Settings, Portfolio, and Portfolio Core source | `d9959a9cee267365d1f13a72351802a66c6dbfe2` | Open receiving candidate against frontend `main` `02c02d95bdf3949662b9123f425271c6491ffdab`. This head is a documentation-only child of the reviewed code pin `a0a542d5eff162bef572564ff0397e460d74ed77`; not a Meri-tree merge. |
+| `neo-capiro/capiro-frontend` [PR98](https://github.com/neo-capiro/capiro-frontend/pull/98), session renewal and cross-run composer guard | `5c784e3e46114816ba57db17ad7a2c2013a8d81a` | Reviewed frontend source candidate, **not received** by PR97. Its first commit starts at exact PR97 code pin `a0a542d5eff162bef572564ff0397e460d74ed77`; the cross-run guard is in its second code commit `d626bb080d7774ba5fc8167661d21893d9f1e3c8`, and this head adds docs/evidence. The branches diverge only by PR97's later documentation commit. Frontend owner receipt and release qualification remain pending. |
 | `neo-capiro/capiro-backend` [PR96](https://github.com/neo-capiro/capiro-backend/pull/96), Core plus Directory receiving source | `784b1c3a91eb6d78f16d92c42e71f05c12c5b5bb` (tree `93b41a8cb736a8276fcb32182c1e07e601e4b417`) | Open draft against that repository's default `backend-import` `c76f5fc0df6688743afeec274211afd2e67fe8f1`; source only. |
 
 The frontend PR97 lineage includes Meri desktop [PR92](https://github.com/neo-capiro/capiro-frontend/pull/92)
@@ -43,6 +44,16 @@ The frontend PR97 lineage includes Meri desktop [PR92](https://github.com/neo-ca
 `45528667db95f805660d2ded5f7a20b5c91c909b`. These four commits are
 ancestors of PR97, not additional cherry-picks. The frontend PR96 and backend
 PR96 numbers name different repositories.
+
+The published frontend PR97 and PR98 heads were checked again before this
+manifest update. PR97's sole new commit after `a0a542d5` changes only
+`docs/coordination/reports/CODEX-THREE-REPO-SOURCE-PIN-AND-NON-MERI-PREVIEW-20261018.md`.
+The comparison from current PR97 head to PR98 reports one commit behind and
+three ahead, with `a0a542d5` as their common parent. The independent frontend
+review returned GO for PR98's source candidate with 35 extracted-source
+assertions. This records a reviewed source pin; the PR97 receiving owner still
+has to incorporate and verify the PR98 commits while retaining its newer
+documentation before the frontend source can be frozen.
 
 Core PR96 includes the guarded Core and Directory lineage documented in its
 [source candidate](https://github.com/neo-capiro/capiro-backend/blob/784b1c3a91eb6d78f16d92c42e71f05c12c5b5bb/docs/integration/CORE-INTEGRATED-SOURCE-CANDIDATE-20261018.md).
@@ -82,15 +93,16 @@ The relevant path is `postgres-journal.mjs` `withServing` → history release �
 retention gate → watermarked read → `postgres-watermark.mjs` → `journal.tx`.
 This is source-only synthetic evidence of a release blocker, not a live outage.
 PR180's later evidence commit documents its own source tests and inherited
-baseline; it does not change the nested lease behavior. The owner must repair
-and review a source successor before receipt.
+baseline; it does not change the nested lease behavior. Draft PR181 publishes a
+held-lease repair and reports **112/112 focused source checks**. Review remains
+before receipt; real PostgreSQL qualification remains before release acceptance.
 
 The following owners must publish and review successors before a release freeze:
 
 | Owner | Pending source or evidence |
 | --- | --- |
-| Meri retention/history | Repair the nested pool checkout in PR180's held serving-fence candidate, then verify finite-pool behavior, shared/exclusive transition ordering, and real PostgreSQL lock/session behavior. The owner retains this implementation. |
-| Frontend | Review and receive PR98's session renewal and cross-run guard, retaining newer edits and request identity. Its owner reports 14/14 browser, 69/69 unit, TypeScript, and 283/283-page build checks; authenticated release qualification remains separate. |
+| Meri retention/history | Review PR181's held-lease successor against PR180, including finite-pool behavior, shared/exclusive transition ordering, and real PostgreSQL lock/session behavior. The separate Core membership/currentness race still needs a consistent authorization decision before release. |
+| Frontend | Receive the independently reviewed PR98 session renewal and cross-run guard into PR97, retaining PR97's later documentation and exact request identity. PR98's owner reports 14/14 browser, 69/69 unit, TypeScript, and 283/283-page build checks; authenticated release qualification remains separate. |
 | Backend audit | PR180's held evidence commit inventories the standard `npm run check` baseline (**4,357 passed, 32 failed**) and runtime/control typecheck diagnostics (**3/18**) against PR179. Resolve or explicitly disposition those red release gates without weakening assertions. |
 | Core and frontend product owners | Qualify authenticated Portfolio Core behavior and complete the Modules aggregate metrics and remaining Settings contracts/design decisions. PR97 and Core PR96 are source candidates; production behavior is not inferred from ancestry. |
 
