@@ -1,0 +1,572 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:conversation-initial-input:1.0.0",
+  "$defs": {
+    "ConversationInitialInputRequest": {
+      "$ref": "#/$defs/Canonical_ConversationInputRequest_c9b90727"
+    },
+    "ConversationInitialInputExpectedContext": {
+      "$ref": "#/$defs/Canonical_ConversationInputExpectedContext_dd73f02f"
+    },
+    "ConversationInitialInputAllocation": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true
+        },
+        "versions": {
+          "$ref": "#/$defs/Canonical_RuntimeVersions_7edb8efc"
+        },
+        "selectedClientId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "requestId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "inputSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "requestSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "allocatedAtMs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "expiresAtMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "binding",
+        "scopes",
+        "versions",
+        "selectedClientId",
+        "requestId",
+        "inputSha256",
+        "requestSha256",
+        "allocatedAtMs",
+        "expiresAtMs"
+      ],
+      "additionalProperties": false
+    },
+    "ConversationInitialInputAllocatedResponse": {
+      "type": "object",
+      "properties": {
+        "allocation": {
+          "$ref": "#/$defs/ConversationInitialInputAllocation"
+        },
+        "state": {
+          "enum": [
+            "RESERVED",
+            "ACCEPTED"
+          ]
+        },
+        "created": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "allocation",
+        "state",
+        "created"
+      ],
+      "additionalProperties": false
+    },
+    "ConversationInitialInputErrorResponse": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "enum": [
+                "NOT_FOUND",
+                "METHOD_NOT_ALLOWED",
+                "INVALID_REQUEST",
+                "SESSION_REFUSED",
+                "SCOPE_REFUSED",
+                "SESSION_CHANGED",
+                "STALE_WRITER",
+                "INITIAL_INPUT_CONFLICT",
+                "INITIAL_INPUT_ALREADY_EXISTS",
+                "INITIAL_INPUT_EXPIRED",
+                "DEADLINE",
+                "CANCELLED",
+                "INITIAL_INPUT_REQUIRED",
+                "INITIAL_INPUT_CORRUPT",
+                "INITIAL_INPUT_UNAVAILABLE",
+                "REQUEST_TOO_LARGE",
+                "UNSUPPORTED_MEDIA_TYPE"
+              ]
+            },
+            "outcome": {
+              "enum": [
+                "NOT_DISPATCHED",
+                "UNKNOWN"
+              ]
+            }
+          },
+          "required": [
+            "code",
+            "outcome"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "error"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_Canonical_Canonical_WindowRequest_f314f340_6bb8c023_8e6cffcb": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "basis": {
+              "const": "calendar-week"
+            },
+            "offset": {
+              "type": "integer",
+              "enum": [
+                -1,
+                0
+              ]
+            },
+            "timezone": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            "weekStartsOn": {
+              "type": "string",
+              "enum": [
+                "monday",
+                "sunday"
+              ]
+            }
+          },
+          "required": [
+            "basis",
+            "offset",
+            "timezone",
+            "weekStartsOn"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "basis": {
+              "const": "calendar-month"
+            },
+            "offset": {
+              "type": "integer",
+              "enum": [
+                -1,
+                0
+              ]
+            },
+            "timezone": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            }
+          },
+          "required": [
+            "basis",
+            "offset",
+            "timezone"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "basis": {
+              "const": "calendar-year"
+            },
+            "offset": {
+              "type": "integer",
+              "enum": [
+                -1,
+                0
+              ]
+            },
+            "timezone": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            }
+          },
+          "required": [
+            "basis",
+            "offset",
+            "timezone"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "basis": {
+              "const": "relative-duration"
+            },
+            "days": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 3660
+            },
+            "anchorAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "timezone": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            }
+          },
+          "required": [
+            "basis",
+            "days",
+            "anchorAt",
+            "timezone"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "basis": {
+              "const": "explicit"
+            },
+            "startInclusive": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "endExclusive": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "timezone": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            }
+          },
+          "required": [
+            "basis",
+            "startInclusive",
+            "endExclusive",
+            "timezone"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "basis": {
+              "const": "fiscal-year"
+            },
+            "year": {
+              "type": "integer",
+              "minimum": 1900,
+              "maximum": 3000
+            },
+            "calendarId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[a-z][a-z0-9_.-]*$"
+            },
+            "stage": {
+              "type": "string",
+              "enum": [
+                "requested",
+                "authorized",
+                "appropriated",
+                "obligated",
+                "actual",
+                "outlay"
+              ]
+            },
+            "revisionId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "timezone": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            }
+          },
+          "required": [
+            "basis",
+            "year",
+            "calendarId",
+            "stage",
+            "revisionId",
+            "timezone"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "basis": {
+              "const": "unbounded"
+            }
+          },
+          "required": [
+            "basis"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Canonical_Canonical_Canonical_skillId_31e12e8e_cae56271_2bec58ad": {
+      "type": "string",
+      "enum": [
+        "quick_skill.research_company",
+        "quick_skill.relationship_brief",
+        "quick_skill.client_changes",
+        "quick_skill.portfolio_changes",
+        "quick_skill.portfolio_overlap",
+        "quick_skill.mail_history",
+        "quick_skill.meeting_prep",
+        "quick_skill.commitments_audit",
+        "quick_skill.funding_opportunity_match",
+        "quick_skill.pe_deep_dive",
+        "quick_skill.bill_watch",
+        "quick_skill.hearing_watch",
+        "quick_skill.representation_lookup",
+        "quick_skill.regulatory_docket_brief"
+      ]
+    },
+    "Canonical_Canonical_Canonical_skillVersion_7e2af095_7f0f4343_d657b779": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+    },
+    "Canonical_Canonical_ConversationSubmitRequest_1ec41363_35a4f454": {
+      "type": "object",
+      "properties": {
+        "requestId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "prompt": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100000,
+          "pattern": "\\S"
+        },
+        "windowRequest": {
+          "$ref": "#/$defs/Canonical_Canonical_Canonical_WindowRequest_f314f340_6bb8c023_8e6cffcb"
+        },
+        "skill": {
+          "type": "object",
+          "properties": {
+            "skillId": {
+              "$ref": "#/$defs/Canonical_Canonical_Canonical_skillId_31e12e8e_cae56271_2bec58ad"
+            },
+            "skillVersion": {
+              "$ref": "#/$defs/Canonical_Canonical_Canonical_skillVersion_7e2af095_7f0f4343_d657b779"
+            }
+          },
+          "required": [
+            "skillId",
+            "skillVersion"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "requestId",
+        "prompt"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ConversationInputRequest_c9b90727": {
+      "$ref": "#/$defs/Canonical_Canonical_ConversationSubmitRequest_1ec41363_35a4f454"
+    },
+    "Canonical_ConversationInputExpectedContext_dd73f02f": {
+      "type": "object",
+      "properties": {
+        "tenantId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "actorId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "conversationId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "runId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "clientId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        }
+      },
+      "required": [
+        "tenantId",
+        "actorId",
+        "conversationId",
+        "runId",
+        "clientId"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_RunBinding_84f2304c": {
+      "type": "object",
+      "properties": {
+        "tenantId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "actorId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "runId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "attemptId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "workerId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "writerFence": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "tenantId",
+        "actorId",
+        "conversationId",
+        "runId",
+        "attemptId",
+        "workerId",
+        "writerFence"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_Scope_f882edb5": {
+      "type": "object",
+      "properties": {
+        "tenantId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "tenant",
+            "client",
+            "mailbox",
+            "memory",
+            "document",
+            "private-user",
+            "public"
+          ]
+        },
+        "resourceId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "policyRevision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "tenantId",
+        "kind",
+        "resourceId",
+        "policyRevision"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_RuntimeVersions_7edb8efc": {
+      "type": "object",
+      "properties": {
+        "imageDigest": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "sdk": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "cli": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "contracts": {
+          "const": "0.1.0"
+        },
+        "skillsDigest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "checkpointFormat": {
+          "const": "0.1.0"
+        }
+      },
+      "required": [
+        "imageDigest",
+        "sdk",
+        "cli",
+        "contracts",
+        "skillsDigest",
+        "checkpointFormat"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
