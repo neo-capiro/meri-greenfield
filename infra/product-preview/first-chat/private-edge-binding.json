@@ -1,0 +1,15 @@
+{
+ "vpcId": "vpc-0ac26cfac7ed972be",
+ "privateSubnetIds": [
+  "subnet-0920665f91c905f01",
+  "subnet-0e38bd390f8961fef",
+  "subnet-06db79cd21239de19"
+ ],
+ "certificateArn": "arn:aws:acm:us-east-1:967807252336:certificate/6c790931-e953-41ac-acbe-51aff570f1ff",
+ "controlSecurityGroupId": "sg-05a350c100574b21f",
+ "clientSecurityGroupIds": [
+  "sg-098fc4f2ac89aa943",
+  "sg-00111cd0e475badfa",
+  "sg-05a350c100574b21f"
+ ]
+}

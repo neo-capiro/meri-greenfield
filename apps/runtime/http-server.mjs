@@ -2,13 +2,16 @@
 import {serve} from '@hono/node-server';
 import {createServer as createHttpsServer} from 'node:https';
 import {fault} from './config.mjs';
-export async function listenRuntime({configuration,application,readiness,signal,tls,testOwners={}}){
- const startServer=testOwners.serve??serve;if(Object.keys(testOwners).some(key=>key!=='serve')||typeof startServer!=='function')throw fault('HTTP_CONFIGURATION');
+export async function listenRuntime({configuration,application,readiness,signal,tls,exposeReadiness=true,testOwners={}}){
+ const startServer=testOwners.serve??serve;if(Object.keys(testOwners).some(key=>key!=='serve')||typeof startServer!=='function'||typeof exposeReadiness!=='boolean')throw fault('HTTP_CONFIGURATION');
  signal?.throwIfAborted();
  let stopping=false;const active=new Set(),sockets=new Set();const json=(body,status=200)=>Response.json(body,{status,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
  const server=startServer({hostname:configuration.http.hostname,port:configuration.http.port,overrideGlobalObjects:false,
   ...(tls?{createServer:createHttpsServer,serverOptions:tls}:{}),fetch:async request=>{
-  const path=new URL(request.url).pathname;if(path==='/health/live'||path==='/health/ready'){
+  const path=new URL(request.url).pathname;
+  // A public listener exposes liveness only: readiness details stay on private/internal listeners.
+  if(path==='/health/ready'&&!exposeReadiness)return json({error:{code:'ROUTE_NOT_FOUND'}},404);
+  if(path==='/health/live'||path==='/health/ready'){
    if(request.method!=='GET'||new URL(request.url).search)return json({error:{code:'METHOD_NOT_ALLOWED'}},405);
    if(path==='/health/live')return json({status:stopping?'stopping':'live'},stopping?503:200);
    if(stopping)return json({status:'not-ready'},503);try{const details=await readiness({signal:request.signal});if(details?.product?.ready===false)return json({status:'not-ready',...details,releaseAcceptance:'held'},503);return json({status:'ready',profile:'isolated-preview',releaseAcceptance:'held',...(details??{})});}catch{return json({status:'not-ready'},503);}

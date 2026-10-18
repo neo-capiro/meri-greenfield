@@ -1,0 +1,23 @@
+{
+ "schema": "meri.first-chat-policy.v1",
+ "changeSet": "D1",
+ "purpose": "meri-first-chat-preview",
+ "model": {
+  "profileId": "us.anthropic.claude-sonnet-4-6",
+  "modelId": "anthropic.claude-sonnet-4-6",
+  "pricingRevision": "b21cfc4941e346275d9503700a094dc892f838172c41bc2e14c8284d91b1677a",
+  "maxInputTokens": 65536,
+  "maxOutputTokens": 8192,
+  "perRunMaxCostMicroUSD": 2000000
+ },
+ "runtime": {
+  "maxTurns": 3,
+  "maxOutputBytes": 262144
+ },
+ "runnerLayout": {
+  "workspaceRoot": "/workspace",
+  "configParentDirectory": "/run/meri",
+  "secureStorageDirectory": "/run/meri/sdk-secure"
+ },
+ "allocationSha256": "43a1863a7c79c0794e1799228c81d43d2962ebcbc16262b6ebb84375fe8b69f2"
+}

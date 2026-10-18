@@ -43,6 +43,8 @@ export function createPreparedRunBindings(options){
   return {admission:r,saved};
  };
  const checkedInitial=async(binding,check)=>{const {admission}=await initialRecord(binding,check);return admission;};
+ // sdkOptionsSha256 is the run-invariant SDK option template (native-authority/sdk-option-template.mjs): carried unchanged, it
+ // matches every retargeted run because the runner verifies cwd, CLAUDE_CONFIG_DIR and the prompt scopes against this intent.
  const retargetPreparation=(binding,scopes)=>{if(!readInitial||!workspaceParent)fail('WORKSPACE');return {...config.preparationIntent,workspace:workspaceParent+binding.conversationId,authoritySha256:hash({scopes,selectedClientId,policyRevision:config.qualification.policyRevision})};};
  /** The authoritative allocation for a target binding: the reviewed static allocation retargeted to exactly that run. Its hash is what
   * the issued facts and the retired record carry; a record naming a different allocation hash is refused rather than admitted. */

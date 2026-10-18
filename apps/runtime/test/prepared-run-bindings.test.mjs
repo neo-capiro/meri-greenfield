@@ -6,6 +6,7 @@ import {compilePreparedCandidateConfiguration} from '../prepared-candidate-confi
 import {candidateFixture} from './prepared-candidate-fixture.mjs';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {capabilityDigest} from '../native-authority/task-verifier.mjs';
+import {createPreparedNextRunOwner,admissionRecordOf} from '../prepared-next-run.mjs';
 function fixture({multiRun={runWindowMs:600000}}={}){
  const f=candidateFixture(),config=f.configuration.nativeCandidate;
  for(const k of ['workspace','configParentDirectory','secureStorageDirectory'])config.preparationIntent[k]=normalize(config.preparationIntent[k]);
@@ -67,4 +68,22 @@ test('original expiry and authoritative target facts persist: a later target is 
  assert.equal(hash(JSON.parse(compiled.allocationJson)),hash(retargeted),'the facts carry the allocation retargeted to the later run');assert.deepEqual(compiled.transport,{origin:x.config.taskOrigin,http:x.config.taskHttp});assert.deepEqual(compiled.runtime.binding,later);assert.equal(compiled.runtime.deadlineMs,laterIntent.expiresAtMs);
  assert.ok(!JSON.stringify(prepared).includes(x.f.secret.proxy)&&compiled.runtime.proxyCredential===x.modelRows.get(laterIntent.issuanceKey).proxyCredential,'the credential stays in trusted memory');
  assert.notEqual(compiled.runtime.proxyCredential,x.modelRows.get(prepared.issuance.issuanceKey).proxyCredential,'a later run uses distinct model material');
+});
+test('the next-run owner revokes a completed source through admissionForBinding with the durable journal record (binding/expiresAtMs trimmed), then reserves the successor',async()=>{
+ const x=fixture(),b=createPreparedRunBindings({configuration:x.f.configuration,pool:x.pool,store:x.store,credentials:x.credentials,issuanceStore:createMemoryIssuanceStore(),capabilityAuthority:x.authority,modelGrants:x.modelGrants,now:()=>Date.now()});
+ const prepared=await b.runIssuance.prepare({binding:x.f.binding,requestSha256:hash({prompt:'First prompt'}),expiresAtMs:x.config.runtime.deadlineMs}),source=x.f.binding,allocation=JSON.parse(x.config.allocationJson);allocation.run=Object.fromEntries(Object.keys(allocation.run).map(k=>[k,source[k]]));
+ // The record exactly as the allocation journal stores a retired original (native-preparation-journal.mjs slot: binding, key, fields, expiresAtMs, state, resource).
+ const journalRecord={binding:source,allocationKey:hash(source),original:prepared.original,allocationSha256:hash(allocation),qualification:x.config.qualification,grantIntents:prepared.grantIntents,taskRequestSha256:'c'.repeat(64),expiresAtMs:prepared.original.expiresAtMs,state:'RETIRED',resource:{taskArn:'arn:aws:ecs:us-east-1:967807252336:task/Synthetic/'+'c'.repeat(32),physicalStopProven:true}};
+ await assert.rejects(b.admissionForBinding({binding:source,record:journalRecord}),/INVALID_COMMAND/,'the untrimmed journal record is not an admission record');
+ assert.equal(typeof (await b.admissionForBinding({binding:source,record:admissionRecordOf(journalRecord)})).revoke,'function');
+ const scopes=[{kind:'client',tenantId:source.tenantId,resourceId:x.config.identity.commandContext.clientResolution.clientId,policyRevision:x.config.qualification.policyRevision}],reserved=[],revoked=[];
+ const nextRuns={async listRuns(){return {runs:[{binding:source,state:'completed',scopes,policyRevision:x.config.qualification.policyRevision,versions:x.f.configuration.versions}],reservations:[]};},async latestCheckpoint(){return {checkpointId:randomUUID(),proofSha256:'f'.repeat(64)};},async foreclosure(){assert.fail('a completed source has no foreclosure');},
+  async reserve(value){reserved.push(value);return {target:value.target,state:'RESERVED',replayed:false};},async readTarget(){return null;},async current(){assert.fail('not reached');}};
+ const store={nextRuns,allocations:{async read(query){assert.deepEqual(query,{binding:source,allocationKey:hash(source)});return {record:structuredClone(journalRecord)};}}};
+ // The real admission per binding is built (shape, retargeted allocation); only its database revocation is replaced.
+ const admissionForBinding=async args=>{await b.admissionForBinding(args);return {async revoke({taskArn}){revoked.push(taskArn);return {state:'REVOKED',taskArn,grantIds:prepared.grantIntents.map(g=>g.grantId),revocationProven:true};}};};
+ const owner=createPreparedNextRunOwner({store,versions:x.f.configuration.versions,admissionForBinding});
+ const selected=await owner.selectRun({principal:{tenantId:source.tenantId,actorId:source.actorId},conversationId:source.conversationId});
+ assert.equal(selected.reserved,true);assert.equal(selected.binding.writerFence,2);assert.deepEqual(revoked,[journalRecord.resource.taskArn]);assert.equal(reserved.length,1);
+ assert.deepEqual(reserved[0].facts.revocation.grantIds.slice().sort(),prepared.grantIntents.map(g=>g.grantId).sort());
 });

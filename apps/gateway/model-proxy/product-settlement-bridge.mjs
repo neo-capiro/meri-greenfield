@@ -11,6 +11,7 @@ import {parseAdmittedGrantSet} from '../budget/admitted-run-binding.mjs';
 import {digest,same} from '../budget/tool-budget-binding.mjs';
 import {refuse} from '../budget/postgres-budget-store.mjs';
 import {createProductModelSettlement} from '../budget/product-model-settlement.mjs';
+import {PRODUCT_MAX_INPUT_TOKENS,PRODUCT_MAX_OUTPUT_TOKENS} from './product-envelope.mjs';
 
 const slot=/^[A-Za-z0-9_-]{1,128}$/u;
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
@@ -27,7 +28,7 @@ function usage(value,id){
  for(const n of [v.input_tokens,v.output_tokens,b.counted_input_tokens,b.max_output_tokens]){
   if(!Number.isSafeInteger(n)||n<0)deny();
  }
- if(b.counted_input_tokens<1||b.counted_input_tokens>8192||b.max_output_tokens<1||b.max_output_tokens>256||v.input_tokens!==b.counted_input_tokens||v.output_tokens>b.max_output_tokens)deny();
+ if(b.counted_input_tokens<1||b.counted_input_tokens>PRODUCT_MAX_INPUT_TOKENS||b.max_output_tokens<1||b.max_output_tokens>PRODUCT_MAX_OUTPUT_TOKENS||v.input_tokens!==b.counted_input_tokens||v.output_tokens>b.max_output_tokens)deny();
  if(!Array.isArray(b.allowed_tool_names)||b.allowed_tool_names.length>8||new Set(b.allowed_tool_names).size!==b.allowed_tool_names.length||b.allowed_tool_names.some(x=>typeof x!=='string'||!slot.test(x)))deny();
  return {...v,binding:{...b,allowed_tool_names:[...b.allowed_tool_names].sort()}};
 }

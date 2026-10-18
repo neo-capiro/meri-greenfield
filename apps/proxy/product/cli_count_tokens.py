@@ -9,6 +9,7 @@ import json
 import math
 import re
 
+from ..qualification.runtime.bedrock_body import ENVELOPE_MAX_INPUT_TOKENS
 from ..qualification.runtime.lifetime import _current_lifetime_check
 from ..qualification.state.pricing import StateDenied
 
@@ -252,7 +253,7 @@ def create_cli_count_tokens_app(count_tokens, *, model, allowed_tool_names=()):
         except Exception:
             _deny("COUNT_PROVIDER_REFUSED")
         check()
-        if type(tokens) is not int or not 1 <= tokens <= 8192:
+        if type(tokens) is not int or not 1 <= tokens <= ENVELOPE_MAX_INPUT_TOKENS:
             _deny("COUNT_RESPONSE_REFUSED")
         payload = json.dumps({"input_tokens": tokens}, separators=(",", ":")).encode("ascii")
         await send({"type": "http.response.start", "status": 200,

@@ -4,9 +4,11 @@ import {canonicalSha256,validateShape} from '../../packages/contracts/validate.m
 import {own} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {readSecret,fault} from './config.mjs';
 import {createNativeCapabilityClient} from './native-client.mjs';
-import {lstat,realpath,mkdir} from 'node:fs/promises';
-import {join,dirname} from 'node:path';
-import {compileNativePreparationIntent} from './native-authority/preparation-intent.mjs';
+import {lstat,realpath,mkdir,open} from 'node:fs/promises';
+import {constants} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {join,dirname,isAbsolute} from 'node:path';
+import {compileNativePreparationIntent,RUNNER_SDK_CA_FILE} from './native-authority/preparation-intent.mjs';
 import {createLifecycleRunOwner} from '../control/conversations/lifecycle/worker-owner.mjs';
 import {createTaskSelectedSkills} from './selected/task.mjs';
 import {createRuntimeSdkSessionFactory,createOwnedRuntimeSdkSession} from './sdk-session-runtime.mjs';
@@ -14,11 +16,24 @@ import {waitForAdmittedTask,loadRemoteTaskBinding} from './task-bootstrap.mjs';
 import {storageMethod} from '../artifacts/storage/boundary.mjs';
 import {captureGeneralReadPort} from './general-read-port.mjs';
 export function assertRunnerEnvironment(environment=process.env){for(const key of ['DATABASE_URL','PGPASSWORD','AWS_ACCESS_KEY_ID','AWS_SECRET_ACCESS_KEY','AWS_SESSION_TOKEN','ANTHROPIC_API_KEY','CLAUDE_CODE_OAUTH_TOKEN','TEMPORAL_API_KEY','MERI_NATIVE_ADMIN_TOKEN','CLAUDE_CODE_USE_BEDROCK','CLAUDE_CODE_USE_VERTEX','CLAUDE_CODE_USE_FOUNDRY','ANTHROPIC_AWS_BEARER_TOKEN','ANTHROPIC_AWS_REGION'])if(environment[key])throw fault('RUNNER_AMBIENT_CREDENTIAL_REFUSED');}
-/** Per-run SDK configuration directories under the admitted preparation intent; absent outside the remote task path. */
-export function sdkConfigurationDirectories(configuration){
+/** Per-run SDK configuration directories under the admitted preparation intent; absent outside the remote task path.
+ * The SDK subprocess environment replaces (never inherits) process.env, so its one extra TLS anchor comes from the same
+ * admitted launch template: only the pinned runner CA path, required on the product path where the proxy cert is private. */
+export function sdkConfigurationDirectories(configuration,environment=process.env){
  if(configuration.remoteTask===undefined)return {};
- const intent=compileNativePreparationIntent(configuration.remoteTask.preparationIntent);
- return {sdkConfigDirectory:join(intent.configParentDirectory,'sdk-'+configuration.binding.runId),sdkSecureStorageDirectory:intent.secureStorageDirectory};
+ const intent=compileNativePreparationIntent(configuration.remoteTask.preparationIntent),ca=intent.launchTemplate.env.NODE_EXTRA_CA_CERTS;
+ if(ca!==undefined&&ca!==RUNNER_SDK_CA_FILE||ca===undefined&&environment.MERI_PRODUCT_PREVIEW_REQUIRED==='1')throw fault('RUNNER_SDK_CA_REFUSED');
+ return {sdkConfigDirectory:join(intent.configParentDirectory,'sdk-'+configuration.binding.runId),sdkSecureStorageDirectory:intent.secureStorageDirectory,...(ca===undefined?{}:{sdkCaFile:ca})};
+}
+/** The SDK CA file must be the exact pinned control CA the poststart owner wrote: a regular, private, symlink-free file owned by
+ * this uid whose bytes match MERI_POSTSTART_CA_SHA256. Checked before SDK initialization; never an arbitrary readable path. */
+export async function assertPinnedSdkCaFile(path,{uid,expectedSha256}){
+ const refuse=()=>{throw fault('RUNNER_SDK_CA_REFUSED');};
+ if(typeof path!=='string'||!isAbsolute(path)||!Number.isSafeInteger(uid)||uid<0||typeof expectedSha256!=='string'||!/^[a-f0-9]{64}$/u.test(expectedSha256))refuse();
+ let handle;try{const before=await lstat(path);if(before.isSymbolicLink()||!before.isFile()||before.uid!==uid||(before.mode&0o077)!==0||before.size<1||before.size>16384||await realpath(path)!==path)refuse();
+  handle=await open(path,constants.O_RDONLY|constants.O_NOFOLLOW);const stat=await handle.stat(),bytes=await handle.readFile();
+  if(stat.ino!==before.ino||stat.dev!==before.dev||bytes.length!==stat.size||createHash('sha256').update(bytes).digest('hex')!==expectedSha256)refuse();
+ }catch(error){if(error?.code==='RUNNER_SDK_CA_REFUSED')throw error;refuse();}finally{await handle?.close();}
 }
 /** A directory the SDK may use only if it is a real directory owned by this task's uid, private to it, and reached without symlinks. */
 async function assertOwnedPrivateDirectory(path,uid){let stat;try{stat=await lstat(path);}catch{throw fault('RUNNER_SDK_DIRECTORY_REFUSED');}if(stat.isSymbolicLink()||!stat.isDirectory()||stat.uid!==uid||(stat.mode&0o077)!==0||await realpath(path)!==path)throw fault('RUNNER_SDK_DIRECTORY_REFUSED');}
@@ -26,7 +41,8 @@ async function assertOwnedPrivateDirectory(path,uid){let stat;try{stat=await lst
 export async function ensureSdkConfigurationDirectories(directories,options={}){
  if(directories.sdkConfigDirectory===undefined)return directories;
  const uid=options.uid??process.getuid?.();if(!Number.isSafeInteger(uid)||uid<0)throw fault('RUNNER_SDK_DIRECTORY_REFUSED');
- const {sdkConfigDirectory,sdkSecureStorageDirectory}=directories;
+ const {sdkConfigDirectory,sdkSecureStorageDirectory,sdkCaFile}=directories;
+ if(sdkCaFile!==undefined)await assertPinnedSdkCaFile(sdkCaFile,{uid,expectedSha256:(options.environment??process.env).MERI_POSTSTART_CA_SHA256});
  await assertOwnedPrivateDirectory(dirname(sdkConfigDirectory),uid);
  try{await mkdir(sdkConfigDirectory,{mode:0o700});}catch{throw fault('RUNNER_SDK_DIRECTORY_REFUSED');}
  await assertOwnedPrivateDirectory(sdkConfigDirectory,uid);

@@ -28,7 +28,8 @@ export async function listenControlApplications({configuration,publicApplication
  try{
   checkStartup();
   if(privateApplication!==null){privateListener=await listen({configuration:{...configuration,http:configuration.privateHttp},application:privateApplication,readiness,...(signal?{signal}:{})});checkStartup();}
-  publicListener=await listen({configuration,application:publicApplication,readiness,...(signal?{signal}:{})});checkStartup();
+  // With a private listener, readiness details are served only there; the public host gets liveness.
+  publicListener=await listen({configuration,application:publicApplication,readiness,exposeReadiness:privateApplication===null,...(signal?{signal}:{})});checkStartup();
   return {publicListener,privateListener};
  }catch(error){
   // A failed public bind must retire the already-open private listener before startup returns.

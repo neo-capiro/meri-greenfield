@@ -21,6 +21,8 @@ RUN npm ci --prefix apps/artifacts/storage --omit=dev --ignore-scripts --no-audi
 COPY apps ./apps
 COPY packages ./packages
 COPY infra/product-preview/runtime-packages.lock.json ./infra/product-preview/runtime-packages.lock.json
+# Stage 1 one-shot database runner (D2). Its migrations already arrive through `COPY apps`.
+COPY infra/product-preview/first-chat-migrate.mjs infra/product-preview/first-chat-database.sql infra/product-preview/first-chat-database-temporal.sql infra/product-preview/first-chat-seed-budget.sql ./infra/product-preview/
 # Stage the retained public index/APK snapshot through the same exact size/hash
 # checks. The upstream index URL rotates; the build never downloads it. Kept
 # outside /opt/meri so the snapshot is not copied into the runtime image.
@@ -45,11 +47,24 @@ RUN --mount=type=bind,from=builder,source=/opt/meri-runtime-packages,target=/tmp
       bash=5.3-r14 libstdc++=16.2.0-r1 ncurses=6.6.20261010-r0 ncurses-terminfo-base=6.6.20261010-r0 && \
     node apps/runtime/build/runtime-packages.mjs verify --lock infra/product-preview/runtime-packages.lock.json
 RUN addgroup -g 1000 node && adduser -D -u 1000 -G node -h /home/node node
+# Amazon RDS global CA bundle, pinned by apps/runtime/certs/rds-global-bundle.lock.json.
+# node-postgres sslmode=verify-full (control, proxy owner, issuer -> Aurora) uses
+# Node's default trust store, which this extends; Node reads it once at start.
+# Root-owned and read-only; a task that needs a different private anchor (the
+# temporal worker) overrides NODE_EXTRA_CA_CERTS in its task environment.
+COPY --chown=0:0 --chmod=0444 apps/runtime/certs/rds-global-bundle.pem /opt/meri/certs/rds-global-bundle.pem
+RUN --network=none printf '%s\n' '90a6f1a7978a1b1b096dca6c57511ca48d3b8cf052f8e704baf358f34ea2f21b  /opt/meri/certs/rds-global-bundle.pem' | sha256sum -c - && \
+    test "$(grep -c -- '-----BEGIN CERTIFICATE-----' /opt/meri/certs/rds-global-bundle.pem)" = 114 && \
+    test "$(grep -c -- '-----BEGIN ' /opt/meri/certs/rds-global-bundle.pem)" = 114 && \
+    chmod 0555 /opt/meri/certs
+ENV NODE_EXTRA_CA_CERTS=/opt/meri/certs/rds-global-bundle.pem
 ENV HOME=/home/node
 # ECS copies this exact image path into the task-local bind mount. The one-shot
 # material writer and application both run as the pinned non-root node UID/GID.
-RUN test "$(id -u node)" = 1000 && test "$(id -g node)" = 1000 && mkdir -p /run/meri /run/meri-temporal && chown node:node /run/meri /run/meri-temporal && chmod 0700 /run/meri /run/meri-temporal
+# /tmp and /workspace are task-local bind mounts too: without an image path to copy, Fargate mounts them root-owned
+# and the node UID cannot create the per-run capability material directory (/tmp/meri-material) or a run workspace.
+RUN test "$(id -u node)" = 1000 && test "$(id -g node)" = 1000 && mkdir -p /run/meri /run/meri-temporal /workspace && chown node:node /run/meri /run/meri-temporal /workspace && chmod 0700 /run/meri /run/meri-temporal /workspace && chmod 1777 /tmp
 USER node
-VOLUME ["/run/meri", "/run/meri-temporal"]
+VOLUME ["/run/meri", "/run/meri-temporal", "/tmp", "/workspace"]
 ENTRYPOINT ["node", "apps/runtime/cli.mjs"]
 CMD ["--help"]

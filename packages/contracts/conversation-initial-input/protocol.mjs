@@ -12,9 +12,9 @@ export const conversationInitialInputErrorStatuses=initialInputErrorStatuses;
 export const initialInputUnknownCodes=Object.freeze(['DEADLINE','CANCELLED','INITIAL_INPUT_UNAVAILABLE','INITIAL_INPUT_CORRUPT','INITIAL_INPUT_REQUIRED']);
 /** Conservative HTTP default; a domain owner may positively prove NOT_DISPATCHED for an otherwise uncertain code. */
 export const initialInputErrorOutcomes=freeze(Object.fromEntries(Object.keys(initialInputErrorStatuses).map(code=>[code,initialInputUnknownCodes.includes(code)?'UNKNOWN':'NOT_DISPATCHED'])));
-export const conversationInitialInputMetadata=freeze({packageVersion:'0.1.8',initialInputVersion:conversationInitialInputVersion,schemaId:'urn:meri:conversation-initial-input:1.0.0',
+export const conversationInitialInputMetadata=freeze({packageVersion:'0.1.10',initialInputVersion:conversationInitialInputVersion,schemaId:'urn:meri:conversation-initial-input:1.0.0',
  routes:{allocate:{method:'POST',path:conversationInitialInputPath,response:'json'}},
- authentication:{...conversationInputMetadata.authentication},limits:{requestBytes:131072,responseBytes:131072,maxRequestMs:3000},
+ authentication:{...conversationInputMetadata.authentication},limits:{requestBytes:131072,responseBytes:131072,maxRequestMs:25000},
  bridge:{owner:'accepted conversation-input receiver',responseBytes:conversationInputMetadata.limits.responseBytes,viewOwner:'conversationInputView'},
  recovery:'only the exact retained immutable request with its genuine allocation proof; digests, UNKNOWN and absence do not create input authority',
  errorOutcomes:['NOT_DISPATCHED','UNKNOWN'],errorOutcomeByCode:initialInputErrorOutcomes,errorStatuses:initialInputErrorStatuses});

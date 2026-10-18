@@ -103,6 +103,29 @@ function bootstrapFiles(c,fs,runtimeIdentity,newId){
  });
 }
 
+/** Bounded startup retry of the INITIAL bootstrap only. The process asks the
+ * issuer for its certificate about a second after its container starts, but
+ * the issuer proves the caller through ECS DescribeServices/DescribeTasks and
+ * requires the task RUNNING and the service's runningCount above zero, which
+ * the ECS control plane shows only several seconds later. A one-shot attempt
+ * therefore lost that race and control/temporal-worker crash-looped. Only an
+ * attempt the issuer refused before any certificate could have been issued
+ * (the client never sent its redeem request, and its transports settled to a
+ * CLEAN receipt) is retried, on a fresh client, every RETRY_INTERVAL_MS until
+ * the window closes. Rotations, material/config refusals, delivered-then-
+ * failed attempts, unsettled transports and stop requests are terminal at
+ * once, with the same content-free status as before. Reviewed constants, not
+ * configuration: the closed runtime schema and rendered bindings stay as they
+ * are. cli.mjs ends startup at limits.startupMs, so the window is also capped
+ * by startupMs minus a reserve for the rest of startup (Temporal connection,
+ * worker creation, listen); startup attempts never outlive that window. */
+export const TEMPORAL_BOOTSTRAP_STARTUP_WINDOW_MS=180000,TEMPORAL_BOOTSTRAP_RETRY_INTERVAL_MS=2500,TEMPORAL_BOOTSTRAP_STARTUP_RESERVE_MS=10000;
+const retriedCodes=['TEMPORAL_ISSUER_BOOTSTRAP_CLIENT_REFUSED','TEMPORAL_PRODUCT_BOOTSTRAP_UNAVAILABLE'];
+export function temporalBootstrapStartupWindowMs(limits){
+ const startupMs=limits!==null&&typeof limits==='object'&&!types.isProxy(limits)?Object.getOwnPropertyDescriptor(limits,'startupMs')?.value:undefined;
+ return integer(startupMs,100,30000)?Math.min(TEMPORAL_BOOTSTRAP_STARTUP_WINDOW_MS,startupMs-TEMPORAL_BOOTSTRAP_STARTUP_RESERVE_MS):TEMPORAL_BOOTSTRAP_STARTUP_WINDOW_MS;
+}
+
 /** Root serializes all delivery.read calls and rebuilds its mTLS client from
  * ensureCurrent's derived config. It drains the old client before registration
  * CAS can invalidate the predecessor; no stale client/config fallback exists. */
@@ -119,7 +142,9 @@ export async function startTemporalProductBootstrap(configuration,options={}){
  if(!callable(readMaterial)||!callable(loadClient)||!callable(newId))fail();
  const files=bootstrapFiles(c,fs,runtimeIdentity,newId),buffers=new Set(),pending=new Set(),clients=new Set(),watchers=new Set();
  let current=null,revision=0,closed=false,failure=null,closing=null,refreshing=null,active=null,expiry=null,fileQueue=Promise.resolve(),stopFailed=false;
+ let acquired=false,windowEndMs=null,retryable=false;
  const reserveMs=c.configuration.totalTimeoutMs+delivery.requestTimeoutMs+c.configuration.requestTimeoutMs;
+ const unavailable=()=>Object.assign(Error('TEMPORAL_PRODUCT_BOOTSTRAP_UNAVAILABLE'),{code:'TEMPORAL_PRODUCT_BOOTSTRAP_UNAVAILABLE'});
  function clearExpiry(){if(expiry!==null)timers.clearTimeout(expiry);expiry=null;}
  function capture(value){
   const found=Buffer.isBuffer(value)?[value]:value&&typeof value==='object'&&!types.isProxy(value)?['keyPem','certPem'].map(key=>Object.getOwnPropertyDescriptor(value,key)?.value):[];
@@ -127,7 +152,8 @@ export async function startTemporalProductBootstrap(configuration,options={}){
  }
  function track(work){const promise=Promise.resolve().then(work).then(capture);pending.add(promise);promise.then(()=>pending.delete(promise),()=>pending.delete(promise));return promise;}
  function queued(work){const promise=fileQueue.then(work);fileQueue=promise.catch(()=>{});return promise;}
- function lifetime(signal,deadlineMs=now()+c.configuration.totalTimeoutMs){return createOperationLifetime({now,signal,deadlineMs,schedule:timers.setTimeout,unschedule:timers.clearTimeout,errorFactory:()=>Object.assign(Error('TEMPORAL_PRODUCT_BOOTSTRAP_UNAVAILABLE'),{code:'TEMPORAL_PRODUCT_BOOTSTRAP_UNAVAILABLE'})});}
+ function lifetime(signal,deadlineMs=now()+c.configuration.totalTimeoutMs){return createOperationLifetime({now,signal,deadlineMs,schedule:timers.setTimeout,unschedule:timers.clearTimeout,errorFactory:unavailable});}
+ function sleep(ms,signal){return new Promise(resolve=>{const timer=timers.setTimeout(done,ms);function done(){timers.clearTimeout(timer);signal?.removeEventListener('abort',done);resolve();}signal?.addEventListener('abort',done,{once:true});});}
  function lose(){
   if(closed||failure)return;failure='TEMPORAL_PRODUCT_BOOTSTRAP_UNAVAILABLE';clearExpiry();active?.abort();
   for(const watcher of watchers)try{watcher(failure);}catch{}
@@ -145,14 +171,20 @@ export async function startTemporalProductBootstrap(configuration,options={}){
    return Object.freeze({closed:true,unsettledOperations:0,physicalStopProven:false});
   }catch(error){throw temporalCleanupUnknown(error);}finally{summary=life.close();watchers.clear();if(summary.unsettledOperations>0)failure='TEMPORAL_PRODUCT_CLEANUP_UNKNOWN';}})();return closing;
  }
- function ensureCurrent(input={}){
-  const v=own(input,[],['signal','beforeRotation']);nativeSignal(v.signal);
-  if(closed||failure||v.signal?.aborted)return Promise.reject(Object.assign(Error('TEMPORAL_PRODUCT_BOOTSTRAP_UNAVAILABLE'),{code:'TEMPORAL_PRODUCT_BOOTSTRAP_UNAVAILABLE'}));
-  if(refreshing)return refreshing;
-  if(healthy()&&current.expiresAtMs-now()>reserveMs)return Promise.resolve(Object.freeze({revision:current.revision,issuerDeliveryConfiguration:current.issuerDeliveryConfiguration}));
-  refreshing=(async()=>{let life,client,reply,old=current;active=new AbortController();const abort=()=>active?.abort();v.signal?.addEventListener('abort',abort,{once:true});
+ /** The unchanged terminal path: lose, close, and rethrow content-free. */
+ async function terminal(error){
+  lose();try{await close();}catch(cleanup){throw temporalCleanupUnknown(new AggregateError([error,cleanup],'TEMPORAL_BOOTSTRAP_AND_CLEANUP_FAILED'));}
+  if(error?.code==='TEMPORAL_PRODUCT_CLEANUP_UNKNOWN')throw error;
+  throw unavailable();
+ }
+ /** One bootstrap attempt. `startup` marks an attempt inside the initial
+  * window, the only kind that may end retryable instead of terminal. */
+ function refresh(v,startup){
+  refreshing=(async()=>{let life,client,reply,old=current,soft=false;active=new AbortController();const abort=()=>active?.abort();v.signal?.addEventListener('abort',abort,{once:true});
+   if(v.signal?.aborted)abort();
    try{
-    const started=now();life=lifetime(active.signal,old?Math.min(old.expiresAtMs,started+c.configuration.totalTimeoutMs):started+c.configuration.totalTimeoutMs);
+    const started=now(),budget=started+c.configuration.totalTimeoutMs;
+    life=lifetime(active.signal,old?Math.min(old.expiresAtMs,budget):startup&&windowEndMs!==null?Math.min(windowEndMs,budget):budget);
     const check=()=>{life.check();if(closed||failure)fail();};
     if(old){if(!callable(v.beforeRotation))fail();const receipt=await life.run(()=>track(()=>v.beforeRotation()));assertTemporalRuntimeCleanup([{status:'fulfilled',value:receipt}]);
      if(receipt===null||typeof receipt!=='object'||Object.getOwnPropertyDescriptor(receipt,'unsettledOperations')?.value!==0)
@@ -164,9 +196,24 @@ export async function startTemporalProductBootstrap(configuration,options={}){
     if(!Buffer.isBuffer(serverCaPem)||!Buffer.isBuffer(clientCaPem)||serverCaPem.length<1||serverCaPem.length>32768||clientCaPem.length<1||clientCaPem.length>32768)fail();
     client=module.createTemporalIssuerBootstrapClient({configuration:clientConfiguration,serverCaPem,clientCaPem,now});
     if(callable(client?.close))clients.add(client);
-    if(!callable(client?.available)||!callable(client?.bootstrap)||!callable(client?.close)||client.available()!==true)fail();
-    if(!old)await life.run(()=>track(()=>queued(()=>files.acquire(check))));check();
-    reply=own(await life.run(signal=>track(()=>client.bootstrap({signal}))),['schemaVersion','role','taskArn','certificateSha256','expiresAtMs','keyPem','certPem','registration']);check();
+    if(!callable(client?.available)||!callable(client?.bootstrap)||!callable(client?.close)||!callable(client?.issuanceRequested)||!callable(client?.settle)||client.available()!==true)fail();
+    // The lock and identity root are acquired once; later startup attempts reuse them.
+    if(!old&&!acquired){await life.run(()=>track(()=>queued(()=>files.acquire(check))));acquired=true;check();}
+    let material;
+    try{material=await life.run(signal=>track(()=>client.bootstrap({signal})));}
+    catch(error){
+     // Startup only: a refusal before the redeem request leaves no certificate
+     // issuer-side. Wait for the client's transports to settle so its receipt
+     // is CLEAN; anything else keeps the fence's cleanup-unknown semantics.
+     if(startup&&!old&&!closed&&!failure&&!o.signal?.aborted&&retriedCodes.includes(error?.code)&&client.issuanceRequested()===false){
+      await life.run(signal=>track(()=>client.settle({signal})));check();
+      if(client.issuanceRequested()!==false)fail();
+      const receipt=client.close();assertTemporalRuntimeCleanup([{status:'fulfilled',value:receipt}]);clients.delete(client);check();
+      soft=true;
+     }
+     throw error;
+    }
+    reply=own(material,['schemaVersion','role','taskArn','certificateSha256','expiresAtMs','keyPem','certPem','registration']);check();
     const cluster=c.configuration.clusterArn.slice(c.configuration.clusterArn.indexOf('cluster/')+8),registration=own(reply.registration,['schemaVersion','state','certificateSha256','role','peerSanUri','taskArn','revision','expiresAtMs']);
     if(reply.schemaVersion!==1||reply.role!==c.configuration.role||typeof reply.taskArn!=='string'||
        !new RegExp(`^arn:aws:ecs:us-east-1:967807252336:task/${cluster}/[a-f0-9]{32}$`,'u').test(reply.taskArn)||!hex(reply.certificateSha256)||
@@ -182,12 +229,43 @@ export async function startTemporalProductBootstrap(configuration,options={}){
     const heldRevision=revision;
     expiry=timers.setTimeout(()=>{if(current?.revision===heldRevision){lose();close().catch(()=>{});}},Math.max(1,current.expiresAtMs-now()));expiry?.unref?.();
     return Object.freeze({revision,issuerDeliveryConfiguration});
-   }catch(error){lose();try{await close();}catch(cleanup){throw temporalCleanupUnknown(new AggregateError([error,cleanup],'TEMPORAL_BOOTSTRAP_AND_CLEANUP_FAILED'));}
-    if(error?.code==='TEMPORAL_PRODUCT_CLEANUP_UNKNOWN')throw error;
-    throw Object.assign(Error('TEMPORAL_PRODUCT_BOOTSTRAP_UNAVAILABLE'),{code:'TEMPORAL_PRODUCT_BOOTSTRAP_UNAVAILABLE'});}
+   }catch(error){
+    // A settled, never-issued startup refusal does not poison the owner; the
+    // startup loop decides whether the window still allows another attempt.
+    if(soft&&!closed&&!failure&&pending.size===0&&life.pendingOperations()===0){retryable=true;throw error;}
+    await terminal(error);}
    finally{const summary=life?.close();if(summary?.unsettledOperations>0)failure='TEMPORAL_PRODUCT_CLEANUP_UNKNOWN';for(const bytes of buffers)bytes.fill(0);buffers.clear();v.signal?.removeEventListener('abort',abort);active=null;refreshing=null;}
   })();return refreshing;
  }
+ function ensureCurrent(input={}){
+  const v=own(input,[],['signal','beforeRotation']);nativeSignal(v.signal);
+  if(closed||failure||v.signal?.aborted)return Promise.reject(unavailable());
+  if(refreshing)return refreshing;
+  if(healthy()&&current.expiresAtMs-now()>reserveMs)return Promise.resolve(Object.freeze({revision:current.revision,issuerDeliveryConfiguration:current.issuerDeliveryConfiguration}));
+  return refresh(v,false);
+ }
+ /** Initial bootstrap inside the bounded startup window (see the constants). */
+ async function startup(){
+  const begun=now(),windowMs=temporalBootstrapStartupWindowMs(configuration?.limits);if(!Number.isSafeInteger(begun))fail();
+  if(o.signal?.aborted)throw unavailable();
+  windowEndMs=windowMs>0?begun+windowMs:null;
+  try{
+   for(;;){
+    retryable=false;
+    try{return await refresh({signal:o.signal},true);}
+    catch(error){
+     if(!retryable)throw error;
+     if(closed||failure)await terminal(error);
+     const at=now();
+     // No attempt starts at or after the window's end; a running attempt's
+     // own deadline is already capped there.
+     if(o.signal?.aborted||windowEndMs===null||!Number.isSafeInteger(at)||at+TEMPORAL_BOOTSTRAP_RETRY_INTERVAL_MS>=windowEndMs)await terminal(error);
+     await sleep(TEMPORAL_BOOTSTRAP_RETRY_INTERVAL_MS,o.signal);
+     if(o.signal?.aborted||closed||failure)await terminal(error);
+    }
+   }
+  }finally{windowEndMs=null;}
+ }
  const owner=Object.freeze({ensureCurrent,close,healthy,status,watch(listener){if(!callable(listener))fail();watchers.add(listener);return ()=>watchers.delete(listener);}});
- await ensureCurrent({signal:o.signal});return owner;
+ await startup();return owner;
 }

@@ -36,14 +36,20 @@ export function assertFirstRunGrantBindings(grantIntents,taskGrantId,secrets){
  return Object.freeze({controlDigest,taskDigest});
 }
 /** Fresh native authority; only absence permits the approved fixed first-run input. */
-export function createPreparedCandidateIdentity({store,identity,qualification,now=Date.now,limits,nextRunOwner,initialBindings,configurationSha256,versions,proposeInitialExpiry}){
+export function createPreparedCandidateIdentity({store,identity,qualification,now=Date.now,limits,nextRunOwner,initialBindings,configurationSha256,versions,proposeInitialExpiry,factWindowMs}){
  const binding=identity.commandContext.binding,scopes=[{kind:'client',tenantId:binding.tenantId,resourceId:identity.commandContext.clientResolution.clientId,policyRevision:qualification.policyRevision}];
+ // A run fact's deadlineMs is how long the selected run may be relied on, not this call's request budget: the context
+ // adapter folds it into the context expiry and the action-session owner inherits that as the session lifetime. Stamping
+ // the request budget here expired every session ~3s after issue (observed live 2026-10-17). The window is the reviewed
+ // run window; without one (static first-run profile) the request budget remains the bound.
+ if(factWindowMs!==undefined&&(!Number.isSafeInteger(factWindowMs)||factWindowMs<1))refuse();
+ const factUntil=()=>now()+(factWindowMs??limits.maxRequestMs);
  if(initialBindings){
   if(!nextRunOwner||typeof initialBindings.claim!=='function'||typeof initialBindings.readConversation!=='function'||typeof proposeInitialExpiry!=='function'||typeof configurationSha256!=='string'||!/^[a-f0-9]{64}$/u.test(configurationSha256)||!versions)refuse();
   const selectedClientId=identity.commandContext.clientResolution.clientId;
   const check=signal=>()=>{if(signal?.aborted)refuse();};
   const valid=(record,principal,conversationId)=>{if(!record||record.schemaVersion!==1||record.state!=='ADMITTED'||principal.tenantId!==binding.tenantId||principal.actorId!==binding.actorId||record.binding.tenantId!==principal.tenantId||record.binding.actorId!==principal.actorId||record.binding.conversationId!==conversationId||record.binding.writerFence!==1||record.selectedClientId!==selectedClientId||record.policyRevision!==qualification.policyRevision||record.configurationSha256!==configurationSha256||!same(record.versions,versions)||!Number.isSafeInteger(record.expiresAtMs))refuse();return record;};
-  const fact=selected=>JSON.stringify({binding:selected.binding,policyRevision:selected.policyRevision,checkedAtMs:now(),deadlineMs:Math.min(selected.expiresAtMs??now()+limits.maxRequestMs,now()+limits.maxRequestMs)});
+  const fact=selected=>JSON.stringify({binding:selected.binding,policyRevision:selected.policyRevision,checkedAtMs:now(),deadlineMs:Math.min(selected.expiresAtMs??factUntil(),factUntil())});
   async function original(principal,conversationId,signal){const query={principal,conversationId,selectedClientId};let record=await initialBindings.readConversation(query,check(signal));check(signal)();
    if(!record){const proposedExpiresAtMs=proposeInitialExpiry({signal});const claimed=await initialBindings.claim({...query,policyRevision:qualification.policyRevision,versions,configurationSha256,proposedExpiresAtMs},check(signal));record=claimed.record;check(signal)();}
    return valid(record,principal,conversationId);}
@@ -58,9 +64,9 @@ export function createPreparedCandidateIdentity({store,identity,qualification,no
    if(!same(saved.run.binding,record.binding)||saved.run.policyRevision!==record.policyRevision||!same(saved.run.versions,versions)||!same(saved.run.scopes,[{kind:'client',tenantId:principal.tenantId,resourceId:selectedClientId,policyRevision:record.policyRevision}]))refuse();const selected=await nextRunOwner.currentRun(request,{signal});check(signal)();if(!same(selected.binding,request)||selected.policyRevision!==record.policyRevision||!same(selected.scopes,saved.run.scopes))refuse();return fact(selected);}};
   return createNativeIdentityContext({...identity,currentOwner,selectRun:async({principal,conversationId,signal})=>{if(conversationId!==binding.conversationId)refuse();const saved=await store.readOptional(binding,{},check(signal));if(!saved)return fact({binding,policyRevision:qualification.policyRevision});if(!same(saved.run.binding,binding)||saved.run.policyRevision!==qualification.policyRevision||!same(saved.run.scopes,scopes))refuse();const selected=await nextRunOwner.selectRun({principal,conversationId,signal});return fact(await nextRunOwner.currentRun(selected.binding,{signal}));},admitInitialConversation:async({principal,conversationId,selectedClientId:requestedClient,signal})=>{if(requestedClient!==selectedClientId)refuse();return fact(await select(await original(principal,conversationId,signal),principal,conversationId,signal));},now,limits,enabled:true});
  }
- const currentOwner={async currentRun(request,{signal}){if(!same(request,binding))refuse();const check=()=>{if(signal?.aborted)refuse();};const saved=await store.readOptional(binding,{},check);check();if(saved&&(!same(saved.run.binding,binding)||saved.run.policyRevision!==qualification.policyRevision||!same(saved.run.scopes,scopes)))refuse();return JSON.stringify({binding,policyRevision:qualification.policyRevision,checkedAtMs:now(),deadlineMs:now()+limits.maxRequestMs});}};
+ const currentOwner={async currentRun(request,{signal}){if(!same(request,binding))refuse();const check=()=>{if(signal?.aborted)refuse();};const saved=await store.readOptional(binding,{},check);check();if(saved&&(!same(saved.run.binding,binding)||saved.run.policyRevision!==qualification.policyRevision||!same(saved.run.scopes,scopes)))refuse();return JSON.stringify({binding,policyRevision:qualification.policyRevision,checkedAtMs:now(),deadlineMs:factUntil()});}};
  if(nextRunOwner){
-  const fact=selected=>JSON.stringify({binding:selected.binding,policyRevision:selected.policyRevision,checkedAtMs:now(),deadlineMs:now()+limits.maxRequestMs});
+  const fact=selected=>JSON.stringify({binding:selected.binding,policyRevision:selected.policyRevision,checkedAtMs:now(),deadlineMs:factUntil()});
   const fixedCurrent=currentOwner.currentRun;currentOwner.currentRun=async(request,{signal})=>{const saved=await store.readOptional(binding,{},()=>{if(signal?.aborted)refuse();});if(!saved)return fixedCurrent(request,{signal});return fact(await nextRunOwner.currentRun(request,{signal}));};
   return createNativeIdentityContext({...identity,currentOwner,selectRun:async({principal,conversationId,signal})=>{const saved=await store.readOptional(binding,{},()=>{if(signal?.aborted)refuse();});if(!saved)return fact({binding,policyRevision:qualification.policyRevision});const selected=await nextRunOwner.selectRun({principal,conversationId,signal});return fact(await nextRunOwner.currentRun(selected.binding,{signal}));},now,limits,enabled:true});
  }
@@ -78,7 +84,7 @@ export function assemblePreparedCandidate(options){
  const nextRunOwner=multi?createPreparedNextRunOwner({store,versions:c.configuration.versions,admissionForBinding:c.admissionForBinding,now}):undefined;
  const runRegistry=multi?createPreparedRunRegistry({issuance:c.runIssuance,issuanceIntent:c.issuanceIntent,store,pool:c.pool,client:c.ecs,identity,controlCapability:secrets.control,objects:c.objects,limits:{...limits,cleanupMs:c.configuration.limits.shutdownMs},now,sourceEnabled:c.configuration.sourceEnabled,...reads,...(config.approvedReads===undefined?{}:{approvedReads:config.approvedReads}),...(c.prepareOriginal?{prepareOriginal:c.prepareOriginal}:{}),...(c.initialBindings?{initialBindings:c.initialBindings,configurationSha256:c.configurationSha256,prepareInitial:c.prepareInitial,retireInitial:c.retireInitial}:{}),...(c.allocate?{allocate:c.allocate}:{})}):null;
  const unavailableReads=createPreparedNativeReads({binding:original.binding,...(config.approvedReads===undefined?{}:{approvedReads:config.approvedReads}),now}).application;
- const identityContext=createPreparedCandidateIdentity({store,identity:{origin:identity.origin,commandContext:identity.commandContext,fetchImpl},qualification:config.qualification,now,limits,...(nextRunOwner?{nextRunOwner}:{}),...(c.initialBindings?{initialBindings:c.initialBindings,configurationSha256:c.configurationSha256,versions:c.configuration.versions,proposeInitialExpiry:c.proposeInitialExpiry}:{})});
+ const identityContext=createPreparedCandidateIdentity({store,identity:{origin:identity.origin,commandContext:identity.commandContext,fetchImpl},qualification:config.qualification,now,limits,...(config.multiRun?{factWindowMs:config.multiRun.runWindowMs}:{}),...(nextRunOwner?{nextRunOwner}:{}),...(c.initialBindings?{initialBindings:c.initialBindings,configurationSha256:c.configurationSha256,versions:c.configuration.versions,proposeInitialExpiry:c.proposeInitialExpiry}:{})});
  const conversationMembership=createCoreMembershipGate({origin:identity.origin,identityContext,fetchImpl,now,limits:{maxRequestMs:limits.maxRequestMs,maxFactBytes:262144}});
  const conversationCurrentness=createCoreConversationCurrentness({origin:identity.origin,fetchImpl,now,limits,selectedClientId:config.identity.commandContext.clientResolution.clientId});
  let controller,pending,closed=false,outerApplication;
@@ -100,6 +106,15 @@ export function assemblePreparedCandidate(options){
   sdkSessionSnapshot:Object.freeze({readSnapshot:sessionCall('sdkSessionSnapshot','readSnapshot')})});
  return Object.freeze({original,controlCapabilitySha256:controlDigest,identityContext,productPorts,native:localNative,application,bindApplication(application){if(outerApplication)refuse();outerApplication=application;},readiness:localNative.readiness,async close(){try{await runRegistry?.close();}finally{await kickoff.close();}}});
 }
+/** The startup owners handed to assemblePreparedCandidate, the task router and the runner poststart authority. The
+ * poststart authority signs runner certificates against the durable run issuer, so `issuer` must travel with the
+ * multi-run ports: omitting it refused every control start whose taskRouter.poststart is enabled (observed live 2026-10-17). */
+export function composePreparedRunBindings(b,initialBindings){
+ if(!b||typeof b.issuer!=='object'||b.issuer===null||typeof b.admissionForBinding!=='function')refuse();
+ return {runIssuance:b.runIssuance,issuanceIntent:b.issuanceIntent,admissionForBinding:b.admissionForBinding,issuer:b.issuer,
+  ...(b.prepareOriginal?{prepareOriginal:b.prepareOriginal}:{}),
+  ...(initialBindings?{initialBindings,prepareInitial:b.prepareInitial,retireInitial:b.retireInitial,configurationSha256:b.configurationSha256,proposeInitialExpiry:b.proposeInitialExpiry}:{})};
+}
 /** CLI-owned clients use the approved control workload role; task receives no AWS credentials. */
 export async function startPreparedCandidate({configuration,pool,signal,issuanceStore,capabilityAuthority,modelGrants,initialBindings,createReadsRuntime,generalReads}){
  const config=compilePreparedCandidateConfiguration(configuration.nativeCandidate,configuration.versions),reads=captureReadRuntimeOptions({...(createReadsRuntime===undefined?{}:{createReadsRuntime}),...(generalReads===undefined?{}:{generalReads})});signal?.throwIfAborted();
@@ -107,7 +122,7 @@ export async function startPreparedCandidate({configuration,pool,signal,issuance
  const [identity,task,control,proxy]=await Promise.all([config.identity.credentialFile,config.taskCapabilityFile,config.controlCapabilityFile,config.proxyCredentialFile].map(readSecret));signal?.throwIfAborted();
  // Multi-run mode (S2): the three ports are composed from startup-supplied owners; a declared multi-run mode without them fails startup
  // here instead of advertising the fixed first-run path.
- const bindings=config.multiRun===undefined?{}:(()=>{const b=createPreparedRunBindings({configuration,pool,store:createPostgresConversationStore({pool}),credentials:{proxy:proxy.toString('utf8').trim(),control:control.toString('utf8').trim()},issuanceStore,capabilityAuthority,modelGrants,limits:{maxRequestMs:configuration.limits.requestMs,maxFactBytes:131072},...(initialBindings?{initialBindings}:{})});return {runIssuance:b.runIssuance,issuanceIntent:b.issuanceIntent,admissionForBinding:b.admissionForBinding,...(b.prepareOriginal?{prepareOriginal:b.prepareOriginal}:{}),...(initialBindings?{initialBindings,prepareInitial:b.prepareInitial,retireInitial:b.retireInitial,configurationSha256:b.configurationSha256,proposeInitialExpiry:b.proposeInitialExpiry}:{})};})();
+ const bindings=config.multiRun===undefined?{}:composePreparedRunBindings(createPreparedRunBindings({configuration,pool,store:createPostgresConversationStore({pool}),credentials:{proxy:proxy.toString('utf8').trim(),control:control.toString('utf8').trim()},issuanceStore,capabilityAuthority,modelGrants,limits:{maxRequestMs:configuration.limits.requestMs,maxFactBytes:131072},...(initialBindings?{initialBindings}:{})}),initialBindings);
  // The private router borrows exactly the durable issuance/allocation/admission owners already used for multi-run execution.
  // A configuration declaration alone never supplies authorization or a task route.
  const taskRouterAuthority=configuration.taskRouter===undefined?null:(()=>{
@@ -133,6 +148,8 @@ export async function startPreparedCandidate({configuration,pool,signal,issuance
    ...(config.approvedReads===undefined?{}:{approvedReads:config.approvedReads})});
  })();
  // Approved control workload role is resolved by the adopted SDK at future effects.
+ // The run issuer belongs to the poststart authority only; assemblePreparedCandidate's option record is closed.
+ const {issuer:_poststartIssuer,...candidateBindings}=bindings;
  const ecs=new ECSClient({region:'us-east-1',maxAttempts:1}),s3=new S3Client({region:'us-east-1',maxAttempts:1});let candidate;
- try{const objects=createS3ArtifactObjects({client:s3,...config.objects,now:Date.now,maxRequestMs:configuration.limits.requestMs});candidate=assemblePreparedCandidate({configuration,pool,ecs,objects,credentials:{identity:identity.toString('utf8').trim(),task:task.toString('utf8').trim(),control:control.toString('utf8').trim(),proxy:proxy.toString('utf8').trim()},...bindings,...reads});return Object.freeze({...candidate,...(taskRouterAuthority?{taskRouterAuthority}:{}),...(poststartOwners?{poststartOwners}:{}),async close(){try{await candidate.close();}finally{ecs.destroy();s3.destroy();}}});}catch(error){ecs.destroy();s3.destroy();throw error;}
+ try{const objects=createS3ArtifactObjects({client:s3,...config.objects,now:Date.now,maxRequestMs:configuration.limits.requestMs});candidate=assemblePreparedCandidate({configuration,pool,ecs,objects,credentials:{identity:identity.toString('utf8').trim(),task:task.toString('utf8').trim(),control:control.toString('utf8').trim(),proxy:proxy.toString('utf8').trim()},...candidateBindings,...reads});return Object.freeze({...candidate,...(taskRouterAuthority?{taskRouterAuthority}:{}),...(poststartOwners?{poststartOwners}:{}),async close(){try{await candidate.close();}finally{ecs.destroy();s3.destroy();}}});}catch(error){ecs.destroy();s3.destroy();throw error;}
 }

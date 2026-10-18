@@ -20,17 +20,23 @@ export function createNativeContinuationRuntime(configuration){
  const nativeOwner=c.restorer?own(c.restorer,['restore','snapshot']):null;
  const restore=nativeOwner?storageMethod(c.restorer,'restore'):null,readNativeSnapshot=nativeOwner?storageMethod(c.restorer,'snapshot'):null;
  if(typeof now!=='function')throw executionFault('CONTINUATION_CONFIGURATION');
- async function snapshot(binding,signal){
+ async function snapshot(binding,signal,{live=true}={}){
   nativeSignal(signal);const check=()=>{if(signal?.aborted)throw executionFault('REFUSED');};
   const started=now(),receipt=assertWorkerAuthorization(await verify({capability:c.taskCapability,binding,operation:'load',inputSha256:hash({binding}),signal}),{binding,operation:'load',inputSha256:hash({binding}),started,now});
   check();const target=data(await read(binding,{},check)),selection={binding,scopes:receipt.scopes,selectedClientId:receipt.selectedClientId};
   const lifecycle=data(await execution(selection,check)),next=nextExecution?data(await nextExecution(selection,check)):null;check();
   if(lifecycle!==null&&next!==null)throw executionFault('CONTINUATION_REFUSED');const saved=next??lifecycle;
-  if(!same(target.run.binding,binding)||!same(target.run.scopes,receipt.scopes)||!['queued','running'].includes(target.run.state))throw executionFault('CONTINUATION_REFUSED');
-  if(saved!==null){if(next!==null){own(saved,['nextTurn']);buildNextTurnOptions(saved.nextTurn,{binding,versions:target.run.versions,scopes:receipt.scopes,request:target.request,sourceRequest:saved.nextTurn.sourceRequest});}
-   else {own(saved,['continuation','sourceRequest']);buildContinuationOptions(saved.continuation,{binding,versions:target.run.versions,scopes:receipt.scopes,request:target.request,sourceRequest:saved.sourceRequest});}}
-  return {target,saved,receipt};
+  if(!same(target.run.binding,binding)||!same(target.run.scopes,receipt.scopes)||live&&!['queued','running'].includes(target.run.state))throw executionFault('CONTINUATION_REFUSED');
+  let options=null;
+  if(saved!==null){if(next!==null){own(saved,['nextTurn']);options=buildNextTurnOptions(saved.nextTurn,{binding,versions:target.run.versions,scopes:receipt.scopes,request:target.request,sourceRequest:saved.nextTurn.sourceRequest});}
+   else {own(saved,['continuation','sourceRequest']);options=buildContinuationOptions(saved.continuation,{binding,versions:target.run.versions,scopes:receipt.scopes,request:target.request,sourceRequest:saved.sourceRequest});}}
+  return {target,saved,receipt,options};
  }
+ /** The SDK continuation options of this run from control's OWN durable saved lineage (lineageResumeOptions via the worker builders,
+  * verified against the target run and the task authority's scopes): null for a fresh run. The launch descriptor match of control's
+  * preparation authority (prepared-runtime.mjs) admits exactly their CLI arguments; never anything the task reports. A started run may
+  * already be past `running` when control reconciles it, so the run state is not required here: the lineage of a run is immutable. */
+ async function resumeOptions(value){const input=own(value,['binding'],['signal']);return (await snapshot(input.binding,input.signal,{live:false})).options;}
  const pin=s=>data({run:s.target.run,request:s.target.request,saved:s.saved,scopes:s.receipt.scopes,selectedClientId:s.receipt.selectedClientId,policyRevision:s.receipt.policyRevision});
  async function prepare(value){
   const input=own(value,['binding','versions'],['signal',...hints]),first=await snapshot(input.binding,input.signal),provided=hints.filter(k=>Object.hasOwn(input,k));
@@ -59,5 +65,5 @@ export function createNativeContinuationRuntime(configuration){
   const source=await createCheckpointSdkSnapshot({key:header.key,transcripts}),final=await snapshot(request.binding,input.signal);
   if(!same(pin(first),pin(final)))throw executionFault('CONTINUATION_REFUSED');return {...header,transcripts:source.transcripts()};
  }
- return Object.freeze({prepare,readSnapshot});
+ return Object.freeze({prepare,readSnapshot,resumeOptions});
 }

@@ -50,7 +50,7 @@ function fixture(){
   metadataUri:'http://169.254.170.2/v4/abcdef0123456789',peerSubjectCn:CN,
   peerUriBase:BASE,serverCaSha256:caSha256,clientCaSha256:caSha256,
   requestTimeoutMs:2000,totalTimeoutMs:10000,maxReplyBytes:16384};
- let challenge,heldCsr,redeemBody,metadataArn=TASK,authorized=true,wrongReceipt=false,wrongLeaf=false;
+ let challenge,heldCsr,redeemBody,metadataArn=TASK,authorized=true,wrongReceipt=false,wrongLeaf=false,refuseChallenge=false;
  const calls=[];
  function fakeRequest(secure){return (url,options,callback)=>{
   const call=new EventEmitter();call.destroy=()=>call.emit('error',Error('destroyed'));
@@ -60,6 +60,9 @@ function fixture(){
     if(!secure){response(callback,{TaskARN:metadataArn});return;}
     assert.equal(options.method,'POST');assert.equal(options.servername,'issuer.meri.internal');
     assert.equal(options.minVersion,'TLSv1.3');assert.equal(options.rejectUnauthorized,true);
+    if(url.pathname.endsWith('/challenge')&&refuseChallenge){
+     response(callback,{error:'TEMPORAL_ISSUER_REFUSED'},{secure,authorized,statusCode:400});return;
+    }
     if(url.pathname.endsWith('/challenge')){
      heldCsr=JSON.parse(body.toString());const id=randomUUID(),expiresAtMs=NOW+15000;
      const message=Buffer.from(JSON.stringify({schemaVersion:1,
@@ -81,6 +84,8 @@ function fixture(){
      taskArn:TASK,revision:'rev-1',expiresAtMs:issued.expiresAtMs};
     response(callback,{schemaVersion:1,certPem:issued.certPem,registration},{secure,authorized});
    }catch(error){call.emit('error',error);}
+   // Like Node's ClientRequest, the transport retires after the reply settles.
+   finally{setImmediate(()=>call.emit('close'));}
   });
   return call;
  };}
@@ -90,8 +95,10 @@ function fixture(){
  return {bootstrap,configuration,calls,issuer,otherIssuer,caPem:ca.caPem,
   setMetadataArn:value=>{metadataArn=value;},setAuthorized:value=>{authorized=value;},
   setWrongReceipt:value=>{wrongReceipt=value;},setWrongLeaf:value=>{wrongLeaf=value;},
+  setRefuseChallenge:value=>{refuseChallenge=value;},
   get redeemBody(){return redeemBody;}};
 }
+const settleTicks=async()=>{for(let n=0;n<5;n++)await new Promise(resolve=>setImmediate(resolve));};
 
 test('post-placement bootstrap signs the one-use CSR challenge and returns only verified task material',async()=>{
  const f=fixture(),client=f.bootstrap(),result=await client.bootstrap();
@@ -185,5 +192,53 @@ test('a late TLS socket close cannot turn an aborted certificate bootstrap into 
  heldCall.emit('socket',heldSocket);
  assert.equal(lateSocketDestroy,1);
  assert.equal(client.close(),receipt);
+ f.issuer.close();f.otherIssuer.close();
+});
+
+test('issuance is requested only at redeem; settle waits for transport retirement so a pre-issuance refusal can close CLEAN',async()=>{
+ const fresh=fixture(),idle=fresh.bootstrap();
+ assert.equal(idle.issuanceRequested(),false);await idle.settle();assert.equal(idle.close().state,'CLEAN');
+ fresh.issuer.close();fresh.otherIssuer.close();
+ // The issuer refuses the challenge (400): no redeem request was ever sent.
+ const refused=fixture();refused.setRefuseChallenge(true);const client=refused.bootstrap();
+ await assert.rejects(client.bootstrap(),{code:'TEMPORAL_ISSUER_BOOTSTRAP_CLIENT_REFUSED'});
+ assert.equal(refused.calls.length,2);assert.equal(client.issuanceRequested(),false);
+ await client.settle();const receipt=client.close();
+ assert.equal(receipt.state,'CLEAN');assert.equal(receipt.pendingOperations,0);assert.equal(client.close(),receipt);
+ // Without settling, the 400 reply's transport is still retiring and the first receipt is UNKNOWN for good.
+ const hasty=refused.bootstrap();await assert.rejects(hasty.bootstrap(),{code:'TEMPORAL_ISSUER_BOOTSTRAP_CLIENT_REFUSED'});
+ assert.equal(hasty.close().state,'CLEANUP_UNKNOWN');await hasty.settle();assert.equal(hasty.close().state,'CLEANUP_UNKNOWN');
+ refused.issuer.close();refused.otherIssuer.close();
+ const tls=fixture();tls.setAuthorized(false);const unauthorized=tls.bootstrap();
+ await assert.rejects(unauthorized.bootstrap(),{code:'TEMPORAL_ISSUER_BOOTSTRAP_CLIENT_REFUSED'});
+ assert.equal(unauthorized.issuanceRequested(),false);await unauthorized.settle();assert.equal(unauthorized.close().state,'CLEAN');
+ tls.issuer.close();tls.otherIssuer.close();
+ // A redeem request that was sent may have registered a certificate even when its reply is refused.
+ const wrong=fixture();wrong.setWrongReceipt(true);const late=wrong.bootstrap();
+ await assert.rejects(late.bootstrap(),{code:'TEMPORAL_ISSUER_BOOTSTRAP_CLIENT_REFUSED'});
+ assert.equal(late.issuanceRequested(),true);await late.settle();assert.equal(late.close().state,'CLEAN');
+ wrong.issuer.close();wrong.otherIssuer.close();
+ const ok=fixture(),delivered=ok.bootstrap(),material=await delivered.bootstrap();
+ assert.equal(delivered.issuanceRequested(),true);material.keyPem.fill(0);await delivered.settle();assert.equal(delivered.close().state,'CLEAN');
+ const aborted=new AbortController();aborted.abort();
+ await assert.rejects(ok.bootstrap().settle({signal:aborted.signal}),{code:'TEMPORAL_ISSUER_BOOTSTRAP_CLIENT_REFUSED'});
+ ok.issuer.close();ok.otherIssuer.close();
+});
+
+test('a pending settle is released by its abort signal, never by a transport that stays open',async()=>{
+ const f=fixture();let heldCall;
+ const request=()=>{const call=new EventEmitter();heldCall=call;call.end=()=>{};call.destroy=()=>{call.emit('error',Error('destroyed'));};return call;};
+ const client=createTemporalIssuerBootstrapClient({configuration:f.configuration,serverCaPem:f.caPem,clientCaPem:f.caPem,
+  metadataRequest:(_url,_options,callback)=>{const call=new EventEmitter();call.destroy=()=>{};
+   call.end=()=>{response(callback,{TaskARN:TASK});setImmediate(()=>call.emit('close'));};return call;},request,now:()=>NOW});
+ const pending=client.bootstrap();await settleTicks();assert.ok(heldCall);
+ const controller=new AbortController();let released=false;
+ const waiting=client.settle({signal:controller.signal}).then(()=>{released=true;},()=>{released='refused';});
+ await settleTicks();assert.equal(released,false,'the challenge request is still open');
+ controller.abort();await waiting;assert.equal(released,'refused');
+ assert.equal(client.issuanceRequested(),false);
+ const receipt=client.close();assert.equal(receipt.state,'CLEANUP_UNKNOWN');
+ await assert.rejects(pending,{code:'TEMPORAL_ISSUER_BOOTSTRAP_CLIENT_REFUSED'});
+ heldCall.emit('close');await client.settle();assert.equal(client.close(),receipt,'the first UNKNOWN witness is preserved');
  f.issuer.close();f.otherIssuer.close();
 });
