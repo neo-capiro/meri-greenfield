@@ -15,7 +15,7 @@ const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const sha=bytes=>createHash('sha256').update(bytes,'utf8').digest('hex');
 const withContext=new Set(['read_monday_client_boards','get_client_context','read_client_documents','resolve_entity','find_contacts']);
 
-/** `getCredentials` for the exact eleven signed source adapters. A missing Option B
+/** `getCredentials` for the exact signed source adapters. A missing Option B
  * delegation, task selection, or current Monday mapping refuses before source Fetch. */
 export function createRetainedReadCredentialRelay({task,nativeCredentials,getServiceSecret,now}){
  if(typeof now!=='function'||typeof getServiceSecret!=='function'||
@@ -60,6 +60,8 @@ export function createRetainedReadCredentialRelay({task,nativeCredentials,getSer
   if(!input||typeof input!=='object'||Array.isArray(input)||!Array.isArray(sources)||
     !same([...sources].sort(),required.sort())||
     Object.hasOwn(input,'clientId')&&input.clientId!==clientId||
+    operation.id==='actions.query'&&
+      (input.mode!=='client_scoped'||input.selection?.clientId!==clientId||metadata!==null)||
     canonicalSha256(input)!==p.argumentsSha256||
     canonicalSha256({input,metadata})!==p.requestSha256)refuse('ACCESS_DENIED');
   const target=data(own(p.target,['method','path','bodySha256']));
