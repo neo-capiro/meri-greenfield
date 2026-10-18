@@ -24,15 +24,17 @@ function checked(value){
  if(original.executionKey!==hash(original.binding)||original.executionId!==original.executionKey||
     !digest(original.planSha256)||!Number.isSafeInteger(original.expiresAtMs)||original.expiresAtMs<1)fail();
  const a=allocation(v.allocationJson);
- if(JSON.stringify(a)!==v.allocationJson||!same(a.run,{
+ // The native allocator and budget admission bind the parsed allocation's canonical hash. A
+ // JSONB readback may reorder keys; raw JSON whitespace/order is not part of that authority.
+ if(!same(a.run,{
   tenantId:original.binding.tenantId,actorId:original.binding.actorId,
   conversationId:original.binding.conversationId,runId:original.binding.runId
  })||Date.parse(a.schedule.expiresAt)<original.expiresAtMs)fail();
- // v1 captures the measured first-chat override. Free-form command/env values could carry a
+ // v1 captures render-material.mjs's measured first-chat override. Free-form command/env values could carry a
  // credential even though taskRequest's general parser allows them for other qualified workloads.
  const request=compileNativeTaskRequest({original,taskRequest:v.taskRequest,containerName:v.containerName});
  const worker=request.request.overrides.containerOverrides[0];
- if(!same(worker.command,['conversation-runner','--config','/run/meri/task.json'])||worker.environment.length!==0)fail();
+ if(!same(worker.command,['start'])||worker.environment.length!==0)fail();
  const q=own(v.qualification,['attempt','policyRevision']);
  if(!Number.isSafeInteger(q.attempt)||q.attempt<1||q.attempt>2147483647||!digest(q.policyRevision)||
     !Array.isArray(v.grantIntents)||v.grantIntents.length<1||v.grantIntents.length>16)fail();

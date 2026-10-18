@@ -1,14 +1,18 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {candidateFixture} from '../../test/prepared-candidate-fixture.mjs';
+import {createRenderFixture} from '../../../../infra/product-preview/first-chat/render-material.fixture.mjs';
 import {createExecutionBinding} from '../../../control/conversations/execution-boundary.mjs';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
+import {compilePreparedRunConfigurationSha256} from '../../prepared-run-configuration.mjs';
 import {compileHistoricalStopFacts,assertHistoricalStopFacts,matchHistoricalStopAllocation} from '../historical-stop-facts.mjs';
 
 function fixture(){
  const f=candidateFixture(),c=f.configuration.nativeCandidate,original=createExecutionBinding({
   binding:f.binding,versions:c.runtime.versions,plan:{qualified:'old first-chat workload'},expiresAtMs:c.runtime.deadlineMs
  });
+ // N21's product renderer uses the runner poststart ENTRYPOINT with command ['start'].
+ c.taskRequest.overrides.containerOverrides[0].command=['start'];
  const input={schemaVersion:1,original,allocationJson:c.allocationJson,taskRequest:c.taskRequest,
   containerName:c.containerName,qualification:c.qualification,grantIntents:c.grantIntents,
   configurationSha256:hash({qualified:'old configuration'}),effectiveDescriptorSha256:hash({effective:'old admission'})};
@@ -26,6 +30,32 @@ test('closed capsule retains exact old stop inputs and only derived canonical ha
  const serialized=JSON.stringify(capsule);
  for(const credential of Object.values(f.secret))assert.equal(serialized.includes(credential),false);
  for(const forbidden of ['proxyCredential','taskCapability','controlCapability','credentialFile'])assert.equal(Object.hasOwn(capsule,forbidden),false);
+});
+
+test('N21 first-chat renderer emits the exact admitted command and allocation shape',async t=>{
+ const renderer=createRenderFixture();t.after(()=>renderer.cleanup());
+ const {roles}=await renderer.render(),control=roles.control.config,c=control.nativeCandidate;
+ const original=createExecutionBinding({binding:c.runtime.binding,versions:c.runtime.versions,
+  plan:{qualified:'rendered first-chat workload'},expiresAtMs:c.runtime.deadlineMs});
+ const capsule=compileHistoricalStopFacts({schemaVersion:1,original,allocationJson:c.allocationJson,
+  taskRequest:c.taskRequest,containerName:c.containerName,qualification:c.qualification,
+  grantIntents:c.grantIntents,configurationSha256:compilePreparedRunConfigurationSha256(control),
+  effectiveDescriptorSha256:hash({originalAdmission:original.binding})});
+ assert.deepEqual(c.taskRequest.overrides.containerOverrides[0].command,['start']);
+ assert.deepEqual(c.taskRequest.overrides.containerOverrides[0].environment,[]);
+ assert.equal(capsule.allocationSha256,hash(JSON.parse(c.allocationJson)));
+ assert.deepEqual(assertHistoricalStopFacts(capsule),capsule);
+});
+
+test('allocation hash follows parsed canonical semantics across JSONB key reordering',()=>{
+ const {input,capsule}=fixture(),parsed=JSON.parse(input.allocationJson),reordered={
+  schedule:parsed.schedule,budgets:parsed.budgets,catalogSha256:parsed.catalogSha256,
+  manifestSha256:parsed.manifestSha256,manifest:parsed.manifest,run:parsed.run
+ };
+ const other=compileHistoricalStopFacts({...input,allocationJson:JSON.stringify(reordered,null,2)});
+ assert.equal(other.allocationSha256,capsule.allocationSha256);
+ assert.notEqual(other.allocationJson,capsule.allocationJson);
+ assert.deepEqual(assertHistoricalStopFacts(other),other);
 });
 
 test('historical Stop facts match an old allocation with no resource after a dispatch uncertainty',()=>{
@@ -51,6 +81,7 @@ test('credential-bearing and unreviewed command surfaces refuse before a capsule
   x=>{x.taskRequest.overrides.containerOverrides[0].environment=[{name:'MERI_PROXY_CREDENTIAL',value:'secret'}];},
   x=>{x.taskRequest.overrides.containerOverrides[0].environment=[{name:'MERI_CONFIG_PATH',value:'/run/meri/task.json'}];},
   x=>{x.taskRequest.overrides.containerOverrides[0].command.push('--token=secret');},
+  x=>{x.taskRequest.overrides.containerOverrides[0].command=['conversation-runner','--config','/run/meri/task.json'];},
   x=>{x.proxyCredential='secret';},
   x=>{x.taskRequest.credential='secret';}
  ]){const changed=structuredClone(input);change(changed);assert.throws(()=>compileHistoricalStopFacts(changed),{code:'HISTORICAL_STOP_FACTS_REFUSED'});}
