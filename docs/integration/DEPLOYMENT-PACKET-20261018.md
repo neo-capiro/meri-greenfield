@@ -55,7 +55,7 @@ Budget pins (B1): `allocation.json` `budgets.maxTurns 20`, `maxToolCalls 20`, `m
 | KMS key, routines cancellation proof | same spec, separate key and `kid` | routines |
 | KMS keys ×3, Objective (D7-2) | same spec, one per purpose | Objective activation (keys ready; activation when Core phases land) |
 | Core `INTERNAL_SERVICE_SECRET` | **new** secret `meri/preview/core/internal-service-secret` (read back 18 Oct: the preview Core task `capiro-preview-first-chat-core:2` carries no such secret, and `capiro/dev/internal-jwt-secret` is Core's JWT secret, unrelated). Generated at packet execution (32 random bytes, base64url), stored once, never in git; its exact ARN + VersionId go to the Core preview task (`secrets: INTERNAL_SERVICE_SECRET`) and to Meri's `features.reads.serviceSecretArn` / `--feature-secrets` | reads, artifacts, approvals, memory, routines |
-| IAM | control task role: `s3:GetBucket*`, `Put/Get/HeadObject` on the artifacts bucket; `kms:GenerateDataKey/Decrypt` on the Meri key; Core task role: `kms:Sign/GetPublicKey` on its keys | least privilege |
+| IAM (roles read back 18 Oct) | control task role `MeriPreview-control-task`: `s3:GetBucket*`, `Put/Get/HeadObject` on the artifacts bucket; `kms:GenerateDataKey/Decrypt` on the Meri key `1cca74fc…`. Core preview task role `Capiro-Preview-First-Chat-ServeTaskTaskRoleD6B44EC7-…`: `kms:Sign/GetPublicKey` on the execution and routines keys. Secret reads: `MeriPreview-control-execution` (the new service secret, via the control material bundle) and `Capiro-Preview-First-Chat-ServeExecutionRole9B512BD-…` (the same secret for `INTERNAL_SERVICE_SECRET`). The temporal worker task has no task role and needs none. | least privilege |
 
 ## 4. Database (D016 #1)
 
