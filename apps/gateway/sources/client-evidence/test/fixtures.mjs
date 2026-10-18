@@ -5,12 +5,12 @@ import {resolveOperationContract} from '../../../../../packages/contracts/retrie
 export const NOW=Date.parse('2026-10-13T12:00:00Z'),asOf=new Date(NOW).toISOString();
 export const id=digit=>`${digit.repeat(8)}-${digit.repeat(4)}-4${digit.repeat(3)}-8${digit.repeat(3)}-${digit.repeat(12)}`;
 export const clientId=id('9'),tenantId=id('1'),documentId='synthetic-doc';
-export const operations={profile:{id:'get_client_context',version:'0.2.0'},documents:{id:'read_client_documents',version:'0.2.0'}};
+export const operations={profile:{id:'get_client_context',version:'0.3.0'},documents:{id:'read_client_documents',version:'0.2.0'}};
 export const endpoints=Object.fromEntries(Object.values(operations).map((operation,index)=>[operation.id,`https://client-evidence.example.invalid/canonical/${index}`]));
 export const sha=text=>createHash('sha256').update(text,'utf8').digest('hex');
 export const fullBody='😀Stored document preview.\nLate decisive evidence: the requested funding was withheld.';
 const documentHash=sha('Synthetic original document bytes, distinct from extracted section text.');
-const profileSchema=JSON.parse(readFileSync(new URL('../../../../../packages/contracts/retrieval-0.2/client-knowledge-profile.schema.json',import.meta.url)));
+const profileSchema=JSON.parse(readFileSync(new URL('../../../../../packages/contracts/retrieval-0.2/client-knowledge-profile-v03.schema.json',import.meta.url)));
 export const sections=['capabilities','people','facilities','submissionHistory','advocacyMatters','advocacyRecords'];
 const rowDefinitions=['ProfileClientCapability','ProfileClientPerson','ProfileClientFacility','ProfileClientSubmissionHistory','ProfileAdvocacyMatter','ProfileAdvocacyRecord'];
 // Schema-derived scalar boilerplate; test expectations are literal domain outcomes.
@@ -26,7 +26,7 @@ export function profileFields(definition) {
 }
 function profilePage(input) {
  const client={...profileFields('ProfileClient'),id:clientId,tenantId,name:'Synthetic named client',status:'active'};
- const page={tool:'get_client_context',generatedAt:asOf,profileSections:{},profile:{},profileSources:{},
+ const page={tool:'get_client_context',generatedAt:asOf,readWindow:{startedAt:asOf,completedAt:asOf},profileSections:{},profile:{},profileSources:{},
   coverageNote:'Profile counts cover the complete authorized section at read time. Summary records omit fields; request a section for full records and follow nextCursor until complete. For a requested complete inventory, use section + representation summary + limit 50 and exhaust every requested section before summarizing; do not stop at a sample while more records are available. Unavailable or unrequested sections are not empty. submissionHistory is the older capability submission ledger; advocacyMatters and advocacyRecords are current Advocacy History, including unassigned records. An auto-generated matter or inferred evidence class is not verified advocacy or proof of causation. Engagement context contains recent items only.',
   context:{client,recentActivity:[],keyStakeholders:[],openThreads:[],openTasks:[],summary:{meetings:0,mailThreads:0,contacts:0,openTasks:0}}};
  for(const section of sections){const selected=input.section===null||input.section===section;

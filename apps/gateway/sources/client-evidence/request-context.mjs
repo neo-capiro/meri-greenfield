@@ -9,9 +9,10 @@ export {frozenData,ownFields} from '../source-admission.mjs';
 export const operationIds=Object.freeze(['get_client_context','read_client_documents']);
 const aborted=Object.getOwnPropertyDescriptor(AbortSignal.prototype,'aborted').get;
 const same=(left,right)=>canonicalSha256(left)===canonicalSha256(right);
+const profileClockSkewMs=5000;
 export function clientEvidenceContract(reference) {
   const operation=frozenData(ownFields(reference,['id','version']));
-  if(!operationIds.includes(operation.id)||operation.version!=='0.2.0')deny('GATEWAY_CONFIGURATION');
+  if(!operationIds.includes(operation.id)||operation.version!==(operation.id==='get_client_context'?'0.3.0':'0.2.0'))deny('GATEWAY_CONFIGURATION');
   return {operation,contract:resolveOperationContract(operation)};
 }
 export function readContext(call,now) {
@@ -62,11 +63,17 @@ export function readContext(call,now) {
   return {operation,contract,input,request,authority,options,metadata:normalized.metadata,invocationId:fields.invocationId,
     argumentsSha256:normalized.argumentsSha256,signal,deadlineMs,active};
 }
-export function assertClientEvidenceResult(result,context) {
+export function assertClientEvidenceResult(result,context,{receivedAtMs,deadlineMs=context.deadlineMs}={}) {
   try {context.contract.assertOutput(result,{request:context.request,...context.options});}
   catch {deny('INVALID_RESULT');}
   if(context.operation.id==='get_client_context') {
     if(result.context.client.tenantId!==context.authority.binding.tenantId)deny('INVALID_RESULT');
+    const receivedAt=receivedAtMs??context.active(),startedAt=Date.parse(result.readWindow.startedAt),
+      completedAt=Date.parse(result.readWindow.completedAt);
+    if(!Number.isSafeInteger(receivedAt)||!Number.isSafeInteger(deadlineMs)||
+        startedAt<Date.parse(context.options.asOf)-profileClockSkewMs||
+        completedAt>receivedAt+profileClockSkewMs||
+        completedAt>Math.min(context.deadlineMs,deadlineMs)+profileClockSkewMs)deny('INVALID_RESULT');
   }else if(!same(result.binding,context.authority.binding)||!same(result.subject,context.authority.subject))deny('INVALID_RESULT');
   context.active();return result;
 }
