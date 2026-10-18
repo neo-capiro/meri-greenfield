@@ -5,8 +5,10 @@ import {createDispatchLifetime} from '../../dispatch/dispatch-lifetime.mjs';
 import {deny,safeFailure} from '../../dispatch/operation-result.mjs';
 import {cancelBody,responseBody,readJsonResponse} from '../json-response.mjs';
 import {operationIds,readContext,assertIdentityContactsResult,frozenData,ownFields} from './request-context.mjs';
-function configuredEndpoints(value){const fields=ownFields(value,operationIds),out={};for(const id of operationIds){try{
- if(typeof fields[id]!=='string')deny('GATEWAY_CONFIGURATION');const url=new URL(fields[id]);
+function configuredEndpoints(value){const fields=ownFields(value,[],operationIds),out={};
+ if(Object.keys(fields).length===0)deny('GATEWAY_CONFIGURATION');
+ for(const [id,endpoint] of Object.entries(fields)){try{
+ if(typeof endpoint!=='string')deny('GATEWAY_CONFIGURATION');const url=new URL(endpoint);
  if(url.protocol!=='https:'||url.username||url.password||url.search||url.hash)deny('GATEWAY_CONFIGURATION');out[id]=url.href;
  }catch{deny('GATEWAY_CONFIGURATION');}}return Object.freeze(out);}
 export function createIdentityContactsHttpAdapter(options){
@@ -16,7 +18,9 @@ export function createIdentityContactsHttpAdapter(options){
     maxRequestMs<1||maxRequestMs>3600000||!Number.isSafeInteger(maxResponseBytes)||maxResponseBytes<1||maxResponseBytes>16777216)deny('GATEWAY_CONFIGURATION');
  const endpoints=configuredEndpoints(configured);
  async function read(call){let life,acquired;try{
-  const context=readContext(call,now);let cutoff=Math.min(context.deadlineMs,context.active()+maxRequestMs);
+  const context=readContext(call,now),endpoint=endpoints[context.operation.id];
+  if(endpoint===undefined)deny('UNAVAILABLE');
+  let cutoff=Math.min(context.deadlineMs,context.active()+maxRequestMs);
   life=createDispatchLifetime({deadlineMs:cutoff,now,signal:context.signal});const active=()=>{life.check();return context.active(cutoff);};
   const pins=Object.freeze({operation:context.operation,input:context.input,metadata:context.metadata,normalizationContext:context.normalizationContext,
     argumentsSha256:context.argumentsSha256,requestSha256:context.requestSha256,binding:context.authority.binding,subject:context.authority.subject,
@@ -28,7 +32,7 @@ export function createIdentityContactsHttpAdapter(options){
      !Number.isSafeInteger(credential.expiresAtMs)||credential.expiresAtMs<=active()||credential.expiresAtMs>context.deadlineMs||
      ![credential.bearerToken,credential.serviceSecret].every(token=>typeof token==='string'&&token.length>=1&&token.length<=8192&&/^[\x21-\x7e]+$/u.test(token)))deny('ACCESS_DENIED');
   cutoff=Math.min(cutoff,credential.expiresAtMs);life.limitDeadline(cutoff);active();
-  const response=await life.run(async signal=>{active();const result=await fetchImpl(endpoints[context.operation.id],{method:'POST',redirect:'error',credentials:'omit',cache:'no-store',signal,
+  const response=await life.run(async signal=>{active();const result=await fetchImpl(endpoint,{method:'POST',redirect:'error',credentials:'omit',cache:'no-store',signal,
     headers:{authorization:`Bearer ${credential.bearerToken}`,'x-internal-service-secret':credential.serviceSecret,'content-type':'application/json',accept:'application/json','accept-encoding':'identity'},
     body:canonicalize({input:context.input,metadata:context.metadata})});acquired=result;
     try{active();return result;}catch(error){try{cancelBody(responseBody(result));}catch{}throw error;}});

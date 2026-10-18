@@ -15,7 +15,8 @@ export function createClientEvidenceHttpAdapter(options) {
       !Number.isSafeInteger(maxResponseBytes)||maxResponseBytes<1||maxResponseBytes>16777216)deny('GATEWAY_CONFIGURATION');
   let endpoints;
   try {
-    endpoints=frozenData(ownFields(configured,operationIds));
+    endpoints=frozenData(ownFields(configured,[],operationIds));
+    if(Object.keys(endpoints).length===0)deny('GATEWAY_CONFIGURATION');
     for(const endpoint of Object.values(endpoints)) {
       if(typeof endpoint!=='string')deny('GATEWAY_CONFIGURATION');
       const url=new URL(endpoint);
@@ -26,6 +27,8 @@ export function createClientEvidenceHttpAdapter(options) {
     let lifetime,acquired;
     try {
       const context=readContext(call,now);
+      const endpoint=endpoints[context.operation.id];
+      if(endpoint===undefined)deny('UNAVAILABLE');
       const protocol=frozenData({input:context.input,metadata:context.metadata});
       const requestSha256=canonicalSha256(protocol),body=canonicalize(protocol);
       let cutoff=Math.min(context.deadlineMs,context.active()+maxRequestMs);
@@ -45,7 +48,7 @@ export function createClientEvidenceHttpAdapter(options) {
       cutoff=Math.min(cutoff,credentials.expiresAtMs);lifetime.limitDeadline(cutoff);active();
       const response=await lifetime.run(async signal=>{
         active();
-        const result=await fetchImpl(endpoints[context.operation.id],{method:'POST',redirect:'error',credentials:'omit',
+        const result=await fetchImpl(endpoint,{method:'POST',redirect:'error',credentials:'omit',
           cache:'no-store',signal,headers:{authorization:`Bearer ${credentials.bearerToken}`,
             'x-internal-service-secret':credentials.serviceSecret,'content-type':'application/json',
             accept:'application/json','accept-encoding':'identity'},body});
