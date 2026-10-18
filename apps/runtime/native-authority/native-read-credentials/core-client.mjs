@@ -13,6 +13,13 @@ import {readJsonResponse,responseBody,cancelBody} from '../../../gateway/sources
 import {safeFailure} from '../../../gateway/dispatch/operation-result.mjs';
 const same=(a,b)=>hash(a)===hash(b),SHA=/^[a-f0-9]{64}$/u,UUID=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u;
 const ROLES=new Set(['standard_user','user_admin','capiro_admin']);
+/** Membership permissions Core is known to answer (#84 @ 0304b0ef: a standard user carries 'memory.propose.firm'). For native reads
+ * every permission is DATA, never authority: read authority is the active membership, role and visible clients alone. The list
+ * is validated exactly as the canonical product membership gate does (product-access/membership.mjs): at most 64 unique,
+ * well-formed lower-case strings; an unknown well-formed permission is accepted and ignored. */
+export const NATIVE_READ_KNOWN_PERMISSIONS=Object.freeze(['memory.propose.firm']);
+const PERMISSION=/^[a-z][a-z0-9_.-]{0,63}$/u;
+const permissionsData=value=>Array.isArray(value)&&value.length<=64&&new Set(value).size===value.length&&value.every(p=>typeof p==='string'&&PERMISSION.test(p));
 const refuse=code=>{throw nativeReadFault(code);};
 const failure=error=>nativeReadFault(nativeReadFailureCode(error)??(safeFailure(error).message==='INTERNAL_ERROR'?'UNAVAILABLE':safeFailure(error).message));
 function clocks(v,{started,now}){const at=now();if(!Number.isSafeInteger(v.checkedAtMs)||v.checkedAtMs<started||v.checkedAtMs>at||!Number.isSafeInteger(v.expiresAtMs)||v.expiresAtMs<=at)refuse('ACCESS_DENIED');}
@@ -39,7 +46,7 @@ export function createNativeToolAuthorityClient(configuration={}){
   acquired=await life.run(signal=>{const pending=Promise.resolve(c.fetchImpl(origin+'/api/clio/application-authority/membership',{method:'POST',redirect:'error',credentials:'omit',cache:'no-store',headers:{authorization:'Bearer '+v.credential,'content-type':'application/json',accept:'application/json','accept-encoding':'identity'},body:'{}',signal}));pending.then(r=>{if(life.signal.aborted)try{cancelBody(responseBody(r));}catch{}},()=>{});return pending;});
   const m=data(await readJsonResponse(acquired,{lifetime:life,maxResponseBytes:131072}));own(m,['tenantId','actorId','status','role','permissions','clientIds','membershipRevision','checkedAtMs','expiresAtMs']);
   clocks(m,{started:memberStarted,now});life.limitDeadline(m.expiresAtMs);
-  if(!same({tenantId:m.tenantId,actorId:m.actorId},before.principal)||m.status!=='active'||!ROLES.has(m.role)||!SHA.test(m.membershipRevision)||!Array.isArray(m.permissions)||m.permissions.length!==0||!Array.isArray(m.clientIds)||m.clientIds.length>4096||new Set(m.clientIds).size!==m.clientIds.length||m.clientIds.some(id=>typeof id!=='string'||!UUID.test(id)))refuse('ACCESS_DENIED');
+  if(!same({tenantId:m.tenantId,actorId:m.actorId},before.principal)||m.status!=='active'||!ROLES.has(m.role)||!SHA.test(m.membershipRevision)||!permissionsData(m.permissions)||!Array.isArray(m.clientIds)||m.clientIds.length>4096||new Set(m.clientIds).size!==m.clientIds.length||m.clientIds.some(id=>typeof id!=='string'||!UUID.test(id)))refuse('ACCESS_DENIED');
   const after=await identify();if(!same(before.principal,after.principal)||before.identityRevision!==after.identityRevision)refuse('ACCESS_DENIED');life.check();
   // Core confirmed this equality ONLY for this fixed no-tenant/no-impersonation/no-cookie client.
   return assertNativeToolAuthority({principal:after.principal,identityRevision:after.identityRevision,actorRole:m.role,clientIds:m.clientIds,membershipRevision:m.membershipRevision,checkedAtMs:Math.min(before.checkedAtMs,m.checkedAtMs,after.checkedAtMs),expiresAtMs:Math.min(v.deadlineMs,before.expiresAtMs,m.expiresAtMs,after.expiresAtMs)},{started:began,now});

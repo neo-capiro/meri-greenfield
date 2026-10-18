@@ -15,13 +15,14 @@ import {NATIVE_READ_FAMILIES} from '../../../../gateway/sources/retained-reads/n
 export const uuid=d=>`${d.repeat(8)}-${d.repeat(4)}-4${d.repeat(3)}-8${d.repeat(3)}-${d.repeat(12)}`;
 export const origin='https://native-core.example.invalid';
 export function coreFixture(options={}){
- const state={now:1800000000000,role:'standard_user',clientIds:[],identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64),contextRevision:'d'.repeat(64),context:{},mode:'off',calls:[],nativeExpiry:1800000060000},now=options.now??(()=>state.now),principal={tenantId:uuid('b'),actorId:uuid('c')};
+ // Core #84 @ 0304b0ef answers a standard user's membership with permissions ['memory.propose.firm'] (spec lines 243/365).
+ const state={now:1800000000000,role:'standard_user',permissions:['memory.propose.firm'],clientIds:[],identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64),contextRevision:'d'.repeat(64),context:{},mode:'off',calls:[],nativeExpiry:1800000060000},now=options.now??(()=>state.now),principal={tenantId:uuid('b'),actorId:uuid('c')};
  const fetchImpl=async(url,init)=>{
   const path=new URL(url).pathname,body=typeof init.body==='string'?JSON.parse(init.body):undefined;state.calls.push({url,init,path,body});await state.beforeResponse?.(path);
   const value=path.endsWith('/identity')?{principal:state.principal??principal,identityRevision:state.identityRevision,checkedAtMs:now(),expiresAtMs:state.nativeExpiry}:
    path.endsWith('/context')?{identitySha256:body.identitySha256,principal:state.principal??principal,identityRevision:state.identityRevision,conversationId:body.conversationId,selectedClientId:body.clientId,contextRevision:state.contextRevision,checkedAtMs:now(),expiresAtMs:state.nativeExpiry,...state.context}:
    path.endsWith('/read-mode-observation')?{operation:body.operation,requestSha256:body.requestSha256,principal:state.principal??principal,surface:'chat',evidenceAccuracyMode:state.mode}:
-   {...principal,status:'active',role:state.role,permissions:[],clientIds:state.clientIds,membershipRevision:state.membershipRevision,checkedAtMs:now(),expiresAtMs:state.nativeExpiry};
+   {...principal,status:'active',role:state.role,permissions:state.permissions,clientIds:state.clientIds,membershipRevision:state.membershipRevision,checkedAtMs:now(),expiresAtMs:state.nativeExpiry};
   state.mutate?.(value,path);return state.response?.(value,path)??Response.json(value);
  };
  const configuration={origin,fetchImpl,now,enabled:true},client=createNativeToolAuthorityClient(configuration);

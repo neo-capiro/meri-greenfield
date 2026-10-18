@@ -12,7 +12,7 @@ test('fixed ordinary identity/member/identity boundary preserves principal, sepa
 });
 for(const role of ['standard_user','user_admin','capiro_admin'])test(`current exact role ${role}`,async()=>{const f=coreFixture();f.state.role=role;assert.equal((await f.client.readCurrent(f.request())).actorRole,role);});
 for(const [label,mutate] of [
- ['portal floor',r=>r.role='client_portal_user'],['unknown role',r=>r.role='admin'],['inactive',r=>r.status='inactive'],['extra field',r=>r.extra=true],['foreign actor',r=>r.actorId=uuid('a')],['foreign tenant',r=>r.tenantId=uuid('a')],['revision format',r=>r.membershipRevision='private'],['nonempty permissions',r=>r.permissions=['admin']],['duplicate clients',r=>r.clientIds=[uuid('d'),uuid('d')]],['invalid client',r=>r.clientIds=['clerk_user']],['oversized clients',r=>r.clientIds=Array(4097).fill(uuid('d'))],['stale',r=>r.checkedAtMs--],['future',r=>r.checkedAtMs++],['expired',r=>r.expiresAtMs=r.checkedAtMs],
+ ['portal floor',r=>r.role='client_portal_user'],['unknown role',r=>r.role='admin'],['inactive',r=>r.status='inactive'],['extra field',r=>r.extra=true],['foreign actor',r=>r.actorId=uuid('a')],['foreign tenant',r=>r.tenantId=uuid('a')],['revision format',r=>r.membershipRevision='private'],['malformed permissions',r=>r.permissions=['Admin']],['duplicate permissions',r=>r.permissions=['admin','admin']],['duplicate clients',r=>r.clientIds=[uuid('d'),uuid('d')]],['invalid client',r=>r.clientIds=['clerk_user']],['oversized clients',r=>r.clientIds=Array(4097).fill(uuid('d'))],['stale',r=>r.checkedAtMs--],['future',r=>r.checkedAtMs++],['expired',r=>r.expiresAtMs=r.checkedAtMs],
 ])test(`membership refuses ${label}`,async()=>{const f=coreFixture();f.state.mutate=(r,p)=>{if(p.endsWith('/membership'))mutate(r);};await refused(f.client.readCurrent(f.request()));assert.equal(f.state.calls.length,2);});
 for(const [label,mutate] of [['principal',r=>r.principal.actorId=uuid('d')],['identity revision',r=>r.identityRevision='d'.repeat(64)]])test(`outer identity ${label} drift withholds fact`,async()=>{const f=coreFixture();f.state.mutate=(r,p)=>{if(p.endsWith('/identity')&&f.state.calls.length===3)mutate(r);};await refused(f.client.readCurrent(f.request()));});
 for(const [label,response] of [
@@ -22,3 +22,16 @@ test('disabled and missing dependencies refuse before IO',async()=>{for(const ch
 test('configuration rejects caller header/origin overrides without invoking getters',()=>{const f=coreFixture();assert.throws(()=>createNativeToolAuthorityClient({...f.configuration,headers:{cookie:'synthetic'}}));assert.throws(()=>createNativeToolAuthorityClient({...f.configuration,origin:origin+'/route'}));let touched=false;assert.throws(()=>createNativeToolAuthorityClient({...f.configuration,get extra(){touched=true;return 1;}}));assert.equal(touched,false);});
 test('aborted or elapsed request refuses before HTTP',async()=>{const f=coreFixture(),abort=new AbortController();abort.abort();await refused(f.client.readCurrent({...f.request(),signal:abort.signal}));await refused(f.client.readCurrent({...f.request(),deadlineMs:f.now()}));assert.equal(f.state.calls.length,0);});
 test('bounded wait refuses and retires late response body',async()=>{const f=coreFixture();let resolve,cancelled=false;f.configuration.maxRequestMs=15;f.configuration.fetchImpl=()=>new Promise(r=>resolve=r);const client=createNativeToolAuthorityClient(f.configuration);await refused(client.readCurrent(f.request()));resolve(new Response(new ReadableStream({cancel(){cancelled=true;}}),{headers:{'content-type':'application/json'}}));await new Promise(r=>setImmediate(r));assert.equal(cancelled,true);});
+
+test('golden Core membership receipt: a standard user with permissions [memory.propose.firm] reads; permissions never become authority',async()=>{
+ const f=coreFixture();f.state.clientIds=['a1234567-b123-4c12-8d12-e123456789ab'];
+ const r=await f.client.readCurrent(f.request());assert.equal(r.actorRole,'standard_user');assert.deepEqual(r.clientIds,['a1234567-b123-4c12-8d12-e123456789ab']);
+ assert.equal(Object.hasOwn(r,'permissions'),false,'the read authority carries no permission');
+ for(const permissions of [[],['memory.propose.firm'],['memory.propose.firm','future.permission_x']]){f.state.permissions=permissions;assert.deepEqual(await f.client.readCurrent(f.request()),{...r,checkedAtMs:r.checkedAtMs,expiresAtMs:r.expiresAtMs});}
+});
+
+test('malformed membership permissions refuse, exactly as the canonical membership gate',async()=>{
+ for(const permissions of [null,'memory.propose.firm',['memory.propose.firm','memory.propose.firm'],['Memory.Propose'],[''],[7],Array.from({length:65},(_,i)=>`p${i}`)]){
+  const f=coreFixture();f.state.permissions=permissions;await refused(f.client.readCurrent(f.request()));
+ }
+});
