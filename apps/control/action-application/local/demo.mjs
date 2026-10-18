@@ -8,6 +8,7 @@ import {data,own,deny} from '../../commands/protocol.mjs';
 import {createCommandAuthority} from '../../../gateway/index.mjs';
 import {createLocalActionIdentity} from '../../../gateway/local-action/identity.mjs';
 import {createLocalActionGateway} from '../../../gateway/local-action/gateway.mjs';
+import {fixtureSignedActionReceipt} from '../../../gateway/local-action/fixture-gateway.mjs';
 import {createLocalLookupAuthorizer} from '../../../gateway/local-action/control-authorizer.mjs';
 import {createTaskLookupDelivery,createPostgresTaskLookupStore,assertTaskLookupStoredBinding} from '../../task-lookup/index.mjs';
 import {createPostgresApprovalMetadataStore,createTaskCreateApprovalMetadataOwner} from '../../commands/approval-metadata/index.mjs';
@@ -38,9 +39,13 @@ export async function createLocalActionDemo(options){
  const issued=identity.issueCredential({ttlMs:Math.max(1,cutoff-now())});h.invocation.capabilitySha256=issued.capabilitySha256;h.state().grant.capability_sha256=issued.capabilitySha256;
  const credential=randomBytes(32).toString('base64url'),credentialHash=hash(credential),commandCredential=randomBytes(32).toString('base64url');
  const current=async signal=>{active(signal);await identity.authorityPorts.verifyCapability(issued.credential,{signal});active(signal);const s=identity.status();if(!s.clientAllowed||!s.sourceEnabled)deny('ACCESS_DENIED');};
- const source={origin:'https://local-action.invalid',getCredentials:async({signal})=>{await current(signal);return{binding:f.binding,bearerToken:'SYNTHETIC_SOURCE',serviceSecret:'SYNTHETIC_SERVICE',expiresAtMs:cutoff};},fetchImpl:async(url,init)=>{
-  await current(init.signal);if(url!=='https://local-action.invalid/api/clio/tools/query_action_items'||init.method!=='POST')deny('ACCESS_DENIED');reads++;
-  return new Response(JSON.stringify(nativeScopedPage(JSON.parse(init.body))),{headers:{'content-type':'application/json'}});
+ const source={origin:'https://local-action.invalid',getCredentials:async pins=>{
+  await current(pins.signal);
+  return fixtureSignedActionReceipt(pins,{bearerToken:'SYNTHETIC_SOURCE',serviceSecret:'SYNTHETIC_SERVICE',expiresAtMs:Math.min(cutoff,pins.deadlineMs)});
+ },fetchImpl:async(url,init)=>{
+  await current(init.signal);if(url!=='https://local-action.invalid/api/clio/tools/actions.query'||init.method!=='POST')deny('ACCESS_DENIED');reads++;
+  const {input}=JSON.parse(init.body),{clientId,actionItemId,status,sort,limit}=input.selection;
+  return new Response(JSON.stringify(nativeScopedPage({clientId,actionItemId,status,sort,limit,cursor:input.cursor})),{headers:{'content-type':'application/json'}});
  }};
  const gateway=createLocalActionGateway({mode,identity,pool:h.pool,allocationJson:JSON.stringify(h.allocation),source,limits,now,newId:randomUUID});
  try{await gateway.bindTrustedGrant(h.json());}catch(error){identity.close();throw error;}
