@@ -36,9 +36,9 @@ test('a committed cancellation behind a lost acknowledgement is reported once, n
  try{await x.running();assert.deepEqual(await x.stop(),{state:'cancelled'});assert.deepEqual(await x.read(),{state:'cancelled',cancelled:1});}finally{x.f.close();}
 });
 
-test('a refused cancellation of a still-live run stays an error and writes nothing',async()=>{
+test('an unproven cancellation of a still-live run stays UNKNOWN and writes nothing',async()=>{
  const x=await stopFixture({async cancelJournal(){throw Object.assign(Error('STORE_UNAVAILABLE'),{code:'STORE_UNAVAILABLE'});}});
- try{await x.running();await assert.rejects(x.stop(),/STORE_UNAVAILABLE/);assert.deepEqual(await x.read(),{state:'running',cancelled:0});assert.deepEqual(x.calls.cancels,[]);}finally{x.f.close();}
+ try{await x.running();await assert.rejects(x.stop(),error=>error.code==='LIFECYCLE_STOP_UNKNOWN'&&error.outcome==='UNKNOWN');assert.deepEqual(await x.read(),{state:'running',cancelled:0});assert.deepEqual(x.calls.cancels,[]);}finally{x.f.close();}
 });
 
 test('an unknown Temporal cancel keeps the durable fence; Stop after a control restart asks again without a second write',async()=>{
@@ -106,11 +106,23 @@ test('revocation after an acknowledged terminal fence suppresses success but can
  try{await x.running();await assert.rejects(x.stop(),error=>error.code==='LIFECYCLE_STOP_UNKNOWN'&&error.outcome==='UNKNOWN');assert.equal(x.calls.cancels.length,1);assert.equal(x.calls.native.length,1);assert.deepEqual(await x.read(),{state:'cancelled',cancelled:1});}finally{x.f.close();}
 });
 
+test('committed cancellation with lost acknowledgement and revoked session still attempts both stop owners',async()=>{
+ let x;x=await stopFixture({async cancelJournal(journal,...args){await journal.cancel(...args);x.f.state.revoked=true;throw Error('synthetic lost COMMIT acknowledgement');}});
+ try{await x.running();await assert.rejects(x.stop(),error=>error.code==='LIFECYCLE_STOP_UNKNOWN'&&error.outcome==='UNKNOWN');assert.deepEqual(await x.read(),{state:'cancelled',cancelled:1});assert.deepEqual(x.calls.cancels,[binding.runId]);assert.equal(x.calls.native.length,1);}finally{x.f.close();}
+});
+
+test('uncommitted cancellation with revoked session cannot authorize stop-only cleanup',async()=>{
+ let x;x=await stopFixture({async cancelJournal(){x.f.state.revoked=true;throw Error('synthetic write not committed');}});
+ try{await x.running();await assert.rejects(x.stop(),error=>error.code==='LIFECYCLE_STOP_UNKNOWN'&&error.outcome==='UNKNOWN');assert.deepEqual(await x.read(),{state:'running',cancelled:0});assert.deepEqual(x.calls.cancels,[]);assert.deepEqual(x.calls.native,[]);}finally{x.f.close();}
+});
+
 test('the lifecycle owner refuses composition without journal or dispatcher cancellation',async()=>{
  const f=await applicationFixture({transitions:true,initialInput:true});
  try{const base={service:f.service,checkpoints:{async read(){}},sessions:f.sessions,reconcileOriginal:async()=>({state:'reconciled'})};
   const journal={...f.store.lifecycle};delete journal.cancel;
   assert.throws(()=>createConversationLifecycleService({...base,store:{...f.store,lifecycle:journal},dispatcher:{...f.dispatcher,async signal(){}}}),/LIFECYCLE_CONFIGURATION/);
+  const noFence={...f.store.lifecycle};delete noFence.readStopFence;
+  assert.throws(()=>createConversationLifecycleService({...base,store:{...f.store,lifecycle:noFence},dispatcher:{...f.dispatcher,async signal(){},async cancel(){}}}),/LIFECYCLE_CONFIGURATION/);
   assert.throws(()=>createConversationLifecycleService({...base,store:f.store,dispatcher:{async start(){},async signal(){}}}),/LIFECYCLE_CONFIGURATION/);
   assert.throws(()=>createConversationLifecycleService({...base,reconcileOriginal:undefined,store:f.store,dispatcher:{...f.dispatcher,async signal(){}}}),/LIFECYCLE_CONFIGURATION/);
  }finally{f.close();}

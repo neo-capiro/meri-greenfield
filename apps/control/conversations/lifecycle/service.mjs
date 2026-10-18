@@ -9,7 +9,7 @@ const receipt=(p,replayed=p.replayed)=>assertLifecycleReceipt({controlId:p.input
 import {cleanupRead} from '../service.mjs';
 export function createConversationLifecycleService({service,store,dispatcher,reconcileOriginal,checkpoints,nativeAdmission,approvals,sessions,now=Date.now,newId=randomUUID,maxRequestMs=3000}){
  const journal=store?.lifecycle;
- if(['authenticateSession','readCurrentState'].some(k=>typeof sessions?.[k]!=='function')||['history','loadForExecution','publish'].some(k=>typeof service?.[k]!=='function')||['begin','change','get','controls','claim','checkpoint','readCheckpoint','execution','continuation','cancel'].some(k=>typeof journal?.[k]!=='function')||['signal','cancel'].some(k=>typeof dispatcher?.[k]!=='function')||typeof reconcileOriginal!=='function'||typeof checkpoints?.read!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('LIFECYCLE_CONFIGURATION');
+ if(['authenticateSession','readCurrentState'].some(k=>typeof sessions?.[k]!=='function')||['history','loadForExecution','publish'].some(k=>typeof service?.[k]!=='function')||['begin','change','get','controls','claim','checkpoint','readCheckpoint','execution','continuation','cancel','readStopFence'].some(k=>typeof journal?.[k]!=='function')||['signal','cancel'].some(k=>typeof dispatcher?.[k]!=='function')||typeof reconcileOriginal!=='function'||typeof checkpoints?.read!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('LIFECYCLE_CONFIGURATION');
  const event=(type,data)=>({contractVersion:'0.1.0',eventId:newId(),createdAt:new Date(now()).toISOString(),type,data});
  /** Every lifecycle operation reads the conversation through the gated history (retention serving gate included); cancellation uses
   * the cleanup-only read so a suppressed subject can still be stopped without any content release. */
@@ -101,11 +101,15 @@ export function createConversationLifecycleService({service,store,dispatcher,rec
    await fresh();
    // Once authorized, disconnect cannot discard an acknowledged terminal write. Keep the original verified authority deadline.
    const fence=createOperationLifetime({deadlineMs:life.deadline(),now,errorFactory:unknown});
-   try{await fence.run(()=>journal.cancel(saved.run.binding,event('run.status',{state:'cancelled',reasonCode:'USER_CANCELLED'}),fence.check,saved.run.scopes));state='cancelled';}
-   catch(error){
+   const cancellation=event('run.status',{state:'cancelled',reasonCode:'USER_CANCELLED'});
+   try{await fence.run(()=>journal.cancel(saved.run.binding,cancellation,fence.check,saved.run.scopes));state='cancelled';}
+   catch{
+    // A lost commit acknowledgement is resolved using only the original verified binding,
+    // scopes, and this write's event ID. Session revocation cannot suppress stop cleanup
+    // after the journal proves a terminal fence, but it still prevents success to the caller.
     const readback=createOperationLifetime({deadlineMs:now()+maxRequestMs,now,errorFactory:unknown});let current;
-    try{current=await fresh(readback);}catch{throw unknown();}finally{readback.close();}
-    if(!terminal(current.run.state))throw error;state=current.run.state;
+    try{current=await readback.run(()=>journal.readStopFence({binding:saved.run.binding,scopes:saved.run.scopes,eventId:cancellation.eventId},readback.check));}catch{throw unknown();}finally{readback.close();}
+    if(!terminal(current.state)||current.cancelCommitted&&current.state!=='cancelled')throw unknown();state=current.state;
    }finally{fence.close();}
   }
   // The authenticated terminal fence authorizes stop-only cleanup even if this request disconnects during either effect.
