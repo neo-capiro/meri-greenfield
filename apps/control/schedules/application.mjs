@@ -12,14 +12,18 @@ import {createScheduleIntentPreparer,SCHEDULE_INTENT_OPERATIONS} from '../intent
 import {createScheduleToolInterface} from './tool-interface.mjs';
 import {createScheduleLifecycle} from './schedule-lifecycle.mjs';
 import {createScheduleIntentReconciler} from './intent-reconciliation.mjs';
+import {createRoutineReadConsentLifecycle} from './read-consent-lifecycle.mjs';
 
 const same=(a,b)=>hash(a)===hash(b),digest=/^[a-f0-9]{64}$/u,uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u;
 const deny=(code='ACCESS_DENIED',outcome='NOT_DISPATCHED')=>{throw Object.assign(Error('ROUTINES_'+code),{code:'ROUTINES_'+code,outcome});};
 const mutation=operation=>{if(!SCHEDULE_INTENT_OPERATIONS.includes(operation))deny('INVALID_REQUEST');return operation;};
 export function createRoutinesService(configuration){
- const c=own(configuration,['contextOwner','journalStore','proposalReader','scheduleOwner','scheduleClient','workflowClient','scheduleNotFoundError','now','maxRequestMs'],['runCancellation']);
+ const c=own(configuration,['contextOwner','journalStore','proposalReader','scheduleOwner','scheduleClient','workflowClient','scheduleNotFoundError','now','maxRequestMs'],['runCancellation','readConsents','log']);
  const resolve=storageMethod(c.contextOwner,'resolve'),authorizeRequest=storageMethod(c.contextOwner,'authorizeRequest'),readProposal=storageMethod(c.proposalReader,'readProposal'),readIntent=storageMethod(c.scheduleOwner,'readIntent');
  if(typeof c.now!=='function'||!Number.isSafeInteger(c.maxRequestMs)||c.maxRequestMs<1||c.maxRequestMs>30000)deny('INVALID_REQUEST');
+ // Option B (lane RD): with the read-consent port the owner's approval also creates, resumes, pauses or revokes the routine's read
+ // consent (read-consent-lifecycle.mjs); without it (option B off) nothing below changes.
+ const readConsents=c.readConsents===undefined?null:createRoutineReadConsentLifecycle({readConsents:c.readConsents,scheduleOwner:c.scheduleOwner,now:c.now,...(c.log===undefined?{}:{log:c.log})});
  function call(value){const v=own(value,['credential','request','deadlineMs'],['signal']);nativeSignal(v.signal);if(!Number.isSafeInteger(v.deadlineMs))deny('INVALID_REQUEST');return v;}
  function input(value,parse){try{const v=call(value);return {v,b:parse(v.request)};}catch{deny('INVALID_REQUEST');}}
  function life(v){return createOperationLifetime({deadlineMs:Math.min(v.deadlineMs,c.now()+c.maxRequestMs),now:c.now,signal:v.signal,errorFactory:code=>Object.assign(Error(code),{code,outcome:'UNKNOWN'})});}
@@ -88,7 +92,24 @@ export function createRoutinesService(configuration){
     if(!same(resolved.current.binding,auth.binding)||resolved.prepared.intentSha256!==b.intentSha256)deny();
     const at=c.now(),expires=Math.min(v.deadlineMs,at+c.maxRequestMs,saved.release.expiresAtMs,resolved.current.expiresAtMs);
     const approval={proposalId:b.proposalId,commandSha256:b.intentSha256,decision:'approved',approver:{tenantId:auth.binding.tenantId,actorId:auth.binding.actorId},policyRevision:auth.scopes[0].policyRevision,decidedAt:new Date(at).toISOString(),expiresAt:new Date(expires).toISOString()};
-    return await l.run(async signal=>{const result=await tools(resolved).execute({operation:b.operation,request:resolved.prepared.input,context:{scheduleContext:{...resolved.context.scheduleContext,approval}},signal});known=result.status==='acknowledged';return result;});
+    // The read consent moves first, under this request's own session selection (never request data): a widening that fails refuses
+    // the approval before anything is dispatched; a narrowing that fails is reported and the mutation proceeds.
+    const consent=readConsents===null?null:await l.run(signal=>readConsents.before({intent:resolved.prepared.intent,attended:{binding:resolved.current.binding,selectedClientId:resolved.current.selectedClientId},
+     clientId:resolved.current.selectedClientId,policyRevision:auth.scopes[0].policyRevision,signal,deadlineMs:expires}));
+    return await l.run(async signal=>{
+     let result;
+     try{result=await tools(resolved).execute({operation:b.operation,request:resolved.prepared.input,context:{scheduleContext:{...resolved.context.scheduleContext,approval}},signal});}
+     catch(error){
+      // Not dispatched: a consent created for this mutation is revoked (best effort). Acknowledged but withheld: the mutation is
+      // durable, so its consent is recorded (best effort). Unknown: left for Core's own digest check.
+      if(consent!==null&&error?.outcome==='NOT_DISPATCHED')await readConsents.abandon(consent,{signal,deadlineMs:expires});
+      else if(consent!==null&&error?.outcome==='ACKNOWLEDGED_NOT_RELEASED')try{await readConsents.after({tenantId:auth.binding.tenantId,intent:resolved.prepared.intent,consent:consent.consent},l.check);}catch{}
+      throw error;
+     }
+     known=result.status==='acknowledged';
+     if(consent!==null&&known)await readConsents.after({tenantId:auth.binding.tenantId,intent:resolved.prepared.intent,consent:consent.consent},l.check);
+     return result;
+    });
    }catch(error){if(known)throw Object.assign(Error('ROUTINES_RESULT_NOT_RELEASED'),{code:'ROUTINES_ACCESS_DENIED',outcome:'ACKNOWLEDGED_NOT_RELEASED'});throw error;}finally{l.close();}
   },
   async list(value){

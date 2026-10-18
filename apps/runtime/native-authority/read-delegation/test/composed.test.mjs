@@ -178,3 +178,18 @@ test('a lost token response is re-requested as retryOf the same canonical reques
   assert.deepEqual(slot.counts,{current:(DISPATCH_OBSERVATIONS+CREDENTIAL_OBSERVATIONS)*OBSERVATION_CALLS.plain.current,tool:1,mode:0,reference:0},'a retry adds no count');
  }finally{x.close();}
 });
+
+test('lane RD: the composer offers the registry-facing stop hook (`runOptions`) only with delegation; it stops the run like stopRun and never throws',async()=>{
+ const x=await composed();
+ try{
+  assert.deepEqual(Object.keys(x.composer.readDelegation).sort(),['consents','enabled','runOptions','stopRun']);
+  await x.login('SYNTHETIC_NATIVE');await x.execute();
+  assert.deepEqual(await x.composer.readDelegation.runOptions.stopRun({binding:x.f.binding,reason:'fenced'}),{stopped:true,revoked:true});
+  assert.equal(x.calls(/\/revocations$/u).length,1);await assert.rejects(x.execute(),'the stopped run reads nothing');
+  // A second stop (retirement after the stop route) is answered without another revoke; an unknown run is not stopped.
+  assert.deepEqual(await x.composer.readDelegation.runOptions.stopRun({binding:x.f.binding,reason:'run_terminal'}),{stopped:true,revoked:false});assert.equal(x.calls(/\/revocations$/u).length,1);
+  assert.deepEqual(await x.composer.readDelegation.runOptions.stopRun({binding:{...x.f.binding,runId:'f1234567-b123-4c12-8d12-e123456789ab'},reason:'cancelled'}),{stopped:false,revoked:false});
+ }finally{x.close();}
+ const off=await composed({delegation:false});
+ try{assert.deepEqual(Object.keys(off.composer.readDelegation).sort(),['enabled','stopRun']);assert.equal(off.composer.readDelegation.enabled,false);}finally{off.close();}
+});

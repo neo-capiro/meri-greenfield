@@ -17,6 +17,9 @@
  *  context.limits          {maxRequestMs, maxFactBytes, retryLimit}: bounds of the schedule context owner
  *  runControl.cancel       cancel the current same-work run of an approved cancellation ({binding, signal, deadlineMs})
  *  retirement.retire       native physical-stop proof for each run of that lineage ({binding, signal, deadlineMs})
+ *  readConsents (optional) option B (lane RD): the reads composer's `readDelegation.consents` ({approve, narrow, resume}); the
+ *                          owner's approval then also creates / pauses / revokes / resumes the routine's Core read consent
+ *                          (control/schedules/read-consent-lifecycle.mjs) over the owner's live session bound at `create`
  *
  * `context.policy` and `runControl` are produced HERE when `configuration.routines.core` is declared
  * (native-authority/routines-configuration.mjs): Core wire A as the policy port and Core wire B proofs consumed by the Core-proof
@@ -58,9 +61,11 @@ export function compileRoutinesConfiguration(configuration){
 function captureOwners(owners){
  if(owners===undefined)return null;
  try{
-  const o=own(owners,['context','retirement'],['runControl','newId']);
+  const o=own(owners,['context','retirement'],['runControl','newId','readConsents','log']);
   const context=own(o.context,['commandContext','allocationJson','template','workflow','limits'],['policy']);
   if((context.policy===undefined)!==(o.runControl===undefined)||o.runControl!==undefined&&typeof o.runControl?.cancel!=='function'||typeof o.retirement?.retire!=='function'||o.newId!==undefined&&typeof o.newId!=='function')throw Error();
+  // Option B (lane RD): the reads composer's `readDelegation.consents` ({approve,narrow,resume}); absent, routines carry no read consent.
+  if(o.readConsents!==undefined&&(types.isProxy(o.readConsents)||['approve','narrow','resume'].some(k=>typeof o.readConsents?.[k]!=='function'))||o.log!==undefined&&(typeof o.log!=='function'||types.isProxy(o.log)))throw Error();
   return Object.freeze({...o,context});
  }catch{throw fault('ROUTINES_CONFIGURATION');}
 }
@@ -96,6 +101,7 @@ export function routinesFamily(owners,transport){
    context:{...captured.context,policy:produced?.policy??captured.context.policy},
    runControl:produced?.runControl??captured.runControl,retirement:captured.retirement,
    ...(produced===null?{}:{cancellationProofs:produced.cancellationProofs,sessionRelay:produced.sessionRelay}),
+   ...(captured.readConsents===undefined?{}:{readConsents:captured.readConsents}),...(captured.log===undefined?{}:{log:captured.log}),
    limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes}})}};
  };
 }

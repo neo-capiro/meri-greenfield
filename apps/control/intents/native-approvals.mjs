@@ -5,6 +5,7 @@
  *  - `record`       → `approval/record`   {proposal,decision,approver,binding} → {decision:ApprovalDecision,checkedAtMs,revoked}
  *  - `readDecision` → `approval/decision` {proposalId,commandSha256,binding}   → {decision:ApprovalDecision|null,checkedAtMs,revoked}
  *  - `getCurrent`   → the same read, serialized for the command executor's approval guard (`commands/approval-context.mjs`).
+ *  - `revoke`       → `approval/revoke`   {proposalId,commandSha256,approver,binding} → {decision,checkedAtMs,revoked:true} (lane RD).
  * `approval/decision` is listed as a required provider contract in `apps/runtime/README.md`; `approval/record` is the Core
  * contract of lane 3 proposal P-INT-10. Core serves both as `POST /api/clio/approvals/native/{record,decision}` (capiro-backend
  * b7c6e9cf), behind the approver's native bearer plus the verified service identity, which the candidate's provider RPC seam
@@ -35,6 +36,11 @@ export function createNativeIntentApprovals(configuration){
   async readDecision(value){const v=await read(value);return v.revoked?null:v.decision;},
   /** Approval guard input: a JSON string; an absent decision is a refusal there (no current approval). */
   async getCurrent(value){const v=await read(value);if(v.decision===null)refused('COMMAND_APPROVAL_REFUSED');return JSON.stringify(v);},
+  /** The approver revokes their own approval (`approval/revoke`, Core `POST .../native/revoke`, lane RD); the receipt must say
+   * `revoked:true` for this exact proposal and command. Later reads answer `revoked:true`, so `readDecision` answers null. */
+  async revoke({proposalId,commandSha256,approver,binding,signal}){nativeSignal(signal);
+   const v=receipt(await c.call('approval/revoke',data({proposalId,commandSha256,approver,binding}),{signal}),{nullable:false});
+   if(v.revoked!==true||v.decision.proposalId!==proposalId||v.decision.commandSha256!==commandSha256)refused('APPROVAL_RECEIPT_REFUSED');return v;},
  });
 }
 export function createCommandJournalOutcomes(configuration){

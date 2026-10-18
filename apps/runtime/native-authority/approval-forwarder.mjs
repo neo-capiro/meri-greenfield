@@ -6,6 +6,8 @@
  *  - `approval/record`   -> POST {origin}/api/clio/approvals/native/record   {proposal,decision,approver,binding}
  *  - `approval/decision` -> POST {origin}/api/clio/approvals/native/decision {proposalId,commandSha256,binding}
  *  - `approval/read`     -> Meri's own custody of the PREPARED proposal (the intent journal reader); Core has no read route.
+ *  - `approval/revoke`   -> POST {origin}/api/clio/approvals/native/revoke   {proposalId,commandSha256,approver,binding}
+ *                           (lane RD): the approver revokes their own approval; afterwards `approval/decision` answers `revoked:true`.
  * Bodies and receipts cross byte for byte (Core's controller mirrors the provider operations); HTTP 200 only.
  *
  * Authority. Every Core call carries BOTH the approver's own native bearer and the verified service identity
@@ -38,8 +40,8 @@ import {retainedOrigin} from '../../../packages/contracts/runtime-0.2/retained-r
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {readJsonResponse,responseBody,cancelBody} from '../../gateway/sources/json-response.mjs';
 import {intentFault,INTENT_FAILURE_CODES} from '../../control/intents/faults.mjs';
-export const CORE_APPROVAL_ROUTES=Object.freeze({record:'/api/clio/approvals/native/record',decision:'/api/clio/approvals/native/decision'});
-export const APPROVAL_FORWARDER_OPERATIONS=Object.freeze(['approval/record','approval/decision','approval/read']);
+export const CORE_APPROVAL_ROUTES=Object.freeze({record:'/api/clio/approvals/native/record',decision:'/api/clio/approvals/native/decision',revoke:'/api/clio/approvals/native/revoke'});
+export const APPROVAL_FORWARDER_OPERATIONS=Object.freeze(['approval/record','approval/decision','approval/read','approval/revoke']);
 const STABLE=['tenantId','actorId','conversationId','runId'];
 const TOKEN=/^[\x21-\x7e]{1,8192}$/u,UUID=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u,HEX64=/^[a-f0-9]{64}$/u;
 const sha=value=>createHash('sha256').update(value).digest('hex'),same=(a,b)=>hash(a)===hash(b);
@@ -168,6 +170,34 @@ export function createCoreApprovalForwarder(options){
   })();
   pending.set(key,work);return work;
  }
+ /** The approver revokes their own recorded approval (Core `POST .../native/revoke`: the approver's native bearer plus the service
+  * identity; append-only under the proposal lock, idempotent). Bound to Meri custody like `record`; the receipt must answer
+  * `revoked:true` for the same proposal, command digest, approver and policy revision. Nothing here is automatic: a run ending
+  * never revokes (Core needs the approver's live bearer). Body `{proposalId,commandSha256,approver,binding}` (record minus the
+  * proposal and decision; Core's exact body is unconfirmed, see the lane RD report). */
+ async function revoke(value){
+  const {signal,deadlineMs,...raw}=own(value,['proposalId','commandSha256','approver','binding'],['signal','deadlineMs']);nativeSignal(signal);
+  let v;try{v=data(raw);own(v.approver,['tenantId','actorId']);validateShape('RunBinding',v.binding);}catch{refuse('INVALID_ARGUMENTS');}
+  if(typeof v.proposalId!=='string'||!UUID.test(v.proposalId)||typeof v.commandSha256!=='string'||!HEX64.test(v.commandSha256))refuse('INVALID_ARGUMENTS');
+  // Only the required approver, who is the conversation owner, holds the live session this call is made with.
+  if(v.approver.tenantId!==v.binding.tenantId||v.approver.actorId!==v.binding.actorId)refuse('ACCESS_DENIED');
+  const key=`${v.proposalId}:revoke`,inflight=pending.get(key);
+  if(inflight)return inflight;
+  const work=(async()=>{
+   const life=lifetime(signal,deadlineMs);
+   try{
+    const p=await custody(life,v.binding,v.proposalId);
+    if(p.commandSha256!==v.commandSha256||!same(v.approver,p.requiredApprover)||STABLE.some(k=>p.command.binding[k]!==v.binding[k]))refuse('ACCESS_DENIED');
+    const client=selectedClient(p);
+    const answer=await post(life,CORE_APPROVAL_ROUTES.revoke,{selected:{binding:stable(p.command.binding),selectedClientId:client.id},body:{proposalId:v.proposalId,commandSha256:v.commandSha256,approver:v.approver,binding:v.binding}});
+    const r=receipt(answer.value,{nullable:false,effect:'unknown'}),d=r.decision;
+    if(r.revoked!==true||d.proposalId!==v.proposalId||d.commandSha256!==v.commandSha256||!same(d.approver,v.approver)||d.policyRevision!==client.policyRevision)refuse('UNAVAILABLE','unknown');
+    const checkedAtMs=now();if(!Number.isSafeInteger(checkedAtMs)||checkedAtMs<answer.started)refuse('UNAVAILABLE','unknown');
+    return data({decision:d,checkedAtMs,revoked:true});
+   }finally{life.close();pending.delete(key);}
+  })();
+  pending.set(key,work);return work;
+ }
  async function decision(value){
   const {signal,deadlineMs,...raw}=own(value,['proposalId','commandSha256','binding'],['signal','deadlineMs']);nativeSignal(signal);
   let v;try{v=data(raw);validateShape('RunBinding',v.binding);}catch{refuse('INVALID_ARGUMENTS');}
@@ -219,9 +249,10 @@ export function createCoreApprovalForwarder(options){
   if(operation==='approval/record')return record({...own(input,['proposal','decision','approver','binding']),...extra});
   if(operation==='approval/decision')return decision({...own(input,['proposalId','commandSha256','binding']),...extra});
   if(operation==='approval/read')return read({...own(input,['proposalId','binding','scopes']),...(signal===undefined?{}:{signal})});
+  if(operation==='approval/revoke')return revoke({...own(input,['proposalId','commandSha256','approver','binding']),...extra});
   refuse('UNAVAILABLE');
  }
- return Object.freeze({origin,operations:APPROVAL_FORWARDER_OPERATIONS,call,record,decision,read,getCredentials,
+ return Object.freeze({origin,operations:APPROVAL_FORWARDER_OPERATIONS,call,record,decision,read,revoke,getCredentials,
   /** The intents decision ports over Core (the shapes `approval.mjs` and the lifecycle read). */
   async readDecision(value){const v=await decision(value);return v.revoked?null:v.decision;},
   async getCurrent(value){const v=await decision(value);if(v.decision===null)throw Object.assign(Error('COMMAND_APPROVAL_REFUSED'),{code:'COMMAND_APPROVAL_REFUSED'});return JSON.stringify(v);}});
