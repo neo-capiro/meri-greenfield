@@ -17,6 +17,7 @@ import {compileScheduleServiceConfiguration} from './schedule-service-configurat
 import {compileCapabilityPlatform} from './product-ports/capability-policy.mjs';
 import {compileRuntimeArtifactsConfiguration} from './artifacts/configuration.mjs';
 import {compileIntentsConfiguration} from './product-ports/intents.mjs';
+import {compileMemoryConfiguration} from './product-ports/memory.mjs';
 import {compileRoutinesCoreConfiguration} from './native-authority/routines-configuration.mjs';
 import {compileObjectiveGenerationConfiguration} from './objective-generation/configuration.mjs';
 export {compileControlUserPreferencesConfiguration};
@@ -63,7 +64,7 @@ export function validateConfiguration(raw,role){
  // The schedule worker is a separately supervised control-domain Temporal poller with a health-only listener. It holds no native
  // capability; its four domain owners are trusted in-process ports, never configuration, so JSON alone cannot start it.
  const common=['version','profile','sourceEnabled','limits',...(role==='schedule-worker'?[]:['native'])];
- own(c,[...common,...(role==='control'?['http','database','temporal','sessions','versions']:role==='temporal-worker'?['http','temporal']:role==='schedule-worker'?['http','temporal','versions','scheduledDispatch']:['binding','versions','workspace','proxyOrigin'])],role==='conversation-runner'?['bootstrap','captureOwnsClose','remoteTask']:role==='control'?['nativeCandidate','retention','telemetry','downloadLinks','privateHttp','taskRouter','userPreferences','tenantSettings','capabilityPlatform','routines','artifacts','intents','reads','objectiveGeneration']:role==='schedule-worker'?['database']:role==='temporal-worker'?['objectiveGeneration']:[]);
+ own(c,[...common,...(role==='control'?['http','database','temporal','sessions','versions']:role==='temporal-worker'?['http','temporal']:role==='schedule-worker'?['http','temporal','versions','scheduledDispatch']:['binding','versions','workspace','proxyOrigin'])],role==='conversation-runner'?['bootstrap','captureOwnsClose','remoteTask']:role==='control'?['nativeCandidate','retention','telemetry','downloadLinks','privateHttp','taskRouter','userPreferences','tenantSettings','capabilityPlatform','routines','artifacts','intents','reads','objectiveGeneration','memory']:role==='schedule-worker'?['database']:role==='temporal-worker'?['objectiveGeneration']:[]);
  if(c.userPreferences!==undefined){requireValue(role==='control','USER_PREFERENCES_CONFIGURATION');compileControlUserPreferencesConfiguration(c);}
  // Lane B control opt-ins (product-ports/settings.mjs, routines.mjs) and the trusted platform capability record (capability-policy.mjs, N3).
  for(const [key,code] of [['tenantSettings','TENANT_SETTINGS_CONFIGURATION'],['routines','ROUTINES_CONFIGURATION']])if(c[key]!==undefined){requireValue(role==='control',code);own(c[key],['enabled'],key==='routines'?['core']:[]);requireValue(typeof c[key].enabled==='boolean',code);}
@@ -97,6 +98,8 @@ export function validateConfiguration(raw,role){
  if(c.artifacts!==undefined){requireValue(role==='control','ARTIFACT_CONFIGURATION');compileRuntimeArtifactsConfiguration(c);}
  // Conversation write intents (lane 3, product-ports/intents.mjs): an explicit control opt-in; absent means disabled.
  if(c.intents!==undefined){requireValue(role==='control','INTENTS_CONFIGURATION');compileIntentsConfiguration(c);}
+ // Memory (lane M): review-only proposals over Core M2; the service secret is a server-side file.
+ if(c.memory!==undefined){requireValue(role==='control','MEMORY_CONFIGURATION');compileMemoryConfiguration(c);if(c.memory.enabled)file(c.memory.serviceSecretFile);}
  // General reads (lane 2): control builds the reads composer before startControl only when declared enabled. Secrets are
  // server-side files; the user bearer is never a file (RC1 option A: the live-session relay supplies it per call).
  if(c.reads!==undefined){requireValue(role==='control','READS_CONFIGURATION');own(c.reads,['enabled'],['serviceSecretFile','readModeServiceSecretFile','defaultCongress']);requireValue(typeof c.reads.enabled==='boolean','READS_CONFIGURATION');

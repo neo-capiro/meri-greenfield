@@ -3,7 +3,7 @@ export function productReadiness({ports,retention,sourceEnabled,userPreferences}
  const available=new Set(ports.configuredOwners??[]),owners=[];
  for(const [name,port] of [['authority.identity','identityContext'],['lifecycle.currentAuthority','transitionAuthority'],['lifecycle.admissionRetirement','continuationAdmission'],
   ['lifecycle.approvals','approvals'],['artifacts.options','artifactOptionsOwner'],['artifacts.privateStore','artifactStore'],['actions.application','actionApplication'],
-  ['tasks.selected','selectedController'],['sessions.sdk','sdkSessionOwner'],['sessions.snapshot','sdkSessionSnapshot'],['history.membership','conversationMembership'],['history.nextTurn','conversationTurns'],['intents.application','intentApplication'],['settings.tenant','settingsApplication']])
+  ['tasks.selected','selectedController'],['sessions.sdk','sdkSessionOwner'],['sessions.snapshot','sdkSessionSnapshot'],['history.membership','conversationMembership'],['history.nextTurn','conversationTurns'],['intents.application','intentApplication'],['settings.tenant','settingsApplication'],['memory.producer','memoryApplication']])
   owners.push({name,state:available.has(port)?'composed':'unavailable'});
  owners.push({name:'retention.startup',state:retention?'composed':'unavailable'},
   {name:'retention.ledgerSink',state:available.has('retentionLedgerSink')?'composed':'unavailable'},
@@ -12,8 +12,6 @@ export function productReadiness({ports,retention,sourceEnabled,userPreferences}
   {name:'schedules.inbox',state:available.has('routinesApplicationFactory')&&ports.routinesApplicationFactory.inboxState?ports.routinesApplicationFactory.inboxState():'unavailable'},
   {name:'sources.currentInstallation',state:sourceEnabled?'unavailable':'disabled'},
   {name:'proxy.modelGrants',state:'unavailable'},
-  // Memory composes no port until Core M2 routes, the parser and an allocated migration exist (product-ports/memory.mjs).
-  {name:'memory.producer',state:'unavailable'},
   {name:'schedules.dispatchWorker',state:'separate-service-required'});
  const recovery=retention?.artifactRecovery?.();if(recovery?.required)owners.push({name:'retention.artifactRecovery',state:recovery.state});
  if(userPreferences!==undefined)owners.push({name:'settings.userPreferences',state:userPreferences});
