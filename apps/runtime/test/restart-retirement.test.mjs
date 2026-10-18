@@ -12,7 +12,7 @@ const check=()=>{};
 async function crashed(t,{admitted=false,state='running'}={}){
  const o=originalFacts(),f=await lifecycleFixture(),binding=o.original.binding,key={binding,allocationKey:o.original.executionKey},ecs=fakeEcs(o.original,o.config.taskRequest),budget=syntheticAdmission(o),processes=[];let n=700,retirements=0;
  t.after(async()=>{for(const p of processes)await p.close().catch(()=>{});f.close();});
- await f.service.submit({credential:f.credential,input:f.input});const allocator=processAllocator({store:f.store,original:o.original,config:o.config,client:ecs.client,admission:budget.admission});
+ await f.service.allocateInput({credential:f.credential,input:f.input});await f.service.submit({credential:f.credential,input:f.input});const allocator=processAllocator({store:f.store,original:o.original,config:o.config,client:ecs.client,admission:budget.admission});
  // The earlier process: the canonical allocator claimed and launched the original (and, when admitted, installed its grants), then died.
  if(admitted)await allocator.allocate();else{await f.store.allocations.claim(allocator.intent,check);await f.store.allocations.record({...key,state:'ALLOCATED',resource:ecs.seed()},check);}
  for(const s of ['starting','running'].slice(0,state==='queued'?0:2))await f.service.publish({credential:f.credential,binding,event:{eventId:id(n++),createdAt:new Date().toISOString(),type:'run.status',data:{state:s,reasonCode:null}}});
@@ -33,7 +33,7 @@ test('review reproduction: a fresh process with durable ALLOCATED state and no c
  assert.deepEqual((await x.terminals()).map(e=>e.data),[{state:'failed',reasonCode:'ATTEMPT_LOST'}]);assert.deepEqual(x.effects(),{runs:0,admits:0,stops:1,revokes:1});assert.equal(p.allocations(),0);
  assert.deepEqual(await x.stop(p),receipt,'a repeated stop is idempotent');assert.equal((await x.terminals()).length,1);assert.deepEqual(x.effects(),{runs:0,admits:0,stops:1,revokes:1});});
 test('a crashed process that held an admitted allocation (real canonical allocation, grants installed) is retired by a fresh process before settling',async t=>{
- const x=await crashed(t,{admitted:true}),r0=await x.record();assert.equal(r0.state,'ADMITTED');assert.equal(r0.resource.grantFactsJsons.length,1);
+ const x=await crashed(t,{admitted:true}),r0=await x.record();assert.equal(r0.state,'ADMITTED');assert.equal(r0.resource.grantFactsJsons.length,2);assert.deepEqual(r0.resource.grantFactsJsons.map(value=>JSON.parse(value).grantId),x.o.config.grantIntents.map(grant=>grant.grantId));
  await x.stop(x.fresh());assert.equal((await x.record()).state,'RETIRED');assert.deepEqual((await x.terminals()).map(e=>e.data.reasonCode),['ATTEMPT_LOST']);assert.deepEqual(x.effects(),{runs:0,admits:0,stops:1,revokes:1});});
 test('a run already terminal whose original was never retired is retired by a fresh process and left as it was',async t=>{
  const x=await crashed(t,{state:'failed'});await x.stop(x.fresh());assert.equal((await x.record()).state,'RETIRED');assert.deepEqual((await x.terminals()).map(e=>e.data.reasonCode),['EXECUTION_FAILED']);});
