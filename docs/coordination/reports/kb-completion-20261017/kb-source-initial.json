@@ -1,0 +1,16 @@
+{
+  "executable": "C:/Users/Administrator/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe",
+  "argv": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "apps/gateway/sources/client-knowledge-search/test/handler.test.mjs",
+    "apps/gateway/sources/client-knowledge-search/test/semantic-handler.test.mjs",
+    "apps/gateway/sources/funding-opportunities/test/handler.test.mjs"
+  ],
+  "startedAt": "2026-10-17T04:02:55.2692100Z",
+  "finishedAt": "2026-10-17T04:02:57.6548332Z",
+  "exitCode": 0,
+  "classification": "Synthetic source HTTP; no installed Core or live qualification"
+}

@@ -21,6 +21,201 @@
   },
   "adapters": [
     {
+      "path": "apps/gateway/sources/funding-opportunities",
+      "family": "funding-opportunities",
+      "declaredIn": ["apps/gateway/sources/funding-opportunities/handler.mjs", "apps/gateway/sources/funding-opportunities/request-context.mjs", "apps/gateway/sources/retained-reads/native-families.mjs", "apps/gateway/general-reads/families/funding-opportunities.mjs", "packages/contracts/native-read-observation-0.2/validate.mjs", "packages/contracts/native-read-observation-0.2/schema.json"],
+      "operations": ["search_funding_opportunities", "get_funding_opportunity_requirements", "get_funding_opportunity", "get_opportunity_client_context", "get_opportunity_government_landscape"],
+      "adapterChecks": ["complete five-operation native observation bridge requires reviewed Core PR52 head 51c157444ac43035eeb489ff46aee5a4e89ba3ac / tree 54af881dddef397db0ff215d6eb2a72d74c0d1bd; strict canonical original-body admission and all-five actual asOf consumption were accepted as source only", "all five reads require the explicit current one-client subject/resource and fresh native visibility before credentials; SDK policy requires client scope", "fixed original POST and raw request hash; once-captured trusted asOf and complete frozen receiving; no legacy retry or output rewriting", "the trusted qualification issuer must bind the reviewed Core source to the actual deployed build, origin/configuration and all-five consumption; the opaque qualification receipt does not automatically detect Core protocol/build compatibility, and availability must be withheld or revoked on unqualified source/server drift"],
+      "subject": "current authorized one-client subject; complete canonical source and required-client SDK registration only; current installation and exact Core/server qualification remain separately required, with no automatic or live qualification"
+    },
+    {
+      "path": "apps/gateway/sources/business-development",
+      "family": "business-development",
+      "declaredIn": ["apps/gateway/sources/business-development/handler.mjs", "apps/gateway/sources/business-development/request-context.mjs", "apps/gateway/sources/retained-reads/native-families.mjs", "apps/gateway/general-reads/families/business-development.mjs"],
+      "operations": ["get_business_development_context", "get_business_development_recent_changes"],
+      "adapterChecks": ["complete context and recent-changes reads for an explicit Core conversation under a current canonical personal or closed one-client task authority", "personal authority requires nonempty coherent tenant/private-user scopes; native authorizeScope checks the current actor-owned active conversation and persisted prospect scope before basic domain reads", "client authority retains the exact native identity/context receipt, current visible one-client subject, revision/expiry vector and whole-output linked-client guard; no client-to-personal downgrade", "no broad conversation GET, new receipt, consumed-revision claim or stronger native snapshot guarantee; evidence/dossier operation remains absent"],
+      "subject": "current authorized personal actor with coherent tenant/private-user scopes or current closed one-client subject with its exact native conversation receipt; SDK exposure is limited to context and recent changes"
+    },
+    {
+      "path": "apps/gateway/sources/outreach-query",
+      "family": "outreach-query",
+      "declaredIn": ["apps/gateway/sources/outreach-query/handler.mjs", "apps/gateway/sources/retained-reads/native-families.mjs", "apps/gateway/sources/outreach-query/request-context.mjs", "apps/gateway/general-reads/families/outreach-query.mjs"],
+      "operations": ["query_outreach"],
+      "partialOperations": ["query_outreach"],
+      "adapterChecks": ["PARTIAL_INPUT: campaign list with an explicit UUID client only", "any outreachId key refuses before source; no owned-detail branch", "exact client subject, resource and current membership before HTTP; native stored recipient counts and closed scalar DTO preserved"],
+      "subject": "current authorized one-client subject; exact UUID client resolution; names, unscoped campaigns and owned detail remain outside SDK exposure"
+    },
+    {
+      "path": "apps/gateway/sources/research-legal-news",
+      "family": "research-legal-news",
+      "declaredIn": ["apps/gateway/sources/research-legal-news/handler.mjs", "apps/gateway/sources/retained-reads/native-families.mjs", "apps/gateway/sources/research-legal-news/request-context.mjs", "apps/gateway/general-reads/families/research-legal-news.mjs"],
+      "operations": ["search_legiwatch_news"],
+      "partialOperations": ["search_legiwatch_news"],
+      "adapterChecks": ["PARTIAL_INPUT: exact typed source ID or explicit-year personnel only", "absent client or exact current visible client UUID; no truthy folder; branch-specific context is request-determined", "native fixed Intel bridge retains member/feature, current client wall, source rights and personnel evidence owners"],
+      "subject": "current native tenant/user and coherent general/client subject; names, folders, news windows, private monitors and implicit years remain outside SDK exposure"
+    },
+    {
+      "path": "apps/gateway/sources/public-data",
+      "family": "public-data",
+      "declaredIn": ["apps/gateway/sources/public-data/handler.mjs", "apps/gateway/sources/retained-reads/native-families.mjs"],
+      "operations": ["query_economic_data"],
+      "adapterChecks": ["only the finite economic stored-read operation is implemented", "fixed original native POST and current native credentials", "exact series, observations, units and receiving contract preserved"],
+      "subject": "current native tenant/user; global stored economic data; grants and awards remain unimplemented"
+    },
+    {
+      "path": "apps/gateway/sources/client-knowledge-search",
+      "family": "client-knowledge-search",
+      "declaredIn": ["apps/gateway/sources/client-knowledge-search/handler.mjs", "apps/gateway/sources/client-knowledge-search/request-context.mjs", "apps/gateway/general-reads/families/client-knowledge-search.mjs", "apps/gateway/sources/retained-reads/native-families.mjs", "apps/gateway/sources/retained-reads/native-handler.mjs", "apps/gateway/sources/retained-reads/http-transport.mjs", "packages/contracts/native-read-observation-0.2/validate.mjs", "packages/contracts/native-read-observation-0.2/schema.json"],
+      "operations": ["search_client_knowledge", "query_knowledge_graph"],
+      "adapterChecks": ["complete semantic and graph operations; semantic requires reviewed Core PR59 head 59efe08f2f3429918758eef30539e9dde4dbb868 / tree c2babd8e0d386b1c9f18ed32ebcd4472d5ebf486, based on funding Core51c; graph retains its independent context and wire", "semantic carries one trusted asOf through the finite six-operation private carrier and exact original request hash; all admitted native generatedAt branches consume that anchor without output rewriting or legacy fallback", "truthy canonical UUID client selectors require the current exact one-client subject/resource and native visibility before credentials; no-client note branches preserve current trusted personal or client authority without inferring a selector; malformed truthy selectors and names fail closed", "SDK family stays optional and requires client scope only for search_client_knowledge; existing denied-client graph filtering remains unchanged", "the trusted qualification issuer must bind reviewed Core source to the actual native build, origin/configuration and consumption evidence; opaque installation receipts do not automatically detect Core protocol/build compatibility or establish live availability"],
+      "subject": "current native tenant/user with current per-call authority; exact authorized one-client selection for semantic client search, admitted current no-client note or independent graph scope; complete source/SDK registration only, with native server qualification separately required"
+    },
+    {
+      "path": "apps/gateway/sources/state-status-votes",
+      "family": "state-status-votes",
+      "declaredIn": ["apps/gateway/sources/state-status-votes/handler.mjs", "apps/gateway/sources/state-status-votes/request-context.mjs", "apps/gateway/sources/retained-reads/native-families.mjs", "apps/gateway/general-reads/families/state-status-votes.mjs"],
+      "operations": ["get_state_bill_status", "search_state_floor_votes"],
+      "adapterChecks": ["all frozen canonical, designation, missing and invalid selector branches delegate the original raw body once", "native lookup/refusal/absence notes and frozen receiving remain unchanged", "existing native quota reservation, optional provider calls and public ingestion/cache effects require separate qualification; no physical cancellation or rollback claim"],
+      "subject": "current native tenant/user; public state evidence under actual native lookup, quota and ingestion owners"
+    },
+    {
+      "path": "apps/gateway/sources/tracked-bills",
+      "family": "tracked-bills",
+      "declaredIn": ["apps/gateway/sources/tracked-bills/handler.mjs", "apps/gateway/sources/retained-reads/native-families.mjs", "apps/gateway/general-reads/families/tracked-bills.mjs"],
+      "operations": ["search_tracked_bills"],
+      "adapterChecks": ["UUID or actual native check-ref name must select the authorized current one-client subject", "exact clipped reference and first expiry pinned; native identity, membership and resolution rechecked across awaits before credentials and release", "named execution requires per-call credentials and sends the admitted UUID while preserving original raw request/proof; tenant-wide ambiguity remains native", "manual tracked rows and nullable stored bill enrichment wrapped in current Meri lineage"],
+      "subject": "current one-client task/resource and native client grant; name resolution is identity selection and never creates authority"
+    },
+    {
+      "path": "apps/gateway/sources/public-domain-hearings",
+      "family": "public-domain-hearings",
+      "declaredIn": ["apps/gateway/sources/public-domain-hearings/handler.mjs", "apps/gateway/sources/retained-reads/native-families.mjs", "apps/gateway/sources/public-domain-hearings/request-context.mjs", "apps/gateway/general-reads/families/public-domain-hearings.mjs"],
+      "operations": ["search_committee_hearings"],
+      "adapterChecks": ["absent client, UUID and actual check-ref name use the same current native client wall and task upper bounds", "exact tenant/reference/context and first expiry retained; identity, membership and name resolution rechecked before per-call credentials and release", "native tenant-wide ambiguity remains a failure; personal name selection follows existing personal UUID admission without inferring a client task", "native governed per-page authorization, published views, cursors and coverage preserved"],
+      "subject": "current native tenant/user and coherent general/client subject; resolved names never create a client grant"
+    },
+    {
+      "path": "apps/gateway/sources/research-legal-legislation",
+      "family": "research-legal-legislation",
+      "declaredIn": ["apps/gateway/sources/research-legal-legislation/handler.mjs", "apps/gateway/sources/retained-reads/native-families.mjs", "apps/gateway/sources/research-legal-legislation/request-context.mjs", "apps/gateway/general-reads/families/research-legal-legislation.mjs"],
+      "operations": ["search_legislative_research", "get_legal_reference"],
+      "partialOperations": ["get_legal_reference"],
+      "adapterChecks": ["complete legislative search preserves raw folder/query arguments and native pre-search membership, folder/client equality and public-corpus query ownership", "named search requires actual current check-ref resolution, exact task/native client grant, pinned expiry and per-call UUID bridge with original raw proof", "PARTIAL_INPUT reference sibling retains absent/UUID client, no folder and parser-independent rules/versions or controlling explicit-reference citations; parser-dependent references stay SDK-withheld", "actual fixed Intel bridge retains feature/member, current client wall, legal identity, version and cursor owners"],
+      "subject": "current native tenant/user and coherent general/client subject; search resolves actual names and delegates existing folder authorization; reference sibling remains partial and SDK-withheld"
+    },
+    {
+      "path": "apps/gateway/sources/public-web",
+      "family": "public-web",
+      "declaredIn": ["apps/gateway/sources/public-web/handler.mjs"],
+      "operations": ["search_public_web", "scrape_web_page"],
+      "adapterChecks": ["fixed native routes and exact current credentials", "native hardened transport owns URL/DNS/redirect safety", "external untrusted discovery and page evidence remain distinct"],
+      "subject": "current native tenant/user; public web data; no fetched-content or live safety qualification from source tests"
+    },
+    {
+      "path": "apps/gateway/sources/data-search",
+      "family": "data-search",
+      "declaredIn": ["apps/gateway/sources/data-search/handler.mjs"],
+      "operations": ["search_capiro_data"],
+      "adapterChecks": ["fixed original native request", "native governed ContextPlane authorizes each page", "partial coverage, provenance and opaque cursor preserved"],
+      "subject": "current native tenant/user; Core owns client/mailbox visibility; empty context"
+    },
+    {
+      "path": "apps/gateway/sources/public-domain-query",
+      "family": "public-domain-query",
+      "declaredIn": ["apps/gateway/sources/public-domain-query/handler.mjs"],
+      "operations": ["query_global_data"],
+      "adapterChecks": ["canonical finite dataset registry", "CONTROL captures supported omitted defaultAsOf once and native request binds it", "strict native success projection removes only SQL before closed receiving"],
+      "subject": "current native tenant/user; typed public data; native analytics audit writes require qualification"
+    },
+    {
+      "path": "apps/gateway/sources/facility-representation",
+      "family": "facility-representation",
+      "declaredIn": ["apps/gateway/sources/facility-representation/handler.mjs"],
+      "operations": ["get_representation"],
+      "adapterChecks": ["current native visible client subject before credentials", "current binding and subject wrap raw native representation", "no inferred geography or selector substitution"],
+      "subject": "current authorized one-client subject and native membership.clientIds; fresh decision lineage"
+    },
+    {
+      "path": "apps/gateway/sources/district-nexus",
+      "family": "district-nexus",
+      "declaredIn": ["apps/gateway/sources/district-nexus/handler.mjs"],
+      "operations": ["get_district_nexus_context", "get_district_nexus_changes"],
+      "adapterChecks": ["current client subject and native visibility before credentials", "raw native facts/changes wrapped in fresh lineage", "gaps, truncation and inclusive windows preserved"],
+      "subject": "current authorized one-client subject and native membership.clientIds; fresh decision lineage"
+    },
+    {
+      "path": "apps/gateway/sources/client-registry",
+      "family": "client-registry",
+      "declaredIn": ["apps/gateway/sources/client-registry/handler.mjs"],
+      "operations": ["lookup_client_registry"],
+      "adapterChecks": ["private per-call result guard required before source", "complete native DTO validation then fresh current visible UUID admission", "whole private DTO withheld on denied output; no fabricated absence"],
+      "subject": "current native tenant/user; returned existing-client identity requires fresh native membership visibility"
+    },
+    {
+      "path": "apps/gateway/sources/federal-market",
+      "family": "federal-market",
+      "declaredIn": ["apps/gateway/sources/federal-market/handler.mjs"],
+      "operations": ["search_federal_contract_awards", "search_federal_subawards", "search_contract_vehicles", "search_procurement_forecasts", "get_district_federal_market"],
+      "adapterChecks": ["fixed actual native producer routes", "optional client selector checked against current subject and visibility", "native global forecast semantics, dates, source modes and nullable amounts preserved"],
+      "subject": "current native tenant/user; global or authorized client selection; no invented evidence-mode observation"
+    },
+    {
+      "path": "apps/gateway/sources/pe-references",
+      "family": "pe-references",
+      "declaredIn": ["apps/gateway/sources/pe-references/handler.mjs"],
+      "operations": ["get_pe_bills", "get_pe_contractors", "get_pe_report_language"],
+      "adapterChecks": ["finite native stored-handler admission", "fixed original flat POST and both current native credentials", "unchanged provenance, attribution, evidence buckets and receiving caps"],
+      "subject": "current authorized native tenant/user; global stored PE evidence; empty context"
+    },
+    {
+      "path": "apps/gateway/sources/federal-legislation",
+      "family": "federal-legislation",
+      "declaredIn": ["apps/gateway/sources/federal-legislation/handler.mjs"],
+      "operations": ["get_bill_status", "search_floor_votes"],
+      "adapterChecks": ["finite native stored-handler admission", "captured server defaultCongress selects explicit native billId; original request proof retained", "unchanged bill status, direct versus rule votes, member resolution and receiving"],
+      "subject": "current authorized native tenant/user; global stored federal evidence; server-owned defaultCongress"
+    },
+    {
+      "path": "apps/gateway/sources/state-legislation",
+      "family": "state-legislation",
+      "declaredIn": ["apps/gateway/sources/state-legislation/handler.mjs"],
+      "operations": ["search_state_bills", "get_state_legislator"],
+      "adapterChecks": ["finite native stored-handler admission", "original flat request retains native normalization once", "unchanged stored state selector, ambiguity/refusal and receiving"],
+      "subject": "current authorized native tenant/user; stored state bill and legislator rows; empty context"
+    },
+    {
+      "path": "apps/gateway/sources/stored-intelligence",
+      "family": "stored-intelligence",
+      "declaredIn": ["apps/gateway/sources/stored-intelligence/handler.mjs"],
+      "operations": ["search_intel_articles"],
+      "adapterChecks": ["finite native stored-handler admission", "fixed original flat POST and exact current grants", "unchanged excerpts, ordering, independently observed count and receiving"],
+      "subject": "current authorized native tenant/user; public stored articles; empty context"
+    },
+    {
+      "path": "apps/gateway/sources/regulatory-dockets",
+      "family": "regulatory-dockets",
+      "declaredIn": ["apps/gateway/sources/regulatory-dockets/handler.mjs"],
+      "operations": ["query_regulatory_dockets"],
+      "adapterChecks": ["finite native stored-handler admission", "fixed original flat POST", "unchanged ordinary/upcoming stored docket projections and receiving"],
+      "subject": "current authorized native tenant/user; global stored dockets; empty context"
+    },
+    {
+      "path": "apps/gateway/sources/intelligence-summary",
+      "family": "intelligence-summary",
+      "declaredIn": ["apps/gateway/sources/intelligence-summary/handler.mjs"],
+      "operations": ["query_intelligence"],
+      "adapterChecks": ["finite native stored-handler admission", "fixed original flat POST delegates actual stored Core aggregate", "unchanged opaque source prose, partial omissions and receiving"],
+      "subject": "current authorized native tenant/user; public stored intelligence; clientName is public contractor text"
+    },
+    {
+      "path": "apps/gateway/sources/legislative-directory",
+      "family": "legislative-directory",
+      "declaredIn": ["apps/gateway/sources/legislative-directory/handler.mjs"],
+      "operations": ["get_committee_roster", "list_members"],
+      "adapterChecks": ["exact current decision, actor, policy and source proof", "fixed native POST with original flat request; normalize once in Core", "current task/allocation/native user and service credentials", "separate federal/state frozen projections, selection refusals and incomplete roster notes"],
+      "subject": "current authorized native Core tenant/user; global stored directory; no normalization context keys"
+    },
+    {
       "path": "apps/gateway/sources/bill-text",
       "family": "bill-text",
       "declaredIn": ["apps/gateway/sources/bill-text/handler.mjs"],

@@ -1,0 +1,58 @@
+{
+  "captureKind": "process-stdio",
+  "captureIncomplete": false,
+  "executable": "C:\\Users\\Administrator\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe",
+  "nodeVersion": "v24.19.0",
+  "cwd": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-16\\task-4\\meri-resolution-next",
+  "argv": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "--test-timeout=30000",
+    "apps/runtime/native-authority/general-read-installation/test/preparation.test.mjs",
+    "apps/runtime/native-authority/general-read-installation/test/runtime.test.mjs"
+  ],
+  "startedAt": "2026-10-17T04:40:46.177Z",
+  "finishedAt": "2026-10-17T04:40:48.957Z",
+  "exitCode": 1,
+  "signal": null,
+  "error": null,
+  "stdout": {
+    "path": "installation-initial.stdout.txt",
+    "bytes": 15214,
+    "sha256": "6cf43e971a6a8355e32f12fe024d54840a232e9cdcf977bb6f61974c5246935a"
+  },
+  "stderr": {
+    "path": "installation-initial.stderr.txt",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "sourceFiles": [
+    {
+      "path": "apps/gateway/general-reads/integration.mjs",
+      "sha256": "4d2ea1e85f1cc19e63a0310436747b9a2e2939449be3c23457e8d5531a9e4360"
+    },
+    {
+      "path": "apps/gateway/general-reads/families/mail.mjs",
+      "sha256": "23442b41652196f7681ff44dadf02643edd0207499a990a8eef71bbc76be40bd"
+    },
+    {
+      "path": "apps/runtime/native-authority/general-read-installation/configuration.mjs",
+      "sha256": "2c9472b150243f52ffb599f3b56ddf4d64cdc666ddde4e4c01017f6d3437ba85"
+    },
+    {
+      "path": "apps/runtime/native-authority/general-read-installation/runtime.mjs",
+      "sha256": "dd560173deb4d5ffc0c1b3dd2ee54611c8a47c8c2da94e0da4252495c8732705"
+    },
+    {
+      "path": "apps/runtime/native-authority/general-read-installation/test/preparation.test.mjs",
+      "sha256": "6dc7a982435e20d9c9095541ff08b1ba46601a8b2f815aa257356b8df7a3c4b3"
+    },
+    {
+      "path": "apps/runtime/native-authority/general-read-installation/test/runtime.test.mjs",
+      "sha256": "62c8b07f3ad19fabf1e30143a9a2961f12e7402c87bbb5fa4f63142375e94769"
+    }
+  ],
+  "scope": "Local source/installation/current-owner protocol over synthetic SQL and source Fetch only; no live qualification or startup mount"
+}

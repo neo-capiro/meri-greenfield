@@ -1,0 +1,16 @@
+# Offline commands and evidence
+
+Node executable: `C:/Users/Administrator/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe`, version 24.19.0. Every command uses `--preserve-symlinks --max-old-space-size=256 --test --test-concurrency=1 --test-timeout=30000`.
+
+- `pr99-exact-zod-worker.txt`: `apps/worker/conversation/reads/test/legislative-directory.test.mjs apps/worker/conversation/reads/test/families.test.mjs apps/worker/conversation/reads/test/admission.test.mjs apps/worker/conversation/reads/test/availability.test.mjs apps/worker/conversation/reads/test/native-families.test.mjs apps/worker/conversation/reads/test/disclosures.test.mjs`. Exit 0; 72/72.
+- `helper-and-platform.txt`: `apps/gateway/sources/retained-reads/native-handler.test.mjs apps/worker/conversation/test/legacy-tools-excluded.test.mjs`. Exit 1; 10 helper passes plus 6/7 unchanged Windows guard checks.
+- `stored-integrated-initial.txt`: `apps/gateway/sources/retained-reads/native-handler.test.mjs apps/gateway/sources/pe-references/test/handler.test.mjs apps/gateway/sources/federal-legislation/test/handler.test.mjs apps/gateway/sources/state-legislation/test/handler.test.mjs apps/gateway/sources/stored-intelligence/test/handler.test.mjs apps/gateway/sources/regulatory-dockets/test/handler.test.mjs apps/gateway/sources/intelligence-summary/test/handler.test.mjs apps/runtime/native-authority/native-read-credentials/test/family-wiring.test.mjs apps/gateway/general-reads/families.test.mjs apps/gateway/general-reads/registration.test.mjs apps/worker/conversation/reads/test/stored-next.test.mjs`. Exit 1; 436/446; ten new MCP cases had an incorrect expectation for empty family policy.
+- `stored-mcp-policy-rerun.txt`: `apps/worker/conversation/reads/test/stored-next.test.mjs`. Exit 0; 30/30 after distinguishing valid excluding policy from invalid empty policy.
+- `stored-ledger-retained.txt`: `scripts/scope-ledger/source-exposure.test.mjs apps/worker/conversation/reads/test/families.test.mjs apps/gateway/general-reads/retained.test.mjs`. Exit 1; 114/115; the old missing-adapter fixture selected now-implemented federal status.
+- `stored-ledger-fixture-rerun.txt`: `scripts/scope-ledger/source-exposure.test.mjs`. Exit 0; 16/16 after explicitly omitting that adapter and its family from the negative fixture. Original assertions retained.
+
+Exact package resolution was checked with `createRequire` at worker `reads/schema.mjs`, SDK and MCP logical package paths under `--preserve-symlinks`; all resolve task-local Zod 4.6.7. Official cached tarball SHA512 is verified against the unchanged worker lock. Other installed packages are borrowed via task-local junctions, with no install or shared modification.
+
+Additional successful checks: `scripts/scope-ledger/cli.mjs --refresh-exposure`, `--check-exposure`, `git diff --check`; `git diff --quiet caa7810ff19c09c8f7ea1c2524c025f36f99ccd6` for unchanged workspace-tools, capability fixture and legacy exclusion test; no changes under central contracts, infrastructure or lockfiles; release checkout clean.
+
+Independent review ran 121 helper/adapter, 30 MCP and 40 mounted-owner cases successfully, plus eight federal assertions, and recorded ACCEPT_SOURCE. Author-only frozen contract checks are recorded separately in the report. No native/live qualification claimed.

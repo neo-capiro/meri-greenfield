@@ -1,0 +1,101 @@
+Γ£ö synthetic get_research_portfolio: missing installation/discovery and disabled source create no server (85.7918ms)
+Γ£ö synthetic get_research_portfolio: foreign/stale discovery never creates a server (88.3ms)
+Γ£ö synthetic get_research_portfolio: discovery revocation after listing refuses before gateway invocation (54.8574ms)
+Γ£ö synthetic get_research_portfolio: a narrower selected allocation and captured installation digest are preserved (184.3158ms)
+Γ£ö synthetic get_research_portfolio_changes: missing installation/discovery and disabled source create no server (18.4611ms)
+Γ£ö synthetic get_research_portfolio_changes: foreign/stale discovery never creates a server (69.171ms)
+Γ£ö synthetic get_research_portfolio_changes: discovery revocation after listing refuses before gateway invocation (30.9159ms)
+Γ£ö synthetic get_research_portfolio_changes: a narrower selected allocation and captured installation digest are preserved (93.1793ms)
+Γ£ö synthetic get_florida_budget_project: missing installation/discovery and disabled source create no server (18.5334ms)
+Γ£ö synthetic get_florida_budget_project: foreign/stale discovery never creates a server (76.4247ms)
+Γ£ö synthetic get_florida_budget_project: discovery revocation after listing refuses before gateway invocation (24.5242ms)
+Γ£ö synthetic get_florida_budget_project: a narrower selected allocation and captured installation digest are preserved (116.3452ms)
+Γ£ö all six gates open: exactly the wired mail family, in catalog order, read-only descriptors only (6.036ms)
+Γ£ö each gate alone excludes: installation, policy, family list, discovery grant, client scope (6.0627ms)
+Γ£ö the deferred list is the owner's 43 catalog originals and none can be constructed (1.3038ms)
+Γ£ö the availability snapshot refuses foreign, stale, expired, duplicated or substituted facts (58.3754ms)
+Γ£ö advertised schemas: canonical only when provably no wider; a hash mismatch is a configuration failure (19.0214ms)
+Γ£ö P3 local budgets are upper bounds that a skill can only narrow; the ledger refuses past them (0.4171ms)
+Γ£ö every gateway code renders its own closed text; unknown failures are INTERNAL_ERROR (0.4946ms)
+Γ£ö P8 fields resolve platform ├â┬ó├ïΓÇá├é┬º tenant ├â┬ó├ïΓÇá├é┬º role: flags AND, families intersect, widening refused (2.4111ms)
+Γ£ö search_lda_filings: worker uses canonical closed schema without authority or defaults (17.0632ms)
+Γ£ö search_sec_filings: worker uses canonical closed schema without authority or defaults (2.3746ms)
+Γ£ö search_fara_registrations: worker uses canonical closed schema without authority or defaults (2.1388ms)
+Γ£ö all twenty constructible families remain unavailable without installation or discovery (6.3328ms)
+Γ£ö per-operation client prefilter preserves personal meetings/tasks while withholding required-client reads (1.1431ms)
+Γ£ö synthetic mail.read_thread: advertised arguments retain canonical constraints (10.9503ms)
+Γ£ö synthetic mail.list_messages: advertised arguments retain canonical constraints (5.0241ms)
+Γ£ö synthetic mail.search_messages: advertised arguments retain canonical constraints (6.7478ms)
+Γ£ö synthetic meeting.list_upcoming_meetings: advertised arguments retain canonical constraints (2.2206ms)
+Γ£ö synthetic meeting.read_client_meetings: advertised arguments retain canonical constraints (3.5357ms)
+Γ£ö synthetic meeting.query_debriefs: advertised arguments retain canonical constraints (2.9949ms)
+Γ£ö synthetic query_tasks: advertised arguments retain canonical constraints (3.045ms)
+Γ£ö synthetic memory.list_own_proposals: advertised arguments retain canonical constraints (2.0282ms)
+Γ£ö synthetic query_action_items: advertised arguments retain canonical constraints (2.3738ms)
+Γ£ö synthetic get_research_portfolio: advertised arguments retain canonical constraints (1.3673ms)
+Γ£ö synthetic get_research_portfolio_changes: advertised arguments retain canonical constraints (1.6899ms)
+Γ£ö synthetic read_client_documents: advertised arguments retain canonical constraints (2.8856ms)
+Γ£ö synthetic search_cbo_cost_estimates: advertised arguments retain canonical constraints (2.2188ms)
+Γ£ö synthetic search_gao_reports: advertised arguments retain canonical constraints (1.3888ms)
+Γ£ö synthetic search_crs_reports: advertised arguments retain canonical constraints (1.225ms)
+Γ£ö synthetic search_sec_filings: advertised arguments retain canonical constraints (1.8292ms)
+Γ£ö synthetic search_fara_registrations: advertised arguments retain canonical constraints (2.0965ms)
+Γ£ö synthetic search_lda_filings: advertised arguments retain canonical constraints (2.2529ms)
+Γ£ö synthetic search_acquisition_personnel: advertised arguments retain canonical constraints (1.8846ms)
+Γ£ö synthetic get_acquisition_person: advertised arguments retain canonical constraints (1.1552ms)
+Γ£ö synthetic search_congress_bills: advertised arguments retain canonical constraints (2.1102ms)
+Γ£ö synthetic read_bill_text: advertised arguments retain canonical constraints (1.6932ms)
+Γ£ö synthetic get_committee_roster: advertised arguments retain canonical constraints (1.821ms)
+Γ£ö synthetic list_members: advertised arguments retain canonical constraints (1.4552ms)
+Γ£ö synthetic list_global_datasets: advertised arguments retain canonical constraints (0.8348ms)
+Γ£ö synthetic find_contacts: advertised arguments retain canonical constraints (1.5397ms)
+Γ£ö synthetic resolve_entity: advertised arguments retain canonical constraints (1.3148ms)
+Γ£ö synthetic get_florida_budget_project: advertised arguments retain canonical constraints (1.7774ms)
+Γ£ö synthetic read_monday_client_boards: advertised arguments retain canonical constraints (1.4478ms)
+Γ£ö synthetic search_memory: advertised arguments retain canonical constraints (1.7735ms)
+Γ£ö synthetic get_client_context: advertised arguments retain canonical constraints (5.2497ms)
+Γ£ö synthetic actions.query: advertised arguments retain canonical constraints (2.6619ms)
+Γ£ö synthetic get_research_evidence: advertised arguments retain canonical constraints (2.6834ms)
+Γ£ö unconvertible/widened schemas fail configuration; union, required and array constraints are checked (0.6016ms)
+Γ£ö contacts canonical bytes and receipt hashes are preserved with a separate deferred-tool notice (228.2165ms)
+Γ£ö contacts guidance counts toward the complete model-visible output limit (101.4496ms)
+Γ£ö search_cbo_cost_estimates: canonical worker schema preserves literals and excludes authority/context (11.0981ms)
+Γ£ö search_gao_reports: canonical worker schema preserves literals and excludes authority/context (1.931ms)
+Γ£ö search_crs_reports: canonical worker schema preserves literals and excludes authority/context (1.3793ms)
+Γ£ö search_acquisition_personnel: canonical worker schema preserves literals and excludes authority/context (3.2467ms)
+Γ£ö get_acquisition_person: canonical worker schema preserves literals and excludes authority/context (1.5652ms)
+node:internal/modules/esm/resolve:271
+    throw new ERR_MODULE_NOT_FOUND(
+          ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module 'C:\Users\Administrator\Documents\Codex\2026-10-16\task-4\meri-general-reads\packages\window-resolution\index.mjs' imported from C:\Users\Administrator\Documents\Codex\2026-10-16\task-4\meri-general-reads\apps\control\conversations\service.mjs
+    at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+    at moduleResolve (node:internal/modules/esm/resolve:865:10)
+    at defaultResolve (node:internal/modules/esm/resolve:992:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+    at #resolve (node:internal/modules/esm/loader:683:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33)
+    at ModuleJob.link (node:internal/modules/esm/module_job:253:17) {
+  code: 'ERR_MODULE_NOT_FOUND',
+  url: 'file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-general-reads/packages/window-resolution/index.mjs'
+}
+
+Node.js v24.19.0
+Γ£û apps\worker\conversation\test\legacy-tools-excluded.test.mjs (506.2661ms)
+Γä╣ tests 67
+Γä╣ suites 0
+Γä╣ pass 66
+Γä╣ fail 1
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 5628.1619
+
+Γ£û failing tests:
+
+test at apps\worker\conversation\test\legacy-tools-excluded.test.mjs:1:1
+Γ£û apps\worker\conversation\test\legacy-tools-excluded.test.mjs (506.2661ms)
+  'test failed'

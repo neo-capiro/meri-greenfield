@@ -1,0 +1,17 @@
+{
+  "startedAt": "2026-10-17T04:05:54.0272368Z",
+  "finishedAt": "2026-10-17T04:05:55.5472328Z",
+  "cwd": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-16\\task-4\\meri-resolution-next",
+  "executable": "C:/Users/Administrator/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe",
+  "rerunReason": "The29/30 corrected run preserved safe INVALID_RESULT projection before source credential release. Pin exact before-credential INVALID_RESULT vs after-source ACCESS_DENIED; retain UNKNOWN, zero source HTTP, no receipt or retry assertions. No production changes.",
+  "exitCode": 0,
+  "qualification": "Offline actual SDK/CONTROL/gateway and task owners; scripted SQL and synthetic native HTTP; no live qualification.",
+  "argv": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "--test-name-pattern=native membership revision changes before-credential",
+    "apps/worker/conversation/reads/test/kb.test.mjs"
+  ]
+}

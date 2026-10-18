@@ -1,0 +1,15 @@
+{
+  "executable": "C:/Users/Administrator/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe",
+  "argv": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "--test-timeout=20000",
+    "scripts/scope-ledger/source-exposure.test.mjs"
+  ],
+  "startedAt": "2026-10-17T04:49:47.9168836Z",
+  "finishedAt": "2026-10-17T04:49:51.1839727Z",
+  "exitCode": 1,
+  "classification": "Bounded source accounting, canonical synthetic composition and immutable history; no live qualification"
+}

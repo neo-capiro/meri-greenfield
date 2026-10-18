@@ -1,0 +1,66 @@
+✔ search_funding_opportunities: fixed native POST preserves source JSON, original request and the exact trusted observation (117.9741ms)
+✔ get_funding_opportunity_requirements: fixed native POST preserves source JSON, original request and the exact trusted observation (17.0566ms)
+✔ get_funding_opportunity: fixed native POST preserves source JSON, original request and the exact trusted observation (9.2824ms)
+✔ get_opportunity_client_context: fixed native POST preserves source JSON, original request and the exact trusted observation (24.2266ms)
+✔ get_opportunity_government_landscape: fixed native POST preserves source JSON, original request and the exact trusted observation (14.0903ms)
+✔ search_funding_opportunities: a legacy or substituted result clock is rejected without rewriting or retry (5.0462ms)
+✔ get_funding_opportunity_requirements: a legacy or substituted result clock is rejected without rewriting or retry (3.4157ms)
+✔ get_funding_opportunity: a legacy or substituted result clock is rejected without rewriting or retry (3.2677ms)
+✔ get_opportunity_client_context: a legacy or substituted result clock is rejected without rewriting or retry (4.0134ms)
+✔ get_opportunity_government_landscape: a legacy or substituted result clock is rejected without rewriting or retry (5.2753ms)
+✖ all five require the frozen explicit client UUID; model clocks, unknown fields and coercion fail before native credentials (5.0801ms)
+✔ capture is inert and case-equivalent identity does not rewrite the native request (4.9664ms)
+✔ one exact client subject/resource is required and shared tenant scope remains admissible (9.9751ms)
+✔ missing or revoked current owner cannot fall back to static credentials (8.1973ms)
+✔ trusted context is exact, pinned and never inferred from an output or ambient clock (3.7783ms)
+✔ search retains raw defaults, effective page clamp and independent source-generated clock (16.1879ms)
+✔ detail preserves UTF-16 continuation and unknown money without mixing grant and contract channels (15.0405ms)
+✔ requirements retain pending/rejected/superseded extraction facts and UTF-16 quote spans (10.0086ms)
+✔ requirement exhausted pages preserve available coverage and no-documents stays distinct from no conditions (7.1875ms)
+✔ client context distinguishes broad match counts from sampled deadline counts and the sampled next deadline (11.0902ms)
+✔ landscape preserves inferred basis, full fingerprint, exact source coverage and original truncation counts (14.3941ms)
+✔ native feature, wall, unsupported-source and not-found refusals retain exact null data and no absence claim (42.9341ms)
+✔ whole DTO admission refuses unknown private fields, oversize envelopes and source identity changes (51.6861ms)
+✔ failed native HTTP never retries legacy mode and current credential proof remains tenant/request bound (11.1517ms)
+✔ revoked decisions, cancellation and expiry cannot release a stored reply (4.8098ms)
+✔ factory refuses nonread, foreign, duplicate, empty and wrong-version operation declarations (0.6544ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 25
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 988.2839
+
+✖ failing tests:
+
+test at apps\gateway\sources\funding-opportunities\test\handler.test.mjs:31:1
+✖ all five require the frozen explicit client UUID; model clocks, unknown fields and coercion fail before native credentials (5.0801ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+    Comparison {
+  +   message: 'INTERNAL_ERROR'
+  -   message: 'INVALID_ARGUMENTS'
+    }
+
+      at async TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/gateway/sources/funding-opportunities/test/handler.test.mjs:35:4)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: GatewayDenied: INTERNAL_ERROR
+        at safeFailure (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/gateway/dispatch/operation-result.mjs:55:10)
+        at execute (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/gateway/sources/funding-opportunities/handler.mjs:22:22)
+        at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/gateway/sources/funding-opportunities/test/handler.test.mjs:35:36)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1382:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+        at Test.postRun (node:internal/test_runner/test:1522:19)
+        at Test.run (node:internal/test_runner/test:1447:12)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    expected: { message: 'INVALID_ARGUMENTS' },
+    operator: 'rejects',
+    diff: 'simple'
+  }

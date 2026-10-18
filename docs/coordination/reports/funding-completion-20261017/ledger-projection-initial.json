@@ -1,0 +1,65 @@
+{
+  "schema": "meri-check-evidence/1",
+  "status": "PRECONDITION_BLOCKED",
+  "testBodyExecuted": false,
+  "assertionFailure": false,
+  "phase": "module initialization before any selected test body",
+  "reason": "The intentionally prepared future funding SDK policy was present while funding adapter metadata remained partial awaiting Core acceptance; strict source-exposure reconciliation refused to initialize.",
+  "failure": {
+    "code": "SOURCE_EXPOSURE_INVALID",
+    "message": "Incomplete source adapter cannot be SDK-exposed: search_funding_opportunities",
+    "stackOwner": "scripts/scope-ledger/source-exposure.mjs",
+    "trigger": "loadSourceExposure at test module initialization"
+  },
+  "nodeVersion": "24.19.0",
+  "observedExecutable": "C:/Users/Administrator/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe",
+  "arguments": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "--test-timeout=20000",
+    "--test-name-pattern",
+    "funding completion projection",
+    "scripts/scope-ledger/source-exposure.test.mjs"
+  ],
+  "observedShell": "powershell",
+  "observedCommand": "& 'C:/Users/Administrator/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe' --preserve-symlinks --max-old-space-size=256 --test --test-concurrency=1 --test-timeout=20000 --test-name-pattern 'funding completion projection' scripts/scope-ledger/source-exposure.test.mjs",
+  "portableCommand": "node --preserve-symlinks --max-old-space-size=256 --test --test-concurrency=1 --test-timeout=20000 --test-name-pattern 'funding completion projection' scripts/scope-ledger/source-exposure.test.mjs",
+  "repositoryRelativeWorkingDirectory": ".",
+  "observedWorkingDirectory": "C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next",
+  "baseCommit": "6104c2c1edb9be1a1353a94552fef28e6b63b2e5",
+  "publicBaseTree": "e1a6cc9b55501191f56142bf684e3782d94534cd",
+  "branch": "codex/meri-funding-completion-20261017",
+  "exitCode": 1,
+  "signal": null,
+  "capture": {
+    "kind": "tool-transcript",
+    "tool": "functions.exec -> tools.exec_command",
+    "toolChunkId": "5d5d53",
+    "stream": "combined command output returned by the tool",
+    "outputTruncated": false,
+    "toolOriginalTokenCount": 341,
+    "toolWallTimeSeconds": 0.521839525,
+    "initialExecutionTimestamp": null,
+    "initialExecutionTimestampNote": "The tool transcript did not include an absolute start/end timestamp.",
+    "archivedAt": "2026-10-17T03:38:10.795Z",
+    "rerunPerformed": false,
+    "normalization": "UTF-8 with LF line endings; output text copied from the original tool response; no result, stack or harness summary was omitted."
+  },
+  "nodeHarnessSummary": {
+    "filesReportedAsFailed": 1,
+    "pass": 0,
+    "fail": 1,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "durationMs": 262.2848,
+    "interpretation": "The failed file is the module-load precondition failure, not a test-body assertion failure."
+  },
+  "consoleArtifact": {
+    "path": "docs/coordination/reports/funding-completion-20261017/ledger-projection-initial.txt",
+    "sha256": "21bd0810e7083663e540d9029b771fea2a86b7d3ff09cdae53246c0149082e47"
+  },
+  "remainingGate": "Actual ledger suite and snapshot generation remain pending accepted Core strict-wire successor pin and parent promotion/final-source-freeze signal."
+}

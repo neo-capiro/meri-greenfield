@@ -1,0 +1,32 @@
+Γ£ö the exclusion list is the owner's 43 distinct names (0.866ms)
+Γ£ö every excluded name is deferred in the catalog originals and absent from catalog operations and aliases (0.4317ms)
+Γ£ö no original skill manifest allows an excluded name, and the operation resolver refuses each one (12.2517ms)
+Γ£û no excluded name can enter the SDK tool surface the worker builds (4.2579ms)
+Γ£ö the only browser code on this branch (the qualification probe) calls no excluded name; no product browser tool list exists here (17.9581ms)
+Γ£ö the general read server derives its never-register list from the same 43 catalog originals (0.8717ms)
+Γ£ö the governed intent surface never names an excluded tool, including the three direct canonical-memory writes (0.223ms)
+Γä╣ tests 7
+Γä╣ suites 0
+Γä╣ pass 6
+Γä╣ fail 1
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 1532.4424
+
+Γ£û failing tests:
+
+test at apps\worker\conversation\test\legacy-tools-excluded.test.mjs:39:1
+Γ£û no excluded name can enter the SDK tool surface the worker builds (4.2579ms)
+  Error: WORKSPACE_ROOT_REFUSED
+      at assertWorkspaceRoot (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-general-reads/apps/worker/conversation/capabilities/workspace-tools.mjs:16:215)
+      at createSdkCapabilities (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-general-reads/apps/worker/conversation/capabilities/index.mjs:24:171)
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-general-reads/apps/worker/conversation/test/legacy-tools-excluded.test.mjs:41:13)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'WORKSPACE_ROOT_REFUSED'
+  }

@@ -1,0 +1,94 @@
+{
+  "diffCheck": "Scoped git diff --check PASS",
+  "fixtureBoundary": "Only exact tracked0.2 Synthetic Client raw name input projects the bound task UUID into the borrowed fixture business-selector guard, then delegates the original complete authority owner. Original request/context/body correlation remains unchanged; actual native check-ref and visibility/task bounds independently reject foreign/hidden/ambiguous/drifted resolution. Other operations and UUID inputs delegate unchanged.",
+  "base": {
+    "head": "36ec54b54c8caa91c8c90f037b65ee2863d6c907",
+    "local": "546a8ad45e48539c3f0fc832018269cabadbf1ee",
+    "tree": "b1f79a9832393053c2db64cc9437bad8d59fc8e4",
+    "publishedPR": 119
+  },
+  "capturedAt": "2026-10-17T04:46:29.6744414Z",
+  "policy": {
+    "sdkOperations": 70,
+    "sdkFamilies": 40,
+    "remainingPartialOperations": 4,
+    "requiredClientFamilies": [
+      "tracked-bills"
+    ],
+    "newOperationIds": [
+      "get_state_bill_status",
+      "search_state_floor_votes",
+      "search_tracked_bills",
+      "search_committee_hearings"
+    ],
+    "optionalFamilies": [
+      "state-status-votes",
+      "public-domain-hearings"
+    ],
+    "remainingAbsentOperations": 10
+  },
+  "pending": [
+    "Parent coherent frozen integration and exact-source review.",
+    "Parent ledger/provenance/publication and actual installed-source qualification."
+  ],
+  "initialFailureClassification": "Two test-only tracked-context key-order expectations compared sorted actual keys with an unsorted expected3-key literal. Correct exact order, preserving all lineage/hash/receipt assertions. No production finding.",
+  "qualification": "Actual MCP/CONTROL/gateway/task/native-reader owners, scripted SQL and synthetic existing native HTTP/source DTOs. No provider/cache/quota/database/native build/installation/live qualification.",
+  "schemaVersion": "meri-sdk-four-read-completion-evidence/1",
+  "frozenSources": [
+    {
+      "sha256": "525d40fa0ee446a0a766a17806bea1a060421b64d58866be0a46f7822aaaafe7",
+      "path": "apps/worker/conversation/reads/families.mjs"
+    },
+    {
+      "sha256": "ca79343bab5041666db4ae7826115c97d52562069c926144008b139f69e4ec96",
+      "path": "apps/worker/conversation/reads/test/completion.test.mjs"
+    },
+    {
+      "sha256": "6ef761fc6c59155147bc98a902993a172d1169ba3a5a8b771bfef0b3570fdc53",
+      "path": "apps/worker/conversation/reads/test/families.test.mjs"
+    },
+    {
+      "sha256": "765a9212fc4d3fe5d4afd0623807971c7c81becc9ced7ed3b2e8670e5ad0ffd5",
+      "path": "apps/worker/conversation/reads/test/source-slices.test.mjs"
+    },
+    {
+      "sha256": "980a2130491777618b04630371491b15e4901449900deda34bff5e8b5b854882",
+      "path": "apps/worker/conversation/reads/test/funding.test.mjs"
+    },
+    {
+      "sha256": "00c4fdaee00249a14afe22e1933caa2b5ca2a75049ab7f0a6786dd1c8b23a067",
+      "path": "apps/worker/conversation/reads/test/kb.test.mjs"
+    },
+    {
+      "sha256": "06c93737750213f34d53d906acdb89c0045ca5c914374dca3455c2520d43057f",
+      "path": "apps/runtime/native-authority/test/read-family-subsets.test.mjs"
+    },
+    {
+      "sha256": "eb27b3ea52b99b0ef1fb2a7ec61427c551224ca6a5787ec3e77d886b47f7b69c",
+      "path": "apps/runtime/test/funding-source-integration.test.mjs"
+    }
+  ],
+  "runs": [
+    {
+      "metadata": "sdk-completion-initial.json",
+      "tests": 64,
+      "output": "sdk-completion-initial.txt",
+      "failed": 2,
+      "passed": 62
+    },
+    {
+      "metadata": "sdk-completion-key-order-delta.json",
+      "tests": 2,
+      "output": "sdk-completion-key-order-delta.txt",
+      "failed": 0,
+      "passed": 2
+    },
+    {
+      "metadata": "sdk-completion-existing-initial.json",
+      "tests": 10,
+      "output": "sdk-completion-existing-initial.txt",
+      "failed": 0,
+      "passed": 10
+    }
+  ]
+}

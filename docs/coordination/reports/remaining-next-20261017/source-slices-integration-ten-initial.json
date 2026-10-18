@@ -1,0 +1,17 @@
+{
+  "args": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "apps/gateway/general-reads/families.test.mjs",
+    "apps/runtime/native-authority/native-read-credentials/test/family-wiring.test.mjs",
+    "apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs",
+    "apps/worker/conversation/reads/test/families.test.mjs",
+    "apps/worker/conversation/reads/test/governed-next.test.mjs",
+    "apps/worker/conversation/reads/test/source-slices.test.mjs"
+  ],
+  "cwd": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-16\\task-4\\meri-remaining-next",
+  "executable": "C:/Users/Administrator/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe",
+  "status": 1
+}

@@ -1,0 +1,28 @@
+file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/scripts/scope-ledger/source-exposure.mjs:10
+const fail=message=>{throw Object.assign(Error(message),{code:'SOURCE_EXPOSURE_INVALID'});};
+                                         ^
+
+Error: Incomplete source adapter cannot be SDK-exposed: search_funding_opportunities
+    at fail (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/scripts/scope-ledger/source-exposure.mjs:10:42)
+    at reconcileSourceExposure (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/scripts/scope-ledger/source-exposure.mjs:54:62)
+    at loadSourceExposure (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/scripts/scope-ledger/source-exposure.mjs:139:9)
+    at file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/scripts/scope-ledger/source-exposure.test.mjs:14:70 {
+  code: 'SOURCE_EXPOSURE_INVALID'
+}
+
+Node.js v24.19.0
+✖ scripts\scope-ledger\source-exposure.test.mjs (253.8414ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 262.2848
+
+✖ failing tests:
+
+test at scripts\scope-ledger\source-exposure.test.mjs:1:1
+✖ scripts\scope-ledger\source-exposure.test.mjs (253.8414ms)
+  'test failed'

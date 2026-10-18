@@ -1,0 +1,44 @@
+Γ£ö 96 selected and43 excluded are reconciled separately from71 registered operations (1.3072ms)
+Γ£ö missing complete coverage counts three incomplete adapters and ten absent adapters exactly once (1.0368ms)
+Γ£ö economic subset and complete semantic/graph SDK family require actual canonical adapters (0.2953ms)
+Γ£ö bounded curated source declarations name eighteen operations and three partial input/resource reads (3.1907ms)
+Γ£ö the three incomplete input/resource operations keep source evidence outside SDK exposure (0.3172ms)
+Γ£ö only complete BD context and recent changes are promoted; evidence remains absent and SDK-held (2.9344ms)
+Γ£ö all five complete funding sources are SDK-exposed only under the actual required-client family policy (11.1321ms)
+Γ£ö funding completion projection preserves other incomplete reads and does not promote current source (6.1515ms)
+Γ£ö semantic KB completion projection preserves graph, funding and all other read coverage (62.2511ms)
+Γ£ö actual complete semantic and graph rows retain distinct clock and SDK client-scope policies (2.3927ms)
+Γ£ö PR119 projection promotes exactly the four state/tracked/hearing reads and preserves every other row field (62.0341ms)
+Γ£ö PR119 five-read projection adds only complete legal search beyond the retained four-read checkpoint (60.9027ms)
+Γ£ö legal search alone is SDK/runtime eligible while the private canonical reference sibling remains source-only (19.1033ms)
+Γ£ö the first four-read accounting report, frozen manifest and all initial/final receipts remain immutable (1.1885ms)
+Γ£ö complete state/tracked/hearing registration preserves exact client policies and canonical helper ownership (1.2715ms)
+Γ£ö 43 canonical constructors include explicit mail composition and measured native helper source without credential effects (25.7904ms)
+Γ£ö named tracked/hearing adapters require per-call ownership and retain original proof while forwarding only the selected UUID (135.6099ms)
+Γ£ö governed data adapter and corrected raw SDK selector are exposed as source only (0.195ms)
+Γ£ö only source-admitted original skills can establish a source route (0.1767ms)
+Γ£ö historical action-items contract is an additional route for one selected successor (0.1126ms)
+Γ£ö read-only product state is counted separately; writes and other product operations stay outside meri_reads (0.3446ms)
+Γ£ö all43 exclusions remain absent from both selected mappings and general registration (0.2766ms)
+Γ£ö all63 reviewed producer records correlate exact operations, context keys and immutable report pointers (12.6516ms)
+Γ£ö current source provenance measures declared canonical paths without claiming qualification (10.4668ms)
+Γ£ö directory source is exposed while retained research/Florida scope and zero-live gates remain explicit (0.1805ms)
+Γ£ö registering a governed write family refuses instead of expanding the read server (1.6801ms)
+Γ£ö registered family without adapter fails closed (1.7017ms)
+Γ£ö wrong, foreign, duplicate, nonstring and empty SDK operationIds refuse (11.8679ms)
+Γ£ö partialOperations must be unique nonempty IDs contained in that adapter declaration (10.4294ms)
+Γ£ö registering an incomplete operation refuses even with a valid canonical operationIds subset (2.669ms)
+Γ£ö renderer calls partial coverage missing complete implementation and never calls it exposed (56.3258ms)
+Γ£ö a manifest declaration alone never manufactures an adapter or source route (2.5482ms)
+Γ£ö duplicate adapter claims and changed selected scope refuse (2.3947ms)
+Γ£ö a duplicate canonical binding refuses rather than choosing an arbitrary adapter family (1.2372ms)
+Γ£ö targeted refresh preserves all eight historical fields from current base, PR107, PR106 and earlier base08f65a79 (2098.4412ms)
+Γ£ö committed current exposure regenerates exactly with a scoped drift check (86.4708ms)
+Γä╣ tests 36
+Γä╣ suites 0
+Γä╣ pass 36
+Γä╣ fail 0
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 3732.4531

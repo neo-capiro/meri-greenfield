@@ -38,7 +38,7 @@ function authority(f,operation){
 const pins=p=>{const {input,deadlineMs,signal,...rest}=p;return {...structuredClone(rest),bearerToken:'SYNTHETIC',serviceSecret:'SYNTHETIC',expiresAtMs:deadlineMs};};
 const response=page=>new Response(JSON.stringify(page),{headers:{'content-type':'application/json'}});
 export function familyCase(family,id){
- if(['public-reports','acquisition-personnel','disclosures'].includes(family))return nativeFamilyCase(family,id);
+ if(NATIVE_FAMILY_CASES.some(([candidate])=>candidate===family)||family==='disclosures')return nativeFamilyCase(family,id);
  if(family==='bill-text')return billTextCase(id);
  if(['research-portfolio','florida-budget'].includes(family))return retainedCase(id);
  const operation={id,version:'0.2.0'};let a,args,transport,page;

@@ -1,0 +1,8 @@
+{
+  "path": "docs/coordination/reports/read-completion-20261017/bd-owner-sdk-initial.txt",
+  "reason": "Remove whitespace-only diagnostic-line indentation for Git whitespace checks; preserve assertions, failure output, stacks and outcomes. Git publishes LF line endings.",
+  "originalWorkingSha256": "254b4247a3f7c157459191f005f78b9d7ab8811cfbbd2df6490c85cee153af1c",
+  "normalizedWorkingSha256": "888e98f0f88af8b33523bbb3fed821dce54b66fcfdac4bc3aafa9d7523cd1cec",
+  "stagedPublishedSha256": "b05edde8b8abd937d694a7f160b79d4b230b207b9efe6786090d1ea912b8ffd2",
+  "whitespaceOnlyLinesNormalized": 4
+}

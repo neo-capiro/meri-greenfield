@@ -1,0 +1,22 @@
+[
+  {
+    "path": "scripts/scope-ledger/source-exposure.test.mjs",
+    "sha256": "4384d5f37ffd11b1cb86eb11fc454ebf40df0710eb1b4a64ebf0a29af3991e9f",
+    "bytes": 42205
+  },
+  {
+    "path": "docs/coordination/ledgers/scope-ledger.json",
+    "sha256": "47a55897d30823fbf34f55651900785018dd59538a10d5d86ff9f4dadd6cbaff",
+    "bytes": 509199
+  },
+  {
+    "path": "docs/coordination/ledgers/MERI-FINAL-SCOPE-LEDGER-20261015.md",
+    "sha256": "b2e23f0ee627bbeca49e499693977b7d677c07bddc520afe7eec39f63ddd9258",
+    "bytes": 112335
+  },
+  {
+    "path": "docs/coordination/reports/CODEX-READ-COMPLETION-NEXT-LEDGER-20261017.md",
+    "sha256": "46e267ed11f7871698bc206054fe14028832dde965a37c511ef54b9161f33d17",
+    "bytes": 8381
+  }
+]

@@ -1,5 +1,28 @@
 # Meri final scope ledger
 
+Stored-source continuation after reviewed PR99: ten more selected reads now have
+fixed native adapters and current grant/context/credential wiring across six
+families (PE references, federal/state legislation, stored intelligence, regulatory
+dockets and intelligence summary). Current source is **43 operations / 26 worker
+families**, **41 of 82 source reads implemented/exposed**, **41 still missing across
+22 families**, and **live zero**. The exact Zod 4.6.7 worker check supersedes only
+the earlier local dependency mismatch; qualification/live gates remain open.
+Earlier increment counts below are historical. See
+[the continuation report](../reports/CODEX-STORED-READ-CONTINUATION-20261016.md).
+
+16 October 2026 legislative-directory increment, release base `caa7810ff19c09c8f7ea1c2524c025f36f99ccd6`:
+`get_committee_roster` and `list_members` now have fixed native gateway adapters,
+current task/tenant/user grant and credential-owner wiring, and `meri_reads`
+exposure. Actual current source is **33 operations / 20 worker families**, with
+**31 of 82 selected source reads implemented/exposed** and **51 reads remaining
+across 28 families**. This also reconciles already-present public-report,
+acquisition and disclosure source omitted by the older generated snapshot.
+Research portfolio, portfolio changes and Florida budget project reads remain
+implemented/exposed through their existing retained-context path. **Qualified/live
+remains zero**; installed receipts, actual current native inputs and live gates are
+still required. Earlier prose counts below are historical. See
+[the implementation and verification report](../reports/CODEX-LEGISLATIVE-DIRECTORY-READS-20261016.md).
+
 Next adapter batch, base `fb708d231c7273f86b1462c72a72e70ccc36a3d6`:
 all 63 missing names have actual retained Core dispatches at
 `b525032222515d636b0dae2d46e40c7c3d8b5528`, tree
@@ -170,7 +193,7 @@ It ran no product code, model, database, browser or deployment. "Declared" means
 | Audit declared-read equation | 47 literal legacy-name read matches + 6 renamed read IDs - 1 historical query_action_items match = 52 declared current reads; + create_word = 53 |
 | Live | 0 |
 
-### Current selected read source exposure (16 October 2026)
+### Current selected read source exposure (17 October 2026)
 
 This is source reconciliation only. The historical proposal tables below retain their original status; current adapter/server presence is recorded here and in `scope-ledger.json.sourceExposure.rows`. No source receipt is repinned and live availability remains zero.
 
@@ -178,12 +201,14 @@ This is source reconciliation only. The historical proposal tables below retain 
 | --- | --- |
 | Selected capabilities / continued exclusions | 96 / 43 |
 | Selected source reads / separate product or governed capabilities | 82 / 14 |
-| Single meri_reads registry | 23 operations / 16 families |
-| Registry accounting | 21 selected source reads + 1 product-state read + 1 historical contract |
+| Selected source adapter coverage | 69 complete + 3 partial + 10 absent = 82 |
+| Single meri_reads registry | 71 operations / 41 families |
+| Registry accounting | 69 selected source reads + 1 product-state read + 1 historical contract |
 | Selected source reads declared in skill manifests | 52 current contracts + 1 historical-only contract |
 | Selected source reads reachable through admitted skill source | 11 |
-| Existing source adapters lacking general-conversation registration | 0 |
-| Selected source reads lacking adapters | 61 (38 declared by skills; 23 without a skill declaration) |
+| Complete source adapters lacking general-conversation registration | 0 |
+| Partial source adapters withheld from SDK exposure | 3 |
+| Selected source reads lacking complete adapters | 13 (3 partial + 10 absent; 9 declared by skills; 4 without a skill declaration) |
 | Pinned actual Core producer mappings (not qualification) | 63 |
 | Live | 0 |
 
@@ -196,61 +221,74 @@ Only `quick_skill.relationship_brief`, `quick_skill.commitments_audit` are admit
 
 | Registered family | Exact operations |
 | --- | --- |
+| `acquisition-personnel` | `get_acquisition_person`, `search_acquisition_personnel` |
 | `action-items-complete` | `actions.query` |
 | `bill-text` | `read_bill_text`, `search_congress_bills` |
+| `business-development` | `get_business_development_context`, `get_business_development_recent_changes` |
 | `client-documents` | `read_client_documents` |
 | `client-knowledge-memory` | `search_memory` |
 | `client-knowledge-monday` | `read_monday_client_boards` |
 | `client-knowledge-profile` | `get_client_context` |
+| `client-knowledge-search` | `query_knowledge_graph`, `search_client_knowledge` |
+| `client-registry` | `lookup_client_registry` |
+| `data-search` | `search_capiro_data` |
 | `dataset-metadata` | `list_global_datasets` |
+| `disclosures` | `search_fara_registrations`, `search_lda_filings`, `search_sec_filings` |
+| `district-nexus` | `get_district_nexus_changes`, `get_district_nexus_context` |
 | `entity-candidates` | `resolve_entity` |
+| `facility-representation` | `get_representation` |
+| `federal-legislation` | `get_bill_status`, `search_floor_votes` |
+| `federal-market` | `get_district_federal_market`, `search_contract_vehicles`, `search_federal_contract_awards`, `search_federal_subawards`, `search_procurement_forecasts` |
 | `florida-budget` | `get_florida_budget_project` |
+| `funding-opportunities` | `get_funding_opportunity`, `get_funding_opportunity_requirements`, `get_opportunity_client_context`, `get_opportunity_government_landscape`, `search_funding_opportunities` |
+| `intelligence-summary` | `query_intelligence` |
+| `legislative-directory` | `get_committee_roster`, `list_members` |
 | `mail` | `mail.list_messages`, `mail.read_thread`, `mail.search_messages` |
 | `meeting-source` | `meeting.list_upcoming_meetings`, `meeting.query_debriefs`, `meeting.read_client_meetings` |
 | `memory-proposals` | `memory.list_own_proposals` |
 | `operational-reads` | `query_action_items`, `query_tasks` |
-| `research-portfolio` | `get_research_portfolio`, `get_research_portfolio_changes` |
-| `research-portfolio-evidence` | `get_research_evidence` |
-| `tenant-contacts` | `find_contacts` |
-
-Every canonical source adapter already present is exposed. The new bill-text source family adds two fixed native producers, retaining all receiving-contract truth limits. The remaining selected source reads lack an adapter; producer mapping alone does not implement them. Their exact unresolved families and operations are:
-
-| Missing adapter family | Selected operations |
-| --- | --- |
-| `acquisition-personnel` | `get_acquisition_person`, `search_acquisition_personnel` |
-| `business-development` | `get_business_development_context`, `get_business_development_evidence`, `get_business_development_recent_changes` |
-| `certification-status` | `get_certification_status` |
-| `client-knowledge-search` | `query_knowledge_graph`, `search_client_knowledge` |
-| `client-registry` | `lookup_client_registry` |
-| `data-search` | `search_capiro_data` |
-| `disclosures` | `search_fara_registrations`, `search_lda_filings`, `search_sec_filings` |
-| `district-nexus` | `get_district_nexus_changes`, `get_district_nexus_context` |
-| `facility-representation` | `get_representation` |
-| `federal-legislation` | `get_bill_status`, `search_floor_votes` |
-| `federal-market` | `get_district_federal_market`, `search_contract_vehicles`, `search_federal_contract_awards`, `search_federal_subawards`, `search_procurement_forecasts` |
-| `funding-opportunities` | `get_funding_opportunity`, `get_funding_opportunity_requirements`, `get_opportunity_client_context`, `get_opportunity_government_landscape`, `search_funding_opportunities` |
-| `intelligence-summary` | `query_intelligence` |
-| `legislative-directory` | `get_committee_roster`, `list_members` |
-| `outreach-query` | `query_outreach` |
 | `pe-references` | `get_pe_bills`, `get_pe_contractors`, `get_pe_report_language` |
-| `program-elements` | `get_pe_budget_timeline`, `get_program_element`, `search_program_elements` |
-| `public-data` | `query_economic_data`, `search_federal_awards`, `search_federal_grants` |
+| `public-data` | `query_economic_data` |
 | `public-domain-hearings` | `search_committee_hearings` |
 | `public-domain-query` | `query_global_data` |
 | `public-reports` | `search_cbo_cost_estimates`, `search_crs_reports`, `search_gao_reports` |
 | `public-web` | `scrape_web_page`, `search_public_web` |
 | `regulatory-dockets` | `query_regulatory_dockets` |
-| `research-legal-candidates` | `search_research_sources` |
-| `research-legal-legislation` | `get_legal_reference`, `search_legislative_research` |
-| `research-legal-news` | `search_legiwatch_news` |
-| `rule-status` | `get_state_rule_status` |
-| `sam-opportunities` | `search_sam_opportunities` |
+| `research-legal-legislation` | `search_legislative_research` |
+| `research-portfolio` | `get_research_portfolio`, `get_research_portfolio_changes` |
+| `research-portfolio-evidence` | `get_research_evidence` |
 | `state-legislation` | `get_state_legislator`, `search_state_bills` |
 | `state-status-votes` | `get_state_bill_status`, `search_state_floor_votes` |
 | `stored-intelligence` | `search_intel_articles` |
+| `tenant-contacts` | `find_contacts` |
 | `tracked-bills` | `search_tracked_bills` |
 
-Canonical gateway family adapter and operation-specific trusted dispatch/current-resource context, plus an admitted exact producer/endpoint protocol. A schema/normalizer binding or skill declaration is not a producer. No guessed endpoint, default credential or permissive generic query is allocated.
+Every complete source adapter already present is SDK-exposed.
+
+The following incomplete source adapters have restricted input/resource coverage or a pending native bridge. They remain outside the SDK registry and are included in the missing-complete inventory. Constructor or source-path presence does not establish complete operation coverage:
+
+| Partial adapter family | Incomplete operations (not SDK-exposed) |
+| --- | --- |
+| `outreach-query` | `query_outreach` |
+| `research-legal-legislation` | `get_legal_reference` |
+| `research-legal-news` | `search_legiwatch_news` |
+
+The finite native families listed above retain their receiving-contract truth limits and require current task, tenant/user and native credentials. Research portfolio, portfolio changes and Florida budget project reads remain exposed through their existing retained-context path. These source paths are not qualified or live. The remaining selected source reads lack complete adapters; producer mapping or a restricted request branch alone does not complete them. Their exact unresolved families and operations are:
+
+| Family lacking complete adapters | Selected operations (partial or absent) |
+| --- | --- |
+| `business-development` | `get_business_development_evidence` |
+| `certification-status` | `get_certification_status` |
+| `outreach-query` | `query_outreach` |
+| `program-elements` | `get_pe_budget_timeline`, `get_program_element`, `search_program_elements` |
+| `public-data` | `search_federal_awards`, `search_federal_grants` |
+| `research-legal-candidates` | `search_research_sources` |
+| `research-legal-legislation` | `get_legal_reference` |
+| `research-legal-news` | `search_legiwatch_news` |
+| `rule-status` | `get_state_rule_status` |
+| `sam-opportunities` | `search_sam_opportunities` |
+
+Missing complete coverage includes partial source adapters and absent adapters. Complete the canonical gateway adapter and operation-specific trusted dispatch/current-resource context using an admitted exact producer/endpoint protocol. A schema/normalizer binding, skill declaration, restricted branch or pending native bridge is not complete operation coverage. No guessed endpoint, default credential or permissive generic query is allocated.
 
 The 63 producer mappings pin Core `b525032222515d636b0dae2d46e40c7c3d8b5528` / tree `16723770a8e111fc66bcf70d36ff32ab71eb9928`. [Sanitized repository publication](https://github.com/neo-capiro/capiro-backend/blob/384325afaaf7ad34aeb9ff9b2f183d667ee17343/docs/retained-read-producer-mapping-20261016/MAPPING-HANDOFF-v2.json) is pinned at `384325afaaf7ad34aeb9ff9b2f183d667ee17343`. Its reviewed v2 index SHA is `c6ebaf2987015db466e88b9d4c550ab77878582ab7142ab256d298ae16ed0def`; publication review SHA `ceb7df958e5eb2f9971af7bd8ac093d6785d18543f5611d5149ebc1b8c4fb3ab`. Every mapped operation in JSON retains its exact scoped report hash/pointer, required receiving context and compatibility status. Original local v2 and superseded evidence remain preserved by their owner.
 

@@ -1,0 +1,32 @@
+Γ£ö get_business_development_context: exact native POST, complete receiving carrier and private credential proof (59.3079ms)
+Γ£ö get_business_development_recent_changes: exact native POST, complete receiving carrier and private credential proof (11.9888ms)
+Γ£ö native UUID capture normalizes private identity only and never substitutes the run conversation (6.5492ms)
+Γ£ö canonical request is mandatory, closed and not trimmed or coerced before any credential access (5.0475ms)
+Γ£ö hostile resource/subject objects cannot run getters or proxy traps (0.9545ms)
+Γ£ö only one coherent current client subject and its closed resource scope can reach the credential owner (5.2939ms)
+Γ£ö missing native resource owner never falls back to static credentials or source HTTP (3.6459ms)
+Γ£ö context retains stored prospect fields, preferences and newest-first history coverage (5.4877ms)
+Γ£ö case-equivalent native linked client is preserved without granting a different resource (2.7083ms)
+Γ£ö recent preserves inferred-change wording, exact JSON diffs and independent unread count without invented totals (2.9015ms)
+Γ£ö complete DTO admission rejects unknown private nested fields and broken coverage instead of redacting (30.1501ms)
+Γ£ö foreign/failed native replies, mismatched credential proof and output limits withhold the whole result (9.2316ms)
+Γ£ö canonical hash/context substitution, revoked decisions, cancellation and expiry never return stored bytes (5.772ms)
+Γ£ö factory and capture refuse evidence, foreign, duplicate and wrong-version operations (0.7734ms)
+Γ£ö get_business_development_context: personal uses exact native POST and current call credentials with no conversation receipt (57.6848ms)
+Γ£ö get_business_development_recent_changes: personal uses exact native POST and current call credentials with no conversation receipt (11.9392ms)
+Γ£ö personal accepts only exact tenant and actor-private scopes, individually or combined (8.8491ms)
+Γ£ö personal cannot borrow client, mailbox, public, memory, document, foreign or empty scope authority (7.9141ms)
+Γ£ö personal cannot change canonical actor identity, widen to portfolio or downgrade a client capability (3.7256ms)
+Γ£ö personal subject binding must still match the retained native call before any credential I/O (1.0961ms)
+Γ£ö personal context preserves null or nonnull native linked identities without reading a client profile (11.4641ms)
+Γ£ö personal retains complete DTO admission and preserves recent inference and pagination truth (13.5445ms)
+Γ£ö personal still requires the current credential owner and refuses static fallback, revocation and proof drift (4.7444ms)
+Γ£ö personal preserves cancellation, original expiry and whole-result resource ceilings (4.8472ms)
+Γä╣ tests 24
+Γä╣ suites 0
+Γä╣ pass 24
+Γä╣ fail 0
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 1402.1476

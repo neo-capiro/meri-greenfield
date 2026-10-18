@@ -1,0 +1,159 @@
+Γ£û runtime availability intersects forged inventories with the public-data subset and current KB client requirement (75.6374ms)
+Γ£ö both selected economic/graph operations execute through the actual runtime owner with exact request/delivery binding (91.1104ms)
+Γ£ö public grant/award siblings never reach gateway execution despite all three inventories claiming them (45.0315ms)
+Γ£û semantic KB is complete but remains unavailable to the actual no-client task despite overclaimed inventories (22.4575ms)
+Γ£ö semantic KB with a real client-task verifier reaches the native runtime gateway with exact request and result hashes (159.9156ms)
+Γ£û selected operations still require current discovered membership (72.9736ms)
+Γ£û selected operations still require current installed membership (58.8367ms)
+Γ£ö empty discovery exposes nothing and cannot execute an otherwise selected operation (76.5956ms)
+Γ£ö current committed task grant/entry revocation denies availability and selected execution before the gateway (49.3122ms)
+Γ£ö post-dispatch task revocation withholds selected bytes without another gateway execution (46.9882ms)
+Γ£ö post-dispatch discovery removal withholds selected bytes and never falls back to a withheld sibling (60.8209ms)
+Γ£ö KB SDK: complete family keeps optional graph and requires a current task client scope only for semantic search (7.9345ms)
+Γ£ö KB SDK: both measured handlers include the semantic helper, family, private wire and current context exactly once (144.8976ms)
+Γ£ö KB SDK: semantic literal schema refuses model context, authority and carrier fields (7.1577ms)
+Γ£ö KB SDK semantic available: actual hook preserves original request, once-captured context, delivery and durable receipts (339.0455ms)
+Γ£ö KB SDK semantic empty: actual hook preserves original request, once-captured context, delivery and durable receipts (207.3162ms)
+Γ£ö KB SDK semantic unavailable: actual hook preserves original request, once-captured context, delivery and durable receipts (184.9268ms)
+Γ£ö KB SDK: personal graph remains available with empty context and no semantic carrier or client tool (216.5959ms)
+Γ£ö KB SDK: personal task cannot acquire semantic client access from installed and discovered inventories (49.4661ms)
+Γ£ö KB SDK semantic foreign-client: current authority refuses before source credentials and reservation (115.9859ms)
+Γ£ö KB SDK semantic invisible-client: current authority refuses before source credentials and reservation (104.6295ms)
+Γ£û KB SDK semantic revoked-task: current authority refuses before source credentials and reservation (96.5831ms)
+Γ£ö KB SDK semantic native-principal: current authority refuses before source credentials and reservation (108.0791ms)
+Γ£ö KB SDK semantic: missing current installation, discovery, exact measurement, source or policy creates no tool (64.2953ms)
+Γ£ö KB SDK semantic: current installation removal after listing refuses before gateway execution (40.7464ms)
+Γ£ö KB SDK semantic: current discovery removal after listing refuses before gateway execution (63.6175ms)
+Γ£ö KB SDK semantic: native membership revision changes before-credential leave UNKNOWN without result or retry (117.9377ms)
+Γ£ö KB SDK semantic: native membership revision changes after-source leave UNKNOWN without result or retry (139.5317ms)
+Γ£ö KB SDK semantic: a source timestamp substitution cannot settle or release model bytes (124.5342ms)
+Γ£ö KB SDK semantic: invocation token and original raw arguments are required before source execution (41.1507ms)
+Γä╣ tests 30
+Γä╣ suites 0
+Γä╣ pass 25
+Γä╣ fail 5
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 4923.3744
+
+Γ£û failing tests:
+
+test at apps\runtime\native-authority\test\read-family-subsets.test.mjs:38:1
+Γ£û runtime availability intersects forged inventories with the public-data subset and current KB client requirement (75.6374ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      {
+        id: 'query_economic_data',
+        version: '0.2.0'
+      },
+      {
+  +     id: 'search_client_knowledge',
+  +     version: '0.2.0'
+  +   },
+  +   {
+        id: 'query_knowledge_graph',
+        version: '0.2.0'
+      }
+    ]
+  
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/runtime/native-authority/test/read-family-subsets.test.mjs:41:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { id: 'query_economic_data', version: '0.2.0' }, { id: 'search_client_knowledge', version: '0.2.0' }, { id: 'query_knowledge_graph', version: '0.2.0' } ],
+    expected: [ { id: 'query_economic_data', version: '0.2.0' }, { id: 'query_knowledge_graph', version: '0.2.0' } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at apps\runtime\native-authority\test\read-family-subsets.test.mjs:67:1
+Γ£û semantic KB is complete but remains unavailable to the actual no-client task despite overclaimed inventories (22.4575ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/runtime/native-authority/test/read-family-subsets.test.mjs:68:39)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps\runtime\native-authority\test\read-family-subsets.test.mjs:92:51
+Γ£û selected operations still require current discovered membership (72.9736ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      {
+  +     id: 'search_client_knowledge',
+  +     version: '0.2.0'
+  +   },
+  +   {
+        id: 'query_knowledge_graph',
+        version: '0.2.0'
+      }
+    ]
+  
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/runtime/native-authority/test/read-family-subsets.test.mjs:96:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { id: 'search_client_knowledge', version: '0.2.0' }, { id: 'query_knowledge_graph', version: '0.2.0' } ],
+    expected: [ { id: 'query_knowledge_graph', version: '0.2.0' } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at apps\runtime\native-authority\test\read-family-subsets.test.mjs:92:51
+Γ£û selected operations still require current installed membership (58.8367ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      {
+  +     id: 'search_client_knowledge',
+  +     version: '0.2.0'
+  +   },
+  +   {
+        id: 'query_knowledge_graph',
+        version: '0.2.0'
+      }
+    ]
+  
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/runtime/native-authority/test/read-family-subsets.test.mjs:96:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { id: 'search_client_knowledge', version: '0.2.0' }, { id: 'query_knowledge_graph', version: '0.2.0' } ],
+    expected: [ { id: 'query_knowledge_graph', version: '0.2.0' } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at apps\worker\conversation\reads\test\kb.test.mjs:106:91
+Γ£û KB SDK semantic revoked-task: current authority refuses before source credentials and reservation (96.5831ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /^ACCESS_DENIED:/u. Input:
+  
+  'INTERNAL_ERROR: mcp__meri_reads__search_client_knowledge failed. No evidence, absence or completeness is established.'
+  
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/worker/conversation/reads/test/kb.test.mjs:112:146)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'INTERNAL_ERROR: mcp__meri_reads__search_client_knowledge failed. No evidence, absence or completeness is established.',
+    expected: /^ACCESS_DENIED:/u,
+    operator: 'match',
+    diff: 'simple'
+  }

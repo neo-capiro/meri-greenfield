@@ -1,0 +1,9 @@
+# Finite funding and semantic KB observation contract checks
+
+Implementation outline: the adjacent schema owns exactly five funding operation references plus `search_client_knowledge@0.2.0` and the closed observation/context shape. `validate.mjs` composes existing inert-data, canonical SHA/JSON and frozen instant owners. Creation captures no clock and grants no access; every assert/encode/decode requires the actual fixed-route operation and original unwrapped request for correlation. The carrier is canonical UTF-8 JSON in strict unpadded base64url, capped at 2,048 decoded bytes. Graph and every other operation remain excluded.
+
+The original five-vector `golden.json` stays byte-identical to PR109 blob `9536c662f4abd3487b6bdb4000ff06a0250f44ae`. Semantic KB uses the reviewed, immutable PR118 proposal fixture `docs/coordination/proposals/native-kb-observation-20261017/golden.json`, blob `a807a90718c2260f2c980bd04e04cec2d8c9414f`. The proposal describes its historical finite-five checkpoint; current finite-six tests explicitly establish later source support without changing that record. This private extension leaves the frozen public retrieval contract unchanged. Installation and native producer/build qualification remain separate gates.
+
+Tests cover literal cross-repository canonical JSON/header/hash fixtures for all six operations, canonical instant compatibility, raw-body correlation, finite route/version scope, inert/hostile data, alternate JSON/base64 encodings, invalid UTF-8 and size bounds. These fixtures do not establish installed Core admission, service identity, producer consumption or live qualification. Existing retrieval schemas, source time semantics and central exports remain unchanged.
+
+Run only the focused adjacent test with Node 24, `--preserve-symlinks --max-old-space-size=256 --test --test-concurrency=1`. No dependencies, network calls or provider credentials are required.

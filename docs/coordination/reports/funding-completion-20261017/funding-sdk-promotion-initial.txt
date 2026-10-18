@@ -1,0 +1,16 @@
+Γ£ö all thirty-seven constructible families remain unavailable without installation or discovery (9.3439ms)
+Γ£ö per-operation client prefilter preserves personal meetings/tasks while withholding required-client reads (1.4958ms)
+Γ£ö synthetic search_funding_opportunities: advertised arguments retain canonical constraints (8.08ms)
+Γ£ö synthetic get_funding_opportunity_requirements: advertised arguments retain canonical constraints (2.945ms)
+Γ£ö synthetic get_funding_opportunity: advertised arguments retain canonical constraints (2.5802ms)
+Γ£ö synthetic get_opportunity_client_context: advertised arguments retain canonical constraints (1.9142ms)
+Γ£ö synthetic get_opportunity_government_landscape: advertised arguments retain canonical constraints (2.1722ms)
+Γ£ö eight partial-input operations remain absent from SDK policy and cannot be advertised by installation/discovery (481.0369ms)
+Γä╣ tests 8
+Γä╣ suites 0
+Γä╣ pass 8
+Γä╣ fail 0
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 2569.4073

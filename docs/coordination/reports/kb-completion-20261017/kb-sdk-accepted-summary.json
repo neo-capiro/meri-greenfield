@@ -1,0 +1,100 @@
+{
+  "initialFailureClassification": [
+    "Four runtime test expectations incorrectly treated the tenant-contacts task fixture as personal. It has a real client scope, so complete semantic KB correctly becomes eligible. Existing selected-operation tests now include semantic; a separate real semantic-approved personal/no-client fixture proves UNAVAILABLE despite overclaimed inventories.",
+    "The revoked durable task safely projects INTERNAL_ERROR through MCP. Exact error projection is retained and zero source HTTP, service-secret releases, reservations and accepted receipts remain asserted."
+  ],
+  "schemaVersion": "meri-kb-sdk-accepted-test-evidence/1",
+  "capturedAt": "2026-10-17T04:14:45.8009453Z",
+  "priorSummary": {
+    "path": "kb-sdk-summary.json",
+    "sha256": "d1ee8a68655343694cdb6ea12f949630362f4bcc2b61b8ba1ea38a549b8eba3e"
+  },
+  "sourceHashesRechecked": true,
+  "coherentRegression": {
+    "cancelled": 0,
+    "files": 24,
+    "outputSha256": "576a02eae93f80fa021ce705fdf97435807c4bc0774dbefb9614a4d48c4c5c0f",
+    "executedBy": "Parent coordinator",
+    "failed": 0,
+    "tests": 918,
+    "skipped": 0,
+    "durationMs": 56409.3299,
+    "metadataSha256": "58ef5de663c90272a7d314f1bcfb7b1af456a337a450cd27c9f3855ee9cc1bc6",
+    "passed": 918,
+    "status": 0,
+    "metadata": "kb-code-regression-final-held.json",
+    "output": "kb-code-regression-final-held.txt",
+    "coverage": "Includes all30 frozen SDK/native-subset tests together, all affected existing family/source-slice/funding-count/registration cases, and source/current-authority/graph/funding/private-wire regression checks."
+  },
+  "policy": {
+    "sdkOperations": 66,
+    "canonicalOperations": [
+      "search_client_knowledge",
+      "query_knowledge_graph"
+    ],
+    "family": "client-knowledge-search",
+    "requiredClientOperations": [
+      "search_client_knowledge"
+    ],
+    "clientScope": "optional",
+    "sdkFamilies": 37
+  },
+  "qualification": "Scripted SQL and synthetic native carrier consumption through actual MCP/CONTROL/gateway/current-task owners only. No deployed Core/provider/installation qualification.",
+  "redundantSelection": "Pending10-case affected-existing selection cancelled by parent because the coherent24-file run already exercised it successfully. No tests repeated by this evidence-only update.",
+  "remaining": [
+    "Parent-owned final metadata/staged review and publication.",
+    "Current deployed Core build/origin/configuration and installation qualification remain separate; no live claim."
+  ],
+  "secondFailureClassification": "A tightened classifier expectation assumed ACCESS_DENIED before source credential acquisition. Actual source boundary projects INVALID_RESULT there, with zero HTTP and UNKNOWN. The focused changed delta pins INVALID_RESULT before credentials and ACCESS_DENIED after source; no production changes.",
+  "disposition": "SDK_CHECKS_COMPLETE",
+  "frozenSources": [
+    {
+      "sha256": "46bda22685d2be656541fef3f892a8861285470c0e502c0bc5d8ae1310557d5d",
+      "path": "apps/worker/conversation/reads/families.mjs"
+    },
+    {
+      "sha256": "870f235d7d000f329498ce540872189b94020dbcd2070726ba18f59cf4034545",
+      "path": "apps/worker/conversation/reads/test/kb.test.mjs"
+    },
+    {
+      "sha256": "4e1431e841f9b1abe6f3be4891f3c24069b0c0fdef9224f73ad543217fa9a454",
+      "path": "apps/worker/conversation/reads/test/families.test.mjs"
+    },
+    {
+      "sha256": "77f727d0503107a727f42faade6594fcafd6a6775831b4beda6e6bc6bd010f44",
+      "path": "apps/worker/conversation/reads/test/source-slices.test.mjs"
+    },
+    {
+      "sha256": "f9c2c4db5137793fce4ab50f34e646a3e5fc79f7803478f72647b73da1090d82",
+      "path": "apps/worker/conversation/reads/test/funding.test.mjs"
+    },
+    {
+      "sha256": "f7ef25989c5172e1967aaf0ecfc5465f7a1b0cefdb2cfd702e19c548ea754e17",
+      "path": "apps/runtime/native-authority/test/read-family-subsets.test.mjs"
+    }
+  ],
+  "previousRuns": [
+    {
+      "output": "kb-sdk-initial.txt",
+      "passed": 25,
+      "metadata": "kb-sdk-initial.json",
+      "failed": 5,
+      "tests": 30
+    },
+    {
+      "note": "Filename retained with its failure; not a successful final run.",
+      "failed": 1,
+      "metadata": "kb-sdk-final.json",
+      "output": "kb-sdk-final.txt",
+      "passed": 29,
+      "tests": 30
+    },
+    {
+      "output": "kb-sdk-phase-delta.txt",
+      "passed": 1,
+      "metadata": "kb-sdk-phase-delta.json",
+      "failed": 0,
+      "tests": 1
+    }
+  ]
+}

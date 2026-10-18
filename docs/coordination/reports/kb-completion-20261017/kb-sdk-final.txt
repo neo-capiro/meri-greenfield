@@ -1,0 +1,57 @@
+Γ£ö runtime availability intersects forged inventories with the public-data subset and current KB client requirement (72.9175ms)
+Γ£ö all selected economic/semantic/graph operations execute through the actual client runtime owner with exact request/delivery binding (120.4567ms)
+Γ£ö public grant/award siblings never reach gateway execution despite all three inventories claiming them (43.6843ms)
+Γ£ö semantic KB is complete but remains unavailable to the actual no-client task despite overclaimed inventories (135.8822ms)
+Γ£ö semantic KB with a real client-task verifier reaches the native runtime gateway with exact request and result hashes (83.0556ms)
+Γ£ö selected operations still require current discovered membership (176.692ms)
+Γ£ö selected operations still require current installed membership (162.5718ms)
+Γ£ö empty discovery exposes nothing and cannot execute an otherwise selected operation (86.8831ms)
+Γ£ö current committed task grant/entry revocation denies availability and selected execution before the gateway (38.3427ms)
+Γ£ö post-dispatch task revocation withholds selected bytes without another gateway execution (33.8731ms)
+Γ£ö post-dispatch discovery removal withholds selected bytes and never falls back to a withheld sibling (43.9018ms)
+Γ£ö KB SDK: complete family keeps optional graph and requires a current task client scope only for semantic search (7.1617ms)
+Γ£ö KB SDK: both measured handlers include the semantic helper, family, private wire and current context exactly once (132.1652ms)
+Γ£ö KB SDK: semantic literal schema refuses model context, authority and carrier fields (6.641ms)
+Γ£ö KB SDK semantic available: actual hook preserves original request, once-captured context, delivery and durable receipts (261.6645ms)
+Γ£ö KB SDK semantic empty: actual hook preserves original request, once-captured context, delivery and durable receipts (166.7778ms)
+Γ£ö KB SDK semantic unavailable: actual hook preserves original request, once-captured context, delivery and durable receipts (153.3835ms)
+Γ£ö KB SDK: personal graph remains available with empty context and no semantic carrier or client tool (169.3167ms)
+Γ£ö KB SDK: personal task cannot acquire semantic client access from installed and discovered inventories (35.3538ms)
+Γ£ö KB SDK semantic foreign-client: current authority refuses before source credentials and reservation (90.3444ms)
+Γ£ö KB SDK semantic invisible-client: current authority refuses before source credentials and reservation (102.4193ms)
+Γ£ö KB SDK semantic revoked-task: current authority refuses before source credentials and reservation (90.2981ms)
+Γ£ö KB SDK semantic native-principal: current authority refuses before source credentials and reservation (106.9503ms)
+Γ£ö KB SDK semantic: missing current installation, discovery, exact measurement, source or policy creates no tool (64.5822ms)
+Γ£ö KB SDK semantic: current installation removal after listing refuses before gateway execution (39.7452ms)
+Γ£ö KB SDK semantic: current discovery removal after listing refuses before gateway execution (65.1417ms)
+Γ£û KB SDK semantic: native membership revision changes before-credential leave UNKNOWN without result or retry (122.7923ms)
+Γ£ö KB SDK semantic: native membership revision changes after-source leave UNKNOWN without result or retry (126.7907ms)
+Γ£ö KB SDK semantic: a source timestamp substitution cannot settle or release model bytes (137.3634ms)
+Γ£ö KB SDK semantic: invocation token and original raw arguments are required before source execution (42.6966ms)
+Γä╣ tests 30
+Γä╣ suites 0
+Γä╣ pass 29
+Γä╣ fail 1
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 4773.7473
+
+Γ£û failing tests:
+
+test at apps\worker\conversation\reads\test\kb.test.mjs:137:57
+Γ£û KB SDK semantic: native membership revision changes before-credential leave UNKNOWN without result or retry (122.7923ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /^ACCESS_DENIED:/u. Input:
+  
+  'INVALID_RESULT: mcp__meri_reads__search_client_knowledge returned a result that failed validation and was withheld. No evidence, absence or completeness is established.'
+  
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-resolution-next/apps/worker/conversation/reads/test/kb.test.mjs:142:90)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'INVALID_RESULT: mcp__meri_reads__search_client_knowledge returned a result that failed validation and was withheld. No evidence, absence or completeness is established.',
+    expected: /^ACCESS_DENIED:/u,
+    operator: 'match',
+    diff: 'simple'
+  }

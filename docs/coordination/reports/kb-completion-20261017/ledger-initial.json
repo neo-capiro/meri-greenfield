@@ -1,0 +1,33 @@
+{
+  "schema": "meri-check-evidence/1",
+  "status": "PASS",
+  "captureKind": "direct-subprocess-capture",
+  "executable": "C:\\Users\\Administrator\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe",
+  "nodeVersion": "v24.19.0",
+  "arguments": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "--test-timeout=20000",
+    "scripts/scope-ledger/source-exposure.test.mjs"
+  ],
+  "portableCommand": "node --preserve-symlinks --max-old-space-size=256 --test --test-concurrency=1 --test-timeout=20000 scripts/scope-ledger/source-exposure.test.mjs",
+  "repositoryRelativeWorkingDirectory": ".",
+  "startedAt": "2026-10-17T04:15:15.970Z",
+  "finishedAt": "2026-10-17T04:15:18.145Z",
+  "exitCode": 0,
+  "signal": null,
+  "error": null,
+  "stdoutBytes": 3075,
+  "stderrBytes": 0,
+  "streamLayout": "stdout followed by stderr, each preserved without alteration; no cross-stream interleaving claim",
+  "outputTruncated": false,
+  "maxBufferBytes": 8388608,
+  "outputArtifact": "docs/coordination/reports/kb-completion-20261017/ledger-initial.txt",
+  "outputSha256": "67d23e7908e2f753aca8ea2568e56d0a66475ebdca9d25c86d220d21aa333319",
+  "basePublicTree": "a1c0ca277a0eda6ac2a29622c21cc38829990e0b",
+  "acceptedCoreHead": "59efe08f2f3429918758eef30539e9dde4dbb868",
+  "acceptedCoreTree": "c2babd8e0d386b1c9f18ed32ebcd4472d5ebf486",
+  "scope": "Single initial post-freeze ledger suite; no provider/DB/native/live calls."
+}

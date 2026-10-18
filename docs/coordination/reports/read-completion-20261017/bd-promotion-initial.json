@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "meri-focused-test-run/1",
+  "cwd": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-16\\task-4\\meri-resolution-next",
+  "executable": "C:\\Users\\Administrator\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe",
+  "arguments": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "--test-name-pattern=business-development|business_development|eight partial|thirty-six|prefilter|funding is absent",
+    "apps/worker/conversation/reads/test/source-slices.test.mjs",
+    "apps/worker/conversation/reads/test/families.test.mjs",
+    "apps/runtime/test/funding-source-integration.test.mjs"
+  ],
+  "startedAt": "2026-10-17T02:01:30.7243199Z",
+  "completedAt": "2026-10-17T02:01:35.7793552Z",
+  "exitCode": 0,
+  "scope": "Only allocated BD promotion/count/finite-sibling and funding-withheld assertions selected from existing tests; no broad rerun"
+}

@@ -1,0 +1,89 @@
+{
+  "policy": {
+    "sdkOperations": 71,
+    "withheldSibling": "get_legal_reference",
+    "remainingPartialOperations": [
+      "get_legal_reference",
+      "search_legiwatch_news",
+      "query_outreach"
+    ],
+    "clientScope": "optional",
+    "family": "research-legal-legislation",
+    "operationIds": [
+      "search_legislative_research"
+    ],
+    "remainingAbsentReads": 10,
+    "sdkFamilies": 41
+  },
+  "qualification": "Actual MCP/CONTROL/gateway/task/native-reference reader with scripted SQL and synthetic fixed HTTP/legal DTOs only. The native folder404 projection tests error receiving, not actual Core folder SQL or a copied access predicate. No source installation, provider/parser/database/native/live qualification.",
+  "capturedAt": "2026-10-17T04:57:12.6165152Z",
+  "fixtureBoundary": "The exact search_legislative_research0.2 Synthetic Research Client raw-name input delegates ORIGINAL fixture authority.check with the already-bound task UUID in that fixture business selector input only. Actual native identity/check-ref/current-task/visibility independently enforce access. Original model request, requestSha256, canonical normalization context, source UUID body, delivery/result hashes and receipts remain asserted. No shared fixture or production policy edit.",
+  "runs": [
+    {
+      "cancelled": 0,
+      "passed": 27,
+      "selection": "18 new MCP/schema/policy cases,1 real native runtime eligibility case and8 affected existing count/schema/prefilter/partial-exclusion cases.",
+      "failed": 0,
+      "tests": 27,
+      "exitCode": 0,
+      "durationMs": 11387.7243,
+      "metadata": "sdk-legal-initial.json",
+      "output": "sdk-legal-initial.txt",
+      "skipped": 0
+    }
+  ],
+  "diffCheck": "Scoped git diff --check PASS",
+  "schemaVersion": "meri-sdk-legal-search-completion-evidence/1",
+  "frozenSources": [
+    {
+      "sha256": "fdec4d24970a267544fa3d82cade3bd2dbe1bda81b4fd50f2e97a7e8928ec15c",
+      "path": "apps/worker/conversation/reads/families.mjs"
+    },
+    {
+      "sha256": "f470454afee57fb99d5d67bbe1afc81167490b1f5a6bad3b3fd153ad4ee2f969",
+      "path": "apps/worker/conversation/reads/test/research-legal.test.mjs"
+    },
+    {
+      "sha256": "7f76094bdf8483072bf57f011340d925e5bf0b842c530923e0fc33e2305284d8",
+      "path": "apps/worker/conversation/reads/test/completion.test.mjs"
+    },
+    {
+      "sha256": "811902b5f29cd99c4aaafd74c502d07baf9faaf653692670e662b3171388adac",
+      "path": "apps/worker/conversation/reads/test/families.test.mjs"
+    },
+    {
+      "sha256": "8e34198763751925d47c9b8e8374bae51b45e1d6a114a5373ca5f986d3e0f8ad",
+      "path": "apps/worker/conversation/reads/test/source-slices.test.mjs"
+    },
+    {
+      "sha256": "f14aeeb45e771023a01dde9897b1f29a6d09b5f400b26a0d2f49875b4cea996c",
+      "path": "apps/worker/conversation/reads/test/funding.test.mjs"
+    },
+    {
+      "sha256": "73f002eb41b48e8fcbca8a6194437deb1837d94136266abb12d0bc3900b7c4a6",
+      "path": "apps/worker/conversation/reads/test/kb.test.mjs"
+    },
+    {
+      "sha256": "573e5995f9bc69d7296891dd235172d7af5fd753adca754c450b21f1f0273e2e",
+      "path": "apps/runtime/native-authority/test/read-family-subsets.test.mjs"
+    },
+    {
+      "sha256": "4e6a3f87684f08edd6fde110eb4fee631a7464e147fc2de924b53fabfcbd7f6f",
+      "path": "apps/runtime/test/funding-source-integration.test.mjs"
+    }
+  ],
+  "pending": [
+    "Parent one coherent proportional phase2 delta over final source/runtime-filter/name-owner bytes.",
+    "Independent exact-source acceptance, final accounting/provenance and publication remain parent-owned."
+  ],
+  "phase": "Additional search_legislative_research SDK subset; prior four-read phase retained unchanged in its own evidence.",
+  "firstPhaseEvidencePreserved": [
+    "sdk-completion-initial.txt",
+    "sdk-completion-initial.json",
+    "sdk-completion-key-order-delta.txt",
+    "sdk-completion-key-order-delta.json",
+    "sdk-completion-existing-initial.txt",
+    "sdk-completion-existing-initial.json"
+  ],
+  "firstPhaseSummary": "sdk-completion-summary.json"
+}
