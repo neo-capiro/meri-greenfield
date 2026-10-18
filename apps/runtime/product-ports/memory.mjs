@@ -31,6 +31,9 @@ import {types} from 'node:util';
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createMemoryApplication} from '../../control/memory/application.mjs';
 import {createMemoryCommandSource} from '../../control/memory/command-source.mjs';
+import {createMemoryCommandOptions} from '../../control/memory/command-options.mjs';
+import {MEMORY_APPROVAL_METADATA_ROW_CLASS} from '../../control/memory/approval-metadata-retention-owner.mjs';
+import {MEMORY_CANDIDATE_ROW_CLASS} from '../../control/memory/retention-payload-owner.mjs';
 import {createCoreDecisions} from '../../control/memory/core-decisions.mjs';
 import {createCoreMemoryTransport} from '../../control/memory/core-http.mjs';
 import {createCoreMemoryReads} from '../../control/memory/core-memory.mjs';
@@ -39,6 +42,7 @@ import {createPostgresMemoryJournal} from '../../control/memory/postgres-journal
 import {createMemoryProducer} from '../../control/memory/producer.mjs';
 import {memoryUnavailable} from '../../control/memory/protocol.mjs';
 import {createMemoryCredentialBroker} from '../native-authority/memory-credentials.mjs';
+import {UUID} from '../../control/product-access/shape.mjs';
 const fault=code=>Object.assign(new Error(code),{code});
 const CONTEXT_KEYS=['configuration','pool','client','native','now','canonicalProductPorts'];
 const integer=(n,min,max)=>Number.isSafeInteger(n)&&n>=min&&n<=max;
@@ -69,6 +73,10 @@ function memoryLimits(configuration){
 const ownedValue=(value,name)=>{const d=value!==null&&typeof value==='object'?Object.getOwnPropertyDescriptor(value,name):undefined;return d&&Object.hasOwn(d,'value')?d.value:undefined;};
 const compositions=new WeakMap();
 const retentionBinders=new WeakMap();
+const commandRetentionBinders=new WeakMap();
+/** These four durable payloads can expose the same proposal after a conversation is suppressed. */
+export const MEMORY_COMMAND_RETENTION_CLASSES=Object.freeze([MEMORY_CANDIDATE_ROW_CLASS,MEMORY_APPROVAL_METADATA_ROW_CLASS,
+ 'meriMemoryCommandJournal','meriMemoryIntentPreparations']);
 /** Assembly binds the same canonical gate used by conversation serving, after retentionGate exists. A missing gate keeps every
  * surface route unavailable and makes conversation-origin producer operations fail closed. The binding belongs to this exact
  * trusted product context; a second, different gate cannot silently replace it. */
@@ -77,21 +85,38 @@ export function bindMemoryRetention(context,gate){
  const bind=retentionBinders.get(context);if(bind===undefined)return false;
  bind(gate);return true;
 }
+/** Separate activation after central retention has proven the four payload classes, target schema, grants and recovery. */
+export function bindMemoryCommandRetention(context,owner){
+ if(context===null||typeof context!=='object'||types.isProxy(context))throw fault('PRODUCT_PORTS_CONFIGURATION');
+ const bind=commandRetentionBinders.get(context);if(bind===undefined)return false;
+ bind(owner);return true;
+}
 function compose(context,owners){
  let c;try{c=own(context,CONTEXT_KEYS,['artifactRecovery']);}catch{throw fault('PRODUCT_PORTS_CONFIGURATION');}
  const memory=compileMemoryConfiguration(c.configuration),now=c.now;
  if(typeof now!=='function')throw fault('PRODUCT_PORTS_CONFIGURATION');
- const off=(state,reason)=>Object.freeze({state,reason,application:null,commandSourceFor:null,tables:Object.freeze([])});
+ const off=(state,reason)=>Object.freeze({state,reason,application:null,commandSourceFor:null,commandOptionsFor:null,tables:Object.freeze([])});
  if(!memory.enabled)return off('disabled','MEMORY_DISABLED');
  const limits=memoryLimits(c.configuration),gate=ownedValue(c.canonicalProductPorts,'conversationMembership');
  if(!gate)return off('unavailable','MEMBERSHIP_GATE_UNAVAILABLE');
  if(c.configuration.retention?.enabled!==true)return off('unavailable','RETENTION_GATE_UNAVAILABLE');
  if(!c.pool||typeof c.pool!=='object'||types.isProxy(c.pool)||typeof c.pool.connect!=='function')throw fault('PRODUCT_PORTS_CONFIGURATION');
  let boundRetention=null;
+ let boundCommandRetention=null;
  const bindRetention=next=>{
   if(next===null||typeof next!=='object'||types.isProxy(next)||typeof next.assertServable!=='function'||types.isProxy(next.assertServable))throw fault('PRODUCT_PORTS_CONFIGURATION');
   if(boundRetention!==null&&boundRetention!==next)throw fault('PRODUCT_PORTS_CONFIGURATION');
   boundRetention=next;
+ };
+ const bindCommandRetention=next=>{
+  if(next===null||typeof next!=='object'||types.isProxy(next)||!Array.isArray(next.classNames)||
+   next.classNames.length!==MEMORY_COMMAND_RETENTION_CLASSES.length||
+   MEMORY_COMMAND_RETENTION_CLASSES.some(name=>!next.classNames.includes(name))||
+   ['registryReady','targetSchemaReady','grantsReady','recoveryReady','policyReady'].some(k=>next[k]!==true)||
+   next.metadata?.className!==MEMORY_APPROVAL_METADATA_ROW_CLASS||
+   ['inventoryPage','present','purgeInTransaction'].some(k=>typeof next.metadata[k]!=='function'||types.isProxy(next.metadata[k]))||
+   boundCommandRetention!==null&&boundCommandRetention!==next)throw fault('PRODUCT_PORTS_CONFIGURATION');
+  boundCommandRetention=next;
  };
  const retention=Object.freeze({assertServable:subject=>{
   if(boundRetention===null)throw fault('RETENTION_READ_UNAVAILABLE');
@@ -111,15 +136,25 @@ function compose(context,owners){
   producerFor:({principal,bearer})=>producerWith(broker.surface({tenantId:principal.tenantId,actorId:principal.actorId,credential:bearer.credential,expiresAtMs:bearer.expiresAtMs}))});
  /** The run's `memory.propose` command source, bound to that run's live session (null without the relay). */
  const commandSourceFor=broker.runAvailable?value=>{
-  if(boundRetention===null)return null;
+  if(boundRetention===null||boundCommandRetention===null)return null;
   const v=own(value,['binding'],['selectedClientId','scopes']);
-  const selectedClientId=v.selectedClientId??broker.selectedClientOf(v.scopes);
-  if(typeof selectedClientId!=='string')throw fault('MEMORY_CONFIGURATION');
+  const selectedClientId=v.selectedClientId===undefined?broker.selectedClientOf(v.scopes):v.selectedClientId;
+  if(typeof selectedClientId!=='string'||!UUID.test(selectedClientId.toLowerCase()))throw fault('MEMORY_CONFIGURATION');
   return createMemoryCommandSource({producer:producerWith(broker.run({binding:v.binding,selectedClientId}))});
  }:null;
+ /** The memory-specific immutable command owner for the same trusted run selection. The shared intent composer supplies its
+  * current policy and a deferred executor; this family supplies the exact canonical retention gate and borrowed pool. */
+ const commandOptionsFor=value=>{
+  if(boundRetention===null||boundCommandRetention===null)return null;
+  const v=own(value,['binding','selectedClientId','preparePolicy','executor','limits']);
+  if(typeof v.selectedClientId!=='string'||!UUID.test(v.selectedClientId.toLowerCase()))throw fault('MEMORY_CONFIGURATION');
+  return createMemoryCommandOptions({pool:c.pool,commandContext:{binding:v.binding,conversationClientId:v.selectedClientId.toLowerCase()},
+   preparePolicy:v.preparePolicy,retention,executor:v.executor,now,newId,limits:v.limits});
+ };
  retentionBinders.set(context,bindRetention);
- return Object.freeze({state:'composed',reason:null,application:Object.freeze({handle:request=>boundRetention===null?memoryUnavailable():application.handle(request)}),commandSourceFor,tables:MEMORY_TABLES,
-  retentionBound:()=>boundRetention!==null});
+ commandRetentionBinders.set(context,bindCommandRetention);
+ return Object.freeze({state:'composed',reason:null,application:Object.freeze({handle:request=>boundRetention===null?memoryUnavailable():application.handle(request)}),commandSourceFor,commandOptionsFor,tables:MEMORY_TABLES,
+  retentionBound:()=>boundRetention!==null,commandRetentionBound:()=>boundCommandRetention!==null});
 }
 function captureOwners(owners){
  let o;try{o=own(owners??{},[],['nativeCredentials','readSecret','fetchImpl','newId']);}catch{throw fault('MEMORY_CONFIGURATION');}

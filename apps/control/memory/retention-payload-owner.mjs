@@ -8,26 +8,26 @@ import {createPostgresMemoryJournal} from './postgres-journal.mjs';
 
 export const MEMORY_CANDIDATE_ROW_CLASS='meriMemoryCandidates';
 const TABLE='meri_memory.candidates';
-const rowWhere="tenant_id=$1 AND candidate_id=$3 AND candidate->'origin'->>'kind'='conversation' AND candidate->'origin'->>'conversationId'=$2";
+const rowWhere="tenant_id=$1 AND candidate_id=$3 AND origin_kind='conversation' AND origin_conversation_id=$2 AND proposer_actor_id=$4";
 
-/** Exact local inventory and readback, plus a delete operation that can run only inside the central row owner's transaction.
+/** Exact local inventory and readback, plus content redaction inside the central row owner's transaction.
  * `purgeInTransaction` requires that transaction to have recorded its matching target in the current transaction. Its SQL cannot
- * pass before the separately allocated retention-target amendment adds candidate_id and admits this class; no DELETE grant is
- * requested here. The future database trigger must independently enforce the same target/suppression check on every DELETE. */
+ * pass before the separately allocated retention-target amendment adds candidate_id and admits this class. The future database
+ * trigger must independently enforce the same target/suppression check on the one-way content tombstone UPDATE. */
 export function createMemoryCandidateRetentionPayloadOwner({pool}){
  assertPool(pool);
  const journal=createPostgresMemoryJournal({pool});
- const conversation=s=>{const v=parseSubject(s);if(v.kind!=='conversation')fail('RETENTION_INVALID_REQUEST');return v;};
+ const conversation=s=>{const v=parseSubject(s);if(v.kind!=='conversation'||!v.ownerActorId)fail('RETENTION_INVALID_REQUEST');return v;};
  return Object.freeze({
   className:MEMORY_CANDIDATE_ROW_CLASS,
   inventoryPage({subject,afterCandidateId=null,limit=500,signal}){
    const s=conversation(subject);
-   return journal.listConversationCandidateIds({tenantId:s.tenantId,conversationId:s.subjectId,afterCandidateId,limit,signal});
+   return journal.listConversationCandidateIds({tenantId:s.tenantId,conversationId:s.subjectId,proposerActorId:s.ownerActorId,afterCandidateId,limit,signal});
   },
   /** Recovery readback checks the full tenant, conversation origin and candidate identity. */
   present({subject,candidateId,signal}){
    const s=conversation(subject);uuid(candidateId);
-   return journal.hasConversationCandidate({tenantId:s.tenantId,conversationId:s.subjectId,candidateId,signal});
+   return journal.hasConversationCandidate({tenantId:s.tenantId,conversationId:s.subjectId,proposerActorId:s.ownerActorId,candidateId,signal});
   },
   /** Called by the central row owner only after its planRows in the SAME READ COMMITTED transaction. Never opens or commits one. */
   async purgeInTransaction({client,plan,workflowId}){
@@ -51,14 +51,16 @@ export function createMemoryCandidateRetentionPayloadOwner({pool}){
    if(projection.ledgerSequence!==p.suppression.ledgerSequence||projection.entrySha256!==p.suppression.entrySha256)fail('RETENTION_SUPPRESSION_GENERATION_REFUSED');
    if(projection.purge?.planSha256!==p.planSha256||!['PLANNED','UNKNOWN'].includes(projection.purge?.state)||!Number.isSafeInteger(projection.purge?.ledgerSequence))fail('RETENTION_PURGE_PLAN_MISMATCH');
    // The same-xact target check makes this method fail closed until the fresh target migration and the central planRows owner land.
-   const targets=(await client.query("SELECT workflow_id FROM meri_conversations.retention_purge_targets WHERE workflow_id=$1 AND tenant_id=$2 AND conversation_id=$3 AND class='meriMemoryCandidates' AND candidate_id=$4 AND plan_sha256=$5 AND ledger_sequence=$6 AND state='PLANNED' AND xmin=pg_current_xact_id()::xid FOR UPDATE",
-    [workflowId,s.tenantId,s.subjectId,candidateId,p.planSha256,projection.purge.ledgerSequence])).rows;
+   const targets=(await client.query("SELECT workflow_id FROM meri_conversations.retention_purge_targets WHERE workflow_id=$1 AND tenant_id=$2 AND conversation_id=$3 AND class='meriMemoryCandidates' AND candidate_id=$4 AND plan_sha256=$5 AND ledger_sequence=$6 AND actor_id=$7 AND state='PLANNED' AND xmin=pg_current_xact_id()::xid FOR UPDATE",
+    [workflowId,s.tenantId,s.subjectId,candidateId,p.planSha256,projection.purge.ledgerSequence,s.ownerActorId])).rows;
    if(targets.length!==1||targets[0].workflow_id!==workflowId)fail('RETENTION_ROW_PURGE_UNAVAILABLE');
-   const args=[s.tenantId,s.subjectId,candidateId];
-   const deleted=(await client.query(`DELETE FROM ${TABLE} WHERE ${rowWhere}`,args)).rowCount;
-   if(!Number.isSafeInteger(deleted)||deleted<0||deleted>1)fail('RETENTION_ROW_PURGE_UNAVAILABLE');
-   const remaining=(await client.query(`SELECT 1 FROM ${TABLE} WHERE ${rowWhere}`,args)).rows;
-   return Object.freeze({workflowId,className:MEMORY_CANDIDATE_ROW_CLASS,target,deleted,state:remaining.length?'UNKNOWN':'EXECUTED'});
+   const args=[s.tenantId,s.subjectId,candidateId,s.ownerActorId];
+   const redacted=(await client.query(`UPDATE ${TABLE} SET candidate=NULL,candidate_purged_at=clock_timestamp() WHERE ${rowWhere}
+    AND candidate IS NOT NULL AND candidate_purged_at IS NULL`,args)).rowCount;
+   if(!Number.isSafeInteger(redacted)||redacted<0||redacted>1)fail('RETENTION_ROW_PURGE_UNAVAILABLE');
+   const after=(await client.query(`SELECT candidate,candidate_purged_at FROM ${TABLE} WHERE ${rowWhere}`,args)).rows;
+   if(!Array.isArray(after)||after.length!==1||after[0].candidate!==null||after[0].candidate_purged_at===null)fail('RETENTION_ROW_PURGE_UNAVAILABLE');
+   return Object.freeze({workflowId,className:MEMORY_CANDIDATE_ROW_CLASS,target,deleted:0,redacted,state:'EXECUTED'});
   }
  });
 }

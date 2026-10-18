@@ -3,7 +3,7 @@
  * Nothing here is PostgreSQL, Core, a secret file or a live session. */
 import test from 'node:test';import assert from 'node:assert/strict';
 import {createProductPortsFactory} from '../index.mjs';
-import {createMemoryFamily,createMemoryFamilyWith,memoryComposition,compileMemoryConfiguration,bindMemoryRetention,MEMORY_TABLES} from '../memory.mjs';
+import {createMemoryFamily,createMemoryFamilyWith,memoryComposition,compileMemoryConfiguration,bindMemoryRetention,bindMemoryCommandRetention,MEMORY_TABLES,MEMORY_COMMAND_RETENTION_CLASSES} from '../memory.mjs';
 import {captureRuntimePorts} from '../../product-applications.mjs';
 import {productReadiness} from '../../product-readiness.mjs';
 import {MEMORY_PATHS,memoryUnavailable} from '../../../control/memory/protocol.mjs';
@@ -121,10 +121,24 @@ test('with the live-session relay the run path composes the governed memory.prop
  const composition=memoryComposition(t.ctx);assert.equal(typeof composition.commandSourceFor,'function');
  assert.equal(composition.commandSourceFor({binding,selectedClientId:CLIENT}),null,'an unbound producer cannot enter the durable command owner');
  assert.equal(bindMemoryRetention(t.ctx,{async assertServable(){}}),true);
+ assert.equal(composition.commandSourceFor({binding,selectedClientId:CLIENT}),null,'an unowned memory metadata payload cannot enter the durable command owner');
+ assert.equal(composition.commandOptionsFor({binding,selectedClientId:CLIENT,preparePolicy:async()=>{},executor:{async execute(){}},limits:{maxRequestMs:1000,maxFactBytes:65536}}),null);
+ const payloadOwner={className:'meriMemoryApprovalMetadata',inventoryPage(){},present(){},purgeInTransaction(){}};
+ const proof={classNames:MEMORY_COMMAND_RETENTION_CLASSES,registryReady:true,targetSchemaReady:true,grantsReady:true,
+  recoveryReady:true,policyReady:true,metadata:payloadOwner};
+ assert.throws(()=>bindMemoryCommandRetention(t.ctx,{className:'meriMemoryApprovalMetadata'}),code('PRODUCT_PORTS_CONFIGURATION'));
+ assert.throws(()=>bindMemoryCommandRetention(t.ctx,{...proof,classNames:['meriMemoryApprovalMetadata']}),code('PRODUCT_PORTS_CONFIGURATION'));
+ assert.throws(()=>bindMemoryCommandRetention(t.ctx,{...proof,recoveryReady:false}),code('PRODUCT_PORTS_CONFIGURATION'));
+ assert.equal(bindMemoryCommandRetention(t.ctx,proof),true);
+ assert.equal(composition.commandRetentionBound(),true);
  const source=composition.commandSourceFor({binding,scopes:[{tenantId:TENANT,kind:'client',resourceId:CLIENT.toUpperCase(),policyRevision:'p'}]});
  assert.equal(source.personalPending,true);assert.equal(typeof source.prepare,'function');assert.equal(typeof source.execute,'function');
+ const options=composition.commandOptionsFor({binding,selectedClientId:CLIENT,preparePolicy:async()=>{},executor:{async execute(){}},limits:{maxRequestMs:1000,maxFactBytes:65536}});
+ assert.equal(options.operation.id,'save_memory');assert.equal(options.commandContext.conversationClientId,CLIENT);
  assert.equal(composition.commandSourceFor({binding,selectedClientId:CLIENT}).personalPending,true);
- // A run whose admitted scopes are not exactly one client scope has no selected client and therefore no source.
+ // A personal proposal still needs the selected-client UUID of a live action session; its command arguments use clientId:null.
+ assert.throws(()=>composition.commandSourceFor({binding,selectedClientId:null}),code('MEMORY_CONFIGURATION'));
+ assert.throws(()=>composition.commandOptionsFor({binding,selectedClientId:null,preparePolicy:async()=>{},executor:{async execute(){}},limits:{maxRequestMs:1000,maxFactBytes:65536}}),code('MEMORY_CONFIGURATION'));
  assert.throws(()=>composition.commandSourceFor({binding,scopes:[{tenantId:TENANT,kind:'tenant',resourceId:TENANT,policyRevision:'p'}]}),code('MEMORY_CONFIGURATION'));
  assert.throws(()=>composition.commandSourceFor({binding}),code('MEMORY_CONFIGURATION'));
 });

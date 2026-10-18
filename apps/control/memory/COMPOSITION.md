@@ -165,6 +165,18 @@ run-originated candidate leaves the command indeterminate and the candidate PREP
 
 ## PR #121 memory audit repair outline (source only)
 
+### Conversational command owner follow-up
+
+The existing command executor keeps approval, current authority, budget and execution custody. The memory family keeps Core
+candidate submission and the exact conversation retention gate. `command-options.mjs` supplies the `save_memory`
+descriptor, `MemoryProposeContext`, an immutable approval-metadata owner and the existing command tool validators to the shared
+intent composer. The metadata owner will use the existing `meri_commands.approval_metadata` relation through a memory-owned codec;
+no parallel proposal table or model execution loop is introduced. Preparation and read recheck the canonical conversation
+retention gate. The producer rechecks it again before a Core lookup or submission. The shared execution composer must bind the
+run's live credential relay, select the memory source for `memory.propose`, and refuse a missing source. Focused tests cover
+immutable prepare/read, suppression, selected-client pinning, and no-execution preparation; live Core and DB acceptance remain
+separate gates.
+
 The producer owns candidate visibility and submission. The late-bound canonical retention read gate checks the trusted conversation
 identity in a conversation-origin candidate before a Core target lookup, write, resubmission, listing, status read or decision.
 A suppressed conversation's candidate is hidden; an unavailable gate fails the request closed. The memory application returns 503
@@ -182,15 +194,17 @@ does not infer one from citations or client IDs. The current conversation gate d
 
 The local `meri_memory.candidates` payload is separate from Core's canonical memory proposal. Its row owner can enumerate exact
 conversation-origin candidate IDs for retention inventory. The central retention registry, purge row owner, and migration/grants
-owner must add the local class and guarded deletion under the same suppression generation before any purge can claim coverage.
-Core remains responsible for its received candidate copy and publication; neither owner can delete the other's payload. Focused
+owner must add the local class and guarded content redaction under the same suppression generation before any purge can claim coverage.
+Core remains responsible for its received candidate copy and publication. Approved canonical Core memory is independent of
+source-conversation erasure; only the pending candidate/source payload belongs to this conversation inventory. Focused
 verification covers gate denials, gate outages, and the review inbox's partial/unavailable status without a live migration or purge.
 
 Exact shared-owner work: register a distinct `meriMemoryCandidates` conversation row class (do not conflate it with Core's external
-`memoryProposals`); drain `listConversationCandidateIds` to exhaustion during inventory; route, preflight, plan, purge and reverify
-`{tenantId,conversationId,candidateId}` under the canonical suppression generation; allocate an additive migration with an exact
-target ledger, guarded `BEFORE DELETE` trigger and restricted purge-only DELETE grant. The current retention PG row port accepts
-only `sdkSession` and `artifactVersions`, and runtime purge remains disabled. No standalone memory DELETE worker should bypass it.
+`memoryProposals`); drain `listConversationCandidateIds` to exhaustion during inventory; route, preflight, plan, redact and reverify
+`{tenantId,conversationId,candidateId}` under the canonical suppression generation. The central target amendment is assigned
+`meri_conversations/0018_memory_candidate_targets.sql`; the memory content-tombstone amendment is assigned
+`meri_memory/0002_candidate_retention_delete.sql` (the allocation name is historical; the SQL must not DELETE the row).
+The current retention PG row port accepts only `sdkSession` and `artifactVersions`, and runtime purge remains disabled.
 
 ### Memory-owned payload port, follow-up source checkpoint
 
@@ -199,15 +213,36 @@ only `sdkSession` and `artifactVersions`, and runtime purge remains disabled. No
 inventory owner must drain pages to exhaustion. `present({subject,candidateId})` reads exact tenant, conversation origin and candidate
 identity without returning payload content. `purgeInTransaction({client,plan,workflowId})` runs only inside the shared row owner's
 READ COMMITTED transaction after its exact `planRows`: it validates the plan digest, locks the recovery and subject keys, reads the
-current SUPPRESSED projection, owner and generation, requires a matching PLANNED target inserted in this transaction, then deletes exactly
-one scoped candidate row and rereads it. It does not open a transaction, expose an HTTP route, or grant DELETE. The future database
-trigger must enforce the same target check independently; source tests simulate the required SQL, not a live database trigger.
+current SUPPRESSED projection, owner and generation, requires a matching PLANNED target inserted in this transaction, then sets
+`candidate=NULL,candidate_purged_at=clock_timestamp()` and rereads the tombstone. It preserves candidate ID, idempotency key,
+request/candidate hashes and review state. The forward SQL trigger independently enforces the same-target rule; source tests
+simulate the required SQL, not a live database trigger.
 
-**freshIDneeded:** the central ledger reserves `meri_memory` `0001` for the original producer outbox; its source is pinned, so an
-additive guarded candidate DELETE trigger needs a new centrally allocated memory migration ID. The ledger reserves
-`meri_conversations` `0014_retention_row_targets.sql` to the retention owner under an **AUTHORING HOLD**; the owner must decide
-whether to release that exact reservation or allocate a successor for `retention_purge_targets` to carry the distinct class and
-`candidate_id`. Neither ID nor migration placement is chosen here. The shared owner must also add class policy/inventory, exact
-target plan/record/update/reverification, recovery behavior and a restricted purge role/grant before binding the port. Surface-origin
-candidate payloads still lack an actor/client retention subject and remain held for new writes; this conversation port does not
-purport to cover them or Core's separately owned received payload.
+`meri_memory/0001` remains the pinned CREATE-only producer outbox. The central ledger assigned the successor `0002` and
+conversations `0018` after collision checks against authored maxima and reserved held IDs; `0012` and `0014` remain held for other
+owners. Neither source migration is applied here. Deployment history and integration-plan hash must be checked by the central
+migration owner before any application. The shared owner must add class policy/inventory, exact target plan/record/update/readback,
+recovery behavior and restricted column grants before binding this port. Surface-origin candidates still lack an actor/client
+retention subject and remain held for new writes. The existing `retention/data-classes.mjs` `memoryProposals` class describes Core's
+external conversation payload, not this Meri candidate outbox. `retention/policy.mjs` requires explicit `retentionMs`; it sets no
+default. Choosing actor/client subject and policy for surface candidates remains a central decision.
+
+### Command payload chain and activation
+
+`approval-metadata-store.mjs` retains the raw memory request and content in `meri_commands.approval_metadata.payload` under an
+immutable `memory_conversation_id`; the metadata row owner inventories it by proposal ID and tombstones `payload` while preserving
+unique proposal/command/idempotency identities and hash. Its forward schema needs nullable `payload`, `payload_purged_at`, immutable
+conversation locator, a partial live-payload index, guarded UPDATE trigger and restricted column grants. A metadata read returns
+no prepared command after tombstone. Existing Core approval reception is task.create-only, so Core's shared owner must qualify
+`memory.propose` before approval is executable.
+
+The same conversation can retain memory content in `meri_memory.candidates`, `meri_commands.command_journal`, and
+`meri_intents.preparations.outcome.result.proposal`. Central retention must register all four exact classes
+`meriMemoryCandidates` (`candidate_id`), `meriMemoryApprovalMetadata` (`proposal_id`), `meriMemoryCommandJournal` (`command_id`),
+and `meriMemoryIntentPreparations` (`delivery_id`). The latter two need immutable conversation locators and guarded content
+tombstones preserving idempotency/delivery replay fences; command history, readOutcome and preparation replay must withhold
+tombstoned content. `bindMemoryCommandRetention` requires a central bundle asserting registry, target schema, grants, recovery,
+policy and all four classes. No shared composition currently supplies that bundle, so `commandOptionsFor` and `commandSourceFor`
+remain unbound. Personal memory within a selected-client run uses that run's selected-client UUID for live credential lookup while
+the personal command arguments carry `clientId:null`; a truly unscoped chat has no compatible action-session credential and stays
+unavailable before prepare.
