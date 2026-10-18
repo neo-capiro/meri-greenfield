@@ -1,10 +1,9 @@
 /** Privileged D005 network setup for one exact run. Never call this from a tool process. This module changes only
  * the per-run Linux netns, veth and nft tables it creates; no VPC, IAM or cloud resource is touched. */
 import {spawn} from 'node:child_process';
-import {openSync,closeSync,fstatSync,statfsSync,constants as fsConstants,existsSync} from 'node:fs';
+import {openSync,closeSync,fstatSync,statfsSync,readFileSync,constants as fsConstants,existsSync} from 'node:fs';
 import {createNetworkPlan} from './plan.mjs';
-import {buildNetworkFirewalls,assertNetworkFirewallReadback,buildFirewallReplaceTransaction} from './firewall.mjs';
-import {startPinnedRelay} from './relay.mjs';
+import {buildNetworkFirewalls,buildHostRelayDenyFirewall,assertNetworkFirewallReadback,buildFirewallReplaceTransaction} from './firewall.mjs';
 
 const IP='/usr/sbin/ip',NFT='/usr/sbin/nft',SYSCTL='/usr/sbin/sysctl',SS='/usr/sbin/ss',NSFS_MAGIC=0x6e736673;
 const fail=code=>{throw Object.assign(new Error(code),{code});};
@@ -18,7 +17,7 @@ const bounded=async(promise,ms)=>{
 /** Minimal environment, exact binary paths, no shell, bounded output and deadline. The deployment image must pin
  * iproute2, nftables and procps. A timeout makes setup/cleanup UNKNOWN until independent readback. */
 export function runLinuxNetworkCommand({file,args,input='',timeoutMs=5000}){
- if(![IP,NFT,SYSCTL].includes(file)||!Array.isArray(args)||args.some(a=>typeof a!=='string'||a.includes('\0'))||typeof input!=='string'||input.length>65536||!Number.isSafeInteger(timeoutMs)||timeoutMs<1||timeoutMs>10000)fail('HOST_NETWORK_COMMAND');
+ if(![IP,NFT,SYSCTL,SS].includes(file)||!Array.isArray(args)||args.some(a=>typeof a!=='string'||a.includes('\0'))||typeof input!=='string'||input.length>65536||!Number.isSafeInteger(timeoutMs)||timeoutMs<1||timeoutMs>10000)fail('HOST_NETWORK_COMMAND');
  return new Promise((resolve,reject)=>{
   const child=spawn(file,args,{cwd:'/',env:{PATH:'/usr/sbin:/usr/bin:/sbin:/bin',LANG:'C',LC_ALL:'C'},stdio:['pipe','pipe','pipe'],shell:false});
   let stdout='',stderr='',done=false;
@@ -40,6 +39,65 @@ function namespaceIdentity(path){
   return Object.freeze({namespacePath:path,namespaceDev:String(stat.dev),namespaceIno:String(stat.ino)});
  }catch{fail('HOST_NETWORK_NAMESPACE_UNKNOWN');}
  finally{if(fd!==undefined)closeSync(fd);}
+}
+function procNamespaceIdentity(pid){
+ let fd;try{fd=openSync(`/proc/${pid}/ns/net`,fsConstants.O_RDONLY|fsConstants.O_CLOEXEC);
+  const stat=fstatSync(fd),fs=statfsSync(`/proc/self/fd/${fd}`);
+  if(fs.type!==NSFS_MAGIC)fail('HOST_NETWORK_NAMESPACE_UNKNOWN');
+  return Object.freeze({namespaceDev:String(stat.dev),namespaceIno:String(stat.ino)});
+ }catch{fail('HOST_NETWORK_NAMESPACE_UNKNOWN');}
+ finally{if(fd!==undefined)closeSync(fd);}
+}
+/** The separate native helper refuses execution unless its original host netns matches this identity and its
+ * current netns. The trusted supervisor must itself be in the same namespace as PID 1. */
+export function readOriginalHostNamespaceIdentity(){
+ const init=procNamespaceIdentity(1),self=procNamespaceIdentity('self');
+ if(init.namespaceDev!==self.namespaceDev||init.namespaceIno!==self.namespaceIno)fail('HOST_NETWORK_NAMESPACE_UNKNOWN');
+ return init;
+}
+/** Production procfs readback of the exact unprivileged host-relay leader. A stable start time protects the PID
+ * observation from reuse; cgroup events and native child ownership separately prove all descendants have exited. */
+export function readHostRelayProcessIdentity(pid){
+ if(!Number.isSafeInteger(pid)||pid<2)fail('HOST_NETWORK_HOST_RELAY_UNKNOWN');
+ try{
+  const raw=readFileSync(`/proc/${pid}/stat`,'utf8'),tail=raw.slice(raw.lastIndexOf(') ')+2).trim().split(/\s+/u);
+  const status=readFileSync(`/proc/${pid}/status`,'utf8'),cgroup=readFileSync(`/proc/${pid}/cgroup`,'utf8');
+  const ids=key=>{const line=status.match(new RegExp(`^${key}:\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)\\s*$`,'mu'));
+   if(!line||new Set(line.slice(1)).size!==1)fail('HOST_NETWORK_HOST_RELAY_UNKNOWN');return Number(line[1]);};
+  const startTime=tail[19],ns=procNamespaceIdentity(pid);
+  if(tail.length<20||tail[0]==='Z'||!/^[1-9][0-9]*$/u.test(startTime)||!/^0::\/meri\/hosts\/[0-9a-f-]+\/[0-9a-f]{64}\/host-relay-(?:sdk|browser)\n$/u.test(cgroup))
+   fail('HOST_NETWORK_HOST_RELAY_UNKNOWN');
+  const again=readFileSync(`/proc/${pid}/stat`,'utf8'),againTail=again.slice(again.lastIndexOf(') ')+2).trim().split(/\s+/u);
+  if(againTail[19]!==startTime||againTail[0]==='Z')fail('HOST_NETWORK_HOST_RELAY_UNKNOWN');
+  return Object.freeze({pid,uid:ids('Uid'),gid:ids('Gid'),cgroupPath:cgroup.slice(3).trim(),startTime,...ns});
+ }catch{fail('HOST_NETWORK_HOST_RELAY_UNKNOWN');}
+}
+
+/** `ss -H -ltnp` must show each pinned host-veth listener once, owned only by the native-launched leader, and
+ * no additional listener owned by that leader. Missing PID data or a co-owner is UNKNOWN. */
+export function assertHostRelayListenerReadback(output,plan,hostRelay){
+ if(typeof output!=='string'||!plan||!Array.isArray(hostRelay?.routes)||!Number.isSafeInteger(hostRelay.pid)||hostRelay.pid<2)
+  fail('HOST_NETWORK_HOST_RELAY_UNKNOWN');
+ const lines=output.trim().split('\n').filter(Boolean),expected=hostRelay.routes.map(r=>`${plan.hostAddress}:${r.port}`),owned=[];
+ for(const line of lines){const columns=line.trim().split(/\s+/u),pids=[...line.matchAll(/pid=(\d+)/gu)].map(m=>Number(m[1]));
+  if(columns[0]!=='LISTEN'||columns.length<5)continue;
+  if(pids.includes(hostRelay.pid)||expected.includes(columns[3])){
+   if(pids.length!==1||pids[0]!==hostRelay.pid||!expected.includes(columns[3]))fail('HOST_NETWORK_HOST_RELAY_UNKNOWN');
+   owned.push(columns[3]);
+  }
+ }
+ if(owned.length!==expected.length||new Set(owned).size!==owned.length||expected.some(address=>!owned.includes(address)))
+  fail('HOST_NETWORK_HOST_RELAY_UNKNOWN');
+ return Object.freeze({verified:true,pid:hostRelay.pid,listeners:Object.freeze(owned)});
+}
+
+/** The SDK host relay may dial its two pinned private services only through the reviewed private ENI. nft OUTPUT
+ * separately enforces the same oifname and exact target pair. This readback refuses policy-route drift. */
+export function assertPrivateTargetRouteReadback(output,{address,interfaceName}){
+ const routes=array(output);
+ if(routes.length!==1||routes[0].dst!==address||routes[0].dev!==interfaceName||routes[0].type!==undefined&&routes[0].type!=='unicast')
+  fail('HOST_NETWORK_PRIVATE_ROUTE_UNKNOWN');
+ return Object.freeze({verified:true,address,interfaceName});
 }
 
 /** Strict route/address readback. nft drops all IPv6 and UDP; the tool namespace must additionally contain no
@@ -80,40 +138,72 @@ export function assertLocalRelayListenerReadback(output,localRelays,pid){
 /** `startLocalRelayProcess` is the trusted native launcher's persistent, unprivileged helper port. It must join the
  * pinned namespace through the C pre-exec broker, hide credentials/cgroupfs and return an observed live-process
  * handle. A ready message alone is not verification; its `verify()` must read the actual loopback listeners there.
- * @param {{allocation:unknown,binding:unknown,kind:'browser'|'bash'|'sdk',routes:unknown,execute?:typeof runLinuxNetworkCommand,startRelay?:typeof startPinnedRelay,startLocalRelayProcess?:(input:object)=>Promise<unknown>,readNamespaceIdentity?:typeof namespaceIdentity,namespaceExists?:typeof existsSync}} input */
-export async function prepareNetworkCompartment({allocation,binding,kind,routes,execute=runLinuxNetworkCommand,startRelay=startPinnedRelay,startLocalRelayProcess,readNamespaceIdentity=namespaceIdentity,namespaceExists=existsSync,cleanupTimeoutMs=3000}){
+ * @param {{allocation:unknown,binding:unknown,kind:'browser'|'sdk',routes:unknown,execute?:typeof runLinuxNetworkCommand,startHostRelayProcess:(input:object)=>Promise<unknown>,hostRelayUid:number,hostRelayGid:number,privateInterfaceName?:string,startLocalRelayProcess:(input:object)=>Promise<unknown>,readNamespaceIdentity?:typeof namespaceIdentity,readHostNamespaceIdentity?:typeof readOriginalHostNamespaceIdentity,readHostRelayIdentity?:typeof readHostRelayProcessIdentity,namespaceExists?:typeof existsSync}} input */
+export async function prepareNetworkCompartment({allocation,binding,kind,routes,execute=runLinuxNetworkCommand,startHostRelayProcess,
+ hostRelayUid,hostRelayGid,privateInterfaceName,startLocalRelayProcess,readNamespaceIdentity=namespaceIdentity,
+ readHostNamespaceIdentity=readOriginalHostNamespaceIdentity,readHostRelayIdentity=readHostRelayProcessIdentity,
+ namespaceExists=existsSync,cleanupTimeoutMs=3000}){
  const plan=createNetworkPlan({allocation,binding,kind,routes});
- if(typeof execute!=='function'||typeof startRelay!=='function'||typeof startLocalRelayProcess!=='function'||typeof readNamespaceIdentity!=='function'||typeof namespaceExists!=='function'||!Number.isSafeInteger(cleanupTimeoutMs)||cleanupTimeoutMs<1||cleanupTimeoutMs>5000)fail('HOST_NETWORK_LOCAL_RELAY_REQUIRED');
+ if(!['sdk','browser'].includes(kind)||typeof execute!=='function'||typeof startHostRelayProcess!=='function'||
+  typeof startLocalRelayProcess!=='function'||typeof readNamespaceIdentity!=='function'||typeof readHostNamespaceIdentity!=='function'||
+  typeof readHostRelayIdentity!=='function'||typeof namespaceExists!=='function'||!Number.isSafeInteger(hostRelayUid)||hostRelayUid<1000||hostRelayUid>65533||
+  !Number.isSafeInteger(hostRelayGid)||hostRelayGid<1000||hostRelayGid>65533||!Number.isSafeInteger(cleanupTimeoutMs)||cleanupTimeoutMs<1||cleanupTimeoutMs>5000)
+  fail('HOST_NETWORK_HOST_RELAY_REQUIRED');
  const run=(file,args,input)=>execute({file,args,...(input===undefined?{}:{input}),timeoutMs:5000});
  const ip=(...args)=>run(IP,args),nft=(...args)=>run(NFT,args);
- let nsCreated=false,vethCreated=false,hostTableCreated=false,toolTableCreated=false,closed=false,closing,lateCleanupUnknown=false,firewalls,identity,localRelay,activePlan=plan,extending=false,extensionInFlight,latestProof;
- const relays=[];
+ let nsCreated=false,vethCreated=false,hostTableCreated=false,toolTableCreated=false,closed=false,closing,lateCleanupUnknown=false,
+  firewalls,identity,hostNamespace,hostRelay,hostRelayStartTime,localRelay,activePlan=plan,extending=false,extensionInFlight,latestProof;
+ const hostDeny=buildHostRelayDenyFirewall(plan,hostRelayUid);
+ const relayPorts=()=>hostRelay?.routes?.map(r=>r.port);
+ const verifyHostRelay=async()=>{
+  if(hostRelay?.verify()?.verified!==true||hostRelay.pid<2||hostRelay.uid!==hostRelayUid||hostRelay.gid!==hostRelayGid||
+   hostRelay.cgroupPath!==plan.hostRelayCgroupPath||hostRelay.routes?.length!==activePlan.routes.length||
+   hostRelay.routes.some((route,i)=>route.name!==activePlan.routes[i].name||!Number.isSafeInteger(route.port)||route.port<1024||route.port>65535)||
+   new Set(relayPorts()).size!==relayPorts().length)fail('HOST_NETWORK_HOST_RELAY_UNKNOWN');
+  const process=readHostRelayIdentity(hostRelay.pid);
+  if(process.pid!==hostRelay.pid||process.uid!==hostRelayUid||process.gid!==hostRelayGid||
+   process.cgroupPath!==plan.hostRelayCgroupPath||process.namespaceDev!==hostNamespace.namespaceDev||
+   process.namespaceIno!==hostNamespace.namespaceIno||!process.startTime||
+   hostRelayStartTime!==undefined&&process.startTime!==hostRelayStartTime)fail('HOST_NETWORK_HOST_RELAY_UNKNOWN');
+  assertHostRelayListenerReadback((await run(SS,['-H','-ltnp'])).stdout,plan,hostRelay);
+  const after=readHostRelayIdentity(hostRelay.pid);
+  if(after.pid!==process.pid||after.startTime!==process.startTime||after.uid!==process.uid||after.gid!==process.gid||
+   after.cgroupPath!==process.cgroupPath||after.namespaceDev!==process.namespaceDev||after.namespaceIno!==process.namespaceIno||
+   hostRelay.verify()?.verified!==true)fail('HOST_NETWORK_HOST_RELAY_UNKNOWN');
+  return process;
+ };
  const cleanup=async(initialErrors=[])=>{
   const errors=[...initialErrors];if(lateCleanupUnknown)errors.push('late-relay');
-  // Cut every host-side route immediately; a stuck local child must not hold network reachability open.
-  for(const relay of relays)try{if(relay.revoke()?.revoked!==true)errors.push('relay-revoke');}catch{errors.push('relay-revoke');}
+  if(hostTableCreated)try{await run(NFT,['-j','-f','-'],JSON.stringify(buildFirewallReplaceTransaction(hostDeny.expectedHost)));}
+   catch{errors.push('host-output-deny');}
   if(localRelay)try{const result=await bounded(localRelay.close(),cleanupTimeoutMs);if(result?.closed!==true)errors.push('local-relay');}catch{errors.push('local-relay');}
-  for(const relay of relays)try{await bounded(relay.close(),cleanupTimeoutMs);}catch{errors.push('relay');}
+  if(hostRelay)try{const result=await bounded(hostRelay.close(),cleanupTimeoutMs);if(result?.closed!==true)errors.push('host-relay');}catch{errors.push('host-relay');}
   // Remove the link before the host firewall: even an orphaned namespace then has no host/public path.
   if(vethCreated)try{await ip('link','delete',plan.hostVethName);}catch{errors.push('veth');}
   if(nsCreated)try{await ip('netns','delete',plan.namespaceName);}catch{errors.push('namespace');}
-  if(hostTableCreated)try{await nft('delete','table','inet',plan.hostTable);}catch{errors.push('host-firewall');}
-  // A successful namespace deletion destroys its nft table. A failed deletion is uncertain even if its table is gone.
+  // Keep the UID-wide host OUTPUT deny if any relay/process/link cleanup is uncertain. Removing the table first
+  // could give an orphaned host-relay process direct ENI egress even after this method returns UNKNOWN.
   if(!errors.length){try{
    const hostLinks=array((await ip('-j','link','show')).stdout);
-   const tables=parse((await nft('-j','list','tables','inet')).stdout).nftables;
-   if(!Array.isArray(tables)||namespaceExists(plan.namespacePath)||hostLinks.some(x=>x.ifname===plan.hostVethName)||tables.some(x=>x.table?.name===plan.hostTable))errors.push('readback');
+   if(namespaceExists(plan.namespacePath)||hostLinks.some(x=>x.ifname===plan.hostVethName))errors.push('readback');
   }catch{errors.push('readback');}}
+  if(!errors.length&&hostTableCreated)try{await nft('delete','table','inet',plan.hostTable);}catch{errors.push('host-firewall');}
+  if(!errors.length)try{
+   const tables=parse((await nft('-j','list','tables','inet')).stdout).nftables;
+   if(!Array.isArray(tables)||tables.some(x=>x.table?.name===plan.hostTable))errors.push('readback');
+  }catch{errors.push('readback');}
   if(errors.length)fail('HOST_NETWORK_CLEANUP_UNKNOWN');return Object.freeze({closed:true});
  };
  const close=(waitForExtension=true)=>{if(closing)return closing;closed=true;
   // Revoke synchronously, before waiting on an in-flight extension or a possibly stuck child.
-  const errors=[];for(const relay of relays)try{if(relay.revoke()?.revoked!==true)errors.push('relay-revoke');}catch{errors.push('relay-revoke');}
+  const errors=[];if(hostRelay)try{if(hostRelay.revoke()?.revoked!==true)errors.push('host-relay-revoke');}catch{errors.push('host-relay-revoke');}
   closing=(async()=>{
    if(waitForExtension&&extensionInFlight)try{await bounded(extensionInFlight.catch(()=>{}),cleanupTimeoutMs);}catch{errors.push('extension');}
    return cleanup(errors);
   })();return closing;};
  try{
+  hostNamespace=readHostNamespaceIdentity();
+  if(!/^\d+$/u.test(hostNamespace?.namespaceDev)||!/^\d+$/u.test(hostNamespace?.namespaceIno))fail('HOST_NETWORK_NAMESPACE_UNKNOWN');
   await ip('netns','add',plan.namespaceName);nsCreated=true;
   identity=readNamespaceIdentity(plan.namespacePath);
   await ip('link','add',plan.hostVethName,'type','veth','peer','name',plan.toolVethName);vethCreated=true;
@@ -124,20 +214,25 @@ export async function prepareNetworkCompartment({allocation,binding,kind,routes,
   await ip('-n',plan.namespaceName,'link','set',plan.toolVethName,'up');
   await ip('-n',plan.namespaceName,'link','set','lo','up');
   await ip('netns','exec',plan.namespaceName,SYSCTL,'-q','-w','net.ipv6.conf.all.disable_ipv6=1');
-  for(const route of plan.routes){
-   const relay=await startRelay({listenAddress:plan.hostAddress,listenPort:0,targetAddress:route.targetAddress,targetPort:route.targetPort});
-   if(typeof relay?.close!=='function'||typeof relay?.revoke!=='function')fail('HOST_NETWORK_CLEANUP_UNKNOWN');
-   relays.push(relay);
-   if(typeof relay.verify!=='function'||relay.address!==plan.hostAddress||!Number.isSafeInteger(relay.port)||relay.port<1024||relay.port>65535)fail('HOST_NETWORK_RELAY_BINDING_UNKNOWN');
-  }
-  firewalls=buildNetworkFirewalls(plan,relays.map(r=>r.port));
-  await run(NFT,['-j','-f','-'],JSON.stringify(firewalls.host));hostTableCreated=true;
+  // No unprivileged process exists until the host INPUT and UID-wide OUTPUT deny table is installed and read back.
+  await run(NFT,['-j','-f','-'],JSON.stringify(hostDeny.host));hostTableCreated=true;
+  assertNetworkFirewallReadback((await nft('-j','list','table','inet',plan.hostTable)).stdout,hostDeny.expectedHost);
+  hostRelay=await startHostRelayProcess({plan,hostNamespace});
+  if(typeof hostRelay?.verify!=='function'||typeof hostRelay?.revoke!=='function'||typeof hostRelay?.close!=='function')
+   fail('HOST_NETWORK_CLEANUP_UNKNOWN');
+  hostRelayStartTime=(await verifyHostRelay()).startTime;
+  firewalls=buildNetworkFirewalls(plan,relayPorts(),{relayUid:hostRelayUid,privateInterfaceName});
+  await run(NFT,['-j','-f','-'],JSON.stringify(buildFirewallReplaceTransaction(firewalls.expectedHost)));
   await run(IP,['netns','exec',plan.namespaceName,NFT,'-j','-f','-'],JSON.stringify(firewalls.tool));toolTableCreated=true;
   const verifyNative=async()=>{
    if(closed||!identity||!firewalls||!toolTableCreated)fail('HOST_NETWORK_UNVERIFIED');
    const observed=readNamespaceIdentity(plan.namespacePath);
    if(observed.namespaceDev!==identity.namespaceDev||observed.namespaceIno!==identity.namespaceIno)fail('HOST_NETWORK_NAMESPACE_UNKNOWN');
-   for(const relay of relays)relay.verify();
+   const hostRelayProcess=await verifyHostRelay();
+   for(const route of activePlan.routes.filter(r=>r.targetAddress!=='127.0.0.1')){
+    const output=await ip('-j','route','get',route.targetAddress,'uid',String(hostRelayUid));
+    assertPrivateTargetRouteReadback(output.stdout,{address:route.targetAddress,interfaceName:privateInterfaceName});
+   }
    const [nsLinks,nsAddr,nsRoutes,nsV6,hostLinks,hostAddr,hostRoutes,hostAllAddresses,hostAllRoutes,hostNft,toolNft]=await Promise.all([
     ip('-d','-j','-n',plan.namespaceName,'link','show'),
     ip('-j','-n',plan.namespaceName,'address','show','dev',plan.toolVethName),
@@ -157,7 +252,10 @@ export async function prepareNetworkCompartment({allocation,binding,kind,routes,
    assertNetworkFirewallReadback(hostNft.stdout,firewalls.expectedHost);
    assertNetworkFirewallReadback(toolNft.stdout,firewalls.expectedTool);
    return Object.freeze({...identity,kind:plan.kind,allocationSha256:plan.allocationSha256,bindingSha256:plan.bindingSha256,
-    localRelays:Object.freeze(activePlan.routes.map((route,i)=>Object.freeze({name:route.name,localPort:route.localPort,hostAddress:plan.hostAddress,hostRelayPort:relays[i].port}))),verified:true});
+    hostRelay:Object.freeze({pid:hostRelayProcess.pid,uid:hostRelayProcess.uid,gid:hostRelayProcess.gid,
+     cgroupPath:hostRelayProcess.cgroupPath,startTime:hostRelayProcess.startTime,namespaceDev:hostRelayProcess.namespaceDev,
+     namespaceIno:hostRelayProcess.namespaceIno}),
+    localRelays:Object.freeze(activePlan.routes.map((route,i)=>Object.freeze({name:route.name,localPort:route.localPort,hostAddress:plan.hostAddress,hostRelayPort:hostRelay.routes[i].port}))),verified:true});
   };
   const nativeProof=await verifyNative();
   localRelay=await startLocalRelayProcess({plan,proof:nativeProof});
@@ -194,22 +292,28 @@ export async function prepareNetworkCompartment({allocation,binding,kind,routes,
     const stopped=await bounded(old.close(),cleanupTimeoutMs);if(stopped?.closed!==true)fail('HOST_NETWORK_LOCAL_RELAY_UNKNOWN');
     if(closed)fail('HOST_NETWORK_EXTENSION_REFUSED');
     localRelay=undefined;
-    for(const route of next.routes.slice(2)){
-     if(closed)fail('HOST_NETWORK_EXTENSION_REFUSED');
-     const relay=await startRelay({listenAddress:plan.hostAddress,listenPort:0,targetAddress:route.targetAddress,targetPort:route.targetPort});
-     if(closed){try{if(relay?.revoke?.()?.revoked!==true)lateCleanupUnknown=true;
-      if((await bounded(relay?.close?.(),cleanupTimeoutMs))?.closed!==true)lateCleanupUnknown=true;}catch{lateCleanupUnknown=true;}
-      fail('HOST_NETWORK_EXTENSION_REFUSED');}
-     if(typeof relay?.close!=='function'||typeof relay?.revoke!=='function')fail('HOST_NETWORK_CLEANUP_UNKNOWN');
-     relays.push(relay);
-     if(typeof relay.verify!=='function'||relay.address!==plan.hostAddress||!Number.isSafeInteger(relay.port)||relay.port<1024||relay.port>65535)fail('HOST_NETWORK_RELAY_BINDING_UNKNOWN');
-    }
-    const nextRules=buildNetworkFirewalls(next,relays.map(r=>r.port));
+    if(hostRelay?.revoke()?.revoked!==true)fail('HOST_NETWORK_HOST_RELAY_CLEANUP_UNKNOWN');
+    const retired=await bounded(hostRelay.close(),cleanupTimeoutMs);
+    if(retired?.closed!==true)fail('HOST_NETWORK_HOST_RELAY_CLEANUP_UNKNOWN');
+    if(closed)fail('HOST_NETWORK_EXTENSION_REFUSED');
+    hostRelay=undefined;hostRelayStartTime=undefined;
+    // Preserve UID-wide deny during the replacement process's entire startup and listener proof.
+    await run(NFT,['-j','-f','-'],JSON.stringify(buildFirewallReplaceTransaction(hostDeny.expectedHost)));
+    if(closed)fail('HOST_NETWORK_EXTENSION_REFUSED');
+    const replacement=await startHostRelayProcess({plan:next,hostNamespace});
+    if(closed){try{if(replacement?.revoke?.()?.revoked!==true)lateCleanupUnknown=true;
+     if((await bounded(replacement?.close?.(),cleanupTimeoutMs))?.closed!==true)lateCleanupUnknown=true;}catch{lateCleanupUnknown=true;}
+     fail('HOST_NETWORK_EXTENSION_REFUSED');}
+    hostRelay=replacement;activePlan=next;
+    if(typeof hostRelay?.verify!=='function'||typeof hostRelay?.revoke!=='function'||typeof hostRelay?.close!=='function')
+     fail('HOST_NETWORK_CLEANUP_UNKNOWN');
+    hostRelayStartTime=(await verifyHostRelay()).startTime;
+    const nextRules=buildNetworkFirewalls(next,relayPorts(),{relayUid:hostRelayUid,privateInterfaceName});
     await run(NFT,['-j','-f','-'],JSON.stringify(buildFirewallReplaceTransaction(nextRules.expectedHost)));
     if(closed)fail('HOST_NETWORK_EXTENSION_REFUSED');
     await run(IP,['netns','exec',plan.namespaceName,NFT,'-j','-f','-'],JSON.stringify(buildFirewallReplaceTransaction(nextRules.expectedTool)));
     if(closed)fail('HOST_NETWORK_EXTENSION_REFUSED');
-    activePlan=next;firewalls=nextRules;
+    firewalls=nextRules;
     const native=await verifyNative();
     if(closed)fail('HOST_NETWORK_EXTENSION_REFUSED');
     const nextLocalRelay=await startLocalRelayProcess({plan:next,proof:native});

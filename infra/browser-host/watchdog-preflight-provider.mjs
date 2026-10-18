@@ -11,7 +11,7 @@ const fail=reason=>{throw Object.assign(new Error(reason),{code:'WATCHDOG_PREFLI
 const own=(v,n)=>v&&typeof v==='object'&&!Array.isArray(v)&&Object.hasOwn(v,n)?v[n]:undefined;
 const names=['ServiceToken','ServiceTimeout','Schema','ProviderCodeSha256','WatchdogDefinitionSha256','QualificationEvidenceSha256',
  'StateMachineVersionArn','ExecutionArn','OriginalT0Ms','DeadlineMs','AllocationSha256','HostId','Generation',
- 'SourceCommit','ImageUri','ImageConfigSha256','BootstrapSha256','NativeHelperSha256','TemplateSha256',
+ 'SourceCommit','ImageUri','ImageConfigSha256','BootstrapSha256','NativeHelperSha256','NativeHostRelayHelperSha256','TemplateSha256',
  'StackServiceRoleArn','LaunchDenyPolicySha256','StackPolicySha256',
  'AmiId','AmiOwner','Architecture','VpcId','SubnetId','ControlSecurityGroupId',
  'EcrApiSecurityGroupId','EcrDockerSecurityGroupId','LogsSecurityGroupId','S3GatewayPrefixListId',
@@ -82,10 +82,11 @@ export async function evaluateWatchdogPreflight(event,ports){
  if(!event||event.RequestType!=='Create'||event.ResourceType!=='Custom::MeriWatchdogPreflight'||event.LogicalResourceId!=='WatchdogPreflight'||
     typeof event.StackId!=='string'||!event.StackId.startsWith(`arn:aws:cloudformation:${HOST_REGION}:${HOST_ACCOUNT}:stack/`))fail('event-scope');
  const p=event.ResourceProperties;pinned(p,names);
- if(p.Schema!=='meri-d005-watchdog-preflight/1'||p.ServiceTimeout!=='30'||p.NetworkMode!=='closed-qualification'||
+ if(p.Schema!=='meri-d005-watchdog-preflight/2'||p.ServiceTimeout!=='30'||p.NetworkMode!=='closed-qualification'||
     !Number.isSafeInteger(p.OriginalT0Ms)||p.DeadlineMs!==p.OriginalT0Ms+HOST_CEILING_MS||
     !Number.isSafeInteger(p.Generation)||p.Generation<1||
-    ![p.TemplateSha256,p.AllocationSha256,p.WatchdogDefinitionSha256,p.QualificationEvidenceSha256,p.ProviderCodeSha256,p.BootstrapSha256,p.NativeHelperSha256,p.ImageConfigSha256,p.LaunchDenyPolicySha256,p.StackPolicySha256].every(v=>typeof v==='string'&&SHA.test(v)))fail('pin-shape');
+    ![p.TemplateSha256,p.AllocationSha256,p.WatchdogDefinitionSha256,p.QualificationEvidenceSha256,p.ProviderCodeSha256,p.BootstrapSha256,p.NativeHelperSha256,p.NativeHostRelayHelperSha256,p.ImageConfigSha256,p.LaunchDenyPolicySha256,p.StackPolicySha256].every(v=>typeof v==='string'&&SHA.test(v))||
+    p.NativeHostRelayHelperSha256===p.NativeHelperSha256)fail('pin-shape');
  const now=ports.nowMs();
  if(!Number.isSafeInteger(now)||now<p.OriginalT0Ms||now>p.OriginalT0Ms+120_000)fail('arm-window');
  const [stack,stackSummary,rolePolicy,stackPolicy,machine,execution,provider,ami,network,qualification]=await Promise.all([
@@ -107,6 +108,8 @@ export async function evaluateWatchdogPreflight(event,ports){
  const resolved={...declared,HostSecurityGroupId:p.HostSecurityGroupId};
  const nic=template.Resources?.HostInstance?.Properties?.NetworkInterfaces;
  if(canonicalJson(resolved)!==canonicalJson(p)||
+    template.Metadata?.nativeHelperSha256!==p.NativeHelperSha256||
+    template.Metadata?.nativeHostRelayHelperSha256!==p.NativeHostRelayHelperSha256||
     computeEnabledTemplateReviewSha256(template)!==p.TemplateSha256||
     !Array.isArray(template.Resources?.HostInstance?.DependsOn)||!template.Resources.HostInstance.DependsOn.includes('WatchdogPreflight')||
     !Array.isArray(nic)||nic.length!==1||canonicalJson(nic[0].GroupSet)!==canonicalJson([{Ref:'HostSecurityGroup'}])||
@@ -141,7 +144,8 @@ export async function evaluateWatchdogPreflight(event,ports){
  const stateMachineArn=p.StateMachineVersionArn.replace(/:[1-9][0-9]*$/u,'');
  const expected={schema:WATCHDOG_INPUT_SCHEMA,hostId:p.HostId,generation:p.Generation,allocationSha256:p.AllocationSha256,
   sourceCommit:p.SourceCommit,imageUri:p.ImageUri,imageConfigSha256:p.ImageConfigSha256,
-  bootstrapSha256:p.BootstrapSha256,nativeHelperSha256:p.NativeHelperSha256,templateSha256:p.TemplateSha256,
+  bootstrapSha256:p.BootstrapSha256,nativeHelperSha256:p.NativeHelperSha256,
+  nativeHostRelayHelperSha256:p.NativeHostRelayHelperSha256,templateSha256:p.TemplateSha256,
   originalT0Ms:p.OriginalT0Ms,deadlineMs:p.DeadlineMs};
  if(execution?.executionArn!==p.ExecutionArn||execution?.stateMachineArn!==stateMachineArn||
     execution?.stateMachineVersionArn!==p.StateMachineVersionArn||execution?.status!=='RUNNING'||

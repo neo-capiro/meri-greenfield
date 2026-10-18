@@ -38,6 +38,7 @@ export function createNetworkPlan({allocation,binding,kind,routes}){
   namespacePath:`/run/netns/meri-${kind}-${digest.slice(0,12)}`,
   hostVethName:`mh${kind[0]}${digest.slice(0,10)}`,toolVethName:`mt${kind[0]}${digest.slice(0,10)}`,
   hostTable:`mh${digest.slice(0,12)}`,toolTable:`mt${digest.slice(0,12)}`,
+  hostRelayCgroupPath:`/meri/hosts/${a.hostId}-${a.generation}/${canonicalSha256(b)}/host-relay-${kind}`,
   subnet:`${block}/30`,hostAddress:address(1),toolAddress:address(2),
   allocationSha256:canonicalSha256(a),bindingSha256:canonicalSha256(b),routes:Object.freeze(ordered)};
  return Object.freeze(plan);

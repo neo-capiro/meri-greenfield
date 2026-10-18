@@ -6,9 +6,10 @@ import {binding,enabledPolicy,installationFor,sourceScopes} from '../../browser/
 import {assertCapabilityPolicy} from '../../capabilities/policy.mjs';
 import {HOST_ALLOCATION_SCHEMA,D005_HOST_IDENTITY_SCHEMA} from '../binding.mjs';
 import {createNativeLocalRelayPort} from '../network/launcher-adapter.mjs';
+import {createNativeHostRelayPort} from '../network/host-launcher-adapter.mjs';
 import {createSdkLaunchGate} from '../launcher/sdk-quiescence.mjs';
 import {createBrowserHostRuntimePort} from '../browser-runtime-port.mjs';
-import {armBrowserAfterWorkspaceReadback,prepareGuestHostRun} from './run.mjs';
+import {armBrowserAfterWorkspaceReadback,prepareAdmittedBrowserWorkspace,prepareGuestHostRun} from './run.mjs';
 import {BROWSER_WORKSPACE_READBACK_SCHEMA} from '../browser-workspace/readback.mjs';
 import {browserPaths} from '../../browser/workspace.mjs';
 
@@ -57,7 +58,7 @@ function fixture({onNetwork,onBash,teardownError}={}){
     return {installation:validBrowserInstallation,failure:new Promise(()=>{}),async close(){events.push('broker-close');return {closed:true};}};},
     createSdkProcessClient(){events.push('process-client');return {kind:'one-sdk-query'};},
     async close(){events.push('launcher-close');return {closed:true};}};},
-  createLocalRelayPort:createNativeLocalRelayPort,createSdkLaunchGate,
+  createLocalRelayPort:createNativeLocalRelayPort,createHostRelayPort:createNativeHostRelayPort,createSdkLaunchGate,
   async createConfinedReadinessPorts(){throw Error('readiness must not start in this fixture');},
   createSdkQuiescenceObserver(){events.push('readiness-observer-created');return {
    async arm(){events.push('readiness-arm');},async waitQuiescent(){events.push('readiness-wait');
@@ -79,11 +80,13 @@ function fixture({onNetwork,onBash,teardownError}={}){
   browser:{installation:validBrowserInstallation,resolve:async()=>{},sourceScopes,
    approvals:{async decide(){}},artifacts:{async ingest(){}},receipts:{async record(){}}},
   bash:{},native:{helperPath:'/opt/meri/bin/meri-native-launch',shimPath:'/opt/meri/bin/meri-mcp-shim',
+   hostRelayHelperPath:'/opt/meri/bin/meri-host-relay-launch',
    nodePath:'/opt/scripted/node',
    sdk:{uid:24001,gid:24001},browser:{uid:24002,gid:24002},
    relay:{sdk:{uid:24003,gid:24003},browser:{uid:24004,gid:24004}},
+   hostRelay:{sdk:{uid:24005,gid:24005},browser:{uid:24006,gid:24006}},
    validateSdkDescriptor:x=>x,verifyConfinement:async()=>{}},
-  network:{sdkRoutes:[{name:'model-proxy',localPort:8443,targetAddress:'10.0.1.10',targetPort:443},
+  network:{privateInterfaceName:'eth0',sdkRoutes:[{name:'model-proxy',localPort:8443,targetAddress:'10.0.1.10',targetPort:443},
    {name:'control',localPort:8444,targetAddress:'10.0.1.11',targetPort:443}]},
   host:{async destroy(){},async observeAbsent(){}},components};
  return {input,events,monitors,clientPurposes,networks,get grantCount(){return grantCount;},
@@ -160,13 +163,29 @@ test('revocation while SDK namespace is pending closes its late handle and never
  assert.equal(f.launcherCount,0);assert.equal(f.grantCount,0);
 });
 
-test('Bash needs confined readiness and four independent process identities',async()=>{
+test('Bash needs confined readiness and six independent process identities',async()=>{
  const f=fixture();f.input.capabilityPolicy={bash:true};
  await assert.rejects(prepareGuestHostRun(f.input),fault('HOST_BOOTSTRAP_CONFIGURATION'));
  assert.equal(f.events.length,0);
  const g=fixture();g.input.native.relay.sdk.uid=g.input.native.sdk.uid;
  await assert.rejects(prepareGuestHostRun(g.input),fault('HOST_BOOTSTRAP_CONFIGURATION'));
  assert.equal(g.events.length,0);
+ const h=fixture();h.input.native.hostRelay.sdk.gid=h.input.native.relay.sdk.gid;
+ await assert.rejects(prepareGuestHostRun(h.input),fault('HOST_BOOTSTRAP_CONFIGURATION'));
+ assert.equal(h.events.length,0);
+});
+
+test('SDK network receives the dedicated host relay and pinned private interface',async()=>{
+ const f=fixture({onNetwork:async input=>{
+  assert.equal(input.kind,'sdk');
+  assert.equal(input.hostRelayUid,24005);assert.equal(input.hostRelayGid,24005);
+  assert.equal(input.privateInterfaceName,'eth0');
+  assert.equal(typeof input.startHostRelayProcess,'function');
+ }});
+ const run=await prepareGuestHostRun(f.input);await run.settle({reason:'conversation-end'});
+ const bad=fixture();delete bad.input.network.privateInterfaceName;
+ await assert.rejects(prepareGuestHostRun(bad.input),fault('HOST_BOOTSTRAP_CONFIGURATION'));
+ assert.equal(bad.events.length,0);
 });
 
 test('SDK control and model relays must match trusted endpoints exactly',async()=>{
@@ -197,9 +216,35 @@ test('paused browser child needs measured workspace readback before observer arm
   readWorkspace:async()=>({...measured,sourceFilesInaccessible:true,schema:'old-boolean-claim'})}),
   fault('HOST_BROWSER_WORKSPACE_UNPROVEN'));
  assert.deepEqual(events,['readback']);
+ await assert.rejects(armBrowserAfterWorkspaceReadback({...scope,
+  preparedWorkspace:{cwd:scope.cwd,cwdInode:'42',stateInode:'999'},
+  readWorkspace:async()=>{events.push('readback');return measured;}}),fault('HOST_BROWSER_WORKSPACE_UNPROVEN'));
+ assert.deepEqual(events,['readback','readback']);
  assert.deepEqual(await armBrowserAfterWorkspaceReadback({...scope,
   readWorkspace:async()=>{events.push('readback');return measured;}}),{armed:true});
- assert.deepEqual(events,['readback','readback','armed']);
+ assert.deepEqual(events,['readback','readback','readback','armed']);
+});
+
+test('browser workspace creation waits for matching browser-purpose currentness',async()=>{
+ const f=fixture(),events=[],paths=browserPaths(f.input.cwd),digest=canonicalSha256(enabledPolicy());
+ const scope={allocation:f.input.allocation,binding,cwd:f.input.cwd,paths,policySha256:digest,
+  maxFreshMs:10000,now:Date.now,signal:new AbortController().signal,
+  sdkUid:24001,sdkGid:24001,browserUid:24002,browserGid:24002,
+  prepare(){events.push('prepared');return {cwd:f.input.cwd,paths,cwdInode:'42',stateInode:'43'};}};
+ await assert.rejects(prepareAdmittedBrowserWorkspace({...scope,browserClient:{
+  async readCurrent(){events.push('current-denied');throw Error('browser not admitted');}}}));
+ assert.deepEqual(events,['current-denied']);
+ const stale={allocation:scope.allocation,binding,policySha256:digest,phase:'active',
+  checkedAtMs:Date.now()-20000,currentUntilMs:Date.now()+1000};
+ await assert.rejects(prepareAdmittedBrowserWorkspace({...scope,browserClient:{
+  async readCurrent(){events.push('current-stale');return stale;}}}),fault('HOST_CURRENTNESS_REFUSED'));
+ assert.deepEqual(events,['current-denied','current-stale']);
+ const admitted=await prepareAdmittedBrowserWorkspace({...scope,browserClient:{
+  async readCurrent(request){events.push('current-admitted');assert.equal(request.policySha256,digest);
+   const checkedAtMs=Date.now();return {allocation:scope.allocation,binding,policySha256:digest,
+    phase:'active',checkedAtMs,currentUntilMs:checkedAtMs+5000};}}});
+ assert.deepEqual(events,['current-denied','current-stale','current-admitted','prepared']);
+ assert.equal(admitted.stateInode,'43');
 });
 
 test('Bash outer proof must match this host generation and boot before readiness',async()=>{

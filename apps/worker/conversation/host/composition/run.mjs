@@ -17,14 +17,16 @@ import {prepareNetworkCompartment} from '../network/confinement.mjs';
 import {createNetworkPlan} from '../network/plan.mjs';
 import {createBrowserProcessObserver} from '../process-observer.mjs';
 import {readBrowserWorkspaceIsolation,BROWSER_WORKSPACE_READBACK_SCHEMA} from '../browser-workspace/readback.mjs';
+import {prepareBrowserWorkspace} from '../browser-workspace/prepare.mjs';
 import {createHostWideProcessObserver} from '../host-wide-process-observer.mjs';
 import {createHostLauncher,startConfinedLocalRelay} from '../launcher/supervisor.mjs';
 import {createConfinedReadinessPorts} from '../launcher/readiness-ports.mjs';
 import {createNativeLocalRelayPort} from '../network/launcher-adapter.mjs';
+import {createNativeHostRelayPort} from '../network/host-launcher-adapter.mjs';
 import {createSdkLaunchGate,createSdkChildQuiescenceObserver,createSdkQuiescenceReader} from '../launcher/sdk-quiescence.mjs';
 import {createBrowserHostRuntimePort} from '../browser-runtime-port.mjs';
 import {createConversationHostTeardown} from '../teardown.mjs';
-import {assertHostAllocation,assertHostRunBinding,assertD005HostIdentity} from '../binding.mjs';
+import {assertHostAllocation,assertHostRunBinding,assertD005HostIdentity,assertBrowserHostCurrent} from '../binding.mjs';
 
 const fault=(code,cause)=>Object.assign(new Error(code),{code,...(cause?{cause}:{})});
 const fail=code=>{throw fault(code);};
@@ -32,11 +34,12 @@ const DEFAULT_COMPONENTS=Object.freeze({createClient:createHostCurrentnessClient
  startBrowserEgress:startBrowserHostEgressService,prepareBash:prepareHostBashRuntimeFacts,
  prepareNetwork:prepareNetworkCompartment,createBrowserObserver:createBrowserProcessObserver,
  createHostObserver:createHostWideProcessObserver,createLauncher:createHostLauncher,
- createLocalRelayPort:createNativeLocalRelayPort,
+ createLocalRelayPort:createNativeLocalRelayPort,createHostRelayPort:createNativeHostRelayPort,
  createConfinedReadinessPorts,
  createSdkLaunchGate,createSdkQuiescenceObserver:createSdkChildQuiescenceObserver,
  createSdkQuiescenceReader,
  startLocalRelay:startConfinedLocalRelay,createBrowserPort:createBrowserHostRuntimePort,
+ prepareBrowserWorkspace,
  createTeardown:createConversationHostTeardown});
 const stopped=signal=>{if(signal?.aborted)fail('HOST_BOOTSTRAP_REVOKED');};
 const exactWorkspace=(cwd,conversationId)=>typeof cwd==='string'&&posix.isAbsolute(cwd)&&
@@ -44,9 +47,26 @@ const exactWorkspace=(cwd,conversationId)=>typeof cwd==='string'&&posix.isAbsolu
 const required=(value,names)=>{if(!value||typeof value!=='object'||names.some(name=>typeof value[name]!=='function'))fail('HOST_BOOTSTRAP_CONFIGURATION');};
 const relayRoutes=ports=>Object.freeze([{name:'bash-http',localPort:ports.httpProxyPort,targetPort:ports.httpProxyPort},
  {name:'bash-socks',localPort:ports.socksProxyPort,targetPort:ports.socksProxyPort}]);
+/** Admit private-state preparation only after an authenticated browser-purpose read for this policy digest. */
+export async function prepareAdmittedBrowserWorkspace({allocation,binding,cwd,paths,browserClient,
+ policySha256,maxFreshMs,now,signal,sdkUid,sdkGid,browserUid,browserGid,
+ prepare=prepareBrowserWorkspace}){
+ if(typeof browserClient?.readCurrent!=='function'||typeof prepare!=='function'||typeof now!=='function')
+  fail('HOST_BROWSER_WORKSPACE_PREP_REFUSED');
+ const current=await browserClient.readCurrent({allocation:structuredClone(allocation),
+  binding:structuredClone(binding),policySha256,signal});
+ assertBrowserHostCurrent({allocation,binding,policySha256,current,nowMs:now(),maxFreshMs});
+ stopped(signal);
+ // Synchronous root-only preparation finishes before either native launcher is constructed.
+ const prepared=prepare({cwd,conversationId:binding.conversationId,sdkUid,sdkGid,browserUid,browserGid});
+ if(prepared?.cwd!==cwd||!Object.keys(paths).every(key=>prepared.paths?.[key]===paths[key])||
+  !/^[1-9][0-9]*$/u.test(prepared.cwdInode)||
+  !/^[1-9][0-9]*$/u.test(prepared.stateInode))fail('HOST_BROWSER_WORKSPACE_PREP_REFUSED');
+ return prepared;
+}
 /** The native broker waits at preexec READY until this exact readback and process-observer arm both complete. */
 export async function armBrowserAfterWorkspaceReadback({allocation,binding,hostIdentity,cwd,paths,
- browserUid,browserGid,sdkUid,sdkGid,leaderPid,browserObserver,
+ browserUid,browserGid,sdkUid,sdkGid,leaderPid,browserObserver,preparedWorkspace,
  readWorkspace=readBrowserWorkspaceIsolation,now=Date.now}){
  if(typeof readWorkspace!=='function'||typeof browserObserver?.arm!=='function'||typeof now!=='function')
   fail('HOST_BROWSER_WORKSPACE_UNPROVEN');
@@ -69,6 +89,9 @@ export async function armBrowserAfterWorkspaceReadback({allocation,binding,hostI
   observed.overlayMountId===observed.stateMountId||
   !/^[1-9][0-9]*$/u.test(observed.originalCwdInode)||
   !/^[1-9][0-9]*$/u.test(observed.stateInode)||
+  (preparedWorkspace&&(preparedWorkspace.cwd!==cwd||
+   preparedWorkspace.cwdInode!==observed.originalCwdInode||
+   preparedWorkspace.stateInode!==observed.stateInode))||
   !Number.isSafeInteger(observed.observedAtMs)||observed.observedAtMs>at||
   observed.observedAtMs<at-1000)fail('HOST_BROWSER_WORKSPACE_UNPROVEN');
  return browserObserver.arm({leaderPid});
@@ -92,7 +115,11 @@ export async function prepareGuestHostRun({allocation,binding,hostIdentity,cwd,d
   typeof native.validateSdkDescriptor!=='function'||typeof native.nodePath!=='string'||
   !posix.isAbsolute(native.nodePath)||posix.resolve(native.nodePath)!==native.nodePath||
   typeof native.verifyConfinement!=='function'||
-  !Array.isArray(network.sdkRoutes)||network.sdkRoutes.length!==2)fail('HOST_BOOTSTRAP_CONFIGURATION');
+  !Array.isArray(network.sdkRoutes)||network.sdkRoutes.length!==2||
+  typeof network.privateInterfaceName!=='string'||
+  !/^[a-z][a-z0-9_.-]{0,14}$/u.test(network.privateInterfaceName)||network.privateInterfaceName==='lo'||
+  typeof native.hostRelayHelperPath!=='string'||!posix.isAbsolute(native.hostRelayHelperPath)||
+  posix.resolve(native.hostRelayHelperPath)!==native.hostRelayHelperPath)fail('HOST_BOOTSTRAP_CONFIGURATION');
  let sdkRoutePlan;try{sdkRoutePlan=createNetworkPlan({allocation:a,binding:b,kind:'sdk',routes:network.sdkRoutes});}
  catch{fail('HOST_BOOTSTRAP_CONFIGURATION');}
  const [modelRoute,controlRoute]=sdkRoutePlan.routes;
@@ -102,16 +129,18 @@ export async function prepareGuestHostRun({allocation,binding,hostIdentity,cwd,d
   posix.resolve(model.localCaPath)!==model.localCaPath)fail('HOST_BOOTSTRAP_CONFIGURATION');
  const identity=person=>Number.isSafeInteger(person?.uid)&&person.uid>=1000&&person.uid<=65533&&
   Number.isSafeInteger(person?.gid)&&person.gid>=1000&&person.gid<=65533;
- if(!identity(native.sdk)||!identity(native.browser)||!identity(native.relay?.sdk)||!identity(native.relay?.browser)||
-  new Set([native.sdk.uid,native.browser.uid,native.relay.sdk.uid,native.relay.browser.uid]).size!==4||
-  new Set([native.sdk.gid,native.browser.gid,native.relay.sdk.gid,native.relay.browser.gid]).size!==4)
+ const identities=[native.sdk,native.browser,native.relay?.sdk,native.relay?.browser,
+  native.hostRelay?.sdk,native.hostRelay?.browser];
+ if(identities.some(person=>!identity(person))||
+  new Set(identities.map(person=>person.uid)).size!==identities.length||
+  new Set(identities.map(person=>person.gid)).size!==identities.length)
   fail('HOST_BOOTSTRAP_CONFIGURATION');
  required(host,['destroy','observeAbsent']);
  if(policy.bash){required(bash,['verifyOuterIsolation']);
   if(typeof native.validateReadinessDescriptor!=='function')fail('HOST_BOOTSTRAP_CONFIGURATION');
   if(policy.sandboxNetworkDomains.length)required(bash.approvals,['decide']);}
  required(components,['createClient','startMonitor','startBrowserEgress','prepareBash','prepareNetwork',
-  'createBrowserObserver','createHostObserver','createLauncher','createLocalRelayPort','createSdkLaunchGate',
+  'createBrowserObserver','createHostObserver','createLauncher','createLocalRelayPort','createHostRelayPort','createSdkLaunchGate',
   'createSdkQuiescenceObserver','createSdkQuiescenceReader','createConfinedReadinessPorts',
   'startLocalRelay','createBrowserPort','createTeardown']);
  stopped(signal);
@@ -122,7 +151,7 @@ export async function prepareGuestHostRun({allocation,binding,hostIdentity,cwd,d
   sdkNetwork,browserNetwork,launcher,readinessLauncher,broker,bashFacts,teardown,browserPort,settlement,stopping,
   sdkLaunchGate,readinessObserver;
  let browserGrantAttempted=false,bootstrapped=false,processClientTaken=false,settling=false;
- let browserActive=false;
+ let browserActive=false,preparedWorkspace;
  const clients=[];
  const closeClients=()=>{for(const client of clients)try{client.close();}catch{}};
  const allSignals=()=>AbortSignal.any([owner.signal,sdkMonitor?.signal,bashMonitor?.signal].filter(Boolean));
@@ -184,6 +213,7 @@ export async function prepareGuestHostRun({allocation,binding,hostIdentity,cwd,d
    if(typeof browser.resolve!=='function')fail('HOST_BOOTSTRAP_CONFIGURATION');
    required(browser.approvals,['decide']);required(browser.artifacts,['ingest']);
    required(browser.receipts,['record']);
+   required(components,['prepareBrowserWorkspace']);
   }
   const pinnedBrowserPolicy=async request=>{
    const current=validateBrowserPolicy(data(await readBrowserPolicy(request)));
@@ -203,6 +233,12 @@ export async function prepareGuestHostRun({allocation,binding,hostIdentity,cwd,d
   if(policy.bash)bashMonitor=await components.startMonitor({...monitorInput,readCurrent:bashClient.readCurrent});
   bashMonitor?.signal.addEventListener('abort',()=>owner.abort(fault('HOST_BOOTSTRAP_REVOKED')),{once:true});
   stopped(allSignals());
+  if(browserActive){
+   preparedWorkspace=await prepareAdmittedBrowserWorkspace({allocation:a,binding:b,cwd,paths,
+    browserClient,policySha256:browserDigest,maxFreshMs:control.maxFreshMs,now,signal:allSignals(),
+    sdkUid:native.sdk.uid,sdkGid:native.sdk.gid,browserUid:native.browser.uid,browserGid:native.browser.gid,
+    prepare:components.prepareBrowserWorkspace});
+  }
   if(browserActive){browserEgress=await components.startBrowserEgress({allocation:a,binding:b,
    readCurrent:browserClient.readCurrent,resolve:browser.resolve,now,
    maxFreshMs:control.maxFreshMs,refreshEveryMs:control.refreshEveryMs});stopped(allSignals());}
@@ -212,12 +248,29 @@ export async function prepareGuestHostRun({allocation,binding,hostIdentity,cwd,d
    helperPath:native.helperPath,nodePath:native.nodePath,cwd,relayUid:native.relay[kind].uid,
    relayGid:native.relay[kind].gid,toolUid:native[kind].uid,
    startConfinedLocalRelay:components.startLocalRelay,authorize:async()=>sdkMonitor.refresh(),signal:allSignals()});
+  const hostRelay=kind=>components.createHostRelayPort({allocation:a,binding:b,hostIdentity:i,
+   helperPath:native.hostRelayHelperPath,nodePath:native.nodePath,
+   uid:native.hostRelay[kind].uid,gid:native.hostRelay[kind].gid,
+   forbiddenUids:identities.filter(person=>person!==native.hostRelay[kind]).map(person=>person.uid),
+   forbiddenGids:identities.filter(person=>person!==native.hostRelay[kind]).map(person=>person.gid),
+   authorize:async()=>{await sdkMonitor.refresh();
+    if(kind==='browser'){
+     const current=await browserClient.readCurrent({allocation:structuredClone(a),binding:structuredClone(b),
+      policySha256:browserDigest,signal:allSignals()});
+     assertBrowserHostCurrent({allocation:a,binding:b,policySha256:browserDigest,current,
+      nowMs:now(),maxFreshMs:control.maxFreshMs});
+    }
+   },signal:allSignals()});
   // The SDK compartment starts with model/control only. Its Bash proxy routes are added after confined readiness.
   sdkNetwork=await components.prepareNetwork({allocation:a,binding:b,kind:'sdk',routes:network.sdkRoutes,
+   hostRelayUid:native.hostRelay.sdk.uid,hostRelayGid:native.hostRelay.sdk.gid,
+   privateInterfaceName:network.privateInterfaceName,startHostRelayProcess:hostRelay('sdk'),
    startLocalRelayProcess:localRelay('sdk')});
   stopped(allSignals());
   if(browserActive){browserNetwork=await components.prepareNetwork({allocation:a,binding:b,kind:'browser',
    routes:[{name:'browser-http',localPort:proxyPort,targetPort:proxyPort}],
+   hostRelayUid:native.hostRelay.browser.uid,hostRelayGid:native.hostRelay.browser.gid,
+   privateInterfaceName:network.privateInterfaceName,startHostRelayProcess:hostRelay('browser'),
    startLocalRelayProcess:localRelay('browser')});stopped(allSignals());
    browserObserver=components.createBrowserObserver({allocation:a,binding:b,profile:paths.profile});}
   hostObserver=components.createHostObserver({allocation:a,binding:b,hostIdentity:i,profile:paths.profile,
@@ -232,7 +285,7 @@ export async function prepareGuestHostRun({allocation,binding,hostIdentity,cwd,d
    sdkLaunchGate,onBrowserPrepared:({leaderPid})=>{if(!browserObserver)fail('HOST_BROWSER_NOT_ADMITTED');
     return armBrowserAfterWorkspaceReadback({allocation:a,binding:b,hostIdentity:i,cwd,paths,
      browserUid:native.browser.uid,browserGid:native.browser.gid,
-     sdkUid:native.sdk.uid,sdkGid:native.sdk.gid,leaderPid,browserObserver});},signal:allSignals()};
+     sdkUid:native.sdk.uid,sdkGid:native.sdk.gid,leaderPid,browserObserver,preparedWorkspace});},signal:allSignals()};
   const validatePinnedSdkDescriptor=descriptor=>{
    const admitted=native.validateSdkDescriptor(descriptor);
    if(canonicalSha256(admitted)!==canonicalSha256(descriptor))fail('HOST_MODEL_DESCRIPTOR_REFUSED');

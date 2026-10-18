@@ -47,7 +47,7 @@ export function createProxyWebGuard({allocation,binding,eniName,proxyUid,relayUi
  const expected=Object.freeze([{table},{chain},...rules]);
  const commands=Object.freeze({nftables:[{create:{table}},{add:{chain}},...rules.map(x=>({add:x}))]});
  const cgroupPath=`/meri/hosts/${a.hostId}-${a.generation}/${canonicalSha256(b)}/browser-proxy`;
- const relayCgroupPath=`/meri/hosts/${a.hostId}-${a.generation}/${canonicalSha256(b)}/host-relays`;
+ const relayCgroupPath=`/meri/hosts/${a.hostId}-${a.generation}/${canonicalSha256(b)}/host-relay-browser`;
  return Object.freeze({schema:PROXY_WEB_GUARD_SCHEMA,tableName,eniName,proxyUid,relayUid,metadataUid,dnsAddress,
   cgroupPath,relayCgroupPath,allocationSha256:canonicalSha256(a),bindingSha256:canonicalSha256(b),commands,expected});
 }

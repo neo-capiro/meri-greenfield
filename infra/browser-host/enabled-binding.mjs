@@ -5,7 +5,7 @@ import {HOST_ACCOUNT,HOST_REGION,validateHostProposalBinding} from './binding.mj
 import {launchDeadlinePolicy} from './launch-deadline-policy.mjs';
 import {closedHostStackPolicy} from './stack-update-policy.mjs';
 
-export const WATCHDOG_INPUT_SCHEMA='meri-d005-host-watchdog-input/1';
+export const WATCHDOG_INPUT_SCHEMA='meri-d005-host-watchdog-input/2';
 export const REVIEW_DIGEST_ZERO='0'.repeat(64);
 export const HOST_CEILING_MS=900_000;
 const SHA=/^[0-9a-f]{64}$/u;
@@ -37,7 +37,7 @@ export function validateEnabledHostInput(input){
  const proposal=validateHostProposalBinding(top.proposal);
  const n=fields(top.privateNetwork,['mode','ecrApiSecurityGroupId','ecrDockerSecurityGroupId','logsSecurityGroupId','s3GatewayPrefixListId']);
  const e=fields(top.encryption,['rootKmsKeyArn','logsKmsKeyArn']);
- const b=fields(top.bootstrap,['userDataBase64','nativeHelperSha256']);
+ const b=fields(top.bootstrap,['userDataBase64','nativeHelperSha256','nativeHostRelayHelperSha256']);
  const w=fields(top.watchdog,['serviceTokenArn','providerCodeSha256','stateMachineVersionArn','definitionSha256','qualificationEvidenceSha256','executionArn','originalT0Ms']);
  const g=fields(top.launchGuard,['serviceRoleArn','policySha256','stackPolicySha256']);
  if(n.mode!=='closed-qualification'||![n.ecrApiSecurityGroupId,n.ecrDockerSecurityGroupId,n.logsSecurityGroupId].every(x=>typeof x==='string'&&x.startsWith('sg-')&&ID.test(x))||
@@ -45,7 +45,9 @@ export function validateEnabledHostInput(input){
  if(new Set([proposal.network.controlSecurityGroupId,n.ecrApiSecurityGroupId,n.ecrDockerSecurityGroupId,n.logsSecurityGroupId]).size!==4)fail();
  if(![e.rootKmsKeyArn,e.logsKmsKeyArn].every(x=>typeof x==='string'&&KMS.test(x)))fail();
  if(typeof b.userDataBase64!=='string'||b.userDataBase64.length>22_000||!/^[A-Za-z0-9+/]+={0,2}$/u.test(b.userDataBase64)||
-    typeof b.nativeHelperSha256!=='string'||!SHA.test(b.nativeHelperSha256))fail();
+    typeof b.nativeHelperSha256!=='string'||!SHA.test(b.nativeHelperSha256)||
+    typeof b.nativeHostRelayHelperSha256!=='string'||!SHA.test(b.nativeHostRelayHelperSha256)||
+    b.nativeHostRelayHelperSha256===b.nativeHelperSha256)fail();
  const raw=Buffer.from(b.userDataBase64,'base64');
  if(raw.length===0||raw.length>16_384||raw.toString('base64')!==b.userDataBase64||sha256(raw)!==proposal.source.bootstrapSha256)fail();
  const match=typeof w.stateMachineVersionArn==='string'&&MACHINE.exec(w.stateMachineVersionArn);
@@ -72,6 +74,7 @@ export function expectedWatchdogInput(b,templateSha256){
  return Object.freeze({schema:WATCHDOG_INPUT_SCHEMA,hostId:a.hostId,generation:a.generation,
   allocationSha256:b.allocationSha256,sourceCommit:s.sourceCommit,imageUri:s.imageUri,
   imageConfigSha256:s.imageConfigSha256,bootstrapSha256:s.bootstrapSha256,
-  nativeHelperSha256:b.bootstrap.nativeHelperSha256,templateSha256,
+  nativeHelperSha256:b.bootstrap.nativeHelperSha256,
+  nativeHostRelayHelperSha256:b.bootstrap.nativeHostRelayHelperSha256,templateSha256,
   originalT0Ms:w.originalT0Ms,deadlineMs:a.leaseDeadlineMs});
 }

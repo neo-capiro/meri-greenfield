@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {compileEnabledBrowserHostTemplate,computeEnabledTemplateReviewSha256} from './enabled-template.mjs';
-import {canonicalJson,WATCHDOG_INPUT_SCHEMA} from './enabled-binding.mjs';
+import {canonicalJson,expectedWatchdogInput,validateEnabledHostInput,WATCHDOG_INPUT_SCHEMA} from './enabled-binding.mjs';
 import {LAUNCH_DENY_POLICY_NAME,launchDeadlinePolicy} from './launch-deadline-policy.mjs';
 import {closedHostStackPolicy} from './stack-update-policy.mjs';
 import {evaluateWatchdogPreflight,handleWatchdogPreflight} from './watchdog-preflight-provider.mjs';
@@ -23,7 +23,8 @@ const fixture=()=>({
   logsSecurityGroupId:ids.logs,s3GatewayPrefixListId:'pl-0123456789abcdef0'},
  encryption:{rootKmsKeyArn:'arn:aws:kms:us-east-1:967807252336:key/12e5d15a-46f8-4188-8052-5d35bc5d2a85',
   logsKmsKeyArn:'arn:aws:kms:us-east-1:967807252336:key/26b43f6a-e709-4f07-9a67-388a641d4b77'},
- bootstrap:{userDataBase64:bootstrap.toString('base64'),nativeHelperSha256:'f'.repeat(64)},
+ bootstrap:{userDataBase64:bootstrap.toString('base64'),nativeHelperSha256:'f'.repeat(64),
+  nativeHostRelayHelperSha256:'2'.repeat(64)},
  watchdog:{serviceTokenArn:'arn:aws:lambda:us-east-1:967807252336:function:MeriD005Preflight:3',providerCodeSha256:providerHash,
   stateMachineVersionArn:'arn:aws:states:us-east-1:967807252336:stateMachine:MeriD005Watchdog:7',
   definitionSha256:hash(definition),qualificationEvidenceSha256:'1'.repeat(64),
@@ -59,7 +60,8 @@ function preflight(){
  p.HostSecurityGroupId=ids.host;
  const expected={schema:WATCHDOG_INPUT_SCHEMA,hostId:p.HostId,generation:p.Generation,allocationSha256:p.AllocationSha256,
   sourceCommit:p.SourceCommit,imageUri:p.ImageUri,imageConfigSha256:p.ImageConfigSha256,
-  bootstrapSha256:p.BootstrapSha256,nativeHelperSha256:p.NativeHelperSha256,templateSha256:p.TemplateSha256,
+  bootstrapSha256:p.BootstrapSha256,nativeHelperSha256:p.NativeHelperSha256,
+  nativeHostRelayHelperSha256:p.NativeHostRelayHelperSha256,templateSha256:p.TemplateSha256,
   originalT0Ms:p.OriginalT0Ms,deadlineMs:p.DeadlineMs};
  const event={RequestType:'Create',RequestId:'request-one',StackId:'arn:aws:cloudformation:us-east-1:967807252336:stack/meri-host/1234',
   ResponseURL:'https://cloudformation-custom-resource-response-use1.s3.amazonaws.com/signed',ResourceType:'Custom::MeriWatchdogPreflight',
@@ -99,6 +101,12 @@ test('enabled source has one bounded private host and a real preflight dependenc
  assert.equal(t.Resources.WatchdogPreflight.Type,'Custom::MeriWatchdogPreflight');
  assert.equal(computeEnabledTemplateReviewSha256(t),t.Metadata.templateReviewSha256);
  assert.equal(t.Resources.WatchdogPreflight.Properties.TemplateSha256,t.Metadata.templateReviewSha256);
+ assert.equal(WATCHDOG_INPUT_SCHEMA,'meri-d005-host-watchdog-input/2');
+ assert.equal(t.Resources.WatchdogPreflight.Properties.Schema,'meri-d005-watchdog-preflight/2');
+ assert.equal(t.Resources.WatchdogPreflight.Properties.NativeHostRelayHelperSha256,fixture().bootstrap.nativeHostRelayHelperSha256);
+ assert.equal(t.Metadata.nativeHostRelayHelperSha256,fixture().bootstrap.nativeHostRelayHelperSha256);
+ assert.equal(expectedWatchdogInput(validateEnabledHostInput(fixture()),t.Metadata.templateReviewSha256).nativeHostRelayHelperSha256,
+  t.Resources.WatchdogPreflight.Properties.NativeHostRelayHelperSha256);
  const h=t.Resources.HostInstance.Properties;
  assert.equal(h.UserData,bootstrap.toString('base64'));
  assert.equal(h.CreditSpecification.CPUCredits,'standard');
@@ -124,6 +132,9 @@ test('input refuses implicit web mode, missing pins, mutable image and larger sp
   x=>{x.proposal.source.imageUri=x.proposal.source.imageUri.replace('@sha256:',':latest-');},
   x=>{x.proposal.host.instanceType='m5.4xlarge';},x=>{x.proposal.host.rootVolumeGiB=31;},
   x=>{x.proposal.allocation.leaseDeadlineMs+=1;},x=>{x.bootstrap.userDataBase64=Buffer.from('another script').toString('base64');},
+  x=>{delete x.bootstrap.nativeHostRelayHelperSha256;},
+  x=>{x.bootstrap.nativeHostRelayHelperSha256='A'.repeat(64);},
+  x=>{x.bootstrap.nativeHostRelayHelperSha256=x.bootstrap.nativeHelperSha256;},
   x=>{x.privateNetwork.ecrApiSecurityGroupId=ids.control;},
   x=>{x.launchGuard.policySha256='0'.repeat(64);},
   x=>{x.launchGuard.stackPolicySha256='0'.repeat(64);},
@@ -143,6 +154,9 @@ test('preflight refuses stale/changed source or a network direct route, then sen
   f=>{f.state.now=t0+120001;},
   f=>{f.state.execution.status='SUCCEEDED';},
   f=>{f.state.execution.input=canonicalJson({...JSON.parse(f.state.execution.input),templateSha256:'f'.repeat(64)});},
+  f=>{f.state.execution.input=canonicalJson({...JSON.parse(f.state.execution.input),nativeHostRelayHelperSha256:'3'.repeat(64)});},
+  f=>{delete f.event.ResourceProperties.NativeHostRelayHelperSha256;},
+  f=>{f.event.ResourceProperties.NativeHostRelayHelperSha256='3'.repeat(64);},
   f=>{f.state.machine.definition='{}';},
   f=>{f.state.stackSummary.Stacks[0].RoleARN='arn:aws:iam::967807252336:role/Other';},
   f=>{f.state.rolePolicy.PolicyDocument=encodeURIComponent(JSON.stringify({...launchDeadlinePolicy(f.p.DeadlineMs),Statement:[]}));},

@@ -1,5 +1,6 @@
 #define _GNU_SOURCE
 #include <errno.h>
+#include <dirent.h>
 #include <fcntl.h>
 #include <grp.h>
 #include <linux/capability.h>
@@ -17,6 +18,7 @@
 #include <sys/socket.h>
 #include <sys/stat.h>
 #include <sys/statfs.h>
+#include <sys/statvfs.h>
 #include <sys/syscall.h>
 #include <sys/types.h>
 #include <sys/un.h>
@@ -163,6 +165,99 @@ static void hide_cgroupfs(void) {
      mount("tmpfs","/sys/fs/cgroup","tmpfs",MS_NOSUID|MS_NODEV|MS_NOEXEC,"size=4096,mode=000")||
      mount(NULL,"/sys/fs/cgroup",NULL,MS_REMOUNT|MS_RDONLY|MS_NOSUID|MS_NODEV|MS_NOEXEC,NULL)) die();
 }
+static void browser_directory(int fd,uid_t uid,gid_t gid,mode_t bits) {
+  struct stat st;
+  if(fd<0||fstat(fd,&st)||!S_ISDIR(st.st_mode)||st.st_uid!=uid||st.st_gid!=gid||
+     (st.st_mode&07777)!=bits||st.st_nlink<1) die();
+}
+static void browser_ancestor(int fd) {
+  struct stat st;
+  if(fd<0||fstat(fd,&st)||!S_ISDIR(st.st_mode)||st.st_uid!=0||
+     (st.st_mode&0022)||(st.st_mode&0001)==0) die();
+}
+/* Pin each component rather than trusting O_NOFOLLOW on just the final cwd. Every ancestor must be owned by root,
+ * not writable by a tool UID, and searchable by the browser UID. The last component is the conversation UUID. */
+static int browser_parent(const char *cwd,char leaf[37]) {
+  int parent=open("/",O_PATH|O_DIRECTORY|O_NOFOLLOW|O_CLOEXEC);browser_ancestor(parent);
+  const char *component=cwd+1;
+  while(1) {
+    const char *slash=strchr(component,'/');
+    size_t length=slash?(size_t)(slash-component):strlen(component);
+    if(length<1||length>255) die();
+    char name[256];memcpy(name,component,length);name[length]='\0';
+    if(!slash) {if(!valid_uuid(name)) die();strcpy(leaf,name);return parent;}
+    int next=openat(parent,name,O_PATH|O_DIRECTORY|O_NOFOLLOW|O_CLOEXEC);
+    browser_ancestor(next);close(parent);parent=next;component=slash+1;
+  }
+}
+static void only_browser_entry(int fd) {
+  int duplicate=fcntl(fd,F_DUPFD_CLOEXEC,3);if(duplicate<0) die();
+  DIR *entries=fdopendir(duplicate);if(!entries) die();
+  int found=0;struct dirent *entry;
+  for(;;) {
+    errno=0;entry=readdir(entries);if(!entry) break;
+    if(!strcmp(entry->d_name,".")||!strcmp(entry->d_name,"..")) continue;
+    if(strcmp(entry->d_name,".browser")||found++) die();
+  }
+  if(errno||found!=1||closedir(entries)) die();
+}
+static void browser_mount_flags(int fd) {
+  struct statvfs flags;
+  if(fstatvfs(fd,&flags)||!(flags.f_flag&ST_NOSUID)||!(flags.f_flag&ST_NODEV)||
+     !(flags.f_flag&ST_NOEXEC)||flags.f_flag&ST_RDONLY) die();
+}
+/* Browser launch alone receives an empty private cwd view. The original browser-owned state directory is pinned
+ * before the overlay and bind-mounted back through its file descriptor; SDK files under cwd remain hidden. */
+static void browser_workspace_view(spec *s) {
+  const char suffix[]="/.browser/home";
+  size_t length=strlen(s->cwd),suffix_length=sizeof(suffix)-1;
+  if(strcmp(s->cwd,s->home)||length<=suffix_length+1||
+     strcmp(s->cwd+length-suffix_length,suffix)) die();
+  char cwd[4096];size_t cwd_length=length-suffix_length;
+  memcpy(cwd,s->cwd,cwd_length);cwd[cwd_length]='\0';
+  char leaf[37];int parent=browser_parent(cwd,leaf);
+  uid_t browser_uid=(uid_t)number(s->uid,65533);
+  gid_t browser_gid=(gid_t)number(s->gid,65533);
+  int original=openat(parent,leaf,O_PATH|O_DIRECTORY|O_NOFOLLOW|O_CLOEXEC);
+  struct stat original_stat;
+  if(original<0||fstat(original,&original_stat)||!S_ISDIR(original_stat.st_mode)||
+     original_stat.st_uid!=0||original_stat.st_gid<1000||original_stat.st_gid>65533||
+     original_stat.st_gid==browser_gid||(original_stat.st_mode&07777)!=01770) die();
+  int source=openat(original,".browser",O_PATH|O_DIRECTORY|O_NOFOLLOW|O_CLOEXEC);
+  browser_directory(source,browser_uid,browser_gid,0700);
+  struct stat source_stat;
+  if(fstat(source,&source_stat)||source_stat.st_dev!=original_stat.st_dev) die();
+  for(size_t i=0;i<3;i++) {
+    const char *name=(const char *[3]){"profile","output","home"}[i];
+    int child=openat(source,name,O_PATH|O_DIRECTORY|O_NOFOLLOW|O_CLOEXEC);
+    browser_directory(child,browser_uid,browser_gid,0700);close(child);
+  }
+  /* The parent FD is immutable to every tool UID. Relative mount targets stay bound to that pinned directory. */
+  if(fchdir(parent)) die();
+  char options[96];int n=snprintf(options,sizeof(options),"size=1048576,mode=0700,uid=%u,gid=%u",
+    (unsigned)browser_uid,(unsigned)browser_gid);
+  if(n<1||(size_t)n>=sizeof(options)||
+     mount("tmpfs",leaf,"tmpfs",MS_NOSUID|MS_NODEV|MS_NOEXEC,options)) die();
+  int overlay=openat(parent,leaf,O_RDONLY|O_DIRECTORY|O_NOFOLLOW|O_CLOEXEC);
+  browser_directory(overlay,browser_uid,browser_gid,0700);
+  struct statfs filesystem;if(fstatfs(overlay,&filesystem)||filesystem.f_type!=TMPFS_MAGIC) die();
+  browser_mount_flags(overlay);
+  if(mkdirat(overlay,".browser",0700)) die();
+  char destination[64],pinned_source[64];
+  n=snprintf(destination,sizeof(destination),"%s/.browser",leaf);
+  if(n<1||(size_t)n>=sizeof(destination)) die();
+  n=snprintf(pinned_source,sizeof(pinned_source),"/proc/self/fd/%d",source);
+  if(n<1||(size_t)n>=sizeof(pinned_source)||
+     mount(pinned_source,destination,NULL,MS_BIND,NULL)||
+     mount(NULL,destination,NULL,MS_REMOUNT|MS_BIND|MS_NOSUID|MS_NODEV|MS_NOEXEC,NULL)) die();
+  int mounted=openat(overlay,".browser",O_RDONLY|O_DIRECTORY|O_NOFOLLOW|O_CLOEXEC);
+  struct stat mounted_stat;
+  browser_directory(mounted,browser_uid,browser_gid,0700);
+  if(fstat(mounted,&mounted_stat)||mounted_stat.st_dev!=source_stat.st_dev||
+     mounted_stat.st_ino!=source_stat.st_ino) die();
+  browser_mount_flags(mounted);only_browser_entry(overlay);
+  close(mounted);close(overlay);close(source);close(original);close(parent);
+}
 static void drop_privilege(spec *s) {
   unsigned long uid=number(s->uid,65533),gid=number(s->gid,65533);
   int dir=open(s->cwd,O_PATH|O_DIRECTORY|O_NOFOLLOW|O_CLOEXEC);if(dir<0||fchdir(dir)) die();close(dir);
@@ -176,7 +271,9 @@ static void drop_privilege(spec *s) {
 }
 static void confined_exec(spec *s,int ready,int gate) {
   pid_t parent=getppid();
-  attach_cgroup(s);enter_namespace(s);hide_cgroupfs();drop_privilege(s);
+  attach_cgroup(s);enter_namespace(s);hide_cgroupfs();
+  if(!strcmp(s->kind,"browser")) browser_workspace_view(s);
+  drop_privilege(s);
   /* Linux clears PDEATHSIG when effective credentials change. Arm only after the final UID/GID drop. */
   if(prctl(PR_SET_PDEATHSIG,SIGKILL)||getppid()!=parent) die();
   if(write_all(ready,"R\n",2)) die();
