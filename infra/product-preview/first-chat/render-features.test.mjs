@@ -354,3 +354,11 @@ test('intents.execution and routines.core render the Core origin, the reads serv
  await assert.rejects(render(withFeatures({sourceEnabled:true,reads:READS,intents:{enabled:true,execution:{issuer:'x',keys:[{kty:'RSA',kid:'k'}]}}}),{featureSecrets:featureSecrets()}),/compileExecutionTrust/u);
  await assert.rejects(render(withFeatures({sourceEnabled:true,reads:READS,routines:{enabled:true,core:{cancellationProof:{...core.cancellationProof,kid:core.unattendedGrant.kid},unattendedGrant:core.unattendedGrant}}}),{featureSecrets:featureSecrets()}),/routines-configuration/u);
 });
+
+test('reads.delegation renders the control toggle under reads and refuses when reads are disabled',async()=>{
+ await baseline();
+ const rendered=await render(withFeatures({sourceEnabled:true,reads:{...READS,delegation:{enabled:true}}}),{featureSecrets:featureSecrets()});
+ assert.deepEqual(config(rendered,'control').reads.delegation,{enabled:true});
+ await assert.rejects(render(withFeatures({reads:{enabled:false,delegation:{enabled:true}}})),/RENDER_INPUT_REFUSED/u);
+ await assert.rejects(render(withFeatures({sourceEnabled:true,reads:{...READS,delegation:{enabled:'yes'}}}),{featureSecrets:featureSecrets()}),/RENDER_INPUT_REFUSED/u);
+});

@@ -39,6 +39,7 @@
  *   retention?: {enabled: true},                              // artifacts tenantId (= core tenantId) and download links need it
  *   artifacts?: {enabled:false} | {enabled:true, region:'us-east-1', bucket, prefix, expectedBucketOwner:'967807252336', kmsKeyId (key ARN), authority?: {enabled:true} (needs reads)},
  *   memory?: {enabled: bool} (enabled needs reads: it reuses the Core service secret file),
+ *   reads.delegation?: {enabled: bool} (option B run-bound Core read delegation; renders reads.delegation),
  *   intents?: {enabled, execution?: {issuer, keys: [Ed25519 public JWK with kid]}} (execution needs reads),
  *   routines?: {enabled, core?: {cancellationProof: {issuer, kid, publicKey}, unattendedGrant?: {issuer, kid, publicKey}}} (core needs reads),
  *   downloadLinks?: {enabled:false} | {enabled:true, ttlMs?},  // signing key generated per render -> /run/meri/download-link.key
@@ -238,7 +239,7 @@ export function parseFeatures(raw,{secrets={},checkpoint}={}){
   out.capabilityPlatform=structuredClone(f.capabilityPlatform);
  }
  if(f.reads!==undefined){
-  const fields=['serviceSecretArn','readModeServiceSecretArn','defaultCongress','approvedReads'],r=record(f.reads,'features.reads',['enabled'],fields);
+  const fields=['serviceSecretArn','readModeServiceSecretArn','defaultCongress','approvedReads','delegation'],r=record(f.reads,'features.reads',['enabled'],fields);
   if(!bool(r.enabled,'features.reads.enabled')){if(fields.some(k=>r[k]!==undefined))fail('RENDER_INPUT_REFUSED','features.reads: disabled reads name no secret, congress or approved reads');out.reads={enabled:false};}
   else{
    if(out.sourceEnabled!==true)fail('RENDER_INPUT_REFUSED','features.reads needs features.sourceEnabled true (G1 gates reads)');
@@ -250,8 +251,10 @@ export function parseFeatures(raw,{secrets={},checkpoint}={}){
    if(r.readModeServiceSecretArn!==undefined&&r.readModeServiceSecretArn===r.serviceSecretArn)fail('RENDER_INPUT_REFUSED','features.reads secret ARNs must be distinct');
    if(r.defaultCongress!==undefined&&(!Number.isSafeInteger(r.defaultCongress)||r.defaultCongress<1||r.defaultCongress>1000))fail('RENDER_INPUT_REFUSED','features.reads.defaultCongress must be 1..1000');
    let approvedReads;if(r.approvedReads!==undefined)try{approvedReads=structuredClone(assertNativeReadConfiguration(r.approvedReads));}catch{fail('RENDER_INPUT_REFUSED','features.reads.approvedReads (runtime-0.2 assertNativeReadConfiguration)');}
+   // Option B (D016-A #4): the run-bound Core read delegation, rendered as a closed toggle under reads.
+   const delegation=r.delegation===undefined?undefined:{enabled:bool(record(r.delegation,'features.reads.delegation',['enabled']).enabled,'features.reads.delegation.enabled')};
    out.reads={enabled:true,serviceSecretArn:r.serviceSecretArn,...(r.readModeServiceSecretArn===undefined?{}:{readModeServiceSecretArn:r.readModeServiceSecretArn}),
-    ...(r.defaultCongress===undefined?{}:{defaultCongress:r.defaultCongress}),...(approvedReads===undefined?{}:{approvedReads})};
+    ...(r.defaultCongress===undefined?{}:{defaultCongress:r.defaultCongress}),...(approvedReads===undefined?{}:{approvedReads}),...(delegation===undefined?{}:{delegation})};
   }
  }
  if(f.memory!==undefined){const m=record(f.memory,'features.memory',['enabled']);out.memory={enabled:bool(m.enabled,'features.memory.enabled')};}
@@ -476,7 +479,7 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,ident
  if(features.memory!==undefined)featureKeys.memory=features.memory.enabled?{enabled:true,origin:k.coreOrigin,serviceSecretFile:PATHS.readsServiceSecret}:{enabled:false};
  if(features.reads!==undefined)featureKeys.reads=features.reads.enabled?{enabled:true,serviceSecretFile:PATHS.readsServiceSecret,
   ...(features.reads.readModeServiceSecretArn===undefined?{}:{readModeServiceSecretFile:PATHS.readsReadModeServiceSecret}),
-  ...(features.reads.defaultCongress===undefined?{}:{defaultCongress:features.reads.defaultCongress})}:{enabled:false};
+  ...(features.reads.defaultCongress===undefined?{}:{defaultCongress:features.reads.defaultCongress}),...(features.reads.delegation===undefined?{}:{delegation:features.reads.delegation})}:{enabled:false};
  const sourceEnabled=features.sourceEnabled===true;
 
  const authorization={tokenFile:TEMPORAL_IDENTITY.tokenFile,namespace:d.temporal.namespace,audience:d.temporal.audience,issuer:issuerOrigin+'/',refreshMs:5000,maxLifetimeMs:60000};
