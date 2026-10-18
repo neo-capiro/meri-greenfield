@@ -1,0 +1,59 @@
+TAP version 13
+# Subtest: all five roles render from throwaway PKI and pass every repository validator and material plan
+not ok 1 - all five roles render from throwaway PKI and pass every repository validator and material plan
+  ---
+  duration_ms: 117.0251
+  type: 'test'
+  location: 'C:\\Users\\Administrator\\Documents\\Codex\\2026-10-18\\task-2\\meri-control-ca-trust\\infra\\product-preview\\first-chat\\render-material.test.mjs:30:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    throwaway pki.py run
+    
+    1 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    Object.setup (file:///C:/Users/Administrator/Documents/Codex/2026-10-18/task-2/meri-control-ca-trust/infra/product-preview/first-chat/render-material.fixture.mjs:27:10)
+    async setup (file:///C:/Users/Administrator/Documents/Codex/2026-10-18/task-2/meri-control-ca-trust/infra/product-preview/first-chat/render-material.test.mjs:26:31)
+    async render (file:///C:/Users/Administrator/Documents/Codex/2026-10-18/task-2/meri-control-ca-trust/infra/product-preview/first-chat/render-material.test.mjs:27:39)
+    async TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-18/task-2/meri-control-ca-trust/infra/product-preview/first-chat/render-material.test.mjs:31:24)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: rendered configs and the synthesized task definitions agree: issuer and owner pins, worker CA trust, runner poststart
+not ok 2 - rendered configs and the synthesized task definitions agree: issuer and owner pins, worker CA trust, runner poststart
+  ---
+  duration_ms: 119.3625
+  type: 'test'
+  location: 'C:\\Users\\Administrator\\Documents\\Codex\\2026-10-18\\task-2\\meri-control-ca-trust\\infra\\product-preview\\first-chat\\stage3-bindings.test.mjs:89:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    throwaway pki.py run
+    
+    1 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    Object.setup (file:///C:/Users/Administrator/Documents/Codex/2026-10-18/task-2/meri-control-ca-trust/infra/product-preview/first-chat/render-material.fixture.mjs:27:10)
+    async setup (file:///C:/Users/Administrator/Documents/Codex/2026-10-18/task-2/meri-control-ca-trust/infra/product-preview/first-chat/stage3-bindings.test.mjs:31:15)
+    async TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-18/task-2/meri-control-ca-trust/infra/product-preview/first-chat/stage3-bindings.test.mjs:90:56)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1949.0944

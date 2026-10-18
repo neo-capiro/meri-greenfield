@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {synthesizeProductPreview} from './manifest.mjs';
+import {CONTROL_NODE_CA_FILE} from '../../apps/runtime/control-ca-bundle.mjs';
 import {canonicalSha256} from '../../packages/contracts/validate.mjs';
 import {createHash} from 'node:crypto';
 
@@ -49,7 +50,7 @@ test('offline source has only two stopped services and three immutable role task
   assert.equal(container.Secrets,undefined);
   if(role!=='runner')assert.deepEqual(container.DependsOn,[{ContainerName:'material-init',Condition:'SUCCESS'}]);
   if(role==='control')assert.deepEqual(container.PortMappings.map(x=>x.ContainerPort),[8080,8082]);
-  if(role==='control'||role==='temporal-worker')assert.deepEqual(container.Environment,[{Name:'MERI_PRODUCT_PREVIEW_REQUIRED',Value:'1'}]);
+  if(role==='control'||role==='temporal-worker')assert.deepEqual(container.Environment,[{Name:'MERI_PRODUCT_PREVIEW_REQUIRED',Value:'1'},...(role==='control'?[{Name:'NODE_EXTRA_CA_CERTS',Value:CONTROL_NODE_CA_FILE}]:[])]);
  }
  assert.equal(byFamily(tasks,'control').TaskRoleArn,input.controlTaskRoleArn);
  assert.equal(byFamily(tasks,'temporal-worker').TaskRoleArn,undefined);
@@ -143,12 +144,12 @@ test('closed versioned bundle binding emits one-shot nonroot init and task-local
   assert.deepEqual(task.Volumes.map(v=>v.Name),['workspace','tmp','material']);
   assert.equal(init.Name,'material-init');assert.equal(init.Essential,false);assert.equal(init.User,'1000:1000');
   assert.equal(init.ReadonlyRootFilesystem,true);assert.deepEqual(init.LinuxParameters.Capabilities.Drop,['ALL']);
-  assert.deepEqual(init.EntryPoint,['node','apps/runtime/material-init-cli.mjs']);assert.deepEqual(init.Command,['write']);
+  assert.deepEqual(init.EntryPoint,['node','apps/runtime/material-init-cli.mjs']);assert.deepEqual(init.Command,role==='control'?['write','--control-node-ca']:['write']);
   assert.deepEqual(init.Environment,[{Name:'MERI_STATIC_MATERIAL_EXPECTED',Value:JSON.stringify(input.materialDelivery[role].expected)}]);
   assert.deepEqual(init.Secrets,[{Name:'MERI_STATIC_MATERIAL_BUNDLE',ValueFrom:input.materialDelivery[role].valueFrom}]);
-  assert.deepEqual(init.MountPoints,[{SourceVolume:'material',ContainerPath:'/run/meri',ReadOnly:false}]);
+  assert.deepEqual(init.MountPoints,[{SourceVolume:'material',ContainerPath:'/run/meri',ReadOnly:false},...(role==='control'?[{SourceVolume:'tmp',ContainerPath:'/tmp',ReadOnly:false}]:[])]);
   assert.deepEqual(app.DependsOn,[{ContainerName:'material-init',Condition:'SUCCESS'}]);
-  assert.equal(app.Secrets,undefined);assert.deepEqual(app.Environment,[{Name:'MERI_PRODUCT_PREVIEW_REQUIRED',Value:'1'}]);
+  assert.equal(app.Secrets,undefined);assert.deepEqual(app.Environment,[{Name:'MERI_PRODUCT_PREVIEW_REQUIRED',Value:'1'},...(role==='control'?[{Name:'NODE_EXTRA_CA_CERTS',Value:CONTROL_NODE_CA_FILE}]:[])]);
   assert.deepEqual(app.MountPoints.find(m=>m.SourceVolume==='material'),{SourceVolume:'material',ContainerPath:'/run/meri',ReadOnly:true});
  }
  const runner=byFamily(tasks,'runner');assert.equal(runner.ContainerDefinitions.length,1);

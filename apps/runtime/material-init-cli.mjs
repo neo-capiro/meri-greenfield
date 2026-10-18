@@ -1,15 +1,17 @@
 /** Packaged one-shot init entrypoint. Secrets are accepted only in the init container's fixed environment slot. */
 import {resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
-import {materializeStaticProductMaterial,parseStaticProductMaterialExpected} from './material-init.mjs';
+import {materializeStaticProductMaterial,parseStaticProductMaterialExpected,releaseStaticProductMaterial} from './material-init.mjs';
+import {materializeControlCaBundle} from './control-ca-bundle.mjs';
 
 export const materialInitEnvironment=Object.freeze({expected:'MERI_STATIC_MATERIAL_EXPECTED',bundle:'MERI_STATIC_MATERIAL_BUNDLE'});
-const usage='Usage: node apps/runtime/material-init-cli.mjs write | --help\nExit codes: 0 success/help; 64 arguments; 78 missing/refused material; 1 cleanup/internal failure.\n';
+const usage='Usage: node apps/runtime/material-init-cli.mjs write [--control-node-ca] | --help\nExit codes: 0 success/help; 64 arguments; 78 missing/refused material; 1 cleanup/internal failure.\n';
 
 /** Explicit environment dependency; importing this module neither reads the environment nor writes files. */
 export async function runMaterialInitCli(argv,{environment=process.env,writeOut=text=>process.stdout.write(text),writeError=text=>process.stderr.write(text)}={}){
  if(argv.length===0||argv.length===1&&['--help','-h'].includes(argv[0])){writeOut(usage);return 0;}
- if(argv.length!==1||argv[0]!=='write'){writeError(usage);return 64;}
+ const controlCa=argv.length===2&&argv[1]==='--control-node-ca';
+ if(argv[0]!=='write'||!(argv.length===1||controlCa)){writeError(usage);return 64;}
  let expectedText,bundleText;
  try{
   expectedText=environment[materialInitEnvironment.expected];bundleText=environment[materialInitEnvironment.bundle];
@@ -17,12 +19,15 @@ export async function runMaterialInitCli(argv,{environment=process.env,writeOut=
   delete environment[materialInitEnvironment.bundle];
   if(typeof expectedText!=='string'||Buffer.byteLength(expectedText,'utf8')>8192||typeof bundleText!=='string'||Buffer.byteLength(bundleText,'utf8')>65536)throw Error();
   const expected=parseStaticProductMaterialExpected(JSON.parse(expectedText));
+  if(controlCa&&expected.role!=='control')throw Error();
   let consumed=false;
   const delivery={async fetch({signal}){
    signal.throwIfAborted();if(consumed)throw Error();consumed=true;
    const text=bundleText;bundleText=undefined;return JSON.parse(text);
   }};
   const result=await materializeStaticProductMaterial({expected,delivery});
+  if(controlCa)try{await materializeControlCaBundle({configurationPath:result.configurationPath,expected});}
+  catch(error){await releaseStaticProductMaterial(result.receipt);throw error;}
   writeOut(JSON.stringify({ready:true,role:result.receipt.role,fileCount:result.receipt.fileCount})+'\n');return 0;
  }catch(error){
   const code=typeof error?.code==='string'&&/^STATIC_INIT_[A-Z_]+$/u.test(error.code)?error.code:'STATIC_INIT_REFUSED';
