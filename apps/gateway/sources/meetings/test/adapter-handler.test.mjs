@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import canonicalize from 'canonicalize';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {createMeetingHttpAdapter} from '../http-adapter.mjs';
 import {createMeetingReadHandler} from '../handler.mjs';
@@ -14,6 +15,9 @@ function setup(operation=operations.read,request={clientId},fixtureOptions={}) {
  return {...f,wire,credentialRequests,state,config,create};
 }
 const exact={clientId,meetingId,sourceKind:'note',sourceId:noteId};
+const canonicalEndpoints=Object.freeze(Object.fromEntries(Object.values(operations).map(operation=>
+ [operation.id,`https://meetings.example.invalid/api/clio/tools/${operation.id}`])));
+const signedCall=f=>({...f.call,invocationId:'synthetic_meeting_call_1'});
 for(const [label,operation,request,kind] of [
  ['personal calendar',operations.upcoming,{},'meeting-upcoming-page'],
  ['client calendar',operations.upcoming,{clientId,withinDays:7,limit:1},'meeting-upcoming-page'],
@@ -27,10 +31,114 @@ for(const [label,operation,request,kind] of [
  assert.deepEqual(result,f.page);assert.equal(result.kind,kind);
  assert.deepEqual(JSON.parse(f.wire[0].options.body),{input:f.input,metadata:f.metadata});
  assert.equal(f.wire[0].url,endpoints[operation.id]);assert.equal(f.wire[0].options.redirect,'error');assert.equal(f.wire[0].options.credentials,'omit');
+ assert.equal(f.wire[0].options.headers['x-meri-deadline-at'],String(NOW+500));
+ assert.equal(f.wire[0].options.headers['x-meri-read-correlation'],undefined);
  const credential=f.credentialRequests[0];assert.deepEqual(credential.binding,f.authority.binding);assert.deepEqual(credential.subject,f.authority.subject);
  assert.equal(credential.argumentsSha256,canonicalSha256(f.input));assert.equal(credential.requestSha256,canonicalSha256({input:f.input,metadata:f.metadata}));
+ assert.deepEqual(credential.target,{method:'POST',path:`/api/clio/tools/${operation.id}`,bodySha256:sha(f.wire[0].options.body)});
  assert.ok(!f.wire[0].options.body.includes('bearerToken'));assert.ok(!f.wire[0].options.body.includes('writerFence'));
  assert.equal(result.evidenceReady,false);assert.equal(result.negativeAssertion.kind,'none');assert.equal(result.coverage.enumeration,'unknown');
+});
+for(const operation of Object.values(operations))test(`${operation.id}: CapiroMeriRead token binds canonical path and exact POST bytes`,async()=>{
+ const request=operation.id===operations.upcoming.id?{}:{clientId},f=setup(operation,request);let issuedTarget,requestedDigest;
+ const result=JSON.parse(await f.create({endpoints:canonicalEndpoints,getCredentials:async r=>{
+  issuedTarget=structuredClone(r.target);requestedDigest=r.correlationSha256;
+  return {...credentialReceipt(r),authorizationScheme:'CapiroMeriRead'};
+ }})(signedCall(f)));
+ assert.deepEqual(result,f.page);assert.equal(new URL(f.wire[0].url).pathname,`/api/clio/tools/${operation.id}`);
+ assert.equal(f.wire[0].options.headers.authorization,'CapiroMeriRead SYNTHETIC_BEARER');
+ assert.equal(f.wire[0].options.headers['x-meri-deadline-at'],String(NOW+500));
+ assert.deepEqual(issuedTarget,{method:'POST',path:`/api/clio/tools/${operation.id}`,bodySha256:sha(f.wire[0].options.body)});
+ const header=f.wire[0].options.headers['x-meri-read-correlation'],bytes=Buffer.from(header,'base64url');
+ assert.equal(header,bytes.toString('base64url'));assert.ok(bytes.length<=8192);
+ assert.equal(bytes.toString('utf8'),canonicalize({binding:f.authority.binding,subject:f.authority.subject,
+  policyRevision:f.authority.policyRevision,normalizationContext:null}));
+ assert.deepEqual(Object.keys(JSON.parse(bytes)).sort(),['binding','normalizationContext','policyRevision','subject']);
+ assert.equal(requestedDigest,sha(bytes));
+});
+
+test('meetings refuse missing or substituted signed correlation digest before Fetch',async()=>{
+ for(const echo of [undefined,'0'.repeat(64)]){
+  const f=setup();await assert.rejects(f.create({endpoints:canonicalEndpoints,getCredentials:async r=>{
+   const receipt=credentialReceipt(r);
+   if(echo===undefined)delete receipt.correlationSha256;else receipt.correlationSha256=echo;
+   return {...receipt,authorizationScheme:'CapiroMeriRead'};
+  }})(signedCall(f)),/ACCESS_DENIED/);
+  assert.equal(f.wire.length,0);
+ }
+});
+
+test('meetings refuse a signed credential without the target echo before Fetch',async()=>{
+ const f=setup();await assert.rejects(f.create({endpoints:canonicalEndpoints,getCredentials:async r=>{
+  const receipt=credentialReceipt(r);delete receipt.target;
+  return {...receipt,authorizationScheme:'CapiroMeriRead'};
+ }})(signedCall(f)),/ACCESS_DENIED/);
+ assert.equal(f.wire.length,0);
+});
+
+test('meetings refuse a signed credential without a trusted invocation ID before Fetch',async()=>{
+ const f=setup();await assert.rejects(f.create({endpoints:canonicalEndpoints,getCredentials:async r=>
+  ({...credentialReceipt(r),authorizationScheme:'CapiroMeriRead'})})(f.call),/ACCESS_DENIED/);
+ assert.equal(f.wire.length,0);
+});
+
+test('meetings refuse Bearer fallback on a canonical path or reserved invocation before Fetch',async()=>{
+ for(const [configured,reserved] of [[canonicalEndpoints,false],[endpoints,true]]){
+  for(const explicit of [false,true]){
+   const f=setup(),call=reserved?signedCall(f):f.call;
+   await assert.rejects(f.create({endpoints:configured,getCredentials:async r=>({
+    ...credentialReceipt(r),...(explicit?{authorizationScheme:'Bearer'}:{}),
+   })})(call),/ACCESS_DENIED/);
+   assert.equal(f.wire.length,0);
+  }
+ }
+});
+
+test('meetings refuse a signed credential expiring after the trusted deadline before Fetch',async()=>{
+ const f=setup();await assert.rejects(f.create({endpoints:canonicalEndpoints,getCredentials:async r=>({
+  ...credentialReceipt(r),authorizationScheme:'CapiroMeriRead',expiresAtMs:f.authority.deadlineMs+1,
+ })})(signedCall(f)),/ACCESS_DENIED/);
+ assert.equal(f.wire.length,0);
+});
+
+test('meetings refuse a signed correlation larger than the ingress cap before Fetch',async()=>{
+ const f=setup(),authority=structuredClone(f.authority),policy=authority.policyRevision;
+ const extra=Array.from({length:80},(_,index)=>({tenantId:authority.binding.tenantId,kind:'document',
+  resourceId:`synthetic-document-${index}-${'x'.repeat(120)}`,policyRevision:policy}));
+ authority.subject.scopes.push(...extra);authority.claims.scopes.push(...extra);authority.decision.scopes.push(...extra);
+ assert.ok(Buffer.byteLength(canonicalize({binding:authority.binding,subject:authority.subject,
+  policyRevision:authority.policyRevision,normalizationContext:null}),'utf8')>8192);
+ let credentialCalls=0;
+ await assert.rejects(f.create({endpoints:canonicalEndpoints,getCredentials:async r=>{
+  credentialCalls+=1;return {...credentialReceipt(r),authorizationScheme:'CapiroMeriRead'};
+ }})({...signedCall(f),authority}),/ACCESS_DENIED/);
+ assert.equal(credentialCalls,0);
+ assert.equal(f.wire.length,0);
+});
+for(const change of [t=>t.path='/api/clio/tools/meeting.query_debriefs',t=>t.bodySha256='0'.repeat(64),t=>t.method='GET'])
+ test('meetings reject a substituted token target before Fetch',async()=>{
+  const f=setup();await assert.rejects(f.create({endpoints:canonicalEndpoints,getCredentials:async r=>{
+   const receipt=credentialReceipt(r);change(receipt.target);return {...receipt,authorizationScheme:'CapiroMeriRead'};
+  }})(signedCall(f)),/ACCESS_DENIED/);assert.equal(f.wire.length,0);
+ });
+test('meetings refuse signed tokens on noncanonical paths and unknown schemes before Fetch',async()=>{
+ for(const [configured,scheme] of [[endpoints,'CapiroMeriRead'],[canonicalEndpoints,'Basic'],[canonicalEndpoints,null]]){
+  const f=setup();await assert.rejects(f.create({endpoints:configured,getCredentials:async r=>
+   ({...credentialReceipt(r),authorizationScheme:scheme})})(signedCall(f)),/ACCESS_DENIED/);assert.equal(f.wire.length,0);
+ }
+});
+test('meetings correlate an optional invocation ID and reject missing or substituted receipt echo',async()=>{
+ const f=setup(),call={...f.call,invocationId:'synthetic_meeting_call_1'};let requested;
+ const result=JSON.parse(await f.create({endpoints:canonicalEndpoints,getCredentials:async r=>{
+  requested=r.invocationId;return {...credentialReceipt(r),authorizationScheme:'CapiroMeriRead'};
+ }})(call));
+ assert.deepEqual(result,f.page);assert.equal(requested,call.invocationId);
+ for(const value of [undefined,'other_meeting_call']){
+  const bad=setup();await assert.rejects(bad.create({endpoints:canonicalEndpoints,getCredentials:async r=>{
+   const receipt=credentialReceipt(r);if(value===undefined)delete receipt.invocationId;else receipt.invocationId=value;
+   return {...receipt,authorizationScheme:'CapiroMeriRead'};
+  }})({...bad.call,invocationId:call.invocationId}),/ACCESS_DENIED/);assert.equal(bad.wire.length,0);
+ }
 });
 test('inventory contains source identity and hashes but never pretends bodies were read',async()=>{
  const f=setup(),page=JSON.parse(await f.create()(f.call));assert.equal(page.meetings[0].sources[0].contentHash,sha(fullBody));

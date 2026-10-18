@@ -65,7 +65,7 @@ export function createRunReadDelegation(configuration){
  /** One single-use token for one call slot. Meri refuses past the per-slot ceilings and past the run's call allowance first;
   * Core enforces the same against Meri's own reservation counts. A lost response is re-requested at most twice, as a retry of
   * the same request, which Core answers by superseding the unconsumed token (no new slot, no new allowance). */
- async function token({kind,callKey,path,body,bodySha256,operation=null,argumentsSha256=null,toolRequestSha256=null,referenceSha256=null,signal,deadlineMs}){
+ async function token({kind,callKey,path,body,bodySha256,operation=null,argumentsSha256=null,toolRequestSha256=null,referenceSha256=null,correlationSha256,signal,deadlineMs}){
   active();assertCallKey(callKey);const d=await ensure({signal,deadlineMs});active();
   // Unattended: pause, revoke or any scope change of the consent ends authority mid-occurrence too, before Core is asked.
   if(mode==='unattended'){const o=await c.readOccurrence({binding,signal:lifetimeSignal(signal)});active();if(o===null)refuse('ACCESS_DENIED');assertOccurrence(o,{binding,clientId,operationsSha256,policyRevision,now});}
@@ -73,7 +73,7 @@ export function createRunReadDelegation(configuration){
   if(!slot){if(slots.size>=maxSlots)refuse('RESOURCE_LIMIT');slot={counts:{current:0,tool:0,mode:0,reference:0},reissues:{current:0,tool:0,mode:0,reference:0}};slots.set(callKey,slot);}
   if(slot.counts[kind]>=READ_TOKEN_CEILINGS[kind])refuse('RESOURCE_LIMIT');
   const target=kind==='current'?delegationRoute(d.delegationId,'current'):path;
-  const first=tokenRequest({kind,callKey,path:target,bodySha256:body===undefined?bodySha256:sha256(bodyBytes(body)),operation,argumentsSha256,toolRequestSha256,referenceSha256}),firstSha256=hash(first);
+  const first=tokenRequest({kind,callKey,path:target,bodySha256:body===undefined?bodySha256:sha256(bodyBytes(body)),operation,argumentsSha256,toolRequestSha256,referenceSha256,correlationSha256}),firstSha256=hash(first);
   const s=lifetimeSignal(signal),cutoff=Math.min(deadlineMs,hardExpiry());
   for(let attempt=0;;attempt++){
    const started=now();

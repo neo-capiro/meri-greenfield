@@ -10,6 +10,7 @@
  * takes the minimum. No I/O, clock or authority: the control owner (Core) supplies all three inputs from its own
  * trusted records and the user's server-side role, and passes the result beside `run` to the worker. */
 import {own} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {resolveOperationContract} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {assertCapabilityPolicy,POLICY_KEYS,POLICY_FLAGS} from './policy.mjs';
 /** @typedef {import('./policy.mjs').CapabilityPolicy} CapabilityPolicy */
 /** Platform-owned limits. Every member is a full CapabilityPolicy input (omitted fields take policy defaults).
@@ -25,6 +26,9 @@ const MAX_ROLES=32;
 const fail=(code,field)=>{throw Object.assign(Error(field?`${code}:${field}`:code),{code,...(field?{field}:{})});};
 /** True when `pattern` admits `host` under the sandbox allowlist syntax (`*.d` covers sub-domains, not the apex). */
 const covers=(/** @type {string} */pattern,/** @type {string} */host)=>pattern===host||pattern.startsWith('*.')&&host.endsWith(pattern.slice(1));
+const operationKey=(/** @type {{id:string,version:string}} */op)=>`${op.id}\u0000${op.version}`;
+const inFamilies=(/** @type {readonly {id:string,version:string}[]} */operations,/** @type {readonly string[]} */families)=>
+ operations.filter(op=>families.includes(resolveOperationContract(op).binding?.group));
 /** Field-wise ⊆. @param {keyof CapabilityPolicy} key @param {CapabilityPolicy} candidate @param {CapabilityPolicy} ceiling */
 function fieldWithin(key,candidate,ceiling){
  const c=candidate[key],m=ceiling[key];
@@ -32,6 +36,8 @@ function fieldWithin(key,candidate,ceiling){
  if(key==='maxParallelSubagents')return /** @type {number} */(c)<=/** @type {number} */(m);
  if(key==='skillNames')return m===null||c!==null&&/** @type {readonly string[]} */(c).every(n=>/** @type {readonly string[]} */(m).includes(n));
  if(key==='sandboxNetworkDomains')return /** @type {readonly string[]} */(c).every(h=>/** @type {readonly string[]} */(m).some(p=>covers(p,h)));
+ if(key==='activeReadOperations'){const admitted=new Set(/** @type {readonly {id:string,version:string}[]} */(m).map(operationKey));
+  return /** @type {readonly {id:string,version:string}[]} */(c).every(op=>admitted.has(operationKey(op)));}
  return /** @type {readonly string[]} */(c).every(n=>/** @type {readonly string[]} */(m).includes(n));
 }
 /** First field of `candidate` (restricted to `keys`) that exceeds `ceiling`, or undefined.
@@ -56,6 +62,7 @@ export function intersectCapabilityPolicies(a,b){
  const raw=Object.fromEntries(POLICY_FLAGS.map(flag=>[flag,pa[/** @type {keyof CapabilityPolicy} */(flag)]===true&&pb[/** @type {keyof CapabilityPolicy} */(flag)]===true]));
  const both=(/** @type {readonly string[]} */x,/** @type {readonly string[]} */y)=>x.filter(v=>y.includes(v));
  raw.subagentTypes=both(pa.subagentTypes,pb.subagentTypes);raw.workspaceToolNames=both(pa.workspaceToolNames,pb.workspaceToolNames);raw.readFamilies=both(pa.readFamilies,pb.readFamilies);
+ const active=new Set(pb.activeReadOperations.map(operationKey));raw.activeReadOperations=inFamilies(pa.activeReadOperations.filter(op=>active.has(operationKey(op))),raw.readFamilies);
  raw.skillNames=pa.skillNames===null?pb.skillNames:pb.skillNames===null?pa.skillNames:both(pa.skillNames,pb.skillNames);
  const fromA=pa.sandboxNetworkDomains.filter(h=>pb.sandboxNetworkDomains.some(p=>covers(p,h)));
  raw.sandboxNetworkDomains=[...fromA,...pb.sandboxNetworkDomains.filter(h=>!fromA.includes(h)&&pa.sandboxNetworkDomains.some(p=>covers(p,h)))];
@@ -84,7 +91,10 @@ export function assertPlatformCapabilityLimits(value){
  * @param {CapabilityPolicy} base @param {unknown} partial @param {CapabilityPolicy} ceiling @param {string} code */
 function override(base,partial,ceiling,code){
  const fields=own(partial,[],[...POLICY_KEYS]),keys=Object.keys(fields);
- const merged=assertCapabilityPolicy(normalize({...base,...fields}));
+ const raw={...base,...fields};
+ if(Object.hasOwn(fields,'readFamilies')&&!Object.hasOwn(fields,'activeReadOperations')&&Array.isArray(fields.readFamilies))
+  raw.activeReadOperations=inFamilies(base.activeReadOperations,fields.readFamilies);
+ const merged=assertCapabilityPolicy(normalize(raw));
  const field=wideningField(merged,ceiling,keys);if(field)fail(code,field);
  return merged;
 }

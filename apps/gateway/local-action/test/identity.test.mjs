@@ -1,11 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {randomUUID} from 'node:crypto';
+import {createHash,randomUUID} from 'node:crypto';
+import canonicalize from 'canonicalize';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {resolveOperationContract} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {createCurrentToolAuthority} from '../../authorization/current-tool-authority.mjs';
 import {createLocalActionIdentity} from '../identity.mjs';
 import {createLocalActionGateway} from '../gateway.mjs';
+import {fixtureSignedActionReceipt} from '../fixture-gateway.mjs';
 import {createLocalActionCaseFactory} from '../case.mjs';
 import {createLocalLookupAuthorizer} from '../control-authorizer.mjs';
 import {createTaskLookupDelivery,createPostgresTaskLookupStore,assertTaskLookupStoredBinding} from '../../../control/task-lookup/index.mjs';
@@ -17,9 +19,25 @@ import {nativeScopedPage,id} from '../../../../docs/qualification/candidates/tas
 const operation={id:'actions.query',version:'0.2.0'},contract=resolveOperationContract(operation),raw={clientId:id(9)};
 const request=JSON.stringify({operation,arguments:raw});
 function identityFixture(){const f=fixture(),config={mode:'synthetic-local',binding:f.binding,clientId:id(9),policyRevision:'a'.repeat(64),deadlineMs:NOW+10000,budgets:f.claims.budgets,grants:contract.descriptor.requiredGrants,sourceEnabled:true,now:()=>f.state.now};const owner=createLocalActionIdentity(config),issued=owner.issueCredential({ttlMs:5000}),authority=createCurrentToolAuthority({ports:owner.authorityPorts,now:config.now,maxFactBytes:65536});const input=contract.normalizeInput(raw,{binding:f.binding,clientResolution:{reference:id(9),clientId:id(9)}}).input;return {f,config,owner,issued,authority,input,check:()=>authority.check({credential:issued.credential,descriptor:contract.descriptor,input,limitDeadline(){}})};}
-function gatewayFixture(){const h=harness();h.allocation.manifest.allowedOperations=[operation];h.allocation.manifest.requiredSources=contract.descriptor.sourceRequirements;h.allocation.manifest.subjectKinds=['client'];h.allocation.manifestSha256=canonicalSha256(h.allocation.manifest);h.allocation.schedule.operations=[{operation,chargeMicrousd:10}];h.invocation.allocationSha256=canonicalSha256(h.allocation);
+function gatewayFixture(changeReceipt=receipt=>receipt){const h=harness();h.allocation.manifest.allowedOperations=[operation];h.allocation.manifest.requiredSources=contract.descriptor.sourceRequirements;h.allocation.manifest.subjectKinds=['client'];h.allocation.manifestSha256=canonicalSha256(h.allocation.manifest);h.allocation.schedule.operations=[{operation,chargeMicrousd:10}];h.invocation.allocationSha256=canonicalSha256(h.allocation);
  const owner=createLocalActionIdentity({mode:'synthetic-local',binding:h.f.binding,clientId:id(9),policyRevision:h.f.claims.policyRevision,deadlineMs:NOW+10000,budgets:h.f.claims.budgets,grants:contract.descriptor.requiredGrants,sourceEnabled:true,now:()=>h.f.state.now});const issued=owner.issueCredential({ttlMs:9000});h.invocation.capabilitySha256=issued.capabilitySha256;h.state().grant.capability_sha256=issued.capabilitySha256;
- let calls=0;const source={origin:'https://synthetic.invalid',getCredentials:async call=>{await owner.authorityPorts.verifyCapability(issued.credential,{signal:call.signal});return {binding:h.f.binding,bearerToken:'SYNTHETIC_USER',serviceSecret:'SYNTHETIC_SERVICE',expiresAtMs:NOW+9000};},fetchImpl:async()=>{calls++;return new Response(JSON.stringify(nativeScopedPage()),{headers:{'content-type':'application/json'}});}};
+ let calls=0,pins;const source={origin:'https://synthetic.invalid',getCredentials:async call=>{
+  await owner.authorityPorts.verifyCapability(issued.credential,{signal:call.signal});pins=call;
+  return changeReceipt(fixtureSignedActionReceipt(call,{bearerToken:'SYNTHETIC_ACTION',serviceSecret:'SYNTHETIC_SERVICE',expiresAtMs:NOW+9000}));
+ },fetchImpl:async(url,init)=>{
+  assert.equal(url,'https://synthetic.invalid/api/clio/tools/actions.query');
+  assert.equal(init.headers.authorization,'CapiroMeriRead SYNTHETIC_ACTION');
+  assert.equal(init.headers['x-internal-service-secret'],'SYNTHETIC_SERVICE');
+  assert.deepEqual(pins.target,{method:'POST',path:'/api/clio/tools/actions.query',
+   bodySha256:createHash('sha256').update(init.body,'utf8').digest('hex')});
+  const correlation=Buffer.from(init.headers['x-meri-read-correlation'],'base64url').toString('utf8');
+  assert.equal(correlation,canonicalize({binding:pins.binding,subject:pins.subject,
+   policyRevision:pins.policyRevision,normalizationContext:null}));
+  assert.equal(pins.correlationSha256,createHash('sha256').update(correlation,'utf8').digest('hex'));
+  assert.deepEqual(JSON.parse(init.body),{input:pins.input,metadata:pins.metadata});
+  calls++;return new Response(JSON.stringify(nativeScopedPage({clientId:pins.input.selection.clientId})),
+   {headers:{'content-type':'application/json'}});
+ }};
  const make=()=>createLocalActionGateway({mode:'synthetic-local',identity:owner,pool:h.pool,allocationJson:JSON.stringify(h.allocation),source,limits,now:()=>h.f.state.now,newId:randomUUID});return {h,owner,issued,source,make,calls:()=>calls};}
 test('opaque issuer computes canonical claims from closed owned state',async()=>{const f=identityFixture();assert.match(f.issued.credential,/^local_action_/);assert.equal(f.issued.claims.binding.actorId,f.config.binding.actorId);assert.equal(f.issued.claims.scopes[0].resourceId,id(9));assert.ok(Object.isFrozen(f.issued.claims));assert.equal((await f.check()).subject.kind,'client');assert.throws(()=>f.owner.issueCredential({ttlMs:1000,claims:{}}));});
 test('forged token changed token foreign issuer restart and close all fail closed',async()=>{const f=identityFixture();for(const credential of ['synthetic',f.issued.credential+'x',f.issued.credential.replace(/.$/,'!')])await assert.rejects(f.authority.identify({credential,limitDeadline(){}}));const restarted=createLocalActionIdentity(f.config);await assert.rejects(restarted.authorityPorts.verifyCapability(f.issued.credential,{}));f.owner.close();await assert.rejects(f.check());assert.throws(()=>f.owner.issueCredential({ttlMs:1}));});
@@ -32,6 +50,17 @@ test('policy ports refuse forged claims wrong operation client grants and source
 test('hostile configuration, calls and signals are inert',async()=>{let effects=0;const f=identityFixture();assert.throws(()=>createLocalActionIdentity({...f.config,get binding(){effects++;return f.f.binding;}}));const proxy=new Proxy({},{get(){effects++;return false;}});await assert.rejects(f.owner.authorityPorts.verifyCapability(f.issued.credential,{signal:proxy}));await assert.rejects(f.owner.authorityPorts.currentRun(new Proxy(f.f.binding,{ownKeys(){effects++;return []}}),{}));assert.equal(effects,0);});
 test('abort inside clock callback cannot release an authority fact',async()=>{const f=identityFixture(),c=new AbortController();let armed=false;const owner=createLocalActionIdentity({...f.config,now:()=>{if(armed)c.abort();return NOW;}});const issued=owner.issueCredential({ttlMs:1000});armed=true;await assert.rejects(owner.authorityPorts.verifyCapability(issued.credential,{signal:c.signal}));});
 test('actual owned durable gateway reserves executes records completion settles and refuses duplicate dispatch',async()=>{const f=gatewayFixture(),g=f.make();await g.bindTrustedGrant(f.h.json());const out=JSON.parse(await g.executeOwned(request,f.issued.credential,f.h.delivery()));assert.equal(out.result.actions.length,1);assert.equal(f.calls(),1);assert.equal([...f.h.state().reservations.values()][0].state,'SETTLED');assert.equal(f.h.state().budget.consumed_micro_usd,'10');await assert.rejects(g.executeOwned(request,f.issued.credential,f.h.delivery()));assert.equal(f.calls(),1);assert.equal(g.execute,undefined);assert.equal(g.forOwnedInvocation,undefined);assert.equal(g.productionSourceEnabled,false);});
+for(const [name,change] of [
+ ['operation',receipt=>({...receipt,operation:{id:'query_action_items',version:'0.2.0'}})],
+ ['body hash',receipt=>({...receipt,target:{...receipt.target,bodySha256:'0'.repeat(64)}})],
+ ['correlation',receipt=>({...receipt,correlationSha256:'0'.repeat(64)})],
+ ['scheme',receipt=>({...receipt,authorizationScheme:'Bearer'})],
+])test(`signed local action receipt refuses changed ${name} before Fetch`,async()=>{
+ const f=gatewayFixture(change),g=f.make();await g.bindTrustedGrant(f.h.json());
+ await assert.rejects(g.executeOwned(request,f.issued.credential,f.h.delivery()));
+ assert.equal(f.calls(),0);assert.equal([...f.h.state().reservations.values()][0].state,'UNKNOWN');
+ assert.equal(f.h.state().budget.consumed_micro_usd,'0');
+});
 test('wrong operation before preparation allocates no durable invocation',async()=>{const f=gatewayFixture(),g=f.make();assert.throws(()=>g.prepareInvocation(f.h.delivery(),JSON.stringify({operation:{id:'other',version:'0.2.0'},arguments:{}})));assert.equal(f.h.commands.length,0);});
 test('unknown reserve acknowledgement never dispatches and reconstructs exact prepared identity',async()=>{const f=gatewayFixture(),g=f.make();await g.bindTrustedGrant(f.h.json());f.h.loseStage('reserve');await assert.rejects(g.executeOwned(request,f.issued.credential,f.h.delivery()));assert.equal(f.calls(),0);assert.equal([...f.h.state().reservations.values()][0].state,'UNKNOWN');const prepared=await f.make().prepareInvocation(f.h.delivery(),request);assert.equal(JSON.parse(prepared.invocationJson).invocationId,[...f.h.state().produced.keys()][0]);await assert.rejects(f.make().executeOwned(request,f.issued.credential,f.h.delivery()));assert.equal(f.calls(),0);});
 test('actual gateway source is denied after local revocation and production descriptors remain null',async()=>{const f=gatewayFixture(),g=f.make();await g.bindTrustedGrant(f.h.json());f.owner.revoke(f.issued.credential);await assert.rejects(g.executeOwned(request,f.issued.credential,f.h.delivery()));assert.equal(f.calls(),0);assert.equal(contract.descriptor.handler,null);assert.equal(contract.descriptor.availability,'unimplemented');});

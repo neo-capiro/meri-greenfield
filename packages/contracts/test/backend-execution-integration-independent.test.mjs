@@ -28,7 +28,7 @@ const cases=[
  ['search_legiwatch_news',{view:'monitors'},{clientResolution:null,effectiveScope:null,windowAsOf:null,defaultYear:null,owner:{tenantId:tenant,clerkUserId:actor}},x=>{assert.equal(x.view,'monitors');assert.equal(x.scope,null);}],
  ['actions.query',{}, {binding,clientResolution:null},x=>{assert.equal(x.mode,'unscoped_list');assert.equal(x.selection.clientId,null);}],
 ];
-const resolve=id=>retrieval.resolveOperationContract({id,version:'0.2.0'});
+const resolve=id=>retrieval.resolveOperationContract({id,version:id==='get_client_context'?'0.3.0':'0.2.0'});
 for(const [id,raw,context,check] of cases){
  test(`actual ${id} raw admission normalizer digest and closed context`,()=>{
   const c=resolve(id),normalized=c.normalizeInput(raw,context);check(normalized.input);

@@ -1,0 +1,123 @@
+{
+  "contractVersion": "0.2.0",
+  "skillId": "quick_skill.representation_lookup",
+  "skillVersion": "1.0.1",
+  "prose": {
+    "id": "urn:meri:original:representation-lookup:1.0.1",
+    "sha256": "d49f44ac5afa0e04f27f516613cda54a1e8813de75090d7f650fc63a2c22e6bf"
+  },
+  "requiredSources": [
+    {
+      "sourceId": "client_knowledge_profile",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "facility_representation",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "state_legislation",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "legislative_directory",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "district_nexus",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "tenant_contacts",
+      "authority": "derived",
+      "purpose": "evidence"
+    }
+  ],
+  "allowedOperations": [
+    {
+      "id": "get_client_context",
+      "version": "0.3.0"
+    },
+    {
+      "id": "get_representation",
+      "version": "0.2.0"
+    },
+    {
+      "id": "get_state_legislator",
+      "version": "0.2.0"
+    },
+    {
+      "id": "list_members",
+      "version": "0.2.0"
+    },
+    {
+      "id": "get_committee_roster",
+      "version": "0.2.0"
+    },
+    {
+      "id": "get_district_nexus_context",
+      "version": "0.2.0"
+    },
+    {
+      "id": "find_contacts",
+      "version": "0.2.0"
+    }
+  ],
+  "subjectKinds": [
+    "client",
+    "entity"
+  ],
+  "windowBases": [
+    "explicit",
+    "unbounded"
+  ],
+  "completion": {
+    "requireAllSources": true,
+    "allowDisclosedPartial": true,
+    "negativeClaims": "complete-covered-only",
+    "rubric": [
+      {
+        "id": "geography-and-office",
+        "requirement": "Resolve exact jurisdiction/district/facility and retain federal/state chamber, member and as-of basis.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "client-nexus",
+        "requirement": "Client relevance requires evidence; representation alone is not a personal relationship.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "decisive-evidence",
+        "requirement": "Read exact material records/passages and retain source/version/hash/scope/time binding; separate free-form inference from source excerpts.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "coverage",
+        "requirement": "Expose per-required-source freshness, pagination, decisive-read and history limits; absence requires complete relevant current coverage.",
+        "evidenceRequired": true
+      }
+    ]
+  },
+  "approval": {
+    "mutations": "separate-immutable-proposal",
+    "autoCreateTasks": false
+  },
+  "budgets": {
+    "maxTurns": 12,
+    "maxToolCalls": 24,
+    "maxRecoveryAttempts": 0,
+    "maxRuntimeSeconds": 60,
+    "maxCostMicroUSD": 1000,
+    "maxOutputBytes": 1048576
+  },
+  "versionPolicy": {
+    "existingRuns": "pin-immutable",
+    "resume": "exact-or-explicit-migration",
+    "fork": "preserve-unless-explicit-reselection"
+  }
+}

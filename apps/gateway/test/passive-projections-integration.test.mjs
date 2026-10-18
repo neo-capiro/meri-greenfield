@@ -46,7 +46,8 @@ for(const id of ids) {
   assert.equal(f.wire.length,1);assert.equal(f.calls.filter(x=>x==='reserve').length,1);assert.equal(f.calls.filter(x=>x==='settle').length,1);
   assert.equal(f.calls.filter(x=>x==='policy').length>=5,true);assert.equal(f.calls.includes('uncertain'),false);
   assert.deepEqual(Object.keys(f.wire[0].body).sort(),['input','metadata']);
-  assert.equal(createHash('sha256').update(f.wire[0].options.body).digest('hex'),f.state.pins.requestSha256);
+  assert.equal(createHash('sha256').update(f.wire[0].options.body).digest('hex'),
+   f.state.pins.target?.bodySha256??f.state.pins.requestSha256);
   assert.equal(f.state.pins.requestSha256,canonicalSha256(f.wire[0].body));
  });
  test(`${id}: revocation after source bytes refuses release and marks reservation uncertain`,async()=>{

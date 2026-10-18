@@ -1,5 +1,9 @@
 # Original skill asset implementation
 
+## Profile context receiving successors
+
+Pinned receiving base: `ab83ee97e9cb88b4727291284da9e2485157c309`. The skill asset owner adds immutable `1.0.1` successors for the nine original recipes that declare `get_client_context`, preserving every `1.0.0` file. Successor changes are limited to the skill/prose version and digest and the canonical `get_client_context@0.3.0` operation reference; source coverage, workflow prose, approval rules and budgets retain their original semantics. The canonical catalog remains owned by the contract integrator. The asset index selects each successor once, using the coordinated catalog digest, so the existing loader and native plugin projection retain their single owners and unique SDK names. Focused asset tests will verify frozen original hashes, exact successor deltas, explicit selection, catalog/source pins and plugin materialization. This is local source integration only; no source/provider activation or live action is included.
+
 Pinned base: PR59 `18adda2c5461b8d346277135aafd3972b4768802`, tree `eaec635b6b1c6cdc353ad48a5fda1f7a3dc10b21`. Exclusive paths: `packages/skills/**`. This is the bounded skill portion of the usable-request batch, not qualification of all workflows.
 
 The existing private retrieval contracts own SkillManifest, PinnedSkill, catalog operations, subject/window and evidence validation. Control retains selection, current authorization, budget admission and immutable run pins; Claude Agent SDK retains the only model loop. This package owns original recipe prose, versioned assets and a fixed selection loader. Source and command adapters remain their existing owners. No contracts, root dependencies, lockfiles, qualification fixtures or source activation are edited.

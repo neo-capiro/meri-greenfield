@@ -80,7 +80,7 @@ export const CATALOG_OPERATION_BINDINGS = Object.freeze([
     contextKeys: Object.freeze(["tenantId", "userId"]), dispatchProfile: 'bound-projection/1',
     normalize: (v, request, context, binding) => (v.clientKnowledgeMemoryValidators.normalizeInput(binding.id, request, clock(context, binding.contextKeys))),
     outputAssert: (v, page, request, context, binding) => v.clientKnowledgeMemoryValidators.assertResult(binding.id, page, request, clock(context, binding.contextKeys))}),
-  Object.freeze({id: 'get_client_context', nativeId: 'get_client_context', group: 'client-knowledge-profile', input: 'ClientKnowledgeProfileRequest', output: 'ClientKnowledgeProfileOutput', version: '0.2.0',
+  Object.freeze({id: 'get_client_context', nativeId: 'get_client_context', group: 'client-knowledge-profile', input: 'ClientKnowledgeProfileRequest', output: 'ClientKnowledgeProfileOutput', version: '0.3.0',
     contextKeys: Object.freeze(["asOf", "clientResolution"]), dispatchProfile: 'bound-projection/1',
     normalize: (v, request, context, binding) => (v.clientKnowledgeProfileValidators.normalizeInput(binding.id, request, clock(context, binding.contextKeys))),
     outputAssert: (v, page, request, context, binding) => v.clientKnowledgeProfileValidators.assertResult(binding.id, page, request, clock(context, binding.contextKeys))}),

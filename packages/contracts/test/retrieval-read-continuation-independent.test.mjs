@@ -25,7 +25,7 @@ const CBO='search_cbo_cost_estimates',GAO='search_gao_reports',CRS='search_crs_r
 const additions=[...funding,DOC,ECON,GRANT,AWARD,DIST,CHANGES,BILL,PERSON,CBO,GAO,CRS];
 const U='9abcdef0-1234-4234-9234-123456789012',V='8abcdef0-1234-4234-9234-123456789012';
 const T='2026-10-11T07:08:09.000Z',client='combined-client',document='combined-document';
-const resolve=id=>resolveOperationContract({id,version:'0.2.0'}), clone=structuredClone;
+const resolve=id=>resolveOperationContract({id,version:id==='get_client_context'?'0.3.0':'0.2.0'}), clone=structuredClone;
 const hash=s=>createHash('sha256').update(s).digest('hex');
 function scope(){return {binding:{tenantId:'combined-tenant',actorId:'combined-actor',conversationId:U,runId:V,
   attemptId:U,workerId:V,writerFence:91},subject:{kind:'client',entityType:'client',entityIds:[client],
@@ -74,14 +74,14 @@ function output(id){
 const verify=(id,page=output(id),raw=request(id),ctx=context(id))=>resolve(id).assertOutput(page,{...ctx,request:raw});
 
 test('independent original139 boundaries and prior21 descriptors survive the16 prior and9 next explicit mappings',()=>{
-  assertCatalog(catalog);assert.equal(catalog.catalogVersion,'0.2.15');
+  assertCatalog(catalog);assert.equal(catalog.catalogVersion,'0.2.16');
   assert.equal(catalog.originals.length,139);assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);
   assert.equal(catalog.originals.filter(x=>x.disposition==='deferred').length,43);
   assert.equal(catalog.operations.length,97);assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,96);
   assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.state==='pending').length,0);
   assert.deepEqual(catalog.operations.filter(x=>!verticalOperationIds.includes(x.operation.id)&&!additions.includes(x.operation.id)&&!nextIds.includes(x.operation.id)&&x.operation.id!=='actions.query'),baseline.descriptors.map(expectedExistingDescriptor));
   for(const before of baseline.originals.map(expectedExistingOriginal))assert.deepEqual(catalog.originals.find(x=>x.id===before.id),
-    (additions.includes(before.id)||nextIds.includes(before.id))?{...before,state:'mapped',replacement:{id:before.id,version:'0.2.0'}}:before);
+    (additions.includes(before.id)||nextIds.includes(before.id))?{...before,state:'mapped',replacement:{id:before.id,version:before.id==='get_client_context'?'0.3.0':'0.2.0'}}:before);
   assert.equal(resolve('query_action_items').binding.nativeCoverage,'partial');
   assert.deepEqual(resolve('query_action_items').descriptor.aliases,[]);
   for(const id of ['get_research_evidence']){

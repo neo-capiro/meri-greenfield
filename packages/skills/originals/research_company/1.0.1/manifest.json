@@ -1,0 +1,211 @@
+{
+  "contractVersion": "0.2.0",
+  "skillId": "quick_skill.research_company",
+  "skillVersion": "1.0.1",
+  "prose": {
+    "id": "urn:meri:original:research-company:1.0.1",
+    "sha256": "9139d0bed0bb1919386dd26c0407ad2e8e10303865a0c52a418cc6beb3c42929"
+  },
+  "requiredSources": [
+    {
+      "sourceId": "entity_candidates",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "client_knowledge_profile",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "public_web",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "program_elements",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "federal_market",
+      "authority": "authoritative",
+      "purpose": "enumeration"
+    },
+    {
+      "sourceId": "stored_public_data",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "funding_opportunities",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "sam_opportunities",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "tracked_bills",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "federal_legislation",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "bill_text",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "certification_status",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "tenant_contacts",
+      "authority": "derived",
+      "purpose": "evidence"
+    }
+  ],
+  "allowedOperations": [
+    {
+      "id": "resolve_entity",
+      "version": "0.2.0"
+    },
+    {
+      "id": "get_client_context",
+      "version": "0.3.0"
+    },
+    {
+      "id": "search_public_web",
+      "version": "0.2.0"
+    },
+    {
+      "id": "scrape_web_page",
+      "version": "0.2.0"
+    },
+    {
+      "id": "search_program_elements",
+      "version": "0.2.0"
+    },
+    {
+      "id": "get_program_element",
+      "version": "0.2.0"
+    },
+    {
+      "id": "get_pe_budget_timeline",
+      "version": "0.2.0"
+    },
+    {
+      "id": "search_federal_contract_awards",
+      "version": "0.2.0"
+    },
+    {
+      "id": "search_federal_subawards",
+      "version": "0.2.0"
+    },
+    {
+      "id": "search_contract_vehicles",
+      "version": "0.2.0"
+    },
+    {
+      "id": "search_procurement_forecasts",
+      "version": "0.2.0"
+    },
+    {
+      "id": "search_federal_grants",
+      "version": "0.2.0"
+    },
+    {
+      "id": "search_funding_opportunities",
+      "version": "0.2.0"
+    },
+    {
+      "id": "get_funding_opportunity_requirements",
+      "version": "0.2.0"
+    },
+    {
+      "id": "search_sam_opportunities",
+      "version": "0.2.0"
+    },
+    {
+      "id": "search_tracked_bills",
+      "version": "0.2.0"
+    },
+    {
+      "id": "get_bill_status",
+      "version": "0.2.0"
+    },
+    {
+      "id": "read_bill_text",
+      "version": "0.2.0"
+    },
+    {
+      "id": "get_certification_status",
+      "version": "0.2.0"
+    },
+    {
+      "id": "find_contacts",
+      "version": "0.2.0"
+    }
+  ],
+  "subjectKinds": [
+    "client",
+    "entity"
+  ],
+  "windowBases": [
+    "explicit",
+    "fiscal-year",
+    "unbounded"
+  ],
+  "completion": {
+    "requireAllSources": true,
+    "allowDisclosedPartial": true,
+    "negativeClaims": "complete-covered-only",
+    "rubric": [
+      {
+        "id": "strategy",
+        "requirement": "Capability/mission mapping, opportunities, gaps, capture strategy, 90-day plan and roadmap are present.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "market-basis",
+        "requirement": "Keep PE/procurement fiscal-year, budget-stage, revision, eligibility and award basis separate.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "decisive-evidence",
+        "requirement": "Read exact material records/passages and retain source/version/hash/scope/time binding; separate free-form inference from source excerpts.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "coverage",
+        "requirement": "Expose per-required-source freshness, pagination, decisive-read and history limits; absence requires complete relevant current coverage.",
+        "evidenceRequired": true
+      }
+    ]
+  },
+  "approval": {
+    "mutations": "separate-immutable-proposal",
+    "autoCreateTasks": false
+  },
+  "budgets": {
+    "maxTurns": 12,
+    "maxToolCalls": 24,
+    "maxRecoveryAttempts": 0,
+    "maxRuntimeSeconds": 60,
+    "maxCostMicroUSD": 1000,
+    "maxOutputBytes": 1048576
+  },
+  "versionPolicy": {
+    "existingRuns": "pin-immutable",
+    "resume": "exact-or-explicit-migration",
+    "fork": "preserve-unless-explicit-reselection"
+  }
+}

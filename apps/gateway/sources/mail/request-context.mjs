@@ -23,7 +23,9 @@ export function mailContract(reference) {
 }
 
 export function readContext(call, now) {
-  const fields = ownFields(call, ['operation', 'input', 'request', 'authority'], ['signal']);
+  const fields = ownFields(call, ['operation', 'input', 'request', 'authority'], ['signal', 'invocationId']);
+  if (fields.invocationId !== undefined &&
+      (typeof fields.invocationId !== 'string' || !/^[A-Za-z0-9_-]{1,128}$/.test(fields.invocationId))) deny('INVALID_ARGUMENTS');
   const {operation, contract} = mailContract(fields.operation);
   const input = frozenData(fields.input), request = frozenData(fields.request), authority = frozenData(fields.authority);
   validateShape(selections[operation.id], input);
@@ -65,7 +67,7 @@ export function readContext(call, now) {
   const normalized = contract.normalizeInput(request, {nowMs: active()});
   if (!same(normalized.input, input)) deny('INVALID_ARGUMENTS');
   const metadata = normalized.metadata;
-  return {operation, contract, input, metadata, request, authority, signal, deadlineMs, active,
+  return {operation, contract, input, metadata, request, authority, signal, deadlineMs, active, invocationId: fields.invocationId,
     argumentsSha256: normalized.argumentsSha256, requestSha256: canonicalSha256({input, metadata})};
 }
 

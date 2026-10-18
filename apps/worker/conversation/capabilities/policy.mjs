@@ -3,7 +3,9 @@
  * it names which supported SDK features this run may use and never carries paths, credentials or authority.
  * The effective policy is computed by `policy-resolution.mjs` (platform ∧ tenant ∧ role) before it reaches a run. */
 import {own} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
-import {READ_FAMILY_IDS} from '../reads/families.mjs';
+import catalog from '../../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
+import {resolveOperationContract} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {READ_FAMILIES,READ_FAMILY_IDS} from '../reads/families.mjs';
 /** @param {string} code @returns {never} */
 const fail=code=>{throw Object.assign(Error(code),{code});};
 export const SUBAGENT_TYPES=Object.freeze(['research','analysis','artifact_production','verification']);
@@ -17,7 +19,7 @@ export const MAX_SANDBOX_NETWORK_DOMAINS=32;
 // PROPOSAL P-INT-3 (local field pending dot): `governedIntents` (default false) admits the prepare-only `meri_intents`
 // server (`intents/runtime.mjs`). It grants nothing: every preparation and later execution keeps its owner's checks.
 export const POLICY_FLAGS=Object.freeze(['subagents','auditHooks','compactionHooks','skillPlugin','workspaceTools','subagentProgress','bash','generalReads','governedIntents']);
-export const POLICY_LISTS=Object.freeze(['subagentTypes','workspaceToolNames','skillNames','sandboxNetworkDomains','readFamilies']);
+export const POLICY_LISTS=Object.freeze(['subagentTypes','workspaceToolNames','skillNames','sandboxNetworkDomains','readFamilies','activeReadOperations']);
 export const POLICY_KEYS=Object.freeze([...POLICY_FLAGS,...POLICY_LISTS,'maxParallelSubagents']);
 const SKILL_NAME=/^[a-z0-9][a-z0-9-]{0,63}$/u;
 // Lower-case DNS names with an alphabetic TLD, optionally one leading `*.` label. IP literals, ports, schemes,
@@ -32,7 +34,26 @@ function allowlist(value,member,max){
 }
 /** @param {readonly string[]} universe */
 const among=universe=>(/** @type {unknown} */v)=>typeof v==='string'&&universe.includes(v);
-/** @typedef {{subagents:boolean,auditHooks:boolean,compactionHooks:boolean,skillPlugin:boolean,workspaceTools:boolean,subagentProgress:boolean,bash:boolean,generalReads:boolean,governedIntents:boolean,subagentTypes:readonly string[],maxParallelSubagents:number,workspaceToolNames:readonly string[],skillNames:readonly string[]|null,sandboxNetworkDomains:readonly string[],readFamilies:readonly string[]}} CapabilityPolicy */
+/** @typedef {{id:string,version:string}} OperationRef */
+/** @typedef {{subagents:boolean,auditHooks:boolean,compactionHooks:boolean,skillPlugin:boolean,workspaceTools:boolean,subagentProgress:boolean,bash:boolean,generalReads:boolean,governedIntents:boolean,subagentTypes:readonly string[],maxParallelSubagents:number,workspaceToolNames:readonly string[],skillNames:readonly string[]|null,sandboxNetworkDomains:readonly string[],readFamilies:readonly string[],activeReadOperations:readonly OperationRef[]}} CapabilityPolicy */
+const readOperationKey=op=>`${op.id}\u0000${op.version}`;
+const DEFERRED_NAMES=new Set(catalog.originals.filter(row=>row.disposition==='deferred').map(row=>row.id));
+const READ_OPERATION_FAMILIES=new Map(catalog.operations.flatMap(row=>{
+ const family=resolveOperationContract(row.operation).binding?.group,configuration=READ_FAMILIES[family];
+ return row.sideEffect==='none'&&row.approvalBoundary==='none'&&configuration!==undefined&&
+  (configuration.operationIds===undefined||configuration.operationIds.includes(row.operation.id))&&
+  !DEFERRED_NAMES.has(row.operation.id)&&!DEFERRED_NAMES.has(row.operation.id.replaceAll('.','_'))
+  ?[[readOperationKey(row.operation),family]]:[];
+}));
+/** A fixed release-profile allowlist. An omitted list registers no general read in G3; the catalog is never an implicit grant. */
+function activeReadOperations(value){
+ if(!Array.isArray(value)||value.length>128)fail('CAPABILITY_POLICY_REFUSED');
+ const seen=new Set();return Object.freeze(value.map(raw=>{
+  let op;try{op=own(raw,['id','version']);}catch{fail('CAPABILITY_POLICY_REFUSED');}
+  if(typeof op.id!=='string'||typeof op.version!=='string'||!READ_OPERATION_FAMILIES.has(readOperationKey(op))||seen.has(readOperationKey(op)))fail('CAPABILITY_POLICY_REFUSED');
+  seen.add(readOperationKey(op));return Object.freeze({id:op.id,version:op.version});
+ }));
+}
 /** Every flag defaults to false (`bash` is explicit eligibility for sandboxed Bash; `sandboxNetworkDomains` is the
  * sandboxed commands' network allowlist); every capability allowlist defaults to the bounded catalog (`skillNames: null` =
  * every original) and `sandboxNetworkDomains` defaults to none. An allowlist may be empty only while the flag it
@@ -48,7 +69,9 @@ export function assertCapabilityPolicy(value){
   workspaceToolNames:p.workspaceToolNames===undefined?WORKSPACE_TOOLS:allowlist(p.workspaceToolNames,among(WORKSPACE_TOOLS),WORKSPACE_TOOLS.length),
   skillNames:p.skillNames===undefined||p.skillNames===null?null:allowlist(p.skillNames,v=>typeof v==='string'&&SKILL_NAME.test(v),32),
   sandboxNetworkDomains:p.sandboxNetworkDomains===undefined?Object.freeze([]):allowlist(p.sandboxNetworkDomains,isSandboxNetworkDomain,MAX_SANDBOX_NETWORK_DOMAINS),
-  readFamilies:p.readFamilies===undefined?READ_FAMILY_IDS:allowlist(p.readFamilies,among(READ_FAMILY_IDS),READ_FAMILY_IDS.length)};
+  readFamilies:p.readFamilies===undefined?READ_FAMILY_IDS:allowlist(p.readFamilies,among(READ_FAMILY_IDS),READ_FAMILY_IDS.length),
+  activeReadOperations:activeReadOperations(p.activeReadOperations===undefined?[]:p.activeReadOperations)};
+ if(policy.activeReadOperations.some(op=>!policy.readFamilies.includes(READ_OPERATION_FAMILIES.get(readOperationKey(op)))))fail('CAPABILITY_POLICY_REFUSED');
  if(policy.subagentProgress&&!policy.subagents)fail('CAPABILITY_POLICY_REFUSED');
  if(policy.subagents&&!policy.subagentTypes.length||policy.workspaceTools&&!policy.workspaceToolNames.length||policy.skillPlugin&&policy.skillNames?.length===0||policy.generalReads&&!policy.readFamilies.length)fail('CAPABILITY_POLICY_REFUSED');
  return Object.freeze(policy);

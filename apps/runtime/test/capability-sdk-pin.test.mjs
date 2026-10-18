@@ -26,6 +26,7 @@ import {PROPOSED_PREVIEW_CAPABILITY_PLATFORM,createConfiguredRunCapabilityPolicy
 import {createConversationActivity} from '../../worker/conversation/activity.mjs';
 import {assertCapabilityPolicy} from '../../worker/conversation/capabilities/policy.mjs';
 import {profileReads} from '../../worker/conversation/reads/availability.mjs';
+import {installationReadOperations} from '../native-authority/general-read-installation/runtime.mjs';
 import {prepareRunSkillPlugin,verifySkillPluginTree,SKILL_PLUGIN_TREE_SCHEMA} from '../../worker/conversation/capabilities/skill-plugin.mjs';
 import {describeSkillPlugin,materializeSkillPlugin} from '../../../packages/skills/plugin.mjs';
 import {createSdkMcpServer} from '../../worker/conversation/agent-sdk.mjs';
@@ -33,7 +34,8 @@ import {binding,versions,scopes,id} from '../../control/conversations/test/store
 
 const root=resolve(fileURLToPath(new URL('../../../',import.meta.url)));
 const {capabilityProfileSha256:measuredProfile,...inputs}=receipt.inputs;
-const PROFILE=createConfiguredRunCapabilityPolicy({capabilityPlatform:PROPOSED_PREVIEW_CAPABILITY_PLATFORM}).profile;
+const ACTIVE_READS=Object.freeze(installationReadOperations().slice(0,3).map(row=>row.operation));
+const PROFILE={...createConfiguredRunCapabilityPolicy({capabilityPlatform:PROPOSED_PREVIEW_CAPABILITY_PLATFORM}).profile,activeReadOperations:ACTIVE_READS};
 /** The proposed profile without the two capabilities whose run facts are real directories (the workspace root and the plugin copy). */
 const PORTABLE={...PROFILE,skillPlugin:false,skillNames:null,workspaceTools:false};
 const POSIX=process.platform!=='win32';
@@ -99,7 +101,8 @@ async function activityRun({profile,generalReads,governedIntents,cwd=`/workspace
 test('a capability-bearing run hashes to the one measured pin whatever its availability; the gate refuses another profile',async()=>{
  const pin=await measured(PORTABLE),without=await measured({...PORTABLE,subagents:false,subagentProgress:false});
  assert.notEqual(pin,receipt.sdkOptions.sha256);assert.notEqual(pin,without);
- const policy=assertCapabilityPolicy(PORTABLE),some=profileReads({policy}).slice(0,2).map(r=>r.operation);
+ const policy=assertCapabilityPolicy(PORTABLE),listed=profileReads({policy}).map(r=>r.operation),some=listed.slice(0,2);
+ assert.deepEqual(listed,ACTIVE_READS,'the profile registers only the explicit reviewed operation set');
  const a=await activityRun({profile:PORTABLE,generalReads:readPort(some),governedIntents:intentPort([{id:'create_task',version:'0.2.0'}])});
  const b=await activityRun({profile:PORTABLE});
  const c=await activityRun({profile:PORTABLE,generalReads:readPort([],{fail:true}),governedIntents:intentPort([])});
@@ -159,16 +162,18 @@ test('the template places the skill plugin path and workspace rules only for thi
 
 test('the measurement reports one launch template for every run of the profile, the run workspace in --settings a placeholder',async()=>{
  const restore=quiet();try{
-  const portable=await measureFirstChatLaunch({...inputs,capabilityProfile:PORTABLE},{root});
+  const portable=await measureFirstChatLaunch({...inputs,capabilityProfile:PORTABLE,activeReadOperations:ACTIVE_READS},{root});
   assert.equal(portable.launchTemplateRunInvariant,true);assert.equal(portable.sdkOptions.runInvariant,true);assert.equal(portable.gates.runnerSdkOptions,'PASS');
-  assert.equal(portable.inputs.capabilityProfileSha256,canonicalSha256(PORTABLE));assert.equal(portable.sdkOptions.sha256,await measured(PORTABLE));
-  const full=await measureFirstChatLaunch({...inputs,capabilityProfile:PROFILE},{root});
+  assert.equal(portable.inputs.capabilityProfileSha256,canonicalSha256(PORTABLE));assert.equal(portable.inputs.activeReadOperationsSha256,canonicalSha256(ACTIVE_READS));assert.equal(portable.sdkOptions.sha256,await measured(PORTABLE));
+  assert.deepEqual(portable.generalReadInstallation.measurement.operations.map(row=>row.operation),[...ACTIVE_READS].sort((a,b)=>`${a.id}@${a.version}`.localeCompare(`${b.id}@${b.version}`)));
+  assert.equal(portable.generalReadInventory.measurement.operations.length,installationReadOperations().length);
+  const full=await measureFirstChatLaunch({...inputs,capabilityProfile:PROFILE,activeReadOperations:ACTIVE_READS},{root});
   // The skill plugin copy's path is a launch argument, deliberately free of any per-run value.
   assert.ok(full.launchTemplate.args.includes(`--plugin-dir-no-mcp=${sdkSkillPluginDirectory(inputs.configParentDirectory)}`));
   assert.equal(full.sdkOptions.runInvariant,true);assert.equal(full.gates.runnerSdkOptions,'PASS');assert.equal(full.launchTemplateRunInvariant,true);
   const settings=full.launchTemplate.args[full.launchTemplate.args.indexOf('--settings')+1];
   assert.deepEqual(JSON.parse(settings).permissions.allow,[`Read(/${LAUNCH_WORKSPACE_PLACEHOLDER}/**)`,`Edit(/${LAUNCH_WORKSPACE_PLACEHOLDER}/**)`]);
-  assert.equal(JSON.stringify(full.launchTemplate).includes('/workspace/'),false,'no probe workspace in the launch template');
+  assert.equal(PROBES.some(probe=>JSON.stringify(full.launchTemplate).includes(`/workspace/${probe.conversationId}`)),false,'no probe workspace in the launch template');
   if(process.platform==='linux')assert.equal(full.gates.matchPreparedDescriptor,'PASS');
  }finally{restore();}
 });
@@ -196,7 +201,7 @@ test('two conversations under the full profile share one launch template; each l
 });
 
 test('matchPreparedDescriptor holds one launch template across conversations and refuses a tampered --settings',async()=>{
- const restore=quiet();let full;try{full=await measureFirstChatLaunch({...inputs,capabilityProfile:PROFILE},{root});}finally{restore();}
+ const restore=quiet();let full;try{full=await measureFirstChatLaunch({...inputs,capabilityProfile:PROFILE,activeReadOperations:ACTIVE_READS},{root});}finally{restore();}
  // Paths valid on this host; each descriptor's --settings is built independently from workspace-tools.mjs workspaceRule.
  const configParentDirectory=resolve('/g3/run'),secureStorageDirectory=join(configParentDirectory,'sdk-secure'),credential='synthetic-task-capability';
  const at=full.launchTemplate.args.indexOf('--settings')+1,base=JSON.parse(full.launchTemplate.args[at]);

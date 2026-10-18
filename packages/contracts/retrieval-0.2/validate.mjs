@@ -5,7 +5,7 @@ import { createClientKnowledgeSearchValidators } from './client-knowledge-search
 import { createClientKnowledgeMondayValidators } from './client-knowledge-monday-validation.mjs';
 import { createClientKnowledgeAttachmentValidators } from './client-knowledge-attachments-validation.mjs';
 import { createClientKnowledgeMemoryValidators } from './client-knowledge-memory-validation.mjs';
-import { createClientKnowledgeProfileValidators } from './client-knowledge-profile-validation.mjs';
+import { createClientKnowledgeProfileValidators } from './client-knowledge-profile-v03-validation.mjs';
 import { createResearchLegalCandidatesValidators } from './research-legal-candidates-validation.mjs';
 import { createPublicDomainQueryValidators } from './public-domain-query-validation.mjs';
 import { createResearchLegalLegislationValidators } from './research-legal-legislation-validation.mjs';
@@ -62,7 +62,7 @@ import { canonicalSha256 } from '../validate.mjs';
 export const contractVersion = '0.2.0';
 const groups = ['common', 'catalog', 'retrieval', 'skill', 'mail', 'meeting-source', 'operational-reads', 'federal-market', 'data-search', 'memory-proposals', 'client-registry', 'research-portfolio', 'research-portfolio-evidence', 'business-development', 'funding-opportunities', 'client-documents', 'public-data', 'district-nexus', 'state-legislation', 'public-reports', 'disclosures', 'acquisition-personnel', 'federal-legislation', 'bill-text', 'legislative-directory', 'pe-references', 'rule-status', 'certification-status', 'stored-intelligence', 'dataset-metadata', 'facility-representation', 'state-status-votes', 'regulatory-dockets', 'tenant-contacts', 'entity-candidates', 'tracked-bills', 'intelligence-summary', 'public-web', 'sam-opportunities', 'florida-budget', 'outreach-query', 'program-elements', 'client-knowledge-search', 'client-knowledge-monday', 'client-knowledge-attachments', 'client-knowledge-memory', 'client-knowledge-profile', 'research-legal-candidates', 'public-domain-query', 'research-legal-legislation', 'action-items-complete', 'research-legal-news', 'public-domain-hearings', 'public-domain-hearing-records', ...executionSchemaSources.map(source => source.group)];
 const schemaBytes = groups.map(group => readFileSync(new URL(
-  executionSchemaSources.find(source => source.group === group)?.path ?? `./${group}.schema.json`, import.meta.url)));
+  executionSchemaSources.find(source => source.group === group)?.path ?? `./${group}${group === 'client-knowledge-profile' ? '-v03' : ''}.schema.json`, import.meta.url)));
 const schemas = schemaBytes.map(raw => JSON.parse(raw));
 const ajv = new Ajv({ strict: true, allErrors: true });
 addFormats(ajv);

@@ -15,7 +15,7 @@ import {addedOperations,fullActionReference} from './backend-execution-expectati
 const T='2026-10-12T12:00:00.000Z',U='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',V='bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
 const copy=structuredClone,sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const load=group=>JSON.parse(readFileSync(new URL(schemaRelativePath(group),import.meta.url)));
-const resolve=id=>resolveOperationContract({id,version:'0.2.0'});
+const resolve=id=>resolveOperationContract({id,version:id==='get_client_context'?'0.3.0':'0.2.0'});
 const rawAudit=JSON.parse(readFileSync(new URL('../../../docs/qualification/candidates/backend-execution-20261012/integration/raw-request-admission-before.json',import.meta.url))).rows;
 const expectedIds=['read_chat_attachments','read_monday_client_boards','get_client_context','search_client_knowledge','query_knowledge_graph','search_memory','search_research_sources','search_legislative_research','get_legal_reference','query_global_data','search_committee_hearings','search_legiwatch_news','actions.query'];
 const keys={read_chat_attachments:['asOf','scope'],read_monday_client_boards:[],get_client_context:['asOf','clientResolution'],search_client_knowledge:['asOf'],query_knowledge_graph:[],search_memory:['tenantId','userId'],search_research_sources:['clientResolution'],search_legislative_research:['clientResolution','citationResolution'],get_legal_reference:['clientResolution','citationResolution'],query_global_data:['defaultAsOf'],search_committee_hearings:['tenantId','clientResolution'],search_legiwatch_news:['clientResolution','effectiveScope','windowAsOf','defaultYear','owner'],'actions.query':['binding','clientResolution']};
@@ -39,7 +39,7 @@ const coverage=(domain,status='healthy')=>({requestedDomains:[domain],searchedDo
 function profile(){
  const sections=['capabilities','people','facilities','submissionHistory','advocacyMatters','advocacyRecords'];
  const client={id:U,tenantId:U,name:'Named client',website:null,description:null,productDescription:null,primaryContactName:null,primaryContactEmail:null,primaryContactPhone:null,logoS3Key:null,logoContentType:null,logoUploadedAt:null,intakeData:{opaque:['data']},status:'active',sectorTag:null,profileType:null,profileStatus:'stored',submissionTracks:[],issueCodes:[],uei:null,cageCode:null,naicsCodes:[],pscCodes:[],tangoEntityLastSyncedAt:null,tangoEntityLastAttemptAt:null,tangoEntityLastError:null,applicantTypes:[],setAsideCertifications:[],ldaClientIds:[],memoryWall:false,createdByUserId:null,createdAt:T,updatedAt:T,canonicalEntityId:null};
- const p={tool:'get_client_context',generatedAt:T,profileSections:{},coverageNote:'Profile counts cover the complete authorized section at read time. Summary records omit fields; request a section for full records and follow nextCursor until complete. For a requested complete inventory, use section + representation summary + limit 50 and exhaust every requested section before summarizing; do not stop at a sample while more records are available. Unavailable or unrequested sections are not empty. submissionHistory is the older capability submission ledger; advocacyMatters and advocacyRecords are current Advocacy History, including unassigned records. An auto-generated matter or inferred evidence class is not verified advocacy or proof of causation. Engagement context contains recent items only.',profile:{},profileSources:{},context:{client,recentActivity:[],keyStakeholders:[],openThreads:[],openTasks:[],summary:{meetings:0,mailThreads:0,contacts:0,openTasks:0}}};
+ const p={tool:'get_client_context',generatedAt:T,readWindow:{startedAt:T,completedAt:T},profileSections:{},coverageNote:'Profile counts cover the complete authorized section at read time. Summary records omit fields; request a section for full records and follow nextCursor until complete. For a requested complete inventory, use section + representation summary + limit 50 and exhaust every requested section before summarizing; do not stop at a sample while more records are available. Unavailable or unrequested sections are not empty. submissionHistory is the older capability submission ledger; advocacyMatters and advocacyRecords are current Advocacy History, including unassigned records. An auto-generated matter or inferred evidence class is not verified advocacy or proof of causation. Engagement context contains recent items only.',profile:{},profileSources:{},context:{client,recentActivity:[],keyStakeholders:[],openThreads:[],openTasks:[],summary:{meetings:0,mailThreads:0,contacts:0,openTasks:0}}};
  for(const section of sections){p.profile[section]=[];p.profileSources[section]=[];p.profileSections[section]={status:'complete',total:0,returned:0,limit:25,truncated:false,nextCursor:null,representation:'summary',source:{tool:p.tool,clientId:U,section}};}
  return p;
 }
@@ -64,11 +64,11 @@ function output(id){
 }
 
 test('exact13 accepted mappings preserve139 original identities and84 unavailable descriptors',()=>{
- assertCatalog(catalog);assert.equal(catalog.catalogVersion,'0.2.15');assert.equal(catalog.operations.length,97);assert.equal(bindings.length,97);
+ assertCatalog(catalog);assert.equal(catalog.catalogVersion,'0.2.16');assert.equal(catalog.operations.length,97);assert.equal(bindings.length,97);
  assert.deepEqual([...addedOperations].sort(),[...expectedIds].sort());assert.equal(catalog.originals.length,139);
  assert.equal(catalog.originals.filter(r=>r.disposition==='selected').length,96);assert.equal(catalog.originals.filter(r=>r.disposition==='deferred').length,43);
  assert.equal(catalog.originals.filter(r=>r.state==='mapped').length,96);assert.equal(catalog.originals.filter(r=>r.disposition==='selected'&&r.state==='pending').length,0);
- for(const id of expectedIds){const nativeId=id==='actions.query'?'query_action_items':id;assert.deepEqual(catalog.originals.find(r=>r.id===nativeId).replacement,{id,version:'0.2.0'});}
+ for(const id of expectedIds){const nativeId=id==='actions.query'?'query_action_items':id;assert.deepEqual(catalog.originals.find(r=>r.id===nativeId).replacement,{id,version:id==='get_client_context'?'0.3.0':'0.2.0'});}
 });
 for(const id of expectedIds){
  test(`${id}: caller Request, exact context and normalized hash connect through canonical resolver`,()=>{

@@ -47,7 +47,8 @@
  *   downloadLinks?: {enabled:false} | {enabled:true, ttlMs?},  // signing key generated per render -> /run/meri/download-link.key
  *   capabilityPlatform?: {maximum, defaults, roleCeilings},   // verbatim; runtime values must carry the matching capabilityProfileSha256 (G3)
  *   reads?: {enabled:false} | {enabled:true, serviceSecretArn, readModeServiceSecretArn?, defaultCongress?, approvedReads?,
- *            installation?: {enabled, revokedOperations?: [{id,version}]},   // P2: pins runtime.generalReadInstallation, ships it brotli-compressed
+ *            installation?: {enabled, activeOperations?: [{id,version}], revokedOperations?: [{id,version}]},
+ *                         // P2: activeOperations is the reviewed source-only set; pins runtime.generalReadInstallation
  *            discovery?: {enabled}}                                           // P1: enabled needs capabilityPlatform (the G2 policy producer)
  *  }
  * Secret VALUES never enter Git or deployment inputs: reads names exact Secrets Manager ARNs, and the operator supplies the bytes fetched
@@ -210,6 +211,8 @@ export const SECRET_ARN=/^arn:aws:secretsmanager:us-east-1:967807252336:secret:[
 const SECRET_VERSION=/^[A-Za-z0-9-]{32,64}$/u,KMS_KEY_ARN=/^arn:aws:kms:us-east-1:967807252336:key\/[a-f0-9-]{36}$/u;
 /** Same token shape as reads-composer.mjs tokenOf, but exact: no surrounding whitespace is delivered. */
 const SECRET_TOKEN=/^[\x21-\x7e]{1,8192}$/u;
+const catalogReadOperations=new Set(retrievalCatalog.operations.map(row=>`${row.operation.id}@${row.operation.version}`));
+const operationKey=op=>`${op.id}@${op.version}`;
 export function parseFeatures(raw,{secrets={},checkpoint}={}){
  if(raw===undefined)return null;
  const f=record(raw,'features',[],FEATURE_KEYS),out={};
@@ -279,16 +282,25 @@ export function parseFeatures(raw,{secrets={},checkpoint}={}){
    let approvedReads;if(r.approvedReads!==undefined)try{approvedReads=structuredClone(assertNativeReadConfiguration(r.approvedReads));}catch{fail('RENDER_INPUT_REFUSED','features.reads.approvedReads (runtime-0.2 assertNativeReadConfiguration)');}
    // Option B (D016-A #4): the run-bound Core read delegation, rendered as a closed toggle under reads.
    const delegation=r.delegation===undefined?undefined:{enabled:bool(record(r.delegation,'features.reads.delegation',['enabled']).enabled,'features.reads.delegation.enabled')};
-   // P2 installation: a toggle plus optional revocations (exact catalog OperationRefs, 1..128, unique); the pin itself comes from runtime values.
+   // P2 installation: an explicit reviewed active set plus optional revocations. The measured pin comes from runtime values.
    let installation;if(r.installation!==undefined){
-    const i=record(r.installation,'features.reads.installation',['enabled'],['revokedOperations']);
-    if(!bool(i.enabled,'features.reads.installation.enabled')&&i.revokedOperations!==undefined)fail('RENDER_INPUT_REFUSED','features.reads.installation: disabled installation revokes nothing');
+    const i=record(r.installation,'features.reads.installation',['enabled'],['activeOperations','revokedOperations']);
+    const enabled=bool(i.enabled,'features.reads.installation.enabled');
+    if(!enabled&&i.activeOperations!==undefined)fail('RENDER_INPUT_REFUSED','features.reads.installation: disabled installation names no active operations');
+    if(!enabled&&i.revokedOperations!==undefined)fail('RENDER_INPUT_REFUSED','features.reads.installation: disabled installation revokes nothing');
+    if(enabled){
+     const v=i.activeOperations;if(!Array.isArray(v)||!v.length||v.length>128)fail('RENDER_INPUT_REFUSED','features.reads.installation.activeOperations must be 1..128 operation refs');
+     for(const op of v){try{validateRetrievalShape('OperationRef',op);}catch{fail('RENDER_INPUT_REFUSED','features.reads.installation.activeOperations must be exact OperationRefs {id,version}');}
+      if(!catalogReadOperations.has(operationKey(op)))fail('RENDER_INPUT_REFUSED',`features.reads.installation.activeOperations names ${operationKey(op)}, which is not in the retrieval catalog`);}
+     if(new Set(v.map(operationKey)).size!==v.length)fail('RENDER_INPUT_REFUSED','features.reads.installation.activeOperations must be unique');
+    }
     if(i.revokedOperations!==undefined){
      const v=i.revokedOperations;if(!Array.isArray(v)||!v.length||v.length>128)fail('RENDER_INPUT_REFUSED','features.reads.installation.revokedOperations must be 1..128 operation refs');
      for(const op of v)try{validateRetrievalShape('OperationRef',op);}catch{fail('RENDER_INPUT_REFUSED','features.reads.installation.revokedOperations must be catalog OperationRefs {id,version}');}
      if(new Set(v.map(op=>`${op.id}@${op.version}`)).size!==v.length)fail('RENDER_INPUT_REFUSED','features.reads.installation.revokedOperations must be unique');
     }
-    installation={enabled:i.enabled,...(i.revokedOperations===undefined?{}:{revokedOperations:structuredClone(i.revokedOperations)})};}
+    installation={enabled,...(i.activeOperations===undefined?{}:{activeOperations:structuredClone(i.activeOperations)}),
+     ...(i.revokedOperations===undefined?{}:{revokedOperations:structuredClone(i.revokedOperations)})};}
    // P1 discovery: the producer needs the trusted platform record (capability-policy.mjs) in the same render.
    let discovery;if(r.discovery!==undefined){const d=record(r.discovery,'features.reads.discovery',['enabled']);discovery={enabled:bool(d.enabled,'features.reads.discovery.enabled')};
     if(discovery.enabled&&f.capabilityPlatform===undefined)fail('RENDER_INPUT_REFUSED','features.reads.discovery needs features.capabilityPlatform (the run capability policy producer)');}
@@ -427,7 +439,9 @@ export const INSTALLATION_MEASUREMENT_MAX_JSON_BYTES=262144;
  * brotli-compressed; byte-exact and digest-pinned like every other material file, re-hashed against the pin after decompression at startup. */
 function installationMaterial(installation,feature){
  if(installation===null)fail('RENDER_INPUT_REFUSED','features.reads.installation needs runtime.generalReadInstallation: re-measure the image with a first-chat-launch-measurement module that emits it');
- const installed=new Set((Array.isArray(installation.measurement?.operations)?installation.measurement.operations:[]).map(row=>`${row?.operation?.id}@${row?.operation?.version}`));
+ const installed=new Set((Array.isArray(installation.measurement?.operations)?installation.measurement.operations:[]).map(row=>operationKey(row?.operation??{})));
+ const active=new Set(feature.activeOperations.map(operationKey));
+ if(installed.size!==active.size||[...active].some(key=>!installed.has(key)))fail('RENDER_INPUT_REFUSED','features.reads.installation.activeOperations differs from runtime.generalReadInstallation.measurement.operations');
  for(const op of feature.revokedOperations??[])if(!installed.has(`${op.id}@${op.version}`))fail('RENDER_INPUT_REFUSED',`features.reads.installation.revokedOperations names ${op.id}@${op.version}, which the measurement does not install`);
  try{createGeneralReadInstallationIssuer({catalogJson:JSON.stringify(retrievalCatalog),now:Date.now,enabled:true,measurement:installation.measurement,measurementSha256:installation.measurementSha256,
   ...(feature.revokedOperations===undefined?{}:{revokedOperations:feature.revokedOperations})});}
@@ -464,6 +478,11 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,ident
  // P2: installation pins the verified in-image measurement and ships its exact bytes; the real control issuer must accept the pin against
  // this tree's catalog and contracts (descriptor drift refuses here, never at startup). Absent feature: no pin, no file, no key.
  const installation=features.reads?.installation,installationBytes=installation?.enabled===true?installationMaterial(r.generalReadInstallation,installation):null;
+ if(capability?.profile.generalReads===true){
+  const active=installation?.enabled===true?installation.activeOperations:[],profile=capability.profile.activeReadOperations;
+  if(active.length!==profile.length||canonicalSha256(active)!==canonicalSha256(profile))
+   fail('RENDER_INPUT_REFUSED','features.reads.installation.activeOperations must equal the G3 capability profile activeReadOperations when generalReads is enabled');
+ }
  const {pins,notAfterMs}=verifyPki(d,pki);
  // Absolute expiries. schedule/serviceTasks/pricing/proxy = now + validity; grants and the static deadline additionally
  // must stay <= startup now + maxRuntimeSeconds (native-allocation-admission), so they use min(validity, maxRuntime).

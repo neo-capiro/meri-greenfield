@@ -14,7 +14,9 @@ export function identityContactsContract(reference){
  return {operation,contract:resolveOperationContract(operation)};
 }
 export function readContext(call,now){
- const fields=ownFields(call,['operation','input','request','authority','normalizationContext'],['signal']);
+ const fields=ownFields(call,['operation','input','request','authority','normalizationContext'],['signal','invocationId']);
+ if(fields.invocationId!==undefined&&
+    (typeof fields.invocationId!=='string'||!/^[A-Za-z0-9_-]{1,128}$/.test(fields.invocationId)))deny('INVALID_ARGUMENTS');
  const {operation,contract}=identityContactsContract(fields.operation);
  const input=frozenData(fields.input),request=frozenData(fields.request),normalizationContext=frozenData(fields.normalizationContext);
  let authority;
@@ -40,7 +42,7 @@ export function readContext(call,now){
  active();let normalized;try{normalized=contract.normalizeInput(request,normalizationContext);}catch{deny('INVALID_ARGUMENTS');}
  if(!same(normalized.input,input))deny('INVALID_ARGUMENTS');
  if(operation.id==='find_contacts'&&input.clientId!==null&&(subject.kind!=='client'||subject.entityIds[0]!==input.clientId))deny('ACCESS_DENIED');
- return {operation,contract,input,request,authority,normalizationContext,metadata:normalized.metadata,
+ return {operation,contract,input,request,authority,normalizationContext,metadata:normalized.metadata,invocationId:fields.invocationId,
   argumentsSha256:normalized.argumentsSha256,requestSha256:canonicalSha256({input,metadata:normalized.metadata}),deadlineMs,signal,active};
 }
 export function assertIdentityContactsResult(value,context){

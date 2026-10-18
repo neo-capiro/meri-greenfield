@@ -37,7 +37,8 @@ test('production-shaped vector: 64-hex policy revision, realistic task arguments
  assert.equal(production.key.publicJwk.x,keyFromSeed(PRODUCTION_SEED_HEX,PRODUCTION_KID).publicJwk.x);
  const trust=compileExecutionTrust({issuer:production.key.issuer,keys:[production.key.publicJwk]});
  for(const [name,c] of Object.entries(production.cases)){
-  const t=productionToken(name);assert.equal(t.credential,c.expected.credential,`${name} bytes are deterministic`);
+  const t=productionToken(name,{allocation:production.inputs.allocation});
+  assert.equal(t.credential,c.expected.credential,`${name} bytes are deterministic`);
   const v=verifyExecutionCapability(c.expected.credential,trust,{nowMs:AT});
   assert.equal(v.claimsJson,c.expected.claimsJson);assert.match(v.claims.policyRevision,/^[a-f0-9]{64}$/u);assert.equal(v.claims.policyRevision,POLICY_REVISION);
   assert.deepEqual(JSON.parse(v.claimsJson).budgets,BUDGETS);assert.equal(v.credentialSha256,c.expected.credentialSha256);

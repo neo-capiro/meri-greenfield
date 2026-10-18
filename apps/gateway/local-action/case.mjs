@@ -1,5 +1,6 @@
 /** Local qualification case only. Caller owns the admitted pool, schema and eventual teardown. */
-import {randomUUID,randomBytes} from 'node:crypto';
+import {createHash,randomUUID,randomBytes} from 'node:crypto';
+import canonicalize from 'canonicalize';
 import catalog from '../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {resolveOperationContract} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
@@ -9,6 +10,7 @@ import {createLocalActionIdentity} from './identity.mjs';
 import {PostgresBudgetStore,BudgetCommitUncertain} from '../budget/postgres-budget-store.mjs';
 import {createLocalLookupAuthorizer} from './control-authorizer.mjs';
 import {createLocalActionGateway} from './gateway.mjs';
+import {fixtureSignedActionReceipt} from './fixture-gateway.mjs';
 const operation=Object.freeze({id:'actions.query',version:'0.2.0'}),contract=resolveOperationContract(operation);
 export function createLocalActionCaseFactory(configuration){
  const {mode,now=Date.now,newId=randomUUID,assertStoredBinding}=ownFields(configuration,['mode','assertStoredBinding'],['now','newId']);
@@ -26,16 +28,33 @@ export function createLocalActionCaseFactory(configuration){
   const allocation={run:Object.fromEntries(['tenantId','actorId','conversationId','runId'].map(k=>[k,binding[k]])),manifest,manifestSha256:canonicalSha256(manifest),catalogSha256:canonicalSha256(catalog),budgets,schedule:{revision:canonicalSha256({name,charge}),expiresAt:new Date(cutoff).toISOString(),operations:[{operation,chargeMicrousd:charge}]}};
   const q={runId:binding.runId,attempt:1,workerArn:`arn:aws:ecs:us-east-1:967807252336:task/Synthetic/${newId().replaceAll('-','')}`,fence:1,policyRevision};
   const facts={grantId,binding,qualificationBinding:q,capabilitySha256:issued.capabilitySha256,allocationSha256:canonicalSha256(allocation)};
-  let calls=0;const token=`synthetic_${randomBytes(24).toString('base64url')}`,secret=`synthetic_${randomBytes(24).toString('base64url')}`;
+  let calls=0,sourcePins;const token=`synthetic_${randomBytes(24).toString('base64url')}`,secret=`synthetic_${randomBytes(24).toString('base64url')}`;
   const active=()=>{const at=now();if(!Number.isSafeInteger(at)||at>=cutoff||identity.status().closed)deny('DEADLINE');};
   const source={origin:'https://local-action.invalid',getCredentials:async call=>{
     await identity.authorityPorts.verifyCapability(issued.credential,{signal:call.signal});
-    if(canonicalSha256(call.binding)!==canonicalSha256(binding)||canonicalSha256(call.subject.scopes)!==canonicalSha256(identity.status().scopes))deny('ACCESS_DENIED');active();
-    return {binding,bearerToken:token,serviceSecret:secret,expiresAtMs:cutoff};},
+    const expected=contract.normalizeInput({clientId,limit:1},{binding,clientResolution:{reference:clientId,clientId}});
+    if(canonicalSha256(call.operation)!==canonicalSha256(operation)||
+      canonicalSha256(call.binding)!==canonicalSha256(binding)||
+      canonicalSha256(call.subject.scopes)!==canonicalSha256(identity.status().scopes)||
+      canonicalSha256(call.input)!==canonicalSha256(expected.input)||call.metadata!==null||
+      call.argumentsSha256!==expected.argumentsSha256||
+      call.requestSha256!==canonicalSha256({input:expected.input,metadata:null})||
+      call.target?.method!=='POST'||call.target.path!=='/api/clio/tools/actions.query')deny('ACCESS_DENIED');
+    sourcePins=call;active();
+    return fixtureSignedActionReceipt(call,{bearerToken:token,serviceSecret:secret,expiresAtMs:cutoff});},
    fetchImpl:async(url,init)=>{
     active();await identity.authorityPorts.verifyCapability(issued.credential,{signal:init.signal});
-    if(url!=='https://local-action.invalid/api/clio/tools/query_action_items'||init.method!=='POST'||init.headers.authorization!==`Bearer ${token}`||init.headers['x-internal-service-secret']!==secret)deny('ACCESS_DENIED');
-    const raw=JSON.parse(init.body),n=contract.normalizeInput(raw,{binding,clientResolution:{reference:clientId,clientId}}).input;
+    if(url!=='https://local-action.invalid/api/clio/tools/actions.query'||init.method!=='POST'||
+      init.headers.authorization!==`CapiroMeriRead ${token}`||init.headers['x-internal-service-secret']!==secret||
+      !sourcePins||sourcePins.target.bodySha256!==createHash('sha256').update(init.body,'utf8').digest('hex'))deny('ACCESS_DENIED');
+    const correlation=Buffer.from(init.headers['x-meri-read-correlation'],'base64url').toString('utf8');
+    if(correlation!==canonicalize({binding:sourcePins.binding,subject:sourcePins.subject,
+      policyRevision:sourcePins.policyRevision,normalizationContext:null})||
+      sourcePins.correlationSha256!==createHash('sha256').update(correlation,'utf8').digest('hex'))deny('ACCESS_DENIED');
+    const protocol=JSON.parse(init.body);
+    if(init.body!==JSON.stringify({input:sourcePins.input,metadata:sourcePins.metadata})||
+      protocol.metadata!==null||protocol.input.selection.clientId!==clientId)deny('ACCESS_DENIED');
+    const n=protocol.input;
     if(n.cursor!==null)deny('UNAVAILABLE');calls++;
     const result={tool:'query_action_items',generatedAt:new Date(now()).toISOString(),clientId,total:0,returned:0,actions:[],scope:{actionItemId:n.selection.actionItemId,status:n.selection.status,sort:n.selection.sort,page:1,limit:n.selection.limit,cursorApplied:false},coverage:{sourceStatus:'healthy',sourceReason:null,complete:true,partial:false,paginationComplete:true,hasMore:false,nextCursor:null,totalIsExactForScope:true,absenceSupported:true,note:'Synthetic empty source snapshot only'}};
     active();return new Response(JSON.stringify(result),{status:200,headers:{'content-type':'application/json'}});

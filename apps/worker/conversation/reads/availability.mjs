@@ -54,15 +54,16 @@ export function resolveAvailableReads({policy,installation,discovery,scopes,fami
  }
  return {available,unavailable};
 }
-/** G3: the reads a run's profile mounts (`mount:'profile'` in runtime.mjs): the profile-determined gates only, 1 (contract), 3 (capability
- * policy), 6 (deferred exclusion), a selected skill's narrowing and the operations another server exposes. The per-run gates 2 (installation),
- * 4 (discovery) and 5 (client scope) never change what is mounted: resolveAvailableReads decides, per call, which mounted read answers.
- * Every row resolveAvailableReads lists for the same inputs is among these rows.
- * @param {{policy:{generalReads?:boolean,readFamilies?:readonly string[]},families?:Readonly<Record<string,import('./families.mjs').ReadFamily>>,
+/** G3: the reads a run's measured release profile mounts (`mount:'profile'` in runtime.mjs): the exact active operation allowlist,
+ * contract, capability family policy, deferred exclusion, a selected skill's narrowing and operations another server exposes.
+ * Per-run installation, discovery and client scope never widen the fixed tool list: resolveAvailableReads decides, per call,
+ * which mounted read answers. An omitted active list mounts no reads.
+ * Profile-mode runtime narrows resolveAvailableReads to this fixed set.
+ * @param {{policy:{generalReads?:boolean,readFamilies?:readonly string[],activeReadOperations?:readonly OperationRef[]},families?:Readonly<Record<string,import('./families.mjs').ReadFamily>>,
  *  narrowTo?:readonly OperationRef[],exclude?:readonly OperationRef[]}} input @returns {AvailableRead[]} */
 export function profileReads({policy,families=READ_FAMILIES,narrowTo,exclude=[]}){
- const excluded=among(exclude),narrowed=narrowTo===undefined?()=>true:among(narrowTo),deferred=new Set(DEFERRED_ORIGINALS);
+ const excluded=among(exclude),narrowed=narrowTo===undefined?()=>true:among(narrowTo),active=among(policy.activeReadOperations??[]),deferred=new Set(DEFERRED_ORIGINALS);
  return familyReads(families).filter(row=>{const d=row.descriptor;return d.sideEffect==='none'&&d.approvalBoundary==='none'&&
   policy.generalReads===true&&(policy.readFamilies??[]).includes(row.family)&&!deferred.has(row.operation.id)&&!deferred.has(sdkToolName(row.operation))&&
-  narrowed(row.operation)&&!excluded(row.operation);});
+  active(row.operation)&&narrowed(row.operation)&&!excluded(row.operation);});
 }

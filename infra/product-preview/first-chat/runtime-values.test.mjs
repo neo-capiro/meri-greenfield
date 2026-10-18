@@ -11,11 +11,12 @@ import {join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {measureFirstChatLaunch,generalReadInstallation} from '../../../apps/runtime/build/first-chat-launch-measurement.mjs';
-import {runtimeValues,policyRevisionOf,measurementOverrides,measurementCommand,embeddedNodeArguments,decodeEmbeddedModule,measurementArguments,MEASUREMENT_MODULE,CONTAINER,main} from './runtime-values.mjs';
+import {runtimeValues,parseReceipt,policyRevisionOf,measurementOverrides,measurementCommand,embeddedNodeArguments,decodeEmbeddedModule,measurementArguments,MEASUREMENT_MODULE,CONTAINER,main} from './runtime-values.mjs';
 import {SOURCE_ROOT,withPosixPaths,parseRuntimeValues} from './render-material.mjs';
 import {createRenderFixture} from './render-material.fixture.mjs';
 import {compilePreparedCandidateConfiguration} from '../../../apps/runtime/prepared-candidate-config.mjs';
 import {allocation as parseAllocation} from '../../../apps/gateway/budget/tool-budget-binding.mjs';
+import {PROPOSED_PREVIEW_CAPABILITY_PLATFORM} from '../../../apps/runtime/product-ports/capability-policy.mjs';
 
 const here=fileURLToPath(new URL('.',import.meta.url)),json=async name=>JSON.parse(await readFile(join(here,name),'utf8'));
 const fixture=createRenderFixture();test.after(()=>fixture.cleanup());
@@ -72,6 +73,35 @@ test('P2: a receipt that predates generalReadInstallation assembles without it; 
  // Internally consistent but not what this source tree measures (a handler, descriptor or catalog changed since the image was measured).
  await refused(v=>{const g=v.receipt.generalReadInstallation;g.measurement.operations[0].handlerSourceSha256='0'.repeat(64);g.measurementSha256=canonicalSha256(g.measurement);},/differs from the source general-read installation measurement/u);
  await refused(v=>{const g=v.receipt.generalReadInstallation;g.measurement.operations.pop();g.measurementSha256=canonicalSha256(g.measurement);},/differs from the source/u);
+});
+
+test('P2 active subset: reviewed refs bind the image measurement, source measurement, and separate full inventory',async()=>{
+ const v=await committed(),inventory=structuredClone(v.receipt.generalReadInstallation);
+ const activeOperations=[structuredClone(inventory.measurement.operations[1].operation),structuredClone(inventory.measurement.operations[0].operation)];
+ v.deployment.features={sourceEnabled:true,reads:{enabled:true,
+  serviceSecretArn:'arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/core/measurement-Ab12Cd',
+  installation:{enabled:true,activeOperations}}};
+ v.receipt.inputs.activeReadOperationsSha256=canonicalSha256(activeOperations);
+ v.receipt.generalReadInventory=inventory;
+ v.receipt.generalReadInstallation=await generalReadInstallation({root:SOURCE_ROOT,activeReadOperations:activeOperations});
+ const args=measurementArguments({...v,root:SOURCE_ROOT}),index=args.indexOf('--active-read-operations');
+ assert.ok(index>0);assert.deepEqual(JSON.parse(Buffer.from(args[index+1],'base64url').toString('utf8')),activeOperations);
+ const context=x=>({policy:x.policy,deployment:x.deployment,policyRevision:x.policyRevision,sourceSkillsDigest:x.receipt.skills.digest,
+  sourceSdkOptionsSha256:x.receipt.sdkOptions.sha256,sourceInstallation:v.receipt.generalReadInstallation,sourceInventory:inventory});
+ assert.equal(parseReceipt(v.receipt,context(v)).generalReadInstallation.measurement.operations.length,2);
+ assert.equal(inventory.measurement.operations.length,76);
+ const refuses=(change,pattern)=>{const changed=change(structuredClone(v));assert.throws(()=>parseReceipt(changed.receipt,context(changed)),{code:'RUNTIME_VALUES_REFUSED',message:pattern});};
+ await refuses(x=>{delete x.receipt.inputs.activeReadOperationsSha256;return x;},/activeReadOperationsSha256/u);
+ await refuses(x=>{delete x.receipt.generalReadInstallation;return x;},/no active P2 measurement/u);
+ await refuses(x=>{delete x.receipt.generalReadInventory;return x;},/generalReadInventory/u);
+ await refuses(x=>{const g=x.receipt.generalReadInventory;g.measurement.operations.pop();g.measurementSha256=canonicalSha256(g.measurement);return x;},/full general-read inventory differs/u);
+ await refuses(x=>{x.receipt.generalReadInstallation=structuredClone(inventory);return x;},/source general-read installation measurement/u);
+ await refuses(x=>{x.deployment.features.reads.installation.activeOperations=[structuredClone(inventory.measurement.operations[2].operation)];return x;},/activeReadOperationsSha256/u);
+ await refuses(x=>{delete x.deployment.features.reads.installation.activeOperations;return x;},/activeOperations/u);
+ const mismatch=structuredClone(v),platform=structuredClone(PROPOSED_PREVIEW_CAPABILITY_PLATFORM),wrong=[structuredClone(inventory.measurement.operations[2].operation)];
+ for(const section of [platform.maximum,platform.defaults,...Object.values(platform.roleCeilings)])section.activeReadOperations=wrong;
+ mismatch.deployment.features.capabilityPlatform=platform;
+ assert.throws(()=>measurementArguments({...mismatch,root:SOURCE_ROOT}),{code:'RUNTIME_VALUES_REFUSED',message:/capability profile active read operations differ/u});
 });
 
 test('fail closed: non-template SDK option pin, foreign platform, drifted inputs, skills, allocation or envelope',async()=>{

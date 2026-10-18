@@ -1,5 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+import canonicalize from 'canonicalize';
 import {createServer} from 'node:http';
 import {once} from 'node:events';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
@@ -13,12 +15,19 @@ const execute = (f, changes = {}, call = f.call()) => createMailReadHandler({ope
 const adapterCall = f => ({operation: f.operation, input: f.input(), request: f.args, authority: f.authority});
 const jsonResponse = page => new Response(JSON.stringify(page), {headers: {'content-type': 'application/json'}});
 const drain = () => new Promise(resolve => setImmediate(resolve));
+const canonicalEndpoints = Object.freeze(Object.fromEntries(operations.map(id =>
+  [id, `https://canonical-mail.example.invalid/api/clio/tools/${id}`])));
+const rawSha256 = bytes => createHash('sha256').update(bytes, 'utf8').digest('hex');
+const signedCall = f => ({...f.call(), invocationId: 'synthetic_mail_call_1'});
+const signedCredentials = (f, pins, changes = {}) => ({...f.credentials(pins),
+  invocationId: pins.invocationId, authorizationScheme: 'CapiroMeriRead',
+  target: structuredClone(pins.target), correlationSha256: pins.correlationSha256, ...changes});
 
 for (const id of operations) test(`${id}: real loopback Fetch, byte decoder and handler preserve the canonical page`, async () => {
   const f = createMailFixture(id), observed = [];
   const server = createServer(async (req, res) => {
     let body = ''; for await (const chunk of req) body += chunk;
-    observed.push({method: req.method, url: req.url, headers: req.headers, body: JSON.parse(body)});
+    observed.push({method: req.method, url: req.url, headers: req.headers, rawBody: body, body: JSON.parse(body)});
     res.writeHead(200, {'content-type': 'application/json; charset=utf-8'}); res.end(JSON.stringify(f.page(JSON.parse(body).input)));
   });
   server.listen(0, '127.0.0.1'); await once(server, 'listening');
@@ -28,14 +37,150 @@ for (const id of operations) test(`${id}: real loopback Fetch, byte decoder and 
     assert.deepEqual(result, f.page()); assert.equal(observed.length, 1); assert.equal(observed[0].method, 'POST');
     assert.deepEqual(observed[0].body, {input: f.input(), metadata: null}); assert.equal(observed[0].headers.authorization, 'Bearer SYNTHETIC_MAIL_TOKEN');
     assert.equal(observed[0].headers['x-internal-service-secret'], 'SYNTHETIC_SERVICE_SECRET');
+    assert.equal(observed[0].headers['x-meri-deadline-at'], String(NOW+1000));
+    assert.equal(observed[0].headers['x-meri-read-correlation'], undefined);
     assert.equal(observed[0].headers['x-tenant-id'], undefined); assert.equal(result.evidenceReady, false);
     assert.deepEqual(result.negativeAssertion, {kind: 'none'}); assert.equal(result.coverage.enumeration, 'unknown');
     const pins = f.credentialCalls[0];
     assert.deepEqual(pins.binding, f.binding); assert.deepEqual(pins.subject, f.subject); assert.deepEqual(pins.sourceIds, ['mail']);
     assert.deepEqual(pins.operation, f.operation); assert.equal(pins.argumentsSha256, canonicalSha256(observed[0].body.input));
     assert.equal(pins.requestSha256, canonicalSha256(observed[0].body)); assert.equal(pins.metadata, null);
+    assert.deepEqual(pins.target, {method: 'POST', path: `/api/clio/tools/${id}`,
+      bodySha256: rawSha256(observed[0].rawBody)});
     assert.ok(Object.isFrozen(pins.input)); assert.ok(Object.isFrozen(pins.subject.scopes));
   } finally {server.closeAllConnections(); await new Promise(resolve => server.close(resolve)); assert.equal(server.listening, false);}
+});
+
+for (const id of operations) test(`${id}: CapiroMeriRead token binds the actual canonical path and raw body`, async () => {
+  const f = createMailFixture(id); let issuedTarget, requestedDigest;
+  const result = JSON.parse(await execute(f, {endpoints: canonicalEndpoints, getCredentials: async pins => {
+    issuedTarget = structuredClone(pins.target); requestedDigest = pins.correlationSha256;
+    return signedCredentials(f, pins, {target: issuedTarget});
+  }}, signedCall(f)));
+  assert.deepEqual(result, f.page());
+  const {url, options} = f.wire[0];
+  assert.equal(new URL(url).pathname, issuedTarget.path);
+  assert.equal(options.headers.authorization, 'CapiroMeriRead SYNTHETIC_MAIL_TOKEN');
+  assert.equal(options.headers['x-meri-deadline-at'], String(NOW+1000));
+  assert.deepEqual(issuedTarget, {method: 'POST', path: `/api/clio/tools/${id}`, bodySha256: rawSha256(options.body)});
+  const header = options.headers['x-meri-read-correlation'];
+  const bytes = Buffer.from(header, 'base64url');
+  assert.equal(header, bytes.toString('base64url'));
+  assert.ok(bytes.length <= 8192);
+  assert.equal(bytes.toString('utf8'), canonicalize({binding: f.binding, subject: f.subject,
+    policyRevision: f.authority.policyRevision, normalizationContext: null}));
+  assert.deepEqual(Object.keys(JSON.parse(bytes)).sort(), ['binding', 'normalizationContext', 'policyRevision', 'subject']);
+  assert.equal(requestedDigest, rawSha256(bytes));
+});
+
+for (const change of [
+  t => t.path = '/api/clio/tools/mail.search_messages',
+  t => t.bodySha256 = '0'.repeat(64),
+  t => t.method = 'GET',
+]) test('mail rejects a substituted token target before Fetch', async () => {
+  const f = createMailFixture(), credentials = pins => {
+    const target = structuredClone(pins.target); change(target);
+    return signedCredentials(f, pins, {target});
+  };
+  await assert.rejects(execute(f, {endpoints: canonicalEndpoints, getCredentials: credentials}, signedCall(f)), /ACCESS_DENIED/);
+  assert.equal(f.wire.length, 0);
+});
+
+test('mail refuses a signed token on a noncanonical configured path and an unknown scheme before Fetch', async () => {
+  for (const [endpointsValue, scheme] of [[endpoints, 'CapiroMeriRead'], [canonicalEndpoints, 'Basic'],
+    [canonicalEndpoints, null]]) {
+    const f = createMailFixture();
+    await assert.rejects(execute(f, {endpoints: endpointsValue, getCredentials: async pins =>
+      signedCredentials(f, pins, {authorizationScheme: scheme})}, signedCall(f)), /ACCESS_DENIED/);
+    assert.equal(f.wire.length, 0);
+  }
+});
+
+test('mail correlates an optional invocation ID with the token receipt', async () => {
+  const f = createMailFixture(), call = {...f.call(), invocationId: 'synthetic_mail_call_1'}; let requested;
+  const result = JSON.parse(await execute(f, {endpoints: canonicalEndpoints, getCredentials: async pins => {
+    requested = pins.invocationId;
+    return signedCredentials(f, pins);
+  }}, call));
+  assert.deepEqual(result, f.page()); assert.equal(requested, call.invocationId);
+  for (const value of [undefined, 'other_mail_call']) {
+    const bad = createMailFixture();
+    await assert.rejects(execute(bad, {endpoints: canonicalEndpoints, getCredentials: async pins => {
+      const receipt = signedCredentials(bad, pins);
+      if (value === undefined) delete receipt.invocationId; else receipt.invocationId = value;
+      return receipt;
+    }},
+    {...bad.call(), invocationId: call.invocationId}), /ACCESS_DENIED/);
+    assert.equal(bad.wire.length, 0);
+  }
+});
+
+test('mail refuses missing or substituted signed correlation digest before Fetch', async () => {
+  for (const echo of [undefined, '0'.repeat(64)]) {
+    const f = createMailFixture();
+    await assert.rejects(execute(f, {endpoints: canonicalEndpoints, getCredentials: async pins => {
+      const receipt = signedCredentials(f, pins);
+      if (echo === undefined) delete receipt.correlationSha256; else receipt.correlationSha256 = echo;
+      return receipt;
+    }}, signedCall(f)), /ACCESS_DENIED/);
+    assert.equal(f.wire.length, 0);
+  }
+});
+
+test('mail refuses a signed credential without the target echo before Fetch', async () => {
+  const f = createMailFixture();
+  await assert.rejects(execute(f, {endpoints: canonicalEndpoints, getCredentials: async pins => {
+    const receipt = signedCredentials(f, pins); delete receipt.target; return receipt;
+  }}, signedCall(f)), /ACCESS_DENIED/);
+  assert.equal(f.wire.length, 0);
+});
+
+test('mail refuses a signed credential without a trusted invocation ID before Fetch', async () => {
+  const f = createMailFixture();
+  await assert.rejects(execute(f, {endpoints: canonicalEndpoints, getCredentials: async pins => ({
+    ...f.credentials(pins), authorizationScheme: 'CapiroMeriRead', target: structuredClone(pins.target),
+    correlationSha256: pins.correlationSha256,
+  })}), /ACCESS_DENIED/);
+  assert.equal(f.wire.length, 0);
+});
+
+test('mail refuses Bearer fallback on a canonical path or reserved invocation before Fetch', async () => {
+  for (const [configured, reserved] of [[canonicalEndpoints, false], [endpoints, true]]) {
+    for (const explicit of [false, true]) {
+      const f = createMailFixture(), call = reserved ? signedCall(f) : f.call();
+      await assert.rejects(execute(f, {endpoints: configured, getCredentials: async pins => ({
+        ...f.credentials(pins), ...(reserved ? {invocationId: pins.invocationId} : {}),
+        ...(explicit ? {authorizationScheme: 'Bearer'} : {}),
+      })}, call), /ACCESS_DENIED/);
+      assert.equal(f.wire.length, 0);
+    }
+  }
+});
+
+test('mail refuses a signed credential expiring after the trusted deadline before Fetch', async () => {
+  const f = createMailFixture();
+  await assert.rejects(execute(f, {endpoints: canonicalEndpoints, getCredentials: async pins =>
+    signedCredentials(f, pins, {expiresAtMs: f.authority.deadlineMs + 1})}, signedCall(f)), /ACCESS_DENIED/);
+  assert.equal(f.wire.length, 0);
+});
+
+test('mail refuses a signed correlation larger than the ingress cap before Fetch', async () => {
+  const f = createMailFixture();
+  const authority = structuredClone(f.authority);
+  const policy = authority.policyRevision;
+  const extra = Array.from({length: 80}, (_, index) => ({tenantId: f.binding.tenantId, kind: 'mailbox',
+    resourceId: `synthetic-mailbox-${index}-${'x'.repeat(120)}`, policyRevision: policy}));
+  authority.subject.scopes.push(...extra);
+  authority.claims.scopes.push(...extra);
+  authority.decision.scopes.push(...extra);
+  assert.ok(Buffer.byteLength(canonicalize({binding: authority.binding, subject: authority.subject,
+    policyRevision: authority.policyRevision, normalizationContext: null}), 'utf8') > 8192);
+  let credentialCalls = 0;
+  await assert.rejects(execute(f, {endpoints: canonicalEndpoints, getCredentials: async pins => {
+    credentialCalls += 1; return signedCredentials(f, pins);
+  }}, {...signedCall(f), authority}), /ACCESS_DENIED/);
+  assert.equal(credentialCalls, 0);
+  assert.equal(f.wire.length, 0);
 });
 
 for (const id of operations) test(`${id}: exact selected client and mailbox remain scoped independently of connection status`, async () => {

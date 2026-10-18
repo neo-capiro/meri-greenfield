@@ -196,7 +196,9 @@ test('reads.installation pins the in-image P2 measurement and ships its exact by
  await baseline();
  const {generalReadInstallation}=await import(pathToFileURL(join(SOURCE_ROOT,RV.MEASUREMENT_MODULE)).href);
  const g=await generalReadInstallation({root:SOURCE_ROOT}),pin=runtime=>{runtime.generalReadInstallation={measurement:structuredClone(g.measurement),measurementSha256:g.measurementSha256};};
- const revoked=[structuredClone(g.measurement.operations[0].operation)],reads={...READS,installation:{enabled:true,revokedOperations:revoked}};
+ const activeOperations=g.measurement.operations.map(row=>structuredClone(row.operation));
+ const enabledInstallation=(rest={})=>({enabled:true,activeOperations,...rest});
+ const revoked=[structuredClone(activeOperations[0])],reads={...READS,installation:enabledInstallation({revokedOperations:revoked})};
  const rendered=await render(withFeatures({sourceEnabled:true,reads},pin),{featureSecrets:featureSecrets()});
  const control=assertOnly(rendered,['sourceEnabled','reads'],{worker:{sourceEnabled:true},extraControlFiles:[PATHS.readsServiceSecret,PATHS.readsReadModeServiceSecret,PATHS.readsInstallationMeasurement]});
  assert.deepEqual(control.reads,{enabled:true,serviceSecretFile:PATHS.readsServiceSecret,readModeServiceSecretFile:PATHS.readsReadModeServiceSecret,defaultCongress:119,
@@ -217,12 +219,24 @@ test('reads.installation pins the in-image P2 measurement and ships its exact by
  const off=await render(withFeatures({sourceEnabled:true,reads:{...READS,installation:{enabled:false},discovery:{enabled:false}}},pin),{featureSecrets:featureSecrets()});
  assert.deepEqual(config(off,'control').reads.installation,{enabled:false});assert.deepEqual(config(off,'control').reads.discovery,{enabled:false});
  assert.equal(off.roles.control.bundle.files.some(f=>f.path===PATHS.readsInstallationMeasurement),false);assert.equal(Object.hasOwn(off.summary.features,'installation'),false);
- const profile=capabilityProfileOf(PROPOSED_PREVIEW_CAPABILITY_PLATFORM);
- const on=await render(withFeatures({sourceEnabled:true,capabilityPlatform:PROPOSED_PREVIEW_CAPABILITY_PLATFORM,reads:{...READS,installation:{enabled:true},discovery:{enabled:true}}},
-  runtime=>{pin(runtime);runtime.capabilityProfileSha256=profile.profileSha256;}),{featureSecrets:featureSecrets()});
+ const profileActive=activeOperations.slice(0,7),profileMeasurement=await generalReadInstallation({root:SOURCE_ROOT,activeReadOperations:profileActive});
+ const pinProfile=runtime=>{runtime.generalReadInstallation={measurement:structuredClone(profileMeasurement.measurement),measurementSha256:profileMeasurement.measurementSha256};};
+ const activePlatform=structuredClone(PROPOSED_PREVIEW_CAPABILITY_PLATFORM);
+ for(const policy of [activePlatform.maximum,activePlatform.defaults,...Object.values(activePlatform.roleCeilings)])policy.activeReadOperations=structuredClone(profileActive);
+ const profile=capabilityProfileOf(activePlatform);
+ const on=await render(withFeatures({sourceEnabled:true,capabilityPlatform:activePlatform,reads:{...READS,installation:enabledInstallation({activeOperations:profileActive}),discovery:{enabled:true}}},
+  runtime=>{pinProfile(runtime);runtime.capabilityProfileSha256=profile.profileSha256;}),{featureSecrets:featureSecrets()});
  assert.deepEqual(config(on,'control').reads.discovery,{enabled:true});
- assert.deepEqual(config(on,'control').reads.installation,{enabled:true,measurementSha256:g.measurementSha256,measurementFile:PATHS.readsInstallationMeasurement});
+ assert.deepEqual(config(on,'control').reads.installation,{enabled:true,measurementSha256:profileMeasurement.measurementSha256,measurementFile:PATHS.readsInstallationMeasurement});
  assert.equal(on.summary.features.installation.revokedOperations,0);
+ assert.equal(on.summary.features.installation.operations,profileActive.length);
+ // The P2 receipt sorts its rows, while the reviewed input order is preserved in the static G3 profile pin.
+ const reversed=[...profileActive].reverse();
+ const reordered=await render(withFeatures({sourceEnabled:true,reads:{...READS,installation:enabledInstallation({activeOperations:reversed})}},pinProfile),{featureSecrets:featureSecrets()});
+ assert.equal(reordered.summary.features.installation.measurementSha256,profileMeasurement.measurementSha256);
+ await assert.rejects(render(withFeatures({sourceEnabled:true,capabilityPlatform:activePlatform,reads:{...READS,installation:enabledInstallation({activeOperations:reversed})}},
+  runtime=>{pinProfile(runtime);runtime.capabilityProfileSha256=profile.profileSha256;}),{featureSecrets:featureSecrets()}),
+  {code:'RENDER_INPUT_REFUSED',message:/must equal the G3 capability profile/u});
  // The capability platform record and the measurement together stay inside the 65,536-byte control bundle (one SecretString).
  assert.ok(on.summary.roles.control.bundleBytes<=65536,`control bundle ${on.summary.roles.control.bundleBytes}`);
  // Without the feature, runtime values that carry the measurement change nothing: no pin, no file, no key.
@@ -231,21 +245,30 @@ test('reads.installation pins the in-image P2 measurement and ships its exact by
  assert.equal(Object.hasOwn(unused.summary.features,'installation'),false);
  // Fail closed.
  const refuse=(features,runtime,pattern,options={featureSecrets:featureSecrets()})=>assert.rejects(render(withFeatures(features,runtime),options),{code:'RENDER_INPUT_REFUSED',message:pattern});
- await refuse({sourceEnabled:true,reads:{...READS,installation:{enabled:true}}},undefined,/needs runtime\.generalReadInstallation/u);
+ await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation()}},undefined,/needs runtime\.generalReadInstallation/u);
+ await refuse({sourceEnabled:true,reads:{...READS,installation:{enabled:true}}},pin,/activeOperations must be 1\.\.128/u);
+ await refuse({sourceEnabled:true,reads:{...READS,installation:{enabled:false,activeOperations}}},pin,/disabled installation names no active/u);
+ await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation({activeOperations:[]})}},pin,/activeOperations must be 1\.\.128/u);
+ await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation({activeOperations:[activeOperations[0],activeOperations[0]]})}},pin,/activeOperations must be unique/u);
+ await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation({activeOperations:[{id:'not_in_catalog',version:'0.2.0'}]})}},pin,/not in the retrieval catalog/u);
+ await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation({activeOperations:[{...activeOperations[0],extra:true}]})}},pin,/exact OperationRefs/u);
+ await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation({activeOperations:activeOperations.slice(1)})}},pin,/differs from runtime\.generalReadInstallation\.measurement/u);
+ await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation()} ,capabilityPlatform:PROPOSED_PREVIEW_CAPABILITY_PLATFORM},runtime=>{pin(runtime);runtime.capabilityProfileSha256=capabilityProfileOf(PROPOSED_PREVIEW_CAPABILITY_PLATFORM).profileSha256;},/must equal the G3 capability profile/u);
+ await refuse({sourceEnabled:true,reads:{...READS,installation:{enabled:false}},capabilityPlatform:activePlatform},runtime=>{pinProfile(runtime);runtime.capabilityProfileSha256=profile.profileSha256;},/must equal the G3 capability profile/u);
  await refuse({sourceEnabled:true,reads:{...READS,discovery:{enabled:true}}},pin,/needs features\.capabilityPlatform/u);
  await refuse({sourceEnabled:true,reads:{...READS,installation:{enabled:false,revokedOperations:revoked}}},pin,/revokes nothing/u);
- await refuse({sourceEnabled:true,reads:{...READS,installation:{enabled:true,revokedOperations:[]}}},pin,/1\.\.128/u);
- await refuse({sourceEnabled:true,reads:{...READS,installation:{enabled:true,revokedOperations:[{id:'x'}]}}},pin,/OperationRefs/u);
- await refuse({sourceEnabled:true,reads:{...READS,installation:{enabled:true,revokedOperations:[revoked[0],revoked[0]]}}},pin,/unique/u);
- await refuse({sourceEnabled:true,reads:{...READS,installation:{enabled:true,revokedOperations:[{id:'not_installed',version:'0.2.0'}]}}},pin,/does not install/u);
+ await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation({revokedOperations:[]})}},pin,/1\.\.128/u);
+ await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation({revokedOperations:[{id:'x'}]})}},pin,/OperationRefs/u);
+ await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation({revokedOperations:[revoked[0],revoked[0]]})}},pin,/unique/u);
+ await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation({revokedOperations:[{id:'not_installed',version:'0.2.0'}]})}},pin,/does not install/u);
  await refuse({sourceEnabled:true,reads:{...READS,installation:{enabled:'yes'}}},pin,/must be a boolean/u);
- await refuse({sourceEnabled:true,reads:{...READS,installation:{enabled:true,measurementSha256:g.measurementSha256}}},pin,/not an accepted field/u);
+ await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation({measurementSha256:g.measurementSha256})}},pin,/not an accepted field/u);
  await refuse({reads:{enabled:false,installation:{enabled:true}}},pin,/disabled reads name no/u,{});
  await refuse({reads:{enabled:false,discovery:{enabled:false}}},pin,/disabled reads name no/u,{});
- await refuse({sourceEnabled:true,reads:{...READS,installation:{enabled:true}}},runtime=>{pin(runtime);runtime.generalReadInstallation.measurementSha256='0'.repeat(64);},/canonical sha256/u);
- await refuse({sourceEnabled:true,reads:{...READS,installation:{enabled:true}}},runtime=>{pin(runtime);delete runtime.generalReadInstallation.measurement;},/measurement is required/u);
- await refuse({sourceEnabled:true,reads:{...READS,installation:{enabled:true}}},runtime=>{pin(runtime);const m=runtime.generalReadInstallation.measurement;m.operations[0].descriptorSha256='0'.repeat(64);runtime.generalReadInstallation.measurementSha256=canonicalSha256(m);},/control installation issuer/u);
- await refuse({sourceEnabled:true,reads:{...READS,installation:{enabled:true}}},runtime=>{pin(runtime);const m=runtime.generalReadInstallation.measurement;m.baseCatalogSha256='0'.repeat(64);runtime.generalReadInstallation.measurementSha256=canonicalSha256(m);},/allocation catalog/u);
+ await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation()}},runtime=>{pin(runtime);runtime.generalReadInstallation.measurementSha256='0'.repeat(64);},/canonical sha256/u);
+ await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation()}},runtime=>{pin(runtime);delete runtime.generalReadInstallation.measurement;},/measurement is required/u);
+ await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation()}},runtime=>{pin(runtime);const m=runtime.generalReadInstallation.measurement;m.operations[0].descriptorSha256='0'.repeat(64);runtime.generalReadInstallation.measurementSha256=canonicalSha256(m);},/control installation issuer/u);
+ await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation()}},runtime=>{pin(runtime);const m=runtime.generalReadInstallation.measurement;m.baseCatalogSha256='0'.repeat(64);runtime.generalReadInstallation.measurementSha256=canonicalSha256(m);},/allocation catalog/u);
  // A drifted measurement also refuses without any feature: runtime values are validated as a whole.
  await assert.rejects(render(withFeatures({sourceEnabled:true,reads:READS},runtime=>{pin(runtime);runtime.generalReadInstallation.measurementSha256='0'.repeat(64);}),{featureSecrets:featureSecrets()}),{code:'RENDER_INPUT_REFUSED'});
 });

@@ -15,7 +15,9 @@ export function meetingContract(reference) {
   return {operation,contract:resolveOperationContract(operation)};
 }
 export function readContext(call,now) {
-  const fields=ownFields(call,['operation','input','request','authority'],['signal']);
+  const fields=ownFields(call,['operation','input','request','authority'],['signal','invocationId']);
+  if(fields.invocationId!==undefined&&
+      (typeof fields.invocationId!=='string'||!/^[A-Za-z0-9_-]{1,128}$/.test(fields.invocationId)))deny('INVALID_ARGUMENTS');
   const {operation,contract}=meetingContract(fields.operation);
   let input,request,authority;
   try {input=frozenData(fields.input);request=frozenData(fields.request);authority=frozenData(fields.authority);}
@@ -55,7 +57,7 @@ export function readContext(call,now) {
   const clientId=input.clientId;
   if(clientId!==null ? subject.kind!=='client'||subject.entityIds[0]!==clientId :
       subject.kind!=='personal'||subject.entityIds[0]!==authority.binding.actorId)deny('ACCESS_DENIED');
-  return {operation,contract,input,request,authority,options,metadata:normalized.metadata,
+  return {operation,contract,input,request,authority,options,metadata:normalized.metadata,invocationId:fields.invocationId,
     argumentsSha256:normalized.argumentsSha256,signal,deadlineMs,active};
 }
 export function assertMeetingResult(result,context) {

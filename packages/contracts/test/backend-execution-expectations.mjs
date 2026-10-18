@@ -8,6 +8,21 @@ const schemaHashTransitions=Object.freeze({search_capiro_data:Object.freeze({
   before:'96e5d1ebc461dc53db86e2fd14e2863d93d5c651e134382a2da5daefd3836fec',
   after:'b390270625b4662df487f04b13df745f422d10a2a8aa90e79e90a7ce75219d60',
 })});
+const profileSchemaTransition=Object.freeze({
+  before:Object.freeze({version:'0.2.0',schemaId:'urn:meri:retrieval:client-knowledge-profile:0.2.0',sha256:'67ad0fd59fe7b995e5e9c73d60a82a12220c58d74a81672b485d9279458ba27d'}),
+  after:Object.freeze({version:'0.3.0',schemaId:'urn:meri:retrieval:client-knowledge-profile:0.3.0',sha256:'7d422f92a4771b2d7e869e45371396c12b8a69934f9cb8ca50f5821ccab514a2'}),
+});
+function transitionProfileDescriptor(row,from,to){
+  if(row.operation.id!=='get_client_context')return row;
+  const prior=profileSchemaTransition[from],next=profileSchemaTransition[to];
+  assert.equal(row.operation.version,prior.version);
+  const refs={};for(const field of ['inputSchema','outputSchema']){
+    const suffix=field==='inputSchema'?'ClientKnowledgeProfileRequest':'ClientKnowledgeProfileOutput';
+    assert.deepEqual(row[field],{id:`${prior.schemaId}#/$defs/${suffix}`,sha256:prior.sha256});
+    refs[field]={id:`${next.schemaId}#/$defs/${suffix}`,sha256:next.sha256};
+  }
+  return {...row,operation:{...row.operation,version:next.version},...refs};
+}
 function transitionSchemaHashes(row,from,to){
   const change=schemaHashTransitions[row.operation.id];if(!change)return row;
   for(const field of ['inputSchema','outputSchema'])assert.equal(row[field].sha256,change[from]);
@@ -25,7 +40,7 @@ export function expectedExistingDescriptor(row) {
     'Historical scoped-only contract; actions.query is the reviewed full native transport successor. This original partial validator remains unchanged.',
     'This scoped-only operation still refuses client-less listing; the successor declares tenant-only unscoped transport without establishing current access.',
     ...result.limitations.slice(2)]};
-  return transitionSchemaHashes(result,'before','after');
+  return transitionProfileDescriptor(transitionSchemaHashes(result,'before','after'),'before','after');
 }
 // Only the declared changed fields are reversed; all other bytes remain hashed.
 export function priorExistingDescriptor(row) {
@@ -42,7 +57,7 @@ export function priorExistingDescriptor(row) {
     assert.deepEqual(row.limitations,expected.limitations);
     result={...result,replacement:null,limitations:[...originalLimitations,...result.limitations.slice(2)]};
   }
-  return transitionSchemaHashes(result,'after','before');
+  return transitionProfileDescriptor(transitionSchemaHashes(result,'after','before'),'after','before');
 }
 export function expectedExistingBinding(row) {
   let result=row;
@@ -53,6 +68,7 @@ export function expectedExistingBinding(row) {
   }
   if(row.id==='query_action_items')result={...result,supersededBy:'actions.query'};
   if(row.id==='list_global_datasets')result={...result,dispatchProfile:'dataset-metadata/1'};
+  if(row.id==='get_client_context')result={...result,version:'0.3.0'};
   const passiveProfiles={read_monday_client_boards:'bound-projection/1',search_memory:'bound-projection/1',
     get_client_context:'bound-projection/1',find_contacts:'bound-projection/1',resolve_entity:'bound-projection/1',
     read_client_documents:'client-documents/1'};
@@ -66,6 +82,6 @@ export function expectedExistingOriginal(row) {
   row={...row,boundary:expectedVerticalBoundary(row.id,row.boundary)};
   if(verticalOperationIds.includes(row.id))return {...row,state:'mapped',replacement:{id:row.id,version:'0.2.0'}};
   if(row.id==='query_action_items')return {...row,state:'mapped',replacement:fullActionReference};
-  if(addedOperations.includes(row.id))return {...row,state:'mapped',replacement:{id:row.id,version:'0.2.0'}};
+  if(addedOperations.includes(row.id))return {...row,state:'mapped',replacement:{id:row.id,version:row.id==='get_client_context'?'0.3.0':'0.2.0'}};
   return row;
 }

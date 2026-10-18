@@ -15,7 +15,7 @@ const ids=['search_public_web','scrape_web_page','search_sam_opportunities','get
 const [SEARCH,PAGE,SAM,FLORIDA]=ids,T='2026-10-12T12:00:00.000Z',U='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',V='bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
 const ev=new URL('../../../docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/',import.meta.url);
 const oldCatalog=JSON.parse(readFileSync(new URL('baseline-catalog.json',ev))),oldBindings=JSON.parse(readFileSync(new URL('baseline-bindings.json',ev)));
-const copy=structuredClone, resolve=id=>resolveOperationContract({id,version:'0.2.0'});
+const copy=structuredClone, resolve=id=>resolveOperationContract({id,version:id==='get_client_context'?'0.3.0':'0.2.0'});
 const schema=group=>JSON.parse(readFileSync(new URL(schemaRelativePath(group),import.meta.url)));
 function context(id){return id===SAM?{asOf:T,sourceStatusAsOf:T,sourceHealthAsOf:T,evidenceAccuracyMode:'off'}:id===FLORIDA?{asOf:T,effectiveScope:{jurisdiction:'FL',sessionKey:'',folderId:null,clientId:null},clientResolution:null}:{};}
 const request=id=>id===SEARCH?{query:' synthetic evidence '}:id===PAGE?{url:'https://example.test/original'}:{};
@@ -31,7 +31,7 @@ const samRow=()=>({id:U,noticeId:'notice',solicitationNumber:null,title:'Synthet
 test('original139 rows and63 descriptors/callbacks survive exactly four full mappings',()=>{
  assertCatalog(catalog);assert.equal(catalog.operations.length,97);assert.equal(bindings.length,97);assert.deepEqual(catalog.operations.filter(x=>!verticalOperationIds.includes(x.operation.id)&&!ids.includes(x.operation.id)&&!backendIds.includes(x.operation.id)&&x.operation.id!=='actions.query'),oldCatalog.operations.map(expectedExistingDescriptor));
  assert.equal(catalog.originals.length,139);assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);assert.equal(catalog.originals.filter(x=>x.disposition==='deferred').length,43);assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,96);assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.replacement===null).length,0);
- for(const old of oldCatalog.originals.map(expectedExistingOriginal))assert.deepEqual(catalog.originals.find(x=>x.id===old.id),(ids.includes(old.id)||backendIds.includes(old.id))?{...old,state:'mapped',replacement:{id:old.id,version:'0.2.0'}}:old);
+ for(const old of oldCatalog.originals.map(expectedExistingOriginal))assert.deepEqual(catalog.originals.find(x=>x.id===old.id),(ids.includes(old.id)||backendIds.includes(old.id))?{...old,state:'mapped',replacement:{id:old.id,version:old.id==='get_client_context'?'0.3.0':'0.2.0'}}:old);
  assert.deepEqual(JSON.parse(JSON.stringify(bindings.filter(x=>!verticalOperationIds.includes(x.id)&&!ids.includes(x.id)&&!backendIds.includes(x.id)&&x.id!=='actions.query'),(k,v)=>typeof v==='function'?{source:v.toString()}:v)),oldBindings.map(expectedExistingBinding));assert.deepEqual(catalog.originals.find(x=>x.id==='query_action_items').replacement,fullActionReference);
  for(const id of ['save_memory','create_task','run_analysis'])if(verticalOperationIds.includes(id))assert.doesNotThrow(()=>resolve(id));else assert.throws(()=>resolve(id));
 });

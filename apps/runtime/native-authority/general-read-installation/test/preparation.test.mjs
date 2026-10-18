@@ -6,7 +6,7 @@ import {canonicalSha256 as hash} from '../../../../../packages/contracts/validat
 import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {familyReads} from '../../../../worker/conversation/reads/availability.mjs';
 import {familyOperations} from '../../../../gateway/general-reads/registration.mjs';
-import {prepareGeneralReadFamilyHandlers,createGeneralReadFamilyHandlers,GENERAL_READ_ADAPTER_FAMILIES} from '../../../../gateway/general-reads/integration.mjs';
+import {prepareGeneralReadFamilyHandlers,createGeneralReadFamilyHandlers,measureGeneralReadFamilySources,GENERAL_READ_ADAPTER_FAMILIES} from '../../../../gateway/general-reads/integration.mjs';
 import {CASES,familyCase} from '../../../../gateway/general-reads/test/family-cases.mjs';
 import {storedCase as fundingCase} from '../../../../gateway/sources/funding-opportunities/test/fixture.mjs';
 import {storedCase as programCase} from '../../../../gateway/sources/program-elements/test/fixture.mjs';
@@ -18,6 +18,25 @@ import {installationReadOperations,prepareGeneralReadInstallation} from '../runt
 test('every SDK runtime reference maps to the canonical composed families, including the existing mail constructor',()=>{
  const expected=familyReads().map(row=>({operation:row.operation,family:row.family}));assert.deepEqual(installationReadOperations(),expected);assert.ok(GENERAL_READ_ADAPTER_FAMILIES.includes('mail'));
  assert.deepEqual(familyOperations('mail'),expected.filter(row=>row.family==='mail').map(row=>row.operation));
+});
+
+test('selected retained source manifests bind the task composer and local dataset bytes',async()=>{
+ const manifests=await measureGeneralReadFamilySources({familyIds:['action-items-complete','dataset-metadata']});
+ const labels=['apps/runtime/native-authority/retained-reads/selected-task-ports.mjs',
+  'apps/runtime/native-authority/retained-reads/operational-task-ports.mjs',
+  'apps/runtime/native-authority/retained-reads/dataset-metadata-port.mjs',
+  'packages/contracts/retrieval-0.2/public-domain-registry.mjs',
+  'packages/contracts/retrieval-0.2/public-domain-datasets.json',
+  'packages/contracts/retrieval-0.2/operation-contracts.mjs',
+  'apps/gateway/dispatch/action-read-context.mjs',
+  'apps/gateway/dispatch/operation-context.mjs',
+  'apps/gateway/dispatch/dispatch-lifetime.mjs',
+  'apps/gateway/dispatch/read-result-envelope.mjs',
+  'apps/gateway/dispatch/operation-result.mjs',
+  'apps/runtime/native-authority/read-delegation/core-client.mjs',
+  'packages/runtime/operation-lifetime.mjs'];
+ for(const manifest of manifests.values())for(const label of labels)
+  assert.equal(manifest.sourceFiles.filter(row=>row.label===label).length,1,label);
 });
 
 test('two-phase preparation preserves legacy source records/order/hash and canonical source siblings without granting SDK eligibility',async()=>{
