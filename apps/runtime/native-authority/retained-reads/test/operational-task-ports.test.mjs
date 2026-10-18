@@ -1,4 +1,5 @@
 /** Synthetic task, Core HTTP and session ports; no live source or credential. */
+import {createHash} from 'node:crypto';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
@@ -56,7 +57,6 @@ function sourceCall(x,id,args){
 for(const [id,args,expectedBody] of [
  ['query_tasks',{clientId:CLIENT,assignedToMe:true,status:'overdue'},input=>({limit:input.limit,clientId:CLIENT,
   status:input.status,dueBefore:input.dueBefore,assignedToMe:true})],
- ['query_action_items',{clientId:CLIENT,sort:'priority'},input=>({limit:input.limit,clientId:CLIENT,sort:'priority'})],
  ['actions.query',{clientId:CLIENT,sort:'priority'},input=>({limit:input.selection.limit,sort:'priority',clientId:CLIENT})]
 ])test(`${id}: task port calls the existing Core adapter with selected-client body and bounded live credentials`,async()=>{
  const x=setup(),call=sourceCall(x,id,args);x.state.native=nativePage(id,call.input,x.f);
@@ -72,6 +72,69 @@ for(const [id,args,expectedBody] of [
  assert.equal(wire.options.headers.authorization,`Bearer ${TOKEN}`);
  assert.equal(wire.options.headers['x-internal-service-secret'],SECRET);
  assert.equal(wire.options.credentials,'omit');assert.equal(wire.options.redirect,'error');
+});
+
+test('query_action_items: original body and reservation use a single-use Option B token',async()=>{
+ const issuance=[];
+ const x=setup({getNativeCredentialWithExpiry:async request=>{
+  issuance.push({kind:'handle',request});return {credential:'mrd.synthetic-handle',expiresAtMs:NOW+3000};},
+ getToolCredential:async request=>{
+  issuance.push({kind:'token',request});return {bearerToken:'SYNTHETIC_SIGNED_TOOL_TOKEN',
+   authorizationScheme:'CapiroMeriRead',expiresAtMs:NOW+2500};}});
+ const call={...sourceCall(x,'query_action_items',{clientId:CLIENT,sort:'priority'}),invocationId:'original_action_call_1'};
+ x.state.native=nativePage('query_action_items',call.input,x.f);
+ const handler=originalHandlers({...x.ports.families['operational-reads'],now:()=>x.state.now,newId:()=>uuid('7')})
+  .find(row=>row.operation.id==='query_action_items');
+ const result=JSON.parse(await handler.execute(call));
+ assert.equal(result.operation.id,'query_action_items');assert.equal(result.subject.entityIds[0],CLIENT);
+ assert.equal(x.state.bearers,0);assert.equal(x.state.secrets,1);assert.equal(issuance.length,2);
+ assert.equal(issuance[0].request.callKey,call.invocationId);
+ assert.deepEqual(issuance[1].request.operation,{id:'query_action_items',version:'0.2.0'});
+ assert.equal(issuance[1].request.argumentsSha256,call.argumentsSha256);
+ assert.equal(issuance[1].request.credential,'mrd.synthetic-handle');
+ const wire=x.state.wire[0],body=wire.options.body;
+ assert.deepEqual(JSON.parse(body),{limit:call.input.limit,clientId:CLIENT,sort:'priority'});
+ assert.deepEqual(issuance[1].request.target,{method:'POST',path:'/api/clio/tools/query_action_items',
+  bodySha256:createHash('sha256').update(body,'utf8').digest('hex')});
+ assert.equal(wire.options.headers.authorization,'CapiroMeriRead SYNTHETIC_SIGNED_TOOL_TOKEN');
+ assert.equal(wire.options.headers['x-internal-service-secret'],SECRET);
+ assert.equal(wire.options.headers['x-meri-deadline-at'],String(NOW+2500));
+ assert.equal(wire.options.headers['x-meri-read-correlation'],undefined);
+ assert.equal(wire.options.credentials,'omit');assert.equal(wire.options.redirect,'error');
+});
+
+test('query_action_items: missing invocation, absent exchange and attended bearer fallback refuse before Fetch',async()=>{
+ for(const failure of ['missing_invocation','missing_callback','null_fallback','ordinary_bearer','expired']){
+  const token=async()=>failure==='null_fallback'?null:failure==='ordinary_bearer'?
+   {bearerToken:'LIVE_USER',authorizationScheme:'Bearer',expiresAtMs:NOW+2500}:
+   {bearerToken:'SIGNED_TOOL_TOKEN',authorizationScheme:'CapiroMeriRead',expiresAtMs:failure==='expired'?NOW:NOW+2500};
+  const x=setup({getToolCredential:failure==='missing_callback'?undefined:token});
+  const call=sourceCall(x,'query_action_items',{clientId:CLIENT,sort:'priority'});
+  if(failure!=='missing_invocation')call.invocationId='original_action_call_1';
+  x.state.native=nativePage('query_action_items',call.input,x.f);
+  const handler=originalHandlers({...x.ports.families['operational-reads'],now:()=>x.state.now,newId:()=>uuid('7')})
+   .find(row=>row.operation.id==='query_action_items');
+  await assert.rejects(handler.execute(call));assert.equal(x.state.wire.length,0);
+ }
+});
+
+test('query_action_items: changed selected input, reservation hash or original target refuses before token issue',async()=>{
+ let issues=0;
+ const x=setup({getToolCredential:async()=>{issues++;throw Error('NO_TOKEN_ISSUE');}});
+ const call=sourceCall(x,'query_action_items',{clientId:CLIENT,sort:'priority'});
+ const sourceIdentity=resolveOperationContract(ref('query_action_items')).descriptor.sourceRequirements[0];
+ const body=JSON.stringify({limit:call.input.limit,clientId:CLIENT,sort:'priority'});
+ const valid={operation:ref('query_action_items'),sourceIdentity,binding:x.f.binding,subject:x.f.subject,
+  policyRevision:x.f.claims.policyRevision,sourceIds:[sourceIdentity.sourceId],argumentsSha256:call.argumentsSha256,
+  input:call.input,invocationId:'original_action_call_1',target:{method:'POST',path:'/api/clio/tools/query_action_items',
+   bodySha256:createHash('sha256').update(body,'utf8').digest('hex')},deadlineMs:DEADLINE,signal:new AbortController().signal};
+ for(const change of [p=>{p.input.clientId=uuid('8');},p=>{p.argumentsSha256='0'.repeat(64);},
+  p=>{p.target.path='/api/clio/tools/actions.query';},p=>{p.invocationId='bad id';},
+  p=>{p.subject.entityIds=[uuid('8')];}]){
+  const pins=structuredClone({...valid,signal:undefined});pins.signal=new AbortController().signal;change(pins);
+  await assert.rejects(x.ports.families['operational-reads'].getCredentials(pins));
+ }
+ assert.equal(issues,0);assert.equal(x.state.bearers,0);assert.equal(x.state.secrets,0);
 });
 
 test('original credential pins require exact operation, source identity, digest, binding and selected-client subject',async()=>{
