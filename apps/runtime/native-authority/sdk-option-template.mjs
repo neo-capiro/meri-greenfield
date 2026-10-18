@@ -28,7 +28,9 @@
  *                         workspaceRule) for THIS run's workspace become `Read(/[run workspace]/**)` / `Edit(...)`; any other rule refuses.
  *  plugins[].path         exactly sdkSkillPluginDirectory(<config parent>) (the parent of CLAUDE_CONFIG_DIR, the admitted
  *                         intent.configParentDirectory) becomes TEMPLATE_PLACEHOLDERS.skillPluginDirectory; any other path refuses.
- * The MCP mounts are availability-invariant (always the profile's full tool list), so one profile has one template. */
+ * The MCP mounts are availability-invariant (always the profile's full tool list), so one profile has one template. The same workspace
+ * rules also reach the CLI inside the `--settings` launch argument; the launch template places them the same way (preparation-intent.mjs
+ * launchTemplateArgs / runLaunchArgs, verified against intent.workspace by matchPreparedDescriptor). */
 import {join,dirname} from 'node:path';
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';

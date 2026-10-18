@@ -13,11 +13,15 @@ import {createHash} from 'node:crypto';
 import receipt from '../../../infra/product-preview/first-chat/launch-measurement-receipt.json' with {type:'json'};
 import catalog from '../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
-import {probeRun,probeTemplateSha256,measureFirstChatLaunch,main} from '../build/first-chat-launch-measurement.mjs';
+import {probeRun,probeTemplateSha256,measureFirstChatLaunch,main,PROBES} from '../build/first-chat-launch-measurement.mjs';
 import {createPreparedRunnerQuery} from '../native-authority/runner-query.mjs';
 import {projectNativeSdkOptions} from '../native-authority/sdk-option-projection.mjs';
 import {sdkOptionsTemplateSha256,projectSdkOptionsTemplate,sdkOptionsRun,sdkConfigDirectory,sdkSkillPluginDirectory,authorityDigest,TEMPLATE_PLACEHOLDERS} from '../native-authority/sdk-option-template.mjs';
-import {RUNNER_SDK_CA_FILE} from '../native-authority/preparation-intent.mjs';
+import {RUNNER_SDK_CA_FILE,LAUNCH_WORKSPACE_PLACEHOLDER,launchTemplateArgs,runLaunchArgs,compileNativePreparationIntent,matchPreparedDescriptor,matchPreparedDescriptorShape} from '../native-authority/preparation-intent.mjs';
+import {continuationLaunchArgs} from '../native-authority/continuation-pin.mjs';
+import {workspaceRule} from '../../worker/conversation/capabilities/workspace-tools.mjs';
+import {query as sdkQuery} from '../../worker/conversation/agent-sdk.mjs';
+import runtimeValues from '../../../infra/product-preview/first-chat/runtime-values.json' with {type:'json'};
 import {PROPOSED_PREVIEW_CAPABILITY_PLATFORM,createConfiguredRunCapabilityPolicy} from '../product-ports/capability-policy.mjs';
 import {createConversationActivity} from '../../worker/conversation/activity.mjs';
 import {assertCapabilityPolicy} from '../../worker/conversation/capabilities/policy.mjs';
@@ -153,20 +157,85 @@ test('the template places the skill plugin path and workspace rules only for thi
  }finally{await probe.close();}
 });
 
-test('the measurement reports whether the launch template is run-invariant: the workspace rules in --settings are not (G3 blocker 4)',async()=>{
+test('the measurement reports one launch template for every run of the profile, the run workspace in --settings a placeholder',async()=>{
  const restore=quiet();try{
   const portable=await measureFirstChatLaunch({...inputs,capabilityProfile:PORTABLE},{root});
   assert.equal(portable.launchTemplateRunInvariant,true);assert.equal(portable.sdkOptions.runInvariant,true);assert.equal(portable.gates.runnerSdkOptions,'PASS');
   assert.equal(portable.inputs.capabilityProfileSha256,canonicalSha256(PORTABLE));assert.equal(portable.sdkOptions.sha256,await measured(PORTABLE));
-  // The skill plugin copy's path is a launch argument, deliberately free of any per-run value.
-  const plugin=await measureFirstChatLaunch({...inputs,capabilityProfile:{...PROFILE,workspaceTools:false}},{root});
-  assert.equal(plugin.launchTemplateRunInvariant,true);assert.ok(plugin.launchTemplate.args.includes(`--plugin-dir-no-mcp=${sdkSkillPluginDirectory(inputs.configParentDirectory)}`));
   const full=await measureFirstChatLaunch({...inputs,capabilityProfile:PROFILE},{root});
-  assert.equal(full.sdkOptions.runInvariant,true);assert.equal(full.gates.runnerSdkOptions,'PASS');
-  assert.equal(full.launchTemplateRunInvariant,false,'workspace tools put this run\'s workspace into the --settings launch argument');
-  if(process.platform==='linux')assert.match(full.gates.matchPreparedDescriptor,/^FAIL/u);
-  const none=await measureFirstChatLaunch(inputs,{root});assert.equal(none.launchTemplateRunInvariant,true);assert.equal(none.sdkOptions.sha256,receipt.sdkOptions.sha256);assert.equal(none.inputs.capabilityProfileSha256,null);
+  // The skill plugin copy's path is a launch argument, deliberately free of any per-run value.
+  assert.ok(full.launchTemplate.args.includes(`--plugin-dir-no-mcp=${sdkSkillPluginDirectory(inputs.configParentDirectory)}`));
+  assert.equal(full.sdkOptions.runInvariant,true);assert.equal(full.gates.runnerSdkOptions,'PASS');assert.equal(full.launchTemplateRunInvariant,true);
+  const settings=full.launchTemplate.args[full.launchTemplate.args.indexOf('--settings')+1];
+  assert.deepEqual(JSON.parse(settings).permissions.allow,[`Read(/${LAUNCH_WORKSPACE_PLACEHOLDER}/**)`,`Edit(/${LAUNCH_WORKSPACE_PLACEHOLDER}/**)`]);
+  assert.equal(JSON.stringify(full.launchTemplate).includes('/workspace/'),false,'no probe workspace in the launch template');
+  if(process.platform==='linux')assert.equal(full.gates.matchPreparedDescriptor,'PASS');
  }finally{restore();}
+});
+
+/** The pinned SDK's launch descriptor for one probe run's options (spawn hook interrupted; nothing is spawned). */
+async function capturedLaunch(profile,probe){
+ const p=await probeRun({...inputs,...(profile===undefined?{}:{capabilityProfile:profile})},{root,binding:probe});let d;
+ try{try{sdkQuery({prompt:'p',options:{...p.options,spawnClaudeCodeProcess(r){d={command:r.command,args:[...r.args],cwd:r.cwd,env:{...r.env}};throw Error('captured');}}});}catch{}}finally{await p.close();}
+ assert.ok(d);return d;
+}
+
+test('two conversations under the full profile share one launch template; each launch is it with exactly its own workspace',async()=>{
+ const restore=quiet();try{
+  const one=await capturedLaunch(PROFILE,PROBES[0]),two=await capturedLaunch(PROFILE,PROBES[1]);
+  assert.notDeepEqual(one.args,two.args,'the SDK puts each run workspace into --settings');
+  const template=launchTemplateArgs(one.args,one.cwd);
+  assert.deepEqual(launchTemplateArgs(two.args,two.cwd),template,'one template');
+  assert.deepEqual(runLaunchArgs(template,two.cwd),two.args,'byte-exact launch of run two');assert.deepEqual(runLaunchArgs(template,one.cwd),one.args);
+  assert.notDeepEqual(runLaunchArgs(template,one.cwd),two.args,'run one workspace is not run two launch');
+  // The workspace anywhere but the --settings allow rules, or a template placeholder outside them, refuses.
+  assert.throws(()=>launchTemplateArgs([...one.args,'--add-dir',one.cwd],one.cwd),/PREPARATION_REFUSED/u);
+  assert.throws(()=>runLaunchArgs([...template,LAUNCH_WORKSPACE_PLACEHOLDER],two.cwd),/PREPARATION_REFUSED/u);
+  assert.throws(()=>launchTemplateArgs(template,one.cwd),/PREPARATION_REFUSED/u,'a template is never re-templated');
+ }finally{restore();}
+});
+
+test('matchPreparedDescriptor holds one launch template across conversations and refuses a tampered --settings',async()=>{
+ const restore=quiet();let full;try{full=await measureFirstChatLaunch({...inputs,capabilityProfile:PROFILE},{root});}finally{restore();}
+ // Paths valid on this host; each descriptor's --settings is built independently from workspace-tools.mjs workspaceRule.
+ const configParentDirectory=resolve('/g3/run'),secureStorageDirectory=join(configParentDirectory,'sdk-secure'),credential='synthetic-task-capability';
+ const at=full.launchTemplate.args.indexOf('--settings')+1,base=JSON.parse(full.launchTemplate.args[at]);
+ const launchTemplate={command:process.execPath,args:full.launchTemplate.args,env:{...full.launchTemplate.env,CLAUDE_SECURESTORAGE_CONFIG_DIR:secureStorageDirectory}};
+ const workspace=probe=>resolve('/g3/workspace',probe.conversationId);
+ const intent=probe=>({workspace:workspace(probe),configParentDirectory,secureStorageDirectory,launchTemplate,executableSha256:'a'.repeat(64),imageSha256:'b'.repeat(64),runnerSha256:'c'.repeat(64),sdkOptionsSha256:'d'.repeat(64),authoritySha256:'e'.repeat(64)});
+ const settings=(rules,extra={})=>JSON.stringify({...base,...extra,permissions:{...base.permissions,allow:rules}});
+ const descriptor=(probe,token)=>({command:process.execPath,args:launchTemplate.args.map((a,i)=>i===at?token:a),cwd:workspace(probe),env:{...launchTemplate.env,CLAUDE_CONFIG_DIR:join(configParentDirectory,'sdk-'+probe.runId),ANTHROPIC_AUTH_TOKEN:credential}});
+ const own=probe=>settings([workspaceRule('Read',workspace(probe)),workspaceRule('Edit',workspace(probe))]);
+ for(const probe of PROBES){
+  assert.equal(matchPreparedDescriptor(descriptor(probe,own(probe)),intent(probe),credential).args[at],own(probe));
+  assert.equal(matchPreparedDescriptorShape(descriptor(probe,own(probe)),intent(probe)).cwd,workspace(probe));}
+ assert.deepEqual(intent(PROBES[0]).launchTemplate,intent(PROBES[1]).launchTemplate,'both runs are configured with the one template');
+ // Continuation arguments still land exactly where the SDK emits them, around the run's own --settings.
+ const continuation={resume:'00000000-0000-4000-8000-0000000000aa'},resumed=continuationLaunchArgs(runLaunchArgs(launchTemplate.args,workspace(PROBES[1])),continuation);
+ assert.deepEqual(matchPreparedDescriptor({...descriptor(PROBES[1],own(PROBES[1])),args:resumed},intent(PROBES[1]),credential,continuation).args,resumed);
+ const refused=d=>{assert.throws(()=>matchPreparedDescriptor(d,intent(PROBES[1]),credential),/PREPARATION_REFUSED/u);assert.throws(()=>matchPreparedDescriptorShape(d,intent(PROBES[1])),/PREPARATION_REFUSED/u);};
+ const two=workspace(PROBES[1]);
+ refused(descriptor(PROBES[1],own(PROBES[0])));                                                         // another conversation's workspace
+ refused(descriptor(PROBES[1],settings([workspaceRule('Read',two),workspaceRule('Edit',resolve('/g3'))]))); // a widened rule
+ refused(descriptor(PROBES[1],settings([workspaceRule('Read',two)])));                                  // a dropped rule
+ refused(descriptor(PROBES[1],settings([workspaceRule('Read',two),workspaceRule('Edit',two),'Bash(*)']))); // an added rule
+ refused(descriptor(PROBES[1],settings([workspaceRule('Read',two),workspaceRule('Edit',two)],{autoMemoryEnabled:true}))); // another byte
+ refused(descriptor(PROBES[1],own(PROBES[1]).replace('{','{ ')));                                        // not the SDK's canonical bytes
+ refused(descriptor(PROBES[1],settings([`Read(/${LAUNCH_WORKSPACE_PLACEHOLDER}/**)`,`Edit(/${LAUNCH_WORKSPACE_PLACEHOLDER}/**)`]))); // the placeholder itself
+ // A configured template with the placeholder anywhere but exactly the --settings workspace rules never compiles.
+ for(const args of [[...launchTemplate.args,LAUNCH_WORKSPACE_PLACEHOLDER],launchTemplate.args.map((a,i)=>i===at?settings([`Read(/${LAUNCH_WORKSPACE_PLACEHOLDER}/**)`,'Bash(*)']):a),
+  launchTemplate.args.map((a,i)=>i===at?settings([`Read(/${LAUNCH_WORKSPACE_PLACEHOLDER}/**)`],{note:LAUNCH_WORKSPACE_PLACEHOLDER}):a)])
+  assert.throws(()=>compileNativePreparationIntent({...intent(PROBES[0]),launchTemplate:{...launchTemplate,args}}),/PREPARATION_REFUSED/u);
+});
+
+test('without a capability profile the launch template, its run launch and every hash are unchanged',async()=>{
+ const none=await measureFirstChatLaunch(inputs,{root});
+ assert.deepEqual(none.launchTemplate.args,receipt.launchTemplate.args);assert.deepEqual(none.launchTemplate.env,receipt.launchTemplate.env);
+ assert.equal(none.launchTemplateRunInvariant,true);assert.equal(none.sdkOptions.sha256,receipt.sdkOptions.sha256);assert.equal(none.sdkOptions.secondProbeSha256,receipt.sdkOptions.sha256);assert.equal(none.inputs.capabilityProfileSha256,null);
+ assert.equal(JSON.stringify(receipt.launchTemplate).includes(LAUNCH_WORKSPACE_PLACEHOLDER),false);
+ for(const args of [receipt.launchTemplate.args,runtimeValues.preparationIntent.launchTemplate.args]){
+  assert.equal(canonicalSha256(launchTemplateArgs(args,'/workspace/00000000-0000-4000-8000-000000000001')),canonicalSha256(args));
+  assert.equal(canonicalSha256(runLaunchArgs(args,'/workspace/00000000-0000-4000-8000-000000000011')),canonicalSha256(args));}
 });
 
 test('Linux: the full proposed profile through a real activity over real directories hashes to the measured pin',{skip:!POSIX&&'real POSIX workspace and plugin directories'},async t=>{
