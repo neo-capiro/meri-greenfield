@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {canonicalSha256} from '../../packages/contracts/validate.mjs';
 import {synthesizeProductPreview} from './manifest.mjs';
+import {CONTROL_NODE_CA_FILE} from '../../apps/runtime/control-ca-bundle.mjs';
 
 const account='967807252336',sha='a'.repeat(64),sourceCommit='c'.repeat(40),refused=/PRODUCT_PREVIEW_BINDING_REFUSED/u;
 const controlCa=Buffer.from('synthetic reviewed public control CA'),controlCaSha=createHash('sha256').update(controlCa).digest('hex');
@@ -43,7 +44,9 @@ test('held writers add only a separate task-local RW token volume to each matchi
   assert.deepEqual(main.MountPoints.find(mount=>mount.SourceVolume==='temporal-token'),{SourceVolume:'temporal-token',ContainerPath:'/run/meri-temporal',ReadOnly:false});
   assert.deepEqual(main.MountPoints.find(mount=>mount.SourceVolume==='material'),{SourceVolume:'material',ContainerPath:'/run/meri',ReadOnly:true});
   assert.equal(init.MountPoints.some(mount=>mount.SourceVolume==='temporal-token'||mount.ContainerPath==='/run/meri-temporal'),false);
-  assert.deepEqual(init.MountPoints,[{SourceVolume:'material',ContainerPath:'/run/meri',ReadOnly:false}]);
+  assert.deepEqual(init.MountPoints,[{SourceVolume:'material',ContainerPath:'/run/meri',ReadOnly:false},...(family==='control'?[{SourceVolume:'tmp',ContainerPath:'/tmp',ReadOnly:false}]:[])]);
+  assert.deepEqual(init.Command,family==='control'?['write','--control-node-ca']:['write']);
+  assert.equal(init.Environment.some(row=>row.Name==='NODE_EXTRA_CA_CERTS'),false,'init keeps image trust until the derived bundle exists');
   assert.equal(main.User,'1000:1000');assert.equal(main.ReadonlyRootFilesystem,true);assert.equal(main.Privileged,false);
   assert.deepEqual(main.LinuxParameters.Capabilities.Drop,['ALL']);assert.deepEqual(main.DependsOn,[{ContainerName:'material-init',Condition:'SUCCESS'}]);
   assert.equal(task.ContainerDefinitions.length,2,'the existing main process owns its writer; no second worker/container');
@@ -112,16 +115,20 @@ test('shared public trust pins do not become a static client identity for either
  assert.equal(resources(synthesizeProductPreview(input),'AWS::ECS::Service').every(service=>service.DesiredCount===0),true);
 });
 
-test('the worker trusts the control private origin through its issuer server CA file; control and runner keep the image trust',()=>{
+test('control uses composite trust after init; worker retains pinned issuer trust and runner keeps image trust',()=>{
  const input=fixture(),tasks=resources(synthesizeProductPreview(input),'AWS::ECS::TaskDefinition');
  const env=family=>tasks.find(task=>task.Family==='meri-product-preview-'+family).ContainerDefinitions.at(-1).Environment;
  const worker=env('temporal-worker');
  assert.deepEqual(worker.filter(row=>row.Name==='NODE_EXTRA_CA_CERTS'),[{Name:'NODE_EXTRA_CA_CERTS',Value:input.temporalTokenWriters.temporalWorker.tls.issuerCaFile}]);
  assert.match(worker.find(row=>row.Name==='NODE_EXTRA_CA_CERTS').Value,/^\/run\/meri\/[A-Za-z0-9._-]+\.pem$/u);
  assert.equal(input.materialDelivery.temporalWorker.expected.sha256ByPath[input.temporalTokenWriters.temporalWorker.tls.issuerCaFile],input.runnerPoststart.controlCaSha256);
- for(const family of ['control','runner'])assert.equal(env(family).some(row=>row.Name==='NODE_EXTRA_CA_CERTS'),false,family);
+ assert.deepEqual(env('control').filter(row=>row.Name==='NODE_EXTRA_CA_CERTS'),[{Name:'NODE_EXTRA_CA_CERTS',Value:CONTROL_NODE_CA_FILE}]);
+ assert.equal(env('runner').some(row=>row.Name==='NODE_EXTRA_CA_CERTS'),false);
  const without=fixture();delete without.temporalTokenWriters;
- for(const task of resources(synthesizeProductPreview(without),'AWS::ECS::TaskDefinition'))assert.equal(task.ContainerDefinitions.some(c=>(c.Environment??[]).some(row=>row.Name==='NODE_EXTRA_CA_CERTS')),false);
+ for(const task of resources(synthesizeProductPreview(without),'AWS::ECS::TaskDefinition')){
+  const extra=task.ContainerDefinitions.flatMap(c=>(c.Environment??[]).filter(row=>row.Name==='NODE_EXTRA_CA_CERTS'));
+  assert.deepEqual(extra,task.Family==='meri-product-preview-control'?[{Name:'NODE_EXTRA_CA_CERTS',Value:CONTROL_NODE_CA_FILE}]:[]);
+ }
 });
 
 test('a worker issuer CA that is not the CA pinned for the control private origin refuses',()=>{

@@ -2,6 +2,7 @@
 import {App, Stack, CfnOutput, BootstraplessSynthesizer, aws_ecs as ecs} from 'aws-cdk-lib';
 import {Template} from 'aws-cdk-lib/assertions';
 import {parseStaticProductMaterialExpected} from '../../apps/runtime/material-init.mjs';
+import {CONTROL_NODE_CA_FILE} from '../../apps/runtime/control-ca-bundle.mjs';
 import {createHash} from 'node:crypto';
 
 const ACCOUNT='967807252336', REGION='us-east-1';
@@ -135,6 +136,8 @@ function task(stack,b,role,port){
    {name:'MERI_POSTSTART_CONTROL_ORIGIN',value:b.runnerPoststart.controlOrigin},
    {name:'MERI_POSTSTART_CA_BASE64',value:b.runnerPoststart.controlCaBase64},
    {name:'MERI_POSTSTART_CA_SHA256',value:b.runnerPoststart.controlCaSha256}]:[{name:'MERI_PRODUCT_PREVIEW_REQUIRED',value:'1'},
+   // Init combines locked image RDS roots and the pinned private server CA before this Node starts.
+   ...(role==='control'?[{name:'NODE_EXTRA_CA_CERTS',value:CONTROL_NODE_CA_FILE}]:[]),
    // Replaces the image's RDS bundle (the worker has no database): Node reads it once at start, after material-init SUCCESS.
    ...(role==='temporalWorker'&&tokenWriter?[{name:'NODE_EXTRA_CA_CERTS',value:tokenWriter.tls.issuerCaFile}]:[])],
   portMappings,linuxParameters:{capabilities:{drop:['ALL']}},
@@ -145,10 +148,10 @@ function task(stack,b,role,port){
   logConfiguration:{logDriver:'awslogs',options:{'awslogs-group':roleValue(b,'logGroupName','logGroupNames',role),'awslogs-region':REGION,'awslogs-stream-prefix':`product-preview-${name}`,'mode':'blocking'}},
   ...(role==='runner'?{}:{healthCheck:health(port)})};
  const init=delivery?{name:'material-init',image:b.imageUri,essential:false,user:b.runtimeUser,privileged:false,readonlyRootFilesystem:true,
-  entryPoint:['node','apps/runtime/material-init-cli.mjs'],command:['write'],linuxParameters:{capabilities:{drop:['ALL']}},
+  entryPoint:['node','apps/runtime/material-init-cli.mjs'],command:role==='control'?['write','--control-node-ca']:['write'],linuxParameters:{capabilities:{drop:['ALL']}},
   environment:[{name:'MERI_STATIC_MATERIAL_EXPECTED',value:JSON.stringify(delivery.expected)}],
   secrets:[{name:'MERI_STATIC_MATERIAL_BUNDLE',valueFrom:delivery.valueFrom}],
-  mountPoints:[{sourceVolume:'material',containerPath:'/run/meri',readOnly:false}],
+  mountPoints:[{sourceVolume:'material',containerPath:'/run/meri',readOnly:false},...(role==='control'?[{sourceVolume:'tmp',containerPath:'/tmp',readOnly:false}]:[])],
   logConfiguration:{logDriver:'awslogs',options:{'awslogs-group':roleValue(b,'logGroupName','logGroupNames',role),'awslogs-region':REGION,'awslogs-stream-prefix':`product-preview-${name}-init`,'mode':'blocking'}}}:null;
  const size=b.sizing[role];
  return new ecs.CfnTaskDefinition(stack,`${role}Task`,{family:`meri-product-preview-${name}`,networkMode:'awsvpc',requiresCompatibilities:['FARGATE'],
