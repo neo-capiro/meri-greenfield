@@ -494,6 +494,36 @@
       "sha256": "bee8991090d4d2f592506f5980db974636254ed83d6afc0c4c726ba95a0275a2"
     },
     {
+      "path": "sdk/effort-beta-addendum/EFFORT-BETA-ADDENDUM-MANIFEST.json",
+      "bytes": 1471,
+      "sha256": "45e677d81c37ffdc21cba9174012172a58e8491784e0910ffab92bf19533914a"
+    },
+    {
+      "path": "sdk/effort-beta-addendum/EFFORT-BETA-RESEARCH.md",
+      "bytes": 6952,
+      "sha256": "1cd1b9b29a86ba6958b00cae3db92b543a1f92145ef5e44ed4b98e71ecd0339f"
+    },
+    {
+      "path": "sdk/effort-beta-addendum/PINNED-EFFORT-BETA-SNIPPETS.json",
+      "bytes": 3010,
+      "sha256": "437f30d390de991388942aaebc6ac00e74ec02958bf5dc4cbd8045c776f7fbc8"
+    },
+    {
+      "path": "sdk/effort-beta-addendum/pinned-capability-experiment-receipt.json",
+      "bytes": 20418,
+      "sha256": "e6467900714e38637c982ca776fcc5e29c08d3d11c8db07f387bfacbddeeedbe"
+    },
+    {
+      "path": "sdk/effort-beta-addendum/pinned-capability-experiment-source.json",
+      "bytes": 551,
+      "sha256": "7d111cf65f77d6fa5aa0bd971c94878209a731cdb2ea1c4223ee0bdb52e2028a"
+    },
+    {
+      "path": "sdk/effort-beta-addendum/pinned-capability-experiment.mjs",
+      "bytes": 13327,
+      "sha256": "d7137d4704ff443a1976d51fbd60779e5059efde299ea450ffb182241f5266de"
+    },
+    {
       "path": "sdk/final-qualification-commands.json",
       "bytes": 6322,
       "sha256": "73603054e0fab99c5160e7b262aa799ef89f515bde6627d7de7d68993d46f2c8"
