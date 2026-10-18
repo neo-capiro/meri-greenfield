@@ -72,7 +72,9 @@ export function createNextRunAdoptionJournal({tx,now,authority,retention,revocat
     else if(saved||row.state!=='RESERVED')refuse('CORRUPT');
    }
    const matching=adoptions.find(a=>same(a.receipt.target,binding))??null;
-   return {descriptor,adoption:matching,state:path.at(-1)?.state??null,reservation:path.at(-1)??null};
+   const effectiveAdoption=descriptor.transitionSha256===null?null:adoptions.find(a=>a.receiptSha256===descriptor.transitionSha256)??null;
+   if(descriptor.transitionSha256!==null&&!effectiveAdoption)refuse('CORRUPT');
+   return {descriptor,adoption:matching,effectiveAdoption,state:path.at(-1)?.state??null,reservation:path.at(-1)??null};
  }
  /** The transaction callback must hold the same tenant/conversation advisory lock as the canonical conversation store. */
  async function readEffective(raw,check){

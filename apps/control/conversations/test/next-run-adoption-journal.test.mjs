@@ -25,7 +25,7 @@ function fixture(){
   if(sql.includes('next_runs'))return {rows:structuredClone(state.next)};
   if(sql.includes('meri_conversations.runs')){assert.equal(args[2][0],binding.runId);return {rows:structuredClone(state.runs.filter(row=>args[2].includes(row.run_id)))};}
   throw Error('unexpected SQL');}});};
- return {state,journal:createNextRunAdoptionJournal({tx})};
+ return {state,tx,journal:createNextRunAdoptionJournal({tx})};
 }
 const check=()=>{};
 
@@ -36,6 +36,9 @@ test('unordered retained rows resolve the adopted target and its inherited succe
  assert.equal(later.configurationSha256,newConfigurationSha256);assert.equal(later.transitionSha256,adoptionRow.receipt_sha256);
  assert.equal(later.reservationSha256,second.reservation_sha256);assert.equal(f.state.locked,2);
  assert.equal(f.state.queries.length,8);assert.ok(f.state.queries.every(sql=>sql.startsWith('SELECT ')));
+ const inherited=await f.tx(successor,check,client=>f.journal.readEffectiveFromClient({client,binding:successor,check}));
+ assert.equal(inherited.adoption,null);assert.equal(inherited.effectiveAdoption.receiptSha256,adoptionRow.receipt_sha256);
+ assert.equal(inherited.state,'RESERVED');
 });
 
 test('original descriptor remains exact after an adopted successor',async()=>{
