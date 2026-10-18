@@ -61,8 +61,10 @@ ENV NODE_EXTRA_CA_CERTS=/opt/meri/certs/rds-global-bundle.pem
 ENV HOME=/home/node
 # ECS copies this exact image path into the task-local bind mount. The one-shot
 # material writer and application both run as the pinned non-root node UID/GID.
-RUN test "$(id -u node)" = 1000 && test "$(id -g node)" = 1000 && mkdir -p /run/meri /run/meri-temporal && chown node:node /run/meri /run/meri-temporal && chmod 0700 /run/meri /run/meri-temporal
+# /tmp and /workspace are task-local bind mounts too: without an image path to copy, Fargate mounts them root-owned
+# and the node UID cannot create the per-run capability material directory (/tmp/meri-material) or a run workspace.
+RUN test "$(id -u node)" = 1000 && test "$(id -g node)" = 1000 && mkdir -p /run/meri /run/meri-temporal /workspace && chown node:node /run/meri /run/meri-temporal /workspace && chmod 0700 /run/meri /run/meri-temporal /workspace && chmod 1777 /tmp
 USER node
-VOLUME ["/run/meri", "/run/meri-temporal"]
+VOLUME ["/run/meri", "/run/meri-temporal", "/tmp", "/workspace"]
 ENTRYPOINT ["node", "apps/runtime/cli.mjs"]
 CMD ["--help"]
