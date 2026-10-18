@@ -36,8 +36,8 @@ async function writeFresh(path,bytes,maxBytes){if(!Buffer.isBuffer(bytes)||!byte
  * validated by the same validator the runner applies at load; nothing optional is left for the runner to assume. */
 function runnerConfiguration(e,directory,delivered){
  let configuration;
- try{const c=own(delivered,['limits','native','workspace','proxyOrigin']),n=own(c.native,['maxResponseBytes']);
-  configuration={version:1,profile:'isolated-preview',sourceEnabled:false,limits:c.limits,native:{origin:e.origin,capabilityFile:join(directory,files.capability.name),loopback:false,maxResponseBytes:n.maxResponseBytes},binding:e.binding,versions:e.versions,workspace:c.workspace,proxyOrigin:c.proxyOrigin,bootstrap:{expiresAtMs:e.expiresAtMs,remote:true},captureOwnsClose:true};
+ try{const c=own(delivered,['limits','native','workspace','proxyOrigin'],['sourceEnabled']),n=own(c.native,['maxResponseBytes']);if(c.sourceEnabled!==undefined&&c.sourceEnabled!==true)fail('CONFIG_REFUSED');
+  configuration={version:1,profile:'isolated-preview',sourceEnabled:c.sourceEnabled===true,limits:c.limits,native:{origin:e.origin,capabilityFile:join(directory,files.capability.name),loopback:false,maxResponseBytes:n.maxResponseBytes},binding:e.binding,versions:e.versions,workspace:c.workspace,proxyOrigin:c.proxyOrigin,bootstrap:{expiresAtMs:e.expiresAtMs,remote:true},captureOwnsClose:true};
   validateConfiguration(configuration,'conversation-runner');}
  catch(error){fail('CONFIG_REFUSED',{cause:error?.code??error?.message});}
  return configuration;

@@ -70,7 +70,9 @@ export function validateConfiguration(raw,role){
  // readiness requires the retention projections; when absent, no gate exists and nothing pretends otherwise.
  // Purge is an explicit switch that this source only accepts off: activation is a reviewed change, never a configuration value.
  if(c.retention!==undefined){requireValue(role==='control','RETENTION_CONFIGURATION');own(c.retention,['enabled'],['purge']);requireValue(c.retention.enabled===true,'RETENTION_CONFIGURATION');if(c.retention.purge!==undefined){own(c.retention.purge,['enabled']);requireValue(c.retention.purge.enabled===false,'RETENTION_CONFIGURATION');}}
- requireValue(c.version===1&&c.profile==='isolated-preview'&&c.sourceEnabled===false);
+ // G1: source connectivity is an explicit boolean (decided: 10-15 #5, D015 #4a). The schedule worker stays source-disabled
+ // (schedule-service-configuration.mjs); every source owner keeps its own enablement, authority and fail-closed checks.
+ requireValue(c.version===1&&c.profile==='isolated-preview'&&typeof c.sourceEnabled==='boolean'&&(role!=='schedule-worker'||c.sourceEnabled===false));
  if(c.captureOwnsClose!==undefined)requireValue(typeof c.captureOwnsClose==='boolean','RUNNER_CAPTURE_CONFIGURATION');
  if(c.bootstrap!==undefined){own(c.bootstrap,['expiresAtMs'],['remote']);requireValue(c.bootstrap.remote===undefined||typeof c.bootstrap.remote==='boolean','TASK_BOOTSTRAP_CONFIGURATION');if(c.bootstrap.remote===true)requireValue(c.captureOwnsClose===true&&c.remoteTask===undefined,'TASK_BOOTSTRAP_CONFIGURATION');requireValue(Number.isSafeInteger(c.bootstrap.expiresAtMs)&&c.bootstrap.expiresAtMs>0,'TASK_BOOTSTRAP_CONFIGURATION');}
  own(c.limits,['startupMs','shutdownMs','requestMs','requestBytes']);requireValue(integer(c.limits.startupMs,100,30000)&&integer(c.limits.shutdownMs,100,30000)&&integer(c.limits.requestMs,10,30000)&&integer(c.limits.requestBytes,1,131072));

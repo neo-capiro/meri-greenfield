@@ -139,7 +139,7 @@ export async function startPreparedCandidate({configuration,pool,signal,issuance
    const o=remoteOriginal(original),b=o.binding;
    if(b.tenantId!==configured.tenantId||b.actorId!==configured.actorId||hash(o.versions)!==hash(config.runtime.versions))refuse();
    const workspace=b.conversationId===configured.conversationId?configuredWorkspace:join(dirname(configuredWorkspace),b.conversationId);
-   return Object.freeze({limits:configuration.limits,native:{maxResponseBytes:configuration.native.maxResponseBytes},workspace,proxyOrigin:new URL(config.runtime.proxyUrl).origin});
+   return Object.freeze({limits:configuration.limits,native:{maxResponseBytes:configuration.native.maxResponseBytes},workspace,proxyOrigin:new URL(config.runtime.proxyUrl).origin,...(configuration.sourceEnabled===true?{sourceEnabled:true}:{})});
   }});
   return Object.freeze({issuanceStore,allocations:createPostgresConversationStore({pool}).allocations,
    admissionForBinding:bindings.admissionForBinding,issuer:bindings.issuer,runnerConfiguration,
