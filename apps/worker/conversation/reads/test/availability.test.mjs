@@ -69,6 +69,10 @@ test('P3 local budgets are upper bounds that a skill can only narrow; the ledger
  // D016-A 3: a run configured above the default keeps its own cap; a skill still narrows it.
  assert.equal(effectiveReadBudgets(undefined,{maxToolCalls:40}).maxToolCalls,40);assert.equal(effectiveReadBudgets({maxToolCalls:99,maxOutputBytes:4},{maxToolCalls:40}).maxToolCalls,40);
  assert.equal(effectiveReadBudgets({maxToolCalls:3,maxOutputBytes:4},{maxToolCalls:40}).maxToolCalls,3);assert.throws(()=>effectiveReadBudgets(undefined,{maxToolCalls:0}),/READ_CONFIGURATION/);
+ // The run's configured read-bytes profile (validated, not a universal 2 MiB) bounds the ledger; a skill still narrows it.
+ assert.deepEqual({...effectiveReadBudgets(undefined,{maxToolCalls:40,maxOutputBytes:4194304,maxAggregateOutputBytes:33554432})},{maxToolCalls:40,maxOutputBytes:4194304,maxReadBytes:33554432,maxRecoveryAttempts:0});
+ assert.deepEqual({...effectiveReadBudgets({maxToolCalls:2,maxOutputBytes:1024},{maxToolCalls:40,maxOutputBytes:4194304,maxAggregateOutputBytes:33554432})},{maxToolCalls:2,maxOutputBytes:1024,maxReadBytes:2048,maxRecoveryAttempts:0});
+ assert.throws(()=>effectiveReadBudgets(undefined,{maxToolCalls:5,maxOutputBytes:2048,maxAggregateOutputBytes:1024}),/READ_CONFIGURATION/);
  const l=createReadLedger(effectiveReadBudgets({maxToolCalls:1,maxOutputBytes:4}));l.admit();assert.throws(()=>l.admit(),/RESOURCE_LIMIT/);
  l.account('1234');assert.throws(()=>l.account('12345'),/RESOURCE_LIMIT/);l.account('1234');assert.throws(()=>l.account('1'),/RESOURCE_LIMIT/,'aggregate read bytes');
 });

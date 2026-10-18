@@ -33,7 +33,7 @@ export function continuationSessionId(lineage){
 /**
  * @param {{binding:unknown,scopes:any[],policy:{generalReads:boolean,readFamilies:readonly string[]},port:{readAvailability:Function,execute:Function},
  *  now:()=>number,deadlineMs:number,timeoutMs?:number,expectedSessionId?:string,skill?:{allowedOperations:{id:string,version:string}[],budgets:{maxToolCalls:number,maxOutputBytes:number}},
- *  exclude?:{id:string,version:string}[],runBudgets?:{maxToolCalls:number},signal?:AbortSignal,mount?:'available'|'profile'}} configuration
+ *  exclude?:{id:string,version:string}[],runBudgets?:{maxToolCalls:number,maxOutputBytes?:number,maxAggregateOutputBytes?:number},signal?:AbortSignal,mount?:'available'|'profile'}} configuration
  */
 export async function createGeneralReadRuntime(configuration){
  const c=own(configuration,['binding','scopes','policy','port','now','deadlineMs'],['timeoutMs','expectedSessionId','skill','exclude','runBudgets','signal','mount']);

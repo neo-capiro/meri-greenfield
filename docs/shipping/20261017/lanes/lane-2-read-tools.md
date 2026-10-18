@@ -239,6 +239,13 @@ There is no bearer file; `secretFiles.nativeReadCredential` is refused (`CONFIGU
    - P1 is the per-run discovery grant over allocation ∩ approved reads ∩ the run capability policy: `discovery-producer.mjs`.
    - The composer builds both. `reads.missing` lists `installation.enabled` and `discovery.enabled` until R0 renders the measurement pin and enables them.
    - P3 (base allocation, tariffs, aggregate bytes) and P5 (context-key sources) are in the same contract doc.
+   - **P3 follow-up** (dot 6247557126, 6247571077, 6247587388; R0's assignment):
+     - **Admission:** one worst-case hold fits (D016 3), with no product-of-maximums check, in both compose and `allocation()`.
+     - **Read bytes:** 1 MiB / 2 MiB is a validated, configurable `readBytes` profile (at most 16 MiB / 256 MiB), not a universal ceiling.
+     - **Effective hold:** one effective output hold for both the aggregate check and the stored reservation.
+     - **Assumptions:** the four gated tariffs need evidence of the measured Core setting. That evidence is carried in the allocation as `tariffAssumptions`.
+     - **`read_client_documents`:** priced as 1 + max(bounded PDF vision, whisper transcription) from `documentPricing` evidence. It stays unallocated until Core caps whisper duration; that is required Core work, not a deferral.
+     - **Worker ledger:** follows the run's call and byte profile.
 3. `gateway.limits`: gateway request/response/cleanup bounds (R0 render).
 4. Render: `approvedReads` and `sourceEnabled:true` (G1, treated as decided), the run capability policy `generalReads:true` and `readFamilies` (G2), and an SDK-options template that admits `meri_reads` (G3).
 5. Worker side: the runner's `meri_reads` server port (G4, apps/worker).
