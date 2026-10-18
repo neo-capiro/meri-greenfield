@@ -16,6 +16,7 @@ import {listenRuntime} from './http-server.mjs';
 import {createControlRouteApplications,listenControlApplications} from './control-route-boundary.mjs';
 import {createWorkerRunApplication} from './worker-http.mjs';
 import {createConversationLifecycleService} from '../control/conversations/lifecycle/service.mjs';
+import {createOriginalReconciler} from './original-stop.mjs';
 import {createConversationLifecycleApplication} from '../control/conversations/lifecycle/http.mjs';
 import {createConversationInputApplication} from '../control/conversations/input/http.mjs';
 import {createConversationInitialInputApplication} from '../control/conversations/initial-input/http.mjs';
@@ -110,7 +111,7 @@ export function assembleControl(options){
  const runBudgets=createRunAllocationBudgetReader({pool,namespace:'product',now,maxRequestMs:Math.min(configuration.limits.requestMs,3000)});
  const basic=createConversationService({sessions,store,dispatcher,versions:configuration.versions,now,maxRequestMs:configuration.limits.requestMs,runBudgets,...(capabilityPolicy?{capabilityPolicy}:{}),...(ports.selectedSkillAdmission?{selectedSkillAdmission:ports.selectedSkillAdmission}:{}),...(ports.selectedOutputPublication?{selectedOutputPublication:ports.selectedOutputPublication}:{}),...(retention?{retention:retention.gate}:{})});
  const port=operation=>({signal,...input})=>native.call(operation,input,{signal});
- const service=createConversationLifecycleService({service:basic,store,dispatcher,sessions,now,maxRequestMs:configuration.limits.requestMs,checkpoints:{read:port('checkpoint/read')},nativeAdmission:ports.continuationAdmission,approvals:ports.approvals});
+ const service=createConversationLifecycleService({service:basic,store,dispatcher,sessions,now,maxRequestMs:configuration.limits.requestMs,reconcileOriginal:createOriginalReconciler({native,now,timeoutMs:configuration.limits.requestMs}),checkpoints:{read:port('checkpoint/read')},nativeAdmission:ports.continuationAdmission,approvals:ports.approvals});
  const conversation=createConversationLifecycleApplication({service,now,maxRequestBytes:configuration.limits.requestBytes,maxRequestMs:configuration.limits.requestMs}),input=createConversationInputApplication({service,now,maxRequestBytes:configuration.limits.requestBytes,maxRequestMs:configuration.limits.requestMs}),initialInput=createConversationInitialInputApplication({service,now,maxRequestBytes:configuration.limits.requestBytes,maxRequestMs:Math.min(configuration.limits.requestMs,conversationInitialInputMetadata.limits.maxRequestMs)}),issuance=createActionSessionApplication({owner:sessions,now,maxRequestMs:configuration.limits.requestMs}),worker=createWorkerRunApplication({service:telemetry?telemetry.observeRunOwner(service):service,sessions,native,configuration,now});
  const products=createRuntimeProductApplications({configuration,sessions,ports,now,conversationStore:store,userPreferences,...(retention?{retention:retention.gate,suppression:{journal:retention.journal,serving:retention.serving}}:{})});
  // Composed intents need their journal table; a disabled family adds no table, so first-chat readiness is unchanged.
