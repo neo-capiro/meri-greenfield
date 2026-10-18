@@ -15,10 +15,11 @@ test('explicit client list uses fixed original native POST and exact private rec
  assert.equal(wire.options.redirect,'error');assert.equal(wire.options.credentials,'omit');assert.equal(wire.options.cache,'no-store');
  assert.equal(proof.requestSha256,canonicalSha256(f.arguments));assert.deepEqual(proof.normalizationContext,f.normalizationContext);assert.equal(Object.hasOwn(out.result,'record'),false);
 });
-test('client UUID capture preserves native trim/clip/trim and case while the raw request is sent unchanged',async()=>{
+test('client UUID capture preserves native trim/clip/trim while Core receives exact selected client',async()=>{
  const rawClient=clientId.toUpperCase()+' '.repeat(44)+'ignored-after-native-cap',status='s'.repeat(39)+' t',request={clientId:rawClient,status,limit:'2.9'},f=storedCase(id,{request});
  assert.deepEqual(captureOutreachListClientSelection(request),{reference:clientId.toUpperCase(),clientId});
- const out=JSON.parse(await f.handler()(f.call()));assert.deepEqual(f.wire[0].body,request);assert.equal(f.call().input.status,'s'.repeat(39));assert.equal(f.call().input.limit,2);assert.equal(out.result.campaigns[0].clientId,clientId);
+ const out=JSON.parse(await f.handler()(f.call()));assert.deepEqual(f.wire[0].body,{...request,clientId});assert.equal(f.call().input.status,'s'.repeat(39));assert.equal(f.call().input.limit,2);assert.equal(out.result.campaigns[0].clientId,clientId);
+ assert.equal(f.credentialCalls[0].requestSha256,canonicalSha256(request));
 });
 test('any own outreachId property refuses detail and malformed/empty fallback before credential factories',async()=>{
  for(const outreachId of [clientId,'not-a-uuid','', '   ',null]){

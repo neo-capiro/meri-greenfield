@@ -15,9 +15,11 @@ test('fixed governed native route preserves original selectors, exact context an
  assert.equal(Object.hasOwn(out.result,'generatedAt'),false);assert.equal(out.result.coverage.complete,false);assert.match(out.result.note,/never imply a complete transcript/);
 });
 
-test('explicit UUID uses exact native identity capture while body retains original case/whitespace',async()=>{
+test('explicit UUID uses exact native identity capture and canonical Core selector',async()=>{
  const canonical=clientId.replaceAll('9','a'),reference=canonical.toUpperCase(),request={clientId:` ${reference} `},f=storedCase(id,{request}),out=JSON.parse(await f.handler()(f.call()));
- assert.deepEqual(f.normalizationContext.clientResolution,{reference,clientId:canonical});assert.deepEqual(f.wire[0].body,request);assert.deepEqual(out.result,f.page);
+ assert.deepEqual(f.normalizationContext.clientResolution,{reference,clientId:canonical});assert.deepEqual(f.wire[0].body,{clientId:canonical});assert.deepEqual(out.result,f.page);
+ assert.equal(f.credentialCalls[0].requestSha256,hash(request));
+ assert.equal(f.credentialCalls[0].target.bodySha256,jsonHash({clientId:canonical}));
 });
 
 test('named resolution is unavailable before credentials or HTTP even with a supplied candidate context',async()=>{

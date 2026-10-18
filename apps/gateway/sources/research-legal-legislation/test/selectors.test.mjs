@@ -8,12 +8,12 @@ import {storedCase,ids} from './fixture.mjs';
 
 const clientId='a1234567-b123-4c12-8d12-e123456789ab',foreign='d1234567-b123-4c12-8d12-e123456789ab';
 for(const id of ids){
- test(`delta ${id}: explicit UUID retains original raw request, exact client context and source scope`,async()=>{
+ test(`delta ${id}: explicit UUID retains raw reservation and projects exact Core client`,async()=>{
   for(const raw of [clientId,` ${clientId.toUpperCase()} `,clientId+' '.repeat(44)+'ignored suffix']){
    const request={...storedCase(id).arguments,clientId:raw,folderId:''},f=storedCase(id,{request}),call=f.call(),out=JSON.parse(await f.handler()(call));
    const expected={clientResolution:{reference:clientId===raw?clientId:raw.trim().slice(0,80).trim(),clientId},citationResolution:null};
    assert.deepEqual(out.result,JSON.parse(JSON.stringify(f.page)));assert.equal(out.result.result.scope.clientId,clientId);assert.equal(out.result.result.scope.folderId,null);
-   assert.deepEqual(f.wire[0].body,request);assert.equal(f.wire[0].url,`https://native-core.example.invalid/api/clio/tools/${id}`);
+   assert.deepEqual(f.wire[0].body,{...request,clientId});assert.equal(f.wire[0].url,`https://native-core.example.invalid/api/clio/tools/${id}`);
    assert.deepEqual(f.credentialCalls[0].normalizationContext,expected);assert.equal(f.credentialCalls[0].requestSha256,hash(request));assert.equal(out.argumentsSha256,call.argumentsSha256);
    assert.deepEqual(f.visibleClientIds,[clientId]);assert.equal(f.authority.subject.entityIds[0],clientId);
   }

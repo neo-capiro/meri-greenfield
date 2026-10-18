@@ -18,7 +18,7 @@ export function createResearchLegalLegislationHandlers(configuration,operations)
    const expected=legalSliceContext(current.operation,current.request,current.normalizationContext.clientResolution);
    if(hash(current.normalizationContext)!==hash(expected))deny('ACCESS_DENIED');
    assertResearchClientSubject(current.authority,expected.clientResolution);
-   if(expected.clientResolution&&!UUID.test(expected.clientResolution.reference))return {...current.request,clientId:expected.clientResolution.clientId};
+   if(expected.clientResolution&&current.request.clientId!==expected.clientResolution.clientId)return {...current.request,clientId:expected.clientResolution.clientId};
    return current.request;
   },
  });
