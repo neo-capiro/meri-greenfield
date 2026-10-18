@@ -159,6 +159,7 @@ test('installed verification joins every base/addition name and version with exa
 test('missing, extra, duplicate, wrong-version and malformed installed identities cannot verify',async t=>{
  const x=await installedFixture(t);const variants=[x.rows.slice(1),[...x.rows,{name:'foreign',version:'1-r0'}],[...x.rows,x.rows[0]],x.rows.map((r,i)=>i===0?{...r,version:'0-r0'}:r)];
  for(const rows of variants){await fs.writeFile(x.database,x.db(rows));await assert.rejects(verifyInstalledPackages(x.f.raw,{rootDirectory:x.root,measureRuntime:runtime}),/^Error: RUNTIME_PACKAGES_VERIFY$/u);}
+ for(const db of [x.db(x.rows).replace('A:x86_64','A:aarch64'),x.db(x.rows).replace('A:x86_64\n',''),x.db(x.rows).replace('A:x86_64','A:x86_64\nA:x86_64')]){await fs.writeFile(x.database,db);await assert.rejects(verifyInstalledPackages(x.f.raw,{rootDirectory:x.root,measureRuntime:runtime}),/^Error: RUNTIME_PACKAGES_VERIFY$/u);}
  for(const text of ['P:glibc\nV:2.44-r4\nV:2.44-r4\n','private-only-data','P:glibc\nV:2.44-r4\0\n','P:glibc\nV:2.44-r4\r\n']){await fs.writeFile(x.database,text);await assert.rejects(verifyInstalledPackages(x.f.raw,{rootDirectory:x.root,measureRuntime:runtime}),/^Error: RUNTIME_PACKAGES_VERIFY$/u);}
 });
 

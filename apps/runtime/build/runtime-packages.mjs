@@ -195,12 +195,13 @@ async function runtimePath(root,name){const file=await fs.realpath(path.join(roo
 function installedSet(bytes){
  const text=utf8(bytes);need(!/[\0\r]/u.test(text),'VERIFY');const result=[],seen=new Set();
  for(const block of text.split(/\n\n+/u)){
-  if(!block.trim())continue;let name,version;
+  if(!block.trim())continue;let name,version,architecture;
   for(const line of block.split('\n')){
    if(line.startsWith('P:')){need(name===undefined,'VERIFY');name=line.slice(2);}
    if(line.startsWith('V:')){need(version===undefined,'VERIFY');version=line.slice(2);}
+   if(line.startsWith('A:')){need(architecture===undefined,'VERIFY');architecture=line.slice(2);}
   }
-  need(typeof name==='string'&&NAME.test(name)&&typeof version==='string'&&VERSION.test(version)&&!seen.has(name),'VERIFY');
+  need(typeof name==='string'&&NAME.test(name)&&typeof version==='string'&&VERSION.test(version)&&architecture==='x86_64'&&!seen.has(name),'VERIFY');
   seen.add(name);result.push({name,version});need(result.length<=2176,'VERIFY');
  }
  return result.sort((a,b)=>a.name<b.name?-1:a.name>b.name?1:0);
