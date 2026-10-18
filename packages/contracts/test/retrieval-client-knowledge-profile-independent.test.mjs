@@ -31,11 +31,11 @@ function summary(section){switch(section){
  case 'advocacyMatters':{const r=full(section);delete r.externalKey;delete r.openedAt;delete r.createdAt;r.summary='';return r;}
  case 'advocacyRecords':{const r=full(section);delete r.metadata;delete r.createdAt;delete r.matterLocked;r.summary='';r.outcome='';return r;}
 }}
-function page({section=null,representation=section?'full':'summary',rows=[]}={}){const p={tool:id,generatedAt:asOf,context:{client:client(),recentActivity:[],keyStakeholders:[],openThreads:[],openTasks:[],summary:{meetings:0,mailThreads:0,contacts:0,openTasks:0}},profileSections:{},profile:{},profileSources:{},coverageNote:'Profile counts cover the complete authorized section at read time. Summary records omit fields; request a section for full records and follow nextCursor until complete. For a requested complete inventory, use section + representation summary + limit 50 and exhaust every requested section before summarizing; do not stop at a sample while more records are available. Unavailable or unrequested sections are not empty. submissionHistory is the older capability submission ledger; advocacyMatters and advocacyRecords are current Advocacy History, including unassigned records. An auto-generated matter or inferred evidence class is not verified advocacy or proof of causation. Engagement context contains recent items only.'};for(const name of sections){const requested=section===null||section===name,rs=name===section?rows:[];p.profile[name]=rs;p.profileSections[name]={status:requested?'complete':'not_requested',total:requested?rs.length:null,returned:rs.length,limit:25,truncated:requested?false:null,nextCursor:null,representation,source:{tool:id,clientId,section:name}};p.profileSources[name]=rs.map(r=>({recordId:r.id,...('updatedAt'in r?{updatedAt:r.updatedAt}:{}),...('sourceUrl'in r?{sourceUrl:r.sourceUrl}:{})}));}return p;}
+function page({section=null,representation=section?'full':'summary',rows=[]}={}){const p={tool:id,generatedAt:asOf,readWindow:{startedAt:asOf,completedAt:asOf},context:{client:client(),recentActivity:[],keyStakeholders:[],openThreads:[],openTasks:[],summary:{meetings:0,mailThreads:0,contacts:0,openTasks:0}},profileSections:{},profile:{},profileSources:{},coverageNote:'Profile counts cover the complete authorized section at read time. Summary records omit fields; request a section for full records and follow nextCursor until complete. For a requested complete inventory, use section + representation summary + limit 50 and exhaust every requested section before summarizing; do not stop at a sample while more records are available. Unavailable or unrequested sections are not empty. submissionHistory is the older capability submission ledger; advocacyMatters and advocacyRecords are current Advocacy History, including unassigned records. An auto-generated matter or inferred evidence class is not verified advocacy or proof of causation. Engagement context contains recent items only.'};for(const name of sections){const requested=section===null||section===name,rs=name===section?rows:[];p.profile[name]=rs;p.profileSections[name]={status:requested?'complete':'not_requested',total:requested?rs.length:null,returned:rs.length,limit:25,truncated:requested?false:null,nextCursor:null,representation,source:{tool:id,clientId,section:name}};p.profileSources[name]=rs.map(r=>({recordId:r.id,...('updatedAt'in r?{updatedAt:r.updatedAt}:{}),...('sourceUrl'in r?{sourceUrl:r.sourceUrl}:{})}));}return p;}
 const named=(section,representation)=>({clientId:'Example',section,...(representation?{representation}:{})});
 test('profile default scope resolves name only from trusted context',()=>{assert.deepEqual(normalize().input,{clientId,section:null,afterId:null,limit:25,representation:'summary'});assert.equal(normalize().metadata.authoritative,false);assert.throws(()=>normalize(raw,{}));assert.throws(()=>normalize({clientId:'Different'}));});
 test('profile UUID selector cannot rebind but case equivalence is preserved',()=>{assert.throws(()=>normalize({clientId:uid(9)},{...ctx,clientResolution:{selector:uid(9),clientId}}));const u='aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa';assert.equal(normalize({clientId:u.toUpperCase()},{...ctx,clientResolution:{selector:u.toUpperCase(),clientId:u}}).input.clientId,u);});
-test('profile caller shape excludes resolution clock and authority fields',()=>{for(const extra of [{asOf},{clientResolution:ctx.clientResolution},{tenantId},{actorRole:'admin'}])assert.throws(()=>normalize({...raw,...extra}));});
+test('profile caller shape excludes resolution clock and authority fields',()=>{for(const extra of [{asOf},{readWindow:{startedAt:asOf,completedAt:asOf}},{clientResolution:ctx.clientResolution},{tenantId},{actorRole:'admin'}])assert.throws(()=>normalize({...raw,...extra}));});
 test('profile default full named section and explicit summary/null limit',()=>{assert.equal(normalize(named('people')).input.representation,'full');assert.equal(normalize({...named('people','summary'),limit:null}).input.limit,25);for(const limit of [0,51,1.5,'2'])assert.throws(()=>normalize({...raw,limit}));});
 test('profile six exact sections and strict representation',()=>{for(const section of ['People','unknown',null])assert.throws(()=>normalize({...raw,section}));assert.throws(()=>normalize({...raw,representation:'compact'}));});
 test('profile cursor requires section, binds client section and stable ID',()=>{assert.throws(()=>normalize({...raw,cursor:cursor()}));assert.throws(()=>normalize({...named('facilities'),cursor:cursor()}));assert.throws(()=>normalize({...named('people'),cursor:encode({v:1,clientId:uid(9),section:'people',afterId:rowId})}));assert.equal(normalize({...named('people'),cursor:cursor()}).input.afterId,rowId);});
@@ -51,7 +51,7 @@ test('profile summary UTF16 caps and collapse match producer without fabricated 
 test('profile full free text and JSON are not summarized or typed as prose',()=>{const r=full('capabilities');r.description='😀\n'.repeat(1000);r.tags=[{nested:'untrusted'}];r.issueCodes={unexpectedButJson:true};check(page({section:'capabilities',rows:[r]}),named('capabilities'));});
 test('profile person confidence retains Decimal string or inferred JS number',()=>{for(const value of ['-9.999','0.001',0.123456789,null]){const r=full('people');r.placementConfidence=value;check(page({section:'people',rows:[r]}),named('people'));}for(const value of ['10.000','0.0001',{},Infinity]){const r=full('people');r.placementConfidence=value;assert.throws(()=>check(page({section:'people',rows:[r]}),named('people')));}});
 test('profile full DTOs reject relation expansions and projection omission',()=>{for(const section of sections){const r=full(section);r.secretAuthority=true;assert.throws(()=>check(page({section,rows:[r]}),named(section)));const missing=full(section);delete missing.id;assert.throws(()=>check(page({section,rows:[missing]}),named(section)));}});
-test('profile archived client and observation substitution are refused',()=>{for(const change of [p=>p.context.client.status='archived',p=>p.context.client.id=uid(9),p=>p.generatedAt='2026-10-12T12:00:01.000Z']){const p=page();change(p);assert.throws(()=>check(p));}});
+test('profile archived client and completion substitution are refused',()=>{for(const change of [p=>p.context.client.status='archived',p=>p.context.client.id=uid(9),p=>p.generatedAt='2026-10-12T12:00:01.000Z']){const p=page();change(p);assert.throws(()=>check(p));}});
 test('profile engagement counts are recent windows not global inventory',()=>{const p=page();p.context.summary.meetings=10;p.context.summary.mailThreads=10;check(p);p.context.summary.contacts=1;assert.throws(()=>check(p));});
 test('profile stakeholder source combinations and latest activity ordering',()=>{const p=page();p.context.keyStakeholders=[{id:'opaque-email-key',email:null,fullName:null,title:null,organization:null,source:'Contact + Meeting + Email'}];p.context.summary.contacts=1;p.context.recentActivity=[{type:'meeting',id:rowId,title:'m',date:asOf},{type:'mail_thread',id:uid(9),title:'mail',date:'2026-10-11T00:00:00.000Z'}];check(p);p.context.recentActivity.reverse();assert.throws(()=>check(p));});
 test('profile source results detach and nested getters never execute',()=>{const p=page(),o=check(p);assert.notEqual(o.context.client.intakeData,p.context.client.intakeData);let hits=0;Object.defineProperty(p.context.client,'intakeData',{get(){hits++;return {};},enumerable:true});assert.throws(()=>check(p));assert.equal(hits,0);});
@@ -61,3 +61,53 @@ test('profile full association-based mail preserves different primary client',()
 test('profile open mail rejects closed status and cross tenant',()=>{for(const change of [r=>r.status='closed',r=>r.tenantId=uid(9)]){const p=page();p.context.openThreads=[thread()];p.context.summary.mailThreads=1;change(p.context.openThreads[0]);assert.throws(()=>check(p));}});
 test('profile full task projection preserves nullable owner and every scalar',()=>{const p=page();p.context.openTasks=[task()];p.context.summary.openTasks=1;check(p);p.context.openTasks[0].ownerUserId=uid(8);check(p);});
 test('profile open tasks reject terminal and wrong client scope',()=>{for(const change of [r=>r.status='done',r=>r.status='canceled',r=>r.clientId=uid(9),r=>r.tenantId=uid(9)]){const p=page();p.context.openTasks=[task()];p.context.summary.openTasks=1;change(p.context.openTasks[0]);assert.throws(()=>check(p));}});
+test('profile source read window has its own clock while gateway admission stays fixed',()=>{
+ const before=clone(ctx),normalized=normalize(),p=page();
+ p.readWindow={startedAt:'2026-10-12T12:00:00.025Z',completedAt:'2026-10-12T12:00:01.500Z'};
+ p.generatedAt=p.readWindow.completedAt;
+ const out=check(p);
+ assert.equal(out.generatedAt,'2026-10-12T12:00:01.500Z');assert.notEqual(out.generatedAt,asOf);
+ assert.deepEqual(ctx,before);assert.deepEqual(normalize(),normalized);
+ assert.deepEqual(out.readWindow,p.readWindow);assert.notEqual(out.readWindow,p.readWindow);
+});
+test('profile owner window accepts equal instants without inferring interhost clock order',()=>{
+ for(const observedAt of ['2026-10-12T11:59:59.000Z','2026-10-12T12:00:01.000Z']){
+  const p=page();p.readWindow={startedAt:observedAt,completedAt:observedAt};p.generatedAt=observedAt;
+  assert.equal(check(p).readWindow.completedAt,observedAt);
+ }
+});
+test('profile source read window is required closed and complete',()=>{
+ const missing=page();delete missing.readWindow;assert.throws(()=>check(missing));
+ for(const window of [null,[],asOf,{}, {startedAt:asOf},{completedAt:asOf},
+  {startedAt:asOf,completedAt:asOf,asOf},{startedAt:asOf,completedAt:asOf,sourceConnected:true}]){
+  const p=page();p.readWindow=window;assert.throws(()=>check(p));
+ }
+});
+test('profile source read window refuses reversed order and unequal generated completion',()=>{
+ const reversed=page();reversed.readWindow.startedAt='2026-10-12T12:00:00.001Z';
+ assert.throws(()=>check(reversed),/Profile source read window mismatch/);
+ const mismatch=page();mismatch.readWindow.completedAt='2026-10-12T12:00:00.001Z';
+ assert.throws(()=>check(mismatch),/Profile source read window mismatch/);
+});
+for(const field of ['startedAt','completedAt'])test(`profile ${field} requires canonical UTC milliseconds`,()=>{
+ for(const stamp of [null,0,'invalid','2026-10-12','2026-10-12T12:00:00Z',
+  '2026-10-12T12:00:00.000+00:00','2026-10-12T12:00:00.000z',
+  '2026-10-12T12:00:00.0000Z','2026-10-12T13:00:00.000+01:00','2026-02-30T12:00:00.000Z']){
+  const p=page();p.readWindow[field]=stamp;
+  if(field==='completedAt')p.generatedAt=stamp;
+  assert.throws(()=>check(p),undefined,`${field}: ${String(stamp)}`);
+ }
+});
+test('profile generatedAt remains canonical even when the window repeats its timestamp',()=>{
+ const p=page();p.generatedAt='2026-10-12T12:00:00Z';p.readWindow.completedAt=p.generatedAt;
+ assert.throws(()=>check(p),/Profile canonical JSON timestamp required/);
+});
+test('profile gateway admission remains canonical and excludes returned source windows',()=>{
+ assert.throws(()=>normalize(raw,{...ctx,asOf:'2026-10-12T12:00:00Z'}));
+ assert.throws(()=>normalize(raw,{...ctx,readWindow:{startedAt:asOf,completedAt:asOf}}));
+});
+test('profile source window accessors refuse without evaluation',()=>{
+ const p=page();let reads=0;
+ Object.defineProperty(p.readWindow,'startedAt',{get(){reads++;return asOf;},enumerable:true});
+ assert.throws(()=>check(p));assert.equal(reads,0);
+});

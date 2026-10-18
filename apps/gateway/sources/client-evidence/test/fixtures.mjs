@@ -26,7 +26,7 @@ export function profileFields(definition) {
 }
 function profilePage(input) {
  const client={...profileFields('ProfileClient'),id:clientId,tenantId,name:'Synthetic named client',status:'active'};
- const page={tool:'get_client_context',generatedAt:asOf,profileSections:{},profile:{},profileSources:{},
+ const page={tool:'get_client_context',generatedAt:asOf,readWindow:{startedAt:asOf,completedAt:asOf},profileSections:{},profile:{},profileSources:{},
   coverageNote:'Profile counts cover the complete authorized section at read time. Summary records omit fields; request a section for full records and follow nextCursor until complete. For a requested complete inventory, use section + representation summary + limit 50 and exhaust every requested section before summarizing; do not stop at a sample while more records are available. Unavailable or unrequested sections are not empty. submissionHistory is the older capability submission ledger; advocacyMatters and advocacyRecords are current Advocacy History, including unassigned records. An auto-generated matter or inferred evidence class is not verified advocacy or proof of causation. Engagement context contains recent items only.',
   context:{client,recentActivity:[],keyStakeholders:[],openThreads:[],openTasks:[],summary:{meetings:0,mailThreads:0,contacts:0,openTasks:0}}};
  for(const section of sections){const selected=input.section===null||input.section===section;

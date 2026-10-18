@@ -2033,7 +2033,8 @@
       "properties": {
         "asOf": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "description": "Immutable gateway admission and correlation observation. The source read window and completion timestamp use the source owner's clock independently."
         },
         "clientResolution": {
           "type": "object",
@@ -2437,6 +2438,25 @@
         "summary"
       ]
     },
+    "ProfileReadWindow": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Source owner observations captured before the profile's first read and after all requested profile and engagement reads complete. This interval does not establish a transaction snapshot or stored-record freshness.",
+      "properties": {
+        "startedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "completedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "startedAt",
+        "completedAt"
+      ]
+    },
     "ClientKnowledgeProfileOutput": {
       "type": "object",
       "additionalProperties": false,
@@ -2446,7 +2466,11 @@
         },
         "generatedAt": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "description": "The source owner's completion observation, exactly equal to readWindow.completedAt."
+        },
+        "readWindow": {
+          "$ref": "#/$defs/ProfileReadWindow"
         },
         "profileSections": {
           "type": "object",
@@ -2644,6 +2668,7 @@
       "required": [
         "tool",
         "generatedAt",
+        "readWindow",
         "profileSections",
         "coverageNote",
         "profile",

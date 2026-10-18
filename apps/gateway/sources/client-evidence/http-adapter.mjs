@@ -25,7 +25,7 @@ export function createClientEvidenceHttpAdapter(options) {
     }
   }catch {deny('GATEWAY_CONFIGURATION');}
   async function read(call) {
-    let lifetime,acquired;
+    let lifetime,acquired,receivedAtMs;
     try {
       const context=readContext(call,now);
       const endpoint=endpoints[context.operation.id];
@@ -72,12 +72,12 @@ export function createClientEvidenceHttpAdapter(options) {
             accept:'application/json','accept-encoding':'identity','x-meri-deadline-at':String(cutoff),
             ...(credentials.authorizationScheme==='CapiroMeriRead'?{'x-meri-read-correlation':Buffer.from(correlationBytes,'utf8').toString('base64url')}:{})},body});
         acquired=result;
-        try {active();return result;}catch(error){try {cancelBody(responseBody(result));}catch{}throw error;}
+        try {receivedAtMs=active();return result;}catch(error){try {cancelBody(responseBody(result));}catch{}throw error;}
       });
       const bounded={run:fn=>lifetime.run(signal=>{active();return fn(signal);}),check:active};
       const result=frozenData(await readJsonResponse(response,{lifetime:bounded,
         maxResponseBytes:Math.min(maxResponseBytes,context.authority.claims.budgets.maxOutputBytes)}));
-      assertClientEvidenceResult(result,context);active();return result;
+      assertClientEvidenceResult(result,context,{receivedAtMs,deadlineMs:cutoff});active();return result;
     }catch(error){throw safeFailure(error);}
     finally {try {if(acquired)cancelBody(responseBody(acquired));}catch{}lifetime?.close();}
   }

@@ -32,7 +32,9 @@ export function createClientKnowledgeProfileValidators({validateShape,schema}){
   function assertResult(id,value,request,context){
     const ctx=snapshotOperationData(context),{input}=normalizeInput(id,request,ctx),page=snapshotOperationData(value);
     validateShape(outputDefinition(id),page);instant(page.generatedAt);
-    if(page.generatedAt!==ctx.asOf||page.context.client.id!==input.clientId||page.context.client.status==='archived'||page.coverageNote!==coverageNote)fail('Profile wrapper identity/observation mismatch');
+    const startedAt=instant(page.readWindow.startedAt),completedAt=instant(page.readWindow.completedAt);
+    if(startedAt>completedAt||page.generatedAt!==page.readWindow.completedAt)fail('Profile source read window mismatch');
+    if(page.context.client.id!==input.clientId||page.context.client.status==='archived'||page.coverageNote!==coverageNote)fail('Profile wrapper identity/observation mismatch');
     for(const section of sections){
       const c=page.profileSections[section],rows=page.profile[section],refs=page.profileSources[section];
       if(c.source.clientId!==input.clientId||c.source.section!==section||c.limit!==input.limit||c.representation!==input.representation||c.returned!==rows.length||rows.length>input.limit||refs.length!==rows.length)fail('Profile section selector/count mismatch');
