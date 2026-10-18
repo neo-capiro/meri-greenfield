@@ -1,5 +1,6 @@
-/** PostgreSQL producer journal over the PROPOSED `meri_memory.candidates` table
- * (docs/coordination/proposals/FABLE-MIGRATION-REQUEST-MEMORY-SETTINGS-20261016.md; no ID allocated, never applied by this source).
+/** PostgreSQL producer journal over the PROPOSED `meri_memory.candidates` table: candidate migration
+ * `migrations/0001_memory_candidates.sql` (the M1 proposal's DDL; no owner-allocated ID, never applied by this source; its statement
+ * parity with this journal is witnessed by `test/migration-source.test.mjs`).
  * The journal is the producer's outbox: the immutable candidate and its hash are written once; only the submission state moves
  * PREPARED → SUBMITTED | SUBMISSION_UNKNOWN → SUBMITTED. Review status is never stored here; Core owns it. */
 import {refuse} from '../product-access/errors.mjs';
