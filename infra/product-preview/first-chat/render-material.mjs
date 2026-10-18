@@ -176,7 +176,7 @@ export function parseRuntimeValues(raw){
 }
 
 /** Product-family activation (header: `features`). Returns null when absent; otherwise the closed, validated entries. Pure. */
-export const FEATURE_KEYS=Object.freeze(['sourceEnabled','userPreferences','tenantSettings','intents','routines','retention','artifacts','downloadLinks','capabilityPlatform','reads']);
+export const FEATURE_KEYS=Object.freeze(['sourceEnabled','userPreferences','tenantSettings','intents','routines','retention','artifacts','downloadLinks','capabilityPlatform','reads','memory']);
 /** --feature-secrets keys -> the deployment-inputs ARN field each must name. */
 export const FEATURE_SECRETS=Object.freeze({'reads.serviceSecret':'serviceSecretArn','reads.readModeServiceSecret':'readModeServiceSecretArn'});
 /** Exact (complete, suffixed) Secrets Manager secret ARN in this account and region. A bare name, another account/region/partition, a
