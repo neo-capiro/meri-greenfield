@@ -5,7 +5,7 @@
 import {own} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {chainPermissions,mergeHookSets} from '../capabilities/fragment.mjs';
 import {READ_SERVER_NAME,READ_TOOL_PREFIX} from './tools.mjs';
-const SKILL_PREFIX='mcp__meri_original_reads__',NAME=/^mcp__meri_reads__[a-z0-9_]{1,128}$/u,MAX_TOOLS=64;
+const SKILL_PREFIX='mcp__meri_original_reads__',NAME=/^mcp__meri_reads__[a-z0-9_]{1,128}$/u,MAX_TOOLS=128;
 const fail=()=>{throw Error('RUNTIME_CONFIGURATION');};
 /** @typedef {{mcpServers:Record<string,any>,allowedTools:string[],canUseTool:import('@anthropic-ai/claude-agent-sdk').CanUseTool,hooks:Record<string,import('@anthropic-ai/claude-agent-sdk').HookCallbackMatcher[]>}} ReadOptions */
 /** @param {unknown} value @returns {ReadOptions} */

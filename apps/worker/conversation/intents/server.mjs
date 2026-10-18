@@ -36,19 +36,21 @@ const deny=(/** @type {string} */reason)=>({hookSpecificOutput:{hookEventName:/*
 /** @typedef {{id:string,version:string}} OperationRef */
 /** @typedef {{deliveryId:string,operation:OperationRef,argumentsSha256:string,outcome:'prepared'|'unknown',status:'approval_required'|'draft'|null,reference:string|null,resultSha256:string|null}} IntentReceipt */
 /**
- * @param {{available:readonly import('./catalog.mjs').IntentRow[],binding:any,scopes:any[],expectedSessionId?:string,maxCalls?:number,timeoutMs:number,deadlineMs:number,now:()=>number,
+ * `mounted` (G3 profile mount): the rows to register, a superset of `available` (which may then be empty); a mounted row outside
+ * `available` answers UNAVAILABLE through `stillAvailable`. Without it exactly the available rows are registered, as before.
+ * @param {{available:readonly import('./catalog.mjs').IntentRow[],mounted?:readonly import('./catalog.mjs').IntentRow[],binding:any,scopes:any[],expectedSessionId?:string,maxCalls?:number,timeoutMs:number,deadlineMs:number,now:()=>number,
  *  stillAvailable:(operation:OperationRef,signal:AbortSignal)=>Promise<boolean>,
  *  prepare:(call:{operation:OperationRef,arguments:unknown,deliveryId:string,signal:AbortSignal})=>Promise<unknown>}} c
  */
 export function createIntentServer(c){
- const maxCalls=c.maxCalls??MAX_INTENT_CALLS;
- if(!Array.isArray(c.available)||!c.available.length||c.available.some(r=>r.unavailable!==null)||typeof c.prepare!=='function'||typeof c.stillAvailable!=='function'||typeof c.now!=='function'||
+ const maxCalls=c.maxCalls??MAX_INTENT_CALLS,profile=c.mounted!==undefined,registered=profile?c.mounted:c.available;
+ if(!Array.isArray(c.available)||!Array.isArray(registered)||!registered.length||!profile&&!c.available.length||registered.some(r=>r.unavailable!==null)||c.available.some(r=>!registered.includes(r))||typeof c.prepare!=='function'||typeof c.stillAvailable!=='function'||typeof c.now!=='function'||
   !Number.isSafeInteger(c.timeoutMs)||c.timeoutMs<INTENT_TIMEOUT_MS.min||c.timeoutMs>INTENT_TIMEOUT_MS.max||!Number.isSafeInteger(c.deadlineMs)||
   !Number.isSafeInteger(maxCalls)||maxCalls<1||maxCalls>MAX_INTENT_CALLS||c.expectedSessionId!==undefined&&!SESSION.test(c.expectedSessionId))throw fault('INTENT_SERVER_CONFIGURATION');
  const binding=data(c.binding),correlations=new Map(),seenToolUses=new Set(),receipts=/** @type {IntentReceipt[]} */([]);
  let session=c.expectedSessionId??null,closed=false,admitted=0;
  /** @type {Map<string,import('./catalog.mjs').IntentRow[]>} */
- const byTool=new Map();for(const r of c.available)byTool.set(intentToolName(r.tool),[...(byTool.get(intentToolName(r.tool))??[]),r]);
+ const byTool=new Map();for(const r of registered)byTool.set(intentToolName(r.tool),[...(byTool.get(intentToolName(r.tool))??[]),r]);
  const rowFor=(/** @type {string} */name,/** @type {unknown} */id)=>byTool.get(name)?.find(r=>r.operation.id===id);
  /** @type {import('@anthropic-ai/claude-agent-sdk').HookCallback} */
  const hook=async(raw,toolUseID,options)=>{try{
@@ -86,7 +88,7 @@ export function createIntentServer(c){
  };
  const tools=[...byTool].map(([name,rows])=>defineIntentTool(rows[0].tool,rows,handler(name)));
  const instructions=['Governed write requests for this conversation. Each tool only prepares: an immutable proposal the user must approve in Meri, or an immutable draft version. Never say a change was made; say what was prepared and that it awaits the user\'s approval.',
-  `Available: ${c.available.map(r=>r.operation.id).join(', ')}.`,'Any other write, external action or memory change is not available in this conversation.'].join('\n');
+  ...(profile?[c.available.length?`Available now: ${c.available.map(r=>r.operation.id).join(', ')}.`:'No write request can be prepared in this conversation right now.','Every other operation of these tools answers UNAVAILABLE in this conversation.']:[`Available: ${c.available.map(r=>r.operation.id).join(', ')}.`]),'Any other write, external action or memory change is not available in this conversation.'].join('\n');
  const server=createSdkMcpServer({name:INTENT_SERVER_NAME,version:'1.0.0',instructions,tools:tools.map(t=>t.definition),alwaysLoad:true,timeout:c.timeoutMs});
  const allowedTools=Object.freeze(tools.map(t=>t.name)),allowed=new Set(allowedTools);
  return Object.freeze({server,allowedTools,
