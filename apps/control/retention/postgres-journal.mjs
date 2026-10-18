@@ -112,17 +112,23 @@ export function createPostgresRetentionJournal({pool,now=Date.now,maxRequestMs=1
   catch(error){failure=wrap(outcome??error);}
   if(!failure&&outcome)failure=wrap(outcome);failure=retire(c,acquiring,reusable,failure);if(failure)throw failure;return result;
  }
- /** One lease holds every page subject's shared transition lock until the serving callback materializes response bytes.
-  * Suppression takes the matching exclusive lock before its ledger append, including the previously absent-row case. */
+ /** One lease holds every page subject's shared transition lock and the shared recovery lock until the serving callback
+  * materializes response bytes. Suppression takes the matching exclusive subject lock before its ledger append.
+  * A scoped projection read uses this lease: borrowing a second one can exhaust a finite pool while the first remains held. */
  async function withServing(keys,fn,{signal,deadlineMs=now()+maxRequestMs}={}){
-  if(!Array.isArray(keys)||keys.length>100||typeof fn!=='function')fail('RETENTION_INVALID_REQUEST');const ordered=[...new Set(keys)].sort();ordered.forEach(parseKey);
+  if(!Array.isArray(keys)||keys.length>100||typeof fn!=='function')fail('RETENTION_INVALID_REQUEST');const ordered=[...new Set(keys)].sort(),locked=new Set(ordered);ordered.forEach(parseKey);
   const life=createOperationLifetime({deadlineMs:Math.min(deadlineMs,now()+maxRequestMs),now,signal,errorFactory:()=>storeError('RETENTION_READ_UNAVAILABLE')});
   let c,reusable=false,failure,outcome,result;const acquiring=Promise.resolve().then(()=>pool.connect());
   try{c=await life.run(()=>acquiring);
    for(const key of ordered)await life.run(()=>c.query('SELECT pg_advisory_lock_shared(hashtextextended($1,0))',[`meri_retention_transition:${key}`]));
-   try{result=await life.run(fn);}catch(error){outcome=error;}
+   await life.run(()=>c.query(`SELECT pg_advisory_lock_shared(${RECOVERY_LOCK})`));
+   const readProjectionOnLease=async key=>{if(!locked.has(key))fail('RETENTION_INVALID_REQUEST');life.check();
+    const snapshot=await readProjection({query:(sql,values)=>life.run(()=>c.query(sql,values))},key);life.check();return snapshot;};
+   const scoped=Object.freeze({readProjection:readProjectionOnLease,get:async key=>(await readProjectionOnLease(key)).projection});
+   try{result=await life.run(s=>fn(s,scoped));}catch(error){outcome=error;}
    // A timed-out acquisition/callback retires the session rather than queueing unlocks behind uncertain work.
    life.check();
+   const recoveryUnlocked=await life.run(()=>c.query(`SELECT pg_advisory_unlock_shared(${RECOVERY_LOCK}) AS unlocked`));if(recoveryUnlocked?.rows?.[0]?.unlocked!==true)fail('RETENTION_UNLOCK_UNKNOWN');
    for(const key of ordered.slice().reverse()){const unlocked=await life.run(()=>c.query('SELECT pg_advisory_unlock_shared(hashtextextended($1,0)) AS unlocked',[`meri_retention_transition:${key}`]));if(unlocked?.rows?.[0]?.unlocked!==true)fail('RETENTION_UNLOCK_UNKNOWN');}
    reusable=true;
   }catch(error){failure=wrap(error);}

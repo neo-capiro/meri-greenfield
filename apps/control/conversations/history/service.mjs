@@ -33,14 +33,16 @@ export function createConversationHistoryService({store,nextRunOwner,gate,retent
    // Turn receipts do not carry scopes: re-read the trusted saved owner record for release authorization.
    if(operation==='nextTurn'){const saved=await store.history.transcript({principal,conversationId:request.conversationId,after:0,limit:1},check(signal));conversations=[saved.conversation];}
    const subjects=conversations.map(c=>({tenantId:principal.tenantId,kind:'conversation',subjectId:c.conversationId}));
-   const release=async fenceSignal=>{
+   const release=async(fenceSignal,assertReleaseServable)=>{
+    if(retention&&typeof assertReleaseServable!=='function')refuse('PRODUCT_CONFIGURATION');
+    const releaseServable=conversationId=>retention?assertReleaseServable({tenantId:principal.tenantId,kind:'conversation',subjectId:conversationId}):Promise.resolve();
     check(signal)();await recheckMembership();
     for(const conversation of conversations)await current(recheckConversation,conversation);
     if(operation==='list'){const visible=[];
-     for(const conversation of conversations){try{await servable(principal,conversation.conversationId);}catch(error){if(error?.code==='RETENTION_SUPPRESSED')continue;throw error;}visible.push(conversation);}
+     for(const conversation of conversations){try{await releaseServable(conversation.conversationId);}catch(error){if(error?.code==='RETENTION_SUPPRESSED')continue;throw error;}visible.push(conversation);}
      check(signal)();check(fenceSignal)();return publish({...result,conversations:visible});
     }
-    await servable(principal,request.conversationId);check(signal)();check(fenceSignal)();return publish(result);
+    await releaseServable(request.conversationId);check(signal)();check(fenceSignal)();return publish(result);
    };
    return retention?retention.withRelease(subjects,release,{signal,deadlineMs}):release();
   }),
