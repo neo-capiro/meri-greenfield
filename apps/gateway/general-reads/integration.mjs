@@ -178,6 +178,8 @@ const SOURCE_PATHS=Object.freeze({
   "apps/gateway/sources/client-knowledge/http-adapter.mjs",
   "apps/gateway/sources/client-knowledge/memory-eligibility.mjs",
   "apps/gateway/sources/client-knowledge/monday-mapping.mjs",
+  "apps/gateway/sources/client-knowledge/monday-signed-adapter.mjs",
+  "apps/gateway/sources/client-knowledge/monday-signed-handler.mjs",
   "apps/gateway/sources/client-knowledge/request-context.mjs"
  ],
  "dataset-metadata": [
@@ -236,6 +238,13 @@ const COMMON=['apps/gateway/general-reads/integration.mjs','apps/gateway/general
  'apps/gateway/sources/identity-contacts/handler.mjs','apps/gateway/sources/identity-contacts/http-adapter.mjs','apps/gateway/sources/identity-contacts/request-context.mjs',
  'apps/gateway/sources/meetings/handler.mjs','apps/gateway/sources/meetings/http-adapter.mjs','apps/gateway/sources/meetings/request-context.mjs',
  'apps/runtime/native-authority/general-read-installation/configuration.mjs','apps/runtime/native-authority/general-read-installation/runtime.mjs',
+ // Signed retained reads use the durable dispatch slot and the per-task Option B relay.
+ // These modules are shared by the selected families and change their release authority.
+ 'apps/gateway/dispatch/tool-dispatch.mjs','apps/gateway/sources/retained-reads/signed-source-operations.mjs',
+ 'apps/runtime/cli.mjs','apps/runtime/native-authority/reads-composer.mjs','apps/runtime/native-authority/retained-read-credential-relay.mjs',
+ 'apps/runtime/native-authority/retained-reads/client-scoped-source-task-ports.mjs',
+ 'apps/runtime/native-authority/read-delegation/contract.mjs','apps/runtime/native-authority/read-delegation/delegation.mjs',
+ 'apps/runtime/native-authority/read-delegation/native-credentials.mjs',
  'apps/gateway/general-reads/families/mail.mjs','apps/gateway/sources/mail/handler.mjs','apps/gateway/sources/mail/http-adapter.mjs','apps/gateway/sources/mail/request-context.mjs',
  'apps/gateway/sources/retained-reads/native-families.mjs',
  'apps/gateway/sources/source-admission.mjs','apps/gateway/sources/json-response.mjs',
