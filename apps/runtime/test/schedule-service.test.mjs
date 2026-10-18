@@ -15,7 +15,7 @@ import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs'
 
 let state;
 function reset(){
- state={events:[],secret:'postgresql://synthetic@db.synthetic.invalid/meri?sslmode=verify-full',secretHook:null,pool:null,client:null,workerState:'INITIALIZED',done:Promise.withResolvers(),activityAbort:new AbortController(),registered:null,listener:null,failWorker:false,failListener:false};
+ state={events:[],secret:'postgresql://synthetic@db.synthetic.invalid/meri?sslmode=verify-full',secrets:{},secretHook:null,pool:null,client:null,workerState:'INITIALIZED',done:Promise.withResolvers(),activityAbort:new AbortController(),registered:null,listener:null,failWorker:false,failListener:false};
  return state;
 }
 reset();
@@ -29,12 +29,13 @@ mock.module('@temporalio/worker',{namedExports:{
  NativeConnection:{async connect(){state.events.push('poller-connect');return {async close(){state.events.push('poller-close');}};}},
  Worker:{async create(options){state.events.push('worker-create');if(state.failWorker)throw Error('Synthetic worker construction failure');state.registered=options;return {getState:()=>state.workerState,run(){state.events.push('worker-run');state.workerState='RUNNING';return state.done.promise;},shutdown(){state.events.push('worker-stop');state.workerState='STOPPED';state.done.resolve();}};}},
 }});
-mock.module('../config.mjs',{namedExports:{fault:code=>Object.assign(Error(code),{code}),async readSecret(){state.events.push('secret-read');state.secretHook?.();return Buffer.from(state.secret);}}});
+mock.module('../config.mjs',{namedExports:{fault:code=>Object.assign(Error(code),{code}),async readSecret(path){state.events.push('secret-read');state.secretHook?.();return Buffer.from(state.secrets[path]??state.secret);}}});
 mock.module('../control.mjs',{namedExports:{async temporalTls(){state.events.push('tls');return {};},async temporalAuthorization(){state.events.push('temporal-authorization');return null;}}});
 mock.module('../http-server.mjs',{namedExports:{async listenRuntime(options){state.events.push('listener-open');if(state.failListener)throw Error('Synthetic listener failure');state.listener=options;return {address:{port:0},async close(){state.events.push('listener-close');}};}}});
 
 const {startScheduleWorker,composeScheduleService}=await import('../schedule-service.mjs');
 const {compileScheduleServiceConfiguration,SCHEDULE_MAX_REQUEST_MS}=await import('../schedule-service-configuration.mjs');
+const {composeRoutinesWorkerRuntimePorts}=await import('../schedule-service-owners.mjs');
 const {readFileSync}=await import('node:fs');
 const configuration={version:1,profile:'isolated-preview',sourceEnabled:false,versions,
  limits:{startupMs:1000,shutdownMs:1000,requestMs:1000,requestBytes:131072},
@@ -43,6 +44,10 @@ const configuration={version:1,profile:'isolated-preview',sourceEnabled:false,ve
  scheduledDispatch:{enabled:true,conversationTaskQueue:'meri-conversations',maxConcurrentActivities:1}};
 const unavailableOwners=()=>({authority:{async authorize(){throw Error('Synthetic policy unavailable');}},runAdmission:{async admit(){throw Error('Synthetic native producer unavailable');}},
  runControl:{async cancel(){throw Error('Synthetic canonical cancel unavailable');}},retirement:{async retire(){throw Error('Synthetic physical retirement unavailable');}}});
+/** The role with its own database file and the native capability client it hands to the owner factory (lane B3). */
+const capabilityFile=resolve('synthetic-capability'),CAPABILITY='synthetic-control-capability-0123456789abcdef';
+const native={origin:'https://control.synthetic.invalid',capabilityFile,loopback:false,maxResponseBytes:131072};
+const nativeConfiguration={...configuration,database:{connectionFile:resolve('synthetic-database')},native};
 
 // Routes statements to the existing independent SQL fixtures. Transaction control is deferred until its first namespace is known;
 // this is an outer protocol boundary, with no custody, admission, identity or dispatch business logic reproduced here.
@@ -98,8 +103,67 @@ test('canonical role settings stay closed, source-disabled, queue-separated and 
  assert.deepEqual(compileScheduleServiceConfiguration(configuration),{scheduledDispatch:configuration.scheduledDispatch});
  const variants=[{sourceEnabled:true},{scheduledDispatch:{...configuration.scheduledDispatch,enabled:false}},{scheduledDispatch:{...configuration.scheduledDispatch,conversationTaskQueue:configuration.temporal.taskQueue}},
   ...[0,11].map(maxConcurrentActivities=>({scheduledDispatch:{...configuration.scheduledDispatch,maxConcurrentActivities}})),
-  {scheduledDispatch:{...configuration.scheduledDispatch,extra:true}},{database:{connectionFile:'relative-file'}},{database:{connectionFile:resolve('synthetic-database'),selector:'synthetic'}},{limits:{...configuration.limits,requestMs:0}},{limits:{...configuration.limits,requestMs:SCHEDULE_MAX_REQUEST_MS+1}}];
+  {scheduledDispatch:{...configuration.scheduledDispatch,extra:true}},{database:{connectionFile:'relative-file'}},{database:{connectionFile:resolve('synthetic-database'),selector:'synthetic'}},{limits:{...configuration.limits,requestMs:0}},{limits:{...configuration.limits,requestMs:SCHEDULE_MAX_REQUEST_MS+1}},
+  // The optional native block is the closed control/poller shape: an HTTPS origin (loopback HTTP only when declared), an absolute file, bounded response size, nothing else.
+  {native:{...native,origin:'http://control.synthetic.invalid'}},{native:{...native,origin:'https://control.synthetic.invalid/v1'}},{native:{...native,origin:'http://127.0.0.1:8082'}},{native:{...native,capabilityFile:'relative-capability'}},
+  {native:{...native,maxResponseBytes:1}},{native:{...native,loopback:'yes'}},{native:{...native,preparedKickoff:true}},{database:{connectionFile:capabilityFile},native}];
  for(const changed of variants){reset();await assert.rejects(startScheduleWorker({...configuration,...changed},{runtimePorts:unavailableOwners()}),{code:'SCHEDULE_SERVICE_CONFIGURATION'});assert.deepEqual(state.events,[]);}
+ assert.deepEqual(compileScheduleServiceConfiguration(nativeConfiguration),{scheduledDispatch:configuration.scheduledDispatch,connectionFile:resolve('synthetic-database'),native});
+ assert.deepEqual(compileScheduleServiceConfiguration({...configuration,native:{...native,origin:'http://127.0.0.1:8082',loopback:true}}).native.origin,'http://127.0.0.1:8082');
+});
+
+test('a trusted owner factory runs once, after the owned pool, Temporal client and native client exist, and its record composes the service',async t=>{
+ const x=await actualComposition(t);reset();state.pool=x.pool;state.client=x.h.temporal.client;state.secrets[capabilityFile]=CAPABILITY;
+ const received=[],queriesBefore=x.sql.queries.length;
+ const factory=resources=>{
+  received.push(resources);state.events.push('factory');
+  assert.equal(Object.isFrozen(resources),true);assert.deepEqual(Object.keys(resources).sort(),['client','configuration','native','now','pool']);
+  assert.equal(resources.pool,x.pool);assert.equal(resources.client.workflow,x.h.temporal.client.workflow);assert.equal(resources.configuration,nativeConfiguration);
+  assert.equal(typeof resources.native.call,'function');assert.equal(typeof resources.now,'function');assert.equal(x.sql.queries.length,queriesBefore,'no SQL before the owners exist');
+  const {pool,client,...owners}=x.runtimePorts;return {...owners,pool:resources.pool,client:resources.client};
+ };
+ const service=await startScheduleWorker(nativeConfiguration,{runtimePortsFactory:factory});
+ try{
+  assert.equal(received.length,1);
+  const at=name=>state.events.indexOf(name);
+  assert.deepEqual(state.events.slice(0,at('factory')),['secret-read','pool-create','tls','temporal-authorization','client-connect','client-create','secret-read'],'database secret, pool, Temporal client, then the capability secret precede the factory');
+  assert.ok(at('factory')<at('poller-connect')&&at('factory')<at('listener-open'));
+  assert.equal((await state.registered.activities.dispatchScheduledOccurrence({occurrence:x.h.occurrence})).outcome,'ACTIVE','the factory\'s owners dispatch');
+  assert.equal(x.h.conversations.state.runs.size,1);
+ }finally{await service.close();}
+ assert.equal(x.sql.ends,1);assert.equal(state.events.filter(e=>e==='client-close').length,1);
+ for(const event of ['client-close','pool-end'])assert.ok(state.events.indexOf(event)>state.events.indexOf('poller-close'));
+});
+
+test('the factory path refuses both inputs, non-plain functions and a missing database file before any resource',async()=>{
+ for(const options of [{runtimePorts:unavailableOwners(),runtimePortsFactory:()=>unavailableOwners()},{runtimePortsFactory:async()=>unavailableOwners()},{runtimePortsFactory:function*(){}},{runtimePortsFactory:'synthetic'},{runtimePortsFactory:new Proxy(()=>{},{})}]){
+  reset();await assert.rejects(startScheduleWorker(nativeConfiguration,options),{code:'SCHEDULE_SERVICE_CONFIGURATION'});assert.deepEqual(state.events,[]);
+ }
+ reset();await assert.rejects(startScheduleWorker(configuration,{runtimePortsFactory:()=>unavailableOwners()}),{code:'SCHEDULE_SERVICE_CONFIGURATION'});assert.deepEqual(state.events,[]);
+ reset();await assert.rejects(startScheduleWorker(nativeConfiguration,{}),{code:'SCHEDULE_SERVICE_UNAVAILABLE'});assert.deepEqual(state.events,[]);
+});
+
+test('an incomplete, foreign, promised or thrown factory record is unavailable: the owned resources close and no poller starts',async t=>{
+ const x=await actualComposition(t);const {pool:_,client:__,...owners}=x.runtimePorts;
+ for(const [produce,cause] of [[()=>undefined,'SCHEDULE_SERVICE_UNAVAILABLE'],[()=>({}),'SCHEDULE_SERVICE_UNAVAILABLE'],[()=>({...owners,runAdmission:undefined}),'SCHEDULE_SERVICE_UNAVAILABLE'],
+  [r=>({...owners,pool:{},client:r.client}),'SCHEDULE_SERVICE_UNAVAILABLE'],[r=>({...owners,pool:r.pool,client:{}}),'SCHEDULE_SERVICE_UNAVAILABLE'],[()=>Promise.resolve(owners),'SCHEDULE_SERVICE_UNAVAILABLE'],[()=>{throw Error('synthetic factory failure');},null]]){
+  reset();state.pool=x.pool;state.client=x.h.temporal.client;state.secrets[capabilityFile]=CAPABILITY;
+  const error=await startScheduleWorker(nativeConfiguration,{runtimePortsFactory:produce}).catch(e=>e);
+  assert.equal(error.code,'SCHEDULE_SERVICE_STARTUP_FAILED');if(cause)assert.equal(error.cause?.code,cause);
+  assert.equal(state.events.includes('factory'),false);assert.equal(state.events.includes('poller-connect'),false);assert.equal(state.events.includes('listener-open'),false);
+  assert.deepEqual(state.events.slice(-2),['client-close','pool-end']);
+ }
+ assert.equal(x.sql.ends,7);
+});
+
+test('without a declared native block the factory receives no native client, and the production composer then refuses',async t=>{
+ const x=await actualComposition(t);reset();state.pool=x.pool;state.client=x.h.temporal.client;
+ let seen;const service=await startScheduleWorker({...configuration,database:{connectionFile:resolve('synthetic-database')}},{runtimePortsFactory:r=>{seen=r;const {pool,client,...owners}=x.runtimePorts;return {...owners,pool:r.pool,client:r.client};}});
+ try{assert.deepEqual(Object.keys(seen).sort(),['client','configuration','now','pool']);assert.equal(state.events.filter(e=>e==='secret-read').length,1);}finally{await service.close();}
+ assert.throws(()=>composeRoutinesWorkerRuntimePorts({pool:x.pool,client:x.h.temporal.client,configuration}),{code:'SCHEDULE_SERVICE_UNAVAILABLE'});
+ assert.throws(()=>composeRoutinesWorkerRuntimePorts({pool:x.pool,client:x.h.temporal.client,configuration,native:{call(){}},now:x.h.now,transport:{}}),{code:'SCHEDULE_SERVICE_CONFIGURATION'});
+ // With the client but without the unattended pin nothing composes either: the record is the B2 composer's own refusal.
+ assert.throws(()=>composeRoutinesWorkerRuntimePorts({pool:x.pool,client:x.h.temporal.client,configuration,native:{call(){}}}),{code:'SCHEDULE_SERVICE_UNAVAILABLE'});
 });
 
 test('the role accepts the preview control request budget and stays inside the scheduled workflow uncertainty bound',()=>{

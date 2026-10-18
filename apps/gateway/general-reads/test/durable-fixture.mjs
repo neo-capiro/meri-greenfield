@@ -11,14 +11,15 @@ import {executionCatalogSha256} from '../../catalog/installed-catalog.mjs';
 import {createGeneralReadInstallationOwner} from '../installation.mjs';
 import {createGeneralReadGatewayMount} from '../mount.mjs';
 import {createGeneralReadFamilyHandlers} from '../integration.mjs';
-export async function durableFamilyFixture(scene){
+/** `options.allocation({binding,operation,expires,catalogSha256})` replaces the selected-skill allocation (e.g. a P3 base general-read allocation). */
+export async function durableFamilyFixture(scene,options={}){
  const {authority:a,operation,now,state}=scene,{binding,claims,subject,policyRevision}=a,scopes=claims.scopes;
  const handlers=await createGeneralReadFamilyHandlers({families:{[scene.family]:scene.transport},now,newId:randomUUID});
  const credential='synthetic-opaque',at=now(),expires=at+10000;
  Object.assign(state,{produced:new Map(),budget:{cap_micro_usd:1000,consumed_micro_usd:0,quarantined:false},allocations:new Map(),
   bindings:new Map(),reservations:new Map(),commands:[],releases:[],connections:0});
  const base=selectSkill('quick_skill.commitments_audit','1.0.0'),manifest={...structuredClone(base.manifest),allowedOperations:[operation]};
- const allocation={run:Object.fromEntries(['tenantId','actorId','conversationId','runId'].map(k=>[k,binding[k]])),manifest,
+ const allocation=options.allocation?options.allocation({binding,operation,expires,catalogSha256:base.pin.catalogSha256}):{run:Object.fromEntries(['tenantId','actorId','conversationId','runId'].map(k=>[k,binding[k]])),manifest,
   manifestSha256:canonicalSha256(manifest),catalogSha256:base.pin.catalogSha256,budgets:manifest.budgets,
   schedule:{revision:'d'.repeat(64),expiresAt:new Date(expires).toISOString(),operations:[{operation,chargeMicrousd:1}]}},allocationJson=JSON.stringify(allocation);
  const grant={grantId:randomUUID(),binding,qualificationBinding:{runId:binding.runId,attempt:1,

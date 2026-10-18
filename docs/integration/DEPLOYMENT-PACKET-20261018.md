@@ -1,0 +1,108 @@
+# Meri integrated release: deployment packet (DRAFT, assembled by R0)
+
+Status: **draft for dot's read-only review; nothing in it is executed.** Target: the preview stacks promoted in place as the production deployment (D016-A §10). Every activation below names the decision it depends on (D016, D016-A). Hashes marked `TBD` are filled when the final images are built and measured.
+
+## 0. Order of operations
+
+1. Source freeze: integration tip `TBD` on `fable/meri-integration-20261018` (#145), Core #84 head `TBD`, frontend #92 head `271a267d`.
+2. Final runtime image (N22) from the freeze tip; in-image `--shipped` measurement **with** the D016 capability profile and the B1 budget; re-pin `allocation.json`, `policy.json`, `runtime-values.json`, `launch-measurement-receipt.json`, `deployment-inputs.json`, `image-scans.json`.
+3. One integrated release qualification on the frozen tree (focused suites plus the full `apps/runtime`, `apps/control`, `apps/gateway`, `packages/contracts` sweep once), results recorded in the release record.
+4. Infrastructure (reversible, preview-scoped, under the 17 Oct standing authorization): §3.
+5. Database: manual snapshot, then `first-chat-migrate.mjs integration` through the Stage 1 migrate task (§4).
+6. Core preview rev 3 (§5), listener rule as a coordinated action with dot (§6).
+7. Runtime render with `features` (§2) and deploy of the five Meri stacks plus the schedule worker (§7), with the normal cycle and a fresh archive name.
+8. Frontend #92 image through the reviewed template (§8).
+9. Readback: product readiness on control, `reads.missing` and `documents.missing` empty, Core routes answering, listener readback; then the authenticated chat test (prompt → response → history after reload → follow-up) and each required workflow.
+10. Rollback (§9) is prepared before step 5 runs.
+
+## 1. Images
+
+| Stack | Source | Image | Scan |
+|---|---|---|---|
+| Runtime (control, worker, owner, proxy, issuer, runner, schedule-worker, migrator) | #145 `TBD` (N22) | `TBD` | 0 findings required |
+| Core preview | capiro-backend #84 `TBD` | `TBD` | 0 findings required |
+| Frontend preview | capiro-frontend #92 `271a267d` (tree `5fe8d221`) | `TBD` | 0 findings required |
+
+Last pinned runtime: N21 `176a8811`, `sha256:5534edfe…`, measured without a profile (SDK template `af7f07b8…`) and with the proposed profile (`ba90896e…`, evidence in `docs/integration/evidence/`).
+
+## 2. Render `features` (D016 #2, #3, #6; D016-A)
+
+```json
+{
+ "sourceEnabled": true,
+ "userPreferences": {"enabled": true},
+ "tenantSettings": {"enabled": true},
+ "intents": {"enabled": true},
+ "routines": {"enabled": true},
+ "retention": {"enabled": true},
+ "artifacts": {"enabled": true, "region": "us-east-1", "bucket": "TBD (§3)", "prefix": "preview/", "expectedBucketOwner": "967807252336", "kmsKeyId": "arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042", "authority": {"enabled": true}},
+ "downloadLinks": {"enabled": true},
+ "capabilityPlatform": "<PROPOSED_PREVIEW_CAPABILITY_PLATFORM verbatim; profile sha256 908d728a… with 14 skills; measured with N22>",
+ "reads": {"enabled": true, "serviceSecretArn": "TBD (Core INTERNAL_SERVICE_SECRET exact ARN)", "defaultCongress": 119, "approvedReads": "<lane 2 catalog, 76 operations>"}
+}
+```
+
+Plus `--feature-secrets` with the exact VersionId of each secret at render time, and `"memory": {"enabled": true}` (renders `memory {enabled, origin: core.coreOrigin, serviceSecretFile: the reads secret}`). `"intents": {"enabled": true, "execution": {"issuer", "keys": [Ed25519 public JWKs with kid]}}` and `"routines": {"enabled": true, "core": {"cancellationProof": {issuer, kid, publicKey}, "unattendedGrant": {issuer, kid, publicKey}}}` render the Core origin and the reads service secret file into `intents.execution` / `routines.core`; the public JWKs come from the packet's KMS keys (`GetPublicKey` readback).
+
+Budget pins (B1): `allocation.json` `budgets.maxTurns 20`, `maxToolCalls 20`, `maxCostMicroUSD 2000000`, `maxRuntimeSeconds 900`; `policy.json` `runtime.maxTurns 20`; read operations with tariffs (P3).
+
+## 3. Infrastructure (D016 #9, #10; D016-A #8)
+
+| Resource | Spec | Why |
+|---|---|---|
+| S3 bucket `TBD` (artifacts) | private, Block Public Access on, SSE-KMS with the existing Meri preview key `1cca74fc…`, versioning on, `expectedBucketOwner 967807252336` | documents |
+| KMS key, execution capability | `ECC_NIST_EDWARDS25519`, sign/verify, Core signer role only | intents execution (Core-side signer) |
+| KMS key, routines cancellation proof | same spec, separate key and `kid` | routines |
+| KMS keys ×3, Objective (D7-2) | same spec, one per purpose | Objective activation (keys ready; activation when Core phases land) |
+| Core `INTERNAL_SERVICE_SECRET` | **new** secret `meri/preview/core/internal-service-secret` (read back 18 Oct: the preview Core task `capiro-preview-first-chat-core:2` carries no such secret, and `capiro/dev/internal-jwt-secret` is Core's JWT secret, unrelated). Generated at packet execution (32 random bytes, base64url), stored once, never in git; its exact ARN + VersionId go to the Core preview task (`secrets: INTERNAL_SERVICE_SECRET`) and to Meri's `features.reads.serviceSecretArn` / `--feature-secrets` | reads, artifacts, approvals, memory, routines |
+| IAM (roles read back 18 Oct) | control task role `MeriPreview-control-task`: `s3:GetBucket*`, `Put/Get/HeadObject` on the artifacts bucket; `kms:GenerateDataKey/Decrypt` on the Meri key `1cca74fc…`. Core preview task role `Capiro-Preview-First-Chat-ServeTaskTaskRoleD6B44EC7-…`: `kms:Sign/GetPublicKey` on the execution and routines keys. Secret reads: `MeriPreview-control-execution` (the new service secret, via the control material bundle) and `Capiro-Preview-First-Chat-ServeExecutionRole9B512BD-…` (the same secret for `INTERNAL_SERVICE_SECRET`). The temporal worker task has no task role and needs none. | least privilege |
+
+## 4. Database (D016 #1)
+
+- Snapshot: `aws rds create-db-cluster-snapshot --db-cluster-identifier capiro-dev-data-auroracluster23d869c0-ltmz40k47ewv --db-cluster-snapshot-identifier meri-integration-pre-<UTC>`; wait `available`; record.
+- Apply: `node infra/product-preview/first-chat-migrate.mjs integration` (plan ordinals 22–35 at tip `TBD`; `plan` output recorded). Refuses unless `meri` and `temporal` are ledgered.
+- Pending plan lines: `meri_memory` 0001 (lane M), any lane X/B2/B(reads) additions, each with sha256 and grants in `first-chat-database-integration.sql`.
+- Core migrations on #84 (approvals, memory, routines consent, read delegation): Core owner's packet section, same snapshot.
+- Rollback: §9.
+
+## 5. Core preview rev 3
+
+- Current: `capiro-preview-first-chat-core:2`, image `…preview-core@sha256:46acfc07…` (secrets today: DB_USER, DB_PASSWORD, CLERK_SECRET_KEY, CLERK_WEBHOOK_SIGNING_SECRET). Target: image from #84 `TBD`; task template adds `INTERNAL_SERVICE_SECRET` by the new exact ARN (§3); `MERI_TOOL_ALLOWLIST` exact 65 names (fail closed); `MEMORY_GOVERNANCE_LIFECYCLE=enforce` + preview tenant in `MEMORY_GOVERNANCE_TENANTS` (preview task only); `PREVIEW_NATIVE_GETS_ENABLED=true`; KMS key ARNs for the signers.
+
+## 6. Listener (coordinated action with dot)
+
+- Core's compact option: P1 POST (3 values), P2 GET (3 values), one exact P3 rule for native ops (approvals, memory, artifact authority, routines, read delegation), host guard unchanged; no shared-rule relocation. Exact values from `first-chat-core-routes.json` at the freeze.
+- Readback recorded before and after.
+
+## 7. Runtime deploy
+
+- Normal cycle (`n<N>-cycle.sh` pattern): scale control/worker to 0, render with `features`, deploy the three stacks, rescale; fresh archive name; supervisor patch included; the diag9 entrypoint **removed** (the runner now self-reports `RUNNER_STARTUP_FAILED stage=… code=…`).
+- New service: `meri-product-preview-schedule-worker` (D016-A #5), same image, role `schedule-worker`, its own DB role and grants (B2).
+
+## 8. Frontend
+
+- `fe-build-271a267d.sh` → scan → change set (template AllowedValues include contracts 0.1.10) → deploy; `CHANGE-SET.md` appended.
+
+## 9. Rollback
+
+- Runtime/Core/frontend: redeploy the previous pinned images (N17 `4172e474` runtime, Core rev 2 `ade7fc88`, frontend rev 17 `4ea553fe`); the render without `features` is byte-identical to today's.
+- Database: logical rollback drops only the new schemas (`meri_settings`, `meri_intents`, `meri_commands`, `meri_schedules`, `meri_task_lookup`, `meri_objective_source`, `meri_artifacts`, `meri_memory`, read-delegation facts) and their ledger rows; the snapshot is for disaster recovery only.
+- Listener: restore the recorded pre-change rules.
+
+## 10. Observability and backups
+
+- Runner stage/code on stderr (D14), control `runtime.reads.unavailable` / `runtime.documents.unavailable` events, product readiness endpoint, Temporal visibility, CloudWatch logs per task family; Aurora 14-day PITR plus the manual snapshot.
+
+## 11. Activation map
+
+| Family | Activates when | Decision |
+|---|---|---|
+| Conversations, budget | deploy | — |
+| Preferences, tenant settings | settings 0001 + render keys | D016 #1 |
+| Reads (A now, B when Core lands) | reads keys + P1/P2/P3 producers + Core W1 | D016 #2, D016-A #4 |
+| Intents, tasks | intents/commands migrations + Core P-INT-10/execution receiver + KMS key | D016 #9 |
+| Routines (attended, then unattended) | schedules migrations + Core routes + schedule worker + consent migration | D016-A #5 |
+| Documents | artifacts migrations + bucket + Core authority receiver + lane X owners | D016 #10 |
+| Memory | `meri_memory` 0001 + Core M2 + governance flags | D016 #6 |
+| Objective | Core phases + D7-2/3 | D016-A #8 |
+| Browser/Bash | D005 host qualification | D015 #8 |

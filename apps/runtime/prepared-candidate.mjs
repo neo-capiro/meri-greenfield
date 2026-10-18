@@ -29,6 +29,8 @@ import {remoteOriginal} from './native-authority/remote-task-boundary.mjs';
 import {dirname,join} from 'node:path';
 import {createObjectiveRunStartFacts} from './objective-source/run-start-facts.mjs';
 import {createPostgresObjectiveRunStartStore} from './objective-source/postgres-run-starts.mjs';
+import {allocation} from '../gateway/budget/tool-budget-binding.mjs';
+import {SCHEDULED_MERI_INBOX_DESTINATION} from '../control/schedules/scheduled-conversation-currentness.mjs';
 const refuse=()=>{throw Error('PREPARED_CANDIDATE_REFUSED');};
 const same=(a,b)=>hash(a)===hash(b);
 /** Check the configured first-run proxy bearer against the model grant intent before allocation. */
@@ -158,5 +160,14 @@ export async function startPreparedCandidate({configuration,pool,signal,issuance
  // The run issuer belongs to the poststart authority only; assemblePreparedCandidate's option record is closed.
  const {issuer:_poststartIssuer,...candidateBindings}=bindings;
  const ecs=new ECSClient({region:'us-east-1',maxAttempts:1}),s3=new S3Client({region:'us-east-1',maxAttempts:1});let candidate;
- try{const objects=createS3ArtifactObjects({client:s3,...config.objects,now:Date.now,maxRequestMs:configuration.limits.requestMs});candidate=assemblePreparedCandidate({configuration,pool,ecs,objects,credentials:{identity:identity.toString('utf8').trim(),task:task.toString('utf8').trim(),control:control.toString('utf8').trim(),proxy:proxy.toString('utf8').trim()},...candidateBindings,...reads,...(intentMountFor===undefined?{}:{intentMountFor})});return Object.freeze({...candidate,...(taskRouterAuthority?{taskRouterAuthority}:{}),...(poststartOwners?{poststartOwners}:{}),...(objectiveTemplate?{objectiveTemplate}:{}),async close(){try{await candidate.close();}finally{ecs.destroy();s3.destroy();}}});}catch(error){ecs.destroy();s3.destroy();throw error;}
+ // Routine occurrences (lane B3): the scheduled-run template and the initial-run retirement control serves to the schedule worker
+ // (native-authority/routines-occurrence-composition.mjs), only with dynamic initial runs (the path that prepares every scheduled run)
+ // and the configured routine task identity (`routines.task`, config.mjs); its manifest digest comes from the sealed allocation.
+ const routineTask=configuration.routines?.task;
+ const routinesOccurrenceOwners=config.multiRun?.dynamicInitialRuns===true&&typeof bindings.retireInitial==='function'&&routineTask!==undefined?Object.freeze({
+  template:Object.freeze({principal:{tenantId:config.runtime.binding.tenantId,actorId:config.runtime.binding.actorId},selectedClientId:config.identity.commandContext.clientResolution.clientId,
+   policyRevision:config.qualification.policyRevision,versions:configuration.versions,task:{taskId:routineTask.taskId,version:routineTask.version,manifestSha256:allocation(config.allocationJson).manifestSha256},
+   configurationSha256:bindings.configurationSha256,allocationJson:config.allocationJson,runWindowMs:config.multiRun.runWindowMs,destinationId:SCHEDULED_MERI_INBOX_DESTINATION}),
+  retirement:Object.freeze({retire:({binding,signal})=>bindings.retireInitial({binding,client:ecs,signal})})}):undefined;
+ try{const objects=createS3ArtifactObjects({client:s3,...config.objects,now:Date.now,maxRequestMs:configuration.limits.requestMs});candidate=assemblePreparedCandidate({configuration,pool,ecs,objects,credentials:{identity:identity.toString('utf8').trim(),task:task.toString('utf8').trim(),control:control.toString('utf8').trim(),proxy:proxy.toString('utf8').trim()},...candidateBindings,...reads,...(intentMountFor===undefined?{}:{intentMountFor})});return Object.freeze({...candidate,...(taskRouterAuthority?{taskRouterAuthority}:{}),...(poststartOwners?{poststartOwners}:{}),...(objectiveTemplate?{objectiveTemplate}:{}),...(routinesOccurrenceOwners?{routinesOccurrenceOwners}:{}),async close(){try{await candidate.close();}finally{ecs.destroy();s3.destroy();}}});}catch(error){ecs.destroy();s3.destroy();throw error;}
 }

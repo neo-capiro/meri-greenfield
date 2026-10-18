@@ -62,6 +62,7 @@ export const PLAN=Object.freeze([
  ['migration','apps/control/intents/migrations/0001_intent_preparations.sql','108b26fbb30d1e7aa2d38942ed5099413a09d7919f5e7fbf2c541ab92f9c68bc','integration'],
  ['migration','apps/control/schedules/migrations/0001_schedule_owner.sql','bf8c593de97dcdae728765ecd90dac6696b290028d4ffb0586bdae0fe87d91c7','integration'],
  ['migration','apps/control/schedules/migrations/0002_occurrences.sql','6a8369dc45e2bc330425550583daceb706652698ebbdecee1f5a1f2202a07242','integration'],
+ ['migration','apps/control/schedules/migrations/0003_run_cancel_proofs.sql','19a4694fa99acb36b55b08ca88e6d7a343944e2fd47e246638a3d5e93971a308','integration'],
  ['migration','apps/control/task-lookup/migrations/0001_task_lookup.sql','ae3197c4f898c5a8a493b2bee4cd6c5da16c62730ad3447e4f07ebfeaf1c100f','integration'],
  ['migration','apps/runtime/objective-source/migrations/0001_objective_custody.sql','1e22b44fcc59ae88e593f6d15f63083bdff0c3421584646fc7a357e7f67b9b34','integration'],
  // D7-4 run starts and the reader v2 JTI replay store (objective-source family; central reservation required before apply).
@@ -70,7 +71,8 @@ export const PLAN=Object.freeze([
  ['migration','apps/artifacts/migrations/0001_versions.sql','d654a24aa4f45c4b3c43d927263f96b8b2f406af509840819feda36c5f2dee19','integration'],
  ['migration','apps/artifacts/migrations/0002_retention.sql','8212082ea875117afb2ba129474ba5f6ba4f937c3d0192ca07267738cd73cba6','integration'],
  ['migration','apps/artifacts/migrations/0003_previews.sql','d1eb7ea68a150f60e7fb63e654a0892044bf24840a785fcff58dded59129b300','integration'],
- ['phase:integration_grants',INTEGRATION_SCRIPT,'d01b7400870f6001ddb26aa05d79931a37be4f98fb9000098321e6eda51e75f9','integration']
+ ['migration','apps/control/memory/migrations/0001_memory_candidates.sql','d925ec36d5e4fa98efeb123fb86f602608dbf82b2caa59bd093366e1eb33067d','integration'],
+ ['phase:integration_grants',INTEGRATION_SCRIPT,'78807257635a000a5092e737e3309333c0be373e05a484a63a87ba3a55844757','integration']
 ].map(([kind,path,pinned,declaredStage],index)=>Object.freeze({ordinal:index+1,kind,path,pinned,
  name:kind==='migration'?path:`${path}#${kind.slice(6)}`,
  stage:declaredStage??(kind==='phase:temporal_grants'?'temporal':'meri')})));

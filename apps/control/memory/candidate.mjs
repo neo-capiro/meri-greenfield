@@ -4,7 +4,7 @@
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {refuse} from '../product-access/errors.mjs';
 import {SHA256,UUID,closed,text} from '../product-access/shape.mjs';
-import {MEMORY_SCOPES,sourceRef} from './wire.mjs';
+import {MEMORY_SCOPES,RESERVED_KEY,sourceRef} from './wire.mjs';
 export const CANDIDATE_SCHEMA='meri.memory-candidate.v1';
 const KEYS=['schema','candidateId','tenantId','proposerActorId','kind','scope','clientId','content','key','ttlDays','corrects','reason','sources','origin','idempotencyKey','createdAt'];
 const deepFreeze=v=>{if(v&&typeof v==='object'){Object.values(v).forEach(deepFreeze);Object.freeze(v);}return v;};
@@ -19,8 +19,10 @@ export function assertCandidate(value){
  const c=closed(value,KEYS,[],'MEMORY_CANDIDATE_INVALID');
  const bad=c.schema!==CANDIDATE_SCHEMA||typeof c.candidateId!=='string'||!UUID.test(c.candidateId)||!text(c.tenantId,1,128)||!text(c.proposerActorId,1,128)||
   !['addition','correction'].includes(c.kind)||!MEMORY_SCOPES.includes(c.scope)||(c.scope==='client')!==(typeof c.clientId==='string'&&UUID.test(c.clientId))||c.scope!=='client'&&c.clientId!==null||
-  !text(c.content,1,4000)||c.content.trim()!==c.content||!(c.key===null||text(c.key,1,120))||!(c.ttlDays===null||Number.isSafeInteger(c.ttlDays)&&c.ttlDays>=1&&c.ttlDays<=365)||
+  !text(c.content,1,4000)||c.content.trim()!==c.content||!(c.key===null||text(c.key,1,120)&&!RESERVED_KEY.test(c.key))||!(c.ttlDays===null||Number.isSafeInteger(c.ttlDays)&&c.ttlDays>=1&&c.ttlDays<=365)||
   (c.kind==='correction')!==(c.corrects!==null)||!(c.reason===null||text(c.reason,1,1000))||c.kind==='addition'&&c.reason!==null||
+  // Core (`0304b0ef`) refuses a correction that asks for its own lifetime (409): an immutable version keeps its target's expiry.
+  c.kind==='correction'&&c.ttlDays!==null||
   !text(c.idempotencyKey,1,128)||typeof c.createdAt!=='string'||new Date(Date.parse(c.createdAt)).toISOString()!==c.createdAt||!Array.isArray(c.sources)||c.sources.length>16;
  if(bad)refuse('MEMORY_CANDIDATE_INVALID');
  if(c.corrects!==null){const t=closed(c.corrects,['memoryId','memorySha256'],[],'MEMORY_CANDIDATE_INVALID');if(!text(t.memoryId,1,128)||!SHA256.test(t.memorySha256))refuse('MEMORY_CANDIDATE_INVALID');}

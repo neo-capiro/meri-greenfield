@@ -32,8 +32,11 @@ function projectPR119(ids){
  input.adapters=base.rows.filter(entry=>entry.adapterPaths.length).map(entry=>({operations:[...new Set([entry.operation,...entry.generalOperations])],paths:[...entry.adapterPaths],
   ...(entry.state==='adapter-partial'?{partialOperations:[entry.operation]}:{}),}));
  const assets=JSON.parse(readFileSync(new URL('../../packages/skills/assets.json',import.meta.url),'utf8')).assets;
- input.skills=assets.map(asset=>{const manifest=JSON.parse(readFileSync(new URL(`../../packages/skills/${asset.manifestPath}`,import.meta.url),'utf8'));
-  return {id:manifest.skillId,operations:manifest.allowedOperations.map(operation=>operation.id)};});
+ // One row per skill identity (bill_watch has 1.0.0 and the plugin-admissible 1.0.1): the union of each version's operations, as source-exposure.mjs does.
+ const bySkill=new Map();
+ for(const asset of assets){const manifest=JSON.parse(readFileSync(new URL(`../../packages/skills/${asset.manifestPath}`,import.meta.url),'utf8'));
+  const row=bySkill.get(manifest.skillId)??{id:manifest.skillId,operations:[]};for(const operation of manifest.allowedOperations)if(!row.operations.includes(operation.id))row.operations.push(operation.id);bySkill.set(manifest.skillId,row);}
+ input.skills=[...bySkill.values()];
  input.admittedSkills=[...base.admittedSkills];assert.deepEqual(reconcileSourceExposure(input).rows,base.rows);
  for(const adapter of input.adapters)if(adapter.operations.some(id=>ids.includes(id)))delete adapter.partialOperations;
  for(const family of new Set(base.rows.filter(entry=>ids.includes(entry.operation)).map(entry=>entry.family)))input.families[family]=READ_FAMILIES[family];

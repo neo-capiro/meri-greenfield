@@ -63,6 +63,19 @@ test('an uncertain Core submission is an unknown command outcome, not a pending 
  assert.equal((await executor.execute(t.f.call(),'synthetic')).status,'indeterminate');assert.equal(t.core.reviews.size,0);
 });
 
+test('a definite Core refusal keeps the candidate PREPARED (never "unknown" at Core); the executor still folds every post-claim source failure into an unknown command outcome; a keyed proposal becoming a correction drops the ttl',async()=>{
+ const t=setup(personal);t.core.failSubmit='refused';
+ const executor=t.create(createMemoryCommandSource({producer:t.producer}));await t.ready(executor);
+ await assert.rejects(executor.execute(t.f.call(),'synthetic'),/COMMAND_OUTCOME_UNKNOWN/);
+ assert.equal([...t.journal.rows.values()][0].submission.state,'PREPARED');assert.equal(t.core.reviews.size,0);
+ assert.equal((await executor.execute(t.f.call(),'synthetic')).status,'indeterminate');
+ const u=setup(f=>{personal(f);f.command.arguments.key='brief-length';f.command.arguments.ttlDays=3;});
+ u.core.addMemory({memoryId:'clio:'+id(77),key:'brief-length',memorySha256:'e'.repeat(64),tenantId:u.f.binding.tenantId,ownerActorId:u.f.binding.actorId});
+ const run=u.create(createMemoryCommandSource({producer:u.producer}));await u.ready(run);
+ assert.equal((await run.execute(u.f.call(),'synthetic')).status,'observed');
+ const [row]=u.journal.rows.values();assert.equal(row.candidate.kind,'correction');assert.equal(row.candidate.ttlDays,null);assert.equal(row.candidate.corrects.memoryId,'clio:'+id(77));
+});
+
 test('eligibility derives only from the current decision: client scopes are clients, a tenant scope admits firm',()=>{
  const binding={tenantId:'t',actorId:'a'};
  const scope=(kind,resourceId)=>({tenantId:'t',kind,resourceId,policyRevision:'p'});

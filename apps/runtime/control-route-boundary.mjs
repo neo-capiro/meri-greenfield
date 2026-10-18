@@ -5,15 +5,17 @@ import {USER_PREFERENCES_PATHS} from '../control/settings/user-application/proto
 import {taskCommandPaths} from '../../packages/contracts/task-command-application/protocol.mjs';
 import {ROUTINE_PATHS} from '../control/schedules/application-http.mjs';
 import {TENANT_SETTINGS_PATHS} from '../control/settings/tenant-application/protocol.mjs';
+import {MEMORY_PATHS} from '../control/memory/protocol.mjs';
 import {OBJECTIVE_READER_PREFIX} from './product-ports/objective.mjs';
 import {OBJECTIVE_RUNS_PREFIX} from './native-authority/objective-runs-http.mjs';
+import {ROUTINES_OCCURRENCE_PREFIX} from './native-authority/routines-occurrence-http.mjs';
 import {OBJECTIVE_GENERATION_START_PATH} from './objective-generation/start-application.mjs';
 const absent=()=>Response.json({error:{code:'ROUTE_NOT_FOUND'}},{status:404,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
-const publicPath=path=>path==='/api/conversations'||path.startsWith('/api/conversations/')||path==='/api/action-followthrough/session'||Object.values(USER_PREFERENCES_PATHS).includes(path)||Object.values(taskCommandPaths).includes(path)||Object.values(ROUTINE_PATHS).includes(path)||Object.values(TENANT_SETTINGS_PATHS).includes(path)||path.startsWith('/api/documents/');
+const publicPath=path=>path==='/api/conversations'||path.startsWith('/api/conversations/')||path==='/api/action-followthrough/session'||Object.values(USER_PREFERENCES_PATHS).includes(path)||Object.values(taskCommandPaths).includes(path)||Object.values(ROUTINE_PATHS).includes(path)||Object.values(TENANT_SETTINGS_PATHS).includes(path)||Object.values(MEMORY_PATHS).includes(path)||path.startsWith('/api/documents/');
 const privatePath=path=>path.startsWith('/v1/')||path.startsWith('/internal/conversations/')||path.startsWith(OBJECTIVE_READER_PREFIX);
 
-export function createControlRouteApplications({assembly,candidate,router=null,poststart=null,privateIngress=null,objectiveReader=null,objectiveRuns=null,objectiveStart=null}){
- if(typeof assembly?.handle!=='function'||typeof candidate?.handle!=='function'||[objectiveReader,objectiveRuns,objectiveStart].some(app=>app!==null&&typeof app?.handle!=='function'))throw Error('PRIVATE_CONTROL_CONFIGURATION');
+export function createControlRouteApplications({assembly,candidate,router=null,poststart=null,privateIngress=null,objectiveReader=null,objectiveRuns=null,objectiveStart=null,routinesOccurrences=null}){
+ if(typeof assembly?.handle!=='function'||typeof candidate?.handle!=='function'||[objectiveReader,objectiveRuns,objectiveStart,routinesOccurrences].some(app=>app!==null&&typeof app?.handle!=='function'))throw Error('PRIVATE_CONTROL_CONFIGURATION');
  const marker=privateIngress?.issue();
  if(router!==null&&(!marker||typeof router.privateApplication?.handle!=='function'))throw Error('PRIVATE_CONTROL_CONFIGURATION');
  if(poststart!==null&&(!marker||typeof poststart.privateApplication?.handle!=='function'))throw Error('PRIVATE_CONTROL_CONFIGURATION');
@@ -27,6 +29,8 @@ export function createControlRouteApplications({assembly,candidate,router=null,p
    if(path.startsWith(OBJECTIVE_READER_PREFIX))return (objectiveReader===null?null:await objectiveReader.handle(request))??absent();
    // The Temporal worker's Objective `runs` native operations (control capability only); disabled answers null, so 404.
    if(path.startsWith(OBJECTIVE_RUNS_PREFIX))return (objectiveRuns===null?null:await objectiveRuns.handle(request))??absent();
+   // The schedule worker's routine occurrence operations (control capability only, lane B3); disabled answers null, so 404.
+   if(path.startsWith(ROUTINES_OCCURRENCE_PREFIX))return (routinesOccurrences===null?null:await routinesOccurrences.handle(request))??absent();
    if(poststart!==null){const delivered=await poststart.privateApplication.handle(request,{ingress:marker});if(delivered!==null)return delivered;}
    if(router!==null){const routed=await router.privateApplication.handle(request,{ingress:marker});if(routed!==null)return routed;}
    const native=await candidate.handle(request);if(native!==null)return native;

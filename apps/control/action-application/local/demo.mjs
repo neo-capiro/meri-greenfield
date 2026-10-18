@@ -39,7 +39,7 @@ export async function createLocalActionDemo(options){
  const credential=randomBytes(32).toString('base64url'),credentialHash=hash(credential),commandCredential=randomBytes(32).toString('base64url');
  const current=async signal=>{active(signal);await identity.authorityPorts.verifyCapability(issued.credential,{signal});active(signal);const s=identity.status();if(!s.clientAllowed||!s.sourceEnabled)deny('ACCESS_DENIED');};
  const source={origin:'https://local-action.invalid',getCredentials:async({signal})=>{await current(signal);return{binding:f.binding,bearerToken:'SYNTHETIC_SOURCE',serviceSecret:'SYNTHETIC_SERVICE',expiresAtMs:cutoff};},fetchImpl:async(url,init)=>{
-  await current(init.signal);if(url!=='https://local-action.invalid/clio/tools/query_action_items'||init.method!=='POST')deny('ACCESS_DENIED');reads++;
+  await current(init.signal);if(url!=='https://local-action.invalid/api/clio/tools/query_action_items'||init.method!=='POST')deny('ACCESS_DENIED');reads++;
   return new Response(JSON.stringify(nativeScopedPage(JSON.parse(init.body))),{headers:{'content-type':'application/json'}});
  }};
  const gateway=createLocalActionGateway({mode,identity,pool:h.pool,allocationJson:JSON.stringify(h.allocation),source,limits,now,newId:randomUUID});

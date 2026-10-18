@@ -9809,9 +9809,9 @@
       "scripts/scope-ledger/backend-producers.json": "ad5fb22cb7f4ef3ffa78f4a730c74bb28e59c0a689a2cec7d5a74a45d7ef6ea4",
       "packages/contracts/retrieval-0.2/catalog-validation.mjs": "5717b6898ce56792a40b556748eeca68d377f4af4e544842bd618efc0b9f7bdc",
       "apps/worker/conversation/reads/families.mjs": "ac3d06a17f7d2142a5713e890f5cd8cfe43c66138d8903f84d9e7967a9d8855c",
-      "apps/worker/conversation/reads/server.mjs": "d3a28df432f44e20849ceeadf7a38e73bed3748f9f36057d1d22057d4ab829b5",
+      "apps/worker/conversation/reads/server.mjs": "58a4ffe9ef2d95a67a8baf768f7951a6fc24da6862685ef77941ac62a9fcf28b",
       "apps/gateway/general-reads/registration.mjs": "80c5a64e10f279ccf7201d85b04c7ded1739416b98d64eb84098ec8937a2300a",
-      "apps/gateway/general-reads/integration.mjs": "5585f76924dadd3f5598a2ed21ed0d56c30c24ee28be06072a9342f7bed445b4",
+      "apps/gateway/general-reads/integration.mjs": "8666f2471ee65b8027c39b0e322efd911d0e94d5992af5c093a8023e145060c7",
       "scripts/general-reads/adapters.json": "5d8bcaa9ace36d73c239b81544ff6d16443eca735768eab76b7539732c3a20e7",
       "apps/gateway/general-reads/families/meeting-source.mjs": "66ee8011d604721b5977ebb601199b4fdaf3149143effb79645898f41fb186b8",
       "apps/gateway/general-reads/families/action-items-complete.mjs": "abfd9f60479cb4c4cbe9d876d04bbebd9755227461673b026f4c6d74c02b7ceb",
@@ -9922,7 +9922,7 @@
       "apps/gateway/sources/public-reports/handler.mjs": "3c212f7fcf4448b043499a934e08bbafab34be9be389cdbceda3ab304bce8af4",
       "apps/gateway/sources/acquisition-personnel/handler.mjs": "3cb660401c6df53c571cfba35288c98a3ee7623ffaee5dd0962d49cd12d89d3f",
       "apps/gateway/sources/disclosures/handler.mjs": "e475938b9ace4dc95478ebf1046ddc27b82087f03ea85357ae1172a44e48b34b",
-      "packages/skills/assets.json": "2617603da51339bf38e90446f577fc9d1329aa12b57c7689bc0c821c4f192a72",
+      "packages/skills/assets.json": "29879497c9879ed3870fa283f6cab40a03f951870f18ed98039339c3185fcdda",
       "apps/control/document-application/research-brief/manifest.json": "fbc7e2708ef41d5d28adec9dcb7f5dd7240b69567f996f676b576f68a0e4b64b",
       "packages/skills/originals/client_changes/1.0.0/manifest.json": "ea9b6fcb18bb51f3a5568f33bd515fda6adeea719d420aacce6a8b5a192ebcd7",
       "packages/skills/originals/commitments_audit/1.0.0/manifest.json": "8e1d487efdfc71ce4858e081f4432f650dd0b9749bf859a9d9d9c6a5944ab955",
@@ -9937,6 +9937,7 @@
       "packages/skills/originals/relationship_brief/1.0.0/manifest.json": "a4ee2cd51cac83d82326439ec93baf4a50860bdbb110ec1c1f40daa0f1420ace",
       "packages/skills/originals/representation_lookup/1.0.0/manifest.json": "9fde84e2d5ff0a6174fd02eb4788bf0fb04cb2b226b624f149f424f38b73856b",
       "packages/skills/originals/research_company/1.0.0/manifest.json": "dcede2f73f39ff28d36a71be430c4c3b44946b7280c0ff4d7f5fa33feb059153",
+      "packages/skills/originals/bill_watch/1.0.1/manifest.json": "f1bf173354354562cfa8b5e8f441b358793c3961b45c9a1697ea079c353668ce",
       "apps/worker/conversation/skills/mcp.mjs": "3a48d8215fb3d8ce5b57a42de297267ec6df1526021a5c9b58e0ea218b0ece0b"
     },
     "backendProducerEvidence": {

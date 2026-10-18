@@ -20,14 +20,14 @@ BEGIN
   RAISE EXCEPTION 'MERI_D2_COMMANDS_IN_PUBLIC';
  END IF;
  SELECT string_agg(s, ', ') INTO missing FROM unnest(ARRAY[
-  'meri_settings','meri_intents','meri_commands','meri_schedules','meri_task_lookup','meri_objective_source','meri_artifacts']) AS s
+  'meri_settings','meri_intents','meri_commands','meri_schedules','meri_task_lookup','meri_objective_source','meri_artifacts','meri_memory']) AS s
   WHERE NOT EXISTS (SELECT 1 FROM pg_namespace n WHERE n.nspname = s AND pg_get_userbyid(n.nspowner) = 'meri_product_migrator');
  IF missing IS NOT NULL THEN RAISE EXCEPTION 'MERI_D2_MIGRATED_SCHEMA_MISSING_OR_FOREIGN %', missing; END IF;
  SELECT string_agg(t, ', ') INTO missing FROM unnest(ARRAY[
   'meri_settings.tenant_settings','meri_settings.user_preferences','meri_settings.settings_audit',
   'meri_intents.preparations','meri_commands.command_journal','meri_commands.approval_metadata',
-  'meri_schedules.projections','meri_schedules.intents','meri_schedules.occurrences',
-  'meri_task_lookup.lookups','meri_task_lookup.events','meri_objective_source.custody',
+  'meri_schedules.projections','meri_schedules.intents','meri_schedules.occurrences','meri_schedules.run_cancel_proofs',
+  'meri_task_lookup.lookups','meri_task_lookup.events','meri_objective_source.custody','meri_memory.candidates',
   'meri_objective_source.run_starts','meri_objective_source.reader_replays',
   'meri_artifacts.versions','meri_artifacts.heads','meri_artifacts.retention_subjects','meri_artifacts.retention_purges',
   'meri_artifacts.preview_attempts','meri_artifacts.previews','meri_artifacts.preview_custody']) AS t
@@ -37,9 +37,13 @@ BEGIN
 END $$;
 
 REVOKE ALL ON SCHEMA meri_settings, meri_intents, meri_commands, meri_schedules, meri_task_lookup,
- meri_objective_source, meri_artifacts FROM PUBLIC;
+ meri_objective_source, meri_artifacts, meri_memory FROM PUBLIC;
 GRANT USAGE ON SCHEMA meri_settings, meri_intents, meri_commands, meri_schedules, meri_task_lookup,
- meri_objective_source, meri_artifacts TO meri_control_runtime;
+ meri_objective_source, meri_artifacts, meri_memory TO meri_control_runtime;
+
+-- Control: memory candidate journal (lane M): insert, read, and the submission settle columns only.
+GRANT SELECT, INSERT ON TABLE meri_memory.candidates TO meri_control_runtime;
+GRANT UPDATE (submission_state,review_id,submitted_at) ON meri_memory.candidates TO meri_control_runtime;
 
 -- Control: personal preferences (user-preferences.mjs). The audit row is insert-only; tenant settings stay ungranted.
 GRANT SELECT, INSERT ON TABLE meri_settings.user_preferences TO meri_control_runtime;
@@ -57,6 +61,8 @@ GRANT UPDATE (state,outcome,updated_at) ON meri_commands.command_journal TO meri
 -- Control: routines foreground schedule owner. Opening an occurrence belongs to the schedule worker (no role yet).
 GRANT SELECT, INSERT ON TABLE meri_schedules.projections, meri_schedules.intents TO meri_control_runtime;
 GRANT SELECT ON TABLE meri_schedules.occurrences TO meri_control_runtime;
+-- Control: single-use Core cancellation-proof jti ledger (insert-before-effect; never updated or deleted).
+GRANT SELECT, INSERT ON TABLE meri_schedules.run_cancel_proofs TO meri_control_runtime;
 GRANT UPDATE (generation,projection,projection_sha256,active_intent) ON meri_schedules.projections TO meri_control_runtime;
 GRANT UPDATE (state,updated_at) ON meri_schedules.intents, meri_schedules.occurrences TO meri_control_runtime;
 
@@ -95,11 +101,11 @@ BEGIN
   CROSS JOIN (VALUES ('UPDATE'),('DELETE'),('TRUNCATE'),('TRIGGER'),('REFERENCES'),
                      ('SELECT WITH GRANT OPTION'),('INSERT WITH GRANT OPTION')) AS p(priv)
   WHERE n.nspname IN ('meri_settings','meri_intents','meri_commands','meri_schedules','meri_task_lookup',
-                      'meri_objective_source','meri_artifacts')
+                      'meri_objective_source','meri_artifacts','meri_memory')
     AND c.relkind IN ('r','v','p') AND has_table_privilege(r.rolname, c.oid, priv);
  IF bad IS NOT NULL THEN RAISE EXCEPTION 'MERI_D2_EXCESS_TABLE_PRIVILEGE %', bad; END IF;
  IF EXISTS (SELECT 1 FROM unnest(ARRAY['meri_settings','meri_intents','meri_commands','meri_schedules',
-             'meri_task_lookup','meri_objective_source','meri_artifacts']) AS s
+             'meri_task_lookup','meri_objective_source','meri_artifacts','meri_memory']) AS s
              CROSS JOIN (VALUES ('meri_model_budget_owner'),('meri_temporal_issuer_service')) AS r(rolname)
              WHERE has_schema_privilege(r.rolname, s, 'USAGE')) THEN
   RAISE EXCEPTION 'MERI_D2_CROSS_SCHEMA_USAGE';
