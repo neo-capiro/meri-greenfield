@@ -178,12 +178,24 @@ class SettlementTests(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(self.calls, [])
         missing = events()
         missing[-1] = {"type": "message_stop"}
+        del missing[-2]["usage"]
         inner, transport = self.setup_transport(
             [b"".join(frame(event) for event in missing)],
             headers={"content-type": "application/vnd.amazon.eventstream"})
         await self.call(transport)
         self.assertEqual(inner.sends, 1)
         self.assertEqual(self.calls, [])
+
+    async def test_bare_stop_with_bound_start_and_delta_usage_settles_once(self):
+        native = events()
+        native[-1] = {"type": "message_stop"}
+        payload = b"".join(frame(event) for event in native)
+        inner, transport = self.setup_transport(
+            [payload], headers={"content-type": "application/vnd.amazon.eventstream"})
+        self.assertEqual((await self.call(transport)).content, payload)
+        self.assertEqual(inner.sends, 1)
+        self.assertEqual(len(self.calls), 1)
+        self.assertEqual((self.calls[0][1].input_tokens, self.calls[0][1].output_tokens), (7, 3))
 
     async def test_http_error_malformed_or_semantically_incomplete_stays_unknown(self):
         valid = raw(message())

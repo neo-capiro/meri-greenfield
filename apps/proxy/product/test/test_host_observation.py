@@ -126,7 +126,7 @@ def stream_frame(event):
     return before_crc + struct.pack(">I", zlib.crc32(before_crc))
 
 
-def streamed_message(terminal=None):
+def streamed_message(terminal=None, *, delta_usage=True):
     start = json.loads(MESSAGE)
     start.update(content=[], stop_reason=None, usage={"input_tokens": 12, "output_tokens": 0})
     if terminal is None:
@@ -142,6 +142,8 @@ def streamed_message(terminal=None):
               {"type": "message_delta", "delta": {"stop_reason": "end_turn", "stop_sequence": None},
                "usage": {"output_tokens": 3}},
               terminal]
+    if not delta_usage:
+        del events[-2]["usage"]
     return b"".join(stream_frame(event) for event in events)
 
 
