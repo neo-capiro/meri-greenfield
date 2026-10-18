@@ -13,7 +13,7 @@ test('task update prepares an immutable normalized proposal and approved executi
  await assert.rejects(c.prepare({...args,title:'Other'}),{code:'CONFLICT'});
  await assert.rejects(c.executeApproved(proposal));assert.equal(c.f.state.fetches,0);
  c.approve(proposal);const result=await c.executeApproved(proposal);assert.equal(result.status,'observed');assert.equal(c.f.state.fetches,1);
- assert.equal(c.f.state.http.url,'https://source.invalid/clio/tools/update_task');
+ assert.equal(c.f.state.http.url,'https://source.invalid/api/clio/tools/update_task');
  assert.deepEqual(JSON.parse(c.f.state.http.options.body),{taskId:id(21),title:'Updated',status:'todo'});
  assert.deepEqual(await c.executeApproved(proposal),result);assert.equal(c.f.state.fetches,1);
 });

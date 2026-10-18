@@ -5,7 +5,7 @@ import {cancelBody,readJsonResponse,responseBody} from '../../gateway/sources/js
 import {ProductError,asProductError,refuse} from '../product-access/errors.mjs';
 import {closed,text} from '../product-access/shape.mjs';
 export const CORE_MEMORY_ROUTES=Object.freeze({
- submit:'/clio/memory/review/submit',status:'/clio/memory/review/status',target:'/clio/memory/read_target',findByKey:'/clio/memory/find_by_key'});
+ submit:'/api/clio/memory/review/submit',status:'/api/clio/memory/review/status',target:'/api/clio/memory/read_target',findByKey:'/api/clio/memory/find_by_key'});
 export function createCoreMemoryTransport(options){
  const {origin,getCredentials,fetchImpl=globalThis.fetch,now,maxRequestMs=10000,maxResponseBytes=262144}=options??{};
  if(Object.keys(options??{}).some(k=>!['origin','getCredentials','fetchImpl','now','maxRequestMs','maxResponseBytes'].includes(k))||typeof origin!=='string'||typeof getCredentials!=='function'||

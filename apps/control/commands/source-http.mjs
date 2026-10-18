@@ -53,7 +53,7 @@ export function createCommandHttpSource(options){
    }
    const requestBody=JSON.stringify(commandSourceBody(command,attachments));if(Buffer.byteLength(requestBody)>maxResponseBytes)deny('COMMAND_RESOURCE_LIMIT');
    const response=await life.run(async signal=>{
-    const r=await fetchImpl(new URL(`/clio/tools/${prepared.tool}`,base).href,{method:'POST',redirect:'error',credentials:'omit',cache:'no-store',signal,
+    const r=await fetchImpl(new URL(`/api/clio/tools/${prepared.tool}`,base).href,{method:'POST',redirect:'error',credentials:'omit',cache:'no-store',signal,
      headers:{authorization:`Bearer ${prepared.credentials.bearerToken}`,'x-internal-service-secret':prepared.credentials.serviceSecret,'content-type':'application/json',accept:'application/json','accept-encoding':'identity'},body:requestBody});
     try{life.check();if(life.signal.aborted)deny('CANCELLED');return r;}catch(error){try{cancel(responseGet(r,'body'));}catch{}throw error;}
    });

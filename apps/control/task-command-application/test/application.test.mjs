@@ -17,7 +17,7 @@ test('task-update Fetch API prepares without effects then accepts the exact appr
  const {proposal}=await prepared.json();assert.equal(c.f.state.fetches,0);
  const unapproved=await c.call('execute',{proposal});assert.notEqual(unapproved.status,200);assert.equal(c.f.state.fetches,0);
  c.approve(proposal);const result=await c.call('execute',{proposal});assert.equal(result.status,200);assert.equal((await result.json()).status,'observed');
- assert.equal(c.f.state.http.url,'https://source.invalid/clio/tools/update_task');assert.equal(c.f.state.fetches,1);
+ assert.equal(c.f.state.http.url,'https://source.invalid/api/clio/tools/update_task');assert.equal(c.f.state.fetches,1);
  assert.equal((await c.call('execute',{proposal})).status,200);assert.equal(c.f.state.fetches,1);
 });
 test('hostile routing, credentials, request shape and cross-tenant session refuse before native work',async()=>{

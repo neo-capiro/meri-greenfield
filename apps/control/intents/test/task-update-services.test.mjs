@@ -12,7 +12,7 @@ for(const resumed of [false,true])test(`durable update composition prepares then
  await c.services.commandExecutor.bindTrustedGrant(JSON.stringify(c.b.invocation));
  const execution={...c.f.execution,proposalId:proposal.proposalId,commandSha256:proposal.commandSha256,idempotencyKey:proposal.command.idempotencyKey};
  const result=await c.services.commands.executeApproved(proposal,execution,'synthetic');assert.equal(result.status,'observed');assert.equal(c.f.state.fetches,1);
- assert.equal(c.f.state.http.url,'https://source.invalid/clio/tools/update_task');assert.equal(c.b.state().budget.consumed_micro_usd,'10');
+ assert.equal(c.f.state.http.url,'https://source.invalid/api/clio/tools/update_task');assert.equal(c.b.state().budget.consumed_micro_usd,'10');
  assert.deepEqual(await c.services.commands.executeApproved(proposal,execution,'synthetic'),result);assert.equal(c.f.state.fetches,1);assert.equal(c.b.state().produced.size,1);
 });
 test('composition defaults source off and rejects a foreign producer binding without connecting',async()=>{

@@ -36,7 +36,7 @@ test('the governed artifact.file command source prepares and executes against th
  const command={action:'artifact.file',arguments:destination,attachments:[docx.object]},authority={binding:a.ctx.binding,subject:{actorId:'actor'},policyRevision:'1',claims:{capabilityId:'capability'},deadlineMs:Date.now()+60000};
  const signal=new AbortController().signal,token=await source.prepare({command,context:{destination},authority,deadlineMs:Date.now()+60000,signal});
  const result=await source.execute(token,{authority,signal});
- assert.equal(requests.length,1);assert.equal(requests[0].url,'https://source.invalid/clio/tools/save_chat_attachments');assert.equal(a.broker.calls.length,1);assert.equal(requests[0].body.attachmentIds.length,1);assert.match(requests[0].body.attachmentIds[0],/^[0-9a-f-]{36}$/);assert.deepEqual({clientId:requests[0].body.clientId,conversationId:requests[0].body.conversationId},destination);
+ assert.equal(requests.length,1);assert.equal(requests[0].url,'https://source.invalid/api/clio/tools/save_chat_attachments');assert.equal(a.broker.calls.length,1);assert.equal(requests[0].body.attachmentIds.length,1);assert.match(requests[0].body.attachmentIds[0],/^[0-9a-f-]{36}$/);assert.deepEqual({clientId:requests[0].body.clientId,conversationId:requests[0].body.conversationId},destination);
  assert.deepEqual(result.files.map(f=>[f.object,f.status]),[[docx.object,'saved']]);
 });
 test('objects outside the conversation, altered references, suppression and revoked authority register nothing',async t=>{

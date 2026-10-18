@@ -21,7 +21,7 @@ function combinedFixturePool(t){
 function fixtureConfiguration(t){
  const {source:ignored,...command}=t.config.command,pool=combinedFixturePool(t);
  const write={origin:'https://qualified-action.invalid',getCredentials:t.p.source.getCredentials,async fetchImpl(url,init){
-  assert.equal(url,'https://qualified-action.invalid/clio/tools/create_task');t.s.active(init.signal);const args=JSON.parse(init.body);t.s.state.taskEffects++;
+  assert.equal(url,'https://qualified-action.invalid/api/clio/tools/create_task');t.s.active(init.signal);const args=JSON.parse(init.body);t.s.state.taskEffects++;
   return new Response(JSON.stringify({tool:'create_task',generatedAt:new Date(t.now()).toISOString(),created:true,task:{id:randomUUID(),title:args.title,status:'todo',dueDate:args.dueDate??null,clientId:args.clientId,createdAt:new Date(t.now()).toISOString()}}),{headers:{'content-type':'application/json'}});
  }};
  return {hostConfiguration:{...t.config,admission:{...t.config.admission,pool},lookup:{...t.config.lookup,pool},metadata:{...t.config.metadata,pool},command:{...command,budgetPool:pool,journalPool:pool}},source:{read:t.p.source,command:write}};
