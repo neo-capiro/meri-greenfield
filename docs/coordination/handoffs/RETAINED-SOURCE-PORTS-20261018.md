@@ -1,5 +1,11 @@
 # Retained read production ports — source handoff, 18 October 2026
 
+## Later profile receiving receipt
+
+Draft [PR161](https://github.com/neo-capiro/meri-greenfield/pull/161) receives this source branch and PR160 into PR157 integration at `ab07d59b8fa080fa4673ff2f408e47850efdb1e6`. The shared loader, single catalog binding and descriptor, worker schema reader, nine immutable skill successors, tariff and P2 source manifest now select `get_client_context@0.3.0`. Catalog `0.2.16` has canonical SHA-256 `58673ff38658c07e608ad209f007c4c6e30b9ee06a04c0f52afa97ac222bca9c`; the v03 schema SHA remains `7d422f92a4771b2d7e869e45371396c12b8a69934f9cb8ca50f5821ccab514a2`. The source-only P2 measurement is `f693d304d279c855435596b16b2909952b5920bbb315ee18c2fe5c190b0704a4` for 76 operations in 42 families. [Reproduction and limits](../../qualification/candidates/profile-receiving-v03-20261018/README.md) distinguish this from an image receipt.
+
+Core [PR87](https://github.com/neo-capiro/capiro-backend/pull/87) advanced to `8130f4404d770db396b6732aac436d6e9ac93b82`: ten retained sources, including the profile 0.3 owner projection and Monday, are source-wired but not available in the preview runtime. `read_client_documents` still returns 503 while measured paid-extraction pricing, an actual audio-duration bound and full output validation remain absent. Meri's shared post-reservation invocation/token relay is still missing for signed retained adapters, and the Monday adapter is a separate source gap; [the shared owner diff](https://github.com/neo-capiro/meri-greenfield/pull/157#issuecomment-6251006311) identifies the exact seams. The Core receiver, real signed task call and live readback remain held. The sections below record the earlier source branch state and ownership at its base, not a current availability claim.
+
 Base: `bf8d215f519d1e397922f340922c777fa381e088` on `codex/meri-retained-source-ports-20261018`. This is a source handoff, not a deployment or installation receipt.
 
 ## Boundaries and implementation outline
