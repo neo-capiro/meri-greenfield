@@ -13,7 +13,10 @@ export function createTrackedBillsHandlers(configuration,operations){
    // Canonical admission already correlates this exact retained reference with the original request.
    const {clientReference}=current.normalizationContext;
    if(hash(current.normalizationContext)!==hash({binding:current.authority.binding,subject:current.authority.subject,clientReference}))deny('ACCESS_DENIED');
-   if(!UUID.test(clientReference.trim()))return {...current.request,clientId:current.input.clientId};
+   // Core's delegated tool gate requires the exact selected UUID. Keep the
+   // original reference in the Meri reservation, but bind the tool token to
+   // the canonical outgoing body even for padded or uppercase UUIDs.
+   if(current.request.clientId!==current.input.clientId)return {...current.request,clientId:current.input.clientId};
    return current.request;
   },
   resultBody(current,data){return {binding:current.authority.binding,subject:current.authority.subject,data};},

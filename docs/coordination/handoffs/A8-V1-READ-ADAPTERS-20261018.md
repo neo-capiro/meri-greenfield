@@ -1,5 +1,29 @@
 # A8 native read source audit — 18 October 2026
 
+## Selector bridge successor outline
+
+The five A8 adapters with an explicit client selector project the already
+admitted current client's canonical lowercase UUID into the Core tool body when
+the retained raw selector uses a name, uppercase UUID, padding, or a clipped
+reference. Their domain request contexts remain the canonical selector owners;
+the native credential owner still checks the current task and client roster.
+The original request and normalized arguments digest remain bound to Meri's
+reservation, while the existing transport binds the tool token to the exact
+projected body bytes. Core keeps the final selected-client gate. No schema,
+credential, grant, or shared receiver changes are involved. Focused source
+handler tests verify both hashes and refusal of mismatched subjects.
+
+The outgoing Core tool body now has the exact selected lowercase UUID for
+`search_tracked_bills`, `search_committee_hearings`, both
+`research-legal-legislation` operations, `search_legiwatch_news`, and
+`query_outreach`. A lowercase exact UUID leaves the body unchanged. A named
+selector still requires the existing per-call current native resolution.
+Meri's original request hash and reservation arguments hash remain unchanged;
+the existing tool target binds `JSON.stringify` of the projected body. This
+closes the explicit-client UUID spelling mismatch against Core PR86's strict
+`assertDelegatedToolSelectors` equality. It does not make an unscoped or
+parser-dependent slice callable, nor establish live Core route qualification.
+
 Meri base: PR157 `c1bd0336984fd28a28aead9851090cf64a0cbf72`.
 Canonical Core inspected read-only: PR86
 `b40971b1f8de888687a8fb92fbdf4ff653fe10d3` in
@@ -19,17 +43,17 @@ or qualified read. No operation is hidden or revoked to improve installation.
 | Operation | Meri source at this base | Actual remaining dependency |
 | --- | --- | --- |
 | `get_state_bill_status`, `search_state_floor_votes` | Complete; exact body, selector and result rails retained | Core Option B requires the exact canonical delegated selector where applicable; live qualification remains open. |
-| `search_tracked_bills`, `search_committee_hearings` | Complete; client resolution, source lineage and limits retained | Core Option B requires a client selector for hearings even when the contract permits null; raw uppercase/padded UUIDs can fail exact token admission. |
-| `search_legislative_research` | Complete; no rewrite needed | Core route/current authority and live qualification. |
+| `search_tracked_bills`, `search_committee_hearings` | Complete explicit-client selector bridge; client resolution, source lineage and limits retained | Core Option B still requires a client selector for hearings even when the contract permits null. |
+| `search_legislative_research` | Complete selected-client body projection; canonical research selection retained | Core route/current authority and live qualification. |
 | `get_legal_reference` | Parser-independent reads admitted; parser-dependent reads refuse before credentials | Core must return authenticated citation resolution: effective reference identity and constitution edition suppression. |
 | `search_legiwatch_news` | Exact source and explicit-year personnel reads admitted; this branch validates typed selectors before name lookup | Four Core/product facts listed below remain absent. |
 | `query_outreach` | Explicit selected-client campaign list admitted; this branch refuses unsupported branches before credential factories | Core lacks client/actor walls for unscoped list and nested exact-record data; unscoped product scope remains undecided. |
 
 State/votes, tracked-bills, hearings and legislation adapters were independently
-audited against Core PR86 `b40971b1` and required no owned file changes. The
-historical complete-source classification stands; their current Core Option B
-selector mismatch is a cross-owner admission contract, not a reason to alter
-the exact native request body without an agreed Core bridge.
+audited against Core PR86 `b40971b1`. The PR159 base required no owned changes
+for their source projections. This successor changes only the outgoing body of
+an admitted explicit-client call when its raw client spelling differs from the
+canonical selected UUID; Core's exact selector admission is the existing bridge.
 
 ## News source change and preserved behavior
 
@@ -43,7 +67,7 @@ client resolution and the matching client subject.
 Exact typed sources (`news`, `budget`, `personnel`, `research`) and explicit-year
 personnel remain admitted. A selected client requires the current native roster
 and a matching task client. Names require the existing per-call credential owner;
-the transport substitutes only its observed UUID, preserves the original request
+the transport sends the selected UUID, preserves the original request
 digest and binds the tool credential target to the exact outgoing JSON bytes.
 An explicit client with a folder delegates the folder/client mismatch check to
 Core/Intel. Source attribution, original body/rights/completeness, proposal stage,
@@ -87,7 +111,9 @@ without current admission checks. `outreach-query/handler.mjs` therefore keeps
 both unscoped and detail branches unavailable. The supported explicit-client
 list now runs its canonical selection/current-subject check before any
 per-call credential factory, so a denied branch cannot allocate that factory.
-The original request and outgoing body/hash remain unchanged. Core must add
+The original Meri request/hash remains unchanged; an uppercase, padded, clipped
+or named client selector produces a canonical outgoing body and exact body hash.
+Core must add
 the missing owner walls; dot/Neo must define the unscoped-list scope before
 either branch can be admitted.
 
@@ -110,6 +136,12 @@ research legislation **70/70**; Outreach source/contract/current-authority
 **116/116**. The Outreach before-fix regression produced three expected failures
 and its after-fix focused run passed. No full installation, SDK or live read
 qualification was run.
+
+Selector bridge successor focused tests: six changed source suites **93/93** on
+Node `v24.19.0`, `--test-concurrency=1`, with no network or Core execution.
+The first test attempt failed at module load because the new worktree had no
+`ajv`; rerun used the existing repository dependency tree through a temporary
+untracked symlink, which was removed afterward.
 
 The new malformed-name preflight assertion was also run against the exact Meri
 base module: it failed with `Missing expected exception` (exit 1), confirming

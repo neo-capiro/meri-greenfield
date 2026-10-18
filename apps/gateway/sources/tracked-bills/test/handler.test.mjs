@@ -1,29 +1,32 @@
 /** Real native HTTP JSON receiving, synthetic client authority and stored manual tracking rows. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
 import {canonicalSha256 as hash} from '../../../../../packages/contracts/validate.mjs';
 import {deny} from '../../../dispatch/operation-result.mjs';
 import {createTrackedBillsHandlers} from '../handler.mjs';
 import {storedCase,trackedRow,id,clientId} from './fixture.mjs';
 
-test('explicit UUID uses the fixed manual native POST, original proof and both frozen lineage envelopes',async()=>{
+test('explicit UUID uses the exact selected-client POST, original proof and both frozen lineage envelopes',async()=>{
  const request={clientId:` ${clientId.toUpperCase()} `},f=storedCase(id,{request}),call=f.call();
  const out=JSON.parse(await f.handler()(call)),[wire]=f.wire,[proof]=f.credentialCalls;
  assert.deepEqual(out,{binding:f.authority.binding,subject:f.authority.subject,operation:f.operation,argumentsSha256:call.argumentsSha256,
   result:{binding:f.authority.binding,subject:f.authority.subject,data:f.page}});
  assert.equal(wire.url,'https://native-core.example.invalid/api/clio/tools/search_tracked_bills');assert.equal(wire.options.method,'POST');
- assert.deepEqual(wire.body,request);assert.equal(Object.hasOwn(wire.body,'input'),false);assert.equal(f.wire.length,1);
+ assert.deepEqual(wire.body,{clientId});assert.equal(Object.hasOwn(wire.body,'input'),false);assert.equal(f.wire.length,1);
  assert.equal(wire.options.headers.authorization,'Bearer SYNTHETIC_NATIVE_USER');assert.equal(wire.options.headers['x-internal-service-secret'],'SYNTHETIC_INTERNAL_SERVICE');
  assert.equal(wire.options.redirect,'error');assert.equal(wire.options.credentials,'omit');assert.equal(wire.options.cache,'no-store');
  assert.equal(proof.requestSha256,hash(request));assert.equal(proof.argumentsSha256,hash({clientId}));
+ assert.deepEqual(proof.target,{method:'POST',path:'/api/clio/tools/search_tracked_bills',
+  bodySha256:createHash('sha256').update(JSON.stringify({clientId}),'utf8').digest('hex')});
  assert.deepEqual(proof.sourceIds,['tracked_bills']);assert.deepEqual(proof.normalizationContext,{binding:f.authority.binding,subject:f.authority.subject,clientReference:clientId.toUpperCase()});
 });
 
-test('the 80-unit retained reference preserves clipping whitespace before native UUID resolution trims it',async()=>{
+test('the 80-unit retained reference preserves clipping while Core receives the exact selected UUID',async()=>{
  const request={clientId:clientId+' '.repeat(50)+'suffix'},f=storedCase(id,{request}),call=f.call();
  assert.equal(call.normalizationContext.clientReference,clientId+' '.repeat(44));
  assert.deepEqual(call.input,{clientId});await f.handler()(call);
- assert.deepEqual(f.wire[0].body,request);assert.equal(f.credentialCalls[0].requestSha256,hash(request));
+ assert.deepEqual(f.wire[0].body,{clientId});assert.equal(f.credentialCalls[0].requestSha256,hash(request));
  assert.equal(f.credentialCalls[0].normalizationContext.clientReference.length,80);
 });
 

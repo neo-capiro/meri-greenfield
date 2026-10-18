@@ -9,10 +9,10 @@ import {storedCase} from './fixture.mjs';
 
 const clientId='a1234567-b123-4c12-8d12-e123456789ab',foreign='d1234567-b123-4c12-8d12-e123456789ab';
 const selections=[...['news','budget','personnel','research'].map(kind=>({view:'source',kind,id:'synthetic-source'})),{view:'personnel',year:'2026',kind:'registration'}];
-for(const request of selections)test(`delta ${request.view}/${request.kind}: UUID client preserves raw selectors, native context and unchanged typed source`,async()=>{
+for(const request of selections)test(`delta ${request.view}/${request.kind}: UUID client preserves raw proof, native context and typed source`,async()=>{
  const raw={...request,clientId:` ${clientId.toUpperCase()} `,folderId:'',sessionKey:'2026'},f=storedCase(undefined,{request:raw});
  const call=f.call(),out=JSON.parse(await f.handler()(call));
- assert.deepEqual(out.result,JSON.parse(JSON.stringify(f.page)));assert.deepEqual(f.wire[0].body,raw);
+ assert.deepEqual(out.result,JSON.parse(JSON.stringify(f.page)));assert.deepEqual(f.wire[0].body,{...raw,clientId});
  assert.deepEqual(f.credentialCalls[0].normalizationContext,{clientResolution:{reference:clientId.toUpperCase(),clientId},
   effectiveScope:{jurisdiction:'FL',sessionKey:'2026',folderId:null,clientId},windowAsOf:null,defaultYear:null,owner:null});
  assert.equal(f.credentialCalls[0].requestSha256,hash(raw));assert.equal(f.credentialCalls[0].argumentsSha256,call.argumentsSha256);
@@ -20,9 +20,10 @@ for(const request of selections)test(`delta ${request.view}/${request.kind}: UUI
  assert.equal(out.result.authority,f.page.authority);assert.equal(Object.hasOwn(out.result,'absenceEvidence'),false);
 });
 
-test('delta news UUID clipping matches the Core bridge without clipping or rewriting the transport request',async()=>{
+test('delta news UUID clipping keeps raw proof and projects the exact selected client',async()=>{
  const request={...storedCase().arguments,clientId:clientId+' '.repeat(44)+'ignored suffix'},f=storedCase(undefined,{request});
- await f.handler()(f.call());assert.deepEqual(f.credentialCalls[0].normalizationContext.clientResolution,{reference:clientId,clientId});assert.deepEqual(f.wire[0].body,request);
+ await f.handler()(f.call());assert.deepEqual(f.credentialCalls[0].normalizationContext.clientResolution,{reference:clientId,clientId});assert.deepEqual(f.wire[0].body,{...request,clientId});
+ assert.equal(f.credentialCalls[0].requestSha256,hash(request));
 });
 
 test('delta news names, folders, clocks and monitor branches remain unavailable before credential factories',async()=>{

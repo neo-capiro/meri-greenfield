@@ -12,7 +12,7 @@ export function createPublicDomainHearingsHandlers(configuration,operations){
    const expected={tenantId:current.authority.binding.tenantId,clientResolution:captureHearingClientSelection(current.request,current.normalizationContext.clientResolution)};
    if(hash(current.normalizationContext)!==hash(expected))deny('ACCESS_DENIED');
    const selected=expected.clientResolution;
-   if(selected&&!UUID.test(selected.reference))return {...current.request,clientId:selected.clientId};
+   if(selected&&current.request.clientId!==selected.clientId)return {...current.request,clientId:selected.clientId};
    return current.request;
   },
  });

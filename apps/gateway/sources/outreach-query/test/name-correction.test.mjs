@@ -147,10 +147,10 @@ test('malformed closed native resolver results never become a campaign lookup or
  }
 });
 
-test('legacy UUID uses the original case/whitespace body with either credential composition and no name observation',async()=>{
+test('explicit UUID projects the exact selected client with either credential composition and no name observation',async()=>{
  const request={clientId:` ${clientId.toUpperCase()} `,status:'draft'},f=storedCase(id,{request});
  await f.handler()(f.call());await perCall(f)(f.call());assert.equal(f.wire.length,2);
- for(const call of f.wire)assert.deepEqual(call.body,request);
+ for(const call of f.wire)assert.deepEqual(call.body,{...request,clientId});
  for(const proof of f.credentialCalls)assert.equal(proof.requestSha256,hash(request));
 });
 

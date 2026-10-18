@@ -15,7 +15,7 @@ function listSelection(current){
 function listRequest(current){
  const selected=listSelection(current);
  // Only the native domain body uses the observed UUID; private receiving stays bound to the original request.
- return UUID.test(selected.reference)?current.request:{...current.request,clientId:selected.clientId};
+ return current.request.clientId===selected.clientId?current.request:{...current.request,clientId:selected.clientId};
 }
 export const createOutreachQueryHandlers=(configuration,operations)=>
  createStoredNativeReadHandlers(configuration,operations,{family:'outreach-query',routes:ROUTES,
