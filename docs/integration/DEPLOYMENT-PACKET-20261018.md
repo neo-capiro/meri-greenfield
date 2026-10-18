@@ -20,6 +20,8 @@ Status: **draft for dot's read-only review; nothing in it is executed.** Target:
 | Stack | Source | Image | Scan |
 |---|---|---|---|
 | Runtime (control, worker, owner, proxy, issuer, runner, schedule-worker, migrator) | #145 `TBD` (N22) | `TBD` | 0 findings required |
+
+Runtime image additions for N22 (lane X finding): the document generation executor needs Python 3 and the pinned pptxgenjs module in the wolfi runtime image (`apps/runtime/Dockerfile`, `runtime-packages.lock.json`), rendered as `artifacts.executor {pythonExecutable, nodeExecutable?, pptxModulePath, tempRoot, timeoutMs?}`; without them documents stay 503 by design.
 | Core preview | capiro-backend #84 `TBD` | `TBD` | 0 findings required |
 | Frontend preview | capiro-frontend #92 `271a267d` (tree `5fe8d221`) | `TBD` | 0 findings required |
 
