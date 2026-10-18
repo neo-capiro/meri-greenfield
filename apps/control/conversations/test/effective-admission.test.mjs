@@ -63,6 +63,8 @@ test('adoption requires a null checkpoint and a bounded authority observation',(
  assert.throws(()=>assertConfigurationAdoptionReceipt({...adoptedReceipt,authorityCheckedAtMs:adoptedReceipt.adoptedAtMs+1}),{code:'EFFECTIVE_ADMISSION_CORRUPT'});
  const premature={...adoptedReceipt,authorityCheckedAtMs:at,adoptedAtMs:at+999};
  assert.throws(()=>resolve(target,[first],[{receipt:premature,receiptSha256:hash(premature)}]),{code:'EFFECTIVE_ADMISSION_CORRUPT'});
+ const staleAuthority={...adoptedReceipt,authorityCheckedAtMs:at+999};
+ assert.throws(()=>resolve(target,[first],[{receipt:staleAuthority,receiptSha256:hash(staleAuthority)}]),{code:'EFFECTIVE_ADMISSION_CORRUPT'});
 });
 
 test('identical receipt replay is stable; a second conflicting adoption is an explicit HOLD',()=>{

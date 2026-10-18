@@ -1,5 +1,6 @@
-/** Read-only effective admission over the existing conversation transaction. The proposed 0020 adoption table has no allocated
- * migration or production mount yet. A missing table refuses; this owner never claims a transition or creates authority. */
+/** Historical effective pins over the existing conversation transaction. A returned descriptor is not current-run,
+ * unexpired adoption, or execution authority; acceptance/issuance must prove those under the same lock.
+ * The proposed 0020 adoption table has no allocated migration or production mount yet. A missing table refuses. */
 import {bounded,fail,hash,own,same,validateShape} from './boundary.mjs';
 import {assertNextRunReservation} from './next-run-reservation.mjs';
 import {assertConfigurationAdoptionReceipt,resolveEffectiveAdmissionFromRows} from './effective-admission.mjs';

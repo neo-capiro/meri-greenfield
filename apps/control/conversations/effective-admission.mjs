@@ -61,7 +61,7 @@ export function resolveEffectiveAdmissionFromRows(raw){return guarded(()=>{
   if(adoption&&same(adoption.receipt.target,r.target)){
    const a=adoption.receipt;
    if(current.transitionSha256!==null)refuse('HOLD');
-   if(r.facts.checkpoint!==null||!same(a.source,r.source)||a.reservationSha256!==row.reservationSha256||a.originalAdmissionSha256!==original.recordSha256||a.selectedClientId!==current.selectedClientId||!same(a.scopes,current.scopes)||a.policyRevision!==current.policyRevision||a.fromConfigurationSha256!==current.configurationSha256||!same(a.fromVersions,current.versions)||a.authorityCheckedAtMs<root.createdAtMs||a.adoptedAtMs<Date.parse(r.reservedAt))refuse('CORRUPT');
+   if(r.facts.checkpoint!==null||!same(a.source,r.source)||a.reservationSha256!==row.reservationSha256||a.originalAdmissionSha256!==original.recordSha256||a.selectedClientId!==current.selectedClientId||!same(a.scopes,current.scopes)||a.policyRevision!==current.policyRevision||a.fromConfigurationSha256!==current.configurationSha256||!same(a.fromVersions,current.versions)||a.authorityCheckedAtMs<Date.parse(r.reservedAt)||a.adoptedAtMs<Date.parse(r.reservedAt))refuse('CORRUPT');
    configurationSha256=a.toConfigurationSha256;versions=a.toVersions;transitionSha256=adoption.receiptSha256;
   }
   current=descriptor({schemaVersion:1,binding:r.target,selectedClientId:current.selectedClientId,scopes:current.scopes,policyRevision:current.policyRevision,configurationSha256,versions,originalAdmissionSha256:original.recordSha256,reservationSha256:row.reservationSha256,transitionSha256});
