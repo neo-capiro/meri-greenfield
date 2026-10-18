@@ -106,6 +106,20 @@ test('task-bound journal retains exact page once and survives owner reconstructi
  assert.deepEqual(loaded.record,f.record);assert.equal(loaded.checkedAtMs,f.state.at);assert.equal(f.state.gateCalls,6);
 });
 
+test('identical retained page accepts a fresh recording time without replacing the original row',async()=>{
+ const f=fixture(),ports=f.store().memoryProposalContexts.forTask(f.task);
+ await ports.retain({record:f.record});
+ f.state.at++;
+ const replay={...f.record,recordedAtMs:f.state.at};
+ assert.equal(JSON.parse(await ports.retain({record:replay})).decision,'retained');
+ assert.equal(f.rows.size,1);
+ assert.deepEqual(JSON.parse(await ports.loadPrevious({key:f.key})).record,f.record);
+ await assert.rejects(ports.retain({record:{...replay,recordedAtMs:at-1}}),/REPLAY_REFUSED/,
+  'a replay cannot backdate the first retained page');
+ await assert.rejects(ports.retain({record:{...replay,expiresAtMs:expiry-1}}),/REPLAY_REFUSED/,
+  'a replay cannot change the immutable expiry');
+});
+
 test('three-page continuation retains the second page using its durable predecessor',async()=>{
  const f=fixture(),ports=f.store().memoryProposalContexts.forTask(f.task);
  const second=structuredClone(f.record),firstRow=f.record.previous.page.candidates[0];
@@ -117,6 +131,9 @@ test('three-page continuation retains the second page using its durable predeces
  second.previousSha256=hash(second.previous);
  await assert.rejects(ports.retain({record:second}),/MEMORY_CONTEXT_REFUSED/,'page two cannot be invented without the first page');
  await ports.retain({record:f.record});await ports.retain({record:second});
+ f.state.at++;
+ assert.equal(JSON.parse(await ports.retain({record:{...second,recordedAtMs:f.state.at}})).decision,'retained',
+  'a second page can replay after its durable predecessor with a fresh recording time');
  const loaded=JSON.parse(await f.store().memoryProposalContexts.forTask(f.task).loadPrevious({key:second.key}));
  assert.deepEqual(loaded.record,second);
  const third={...second.previous.page,

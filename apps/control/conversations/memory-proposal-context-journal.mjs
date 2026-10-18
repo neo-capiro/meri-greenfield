@@ -209,9 +209,14 @@ export function createMemoryProposalContextJournal({tx,rowRun,pool,retentionGate
     if(rows.length>1)refuse();
     if(rows.length){
      const row=rows[0];
+     // The gateway records the time of each fresh dispatch. A retry of the
+     // same page may therefore carry a later time; keep the first durable row
+     // and compare every page/authority/expiry field against it.
      if(row.record_sha256!==hash(row.record)||row.key_sha256!==keySha256||
-        Number(row.expires_at_ms)!==row.record?.expiresAtMs||
-        !same(retainedRecord(row.record,task,now(),prior),record))fail('MEMORY_CONTEXT_REPLAY_REFUSED');
+        Number(row.expires_at_ms)!==row.record?.expiresAtMs)fail('MEMORY_CONTEXT_REPLAY_REFUSED');
+     const stored=retainedRecord(row.record,task,now(),prior);
+     if(record.recordedAtMs<stored.recordedAtMs||
+        !same({...stored,recordedAtMs:record.recordedAtMs},record))fail('MEMORY_CONTEXT_REPLAY_REFUSED');
     }else{
      await c.query('INSERT INTO meri_conversations.memory_proposal_contexts(tenant_id,conversation_id,run_id,key_sha256,record,record_sha256,expires_at_ms) VALUES($1,$2,$3,$4,$5,$6,$7)',
       [...tuple(task.binding),keySha256,record,hash(record),record.expiresAtMs]);checked();
