@@ -1,5 +1,6 @@
--- Source proposal only. A central owner must allocate a product migration ID,
--- register this table and narrow role grants in the migration tree. The
+-- Superseded historical source proposal only. The central owner has now
+-- reserved conversation 0019 and authored the full source migration there;
+-- register and qualify that numbered file, not this proposal. The
 -- conversation store already provides a bounded exact-row inventory slice;
 -- the complete canonical retention facts composer is still absent. The
 -- source-qualified row owner also expects a distinct
@@ -8,7 +9,9 @@
 -- ledger_sequence), plus a same-transaction exact-target DELETE trigger and
 -- UPDATE refusal on the journal. Those are held for central migration review.
 -- Startup readiness source already probes the journal relation. Never apply
--- this proposal file directly. Candidate conversation slot 0018 is unallocated.
+-- this proposal file directly. The superseding, centrally source-allocated
+-- conversation slot is 0019_memory_proposal_contexts.sql; published 0018
+-- belongs to the distinct memory candidate target owner.
 -- The conversation-store journal owns immutable rows and exact-key replay.
 BEGIN;
 CREATE TABLE meri_conversations.memory_proposal_contexts (

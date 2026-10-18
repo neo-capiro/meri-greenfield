@@ -205,8 +205,10 @@ const SOURCE_PATHS=Object.freeze({
   "apps/runtime/control.mjs",
   "apps/control/conversations/postgres-store.mjs",
   "apps/control/conversations/memory-proposal-context-journal.mjs",
+  "apps/control/conversations/migrations/0019_memory_proposal_contexts.sql",
   "apps/control/retention/data-classes.mjs",
   "apps/control/retention/inventory.mjs",
+  "apps/control/retention/inventory-source.mjs",
   "apps/control/retention/postgres-journal.mjs",
   "apps/control/retention/recovery-watermark.mjs",
   "apps/control/retention/suppression.mjs"
