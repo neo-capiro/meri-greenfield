@@ -58,8 +58,9 @@ function lateBoundOptionsOwner({authority,compose}){
  * body,requestSha256,deadlineMs,signal})` -> `{artifactOptions,selectedClientId,credential,limits,enabled?,recheck}` or null) and
  * `executor` (`createFixedRuntimeArtifactExecutor(...)` over approved image paths) must be supplied together. */
 export function documentsFamily(owners={}){
- const o=own(owners,[],['authority','executor','createS3Client']);
+ const o=own(owners,[],['authority','executor','createS3Client','bindVersionReader']);
  if(o.createS3Client!==undefined&&!ordinary(o.createS3Client))throw fault();
+ if(o.bindVersionReader!==undefined&&!ordinary(o.bindVersionReader))throw fault();
  if((o.authority===undefined)!==(o.executor===undefined))throw fault();
  if(o.authority!==undefined){storageMethod(o.authority,'resolve');storageMethod(o.executor,'execute');}
  const createClient=o.createS3Client??(({region})=>new S3Client({region,maxAttempts:1}));
@@ -77,6 +78,7 @@ export function documentsFamily(owners={}){
   // Composed disabled: without a declared Core authority origin the supplied authority is never reached.
   if(o.authority===undefined||declared.authority===undefined)return {ports:{artifactStore:storage}};
   if(Object.hasOwn(o.authority,'origin')&&o.authority.origin!==declared.authority.origin||Object.hasOwn(o.authority,'now')&&o.authority.now!==now)throw fault();
+  o.bindVersionReader?.({pool,versions:storage.versions});
   // Production documents charge the admitted run's allocation in the product budget namespace (never the qualification one).
   const late=lateBoundOptionsOwner({authority:o.authority,compose:sessions=>createRuntimeDocumentOptionsComposer({storage,executor:o.executor,budgetPool:pool,sessions,now,namespace:'product'})});
   registerDocumentsSessionBinder(context,late.bind);

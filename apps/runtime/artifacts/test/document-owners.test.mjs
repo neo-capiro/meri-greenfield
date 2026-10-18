@@ -15,6 +15,8 @@ import {createRuntimeDocumentRunOptions,DOCUMENTS_PRODUCER_NAMESPACE} from '../r
 import {createRuntimeArtifactApplication} from '../application.mjs';
 import {bindDocumentsSessions} from '../session-binding.mjs';
 import {captureRuntimePorts} from '../../product-applications.mjs';
+import {record as storedRecord} from '../../../artifacts/storage/test/sql-fixture.mjs';
+import {ARTIFACT_MIME_TYPES,artifactFilename} from '../../../../packages/contracts/artifacts-0.2/artifact-formats.mjs';
 import {executionGrantFixture} from '../../../gateway/budget/test/execution-grant-fixture.mjs';
 import {admittedSet,ISSUED_AT,RUN_BINDING,BUDGETS,POLICY_REVISION,CLIENT} from '../../native-authority/test/execution-capability-fixture.mjs';
 const code=c=>e=>{assert.equal(e?.code,c,`expected ${c}, got ${e?.code} (${e?.message})`);return true;};
@@ -75,6 +77,12 @@ async function liveSession(now){
  return {sessions,credential:(await sessions.issue({identityCredential:BEARER})).credential};
 }
 const createBody=operation=>({deliveryId:'synthetic-delivery-'+operation,request:{operation,format:operation==='create_excel'?'xlsx':'txt',title:'Synthetic',content:operation==='create_excel'?{sheets:[{name:'Data',rows:[[{value:'A'}]]}]}:{text:'Synthetic document body'}}});
+function retainedDocument(operation,versionId){
+ const r=storedRecord(12),spec=createBody(operation).request;
+ r.version.versionId=versionId;r.version.binding=structuredClone(BINDING);r.version.scopes=structuredClone(scopes);r.version.object.scopes=structuredClone(scopes);
+ r.spec=spec;r.specSha256=hash(spec);r.version.mimeType=ARTIFACT_MIME_TYPES[spec.format];r.version.filename=artifactFilename(spec);
+ return r;
+}
 
 test('configuration: the closed artifacts.executor block names image paths only (absolute POSIX, no traversal, bounded timeout) and composes nothing by itself',()=>{
  const base={...control({artifacts:artifacts({executor:executorBlock})})};
@@ -103,6 +111,8 @@ test('run-options owner: unavailable without Core authority ports; registers the
   const t={...tuple};change(t);assert.throws(()=>owner.register(t),code('ARTIFACT_RUN_OPTIONS_REFUSED'),label);
  }
  const handle=owner.register(tuple);assert.equal(owner.size(),1);
+ const retainedId='00000000-0000-4000-8000-00000000f001';
+ owner.bindVersionReader({pool:tuple.pool,versions:{async read(id){assert.equal(id,retainedId);return retainedDocument('create_word',id);}}});
  assert.equal(owner.register({...tuple}),handle,'idempotent for the same run facts');
  assert.throws(()=>owner.register({...tuple,original:{...tuple.original,executionId:'other'}}),code('ARTIFACT_RUN_OPTIONS_CONFLICT'));
  // Null (503 UNAVAILABLE) for another run, other scopes, another selected client, an unknown intent or an aborted request.
@@ -136,6 +146,50 @@ test('run-options owner: unavailable without Core authority ports; registers the
   assert.throws(()=>createRuntimeDocumentRunOptions({now:()=>START,limits:{maxRequestMs:1000,maxFactBytes:65536},...bad}),code('ARTIFACT_RUN_OPTIONS_CONFIGURATION'));
 });
 
+test('run-options read family follows the retained version for Excel and Word, with no caller-supplied operation',async()=>{
+ const {tuple}=admittedRun(),owner=createRuntimeDocumentRunOptions({now:()=>START,limits:{maxRequestMs:1000,maxFactBytes:65536},authorityPorts:authorityPorts({credential:tuple.taskCapability,calls:[]})});
+ const excelId='00000000-0000-4000-8000-00000000f101',wordId='00000000-0000-4000-8000-00000000f102';
+ const records=new Map([[excelId,retainedDocument('create_excel',excelId)],[wordId,retainedDocument('create_word',wordId)]]),reads=[];let refusal=null,park=null;
+ const versions={async read(id,signal){reads.push([id,signal]);if(refusal)throw Object.assign(Error(refusal),{code:refusal});if(park)await park.enter();return structuredClone(records.get(id));}};
+ owner.bindVersionReader({pool:tuple.pool,versions});const handle=owner.register(tuple);
+ const call=(intent,body,extra={})=>({binding:BINDING,scopes,selectedClientId:CLIENT,intent,body,requestSha256:hash({intent,body}),authority:{operations:INTENT_OPERATIONS[intent],limits:null,expiresAtMs:START+60000},deadlineMs:START+5000,...extra});
+ for(const intent of ['inspect','download','preview','preview-publish'])for(const [id,expected] of [[excelId,'create_excel'],[wordId,'create_word']]){
+  const result=await owner.read(call(intent,{versionId:id}));assert.equal(result?.descriptor.operation.id,expected,`${intent} ${expected}`);
+ }
+ assert.equal(reads.length,8);
+ assert.equal((await owner.read(call('inspect',{versionId:wordId,request:{operation:'create_excel'}}))).descriptor.operation.id,'create_word','a forged operation field cannot override the retained family; the HTTP body is rejected downstream');
+ const foreign=retainedDocument('create_excel',excelId);foreign.version.binding.conversationId='00000000-0000-4000-8000-00000000f999';records.set(excelId,foreign);
+ assert.equal(await owner.read(call('inspect',{versionId:excelId})),null,'another conversation cannot select a family');
+ const otherActor=retainedDocument('create_excel',excelId);otherActor.version.binding.actorId='00000000-0000-4000-8000-00000000f997';records.set(excelId,otherActor);
+ assert.equal(await owner.read(call('inspect',{versionId:excelId})),null,'another actor cannot select a family');
+ const otherScope=retainedDocument('create_excel',excelId);otherScope.version.scopes[0].resourceId='00000000-0000-4000-8000-00000000f998';records.set(excelId,otherScope);
+ assert.equal(await owner.read(call('inspect',{versionId:excelId})),null,'another selected client cannot select a family');
+ const tampered=retainedDocument('create_excel',excelId);tampered.specSha256='f'.repeat(64);records.set(excelId,tampered);
+ assert.equal(await owner.read(call('download',{versionId:excelId})),null,'a mismatched retained spec cannot select a family');
+ const wrongMime=retainedDocument('create_excel',excelId);wrongMime.version.mimeType=ARTIFACT_MIME_TYPES.txt;records.set(excelId,wrongMime);
+ assert.equal(await owner.read(call('inspect',{versionId:excelId})),null,'the immutable operation and MIME must agree');
+ records.set(excelId,retainedDocument('create_excel',excelId));
+ for(const code of ['RETENTION_SUPPRESSED','ARTIFACT_PUBLICATION_UNAVAILABLE']){refusal=code;
+  assert.equal(await owner.read(call('download',{versionId:excelId})),null,`${code} cannot be bypassed for family selection`);}
+ refusal=null;
+ const aborted=new AbortController();aborted.abort();const before=reads.length;
+ assert.equal(await owner.read(call('download',{versionId:wordId},{signal:aborted.signal})),null);assert.equal(reads.length,before);
+ let entered,continueRead;const atReader=new Promise(resolve=>{entered=resolve;}),resumeReader=new Promise(resolve=>{continueRead=resolve;});
+ park={enter:async()=>{entered();await resumeReader;}};
+ const pending=owner.read(call('inspect',{versionId:wordId}));await atReader;handle.release();continueRead();
+ assert.equal(await pending,null,'release during canonical lookup cannot return stale run options');
+});
+
+test('run-options reader can recompose on one pool before registration, but cannot switch custody during an active run',()=>{
+ const {tuple}=admittedRun(),owner=createRuntimeDocumentRunOptions({now:()=>START,limits:{maxRequestMs:1000,maxFactBytes:65536},authorityPorts:authorityPorts({credential:tuple.taskCapability,calls:[]})});
+ const first={read:async()=>{}},second={read:async()=>{}};
+ owner.bindVersionReader({pool:tuple.pool,versions:first});owner.bindVersionReader({pool:tuple.pool,versions:first});
+ owner.bindVersionReader({pool:tuple.pool,versions:second});
+ const handle=owner.register(tuple);
+ assert.throws(()=>owner.bindVersionReader({pool:tuple.pool,versions:first}),code('ARTIFACT_RUN_OPTIONS_CONFLICT'));
+ handle.release();owner.bindVersionReader({pool:tuple.pool,versions:first});
+});
+
 test('startup composition composes both Meri-local owners from the declaration and the Core authority ports, naming each gap by key; nothing spawns, reads or connects',async()=>{
  const s=secretFiles(),fetches=[],fetchImpl=async()=>{fetches.push(1);throw Error('not reached');},ports=authorityPorts({credential:'x',calls:[]}),now=()=>START;
  const missing=async(configuration,extra={})=>(await composeDocumentsFamily({configuration,readSecret:s.readSecret,fetchImpl,...extra})).missing;
@@ -151,11 +205,14 @@ test('startup composition composes both Meri-local owners from the declaration a
  await assert.rejects(composeDocumentsFamily({configuration:control({artifacts:artifacts()}),readSecret:s.readSecret,authorityPorts:{verifyCapability(){}}}),code('ARTIFACT_AUTHORITY_CONFIGURATION'));
  await assert.rejects(composeDocumentsFamily({configuration:control({artifacts:artifacts({executor:{...executorBlock,timeoutMs:0}})}),readSecret:s.readSecret}),code('ARTIFACT_AUTHORITY_CONFIGURATION'));
  // The composed family constructs the pinned S3 client without any request and never touches the pool at construction.
- const realFamily=composed.family(Object.freeze({configuration:{...control({artifacts:artifacts({executor:executorBlock})}),sessions:{maxSessions:10,maxTtlMs:30000},versions:{}},pool:Object.freeze({connect:()=>assert.fail('no SQL')}),now}));
+ const sharedPool=Object.freeze({connect:()=>assert.fail('no SQL')}),familyContext=()=>Object.freeze({configuration:{...control({artifacts:artifacts({executor:executorBlock})}),sessions:{maxSessions:10,maxTtlMs:30000},versions:{}},pool:sharedPool,now});
+ const realFamily=composed.family(familyContext());
  assert.deepEqual(Object.keys(realFamily.ports),['artifactStore','artifactOptionsOwner']);
+ const recomposed=composed.family(familyContext());
+ assert.notEqual(realFamily.ports.artifactStore.versions,recomposed.ports.artifactStore.versions,'distinct trusted contexts may recompose the canonical reader on one pool before any run is registered');
 });
 
-test('through the real documents app: 503 while either owner is absent or the run is not registered; with both, Core and the run owner admit create/revise/inspect/download: create reaches the gateway authority, a reservation on the run allocation and then the generator; reads fail closed at the store',async()=>{
+test('through the real documents app: create reaches the run budget and generator; reads fail closed when retained publication custody is unavailable',async()=>{
  const now=()=>START,s=secretFiles(),core=scriptedCore(now),live=await liveSession(now),{f,tuple}=admittedRun(),calls=[],generated=[];
  const ports=authorityPorts({credential:tuple.taskCapability,calls}),executor={async execute(value){generated.push(value);throw Error('not reached');}};
  const configuration={...control({artifacts:artifacts()}),sessions:{maxSessions:10,maxTtlMs:30000},versions:{}};
@@ -175,8 +232,15 @@ test('through the real documents app: 503 while either owner is absent or the ru
  const handle=m.composed.runOptions.register(tuple);
  const closed=async(intent,body,expectedOperation)=>{core.calls.length=0;calls.length=0;generated.length=0;const before=f.commands.length,reservations=f.state().reservations.size;
   const response=await m.send(intent,body),json=await response.json();
-  assert.notEqual(response.status,200,intent);assert.notEqual(response.status,503,`${intent}: the owners were present (${JSON.stringify(json)})`);assert.equal(typeof json.error?.code,'string');
-  assert.ok(core.calls.length>=2,`${intent}: Core observed at resolve and admission (${core.calls.length})`);assert.ok(core.calls.every(c=>c.request.intent===intent&&c.request.clientId===CLIENT));
+  assert.notEqual(response.status,200,intent);assert.equal(typeof json.error?.code,'string');
+  if(['inspect','download'].includes(intent)){
+   assert.equal(response.status,503,`${intent}: unretained versions are unavailable before descriptor selection`);
+   assert.equal(core.calls.length,1,`${intent}: Core observed the caller before the canonical version lookup`);
+  }else{
+   assert.notEqual(response.status,503,`${intent}: the owners were present (${JSON.stringify(json)})`);
+   assert.ok(core.calls.length>=2,`${intent}: Core observed at resolve and admission (${core.calls.length})`);
+  }
+  assert.ok(core.calls.every(c=>c.request.intent===intent&&c.request.clientId===CLIENT));
   if(['create','revise'].includes(intent)&&body.baseVersionId===undefined){
    assert.ok(f.commands.slice(before).some(c=>c.sql.startsWith('SELECT * FROM meri_product_budget.budget')),`${intent}: the admitted run was read through the product budget (${JSON.stringify(json)}; authority calls ${JSON.stringify(calls)})`);
    // The gateway authority (Core ports + currentRun on the admitted run) decided, a reservation was taken on the run's own
@@ -189,8 +253,8 @@ test('through the real documents app: 503 while either owner is absent or the ru
    // Stand in for the budget recovery that reconciles an UNKNOWN reservation; one UNKNOWN per grant blocks the next reservation.
    Object.assign(reservation,{state:'SETTLED',charged_micro_usd:reservation.hold_micro_usd,output_bytes:'0',settled_at:new Date(START)});
   }else{
-   // Reads and a revision reach the real S3/PG versions owner (which refuses without publication custody) after Core allowed
-   // them, before any budget effect: nothing is reserved and nothing is generated.
+   // A revision reaches the real S3/PG versions owner after Core admission. Reads resolve their family through the same
+   // publication/retention owner, which refuses without custody. Neither path reserves or generates.
    assert.equal(generated.length,0,`${intent}: nothing is generated for a read or a revision whose base cannot be read`);assert.equal(f.state().reservations.size,reservations,`${intent}: no reservation`);
    assert.equal(f.statements().slice(before).some(x=>/^(INSERT|UPDATE)/u.test(x)),false,`${intent}: no budget effect`);
   }

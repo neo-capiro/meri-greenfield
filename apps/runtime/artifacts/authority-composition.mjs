@@ -59,5 +59,5 @@ export async function composeDocumentsFamily(options){
  const client=createCoreArtifactAuthorityClient({origin:declared.authority.origin,fetchImpl,now});
  const authority=createCoreArtifactAuthority({client,credentials,runOptions,now,
   limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes}});
- return Object.freeze({family:documentsFamily({authority,executor}),authority,missing:Object.freeze([]),runOptions:composedRunOptions});
+ return Object.freeze({family:documentsFamily({authority,executor,...(composedRunOptions?{bindVersionReader:value=>composedRunOptions.bindVersionReader(value)}:{})}),authority,missing:Object.freeze([]),runOptions:composedRunOptions});
 }
