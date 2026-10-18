@@ -254,13 +254,16 @@ test('the full P2 measurement needs all 21 retained handlers; task-bound ports c
  const absent=await createControlReadsComposer(base);
  assert.deepEqual(absent.missing,retained.map(id=>`retainedTaskPorts.${id}`));
  await assert.rejects(absent.createReadsRuntime(f.tuple).readAvailability(),code('UNAVAILABLE'));
- const composer=await createControlReadsComposer({...base,retainedTaskPorts(){return {families:sourcePorts,contextPorts:{
+ let retainedPorts;
+ const composer=await createControlReadsComposer({...base,retainedTaskPorts(ports){retainedPorts=ports;return {families:sourcePorts,contextPorts:{
   mailContextPorts:{async loadPrevious(){throw Error('UNREACHABLE_MAIL_CONTEXT');},async retain(){throw Error('UNREACHABLE_MAIL_CONTEXT');}},
   memoryContextPorts:f.gatewayConfiguration.memoryContextPorts,
   retainedContextPorts:{async readCurrent(){throw Error('UNREACHABLE_RETAINED_CONTEXT');}}
  }};}});
  assert.deepEqual(composer.missing,[]);assert.deepEqual(composer.familyIds,families);
  const available=await composer.createReadsRuntime(f.tuple).readAvailability();
+ assert.equal(typeof retainedPorts.getNativeCredentialWithExpiry,'function');
+ assert.equal(typeof retainedPorts.getSignedSourceCredentials,'function');
  assert.deepEqual(available.installation.operations,[f.operation],'all 76 source hashes pass before run eligibility narrows to one');
  f.scope.abort();
 });

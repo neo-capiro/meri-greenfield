@@ -59,7 +59,7 @@ export function composeDelegatedNativeCredentials(configuration){
   return {...v,expiresAtMs:Math.min(v.expiresAtMs,delegation.hardExpiry(),deadlineMs)};
  }
  // Every outbound delegated call combines the caller's signal with the run's Stop signal, so Stop aborts it in flight.
- const call=(raw,keys)=>{let v;try{v=own(raw,keys,['signal']);nativeSignal(v.signal);}catch{refuse('INVALID_ARGUMENTS');}if(v.signal?.aborted||delegation.signal.aborted)refuse('CANCELLED');if(!Number.isSafeInteger(v.deadlineMs))refuse('INVALID_ARGUMENTS');
+ const call=(raw,keys,optional=[])=>{let v;try{v=own(raw,keys,['signal',...optional]);nativeSignal(v.signal);}catch{refuse('INVALID_ARGUMENTS');}if(v.signal?.aborted||delegation.signal.aborted)refuse('CANCELLED');if(!Number.isSafeInteger(v.deadlineMs))refuse('INVALID_ARGUMENTS');
   return {...v,signal:v.signal===undefined?delegation.signal:AbortSignal.any([v.signal,delegation.signal])};};
  const identity=v=>({principal:v.principal,identityRevision:v.identityRevision});
  async function readCurrent(raw){
@@ -110,11 +110,12 @@ export function composeDelegatedNativeCredentials(configuration){
   * the dispatch's reservation exists; Core verifies that UNKNOWN reservation for this call key, operation and arguments. */
  async function toolCredential(raw){
   const h=slotOf(raw?.credential);if(!h)return null;
-  const v=call(raw,['credential','operation','argumentsSha256','target','deadlineMs']),operation=data(own(v.operation,['id','version']));assertReadOnlyOperation(operation);
+  const v=call(raw,['credential','operation','argumentsSha256','target','deadlineMs'],['correlationSha256']),operation=data(own(v.operation,['id','version']));assertReadOnlyOperation(operation);
   const target=data(own(v.target,['method','path','bodySha256']));
   if(target.method!=='POST'||target.path!==toolRoute(operation)||typeof target.bodySha256!=='string'||!SHA.test(target.bodySha256))refuse('ACCESS_DENIED');
   delegation.assertReleasable();
-  const issued=await delegation.token({kind:'tool',callKey:h.callKey,path:target.path,bodySha256:target.bodySha256,operation,argumentsSha256:v.argumentsSha256,signal:v.signal,deadlineMs:v.deadlineMs});
+  const issued=await delegation.token({kind:'tool',callKey:h.callKey,path:target.path,bodySha256:target.bodySha256,operation,argumentsSha256:v.argumentsSha256,
+   ...(v.correlationSha256===undefined?{}:{correlationSha256:v.correlationSha256}),signal:v.signal,deadlineMs:v.deadlineMs});
   return Object.freeze({bearerToken:issued.token,authorizationScheme:READ_TOKEN_SCHEME,expiresAtMs:Math.min(issued.expiresAtMs,delegation.hardExpiry())});
  }
  /** Before a delegated result is released: the delegation is still current, unexpired and not stopped. */

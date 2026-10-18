@@ -37,6 +37,16 @@ function authority(f,operation){
 }
 const pins=p=>{const {input,deadlineMs,signal,...rest}=p;return {...structuredClone(rest),bearerToken:'SYNTHETIC',serviceSecret:'SYNTHETIC',expiresAtMs:deadlineMs};};
 const response=page=>new Response(JSON.stringify(page),{headers:{'content-type':'application/json'}});
+// Durable signed-source fixtures use the actual invocation slot. The source
+// adapter still checks the exact Core path, body and correlation before Fetch.
+function signedCoreFixture(transport){
+ const endpoints=Object.fromEntries(Object.entries(transport.endpoints).map(([id,url])=>
+  [id,new URL(`/api/clio/tools/${id}`,url).href]));
+ const original=transport.getCredentials;
+ return {...transport,endpoints,getCredentials:async request=>({...await original(request),
+  invocationId:request.invocationId,authorizationScheme:'CapiroMeriRead',target:request.target,
+  correlationSha256:request.correlationSha256})};
+}
 export function familyCase(family,id){
  if(NATIVE_FAMILY_CASES.some(([candidate])=>candidate===family)||family==='disclosures')return nativeFamilyCase(family,id);
  if(family==='bill-text')return billTextCase(id);
@@ -92,6 +102,8 @@ export function familyCase(family,id){
   }
  }
  policy(a);policy(page);
+ if(['meeting-source','tenant-contacts','entity-candidates','client-knowledge-profile','client-documents'].includes(family))
+  transport=signedCoreFixture(transport);
  const state={now:Date.parse(a.claims.issuedAt)+1000,revoked:false,installRevoked:false},wire=[];
  const {now:ignored,...source}=transport;
  if(source.fetchImpl){const fetch=source.fetchImpl;source.fetchImpl=async(...values)=>{wire.push(values);const result=await fetch(...values);state.afterSource?.();return result;};}
