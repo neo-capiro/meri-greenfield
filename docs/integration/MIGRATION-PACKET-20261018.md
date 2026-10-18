@@ -55,6 +55,9 @@ Data backfill: **none**; every file creates empty objects. Destructive operation
    - Neither file has been applied anywhere, so the change involves no data migration. New sha256 values replace rows 3 and 4.
 2. **The plan and grants are not authored yet.**
    - `first-chat-migrate.mjs` pins only conversations 0001–0017, budget 0001–0002, issuer 0001 and the seed. The `first-chat-database.sql` `meri_grants` phase grants only `meri_conversations`, `meri_product_budget` and `meri_service_identity`. Even the D015 #13 artifacts files have no plan entry or runtime grant yet.
+   - **Grants proposal:** `docs/integration/GRANTS-PROPOSAL-20261018.md` derives each runtime privilege from a production statement (file:line).
+     - The grants **cannot** go into `first-chat-database.sql`. Its `phase:meri_grants` sha256 is pinned (`first-chat-migrate.mjs:52`) and already recorded as applied, so any edit makes every later run refuse (`:64`, `:228`).
+     - They go in a new psql file, `infra/product-preview/first-chat-database-integration.sql`, as `phase:integration_grants` after the packet migrations. This is the same pattern as `first-chat-database-temporal.sql`.
    - **Source task (R0):**
      - Add `['migration', path, sha256]` plan entries in the order above.
      - Add a `meri_grants` section that revokes PUBLIC on each new schema and grants `USAGE` only to the role whose store runs there: `meri_control_runtime`, plus the worker or schedule role where applicable.
