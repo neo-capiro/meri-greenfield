@@ -29,28 +29,48 @@ import {compileExecutionTrust} from '../native-authority/execution-capability.mj
 import {composeIntentApprovals} from '../../control/intents/compose.mjs';
 import {createNativeIntentApprovals} from '../../control/intents/native-approvals.mjs';
 import {createPostgresCommandJournal} from '../../control/commands/postgres-command-journal.mjs';
+import {createPostgresCommandProposalReader} from '../../control/intents/postgres-journal.mjs';
 import {ProductError} from '../../control/product-access/errors.mjs';
+import {createReadCredentialRelay} from '../read-credential-relay.mjs';
+import {routinesReservedSecretFiles} from '../native-authority/routines-configuration.mjs';
+import {createRoutinesServiceSecret} from '../native-authority/routines-core-client.mjs';
+import {createCoreApprovalForwarder,createReservedCredentialDigests,registerApprovalSessionBinder} from '../native-authority/approval-forwarder.mjs';
+import {compilePreparedCandidateConfiguration} from '../prepared-candidate-config.mjs';
 const fault=code=>Object.assign(new Error(code),{code});
+/** The runtime secret reader, loaded on first use: `../config.mjs` imports this module for its configuration validator. */
+const runtimeReadSecret=async path=>(await import('../config.mjs')).readSecret(path);
 /** Bound for one Core decision receipt (the sessions owner uses the same fact bound). */
 export const INTENT_FACT_BYTES=131072;
 const CONTEXT_KEYS=['configuration','pool','client','native','now','canonicalProductPorts'];
 const integer=(n,min,max)=>Number.isSafeInteger(n)&&n>=min&&n<=max;
-/** Closed `intents` control configuration. Absent ⇒ `{enabled:false}`; present ⇒ `{enabled:boolean, execution?}`.
+/** Closed `intents` control configuration. Absent ⇒ `{enabled:false}`; present ⇒ `{enabled:boolean, core?, execution?}`.
+ * `core` (only with `enabled:true`) names Core's P-INT-10 approval owner for the approval forwarder
+ * (`native-authority/approval-forwarder.mjs`): `{origin, serviceSecretFile}`, the https origin of `POST /api/clio/approvals/native/
+ * {record,decision}` and the file holding the internal service secret Core's ToolServiceSecretGuard verifies (read per call,
+ * never a native candidate credential file). Without it the shared decision adapter stays over the provider RPC seam (which
+ * serves no `approval/*` operation), so every decision read refuses at use and nothing claims Core.
  * `execution` (only with `enabled:true`) is the Core execution-capability trust for the execution owner
  * (`native-authority/execution-composition.mjs`): `{coreOrigin, issuer, keys:[pinned OKP Ed25519 JWK], serviceSecretFile}`.
- * It is pure data: the keys are pinned here and never fetched; the secret file is read by the composer only on use. */
+ * Both are pure data: the keys are pinned here and never fetched; the secret files are read by the composer only on use. */
 export function compileIntentsConfiguration(configuration){
  if(configuration===null||typeof configuration!=='object'||types.isProxy(configuration))throw fault('INTENTS_CONFIGURATION');
  const d=Object.getOwnPropertyDescriptor(configuration,'intents');
  if(d===undefined)return Object.freeze({enabled:false});
  if(!Object.hasOwn(d,'value'))throw fault('INTENTS_CONFIGURATION');
- let value;try{value=own(d.value,['enabled'],['execution']);}catch{throw fault('INTENTS_CONFIGURATION');}
- if(typeof value.enabled!=='boolean'||value.execution!==undefined&&value.enabled!==true)throw fault('INTENTS_CONFIGURATION');
- if(value.execution===undefined)return Object.freeze({enabled:value.enabled});
+ let value;try{value=own(d.value,['enabled'],['core','execution']);}catch{throw fault('INTENTS_CONFIGURATION');}
+ if(typeof value.enabled!=='boolean'||(value.execution!==undefined||value.core!==undefined)&&value.enabled!==true)throw fault('INTENTS_CONFIGURATION');
+ const secretFile=file=>typeof file==='string'&&isAbsolute(file)&&!file.includes('/../')&&!file.includes('\\..\\')&&file.length<=4096;
+ const httpsOrigin=raw=>{let origin;try{origin=new URL(raw);}catch{return false;}return origin.protocol==='https:'&&origin.origin===raw;};
+ const reserved=routinesReservedSecretFiles(configuration);
+ let core;
+ if(value.core!==undefined){
+  try{core=data(own(value.core,['origin','serviceSecretFile']));}catch{throw fault('INTENTS_CONFIGURATION');}
+  if(!httpsOrigin(core.origin)||!secretFile(core.serviceSecretFile)||reserved.includes(core.serviceSecretFile))throw fault('INTENTS_CONFIGURATION');
+ }
+ if(value.execution===undefined)return Object.freeze({enabled:value.enabled,...(core===undefined?{}:{core})});
  let e;try{e=data(own(value.execution,['coreOrigin','issuer','keys','serviceSecretFile']));compileExecutionTrust({issuer:e.issuer,keys:e.keys});}catch{throw fault('INTENTS_CONFIGURATION');}
- let origin;try{origin=new URL(e.coreOrigin);}catch{throw fault('INTENTS_CONFIGURATION');}
- if(origin.protocol!=='https:'||origin.origin!==e.coreOrigin||typeof e.serviceSecretFile!=='string'||!isAbsolute(e.serviceSecretFile)||e.serviceSecretFile.includes('/../')||e.serviceSecretFile.length>4096)throw fault('INTENTS_CONFIGURATION');
- return Object.freeze({enabled:true,execution:e});
+ if(!httpsOrigin(e.coreOrigin)||!secretFile(e.serviceSecretFile))throw fault('INTENTS_CONFIGURATION');
+ return Object.freeze({enabled:true,...(core===undefined?{}:{core}),execution:e});
 }
 /** Route bounds derived from the validated control limits; never wider than the product HTTP owner's own ceilings. */
 function intentLimits(configuration){
@@ -67,17 +87,40 @@ const unavailableExecution=Object.freeze({
 });
 const ownedValue=(value,name)=>{const d=value!==null&&typeof value==='object'?Object.getOwnPropertyDescriptor(value,name):undefined;return d&&Object.hasOwn(d,'value')?d.value:undefined;};
 const compositions=new WeakMap();
-function compose(context,execution){
+/** The Core approval forwarder for this context (`intents.core` declared): its credential relay is late-bound to control's own
+ * action-session owner by trusted assembly (`bindApprovalSessions(context, sessions)`); until then every Core call refuses
+ * ACCESS_DENIED (no live approver session). The proposal custody reader needs the control pool. Inert at construction. */
+function approvalForwarder(context,c,intents,now,transport){
+ const core=intents.core;if(core===undefined)return null;
+ if(!c.pool||typeof c.pool!=='object'||types.isProxy(c.pool)||typeof c.pool.connect!=='function')throw fault('PRODUCT_PORTS_CONFIGURATION');
+ const readSecret=transport.readSecret??runtimeReadSecret,reserved=routinesReservedSecretFiles(c.configuration),relay=createReadCredentialRelay();
+ const candidate=c.configuration.nativeCandidate===undefined?null:compilePreparedCandidateConfiguration(c.configuration.nativeCandidate,c.configuration.versions);
+ const forwarder=createCoreApprovalForwarder({origin:core.origin,nativeCredentials:relay.port,
+  getServiceSecret:createRoutinesServiceSecret({file:core.serviceSecretFile,reservedFiles:reserved,readSecret}),
+  reservedCredentials:createReservedCredentialDigests({files:reserved,readSecret}),
+  readProposal:createPostgresCommandProposalReader({pool:c.pool}).readProposal,
+  ...(candidate===null?{}:{selectedClientId:candidate.identity.commandContext.clientResolution.clientId}),
+  now,maxRequestMs:Math.min(c.configuration.limits?.requestMs??10000,30000),...(transport.fetchImpl===undefined?{}:{fetchImpl:transport.fetchImpl})});
+ registerApprovalSessionBinder(context,sessions=>relay.bind(sessions));
+ return Object.freeze({forwarder,relay});
+}
+function compose(context,execution,transport){
  let c;try{c=own(context,CONTEXT_KEYS,['artifactRecovery']);}catch{throw fault('PRODUCT_PORTS_CONFIGURATION');}
  const intents=compileIntentsConfiguration(c.configuration);
  // The trusted native client: the fenced startup client carries `call` as an own method; a prototype method is accepted too.
- const call=c.native!==null&&typeof c.native==='object'&&!types.isProxy(c.native)&&typeof c.native.call==='function'?c.native.call:undefined,now=c.now;
+ const nativeCall=c.native!==null&&typeof c.native==='object'&&!types.isProxy(c.native)&&typeof c.native.call==='function'?c.native.call:undefined,now=c.now;
  if(typeof now!=='function')throw fault('PRODUCT_PORTS_CONFIGURATION');
- // The one decision adapter for this control process. Inert: it holds the native call and calls it only when a port is used.
- const decisions=typeof call==='function'?createNativeIntentApprovals({call:(operation,input,options)=>call.call(c.native,operation,input,options),now,maxFactBytes:INTENT_FACT_BYTES}):null;
+ // With `intents.core` the approval operations go to Core P-INT-10 through the forwarder (the provider seam serves none of them).
+ const core=intents.enabled?approvalForwarder(context,c,intents,now,transport):null;
+ const call=core?(operation,input,options)=>core.forwarder.call(operation,input,options):typeof nativeCall==='function'?(operation,input,options)=>nativeCall.call(c.native,operation,input,options):undefined;
+ // The one decision adapter for this control process. Inert: it holds the call and makes it only when a port is used.
+ const decisions=typeof call==='function'?createNativeIntentApprovals({call,now,maxFactBytes:INTENT_FACT_BYTES}):null;
  const shared={decisions,
   approvalStore:decisions?Object.freeze({getCurrent:value=>decisions.getCurrent(value)}):null,
-  readDecision:decisions?value=>decisions.readDecision(value):null};
+  readDecision:decisions?value=>decisions.readDecision(value):null,
+  /** The forwarder's attended Core credentials (`{origin,getCredentials}`, the execution owner's `core` port) and its relay state. */
+  core:core?Object.freeze({origin:core.forwarder.origin,getCredentials:value=>core.forwarder.getCredentials(value)}):null,
+  approvalSessions:()=>core?core.relay.state():'absent'};
  if(!intents.enabled)return Object.freeze({...shared,state:'disabled',reason:'INTENTS_DISABLED',application:null,owner:null});
  const limits=intentLimits(c.configuration),gate=ownedValue(c.canonicalProductPorts,'conversationMembership');
  if(!decisions)return Object.freeze({...shared,state:'unavailable',reason:'NATIVE_UNAVAILABLE',application:null,owner:null});
@@ -97,20 +140,26 @@ function executionOwner(execution){
  if(execution===null||typeof execution!=='object'||types.isProxy(execution)||EXECUTION_METHODS.some(k=>typeof execution[k]!=='function'||types.isProxy(execution[k])))throw fault('PRODUCT_PORTS_CONFIGURATION');
  return execution;
 }
+/** `transport` ({fetchImpl, readSecret}) is a trusted test seam for the approval forwarder only; production uses global fetch
+ * and the runtime secret reader. */
+function captureTransport(transport){
+ try{const t=own(transport??{},[],['fetchImpl','readSecret']);for(const fn of Object.values(t))if(typeof fn!=='function'||types.isProxy(fn))throw Error();return Object.freeze(t);}
+ catch{throw fault('PRODUCT_PORTS_CONFIGURATION');}
+}
 /** The memoized per-context intents composition (shared approval store, decision reader and, when enabled, the application).
  * `execution` is accepted only by the intents family; a later call naming a different owner for the same context is refused. */
-export function intentsComposition(context,{execution}={}){
+export function intentsComposition(context,{execution,transport}={}){
  if(context===null||typeof context!=='object'||types.isProxy(context))throw fault('PRODUCT_PORTS_CONFIGURATION');
- const owner=executionOwner(execution);let memo=compositions.get(context);
- if(memo===undefined){memo={value:compose(context,owner),execution:owner};compositions.set(context,memo);}
+ const owner=executionOwner(execution),seam=captureTransport(transport);let memo=compositions.get(context);
+ if(memo===undefined){memo={value:compose(context,owner,seam),execution:owner};compositions.set(context,memo);}
  else if(owner!==undefined&&memo.execution!==owner)throw fault('PRODUCT_PORTS_CONFIGURATION');
  return memo.value;
 }
 /** An intents family over an optional trusted execution owner (`createIntentExecutionOwner`). */
-export function createIntentsFamilyWith({execution}={}){
- const owner=executionOwner(execution);
+export function createIntentsFamilyWith({execution,transport}={}){
+ const owner=executionOwner(execution),seam=captureTransport(transport);
  return function createIntentsFamily(context){
-  const shared=intentsComposition(context,{execution:owner});
+  const shared=intentsComposition(context,{execution:owner,transport:seam});
   return {ports:shared.application?{intentApplication:shared.application}:{},shared};
  };
 }

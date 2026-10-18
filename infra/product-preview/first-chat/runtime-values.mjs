@@ -12,6 +12,11 @@
  *  allocation             allocation.json verbatim, validated by apps/gateway/budget/tool-budget-binding.mjs allocation().
  *  runtime                policy.runtime {maxTurns, maxOutputBytes} (<= the allocation budgets, as prepared-candidate-config requires).
  *  qualification          {attempt: 1, policyRevision: canonicalSha256(policy.json)}.
+ *  generalReadInstallation  receipt.generalReadInstallation {measurement, measurementSha256} (P2, installation-issuer.mjs): the in-image
+ *                         measurement must hash to its sha256 and equal the SAME function run on this source tree (handler source bytes,
+ *                         descriptors, catalog), exactly as the SDK options pin is checked; render-material pins the sha256 in control
+ *                         `reads.installation` and ships the bytes. A receipt from a module that predates the field assembles without it
+ *                         (the render then refuses to enable installation).
  *
  * preparationIntent.sdkOptionsSha256 is the run-invariant SDK option template hash (apps/runtime/native-authority/sdk-option-template.mjs).
  * runner-query.mjs reduces every run's options to that template after verifying the per-run values (cwd = the intent workspace,
@@ -34,7 +39,7 @@ import {allocation as parseAllocation} from '../../../apps/gateway/budget/tool-b
 import {RUNNER_SDK_CA_FILE} from '../../../apps/runtime/native-authority/preparation-intent.mjs';
 import {SDK_OPTIONS_TEMPLATE_SCHEMA} from '../../../apps/runtime/native-authority/sdk-option-template.mjs';
 import {PRODUCT_MAX_INPUT_TOKENS,PRODUCT_MAX_OUTPUT_TOKENS} from '../../../apps/gateway/model-proxy/product-envelope.mjs';
-import {RECEIPT_SCHEMA,PINNED_SDK,PINNED_CLI,WORKSPACE_ROOT,skillsDigest,probeTemplateSha256} from '../../../apps/runtime/build/first-chat-launch-measurement.mjs';
+import {RECEIPT_SCHEMA,PINNED_SDK,PINNED_CLI,WORKSPACE_ROOT,skillsDigest,probeTemplateSha256,generalReadInstallation} from '../../../apps/runtime/build/first-chat-launch-measurement.mjs';
 import {parseRuntimeValues,parseFeatures,capabilityProfileOf,SOURCE_ROOT} from './render-material.mjs';
 
 export const MEASUREMENT_MODULE='apps/runtime/build/first-chat-launch-measurement.mjs';
@@ -108,7 +113,7 @@ export const measurementInputs=({policy,deployment,policyRevision})=>{const capa
 /** --capability-profile value: the exact profile JSON, base64url (one shell-safe word). */
 export const encodeCapabilityProfile=profile=>Buffer.from(JSON.stringify(profile),'utf8').toString('base64url');
 /** The in-image receipt, checked against the policy/deployment inputs it was taken with and the source skills digest. */
-export function parseReceipt(receipt,{policy,deployment,policyRevision,sourceSkillsDigest,sourceSdkOptionsSha256,requireLinux=true}){
+export function parseReceipt(receipt,{policy,deployment,policyRevision,sourceSkillsDigest,sourceSdkOptionsSha256,sourceInstallation=null,requireLinux=true}){
  const r=receipt;if(r?.schema!==RECEIPT_SCHEMA)refuse('receipt.schema');
  if(requireLinux&&(r.platform?.os!=='linux'||r.platform?.arch!=='x64'))refuse('receipt was not measured on linux/x64 (the CLI executable is platform-specific)');
  if(requireLinux&&r.platform?.uid!==1000)refuse('receipt was not measured as uid 1000');
@@ -133,15 +138,22 @@ export function parseReceipt(receipt,{policy,deployment,policyRevision,sourceSki
  if(JSON.stringify(Object.keys(r.gates??{}).sort())!==JSON.stringify([...RECEIPT_GATES].sort()))refuse('receipt launch gates are not exactly the measured set');
  if(requireLinux&&failed.length)refuse(`receipt launch gates not all PASS: ${failed.join(',')}`);
  if(r.skills?.digest!==sourceSkillsDigest)refuse('receipt skills digest differs from the source skills digest');
+ // P2: the installation measurement is checked like the SDK options pin: internally consistent and reproduced by this source tree.
+ if(r.generalReadInstallation!==undefined){
+  const g=record(r.generalReadInstallation,'receipt.generalReadInstallation',['measurement','measurementSha256']);
+  if(!hex64.test(g.measurementSha256)||canonicalSha256(g.measurement)!==g.measurementSha256)refuse('receipt generalReadInstallation.measurementSha256 is not the canonical sha256 of its measurement');
+  if(sourceInstallation===null||g.measurementSha256!==sourceInstallation.measurementSha256)refuse('receipt generalReadInstallation differs from the source general-read installation measurement (handler source, descriptor or catalog drift since the image was measured)');
+ }
  return r;
 }
 
 export function assembleRuntimeValues({receipt,allocation,policy,policyRevision,capabilityProfileSha256=null}){
+ const installation=receipt.generalReadInstallation===undefined?null:{measurement:structuredClone(receipt.generalReadInstallation.measurement),measurementSha256:receipt.generalReadInstallation.measurementSha256};
  const runtime={schemaVersion:1,versions:{sdk:receipt.versions.sdk,cli:receipt.versions.cli,contracts:'0.1.0',skillsDigest:receipt.skills.digest,checkpointFormat:'0.1.0'},
   preparationIntent:{configParentDirectory:policy.runnerLayout.configParentDirectory,secureStorageDirectory:policy.runnerLayout.secureStorageDirectory,
    launchTemplate:structuredClone(receipt.launchTemplate),executableSha256:receipt.executable.sha256,sdkOptionsSha256:receipt.sdkOptions.sha256,runnerSha256:receipt.runner.sha256},
   allocation:structuredClone(allocation),runtime:{maxTurns:policy.runtime.maxTurns,maxOutputBytes:policy.runtime.maxOutputBytes},qualification:{attempt:1,policyRevision},
-  ...(capabilityProfileSha256===null?{}:{capabilityProfileSha256})};
+  ...(capabilityProfileSha256===null?{}:{capabilityProfileSha256}),...(installation===null?{}:{generalReadInstallation:installation})};
  try{parseRuntimeValues(runtime);}catch(error){refuse(`render-material parseRuntimeValues ${error.message}`);}
  return runtime;
 }
@@ -158,8 +170,11 @@ export async function runtimeValues({receipt,allocation,policy,deployment,requir
  // A profile that enables anything changes the projected options; an unchanged template means the source module cannot project it.
  if(capability&&sourceSdkOptionsSha256===await probeTemplateSha256(measurementInputs({policy:p,deployment:{...deployment,features:undefined},policyRevision}),{root:sourceRoot}))
   refuse(`${MEASUREMENT_MODULE} does not project capability profiles (G3 runtime change pending): no measurement can pin capability profile ${capability.profileSha256}`);
- const r=parseReceipt(receipt,{policy:p,deployment,policyRevision,sourceSkillsDigest:source.digest,sourceSdkOptionsSha256,requireLinux});
- return {runtime:assembleRuntimeValues({receipt:r,allocation:a,policy:p,policyRevision,capabilityProfileSha256:capability?.profileSha256??null}),policyRevision,skillsDigest:source.digest};
+ // P2: the same in-image function on this source tree; a receipt that carries the measurement must reproduce it exactly.
+ const sourceInstallation=await generalReadInstallation({root:sourceRoot});
+ const r=parseReceipt(receipt,{policy:p,deployment,policyRevision,sourceSkillsDigest:source.digest,sourceSdkOptionsSha256,sourceInstallation,requireLinux});
+ return {runtime:assembleRuntimeValues({receipt:r,allocation:a,policy:p,policyRevision,capabilityProfileSha256:capability?.profileSha256??null}),policyRevision,skillsDigest:source.digest,
+  generalReadInstallationSha256:r.generalReadInstallation?.measurementSha256??null};
 }
 
 /** The one-shot measurement as the bash string for the meri-product-preview-d2-migrate container (entryPoint ["/bin/bash","-c"]).
@@ -220,7 +235,7 @@ export async function main(argv=process.argv.slice(2)){
   if(!isAbsolute(resolve(a.out)))refuse('--out');
   const {runtime,policyRevision:revision}=await runtimeValues({receipt:await json(a.receipt),allocation:await json(a.allocation??resolve(here,'allocation.json')),policy,deployment});
   await writeFile(a.out,JSON.stringify(runtime,null,1)+'\n',{flag:'wx'});
-  process.stdout.write(JSON.stringify({status:'MERI_FIRST_CHAT_RUNTIME_VALUES_WRITTEN',out:resolve(a.out),policyRevision:revision,skillsDigest:runtime.versions.skillsDigest})+'\n');return 0;
+  process.stdout.write(JSON.stringify({status:'MERI_FIRST_CHAT_RUNTIME_VALUES_WRITTEN',out:resolve(a.out),policyRevision:revision,skillsDigest:runtime.versions.skillsDigest,generalReadInstallationSha256:runtime.generalReadInstallation?.measurementSha256??null})+'\n');return 0;
  }catch(error){process.stderr.write((typeof error?.code==='string'&&/^RUNTIME_VALUES_/u.test(error.code)?error.message:`RUNTIME_VALUES_REFUSED: ${error?.code??error?.message}`)+'\n');return 2;}
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href)process.exitCode=await main();

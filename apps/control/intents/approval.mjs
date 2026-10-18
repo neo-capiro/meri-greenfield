@@ -111,8 +111,13 @@ export function createIntentApprovalOwner(configuration){
    life.limitDeadline(instant(proposal.expiresAt));
    const started=c.now();let raw;
    try{raw=await life.run(s=>decisions.record.call(c.decisions,{proposal,decision:r.decision,approver,binding:proposal.command.binding,signal:s,deadlineMs:Math.min(deadlineMs??Infinity,instant(proposal.expiresAt))}));}
-   // The owner may have recorded the decision: repeat the same request (the owner answers by proposal and approver).
-   catch{fail('APPROVAL_DECISION_UNKNOWN','UNKNOWN');}
+   catch(error){
+    // An owner refusal before its request left (`effect:'none'`, the Core forwarder's closed codes) recorded nothing: no live
+    // approver session or a forwarded identity mismatch is APPROVER_REFUSED, an unreachable owner APPROVAL_OWNER_UNAVAILABLE.
+    if(error?.effect==='none'&&typeof error.code==='string')fail(error.code==='ACCESS_DENIED'?'APPROVER_REFUSED':['DEADLINE','CANCELLED'].includes(error.code)?error.code:'APPROVAL_OWNER_UNAVAILABLE','NOT_DISPATCHED');
+    // Otherwise the owner may have recorded the decision: repeat the same request (the owner answers by proposal and approver).
+    fail('APPROVAL_DECISION_UNKNOWN','UNKNOWN');
+   }
    const decision=admitDecision(raw,proposal,r.decision,approver,started);
    if(r.decision==='rejected')return data({status:'rejected',deliveryId:r.deliveryId,proposalId:proposal.proposalId,decision});
    return await execute(life,principal,proposal,decision,r.deliveryId);

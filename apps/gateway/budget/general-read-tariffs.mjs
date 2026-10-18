@@ -9,6 +9,24 @@
  *    operations unless the render asserts the assumption from a reviewed Core configuration.
  *  - chargeMicrousd null: external cost unknown and unbounded in source; the operation is never allocated. */
 export const GENERAL_READ_TARIFF_ASSUMPTIONS=Object.freeze(['rerankDisabled','webSearchProviderDuckDuckGo']);
+/** read_client_documents (Core #84 @ aabe0f17): one document, one section, at most one paid call per call.
+ *  - text: listing, plain text, docx, xlsx, pptx and PDFs with a text layer are parsed locally: the 1 µUSD floor.
+ *  - vision: only when the selected PDF page has no text layer. One page, the page ≤ 5 MiB (file ≤ 20 MiB), output ≤ 8,192
+ *    tokens (8,000 requested; raised to 8,192 for gpt-6-astra), zero retries, 30 s. Model from OPENAI_MODEL (default
+ *    gpt-6-astra). Priced from evidence of the model's input/output prices and an input-token bound for one page.
+ *  - transcription: audio/video goes to whisper-1 with no duration, cost or cache bound in Core (only the 25 MiB upload
+ *    limit). It is priced only once Core supplies a duration cap (evidence `maxAudioSeconds`); until then the document read
+ *    is not allocated. That Core cap is required work, not a deferral.
+ * The charge is 1 + max(vision, transcription), because Meri cannot tell from the operation which branch a call takes. */
+export const GENERAL_READ_DOCUMENT_BOUNDS=Object.freeze({textChargeMicrousd:1,
+ vision:Object.freeze({pages:1,maxPageBytes:5242880,maxFileBytes:20971520,maxOutputTokens:8192,retries:0,timeoutMs:30000}),
+ transcription:Object.freeze({model:'whisper-1',maxUploadBytes:26214400,maxAudioSeconds:null})});
+/** The exact Core setting each assumption asserts. An allocation may price an assumption-gated read only with evidence binding
+ * this setting to the measured Core (source commit, image digest, configuration digest); see assertTariffAssumptionEvidence. */
+export const GENERAL_READ_TARIFF_ASSUMPTION_KEYS=Object.freeze({
+ rerankDisabled:Object.freeze({configKey:'RETRIEVAL_RERANK_ENABLED',configValue:'false'}),
+ webSearchProviderDuckDuckGo:Object.freeze({configKey:'CLIO_WEB_SEARCH_PROVIDER',configValue:'duckduckgo'}),
+});
 export const GENERAL_READ_TARIFFS=Object.freeze({
  'actions.query@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/query_action_items: Capiro database only, no outbound paid call"}),
  'find_contacts@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/find_contacts: Capiro database only, no outbound paid call"}),
@@ -55,7 +73,7 @@ export const GENERAL_READ_TARIFFS=Object.freeze({
  'query_regulatory_dockets@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/query_regulatory_dockets: Capiro database only, no outbound paid call"}),
  'query_tasks@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/query_tasks: Capiro database only, no outbound paid call"}),
  'read_bill_text@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/read_bill_text: Capiro database only, no outbound paid call"}),
- 'read_client_documents@0.2.0':Object.freeze({chargeMicrousd:null,class:'unknown',evidence:"audio/video → OpenAI whisper-1 and image-only PDF pages → OpenAI vision (engagement.service.ts:7954,8007; attachment-pdf-vision.ts:69); cost scales with file length and pages, no per-call bound in source"}),
+ 'read_client_documents@0.2.0':Object.freeze({chargeMicrousd:null,class:'document-composite',evidence:"One call reads one document section and makes at most ONE paid call (Core #84 @ aabe0f17): listing and text/docx/xlsx/pptx/text-layer PDFs parse locally (engagement/attachment-content.service.ts:388-399); an image-only PDF page goes to OpenAI vision, bounded (engagement/attachment-pdf-vision.ts:60-91); audio/video goes to OpenAI whisper-1 with no duration bound (engagement/engagement.service.ts:7950-7967, 8893). Priced by composeGeneralReadAllocation only from documentPricing evidence; see GENERAL_READ_DOCUMENT_BOUNDS"}),
  'read_monday_client_boards@0.2.0':Object.freeze({chargeMicrousd:1,class:'tenant-saas',evidence:"monday.com managed MCP over the tenant's own OAuth connection; Capiro is not billed per call (monday-managed-mcp.adapter.ts:450)"}),
  'resolve_entity@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/resolve_entity: Capiro database only, no outbound paid call"}),
  'scrape_web_page@0.2.0':Object.freeze({chargeMicrousd:1,class:'free-external',evidence:"direct fetch of the target URL, no vendor (meri-tools.service.ts:6610 → hardenedWebTransport.ts:153/200); 5 MB HTML / 15 MB PDF caps"}),

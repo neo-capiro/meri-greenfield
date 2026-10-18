@@ -7,10 +7,70 @@
   "maxRuntimeSeconds": 900,
   "maxCostMicroUSD": 2000000
  },
+ "defaultReadBytes": {
+  "maxOutputBytes": 1048576,
+  "maxAggregateOutputBytes": 2097152
+ },
  "assumptions": [
   "rerankDisabled",
   "webSearchProviderDuckDuckGo"
  ],
+ "documentPricingRequired": {
+  "bounds": {
+   "textChargeMicrousd": 1,
+   "vision": {
+    "pages": 1,
+    "maxPageBytes": 5242880,
+    "maxFileBytes": 20971520,
+    "maxOutputTokens": 8192,
+    "retries": 0,
+    "timeoutMs": 30000
+   },
+   "transcription": {
+    "model": "whisper-1",
+    "maxUploadBytes": 26214400,
+    "maxAudioSeconds": null
+   }
+  },
+  "vision": [
+   "model",
+   "inputMicrousdPerMillionTokens",
+   "outputMicrousdPerMillionTokens",
+   "maxInputTokens",
+   "coreSourceCommit",
+   "coreImageDigest",
+   "configurationSha256"
+  ],
+  "transcription": [
+   "model",
+   "microusdPerMinute",
+   "maxAudioSeconds",
+   "coreSourceCommit",
+   "coreImageDigest",
+   "configurationSha256"
+  ],
+  "coreWork": "Core must cap whisper-1 transcription duration (maxAudioSeconds) before read_client_documents can be allocated"
+ },
+ "assumptionEvidenceRequired": {
+  "rerankDisabled": {
+   "configKey": "RETRIEVAL_RERANK_ENABLED",
+   "configValue": "false",
+   "evidence": [
+    "coreSourceCommit",
+    "coreImageDigest",
+    "configurationSha256"
+   ]
+  },
+  "webSearchProviderDuckDuckGo": {
+   "configKey": "CLIO_WEB_SEARCH_PROVIDER",
+   "configValue": "duckduckgo",
+   "evidence": [
+    "coreSourceCommit",
+    "coreImageDigest",
+    "configurationSha256"
+   ]
+  }
+ },
  "operations": [
   {
    "operation": {
@@ -558,7 +618,7 @@
     "id": "read_client_documents",
     "version": "0.2.0"
    },
-   "evidence": "audio/video → OpenAI whisper-1 and image-only PDF pages → OpenAI vision (engagement.service.ts:7954,8007; attachment-pdf-vision.ts:69); cost scales with file length and pages, no per-call bound in source"
+   "evidence": "One call reads one document section and makes at most ONE paid call (Core #84 @ aabe0f17): listing and text/docx/xlsx/pptx/text-layer PDFs parse locally (engagement/attachment-content.service.ts:388-399); an image-only PDF page goes to OpenAI vision, bounded (engagement/attachment-pdf-vision.ts:60-91); audio/video goes to OpenAI whisper-1 with no duration bound (engagement/engagement.service.ts:7950-7967, 8893). Priced by composeGeneralReadAllocation only from documentPricing evidence; see GENERAL_READ_DOCUMENT_BOUNDS"
   }
  ]
 }

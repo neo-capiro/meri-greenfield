@@ -192,6 +192,64 @@ test('reads: the Core service secrets come from the exact ARNs, travel only in c
  assert.deepEqual(assertOnly(await render(withFeatures({reads:{enabled:false}})),['reads']).reads,{enabled:false});
 });
 
+test('reads.installation pins the in-image P2 measurement and ships its exact bytes to control only; reads.discovery needs capabilityPlatform; drift, absence and bad revocations refuse',async()=>{
+ await baseline();
+ const {generalReadInstallation}=await import(pathToFileURL(join(SOURCE_ROOT,RV.MEASUREMENT_MODULE)).href);
+ const g=await generalReadInstallation({root:SOURCE_ROOT}),pin=runtime=>{runtime.generalReadInstallation={measurement:structuredClone(g.measurement),measurementSha256:g.measurementSha256};};
+ const revoked=[structuredClone(g.measurement.operations[0].operation)],reads={...READS,installation:{enabled:true,revokedOperations:revoked}};
+ const rendered=await render(withFeatures({sourceEnabled:true,reads},pin),{featureSecrets:featureSecrets()});
+ const control=assertOnly(rendered,['sourceEnabled','reads'],{worker:{sourceEnabled:true},extraControlFiles:[PATHS.readsServiceSecret,PATHS.readsReadModeServiceSecret,PATHS.readsInstallationMeasurement]});
+ assert.deepEqual(control.reads,{enabled:true,serviceSecretFile:PATHS.readsServiceSecret,readModeServiceSecretFile:PATHS.readsReadModeServiceSecret,defaultCongress:119,
+  installation:{enabled:true,measurementSha256:g.measurementSha256,measurementFile:PATHS.readsInstallationMeasurement,revokedOperations:revoked}});
+ // The material file is the measurement as brotli JSON (the control cli decompresses and re-hashes it against the pin), digest-pinned and planned by purpose.
+ const {brotliDecompressSync,brotliCompressSync}=await import('node:zlib');
+ const bytes=Buffer.from(rendered.roles.control.bundle.files.find(f=>f.path===PATHS.readsInstallationMeasurement).base64,'base64'),json=brotliDecompressSync(bytes).toString('utf8');
+ assert.deepEqual(JSON.parse(json),g.measurement);assert.equal(canonicalSha256(JSON.parse(json)),g.measurementSha256);assert.equal(json,JSON.stringify(g.measurement));
+ assert.equal(rendered.roles.control.expected.sha256ByPath[PATHS.readsInstallationMeasurement],sha(bytes));
+ assert.deepEqual(rendered.summary.features.installation,{file:PATHS.readsInstallationMeasurement,encoding:'brotli',bytes:bytes.length,sha256:sha(bytes),measurementSha256:g.measurementSha256,operations:g.measurement.operations.length,revokedOperations:1});
+ const plan=withPosixPaths(()=>compileProductMaterialPlan({role:'control',configuration:control,runtimeUser:RUNTIME_USERS.control}));
+ assert.deepEqual(plan.requiredFiles.find(f=>f.path===PATHS.readsInstallationMeasurement).purposes,['reads-installation-measurement']);
+ const tampered=structuredClone(rendered.roles.control.bundle);tampered.files.find(f=>f.path===PATHS.readsInstallationMeasurement).base64=brotliCompressSync(Buffer.from(JSON.stringify({...g.measurement,operations:[]}))).toString('base64');
+ assert.throws(()=>withPosixPaths(()=>validateStaticProductDelivery({expected:rendered.roles.control.expected,bundle:tampered})),/STATIC_INIT_/u);
+ for(const role of ROLES.filter(r=>r!=='control'))assert.equal(rendered.roles[role].bundle.files.some(f=>f.path===PATHS.readsInstallationMeasurement),false,role);
+ assert.ok(rendered.summary.roles.control.bundleBytes<=65536,'control bundle (Secrets Manager SecretString) with the measurement');
+ // Disabled installation renders only its toggle and no file; discovery renders its toggle only with the platform record (G2 producer).
+ const off=await render(withFeatures({sourceEnabled:true,reads:{...READS,installation:{enabled:false},discovery:{enabled:false}}},pin),{featureSecrets:featureSecrets()});
+ assert.deepEqual(config(off,'control').reads.installation,{enabled:false});assert.deepEqual(config(off,'control').reads.discovery,{enabled:false});
+ assert.equal(off.roles.control.bundle.files.some(f=>f.path===PATHS.readsInstallationMeasurement),false);assert.equal(Object.hasOwn(off.summary.features,'installation'),false);
+ const profile=capabilityProfileOf(PROPOSED_PREVIEW_CAPABILITY_PLATFORM);
+ const on=await render(withFeatures({sourceEnabled:true,capabilityPlatform:PROPOSED_PREVIEW_CAPABILITY_PLATFORM,reads:{...READS,installation:{enabled:true},discovery:{enabled:true}}},
+  runtime=>{pin(runtime);runtime.capabilityProfileSha256=profile.profileSha256;}),{featureSecrets:featureSecrets()});
+ assert.deepEqual(config(on,'control').reads.discovery,{enabled:true});
+ assert.deepEqual(config(on,'control').reads.installation,{enabled:true,measurementSha256:g.measurementSha256,measurementFile:PATHS.readsInstallationMeasurement});
+ assert.equal(on.summary.features.installation.revokedOperations,0);
+ // The capability platform record and the measurement together stay inside the 65,536-byte control bundle (one SecretString).
+ assert.ok(on.summary.roles.control.bundleBytes<=65536,`control bundle ${on.summary.roles.control.bundleBytes}`);
+ // Without the feature, runtime values that carry the measurement change nothing: no pin, no file, no key.
+ const unused=await render(withFeatures({sourceEnabled:true,reads:READS},pin),{featureSecrets:featureSecrets()});
+ assert.equal(Object.hasOwn(config(unused,'control').reads,'installation'),false);assert.equal(unused.roles.control.bundle.files.some(f=>f.path===PATHS.readsInstallationMeasurement),false);
+ assert.equal(Object.hasOwn(unused.summary.features,'installation'),false);
+ // Fail closed.
+ const refuse=(features,runtime,pattern,options={featureSecrets:featureSecrets()})=>assert.rejects(render(withFeatures(features,runtime),options),{code:'RENDER_INPUT_REFUSED',message:pattern});
+ await refuse({sourceEnabled:true,reads:{...READS,installation:{enabled:true}}},undefined,/needs runtime\.generalReadInstallation/u);
+ await refuse({sourceEnabled:true,reads:{...READS,discovery:{enabled:true}}},pin,/needs features\.capabilityPlatform/u);
+ await refuse({sourceEnabled:true,reads:{...READS,installation:{enabled:false,revokedOperations:revoked}}},pin,/revokes nothing/u);
+ await refuse({sourceEnabled:true,reads:{...READS,installation:{enabled:true,revokedOperations:[]}}},pin,/1\.\.128/u);
+ await refuse({sourceEnabled:true,reads:{...READS,installation:{enabled:true,revokedOperations:[{id:'x'}]}}},pin,/OperationRefs/u);
+ await refuse({sourceEnabled:true,reads:{...READS,installation:{enabled:true,revokedOperations:[revoked[0],revoked[0]]}}},pin,/unique/u);
+ await refuse({sourceEnabled:true,reads:{...READS,installation:{enabled:true,revokedOperations:[{id:'not_installed',version:'0.2.0'}]}}},pin,/does not install/u);
+ await refuse({sourceEnabled:true,reads:{...READS,installation:{enabled:'yes'}}},pin,/must be a boolean/u);
+ await refuse({sourceEnabled:true,reads:{...READS,installation:{enabled:true,measurementSha256:g.measurementSha256}}},pin,/not an accepted field/u);
+ await refuse({reads:{enabled:false,installation:{enabled:true}}},pin,/disabled reads name no/u,{});
+ await refuse({reads:{enabled:false,discovery:{enabled:false}}},pin,/disabled reads name no/u,{});
+ await refuse({sourceEnabled:true,reads:{...READS,installation:{enabled:true}}},runtime=>{pin(runtime);runtime.generalReadInstallation.measurementSha256='0'.repeat(64);},/canonical sha256/u);
+ await refuse({sourceEnabled:true,reads:{...READS,installation:{enabled:true}}},runtime=>{pin(runtime);delete runtime.generalReadInstallation.measurement;},/measurement is required/u);
+ await refuse({sourceEnabled:true,reads:{...READS,installation:{enabled:true}}},runtime=>{pin(runtime);const m=runtime.generalReadInstallation.measurement;m.operations[0].descriptorSha256='0'.repeat(64);runtime.generalReadInstallation.measurementSha256=canonicalSha256(m);},/control installation issuer/u);
+ await refuse({sourceEnabled:true,reads:{...READS,installation:{enabled:true}}},runtime=>{pin(runtime);const m=runtime.generalReadInstallation.measurement;m.baseCatalogSha256='0'.repeat(64);runtime.generalReadInstallation.measurementSha256=canonicalSha256(m);},/allocation catalog/u);
+ // A drifted measurement also refuses without any feature: runtime values are validated as a whole.
+ await assert.rejects(render(withFeatures({sourceEnabled:true,reads:READS},runtime=>{pin(runtime);runtime.generalReadInstallation.measurementSha256='0'.repeat(64);}),{featureSecrets:featureSecrets()}),{code:'RENDER_INPUT_REFUSED'});
+});
+
 test('capability platform renders verbatim only with the matching G3 measurement pin',async()=>{
  await baseline();
  const profile=capabilityProfileOf(PROPOSED_PREVIEW_CAPABILITY_PLATFORM);
@@ -353,4 +411,21 @@ test('intents.execution and routines.core render the Core origin, the reads serv
  await assert.rejects(render(withFeatures({sourceEnabled:true,reads:READS,routines:{enabled:false,core}}),{featureSecrets:featureSecrets()}),/needs features.routines.enabled true/u);
  await assert.rejects(render(withFeatures({sourceEnabled:true,reads:READS,intents:{enabled:true,execution:{issuer:'x',keys:[{kty:'RSA',kid:'k'}]}}}),{featureSecrets:featureSecrets()}),/compileExecutionTrust/u);
  await assert.rejects(render(withFeatures({sourceEnabled:true,reads:READS,routines:{enabled:true,core:{cancellationProof:{...core.cancellationProof,kid:core.unattendedGrant.kid},unattendedGrant:core.unattendedGrant}}}),{featureSecrets:featureSecrets()}),/routines-configuration/u);
+});
+
+test('reads.delegation renders the control toggle under reads and refuses when reads are disabled',async()=>{
+ await baseline();
+ const rendered=await render(withFeatures({sourceEnabled:true,reads:{...READS,delegation:{enabled:true}}}),{featureSecrets:featureSecrets()});
+ assert.deepEqual(config(rendered,'control').reads.delegation,{enabled:true});
+ await assert.rejects(render(withFeatures({reads:{enabled:false,delegation:{enabled:true}}})),/RENDER_INPUT_REFUSED/u);
+ await assert.rejects(render(withFeatures({sourceEnabled:true,reads:{...READS,delegation:{enabled:'yes'}}}),{featureSecrets:featureSecrets()}),/RENDER_INPUT_REFUSED/u);
+});
+
+test('intents.core renders the Core approval forwarder block (origin and reads secret file) next to execution',async()=>{
+ await baseline();
+ const rendered=await render(withFeatures({sourceEnabled:true,reads:READS,intents:{enabled:true,core:{enabled:true}}}),{featureSecrets:featureSecrets()});
+ const control=config(rendered,'control');
+ assert.deepEqual(control.intents,{enabled:true,core:{origin:control.nativeCandidate.identity.origin,serviceSecretFile:PATHS.readsServiceSecret}});
+ await assert.rejects(render(withFeatures({intents:{enabled:true,core:{enabled:true}}})),/needs features.reads enabled/u);
+ await assert.rejects(render(withFeatures({sourceEnabled:true,reads:READS,intents:{enabled:false,core:{enabled:true}}}),{featureSecrets:featureSecrets()}),/needs features.intents.enabled true/u);
 });

@@ -5,8 +5,11 @@
  *  - `record`       → `approval/record`   {proposal,decision,approver,binding} → {decision:ApprovalDecision,checkedAtMs,revoked}
  *  - `readDecision` → `approval/decision` {proposalId,commandSha256,binding}   → {decision:ApprovalDecision|null,checkedAtMs,revoked}
  *  - `getCurrent`   → the same read, serialized for the command executor's approval guard (`commands/approval-context.mjs`).
- * `approval/decision` is listed as a required provider contract in `apps/runtime/README.md`; `approval/record` is a NEW
- * required Core contract (lane 3 proposal P-INT-10). Core implements neither today, so no composition may claim this live.
+ * `approval/decision` is listed as a required provider contract in `apps/runtime/README.md`; `approval/record` is the Core
+ * contract of lane 3 proposal P-INT-10. Core serves both as `POST /api/clio/approvals/native/{record,decision}` (capiro-backend
+ * b7c6e9cf), behind the approver's native bearer plus the verified service identity, which the candidate's provider RPC seam
+ * does not carry: the production composition supplies `call` from `apps/runtime/native-authority/approval-forwarder.mjs`
+ * (`intents.core` declared), never the raw provider client. A failure that carries `effect:'none'` recorded nothing.
  *
  * `createCommandJournalOutcomes({journal,contextFor})` reads the executor's durable result (`meri_commands.command_journal`) for a
  * proposal: `journal` is the executor's own `createPostgresCommandJournal` and `contextFor(proposal)` the exact executor
