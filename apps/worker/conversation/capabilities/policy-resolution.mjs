@@ -61,8 +61,9 @@ export function intersectCapabilityPolicies(a,b){
  /** @type {Record<string,unknown>} */
  const raw=Object.fromEntries(POLICY_FLAGS.map(flag=>[flag,pa[/** @type {keyof CapabilityPolicy} */(flag)]===true&&pb[/** @type {keyof CapabilityPolicy} */(flag)]===true]));
  const both=(/** @type {readonly string[]} */x,/** @type {readonly string[]} */y)=>x.filter(v=>y.includes(v));
- raw.subagentTypes=both(pa.subagentTypes,pb.subagentTypes);raw.workspaceToolNames=both(pa.workspaceToolNames,pb.workspaceToolNames);raw.readFamilies=both(pa.readFamilies,pb.readFamilies);
- const active=new Set(pb.activeReadOperations.map(operationKey));raw.activeReadOperations=inFamilies(pa.activeReadOperations.filter(op=>active.has(operationKey(op))),raw.readFamilies);
+ const readFamilies=both(pa.readFamilies,pb.readFamilies);
+ raw.subagentTypes=both(pa.subagentTypes,pb.subagentTypes);raw.workspaceToolNames=both(pa.workspaceToolNames,pb.workspaceToolNames);raw.readFamilies=readFamilies;
+ const active=new Set(pb.activeReadOperations.map(operationKey));raw.activeReadOperations=inFamilies(pa.activeReadOperations.filter(op=>active.has(operationKey(op))),readFamilies);
  raw.skillNames=pa.skillNames===null?pb.skillNames:pb.skillNames===null?pa.skillNames:both(pa.skillNames,pb.skillNames);
  const fromA=pa.sandboxNetworkDomains.filter(h=>pb.sandboxNetworkDomains.some(p=>covers(p,h)));
  raw.sandboxNetworkDomains=[...fromA,...pb.sandboxNetworkDomains.filter(h=>!fromA.includes(h)&&pa.sandboxNetworkDomains.some(p=>covers(p,h)))];

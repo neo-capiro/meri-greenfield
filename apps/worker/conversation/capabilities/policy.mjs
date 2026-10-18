@@ -36,6 +36,7 @@ function allowlist(value,member,max){
 const among=universe=>(/** @type {unknown} */v)=>typeof v==='string'&&universe.includes(v);
 /** @typedef {{id:string,version:string}} OperationRef */
 /** @typedef {{subagents:boolean,auditHooks:boolean,compactionHooks:boolean,skillPlugin:boolean,workspaceTools:boolean,subagentProgress:boolean,bash:boolean,generalReads:boolean,governedIntents:boolean,subagentTypes:readonly string[],maxParallelSubagents:number,workspaceToolNames:readonly string[],skillNames:readonly string[]|null,sandboxNetworkDomains:readonly string[],readFamilies:readonly string[],activeReadOperations:readonly OperationRef[]}} CapabilityPolicy */
+/** @param {OperationRef} op */
 const readOperationKey=op=>`${op.id}\u0000${op.version}`;
 const DEFERRED_NAMES=new Set(catalog.originals.filter(row=>row.disposition==='deferred').map(row=>row.id));
 const READ_OPERATION_FAMILIES=new Map(catalog.operations.flatMap(row=>{
@@ -45,13 +46,16 @@ const READ_OPERATION_FAMILIES=new Map(catalog.operations.flatMap(row=>{
   !DEFERRED_NAMES.has(row.operation.id)&&!DEFERRED_NAMES.has(row.operation.id.replaceAll('.','_'))
   ?[[readOperationKey(row.operation),family]]:[];
 }));
-/** A fixed release-profile allowlist. An omitted list registers no general read in G3; the catalog is never an implicit grant. */
+/** A fixed release-profile allowlist. An omitted list registers no general read in G3; the catalog is never an implicit grant.
+ * @param {unknown} value @returns {readonly OperationRef[]} */
 function activeReadOperations(value){
  if(!Array.isArray(value)||value.length>128)fail('CAPABILITY_POLICY_REFUSED');
  const seen=new Set();return Object.freeze(value.map(raw=>{
   let op;try{op=own(raw,['id','version']);}catch{fail('CAPABILITY_POLICY_REFUSED');}
-  if(typeof op.id!=='string'||typeof op.version!=='string'||!READ_OPERATION_FAMILIES.has(readOperationKey(op))||seen.has(readOperationKey(op)))fail('CAPABILITY_POLICY_REFUSED');
-  seen.add(readOperationKey(op));return Object.freeze({id:op.id,version:op.version});
+  if(typeof op.id!=='string'||typeof op.version!=='string')fail('CAPABILITY_POLICY_REFUSED');
+  const reference=Object.freeze({id:op.id,version:op.version}),key=readOperationKey(reference);
+  if(!READ_OPERATION_FAMILIES.has(key)||seen.has(key))fail('CAPABILITY_POLICY_REFUSED');
+  seen.add(key);return reference;
  }));
 }
 /** Every flag defaults to false (`bash` is explicit eligibility for sandboxed Bash; `sandboxNetworkDomains` is the
