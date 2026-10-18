@@ -11,14 +11,18 @@ export function createConversationHistoryService({store,nextRunOwner,gate,retent
  async function transcript({principal,request,signal,recheckConversation}){
   // Subject ownership/client authorization precedes subject-specific retention observations.
   const result=await store.history.transcript({principal,...request},check(signal));
-  await servable(principal,request.conversationId);await current(recheckConversation,result.conversation);return result;
+  await servable(principal,request.conversationId);await current(recheckConversation,result.conversation);
+  // Core currentness is awaited: suppression can take effect while that authorization check is in flight.
+  await servable(principal,request.conversationId);return result;
  }
  return Object.freeze({
   list:guard(async({principal,request,signal,recheckConversation})=>{
-   const result=await store.history.list({principal,...request},check(signal)),visible=[];
+   const result=await store.history.list({principal,...request},check(signal)),authorized=[],visible=[];
    for(const c of result.conversations){try{await servable(principal,c.conversationId);}catch(error){if(error?.code==='RETENTION_SUPPRESSED')continue;throw error;}
     // Core's current context wire does not distinguish archive from outage; withhold the whole page on either failure.
-    await current(recheckConversation,c);visible.push(c);}
+    await current(recheckConversation,c);authorized.push(c);}
+   // Recheck every authorized row after all awaited Core reads, before releasing the saved page.
+   for(const c of authorized){try{await servable(principal,c.conversationId);}catch(error){if(error?.code==='RETENTION_SUPPRESSED')continue;throw error;}visible.push(c);}
    return {...result,conversations:visible};
   }),
   transcript:guard(transcript),
@@ -29,11 +33,11 @@ export function createConversationHistoryService({store,nextRunOwner,gate,retent
    if(saved.latestRun.binding.runId===request.sourceRunId&&!terminal(saved.latestRun.state))refuse('CONVERSATION_TURN_CONFLICT','NOT_DISPATCHED');
    try{if(recheckMembership)await recheckMembership();else await gate.recheck({principal,signal,deadlineMs});}
    catch(error){throw new ProductError(productFailure(error)?.code??'CONVERSATION_UNAVAILABLE','NOT_DISPATCHED');}
-   try{await current(recheckConversation,saved.conversation);}catch(error){throw new ProductError(productFailure(error)?.code??'CONVERSATION_UNAVAILABLE','NOT_DISPATCHED');}
+   try{await current(recheckConversation,saved.conversation);await servable(principal,request.conversationId);}catch(error){throw new ProductError(productFailure(error)?.code??'CONVERSATION_UNAVAILABLE','NOT_DISPATCHED');}
    let admitted;try{admitted=await nextRunOwner.admitTurn({principal:{tenantId:principal.tenantId,actorId:principal.actorId},...request,signal});}
    // A source not yet settled (or still live) refuses before any reservation write: a definite, retryable conflict, never UNKNOWN.
    catch(error){if(['NEXT_RUN_SOURCE_UNSETTLED','NEXT_RUN_SOURCE_NOT_TERMINAL'].includes(error?.code))throw new ProductError('CONVERSATION_TURN_CONFLICT','NOT_DISPATCHED');throw asProductError(error,'CONVERSATION_UNAVAILABLE','UNKNOWN');}
-   try{await servable(principal,request.conversationId);await current(recheckConversation,saved.conversation);}catch(error){throw new ProductError(productFailure(error)?.code??'CONVERSATION_UNAVAILABLE','RESULT_NOT_RELEASED');}
+   try{await servable(principal,request.conversationId);await current(recheckConversation,saved.conversation);await servable(principal,request.conversationId);}catch(error){throw new ProductError(productFailure(error)?.code??'CONVERSATION_UNAVAILABLE','RESULT_NOT_RELEASED');}
    return {schema:TURN_SCHEMA,...admitted};
   }),
  });

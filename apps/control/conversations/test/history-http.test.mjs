@@ -169,6 +169,31 @@ test('member removal and retention suppression refuse history release',async()=>
   f.state.member.status='active';f.state.suppressed=true;assert.equal((await f.post('transcript',{conversationId:binding.conversationId})).status,503);assert.deepEqual((await (await f.post('list',{})).json()).conversations,[]);
  }finally{f.close();}
 });
+for(const path of ['transcript','list'])test(`suppression during awaited Core currentness withholds saved ${path}`,async()=>{
+ const f=await fixture();try{await f.turn(1);f.state.retentionChecks=0;
+  f.state.onCoreRead=async()=>{await Promise.resolve();f.state.suppressed=true;};
+  const response=await f.post(path,path==='list'?{}:{conversationId:binding.conversationId});
+  if(path==='list'){assert.equal(response.status,200);assert.deepEqual((await response.json()).conversations,[]);}
+  else{assert.equal(response.status,503);assert.deepEqual(await response.json(),{error:{code:'CONVERSATION_UNAVAILABLE'}});}
+  assert.equal(f.state.retentionChecks,2,'retention must be read again after Core currentness');
+ }finally{f.close();}
+});
+test('suppression during final next-turn Core currentness withholds its admitted result',async()=>{
+ const f=await fixture();try{await f.service.submit({credential:f.credential,input:f.input});await f.service.cancel({credential:f.credential});
+  f.state.coreReads=[];f.state.onCoreRead=async()=>{if(f.state.coreReads.length===3){await Promise.resolve();f.state.suppressed=true;}};
+  const before=f.state.nextRuns.size,response=await f.post('next-turn',{conversationId:binding.conversationId,sourceRunId:binding.runId});
+  assert.equal(response.status,503);assert.deepEqual(await response.json(),{error:{code:'CONVERSATION_UNAVAILABLE',outcome:'RESULT_NOT_RELEASED'}});
+  assert.equal(f.state.nextRuns.size,before+1,'admission remains durable after result withholding');
+ }finally{f.close();}
+});
+test('suppression during pre-admission next-turn Core currentness prevents reservation',async()=>{
+ const f=await fixture();try{await f.service.submit({credential:f.credential,input:f.input});await f.service.cancel({credential:f.credential});
+  f.state.coreReads=[];f.state.onCoreRead=async()=>{if(f.state.coreReads.length===2){await Promise.resolve();f.state.suppressed=true;}};
+  const before=f.state.nextRuns.size,response=await f.post('next-turn',{conversationId:binding.conversationId,sourceRunId:binding.runId});
+  assert.equal(response.status,503);assert.deepEqual(await response.json(),{error:{code:'CONVERSATION_UNAVAILABLE',outcome:'NOT_DISPATCHED'}});
+  assert.equal(f.state.nextRuns.size,before);
+ }finally{f.close();}
+});
 test('forged cursor, scope hints, corrupt event and identity substitution cannot become a successful page',async()=>{
  const f=await fixture();try{await f.turn(1);
   assert.equal((await f.post('transcript',{conversationId:binding.conversationId,after:-1})).status,400);
