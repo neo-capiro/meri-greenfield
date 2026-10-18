@@ -319,6 +319,7 @@ BEGIN
    IF NEW.invocation_id IS DISTINCT FROM OLD.invocation_id THEN
     RAISE EXCEPTION 'NEXT_RUN_ADOPTION_CLAIM_LOCATOR_IMMUTABLE';
    END IF;
+  END IF;
   RETURN NEW;
  END IF;
  IF TG_TABLE_NAME='tenant_run_reservations' THEN
@@ -423,8 +424,8 @@ BEGIN
      OR source_allocation.record#>'{resource,physicalStopProven}' IS DISTINCT FROM 'true'::jsonb
      OR reserved.reservation#>'{facts,retirement,physicalStopProven}' IS DISTINCT FROM 'true'::jsonb
   THEN RAISE EXCEPTION 'NEXT_RUN_ADOPTION_RETIREMENT_REFUSED'; END IF;
-  SELECT array_agg(x.grant->>'grantId' ORDER BY x.grant->>'grantId') INTO source_grants
-   FROM pg_catalog.jsonb_array_elements(source_allocation.record->'grantIntents') AS x(grant);
+  SELECT array_agg(x.grant_fact->>'grantId' ORDER BY x.grant_fact->>'grantId') INTO source_grants
+   FROM pg_catalog.jsonb_array_elements(source_allocation.record->'grantIntents') AS x(grant_fact);
   SELECT array_agg(x.grant_id ORDER BY x.grant_id) INTO receipt_grants
    FROM pg_catalog.jsonb_array_elements_text(reserved.reservation#>'{facts,revocation,grantIds}') AS x(grant_id);
   SELECT array_agg(g.grant_id::text ORDER BY g.grant_id::text) INTO budget_grants
