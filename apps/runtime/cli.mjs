@@ -3,6 +3,7 @@ import {pathToFileURL} from 'node:url';
 import {loadConfiguration} from './config.mjs';
 import {assertProductRunnerMeasurement} from './native-authority/ecs-prepared-task-proof.mjs';
 import {withRunnerDiagnostics} from './runner-runtime-diagnostics.mjs';
+import {verifyControlCaBundle} from './control-ca-bundle.mjs';
 /** The product worker reaches control's private origin with global fetch, so Node's default store must also trust the one Meri
  * preview server CA. That anchor is exactly its pinned issuer server CA file (same CA; serverCaSha256 pinned, written by
  * material-init before this process starts), never another path. NODE_EXTRA_CA_CERTS is read once at process start. */
@@ -14,6 +15,7 @@ export async function main(argv=process.argv.slice(2),{poststartTls,nativeFetch}
      (role!=='conversation-runner'||process.env.MERI_PRODUCT_PREVIEW_REQUIRED!=='1'||c.bootstrap?.remote!==true||c.remoteTask!==undefined||typeof nativeFetch!=='function'))throw Error('PRODUCT_POSTSTART_REFUSED');
   if(role==='control'&&process.env.MERI_PRODUCT_PREVIEW_REQUIRED!==undefined&&
      (process.env.MERI_PRODUCT_PREVIEW_REQUIRED!=='1'||c.privateHttp===undefined||c.nativeCandidate===undefined||c.taskRouter?.enabled!==true||c.taskRouter.poststart?.enabled!==true||c.temporal.authorization===undefined||c.temporal.tokenWriter?.enabled!==true||c.temporal.issuerDelivery===undefined||c.temporal.issuerBootstrap?.enabled!==true))throw Error('PRODUCT_LISTENER_REFUSED');
+  if(role==='control'&&process.env.MERI_PRODUCT_PREVIEW_REQUIRED==='1')await verifyControlCaBundle(c);
   if(role==='temporal-worker'&&process.env.MERI_PRODUCT_PREVIEW_REQUIRED!==undefined&&
      (process.env.MERI_PRODUCT_PREVIEW_REQUIRED!=='1'||c.native.preparedKickoff!==true||c.native.loopback!==false||
       !c.native.origin.startsWith('https://')||c.http.port!==8081||c.temporal.authorization===undefined||c.temporal.tokenWriter?.enabled!==true||c.temporal.issuerDelivery===undefined||c.temporal.issuerBootstrap?.enabled!==true||!productWorkerTrustsPinnedServerCa(c)))throw Error('PRODUCT_WORKER_REFUSED');

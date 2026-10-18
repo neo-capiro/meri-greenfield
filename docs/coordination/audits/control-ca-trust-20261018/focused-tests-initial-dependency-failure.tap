@@ -1,0 +1,198 @@
+TAP version 13
+# node:internal/modules/package_json_reader:314
+#   throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+#         ^
+# Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@capiro/meri-contracts' imported from C:\\Users\\Administrator\\Documents\\Codex\\2026-10-18\\task-2\\meri-control-ca-trust\\apps\\worker\\qualification\\checkpoint\\bound-session-store.mjs
+#     at Object.getPackageJSONURL (node:internal/modules/package_json_reader:314:9)
+#     at packageResolve (node:internal/modules/esm/resolve:772:81)
+#     at moduleResolve (node:internal/modules/esm/resolve:859:18)
+#     at defaultResolve (node:internal/modules/esm/resolve:989:11)
+#     at \#cachedDefaultResolve (node:internal/modules/esm/loader:747:20)
+#     at ModuleLoader.resolve (node:internal/modules/esm/loader:724:38)
+#     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+#     at ModuleJob._link (node:internal/modules/esm/module_job:182:49) {
+#   code: 'ERR_MODULE_NOT_FOUND'
+# }
+# Node.js v22.23.3
+# Subtest: apps\\runtime\\test\\cli-product-runner-pin.test.mjs
+not ok 1 - apps\\runtime\\test\\cli-product-runner-pin.test.mjs
+  ---
+  duration_ms: 650.729
+  type: 'test'
+  location: 'C:\\Users\\Administrator\\Documents\\Codex\\2026-10-18\\task-2\\meri-control-ca-trust\\apps\\runtime\\test\\cli-product-runner-pin.test.mjs:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: composite preserves every locked RDS byte and appends exactly the pinned private server CA
+ok 2 - composite preserves every locked RDS byte and appends exactly the pinned private server CA
+  ---
+  duration_ms: 155.0309
+  type: 'test'
+  ...
+# Subtest: changed RDS bytes, a foreign private pin, a leaf, multiple PEMs and private key material refuse
+ok 3 - changed RDS bytes, a foreign private pin, a leaf, multiple PEMs and private key material refuse
+  ---
+  duration_ms: 4.0429
+  type: 'test'
+  ...
+# Subtest: control startup admits only the fixed composite path and refuses missing/wrong environment before resources
+ok 4 - control startup admits only the fixed composite path and refuses missing/wrong environment before resources
+  ---
+  duration_ms: 0.6681
+  type: 'test'
+  ...
+# Subtest: fresh Node global fetch trusts the private origin with composite roots, retains all RDS roots and verifies hostname
+ok 5 - fresh Node global fetch trusts the private origin with composite roots, retains all RDS roots and verifies hostname
+  ---
+  duration_ms: 416.8007
+  type: 'test'
+  ...
+# (node:24624) ExperimentalWarning: Module mocking is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: control CA flag rejects another role before canonical materialization and consumes the secret slot
+ok 6 - control CA flag rejects another role before canonical materialization and consumes the secret slot
+  ---
+  duration_ms: 1.6938
+  type: 'test'
+  ...
+# Subtest: ready is emitted after canonical materialization and composite initialization both complete
+ok 7 - ready is emitted after canonical materialization and composite initialization both complete
+  ---
+  duration_ms: 0.6606
+  type: 'test'
+  ...
+# Subtest: composite refusal releases the exact static receipt, emits no ready and hides private error text
+ok 8 - composite refusal releases the exact static receipt, emits no ready and hides private error text
+  ---
+  duration_ms: 0.4564
+  type: 'test'
+  ...
+# Subtest: static failure never starts the composite; rollback failure keeps the cleanup failure exit
+ok 9 - static failure never starts the composite; rollback failure keeps the cleanup failure exit
+  ---
+  duration_ms: 0.6713
+  type: 'test'
+  ...
+# Subtest: plain write retains its existing canonical initialization path
+ok 10 - plain write retains its existing canonical initialization path
+  ---
+  duration_ms: 0.3086
+  type: 'test'
+  ...
+# Subtest: production composer creates exact shared bytes with exclusive private permissions and verifies startup readback
+ok 11 - production composer creates exact shared bytes with exclusive private permissions and verifies startup readback
+  ---
+  duration_ms: 7.8856
+  type: 'test'
+  ...
+# Subtest: production startup rejects missing and changed composite output without removing material
+ok 12 - production startup rejects missing and changed composite output without removing material
+  ---
+  duration_ms: 4.9432
+  type: 'test'
+  ...
+# Subtest: production composer rolls back only its derived paths when output readback fails
+ok 13 - production composer rolls back only its derived paths when output readback fails
+  ---
+  duration_ms: 2.475
+  type: 'test'
+  ...
+# Subtest: production composer preserves a preexisting foreign directory and refuses a foreign configuration path
+ok 14 - production composer preserves a preexisting foreign directory and refuses a foreign configuration path
+  ---
+  duration_ms: 1.6364
+  type: 'test'
+  ...
+# node:internal/modules/package_json_reader:314
+#   throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+#         ^
+# Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@capiro/meri-contracts' imported from C:\\Users\\Administrator\\Documents\\Codex\\2026-10-18\\task-2\\meri-control-ca-trust\\apps\\worker\\qualification\\checkpoint\\bound-session-store.mjs
+#     at Object.getPackageJSONURL (node:internal/modules/package_json_reader:314:9)
+#     at packageResolve (node:internal/modules/esm/resolve:772:81)
+#     at moduleResolve (node:internal/modules/esm/resolve:859:18)
+#     at defaultResolve (node:internal/modules/esm/resolve:989:11)
+#     at \#cachedDefaultResolve (node:internal/modules/esm/loader:747:20)
+#     at ModuleLoader.resolve (node:internal/modules/esm/loader:724:38)
+#     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+#     at ModuleJob._link (node:internal/modules/esm/module_job:182:49) {
+#   code: 'ERR_MODULE_NOT_FOUND'
+# }
+# Node.js v22.23.3
+# Subtest: infra\\product-preview\\manifest-token-writers.test.mjs
+not ok 4 - infra\\product-preview\\manifest-token-writers.test.mjs
+  ---
+  duration_ms: 526.2354
+  type: 'test'
+  location: 'C:\\Users\\Administrator\\Documents\\Codex\\2026-10-18\\task-2\\meri-control-ca-trust\\infra\\product-preview\\manifest-token-writers.test.mjs:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# node:internal/modules/package_json_reader:314
+#   throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+#         ^
+# Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@capiro/meri-contracts' imported from C:\\Users\\Administrator\\Documents\\Codex\\2026-10-18\\task-2\\meri-control-ca-trust\\apps\\worker\\qualification\\checkpoint\\bound-session-store.mjs
+#     at Object.getPackageJSONURL (node:internal/modules/package_json_reader:314:9)
+#     at packageResolve (node:internal/modules/esm/resolve:772:81)
+#     at moduleResolve (node:internal/modules/esm/resolve:859:18)
+#     at defaultResolve (node:internal/modules/esm/resolve:989:11)
+#     at \#cachedDefaultResolve (node:internal/modules/esm/loader:747:20)
+#     at ModuleLoader.resolve (node:internal/modules/esm/loader:724:38)
+#     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+#     at ModuleJob._link (node:internal/modules/esm/module_job:182:49) {
+#   code: 'ERR_MODULE_NOT_FOUND'
+# }
+# Node.js v22.23.3
+# Subtest: infra\\product-preview\\manifest.test.mjs
+not ok 5 - infra\\product-preview\\manifest.test.mjs
+  ---
+  duration_ms: 515.1994
+  type: 'test'
+  location: 'C:\\Users\\Administrator\\Documents\\Codex\\2026-10-18\\task-2\\meri-control-ca-trust\\infra\\product-preview\\manifest.test.mjs:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# node:internal/modules/package_json_reader:314
+#   throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+#         ^
+# Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@capiro/meri-contracts' imported from C:\\Users\\Administrator\\Documents\\Codex\\2026-10-18\\task-2\\meri-control-ca-trust\\apps\\worker\\qualification\\checkpoint\\bound-session-store.mjs
+#     at Object.getPackageJSONURL (node:internal/modules/package_json_reader:314:9)
+#     at packageResolve (node:internal/modules/esm/resolve:772:81)
+#     at moduleResolve (node:internal/modules/esm/resolve:859:18)
+#     at defaultResolve (node:internal/modules/esm/resolve:989:11)
+#     at \#cachedDefaultResolve (node:internal/modules/esm/loader:747:20)
+#     at ModuleLoader.resolve (node:internal/modules/esm/loader:724:38)
+#     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+#     at ModuleJob._link (node:internal/modules/esm/module_job:182:49) {
+#   code: 'ERR_MODULE_NOT_FOUND'
+# }
+# Node.js v22.23.3
+# Subtest: infra\\product-preview\\material-init.test.mjs
+not ok 6 - infra\\product-preview\\material-init.test.mjs
+  ---
+  duration_ms: 600.1351
+  type: 'test'
+  location: 'C:\\Users\\Administrator\\Documents\\Codex\\2026-10-18\\task-2\\meri-control-ca-trust\\infra\\product-preview\\material-init.test.mjs:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..17
+# tests 17
+# suites 0
+# pass 13
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 702.9891

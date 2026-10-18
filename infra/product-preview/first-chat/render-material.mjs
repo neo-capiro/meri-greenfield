@@ -65,6 +65,7 @@ import {fileURLToPath,pathToFileURL} from 'node:url';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {validateConfiguration,compileControlTaskRouterConfiguration} from '../../../apps/runtime/config.mjs';
 import {productWorkerTrustsPinnedServerCa} from '../../../apps/runtime/cli.mjs';
+import {CONTROL_NODE_CA_FILE,productControlTrustsCompositeCa} from '../../../apps/runtime/control-ca-bundle.mjs';
 import {compilePreparedCandidateConfiguration} from '../../../apps/runtime/prepared-candidate-config.mjs';
 import {parseTemporalIssuerRuntimeConfiguration} from '../../../apps/runtime/temporal-issuer-cli.mjs';
 import {compileProductMaterialPlan} from '../../../apps/runtime/material-init-plan.mjs';
@@ -74,7 +75,7 @@ import {productRunnerMeasurement} from '../../../apps/runtime/native-authority/e
 import {runOwnerOperations} from '../../../packages/contracts/runtime-0.2/validate.mjs';
 import {sdkSessionOperations} from '../../../packages/contracts/runtime-0.2/session.mjs';
 import {validateProductOwnerConfiguration} from '../../../apps/proxy/product/owner-entrypoint.mjs';
-import {parseProductProxyStartupConfiguration,PRODUCT_PROXY_PRICING_REVISION} from '../../../apps/proxy/product/startup-config.mjs';
+import {parseProductProxyStartupConfiguration,PRODUCT_PROXY_PRICING_REVISION,PRODUCT_PROXY_MODEL_ALIAS} from '../../../apps/proxy/product/startup-config.mjs';
 import {compileCapabilityPlatform,createConfiguredRunCapabilityPolicy} from '../../../apps/runtime/product-ports/capability-policy.mjs';
 import {compileRuntimeArtifactsConfiguration} from '../../../apps/runtime/artifacts/configuration.mjs';
 import {assertNativeReadConfiguration} from '../../../packages/contracts/runtime-0.2/reads.mjs';
@@ -456,7 +457,7 @@ function installationMaterial(installation,feature){
 /** Same predicates as apps/runtime/cli.mjs main() for MERI_PRODUCT_PREVIEW_REQUIRED=1 (the CLI evaluates them inline). */
 export function assertProductCliGates(role,c,environment){
  const common=c.temporal.authorization!==undefined&&c.temporal.tokenWriter?.enabled===true&&c.temporal.issuerDelivery!==undefined&&c.temporal.issuerBootstrap?.enabled===true;
- if(role==='control'&&!(common&&c.privateHttp!==undefined&&c.nativeCandidate!==undefined&&c.taskRouter?.enabled===true&&c.taskRouter.poststart?.enabled===true))fail('RENDER_GATE_REFUSED','PRODUCT_LISTENER_REFUSED');
+ if(role==='control'&&!(common&&c.privateHttp!==undefined&&c.nativeCandidate!==undefined&&c.taskRouter?.enabled===true&&c.taskRouter.poststart?.enabled===true&&productControlTrustsCompositeCa(environment)))fail('RENDER_GATE_REFUSED','PRODUCT_LISTENER_REFUSED');
  if(role==='temporal-worker'&&!(common&&c.native.preparedKickoff===true&&c.native.loopback===false&&c.native.origin.startsWith('https://')&&c.http.port===8081&&productWorkerTrustsPinnedServerCa(c,environment)))fail('RENDER_GATE_REFUSED','PRODUCT_WORKER_REFUSED');
 }
 
@@ -532,7 +533,7 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,ident
   authoritySha256:canonicalSha256({scopes:[{kind:'client',tenantId:binding.tenantId,resourceId:k.clientId,policyRevision}],selectedClientId:k.clientId,policyRevision})};
  const nativeCandidate={
   identity:{origin:k.coreOrigin,credentialFile:PATHS.identity,commandContext:{binding,clientResolution:{reference:k.clientId,clientId:k.clientId}}},
-  runtime:{binding,versions,proxyUrl:o.proxyUrl,model:d.model.profileId,deadlineMs:grantExpiresAtMs,maxTurns:r.runtime.maxTurns,maxCostMicroUSD:d.model.perRunMaxCostMicroUSD,maxOutputBytes:r.runtime.maxOutputBytes},
+  runtime:{binding,versions,proxyUrl:o.proxyUrl,model:PRODUCT_PROXY_MODEL_ALIAS,deadlineMs:grantExpiresAtMs,maxTurns:r.runtime.maxTurns,maxCostMicroUSD:d.model.perRunMaxCostMicroUSD,maxOutputBytes:r.runtime.maxOutputBytes},
   proxyCredentialFile:PATHS.proxyCapability,plan:r.plan,preparationIntent,allocationJson:JSON.stringify(allocation),
   qualification:{attempt:r.qualification.attempt,policyRevision},grantIntents,grantId:taskGrantId,
   operations:[...Object.keys(runOwnerOperations),...sdkSessionOperations.map(op=>'runner/session/'+op)],
@@ -670,10 +671,10 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,ident
   roles[role]={config:configs[role],configBytes:configBytes[role],configSha256:sha(configBytes[role]),configPath:{control:PATHS.control,'temporal-worker':PATHS.worker,'temporal-issuer':PATHS.issuer,'model-owner':PATHS.owner,'model-proxy':PATHS.proxy}[role],
    expected,bundle,image:img,sourceCommit:commit};
  }
- const workerEnvironment={NODE_EXTRA_CA_CERTS:PATHS.issuerCa};
- validateRendered(roles,{workerEnvironment});
+ const workerEnvironment={NODE_EXTRA_CA_CERTS:PATHS.issuerCa},controlEnvironment={NODE_EXTRA_CA_CERTS:CONTROL_NODE_CA_FILE};
+ validateRendered(roles,{workerEnvironment,controlEnvironment});
  const summary=summarize({d,k,r,s,roles,pins,binding,nativeCandidate,taskGrantId,modelGrantId,grantExpiresAtMs,expiresAtMs,nowMs,validityDays,notAfterMs,runtimeMs,runWindowMs,
-  taskRouterZone,deploymentRevision,controlPrivate,workerEnvironment,runnerSha256,policyRevision,allocation});
+  taskRouterZone,deploymentRevision,controlPrivate,workerEnvironment,controlEnvironment,runnerSha256,policyRevision,allocation});
  // Non-secret record of what the features rendered (absent without features, so the reviewed summary is unchanged). The secret
  // files are named by path, source ARN, VersionId and sha256 only, so the operator can re-verify the fetched value.
  if(Object.keys(features).length)summary.features={sourceEnabled,controlKeys:Object.keys(featureKeys),approvedReads:features.reads?.approvedReads!==undefined,
@@ -698,12 +699,12 @@ export function withPosixPaths(fn){
 }
 /** Every repository validator and material plan, on the exact rendered bytes. Throws on the first refusal. */
 export function validateRendered(roles,options){return withPosixPaths(()=>validateRenderedLinux(roles,options));}
-function validateRenderedLinux(roles,{workerEnvironment}){
+function validateRenderedLinux(roles,{workerEnvironment,controlEnvironment}){
  const parse=role=>JSON.parse(roles[role].configBytes.toString('utf8'));
  for(const role of ['control','temporal-worker']){
   const c=parse(role);
   try{validateConfiguration(c,role);}catch(error){fail('RENDER_VALIDATION_REFUSED',`${role} validateConfiguration ${error.code??error.message}`);}
-  assertProductCliGates(role,c,workerEnvironment);
+  assertProductCliGates(role,c,role==='control'?controlEnvironment:workerEnvironment);
   if(role==='control'){
    try{compilePreparedCandidateConfiguration(c.nativeCandidate,c.versions);compileControlTaskRouterConfiguration(c);}catch(error){fail('RENDER_VALIDATION_REFUSED',`control prepared candidate ${error.message}`);}
   }
@@ -727,12 +728,12 @@ function validateRenderedLinux(roles,{workerEnvironment}){
 function summarize(x){
  const {d,s,roles,pins}=x,env=(name,value)=>({name,value});
  const init=role=>({containerName:'material-init',image:role==='model-proxy'?d.images.nodeRuntime:roles[role].image,user:role==='model-proxy'?'0:0':RUNTIME_USERS[role],
-  entryPoint:['node','apps/runtime/material-init-cli.mjs'],command:['write'],
+  entryPoint:['node','apps/runtime/material-init-cli.mjs'],command:role==='control'?['write','--control-node-ca']:['write'],
   environment:[env('MERI_STATIC_MATERIAL_EXPECTED',JSON.stringify(roles[role].expected))],
   secrets:[{name:'MERI_STATIC_MATERIAL_BUNDLE',valueFrom:`${d.secrets[{control:'control/material','temporal-worker':'worker/material','temporal-issuer':'issuer/material','model-owner':'owner/material','model-proxy':'proxy/material'}[role]]}:::<VersionId of the PutSecretValue with ${role}/bundle.json>`}]});
  const wiring={
   control:{family:s.taskDefinitions.control,containerName:'control',image:roles.control.image,user:'1000:1000',entryPoint:['node','apps/runtime/cli.mjs'],command:['control','--config',PATHS.control],
-   environment:[env('MERI_PRODUCT_PREVIEW_REQUIRED','1')],ports:[8080,8082],volumes:{'/run/meri':'material (read-only)','/run/meri-temporal':'temporal-token (writable, empty)','/tmp':'tmp (writable; holds multiRun.materialDirectory)','/workspace':'workspace'},init:init('control')},
+   environment:[env('MERI_PRODUCT_PREVIEW_REQUIRED','1'),env('NODE_EXTRA_CA_CERTS',x.controlEnvironment.NODE_EXTRA_CA_CERTS)],ports:[8080,8082],volumes:{'/run/meri':'material (read-only)','/run/meri-temporal':'temporal-token (writable, empty)','/tmp':'tmp (writable; init writes control CA bundle; holds multiRun.materialDirectory)','/workspace':'workspace'},init:init('control')},
   'temporal-worker':{family:s.taskDefinitions['temporal-worker'],containerName:'temporal-worker',image:roles['temporal-worker'].image,user:'1000:1000',entryPoint:['node','apps/runtime/cli.mjs'],command:['temporal-worker','--config',PATHS.worker],
    environment:[env('MERI_PRODUCT_PREVIEW_REQUIRED','1'),env('NODE_EXTRA_CA_CERTS',x.workerEnvironment.NODE_EXTRA_CA_CERTS)],ports:[8081],volumes:{'/run/meri':'material (read-only)','/run/meri-temporal':'temporal-token (writable, empty)'},init:init('temporal-worker')},
   'temporal-issuer':{family:s.taskDefinitions['temporal-issuer'],containerName:'temporal-issuer',image:roles['temporal-issuer'].image,user:'1000:1000',entryPoint:['node','apps/runtime/temporal-issuer-cli.mjs'],
@@ -758,6 +759,7 @@ function summarize(x){
    controlConfigSha256:roles.control.configSha256,workerConfigSha256:roles['temporal-worker'].configSha256},
   runnerPoststart:{MERI_POSTSTART_CONTROL_ORIGIN:x.controlPrivate,MERI_POSTSTART_CA_BASE64:wiring.runner.environment[3].value,MERI_POSTSTART_CA_SHA256:pins.pem['server-ca'],
    MERI_RUNNER_SHA256:x.runnerSha256,launchTemplateNodeExtraCaCerts:RUNNER_SDK_CA_FILE},
+  control:{NODE_EXTRA_CA_CERTS:x.controlEnvironment.NODE_EXTRA_CA_CERTS},
   worker:{NODE_EXTRA_CA_CERTS:x.workerEnvironment.NODE_EXTRA_CA_CERTS},
   taskRouter:{zone:x.taskRouterZone,runnerLeafSan:`<32-hex ECS task id>.${x.taskRouterZone}`,dns:'not required: control connects to the task private IPv4 with SNI = the SAN (runner-tls-client.mjs)'},
   deploymentRevision:x.deploymentRevision,
