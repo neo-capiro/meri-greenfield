@@ -23,7 +23,8 @@ export function createRetainedReadCredentialRelay({task,nativeCredentials,getSer
    nativeCredentials.toolCredential!==undefined&&typeof nativeCredentials.toolCredential!=='function')refuse('CONFIGURATION');
  const binding=data(task.binding),scopes=data(task.scopes),grant=data(task.grant),original=data(task.original);
  validateShape('RunBinding',binding);
- const selected=scopes.length===1&&scopes[0]?.kind==='client'?scopes[0]:null;
+ const selected=Array.isArray(scopes)&&scopes.length===1&&scopes[0]?.kind==='client'?scopes[0]:null;
+ if(selected)try{validateShape('Scope',selected);}catch{refuse('UNAVAILABLE');}
  if(!selected||selected.tenantId!==binding.tenantId||!same(original.binding,binding)||
    grant.qualificationBinding?.policyRevision!==selected.policyRevision||
    !Number.isSafeInteger(original.expiresAtMs)||original.expiresAtMs<=now())refuse('UNAVAILABLE');
@@ -45,8 +46,9 @@ export function createRetainedReadCredentialRelay({task,nativeCredentials,getSer
   active(p.deadlineMs,p.signal);
   const operation=data(own(p.operation,['id','version'])),id=`${operation.id}@${operation.version}`;
   if(!signedRetainedSourceOperation(operation)||!allocated.has(id)||!approved.has(id)||
-    !CALL_KEY.test(p.invocationId)||!same(p.binding,binding)||p.policyRevision!==policyRevision||
-    !SHA.test(p.argumentsSha256)||!SHA.test(p.requestSha256)||!SHA.test(p.correlationSha256)||
+    typeof p.invocationId!=='string'||!CALL_KEY.test(p.invocationId)||
+    !same(p.binding,binding)||p.policyRevision!==policyRevision||
+    [p.argumentsSha256,p.requestSha256,p.correlationSha256].some(value=>typeof value!=='string'||!SHA.test(value))||
     Object.hasOwn(p,'normalizationContext')!==withContext.has(operation.id))refuse('ACCESS_DENIED');
   const subject=data(p.subject);try{assertSubject(subject,binding);}catch{refuse('ACCESS_DENIED');}
   // The selected client is a current task fact. An unrelated or personal scope
@@ -55,7 +57,8 @@ export function createRetainedReadCredentialRelay({task,nativeCredentials,getSer
     subject.kind==='client'&&subject.entityIds[0]!==clientId)refuse('ACCESS_DENIED');
   const input=data(p.input),metadata=data(p.metadata),sources=data(p.sourceIds);
   const required=[...new Set(resolveOperationContract(operation).descriptor.sourceRequirements.map(source=>source.sourceId))];
-  if(!same([...sources].sort(),required.sort())||
+  if(!input||typeof input!=='object'||Array.isArray(input)||!Array.isArray(sources)||
+    !same([...sources].sort(),required.sort())||
     Object.hasOwn(input,'clientId')&&input.clientId!==clientId||
     canonicalSha256(input)!==p.argumentsSha256||
     canonicalSha256({input,metadata})!==p.requestSha256)refuse('ACCESS_DENIED');
@@ -72,7 +75,7 @@ export function createRetainedReadCredentialRelay({task,nativeCredentials,getSer
   if(typeof nativeCredentials.toolCredential!=='function')refuse('UNAVAILABLE');
   const signal=p.signal===undefined?runSignal:runSignal===undefined?p.signal:AbortSignal.any([p.signal,runSignal]);
   let serviceSecret;try{serviceSecret=await getServiceSecret();}catch{refuse('UNAVAILABLE');}
-  active(p.deadlineMs,signal);if(!TOKEN.test(serviceSecret))refuse('UNAVAILABLE');
+  active(p.deadlineMs,signal);if(typeof serviceSecret!=='string'||!TOKEN.test(serviceSecret))refuse('UNAVAILABLE');
   const handle=await nativeCredentials.getNativeCredential({binding,callKey:p.invocationId,deadlineMs:p.deadlineMs,signal});
   active(p.deadlineMs,signal);
   let issued;try{issued=own(handle,['credential','expiresAtMs']);}catch{refuse('UNAVAILABLE');}
@@ -83,7 +86,7 @@ export function createRetainedReadCredentialRelay({task,nativeCredentials,getSer
   if(token===null)refuse('UNAVAILABLE');
   let credential;try{credential=own(token,['bearerToken','authorizationScheme','expiresAtMs']);}catch{refuse('UNAVAILABLE');}
   const expiresAtMs=Math.min(issued.expiresAtMs,credential.expiresAtMs,p.deadlineMs,original.expiresAtMs);
-  if(credential.authorizationScheme!=='CapiroMeriRead'||!TOKEN.test(credential.bearerToken)||
+  if(credential.authorizationScheme!=='CapiroMeriRead'||typeof credential.bearerToken!=='string'||!TOKEN.test(credential.bearerToken)||
     credential.bearerToken===serviceSecret||!Number.isSafeInteger(credential.expiresAtMs)||expiresAtMs<=now())refuse('UNAVAILABLE');
   return Object.freeze({operation,argumentsSha256:p.argumentsSha256,metadata,
    ...(Object.hasOwn(p,'normalizationContext')?{normalizationContext:data(p.normalizationContext)}:{}),

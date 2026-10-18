@@ -79,6 +79,7 @@ test('wrong task, operation, input and signed target pins refuse before any toke
   {name:'operation version',value:{...base,operation:{...base.operation,version:'0.2.0'}}},
   {name:'unallocated operation',value:{...base,operation:{id:'read_client_documents',version:'0.2.0'}}},
   {name:'missing invocation',value:(({invocationId:ignored,...rest})=>rest)(base)},
+  {name:'numeric invocation',value:{...base,invocationId:12345}},
   {name:'binding',value:{...base,binding:{...base.binding,writerFence:2}}},
   {name:'selected client',value:{...base,input:{...base.input,clientId:'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'}}},
   {name:'subject client',value:{...base,subject:{...base.subject,entityIds:['aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa']}}},
@@ -101,6 +102,12 @@ test('Option A cannot become a signed Core source credential',async()=>{
  const x=relayFixture(clientEvidenceFixture()),nativeCredentials={...x.nativeCredentials,async toolCredential(request){x.calls.tool.push(request);return null;}};
  await assert.rejects(x.create({nativeCredentials})(x.pins),{message:'UNAVAILABLE'});
  assert.equal(x.calls.tool.length,1);
+});
+
+test('a coerced service secret is refused before the delegated handle is acquired',async()=>{
+ const x=relayFixture(clientEvidenceFixture());
+ await assert.rejects(x.create({getServiceSecret:async()=>['synthetic-service-secret']})(x.pins),{message:'UNAVAILABLE'});
+ assert.equal(x.calls.handle.length,0);assert.equal(x.calls.tool.length,0);
 });
 
 test('Stop and expiry refuse before token acquisition, including Stop during secret retrieval',async()=>{
