@@ -8,10 +8,11 @@ import {PLATFORM_BLOCKED_ORIGINS} from './public-web.mjs';
 export const BROWSER_SERVER_NAME='meri_browser';
 const fail=()=>{throw Object.assign(new Error('BROWSER_CONFIGURATION'),{code:'BROWSER_CONFIGURATION'});};
 const path=v=>typeof v==='string'&&isAbsolute(v)&&!v.includes('/../')&&!v.includes('\0')&&v.length<=4096;
-/** The host egress control's forward-proxy endpoint: `http://host:port` with an explicit port and nothing else. */
-const proxyEndpoint=v=>{let u;try{u=new URL(v);}catch{return false;}return u.protocol==='http:'&&!!u.port&&!u.username&&!u.password&&u.pathname==='/'&&!u.search&&!u.hash&&v===u.origin;};
+/** The host egress control listens on loopback in the same isolated unit as the browser. A remote proxy endpoint
+ * would escape the run's local grant/revocation owner, even if supplied as a trusted installation mistake. */
+const proxyEndpoint=v=>{let u;try{u=new URL(v);}catch{return false;}return u.protocol==='http:'&&['127.0.0.1','[::1]'].includes(u.hostname)&&!!u.port&&!u.username&&!u.password&&u.pathname==='/'&&!u.search&&!u.hash&&v===u.origin;};
 /** Trusted deployment fact from runtime preparation (never from policy): absolute installation paths, exact version
- * and the dedicated browser host's egress-control proxy endpoint (`egressProxy`). */
+ * and that host's loopback egress-control proxy endpoint (`egressProxy`). */
 export function validateBrowserInstallation(raw){
  let i;try{i=own(raw,['nodePath','cliPath','browsersPath','version','egressProxy']);}catch{fail();}
  if(![i.nodePath,i.cliPath,i.browsersPath].every(path)||i.version!==PLAYWRIGHT_MCP_VERSION||!proxyEndpoint(i.egressProxy))fail();

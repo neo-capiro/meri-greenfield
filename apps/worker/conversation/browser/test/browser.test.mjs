@@ -78,8 +78,9 @@ test('configuration refuses a workspace that is not this conversation, missing p
  const open=over=>buildOpenBrowserFragment({...base,cwd,policy:validateBrowserPolicy(enabledPolicy()),...over});
  assert.throws(()=>open({receipts:undefined}),/BROWSER_CONFIGURATION/);assert.throws(()=>open({artifacts:{}}),/BROWSER_CONFIGURATION/);
  assert.throws(()=>open({installation:{...installation,version:'0.0.84'}}),/BROWSER_CONFIGURATION/);assert.throws(()=>open({installation:{...installation,cliPath:'cli.js'}}),/BROWSER_CONFIGURATION/);
- for(const egressProxy of [undefined,'','http://127.0.0.1','https://127.0.0.1:3128','socks5://127.0.0.1:1080','http://u:p@127.0.0.1:3128','http://127.0.0.1:3128/path','http://127.0.0.1:3128/','http://127.0.0.1:3128?x=1'])
+ for(const egressProxy of [undefined,'','http://127.0.0.1','https://127.0.0.1:3128','socks5://127.0.0.1:1080','http://u:p@127.0.0.1:3128','http://127.0.0.1:3128/path','http://127.0.0.1:3128/','http://127.0.0.1:3128?x=1','http://proxy.example:3128','http://169.254.169.254:3128','http://localhost:3128'])
   assert.throws(()=>open({installation:{...installation,egressProxy}}),/BROWSER_CONFIGURATION/,String(egressProxy));
+ assert.equal(open({installation:{...installation,egressProxy:'http://[::1]:3128'}}).enabled,true,'a literal IPv6 loopback listener is valid');
  assert.throws(()=>open({sourceScopes:[{...sourceScopes[0],tenantId:'tenant-other'}]}),/BROWSER_CONFIGURATION/);assert.throws(()=>open({sourceScopes:[{tenantId:binding.tenantId,kind:'any',resourceId:'x',policyRevision:'p'}]}),/BROWSER_CONFIGURATION/);
  assert.throws(()=>open({sourceScopes:undefined}),/BROWSER_CONFIGURATION/);
  assert.equal(open({artifacts:undefined,sourceScopes:undefined,policy:validateBrowserPolicy(enabledPolicy({downloads:{enabled:false,formats:['pdf'],maxBytes:1,maxFiles:1}}))}).enabled,true);

@@ -39,7 +39,7 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
  if(browser!==undefined&&typeof browser.policy!=='function')throw fault('BROWSER_ACTIVITY_CONFIGURATION');
  if(objectiveGeneration!==undefined&&typeof objectiveGeneration.prepare!=='function')throw fault('OBJECTIVE_ACTIVITY_CONFIGURATION');
  return async function executeConversation({binding,signal}){
-  validateShape('RunBinding',binding);let preparation,life,stream,controls,input,skillRuntime,readRuntime,intentRuntime,browserRun,browserOutcome='ended',skillOutput,terminalResult,claimed=false,closed=false,resultSeen=false,bytes=0,heartbeatTimer;const controller=new AbortController();let failure;let closing;const closeQuery=()=>{if(!closing&&stream&&!closed){closed=true;closing=Promise.resolve().then(()=>stream.close?.());closing.catch(()=>{});}return closing;};
+  validateShape('RunBinding',binding);let preparation,life,stream,controls,input,skillRuntime,readRuntime,intentRuntime,browserRun,browserOutcome='ended',browserPreparationCleanupUnknown=false,skillOutput,terminalResult,claimed=false,closed=false,resultSeen=false,bytes=0,heartbeatTimer;const controller=new AbortController();let failure;let closing;const closeQuery=()=>{if(!closing&&stream&&!closed){closed=true;closing=Promise.resolve().then(()=>stream.close?.());closing.catch(()=>{});}return closing;};
   try{preparation=createOperationLifetime({deadlineMs:now()+3000,now,signal,errorFactory:fault});const saved=await preparation.run(signal=>runOwner.load({binding,signal}));validateShape('Run',saved.run);if(!same(saved.run.binding,binding)||saved.run.state!=='queued')throw fault('RUN_NOT_QUEUED');
    const policy=readCapabilityPolicy(saved); // Default-off SDK capabilities, validated before any claim; absent policy keeps first-chat behaviour.
    const runBudgets=readRunBudgets(saved); // The run's admitted allocation budgets bound the early read ledger; absent keeps its defaults.
@@ -60,7 +60,17 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
      ...(lineage?{expectedSessionId:continuationSessionId(lineage)}:{}),...(skill?{skill}:{}),exclude:skillRuntime?skillRuntime.selected.manifest.allowedOperations:[],...(runBudgets===undefined?{}:{runBudgets}),signal}));
     readRuntime=mounts.reads??undefined;intentRuntime=mounts.intents??undefined;}
    const capabilities=policy===undefined?undefined:createSdkCapabilities(policy,{runOwner,binding,cwd:runtime.cwd,...Object.fromEntries(CAPABILITY_RUNTIME_FACTS.flatMap(k=>runtime[k]===undefined?[]:[[k,runtime[k]]])),now,newId});
-   if(browser!==undefined)browserRun=await life.run(signal=>prepareBrowserRun({port:browser,binding,cwd:runtime.cwd,deadlineMs:runtime.deadlineMs,now,signal}));
+   if(browser!==undefined){
+    // The lifetime may reject before the preparation promise settles. Keep ownership of a late run handle so it can
+    // still be cleaned up; until then the outcome is unknown and the disposable host must be quarantined.
+    let settled=false,abandoned=false,prepared;
+    const prepare=async signal=>{try{prepared=await prepareBrowserRun({port:browser,binding,cwd:runtime.cwd,deadlineMs:runtime.deadlineMs,now,signal});
+     if(abandoned)await prepared.settle({outcome:'cancelled'});return prepared;}
+     catch(error){browserPreparationCleanupUnknown ||= error?.code==='BROWSER_CLEANUP_UNKNOWN';throw error;}
+     finally{settled=true;}};
+    try{browserRun=await life.run(prepare);}
+    catch(error){abandoned=true;if(prepared)browserRun=prepared;else if(!settled)browserPreparationCleanupUnknown=true;throw error;}
+   }
    const objectiveRuntime=objectiveGeneration===undefined?null:await life.run(signal=>objectiveGeneration.prepare({binding,request:saved.request,versions:saved.run.versions,scopes:saved.run.scopes,cwd:runtime.cwd,model:runtime.model,proxyUrl:runtime.proxyUrl,proxyCredentialSha256:createHash('sha256').update(runtime.proxyCredential).digest('hex'),deadlineMs:runtime.deadlineMs,signal}));
    if(objectiveRuntime){if(lineage||saved.request.skill||typeof lifecycle?.captureCompletion!=='function'||typeof objectiveRuntime.capture!=='function')throw fault('OBJECTIVE_COMPLETION_UNAVAILABLE');life.limitDeadline(objectiveRuntime.deadlineMs);}
    const options=buildConversationOptions(runtime,controller,lineage?{...lineage,request:saved.request,
@@ -91,7 +101,7 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
    capabilities?.check();if(controls?.isHeld())return await controls.heldResult();controls?.check();if(!resultSeen)throw fault('SDK_RESULT_MISSING');if(skillRuntime){skillOutput=await life.run(()=>skillRuntime.finish(terminalResult));if(typeof selectedSkills.publish!=='function')throw fault('OUTPUT_PUBLICATION_UNAVAILABLE');await life.run(signal=>selectedSkills.publish({binding,output:skillOutput,signal}));}
    const typedResult=objectiveRuntime?await life.run(signal=>objectiveRuntime.capture({sdkResult:terminalResult,signal})):undefined;
    if(controls?.canCaptureCompletion())await controls.captureCompletion(typedResult);else await publish('run.status',{state:'completed',reasonCode:null});return {state:'completed',...(skillOutput===undefined?{}:{output:skillOutput})};
-  }catch(error){failure=error;controller.abort();clearInterval(heartbeatTimer);await attemptCleanup(closeQuery,{now,timeoutMs:cleanupAttemptMs});const cancelled=signal?.aborted||life?.signal.aborted;browserOutcome=cancelled?'cancelled':'failed';life?.close();preparation?.close();
+  }catch(error){failure=error;browserPreparationCleanupUnknown ||= error?.code==='BROWSER_CLEANUP_UNKNOWN';controller.abort();clearInterval(heartbeatTimer);await attemptCleanup(closeQuery,{now,timeoutMs:cleanupAttemptMs});const cancelled=signal?.aborted||life?.signal.aborted;browserOutcome=cancelled?'cancelled':'failed';life?.close();preparation?.close();
    // A denied/unknown starting claimant cannot terminalize another admitted activity.
    // A held run refuses the ordinary terminal event and admits only the explicit uncheckpointed-hold failure, which
    // the store verifies against this run's unapplied pause/approval control (and refuses without one). The local
@@ -105,6 +115,6 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
    throw fault(cancelled?'EXECUTION_STOPPED':'EXECUTION_FAILED');
   }finally{clearInterval(heartbeatTimer);controller.abort(failure);let known=false;
    try{known=await cleanupConversation({skillRuntime,readRuntime,intentRuntime,controls,input,closeQuery,browserRun,browserOutcome,now,timeoutMs:cleanupAttemptMs});}
-   finally{life?.close();preparation?.close();}if(!known)throw fault('SDK_CLEANUP_UNKNOWN');}
+   finally{life?.close();preparation?.close();}if(!known||browserPreparationCleanupUnknown)throw fault('SDK_CLEANUP_UNKNOWN');}
  };
 }
