@@ -199,32 +199,39 @@ Separate findings on the integration tip (not lane 2, not changed here). Both we
 **Composer (in this lane): `apps/runtime/native-authority/reads-composer.mjs`.** It is async because it prepares and measures the family handlers. Control startup awaits it once, before `startControl`; it is separate from R0's synchronous `productPortsFactory`:
 
 ```js
-const reads=await createControlReadsComposer({configuration,now,secretFiles,defaultCongress:119,gateway});
-await startControl(configuration,{signal,createReadsRuntime:reads.createReadsRuntime});
+const relay=createReadCredentialRelay();                                   // apps/runtime/read-credential-relay.mjs (R0)
+const reads=await createControlReadsComposer({configuration,now,secretFiles,defaultCongress:119,gateway,nativeCredentials:relay.port});
+await startControl(configuration,{signal,createReadsRuntime:reads.createReadsRuntime,readCredentialRelay:relay});
 ```
 
-- It composes Core's native tool authority at `nativeCandidate.identity.origin`, the native read credential broker, and the 27 native read families. `reads.missing` lists every absent input by key name, never by value.
+- It composes Core's native tool authority at `nativeCandidate.identity.origin`, the read credential broker, and the 27 native read families. `reads.missing` lists every absent input by key name, never by value.
 - No pool is needed at startup; each run tuple carries its own pool.
 - The 15 non-native families stay uninstalled: mail, meeting-source, the retained-signed research-portfolio/Florida reads, and others. They need their own transports; Florida also needs Core W1 plus signing ports.
-- **Credential invariant (Core #83), pinned by `apps/runtime/native-authority/test/read-composer.test.mjs`, 35/35:**
-  - The marked control credential reaches only `application-authority/{identity,context,membership}`.
-  - Read secret files must differ from all four candidate credential files (identity, task, control, proxy) by path and by bytes, checked at startup. The native read bearer must also differ from the service secret.
-  - Each call re-reads its file and fails closed (`UNAVAILABLE`) if the file now holds a candidate credential.
-  - A composed native read sends `Bearer <native read credential>` plus `x-internal-service-secret` on `tools/*`, and no request carries a candidate credential.
-  - A mutation test (dropping the per-call check) fails 2 cases.
+
+**Bearer: RC1 option A (dot's source ack 6245772555, PR #121 6245757066).** The native read bearer is the user's own live action-session token for the same run.
+- Each read resolves it at call time through `relay.port.nativeCredentialFor({binding, selectedClientId})`. The selected client is the run's single client scope.
+- It is never read from a file, cached or persisted. The rule is the same for every refusal reason: an unbound or closed relay, no live session for the run's tenant/actor/conversation/run and client, an expired or revoked session, a caller binding drift, or any scope shape other than one client scope. Each of these refuses with `UNAVAILABLE` before any Core request.
+- Revocation is still checked on every read through Core `identity` and `membership`, which re-check the Clerk session by `sid`.
+- Unattended runs get no reads; option B (a Core run-bound read delegation) is the durable path.
+
+**Credential invariant (Core #83), pinned by `apps/runtime/native-authority/test/read-composer.test.mjs`, 33/33:**
+- The marked control credential reaches only `application-authority/{identity,context,membership}`.
+- Service secret files must differ from all four candidate credential files (identity, task, control, proxy) by path and by bytes, checked at startup and on every call.
+- A relayed bearer is refused when it is any candidate credential or the current service secret.
+- A composed native read (client-scoped tracked bills, real action-session owner and relay) sends `Bearer <live session token>` plus `x-internal-service-secret` on `tools/*`. Every outbound request is checked to carry no candidate credential.
+- Mutation checks: dropping the relayed-bearer check fails 2 cases; caching the bearer fails 3.
 
 **Render keys (R0 adds them to `render-material.mjs` and the material inventory; this lane does not edit either):**
 
 | Key | File | Content |
 |---|---|---|
-| `secretFiles.nativeReadCredential` | `/run/meri/native-read-credential` | Unmarked Core native bearer for the run actor. The owner refuses unless its Core principal equals the run's tenant and actor. Never the marked identity credential |
 | `secretFiles.serviceSecret` | `/run/meri/core-tool-service-secret` | Core `INTERNAL_SERVICE_SECRET` for `POST /api/clio/tools/:name` |
 | `secretFiles.readModeServiceSecret` | `/run/meri/core-read-mode-service-secret` | Service secret for `read-mode-observation`. May hold the same value as the tool secret; required only by the five mode reads |
 | `defaultCongress` | config value | `119`. Needed for the bill-text and federal-legislation families |
 
-The files are read with `config.mjs` `readSecret`, so each must be owner-only (0600), owned by the runtime user, no symlink, and at most 32 KiB.
+There is no bearer file; `secretFiles.nativeReadCredential` is refused (`CONFIGURATION`). The files are read with `config.mjs` `readSecret`, so each must be owner-only (0600), owned by the runtime user, no symlink, and at most 32 KiB.
 
-**Still needed (outside this lane), with the composer reporting each one in `missing` until supplied:**
+**Still needed (outside this lane), with the composer reporting each one in `missing` until supplied (plus `nativeCredentials.nativeCredentialFor` and `secretFiles.serviceSecret`):**
 1. `gateway.authority`: the `tool.read` current authority (`createReadAuthority`) over Core-backed `verifyCapability`, `currentRun`, `authorizeBusiness` and `authorizeSources` ports. No production producer exists.
 2. `gateway.readCurrentInstallation` (P2 installation receipt issuer) and `gateway.discoveryOwner.readDiscoveryGrant` (P1). Writing either would invent authority; they need dot's and the qualification owner's contract first.
 3. `gateway.limits`: gateway request/response/cleanup bounds (R0 render).
