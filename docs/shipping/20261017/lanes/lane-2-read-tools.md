@@ -16,8 +16,8 @@ Status vocabulary is BACKLOG.md's: `source` → `integrated` → `qualified` →
 
 | Accounting | Complete | Partial | Absent | Basis |
 |---|---|---|---|---|
-| Accepted ledger (PR125 `scope-ledger.json`) | 69 | 3 | 10 | Published; not regenerated here (the full tooling repair is held behind the denied ledger payload) |
-| This lane's source, honest | 74 | 3 | 5 | +5 mode operations whose Meri source and focused tests now pass; their Core producer (PR68) has never run Jest/TypeScript |
+| Accepted ledger (PR125 `scope-ledger.json`) | 69 | 3 | 10 | Superseded on 18 Oct by the fresh exposure regeneration below |
+| Regenerated ledger (`--refresh-exposure`, D015 #5, 18 Oct) | 74 | 3 | 5 | This lane's honest source counts; the +5 mode operations' Core producer (PR68) has never run Jest/TypeScript |
 | Qualified / deployed / live | 0 / 0 / 0 | | | No real Core, Linux image, PG, SDK install or live user |
 
 "Complete source" means the Meri adapter, trusted dispatch context and focused tests exist and pass. It does **not** mean the Core endpoint is merged or running: every family calls Core's retained-authority read stack (`feat/core-retained-authority` PR35 → PR52 → PR59 → PR68), and none of it is on Core's default branch `backend-import`. `read-mode-observation` and the `x-meri-read-observation` decoder are absent there. Core in capiro-dev is `0/0/0`.
@@ -134,4 +134,71 @@ Known host-only failures, unrelated to this lane:
 | Qualification in the real image against deployed Core | lane 1 | Evidence → `qualified` |
 | Live authenticated read | dot E2E | Evidence → `live-verified` |
 | Admit the six read-complete skills | lane 6 / Fable | Reviewed per-skill compiler and admission |
-| Ledger regeneration to the honest counts | Fable, after Neo's exact approval of the held ledger payload | Never retry or route around the denied blob `28865e43…` |
+| Ledger regeneration to the honest counts | Fable | **Done 18 Oct** as a fresh regeneration (D015 #5); see "Runtime integration" below. The denied blob `28865e43…` was not used or retried |
+
+## Runtime integration (18 Oct, session `rt-reads`)
+
+Branch `fable/rt-reads-20261018` from the integration tip `ac2d2a7a`, draft PR into `fable/meri-integration-20261018`. Source and tests only; nothing built, deployed or run against AWS.
+
+### The 17 reported failures
+
+- **Cause: the Windows POSIX-path test shim, not the availability gate.** Under the shim, `registerMeasuredHandlers` (`apps/gateway/catalog/measured-handlers.mjs`) resolves the repository root (`fileURLToPath`, a `C:\…` path) with POSIX `resolve`, giving `C:\dev\…\C:\dev\…\apps\…`. Reading it fails with ENOENT, so the installation owner refuses (`GENERAL_READ_INSTALLATION_REFUSED`), `mount.mjs` `readAvailability` returns `UNAVAILABLE`, and `reads-owner.mjs` reports `UNAVAILABLE`. All 16 `read-family-subsets` cases failed this way. The Linux runtime is not affected, and no gate was loosened. The same artifact causes about 1,000 shim-only failures across lane 2 suites; all of them pass without the shim. **Run lane 2 tests on Windows without the shim.**
+- **Without the shim, 4 cases failed, all stale assertions.** PR132 (`bba4ef68`) opened the whole `public-data` and `program-elements` families, so the five Core PR68 mode candidates (`search_federal_grants`, `search_federal_awards`, `search_program_elements`, `get_program_element`, `get_pe_budget_timeline`) are now eligible. PR132 updated the gateway and worker tests but not this runtime test. The test now treats the five as complete, and still checks that the five truly absent reads never reach availability or execution, including the finite business-development subset. Result: 16/16.
+
+### Other stale lane 2 tests on the integrated tree (pass at base or new with lane 2)
+
+| File | Cause | Fix |
+|---|---|---|
+| `scripts/scope-ledger/source-exposure.test.mjs` (whole file failed to load) | `scripts/general-reads/adapters.json` still declared `public-data` as economic-only: "Registered read lacks a canonical adapter: search_federal_grants" | Curated entries for the real `public-data` grants/awards and `program-elements` adapters, with their PR68 dependency stated; assertions moved to the PR132 state (76/42 registered, 74/3/5). Synthetic "no adapter" and "partial" cases now use reads that are still absent |
+| `apps/runtime/test/funding-source-integration.test.mjs` | SDK 71/41 asserted (PR125); PR132 makes it 76/42 | 76/42, matching every worker reads test |
+| `packages/contracts/test/retrieval-action-item-binding`, `-action-item-independent`, `-memory-binding` | Historical descriptor hashes changed only by `f33ea1a8` (`search_capiro_data` input `DataSearchInput` → `DataSearchRequest`) | Assert that exact reviewed descriptor change, then undo only it. The historical pins (including the 12 Oct baseline evidence) are unchanged and still match |
+| `packages/contracts/test/vertical-execution-integration-independent`, `vertical-final-integration-independent` | Same `f33ea1a8` change, compared with the 12 Oct identity files (descriptor, and in the final check the binding `input`) | Same treatment, next to the tests' existing Portfolio-footnote and dispatch-profile undos: 26/26 and 40/40, as at base |
+| `apps/runtime/native-authority/retained-reads/test/control.test.mjs` | Passed an empty call context; PR132's transport reads `c.operation.id` to keep mode reads off the delegated path | Minimal real call context (`get_florida_budget_project`); same assertions |
+
+Every row above also fails identically at the lane 2 tip `e8def62b`. They are lane 2's own stale tests (PR132 was received while on HOLD_TESTS), not merge drift.
+
+### Catalog, skills, SDK registration and ledger agreement
+
+| Surface | Value |
+|---|---|
+| `packages/contracts/retrieval-0.2/catalog.json` canonical sha256 | `f351ebad656225b15e6b4433bdad5d3e9e2ef270c64940d29811ef2f130b71ae` (base `af430a94`: `27db172a…`; the only descriptor change is `search_capiro_data`, `f33ea1a8`) |
+| `packages/skills/assets.json` and selected skill pins | `f351ebad…` (agree) |
+| Worker `familyReads()` / `READ_FAMILY_IDS` | 76 / 42 (base: 31 / 19) |
+| Installation-eligible reads (`installationReadOperations`) / adapter constructors | 76 / 44 |
+| Scope ledger `sourceExposure` | 76 operations / 42 families; 74 complete + 3 partial + 5 absent = 82 |
+
+**Coordinator re-pin (P1, files outside this lane):** done at `291ff5d7`. `infra/product-preview/first-chat/allocation.json:61` and `runtime-values.json:108` now pin `f351ebad…`. With this branch merged over that tip, `runtime-values.test.mjs` passes 5/5. `sdkOptionsSha256` stays `af7f07b8…`, which is consistent: lane 2 does not change the SDK options while `generalReads` is off (G2), because `meri_reads` is not registered.
+
+### Scope ledger regeneration (D015 #5)
+
+Fresh regeneration with the repository's own tool, `node scripts/scope-ledger/cli.mjs --refresh-exposure`, then `--check-exposure` exit 0. Only `sourceExposure` changed (provenance, counts, registration, missing families, rows). Every historical field (`capabilities`, `ownerDirection`, `coverageOrigin`, `provenance`, `counts`, `gates`, `excludedReferences`, `ownershipGraph`), `TOOL-COVERAGE-96.csv` and the general-reads proposal inventory are byte-identical. The new `scope-ledger.json` is git blob `76fdc689780b74c86f8494421ac19c4f43205aad`, sha256 `48b2c65d5a1375c7740ef58ed206858108710b4394442f54b7e896d61e3526a6`. It is not the denied blob `28865e43…` (sha256 `0a97c45b…`), which was never read, used or retried.
+
+The full regeneration (`--check`/`--write`) remains blocked, as it was at base: the exclusion scan finds unclassified references (`apps/proxy/product/main.py` at base, and also lane 2's `apps/gateway/sources/client-registry/test/fixture.mjs`). Classifying them rewrites historical `capabilities[].references`, so that is a separate decision. `scripts/scope-ledger/ledger.test.mjs` fails for the same reason at base and here.
+
+### Remaining failures (with evidence)
+
+Run: 269 lane 2 test files (gateway, native-authority read paths, native-read-credentials, general-read-installation, retained-reads, worker reads, skills, scope ledger, general-reads inventory, retrieval contracts, the runtime funding/KB source integrations). Node 24.19, serial, one file per process, **without** the POSIX shim, `MERI_REVIEW_SOURCE_ROOT` set. Result: **7,273 passed / 16 failed**. The two vertical contract identity tests, run separately, pass 26/26 and 40/40. Every remaining failure also fails at base `af430a94`, or is host-only:
+
+| File | Failed | Cause | Owner |
+|---|---|---|---|
+| `apps/gateway/sources/public-domain-query/test/handler.test.mjs` | 1 | Host time zone; 17/17 with `TZ=UTC` | none (host) |
+| `apps/gateway/test/mail-history-gateway-flow.test.mjs` | 1 | Same at base (`ARTIFACT_BUDGET_SETTLEMENT_UNKNOWN`) | pre-existing |
+| `apps/worker/conversation/reads/test/options.test.mjs` | 4 | Same at base: `options.mjs` `RUNTIME_CONFIGURATION` | worker options owner |
+| `packages/skills/test/assets.test.mjs`, `plugin.test.mjs` | 1 + 1 | Windows: symlink EPERM; file mode 0o666 vs 0o600. Same at base | none (host) |
+| `packages/contracts/test/retrieval-{mail,meeting-source,memory-proposals,operational-reads,public-domain-query}.test.mjs` | 5 | Pin contracts package version `0.1.5`; it is `0.1.10` (lane 1). Same at base | contracts version owner |
+| `scripts/scope-ledger/ledger.test.mjs` | 1 | Full exclusion scan (above). Same at base | decision |
+| `scripts/scope-ledger/source-exposure.test.mjs` | 1 of 36 | "targeted refresh preserves…" needs historical trees `a945196e`, `615a5467`, `e1845c3b`, `08f65a79`, which no GitHub ref contains (`not our ref`). The same assertions pass against the three published trees | environment |
+| `scripts/general-reads/inventory.test.mjs` | 1 | Same at base: `sources.mjs` dispatch-profile regex is obsolete. The repair is in the held codex recovery patch, not received | held (dot) |
+
+Separate findings on the integration tip (not lane 2, not changed here). From a comparison of the other 31 `packages/contracts/test` files against base:
+- `packages/contracts` `generate-conversations.mjs`, `generate-input.mjs` and `generate-initial-input.mjs` `--check` exit 1. `00076b0a` (H1) changed `apps/control/conversations/service.mjs` without regenerating the `dist/*metadata.json` source hashes. `conversation-input-public` and `conversation-initial-input-public` each fail 1 case for the same reason. The other generator checks pass.
+- `schedule-tool-independent.test.mjs`: 2 cases expect the schedule action's `retry.maximumAttempts` to be 2, but it is 1. This passes at base, so it is lane 5's schedule composition.
+
+### Production mount: exact changes still needed (not made; outside this lane)
+
+Reads are still not mounted in the production composition (integration ledger G1–G4). The seam already exists: `startControl(configuration,{signal,createReadsRuntime})` (`apps/runtime/control.mjs:105`) threads into prepared-candidate → remote-composition → `prepared-reads.mjs` → `reads-owner.mjs`. The changes still needed:
+
+1. `apps/runtime/cli.mjs` (control role): build `prepareGeneralReadInstallation({familyIds,newId,taskPorts})` (`native-authority/general-read-installation/runtime.mjs`) and pass its `createReadsRuntime` to `startControl`. `taskPorts(tuple)` must return `{families:{<id>:{origin}},nativeCredentials:{coreAuthority,getNativeCredential,getServiceSecret[,getReadModeServiceSecret,defaultCongress]},gateway:{authority,limits,producerContext,producer,credential,readCurrentInstallation,discoveryOwner}}`.
+2. `readCurrentInstallation` (P2 installation receipt issuer) and `discoveryOwner.readDiscoveryGrant` (P1) have no producer. Writing either would invent authority; they need dot's and the qualification owner's contract first.
+3. Render: `approvedReads` (enabled plus operations), `sourceEnabled:true` (G1, `config.mjs:67`), a run capability policy with `generalReads:true` and `readFamilies` (G2), an SDK-options template that admits `meri_reads` (G3), and the P1 catalog re-pin above.
+4. Core: the retained-authority read stack (PR35 → PR52 → PR59 → PR68), unmerged and undeployed.

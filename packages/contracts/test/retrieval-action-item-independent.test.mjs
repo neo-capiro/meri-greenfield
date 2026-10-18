@@ -11,6 +11,13 @@ import { assertCatalog, assertActionItemClientScopedPage, assertActionItemReadIn
 import { contract, clientId, actorId, id, page, row, operation, sha } from '../../../docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs';
 const baseline=JSON.parse(fs.readFileSync(new URL('../../../docs/qualification/candidates/capability-successor-20261012/action-review/baseline-catalog.json',import.meta.url)));
 
+// f33ea1a8 (read chain) split search_capiro_data's raw DataSearchRequest from its normalized input. Assert that exact reviewed
+// descriptor change, then undo only it so the historical hash below still proves every other descriptor is unchanged.
+const DATA_SEARCH_REQUEST={id:'urn:meri:retrieval:data-search:0.2.0#/$defs/DataSearchRequest',sha256:'b390270625b4662df487f04b13df745f422d10a2a8aa90e79e90a7ce75219d60'};
+const DATA_SEARCH_PRIOR_SHA='96e5d1ebc461dc53db86e2fd14e2863d93d5c651e134382a2da5daefd3836fec';
+const priorDataSearch=operations=>operations.map(op=>{if(op.operation.id!=='search_capiro_data')return op;
+ assert.deepEqual(op.inputSchema,DATA_SEARCH_REQUEST);assert.equal(op.outputSchema.sha256,DATA_SEARCH_REQUEST.sha256);
+ return {...op,inputSchema:{id:'urn:meri:retrieval:data-search:0.2.0#/$defs/DataSearchInput',sha256:DATA_SEARCH_PRIOR_SHA},outputSchema:{...op.outputSchema,sha256:DATA_SEARCH_PRIOR_SHA}};});
 test('independent literal recommendation and outcome source proofs satisfy unchanged family',()=>{
   for(const actions of [[row()],[row({outcome:'Synthetic outreach reported'})]])
     assertActionItemClientScopedPage(page({clientId},{actions}),{clientId},{actorId});
@@ -29,7 +36,7 @@ test('partial binding preserves every original row and fourteen descriptors',()=
   const fullAction=priorRows.find(row=>row.id==='query_action_items');
   assert.deepEqual(fullAction.replacement,fullActionReference);fullAction.state='pending';fullAction.replacement=null;
   assert.equal(sha(priorRows),baseline.originalsSha256);
-  assert.equal(sha(catalog.operations.filter(x=>baseline.originalIds.includes(x.operation.id))),baseline.originalOperationsSha256);
+  assert.equal(sha(priorDataSearch(catalog.operations.filter(x=>baseline.originalIds.includes(x.operation.id)))),baseline.originalOperationsSha256);
   assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,96);
   assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.replacement===null).length,0);
   const c=contract();assert.equal(c.binding.nativeCoverage,'partial');assert.deepEqual(c.descriptor.aliases,[]);

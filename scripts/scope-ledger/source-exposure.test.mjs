@@ -21,6 +21,8 @@ const row=id=>snapshot.rows.find(row=>row.id===id),registered=snapshot.generalRe
 function synthetic(){return {catalog:structuredClone(catalog),bindings:CATALOG_OPERATION_BINDINGS,families:READ_FAMILIES,
  adapters:[{operations:[...registered],paths:['synthetic adapter path']}],skills:[],admittedSkills:[],provenance:{}};}
 const refuses=work=>assert.throws(work,error=>error.code==='SOURCE_EXPOSURE_INVALID');
+// PR132 candidate source (Core PR68 read-mode observation): registered after the PR119/PR125 accounting checkpoints.
+const PR132_MODE_READS=['search_federal_grants','search_federal_awards','search_program_elements','get_program_element','get_pe_budget_timeline'];
 function projectPR119(ids){
  const tree='b1f79a9832393053c2db64cc9437bad8d59fc8e4';
  const base=JSON.parse(execFileSync('git',['show',`${tree}:docs/coordination/ledgers/scope-ledger.json`],{cwd:root,encoding:'utf8',maxBuffer:2*1024*1024})).sourceExposure;
@@ -47,37 +49,41 @@ function assertOnlyReadPromotions(base,projected,ids){
  }
 }
 
-test('96 selected and43 excluded are reconciled separately from71 registered operations',()=>{
+test('96 selected and43 excluded are reconciled separately from76 registered operations',()=>{
  assert.equal(snapshot.rows.length,96);assert.equal(snapshot.counts.selectedSourceReads,82);assert.equal(snapshot.counts.selectedProductOrGoverned,14);
- assert.equal(snapshot.counts.registeredGeneralOperations,71);assert.equal(snapshot.counts.registeredFamilies,41);
- assert.equal(snapshot.counts.generalSelectedSourceReads,69);assert.equal(snapshot.counts.generalSelectedProductStateReads,1);assert.equal(snapshot.counts.generalHistoricalOperations,1);
+ assert.equal(snapshot.counts.registeredGeneralOperations,76);assert.equal(snapshot.counts.registeredFamilies,42);
+ assert.equal(snapshot.counts.generalSelectedSourceReads,74);assert.equal(snapshot.counts.generalSelectedProductStateReads,1);assert.equal(snapshot.counts.generalHistoricalOperations,1);
  assert.equal(snapshot.counts.excludedCapabilities,43);assert.equal(snapshot.counts.live,0);
 });
-test('missing complete coverage counts three incomplete adapters and ten absent adapters exactly once',()=>{
+test('missing complete coverage counts three incomplete adapters and five absent adapters exactly once',()=>{
  assert.deepEqual(snapshot.existingAdaptersWithoutGeneralExposure,[]);assert.equal(snapshot.counts.existingSourceAdaptersWithoutGeneralExposure,0);
- assert.equal(snapshot.counts.completeSourceAdapters,69);assert.equal(snapshot.counts.partialSourceAdapters,3);assert.equal(snapshot.counts.absentSourceAdapters,10);
- assert.equal(snapshot.counts.missingSourceAdapters,13);assert.equal(snapshot.counts.missingAdaptersDeclaredBySkills,9);assert.equal(snapshot.counts.missingAdaptersWithoutSkillDeclaration,4);
+ assert.equal(snapshot.counts.completeSourceAdapters,74);assert.equal(snapshot.counts.partialSourceAdapters,3);assert.equal(snapshot.counts.absentSourceAdapters,5);
+ assert.equal(snapshot.counts.missingSourceAdapters,8);assert.equal(snapshot.counts.missingAdaptersDeclaredBySkills,4);assert.equal(snapshot.counts.missingAdaptersWithoutSkillDeclaration,4);
  assert.equal(snapshot.counts.completeSourceAdapters+snapshot.counts.partialSourceAdapters+snapshot.counts.absentSourceAdapters,82);
  const gaps=snapshot.rows.filter(row=>row.kind==='source-read'&&row.state!=='adapter-present');
  for(const gap of gaps){if(gap.state==='adapter-missing')assert.deepEqual(gap.adapterPaths,[]);else assert.ok(gap.adapterPaths.length);assert.deepEqual(gap.generalOperations,[]);assert.deepEqual(gap.sourceAdmittedSkills,[]);assert.ok(Array.isArray(gap.requiredContextKeys));}
  assert.deepEqual(snapshot.missingAdapterFamilies.flatMap(row=>row.operations).sort(),gaps.map(row=>row.operation).sort());
 });
 
-test('economic subset and complete semantic/graph SDK family require actual canonical adapters',()=>{
+test('economic, PR132 mode-candidate and complete semantic/graph SDK families require actual canonical adapters',()=>{
  for(const id of ['query_economic_data','query_knowledge_graph','search_client_knowledge']){
   assert.equal(row(id).state,'adapter-present');assert.deepEqual(row(id).generalOperations,[id]);assert.ok(row(id).adapterPaths.some(path=>path.includes('/general-reads/families/')));
  }
- for(const id of ['search_federal_grants','search_federal_awards']){
-  assert.equal(row(id).state,'adapter-missing');assert.deepEqual(row(id).adapterPaths,[]);assert.deepEqual(row(id).generalOperations,[]);assert.equal(registered.includes(id),false);
+ // PR132 candidate source: registered only through the canonical mode-observation adapters, each requiring the trusted evidence mode.
+ for(const [family,ids] of [['public-data',['search_federal_grants','search_federal_awards']],['program-elements',['search_program_elements','get_program_element','get_pe_budget_timeline']]])for(const id of ids){
+  const entry=row(id);assert.equal(entry.state,'adapter-present');assert.deepEqual(entry.generalOperations,[id]);assert.equal(registered.includes(id),true);assert.deepEqual(entry.requiredContextKeys,['evidenceAccuracyMode']);
+  for(const path of [`apps/gateway/sources/${family}/handler.mjs`,`apps/gateway/sources/${family}/request-context.mjs`,`apps/gateway/general-reads/families/${family}.mjs`,'apps/runtime/native-authority/native-read-credentials/read-mode-observation.mjs','packages/contracts/native-read-observation-0.2/validate.mjs'])assert.ok(entry.adapterPaths.includes(path),`${id}: ${path}`);
+  const input=synthetic();input.adapters[0].partialOperations=[id];refuses(()=>reconcileSourceExposure(input));
  }
- assert.deepEqual(snapshot.generalRegistration.find(row=>row.family==='public-data').operations,['query_economic_data']);
+ assert.deepEqual(snapshot.generalRegistration.find(row=>row.family==='public-data').operations,['query_economic_data','search_federal_awards','search_federal_grants']);
+ assert.deepEqual(snapshot.generalRegistration.find(row=>row.family==='program-elements').operations,['get_pe_budget_timeline','get_program_element','search_program_elements']);
  assert.deepEqual(snapshot.generalRegistration.find(row=>row.family==='client-knowledge-search').operations,['query_knowledge_graph','search_client_knowledge']);
 });
 
-test('bounded curated source declarations name eighteen operations and three partial input/resource reads',()=>{
- const families=['public-data','client-knowledge-search','state-status-votes','tracked-bills','public-domain-hearings','research-legal-legislation','research-legal-news','outreach-query','business-development','funding-opportunities'];
+test('bounded curated source declarations name twenty-three operations and three partial input/resource reads',()=>{
+ const families=['public-data','program-elements','client-knowledge-search','state-status-votes','tracked-bills','public-domain-hearings','research-legal-legislation','research-legal-news','outreach-query','business-development','funding-opportunities'];
  const declared=JSON.parse(readFileSync(new URL('../general-reads/adapters.json',import.meta.url),'utf8')).adapters.filter(adapter=>families.includes(adapter.family));
- assert.equal(declared.length,10);assert.equal(declared.flatMap(adapter=>adapter.operations).length,18);assert.equal(declared.flatMap(adapter=>adapter.partialOperations??[]).length,3);
+ assert.equal(declared.length,11);assert.equal(declared.flatMap(adapter=>adapter.operations).length,23);assert.equal(declared.flatMap(adapter=>adapter.partialOperations??[]).length,3);
  for(const adapter of declared){
   const text=adapter.declaredIn.map(path=>readFileSync(new URL(`../../${path}`,import.meta.url),'utf8')).join('\n');
   for(const id of adapter.operations)assert.ok(text.includes(`'${id}'`)||text.includes(`${id}:'/api/clio/tools/${id}'`),`${adapter.path}: ${id}`);
@@ -141,7 +147,7 @@ test('funding completion projection preserves other incomplete reads and does no
   projected.counts.selectedSourceReads,projected.counts.completeSourceAdapters,projected.counts.partialSourceAdapters,projected.counts.absentSourceAdapters,
   projected.counts.missingSourceAdapters,projected.missingAdapterFamilies.length,projected.counts.registeredGeneralOperations,projected.counts.registeredFamilies,
   projected.counts.missingAdaptersDeclaredBySkills,projected.counts.missingAdaptersWithoutSkillDeclaration,projected.counts.excludedCapabilities,projected.counts.live,
- ],[82,69,3,10,13,10,71,41,9,4,43,0]);
+ ],[82,74,3,5,8,8,76,42,4,4,43,0]);
  assert.deepEqual(projected.partialAdapterFamilies.map(entry=>[entry.family,entry.operations.length]),[
   ['outreach-query',1],['research-legal-legislation',1],['research-legal-news',1],
  ]);
@@ -206,7 +212,12 @@ test('PR119 projection promotes exactly the four state/tracked/hearing reads and
 
 test('PR119 five-read projection adds only complete legal search beyond the retained four-read checkpoint',()=>{
  const ids=['get_state_bill_status','search_state_floor_votes','search_tracked_bills','search_committee_hearings','search_legislative_research'];
- const {base,projected}=projectPR119(ids);assertOnlyReadPromotions(base,projected,ids);assert.deepEqual(projected.rows,snapshot.rows);
+ const {base,projected}=projectPR119(ids);assertOnlyReadPromotions(base,projected,ids);
+ // The shared public-data adapter now also declares its mode-request files, so only the economic row's adapter paths grow.
+ const settled=entry=>entry.operation==='query_economic_data'?{...entry,adapterPaths:null}:entry;
+ assert.deepEqual(projected.rows.filter(entry=>!PR132_MODE_READS.includes(entry.operation)).map(settled),snapshot.rows.filter(entry=>!PR132_MODE_READS.includes(entry.operation)).map(settled));
+ const economic=projected.rows.find(entry=>entry.operation==='query_economic_data');assert.ok(economic.adapterPaths.every(path=>row('query_economic_data').adapterPaths.includes(path)));
+ for(const id of PR132_MODE_READS){const before=projected.rows.find(entry=>entry.operation===id),after=row(id);assert.equal(before.state,'adapter-missing',id);assert.deepEqual(before.generalOperations,[]);assert.equal(after.state,'adapter-present',id);assert.deepEqual(after.generalOperations,[id]);}
  assert.deepEqual([projected.counts.completeSourceAdapters,projected.counts.partialSourceAdapters,projected.counts.absentSourceAdapters,
   projected.counts.missingSourceAdapters,projected.missingAdapterFamilies.length,projected.counts.missingAdaptersDeclaredBySkills,projected.counts.missingAdaptersWithoutSkillDeclaration,
   projected.counts.registeredGeneralOperations,projected.counts.registeredFamilies,projected.counts.live],[69,3,10,13,10,9,4,71,41,0]);
@@ -225,9 +236,10 @@ test('legal search alone is SDK/runtime eligible while the private canonical ref
  assert.equal(row(search).state,'adapter-present');assert.deepEqual(row(search).generalOperations,[search]);assert.equal(row(reference).state,'adapter-partial');assert.deepEqual(row(reference).generalOperations,[]);
  for(const id of [search,reference])assert.ok(row(id).adapterPaths.includes('apps/gateway/sources/research-legal-legislation/request-context.mjs'));
  const owner=readFileSync(new URL('../../apps/runtime/native-authority/native-read-credentials/source-read-context.mjs',import.meta.url),'utf8');
- assert.match(owner,/contract\.descriptor\.operation\.id==='search_legislative_research'\)reference=captureResearchClientReference\(request\)/);
- assert.match(owner,/if\(contract\.descriptor\.operation\.id==='search_legislative_research'\)assertLegalSearchRequest/);
- const eligible=installationReadOperations();assert.equal(eligible.length,71);assert.deepEqual(eligible.filter(entry=>entry.family===family).map(entry=>entry.operation.id),[search]);
+ // c0d6e507/1fc1b0cf: legal search, the source-only reference sibling and legal news all capture native client names through one owner; SDK exposure stays search-only.
+ assert.match(owner,/contract\.binding\.group==='research-legal-legislation'\|\|contract\.binding\.group==='research-legal-news'\)reference=captureResearchClientReference\(request\)/);
+ assert.match(owner,/assertLegalRawRequest\(contract\.descriptor\.operation,request\)/);
+ const eligible=installationReadOperations();assert.equal(eligible.length,76);assert.deepEqual(eligible.filter(entry=>entry.family===family).map(entry=>entry.operation.id),[search]);
  let effects=0;const inactive=()=>{effects++;throw Error('PASSIVE_COMPOSITION_EXECUTED');};
  const prepared=await prepareGeneralReadFamilyHandlers({familyIds:[family]}),handlers=prepared.create({families:{[family]:{origin:'https://synthetic.example.invalid',getCredentials:inactive,fetchImpl:inactive}},now:()=>0,newId:inactive});
  assert.deepEqual([...handlers.keys()].sort(),[`${reference}@0.2.0`,`${search}@0.2.0`].sort());
@@ -273,9 +285,9 @@ test('complete state/tracked/hearing registration preserves exact client policie
  const state=adapters.find(entry=>entry.family==='state-status-votes').adapterChecks.join(' ');assert.match(state,/all frozen canonical, designation, missing and invalid/);assert.match(state,/separate qualification/);
 });
 
-test('43 canonical constructors include explicit mail composition and measured native helper source without credential effects',async()=>{
- assert.equal(GENERAL_READ_ADAPTER_FAMILIES.length,43);assert.equal(new Set(GENERAL_READ_ADAPTER_FAMILIES).size,43);
- for(const family of ['mail','state-status-votes','tracked-bills','public-domain-hearings'])assert.ok(GENERAL_READ_ADAPTER_FAMILIES.includes(family));
+test('44 canonical constructors include explicit mail composition and measured native helper source without credential effects',async()=>{
+ assert.equal(GENERAL_READ_ADAPTER_FAMILIES.length,44);assert.equal(new Set(GENERAL_READ_ADAPTER_FAMILIES).size,44);
+ for(const family of ['mail','state-status-votes','tracked-bills','public-domain-hearings','program-elements'])assert.ok(GENERAL_READ_ADAPTER_FAMILIES.includes(family));
  let effects=0;const inactive=()=>{effects++;throw Error('PASSIVE_COMPOSITION_EXECUTED');},native={origin:'https://synthetic.example.invalid',getCredentials:inactive,fetchImpl:inactive};
  const mailIds=['mail.list_messages','mail.search_messages','mail.read_thread'],mail={endpoints:Object.fromEntries(mailIds.map((id,index)=>[id,`https://synthetic.example.invalid/mail/${index}`])),getCredentials:inactive,fetchImpl:inactive};
  const prepared=await prepareGeneralReadFamilyHandlers({familyIds:['mail','state-status-votes','tracked-bills','public-domain-hearings']});
@@ -357,7 +369,7 @@ test('directory source is exposed while retained research/Florida scope and zero
  for(const id of ['get_committee_roster','list_members','get_research_portfolio','get_research_portfolio_changes','get_florida_budget_project']){
   assert.equal(row(id).state,'adapter-present');assert.deepEqual(row(id).generalOperations,[id]);
  }
- assert.equal(snapshot.missingAdapterFamilies.length,10);assert.equal(snapshot.counts.live,0);
+ assert.equal(snapshot.missingAdapterFamilies.length,8);assert.equal(snapshot.counts.live,0);
  assert.ok(row('get_committee_roster').adapterPaths.includes('apps/gateway/sources/legislative-directory/handler.mjs'));
  assert.ok(row('list_members').adapterPaths.includes('apps/gateway/general-reads/families/legislative-directory.mjs'));
 });
@@ -373,30 +385,31 @@ test('wrong, foreign, duplicate, nonstring and empty SDK operationIds refuse',()
   const input=synthetic();input.families={...input.families,'public-data':{clientScope:'optional',operationIds}};
   refuses(()=>reconcileSourceExposure(input));
  }
- const input=synthetic();input.families={...input.families,'public-data':{clientScope:'optional',operationIds:['search_federal_grants']}};
+ const input=synthetic();input.adapters[0].operations=input.adapters[0].operations.filter(id=>id!=='search_federal_grants');
+ input.families={...input.families,'public-data':{clientScope:'optional',operationIds:['search_federal_grants']}};
  refuses(()=>reconcileSourceExposure(input));
 });
 
 test('partialOperations must be unique nonempty IDs contained in that adapter declaration',()=>{
- for(const partialOperations of [['get_bill_status'],['search_federal_grants','search_federal_grants'],[],null,'query_economic_data',[42]]){
-  const input=synthetic();input.adapters.push({operations:['search_federal_grants'],partialOperations,paths:['partial adapter']});
+ for(const partialOperations of [['get_bill_status'],['search_sam_opportunities','search_sam_opportunities'],[],null,'query_economic_data',[42]]){
+  const input=synthetic();input.adapters.push({operations:['search_sam_opportunities'],partialOperations,paths:['partial adapter']});
   refuses(()=>reconcileSourceExposure(input));
  }
- const input=synthetic();input.adapters.push({operations:['search_federal_grants'],partialOperations:['search_federal_grants'],paths:['partial adapter']});
- const result=reconcileSourceExposure(input),entry=result.rows.find(row=>row.id==='search_federal_grants');
+ const input=synthetic();input.adapters.push({operations:['search_sam_opportunities'],partialOperations:['search_sam_opportunities'],paths:['partial adapter']});
+ const result=reconcileSourceExposure(input),entry=result.rows.find(row=>row.id==='search_sam_opportunities');
  assert.equal(entry.state,'adapter-partial');assert.deepEqual(entry.adapterPaths,['partial adapter']);assert.deepEqual(entry.generalOperations,[]);
 });
 
 test('registering an incomplete operation refuses even with a valid canonical operationIds subset',()=>{
- const input=synthetic();input.adapters.push({operations:['search_federal_grants'],partialOperations:['search_federal_grants'],paths:['restricted public-data adapter']});
- input.families={...input.families,'public-data':{clientScope:'optional',operationIds:['search_federal_grants']}};
+ const input=synthetic();input.adapters.push({operations:['get_business_development_evidence'],partialOperations:['get_business_development_evidence'],paths:['restricted business-development adapter']});
+ input.families={...input.families,'business-development':{clientScope:'optional',operationIds:['get_business_development_context','get_business_development_evidence']}};
  refuses(()=>reconcileSourceExposure(input));
  const existing=synthetic();existing.adapters[0].partialOperations=['query_economic_data'];refuses(()=>reconcileSourceExposure(existing));
 });
 
 test('renderer calls partial coverage missing complete implementation and never calls it exposed',()=>{
  const markdown=generateExposure(root).markdown;
- assert.match(markdown,/69 complete \+ 3 partial \+ 10 absent = 82/);
+ assert.match(markdown,/74 complete \+ 3 partial \+ 5 absent = 82/);
  assert.match(markdown,/Partial source adapters withheld from SDK exposure \| 3/);
  assert.match(markdown,/Every complete source adapter already present is SDK-exposed/);
  assert.match(markdown,/Partial adapter family \| Incomplete operations \(not SDK-exposed\)/);
