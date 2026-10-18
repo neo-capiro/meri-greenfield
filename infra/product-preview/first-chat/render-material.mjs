@@ -29,7 +29,23 @@
  *  stage3.json {schemaVersion:1, taskDefinitions:{control,'temporal-worker','temporal-issuer','model-owner','model-proxy',runner} (family:revision ARNs),
  *    services:{control,'temporal-worker','model-owner','model-proxy','temporal-issuer'?}, network:{control|temporal-worker|model-owner|model-proxy:
  *    {subnets,securityGroups} (the exact service ENI sets), runner:{subnet,securityGroups}}}
- *  private dir: <stem>.pem / <stem>.key.pem from pki.py, pins.json, db-logins.json {control, modelOwner, issuer} (password string or {password}). */
+ *  private dir: <stem>.pem / <stem>.key.pem from pki.py, pins.json, db-logins.json {control, modelOwner, issuer} (password string or {password}).
+ *
+ * Product families (deployment-inputs.json `features`, OPTIONAL; see parseFeatures). Absent, or {}, renders byte-identical material to the
+ * render without the block (the reviewed first chat). Each present entry renders exactly its own control key; nothing defaults on:
+ *  features: {
+ *   sourceEnabled?: boolean,                                  // G1: control and temporal-worker `sourceEnabled` (runner: delivered by control)
+ *   userPreferences?|tenantSettings?|intents?|routines?: {enabled: boolean},
+ *   retention?: {enabled: true},                              // artifacts tenantId (= core tenantId) and download links need it
+ *   artifacts?: {enabled:false} | {enabled:true, region:'us-east-1', bucket, prefix, expectedBucketOwner:'967807252336', kmsKeyId (key ARN), authority?: {enabled:true} (needs reads)},
+ *   downloadLinks?: {enabled:false} | {enabled:true, ttlMs?},  // signing key generated per render -> /run/meri/download-link.key
+ *   capabilityPlatform?: {maximum, defaults, roleCeilings},   // verbatim; runtime values must carry the matching capabilityProfileSha256 (G3)
+ *   reads?: {enabled:false} | {enabled:true, serviceSecretArn, readModeServiceSecretArn?, defaultCongress?, approvedReads?}
+ *  }
+ * Secret VALUES never enter Git or deployment inputs: reads names exact Secrets Manager ARNs, and the operator supplies the bytes fetched
+ * at a recorded VersionId through --feature-secrets {"reads.serviceSecret"|"reads.readModeServiceSecret": {secretArn, versionId, path}}.
+ * They travel only inside control's bundle (like the database login and identity credential): owner-only 0600 under /run/meri, pinned
+ * by sha256 in expected.json and the material plan. */
 import {createHash,createPrivateKey,createPublicKey,randomBytes,randomUUID,X509Certificate} from 'node:crypto';
 import {readFile,mkdir,writeFile,lstat} from 'node:fs/promises';
 import {execFileSync} from 'node:child_process';
@@ -49,6 +65,9 @@ import {runOwnerOperations} from '../../../packages/contracts/runtime-0.2/valida
 import {sdkSessionOperations} from '../../../packages/contracts/runtime-0.2/session.mjs';
 import {validateProductOwnerConfiguration} from '../../../apps/proxy/product/owner-entrypoint.mjs';
 import {parseProductProxyStartupConfiguration,PRODUCT_PROXY_PRICING_REVISION} from '../../../apps/proxy/product/startup-config.mjs';
+import {compileCapabilityPlatform,createConfiguredRunCapabilityPolicy} from '../../../apps/runtime/product-ports/capability-policy.mjs';
+import {compileRuntimeArtifactsConfiguration} from '../../../apps/runtime/artifacts/configuration.mjs';
+import {assertNativeReadConfiguration} from '../../../packages/contracts/runtime-0.2/reads.mjs';
 
 export const SOURCE_ROOT=resolve(fileURLToPath(new URL('../../../',import.meta.url)));
 const ACCOUNT='967807252336',REGION='us-east-1',ECS=`arn:aws:ecs:${REGION}:${ACCOUNT}:`;
@@ -67,7 +86,9 @@ export const PATHS=Object.freeze({
  issuerClientCaKey:'/run/meri/issuer-client-ca.key',
  ownerCa:'/run/meri/owner-bridge-ca.pem',ownerCert:'/run/meri/owner-server.pem',ownerKey:'/run/meri/owner-server.key',
  proxyServerCert:'/run/meri/proxy-server.pem',proxyServerKey:'/run/meri/proxy-server.key',proxyOwnerCa:'/run/meri/proxy-owner-ca.pem',
- proxyOwnerCert:'/run/meri/proxy-owner-client.pem',proxyOwnerKey:'/run/meri/proxy-owner-client.key'});
+ proxyOwnerCert:'/run/meri/proxy-owner-client.pem',proxyOwnerKey:'/run/meri/proxy-owner-client.key',
+ // Delivered only when the matching feature is rendered (control only).
+ readsServiceSecret:'/run/meri/core-service-secret',readsReadModeServiceSecret:'/run/meri/core-read-mode-service-secret',downloadLinkKey:'/run/meri/download-link.key'});
 const TEMPORAL_IDENTITY=Object.freeze({directory:'/run/meri-temporal/identity',keyFile:'/run/meri-temporal/identity/client-key.pem',certFile:'/run/meri-temporal/identity/client-cert.pem',tokenFile:'/run/meri-temporal/token.json'});
 const IDENTITIES=Object.freeze({control:{subject:'meri-temporal-control:v1',workloadPrincipal:'meri-workload-control:v1'},'temporal-worker':{subject:'meri-temporal-worker:v1',workloadPrincipal:'meri-workload-worker:v1'}});
 const DAY_MS=86400000;
@@ -132,8 +153,10 @@ export function parseCoreValues(raw){
 
 /** Meri-owned runtime bindings derived from the reviewed image and budget owner (not Core, not secret). */
 export function parseRuntimeValues(raw){
- const r=record(raw,'runtime',['schemaVersion','versions','preparationIntent','allocation','runtime','qualification'],['plan','multiRun']);
+ const r=record(raw,'runtime',['schemaVersion','versions','preparationIntent','allocation','runtime','qualification'],['plan','multiRun','capabilityProfileSha256']);
  assertNoPending(r,'runtime');
+ // G3: present only when the in-image measurement projected the SDK options with a capability profile (runtime-values.mjs).
+ if(r.capabilityProfileSha256!==undefined&&!hex64.test(r.capabilityProfileSha256))fail('RENDER_INPUT_REFUSED','runtime.capabilityProfileSha256 must be 64 hex');
  if(r.schemaVersion!==1)fail('RENDER_INPUT_REFUSED','runtime.schemaVersion must be 1');
  const v=record(r.versions,'runtime.versions',['sdk','cli','contracts','skillsDigest','checkpointFormat']);
  const p=record(r.preparationIntent,'runtime.preparationIntent',['configParentDirectory','secureStorageDirectory','launchTemplate','executableSha256','sdkOptionsSha256'],['runnerSha256']);
@@ -147,11 +170,106 @@ export function parseRuntimeValues(raw){
  const q=record(r.qualification,'runtime.qualification',['attempt','policyRevision']);
  if(!Number.isSafeInteger(q.attempt)||q.attempt<1||q.attempt>2147483647||!hex64.test(q.policyRevision))fail('RENDER_INPUT_REFUSED','qualification.attempt 1..2^31-1 and policyRevision 64 hex');
  if(r.multiRun!==undefined)record(r.multiRun,'runtime.multiRun',[],['runWindowMs']);
- return {versions:{...v},preparationIntent:{...p,launchTemplate:{command:lt.command,args:[...lt.args],env:{...lt.env}}},allocation:a,runtime:rt,qualification:{...q},plan:r.plan??DEFAULTS.plan,multiRun:r.multiRun??{}};
+ return {versions:{...v},preparationIntent:{...p,launchTemplate:{command:lt.command,args:[...lt.args],env:{...lt.env}}},allocation:a,runtime:rt,qualification:{...q},plan:r.plan??DEFAULTS.plan,multiRun:r.multiRun??{},
+  capabilityProfileSha256:r.capabilityProfileSha256??null};
+}
+
+/** Product-family activation (header: `features`). Returns null when absent; otherwise the closed, validated entries. Pure. */
+export const FEATURE_KEYS=Object.freeze(['sourceEnabled','userPreferences','tenantSettings','intents','routines','retention','artifacts','downloadLinks','capabilityPlatform','reads']);
+/** --feature-secrets keys -> the deployment-inputs ARN field each must name. */
+export const FEATURE_SECRETS=Object.freeze({'reads.serviceSecret':'serviceSecretArn','reads.readModeServiceSecret':'readModeServiceSecretArn'});
+/** Exact (complete, suffixed) Secrets Manager secret ARN in this account and region. A bare name, another account/region/partition, a
+ * JSON-key/version suffix or a partial ARN without the 6-character suffix refuses (a name that itself ends in -XXXXXX cannot be told
+ * apart syntactically; the operator's describe-secret ARN equality check covers that case). */
+export const SECRET_ARN=/^arn:aws:secretsmanager:us-east-1:967807252336:secret:[A-Za-z0-9/_+=.@-]{1,512}-[A-Za-z0-9]{6}$/u;
+const SECRET_VERSION=/^[A-Za-z0-9-]{32,64}$/u,KMS_KEY_ARN=/^arn:aws:kms:us-east-1:967807252336:key\/[a-f0-9-]{36}$/u;
+/** Same token shape as reads-composer.mjs tokenOf, but exact: no surrounding whitespace is delivered. */
+const SECRET_TOKEN=/^[\x21-\x7e]{1,8192}$/u;
+export function parseFeatures(raw,{secrets={},checkpoint}={}){
+ if(raw===undefined)return null;
+ const f=record(raw,'features',[],FEATURE_KEYS),out={};
+ const bool=(v,name)=>{if(typeof v!=='boolean')fail('RENDER_INPUT_REFUSED',`${name} must be a boolean`);return v;};
+ const toggle=key=>{const v=record(f[key],`features.${key}`,['enabled']);return {enabled:bool(v.enabled,`features.${key}.enabled`)};};
+ if(f.sourceEnabled!==undefined)out.sourceEnabled=bool(f.sourceEnabled,'features.sourceEnabled');
+ for(const key of ['userPreferences','tenantSettings','intents','routines'])if(f[key]!==undefined)out[key]=toggle(key);
+ if(f.retention!==undefined){if(toggle('retention').enabled!==true)fail('RENDER_INPUT_REFUSED','features.retention.enabled must be true (omit retention to leave it undeclared)');out.retention={enabled:true};}
+ if(f.artifacts!==undefined){
+  const storage=['region','bucket','prefix','expectedBucketOwner','kmsKeyId'],a=record(f.artifacts,'features.artifacts',['enabled'],[...storage,'authority']);
+  if(!bool(a.enabled,'features.artifacts.enabled')){if([...storage,'authority'].some(k=>a[k]!==undefined))fail('RENDER_INPUT_REFUSED','features.artifacts: a disabled store names no storage');out.artifacts={enabled:false};}
+  else{
+   record(a,'features.artifacts',['enabled',...storage],['authority']);
+   // Core artifact current authority (docs/integration/ARTIFACT-CURRENT-AUTHORITY-CONTRACT.md); reuses the reads Core service secret.
+   const authority=a.authority===undefined?false:record(a.authority,'features.artifacts.authority',['enabled']).enabled===true;
+   if(a.region!==REGION||a.expectedBucketOwner!==ACCOUNT)fail('RENDER_INPUT_REFUSED',`features.artifacts region/expectedBucketOwner must be ${REGION}/${ACCOUNT}`);
+   if(typeof a.kmsKeyId!=='string'||!KMS_KEY_ARN.test(a.kmsKeyId))fail('RENDER_INPUT_REFUSED','features.artifacts.kmsKeyId must be a full KMS key ARN in this account and region');
+   try{const {authority:_authority,...store}=a;compileRuntimeArtifactsConfiguration({artifacts:store});}catch{fail('RENDER_INPUT_REFUSED','features.artifacts bucket/prefix (artifacts/configuration.mjs)');}
+   if(checkpoint&&a.bucket===checkpoint.bucket&&[a.prefix,checkpoint.prefix].some((p,i,all)=>(all[1-i]+'/').startsWith(p+'/')))fail('RENDER_INPUT_REFUSED','features.artifacts must not overlap the run checkpoint objects');
+   out.artifacts={enabled:true,region:a.region,bucket:a.bucket,prefix:a.prefix,expectedBucketOwner:a.expectedBucketOwner,kmsKeyId:a.kmsKeyId,...(authority?{authority:true}:{})};
+  }
+ }
+ if(f.downloadLinks!==undefined){
+  const l=record(f.downloadLinks,'features.downloadLinks',['enabled'],['ttlMs']);
+  if(!bool(l.enabled,'features.downloadLinks.enabled')){if(l.ttlMs!==undefined)fail('RENDER_INPUT_REFUSED','features.downloadLinks: ttlMs only with enabled');out.downloadLinks={enabled:false};}
+  else{
+   if(l.ttlMs!==undefined&&(!Number.isSafeInteger(l.ttlMs)||l.ttlMs<1000||l.ttlMs>300000))fail('RENDER_INPUT_REFUSED','features.downloadLinks.ttlMs must be 1000..300000');
+   // download-gate.mjs opens only over composed retention serving and the private artifact store.
+   if(out.retention===undefined||out.artifacts?.enabled!==true)fail('RENDER_INPUT_REFUSED','features.downloadLinks needs features.retention and an enabled features.artifacts');
+   out.downloadLinks={enabled:true,...(l.ttlMs===undefined?{}:{ttlMs:l.ttlMs})};
+  }
+ }
+ if(f.capabilityPlatform!==undefined){
+  try{compileCapabilityPlatform({capabilityPlatform:f.capabilityPlatform});}catch{fail('RENDER_INPUT_REFUSED','features.capabilityPlatform (capability-policy.mjs compileCapabilityPlatform)');}
+  out.capabilityPlatform=structuredClone(f.capabilityPlatform);
+ }
+ if(f.reads!==undefined){
+  const fields=['serviceSecretArn','readModeServiceSecretArn','defaultCongress','approvedReads'],r=record(f.reads,'features.reads',['enabled'],fields);
+  if(!bool(r.enabled,'features.reads.enabled')){if(fields.some(k=>r[k]!==undefined))fail('RENDER_INPUT_REFUSED','features.reads: disabled reads name no secret, congress or approved reads');out.reads={enabled:false};}
+  else{
+   if(out.sourceEnabled!==true)fail('RENDER_INPUT_REFUSED','features.reads needs features.sourceEnabled true (G1 gates reads)');
+   const material=new Set(Object.values(secrets));
+   for(const key of ['serviceSecretArn','readModeServiceSecretArn'])if(r[key]!==undefined||key==='serviceSecretArn'){
+    if(typeof r[key]!=='string'||!SECRET_ARN.test(r[key]))fail('RENDER_INPUT_REFUSED',`features.reads.${key} must be an exact Secrets Manager secret ARN in ${ACCOUNT}/${REGION}`);
+    if(material.has(r[key]))fail('RENDER_INPUT_REFUSED',`features.reads.${key} must not be a Meri material secret`);
+   }
+   if(r.readModeServiceSecretArn!==undefined&&r.readModeServiceSecretArn===r.serviceSecretArn)fail('RENDER_INPUT_REFUSED','features.reads secret ARNs must be distinct');
+   if(r.defaultCongress!==undefined&&(!Number.isSafeInteger(r.defaultCongress)||r.defaultCongress<1||r.defaultCongress>1000))fail('RENDER_INPUT_REFUSED','features.reads.defaultCongress must be 1..1000');
+   let approvedReads;if(r.approvedReads!==undefined)try{approvedReads=structuredClone(assertNativeReadConfiguration(r.approvedReads));}catch{fail('RENDER_INPUT_REFUSED','features.reads.approvedReads (runtime-0.2 assertNativeReadConfiguration)');}
+   out.reads={enabled:true,serviceSecretArn:r.serviceSecretArn,...(r.readModeServiceSecretArn===undefined?{}:{readModeServiceSecretArn:r.readModeServiceSecretArn}),
+    ...(r.defaultCongress===undefined?{}:{defaultCongress:r.defaultCongress}),...(approvedReads===undefined?{}:{approvedReads})};
+  }
+ }
+ if(out.artifacts?.authority===true&&out.reads?.enabled!==true)fail('RENDER_INPUT_REFUSED','features.artifacts.authority reuses the reads Core service secret: it needs features.reads enabled');
+ return out;
+}
+/** The single capability profile every run resolves to under `capabilityPlatform` (G3), or null when the platform is absent or
+ * enables nothing. runtime-values.mjs measures the SDK options with exactly this profile; the render pins its digest. */
+export function capabilityProfileOf(capabilityPlatform){
+ if(capabilityPlatform===undefined)return null;
+ const producer=createConfiguredRunCapabilityPolicy({capabilityPlatform});
+ return producer.profile===null?null:{profile:producer.profile,profileSha256:producer.profileSha256};
+}
+/** Operator-supplied secret bytes for the rendered features: exactly the keys the features need, each naming the same ARN as the
+ * deployment inputs and the Secrets Manager VersionId it was read at. Values are never echoed in a refusal. */
+function featureSecretFiles(features,supplied={},identityCredential){
+ const reads=features.reads?.enabled===true?features.reads:null;
+ const needed=Object.entries(FEATURE_SECRETS).filter(([,field])=>reads?.[field]!==undefined).map(([key])=>key);
+ const s=record(supplied,'featureSecrets',needed);
+ const out={};
+ for(const key of needed){
+  const e=record(s[key],`featureSecrets.${key}`,['secretArn','versionId','bytes']);
+  if(e.secretArn!==reads[FEATURE_SECRETS[key]])fail('RENDER_INPUT_REFUSED',`featureSecrets.${key}.secretArn differs from features.reads.${FEATURE_SECRETS[key]}`);
+  if(typeof e.versionId!=='string'||!SECRET_VERSION.test(e.versionId))fail('RENDER_INPUT_REFUSED',`featureSecrets.${key}.versionId must be a Secrets Manager VersionId`);
+  if(!Buffer.isBuffer(e.bytes)||!SECRET_TOKEN.test(e.bytes.toString('latin1')))fail('RENDER_PRIVATE_REFUSED',`featureSecrets.${key} must be 1..8192 printable ASCII bytes with no whitespace`);
+  if(e.bytes.toString('latin1').includes('PENDING_'))fail('RENDER_PENDING_VALUE',`featureSecrets.${key}`);
+  // reads-composer.mjs refuses a service secret equal to a candidate credential (the identity bearer).
+  if(e.bytes.equals(identityCredential))fail('RENDER_PRIVATE_REFUSED',`featureSecrets.${key} equals the identity credential`);
+  out[key]={secretArn:e.secretArn,versionId:e.versionId,bytes:Buffer.from(e.bytes)};
+ }
+ return out;
 }
 
 export function parseDeploymentInputs(raw){
- const d=record(raw,'deployment',['schemaVersion','account','region','clusterArn','vpcId','privateSubnetIds','images','foundation','privateEdge','names','proxyClientSubject','temporalClients','origins','temporal','issuer','database','checkpoint','model','secrets','pinsDer','pinsPem','core']);
+ const d=record(raw,'deployment',['schemaVersion','account','region','clusterArn','vpcId','privateSubnetIds','images','foundation','privateEdge','names','proxyClientSubject','temporalClients','origins','temporal','issuer','database','checkpoint','model','secrets','pinsDer','pinsPem','core'],['features']);
  if(d.schemaVersion!==1||d.account!==ACCOUNT||d.region!==REGION)fail('RENDER_INPUT_REFUSED','deployment account/region');
  // Core-owned placeholders in deployment-inputs are superseded by the core values file; everything else must be final.
  const {core:_core,origins,...rest}=d;void _core;const {coreOrigin:_c,frontendOrigin:_f,...finalOrigins}=origins;void _c;void _f;
@@ -162,7 +280,7 @@ export function parseDeploymentInputs(raw){
  if(jwkSha!==d.issuer.publicJwkSha256||jwk.kid!==d.issuer.kid)fail('RENDER_INPUT_REFUSED','deployment.issuer.publicJwkSha256 does not match the canonical JWK');
  for(const commit of [d.images.nodeRuntimeSourceCommit,d.images.proxySourceCommit])if(!/^[a-f0-9]{40}$/u.test(commit))fail('RENDER_INPUT_REFUSED','image source commits must be 40 hex');
  imageDigest(d.images.nodeRuntime);imageDigest(d.images.proxy);
- return {...d,clusterName:cluster[1]};
+ return {...d,clusterName:cluster[1],features:parseFeatures(d.features,{secrets:d.secrets,checkpoint:d.checkpoint})};
 }
 
 /** Throwaway-free private reader: only certificate/key PEMs, pins.json and db-logins.json named here are read. */
@@ -177,6 +295,18 @@ export async function readPrivateDirectory(directory,{readBytes=readFile}={}){
  const pins=JSON.parse((await readBytes(join(directory,'pins.json'))).toString('utf8'));
  const logins=JSON.parse((await readBytes(join(directory,'db-logins.json'))).toString('utf8'));
  return {certs,keys,pins,logins};
+}
+
+/** --feature-secrets: {<FEATURE_SECRETS key>: {secretArn, versionId, path}} -> the same entries with the file bytes (read here, never
+ * printed). The operator fetches each value at the recorded VersionId of the exact ARN into private custody outside the repository. */
+export async function readFeatureSecrets(raw,{readBytes=readFile}={}){
+ const m=record(raw,'featureSecrets',[],Object.keys(FEATURE_SECRETS)),out={};
+ for(const [key,value] of Object.entries(m)){
+  const e=record(value,`featureSecrets.${key}`,['secretArn','versionId','path']);
+  if(typeof e.path!=='string'||!isAbsolute(e.path))fail('RENDER_INPUT_REFUSED',`featureSecrets.${key}.path must be an absolute local path`);
+  out[key]={secretArn:e.secretArn,versionId:e.versionId,bytes:await readBytes(e.path)};
+ }
+ return out;
 }
 
 function password(logins,key,role){
@@ -236,13 +366,19 @@ export function assertProductCliGates(role,c,environment){
 
 /** Pure render (reads only the private material passed in). Returns every role's exact bytes plus the non-secret summary. */
 export function renderMaterial({deployment,core,runtime,stage3,private:pki,identityCredential,nowMs=Date.now(),validityDays=DEFAULTS.validityDays,
- taskRouterZone=DEFAULTS.taskRouterZone,deploymentRevision=DEFAULTS.deploymentRevision,sourceRoot=SOURCE_ROOT}){
+ taskRouterZone=DEFAULTS.taskRouterZone,deploymentRevision=DEFAULTS.deploymentRevision,sourceRoot=SOURCE_ROOT,featureSecrets={}}){
  const d=parseDeploymentInputs(deployment),k=parseCoreValues(core),r=parseRuntimeValues(runtime),s=parseStage3(stage3,{clusterName:d.clusterName});
  if(!Number.isSafeInteger(nowMs)||nowMs<1)fail('RENDER_INPUT_REFUSED','nowMs');
  if(!Number.isFinite(validityDays)||validityDays<=0)fail('RENDER_INPUT_REFUSED','validityDays must be positive');
  if(!/^[A-Za-z0-9_-]{1,128}$/u.test(deploymentRevision))fail('RENDER_INPUT_REFUSED','deploymentRevision');
  if(!Buffer.isBuffer(identityCredential)||identityCredential.length<1||identityCredential.length>32768)fail('RENDER_INPUT_REFUSED','identity credential must be 1..32768 bytes');
  if(identityCredential.toString('utf8').includes('PENDING_'))fail('RENDER_PENDING_VALUE','identity credential');
+ const features=d.features??{},secretFiles=featureSecretFiles(features,featureSecrets,identityCredential);
+ // G3: the one SDK-options pin was measured with exactly one capability profile (or none); the runs must resolve to the same one.
+ const capability=capabilityProfileOf(features.capabilityPlatform);
+ if((capability?.profileSha256??null)!==r.capabilityProfileSha256)fail('RENDER_INPUT_REFUSED',capability?
+  `capabilityPlatform resolves to capability profile ${capability.profileSha256}; runtime values must carry the in-image measurement taken with it (capabilityProfileSha256, G3)`:
+  'runtime values were measured with a capability profile but the rendered capabilityPlatform is absent or enables nothing (G3)');
  const {pins,notAfterMs}=verifyPki(d,pki);
  // Absolute expiries. schedule/serviceTasks/pricing/proxy = now + validity; grants and the static deadline additionally
  // must stay <= startup now + maxRuntimeSeconds (native-allocation-admission), so they use min(validity, maxRuntime).
@@ -302,7 +438,22 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,ident
    overrides:{containerOverrides:[{name:CONTAINER_NAMES.runner,command:['start'],environment:[]}]}},
   containerName:CONTAINER_NAMES.runner,taskOrigin:controlPrivate,taskHttp:{hostname:'0.0.0.0',port:8080,frontendOrigin:controlPrivate},
   objects:{bucket:d.checkpoint.bucket,prefix:d.checkpoint.prefix,expectedBucketOwner:ACCOUNT,kmsKeyId:d.checkpoint.kmsKeyArn},
-  multiRun:{runWindowMs,materialDirectory:DEFAULTS.materialDirectory,dynamicInitialRuns:true}};
+  multiRun:{runWindowMs,materialDirectory:DEFAULTS.materialDirectory,dynamicInitialRuns:true},
+  // Runner-side original reads (prepared-candidate-config.mjs; delivered to each run by the prepared-run registry bootstrap).
+  ...(features.reads?.approvedReads===undefined?{}:{approvedReads:features.reads.approvedReads})};
+ // Product families, each rendered as exactly its own control key, in a fixed order after every first-chat key (absent: none).
+ const downloadLinkKey=features.downloadLinks?.enabled===true?Buffer.from(randomBytes(32).toString('base64url'),'utf8'):null;
+ const featureKeys={};
+ for(const key of ['userPreferences','tenantSettings','intents','routines','retention'])if(features[key]!==undefined)featureKeys[key]={...features[key]};
+ // artifacts/configuration.mjs: tenantId (publication custody) exactly when retention is declared; the preview has one tenant.
+ if(features.artifacts!==undefined){const {authority,...store}=features.artifacts;featureKeys.artifacts=store.enabled?{...store,...(features.retention?{tenantId:k.tenantId}:{}),
+  ...(authority?{authority:{origin:k.coreOrigin,serviceSecretFile:PATHS.readsServiceSecret}}:{})}:{enabled:false};}
+ if(features.downloadLinks!==undefined)featureKeys.downloadLinks=features.downloadLinks.enabled?{enabled:true,keyFile:PATHS.downloadLinkKey,...(features.downloadLinks.ttlMs===undefined?{}:{ttlMs:features.downloadLinks.ttlMs})}:{enabled:false};
+ if(features.capabilityPlatform!==undefined)featureKeys.capabilityPlatform=structuredClone(features.capabilityPlatform);
+ if(features.reads!==undefined)featureKeys.reads=features.reads.enabled?{enabled:true,serviceSecretFile:PATHS.readsServiceSecret,
+  ...(features.reads.readModeServiceSecretArn===undefined?{}:{readModeServiceSecretFile:PATHS.readsReadModeServiceSecret}),
+  ...(features.reads.defaultCongress===undefined?{}:{defaultCongress:features.reads.defaultCongress})}:{enabled:false};
+ const sourceEnabled=features.sourceEnabled===true;
 
  const authorization={tokenFile:TEMPORAL_IDENTITY.tokenFile,namespace:d.temporal.namespace,audience:d.temporal.audience,issuer:issuerOrigin+'/',refreshMs:5000,maxLifetimeMs:60000};
  const revisionLabel=role=>`${role}-td${revisionOf(s.taskDefinitions[role])}`;
@@ -323,13 +474,14 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,ident
  // `input/admit` re-runs that recheck about five times (~2.4 s each), so 12000ms cancelled the first admit mid-flight
  // (control aborted its own Core call; ALB 460). 25000ms stays inside the frontend proxy's 30 s request budget.
  const limits={startupMs:30000,shutdownMs:10000,requestMs:25000,requestBytes:131072};
- const control={version:1,profile:'isolated-preview',sourceEnabled:false,limits,
+ const control={version:1,profile:'isolated-preview',sourceEnabled,limits,
   native:{origin:controlPrivate,capabilityFile:PATHS.controlCapability,loopback:false,maxResponseBytes:2097152},
   http:{hostname:'0.0.0.0',port:8080,frontendOrigin:k.frontendOrigin},database:{connectionFile:PATHS.database},temporal:temporal('control'),
   sessions:{mode:'process-local',replicas:1,maxSessions:100,maxTtlMs:300000},versions,nativeCandidate,
   privateHttp:{hostname:'0.0.0.0',port:8082,frontendOrigin:controlPrivate},
-  taskRouter:{enabled:true,runnerCaFile:PATHS.runnerCa,zone:taskRouterZone,vpcId:d.vpcId,poststart:{enabled:true,runnerCaKeyFile:PATHS.runnerCaKey,controlCaFile:PATHS.controlCa}}};
- const worker={version:1,profile:'isolated-preview',sourceEnabled:false,limits,
+  taskRouter:{enabled:true,runnerCaFile:PATHS.runnerCa,zone:taskRouterZone,vpcId:d.vpcId,poststart:{enabled:true,runnerCaKeyFile:PATHS.runnerCaKey,controlCaFile:PATHS.controlCa}},...featureKeys};
+ // G1 applies to control and the Temporal worker; the runner receives it only through control's prepared delivery.
+ const worker={version:1,profile:'isolated-preview',sourceEnabled,limits,
   native:{origin:controlPrivate,capabilityFile:PATHS.controlCapability,loopback:false,maxResponseBytes:2097152,preparedKickoff:true},
   http:{hostname:'0.0.0.0',port:8081,frontendOrigin:k.frontendOrigin},temporal:temporal('temporal-worker')};
 
@@ -382,7 +534,11 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,ident
  const files={
   control:new Map([[PATHS.control,controlBytes],[PATHS.database,controlDsn],[PATHS.identity,identityCredential],[PATHS.taskCapability,capabilityBytes.task],
    [PATHS.controlCapability,capabilityBytes.control],[PATHS.proxyCapability,capabilityBytes.proxy],...temporalFiles('control'),
-   [PATHS.runnerCa,pki.certs['runner-ca']],[PATHS.runnerCaKey,pki.keys['runner-ca']],[PATHS.controlCa,pki.certs['server-ca']]]),
+   [PATHS.runnerCa,pki.certs['runner-ca']],[PATHS.runnerCaKey,pki.keys['runner-ca']],[PATHS.controlCa,pki.certs['server-ca']],
+   // Feature material, control only and only when rendered: the Core service secrets for reads and the download-link signing key.
+   ...(secretFiles['reads.serviceSecret']?[[PATHS.readsServiceSecret,secretFiles['reads.serviceSecret'].bytes]]:[]),
+   ...(secretFiles['reads.readModeServiceSecret']?[[PATHS.readsReadModeServiceSecret,secretFiles['reads.readModeServiceSecret'].bytes]]:[]),
+   ...(downloadLinkKey?[[PATHS.downloadLinkKey,downloadLinkKey]]:[])]),
   'temporal-worker':new Map([[PATHS.worker,configBytes['temporal-worker']],[PATHS.controlCapability,capabilityBytes.control],...temporalFiles('temporal-worker')]),
   'temporal-issuer':new Map([[PATHS.issuer,configBytes['temporal-issuer']],[PATHS.issuerDatabase,issuerDsn],[PATHS.issuerServerKey,pki.keys['issuer-server']],
    [PATHS.issuerServerCert,pki.certs['issuer-server']],[PATHS.issuerClientCa,pki.certs['issuer-client-ca']],[PATHS.issuerClientCaKey,pki.keys['issuer-client-ca']]]),
@@ -402,6 +558,13 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,ident
  validateRendered(roles,{workerEnvironment});
  const summary=summarize({d,k,r,s,roles,pins,binding,nativeCandidate,taskGrantId,modelGrantId,grantExpiresAtMs,expiresAtMs,nowMs,validityDays,notAfterMs,runtimeMs,runWindowMs,
   taskRouterZone,deploymentRevision,controlPrivate,workerEnvironment,runnerSha256,policyRevision,allocation});
+ // Non-secret record of what the features rendered (absent without features, so the reviewed summary is unchanged). The secret
+ // files are named by path, source ARN, VersionId and sha256 only, so the operator can re-verify the fetched value.
+ if(Object.keys(features).length)summary.features={sourceEnabled,controlKeys:Object.keys(featureKeys),approvedReads:features.reads?.approvedReads!==undefined,
+  capabilityProfileSha256:capability?.profileSha256??null,
+  secretFiles:Object.fromEntries(Object.entries(secretFiles).map(([key,v])=>[key==='reads.serviceSecret'?PATHS.readsServiceSecret:PATHS.readsReadModeServiceSecret,
+   {feature:key,secretArn:v.secretArn,versionId:v.versionId,sha256:sha(v.bytes)}])),
+  generatedFiles:downloadLinkKey?{[PATHS.downloadLinkKey]:'download-link signing key, fresh per render (32 random bytes, base64url)'}:{}};
  return {roles,summary};
 }
 
@@ -506,7 +669,7 @@ export async function writeRendered(out,{roles,summary},{sourceRoot=SOURCE_ROOT}
 const USAGE=`Usage: node infra/product-preview/first-chat/render-material.mjs \\
   --deployment-inputs infra/product-preview/first-chat/deployment-inputs.json --private <pki-dir> \\
   --core <core-values.json> --runtime <runtime-values.json> --stage3 <stage3.json> --out <new-dir-outside-repo> \\
-  [--validity-days 7] [--now-ms <epoch ms>] [--zone runner.meri.internal] [--deployment-revision first-chat-preview-1]
+  [--validity-days 7] [--now-ms <epoch ms>] [--zone runner.meri.internal] [--deployment-revision first-chat-preview-1]   [--feature-secrets <feature-secrets.json>]   (only with features.reads: {"reads.serviceSecret":{secretArn,versionId,path}, ...})
 Prints only the non-secret summary path and config hashes. Exit 0 rendered; 2 arguments/inputs/validation refused.`;
 export async function main(argv=process.argv.slice(2)){
  if(argv.length===0||argv.includes('--help')){process.stdout.write(USAGE+'\n');return argv.length?0:2;}
@@ -518,7 +681,8 @@ export async function main(argv=process.argv.slice(2)){
   const rendered=renderMaterial({deployment:await json(a['deployment-inputs']),core,runtime:await json(a.runtime),stage3:await json(a.stage3),private:pki,
    identityCredential:await readFile(parseCoreValues(core).identityCredentialPath),
    ...(a['now-ms']?{nowMs:Number(a['now-ms'])}:{}),...(a['validity-days']?{validityDays:Number(a['validity-days'])}:{}),
-   ...(a.zone?{taskRouterZone:a.zone}:{}),...(a['deployment-revision']?{deploymentRevision:a['deployment-revision']}:{})});
+   ...(a.zone?{taskRouterZone:a.zone}:{}),...(a['deployment-revision']?{deploymentRevision:a['deployment-revision']}:{}),
+   ...(a['feature-secrets']?{featureSecrets:await readFeatureSecrets(await json(resolve(a['feature-secrets'])))}:{})});
   const out=await writeRendered(a.out,rendered);
   process.stdout.write(JSON.stringify({status:'MERI_FIRST_CHAT_MATERIAL_RENDERED',out,summary:join(out,'summary.json'),configSha256:rendered.summary.taskDefinitionConfigPins})+'\n');
   return 0;

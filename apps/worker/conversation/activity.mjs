@@ -14,8 +14,8 @@ import {createActivityLifecycle,assertLifecycleConfiguration,HOLD_CHECKPOINT_FAI
 import {readCapabilityPolicy} from './capabilities/policy.mjs';
 import {createSdkCapabilities} from './capabilities/index.mjs';
 import {createProgressProjector} from './capabilities/progress.mjs';
-import {createGeneralReadRuntime,continuationSessionId} from './reads/runtime.mjs';
-import {createIntentRuntime} from './intents/runtime.mjs';
+import {continuationSessionId} from './reads/runtime.mjs';
+import {createProfileMounts} from './capabilities/mounts.mjs';
 import {prepareBrowserRun} from './browser/runtime.mjs';
 import {attemptCleanup,cleanupConversation,CLEANUP_ATTEMPT_MS} from './cleanup.mjs';
 const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
@@ -42,19 +42,21 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
   try{preparation=createOperationLifetime({deadlineMs:now()+3000,now,signal,errorFactory:fault});const saved=await preparation.run(signal=>runOwner.load({binding,signal}));validateShape('Run',saved.run);if(!same(saved.run.binding,binding)||saved.run.state!=='queued')throw fault('RUN_NOT_QUEUED');
    const policy=readCapabilityPolicy(saved); // Default-off SDK capabilities, validated before any claim; absent policy keeps first-chat behaviour.
    const prepareStarted=now();if(saved.continuation&&saved.nextTurn)throw fault('CONTINUATION_REFUSED');const lineage=saved.nextTurn?{nextTurn:saved.nextTurn}:saved.continuation?{continuation:saved.continuation}:null,sourceRequest=saved.nextTurn?.sourceRequest??saved.sourceRequest;if(lineage&&lifecycle===undefined)throw fault('CONTINUATION_UNAVAILABLE');
-   const runtime=await preparation.run(signal=>prepareRuntime({binding,versions:saved.run.versions,
+   // A run whose policy enables the skill plugin asks runtime preparation for its read-only plugin copy (the trusted skillPluginDirectory fact).
+   const runtime=await preparation.run(signal=>prepareRuntime({binding,versions:saved.run.versions,...(policy?.skillPlugin===true?{skillPlugin:true}:{}),
     ...(lineage?{...lineage,sourceRequest,request:saved.request,scopes:saved.run.scopes}:{}),runtimeSignal:controller.signal,signal}));
    life=createOperationLifetime({deadlineMs:runtime.deadlineMs,now,signal,errorFactory:fault});preparation.close();const abort=()=>controller.abort(life.signal.reason);life.signal.addEventListener('abort',abort,{once:true});
    const publish=async(type,data,eventId=newId())=>{life.check();await life.run(signal=>runOwner.append({binding,event:{eventId,createdAt:new Date(now()).toISOString(),type,data},signal}));life.check();};
    await publish('run.status',{state:'starting',reasonCode:null});claimed=true;if(!same(runtime.binding,binding)||!same(runtime.versions,saved.run.versions))throw fault('RUNTIME_PIN_REFUSED');
    if(saved.request.skill&&selectedSkills!==undefined)skillRuntime=await life.run(signal=>selectedSkills.prepare({binding,versions:saved.run.versions,request:saved.request,scopes:saved.run.scopes,...(lineage?{...lineage,sourceRequest}:{}),signal}));
-   // A selected skill narrows general reads to its own operations; those the skill server already exposes are excluded.
-   if(policy?.generalReads&&generalReads!==undefined){const skill=saved.request.skill?selectSkill(saved.request.skill.skillId,saved.request.skill.skillVersion).manifest:undefined;
-    readRuntime=await life.run(signal=>createGeneralReadRuntime({binding,scopes:saved.run.scopes,policy,port:generalReads,now,deadlineMs:runtime.deadlineMs,
-     ...(lineage?{expectedSessionId:continuationSessionId(lineage)}:{}),...(skill?{skill}:{}),exclude:skillRuntime?skillRuntime.selected.manifest.allowedOperations:[],signal}));}
-   // Prepare-only write requests; on resume/fork the SDK session is pinned so a replayed tool use keeps its delivery identity.
-   if(policy?.governedIntents&&governedIntents!==undefined)intentRuntime=await life.run(signal=>createIntentRuntime({binding,scopes:saved.run.scopes,policy,port:governedIntents,now,deadlineMs:runtime.deadlineMs,
-    ...(lineage?{expectedSessionId:continuationSessionId(lineage)}:{}),signal}));
+   // G3: general reads and prepare-only write requests are mounted from the profile alone (capabilities/mounts.mjs): the full tool list
+   // whenever the policy enables them, with or without a trusted port; per-run availability is answered per call (UNAVAILABLE).
+   // A selected skill narrows general reads to its own operations; those the skill server already exposes are excluded. On resume/fork
+   // the SDK session is pinned so a replayed tool use keeps its delivery identity.
+   if(policy?.generalReads||policy?.governedIntents){const skill=saved.request.skill?selectSkill(saved.request.skill.skillId,saved.request.skill.skillVersion).manifest:undefined;
+    const mounts=await life.run(signal=>createProfileMounts({policy,binding,scopes:saved.run.scopes,now,deadlineMs:runtime.deadlineMs,...(generalReads===undefined?{}:{generalReads}),...(governedIntents===undefined?{}:{governedIntents}),
+     ...(lineage?{expectedSessionId:continuationSessionId(lineage)}:{}),...(skill?{skill}:{}),exclude:skillRuntime?skillRuntime.selected.manifest.allowedOperations:[],signal}));
+    readRuntime=mounts.reads??undefined;intentRuntime=mounts.intents??undefined;}
    const capabilities=policy===undefined?undefined:createSdkCapabilities(policy,{runOwner,binding,cwd:runtime.cwd,...Object.fromEntries(CAPABILITY_RUNTIME_FACTS.flatMap(k=>runtime[k]===undefined?[]:[[k,runtime[k]]])),now,newId});
    if(browser!==undefined)browserRun=await life.run(signal=>prepareBrowserRun({port:browser,binding,cwd:runtime.cwd,deadlineMs:runtime.deadlineMs,now,signal}));
    const objectiveRuntime=objectiveGeneration===undefined?null:await life.run(signal=>objectiveGeneration.prepare({binding,request:saved.request,versions:saved.run.versions,scopes:saved.run.scopes,cwd:runtime.cwd,model:runtime.model,proxyUrl:runtime.proxyUrl,proxyCredentialSha256:createHash('sha256').update(runtime.proxyCredential).digest('hex'),deadlineMs:runtime.deadlineMs,signal}));

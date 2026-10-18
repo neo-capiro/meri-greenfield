@@ -37,7 +37,7 @@ export const NO_CAPABILITY_PLATFORM=freeze({maximum:{},defaults:{},roleCeilings:
  * frontmatter and is excluded by the plugin itself, so naming it would refuse SKILL_PLUGIN_NAME_REFUSED at run time. */
 export const PLUGIN_SKILL_NAMES=Object.freeze(['meri-client-changes','meri-commitments-audit','meri-funding-opportunity-match','meri-hearing-watch','meri-mail-history',
  'meri-meeting-prep','meri-pe-deep-dive','meri-portfolio-changes','meri-portfolio-overlap','meri-regulatory-docket-brief','meri-relationship-brief',
- 'meri-representation-lookup','meri-research-company']);
+ 'meri-representation-lookup','meri-research-company','meri-bill-watch']);
 const PREVIEW_PROFILE={generalReads:true,readFamilies:[...READ_FAMILY_IDS],governedIntents:true,skillPlugin:true,skillNames:[...PLUGIN_SKILL_NAMES],
  workspaceTools:true,workspaceToolNames:[...WORKSPACE_TOOLS],subagents:true,subagentTypes:[...SUBAGENT_TYPES],maxParallelSubagents:MAX_PARALLEL_SUBAGENTS,
  subagentProgress:true,auditHooks:true,compactionHooks:true,bash:true,sandboxNetworkDomains:[]};

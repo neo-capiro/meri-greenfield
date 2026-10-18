@@ -1,7 +1,10 @@
 /** Human-approved cancellation resolves actual same-work workflow executions before proposal creation, then rechecks the exact
- * selection before using the canonical run-control and native retirement owners. Schedule-wrapper references never select work. */
+ * selection before using the canonical run-control and native retirement owners. Schedule-wrapper references never select work.
+ * With `proofs` (Core wire B, native-authority/routines-core-client.mjs) the cancellation is attended only: the approving request's
+ * own live session selection (`attended`) obtains Core's proof that the owner approved stopping exactly these runs, and the run
+ * control receives `{proof, expected}` beside the binding; without a live session or proof nothing is stopped. */
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
-import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
+import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {createScheduledJobLineage,snapshotScheduledJobSelection} from './scheduled-job-lineage.mjs';
 import {createScheduledJobLifecycle} from './scheduled-job-lifecycle.mjs';
@@ -10,10 +13,16 @@ import {sdkMethod} from './temporal-schedule-mutations.mjs';
 import {types} from 'node:util';
 const same=(a,b)=>hash(a)===hash(b),uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u;
 const fail=code=>{throw Object.assign(Error('SCHEDULE_JOB_'+code),{code:'SCHEDULE_JOB_'+code,outcome:'UNKNOWN'});};
+/** The approving request's own session selection (never request data): the owner's exact run binding and selected client. */
+function attendedSelection(raw,callerIdentity){
+ let a;try{a=data(own(raw,['binding','selectedClientId']));validateShape('RunBinding',a.binding);}catch{fail('AUTHORITY');}
+ if(typeof a.selectedClientId!=='string'||!uuid.test(a.selectedClientId)||a.binding.tenantId!==callerIdentity?.tenantId||a.binding.actorId!==callerIdentity?.actorId)fail('AUTHORITY');
+ return a;
+}
 export function createScheduledRunCancellation(configuration){
- const c=own(configuration,['scheduleOwner','store','runControl','retirement','client','now','maxRequestMs']);
+ const c=own(configuration,['scheduleOwner','store','runControl','retirement','client','now','maxRequestMs'],['proofs']);
  const readOpen=sdkMethod(c.scheduleOwner,'readOpenOccurrenceForSchedule'),settle=sdkMethod(c.scheduleOwner,'settleOccurrence'),lineage=createScheduledJobLineage({store:c.store});
- const cancelRun=sdkMethod(c.runControl,'cancel'),retire=sdkMethod(c.retirement,'retire');
+ const cancelRun=sdkMethod(c.runControl,'cancel'),retire=sdkMethod(c.retirement,'retire'),issueProof=c.proofs===undefined?null:sdkMethod(c.proofs,'issue');
  const withDeadline=sdkMethod(c.client.connection,'withDeadline'),withAbort=sdkMethod(c.client.connection,'withAbortSignal'),getHandle=sdkMethod(c.client.workflow,'getHandle');
  if(typeof c.now!=='function'||!Number.isSafeInteger(c.maxRequestMs)||c.maxRequestMs<1||c.maxRequestMs>30000)fail('CONFIGURATION');
  function lifetime(deadlineMs,signal){nativeSignal(signal);if(!Number.isSafeInteger(deadlineMs))fail('REQUEST');const cutoff=Math.min(deadlineMs,c.now()+c.maxRequestMs);return {...createOperationLifetime({now:c.now,signal,deadlineMs:cutoff,errorFactory:code=>Object.assign(Error(code),{code,outcome:'UNKNOWN'})}),deadlineMs:cutoff};}
@@ -39,17 +48,25 @@ export function createScheduledRunCancellation(configuration){
   async prepare(value){const v=own(value,['callerIdentity','scopes','request','deadlineMs'],['signal']),life=lifetime(v.deadlineMs,v.signal);try{
    const r=await selection({...v,scheduleId:v.request.scheduleId},life);return data(r.runs);
   }finally{life.close();}},
-  async cancel(value){const v=own(value,['binding','deadlineMs'],['signal']),b=data(v.binding),life=lifetime(v.deadlineMs,v.signal);try{
+  async cancel(value){const v=own(value,['binding','deadlineMs'],['signal','attended']),b=data(v.binding),life=lifetime(v.deadlineMs,v.signal);try{
    const i=b.intent;if(i?.operation!=='cancel_scheduled_task'||i.cancel?.running!=='request_cancel'||!same(b.callerIdentity,i.projection.owner))fail('SELECTION');
+   const attended=issueProof===null?null:attendedSelection(v.attended,b.callerIdentity);
    const s=await selection({callerIdentity:b.callerIdentity,scopes:i.projection.scopes,scheduleId:i.projection.scheduleId},life);
    if(!same(i.cancel.runs,s.runs))fail('SELECTION');if(s.row===null)return;
+   // Core proof of the owner's approval of exactly this intent, decision, runs and lineage targets, issued inside this request.
+   let authority={};
+   if(issueProof!==null){
+    const intentSha256=hash(i),expected=data({intentId:i.intentId,intentSha256,scheduleId:i.projection.scheduleId,decisionSha256:hash(b.approval),runs:s.runs,targets:s.expectedLineage.bindings});
+    const issued=data(await life.run(signal=>issueProof({attended,intent:i,intentSha256,decision:b.approval,targets:expected.targets,signal,deadlineMs:life.deadlineMs})));
+    if(typeof issued?.proof!=='string')fail('AUTHORITY');authority={proof:issued.proof,expected};
+   }
    // Per-call guards retain the immutable human-approved selection through the actual control boundary. Another resume may
    // create work, but this approval cannot silently select or retire it. No shared mutable expected-selection state exists.
    const runControl={async cancel(call){
     if(!same(call.binding,s.expectedLineage.currentBinding))fail('SELECTION');
     const fresh=await selection({callerIdentity:b.callerIdentity,scopes:i.projection.scopes,scheduleId:i.projection.scheduleId},life);
     if(!same(fresh.expectedLineage,s.expectedLineage)||!same(fresh.runs,s.runs))fail('SELECTION');
-    return cancelRun(call);
+    return cancelRun({...call,...authority});
    }},retirement={retire(call){if(!s.expectedLineage.bindings.some(binding=>same(binding,call.binding)))fail('SELECTION');return retire(call);}};
    const jobs=createScheduledJobLifecycle({store:c.store,runControl,retirement,now:c.now,maxRequestMs:c.maxRequestMs});
    const receipt=await life.run(signal=>jobs.cancel({occurrence:s.selected.occurrence,effect:s.selected.effect,expectedLineage:s.expectedLineage,signal,deadlineMs:v.deadlineMs}));

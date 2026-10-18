@@ -38,7 +38,8 @@ test('intents enabled with the canonical membership gate: the intent application
  const admitted=[];const gate={async admit({credential}){admitted.push(credential);throw Object.assign(Error('synthetic membership refusal'),{code:'ACCESS_DENIED'});},async recheck(){throw Error('not reached');}};
  const {assembly,touched,owner}=assemble({enabled:true},{gate});
  try{
-  assert.equal(owner('intents.application'),'composed');assert.equal(owner('tasks.commands'),'disabled');assert.equal(owner('lifecycle.approvals'),'unavailable');
+  // The lifecycle's approval wait now composes over Meri's own journal proposal reader and the shared Core decision adapter.
+  assert.equal(owner('intents.application'),'composed');assert.equal(owner('tasks.commands'),'disabled');assert.equal(owner('lifecycle.approvals'),'composed');
   const r=await post(assembly,'/api/conversations/intents/list',{conversationId:'00000000-0000-4000-8000-000000000001'});
   assert.notEqual(r.status,503);assert.deepEqual(admitted,['token'],'the request reached the intent application\'s membership gate');assert.deepEqual(touched,[]);
  }finally{await assembly.close();}

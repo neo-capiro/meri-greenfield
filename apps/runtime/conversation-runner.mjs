@@ -9,6 +9,8 @@ import {constants} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {join,dirname,isAbsolute} from 'node:path';
 import {compileNativePreparationIntent,RUNNER_SDK_CA_FILE} from './native-authority/preparation-intent.mjs';
+import {sdkSkillPluginDirectory} from './native-authority/sdk-option-template.mjs';
+import {prepareRunSkillPlugin} from '../worker/conversation/capabilities/skill-plugin.mjs';
 import {createLifecycleRunOwner} from '../control/conversations/lifecycle/worker-owner.mjs';
 import {createTaskSelectedSkills} from './selected/task.mjs';
 import {createRuntimeSdkSessionFactory,createOwnedRuntimeSdkSession} from './sdk-session-runtime.mjs';
@@ -67,12 +69,14 @@ export function assembleConversationRunner({configuration,native,query,credentia
   lifecycle={captureOwnsClose:configuration.captureOwnsClose??false,captureCheckpoint:({binding:b,signal,...input})=>{localBinding(b);return call('runner/checkpoint/capture',input,signal);},captureCompletion:async({binding:b,signal,...input})=>{localBinding(b);await sdkSession?.settle(signal);return call('runner/checkpoint/complete',input,signal);}};
  }
  const append=storageMethod(runOwner,'append');runOwner={...runOwner,async append(input){if(input.event.type==='run.status'&&input.event.data.state==='completed')await sdkSession?.settle(input.signal);return append(input);}};
- const prepareRuntime=async({binding:b,versions,signal,runtimeSignal,continuation,nextTurn,sourceRequest,request,scopes})=>{if(canonicalSha256(versions)!==configuredVersionsSha256)throw fault('RUNNER_VERSION_REFUSED');if(continuation!==undefined&&nextTurn!==undefined)throw fault('RUNNER_RUNTIME_REFUSED');const lineage=nextTurn!==undefined?{nextTurn}:continuation!==undefined?{continuation}:null,resumed=lineage?{...lineage,sourceRequest,request,scopes}:{};const r=await call('runner/runtime',{versions,...resumed},signal);own(r,['binding','versions','proxyUrl','proxyCredential','model','deadlineMs','maxTurns','maxCostMicroUSD','maxOutputBytes'],[...(lineage===null?[]:['restoreReceipt']),...(sessionFactory===undefined?[]:['sdkSessionKey'])]);if(canonicalSha256(r.binding)!==canonicalSha256(b)||canonicalSha256(r.versions)!==configuredVersionsSha256||new URL(r.proxyUrl).origin!==configuration.proxyOrigin)throw fault('RUNNER_RUNTIME_REFUSED');
+ const prepareRuntime=async({binding:b,versions,signal,runtimeSignal,continuation,nextTurn,sourceRequest,request,scopes,skillPlugin})=>{if(canonicalSha256(versions)!==configuredVersionsSha256)throw fault('RUNNER_VERSION_REFUSED');if(continuation!==undefined&&nextTurn!==undefined)throw fault('RUNNER_RUNTIME_REFUSED');const lineage=nextTurn!==undefined?{nextTurn}:continuation!==undefined?{continuation}:null,resumed=lineage?{...lineage,sourceRequest,request,scopes}:{};const r=await call('runner/runtime',{versions,...resumed},signal);own(r,['binding','versions','proxyUrl','proxyCredential','model','deadlineMs','maxTurns','maxCostMicroUSD','maxOutputBytes'],[...(lineage===null?[]:['restoreReceipt']),...(sessionFactory===undefined?[]:['sdkSessionKey'])]);if(canonicalSha256(r.binding)!==canonicalSha256(b)||canonicalSha256(r.versions)!==configuredVersionsSha256||new URL(r.proxyUrl).origin!==configuration.proxyOrigin)throw fault('RUNNER_RUNTIME_REFUSED');
   const {sdkSessionKey,...runtime}=r;let sessionStore;
   if(sessionFactory!==undefined){if(sdkSessionKey===undefined||sdkSessionKey===null&&lineage!==null)throw fault('RUNNER_SDK_REGISTRATION_UNAVAILABLE');sessionStore=await sdkSession.prepare({binding:b,sessionKey:sdkSessionKey,signal,...(lineage??{}),...(sdkSessionKey===null||lineage!==null?{runtimeSignal}:{})});}
   else sessionStore={load:key=>call('runner/session/load',{key}).then(v=>{own(v,['entries']);return v.entries;}),append:(key,entries)=>call('runner/session/append',{key,entries}).then(v=>{own(v,['committed']);if(v.committed!==true)throw fault('SESSION_PERSISTENCE_FAILED');})};
   const directories=await ensureSdkConfigurationDirectories(sdkConfigurationDirectories(configuration));
-  return {...runtime,cwd:configuration.workspace,sessionStore,...directories};};
+  // G3: the read-only skill plugin copy under the admitted private config parent, one run-invariant path (sdkSkillPluginDirectory).
+  const plugin=skillPlugin===true&&directories.sdkConfigDirectory!==undefined?await prepareRunSkillPlugin(sdkSkillPluginDirectory(dirname(directories.sdkConfigDirectory))):undefined;
+  return {...runtime,cwd:configuration.workspace,sessionStore,...directories,...(plugin?{skillPluginDirectory:plugin.directory}:{})};};
  const activity=createConversationActivity({runOwner,prepareRuntime,selectedSkills,now,...(readPort?{generalReads:readPort}:{}),...(governedIntents?{governedIntents}:{}),...(query?{query}:{}),...(lifecycle?{lifecycle}:{}),heartbeat:()=>{}});
  const execute=async input=>{try{return await activity(input);}finally{try{await selectedSkills.close();}finally{await sdkSession?.close();}}};
  Object.defineProperty(execute,'cleanupStatus',{value:()=>sdkSession?.cleanupStatus()??{pendingInitializations:0,closed:true,failures:[],physicalStopProven:false}});return execute;
