@@ -19,7 +19,7 @@ mock.module('../capabilities/index.mjs',{namedExports:{createSdkCapabilities:()=
 mock.module('../continuation/activity-lifecycle.mjs',{namedExports:{HOLD_CHECKPOINT_FAILED:'HOLD_CHECKPOINT_FAILED',assertLifecycleConfiguration(){},
  createActivityLifecycle:()=>({observe(){},isHeld:()=>false,canCaptureCompletion:()=>false,check(){},failure:new Promise(()=>{}),finish:close('finish'),close:close('controls')})}});
 const {createConversationActivity}=await import('../activity.mjs');
-const selected=selectSkill('quick_skill.client_changes','1.0.0');
+const selected=selectSkill('quick_skill.client_changes','1.0.1');
 function execute({bad,mode,failed=false,signal,deadlineOffsetMs=5000}){
  active={calls:[],bad,mode};let n=600;
  const run={binding,versions,scopes,state:'queued',policyRevision:scopes[0].policyRevision,createdAt:new Date().toISOString()};

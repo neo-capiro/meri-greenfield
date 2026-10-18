@@ -9,7 +9,7 @@ import { CATALOG_OPERATION_BINDINGS } from '../retrieval-0.2/catalog-validation.
 import { canonicalSha256 } from '../validate.mjs';
 
 const catalog = () => JSON.parse(readFileSync(new URL('../retrieval-0.2/catalog.json', import.meta.url)));
-const operation = id => resolveOperationContract({id, version: '0.2.0'});
+const operation = id => resolveOperationContract({id, version: id==='get_client_context'?'0.3.0':'0.2.0'});
 const added = ['list_upcoming_meetings','read_client_meetings','query_debriefs','query_tasks','search_capiro_data',
   'search_federal_contract_awards','search_federal_subawards','search_contract_vehicles','search_procurement_forecasts','get_district_federal_market'];
 const nowMs = Date.parse('2026-01-01T00:00:00.000Z');

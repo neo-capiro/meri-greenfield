@@ -41,7 +41,7 @@ export function familyCase(family,id){
  if(NATIVE_FAMILY_CASES.some(([candidate])=>candidate===family)||family==='disclosures')return nativeFamilyCase(family,id);
  if(family==='bill-text')return billTextCase(id);
  if(['research-portfolio','florida-budget'].includes(family))return retainedCase(id);
- const operation={id,version:'0.2.0'};let a,args,transport,page;
+ const operation={id,version:id==='get_client_context'?'0.3.0':'0.2.0'};let a,args,transport,page;
  if(family==='meeting-source'){
   const f=meetingFixture(operation,{clientId:meetingClient});a=f.authority;args=f.request;page=f.page;
   transport={endpoints:meetingEndpoints,getCredentials:pins,fetchImpl:async()=>response(page)};

@@ -8,13 +8,15 @@ export function createMailReadHandler(options) {
   if (typeof read !== 'function' || typeof now !== 'function') deny('GATEWAY_CONFIGURATION');
   return async function execute(call) {
     try {
-      const fields = ownFields(call, ['input', 'request', 'authority', 'argumentsSha256'], ['signal']);
+      const fields = ownFields(call, ['input', 'request', 'authority', 'argumentsSha256'], ['signal', 'invocationId']);
       const context = readContext({operation, input: fields.input, request: fields.request,
-        authority: fields.authority, signal: fields.signal}, now);
+        authority: fields.authority, signal: fields.signal,
+        ...(fields.invocationId === undefined ? {} : {invocationId: fields.invocationId})}, now);
       if (fields.argumentsSha256 !== context.argumentsSha256) deny('INVALID_ARGUMENTS');
       context.active();
       const page = frozenData(await read.call(adapter, {operation, input: context.input, request: context.request,
-        authority: context.authority, signal: context.signal}));
+        authority: context.authority, signal: context.signal,
+        ...(context.invocationId === undefined ? {} : {invocationId: context.invocationId})}));
       context.active(); assertMailPage(page, context, context.request); context.active();
       const output = JSON.stringify(page); context.active(); return output;
     } catch (error) { throw safeFailure(error); }

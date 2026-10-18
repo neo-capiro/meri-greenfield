@@ -7,12 +7,12 @@ const id=n=>`${n.repeat(8)}-${n.repeat(4)}-4${n.repeat(3)}-8${n.repeat(3)}-${n.r
 const authority={binding:{tenantId:id('1'),actorId:id('2')},policyRevision:'p1',subject:{kind:'client',entityType:'client',entityIds:[id('3')]}};
 const now=Date.parse('2026-10-13T12:00:00Z');
 function context(operation,request={},changes={}) {
- const contract=resolveOperationContract({id:operation,version:'0.2.0'});
+ const contract=resolveOperationContract({id:operation,version:operation==='get_client_context'?'0.3.0':'0.2.0'});
  return prepareProjectionReadContext({entry:{contract},request,authority,defaultCongress:119,observedAtMs:now,...changes});
 }
 test('six canonical private binding profiles compose existing context keys without activating catalog',()=>{
  for(const op of ['search_memory','read_monday_client_boards','get_client_context','find_contacts','resolve_entity','read_client_documents']) {
-  const c=resolveOperationContract({id:op,version:'0.2.0'});
+  const c=resolveOperationContract({id:op,version:op==='get_client_context'?'0.3.0':'0.2.0'});
   assert.equal(c.binding.dispatchProfile,op==='read_client_documents'?'client-documents/1':'bound-projection/1');
   assert.equal(c.descriptor.handler,null);assert.equal(c.descriptor.qualification,'pending');assert.equal(c.descriptor.availability,'unimplemented');
  }

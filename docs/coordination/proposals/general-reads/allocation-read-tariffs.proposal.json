@@ -117,7 +117,7 @@
   {
    "operation": {
     "id": "get_client_context",
-    "version": "0.2.0"
+    "version": "0.3.0"
    },
    "chargeMicrousd": 1
   },

@@ -15,7 +15,7 @@ const NOW=Date.parse('2026-10-12T20:00:00.000Z'),at=new Date(NOW).toISOString();
 const binding={tenantId:'vertical-tenant',actorId:'vertical-actor',conversationId:id(1),runId:id(2),attemptId:id(3),workerId:id(4),writerFence:1};
 const scope={tenantId:binding.tenantId,kind:'client',resourceId:id(5),policyRevision:'policy:review'};
 const object={objectId:id(6),versionId:'version:exact',sha256:'a'.repeat(64),bytes:17,scopes:[scope]};
-const resolve=id=>canonical.resolveOperationContract({id,version:'0.2.0'});
+const resolve=id=>canonical.resolveOperationContract({id,version:id==='get_client_context'?'0.3.0':'0.2.0'});
 const commands={
  create_task:{raw:{title:'  Follow up  ',clientId:' ',dueDate:' '},ctx:{commandContext:{binding,clientResolution:null}},action:'task.create',expected:{arguments:{title:'Follow up',clientId:null,dueDate:null},attachments:[]}},
  update_task:{raw:{taskId:id(7).toUpperCase(),status:' OPEN '},ctx:{commandContext:{binding}},action:'task.update',expected:{arguments:{taskId:id(7),mode:'unconditional_patch',patch:{status:'todo'}},attachments:[]}},
@@ -102,9 +102,17 @@ const prior=JSON.parse(readFileSync(new URL('../../../docs/qualification/candida
 test('final all84 prior descriptors and callback bodies retain two Portfolio footnotes and accepted passive projection dispatch metadata',()=>{
  const replacement='Projected Portfolio evidence has its own get_research_evidence binding; this detail/changes operation does not return it.';
  for(const old of prior.operations){const d=structuredClone(resolve(old.id).descriptor);if(['get_research_portfolio','get_research_portfolio_changes'].includes(old.id)){assert.equal(d.limitations.at(-1),replacement);d.limitations[d.limitations.length-1]=prior.oldPortfolioLimitation;}
-  // f33ea1a8 (read chain) split search_capiro_data's raw DataSearchRequest from its normalized input: assert it exactly, then undo only it.
+  // Rewind only the reviewed data-search request and profile 0.3 successor before comparing historical identities.
   if(old.id==='search_capiro_data'){assert.deepEqual(d.inputSchema,{id:'urn:meri:retrieval:data-search:0.2.0#/$defs/DataSearchRequest',sha256:'b390270625b4662df487f04b13df745f422d10a2a8aa90e79e90a7ce75219d60'});assert.equal(d.outputSchema.sha256,d.inputSchema.sha256);
    d.inputSchema={id:'urn:meri:retrieval:data-search:0.2.0#/$defs/DataSearchInput',sha256:'96e5d1ebc461dc53db86e2fd14e2863d93d5c651e134382a2da5daefd3836fec'};d.outputSchema.sha256=d.inputSchema.sha256;}
+  if(old.id==='get_client_context'){
+   assert.equal(d.operation.version,'0.3.0');d.operation.version='0.2.0';
+   for(const field of ['inputSchema','outputSchema']){
+    const suffix=field==='inputSchema'?'ClientKnowledgeProfileRequest':'ClientKnowledgeProfileOutput';
+    assert.deepEqual(d[field],{id:`urn:meri:retrieval:client-knowledge-profile:0.3.0#/$defs/${suffix}`,sha256:'7d422f92a4771b2d7e869e45371396c12b8a69934f9cb8ca50f5821ccab514a2'});
+    d[field]={id:`urn:meri:retrieval:client-knowledge-profile:0.2.0#/$defs/${suffix}`,sha256:'67ad0fd59fe7b995e5e9c73d60a82a12220c58d74a81672b485d9279458ba27d'};
+   }
+  }
   assert.equal(hash(d),old.sha256,old.id);}
  for(const old of prior.bindings){const b=resolve(old.id).binding,serial=JSON.parse(JSON.stringify(b,(_k,v)=>typeof v==='function'?{source:v.toString()}:v));
   // Accepted2c21104 adds metadata only; retain the complete original callback hash.
@@ -113,8 +121,9 @@ test('final all84 prior descriptors and callback bodies retain two Portfolio foo
   if(projected.includes(old.id)){assert.equal(serial.dispatchProfile,'bound-projection/1');delete serial.dispatchProfile;}
   if(old.id==='read_client_documents'){assert.equal(serial.dispatchProfile,'client-documents/1');delete serial.dispatchProfile;}
   if(old.id==='search_capiro_data'){assert.equal(serial.input,'DataSearchRequest');serial.input='DataSearchInput';}
+  if(old.id==='get_client_context'){assert.equal(serial.version,'0.3.0');serial.version='0.2.0';}
   assert.equal(hash(serial),old.sha256,old.id);}
- for(const old of prior.originals){const expected=structuredClone(old);if(cases.some(x=>x[0]===old.id)){expected.state='mapped';expected.replacement={id:old.id,version:'0.2.0'};}if(old.id==='get_research_evidence'){assert.equal(old.boundary,'Proposed authorized Research Portfolio record/evidence/history read only; owner/client/grant policies and source inclusion require explicit acceptance; management workflow parity deferred.');expected.boundary='D011/R2 selected projected evidence: exact authorized review and retained snapshot plus current annual continuity. Raw member and unrestricted older-history exposure unavailable; no Portfolio management workflow parity.';}assert.deepEqual(catalog.originals.find(x=>x.id===old.id),expected,old.id);}
+ for(const old of prior.originals){const expected=structuredClone(old);if(cases.some(x=>x[0]===old.id)){expected.state='mapped';expected.replacement={id:old.id,version:'0.2.0'};}if(old.id==='get_client_context')expected.replacement={id:old.id,version:'0.3.0'};if(old.id==='get_research_evidence'){assert.equal(old.boundary,'Proposed authorized Research Portfolio record/evidence/history read only; owner/client/grant policies and source inclusion require explicit acceptance; management workflow parity deferred.');expected.boundary='D011/R2 selected projected evidence: exact authorized review and retained snapshot plus current annual continuity. Raw member and unrestricted older-history exposure unavailable; no Portfolio management workflow parity.';}assert.deepEqual(catalog.originals.find(x=>x.id===old.id),expected,old.id);}
 });
 test('final source accounting cannot promote whole requirements or native gates',()=>{
  const ledger=JSON.parse(readFileSync(new URL('../../../docs/qualification/candidates/vertical-source-20261012/integration/requirements-continuation.json',import.meta.url)));

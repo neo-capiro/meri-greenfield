@@ -19,7 +19,7 @@ const [ROSTER,MEMBERS,CONTRACTORS,BILLS,REPORT,RULE,CERT,INTEL,DATASETS,FACILITY
 const T='2026-10-12T12:00:00.000Z',AFTER='2026-10-12T12:00:00.001Z',BEFORE='2026-10-12T11:59:59.999Z';
 const U='ab123456-1234-4234-8234-123456789abc',V='cd123456-1234-4234-8234-123456789abc';
 const copy=structuredClone;
-const resolve=id=>resolveOperationContract({id,version:'0.2.0'});
+const resolve=id=>resolveOperationContract({id,version:id==='get_client_context'?'0.3.0':'0.2.0'});
 const schema=group=>JSON.parse(readFileSync(new URL(`../retrieval-0.2/${group}.schema.json`,import.meta.url)));
 const constant=(group,key)=>schema(group).$defs[key].const;
 function scope(){return {binding:{tenantId:'review-tenant',actorId:'review-actor',conversationId:U,runId:V,attemptId:U,workerId:V,writerFence:8},subject:{kind:'client',entityType:'client',entityIds:[U],tenantId:'review-tenant',actorId:'review-actor',authorizationDecisionId:V,policyRevision:'policy-8',rosterVersionId:null,scopes:[{tenantId:'review-tenant',kind:'client',resourceId:U,policyRevision:'policy-8'}]}};}
@@ -50,7 +50,7 @@ test('exact PR28 descriptors and callback source survive in single registry with
  assert.equal(catalog.originals.filter(x=>x.disposition==='deferred').length,43);
  assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,96);
  assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.replacement===null).length,0);
- for(const old of baseline.originals.map(expectedExistingOriginal))assert.deepEqual(catalog.originals.find(x=>x.id===old.id),(ids.includes(old.id)||civicIds.includes(old.id))?{...old,state:'mapped',replacement:{id:old.id,version:'0.2.0'}}:old);
+ for(const old of baseline.originals.map(expectedExistingOriginal))assert.deepEqual(catalog.originals.find(x=>x.id===old.id),(ids.includes(old.id)||civicIds.includes(old.id))?{...old,state:'mapped',replacement:{id:old.id,version:old.id==='get_client_context'?'0.3.0':'0.2.0'}}:old);
  const serialized=JSON.parse(JSON.stringify(bindings.filter(x=>!ids.includes(x.id)&&!civicIds.includes(x.id)&&x.id!=='actions.query'),(k,v)=>typeof v==='function'?{source:v.toString()}:v));assert.deepEqual(serialized,oldBindings.map(expectedExistingBinding));
  for(const id of ['save_memory','create_task','create_word','schedule_task','run_analysis']){
   const old=baseline.originals.map(expectedExistingOriginal).find(x=>x.id===id);assert.deepEqual(catalog.originals.find(x=>x.id===id),old);assert.equal(resolve(id).descriptor.availability,'unimplemented');assert.equal(resolve(id).descriptor.handler,null);

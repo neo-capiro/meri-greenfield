@@ -13,14 +13,15 @@ import {z} from 'zod';
 import catalog from '../../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
 import {resolveOperationContract} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 const fail=()=>{throw Object.assign(Error('READ_SCHEMA_CONFIGURATION'),{code:'READ_SCHEMA_CONFIGURATION'});};
-const RETRIEVAL=/^urn:meri:retrieval:([a-z0-9-]+):0\.2\.0$/u;
+const RETRIEVAL=/^urn:meri:retrieval:([a-z0-9-]+):(0\.2\.0|0\.3\.0)$/u;
 const ANNOTATIONS=new Set(['$schema','$id','title','description','default','examples','$comment']);
 /** @param {string} id */
 function document(id){
- const group=RETRIEVAL.exec(id)?.[1];if(!group)fail();
+ const match=RETRIEVAL.exec(id),group=match?.[1],version=match?.[2];if(!group||version==='0.3.0'&&group!=='client-knowledge-profile')fail();
  const descriptor=catalog.operations.find(d=>d.inputSchema.id.split('#')[0]===id);
  const file=descriptor?resolveOperationContract(descriptor.operation).binding?.group:group;if(typeof file!=='string')fail();
- const bytes=readFileSync(new URL(`../../../../packages/contracts/retrieval-0.2/${file}.schema.json`,import.meta.url));
+ const schemaFile=file==='client-knowledge-profile'&&version==='0.3.0'?'client-knowledge-profile-v03':file;
+ const bytes=readFileSync(new URL(`../../../../packages/contracts/retrieval-0.2/${schemaFile}.schema.json`,import.meta.url));
  const doc=JSON.parse(bytes.toString('utf8'));if(doc.$id!==id)fail();
  return {doc,sha256:createHash('sha256').update(bytes).digest('hex')};
 }
