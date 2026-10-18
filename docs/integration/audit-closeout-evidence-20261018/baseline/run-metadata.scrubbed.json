@@ -1,0 +1,209 @@
+{
+  "node": "v24.19.0",
+  "npm": "11.9.0",
+  "typescript": "5.9.3",
+  "TZ": "America/Toronto",
+  "NODE_OPTIONS": null,
+  "tasks": [
+    {
+      "pin": "immediate-parent",
+      "name": "runtime-types",
+      "argv": [
+        "node",
+        "apps/runtime/node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--pretty",
+        "false",
+        "-p",
+        "apps/runtime/tsconfig.json"
+      ],
+      "cwd": "<immediate-parent-worktree>",
+      "sha": "1aa5c66e9283024e78ad6f26f5450cbc61a37659",
+      "startedAt": "2026-10-18T21:47:28.418680+00:00",
+      "exitCode": 2,
+      "log": "immediate-parent-runtime-types.scrubbed.log",
+      "endedAt": "2026-10-18T21:47:48.681382+00:00",
+      "originalRawLogName": "immediate-parent-runtime-types.raw.log",
+      "originalRawLogSha256": "f288361ede5079e593ded80e09b577ab897c5a0b6229de63f576d7a4662def8d",
+      "bytes": 405,
+      "sha256": "f288361ede5079e593ded80e09b577ab897c5a0b6229de63f576d7a4662def8d"
+    },
+    {
+      "pin": "receiving-parent",
+      "name": "runtime-types",
+      "argv": [
+        "node",
+        "apps/runtime/node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--pretty",
+        "false",
+        "-p",
+        "apps/runtime/tsconfig.json"
+      ],
+      "cwd": "<receiving-parent-worktree>",
+      "sha": "141f2ada6378382f2bf7462d8a2c5dc7758230d0",
+      "startedAt": "2026-10-18T21:47:28.420256+00:00",
+      "exitCode": 2,
+      "log": "receiving-parent-runtime-types.scrubbed.log",
+      "endedAt": "2026-10-18T21:47:48.816857+00:00",
+      "originalRawLogName": "receiving-parent-runtime-types.raw.log",
+      "originalRawLogSha256": "f288361ede5079e593ded80e09b577ab897c5a0b6229de63f576d7a4662def8d",
+      "bytes": 405,
+      "sha256": "f288361ede5079e593ded80e09b577ab897c5a0b6229de63f576d7a4662def8d"
+    },
+    {
+      "pin": "candidate",
+      "name": "runtime-types",
+      "argv": [
+        "node",
+        "apps/runtime/node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--pretty",
+        "false",
+        "-p",
+        "apps/runtime/tsconfig.json"
+      ],
+      "cwd": "<candidate-worktree>",
+      "sha": "a1876afaeaa59d9da47729487d490cba8cfc9d9c",
+      "startedAt": "2026-10-18T21:47:28.416097+00:00",
+      "exitCode": 2,
+      "log": "candidate-runtime-types.scrubbed.log",
+      "endedAt": "2026-10-18T21:47:49.924349+00:00",
+      "originalRawLogName": "candidate-runtime-types.raw.log",
+      "originalRawLogSha256": "f288361ede5079e593ded80e09b577ab897c5a0b6229de63f576d7a4662def8d",
+      "bytes": 405,
+      "sha256": "f288361ede5079e593ded80e09b577ab897c5a0b6229de63f576d7a4662def8d"
+    },
+    {
+      "pin": "receiving-parent",
+      "name": "control-types",
+      "argv": [
+        "node",
+        "apps/runtime/node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--pretty",
+        "false",
+        "-p",
+        "apps/control/conversations/tsconfig.json"
+      ],
+      "cwd": "<receiving-parent-worktree>",
+      "sha": "141f2ada6378382f2bf7462d8a2c5dc7758230d0",
+      "startedAt": "2026-10-18T21:47:28.421008+00:00",
+      "exitCode": 2,
+      "log": "receiving-parent-control-types.scrubbed.log",
+      "endedAt": "2026-10-18T21:47:52.329498+00:00",
+      "originalRawLogName": "receiving-parent-control-types.raw.log",
+      "originalRawLogSha256": "0516385759864540947ba7cfdc4d3daf706deab55b44293d8f8f29ae24e37096",
+      "bytes": 2826,
+      "sha256": "0516385759864540947ba7cfdc4d3daf706deab55b44293d8f8f29ae24e37096"
+    },
+    {
+      "pin": "candidate",
+      "name": "control-types",
+      "argv": [
+        "node",
+        "apps/runtime/node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--pretty",
+        "false",
+        "-p",
+        "apps/control/conversations/tsconfig.json"
+      ],
+      "cwd": "<candidate-worktree>",
+      "sha": "a1876afaeaa59d9da47729487d490cba8cfc9d9c",
+      "exitCode": 2,
+      "log": "candidate-control-types.scrubbed.log",
+      "correctedDependencySetupRerun": true,
+      "originalRawLogName": "candidate-control-types.raw.log",
+      "originalRawLogSha256": "0516385759864540947ba7cfdc4d3daf706deab55b44293d8f8f29ae24e37096",
+      "bytes": 2826,
+      "sha256": "0516385759864540947ba7cfdc4d3daf706deab55b44293d8f8f29ae24e37096",
+      "initialAttemptStartedAt": "2026-10-18T21:47:28.416431+00:00",
+      "initialAttemptEndedAt": "2026-10-18T21:47:53.312909+00:00",
+      "canonicalRerunTimestamps": "not recorded; initial attempt times must not be interpreted as canonical rerun times"
+    },
+    {
+      "pin": "immediate-parent",
+      "name": "control-types",
+      "argv": [
+        "node",
+        "apps/runtime/node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--pretty",
+        "false",
+        "-p",
+        "apps/control/conversations/tsconfig.json"
+      ],
+      "cwd": "<immediate-parent-worktree>",
+      "sha": "1aa5c66e9283024e78ad6f26f5450cbc61a37659",
+      "exitCode": 2,
+      "log": "immediate-parent-control-types.scrubbed.log",
+      "correctedDependencySetupRerun": true,
+      "originalRawLogName": "immediate-parent-control-types.raw.log",
+      "originalRawLogSha256": "0516385759864540947ba7cfdc4d3daf706deab55b44293d8f8f29ae24e37096",
+      "bytes": 2826,
+      "sha256": "0516385759864540947ba7cfdc4d3daf706deab55b44293d8f8f29ae24e37096",
+      "initialAttemptStartedAt": "2026-10-18T21:47:28.419395+00:00",
+      "initialAttemptEndedAt": "2026-10-18T21:47:54.520952+00:00",
+      "canonicalRerunTimestamps": "not recorded; initial attempt times must not be interpreted as canonical rerun times"
+    },
+    {
+      "pin": "candidate",
+      "name": "standard",
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "cwd": "<candidate-worktree>",
+      "sha": "a1876afaeaa59d9da47729487d490cba8cfc9d9c",
+      "startedAt": "2026-10-18T21:47:28.415471+00:00",
+      "exitCode": 1,
+      "log": "candidate-standard.scrubbed.log",
+      "endedAt": "2026-10-18T21:48:27.249685+00:00",
+      "originalRawLogName": "candidate-standard.raw.log",
+      "originalRawLogSha256": "62b5f09ab56fd4dd5bb8f84c7a19cbae24ebf0801787fbe13c8b9d9c076e7021",
+      "bytes": 420403,
+      "sha256": "6256c224570871f46ddb0ac381045e0e3f9a60cc4578d73b3b915bbe5647eb7f"
+    },
+    {
+      "pin": "immediate-parent",
+      "name": "standard",
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "cwd": "<immediate-parent-worktree>",
+      "sha": "1aa5c66e9283024e78ad6f26f5450cbc61a37659",
+      "startedAt": "2026-10-18T21:47:28.418464+00:00",
+      "exitCode": 1,
+      "log": "immediate-parent-standard.scrubbed.log",
+      "endedAt": "2026-10-18T21:48:27.314078+00:00",
+      "originalRawLogName": "immediate-parent-standard.raw.log",
+      "originalRawLogSha256": "cf8d054fed2efb294f9ee2aa497185bdf8f79e2b0d6b8702b3aff4c06c0ffaa1",
+      "bytes": 421058,
+      "sha256": "39d25a6fd4c141b9dd6f812454208b2a5cb4fd008c2d12446f76d307f8c6d81b"
+    },
+    {
+      "pin": "receiving-parent",
+      "name": "standard",
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "cwd": "<receiving-parent-worktree>",
+      "sha": "141f2ada6378382f2bf7462d8a2c5dc7758230d0",
+      "startedAt": "2026-10-18T21:47:28.420037+00:00",
+      "exitCode": 1,
+      "log": "receiving-parent-standard.scrubbed.log",
+      "endedAt": "2026-10-18T21:48:27.540290+00:00",
+      "originalRawLogName": "receiving-parent-standard.raw.log",
+      "originalRawLogSha256": "46936eab754f03dc004fbb73073c006a5c2ae1816650a8743270d0189fe5d5b0",
+      "bytes": 422060,
+      "sha256": "bd50cf956eaade53b898d8c2bbccbdaab407f2e8bbd672bf048a5080fa15f9ff"
+    }
+  ],
+  "logHashNote": "Published log fields/hash refer to scrubbed files. Original raw hashes are preserved separately. Canonical dependency-setup rerun timestamps were not recorded; only original-attempt times exist for the two labeled control rows."
+}

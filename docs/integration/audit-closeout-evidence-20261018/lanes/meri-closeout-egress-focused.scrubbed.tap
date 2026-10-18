@@ -1,0 +1,41 @@
+✔ the grant binds the run and the digest of its effective policy; a disabled policy or a tampered grant has no control (12.086481ms)
+✔ an allowlisted origin is admitted and pinned to the checked address; each hop of a redirect chain is decided anew (5.757531ms)
+✔ unlisted sub-resource, fetch, download, WebSocket and tunnel origins are refused at the control (1.108309ms)
+✔ the control enforces the effective tenant/role-narrowed list, not the platform-approved maximum (12.456037ms)
+✔ resolved-address and rebinding protection: any denied answer refuses the name, every admission resolves afresh (6.860141ms)
+✔ web ports only, IP literals without DNS, revocation and expiry (10.714741ms)
+✔ forward-proxy requests: CONNECT tunnels and absolute-form http are decided by the same rule; anything else is refused (2.927899ms)
+✔ H3: the activation record makes the effective origin allowlist mandatory for every connection kind and hop (1.629925ms)
+✔ H3: an allowlisted public origin redirecting to an unlisted public origin is refused at the redirect hop (2.673456ms)
+✔ H3: unlisted sub-resource, fetch, download and WebSocket origins are refused; listed ones pass with http/https origin mapping (0.530889ms)
+✔ H3: the egress decision uses the effective tenant/role-narrowed list, never the platform-approved maximum (7.016537ms)
+✔ the activation checklist names every egress requirement, the proxy route and connection coalescing are required, and the gate stays held (12.494506ms)
+✔ an allowlisted name is admitted, dialled only at its checked address, and the Host and proxy headers are normalized (26.360746ms)
+✔ a redirect is relayed, never followed: the next hop is a new request decided on its own and an unlisted target is refused (8.451967ms)
+✔ IP literals, non-public answers, rebinding answers, IPv4-mapped loopback and non-web ports are refused before any dial (16.07602ms)
+✔ the Host header must name the target authority, so an admitted address cannot be asked for another site (3.458293ms)
+✔ a DNS answer that changes after admission cannot move the admitted connection; the next admission is decided afresh (5.227446ms)
+✔ CONNECT admits only allowlisted names on 443/80; wildcard entries admit subdomains, never the apex (12.71326ms)
+✔ SOCKS5 admits only CONNECT by allowlisted name; address-type requests, other commands and auth-only clients are refused (7.894028ms)
+✔ SOCKS5 reads the complete greeting before its method count and refuses truncated or empty method lists (3.587918ms)
+✔ revocation refuses every later admission and destroys tunnels that are already open; expiry refuses too (4.3328ms)
+✔ revocation at an admitted decision never dials an HTTP or CONNECT upstream (5.400006ms)
+✔ the browser run control is enforced by the same proxy: allowlisted origins tunnel, unlisted and non-public ones do not (9.60353ms)
+✔ the proxy listens on loopback only, dials IP literals only, and the Bash runtime fact binds its ports to the domain list (1.676162ms)
+✔ a stalled or failed upstream connect returns a refusal and leaves no late timeout crash (65.701512ms)
+✔ failure to bind the SOCKS listener closes the already-bound HTTP listener (3.472796ms)
+✔ allocation and currentness bind exact host, image, generation, run and effective policy digest (29.417261ms)
+✔ proxy starts denied; only a trusted current run grants it, and failed refresh closes its listener (63.789557ms)
+✔ mismatched grant never opens egress and a lost currentness lease destroys idle proxy sockets (81.328445ms)
+✔ a caller cannot extend an admitted grant while the trusted currentness read is pending (2.369495ms)
+✔ a late currentness reply cannot renew a lease that already expired (20.332105ms)
+✔ a wall-clock rollback cannot extend the last authenticated lease (86.519742ms)
+✔ a late refresh cannot replace an elapsed lease before its timer callback runs (88.781014ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 33
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1251.32877

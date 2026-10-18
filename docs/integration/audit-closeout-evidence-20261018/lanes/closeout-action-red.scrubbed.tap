@@ -1,0 +1,527 @@
+TAP version 13
+# Subtest: independent public receiver actual PR42 query/read
+not ok 1 - independent public receiver actual PR42 query/read
+  ---
+  duration_ms: 164.787634
+  type: 'test'
+  location: '<checkout>/packages/contracts/test/action-application-independent.test.mjs:17:128'
+  failureType: 'testCodeFailure'
+  error: 'LOCAL_FLOW_REFUSED'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    requireOk (file://<checkout>/apps/control/action-application/local/flow.mjs:4:54)
+    runLocalActionFlow (file://<checkout>/apps/control/action-application/local/flow.mjs:5:13)
+    async file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:13:211
+    async TestContext.<anonymous> (file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:17:212)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: independent public receiver actual PR42 draft/draft
+not ok 2 - independent public receiver actual PR42 draft/draft
+  ---
+  duration_ms: 0.107402
+  type: 'test'
+  location: '<checkout>/packages/contracts/test/action-application-independent.test.mjs:17:128'
+  failureType: 'testCodeFailure'
+  error: 'LOCAL_FLOW_REFUSED'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    requireOk (file://<checkout>/apps/control/action-application/local/flow.mjs:4:54)
+    runLocalActionFlow (file://<checkout>/apps/control/action-application/local/flow.mjs:5:13)
+    async file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:13:211
+    async TestContext.<anonymous> (file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:17:212)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: independent public receiver actual PR42 prepare/pending
+not ok 3 - independent public receiver actual PR42 prepare/pending
+  ---
+  duration_ms: 0.059039
+  type: 'test'
+  location: '<checkout>/packages/contracts/test/action-application-independent.test.mjs:17:128'
+  failureType: 'testCodeFailure'
+  error: 'LOCAL_FLOW_REFUSED'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    requireOk (file://<checkout>/apps/control/action-application/local/flow.mjs:4:54)
+    runLocalActionFlow (file://<checkout>/apps/control/action-application/local/flow.mjs:5:13)
+    async file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:13:211
+    async TestContext.<anonymous> (file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:17:212)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: independent public receiver actual PR42 execute/executed
+not ok 4 - independent public receiver actual PR42 execute/executed
+  ---
+  duration_ms: 0.076596
+  type: 'test'
+  location: '<checkout>/packages/contracts/test/action-application-independent.test.mjs:17:128'
+  failureType: 'testCodeFailure'
+  error: 'LOCAL_FLOW_REFUSED'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    requireOk (file://<checkout>/apps/control/action-application/local/flow.mjs:4:54)
+    runLocalActionFlow (file://<checkout>/apps/control/action-application/local/flow.mjs:5:13)
+    async file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:13:211
+    async TestContext.<anonymous> (file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:17:212)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: independent public receiver actual PR42 execute/replay
+not ok 5 - independent public receiver actual PR42 execute/replay
+  ---
+  duration_ms: 0.087692
+  type: 'test'
+  location: '<checkout>/packages/contracts/test/action-application-independent.test.mjs:17:128'
+  failureType: 'testCodeFailure'
+  error: 'LOCAL_FLOW_REFUSED'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    requireOk (file://<checkout>/apps/control/action-application/local/flow.mjs:4:54)
+    runLocalActionFlow (file://<checkout>/apps/control/action-application/local/flow.mjs:5:13)
+    async file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:13:211
+    async TestContext.<anonymous> (file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:17:212)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: independent actual pending approval error and indeterminate accounting remain non-success
+not ok 6 - independent actual pending approval error and indeterminate accounting remain non-success
+  ---
+  duration_ms: 0.115804
+  type: 'test'
+  location: '<checkout>/packages/contracts/test/action-application-independent.test.mjs:18:1'
+  failureType: 'testCodeFailure'
+  error: 'LOCAL_FLOW_REFUSED'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    requireOk (file://<checkout>/apps/control/action-application/local/flow.mjs:4:54)
+    runLocalActionFlow (file://<checkout>/apps/control/action-application/local/flow.mjs:5:13)
+    async file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:13:211
+    async TestContext.<anonymous> (file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:17:212)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: independent public error UNAUTHENTICATED/401
+ok 7 - independent public error UNAUTHENTICATED/401
+  ---
+  duration_ms: 0.940987
+  type: 'test'
+  ...
+# Subtest: independent public error ACCESS_DENIED/403
+ok 8 - independent public error ACCESS_DENIED/403
+  ---
+  duration_ms: 0.122765
+  type: 'test'
+  ...
+# Subtest: independent public error DEADLINE/408
+ok 9 - independent public error DEADLINE/408
+  ---
+  duration_ms: 0.177988
+  type: 'test'
+  ...
+# Subtest: independent public error CANCELLED/499
+ok 10 - independent public error CANCELLED/499
+  ---
+  duration_ms: 0.163476
+  type: 'test'
+  ...
+# Subtest: independent public error COMMAND_APPROVAL_REFUSED/409
+ok 11 - independent public error COMMAND_APPROVAL_REFUSED/409
+  ---
+  duration_ms: 0.128844
+  type: 'test'
+  ...
+# Subtest: independent public error COMMAND_OUTCOME_UNKNOWN/502
+ok 12 - independent public error COMMAND_OUTCOME_UNKNOWN/502
+  ---
+  duration_ms: 0.085128
+  type: 'test'
+  ...
+# Subtest: independent receiver preserves UNKNOWN without retry/approval fields
+ok 13 - independent receiver preserves UNKNOWN without retry/approval fields
+  ---
+  duration_ms: 0.522357
+  type: 'test'
+  ...
+# Subtest: independent receiver preserves RESULT_NOT_RELEASED without retry/approval fields
+ok 14 - independent receiver preserves RESULT_NOT_RELEASED without retry/approval fields
+  ---
+  duration_ms: 0.120812
+  type: 'test'
+  ...
+# Subtest: independent receiver preserves STORED_NOT_RELEASED without retry/approval fields
+ok 15 - independent receiver preserves STORED_NOT_RELEASED without retry/approval fields
+  ---
+  duration_ms: 0.150737
+  type: 'test'
+  ...
+# Subtest: independent receiver preserves NOT_STORED without retry/approval fields
+ok 16 - independent receiver preserves NOT_STORED without retry/approval fields
+  ---
+  duration_ms: 0.102355
+  type: 'test'
+  ...
+# Subtest: independent receiver preserves READ_UNAVAILABLE without retry/approval fields
+ok 17 - independent receiver preserves READ_UNAVAILABLE without retry/approval fields
+  ---
+  duration_ms: 0.084528
+  type: 'test'
+  ...
+# Subtest: independent receiving refusal accepted recommendation
+not ok 18 - independent receiving refusal accepted recommendation
+  ---
+  duration_ms: 0.093652
+  type: 'test'
+  location: '<checkout>/packages/contracts/test/action-application-independent.test.mjs:36:3'
+  failureType: 'testCodeFailure'
+  error: 'LOCAL_FLOW_REFUSED'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    requireOk (file://<checkout>/apps/control/action-application/local/flow.mjs:4:54)
+    runLocalActionFlow (file://<checkout>/apps/control/action-application/local/flow.mjs:5:13)
+    async file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:13:211
+    async TestContext.<anonymous> (file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:17:212)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: independent receiving refusal unknown query field
+not ok 19 - independent receiving refusal unknown query field
+  ---
+  duration_ms: 0.048183
+  type: 'test'
+  location: '<checkout>/packages/contracts/test/action-application-independent.test.mjs:36:3'
+  failureType: 'testCodeFailure'
+  error: 'LOCAL_FLOW_REFUSED'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    requireOk (file://<checkout>/apps/control/action-application/local/flow.mjs:4:54)
+    runLocalActionFlow (file://<checkout>/apps/control/action-application/local/flow.mjs:5:13)
+    async file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:13:211
+    async TestContext.<anonymous> (file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:17:212)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: independent receiving refusal query digest
+not ok 20 - independent receiving refusal query digest
+  ---
+  duration_ms: 0.069975
+  type: 'test'
+  location: '<checkout>/packages/contracts/test/action-application-independent.test.mjs:36:3'
+  failureType: 'testCodeFailure'
+  error: 'LOCAL_FLOW_REFUSED'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    requireOk (file://<checkout>/apps/control/action-application/local/flow.mjs:4:54)
+    runLocalActionFlow (file://<checkout>/apps/control/action-application/local/flow.mjs:5:13)
+    async file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:13:211
+    async TestContext.<anonymous> (file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:17:212)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: independent receiving refusal event binding
+not ok 21 - independent receiving refusal event binding
+  ---
+  duration_ms: 0.054211
+  type: 'test'
+  location: '<checkout>/packages/contracts/test/action-application-independent.test.mjs:36:3'
+  failureType: 'testCodeFailure'
+  error: 'LOCAL_FLOW_REFUSED'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    requireOk (file://<checkout>/apps/control/action-application/local/flow.mjs:4:54)
+    runLocalActionFlow (file://<checkout>/apps/control/action-application/local/flow.mjs:5:13)
+    async file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:13:211
+    async TestContext.<anonymous> (file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:17:212)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: independent receiving refusal event result ref
+not ok 22 - independent receiving refusal event result ref
+  ---
+  duration_ms: 0.050707
+  type: 'test'
+  location: '<checkout>/packages/contracts/test/action-application-independent.test.mjs:36:3'
+  failureType: 'testCodeFailure'
+  error: 'LOCAL_FLOW_REFUSED'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    requireOk (file://<checkout>/apps/control/action-application/local/flow.mjs:4:54)
+    runLocalActionFlow (file://<checkout>/apps/control/action-application/local/flow.mjs:5:13)
+    async file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:13:211
+    async TestContext.<anonymous> (file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:17:212)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: independent receiving refusal draft digest
+not ok 23 - independent receiving refusal draft digest
+  ---
+  duration_ms: 0.040071
+  type: 'test'
+  location: '<checkout>/packages/contracts/test/action-application-independent.test.mjs:36:3'
+  failureType: 'testCodeFailure'
+  error: 'LOCAL_FLOW_REFUSED'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    requireOk (file://<checkout>/apps/control/action-application/local/flow.mjs:4:54)
+    runLocalActionFlow (file://<checkout>/apps/control/action-application/local/flow.mjs:5:13)
+    async file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:13:211
+    async TestContext.<anonymous> (file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:17:212)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: independent receiving refusal recommendation hash
+not ok 24 - independent receiving refusal recommendation hash
+  ---
+  duration_ms: 0.035283
+  type: 'test'
+  location: '<checkout>/packages/contracts/test/action-application-independent.test.mjs:36:3'
+  failureType: 'testCodeFailure'
+  error: 'LOCAL_FLOW_REFUSED'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    requireOk (file://<checkout>/apps/control/action-application/local/flow.mjs:4:54)
+    runLocalActionFlow (file://<checkout>/apps/control/action-application/local/flow.mjs:5:13)
+    async file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:13:211
+    async TestContext.<anonymous> (file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:17:212)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: independent receiving refusal prepare approval confusion
+not ok 25 - independent receiving refusal prepare approval confusion
+  ---
+  duration_ms: 0.034162
+  type: 'test'
+  location: '<checkout>/packages/contracts/test/action-application-independent.test.mjs:36:3'
+  failureType: 'testCodeFailure'
+  error: 'LOCAL_FLOW_REFUSED'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    requireOk (file://<checkout>/apps/control/action-application/local/flow.mjs:4:54)
+    runLocalActionFlow (file://<checkout>/apps/control/action-application/local/flow.mjs:5:13)
+    async file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:13:211
+    async TestContext.<anonymous> (file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:17:212)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: independent receiving refusal proposal digest
+not ok 26 - independent receiving refusal proposal digest
+  ---
+  duration_ms: 0.033941
+  type: 'test'
+  location: '<checkout>/packages/contracts/test/action-application-independent.test.mjs:36:3'
+  failureType: 'testCodeFailure'
+  error: 'LOCAL_FLOW_REFUSED'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    requireOk (file://<checkout>/apps/control/action-application/local/flow.mjs:4:54)
+    runLocalActionFlow (file://<checkout>/apps/control/action-application/local/flow.mjs:5:13)
+    async file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:13:211
+    async TestContext.<anonymous> (file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:17:212)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: independent receiving refusal proposal task substitution
+not ok 27 - independent receiving refusal proposal task substitution
+  ---
+  duration_ms: 0.050026
+  type: 'test'
+  location: '<checkout>/packages/contracts/test/action-application-independent.test.mjs:36:3'
+  failureType: 'testCodeFailure'
+  error: 'LOCAL_FLOW_REFUSED'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    requireOk (file://<checkout>/apps/control/action-application/local/flow.mjs:4:54)
+    runLocalActionFlow (file://<checkout>/apps/control/action-application/local/flow.mjs:5:13)
+    async file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:13:211
+    async TestContext.<anonymous> (file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:17:212)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: independent receiving refusal prepare client substitution
+not ok 28 - independent receiving refusal prepare client substitution
+  ---
+  duration_ms: 0.056956
+  type: 'test'
+  location: '<checkout>/packages/contracts/test/action-application-independent.test.mjs:36:3'
+  failureType: 'testCodeFailure'
+  error: 'LOCAL_FLOW_REFUSED'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    requireOk (file://<checkout>/apps/control/action-application/local/flow.mjs:4:54)
+    runLocalActionFlow (file://<checkout>/apps/control/action-application/local/flow.mjs:5:13)
+    async file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:13:211
+    async TestContext.<anonymous> (file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:17:212)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: independent receiving refusal execute approval confusion
+not ok 29 - independent receiving refusal execute approval confusion
+  ---
+  duration_ms: 0.045379
+  type: 'test'
+  location: '<checkout>/packages/contracts/test/action-application-independent.test.mjs:36:3'
+  failureType: 'testCodeFailure'
+  error: 'LOCAL_FLOW_REFUSED'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    requireOk (file://<checkout>/apps/control/action-application/local/flow.mjs:4:54)
+    runLocalActionFlow (file://<checkout>/apps/control/action-application/local/flow.mjs:5:13)
+    async file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:13:211
+    async TestContext.<anonymous> (file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:17:212)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: independent receiving refusal execute unknown key
+not ok 30 - independent receiving refusal execute unknown key
+  ---
+  duration_ms: 0.042985
+  type: 'test'
+  location: '<checkout>/packages/contracts/test/action-application-independent.test.mjs:36:3'
+  failureType: 'testCodeFailure'
+  error: 'LOCAL_FLOW_REFUSED'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    requireOk (file://<checkout>/apps/control/action-application/local/flow.mjs:4:54)
+    runLocalActionFlow (file://<checkout>/apps/control/action-application/local/flow.mjs:5:13)
+    async file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:13:211
+    async TestContext.<anonymous> (file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:17:212)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: independent receiving refusal execute tenant-scope mismatch
+not ok 31 - independent receiving refusal execute tenant-scope mismatch
+  ---
+  duration_ms: 0.037126
+  type: 'test'
+  location: '<checkout>/packages/contracts/test/action-application-independent.test.mjs:36:3'
+  failureType: 'testCodeFailure'
+  error: 'LOCAL_FLOW_REFUSED'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    requireOk (file://<checkout>/apps/control/action-application/local/flow.mjs:4:54)
+    runLocalActionFlow (file://<checkout>/apps/control/action-application/local/flow.mjs:5:13)
+    async file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:13:211
+    async TestContext.<anonymous> (file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:17:212)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: independent route and status cannot reclassify an actual payload
+not ok 32 - independent route and status cannot reclassify an actual payload
+  ---
+  duration_ms: 0.082344
+  type: 'test'
+  location: '<checkout>/packages/contracts/test/action-application-independent.test.mjs:37:1'
+  failureType: 'testCodeFailure'
+  error: 'LOCAL_FLOW_REFUSED'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    requireOk (file://<checkout>/apps/control/action-application/local/flow.mjs:4:54)
+    runLocalActionFlow (file://<checkout>/apps/control/action-application/local/flow.mjs:5:13)
+    async file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:13:211
+    async TestContext.<anonymous> (file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:17:212)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: independent malformed primitive JSON 
+ok 33 - independent malformed primitive JSON 
+  ---
+  duration_ms: 0.116616
+  type: 'test'
+  ...
+# Subtest: independent malformed primitive JSON null
+ok 34 - independent malformed primitive JSON null
+  ---
+  duration_ms: 0.647115
+  type: 'test'
+  ...
+# Subtest: independent malformed primitive JSON []
+ok 35 - independent malformed primitive JSON []
+  ---
+  duration_ms: 0.110587
+  type: 'test'
+  ...
+# Subtest: independent malformed primitive JSON {}
+ok 36 - independent malformed primitive JSON {}
+  ---
+  duration_ms: 0.094222
+  type: 'test'
+  ...
+# Subtest: independent malformed primitive JSON {"error":
+ok 37 - independent malformed primitive JSON {"error":
+  ---
+  duration_ms: 0.083596
+  type: 'test'
+  ...
+# Subtest: independent malformed primitive JSON {"error":{}} trailing
+ok 38 - independent malformed primitive JSON {"error":{}} trailing
+  ---
+  duration_ms: 0.069805
+  type: 'test'
+  ...
+# Subtest: independent receiving refuses effectful objects without reading any traps
+ok 39 - independent receiving refuses effectful objects without reading any traps
+  ---
+  duration_ms: 0.417328
+  type: 'test'
+  ...
+# Subtest: independent explicit byte and nesting bounds refuse safely
+ok 40 - independent explicit byte and nesting bounds refuse safely
+  ---
+  duration_ms: 0.183206
+  type: 'test'
+  ...
+# Subtest: independent package has no public approval, credential or execution method
+ok 41 - independent package has no public approval, credential or execution method
+  ---
+  duration_ms: 0.284819
+  type: 'test'
+  ...
+# Subtest: independent generated browser receiver has no external/private/Node imports
+not ok 42 - independent generated browser receiver has no external/private/Node imports
+  ---
+  duration_ms: 3.15302
+  type: 'test'
+  location: '<checkout>/packages/contracts/test/action-application-independent.test.mjs:42:1'
+  failureType: 'testCodeFailure'
+  error: 'LOCAL_FLOW_REFUSED'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    requireOk (file://<checkout>/apps/control/action-application/local/flow.mjs:4:54)
+    runLocalActionFlow (file://<checkout>/apps/control/action-application/local/flow.mjs:5:13)
+    async file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:13:211
+    async TestContext.<anonymous> (file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:17:212)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: independent receiving accepts canonical nonconsecutive reserved event sequence
+not ok 43 - independent receiving accepts canonical nonconsecutive reserved event sequence
+  ---
+  duration_ms: 0.253762
+  type: 'test'
+  location: '<checkout>/packages/contracts/test/action-application-independent.test.mjs:54:1'
+  failureType: 'testCodeFailure'
+  error: 'LOCAL_FLOW_REFUSED'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    requireOk (file://<checkout>/apps/control/action-application/local/flow.mjs:4:54)
+    runLocalActionFlow (file://<checkout>/apps/control/action-application/local/flow.mjs:5:13)
+    async file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:13:211
+    async TestContext.<anonymous> (file://<checkout>/packages/contracts/test/action-application-independent.test.mjs:17:212)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: independent receiving accepts actual original A recommendation prepared under current B
+ok 44 - independent receiving accepts actual original A recommendation prepared under current B
+  ---
+  duration_ms: 122.561597
+  type: 'test'
+  ...
+1..44
+# tests 44
+# suites 0
+# pass 21
+# fail 23
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 807.777379

@@ -1,0 +1,83 @@
+{
+  "sourceCommit": "e79ceba058343f2a78c655c50c82006604dda4e7",
+  "sourceTree": "859f84abf40d0ed565088b621f5c26a6f824877d",
+  "environment": {
+    "node": "v24.19.0",
+    "npm": "11.9.0",
+    "typescript": "Version 5.9.3",
+    "TZ": "America/Toronto",
+    "NODE_OPTIONS": "unset"
+  },
+  "runs": {
+    "standard": {
+      "command": "env -u NODE_OPTIONS TZ=America/Toronto npm run check",
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "exitCode": 0,
+      "startedAt": "2026-10-18T22:00:41Z",
+      "finishedAt": "2026-10-18T22:00:59Z",
+      "seconds": 18.672,
+      "log": "standard.scrubbed.log",
+      "bytes": 393300,
+      "sha256": "38ac06f59d60b669a19911c4bd9fcdbcc74c6ecd9e540669ff7c0a9369241782"
+    },
+    "worker-focused": {
+      "command": "env -u NODE_OPTIONS TZ=America/Toronto node --test apps/worker/conversation/test/options-trust.test.mjs apps/worker/conversation/test/activity.test.mjs apps/worker/conversation/test/terminal-settlement.test.mjs",
+      "argv": [
+        "node",
+        "--test",
+        "apps/worker/conversation/test/options-trust.test.mjs",
+        "apps/worker/conversation/test/activity.test.mjs",
+        "apps/worker/conversation/test/terminal-settlement.test.mjs"
+      ],
+      "exitCode": 0,
+      "startedAt": "2026-10-18T22:00:41Z",
+      "finishedAt": "2026-10-18T22:00:44Z",
+      "seconds": 3.504,
+      "log": "worker-focused.scrubbed.log",
+      "bytes": 2080,
+      "sha256": "601f68d1aaade69962a2a4db34c8b86f376b6b824e2f359e48801531c88811a0"
+    },
+    "runtime-types": {
+      "command": "env -u NODE_OPTIONS TZ=America/Toronto node apps/runtime/node_modules/typescript/bin/tsc --noEmit --pretty false -p apps/runtime/tsconfig.json",
+      "argv": [
+        "node",
+        "apps/runtime/node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--pretty",
+        "false",
+        "-p",
+        "apps/runtime/tsconfig.json"
+      ],
+      "exitCode": 0,
+      "startedAt": "2026-10-18T22:00:41Z",
+      "finishedAt": "2026-10-18T22:00:48Z",
+      "seconds": 7.526,
+      "log": "runtime-types.scrubbed.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "control-types": {
+      "command": "env -u NODE_OPTIONS TZ=America/Toronto node apps/runtime/node_modules/typescript/bin/tsc --noEmit --pretty false -p apps/control/conversations/tsconfig.json",
+      "argv": [
+        "node",
+        "apps/runtime/node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--pretty",
+        "false",
+        "-p",
+        "apps/control/conversations/tsconfig.json"
+      ],
+      "exitCode": 0,
+      "startedAt": "2026-10-18T22:00:41Z",
+      "finishedAt": "2026-10-18T22:00:49Z",
+      "seconds": 8.82,
+      "log": "control-types.scrubbed.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

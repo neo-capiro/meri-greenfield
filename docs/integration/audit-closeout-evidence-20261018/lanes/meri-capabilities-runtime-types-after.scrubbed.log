@@ -1,0 +1,6 @@
+apps/worker/conversation/capabilities/policy.mjs(55,107): error TS2345: Argument of type '{ [k: string]: any; }' is not assignable to parameter of type 'OperationRef'.
+  Type '{ [k: string]: any; }' is missing the following properties from type 'OperationRef': id, version
+apps/worker/conversation/capabilities/policy.mjs(55,139): error TS2345: Argument of type '{ [k: string]: any; }' is not assignable to parameter of type 'OperationRef'.
+  Type '{ [k: string]: any; }' is missing the following properties from type 'OperationRef': id, version
+apps/worker/conversation/capabilities/policy.mjs(56,29): error TS2345: Argument of type '{ [k: string]: any; }' is not assignable to parameter of type 'OperationRef'.
+  Type '{ [k: string]: any; }' is missing the following properties from type 'OperationRef': id, version

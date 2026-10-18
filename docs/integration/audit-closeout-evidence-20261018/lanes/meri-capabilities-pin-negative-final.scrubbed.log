@@ -1,0 +1,11 @@
+✔ the projection admits exactly the capability keys in canonical form and refuses any other key, server or hook event (7.785023ms)
+✔ a capability profile with an unknown key refuses the measurement; a malformed flag value is a usage error (7.198971ms)
+✔ an extra entry in the plugin copy refuses (270.41199ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1525.921679

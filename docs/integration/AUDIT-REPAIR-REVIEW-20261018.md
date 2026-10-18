@@ -1,5 +1,7 @@
 # Audit repair verification and follow-up
 
+> The remaining-failure closeout now resolves all 48 reported failures and 21 TypeScript occurrences: standard **4,391/4,391**, focused worker **20/20**, runtime/control **0/0**. See [the follow-up audit](FAILURE-CLOSEOUT-20261018.md) for exact source commits, per-failure mapping and the four unchanged dot-owned integration dependencies. Earlier results below are historical; the deployment/chat hold remains active.
+
 The user authorized closure of all nine reproduced audit findings. Overlapping implementation lanes have stopped. The accepted receiving checkpoints are Meri PR179 `141f2ada6378382f2bf7462d8a2c5dc7758230d0` and frontend PR97 `a0a542d5eff162bef572564ff0397e460d74ed77`. PR175 remains unchanged at `993f52a97e5d9edcf65c9f89423c097aa52831c7`. These are committed source, not deployed repairs.
 
 ## Implementation outline and ownership

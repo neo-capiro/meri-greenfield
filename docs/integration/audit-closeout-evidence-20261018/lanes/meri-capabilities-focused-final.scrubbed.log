@@ -1,0 +1,38 @@
+✔ all six gates open: exactly the wired mail family, in catalog order, read-only descriptors only (3.814534ms)
+✔ each gate alone excludes: installation, policy, family list, discovery grant, client scope (4.441048ms)
+✔ the deferred list is the owner's 43 catalog originals and none can be constructed (1.366057ms)
+✔ the availability snapshot refuses foreign, stale, expired, duplicated or substituted facts (49.152005ms)
+✔ advertised schemas: canonical only when provably no wider; a hash mismatch is a configuration failure (21.362468ms)
+✔ P3 local budgets are upper bounds that a skill can only narrow; the ledger refuses past them (0.713244ms)
+✔ every gateway code renders its own closed text; unknown failures are INTERNAL_ERROR (0.593945ms)
+✔ P8 fields resolve platform Ã¢Ë†Â§ tenant Ã¢Ë†Â§ role: flags AND, families intersect, widening refused (8.528693ms)
+✔ policy defaults every capability off and bounds every allowlist (4.747769ms)
+✔ workspace file tools are confined by SDK permission rules, not a textual gate; Bash is never a file tool (1.295ms)
+✔ subagent definitions use declared SDK fields and the Agent gate bounds type, options and parallelism (1.428271ms)
+✔ audit, compaction and subagent hooks publish hashes and names only, never raw input, output, errors or summaries (2.069927ms)
+✔ skill plugin binds the immutable image path and the original names; cwd discovery is refused (57.472654ms)
+✔ progress projector displays only admitted one-line summaries (0.426803ms)
+✔ composition yields an all-off empty fragment and per-capability additive fragments that only use declared option names (35.180696ms)
+✔ a refused capability event is remembered and fails the run after the loop (2.844483ms)
+✔ no tenant record: platform defaults bounded by the role ceiling (7.75648ms)
+✔ tenant admins enable and restrict inside the platform maximum (1.553139ms)
+✔ a tenant setting that would widen the platform maximum is refused with a stable code naming the field, never clipped (2.097808ms)
+✔ the user role ceiling narrows the effective policy and a tenant may only narrow it further (2.592053ms)
+✔ empty intersections switch the scoped capability off and still validate (1.692399ms)
+✔ intersection: flags AND, allowlists intersect (wildcards cover sub-domains, not the apex), parallelism takes the minimum (0.59127ms)
+✔ resolution is idempotent and monotone (7.769951ms)
+✔ platform limits are validated: defaults and role ceilings must sit inside the maximum (0.917952ms)
+✔ the canonical prepared plugin directory is accepted and returned unchanged (12.046921ms)
+✔ aliases are refused: a symlink to the plugin, a symlinked parent, a missing path and a file (6.847001ms)
+✔ symlinks into the writable conversation workspace are refused wherever they appear (34.462815ms)
+✔ an options fragment whose plugin path differs from the trusted prepared path is refused (33.747058ms)
+✔ dot P2a-R2: a missing workspace is refused, so an aliased existing parent cannot hide an overlap with the plugin (1.867803ms)
+✔ dot P2a-R2: options built for a missing workspace refuse the plugin fact before any SDK option is produced (9.850844ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 30
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1534.82142

@@ -1,0 +1,11 @@
+apps/worker/conversation/egress/proxy-server.mjs(63,9): error TS2339: Property 'destroySoon' does not exist on type 'Duplex'.
+apps/worker/conversation/egress/proxy-server.mjs(96,17): error TS7006: Parameter 'error' implicitly has an 'any' type.
+apps/worker/conversation/egress/proxy-server.mjs(98,44): error TS7006: Parameter 'error' implicitly has an 'any' type.
+apps/worker/conversation/egress/proxy-server.mjs(143,7): error TS2740: Type 'Duplex' is missing the following properties from type 'Socket': destroySoon, connect, resetAndDestroy, setTimeout, and 17 more.
+apps/worker/conversation/egress/proxy-server.mjs(167,59): error TS2532: Object is possibly 'undefined'.
+apps/worker/conversation/egress/proxy-server.mjs(168,35): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+apps/worker/conversation/egress/proxy-server.mjs(191,75): error TS7006: Parameter 'error' implicitly has an 'any' type.
+apps/worker/conversation/egress/proxy-server.mjs(208,68): error TS7034: Variable 'wake' implicitly has type 'any' in some locations where its type cannot be determined.
+apps/worker/conversation/egress/proxy-server.mjs(209,122): error TS7005: Variable 'wake' implicitly has an 'any' type.
+apps/worker/conversation/egress/proxy-server.mjs(210,18): error TS7005: Variable 'wake' implicitly has an 'any' type.

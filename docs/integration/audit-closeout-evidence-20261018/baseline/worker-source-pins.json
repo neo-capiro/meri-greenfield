@@ -1,0 +1,32 @@
+[
+  {
+    "pin": "candidate",
+    "sha": "a1876afaeaa59d9da47729487d490cba8cfc9d9c",
+    "hashes": {
+      "apps/control/conversations/test/application-fixture.mjs": "fc49502dd59e21e4e6f630a18518807f7472f59e1435b7310a3ef24ccca777ea",
+      "apps/control/conversations/test/store-fixture.mjs": "57f4fb3d2c52678ae184bb17130161f471b0c50f21073ab4ec63d6b701bb0fde",
+      "apps/control/conversations/test/initial-input-fixture.mjs": "e30adab46759c7d79bd37133a2901fb267ee3b0f1c2326dfb4d804f141d4160c",
+      "apps/control/conversations/service.mjs": "79970698d4f237f81256bb8a92fc6b6e5ea6a8fae2ae52754dc2f3044314487f",
+      "apps/control/conversations/postgres-store.mjs": "3943e94931fc0843faa6dac8c10c7083178996182804abe8f28f8cfedfb53a79",
+      "apps/worker/conversation/test/options-trust.test.mjs": "ac524f021cbeed41926b6d22c4097f896a72ab8563307211cfc413323de01202",
+      "apps/worker/conversation/test/activity.test.mjs": "26556c1b858b2fc5985bc0fed10bc0c8c73e592b42c14f635a9628a827c59712",
+      "apps/worker/conversation/test/terminal-settlement.test.mjs": "56b2a0f78b5fe453e70050911cee25759fdfc71ce9a675969e80049a3c964405"
+    },
+    "matchesBundle": true
+  },
+  {
+    "pin": "receiving-parent",
+    "sha": "141f2ada6378382f2bf7462d8a2c5dc7758230d0",
+    "hashes": {
+      "apps/control/conversations/test/application-fixture.mjs": "fc49502dd59e21e4e6f630a18518807f7472f59e1435b7310a3ef24ccca777ea",
+      "apps/control/conversations/test/store-fixture.mjs": "57f4fb3d2c52678ae184bb17130161f471b0c50f21073ab4ec63d6b701bb0fde",
+      "apps/control/conversations/test/initial-input-fixture.mjs": "e30adab46759c7d79bd37133a2901fb267ee3b0f1c2326dfb4d804f141d4160c",
+      "apps/control/conversations/service.mjs": "79970698d4f237f81256bb8a92fc6b6e5ea6a8fae2ae52754dc2f3044314487f",
+      "apps/control/conversations/postgres-store.mjs": "3943e94931fc0843faa6dac8c10c7083178996182804abe8f28f8cfedfb53a79",
+      "apps/worker/conversation/test/options-trust.test.mjs": "ac524f021cbeed41926b6d22c4097f896a72ab8563307211cfc413323de01202",
+      "apps/worker/conversation/test/activity.test.mjs": "26556c1b858b2fc5985bc0fed10bc0c8c73e592b42c14f635a9628a827c59712",
+      "apps/worker/conversation/test/terminal-settlement.test.mjs": "56b2a0f78b5fe453e70050911cee25759fdfc71ce9a675969e80049a3c964405"
+    },
+    "matchesBundle": true
+  }
+]

@@ -1,0 +1,237 @@
+{
+  "source": "a1876afaeaa59d9da47729487d490cba8cfc9d9c",
+  "finalHead": "6ac1ac02a1bc434b6a295aaca430287748baf137",
+  "branch": "fix/closeout-contract-expectations-20261018",
+  "environment": {
+    "node": "v24.19.0",
+    "npm": "11.9.0",
+    "typescript": "5.9.3",
+    "TZ": "America/Toronto",
+    "NODE_OPTIONS": null,
+    "dependencies": "matching lockfile physical contracts node_modules copied by root; no tracked dependency edits"
+  },
+  "before": {
+    "pass": 187,
+    "fail": 9,
+    "total": 196
+  },
+  "after": {
+    "pass": 198,
+    "fail": 0,
+    "total": 198
+  },
+  "newFailures": [],
+  "generator": "node packages/contracts/generate-initial-input.mjs; node packages/contracts/generate-initial-input.mjs --check",
+  "tests": [
+    {
+      "location": "packages/contracts/test/conversation-initial-input-public.test.mjs:50:1",
+      "name": "initial-input generation records exact canonical provenance and one shared browser import",
+      "error": "AssertionError [ERR_ASSERTION]: ../../apps/control/conversations/postgres-store.mjs",
+      "diagnostic": "AssertionError [ERR_ASSERTION]: ../../apps/control/conversations/postgres-store.mjs\n  + actual - expected\n  \n  + '3943e94931fc0843faa6dac8c10c7083178996182804abe8f28f8cfedfb53a79'\n  - '96002cc66ed5658273af0cd4035e027efaaaa94708e020f28b79c22f1fc355a0'\n  \n      at TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/conversation-initial-input-public.test.mjs:53:110)\n      at async Test.run (node:internal/test_runner/test:1389:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: '3943e94931fc0843faa6dac8c10c7083178996182804abe8f28f8cfedfb53a79',\n    expected: '96002cc66ed5658273af0cd4035e027efaaaa94708e020f28b79c22f1fc355a0',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }",
+      "number": 24,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited generated provenance mismatch",
+      "expected": "96002cc66ed5658273af0cd4035e027efaaaa94708e020f28b79c22f1fc355a0",
+      "actual": "3943e94931fc0843faa6dac8c10c7083178996182804abe8f28f8cfedfb53a79",
+      "assertion": "conversation-initial-input-public.test.mjs:53:110: assert.equal(sha256(sourceBytes), row.sha256, row.path), first mismatch ../../apps/control/conversations/postgres-store.mjs.",
+      "closeoutClassification": "product defect",
+      "cause": "Generated initial-input provenance retained the old PostgreSQL-store source fingerprint after memory proposal context composition. Canonical generator changed only that source hash/byte count; browser JavaScript, schema and declarations remained byte-identical.",
+      "fixCommit": "922a9d18",
+      "verification": "PASS: final same nine-file group198/198, no skips/cancellations",
+      "dependency": null
+    },
+    {
+      "location": "packages/contracts/test/document-application-independent.test.mjs:76:1",
+      "name": "standalone browser module works with no Node or private graph",
+      "error": "TypeError: vm.SourceTextModule is not a constructor",
+      "diagnostic": "TypeError: vm.SourceTextModule is not a constructor\n      at TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/document-application-independent.test.mjs:76:384)\n      at async Test.run (node:internal/test_runner/test:1389:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)",
+      "number": 25,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited environment-sensitive runner failure",
+      "expected": "vm.SourceTextModule is constructible.",
+      "actual": "TypeError: vm.SourceTextModule is not a constructor",
+      "assertion": "document-application-independent.test.mjs:76:384: new vm.SourceTextModule(...). The public receiver assertions are not reached without --experimental-vm-modules.",
+      "closeoutClassification": "test setup/environment problem",
+      "cause": "Node24 SourceTextModule needs --experimental-vm-modules. The test now runs its same import-denying VM receiver assertions in a bounded child with the required flag; npm standard checks need no ambient flag.",
+      "fixCommit": "0b73b519",
+      "verification": "PASS: final same nine-file group198/198, no skips/cancellations",
+      "dependency": null
+    },
+    {
+      "location": "packages/contracts/test/retrieval-action-item-binding.test.mjs:88:1",
+      "name": "all fourteen original descriptors and all139 native rows remain exact",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:",
+      "diagnostic": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n  + actual - expected\n  \n    {\n      id: 'get_client_context',\n  +   version: '0.3.0'\n  -   version: '0.2.0'\n    }\n  \n      at TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/retrieval-action-item-binding.test.mjs:95:43)\n      at Test.runInAsyncScope (node:async_hooks:227:14)\n      at Test.run (node:internal/test_runner/test:1382:25)\n      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)\n      at Test.postRun (node:internal/test_runner/test:1522:19)\n      at Test.run (node:internal/test_runner/test:1447:12)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: { id: 'get_client_context', version: '0.3.0' },\n    expected: { id: 'get_client_context', version: '0.2.0' },\n    operator: 'deepStrictEqual',\n    diff: 'simple'\n  }",
+      "number": 26,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited descriptor expectation mismatch",
+      "expected": "{ id: 'get_client_context', version: '0.2.0' }",
+      "actual": "{ id: 'get_client_context', version: '0.3.0' }",
+      "assertion": "packages/contracts/test/retrieval-action-item-binding.test.mjs:95: deepStrictEqual original operation descriptor.",
+      "closeoutClassification": "stale expectation",
+      "cause": "Historical inverse asserted every continuation was0.2.0 despite accepted get_client_context0.3.0 full-profile schema and binding. Literal0.3.0 exception preserves both unchanged historical hashes.",
+      "fixCommit": "d25ea2e2",
+      "verification": "PASS: final same nine-file group198/198, no skips/cancellations",
+      "dependency": null
+    },
+    {
+      "location": "packages/contracts/test/retrieval-action-item-independent.test.mjs:26:1",
+      "name": "partial binding preserves every original row and fourteen descriptors",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:",
+      "diagnostic": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n  + actual - expected\n  \n    {\n      id: 'get_client_context',\n  +   version: '0.3.0'\n  -   version: '0.2.0'\n    }\n  \n      at TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/retrieval-action-item-independent.test.mjs:32:46)\n      at Test.runInAsyncScope (node:async_hooks:227:14)\n      at Test.run (node:internal/test_runner/test:1382:25)\n      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)\n      at Test.postRun (node:internal/test_runner/test:1522:19)\n      at Test.run (node:internal/test_runner/test:1447:12)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: { id: 'get_client_context', version: '0.3.0' },\n    expected: { id: 'get_client_context', version: '0.2.0' },\n    operator: 'deepStrictEqual',\n    diff: 'simple'\n  }",
+      "number": 27,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited descriptor expectation mismatch",
+      "expected": "{ id: 'get_client_context', version: '0.2.0' }",
+      "actual": "{ id: 'get_client_context', version: '0.3.0' }",
+      "assertion": "packages/contracts/test/retrieval-action-item-independent.test.mjs:32: deepStrictEqual original operation descriptor.",
+      "closeoutClassification": "stale expectation",
+      "cause": "Same independently maintained literal descriptor inverse as row26.",
+      "fixCommit": "d25ea2e2",
+      "verification": "PASS: final same nine-file group198/198, no skips/cancellations",
+      "dependency": null
+    },
+    {
+      "location": "packages/contracts/test/retrieval-meeting-source.test.mjs:361:1",
+      "name": "meeting schema objects stay closed and package public exports stay 0.1 only",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:",
+      "diagnostic": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  \n  '0.1.10' !== '0.1.5'\n  \n      at TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/retrieval-meeting-source.test.mjs:365:10)\n      at Test.runInAsyncScope (node:async_hooks:227:14)\n      at Test.run (node:internal/test_runner/test:1382:25)\n      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)\n      at Test.postRun (node:internal/test_runner/test:1522:19)\n      at Test.run (node:internal/test_runner/test:1447:12)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: '0.1.10',\n    expected: '0.1.5',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }",
+      "number": 28,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited package expectation mismatch",
+      "expected": "0.1.5",
+      "actual": "0.1.10",
+      "assertion": "packages/contracts/test/retrieval-meeting-source.test.mjs:365:10: strictEqual public package version.",
+      "closeoutClassification": "stale expectation",
+      "cause": "Public package release is exact0.1.10; this schema/export test still asserted0.1.5. Export exclusion and closed-object checks are unchanged.",
+      "fixCommit": "d25ea2e2",
+      "verification": "PASS: final same nine-file group198/198, no skips/cancellations",
+      "dependency": null
+    },
+    {
+      "location": "packages/contracts/test/retrieval-memory-proposals.test.mjs:120:1",
+      "name": "operation is mapped but unavailable and public exports stay separate",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:",
+      "diagnostic": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  \n  '0.1.10' !== '0.1.5'\n  \n      at TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/retrieval-memory-proposals.test.mjs:127:10)\n      at Test.runInAsyncScope (node:async_hooks:227:14)\n      at Test.run (node:internal/test_runner/test:1382:25)\n      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)\n      at Test.postRun (node:internal/test_runner/test:1522:19)\n      at Test.run (node:internal/test_runner/test:1447:12)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: '0.1.10',\n    expected: '0.1.5',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }",
+      "number": 29,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited package expectation mismatch",
+      "expected": "0.1.5",
+      "actual": "0.1.10",
+      "assertion": "packages/contracts/test/retrieval-memory-proposals.test.mjs:127:10: strictEqual public package version.",
+      "closeoutClassification": "stale expectation",
+      "cause": "Public package release is exact0.1.10; memory internal/private export exclusion remains checked.",
+      "fixCommit": "d25ea2e2",
+      "verification": "PASS: final same nine-file group198/198, no skips/cancellations",
+      "dependency": null
+    },
+    {
+      "location": "packages/contracts/test/retrieval-operational-reads.test.mjs:394:1",
+      "name": "operational-read schema objects stay closed and package public exports stay 0.1 only",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:",
+      "diagnostic": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  \n  '0.1.10' !== '0.1.5'\n  \n      at TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/retrieval-operational-reads.test.mjs:398:10)\n      at Test.runInAsyncScope (node:async_hooks:227:14)\n      at Test.run (node:internal/test_runner/test:1382:25)\n      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)\n      at Test.postRun (node:internal/test_runner/test:1522:19)\n      at Test.run (node:internal/test_runner/test:1447:12)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: '0.1.10',\n    expected: '0.1.5',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }",
+      "number": 30,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited package expectation mismatch",
+      "expected": "0.1.5",
+      "actual": "0.1.10",
+      "assertion": "packages/contracts/test/retrieval-operational-reads.test.mjs:398:10: strictEqual public package version.",
+      "closeoutClassification": "stale expectation",
+      "cause": "Public package release is exact0.1.10; operational read private-export exclusions and closed schema checks remain unchanged.",
+      "fixCommit": "d25ea2e2",
+      "verification": "PASS: final same nine-file group198/198, no skips/cancellations",
+      "dependency": null
+    },
+    {
+      "location": "packages/contracts/test/retrieval-public-domain-query.test.mjs:101:1",
+      "name": "trusted default as-of is distinct from explicit date and generatedAt",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:",
+      "diagnostic": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  + actual - expected\n  \n  + '2020-01-01T05:00:00.000Z'\n  - '2020-01-01T00:00:00.000Z'\n                 ^\n  \n      at TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/retrieval-public-domain-query.test.mjs:104:9)\n      at Test.runInAsyncScope (node:async_hooks:227:14)\n      at Test.run (node:internal/test_runner/test:1382:25)\n      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)\n      at Test.postRun (node:internal/test_runner/test:1522:19)\n      at Test.run (node:internal/test_runner/test:1447:12)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: '2020-01-01T05:00:00.000Z',\n    expected: '2020-01-01T00:00:00.000Z',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }",
+      "number": 31,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited environment-sensitive timezone assertion",
+      "expected": "2020-01-01T00:00:00.000Z",
+      "actual": "2020-01-01T05:00:00.000Z",
+      "assertion": "retrieval-public-domain-query.test.mjs:104:9: assert.equal(normalize({...r, asOfDate:'January 1, 2020'}).input.asOfDate, '2020-01-01T00:00:00.000Z').",
+      "closeoutClassification": "product defect",
+      "cause": "Timezone-less human as-of and filter strings used host-local Date.parse, changing request digests/results across hosts. UTC default now matches existing midnight-UTC date contract; explicit offsets and timezone names retain their instants. Negative timestamp acceptance preserved. Independent review additionally caught and repaired legacy hour-only offsets/RFCcomments and unclosed-comment UTC swallowing before consolidation.",
+      "fixCommit": "020959c6 + 6924aa30 + fd14b4ee + 6ac1ac02",
+      "verification": "PASS: final same nine-file group198/198, no skips/cancellations",
+      "dependency": null
+    },
+    {
+      "location": "packages/contracts/test/task-command-application-public.test.mjs:25:1",
+      "name": "actual prepare/approve/execute API wire admits canonical normalization and immutable correlated result",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:",
+      "diagnostic": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  + actual - expected\n  \n  + 'https://source.invalid/api/clio/tools/update_task'\n  - 'https://source.invalid/clio/tools/update_task'\n  \n      at TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/task-command-application-public.test.mjs:28:119)\n      at async Test.run (node:internal/test_runner/test:1389:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: 'https://source.invalid/api/clio/tools/update_task',\n    expected: 'https://source.invalid/clio/tools/update_task',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }",
+      "number": 32,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited route expectation mismatch",
+      "expected": "https://source.invalid/clio/tools/update_task",
+      "actual": "https://source.invalid/api/clio/tools/update_task",
+      "assertion": "task-command-application-public.test.mjs:28:119: strictEqual command source URL.",
+      "closeoutClassification": "stale expectation",
+      "cause": "Native task transport is /api/clio/tools/update_task, established by command composition and intent service tests; public receiver expectation omitted/api.",
+      "fixCommit": "d25ea2e2",
+      "verification": "PASS: final same nine-file group198/198, no skips/cancellations",
+      "dependency": null
+    }
+  ],
+  "logs": {
+    "<scratch>/closeout-contracts-before.scrubbed.log": {
+      "bytes": 24294,
+      "sha256": "dfec78117d8567a1eb1bf9f9e2a0d644e59ae7e37b988fe8dc71aed32238d67d"
+    },
+    "<scratch>/closeout-contracts-dates-final.scrubbed.log": {
+      "bytes": 3008,
+      "sha256": "ac7a8f1da33732edc7bc6f7dbeec2622298fbf7a165c6a1526ae2444ec6c58fe"
+    },
+    "<scratch>/closeout-contracts-dates.scrubbed.log": {
+      "bytes": 3010,
+      "sha256": "689982fb7ffc6e2942de6cb6185bc448df19b447585fb8543067184dae5ce024"
+    },
+    "<scratch>/closeout-contracts-expectations.scrubbed.log": {
+      "bytes": 9157,
+      "sha256": "7a056efb363c03c9c0e03d0e50440afb1b6c65e49f2fca946c233477f05e4b1d"
+    },
+    "<scratch>/closeout-contracts-final.scrubbed.log": {
+      "bytes": 16583,
+      "sha256": "9e1f092640ece0355e44781d44705b5566eee11a6419aed0f5251d03cddd083c"
+    },
+    "<scratch>/closeout-contracts-initial-check.scrubbed.log": {
+      "bytes": 547,
+      "sha256": "88883ec73208ff90938f7484ad120bee6294ba8e400860327b486f90835e8ae8"
+    },
+    "<scratch>/closeout-contracts-initial-generate.scrubbed.log": {
+      "bytes": 547,
+      "sha256": "88883ec73208ff90938f7484ad120bee6294ba8e400860327b486f90835e8ae8"
+    },
+    "<scratch>/closeout-contracts-initial-tests.scrubbed.log": {
+      "bytes": 4016,
+      "sha256": "df3c025e5e34c4571d47b281b485320c36d071e49f234be098c8741c74f29010"
+    },
+    "<scratch>/closeout-contracts-vm.scrubbed.log": {
+      "bytes": 3923,
+      "sha256": "bd4fe0b638c5181d210f4890c37d4e71ea9b9f759fe6a80ada0cfa42a5b27fd4"
+    },
+    "<scratch>/closeout-contracts-dates-review.scrubbed.log": {
+      "bytes": 3008,
+      "sha256": "43016b7ecee84409f64e2b7af0fb20913b11b006204386bc555c05f39b496fe8"
+    },
+    "<scratch>/closeout-contracts-initial-check-final.scrubbed.log": {
+      "bytes": 547,
+      "sha256": "88883ec73208ff90938f7484ad120bee6294ba8e400860327b486f90835e8ae8"
+    },
+    "<scratch>/closeout-contracts-dates-matrix.scrubbed.log": {
+      "bytes": 3092,
+      "sha256": "27c0ec4e198580d883258b74a10fd650dc096a61cb9ca3fc033f4bdc67072e02"
+    }
+  },
+  "dateCommitOrder": [
+    "020959c6",
+    "6924aa30",
+    "fd14b4ee",
+    "6ac1ac02"
+  ],
+  "finiteDateMatrix": "132 nativeUTC-reference explicit-zone strings, plus timezone-free date/time/nested/unclosedcomment and raw-invalid guards; named assertions run under UTC, America/Toronto and Asia/Tokyo"
+}

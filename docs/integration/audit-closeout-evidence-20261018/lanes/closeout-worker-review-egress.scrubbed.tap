@@ -1,0 +1,94 @@
+TAP version 13
+# Subtest: an allowlisted name is admitted, dialled only at its checked address, and the Host and proxy headers are normalized
+ok 1 - an allowlisted name is admitted, dialled only at its checked address, and the Host and proxy headers are normalized
+  ---
+  duration_ms: 26.278453
+  type: 'test'
+  ...
+# Subtest: a redirect is relayed, never followed: the next hop is a new request decided on its own and an unlisted target is refused
+ok 2 - a redirect is relayed, never followed: the next hop is a new request decided on its own and an unlisted target is refused
+  ---
+  duration_ms: 6.898455
+  type: 'test'
+  ...
+# Subtest: IP literals, non-public answers, rebinding answers, IPv4-mapped loopback and non-web ports are refused before any dial
+ok 3 - IP literals, non-public answers, rebinding answers, IPv4-mapped loopback and non-web ports are refused before any dial
+  ---
+  duration_ms: 16.260327
+  type: 'test'
+  ...
+# Subtest: the Host header must name the target authority, so an admitted address cannot be asked for another site
+ok 4 - the Host header must name the target authority, so an admitted address cannot be asked for another site
+  ---
+  duration_ms: 1.704967
+  type: 'test'
+  ...
+# Subtest: a DNS answer that changes after admission cannot move the admitted connection; the next admission is decided afresh
+ok 5 - a DNS answer that changes after admission cannot move the admitted connection; the next admission is decided afresh
+  ---
+  duration_ms: 5.798509
+  type: 'test'
+  ...
+# Subtest: CONNECT admits only allowlisted names on 443/80; wildcard entries admit subdomains, never the apex
+ok 6 - CONNECT admits only allowlisted names on 443/80; wildcard entries admit subdomains, never the apex
+  ---
+  duration_ms: 7.946643
+  type: 'test'
+  ...
+# Subtest: SOCKS5 admits only CONNECT by allowlisted name; address-type requests, other commands and auth-only clients are refused
+ok 7 - SOCKS5 admits only CONNECT by allowlisted name; address-type requests, other commands and auth-only clients are refused
+  ---
+  duration_ms: 12.734509
+  type: 'test'
+  ...
+# Subtest: SOCKS5 reads the complete greeting before its method count and refuses truncated or empty method lists
+ok 8 - SOCKS5 reads the complete greeting before its method count and refuses truncated or empty method lists
+  ---
+  duration_ms: 4.138902
+  type: 'test'
+  ...
+# Subtest: revocation refuses every later admission and destroys tunnels that are already open; expiry refuses too
+ok 9 - revocation refuses every later admission and destroys tunnels that are already open; expiry refuses too
+  ---
+  duration_ms: 4.44315
+  type: 'test'
+  ...
+# Subtest: revocation at an admitted decision never dials an HTTP or CONNECT upstream
+ok 10 - revocation at an admitted decision never dials an HTTP or CONNECT upstream
+  ---
+  duration_ms: 4.114905
+  type: 'test'
+  ...
+# Subtest: the browser run control is enforced by the same proxy: allowlisted origins tunnel, unlisted and non-public ones do not
+ok 11 - the browser run control is enforced by the same proxy: allowlisted origins tunnel, unlisted and non-public ones do not
+  ---
+  duration_ms: 14.083324
+  type: 'test'
+  ...
+# Subtest: the proxy listens on loopback only, dials IP literals only, and the Bash runtime fact binds its ports to the domain list
+ok 12 - the proxy listens on loopback only, dials IP literals only, and the Bash runtime fact binds its ports to the domain list
+  ---
+  duration_ms: 1.912469
+  type: 'test'
+  ...
+# Subtest: a stalled or failed upstream connect returns a refusal and leaves no late timeout crash
+ok 13 - a stalled or failed upstream connect returns a refusal and leaves no late timeout crash
+  ---
+  duration_ms: 66.984503
+  type: 'test'
+  ...
+# Subtest: failure to bind the SOCKS listener closes the already-bound HTTP listener
+ok 14 - failure to bind the SOCKS listener closes the already-bound HTTP listener
+  ---
+  duration_ms: 2.186863
+  type: 'test'
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 784.353027

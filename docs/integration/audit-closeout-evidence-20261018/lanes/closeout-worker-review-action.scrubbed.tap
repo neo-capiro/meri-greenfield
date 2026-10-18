@@ -1,0 +1,598 @@
+TAP version 13
+# Subtest: independent full wire flow: recommendation, draft, pending refusal, explicit approval, one effect and replay
+ok 1 - independent full wire flow: recommendation, draft, pending refusal, explicit approval, one effect and replay
+  ---
+  duration_ms: 432.464359
+  type: 'test'
+  ...
+# Subtest: independent mode undefined refuses
+ok 2 - independent mode undefined refuses
+  ---
+  duration_ms: 0.414884
+  type: 'test'
+  ...
+# Subtest: independent mode production refuses
+ok 3 - independent mode production refuses
+  ---
+  duration_ms: 0.170547
+  type: 'test'
+  ...
+# Subtest: independent mode local refuses
+ok 4 - independent mode local refuses
+  ---
+  duration_ms: 0.129986
+  type: 'test'
+  ...
+# Subtest: independent mode synthetic refuses
+ok 5 - independent mode synthetic refuses
+  ---
+  duration_ms: 0.110907
+  type: 'test'
+  ...
+# Subtest: independent invalid ttl 0 refuses
+ok 6 - independent invalid ttl 0 refuses
+  ---
+  duration_ms: 0.41831
+  type: 'test'
+  ...
+# Subtest: independent invalid ttl -1 refuses
+ok 7 - independent invalid ttl -1 refuses
+  ---
+  duration_ms: 0.137387
+  type: 'test'
+  ...
+# Subtest: independent invalid ttl 30001 refuses
+ok 8 - independent invalid ttl 30001 refuses
+  ---
+  duration_ms: 0.178659
+  type: 'test'
+  ...
+# Subtest: independent invalid ttl Infinity refuses
+ok 9 - independent invalid ttl Infinity refuses
+  ---
+  duration_ms: 0.204487
+  type: 'test'
+  ...
+# Subtest: independent invalid ttl 1.5 refuses
+ok 10 - independent invalid ttl 1.5 refuses
+  ---
+  duration_ms: 0.240052
+  type: 'test'
+  ...
+# Subtest: independent opaque credentials are distinct between sessions and absent from stats
+ok 11 - independent opaque credentials are distinct between sessions and absent from stats
+  ---
+  duration_ms: 21.667954
+  type: 'test'
+  ...
+# Subtest: independent invalid authorization empty
+ok 12 - independent invalid authorization empty
+  ---
+  duration_ms: 10.311585
+  type: 'test'
+  ...
+# Subtest: independent invalid authorization Bearer invalid
+ok 13 - independent invalid authorization Bearer invalid
+  ---
+  duration_ms: 11.629449
+  type: 'test'
+  ...
+# Subtest: independent invalid authorization Basic synthetic
+ok 14 - independent invalid authorization Basic synthetic
+  ---
+  duration_ms: 11.49684
+  type: 'test'
+  ...
+# Subtest: independent query body tenantId never grants authority
+ok 15 - independent query body tenantId never grants authority
+  ---
+  duration_ms: 10.732229
+  type: 'test'
+  ...
+# Subtest: independent query body actorId never grants authority
+ok 16 - independent query body actorId never grants authority
+  ---
+  duration_ms: 12.301862
+  type: 'test'
+  ...
+# Subtest: independent query body clientId never grants authority
+ok 17 - independent query body clientId never grants authority
+  ---
+  duration_ms: 5.93694
+  type: 'test'
+  ...
+# Subtest: independent query body scopes never grants authority
+ok 18 - independent query body scopes never grants authority
+  ---
+  duration_ms: 5.688305
+  type: 'test'
+  ...
+# Subtest: independent query body approval never grants authority
+ok 19 - independent query body approval never grants authority
+  ---
+  duration_ms: 6.363951
+  type: 'test'
+  ...
+# Subtest: independent query body credential never grants authority
+ok 20 - independent query body credential never grants authority
+  ---
+  duration_ms: 7.639723
+  type: 'test'
+  ...
+# Subtest: independent query request cannot select another client
+ok 21 - independent query request cannot select another client
+  ---
+  duration_ms: 8.395451
+  type: 'test'
+  ...
+# Subtest: independent cross-session retained selection refuses even with valid second credential
+ok 22 - independent cross-session retained selection refuses even with valid second credential
+  ---
+  duration_ms: 46.156715
+  type: 'test'
+  ...
+# Subtest: independent cross-session proposal approval and execution refuse
+ok 23 - independent cross-session proposal approval and execution refuse
+  ---
+  duration_ms: 61.743192
+  type: 'test'
+  ...
+# Subtest: independent revoked session denies reads and trusted approval
+ok 24 - independent revoked session denies reads and trusted approval
+  ---
+  duration_ms: 57.036676
+  type: 'test'
+  ...
+# Subtest: independent preparation policy revocation prevents metadata insert
+ok 25 - independent preparation policy revocation prevents metadata insert
+  ---
+  duration_ms: 54.982943
+  type: 'test'
+  ...
+# Subtest: independent current client denial invalidates retained source read
+ok 26 - independent current client denial invalidates retained source read
+  ---
+  duration_ms: 37.370316
+  type: 'test'
+  ...
+# Subtest: independent revoked exact approval refuses before task effect
+ok 27 - independent revoked exact approval refuses before task effect
+  ---
+  duration_ms: 60.456144
+  type: 'test'
+  ...
+# Subtest: independent tampered proposal neither approves nor executes
+ok 28 - independent tampered proposal neither approves nor executes
+  ---
+  duration_ms: 57.386773
+  type: 'test'
+  ...
+# Subtest: independent selection hash tampering refuses
+ok 29 - independent selection hash tampering refuses
+  ---
+  duration_ms: 39.917711
+  type: 'test'
+  ...
+# Subtest: independent no HTTP approval route
+ok 30 - independent no HTTP approval route
+  ---
+  duration_ms: 17.629744
+  type: 'test'
+  ...
+# Subtest: independent pre-aborted Request does not run source
+ok 31 - independent pre-aborted Request does not run source
+  ---
+  duration_ms: 7.051998
+  type: 'test'
+  ...
+# Subtest: independent session expiry refuses subsequent requests
+ok 32 - independent session expiry refuses subsequent requests
+  ---
+  duration_ms: 182.789401
+  type: 'test'
+  ...
+# Subtest: independent close is idempotent and leaves session unavailable
+ok 33 - independent close is idempotent and leaves session unavailable
+  ---
+  duration_ms: 6.632126
+  type: 'test'
+  ...
+# Subtest: independent success response prevents caching and adds no permissive CORS
+ok 34 - independent success response prevents caching and adds no permissive CORS
+  ---
+  duration_ms: 33.450924
+  type: 'test'
+  ...
+# Subtest: independent CLI admission --help
+ok 35 - independent CLI admission --help
+  ---
+  duration_ms: 86.307317
+  type: 'test'
+  ...
+# Subtest: independent CLI admission --unknown
+ok 36 - independent CLI admission --unknown
+  ---
+  duration_ms: 88.285034
+  type: 'test'
+  ...
+# Subtest: independent CLI admission empty
+ok 37 - independent CLI admission empty
+  ---
+  duration_ms: 87.534013
+  type: 'test'
+  ...
+# Subtest: independent CLI admission --run --help
+ok 38 - independent CLI admission --run --help
+  ---
+  duration_ms: 97.72057
+  type: 'test'
+  ...
+# Subtest: independent explicit CLI synthetic run succeeds without exposing bearer secrets
+ok 39 - independent explicit CLI synthetic run succeeds without exposing bearer secrets
+  ---
+  duration_ms: 1292.094944
+  type: 'test'
+  ...
+# Subtest: independent recomputed tampered command digest does not match retained metadata
+ok 40 - independent recomputed tampered command digest does not match retained metadata
+  ---
+  duration_ms: 79.945931
+  type: 'test'
+  ...
+# Subtest: independent revoked session after explicit approval still denies execution
+ok 41 - independent revoked session after explicit approval still denies execution
+  ---
+  duration_ms: 80.278288
+  type: 'test'
+  ...
+# Subtest: independent revoke during body acquisition refuses before source
+ok 42 - independent revoke during body acquisition refuses before source
+  ---
+  duration_ms: 11.127821
+  type: 'test'
+  ...
+# Subtest: independent expire during body acquisition refuses before source
+ok 43 - independent expire during body acquisition refuses before source
+  ---
+  duration_ms: 185.218242
+  type: 'test'
+  ...
+# Subtest: independent fresh repeated queries preserve distinct result references and event slots
+ok 44 - independent fresh repeated queries preserve distinct result references and event slots
+  ---
+  duration_ms: 77.842402
+  type: 'test'
+  ...
+# Subtest: actual local HTTP graph prepares, refuses unapproved mutation, separately approves and replays one effect
+ok 45 - actual local HTTP graph prepares, refuses unapproved mutation, separately approves and replays one effect
+  ---
+  duration_ms: 413.106613
+  type: 'test'
+  ...
+# Subtest: opaque forged and other-session credentials never call source
+ok 46 - opaque forged and other-session credentials never call source
+  ---
+  duration_ms: 19.824238
+  type: 'test'
+  ...
+# Subtest: current session revocation denies retained recommendation and command effects
+ok 47 - current session revocation denies retained recommendation and command effects
+  ---
+  duration_ms: 71.957251
+  type: 'test'
+  ...
+# Subtest: current client policy denial refuses subsequent requests
+ok 48 - current client policy denial refuses subsequent requests
+  ---
+  duration_ms: 7.346442
+  type: 'test'
+  ...
+# Subtest: current preparation denial creates no immutable metadata
+ok 49 - current preparation denial creates no immutable metadata
+  ---
+  duration_ms: 64.00379
+  type: 'test'
+  ...
+# Subtest: separate approval revocation refuses before task effect
+ok 50 - separate approval revocation refuses before task effect
+  ---
+  duration_ms: 69.588835
+  type: 'test'
+  ...
+# Subtest: body cannot supply authority or approve HTTP route
+ok 51 - body cannot supply authority or approve HTTP route
+  ---
+  duration_ms: 6.609121
+  type: 'test'
+  ...
+# Subtest: closed session refuses all requests and cleanup is idempotent
+ok 52 - closed session refuses all requests and cleanup is idempotent
+  ---
+  duration_ms: 8.564495
+  type: 'test'
+  ...
+# Subtest: construction bounds are closed and require explicit local mode
+ok 53 - construction bounds are closed and require explicit local mode
+  ---
+  duration_ms: 0.303847
+  type: 'test'
+  ...
+# Subtest: CLI help and invalid args do not construct the local graph or mutate configuration
+ok 54 - CLI help and invalid args do not construct the local graph or mutate configuration
+  ---
+  duration_ms: 0.392401
+  type: 'test'
+  ...
+# Subtest: independent public receiver actual PR42 query/read
+ok 55 - independent public receiver actual PR42 query/read
+  ---
+  duration_ms: 415.010805
+  type: 'test'
+  ...
+# Subtest: independent public receiver actual PR42 draft/draft
+ok 56 - independent public receiver actual PR42 draft/draft
+  ---
+  duration_ms: 3.323824
+  type: 'test'
+  ...
+# Subtest: independent public receiver actual PR42 prepare/pending
+ok 57 - independent public receiver actual PR42 prepare/pending
+  ---
+  duration_ms: 3.884018
+  type: 'test'
+  ...
+# Subtest: independent public receiver actual PR42 execute/executed
+ok 58 - independent public receiver actual PR42 execute/executed
+  ---
+  duration_ms: 1.526308
+  type: 'test'
+  ...
+# Subtest: independent public receiver actual PR42 execute/replay
+ok 59 - independent public receiver actual PR42 execute/replay
+  ---
+  duration_ms: 0.204478
+  type: 'test'
+  ...
+# Subtest: independent actual pending approval error and indeterminate accounting remain non-success
+ok 60 - independent actual pending approval error and indeterminate accounting remain non-success
+  ---
+  duration_ms: 0.381685
+  type: 'test'
+  ...
+# Subtest: independent public error UNAUTHENTICATED/401
+ok 61 - independent public error UNAUTHENTICATED/401
+  ---
+  duration_ms: 0.193562
+  type: 'test'
+  ...
+# Subtest: independent public error ACCESS_DENIED/403
+ok 62 - independent public error ACCESS_DENIED/403
+  ---
+  duration_ms: 0.115093
+  type: 'test'
+  ...
+# Subtest: independent public error DEADLINE/408
+ok 63 - independent public error DEADLINE/408
+  ---
+  duration_ms: 0.21902
+  type: 'test'
+  ...
+# Subtest: independent public error CANCELLED/499
+ok 64 - independent public error CANCELLED/499
+  ---
+  duration_ms: 0.181594
+  type: 'test'
+  ...
+# Subtest: independent public error COMMAND_APPROVAL_REFUSED/409
+ok 65 - independent public error COMMAND_APPROVAL_REFUSED/409
+  ---
+  duration_ms: 0.083506
+  type: 'test'
+  ...
+# Subtest: independent public error COMMAND_OUTCOME_UNKNOWN/502
+ok 66 - independent public error COMMAND_OUTCOME_UNKNOWN/502
+  ---
+  duration_ms: 0.124618
+  type: 'test'
+  ...
+# Subtest: independent receiver preserves UNKNOWN without retry/approval fields
+ok 67 - independent receiver preserves UNKNOWN without retry/approval fields
+  ---
+  duration_ms: 0.567845
+  type: 'test'
+  ...
+# Subtest: independent receiver preserves RESULT_NOT_RELEASED without retry/approval fields
+ok 68 - independent receiver preserves RESULT_NOT_RELEASED without retry/approval fields
+  ---
+  duration_ms: 0.123866
+  type: 'test'
+  ...
+# Subtest: independent receiver preserves STORED_NOT_RELEASED without retry/approval fields
+ok 69 - independent receiver preserves STORED_NOT_RELEASED without retry/approval fields
+  ---
+  duration_ms: 0.122144
+  type: 'test'
+  ...
+# Subtest: independent receiver preserves NOT_STORED without retry/approval fields
+ok 70 - independent receiver preserves NOT_STORED without retry/approval fields
+  ---
+  duration_ms: 0.11964
+  type: 'test'
+  ...
+# Subtest: independent receiver preserves READ_UNAVAILABLE without retry/approval fields
+ok 71 - independent receiver preserves READ_UNAVAILABLE without retry/approval fields
+  ---
+  duration_ms: 0.240342
+  type: 'test'
+  ...
+# Subtest: independent receiving refusal accepted recommendation
+ok 72 - independent receiving refusal accepted recommendation
+  ---
+  duration_ms: 0.458731
+  type: 'test'
+  ...
+# Subtest: independent receiving refusal unknown query field
+ok 73 - independent receiving refusal unknown query field
+  ---
+  duration_ms: 0.425771
+  type: 'test'
+  ...
+# Subtest: independent receiving refusal query digest
+ok 74 - independent receiving refusal query digest
+  ---
+  duration_ms: 4.156459
+  type: 'test'
+  ...
+# Subtest: independent receiving refusal event binding
+ok 75 - independent receiving refusal event binding
+  ---
+  duration_ms: 1.838267
+  type: 'test'
+  ...
+# Subtest: independent receiving refusal event result ref
+ok 76 - independent receiving refusal event result ref
+  ---
+  duration_ms: 2.1581
+  type: 'test'
+  ...
+# Subtest: independent receiving refusal draft digest
+ok 77 - independent receiving refusal draft digest
+  ---
+  duration_ms: 0.721567
+  type: 'test'
+  ...
+# Subtest: independent receiving refusal recommendation hash
+ok 78 - independent receiving refusal recommendation hash
+  ---
+  duration_ms: 0.877701
+  type: 'test'
+  ...
+# Subtest: independent receiving refusal prepare approval confusion
+ok 79 - independent receiving refusal prepare approval confusion
+  ---
+  duration_ms: 0.285851
+  type: 'test'
+  ...
+# Subtest: independent receiving refusal proposal digest
+ok 80 - independent receiving refusal proposal digest
+  ---
+  duration_ms: 1.233307
+  type: 'test'
+  ...
+# Subtest: independent receiving refusal proposal task substitution
+ok 81 - independent receiving refusal proposal task substitution
+  ---
+  duration_ms: 0.880496
+  type: 'test'
+  ...
+# Subtest: independent receiving refusal prepare client substitution
+ok 82 - independent receiving refusal prepare client substitution
+  ---
+  duration_ms: 1.730355
+  type: 'test'
+  ...
+# Subtest: independent receiving refusal execute approval confusion
+ok 83 - independent receiving refusal execute approval confusion
+  ---
+  duration_ms: 0.290057
+  type: 'test'
+  ...
+# Subtest: independent receiving refusal execute unknown key
+ok 84 - independent receiving refusal execute unknown key
+  ---
+  duration_ms: 0.23223
+  type: 'test'
+  ...
+# Subtest: independent receiving refusal execute tenant-scope mismatch
+ok 85 - independent receiving refusal execute tenant-scope mismatch
+  ---
+  duration_ms: 0.345259
+  type: 'test'
+  ...
+# Subtest: independent route and status cannot reclassify an actual payload
+ok 86 - independent route and status cannot reclassify an actual payload
+  ---
+  duration_ms: 0.64445
+  type: 'test'
+  ...
+# Subtest: independent malformed primitive JSON 
+ok 87 - independent malformed primitive JSON 
+  ---
+  duration_ms: 0.191648
+  type: 'test'
+  ...
+# Subtest: independent malformed primitive JSON null
+ok 88 - independent malformed primitive JSON null
+  ---
+  duration_ms: 0.154894
+  type: 'test'
+  ...
+# Subtest: independent malformed primitive JSON []
+ok 89 - independent malformed primitive JSON []
+  ---
+  duration_ms: 0.112139
+  type: 'test'
+  ...
+# Subtest: independent malformed primitive JSON {}
+ok 90 - independent malformed primitive JSON {}
+  ---
+  duration_ms: 0.104687
+  type: 'test'
+  ...
+# Subtest: independent malformed primitive JSON {"error":
+ok 91 - independent malformed primitive JSON {"error":
+  ---
+  duration_ms: 0.091708
+  type: 'test'
+  ...
+# Subtest: independent malformed primitive JSON {"error":{}} trailing
+ok 92 - independent malformed primitive JSON {"error":{}} trailing
+  ---
+  duration_ms: 0.145399
+  type: 'test'
+  ...
+# Subtest: independent receiving refuses effectful objects without reading any traps
+ok 93 - independent receiving refuses effectful objects without reading any traps
+  ---
+  duration_ms: 0.369617
+  type: 'test'
+  ...
+# Subtest: independent explicit byte and nesting bounds refuse safely
+ok 94 - independent explicit byte and nesting bounds refuse safely
+  ---
+  duration_ms: 0.387233
+  type: 'test'
+  ...
+# Subtest: independent package has no public approval, credential or execution method
+ok 95 - independent package has no public approval, credential or execution method
+  ---
+  duration_ms: 1.803466
+  type: 'test'
+  ...
+# Subtest: independent generated browser receiver has no external/private/Node imports
+ok 96 - independent generated browser receiver has no external/private/Node imports
+  ---
+  duration_ms: 105.368315
+  type: 'test'
+  ...
+# Subtest: independent receiving accepts canonical nonconsecutive reserved event sequence
+ok 97 - independent receiving accepts canonical nonconsecutive reserved event sequence
+  ---
+  duration_ms: 4.769711
+  type: 'test'
+  ...
+# Subtest: independent receiving accepts actual original A recommendation prepared under current B
+ok 98 - independent receiving accepts actual original A recommendation prepared under current B
+  ---
+  duration_ms: 36.965606
+  type: 'test'
+  ...
+1..98
+# tests 98
+# suites 0
+# pass 98
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3972.085794

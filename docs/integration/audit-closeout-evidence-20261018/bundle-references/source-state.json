@@ -1,0 +1,58 @@
+{
+  "current": {
+    "head": "43db1dfac9663962efb0e49fa24ec7ddea10f9d0",
+    "tree": "ca3f3a59e556e191a2a76c74c5deb87cc356af5a",
+    "status": "",
+    "sha256": {
+      "apps/control/action-application/local/demo.mjs": "f7ef7f23dc7ef7f6052e3a31297bcad8893001fa9370ab84ac79d18c143d3181",
+      "apps/control/conversations/package-lock.json": "3225d67c562631322a1ca6a6ef74f8f246975cdad2120e107acd9840670e98e2",
+      "apps/control/conversations/postgres-store.mjs": "3943e94931fc0843faa6dac8c10c7083178996182804abe8f28f8cfedfb53a79",
+      "apps/gateway/sources/action-items/http-adapter.mjs": "d6bdcd91671c9583fa0e7f5e17a262097c045c79605c82c8a2895570c0be3410",
+      "apps/runtime/package-lock.json": "4de8254a956ef18c4de43becdb3544a56013c2be0421884636739dcaa03c23c9",
+      "apps/worker/conversation/capabilities/policy-resolution.mjs": "3ae47f734ad9c2c23012935b8642946b51d4b4245f01b592ca61d1c1cac7e6d7",
+      "apps/worker/conversation/capabilities/policy.mjs": "7b5e52ae86ebc847e23967b5dcead0e38d27330b99fff976dc87e3488fc756d1",
+      "apps/worker/conversation/capabilities/skill-plugin.mjs": "789db99ae5085da2e80794bfd560e8d80684426ea5c8f9925b7c476116306449",
+      "apps/worker/conversation/egress/proxy-server.mjs": "e176f417f0db33f1c574c2d54eb0f2bb1f2dc4f93f62d789cb8b55a271f634f5",
+      "package-lock.json": "4a18a2e5eeb672758df381eba55653da2dc0d9e9ab26e3f6f7943ad19120753c",
+      "packages/contracts/dist/conversation-initial-input.metadata.json": "633fa9b02b9d0a95fc8e275a8c070ed510e22df362b8aa7b5e1888149ac08d83",
+      "packages/contracts/test/action-application-independent.test.mjs": "1f36f3c52797ded705398531a95d71c8fe1af2c199c87a27abc9a00cff3e0b71",
+      "packages/contracts/test/conversation-initial-input-public.test.mjs": "4332248e40753ad7e2d91f2cfc8d38b7fbade36c143ca8756cb9ae70a5d8cfc6",
+      "packages/contracts/test/document-application-independent.test.mjs": "726d321fa6c5e16f76bc2a4b5162d9e9fe387b5dce6215c92be7e52823fceb22",
+      "packages/contracts/test/retrieval-action-item-binding.test.mjs": "482be2182507d720e57f38e143b76df8e4cbf30844382c7310e5a4b51e5d17d0",
+      "packages/contracts/test/retrieval-action-item-independent.test.mjs": "983476af201b451b93d7d2ec65adbc2fc9763bf58bf88de9c5d7b25c2d40812a",
+      "packages/contracts/test/retrieval-meeting-source.test.mjs": "edfe5ac257d98a85714bbcb2f4355709b8f805917688a66adfdda852de3983f3",
+      "packages/contracts/test/retrieval-memory-proposals.test.mjs": "9ed68bc4de153402299e2bca0390b98de5260b4de37e9f001e84a1af5f9500b9",
+      "packages/contracts/test/retrieval-operational-reads.test.mjs": "adad6f49f8b5f4ef83959f0b32ab5d8ec639b9c951e5097f1ae0d80a9dd8f7c1",
+      "packages/contracts/test/retrieval-public-domain-query.test.mjs": "59a75f0b86d2a0bb9247be5458a6974eeefb6953d05ef2b915c28783b2ba97c5",
+      "packages/contracts/test/task-command-application-public.test.mjs": "95c196cd22a9a797ff37a98a6127e32919cdb4e1cacb3ebbb2241a580ef1bf2f"
+    }
+  },
+  "baseline": {
+    "head": "141f2ada6378382f2bf7462d8a2c5dc7758230d0",
+    "tree": "4143ada5ab3283565cb665c2fcb5564a0f5aed32",
+    "status": "",
+    "sha256": {
+      "apps/control/action-application/local/demo.mjs": "f7ef7f23dc7ef7f6052e3a31297bcad8893001fa9370ab84ac79d18c143d3181",
+      "apps/control/conversations/package-lock.json": "3225d67c562631322a1ca6a6ef74f8f246975cdad2120e107acd9840670e98e2",
+      "apps/control/conversations/postgres-store.mjs": "3943e94931fc0843faa6dac8c10c7083178996182804abe8f28f8cfedfb53a79",
+      "apps/gateway/sources/action-items/http-adapter.mjs": "d6bdcd91671c9583fa0e7f5e17a262097c045c79605c82c8a2895570c0be3410",
+      "apps/runtime/package-lock.json": "4de8254a956ef18c4de43becdb3544a56013c2be0421884636739dcaa03c23c9",
+      "apps/worker/conversation/capabilities/policy-resolution.mjs": "3ae47f734ad9c2c23012935b8642946b51d4b4245f01b592ca61d1c1cac7e6d7",
+      "apps/worker/conversation/capabilities/policy.mjs": "7b5e52ae86ebc847e23967b5dcead0e38d27330b99fff976dc87e3488fc756d1",
+      "apps/worker/conversation/capabilities/skill-plugin.mjs": "789db99ae5085da2e80794bfd560e8d80684426ea5c8f9925b7c476116306449",
+      "apps/worker/conversation/egress/proxy-server.mjs": "e176f417f0db33f1c574c2d54eb0f2bb1f2dc4f93f62d789cb8b55a271f634f5",
+      "package-lock.json": "4a18a2e5eeb672758df381eba55653da2dc0d9e9ab26e3f6f7943ad19120753c",
+      "packages/contracts/dist/conversation-initial-input.metadata.json": "633fa9b02b9d0a95fc8e275a8c070ed510e22df362b8aa7b5e1888149ac08d83",
+      "packages/contracts/test/action-application-independent.test.mjs": "1f36f3c52797ded705398531a95d71c8fe1af2c199c87a27abc9a00cff3e0b71",
+      "packages/contracts/test/conversation-initial-input-public.test.mjs": "4332248e40753ad7e2d91f2cfc8d38b7fbade36c143ca8756cb9ae70a5d8cfc6",
+      "packages/contracts/test/document-application-independent.test.mjs": "726d321fa6c5e16f76bc2a4b5162d9e9fe387b5dce6215c92be7e52823fceb22",
+      "packages/contracts/test/retrieval-action-item-binding.test.mjs": "482be2182507d720e57f38e143b76df8e4cbf30844382c7310e5a4b51e5d17d0",
+      "packages/contracts/test/retrieval-action-item-independent.test.mjs": "983476af201b451b93d7d2ec65adbc2fc9763bf58bf88de9c5d7b25c2d40812a",
+      "packages/contracts/test/retrieval-meeting-source.test.mjs": "edfe5ac257d98a85714bbcb2f4355709b8f805917688a66adfdda852de3983f3",
+      "packages/contracts/test/retrieval-memory-proposals.test.mjs": "9ed68bc4de153402299e2bca0390b98de5260b4de37e9f001e84a1af5f9500b9",
+      "packages/contracts/test/retrieval-operational-reads.test.mjs": "adad6f49f8b5f4ef83959f0b32ab5d8ec639b9c951e5097f1ae0d80a9dd8f7c1",
+      "packages/contracts/test/retrieval-public-domain-query.test.mjs": "59a75f0b86d2a0bb9247be5458a6974eeefb6953d05ef2b915c28783b2ba97c5",
+      "packages/contracts/test/task-command-application-public.test.mjs": "95c196cd22a9a797ff37a98a6127e32919cdb4e1cacb3ebbb2241a580ef1bf2f"
+    }
+  }
+}

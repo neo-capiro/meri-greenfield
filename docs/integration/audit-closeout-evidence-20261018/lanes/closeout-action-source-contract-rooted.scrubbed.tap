@@ -1,0 +1,394 @@
+TAP version 13
+# Subtest: local gateway independent: actual owned credential reaches canonical durable dispatch/source/store/read
+ok 1 - local gateway independent: actual owned credential reaches canonical durable dispatch/source/store/read
+  ---
+  duration_ms: 260.245726
+  type: 'test'
+  ...
+# Subtest: local gateway independent: narrowing client after real source acquisition blocks release and result retention
+ok 2 - local gateway independent: narrowing client after real source acquisition blocks release and result retention
+  ---
+  duration_ms: 29.767601
+  type: 'test'
+  ...
+# Subtest: local gateway independent: narrowing grants after real source acquisition blocks release and result retention
+ok 3 - local gateway independent: narrowing grants after real source acquisition blocks release and result retention
+  ---
+  duration_ms: 22.387433
+  type: 'test'
+  ...
+# Subtest: local gateway independent: narrowing sources after real source acquisition blocks release and result retention
+ok 4 - local gateway independent: narrowing sources after real source acquisition blocks release and result retention
+  ---
+  duration_ms: 35.236104
+  type: 'test'
+  ...
+# Subtest: local gateway independent: local capability cannot override canonical durable grant revocation
+ok 5 - local gateway independent: local capability cannot override canonical durable grant revocation
+  ---
+  duration_ms: 20.596395
+  type: 'test'
+  ...
+# Subtest: local gateway independent: historical result survives exact task replacement but requires newly issued current credential
+ok 6 - local gateway independent: historical result survives exact task replacement but requires newly issued current credential
+  ---
+  duration_ms: 55.724056
+  type: 'test'
+  ...
+# Subtest: local gateway independent: source acquisition token revocation leaves UNKNOWN without redispatch
+ok 7 - local gateway independent: source acquisition token revocation leaves UNKNOWN without redispatch
+  ---
+  duration_ms: 24.249238
+  type: 'test'
+  ...
+# Subtest: local gateway independent: concrete construction rejects production origin, forged owner and extra request-selected ports
+ok 8 - local gateway independent: concrete construction rejects production origin, forged owner and extra request-selected ports
+  ---
+  duration_ms: 8.245952
+  type: 'test'
+  ...
+# Subtest: opaque issuer computes canonical claims from closed owned state
+ok 9 - opaque issuer computes canonical claims from closed owned state
+  ---
+  duration_ms: 38.616301
+  type: 'test'
+  ...
+# Subtest: forged token changed token foreign issuer restart and close all fail closed
+ok 10 - forged token changed token foreign issuer restart and close all fail closed
+  ---
+  duration_ms: 1.532518
+  type: 'test'
+  ...
+# Subtest: capability expiry and current run deadline deny
+ok 11 - capability expiry and current run deadline deny
+  ---
+  duration_ms: 1.211816
+  type: 'test'
+  ...
+# Subtest: revoke denies actual canonical authority without mutating claim history
+ok 12 - revoke denies actual canonical authority without mutating claim history
+  ---
+  duration_ms: 2.441388
+  type: 'test'
+  ...
+# Subtest: current policy denies clientAllowed
+ok 13 - current policy denies clientAllowed
+  ---
+  duration_ms: 1.210553
+  type: 'test'
+  ...
+# Subtest: current policy denies sourceEnabled
+ok 14 - current policy denies sourceEnabled
+  ---
+  duration_ms: 1.697096
+  type: 'test'
+  ...
+# Subtest: current policy denies grants
+ok 15 - current policy denies grants
+  ---
+  duration_ms: 2.098691
+  type: 'test'
+  ...
+# Subtest: revision change invalidates existing token; new current token may validate
+ok 16 - revision change invalidates existing token; new current token may validate
+  ---
+  duration_ms: 1.044513
+  type: 'test'
+  ...
+# Subtest: coherent replacement preserves stable owner and invalidates prior task token
+ok 17 - coherent replacement preserves stable owner and invalidates prior task token
+  ---
+  duration_ms: 2.050209
+  type: 'test'
+  ...
+# Subtest: policy ports refuse forged claims wrong operation client grants and source requirements
+ok 18 - policy ports refuse forged claims wrong operation client grants and source requirements
+  ---
+  duration_ms: 3.689989
+  type: 'test'
+  ...
+# Subtest: hostile configuration, calls and signals are inert
+ok 19 - hostile configuration, calls and signals are inert
+  ---
+  duration_ms: 0.741477
+  type: 'test'
+  ...
+# Subtest: abort inside clock callback cannot release an authority fact
+ok 20 - abort inside clock callback cannot release an authority fact
+  ---
+  duration_ms: 0.762469
+  type: 'test'
+  ...
+# Subtest: actual owned durable gateway reserves executes records completion settles and refuses duplicate dispatch
+ok 21 - actual owned durable gateway reserves executes records completion settles and refuses duplicate dispatch
+  ---
+  duration_ms: 101.397281
+  type: 'test'
+  ...
+# Subtest: signed local action receipt refuses changed operation before Fetch
+ok 22 - signed local action receipt refuses changed operation before Fetch
+  ---
+  duration_ms: 15.706209
+  type: 'test'
+  ...
+# Subtest: signed local action receipt refuses changed body hash before Fetch
+ok 23 - signed local action receipt refuses changed body hash before Fetch
+  ---
+  duration_ms: 11.778893
+  type: 'test'
+  ...
+# Subtest: signed local action receipt refuses changed correlation before Fetch
+ok 24 - signed local action receipt refuses changed correlation before Fetch
+  ---
+  duration_ms: 12.478998
+  type: 'test'
+  ...
+# Subtest: signed local action receipt refuses changed scheme before Fetch
+ok 25 - signed local action receipt refuses changed scheme before Fetch
+  ---
+  duration_ms: 9.411377
+  type: 'test'
+  ...
+# Subtest: wrong operation before preparation allocates no durable invocation
+ok 26 - wrong operation before preparation allocates no durable invocation
+  ---
+  duration_ms: 4.488662
+  type: 'test'
+  ...
+# Subtest: unknown reserve acknowledgement never dispatches and reconstructs exact prepared identity
+ok 27 - unknown reserve acknowledgement never dispatches and reconstructs exact prepared identity
+  ---
+  duration_ms: 18.754321
+  type: 'test'
+  ...
+# Subtest: actual gateway source is denied after local revocation and production descriptors remain null
+ok 28 - actual gateway source is denied after local revocation and production descriptors remain null
+  ---
+  duration_ms: 7.101928
+  type: 'test'
+  ...
+# Subtest: gateway only accepts branded identity explicit local transport and exact allocation
+ok 29 - gateway only accepts branded identity explicit local transport and exact allocation
+  ---
+  duration_ms: 4.588633
+  type: 'test'
+  ...
+# Subtest: real local case composes control current authorizer store owned gateway and source response
+ok 30 - real local case composes control current authorizer store owned gateway and source response
+  ---
+  duration_ms: 120.204907
+  type: 'test'
+  ...
+# Subtest: control authorizer recomputes binding digest scopes and current capability
+ok 31 - control authorizer recomputes binding digest scopes and current capability
+  ---
+  duration_ms: 2.971406
+  type: 'test'
+  ...
+# Subtest: failed setup acknowledgement keeps safe owned IDs and evicts failed-BEGIN connection
+ok 32 - failed setup acknowledgement keeps safe owned IDs and evicts failed-BEGIN connection
+  ---
+  duration_ms: 8.442609
+  type: 'test'
+  ...
+# Subtest: action source independent: actual canonical dispatch reaches signed alias and validated scoped projection
+ok 33 - action source independent: actual canonical dispatch reaches signed alias and validated scoped projection
+  ---
+  duration_ms: 106.348791
+  type: 'test'
+  ...
+# Subtest: action source independent: actual production catalog remains disabled before any ports
+ok 34 - action source independent: actual production catalog remains disabled before any ports
+  ---
+  duration_ms: 10.4887
+  type: 'test'
+  ...
+# Subtest: action source independent: exact body, original digest and four-field correlation bind one token
+ok 35 - action source independent: exact body, original digest and four-field correlation bind one token
+  ---
+  duration_ms: 9.047289
+  type: 'test'
+  ...
+# Subtest: action source independent: bearer and changed token pins refuse before Core HTTP
+ok 36 - action source independent: bearer and changed token pins refuse before Core HTTP
+  ---
+  duration_ms: 24.642931
+  type: 'test'
+  ...
+# Subtest: action source independent: model cannot supply authority/context or transport options
+ok 37 - action source independent: model cannot supply authority/context or transport options
+  ---
+  duration_ms: 1.615504
+  type: 'test'
+  ...
+# Subtest: action source independent: connected unscoped and names refuse, UUID must equal current selected subject
+ok 38 - action source independent: connected unscoped and names refuse, UUID must equal current selected subject
+  ---
+  duration_ms: 6.991842
+  type: 'test'
+  ...
+# Subtest: action source independent: exact origin admission precedes allocation
+ok 39 - action source independent: exact origin admission precedes allocation
+  ---
+  duration_ms: 0.548536
+  type: 'test'
+  ...
+# Subtest: action source independent: credential full binding, expiry, header admission and closed shape
+ok 40 - action source independent: credential full binding, expiry, header admission and closed shape
+  ---
+  duration_ms: 25.388875
+  type: 'test'
+  ...
+# Subtest: action source independent: credential getters and proxies are inert at admission
+ok 41 - action source independent: credential getters and proxies are inert at admission
+  ---
+  duration_ms: 6.182312
+  type: 'test'
+  ...
+# Subtest: action source independent: HTTP status, redirect, media and encoding refuse without retry
+ok 42 - action source independent: HTTP status, redirect, media and encoding refuse without retry
+  ---
+  duration_ms: 16.372984
+  type: 'test'
+  ...
+# Subtest: action source independent: bounded bytes and fatal UTF8 JSON decoding
+ok 43 - action source independent: bounded bytes and fatal UTF8 JSON decoding
+  ---
+  duration_ms: 19.281815
+  type: 'test'
+  ...
+# Subtest: action source independent: acquired response cancelled when outer lifetime loses same-turn race
+ok 44 - action source independent: acquired response cancelled when outer lifetime loses same-turn race
+  ---
+  duration_ms: 9.03478
+  type: 'test'
+  ...
+# Subtest: action source independent: parked credentials abort refuses and cancels owned late body
+ok 45 - action source independent: parked credentials abort refuses and cancels owned late body
+  ---
+  duration_ms: 3.733744
+  type: 'test'
+  ...
+# Subtest: action source independent: parked fetch abort refuses and cancels owned late body
+ok 46 - action source independent: parked fetch abort refuses and cancels owned late body
+  ---
+  duration_ms: 3.360052
+  type: 'test'
+  ...
+# Subtest: action source independent: parked body abort refuses and cancels owned late body
+ok 47 - action source independent: parked body abort refuses and cancels owned late body
+  ---
+  duration_ms: 2.699837
+  type: 'test'
+  ...
+# Subtest: action source independent: parked credentials expiry refuses and cancels owned late body
+ok 48 - action source independent: parked credentials expiry refuses and cancels owned late body
+  ---
+  duration_ms: 2.097099
+  type: 'test'
+  ...
+# Subtest: action source independent: parked fetch expiry refuses and cancels owned late body
+ok 49 - action source independent: parked fetch expiry refuses and cancels owned late body
+  ---
+  duration_ms: 3.027335
+  type: 'test'
+  ...
+# Subtest: action source independent: parked body expiry refuses and cancels owned late body
+ok 50 - action source independent: parked body expiry refuses and cancels owned late body
+  ---
+  duration_ms: 2.880989
+  type: 'test'
+  ...
+# Subtest: action source independent: credential deadline shrinks original authority during body read
+ok 51 - action source independent: credential deadline shrinks original authority during body read
+  ---
+  duration_ms: 2.725986
+  type: 'test'
+  ...
+# Subtest: action source independent: raw page substitution, scope, proof and recommendation truth refuse
+ok 52 - action source independent: raw page substitution, scope, proof and recommendation truth refuse
+  ---
+  duration_ms: 45.552019
+  type: 'test'
+  ...
+# Subtest: action source independent: revocation and source/fence/subject drift after fetch prevents release
+ok 53 - action source independent: revocation and source/fence/subject drift after fetch prevents release
+  ---
+  duration_ms: 24.086633
+  type: 'test'
+  ...
+# Subtest: action source independent: final fresh authority after settlement denies late success
+ok 54 - action source independent: final fresh authority after settlement denies late success
+  ---
+  duration_ms: 17.801075
+  type: 'test'
+  ...
+# Subtest: action source independent: direct handler checks exact normalized digest and caller cancellation
+ok 55 - action source independent: direct handler checks exact normalized digest and caller cancellation
+  ---
+  duration_ms: 3.175524
+  type: 'test'
+  ...
+# Subtest: action source independent: outer operation/digest/full lineage cannot be replaced by handler result
+ok 56 - action source independent: outer operation/digest/full lineage cannot be replaced by handler result
+  ---
+  duration_ms: 25.785302
+  type: 'test'
+  ...
+# Subtest: action source independent: opaque continuation and degraded coverage preserve native limits
+ok 57 - action source independent: opaque continuation and degraded coverage preserve native limits
+  ---
+  duration_ms: 8.326543
+  type: 'test'
+  ...
+# Subtest: action source independent: direct unscoped action read refuses before credential acquisition
+ok 58 - action source independent: direct unscoped action read refuses before credential acquisition
+  ---
+  duration_ms: 1.505007
+  type: 'test'
+  ...
+# Subtest: action source independent: clock callback cancellation prevents direct late handler release
+ok 59 - action source independent: clock callback cancellation prevents direct late handler release
+  ---
+  duration_ms: 1.125966
+  type: 'test'
+  ...
+# Subtest: action source independent: callback cancellation after trace allocation cannot release direct result
+ok 60 - action source independent: callback cancellation after trace allocation cannot release direct result
+  ---
+  duration_ms: 0.777541
+  type: 'test'
+  ...
+# Subtest: action source independent: fresh decision IDs may rotate without changing policy selection
+ok 61 - action source independent: fresh decision IDs may rotate without changing policy selection
+  ---
+  duration_ms: 5.526485
+  type: 'test'
+  ...
+# Subtest: action source independent: normalized authority cannot switch selected client after preflight
+ok 62 - action source independent: normalized authority cannot switch selected client after preflight
+  ---
+  duration_ms: 1.419223
+  type: 'test'
+  ...
+# Subtest: action source independent: shortened release deadline bounds parked settlement with no late output
+ok 63 - action source independent: shortened release deadline bounds parked settlement with no late output
+  ---
+  duration_ms: 25.545892
+  type: 'test'
+  ...
+# Subtest: action source independent: every actual policy call receives the same canonical normalized action input
+ok 64 - action source independent: every actual policy call receives the same canonical normalized action input
+  ---
+  duration_ms: 7.095639
+  type: 'test'
+  ...
+1..64
+# tests 64
+# suites 0
+# pass 64
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 920.735246

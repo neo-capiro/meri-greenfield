@@ -1,0 +1,274 @@
+TAP version 13
+# Subtest: independent public receiver actual PR42 query/read
+ok 1 - independent public receiver actual PR42 query/read
+  ---
+  duration_ms: 353.80589
+  type: 'test'
+  ...
+# Subtest: independent public receiver actual PR42 draft/draft
+ok 2 - independent public receiver actual PR42 draft/draft
+  ---
+  duration_ms: 3.636121
+  type: 'test'
+  ...
+# Subtest: independent public receiver actual PR42 prepare/pending
+ok 3 - independent public receiver actual PR42 prepare/pending
+  ---
+  duration_ms: 2.889788
+  type: 'test'
+  ...
+# Subtest: independent public receiver actual PR42 execute/executed
+ok 4 - independent public receiver actual PR42 execute/executed
+  ---
+  duration_ms: 1.339966
+  type: 'test'
+  ...
+# Subtest: independent public receiver actual PR42 execute/replay
+ok 5 - independent public receiver actual PR42 execute/replay
+  ---
+  duration_ms: 0.214633
+  type: 'test'
+  ...
+# Subtest: independent actual pending approval error and indeterminate accounting remain non-success
+ok 6 - independent actual pending approval error and indeterminate accounting remain non-success
+  ---
+  duration_ms: 0.440733
+  type: 'test'
+  ...
+# Subtest: independent public error UNAUTHENTICATED/401
+ok 7 - independent public error UNAUTHENTICATED/401
+  ---
+  duration_ms: 0.156114
+  type: 'test'
+  ...
+# Subtest: independent public error ACCESS_DENIED/403
+ok 8 - independent public error ACCESS_DENIED/403
+  ---
+  duration_ms: 0.115494
+  type: 'test'
+  ...
+# Subtest: independent public error DEADLINE/408
+ok 9 - independent public error DEADLINE/408
+  ---
+  duration_ms: 0.131508
+  type: 'test'
+  ...
+# Subtest: independent public error CANCELLED/499
+ok 10 - independent public error CANCELLED/499
+  ---
+  duration_ms: 0.163546
+  type: 'test'
+  ...
+# Subtest: independent public error COMMAND_APPROVAL_REFUSED/409
+ok 11 - independent public error COMMAND_APPROVAL_REFUSED/409
+  ---
+  duration_ms: 0.094262
+  type: 'test'
+  ...
+# Subtest: independent public error COMMAND_OUTCOME_UNKNOWN/502
+ok 12 - independent public error COMMAND_OUTCOME_UNKNOWN/502
+  ---
+  duration_ms: 0.140802
+  type: 'test'
+  ...
+# Subtest: independent receiver preserves UNKNOWN without retry/approval fields
+ok 13 - independent receiver preserves UNKNOWN without retry/approval fields
+  ---
+  duration_ms: 0.553623
+  type: 'test'
+  ...
+# Subtest: independent receiver preserves RESULT_NOT_RELEASED without retry/approval fields
+ok 14 - independent receiver preserves RESULT_NOT_RELEASED without retry/approval fields
+  ---
+  duration_ms: 0.128323
+  type: 'test'
+  ...
+# Subtest: independent receiver preserves STORED_NOT_RELEASED without retry/approval fields
+ok 15 - independent receiver preserves STORED_NOT_RELEASED without retry/approval fields
+  ---
+  duration_ms: 0.282615
+  type: 'test'
+  ...
+# Subtest: independent receiver preserves NOT_STORED without retry/approval fields
+ok 16 - independent receiver preserves NOT_STORED without retry/approval fields
+  ---
+  duration_ms: 0.131088
+  type: 'test'
+  ...
+# Subtest: independent receiver preserves READ_UNAVAILABLE without retry/approval fields
+ok 17 - independent receiver preserves READ_UNAVAILABLE without retry/approval fields
+  ---
+  duration_ms: 0.138859
+  type: 'test'
+  ...
+# Subtest: independent receiving refusal accepted recommendation
+ok 18 - independent receiving refusal accepted recommendation
+  ---
+  duration_ms: 0.562256
+  type: 'test'
+  ...
+# Subtest: independent receiving refusal unknown query field
+ok 19 - independent receiving refusal unknown query field
+  ---
+  duration_ms: 0.453552
+  type: 'test'
+  ...
+# Subtest: independent receiving refusal query digest
+ok 20 - independent receiving refusal query digest
+  ---
+  duration_ms: 6.602555
+  type: 'test'
+  ...
+# Subtest: independent receiving refusal event binding
+ok 21 - independent receiving refusal event binding
+  ---
+  duration_ms: 1.634178
+  type: 'test'
+  ...
+# Subtest: independent receiving refusal event result ref
+ok 22 - independent receiving refusal event result ref
+  ---
+  duration_ms: 1.338834
+  type: 'test'
+  ...
+# Subtest: independent receiving refusal draft digest
+ok 23 - independent receiving refusal draft digest
+  ---
+  duration_ms: 0.799694
+  type: 'test'
+  ...
+# Subtest: independent receiving refusal recommendation hash
+ok 24 - independent receiving refusal recommendation hash
+  ---
+  duration_ms: 1.084251
+  type: 'test'
+  ...
+# Subtest: independent receiving refusal prepare approval confusion
+ok 25 - independent receiving refusal prepare approval confusion
+  ---
+  duration_ms: 0.317467
+  type: 'test'
+  ...
+# Subtest: independent receiving refusal proposal digest
+ok 26 - independent receiving refusal proposal digest
+  ---
+  duration_ms: 1.271583
+  type: 'test'
+  ...
+# Subtest: independent receiving refusal proposal task substitution
+ok 27 - independent receiving refusal proposal task substitution
+  ---
+  duration_ms: 1.084181
+  type: 'test'
+  ...
+# Subtest: independent receiving refusal prepare client substitution
+ok 28 - independent receiving refusal prepare client substitution
+  ---
+  duration_ms: 0.938723
+  type: 'test'
+  ...
+# Subtest: independent receiving refusal execute approval confusion
+ok 29 - independent receiving refusal execute approval confusion
+  ---
+  duration_ms: 0.317678
+  type: 'test'
+  ...
+# Subtest: independent receiving refusal execute unknown key
+ok 30 - independent receiving refusal execute unknown key
+  ---
+  duration_ms: 0.27293
+  type: 'test'
+  ...
+# Subtest: independent receiving refusal execute tenant-scope mismatch
+ok 31 - independent receiving refusal execute tenant-scope mismatch
+  ---
+  duration_ms: 0.280322
+  type: 'test'
+  ...
+# Subtest: independent route and status cannot reclassify an actual payload
+ok 32 - independent route and status cannot reclassify an actual payload
+  ---
+  duration_ms: 0.366912
+  type: 'test'
+  ...
+# Subtest: independent malformed primitive JSON 
+ok 33 - independent malformed primitive JSON 
+  ---
+  duration_ms: 0.124968
+  type: 'test'
+  ...
+# Subtest: independent malformed primitive JSON null
+ok 34 - independent malformed primitive JSON null
+  ---
+  duration_ms: 0.126391
+  type: 'test'
+  ...
+# Subtest: independent malformed primitive JSON []
+ok 35 - independent malformed primitive JSON []
+  ---
+  duration_ms: 0.069074
+  type: 'test'
+  ...
+# Subtest: independent malformed primitive JSON {}
+ok 36 - independent malformed primitive JSON {}
+  ---
+  duration_ms: 0.051347
+  type: 'test'
+  ...
+# Subtest: independent malformed primitive JSON {"error":
+ok 37 - independent malformed primitive JSON {"error":
+  ---
+  duration_ms: 0.051097
+  type: 'test'
+  ...
+# Subtest: independent malformed primitive JSON {"error":{}} trailing
+ok 38 - independent malformed primitive JSON {"error":{}} trailing
+  ---
+  duration_ms: 0.06012
+  type: 'test'
+  ...
+# Subtest: independent receiving refuses effectful objects without reading any traps
+ok 39 - independent receiving refuses effectful objects without reading any traps
+  ---
+  duration_ms: 0.247462
+  type: 'test'
+  ...
+# Subtest: independent explicit byte and nesting bounds refuse safely
+ok 40 - independent explicit byte and nesting bounds refuse safely
+  ---
+  duration_ms: 0.133361
+  type: 'test'
+  ...
+# Subtest: independent package has no public approval, credential or execution method
+ok 41 - independent package has no public approval, credential or execution method
+  ---
+  duration_ms: 0.241333
+  type: 'test'
+  ...
+# Subtest: independent generated browser receiver has no external/private/Node imports
+ok 42 - independent generated browser receiver has no external/private/Node imports
+  ---
+  duration_ms: 79.826727
+  type: 'test'
+  ...
+# Subtest: independent receiving accepts canonical nonconsecutive reserved event sequence
+ok 43 - independent receiving accepts canonical nonconsecutive reserved event sequence
+  ---
+  duration_ms: 6.100889
+  type: 'test'
+  ...
+# Subtest: independent receiving accepts actual original A recommendation prepared under current B
+ok 44 - independent receiving accepts actual original A recommendation prepared under current B
+  ---
+  duration_ms: 35.799187
+  type: 'test'
+  ...
+1..44
+# tests 44
+# suites 0
+# pass 44
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 969.482414

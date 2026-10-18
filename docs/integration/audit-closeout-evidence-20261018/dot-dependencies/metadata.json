@@ -1,0 +1,101 @@
+{
+  "command": "env -u NODE_OPTIONS TZ=America/Toronto node --test --test-reporter=tap apps/control/retention/test/postgres-watermark.test.mjs apps/runtime/test/startup-history.test.mjs",
+  "environment": {
+    "node": "v24.19.0",
+    "npm": "11.9.0",
+    "TZ": "America/Toronto",
+    "NODE_OPTIONS": "unset",
+    "moduleMockFlag": "not required; source uses no mock.module"
+  },
+  "runs": [
+    {
+      "sourceCommit": "e79ceba058343f2a78c655c50c82006604dda4e7",
+      "worktree": "<workspace>/meri-failure-closeout",
+      "exitCode": 1,
+      "counts": {
+        "tests": 20,
+        "pass": 16,
+        "fail": 4,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "failingNames": [
+        "through the watermarked journal, an advance whose commit is unknown leaves the projection standing and closes the serving fence",
+        "trusted startup composes canonical session, submit and membership history, with missing lifecycle owners refused before writes",
+        "membership revision changing during assembled transcript read withholds reload response",
+        "scripted worker delta streams publicly and reloads from the membership transcript"
+      ],
+      "scrubbedLog": "final-e79ceba0.scrubbed.log",
+      "logBytes": 8208,
+      "logSha256": "b075c66730ce27e7059239a644f4d3e8fb93959493cc2bf43ab1bb7d2603eed9",
+      "sourceSha256": {
+        "apps/control/retention/test/postgres-watermark.test.mjs": "2c2a837cf51b1e294d703159f5b321d718aaab7d03d119a175fd1b304d786ac7",
+        "apps/control/retention/recovery-watermark.mjs": "584e10bcf662fb5146041be1a3f24a7d4bc9f50aa4e68b4019ba8100e0f88d70",
+        "apps/runtime/test/startup-history.test.mjs": "e18e9c0eff85014283029989e72c032ab2a3e1a2c1b4384d1c0d0c8dd1cefe35",
+        "apps/runtime/product-applications.mjs": "97fabf06602498c7e0596383a591fb8b56fe99d307c9728656b417b6ca60927a",
+        "apps/control/conversations/history/http.mjs": "f7e4b0377203a324579030515c782121df91deea9b19384c452aa375b1a80eaf"
+      }
+    },
+    {
+      "sourceCommit": "a1876afaeaa59d9da47729487d490cba8cfc9d9c",
+      "worktree": "<workspace>/meri-pr180-baseline",
+      "exitCode": 1,
+      "counts": {
+        "tests": 20,
+        "pass": 16,
+        "fail": 4,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "failingNames": [
+        "through the watermarked journal, an advance whose commit is unknown leaves the projection standing and closes the serving fence",
+        "trusted startup composes canonical session, submit and membership history, with missing lifecycle owners refused before writes",
+        "membership revision changing during assembled transcript read withholds reload response",
+        "scripted worker delta streams publicly and reloads from the membership transcript"
+      ],
+      "scrubbedLog": "pr180-a1876afa.scrubbed.log",
+      "logBytes": 8206,
+      "logSha256": "c1451b68cdd43b22b66703c6295dcbcbc2583a59b7c6cda9659943ca5bde6bdd",
+      "sourceSha256": {
+        "apps/control/retention/test/postgres-watermark.test.mjs": "2c2a837cf51b1e294d703159f5b321d718aaab7d03d119a175fd1b304d786ac7",
+        "apps/control/retention/recovery-watermark.mjs": "584e10bcf662fb5146041be1a3f24a7d4bc9f50aa4e68b4019ba8100e0f88d70",
+        "apps/runtime/test/startup-history.test.mjs": "e18e9c0eff85014283029989e72c032ab2a3e1a2c1b4384d1c0d0c8dd1cefe35",
+        "apps/runtime/product-applications.mjs": "97fabf06602498c7e0596383a591fb8b56fe99d307c9728656b417b6ca60927a",
+        "apps/control/conversations/history/http.mjs": "f7e4b0377203a324579030515c782121df91deea9b19384c452aa375b1a80eaf"
+      }
+    },
+    {
+      "sourceCommit": "1aa5c66e9283024e78ad6f26f5450cbc61a37659",
+      "worktree": "<workspace>/meri-pr180-parent",
+      "exitCode": 1,
+      "counts": {
+        "tests": 20,
+        "pass": 16,
+        "fail": 4,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "failingNames": [
+        "through the watermarked journal, an advance whose commit is unknown leaves the projection standing and closes the serving fence",
+        "trusted startup composes canonical session, submit and membership history, with missing lifecycle owners refused before writes",
+        "membership revision changing during assembled transcript read withholds reload response",
+        "scripted worker delta streams publicly and reloads from the membership transcript"
+      ],
+      "scrubbedLog": "immediate-parent-1aa5c66e.scrubbed.log",
+      "logBytes": 8320,
+      "logSha256": "d027f125053abb544cab4ec529499e791291d65f0ac73cc873d7761f16143988",
+      "sourceSha256": {
+        "apps/control/retention/test/postgres-watermark.test.mjs": "2c2a837cf51b1e294d703159f5b321d718aaab7d03d119a175fd1b304d786ac7",
+        "apps/control/retention/recovery-watermark.mjs": "584e10bcf662fb5146041be1a3f24a7d4bc9f50aa4e68b4019ba8100e0f88d70",
+        "apps/runtime/test/startup-history.test.mjs": "e18e9c0eff85014283029989e72c032ab2a3e1a2c1b4384d1c0d0c8dd1cefe35",
+        "apps/runtime/product-applications.mjs": "97fabf06602498c7e0596383a591fb8b56fe99d307c9728656b417b6ca60927a",
+        "apps/control/conversations/history/http.mjs": "f7e4b0377203a324579030515c782121df91deea9b19384c452aa375b1a80eaf"
+      }
+    }
+  ],
+  "classification": "All four failures are inherited independent integration-fixture deficiencies in dot-owned retention/history areas; left unchanged for integration. These are outside the standard32 and focused-worker16, not newly introduced by closeout.",
+  "sourceComparison": "All five implicated test/composition/guard files are byte-identical at all three pinned commits."
+}

@@ -1,0 +1,929 @@
+TAP version 13
+# Subtest: independent full wire flow: recommendation, draft, pending refusal, explicit approval, one effect and replay
+not ok 1 - independent full wire flow: recommendation, draft, pending refusal, explicit approval, one effect and replay
+  ---
+  duration_ms: 332.525716
+  type: 'test'
+  location: '<checkout>/apps/control/action-application/local/local-independent.test.mjs:22:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    502 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 502
+  operator: 'strictEqual'
+  stack: |-
+    selected (file://<checkout>/apps/control/action-application/local/local-independent.test.mjs:19:85)
+    async proposal (file://<checkout>/apps/control/action-application/local/local-independent.test.mjs:20:48)
+    async TestContext.<anonymous> (file://<checkout>/apps/control/action-application/local/local-independent.test.mjs:23:33)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: independent mode undefined refuses
+ok 2 - independent mode undefined refuses
+  ---
+  duration_ms: 0.394864
+  type: 'test'
+  ...
+# Subtest: independent mode production refuses
+ok 3 - independent mode production refuses
+  ---
+  duration_ms: 0.164087
+  type: 'test'
+  ...
+# Subtest: independent mode local refuses
+ok 4 - independent mode local refuses
+  ---
+  duration_ms: 0.137597
+  type: 'test'
+  ...
+# Subtest: independent mode synthetic refuses
+ok 5 - independent mode synthetic refuses
+  ---
+  duration_ms: 0.143856
+  type: 'test'
+  ...
+# Subtest: independent invalid ttl 0 refuses
+ok 6 - independent invalid ttl 0 refuses
+  ---
+  duration_ms: 0.174002
+  type: 'test'
+  ...
+# Subtest: independent invalid ttl -1 refuses
+ok 7 - independent invalid ttl -1 refuses
+  ---
+  duration_ms: 0.135414
+  type: 'test'
+  ...
+# Subtest: independent invalid ttl 30001 refuses
+ok 8 - independent invalid ttl 30001 refuses
+  ---
+  duration_ms: 0.165148
+  type: 'test'
+  ...
+# Subtest: independent invalid ttl Infinity refuses
+ok 9 - independent invalid ttl Infinity refuses
+  ---
+  duration_ms: 0.141673
+  type: 'test'
+  ...
+# Subtest: independent invalid ttl 1.5 refuses
+ok 10 - independent invalid ttl 1.5 refuses
+  ---
+  duration_ms: 0.157938
+  type: 'test'
+  ...
+# Subtest: independent opaque credentials are distinct between sessions and absent from stats
+ok 11 - independent opaque credentials are distinct between sessions and absent from stats
+  ---
+  duration_ms: 34.411735
+  type: 'test'
+  ...
+# Subtest: independent invalid authorization empty
+ok 12 - independent invalid authorization empty
+  ---
+  duration_ms: 13.054849
+  type: 'test'
+  ...
+# Subtest: independent invalid authorization Bearer invalid
+ok 13 - independent invalid authorization Bearer invalid
+  ---
+  duration_ms: 10.679103
+  type: 'test'
+  ...
+# Subtest: independent invalid authorization Basic synthetic
+ok 14 - independent invalid authorization Basic synthetic
+  ---
+  duration_ms: 11.571016
+  type: 'test'
+  ...
+# Subtest: independent query body tenantId never grants authority
+ok 15 - independent query body tenantId never grants authority
+  ---
+  duration_ms: 11.816846
+  type: 'test'
+  ...
+# Subtest: independent query body actorId never grants authority
+ok 16 - independent query body actorId never grants authority
+  ---
+  duration_ms: 12.893947
+  type: 'test'
+  ...
+# Subtest: independent query body clientId never grants authority
+ok 17 - independent query body clientId never grants authority
+  ---
+  duration_ms: 9.439007
+  type: 'test'
+  ...
+# Subtest: independent query body scopes never grants authority
+ok 18 - independent query body scopes never grants authority
+  ---
+  duration_ms: 9.515463
+  type: 'test'
+  ...
+# Subtest: independent query body approval never grants authority
+ok 19 - independent query body approval never grants authority
+  ---
+  duration_ms: 11.214129
+  type: 'test'
+  ...
+# Subtest: independent query body credential never grants authority
+ok 20 - independent query body credential never grants authority
+  ---
+  duration_ms: 10.043191
+  type: 'test'
+  ...
+# Subtest: independent query request cannot select another client
+ok 21 - independent query request cannot select another client
+  ---
+  duration_ms: 10.043658
+  type: 'test'
+  ...
+# Subtest: independent cross-session retained selection refuses even with valid second credential
+not ok 22 - independent cross-session retained selection refuses even with valid second credential
+  ---
+  duration_ms: 46.673652
+  type: 'test'
+  location: '<checkout>/apps/control/action-application/local/local-independent.test.mjs:35:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    502 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 502
+  operator: 'strictEqual'
+  stack: |-
+    selected (file://<checkout>/apps/control/action-application/local/local-independent.test.mjs:19:85)
+    async TestContext.<anonymous> (file://<checkout>/apps/control/action-application/local/local-independent.test.mjs:35:153)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: independent cross-session proposal approval and execution refuse
+not ok 23 - independent cross-session proposal approval and execution refuse
+  ---
+  duration_ms: 32.353817
+  type: 'test'
+  location: '<checkout>/apps/control/action-application/local/local-independent.test.mjs:36:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    502 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 502
+  operator: 'strictEqual'
+  stack: |-
+    selected (file://<checkout>/apps/control/action-application/local/local-independent.test.mjs:19:85)
+    async proposal (file://<checkout>/apps/control/action-application/local/local-independent.test.mjs:20:48)
+    async TestContext.<anonymous> (file://<checkout>/apps/control/action-application/local/local-independent.test.mjs:36:125)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: independent revoked session denies reads and trusted approval
+not ok 24 - independent revoked session denies reads and trusted approval
+  ---
+  duration_ms: 27.123084
+  type: 'test'
+  location: '<checkout>/apps/control/action-application/local/local-independent.test.mjs:37:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    502 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 502
+  operator: 'strictEqual'
+  stack: |-
+    selected (file://<checkout>/apps/control/action-application/local/local-independent.test.mjs:19:85)
+    async proposal (file://<checkout>/apps/control/action-application/local/local-independent.test.mjs:20:48)
+    async TestContext.<anonymous> (file://<checkout>/apps/control/action-application/local/local-independent.test.mjs:37:105)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: independent preparation policy revocation prevents metadata insert
+not ok 25 - independent preparation policy revocation prevents metadata insert
+  ---
+  duration_ms: 25.454743
+  type: 'test'
+  location: '<checkout>/apps/control/action-application/local/local-independent.test.mjs:38:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    502 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 502
+  operator: 'strictEqual'
+  stack: |-
+    selected (file://<checkout>/apps/control/action-application/local/local-independent.test.mjs:19:85)
+    async TestContext.<anonymous> (file://<checkout>/apps/control/action-application/local/local-independent.test.mjs:38:110)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: independent current client denial invalidates retained source read
+not ok 26 - independent current client denial invalidates retained source read
+  ---
+  duration_ms: 22.706857
+  type: 'test'
+  location: '<checkout>/apps/control/action-application/local/local-independent.test.mjs:39:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    502 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 502
+  operator: 'strictEqual'
+  stack: |-
+    selected (file://<checkout>/apps/control/action-application/local/local-independent.test.mjs:19:85)
+    async TestContext.<anonymous> (file://<checkout>/apps/control/action-application/local/local-independent.test.mjs:39:110)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: independent revoked exact approval refuses before task effect
+not ok 27 - independent revoked exact approval refuses before task effect
+  ---
+  duration_ms: 25.38583
+  type: 'test'
+  location: '<checkout>/apps/control/action-application/local/local-independent.test.mjs:40:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    502 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 502
+  operator: 'strictEqual'
+  stack: |-
+    selected (file://<checkout>/apps/control/action-application/local/local-independent.test.mjs:19:85)
+    async proposal (file://<checkout>/apps/control/action-application/local/local-independent.test.mjs:20:48)
+    async TestContext.<anonymous> (file://<checkout>/apps/control/action-application/local/local-independent.test.mjs:40:105)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: independent tampered proposal neither approves nor executes
+not ok 28 - independent tampered proposal neither approves nor executes
+  ---
+  duration_ms: 23.877369
+  type: 'test'
+  location: '<checkout>/apps/control/action-application/local/local-independent.test.mjs:41:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    502 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 502
+  operator: 'strictEqual'
+  stack: |-
+    selected (file://<checkout>/apps/control/action-application/local/local-independent.test.mjs:19:85)
+    async proposal (file://<checkout>/apps/control/action-application/local/local-independent.test.mjs:20:48)
+    async TestContext.<anonymous> (file://<checkout>/apps/control/action-application/local/local-independent.test.mjs:41:103)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: independent selection hash tampering refuses
+not ok 29 - independent selection hash tampering refuses
+  ---
+  duration_ms: 21.492179
+  type: 'test'
+  location: '<checkout>/apps/control/action-application/local/local-independent.test.mjs:42:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    502 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 502
+  operator: 'strictEqual'
+  stack: |-
+    selected (file://<checkout>/apps/control/action-application/local/local-independent.test.mjs:19:85)
+    async TestContext.<anonymous> (file://<checkout>/apps/control/action-application/local/local-independent.test.mjs:42:88)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: independent no HTTP approval route
+ok 30 - independent no HTTP approval route
+  ---
+  duration_ms: 9.117353
+  type: 'test'
+  ...
+# Subtest: independent pre-aborted Request does not run source
+ok 31 - independent pre-aborted Request does not run source
+  ---
+  duration_ms: 6.18565
+  type: 'test'
+  ...
+# Subtest: independent session expiry refuses subsequent requests
+ok 32 - independent session expiry refuses subsequent requests
+  ---
+  duration_ms: 182.733144
+  type: 'test'
+  ...
+# Subtest: independent close is idempotent and leaves session unavailable
+ok 33 - independent close is idempotent and leaves session unavailable
+  ---
+  duration_ms: 7.344194
+  type: 'test'
+  ...
+# Subtest: independent success response prevents caching and adds no permissive CORS
+ok 34 - independent success response prevents caching and adds no permissive CORS
+  ---
+  duration_ms: 43.813982
+  type: 'test'
+  ...
+# Subtest: independent CLI admission --help
+ok 35 - independent CLI admission --help
+  ---
+  duration_ms: 54.19312
+  type: 'test'
+  ...
+# Subtest: independent CLI admission --unknown
+ok 36 - independent CLI admission --unknown
+  ---
+  duration_ms: 53.456235
+  type: 'test'
+  ...
+# Subtest: independent CLI admission empty
+ok 37 - independent CLI admission empty
+  ---
+  duration_ms: 55.259975
+  type: 'test'
+  ...
+# Subtest: independent CLI admission --run --help
+ok 38 - independent CLI admission --run --help
+  ---
+  duration_ms: 52.545981
+  type: 'test'
+  ...
+# Subtest: independent explicit CLI synthetic run succeeds without exposing bearer secrets
+ok 39 - independent explicit CLI synthetic run succeeds without exposing bearer secrets
+  ---
+  duration_ms: 817.789469
+  type: 'test'
+  ...
+# Subtest: independent recomputed tampered command digest does not match retained metadata
+not ok 40 - independent recomputed tampered command digest does not match retained metadata
+  ---
+  duration_ms: 21.881566
+  type: 'test'
+  location: '<checkout>/apps/control/action-application/local/local-independent.test.mjs:56:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    502 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 502
+  operator: 'strictEqual'
+  stack: |-
+    selected (file://<checkout>/apps/control/action-application/local/local-independent.test.mjs:19:85)
+    async proposal (file://<checkout>/apps/control/action-application/local/local-independent.test.mjs:20:48)
+    async TestContext.<anonymous> (file://<checkout>/apps/control/action-application/local/local-independent.test.mjs:56:123)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: independent revoked session after explicit approval still denies execution
+not ok 41 - independent revoked session after explicit approval still denies execution
+  ---
+  duration_ms: 18.885015
+  type: 'test'
+  location: '<checkout>/apps/control/action-application/local/local-independent.test.mjs:57:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    502 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 502
+  operator: 'strictEqual'
+  stack: |-
+    selected (file://<checkout>/apps/control/action-application/local/local-independent.test.mjs:19:85)
+    async proposal (file://<checkout>/apps/control/action-application/local/local-independent.test.mjs:20:48)
+    async TestContext.<anonymous> (file://<checkout>/apps/control/action-application/local/local-independent.test.mjs:57:118)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: independent revoke during body acquisition refuses before source
+ok 42 - independent revoke during body acquisition refuses before source
+  ---
+  duration_ms: 10.067904
+  type: 'test'
+  ...
+# Subtest: independent expire during body acquisition refuses before source
+ok 43 - independent expire during body acquisition refuses before source
+  ---
+  duration_ms: 181.724144
+  type: 'test'
+  ...
+# Subtest: independent fresh repeated queries preserve distinct result references and event slots
+not ok 44 - independent fresh repeated queries preserve distinct result references and event slots
+  ---
+  duration_ms: 22.001656
+  type: 'test'
+  location: '<checkout>/apps/control/action-application/local/local-independent.test.mjs:63:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    502 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 502
+  operator: 'strictEqual'
+  stack: |-
+    selected (file://<checkout>/apps/control/action-application/local/local-independent.test.mjs:19:85)
+    async TestContext.<anonymous> (file://<checkout>/apps/control/action-application/local/local-independent.test.mjs:63:130)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: actual local HTTP graph prepares, refuses unapproved mutation, separately approves and replays one effect
+ok 45 - actual local HTTP graph prepares, refuses unapproved mutation, separately approves and replays one effect
+  ---
+  duration_ms: 434.096938
+  type: 'test'
+  ...
+# Subtest: opaque forged and other-session credentials never call source
+ok 46 - opaque forged and other-session credentials never call source
+  ---
+  duration_ms: 19.819711
+  type: 'test'
+  ...
+# Subtest: current session revocation denies retained recommendation and command effects
+ok 47 - current session revocation denies retained recommendation and command effects
+  ---
+  duration_ms: 77.302413
+  type: 'test'
+  ...
+# Subtest: current client policy denial refuses subsequent requests
+ok 48 - current client policy denial refuses subsequent requests
+  ---
+  duration_ms: 6.947478
+  type: 'test'
+  ...
+# Subtest: current preparation denial creates no immutable metadata
+ok 49 - current preparation denial creates no immutable metadata
+  ---
+  duration_ms: 56.651839
+  type: 'test'
+  ...
+# Subtest: separate approval revocation refuses before task effect
+ok 50 - separate approval revocation refuses before task effect
+  ---
+  duration_ms: 62.813505
+  type: 'test'
+  ...
+# Subtest: body cannot supply authority or approve HTTP route
+ok 51 - body cannot supply authority or approve HTTP route
+  ---
+  duration_ms: 7.146906
+  type: 'test'
+  ...
+# Subtest: closed session refuses all requests and cleanup is idempotent
+ok 52 - closed session refuses all requests and cleanup is idempotent
+  ---
+  duration_ms: 7.068058
+  type: 'test'
+  ...
+# Subtest: construction bounds are closed and require explicit local mode
+ok 53 - construction bounds are closed and require explicit local mode
+  ---
+  duration_ms: 0.340332
+  type: 'test'
+  ...
+# Subtest: CLI help and invalid args do not construct the local graph or mutate configuration
+ok 54 - CLI help and invalid args do not construct the local graph or mutate configuration
+  ---
+  duration_ms: 0.325971
+  type: 'test'
+  ...
+# Subtest: local gateway independent: actual owned credential reaches canonical durable dispatch/source/store/read
+ok 55 - local gateway independent: actual owned credential reaches canonical durable dispatch/source/store/read
+  ---
+  duration_ms: 350.436928
+  type: 'test'
+  ...
+# Subtest: local gateway independent: narrowing client after real source acquisition blocks release and result retention
+ok 56 - local gateway independent: narrowing client after real source acquisition blocks release and result retention
+  ---
+  duration_ms: 35.203206
+  type: 'test'
+  ...
+# Subtest: local gateway independent: narrowing grants after real source acquisition blocks release and result retention
+ok 57 - local gateway independent: narrowing grants after real source acquisition blocks release and result retention
+  ---
+  duration_ms: 23.920835
+  type: 'test'
+  ...
+# Subtest: local gateway independent: narrowing sources after real source acquisition blocks release and result retention
+ok 58 - local gateway independent: narrowing sources after real source acquisition blocks release and result retention
+  ---
+  duration_ms: 23.388112
+  type: 'test'
+  ...
+# Subtest: local gateway independent: local capability cannot override canonical durable grant revocation
+ok 59 - local gateway independent: local capability cannot override canonical durable grant revocation
+  ---
+  duration_ms: 13.23402
+  type: 'test'
+  ...
+# Subtest: local gateway independent: historical result survives exact task replacement but requires newly issued current credential
+ok 60 - local gateway independent: historical result survives exact task replacement but requires newly issued current credential
+  ---
+  duration_ms: 39.613885
+  type: 'test'
+  ...
+# Subtest: local gateway independent: source acquisition token revocation leaves UNKNOWN without redispatch
+ok 61 - local gateway independent: source acquisition token revocation leaves UNKNOWN without redispatch
+  ---
+  duration_ms: 25.103725
+  type: 'test'
+  ...
+# Subtest: local gateway independent: concrete construction rejects production origin, forged owner and extra request-selected ports
+ok 62 - local gateway independent: concrete construction rejects production origin, forged owner and extra request-selected ports
+  ---
+  duration_ms: 9.390935
+  type: 'test'
+  ...
+# Subtest: opaque issuer computes canonical claims from closed owned state
+ok 63 - opaque issuer computes canonical claims from closed owned state
+  ---
+  duration_ms: 81.241965
+  type: 'test'
+  ...
+# Subtest: forged token changed token foreign issuer restart and close all fail closed
+ok 64 - forged token changed token foreign issuer restart and close all fail closed
+  ---
+  duration_ms: 2.721096
+  type: 'test'
+  ...
+# Subtest: capability expiry and current run deadline deny
+ok 65 - capability expiry and current run deadline deny
+  ---
+  duration_ms: 1.458345
+  type: 'test'
+  ...
+# Subtest: revoke denies actual canonical authority without mutating claim history
+ok 66 - revoke denies actual canonical authority without mutating claim history
+  ---
+  duration_ms: 2.322506
+  type: 'test'
+  ...
+# Subtest: current policy denies clientAllowed
+ok 67 - current policy denies clientAllowed
+  ---
+  duration_ms: 1.622052
+  type: 'test'
+  ...
+# Subtest: current policy denies sourceEnabled
+ok 68 - current policy denies sourceEnabled
+  ---
+  duration_ms: 2.466853
+  type: 'test'
+  ...
+# Subtest: current policy denies grants
+ok 69 - current policy denies grants
+  ---
+  duration_ms: 1.243251
+  type: 'test'
+  ...
+# Subtest: revision change invalidates existing token; new current token may validate
+ok 70 - revision change invalidates existing token; new current token may validate
+  ---
+  duration_ms: 1.976355
+  type: 'test'
+  ...
+# Subtest: coherent replacement preserves stable owner and invalidates prior task token
+ok 71 - coherent replacement preserves stable owner and invalidates prior task token
+  ---
+  duration_ms: 2.004046
+  type: 'test'
+  ...
+# Subtest: policy ports refuse forged claims wrong operation client grants and source requirements
+ok 72 - policy ports refuse forged claims wrong operation client grants and source requirements
+  ---
+  duration_ms: 5.398024
+  type: 'test'
+  ...
+# Subtest: hostile configuration, calls and signals are inert
+ok 73 - hostile configuration, calls and signals are inert
+  ---
+  duration_ms: 1.014808
+  type: 'test'
+  ...
+# Subtest: abort inside clock callback cannot release an authority fact
+ok 74 - abort inside clock callback cannot release an authority fact
+  ---
+  duration_ms: 0.909219
+  type: 'test'
+  ...
+# Subtest: actual owned durable gateway reserves executes records completion settles and refuses duplicate dispatch
+ok 75 - actual owned durable gateway reserves executes records completion settles and refuses duplicate dispatch
+  ---
+  duration_ms: 153.244818
+  type: 'test'
+  ...
+# Subtest: signed local action receipt refuses changed operation before Fetch
+ok 76 - signed local action receipt refuses changed operation before Fetch
+  ---
+  duration_ms: 22.781219
+  type: 'test'
+  ...
+# Subtest: signed local action receipt refuses changed body hash before Fetch
+ok 77 - signed local action receipt refuses changed body hash before Fetch
+  ---
+  duration_ms: 27.363386
+  type: 'test'
+  ...
+# Subtest: signed local action receipt refuses changed correlation before Fetch
+ok 78 - signed local action receipt refuses changed correlation before Fetch
+  ---
+  duration_ms: 11.874283
+  type: 'test'
+  ...
+# Subtest: signed local action receipt refuses changed scheme before Fetch
+ok 79 - signed local action receipt refuses changed scheme before Fetch
+  ---
+  duration_ms: 15.881514
+  type: 'test'
+  ...
+# Subtest: wrong operation before preparation allocates no durable invocation
+ok 80 - wrong operation before preparation allocates no durable invocation
+  ---
+  duration_ms: 6.195054
+  type: 'test'
+  ...
+# Subtest: unknown reserve acknowledgement never dispatches and reconstructs exact prepared identity
+ok 81 - unknown reserve acknowledgement never dispatches and reconstructs exact prepared identity
+  ---
+  duration_ms: 22.246475
+  type: 'test'
+  ...
+# Subtest: actual gateway source is denied after local revocation and production descriptors remain null
+ok 82 - actual gateway source is denied after local revocation and production descriptors remain null
+  ---
+  duration_ms: 6.933455
+  type: 'test'
+  ...
+# Subtest: gateway only accepts branded identity explicit local transport and exact allocation
+ok 83 - gateway only accepts branded identity explicit local transport and exact allocation
+  ---
+  duration_ms: 5.233867
+  type: 'test'
+  ...
+# Subtest: real local case composes control current authorizer store owned gateway and source response
+ok 84 - real local case composes control current authorizer store owned gateway and source response
+  ---
+  duration_ms: 104.151766
+  type: 'test'
+  ...
+# Subtest: control authorizer recomputes binding digest scopes and current capability
+ok 85 - control authorizer recomputes binding digest scopes and current capability
+  ---
+  duration_ms: 2.430839
+  type: 'test'
+  ...
+# Subtest: failed setup acknowledgement keeps safe owned IDs and evicts failed-BEGIN connection
+ok 86 - failed setup acknowledgement keeps safe owned IDs and evicts failed-BEGIN connection
+  ---
+  duration_ms: 10.945304
+  type: 'test'
+  ...
+# Subtest: action source independent: actual canonical dispatch reaches signed alias and validated scoped projection
+ok 87 - action source independent: actual canonical dispatch reaches signed alias and validated scoped projection
+  ---
+  duration_ms: 147.945369
+  type: 'test'
+  ...
+# Subtest: action source independent: actual production catalog remains disabled before any ports
+ok 88 - action source independent: actual production catalog remains disabled before any ports
+  ---
+  duration_ms: 8.469758
+  type: 'test'
+  ...
+# Subtest: action source independent: exact body, original digest and four-field correlation bind one token
+ok 89 - action source independent: exact body, original digest and four-field correlation bind one token
+  ---
+  duration_ms: 10.372192
+  type: 'test'
+  ...
+# Subtest: action source independent: bearer and changed token pins refuse before Core HTTP
+ok 90 - action source independent: bearer and changed token pins refuse before Core HTTP
+  ---
+  duration_ms: 41.162412
+  type: 'test'
+  ...
+# Subtest: action source independent: model cannot supply authority/context or transport options
+ok 91 - action source independent: model cannot supply authority/context or transport options
+  ---
+  duration_ms: 2.010747
+  type: 'test'
+  ...
+# Subtest: action source independent: connected unscoped and names refuse, UUID must equal current selected subject
+ok 92 - action source independent: connected unscoped and names refuse, UUID must equal current selected subject
+  ---
+  duration_ms: 9.521421
+  type: 'test'
+  ...
+# Subtest: action source independent: exact origin admission precedes allocation
+ok 93 - action source independent: exact origin admission precedes allocation
+  ---
+  duration_ms: 0.705562
+  type: 'test'
+  ...
+# Subtest: action source independent: credential full binding, expiry, header admission and closed shape
+ok 94 - action source independent: credential full binding, expiry, header admission and closed shape
+  ---
+  duration_ms: 35.736219
+  type: 'test'
+  ...
+# Subtest: action source independent: credential getters and proxies are inert at admission
+ok 95 - action source independent: credential getters and proxies are inert at admission
+  ---
+  duration_ms: 6.913906
+  type: 'test'
+  ...
+# Subtest: action source independent: HTTP status, redirect, media and encoding refuse without retry
+ok 96 - action source independent: HTTP status, redirect, media and encoding refuse without retry
+  ---
+  duration_ms: 14.853787
+  type: 'test'
+  ...
+# Subtest: action source independent: bounded bytes and fatal UTF8 JSON decoding
+ok 97 - action source independent: bounded bytes and fatal UTF8 JSON decoding
+  ---
+  duration_ms: 25.683568
+  type: 'test'
+  ...
+# Subtest: action source independent: acquired response cancelled when outer lifetime loses same-turn race
+ok 98 - action source independent: acquired response cancelled when outer lifetime loses same-turn race
+  ---
+  duration_ms: 12.667597
+  type: 'test'
+  ...
+# Subtest: action source independent: parked credentials abort refuses and cancels owned late body
+ok 99 - action source independent: parked credentials abort refuses and cancels owned late body
+  ---
+  duration_ms: 2.830651
+  type: 'test'
+  ...
+# Subtest: action source independent: parked fetch abort refuses and cancels owned late body
+ok 100 - action source independent: parked fetch abort refuses and cancels owned late body
+  ---
+  duration_ms: 7.569323
+  type: 'test'
+  ...
+# Subtest: action source independent: parked body abort refuses and cancels owned late body
+ok 101 - action source independent: parked body abort refuses and cancels owned late body
+  ---
+  duration_ms: 2.955138
+  type: 'test'
+  ...
+# Subtest: action source independent: parked credentials expiry refuses and cancels owned late body
+ok 102 - action source independent: parked credentials expiry refuses and cancels owned late body
+  ---
+  duration_ms: 1.947652
+  type: 'test'
+  ...
+# Subtest: action source independent: parked fetch expiry refuses and cancels owned late body
+ok 103 - action source independent: parked fetch expiry refuses and cancels owned late body
+  ---
+  duration_ms: 7.916396
+  type: 'test'
+  ...
+# Subtest: action source independent: parked body expiry refuses and cancels owned late body
+ok 104 - action source independent: parked body expiry refuses and cancels owned late body
+  ---
+  duration_ms: 3.304634
+  type: 'test'
+  ...
+# Subtest: action source independent: credential deadline shrinks original authority during body read
+ok 105 - action source independent: credential deadline shrinks original authority during body read
+  ---
+  duration_ms: 2.627164
+  type: 'test'
+  ...
+# Subtest: action source independent: raw page substitution, scope, proof and recommendation truth refuse
+ok 106 - action source independent: raw page substitution, scope, proof and recommendation truth refuse
+  ---
+  duration_ms: 58.402019
+  type: 'test'
+  ...
+# Subtest: action source independent: revocation and source/fence/subject drift after fetch prevents release
+ok 107 - action source independent: revocation and source/fence/subject drift after fetch prevents release
+  ---
+  duration_ms: 18.691724
+  type: 'test'
+  ...
+# Subtest: action source independent: final fresh authority after settlement denies late success
+ok 108 - action source independent: final fresh authority after settlement denies late success
+  ---
+  duration_ms: 14.460796
+  type: 'test'
+  ...
+# Subtest: action source independent: direct handler checks exact normalized digest and caller cancellation
+ok 109 - action source independent: direct handler checks exact normalized digest and caller cancellation
+  ---
+  duration_ms: 3.098954
+  type: 'test'
+  ...
+# Subtest: action source independent: outer operation/digest/full lineage cannot be replaced by handler result
+ok 110 - action source independent: outer operation/digest/full lineage cannot be replaced by handler result
+  ---
+  duration_ms: 26.121763
+  type: 'test'
+  ...
+# Subtest: action source independent: opaque continuation and degraded coverage preserve native limits
+ok 111 - action source independent: opaque continuation and degraded coverage preserve native limits
+  ---
+  duration_ms: 5.213577
+  type: 'test'
+  ...
+# Subtest: action source independent: direct unscoped action read refuses before credential acquisition
+ok 112 - action source independent: direct unscoped action read refuses before credential acquisition
+  ---
+  duration_ms: 1.260367
+  type: 'test'
+  ...
+# Subtest: action source independent: clock callback cancellation prevents direct late handler release
+ok 113 - action source independent: clock callback cancellation prevents direct late handler release
+  ---
+  duration_ms: 1.156571
+  type: 'test'
+  ...
+# Subtest: action source independent: callback cancellation after trace allocation cannot release direct result
+ok 114 - action source independent: callback cancellation after trace allocation cannot release direct result
+  ---
+  duration_ms: 0.794346
+  type: 'test'
+  ...
+# Subtest: action source independent: fresh decision IDs may rotate without changing policy selection
+ok 115 - action source independent: fresh decision IDs may rotate without changing policy selection
+  ---
+  duration_ms: 4.761526
+  type: 'test'
+  ...
+# Subtest: action source independent: normalized authority cannot switch selected client after preflight
+ok 116 - action source independent: normalized authority cannot switch selected client after preflight
+  ---
+  duration_ms: 0.888518
+  type: 'test'
+  ...
+# Subtest: action source independent: shortened release deadline bounds parked settlement with no late output
+ok 117 - action source independent: shortened release deadline bounds parked settlement with no late output
+  ---
+  duration_ms: 24.650703
+  type: 'test'
+  ...
+# Subtest: action source independent: every actual policy call receives the same canonical normalized action input
+ok 118 - action source independent: every actual policy call receives the same canonical normalized action input
+  ---
+  duration_ms: 5.418296
+  type: 'test'
+  ...
+1..118
+# tests 118
+# suites 0
+# pass 106
+# fail 12
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2901.304661

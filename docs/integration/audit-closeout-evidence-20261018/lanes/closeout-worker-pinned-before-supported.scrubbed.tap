@@ -1,0 +1,226 @@
+TAP version 13
+# Subtest: one SDK query persists streamed text once, hides reasoning and completes durable run
+not ok 1 - one SDK query persists streamed text once, hides reasoning and completes durable run
+  ---
+  duration_ms: 14.463243
+  type: 'test'
+  location: '<workspace>/meri-closeout-worker/apps/worker/conversation/test/activity.test.mjs:5:1'
+  failureType: 'testCodeFailure'
+  error: 'STORE_UNAVAILABLE'
+  code: 'STORE_UNAVAILABLE'
+  stack: |-
+    tx (file://<workspace>/meri-closeout-worker/apps/control/conversations/postgres-store.mjs:24:68)
+  ...
+# Subtest: nonstreamed final assistant text is displayed with a valid generated UUID
+not ok 2 - nonstreamed final assistant text is displayed with a valid generated UUID
+  ---
+  duration_ms: 3.303475
+  type: 'test'
+  location: '<workspace>/meri-closeout-worker/apps/worker/conversation/test/activity.test.mjs:6:1'
+  failureType: 'testCodeFailure'
+  error: 'STORE_UNAVAILABLE'
+  code: 'STORE_UNAVAILABLE'
+  stack: |-
+    tx (file://<workspace>/meri-closeout-worker/apps/control/conversations/postgres-store.mjs:24:68)
+  ...
+# Subtest: SDK mirror never leaks diagnostics or makes a duplicate model query
+not ok 3 - SDK mirror never leaks diagnostics or makes a duplicate model query
+  ---
+  duration_ms: 2.309609
+  type: 'test'
+  location: '<workspace>/meri-closeout-worker/apps/worker/conversation/test/activity.test.mjs:7:437'
+  failureType: 'testCodeFailure'
+  error: 'STORE_UNAVAILABLE'
+  code: 'STORE_UNAVAILABLE'
+  stack: |-
+    tx (file://<workspace>/meri-closeout-worker/apps/control/conversations/postgres-store.mjs:24:68)
+  ...
+# Subtest: SDK missing never leaks diagnostics or makes a duplicate model query
+not ok 4 - SDK missing never leaks diagnostics or makes a duplicate model query
+  ---
+  duration_ms: 2.275858
+  type: 'test'
+  location: '<workspace>/meri-closeout-worker/apps/worker/conversation/test/activity.test.mjs:7:437'
+  failureType: 'testCodeFailure'
+  error: 'STORE_UNAVAILABLE'
+  code: 'STORE_UNAVAILABLE'
+  stack: |-
+    tx (file://<workspace>/meri-closeout-worker/apps/control/conversations/postgres-store.mjs:24:68)
+  ...
+# Subtest: SDK sdkFailure never leaks diagnostics or makes a duplicate model query
+not ok 5 - SDK sdkFailure never leaks diagnostics or makes a duplicate model query
+  ---
+  duration_ms: 1.941885
+  type: 'test'
+  location: '<workspace>/meri-closeout-worker/apps/worker/conversation/test/activity.test.mjs:7:437'
+  failureType: 'testCodeFailure'
+  error: 'STORE_UNAVAILABLE'
+  code: 'STORE_UNAVAILABLE'
+  stack: |-
+    tx (file://<workspace>/meri-closeout-worker/apps/control/conversations/postgres-store.mjs:24:68)
+  ...
+# Subtest: SDK duplicate never leaks diagnostics or makes a duplicate model query
+not ok 6 - SDK duplicate never leaks diagnostics or makes a duplicate model query
+  ---
+  duration_ms: 1.904668
+  type: 'test'
+  location: '<workspace>/meri-closeout-worker/apps/worker/conversation/test/activity.test.mjs:7:437'
+  failureType: 'testCodeFailure'
+  error: 'STORE_UNAVAILABLE'
+  code: 'STORE_UNAVAILABLE'
+  stack: |-
+    tx (file://<workspace>/meri-closeout-worker/apps/control/conversations/postgres-store.mjs:24:68)
+  ...
+# Subtest: SDK subagent never leaks diagnostics or makes a duplicate model query
+not ok 7 - SDK subagent never leaks diagnostics or makes a duplicate model query
+  ---
+  duration_ms: 1.563135
+  type: 'test'
+  location: '<workspace>/meri-closeout-worker/apps/worker/conversation/test/activity.test.mjs:7:437'
+  failureType: 'testCodeFailure'
+  error: 'STORE_UNAVAILABLE'
+  code: 'STORE_UNAVAILABLE'
+  stack: |-
+    tx (file://<workspace>/meri-closeout-worker/apps/control/conversations/postgres-store.mjs:24:68)
+  ...
+# Subtest: revocation during query stops publication and closes SDK before another result
+not ok 8 - revocation during query stops publication and closes SDK before another result
+  ---
+  duration_ms: 1.775795
+  type: 'test'
+  location: '<workspace>/meri-closeout-worker/apps/worker/conversation/test/activity.test.mjs:8:1'
+  failureType: 'testCodeFailure'
+  error: 'STORE_UNAVAILABLE'
+  code: 'STORE_UNAVAILABLE'
+  stack: |-
+    tx (file://<workspace>/meri-closeout-worker/apps/control/conversations/postgres-store.mjs:24:68)
+  ...
+# Subtest: output limit fails instead of truncating a completed response
+not ok 9 - output limit fails instead of truncating a completed response
+  ---
+  duration_ms: 1.936026
+  type: 'test'
+  location: '<workspace>/meri-closeout-worker/apps/worker/conversation/test/activity.test.mjs:9:1'
+  failureType: 'testCodeFailure'
+  error: 'STORE_UNAVAILABLE'
+  code: 'STORE_UNAVAILABLE'
+  stack: |-
+    tx (file://<workspace>/meri-closeout-worker/apps/control/conversations/postgres-store.mjs:24:68)
+  ...
+# Subtest: late SDK iterator is bounded by deadline and closed without a second query
+not ok 10 - late SDK iterator is bounded by deadline and closed without a second query
+  ---
+  duration_ms: 1.771167
+  type: 'test'
+  location: '<workspace>/meri-closeout-worker/apps/worker/conversation/test/activity.test.mjs:10:1'
+  failureType: 'testCodeFailure'
+  error: 'STORE_UNAVAILABLE'
+  code: 'STORE_UNAVAILABLE'
+  stack: |-
+    tx (file://<workspace>/meri-closeout-worker/apps/control/conversations/postgres-store.mjs:24:68)
+  ...
+# Subtest: SDK options reject ambient config, wrong workspace and upstream keys
+ok 11 - SDK options reject ambient config, wrong workspace and upstream keys
+  ---
+  duration_ms: 1.911589
+  type: 'test'
+  ...
+# Subtest: final assistant frame repairs a missing streamed suffix without duplicate prefix
+not ok 12 - final assistant frame repairs a missing streamed suffix without duplicate prefix
+  ---
+  duration_ms: 1.737987
+  type: 'test'
+  location: '<workspace>/meri-closeout-worker/apps/worker/conversation/test/activity.test.mjs:12:1'
+  failureType: 'testCodeFailure'
+  error: 'STORE_UNAVAILABLE'
+  code: 'STORE_UNAVAILABLE'
+  stack: |-
+    tx (file://<workspace>/meri-closeout-worker/apps/control/conversations/postgres-store.mjs:24:68)
+  ...
+# Subtest: a conflicting final text refuses completion instead of silently dropping the mismatch
+not ok 13 - a conflicting final text refuses completion instead of silently dropping the mismatch
+  ---
+  duration_ms: 1.596324
+  type: 'test'
+  location: '<workspace>/meri-closeout-worker/apps/worker/conversation/test/activity.test.mjs:13:1'
+  failureType: 'testCodeFailure'
+  error: 'STORE_UNAVAILABLE'
+  code: 'STORE_UNAVAILABLE'
+  stack: |-
+    tx (file://<workspace>/meri-closeout-worker/apps/control/conversations/postgres-store.mjs:24:68)
+  ...
+# Subtest: runtime preparation mismatch records a failed run without invoking SDK
+not ok 14 - runtime preparation mismatch records a failed run without invoking SDK
+  ---
+  duration_ms: 1.406639
+  type: 'test'
+  location: '<workspace>/meri-closeout-worker/apps/worker/conversation/test/activity.test.mjs:14:1'
+  failureType: 'testCodeFailure'
+  error: 'STORE_UNAVAILABLE'
+  code: 'STORE_UNAVAILABLE'
+  stack: |-
+    tx (file://<workspace>/meri-closeout-worker/apps/control/conversations/postgres-store.mjs:24:68)
+  ...
+# Subtest: the pinned runner CA reaches the SDK subprocess env exactly once and is covered by the SDK options digest
+ok 15 - the pinned runner CA reaches the SDK subprocess env exactly once and is covered by the SDK options digest
+  ---
+  duration_ms: 2.807359
+  type: 'test'
+  ...
+# Subtest: any other CA path, or a CA without the admitted per-task SDK directories, refuses
+ok 16 - any other CA path, or a CA without the admitted per-task SDK directories, refuses
+  ---
+  duration_ms: 0.640665
+  type: 'test'
+  ...
+# Subtest: the per-attempt acknowledgement bound is the control service request bound, not 30 ms
+ok 17 - the per-attempt acknowledgement bound is the control service request bound, not 30 ms
+  ---
+  duration_ms: 1.219407
+  type: 'test'
+  ...
+# Subtest: terminal recording slower than 30 ms is acknowledged on the first attempt
+not ok 18 - terminal recording slower than 30 ms is acknowledged on the first attempt
+  ---
+  duration_ms: 15.982571
+  type: 'test'
+  location: '<workspace>/meri-closeout-worker/apps/worker/conversation/test/terminal-settlement.test.mjs:14:1'
+  failureType: 'testCodeFailure'
+  error: 'STORE_UNAVAILABLE'
+  code: 'STORE_UNAVAILABLE'
+  stack: |-
+    tx (file://<workspace>/meri-closeout-worker/apps/control/conversations/postgres-store.mjs:24:68)
+  ...
+# Subtest: a lost acknowledgement is read back by replaying the same event ID; no second terminal event
+not ok 19 - a lost acknowledgement is read back by replaying the same event ID; no second terminal event
+  ---
+  duration_ms: 2.796272
+  type: 'test'
+  location: '<workspace>/meri-closeout-worker/apps/worker/conversation/test/terminal-settlement.test.mjs:16:1'
+  failureType: 'testCodeFailure'
+  error: 'STORE_UNAVAILABLE'
+  code: 'STORE_UNAVAILABLE'
+  stack: |-
+    tx (file://<workspace>/meri-closeout-worker/apps/control/conversations/postgres-store.mjs:24:68)
+  ...
+# Subtest: never acknowledged: settlement is finite (two rounds over two fixed event IDs) and leaves the run nonterminal for the reconciler
+not ok 20 - never acknowledged: settlement is finite (two rounds over two fixed event IDs) and leaves the run nonterminal for the reconciler
+  ---
+  duration_ms: 2.412554
+  type: 'test'
+  location: '<workspace>/meri-closeout-worker/apps/worker/conversation/test/terminal-settlement.test.mjs:19:1'
+  failureType: 'testCodeFailure'
+  error: 'STORE_UNAVAILABLE'
+  code: 'STORE_UNAVAILABLE'
+  stack: |-
+    tx (file://<workspace>/meri-closeout-worker/apps/control/conversations/postgres-store.mjs:24:68)
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 4
+# fail 16
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1271.112888
