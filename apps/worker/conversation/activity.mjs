@@ -15,6 +15,7 @@ import {readCapabilityPolicy} from './capabilities/policy.mjs';
 import {createSdkCapabilities} from './capabilities/index.mjs';
 import {createProgressProjector} from './capabilities/progress.mjs';
 import {continuationSessionId} from './reads/runtime.mjs';
+import {readRunBudgets} from './reads/budget.mjs';
 import {createProfileMounts} from './capabilities/mounts.mjs';
 import {prepareBrowserRun} from './browser/runtime.mjs';
 import {attemptCleanup,cleanupConversation,CLEANUP_ATTEMPT_MS} from './cleanup.mjs';
@@ -41,6 +42,7 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
   validateShape('RunBinding',binding);let preparation,life,stream,controls,input,skillRuntime,readRuntime,intentRuntime,browserRun,browserOutcome='ended',skillOutput,terminalResult,claimed=false,closed=false,resultSeen=false,bytes=0,heartbeatTimer;const controller=new AbortController();let failure;let closing;const closeQuery=()=>{if(!closing&&stream&&!closed){closed=true;closing=Promise.resolve().then(()=>stream.close?.());closing.catch(()=>{});}return closing;};
   try{preparation=createOperationLifetime({deadlineMs:now()+3000,now,signal,errorFactory:fault});const saved=await preparation.run(signal=>runOwner.load({binding,signal}));validateShape('Run',saved.run);if(!same(saved.run.binding,binding)||saved.run.state!=='queued')throw fault('RUN_NOT_QUEUED');
    const policy=readCapabilityPolicy(saved); // Default-off SDK capabilities, validated before any claim; absent policy keeps first-chat behaviour.
+   const runBudgets=readRunBudgets(saved); // The run's admitted allocation budgets bound the early read ledger; absent keeps its defaults.
    const prepareStarted=now();if(saved.continuation&&saved.nextTurn)throw fault('CONTINUATION_REFUSED');const lineage=saved.nextTurn?{nextTurn:saved.nextTurn}:saved.continuation?{continuation:saved.continuation}:null,sourceRequest=saved.nextTurn?.sourceRequest??saved.sourceRequest;if(lineage&&lifecycle===undefined)throw fault('CONTINUATION_UNAVAILABLE');
    // A run whose policy enables the skill plugin asks runtime preparation for its read-only plugin copy (the trusted skillPluginDirectory fact).
    const runtime=await preparation.run(signal=>prepareRuntime({binding,versions:saved.run.versions,...(policy?.skillPlugin===true?{skillPlugin:true}:{}),
@@ -55,7 +57,7 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
    // the SDK session is pinned so a replayed tool use keeps its delivery identity.
    if(policy?.generalReads||policy?.governedIntents){const skill=saved.request.skill?selectSkill(saved.request.skill.skillId,saved.request.skill.skillVersion).manifest:undefined;
     const mounts=await life.run(signal=>createProfileMounts({policy,binding,scopes:saved.run.scopes,now,deadlineMs:runtime.deadlineMs,...(generalReads===undefined?{}:{generalReads}),...(governedIntents===undefined?{}:{governedIntents}),
-     ...(lineage?{expectedSessionId:continuationSessionId(lineage)}:{}),...(skill?{skill}:{}),exclude:skillRuntime?skillRuntime.selected.manifest.allowedOperations:[],signal}));
+     ...(lineage?{expectedSessionId:continuationSessionId(lineage)}:{}),...(skill?{skill}:{}),exclude:skillRuntime?skillRuntime.selected.manifest.allowedOperations:[],...(runBudgets===undefined?{}:{runBudgets}),signal}));
     readRuntime=mounts.reads??undefined;intentRuntime=mounts.intents??undefined;}
    const capabilities=policy===undefined?undefined:createSdkCapabilities(policy,{runOwner,binding,cwd:runtime.cwd,...Object.fromEntries(CAPABILITY_RUNTIME_FACTS.flatMap(k=>runtime[k]===undefined?[]:[[k,runtime[k]]])),now,newId});
    if(browser!==undefined)browserRun=await life.run(signal=>prepareBrowserRun({port:browser,binding,cwd:runtime.cwd,deadlineMs:runtime.deadlineMs,now,signal}));

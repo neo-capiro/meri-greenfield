@@ -36,3 +36,14 @@ export function createReadLedger(budgets){
   get calls(){return correlated;},get readBytes(){return readBytes;},
  });
 }
+/** The run's admitted allocation budgets as loaded for execution (`saved.runBudgets`, control's read-only allocation reader), for
+ * this ledger only. Absent means the defaults; anything malformed refuses the run rather than guessing a bound.
+ * @param {unknown} saved @returns {{maxToolCalls:number,maxOutputBytes:number,maxAggregateOutputBytes?:number}|undefined} */
+export function readRunBudgets(saved){
+ if(!saved||typeof saved!=='object'||!Object.hasOwn(saved,'runBudgets'))return undefined;
+ const value=/** @type {{runBudgets:any}} */(saved).runBudgets,keys=value&&typeof value==='object'&&!Array.isArray(value)?Object.keys(value):[];
+ const positive=(/** @type {unknown} */v)=>Number.isSafeInteger(v)&&/** @type {number} */(v)>=1;
+ if(!keys.length||keys.some(k=>!['maxToolCalls','maxOutputBytes','maxAggregateOutputBytes'].includes(k))||!positive(value.maxToolCalls)||!positive(value.maxOutputBytes)||
+  Object.hasOwn(value,'maxAggregateOutputBytes')&&(!positive(value.maxAggregateOutputBytes)||value.maxAggregateOutputBytes<value.maxOutputBytes))throw fault('READ_CONFIGURATION');
+ return Object.freeze({maxToolCalls:value.maxToolCalls,maxOutputBytes:value.maxOutputBytes,...(Object.hasOwn(value,'maxAggregateOutputBytes')?{maxAggregateOutputBytes:value.maxAggregateOutputBytes}:{})});
+}
