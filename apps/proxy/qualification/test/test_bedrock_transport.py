@@ -446,6 +446,49 @@ class TransportTests(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(counter.parameters, [])
                 self.assertEqual(transport.requests, [])
 
+    async def test_closed_beta_headers_match_body_without_changing_signed_or_counted_bytes(self):
+        betas = ["context-management-2025-06-27", "effort-2025-11-24"]
+        for header in (None, ",".join(betas), "\t" + betas[1] + " , " + betas[0] + "\t"):
+            with self.subTest(header=header):
+                guard, counter, ledger, transport, client = self.setup_guard()
+                raw = json.dumps({**native_body(), "anthropic_beta": betas,
+                                  "metadata": {"user_id": "synthetic"}, "tools": []}, indent=2).encode()
+                headers = {"content-type": "application/json"}
+                if header is not None:
+                    headers["anthropic-beta"] = header
+                request = client.client.build_request("POST", URL, content=raw, headers=headers)
+                original_headers = list(request.headers.raw)
+                await client.client.send(request)
+                self.assertEqual(list(request.headers.raw), original_headers)
+                self.assertEqual(transport.requests, [("POST", URL, raw)])
+                self.assertEqual(counter.parameters[0]["input"]["invokeModel"]["body"], raw)
+                self.assertEqual(guard.native_body.anthropic_betas, frozenset(betas))
+                self.assertEqual(ledger.holds[guard.request_id]["state"], "UNKNOWN")
+
+    async def test_beta_header_duplicates_unknowns_and_body_mismatches_never_count_or_send(self):
+        beta = "effort-2025-11-24"
+        other = "context-management-2025-06-27"
+        cases = [([beta], [("anthropic-beta", value)]) for value in
+                 ("", " ", "unknown", beta.upper(), beta + ",", "," + beta,
+                  beta + "," + beta, other, other + "," + beta,
+                  beta + "\r\n", "\v" + beta)]
+        cases += [([beta], [("anthropic-beta", beta), ("Anthropic-Beta", beta)]),
+                  ([beta], [(b"anthropic-beta", b"\xc2\xa0" + beta.encode())]),
+                  ([], [("anthropic-beta", beta)]), (None, [("anthropic-beta", beta)])]
+        for body_betas, feature_headers in cases:
+            with self.subTest(body_betas=body_betas, feature_headers=feature_headers):
+                _, counter, ledger, transport, client = self.setup_guard()
+                body = native_body()
+                if body_betas is not None:
+                    body["anthropic_beta"] = body_betas
+                request = client.client.build_request("POST", URL, content=json.dumps(body).encode(),
+                    headers=[("content-type", "application/json"), *feature_headers])
+                with self.assertRaisesRegex(AdmissionDenied, "UNQUALIFIED_NATIVE_FEATURE_HEADER"):
+                    await client.client.send(request)
+                self.assertEqual(counter.parameters, [])
+                self.assertEqual(ledger.holds, {})
+                self.assertEqual(transport.requests, [])
+
 
     async def test_lifetime_denied_before_count_has_no_hold_or_dispatch(self):
         guard, counter, ledger, transport, client = self.setup_guard()
@@ -537,6 +580,62 @@ class BodyTests(unittest.TestCase):
             with self.subTest(kwargs=str(kwargs)):
                 with self.assertRaises(AdmissionDenied):
                     BodyLimits(**kwargs)
+
+    def test_sdk_metadata_beta_enums_and_empty_tools_preserve_counted_bytes(self):
+        body = {**native_body(), "metadata": {"user_id": "u" * 512}, "tools": [],
+                "anthropic_beta": ["context-management-2025-06-27", "effort-2025-11-24"]}
+        raw = json.dumps(body, indent=2).encode()
+        native = inspect_native_request("POST", URL, raw, BodyLimits())
+        self.assertIs(native.raw, raw)
+        self.assertEqual(native.sha256, hashlib.sha256(raw).hexdigest())
+        self.assertEqual(native.count_parameters()["input"]["invokeModel"]["body"], raw)
+        self.assertEqual(native.anthropic_betas, frozenset(body["anthropic_beta"]))
+        self.assertEqual(self.inspect({**native_body(), "anthropic_beta": []}).anthropic_betas, frozenset())
+        for key, value in (("metadata", {}), ("metadata", {"user_id": 1}),
+                           ("metadata", {"user_id": "u" * 513}),
+                           ("metadata", {"user_id": "u", "extra": None}),
+                           ("anthropic_beta", None), ("anthropic_beta", "effort-2025-11-24"),
+                           ("anthropic_beta", ["unknown"]),
+                           ("anthropic_beta", ["effort-2025-11-24"] * 2),
+                           ("anthropic_beta", ["context-management-2025-06-27", "effort-2025-11-24", "unknown"]),
+                           ("context_management", None), ("context_management", {"edits": []}),
+                           ("effort", "low"), ("task_budget", {})):
+            with self.subTest(key=key), self.assertRaises(AdmissionDenied):
+                self.inspect({**body, key: value})
+
+    def test_structured_output_requires_exact_trusted_schema_and_tool_authority(self):
+        schema = {"type": "object", "properties": {"reply": {"type": "string"}},
+                  "required": ["reply"], "additionalProperties": False}
+        limits = BodyLimits(allowed_tool_names=frozenset({"StructuredOutput"}),
+                            structured_output_schema_json=json.dumps(schema))
+        tool = {"name": "StructuredOutput", "input_schema": schema}
+        body = {**native_body(), "tools": [tool], "tool_choice": {"type": "tool", "name": "StructuredOutput"}}
+        def inspect(value, binding=limits):
+            return inspect_native_request("POST", URL, json.dumps(value).encode(), binding)
+        inspect(body)
+        for binding in (BodyLimits(), BodyLimits(allowed_tool_names=frozenset({"StructuredOutput"})),
+                        BodyLimits(structured_output_schema_json=json.dumps(schema))):
+            with self.subTest(binding=binding), self.assertRaises(AdmissionDenied):
+                inspect(body, binding)
+        for changed in ({}, {**schema, "additionalProperties": True},
+                        {**schema, "additionalProperties": 0}):
+            with self.subTest(schema=changed), self.assertRaises(AdmissionDenied):
+                inspect({**body, "tools": [{**tool, "input_schema": changed}]})
+        format_body = {**native_body(), "output_config": {"format": {"type": "json_schema", "schema": schema}}}
+        # A format binding grants no tool name; it can stand alone.
+        inspect(format_body, BodyLimits(structured_output_schema_json=json.dumps(schema)))
+        for config in ({"format": {"type": "json_schema", "schema": {}}},
+                       {"format": {"type": "json_schema", "schema": schema, "extra": True}},
+                       {**format_body["output_config"], "effort": "low"}):
+            with self.subTest(config=config), self.assertRaises(AdmissionDenied):
+                inspect({**native_body(), "output_config": config})
+        with self.assertRaises(AdmissionDenied):
+            inspect(format_body, BodyLimits())
+        for extra in ({"tool_choice": body["tool_choice"]},
+                      {"messages": [{"role": "assistant", "content": [
+                          {"type": "tool_use", "id": "tool_1", "name": "StructuredOutput", "input": {}}]}]}):
+            with self.subTest(keys=list(extra)), self.assertRaises(AdmissionDenied):
+                inspect({**native_body(), **extra}, BodyLimits(allowed_tool_names=frozenset({"StructuredOutput"})))
 
 
 if __name__ == "__main__":

@@ -13,7 +13,8 @@ from typing import Protocol
 import httpx
 from litellm.llms.custom_httpx.http_handler import AsyncHTTPHandler
 
-from .bedrock_body import AdmissionDenied, BodyLimits, COUNT_MODEL_ID, RUNTIME_HOST, NativeBody, inspect_native_request
+from .bedrock_body import (AdmissionDenied, BodyLimits, COUNT_MODEL_ID, RUNTIME_HOST,
+                          ALLOWED_ANTHROPIC_BETAS, NativeBody, inspect_native_request)
 
 
 @dataclass(frozen=True)
@@ -116,13 +117,23 @@ class BedrockSendGuard:
             raise AdmissionDenied("UNQUALIFIED_NATIVE_ENCODING")
         if request.headers.get("host") != RUNTIME_HOST:
             raise AdmissionDenied("UNQUALIFIED_HOST_HEADER")
-        # No service-tier, latency, guardrail, trace or beta feature headers are
-        # qualified by this small envelope. SigV4/date/session-token are trusted
+        # No service-tier, latency, guardrail or trace headers are qualified.
+        # SigV4/date/session-token are trusted
         # client concerns, not worker-supplied authority checked by this spike.
-        if any(name.startswith("x-amzn-bedrock-") or name == "anthropic-beta"
-               for name in request.headers):
+        if any(name.startswith("x-amzn-bedrock-") for name in request.headers):
             raise AdmissionDenied("UNQUALIFIED_NATIVE_FEATURE_HEADER")
         body = inspect_native_request(request.method, str(request.url), raw, self.limits)
+        beta_headers = request.headers.get_list("anthropic-beta")
+        if beta_headers:
+            # Bedrock supports body betas without a header. If a header is sent,
+            # validate its exact set without rewriting the signed request.
+            if len(beta_headers) != 1:
+                raise AdmissionDenied("UNQUALIFIED_NATIVE_FEATURE_HEADER")
+            betas = [value.strip(" \t") for value in beta_headers[0].split(",")]
+            if (not 1 <= len(betas) <= 2 or len(set(betas)) != len(betas)
+                    or any(value not in ALLOWED_ANTHROPIC_BETAS for value in betas)
+                    or frozenset(betas) != body.anthropic_betas):
+                raise AdmissionDenied("UNQUALIFIED_NATIVE_FEATURE_HEADER")
         try:
             count = await self._within_deadline(lambda: self.counter.count(body.count_parameters()))
         except Exception:
