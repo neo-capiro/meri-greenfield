@@ -99,12 +99,164 @@
       "bytes": 784966
     },
     {
+      "name": "freetype",
+      "version": "2.14.3-r7",
+      "file": "freetype-2.14.3-r7.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/freetype-2.14.3-r7.apk",
+      "sha256": "81694e54dd1c00ae479310aed0b45e492b31b15d2ae81865ee5393604354cf92",
+      "bytes": 478404
+    },
+    {
+      "name": "gdbm",
+      "version": "1.26-r7",
+      "file": "gdbm-1.26-r7.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/gdbm-1.26-r7.apk",
+      "sha256": "b353e1fb3f7702fe2faba2fd6800bbfd3db63a726e17d294a626aacbf239629b",
+      "bytes": 280622
+    },
+    {
+      "name": "lcms2",
+      "version": "2.19.1-r3",
+      "file": "lcms2-2.19.1-r3.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/lcms2-2.19.1-r3.apk",
+      "sha256": "f2c5857cab8fd797f0a07e56042e41e93522bca988281e8765d275614ee23933",
+      "bytes": 237648
+    },
+    {
+      "name": "libbz2-1",
+      "version": "1.0.8-r25",
+      "file": "libbz2-1-1.0.8-r25.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/libbz2-1-1.0.8-r25.apk",
+      "sha256": "52d98e5a8b0ea3e1f301d565bf8c8fed6b106f881d9d120dbde0d38fbd4f9fb8",
+      "bytes": 50263
+    },
+    {
+      "name": "libexpat1",
+      "version": "2.9.0-r0",
+      "file": "libexpat1-2.9.0-r0.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/libexpat1-2.9.0-r0.apk",
+      "sha256": "49291dad97f2292a5796c2cdb766f6476b274332ae2bbd3c35447d7f305f81a8",
+      "bytes": 113449
+    },
+    {
+      "name": "libffi",
+      "version": "3.8.0-r2",
+      "file": "libffi-3.8.0-r2.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/libffi-3.8.0-r2.apk",
+      "sha256": "93fe2f937802653775e8537c7a2840c6de8a1d83c396559be200c0d5d86375f6",
+      "bytes": 47462
+    },
+    {
+      "name": "libgfortran",
+      "version": "16.2.0-r1",
+      "file": "libgfortran-16.2.0-r1.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/libgfortran-16.2.0-r1.apk",
+      "sha256": "de6d40b1510125b2530c7b7e1d37c1c3f70c49a1c7dfc33826c3725e3d92f4e2",
+      "bytes": 1312300
+    },
+    {
+      "name": "libjpeg-turbo",
+      "version": "3.2.0-r5",
+      "file": "libjpeg-turbo-3.2.0-r5.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/libjpeg-turbo-3.2.0-r5.apk",
+      "sha256": "0a30d14964216ff18d89107d75bf7903d5ef7d7a1bddf33c7d5f93715a72511a",
+      "bytes": 638577
+    },
+    {
+      "name": "libopenblas-0",
+      "version": "0.3.34-r1",
+      "file": "libopenblas-0-0.3.34-r1.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/libopenblas-0-0.3.34-r1.apk",
+      "sha256": "1eab6e1b9049452dcad27dc3ef02dcbf1575648d6f01ee991966021b0794402a",
+      "bytes": 11799709
+    },
+    {
+      "name": "libpng",
+      "version": "1.6.59-r0",
+      "file": "libpng-1.6.59-r0.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/libpng-1.6.59-r0.apk",
+      "sha256": "658ba44b0ae145eac273d5822093e891be48967dd482067af79b189a00b8eb9b",
+      "bytes": 143584
+    },
+    {
       "name": "libstdc++",
       "version": "16.2.0-r1",
       "file": "libstdc++-16.2.0-r1.apk",
       "url": "https://packages.wolfi.dev/os/x86_64/libstdc++-16.2.0-r1.apk",
       "sha256": "fc233c091aa551d6ba6da3e444d99a94e9947d53814d20183a0a7ded9a668f80",
       "bytes": 1260650
+    },
+    {
+      "name": "libuuid",
+      "version": "2.42.4-r0",
+      "file": "libuuid-2.42.4-r0.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/libuuid-2.42.4-r0.apk",
+      "sha256": "e1f5d85296afc0074e4d69fb3bdf7cb12b82233768ea5ad38330d53c76724785",
+      "bytes": 33422
+    },
+    {
+      "name": "libwebp",
+      "version": "1.6.0-r7",
+      "file": "libwebp-1.6.0-r7.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/libwebp-1.6.0-r7.apk",
+      "sha256": "e1dcd7b76e2a53791462c84e4b8fa8f15892665e16f60a54c1751cb7a9804000",
+      "bytes": 339709
+    },
+    {
+      "name": "libxau",
+      "version": "1.0.12-r9",
+      "file": "libxau-1.0.12-r9.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/libxau-1.0.12-r9.apk",
+      "sha256": "fa4cab03a805ef6996e7540d69096d3185903ca0a3101a3d57d9c6526df41793",
+      "bytes": 16465
+    },
+    {
+      "name": "libxcb",
+      "version": "1.17.0-r17",
+      "file": "libxcb-1.17.0-r17.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/libxcb-1.17.0-r17.apk",
+      "sha256": "5b395537596061fb0bc6a55a1e5b89162b0f64d29ae0d3c882a3be3d338dbd3c",
+      "bytes": 399741
+    },
+    {
+      "name": "libxdmcp",
+      "version": "1.1.5-r12",
+      "file": "libxdmcp-1.1.5-r12.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/libxdmcp-1.1.5-r12.apk",
+      "sha256": "7cc7cb88364210cd1d48016f7a1c4caf50525ea1c84516588f837020c0768d03",
+      "bytes": 20709
+    },
+    {
+      "name": "libxml2-16",
+      "version": "2.15.4-r1",
+      "file": "libxml2-16-2.15.4-r1.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/libxml2-16-2.15.4-r1.apk",
+      "sha256": "461b0e802a5ffb3428f61e85eb56395361c1b2fd0cc0d4cc2666abb672c16471",
+      "bytes": 709117
+    },
+    {
+      "name": "libxslt",
+      "version": "1.1.45-r5",
+      "file": "libxslt-1.1.45-r5.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/libxslt-1.1.45-r5.apk",
+      "sha256": "774aa16154ab1fe6ba8059ffabde298f2cc6ed3c3485de645e3db875108f46f6",
+      "bytes": 292610
+    },
+    {
+      "name": "libzstd1",
+      "version": "1.5.7-r10",
+      "file": "libzstd1-1.5.7-r10.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/libzstd1-1.5.7-r10.apk",
+      "sha256": "6660523fbffeca75cd601b0c61f201f0054a568bac72204bb13be0dba36da176",
+      "bytes": 639525
+    },
+    {
+      "name": "mpdecimal",
+      "version": "4.0.1-r4",
+      "file": "mpdecimal-4.0.1-r4.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/mpdecimal-4.0.1-r4.apk",
+      "sha256": "823156afdf095874d8e386ab453e69bf5677ab76dd249da7f6451929e6f9ccd4",
+      "bytes": 131249
     },
     {
       "name": "ncurses",
@@ -121,6 +273,174 @@
       "url": "https://packages.wolfi.dev/os/x86_64/ncurses-terminfo-base-6.6.20261010-r0.apk",
       "sha256": "fac2c47f1e85175a8cb6842c374b5462aa8a10d548b5d602d28ee7829b00a751",
       "bytes": 119342
+    },
+    {
+      "name": "openjpeg",
+      "version": "2.5.4-r3",
+      "file": "openjpeg-2.5.4-r3.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/openjpeg-2.5.4-r3.apk",
+      "sha256": "eca7c6ea6d158a9d07cef353b9a7af8b2080e92c7a58dddae74f5a92f9fcd83d",
+      "bytes": 244855
+    },
+    {
+      "name": "py3-pip-wheel",
+      "version": "26.2.1-r4",
+      "file": "py3-pip-wheel-26.2.1-r4.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/py3-pip-wheel-26.2.1-r4.apk",
+      "sha256": "9e7ff37eeaa621df6d066b9904a91555848c5c13db95dab7efd2ad67c11fae7a",
+      "bytes": 1814451
+    },
+    {
+      "name": "py3.13-contourpy",
+      "version": "1.4.0-r1",
+      "file": "py3.13-contourpy-1.4.0-r1.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-contourpy-1.4.0-r1.apk",
+      "sha256": "cb321f90a0d52f888d78d1b3a561dbd6c860dc0a764ea76551ca9affa949849e",
+      "bytes": 462780
+    },
+    {
+      "name": "py3.13-cycler",
+      "version": "0.12.1-r8",
+      "file": "py3.13-cycler-0.12.1-r8.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-cycler-0.12.1-r8.apk",
+      "sha256": "ca1b3cc9bed9249546f77bcbb211f5268df09ead37f236b9e6b19a124ba89328",
+      "bytes": 27301
+    },
+    {
+      "name": "py3.13-fonttools",
+      "version": "4.67.0-r0",
+      "file": "py3.13-fonttools-4.67.0-r0.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-fonttools-4.67.0-r0.apk",
+      "sha256": "0161c9847bf6b62452c7fa29a831d3b08699f6af95677455a86d67ff832d2c50",
+      "bytes": 3354281
+    },
+    {
+      "name": "py3.13-kiwisolver",
+      "version": "1.5.1-r1",
+      "file": "py3.13-kiwisolver-1.5.1-r1.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-kiwisolver-1.5.1-r1.apk",
+      "sha256": "31d9b285bc8d5535ae89906ff5705971e6e51f8e1a9344d785436b7ec09d655f",
+      "bytes": 115891
+    },
+    {
+      "name": "py3.13-lxml",
+      "version": "6.1.3-r0",
+      "file": "py3.13-lxml-6.1.3-r0.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-lxml-6.1.3-r0.apk",
+      "sha256": "b77cf8d2a37b5a68351b9d8387a6fffc6da785bd44060a150b1eeebaa3afff5f",
+      "bytes": 2581465
+    },
+    {
+      "name": "py3.13-matplotlib",
+      "version": "3.11.2-r0",
+      "file": "py3.13-matplotlib-3.11.2-r0.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-matplotlib-3.11.2-r0.apk",
+      "sha256": "6f16b931d0208a6f296fb129529547430024eb997bdfe1a9e976e99ce4dacee4",
+      "bytes": 14295686
+    },
+    {
+      "name": "py3.13-numpy-2.2",
+      "version": "2.2.6-r5",
+      "file": "py3.13-numpy-2.2-2.2.6-r5.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-numpy-2.2-2.2.6-r5.apk",
+      "sha256": "82242789cf3bcbe8a3c64093d2782380a92de9ec3a4807d70ff975260203b219",
+      "bytes": 12477950
+    },
+    {
+      "name": "py3.13-packaging",
+      "version": "26.3-r0",
+      "file": "py3.13-packaging-26.3-r0.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-packaging-26.3-r0.apk",
+      "sha256": "fc9f3c999a5963b1b6634b1c481af9942658920a93f444642166051f5defe3ec",
+      "bytes": 343989
+    },
+    {
+      "name": "py3.13-pillow",
+      "version": "12.3.0-r1",
+      "file": "py3.13-pillow-12.3.0-r1.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-pillow-12.3.0-r1.apk",
+      "sha256": "30204e23855c47ed5ca62de88df3cbc8ff81ef4d1820d9b2323ef41aa46507d3",
+      "bytes": 1396143
+    },
+    {
+      "name": "py3.13-pygments",
+      "version": "2.21.0-r0",
+      "file": "py3.13-pygments-2.21.0-r0.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-pygments-2.21.0-r0.apk",
+      "sha256": "80b8019c2aeeeea4abeea2053eabc46997adc404ab20354e9c5ec8991f840416",
+      "bytes": 2899203
+    },
+    {
+      "name": "py3.13-pyparsing",
+      "version": "3.3.3-r0",
+      "file": "py3.13-pyparsing-3.3.3-r0.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-pyparsing-3.3.3-r0.apk",
+      "sha256": "628ce308e90f234dfd34db2146f28bf4e25da682c8273c07f240b86f4f2b3ace",
+      "bytes": 362378
+    },
+    {
+      "name": "py3.13-python-dateutil",
+      "version": "2.9.0-r13",
+      "file": "py3.13-python-dateutil-2.9.0-r13.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-python-dateutil-2.9.0-r13.apk",
+      "sha256": "9f363a36fdcc074d0952d032dea5c3860eb6bfc6ea37f5dbea4f2a15b56a1521",
+      "bytes": 389607
+    },
+    {
+      "name": "py3.13-six",
+      "version": "1.17.0-r7",
+      "file": "py3.13-six-1.17.0-r7.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-six-1.17.0-r7.apk",
+      "sha256": "fcc24f3d528239978d16c215f379b103bf3115d9915d0a2dbb71a53e30cc3c47",
+      "bytes": 41637
+    },
+    {
+      "name": "py3.13-typing-extensions",
+      "version": "4.16.0-r0",
+      "file": "py3.13-typing-extensions-4.16.0-r0.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-typing-extensions-4.16.0-r0.apk",
+      "sha256": "1b2911197709c8700828f33a8da32159b490df009fdd36a4c634dd58b505fe96",
+      "bytes": 130024
+    },
+    {
+      "name": "python-3.13-base",
+      "version": "3.13.16_git20261016-r0",
+      "file": "python-3.13-base-3.13.16_git20261016-r0.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/python-3.13-base-3.13.16_git20261016-r0.apk",
+      "sha256": "081235dc7cc8a68e0896b80cd6b0ec27d9c0f38cdd6dcfd8df052e083735881d",
+      "bytes": 12199161
+    },
+    {
+      "name": "readline",
+      "version": "8.3-r3",
+      "file": "readline-8.3-r3.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/readline-8.3-r3.apk",
+      "sha256": "bc694bcbfcf3d3d48c890b2701714269c9c0851a85c44bb5bf38347e4999f80b",
+      "bytes": 349087
+    },
+    {
+      "name": "sqlite-libs",
+      "version": "3.54.1-r0",
+      "file": "sqlite-libs-3.54.1-r0.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/sqlite-libs-3.54.1-r0.apk",
+      "sha256": "5ea68a7dad00791dbc5eff42aad9022b0984f82e271058811a4d72181e450144",
+      "bytes": 989586
+    },
+    {
+      "name": "tiff",
+      "version": "4.7.2-r3",
+      "file": "tiff-4.7.2-r3.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/tiff-4.7.2-r3.apk",
+      "sha256": "2ff8e1ab80b34e531013dac8e42c546ac5fa0c097217f46a1ee74fc12d931587",
+      "bytes": 544160
+    },
+    {
+      "name": "xz",
+      "version": "5.8.4-r0",
+      "file": "xz-5.8.4-r0.apk",
+      "url": "https://packages.wolfi.dev/os/x86_64/xz-5.8.4-r0.apk",
+      "sha256": "d015b40af8b300a0a33e710573e1e7d6cdc31ae5124bcac2fd299bea90a8506a",
+      "bytes": 397390
     }
   ],
   "requiredPaths": [
@@ -130,6 +450,19 @@
     "/usr/bin/bash",
     "/usr/lib/libgcc_s.so.1",
     "/usr/lib/libstdc++.so.6",
-    "/usr/local/bin/node"
+    "/usr/local/bin/node",
+    "/usr/bin/python3.13",
+    "/usr/lib/libpython3.13.so.1.0",
+    "/usr/lib/python3.13/site-packages/PIL/__init__.py",
+    "/usr/lib/python3.13/site-packages/lxml/__init__.py",
+    "/usr/lib/python3.13/site-packages/matplotlib/__init__.py",
+    "/usr/lib/python3.13/site-packages/numpy/__init__.py",
+    "/usr/lib/python3.13/site-packages/docx/__init__.py",
+    "/usr/lib/python3.13/site-packages/openpyxl/__init__.py",
+    "/usr/lib/python3.13/site-packages/xlsxwriter/__init__.py",
+    "/usr/lib/python3.13/site-packages/et_xmlfile/__init__.py",
+    "/opt/meri/apps/artifacts/python/entry.py",
+    "/opt/meri/apps/artifacts/presentation.mjs",
+    "/opt/meri/apps/artifacts/generation/node_modules/pptxgenjs/package.json"
   ]
 }

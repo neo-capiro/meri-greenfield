@@ -8,6 +8,7 @@ import {fileURLToPath} from 'node:url';
 import {createHash} from 'node:crypto';
 import {createProductImageBuildRecipe} from './image-build-recipe.mjs';
 import productImageTestReporter from './image-build-test-reporter.mjs';
+import {compileRuntimeArtifactsConfiguration} from '../../apps/runtime/artifacts/configuration.mjs';
 
 const verifier=fileURLToPath(new URL('./image-build-source.py',import.meta.url));
 const producer=fileURLToPath(new URL('./image-build-producer.py',import.meta.url));
@@ -287,6 +288,56 @@ test('runtime Dockerfile bakes the locked RDS bundle read-only and points NODE_E
  const ignore=repoFile('.dockerignore').toString('utf8').split(/\r?\n/u).map(line=>line.trim()).filter(line=>line&&!line.startsWith('#'));
  assert.ok(ignore.indexOf('**/*.pem')>=0&&ignore.indexOf('**/*.pem')<ignore.indexOf('!'+lock.path));
  assert.deepEqual(ignore.filter(line=>line.startsWith('!')&&/\.(pem|key|crt)$/u.test(line)),['!'+lock.path]);
+});
+
+const wheelLockPath='infra/product-preview/runtime-wheels.lock.json',pendingPath='infra/product-preview/runtime-packages/pending-additions.json';
+/** The `name=version` pins of the runtime stage's one offline `apk add`, continuation lines included. */
+function apkPins(runtime){
+ const lines=runtime.split('\n'),start=lines.findIndex(line=>line.includes('--repository /tmp/runtime-repo add --no-network --no-cache'));assert.ok(start>=0);
+ const pins=[];
+ for(let i=start;;i++){
+  const line=lines[i],tokens=line.replace(/\\$/u,'').trim().split(/\s+/u).filter(Boolean),from=i===start?tokens.indexOf('--no-cache')+1:0;
+  for(const token of tokens.slice(from)){assert.match(token,/^[a-z0-9][a-z0-9+_.-]*=[0-9][A-Za-z0-9._+~-]*$/u,token);pins.push(token);}
+  if(!line.endsWith('\\'))break;
+ }
+ return pins;
+}
+test('runtime Dockerfile pins exactly the locked additional packages plus the pending retained downloads, and bakes the executor wheels',()=>{
+ const dockerfile=repoFile('apps/runtime/Dockerfile').toString('utf8'),runtime=dockerfile.slice(dockerfile.indexOf('FROM ${RUNTIME_IMAGE} AS runtime'));
+ const lock=JSON.parse(repoFile(runtimeLockPath)),wheels=JSON.parse(repoFile(wheelLockPath));
+ let pending=[];try{pending=JSON.parse(repoFile(pendingPath)).apkPackages;}catch(error){if(error.code!=='ENOENT')throw error;}
+ const rows=[...lock.additionalPackages,...pending],pins=apkPins(runtime);
+ assert.deepEqual([...pins].sort(),rows.map(r=>`${r.name}=${r.version}`).sort());assert.equal(new Set(pins).size,pins.length);
+ const lockedNames=new Set(lock.additionalPackages.map(r=>r.name));for(const row of pending)assert.ok(!lockedNames.has(row.name),row.name+' is both locked and pending');
+ // Wheels: copied in the builder, re-included in the context, every lock row hash-checked, unpacked into the lock's site-packages and probed by the lock.
+ assert.ok(dockerfile.includes('COPY infra/product-preview/runtime-packages/wheels /opt/meri-runtime-input/wheels'));
+ assert.ok(repoFile('.dockerignore').toString('utf8').split(/\r?\n/u).includes('!infra/product-preview/runtime-packages/wheels/'));
+ assert.ok(runtime.includes(`set -- * && test "$#" = ${wheels.wheels.length} &&`));
+ assert.ok(runtime.includes(`test "$(/usr/bin/python3.13 -I -c 'import sysconfig;print(sysconfig.get_paths()["purelib"])')" = ${wheels.sitePackages}`));
+ for(const row of wheels.wheels){assert.ok(runtime.includes(`'${row.sha256}  ${row.file}'`),row.file);assert.ok(lock.requiredPaths.includes(`${wheels.sitePackages}/${row.importName}/__init__.py`),row.importName);}
+ const loop=/for wheel in ([^;]+); do \/usr\/bin\/python3\.13 -I -B -m zipfile -e "\$wheel" (\S+)/u.exec(runtime);assert.ok(loop);
+ assert.deepEqual(loop[1].trim().split(/\s+/u).sort(),wheels.wheels.map(r=>r.file).sort());assert.equal(loop[2],wheels.sitePackages);
+ // The import smoke pins each generator library version: the wheel versions and the apk versions (Wolfi `-rN` / `_gitN` suffixes stripped).
+ const versions=/__version__\)==\(([^)]*)\)/u.exec(runtime);assert.ok(versions);const pinned=versions[1].split(',').map(v=>v.trim().slice(1,-1));
+ const apkVersion=name=>{const row=rows.find(r=>r.name===name);assert.ok(row,name);return row.version.replace(/-r\d+$/u,'').replace(/_git\d+$/u,'');};
+ for(const row of wheels.wheels)assert.ok(pinned.includes(row.version),row.name);
+ for(const name of ['py3.13-lxml','py3.13-pillow','py3.13-matplotlib','py3.13-numpy-2.2'])assert.ok(pinned.includes(apkVersion(name)),name);
+ assert.ok(runtime.includes(`sys.version_info[:3]==(${apkVersion('python-3.13-base').split('.').join(',')})`));
+ // PptxGenJS: its own locked package installed in the builder, loaded at the in-image path the executor configuration names, same pin as presentation.mjs.
+ const generation=JSON.parse(repoFile('apps/artifacts/generation/package.json')),generationLock=JSON.parse(repoFile('apps/artifacts/generation/package-lock.json'));
+ assert.equal(generation.dependencies.pptxgenjs,'4.0.1');assert.equal(generationLock.packages[''].dependencies.pptxgenjs,'4.0.1');assert.equal(generationLock.packages['node_modules/pptxgenjs'].version,'4.0.1');
+ assert.ok(repoFile('apps/artifacts/presentation.mjs').toString('utf8').includes(`packageData.version!=='${generation.dependencies.pptxgenjs}'`));
+ assert.ok(dockerfile.includes('RUN npm ci --prefix apps/artifacts/generation --omit=dev --ignore-scripts --no-audit --no-fund'));
+ assert.ok(runtime.includes('require("/opt/meri/apps/artifacts/generation/node_modules/pptxgenjs/package.json")'));
+ // The lock's verify runs after the wheels are unpacked (it probes their __init__ files) and before the non-root user exists.
+ assert.ok(runtime.indexOf('-m zipfile -e')<runtime.indexOf('runtime-packages.mjs verify')&&runtime.indexOf('runtime-packages.mjs verify')<runtime.indexOf('RUN addgroup -g 1000 node'));
+});
+test('the rendered artifacts.executor image paths validate and name files the lock verifies in the image',()=>{
+ const lock=JSON.parse(repoFile(runtimeLockPath)),dockerfile=repoFile('apps/runtime/Dockerfile').toString('utf8');
+ const executor={pythonExecutable:'/usr/bin/python3.13',nodeExecutable:'/usr/local/bin/node',pptxModulePath:'/opt/meri/apps/artifacts/generation/node_modules/pptxgenjs',tempRoot:'/tmp',timeoutMs:30000};
+ assert.deepEqual(compileRuntimeArtifactsConfiguration({artifacts:{enabled:false,executor}}).executor,executor);
+ for(const path of [executor.pythonExecutable,executor.nodeExecutable,executor.pptxModulePath+'/package.json','/opt/meri/apps/artifacts/python/entry.py','/opt/meri/apps/artifacts/presentation.mjs','/usr/lib/libpython3.13.so.1.0'])assert.ok(lock.requiredPaths.includes(path),path);
+ assert.match(dockerfile,/^VOLUME \[.*"\/tmp".*\]$/mu);assert.ok(dockerfile.includes('chmod 1777 /tmp'));
 });
 
 test('Python entrypoint help/import/missing configuration are bounded and inert',()=>{

@@ -1,0 +1,13 @@
+{
+  "name": "@meri/artifact-generation",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The pinned PptxGenJS module the fixed typed presentation generator (apps/artifacts/presentation.mjs) loads by absolute path; no code of its own. In the runtime image artifacts.executor.pptxModulePath is /opt/meri/apps/artifacts/generation/node_modules/pptxgenjs.",
+  "type": "module",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "dependencies": {
+    "pptxgenjs": "4.0.1"
+  }
+}

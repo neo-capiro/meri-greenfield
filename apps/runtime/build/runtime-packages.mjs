@@ -7,7 +7,8 @@ import {Readable} from 'node:stream';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 
-const LOCK_LIMIT=256*1024, FILE_LIMIT=16*1024*1024, TOTAL_LIMIT=64*1024*1024, DB_LIMIT=8*1024*1024;
+// TOTAL_LIMIT covers the signed index plus the document-generation executor closure (CPython, Pillow, lxml, matplotlib/numpy/openblas; ~83 MiB).
+const LOCK_LIMIT=256*1024, FILE_LIMIT=16*1024*1024, TOTAL_LIMIT=128*1024*1024, DB_LIMIT=8*1024*1024;
 const ORIGIN='https://packages.wolfi.dev/os/x86_64/';
 const NAME=/^[a-z0-9][a-z0-9+_.-]{0,127}$/u, VERSION=/^[0-9][A-Za-z0-9._+~-]{0,127}$/u;
 const HASH=/^[a-f0-9]{64}$/u;

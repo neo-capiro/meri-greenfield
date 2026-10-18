@@ -60,7 +60,7 @@ test('lock permits only exact public APK/index URLs and strict per-file/combined
  for(const mutate of [x=>{x.additionalPackages[0].url='http://packages.wolfi.dev/os/x86_64/bash-5.3-r14.apk';},x=>{x.additionalPackages[0].url+='?token=private';},
   x=>{x.additionalPackages[0].url=x.additionalPackages[0].url.replace('https://','https://private@');},x=>{x.additionalPackages[0].file='../bash.apk';},
   x=>{x.repositoryIndex.url=x.repositoryIndex.url.replace('packages.wolfi.dev','foreign.example');},x=>{x.repositoryIndex.bytes=16*1024*1024+1;},x=>{x.repositoryIndex.bytes=0;},
-  x=>{x.additionalPackages=Array.from({length:5},(_,i)=>({name:'package'+i,version:'1-r0',file:'package'+i+'-1-r0.apk',url:origin+'package'+i+'-1-r0.apk',sha256:'c'.repeat(64),bytes:16*1024*1024}));}]){
+  x=>{x.additionalPackages=Array.from({length:9},(_,i)=>({name:'package'+i,version:'1-r0',file:'package'+i+'-1-r0.apk',url:origin+'package'+i+'-1-r0.apk',sha256:'c'.repeat(64),bytes:16*1024*1024}));}]){
   const f=fixture();mutate(f.lock);assert.throws(()=>parseRuntimePackageLock(bytes(f.lock)),/^Error: RUNTIME_PACKAGES_LOCK$/u);
  }
 });
