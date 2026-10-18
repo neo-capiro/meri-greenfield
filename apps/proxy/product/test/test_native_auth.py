@@ -2,6 +2,7 @@
 import asyncio
 from dataclasses import replace
 import json
+from pathlib import Path
 import time
 from types import SimpleNamespace
 import unittest
@@ -64,6 +65,11 @@ class AuthTests(unittest.IsolatedAsyncioTestCase):
         finally:
             _request_lifetime.reset(token)
 
+    async def test_pinned_native_config_grants_only_the_authorized_alias(self):
+        config = json.loads(Path(auth.__file__).with_name("litellm-product-config.yaml").read_text())
+        self.assertEqual([row["model_name"] for row in config["model_list"]], [auth.MODEL])
+        self.assertEqual([row["model_info"]["id"] for row in config["model_list"]], [auth.MODEL])
+
     async def test_real_product_authority_refreshes_and_projects_sha_model_only(self):
         before = len(self.exchange.calls)
         result = await self.dispatch(lambda req: auth.authenticate_product_request(req, KEY.decode()))
@@ -81,10 +87,12 @@ class AuthTests(unittest.IsolatedAsyncioTestCase):
                                 request=Request(dict(self.scope), self.body))
 
     async def test_foreign_key_model_raw_body_and_second_auth_are_denied(self):
-        for kind in ("key", "model", "body", "second"):
+        for kind in ("key", "model", "profile_model", "body", "second"):
             async def call(req):
                 if kind == "model":
                     req.raw = self.life.original_body = b'{"model":"foreign"}'
+                if kind == "profile_model":
+                    req.raw = self.life.original_body = b'{"model":"us.anthropic.claude-sonnet-4-6"}'
                 if kind == "body":
                     req.raw = b'{"model":"meri-sonnet-qualification"}'
                 result = await auth.authenticate_product_request(req, "foreign" if kind == "key" else KEY.decode())
