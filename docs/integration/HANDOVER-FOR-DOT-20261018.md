@@ -33,6 +33,7 @@ Written for dot (cloud, GitHub only) on Neo's instruction. Everything referenced
 | Grants | `0e485ce4` | `capiro_app` USAGE + SELECT on the four `meri_read_delegation_facts` views; the Meri-owned `SECURITY DEFINER` snapshot function `meri_core_authority.current_admission_v1(uuid,uuid,uuid)` (Core proposal body verbatim) owned by NOLOGIN `meri_core_admission_reader`; readbacks; `phase:integration_grants` re-pinned to `ddf18d68…2834`; packet §4/§5 (role readback, Core template env, `INTERNAL_SERVICE_SECRET` whitespace rule, non-resetting daily cap) |
 | Lane L2 | `24bf221a`, merged `a6bfe898` | resume/fork end to end: `resolveTransitionContext` admits fork targets by the explicit `transition.intent`; resume writes the `next_runs` mapping born ACCEPTED from the proven retirement inside the successor transaction (`recordContinuationReservation`); synthetic e2e suite over the real lifecycle service, journal, session owner, continuation authority and prepared-run registry (3 tests + 9 adapter cases); no composer diffs |
 | Lane CL | `895e071a`, merged `0e7d89bf` | capability ledger (docs only) |
+| #156 (rt-reads) | `8b887380`, merged; re-pin `7ec443da` | admission view `run_facts_v1.admitted` derives the exact original ADMITTED set (every declared grant, exact facts/executor/worker, ACTIVE, earliest expiry) — dot accepted 6249495899; `read_delegation_facts` 0001 re-pinned to `bc3ec031…`; delegation suites 28/28 |
 
 Suites run at each merge are listed on PR #121; the broad per-directory sweep of the tip against the base was **not completed** (host memory exhaustion when run alongside four lanes — see §6).
 
@@ -50,7 +51,7 @@ To merge (R0 or whoever resumes):
 - Add migration 0004 to `infra/product-preview/first-chat-migrate.mjs` (integration stage, after schedules 0003) and `GRANT UPDATE (read_consent)` on `meri_schedules.projections` to `meri_control_runtime` in `first-chat-database-integration.sql`; re-pin both.
 - **Open gap RD found:** `cli.mjs` composes no routines owners for the consents seam (`routinesFamily()` without owners); the ledger says attended routine owners are wired (`3a04031e`) — verify which is true before wiring `readConsents: reads.readDelegation.consents` (the reads composer is built after the families list, so a `let`/relay capture is needed).
 - **Open gap RD found:** `occurrence-relay` binds the raw occurrence row but `assertOccurrence` expects consent facts — an adapter joining `projections.read_consent` + occurrence + allocation digest is needed before any unattended run reads.
-- Option B stays composed **disabled** (`features.reads.delegation {enabled:false}`) until these land plus the rt-reads admission-view repair (dot 6249255722) and the Core side.
+- Option B stays composed **disabled** (`features.reads.delegation {enabled:false}`) until these land plus the Core side (the admission-view repair #156 is merged).
 
 ### Lane I — `fable/int-lane-i-20261018` @ `94b69264` (work `31d8de37`, base `21862a5e`), runtime image document-executor dependencies
 Done in source: `infra/product-preview/runtime-packages.lock.json` (+44 packages: CPython 3.13, Pillow, lxml, matplotlib, numpy …; sha `5dc3b335…`), `runtime-wheels.lock.json` + `runtime-packages/wheels/` (python-docx 1.2.0, XlsxWriter 3.2.9, openpyxl 3.1.5, et_xmlfile 2.0.0 at the hashes pinned in `apps/worker/qualification/requirements.lock.txt`), `runtime-packages/complete-pending-additions.mjs` (offline re-verification against the retained signed APKINDEX), `apps/artifacts/generation/` (pptxgenjs 4.0.1, offline `npm ci`), Dockerfile changes, `runtime-packages.mjs` TOTAL_LIMIT 64→128 MiB. Tests green alone (`runtime-packages` 22/22, `complete-pending-additions` 6/6, `image-build` 47/47).
@@ -68,7 +69,7 @@ Done in source: `infra/product-preview/runtime-packages.lock.json` (+44 packages
 ## 3. Side sessions (their own handover posts are on PR #121)
 
 - **Core lane** (capiro-backend #84, last known `70e13545`, R24–R26): routines mounted, wire C unattended grant, consent ≤30 days, snapshot function proposal, the seven-field issuance pinned, revoke route, dot's two receiver repairs. Next on its list: preview template (`INTERNAL_SERVICE_SECRET` ARN parameter, profile env, signer env), option B Core side, Objective key specs + D7-3, receiving #85, the packet section. Asked to post its handover state.
-- **rt-reads** (meri-greenfield reads lane): #155 and #154 merged; next item dot 6249255722 (admission view must derive the exact original ADMITTED set and use the earliest applicable expiry; re-pin the view sha afterwards). Asked to push a draft PR even if unfinished and post its state.
+- **rt-reads** (meri-greenfield reads lane): #155, #154 and #156 merged; its handover post is PR #121 6249390989; the session is idle (done). Its remaining notes (dot's #151 corrections status, Core W1) are in that post.
 - **fe-integration**: finished; #92 `271a267d` is the frontend candidate (not built).
 
 ## 4. Decisions waiting on Neo (details with exact plan passages in `PLAN-RECONCILIATION-20261018.md` §4)
@@ -86,7 +87,7 @@ Also: the ≤30 s revocation bound (proposed 30 s); the Space page link (never p
 | K1 kickoff cancellation signal | non-blocking, after the candidate |
 | D11 expired unused binding | mitigated by the frontend |
 | Core `approval/revoke` body | Meri sends `{proposalId, commandSha256, approver, binding}` — Core to confirm |
-| rt-reads admission view (dot 6249255722) | open; re-pin the view sha after the repair |
+| rt-reads admission view (dot 6249255722) | **resolved**: #156 merged, view sha re-pinned `bc3ec031…` (`7ec443da`) |
 | Routines owners in `cli.mjs` (RD's finding vs ledger) | verify |
 | Installation receipt vs 55 registered handlers (CL) | focused check before N22 |
 | Lane I build | no evidence; platform (amd64 lock vs ARM64 Fargate) to reconcile |
