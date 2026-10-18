@@ -90,6 +90,7 @@ export async function startEgressProxy({control,dial=dialAddress,host='127.0.0.1
  }
  /** Dials the checked address; resolves the connected socket or rejects. @param {{address:string,port:number}} target */
  const open=target=>new Promise((resolve,reject)=>{
+  if(revoked){reject(fault('EGRESS_REVOKED'));return;}
   let s;try{s=track(dial(target));}catch(e){reject(e);return;}
   let settled=false;
   const finish=(error)=>{if(settled)return;settled=true;clearTimeout(timer);s.off('connect',connected);s.off('error',errored);s.off('close',closed);
@@ -109,6 +110,7 @@ export async function startEgressProxy({control,dial=dialAddress,host='127.0.0.1
   const a=await decide(signal=>control.admitProxyRequest({method:'CONNECT',target:String(req.url),headers:{...req.headers}},{signal}));
   record({kind:'connect',ok:a.ok,code:a.ok?null:a.code,...where});
   if(!a.ok)return refuseRaw(socket,403,'Forbidden',a.code);
+  if(revoked||socket.destroyed){socket.destroy();return;}
   try{const upstream=await open(a.connect);if(revoked||socket.destroyed){upstream.destroy();socket.destroy();return;}
    socket.write('HTTP/1.1 200 Connection Established\r\n\r\n');if(head?.length)upstream.write(head);splice(socket,upstream);}
   catch{refuseRaw(socket,502,'Bad Gateway','EGRESS_CONNECT_FAILED');}
@@ -119,6 +121,7 @@ export async function startEgressProxy({control,dial=dialAddress,host='127.0.0.1
   const a=await decide(signal=>control.admitProxyRequest({method:String(req.method),target,headers:{...req.headers}},{signal}));
   record({kind:'upgrade',ok:a.ok,code:a.ok?null:a.code,...where});
   if(!a.ok)return refuseRaw(socket,403,'Forbidden',a.code);
+  if(revoked||socket.destroyed){socket.destroy();return;}
   try{const upstream=await open(a.connect),u=new URL(target),headers=forwardHeaders(req.headers,authority,{keepUpgrade:true});
    if(revoked||socket.destroyed){upstream.destroy();socket.destroy();return;}
    upstream.write(`${req.method} ${u.pathname}${u.search} HTTP/1.1\r\n${Object.entries(headers).flatMap(([k,v])=>(Array.isArray(v)?v:[v]).map(x=>`${k}: ${x}`)).join('\r\n')}\r\n\r\n`);
@@ -134,9 +137,11 @@ export async function startEgressProxy({control,dial=dialAddress,host='127.0.0.1
   const a=await decide(signal=>control.admitProxyRequest({method:String(req.method),target,headers:{...req.headers}},{signal}));
   if(!a.ok)return refuse(403,a.code);
   record({kind:'http',ok:true,code:null,...where});
+  if(revoked||req.socket.destroyed){res.destroy();return;}
   const u=new URL(target);
   /** @type {import('node:net').Socket} */let connection;
   try{connection=track(dial(a.connect));}catch{return refuse(502,'EGRESS_CONNECT_FAILED');}
+  if(revoked||req.socket.destroyed){connection.destroy();res.destroy();return;}
   // No agent: Node uses createConnection only without one, so this request owns its socket and nothing is pooled.
   const upstream=httpRequest({method:req.method,path:`${u.pathname}${u.search}`,headers:forwardHeaders(req.headers,authority),createConnection:()=>connection,timeout:L.connectMs});
   upstream.on('response',r=>{
@@ -176,6 +181,7 @@ export async function startEgressProxy({control,dial=dialAddress,host='127.0.0.1
   const a=await decide(signal=>admitSocks({host,port},{signal}));
   record({kind:'socks',ok:a.ok,code:a.ok?null:a.code,host,port});
   if(!a.ok){socket.end(reply(2));return;}
+  if(revoked||socket.destroyed){socket.destroy();return;}
   let upstream;try{upstream=await open(a.connect);}catch{socket.end(reply(5));return;}
   if(revoked||socket.destroyed){upstream.destroy();socket.destroy();return;}
   socket.write(reply(0));const rest=reader.release();if(rest.length)upstream.write(rest);splice(socket,upstream);
