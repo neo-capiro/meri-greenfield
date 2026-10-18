@@ -2,15 +2,16 @@
  * exact candidate to Core's canonical review. It never publishes, approves, confirms, corrects or forgets memory: every candidate is
  * pending until Core decides, and an uncertain submission stays visible as `submission_unknown` instead of being assumed absent. */
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
-import {asProductError,refuse} from '../product-access/errors.mjs';
+import {asProductError,productFailure,refuse} from '../product-access/errors.mjs';
 import {buildCandidate} from './candidate.mjs';
 import {assertCorrectionTarget,assertProposalScope,visibleToProposer} from './eligibility.mjs';
 import {encodeCursor} from './wire.mjs';
 const UUID4=/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u;
+/** `decisions` (`core-decisions.mjs`) is optional: without it the review path lists but `decide` answers MEMORY_UNAVAILABLE. */
 export function createMemoryProducer(options){
- const {journal,review,memory,newId,now}=options??{};
+ const {journal,review,memory,decisions=null,newId,now}=options??{};
  if(['insert','recordSubmission','recordUnknown','get','findOwnByKey','listOwn'].some(k=>typeof journal?.[k]!=='function')||['submit','status'].some(k=>typeof review?.[k]!=='function')||
-  ['readTarget','findByKey'].some(k=>typeof memory?.[k]!=='function')||typeof newId!=='function'||typeof now!=='function')refuse('PRODUCT_CONFIGURATION');
+  ['readTarget','findByKey'].some(k=>typeof memory?.[k]!=='function')||decisions!==null&&typeof decisions?.decide!=='function'||typeof newId!=='function'||typeof now!=='function')refuse('PRODUCT_CONFIGURATION');
  const id=()=>{const v=newId();if(typeof v!=='string'||!UUID4.test(v))refuse('PRODUCT_CONFIGURATION');return v;};
  /** Journal then submit. A replayed idempotency key resubmits the identical journaled candidate only when its earlier submission was
   * not acknowledged; Core deduplicates it by (candidateId, hash), so the replay cannot create a second review item. */
@@ -37,7 +38,10 @@ export function createMemoryProducer(options){
   assertProposalScope(principal,record.candidate);
   let reviewId;
   try{({reviewId}=await review.submit({candidate:record.candidate,candidateSha256:record.candidateSha256,signal,deadlineMs}));}
-  catch{
+  catch(error){
+   // Core refused this exact candidate definitively (nothing recorded there): the journaled candidate stays PREPARED and the refusal
+   // is answered; a replay of the same request resubmits and is refused again. Anything else is an unacknowledged submission.
+   if(productFailure(error)?.code==='MEMORY_SUBMISSION_REFUSED')throw error;
    try{await journal.recordUnknown({tenantId:record.candidate.tenantId,candidateId:record.candidate.candidateId,signal});}catch{}
    return view({...record,submission:{state:'SUBMISSION_UNKNOWN',reviewId:null}},null);
   }
@@ -61,7 +65,16 @@ export function createMemoryProducer(options){
   }
   return out;
  }
+ async function list({principal,request,signal,deadlineMs}){
+  try{
+   if(request.clientId!==null&&!principal.clientIds.includes(request.clientId))refuse('MEMORY_CLIENT_REFUSED');
+   const rows=await journal.listOwn({tenantId:principal.tenantId,proposerActorId:principal.actorId,clientIds:principal.clientIds,clientId:request.clientId,cursor:request.cursor,limit:request.limit+1,signal});
+   const page=rows.slice(0,request.limit).filter(r=>visibleToProposer(principal,r.candidate));
+   return Object.freeze({proposals:await statuses(principal,page,{signal,deadlineMs}),nextCursor:rows.length>request.limit?encodeCursor(rows[request.limit-1].candidate):null});
+  }catch(error){throw asProductError(error,'MEMORY_UNAVAILABLE');}
+ }
  return Object.freeze({
+  list,
   async propose({principal,request,origin,signal,deadlineMs}){
    try{
     assertProposalScope(principal,request);
@@ -92,16 +105,9 @@ export function createMemoryProducer(options){
      const target=await memory.findByKey({tenantId:principal.tenantId,actorId:principal.actorId,scope:a.scope,clientId:a.clientId,key:a.key,signal,deadlineMs});
      if(target){assertCorrectionTarget(principal,target);corrects={memoryId:target.memoryId,memorySha256:target.memorySha256};}
     }
-    return await produce({principal,scope:a.scope,clientId:a.clientId,content:a.content,key:a.key,ttlDays:a.ttlDays===null?null:Math.ceil(a.ttlDays),corrects,reason:null,sources:[],origin,idempotencyKey:command.idempotencyKey},
+    // A correction keeps its target's lifetime (Core refuses a correction with ttlDays, 409): the command's ttl applies to additions only.
+    return await produce({principal,scope:a.scope,clientId:a.clientId,content:a.content,key:a.key,ttlDays:corrects!==null||a.ttlDays===null?null:Math.ceil(a.ttlDays),corrects,reason:null,sources:[],origin,idempotencyKey:command.idempotencyKey},
      requestSha256,{signal,deadlineMs});
-   }catch(error){throw asProductError(error,'MEMORY_UNAVAILABLE');}
-  },
-  async list({principal,request,signal,deadlineMs}){
-   try{
-    if(request.clientId!==null&&!principal.clientIds.includes(request.clientId))refuse('MEMORY_CLIENT_REFUSED');
-    const rows=await journal.listOwn({tenantId:principal.tenantId,proposerActorId:principal.actorId,clientIds:principal.clientIds,clientId:request.clientId,cursor:request.cursor,limit:request.limit+1,signal});
-    const page=rows.slice(0,request.limit).filter(r=>visibleToProposer(principal,r.candidate));
-    return Object.freeze({proposals:await statuses(principal,page,{signal,deadlineMs}),nextCursor:rows.length>request.limit?encodeCursor(rows[request.limit-1].candidate):null});
    }catch(error){throw asProductError(error,'MEMORY_UNAVAILABLE');}
   },
   async status({principal,request,signal,deadlineMs}){
@@ -109,6 +115,27 @@ export function createMemoryProducer(options){
     const r=await journal.get({tenantId:principal.tenantId,proposerActorId:principal.actorId,candidateId:request.candidateId,signal});
     if(!r||!visibleToProposer(principal,r.candidate))refuse('MEMORY_PROPOSAL_NOT_FOUND');
     return (await statuses(principal,[r],{signal,deadlineMs}))[0];
+   }catch(error){throw asProductError(error,'MEMORY_UNAVAILABLE');}
+  },
+  /** The Meri review path (D016 #6): the proposer's own candidates that Core currently holds as PENDING. The page is the same keyset
+   * page as `list` with decided, unknown and unavailable candidates left out, so `nextCursor` still walks every own candidate. */
+  async listPending({principal,request,signal,deadlineMs}){
+   const page=await list({principal,request,signal,deadlineMs});
+   return Object.freeze({proposals:Object.freeze(page.proposals.filter(p=>p.review.status==='pending')),nextCursor:page.nextCursor});
+  },
+  /** The proposer's own decision on one of their pending candidates, forwarded to Core's canonical owner (never decided here). Only a
+   * candidate Core currently reports as pending is forwarded; the answer is Core's current review state read back afterwards. */
+  async decide({principal,request,decision,signal,deadlineMs}){
+   try{
+    if(decisions===null)refuse('MEMORY_UNAVAILABLE');
+    const r=await journal.get({tenantId:principal.tenantId,proposerActorId:principal.actorId,candidateId:request.candidateId,signal});
+    if(!r||!visibleToProposer(principal,r.candidate))refuse('MEMORY_PROPOSAL_NOT_FOUND');
+    const current=(await statuses(principal,[r],{signal,deadlineMs}))[0];
+    if(current.review.status==='unavailable')refuse('MEMORY_REVIEW_UNAVAILABLE');
+    if(current.review.status!=='pending')refuse('MEMORY_DECISION_NOT_PENDING');
+    const {outcome}=await decisions.decide({candidate:r.candidate,decision,reason:request.reason,signal,deadlineMs});
+    const after=(await statuses(principal,[r],{signal,deadlineMs}))[0];
+    return Object.freeze({proposal:after,decision:Object.freeze({decision,outcome})});
    }catch(error){throw asProductError(error,'MEMORY_UNAVAILABLE');}
   },
  });
