@@ -41,8 +41,10 @@ export function createToolDispatch({ catalog, authority, budget, limits, now, ne
     if (canonicalSha256(entry.descriptor.operation) !== canonicalSha256(request.operation)) deny('GATEWAY_CONFIGURATION');
     const signedSource=signedRetainedSourceId(request.operation.id);
     const originalAction=request.operation.id==='query_action_items'&&request.operation.version==='0.2.0';
+    const memoryPage=request.operation.id==='search_memory'&&request.operation.version==='0.2.0';
+    const memoryProposal=request.operation.id==='memory.list_own_proposals'&&request.operation.version==='0.2.0';
     if((signedSource&&!signedRetainedSourceOperation(request.operation))||
-       (signedSource||originalAction)&&invocationId===undefined)deny('UNAVAILABLE');
+       (signedSource||originalAction||memoryPage||memoryProposal)&&invocationId===undefined)deny('UNAVAILABLE');
     assertOperationArguments(entry, request.arguments);
     let deadlineMs = now()+limits.maxRequestMs;
     const ownedLifetime = createDispatchLifetime({ deadlineMs, now, signal });
@@ -82,17 +84,26 @@ export function createToolDispatch({ catalog, authority, budget, limits, now, ne
       lifetime.limitDeadline(effect.deadlineMs);
       await context.observeAuthority(effect);
       let outputJson;
+      let memoryEligibilityObserved=false;
+      const limitReleaseDeadline=expiresAtMs=>{
+        if(!memoryPage||memoryEligibilityObserved||!Number.isSafeInteger(expiresAtMs)||
+           expiresAtMs<=now()||expiresAtMs>deadlineMs)deny('ACCESS_DENIED');
+        lifetime.limitDeadline(expiresAtMs);
+        memoryEligibilityObserved=true;
+      };
       const projection = ['bound-projection/1','client-documents/1'].includes(entry.contract.binding?.dispatchProfile);
       try { outputJson = await lifetime.run(signal => entry.execute({ input: normalized.input,
         request: normalized.request, authority: effect, argumentsSha256: normalized.argumentsSha256,
         ...(projection || context.handlerNormalization ? {normalizationContext:context.options(effect)} : {}),
-        ...(signedSource||originalAction?{invocationId}:{}),signal })); }
+        ...(signedSource||originalAction||memoryPage||memoryProposal?{invocationId}:{}),
+        ...(memoryPage?{limitReleaseDeadline}:{}),signal })); }
       catch (error) {
         const failure = safeFailure(error);
         if (['DEADLINE', 'CANCELLED'].includes(failure.message)) throw failure;
         if(failure.message==='UNAVAILABLE'&&(nativeReadGroup(entry)||['research-portfolio','florida-budget'].includes(entry.contract.binding?.group)))throw failure;
         deny('INVALID_RESULT');
       }
+      if(memoryPage&&!memoryEligibilityObserved)deny('INVALID_RESULT');
       const output = parseRawJson(outputJson, Math.min(limits.maxResponseBytes, effect.claims.budgets.maxOutputBytes), 'INVALID_RESULT');
       const result = assertDispatchResult({ entry, output, authority: effect, normalized, context });
       const release = await inspect();

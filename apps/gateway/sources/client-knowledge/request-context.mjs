@@ -7,6 +7,7 @@ import {frozenData,ownFields} from '../source-admission.mjs';
 export {frozenData,ownFields} from '../source-admission.mjs';
 export const operationIds=Object.freeze(['search_memory','read_monday_client_boards']);
 const aborted=Object.getOwnPropertyDescriptor(AbortSignal.prototype,'aborted').get;
+const callKey=value=>typeof value==='string'&&/^[A-Za-z0-9_-]{1,128}$/.test(value);
 export const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 export function knowledgeContract(reference) {
   const operation=frozenData(ownFields(reference,['id','version']));
@@ -14,8 +15,12 @@ export function knowledgeContract(reference) {
   return {operation,contract:resolveOperationContract(operation)};
 }
 export function readContext(call,now) {
-  const fields=ownFields(call,['operation','input','request','authority','normalizationContext'],['signal']);
+  const fields=ownFields(call,['operation','input','request','authority','normalizationContext'],
+    ['signal','invocationId','limitReleaseDeadline']);
   const {operation,contract}=knowledgeContract(fields.operation);
+  const signed=fields.invocationId!==undefined||fields.limitReleaseDeadline!==undefined;
+  if(operation.id==='search_memory'&&signed&&(!callKey(fields.invocationId)||
+      typeof fields.limitReleaseDeadline!=='function'||types.isProxy(fields.limitReleaseDeadline)))deny('ACCESS_DENIED');
   let input,request,authority,normalizationContext;
   try {input=frozenData(fields.input);request=frozenData(fields.request);authority=frozenData(fields.authority);
     normalizationContext=frozenData(fields.normalizationContext);}catch {deny('INVALID_ARGUMENTS');}
@@ -46,9 +51,14 @@ export function readContext(call,now) {
   active();let normalized;
   try {normalized=contract.normalizeInput(request,normalizationContext);}catch {deny('INVALID_ARGUMENTS');}
   if(!same(normalized.input,input))deny('INVALID_ARGUMENTS');
-  if(input.clientId!==null ? subject.kind!=='client'||subject.entityIds[0]!==input.clientId : subject.kind!=='personal')deny('ACCESS_DENIED');
+  if(operation.id==='search_memory'&&signed&&
+      (input.clientId===null||subject.kind!=='client'||subject.entityType!=='client'||subject.entityIds[0]!==input.clientId||
+        subject.scopes.length!==1||subject.scopes[0].kind!=='client'||subject.scopes[0].resourceId!==input.clientId))deny('ACCESS_DENIED');
+  if(!(operation.id==='search_memory'&&signed)&&
+      (input.clientId!==null ? subject.kind!=='client'||subject.entityIds[0]!==input.clientId : subject.kind!=='personal'))deny('ACCESS_DENIED');
   const metadata=normalized.metadata;
   return {operation,contract,input,request,authority,normalizationContext,metadata,signal,deadlineMs,active,
+    invocationId:fields.invocationId,limitReleaseDeadline:fields.limitReleaseDeadline,
     argumentsSha256:normalized.argumentsSha256,requestSha256:canonicalSha256({input,metadata})};
 }
 export function requestPins(context) {

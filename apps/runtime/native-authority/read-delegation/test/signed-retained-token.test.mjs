@@ -7,6 +7,7 @@ import {SIGNED_RETAINED_SOURCE_OPERATIONS} from '../../../../gateway/sources/ret
 import {READ_DELEGATION_ROUTES,tokenRequest,toolRoute} from '../contract.mjs';
 
 const sourceVersions=Object.freeze({
+ 'actions.query':'0.2.0',search_memory:'0.2.0','memory.list_own_proposals':'0.2.0',
  read_monday_client_boards:'0.2.0',get_client_context:'0.3.0',resolve_entity:'0.2.0',
  'mail.list_messages':'0.2.0','mail.search_messages':'0.2.0','mail.read_thread':'0.2.0',
  'meeting.list_upcoming_meetings':'0.2.0','meeting.query_debriefs':'0.2.0','meeting.read_client_meetings':'0.2.0',
@@ -17,7 +18,7 @@ const tool=(operation,extra={})=>tokenRequest({kind:'tool',callKey:'owned_retain
  bodySha256:SHA.body,operation,argumentsSha256:SHA.arguments,...extra});
 const denied=error=>error?.message==='INVALID_ARGUMENTS'||error?.message==='ACCESS_DENIED';
 
-test('only the eleven exact retained source versions carry a closed correlation claim',()=>{
+test('only the exact signed source versions carry a closed correlation claim',()=>{
  assert.deepEqual(SIGNED_RETAINED_SOURCE_OPERATIONS,sourceVersions);
  for(const [id,version] of Object.entries(sourceVersions)){
   const operation={id,version},request=tool(operation,{correlationSha256:SHA.correlation});

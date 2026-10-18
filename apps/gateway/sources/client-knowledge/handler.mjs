@@ -7,12 +7,18 @@ export function createClientKnowledgeReadHandler(options) {
   if(typeof read!=='function'||typeof now!=='function')deny('GATEWAY_CONFIGURATION');
   return async function execute(call) {
     try {
-      const fields=ownFields(call,['input','request','authority','normalizationContext','argumentsSha256'],['signal']);
+      const fields=ownFields(call,['input','request','authority','normalizationContext','argumentsSha256'],
+        ['signal','invocationId','limitReleaseDeadline']);
       const context=readContext({operation,input:fields.input,request:fields.request,authority:fields.authority,
-        normalizationContext:fields.normalizationContext,signal:fields.signal},now);
+        normalizationContext:fields.normalizationContext,...(fields.signal===undefined?{}:{signal:fields.signal}),
+        ...(fields.invocationId===undefined?{}:{invocationId:fields.invocationId}),
+        ...(fields.limitReleaseDeadline===undefined?{}:{limitReleaseDeadline:fields.limitReleaseDeadline})},now);
       if(fields.argumentsSha256!==context.argumentsSha256)deny('INVALID_ARGUMENTS');
       context.active();const result=frozenData(await read.call(adapter,{operation,input:context.input,request:context.request,
-        authority:context.authority,normalizationContext:context.normalizationContext,signal:context.signal}));
+        authority:context.authority,normalizationContext:context.normalizationContext,
+        ...(context.signal===undefined?{}:{signal:context.signal}),
+        ...(context.invocationId===undefined?{}:{invocationId:context.invocationId}),
+        ...(context.limitReleaseDeadline===undefined?{}:{limitReleaseDeadline:context.limitReleaseDeadline})}));
       context.active();assertResult(result,context);
       const output=JSON.stringify({binding:context.authority.binding,subject:context.authority.subject,operation,
         argumentsSha256:context.argumentsSha256,result});context.active();return output;
