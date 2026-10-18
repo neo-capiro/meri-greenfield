@@ -1,5 +1,8 @@
-/** Meri side of Core's approved-execution capability `capiro.meri-execution-capability.v1` (Core DRAFT, capiro-backend
- * `docs/integration/MERI-EXECUTION-CAPABILITY-DRAFT.md` at 5a6ec070; dot's binding review PR #121 6246551969).
+/** Meri side of Core's approved-execution capability `capiro.meri-execution-capability.v1` (Core DRAFT rev 3, capiro-backend #84
+ * `docs/integration/MERI-EXECUTION-CAPABILITY-DRAFT.md` and codec `apps/api/src/meri/execution-capability/meri-execution-capability.ts`
+ * at 0304b0ef; dot's binding review PR #121 6246551969 and 6247443108). Rev 3 adds three `execution` members to the rev 1 ten:
+ * `sourceBodySha256` (Meri's exact `create_task` body projection), `allocationSha256` (the authenticated allocation the budgets were
+ * copied from) and `qualification` (the admitted `{runId, attempt, workerArn, fence, policyRevision}`); the key set stays closed.
  *
  * Pure and inert: no I/O, timer, key fetch or clock read. Keys are pinned OKP JWKs `(iss, kid) -> x`; nothing is fetched at
  * run time. Every refusal is the closed code `EXECUTION_CAPABILITY_REFUSED` (or `..._MISMATCH` for a valid token that does not
@@ -31,7 +34,11 @@ export const EXECUTION_LIMITS=Object.freeze({maxTokenBytes:8192,maxSigningInputB
 export const EXECUTION_COMMAND_ACTIONS=Object.freeze(['task.create']);
 const KID=/^[A-Za-z0-9._-]{1,64}$/u,B64=/^[A-Za-z0-9_-]+$/u,DIGEST=/^[a-f0-9]{64}$/u;
 const PAYLOAD_KEYS=['aud','capability','execution','exp','iat','iss','jti','nbf'];
-const EXECUTION_KEYS=['action','approver','argumentsSha256','clientIds','commandSha256','decisionSha256','idempotencyKey','proposalId','requestId','requestSha256'];
+/** Rev 3 `execution` members (closed; Core `MeriExecutionBinding`). */
+export const EXECUTION_KEYS=Object.freeze(['action','allocationSha256','approver','argumentsSha256','clientIds','commandSha256','decisionSha256','idempotencyKey','proposalId','qualification','requestId','requestSha256','sourceBodySha256']);
+/** Rev 3 `execution.qualification` members: Meri's grant-fact `qualificationBinding`. */
+export const QUALIFICATION_KEYS=Object.freeze(['runId','attempt','workerArn','fence','policyRevision']);
+const WORKER_ARN=/^arn:aws:ecs:[a-z0-9-]{1,32}:[0-9]{12}:task\/[A-Za-z0-9_-]{1,255}\/[0-9a-f]{32}$/u;
 export const executionFault=(code='EXECUTION_CAPABILITY_REFUSED')=>Object.assign(new Error(code),{code});
 const refuse=()=>{throw executionFault();};
 const mismatch=()=>{throw executionFault('EXECUTION_CAPABILITY_MISMATCH');};
@@ -91,8 +98,11 @@ export function verifyExecutionCapability(credential,trust,{nowMs,skewMs=0}={}){
  if(c.capabilityId!==p.jti||c.issuer!==p.iss||c.audience!==p.aud||c.issuedAt!==isoSecond(p.iat)||c.expiresAt!==isoSecond(p.exp)||!same(c.actions,EXECUTION_ACTIONS)||
   c.scopes.some(s=>s.tenantId!==c.binding.tenantId||s.policyRevision!==c.policyRevision)||new Set(c.scopes.map(hash)).size!==c.scopes.length)refuse();
  let e;try{e=own(p.execution,EXECUTION_KEYS);}catch{return refuse();}
- if(!EXECUTION_COMMAND_ACTIONS.includes(e.action)||['argumentsSha256','commandSha256','decisionSha256','requestSha256'].some(k=>typeof e[k]!=='string'||!DIGEST.test(e[k]))||
+ if(!EXECUTION_COMMAND_ACTIONS.includes(e.action)||['argumentsSha256','sourceBodySha256','commandSha256','decisionSha256','requestSha256','allocationSha256'].some(k=>typeof e[k]!=='string'||!DIGEST.test(e[k]))||
   !Array.isArray(e.clientIds)||!same(e.clientIds,scopeClientIds(c.scopes)))refuse();
+ // Rev 3: the qualification is self-consistent with the executor binding and revision; the admitted facts are compared later.
+ let q;try{q=own(e.qualification,QUALIFICATION_KEYS);}catch{return refuse();}
+ if(q.runId!==c.binding.runId||!Number.isSafeInteger(q.attempt)||q.attempt<1||q.attempt>2147483647||typeof q.workerArn!=='string'||!WORKER_ARN.test(q.workerArn)||q.fence!==c.binding.writerFence||q.policyRevision!==c.policyRevision)refuse();
  try{validateShape('Identity',e.approver);}catch{return refuse();}
  if(!same(e.approver,{tenantId:c.binding.tenantId,actorId:c.binding.actorId}))refuse();
  const request={contractVersion:'0.1.0',requestId:e.requestId,capabilityId:p.jti,executorBinding:c.binding,proposalId:e.proposalId,commandSha256:e.commandSha256,idempotencyKey:e.idempotencyKey};
@@ -108,15 +118,19 @@ export function executionBodyBinding(command){
  try{validateCommandShape('TaskCreateArguments',command.arguments);}catch{return mismatch();}
  return data({argumentsSha256:hash(command.arguments),sourceTool:commandSourceTool(command.action),sourceBodySha256:hash(commandSourceBody(command,[]))});
 }
-/** The trusted comparison of a verified capability to the actual execution request, proposal and (optional) current decision. */
-export function assertExecutionCorrelation({verified,proposal,executorBinding,requestId,decision}){
+/** The trusted comparison of a verified capability to the actual execution request, proposal and (optional) current decision,
+ * allocation digest and admitted qualification (Core rev 3 `assertExecutionMatches`). The source body is always compared: it is
+ * Meri's own projection of the approved command. */
+export function assertExecutionCorrelation({verified,proposal,executorBinding,requestId,decision,allocationSha256,qualification}){
  try{assertProposalIntegrity(proposal);}catch{return mismatch();}
  const c=verified.claims,e=verified.execution,command=proposal.command,body=executionBodyBinding(command);
  if(e.action!==command.action||e.proposalId!==proposal.proposalId||e.commandSha256!==proposal.commandSha256||e.idempotencyKey!==command.idempotencyKey||
-  e.argumentsSha256!==body.argumentsSha256||!same(c.scopes,command.scopes)||!same(e.clientIds,scopeClientIds(command.scopes))||
+  e.argumentsSha256!==body.argumentsSha256||e.sourceBodySha256!==body.sourceBodySha256||!same(c.scopes,command.scopes)||!same(e.clientIds,scopeClientIds(command.scopes))||
   !same(e.approver,proposal.requiredApprover)||STABLE.some(k=>c.binding[k]!==command.binding[k]))mismatch();
  if(executorBinding!==undefined&&!same(c.binding,executorBinding))mismatch();
  if(requestId!==undefined&&e.requestId!==requestId)mismatch();
+ if(allocationSha256!==undefined&&e.allocationSha256!==allocationSha256)mismatch();
+ if(qualification!==undefined&&!same(e.qualification,qualification))mismatch();
  if(decision!==undefined){
   try{validateShape('ApprovalDecision',decision);}catch{return mismatch();}
   if(hash(decision)!==e.decisionSha256||decision.decision!=='approved'||decision.proposalId!==proposal.proposalId||decision.commandSha256!==proposal.commandSha256||

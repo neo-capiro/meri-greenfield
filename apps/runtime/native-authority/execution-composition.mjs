@@ -24,8 +24,10 @@
  *                          the shared native decision adapter, so every executor rechecks the decision the decide route recorded.
  *
  * Suppliers (dot item 6): `currentRun`/`currentAllocation` always come from `createPostgresAdmittedRunOwner` over the run's
- * admitted grant set and installed allocation; `issueExecution` is `execution-issuance.mjs`; the executor's trusted grant is
- * `execution-grant.mjs` over the existing `bindTrustedGrant` (ACTIVE row required). The approval-wait/continuation guard (dot
+ * admitted grant set and installed allocation; `issueExecution` is `execution-issuance.mjs`, whose successful issuance installs
+ * the token's grant on the run's existing allocation (`../../gateway/budget/execution-grant-admission.mjs`, lane X) before any
+ * receipt; the executor's trusted grant is `execution-grant.mjs` over the existing `bindTrustedGrant` (that ACTIVE row). The
+ * run-terminal cleanup revokes the execution grants with the admitted set. The approval-wait/continuation guard (dot
  * item 4): nothing here is reachable from the lifecycle. `issueExecution` is called only by the decide route after Core recorded
  * an approved decision; its <=120 s token is handed to exactly one executor for exactly one proposal and is never retained,
  * returned to the runner or accepted by any other port. */
@@ -39,6 +41,7 @@ import {createCurrentToolAuthority} from '../../gateway/authorization/current-to
 import {createPostgresAdmittedRunOwner} from '../../gateway/budget/admitted-run-owner.mjs';
 import {parseAdmittedGrantSet} from '../../gateway/budget/admitted-run-binding.mjs';
 import {PostgresBudgetStore} from '../../gateway/budget/postgres-budget-store.mjs';
+import {createExecutionGrantAdmission} from '../../gateway/budget/execution-grant-admission.mjs';
 import {createPostgresApprovalMetadataStore,createTaskCreateApprovalMetadataOwner} from '../../control/commands/approval-metadata/index.mjs';
 import {createPostgresCommandJournal} from '../../control/commands/postgres-command-journal.mjs';
 import {createPostgresCommandExecutor} from '../../control/commands/durable-executor.mjs';
@@ -77,7 +80,8 @@ export function createAdmittedRunSource({pool,allocations,now,limits}){
   let set;try{set=parseAdmittedGrantSet({allocationJson,grantFactsJsons});}catch{throw unavailable();}
   if(!same(set.facts[0].binding,binding))throw unavailable();
   const owner=createPostgresAdmittedRunOwner({pool,allocationJson,grantFactsJsons,namespace:'product',now,limits});
-  return Object.freeze({binding:data(binding),allocationJson,grantFactsJsons:Object.freeze(grantFactsJsons),owner});
+  const q=set.facts[0].qualificationBinding,qualification=data({runId:q.runId,attempt:q.attempt,workerArn:q.workerArn,fence:q.fence,policyRevision:q.policyRevision});
+  return Object.freeze({binding:data(binding),allocationJson,grantFactsJsons:Object.freeze(grantFactsJsons),qualification,owner});
  }});
 }
 export function createIntentExecutionOwner(configuration){
@@ -99,7 +103,13 @@ export function createIntentExecutionOwner(configuration){
  const missing=()=>Object.freeze([...OWNERS.filter(k=>c[k]===undefined),...(c.sourceEnabled===true?[]:['sourceEnabled']),...(approvals?[]:['approvals'])]);
  const state=()=>c.enabled!==true?'disabled':missing().length?'unavailable':'composed';
  const issuance=c.enabled===true&&trust&&core&&admitted?createCoreExecutionIssuance({origin:core.origin,trust,getCredentials:core.getCredentials,fetchImpl,now,
-  executorFor:async({proposal,signal})=>{const run=await admitted.admittedFor({binding:proposal.command.binding,signal});return {binding:run.binding,currentAllocationJson:await run.owner.currentAllocation(run.binding,{signal})};},
+  executorFor:async({proposal,signal})=>{const run=await admitted.admittedFor({binding:proposal.command.binding,signal});return {binding:run.binding,currentAllocationJson:await run.owner.currentAllocation(run.binding,{signal}),qualification:run.qualification};},
+  // Dot item 5: the verified token's grant, installed on the run's existing allocation by the gateway budget owner (lane X).
+  installGrant:async({verified,executorBinding,signal})=>{
+   const run=await admitted.admittedFor({binding:executorBinding,signal});
+   const facts=executionGrantFacts({verified,admitted:{allocationJson:run.allocationJson,grantFactsJsons:run.grantFactsJsons}});
+   const installer=createExecutionGrantAdmission({pool:c.pool,allocationJson:run.allocationJson,grantFactsJsons:run.grantFactsJsons,namespace:'product',now,limits:{maxRequestMs:limits.maxRequestMs,maxFactBytes:limits.maxFactBytes}});
+   return installer.install({facts,expiresAtMs:verified.expiresAtMs,signal});},
   readDecision:value=>approvals.readDecision(value),limits:{maxRequestMs:limits.maxRequestMs,maxResponseBytes:Math.min(limits.maxResponseBytes,65536),maxSkewMs:1000}}):undefined;
  const composed=()=>{if(state()!=='composed')throw unavailable();};
  async function contextFor(proposal){
