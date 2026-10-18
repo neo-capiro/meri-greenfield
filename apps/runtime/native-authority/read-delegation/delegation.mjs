@@ -14,7 +14,7 @@ import {own,data,nativeSignal} from '../../../../packages/contracts/commands-0.2
 import {canonicalSha256 as hash,validateShape} from '../../../../packages/contracts/validate.mjs';
 import {nativeReadFault,nativeReadFailureCode} from '../../../../packages/contracts/runtime-0.2/reads.mjs';
 import {allocation as parseAllocation} from '../../../gateway/budget/tool-budget-binding.mjs';
-import {READ_DELEGATION_LIMITS,READ_TOKEN_CEILINGS,READ_TOKEN_REISSUES,delegationRoute,operationsDigest,assertOccurrence,delegationBound,
+import {READ_DELEGATION_LIMITS,READ_TOKEN_CEILINGS,READ_TOKEN_REISSUES,MEMORY_ELIGIBILITY_TOKEN_CEILING,delegationRoute,operationsDigest,assertOccurrence,delegationBound,
  delegationCreateRequest,assertDelegationReceipt,tokenRequest,assertTokenReceipt,assertCallKey} from './contract.mjs';
 import {responseLost,sha256,bodyBytes} from './core-client.mjs';
 
@@ -65,24 +65,41 @@ export function createRunReadDelegation(configuration){
  /** One single-use token for one call slot. Meri refuses past the per-slot ceilings and past the run's call allowance first;
   * Core enforces the same against Meri's own reservation counts. A lost response is re-requested at most twice, as a retry of
   * the same request, which Core answers by superseding the unconsumed token (no new slot, no new allowance). */
- async function token({kind,callKey,path,body,bodySha256,operation=null,argumentsSha256=null,toolRequestSha256=null,referenceSha256=null,correlationSha256,signal,deadlineMs}){
+ async function token({kind,callKey,path,body,bodySha256,operation=null,argumentsSha256=null,toolRequestSha256=null,referenceSha256=null,correlationSha256,
+  pageBodySha256=null,pageRequestSha256=null,resultSha256=null,recordsSha256=null,pageProof=null,signal,deadlineMs}){
   active();assertCallKey(callKey);const d=await ensure({signal,deadlineMs});active();
   // Unattended: pause, revoke or any scope change of the consent ends authority mid-occurrence too, before Core is asked.
   if(mode==='unattended'){const o=await c.readOccurrence({binding,signal:lifetimeSignal(signal)});active();if(o===null)refuse('ACCESS_DENIED');assertOccurrence(o,{binding,clientId,operationsSha256,policyRevision,now});}
   let slot=slots.get(callKey);
-  if(!slot){if(slots.size>=maxSlots)refuse('RESOURCE_LIMIT');slot={counts:{current:0,tool:0,mode:0,reference:0},reissues:{current:0,tool:0,mode:0,reference:0}};slots.set(callKey,slot);}
-  if(slot.counts[kind]>=READ_TOKEN_CEILINGS[kind])refuse('RESOURCE_LIMIT');
+  if(!slot){if(slots.size>=maxSlots)refuse('RESOURCE_LIMIT');slot={counts:{current:0,tool:0,mode:0,reference:0,memory_eligibility:0},
+   reissues:{current:0,tool:0,mode:0,reference:0}};slots.set(callKey,slot);}
+  if(kind==='memory_eligibility'){
+   const parent=slot.parentPage;
+   if(!parent||parent.delegationId!==d.delegationId||parent.argumentsSha256!==argumentsSha256||
+    parent.bodySha256!==pageBodySha256||parent.correlationSha256!==correlationSha256)refuse('ACCESS_DENIED');
+   if(slot.counts.memory_eligibility>=MEMORY_ELIGIBILITY_TOKEN_CEILING)refuse('RESOURCE_LIMIT');
+  }else if(slot.counts[kind]>=READ_TOKEN_CEILINGS[kind])refuse('RESOURCE_LIMIT');
   const target=kind==='current'?delegationRoute(d.delegationId,'current'):path;
-  const first=tokenRequest({kind,callKey,path:target,bodySha256:body===undefined?bodySha256:sha256(bodyBytes(body)),operation,argumentsSha256,toolRequestSha256,referenceSha256,correlationSha256}),firstSha256=hash(first);
+  const first=tokenRequest({kind,callKey,path:target,bodySha256:body===undefined?bodySha256:sha256(bodyBytes(body)),operation,argumentsSha256,
+   toolRequestSha256,referenceSha256,correlationSha256,pageBodySha256,pageRequestSha256,resultSha256,recordsSha256,pageProof}),firstSha256=hash(first);
   const s=lifetimeSignal(signal),cutoff=Math.min(deadlineMs,hardExpiry());
+  if(!Number.isSafeInteger(deadlineMs)||cutoff<=now())refuse('UNAVAILABLE');
+  // Core permits one helper row, even if its response is lost. Never request a second helper token for this page.
+  if(kind==='memory_eligibility')slot.counts.memory_eligibility++;
   for(let attempt=0;;attempt++){
    const started=now();
    try{
     const raw=await c.client.issueToken({delegationId:d.delegationId,request:attempt===0?first:{...first,retryOf:firstSha256},signal:s,deadlineMs:cutoff});active();
     if(current?.delegationId!==d.delegationId)refuse('ACCESS_DENIED');
-    slot.counts[kind]++;return Object.freeze({...assertTokenReceipt(raw,{hardExpiryMs:hardExpiry(),started,now}),delegationId:d.delegationId,path:target});
+    const receipt=assertTokenReceipt(raw,{hardExpiryMs:hardExpiry(),started,now});
+    const expiresAtMs=kind==='memory_eligibility'?Math.min(receipt.expiresAtMs,cutoff):receipt.expiresAtMs;
+    if(expiresAtMs<=now())refuse('UNAVAILABLE');
+    if(kind!=='memory_eligibility')slot.counts[kind]++;
+    if(kind==='tool'&&operation?.id==='search_memory'&&operation.version==='0.2.0')slot.parentPage=Object.freeze({delegationId:d.delegationId,
+     argumentsSha256,bodySha256:first.bodySha256,correlationSha256});
+    return Object.freeze({...receipt,expiresAtMs,delegationId:d.delegationId,path:target});
    }catch(error){
-    if(!responseLost(error)||attempt>=READ_TOKEN_REISSUES||slot.reissues[kind]>=READ_TOKEN_REISSUES||s.aborted||now()>=cutoff||stopped!==null)throw nativeReadFault(nativeReadFailureCode(error)??'UNAVAILABLE');
+    if(kind==='memory_eligibility'||!responseLost(error)||attempt>=READ_TOKEN_REISSUES||slot.reissues[kind]>=READ_TOKEN_REISSUES||s.aborted||now()>=cutoff||stopped!==null)throw nativeReadFault(nativeReadFailureCode(error)??'UNAVAILABLE');
     slot.reissues[kind]++;
    }
   }

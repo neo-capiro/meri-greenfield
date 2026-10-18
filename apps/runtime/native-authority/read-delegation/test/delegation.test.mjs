@@ -203,3 +203,65 @@ test('adapter relays the signed retained source correlation into the one-use Cor
  assert.equal(issued.callKey,'owned_signed_1');assert.deepEqual(issued.operation,operation);
  assert.equal(issued.correlationSha256,correlationSha256);assert.equal(issued.bodySha256,bodySha256);
 });
+
+test('memory eligibility uses one distinct proof-bound token after the signed page, without widening the ordinary tool ceiling',async()=>{
+ const clock={t:T0},{s,client}=stub({clock}),{d}=delegation({clock,client});
+ const x=composeDelegatedNativeCredentials({delegation:d,client,now:()=>clock.t});
+ const {credential}=await x.getNativeCredential({binding,callKey:'owned_memory_1',deadlineMs:T0+MIN});
+ const operation={id:'search_memory',version:'0.2.0'},argumentsSha256='a'.repeat(64),pageBodySha256='b'.repeat(64),
+  pageRequestSha256='c'.repeat(64),resultSha256='d'.repeat(64),recordsSha256='e'.repeat(64),correlationSha256='f'.repeat(64);
+ const pageTarget={method:'POST',path:toolRoute(operation),bodySha256:pageBodySha256};
+ const helperTarget={method:'POST',path:'/api/clio/tools/search_memory_eligibility',bodySha256:'1'.repeat(64)};
+ const helper={credential,operation,argumentsSha256,pageBodySha256,pageRequestSha256,resultSha256,recordsSha256,
+  correlationSha256,pageProof:'SYNTHETIC_SIGNED_PAGE_PROOF',target:helperTarget,deadlineMs:T0+1000};
+ await assert.rejects(x.memoryEligibilityCredential(helper),code('ACCESS_DENIED'),'no page token, no helper');
+ await x.toolCredential({credential,operation,argumentsSha256,target:pageTarget,correlationSha256,deadlineMs:T0+MIN});
+ const receipt=await x.memoryEligibilityCredential(helper);
+ assert.equal(receipt.authorizationScheme,'CapiroMeriRead');assert.equal(receipt.expiresAtMs,T0+1000,
+  'the helper cannot outlive the original callback deadline');
+ const issued=s.tokens.filter(request=>request.kind==='memory_eligibility');assert.equal(issued.length,1);
+ assert.deepEqual(issued[0],{schemaVersion:1,kind:'memory_eligibility',callKey:'owned_memory_1',method:'POST',
+  path:helperTarget.path,bodySha256:helperTarget.bodySha256,operation,argumentsSha256,pageBodySha256,
+  pageRequestSha256,resultSha256,recordsSha256,correlationSha256,pageProof:helper.pageProof,retryOf:null});
+ assert.equal(s.tokens.filter(request=>request.kind==='tool').length,1);
+ await assert.rejects(x.memoryEligibilityCredential(helper),code('RESOURCE_LIMIT'),'the helper has its own one-use ceiling');
+ await assert.rejects(x.toolCredential({credential,operation,argumentsSha256,target:pageTarget,correlationSha256,deadlineMs:T0+MIN}),code('RESOURCE_LIMIT'),
+  'the ordinary tool ceiling stays one');
+});
+
+test('memory helper refuses changed page pins and never reissues after a lost token response',async()=>{
+ const clock={t:T0},{s,client}=stub({clock}),{d}=delegation({clock,client});
+ const x=composeDelegatedNativeCredentials({delegation:d,client,now:()=>clock.t});
+ const {credential}=await x.getNativeCredential({binding,callKey:'owned_memory_2',deadlineMs:T0+MIN});
+ const operation={id:'search_memory',version:'0.2.0'},argumentsSha256='a'.repeat(64),pageBodySha256='b'.repeat(64),correlationSha256='c'.repeat(64);
+ await x.toolCredential({credential,operation,argumentsSha256,correlationSha256,
+  target:{method:'POST',path:toolRoute(operation),bodySha256:pageBodySha256},deadlineMs:T0+MIN});
+ const helper={credential,operation,argumentsSha256,pageBodySha256,pageRequestSha256:'d'.repeat(64),resultSha256:'e'.repeat(64),
+  recordsSha256:'f'.repeat(64),correlationSha256,pageProof:'SYNTHETIC_PROOF',
+  target:{method:'POST',path:'/api/clio/tools/search_memory_eligibility',bodySha256:'1'.repeat(64)},deadlineMs:T0+MIN};
+ for(const changed of [{...helper,argumentsSha256:'0'.repeat(64)},{...helper,pageBodySha256:'0'.repeat(64)},
+  {...helper,correlationSha256:'0'.repeat(64)},{...helper,pageProof:''},{...helper,target:{...helper.target,path:'/api/clio/tools/search_memory'}}])
+  await assert.rejects(x.memoryEligibilityCredential(changed),code(changed.pageProof===''?'INVALID_ARGUMENTS':'ACCESS_DENIED'));
+ assert.equal(s.tokens.filter(request=>request.kind==='memory_eligibility').length,0);
+ s.lose=1;await assert.rejects(x.memoryEligibilityCredential(helper),code('UNAVAILABLE'));
+ assert.equal(s.tokens.filter(request=>request.kind==='memory_eligibility').length,1,'one request, no lost-response retry');
+ await assert.rejects(x.memoryEligibilityCredential(helper),code('RESOURCE_LIMIT'),'a lost response does not reopen the slot');
+ assert.equal(s.tokens.filter(request=>request.kind==='memory_eligibility').length,1);
+ await assert.rejects(x.memoryEligibilityCredential({...helper,credential:'SYNTHETIC_BEARER'}),code('UNAVAILABLE'),'no ambient bearer fallback');
+});
+
+test('a malformed Core page-token receipt cannot establish a local eligibility parent',async()=>{
+ const clock={t:T0},{s,client}=stub({clock}),{d}=delegation({clock,client});
+ client.issueToken=async({request})=>{s.tokens.push(request);return {schemaVersion:1,token:'SYNTHETIC_BAD_RECEIPT',
+  expiresAtMs:clock.t+MIN+READ_DELEGATION_LIMITS.clockSkewMs+1};};
+ const x=composeDelegatedNativeCredentials({delegation:d,client,now:()=>clock.t});
+ const {credential}=await x.getNativeCredential({binding,callKey:'owned_memory_3',deadlineMs:T0+MIN});
+ const operation={id:'search_memory',version:'0.2.0'},argumentsSha256='a'.repeat(64),pageBodySha256='b'.repeat(64),correlationSha256='c'.repeat(64);
+ await assert.rejects(x.toolCredential({credential,operation,argumentsSha256,correlationSha256,
+  target:{method:'POST',path:toolRoute(operation),bodySha256:pageBodySha256},deadlineMs:T0+MIN}),code('ACCESS_DENIED'));
+ await assert.rejects(x.memoryEligibilityCredential({credential,operation,argumentsSha256,pageBodySha256,
+  pageRequestSha256:'d'.repeat(64),resultSha256:'e'.repeat(64),recordsSha256:'f'.repeat(64),correlationSha256,
+  pageProof:'SYNTHETIC_PROOF',target:{method:'POST',path:'/api/clio/tools/search_memory_eligibility',bodySha256:'1'.repeat(64)},deadlineMs:T0+MIN}),
+ code('ACCESS_DENIED'));
+ assert.equal(s.tokens.filter(request=>request.kind==='memory_eligibility').length,0);
+});

@@ -39,6 +39,17 @@ test('selected retained source manifests bind the task composer and local datase
   assert.equal(manifest.sourceFiles.filter(row=>row.label===label).length,1,label);
 });
 
+test('proposal source manifest binds the durable continuation owner and startup relay',async()=>{
+ const manifests=await measureGeneralReadFamilySources({familyIds:['memory-proposals']});
+ const rows=manifests.get('memory-proposals').sourceFiles;
+ for(const label of ['apps/gateway/dispatch/memory-read-context.mjs',
+  'apps/runtime/memory-context-relay.mjs','apps/runtime/control.mjs',
+  'apps/control/conversations/postgres-store.mjs',
+  'apps/control/conversations/memory-proposal-context-journal.mjs',
+  'apps/control/retention/data-classes.mjs','apps/control/retention/inventory.mjs'])
+  assert.equal(rows.filter(row=>row.label===label).length,1,label);
+});
+
 test('two-phase preparation preserves legacy source records/order/hash and canonical source siblings without granting SDK eligibility',async()=>{
  const families={},ids=[...new Set(installationReadOperations().map(row=>row.family))];let externalCalls=0;
  for(const id of ids){

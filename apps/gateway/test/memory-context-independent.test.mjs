@@ -80,7 +80,8 @@ function fixture({client=null, nextCursor=null}={}) {
   }};
   const authority=createCurrentToolAuthority({ports:authorityPorts,now:()=>state.now,maxFactBytes:65536});
   const create=changes=>createToolDispatch({catalog:{entry:()=>entry,discoverable:()=>[entry]},authority,budget,
-    limits,now:()=>state.now,newId:()=>id('b'),sourceEnabled:true,memoryContextPorts:contextPorts,...changes});
+    limits,now:()=>state.now,newId:()=>id('b'),sourceEnabled:true,memoryContextPorts:contextPorts,
+    invocationId:'synthetic_memory_call_1',...changes});
   return {state,events,stored,binding,subject,claims,scope,contract,entry,authorityPorts,budget,contextPorts,create};
 }
 

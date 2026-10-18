@@ -20,7 +20,7 @@ export function createRetentionReadGate({journal,serving}){
  return Object.freeze({isSuppressed,assertServable});
 }
 export function createSuppressionOwner({ledger,journal,ownership,authorization=refusingOwnerMediation,cancellation=null,serving,now}){
- if(typeof ledger?.append!=='function'||typeof journal?.get!=='function'||typeof journal?.set!=='function'||typeof ownership?.ownerOf!=='function'||typeof authorization?.ownerMediated!=='function'||cancellation!==null&&typeof cancellation?.cancelInFlight!=='function'||typeof serving?.isEnabled!=='function'||typeof serving?.disable!=='function')fail('RETENTION_CONFIGURATION');const tick=clock(now);
+ if(typeof ledger?.append!=='function'||typeof journal?.get!=='function'||typeof journal?.set!=='function'||typeof journal?.withTransition!=='function'||typeof ownership?.ownerOf!=='function'||typeof authorization?.ownerMediated!=='function'||cancellation!==null&&typeof cancellation?.cancelInFlight!=='function'||typeof serving?.isEnabled!=='function'||typeof serving?.disable!=='function')fail('RETENTION_CONFIGURATION');const tick=clock(now);
  const barrier=()=>{if(!serving.isEnabled())fail('RETENTION_RECOVERY_BARRIER');};
  async function trustedSubject(raw){const s=subject(raw);let owner;try{owner=await ownership.ownerOf({tenantId:s.tenantId,kind:s.kind,subjectId:s.subjectId});}catch{fail('RETENTION_SUBJECT_UNKNOWN');}if(typeof owner!=='string'||!owner)fail('RETENTION_SUBJECT_UNKNOWN');if(s.ownerActorId!==undefined&&s.ownerActorId!==owner)fail('RETENTION_OWNERSHIP_REFUSED');return {...s,ownerActorId:owner};}
  async function authorize(principal,s,operation){
@@ -37,20 +37,26 @@ export function createSuppressionOwner({ledger,journal,ownership,authorization=r
   serving.disable();throw Object.assign(new Error('RETENTION_PROJECTION_FAILED'),{code:'RETENTION_PROJECTION_FAILED',cause:error});}}
  async function suppress({principal,subject:rawSubject,reason,outstandingAccess,signal}){
   barrier();const p=principalOf(principal),s=await trustedSubject(rawSubject),key=subjectKey(s);text(reason,1024);const access=outstanding(outstandingAccess);
-  const auth=await authorize(p,s,'retention.suppress');barrier();
-  const current=await journal.get(key),expected=projectionToken(current);if(current&&current.state!=='RELEASED')return Object.freeze({...current,replayed:true});
-  let cancelled=[];if(cancellation&&access.inFlightRuns.length){cancelled=data(await cancellation.cancelInFlight({principal:p,subject:s,runs:access.inFlightRuns,signal}));if(!Array.isArray(cancelled))fail('RETENTION_CANCELLATION_REFUSED');}
-  barrier();const entry=await ledger.append({subject:s,state:'SUPPRESSED',reason,facts:{principal:p,authorization:auth,outstandingAccess:access,cancelled,revokes:['read','replay','restore','continuation','reservation','allocationClaim'],cannotRecall:['issuedSignedUrlsUntilExpiry','runningWorkerUntilOwnCleanup']}});
-  const row={state:'SUPPRESSED',ownerActorId:s.ownerActorId,suppressedAtMs:entry.atMs,ledgerSequence:entry.sequence,entrySha256:entry.entrySha256,authorization:auth,outstandingAccess:access,cancelled,purge:null};
-  await project(key,row,expected);return Object.freeze({...row,replayed:false});
+  return journal.withTransition(key,async()=>{
+   const currentOwner=await trustedSubject(rawSubject);if(currentOwner.ownerActorId!==s.ownerActorId)fail('RETENTION_OWNERSHIP_REFUSED');
+   const auth=await authorize(p,s,'retention.suppress');barrier();
+   const current=await journal.get(key),expected=projectionToken(current);if(current&&current.state!=='RELEASED')return Object.freeze({...current,replayed:true});
+   let cancelled=[];if(cancellation&&access.inFlightRuns.length){cancelled=data(await cancellation.cancelInFlight({principal:p,subject:s,runs:access.inFlightRuns,signal}));if(!Array.isArray(cancelled))fail('RETENTION_CANCELLATION_REFUSED');}
+   barrier();const entry=await ledger.append({subject:s,state:'SUPPRESSED',reason,facts:{principal:p,authorization:auth,outstandingAccess:access,cancelled,revokes:['read','replay','restore','continuation','reservation','allocationClaim'],cannotRecall:['issuedSignedUrlsUntilExpiry','runningWorkerUntilOwnCleanup']}});
+   const row={state:'SUPPRESSED',ownerActorId:s.ownerActorId,suppressedAtMs:entry.atMs,ledgerSequence:entry.sequence,entrySha256:entry.entrySha256,authorization:auth,outstandingAccess:access,cancelled,purge:null};
+   await project(key,row,expected);return Object.freeze({...row,replayed:false});
+  });
  }
  async function release({principal,subject:rawSubject,reason}){
   barrier();const p=principalOf(principal),s=await trustedSubject(rawSubject),key=subjectKey(s);text(reason,1024);
-  const auth=await authorize(p,s,'retention.release');barrier();
-  const current=await journal.get(key),expected=projectionToken(current);if(!current||current.state!=='SUPPRESSED')fail('RETENTION_NOT_SUPPRESSED');if(current.purge)fail('RETENTION_PURGE_IN_PROGRESS');
-  const entry=await ledger.append({subject:s,state:'RELEASED',reason,facts:{principal:p,authorization:auth}});
-  const row={state:'RELEASED',ownerActorId:s.ownerActorId,releasedAtMs:entry.atMs,ledgerSequence:entry.sequence,entrySha256:entry.entrySha256,authorization:auth,purge:null};
-  await project(key,row,expected);return Object.freeze({...row,replayed:false});
+  return journal.withTransition(key,async()=>{
+   const currentOwner=await trustedSubject(rawSubject);if(currentOwner.ownerActorId!==s.ownerActorId)fail('RETENTION_OWNERSHIP_REFUSED');
+   const auth=await authorize(p,s,'retention.release');barrier();
+   const current=await journal.get(key),expected=projectionToken(current);if(!current||current.state!=='SUPPRESSED')fail('RETENTION_NOT_SUPPRESSED');if(current.purge)fail('RETENTION_PURGE_IN_PROGRESS');
+   const entry=await ledger.append({subject:s,state:'RELEASED',reason,facts:{principal:p,authorization:auth}});
+   const row={state:'RELEASED',ownerActorId:s.ownerActorId,releasedAtMs:entry.atMs,ledgerSequence:entry.sequence,entrySha256:entry.entrySha256,authorization:auth,purge:null};
+   await project(key,row,expected);return Object.freeze({...row,replayed:false});
+  });
  }
  const gate=createRetentionReadGate({journal,serving});
  return Object.freeze({suppress,release,isSuppressed:gate.isSuppressed,assertServable:gate.assertServable,now:tick});

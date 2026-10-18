@@ -36,6 +36,9 @@ function authority(f,operation){
   sourceIds:resolveOperationContract(operation).descriptor.sourceRequirements.map(s=>s.sourceId),deadlineMs:f.state.now+10000};
 }
 const pins=p=>{const {input,deadlineMs,signal,...rest}=p;return {...structuredClone(rest),bearerToken:'SYNTHETIC',serviceSecret:'SYNTHETIC',expiresAtMs:deadlineMs};};
+const signedPins=p=>{const {input,deadlineMs,signal,...rest}=p;return {...structuredClone(rest),
+ authorizationScheme:'CapiroMeriRead',bearerToken:'SYNTHETIC_TOOL_TOKEN',
+ serviceSecret:'SYNTHETIC_SERVICE_SECRET',expiresAtMs:deadlineMs};};
 const response=page=>new Response(JSON.stringify(page),{headers:{'content-type':'application/json'}});
 // Durable signed-source fixtures use the actual invocation slot. The source
 // adapter still checks the exact Core path, body and correlation before Fetch.
@@ -61,7 +64,22 @@ export function familyCase(family,id){
  }else if(['tenant-contacts','entity-candidates'].includes(family)){
   const f=createIdentityContactsFixture(id,{linked:id==='find_contacts'});a=f.authority;args=f.args;transport=f.config;
  }else if(family==='client-knowledge-memory'){
-  const f=createClientKnowledgeFixture(id);a=f.authority;args=f.args;transport=f.config;
+  const f=createClientKnowledgeFixture(id,{client:true});a=f.authority;args=f.args;page=f.page(f.input());
+  transport={endpoints:{search_memory:'https://synthetic-core.example.invalid/api/clio/tools/search_memory'},
+   getCredentials:async p=>({...f.credentials(p),invocationId:p.invocationId,
+    authorizationScheme:'CapiroMeriRead',target:p.target,correlationSha256:p.correlationSha256}),
+   getEligibilityCredentials:async p=>({...f.receiptPins(p),invocationId:p.invocationId,
+    pageProof:p.pageProof,pageBodySha256:p.pageBodySha256,pageRequestSha256:p.pageRequestSha256,
+    resultSha256:p.resultSha256,recordsSha256:p.recordsSha256,authorizationScheme:'CapiroMeriRead',
+    target:p.target,correlationSha256:p.correlationSha256,bearerToken:'SYNTHETIC_HELPER_TOKEN',
+    serviceSecret:'SYNTHETIC_HELPER_SECRET',expiresAtMs:p.deadlineMs}),
+   fetchImpl:async(url,options)=>{
+    const body=JSON.parse(options.body);
+    if(new URL(url).pathname==='/api/clio/tools/search_memory')return new Response(JSON.stringify(f.page(body.input)),
+     {headers:{'content-type':'application/json','x-meri-memory-page-proof':'SYNTHETIC_PAGE_PROOF'}});
+    if(new URL(url).pathname==='/api/clio/tools/search_memory_eligibility')return response(f.eligibility(body));
+    throw Error('Unexpected synthetic memory route');
+   }};
  }else if(family==='client-knowledge-monday'){
   const f=createClientKnowledgeFixture(id);a=f.authority;args=f.args;
   transport={...f.config,endpoints:{[id]:`https://synthetic-core.example.invalid/api/clio/tools/${id}`},
@@ -77,16 +95,18 @@ export function familyCase(family,id){
   }
   if(family==='memory-proposals'){
    Object.assign(f.binding,{tenantId:uuid('a'),actorId:uuid('b')});
-   Object.assign(f.subject,{tenantId:f.binding.tenantId,actorId:f.binding.actorId,entityIds:[f.binding.actorId]});
-   Object.assign(f.claims.scopes[0],{tenantId:f.binding.tenantId,kind:'private-user',resourceId:f.binding.actorId});
+   Object.assign(f.subject,{tenantId:f.binding.tenantId,actorId:f.binding.actorId,
+    kind:'client',entityType:'client',entityIds:[clientId]});
+   Object.assign(f.claims.scopes[0],{tenantId:f.binding.tenantId,kind:'client',resourceId:clientId});
+   args={clientId};
   }
   a=authority(f,operation);
   if(family==='dataset-metadata')transport={registry:createPublicDomainDatasetRegistry({canonicalSha256,validateMetadata:validateShape})};
   else{
    if(family==='action-items-complete')page=nativeScopedPage(args);
    else if(family==='memory-proposals')page={tool:'list_memory_proposals',enabled:true,authority:'own_pending_proposals',claimsAreApprovedFacts:false,
-    scope:{tenantId:f.binding.tenantId,userId:f.binding.actorId,clientId:null},candidates:[{id:uuid('e'),status:'pending',approvedFact:false,
-     scope:'personal',clientId:null,sourceKind:'explicit_user',createdAt:'2026-10-02T00:00:00.000Z',restricted:false,title:'Synthetic proposal',
+    scope:{tenantId:f.binding.tenantId,userId:f.binding.actorId,clientId},candidates:[{id:uuid('e'),status:'pending',approvedFact:false,
+     scope:'client',clientId,sourceKind:'explicit_user',createdAt:'2026-10-02T00:00:00.000Z',restricted:false,title:'Synthetic proposal',
      proposedText:'Unapproved synthetic text',contentTruncated:false}],nextCursor:null,coverage:{firstPage:true,complete:true,reason:'own_pending_proposals_complete'}};
    else{
     const normalized=resolveOperationContract(operation).normalizeInput(args,{actorId:a.binding.actorId,nowMs:f.state.now}).input,task=id==='query_tasks';
@@ -97,7 +117,7 @@ export function familyCase(family,id){
      coverage:{sourceStatus:'healthy',sourceReason:null,complete:true,partial:false,paginationComplete:true,hasMore:false,nextCursor:null,
       totalIsExactForScope:true,absenceSupported:true,note:'Synthetic native empty-page assertion, not Meri absence evidence.'}};
    }
-   transport={origin:'https://source.example.invalid',getCredentials:family==='operational-reads'?pins:async()=>({binding:a.binding,
+   transport={origin:'https://source.example.invalid',getCredentials:family==='memory-proposals'?signedPins:family==='operational-reads'?pins:async()=>({binding:a.binding,
     bearerToken:'SYNTHETIC',serviceSecret:'SYNTHETIC',expiresAtMs:a.deadlineMs}),fetchImpl:async()=>response(page)};
   }
  }

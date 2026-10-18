@@ -22,10 +22,18 @@ export const sdkEntry=({runId=randomUUID(),sessionId=randomUUID(),subpath='main'
 /** A conversation snapshot carries runs, checkpoints and journals by default; an artifact snapshot carries none of those conversation
  * rows unless a test passes them on purpose (they would be another subject's obligation). */
 export function snapshot(subject,{checkpoints=subject.kind==='artifact'?0:1,outputs=subject.kind==='artifact'?0:1,shared=[],sdkEntries=subject.kind==='artifact'?[]:[sdkEntry()],artifactVersions=[]}={}){
- const checkpoint=()=>{const opaque=object(),entry=object();return {checkpointId:randomUUID(),checkpoint:{opaqueSession:opaque,workspace:{entries:[{object:entry}]}}};};
- const cps=Array.from({length:checkpoints},checkpoint);if(shared.length)cps[0].checkpoint.workspace.entries.push(...shared.map(o=>({object:{objectId:o.objectId,versionId:o.versionId,sha256:o.sha256}})));
- const conversation=subject.kind==='conversation';
- return {subject,runs:conversation?[{runId:randomUUID(),continuation:null}]:[],checkpoints:cps,completionCheckpoints:conversation?[checkpoint()]:[],nextRuns:[],sdkSessionEntries:sdkEntries,selectedOutputs:Array.from({length:outputs},()=>({outputId:randomUUID(),object:object()})),artifactVersions,nativeJournalRows:conversation?[{runId:randomUUID()}]:[],uploads:[]};
+ const isConversation=subject.kind==='conversation',runId=randomUUID();
+ const checkpoint=controlId=>{const opaque=object(),entry=object();return {checkpointId:randomUUID(),runId,
+  ...(controlId?{controlId}:{}),checkpoint:{opaqueSession:opaque,workspace:{entries:[{object:entry}]}}};};
+ const cps=Array.from({length:checkpoints},()=>checkpoint(randomUUID()));
+ if(shared.length)cps[0].checkpoint.workspace.entries.push(...shared.map(o=>({object:{objectId:o.objectId,versionId:o.versionId,sha256:o.sha256}})));
+ const runs=isConversation?[{runId,continuation:null,lastSequence:1}]:[];
+ return {subject,conversation:isConversation?{conversationId:subject.subjectId,projectionSha256:'a'.repeat(64)}:null,
+  runs,eventRows:isConversation?[{runId,sequence:1,eventId:randomUUID(),eventSha256:'b'.repeat(64)}]:[],
+  controls:cps.map((row,index)=>({controlId:row.controlId,runId,controlSequence:index+1,projectionSha256:'c'.repeat(64)})),
+  checkpoints:cps,completionCheckpoints:isConversation?[{...checkpoint(),state:'PUBLISHED'}]:[],
+  nextRuns:[],sdkSessionEntries:sdkEntries,selectedOutputs:Array.from({length:outputs},()=>({outputId:randomUUID(),object:object()})),
+  artifactVersions,nativeJournalRows:isConversation?[{runId}]:[],memoryContinuations:[],uploads:[]};
 }
 export function clock(start=1_800_000_000_000){let t=start;return {now:()=>t,advance(ms){t+=ms;return t;}};}
 /** Injected storage handler: an in-memory versioned bucket whose responses mimic S3 status codes; `fault` switches ambiguity on. */

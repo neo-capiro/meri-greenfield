@@ -23,7 +23,8 @@ const MINUTE=60000,DAY=86400000;
 export const READ_DELEGATION_LIMITS=Object.freeze({attendedMaxMs:30*MINUTE,occurrenceMaxMs:15*MINUTE,consentMaxMs:30*DAY,tokenMaxMs:MINUTE,
  clockSkewMs:5000,maxRequestMs:3000,maxBodyBytes:16384,maxResponseBytes:16384,maxTokenRetries:2,revokeAttempts:3});
 export const READ_TOKEN_SCHEME='CapiroMeriRead';
-export const READ_TOKEN_KINDS=Object.freeze(['current','tool','mode','reference']);
+export const READ_TOKEN_KINDS=Object.freeze(['current','tool','mode','reference','memory_eligibility']);
+export const MEMORY_ELIGIBILITY_TOKEN_CEILING=1;
 const BASE='/api/clio/application-authority';
 export const READ_DELEGATION_ROUTES=Object.freeze({create:`${BASE}/read-delegations`,consents:`${BASE}/read-delegation-consents`,
  mode:`${BASE}/read-mode-observation`,reference:'/api/clio/clients/check-ref'});
@@ -98,10 +99,20 @@ export function assertDelegationReceipt(raw,{bound,started,now}){
   !Number.isSafeInteger(v.expiresAtMs)||v.expiresAtMs<=at||v.expiresAtMs>bound+READ_DELEGATION_LIMITS.clockSkewMs)refuse('ACCESS_DENIED');
  return Object.freeze({...v,expiresAtMs:Math.min(v.expiresAtMs,bound)});
 }
-export function tokenRequest({kind,callKey,method='POST',path,bodySha256,operation=null,argumentsSha256=null,toolRequestSha256=null,referenceSha256=null,correlationSha256,retryOf=null}){
+export function tokenRequest({kind,callKey,method='POST',path,bodySha256,operation=null,argumentsSha256=null,toolRequestSha256=null,referenceSha256=null,correlationSha256,
+ pageBodySha256=null,pageRequestSha256=null,resultSha256=null,recordsSha256=null,pageProof=null,retryOf=null}){
  if(!READ_TOKEN_KINDS.includes(kind)||method!=='POST'||typeof path!=='string'||!path.startsWith('/api/clio/')||!SHA.test(bodySha256)||retryOf!==null&&!SHA.test(retryOf))refuse('INVALID_ARGUMENTS');
  assertCallKey(callKey);
- if(kind!=='tool'&&(argumentsSha256!==null||correlationSha256!==undefined))refuse('INVALID_ARGUMENTS');
+ if(kind==='memory_eligibility'){
+  assertReadOnlyOperation(operation);
+  if(operation.id!=='search_memory'||operation.version!=='0.2.0'||path!=='/api/clio/tools/search_memory_eligibility'||
+   ![argumentsSha256,pageBodySha256,pageRequestSha256,resultSha256,recordsSha256,correlationSha256].every(v=>typeof v==='string'&&SHA.test(v))||
+   typeof pageProof!=='string'||!TOKEN.test(pageProof)||toolRequestSha256!==null||referenceSha256!==null||retryOf!==null)refuse('INVALID_ARGUMENTS');
+  return data({schemaVersion:1,kind,callKey,method,path,bodySha256,operation:{id:operation.id,version:operation.version},
+   argumentsSha256,pageBodySha256,pageRequestSha256,resultSha256,recordsSha256,correlationSha256,pageProof,retryOf:null});
+ }
+ if([pageBodySha256,pageRequestSha256,resultSha256,recordsSha256,pageProof].some(v=>v!==null)||
+  kind!=='tool'&&(argumentsSha256!==null||correlationSha256!==undefined))refuse('INVALID_ARGUMENTS');
  // `tool`: Core admits it only against Meri's UNKNOWN reservation for this call key with this operation and arguments hash.
  if(kind==='tool'){
   assertReadOnlyOperation(operation);
