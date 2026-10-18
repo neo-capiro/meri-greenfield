@@ -50,8 +50,13 @@ export function familyCase(family,id){
   transport={endpoints:evidenceEndpoints,getCredentials:credentialReceipt,fetchImpl:async()=>response(page)};
  }else if(['tenant-contacts','entity-candidates'].includes(family)){
   const f=createIdentityContactsFixture(id,{linked:id==='find_contacts'});a=f.authority;args=f.args;transport=f.config;
- }else if(['client-knowledge-memory','client-knowledge-monday'].includes(family)){
+ }else if(family==='client-knowledge-memory'){
   const f=createClientKnowledgeFixture(id);a=f.authority;args=f.args;transport=f.config;
+ }else if(family==='client-knowledge-monday'){
+  const f=createClientKnowledgeFixture(id);a=f.authority;args=f.args;
+  transport={...f.config,endpoints:{[id]:`https://synthetic-core.example.invalid/api/clio/tools/${id}`},
+   getCredentials:async p=>({...f.credentials(p),invocationId:p.invocationId,authorizationScheme:'CapiroMeriRead',
+    target:p.target,correlationSha256:p.correlationSha256})};
  }else if(family==='research-portfolio-evidence'){
   const f=researchFixture();a=authority(f,operation);args=f.raw;transport=f.config;
  }else{
