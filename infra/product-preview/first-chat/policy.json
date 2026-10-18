@@ -19,5 +19,5 @@
   "configParentDirectory": "/run/meri",
   "secureStorageDirectory": "/run/meri/sdk-secure"
  },
- "allocationSha256": "43a1863a7c79c0794e1799228c81d43d2962ebcbc16262b6ebb84375fe8b69f2"
+ "allocationSha256": "43e65663c6dc16f7e16018a0e3cb51c3d1529e00b4e9897273d9b93f4bded53e"
 }

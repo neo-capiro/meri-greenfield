@@ -4,7 +4,7 @@
   "sdk": "0.3.295",
   "cli": "2.1.295",
   "contracts": "0.1.0",
-  "skillsDigest": "b3ed4f26fca7ed75117523ca8bac51e4f2b0088458f2db6947000d9546aae8d4",
+  "skillsDigest": "9b1b763df5f24bb54664251a1aa387c07a61439681371f54d1475614abf95191",
   "checkpointFormat": "0.1.0"
  },
  "preparationIntent": {
@@ -105,7 +105,7 @@
     "fork": "preserve-unless-explicit-reselection"
    }
   },
-  "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968",
+  "catalogSha256": "f351ebad656225b15e6b4433bdad5d3e9e2ef270c64940d29811ef2f130b71ae",
   "scheduleRevision": "417b82d518b30bfd16356f9ef5f64adba647c9ac722c11aaa857f679d74d0f0f",
   "operations": [
    {
@@ -123,6 +123,6 @@
  },
  "qualification": {
   "attempt": 1,
-  "policyRevision": "e5215dbed85c0d30f029bd17c2e5ffd009bd91dbdc465b85875a5e35dd5626cb"
+  "policyRevision": "91063196140bb55ee8c9ccec8f5aba3c85e0ef0c3f2231b38afa3adeda221af5"
  }
 }
