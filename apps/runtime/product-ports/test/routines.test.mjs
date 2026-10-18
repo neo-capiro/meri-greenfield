@@ -90,3 +90,31 @@ test('routines.core is validated by compileRoutinesConfiguration and refuses a s
   assert.throws(()=>compileRoutinesConfiguration({routines}),code('ROUTINES_CONFIGURATION'));
  assert.throws(()=>compileRoutinesConfiguration({routines:{enabled:true,core},nativeCandidate:{identity:{credentialFile:core.serviceSecretFile}}}),code('ROUTINES_CONFIGURATION'));
 });
+
+/** Lane RD (option B): the composer's `readDelegation.consents` as a trusted routines owner. */
+import {binding as ownerBinding,clientId as ownerClientId} from '../../../control/schedules/test/application-fixture.mjs';
+import {canonicalSha256 as sha256} from '../../../../packages/contracts/validate.mjs';
+test('with `readConsents` the owner approval also creates the routine read consent over the actual sessions; a malformed port is refused',async()=>{
+ const f=await applicationFixture();try{
+  const {commandContext,allocationJson,template,workflow,policy,limits}=f.contextConfiguration,calls=[],events=[];
+  const consents={async approve({signal,...input}){calls.push(input);return {schemaVersion:1,consentId:'c1234567-b123-4c12-8d12-e123456789ab',state:'active',createdAtMs:f.now(),expiresAtMs:input.requestedExpiresAtMs};},async narrow(){throw Error('unexpected narrow');},async resume(){throw Error('unexpected resume');}};
+  const client={...f.client,connection:{withDeadline:(deadline,fn)=>fn(),withAbortSignal:(signal,fn)=>fn()}};
+  const owners={context:{commandContext,allocationJson,template,workflow,policy,limits},newId:f.newId,runControl:{async cancel(){}},retirement:{async retire(){}}};
+  const family=routinesFamily({...owners,readConsents:consents,log:e=>events.push(e)});
+  const {ports}=family({configuration:{...base,routines:{enabled:true}},pool:f.pool,client,now:f.now});
+  const app=ports.routinesApplicationFactory.create({sessions:f.sessions});assert.deepEqual(census(ports),['composed','pending']);
+  const prepared=await (await app.handle(post(ROUTINE_PATHS.prepare,{requestId:'public-request',operation:'schedule_task',request:routineRequest()},f.session.credential))).json();
+  assert.equal(prepared.status,'approval_required');assert.deepEqual(calls,[],'preparation consents nothing');
+  const approved=await app.handle(post(ROUTINE_PATHS.approve,{operation:'schedule_task',request:routineRequest(),proposalId:prepared.proposal.proposalId,intentSha256:prepared.proposal.intentSha256,decision:'approved'},f.session.credential));
+  assert.equal(approved.status,200);const result=await approved.json();assert.equal(result.status,'acknowledged');assert.equal(f.temporal.calls.create,1);
+  assert.equal(calls.length,1);const call=calls[0];
+  assert.equal(call.liveCredential,'synthetic-native','the owner\'s native bearer, resolved from the actual sessions');
+  assert.equal(call.scheduleId,result.receipt.projection.scheduleId);assert.equal(call.clientId,ownerClientId);assert.equal(call.policyRevision,'p1');
+  assert.deepEqual(call.operations,JSON.parse(allocationJson).manifest.allowedOperations);assert.equal(call.scheduleProjectionSha256,sha256(result.receipt.projection));
+  assert.equal(call.requestedExpiresAtMs,f.now()+30*86400000);assert.ok(call.deadlineMs<=f.now()+5000);
+  const stored=await f.owner.readReadConsent({tenantId:ownerBinding.tenantId,scheduleId:result.receipt.projection.scheduleId},()=>{});
+  assert.equal(stored.consentId,'c1234567-b123-4c12-8d12-e123456789ab');assert.equal(stored.state,'active');assert.deepEqual(events,[]);
+  for(const bad of [{approve(){}},{approve(){},narrow(){},resume:'x'},new Proxy({approve(){},narrow(){},resume(){}},{})])assert.throws(()=>routinesFamily({...owners,readConsents:bad}),code('ROUTINES_CONFIGURATION'));
+  assert.throws(()=>routinesFamily({...owners,log:'x'}),code('ROUTINES_CONFIGURATION'));
+ }finally{await f.close();}
+});

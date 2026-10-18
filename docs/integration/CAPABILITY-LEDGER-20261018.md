@@ -2,6 +2,8 @@
 
 Lane CL. One row per Appendix A name (96), Appendix B name (43) and Appendix C skill (14) of `CAPIRO-REMAINING-DEPLOYMENT-PLAN-20261017.md` (capiro-backend `5f719149`). Companion to `RUNTIME-INTEGRATION-LEDGER.md` §5 (family level) and `PLAN-RECONCILIATION-20261018.md` §3. **Stopped at Neo's request (18 Oct); every row below is either mapped from source read on the tip or marked "not yet mapped". Nothing is guessed.**
 
+**Dot successor source correction:** the P2 receipt measures 76 operations/42 families but the old production composer registered 55 native handlers. The successor composer now requires a task-bound retained-port producer for the other 21 operations/15 families and reports every missing family; `cli.mjs` has no production producer. The existing Core retained routes cover only research portfolio (2) and Florida budget (1). The remaining 18 need trusted endpoint, credential, and current-context owners. Every `R-RETAINED` row below remains **source/blocker**, including historical `query_action_items`; no measured row becomes integrated just because a passive adapter exists. The exact 21-operation list is in `DOT-SOURCE-INTEGRATION-20261018.md`. Memory audit PR121 `6249424994` remains open and is tracked there without duplicating the memory lane's edits.
+
 ## 0. Tip, method, vocabulary
 
 - **Tip analysed:** `fable/meri-integration-20261018` @ `6aa515b302c519069ccf45221b54add9962d544d` (`6aa515b3`; the lane branch was fast-forwarded from `1b8a1fb5` to that docs-only commit).

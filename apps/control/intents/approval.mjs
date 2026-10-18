@@ -67,7 +67,7 @@ export function createIntentApprovalOwner(configuration){
  const journal=own(c.journal,['read','list'],['claim','settle']),limits=data(c.limits);own(limits,['maxRequestMs']);
  if(typeof journal.read!=='function'||typeof journal.list!=='function'||typeof c.commandOptionsFor!=='function'||typeof c.now!=='function'||typeof(c.enabled??false)!=='boolean'||
   !Number.isSafeInteger(limits.maxRequestMs)||limits.maxRequestMs<1||limits.maxRequestMs>30000)throw new ProductError('PRODUCT_CONFIGURATION');
- const decisions=c.decisions===undefined?undefined:own(c.decisions,[],['record','readDecision','getCurrent']);
+ const decisions=c.decisions===undefined?undefined:own(c.decisions,[],['record','readDecision','getCurrent','revoke']);
  const outcomes=c.outcomes===undefined?undefined:own(c.outcomes,['read']);
  if(decisions&&Object.values(decisions).some(f=>typeof f!=='function')||outcomes&&typeof outcomes.read!=='function'||c.issueExecution!==undefined&&typeof c.issueExecution!=='function')throw new ProductError('PRODUCT_CONFIGURATION');
  const lifetime=(deadlineMs,signal)=>{nativeSignal(signal);const at=c.now();

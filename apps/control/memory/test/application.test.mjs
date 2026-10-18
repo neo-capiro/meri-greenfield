@@ -73,3 +73,19 @@ test('the review path lists only pending own candidates and forwards the propose
  // A definite Core refusal of a submission is the documented 409, not an unknown outcome.
  assert.deepEqual(await t.post(MEMORY_PATHS.propose,{idempotencyKey:id(4),scope:'personal',content:'dup',key:'k'}),{status:409,body:{error:{code:'MEMORY_SUBMISSION_REFUSED'}}});
 });
+
+test('review HTTP keeps page availability and cursor when a decided page is empty or Core status is unavailable',async()=>{
+ const t=setup();
+ const first=(await t.post(MEMORY_PATHS.propose,{idempotencyKey:id(11),scope:'personal',content:'First'})).body.proposal;
+ const second=(await t.post(MEMORY_PATHS.propose,{idempotencyKey:id(12),scope:'personal',content:'Second'})).body.proposal;
+ await t.post(MEMORY_PATHS.reviewApprove,{candidateId:second.candidateId});
+ const empty=await t.post(MEMORY_PATHS.reviewList,{limit:1});
+ assert.equal(empty.status,200);assert.deepEqual(empty.body.proposals,[]);assert.equal(typeof empty.body.nextCursor,'string');
+ assert.deepEqual(empty.body.reviewAvailability,{state:'available',unresolvedCount:0});
+ const next=await t.post(MEMORY_PATHS.reviewList,{limit:1,cursor:empty.body.nextCursor});
+ assert.deepEqual(next.body.proposals.map(p=>p.candidateId),[first.candidateId]);
+ t.core.state.offline=true;
+ const unavailable=await t.post(MEMORY_PATHS.reviewList,{});
+ assert.equal(unavailable.status,200);assert.deepEqual(unavailable.body.proposals,[]);
+ assert.deepEqual(unavailable.body.reviewAvailability,{state:'unavailable',unresolvedCount:2});
+});

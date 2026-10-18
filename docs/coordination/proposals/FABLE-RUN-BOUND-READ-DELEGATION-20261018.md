@@ -212,7 +212,7 @@ All bodies are closed objects (additional properties refused) of at most 16 KiB,
 
 - `argumentsSha256` is required for `tool` and null otherwise: Core matches it, with the operation, against the `reservations_v1` row for `callKey`. `retryOf` is null on a first request; a lost-response retry sends the same request with `retryOf` = its canonical digest. **Canonical request digest** (dot 6248070410): the canonical-JSON sha256 of the request with `retryOf` normalized to `null`, for first requests and retries alike. Core stores it with each token and finds a retry's unconsumed predecessor by that digest.
 - Response: `{"schemaVersion":1,"token":"<opaque>","expiresAtMs":0}`.
-- JWT claims (typ `capiro-meri-read+jwt`, ES256, header `kid`): `iss`, `aud` = `capiro:meri-native-read:v1`, `sub` = delegationId, `jti`, `iat`, `nbf`, `exp`, `kind`, `callKey`, `method`, `path`, `bodySha256`, `operation`, `toolRequestSha256`, `referenceSha256`, `tenantId`, `actorId`, `clientId`, `conversationId`, `runId`.
+- JWT claims (typ `capiro-meri-read+jwt`, EdDSA over pure Ed25519, header `kid`): `iss`, `aud` = `capiro:meri-native-read:v1`, `sub` = delegationId, `jti`, `iat`, `nbf`, `exp`, `kind`, `callKey`, `method`, `path`, `bodySha256`, `operation`, `toolRequestSha256`, `referenceSha256`, `tenantId`, `actorId`, `clientId`, `conversationId`, `runId`.
 
 **Use:** `Authorization: CapiroMeriRead <token>` plus verified service identity, on the token's target only.
 - The middleware branch verifies the signature, `kid`, `aud`, `nbf`/`exp`, method, path, empty query, body hash and target binding (§3), and consumes the `jti` (§7).
@@ -372,9 +372,9 @@ GRANT SELECT, INSERT, UPDATE ON meri_read_delegation_consents, meri_read_delegat
 
 ### 11.4 Key custody
 
-- **Key:** AWS KMS asymmetric key, spec `ECC_NIST_P256`, usage `SIGN_VERIFY` (ES256), alias `alias/capiro-meri-read-delegation-v1`, in the Core account and region.
-- **Key policy:** account root admin; the Core API task role gets `kms:Sign` and `kms:GetPublicKey` only. No other principal, and no `kms:Encrypt`/`Decrypt`.
-- **Verification:** local, with the public key fetched once at startup and pinned by `kid` (the KMS key id). There is no remote verify per request.
+- **Key:** a distinct AWS KMS asymmetric `ECC_NIST_EDWARDS25519` `SIGN_VERIFY` key for `MERI_READ_DELEGATION_SIGNER`, using `ED25519_SHA_512` over RAW (pure Ed25519). `alias/capiro-meri-read-delegation-v1` is the proposed alias, not a created resource. This corrects the earlier ES256/P-256 prose to Core successor PR86 `f64047ac` without changing Meri's opaque-token wire.
+- **Key policy:** account root admin; the Core API task role gets `kms:Sign` on this key under the exact signing-algorithm/message-type conditions. `GetPublicKey` is read back and pinned before activation. No other signing purpose shares this key or `kid`; no `kms:Encrypt`/`Decrypt`.
+- **Verification:** Core verifies locally against the pinned Ed25519 public key and `kid`; Meri treats the token as opaque and does not verify it. There is no remote verify per request.
 - **Rotation:** create `-v2`, issue new tokens with it, and verify both `kid`s for 60 s (the maximum token lifetime). Then remove v1 from the verify set.
 - Creating the key is an AWS action and is **not** done here.
 
@@ -451,5 +451,5 @@ Shared changes:
 - `core-client.test.mjs` 4/4.
 
 **Remaining, outside this lane:**
-- **Core:** the routes, `TenantContextMiddleware` branch, `readDelegated`, the tables, and the ES256 key (§11), in Core's protected auth/middleware lane.
+- **Core:** the routes, `TenantContextMiddleware` branch, `readDelegated`, the tables, and the separate Ed25519 key (§11), in Core's protected auth/middleware lane.
 - **R0:** the plan line and grants (§11.2–§11.3) in `infra/**`. In `cli.mjs`: pass `delegation:{enabled, readOccurrence}`, where `readOccurrence` is the schedule owner's trusted occurrence facts for a run binding. Call `reads.readDelegation.stopRun({binding, reason})` from the run Stop path after the run is recorded terminal. Wire `readDelegation.consents` into the routines approve/pause/delete paths.

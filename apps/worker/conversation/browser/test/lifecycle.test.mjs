@@ -64,4 +64,13 @@ test('the open path installs a grant the host control accepts, bound to the frag
   await assert.rejects(grantBrowserEgress({fragment:c,egress,binding,deadlineMs:clock()+60000,lifecycle:l}),e=>e.code==='BROWSER_EGRESS_GRANT_REFUSED'||e.message==='control down');
   assert.deepEqual(k.steps.map(s=>s[0]),['revoke','exit'],'cleanup settled before rethrow');
  }
+ await mkdir(join(cwd,'.browser','profile'),{recursive:true});
+ await writeFile(join(cwd,'.browser','profile','Cookies'),'synthetic');
+ const {cap:uncertain}=openFragment({cwd}),lost=host({revoke:new Error('revoke unknown'),exit:{exited:false}});
+ const uncertainLife=createBrowserRunLifecycle({fragment:uncertain,binding,cwd,egress:lost.egress,processes:lost.processes,now:Date.now});
+ const lostAck=new Error('grant acknowledgement lost');
+ await assert.rejects(grantBrowserEgress({fragment:uncertain,egress:{...lost.egress,async grant(){throw lostAck;}},binding,deadlineMs:clock()+60000,lifecycle:uncertainLife}),
+  e=>e.code==='BROWSER_CLEANUP_UNKNOWN'&&e.cause===lostAck&&e.receipt.egress==='unknown'&&e.receipt.process==='unknown'&&e.receipt.profile==='unknown');
+ assert.deepEqual(lost.steps.map(s=>s[0]),['revoke','exit']);
+ assert.equal(await gone(join(cwd,'.browser','profile','Cookies')),false,'unconfirmed exit retains the profile for host destruction');
 }));

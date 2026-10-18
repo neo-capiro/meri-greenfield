@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {resolve} from 'node:path';
 import {
- ROOT,DATABASE_SCRIPT,PLAN,PASSWORD_VARIABLES,lex,loadPlan,migrationBody,splitStatements,psqlLiteral,
+ ROOT,DATABASE_SCRIPT,INTEGRATION_SCRIPT,PLAN,PASSWORD_VARIABLES,lex,loadPlan,migrationBody,splitStatements,psqlLiteral,
  runPsqlScript,scramVerifier,passwordVariables,verifyLedger,runStage
 } from './first-chat-migrate.mjs';
 
@@ -298,7 +298,7 @@ test('plan pins the change-set order, real paths and current bytes; 0012 and 001
   '0010_retention.sql','0011_run_issuance.sql','0013_retention_recovery_watermark.sql','0015_model_run_issuance.sql',
   '0016_initial_inputs.sql','0017_initial_run_bindings.sql','0001_product_budget.sql','0002_tenant_budgets.sql',
   '0001_service_task_registrations.sql','first-chat-seed-budget.sql','first-chat-database.sql#meri_grants','first-chat-database-temporal.sql#temporal_grants',
-  '0001_settings.sql','0001_commands.sql','0001_approval_metadata.sql','0001_intent_preparations.sql','0001_schedule_owner.sql','0002_occurrences.sql','0003_run_cancel_proofs.sql',
+  '0001_settings.sql','0001_commands.sql','0001_approval_metadata.sql','0001_intent_preparations.sql','0001_schedule_owner.sql','0002_occurrences.sql','0003_run_cancel_proofs.sql','0004_read_consent.sql',
   '0001_task_lookup.sql','0001_objective_custody.sql','0002_objective_run_starts.sql','0003_objective_reader_replays.sql','0001_versions.sql','0002_retention.sql','0003_previews.sql','0001_memory_candidates.sql','0001_read_delegation_facts.sql','first-chat-database-integration.sql#integration_grants']);
  assert.ok(!plan.some(e=>/00(12|14)_/u.test(e.name)));
  assert.equal(plan.find(e=>e.name.includes('temporal-issuer')).path,'apps/runtime/temporal-issuer/migrations/0001_service_task_registrations.sql');
@@ -309,6 +309,60 @@ test('plan pins the change-set order, real paths and current bytes; 0012 and 001
  for(const column of ['id integer PRIMARY KEY CHECK (id=1)','cap_micro_usd bigint','consumed_micro_usd bigint','quarantined boolean'])assert.ok(budget.includes(column));
  assert.match(read('apps/runtime/Dockerfile'),/^COPY infra\/product-preview\/first-chat-migrate\.mjs infra\/product-preview\/first-chat-database\.sql infra\/product-preview\/first-chat-database-temporal\.sql infra\/product-preview\/first-chat-database-integration\.sql infra\/product-preview\/first-chat-seed-budget\.sql \.\/infra\/product-preview\/$/mu);
  assert.match(read('apps/runtime/package-lock.json'),/"node_modules\/pg": \{\n\s+"version": "8\.23\.1"/u);
+});
+
+test('integration grants only the schedule consent reference update column to control',async()=>{
+ const statements=[];
+ await runPsqlScript({
+  text:read(INTEGRATION_SCRIPT),variables:{phase_integration_grants:'1'},
+  connect:async()=>({async query(q){if(typeof q==='string')statements.push(q);return {rows:[]};},async end(){}})
+ });
+ const actual=grants(statements);
+ const projectionUpdates=[...actual].filter(g=>g.startsWith('meri_control_runtime UPDATE')&&
+  g.endsWith(' TABLE meri_schedules.projections')).sort();
+ assert.deepEqual(projectionUpdates,[
+  'active_intent','generation','projection','projection_sha256','read_consent'
+ ].map(column=>`meri_control_runtime UPDATE(${column}) TABLE meri_schedules.projections`).sort());
+ assert.ok(actual.has('meri_control_runtime SELECT TABLE meri_schedules.projections'));
+ assert.ok(!actual.has('meri_control_runtime UPDATE TABLE meri_schedules.projections'));
+ assert.match(read('apps/control/schedules/postgres-schedule-owner.mjs'),
+  /UPDATE meri_schedules\.projections SET read_consent=\$4 WHERE tenant_id=\$1 AND schedule_id=\$2 AND generation=\$3/u);
+});
+
+test('Core admission snapshot installs as its restricted definer and removes temporary privileges',async()=>{
+ const statements=[];
+ await runPsqlScript({
+  text:read(INTEGRATION_SCRIPT),variables:{phase_integration_grants:'1'},
+  connect:async()=>({async query(q){if(typeof q==='string')statements.push(q.replace(/\s+/gu,' ').trim());return {rows:[]};},async end(){}})
+ });
+ const start=statements.findIndex(s=>s.startsWith('DO $install$'));
+ const end=statements.findIndex((s,i)=>i>start&&s==='COMMIT;');
+ assert.ok(start>0&&end>start);
+ const block=statements.slice(start-1,end+1),at=pattern=>block.findIndex(s=>pattern.test(s));
+ const order=[
+  /^BEGIN;$/u,/^DO \$install\$.*current_user <> session_user/u,
+  /^CREATE ROLE meri_core_admission_reader NOLOGIN NOINHERIT NOSUPERUSER/u,
+  /^GRANT meri_core_admission_reader TO SESSION_USER WITH SET TRUE, INHERIT FALSE, ADMIN FALSE;$/u,
+  /^SET ROLE meri_product_migrator;$/u,/^GRANT USAGE ON SCHEMA meri_product_budget TO meri_core_admission_reader;$/u,
+  /^SET ROLE NONE;$/u,/^CREATE SCHEMA meri_core_authority;$/u,
+  /^GRANT USAGE, CREATE ON SCHEMA meri_core_authority TO meri_core_admission_reader;$/u,
+  /^GRANT USAGE ON SCHEMA meri_core_authority TO capiro_app;$/u,
+  /^SET ROLE meri_core_admission_reader;$/u,/^CREATE FUNCTION meri_core_authority\.current_admission_v1/u,
+  /^REVOKE EXECUTE ON FUNCTION meri_core_authority\.current_admission_v1/u,
+  /^GRANT EXECUTE ON FUNCTION meri_core_authority\.current_admission_v1/u,
+  /^SET ROLE NONE;$/u,/^REVOKE CREATE ON SCHEMA meri_core_authority FROM meri_core_admission_reader;$/u,
+  /^REVOKE meri_core_admission_reader FROM SESSION_USER;$/u,/^COMMIT;$/u
+ ];
+ let cursor=0;
+ for(const expected of order){
+  const index=block.findIndex((s,i)=>i>=cursor&&expected.test(s));
+  assert.ok(index>=cursor,`missing or out of order: ${expected}`);cursor=index+1;
+ }
+ assert.equal(block[at(/^CREATE FUNCTION/u)].match(/FOR SHARE/gu)?.length,1);
+ assert.doesNotMatch(block.join(' '),/CREATE OR REPLACE FUNCTION|ALTER FUNCTION .* OWNER TO/u);
+ const sql=read(INTEGRATION_SCRIPT);
+ assert.match(sql,/has_schema_privilege\('meri_core_admission_reader', 'meri_core_authority', 'CREATE'\)/u);
+ assert.match(sql,/m\.member = session_user::regrole AND m\.set_option/u);
 });
 
 test('migration bodies: one outer BEGIN/COMMIT is stripped, bare files run whole, anything else is refused',()=>{
@@ -405,7 +459,7 @@ test('runner applies the meri stage in order, one transaction and ledger row eac
 
 test('integration stage runs only after meri and temporal are ledgered; earlier stages never reach its entries',async()=>{
  const plan=loadPlan(),integration=plan.filter(e=>e.stage==='integration');
- assert.equal(integration.length,17);assert.equal(integration.at(-1).kind,'phase:integration_grants');
+ assert.equal(integration.length,18);assert.equal(integration.at(-1).kind,'phase:integration_grants');
  const early=fakeDatabase();
  await assert.rejects(runStage({stage:'integration',plan,variables,connect:early.connect}),/MERI_D2_PRIOR_STAGE_INCOMPLETE/u);
  assert.equal(early.state.executed.length,0);
@@ -414,7 +468,7 @@ test('integration stage runs only after meri and temporal are ledgered; earlier 
  assert.equal(ready.state.executed.length,0);
  await runStage({stage:'integration',plan,variables,connect:ready.connect});
  assert.deepEqual(ready.state.ledger.map(r=>r.ordinal),plan.map(e=>e.ordinal));
- assert.equal(ready.state.executed.length,16);assert.ok(ready.state.phases.includes('integration_grants'));
+ assert.equal(ready.state.executed.length,17);assert.ok(ready.state.phases.includes('integration_grants'));
 });
 test('runner refuses a changed applied file, a ledger gap and an early temporal stage before any bootstrap',async()=>{
  const plan=loadPlan();

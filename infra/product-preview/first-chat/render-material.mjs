@@ -37,13 +37,13 @@
  * render without the block (the reviewed first chat). Each present entry renders exactly its own control key; nothing defaults on:
  *  features: {
  *   sourceEnabled?: boolean,                                  // G1: control and temporal-worker `sourceEnabled` (runner: delivered by control)
- *   userPreferences?|tenantSettings?|intents?|routines?: {enabled: boolean},
+ *   userPreferences?|tenantSettings?|intents?|routines?: {enabled: boolean, task?, workflow?},
  *   retention?: {enabled: true},                              // artifacts tenantId (= core tenantId) and download links need it
  *   artifacts?: {enabled:false} | {enabled:true, region:'us-east-1', bucket, prefix, expectedBucketOwner:'967807252336', kmsKeyId (key ARN), authority?: {enabled:true} (needs reads)},
  *   memory?: {enabled: bool} (enabled needs reads: it reuses the Core service secret file),
  *   reads.delegation?: {enabled: bool} (option B run-bound Core read delegation; renders reads.delegation),
  *   intents?: {enabled, execution?: {issuer, keys: [Ed25519 public JWK with kid]}, core?: {enabled:true}} (execution and core need reads),
- *   routines?: {enabled, core?: {cancellationProof: {issuer, kid, publicKey}, unattendedGrant?: {issuer, kid, publicKey}}} (core needs reads),
+ *   routines?: {enabled, core?: {cancellationProof: {issuer, kid, publicKey}, unattendedGrant?: {issuer, kid, publicKey}}, task?: {taskId,version}, workflow?: {taskQueue,workflowIdPrefix}} (core needs reads),
  *   downloadLinks?: {enabled:false} | {enabled:true, ttlMs?},  // signing key generated per render -> /run/meri/download-link.key
  *   capabilityPlatform?: {maximum, defaults, roleCeilings},   // verbatim; runtime values must carry the matching capabilityProfileSha256 (G3)
  *   reads?: {enabled:false} | {enabled:true, serviceSecretArn, readModeServiceSecretArn?, defaultCongress?, approvedReads?,
@@ -226,10 +226,15 @@ export function parseFeatures(raw,{secrets={},checkpoint}={}){
    try{compileIntentsConfiguration({intents:{enabled:true,execution:{coreOrigin:'https://placeholder.invalid',issuer:e.issuer,keys:structuredClone(e.keys),serviceSecretFile:'/run/meri/placeholder'}}});}catch{fail('RENDER_INPUT_REFUSED','features.intents.execution (apps/runtime/native-authority/execution-capability.mjs compileExecutionTrust)');}
    out.intents={enabled:true,execution:{issuer:e.issuer,keys:structuredClone(e.keys)},...(core?{core:true}:{})};}else out.intents={enabled,...(core?{core:true}:{})};}
  // Routines Core owners (lane B2): the policy-check origin and the Ed25519 pins for the cancellation proof and the unattended grant.
- if(f.routines!==undefined){const v=record(f.routines,'features.routines',['enabled'],['core']);const enabled=bool(v.enabled,'features.routines.enabled');
+ if(f.routines!==undefined){const v=record(f.routines,'features.routines',['enabled'],['core','task','workflow']);const enabled=bool(v.enabled,'features.routines.enabled');
+  let task,workflow;
+  if(v.task!==undefined){if(!enabled)fail('RENDER_INPUT_REFUSED','features.routines.task needs features.routines.enabled true');const t=record(v.task,'features.routines.task',['taskId','version']);
+   if(typeof t.taskId!=='string'||!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(t.taskId)||!Number.isSafeInteger(t.version)||t.version<1)fail('RENDER_INPUT_REFUSED','features.routines.task identity');task={taskId:t.taskId,version:t.version};}
+  if(v.workflow!==undefined){if(!enabled)fail('RENDER_INPUT_REFUSED','features.routines.workflow needs features.routines.enabled true');const w=record(v.workflow,'features.routines.workflow',['taskQueue','workflowIdPrefix']);
+   if(typeof w.taskQueue!=='string'||!/^[A-Za-z0-9._-]{1,128}$/u.test(w.taskQueue)||typeof w.workflowIdPrefix!=='string'||!/^[A-Za-z0-9._/-]{1,128}$/u.test(w.workflowIdPrefix))fail('RENDER_INPUT_REFUSED','features.routines.workflow target');workflow={taskQueue:w.taskQueue,workflowIdPrefix:w.workflowIdPrefix};}
   if(v.core!==undefined){if(!enabled)fail('RENDER_INPUT_REFUSED','features.routines.core needs features.routines.enabled true');const c=record(v.core,'features.routines.core',[],['cancellationProof','unattendedGrant']);
    try{if(compileRoutinesCoreConfiguration({routines:{enabled:true,core:{origin:'https://placeholder.invalid',serviceSecretFile:'/run/meri/placeholder',...structuredClone(c)}}})===null)throw Error();}catch{fail('RENDER_INPUT_REFUSED','features.routines.core (apps/runtime/native-authority/routines-configuration.mjs)');}
-   out.routines={enabled:true,core:structuredClone(c)};}else out.routines={enabled};}
+   out.routines={enabled:true,core:structuredClone(c),...(task?{task}:{}),...(workflow?{workflow}:{})};}else out.routines={enabled,...(task?{task}:{}),...(workflow?{workflow}:{})};}
  if(f.retention!==undefined){if(toggle('retention').enabled!==true)fail('RENDER_INPUT_REFUSED','features.retention.enabled must be true (omit retention to leave it undeclared)');out.retention={enabled:true};}
  if(f.artifacts!==undefined){
   const storage=['region','bucket','prefix','expectedBucketOwner','kmsKeyId'],a=record(f.artifacts,'features.artifacts',['enabled'],[...storage,'authority']);
@@ -526,7 +531,10 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,ident
  const featureKeys={};
  for(const key of ['userPreferences','tenantSettings','retention'])if(features[key]!==undefined)featureKeys[key]={...features[key]};
  if(features.intents!==undefined)featureKeys.intents={...(features.intents.execution===undefined?{enabled:features.intents.enabled}:{enabled:true,execution:{coreOrigin:k.coreOrigin,issuer:features.intents.execution.issuer,keys:structuredClone(features.intents.execution.keys),serviceSecretFile:PATHS.readsServiceSecret}}),...(features.intents.core===true?{core:{origin:k.coreOrigin,serviceSecretFile:PATHS.readsServiceSecret}}:{})};
- if(features.routines!==undefined)featureKeys.routines=features.routines.core===undefined?{enabled:features.routines.enabled}:{enabled:true,core:{origin:k.coreOrigin,serviceSecretFile:PATHS.readsServiceSecret,...structuredClone(features.routines.core)}};
+ if(features.routines!==undefined)featureKeys.routines={enabled:features.routines.enabled,
+  ...(features.routines.core===undefined?{}:{core:{origin:k.coreOrigin,serviceSecretFile:PATHS.readsServiceSecret,...structuredClone(features.routines.core)}}),
+  ...(features.routines.task===undefined?{}:{task:structuredClone(features.routines.task)}),
+  ...(features.routines.workflow===undefined?{}:{workflow:structuredClone(features.routines.workflow)})};
  // artifacts/configuration.mjs: tenantId (publication custody) exactly when retention is declared; the preview has one tenant.
  if(features.artifacts!==undefined){const {authority,...store}=features.artifacts;featureKeys.artifacts=store.enabled?{...store,...(features.retention?{tenantId:k.tenantId}:{}),
   ...(authority?{authority:{origin:k.coreOrigin,serviceSecretFile:PATHS.readsServiceSecret}}:{})}:{enabled:false};}

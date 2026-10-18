@@ -71,12 +71,14 @@ export function validateConfiguration(raw,role){
  if(c.userPreferences!==undefined){requireValue(role==='control','USER_PREFERENCES_CONFIGURATION');compileControlUserPreferencesConfiguration(c);}
  // Lane B control opt-ins (product-ports/settings.mjs, routines.mjs) and the trusted platform capability record (capability-policy.mjs, N3).
  // `routines` is also the schedule worker's firing declaration (lane B2/B3); `routines.task` is control's routine task identity.
- for(const [key,code] of [['tenantSettings','TENANT_SETTINGS_CONFIGURATION'],['routines','ROUTINES_CONFIGURATION']])if(c[key]!==undefined){requireValue(role==='control'||key==='routines'&&role==='schedule-worker',code);own(c[key],['enabled'],key==='routines'?['core','task']:[]);requireValue(typeof c[key].enabled==='boolean',code);}
+ for(const [key,code] of [['tenantSettings','TENANT_SETTINGS_CONFIGURATION'],['routines','ROUTINES_CONFIGURATION']])if(c[key]!==undefined){requireValue(role==='control'||key==='routines'&&role==='schedule-worker',code);own(c[key],['enabled'],key==='routines'?['core','task','workflow']:[]);requireValue(typeof c[key].enabled==='boolean',code);}
  // Routines Core owners (lane B2): the wire A policy client and the Core-proof run control compose only from this closed block.
  if(c.routines?.core!==undefined)compileRoutinesCoreConfiguration(c);
  // Routine task identity (lane B3): the one generic routine task of the allocation manifest, public facts of the candidate's scheduled-run
  // template (prepared-candidate.mjs routinesOccurrenceOwners); the manifest digest is derived from the allocation, never configured.
  if(c.routines?.task!==undefined){requireValue(role==='control','ROUTINES_CONFIGURATION');own(c.routines.task,['taskId','version']);requireValue(/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(c.routines.task.taskId)&&integer(c.routines.task.version,1,Number.MAX_SAFE_INTEGER),'ROUTINES_CONFIGURATION');}
+ // Attended routine dispatch names the separately configured schedule worker target; JSON alone never supplies its owners.
+ if(c.routines?.workflow!==undefined){requireValue(role==='control'&&c.routines.enabled===true,'ROUTINES_CONFIGURATION');own(c.routines.workflow,['taskQueue','workflowIdPrefix']);requireValue(typeof c.routines.workflow.taskQueue==='string'&&/^[A-Za-z0-9._-]{1,128}$/u.test(c.routines.workflow.taskQueue)&&typeof c.routines.workflow.workflowIdPrefix==='string'&&/^[A-Za-z0-9._/-]{1,128}$/u.test(c.routines.workflow.workflowIdPrefix),'ROUTINES_CONFIGURATION');}
  if(c.capabilityPlatform!==undefined){requireValue(role==='control','CAPABILITY_PLATFORM_CONFIGURATION');compileCapabilityPlatform(c);}
  // Objective generation opt-ins (objective-generation/configuration.mjs): control `runs`/`start`, worker `runs`. Absent = disabled.
  if(c.objectiveGeneration!==undefined)compileObjectiveGenerationConfiguration(c,role);

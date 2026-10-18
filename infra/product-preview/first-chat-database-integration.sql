@@ -64,6 +64,8 @@ GRANT SELECT ON TABLE meri_schedules.occurrences TO meri_control_runtime;
 -- Control: single-use Core cancellation-proof jti ledger (insert-before-effect; never updated or deleted).
 GRANT SELECT, INSERT ON TABLE meri_schedules.run_cancel_proofs TO meri_control_runtime;
 GRANT UPDATE (generation,projection,projection_sha256,active_intent) ON meri_schedules.projections TO meri_control_runtime;
+-- The control-owned consent lifecycle updates only its reference column (schedules 0004); Core owns consent authority.
+GRANT UPDATE (read_consent) ON meri_schedules.projections TO meri_control_runtime;
 GRANT UPDATE (state,updated_at) ON meri_schedules.intents, meri_schedules.occurrences TO meri_control_runtime;
 
 -- Control: task lookup results.
@@ -137,19 +139,27 @@ GRANT SELECT ON TABLE meri_read_delegation_facts.run_facts_v1, meri_read_delegat
   meri_read_delegation_facts.occurrences_v1, meri_read_delegation_facts.schedules_v1 TO capiro_app;
 RESET ROLE;
 
--- Meri-owned SECURITY DEFINER current-admission snapshot (dot 6248138427 / 6248171459; Core lane proposal
--- capiro-backend #84 docs/integration/CORE-ADMISSION-SNAPSHOT-FUNCTION-20261018.sql at 70e13545, body verbatim).
+-- Meri-owned SECURITY DEFINER current-admission snapshot (dot 6248138427 / 6248171459; Core successor
+-- capiro-backend #86 docs/integration/CORE-ADMISSION-SNAPSHOT-FUNCTION-20261018.sql at f64047ac, body verbatim).
 -- Contract `capiro.meri-core-admission-snapshot.v1`: Core calls exactly this signature on its own transaction after its
 -- proposal advisory lock; the function takes the canonical budget FOR SHARE first, reads clock_timestamp() in its own
 -- statement, then Meri's saved ADMITTED record, the run, its allocation and its grants in grant_id order. The predicate
--- stays Core's. Runs as the admin login (role creation and ownership transfer); idempotent on re-run.
+-- stays Core's. The verified installer grants base privileges as their owner, creates as the definer, then removes temporary
+-- SET/schema CREATE privileges in this transaction. The phase ledger skips this block after success.
 BEGIN;
-DO $$
+DO $install$
 BEGIN
- IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'meri_core_admission_reader') THEN
-  CREATE ROLE meri_core_admission_reader NOLOGIN NOINHERIT NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION;
+ IF current_user <> session_user THEN
+  RAISE EXCEPTION 'MERI_CORE_ADMISSION_INSTALLER_ROLE_REQUIRED';
  END IF;
-END $$;
+END
+$install$;
+
+CREATE ROLE meri_core_admission_reader NOLOGIN NOINHERIT NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION;
+-- PostgreSQL 16 gives a CREATEROLE installer ADMIN but not SET on a new role. Remove this temporary SET-only edge below.
+GRANT meri_core_admission_reader TO SESSION_USER WITH SET TRUE, INHERIT FALSE, ADMIN FALSE;
+
+SET ROLE meri_product_migrator;
 GRANT USAGE ON SCHEMA meri_product_budget TO meri_core_admission_reader;
 GRANT USAGE ON SCHEMA meri_conversations TO meri_core_admission_reader;
 GRANT SELECT ON meri_conversations.native_allocations TO meri_core_admission_reader;
@@ -157,11 +167,16 @@ GRANT SELECT ON meri_product_budget.budget, meri_product_budget.runs, meri_produ
   meri_product_budget.grants, meri_product_budget.tool_grant_bindings TO meri_core_admission_reader;
 -- PostgreSQL requires UPDATE privilege for FOR SHARE; one column only, held by the definer role, never used.
 GRANT UPDATE (quarantined) ON meri_product_budget.budget TO meri_core_admission_reader;
+SET ROLE NONE;
 
-CREATE SCHEMA IF NOT EXISTS meri_core_authority;
+CREATE SCHEMA meri_core_authority;
 REVOKE ALL ON SCHEMA meri_core_authority FROM PUBLIC;
+GRANT USAGE, CREATE ON SCHEMA meri_core_authority TO meri_core_admission_reader;
+GRANT USAGE ON SCHEMA meri_core_authority TO capiro_app;
 
-CREATE OR REPLACE FUNCTION meri_core_authority.current_admission_v1(p_tenant_id uuid, p_conversation_id uuid, p_run_id uuid)
+SET ROLE meri_core_admission_reader;
+
+CREATE FUNCTION meri_core_authority.current_admission_v1(p_tenant_id uuid, p_conversation_id uuid, p_run_id uuid)
 RETURNS jsonb
 LANGUAGE plpgsql
 VOLATILE
@@ -227,10 +242,12 @@ BEGIN
 END
 $fn$;
 
-ALTER FUNCTION meri_core_authority.current_admission_v1(uuid, uuid, uuid) OWNER TO meri_core_admission_reader;
 REVOKE EXECUTE ON FUNCTION meri_core_authority.current_admission_v1(uuid, uuid, uuid) FROM PUBLIC;
-GRANT USAGE ON SCHEMA meri_core_authority TO capiro_app;
 GRANT EXECUTE ON FUNCTION meri_core_authority.current_admission_v1(uuid, uuid, uuid) TO capiro_app;
+SET ROLE NONE;
+
+REVOKE CREATE ON SCHEMA meri_core_authority FROM meri_core_admission_reader;
+REVOKE meri_core_admission_reader FROM SESSION_USER;
 COMMIT;
 
 -- Readback: capiro_app holds nothing in a Meri schema beyond the four facts views and the function; the definer role
@@ -247,6 +264,13 @@ BEGIN
  IF bad IS NOT NULL THEN RAISE EXCEPTION 'MERI_D2_CORE_APP_EXCESS_PRIVILEGE %', bad; END IF;
  IF (SELECT rolcanlogin OR rolsuper OR rolcreaterole OR rolcreatedb FROM pg_roles WHERE rolname = 'meri_core_admission_reader') THEN
   RAISE EXCEPTION 'MERI_D2_ADMISSION_READER_ATTRIBUTES';
+ END IF;
+ IF has_schema_privilege('meri_core_admission_reader', 'meri_core_authority', 'CREATE')
+    OR NOT has_schema_privilege('meri_core_admission_reader', 'meri_core_authority', 'USAGE')
+    OR EXISTS (SELECT 1 FROM pg_auth_members m
+                WHERE m.roleid = 'meri_core_admission_reader'::regrole
+                  AND m.member = session_user::regrole AND m.set_option) THEN
+  RAISE EXCEPTION 'MERI_D2_ADMISSION_READER_TEMPORARY_PRIVILEGE';
  END IF;
  IF NOT has_function_privilege('capiro_app', 'meri_core_authority.current_admission_v1(uuid, uuid, uuid)', 'EXECUTE')
     OR has_function_privilege('meri_control_runtime', 'meri_core_authority.current_admission_v1(uuid, uuid, uuid)', 'EXECUTE') THEN

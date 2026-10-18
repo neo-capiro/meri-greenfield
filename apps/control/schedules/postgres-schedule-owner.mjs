@@ -1,5 +1,6 @@
 import {canonicalSha256, frozenScheduleData, denySchedule,scheduleErrorCode} from '../../../packages/contracts/schedules-0.2/lifecycle-validation.mjs';
 import {snapshotScheduledJobSelection} from './scheduled-job-lineage.mjs';
+import {storedReadConsent,occurrenceReadConsentFacts} from './occurrence-read-consent.mjs';
 
 // Borrow a pg 8.23.1-compatible pool configured by its owner with finite
 // connectionTimeoutMillis/query_timeout. Source cancellation is not wire cancellation.
@@ -105,13 +106,17 @@ export function createPostgresScheduleOwner({pool}) {
       record.occurrenceKey!==identity.occurrenceKey||effect.binding.tenantId!==tenantId)denySchedule('SCHEDULE_CORRUPT');
     return frozenScheduleData({...record,occurrence,effect});
   }
+  function conversationSelection(selection) {
+    const s=frozenScheduleData(selection);
+    if(!s||Object.keys(s).length!==2||typeof s.tenantId!=='string'||!s.tenantId||s.tenantId.length>128||
+      typeof s.conversationId!=='string'||!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(s.conversationId))denySchedule('SCHEDULE_OCCURRENCE');
+    return s;
+  }
   /** Positive local conversation-origin proof. Absence is distinct from corrupt/ambiguous custody; neither a UUID pattern nor
    * failure of another authority source establishes scheduled origin. No current projection join: historical output survives
    * later schedule updates/cancellation, subject to the reader's current native membership and client wall. */
   async function readOccurrenceForConversation(selection,check) {
-    const s=frozenScheduleData(selection);
-    if(!s||Object.keys(s).length!==2||typeof s.tenantId!=='string'||!s.tenantId||s.tenantId.length>128||
-      typeof s.conversationId!=='string'||!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(s.conversationId))denySchedule('SCHEDULE_OCCURRENCE');
+    const s=conversationSelection(selection);
     return transaction(async c=>{
       const rows=(await c.query("SELECT tenant_id,generation,occurrence_key,schedule_id,occurrence,effect,effect_sha256,state FROM meri_schedules.occurrences WHERE tenant_id=$1 AND effect->'binding'->>'conversationId'=$2 LIMIT 2",[s.tenantId,s.conversationId])).rows;check();
       if(!Array.isArray(rows)||rows.length>1)denySchedule('SCHEDULE_CORRUPT');
@@ -119,6 +124,27 @@ export function createPostgresScheduleOwner({pool}) {
       const record=originOccurrence(rows[0],s.tenantId);
       if(record.effect.binding.conversationId!==s.conversationId)denySchedule('SCHEDULE_CORRUPT');
       return record;
+    },check);
+  }
+  /** One statement sees the occurrence, its current projection and the locally recorded consent together. LEFT JOIN preserves
+   * an occurrence whose projection is missing so that it is refused rather than mistaken for an attended run. */
+  const CONSENT_OCCURRENCE_SQL=[
+    'SELECT o.tenant_id,o.generation,o.occurrence_key,o.schedule_id,o.occurrence,o.effect,o.effect_sha256,o.state,o.created_at,',
+    'p.tenant_id AS current_tenant_id,p.schedule_id AS current_schedule_id,p.owner_actor_id AS current_owner_actor_id,',
+    'p.generation AS current_generation,p.projection AS current_projection,p.projection_sha256 AS current_projection_sha256,',
+    'p.active_intent AS current_active_intent,p.read_consent FROM meri_schedules.occurrences o',
+    'LEFT JOIN meri_schedules.projections p ON p.tenant_id=o.tenant_id AND p.schedule_id=o.schedule_id',
+    "WHERE o.tenant_id=$1 AND o.effect->'binding'->>'conversationId'=$2 LIMIT 2",
+  ].join(' ');
+  async function readConsentForOccurrence(selection,check) {
+    const s=conversationSelection(selection);
+    return transaction(async c=>{
+      const rows=(await c.query(CONSENT_OCCURRENCE_SQL,[s.tenantId,s.conversationId])).rows;check();
+      if(!Array.isArray(rows)||rows.length>1)denySchedule('SCHEDULE_CORRUPT');
+      if(!rows.length)return null;
+      const record=originOccurrence(rows[0],s.tenantId);
+      if(record.effect.binding.conversationId!==s.conversationId)denySchedule('SCHEDULE_CORRUPT');
+      return occurrenceReadConsentFacts(record,rows[0]);
     },check);
   }
   /** Same immutable custody facet for cancellation of the one OPEN occurrence; no mutation or current generation inference. */
@@ -171,5 +197,27 @@ export function createPostgresScheduleOwner({pool}) {
       return frozenScheduleData({rows:rows.slice(0,s.limit).map(r=>({projection:r.projection,generation:Number(r.generation),unresolved:r.active_intent!==null})),hasMore:rows.length>s.limit});
     },check);
   }
-  return Object.freeze({claim,markDispatching:(b,c)=>transition(b,'DISPATCHING',c),commitKnown:(b,c)=>transition(b,'ACKNOWLEDGED',c),markUnknown:(b,c)=>transition(b,'UNKNOWN',c),list,readFiring,readIntent,acknowledgeReconciled,openOccurrence,settleOccurrence,readOccurrenceForConversation,readOpenOccurrenceForSchedule});
+  /** Option B read consent reference (lane RD, migration 0004): the consent Core holds for this schedule's reads, as Meri last saw
+   * it, beside the projection digest it was approved for. A reference and a state only: never authority, never a credential. */
+  const uuidText=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u;
+  async function readReadConsent(selection,check) {
+    const s=frozenScheduleData(selection);
+    if(typeof s?.tenantId!=='string'||!s.tenantId||!uuidText.test(s.scheduleId??''))denySchedule('SCHEDULE_READ_CONSENT');
+    return transaction(async c=>{
+      const row=(await c.query('SELECT read_consent FROM meri_schedules.projections WHERE tenant_id=$1 AND schedule_id=$2',[s.tenantId,s.scheduleId])).rows[0];check();
+      if(!row||row.read_consent===null||row.read_consent===undefined)return null;
+      return storedReadConsent(row.read_consent);
+    },check);
+  }
+  /** Recorded against the acknowledged generation only (the same fence commitKnown used); a stale write is refused. */
+  async function recordReadConsent(selection,check) {
+    const s=frozenScheduleData(selection),consent=storedReadConsent(s.consent);
+    if(typeof s.tenantId!=='string'||!s.tenantId||!uuidText.test(s.scheduleId??'')||!Number.isSafeInteger(s.generation)||s.generation<1)denySchedule('SCHEDULE_READ_CONSENT');
+    return transaction(async c=>{
+      const changed=await c.query('UPDATE meri_schedules.projections SET read_consent=$4 WHERE tenant_id=$1 AND schedule_id=$2 AND generation=$3',[s.tenantId,s.scheduleId,s.generation,consent]);check();
+      if(changed.rowCount!==1)denySchedule('SCHEDULE_STALE');
+      return frozenScheduleData({scheduleId:s.scheduleId,generation:s.generation,consentId:consent.consentId,state:consent.state});
+    },check);
+  }
+  return Object.freeze({claim,markDispatching:(b,c)=>transition(b,'DISPATCHING',c),commitKnown:(b,c)=>transition(b,'ACKNOWLEDGED',c),markUnknown:(b,c)=>transition(b,'UNKNOWN',c),list,readFiring,readIntent,acknowledgeReconciled,openOccurrence,settleOccurrence,readOccurrenceForConversation,readConsentForOccurrence,readOpenOccurrenceForSchedule,readReadConsent,recordReadConsent});
 }

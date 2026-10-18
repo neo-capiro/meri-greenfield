@@ -10,6 +10,10 @@ import {createNativeReadsClient} from '../reads-client.mjs';
 import {createNativeReadCredentialBroker,createControlReadsComposer,selectedClientOf,READ_GATEWAY_INPUTS} from '../reads-composer.mjs';
 import {installationFixture} from '../general-read-installation/test/fixture.mjs';
 import {nativeFamilyCase} from '../../../gateway/general-reads/test/native-family-cases.mjs';
+import {familyCase} from '../../../gateway/general-reads/test/family-cases.mjs';
+import {endpoints as mailEndpoints} from '../../../gateway/sources/mail/test/fixtures.mjs';
+import {NATIVE_READ_FAMILIES} from '../../../gateway/sources/retained-reads/native-families.mjs';
+import {installationReadOperations} from '../general-read-installation/runtime.mjs';
 import {origin as coreOrigin} from '../native-read-credentials/test/fixture.mjs';
 import catalog from '../../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
 import {measureGeneralReadInstallation} from '../../../gateway/general-reads/installation-issuer.mjs';
@@ -229,6 +233,36 @@ test('a composed read runs through the real P2 installation issuer and P1 discov
   const availability=await x.client.readAvailability();assert.deepEqual(availability.installation.operations,[x.f.operation]);assert.deepEqual(availability.discovery.operations,[x.f.operation]);
   const raw=await x.execute();assert.deepEqual(JSON.parse(raw).binding,x.f.binding);assert.equal(x.f.wire.length,1);assert.ok(policyCalls.length>0);noCandidate(x);
  }finally{x.close();}
+});
+
+test('the full P2 measurement needs all 21 retained handlers; task-bound ports compose the exact 76',async()=>{
+ const f=await installationFixture({scene:nativeFamilyCase('tracked-bills','search_tracked_bills')}),s=secretFixture(),rows=installationReadOperations();
+ assert.equal(rows.length,76);const families=[...new Set(rows.map(row=>row.family))],retained=families.filter(id=>!NATIVE_READ_FAMILIES.includes(id));
+ assert.equal(families.length,42);assert.equal(retained.length,15);assert.equal(rows.filter(row=>retained.includes(row.family)).length,21);
+ const {measurement,measurementSha256}=await measureGeneralReadInstallation({catalogJson:JSON.stringify(catalog),operations:rows});
+ const sourcePorts=Object.fromEntries(retained.map(family=>{
+  if(family==='mail')return [family,{endpoints:mailEndpoints,getCredentials:async()=>{throw Error('UNREACHABLE_MAIL_CREDENTIAL');},fetchImpl:async()=>{throw Error('UNREACHABLE_MAIL_SOURCE');}}];
+  const operation=rows.find(row=>row.family===family).operation.id;
+  return [family,familyCase(family,operation).transport];
+ }));
+ const base={configuration:s.configuration,secretFiles:READ,readSecret:s.readSecret,now:f.now,
+  nativeCredentials:{nativeCredentialFor(){throw Error('UNREACHABLE_NATIVE_CREDENTIAL');}},
+  gateway:{authority:f.gatewayConfiguration.authority,limits:f.gatewayConfiguration.limits,discoveryOwner:f.gatewayConfiguration.discoveryOwner},
+  installation:{enabled:true,measurement,measurementSha256}};
+ const narrowed=await createControlReadsComposer({...base,familyIds:[f.family]});
+ assert.equal(narrowed.missing.filter(name=>name.startsWith('familyIds.')).length,41,'a 55-handler override cannot silently accept the 76-row receipt');
+ const absent=await createControlReadsComposer(base);
+ assert.deepEqual(absent.missing,retained.map(id=>`retainedTaskPorts.${id}`));
+ await assert.rejects(absent.createReadsRuntime(f.tuple).readAvailability(),code('UNAVAILABLE'));
+ const composer=await createControlReadsComposer({...base,retainedTaskPorts(){return {families:sourcePorts,contextPorts:{
+  mailContextPorts:{async loadPrevious(){throw Error('UNREACHABLE_MAIL_CONTEXT');},async retain(){throw Error('UNREACHABLE_MAIL_CONTEXT');}},
+  memoryContextPorts:f.gatewayConfiguration.memoryContextPorts,
+  retainedContextPorts:{async readCurrent(){throw Error('UNREACHABLE_RETAINED_CONTEXT');}}
+ }};}});
+ assert.deepEqual(composer.missing,[]);assert.deepEqual(composer.familyIds,families);
+ const available=await composer.createReadsRuntime(f.tuple).readAvailability();
+ assert.deepEqual(available.installation.operations,[f.operation],'all 76 source hashes pass before run eligibility narrows to one');
+ f.scope.abort();
 });
 
 test('the real P1/P2 producers stay disabled by default and keep the runtime unavailable',async()=>{

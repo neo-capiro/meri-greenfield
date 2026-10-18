@@ -1,7 +1,7 @@
 /** The one CONTROL startup hook for general reads. Control startup calls `createControlReadsComposer` once and passes its
  * `createReadsRuntime` to `startControl(configuration,{signal,createReadsRuntime,readCredentialRelay})` (control.mjs →
  * prepared-candidate → remote-composition → prepared-reads → reads-owner). It composes only what exists: Core's native tool
- * authority at the configured Core origin, the read credential broker, and the native read families. The gateway's current
+ * authority at the configured Core origin, the read credential broker, and the installed read families. The gateway's current
  * tool authority, the P2 installation receipt and the P1 discovery grant are decision-gated inputs; while any is absent
  * every task gets the unavailable runtime (fail closed), never an empty success.
  *
@@ -32,7 +32,7 @@ import {NATIVE_READ_FAMILIES} from '../../gateway/sources/retained-reads/native-
 import {readSecret as readRuntimeSecret} from '../config.mjs';
 import {createNativeToolAuthorityClient} from './native-read-credentials/core-client.mjs';
 import {prepareGeneralReadInstallation,installationReadOperations} from './general-read-installation/runtime.mjs';
-import {taskTuple} from './general-read-installation/configuration.mjs';
+import {taskTuple,synchronous} from './general-read-installation/configuration.mjs';
 import catalog from '../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
 import {createGeneralReadInstallationIssuer} from '../../gateway/general-reads/installation-issuer.mjs';
 import {createGeneralReadDiscoveryProducer} from '../../gateway/general-reads/discovery-producer.mjs';
@@ -40,6 +40,7 @@ import {createReadDelegationCoreClient} from './read-delegation/core-client.mjs'
 import {createRunReadDelegation} from './read-delegation/delegation.mjs';
 import {composeDelegatedNativeCredentials} from './read-delegation/native-credentials.mjs';
 import {createReadDelegationConsents} from './read-delegation/consent.mjs';
+import {createReadDelegationRunOptions} from './read-delegation/run-options.mjs';
 
 /** Server-side secret files the control role renders for reads (absolute paths). `readModeServiceSecret` may name the same
  * file as `serviceSecret`. There is no bearer file: the bearer comes from the live-session relay. */
@@ -103,22 +104,28 @@ export async function createNativeReadCredentialBroker(options){
 
 /** Returns `{createReadsRuntime, familyIds, missing}`. `missing` names each absent input (no secret values).
  * P2 (`installation`) and P1 (`discovery`) producers are composed here and stay DISABLED unless their `enabled` is true; an
- * explicit `gateway.readCurrentInstallation` / `gateway.discoveryOwner` port takes precedence (tests, future owners). */
+ * explicit `gateway.readCurrentInstallation` / `gateway.discoveryOwner` port takes precedence (tests, future owners).
+ * Non-native families require a trusted, task-bound `retainedTaskPorts` owner. A source adapter or measured descriptor
+ * alone cannot supply its credential, current context, or source endpoint. */
 export async function createControlReadsComposer(options){
- const c=own(options,['configuration','secretFiles'],['now','newId','fetchImpl','gateway','nativeCredentials','defaultCongress','familyIds','readSecret','sourceRoot','installation','discovery','delegation']);
+ const c=own(options,['configuration','secretFiles'],['now','newId','fetchImpl','gateway','nativeCredentials','defaultCongress','familyIds','retainedTaskPorts','readSecret','sourceRoot','installation','discovery','delegation']);
  const now=c.now??Date.now,newId=c.newId??randomUUID,fetchImpl=c.fetchImpl??globalThis.fetch;
  if(typeof now!=='function'||typeof newId!=='function'||typeof fetchImpl!=='function'||types.isProxy(fetchImpl)||
   c.defaultCongress!==undefined&&(!Number.isSafeInteger(c.defaultCongress)||c.defaultCongress<1))refuse('CONFIGURATION');
  const broker=await createNativeReadCredentialBroker({configuration:c.configuration,secretFiles:c.secretFiles,now,
   ...(c.readSecret===undefined?{}:{readSecret:c.readSecret}),...(c.nativeCredentials===undefined?{}:{nativeCredentials:c.nativeCredentials})});
  const coreAuthority=createNativeToolAuthorityClient({origin:c.configuration.nativeCandidate.identity.origin,fetchImpl,now,enabled:broker.available});
- const native=[...new Set(installationReadOperations().map(row=>row.family))].filter(family=>NATIVE_READ_FAMILIES.includes(family));
- const familyIds=c.familyIds===undefined?native:data(c.familyIds);
- if(!Array.isArray(familyIds)||!familyIds.length||new Set(familyIds).size!==familyIds.length||familyIds.some(id=>!native.includes(id)))refuse('CONFIGURATION');
+ const availableFamilies=[...new Set(installationReadOperations().map(row=>row.family))];
+ const familyIds=c.familyIds===undefined?availableFamilies:data(c.familyIds);
+ if(!Array.isArray(familyIds)||!familyIds.length||new Set(familyIds).size!==familyIds.length||familyIds.some(id=>!availableFamilies.includes(id)))refuse('CONFIGURATION');
+ const retainedIds=familyIds.filter(id=>!NATIVE_READ_FAMILIES.includes(id));
+ if(c.retainedTaskPorts!==undefined&&(typeof c.retainedTaskPorts!=='function'||types.isProxy(c.retainedTaskPorts)))refuse('CONFIGURATION');
  const gateway=c.gateway===undefined?{}:own(c.gateway,[],[...READ_GATEWAY_INPUTS,'namespace']);
  const installation=c.installation===undefined?{}:own(c.installation,[],['enabled','measurement','measurementSha256','ttlMs','revokedOperations']);
  const discovery=c.discovery===undefined?{}:own(c.discovery,[],['enabled','capabilityPolicy','ttlMs']);
  if(installation.enabled!==undefined&&typeof installation.enabled!=='boolean'||discovery.enabled!==undefined&&typeof discovery.enabled!=='boolean')refuse('CONFIGURATION');
+ const omittedMeasuredFamilies=installation.enabled===true&&Array.isArray(installation.measurement?.operations)?
+  [...new Set(installation.measurement.operations.map(row=>row?.family).filter(id=>typeof id==='string'))].filter(id=>!familyIds.includes(id)):[];
  // P2: one issuer per process; an enabled issuer refuses construction unless its pinned measurement matches this source.
  const issuer=gateway.readCurrentInstallation===undefined?createGeneralReadInstallationIssuer({catalogJson:JSON.stringify(catalog),now,...installation}):null;
  const readCurrentInstallation=gateway.readCurrentInstallation??(issuer.enabled?issuer.readCurrentInstallation:undefined);
@@ -131,18 +138,27 @@ export async function createControlReadsComposer(options){
  const delegations=new Map();
  const missing=Object.freeze([...(c.nativeCredentials===undefined&&!unattendedReads?['nativeCredentials.nativeCredentialFor']:[]),...(broker.getServiceSecret===undefined?['secretFiles.serviceSecret']:[]),
   ...['authority','limits'].filter(key=>gateway[key]===undefined).map(key=>`gateway.${key}`),
-  ...(readCurrentInstallation===undefined?['installation.enabled']:[]),...(gateway.discoveryOwner===undefined&&!discoveryEnabled?['discovery.enabled']:[])]);
+  ...(readCurrentInstallation===undefined?['installation.enabled']:[]),...(gateway.discoveryOwner===undefined&&!discoveryEnabled?['discovery.enabled']:[]),
+  ...omittedMeasuredFamilies.map(id=>`familyIds.${id}`),
+  ...(c.retainedTaskPorts===undefined?retainedIds.map(id=>`retainedTaskPorts.${id}`):[])]);
  function taskPorts(raw){
   // An empty gateway makes the installation runtime return its unavailable gateway for this task.
   if(missing.length)return {gateway:{},families:{}};
   const t=taskTuple(raw);
   const bearer=broker.bearerFor({binding:t.binding,scopes:t.scopes});
+  const supplied=retainedIds.length?own(synchronous(c.retainedTaskPorts(Object.freeze({task:t,
+   getNativeCredential:async request=>(await bearer({binding:t.binding,...request})).credential,
+   getServiceSecret:broker.getServiceSecret}))),['families'],['contextPorts']):{families:{},contextPorts:{}};
+  const retainedFamilies=own(supplied.families,retainedIds),contextPorts=own(supplied.contextPorts??{},[],['memoryContextPorts','mailContextPorts','retainedContextPorts']);
+  if(retainedIds.includes('mail')&&contextPorts.mailContextPorts===undefined||retainedIds.includes('memory-proposals')&&contextPorts.memoryContextPorts===undefined||
+   retainedIds.some(id=>id==='research-portfolio'||id==='florida-budget')&&contextPorts.retainedContextPorts===undefined)refuse('CONFIGURATION');
   // P1: per task, over this run's own allocation and approved reads.
   const discoveryOwner=gateway.discoveryOwner??createGeneralReadDiscoveryProducer({binding:t.binding,policyRevision:t.grant.qualificationBinding.policyRevision,
    allocationJson:t.allocationJson,approvedReads:t.approvedReads,now,enabled:true,capabilityPolicy:discovery.capabilityPolicy,...(discovery.ttlMs===undefined?{}:{ttlMs:discovery.ttlMs})});
   return {gateway:{authority:gateway.authority,limits:gateway.limits,readCurrentInstallation,discoveryOwner,
     producerContext:t.grant,producer:{namespace:'general-reads',executionId:t.original.executionId},credential:t.taskCapability,sourceEnabled:true,...(gateway.namespace===undefined?{}:{namespace:gateway.namespace})},
-   families:Object.fromEntries(familyIds.map(id=>[id,{origin:coreAuthority.origin,fetchImpl}])),
+   families:{...Object.fromEntries(familyIds.filter(id=>NATIVE_READ_FAMILIES.includes(id)).map(id=>[id,{origin:coreAuthority.origin,fetchImpl}])),...retainedFamilies},
+   contextPorts,
    nativeCredentials:{...nativeCredentialsFor(t,bearer),getServiceSecret:broker.getServiceSecret,
     ...(broker.getReadModeServiceSecret===undefined?{}:{getReadModeServiceSecret:broker.getReadModeServiceSecret}),...(c.defaultCongress===undefined?{}:{defaultCongress:c.defaultCongress})}};
  }
@@ -170,6 +186,8 @@ export async function createControlReadsComposer(options){
   return entry.delegation.stop(reason);
  }
  const preparation=await prepareGeneralReadInstallation({familyIds,newId,taskPorts,...(c.sourceRoot===undefined?{}:{sourceRoot:c.sourceRoot})});
+ // `runOptions` (lane RD) is the registry-facing form of `stopRun` (`readDelegationRunOptions` of control → prepared candidate →
+ // prepared-run registry, registered like `documentsRunOptions`): it never throws and reports a failed stop instead.
  return Object.freeze({createReadsRuntime:preparation.createReadsRuntime,familyIds:Object.freeze([...familyIds]),missing,
-  readDelegation:Object.freeze({enabled:Boolean(delegationClient?.available),stopRun,...(delegationClient?.available?{consents:createReadDelegationConsents({client:delegationClient,now})}:{})})});
+  readDelegation:Object.freeze({enabled:Boolean(delegationClient?.available),stopRun,...(delegationClient?.available?{consents:createReadDelegationConsents({client:delegationClient,now}),runOptions:createReadDelegationRunOptions({stopRun})}:{})})});
 }

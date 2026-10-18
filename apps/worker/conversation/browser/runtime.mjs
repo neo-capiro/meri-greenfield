@@ -22,7 +22,17 @@ export async function grantBrowserEgress({fragment,egress,binding,deadlineMs,lif
   const ack=await egress.grant(grant,{signal});
   if(ack?.granted!==true||ack.policySha256!==grant.policySha256)throw fault('BROWSER_EGRESS_GRANT_REFUSED');
   return grant;
- }catch(error){try{await lifecycle.settle({outcome:'failed'});}catch{}throw error;}
+ }catch(error){
+  // A grant may have reached the host even when its acknowledgement was lost. If revocation or process exit cannot
+  // be verified, that unknown cleanup outcome must take precedence over the grant error so the caller fails the run
+  // and destroys the disposable host. Keep the original grant failure as the cause for local diagnosis.
+  try{await lifecycle.settle({outcome:'failed'});}
+  catch(cleanupError){
+   if(cleanupError instanceof Error&&cleanupError.cause===undefined)cleanupError.cause=error;
+   throw cleanupError;
+  }
+  throw error;
+ }
 }
 export async function prepareBrowserRun({port,binding,cwd,deadlineMs,now,signal}){
  if(typeof port?.policy!=='function'||typeof now!=='function')throw fault('BROWSER_CONFIGURATION');

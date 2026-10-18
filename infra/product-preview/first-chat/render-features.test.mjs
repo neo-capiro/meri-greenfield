@@ -406,6 +406,11 @@ test('intents.execution and routines.core render the Core origin, the reads serv
  const control=config(rendered,'control'),origin=control.nativeCandidate.identity.origin;
  assert.deepEqual(control.intents,{enabled:true,execution:{coreOrigin:origin,issuer:execution.issuer,keys:execution.keys,serviceSecretFile:PATHS.readsServiceSecret}});
  assert.deepEqual(control.routines,{enabled:true,core:{origin,serviceSecretFile:PATHS.readsServiceSecret,...core}});
+ const task={taskId:'11111111-1111-4111-8111-000000000009',version:1},workflow={taskQueue:'meri-schedule-worker',workflowIdPrefix:'meri/routine/'};
+ const targeted=await render(withFeatures({sourceEnabled:true,reads:READS,routines:{enabled:true,core,task,workflow}}),{featureSecrets:featureSecrets()});
+ assert.deepEqual(config(targeted,'control').routines,{enabled:true,core:{origin,serviceSecretFile:PATHS.readsServiceSecret,...core},task,workflow});
+ await assert.rejects(render(withFeatures({routines:{enabled:false,task}})),/needs features.routines.enabled true/u);
+ await assert.rejects(render(withFeatures({routines:{enabled:true,workflow:{...workflow,taskQueue:'bad queue'}}})),/features.routines.workflow target/u);
  assert.deepEqual(config(await render(withFeatures({intents:{enabled:true},routines:{enabled:false}})),'control').intents,{enabled:true});
  await assert.rejects(render(withFeatures({intents:{enabled:true,execution}})),/needs features.reads enabled/u);
  await assert.rejects(render(withFeatures({sourceEnabled:true,reads:READS,routines:{enabled:false,core}}),{featureSecrets:featureSecrets()}),/needs features.routines.enabled true/u);

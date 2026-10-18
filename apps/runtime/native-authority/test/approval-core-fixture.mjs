@@ -7,7 +7,7 @@ export const CORE_ORIGIN='https://core.synthetic.invalid',SECRET='synthetic-appr
 const same=(a,b)=>hash(a)===hash(b);
 /** `state`: {bearers:{<nativeCredential>:{tenantId,userId}}, serviceSecret, coreNow(), requests:[], rewrite?, contentType?}. */
 export function approvalCore(state){
- const decisions=new Map();
+ const decisions=new Map(),revocations=new Set();
  function record(ctx,body){
   const {proposal,decision,approver,binding}=body,b=proposal.command.binding;
   if(approver.tenantId!==ctx.tenantId||approver.actorId!==ctx.userId||!same(approver,proposal.requiredApprover)||b.tenantId!==ctx.tenantId||b.actorId!==ctx.userId)return [403,{message:'Native approval refused'}];
@@ -22,9 +22,18 @@ export function approvalCore(state){
  }
  function decision(ctx,body){
   const {proposalId,commandSha256,binding}=body;if(binding.tenantId!==ctx.tenantId||binding.actorId!==ctx.userId)return [403,{message:'Native approval refused'}];
-  const stored=decisions.get(`${ctx.tenantId}:${proposalId}`);
+  const key=`${ctx.tenantId}:${proposalId}`,stored=decisions.get(key);
   if(!stored||stored.commandSha256!==commandSha256||stored.binding.actorId!==binding.actorId||stored.binding.conversationId!==binding.conversationId||stored.binding.runId!==binding.runId)return [200,{decision:null,checkedAtMs:state.coreNow(),revoked:false}];
-  const {binding:_,...d}=stored;return [200,{decision:d,checkedAtMs:state.coreNow(),revoked:false}];
+  const {binding:_,...d}=stored;return [200,{decision:d,checkedAtMs:state.coreNow(),revoked:revocations.has(key)}];
+ }
+ /** Lane RD: the approver's own revocation, append-only under the proposal lock and idempotent; a decision Core never recorded
+  * for this proposal and command is 409. Afterwards every decision read answers `revoked:true`. */
+ function revoke(ctx,body){
+  const {proposalId,commandSha256,approver,binding}=body;
+  if(approver.tenantId!==ctx.tenantId||approver.actorId!==ctx.userId||binding.tenantId!==ctx.tenantId||binding.actorId!==ctx.userId)return [403,{message:'Native approval refused'}];
+  const key=`${ctx.tenantId}:${proposalId}`,stored=decisions.get(key);
+  if(!stored||stored.commandSha256!==commandSha256||!same(stored.approver,approver)||stored.binding.conversationId!==binding.conversationId||stored.binding.runId!==binding.runId)return [409,{message:'No approval to revoke'}];
+  revocations.add(key);const {binding:_,...d}=stored;return [200,{decision:d,checkedAtMs:state.coreNow(),revoked:true}];
  }
  async function fetchImpl(url,init){
   const entry={url,headers:{...init.headers},body:JSON.parse(init.body)};state.requests.push(entry);
@@ -35,9 +44,10 @@ export function approvalCore(state){
   let status,body;
   if(url===CORE_ORIGIN+CORE_APPROVAL_ROUTES.record)[status,body]=record(ctx,entry.body);
   else if(url===CORE_ORIGIN+CORE_APPROVAL_ROUTES.decision)[status,body]=decision(ctx,entry.body);
+  else if(url===CORE_ORIGIN+CORE_APPROVAL_ROUTES.revoke)[status,body]=revoke(ctx,entry.body);
   else return new Response('',{status:404});
   if(state.rewrite)[status,body]=await state.rewrite(status,body,entry);
   return new Response(JSON.stringify(body),{status,headers:{'content-type':status===200?state.contentType??'application/json':'application/json'}});
  }
- return {fetchImpl,decisions};
+ return {fetchImpl,decisions,revocations};
 }

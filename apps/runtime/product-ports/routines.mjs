@@ -17,6 +17,9 @@
  *  context.limits          {maxRequestMs, maxFactBytes, retryLimit}: bounds of the schedule context owner
  *  runControl.cancel       cancel the current same-work run of an approved cancellation ({binding, signal, deadlineMs})
  *  retirement.retire       native physical-stop proof for each run of that lineage ({binding, signal, deadlineMs})
+ *  readConsents (optional) option B (lane RD): the reads composer's `readDelegation.consents` ({approve, narrow, resume}); the
+ *                          owner's approval then also creates / pauses / revokes / resumes the routine's Core read consent
+ *                          (control/schedules/read-consent-lifecycle.mjs) over the owner's live session bound at `create`
  *
  * `context.policy` and `runControl` are produced HERE when `configuration.routines.core` is declared
  * (native-authority/routines-configuration.mjs): Core wire A as the policy port and Core wire B proofs consumed by the Core-proof
@@ -52,15 +55,17 @@ export const CORE_PRODUCED_ROUTINE_OWNERS=Object.freeze(['context.policy','runCo
 export function compileRoutinesConfiguration(configuration){
  if(configuration?.routines===undefined)return false;
  // `task` (lane B3) is the routine task identity for control's occurrence admission template (config.mjs); not an owner.
- let c;try{c=own(configuration.routines,['enabled'],['core','task']);}catch{throw fault('ROUTINES_CONFIGURATION');}
+ let c;try{c=own(configuration.routines,['enabled'],['core','task','workflow']);}catch{throw fault('ROUTINES_CONFIGURATION');}
  if(typeof c.enabled!=='boolean')throw fault('ROUTINES_CONFIGURATION');compileRoutinesCoreConfiguration(configuration);return c.enabled;
 }
 function captureOwners(owners){
  if(owners===undefined)return null;
  try{
-  const o=own(owners,['context','retirement'],['runControl','newId']);
+  const o=own(owners,['context','retirement'],['runControl','newId','readConsents','log','contextOwnerFactory']);
   const context=own(o.context,['commandContext','allocationJson','template','workflow','limits'],['policy']);
-  if((context.policy===undefined)!==(o.runControl===undefined)||o.runControl!==undefined&&typeof o.runControl?.cancel!=='function'||typeof o.retirement?.retire!=='function'||o.newId!==undefined&&typeof o.newId!=='function')throw Error();
+  if((context.policy===undefined)!==(o.runControl===undefined)||o.runControl!==undefined&&typeof o.runControl?.cancel!=='function'||typeof o.retirement?.retire!=='function'||o.newId!==undefined&&typeof o.newId!=='function'||o.contextOwnerFactory!==undefined&&(typeof o.contextOwnerFactory!=='function'||types.isProxy(o.contextOwnerFactory)))throw Error();
+  // Option B (lane RD): the reads composer's `readDelegation.consents` ({approve,narrow,resume}); absent, routines carry no read consent.
+  if(o.readConsents!==undefined&&(types.isProxy(o.readConsents)||['approve','narrow','resume'].some(k=>typeof o.readConsents?.[k]!=='function'))||o.log!==undefined&&(typeof o.log!=='function'||types.isProxy(o.log)))throw Error();
   return Object.freeze({...o,context});
  }catch{throw fault('ROUTINES_CONFIGURATION');}
 }
@@ -81,7 +86,7 @@ function coreOwners({core,configuration,pool,client,now,newId,transport}){
   store:createPostgresConversationStore({pool,now}),dispatcher:createTemporalConversationDispatcher({client,taskQueue,now,maxRequestMs}),now,maxRequestMs,...(newId===undefined?{}:{newId})});
  return Object.freeze({sessionRelay:relay,policy:Object.freeze({check:wires.policyCheck}),runControl,cancellationProofs:Object.freeze({issue:wires.cancellationProof})});
 }
-/** Family builder over optional trusted owners; `createRoutinesFamily` is the production entry (lane 1 owners do not exist yet).
+/** Family builder over optional trusted owners; `createRoutinesFamily` retains the closed unavailable fallback.
  * `transport` ({fetchImpl, readSecret}) is a trusted test seam only; production uses global fetch and the runtime secret reader. */
 export function routinesFamily(owners,transport){
  const captured=captureOwners(owners),seam=captureTransport(transport);
@@ -96,6 +101,8 @@ export function routinesFamily(owners,transport){
    context:{...captured.context,policy:produced?.policy??captured.context.policy},
    runControl:produced?.runControl??captured.runControl,retirement:captured.retirement,
    ...(produced===null?{}:{cancellationProofs:produced.cancellationProofs,sessionRelay:produced.sessionRelay}),
+   ...(captured.readConsents===undefined?{}:{readConsents:captured.readConsents}),...(captured.log===undefined?{}:{log:captured.log}),
+   ...(captured.contextOwnerFactory===undefined?{}:{contextOwnerFactory:captured.contextOwnerFactory}),
    limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes}})}};
  };
 }
