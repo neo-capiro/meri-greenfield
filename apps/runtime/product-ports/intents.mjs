@@ -118,6 +118,8 @@ function compose(context,execution,transport){
  const shared={decisions,
   approvalStore:decisions?Object.freeze({getCurrent:value=>decisions.getCurrent(value)}):null,
   readDecision:decisions?value=>decisions.readDecision(value):null,
+  /** The approver's own revocation of a recorded approval (`approval/revoke`, lane RD); attended only, never automatic. */
+  revokeDecision:decisions?value=>decisions.revoke(value):null,
   /** The forwarder's attended Core credentials (`{origin,getCredentials}`, the execution owner's `core` port) and its relay state. */
   core:core?Object.freeze({origin:core.forwarder.origin,getCredentials:value=>core.forwarder.getCredentials(value)}):null,
   approvalSessions:()=>core?core.relay.state():'absent'};

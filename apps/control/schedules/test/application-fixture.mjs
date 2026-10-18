@@ -52,7 +52,7 @@ function routedPool(schedules,preparations){return {async connect(){
 }};}
 
 /** Optional cancellation is a trusted private boundary; defaults and every canonical application owner remain unchanged. */
-export async function applicationFixture({runCancellation}={}){
+export async function applicationFixture({runCancellation,readConsents,log}={}){
  const state={now:NOW,ids:100,fetches:[],policies:[],scheduleQueries:[],allowed:true,refusePhase:null,revoked:false,actorId:binding.actorId,policyRevision:'p1',membershipRevision:'m1',policyHook:null,scheduleQueryHook:null,loseCreateAck:false,failCreateBefore:false,loseScheduleCommit:false};
  const now=()=>state.now,newId=()=>id(state.ids++),scopes=()=>[{tenantId:binding.tenantId,kind:'client',resourceId:clientId,policyRevision:state.policyRevision}],commandContext={binding,clientResolution:{reference:clientId,clientId}};
  const fetchImpl=async(url,init)=>{
@@ -85,7 +85,7 @@ export async function applicationFixture({runCancellation}={}){
   const result=await temporal.scheduleClient.create(options);if(state.loseCreateAck){state.loseCreateAck=false;throw Error('synthetic provider acknowledgement lost');}return result;
  }};
  const workflowClient={connection:temporal.scheduleClient.connection,getHandle(){throw Error('unexpected workflow history reference');}};
- const config={contextOwner:context,journalStore:createPostgresIntentJournalStore({pool}),proposalReader:createPostgresScheduleProposalReader({pool}),scheduleOwner:owner,scheduleClient,workflowClient,scheduleNotFoundError:ScheduleNotFoundError,now,maxRequestMs:5000,...(runCancellation===undefined?{}:{runCancellation})};
+ const config={contextOwner:context,journalStore:createPostgresIntentJournalStore({pool}),proposalReader:createPostgresScheduleProposalReader({pool}),scheduleOwner:owner,scheduleClient,workflowClient,scheduleNotFoundError:ScheduleNotFoundError,now,maxRequestMs:5000,...(runCancellation===undefined?{}:{runCancellation}),...(readConsents===undefined?{}:{readConsents}),...(log===undefined?{}:{log})};
  const service=createRoutinesService(config),call=(method,request,credential=session.credential)=>service[method]({credential,request,deadlineMs:now()+4500});
  const prepare=(request=routineRequest(),operation='schedule_task',requestId='request-one')=>call('prepare',{requestId,operation,request});
  const body=(prepared,request=routineRequest(),operation=prepared.proposal.operation)=>({operation,request,proposalId:prepared.proposal.proposalId,intentSha256:prepared.proposal.intentSha256});

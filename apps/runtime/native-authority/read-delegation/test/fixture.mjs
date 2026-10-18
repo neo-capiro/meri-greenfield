@@ -2,7 +2,7 @@
  * §3-§9), modelled in memory over the scripted Meri owner state (reservations, run state). No live credential, key or route. */
 import {createHash,randomUUID} from 'node:crypto';
 import {canonicalSha256 as hash} from '../../../../../packages/contracts/validate.mjs';
-import {READ_TOKEN_CEILINGS,READ_TOKEN_REISSUES,READ_DELEGATION_LIMITS,READ_TOKEN_SCHEME} from '../contract.mjs';
+import {READ_TOKEN_CEILINGS,READ_TOKEN_REISSUES,READ_DELEGATION_LIMITS,READ_TOKEN_SCHEME,READ_DELEGATION_ROUTES} from '../contract.mjs';
 
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const json=(value,status=200)=>new Response(JSON.stringify(value),{status,headers:{'content-type':'application/json'}});
@@ -10,7 +10,26 @@ const DELEGATION=/^\/api\/clio\/application-authority\/read-delegations\/([a-f0-
 
 export function delegationCoreFixture({now,binding,clientId,runDeadlineMs,principal,reservations,liveBearers,serviceSecret='SYNTHETIC_SERVICE',authority,tools}){
  const state={delegations:new Map(),tokens:new Map(),slots:new Map(),calls:[],runState:'running',dropTokenResponses:0,failRevokes:0,createStatus:null,
-  createExpiry:null,checkRefClientId:clientId,mode:'off',consent:null,unavailable:false,withholdAtRelease:false,role:'standard_user'};
+  createExpiry:null,checkRefClientId:clientId,mode:'off',consent:null,unavailable:false,withholdAtRelease:false,role:'standard_user',consents:new Map(),consentStatus:null};
+ /** Lane RD: the consent routes (§9-§10). Create needs a live bearer and supersedes the schedule's active consent; `paused` and
+  * `revoked` need only the service identity; `active` (resume) needs a live bearer; revoked and superseded never change again. */
+ function consents(path,scheme,authorization,service,bytes){
+  if(!service)return json({error:'service'},401);if(state.consentStatus)return json({error:'refused'},state.consentStatus);
+  const live=scheme==='Bearer'&&liveBearers.has(authorization.slice(7));
+  if(path===READ_DELEGATION_ROUTES.consents){
+   if(!live)return json({error:'session'},401);const body=JSON.parse(bytes);
+   if(body.schemaVersion!==1||body.clientId!==clientId||!Number.isSafeInteger(body.requestedExpiresAtMs)||body.requestedExpiresAtMs<=now())return json({error:'request'},400);
+   for(const c of state.consents.values())if(c.scheduleId===body.scheduleId&&c.state==='active')c.state='superseded';
+   const c={id:randomUUID(),state:'active',createdAtMs:now(),expiresAtMs:Math.min(body.requestedExpiresAtMs,now()+READ_DELEGATION_LIMITS.consentMaxMs),request:body,scheduleId:body.scheduleId,history:['active']};
+   state.consents.set(c.id,c);return json({schemaVersion:1,consentId:c.id,state:c.state,createdAtMs:c.createdAtMs,expiresAtMs:c.expiresAtMs},201);
+  }
+  const m=/^\/api\/clio\/application-authority\/read-delegation-consents\/([a-f0-9-]{36})\/state$/u.exec(path);if(!m)return null;
+  const c=state.consents.get(m[1]);if(!c)return json({error:'unknown'},404);const {state:next}=JSON.parse(bytes);
+  if(!['paused','revoked','active'].includes(next))return json({error:'state'},400);
+  if(next==='active'&&!live)return json({error:'session'},401);
+  if(['revoked','superseded','expired'].includes(c.state))return json({error:'changed'},409);
+  c.state=next;c.history.push(next);return json({schemaVersion:1,consentId:c.id,state:c.state});
+ }
  const active=d=>d&&d.state==='active'&&now()<Math.min(d.expiresAtMs,runDeadlineMs)&&['queued','starting','running'].includes(state.runState);
  function consume(header,{kind,path,bodySha256}){
   const t=state.tokens.get(header.slice(READ_TOKEN_SCHEME.length+1)),d=t&&state.delegations.get(t.delegationId);
@@ -32,6 +51,7 @@ export function delegationCoreFixture({now,binding,clientId,runDeadlineMs,princi
   // A read token is never admitted on identity, context or membership.
   if(delegated&&/\/application-authority\/(identity|context|membership)$/u.test(path))return json({error:'token'},401);
   const service=headers['x-internal-service-secret']===serviceSecret;
+  if(path.startsWith(READ_DELEGATION_ROUTES.consents)){const answer=consents(path,scheme,authorization,service,bytes);if(answer)return answer;}
   if(path==='/api/clio/application-authority/read-delegations'){
    if(!service)return json({error:'service'},401);if(state.createStatus)return json({error:'refused'},state.createStatus);
    const body=JSON.parse(bytes);

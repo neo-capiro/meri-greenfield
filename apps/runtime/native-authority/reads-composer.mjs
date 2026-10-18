@@ -40,6 +40,7 @@ import {createReadDelegationCoreClient} from './read-delegation/core-client.mjs'
 import {createRunReadDelegation} from './read-delegation/delegation.mjs';
 import {composeDelegatedNativeCredentials} from './read-delegation/native-credentials.mjs';
 import {createReadDelegationConsents} from './read-delegation/consent.mjs';
+import {createReadDelegationRunOptions} from './read-delegation/run-options.mjs';
 
 /** Server-side secret files the control role renders for reads (absolute paths). `readModeServiceSecret` may name the same
  * file as `serviceSecret`. There is no bearer file: the bearer comes from the live-session relay. */
@@ -170,6 +171,8 @@ export async function createControlReadsComposer(options){
   return entry.delegation.stop(reason);
  }
  const preparation=await prepareGeneralReadInstallation({familyIds,newId,taskPorts,...(c.sourceRoot===undefined?{}:{sourceRoot:c.sourceRoot})});
+ // `runOptions` (lane RD) is the registry-facing form of `stopRun` (`readDelegationRunOptions` of control → prepared candidate →
+ // prepared-run registry, registered like `documentsRunOptions`): it never throws and reports a failed stop instead.
  return Object.freeze({createReadsRuntime:preparation.createReadsRuntime,familyIds:Object.freeze([...familyIds]),missing,
-  readDelegation:Object.freeze({enabled:Boolean(delegationClient?.available),stopRun,...(delegationClient?.available?{consents:createReadDelegationConsents({client:delegationClient,now})}:{})})});
+  readDelegation:Object.freeze({enabled:Boolean(delegationClient?.available),stopRun,...(delegationClient?.available?{consents:createReadDelegationConsents({client:delegationClient,now}),runOptions:createReadDelegationRunOptions({stopRun})}:{})})});
 }

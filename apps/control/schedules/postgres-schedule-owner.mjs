@@ -171,5 +171,35 @@ export function createPostgresScheduleOwner({pool}) {
       return frozenScheduleData({rows:rows.slice(0,s.limit).map(r=>({projection:r.projection,generation:Number(r.generation),unresolved:r.active_intent!==null})),hasMore:rows.length>s.limit});
     },check);
   }
-  return Object.freeze({claim,markDispatching:(b,c)=>transition(b,'DISPATCHING',c),commitKnown:(b,c)=>transition(b,'ACKNOWLEDGED',c),markUnknown:(b,c)=>transition(b,'UNKNOWN',c),list,readFiring,readIntent,acknowledgeReconciled,openOccurrence,settleOccurrence,readOccurrenceForConversation,readOpenOccurrenceForSchedule});
+  /** Option B read consent reference (lane RD, migration 0004): the consent Core holds for this schedule's reads, as Meri last saw
+   * it, beside the projection digest it was approved for. A reference and a state only: never authority, never a credential. */
+  const READ_CONSENT_STATES=['active','paused','revoked'],READ_CONSENT_KEYS=['consentId','state','createdAtMs','expiresAtMs','scheduleProjectionSha256','operationsDigest'];
+  const uuidText=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u,shaText=/^[a-f0-9]{64}$/u;
+  function storedReadConsent(value) {
+    const r=frozenScheduleData(value);
+    if(!r||typeof r!=='object'||Array.isArray(r)||Object.keys(r).length!==READ_CONSENT_KEYS.length||READ_CONSENT_KEYS.some(key=>!Object.hasOwn(r,key))||
+      !uuidText.test(r.consentId)||!READ_CONSENT_STATES.includes(r.state)||!Number.isSafeInteger(r.createdAtMs)||!Number.isSafeInteger(r.expiresAtMs)||r.expiresAtMs<=r.createdAtMs||
+      !shaText.test(r.scheduleProjectionSha256)||!shaText.test(r.operationsDigest))denySchedule('SCHEDULE_READ_CONSENT');
+    return r;
+  }
+  async function readReadConsent(selection,check) {
+    const s=frozenScheduleData(selection);
+    if(typeof s?.tenantId!=='string'||!s.tenantId||!uuidText.test(s.scheduleId??''))denySchedule('SCHEDULE_READ_CONSENT');
+    return transaction(async c=>{
+      const row=(await c.query('SELECT read_consent FROM meri_schedules.projections WHERE tenant_id=$1 AND schedule_id=$2',[s.tenantId,s.scheduleId])).rows[0];check();
+      if(!row||row.read_consent===null||row.read_consent===undefined)return null;
+      return storedReadConsent(row.read_consent);
+    },check);
+  }
+  /** Recorded against the acknowledged generation only (the same fence commitKnown used); a stale write is refused. */
+  async function recordReadConsent(selection,check) {
+    const s=frozenScheduleData(selection),consent=storedReadConsent(s.consent);
+    if(typeof s.tenantId!=='string'||!s.tenantId||!uuidText.test(s.scheduleId??'')||!Number.isSafeInteger(s.generation)||s.generation<1)denySchedule('SCHEDULE_READ_CONSENT');
+    return transaction(async c=>{
+      const changed=await c.query('UPDATE meri_schedules.projections SET read_consent=$4 WHERE tenant_id=$1 AND schedule_id=$2 AND generation=$3',[s.tenantId,s.scheduleId,s.generation,consent]);check();
+      if(changed.rowCount!==1)denySchedule('SCHEDULE_STALE');
+      return frozenScheduleData({scheduleId:s.scheduleId,generation:s.generation,consentId:consent.consentId,state:consent.state});
+    },check);
+  }
+  return Object.freeze({claim,markDispatching:(b,c)=>transition(b,'DISPATCHING',c),commitKnown:(b,c)=>transition(b,'ACKNOWLEDGED',c),markUnknown:(b,c)=>transition(b,'UNKNOWN',c),list,readFiring,readIntent,acknowledgeReconciled,openOccurrence,settleOccurrence,readOccurrenceForConversation,readOpenOccurrenceForSchedule,readReadConsent,recordReadConsent});
 }

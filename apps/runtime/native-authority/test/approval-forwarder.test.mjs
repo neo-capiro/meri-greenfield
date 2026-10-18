@@ -139,3 +139,62 @@ test('the session binder binds once per context and is a no-op for a context wit
  assert.throws(()=>registerApprovalSessionBinder(context,()=>{}),code('APPROVAL_FORWARDER_CONFIGURATION'));
  const sessions={};assert.equal(bindApprovalSessions(context,sessions),true);assert.deepEqual(bound,[sessions]);assert.equal(bindApprovalSessions(Object.freeze({}),sessions),false);
 });
+/** Lane RD: `approval/revoke` (Core `POST .../native/revoke`, append-only, idempotent, attended): the approver revokes their own approval. */
+const revocation=h=>({proposalId:h.proposal.proposalId,commandSha256:h.proposal.commandSha256,approver:principal,binding});
+test('revoke forwards the attended request bound to custody and returns a revoked, Meri-stamped receipt; later decision reads answer revoked',async t=>{
+ const h=await harness();t.after(h.close);
+ await h.decide();const started=Date.now(),receipt=await h.forwarder.revoke(revocation(h));
+ assert.deepEqual(Object.keys(receipt),['decision','checkedAtMs','revoked']);assert.ok(Object.isFrozen(receipt));assert.equal(receipt.revoked,true);
+ assert.equal(receipt.decision.proposalId,h.proposal.proposalId);assert.equal(receipt.decision.commandSha256,h.proposal.commandSha256);assert.deepEqual(receipt.decision.approver,principal);
+ assert.ok(receipt.checkedAtMs>=started);assert.notEqual(receipt.checkedAtMs,7);
+ const sent=h.core.requests.at(-1);assert.equal(sent.url,CORE_ORIGIN+CORE_APPROVAL_ROUTES.revoke);
+ assert.equal(sent.headers.authorization,'Bearer '+NATIVE);assert.equal(sent.headers['x-internal-service-secret'],SECRET);
+ assert.deepEqual(Object.keys(sent.body).sort(),['approver','binding','commandSha256','proposalId']);assert.deepEqual(sent.body.binding,binding);
+ assert.ok(!JSON.stringify(sent).includes(h.f.credential));assert.deepEqual(h.custody.at(-1),h.proposal.proposalId);
+ // Afterwards the decision read answers revoked:true: the lifecycle sees no current approval; the guard input carries the revocation.
+ const adapter=createNativeIntentApprovals({call:(operation,input,options)=>h.forwarder.call(operation,input,options),now:Date.now,maxFactBytes:65536});
+ const selection={proposalId:h.proposal.proposalId,commandSha256:h.proposal.commandSha256,binding};
+ assert.equal(await adapter.readDecision(selection),null);assert.equal(JSON.parse(await adapter.getCurrent(selection)).revoked,true);
+ assert.equal((await h.forwarder.decision(selection)).revoked,true);assert.equal(await h.forwarder.readDecision(selection),null);
+});
+test('revoke is idempotent: concurrent repeats coalesce, a later repeat answers the same revocation; the native adapter consumes the seam',async t=>{
+ const h=await harness();t.after(h.close);await h.decide();const before=h.core.requests.length;
+ const [a,b]=await Promise.all([h.forwarder.revoke(revocation(h)),h.forwarder.revoke(revocation(h))]);assert.equal(h.core.requests.length,before+1);assert.deepEqual(a.decision,b.decision);
+ const again=await h.forwarder.call('approval/revoke',revocation(h),{});assert.equal(h.core.requests.length,before+2);assert.equal(again.revoked,true);assert.deepEqual(again.decision,a.decision);
+ assert.equal(h.synthetic.revocations.size,1);
+ const adapter=createNativeIntentApprovals({call:(operation,input,options)=>h.forwarder.call(operation,input,options),now:Date.now,maxFactBytes:65536});
+ const r=await adapter.revoke(revocation(h));assert.equal(r.revoked,true);assert.equal(r.decision.proposalId,h.proposal.proposalId);
+ // The adapter refuses a receipt that does not say revoked for this proposal.
+ h.core.rewrite=(status,body)=>[status,{...body,revoked:false}];await assert.rejects(adapter.revoke(revocation(h)),code('UNAVAILABLE'));
+});
+test('revoke: custody and approver refusals happen before any Core request with effect none',async t=>{
+ const h=await harness();t.after(h.close);await h.decide();const before=h.core.requests.length;
+ for(const [mutate,expected] of [
+  [{proposalId:id(202)},'ACCESS_DENIED'],[{commandSha256:'f'.repeat(64)},'ACCESS_DENIED'],[{binding:{...binding,runId:id(79)}},'ACCESS_DENIED'],
+  [{approver:{tenantId:binding.tenantId,actorId:'reviewer'}},'ACCESS_DENIED'],[{proposalId:'not-a-uuid'},'INVALID_ARGUMENTS'],[{commandSha256:'short'},'INVALID_ARGUMENTS'],
+ ]){const error=await h.forwarder.revoke({...revocation(h),...mutate}).then(()=>null,e=>e);assert.equal(error?.code,expected,JSON.stringify(mutate));assert.equal(error.effect,'none');}
+ assert.equal(h.core.requests.length,before);
+ // A fresh executor attempt names the same run: stable keys only.
+ const attempt=await h.forwarder.revoke({...revocation(h),binding:{...binding,attemptId:id(77),workerId:id(78)}});assert.equal(attempt.revoked,true);
+});
+test('revoke: no approval yet is Core 409 (REFUSED, none); 403, 5xx, malformed and uncorrelated answers refuse with the typed code and effect',async t=>{
+ const h=await harness();t.after(h.close);
+ const outcome=async()=>h.forwarder.revoke(revocation(h)).then(()=>null,e=>({code:e.code,effect:e.effect}));
+ assert.deepEqual(await outcome(),{code:'REFUSED',effect:'none'});assert.equal(h.synthetic.revocations.size,0);
+ await h.decide();
+ h.core.rewrite=()=>[403,{message:'refused'}];assert.deepEqual(await outcome(),{code:'ACCESS_DENIED',effect:'none'});
+ h.core.rewrite=()=>[500,{message:'down'}];assert.deepEqual(await outcome(),{code:'UNAVAILABLE',effect:'unknown'});
+ h.core.rewrite=()=>[200,{message:'wrong shape'}];assert.deepEqual(await outcome(),{code:'UNAVAILABLE',effect:'unknown'});
+ h.core.rewrite=(status,body)=>[status,{...body,revoked:false}];assert.deepEqual(await outcome(),{code:'UNAVAILABLE',effect:'unknown'});
+ h.core.rewrite=(status,body)=>[status,{...body,decision:{...body.decision,proposalId:id(202)}}];assert.deepEqual(await outcome(),{code:'UNAVAILABLE',effect:'unknown'});
+ h.core.rewrite=(status,body)=>[status,{...body,decision:{...body.decision,policyRevision:'policy2'}}];assert.deepEqual(await outcome(),{code:'UNAVAILABLE',effect:'unknown'});
+ h.core.rewrite=null;h.core.bearers={};assert.deepEqual(await outcome(),{code:'ACCESS_DENIED',effect:'none'});
+});
+test('revoke: a session revoked during the call never reaches Core before the request, and withholds the receipt as unknown after it',async t=>{
+ const h=await harness();t.after(h.close);await h.decide();
+ h.f.sessions.revoke(h.f.credential);const before=h.core.requests.length;
+ const refused=await h.forwarder.revoke(revocation(h)).then(()=>null,e=>e);assert.equal(refused?.code,'ACCESS_DENIED');assert.equal(refused.effect,'none');assert.equal(h.core.requests.length,before);
+ const g=await harness();t.after(g.close);await g.decide();
+ g.core.rewrite=(status,body)=>{g.f.sessions.revoke(g.f.credential);return [status,body];};
+ const error=await g.forwarder.revoke(revocation(g)).then(()=>null,e=>e);assert.equal(error?.code,'ACCESS_DENIED');assert.equal(error.effect,'unknown');assert.equal(g.synthetic.revocations.size,1,'Core recorded the revocation');
+});

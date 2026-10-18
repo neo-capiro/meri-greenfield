@@ -126,3 +126,39 @@ test('a source with only its foreclosure (no-authority) evidence is accepted exa
 test('the production issuance-intent shape (expiry plus its persisted flag) is accepted; any other field is refused before issuance',async()=>{
  for(const persisted of [false,true]){const f=fixture(),{expiresAtMs}=await f.options.issuanceIntent();f.options.issuanceIntent=async()=>({expiresAtMs,persisted});const registry=f.create();try{await registry.ensure({binding:f.binding});assert.equal(f.stats.prepare,1);}finally{await registry.close();}}
  for(const extra of [{persisted:'yes'},{renew:true}]){const f=fixture(),{expiresAtMs}=await f.options.issuanceIntent();f.options.issuanceIntent=async()=>({expiresAtMs,...extra});const registry=f.create();try{await assert.rejects(registry.ensure({binding:f.binding}));assert.equal(f.stats.prepare,0);}finally{await registry.close();}}});
+/** Lane RD (option B): the registry stops the run's Core read delegation on every terminal path, through the registered
+ * `readDelegationRunOptions` (cli → control → prepared candidate → here, like `documentsRunOptions`). */
+function delegationHook(f,{throwing=false,rejecting=false}={}){const stops=[];
+ f.options.readDelegationRunOptions={stopRun({binding,reason}){stops.push({binding,reason});if(throwing)throw Error('synthetic hook throw');if(rejecting)return Promise.reject(Error('synthetic hook rejection'));return Promise.resolve({stopped:true,revoked:true});}};
+ return stops;}
+test('the stop route stops the read delegation as cancelled, then retirement as run_terminal, for the exact run binding',async()=>{
+ const f=fixture(),stops=delegationHook(f),x=stopOnly(f);f.state.targetRecord=undefined;f.state.run='running';const registry=f.create();try{
+  const entry=await registry.ensure({binding:f.binding});assert.equal((await kickoff(entry)).state,'executing');assert.deepEqual(stops,[],'a live run keeps its delegation');
+  assert.equal((await registry.handle(post('/v1/execution/kickoff/stop',x.body,f.options.controlCapability))).status,200);
+  assert.deepEqual(stops.map(s=>s.reason),['cancelled','run_terminal']);for(const s of stops)assert.deepEqual(s.binding,f.binding);
+  assert.equal(x.calls.length,1,'the original was retired');assert.deepEqual(x.appended,[{state:'failed',reasonCode:'ATTEMPT_LOST'}]);
+ }finally{await registry.close();}
+ assert.deepEqual(stops.map(s=>s.reason),['cancelled','run_terminal'],'a closed entry is not stopped again at registry close');
+});
+test('registry close (fence lost, shutdown) stops a live run as fenced; a restart stop-only entry stops as cancelled then run_terminal',async()=>{
+ const f=fixture(),stops=delegationHook(f),registry=f.create();
+ const entry=await registry.ensure({binding:f.binding});await kickoff(entry);assert.deepEqual(stops,[]);
+ await registry.close();assert.deepEqual(stops.map(s=>s.reason),['fenced']);assert.deepEqual(stops[0].binding,f.binding);
+ const g=fixture(),again=delegationHook(g),x=stopOnly(g);g.state.run='running';const restarted=g.create();try{
+  assert.equal((await restarted.handle(post('/v1/execution/kickoff/stop',x.body,g.options.controlCapability))).status,200);
+  assert.deepEqual(again.map(s=>s.reason),['cancelled','run_terminal']);
+ }finally{await restarted.close();}
+});
+test('a throwing or rejecting stop hook never blocks the stop, the retirement or the registry close',async()=>{
+ for(const mode of [{throwing:true},{rejecting:true}]){
+  const f=fixture(),stops=delegationHook(f,mode),x=stopOnly(f);f.state.targetRecord=undefined;f.state.run='running';const registry=f.create();
+  const entry=await registry.ensure({binding:f.binding});await kickoff(entry);
+  assert.equal((await registry.handle(post('/v1/execution/kickoff/stop',x.body,f.options.controlCapability))).status,200,JSON.stringify(mode));
+  assert.deepEqual(stops.map(s=>s.reason),['cancelled','run_terminal']);assert.equal(x.calls.length,1);assert.deepEqual(x.appended,[{state:'failed',reasonCode:'ATTEMPT_LOST'}]);
+  await registry.close();
+ }
+});
+test('without readDelegationRunOptions nothing is called; a malformed option refuses construction',async()=>{
+ const f=fixture();const registry=f.create();try{const entry=await registry.ensure({binding:f.binding});await kickoff(entry);}finally{await registry.close();}
+ for(const bad of [null,{},{stopRun:'x'},{stopRun:new Proxy(()=>{},{})}]){const g=fixture();g.options.readDelegationRunOptions=bad;assert.throws(()=>g.create(),{code:'PREPARED_RUN_REGISTRY_REFUSED'},JSON.stringify(bad));}
+});
