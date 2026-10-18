@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import canonicalize from 'canonicalize';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
+import {resolveOperationContract} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {createRetainedReadCredentialRelay} from '../retained-read-credential-relay.mjs';
 import {clientEvidenceFixture,operations as evidenceOperations} from '../../../gateway/sources/client-evidence/test/fixtures.mjs';
 import {createIdentityContactsFixture} from '../../../gateway/sources/identity-contacts/test/fixtures.mjs';
@@ -44,6 +45,37 @@ function relayFixture(f){
  const create=(changes={})=>createRetainedReadCredentialRelay({task,nativeCredentials,getServiceSecret,now:()=>clock.at,...changes});
  return {f,pins,clock,calls,task,nativeCredentials,stop,getServiceSecret,create};
 }
+
+function actionFixture(){
+ const base=clientEvidenceFixture(),operation={id:'actions.query',version:'0.2.0'};
+ const contract=resolveOperationContract(operation),clientId=base.authority.subject.entityIds[0],request={clientId};
+ const normalized=contract.normalizeInput(request,{binding:base.authority.binding,
+  clientResolution:{reference:clientId,clientId}});
+ return {operation,input:structuredClone(normalized.input),metadata:normalized.metadata,
+  authority:{...base.authority,decision:{...base.authority.decision,operation:'actions.query@0.2.0'},
+   sourceIds:contract.descriptor.sourceRequirements.map(row=>row.sourceId)}};
+}
+
+test('actions.query relay binds the original reservation, one call slot and exact signed alias bytes',async()=>{
+ const x=relayFixture(actionFixture()),receipt=await x.create()(x.pins);
+ assert.equal(receipt.authorizationScheme,'CapiroMeriRead');
+ assert.equal(Object.hasOwn(receipt,'normalizationContext'),false);
+ assert.equal(x.calls.handle.length,1);assert.equal(x.calls.handle[0].callKey,x.pins.invocationId);
+ assert.equal(x.calls.tool.length,1);assert.deepEqual(x.calls.tool[0].operation,x.pins.operation);
+ assert.equal(x.calls.tool[0].argumentsSha256,canonicalSha256(x.pins.input));
+ assert.deepEqual(x.calls.tool[0].target,{method:'POST',path:'/api/clio/tools/actions.query',
+  bodySha256:sha(JSON.stringify({input:x.pins.input,metadata:null}))});
+ assert.equal(x.calls.tool[0].correlationSha256,x.pins.correlationSha256);
+});
+
+test('actions.query relay refuses unscoped or foreign nested selection before credential acquisition',async()=>{
+ for(const mutate of [input=>{input.mode='unscoped_list';input.selection.clientId=null;},
+  input=>{input.selection.clientId='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';}]){
+  const f=actionFixture();mutate(f.input);const x=relayFixture(f);
+  await assert.rejects(x.create()(x.pins),{message:'ACCESS_DENIED'});
+  assert.equal(x.calls.secret,0);assert.equal(x.calls.handle.length,0);assert.equal(x.calls.tool.length,0);
+ }
+});
 
 test('profile receipt binds exact input/body/correlation, selected client and one invocation token',async()=>{
  const x=relayFixture(clientEvidenceFixture()),receipt=await x.create()(x.pins);

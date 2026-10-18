@@ -1,5 +1,4 @@
 /** Selected-client handler; canonical dispatch still owns current authority and release. */
-import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {deny,safeFailure} from '../../dispatch/operation-result.mjs';
 import {frozenData,ownFields,operation,readContext} from './request-context.mjs';
 import {projectActionItems} from './projection.mjs';
@@ -9,12 +8,13 @@ export function createActionItemsReadHandler(options) {
   if(typeof read!=='function'||typeof now!=='function'||typeof newId!=='function')deny('GATEWAY_CONFIGURATION');
   return async function execute(call) {
     try {
-      const fields=ownFields(call,['input','request','authority','argumentsSha256'],['signal']);
-      const context=readContext({input:fields.input,request:fields.request,authority:fields.authority,signal:fields.signal},now);
-      if(context.input.mode!=='client_scoped')deny('UNAVAILABLE');
-      if(typeof fields.argumentsSha256!=='string'||fields.argumentsSha256!==canonicalSha256(context.input))deny('INVALID_ARGUMENTS');
+      const fields=ownFields(call,['input','request','authority','argumentsSha256','invocationId'],['signal']);
+      const context=readContext({input:fields.input,request:fields.request,authority:fields.authority,
+        invocationId:fields.invocationId,signal:fields.signal},now);
+      if(fields.argumentsSha256!==context.argumentsSha256)deny('INVALID_ARGUMENTS');
       context.active();
-      const native=await read({input:context.input,request:context.request,authority:context.authority,signal:context.signal});
+      const native=await read({input:context.input,request:context.request,authority:context.authority,
+        invocationId:context.invocationId,signal:context.signal});
       context.active();const requestId=newId();context.active();const traceId=newId();
       const result=projectActionItems(native,context,{requestId,traceId,retrievedAt:new Date(context.active()).toISOString()});
       context.active();

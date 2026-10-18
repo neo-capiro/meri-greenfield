@@ -1,0 +1,7 @@
+# `actions.query` signed source successor, 18 October 2026
+
+Base: Meri PR167 `2c53e6c5123d392308d84a74eb8da2e5741f5dc1`. This slice owns the `actions.query@0.2.0` gateway source adapter, its signed-operation admission, and the existing retained credential relay. Core owns the exact `/api/clio/tools/actions.query` dispatch alias and the canonical `query_action_items` result producer. The Meri gateway dispatch continues to own current authority, the UNKNOWN reservation, settlement, and release. The task credential issuer remains the existing Option B owner.
+
+The handler forwards its trusted invocation ID only after a selected-client normalized request and original arguments digest pass. The adapter serializes exactly `JSON.stringify({input,metadata:null})`, then requests one signed credential for the same `actions.query@0.2.0` operation, call slot, original normalized-input digest, and exact target body bytes. It sends the bounded canonical four-field correlation header and verifies every credential echo before HTTP. The relay checks current task allocation, selected client, body and correlation pins before borrowing the native tool credential. There is no passive bearer path and no route for unscoped action listing. The response remains the canonical `query_action_items` page projected through the existing `actions.query` result contract.
+
+Focused verification: signed source transport, relay, selected-client and mutation refusals, cancellation/deadline behavior, and unchanged gateway reservation/release. No live source or credential calls.
