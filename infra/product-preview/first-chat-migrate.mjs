@@ -21,6 +21,9 @@ export const ROOT=resolve(dirname(fileURLToPath(import.meta.url)),'../..');
 export const DATABASE_SCRIPT='infra/product-preview/first-chat-database.sql';
 // Supersedes DATABASE_SCRIPT's temporal_grants section (that file stays byte-identical: its sha is ledgered).
 export const TEMPORAL_SCRIPT='infra/product-preview/first-chat-database-temporal.sql';
+/** Integration packet grants (docs/integration/MIGRATION-PACKET-20261018.md, GRANTS-PROPOSAL-20261018.md); a separate file because
+ * DATABASE_SCRIPT's phase_meri_grants sha is ledgered and an edit would refuse every later run. */
+export const INTEGRATION_SCRIPT='infra/product-preview/first-chat-database-integration.sql';
 export const LEDGER='meri_migration_ledger.applied';
 export const OWNER='meri_product_migrator';
 
@@ -50,10 +53,24 @@ export const PLAN=Object.freeze([
  ['migration','apps/runtime/temporal-issuer/migrations/0001_service_task_registrations.sql','59b0e32eac16764bc0d22cb85509b7e9ea1e51c2a50882ed95d9cf14406e0041'],
  ['migration','infra/product-preview/first-chat-seed-budget.sql','adfdbb8590e5c69ccf30c3cecf42bdc483a061ae6639c1db01e952389a39ff3a'],
  ['phase:meri_grants',DATABASE_SCRIPT,'c6e2b5edf6b88030c677cf326c83d8e4f17a0b413808072eae1d1dab3d8814d5'],
- ['phase:temporal_grants',TEMPORAL_SCRIPT,'2d305021ec1c66de034b07d233bb534492f5896d2ed3ff16c7118cf78520f348']
-].map(([kind,path,pinned],index)=>Object.freeze({ordinal:index+1,kind,path,pinned,
+ ['phase:temporal_grants',TEMPORAL_SCRIPT,'2d305021ec1c66de034b07d233bb534492f5896d2ed3ff16c7118cf78520f348'],
+ // Stage 'integration' (proposal, not applied: requires the owner's approval of the migration packet). The 'meri' and 'temporal'
+ // stages stop before these entries; only an explicit `integration` run applies them, after both earlier stages are ledgered.
+ ['migration','apps/control/settings/migrations/0001_settings.sql','7243fe1e45b4890fc36eeb5c96a6ec493bd92cb8572de11b8d6bae5f06d976e1','integration'],
+ ['migration','apps/control/commands/migrations/0001_commands.sql','64f679e434dbc9d54d700af83357296ba3f4cb2c52e382c72e0d7c1caad7c936','integration'],
+ ['migration','apps/control/commands/approval-metadata/migrations/0001_approval_metadata.sql','448678c2241e40e28190987c1f60c3492f39f9a43da8bc6ae6f0708efdd2d1a5','integration'],
+ ['migration','apps/control/intents/migrations/0001_intent_preparations.sql','108b26fbb30d1e7aa2d38942ed5099413a09d7919f5e7fbf2c541ab92f9c68bc','integration'],
+ ['migration','apps/control/schedules/migrations/0001_schedule_owner.sql','bf8c593de97dcdae728765ecd90dac6696b290028d4ffb0586bdae0fe87d91c7','integration'],
+ ['migration','apps/control/schedules/migrations/0002_occurrences.sql','6a8369dc45e2bc330425550583daceb706652698ebbdecee1f5a1f2202a07242','integration'],
+ ['migration','apps/control/task-lookup/migrations/0001_task_lookup.sql','ae3197c4f898c5a8a493b2bee4cd6c5da16c62730ad3447e4f07ebfeaf1c100f','integration'],
+ ['migration','apps/runtime/objective-source/migrations/0001_objective_custody.sql','1e22b44fcc59ae88e593f6d15f63083bdff0c3421584646fc7a357e7f67b9b34','integration'],
+ ['migration','apps/artifacts/migrations/0001_versions.sql','d654a24aa4f45c4b3c43d927263f96b8b2f406af509840819feda36c5f2dee19','integration'],
+ ['migration','apps/artifacts/migrations/0002_retention.sql','8212082ea875117afb2ba129474ba5f6ba4f937c3d0192ca07267738cd73cba6','integration'],
+ ['migration','apps/artifacts/migrations/0003_previews.sql','d1eb7ea68a150f60e7fb63e654a0892044bf24840a785fcff58dded59129b300','integration'],
+ ['phase:integration_grants',INTEGRATION_SCRIPT,'5ece87c8d784298a9f289a1d685dbcb9e4162117f3170f0a9f7d6a39005b0306','integration']
+].map(([kind,path,pinned,declaredStage],index)=>Object.freeze({ordinal:index+1,kind,path,pinned,
  name:kind==='migration'?path:`${path}#${kind.slice(6)}`,
- stage:kind==='phase:temporal_grants'?'temporal':'meri'})));
+ stage:declaredStage??(kind==='phase:temporal_grants'?'temporal':'meri')})));
 
 /** Read every planned file and refuse any byte change against the reviewed pins before a connection exists. */
 export function loadPlan({root=ROOT,read=path=>readFileSync(resolve(root,path)),plan=PLAN}={}){
@@ -267,7 +284,7 @@ async function recordPhase(client,entry){
 
 /** Run one stage against `connect(database)` clients. The main client holds a session advisory lock. */
 export async function runStage({stage,plan,variables,connect,log=()=>{}}){
- if(!['meri','temporal'].includes(stage))refuse('MERI_D2_STAGE');
+ if(!['meri','temporal','integration'].includes(stage))refuse('MERI_D2_STAGE');
  const script=plan.find(entry=>entry.path===DATABASE_SCRIPT).text;
  const phase=(name,extra={})=>runPsqlScript({text:script,variables:{[`phase_${name}`]:'1',...extra},connect,log});
  const main=await connect('capiro');let failure;
@@ -276,6 +293,7 @@ export async function runStage({stage,plan,variables,connect,log=()=>{}}){
   if(locked!==true)refuse('MERI_D2_ANOTHER_RUN_ACTIVE');
   const applied=verifyLedger(await readLedger(main),plan);
   if(stage==='temporal'&&applied<plan.findIndex(entry=>entry.stage==='temporal'))refuse('MERI_D2_MERI_STAGE_INCOMPLETE');
+  if(stage==='integration'&&applied<plan.findIndex(entry=>entry.stage==='integration'))refuse('MERI_D2_PRIOR_STAGE_INCOMPLETE');
   log({event:'ledger',applied});
   await phase('bootstrap',variables);log({event:'phase',phase:'bootstrap'});
   for(const entry of plan.slice(applied)){
@@ -307,9 +325,9 @@ function environment(env){
 
 export async function main(argv=process.argv.slice(2),env=process.env,out=line=>process.stdout.write(JSON.stringify(line)+'\n')){
  const [stage]=argv;
- if(!['plan','meri','temporal'].includes(stage))refuse('MERI_D2_STAGE','use plan, meri or temporal');
+ if(!['plan','meri','temporal','integration'].includes(stage))refuse('MERI_D2_STAGE','use plan, meri, temporal or integration');
  const plan=loadPlan();
- if(stage==='plan'){out({event:'plan',entries:plan.map(({ordinal,name,sha256,stage:s})=>({ordinal,name,sha256,stage:s})),databaseScriptSha256:plan.at(-1).sha256});return;}
+ if(stage==='plan'){out({event:'plan',entries:plan.map(({ordinal,name,sha256,stage:s})=>({ordinal,name,sha256,stage:s})),databaseScriptSha256:plan.find(entry=>entry.path===DATABASE_SCRIPT).sha256});return;}
  const c=environment(env),variables=passwordVariables(env);
  // The same locked pg 8.23.1 the control runtime uses (apps/runtime/package-lock.json, a production dependency).
  const pg=createRequire(resolve(ROOT,'apps/runtime/package.json'))('pg');

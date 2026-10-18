@@ -297,7 +297,9 @@ test('plan pins the change-set order, real paths and current bytes; 0012 and 001
   '0006_native_executions.sql','0007_native_preparation.sql','0008_native_prepared_launch.sql','0009_next_runs.sql',
   '0010_retention.sql','0011_run_issuance.sql','0013_retention_recovery_watermark.sql','0015_model_run_issuance.sql',
   '0016_initial_inputs.sql','0017_initial_run_bindings.sql','0001_product_budget.sql','0002_tenant_budgets.sql',
-  '0001_service_task_registrations.sql','first-chat-seed-budget.sql','first-chat-database.sql#meri_grants','first-chat-database-temporal.sql#temporal_grants']);
+  '0001_service_task_registrations.sql','first-chat-seed-budget.sql','first-chat-database.sql#meri_grants','first-chat-database-temporal.sql#temporal_grants',
+  '0001_settings.sql','0001_commands.sql','0001_approval_metadata.sql','0001_intent_preparations.sql','0001_schedule_owner.sql','0002_occurrences.sql',
+  '0001_task_lookup.sql','0001_objective_custody.sql','0001_versions.sql','0002_retention.sql','0003_previews.sql','first-chat-database-integration.sql#integration_grants']);
  assert.ok(!plan.some(e=>/00(12|14)_/u.test(e.name)));
  assert.equal(plan.find(e=>e.name.includes('temporal-issuer')).path,'apps/runtime/temporal-issuer/migrations/0001_service_task_registrations.sql');
  assert.throws(()=>loadPlan({read:path=>Buffer.from(read(path)+(path.endsWith('0009_next_runs.sql')?'\n':''))}),/MERI_D2_SOURCE_CHANGED/u);
@@ -366,7 +368,7 @@ function fakeDatabase({failOn}={}){
    if(text==='ROLLBACK'){pending=null;return {rows:[]};}
    if(/^INSERT INTO meri_migration_ledger/u.test(text)){assert.ok(pending,'ledger write outside a transaction');pending.push({ordinal:params[0],name:params[1],sha256:params[2]});return {rows:[]};}
    if(/^SELECT CASE WHEN \(TRUE\)::int\s*\+/u.test(text)){state.phases.push('bootstrap');}
-   if(/^SELECT CASE WHEN \(TRUE\)::int = 1 THEN 'ok'/u.test(text))state.phases.push('temporal_grants');
+   if(/^SELECT CASE WHEN \(TRUE\)::int = 1 THEN 'ok'/u.test(text))state.phases.push(/INTEGRATION_GRANTS/u.test(text)?'integration_grants':'temporal_grants');
    if(/^SELECT CASE WHEN \(FALSE\)::int \+ \(TRUE\)::int \+ \(FALSE\)::int/u.test(text))state.phases.push('meri_grants');
    if(/^SELECT CASE WHEN \(FALSE\)::int \+ \(FALSE\)::int \+ \(TRUE\)::int/u.test(text))state.phases.push('temporal_grants');
    if(/^SELECT CASE WHEN \(FALSE\)::int \+ \(FALSE\)::int \+ \(FALSE\)::int \+ \(TRUE\)::int/u.test(text))state.phases.push('release');
@@ -397,10 +399,23 @@ test('runner applies the meri stage in order, one transaction and ledger row eac
  assert.deepEqual(again.state.phases,['bootstrap','release']);
  // Temporal stage then applies only its phase.
  await runStage({stage:'temporal',plan,variables,connect:again.connect});
- assert.deepEqual(again.state.ledger.map(r=>r.ordinal),plan.map(e=>e.ordinal));
+ assert.deepEqual(again.state.ledger.map(r=>r.ordinal),plan.filter(e=>e.stage!=='integration').map(e=>e.ordinal));
  assert.deepEqual(again.state.phases,['bootstrap','release','bootstrap','temporal_grants','release']);
 });
 
+test('integration stage runs only after meri and temporal are ledgered; earlier stages never reach its entries',async()=>{
+ const plan=loadPlan(),integration=plan.filter(e=>e.stage==='integration');
+ assert.equal(integration.length,12);assert.equal(integration.at(-1).kind,'phase:integration_grants');
+ const early=fakeDatabase();
+ await assert.rejects(runStage({stage:'integration',plan,variables,connect:early.connect}),/MERI_D2_PRIOR_STAGE_INCOMPLETE/u);
+ assert.equal(early.state.executed.length,0);
+ const ready=fakeDatabase();ready.state.ledger=plan.filter(e=>e.stage!=='integration').map(e=>({ordinal:e.ordinal,name:e.name,sha256:e.sha256}));ready.state.ledgerTable=ready.state.owner=true;
+ await runStage({stage:'meri',plan,variables,connect:ready.connect});await runStage({stage:'temporal',plan,variables,connect:ready.connect});
+ assert.equal(ready.state.executed.length,0);
+ await runStage({stage:'integration',plan,variables,connect:ready.connect});
+ assert.deepEqual(ready.state.ledger.map(r=>r.ordinal),plan.map(e=>e.ordinal));
+ assert.equal(ready.state.executed.length,11);assert.ok(ready.state.phases.includes('integration_grants'));
+});
 test('runner refuses a changed applied file, a ledger gap and an early temporal stage before any bootstrap',async()=>{
  const plan=loadPlan();
  const changed=fakeDatabase();changed.state.ledgerTable=changed.state.owner=true;
