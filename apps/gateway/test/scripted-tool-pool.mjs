@@ -33,6 +33,7 @@ export function scriptedToolPool(state,clock){
       else if(sql.startsWith('SELECT 1 FROM meri_qualification.budget_liabilities'))rows=liabilities().filter(r=>r.grant_id===p[0]&&r.state==='UNKNOWN');
       else if(sql.includes('AS run_total FROM meri_qualification.budget_liabilities'))rows=[{held:liabilities().filter(r=>r.state==='UNKNOWN').reduce((n,r)=>n+r.hold_micro_usd,0),run_total:liabilities().reduce((n,r)=>n+(r.state==='UNKNOWN'?r.hold_micro_usd:r.consumed_micro_usd),0)}];
       else if(sql.startsWith('SELECT count(*) AS calls'))rows=[{calls:state.reservations.size}];
+      else if(sql.startsWith("SELECT COALESCE(sum(CASE WHEN state='SETTLED' THEN output_bytes ELSE max_output_bytes END),0) AS read_bytes"))rows=[{read_bytes:[...state.reservations.values()].filter(r=>r.run_id===p[0]).reduce((n,r)=>n+Number(r.state==='SETTLED'?r.output_bytes:r.max_output_bytes),0)}];
       else if(sql!=='BEGIN'&&!sql.startsWith('SET LOCAL'))throw Error('unmodelled SQL');
       if(state.afterQuery)await state.afterQuery(sql);
       return {rows};

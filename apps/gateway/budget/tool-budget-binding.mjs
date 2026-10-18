@@ -3,6 +3,7 @@ import { canonicalSha256, validateShape as publicShape } from '../../../packages
 import { validateShape as privateShape } from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import { refuse } from './postgres-budget-store.mjs';
 import {assertOccurrenceCostScope} from './occurrence-cost-scope.mjs';
+import {isGeneralReadManifest,assertGeneralReadManifest} from './general-read-manifest.mjs';
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 export const digest = value => { if (typeof value !== 'string' || !/^[0-9a-f]{64}$/.test(value)) refuse('INVALID_DIGEST'); return value; };
@@ -23,7 +24,8 @@ export function allocation(raw) {
   publicShape('RunBinding', { ...a.run, attemptId: a.run.runId, workerId: a.run.runId, writerFence: 1 });
   if(Object.hasOwn(a,'occurrenceCostScope'))assertOccurrenceCostScope(a.occurrenceCostScope,a.run);
   digest(a.manifestSha256); digest(a.catalogSha256); privateShape('Budgets', a.budgets);
-  privateShape('SkillManifest', a.manifest);
+  // P3: an ordinary conversation run carries the closed base general-read manifest; a selected skill run its SkillManifest.
+  if (isGeneralReadManifest(a.manifest)) assertGeneralReadManifest(a.manifest); else privateShape('SkillManifest', a.manifest);
   if (canonicalSha256(a.manifest) !== a.manifestSha256 || !same(a.manifest.budgets,a.budgets)) refuse('MANIFEST_BUDGET_MISMATCH');
   keys(a.schedule, ['revision', 'expiresAt', 'operations']); digest(a.schedule.revision);
   if (!Number.isSafeInteger(Date.parse(a.schedule.expiresAt)) || !Array.isArray(a.schedule.operations) || !a.schedule.operations.length || a.schedule.operations.length > 4096) refuse('INVALID_CHARGE_SCHEDULE');

@@ -2,6 +2,7 @@
 import { canonicalSha256 } from '../../../packages/contracts/validate.mjs';
 import { PostgresBudgetStore, refuse } from './postgres-budget-store.mjs';
 import { allocation, invocation, grantFacts, same, digest, integer } from './tool-budget-binding.mjs';
+import { isGeneralReadManifest } from './general-read-manifest.mjs';
 import { composeToolBudgetDispatch } from './tool-budget-dispatch.mjs';
 import { composeBudgetExecution } from './tool-budget-execution.mjs';
 import { createToolInvocationOwner } from './tool-invocation-owner.mjs';
@@ -107,6 +108,11 @@ function assembleBudget({ pool, allocationJson, now = Date.now, namespace }) {
           const count = (await client.query(`SELECT count(*) AS calls FROM ${store.tables.tool_reservations} WHERE run_id=$1`, [i.binding.runId])).rows[0];
           if (n(count.calls) >= n(a.budgets.maxToolCalls) || n(budget.consumed_micro_usd)+n(totals.held)+n(charge) > n(budget.cap_micro_usd) ||
               n(totals.run_total)+n(charge) > n(Math.min(a.budgets.maxCostMicroUSD, call.budgets.maxCostMicrousd))) refuse('BUDGET_EXHAUSTED');
+          // P3 aggregate read bytes: settled actual output plus every unsettled hold, plus this call's hold, within the manifest bound.
+          if (isGeneralReadManifest(a.manifest)) {
+            const used = (await client.query(`SELECT COALESCE(sum(CASE WHEN state='SETTLED' THEN output_bytes ELSE max_output_bytes END),0) AS read_bytes FROM ${store.tables.tool_reservations} WHERE run_id=$1`, [i.binding.runId])).rows[0];
+            if (n(used.read_bytes) + n(call.budgets.maxOutputBytes) > n(a.manifest.maxAggregateOutputBytes)) refuse('BUDGET_EXHAUSTED');
+          }
           const occurrence=await readOccurrenceCost({client,tables:store.tables,allocation:a,parseAllocation:allocation});
           if(occurrence&&occurrence.totalMicroUSD+n(charge)>occurrence.maxCostMicroUSD)refuse('BUDGET_EXHAUSTED');
           await client.query(`INSERT INTO ${store.tables.tool_reservations}(invocation_id,reservation_id,grant_id,run_id,facts,operation,arguments_sha256,hold_micro_usd,max_output_bytes,state) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,'UNKNOWN')`, [i.invocationId, call.reservationId, i.grantId, i.binding.runId, facts, operation, argumentsSha256, charge, Math.min(a.budgets.maxOutputBytes,call.budgets.maxOutputBytes)]);
