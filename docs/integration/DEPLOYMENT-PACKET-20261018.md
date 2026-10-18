@@ -34,17 +34,17 @@ Last pinned runtime: N21 `176a8811`, `sha256:5534edfe…`, measured without a pr
  "sourceEnabled": true,
  "userPreferences": {"enabled": true},
  "tenantSettings": {"enabled": true},
- "intents": {"enabled": true},
+ "intents": {"enabled": true, "core": {"enabled": true}},
  "routines": {"enabled": true},
  "retention": {"enabled": true},
  "artifacts": {"enabled": true, "region": "us-east-1", "bucket": "TBD (§3)", "prefix": "preview/", "expectedBucketOwner": "967807252336", "kmsKeyId": "arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042", "authority": {"enabled": true}},
  "downloadLinks": {"enabled": true},
  "capabilityPlatform": "<PROPOSED_PREVIEW_CAPABILITY_PLATFORM verbatim; profile sha256 908d728a… with 14 skills; measured with N22>",
- "reads": {"enabled": true, "serviceSecretArn": "TBD (Core INTERNAL_SERVICE_SECRET exact ARN)", "defaultCongress": 119, "approvedReads": "<lane 2 catalog, 76 operations>"}
+ "reads": {"enabled": true, "serviceSecretArn": "TBD (Core INTERNAL_SERVICE_SECRET exact ARN)", "defaultCongress": 119, "approvedReads": "<lane 2 catalog, 76 operations>", "installation": {"enabled": true}, "discovery": {"enabled": true}, "delegation": {"enabled": true}}
 }
 ```
 
-Plus `--feature-secrets` with the exact VersionId of each secret at render time, and `"memory": {"enabled": true}` (renders `memory {enabled, origin: core.coreOrigin, serviceSecretFile: the reads secret}`). `"intents": {"enabled": true, "execution": {"issuer", "keys": [Ed25519 public JWKs with kid]}}` and `"routines": {"enabled": true, "core": {"cancellationProof": {issuer, kid, publicKey}, "unattendedGrant": {issuer, kid, publicKey}}}` render the Core origin and the reads service secret file into `intents.execution` / `routines.core`; the public JWKs come from the packet's KMS keys (`GetPublicKey` readback).
+Plus `--feature-secrets` with the exact VersionId of each secret at render time, and `"memory": {"enabled": true}` (renders `memory {enabled, origin: core.coreOrigin, serviceSecretFile: the reads secret}`). `"intents": {"enabled": true, "execution": {"issuer", "keys": [Ed25519 public JWKs with kid]}}` and `"routines": {"enabled": true, "core": {"cancellationProof": {issuer, kid, publicKey}, "unattendedGrant": {issuer, kid, publicKey}}}` render the Core origin and the reads service secret file into `intents.execution` / `routines.core`; the public JWKs come from the packet's KMS keys (`GetPublicKey` readback). `intents.core {enabled}` renders the Core P-INT-10 approval forwarder block (`intents.core {origin, serviceSecretFile}`, lane L); `reads.installation` / `reads.discovery` render the P2 installation pin plus the brotli measurement material and the P1 discovery toggle (lane R3; the pin comes from the N22 runtime values); `reads.delegation {enabled}` renders option B's toggle — set it `false` at render time if Core's delegation routes are not live yet (§11), never leave it on against a Core that lacks them.
 
 Budget pins (B1): `allocation.json` `budgets.maxTurns 20`, `maxToolCalls 20`, `maxCostMicroUSD 2000000`, `maxRuntimeSeconds 900`; `policy.json` `runtime.maxTurns 20`; read operations with tariffs (P3).
 
@@ -63,13 +63,15 @@ Budget pins (B1): `allocation.json` `budgets.maxTurns 20`, `maxToolCalls 20`, `m
 
 - Snapshot: `aws rds create-db-cluster-snapshot --db-cluster-identifier capiro-dev-data-auroracluster23d869c0-ltmz40k47ewv --db-cluster-snapshot-identifier meri-integration-pre-<UTC>`; wait `available`; record.
 - Apply: `node infra/product-preview/first-chat-migrate.mjs integration` (plan ordinals 22–35 at tip `TBD`; `plan` output recorded). Refuses unless `meri` and `temporal` are ledgered.
-- Pending plan lines: `meri_memory` 0001 (lane M), any lane X/B2/B(reads) additions, each with sha256 and grants in `first-chat-database-integration.sql`.
+- In the plan: `meri_memory` 0001 (lane M) and `read_delegation_facts` 0001 (option B), each with sha256 and grants in `first-chat-database-integration.sql`. Pending: lane RD's routine read-consent field (a migration only if no existing facts column carries it); the snapshot function below.
+- Core's canonical-admission read: a **Meri-owned `SECURITY DEFINER` snapshot function** (dot 6248138427, refined 6248171459): fixed signature, static schema-qualified SQL, `SET search_path = pg_catalog, pg_temp`, VOLATILE PARALLEL UNSAFE, lock first then `clock_timestamp()` in a separate statement, Core proposal lock before budget lock, grants in stable id order; owner a dedicated NOLOGIN non-superuser role with only the needed SELECT/row-lock privileges; `REVOKE EXECUTE FROM PUBLIC` in the creation transaction; schema USAGE + exact-signature EXECUTE to the Core API role only. DDL and rollback (`DROP FUNCTION`, `DROP ROLE`) come from the Core lane (`docs/coordination/proposals/CORE-ADMISSION-SNAPSHOT-FUNCTION-20261018.sql`, requested) and are carried in `first-chat-database-integration.sql`; Core's receiver calls it on its existing transaction connection.
+- Core API role grants (SELECT on the `meri_read_delegation_facts` views; EXECUTE on the snapshot function): **the Core API's PostgreSQL role name is pending** (Core lane, or the Core task definition's secret reference by name).
 - Core migrations on #84 (approvals, memory, routines consent, read delegation): Core owner's packet section, same snapshot.
 - Rollback: §9.
 
 ## 5. Core preview rev 3
 
-- Current: `capiro-preview-first-chat-core:2`, image `…preview-core@sha256:46acfc07…` (secrets today: DB_USER, DB_PASSWORD, CLERK_SECRET_KEY, CLERK_WEBHOOK_SIGNING_SECRET). Target: image from #84 `TBD`; task template adds `INTERNAL_SERVICE_SECRET` by the new exact ARN (§3); `MERI_TOOL_ALLOWLIST` exact 65 names (fail closed); `MEMORY_GOVERNANCE_LIFECYCLE=enforce` + preview tenant in `MEMORY_GOVERNANCE_TENANTS` (preview task only); `PREVIEW_NATIVE_GETS_ENABLED=true`; KMS key ARNs for the signers.
+- Current: `capiro-preview-first-chat-core:2`, image `…preview-core@sha256:46acfc07…` (secrets today: DB_USER, DB_PASSWORD, CLERK_SECRET_KEY, CLERK_WEBHOOK_SIGNING_SECRET). Target: image from #84 `TBD`; task template adds `INTERNAL_SERVICE_SECRET` by the new exact ARN (§3); `MERI_TOOL_ALLOWLIST` exact 65 names (fail closed); `MEMORY_GOVERNANCE_LIFECYCLE=enforce` + preview tenant in `MEMORY_GOVERNANCE_TENANTS` (preview task only); `PREVIEW_NATIVE_GETS_ENABLED=true`; KMS key ARNs for the signers; optional `MERI_EXECUTION_MAX_*` platform maxima and the D016 profile (20 turns / 20 tool calls / $2 / 900 s) in the template (Core 6248102960). **No ordinary-bearer `create_task` fallback in `first-chat-preview`:** `features.intents.execution` is ON in the same activation window as Core rev 3 (§11).
 
 ## 6. Listener (coordinated action with dot)
 
@@ -102,7 +104,7 @@ Budget pins (B1): `allocation.json` `budgets.maxTurns 20`, `maxToolCalls 20`, `m
 | Conversations, budget | deploy | — |
 | Preferences, tenant settings | settings 0001 + render keys | D016 #1 |
 | Reads (A now, B when Core lands) | reads keys + P1/P2/P3 producers + Core W1 | D016 #2, D016-A #4 |
-| Intents, tasks | intents/commands migrations + Core P-INT-10/execution receiver + KMS key | D016 #9 |
+| Intents, tasks | intents/commands migrations + Core P-INT-10/execution receiver + KMS key + the admission snapshot function; **`intents.execution` ON together with Core rev 3 (no fallback)** | D016 #9 |
 | Routines (attended, then unattended) | schedules migrations + Core routes + schedule worker + consent migration | D016-A #5 |
 | Documents | artifacts migrations + bucket + Core authority receiver + lane X owners | D016 #10 |
 | Memory | `meri_memory` 0001 + Core M2 + governance flags | D016 #6 |
