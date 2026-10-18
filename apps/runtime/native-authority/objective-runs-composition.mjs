@@ -3,7 +3,9 @@
  * private application; the owner inside answers `not-started` (nothing written) until every trusted owner exists:
  *   - `authority`: Core's current-claim authority for an Objective-origin admission (no Meri substitute; absent today),
  *   - `template`: the prepared candidate's dynamic-initial-run facts (versions, policy revision, bindings configuration digest,
- *     run window); Objective runs are prepared only by that path, so without it nothing can be admitted,
+ *     run window); Objective runs are prepared only by that path, so without it nothing can be admitted. The candidate must
+ *     expose it ONLY when the prepared-run splice (run-start-facts.mjs decorator and pair reconstruction) is composed: a run-start
+ *     writer without that reader would let an Objective run be prepared as ordinary chat,
  *   - the control pool, conversation store and Temporal client (always present in control).
  * Nothing here reads configuration files, credentials or request data. */
 import {own} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
