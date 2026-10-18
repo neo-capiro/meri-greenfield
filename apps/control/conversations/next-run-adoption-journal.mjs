@@ -20,7 +20,8 @@ export function createNextRunAdoptionJournal({tx,now,authority,retention,revocat
  /** The caller must already hold the canonical tenant/conversation lock. This is shared by current, accept and execution
   * so they resolve exactly the same lineage inside their own transaction, without opening a nested snapshot. */
  async function readEffectiveFromClient(raw){
-  const {client,binding,check}=own(raw,['client','binding','check']);validateShape('RunBinding',binding);
+  const {client,binding:rawBinding,check}=own(raw,['client','binding','check']),binding=bounded(rawBinding);
+  validateShape('RunBinding',binding);
   if(typeof check!=='function')refuse('CONFIGURATION');
   if(typeof client?.query!=='function')refuse('CONFIGURATION');
    const key=[binding.tenantId,binding.conversationId];
@@ -112,7 +113,8 @@ export function createNextRunAdoptionJournal({tx,now,authority,retention,revocat
   * first-write fences under that same lock, including claims in the product budget schema hidden from the app role. */
  async function claim(raw,check){
   const input=own(raw,['target','toConfigurationSha256','toVersions'],['signal']);
-  const {target,toConfigurationSha256,toVersions,signal}=input;validateShape('RunBinding',target);validateShape('RuntimeVersions',toVersions);nativeSignal(signal);
+  const target=bounded(input.target),toVersions=bounded(input.toVersions),{toConfigurationSha256,signal}=input;
+  validateShape('RunBinding',target);validateShape('RuntimeVersions',toVersions);nativeSignal(signal);
   if(!digest(toConfigurationSha256)||typeof check!=='function')refuse('CONFIGURATION');current();
   return tx(target,check,async client=>{
    if(typeof client?.query!=='function')refuse('CONFIGURATION');const key=[target.tenantId,target.conversationId,target.runId];
@@ -129,7 +131,7 @@ export function createNextRunAdoptionJournal({tx,now,authority,retention,revocat
    const fences=new Set();let latest=null;for(const row of runRows){if(row.tenant_id!==target.tenantId||row.conversation_id!==target.conversationId||row.projection_sha256!==hash(row.projection))refuse('CORRUPT');try{validateShape('Run',row.projection);}catch{refuse('CORRUPT');}const b=row.projection.binding;if(fences.has(b.writerFence))refuse('CORRUPT');fences.add(b.writerFence);if(!latest||b.writerFence>latest.projection.binding.writerFence)latest=row;}
    if(!latest||latest.run_id!==source.runId||!same(latest.projection.binding,source)||!['failed','cancelled'].includes(latest.projection.state)||!same(latest.projection.scopes,sourceEffective.scopes)||latest.projection.policyRevision!==sourceEffective.policyRevision||!same(latest.projection.versions,sourceEffective.versions))refuse('SOURCE');
    const allocationRows=rowsOf(await client.query('SELECT * FROM meri_conversations.native_allocations WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',[...key.slice(0,2),source.runId]));check();
-   if(allocationRows.length!==1)refuse('SOURCE');const allocation=allocationRows[0],record=allocation.record;
+   if(allocationRows.length!==1)refuse('SOURCE');const allocation=allocationRows[0],record=bounded(allocation.record,2097152);
    if(allocation.tenant_id!==target.tenantId||allocation.conversation_id!==target.conversationId||allocation.run_id!==source.runId||allocation.record_sha256!==hash(record))refuse('SOURCE');
    if(reservation.facts.noAuthority){if(record.state!==FORECLOSED||!foreclosed(record,source)||record.foreclosure.state!==latest.projection.state||allocation.record_sha256!==reservation.facts.noAuthority.foreclosureSha256)refuse('SOURCE');}
    else if(record.state!=='RETIRED'||record.resource?.physicalStopProven!==true||!same(record.original?.binding,source)||!same(record.grantIntents?.map(g=>g.grantId).sort(),[...reservation.facts.revocation.grantIds].sort()))refuse('SOURCE');
