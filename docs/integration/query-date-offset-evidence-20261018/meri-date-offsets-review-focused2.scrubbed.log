@@ -1,0 +1,172 @@
+TAP version 13
+# Subtest: one immutable provider supplies all12 datasets and88 fields without physical expressions
+ok 1 - one immutable provider supplies all12 datasets and88 fields without physical expressions
+  ---
+  duration_ms: 3.14875
+  type: 'test'
+  ...
+# Subtest: unknown or decorative provider refuses instead of adopting arbitrary field maps
+ok 2 - unknown or decorative provider refuses instead of adopting arbitrary field maps
+  ---
+  duration_ms: 0.311739
+  type: 'test'
+  ...
+# Subtest: exact family exports and normalization bind selected immutable snapshot
+ok 3 - exact family exports and normalization bind selected immutable snapshot
+  ---
+  duration_ms: 8.162628
+  type: 'test'
+  ...
+# Subtest: model SQL/table/alias/registry authority is refused at closed boundaries
+ok 4 - model SQL/table/alias/registry authority is refused at closed boundaries
+  ---
+  duration_ms: 1.07605
+  type: 'test'
+  ...
+# Subtest: selectors reject coercion hooks, hidden fields, proxies and callbacks
+ok 5 - selectors reject coercion hooks, hidden fields, proxies and callbacks
+  ---
+  duration_ms: 0.267873
+  type: 'test'
+  ...
+# Subtest: typed requests exclude legacy nonarray ignoring and broad Number coercion
+ok 6 - typed requests exclude legacy nonarray ignoring and broad Number coercion
+  ---
+  duration_ms: 0.761406
+  type: 'test'
+  ...
+# Subtest: positive finite row limit preserves floor/default and per-dataset maximum
+ok 7 - positive finite row limit preserves floor/default and per-dataset maximum
+  ---
+  duration_ms: 1.955404
+  type: 'test'
+  ...
+# Subtest: all six aggregates preserve source type/group capabilities
+ok 8 - all six aggregates preserve source type/group capabilities
+  ---
+  duration_ms: 1.912199
+  type: 'test'
+  ...
+# Subtest: bare count and alias collision rules remain exact
+ok 9 - bare count and alias collision rules remain exact
+  ---
+  duration_ms: 0.727385
+  type: 'test'
+  ...
+# Subtest: grouped mixed projections retain ordinary fields and groupable flags
+ok 10 - grouped mixed projections retain ordinary fields and groupable flags
+  ---
+  duration_ms: 0.785693
+  type: 'test'
+  ...
+# Subtest: ordering is limited to selected aliases and preserves legacy desc-exact default
+ok 11 - ordering is limited to selected aliases and preserves legacy desc-exact default
+  ---
+  duration_ms: 0.353843
+  type: 'test'
+  ...
+# Subtest: every closed filter operator is admitted with its actual value contract
+ok 12 - every closed filter operator is admitted with its actual value contract
+  ---
+  duration_ms: 1.188319
+  type: 'test'
+  ...
+# Subtest: numeric boolean and date filters remain type-correct without invented ordering
+ok 13 - numeric boolean and date filters remain type-correct without invented ordering
+  ---
+  duration_ms: 0.978724
+  type: 'test'
+  ...
+# Subtest: filter windows and nonfilterable arrays fail closed
+ok 14 - filter windows and nonfilterable arrays fail closed
+  ---
+  duration_ms: 1.039005
+  type: 'test'
+  ...
+# Subtest: trusted default as-of is distinct from explicit date and generatedAt
+ok 15 - trusted default as-of is distinct from explicit date and generatedAt
+  ---
+  duration_ms: 4.404932
+  type: 'test'
+  ...
+# Subtest: legacy explicit query dates preserve the native UTC parser reference
+ok 16 - legacy explicit query dates preserve the native UTC parser reference
+  ---
+  duration_ms: 78.23714
+  type: 'test'
+  ...
+# Subtest: query date normalization preserves UTC semantics in multiple host timezones
+ok 17 - query date normalization preserves UTC semantics in multiple host timezones
+  ---
+  duration_ms: 1084.583829
+  type: 'test'
+  ...
+# Subtest: all twelve dataset projections accept their complete field selection windows
+ok 18 - all twelve dataset projections accept their complete field selection windows
+  ---
+  duration_ms: 6.487316
+  type: 'test'
+  ...
+# Subtest: success omits SQL and retains exact aliases, dataset and pretrim count
+ok 19 - success omits SQL and retains exact aliases, dataset and pretrim count
+  ---
+  duration_ms: 3.728924
+  type: 'test'
+  ...
+# Subtest: counts retain exact unsafe integer strings and refuse fractional or null values
+ok 20 - counts retain exact unsafe integer strings and refuse fractional or null values
+  ---
+  duration_ms: 1.431335
+  type: 'test'
+  ...
+# Subtest: numbers preserve decimal strings and nullable stored/aggregate results
+ok 21 - numbers preserve decimal strings and nullable stored/aggregate results
+  ---
+  duration_ms: 1.207639
+  type: 'test'
+  ...
+# Subtest: array scalars preserve null elements; dates and booleans retain source types
+ok 22 - array scalars preserve null elements; dates and booleans retain source types
+  ---
+  duration_ms: 0.607184
+  type: 'test'
+  ...
+# Subtest: truncation reports whole-row prefix and original fetched count, including zero retained
+ok 23 - truncation reports whole-row prefix and original fetched count, including zero retained
+  ---
+  duration_ms: 0.47141
+  type: 'test'
+  ...
+# Subtest: legacy256Ki ceiling counts UTF16 not UTF8 and never silently drops half a row
+ok 24 - legacy256Ki ceiling counts UTF16 not UTF8 and never silently drops half a row
+  ---
+  duration_ms: 4.455248
+  type: 'test'
+  ...
+# Subtest: error envelope remains explicit and never doubles as empty success
+ok 25 - error envelope remains explicit and never doubles as empty success
+  ---
+  duration_ms: 0.569127
+  type: 'test'
+  ...
+# Subtest: result observation is independent; validator never claims audit or role admission
+ok 26 - result observation is independent; validator never claims audit or role admission
+  ---
+  duration_ms: 0.434254
+  type: 'test'
+  ...
+# Subtest: snapshots cannot mutate provider, requests, normalized tuples or returned siblings
+ok 27 - snapshots cannot mutate provider, requests, normalized tuples or returned siblings
+  ---
+  duration_ms: 0.507965
+  type: 'test'
+  ...
+1..27
+# tests 27
+# suites 0
+# pass 27
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1422.669465

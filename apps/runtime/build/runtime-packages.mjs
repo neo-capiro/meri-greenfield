@@ -7,7 +7,8 @@ import {Readable} from 'node:stream';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 
-const LOCK_LIMIT=256*1024, FILE_LIMIT=16*1024*1024, TOTAL_LIMIT=64*1024*1024, DB_LIMIT=8*1024*1024;
+// TOTAL_LIMIT covers the signed index plus the document-generation executor closure (CPython, Pillow, lxml, matplotlib/numpy/openblas; ~83 MiB).
+const LOCK_LIMIT=256*1024, FILE_LIMIT=16*1024*1024, TOTAL_LIMIT=128*1024*1024, DB_LIMIT=8*1024*1024;
 const ORIGIN='https://packages.wolfi.dev/os/x86_64/';
 const NAME=/^[a-z0-9][a-z0-9+_.-]{0,127}$/u, VERSION=/^[0-9][A-Za-z0-9._+~-]{0,127}$/u;
 const HASH=/^[a-f0-9]{64}$/u;
@@ -194,12 +195,13 @@ async function runtimePath(root,name){const file=await fs.realpath(path.join(roo
 function installedSet(bytes){
  const text=utf8(bytes);need(!/[\0\r]/u.test(text),'VERIFY');const result=[],seen=new Set();
  for(const block of text.split(/\n\n+/u)){
-  if(!block.trim())continue;let name,version;
+  if(!block.trim())continue;let name,version,architecture;
   for(const line of block.split('\n')){
    if(line.startsWith('P:')){need(name===undefined,'VERIFY');name=line.slice(2);}
    if(line.startsWith('V:')){need(version===undefined,'VERIFY');version=line.slice(2);}
+   if(line.startsWith('A:')){need(architecture===undefined,'VERIFY');architecture=line.slice(2);}
   }
-  need(typeof name==='string'&&NAME.test(name)&&typeof version==='string'&&VERSION.test(version)&&!seen.has(name),'VERIFY');
+  need(typeof name==='string'&&NAME.test(name)&&typeof version==='string'&&VERSION.test(version)&&architecture==='x86_64'&&!seen.has(name),'VERIFY');
   seen.add(name);result.push({name,version});need(result.length<=2176,'VERIFY');
  }
  return result.sort((a,b)=>a.name<b.name?-1:a.name>b.name?1:0);

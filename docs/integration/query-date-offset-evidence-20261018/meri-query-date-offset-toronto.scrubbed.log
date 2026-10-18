@@ -1,0 +1,22 @@
+TAP version 13
+# Subtest: trusted default as-of is distinct from explicit date and generatedAt
+ok 1 - trusted default as-of is distinct from explicit date and generatedAt
+  ---
+  duration_ms: 20.257958
+  type: 'test'
+  ...
+# Subtest: legacy explicit query dates preserve the native UTC parser reference
+ok 2 - legacy explicit query dates preserve the native UTC parser reference
+  ---
+  duration_ms: 82.594014
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 327.416666

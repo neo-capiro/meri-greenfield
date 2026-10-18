@@ -1,0 +1,10 @@
+Exact PR186 source 4d82147624cba329ffc5ade1bb027838a4e37474; actual public normalizer probe; expected failures before repair.
+{"timezone":"UTC","selector":"January 1, 2020 12:30 PM -0500","expected":"2020-01-01T17:30:00.000Z","asOf":"2020-01-01T12:30:00.000Z","filter":"2020-01-01T12:30:00.000Z","pass":false}
+{"timezone":"UTC","selector":"Jan 1 12:30:00 -0500 2020","expected":"2020-01-01T17:30:00.000Z","asOf":"2020-01-01T12:30:00.000Z","filter":"2020-01-01T12:30:00.000Z","pass":false}
+exit=1
+{"timezone":"America/Toronto","selector":"January 1, 2020 12:30 PM -0500","expected":"2020-01-01T17:30:00.000Z","asOf":"2020-01-01T12:30:00.000Z","filter":"2020-01-01T12:30:00.000Z","pass":false}
+{"timezone":"America/Toronto","selector":"Jan 1 12:30:00 -0500 2020","expected":"2020-01-01T17:30:00.000Z","asOf":"2020-01-01T12:30:00.000Z","filter":"2020-01-01T12:30:00.000Z","pass":false}
+exit=1
+{"timezone":"Asia/Tokyo","selector":"January 1, 2020 12:30 PM -0500","expected":"2020-01-01T17:30:00.000Z","asOf":"2020-01-01T12:30:00.000Z","filter":"2020-01-01T12:30:00.000Z","pass":false}
+{"timezone":"Asia/Tokyo","selector":"Jan 1 12:30:00 -0500 2020","expected":"2020-01-01T17:30:00.000Z","asOf":"2020-01-01T12:30:00.000Z","filter":"2020-01-01T12:30:00.000Z","pass":false}
+exit=1
