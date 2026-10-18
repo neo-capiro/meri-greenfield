@@ -319,3 +319,13 @@ test('Stage 3: feature material rides the existing control/material secret; temp
  for(const path of [PATHS.readsServiceSecret,PATHS.readsReadModeServiceSecret,PATHS.downloadLinkKey])assert.ok(bodies.app.includes(path),path);
  for(const body of Object.values(bodies))for(const secret of [...Object.values(SECRET),Buffer.from(key,'base64').toString('utf8')])assert.equal(body.includes(secret),false);
 });
+
+test('artifacts.authority renders the Core artifact authority origin and reuses the reads service secret file; without reads it refuses',async()=>{
+ await baseline();
+ const rendered=await render(withFeatures({sourceEnabled:true,reads:READS,artifacts:{...ARTIFACTS,authority:{enabled:true}}}),{featureSecrets:featureSecrets()});
+ const control=config(rendered,'control');
+ assert.deepEqual(control.artifacts,{...ARTIFACTS,authority:{origin:control.nativeCandidate.identity.origin,serviceSecretFile:PATHS.readsServiceSecret}});
+ await assert.rejects(render(withFeatures({artifacts:{...ARTIFACTS,authority:{enabled:true}}})),/needs features.reads enabled/u);
+ await assert.rejects(render(withFeatures({artifacts:{enabled:false,authority:{enabled:true}}})),/RENDER_INPUT_REFUSED/u);
+ assert.deepEqual(config(await render(withFeatures({artifacts:ARTIFACTS})),'control').artifacts,ARTIFACTS);
+});

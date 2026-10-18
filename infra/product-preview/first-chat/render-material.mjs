@@ -37,7 +37,7 @@
  *   sourceEnabled?: boolean,                                  // G1: control and temporal-worker `sourceEnabled` (runner: delivered by control)
  *   userPreferences?|tenantSettings?|intents?|routines?: {enabled: boolean},
  *   retention?: {enabled: true},                              // artifacts tenantId (= core tenantId) and download links need it
- *   artifacts?: {enabled:false} | {enabled:true, region:'us-east-1', bucket, prefix, expectedBucketOwner:'967807252336', kmsKeyId (key ARN)},
+ *   artifacts?: {enabled:false} | {enabled:true, region:'us-east-1', bucket, prefix, expectedBucketOwner:'967807252336', kmsKeyId (key ARN), authority?: {enabled:true} (needs reads)},
  *   downloadLinks?: {enabled:false} | {enabled:true, ttlMs?},  // signing key generated per render -> /run/meri/download-link.key
  *   capabilityPlatform?: {maximum, defaults, roleCeilings},   // verbatim; runtime values must carry the matching capabilityProfileSha256 (G3)
  *   reads?: {enabled:false} | {enabled:true, serviceSecretArn, readModeServiceSecretArn?, defaultCongress?, approvedReads?}
@@ -194,15 +194,17 @@ export function parseFeatures(raw,{secrets={},checkpoint}={}){
  for(const key of ['userPreferences','tenantSettings','intents','routines'])if(f[key]!==undefined)out[key]=toggle(key);
  if(f.retention!==undefined){if(toggle('retention').enabled!==true)fail('RENDER_INPUT_REFUSED','features.retention.enabled must be true (omit retention to leave it undeclared)');out.retention={enabled:true};}
  if(f.artifacts!==undefined){
-  const storage=['region','bucket','prefix','expectedBucketOwner','kmsKeyId'],a=record(f.artifacts,'features.artifacts',['enabled'],storage);
-  if(!bool(a.enabled,'features.artifacts.enabled')){if(storage.some(k=>a[k]!==undefined))fail('RENDER_INPUT_REFUSED','features.artifacts: a disabled store names no storage');out.artifacts={enabled:false};}
+  const storage=['region','bucket','prefix','expectedBucketOwner','kmsKeyId'],a=record(f.artifacts,'features.artifacts',['enabled'],[...storage,'authority']);
+  if(!bool(a.enabled,'features.artifacts.enabled')){if([...storage,'authority'].some(k=>a[k]!==undefined))fail('RENDER_INPUT_REFUSED','features.artifacts: a disabled store names no storage');out.artifacts={enabled:false};}
   else{
-   record(a,'features.artifacts',['enabled',...storage]);
+   record(a,'features.artifacts',['enabled',...storage],['authority']);
+   // Core artifact current authority (docs/integration/ARTIFACT-CURRENT-AUTHORITY-CONTRACT.md); reuses the reads Core service secret.
+   const authority=a.authority===undefined?false:record(a.authority,'features.artifacts.authority',['enabled']).enabled===true;
    if(a.region!==REGION||a.expectedBucketOwner!==ACCOUNT)fail('RENDER_INPUT_REFUSED',`features.artifacts region/expectedBucketOwner must be ${REGION}/${ACCOUNT}`);
    if(typeof a.kmsKeyId!=='string'||!KMS_KEY_ARN.test(a.kmsKeyId))fail('RENDER_INPUT_REFUSED','features.artifacts.kmsKeyId must be a full KMS key ARN in this account and region');
-   try{compileRuntimeArtifactsConfiguration({artifacts:{...a}});}catch{fail('RENDER_INPUT_REFUSED','features.artifacts bucket/prefix (artifacts/configuration.mjs)');}
+   try{const {authority:_authority,...store}=a;compileRuntimeArtifactsConfiguration({artifacts:store});}catch{fail('RENDER_INPUT_REFUSED','features.artifacts bucket/prefix (artifacts/configuration.mjs)');}
    if(checkpoint&&a.bucket===checkpoint.bucket&&[a.prefix,checkpoint.prefix].some((p,i,all)=>(all[1-i]+'/').startsWith(p+'/')))fail('RENDER_INPUT_REFUSED','features.artifacts must not overlap the run checkpoint objects');
-   out.artifacts={enabled:true,region:a.region,bucket:a.bucket,prefix:a.prefix,expectedBucketOwner:a.expectedBucketOwner,kmsKeyId:a.kmsKeyId};
+   out.artifacts={enabled:true,region:a.region,bucket:a.bucket,prefix:a.prefix,expectedBucketOwner:a.expectedBucketOwner,kmsKeyId:a.kmsKeyId,...(authority?{authority:true}:{})};
   }
  }
  if(f.downloadLinks!==undefined){
@@ -236,6 +238,7 @@ export function parseFeatures(raw,{secrets={},checkpoint}={}){
     ...(r.defaultCongress===undefined?{}:{defaultCongress:r.defaultCongress}),...(approvedReads===undefined?{}:{approvedReads})};
   }
  }
+ if(out.artifacts?.authority===true&&out.reads?.enabled!==true)fail('RENDER_INPUT_REFUSED','features.artifacts.authority reuses the reads Core service secret: it needs features.reads enabled');
  return out;
 }
 /** The single capability profile every run resolves to under `capabilityPlatform` (G3), or null when the platform is absent or
@@ -443,7 +446,8 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,ident
  const featureKeys={};
  for(const key of ['userPreferences','tenantSettings','intents','routines','retention'])if(features[key]!==undefined)featureKeys[key]={...features[key]};
  // artifacts/configuration.mjs: tenantId (publication custody) exactly when retention is declared; the preview has one tenant.
- if(features.artifacts!==undefined)featureKeys.artifacts=features.artifacts.enabled?{...features.artifacts,...(features.retention?{tenantId:k.tenantId}:{})}:{enabled:false};
+ if(features.artifacts!==undefined){const {authority,...store}=features.artifacts;featureKeys.artifacts=store.enabled?{...store,...(features.retention?{tenantId:k.tenantId}:{}),
+  ...(authority?{authority:{origin:k.coreOrigin,serviceSecretFile:PATHS.readsServiceSecret}}:{})}:{enabled:false};}
  if(features.downloadLinks!==undefined)featureKeys.downloadLinks=features.downloadLinks.enabled?{enabled:true,keyFile:PATHS.downloadLinkKey,...(features.downloadLinks.ttlMs===undefined?{}:{ttlMs:features.downloadLinks.ttlMs})}:{enabled:false};
  if(features.capabilityPlatform!==undefined)featureKeys.capabilityPlatform=structuredClone(features.capabilityPlatform);
  if(features.reads!==undefined)featureKeys.reads=features.reads.enabled?{enabled:true,serviceSecretFile:PATHS.readsServiceSecret,
