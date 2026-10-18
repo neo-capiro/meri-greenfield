@@ -86,7 +86,7 @@ test('explicit synthetic source-enabled composition reaches both actual APIs thr
   const prepared=await routes.public.handle(request(paths[0],{arguments:{taskId:id(21),title:'Updated',status:'open'}}));assert.equal(prepared.status,200);const {proposal}=await prepared.json();
   assert.equal(s.task.f.state.fetches,0);assert.notEqual((await routes.public.handle(request(paths[1],{proposal}))).status,200);assert.equal(s.task.f.state.fetches,0);
   s.task.approve(proposal);const executed=await routes.public.handle(request(paths[1],{proposal}));assert.equal(executed.status,200);assert.equal((await executed.json()).status,'observed');
-  assert.equal((await routes.public.handle(request(paths[1],{proposal}))).status,200);assert.equal(s.task.f.state.fetches,1);assert.equal(s.task.f.state.http.url,'https://source.invalid/clio/tools/update_task');assert.deepEqual(JSON.parse(s.task.f.state.http.options.body),{taskId:id(21),title:'Updated',status:'todo'});
+  assert.equal((await routes.public.handle(request(paths[1],{proposal}))).status,200);assert.equal(s.task.f.state.fetches,1);assert.equal(s.task.f.state.http.url,'https://source.invalid/api/clio/tools/update_task');assert.deepEqual(JSON.parse(s.task.f.state.http.options.body),{taskId:id(21),title:'Updated',status:'todo'});
   const census=assembly.productReadiness();assert.equal(census.owners.find(owner=>owner.name==='tasks.commands').state,'composed');assert.equal(census.owners.find(owner=>owner.name==='settings.userPreferences').state,'composed');assert.equal(census.ready,false);
  }finally{assembly.close();}assert.equal(s.ends,0,'assembly must not dispose its borrowed pool');
 });
