@@ -1,6 +1,7 @@
 {
-  "publishedCodeCommit": "88026e7e5ff5a568b9c2c250c6ebb1573abe09b3",
-  "reviewedCompleteCodeTree": "7b599373392e91b0ffd04f0e80b4f5a5291024c6",
+  "initialPublishedCodeCommit": "88026e7e5ff5a568b9c2c250c6ebb1573abe09b3",
+  "latestPublishedCodeCommit": "0d3388a88aa575fba2bf9ee9c1c219053ea09418",
+  "latestReviewedCompleteCodeTree": "be5ece2d8ff81d6112fb55c29e60beb69c8c4c09",
   "scrubbing": "localworkspacepathsonly; source-time manifests retained as source-time evidence",
   "files": [
     {
@@ -22,6 +23,141 @@
       "path": "SOURCE-PUBLICATION.json",
       "bytes": 843,
       "sha256": "8eec3debf053a817b6d81f8dbf6b7abead5e7ba9812c10870104837ab0b1979d"
+    },
+    {
+      "path": "attached-date-offset/README.md",
+      "bytes": 2088,
+      "sha256": "2d0b5e22574d70707629cc7e8341ad661eae77a9008e3a0ce2816382c1d6a8a5"
+    },
+    {
+      "path": "attached-date-offset/after-query.tap",
+      "bytes": 5971,
+      "sha256": "482262c7327385fd506811934d6d8a59e1638da6f29bfe2905835f53e3345cb4"
+    },
+    {
+      "path": "attached-date-offset/before-new-regression.tap",
+      "bytes": 2341,
+      "sha256": "72dec10a4c75d1930e94c295f3ffd97c505cf9e96359fc0e3434c91658cb6210"
+    },
+    {
+      "path": "attached-date-offset/control-types.json",
+      "bytes": 242,
+      "sha256": "0216c8dd6b283f334869d06d00f076fead9c9758f6f69164650b814decaa4428"
+    },
+    {
+      "path": "attached-date-offset/control-types.tap",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "attached-date-offset/followup.json",
+      "bytes": 1490,
+      "sha256": "8b9e0a451fbd381cfde28b2e7ef0d47e754b9e2cd772993d1c42e330f48497ed"
+    },
+    {
+      "path": "attached-date-offset/review-REFERENCE-REVIEW.md",
+      "bytes": 4331,
+      "sha256": "b83f02841a43b9b1b7c2a45a8031aacaa300dd09082505034d1fa6d8a395cb18"
+    },
+    {
+      "path": "attached-date-offset/review-cases.json",
+      "bytes": 3609,
+      "sha256": "b823e9bb54e044a4051c7c8197dfa3199ac4994814edbcebca99cfd686b1fc6e"
+    },
+    {
+      "path": "attached-date-offset/review-public-after-America-Toronto.log",
+      "bytes": 11199,
+      "sha256": "abce6d8388dde75fc683ed4d4822b51855a01b2f677bc4714dce0f937572627a"
+    },
+    {
+      "path": "attached-date-offset/review-public-after-Asia-Tokyo.log",
+      "bytes": 11194,
+      "sha256": "69884a0c4cd422513f36b418781496559d291d828fb10c995cc206a12a7f2f4c"
+    },
+    {
+      "path": "attached-date-offset/review-public-after-UTC.log",
+      "bytes": 11187,
+      "sha256": "9e34ef64f8cdadcf48fb386d6270ca319d70518f1dd80ccea3ef0accd0709dfc"
+    },
+    {
+      "path": "attached-date-offset/review-public-before-America-Toronto.log",
+      "bytes": 14920,
+      "sha256": "5985bfd820161d361e12ebbc8f5b474c1272b1350ba71a2f7765f35eac7ee452"
+    },
+    {
+      "path": "attached-date-offset/review-public-before-Asia-Tokyo.log",
+      "bytes": 14915,
+      "sha256": "42d18568477af1dd789d1b0308281f543edb59fe40853f2a3ec349958785bc3a"
+    },
+    {
+      "path": "attached-date-offset/review-public-before-UTC.log",
+      "bytes": 14908,
+      "sha256": "85180140672972295cee17cf57f00cc50c967f6861b3f4607806fc99fd496cc5"
+    },
+    {
+      "path": "attached-date-offset/review-public-probe.mjs",
+      "bytes": 3457,
+      "sha256": "62f874f755aa31723038e1cb27644fdf086d30e52e3d8dfa067fa267af9ab371"
+    },
+    {
+      "path": "attached-date-offset/review-reference-UTC.json",
+      "bytes": 3999,
+      "sha256": "0d6299e7bda3c2b2aaa975c08573cf75e547f654c105774d840055fca5ddc800"
+    },
+    {
+      "path": "attached-date-offset/review-reference-cases.mjs",
+      "bytes": 1461,
+      "sha256": "500876f797fb5254b6cc6f8b5a3b9cfaeb3380cb92be9748fa84db059b052e97"
+    },
+    {
+      "path": "attached-date-offset/review-review-evidence.json",
+      "bytes": 5295,
+      "sha256": "cf312b7d5482f987a238aa73721f378002f3c2804c90a3f23cad2dd6dbc4817b"
+    },
+    {
+      "path": "attached-date-offset/review-selected-after-America-Toronto.tap",
+      "bytes": 536,
+      "sha256": "ea1cb2eada3254fbec6d8a197c9756776e9ff114f476ff602dd0be0a6d01e8bc"
+    },
+    {
+      "path": "attached-date-offset/review-selected-after-Asia-Tokyo.tap",
+      "bytes": 534,
+      "sha256": "3e3a50200d755bee52fe4cef859d0f93f196060fbb7e8e9f88b991975e9d0164"
+    },
+    {
+      "path": "attached-date-offset/review-selected-after-UTC.tap",
+      "bytes": 536,
+      "sha256": "59b88688b3d498976367b8703fa06891fa03983b95baee5af545f8dc070efbb9"
+    },
+    {
+      "path": "attached-date-offset/runtime-types.json",
+      "bytes": 228,
+      "sha256": "43d871c5c8037a5883faffb3f1c5d0a80d34e823d19e21ebebbdf17ec462f25f"
+    },
+    {
+      "path": "attached-date-offset/runtime-types.tap",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "attached-date-offset/standard.json",
+      "bytes": 358,
+      "sha256": "708ca75b020e6b188d8e1a2fa4db197b195097d89977f1b0f94f526ce87bca01"
+    },
+    {
+      "path": "attached-date-offset/standard.tap",
+      "bytes": 392771,
+      "sha256": "dae7441f28056bbbde4bd4ed2058fd355135715781c60f6419e0311c897b4a22"
+    },
+    {
+      "path": "attached-date-offset/worker.json",
+      "bytes": 309,
+      "sha256": "b7be3ae9e9b64a885c28e848473917ff0db1c5069006a0cbf39e06832b880dac"
+    },
+    {
+      "path": "attached-date-offset/worker.tap",
+      "bytes": 4734,
+      "sha256": "84daaa2d652b09b967591252cb44d941d384a7468c9ceb2272be1873f8ee5324"
     },
     {
       "path": "core-proposal/README.md",

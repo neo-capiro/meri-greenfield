@@ -1,5 +1,7 @@
 # Query date offset correction — 2026-10-18
 
+> Later attached-plus correction: [exact `12:30 Jan 1 2020+0530` follow-up](integration-evidence-20261018/attached-date-offset/README.md). The earlier900-case result here did not cover this form; it now has an exact three-timezone regression and an expanded948-case reference matrix.
+
 The PR186 queryDate implementation incorrectly replaced valid explicit offsets when a meridiem preceded the offset or a year followed it. Both independently reported cases now preserve the native instant, **2020-01-01T17:30:00.000Z**, in public as-of selectors and date filters on UTC, America/Toronto and Asia/Tokyo:
 
 | Accepted input | PR186 `4d821476` | Corrected result |
