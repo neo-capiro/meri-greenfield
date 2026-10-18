@@ -29,17 +29,20 @@ export function approvalSubject({binding,server,action,toolUseId,input,pageOrigi
 export function approvalRequest({subject,input,requestedAtMs,expiresAtMs}){
  return {schema:APPROVAL_REQUEST_SCHEMA,subject:structuredClone(subject),subjectSha256:canonicalSha256(subject),input:structuredClone(input),requestedAtMs,expiresAtMs};
 }
-/** null when `receipt` authorizes exactly `request` at time `at`, otherwise the stable refusal code. */
-export function receiptRefusal(receipt,request,at){
- if(!record(receipt)||receipt.schema!==APPROVAL_RECEIPT_SCHEMA||!record(receipt.decision))return 'BROWSER_APPROVAL_DENIED';
- const d=receipt.decision;try{validateShape('ApprovalDecision',d);}catch{return 'BROWSER_APPROVAL_DENIED';}
- if(d.decision!=='approved')return 'BROWSER_APPROVAL_DENIED';
+/** null when `receipt` authorizes exactly `request` at time `at`, otherwise the stable refusal code. `schema` and
+ * `prefix` let another consequential-action subject (Bash, `capabilities/bash-approval.mjs`) reuse the same canonical
+ * decision checks with its own receipt schema and refusal codes; the browser defaults are unchanged. */
+export function receiptRefusal(receipt,request,at,{schema=APPROVAL_RECEIPT_SCHEMA,prefix='BROWSER'}={}){
+ const code=reason=>`${prefix}_APPROVAL_${reason}`;
+ if(!record(receipt)||receipt.schema!==schema||!record(receipt.decision))return code('DENIED');
+ const d=receipt.decision;try{validateShape('ApprovalDecision',d);}catch{return code('DENIED');}
+ if(d.decision!=='approved')return code('DENIED');
  const {subject,subjectSha256}=request;
- if(receipt.subjectSha256!==subjectSha256||d.commandSha256!==subjectSha256||receipt.proposalId!==d.proposalId||receipt.toolUseId!==subject.toolUseId||d.approver.tenantId!==subject.binding.tenantId)return 'BROWSER_APPROVAL_MISMATCH';
+ if(receipt.subjectSha256!==subjectSha256||d.commandSha256!==subjectSha256||receipt.proposalId!==d.proposalId||receipt.toolUseId!==subject.toolUseId||d.approver.tenantId!==subject.binding.tenantId)return code('MISMATCH');
  const decidedAtMs=Date.parse(d.decidedAt);
- if(decidedAtMs<request.requestedAtMs||decidedAtMs>at||Date.parse(d.expiresAt)<=at||request.expiresAtMs<at)return 'BROWSER_APPROVAL_EXPIRED';
+ if(decidedAtMs<request.requestedAtMs||decidedAtMs>at||Date.parse(d.expiresAt)<=at||request.expiresAtMs<at)return code('EXPIRED');
  const c=receipt.consumption;
- if(!record(c)||c.consumed!==true||typeof c.consumptionId!=='string'||!UUID.test(c.consumptionId)||!Number.isSafeInteger(c.consumedAtMs)||c.consumedAtMs<decidedAtMs||c.consumedAtMs>at)return 'BROWSER_APPROVAL_UNCONSUMED';
+ if(!record(c)||c.consumed!==true||typeof c.consumptionId!=='string'||!UUID.test(c.consumptionId)||!Number.isSafeInteger(c.consumedAtMs)||c.consumedAtMs<decidedAtMs||c.consumedAtMs>at)return code('UNCONSUMED');
  return null;
 }
 /** Run-local ledger: `claim(receipt)` is true once per proposal, consumption and tool-use id, false on any reuse. */

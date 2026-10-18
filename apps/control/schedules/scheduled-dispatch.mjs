@@ -10,7 +10,10 @@
  * and native workflow. The row stays OPEN through UNKNOWN, so it outlives the dispatch workflow's run timeout: no later occurrence
  * of the schedule is admitted while it is open. Only evidence settles it: the run's start observed (DISPATCHED) or a fenced
  * refusal of this occurrence (REFUSED). A later firing may settle a blocking predecessor only by observing the predecessor's own
- * started run through that row; absence or an admitted-but-unstarted run keeps the barrier. */
+ * started run through that row; absence or an admitted-but-unstarted run keeps the barrier.
+ * With the runtime's canonical jobOwner, ACTIVE also retains OPEN through running/paused/approval-waiting work. DISPATCHED then
+ * requires actual same-work terminal state and proven retirement; started workflows alone never settle the job-mode barrier.
+ * The original two-port low-level mode remains compatible for source-only legacy callers. */
 import {types} from 'node:util';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {validateShape} from '../../../packages/contracts/validate.mjs';
@@ -19,7 +22,7 @@ import {sdkMethod} from './temporal-schedule-mutations.mjs';
 import {snapshotOccurrence,occurrenceIdentity} from './scheduled-occurrence.mjs';
 import {workflowId} from '../conversations/temporal-dispatch.mjs';
 
-const PORTS=['scheduleOwner','store','dispatcher','runs','authority','taskInstructions','versions','now','maxRequestMs'];
+const PORTS=['scheduleOwner','store','dispatcher','runs','authority','taskInstructions','versions','now','maxRequestMs','runAdmission','jobOwner'];
 function optionsData(value,allowed,required=allowed) {
  if(!value||typeof value!=='object'||types.isProxy(value)||Object.getPrototypeOf(value)!==Object.prototype)denySchedule('SCHEDULE_DISPATCH_OPTIONS');
  const out={};for(const key of Reflect.ownKeys(value)){const d=Object.getOwnPropertyDescriptor(value,key);if(!allowed.includes(key)||!d.enumerable||!Object.hasOwn(d,'value'))denySchedule('SCHEDULE_DISPATCH_OPTIONS');out[key]=d.value;}
@@ -33,6 +36,8 @@ export function createScheduledDispatch(options) {
  const o=optionsData(options,PORTS,PORTS.slice(0,7)),now=o.now??Date.now,maxRequestMs=o.maxRequestMs??10000;
  const readFiring=sdkMethod(o.scheduleOwner,'readFiring'),openOccurrence=sdkMethod(o.scheduleOwner,'openOccurrence'),settleOccurrence=sdkMethod(o.scheduleOwner,'settleOccurrence'),accept=sdkMethod(o.store,'accept'),readOptional=sdkMethod(o.store,'readOptional');
  const start=sdkMethod(o.dispatcher,'start'),describeRun=sdkMethod(o.runs,'describe'),authorize=sdkMethod(o.authority,'authorize'),readInstruction=sdkMethod(o.taskInstructions,'read');
+ const admit=o.runAdmission===undefined?null:sdkMethod(o.runAdmission,'admit');
+ const inspectJob=o.jobOwner===undefined?null:sdkMethod(o.jobOwner,'inspect'),cancelJob=o.jobOwner===undefined?null:sdkMethod(o.jobOwner,'cancel');
  try{validateShape('RuntimeVersions',o.versions);}catch{denySchedule('SCHEDULE_DISPATCH_OPTIONS');}
  const versions=frozenScheduleData(o.versions);
  if(typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)denySchedule('SCHEDULE_DISPATCH_OPTIONS');
@@ -110,12 +115,31 @@ export function createScheduledDispatch(options) {
   if(r?.state!==state&&r?.state!=='ABSENT')denySchedule('SCHEDULE_OCCURRENCE_RECEIPT');
   return result(state,c.id,code,admitted);
  }
+ /** Job mode keeps the same OPEN row through start, holds and uncertain effects. Only the canonical job owner may release it. */
+ async function jobProgress(c,{cancel=false}={}) {
+  const began=now(),r=frozenScheduleData(await c.life.run(signal=>(cancel?cancelJob:inspectJob)({occurrence:c.occ,effect:c.effect,signal,deadlineMs:c.deadline()}))),at=now();
+  if(!r||Object.keys(r).length!==7||!['state','binding','currentBinding','runState','reason','checkedAtMs','expiresAtMs'].every(k=>Object.hasOwn(r,k))||
+   !['OCCUPIED','SETTLED'].includes(r.state)||canonicalSha256(r.binding)!==canonicalSha256(c.id.binding)||
+   !Number.isSafeInteger(r.checkedAtMs)||r.checkedAtMs<began||r.checkedAtMs>at||!Number.isSafeInteger(r.expiresAtMs)||r.expiresAtMs<=at||
+   r.reason!==null&&typeof r.reason!=='string')denySchedule('SCHEDULE_JOB_RECEIPT');
+  if((r.currentBinding===null)!==(r.runState===null))denySchedule('SCHEDULE_JOB_RECEIPT');
+  if(r.currentBinding!==null){try{validateShape('RunBinding',r.currentBinding);}catch{denySchedule('SCHEDULE_JOB_RECEIPT');}
+   if(['tenantId','actorId','conversationId'].some(k=>r.currentBinding[k]!==c.id.binding[k])||r.currentBinding.writerFence<c.id.binding.writerFence||
+    !['queued','starting','running','paused','waiting-for-approval','completed','failed','cancelled'].includes(r.runState))denySchedule('SCHEDULE_JOB_RECEIPT');}
+  if(r.state==='SETTLED'&&(r.currentBinding===null||!['completed','failed','cancelled'].includes(r.runState)||r.reason!==null))denySchedule('SCHEDULE_JOB_RECEIPT');
+  c.limit(r.expiresAtMs);
+  return r.state==='SETTLED'?settled(c,'DISPATCHED',true):result('ACTIVE',c.id,r.reason,r.currentBinding!==null);
+ }
+ // An earlier absence read cannot foreclose a concurrent native admission. In job mode a pre-admission refusal records no
+ // settlement; any existing OPEN row remains a barrier until the canonical job owner proves its actual work settled.
+ const refused=(c,admitted,code)=>inspectJob?admitted?jobProgress(c):result('REFUSED',c.id,code,false):settled(c,'REFUSED',admitted,code);
  /** A blocking predecessor is settled only by its own started run, found through the run its durable row names. */
  async function predecessorStarted(c,blocking) {
   const occ=snapshotOccurrence(blocking.occurrence),id=occurrenceIdentity(occ),p={...c,occ,id,effect:effectOf(id)};
   if(occ.projection.scheduleId!==c.occ.projection.scheduleId||id.binding.tenantId!==c.id.binding.tenantId||canonicalSha256(p.effect)!==blocking.effectSha256)denySchedule('SCHEDULE_OCCURRENCE_CONFLICT');
   const saved=await existing(p);
   if(saved===null||!await started(p,saved))return false;
+  if(inspectJob)return (await jobProgress(p)).outcome==='DISPATCHED';
   await settled(p,'DISPATCHED',true);return true;
  }
  /** Open (or resume) this occurrence's durable barrier before any effect. Returns null when this occurrence holds it. */
@@ -129,12 +153,25 @@ export function createScheduledDispatch(options) {
   }
   return 'SCHEDULE_OCCURRENCE_UNRESOLVED';
  }
- function admission(c,scopes,prompt) {
-  const b=c.id.binding,createdAt=new Date(now()).toISOString(),policyRevision=scopes[0].policyRevision;
+ function admission(c,scopes,prompt,saved=null) {
+  const b=c.id.binding,createdAt=saved?.run.createdAt??new Date(now()).toISOString(),policyRevision=scopes[0].policyRevision;
   return {conversation:{conversationId:b.conversationId,owner:{tenantId:b.tenantId,actorId:b.actorId},scopes,createdAt,policyRevision},
-   run:{binding:b,state:'queued',scopes,createdAt,policyRevision,versions},
-   request:{requestId:c.id.requestId,prompt,skill:null,window:null,windowRequest:null},
+   run:saved?.run??{binding:b,state:'queued',scopes,createdAt,policyRevision,versions},
+   request:saved?.request??{requestId:c.id.requestId,prompt,skill:null,window:null,windowRequest:null},
    event:{contractVersion:'0.1.0',eventId:c.id.eventId,binding:b,sequence:1,createdAt,scopes,type:'run.status',data:{state:'queued',reasonCode:null}}};
+ }
+ /** The runtime facet must prove durable original admission, then the canonical store must independently show the same request.
+  * Receipt text alone never permits a native start. The low-level direct-accept path remains compatible for existing callers. */
+ async function nativeAdmission(c,input) {
+  const raw=await c.life.run(signal=>admit({occurrence:c.occ,occurrenceKey:c.id.occurrenceKey,effect:c.effect,input,signal,deadlineMs:c.deadline()}));
+  const r=frozenScheduleData(raw);
+  if(!r||Object.keys(r).length!==4||!['binding','requestSha256','expiresAtMs','replayed'].every(k=>Object.hasOwn(r,k))||
+   canonicalSha256(r.binding)!==canonicalSha256(c.id.binding)||r.requestSha256!==canonicalSha256(input.request)||
+   !Number.isSafeInteger(r.expiresAtMs)||r.expiresAtMs<=now()||typeof r.replayed!=='boolean')denySchedule('SCHEDULE_ADMISSION_RECEIPT');
+  c.limit(r.expiresAtMs);
+  const saved=await existing(c);
+  if(saved===null||canonicalSha256(saved.request)!==r.requestSha256||canonicalSha256(saved.run.versions)!==canonicalSha256(input.run.versions)||
+   canonicalSha256(saved.run.scopes)!==canonicalSha256(input.run.scopes)||saved.run.policyRevision!==input.run.policyRevision)denySchedule('SCHEDULE_ADMISSION_RECEIPT');
  }
 
  async function dispatch(request) {
@@ -142,24 +179,27 @@ export function createScheduledDispatch(options) {
   try {
    const saved=await existing(c);admitted=saved!==null;
    // A run past queued, or the exact workflow observed, is evidence the start happened; replay never adds an effect.
-   if(saved&&await started(c,saved))return await settled(c,'DISPATCHED',true);
+   if(saved&&await started(c,saved))return inspectJob?await jobProgress(c):await settled(c,'DISPATCHED',true);
    const firing=await c.life.run(()=>readFiring({tenantId:c.id.binding.tenantId,scheduleId:c.occ.projection.scheduleId},c.life.check));
    const refusal=fence(c.occ,firing)??(admitted?null:missed(c.occ,firing));
-   if(refusal)return await settled(c,'REFUSED',admitted,refusal);
+   if(refusal)return await refused(c,admitted,refusal);
    let receipt=null,prompt=null;
    if(!admitted) {
     prompt=await instruction(c,firing);
-    if(prompt===null)return await settled(c,'REFUSED',false,'SCHEDULE_INSTRUCTION_MISMATCH');
+    if(prompt===null)return await refused(c,false,'SCHEDULE_INSTRUCTION_MISMATCH');
     receipt=await current(c,'before_admission');
-    if(receipt===null)return await settled(c,'REFUSED',false,'SCHEDULE_AUTHORITY_REFUSED');
+    if(receipt===null)return await refused(c,false,'SCHEDULE_AUTHORITY_REFUSED');
    }
    const blocked=await barrier(c);
    if(blocked)return result('REFUSED',c.id,blocked,admitted);
-   if(!admitted){admitted=null;await c.life.run(()=>accept(admission(c,receipt.scopes,prompt),c.life.check));admitted=true;}
-   if(await current(c,'before_start')===null)return await settled(c,'REFUSED',true,'SCHEDULE_AUTHORITY_REFUSED');
+   if(!admitted){admitted=null;const input=admission(c,receipt.scopes,prompt);if(admit)await nativeAdmission(c,input);else await c.life.run(()=>accept(input,c.life.check));admitted=true;}
+   // A committed request is evidence of admission, not of a successfully released native proof. UNKNOWN recovery and legacy
+   // queued rows must pass the required runtime facet again, with the saved request/time unchanged, before any workflow start.
+   else if(admit)await nativeAdmission(c,admission(c,saved.run.scopes,saved.request.prompt,saved));
+   if(await current(c,'before_start')===null)return await refused(c,true,'SCHEDULE_AUTHORITY_REFUSED');
    // The canonical dispatcher starts the exact workflow ID with REJECT_DUPLICATE/USE_EXISTING; a lost acknowledgement is UNKNOWN.
    await c.life.run(signal=>start({binding:c.id.binding,signal,deadlineMs:c.deadline()}));
-   return await settled(c,'DISPATCHED',true);
+   return inspectJob?await jobProgress(c):await settled(c,'DISPATCHED',true);
   } catch(error) {return result('UNKNOWN',c.id,exposed(scheduleErrorCode(error)),admitted);}
   finally {c.life.close();}
  }
@@ -169,9 +209,10 @@ export function createScheduledDispatch(options) {
    const saved=await existing(c);
    if(saved===null)return result('NOT_DISPATCHED',c.id,null,false);
    admitted=true;
-   return await started(c,saved)?await settled(c,'DISPATCHED',true):result('ADMITTED',c.id,null,true);
+   return await started(c,saved)?inspectJob?await jobProgress(c):await settled(c,'DISPATCHED',true):result('ADMITTED',c.id,null,true);
   } catch(error) {return result('UNKNOWN',c.id,exposed(scheduleErrorCode(error)),admitted);}
   finally {c.life.close();}
  }
- return Object.freeze({dispatch,reconcile});
+ async function cancel(request){const c=opened(request);if(c===null)return malformed();try{return await jobProgress(c,{cancel:true});}catch(error){return result('UNKNOWN',c.id,exposed(scheduleErrorCode(error)),null);}finally{c.life.close();}}
+ return Object.freeze({dispatch,reconcile,...(cancelJob?{cancel}:{})});
 }

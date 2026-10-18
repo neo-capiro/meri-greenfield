@@ -1,0 +1,13 @@
+{
+  "Action": "Diagnostic rerun of disposable PostgreSQL qualification",
+  "Target": "127.0.0.1:55436/meri_prefs_task6_qual_20261017",
+  "Status": "Denied before execution",
+  "Reason": "Automatic approval review did not recognize trusted user approval for this exact rerun and cited prior no-migrations/no-credentials restrictions.",
+  "NoRetry": true,
+  "FirstRealRun": "First real suite before-hook failure; source guard passed; all ten PG cases cancelled",
+  "ExistingClusterStopped": true,
+  "DataDirectoryExists": false,
+  "PasswordFileExists": false,
+  "Port55436": [],
+  "At": "2026-10-17T02:18:38.9384575Z"
+}

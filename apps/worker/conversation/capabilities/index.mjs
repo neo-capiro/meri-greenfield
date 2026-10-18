@@ -20,10 +20,11 @@ const fail=code=>{throw Object.assign(Error(code),{code});};
 const withoutBash=p=>p.bash?assertCapabilityPolicy({...p,bash:false}):p;
 /** @param {unknown} policy @param {unknown} facts */
 export function createSdkCapabilities(policy,facts){
- const requested=assertCapabilityPolicy(policy),f=own(facts,['runOwner','binding','cwd','now','newId'],['skillPluginDirectory','bashSandbox','sdkConfigDirectory','sdkSecureStorageDirectory']);
+ const requested=assertCapabilityPolicy(policy),f=own(facts,['runOwner','binding','cwd','now','newId'],['skillPluginDirectory','bashSandbox','bashEgress','bashApprovals','sdkConfigDirectory','sdkSecureStorageDirectory']);
  if(typeof f.runOwner?.append!=='function'||typeof f.now!=='function'||typeof f.newId!=='function')fail('CAPABILITY_CONFIGURATION');validateShape('RunBinding',f.binding);assertWorkspaceRoot(f.cwd);
  const protectedPaths={...(f.sdkConfigDirectory===undefined?{}:{sdkConfigDirectory:f.sdkConfigDirectory}),...(f.sdkSecureStorageDirectory===undefined?{}:{sdkSecureStorageDirectory:f.sdkSecureStorageDirectory})};
- const bash=createBashSandbox(requested,{cwd:f.cwd,attestation:f.bashSandbox,protectedPaths}),p=bash?requested:withoutBash(requested);
+ // Networked Bash also needs the run's egress proxy fact and the approval port (bash-sandbox.mjs); both are trusted runtime facts.
+ const bash=createBashSandbox(requested,{cwd:f.cwd,attestation:f.bashSandbox,protectedPaths,egress:f.bashEgress,approvals:f.bashApprovals,binding:f.binding,now:f.now}),p=bash?requested:withoutBash(requested);
  /** @type {Error|undefined} */let failure;
  // The first failure of any kind latches: a refused event, or a hook validation/projection error. After it no
  // further event is attempted and `check()` throws, so the activity cannot complete, checkpoint or publish output.

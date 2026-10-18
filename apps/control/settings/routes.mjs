@@ -9,7 +9,7 @@ export function createSettingsRoutes({service}){
  const route=(handle,effect=false)=>Object.freeze({handle,errors:SETTINGS_ERROR_STATUSES,effect});
  return Object.freeze({
   '/api/settings/user/read':route(({principal,body,signal})=>{empty(body);return service.readUser({principal,signal});}),
-  '/api/settings/user/save':route(({principal,body,signal})=>service.saveUser({principal,body,signal}),true),
+  '/api/settings/user/save':route(({principal,body,signal,recheckMembership})=>service.saveUser({principal,body,signal,recheckMembership}),true),
   '/api/settings/tenant/read':route(({principal,body,signal})=>{empty(body);return service.readTenant({principal,signal});}),
   '/api/settings/tenant/save':route(({principal,body,signal})=>service.saveTenant({principal,body,signal}),true),
   '/api/settings/tenant/audit':route(({principal,body,signal})=>service.readAudit({principal,body,signal})),

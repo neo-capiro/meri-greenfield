@@ -1,0 +1,28 @@
+{
+  "startedAt": "2026-10-17T02:16:30.951Z",
+  "cutoff": "2026-10-17T02:33:23.000Z",
+  "head": "69a61c36b1b98e5bc02591f2b4a4c32f14b828cf",
+  "tree": "9f6df335b70b3c91a6ec1c9e71fd4a1dc0b9a1af",
+  "port": 55436,
+  "database": "meri_prefs_task6_qual_20261017",
+  "steps": [
+    {
+      "step": "failure",
+      "at": "2026-10-17T02:16:31.014Z",
+      "reason": "CHILD_FAILED_git_EXIT_128"
+    }
+  ],
+  "testExit": null,
+  "restore": null,
+  "cleanup": {
+    "stopped": true,
+    "dataRemoved": true,
+    "portFree": true,
+    "finishedBeforeDeadline": true
+  },
+  "failures": [
+    "CHILD_FAILED_git_EXIT_128"
+  ],
+  "finishedAt": "2026-10-17T02:16:31.045Z",
+  "freeBytesAfter": 5357727744
+}

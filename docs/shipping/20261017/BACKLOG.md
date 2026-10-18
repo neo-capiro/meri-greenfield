@@ -45,16 +45,18 @@ Status: **source not started**. Nothing renders Stage 2 today, and Stage 3 is pa
 
 ## Lane PRs (17 Oct evening): all draft, held out of integration until the first shipment is live
 
-| Lane | PR | Branch tip | Source status | Blocked on |
-|---|---|---|---|---|
-| 2 reads/skills | #135 | e8def62b | 74 complete / 3 partial / 5 absent of 82 | Core read handlers (dot) |
-| 3 write intents | #137 | 8cf6b6f0 | proposal → approval → execution → result → history complete | Core `approval/record`, `approval/decision`, intent capability issuer; lane-1 wiring (compose.mjs, P-INT-9); intents/commands/approval-metadata migrations |
-| 4 lifecycle | merged #134 (second turn, Stop) + 6e19e23d/a02dd3be (second-turn path) | — | history paging, reconnect, pause/resume still to finish | none for source |
-| 5 memory/tasks/settings/schedules | #136 | b60078ab | routine flow 2/2; schedules, budget pass | Core memory parser (denied), settings/schedules migrations |
-| 6 documents | #138 | 7d9ce8cf | generation, revision (HTTP), previews, downloads, signed links, renderer qualification owner | Core artifact authority; chat revision contract; image Office libs; sandboxed renderer task; meri_artifacts 0001–0003 |
-| 7 Objective → Strategy → Planner | #140 | 0caa9eb9 | workflow, Core client, custody adapter | run-start migration ID or Temporal alternative (Neo); Core Ed25519 issuer keys; Strategy authority |
-| 8 browser/Bash | #139 | 8a9c20f1 | egress proxy, Bash approvals, Linux harness | Fargate cannot sandbox: D005 host; image/lockfile; approval owner |
-| 9 post-shipment | in progress | — | inventory + preparation | Neo decisions |
+Receive pass 17 Oct (source only, no image build, no AWS, no deploy): lanes 9, 6, 8, 7, 5 merged onto the integration branch via `fable/lanes-receive-20261017`; lanes 2 and 3 were merged, failed on the combined tree, and were reverted (reasons in the receive PR). "integrated (source)" means the source is on the integration branch and the lane's own test files plus the first-chat SDK-options pin guards passed on the merged tree; it does not mean qualified or deployed.
+
+| Lane | PR | Branch tip | Source status | Integration | Blocked on |
+|---|---|---|---|---|---|
+| 2 reads/skills | #135 | e8def62b | 74 complete / 3 partial / 5 absent of 82 | held: merge reverted. Changes `packages/contracts/retrieval-0.2/catalog.json`, so first-chat `allocation.catalogSha256` no longer matches (`runtime-values.test.mjs` 2/5); own tests fail (`search_federal_grants` registered without a canonical adapter; SDK count 76 vs 71) | Core read handlers (dot); catalog pin / allocation re-pin decision |
+| 3 write intents | #137 | 8cf6b6f0 | proposal → approval → execution → result → history complete | held: merge reverted. `postgres-journal.mjs` adds `read`/`list` to the journal store port; lane 5's `prepared-schedule-reader.test.mjs:37` asserts the port stays exactly `['claim','settle']` (40/41 on the combined tree). `fixture.mjs` conflict with #136 resolves as a parameter union (patch kept by the receive owner) | Core `approval/record`, `approval/decision`, intent capability issuer; lane-1 wiring (compose.mjs, P-INT-9); intents/commands/approval-metadata migrations; lane 3/5 agreement on the journal port shape |
+| 4 lifecycle | merged #134 (second turn, Stop) + 6e19e23d/a02dd3be (second-turn path) | — | history paging, reconnect, pause/resume still to finish | integrated earlier | none for source |
+| 5 memory/tasks/settings/schedules | #136 | b60078ab | routine flow 2/2; schedules, budget pass | integrated (source) | Core memory parser (denied), settings/schedules migrations |
+| 6 documents | #138 | 7d9ce8cf | generation, revision (HTTP), previews, downloads, signed links, renderer qualification owner | integrated (source) | Core artifact authority; chat revision contract; image Office libs; sandboxed renderer task; meri_artifacts 0001–0003 |
+| 7 Objective → Strategy → Planner | #140 | 0caa9eb9 | workflow, Core client, custody adapter | integrated (source) | run-start migration ID or Temporal alternative (Neo); Core Ed25519 issuer keys; Strategy authority |
+| 8 browser/Bash | #139 | 8a9c20f1 | egress proxy, Bash approvals, Linux harness | integrated (source) | Fargate cannot sandbox: D005 host; image/lockfile; approval owner |
+| 9 post-shipment | #141 | 598a026a | takeover S1–S4, site manifests, WOPI editor decisions, bridge guard; 21 added files, nothing imports them yet | integrated (source) | Neo decisions N1–N7; dot contract proposals on #121 |
 
 ## Rules for every lane
 

@@ -22,7 +22,7 @@ function setup(changes={}){
 }
 
 for(const [phase,path] of Object.entries({
- admit:'generation-admissions',publish:'generation-requests',accept:'generation-acceptances',
+ admit:'generation-admissions',publish:'generation-requests',accept:'generation-acceptances',complete:'generation-completions',
 }))test(`initial ${phase} sends only the Core-owned job reference on a fixed POST route`,async()=>{
  const f=setup(),reply=await f.client[phase](f.call),sent=f.state.calls[0],body={schemaVersion:1,generationJobId:f.original.generationJobId};
  assert.deepEqual(reply,{kind:'unqualified-response',status:201,value:{opaque:'transport-only'}});
@@ -50,6 +50,7 @@ for(const [phase,path] of Object.entries({
 for(const [method,phase,path] of [
  ['readAdmission','admission-read','generation-admissions'],
  ['readRequest','request-read','generation-requests'],
+ ['readCompletion','completion-read','generation-completions'],
 ])test(`${method} uses the fixed Core GET readback and a body-free job identity`,async()=>{
  const f=setup(),reply=await f.client[method](f.call),sent=f.state.calls[0],identity={schemaVersion:1,generationJobId:f.original.generationJobId};
  assert.deepEqual(reply,{kind:'unqualified-response',status:200,value:{opaque:'transport-only'}});
