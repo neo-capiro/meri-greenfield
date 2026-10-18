@@ -125,5 +125,19 @@ export function createActionSessionOwner(configuration){
    const result=data({checkedAtMs:active(t.signal),expiresAtMs:t.deadline(),transitionSha256:transitionHash(after)});release(r,t);return result;
   }catch{deny();}finally{t?.close();}
  }
- return Object.freeze({issue,authenticateSession,readCurrentState,verifyTransition,revoke(credential){if(typeof credential!=='string')deny();const r=sessions.get(hash(credential));if(r)remove(r);},close(){closed=true;for(const r of sessions.values())remove(r);},status:()=>data({mode,closed,sessions:sessions.size})});
+ /** Live-session read relay (RC1 option A; dot's source ack 6245772555). Returns the native credential held by the freshest live
+  * action session whose context names exactly this run (tenant, actor, conversation, run) and this selected client, for read
+  * calls only. The credential stays in this process: it is never persisted or logged, an expired, revoked or closed session
+  * refuses, and every read still re-verifies identity and membership at Core with it. Session records never hold the marked
+  * control credential, and no credential is minted here. Unattended runs have no live session, so their reads refuse. */
+ function nativeCredentialFor(input){
+  const v=own(input,['binding','selectedClientId'],['signal']);nativeSignal(v.signal);const at=active(v.signal);
+  const b=data(v.binding);if(b===null||typeof b!=='object'||Array.isArray(b))deny();
+  const keys=['tenantId','actorId','conversationId','runId'];if(keys.some(k=>typeof b[k]!=='string'||!b[k])||!uuid.test(b.conversationId)||!uuid.test(b.runId)||typeof v.selectedClientId!=='string'||!uuid.test(v.selectedClientId))deny();
+  let best=null;
+  for(const r of sessions.values()){const c=r.context.binding;if(r.expiresAtMs<=at||!r.nativeCredential||keys.some(k=>c?.[k]!==b[k])||r.context.selectedClientId!==v.selectedClientId)continue;if(best===null||r.expiresAtMs>best.expiresAtMs)best=r;}
+  if(best===null)deny('SESSION_UNAVAILABLE');valid(best,v.signal);
+  return Object.freeze({credential:best.nativeCredential,expiresAtMs:best.expiresAtMs});
+ }
+ return Object.freeze({issue,authenticateSession,readCurrentState,verifyTransition,nativeCredentialFor,revoke(credential){if(typeof credential!=='string')deny();const r=sessions.get(hash(credential));if(r)remove(r);},close(){closed=true;for(const r of sessions.values())remove(r);},status:()=>data({mode,closed,sessions:sessions.size})});
 }

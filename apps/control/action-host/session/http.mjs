@@ -9,7 +9,7 @@ const path='/api/action-followthrough/session';
 const response=(status,value)=>canonicalResponse(value,status);
 export function createActionSessionApplication(options){
  const {owner,maxRequestBytes=4096,maxRequestMs=3000,now=Date.now}=own(options,['owner'],['maxRequestBytes','maxRequestMs','now']);
- const {issue}=own(owner,['issue'],['authenticateSession','readCurrentState','verifyTransition','revoke','close','status']);
+ const {issue}=own(owner,['issue'],['authenticateSession','readCurrentState','verifyTransition','nativeCredentialFor','revoke','close','status']);
  if(typeof issue!=='function'||typeof now!=='function'||!Number.isSafeInteger(maxRequestBytes)||maxRequestBytes<1||maxRequestBytes>65536||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)throw Error('SESSION_CONFIGURATION');
  return Object.freeze({async handle(request){
   let life;const fail=(status,code)=>response(status,{error:{code}});
