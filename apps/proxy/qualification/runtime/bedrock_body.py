@@ -191,15 +191,21 @@ def inspect_native_request(method, url, raw, limits):
         _deny("MALFORMED_JSON")
     _bounded_json_tree(body)
     _object(body, ("anthropic_version", "max_tokens", "messages", "system", "tools", "tool_choice", "temperature",
-                   "metadata", "anthropic_beta", "output_config"),
+                   "metadata", "anthropic_beta", "output_config", "thinking"),
             ("anthropic_version", "max_tokens", "messages"))
     if body["anthropic_version"] != "bedrock-2023-05-31":
         _deny("UNSUPPORTED_NATIVE_VERSION")
     output = body["max_tokens"]
     if type(output) is not int or not 1 <= output <= limits.max_output_tokens:
         _deny("OUTPUT_BOUND")
-    if "temperature" in body and (type(body["temperature"]) not in (int, float) or body["temperature"] != 0):
+    # The pinned SDK's accurately profiled Sonnet request uses default sampling
+    # 1 and explicit disabled thinking. Neither grants a new thinking budget.
+    if "temperature" in body and (type(body["temperature"]) not in (int, float) or body["temperature"] not in (0, 1)):
         _deny("UNQUALIFIED_SAMPLING")
+    if "thinking" in body:
+        _object(body["thinking"], ("type",), ("type",))
+        if body["thinking"]["type"] != "disabled":
+            _deny("UNQUALIFIED_THINKING")
     if "metadata" in body:
         _object(body["metadata"], ("user_id",), ("user_id",))
         user_id = body["metadata"]["user_id"]

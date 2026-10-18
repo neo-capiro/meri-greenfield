@@ -548,7 +548,7 @@ class BodyTests(unittest.TestCase):
         for key, value in (("model", "foreign"), ("stream", True), ("thinking", {"type": "enabled"}),
                            ("anthropic_beta", ["unknown"]), ("cache_control", {"type": "ephemeral"}),
                            ("max_tokens", 8193), ("max_tokens", True), ("max_tokens", 0),
-                           ("messages", []), ("anthropic_version", "foreign"), ("temperature", 1)):
+                           ("messages", []), ("anthropic_version", "foreign"), ("temperature", 0.5)):
             bad.append({**native_body(), key: value})
         bad.extend([
             {**native_body(), "messages": [{"role": "user", "content": [{"type": "text", "text": "synthetic", "cache_control": {"type": "ephemeral"}}]}]},
@@ -580,6 +580,19 @@ class BodyTests(unittest.TestCase):
             with self.subTest(kwargs=str(kwargs)):
                 with self.assertRaises(AdmissionDenied):
                     BodyLimits(**kwargs)
+
+    def test_observed_disabled_thinking_and_default_sampling_are_closed(self):
+        for temperature in (0, 0.0, 1, 1.0):
+            body = {**native_body(), "thinking": {"type": "disabled"}, "temperature": temperature}
+            raw = json.dumps(body).encode()
+            self.assertIs(inspect_native_request("POST", URL, raw, BodyLimits()).raw, raw)
+        for thinking in ({}, None, "disabled", {"type": "enabled"}, {"type": "adaptive"},
+                         {"type": "disabled", "budget_tokens": 0}, {"type": "disabled", "extra": None}):
+            with self.subTest(thinking=thinking), self.assertRaises(AdmissionDenied):
+                self.inspect({**native_body(), "thinking": thinking})
+        for temperature in (False, True, None, "1", -1, 0.5, 1.01, 2):
+            with self.subTest(temperature=temperature), self.assertRaises(AdmissionDenied):
+                self.inspect({**native_body(), "thinking": {"type": "disabled"}, "temperature": temperature})
 
     def test_sdk_metadata_beta_enums_and_empty_tools_preserve_counted_bytes(self):
         body = {**native_body(), "metadata": {"user_id": "u" * 512}, "tools": [],
