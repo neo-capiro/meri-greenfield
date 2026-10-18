@@ -8,6 +8,7 @@ import pg from 'pg';
 import {createPostgresConversationStore} from '../postgres-store.mjs';
 import {createConversationRetentionInventory} from '../retention-inventory.mjs';
 import {assertNextRunReservation} from '../next-run-reservation.mjs';
+import {enumerateReferences} from '../../retention/inventory.mjs';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 import {versions} from './store-fixture.mjs';
 
@@ -18,6 +19,9 @@ const enabled=process.env.MERI_CONV_INVENTORY_PG_SOCKET===SOCKET&&
 const check=()=>{};
 const at=()=>new Date().toISOString();
 const status=state=>({eventId:randomUUID(),createdAt:at(),type:'run.status',data:{state,reasonCode:null}});
+const completeSnapshot=owner=>({...owner,sdkSessionEntries:[],selectedOutputs:[],artifactVersions:[],
+ nativeJournalRows:[],uploads:[],schedules:[],receipts:[],memoryProposals:[],budgetRuns:[]});
+const sorted=value=>[...value].sort((a,b)=>JSON.stringify(a).localeCompare(JSON.stringify(b)));
 
 function checkpoint({binding,scopes,checkpointId,captureSequence,sourceRequestSha256,contextSha256}){
  const object={objectId:randomUUID(),versionId:'synthetic-immutable-v1',sha256:'a'.repeat(64),bytes:10,scopes};
@@ -66,6 +70,8 @@ async function fixture(pool){
   type:'message.delta',data:{messageId:randomUUID(),text:`synthetic ${i}`}},check);
  const first=await store.completions.begin({binding,scopes,selectedClientId:clientId,
   completionId:randomUUID(),checkpointId:randomUUID()},check);
+ const unpublished=await createConversationRetentionInventory({pool}).inventoryForConversation({
+  tenantId,conversationId,ownerActorId:actorId});
  const firstProof=checkpoint({binding,scopes,checkpointId:first.checkpointId,
   captureSequence:first.captureSequence,sourceRequestSha256:first.sourceRequestSha256,
   contextSha256:first.contextSha256});
@@ -114,6 +120,7 @@ async function fixture(pool){
  const memory={binding:target,scopes,clientId,policyRevision};
  for(let i=0;i<34;i++)await insertMemoryRow(pool,memory,`page-${String(i).padStart(2,'0')}`);
  return {subject:{tenantId,conversationId,ownerActorId:actorId},binding,target,firstProof,heldProof,
+  unpublished,
   memory,store};
 }
 
@@ -136,6 +143,25 @@ test('one PostgreSQL snapshot exhausts conversation rows and memory pages, respe
  assert.deepEqual(new Set(baseline.objectVersions.map(o=>o.objectId)),
   new Set([f.firstProof.checkpoint.opaqueSession.objectId,f.heldProof.checkpoint.opaqueSession.objectId]));
  assert.equal(baseline.nextRuns[0].targetRunId,f.target.runId);
+ const enumerated=enumerateReferences(completeSnapshot(baseline));
+ assert.deepEqual(sorted(enumerated.rowTargets.filter(target=>target.table==='controls')),
+  sorted(baseline.controls.map(({controlId,runId,controlSequence,projectionSha256})=>({
+   className:'conversation',table:'controls',controlId,runId,controlSequence,projectionSha256}))));
+ assert.deepEqual(sorted(enumerated.rowTargets.filter(target=>target.className==='events')),
+  sorted(baseline.eventRows.map(({runId,sequence,eventId,eventSha256})=>({
+   className:'events',table:'events',runId,sequence,eventId,eventSha256}))));
+ assert.equal(enumerated.rowTargets.some(target=>target.className==='events'&&target.key===f.subject.conversationId),
+  false,'no conversation-wide event target may replace exact event rows');
+ assert.deepEqual(sorted(enumerated.objects.map(({objectId,versionId,sha256})=>({objectId,versionId,sha256}))),
+  sorted(baseline.objectVersions),'planner preserves every owner-reported object version');
+ const pending=enumerateReferences(completeSnapshot(f.unpublished));
+ assert.equal(f.unpublished.completionCheckpoints.length,1);
+ assert.equal(f.unpublished.completionCheckpoints[0].state,'CAPTURING');
+ assert.equal(f.unpublished.completionCheckpoints[0].checkpoint,null);
+ assert.deepEqual(pending.rowTargets.filter(target=>target.className==='completionCheckpoints'),[{
+  className:'completionCheckpoints',checkpointId:f.unpublished.completionCheckpoints[0].checkpointId,
+  runId:f.binding.runId,state:'CAPTURING'}]);
+ assert.deepEqual(pending.objects,[],'unpublished capture supplies no proven object-version reference');
  for(const subject of [
   {...f.subject,ownerActorId:'foreign-actor'},
   {...f.subject,tenantId:'foreign-tenant'},

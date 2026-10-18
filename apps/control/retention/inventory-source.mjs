@@ -1,18 +1,21 @@
-/** Planner-ready inventory from the existing complete snapshot owner and the
- * conversation store's exact proposal-continuation rows. This is a fail-closed
- * composition port; it does not supply absent product/retention authorities or
- * enable the purge executor. */
+/** Legacy inventory composition over injected snapshot and continuation ports.
+ * It is source-incomplete for production: the PR176 conversation producer already
+ * includes continuations in one repeatable-read snapshot and its digest cannot be
+ * carried through this separate-read composition. No purge authority is supplied. */
 import {data,own,fail,same,subject,subjectKey,digest} from './boundary.mjs';
 import {enumerateReferences} from './inventory.mjs';
 
 const REQUIRED=['subject','runs','checkpoints','completionCheckpoints','nextRuns',
  'sdkSessionEntries','selectedOutputs','artifactVersions','nativeJournalRows','uploads',
  'schedules','receipts','memoryProposals','budgetRuns'];
-const OPTIONAL=['editorDrafts'];
+const OPTIONAL=['editorDrafts','conversation','eventRows','controls'];
 const unavailable=()=>fail('RETENTION_AUTHORITY_UNAVAILABLE');
 
 /** `snapshotFor` belongs to the trusted existing data owners and must supply
- * every non-continuation class, including truthful empty lists. `journal` is
+ * every non-continuation class, including truthful empty lists. A producer
+ * inventorySha256 is intentionally refused here: its memory rows were read in
+ * the producer's transaction, while this legacy port reads them separately.
+ * `journal` is
  * the recovered, watermarked retention journal, not its raw PostgreSQL store.
  * Holding one suppression generation around both reads prevents a release and
  * new suppression from laundering a mixed inventory into a current plan. */
