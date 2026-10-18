@@ -34,7 +34,8 @@ mock.module('../control.mjs',{namedExports:{async temporalTls(){state.events.pus
 mock.module('../http-server.mjs',{namedExports:{async listenRuntime(options){state.events.push('listener-open');if(state.failListener)throw Error('Synthetic listener failure');state.listener=options;return {address:{port:0},async close(){state.events.push('listener-close');}};}}});
 
 const {startScheduleWorker,composeScheduleService}=await import('../schedule-service.mjs');
-const {compileScheduleServiceConfiguration}=await import('../schedule-service-configuration.mjs');
+const {compileScheduleServiceConfiguration,SCHEDULE_MAX_REQUEST_MS}=await import('../schedule-service-configuration.mjs');
+const {readFileSync}=await import('node:fs');
 const configuration={version:1,profile:'isolated-preview',sourceEnabled:false,versions,
  limits:{startupMs:1000,shutdownMs:1000,requestMs:1000,requestBytes:131072},
  http:{hostname:'127.0.0.1',port:0,frontendOrigin:'https://ui.synthetic.invalid'},
@@ -97,8 +98,21 @@ test('canonical role settings stay closed, source-disabled, queue-separated and 
  assert.deepEqual(compileScheduleServiceConfiguration(configuration),{scheduledDispatch:configuration.scheduledDispatch});
  const variants=[{sourceEnabled:true},{scheduledDispatch:{...configuration.scheduledDispatch,enabled:false}},{scheduledDispatch:{...configuration.scheduledDispatch,conversationTaskQueue:configuration.temporal.taskQueue}},
   ...[0,11].map(maxConcurrentActivities=>({scheduledDispatch:{...configuration.scheduledDispatch,maxConcurrentActivities}})),
-  {scheduledDispatch:{...configuration.scheduledDispatch,extra:true}},{database:{connectionFile:'relative-file'}},{database:{connectionFile:resolve('synthetic-database'),selector:'synthetic'}},{limits:{...configuration.limits,requestMs:0}}];
+  {scheduledDispatch:{...configuration.scheduledDispatch,extra:true}},{database:{connectionFile:'relative-file'}},{database:{connectionFile:resolve('synthetic-database'),selector:'synthetic'}},{limits:{...configuration.limits,requestMs:0}},{limits:{...configuration.limits,requestMs:SCHEDULE_MAX_REQUEST_MS+1}}];
  for(const changed of variants){reset();await assert.rejects(startScheduleWorker({...configuration,...changed},{runtimePorts:unavailableOwners()}),{code:'SCHEDULE_SERVICE_CONFIGURATION'});assert.deepEqual(state.events,[]);}
+});
+
+test('the role accepts the preview control request budget and stays inside the scheduled workflow uncertainty bound',()=>{
+ // The preview renders requestMs 25000 for control and worker (render-material.mjs); the former 3000 cap refused it.
+ for(const requestMs of [3000,25000,SCHEDULE_MAX_REQUEST_MS])assert.deepEqual(compileScheduleServiceConfiguration({...configuration,limits:{...configuration.limits,requestMs}}),{scheduledDispatch:configuration.scheduledDispatch});
+ // Static witness over the workflow source: one activity lifetime ends inside startToClose, and startToClose plus the request bound
+ // stays shorter than the settle period after UNKNOWN, so a lost attempt has settled before reconciliation.
+ const workflow=readFileSync(new URL('../../control/conversations/scheduled-dispatch-workflow.ts',import.meta.url),'utf8');
+ const minutes=pattern=>Number(pattern.exec(workflow)?.[1])*60000;
+ const startToClose=minutes(/proxyActivities<Activities>\(\{startToCloseTimeout:'(\d+) minutes?'/u),settle=minutes(/settleAfterUnknown='(\d+) minutes?'/u);
+ assert.equal(startToClose,60000);assert.equal(settle,120000);
+ assert.equal((workflow.match(/startToCloseTimeout:'1 minute'/gu)??[]).length,2,'every scheduled activity keeps the same startToClose');
+ assert.ok(SCHEDULE_MAX_REQUEST_MS<startToClose&&startToClose+SCHEDULE_MAX_REQUEST_MS<settle);
 });
 
 test('owning a pool requires its explicit database configuration; pre-abort creates no resources',async()=>{
