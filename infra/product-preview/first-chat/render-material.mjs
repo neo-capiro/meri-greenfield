@@ -40,7 +40,7 @@
  *   artifacts?: {enabled:false} | {enabled:true, region:'us-east-1', bucket, prefix, expectedBucketOwner:'967807252336', kmsKeyId (key ARN), authority?: {enabled:true} (needs reads)},
  *   memory?: {enabled: bool} (enabled needs reads: it reuses the Core service secret file),
  *   reads.delegation?: {enabled: bool} (option B run-bound Core read delegation; renders reads.delegation),
- *   intents?: {enabled, execution?: {issuer, keys: [Ed25519 public JWK with kid]}} (execution needs reads),
+ *   intents?: {enabled, execution?: {issuer, keys: [Ed25519 public JWK with kid]}, core?: {enabled:true}} (execution and core need reads),
  *   routines?: {enabled, core?: {cancellationProof: {issuer, kid, publicKey}, unattendedGrant?: {issuer, kid, publicKey}}} (core needs reads),
  *   downloadLinks?: {enabled:false} | {enabled:true, ttlMs?},  // signing key generated per render -> /run/meri/download-link.key
  *   capabilityPlatform?: {maximum, defaults, roleCeilings},   // verbatim; runtime values must carry the matching capabilityProfileSha256 (G3)
@@ -200,10 +200,12 @@ export function parseFeatures(raw,{secrets={},checkpoint}={}){
  for(const key of ['userPreferences','tenantSettings'])if(f[key]!==undefined)out[key]=toggle(key);
  // Write-intent execution trust (lane E): the Core issuer and its Ed25519 public JWKs; validated by the control compiler against a
  // placeholder origin and secret path (the rendered values are the Core origin and the reads service secret file).
- if(f.intents!==undefined){const v=record(f.intents,'features.intents',['enabled'],['execution']);const enabled=bool(v.enabled,'features.intents.enabled');
+ if(f.intents!==undefined){const v=record(f.intents,'features.intents',['enabled'],['execution','core']);const enabled=bool(v.enabled,'features.intents.enabled');
+  // Approval forwarder (lane L): Core P-INT-10 record/decision at the Core origin with the reads service secret file.
+  const core=v.core===undefined?undefined:bool(record(v.core,'features.intents.core',['enabled']).enabled,'features.intents.core.enabled');if(core&&!enabled)fail('RENDER_INPUT_REFUSED','features.intents.core needs features.intents.enabled true');
   if(v.execution!==undefined){if(!enabled)fail('RENDER_INPUT_REFUSED','features.intents.execution needs features.intents.enabled true');const e=record(v.execution,'features.intents.execution',['issuer','keys']);
    try{compileIntentsConfiguration({intents:{enabled:true,execution:{coreOrigin:'https://placeholder.invalid',issuer:e.issuer,keys:structuredClone(e.keys),serviceSecretFile:'/run/meri/placeholder'}}});}catch{fail('RENDER_INPUT_REFUSED','features.intents.execution (apps/runtime/native-authority/execution-capability.mjs compileExecutionTrust)');}
-   out.intents={enabled:true,execution:{issuer:e.issuer,keys:structuredClone(e.keys)}};}else out.intents={enabled};}
+   out.intents={enabled:true,execution:{issuer:e.issuer,keys:structuredClone(e.keys)},...(core?{core:true}:{})};}else out.intents={enabled,...(core?{core:true}:{})};}
  // Routines Core owners (lane B2): the policy-check origin and the Ed25519 pins for the cancellation proof and the unattended grant.
  if(f.routines!==undefined){const v=record(f.routines,'features.routines',['enabled'],['core']);const enabled=bool(v.enabled,'features.routines.enabled');
   if(v.core!==undefined){if(!enabled)fail('RENDER_INPUT_REFUSED','features.routines.core needs features.routines.enabled true');const c=record(v.core,'features.routines.core',[],['cancellationProof','unattendedGrant']);
@@ -261,6 +263,7 @@ export function parseFeatures(raw,{secrets={},checkpoint}={}){
  if(out.artifacts?.authority===true&&out.reads?.enabled!==true)fail('RENDER_INPUT_REFUSED','features.artifacts.authority reuses the reads Core service secret: it needs features.reads enabled');
  if(out.memory?.enabled===true&&out.reads?.enabled!==true)fail('RENDER_INPUT_REFUSED','features.memory reuses the reads Core service secret: it needs features.reads enabled');
  if(out.intents?.execution!==undefined&&out.reads?.enabled!==true)fail('RENDER_INPUT_REFUSED','features.intents.execution reuses the reads Core service secret: it needs features.reads enabled');
+ if(out.intents?.core===true&&out.reads?.enabled!==true)fail('RENDER_INPUT_REFUSED','features.intents.core reuses the reads Core service secret: it needs features.reads enabled');
  if(out.routines?.core!==undefined&&out.reads?.enabled!==true)fail('RENDER_INPUT_REFUSED','features.routines.core reuses the reads Core service secret: it needs features.reads enabled');
  return out;
 }
@@ -468,7 +471,7 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,ident
  const downloadLinkKey=features.downloadLinks?.enabled===true?Buffer.from(randomBytes(32).toString('base64url'),'utf8'):null;
  const featureKeys={};
  for(const key of ['userPreferences','tenantSettings','retention'])if(features[key]!==undefined)featureKeys[key]={...features[key]};
- if(features.intents!==undefined)featureKeys.intents=features.intents.execution===undefined?{enabled:features.intents.enabled}:{enabled:true,execution:{coreOrigin:k.coreOrigin,issuer:features.intents.execution.issuer,keys:structuredClone(features.intents.execution.keys),serviceSecretFile:PATHS.readsServiceSecret}};
+ if(features.intents!==undefined)featureKeys.intents={...(features.intents.execution===undefined?{enabled:features.intents.enabled}:{enabled:true,execution:{coreOrigin:k.coreOrigin,issuer:features.intents.execution.issuer,keys:structuredClone(features.intents.execution.keys),serviceSecretFile:PATHS.readsServiceSecret}}),...(features.intents.core===true?{core:{origin:k.coreOrigin,serviceSecretFile:PATHS.readsServiceSecret}}:{})};
  if(features.routines!==undefined)featureKeys.routines=features.routines.core===undefined?{enabled:features.routines.enabled}:{enabled:true,core:{origin:k.coreOrigin,serviceSecretFile:PATHS.readsServiceSecret,...structuredClone(features.routines.core)}};
  // artifacts/configuration.mjs: tenantId (publication custody) exactly when retention is declared; the preview has one tenant.
  if(features.artifacts!==undefined){const {authority,...store}=features.artifacts;featureKeys.artifacts=store.enabled?{...store,...(features.retention?{tenantId:k.tenantId}:{}),

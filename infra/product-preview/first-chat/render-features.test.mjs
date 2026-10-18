@@ -362,3 +362,12 @@ test('reads.delegation renders the control toggle under reads and refuses when r
  await assert.rejects(render(withFeatures({reads:{enabled:false,delegation:{enabled:true}}})),/RENDER_INPUT_REFUSED/u);
  await assert.rejects(render(withFeatures({sourceEnabled:true,reads:{...READS,delegation:{enabled:'yes'}}}),{featureSecrets:featureSecrets()}),/RENDER_INPUT_REFUSED/u);
 });
+
+test('intents.core renders the Core approval forwarder block (origin and reads secret file) next to execution',async()=>{
+ await baseline();
+ const rendered=await render(withFeatures({sourceEnabled:true,reads:READS,intents:{enabled:true,core:{enabled:true}}}),{featureSecrets:featureSecrets()});
+ const control=config(rendered,'control');
+ assert.deepEqual(control.intents,{enabled:true,core:{origin:control.nativeCandidate.identity.origin,serviceSecretFile:PATHS.readsServiceSecret}});
+ await assert.rejects(render(withFeatures({intents:{enabled:true,core:{enabled:true}}})),/needs features.reads enabled/u);
+ await assert.rejects(render(withFeatures({sourceEnabled:true,reads:READS,intents:{enabled:false,core:{enabled:true}}}),{featureSecrets:featureSecrets()}),/needs features.intents.enabled true/u);
+});
