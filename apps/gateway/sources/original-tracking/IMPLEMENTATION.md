@@ -18,6 +18,23 @@ Handler calls retain existing `{input,request,authority,argumentsSha256,signal?}
 
 The original client-less action branch has no qualified original output contract and remains unavailable before reservation. The successor `actions.query/action_items_complete` remains a separate derived source and is never renamed, redirected into or promoted to original authoritative identity. Native exact count, source status, content hash, timestamp and opaque cursor remain producer assertions. Receipt projection does not manufacture proof or versions: it preserves row proof bytes and emits null snapshot/asOf/synchronization, unknown freshness/enumeration, unsupported history, `evidenceReady:false` and no negative assertion. Native `pageCoverage.absenceSupported` is preserved as a native assertion only. An original recommendation is never accepted as a task; a done native task is never proof of delivery or client acceptance.
 
+## Task-bound original action source slice
+
+The gateway keeps normalization, current authorization, UNKNOWN budget reservation,
+source projection and release. For `query_action_items@0.2.0`, the operational task
+port will use the existing run-delegation native handle and `toolCredential` callback
+to request one `CapiroMeriRead` token for the original operation, reservation
+arguments hash, and the exact projected `POST /api/clio/tools/query_action_items`
+body hash. The original-tracking adapter owns that flat body and the bounded
+transport. A call carrying an invocation id must receive a signed token for that
+same id and target; a missing token or attended bearer fallback refuses before
+Fetch. `query_tasks` retains its separate historical path and portfolio hold.
+The shared dispatcher and selected task composer must forward the invocation id
+and tool-credential callback; those files are owned by the receiving lane.
+Focused synthetic checks cover path/body/hash equality, selected-client binding,
+expiry, fallback refusal, and original operation identity. No live source or
+credential call is part of this slice.
+
 Exact remaining live gate: qualify the original native producer identity and actual owner, current tenant/actor/client or private task policy, bound credential issuance, revocation/fence/budget correlation, cursor authenticity, physical transport retirement and final release under the approved isolated runtime. Trusted catalog source provenance and explicit activation are separate gates. Native snapshots, exhaustive absence, history and original protocol authentication are unavailable here. Local synthetic tests do not establish authentic producer identity or live qualification.
 
 ## Verification and retention
