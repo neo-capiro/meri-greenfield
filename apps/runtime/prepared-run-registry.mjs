@@ -13,12 +13,13 @@ import {createPreparedTaskKickoff} from './native-authority/prepared-kickoff.mjs
 import {createPreparedKickoffApplication,createPreparedRunnerReleaseClient} from './native-authority/prepared-kickoff-http.mjs';
 import {createPreparedReadEntry} from './native-authority/prepared-read-entry.mjs';
 import {createNativeReadsApplication} from './native-authority/reads-http.mjs';
+import {createRunnerIntentsApplication,runnerIntentFault} from './native-authority/intents-http.mjs';
 import {nativeReadFault,assertNativeReadRequest} from '../../packages/contracts/runtime-0.2/reads.mjs';
 import {captureReadRuntimeOptions} from './native-authority/prepared-reads.mjs';
 const fail=()=>{throw Object.assign(Error('PREPARED_RUN_REGISTRY_REFUSED'),{code:'PREPARED_RUN_REGISTRY_REFUSED'});};
 const same=(a,b)=>hash(a)===hash(b);
 export function createPreparedRunRegistry(configuration){
- const c=own(configuration,['issuance','issuanceIntent','store','pool','client','identity','controlCapability','objects','limits'],['now','allocate','retireOriginal','retireInitial','fetchImpl','maximumExpiresAtMs','prepareOriginal','prepareInitial','initialBindings','configurationSha256','approvedReads','sourceEnabled','generalReads','createReadsRuntime']);
+ const c=own(configuration,['issuance','issuanceIntent','store','pool','client','identity','controlCapability','objects','limits'],['now','allocate','retireOriginal','retireInitial','fetchImpl','maximumExpiresAtMs','prepareOriginal','prepareInitial','initialBindings','configurationSha256','approvedReads','sourceEnabled','generalReads','createReadsRuntime','intents','intentMountFor']);
  const readsRuntime=captureReadRuntimeOptions(Object.fromEntries(['createReadsRuntime','generalReads'].filter(k=>c[k]!==undefined).map(k=>[k,c[k]])));
  const now=c.now??Date.now,fetchImpl=c.fetchImpl??fetch,limits=own(c.limits,['maxRequestMs','maxFactBytes'],['cleanupMs','maxWaitMs']),controlDigest=capabilityDigest(c.controlCapability),cache=new Map(),ready=new Map(),cancellation=new AbortController();let closed=false,closing;
  const read=storageMethod(c.store,'read'),readTarget=storageMethod(c.store.nextRuns,'readTarget'),current=storageMethod(c.store.nextRuns,'current'),readAllocation=storageMethod(c.store.allocations,'read'),prepare=storageMethod(c.issuance,'prepare'),resolveFacts=storageMethod(c.issuance,'resolveFacts'),resolveCapability=storageMethod(c.issuance,'resolveCapability');
@@ -100,8 +101,11 @@ export function createPreparedRunRegistry(configuration){
  const reply=(value,status=200)=>Response.json(value,{status,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
  // The canonical HTTP owner owns the full body-inclusive operation lifetime. Lookup cannot create an entry or use control authority.
  const reads=createNativeReadsApplication({...(c.approvedReads===undefined?{}:{approvedReads:c.approvedReads}),now,owner:{async handle(operation,input,credential,signal,deadlineMs){check(signal);if(matchesCapability(credential,controlDigest))throw nativeReadFault('ACCESS_DENIED');const request=assertNativeReadRequest('runner/reads/'+operation,input),entry=ready.get(hash(request.binding));if(!entry)throw nativeReadFault('UNAVAILABLE');return entry.read(operation,request,credential,signal,deadlineMs);}}});
+ // P-INT-9 runner→control governed intents: task-authorized like reads, disabled unless control declares intents and a trusted
+ // per-run intent mount owner exists (none yet: it needs Core's per-run result-release and execution grants), so it answers UNAVAILABLE.
+ const intents=createRunnerIntentsApplication({enabled:c.intents?.enabled===true,controlCapabilitySha256:controlDigest,now,resolveRun:async({binding,credential,signal})=>{check(signal);const e=ready.get(hash(binding));if(!e)throw runnerIntentFault('UNAVAILABLE');if(!e.matchesTaskCapability(credential))throw runnerIntentFault('ACCESS_DENIED');if(typeof c.intentMountFor!=='function')throw runnerIntentFault('UNAVAILABLE');return c.intentMountFor({binding:e.binding,original:e.original,signal});}});
  async function handle(request){let life;try{
-  if(types.isProxy(request)||!(request instanceof Request))fail();const info=Object.fromEntries(Object.entries(getters).map(([k,g])=>[k,g.call(request)])),url=new URL(info.url),path=url.pathname;if(path.startsWith('/v1/runner/reads/'))return reads.handle(request);if(!handled.test(path))return null;
+  if(types.isProxy(request)||!(request instanceof Request))fail();const info=Object.fromEntries(Object.entries(getters).map(([k,g])=>[k,g.call(request)])),url=new URL(info.url),path=url.pathname;if(path.startsWith('/v1/runner/reads/'))return reads.handle(request);if(path.startsWith('/v1/runner/intents/'))return intents.handle(request);if(!handled.test(path))return null;
   const header=k=>Headers.prototype.get.call(info.headers,k),auth=header('authorization');if(!auth?.startsWith('Bearer '))fail();const credential=auth.slice(7),control=matchesCapability(credential,controlDigest),kickoffRoute=path.startsWith('/v1/execution/kickoff');
   if(kickoffRoute&&!control)fail();if(!control&&![...ready.values()].some(entry=>entry.matchesTaskCapability(credential)))return null;
   if(info.method!=='POST'||url.search||url.hash||!/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(header('content-type')??'')||header('content-encoding')!==null)fail();

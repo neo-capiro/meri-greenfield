@@ -51,7 +51,7 @@ export async function ensureSdkConfigurationDirectories(directories,options={}){
  await assertOwnedPrivateDirectory(sdkSecureStorageDirectory,uid);
  return directories;
 }
-export function assembleConversationRunner({configuration,native,query,credentialForBinding,sessionFactory,generalReads,now=Date.now}){
+export function assembleConversationRunner({configuration,native,query,credentialForBinding,sessionFactory,generalReads,governedIntents,now=Date.now}){
  const readPort=captureGeneralReadPort(generalReads,configuration.sourceEnabled);
  validateShape('RuntimeVersions',configuration.versions);const configuredVersionsSha256=canonicalSha256(configuration.versions);
  const binding=configuration.binding,call=(operation,input,signal)=>native.call(operation,{binding,...input},{signal});
@@ -73,12 +73,12 @@ export function assembleConversationRunner({configuration,native,query,credentia
   else sessionStore={load:key=>call('runner/session/load',{key}).then(v=>{own(v,['entries']);return v.entries;}),append:(key,entries)=>call('runner/session/append',{key,entries}).then(v=>{own(v,['committed']);if(v.committed!==true)throw fault('SESSION_PERSISTENCE_FAILED');})};
   const directories=await ensureSdkConfigurationDirectories(sdkConfigurationDirectories(configuration));
   return {...runtime,cwd:configuration.workspace,sessionStore,...directories};};
- const activity=createConversationActivity({runOwner,prepareRuntime,selectedSkills,now,...(readPort?{generalReads:readPort}:{}),...(query?{query}:{}),...(lifecycle?{lifecycle}:{}),heartbeat:()=>{}});
+ const activity=createConversationActivity({runOwner,prepareRuntime,selectedSkills,now,...(readPort?{generalReads:readPort}:{}),...(governedIntents?{governedIntents}:{}),...(query?{query}:{}),...(lifecycle?{lifecycle}:{}),heartbeat:()=>{}});
  const execute=async input=>{try{return await activity(input);}finally{try{await selectedSkills.close();}finally{await sdkSession?.close();}}};
  Object.defineProperty(execute,'cleanupStatus',{value:()=>sdkSession?.cleanupStatus()??{pendingInitializations:0,closed:true,failures:[],physicalStopProven:false}});return execute;
 }
 export async function assertRunnerWorkspace(configuration){const workspace=await lstat(configuration.workspace);if(process.getuid()===0||!workspace.isDirectory()||workspace.isSymbolicLink()||workspace.uid!==process.getuid()||await realpath(configuration.workspace)!==configuration.workspace)throw fault('RUNNER_WORKSPACE_REFUSED');}
-export async function runConversation(configuration,{signal,query,sessionFactory,generalReads,poststartTls,nativeFetch}={}){
+export async function runConversation(configuration,{signal,query,sessionFactory,generalReads,governedIntents,poststartTls,nativeFetch}={}){
  const readPort=captureGeneralReadPort(generalReads,configuration.sourceEnabled);
  assertRunnerEnvironment();await assertRunnerWorkspace(configuration);
  const product=process.env.MERI_PRODUCT_PREVIEW_REQUIRED==='1';
@@ -100,5 +100,5 @@ export async function runConversation(configuration,{signal,query,sessionFactory
  if(poststartTls!==undefined)throw fault('RUNNER_POSTSTART_REFUSED');
  if(configuration.bootstrap)await waitForAdmittedTask({native,binding:configuration.binding,versions:configuration.versions,deadlineMs:configuration.bootstrap.expiresAtMs,signal});
  const sessions=sessionFactory??createRuntimeSdkSessionFactory({origin:configuration.native.origin,credential,binding:configuration.binding});
- return assembleConversationRunner({configuration,native,credentialForBinding:async()=>credential,sessionFactory:sessions,...(readPort?{generalReads:readPort}:{}),...(query?{query}:{})})({binding:configuration.binding,signal});
+ return assembleConversationRunner({configuration,native,credentialForBinding:async()=>credential,sessionFactory:sessions,...(readPort?{generalReads:readPort}:{}),...(governedIntents?{governedIntents}:{}),...(query?{query}:{})})({binding:configuration.binding,signal});
 }
