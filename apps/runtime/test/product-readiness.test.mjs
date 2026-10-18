@@ -10,6 +10,6 @@ test('missing owners name the foreground application and separately supervised s
  assert.ok(Object.isFrozen(result.owners));
 });
 test('composed owners do not conceal remaining source, model grant or placement gaps',()=>{
- const result=productReadiness({ports:{configuredOwners:['identityContext','transitionAuthority','continuationAdmission','approvals','artifactOptionsOwner','artifactStore','actionApplication','selectedController','sdkSessionOwner','sdkSessionSnapshot','conversationMembership','conversationTurns','retentionLedgerSink']},retention:{},sourceEnabled:true});
+ const result=productReadiness({ports:{configuredOwners:['identityContext','transitionAuthority','continuationAdmission','approvals','artifactOptionsOwner','artifactStore','actionApplication','selectedController','sdkSessionOwner','sdkSessionSnapshot','conversationMembership','conversationTurns','intentApplication','settingsApplication','retentionLedgerSink']},retention:{},sourceEnabled:true});
  assert.equal(result.ready,false);assert.deepEqual(result.missingOwners,['tasks.commands','schedules.application','schedules.inbox','sources.currentInstallation','proxy.modelGrants','schedules.dispatchWorker']);
 });
