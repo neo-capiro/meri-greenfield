@@ -1,24 +1,26 @@
-/** SYNTHETIC: Core's DRAFT issuance route answered by a fake Fetch that signs with the synthetic production key. Exercises the
- * Meri adapter only: correlation, exact budgets, fresh current-decision observation, local stamping and signed-time handling. */
+/** SYNTHETIC: Core's DRAFT rev 3 issuance route answered by a fake Fetch that signs with the synthetic production key. Exercises
+ * the Meri adapter only: the rev 3 request body, correlation (budgets, allocation digest, qualification), fresh current-decision
+ * observation, local stamping, signed-time handling and the grant installation that precedes every receipt. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 import {productFailure} from '../../../control/product-access/errors.mjs';
 import {compileExecutionTrust} from '../execution-capability.mjs';
 import {createCoreExecutionIssuance,CORE_EXECUTION_ROUTE} from '../execution-issuance.mjs';
-import {productionToken,productionTrust,ISSUED_AT,RUN_BINDING,BUDGETS,POLICY_REVISION} from './execution-capability-fixture.mjs';
+import {productionToken,productionTrust,admittedSet,ISSUED_AT,RUN_BINDING,BUDGETS,POLICY_REVISION,QUALIFICATION} from './execution-capability-fixture.mjs';
 const ORIGIN='https://core.example.test';
 const code=c=>e=>e?.code===c||productFailure(e)?.code===c;
-const allocation={run:{tenantId:RUN_BINDING.tenantId,actorId:RUN_BINDING.actorId,conversationId:RUN_BINDING.conversationId,runId:RUN_BINDING.runId},
- budgets:{maxTurns:3,maxToolCalls:1,maxRecoveryAttempts:0,maxRuntimeSeconds:900,maxCostMicroUSD:2000000,maxOutputBytes:262144},
- schedule:{revision:'d'.repeat(64),expiresAt:'2026-10-18T15:00:00.000Z',operations:[{operation:{id:'create_task',version:'0.2.0'},chargeMicrousd:1000}]}};
-function harness({token=productionToken('clientAndDueDate'),decision,start=ISSUED_AT*1000+200,coreChecked=1,executor,respond}={}){
- const s={t:start,requests:[],decisions:0,sleeps:[],credentials:[]};const now=()=>s.t;
+/** The run's admitted allocation: the one the synthetic Core signs the budgets and allocation digest from. */
+const allocation=admittedSet().allocation;
+function harness({token=productionToken('clientAndDueDate'),decision,start=ISSUED_AT*1000+200,coreChecked=1,executor,respond,install}={}){
+ const s={t:start,requests:[],decisions:0,sleeps:[],credentials:[],installs:[]};const now=()=>s.t;
  const current=()=>JSON.stringify({binding:RUN_BINDING,policyRevision:POLICY_REVISION,deadlineMs:start+600000,checkedAtMs:s.t,allocation,allocationSha256:hash(allocation)});
  const issuance=createCoreExecutionIssuance({origin:ORIGIN,trust:compileExecutionTrust(productionTrust()),now,
   sleep:async ms=>{s.sleeps.push(ms);s.t+=ms;},
   getCredentials:async v=>{s.credentials.push(v);return {tenantId:v.tenantId,actorId:v.actorId,bearerToken:'native-session-token',serviceSecret:'service-secret',expiresAtMs:s.t+300000};},
-  executorFor:async({proposal})=>executor?executor(proposal):{binding:RUN_BINDING,currentAllocationJson:current()},
+  executorFor:async({proposal})=>executor?executor(proposal):{binding:RUN_BINDING,currentAllocationJson:current(),qualification:QUALIFICATION},
+  installGrant:async v=>{s.installs.push({...v,at:s.t,requests:s.requests.length,decisions:s.decisions});if(install)return install(v);},
   readDecision:async()=>{s.decisions++;return decision===undefined?token.decision:decision;},
   fetchImpl:async(url,init)=>{s.requests.push({url,init,body:JSON.parse(init.body)});s.t+=40;
    if(respond)return respond(url,init);
@@ -26,23 +28,38 @@ function harness({token=productionToken('clientAndDueDate'),decision,start=ISSUE
  const issue=(extra={})=>issuance.issueExecution({proposal:token.proposal,principal:{tenantId:RUN_BINDING.tenantId,actorId:RUN_BINDING.actorId,role:'standard_user',permissions:[],clientIds:[],membershipRevision:'m1'},...extra});
  return {s,issue,token};
 }
-test('issues against the draft route with exact executor binding, deterministic request id, allocation budgets and approver credentials',async()=>{
+test('issues against the draft route with exact executor binding, deterministic request id, the authenticated allocation, its digest, the qualification, the run deadline and approver credentials',async()=>{
  const {s,issue,token}=harness(),started=s.t,receipt=await issue();
  assert.equal(s.requests.length,1);const r=s.requests[0];
  assert.equal(r.url,ORIGIN+CORE_EXECUTION_ROUTE);assert.equal(r.init.method,'POST');assert.equal(r.init.redirect,'error');
  assert.equal(r.init.headers.authorization,'Bearer native-session-token');assert.equal(r.init.headers['x-internal-service-secret'],'service-secret');
- assert.deepEqual(Object.keys(r.body),['proposal','executorBinding','requestId','budgets','allocationSha256']);
- assert.deepEqual(r.body.executorBinding,RUN_BINDING);assert.equal(r.body.requestId,token.requestId);assert.deepEqual(r.body.budgets,BUDGETS);assert.equal(r.body.allocationSha256,hash(allocation));
+ assert.deepEqual(Object.keys(r.body),['proposal','executorBinding','requestId','allocation','allocationSha256','qualification','runDeadlineMs']);
+ assert.deepEqual(r.body.executorBinding,RUN_BINDING);assert.equal(r.body.requestId,token.requestId);assert.deepEqual(r.body.allocation,allocation);assert.equal(r.body.allocationSha256,hash(allocation));
+ assert.deepEqual(r.body.qualification,QUALIFICATION);assert.equal(r.body.runDeadlineMs,started+600000);assert.deepEqual(JSON.parse(Buffer.from(receipt.credential.split('.')[1],'base64url').toString()).capability.budgets,BUDGETS);
+ // The grant was installed from the verified token, for the executor binding, after the correlated response and the fresh decision.
+ assert.equal(s.installs.length,1);assert.equal(s.installs[0].verified.credentialSha256,createHash('sha256').update(token.credential).digest('hex'));
+ assert.deepEqual(s.installs[0].executorBinding,RUN_BINDING);assert.equal(s.installs[0].requests,1);assert.equal(s.installs[0].decisions,1);assert.ok(receipt.checkedAtMs>=s.installs[0].at);
  assert.deepEqual(s.credentials.map(c=>[c.tenantId,c.actorId,c.purpose]),[[RUN_BINDING.tenantId,RUN_BINDING.actorId,'approval.execution']]);
  assert.equal(hash(receipt.execution),hash(token.execution));assert.equal(receipt.credential,token.credential);
  // Local stamp after the correlated response and the fresh decision read; Core's own checkedAtMs (1) is never used.
  assert.equal(receipt.checkedAtMs,s.t);assert.ok(receipt.checkedAtMs>=started+40);assert.equal(s.decisions,1);
  assert.equal(receipt.expiresAtMs,(ISSUED_AT+120)*1000);
 });
-test('an idempotent replay of the same immutable token is accepted only with a fresh current-decision observation',async()=>{
+test('an idempotent replay of the same immutable token is accepted only with a fresh current-decision observation, and re-installs the same grant idempotently',async()=>{
  const {s,issue}=harness(),first=await issue();s.t+=5000;const second=await issue();
  assert.equal(second.credential,first.credential);assert.equal(s.decisions,2);assert.ok(second.checkedAtMs>first.checkedAtMs);
  assert.equal(s.requests[0].body.requestId,s.requests[1].body.requestId);
+ assert.equal(s.installs.length,2);assert.equal(s.installs[0].verified.credentialSha256,s.installs[1].verified.credentialSha256);
+});
+test('no receipt without the installed grant: a conflicting install is EXECUTION_GRANT_REFUSED, an unavailable owner is EXECUTION_OWNER_UNAVAILABLE',async()=>{
+ for(const [thrown,expected] of [[Object.assign(Error('EXECUTION_GRANT_CONFLICT'),{code:'EXECUTION_GRANT_CONFLICT'}),'EXECUTION_GRANT_REFUSED'],[Error('EXECUTION_GRANT_REVOKED'),'EXECUTION_GRANT_REFUSED'],[Error('BUDGET_STATE_UNAVAILABLE'),'EXECUTION_OWNER_UNAVAILABLE'],[new TypeError('down'),'EXECUTION_OWNER_UNAVAILABLE']]){
+  const h=harness({install:()=>{throw thrown;}});await assert.rejects(h.issue(),code(expected),String(thrown.message));assert.equal(h.s.installs.length,1);
+ }
+ // A token whose qualification or allocation digest is not the admitted run's never reaches the installer.
+ const foreign=productionToken('clientAndDueDate',{qualification:{...QUALIFICATION,attempt:2}});
+ const h=harness({token:foreign});await assert.rejects(h.issue(),code('EXECUTION_CAPABILITY_MISMATCH'));assert.equal(h.s.installs.length,0);
+ const other=harness({executor:()=>({binding:RUN_BINDING,currentAllocationJson:JSON.stringify({binding:RUN_BINDING,policyRevision:POLICY_REVISION,deadlineMs:ISSUED_AT*1000+600000,checkedAtMs:ISSUED_AT*1000+200,allocation,allocationSha256:hash(allocation)}),qualification:{...QUALIFICATION,fence:2}})});
+ await assert.rejects(other.issue(),code('EXECUTION_OWNER_UNAVAILABLE'));assert.equal(other.s.requests.length,0);
 });
 test('a revoked, changed or rejected current decision refuses the token before any receipt',async()=>{
  const base=productionToken('clientAndDueDate');

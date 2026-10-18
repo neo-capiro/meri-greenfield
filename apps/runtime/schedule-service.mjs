@@ -1,5 +1,14 @@
 /** Owned startup for the existing schedule poller. Trusted firing authority and native admission are mandatory borrowed owners;
- * JSON configuration never selects or manufactures them. Common configuration is validated by the calling runtime entry point. */
+ * JSON configuration never selects or manufactures them. Common configuration is validated by the calling runtime entry point.
+ *
+ * Two ways to supply the owners (exactly one):
+ *  `runtimePorts`         the finished record {authority, runAdmission, runControl, retirement, pool?, client?, now?} (tests, embedders);
+ *  `runtimePortsFactory`  a trusted plain function the service calls ONCE, after it owns its pool, Temporal client and (when the
+ *                         role declares `native`) its native capability client: `factory({pool, client, native?, configuration, now})`
+ *                         must return that same record synchronously (schedule-service-owners.mjs composeRoutinesWorkerRuntimePorts
+ *                         is the production factory, passed by cli.mjs). It is refused as configuration when it is not a plain
+ *                         function, and as unavailable when its record is not complete, before any poller or listener starts; a
+ *                         thrown factory tears the owned resources down. The factory never creates resources: the service does. */
 import {Pool} from 'pg';
 import {Connection,Client} from '@temporalio/client';
 import {types} from 'node:util';
@@ -9,8 +18,9 @@ import {transact,assertPool} from '../control/product-persistence/transaction.mj
 import {storageMethod} from '../artifacts/storage/boundary.mjs';
 import {readSecret,fault} from './config.mjs';
 import {temporalTls,temporalAuthorization} from './control.mjs';
+import {createNativeCapabilityClient} from './native-client.mjs';
 import {assembleScheduleDispatch,startScheduleWorker as startSchedulePoller} from './schedule-worker.mjs';
-import {compileScheduleServiceConfiguration} from './schedule-service-configuration.mjs';
+import {compileScheduleServiceConfiguration,SCHEDULE_NATIVE_MAX_REQUEST_MS} from './schedule-service-configuration.mjs';
 
 const relations=Object.freeze(['meri_schedules.projections','meri_schedules.intents','meri_schedules.occurrences','meri_intents.preparations',
  'meri_conversations.conversations','meri_conversations.runs','meri_conversations.events','meri_conversations.controls','meri_conversations.initial_inputs','meri_conversations.initial_run_bindings',
@@ -46,22 +56,50 @@ async function checkSchema(pool,configuration,now,signal){
   },{readOnly:true,check:life.check,unavailable:'SCHEDULE_SCHEMA_UNAVAILABLE',uncertain:'SCHEDULE_SCHEMA_UNAVAILABLE'}));life.check();
  }finally{life.close();}
 }
+/** A trusted plain synchronous function, or undefined. Accessors, proxies, async and generator functions are configuration faults. */
+function captureFactory(options){
+ const c=own(options,[],['runtimePorts','runtimePortsFactory','signal']);
+ const factory=c.runtimePortsFactory;
+ if(factory===undefined)return null;
+ if(c.runtimePorts!==undefined||typeof factory!=='function'||types.isProxy(factory)||types.isAsyncFunction(factory)||types.isGeneratorFunction(factory))throw fault('SCHEDULE_SERVICE_CONFIGURATION');
+ return factory;
+}
+function produced(factory,resources){
+ const supplied=Reflect.apply(factory,undefined,[Object.freeze(resources)]);
+ if(supplied===undefined)throw fault('SCHEDULE_SERVICE_UNAVAILABLE');
+ // A plain function can still return a Promise. Consume only a native rejection while refusing it; never run a then getter.
+ if(types.isPromise(supplied)){Promise.prototype.then.call(supplied,undefined,()=>{});throw fault('SCHEDULE_SERVICE_UNAVAILABLE');}
+ const p=capture(supplied);
+ // The record may name the resources it was given, never others: the service owns and closes exactly what it created.
+ if(p.pool!==undefined&&p.pool!==resources.pool||p.client!==undefined&&p.client!==resources.client)throw fault('SCHEDULE_SERVICE_UNAVAILABLE');
+ return p;
+}
 export async function startScheduleWorker(configuration,options={}){
- const {runtimePorts,signal}=own(options,[],['runtimePorts','signal']);nativeSignal(signal);
- const p=capture(runtimePorts),plan=compileScheduleServiceConfiguration(configuration);
- if(!p.pool&&plan.connectionFile===undefined)throw fault('SCHEDULE_SERVICE_CONFIGURATION');
+ const {runtimePorts,signal}=own(options,[],['runtimePorts','runtimePortsFactory','signal']);nativeSignal(signal);
+ const factory=captureFactory(options),plan=compileScheduleServiceConfiguration(configuration);
+ // Without a factory the owners must exist now; with one, every resource it will receive is owned here, so the pool needs its file.
+ let p=factory===null?capture(runtimePorts):null;
+ if((factory===null?!p.pool:true)&&plan.connectionFile===undefined)throw fault('SCHEDULE_SERVICE_CONFIGURATION');
  let ownedPool,ownedClientConnection,ownedClientAuthorization,poller,closing;
  const close=()=>closing??=(async()=>{
   const errors=[];for(const stop of [()=>poller?.close(),()=>ownedClientConnection?.close(),()=>ownedClientAuthorization?.close(),()=>ownedPool?.end()])try{await stop();}catch(error){errors.push(error);}
   if(errors.length)throw new AggregateError(errors,'SCHEDULE_SERVICE_CLEANUP_UNKNOWN');
  })();
  try{
-  signal?.throwIfAborted();let pool=p.pool,client=p.client;
+  signal?.throwIfAborted();let pool=p?.pool,client=p?.client,native;
   if(!pool){const bytes=await readSecret(plan.connectionFile);signal?.throwIfAborted();ownedPool=new Pool({connectionString:connectionString(bytes),max:10,connectionTimeoutMillis:configuration.limits.requestMs,idleTimeoutMillis:10000,query_timeout:configuration.limits.requestMs});pool=ownedPool;}
   if(!client){
    const tls=await temporalTls(configuration.temporal.tls);ownedClientAuthorization=await temporalAuthorization(configuration,{signal});signal?.throwIfAborted();
    ownedClientConnection=await Connection.connect({address:configuration.temporal.address,tls,connectTimeout:configuration.limits.startupMs,...(ownedClientAuthorization?{apiKey:()=>ownedClientAuthorization.apiKey()}:{})});signal?.throwIfAborted();
    client=new Client({connection:ownedClientConnection,namespace:configuration.temporal.namespace});
+  }
+  if(factory!==null){
+   // The native capability client (control's private native operations) is owned here too, only when the role declares it.
+   if(plan.native!==undefined){
+    const capability=await readSecret(plan.native.capabilityFile);signal?.throwIfAborted();
+    native=createNativeCapabilityClient({configuration:plan.native,credential:new TextDecoder('utf-8',{fatal:true}).decode(capability).trim(),maxRequestMs:Math.min(configuration.limits.requestMs,SCHEDULE_NATIVE_MAX_REQUEST_MS)});
+   }
+   p=produced(factory,{pool,client,...(native===undefined?{}:{native}),configuration,now:Date.now});signal?.throwIfAborted();
   }
   const dispatch=composeScheduleService({configuration,runtimePorts:{...p,pool,client}});
   await checkSchema(pool,configuration,p.now,signal);signal?.throwIfAborted();

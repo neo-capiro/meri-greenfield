@@ -1,12 +1,18 @@
 /** SYNTHETIC owners and a scripted product-budget pool under the ACTUAL execution composition: state gating, the executor
- * context, the deferred per-capability executor's pre-SQL refusals, the ACTIVE-grant requirement and the P-INT-9 mount. */
+ * context, the deferred per-capability executor's pre-SQL refusals, the ACTIVE-grant requirement, the P-INT-9 mount, and the
+ * issuance path that installs the token's grant on the run's existing allocation before any receipt (lane X). */
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 import {productFailure} from '../../../control/product-access/errors.mjs';
 import {createCommandToolInterface} from '../../../control/commands/tool-interface.mjs';
+import {createPostgresToolBudget} from '../../../gateway/budget/postgres-tool-budget.mjs';
+import {executionGrantFixture} from '../../../gateway/budget/test/execution-grant-fixture.mjs';
 import {createIntentExecutionOwner} from '../execution-composition.mjs';
-import {productionToken,productionTrust,productionProposal,admittedSet,CASES,ISSUED_AT,RUN_BINDING,CLIENT} from './execution-capability-fixture.mjs';
+import {CORE_EXECUTION_ROUTE} from '../execution-issuance.mjs';
+import {bindExecutionGrant} from '../execution-grant.mjs';
+import {productionToken,productionTrust,productionProposal,productionDecision,signExecution,admittedSet,CASES,ISSUED_AT,RUN_BINDING,CLIENT,CAPABILITY_ID,QUALIFICATION} from './execution-capability-fixture.mjs';
 const code=c=>e=>e?.code===c||productFailure(e)?.code===c;
 function scriptedPool(allocationRow){
  const s={connects:0,statements:[]};
@@ -69,6 +75,33 @@ test('a matching token without an ACTIVE grant row never executes: bindTrustedGr
  await assert.rejects(options.executor.execute({proposal:t.proposal,execution:t.execution},t.credential),code('EXECUTION_GRANT_UNAVAILABLE'));
  assert.ok(sql.s.statements.some(x=>x.startsWith('SELECT allocation,allocation_sha256')));
  assert.equal(sql.s.statements.some(x=>/^(INSERT|UPDATE)/u.test(x)),false);assert.equal(calls.some(c=>c[0]==='fetch'),false);
+});
+test('issueExecution over the real composition: rev 3 body from the admitted run, the token grant installed ACTIVE on the run allocation before the receipt, idempotent replay, and the existing bindTrustedGrant then accepts it',async()=>{
+ const START=ISSUED_AT*1000+1000,set=admittedSet(),f=executionGrantFixture({allocation:set.allocation,facts:set.facts,expiresAtMs:START+1800000,clock:START});
+ const proposal=productionProposal(CASES.clientAndDueDate),decision=productionDecision(proposal),core=[];
+ // A synthetic Core: signs exactly what the rev 3 body carries (allocation budgets and digest, qualification) with the pinned key.
+ const fetchImpl=async(url,init)=>{const body=JSON.parse(init.body);core.push({url,body});assert.equal(new URL(url).pathname,CORE_EXECUTION_ROUTE);
+  const t=signExecution({proposal:body.proposal,decision,executorBinding:body.executorBinding,requestId:body.requestId,capabilityId:CAPABILITY_ID,allocation:body.allocation,qualification:body.qualification,iat:ISSUED_AT,exp:ISSUED_AT+120});
+  return new Response(JSON.stringify({execution:t.execution,credential:t.credential,checkedAtMs:1,expiresAtMs:(ISSUED_AT+120)*1000}),{status:200,headers:{'content-type':'application/json'}});};
+ const refuse=async()=>{throw Error('not reached');};
+ const owner=createIntentExecutionOwner({enabled:true,trust:productionTrust(),core:{origin:'https://core.example.test',getCredentials:async v=>({tenantId:v.tenantId,actorId:v.actorId,bearerToken:'native-session-token',serviceSecret:'service-secret',expiresAtMs:START+300000})},
+  allocations:f.allocations,pool:f.pool,selectionFor:async()=>({reference:CLIENT,clientId:CLIENT}),preparePolicy:refuse,authorizeBusiness:refuse,authorizeSources:refuse,currentRights:refuse,
+  source:{origin:'https://core.example.test',getServiceSecret:async()=>'service-secret'},sourceEnabled:true,now:()=>START,fetchImpl});
+ owner.bindApprovals({approvalStore:{getCurrent:refuse},readDecision:async()=>decision});assert.equal(owner.state(),'composed');
+ const receipt=await owner.issueExecution({proposal,principal:proposal.requiredApprover});
+ assert.equal(core.length,1);assert.deepEqual(Object.keys(core[0].body),['proposal','executorBinding','requestId','allocation','allocationSha256','qualification','runDeadlineMs']);
+ assert.deepEqual(core[0].body.allocation,set.allocation);assert.equal(core[0].body.allocationSha256,hash(set.allocation));assert.deepEqual(core[0].body.qualification,QUALIFICATION);assert.deepEqual(core[0].body.executorBinding,RUN_BINDING);
+ assert.equal(core[0].body.runDeadlineMs,START+900000,'the admitted run deadline (started_at + maxRuntimeSeconds)');
+ const g=f.state().grants.get(CAPABILITY_ID);
+ assert.equal(g?.state,'ACTIVE');assert.equal(g.capability_sha256,createHash('sha256').update(receipt.credential).digest('hex'));assert.equal(g.expires_at.getTime(),(ISSUED_AT+120)*1000);assert.equal(g.run_id,RUN_BINDING.runId);
+ const facts=f.state().bindings.get(CAPABILITY_ID).facts;
+ assert.deepEqual(facts,{grantId:CAPABILITY_ID,binding:RUN_BINDING,qualificationBinding:QUALIFICATION,capabilitySha256:g.capability_sha256,allocationSha256:hash(set.allocation)});
+ assert.equal(f.state().grants.size,3,'the admitted task/model grants stay as installed');
+ const snapshot=structuredClone(f.state()),again=await owner.issueExecution({proposal,principal:proposal.requiredApprover});
+ assert.equal(again.credential,receipt.credential);assert.deepEqual(f.state(),snapshot,'an idempotent Core replay re-installs nothing');
+ // Dot item 5 closes: the EXISTING grant owner on the same allocation now binds the token's grant (it still creates nothing).
+ await bindExecutionGrant({bindTrustedGrant:createPostgresToolBudget({pool:f.pool,allocationJson:set.allocationJson,namespace:'product',now:()=>START}).bindTrustedGrant,facts,check:()=>{}});
+ assert.deepEqual(f.state(),snapshot);
 });
 test('P-INT-9 mount: prepare-only create_task for the exact admitted run; foreign or unadmitted runs are UNAVAILABLE',async()=>{
  const {owner}=owners();owner.bindApprovals(approvals);

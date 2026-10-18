@@ -1,21 +1,28 @@
 /** `issueExecution` for conversation write intents (`apps/control/intents/approval.mjs`) over Core's proposed issuance route
- * (Core DRAFT §3, `POST /api/clio/approvals/native/execution`, NOT mounted at Core 5a6ec070). Construction is inert.
+ * (Core DRAFT rev 3 §3, `POST /api/clio/approvals/native/execution`, NOT mounted at Core 0304b0ef). Construction is inert.
  *
  * One call, for an approved proposal and the attended approver (`principal`):
- *  1. Executor run: `executorFor({proposal, signal})` -> `{binding, currentAllocationJson}` from the existing admitted-run owner
- *     (`createPostgresAdmittedRunOwner(...).currentAllocation`). The binding keeps the proposal's tenant/actor/conversation/run.
- *  2. Budgets: `capabilityBudgets(currentAllocationJson)` (dot item 1); the request carries them with the allocation hash.
+ *  1. Executor run: `executorFor({proposal, signal})` -> `{binding, currentAllocationJson, qualification}` from the existing
+ *     admitted-run owner (`createPostgresAdmittedRunOwner(...).currentAllocation`) and the run's admitted grant set (the
+ *     qualification `{runId, attempt, workerArn, fence, policyRevision}`). The binding keeps the proposal's tenant/actor/
+ *     conversation/run; the qualification names the same run, fence and revision.
+ *  2. Budgets: `capabilityBudgets(currentAllocationJson)` (dot item 1). Rev 3 copies the budgets at Core from the authenticated
+ *     allocation itself, so the request carries the allocation, its hash, the qualification and the run deadline.
  *  3. Request id: deterministic per (proposal, commandSha256, executor binding), so Core's idempotent answer for the same
  *     (tenant, proposal, run, attempt) correlates exactly; anything else refuses.
  *  4. Core call with the approver's native bearer and the verified service secret (`getCredentials`, purpose
  *     `approval.execution`), fixed https origin, no redirects, bounded body, no retries.
  *  5. Local verification of the returned token (pinned keys, draft §4) and the trusted comparison to the proposal, executor
- *     binding, request id and budgets (exact equality, never "below a ceiling").
+ *     binding, request id, budgets, allocation digest and qualification (exact equality, never "below a ceiling").
  *  6. Fresh current-authority observation (dot item 2): Core's answer — even an idempotent replay of the same immutable token — is
  *     accepted only after Meri re-reads the CURRENT decision (`readDecision`, the shared `approval/decision` adapter) and its
  *     hash equals the token's `decisionSha256`. Core's own `checkedAtMs` is never trusted: this adapter stamps its own clock
  *     after the correlated fresh response. Signed `iat`/`exp` are enforced separately: `exp` must be in the future and `iat`
  *     must not be ahead of this clock (a bounded wait of at most `maxSkewMs` absorbs a second-granular issuer clock).
+ *  7. Grant installation (dot item 5): `installGrant({verified, executorBinding, signal})` installs the token's budget grant on
+ *     the run's existing allocation (`../../gateway/budget/execution-grant-admission.mjs`, idempotent per `jti`) BEFORE the
+ *     receipt exists. Without the ACTIVE row the executor's `bindTrustedGrant` would refuse, so an install failure is an issuance
+ *     failure: a refused or conflicting install is `EXECUTION_GRANT_REFUSED`; an unreachable owner is `EXECUTION_OWNER_UNAVAILABLE`.
  * Receipt: `{execution, credential, checkedAtMs, expiresAtMs}` with `expiresAtMs = min(exp, decision, proposal, run deadline)`.
  * Failures: ProductError `EXECUTION_OWNER_UNAVAILABLE` (NOT_DISPATCHED) when Core is unreachable or refuses, otherwise a plain
  * `EXECUTION_CAPABILITY_REFUSED`/`_MISMATCH` (approval.mjs maps it to `EXECUTION_AUTHORITY_REFUSED`, NOT_DISPATCHED). */
@@ -25,20 +32,23 @@ import {data,own,nativeSignal} from '../../../packages/contracts/commands-0.2/ex
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {cancelBody,readJsonResponse,responseBody} from '../../gateway/sources/json-response.mjs';
 import {ProductError} from '../../control/product-access/errors.mjs';
-import {assertExecutionCorrelation,capabilityBudgets,executionFault,executionRequestId,verifyExecutionCapability,EXECUTION_LIMITS,EXECUTION_COMMAND_ACTIONS} from './execution-capability.mjs';
+import {assertExecutionCorrelation,capabilityBudgets,executionFault,executionRequestId,verifyExecutionCapability,EXECUTION_LIMITS,EXECUTION_COMMAND_ACTIONS,QUALIFICATION_KEYS} from './execution-capability.mjs';
 export const CORE_EXECUTION_ROUTE='/api/clio/approvals/native/execution';
 const STABLE=['tenantId','actorId','conversationId','runId'];
 const same=(a,b)=>hash(a)===hash(b);
 const unavailable=()=>new ProductError('EXECUTION_OWNER_UNAVAILABLE','NOT_DISPATCHED');
 const token=v=>typeof v==='string'&&v.length>0&&v.length<=8192&&/^[\x21-\x7e]+$/u.test(v);
 const instant=v=>{const t=typeof v==='string'?Date.parse(v):NaN;return Number.isSafeInteger(t)?t:NaN;};
+const GRANT_REFUSALS=/^EXECUTION_GRANT_(REFUSED|CONFLICT|REVOKED)$/u;
+/** An install refusal (facts, conflict, revoked) is a closed refusal; anything else is the owner being unavailable. */
+const grantFailure=error=>{const code=error?.code??error?.message;return typeof code==='string'&&GRANT_REFUSALS.test(code)?executionFault('EXECUTION_GRANT_REFUSED'):unavailable();};
 export function createCoreExecutionIssuance(configuration){
- const c=own(configuration,['origin','trust','getCredentials','executorFor','readDecision','fetchImpl','now'],['limits','sleep']);
+ const c=own(configuration,['origin','trust','getCredentials','executorFor','readDecision','installGrant','fetchImpl','now'],['limits','sleep']);
  const limits=c.limits===undefined?{maxRequestMs:10000,maxResponseBytes:65536,maxSkewMs:1000}:data(own(c.limits,['maxRequestMs','maxResponseBytes','maxSkewMs']));
  let base;try{base=new URL(c.origin);}catch{throw executionFault('EXECUTION_CONFIGURATION');}
  const sleep=c.sleep??(ms=>new Promise(resolve=>setTimeout(resolve,ms)));
  if(base.protocol!=='https:'||base.origin!==c.origin||base.username||base.password||!(c.trust?.keys instanceof Map)||
-  ['getCredentials','executorFor','readDecision','fetchImpl','now'].some(k=>typeof c[k]!=='function'||types.isProxy(c[k]))||typeof sleep!=='function'||
+  ['getCredentials','executorFor','readDecision','installGrant','fetchImpl','now'].some(k=>typeof c[k]!=='function'||types.isProxy(c[k]))||typeof sleep!=='function'||
   !Number.isSafeInteger(limits.maxRequestMs)||limits.maxRequestMs<1||limits.maxRequestMs>30000||!Number.isSafeInteger(limits.maxResponseBytes)||limits.maxResponseBytes<1||limits.maxResponseBytes>1048576||
   !Number.isSafeInteger(limits.maxSkewMs)||limits.maxSkewMs<0||limits.maxSkewMs>EXECUTION_LIMITS.maxSkewMs)throw executionFault('EXECUTION_CONFIGURATION');
  const now=c.now,url=new URL(CORE_EXECUTION_ROUTE,base).href;
@@ -64,12 +74,13 @@ export function createCoreExecutionIssuance(configuration){
   if(!Number.isSafeInteger(cutoff)||cutoff<=started)throw unavailable();
   const life=createOperationLifetime({deadlineMs:cutoff,now,signal:v.signal,errorFactory:code=>new ProductError(code==='CANCELLED'?'CANCELLED':'DEADLINE','NOT_DISPATCHED')});
   try{
-   // 1-2. The executor run and its authenticated allocation (the existing admitted-run owner).
-   let executor;try{executor=data(own(await life.run(signal=>c.executorFor({proposal,signal})),['binding','currentAllocationJson']));validateShape('RunBinding',executor.binding);}
+   // 1-2. The executor run, its authenticated allocation (the existing admitted-run owner) and the admitted qualification.
+   let executor,qualification;
+   try{executor=data(own(await life.run(signal=>c.executorFor({proposal,signal})),['binding','currentAllocationJson','qualification']));validateShape('RunBinding',executor.binding);qualification=own(executor.qualification,QUALIFICATION_KEYS);}
    catch{throw unavailable();}
-   if(STABLE.some(k=>executor.binding[k]!==proposal.command.binding[k]))throw unavailable();
+   if(STABLE.some(k=>executor.binding[k]!==proposal.command.binding[k])||qualification.runId!==executor.binding.runId||qualification.fence!==executor.binding.writerFence)throw unavailable();
    let allocation;try{allocation=capabilityBudgets(executor.currentAllocationJson);}catch{throw unavailable();}
-   const at=now();if(!same(allocation.binding,executor.binding)||allocation.checkedAtMs<started||allocation.checkedAtMs>at||allocation.deadlineMs<=at)throw unavailable();
+   const at=now();if(!same(allocation.binding,executor.binding)||qualification.policyRevision!==allocation.policyRevision||allocation.checkedAtMs<started||allocation.checkedAtMs>at||allocation.deadlineMs<=at)throw unavailable();
    life.limitDeadline(allocation.deadlineMs);
    // 3-4. The Core issuance call with the attended approver's native credentials.
    const requestId=executionRequestId({proposalId:proposal.proposalId,commandSha256:proposal.commandSha256,executorBinding:executor.binding});
@@ -78,12 +89,15 @@ export function createCoreExecutionIssuance(configuration){
    catch{throw unavailable();}
    if(credentials.tenantId!==principal.tenantId||credentials.actorId!==principal.actorId||!token(credentials.bearerToken)||!token(credentials.serviceSecret)||!Number.isSafeInteger(credentials.expiresAtMs)||credentials.expiresAtMs<=now())throw unavailable();
    life.limitDeadline(credentials.expiresAtMs);
-   const raw=await post(life,credentials,{proposal,executorBinding:executor.binding,requestId,budgets:allocation.budgets,allocationSha256:allocation.allocationSha256});
+   // Rev 3 body: the authenticated allocation (Core copies the budgets and binds its digest), the qualification facts and the
+   // run deadline the capability must not outlive. `capabilityBudgets` already proved the allocation's hash and shape.
+   const raw=await post(life,credentials,{proposal,executorBinding:executor.binding,requestId,allocation:JSON.parse(executor.currentAllocationJson).allocation,allocationSha256:allocation.allocationSha256,qualification:executor.qualification,runDeadlineMs:allocation.deadlineMs});
    let receipt;try{receipt=own(raw,['execution','credential','checkedAtMs','expiresAtMs']);}catch{throw executionFault();}
-   // 5. Local verification and the trusted comparison (exact budgets; the Core receipt's execution must be the token's).
+   // 5. Local verification and the trusted comparison (exact budgets, allocation digest and qualification; the Core receipt's
+   // execution must be the token's).
    const verified=verifyExecutionCapability(receipt.credential,c.trust,{nowMs:now(),skewMs:limits.maxSkewMs});
    if(!same(receipt.execution,verified.request)||receipt.expiresAtMs!==verified.expiresAtMs||!same(verified.claims.budgets,allocation.budgets))throw executionFault('EXECUTION_CAPABILITY_MISMATCH');
-   assertExecutionCorrelation({verified,proposal,executorBinding:executor.binding,requestId});
+   assertExecutionCorrelation({verified,proposal,executorBinding:executor.binding,requestId,allocationSha256:allocation.allocationSha256,qualification:executor.qualification});
    // 6. Fresh current-authority observation: the CURRENT decision is the one the token signs.
    let decision;try{decision=data(await life.run(signal=>c.readDecision({proposalId:proposal.proposalId,commandSha256:proposal.commandSha256,binding:proposal.command.binding,signal})));}
    catch{throw unavailable();}
@@ -91,6 +105,8 @@ export function createCoreExecutionIssuance(configuration){
    assertExecutionCorrelation({verified,proposal,decision});
    const signedAt=verified.issuedAtMs;
    if(signedAt>now()){if(signedAt-now()>limits.maxSkewMs)throw executionFault();await life.run(()=>sleep(signedAt-now()));}
+   // 7. The token's budget grant is installed on the run's existing allocation before any receipt exists (idempotent per jti).
+   try{await life.run(signal=>c.installGrant({verified,executorBinding:executor.binding,signal}));}catch(error){throw grantFailure(error);}
    const checkedAtMs=now(),expiresAtMs=Math.min(verified.expiresAtMs,instant(decision.expiresAt),instant(proposal.expiresAt),allocation.deadlineMs);
    if(!Number.isSafeInteger(checkedAtMs)||checkedAtMs<started||checkedAtMs<signedAt||!Number.isSafeInteger(expiresAtMs)||expiresAtMs<=checkedAtMs)throw executionFault();
    life.check();

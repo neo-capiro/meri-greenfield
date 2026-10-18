@@ -79,7 +79,9 @@ export async function productRoutinesFlowFixture(){
  const configuration={version:1,profile:'isolated-preview',sourceEnabled:false,versions:h.template.versions,limits:{startupMs:1000,shutdownMs:1000,requestMs:1000,requestBytes:131072},native:{maxResponseBytes:2097152},
   temporal:{taskQueue:'meri-schedules'},scheduledDispatch:{enabled:true,conversationTaskQueue:'meri-conversations',maxConcurrentActivities:1}};
  const ports=captureRuntimePorts({routinesApplicationFactory:feature,conversationMembership:gate,conversationCurrentness:core}),app=createRuntimeProductApplications({configuration,sessions,ports,conversationStore:store,retention,now}),routes=createControlRouteApplications({assembly:app,candidate:{handle(){throw Error('private route was used');}}});
- const dispatch=composeScheduleService({configuration,runtimePorts:{authority:h.firingAuthority,runAdmission:h.adapter,runControl,retirement,pool,client,now}});
+ // The worker role's own configuration: control's native block (a partial record here) is not the worker's native client declaration.
+ const {native:_controlNative,...workerConfiguration}=configuration;
+ const dispatch=composeScheduleService({configuration:workerConfiguration,runtimePorts:{authority:h.firingAuthority,runAdmission:h.adapter,runControl,retirement,pool,client,now}});
  const post=(path,body,credential=session.credential)=>routes.public.handle(new Request('https://meri.synthetic.invalid'+path,{method:'POST',headers:{authorization:'Bearer '+credential,'content-type':'application/json'},body:JSON.stringify(body)}));
  async function occurrence(proposalId){const retained=await owner.readIntent({tenantId:h.template.principal.tenantId,intentId:proposalId},()=>{});assert.equal(retained.state,'ACKNOWLEDGED');const intent=retained.intent;
   const o=snapshotOccurrence({workflowId:intent.configuration.workflow.workflowId+'/firing/1',temporalScheduleId:intent.projection.temporalScheduleId,scheduledAt:new Date(now()).toISOString(),projection:intent.projection,generation:intent.generation,task:intent.configuration.task});return {occurrence:o,identity:occurrenceIdentity(o)};
