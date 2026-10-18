@@ -1,0 +1,215 @@
+{
+  "schema": "capiro.meri-execution-capability.v1 production-shaped vector (Meri, SYNTHETIC key)",
+  "note": "SYNTHETIC Ed25519 key from SHA-256(\"meri-execution-capability-production-vector-v1\"); never deploy. Signed exactly per Core DRAFT 5a6ec070 section 2. Regenerate only with a contract change.",
+  "key": {
+    "seedHex": "0ceca2405b287391cdb938dae7d02bd8aedb0498538c2756f87cc45be1a2a95a",
+    "issuer": "capiro-core:meri-execution:v1",
+    "kid": "meri-execution-synthetic-production-1",
+    "publicJwk": {
+      "kty": "OKP",
+      "crv": "Ed25519",
+      "x": "b2SlbM1G5FLrgawdtky9QZgOmUyLhHcEKCRq3e7YTME",
+      "kid": "meri-execution-synthetic-production-1",
+      "alg": "EdDSA",
+      "use": "sig"
+    }
+  },
+  "inputs": {
+    "policyRevision": "eb9ce27fb3b09793e6be60bd579d03473d5fb000220e994cb13eb4f9db3cc016",
+    "budgets": {
+      "maxTurns": 3,
+      "maxRuntimeSeconds": 900,
+      "maxCostMicrousd": 2000000,
+      "maxOutputBytes": 262144
+    },
+    "capabilityId": "9c1e7a3b-5d2f-4b8e-a6c4-3f0d8e2b7a15",
+    "iat": 1792332131,
+    "exp": 1792332251
+  },
+  "cases": {
+    "clientAndDueDate": {
+      "proposal": {
+        "proposalId": "f4b7e2a9-0001-4d3c-a8e1-2b6f9c0d5e37",
+        "command": {
+          "contractVersion": "0.1.0",
+          "commandId": "3d8f1b6e-0001-4c2a-9e7b-5a1f8d3c6e20",
+          "binding": {
+            "tenantId": "org_2nT4kQ7vXbR9mWc3LpY8sHd1Fz6",
+            "actorId": "user_2nT5aJ8wYcS0nXd4MqZ9tIe2Ga7",
+            "conversationId": "c2f6a1d4-7b3e-4c9a-8f15-2d6e9b0a4c71",
+            "runId": "a7d3e9f2-1c4b-4e8a-9d26-5f0b3c7e1a94",
+            "attemptId": "e1b8c4f7-3a2d-4f6e-b9c0-7d5a2e8f1b36",
+            "workerId": "4f9a2c6e-8d1b-4a3f-a7e5-0c2b9d6f3e18",
+            "writerFence": 1
+          },
+          "action": "task.create",
+          "arguments": {
+            "title": "Draft HASC markup talking points on the FY27 NDAA counter-UAS provision",
+            "clientId": "6b3e9f1a-2c7d-4e85-9a4f-1d8c3b7e0f52",
+            "dueDate": "2026-10-30T00:00:00.000Z"
+          },
+          "attachments": [],
+          "scopes": [
+            {
+              "tenantId": "org_2nT4kQ7vXbR9mWc3LpY8sHd1Fz6",
+              "kind": "client",
+              "resourceId": "6b3e9f1a-2c7d-4e85-9a4f-1d8c3b7e0f52",
+              "policyRevision": "eb9ce27fb3b09793e6be60bd579d03473d5fb000220e994cb13eb4f9db3cc016"
+            }
+          ],
+          "idempotencyKey": "8a2c5e7f-0001-4b1d-8f3a-6c9e2d0b7a14"
+        },
+        "commandSha256": "81fcd764eb5e67ebbda9a440a85f08e25f7a5c42b4b49c0784ffa015fa66d08a",
+        "createdAt": "2026-10-18T14:01:05.000Z",
+        "expiresAt": "2026-10-18T14:16:05.000Z",
+        "requiredApprover": {
+          "tenantId": "org_2nT4kQ7vXbR9mWc3LpY8sHd1Fz6",
+          "actorId": "user_2nT5aJ8wYcS0nXd4MqZ9tIe2Ga7"
+        }
+      },
+      "decision": {
+        "proposalId": "f4b7e2a9-0001-4d3c-a8e1-2b6f9c0d5e37",
+        "commandSha256": "81fcd764eb5e67ebbda9a440a85f08e25f7a5c42b4b49c0784ffa015fa66d08a",
+        "decision": "approved",
+        "decidedAt": "2026-10-18T14:01:41.000Z",
+        "expiresAt": "2026-10-18T14:16:05.000Z",
+        "approver": {
+          "tenantId": "org_2nT4kQ7vXbR9mWc3LpY8sHd1Fz6",
+          "actorId": "user_2nT5aJ8wYcS0nXd4MqZ9tIe2Ga7"
+        },
+        "policyRevision": "eb9ce27fb3b09793e6be60bd579d03473d5fb000220e994cb13eb4f9db3cc016"
+      },
+      "executorBinding": {
+        "tenantId": "org_2nT4kQ7vXbR9mWc3LpY8sHd1Fz6",
+        "actorId": "user_2nT5aJ8wYcS0nXd4MqZ9tIe2Ga7",
+        "conversationId": "c2f6a1d4-7b3e-4c9a-8f15-2d6e9b0a4c71",
+        "runId": "a7d3e9f2-1c4b-4e8a-9d26-5f0b3c7e1a94",
+        "attemptId": "e1b8c4f7-3a2d-4f6e-b9c0-7d5a2e8f1b36",
+        "workerId": "4f9a2c6e-8d1b-4a3f-a7e5-0c2b9d6f3e18",
+        "writerFence": 1
+      },
+      "requestId": "bd450ccf-9b7d-4d22-a4e1-1cbc85192ec5",
+      "expected": {
+        "credential": "eyJhbGciOiJFZERTQSIsInR5cCI6ImNhcGlyby1tZXJpLWV4ZWN1dGlvbitqd3QiLCJraWQiOiJtZXJpLWV4ZWN1dGlvbi1zeW50aGV0aWMtcHJvZHVjdGlvbi0xIn0.eyJhdWQiOiJtZXJpLWdhdGV3YXkiLCJjYXBhYmlsaXR5Ijp7ImFjdGlvbnMiOlsiY29tbWFuZC5leGVjdXRlIl0sImF1ZGllbmNlIjoibWVyaS1nYXRld2F5IiwiYmluZGluZyI6eyJhY3RvcklkIjoidXNlcl8yblQ1YUo4d1ljUzBuWGQ0TXFaOXRJZTJHYTciLCJhdHRlbXB0SWQiOiJlMWI4YzRmNy0zYTJkLTRmNmUtYjljMC03ZDVhMmU4ZjFiMzYiLCJjb252ZXJzYXRpb25JZCI6ImMyZjZhMWQ0LTdiM2UtNGM5YS04ZjE1LTJkNmU5YjBhNGM3MSIsInJ1bklkIjoiYTdkM2U5ZjItMWM0Yi00ZThhLTlkMjYtNWYwYjNjN2UxYTk0IiwidGVuYW50SWQiOiJvcmdfMm5UNGtRN3ZYYlI5bVdjM0xwWThzSGQxRno2Iiwid29ya2VySWQiOiI0ZjlhMmM2ZS04ZDFiLTRhM2YtYTdlNS0wYzJiOWQ2ZjNlMTgiLCJ3cml0ZXJGZW5jZSI6MX0sImJ1ZGdldHMiOnsibWF4Q29zdE1pY3JvdXNkIjoyMDAwMDAwLCJtYXhPdXRwdXRCeXRlcyI6MjYyMTQ0LCJtYXhSdW50aW1lU2Vjb25kcyI6OTAwLCJtYXhUdXJucyI6M30sImNhcGFiaWxpdHlJZCI6IjljMWU3YTNiLTVkMmYtNGI4ZS1hNmM0LTNmMGQ4ZTJiN2ExNSIsImV4cGlyZXNBdCI6IjIwMjYtMTAtMThUMTQ6MDQ6MTEuMDAwWiIsImlzc3VlZEF0IjoiMjAyNi0xMC0xOFQxNDowMjoxMS4wMDBaIiwiaXNzdWVyIjoiY2FwaXJvLWNvcmU6bWVyaS1leGVjdXRpb246djEiLCJwb2xpY3lSZXZpc2lvbiI6ImViOWNlMjdmYjNiMDk3OTNlNmJlNjBiZDU3OWQwMzQ3M2Q1ZmIwMDAyMjBlOTk0Y2IxM2ViNGY5ZGIzY2MwMTYiLCJzY29wZXMiOlt7ImtpbmQiOiJjbGllbnQiLCJwb2xpY3lSZXZpc2lvbiI6ImViOWNlMjdmYjNiMDk3OTNlNmJlNjBiZDU3OWQwMzQ3M2Q1ZmIwMDAyMjBlOTk0Y2IxM2ViNGY5ZGIzY2MwMTYiLCJyZXNvdXJjZUlkIjoiNmIzZTlmMWEtMmM3ZC00ZTg1LTlhNGYtMWQ4YzNiN2UwZjUyIiwidGVuYW50SWQiOiJvcmdfMm5UNGtRN3ZYYlI5bVdjM0xwWThzSGQxRno2In1dfSwiZXhlY3V0aW9uIjp7ImFjdGlvbiI6InRhc2suY3JlYXRlIiwiYXBwcm92ZXIiOnsiYWN0b3JJZCI6InVzZXJfMm5UNWFKOHdZY1MwblhkNE1xWjl0SWUyR2E3IiwidGVuYW50SWQiOiJvcmdfMm5UNGtRN3ZYYlI5bVdjM0xwWThzSGQxRno2In0sImFyZ3VtZW50c1NoYTI1NiI6ImI2OTU4MTgzZDBjMjFhZmE4OWNkNTZhMjYyMTQ5MmNkNGM2ZjEzNTI2YzMyMTkyMTUwMzRhNWE3NjY3MTQ1NWQiLCJjbGllbnRJZHMiOlsiNmIzZTlmMWEtMmM3ZC00ZTg1LTlhNGYtMWQ4YzNiN2UwZjUyIl0sImNvbW1hbmRTaGEyNTYiOiI4MWZjZDc2NGViNWU2N2ViYmRhOWE0NDBhODVmMDhlMjVmN2E1YzQyYjRiNDljMDc4NGZmYTAxNWZhNjZkMDhhIiwiZGVjaXNpb25TaGEyNTYiOiI0YTQ2Nzc1ZTM5NmU2MjNlMTk4OWNkODUyMzYwNWM2NDE0NTUzM2JlOWE1MTM1MDYzZWVhYTc0ZDk1NmY5OWZjIiwiaWRlbXBvdGVuY3lLZXkiOiI4YTJjNWU3Zi0wMDAxLTRiMWQtOGYzYS02YzllMmQwYjdhMTQiLCJwcm9wb3NhbElkIjoiZjRiN2UyYTktMDAwMS00ZDNjLWE4ZTEtMmI2ZjljMGQ1ZTM3IiwicmVxdWVzdElkIjoiYmQ0NTBjY2YtOWI3ZC00ZDIyLWE0ZTEtMWNiYzg1MTkyZWM1IiwicmVxdWVzdFNoYTI1NiI6ImFhYjY1YTlhNzIwNTRhN2JhN2ZlYjBmZDBiN2E0ZjA1Y2JiODQ5MjJhMDlmMGFmY2M0OTk4ZGVhNWU5OWZlZjkifSwiZXhwIjoxNzkyMzMyMjUxLCJpYXQiOjE3OTIzMzIxMzEsImlzcyI6ImNhcGlyby1jb3JlOm1lcmktZXhlY3V0aW9uOnYxIiwianRpIjoiOWMxZTdhM2ItNWQyZi00YjhlLWE2YzQtM2YwZDhlMmI3YTE1IiwibmJmIjoxNzkyMzMyMTMxfQ.QhqRYYcABITIw5khQIvCJjzQKLpgIg1F-ekHiQwIgnI26Cbkq-fPbGE17AU4wUA2vUfFgCA_EcT-EKg6HyGiCQ",
+        "claimsJson": "{\"capabilityId\":\"9c1e7a3b-5d2f-4b8e-a6c4-3f0d8e2b7a15\",\"issuer\":\"capiro-core:meri-execution:v1\",\"audience\":\"meri-gateway\",\"binding\":{\"tenantId\":\"org_2nT4kQ7vXbR9mWc3LpY8sHd1Fz6\",\"actorId\":\"user_2nT5aJ8wYcS0nXd4MqZ9tIe2Ga7\",\"conversationId\":\"c2f6a1d4-7b3e-4c9a-8f15-2d6e9b0a4c71\",\"runId\":\"a7d3e9f2-1c4b-4e8a-9d26-5f0b3c7e1a94\",\"attemptId\":\"e1b8c4f7-3a2d-4f6e-b9c0-7d5a2e8f1b36\",\"workerId\":\"4f9a2c6e-8d1b-4a3f-a7e5-0c2b9d6f3e18\",\"writerFence\":1},\"actions\":[\"command.execute\"],\"scopes\":[{\"tenantId\":\"org_2nT4kQ7vXbR9mWc3LpY8sHd1Fz6\",\"kind\":\"client\",\"resourceId\":\"6b3e9f1a-2c7d-4e85-9a4f-1d8c3b7e0f52\",\"policyRevision\":\"eb9ce27fb3b09793e6be60bd579d03473d5fb000220e994cb13eb4f9db3cc016\"}],\"issuedAt\":\"2026-10-18T14:02:11.000Z\",\"expiresAt\":\"2026-10-18T14:04:11.000Z\",\"policyRevision\":\"eb9ce27fb3b09793e6be60bd579d03473d5fb000220e994cb13eb4f9db3cc016\",\"budgets\":{\"maxTurns\":3,\"maxRuntimeSeconds\":900,\"maxCostMicrousd\":2000000,\"maxOutputBytes\":262144}}",
+        "execution": {
+          "contractVersion": "0.1.0",
+          "requestId": "bd450ccf-9b7d-4d22-a4e1-1cbc85192ec5",
+          "capabilityId": "9c1e7a3b-5d2f-4b8e-a6c4-3f0d8e2b7a15",
+          "executorBinding": {
+            "tenantId": "org_2nT4kQ7vXbR9mWc3LpY8sHd1Fz6",
+            "actorId": "user_2nT5aJ8wYcS0nXd4MqZ9tIe2Ga7",
+            "conversationId": "c2f6a1d4-7b3e-4c9a-8f15-2d6e9b0a4c71",
+            "runId": "a7d3e9f2-1c4b-4e8a-9d26-5f0b3c7e1a94",
+            "attemptId": "e1b8c4f7-3a2d-4f6e-b9c0-7d5a2e8f1b36",
+            "workerId": "4f9a2c6e-8d1b-4a3f-a7e5-0c2b9d6f3e18",
+            "writerFence": 1
+          },
+          "proposalId": "f4b7e2a9-0001-4d3c-a8e1-2b6f9c0d5e37",
+          "commandSha256": "81fcd764eb5e67ebbda9a440a85f08e25f7a5c42b4b49c0784ffa015fa66d08a",
+          "idempotencyKey": "8a2c5e7f-0001-4b1d-8f3a-6c9e2d0b7a14"
+        },
+        "argumentsSha256": "b6958183d0c21afa89cd56a2621492cd4c6f13526c3219215034a5a76671455d",
+        "sourceBody": {
+          "title": "Draft HASC markup talking points on the FY27 NDAA counter-UAS provision",
+          "clientId": "6b3e9f1a-2c7d-4e85-9a4f-1d8c3b7e0f52",
+          "dueDate": "2026-10-30T00:00:00.000Z"
+        },
+        "sourceBodySha256": "b6958183d0c21afa89cd56a2621492cd4c6f13526c3219215034a5a76671455d",
+        "decisionSha256": "4a46775e396e623e1989cd8523605c64145533be9a5135063eeaa74d956f99fc",
+        "credentialSha256": "eebad1c4e85bf16a4825f8d65d3295e4dbefd25a6444d5c2e6a278b213c49d7e"
+      }
+    },
+    "nullClientAndDueDate": {
+      "proposal": {
+        "proposalId": "f4b7e2a9-0001-4d3c-a8e1-2b6f9c0d5e37",
+        "command": {
+          "contractVersion": "0.1.0",
+          "commandId": "3d8f1b6e-0001-4c2a-9e7b-5a1f8d3c6e20",
+          "binding": {
+            "tenantId": "org_2nT4kQ7vXbR9mWc3LpY8sHd1Fz6",
+            "actorId": "user_2nT5aJ8wYcS0nXd4MqZ9tIe2Ga7",
+            "conversationId": "c2f6a1d4-7b3e-4c9a-8f15-2d6e9b0a4c71",
+            "runId": "a7d3e9f2-1c4b-4e8a-9d26-5f0b3c7e1a94",
+            "attemptId": "e1b8c4f7-3a2d-4f6e-b9c0-7d5a2e8f1b36",
+            "workerId": "4f9a2c6e-8d1b-4a3f-a7e5-0c2b9d6f3e18",
+            "writerFence": 1
+          },
+          "action": "task.create",
+          "arguments": {
+            "title": "Call the SAC-D clerk about the base site visit schedule",
+            "clientId": null,
+            "dueDate": null
+          },
+          "attachments": [],
+          "scopes": [
+            {
+              "tenantId": "org_2nT4kQ7vXbR9mWc3LpY8sHd1Fz6",
+              "kind": "client",
+              "resourceId": "6b3e9f1a-2c7d-4e85-9a4f-1d8c3b7e0f52",
+              "policyRevision": "eb9ce27fb3b09793e6be60bd579d03473d5fb000220e994cb13eb4f9db3cc016"
+            }
+          ],
+          "idempotencyKey": "8a2c5e7f-0001-4b1d-8f3a-6c9e2d0b7a14"
+        },
+        "commandSha256": "e6e1ddafba3b35d7f0ddfae00520c636ce9acf8b25acfebc43383d7659392742",
+        "createdAt": "2026-10-18T14:01:05.000Z",
+        "expiresAt": "2026-10-18T14:16:05.000Z",
+        "requiredApprover": {
+          "tenantId": "org_2nT4kQ7vXbR9mWc3LpY8sHd1Fz6",
+          "actorId": "user_2nT5aJ8wYcS0nXd4MqZ9tIe2Ga7"
+        }
+      },
+      "decision": {
+        "proposalId": "f4b7e2a9-0001-4d3c-a8e1-2b6f9c0d5e37",
+        "commandSha256": "e6e1ddafba3b35d7f0ddfae00520c636ce9acf8b25acfebc43383d7659392742",
+        "decision": "approved",
+        "decidedAt": "2026-10-18T14:01:41.000Z",
+        "expiresAt": "2026-10-18T14:16:05.000Z",
+        "approver": {
+          "tenantId": "org_2nT4kQ7vXbR9mWc3LpY8sHd1Fz6",
+          "actorId": "user_2nT5aJ8wYcS0nXd4MqZ9tIe2Ga7"
+        },
+        "policyRevision": "eb9ce27fb3b09793e6be60bd579d03473d5fb000220e994cb13eb4f9db3cc016"
+      },
+      "executorBinding": {
+        "tenantId": "org_2nT4kQ7vXbR9mWc3LpY8sHd1Fz6",
+        "actorId": "user_2nT5aJ8wYcS0nXd4MqZ9tIe2Ga7",
+        "conversationId": "c2f6a1d4-7b3e-4c9a-8f15-2d6e9b0a4c71",
+        "runId": "a7d3e9f2-1c4b-4e8a-9d26-5f0b3c7e1a94",
+        "attemptId": "e1b8c4f7-3a2d-4f6e-b9c0-7d5a2e8f1b36",
+        "workerId": "4f9a2c6e-8d1b-4a3f-a7e5-0c2b9d6f3e18",
+        "writerFence": 1
+      },
+      "requestId": "c5d5e952-2b21-4147-9e2f-6b37e3713efb",
+      "expected": {
+        "credential": "eyJhbGciOiJFZERTQSIsInR5cCI6ImNhcGlyby1tZXJpLWV4ZWN1dGlvbitqd3QiLCJraWQiOiJtZXJpLWV4ZWN1dGlvbi1zeW50aGV0aWMtcHJvZHVjdGlvbi0xIn0.eyJhdWQiOiJtZXJpLWdhdGV3YXkiLCJjYXBhYmlsaXR5Ijp7ImFjdGlvbnMiOlsiY29tbWFuZC5leGVjdXRlIl0sImF1ZGllbmNlIjoibWVyaS1nYXRld2F5IiwiYmluZGluZyI6eyJhY3RvcklkIjoidXNlcl8yblQ1YUo4d1ljUzBuWGQ0TXFaOXRJZTJHYTciLCJhdHRlbXB0SWQiOiJlMWI4YzRmNy0zYTJkLTRmNmUtYjljMC03ZDVhMmU4ZjFiMzYiLCJjb252ZXJzYXRpb25JZCI6ImMyZjZhMWQ0LTdiM2UtNGM5YS04ZjE1LTJkNmU5YjBhNGM3MSIsInJ1bklkIjoiYTdkM2U5ZjItMWM0Yi00ZThhLTlkMjYtNWYwYjNjN2UxYTk0IiwidGVuYW50SWQiOiJvcmdfMm5UNGtRN3ZYYlI5bVdjM0xwWThzSGQxRno2Iiwid29ya2VySWQiOiI0ZjlhMmM2ZS04ZDFiLTRhM2YtYTdlNS0wYzJiOWQ2ZjNlMTgiLCJ3cml0ZXJGZW5jZSI6MX0sImJ1ZGdldHMiOnsibWF4Q29zdE1pY3JvdXNkIjoyMDAwMDAwLCJtYXhPdXRwdXRCeXRlcyI6MjYyMTQ0LCJtYXhSdW50aW1lU2Vjb25kcyI6OTAwLCJtYXhUdXJucyI6M30sImNhcGFiaWxpdHlJZCI6IjljMWU3YTNiLTVkMmYtNGI4ZS1hNmM0LTNmMGQ4ZTJiN2ExNSIsImV4cGlyZXNBdCI6IjIwMjYtMTAtMThUMTQ6MDQ6MTEuMDAwWiIsImlzc3VlZEF0IjoiMjAyNi0xMC0xOFQxNDowMjoxMS4wMDBaIiwiaXNzdWVyIjoiY2FwaXJvLWNvcmU6bWVyaS1leGVjdXRpb246djEiLCJwb2xpY3lSZXZpc2lvbiI6ImViOWNlMjdmYjNiMDk3OTNlNmJlNjBiZDU3OWQwMzQ3M2Q1ZmIwMDAyMjBlOTk0Y2IxM2ViNGY5ZGIzY2MwMTYiLCJzY29wZXMiOlt7ImtpbmQiOiJjbGllbnQiLCJwb2xpY3lSZXZpc2lvbiI6ImViOWNlMjdmYjNiMDk3OTNlNmJlNjBiZDU3OWQwMzQ3M2Q1ZmIwMDAyMjBlOTk0Y2IxM2ViNGY5ZGIzY2MwMTYiLCJyZXNvdXJjZUlkIjoiNmIzZTlmMWEtMmM3ZC00ZTg1LTlhNGYtMWQ4YzNiN2UwZjUyIiwidGVuYW50SWQiOiJvcmdfMm5UNGtRN3ZYYlI5bVdjM0xwWThzSGQxRno2In1dfSwiZXhlY3V0aW9uIjp7ImFjdGlvbiI6InRhc2suY3JlYXRlIiwiYXBwcm92ZXIiOnsiYWN0b3JJZCI6InVzZXJfMm5UNWFKOHdZY1MwblhkNE1xWjl0SWUyR2E3IiwidGVuYW50SWQiOiJvcmdfMm5UNGtRN3ZYYlI5bVdjM0xwWThzSGQxRno2In0sImFyZ3VtZW50c1NoYTI1NiI6IjU2ODdiMzA1MTVjZDU1ZTdlMzZkNzA5Mjc3N2E4NmQ5YTE0YWIwYTU5NmI5YzM1NzdhMjk2NGQxNTRkOGRmNzciLCJjbGllbnRJZHMiOlsiNmIzZTlmMWEtMmM3ZC00ZTg1LTlhNGYtMWQ4YzNiN2UwZjUyIl0sImNvbW1hbmRTaGEyNTYiOiJlNmUxZGRhZmJhM2IzNWQ3ZjBkZGZhZTAwNTIwYzYzNmNlOWFjZjhiMjVhY2ZlYmM0MzM4M2Q3NjU5MzkyNzQyIiwiZGVjaXNpb25TaGEyNTYiOiIzODY2YjI0YjQ2OWFkYjc1M2VmY2E0MWE5NDdmYzRiYjhmZjQwZmJkNmEzOTk1ZmU1YTg1OGY5YzI1NTJiOGEyIiwiaWRlbXBvdGVuY3lLZXkiOiI4YTJjNWU3Zi0wMDAxLTRiMWQtOGYzYS02YzllMmQwYjdhMTQiLCJwcm9wb3NhbElkIjoiZjRiN2UyYTktMDAwMS00ZDNjLWE4ZTEtMmI2ZjljMGQ1ZTM3IiwicmVxdWVzdElkIjoiYzVkNWU5NTItMmIyMS00MTQ3LTllMmYtNmIzN2UzNzEzZWZiIiwicmVxdWVzdFNoYTI1NiI6IjAyMzdmNzU1NDg1YjQ5YThkMTI4YmEwZmVmNTE0ZjJiNmU4OTZlMTgxYjVkYjMxNzhhNzkxYmNlY2VkYTk3MzEifSwiZXhwIjoxNzkyMzMyMjUxLCJpYXQiOjE3OTIzMzIxMzEsImlzcyI6ImNhcGlyby1jb3JlOm1lcmktZXhlY3V0aW9uOnYxIiwianRpIjoiOWMxZTdhM2ItNWQyZi00YjhlLWE2YzQtM2YwZDhlMmI3YTE1IiwibmJmIjoxNzkyMzMyMTMxfQ.QSO2yWVuGnBi1bFId7PrHc5Ta9Y1SvjOLsPejcFMZnqEUfIARRqCiusAXqINT8UaeBM079ZwhG8b0BNGRWnZCQ",
+        "claimsJson": "{\"capabilityId\":\"9c1e7a3b-5d2f-4b8e-a6c4-3f0d8e2b7a15\",\"issuer\":\"capiro-core:meri-execution:v1\",\"audience\":\"meri-gateway\",\"binding\":{\"tenantId\":\"org_2nT4kQ7vXbR9mWc3LpY8sHd1Fz6\",\"actorId\":\"user_2nT5aJ8wYcS0nXd4MqZ9tIe2Ga7\",\"conversationId\":\"c2f6a1d4-7b3e-4c9a-8f15-2d6e9b0a4c71\",\"runId\":\"a7d3e9f2-1c4b-4e8a-9d26-5f0b3c7e1a94\",\"attemptId\":\"e1b8c4f7-3a2d-4f6e-b9c0-7d5a2e8f1b36\",\"workerId\":\"4f9a2c6e-8d1b-4a3f-a7e5-0c2b9d6f3e18\",\"writerFence\":1},\"actions\":[\"command.execute\"],\"scopes\":[{\"tenantId\":\"org_2nT4kQ7vXbR9mWc3LpY8sHd1Fz6\",\"kind\":\"client\",\"resourceId\":\"6b3e9f1a-2c7d-4e85-9a4f-1d8c3b7e0f52\",\"policyRevision\":\"eb9ce27fb3b09793e6be60bd579d03473d5fb000220e994cb13eb4f9db3cc016\"}],\"issuedAt\":\"2026-10-18T14:02:11.000Z\",\"expiresAt\":\"2026-10-18T14:04:11.000Z\",\"policyRevision\":\"eb9ce27fb3b09793e6be60bd579d03473d5fb000220e994cb13eb4f9db3cc016\",\"budgets\":{\"maxTurns\":3,\"maxRuntimeSeconds\":900,\"maxCostMicrousd\":2000000,\"maxOutputBytes\":262144}}",
+        "execution": {
+          "contractVersion": "0.1.0",
+          "requestId": "c5d5e952-2b21-4147-9e2f-6b37e3713efb",
+          "capabilityId": "9c1e7a3b-5d2f-4b8e-a6c4-3f0d8e2b7a15",
+          "executorBinding": {
+            "tenantId": "org_2nT4kQ7vXbR9mWc3LpY8sHd1Fz6",
+            "actorId": "user_2nT5aJ8wYcS0nXd4MqZ9tIe2Ga7",
+            "conversationId": "c2f6a1d4-7b3e-4c9a-8f15-2d6e9b0a4c71",
+            "runId": "a7d3e9f2-1c4b-4e8a-9d26-5f0b3c7e1a94",
+            "attemptId": "e1b8c4f7-3a2d-4f6e-b9c0-7d5a2e8f1b36",
+            "workerId": "4f9a2c6e-8d1b-4a3f-a7e5-0c2b9d6f3e18",
+            "writerFence": 1
+          },
+          "proposalId": "f4b7e2a9-0001-4d3c-a8e1-2b6f9c0d5e37",
+          "commandSha256": "e6e1ddafba3b35d7f0ddfae00520c636ce9acf8b25acfebc43383d7659392742",
+          "idempotencyKey": "8a2c5e7f-0001-4b1d-8f3a-6c9e2d0b7a14"
+        },
+        "argumentsSha256": "5687b30515cd55e7e36d7092777a86d9a14ab0a596b9c3577a2964d154d8df77",
+        "sourceBody": {
+          "title": "Call the SAC-D clerk about the base site visit schedule"
+        },
+        "sourceBodySha256": "6219da8cf8b7d33d6d04d4cb13d345246a934ec193040826d8fc8f02a6d06ab0",
+        "decisionSha256": "3866b24b469adb753efca41a947fc4bb8ff40fbd6a3995fe5a858f9c2552b8a2",
+        "credentialSha256": "d304657147fbb751c28cdccac1fe95e9e65f46eda091ee0b8acbeedc1e32ec57"
+      }
+    }
+  }
+}
