@@ -32,6 +32,14 @@ test('a STARTED run is decorated with the protected pair from the stored selecti
  assert.ok(assertIssuedObjectiveProtectedFacts({issuance:{...s.issuance,factsSha256},...rest,factsSha256},{accepted:s.accepted}),'the issued entry passes the historical validator');
 });
 
+test('reconstruction after ISSUED rebuilds the identical pair without a clock, so base plus pair matches the bound digest',async()=>{
+ const s=setup(),out=await s.facts.decorate(s.input);s.input.nowMs=Number.MAX_SAFE_INTEGER;
+ const pair=await s.facts.pairFor({binding:s.f.binding,executionSelection:s.input.executionSelection});
+ assert.equal(hash({...s.base,...pair}),out.facts.factsSha256);assert.notEqual(hash(s.base),out.facts.factsSha256,'base facts alone never match a pair-bearing receipt');
+ s.port.answer={state:'ABSENT'};assert.equal(await s.facts.pairFor({binding:s.f.binding,executionSelection:s.input.executionSelection}),null);
+ s.port.answer={state:'UNKNOWN'};await assert.rejects(s.facts.pairFor({binding:s.f.binding,executionSelection:s.input.executionSelection}),refused);
+});
+
 test('ABSENT is ordinary chat (null, nothing compiled); UNKNOWN, read failure or a foreign row refuse and never downgrade',async()=>{
  const s=setup();s.port.answer={state:'ABSENT'};assert.equal(await s.facts.decorate(s.input),null);
  for(const answer of [{state:'UNKNOWN'},Object.assign(Error('down'),{code:'OBJECTIVE_RUN_START_UNAVAILABLE'}),{state:'STARTED',record:runStartFixture({generationJobId:id(22)}).record},{state:'STARTED'}]){

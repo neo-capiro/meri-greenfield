@@ -18,6 +18,16 @@ const fault=()=>Object.assign(Error('OBJECTIVE_RUN_START_FACTS_REFUSED'),{code:'
 const refuse=()=>{throw fault();};
 const same=(a,b)=>hash(a)===hash(b);
 
+/** The protected pair exactly as compileObjectiveProtectedFacts builds it, from a stored run-start record (no clock). */
+export function objectivePairFromRunStart(value,executionSelection){
+ try{
+  const r=assertObjectiveRunStartRecord(value),s=r.selection,selection=data(own(executionSelection,['provider','model']));
+  if(Object.values(selection).some(x=>typeof x!=='string'||!x.trim()||x.length>128))refuse();
+  return data({objectiveGeneration:{sourceAdmission:s.sourceAdmission,sourceAdmissionSha256:r.sourceAdmissionSha256},
+   objectiveStrategy:{schemaVersion:1,operation:'strategy.draft',request:s.request,requestSha256:r.typedRequestSha256,executionContext:s.executionContext,queuedType:s.queuedType,executionSelection:selection}});
+ }catch{refuse();}
+}
+
 export function createObjectiveRunStartFacts({runStarts}={}){
  let read;try{read=storageMethod(runStarts,'read');}catch{refuse();}
  /** The stored record for this exact binding, or null for ordinary chat. */
@@ -36,9 +46,16 @@ export function createObjectiveRunStartFacts({runStarts}={}){
   try{
    if(record.sourceRequestSha256!==hash(v.accepted.request)||record.effectExpiresAtMs<v.issuance.expiresAtMs)refuse();
    const pair=compileObjectiveProtectedFacts({...record.selection,executionSelection:v.executionSelection},{accepted:v.accepted,issuance:v.issuance,nowMs:v.nowMs});
-   if(pair.objectiveGeneration.sourceAdmissionSha256!==record.sourceAdmissionSha256||pair.objectiveStrategy.requestSha256!==record.typedRequestSha256)refuse();
+   if(!same(pair,objectivePairFromRunStart(record,v.executionSelection)))refuse();
    return decorateObjectiveBindFactsInput({preparedFacts:v.preparedFacts,pair},{accepted:v.accepted,issuance:v.issuance,nowMs:v.nowMs});
   }catch{refuse();}
  }
- return Object.freeze({selectionFor,decorate});
+ /** Whole-facts reconstruction after ISSUED (registry build, task router, runner poststart, initial stop): the exact pair the
+  * prepare path bound, rebuilt from the immutable row without a clock, or null for ordinary chat. The caller still compares
+  * the complete facts digest with the issuer's immutable factsSha256; a pair-bearing receipt never matches base facts. */
+ async function pairFor(value){
+  const v=own(value,['binding','executionSelection'],['signal']),record=await selectionFor({binding:v.binding,signal:v.signal});
+  return record===null?null:objectivePairFromRunStart(record,v.executionSelection);
+ }
+ return Object.freeze({selectionFor,decorate,pairFor});
 }
