@@ -49,7 +49,7 @@ test('bounded bodies; the service secret is never sent as a bearer; no client wi
 });
 
 const MIGRATION=new URL('../migrations/0001_read_delegation_facts.sql',import.meta.url);
-const READ_DELEGATION_FACTS_SHA256='08b18e3a0eae1a43980127ca0d9dca4c363c108494d9738bad8a25913cc61c82';
+const READ_DELEGATION_FACTS_SHA256='bc3ec0314839d953909ffd9eda5c9235da0fbf966ff28d46e19d7e76f7702745';
 test('the facts-view migration is CREATE-only over the product namespace and matches its plan pin',()=>{
  const bytes=readFileSync(MIGRATION),sql=bytes.toString('utf8'),code=sql.split('\n').filter(line=>!line.startsWith('--')).join('\n');
  assert.match(code,/^BEGIN;/mu);assert.match(code,/COMMIT;\s*$/u);
@@ -62,7 +62,7 @@ test('the facts-view migration is CREATE-only over the product namespace and mat
  assert.match(code,/FROM meri_conversations\.native_allocations n/u);assert.match(code,/n\.record->>'state' = 'ADMITTED'/u);
  assert.match(code,/NOT EXISTS \(\s*SELECT 1 FROM jsonb_array_elements\(n\.record->'grantIntents'\) gi\s*WHERE NOT EXISTS/u,'every declared grant');
  for(const predicate of ["g.state = 'ACTIVE'","g.capability_sha256 = gi->>'capabilitySha256'",'g.attempt = r.attempt','g.fence = r.fence','g.policy_revision = r.policy_revision',
-  "g.worker_arn = n.record->'resource'->>'taskArn'",'g.expires_at > clock_timestamp()','f.fact::jsonb = gb.facts',"n.record->>'allocationSha256' = a.allocation_sha256"])assert.ok(code.includes(predicate),predicate);
+  "g.worker_arn = n.record->'resource'->>'taskArn'","n.record->'binding' = c.projection->'binding'","r.worker_arn = n.record->'resource'->>'taskArn'",'g.expires_at > clock_timestamp()','f.fact::jsonb = gb.facts',"n.record->>'allocationSha256' = a.allocation_sha256"])assert.ok(code.includes(predicate),predicate);
  assert.doesNotMatch(code,/LIMIT 1/u,'no single surviving grant');assert.match(code,/adm\.record_until, adm\.grants_until\) AS admitted_until/u);
  assert.equal(createHash('sha256').update(bytes).digest('hex'),READ_DELEGATION_FACTS_SHA256);
 });

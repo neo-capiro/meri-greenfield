@@ -12,7 +12,10 @@
 --    grant, or a surviving sibling) never substitutes for a missing, revoked or expired declared grant.
 --  - `admitted_until` is the earliest of the run deadline, the record's own expiry and every declared grant's expiry.
 -- A revoked grant (Meri admission revoke sets grants.state = 'REVOKED') or a quarantined budget ends delegated authority at the
--- next issue, use or release.
+-- next issue, use or release. This mirrors Core's authoritative currentness read, meri_core_authority.current_admission_v1
+-- (Core lane 6249249387): the same declared set, exact executor binding (record binding = run binding, run worker ARN = the
+-- record's task ARN) and allocation digest. Core additionally requires every UNDECLARED grant on the run to be one it issued,
+-- which only Core's own issuance ledger can show; the view never relaxes that check.
 --  - run_facts_v1: the run's installed allocation (sha256, allowed operations, call allowance, deadline), Meri's reserved-call
 --    count (the same count the budget owner checks before every reservation), the attempt/fence/policy of the run's grant
 --    owner, and the run's current state, binding and scopes.
@@ -51,6 +54,8 @@ SELECT a.run_id,
   JOIN meri_conversations.runs c ON c.run_id = a.run_id
   LEFT JOIN LATERAL (
    SELECT n.record->>'state' = 'ADMITTED'
+          AND n.record->'binding' = c.projection->'binding'
+          AND r.worker_arn = n.record->'resource'->>'taskArn'
           AND n.record->>'allocationSha256' = a.allocation_sha256
           AND (n.record->'qualification'->>'attempt')::integer = r.attempt
           AND (n.record->'binding'->>'writerFence')::integer = r.fence

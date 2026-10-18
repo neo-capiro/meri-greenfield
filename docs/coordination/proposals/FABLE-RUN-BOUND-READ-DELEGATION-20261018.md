@@ -83,7 +83,9 @@ At every check Core requires all of the following, or it refuses and records the
 - `admitted` is true: Meri's canonical current-admission predicate (`admitted-run-current.mjs` `readCurrentAdmission`) over the **exact original admitted set** (dot 6249255722):
   - **Source:** the run's saved ADMITTED allocation record (`meri_conversations.native_allocations`) declares every original grant (`record.grantIntents`) and its exact stored facts (`record.resource.grantFactsJsons`, bound to the launched task ARN).
   - **Every declared grant** must be `ACTIVE` and unexpired, and match the run's attempt, fence, policy, capability digest and worker ARN. It must also be bound to the run by a `tool_grant_bindings` row whose facts equal the stored facts.
+  - **Executor binding:** the record's binding equals the run's binding, and the run's worker ARN equals the record's task ARN.
   - **Allocation and budget:** the record's allocation digest is the installed allocation's, and the budget is not quarantined.
+  - **Core's authoritative read:** Core reads currentness through `meri_core_authority.current_admission_v1` (Core lane 6249249387), which applies the same declared set and also requires every *undeclared* grant on the run to be Core-issued. The view mirrors it and never relaxes that check.
   - **No substitutes:** a later execution grant or a surviving sibling never stands in for a missing, revoked or expired declared grant.
   - **Revocation:** Meri's admission revoke sets a grant `REVOKED`, which ends delegated authority at the next issue, use or release. This is the same original-set derivation dot asked of the execution receiver (6248171459), so the two lanes map one owner;
 - `run_state ∈ {queued, starting, running}`;
@@ -280,10 +282,10 @@ Rollback is `DROP TABLE` of these four tables, which hold no other data. Take a 
 
 ### 11.2 Meri migration: run-facts views (CREATE-only; created as the owner of the base schemas, `meri_product_migrator` per the grants proposal)
 
-In source: `apps/runtime/native-authority/read-delegation/migrations/0001_read_delegation_facts.sql`, sha256 `08b18e3a0eae1a43980127ca0d9dca4c363c108494d9738bad8a25913cc61c82` (pinned by `read-delegation/test/core-client.test.mjs`). It needs the meri stage plus schedules 0001–0002, so its plan line goes in the `integration` stage after `apps/artifacts/migrations/0003_previews.sql` and before `phase:integration_grants` (R0 edits `infra/product-preview/first-chat-migrate.mjs`; not edited here):
+In source: `apps/runtime/native-authority/read-delegation/migrations/0001_read_delegation_facts.sql`, sha256 `bc3ec0314839d953909ffd9eda5c9235da0fbf966ff28d46e19d7e76f7702745` (pinned by `read-delegation/test/core-client.test.mjs`). It needs the meri stage plus schedules 0001–0002, so its plan line goes in the `integration` stage after `apps/artifacts/migrations/0003_previews.sql` and before `phase:integration_grants` (R0 edits `infra/product-preview/first-chat-migrate.mjs`; not edited here):
 
 ```js
-['migration','apps/runtime/native-authority/read-delegation/migrations/0001_read_delegation_facts.sql','08b18e3a0eae1a43980127ca0d9dca4c363c108494d9738bad8a25913cc61c82','integration'],
+['migration','apps/runtime/native-authority/read-delegation/migrations/0001_read_delegation_facts.sql','bc3ec0314839d953909ffd9eda5c9235da0fbf966ff28d46e19d7e76f7702745','integration'],
 ```
 
 The file's SQL, verbatim:
@@ -316,6 +318,8 @@ SELECT a.run_id,
   JOIN meri_conversations.runs c ON c.run_id = a.run_id
   LEFT JOIN LATERAL (
    SELECT n.record->>'state' = 'ADMITTED'
+          AND n.record->'binding' = c.projection->'binding'
+          AND r.worker_arn = n.record->'resource'->>'taskArn'
           AND n.record->>'allocationSha256' = a.allocation_sha256
           AND (n.record->'qualification'->>'attempt')::integer = r.attempt
           AND (n.record->'binding'->>'writerFence')::integer = r.fence
