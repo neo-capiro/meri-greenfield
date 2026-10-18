@@ -20,8 +20,16 @@
  * and a later turn reduce to the same template.
  * Everything else (tools, allowedTools, permissionMode, settings, model, maxTurns, maxBudgetUsd, env, MCP servers, hooks,
  * output format and the system prompt template) stays in the hashed template, so the one configured
- * sdkOptionsSha256 matches every run of the reviewed workload and refuses any other option. */
-import {join} from 'node:path';
+ * sdkOptionsSha256 matches every run of the reviewed workload and refuses any other option.
+ *
+ * G3, capability-bearing runs (apps/worker/conversation/capabilities/index.mjs fragment and capabilities/mounts.mjs MCP mounts). The
+ * fragment repeats two of the run facts above inside data options; both are placed with the same verification, nothing else is:
+ *  settings.permissions.allow  exactly `Read(/<workspace>/**)` / `Edit(/<workspace>/**)` (capabilities/workspace-tools.mjs
+ *                         workspaceRule) for THIS run's workspace become `Read(/[run workspace]/**)` / `Edit(...)`; any other rule refuses.
+ *  plugins[].path         exactly sdkSkillPluginDirectory(<config parent>) (the parent of CLAUDE_CONFIG_DIR, the admitted
+ *                         intent.configParentDirectory) becomes TEMPLATE_PLACEHOLDERS.skillPluginDirectory; any other path refuses.
+ * The MCP mounts are availability-invariant (always the profile's full tool list), so one profile has one template. */
+import {join,dirname} from 'node:path';
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
 import {REQUEST_CONTEXT_MARKER,requestContextSuffix} from '../../worker/conversation/request-context.mjs';
@@ -32,7 +40,12 @@ import {SDK_CONTINUATION_FIELDS,sdkOptionsContinuation,assertResumeOptions} from
 export {SDK_CONTINUATION_FIELDS,sdkOptionsContinuation};
 export {REQUEST_CONTEXT_MARKER,requestContextSuffix};
 export const SDK_OPTIONS_TEMPLATE_SCHEMA='meri.sdk-options-template.v1';
-export const TEMPLATE_PLACEHOLDERS=Object.freeze({workspace:'[run workspace]',configDirectory:'[run sdk config directory]',window:'[request window]',scopes:'[authorized run scopes]'});
+export const TEMPLATE_PLACEHOLDERS=Object.freeze({workspace:'[run workspace]',configDirectory:'[run sdk config directory]',window:'[request window]',scopes:'[authorized run scopes]',skillPluginDirectory:'[run skill plugin directory]'});
+/** The run's read-only skill plugin copy (capabilities/skill-plugin.mjs prepareRunSkillPlugin) under the admitted private SDK configuration
+ * parent. Deliberately free of any per-run value: the SDK passes it as the `--plugin-dir-no-mcp` launch argument, which the one measured
+ * launch template (preparation-intent.mjs matchPreparedDescriptor) pins byte-exactly for every run. */
+export const SKILL_PLUGIN_DIRECTORY_NAME='meri-skill-plugin';
+export const sdkSkillPluginDirectory=configParentDirectory=>join(configParentDirectory,SKILL_PLUGIN_DIRECTORY_NAME);
 const refuse=()=>{throw executionFault('SDK_OPTIONS_REFUSED');};
 const misconfigured=()=>{throw executionFault('SDK_PREPARATION_CONFIGURATION');};
 const hexOk=value=>typeof value==='string'&&/^[a-f0-9]{64}$/u.test(value);
@@ -86,8 +99,20 @@ export function projectSdkOptionsTemplate(options,run,continuation=null){
  if(context===null||typeof context!=='object'||Array.isArray(context)||Object.keys(context).some(k=>!['window','scopes','skill'].includes(k)))refuse();
  if(requestContextSuffix(context)!==prompt.slice(at)||!authorizedScopes(context.scopes,r.authoritySha256))refuse();
  const P=TEMPLATE_PLACEHOLDERS;
- return data({schema:SDK_OPTIONS_TEMPLATE_SCHEMA,options:{...p,cwd:P.workspace,env:{...env,CLAUDE_CONFIG_DIR:P.configDirectory},
+ return data({schema:SDK_OPTIONS_TEMPLATE_SCHEMA,options:{...p,...placeCapabilityFacts(p,r),cwd:P.workspace,env:{...env,CLAUDE_CONFIG_DIR:P.configDirectory},
   systemPrompt:{template:prompt.slice(0,at),requestContext:{window:P.window,scopes:P.scopes,skill:context.skill??null}}}});
+}
+/** The capability fragment's copies of the run facts (see the module comment), verified and placed; absent keys stay absent. */
+function placeCapabilityFacts(p,r){
+ const P=TEMPLATE_PLACEHOLDERS,placed={};
+ if(Object.hasOwn(p,'plugins')){const expected=sdkSkillPluginDirectory(dirname(r.configDirectory));if(p.plugins.some(plugin=>plugin.path!==expected))refuse();placed.plugins=p.plugins.map(plugin=>({...plugin,path:P.skillPluginDirectory}));}
+ const permissions=p.settings!==null&&typeof p.settings==='object'?p.settings.permissions:undefined;
+ if(permissions!==null&&typeof permissions==='object'&&Object.hasOwn(permissions,'allow')){
+  if(!Array.isArray(permissions.allow))refuse();
+  const rule=value=>{for(const tool of ['Read','Edit'])if(value===`${tool}(/${r.workspace}/**)`)return `${tool}(/${P.workspace}/**)`;return refuse();};
+  placed.settings={...p.settings,permissions:{...permissions,allow:permissions.allow.map(rule)}};
+ }
+ return placed;
 }
 export const sdkOptionsTemplateSha256=(options,run,continuation=null)=>hash(projectSdkOptionsTemplate(options,run,continuation));
 /** The runner gate: this run's options reduce to exactly the configured template. Without a restoration source the run is fresh; with
