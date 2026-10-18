@@ -194,11 +194,40 @@ Separate findings on the integration tip (not lane 2, not changed here). From a 
 - `packages/contracts` `generate-conversations.mjs`, `generate-input.mjs` and `generate-initial-input.mjs` `--check` exit 1. `00076b0a` (H1) changed `apps/control/conversations/service.mjs` without regenerating the `dist/*metadata.json` source hashes. `conversation-input-public` and `conversation-initial-input-public` each fail 1 case for the same reason. The other generator checks pass.
 - `schedule-tool-independent.test.mjs`: 2 cases expect the schedule action's `retry.maximumAttempts` to be 2, but it is 1. This passes at base, so it is lane 5's schedule composition.
 
-### Production mount: exact changes still needed (not made; outside this lane)
+### Production mount: the control composer and what is still needed
 
-Reads are still not mounted in the production composition (integration ledger G1–G4). The seam already exists: `startControl(configuration,{signal,createReadsRuntime})` (`apps/runtime/control.mjs:105`) threads into prepared-candidate → remote-composition → `prepared-reads.mjs` → `reads-owner.mjs`. The changes still needed:
+**Composer (in this lane): `apps/runtime/native-authority/reads-composer.mjs`.** Control startup calls it once:
 
-1. `apps/runtime/cli.mjs` (control role): build `prepareGeneralReadInstallation({familyIds,newId,taskPorts})` (`native-authority/general-read-installation/runtime.mjs`) and pass its `createReadsRuntime` to `startControl`. `taskPorts(tuple)` must return `{families:{<id>:{origin}},nativeCredentials:{coreAuthority,getNativeCredential,getServiceSecret[,getReadModeServiceSecret,defaultCongress]},gateway:{authority,limits,producerContext,producer,credential,readCurrentInstallation,discoveryOwner}}`.
-2. `readCurrentInstallation` (P2 installation receipt issuer) and `discoveryOwner.readDiscoveryGrant` (P1) have no producer. Writing either would invent authority; they need dot's and the qualification owner's contract first.
-3. Render: `approvedReads` (enabled plus operations), `sourceEnabled:true` (G1, `config.mjs:67`), a run capability policy with `generalReads:true` and `readFamilies` (G2), an SDK-options template that admits `meri_reads` (G3), and the P1 catalog re-pin above.
-4. Core: the retained-authority read stack (PR35 → PR52 → PR59 → PR68), unmerged and undeployed.
+```js
+const reads=await createControlReadsComposer({configuration,now,secretFiles,defaultCongress:119,gateway});
+await startControl(configuration,{signal,createReadsRuntime:reads.createReadsRuntime});
+```
+
+- It composes Core's native tool authority at `nativeCandidate.identity.origin`, the native read credential broker, and the 27 native read families. `reads.missing` lists every absent input by key name, never by value.
+- No pool is needed at startup; each run tuple carries its own pool.
+- The 15 non-native families stay uninstalled: mail, meeting-source, the retained-signed research-portfolio/Florida reads, and others. They need their own transports; Florida also needs Core W1 plus signing ports.
+- **Credential invariant (Core #83), pinned by `apps/runtime/native-authority/test/read-composer.test.mjs`, 35/35:**
+  - The marked control credential reaches only `application-authority/{identity,context,membership}`.
+  - Read secret files must differ from all four candidate credential files (identity, task, control, proxy) by path and by bytes, checked at startup. The native read bearer must also differ from the service secret.
+  - Each call re-reads its file and fails closed (`UNAVAILABLE`) if the file now holds a candidate credential.
+  - A composed native read sends `Bearer <native read credential>` plus `x-internal-service-secret` on `tools/*`, and no request carries a candidate credential.
+  - A mutation test (dropping the per-call check) fails 2 cases.
+
+**Render keys (R0 adds them to `render-material.mjs` and the material inventory; this lane does not edit either):**
+
+| Key | File | Content |
+|---|---|---|
+| `secretFiles.nativeReadCredential` | `/run/meri/native-read-credential` | Unmarked Core native bearer for the run actor. The owner refuses unless its Core principal equals the run's tenant and actor. Never the marked identity credential |
+| `secretFiles.serviceSecret` | `/run/meri/core-tool-service-secret` | Core `INTERNAL_SERVICE_SECRET` for `POST /api/clio/tools/:name` |
+| `secretFiles.readModeServiceSecret` | `/run/meri/core-read-mode-service-secret` | Service secret for `read-mode-observation`. May hold the same value as the tool secret; required only by the five mode reads |
+| `defaultCongress` | config value | `119`. Needed for the bill-text and federal-legislation families |
+
+The files are read with `config.mjs` `readSecret`, so each must be owner-only (0600), owned by the runtime user, no symlink, and at most 32 KiB.
+
+**Still needed (outside this lane), with the composer reporting each one in `missing` until supplied:**
+1. `gateway.authority`: the `tool.read` current authority (`createReadAuthority`) over Core-backed `verifyCapability`, `currentRun`, `authorizeBusiness` and `authorizeSources` ports. No production producer exists.
+2. `gateway.readCurrentInstallation` (P2 installation receipt issuer) and `gateway.discoveryOwner.readDiscoveryGrant` (P1). Writing either would invent authority; they need dot's and the qualification owner's contract first.
+3. `gateway.limits`: gateway request/response/cleanup bounds (R0 render).
+4. Render: `approvedReads` and `sourceEnabled:true` (G1, treated as decided), the run capability policy `generalReads:true` and `readFamilies` (G2), and an SDK-options template that admits `meri_reads` (G3).
+5. Worker side: the runner's `meri_reads` server port (G4, apps/worker).
+6. Core: the retained-authority read stack (PR35 → PR52 → PR59 → PR68) and the listener routes for `tools/*`, `read-mode-observation` and `clients/check-ref`, in the coordinated packet.
