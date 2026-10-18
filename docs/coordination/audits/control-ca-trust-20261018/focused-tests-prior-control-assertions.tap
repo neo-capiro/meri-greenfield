@@ -1,0 +1,322 @@
+TAP version 13
+# Subtest: product runner CLI refuses absent or incorrect measured entrypoint pin before runtime startup
+ok 1 - product runner CLI refuses absent or incorrect measured entrypoint pin before runtime startup
+  ---
+  duration_ms: 27.3279
+  type: 'test'
+  ...
+# Subtest: product control task definition requires split private listener before secret or network startup
+ok 2 - product control task definition requires split private listener before secret or network startup
+  ---
+  duration_ms: 9.2788
+  type: 'test'
+  ...
+# Subtest: product runner refuses a bootstrap-free plaintext receiver before secret or network startup
+ok 3 - product runner refuses a bootstrap-free plaintext receiver before secret or network startup
+  ---
+  duration_ms: 5.7395
+  type: 'test'
+  ...
+# Subtest: product Temporal poller refuses a loopback native origin before secret or network startup
+ok 4 - product Temporal poller refuses a loopback native origin before secret or network startup
+  ---
+  duration_ms: 5.864
+  type: 'test'
+  ...
+# Subtest: product Temporal poller refuses missing issuer token configuration before startup
+ok 5 - product Temporal poller refuses missing issuer token configuration before startup
+  ---
+  duration_ms: 5.0662
+  type: 'test'
+  ...
+# Subtest: product Temporal poller trusts the control private origin only through its pinned issuer server CA file
+ok 6 - product Temporal poller trusts the control private origin only through its pinned issuer server CA file
+  ---
+  duration_ms: 0.4929
+  type: 'test'
+  ...
+# Subtest: composite preserves every locked RDS byte and appends exactly the pinned private server CA
+ok 7 - composite preserves every locked RDS byte and appends exactly the pinned private server CA
+  ---
+  duration_ms: 251.2557
+  type: 'test'
+  ...
+# Subtest: changed RDS bytes, a foreign private pin, a leaf, multiple PEMs and private key material refuse
+ok 8 - changed RDS bytes, a foreign private pin, a leaf, multiple PEMs and private key material refuse
+  ---
+  duration_ms: 3.7968
+  type: 'test'
+  ...
+# Subtest: control startup admits only the fixed composite path and refuses missing/wrong environment before resources
+ok 9 - control startup admits only the fixed composite path and refuses missing/wrong environment before resources
+  ---
+  duration_ms: 0.6681
+  type: 'test'
+  ...
+# Subtest: fresh Node global fetch trusts the private origin with composite roots, retains all RDS roots and verifies hostname
+ok 10 - fresh Node global fetch trusts the private origin with composite roots, retains all RDS roots and verifies hostname
+  ---
+  duration_ms: 451.2182
+  type: 'test'
+  ...
+# (node:16656) ExperimentalWarning: Module mocking is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: control CA flag rejects another role before canonical materialization and consumes the secret slot
+ok 11 - control CA flag rejects another role before canonical materialization and consumes the secret slot
+  ---
+  duration_ms: 2.2894
+  type: 'test'
+  ...
+# Subtest: ready is emitted after canonical materialization and composite initialization both complete
+ok 12 - ready is emitted after canonical materialization and composite initialization both complete
+  ---
+  duration_ms: 1.0223
+  type: 'test'
+  ...
+# Subtest: composite refusal releases the exact static receipt, emits no ready and hides private error text
+ok 13 - composite refusal releases the exact static receipt, emits no ready and hides private error text
+  ---
+  duration_ms: 0.671
+  type: 'test'
+  ...
+# Subtest: static failure never starts the composite; rollback failure keeps the cleanup failure exit
+ok 14 - static failure never starts the composite; rollback failure keeps the cleanup failure exit
+  ---
+  duration_ms: 0.641
+  type: 'test'
+  ...
+# Subtest: plain write retains its existing canonical initialization path
+ok 15 - plain write retains its existing canonical initialization path
+  ---
+  duration_ms: 0.2839
+  type: 'test'
+  ...
+# Subtest: production composer creates exact shared bytes with exclusive private permissions and verifies startup readback
+ok 16 - production composer creates exact shared bytes with exclusive private permissions and verifies startup readback
+  ---
+  duration_ms: 8.0739
+  type: 'test'
+  ...
+# Subtest: production startup rejects missing and changed composite output without removing material
+ok 17 - production startup rejects missing and changed composite output without removing material
+  ---
+  duration_ms: 4.1767
+  type: 'test'
+  ...
+# Subtest: production composer rolls back only its derived paths when output readback fails
+ok 18 - production composer rolls back only its derived paths when output readback fails
+  ---
+  duration_ms: 1.9449
+  type: 'test'
+  ...
+# Subtest: production composer preserves a preexisting foreign directory and refuses a foreign configuration path
+ok 19 - production composer preserves a preexisting foreign directory and refuses a foreign configuration path
+  ---
+  duration_ms: 1.6879
+  type: 'test'
+  ...
+# Subtest: held writers add only a separate task-local RW token volume to each matching main container
+ok 20 - held writers add only a separate task-local RW token volume to each matching main container
+  ---
+  duration_ms: 2671.4253
+  type: 'test'
+  ...
+# Subtest: omitting the optional writer descriptors preserves the prior task-volume layout
+ok 21 - omitting the optional writer descriptors preserves the prior task-volume layout
+  ---
+  duration_ms: 42.6147
+  type: 'test'
+  ...
+# Subtest: descriptor refs are closed, direct, distinct and exactly bound to independently pinned static issuer material
+ok 22 - descriptor refs are closed, direct, distinct and exactly bound to independently pinned static issuer material
+  ---
+  duration_ms: 12.2183
+  type: 'test'
+  ...
+# Subtest: shared public trust pins do not become a static client identity for either role
+ok 23 - shared public trust pins do not become a static client identity for either role
+  ---
+  duration_ms: 30.4205
+  type: 'test'
+  ...
+# Subtest: control uses composite trust after init; worker retains pinned issuer trust and runner keeps image trust
+ok 24 - control uses composite trust after init; worker retains pinned issuer trust and runner keeps image trust
+  ---
+  duration_ms: 57.3745
+  type: 'test'
+  ...
+# Subtest: a worker issuer CA that is not the CA pinned for the control private origin refuses
+ok 25 - a worker issuer CA that is not the CA pinned for the control private origin refuses
+  ---
+  duration_ms: 0.6687
+  type: 'test'
+  ...
+# Subtest: offline source has only two stopped services and three immutable role tasks
+not ok 26 - offline source has only two stopped services and three immutable role tasks
+  ---
+  duration_ms: 2690.982
+  type: 'test'
+  location: 'C:\\Users\\Administrator\\Documents\\Codex\\2026-10-18\\task-2\\meri-control-ca-trust\\infra\\product-preview\\manifest.test.mjs:33:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+          Name: 'MERI_PRODUCT_PREVIEW_REQUIRED',
+          Value: '1'
+        },
+    +   {
+    +     Name: 'NODE_EXTRA_CA_CERTS',
+    +     Value: '/tmp/meri-control-ca/ca-bundle.pem'
+    +   }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      Name: 'MERI_PRODUCT_PREVIEW_REQUIRED'
+      Value: '1'
+  actual:
+    0:
+      Name: 'MERI_PRODUCT_PREVIEW_REQUIRED'
+      Value: '1'
+    1:
+      Name: 'NODE_EXTRA_CA_CERTS'
+      Value: '/tmp/meri-control-ca/ca-bundle.pem'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-18/task-2/meri-control-ca-trust/infra/product-preview/manifest.test.mjs:52:56)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: network lists are used verbatim per service: 1-3 distinct subnets and 1-5 distinct groups per role
+ok 27 - network lists are used verbatim per service: 1-3 distinct subnets and 1-5 distinct groups per role
+  ---
+  duration_ms: 44.5497
+  type: 'test'
+  ...
+# Subtest: before Stage 6 only the internal 8082 target group attaches; the public 8080 target group stays optional
+ok 28 - before Stage 6 only the internal 8082 target group attaches; the public 8080 target group stays optional
+  ---
+  duration_ms: 30.4135
+  type: 'test'
+  ...
+# Subtest: two distinct reviewed control target groups attach to separate public and private control ports
+ok 29 - two distinct reviewed control target groups attach to separate public and private control ports
+  ---
+  duration_ms: 26.9411
+  type: 'test'
+  ...
+# Subtest: closed versioned bundle binding emits one-shot nonroot init and task-local read-only app material
+not ok 30 - closed versioned bundle binding emits one-shot nonroot init and task-local read-only app material
+  ---
+  duration_ms: 27.704
+  type: 'test'
+  location: 'C:\\Users\\Administrator\\Documents\\Codex\\2026-10-18\\task-2\\meri-control-ca-trust\\infra\\product-preview\\manifest.test.mjs:138:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        'write',
+    +   '--control-node-ca'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'write'
+  actual:
+    0: 'write'
+    1: '--control-node-ca'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-18/task-2/meri-control-ca-trust/infra/product-preview/manifest.test.mjs:146:90)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: mounted material requires complete independently pinned role envelopes and exact secret VersionIds
+ok 31 - mounted material requires complete independently pinned role envelopes and exact secret VersionIds
+  ---
+  duration_ms: 2.2707
+  type: 'test'
+  ...
+# Subtest: missing inventory, foreign refs, runnable state and claimed material delivery refuse
+ok 32 - missing inventory, foreign refs, runnable state and claimed material delivery refuse
+  ---
+  duration_ms: 1.8165
+  type: 'test'
+  ...
+# Subtest: per-role execution roles and log groups: each task definition gets its own role and awslogs group
+ok 33 - per-role execution roles and log groups: each task definition gets its own role and awslogs group
+  ---
+  duration_ms: 22.7553
+  type: 'test'
+  ...
+# Subtest: control/poller delivery validates exact independent pins and returns only a content-free startup receipt
+ok 34 - control/poller delivery validates exact independent pins and returns only a content-free startup receipt
+  ---
+  duration_ms: 33.8913
+  type: 'test'
+  ...
+# Subtest: expected contract rejects changes, foreign fields, unsafe paths, roles, users and unpinned source/image before delivery
+ok 35 - expected contract rejects changes, foreign fields, unsafe paths, roles, users and unpinned source/image before delivery
+  ---
+  duration_ms: 6.6942
+  type: 'test'
+  ...
+# Subtest: bundle refuses missing, duplicated, foreign, changed, malformed, empty and oversized files without trusting echoes
+ok 36 - bundle refuses missing, duplicated, foreign, changed, malformed, empty and oversized files without trusting echoes
+  ---
+  duration_ms: 42.7897
+  type: 'test'
+  ...
+# Subtest: even fully repinned material must contain valid canonical role configuration with the exact declared inventory
+ok 37 - even fully repinned material must contain valid canonical role configuration with the exact declared inventory
+  ---
+  duration_ms: 32.7345
+  type: 'test'
+  ...
+# Subtest: optional static signing/token files are included while token rotation remains a separate runtime responsibility
+ok 38 - optional static signing/token files are included while token rotation remains a separate runtime responsibility
+  ---
+  duration_ms: 5.3596
+  type: 'test'
+  ...
+# Subtest: missing delivery/invalid deadline/unsupported host refuse before any delivery effect and forged cleanup receipts refuse
+ok 39 - missing delivery/invalid deadline/unsupported host refuse before any delivery effect and forged cleanup receipts refuse
+  ---
+  duration_ms: 3.4485
+  type: 'test'
+  ...
+# Subtest: CLI has import-safe help, closed arguments, bounded material refusal and no material in diagnostics
+ok 40 - CLI has import-safe help, closed arguments, bounded material refusal and no material in diagnostics
+  ---
+  duration_ms: 1674.5552
+  type: 'test'
+  ...
+# Subtest: a deadline crossed during file open/stat writes no material bytes and leaves no owned path
+ok 41 - a deadline crossed during file open/stat writes no material bytes and leaves no owned path # SKIP UNRUN: requires nonroot Linux UID/GID 1000 and a writable /run without /run/meri
+  ---
+  duration_ms: 0.1932
+  type: 'test'
+  ...
+1..41
+# tests 41
+# suites 0
+# pass 38
+# fail 2
+# cancelled 0
+# skipped 1
+# todo 0
+# duration_ms 5505.5911
