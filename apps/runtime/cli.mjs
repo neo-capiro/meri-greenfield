@@ -33,6 +33,15 @@ export async function main(argv=process.argv.slice(2),{poststartTls,nativeFetch}
   const module=await import(file);
   // Control receives the production product-port composition (G4); the other roles take no product ports.
   const productPorts=role==='control'?{productPortsFactory:(await import('./product-ports/index.mjs')).createProductPortsFactory()}:{};
+  // General reads (lane 2), only when declared: the composer is built before control (it prepares and measures handlers) and
+  // gets the live-session relay, which startControl binds to this control's own action-session owner (RC1 option A).
+  if(role==='control'&&c.reads?.enabled===true){
+   const [{createControlReadsComposer},{createReadCredentialRelay}]=await Promise.all([import('./native-authority/reads-composer.mjs'),import('./read-credential-relay.mjs')]);
+   const relay=createReadCredentialRelay();
+   const reads=await createControlReadsComposer({configuration:c,secretFiles:{serviceSecret:c.reads.serviceSecretFile,...(c.reads.readModeServiceSecretFile===undefined?{}:{readModeServiceSecret:c.reads.readModeServiceSecretFile})},nativeCredentials:relay.port,...(c.reads.defaultCongress===undefined?{}:{defaultCongress:c.reads.defaultCongress})});
+   if(reads.missing.length)process.stderr.write(JSON.stringify({event:'runtime.reads.unavailable',missing:reads.missing})+'\n');
+   Object.assign(productPorts,{createReadsRuntime:reads.createReadsRuntime,readCredentialRelay:relay});
+  }
   runtime=await module[start](c,{signal:controller.signal,...productPorts});clearTimeout(startupTimer);if(controller.signal.aborted){retire();await runtime.close();}else{process.stdout.write(JSON.stringify({event:'runtime.listening',role,address:runtime.address,profile:c.profile,...(runtime.downloads?{downloads:runtime.downloads.reason}:{})})+'\n');await Promise.race([new Promise(resolve=>controller.signal.addEventListener('abort',resolve,{once:true})),...(runtime.completion?[runtime.completion]:[])]);retire();await runtime.close();}return 0;
  }catch(error){process.stderr.write('RUNTIME_UNAVAILABLE\n');retire();controller.abort();cleanupUnknown=error?.code==='TEMPORAL_PRODUCT_CLEANUP_UNKNOWN';
   try{await runtime?.close();}catch{cleanupUnknown=true;}
