@@ -1,0 +1,17 @@
+gdbm=1.26-r7
+libbz2-1=1.0.8-r25
+libcrypto3=3.6.5-r2
+libexpat1=2.9.0-r0
+libffi=3.8.0-r2
+libssl3=3.6.5-r2
+libstdc++=16.2.0-r1
+libuuid=2.42.4-r0
+mpdecimal=4.0.1-r4
+ncurses=6.6.20261010-r0
+ncurses-terminfo-base=6.6.20261010-r0
+py3-pip-wheel=26.2.1-r4
+python-3.13=3.13.16_git20261016-r0
+python-3.13-base=3.13.16_git20261016-r0
+readline=8.3-r3
+sqlite-libs=3.54.1-r0
+xz=5.8.4-r0

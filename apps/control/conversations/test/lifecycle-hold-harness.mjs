@@ -22,7 +22,7 @@ export async function holdComposition({pool,binding=fixtureBinding,scopes,captur
    void (async()=>{for(;;){const next=await iterator.next();if(next.done)return;inputs.push(next.value);}})();yield* h.script({...api,stopped:stop.promise});},
   async interrupt(){counts.interrupts++;await hooks.interrupted?.();return {still_queued:[]};},close(){counts.closes++;stop.resolve();}};}
  const lifecycle={captureCheckpoint,pollMs:5,...(captureCompletion?{captureCompletion:input=>captureCompletion(h,input)}:{})};
- h.execute=async()=>{await f.service.submit({credential:f.credential,input:f.input});await hooks.afterSubmit?.();return createConversationActivity({runOwner,prepareRuntime,query,lifecycle,...(terminalAttemptMs?{terminalAttemptMs}:{})})({binding});};
+ h.execute=async()=>{await f.service.allocateInput({credential:f.credential,input:f.input});await f.service.submit({credential:f.credential,input:f.input});await hooks.afterSubmit?.();return createConversationActivity({runOwner,prepareRuntime,query,lifecycle,...(terminalAttemptMs?{terminalAttemptMs}:{})})({binding});};
  h.control=intent=>f.control(intent==='pause'?{controlId:id(231),intent}:{controlId:id(232),intent,proposalId:f.proposal.proposalId});
  h.controlId=intent=>intent==='pause'?id(231):id(232);
  h.history=async()=>f.store.read(binding,{after:0,limit:100},()=>{});

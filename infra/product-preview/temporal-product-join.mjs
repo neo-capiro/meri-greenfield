@@ -13,23 +13,30 @@ const record=(value,keys)=>{
 /**
  * `runtimeProjection` must be decoded independently from exact reviewed control/worker config bytes.
  * A matching SHA supplied beside a projection does not itself prove its contents.
+ * `productSubnetReadbacks` holds one DescribeSubnets projection per product `privateSubnetIds` entry.
+ * Each product role's security-group list must carry exactly one Temporal client SG, a different one per role;
+ * the remaining entries (issuer-client/db-client markers) are not Temporal client groups.
  */
-export function inspectTemporalProductJoin({productBinding,temporalBinding,runtimeProjection,productSubnetReadback,issuerRenewal}){
+export function inspectTemporalProductJoin({productBinding,temporalBinding,runtimeProjection,productSubnetReadbacks,issuerRenewal}){
  let t,p;
  try{t=validateTemporalPreviewBinding(temporalBinding);synthesizeProductPreview(productBinding);p=productBinding;
   validateTemporalIssuerRenewal(t,issuerRenewal);}catch{fail();}
  if(p.account!==t.account||p.region!==t.region||p.clusterArn!==t.clusterArn||
     issuerRenewal.issuerServiceTaskRoleArn===p.controlTaskRoleArn||
-    issuerRenewal.issuerServiceTaskRoleArn===p.executionRoleArn||
-    !Array.isArray(t.network.clientSecurityGroupIds)||
-    new Set([p.network.controlSecurityGroupId,p.network.workerSecurityGroupId]).size!==2||
-    ![p.network.controlSecurityGroupId,p.network.workerSecurityGroupId]
-     .every(x=>t.network.clientSecurityGroupIds.includes(x))||
-    t.subnets.some(x=>x.id===p.network.privateSubnetId))fail();
- const subnet=record(productSubnetReadback,['SubnetId','VpcId','RouteTableId']);
- if(subnet.SubnetId!==p.network.privateSubnetId||subnet.VpcId!==t.vpcId||
-    !/^vpc-[a-f0-9]{8,17}$/u.test(subnet.VpcId)||
-    !/^rtb-[a-f0-9]{8,17}$/u.test(subnet.RouteTableId))fail();
+    [p.executionRoleArn,...Object.values(p.executionRoleArns??{})].includes(issuerRenewal.issuerServiceTaskRoleArn)||
+    !Array.isArray(t.network.clientSecurityGroupIds))fail();
+ const clientGroups=[p.network.controlSecurityGroupIds,p.network.workerSecurityGroupIds]
+  .map(groups=>groups.filter(x=>t.network.clientSecurityGroupIds.includes(x)));
+ // Product and Temporal share capiro-dev's private subnets (Neo's placement decision: separate services,
+ // existing VPC); isolation is by security group, so a shared subnet must agree on its route table instead.
+ if(clientGroups.some(groups=>groups.length!==1)||clientGroups[0][0]===clientGroups[1][0])fail();
+ if(!Array.isArray(productSubnetReadbacks)||productSubnetReadbacks.length!==p.network.privateSubnetIds.length)fail();
+ const readbacks=productSubnetReadbacks.map(value=>record(value,['SubnetId','VpcId','RouteTableId']));
+ if(new Set(readbacks.map(x=>x.SubnetId)).size!==readbacks.length||
+    readbacks.some(x=>!p.network.privateSubnetIds.includes(x.SubnetId)||x.VpcId!==t.vpcId||
+     !/^vpc-[a-f0-9]{8,17}$/u.test(x.VpcId)||!/^rtb-[a-f0-9]{8,17}$/u.test(x.RouteTableId)||
+     (Object.hasOwn(t.network.taskRouteTableBySubnet,x.SubnetId)&&t.network.taskRouteTableBySubnet[x.SubnetId]!==x.RouteTableId)))fail();
+ const subnet=readbacks[0];
  const projections=record(runtimeProjection,['control','temporalWorker']);
  const address=`frontend.${t.privateDnsName}:7233`,serverName=`frontend.${t.privateDnsName}`;
  for(const [role,config] of Object.entries(projections)){

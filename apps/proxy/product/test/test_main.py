@@ -164,6 +164,7 @@ class MainTests(unittest.IsolatedAsyncioTestCase):
         with patch.dict(os.environ, {}, clear=True), patch.object(main, "_running", False), \
              patch.object(main, "_environment"), patch.object(main.sys, "platform", "linux"), \
              patch.object(main.sys, "version_info", (3,13,5)), \
+             patch.object(main, "_check_reviewed_tls_files"), \
              patch.object(main, "_tls", return_value=(server_tls,policy,material)), \
              patch.object(main, "_native_bootstrap", side_effect=completed_native_boundary), \
              patch.object(main, "_clients", return_value=(services.ecs,services.ec2,Client())), \
@@ -185,8 +186,21 @@ class MainTests(unittest.IsolatedAsyncioTestCase):
 
     def test_product_docker_recipe_preserves_pinned_separate_native_assembly(self):
         recipe = (Path(main.__file__).parent/"Dockerfile").read_text()
-        self.assertIn("ARG PROXY_ASSEMBLY_IMAGE\nFROM ${PROXY_ASSEMBLY_IMAGE}", recipe)
+        self.assertIn("ARG PROXY_ASSEMBLY_IMAGE\nARG PROXY_RUNTIME_IMAGE\n"
+                      "FROM ${PROXY_ASSEMBLY_IMAGE} AS assembly\nFROM ${PROXY_RUNTIME_IMAGE} AS product\n", recipe)
+        self.assertEqual(recipe.count("\nFROM "), 2)
         self.assertNotIn("ARG PROXY_ASSEMBLY_IMAGE=", recipe)
+        self.assertNotIn("ARG PROXY_RUNTIME_IMAGE=", recipe)
+        self.assertIn('os.environ["PROXY_RUNTIME_IMAGE"]==lock["runtimeImageUri"]', recipe)
+        # Wolfi packages only from the bind-mounted retained snapshot, never a layer or network.
+        self.assertIn("--repositories-file /dev/null", recipe)
+        self.assertIn("add --no-network --no-cache", recipe)
+        instructions = "\n".join(line for line in recipe.splitlines() if not line.lstrip().startswith("#"))
+        for forbidden in ("allow-untrusted", "apk upgrade", "apk update", "COPY proxy-runtime-packages",
+                          "dl-cdn", "packages.wolfi.dev"):
+            self.assertNotIn(forbidden, instructions)
+        self.assertIn("runtime_packages verify", recipe)
+        self.assertIn('"/usr/bin/dpkg","/var/lib/dpkg"', recipe)
         self.assertIn("@sha256:[0-9a-f]{64}", recipe)
         self.assertIn('"assembly-pins.json","requirements.lock"', recipe)
         self.assertIn('"boto3":"1.43.111"', recipe)
@@ -195,7 +209,147 @@ class MainTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("test_main.InstalledNativeStartup", recipe)
         self.assertIn('"-E", "-B", "-m", "apps.proxy.product.main"', recipe)
         self.assertNotIn("pip install", recipe)
-        self.assertNotIn("COPY --from=", recipe)
+        self.assertEqual({line.split()[1] for line in recipe.splitlines() if line.startswith("COPY --from=")},
+                         {"--from=assembly"})
+
+
+def _not_running(role):
+    def change(reply, _kwargs):
+        for s in reply['services']:
+            if s['serviceName'] == 'meri-'+role:
+                s['runningCount'] = s['deployments'][0]['runningCount'] = 0
+                s['pendingCount'] = s['deployments'][0]['pendingCount'] = 1
+        return reply
+    return change
+
+
+class StartupPairWaitTests(unittest.IsolatedAsyncioTestCase):
+    """Bounded startup wait for the service pair through the actual executable
+    path; native, SDK, TLS and serving constructors stay synthetic."""
+
+    async def _run(self, services, *, tls_check=None, window=5, interval=.01):
+        value = configuration()
+        value['serviceTasks'] = services.configuration
+        value['expiresAtMs'] = services.configuration['expiresAtMs']
+        accepted = parse(value)
+        served, tls = [], []
+        async def serve(**kwargs):
+            served.append(kwargs)
+        def native(resources):
+            resources.native_started = resources.native_stopped = True
+            return SimpleNamespace(close=lambda: None)
+        def compiled_tls(_value, policy):
+            tls.append(policy)
+            return ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER), policy, None
+        class Client:
+            def close(self):
+                pass
+        sleeps = []
+        real_sleep = asyncio.sleep
+        async def sleep(seconds):
+            sleeps.append(seconds)
+            await real_sleep(seconds)
+        with patch.dict(os.environ, {}, clear=True), patch.object(main, "_running", False), \
+             patch.object(main, "_environment"), patch.object(main.sys, "platform", "linux"), \
+             patch.object(main.sys, "version_info", (3,13,5)), \
+             patch.object(main, "_PAIR_STARTUP_WINDOW_SECONDS", window), \
+             patch.object(main, "_PAIR_RETRY_INTERVAL_SECONDS", interval), \
+             patch.object(main.asyncio, "sleep", sleep), \
+             patch.object(main, "_check_reviewed_tls_files", side_effect=tls_check), \
+             patch.object(main, "_tls", side_effect=compiled_tls), \
+             patch.object(main, "_native_bootstrap", side_effect=native), \
+             patch.object(main, "_clients", return_value=(services.ecs, services.ec2, Client())), \
+             patch.object(main, "_provider_factory", return_value=lambda: None), \
+             patch("apps.proxy.product.uvicorn_tls_protocol.serve_product_proxy_with_owner", side_effect=serve):
+            try:
+                await main.run_product_proxy(accepted)
+            finally:
+                result = SimpleNamespace(served=served, tls=tls, sleeps=sleeps,
+                    services=[c for c in services.calls if c[0] == 'describe_services'])
+                self.last = result
+        return result
+
+    async def test_peer_or_own_service_not_yet_running_is_reread_until_admitted(self):
+        for role in ('proxy', 'owner'):
+            services, denials = service_fixture(), [2]
+            def change(reply, kwargs, role=role, denials=denials):
+                if denials[0] > 0:
+                    denials[0] -= 1
+                    return _not_running(role)(reply, kwargs)
+                return reply
+            services.changes['describe_services'] = change
+            result = await self._run(services)
+            self.assertEqual(len(result.sleeps), 2)
+            # Two denied attempts stop at their first service read; the admitted
+            # attempt is a complete fresh read (services read first and last).
+            self.assertEqual(len(result.services), 2+2)
+            self.assertEqual(len(services.calls), 2+10)
+            self.assertEqual(len(result.served), 1)
+            self.assertEqual((result.served[0]['owner_ipv4'], result.served[0]['proxy_ipv4']), ('10.40.4.1', '10.40.4.2'))
+            self.assertEqual(result.tls[0].owner_task_arn, services.task_id('owner'))
+            self.assertEqual(result.tls[0].proxy_task_arn, services.task_id('proxy'))
+
+    async def test_late_denial_is_not_cached_and_next_attempt_rediscovers_everything(self):
+        services, pending = service_fixture(), [True]
+        def change(reply, _kwargs):
+            if pending[0]:
+                pending[0] = False
+                next(t for t in reply['tasks'] if t['group'] == 'service:meri-proxy')['lastStatus'] = 'PENDING'
+            return reply
+        services.changes['describe_tasks'] = change
+        result = await self._run(services)
+        self.assertEqual(len(result.sleeps), 1)
+        methods = [c[0] for c in services.calls]
+        self.assertEqual(len(methods), 6+10)
+        self.assertEqual(methods[5], 'describe_tasks')
+        self.assertEqual(methods[6], 'describe_services')
+        self.assertEqual(methods[6:].count('describe_network_interfaces'), 1)
+        self.assertEqual(len(result.served), 1)
+
+    async def test_exhausted_window_keeps_the_same_terminal_denial(self):
+        services = service_fixture()
+        services.changes['describe_services'] = _not_running('proxy')
+        with self.assertRaises(main.StateDenied) as raised:
+            await self._run(services, window=.2, interval=.01)
+        # Not CleanupUnknown: main() still maps this to exit 78, not 75.
+        self.assertIsNot(type(raised.exception), main.CleanupUnknown)
+        self.assertEqual(str(raised.exception), 'PRODUCT_SERVICE_PAIR_DENIED')
+        self.assertGreater(len(self.last.services), 1)
+        self.assertEqual(len(self.last.services), len(self.last.sleeps)+1)
+        self.assertEqual(self.last.served, [])
+        self.assertEqual(self.last.tls, [])
+
+    async def test_reviewed_material_refusal_fails_before_any_pair_read_or_wait(self):
+        services = service_fixture()
+        services.changes['describe_services'] = _not_running('proxy')
+        with self.assertRaises(main.StateDenied):
+            await self._run(services, tls_check=main.StateDenied("PRODUCT_PROXY_STARTUP_DENIED"))
+        self.assertEqual(services.calls, [])
+        self.assertEqual(self.last.sleeps, [])
+        self.assertEqual(self.last.served, [])
+
+    async def test_unsettled_native_read_or_retired_reader_is_terminal_without_retry(self):
+        resources, calls = main._Resources(), []
+        async def unsettled(_factory, _resources, _seconds=5):
+            calls.append(1)
+            raise main.CleanupUnknown()
+        reader = SimpleNamespace(available=True)
+        with patch.object(main, "_bounded_native", side_effect=unsettled), \
+             patch.object(main, "_PAIR_RETRY_INTERVAL_SECONDS", .01):
+            with self.assertRaises(main.CleanupUnknown):
+                await main._read_startup_service_pair(reader, resources, time.time_ns()//1000000+60000)
+        self.assertEqual(calls, [1])
+        services = service_fixture()
+        reader = services.reader()
+        def retire(reply, kwargs):
+            reader.abort()
+            return _not_running('proxy')(reply, kwargs)
+        services.changes['describe_services'] = retire
+        with patch.object(main, "_PAIR_RETRY_INTERVAL_SECONDS", .01):
+            with self.assertRaises(main.StateDenied) as raised:
+                await main._read_startup_service_pair(reader, main._Resources(), services.configuration['expiresAtMs'])
+        self.assertIsNot(type(raised.exception), main.CleanupUnknown)
+        self.assertEqual(len([c for c in services.calls if c[0] == 'describe_services']), 1)
 
 
 def _installed_native():
@@ -221,8 +375,11 @@ class InstalledNativeStartup(unittest.IsolatedAsyncioTestCase):
         fixture = AuthTests(methodName="test_real_product_authority_refreshes_and_projects_sha_model_only")
         fixture_started = False
         gate = None
+        # HOME matches the assembly image's ENV, which production inherits; the nonroot
+        # UID has no passwd entry, so clearing it breaks the real Prisma import (Path.home()).
         env = {"LITELLM_LOCAL_MODEL_COST_MAP": "True", "AWS_EC2_METADATA_DISABLED": "true",
-               "AWS_SHARED_CREDENTIALS_FILE": os.devnull, "AWS_CONFIG_FILE": os.devnull}
+               "AWS_SHARED_CREDENTIALS_FILE": os.devnull, "AWS_CONFIG_FILE": os.devnull,
+               "HOME": "/tmp/meri-home"}
         try:
             with patch.dict(os.environ, env, clear=True), main._quiet_native_output():
                 native = import_module("litellm.proxy.proxy_server")

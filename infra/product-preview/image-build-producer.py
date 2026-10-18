@@ -25,6 +25,7 @@ need, decode, encoded = _source.need, _source.decode, _source.encoded
 validate_request, verify, file_sha = _source.validate_request, _source.verify, _source.file_sha
 SHA, RUNNER, CONTRACT = _source.SHA, _source.RUNNER, _source.CONTRACT
 RUNTIME_LOCK = _source.RUNTIME_LOCK
+RDS_CA_BUNDLE, RDS_CA_LOCK, RDS_CA_IMAGE_PATH = _source.RDS_CA_BUNDLE, _source.RDS_CA_LOCK, _source.RDS_CA_IMAGE_PATH
 REGION = "us-east-1"
 LINUX_ONLY_TESTS = (
     "apps/runtime/test/prepared-candidate-bootstrap.test.mjs",
@@ -54,7 +55,7 @@ _ERROR_CODES = frozenset("PRODUCT_IMAGE_" + name for name in (
     "LINUX_CASES_UNPROVEN", "LINUX_REPORTER_UNPROVEN", "LINUX_FIXTURE_UNPROVEN",
     "MANIFEST_ORDER", "MANIFEST_SHA_MISMATCH", "MANIFEST_SHAPE",
     "MEMBER_ANCESTOR", "MEMBER_PATH", "MEMBER_TYPE", "NODE_PIN",
-    "OBJECT_BINDING", "OBJECT_BOUND", "PRIVATE_MEMBER", "PRODUCER_DEADLINE",
+    "OBJECT_BINDING", "OBJECT_BOUND", "PRIVATE_MEMBER", "PRODUCER_DEADLINE", "PUBLIC_CA_BUNDLE", "RDS_CA_LOCK",
     "PRODUCER_PLATFORM_OR_OUTPUT", "PROJECT_PIN", "REPOSITORY_PIN",
     "REPOSITORY_POLICY", "REQUEST_OBJECT", "REQUEST_PIN", "RUNNER_BOUND",
     "RUNTIME_USER", "RUNTIME_BASE_PIN", "RUNTIME_PACKAGES_UNPROVEN", "RUNTIME_NATIVE_UNPROVEN", "SCAN_FINDINGS_HOLD", "SCAN_INCOMPLETE", "SHAPE_REFUSED",
@@ -463,15 +464,17 @@ def _produce(pin, output, diagnostic):
             diagnostic["phase"] = "IMAGE_INSPECT"
             inspection = decode(run(docker + ["image", "inspect", image]))[0]
             config = inspection["Config"]
-            need(inspection["Os"] == "linux" and inspection["Architecture"] == "amd64" and config["Entrypoint"] == ["node", "apps/runtime/cli.mjs"] and config["Labels"]["org.opencontainers.image.revision"] == p["sourceCommit"] and config["Labels"]["org.opencontainers.image.base.name"] == p["runtimeBaseImageUri"] and config["Labels"]["io.meri.node.base"] == p["nodeImageUri"] and config["Labels"]["io.meri.runtime.packages.sha256"] == p["runtimePackagesSha256"] and inspection["Size"] <= 3 * 1024**3, "IMAGE_IDENTITY")
+            need(inspection["Os"] == "linux" and inspection["Architecture"] == "amd64" and config["Entrypoint"] == ["node", "apps/runtime/cli.mjs"] and config["Labels"]["org.opencontainers.image.revision"] == p["sourceCommit"] and config["Labels"]["org.opencontainers.image.base.name"] == p["runtimeBaseImageUri"] and config["Labels"]["io.meri.node.base"] == p["nodeImageUri"] and config["Labels"]["io.meri.runtime.packages.sha256"] == p["runtimePackagesSha256"] and type(config.get("Env")) is list and "NODE_EXTRA_CA_CERTS=" + RDS_CA_IMAGE_PATH in config["Env"] and sum(1 for entry in config["Env"] if type(entry) is str and entry.startswith("NODE_EXTRA_CA_CERTS=")) == 1 and inspection["Size"] <= 3 * 1024**3, "IMAGE_IDENTITY")
             sandbox = docker + ["run", "--rm", "--name", probe_name, "--init", "--network", "none", "--read-only", "--cap-drop", "ALL", "--security-opt", "no-new-privileges", "--pids-limit", "128", "--memory", "2g", "--tmpfs", "/tmp:rw,nosuid,nodev,noexec,size=128m", "--entrypoint", "/usr/local/bin/node", image]
             owned_probe = True
             diagnostic["phase"] = "SANDBOX_HELP"
             run(sandbox + ["apps/runtime/cli.mjs", "--help"])
-            probe = "import fs from 'node:fs';import {createHash} from 'node:crypto';import {measureProductRunner} from './apps/runtime/native-authority/ecs-prepared-task-proof.mjs';const runner=await measureProductRunner();await import('./apps/runtime/control.mjs');await import('./apps/runtime/temporal-worker.mjs');await import('./apps/runtime/conversation-runner.mjs');console.log(JSON.stringify({runner,node:process.version,runtimeUser:process.getuid()+':'+process.getgid(),executableSha256:createHash('sha256').update(fs.readFileSync(process.execPath)).digest('hex')}));"
+            probe = "import fs from 'node:fs';import {createHash} from 'node:crypto';import {measureProductRunner} from './apps/runtime/native-authority/ecs-prepared-task-proof.mjs';const runner=await measureProductRunner();await import('./apps/runtime/control.mjs');await import('./apps/runtime/temporal-worker.mjs');await import('./apps/runtime/conversation-runner.mjs');console.log(JSON.stringify({runner,node:process.version,runtimeUser:process.getuid()+':'+process.getgid(),executableSha256:createHash('sha256').update(fs.readFileSync(process.execPath)).digest('hex'),rdsCaBundle:{path:process.env.NODE_EXTRA_CA_CERTS,sha256:createHash('sha256').update(fs.readFileSync('" + RDS_CA_IMAGE_PATH + "')).digest('hex'),mode:(fs.statSync('" + RDS_CA_IMAGE_PATH + "').mode&4095).toString(8),uid:fs.statSync('" + RDS_CA_IMAGE_PATH + "').uid}}));"
             diagnostic["phase"] = "SANDBOX_MEASURE"
             measured = decode(run(sandbox + ["--input-type=module", "-e", probe], timeout=90))
-            need(measured["node"] == p["nodeVersion"] and measured["runtimeUser"] == p["runtimeUser"] and measured["runner"] == {"contract": CONTRACT, "path": RUNNER, "runnerSha256": p["runnerSha256"], "bytes": verified["runnerBytes"]} and SHA.fullmatch(measured["executableSha256"]), "IMAGE_MEASUREMENT")
+            # verify() already joined the sealed lock to the bundle bytes; the image must carry exactly them.
+            rds_ca = _source.rds_ca_lock((context / RDS_CA_LOCK).read_bytes(), (context / RDS_CA_BUNDLE).read_bytes())
+            need(measured["node"] == p["nodeVersion"] and measured["runtimeUser"] == p["runtimeUser"] and measured["runner"] == {"contract": CONTRACT, "path": RUNNER, "runnerSha256": p["runnerSha256"], "bytes": verified["runnerBytes"]} and SHA.fullmatch(measured["executableSha256"]) and measured.get("rdsCaBundle") == {"path": RDS_CA_IMAGE_PATH, "sha256": rds_ca["sha256"], "mode": "444", "uid": 0}, "IMAGE_MEASUREMENT")
             runtime_packages = decode(run(sandbox + ["apps/runtime/build/runtime-packages.mjs", "verify", "--lock", RUNTIME_LOCK], timeout=90))
             need(type(runtime_packages) is dict and set(runtime_packages) == {"schemaVersion", "status", "runtimeBaseImageUri", "runtimePackagesSha256", "installedPackageSetSha256", "nodeVersion", "glibcVersion"} and
                  type(runtime_packages["schemaVersion"]) is int and runtime_packages["schemaVersion"] == 1 and runtime_packages["status"] == "RUNTIME_PACKAGES_VERIFIED" and

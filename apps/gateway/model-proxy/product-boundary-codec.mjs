@@ -5,6 +5,7 @@
  * capture and their canonical SQL owners.
  */
 import {isDeepStrictEqual} from 'node:util';
+import {PRODUCT_MAX_INPUT_TOKENS,PRODUCT_MAX_OUTPUT_TOKENS} from './product-envelope.mjs';
 
 const WIRE_LIMIT=12*1024*1024;
 const BODY_LIMIT=4*1024*1024;
@@ -92,7 +93,7 @@ export function decodeReservationFrame(wire){
  });
  if(!seen.has('host')||!seen.has('content-type'))deny();
  const [inputTokens,nativeBodySha256,modelId,origin]=tuple(count,4);
- integer(inputTokens,1,8192);ascii(nativeBodySha256,64,64,hash);
+ integer(inputTokens,1,PRODUCT_MAX_INPUT_TOKENS);ascii(nativeBodySha256,64,64,hash);
  printable(modelId,128);ascii(origin,64,1,slot);
  return {value:{requestId,binding:selectedBinding,deadlineMs},
   observation:{requestId:claimId,peer:{binding:observedBinding,taskArn,grantId,observedAtMs},
@@ -110,8 +111,8 @@ export function decodeSettlementFrame(wire){
  if(status!=='COMPLETE'||usageId!==requestId||origin!=='native-usage-data'||
     !['COMPLETE_NATIVE_MESSAGE','COMPLETE_NATIVE_STREAM'].includes(reason))deny();
  for(const value of [nativeSha,rawSha,pricingRevision,evidenceSha])ascii(value,64,64,hash);
- integer(countedInput,1,8192);integer(maxOutput,1,256);
- if(integer(inputTokens,1,8192)!==countedInput)deny();integer(outputTokens,0,maxOutput);
+ integer(countedInput,1,PRODUCT_MAX_INPUT_TOKENS);integer(maxOutput,1,PRODUCT_MAX_OUTPUT_TOKENS);
+ if(integer(inputTokens,1,PRODUCT_MAX_INPUT_TOKENS)!==countedInput)deny();integer(outputTokens,0,maxOutput);
  if(!Array.isArray(names)||names.length>8)deny();
  const allowed_tool_names=names.map(name=>ascii(name,128,1,slot));
  if(new Set(allowed_tool_names).size!==allowed_tool_names.length||

@@ -33,8 +33,14 @@ names = ["litellm", "litellm.llms", "litellm.llms.custom_httpx",
          "litellm.llms.custom_httpx.http_handler"]
 modules = {name: types.ModuleType(name) for name in names}
 modules[names[-1]].AsyncHTTPHandler = _Handler
+_before = set(sys.modules)
 with patch.dict(sys.modules, modules):
     PRODUCT = importlib.import_module("apps.proxy.product.host_composition")
+    _product = {name: module for name, module in sys.modules.items()
+                if name.startswith("apps.") and name not in _before}
+# patch.dict drops every module first imported inside it. Keep one instance of the
+# product modules (their type-identity checks span suites); only stubs are removed.
+sys.modules.update(_product)
 
 
 class _Counter:

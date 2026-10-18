@@ -1,6 +1,6 @@
 /** Offline validation of exact AWS Describe* readback. No AWS client or network on import/call. */
 import {createHash} from 'node:crypto';
-import {TEMPORAL_INTERFACE_ENDPOINTS,validateTemporalPreviewBinding} from './temporal-binding.mjs';
+import {TEMPORAL_INTERFACE_ENDPOINTS,temporalEndpointSecurityGroupIds,validateTemporalPreviewBinding} from './temporal-binding.mjs';
 
 const fail=()=>{throw Error('TEMPORAL_NETWORK_READBACK_REFUSED');};
 const record=(value,keys)=>{
@@ -71,8 +71,9 @@ export function validateTemporalNetworkReadback(binding,readback){
     gateway.ServiceName!=='com.amazonaws.us-east-1.s3'||gateway.VpcEndpointType!=='Gateway'||
     gateway.State!=='available'||
     !exactSet(gateway.RouteTableIds,[...routes.keys()]))fail();
- const peerIds=[...Object.values(b.network.interfaceEndpoints).map(x=>x.securityGroupId),
-  b.network.issuerSecurityGroupId,b.network.migrationSecurityGroupId];
+ // One row per distinct SG: the capiro-dev interface endpoints share one group.
+ const peerIds=[...temporalEndpointSecurityGroupIds(b.network),b.network.issuerSecurityGroupId,
+  b.network.migrationSecurityGroupId,b.network.issuerClientSecurityGroupId,b.network.dbClientSecurityGroupId];
  if(!exactSet(rows(e.securityGroups,peerIds.length).map(item=>{
   const sg=record(item,['GroupId','VpcId']);if(sg.VpcId!==b.vpcId)fail();return sg.GroupId;
  }),peerIds))fail();

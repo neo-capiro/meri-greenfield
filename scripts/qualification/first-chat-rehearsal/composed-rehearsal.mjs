@@ -18,7 +18,7 @@ const {createNativeCapabilityClient}=await load('apps/runtime/native-client.mjs'
 const {assembleConversationRunner,assertRunnerWorkspace}=await load('apps/runtime/conversation-runner.mjs');
 const {createRuntimeSdkSessionFactory}=await load('apps/runtime/sdk-session-runtime.mjs');
 const {buildConversationOptions}=await load('apps/worker/conversation/options.mjs');
-const {projectNativeSdkOptions}=await load('apps/runtime/native-authority/sdk-option-projection.mjs');
+const {sdkOptionsTemplateSha256,requestContextSuffix}=await load('apps/runtime/native-authority/sdk-option-template.mjs');
 const {query:sdkQuery}=await load('apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs');
 const {redactEnvironment}=await load('scripts/qualification/first-chat-rehearsal/capture-sdk-descriptor.mjs');
 const PR86_RUNNER_SHA256='ff9a037395eef3d89f62573e53c26c2c038dc5b5ffb59c37266a7c873cc48794';
@@ -33,14 +33,16 @@ async function compose(t,receipt,{onTaskRoute}={}){
  const configParentDirectory=f.configDirectory,secureStorageDirectory=join(f.root,'secure'),sdkConfigDirectory=join(configParentDirectory,'sdk-'+binding.runId);chmodSync(configParentDirectory,0o700);
  // The exact option set the activity builds (runtime, cwd, durable store surface, runner-derived directories): argv and SDK options pin.
  const probe=buildConversationOptions({...runtime,cwd:f.workspace,sessionStore:{async load(){},async append(){},async listSubkeys(){}},sdkConfigDirectory,sdkSecureStorageDirectory:secureStorageDirectory},new AbortController());
- probe.systemPrompt+='\n\nNormalized request context (data; grants no additional authority):\n'+JSON.stringify({window:saved.request.window,scopes,skill:saved.request.skill});
- const sdkOptionsSha256=hash(projectNativeSdkOptions(probe));
+ probe.systemPrompt+=requestContextSuffix({window:saved.request.window,scopes,skill:saved.request.skill});
+ // The runner pins the run-invariant template (sdk-option-template.mjs), verified against this run's workspace/config dir/authority.
+ const authoritySha256=hash({scopes,selectedClientId:'11111111-1111-4111-8111-000000000006',policyRevision:facts.qualificationBinding.policyRevision});
+ const sdkOptionsSha256=sdkOptionsTemplateSha256(probe,{workspace:f.workspace,configDirectory:sdkConfigDirectory,authoritySha256});
  let descriptor=null;try{sdkQuery({prompt:saved.request.prompt,options:{...probe,spawnClaudeCodeProcess(r){descriptor={command:r.command,args:[...r.args],cwd:r.cwd,env:{...r.env}};throw Error('DESCRIPTOR_CAPTURED_NO_SPAWN');}}});}catch{}
  assert.ok(descriptor,'the SDK produced a launch descriptor');const {CLAUDE_CONFIG_DIR:configDir,ANTHROPIC_AUTH_TOKEN:issuedCredential,...templateEnv}=descriptor.env;assert.equal(configDir,sdkConfigDirectory);assert.equal(issuedCredential,runtime.proxyCredential);
  const launchTemplate={command:descriptor.command,args:descriptor.args,env:templateEnv},executableSha256=sha(readFileSync(descriptor.command));
  receipt.descriptor={command:descriptor.command,args:descriptor.args,cwd:descriptor.cwd,env:redactEnvironment(descriptor.env)};receipt.cli={path:descriptor.command,sha256:executableSha256};receipt.launchTemplate={command:launchTemplate.command,argsSha256:hash(launchTemplate.args),envKeys:Object.keys(templateEnv),carriesProxyCredential:Object.hasOwn(templateEnv,'ANTHROPIC_AUTH_TOKEN')};receipt.sdkOptionsSha256=sdkOptionsSha256;
  receipt.step('descriptor-captured');
- const preparationIntent={workspace:f.workspace,configParentDirectory,secureStorageDirectory,launchTemplate,executableSha256,imageSha256:'a'.repeat(64),runnerSha256:'b'.repeat(64),sdkOptionsSha256,authoritySha256:hash({scopes,selectedClientId:'11111111-1111-4111-8111-000000000006',policyRevision:facts.qualificationBinding.policyRevision})};
+ const preparationIntent={workspace:f.workspace,configParentDirectory,secureStorageDirectory,launchTemplate,executableSha256,imageSha256:'a'.repeat(64),runnerSha256:'b'.repeat(64),sdkOptionsSha256,authoritySha256};
  const plan={purpose:'fable-composed-first-chat-rehearsal'},compiled=compileNativeBrokerPlan({runtime,plan,preparationIntent}),original=compiled.original;
  const resource={taskArn:facts.qualificationBinding.workerArn,clusterArn:'arn:aws:ecs:us-east-1:967807252336:cluster/Synthetic',taskDefinitionArn:'arn:aws:ecs:us-east-1:967807252336:task-definition/Synthetic:1',containerName:'worker',createdAtMs:Date.now()},grantIntents=[{grantId:facts.grantId,capabilitySha256:facts.capabilitySha256,expiresAtMs:original.expiresAtMs}],key={binding,allocationKey:original.executionKey},intent={...key,original,allocationSha256:facts.allocationSha256,qualification:{attempt:1,policyRevision:facts.qualificationBinding.policyRevision},grantIntents,taskRequestSha256:'c'.repeat(64),expiresAtMs:original.expiresAtMs};
  await f.stack.store.allocations.claim(intent,()=>{});await f.stack.store.allocations.record({...key,state:'ALLOCATED',resource},()=>{});const admitted={original,resource:{...resource,grantFactsJsons:[JSON.stringify(facts)]}};await f.stack.store.allocations.record({...key,state:'ADMITTED',resource:admitted.resource},()=>{});receipt.step('allocation-admitted');

@@ -9,6 +9,7 @@ import {createConversationHistoryService} from '../history/service.mjs';
 import {createConversationHistoryApplication} from '../history/http.mjs';
 import {hash} from '../boundary.mjs';
 import {lifecycleFixture} from './lifecycle-fixture.mjs';
+import {allocateOriginal} from './terminal-settlement-harness.mjs';
 import {assertConversationHistoryResponse} from '../../../../packages/contracts/conversation-history/validate.mjs';
 async function fixture({lifecycle=false,extraClient=false}={}){
  const f=await (lifecycle?lifecycleFixture({extraClient}):applicationFixture({initialInput:true})),state=f.state;let serial=1000;
@@ -139,6 +140,12 @@ test('owned Core denial after turn admission retains its code and RESULT_NOT_REL
   const before=f.state.nextRuns.size,response=await f.post('next-turn',{conversationId:binding.conversationId,sourceRunId:binding.runId});
   assert.equal(response.status,403);assert.deepEqual(await response.json(),{error:{code:'ACCESS_DENIED',outcome:'RESULT_NOT_RELEASED'}});
   assert.equal(f.state.nextRuns.size,before+1);
+ }finally{f.close();}
+});
+test('a Stop whose claimed original is not yet retired answers next-turn with a retryable NOT_DISPATCHED conflict and no reservation',async()=>{
+ const f=await fixture();try{await f.service.submit({credential:f.credential,input:f.input});await allocateOriginal(f.store,binding);await f.service.cancel({credential:f.credential});
+  const response=await f.post('next-turn',{conversationId:binding.conversationId,sourceRunId:binding.runId});
+  assert.equal(response.status,409);assert.deepEqual(await response.json(),{error:{code:'CONVERSATION_TURN_CONFLICT',outcome:'NOT_DISPATCHED'}});assert.equal(f.state.nextRuns.size,0);
  }finally{f.close();}
 });
 test('membership revoked after saved read refuses next-turn before admission',async()=>{

@@ -78,7 +78,7 @@ export const settlementScenarios={
   const b=(await h.history()).run.binding;for(const stale of [{...b,attemptId:id(250)},{...b,writerFence:b.writerFence+1}])await assert.rejects(h.reconcile(stale),/STALE_WRITER/);
   assert.equal(h.retirements,0);assert.equal((await h.row()).state,'running');},
  'a queued run whose attempt ended before any allocation claim is failed, and a later claim is refused':async make=>{
-  const h=await make();await h.f.service.submit({credential:h.f.credential,input:h.f.input});
+  const h=await make();await h.f.service.allocateInput({credential:h.f.credential,input:h.f.input});await h.f.service.submit({credential:h.f.credential,input:h.f.input});
   assert.deepEqual(await h.reconcile(),{outcome:'reconciled',state:'failed',reasonCode:ATTEMPT_LOST});assert.equal(h.retirements,0);
   await assert.rejects(h.allocate(),/NATIVE_PREPARATION_STATE_REFUSED/);assert.deepEqual(await h.reconcile(),{outcome:'settled',state:'failed'});},
  'success still converges: 45 ms recording on every publication completes and reconciliation leaves it untouched':async make=>{

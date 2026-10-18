@@ -57,6 +57,11 @@ infra/*
 !infra/product-preview/
 infra/product-preview/*
 !infra/product-preview/runtime-packages.lock.json
+# Stage 1 one-shot database runner (D2), copied by apps/runtime/Dockerfile.
+!infra/product-preview/first-chat-migrate.mjs
+!infra/product-preview/first-chat-database.sql
+!infra/product-preview/first-chat-database-temporal.sql
+!infra/product-preview/first-chat-seed-budget.sql
 !infra/product-preview/runtime-packages/
 infra/product-preview/runtime-packages/*
 !infra/product-preview/runtime-packages/x86_64/
@@ -65,6 +70,8 @@ scripts
 **/*.env
 **/.env*
 **/*.pem
+# The one public certificate the runtime image bakes in (pinned by its lock and the source verifier).
+!apps/runtime/certs/rds-global-bundle.pem
 **/*.key
 **/credentials
 **/config.json

@@ -8,6 +8,7 @@ import {createPostgresAdmittedRunOwner} from './admitted-run-owner.mjs';
 import {parseAdmittedGrantSet} from './admitted-run-binding.mjs';
 import {digest,same} from './tool-budget-binding.mjs';
 import {refuse} from './postgres-budget-store.mjs';
+import {PRODUCT_MAX_INPUT_TOKENS,PRODUCT_MAX_OUTPUT_TOKENS} from '../model-proxy/product-envelope.mjs';
 
 const slot=/^[A-Za-z0-9_-]{1,128}$/u;
 const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u;
@@ -24,7 +25,7 @@ function pricingPin(value){
  digest(p.revision);
  positive(p.actualInputMicroUSDPerK,1_000_000_000);positive(p.reserveInputMicroUSDPerK,1_000_000_000);positive(p.outputMicroUSDPerK,1_000_000_000);
  if(p.actualInputMicroUSDPerK>p.reserveInputMicroUSDPerK)refuse('PRODUCT_MODEL_CONFIGURATION');
- positive(p.maxInputTokens,8192);positive(p.maxOutputTokens,256);
+ positive(p.maxInputTokens,PRODUCT_MAX_INPUT_TOKENS);positive(p.maxOutputTokens,PRODUCT_MAX_OUTPUT_TOKENS);
  return p;
 }
 function observation(value,selected,pricing){

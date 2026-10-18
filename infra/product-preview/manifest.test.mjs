@@ -15,7 +15,9 @@ function binding(){return {
  executionRoleArn:'arn:aws:iam::967807252336:role/MeriGreenfield-ProductPreview-Execution',
  controlTaskRoleArn:'arn:aws:iam::967807252336:role/MeriGreenfield-ProductPreview-Control',
  runtimeUser:'1000:1000',runnerSha256:b,
- network:{privateSubnetId:'subnet-1234abcd',controlSecurityGroupId:'sg-1234abcd',workerSecurityGroupId:'sg-5678abcd',runnerSecurityGroupIds:['sg-abcd1234']},
+ network:{privateSubnetIds:['subnet-0920665f91c905f01','subnet-0e38bd390f8961fef','subnet-06db79cd21239de19'],
+  controlSecurityGroupIds:['sg-05a350c100574b21f','sg-0c3da023e9e8fb292','sg-0d5b5286baf28242e'],
+  workerSecurityGroupIds:['sg-00111cd0e475badfa','sg-0c3da023e9e8fb292'],runnerSecurityGroupIds:['sg-abcd1234']},
  sizing:{control:{cpu:512,memoryMiB:1024,ephemeralStorageGiB:21},temporalWorker:{cpu:512,memoryMiB:1024,ephemeralStorageGiB:21},runner:{cpu:1024,memoryMiB:2048,ephemeralStorageGiB:50}}
 };}
 const byType=(template,type)=>Object.values(template.Resources).filter(r=>r.Type===type).map(r=>r.Properties);
@@ -58,15 +60,65 @@ test('offline source has only two stopped services and three immutable role task
   {Name:'MERI_POSTSTART_CA_BASE64',Value:input.runnerPoststart.controlCaBase64},
   {Name:'MERI_POSTSTART_CA_SHA256',Value:input.runnerPoststart.controlCaSha256}]);
  assert.equal(template.Outputs.RunnerClusterArn.Value,input.clusterArn);
- assert.equal(template.Outputs.RunnerPrivateSubnetId.Value,input.network.privateSubnetId);
+ // The runner request names exactly one subnet (control nativeCandidate.taskRequest); the output is the first.
+ assert.equal(template.Outputs.RunnerPrivateSubnetId.Value,input.network.privateSubnetIds[0]);
  assert.equal(template.Outputs.RunnerSecurityGroupIds.Value,input.network.runnerSecurityGroupIds.join(','));
  for(const service of services){
   assert.equal(service.DesiredCount,0);assert.equal(service.EnableExecuteCommand,false);
   assert.equal(service.Cluster,input.clusterArn);assert.equal(service.NetworkConfiguration.AwsvpcConfiguration.AssignPublicIp,'DISABLED');
-  assert.deepEqual(service.NetworkConfiguration.AwsvpcConfiguration.Subnets,[input.network.privateSubnetId]);
-  assert.equal(service.LoadBalancers,undefined);
+  assert.deepEqual(service.NetworkConfiguration.AwsvpcConfiguration.Subnets,input.network.privateSubnetIds);
+  assert.equal(service.LoadBalancers,undefined);assert.equal(service.ServiceRegistries,undefined);
  }
+ const groups=name=>services.find(s=>s.ServiceName===`meri-product-preview-${name}`).NetworkConfiguration.AwsvpcConfiguration.SecurityGroups;
+ assert.deepEqual(groups('control'),input.network.controlSecurityGroupIds);
+ assert.deepEqual(groups('temporal-worker'),input.network.workerSecurityGroupIds);
  assert(!services.some(s=>s.ServiceName.includes('runner')));
+});
+
+test('network lists are used verbatim per service: 1-3 distinct subnets and 1-5 distinct groups per role',()=>{
+ const input=binding();
+ input.network.privateSubnetIds=['subnet-0e38bd390f8961fef'];
+ input.network.controlSecurityGroupIds=['sg-00000001','sg-00000002','sg-00000003','sg-00000004','sg-00000005'];
+ input.network.workerSecurityGroupIds=['sg-00111cd0e475badfa'];
+ const template=synthesizeProductPreview(input),services=byType(template,'AWS::ECS::Service');
+ const vpc=name=>services.find(s=>s.ServiceName===`meri-product-preview-${name}`).NetworkConfiguration.AwsvpcConfiguration;
+ for(const name of ['control','temporal-worker'])assert.deepEqual(vpc(name).Subnets,['subnet-0e38bd390f8961fef']);
+ assert.deepEqual(vpc('control').SecurityGroups,input.network.controlSecurityGroupIds);
+ assert.deepEqual(vpc('temporal-worker').SecurityGroups,['sg-00111cd0e475badfa']);
+ assert.equal(template.Outputs.RunnerPrivateSubnetId.Value,'subnet-0e38bd390f8961fef');
+ const variants=[
+  x=>{delete x.network.privateSubnetIds;},
+  x=>{x.network.privateSubnetId='subnet-0920665f91c905f01';},
+  x=>{x.network.controlSecurityGroupId='sg-05a350c100574b21f';},
+  x=>{x.network.privateSubnetIds=[];},
+  x=>{x.network.privateSubnetIds='subnet-0920665f91c905f01';},
+  x=>{x.network.privateSubnetIds=['subnet-0920665f91c905f01','subnet-0920665f91c905f01'];},
+  x=>{x.network.privateSubnetIds=['subnet-00000001','subnet-00000002','subnet-00000003','subnet-00000004'];},
+  x=>{x.network.privateSubnetIds=['sg-0920665f91c905f01'];},
+  x=>{x.network.controlSecurityGroupIds=[];},
+  x=>{x.network.workerSecurityGroupIds=[];},
+  x=>{delete x.network.workerSecurityGroupIds;},
+  x=>{x.network.controlSecurityGroupIds=['sg-05a350c100574b21f','sg-05a350c100574b21f'];},
+  x=>{x.network.workerSecurityGroupIds=['sg-00000001','sg-00000002','sg-00000003','sg-00000004','sg-00000005','sg-00000006'];},
+  x=>{x.network.workerSecurityGroupIds=['subnet-00111cd0e475badfa'];},
+  x=>{x.network.workerSecurityGroupIds=[...x.network.controlSecurityGroupIds].reverse();},
+  x=>{x.network.runnerSecurityGroupIds=['sg-abcd1234','sg-abcd1234'];},
+  x=>{x.network.serviceRegistryArn='arn:aws:servicediscovery:us-east-1:967807252336:service/srv-dzaxdlxlpxxbxpef';}
+ ];
+ for(const change of variants){const x=binding();change(x);assert.throws(()=>synthesizeProductPreview(x),/PRODUCT_PREVIEW_BINDING_REFUSED/);}
+ for(const key of ['controlServiceRegistryArn','serviceRegistryArn']){
+  const x=binding();x[key]='arn:aws:servicediscovery:us-east-1:967807252336:service/srv-dzaxdlxlpxxbxpef';
+  assert.throws(()=>synthesizeProductPreview(x),/PRODUCT_PREVIEW_BINDING_REFUSED/);
+ }
+});
+
+test('before Stage 6 only the internal 8082 target group attaches; the public 8080 target group stays optional',()=>{
+ const input=binding();
+ input.controlPrivateTargetGroupArn='arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/meri-preview-control-8082/1732509ee5fbf759';
+ const services=byType(synthesizeProductPreview(input),'AWS::ECS::Service'),control=services.find(s=>s.ServiceName==='meri-product-preview-control');
+ assert.deepEqual(control.LoadBalancers,[{ContainerName:'control',ContainerPort:8082,TargetGroupArn:input.controlPrivateTargetGroupArn}]);
+ assert.equal(control.ServiceRegistries,undefined);
+ assert.equal(services.find(s=>s.ServiceName==='meri-product-preview-temporal-worker').LoadBalancers,undefined);
 });
 
 test('two distinct reviewed control target groups attach to separate public and private control ports',()=>{
@@ -144,11 +196,41 @@ test('missing inventory, foreign refs, runnable state and claimed material deliv
   x=>{x.materialDelivery='unmounted';},
   x=>{x.materialDelivery='ready';},
   x=>{x.network.runnerSecurityGroupIds=[];},
-  x=>{x.network.privateSubnetId='subnet-foreign';},
+  x=>{x.network.privateSubnetIds=['subnet-foreign'];},
   x=>{x.controlTargetGroupArn='arn:aws:elasticloadbalancing:us-west-2:967807252336:targetgroup/meri-product-preview/1234567890abcdef';},
   x=>{x.controlTargetGroupArn='arn:aws:elasticloadbalancing:us-east-1:000000000000:targetgroup/foreign/1234567890abcdef';},
   x=>{x.controlPrivateTargetGroupArn='arn:aws:elasticloadbalancing:us-west-2:967807252336:targetgroup/foreign/1234567890abcdef';},
   x=>{x.controlTargetGroupArn='arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/meri-preview/1234567890abcdef';x.controlPrivateTargetGroupArn=x.controlTargetGroupArn;}
  ];
  for(const change of variants){const x=binding();change(x);assert.throws(()=>synthesizeProductPreview(x),/PRODUCT_PREVIEW_BINDING_REFUSED/);}
+});
+
+test('per-role execution roles and log groups: each task definition gets its own role and awslogs group',()=>{
+ const input=binding();delete input.executionRoleArn;delete input.logGroupName;
+ input.executionRoleArns={control:'arn:aws:iam::967807252336:role/MeriPreview-control-execution',
+  temporalWorker:'arn:aws:iam::967807252336:role/MeriPreview-worker-execution',runner:'arn:aws:iam::967807252336:role/MeriPreview-runner-execution'};
+ input.logGroupNames={control:'/meri/product-preview/control',temporalWorker:'/meri/product-preview/worker',runner:'/meri/product-preview/runner'};
+ const template=synthesizeProductPreview(input),tasks=byType(template,'AWS::ECS::TaskDefinition');
+ for(const [role,family] of [['control','control'],['temporalWorker','temporal-worker'],['runner','runner']]){
+  const task=byFamily(tasks,family);
+  assert.equal(task.ExecutionRoleArn,input.executionRoleArns[role]);
+  for(const container of task.ContainerDefinitions)assert.equal(container.LogConfiguration.Options['awslogs-group'],input.logGroupNames[role]);
+ }
+ assert.deepEqual(Object.keys(template.Outputs).filter(k=>k.endsWith('TaskDefinitionArn')).sort(),['ControlTaskDefinitionArn','RunnerTaskDefinitionArn','TemporalWorkerTaskDefinitionArn']);
+ const variants=[
+  x=>{x.executionRoleArn=x.executionRoleArns.control;},
+  x=>{x.logGroupName='/meri/product-preview/control';},
+  x=>{delete x.executionRoleArns;},
+  x=>{delete x.logGroupNames;},
+  x=>{delete x.executionRoleArns.runner;},
+  x=>{x.executionRoleArns.extra=x.executionRoleArns.runner;},
+  x=>{x.executionRoleArns.runner=x.executionRoleArns.control;},
+  x=>{x.executionRoleArns.temporalWorker=x.controlTaskRoleArn;},
+  x=>{x.executionRoleArns.runner='arn:aws:iam::000000000000:role/MeriPreview-runner-execution';},
+  x=>{x.logGroupNames.runner=x.logGroupNames.temporalWorker;},
+  x=>{x.logGroupNames.control='meri/product-preview/control';},
+  x=>{x.logGroupNames=['/a','/b','/c'];}
+ ];
+ for(const change of variants){const x=structuredClone(input);change(x);assert.throws(()=>synthesizeProductPreview(x),/PRODUCT_PREVIEW_BINDING_REFUSED/);}
+ const legacy=binding();legacy.executionRoleArn=legacy.controlTaskRoleArn;assert.throws(()=>synthesizeProductPreview(legacy),/PRODUCT_PREVIEW_BINDING_REFUSED/);
 });

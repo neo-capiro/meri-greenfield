@@ -53,19 +53,34 @@ class _HandlerHolder:
     success: bool = False
 
 
-def create_product_litellm_invoker(*, native_app, litellm_module, callback_base):
+def create_product_litellm_invoker(*, native_app, litellm_module, callback_base, native_baseline_types=(),
+                                   native_lifespan_types=()):
     """Register one hook and return an ASGI invoker for the canonical host.
 
     The calling startup must import the *pinned* LiteLLM 1.104.2 module and
     ``litellm.proxy.proxy_server.app``, run the native lifespan/auth setup,
     and prove that this registered hook is on its selected deployment path.
     This source does not replace upstream auth, router or provider selection.
+
+    ``native_baseline_types`` names the exact classes the pinned native import
+    registers before this hook (each once, in order). ``native_lifespan_types``
+    names the exact classes the pinned native lifespan may append after it (each
+    at most once). Anything else refuses; native hooks' effects on a request are
+    still subject to the host's final-request admission.
     """
     if (not callable(native_app) or type(callback_base) is not type
             or not callable(getattr(callback_base, "async_pre_call_deployment_hook", None))
             or type(getattr(litellm_module, "callbacks", None)) is not list
-            or litellm_module.callbacks):
+            or type(native_baseline_types) is not tuple
+            or not all(type(t) is type for t in native_baseline_types)
+            or len(set(native_baseline_types)) != len(native_baseline_types)
+            or type(native_lifespan_types) is not tuple
+            or not all(type(t) is type for t in native_lifespan_types)
+            or len(set(native_lifespan_types)) != len(native_lifespan_types)
+            or set(native_lifespan_types) & set(native_baseline_types)
+            or [type(c) for c in litellm_module.callbacks] != list(native_baseline_types)):
         _deny()
+    baseline = tuple(litellm_module.callbacks)
 
     class ProductDeploymentHook(callback_base):
         async def async_pre_call_deployment_hook(self, kwargs, call_type):
@@ -80,10 +95,18 @@ def create_product_litellm_invoker(*, native_app, litellm_module, callback_base)
     callback = ProductDeploymentHook()
     litellm_module.callbacks.append(callback)
 
+    lifespan_allowed = frozenset(native_lifespan_types)
+
     def registration_current():
-        return (type(litellm_module.callbacks) is list
-                and len(litellm_module.callbacks) == 1
-                and litellm_module.callbacks[0] is callback)
+        current = litellm_module.callbacks
+        if type(current) is not list or len(current) < len(baseline) + 1:
+            return False
+        tail = current[len(baseline) + 1:]
+        tail_types = [type(c) for c in tail]
+        return (all(current[i] is baseline[i] for i in range(len(baseline)))
+                and current[len(baseline)] is callback
+                and all(t in lifespan_allowed for t in tail_types)
+                and len(set(tail_types)) == len(tail_types))
 
     async def invoke(handler, scope, receive, send):
         evidence = getattr(handler, "_product_native_dispatch_evidence", None)
@@ -142,13 +165,29 @@ def load_pinned_product_litellm_invoker():
         module = import_module("litellm")
         native = import_module("litellm.proxy.proxy_server")
         logger = import_module("litellm.integrations.custom_logger")
+        limiter = import_module("litellm.proxy.hooks.model_max_budget_limiter")
+        # Exact native hooks the pinned 1.104.2 lifespan appends after this hook.
+        lifespan = tuple(getattr(import_module(module_name), class_name) for module_name, class_name in (
+            ("litellm.proxy.hooks.parallel_request_limiter_v3", "_PROXY_MaxParallelRequestsHandler_v3"),
+            ("litellm.proxy.hooks.cache_control_check", "_PROXY_CacheControlCheck"),
+            ("litellm.proxy.hooks.responses_id_security", "ResponsesIDSecurity"),
+            ("litellm.proxy.hooks.litellm_skills.main", "SkillsInjectionHook"),
+            ("litellm.proxy.hooks.max_iterations_limiter", "_PROXY_MaxIterationsHandler"),
+            ("litellm.proxy.hooks.max_budget_per_session_limiter", "_PROXY_MaxBudgetPerSessionHandler"),
+            ("litellm.proxy.hooks.sensitive_data_routing", "_PROXY_SensitiveDataRoutingHandler"),
+            ("litellm.proxy.hooks.prompt_cache_prediction", "PromptCacheObserver"),
+            ("litellm._service_logger", "ServiceLogging")))
         if (getattr(module, "__name__", None) != "litellm"
                 or getattr(native, "__name__", None) != "litellm.proxy.proxy_server"
-                or getattr(logger, "__name__", None) != "litellm.integrations.custom_logger"):
+                or getattr(logger, "__name__", None) != "litellm.integrations.custom_logger"
+                or getattr(limiter, "__name__", None) != "litellm.proxy.hooks.model_max_budget_limiter"):
             _deny()
+        # Pinned 1.104.2 registers exactly this native limiter when proxy_server is imported.
         return create_product_litellm_invoker(
             native_app=native.app, litellm_module=module,
-            callback_base=logger.CustomLogger)
+            callback_base=logger.CustomLogger,
+            native_baseline_types=(limiter._PROXY_VirtualKeyModelMaxBudgetLimiter,),
+            native_lifespan_types=lifespan)
     except StateDenied:
         raise
     except Exception:

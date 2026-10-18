@@ -1,0 +1,8 @@
+{
+ "proxy": "a503a2bd61ed49f1b0089a8cc5d7f260503dfa5dd5a76592d99e2b74e2885ace",
+ "nodeRuntime": "a83a96788c3feeac33e2c244bf4865be6ce567ff485fe03ebf2b17b8139ea784",
+ "_receipts": {
+  "proxy": "infra/product-preview/first-chat/b7-build-receipt.json",
+  "nodeRuntime": "infra/product-preview/first-chat/n12-build-receipt.json"
+ }
+}

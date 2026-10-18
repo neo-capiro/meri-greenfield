@@ -33,18 +33,38 @@ async def _send(_event):
 
 class NativeCallbackTests(unittest.IsolatedAsyncioTestCase):
     async def test_pinned_loader_uses_only_real_module_names(self):
-        module = SimpleNamespace(__name__="litellm", callbacks=[])
+        # Real 1.104.2 registers its native model-budget limiter when proxy_server is imported.
+        class _Limiter:
+            pass
+        module = SimpleNamespace(__name__="litellm", callbacks=[_Limiter()])
         native = SimpleNamespace(__name__="litellm.proxy.proxy_server",
                                  app=lambda *_args: None)
         logger = SimpleNamespace(__name__="litellm.integrations.custom_logger",
                                  CustomLogger=_CustomLogger)
-        imported = {item.__name__: item for item in (module, native, logger)}
+        limiter = SimpleNamespace(__name__="litellm.proxy.hooks.model_max_budget_limiter",
+                                  _PROXY_VirtualKeyModelMaxBudgetLimiter=_Limiter)
+        lifespan_names = (
+            ("litellm.proxy.hooks.parallel_request_limiter_v3", "_PROXY_MaxParallelRequestsHandler_v3"),
+            ("litellm.proxy.hooks.cache_control_check", "_PROXY_CacheControlCheck"),
+            ("litellm.proxy.hooks.responses_id_security", "ResponsesIDSecurity"),
+            ("litellm.proxy.hooks.litellm_skills.main", "SkillsInjectionHook"),
+            ("litellm.proxy.hooks.max_iterations_limiter", "_PROXY_MaxIterationsHandler"),
+            ("litellm.proxy.hooks.max_budget_per_session_limiter", "_PROXY_MaxBudgetPerSessionHandler"),
+            ("litellm.proxy.hooks.sensitive_data_routing", "_PROXY_SensitiveDataRoutingHandler"),
+            ("litellm.proxy.hooks.prompt_cache_prediction", "PromptCacheObserver"),
+            ("litellm._service_logger", "ServiceLogging"))
+        lifespan_modules = [SimpleNamespace(__name__=m, **{c: type(c, (), {})}) for m, c in lifespan_names]
+        imported = {item.__name__: item for item in (module, native, logger, limiter, *lifespan_modules)}
         with (patch.object(product.metadata, "version", return_value="1.104.2") as version,
               patch.object(product, "import_module", side_effect=imported.__getitem__)):
             invoke = product.load_pinned_product_litellm_invoker()
         self.assertTrue(callable(invoke))
-        self.assertEqual(len(module.callbacks), 1)
+        self.assertEqual(len(module.callbacks), 2)
+        self.assertIs(type(module.callbacks[0]), _Limiter)
         version.assert_called_once_with("litellm")
+        # The pinned native lifespan appends its hooks after ours; registration stays current.
+        module.callbacks.extend(getattr(m, c)() for m, (_, c) in zip(lifespan_modules, lifespan_names))
+        self.assertTrue(invoke.registration_current())
 
         wrong = SimpleNamespace(__name__="not-litellm", callbacks=[])
         imported["litellm"] = wrong
@@ -52,6 +72,53 @@ class NativeCallbackTests(unittest.IsolatedAsyncioTestCase):
               patch.object(product, "import_module", side_effect=imported.__getitem__)):
             with self.assertRaisesRegex(Exception, "PRODUCT_NATIVE_LITELLM_REFUSED"):
                 product.load_pinned_product_litellm_invoker()
+
+    async def test_native_baseline_is_exact_and_registration_detects_drift(self):
+        class _Limiter:
+            pass
+        class _Other:
+            pass
+        app = lambda *_args: None
+        for callbacks in ([_Other()], [_Limiter(), _Limiter()], [_Limiter(), _Other()], []):
+            with self.subTest(callbacks=[type(c).__name__ for c in callbacks]):
+                module = SimpleNamespace(callbacks=list(callbacks))
+                with self.assertRaisesRegex(Exception, "PRODUCT_NATIVE_LITELLM_REFUSED"):
+                    product.create_product_litellm_invoker(native_app=app, litellm_module=module,
+                        callback_base=_CustomLogger, native_baseline_types=(_Limiter,))
+        for bad in ([_Limiter], (_Limiter, _Limiter), (_Limiter()),):
+            with self.assertRaisesRegex(Exception, "PRODUCT_NATIVE_LITELLM_REFUSED"):
+                product.create_product_litellm_invoker(native_app=app, litellm_module=SimpleNamespace(callbacks=[_Limiter()]),
+                    callback_base=_CustomLogger, native_baseline_types=bad)
+        base = _Limiter(); module = SimpleNamespace(callbacks=[base])
+        invoke = product.create_product_litellm_invoker(native_app=app, litellm_module=module,
+            callback_base=_CustomLogger, native_baseline_types=(_Limiter,))
+        hook = module.callbacks[1]
+        for drift in ([base, hook, _Other()], [hook], [_Limiter(), hook], [base]):
+            module.callbacks[:] = drift
+            with self.assertRaisesRegex(Exception, "PRODUCT_NATIVE_LITELLM_REFUSED"):
+                await invoke(_Handler(), _scope(), lambda: None, _send)
+        module.callbacks[:] = [base, hook]
+
+    async def test_lifespan_hooks_are_an_exact_allowlist(self):
+        class _Limiter: pass
+        class _A: pass
+        class _B: pass
+        class _Other: pass
+        app = lambda *_args: None
+        base = _Limiter(); module = SimpleNamespace(callbacks=[base])
+        invoke = product.create_product_litellm_invoker(native_app=app, litellm_module=module,
+            callback_base=_CustomLogger, native_baseline_types=(_Limiter,), native_lifespan_types=(_A, _B))
+        hook = module.callbacks[1]
+        for good in ([base, hook], [base, hook, _A()], [base, hook, _B(), _A()]):
+            module.callbacks[:] = good
+            self.assertTrue(invoke.registration_current())
+        for bad in ([base, hook, _Other()], [base, hook, _A(), _A()], [base, _A(), hook], [hook, base], [base, hook, hook]):
+            module.callbacks[:] = bad
+            self.assertFalse(invoke.registration_current())
+        for overlap in ((_Limiter,), (_A, _A), [_A]):
+            with self.assertRaisesRegex(Exception, "PRODUCT_NATIVE_LITELLM_REFUSED"):
+                product.create_product_litellm_invoker(native_app=app, litellm_module=SimpleNamespace(callbacks=[_Limiter()]),
+                    callback_base=_CustomLogger, native_baseline_types=(_Limiter,), native_lifespan_types=overlap)
 
     async def test_wrong_distribution_refuses_before_import(self):
         with (patch.object(product.metadata, "version", return_value="1.104.1"),
