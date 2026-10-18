@@ -3,6 +3,7 @@ import {Pool} from 'pg';
 import {Connection,Client} from '@temporalio/client';
 import {createPostgresConversationStore} from '../control/conversations/postgres-store.mjs';
 import {createConversationService} from '../control/conversations/service.mjs';
+import {createRunAllocationBudgetReader} from '../gateway/budget/run-allocation-budgets.mjs';
 import {createConversationApplication} from '../control/conversations/http.mjs';
 import {createTemporalConversationDispatcher} from '../control/conversations/temporal-dispatch.mjs';
 import {createActionSessionOwner} from '../control/action-host/session/owner.mjs';
@@ -102,7 +103,9 @@ export function assembleControl(options){
  if(productContext)bindApprovalSessions(productContext,sessions);
  const dispatcher=createTemporalConversationDispatcher({client,taskQueue:configuration.temporal.taskQueue,lifecycle:true,now,maxRequestMs:configuration.limits.requestMs});
  const capabilityPolicy=configuration.capabilityPlatform===undefined?undefined:createConfiguredRunCapabilityPolicy(configuration);
- const basic=createConversationService({sessions,store,dispatcher,versions:configuration.versions,now,maxRequestMs:configuration.limits.requestMs,...(capabilityPolicy?{capabilityPolicy}:{}),...(ports.selectedSkillAdmission?{selectedSkillAdmission:ports.selectedSkillAdmission}:{}),...(ports.selectedOutputPublication?{selectedOutputPublication:ports.selectedOutputPublication}:{}),...(retention?{retention:retention.gate}:{})});
+ // #153: the worker's early read ledger follows the run's admitted allocation budgets, read from this control's own pool (read-only).
+ const runBudgets=createRunAllocationBudgetReader({pool,namespace:'product',now,maxRequestMs:Math.min(configuration.limits.requestMs,3000)});
+ const basic=createConversationService({sessions,store,dispatcher,versions:configuration.versions,now,maxRequestMs:configuration.limits.requestMs,runBudgets,...(capabilityPolicy?{capabilityPolicy}:{}),...(ports.selectedSkillAdmission?{selectedSkillAdmission:ports.selectedSkillAdmission}:{}),...(ports.selectedOutputPublication?{selectedOutputPublication:ports.selectedOutputPublication}:{}),...(retention?{retention:retention.gate}:{})});
  const port=operation=>({signal,...input})=>native.call(operation,input,{signal});
  const service=createConversationLifecycleService({service:basic,store,dispatcher,sessions,now,maxRequestMs:configuration.limits.requestMs,checkpoints:{read:port('checkpoint/read')},nativeAdmission:ports.continuationAdmission,approvals:ports.approvals});
  const conversation=createConversationLifecycleApplication({service,now,maxRequestBytes:configuration.limits.requestBytes,maxRequestMs:configuration.limits.requestMs}),input=createConversationInputApplication({service,now,maxRequestBytes:configuration.limits.requestBytes,maxRequestMs:configuration.limits.requestMs}),initialInput=createConversationInitialInputApplication({service,now,maxRequestBytes:configuration.limits.requestBytes,maxRequestMs:Math.min(configuration.limits.requestMs,conversationInitialInputMetadata.limits.maxRequestMs)}),issuance=createActionSessionApplication({owner:sessions,now,maxRequestMs:configuration.limits.requestMs}),worker=createWorkerRunApplication({service:telemetry?telemetry.observeRunOwner(service):service,sessions,native,configuration,now});
