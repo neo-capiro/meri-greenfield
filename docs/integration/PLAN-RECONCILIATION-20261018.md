@@ -2,6 +2,8 @@
 
 Owner: Fable R0. Companion to `RUNTIME-INTEGRATION-LEDGER.md` (families, gates, defects), `DEPLOYMENT-PACKET-20261018.md` (deployment) and `docs/coordination/DECISIONS.md` (D015, D016, D016-A). Updated at every lane merge. §6 is the single remaining-work list.
 
+**Dot successor correction, 18 Oct:** `DOT-SOURCE-INTEGRATION-20261018.md` records the current source and unresolved gates. Neo approved the launch split after the open §4 item 3 below was written: critical functional, desktop, accessibility, security, isolation, cancellation/recovery and rollback checks precede launch; the larger labelled corpus and long benchmark program follow as explicitly tracked post-launch evidence. The old "Open" wording in §4 item 3 is historical, not a pending decision. A separate coherent chat-ready diagnostic run may precede completion of other lanes, but does not declare desktop v1 or production cutover complete. Browser/Bash remains in scope and held until its host and sandbox proof exists. No source-disabled capability advances to integrated or qualified on this basis.
+
 ## 0. Plans and versions used
 
 | Document | Pin | Role |

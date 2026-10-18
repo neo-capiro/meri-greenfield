@@ -16,7 +16,8 @@ const material=value=>brotliCompressSync(Buffer.from(typeof value==='string'?val
 const state={composer:[],returned:[],control:[],secrets:[],bytes:material(MEASUREMENT)};
 mock.module('../config.mjs',{namedExports:{...configurationModule,async readSecret(path){state.secrets.push(path);return Buffer.from(state.bytes);}}});
 mock.module('../read-credential-relay.mjs',{namedExports:{createReadCredentialRelay(){return {port:{nativeCredentialFor(){throw Error('not reached');}}};}}});
-mock.module('../native-authority/reads-composer.mjs',{namedExports:{async createControlReadsComposer(options){state.composer.push(options);const composed={createReadsRuntime(){},familyIds:Object.freeze([]),missing:Object.freeze([])};state.returned.push(composed);return composed;}}});
+mock.module('../native-authority/reads-composer.mjs',{namedExports:{async createControlReadsComposer(options){state.composer.push(options);const composed={createReadsRuntime(){},familyIds:Object.freeze([]),missing:Object.freeze([]),
+ ...(options.delegation?.enabled?{readDelegation:{runOptions:{async stopRun(){return {stopped:false,revoked:false};}}}}:{})};state.returned.push(composed);return composed;}}});
 mock.module('../control.mjs',{namedExports:{async startControl(configuration,ports){state.control.push(ports);return {address:{port:0},completion:Promise.resolve(),async close(){}};}}});
 const {main}=await import('../cli.mjs');
 
@@ -39,8 +40,9 @@ test('cli passes exactly installation {enabled, measurement, measurementSha256, 
  const r=await start({enabled:true,serviceSecretFile:SERVICE,installation:{enabled:true,measurementSha256:PIN,measurementFile:FILE,revokedOperations:[OP]},discovery:{enabled:true}},{capabilityPlatform:PROPOSED_PREVIEW_CAPABILITY_PLATFORM});
  assert.equal(r.code,0,r.err);assert.match(r.out,/runtime\.listening/u);assert.equal(r.composer.length,1);
  const o=r.composer[0];
- assert.deepEqual(Object.keys(o),['configuration','secretFiles','nativeCredentials','installation','discovery']);
+ assert.deepEqual(Object.keys(o),['configuration','secretFiles','nativeCredentials','gateway','installation','discovery']);
  assert.deepEqual(o.secretFiles,{serviceSecret:SERVICE});assert.equal(typeof o.nativeCredentials.nativeCredentialFor,'function');
+ assert.equal(typeof o.gateway.authority.identify,'function');assert.equal(typeof o.gateway.authority.check,'function');assert.equal(typeof o.gateway.limits.maxRequestMs,'number');
  assert.deepEqual(o.installation,{enabled:true,measurement:MEASUREMENT,measurementSha256:PIN,revokedOperations:[OP]});
  assert.deepEqual(Object.keys(o.discovery),['enabled','capabilityPolicy']);assert.equal(o.discovery.enabled,true);
  assert.equal(typeof o.discovery.capabilityPolicy.forRun,'function');
@@ -53,9 +55,17 @@ test('disabled installation and discovery pass their toggles only; absent blocks
  const off=await start({enabled:true,serviceSecretFile:SERVICE,installation:{enabled:false},discovery:{enabled:false}});
  assert.equal(off.code,0,off.err);assert.deepEqual(off.composer[0].installation,{enabled:false});assert.deepEqual(off.composer[0].discovery,{enabled:false});assert.deepEqual(off.secrets,[]);
  const plain=await start({enabled:true,serviceSecretFile:SERVICE,defaultCongress:119});
- assert.equal(plain.code,0,plain.err);assert.deepEqual(Object.keys(plain.composer[0]),['configuration','secretFiles','nativeCredentials','defaultCongress']);assert.deepEqual(plain.secrets,[]);
+ assert.equal(plain.code,0,plain.err);assert.deepEqual(Object.keys(plain.composer[0]),['configuration','secretFiles','nativeCredentials','gateway','defaultCongress']);assert.deepEqual(plain.secrets,[]);
  const refused=await start({enabled:true,serviceSecretFile:SERVICE,discovery:{enabled:true}});
  assert.equal(refused.code,2);assert.equal(refused.err,'RUNTIME_CONFIGURATION\n');assert.equal(refused.composer.length,0);
+});
+
+test('enabled read delegation passes its run stop hook to control without invoking it during startup',async()=>{
+ const r=await start({enabled:true,serviceSecretFile:SERVICE,delegation:{enabled:true}});
+ assert.equal(r.code,0,r.err);
+ assert.equal(r.composer.length,1);
+ assert.equal(typeof state.control.at(-1).readDelegationRunOptions.stopRun,'function');
+ assert.equal(state.control.at(-1).readDelegationRunOptions,state.returned.at(-1).readDelegation.runOptions);
 });
 
 test('fail closed: material bytes that do not hash to the pin, are not brotli JSON, or do not match the pin stop startup before the composer',async()=>{

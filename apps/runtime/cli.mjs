@@ -35,7 +35,7 @@ export async function main(argv=process.argv.slice(2),{poststartTls,nativeFetch}
   const [file,start]={control:['./control.mjs','startControl'],'temporal-worker':['./temporal-worker.mjs','startTemporalWorker'],'schedule-worker':['./schedule-service.mjs','startScheduleWorker']}[role];
   const module=await import(file);
   // Control receives the production product-port composition (G4); the other roles take no product ports.
-  let productPorts={};
+  let productPorts={},routinesOwners=null,readDelegationConsents;
   // The live-session relay (RC1 option A) serves reads and the memory run path; startControl binds it to its own session owner.
   const relay=role==='control'?(await import('./read-credential-relay.mjs')).createReadCredentialRelay():null;
   let authority=null;
@@ -60,7 +60,7 @@ export async function main(argv=process.argv.slice(2),{poststartTls,nativeFetch}
    authority=c.nativeCandidate===undefined?null:createControlCurrentAuthority({configuration:c,readSecret,nativeCredentials:relay.port});
    const execution=createControlIntentExecution({readSecret,...(authority?{owners:authority.owners}:{})});
    const intents=authority?context=>{authority.bind(context);return execution.family(context);}:execution.family;
-   productPorts={productPortsFactory:createProductPortsFactory({families:PRODUCT_FAMILIES.map(([name,factory])=>[name,name==='documents'?documents.family:name==='intents'?intents:name==='memory'?memoryFamily:factory])}),intentMountFor:execution.intentMountFor,...(relay?{readCredentialRelay:relay}:{}),...(occurrences?{occurrenceRelay:occurrences}:{}),...(documents.runOptions?{documentsRunOptions:documents.runOptions}:{})};
+   productPorts={productPortsFactory:createProductPortsFactory({families:PRODUCT_FAMILIES.map(([name,factory])=>[name,name==='documents'?documents.family:name==='intents'?intents:name==='memory'?memoryFamily:name==='routines'?context=>routinesOwners?.family(context)??factory(context):factory])}),intentMountFor:execution.intentMountFor,...(relay?{readCredentialRelay:relay}:{}),...(occurrences?{occurrenceRelay:occurrences}:{}),...(documents.runOptions?{documentsRunOptions:documents.runOptions}:{})};
   }
   // General reads (lane 2), only when declared: the composer is built before control (it prepares and measures handlers) and
   // gets the live-session relay, which startControl binds to this control's own action-session owner (RC1 option A).
@@ -79,7 +79,13 @@ export async function main(argv=process.argv.slice(2),{poststartTls,nativeFetch}
    if(c.reads.discovery!==undefined)discovery=c.reads.discovery.enabled===true&&c.capabilityPlatform!==undefined?{enabled:true,capabilityPolicy:(await import('./product-ports/capability-policy.mjs')).createConfiguredRunCapabilityPolicy(c)}:{enabled:false};
    const reads=await createControlReadsComposer({configuration:c,secretFiles:{serviceSecret:c.reads.serviceSecretFile,...(c.reads.readModeServiceSecretFile===undefined?{}:{readModeServiceSecret:c.reads.readModeServiceSecretFile})},nativeCredentials:relay.port,...(authority?{gateway:{authority:authority.gateway.authority,limits:authority.gateway.limits}}:{}),...(c.reads.delegation===undefined?{}:{delegation:{enabled:c.reads.delegation.enabled===true,readOccurrence:occurrences.port.readOccurrence}}),...(c.reads.defaultCongress===undefined?{}:{defaultCongress:c.reads.defaultCongress}),...(installation===undefined?{}:{installation}),...(discovery===undefined?{}:{discovery})});
    if(reads.missing.length)process.stderr.write(JSON.stringify({event:'runtime.reads.unavailable',missing:reads.missing})+'\n');
-   Object.assign(productPorts,{createReadsRuntime:reads.createReadsRuntime});
+   Object.assign(productPorts,{createReadsRuntime:reads.createReadsRuntime,...(reads.readDelegation?.runOptions?{readDelegationRunOptions:reads.readDelegation.runOptions}:{})});
+   readDelegationConsents=reads.readDelegation?.consents;
+  }
+  if(role==='control'&&c.routines?.enabled===true){
+   const {createAttendedRoutinesOwnerComposition}=await import('./native-authority/routines-owner-composition.mjs');
+   routinesOwners=createAttendedRoutinesOwnerComposition({configuration:c,workflow:c.routines.workflow,readConsents:readDelegationConsents});
+   productPorts.routinesCandidateBinder=candidate=>{routinesOwners.bindCandidate(candidate);if(routinesOwners.state()==='owners-unavailable')process.stderr.write(JSON.stringify({event:'runtime.routines.attended.unavailable'})+'\n');};
   }
   runtime=await module[start](c,{signal:controller.signal,...productPorts});clearTimeout(startupTimer);if(controller.signal.aborted){retire();await runtime.close();}else{process.stdout.write(JSON.stringify({event:'runtime.listening',role,address:runtime.address,profile:c.profile,...(runtime.downloads?{downloads:runtime.downloads.reason}:{})})+'\n');await Promise.race([new Promise(resolve=>controller.signal.addEventListener('abort',resolve,{once:true})),...(runtime.completion?[runtime.completion]:[])]);retire();await runtime.close();}return 0;
  }catch(error){process.stderr.write('RUNTIME_UNAVAILABLE\n');retire();controller.abort();cleanupUnknown=error?.code==='TEMPORAL_PRODUCT_CLEANUP_UNKNOWN';

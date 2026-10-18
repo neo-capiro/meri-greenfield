@@ -23,8 +23,10 @@ export const PROXY_REFUSAL_HEADER='x-meri-egress-refusal';
 const LOOPBACK=Object.freeze(['127.0.0.1','::1']);
 const HOP_BY_HOP=Object.freeze(['connection','keep-alive','proxy-connection','proxy-authenticate','proxy-authorization','te','trailer','transfer-encoding','upgrade']);
 const DEFAULT_LIMITS=Object.freeze({admitMs:10000,idleMs:120000,connectMs:10000,maxHeaderSize:16384,maxConnections:256});
+/** @param {string} code */
+const fault=code=>Object.assign(new Error(code),{code});
 /** @param {string} code @returns {never} */
-const fail=code=>{throw Object.assign(new Error(code),{code});};
+const fail=code=>{throw fault(code);};
 /** @typedef {{ok:true,connect:{address:string,port:number}}|{ok:false,code:string}} Admission */
 /** @typedef {{admitProxyRequest:(request:{method:string,target:string,headers:Record<string,unknown>},options:{signal:AbortSignal})=>Promise<Admission>,admitSocks?:(destination:{host:string,port:number},options:{signal:AbortSignal})=>Promise<Admission>,revoke?:()=>unknown}} EgressControl */
 /** @typedef {{kind:'connect'|'http'|'upgrade'|'socks',ok:boolean,code:string|null,host:string,port:number}} ProxyDecision */
@@ -89,9 +91,12 @@ export async function startEgressProxy({control,dial=dialAddress,host='127.0.0.1
  /** Dials the checked address; resolves the connected socket or rejects. @param {{address:string,port:number}} target */
  const open=target=>new Promise((resolve,reject)=>{
   let s;try{s=track(dial(target));}catch(e){reject(e);return;}
-  const timer=setTimeout(()=>{s.destroy();reject(fail('EGRESS_CONNECT_TIMEOUT'));},L.connectMs);
-  s.once('connect',()=>{clearTimeout(timer);resolve(s);});
-  s.once('error',e=>{clearTimeout(timer);reject(e);});
+  let settled=false;
+  const finish=(error)=>{if(settled)return;settled=true;clearTimeout(timer);s.off('connect',connected);s.off('error',errored);s.off('close',closed);
+   if(error){s.destroy();reject(error);}else resolve(s);};
+  const connected=()=>finish(null),errored=error=>finish(error),closed=()=>finish(fault('EGRESS_CONNECT_CLOSED'));
+  const timer=setTimeout(()=>finish(fault('EGRESS_CONNECT_TIMEOUT')),L.connectMs);
+  s.once('connect',connected);s.once('error',errored);s.once('close',closed);
  });
  /** @param {import('node:stream').Duplex} a @param {import('node:stream').Duplex} b */
  const splice=(a,b)=>{a.pipe(b);b.pipe(a);const end=()=>{a.destroy();b.destroy();};a.once('close',end);b.once('close',end);};
@@ -175,10 +180,16 @@ export async function startEgressProxy({control,dial=dialAddress,host='127.0.0.1
   if(revoked||socket.destroyed){upstream.destroy();socket.destroy();return;}
   socket.write(reply(0));const rest=reader.release();if(rest.length)upstream.write(rest);splice(socket,upstream);
  }
- /** @param {import('node:net').Server|import('node:http').Server} server @param {number} port @returns {Promise<number>} */
- const listen=(server,port)=>new Promise((resolve,reject)=>{server.once('error',reject);server.listen({host,port,exclusive:true},()=>{server.off('error',reject);resolve(/** @type {import('node:net').AddressInfo} */(server.address()).port);});});
- const ports={http:await listen(http,httpPort),...(socks?{socks:await listen(socks,/** @type {number} */(socksPort))}:{})};
  const destroyAll=()=>{for(const s of live)s.destroy();live.clear();};
+ /** @param {import('node:net').Server|import('node:http').Server} server @param {number} port @returns {Promise<number>} */
+ const listen=(server,port)=>new Promise((resolve,reject)=>{const onError=error=>{server.off('error',onError);reject(error);};server.once('error',onError);
+  try{server.listen({host,port,exclusive:true},()=>{server.off('error',onError);resolve(/** @type {import('node:net').AddressInfo} */(server.address()).port);});}
+  catch(error){server.off('error',onError);reject(error);}});
+ /** A failed second bind must not leave the first listener accepting requests. */
+ let ports;try{ports={http:await listen(http,httpPort),...(socks?{socks:await listen(socks,/** @type {number} */(socksPort))}:{})};}
+ catch(error){revoked=true;lifetime.abort();try{control.revoke?.();}catch{}destroyAll();
+  await Promise.all([http,...(socks?[socks]:[])].filter(s=>s.listening).map(s=>new Promise(resolve=>s.close(()=>resolve(undefined)))));
+  throw error;}
  /** Ends the run's egress now: later admissions refuse and every open tunnel or request is destroyed. Idempotent. */
  const revoke=()=>{revoked=true;lifetime.abort();try{control.revoke?.();}catch{}destroyAll();return Object.freeze({revoked:true});};
  /** Revokes, then stops listening and waits for both servers to close. */

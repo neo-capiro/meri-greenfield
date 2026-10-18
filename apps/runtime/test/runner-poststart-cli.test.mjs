@@ -31,3 +31,12 @@ test('a failed startup reports one constant stage and code, never a message or v
  assert.equal(await startRunnerProductTask({argv:['start'],environment,report,bootstrap:async()=>material,makeNativeFetch:async()=>{throw Object.assign(Error('x'),{code:'not constant'});},release:async()=>{}}),2);
  assert.deepEqual(reports.at(-1),['native-transport','UNKNOWN']);
 });
+test('default startup reporter emits a transport category without exception or private material',async()=>{
+ const lines=[],original=process.stderr.write;
+ process.stderr.write=chunk=>{lines.push(String(chunk));return true;};
+ try{
+  const error=Object.assign(Error('private host, token, CA and response body'),{code:'RUNNER_POSTSTART_TLS',step:'challenge',headers:{authorization:'private'}});
+  assert.equal(await startRunnerProductTask({argv:['start'],environment,bootstrap:async()=>{throw error;}}),2);
+ }finally{process.stderr.write=original;}
+ assert.deepEqual(lines,['RUNNER_STARTUP_FAILED stage=bootstrap step=challenge code=RUNNER_POSTSTART_TLS\n']);
+});

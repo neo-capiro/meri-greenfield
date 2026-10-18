@@ -54,7 +54,7 @@ export const PLAN=Object.freeze([
  ['migration','infra/product-preview/first-chat-seed-budget.sql','adfdbb8590e5c69ccf30c3cecf42bdc483a061ae6639c1db01e952389a39ff3a'],
  ['phase:meri_grants',DATABASE_SCRIPT,'c6e2b5edf6b88030c677cf326c83d8e4f17a0b413808072eae1d1dab3d8814d5'],
  ['phase:temporal_grants',TEMPORAL_SCRIPT,'2d305021ec1c66de034b07d233bb534492f5896d2ed3ff16c7118cf78520f348'],
- // Stage 'integration' (proposal, not applied: requires the owner's approval of the migration packet). The 'meri' and 'temporal'
+ // Stage 'integration' (approved by D016, not applied: snapshot first). The 'meri' and 'temporal'
  // stages stop before these entries; only an explicit `integration` run applies them, after both earlier stages are ledgered.
  ['migration','apps/control/settings/migrations/0001_settings.sql','7243fe1e45b4890fc36eeb5c96a6ec493bd92cb8572de11b8d6bae5f06d976e1','integration'],
  ['migration','apps/control/commands/migrations/0001_commands.sql','64f679e434dbc9d54d700af83357296ba3f4cb2c52e382c72e0d7c1caad7c936','integration'],
@@ -63,6 +63,7 @@ export const PLAN=Object.freeze([
  ['migration','apps/control/schedules/migrations/0001_schedule_owner.sql','bf8c593de97dcdae728765ecd90dac6696b290028d4ffb0586bdae0fe87d91c7','integration'],
  ['migration','apps/control/schedules/migrations/0002_occurrences.sql','6a8369dc45e2bc330425550583daceb706652698ebbdecee1f5a1f2202a07242','integration'],
  ['migration','apps/control/schedules/migrations/0003_run_cancel_proofs.sql','19a4694fa99acb36b55b08ca88e6d7a343944e2fd47e246638a3d5e93971a308','integration'],
+ ['migration','apps/control/schedules/migrations/0004_read_consent.sql','d57783e1a9e349d1df43e00a273db588b48a6c1b4a49279b30da8428b0ec9830','integration'],
  ['migration','apps/control/task-lookup/migrations/0001_task_lookup.sql','ae3197c4f898c5a8a493b2bee4cd6c5da16c62730ad3447e4f07ebfeaf1c100f','integration'],
  ['migration','apps/runtime/objective-source/migrations/0001_objective_custody.sql','1e22b44fcc59ae88e593f6d15f63083bdff0c3421584646fc7a357e7f67b9b34','integration'],
  // D7-4 run starts and the reader v2 JTI replay store (objective-source family; central reservation required before apply).
@@ -73,7 +74,7 @@ export const PLAN=Object.freeze([
  ['migration','apps/artifacts/migrations/0003_previews.sql','d1eb7ea68a150f60e7fb63e654a0892044bf24840a785fcff58dded59129b300','integration'],
  ['migration','apps/control/memory/migrations/0001_memory_candidates.sql','d925ec36d5e4fa98efeb123fb86f602608dbf82b2caa59bd093366e1eb33067d','integration'],
  ['migration','apps/runtime/native-authority/read-delegation/migrations/0001_read_delegation_facts.sql','bc3ec0314839d953909ffd9eda5c9235da0fbf966ff28d46e19d7e76f7702745','integration'],
- ['phase:integration_grants',INTEGRATION_SCRIPT,'ddf18d684a86bb589a8d33c40ea787471265d7d17afb1786775583ff3f172834','integration']
+ ['phase:integration_grants',INTEGRATION_SCRIPT,'2a4891d2a8cf4f0a419f983c8b62b826f57663fa8a0372f75994fb1bd9240bc6','integration']
 ].map(([kind,path,pinned,declaredStage],index)=>Object.freeze({ordinal:index+1,kind,path,pinned,
  name:kind==='migration'?path:`${path}#${kind.slice(6)}`,
  stage:declaredStage??(kind==='phase:temporal_grants'?'temporal':'meri')})));

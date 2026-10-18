@@ -64,6 +64,8 @@ GRANT SELECT ON TABLE meri_schedules.occurrences TO meri_control_runtime;
 -- Control: single-use Core cancellation-proof jti ledger (insert-before-effect; never updated or deleted).
 GRANT SELECT, INSERT ON TABLE meri_schedules.run_cancel_proofs TO meri_control_runtime;
 GRANT UPDATE (generation,projection,projection_sha256,active_intent) ON meri_schedules.projections TO meri_control_runtime;
+-- The control-owned consent lifecycle updates only its reference column (schedules 0004); Core owns consent authority.
+GRANT UPDATE (read_consent) ON meri_schedules.projections TO meri_control_runtime;
 GRANT UPDATE (state,updated_at) ON meri_schedules.intents, meri_schedules.occurrences TO meri_control_runtime;
 
 -- Control: task lookup results.

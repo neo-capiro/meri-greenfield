@@ -3,7 +3,7 @@
  * recording every dial. Nothing leaves this host: no real DNS, no external connection. */
 import test from 'node:test';import assert from 'node:assert/strict';
 import {createServer as httpServer,request as httpRequest} from 'node:http';
-import {createServer as netServer,connect} from 'node:net';
+import {createServer as netServer,connect,Socket} from 'node:net';
 import {once} from 'node:events';
 import {startEgressProxy,PROXY_REFUSAL_HEADER,dialAddress} from '../proxy-server.mjs';
 import {createBashEgressControl,startBashEgress,domainAllowed,bashEgressDomainsSha256,BASH_EGRESS_SCHEMA} from '../bash-egress.mjs';
@@ -152,4 +152,29 @@ test('the proxy listens on loopback only, dials IP literals only, and the Bash r
  assert.ok(Number.isSafeInteger(fact.httpProxyPort)&&Number.isSafeInteger(fact.socksProxyPort)&&fact.httpProxyPort!==fact.socksProxyPort);
  await assert.rejects(startBashEgress({domains:[],expiresAtMs:clock()+1}),e=>e.code==='BASH_EGRESS_CONFIGURATION','an empty list starts no proxy: the sandbox then has no network');
  assert.throws(()=>createBashEgressControl({domains:['10.0.0.1'],resolve:async()=>[],now:clock,expiresAtMs:1}),e=>e.code==='BASH_EGRESS_CONFIGURATION');
+});
+
+test('a stalled or failed upstream connect returns a refusal and leaves no late timeout crash',async t=>{
+ const control=createBashEgressControl({domains:['records.example'],resolve:async()=>['93.184.215.14'],now:clock,expiresAtMs:clock()+60000});
+ let stalled;
+ const proxy=await startEgressProxy({control,dial:()=>{stalled=new Socket();return stalled;},limits:{connectMs:20,admitMs:1000,idleMs:1000}});
+ t.after(()=>proxy.close());
+ const response=await tunnel(proxy,'records.example:443');
+ assert.equal(response.status,502);assert.equal(response.refusal,'EGRESS_CONNECT_FAILED');assert.equal(stalled.destroyed,true);
+ const failed=await startEgressProxy({control:createBashEgressControl({domains:['records.example'],resolve:async()=>['93.184.215.14'],now:clock,expiresAtMs:clock()+60000}),
+  dial:()=>{const socket=new Socket();queueMicrotask(()=>socket.emit('error',new Error('synthetic connect failure')));return socket;},
+  limits:{connectMs:20,admitMs:1000,idleMs:1000}});
+ t.after(()=>failed.close());
+ const refused=await tunnel(failed,'records.example:443');
+ assert.equal(refused.status,502);assert.equal(refused.refusal,'EGRESS_CONNECT_FAILED');
+ await new Promise(resolve=>setTimeout(resolve,40));
+});
+
+test('failure to bind the SOCKS listener closes the already-bound HTTP listener',async()=>{
+ const reservation=netServer();await once(reservation.listen(0,'127.0.0.1'),'listening');const port=reservation.address().port;
+ await new Promise(resolve=>reservation.close(resolve));
+ const control=createBashEgressControl({domains:['records.example'],resolve:async()=>['93.184.215.14'],now:clock,expiresAtMs:clock()+60000});
+ await assert.rejects(startEgressProxy({control,httpPort:port,socksPort:port}),e=>e.code==='EADDRINUSE');
+ assert.deepEqual(await new Promise(resolve=>{const socket=connect({host:'127.0.0.1',port});socket.once('connect',()=>{socket.destroy();resolve('listening');});socket.once('error',e=>resolve(e.code));}), 'ECONNREFUSED');
+ assert.deepEqual(await control.admit({host:'records.example',port:443}),{ok:false,code:'BASH_EGRESS_REVOKED'});
 });

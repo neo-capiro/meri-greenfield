@@ -2,6 +2,12 @@
 
 Status: **draft for dot's read-only review; nothing in it is executed.** Target: the preview stacks promoted in place as the production deployment (D016-A §10). Every activation below names the decision it depends on (D016, D016-A). Hashes marked `TBD` are filled when the final images are built and measured.
 
+**Dot successor readback, 18 Oct:** ECS task definitions control `:27`, runner `:12`, and Stage 1 migrator `d2-migrate:6` report Linux `X86_64`; `runtime-packages.lock.json` pins `linux/amd64`. N22 therefore remains an amd64 candidate, subject to exact image/scan/measurement evidence. PR121 `6249675109` records the read-only metadata. RD/occurrence/retained-read source status is in `DOT-SOURCE-INTEGRATION-20261018.md`; the 76-operation receipt has 21 retained handlers without production trusted ports, so `reads.missing` cannot be assumed empty. Core #84 published `5c105cfe` still expects the three-field revoke body; the four-field successor fix and snapshot installer choreography must be received at exact published pins before a coordinated image. The existing-preview chat diagnosis is in `DOT-CHAT-DIAGNOSTIC-PACKET-20261018.md`. This packet authorizes no live operation.
+
+**Launch gate decision:** Neo approved critical functional, desktop, accessibility, security, isolation, revocation, cancellation/recovery, operations and rollback checks before launch, with the larger labelled corpus and long benchmark program tracked after launch. The separate chat diagnostic may run on a smaller coherent compatible cohort without completing this packet or promoting it to production.
+
+**Destination clarification:** the final production app origin is `https://os.capiro.ai` (`is.capiro.ai` was a typo). Before any later production cutover, pin the same canonical origin through auth callbacks, cookies, CORS, redirect rules and frontend/Core/Meri configuration, and prepare rollback to the prior immutable pins. This does not change current preview DNS. Neo permits production data connections in the confirmed maintenance window on the real code path; it does not authorize irreversible deletion or new security grants. Confirm that window before a disruptive production-facing change.
+
 ## 0. Order of operations
 
 1. Source freeze: integration tip `TBD` on `fable/meri-integration-20261018` (#145), Core #84 head `TBD`, frontend #92 head `271a267d`.
@@ -35,7 +41,7 @@ Last pinned runtime: N21 `176a8811`, `sha256:5534edfe…`, measured without a pr
  "userPreferences": {"enabled": true},
  "tenantSettings": {"enabled": true},
  "intents": {"enabled": true, "core": {"enabled": true}},
- "routines": {"enabled": true},
+ "routines": {"enabled": true, "task": {"taskId": "TBD (generic routine task UUID)", "version": 1}, "workflow": {"taskQueue": "TBD (same queue as schedule worker)", "workflowIdPrefix": "TBD (pinned schedule prefix)"}},
  "retention": {"enabled": true},
  "artifacts": {"enabled": true, "region": "us-east-1", "bucket": "TBD (§3)", "prefix": "preview/", "expectedBucketOwner": "967807252336", "kmsKeyId": "arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042", "authority": {"enabled": true}},
  "downloadLinks": {"enabled": true},
@@ -62,8 +68,8 @@ Budget pins (B1): `allocation.json` `budgets.maxTurns 20`, `maxToolCalls 20`, `m
 ## 4. Database (D016 #1)
 
 - Snapshot: `aws rds create-db-cluster-snapshot --db-cluster-identifier capiro-dev-data-auroracluster23d869c0-ltmz40k47ewv --db-cluster-snapshot-identifier meri-integration-pre-<UTC>`; wait `available`; record.
-- Apply: `node infra/product-preview/first-chat-migrate.mjs integration` (plan ordinals 22–35 at tip `TBD`; `plan` output recorded). Refuses unless `meri` and `temporal` are ledgered.
-- In the plan: `meri_memory` 0001 (lane M) and `read_delegation_facts` 0001 (option B), each with sha256 and grants in `first-chat-database-integration.sql`. Pending: lane RD's routine read-consent field (a migration only if no existing facts column carries it); the snapshot function below.
+- Apply: `node infra/product-preview/first-chat-migrate.mjs integration` (plan ordinals 22-39 at this successor source; final pin `TBD`, `plan` output recorded). Refuses unless `meri` and `temporal` are ledgered.
+- In the plan: `meri_memory` 0001 (lane M), `read_delegation_facts` 0001 (option B), and schedules `0004_read_consent.sql` (ordinal 29, SHA-256 `d57783e1a9e349d1df43e00a273db588b48a6c1b4a49279b30da8428b0ec9830`). Integration grants are re-pinned to `2a4891d2a8cf4f0a419f983c8b62b826f57663fa8a0372f75994fb1bd9240bc6`; the snapshot function below still needs isolated installer/restore qualification.
 - Core's canonical-admission read (done in source, see the next two lines): a **Meri-owned `SECURITY DEFINER` snapshot function** (dot 6248138427, refined 6248171459): fixed signature, static schema-qualified SQL, `SET search_path = pg_catalog, pg_temp`, VOLATILE PARALLEL UNSAFE, lock first then `clock_timestamp()` in a separate statement, Core proposal lock before budget lock, grants in stable id order; owner a dedicated NOLOGIN non-superuser role with only the needed SELECT/row-lock privileges; `REVOKE EXECUTE FROM PUBLIC` in the creation transaction; schema USAGE + exact-signature EXECUTE to the Core API role only. DDL and rollback (`DROP FUNCTION`, `DROP ROLE`) come from the Core lane (`docs/coordination/proposals/CORE-ADMISSION-SNAPSHOT-FUNCTION-20261018.sql`, requested) and are carried in `first-chat-database-integration.sql`; Core's receiver calls it on its existing transaction connection.
 - Core API role: **`capiro_app`** (Core migration `20260502020000_capiro_app_role`; the preview Core task's `DB_USER` is the `username` key of its app credential secret). **Readback before Stage 1:** `aws secretsmanager get-secret-value` on that secret, print the `username` key only; the grants phase fails closed (`MERI_D2_CORE_APP_ROLE_MISSING`) if the role is absent.
 - Placed in `first-chat-database-integration.sql` (phase `integration_grants`, re-pinned): USAGE + SELECT on the four `meri_read_delegation_facts` views to `capiro_app`; the snapshot function `meri_core_authority.current_admission_v1(uuid,uuid,uuid)` (Core lane proposal capiro-backend #84 `70e13545`, body verbatim) owned by NOLOGIN `meri_core_admission_reader` with SELECT on the five budget tables + `native_allocations` and `UPDATE (quarantined)` for the row lock; EXECUTE + schema USAGE to `capiro_app` only; readback asserts `capiro_app` holds nothing else in any `meri_*` schema. Rollback in §9.
