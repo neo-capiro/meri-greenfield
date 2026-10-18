@@ -14,8 +14,11 @@
  *    Without that forwarder the store is NOT composed: a store with no recovery owner would keep retention serving fenced and
  *    stop control readiness (`control.mjs` retentionGate + `ensureServing`).
  *  - `artifactOptionsOwner` is composed ONLY when a trusted Core artifact authority and the fixed executor are supplied through
- *    `documentsFamily({authority,executor})` (never configuration). The production registration supplies neither (no Core owner
- *    exists), so it stays absent and `/api/documents/*` answers 503 UNAVAILABLE. When composed, the owner is late-bound to
+ *    `documentsFamily({authority,executor})` (never configuration) AND the `artifacts` block declares `authority` (the Core origin
+ *    and service-secret file of docs/integration/ARTIFACT-CURRENT-AUTHORITY-CONTRACT.md). An authority that names its `origin` or
+ *    `now` must match the declared origin and control's clock. Startup builds that authority with `composeDocumentsFamily`
+ *    (`../artifacts/authority-composition.mjs`). The production registration supplies neither (no Core receiver and no Meri-local
+ *    run-options owner exist yet), so it stays absent and `/api/documents/*` answers 503 UNAVAILABLE. When composed, the owner is late-bound to
  *    control's own action-session owner: `createRuntimeDocumentOptionsComposer` and the runtime document application both require
  *    the exact `sessions` object, which `assembleControl` creates after the product-port factory returns. Until trusted assembly
  *    calls `bindDocumentsSessions(context, sessions)` (`../artifacts/session-binding.mjs`) every resolve answers null (the
@@ -71,7 +74,9 @@ export function documentsFamily(owners={}){
   const s3={client,bucket:declared.bucket,prefix:declared.prefix,expectedBucketOwner:declared.expectedBucketOwner,kmsKeyId:declared.kmsKeyId};
   const storage=createRuntimeArtifactStorage({s3,versionsPool:pool,now,maxRequestMs:configuration.limits.requestMs,
    ...(retention?{custody:{journal:artifactRecovery.journal,retention:artifactRecovery.retention,tenantId:declared.tenantId,evidenceS3:s3,enabled:true}}:{})});
-  if(o.authority===undefined)return {ports:{artifactStore:storage}};
+  // Composed disabled: without a declared Core authority origin the supplied authority is never reached.
+  if(o.authority===undefined||declared.authority===undefined)return {ports:{artifactStore:storage}};
+  if(Object.hasOwn(o.authority,'origin')&&o.authority.origin!==declared.authority.origin||Object.hasOwn(o.authority,'now')&&o.authority.now!==now)throw fault();
   const late=lateBoundOptionsOwner({authority:o.authority,compose:sessions=>createRuntimeDocumentOptionsComposer({storage,executor:o.executor,budgetPool:pool,sessions,now})});
   registerDocumentsSessionBinder(context,late.bind);
   return {ports:{artifactStore:storage,artifactOptionsOwner:late.owner}};

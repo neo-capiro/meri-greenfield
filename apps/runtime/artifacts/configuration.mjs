@@ -8,20 +8,27 @@
  *     bucket, prefix,                // S3 general purpose bucket (never a directory bucket) and the object key prefix
  *     expectedBucketOwner,           // 12-digit account sent as ExpectedBucketOwner on every request
  *     kmsKeyId,                      // full KMS key ARN used for SSE-KMS on every PutObject
- *     tenantId?                      // publication custody tenant; REQUIRED exactly when control also declares `retention`
+ *     tenantId?,                     // publication custody tenant; REQUIRED exactly when control also declares `retention`
+ *     authority?: {                  // Core artifact current-authority wire (docs/integration/ARTIFACT-CURRENT-AUTHORITY-CONTRACT.md)
+ *       origin,                      // bare https Core origin; equals nativeCandidate.identity.origin when that is declared
+ *       serviceSecretFile            // absolute POSIX path of the Core service secret (x-internal-service-secret), never a bearer
+ *     }
  *   }
  *
  * The five storage keys are required when `enabled` is true and validated whenever present. `tenantId` without a declared
- * `retention` is refused: publication custody needs the control-owned retention journal, which exists only then. */
+ * `retention` is refused: publication custody needs the control-owned retention journal, which exists only then. `authority` only
+ * names WHERE the Core artifact authority is and which service-secret file to send; it composes nothing by itself. The options owner
+ * also needs `enabled: true` and the trusted Meri-local owners that only startup supplies (`./authority-composition.mjs`). */
 const fault=()=>Object.assign(new Error('ARTIFACT_CONFIGURATION'),{code:'ARTIFACT_CONFIGURATION'});
 const REQUIRED=Object.freeze(['region','bucket','prefix','expectedBucketOwner','kmsKeyId']);
-const KEYS=Object.freeze(['enabled',...REQUIRED,'tenantId']);
+const KEYS=Object.freeze(['enabled',...REQUIRED,'tenantId','authority']);
 const REGION=/^[a-z]{2}(?:-gov)?-[a-z]+-[0-9]$/u,BUCKET=/^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$/u,OWNER=/^[0-9]{12}$/u;
+const AUTHORITY_KEYS=Object.freeze(['origin','serviceSecretFile']),SECRET_FILE=/^\/[A-Za-z0-9._\/-]{1,4095}$/u;
 const PREFIX=/^[A-Za-z0-9][A-Za-z0-9/_-]{0,127}$/u,KMS_KEY=/^arn:aws(?:-us-gov|-cn)?:kms:([a-z0-9-]+):[0-9]{12}:key\/[a-f0-9-]{36}$/u;
-function plain(value){
+function plain(value,keys=KEYS){
  if(value===null||typeof value!=='object'||Array.isArray(value)||![Object.prototype,null].includes(Object.getPrototypeOf(value)))throw fault();
  const descriptors=Object.getOwnPropertyDescriptors(value);
- for(const [key,d] of Object.entries(descriptors))if(!KEYS.includes(key)||!d.enumerable||!Object.hasOwn(d,'value'))throw fault();
+ for(const [key,d] of Object.entries(descriptors))if(!keys.includes(key)||!d.enumerable||!Object.hasOwn(d,'value'))throw fault();
  if(Object.getOwnPropertySymbols(value).length)throw fault();
  return Object.fromEntries(Object.entries(descriptors).map(([key,d])=>[key,d.value]));
 }
@@ -40,5 +47,13 @@ export function compileRuntimeArtifactsConfiguration(configuration){
  const retention=configuration.retention!==undefined;
  if(a.tenantId!==undefined&&!retention)throw fault();
  if(a.enabled&&retention&&a.tenantId===undefined)throw fault();
+ if(a.authority!==undefined){
+  const auth=plain(a.authority,AUTHORITY_KEYS);if(AUTHORITY_KEYS.some(key=>!Object.hasOwn(auth,key)))throw fault();
+  let url;try{url=new URL(auth.origin);}catch{throw fault();}
+  if(typeof auth.origin!=='string'||url.protocol!=='https:'||url.origin!==auth.origin||url.username||url.password||url.search||url.hash||url.pathname!=='/')throw fault();
+  const identityOrigin=configuration.nativeCandidate?.identity?.origin;if(identityOrigin!==undefined&&identityOrigin!==auth.origin)throw fault();
+  if(typeof auth.serviceSecretFile!=='string'||!SECRET_FILE.test(auth.serviceSecretFile)||auth.serviceSecretFile.includes('//')||auth.serviceSecretFile.split('/').includes('..'))throw fault();
+  a.authority=Object.freeze(auth);
+ }
  return Object.freeze(a);
 }

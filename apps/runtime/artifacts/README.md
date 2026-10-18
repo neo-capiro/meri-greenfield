@@ -96,3 +96,16 @@ read, the documented linearization order, token placement, lifetime bounds), `te
 (real loopback listener plus telemetry: no link in process output, spans, metrics or refusal bodies), `../test/download-links-mount.test.mjs`
 (startup gate through `startControl`), `../../artifacts/storage/test/signed-download.test.mjs` and
 `../../artifacts/storage/test/s3-private-bucket.test.mjs`.
+
+## Core artifact current authority (D31)
+
+Contract: `docs/integration/ARTIFACT-CURRENT-AUTHORITY-CONTRACT.md`; golden vectors: `docs/integration/artifact-current-authority.vector.json`.
+`core-authority-wire.mjs` (closed request/receipt shapes, intent operations), `core-authority-client.mjs` (fixed route
+`POST /api/clio/application-authority/artifact`, native bearer + `x-internal-service-secret`, correlated `observationId`, Meri-clock
+lifetime), `authority-credentials.mjs` (service secret re-read per call; marked candidate credentials and the service secret are never
+admitted as a bearer), `core-authority.mjs` (the in-process `authority.resolve` that `../product-ports/documents.mjs` composes: one
+observation per resolve/recheck, pinned facts, Core-gated `authorize`) and `authority-composition.mjs` (`composeDocumentsFamily`, used
+by startup; composed disabled unless `artifacts.enabled`, `artifacts.authority`, `nativeCandidate`, a readable service secret and the
+Meri-local `runOptions`/`executor` owners all exist, otherwise the store-only family with `missing` by key). Core's receipt is a fact,
+never the options object: allocation, producer context, descriptor, evidence, assets, run capability and `authority.check` stay with
+the Meri-local `runOptions` owner (dot, PR #121 6246642210). Tests: `test/core-authority.test.mjs`.
