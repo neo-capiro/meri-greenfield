@@ -29,6 +29,8 @@ separate repositories and remain referenced source candidates.
 | `neo-capiro/meri-greenfield` [PR180](https://github.com/neo-capiro/meri-greenfield/pull/180), first audit follow-up | `7e4e75828abcd870137ea8f72ff5fbea08fa25a6` | Parent is exact PR179 pin above; received by fast-forward on this manifest branch. Closes the awaited history-membership and rapid-successor gaps. |
 | `neo-capiro/meri-greenfield` [PR180](https://github.com/neo-capiro/meri-greenfield/pull/180), later retention fence/evidence candidate | `a1876afaeaa59d9da47729487d490cba8cfc9d9c` | **Not received** here. The source fence is direct child `1aa5c66e9283024e78ad6f26f5450cbc61a37659`; this head adds evidence/docs only. A finite PostgreSQL pool can starve while the fence holds a lease and a nested retention read requests another. |
 | `neo-capiro/meri-greenfield` [PR181](https://github.com/neo-capiro/meri-greenfield/pull/181), held-lease retention follow-up | `a50ce248337f3ce1ab7103e045bb8ab826ca92dc` | Draft direct child of PR180 `a1876afa`; **not received** here. Focused finite-pool source repair is published for review. Real PostgreSQL qualification and the separate consistent Core authorization decision remain open. |
+| `neo-capiro/meri-greenfield` [PR183](https://github.com/neo-capiro/meri-greenfield/pull/183), native usage terminal metrics | `97906eb50e02f7f14677ecd923cde90c28a3153c` | Draft direct child of PR180 `a1876afa`; **not received** here. Narrow native usage parser and offline regression source candidate, pending review. Exact live Sonnet 4.6 stream and image qualification remain open. |
+| `neo-capiro/meri-greenfield` [PR184](https://github.com/neo-capiro/meri-greenfield/pull/184), first-chat SDK model alias | `6be3e4abccebb5da56092572ccb0feddaf514d0e` | Draft direct child of PR180 `a1876afa`; **not received** here. Renderer/runtime measurement source candidate, pending review and comparison with the separate shipping renderer proposal. The checked-in image receipt is stale; no image qualification is implied. |
 | `neo-capiro/meri-greenfield` document-executor image lane, [PR121 handoff](https://github.com/neo-capiro/meri-greenfield/pull/121) | `d2f054362521f622b9dd63c65ef5eaa3bdde8d5a` | Separate successor to lane I `94b692648c47fd509e62a621cc5b612e0d356ed3`; **not received** in PR179/PR180 or this manifest branch. The final Meri source must receive its owned image/package/wheel closure before image qualification. |
 | `neo-capiro/capiro-frontend` [PR97](https://github.com/neo-capiro/capiro-frontend/pull/97), receiving Meri, Modules/Settings, Portfolio, and Portfolio Core source | `d9959a9cee267365d1f13a72351802a66c6dbfe2` | Open receiving candidate against frontend `main` `02c02d95bdf3949662b9123f425271c6491ffdab`. This head is a documentation-only child of the reviewed code pin `a0a542d5eff162bef572564ff0397e460d74ed77`; not a Meri-tree merge. |
 | `neo-capiro/capiro-frontend` [PR98](https://github.com/neo-capiro/capiro-frontend/pull/98), session renewal and cross-run composer guard | `5c784e3e46114816ba57db17ad7a2c2013a8d81a` | Reviewed frontend source candidate, **not received** by PR97. Its first commit starts at exact PR97 code pin `a0a542d5eff162bef572564ff0397e460d74ed77`; the cross-run guard is in its second code commit `d626bb080d7774ba5fc8167661d21893d9f1e3c8`, and this head adds docs/evidence. The branches diverge only by PR97's later documentation commit. Frontend owner receipt and release qualification remain pending. |
@@ -97,11 +99,30 @@ baseline; it does not change the nested lease behavior. Draft PR181 publishes a
 held-lease repair and reports **112/112 focused source checks**. Review remains
 before receipt; real PostgreSQL qualification remains before release acceptance.
 
+The separate native source candidates are siblings of PR181, each based on
+exact PR180 `a1876afa`, and have not been combined with that branch or this
+manifest's Meri code. PR183 reports **60/60 focused credential-free Python
+checks** of terminal usage, response settlement, host observation/composition,
+and callback behavior. Its parser requires documented terminal input/output
+metrics consistent with CountTokens and `message_delta`; missing, malformed,
+conflicting or mismatched metrics remain `UNKNOWN`, and nonzero cache counts
+are not priced as ordinary input. The full upstream LiteLLM streaming test did
+not run because its local environment lacked FastAPI; no provider stream was
+observed. PR184 reports **8/8 runtime-values tests**, **1/1 pinned-SDK/CLI
+local HTTPS stand-in flow**, and **8/8 native-auth tests**. The stand-in used a
+synthetic token and no provider call. Its runtime test used a synthetic image
+digest; the existing N21 receipt remains stale. The SDK-facing alias is aligned
+with the fixed native/proxy allowlist while the provider profile and pricing
+stay pinned. Both drafts require review
+and ancestry/overlap checks before receipt. Neither qualifies an image,
+provider behavior, live auth, or first-chat activation.
+
 The following owners must publish and review successors before a release freeze:
 
 | Owner | Pending source or evidence |
 | --- | --- |
 | Meri retention/history | Review PR181's held-lease successor against PR180, including finite-pool behavior, shared/exclusive transition ordering, and real PostgreSQL lock/session behavior. The separate Core membership/currentness race still needs a consistent authorization decision before release. |
+| Meri native usage and model alias | Review PR183 and PR184 as separate PR180 siblings, preserve settlement and provider/budget authorization, and reconcile PR184's renderer with the separate shipping proposal before receipt. Remeasure source-bound image/runtime inputs after source freeze; no current receipt qualifies these drafts. |
 | Frontend | Receive the independently reviewed PR98 session renewal and cross-run guard into PR97, retaining PR97's later documentation and exact request identity. PR98's owner reports 14/14 browser, 69/69 unit, TypeScript, and 283/283-page build checks; authenticated release qualification remains separate. |
 | Backend audit | PR180's held evidence commit inventories the standard `npm run check` baseline (**4,357 passed, 32 failed**) and runtime/control typecheck diagnostics (**3/18**) against PR179. Resolve or explicitly disposition those red release gates without weakening assertions. |
 | Core and frontend product owners | Qualify authenticated Portfolio Core behavior and complete the Modules aggregate metrics and remaining Settings contracts/design decisions. PR97 and Core PR96 are source candidates; production behavior is not inferred from ancestry. |
