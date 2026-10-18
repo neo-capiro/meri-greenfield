@@ -38,6 +38,7 @@
  *   userPreferences?|tenantSettings?|intents?|routines?: {enabled: boolean},
  *   retention?: {enabled: true},                              // artifacts tenantId (= core tenantId) and download links need it
  *   artifacts?: {enabled:false} | {enabled:true, region:'us-east-1', bucket, prefix, expectedBucketOwner:'967807252336', kmsKeyId (key ARN), authority?: {enabled:true} (needs reads)},
+ *   memory?: {enabled: bool} (enabled needs reads: it reuses the Core service secret file),
  *   downloadLinks?: {enabled:false} | {enabled:true, ttlMs?},  // signing key generated per render -> /run/meri/download-link.key
  *   capabilityPlatform?: {maximum, defaults, roleCeilings},   // verbatim; runtime values must carry the matching capabilityProfileSha256 (G3)
  *   reads?: {enabled:false} | {enabled:true, serviceSecretArn, readModeServiceSecretArn?, defaultCongress?, approvedReads?}
@@ -238,7 +239,9 @@ export function parseFeatures(raw,{secrets={},checkpoint}={}){
     ...(r.defaultCongress===undefined?{}:{defaultCongress:r.defaultCongress}),...(approvedReads===undefined?{}:{approvedReads})};
   }
  }
+ if(f.memory!==undefined){const m=record(f.memory,'features.memory',['enabled']);out.memory={enabled:bool(m.enabled,'features.memory.enabled')};}
  if(out.artifacts?.authority===true&&out.reads?.enabled!==true)fail('RENDER_INPUT_REFUSED','features.artifacts.authority reuses the reads Core service secret: it needs features.reads enabled');
+ if(out.memory?.enabled===true&&out.reads?.enabled!==true)fail('RENDER_INPUT_REFUSED','features.memory reuses the reads Core service secret: it needs features.reads enabled');
  return out;
 }
 /** The single capability profile every run resolves to under `capabilityPlatform` (G3), or null when the platform is absent or
@@ -450,6 +453,8 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,ident
   ...(authority?{authority:{origin:k.coreOrigin,serviceSecretFile:PATHS.readsServiceSecret}}:{})}:{enabled:false};}
  if(features.downloadLinks!==undefined)featureKeys.downloadLinks=features.downloadLinks.enabled?{enabled:true,keyFile:PATHS.downloadLinkKey,...(features.downloadLinks.ttlMs===undefined?{}:{ttlMs:features.downloadLinks.ttlMs})}:{enabled:false};
  if(features.capabilityPlatform!==undefined)featureKeys.capabilityPlatform=structuredClone(features.capabilityPlatform);
+ // Memory (lane M): review-only proposals over Core M2 at the Core origin, with the same Core service secret file as reads.
+ if(features.memory!==undefined)featureKeys.memory=features.memory.enabled?{enabled:true,origin:k.coreOrigin,serviceSecretFile:PATHS.readsServiceSecret}:{enabled:false};
  if(features.reads!==undefined)featureKeys.reads=features.reads.enabled?{enabled:true,serviceSecretFile:PATHS.readsServiceSecret,
   ...(features.reads.readModeServiceSecretArn===undefined?{}:{readModeServiceSecretFile:PATHS.readsReadModeServiceSecret}),
   ...(features.reads.defaultCongress===undefined?{}:{defaultCongress:features.reads.defaultCongress})}:{enabled:false};

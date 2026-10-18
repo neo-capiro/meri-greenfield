@@ -329,3 +329,13 @@ test('artifacts.authority renders the Core artifact authority origin and reuses 
  await assert.rejects(render(withFeatures({artifacts:{enabled:false,authority:{enabled:true}}})),/RENDER_INPUT_REFUSED/u);
  assert.deepEqual(config(await render(withFeatures({artifacts:ARTIFACTS})),'control').artifacts,ARTIFACTS);
 });
+
+test('memory renders the control memory block at the Core origin with the reads service secret file; without reads it refuses',async()=>{
+ await baseline();
+ const rendered=await render(withFeatures({sourceEnabled:true,reads:READS,memory:{enabled:true}}),{featureSecrets:featureSecrets()});
+ const control=config(rendered,'control');
+ assert.deepEqual(control.memory,{enabled:true,origin:control.nativeCandidate.identity.origin,serviceSecretFile:PATHS.readsServiceSecret});
+ assert.deepEqual(assertOnly(await render(withFeatures({memory:{enabled:false}})),['memory']).memory,{enabled:false});
+ await assert.rejects(render(withFeatures({memory:{enabled:true}})),/needs features.reads enabled/u);
+ await assert.rejects(render(withFeatures({memory:{enabled:'yes'}})),/RENDER_INPUT_REFUSED/u);
+});
