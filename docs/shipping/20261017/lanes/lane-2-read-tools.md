@@ -234,7 +234,11 @@ There is no bearer file; `secretFiles.nativeReadCredential` is refused (`CONFIGU
 
 **Still needed (outside this lane), with the composer reporting each one in `missing` until supplied (plus `nativeCredentials.nativeCredentialFor` and `secretFiles.serviceSecret`):**
 1. `gateway.authority`: the `tool.read` current authority (`createReadAuthority`) over Core-backed `verifyCapability`, `currentRun`, `authorizeBusiness` and `authorizeSources` ports. No production producer exists.
-2. `gateway.readCurrentInstallation` (P2 installation receipt issuer) and `gateway.discoveryOwner.readDiscoveryGrant` (P1). Writing either would invent authority; they need dot's and the qualification owner's contract first.
+2. **P1/P2 now exist as source, composed disabled** (`FABLE-READ-GATE-CONTRACTS-20261018.md`).
+   - P2 is the in-image installation measurement plus a control-side issuer: `apps/gateway/general-reads/installation-issuer.mjs`.
+   - P1 is the per-run discovery grant over allocation ∩ approved reads ∩ the run capability policy: `discovery-producer.mjs`.
+   - The composer builds both. `reads.missing` lists `installation.enabled` and `discovery.enabled` until R0 renders the measurement pin and enables them.
+   - P3 (base allocation, tariffs, aggregate bytes) and P5 (context-key sources) are in the same contract doc.
 3. `gateway.limits`: gateway request/response/cleanup bounds (R0 render).
 4. Render: `approvedReads` and `sourceEnabled:true` (G1, treated as decided), the run capability policy `generalReads:true` and `readFamilies` (G2), and an SDK-options template that admits `meri_reads` (G3).
 5. Worker side: the runner's `meri_reads` server port (G4, apps/worker).
