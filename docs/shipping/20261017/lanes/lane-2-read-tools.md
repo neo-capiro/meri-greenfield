@@ -167,7 +167,7 @@ Every row above also fails identically at the lane 2 tip `e8def62b`. They are la
 | Installation-eligible reads (`installationReadOperations`) / adapter constructors | 76 / 44 |
 | Scope ledger `sourceExposure` | 76 operations / 42 families; 74 complete + 3 partial + 5 absent = 82 |
 
-**Coordinator re-pin (P1, files outside this lane):** `infra/product-preview/first-chat/allocation.json:61` and `infra/product-preview/first-chat/runtime-values.json:108` still pin `allocation.catalogSha256 = 27db172a…`; they must become `f351ebad…` at the next render (`runtime-values.test.mjs` refuses until then). `sdkOptionsSha256` (`af7f07b8…`): lane 2 does not change the SDK options while `generalReads` is off (G2, the current state), because `meri_reads` is not registered. Other lanes changed worker options (lane 8 Bash), so re-measure it in the image at the same render.
+**Coordinator re-pin (P1, files outside this lane):** done at `291ff5d7`. `infra/product-preview/first-chat/allocation.json:61` and `runtime-values.json:108` now pin `f351ebad…`. With this branch merged over that tip, `runtime-values.test.mjs` passes 5/5. `sdkOptionsSha256` stays `af7f07b8…`, which is consistent: lane 2 does not change the SDK options while `generalReads` is off (G2), because `meri_reads` is not registered.
 
 ### Scope ledger regeneration (D015 #5)
 
