@@ -66,3 +66,43 @@ test('lost or unproven native retirement keeps the occurrence OPEN and never cla
  const h=await fixture();t.after(h.close);const runs=await h.prepare();h.hooks.retire=()=>{throw Error('synthetic stop acknowledgement unavailable');};await assert.rejects(h.owner.cancel({binding:h.approved(runs),deadlineMs:h.now()+1000}));
  assert.equal(h.scheduleSql.state.occurrences.get(h.template.principal.tenantId+':'+h.identity.occurrenceKey).state,'OPEN');assert.equal(h.calls.cancel.length,1);assert.equal(h.row(h.identity.binding).projection.state,'cancelled');
 });
+
+/** Core wire B (D016 attended-only): the approving request's own session obtains Core's proof; the Core-proof run control stops the
+ * exact run through the same store/dispatcher the lifecycle Stop uses, with no session and no service privilege beyond the proof. */
+import {createRoutinesRunControl} from '../../../runtime/native-authority/routines-run-control.mjs';
+import {routineCancellationTrust} from '../../../runtime/native-authority/routines-cancellation-proof.mjs';
+import {createPostgresRunCancelProofLedger} from '../postgres-run-cancel-proofs.mjs';
+import {createScheduledJobLifecycle} from '../scheduled-job-lifecycle.mjs';
+import {coreSigner,proofLedgerPool} from '../../../runtime/native-authority/test/routines-core-fixture.mjs';
+async function proofFixture(){
+ const h=await fixture(),signer=coreSigner(),ledger=proofLedgerPool(),issued=[],issuer={script:null};
+ const runControl=createRoutinesRunControl({trust:routineCancellationTrust(signer.pin),ledger:createPostgresRunCancelProofLedger({pool:ledger.pool}),store:h.store,dispatcher:h.dispatcher,now:h.now,maxRequestMs:1000});
+ const proofs={async issue(call){issued.push(structuredClone({attended:call.attended,intent:call.intent,intentSha256:call.intentSha256,decision:call.decision,targets:call.targets}));
+  const p=call.intent.projection,claims={tenantId:p.owner.tenantId,ownerActorId:p.owner.actorId,scheduleId:p.scheduleId,intentId:call.intent.intentId,intentSha256:call.intentSha256,decisionSha256:hash(call.decision),runs:call.intent.cancel.runs,targets:call.targets};
+  const out=signer.sign(issuer.script?issuer.script(claims):claims,{nowMs:h.now()});return {proof:out.proof,jti:out.jti};}};
+ const owner=createScheduledRunCancellation({scheduleOwner:h.scheduleOwner,store:h.store,runControl,retirement:h.options.retirement,client:h.client,now:h.now,maxRequestMs:1000,proofs});
+ const attended={binding:h.identity.binding,selectedClientId:h.scopes[0].resourceId};
+ return {...h,owner,runControl,ledger,issued,issuer,attended,occurrence:()=>h.scheduleSql.state.occurrences.get(h.template.principal.tenantId+':'+h.identity.occurrenceKey).state};
+}
+test('attended approval obtains Core proof for the exact intent/decision/targets and the proof control runs the lifecycle Stop order',async t=>{
+ const h=await proofFixture();t.after(h.close);const runs=await h.prepare();assert.equal(h.issued.length,0);
+ await h.owner.cancel({binding:h.approved(runs),deadlineMs:h.now()+1000,attended:h.attended});
+ assert.equal(h.issued.length,1);const call=h.issued[0];
+ assert.deepEqual(call.attended,h.attended);assert.equal(call.intent.operation,'cancel_scheduled_task');assert.deepEqual(call.intent.cancel.runs,runs);assert.equal(call.intentSha256,hash(call.intent));
+ assert.equal(call.decision.decision,'approved');assert.equal(call.decision.commandSha256,call.intentSha256);assert.deepEqual(call.targets,[h.identity.binding]);
+ assert.equal(h.row(h.identity.binding).projection.state,'cancelled');assert.deepEqual(h.calls.retire,[h.identity.binding]);assert.equal(h.occurrence(),'DISPATCHED');
+ const rows=[...h.ledger.state.rows.values()];assert.equal(rows.length,1);assert.deepEqual(rows[0].binding,h.identity.binding);assert.equal(rows[0].intent_sha256,call.intentSha256);
+ assert.equal(h.calls.cancel.length,0,'the session-based fixture control is never used');
+});
+test('a proof for other targets, a missing attended selection or an unattended job owner stops nothing and consumes nothing',async t=>{
+ const h=await proofFixture();t.after(h.close);const runs=await h.prepare();
+ await assert.rejects(h.owner.cancel({binding:h.approved(runs),deadlineMs:h.now()+1000}),e=>e.code==='SCHEDULE_JOB_AUTHORITY');assert.equal(h.issued.length,0);
+ await assert.rejects(h.owner.cancel({binding:h.approved(runs),deadlineMs:h.now()+1000,attended:{...h.attended,binding:{...h.identity.binding,actorId:'other'}}}),e=>e.code==='SCHEDULE_JOB_AUTHORITY');
+ h.issuer.script=claims=>({...claims,targets:[{...h.identity.binding,runId:id(5555)}]});
+ await assert.rejects(h.owner.cancel({binding:h.approved(runs),deadlineMs:h.now()+1000,attended:h.attended}));assert.equal(h.issued.length,1);
+ assert.equal(h.row(h.identity.binding).projection.state,'running');assert.equal(h.occurrence(),'OPEN');assert.equal(h.ledger.state.rows.size,0);assert.equal(h.calls.retire.length,0);
+ // The schedule worker's job owner carries no proof: the Core-proof control refuses before any read or effect.
+ const jobs=createScheduledJobLifecycle({store:h.store,runControl:h.runControl,retirement:h.options.retirement,now:h.now,maxRequestMs:1000});
+ await assert.rejects(jobs.cancel({...h.selection,deadlineMs:h.now()+1000}),e=>e.code==='ROUTINE_RUN_CONTROL_REQUEST');
+ assert.equal(h.row(h.identity.binding).projection.state,'running');assert.equal(h.ledger.state.rows.size,0);
+});

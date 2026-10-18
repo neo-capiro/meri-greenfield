@@ -48,3 +48,45 @@ test('with every trusted owner supplied the enabled feature composes over the ac
   assert.equal(f.temporal.calls.create,0);assert.deepEqual([cancelled.length,retired.length],[0,0]);
  }finally{await f.close();}
 });
+
+test('configuration.routines.core produces context.policy and runControl from the Core wires over the actual sessions, attended only',async()=>{
+ const {coreRoutes,coreSigner,CORE_ORIGIN}=await import('../../native-authority/test/routines-core-fixture.mjs');
+ const {binding:owner,clientId,NOW}=await import('../../../control/schedules/test/application-fixture.mjs');
+ const f=await applicationFixture();try{
+  const {commandContext,allocationJson,template,workflow,limits}=f.contextConfiguration,retired=[];
+  const client={...f.client,workflow:{...f.client.workflow,start(){throw Error('unexpected workflow start');}},connection:{withDeadline:(deadline,fn)=>fn(),withAbortSignal:(signal,fn)=>fn()}};
+  const core={requests:[],serviceSecret:'synthetic-routines-service-secret',bearer:'synthetic-native',principal:{tenantId:owner.tenantId,actorId:owner.actorId},signer:coreSigner(),coreNow:f.now,
+   membership:()=>({tenantId:owner.tenantId,actorId:owner.actorId,clientIds:[clientId],expiresAtMs:NOW+60000}),rewrite:null};
+  const configuration={...base,temporal:{taskQueue:'meri-conversations'},routines:{enabled:true,core:{origin:CORE_ORIGIN,serviceSecretFile:'/run/meri/routines-service-secret',cancellationProof:core.signer.pin}}};
+  const transport={fetchImpl:coreRoutes(core),readSecret:async()=>Buffer.from(core.serviceSecret)};
+  // One source per owner: a trusted policy/runControl beside `core` is refused; without `core` the lane-1 owners alone are unavailable.
+  assert.throws(()=>routinesFamily({context:{commandContext,allocationJson,template,workflow,limits,policy:f.contextConfiguration.policy},runControl:{async cancel(){}},retirement:{async retire(){}}},transport)({configuration,pool:f.pool,client,now:f.now}),code('ROUTINES_CONFIGURATION'));
+  assert.throws(()=>routinesFamily({context:{commandContext,allocationJson,template,workflow,limits,policy:f.contextConfiguration.policy},retirement:{async retire(){}}}),code('ROUTINES_CONFIGURATION'));
+  assert.deepEqual(census(routinesFamily({context:{commandContext,allocationJson,template,workflow,limits},retirement:{async retire(){}}})({configuration:{...base,routines:{enabled:true}},pool:f.pool,client,now:f.now}).ports),['unavailable','unavailable']);
+  const family=routinesFamily({context:{commandContext,allocationJson,template,workflow,limits},newId:f.newId,retirement:{async retire(call){retired.push(call);return {physicalStopProven:true};}}},transport);
+  const {ports}=family({configuration,pool:f.pool,client,now:f.now});
+  assert.equal(core.requests.length,0,'composition is inert');assert.equal(ports.routinesApplicationFactory.state(),'pending');
+  const app=ports.routinesApplicationFactory.create({sessions:f.sessions});assert.deepEqual(census(ports),['composed','pending']);
+  const prepared=await app.handle(post(ROUTINE_PATHS.prepare,{requestId:'public-request',operation:'schedule_task',request:{...routineRequest(),destinationReference:'meri-inbox'}},f.session.credential));
+  assert.equal(prepared.status,200);const body=await prepared.json();assert.equal(body.status,'approval_required');assert.equal(body.proposal.projection.destinationId,'meri-inbox');
+  // Every policy phase went to Core wire A with the owner's live native bearer plus the service identity; limits are Core's ceiling.
+  assert.ok(core.requests.length>=2);for(const r of core.requests){assert.equal(r.url,CORE_ORIGIN+'/api/clio/routines/policy/check');assert.equal(r.headers.authorization,'Bearer synthetic-native');assert.equal(r.headers['x-internal-service-secret'],core.serviceSecret);}
+  assert.equal(body.proposal.projection.retryLimit,0);assert.equal(f.state.policies.length,0,'the fixture policy is not consulted');
+  // The same owners, and nothing else, satisfy the production census; firing is still held (no worker, no unattended call).
+  assert.deepEqual(Object.keys(PRODUCTION_ROUTINE_OWNERS).sort(),['context.commandContext+allocationJson+template','context.policy','context.workflow','retirement','runControl']);
+  assert.equal(f.temporal.calls.create,0);assert.equal(retired.length,0);
+  // Without a live session for the run (sessions closed) Core is not reached and the route refuses.
+  f.sessions.close();const count=core.requests.length;
+  const refused=await app.handle(post(ROUTINE_PATHS.prepare,{requestId:'public-request-2',operation:'schedule_task',request:{...routineRequest(),destinationReference:'meri-inbox'}},f.session.credential));
+  assert.notEqual(refused.status,200);assert.equal(core.requests.length,count);
+ }finally{await f.close();}
+});
+
+test('routines.core is validated by compileRoutinesConfiguration and refuses a secret file shared with the native candidate',()=>{
+ const pin={issuer:'https://core.synthetic.invalid/meri-routines',kid:'routine-cancel-1',publicKey:{kty:'OKP',crv:'Ed25519',x:'11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo'}};
+ const core={origin:'https://core.synthetic.invalid',serviceSecretFile:'/run/meri/routines-service-secret',cancellationProof:pin};
+ assert.equal(compileRoutinesConfiguration({routines:{enabled:true,core}}),true);assert.equal(compileRoutinesConfiguration({routines:{enabled:false,core}}),false);
+ for(const routines of [{enabled:true,core:{...core,origin:'http://core.synthetic.invalid'}},{enabled:true,core:{...core,cancellationProof:{...pin,kid:''}}},{enabled:true,core:{...core,unattended:true}},{enabled:true,core:null}])
+  assert.throws(()=>compileRoutinesConfiguration({routines}),code('ROUTINES_CONFIGURATION'));
+ assert.throws(()=>compileRoutinesConfiguration({routines:{enabled:true,core},nativeCandidate:{identity:{credentialFile:core.serviceSecretFile}}}),code('ROUTINES_CONFIGURATION'));
+});
