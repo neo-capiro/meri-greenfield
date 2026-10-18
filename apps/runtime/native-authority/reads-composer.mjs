@@ -162,7 +162,7 @@ export async function createControlReadsComposer(options){
    entry={delegation,runDeadlineMs,credentials:composeDelegatedNativeCredentials({delegation,client:delegationClient,now,...(fallback?{fallback}:{})})};
    delegations.set(key,entry);
   }
-  return {coreAuthority:entry.credentials.coreAuthority,getNativeCredential:entry.credentials.getNativeCredential,toolCredential:entry.credentials.toolCredential};
+  return {coreAuthority:entry.credentials.coreAuthority,getNativeCredential:entry.credentials.getNativeCredential,toolCredential:entry.credentials.toolCredential,stopSignal:entry.delegation.signal};
  }
  /** Stop hook for the run owner, called after it records the run terminal in its own store. The entry stays as a tombstone. */
  async function stopRun({binding,reason='run_terminal'}){

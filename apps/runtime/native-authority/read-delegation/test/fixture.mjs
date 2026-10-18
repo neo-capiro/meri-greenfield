@@ -49,7 +49,8 @@ export function delegationCoreFixture({now,binding,clientId,runDeadlineMs,princi
   const route=DELEGATION.exec(path);
   if(route&&route[2]==='tokens'){
    if(!service)return json({error:'service'},401);const d=state.delegations.get(route[1]);if(!active(d))return json({error:'changed'},409);
-   const body=JSON.parse(bytes),{retryOf,...request}=body,requestSha256=hash(request),slotKey=`${binding.runId}|${body.callKey}`;
+   // Canonical request digest: the request with retryOf normalized to null, for first requests and retries alike.
+   const body=JSON.parse(bytes),retryOf=body.retryOf,requestSha256=hash({...body,retryOf:null}),slotKey=`${binding.runId}|${body.callKey}`;
    let slot=state.slots.get(slotKey);
    if(!slot){slot={counts:{current:0,tool:0,mode:0,reference:0},reissues:{current:0,tool:0,mode:0,reference:0}};state.slots.set(slotKey,slot);}
    if(body.kind==='tool'){const r=reservations.get(body.callKey);

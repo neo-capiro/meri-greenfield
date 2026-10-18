@@ -36,11 +36,15 @@ function sessions({binding,scopes,now,ttlMs=60000}){
  return {owner,relay,issue:token=>owner.issue({identityCredential:token}),advance:ms=>{clock+=ms;},close:()=>{relay.close();owner.close();}};
 }
 
-async function composed({unattended=false,consent='active',delegation=true}={}){
+async function composed({unattended=false,consent='active',delegation=true,hangTools=false}={}){
+ const inflight=[];
+ // An in-flight source request that ends only when its transport aborts it.
+ const hanging=(url,init)=>{const entry={startedAt:Date.now(),abortedAt:null};inflight.push(entry);
+  return new Promise((_,reject)=>init.signal.addEventListener('abort',()=>{entry.abortedAt=Date.now();reject(init.signal.reason??Error('aborted'));},{once:true}));};
  const f=await installationFixture({scene:nativeFamilyCase('tracked-bills','search_tracked_bills')}),s=secrets(),clientId=f.scopes[0].resourceId;
  const session=sessions({binding:f.binding,scopes:f.scopes,now:f.now}),live=new Set();
  const core=delegationCoreFixture({now:f.now,binding:f.binding,clientId,runDeadlineMs:f.deadlineMs,principal:f.core.principal,reservations:f.state.reservations,liveBearers:live,
-  authority:f.core.fetchImpl,tools:f.transport.fetchImpl});
+  authority:f.core.fetchImpl,tools:hangTools?hanging:f.transport.fetchImpl});
  const a=allocation(f.allocationJson),occurrences=[];
  if(unattended)core.state.consent={id:'c1234567-b123-4c12-8d12-e123456789ab',state:consent,expiresAtMs:f.now()+86400000};
  const readOccurrence=async({binding})=>{occurrences.push(binding);if(!unattended)return null;
@@ -57,7 +61,7 @@ async function composed({unattended=false,consent='active',delegation=true}={}){
  const execute=mount();
  const login=async token=>{live.add(token);return session.issue(token);};
  const calls=pattern=>core.state.calls.filter(call=>pattern.test(call.path));
- return {f,core,session,composer,execute,mount,login,calls,occurrences,clientId,close:()=>{session.close();f.scope.abort();}};
+ return {f,core,session,composer,execute,mount,login,calls,occurrences,clientId,inflight,close:()=>{session.close();f.scope.abort();}};
 }
 
 test('an attended delegated read uses single-use per-route tokens and never the identity, context or membership routes',async()=>{
@@ -151,4 +155,26 @@ test('delegation disabled keeps option A exactly',async()=>{
  const x=await composed({delegation:false});
  try{await x.login('SYNTHETIC_NATIVE');await x.execute();assert.equal(x.calls(DELEGATION_ROUTE).length,0);assert.equal(x.f.wire[0].options.headers.authorization,'Bearer SYNTHETIC_NATIVE');assert.equal(x.composer.readDelegation.enabled,false);}
  finally{x.close();}
+});
+
+test('Stop aborts the in-flight source request of the run itself, not only later issuance (dot 6248061000)',async()=>{
+ const x=await composed({hangTools:true});
+ try{
+  await x.login('SYNTHETIC_NATIVE');const pending=x.execute();pending.catch(()=>{});
+  for(let i=0;i<300&&!x.inflight.length;i++)await new Promise(resolve=>setTimeout(resolve,10));
+  assert.equal(x.inflight.length,1,'the delegated tool request is in flight');
+  const stoppedAt=Date.now();await x.composer.readDelegation.stopRun({binding:x.f.binding,reason:'cancelled'});
+  await assert.rejects(pending);const [entry]=x.inflight;assert.notEqual(entry.abortedAt,null,'the transport aborted it');assert.ok(entry.abortedAt-stoppedAt<1000,'at Stop, not at a deadline');
+ }finally{x.close();}
+});
+
+test('a lost token response is re-requested as retryOf the same canonical request and the read completes',async()=>{
+ const x=await composed();
+ try{
+  await x.login('SYNTHETIC_NATIVE');x.core.state.dropTokenResponses=1;
+  const raw=await x.execute();assert.deepEqual(JSON.parse(raw).binding,x.f.binding);
+  const tokens=[...x.core.state.tokens.values()];assert.equal(tokens.filter(t=>t.superseded).length,1,'the unconsumed predecessor was superseded');
+  const [[,slot]]=[...x.core.state.slots];assert.equal(Object.values(slot.reissues).reduce((a,b)=>a+b,0),1);
+  assert.deepEqual(slot.counts,{current:(DISPATCH_OBSERVATIONS+CREDENTIAL_OBSERVATIONS)*OBSERVATION_CALLS.plain.current,tool:1,mode:0,reference:0},'a retry adds no count');
+ }finally{x.close();}
 });
