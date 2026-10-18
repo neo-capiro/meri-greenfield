@@ -190,13 +190,13 @@ Run: 269 lane 2 test files (gateway, native-authority read paths, native-read-cr
 | `scripts/scope-ledger/source-exposure.test.mjs` | 1 of 36 | "targeted refresh preserves…" needs historical trees `a945196e`, `615a5467`, `e1845c3b`, `08f65a79`, which no GitHub ref contains (`not our ref`). The same assertions pass against the three published trees | environment |
 | `scripts/general-reads/inventory.test.mjs` | 1 | Same at base: `sources.mjs` dispatch-profile regex is obsolete. The repair is in the held codex recovery patch, not received | held (dot) |
 
-Separate findings on the integration tip (not lane 2, not changed here). From a comparison of the other 31 `packages/contracts/test` files against base:
+Separate findings on the integration tip (not lane 2, not changed here). Both were resolved by R0 on #145: `9ca7fff4` regenerated the metadata, and `7531295c` updated the schedule expectation to lane 5's deliberate single attempt. From a comparison of the other 31 `packages/contracts/test` files against base:
 - `packages/contracts` `generate-conversations.mjs`, `generate-input.mjs` and `generate-initial-input.mjs` `--check` exit 1. `00076b0a` (H1) changed `apps/control/conversations/service.mjs` without regenerating the `dist/*metadata.json` source hashes. `conversation-input-public` and `conversation-initial-input-public` each fail 1 case for the same reason. The other generator checks pass.
 - `schedule-tool-independent.test.mjs`: 2 cases expect the schedule action's `retry.maximumAttempts` to be 2, but it is 1. This passes at base, so it is lane 5's schedule composition.
 
 ### Production mount: the control composer and what is still needed
 
-**Composer (in this lane): `apps/runtime/native-authority/reads-composer.mjs`.** Control startup calls it once:
+**Composer (in this lane): `apps/runtime/native-authority/reads-composer.mjs`.** It is async because it prepares and measures the family handlers. Control startup awaits it once, before `startControl`; it is separate from R0's synchronous `productPortsFactory`:
 
 ```js
 const reads=await createControlReadsComposer({configuration,now,secretFiles,defaultCongress:119,gateway});
