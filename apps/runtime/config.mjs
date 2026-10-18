@@ -17,6 +17,7 @@ import {compileScheduleServiceConfiguration} from './schedule-service-configurat
 import {compileCapabilityPlatform} from './product-ports/capability-policy.mjs';
 import {compileRuntimeArtifactsConfiguration} from './artifacts/configuration.mjs';
 import {compileIntentsConfiguration} from './product-ports/intents.mjs';
+import {compileRoutinesCoreConfiguration} from './native-authority/routines-configuration.mjs';
 import {compileObjectiveGenerationConfiguration} from './objective-generation/configuration.mjs';
 export {compileControlUserPreferencesConfiguration};
 export const fault=code=>Object.assign(new Error(code),{code});
@@ -65,7 +66,9 @@ export function validateConfiguration(raw,role){
  own(c,[...common,...(role==='control'?['http','database','temporal','sessions','versions']:role==='temporal-worker'?['http','temporal']:role==='schedule-worker'?['http','temporal','versions','scheduledDispatch']:['binding','versions','workspace','proxyOrigin'])],role==='conversation-runner'?['bootstrap','captureOwnsClose','remoteTask']:role==='control'?['nativeCandidate','retention','telemetry','downloadLinks','privateHttp','taskRouter','userPreferences','tenantSettings','capabilityPlatform','routines','artifacts','intents','reads','objectiveGeneration']:role==='schedule-worker'?['database']:role==='temporal-worker'?['objectiveGeneration']:[]);
  if(c.userPreferences!==undefined){requireValue(role==='control','USER_PREFERENCES_CONFIGURATION');compileControlUserPreferencesConfiguration(c);}
  // Lane B control opt-ins (product-ports/settings.mjs, routines.mjs) and the trusted platform capability record (capability-policy.mjs, N3).
- for(const [key,code] of [['tenantSettings','TENANT_SETTINGS_CONFIGURATION'],['routines','ROUTINES_CONFIGURATION']])if(c[key]!==undefined){requireValue(role==='control',code);own(c[key],['enabled']);requireValue(typeof c[key].enabled==='boolean',code);}
+ for(const [key,code] of [['tenantSettings','TENANT_SETTINGS_CONFIGURATION'],['routines','ROUTINES_CONFIGURATION']])if(c[key]!==undefined){requireValue(role==='control',code);own(c[key],['enabled'],key==='routines'?['core']:[]);requireValue(typeof c[key].enabled==='boolean',code);}
+ // Routines Core owners (lane B2): the wire A policy client and the Core-proof run control compose only from this closed block.
+ if(c.routines?.core!==undefined)compileRoutinesCoreConfiguration(c);
  if(c.capabilityPlatform!==undefined){requireValue(role==='control','CAPABILITY_PLATFORM_CONFIGURATION');compileCapabilityPlatform(c);}
  // Objective generation opt-ins (objective-generation/configuration.mjs): control `runs`/`start`, worker `runs`. Absent = disabled.
  if(c.objectiveGeneration!==undefined)compileObjectiveGenerationConfiguration(c,role);

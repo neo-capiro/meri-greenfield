@@ -26,7 +26,7 @@ BEGIN
  SELECT string_agg(t, ', ') INTO missing FROM unnest(ARRAY[
   'meri_settings.tenant_settings','meri_settings.user_preferences','meri_settings.settings_audit',
   'meri_intents.preparations','meri_commands.command_journal','meri_commands.approval_metadata',
-  'meri_schedules.projections','meri_schedules.intents','meri_schedules.occurrences',
+  'meri_schedules.projections','meri_schedules.intents','meri_schedules.occurrences','meri_schedules.run_cancel_proofs',
   'meri_task_lookup.lookups','meri_task_lookup.events','meri_objective_source.custody',
   'meri_objective_source.run_starts','meri_objective_source.reader_replays',
   'meri_artifacts.versions','meri_artifacts.heads','meri_artifacts.retention_subjects','meri_artifacts.retention_purges',
@@ -57,6 +57,8 @@ GRANT UPDATE (state,outcome,updated_at) ON meri_commands.command_journal TO meri
 -- Control: routines foreground schedule owner. Opening an occurrence belongs to the schedule worker (no role yet).
 GRANT SELECT, INSERT ON TABLE meri_schedules.projections, meri_schedules.intents TO meri_control_runtime;
 GRANT SELECT ON TABLE meri_schedules.occurrences TO meri_control_runtime;
+-- Control: single-use Core cancellation-proof jti ledger (insert-before-effect; never updated or deleted).
+GRANT SELECT, INSERT ON TABLE meri_schedules.run_cancel_proofs TO meri_control_runtime;
 GRANT UPDATE (generation,projection,projection_sha256,active_intent) ON meri_schedules.projections TO meri_control_runtime;
 GRANT UPDATE (state,updated_at) ON meri_schedules.intents, meri_schedules.occurrences TO meri_control_runtime;
 
