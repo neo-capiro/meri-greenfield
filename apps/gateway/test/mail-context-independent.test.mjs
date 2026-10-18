@@ -33,7 +33,7 @@ function fixture(kind='list'){
   const authorityPorts={
     async verifyCapability(){events.push('capability');if(state.revoked)throw Error('synthetic denial');return JSON.stringify(claims);},
     async currentRun(){events.push('run');return JSON.stringify({binding,policyRevision:scope.policyRevision,deadlineMs:state.deadline??NOW+10000,checkedAtMs:state.now});},
-    async authorizeBusiness({input}){events.push('policy');state.inputs??=[];state.inputs.push(clone(input));if(state.rotate)subject.authorizationDecisionId=id(String(state.checks));
+    async authorizeBusiness({input}){events.push('policy');state.inputs??=[];state.inputs.push(clone(input));if(state.rotate)subject.authorizationDecisionId=id('0123456789abcdef'[state.checks]);
       return JSON.stringify({decision:{decisionId:subject.authorizationDecisionId,actor:{tenantId:binding.tenantId,actorId:binding.actorId},operation:`${operation.id}@${operation.version}`,scopes:subject.scopes,policyRevision:scope.policyRevision,evaluatedAt:new Date(state.now).toISOString(),decision:'allowed',reasonCode:'SYNTHETIC_ONLY'},subject,grants:descriptor.requiredGrants});},
     async authorizeSources(){events.push('sources');return JSON.stringify({sourceIds:[...new Set(descriptor.sourceRequirements.map(x=>x.sourceId))],enabled:true,policyRevision:scope.policyRevision,checkedAtMs:state.now});}
   };
@@ -55,7 +55,7 @@ function fixture(kind='list'){
     const page={kind:'mail-candidate-source-page',contractVersion:'0.2.0',operation,requestId:id('e'),traceId:id('f'),binding:call.authority.binding,subject:call.authority.subject,window:{basis:'unbounded'},argumentsSha256:call.argumentsSha256,appliedFilters:[],sources:[{sourceId:'mail',authority:'authoritative',snapshotVersionId:null,adapterVersion:'0.2.0',status:'partial',synchronizedAt:null,asOf:null,retrievedAt:anchor,freshness:'unknown'}],coverage:{sourcesRequested:['mail'],sourcesChecked:['mail'],sourcesUnavailable:[],enumeration:'unknown',enumerableTotal:total,returnedCount:messages.length,truncated:more===true,historySupport:'bounded',limitations:['Synthetic incomplete stored candidates.']},selection,filterSha256:filterPins[kind],order:'effectiveAt-desc-nullslast_messageId-desc',snapshotVersionId:null,queryScope:{asOfInclusive:anchor,storedCreatedAtEndInclusive:anchor,effectiveStartInclusive:null,missingEffectiveDates:'included'},messages,totalMatches:total,hasMore:more,nextOffset:more===true?offset+messages.length:null,threadGroups:kind==='list'?messages.map(m=>({mailboxId:m.mailboxId,threadId:m.threadId,messageIds:[m.messageId]})):null,returnedThreadGroupCount:kind==='list'?messages.length:null,continuation:{cursor:null,requiredReads:messages.map(m=>m.readHandle),remainingSources:[]},evidenceReady:false,negativeAssertion:{kind:'none'}};
     return JSON.stringify(state.changeOutput?state.changeOutput(page):page);
   }};
-  const create=changes=>createToolDispatch({catalog:{entry:()=>entry,discoverable:()=>[entry]},authority,budget,limits,now:()=>state.now,newId:()=>id('b'),sourceEnabled:true,mailContextPorts:contextPorts,...changes});
+  const create=changes=>createToolDispatch({catalog:{entry:()=>entry,discoverable:()=>[entry]},authority,budget,limits,now:()=>state.now,newId:()=>id('b'),sourceEnabled:true,invocationId:'synthetic-mail-invocation',mailContextPorts:contextPorts,...changes});
   const request=patch=>JSON.stringify({operation,arguments:{...args,...patch}});
   return {kind,operation,args,events,stored,state,binding,subject,scope,claims,authorityPorts,budget,contextPorts,contract,entry,create,request};
 }
@@ -92,9 +92,18 @@ test('mail independent: first-page current decision IDs may rotate',async()=>{
   assert.equal(out.subject.authorizationDecisionId,id('3'));assert.equal(f.state.checks,5);assert.equal(f.events.includes('settle'),true);
 });
 
-test('mail independent: full previous/current page decision mismatch still refuses',async()=>{
-  const f=await seeded();f.subject.authorizationDecisionId=id('b');await denied(f,nextArgs);
-  assert.equal(f.events.includes('load'),true);assert.equal(f.events.includes('handler'),true);assert.equal(f.events.includes('settle'),false);assert.equal(f.events.includes('uncertain'),true);
+test('mail independent: fresh decisions continue without changing retained history',async()=>{
+  for(const kind of ['list','search']){
+    const f=fixture(kind);f.state.rotate=true;
+    const first=JSON.parse(await f.create().execute(f.request({}),'synthetic'));
+    const retained=clone(f.state.record);
+    const second=JSON.parse(await f.create().execute(f.request(nextArgs),'synthetic'));
+    assert.notEqual(first.subject.authorizationDecisionId,second.subject.authorizationDecisionId);
+    assert.equal(second.subject.authorizationDecisionId,id('8'));
+    assert.equal(f.events.filter(x=>x==='load').length,1);assert.equal(f.events.filter(x=>x==='handler').length,2);
+    assert.equal(f.events.filter(x=>x==='settle').length,2);assert.equal(f.events.includes('uncertain'),false);
+    assert.equal(f.stored.get(canonicalSha256(retained.key)).previousSha256,retained.previousSha256);
+  }
 });
 
 for(const total of [0,1,null])test(`mail independent: terminal or unknown total ${total} never retains invented continuation`,async()=>{
@@ -123,10 +132,10 @@ for(const [name,change]of Object.entries(corruptions))test(`mail independent: re
   const f=await seeded();f.state.changeLoad=change;await denied(f,nextArgs);assert.equal(f.events.includes('handler'),false);assert.equal(f.events.includes('reserve'),false);
 });
 
-for(const name of ['anchor','pageDecision','nextOffset','selection','window'])test(`mail independent: rehashed retained ${name} cannot bypass canonical continuation`,async()=>{
+for(const name of ['anchor','pagePolicy','nextOffset','selection','window'])test(`mail independent: rehashed retained ${name} cannot bypass canonical continuation`,async()=>{
   const f=await seeded();f.state.changeLoad=r=>{const p=r.record.previousPage;
     if(name==='anchor')p.queryScope.asOfInclusive='2026-10-10T04:00:00.000Z';
-    if(name==='pageDecision')p.subject.authorizationDecisionId=id('d');
+    if(name==='pagePolicy'){p.subject.policyRevision='foreign-policy';p.subject.scopes[0].policyRevision='foreign-policy';}
     if(name==='nextOffset')p.nextOffset=2;
     if(name==='selection')p.selection.limit=2;
     if(name==='window')p.window={basis:'calendar',startInclusive:ANCHOR,endExclusive:'2026-10-12T04:00:00.000Z'};

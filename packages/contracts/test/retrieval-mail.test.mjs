@@ -222,6 +222,21 @@ test('continuation binds retained anchor filters actor window and message offset
   for(const edit of [q=>q.queryScope.asOfInclusive='2026-01-01T00:00:00.001Z',q=>q.filterSha256='a'.repeat(64),q=>q.binding.writerFence=2,q=>q.nextOffset=2,q=>q.argumentsSha256='a'.repeat(64)]){const q=structuredClone(prior);edit(q);assert.throws(()=>assertMailCandidateSourcePage(p,nextRequest,'mail.list_messages',{...clock,previousPage:q}));}
   assert.throws(()=>assertMailListInput({...request,offset:1}),/asOf/);
 });
+test('list/search continuation accepts a fresh authorization decision while retaining subject and policy',()=>{
+  for (const operation of ['mail.list_messages','mail.search_messages']) {
+    const request={...listInput(),limit:1,...(operation==='mail.search_messages'?{query:'synthetic'}:{})};
+    const prior=candidatePage(request,operation);prior.totalMatches=2;prior.coverage.enumerableTotal=2;prior.hasMore=true;prior.nextOffset=1;prior.coverage.truncated=true;
+    const nextRequest={...request,offset:1,asOf:'2026-01-01T00:00:00Z'},current=candidatePage(nextRequest,operation);
+    current.totalMatches=2;current.coverage.enumerableTotal=2;current.subject.authorizationDecisionId=messageId;
+    assertMailCandidateSourcePage(current,nextRequest,operation,{...clock,previousPage:prior});
+    for (const change of [
+      page=>{page.subject.policyRevision='policy-v2';page.subject.scopes[0].policyRevision='policy-v2';page.messages[0].scopes[0].policyRevision='policy-v2';},
+      page=>{page.subject.scopes[0].resourceId=messageId;page.messages[0].scopes[0].resourceId=messageId;page.messages[0].mailboxId=messageId;},
+      page=>{page.binding.actorId='another-reader';page.subject.actorId='another-reader';page.subject.entityIds=['another-reader'];},
+      page=>{page.binding.tenantId='other-tenant';page.subject.tenantId='other-tenant';page.subject.scopes[0].tenantId='other-tenant';page.messages[0].scopes[0].tenantId='other-tenant';},
+    ]) {const changed=structuredClone(current);change(changed);assert.throws(()=>assertMailCandidateSourcePage(changed,nextRequest,operation,{...clock,previousPage:prior}),/Mail retained continuation binding mismatch/);}
+  }
+});
 test('dedup is mailbox-specific; order nulls-last and immutable versions are conservative',()=>{
   const p=candidatePage();p.messages.push({...structuredClone(p.messages[0]),messageId:uuid,readHandle:'other'});p.totalMatches=2;p.coverage.enumerableTotal=2;p.coverage.returnedCount=2;p.continuation.requiredReads.push('other');p.threadGroups[0].messageIds.push(uuid);
   assert.throws(()=>assertMailCandidateSourcePage(p,listInput(),'mail.list_messages',clock),/deduplication/);

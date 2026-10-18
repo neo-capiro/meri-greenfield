@@ -111,6 +111,11 @@ function assertMailSearchInput(input, options = {}) { return normalizeCandidateI
 function filterDigest(selection) {
   return canonicalSha256({...selection,offset:0,asOf:null});
 }
+function stableSubject(subject) {
+  // A new page gets a new authorization decision; its subject and scope stay bound.
+  const {authorizationDecisionId: ignored, ...selection} = subject;
+  return selection;
+}
 function assertMailCandidateSourcePage(page, input, operation, options = {}) {
   const now = trustedNow(options), kind = operationKind(operation);
   const selection = normalizeCandidateInput(input,operation,options);
@@ -132,7 +137,7 @@ function assertMailCandidateSourcePage(page, input, operation, options = {}) {
     validateShape(`Mail${kind}Selection`,previous.selection);
     const priorOffset=previous.selection.offset+previous.messages.length;
     if (previous.totalMatches===null || previous.messages.length!==Math.min(previous.selection.limit,Math.max(0,previous.totalMatches-previous.selection.offset)) || priorOffset>=previous.totalMatches || previous.coverage.returnedCount!==previous.messages.length || previous.coverage.enumerableTotal!==previous.totalMatches || previous.coverage.enumeration!=='unknown' || previous.coverage.truncated!==true || previous.continuation.cursor!==null || canonicalSha256(previous.queryScope)!==canonicalSha256(q) || (previous.selection.asOf!==null && previous.selection.asOf!==q.asOfInclusive)) fail('Mail prior-page pagination/anchor inconsistency');
-    if (previous.operation.id !== operation || previous.totalMatches===null || previous.hasMore!==true || previous.messages.length===0 || previous.nextOffset!==priorOffset || priorOffset>10000 || previous.nextOffset !== selection.offset || previous.queryScope.asOfInclusive !== q.asOfInclusive || previous.filterSha256 !== page.filterSha256 || filterDigest(previous.selection) !== page.filterSha256 || previous.argumentsSha256!==canonicalSha256(previous.selection) || canonicalSha256(previous.binding)!==canonicalSha256(page.binding) || canonicalSha256(previous.subject)!==canonicalSha256(page.subject) || canonicalSha256(previous.window)!==canonicalSha256(page.window)) fail('Mail retained continuation binding mismatch');
+    if (previous.operation.id !== operation || previous.totalMatches===null || previous.hasMore!==true || previous.messages.length===0 || previous.nextOffset!==priorOffset || priorOffset>10000 || previous.nextOffset !== selection.offset || previous.queryScope.asOfInclusive !== q.asOfInclusive || previous.filterSha256 !== page.filterSha256 || filterDigest(previous.selection) !== page.filterSha256 || previous.argumentsSha256!==canonicalSha256(previous.selection) || canonicalSha256(previous.binding)!==canonicalSha256(page.binding) || canonicalSha256(stableSubject(previous.subject))!==canonicalSha256(stableSubject(page.subject)) || canonicalSha256(previous.window)!==canonicalSha256(page.window)) fail('Mail retained continuation binding mismatch');
   } else if (options.previousPage !== undefined) fail('Unexpected prior page for first offset');
   if (c.enumeration !== 'unknown' || next.cursor !== null || c.returnedCount !== messages.length || messages.length > selection.limit) fail('Mail candidate incomplete coverage/count mismatch');
   if (page.totalMatches === null) {

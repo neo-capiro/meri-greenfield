@@ -82,7 +82,7 @@ function mailFixture(id = 'mail.list_messages') {
   };
   const create = changes => createToolDispatch({ catalog: { entry: () => f.entry, discoverable: () => [] },
     authority: f.authority, budget: f.budget, limits, now: () => f.state.now, newId: () => uuid('7'),
-    sourceEnabled: true, mailContextPorts: contextPorts, ...changes });
+    sourceEnabled: true, invocationId: 'synthetic-mail-invocation', mailContextPorts: contextPorts, ...changes });
   const args = { subject: { kind: 'personal' }, limit: 1, ...(id === 'mail.search_messages' ? { query: '  synthetic  ' } : {}) };
   const request = input => JSON.stringify({ operation, arguments: input });
   const execute = (input = args, changes, signal) => create(changes).execute(request(input), 'synthetic-opaque', signal);
@@ -118,29 +118,27 @@ for (const id of ['mail.list_messages', 'mail.search_messages']) {
   });
 }
 
-test('mail first page keeps fresh decision rotation and exact output page identity', async () => {
-  const f = mailFixture(), policy = f.ports.authorizeBusiness; let decisions = 0;
-  f.ports.authorizeBusiness = async (...args) => {
-    const row = JSON.parse(await policy(...args)), decisionId = uuid(String(++decisions));
-    row.decision.decisionId = decisionId; row.subject.authorizationDecisionId = decisionId;
-    return JSON.stringify(row);
-  };
-  const output = JSON.parse(await f.execute());
-  assert.equal(decisions, 5); assert.equal(output.subject.authorizationDecisionId, uuid('3'));
-  const record = [...f.records.values()][0];
-  assert.deepEqual(record.previousPage, output);
-  assert.equal(Object.hasOwn(record.key.subject, 'authorizationDecisionId'), false);
-});
-
-test('prior/current page decision mismatch refuses without rewriting retained history', async () => {
-  const f = mailFixture(); await f.execute();
-  const original = structuredClone([...f.records.values()][0]);
-  f.subject.authorizationDecisionId = uuid('e');
-  await assert.rejects(f.execute({ ...f.args, offset: 1, asOf: f.anchor }), /INVALID_RESULT/);
-  assert.equal(f.calls.filter(c => c === 'load-previous').length, 1);
-  assert.equal(f.calls.filter(c => c === 'handler').length, 2);
-  assert.equal(f.calls.filter(c => c === 'uncertain').length, 1);
-  assert.deepEqual([...f.records.values()][0], original);
+test('mail list/search pages accept fresh decisions and retain the exact previous page', async () => {
+  for (const id of ['mail.list_messages', 'mail.search_messages']) {
+    const f = mailFixture(id), policy = f.ports.authorizeBusiness; let decisions = 0;
+    f.ports.authorizeBusiness = async (...args) => {
+      const row = JSON.parse(await policy(...args)), decisionId = uuid('0123456789abcdef'[++decisions]);
+      row.decision.decisionId = decisionId; row.subject.authorizationDecisionId = decisionId;
+      return JSON.stringify(row);
+    };
+    const first = JSON.parse(await f.execute());
+    assert.equal(decisions, 5); assert.equal(first.subject.authorizationDecisionId, uuid('3'));
+    const retained = structuredClone([...f.records.values()][0]);
+    assert.deepEqual(retained.previousPage, first);
+    assert.equal(Object.hasOwn(retained.key.subject, 'authorizationDecisionId'), false);
+    const second = JSON.parse(await f.execute({ ...f.args, offset: 1, asOf: f.anchor }));
+    assert.equal(decisions, 10); assert.equal(second.subject.authorizationDecisionId, uuid('8'));
+    assert.notEqual(second.subject.authorizationDecisionId, first.subject.authorizationDecisionId);
+    assert.deepEqual([...f.records.values()][0], retained);
+    assert.equal(f.calls.filter(c => c === 'load-previous').length, 1);
+    assert.equal(f.calls.filter(c => c === 'handler').length, 2);
+    assert.equal(f.calls.filter(c => c === 'uncertain').length, 0);
+  }
 });
 
 test('unknown, exhausted and empty totals retain no cursor or completeness claim', async () => {
