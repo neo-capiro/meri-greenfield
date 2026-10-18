@@ -7,10 +7,11 @@ import {own,data} from '../../packages/contracts/commands-0.2/execution-boundary
 import {createNativeCapabilityClient} from './native-client.mjs';
 import {readRuntimeTemporalTls as temporalTls,startRuntimeTemporalAuthorization as temporalAuthorization} from './temporal-product-runtime.mjs';
 import {readSecret,fault} from './config.mjs';
-import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 import {listenRuntime} from './http-server.mjs';
 import {createTemporalRuntimeFence,assertTemporalRuntimeCleanup,temporalCleanupUnknown} from './temporal-runtime-fence.mjs';
 import {createObjectiveWorkerActivities,objectiveWorkerPorts} from './objective-generation/worker-activities.mjs';
+import {stopOriginal,createOriginalReconciler as createReconcileActivity} from './original-stop.mjs';
+export {createReconcileActivity};
 async function sleep(signal,ms){signal.throwIfAborted();await new Promise((resolve,reject)=>{const abort=()=>{clearTimeout(timer);reject(fault('CANCELLED'));},timer=setTimeout(()=>{signal.removeEventListener('abort',abort);resolve();},ms);signal.addEventListener('abort',abort,{once:true});if(signal.aborted)abort();});}
 /**
  * The only admitted broker mode is the prepared original kickoff. Every exit after dispatch (terminal result, cancellation,
@@ -19,10 +20,6 @@ async function sleep(signal,ms){signal.throwIfAborted();await new Promise((resol
  * execution/start mode is not composed: its routes have no original stop owner, so a cancelled activity left the launched
  * task running (audit L5).
  */
-/** The original's independent stop through execution/kickoff/stop. The control owner retires the original and settles a run
- * it left nonterminal (run reconciler); an unproven stop or a mismatched receipt is UNKNOWN. */
-async function stopOriginal({native,binding,expiresAtMs,now,timeoutMs,code}){const executionKey=canonicalSha256(binding),life=createOperationLifetime({now,deadlineMs:now()+timeoutMs,errorFactory:()=>fault(code)});
- try{const p=own(await life.run(signal=>native.call('execution/kickoff/stop',{binding,executionId:executionKey},{signal})),['binding','executionId','expiresAtMs']);if(canonicalSha256(p.binding)!==executionKey||p.executionId!==executionKey||!Number.isSafeInteger(p.expiresAtMs)||expiresAtMs!==undefined&&p.expiresAtMs!==expiresAtMs)throw fault(code);}finally{life.close();}}
 export function createBrokerActivity({native,context=()=>Context.current(),now=Date.now,pollMs=1000}){
  if(!Number.isSafeInteger(pollMs)||pollMs<10||pollMs>1000)throw fault('BROKER_CONFIGURATION');
  return async function executeConversation(input){own(input,['binding']);validateShape('RunBinding',input.binding);const activity=context(),signal=activity.cancellationSignal;signal.throwIfAborted();const executionKey=canonicalSha256(input.binding);let started,cleaning;
@@ -34,13 +31,6 @@ export function createBrokerActivity({native,context=()=>Context.current(),now=D
    for(;;){currentLease();const current=observe(await native.call('execution/poll',{binding:input.binding,executionId:started.executionId},{signal}));if(current.state!=='executing'){await cleanup();return {state:current.state};}await sleep(signal,pollMs);}
   }catch(error){try{await cleanup();}catch(cleanupError){throw Object.assign(fault('BROKER_KICKOFF_CLEANUP_UNKNOWN'),{cause:cleanupError});}throw error;}
  };
-}
-/** Original-attempt reconciliation, scheduled by the workflow after executeConversation failed or was lost (for example the
- * heartbeat timeout of a crashed poller, which never ran its own cleanup). It repeats the same idempotent independent stop;
- * it never starts, kicks off or redispatches the original. */
-export function createReconcileActivity({native,now=Date.now,timeoutMs=15000}){
- if(!Number.isSafeInteger(timeoutMs)||timeoutMs<1||timeoutMs>30000)throw fault('BROKER_CONFIGURATION');
- return async function reconcileConversation(input){own(input,['binding']);validateShape('RunBinding',input.binding);await stopOriginal({native,binding:input.binding,expiresAtMs:undefined,now,timeoutMs,code:'BROKER_RECONCILE_UNKNOWN'});return {state:'reconciled'};};
 }
 export function workerOptions({configuration,connection,native}){return {connection,namespace:configuration.temporal.namespace,taskQueue:configuration.temporal.taskQueue,workflowsPath:fileURLToPath(new URL('../control/conversations/workflow.ts',import.meta.url)),activities:{executeConversation:createBrokerActivity({native}),reconcileConversation:createReconcileActivity({native}),...createObjectiveWorkerActivities(objectiveWorkerPorts({configuration,native}))},maxConcurrentActivityTaskExecutions:10,shutdownGraceTime:configuration.limits.shutdownMs,shutdownForceTime:configuration.limits.shutdownMs+1000};}
 /** Readiness fails when the poller is not running or when the trusted-client authorization is not healthy (expired, failed or closed). */

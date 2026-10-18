@@ -6,6 +6,7 @@
  * reservation and settlement composition. It opens no socket or listener.
  */
 import {TextDecoder} from 'node:util';
+import {PRODUCT_MAX_INPUT_TOKENS,PRODUCT_MAX_OUTPUT_TOKENS} from '../../gateway/model-proxy/product-envelope.mjs';
 
 const MAX_WIRE=12*1024*1024;
 const MAX_BODY=4*1024*1024;
@@ -100,7 +101,7 @@ export function decodeReservationFrame(value){
    url:string(native[1],1024,{ascii:true}),host:string(native[2],256,{ascii:true}),
    contentType:string(native[3],256,{ascii:true}),body:body(native[4]),
    headers:headers(native[5])},
-  count:{inputTokens:integer(count[0],1,8192),
+  count:{inputTokens:integer(count[0],1,PRODUCT_MAX_INPUT_TOKENS),
    nativeBodySha256:string(count[1],64,{pattern:SHA}),
    modelId:string(count[2],128,{ascii:true}),origin:string(count[3],64,{pattern:SLOT})}};
  if(observation.requestId!==request.requestId||
@@ -117,9 +118,9 @@ function usage(value,id){
   native_body_sha256:string(b[1],64,{pattern:SHA}),
   raw_request_sha256:string(b[2],64,{pattern:SHA}),
   pricing_revision:string(b[3],64,{pattern:SHA}),
-  counted_input_tokens:integer(b[4],1,8192),max_output_tokens:integer(b[5],1,256),
+  counted_input_tokens:integer(b[4],1,PRODUCT_MAX_INPUT_TOKENS),max_output_tokens:integer(b[5],1,PRODUCT_MAX_OUTPUT_TOKENS),
   allowed_tool_names:checked},evidence_sha256:string(u[2],64,{pattern:SHA}),
-  input_tokens:integer(u[3],1,8192),output_tokens:integer(u[4],0,256),
+  input_tokens:integer(u[3],1,PRODUCT_MAX_INPUT_TOKENS),output_tokens:integer(u[4],0,PRODUCT_MAX_OUTPUT_TOKENS),
   reason:u[5],origin:u[6]};
  if(result.status!=='COMPLETE'||result.binding.request_id!==id||
     result.input_tokens!==result.binding.counted_input_tokens||
@@ -153,7 +154,7 @@ export function decodeCompleteCaptureFrame(value){
    pricingRevision:string(complete[8],64,{pattern:SHA}),
    evidenceSha256:string(complete[9],64,{pattern:SHA}),httpStatus:integer(complete[10],200,200),
    complete:complete[11],eof:complete[12],
-   usage:{inputTokens:integer(tokens[0],1,8192),outputTokens:integer(tokens[1],0,256)}},
+   usage:{inputTokens:integer(tokens[0],1,PRODUCT_MAX_INPUT_TOKENS),outputTokens:integer(tokens[1],0,PRODUCT_MAX_OUTPUT_TOKENS)}},
   usageResult:usage(frame[6],requestId)};
  if(result.reservation.requestId!==requestId||result.reservation.state!=='UNKNOWN'||
     result.completion.requestId!==requestId||result.completion.complete!==true||
