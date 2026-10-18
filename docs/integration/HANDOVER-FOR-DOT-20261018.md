@@ -26,7 +26,7 @@ Written for dot (cloud, GitHub only) on Neo's instruction. Everything referenced
 |---|---|---|
 | Lane L | `69eaa9d5`, bound `1b923142`, render `0d26ac3a` | continuation authority (`readCurrent` / `admit` / `retire`), Core P-INT-10 approval forwarder under `intents.core`, `features.intents.core` |
 | Lane R3 | `ccb82e3c` | installation measurement → runtime values → `features.reads.installation` / `discovery` → brotli material → cli → composer |
-| #153 | `4fa4a950` | run budgets passed through to the worker's read ledger |
+| #153 | `4fa4a950`; composer wired after the first handover (see PR #121 addendum) | run budgets passed through to the worker's read ledger; `assembleControl` now composes `runBudgets: createRunAllocationBudgetReader({pool, namespace:'product', now})` for the conversations service (read-only, no new grant) — this wiring was missing at the first handover; run-budgets + startup suites 22/22 |
 | Lane X follow-up | `0a165ee5` (in tip) | model proxy tolerates execution grants on the run |
 | #155, #154 | `21cd801e`, `61d7511b`, re-pin `1b8a1fb5` | membership `permissions` accepted as data (the lane T defect); dot's #150 corrections; `read_delegation_facts` 0001 re-pinned to `700663d7…03eb` |
 | Reconciliation | `6aa515b3` | `PLAN-RECONCILIATION-20261018.md`; ledger header cites both plans |
