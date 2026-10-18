@@ -29,9 +29,10 @@ function queryDate(value){
   const namedZone=firstNumber>=0&&/(?:^|[^A-Za-z])(?:UT|UTC|GMT|[ECMP][SD]T|Z)(?![A-Za-z])/i.test(text.slice(firstNumber));
   // Legacy syntax allows a meridiem before the offset or a year after it.
   // Recognize the signed token, leaving its grammar to the original native parse.
-  // The token boundary excludes hyphenated date fields after a clock.
+  // A plus may directly follow a date number. A minus still needs a token
+  // boundary because native legacy parsing also uses it for date fields.
   const clock=/\d+\s*:\s*\d+(?:\s*:\s*\d+(?:\s*\.\s*\d+)?)?(?:\s*[AP]M)?/i.exec(text);
-  const numericZone=clock!==null&&/(?:^|[^A-Za-z0-9])[+-]\d/.test(text.slice(clock.index+clock[0].length));
+  const numericZone=clock!==null&&/\+\d|(?:^|[^A-Za-z0-9])-\d/.test(text.slice(clock.index+clock[0].length));
   const localIso=/^(?:\d{4}|[+-]\d{6})-\d{2}-\d{2}(?:T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?)?$/i.test(value);
   const utcText=unclosedAt<0?value:value.slice(0,unclosedAt);
   return namedZone||numericZone?original:Date.parse(localIso?value+'Z':utcText+' UTC');

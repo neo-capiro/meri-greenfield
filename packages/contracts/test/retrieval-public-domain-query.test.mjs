@@ -111,6 +111,7 @@ test('trusted default as-of is distinct from explicit date and generatedAt',()=>
   assert.equal(normalize({...r,asOfDate:value}).input.asOfDate,value==='2020-01-01'?'2020-01-01T00:00:00.000Z':'2020-01-01T12:30:00.000Z');
  for(const [value,expected]of [
   ['January 1, 2020 12:30 PM -0500','2020-01-01T17:30:00.000Z'],
+  ['12:30 Jan 1 2020+0530','2020-01-01T07:00:00.000Z'],
   ['Jan 1 2020 12:30 +5:3','2020-01-01T07:27:00.000Z'],
   ['Jan 1 2020 12:30 -5:3','2020-01-01T17:33:00.000Z'],
   ['12:30 Jan;-1 2020','2020-01-01T13:30:00.000Z'],
@@ -127,7 +128,7 @@ test('trusted default as-of is distinct from explicit date and generatedAt',()=>
   ['01 Jan 2020 12:30:00 (foo) +0530 (India Standard Time)','2020-01-01T07:00:00.000Z'],
  ])
   assert.equal(normalize({...r,asOfDate:value}).input.asOfDate,expected);
- for(const [value,expected]of [['January 1, 2020 12:30 PM -0500','2020-01-01T17:30:00.000Z'],['Jan 1 12:30:00 -0500 2020','2020-01-01T17:30:00.000Z'],['+002020-01-01T12:30:00','2020-01-01T12:30:00.000Z'],['-000001-01-01','-000001-01-01T00:00:00.000Z'],['-000001-01-01T12:30:00','-000001-01-01T12:30:00.000Z'],['-000001-01-01T12:30:00-05:00','-000001-01-01T17:30:00.000Z'],['January 1, 2020','2020-01-01T00:00:00.000Z'],['2020-01-01T12:30:00','2020-01-01T12:30:00.000Z'],['2020-01-01T12:30:00-05:00','2020-01-01T17:30:00.000Z']])
+ for(const [value,expected]of [['12:30 Jan 1 2020+0530','2020-01-01T07:00:00.000Z'],['January 1, 2020 12:30 PM -0500','2020-01-01T17:30:00.000Z'],['Jan 1 12:30:00 -0500 2020','2020-01-01T17:30:00.000Z'],['+002020-01-01T12:30:00','2020-01-01T12:30:00.000Z'],['-000001-01-01','-000001-01-01T00:00:00.000Z'],['-000001-01-01T12:30:00','-000001-01-01T12:30:00.000Z'],['-000001-01-01T12:30:00-05:00','-000001-01-01T17:30:00.000Z'],['January 1, 2020','2020-01-01T00:00:00.000Z'],['2020-01-01T12:30:00','2020-01-01T12:30:00.000Z'],['2020-01-01T12:30:00-05:00','2020-01-01T17:30:00.000Z']])
   assert.equal(normalize(request({filters:[{field:'open_date',op:'eq',value}]})).input.filters[0].value,expected);
 
  for(const [value,expected]of [
@@ -149,7 +150,7 @@ test('trusted default as-of is distinct from explicit date and generatedAt',()=>
   assert.equal(normalize(request({filters:[{field:'open_date',op:'eq',value}]})).input.filters[0].value,expected);
  }
  // An offset must not be inferred from the date separators after a clock.
- for(const value of ['12:30:00 2020-01-01','12:30 Jan-1-2020'])assert.equal(normalize({...r,asOfDate:value}).input.asOfDate,'2020-01-01T12:30:00.000Z');
+ for(const value of ['12:30:00 2020-01-01','12:30 Jan-1-2020','12:30 Jan 1 2020-0530','12:30 Jan 1 2020-5'])assert.equal(normalize({...r,asOfDate:value}).input.asOfDate,'2020-01-01T12:30:00.000Z');
  for(const value of [' 2020-01-01T12:30:00Z ','2020-01-01T12:30:00 invalid','Jan 1 12:30:00 -000001','January 1, -2020 12:30:00','Jan 1 2020 1 : 2 -0500'])assert.throws(()=>normalize({...r,asOfDate:value}));
  // Date filters retain extended ISO years; the as-of wire format stays RFC3339.
  assert.throws(()=>normalize({...r,asOfDate:'-000001-01-01T12:30:00'}),/date-time/u);
@@ -166,9 +167,10 @@ test('legacy explicit query dates preserve the native UTC parser reference',()=>
    const placements=['Jan 1 12:30:00 '+zone+' 2020','Jan 1 12:30:00 '+zone+', 2020',
     'Jan 1 2020 12:30 PM'+zone,'Jan 1 2020 12:30 PM,'+zone,'Jan 1 2020 12:30 '+zone+' PM','2020 12:30:00 Jan 1 '+zone];
    for(const separator of [';','/','.',':','!','@'])placements.push('Jan 1 2020 12:30 PM'+separator+zone);
+   if(zone.startsWith('+'))for(const date of ['12:30 Jan 1 2020','12:30:00 Jan 1 2020','12:30 Jan-1-2020','12:30 2020-01-01'])placements.push(date+zone);
    for(const value of placements)cases.push(value+comment);
   }
- assert.equal(cases.length,900);
+ assert.equal(cases.length,948);
  const reference=JSON.parse(execFileSync(process.execPath,['--input-type=module','--eval',`
   import {readFileSync} from 'node:fs';
   process.stdout.write(JSON.stringify(JSON.parse(readFileSync(0,'utf8')).map(value=>{
