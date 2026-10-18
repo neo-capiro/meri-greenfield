@@ -9,9 +9,10 @@ import {encodeCursor} from './wire.mjs';
 const UUID4=/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u;
 /** `decisions` (`core-decisions.mjs`) is optional: without it the review path lists but `decide` answers MEMORY_UNAVAILABLE. */
 export function createMemoryProducer(options){
- const {journal,review,memory,decisions=null,retention=null,newId,now}=options??{};
+ const {journal,review,memory,decisions=null,retention=null,requireSurfaceRetentionSubject=false,newId,now}=options??{};
  if(['insert','recordSubmission','recordUnknown','get','findOwnByKey','listOwn'].some(k=>typeof journal?.[k]!=='function')||['submit','status'].some(k=>typeof review?.[k]!=='function')||
-  ['readTarget','findByKey'].some(k=>typeof memory?.[k]!=='function')||decisions!==null&&typeof decisions?.decide!=='function'||retention!==null&&typeof retention?.assertServable!=='function'||typeof newId!=='function'||typeof now!=='function')refuse('PRODUCT_CONFIGURATION');
+  ['readTarget','findByKey'].some(k=>typeof memory?.[k]!=='function')||decisions!==null&&typeof decisions?.decide!=='function'||retention!==null&&typeof retention?.assertServable!=='function'||
+  typeof requireSurfaceRetentionSubject!=='boolean'||requireSurfaceRetentionSubject&&retention===null||typeof newId!=='function'||typeof now!=='function')refuse('PRODUCT_CONFIGURATION');
  const id=()=>{const v=newId();if(typeof v!=='string'||!UUID4.test(v))refuse('PRODUCT_CONFIGURATION');return v;};
  /** Only a conversation-origin candidate has a canonical retention subject today. The producer never infers one from source
   * citations or a surface request; those candidates need the separately owned actor/client subject policy. */
@@ -23,6 +24,9 @@ export function createMemoryProducer(options){
  const servable=candidate=>originServable(candidate.tenantId,candidate.origin);
  async function requireOriginServable(tenantId,origin){if(!await originServable(tenantId,origin))refuse('MEMORY_PROPOSAL_NOT_FOUND');}
  async function requireServable(candidate){if(!await servable(candidate))refuse('MEMORY_PROPOSAL_NOT_FOUND');}
+ /** There is no canonical actor/client retention subject for a new surface-origin payload yet. Keep old owner review/read paths,
+  * but production must not create or resubmit such a payload until the shared retention owner defines its policy. */
+ function requireWritableOrigin(origin){if(requireSurfaceRetentionSubject&&origin.kind!=='conversation')refuse('MEMORY_RETENTION_SUBJECT_UNAVAILABLE','NOT_DISPATCHED');}
  /** Journal then submit. A replayed idempotency key resubmits the identical journaled candidate only when its earlier submission was
   * not acknowledged; Core deduplicates it by (candidateId, hash), so the replay cannot create a second review item. */
  async function produce(fields,requestSha256,{signal,deadlineMs}){
@@ -69,6 +73,7 @@ export function createMemoryProducer(options){
  /** Read-only reconciliation of journaled candidates against Core. A candidate Core already holds is recorded as SUBMITTED; nothing
   * is (re)submitted from a read. Review-status failure yields `unavailable`, never `pending`. */
  async function statuses(principal,records,{signal,deadlineMs}){
+  if(records.length===0)return [];
   let reviews=null;
   try{reviews=await review.status({tenantId:principal.tenantId,actorId:principal.actorId,candidates:records.map(r=>({candidateId:r.candidate.candidateId,candidateSha256:r.candidateSha256})),signal,deadlineMs});}catch{}
   const out=[];
@@ -95,6 +100,7 @@ export function createMemoryProducer(options){
   list,
   async propose({principal,request,origin,signal,deadlineMs}){
    try{
+    requireWritableOrigin(origin);
     assertProposalScope(principal,request);
     const requestSha256=canonicalSha256({operation:'memory.propose',origin,request});
     return await produce({principal,...request,corrects:null,reason:null,origin},requestSha256,{signal,deadlineMs});
@@ -103,6 +109,7 @@ export function createMemoryProducer(options){
   /** Sourced correction of an existing memory. The target is pinned by its current content hash; review decides whether it applies. */
   async correct({principal,request,origin,signal,deadlineMs}){
    try{
+    requireWritableOrigin(origin);
     const requestSha256=canonicalSha256({operation:'memory.correct',origin,request});
     const retained=await replay(principal,request.idempotencyKey,requestSha256,{signal,deadlineMs});if(retained)return retained;
     const target=await memory.readTarget({tenantId:principal.tenantId,actorId:principal.actorId,memoryId:request.targetMemoryId,signal,deadlineMs});

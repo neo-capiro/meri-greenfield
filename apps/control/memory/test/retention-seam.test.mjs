@@ -33,3 +33,35 @@ test('conversation inventory refuses unbounded or malformed enumeration before o
  }
  assert.equal(connects,0);
 });
+
+test('conversation candidate insert checks canonical projection under recovery and subject locks before writing',async()=>{
+ const f=createMemoryPoolFixture(),journal=createPostgresMemoryJournal({pool:f.pool,guardConversationRetention:true}),conversationId=id(801),tenantId=principal().tenantId;
+ const built=buildCandidate({candidateId:id(91),principal:principal(),scope:'personal',clientId:null,content:'A pending fact',key:null,ttlDays:null,
+  sources:[],origin:{kind:'conversation',conversationId,runId:id(802),commandId:id(803),commandSha256:'a'.repeat(64)},
+  idempotencyKey:id(92),createdAt:new Date(NOW).toISOString()});
+ const insert=()=>journal.insert({...built,requestSha256:'b'.repeat(64)});
+ f.retentionRows.set(tenantId+'/'+conversationId,'SUPPRESSED');
+ await assert.rejects(insert(),e=>productFailure(e)?.code==='MEMORY_PROPOSAL_NOT_FOUND');
+ assert.equal(f.rows.length,0);
+ assert.deepEqual(f.statements.slice(0,7),['BEGIN',"SET LOCAL statement_timeout = '5s'","SET LOCAL lock_timeout = '2s'",
+  'SET TRANSACTION ISOLATION LEVEL READ COMMITTED',
+  "SELECT pg_advisory_xact_lock_shared(hashtextextended('meri_retention_recovery',0))",
+  'SELECT pg_advisory_xact_lock(hashtextextended($1,0))',
+  'SELECT state FROM meri_conversations.retention_subjects WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE']);
+ assert.deepEqual(f.queries[5].params,['meri_retention_subject:'+tenantId+':conversation:'+conversationId]);
+ assert.deepEqual(f.queries[6].params,[tenantId,conversationId]);
+ assert.equal(f.statements[7],'ROLLBACK','a suppressed insert never reaches the candidate table');
+ f.retentionRows.set(tenantId+'/'+conversationId,'RELEASED');
+ await insert();assert.equal(f.rows.length,1);
+ assert.ok(f.statements.some(s=>s.startsWith('INSERT INTO meri_memory.candidates')));
+});
+
+test('retention projection read failure closes a conversation insert before candidate SQL',async()=>{
+ const built=buildCandidate({candidateId:id(93),principal:principal(),scope:'personal',clientId:null,content:'A pending fact',key:null,ttlDays:null,
+  sources:[],origin:{kind:'conversation',conversationId:id(801),runId:id(802),commandId:id(803),commandSha256:'a'.repeat(64)},
+  idempotencyKey:id(94),createdAt:new Date(NOW).toISOString()});
+ const statements=[],pool={async connect(){return {async query(sql){statements.push(sql);if(sql.startsWith('SELECT state FROM meri_conversations.retention_subjects'))throw Error('database unavailable');return {rows:[]};},release(){}};}};
+ const journal=createPostgresMemoryJournal({pool,guardConversationRetention:true});
+ await assert.rejects(journal.insert({...built,requestSha256:'b'.repeat(64)}),e=>productFailure(e)?.code==='MEMORY_JOURNAL_UNAVAILABLE');
+ assert.equal(statements.some(s=>s.startsWith('INSERT INTO meri_memory.candidates')),false);
+});

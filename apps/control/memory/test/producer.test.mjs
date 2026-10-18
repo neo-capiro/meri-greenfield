@@ -10,9 +10,10 @@ import {correctRequest,listRequest,proposeRequest,statusRequest} from '../wire.m
 import {FIRM_PROPOSAL_PERMISSION} from '../eligibility.mjs';
 import {CLIENT_A,CLIENT_B,NOW,T2,createCoreDouble,createJournalDouble,id,ids,principal} from './fixtures.mjs';
 const surface={kind:'surface'};
-function setup({retention=null}={}){
+function setup({retention=null,requireSurfaceRetentionSubject=false}={}){
  const journal=createJournalDouble(),core=createCoreDouble(),newId=ids();
- const producer=createMemoryProducer({journal,review:createCoreReview({transport:core.transport}),memory:createCoreMemoryReads({transport:core.transport}),retention,newId,now:()=>NOW});
+ const producer=createMemoryProducer({journal,review:createCoreReview({transport:core.transport}),memory:createCoreMemoryReads({transport:core.transport}),retention,
+  requireSurfaceRetentionSubject,newId,now:()=>NOW});
  const propose=(p,body)=>producer.propose({principal:p,request:proposeRequest(body),origin:surface});
  const correct=(p,body)=>producer.correct({principal:p,request:correctRequest(body),origin:surface});
  const list=(p,body={})=>producer.list({principal:p,request:listRequest(body)});
@@ -202,6 +203,16 @@ test('an unavailable conversation retention gate fails closed; surface candidate
  assert.equal(t.journal.rows.size,0);assert.equal(t.core.calls.length,0);
  const surfaceView=await t.propose(principal(),{idempotencyKey:id(714),scope:'personal',content:'surface fact'});
  assert.equal(surfaceView.review.status,'pending','the separate surface subject policy is not guessed from a citation or proposer');
+});
+
+test('production surface writes fail closed before journal or Core until an actor/client retention subject is owned',async()=>{
+ const retention={async assertServable(){throw Error('a surface request has no conversation subject');}};
+ const t=setup({retention,requireSurfaceRetentionSubject:true});
+ await code(t.propose(principal(),{idempotencyKey:id(820),scope:'personal',content:'new'}),'MEMORY_RETENTION_SUBJECT_UNAVAILABLE');
+ await code(t.correct(principal(),{idempotencyKey:id(821),targetMemoryId:'clio:'+id(822),content:'changed',reason:'source changed',sources:[web]}),
+  'MEMORY_RETENTION_SUBJECT_UNAVAILABLE');
+ assert.equal(t.journal.rows.size,0);assert.equal(t.core.calls.length,0);
+ assert.throws(()=>setup({requireSurfaceRetentionSubject:true}),e=>productFailure(e)?.code==='PRODUCT_CONFIGURATION');
 });
 
 test('uncertain submission stays submission_unknown, is reconciled from Core on read, and replay resubmits only the identical candidate',async()=>{

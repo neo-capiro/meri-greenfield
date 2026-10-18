@@ -1,17 +1,22 @@
 # Memory family composition (lane M, 18 October 2026)
 
 Status: source only. D016 #6 (`docs/coordination/DECISIONS.md`): memory is **review-only and in scope**. Nothing here applies a
-migration, opens a listener or changes a composer file; the composer diffs below are what R0 applies to activate the family.
+migration or opens a listener. Earlier composer diffs below record the integration contract; the late retention bind and readiness
+correction remain shared-owner changes.
 
 ## What the family composes (`apps/runtime/product-ports/memory.mjs`)
 
-Composed only when `configuration.memory.enabled === true` (with `origin` and `serviceSecretFile`) AND the prepared candidate supplies
-`conversationMembership`. Otherwise no port: the mount answers `503 MEMORY_UNAVAILABLE / NOT_DISPATCHED`, readiness `memory.producer:
-unavailable`.
+Composed only when `configuration.memory.enabled === true` (with `origin` and `serviceSecretFile`),
+`configuration.retention.enabled === true`, AND the prepared candidate supplies `conversationMembership`. Otherwise no port: the
+mount answers `503 MEMORY_UNAVAILABLE / NOT_DISPATCHED`, readiness `memory.producer: unavailable`. A composed port also returns 503
+until control binds the canonical retention gate; shared readiness must not report serving before that bind.
 
 - Port `memoryApplication` (`apps/control/memory/application.mjs`): `MEMORY_PATHS` of `apps/control/memory/protocol.mjs`
-  - `/api/memory/proposals/{list,status,propose,correct}` — the governed producer surface (unchanged wire, `wire.mjs`).
-  - `/api/memory/review/list` `{cursor?,limit?,clientId?}` → `{proposals:[PENDING own candidates], nextCursor}`.
+  - `/api/memory/proposals/{list,status,propose,correct}` — the governed producer surface (unchanged wire, `wire.mjs`). New
+    surface-origin propose/correct is held at `503 MEMORY_RETENTION_SUBJECT_UNAVAILABLE` pending retention ownership.
+  - `/api/memory/review/list` `{cursor?,limit?,clientId?}` → `{proposals:[PENDING own candidates], nextCursor,
+    reviewAvailability:{state:'available'|'partial'|'unavailable',unresolvedCount}}`. Availability is page-local; callers drain
+    `nextCursor` to determine the whole inbox's state. A Core status outage cannot masquerade as an empty inbox.
   - `/api/memory/review/approve` `{candidateId}` / `/api/memory/review/reject` `{candidateId, reason}` → `{proposal, decision:{decision,
     outcome}}`; forwarded to Core's owner-decision route (additions, personal own only) or version-candidate routes (corrections).
     Effect routes: `MEMORY_DECISION_UNCERTAIN` carries `outcome:'UNKNOWN'`.
@@ -67,9 +72,11 @@ unavailable`.
 +const publicPath=path=>...||Object.values(TENANT_SETTINGS_PATHS).includes(path)||Object.values(MEMORY_PATHS).includes(path)||path.startsWith('/api/documents/');
 ```
 
-### `apps/runtime/control.mjs` (readiness: require the journal table when composed)
+### `apps/runtime/control.mjs` (bind retention and require the journal table when composed)
 
 ```diff
+ // After retentionGate(...) creates the exact canonical gate, before products can serve:
+ if(productContext && retention)bindMemoryRetention(productContext,retention.gate);
  const intentTables=Object.freeze(ports.intentApplication?[...]:[]);
 +// Composed memory needs its candidate journal (lane M); a disabled family adds no table.
 +const memoryTables=Object.freeze(ports.memoryApplication?['meri_memory.candidates']:[]);
@@ -79,6 +86,10 @@ unavailable`.
    if(assembly.intentTables?.length){...INTENTS_SCHEMA_UNAVAILABLE...}
 +  if(assembly.memoryTables?.length){const r=await pool.query('SELECT name,to_regclass(name) AS relation FROM unnest($1::text[]) AS names(name)',[assembly.memoryTables]);if(r.rows.length!==assembly.memoryTables.length||r.rows.some(row=>row.relation===null))throw fault('MEMORY_SCHEMA_UNAVAILABLE');}
 ```
+
+Import `bindMemoryRetention` from `product-ports/memory.mjs`. `memoryComposition(productContext).retentionBound()` is the
+source-owned readiness signal; the shared readiness path must refuse an unbound memory composition. The bound gate is
+`retention.gate`, already used by conversation serving, not a new memory suppression store.
 
 ### `apps/runtime/product-readiness.mjs` (+ `apps/runtime/test/product-readiness.test.mjs`)
 
@@ -90,6 +101,10 @@ unavailable`.
 -  {name:'memory.producer',state:'unavailable'},
 ```
 Test line 14: `missingOwners` of the "composed owners" case becomes `['tasks.commands','schedules.application','schedules.inbox','sources.currentInstallation','proxy.modelGrants','memory.producer','schedules.dispatchWorker']` only while `memoryApplication` is not in `configuredOwners` (unchanged list); add `'memoryApplication'` to that case's `configuredOwners` and drop `'memory.producer'` from the expectation.
+
+The existing `configuredOwners.includes('memoryApplication')` check is insufficient before the late bind. The shared owner should
+pass the memory composition's `retentionBound()` result into readiness and mark `memory.producer` unavailable if false, even though
+the route port was captured. This prevents readiness from declaring an unbound 503 route composed.
 
 ### `apps/runtime/cli.mjs` (run path: give the family the relay)
 
@@ -143,22 +158,36 @@ GRANT UPDATE (submission_state,review_id,submitted_at) ON meri_memory.candidates
 | 409/400/403 are definite (nothing recorded) | `MEMORY_SUBMISSION_REFUSED` (409 to the client); the journal row stays PREPARED, a replay is refused again. Previously every failure became `submission_unknown` and was resubmitted for ever |
 | 503 until `MEMORY_GOVERNANCE_LIFECYCLE=enforce` | uncertainty: `submission_unknown` (resubmitted once enforced); a decision answers `MEMORY_DECISION_UNCERTAIN` with `outcome:'UNKNOWN'` |
 | Decision routes are bearer-only standard-user routes | the transport sends the service secret only to the four receiving routes |
-| D25: Core membership carries `permissions:[]` | unchanged: surface firm proposals still need `memory.propose.firm`, which no Core fact grants (firm proposals are refused on Meri; Core would review-gate them). Decision deferred, no scope added |
+| D25: Core membership carries `permissions:[]` | unchanged: when surface writes acquire retention ownership, firm proposals also need `memory.propose.firm`, which no Core fact currently grants. No scope is added here |
 
 Known limit: the command executor folds every post-claim source failure into `COMMAND_OUTCOME_UNKNOWN`, so a definite Core refusal of a
 run-originated candidate leaves the command indeterminate and the candidate PREPARED (visible as `submission_unknown`).
 
 ## PR #121 memory audit repair outline (source only)
 
-The producer owns candidate visibility and submission. An injected canonical retention read gate checks the trusted conversation
-identity in a conversation-origin candidate before writing, resubmitting, listing, reading status or forwarding a decision. A
-suppressed conversation's candidate is hidden; an unavailable gate fails the request closed. The gate comes from the existing
-retention owner, not from a new memory state store. The shared control composer must bind that exact gate when retention is declared;
-until it does, this memory-owned seam is not active in the product. Surface-origin candidates have no conversation subject, so an
-actor/client subject policy is needed before claiming their suppression or deletion is covered.
+The producer owns candidate visibility and submission. The late-bound canonical retention read gate checks the trusted conversation
+identity in a conversation-origin candidate before a Core target lookup, write, resubmission, listing, status read or decision.
+A suppressed conversation's candidate is hidden; an unavailable gate fails the request closed. The memory application returns 503
+while unbound. The shared control composer must call `bindMemoryRetention(productContext,retention.gate)` after `retentionGate`
+exists. A conversation-origin journal INSERT also takes the canonical shared recovery lock and subject advisory lock, then reads
+`meri_conversations.retention_subjects` under READ COMMITTED in the same transaction before writing. This serializes with **PostgreSQL projection**,
+but the external ledger append precedes that projection and is not covered by this lock. The central retention owner must close
+that gap before claiming atomic write suppression. The runtime grant owner must allow the journal's SELECT/row lock on
+`meri_conversations.retention_subjects` (absent from the currently reviewed integration grants).
+
+Surface-origin candidates have no conversation subject. In the production memory family, NEW surface proposals and corrections
+answer `503 MEMORY_RETENTION_SUBJECT_UNAVAILABLE` before a journal or Core read/write. Existing candidates remain visible to their
+authorized proposer for status/review. The actor/client subject, suppression and deletion policy is a central decision; this source
+does not infer one from citations or client IDs. The current conversation gate does not cover those existing surface rows.
 
 The local `meri_memory.candidates` payload is separate from Core's canonical memory proposal. Its row owner can enumerate exact
 conversation-origin candidate IDs for retention inventory. The central retention registry, purge row owner, and migration/grants
 owner must add the local class and guarded deletion under the same suppression generation before any purge can claim coverage.
 Core remains responsible for its received candidate copy and publication; neither owner can delete the other's payload. Focused
 verification covers gate denials, gate outages, and the review inbox's partial/unavailable status without a live migration or purge.
+
+Exact shared-owner work: register a distinct `meriMemoryCandidates` conversation row class (do not conflate it with Core's external
+`memoryProposals`); drain `listConversationCandidateIds` to exhaustion during inventory; route, preflight, plan, purge and reverify
+`{tenantId,conversationId,candidateId}` under the canonical suppression generation; allocate an additive migration with an exact
+target ledger, guarded `BEFORE DELETE` trigger and restricted purge-only DELETE grant. The current retention PG row port accepts
+only `sdkSession` and `artifactVersions`, and runtime purge remains disabled. No standalone memory DELETE worker should bypass it.

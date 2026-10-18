@@ -6,6 +6,7 @@
 import {refuse} from '../product-access/errors.mjs';
 import {UUID} from '../product-access/shape.mjs';
 import {assertPool,transact} from '../product-persistence/transaction.mjs';
+import {subjectKey} from '../retention/boundary.mjs';
 import {assertCandidate} from './candidate.mjs';
 const table='meri_memory.candidates';
 const COLUMNS='candidate, candidate_sha256, request_sha256, submission_state, review_id';
@@ -15,19 +16,37 @@ function record(row){
  if(candidateSha256!==row.candidate_sha256||!SUBMISSION_STATES.includes(row.submission_state)||(row.submission_state==='SUBMITTED')!==(row.review_id!==null))refuse('MEMORY_JOURNAL_STATE');
  return Object.freeze({candidate,candidateSha256,requestSha256:row.request_sha256,submission:Object.freeze({state:row.submission_state,reviewId:row.review_id})});
 }
-export function createPostgresMemoryJournal({pool}){
+export function createPostgresMemoryJournal({pool,guardConversationRetention=false}){
  assertPool(pool);
+ if(typeof guardConversationRetention!=='boolean')refuse('PRODUCT_CONFIGURATION');
  const tx=(signal,operation,readOnly=false)=>transact(pool,operation,{readOnly,check:()=>{if(signal?.aborted)refuse('CANCELLED');},unavailable:'MEMORY_JOURNAL_UNAVAILABLE',uncertain:'MEMORY_JOURNAL_UNKNOWN'});
+ /** Serialize conversation-origin INSERTs with the canonical PostgreSQL retention projection. The producer's canonical serving
+  * gate checks the authoritative recovery barrier before this transaction; this check closes the race with an already projected
+  * suppression. The central retention owner still must fence the external ledger append through projection. */
+ async function guardInsert(client,candidate){
+  if(!guardConversationRetention||candidate.origin.kind!=='conversation')return;
+  const s={tenantId:candidate.tenantId,kind:'conversation',subjectId:candidate.origin.conversationId};
+  // A pool may default to REPEATABLE READ; its pre-lock snapshot would miss a projection committed while this tx waited.
+  await client.query('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
+  await client.query("SELECT pg_advisory_xact_lock_shared(hashtextextended('meri_retention_recovery',0))");
+  await client.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))',['meri_retention_subject:'+subjectKey(s)]);
+  const rows=(await client.query('SELECT state FROM meri_conversations.retention_subjects WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE',[s.tenantId,s.subjectId])).rows;
+  if(rows.length>1||rows[0]&&!['SUPPRESSED','RELEASED'].includes(rows[0].state))refuse('MEMORY_JOURNAL_STATE');
+  if(rows[0]?.state==='SUPPRESSED')refuse('MEMORY_PROPOSAL_NOT_FOUND');
+ }
  return Object.freeze({
   /** Insert-once by (tenant, proposer, idempotency key). A replay returns the original record; a different request under the same
    * key is a conflict, never a silent substitution. */
   insert({candidate,candidateSha256,requestSha256,signal}){
+   const verified=assertCandidate(candidate);if(verified.candidateSha256!==candidateSha256)refuse('MEMORY_JOURNAL_STATE');
+   const c=verified.candidate;
    return tx(signal,async client=>{
+    await guardInsert(client,c);
     const inserted=(await client.query(`INSERT INTO ${table}(tenant_id,candidate_id,proposer_actor_id,idempotency_key,request_sha256,candidate,candidate_sha256,scope,client_id,created_at,submission_state)
      VALUES($1,$2,$3,$4,$5,$6::jsonb,$7,$8,$9,$10,'PREPARED') ON CONFLICT (tenant_id,proposer_actor_id,idempotency_key) DO NOTHING RETURNING ${COLUMNS}`,
-     [candidate.tenantId,candidate.candidateId,candidate.proposerActorId,candidate.idempotencyKey,requestSha256,JSON.stringify(candidate),candidateSha256,candidate.scope,candidate.clientId,candidate.createdAt])).rows[0];
+     [c.tenantId,c.candidateId,c.proposerActorId,c.idempotencyKey,requestSha256,JSON.stringify(c),candidateSha256,c.scope,c.clientId,c.createdAt])).rows[0];
     if(inserted)return Object.freeze({inserted:true,record:record(inserted)});
-    const existing=(await client.query(`SELECT ${COLUMNS} FROM ${table} WHERE tenant_id=$1 AND proposer_actor_id=$2 AND idempotency_key=$3 FOR UPDATE`,[candidate.tenantId,candidate.proposerActorId,candidate.idempotencyKey])).rows[0];
+    const existing=(await client.query(`SELECT ${COLUMNS} FROM ${table} WHERE tenant_id=$1 AND proposer_actor_id=$2 AND idempotency_key=$3 FOR UPDATE`,[c.tenantId,c.proposerActorId,c.idempotencyKey])).rows[0];
     if(!existing)refuse('MEMORY_JOURNAL_STATE');
     const r=record(existing);if(r.requestSha256!==requestSha256)refuse('MEMORY_IDEMPOTENCY_CONFLICT');
     return Object.freeze({inserted:false,record:r});

@@ -10,8 +10,9 @@
  * nothing (as `intents.mjs`).
  *
  * What the composed port does, and only that:
- *  - the producer surface (`/api/memory/proposals/*`): own proposals, status, propose, sourced correct. Every candidate is journaled
- *    in `meri_memory.candidates` (candidate migration `apps/control/memory/migrations/0001_memory_candidates.sql`, stage
+ *  - the producer surface (`/api/memory/proposals/*`): own proposals and status. New surface-origin propose/correct returns
+ *    MEMORY_RETENTION_SUBJECT_UNAVAILABLE until the actor/client retention subject has a central owner. Conversation-origin
+ *    commands journal candidates in `meri_memory.candidates` (candidate migration `apps/control/memory/migrations/0001_memory_candidates.sql`, stage
  *    `integration` once dot reserves its ordinal; readiness must require the table) and submitted to Core's W8 receiver
  *    (capiro-backend #84 `0304b0ef`); Core's existing owners decide. Nothing is committed inline at any scope.
  *  - the Meri review path (`/api/memory/review/*`): the proposer's own PENDING candidates (personal candidates never reach Core's
@@ -36,6 +37,7 @@ import {createCoreMemoryReads} from '../../control/memory/core-memory.mjs';
 import {createCoreReview} from '../../control/memory/core-review.mjs';
 import {createPostgresMemoryJournal} from '../../control/memory/postgres-journal.mjs';
 import {createMemoryProducer} from '../../control/memory/producer.mjs';
+import {memoryUnavailable} from '../../control/memory/protocol.mjs';
 import {createMemoryCredentialBroker} from '../native-authority/memory-credentials.mjs';
 const fault=code=>Object.assign(new Error(code),{code});
 const CONTEXT_KEYS=['configuration','pool','client','native','now','canonicalProductPorts'];
@@ -66,6 +68,15 @@ function memoryLimits(configuration){
 }
 const ownedValue=(value,name)=>{const d=value!==null&&typeof value==='object'?Object.getOwnPropertyDescriptor(value,name):undefined;return d&&Object.hasOwn(d,'value')?d.value:undefined;};
 const compositions=new WeakMap();
+const retentionBinders=new WeakMap();
+/** Assembly binds the same canonical gate used by conversation serving, after retentionGate exists. A missing gate keeps every
+ * surface route unavailable and makes conversation-origin producer operations fail closed. The binding belongs to this exact
+ * trusted product context; a second, different gate cannot silently replace it. */
+export function bindMemoryRetention(context,gate){
+ if(context===null||typeof context!=='object'||types.isProxy(context))throw fault('PRODUCT_PORTS_CONFIGURATION');
+ const bind=retentionBinders.get(context);if(bind===undefined)return false;
+ bind(gate);return true;
+}
 function compose(context,owners){
  let c;try{c=own(context,CONTEXT_KEYS,['artifactRecovery']);}catch{throw fault('PRODUCT_PORTS_CONFIGURATION');}
  const memory=compileMemoryConfiguration(c.configuration),now=c.now;
@@ -74,26 +85,41 @@ function compose(context,owners){
  if(!memory.enabled)return off('disabled','MEMORY_DISABLED');
  const limits=memoryLimits(c.configuration),gate=ownedValue(c.canonicalProductPorts,'conversationMembership');
  if(!gate)return off('unavailable','MEMBERSHIP_GATE_UNAVAILABLE');
+ if(c.configuration.retention?.enabled!==true)return off('unavailable','RETENTION_GATE_UNAVAILABLE');
  if(!c.pool||typeof c.pool!=='object'||types.isProxy(c.pool)||typeof c.pool.connect!=='function')throw fault('PRODUCT_PORTS_CONFIGURATION');
+ let boundRetention=null;
+ const bindRetention=next=>{
+  if(next===null||typeof next!=='object'||types.isProxy(next)||typeof next.assertServable!=='function'||types.isProxy(next.assertServable))throw fault('PRODUCT_PORTS_CONFIGURATION');
+  if(boundRetention!==null&&boundRetention!==next)throw fault('PRODUCT_PORTS_CONFIGURATION');
+  boundRetention=next;
+ };
+ const retention=Object.freeze({assertServable:subject=>{
+  if(boundRetention===null)throw fault('RETENTION_READ_UNAVAILABLE');
+  return boundRetention.assertServable(subject);
+ }});
  // Inert: the broker validates paths only; the secret file is read inside a request (and the candidate digests once, on first use).
  const broker=createMemoryCredentialBroker({configuration:c.configuration,serviceSecretFile:memory.serviceSecretFile,now,
   ...(owners.readSecret===undefined?{}:{readSecret:owners.readSecret}),...(owners.nativeCredentials===undefined?{}:{nativeCredentials:owners.nativeCredentials})});
- const journal=createPostgresMemoryJournal({pool:c.pool}),newId=owners.newId??randomUUID,fetchImpl=owners.fetchImpl??globalThis.fetch;
+ const journal=createPostgresMemoryJournal({pool:c.pool,guardConversationRetention:true}),newId=owners.newId??randomUUID,fetchImpl=owners.fetchImpl??globalThis.fetch;
  /** One producer over one credential source: the Core client, the review/read/decision adapters and the shared journal. */
  function producerWith(getCredentials){
   const transport=createCoreMemoryTransport({origin:memory.origin,getCredentials,fetchImpl,now,maxRequestMs:Math.min(limits.maxRequestMs,10000),maxResponseBytes:Math.min(limits.maxResponseBytes,262144)});
-  return createMemoryProducer({journal,review:createCoreReview({transport}),memory:createCoreMemoryReads({transport}),decisions:createCoreDecisions({transport}),newId,now});
+  return createMemoryProducer({journal,review:createCoreReview({transport}),memory:createCoreMemoryReads({transport}),decisions:createCoreDecisions({transport}),retention,
+   requireSurfaceRetentionSubject:true,newId,now});
  }
  const application=createMemoryApplication({gate,now,limits,
   producerFor:({principal,bearer})=>producerWith(broker.surface({tenantId:principal.tenantId,actorId:principal.actorId,credential:bearer.credential,expiresAtMs:bearer.expiresAtMs}))});
  /** The run's `memory.propose` command source, bound to that run's live session (null without the relay). */
  const commandSourceFor=broker.runAvailable?value=>{
+  if(boundRetention===null)return null;
   const v=own(value,['binding'],['selectedClientId','scopes']);
   const selectedClientId=v.selectedClientId??broker.selectedClientOf(v.scopes);
   if(typeof selectedClientId!=='string')throw fault('MEMORY_CONFIGURATION');
   return createMemoryCommandSource({producer:producerWith(broker.run({binding:v.binding,selectedClientId}))});
  }:null;
- return Object.freeze({state:'composed',reason:null,application:Object.freeze({handle:request=>application.handle(request)}),commandSourceFor,tables:MEMORY_TABLES});
+ retentionBinders.set(context,bindRetention);
+ return Object.freeze({state:'composed',reason:null,application:Object.freeze({handle:request=>boundRetention===null?memoryUnavailable():application.handle(request)}),commandSourceFor,tables:MEMORY_TABLES,
+  retentionBound:()=>boundRetention!==null});
 }
 function captureOwners(owners){
  let o;try{o=own(owners??{},[],['nativeCredentials','readSecret','fetchImpl','newId']);}catch{throw fault('MEMORY_CONFIGURATION');}
