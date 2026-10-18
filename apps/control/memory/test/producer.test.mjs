@@ -184,6 +184,17 @@ test('conversation-origin candidate uses the canonical retention subject before 
  gate.state='unavailable';await code(t.status(principal(),view.candidateId),'MEMORY_UNAVAILABLE');await code(t.list(principal()),'MEMORY_UNAVAILABLE');
 });
 
+test('a suppressed keyed conversational command cannot read a Core correction target before retention admission',async()=>{
+ const conversationId=id(720),checked=[],gate={async assertServable(subject){checked.push(subject);throw Object.assign(Error('suppressed'),{code:'RETENTION_SUPPRESSED'});}};
+ const t=setup({retention:gate}),command={binding:{conversationId,runId:id(721)},commandId:id(722),idempotencyKey:id(723),
+  arguments:{scope:'personal',clientId:null,content:'Changed fact',key:'known-key',ttlDays:null}};
+ t.core.addMemory({memoryId:'existing-target',key:'known-key'});
+ await code(t.producer.proposeFromCommand({principal:principal(),command,commandSha256:'c'.repeat(64)}),'MEMORY_PROPOSAL_NOT_FOUND');
+ assert.deepEqual(checked,[{tenantId:principal().tenantId,kind:'conversation',subjectId:conversationId}]);
+ assert.deepEqual(t.core.calls,[],'Core findByKey and submit are both beyond the retention gate');
+ assert.equal(t.journal.rows.size,0);
+});
+
 test('an unavailable conversation retention gate fails closed; surface candidates do not inherit a guessed conversation subject',async()=>{
  const gate={async assertServable(){throw Object.assign(Error('retention unavailable'),{code:'RETENTION_READ_UNAVAILABLE'});}},t=setup({retention:gate});
  const command={binding:{conversationId:id(710),runId:id(711)},commandId:id(712),idempotencyKey:id(713),arguments:{scope:'personal',clientId:null,content:'fact',key:null,ttlDays:null}};

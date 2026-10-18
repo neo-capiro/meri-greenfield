@@ -15,11 +15,13 @@ export function createMemoryProducer(options){
  const id=()=>{const v=newId();if(typeof v!=='string'||!UUID4.test(v))refuse('PRODUCT_CONFIGURATION');return v;};
  /** Only a conversation-origin candidate has a canonical retention subject today. The producer never infers one from source
   * citations or a surface request; those candidates need the separately owned actor/client subject policy. */
- async function servable(candidate){
-  if(retention===null||candidate.origin.kind!=='conversation')return true;
-  try{await retention.assertServable({tenantId:candidate.tenantId,kind:'conversation',subjectId:candidate.origin.conversationId});return true;}
+ async function originServable(tenantId,origin){
+  if(retention===null||origin.kind!=='conversation')return true;
+  try{await retention.assertServable({tenantId,kind:'conversation',subjectId:origin.conversationId});return true;}
   catch(error){if(error?.code==='RETENTION_SUPPRESSED')return false;throw error;}
  }
+ const servable=candidate=>originServable(candidate.tenantId,candidate.origin);
+ async function requireOriginServable(tenantId,origin){if(!await originServable(tenantId,origin))refuse('MEMORY_PROPOSAL_NOT_FOUND');}
  async function requireServable(candidate){if(!await servable(candidate))refuse('MEMORY_PROPOSAL_NOT_FOUND');}
  /** Journal then submit. A replayed idempotency key resubmits the identical journaled candidate only when its earlier submission was
   * not acknowledged; Core deduplicates it by (candidateId, hash), so the replay cannot create a second review item. */
@@ -114,6 +116,8 @@ export function createMemoryProducer(options){
    try{
     const a=command.arguments,origin={kind:'conversation',conversationId:command.binding.conversationId,runId:command.binding.runId,commandId:command.commandId,commandSha256};
     assertProposalScope(principal,a);
+    // The trusted command binding identifies the conversation before any keyed target lookup can reach Core.
+    await requireOriginServable(principal.tenantId,origin);
     const requestSha256=canonicalSha256({operation:'memory.propose.command',commandSha256});
     const retained=await replay(principal,command.idempotencyKey,requestSha256,{signal,deadlineMs});if(retained)return retained;
     let corrects=null;
