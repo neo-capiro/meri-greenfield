@@ -8,9 +8,11 @@
  *                          admitted grant set on the SAME allocation; the token's UUID attempt/worker ids never substitute for it
  *   capabilitySha256     = SHA-256 of the exact compact token bytes
  *   allocationSha256     = SHA-256 of the admitted allocation
- * `bindExecutionGrant` calls `bindTrustedGrant`, which requires an already ACTIVE `grants` row with these facts; it neither
- * creates nor activates one. The run's task/model grants are never reused: a capability whose id or digest collides with one
- * is refused before any SQL. With no ACTIVE row the bind refuses `EXECUTION_GRANT_UNAVAILABLE` and nothing executes. */
+ * The token's own rev 3 `execution.qualification` and `execution.allocationSha256` must equal the admitted facts exactly; they
+ * never substitute for them. `bindExecutionGrant` calls `bindTrustedGrant`, which requires an already ACTIVE `grants` row with
+ * these facts; it neither creates nor activates one (`../../gateway/budget/execution-grant-admission.mjs` installs that row on the
+ * run's existing allocation when `issueExecution` succeeds). The run's task/model grants are never reused: a capability whose id
+ * or digest collides with one is refused before any SQL. With no ACTIVE row the bind refuses `EXECUTION_GRANT_UNAVAILABLE`. */
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {data,own} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {parseAdmittedGrantSet} from '../../gateway/budget/admitted-run-binding.mjs';
@@ -22,11 +24,12 @@ const refuse=()=>{throw executionFault('EXECUTION_GRANT_REFUSED');};
 /** `admitted` = `{allocationJson, grantFactsJsons}` of the run (the allocation record's admitted grant set). */
 export function executionGrantFacts({verified,admitted}){
  let set;try{set=parseAdmittedGrantSet(own(admitted,['allocationJson','grantFactsJsons']));}catch{return refuse();}
- const first=set.facts[0],q=first.qualificationBinding,claims=verified?.claims;
- if(!claims||hash(first.binding)!==hash(claims.binding)||q.policyRevision!==claims.policyRevision||q.runId!==claims.binding.runId||q.fence!==claims.binding.writerFence||
+ const first=set.facts[0],q=first.qualificationBinding,claims=verified?.claims,e=verified?.execution,allocationSha256=hash(set.allocation);
+ const qualificationBinding={runId:q.runId,attempt:q.attempt,workerArn:q.workerArn,fence:q.fence,policyRevision:q.policyRevision};
+ if(!claims||!e||hash(first.binding)!==hash(claims.binding)||q.policyRevision!==claims.policyRevision||q.runId!==claims.binding.runId||q.fence!==claims.binding.writerFence||
+  hash(e.qualification)!==hash(qualificationBinding)||e.allocationSha256!==allocationSha256||
   set.facts.some(f=>f.grantId===claims.capabilityId||f.capabilitySha256===verified.credentialSha256))refuse();
- const facts={grantId:claims.capabilityId,binding:claims.binding,qualificationBinding:{runId:q.runId,attempt:q.attempt,workerArn:q.workerArn,fence:q.fence,policyRevision:q.policyRevision},
-  capabilitySha256:verified.credentialSha256,allocationSha256:hash(set.allocation)};
+ const facts={grantId:claims.capabilityId,binding:claims.binding,qualificationBinding,capabilitySha256:verified.credentialSha256,allocationSha256};
  try{parseToolGrantFacts(JSON.stringify(facts),set.allocation);}catch{return refuse();}
  return data(facts);
 }

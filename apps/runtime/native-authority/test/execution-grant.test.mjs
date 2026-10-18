@@ -15,9 +15,12 @@ test('grant facts: capability id, exact executor binding, the admitted qualifica
   capabilitySha256:createHash('sha256').update(productionToken('clientAndDueDate').credential).digest('hex'),allocationSha256:hash(set.allocation)});
  assert.notEqual(facts.qualificationBinding.workerArn,RUN_BINDING.workerId,'the token UUID worker id never substitutes for the actual task ARN');
 });
-test('grant facts refuse another executor binding, policy revision, or reuse of the run task/model grant id or digest',()=>{
+test('grant facts refuse another executor binding, policy revision, or reuse of the run task/model grant id or digest, and a token whose own qualification or allocation digest is not the admitted one',()=>{
  const v=verified(),refused=admitted=>assert.throws(()=>executionGrantFacts({verified:v,admitted}),code('EXECUTION_GRANT_REFUSED'));
  const pick=s=>({allocationJson:s.allocationJson,grantFactsJsons:s.grantFactsJsons});
+ const set0=admittedSet();
+ for(const options of [{qualification:{runId:RUN_BINDING.runId,attempt:2,workerArn:WORKER_ARN,fence:1,policyRevision:POLICY_REVISION}},{allocation:{...set0.allocation,schedule:{...set0.allocation.schedule,revision:'e'.repeat(64)}}}])
+  assert.throws(()=>executionGrantFacts({verified:verified(options),admitted:pick(set0)}),code('EXECUTION_GRANT_REFUSED'),JSON.stringify(options));
  refused(pick(admittedSet({binding:{...RUN_BINDING,attemptId:'00000000-0000-4000-8000-000000000003'}})));
  refused(pick(admittedSet({policyRevision:'c'.repeat(64)})));
  refused(pick(admittedSet({grants:[[CAPABILITY_ID,'model'],['1b2c3d4e-0000-4000-8000-00000000000b','task']]})));
