@@ -82,9 +82,11 @@ def _usage(value, binding, *, delta=False):
 
 
 def _terminal_metrics(event, binding, output):
-    # This is a Bedrock-only settlement source. Its final counters must be
-    # present; a bare Anthropic stop marker does not prove Bedrock usage.
-    _object(event, ("type", "amazon-bedrock-invocationMetrics"))
+    # Anthropic's bound start and cumulative delta carry the required usage.
+    # Bedrock's optional stop extension must agree whenever it is present.
+    _object(event, ("type",), ("amazon-bedrock-invocationMetrics",))
+    if "amazon-bedrock-invocationMetrics" not in event:
+        return
     metrics = event["amazon-bedrock-invocationMetrics"]
     _object(metrics, ("inputTokenCount", "outputTokenCount", "invocationLatency", "firstByteLatency"),
             ("cacheReadInputTokenCount", "cacheWriteInputTokenCount"))

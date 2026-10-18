@@ -58,13 +58,31 @@ class UsageTests(unittest.TestCase):
         result=stream(native)
         self.assertEqual((result.status,result.input_tokens,result.output_tokens),("COMPLETE",7,3))
         bare=events();bare[-1]={"type":"message_stop"}
-        self.assertEqual(stream(bare).status,"UNKNOWN")
+        bare_result=stream(bare)
+        self.assertEqual((bare_result.status,bare_result.input_tokens,bare_result.output_tokens),("COMPLETE",7,3))
         for items in (events()[:-1],events()[1:],events()+[{"type":"ping"}],events()+[{"type":"error","error":{}}],[] ):
             self.assertEqual(stream(items).status,"UNKNOWN")
         self.assertEqual(stream(events(),transport_complete=False).status,"UNKNOWN")
         self.assertEqual(stream(events(),cancelled=True).status,"UNKNOWN")
         self.assertEqual(stream(native,transport_complete=False).status,"UNKNOWN")
         self.assertEqual(stream(native,cancelled=True).status,"UNKNOWN")
+
+    def test_bare_stop_requires_bound_start_and_cumulative_delta_usage(self):
+        bare=events();bare[-1]={"type":"message_stop"}
+        for location in ("start", "delta"):
+            invalid=copy.deepcopy(bare)
+            if location=="start":
+                del invalid[0]["message"]["usage"]
+            else:
+                del invalid[-2]["usage"]
+            self.assertEqual(stream(invalid).status,"UNKNOWN")
+        invalid=copy.deepcopy(bare);invalid[-2]["usage"]["output_tokens"]=17
+        self.assertEqual(stream(invalid).status,"UNKNOWN")
+        # LiteLLM recognizes stop.usage, but its raw Sonnet 4.6 shape is not
+        # established. This separately held extension must never be ignored.
+        invalid=copy.deepcopy(bare)
+        invalid[-1]["usage"]={"input_tokens":7,"output_tokens":3}
+        self.assertEqual(stream(invalid).status,"UNKNOWN")
 
     def test_bedrock_terminal_metrics_are_closed_and_match_bound_usage(self):
         native=events()

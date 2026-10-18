@@ -204,19 +204,21 @@ class HostCompositionTests(unittest.IsolatedAsyncioTestCase):
         finally:
             await handler.close()
 
-    async def test_native_callback_final_body_requires_valid_bedrock_metrics_settlement(self):
-        valid = streamed_message()
-        sent = await self.invoke_native_stream(valid)
-        self.assertEqual([event["type"] for event in sent],
-                         ["http.response.start", "http.response.body"])
-        self.assertEqual(sent[-1]["body"], valid)
-        self.assertEqual((self.counter.calls, self.inner.calls,
-                          self.bridge.reservations, self.bridge.settlements), (1, 1, 1, 1))
+    async def test_native_callback_final_body_requires_valid_usage_settlement(self):
+        for terminal in (None, {"type": "message_stop"}):
+            with self.subTest(terminal=terminal):
+                valid = streamed_message(terminal)
+                sent = await self.invoke_native_stream(valid)
+                self.assertEqual([event["type"] for event in sent],
+                                 ["http.response.start", "http.response.body"])
+                self.assertEqual(sent[-1]["body"], valid)
+                self.assertEqual((self.counter.calls, self.inner.calls,
+                                  self.bridge.reservations, self.bridge.settlements), (1, 1, 1, 1))
+                self.counter = _Counter()
 
     async def test_native_callback_suppresses_final_body_for_invalid_terminal_metrics(self):
         cases = (
             ("malformed", {"type": "message_stop", "amazon-bedrock-invocationMetrics": []}),
-            ("missing", {"type": "message_stop"}),
             ("count-mismatch", {"type": "message_stop", "amazon-bedrock-invocationMetrics": {
                 "inputTokenCount": 13, "outputTokenCount": 3,
                 "invocationLatency": 9240, "firstByteLatency": 500}}),
@@ -231,6 +233,14 @@ class HostCompositionTests(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual([event["type"] for event in self.native_sent],
                                  ["http.response.start"])
                 self.counter = _Counter()
+        with self.assertRaisesRegex(Exception, "PRODUCT_NATIVE_LITELLM_REFUSED"):
+            await self.invoke_native_stream(
+                streamed_message({"type": "message_stop"}, delta_usage=False))
+        self.assertEqual((self.counter.calls, self.inner.calls,
+                          self.bridge.reservations, self.bridge.settlements), (1, 1, 1, 0))
+        self.assertEqual([event["type"] for event in self.native_sent],
+                         ["http.response.start"])
+        self.counter = _Counter()
         with self.assertRaisesRegex(Exception, "PRODUCT_NATIVE_LITELLM_REFUSED"):
             await self.invoke_native_stream(streamed_message()[:-1])
         self.assertEqual((self.counter.calls, self.inner.calls,
