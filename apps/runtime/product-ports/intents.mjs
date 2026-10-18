@@ -59,7 +59,8 @@ const compositions=new WeakMap();
 function compose(context){
  let c;try{c=own(context,CONTEXT_KEYS,['artifactRecovery']);}catch{throw fault('PRODUCT_PORTS_CONFIGURATION');}
  const intents=compileIntentsConfiguration(c.configuration);
- const call=ownedValue(c.native,'call'),now=c.now;
+ // The trusted native client: the fenced startup client carries `call` as an own method; a prototype method is accepted too.
+ const call=c.native!==null&&typeof c.native==='object'&&!types.isProxy(c.native)&&typeof c.native.call==='function'?c.native.call:undefined,now=c.now;
  if(typeof now!=='function')throw fault('PRODUCT_PORTS_CONFIGURATION');
  // The one decision adapter for this control process. Inert: it holds the native call and calls it only when a port is used.
  const decisions=typeof call==='function'?createNativeIntentApprovals({call:(operation,input,options)=>call.call(c.native,operation,input,options),now,maxFactBytes:INTENT_FACT_BYTES}):null;
