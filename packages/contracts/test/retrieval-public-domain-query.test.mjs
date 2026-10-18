@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
+import {execFileSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
 import Ajv from 'ajv/dist/2020.js';
 import addFormats from 'ajv-formats';
 import {canonicalSha256} from '../validate.mjs';
@@ -102,8 +104,48 @@ test('trusted default as-of is distinct from explicit date and generatedAt',()=>
  const r={dataset:'lda_registrations',select:[{agg:'count'}]};assert.equal(normalize(r,{defaultAsOf:at}).input.asOfDate,at);
  assert.throws(()=>normalize(r));assert.throws(()=>normalize(r,{defaultAsOf:'2026-10-12T12:00:00Z'}));
  assert.equal(normalize({...r,asOfDate:'January 1, 2020'}).input.asOfDate,'2020-01-01T00:00:00.000Z');
+ for(const value of ['Jan-1-2020','January 1, 2020 (PST)','January 1, 2020 (foo'])assert.equal(normalize({...r,asOfDate:value}).input.asOfDate,'2020-01-01T00:00:00.000Z');
+ for(const value of ['2020-01-01','2020-01-01T12:30:00','2020-01-01 12:30:00','January 1, 2020 12:30:00','January 1, 2020 12:30:00 (foo'])
+  assert.equal(normalize({...r,asOfDate:value}).input.asOfDate,value==='2020-01-01'?'2020-01-01T00:00:00.000Z':'2020-01-01T12:30:00.000Z');
+ for(const [value,expected]of [
+  ['2020-01-01T12:30:00-05:00','2020-01-01T17:30:00.000Z'],
+  ['January 1, 2020 PST','2020-01-01T08:00:00.000Z'],
+  ['January 1, 2020 GMT+0200','2019-12-31T22:00:00.000Z'],
+  ['2020-01-01 12:30:00+05','2020-01-01T07:30:00.000Z'],
+  ['2020-01-01 12:30:00-05','2020-01-01T17:30:00.000Z'],
+  ['January 1, 2020 12:30:00 -5','2020-01-01T17:30:00.000Z'],
+  ['01 Jan 2020 12:30:00 +0530 (India Standard Time)','2020-01-01T07:00:00.000Z'],
+  ['2020-01-01 12:30:00+5:30','2020-01-01T07:00:00.000Z'],
+  ['2020-01-01 12:30:00 -5 (foo(bar))','2020-01-01T17:30:00.000Z'],
+  ['01 Jan 2020 12:30:00 (foo) +0530 (India Standard Time)','2020-01-01T07:00:00.000Z'],
+ ])
+  assert.equal(normalize({...r,asOfDate:value}).input.asOfDate,expected);
+ for(const [value,expected]of [['January 1, 2020','2020-01-01T00:00:00.000Z'],['2020-01-01T12:30:00','2020-01-01T12:30:00.000Z'],['2020-01-01T12:30:00-05:00','2020-01-01T17:30:00.000Z']])
+  assert.equal(normalize(request({filters:[{field:'open_date',op:'eq',value}]})).input.filters[0].value,expected);
+
+ for(const value of [' 2020-01-01T12:30:00Z ','2020-01-01T12:30:00 invalid'])assert.throws(()=>normalize({...r,asOfDate:value}));
  assert.throws(()=>normalize({...r,asOfDate:'invalid'}));assert.throws(()=>normalize({...r,asOfDate:at},{defaultAsOf:at}));
  assert.throws(()=>normalize(request({asOfDate:at})));assert.throws(()=>normalize(request(),{defaultAsOf:at}));
+});
+test('legacy explicit query dates preserve the native UTC parser reference',()=>{
+ const cases=[];
+ for(const clock of ['2020-01-01 12:30:00','January 1, 2020 12:30:00','01 Jan 2020 12:30:00'])
+  for(const zone of ['+05','-05','-5','+0530','+5:30','-05:00','GMT+05','GMT-05','PST','UTC','Z'])
+   for(const comment of ['',' (India Standard Time)',' (foo(bar))',' (PST)'])cases.push(clock+' '+zone+comment);
+ const reference=JSON.parse(execFileSync(process.execPath,['--input-type=module','--eval',`
+  import {readFileSync} from 'node:fs';
+  process.stdout.write(JSON.stringify(JSON.parse(readFileSync(0,'utf8')).map(value=>{
+   const time=Date.parse(value);if(!Number.isFinite(time))throw Error('Invalid reference case: '+value);
+   return new Date(time).toISOString();
+  })));
+ `],{env:{...process.env,TZ:'UTC'},input:JSON.stringify(cases),encoding:'utf8',timeout:10000,maxBuffer:1048576}));
+ const r={dataset:'lda_registrations',select:[{agg:'count'}]};
+ for(let index=0;index<cases.length;index++)assert.equal(normalize({...r,asOfDate:cases[index]}).input.asOfDate,reference[index],cases[index]);
+});
+test('query date normalization preserves UTC semantics in multiple host timezones',()=>{
+ for(const TZ of ['UTC','America/Toronto','Asia/Tokyo'])execFileSync(process.execPath,
+  ['--test','--test-name-pattern=^(trusted default as-of is distinct from explicit date and generatedAt|legacy explicit query dates preserve the native UTC parser reference)$',fileURLToPath(import.meta.url)],
+  {env:{...process.env,TZ},encoding:'utf8',timeout:10000,maxBuffer:1048576});
 });
 test('all twelve dataset projections accept their complete field selection windows',()=>{
  for(const d of registry.listDatasetMetadata())for(const f of d.fields)normalize({dataset:d.key,select:[{field:f.name}]},{defaultAsOf:d.supportsAsOf?at:null});

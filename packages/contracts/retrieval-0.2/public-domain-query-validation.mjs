@@ -9,6 +9,24 @@ const fail=message=>{throw new Error(message);};
 export const PUBLIC_DOMAIN_QUERY_OPERATION_IDS=Object.freeze([ID]);
 const numericString=/^(?:[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?|NaN|[+-]?Infinity)$/i;
 const nullOps=new Set(['is_null','is_not_null']);
+// A query is replayed across hosts: a selector without a timezone denotes UTC,
+// as the canonical date-only contract requires. Preserve explicitly zoned input.
+function queryDate(value){
+  const original=Date.parse(value);if(!Number.isFinite(original))return original;
+  // Comments are ignored by legacy date syntax, including nested comments.
+  // Strip them for zone detection and UTC insertion; the raw parse remains the validity gate.
+  let text='',depth=0;
+  for(const character of value){
+    if(character==='('){depth++;continue;}
+    if(character===')'&&depth){depth--;continue;}
+    if(!depth)text+=character;
+  }
+  text=text.trimEnd();
+  const namedZone=/Z$|\b(?:UT|UTC|GMT|[ECMP][SD]T)\b/i.test(text);
+  const numericZone=/\d:\d{2}(?::\d{2}(?:\.\d+)?)?\s*[+-]\d{1,2}(?::?\d{2})?$/.test(text);
+  const localIso=/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?$/i.test(value);
+  return namedZone||numericZone?original:Date.parse(localIso?value+'Z':text+' UTC');
+}
 function freeze(value) {
   if(value&&typeof value==='object'){for(const item of Object.values(value))freeze(item);Object.freeze(value);}return value;
 }
@@ -17,7 +35,7 @@ function inputValue(type,value) {
   if(type==='boolean'){if(typeof value!=='boolean')fail('Boolean filter value required');return value;}
   if(typeof value!=='string')fail('String filter value required');
   if(type==='date'||type==='timestamp'){
-    const at=Date.parse(value);if(!Number.isFinite(at))fail('Finite date filter value required');return new Date(at).toISOString();
+    const at=queryDate(value);if(!Number.isFinite(at))fail('Finite date filter value required');return new Date(at).toISOString();
   }
   return value; // string[] fields use scalar strings in the frozen filter contract.
 }
@@ -95,7 +113,7 @@ export function createPublicDomainQueryValidators({validateShape,schema,canonica
     let asOfDate=null;
     if(metadata.supportsAsOf){
       if(raw.asOfDate===undefined){if(ctx.defaultAsOf===null)fail('Trusted default as-of observation required');assertPublicDataInstant(ctx.defaultAsOf);asOfDate=ctx.defaultAsOf;}
-      else{if(ctx.defaultAsOf!==null)fail('Explicit as-of selector cannot use a default observation');const time=Date.parse(raw.asOfDate);if(!Number.isFinite(time))fail('Finite as-of selector required');asOfDate=new Date(time).toISOString();}
+      else{if(ctx.defaultAsOf!==null)fail('Explicit as-of selector cannot use a default observation');const time=queryDate(raw.asOfDate);if(!Number.isFinite(time))fail('Finite as-of selector required');asOfDate=new Date(time).toISOString();}
     }else if(raw.asOfDate!==undefined||ctx.defaultAsOf!==null)fail('Dataset does not use an as-of selector');
     const input={dataset:raw.dataset,select,filters,groupBy,orderBy,limit,asOfDate,snapshotSha256};
     validateShape('PublicDomainQueryInput',input);return{input,aliases};
