@@ -199,7 +199,14 @@ const SOURCE_PATHS=Object.freeze({
  "memory-proposals": [
   "apps/gateway/sources/memory-proposals/handler.mjs",
   "apps/gateway/sources/memory-proposals/http-adapter.mjs",
-  "apps/gateway/sources/memory-proposals/request-context.mjs"
+  "apps/gateway/sources/memory-proposals/request-context.mjs",
+  "apps/gateway/dispatch/memory-read-context.mjs",
+  "apps/runtime/memory-context-relay.mjs",
+  "apps/runtime/control.mjs",
+  "apps/control/conversations/postgres-store.mjs",
+  "apps/control/conversations/memory-proposal-context-journal.mjs",
+  "apps/control/retention/data-classes.mjs",
+  "apps/control/retention/inventory.mjs"
  ],
  "original-tracking": [
   "apps/gateway/sources/original-tracking/handler.mjs",

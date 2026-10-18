@@ -10,7 +10,8 @@ import {createConversationHistoryStore} from './history/store.mjs';
 import {productFailure} from '../product-access/errors.mjs';
 import {createOriginalInputJournal} from './initial-input-journal.mjs';
 import {assertOriginalInputActive} from './initial-input-facts.mjs';
-export function createPostgresConversationStore({pool,transitionAuthority,now=Date.now}){
+import {createMemoryProposalContextJournal} from './memory-proposal-context-journal.mjs';
+export function createPostgresConversationStore({pool,transitionAuthority,retentionGate,now=Date.now}){
  if(typeof pool?.connect!=='function')fail('STORE_CONFIGURATION');
  async function tx(binding,check,body){let c,begun=false,committing=false,reusable=false,failure,result;
   try{check();c=await pool.connect();check();await c.query('BEGIN');begun=true;check();await c.query("SET LOCAL statement_timeout = '5s'");await c.query("SET LOCAL lock_timeout = '2s'");check();
@@ -68,5 +69,5 @@ export function createPostgresConversationStore({pool,transitionAuthority,now=Da
  const lifecycle=createLifecycleJournal({tx,rowRun,transitionAuthority,now,cancelAppend:(binding,event,check,scopes)=>appendEvent(binding,event,check,scopes,true)});
  const preparation=createNativePreparationJournals({tx,rowRun});
  const initialInputs=createOriginalInputJournal({tx,rowRun,now}),originalInputPorts=Object.freeze({claim:initialInputs.claim,read:initialInputs.read,accept(raw,check){const i=own(raw,['conversation','run','request','event','selectedClientId']);uuid(i.selectedClientId);return accept(i,check,i.selectedClientId);}});
- return Object.freeze({accept:(input,check)=>accept(input,check),initialInputs:originalInputPorts,append,read,readOptional,findRequest,history:createConversationHistoryStore({tx,rowRun}),nextRuns:createNextRunJournal({tx,rowRun}),completions:createCompletionJournal({tx,rowRun}),...preparation,executions:createExecutionJournal({tx,rowRun,verifyPreparedClaim:preparation.allocations.verifyExecutionClaim}),selectedOutputs:createSelectedOutputJournal({tx,rowRun}),lifecycle});
+ return Object.freeze({accept:(input,check)=>accept(input,check),initialInputs:originalInputPorts,append,read,readOptional,findRequest,history:createConversationHistoryStore({tx,rowRun}),nextRuns:createNextRunJournal({tx,rowRun}),completions:createCompletionJournal({tx,rowRun}),...preparation,executions:createExecutionJournal({tx,rowRun,verifyPreparedClaim:preparation.allocations.verifyExecutionClaim}),selectedOutputs:createSelectedOutputJournal({tx,rowRun}),memoryProposalContexts:createMemoryProposalContextJournal({tx,rowRun,retentionGate,now}),lifecycle});
 }

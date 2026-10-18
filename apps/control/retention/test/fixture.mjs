@@ -25,7 +25,7 @@ export function snapshot(subject,{checkpoints=subject.kind==='artifact'?0:1,outp
  const checkpoint=()=>{const opaque=object(),entry=object();return {checkpointId:randomUUID(),checkpoint:{opaqueSession:opaque,workspace:{entries:[{object:entry}]}}};};
  const cps=Array.from({length:checkpoints},checkpoint);if(shared.length)cps[0].checkpoint.workspace.entries.push(...shared.map(o=>({object:{objectId:o.objectId,versionId:o.versionId,sha256:o.sha256}})));
  const conversation=subject.kind==='conversation';
- return {subject,runs:conversation?[{runId:randomUUID(),continuation:null}]:[],checkpoints:cps,completionCheckpoints:conversation?[checkpoint()]:[],nextRuns:[],sdkSessionEntries:sdkEntries,selectedOutputs:Array.from({length:outputs},()=>({outputId:randomUUID(),object:object()})),artifactVersions,nativeJournalRows:conversation?[{runId:randomUUID()}]:[],uploads:[]};
+ return {subject,runs:conversation?[{runId:randomUUID(),continuation:null}]:[],checkpoints:cps,completionCheckpoints:conversation?[checkpoint()]:[],nextRuns:[],sdkSessionEntries:sdkEntries,selectedOutputs:Array.from({length:outputs},()=>({outputId:randomUUID(),object:object()})),artifactVersions,nativeJournalRows:conversation?[{runId:randomUUID()}]:[],memoryContinuations:[],uploads:[]};
 }
 export function clock(start=1_800_000_000_000){let t=start;return {now:()=>t,advance(ms){t+=ms;return t;}};}
 /** Injected storage handler: an in-memory versioned bucket whose responses mimic S3 status codes; `fault` switches ambiguity on. */
