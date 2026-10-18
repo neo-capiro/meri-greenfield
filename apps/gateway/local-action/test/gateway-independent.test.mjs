@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {randomUUID} from 'node:crypto';
+import {createHash,randomUUID} from 'node:crypto';
+import canonicalize from 'canonicalize';
 import {harness,canonicalSha256,NOW,limits} from '../../../../docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs';
 import {nativeScopedPage,id} from '../../../../docs/qualification/candidates/task-slice-20261012/action-source-author/accepted-action-fixture.mjs';
 import {resolveOperationContract} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
@@ -9,6 +10,7 @@ import {createTaskLookupPoolFixture} from '../../../control/task-lookup/postgres
 import {fixture as controlFixture} from '../../../control/task-lookup/fixtures.mjs';
 import {createLocalActionIdentity} from '../identity.mjs';
 import {createLocalActionGateway} from '../gateway.mjs';
+import {fixtureSignedActionReceipt} from '../fixture-gateway.mjs';
 import {createLocalLookupAuthorizer} from '../control-authorizer.mjs';
 const operation={id:'actions.query',version:'0.2.0'},contract=resolveOperationContract(operation),clientId=id(9);
 async function setup(){
@@ -18,8 +20,29 @@ async function setup(){
  h.invocation.allocationSha256=canonicalSha256(h.allocation);
  const identity=createLocalActionIdentity({mode:'synthetic-local',binding:h.f.binding,clientId,policyRevision:h.invocation.qualificationBinding.policyRevision,deadlineMs:NOW+5000,budgets:h.f.claims.budgets,grants:contract.descriptor.requiredGrants,sourceEnabled:true,now:()=>h.f.state.now});
  const issued=identity.issueCredential({ttlMs:4000});h.invocation.capabilitySha256=issued.capabilitySha256;h.state().grant.capability_sha256=issued.capabilitySha256;
- let afterSource=()=>{};
- const source={origin:'https://review-local.invalid',getCredentials:async()=>({binding:h.f.binding,bearerToken:'SYNTHETIC',serviceSecret:'SYNTHETIC',expiresAtMs:NOW+4000}),fetchImpl:async(url,options)=>{http.push({url,method:options.method});const native=nativeScopedPage(JSON.parse(options.body));afterSource();return new Response(JSON.stringify(native),{status:200,headers:{'content-type':'application/json'}});}};
+ let afterSource=()=>{},signedPins;
+ const source={origin:'https://review-local.invalid',getCredentials:async pins=>{
+  signedPins=pins;return fixtureSignedActionReceipt(pins,{bearerToken:'SYNTHETIC_ACTION',serviceSecret:'SYNTHETIC_SERVICE',expiresAtMs:NOW+4000});
+ },fetchImpl:async(url,options)=>{
+  assert.equal(url,'https://review-local.invalid/api/clio/tools/actions.query');
+  assert.equal(options.method,'POST');
+  assert.equal(options.headers.authorization,'CapiroMeriRead SYNTHETIC_ACTION');
+  assert.equal(options.headers['x-internal-service-secret'],'SYNTHETIC_SERVICE');
+  assert.deepEqual(signedPins.operation,operation);
+  assert.deepEqual(signedPins.target,{method:'POST',path:'/api/clio/tools/actions.query',
+   bodySha256:createHash('sha256').update(options.body,'utf8').digest('hex')});
+  const correlation=Buffer.from(options.headers['x-meri-read-correlation'],'base64url').toString('utf8');
+  assert.equal(correlation,canonicalize({binding:signedPins.binding,subject:signedPins.subject,
+   policyRevision:signedPins.policyRevision,normalizationContext:null}));
+  assert.equal(signedPins.correlationSha256,createHash('sha256').update(correlation,'utf8').digest('hex'));
+  const protocol=JSON.parse(options.body);
+  assert.deepEqual(protocol,{input:signedPins.input,metadata:signedPins.metadata});
+  assert.equal(signedPins.requestSha256,canonicalSha256(protocol));
+  assert.equal(protocol.input.selection.clientId,clientId);
+  http.push({url,method:options.method});
+  const native=nativeScopedPage({clientId:protocol.input.selection.clientId});afterSource();
+  return new Response(JSON.stringify(native),{status:200,headers:{'content-type':'application/json'}});
+ }};
  const config={mode:'synthetic-local',identity,pool:h.pool,allocationJson:JSON.stringify(h.allocation),source,limits,now:()=>h.f.state.now,newId:randomUUID};
  const gateway=createLocalActionGateway(config);await gateway.bindTrustedGrant(h.json());
  c.context={...c.context,binding:h.f.binding,scopes:identity.status().scopes,selectedClientId:clientId,deliveryJson:h.delivery('independent-local-owner'),deadlineMs:NOW+3000};

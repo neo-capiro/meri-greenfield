@@ -9,6 +9,15 @@ import {createActionItemsReadHandler} from '../sources/action-items/handler.mjs'
 import {ownFields,frozenData} from '../sources/source-admission.mjs';
 import {deny,parseRawJson,exactKeys} from '../dispatch/operation-result.mjs';
 const operation=Object.freeze({id:'actions.query',version:'0.2.0'}),same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
+/** Exact synthetic echo of the task-bound source request. No local token issuance. */
+export function fixtureSignedActionReceipt(pins,{bearerToken,serviceSecret,expiresAtMs}){
+ const p=ownFields(pins,['operation','input','metadata','argumentsSha256','requestSha256','binding','subject',
+  'policyRevision','sourceIds','invocationId','target','correlationSha256','deadlineMs','signal']);
+ return Object.freeze({operation:p.operation,metadata:p.metadata,argumentsSha256:p.argumentsSha256,
+  requestSha256:p.requestSha256,binding:p.binding,subject:p.subject,policyRevision:p.policyRevision,
+  sourceIds:p.sourceIds,invocationId:p.invocationId,target:p.target,correlationSha256:p.correlationSha256,
+  authorizationScheme:'CapiroMeriRead',bearerToken,serviceSecret,expiresAtMs});
+}
 export function fixtureActionTransport(source){
  const transport=ownFields(source,['origin','getCredentials','fetchImpl'],['maxRequestMs','maxResponseBytes']);
  if(typeof transport.origin!=='string'||typeof transport.fetchImpl!=='function')deny('GATEWAY_CONFIGURATION');
