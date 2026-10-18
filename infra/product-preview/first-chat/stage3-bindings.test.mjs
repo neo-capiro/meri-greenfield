@@ -120,6 +120,10 @@ test('rendered configs and the synthesized task definitions agree: issuer and ow
  const worker=main(byFamily('meri-product-preview-temporal-worker'));
  assert.equal(env(worker,'NODE_EXTRA_CA_CERTS'),PATHS.issuerCa);assert.equal(env(worker,'NODE_EXTRA_CA_CERTS'),rendered.summary.worker.NODE_EXTRA_CA_CERTS);
  assert.equal(productWorkerTrustsPinnedServerCa(config('temporal-worker'),{NODE_EXTRA_CA_CERTS:env(worker,'NODE_EXTRA_CA_CERTS')}),true);
+ const control=byFamily('meri-product-preview-control'),controlMain=main(control),controlInit=control.ContainerDefinitions[0];
+ assert.equal(env(controlMain,'NODE_EXTRA_CA_CERTS'),rendered.summary.control.NODE_EXTRA_CA_CERTS);
+ assert.deepEqual(controlInit.Command,['write','--control-node-ca']);
+ assert.deepEqual(controlInit.MountPoints.find(m=>m.SourceVolume==='tmp'),{SourceVolume:'tmp',ContainerPath:'/tmp',ReadOnly:false});
  // Runner environment equals the render wiring exactly; material-init envelopes and config pins equal the render.
  assert.deepEqual(main(runner).Environment.map(e=>({name:e.Name,value:e.Value})),rendered.summary.wiring.runner.environment);
  for(const [family,role] of [['meri-product-preview-control','control'],['meri-product-preview-temporal-worker','temporal-worker'],['meri-product-preview-owner','model-owner'],['meri-product-preview-proxy','model-proxy'],['meri-product-preview-temporal-issuer','temporal-issuer']]){

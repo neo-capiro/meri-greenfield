@@ -19,6 +19,7 @@
 import {createHash} from 'node:crypto';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {ROLES,PATHS} from './render-material.mjs';
+import {CONTROL_NODE_CA_FILE} from '../../../apps/runtime/control-ca-bundle.mjs';
 import {synthesizeProductPreview} from '../manifest.mjs';
 import {MODEL_PROXY_SERVICES,MODEL_PROXY_EXISTING,LITELLM} from '../model-proxy-plan.mjs';
 import {synthesizeModelProxyTemplate} from '../model-proxy-template.mjs';
@@ -139,6 +140,7 @@ export function buildStage3Bindings({deployment,foundationOutputs,privateEdgeOut
  if(poststart.MERI_POSTSTART_CONTROL_ORIGIN!==privateEdgeOutputs.ControlPrivateOrigin||sha(ca)!==poststart.MERI_POSTSTART_CA_SHA256||control[PATHS.controlCa]!==poststart.MERI_POSTSTART_CA_SHA256)
   fail('runner poststart CA/origin is not the rendered control-ca.pem at the private edge origin');
  if(s.worker.NODE_EXTRA_CA_CERTS!==PATHS.issuerCa)fail('rendered worker NODE_EXTRA_CA_CERTS is not the issuer CA file');
+ if(s.control?.NODE_EXTRA_CA_CERTS!==CONTROL_NODE_CA_FILE)fail('rendered control NODE_EXTRA_CA_CERTS is not the composite CA file');
  if(!hex64.test(poststart.MERI_RUNNER_SHA256??''))fail('runner sha256');
  const writer=role=>{const pins=renderedExpected[role].sha256ByPath,paths=[PATHS.issuerJwks,PATHS.issuerCa,PATHS.issuerClientCa];
   if(paths.some(path=>!hex64.test(pins[path]??'')))fail(`${role} material lacks a token-writer file`);

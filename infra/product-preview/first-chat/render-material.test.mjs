@@ -11,6 +11,7 @@ import {writeRendered,main,withPosixPaths,SOURCE_ROOT,ROLES,RUNTIME_USERS,PATHS}
 import {createRenderFixture,TD,FAKE_PASSWORDS,IDENTITY,python} from './render-material.fixture.mjs';
 import {validateConfiguration} from '../../../apps/runtime/config.mjs';
 import {productWorkerTrustsPinnedServerCa} from '../../../apps/runtime/cli.mjs';
+import {CONTROL_NODE_CA_FILE,productControlTrustsCompositeCa} from '../../../apps/runtime/control-ca-bundle.mjs';
 import {compilePreparedCandidateConfiguration} from '../../../apps/runtime/prepared-candidate-config.mjs';
 import {parseTemporalIssuerRuntimeConfiguration,startTemporalIssuerRuntime} from '../../../apps/runtime/temporal-issuer-cli.mjs';
 import {compileProductMaterialPlan} from '../../../apps/runtime/material-init-plan.mjs';
@@ -36,6 +37,9 @@ test('all five roles render from throwaway PKI and pass every repository validat
  for(const role of ['control','temporal-worker'])assert.ok(validateConfiguration(parsed(role),role));
  compilePreparedCandidateConfiguration(control.nativeCandidate,control.versions);
  assert.equal(productWorkerTrustsPinnedServerCa(parsed('temporal-worker'),{NODE_EXTRA_CA_CERTS:PATHS.issuerCa}),true);
+ assert.equal(productControlTrustsCompositeCa(summary.control),true);
+ assert.deepEqual(summary.wiring.control.environment.find(e=>e.name==='NODE_EXTRA_CA_CERTS'),{name:'NODE_EXTRA_CA_CERTS',value:CONTROL_NODE_CA_FILE});
+ assert.deepEqual(summary.wiring.control.init.command,['write','--control-node-ca']);
  parseTemporalIssuerRuntimeConfiguration(parsed('temporal-issuer'));
  assert.equal(validateProductOwnerConfiguration(parsed('model-owner')).enabled,true);
  parseProductProxyStartupConfiguration(parsed('model-proxy'));
@@ -100,7 +104,8 @@ test('the actual cli.mjs product gates admit control and worker (startup then fa
  for(const [role,name] of [['control','control.json'],['temporal-worker','worker.json']]){
   const file=join(dir,name);await writeFile(file,roles[role].configBytes);
   const r=run(role,file,role==='temporal-worker'?{NODE_EXTRA_CA_CERTS:PATHS.issuerCa}:{});
-  assert.equal(r.stderr.includes('RUNTIME_CONFIGURATION'),false,`${role} gate: ${r.stderr}`);assert.equal(r.status,3,`${role}: ${r.stderr}`);
+  if(role==='control'){assert.equal(r.status,2,'control refuses without the init-created composite');assert.match(r.stderr,/RUNTIME_CONFIGURATION/u);}
+  else {assert.equal(r.stderr.includes('RUNTIME_CONFIGURATION'),false,`${role} gate: ${r.stderr}`);assert.equal(r.status,3,`${role}: ${r.stderr}`);}
  }
  // Negative: the worker without the pinned server CA trust is refused by the gate itself.
  const refused=run('temporal-worker',join(dir,'worker.json'),{});assert.equal(refused.status,2);assert.match(refused.stderr,/RUNTIME_CONFIGURATION/u);
