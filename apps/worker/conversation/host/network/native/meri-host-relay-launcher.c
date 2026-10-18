@@ -91,13 +91,23 @@ static int launch_lock(const char *binding,const char *kind) {
  struct stat st;if(fd<0||fstat(fd,&st)||!S_ISREG(st.st_mode)||st.st_uid!=0||(st.st_mode&0077)||flock(fd,LOCK_EX|LOCK_NB))die();
  return fd; /* close_range releases it only after the paused child receives GO. */
 }
-static void require_host_network(unsigned long long dev,unsigned long long ino) {
- int init=open("/proc/1/ns/net",O_RDONLY|O_CLOEXEC),self=open("/proc/self/ns/net",O_RDONLY|O_CLOEXEC);
+static void require_matching_network(int init,int self,unsigned long long dev,unsigned long long ino) {
  struct stat a,b;struct statfs af,bf;
  if(init<0||self<0||fstat(init,&a)||fstat(self,&b)||fstatfs(init,&af)||fstatfs(self,&bf)||
     af.f_type!=NSFS_MAGIC||bf.f_type!=NSFS_MAGIC||a.st_dev!=b.st_dev||a.st_ino!=b.st_ino||
     (unsigned long long)a.st_dev!=dev||(unsigned long long)a.st_ino!=ino)die();
- close(init);close(self);
+}
+/* PID 1's proc namespace symlink may become unreadable after dropping root. Pin its verified nsfs object first. */
+static int pin_host_network(unsigned long long dev,unsigned long long ino) {
+ int init=open("/proc/1/ns/net",O_RDONLY|O_CLOEXEC),self=open("/proc/self/ns/net",O_RDONLY|O_CLOEXEC);
+ require_matching_network(init,self,dev,ino);
+ if(close(self))die();
+ return init;
+}
+static void require_pinned_host_network(int init,unsigned long long dev,unsigned long long ino) {
+ int self=open("/proc/self/ns/net",O_RDONLY|O_CLOEXEC);
+ require_matching_network(init,self,dev,ino);
+ if(close(self))die();
 }
 static void attach_cgroup(const char *host,const char *generation,const char *binding,const char *kind) {
  int root=open("/sys/fs/cgroup/meri/hosts",O_PATH|O_DIRECTORY|O_NOFOLLOW|O_CLOEXEC);struct statfs fs;
@@ -147,12 +157,13 @@ int main(int argc,char **argv) {
     strcmp(argv[12],"/")||strlen(argv[13])>4096)die();
  for(const char *p=argv[13];*p;p++)if(!((*p>='A'&&*p<='Z')||(*p>='a'&&*p<='z')||(*p>='0'&&*p<='9')||*p=='_'||*p=='-'))die();
  root_file(argv[10],1);root_file(argv[11],0);
- require_host_network(ns_dev,ns_ino);pid_t parent=getppid();if(parent<2)die();
+ int host_network=pin_host_network(ns_dev,ns_ino);pid_t parent=getppid();if(parent<2)die();
  int lock=launch_lock(argv[4],argv[5]);(void)lock;
  attach_cgroup(argv[2],argv[3],argv[4],argv[5]);
  hide_cgroupfs();drop(uid,gid);
  if(prctl(PR_SET_PDEATHSIG,SIGKILL)||getppid()!=parent)die();
- require_host_network(ns_dev,ns_ino);
+ require_pinned_host_network(host_network,ns_dev,ns_ino);
+ if(close(host_network))die();
  if(write_all(3,"R\n",2))die();
  char go;if(read(4,&go,1)!=1||go!='G'||close_range(3,~0U,0))die();
  char *args[]={argv[10],argv[11],argv[13],NULL};

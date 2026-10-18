@@ -151,10 +151,18 @@ export async function prepareNetworkCompartment({allocation,binding,kind,routes,
   fail('HOST_NETWORK_HOST_RELAY_REQUIRED');
  const run=(file,args,input)=>execute({file,args,...(input===undefined?{}:{input}),timeoutMs:5000});
  const ip=(...args)=>run(IP,args),nft=(...args)=>run(NFT,args);
- let nsCreated=false,vethCreated=false,hostTableCreated=false,toolTableCreated=false,closed=false,closing,lateCleanupUnknown=false,
+ let nsCreated=false,vethCreated=false,hostTableCreated=false,toolTableCreated=false,closed=false,closing,lateCleanupUnknown=false,hostRelayStartUnknown=false,
   firewalls,identity,hostNamespace,hostRelay,hostRelayStartTime,localRelay,activePlan=plan,extending=false,extensionInFlight,latestProof;
  const hostDeny=buildHostRelayDenyFirewall(plan,hostRelayUid);
  const relayPorts=()=>hostRelay?.routes?.map(r=>r.port);
+ const startHostRelay=async startPlan=>{
+  try{return await startHostRelayProcess({plan:startPlan,hostNamespace});}
+  catch(error){
+   // A rejected launch has no returned handle. Even if its adapter tried cleanup, this layer has no exact
+   // absence receipt for a child that may have reached the host network namespace.
+   hostRelayStartUnknown=true;throw error;
+  }
+ };
  const verifyHostRelay=async()=>{
   if(hostRelay?.verify()?.verified!==true||hostRelay.pid<2||hostRelay.uid!==hostRelayUid||hostRelay.gid!==hostRelayGid||
    hostRelay.cgroupPath!==plan.hostRelayCgroupPath||hostRelay.routes?.length!==activePlan.routes.length||
@@ -174,6 +182,7 @@ export async function prepareNetworkCompartment({allocation,binding,kind,routes,
  };
  const cleanup=async(initialErrors=[])=>{
   const errors=[...initialErrors];if(lateCleanupUnknown)errors.push('late-relay');
+  if(hostRelayStartUnknown)errors.push('host-relay-start');
   if(hostTableCreated)try{await run(NFT,['-j','-f','-'],JSON.stringify(buildFirewallReplaceTransaction(hostDeny.expectedHost)));}
    catch{errors.push('host-output-deny');}
   if(localRelay)try{const result=await bounded(localRelay.close(),cleanupTimeoutMs);if(result?.closed!==true)errors.push('local-relay');}catch{errors.push('local-relay');}
@@ -217,7 +226,7 @@ export async function prepareNetworkCompartment({allocation,binding,kind,routes,
   // No unprivileged process exists until the host INPUT and UID-wide OUTPUT deny table is installed and read back.
   await run(NFT,['-j','-f','-'],JSON.stringify(hostDeny.host));hostTableCreated=true;
   assertNetworkFirewallReadback((await nft('-j','list','table','inet',plan.hostTable)).stdout,hostDeny.expectedHost);
-  hostRelay=await startHostRelayProcess({plan,hostNamespace});
+  hostRelay=await startHostRelay(plan);
   if(typeof hostRelay?.verify!=='function'||typeof hostRelay?.revoke!=='function'||typeof hostRelay?.close!=='function')
    fail('HOST_NETWORK_CLEANUP_UNKNOWN');
   hostRelayStartTime=(await verifyHostRelay()).startTime;
@@ -300,7 +309,7 @@ export async function prepareNetworkCompartment({allocation,binding,kind,routes,
     // Preserve UID-wide deny during the replacement process's entire startup and listener proof.
     await run(NFT,['-j','-f','-'],JSON.stringify(buildFirewallReplaceTransaction(hostDeny.expectedHost)));
     if(closed)fail('HOST_NETWORK_EXTENSION_REFUSED');
-    const replacement=await startHostRelayProcess({plan:next,hostNamespace});
+    const replacement=await startHostRelay(next);
     if(closed){try{if(replacement?.revoke?.()?.revoked!==true)lateCleanupUnknown=true;
      if((await bounded(replacement?.close?.(),cleanupTimeoutMs))?.closed!==true)lateCleanupUnknown=true;}catch{lateCleanupUnknown=true;}
      fail('HOST_NETWORK_EXTENSION_REFUSED');}

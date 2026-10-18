@@ -26,7 +26,8 @@ function topology(p){return {
  allRoutes:JSON.stringify([{dst:p.subnet,dev:p.hostVethName},{dst:'default',dev:'eth0'}]),
  };}
 
-function fixture(kind,{deferReplacement=false,lateCloseFails=false,stalledLocalClose=false,hostCloseFails=false}={}){
+function fixture(kind,{deferReplacement=false,lateCloseFails=false,stalledLocalClose=false,hostCloseFails=false,
+ rejectHostStartAt=0,rejectHostStartCode='HOST_NETWORK_HOST_RELAY_CLEANUP_UNKNOWN'}={}){
  const routes=kind==='browser'?browser:sdk,p=createNetworkPlan({allocation,binding,kind,routes}),
   expanded=kind==='sdk'?createNetworkPlan({allocation,binding,kind,routes:[...sdk,...bash]}):undefined,
   initialPorts=kind==='browser'?[44000]:[44000,44001],expandedPorts=[44002,44003,44004,44005],
@@ -41,6 +42,7 @@ function fixture(kind,{deferReplacement=false,lateCloseFails=false,stalledLocalC
   async close(){events.push(`close ${pid}`);if(late)lateCloses++;return {closed:late?!lateCloseFails:!hostCloseFails};}});
  const startHostRelayProcess=async({plan})=>{
   starts++;events.push(`host-start ${starts}`);const isLate=starts===2;
+  if(starts===rejectHostStartAt)throw Object.assign(Error(rejectHostStartCode),{code:rejectHostStartCode});
   if(isLate&&deferReplacement){markReplacement();return new Promise(resolve=>{releaseReplacement=()=>{
    relay=makeProcess(plan,expandedPorts,322,true);resolve(relay);};});}
   relay=makeProcess(plan,isLate?expandedPorts:initialPorts,isLate?322:321,isLate);return relay;
@@ -139,4 +141,25 @@ test('uncertain host relay cgroup cleanup retains UID-wide OUTPUT deny table',as
  await assert.rejects(network.close(),fault('HOST_NETWORK_CLEANUP_UNKNOWN'));
  assert.ok(f.events.some(x=>x==='nft -j -f -'),'deny replacement attempted');
  assert.equal(f.events.some(x=>x.includes('delete table inet')),false,'deny table must remain installed');
+});
+
+test('rejected initial host relay startup keeps UID-wide OUTPUT deny without a returned handle',async()=>{
+ for(const rejectHostStartCode of ['HOST_NETWORK_HOST_RELAY_CLEANUP_UNKNOWN','HOST_NETWORK_HOST_RELAY_UNKNOWN']){
+  const f=fixture('browser',{rejectHostStartAt:1,rejectHostStartCode});
+  await assert.rejects(prepareNetworkCompartment(f.options),fault('HOST_NETWORK_CLEANUP_UNKNOWN'));
+  assert.ok(f.events.findIndex(x=>x==='nft -j -f -')<f.events.findIndex(x=>x==='host-start 1'));
+  assert.ok(f.events.some(x=>x.includes('link delete')),'network link teardown still runs');
+  assert.equal(f.events.some(x=>x.includes('delete table inet')),false,'uncertain relay absence retains host deny');
+ }
+});
+
+test('rejected Bash replacement keeps UID-wide OUTPUT deny after old relay closes',async()=>{
+ const f=fixture('sdk',{rejectHostStartAt:2}),network=await prepareNetworkCompartment(f.options);
+ const now=Date.now(),receipt={schema:'meri-d005-sdk-quiescent/1',sdkChildEmpty:true,
+  allocationSha256:f.p.allocationSha256,bindingSha256:f.p.bindingSha256,namespaceDev:'4',namespaceIno:'42',observedAtMs:now};
+ await assert.rejects(network.extendBashRoutes({bashRoutes:bash,readSdkQuiescent:async()=>receipt,now:()=>now}),
+  fault('HOST_NETWORK_CLEANUP_UNKNOWN'));
+ assert.ok(f.events.findIndex(x=>x==='close 321')<f.events.findIndex(x=>x==='host-start 2'));
+ assert.ok(f.events.some(x=>x.includes('link delete')),'network link teardown still runs');
+ assert.equal(f.events.some(x=>x.includes('delete table inet')),false,'uncertain replacement absence retains host deny');
 });
