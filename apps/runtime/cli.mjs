@@ -37,7 +37,8 @@ export async function main(argv=process.argv.slice(2),{poststartTls,nativeFetch}
   // Control receives the production product-port composition (G4); the other roles take no product ports.
   let productPorts={};
   // The live-session relay (RC1 option A) serves reads and the memory run path; startControl binds it to its own session owner.
-  const relay=role==='control'&&(c.reads?.enabled===true||c.memory?.enabled===true)?(await import('./read-credential-relay.mjs')).createReadCredentialRelay():null;
+  const relay=role==='control'?(await import('./read-credential-relay.mjs')).createReadCredentialRelay():null;
+  let authority=null;
   // The schedule worker's owners (lane B3): the service calls this factory once it owns its pool, Temporal client and native client;
   // the factory composes Core's firing authority and unattended stop (B2) plus the admission/retirement ports over control's operations.
   if(role==='schedule-worker'&&c.routines?.enabled===true){const {composeRoutinesWorkerRuntimePorts}=await import('./schedule-service-owners.mjs');productPorts={runtimePortsFactory:composeRoutinesWorkerRuntimePorts};}
@@ -51,15 +52,19 @@ export async function main(argv=process.argv.slice(2),{poststartTls,nativeFetch}
    if(c.artifacts?.enabled===true&&documents.missing.length)process.stderr.write(JSON.stringify({event:'runtime.documents.unavailable',missing:documents.missing})+'\n');
    // Write-intent execution (lane E): the intents family and the per-run intent mount share one composition; both stay inert
    // unless control declares intents.execution and its Core owners exist.
-   const [{createControlIntentExecution},{readSecret}]=await Promise.all([import('./native-authority/execution-composition.mjs'),import('./config.mjs')]);
-   const execution=createControlIntentExecution({readSecret});
-   productPorts={productPortsFactory:createProductPortsFactory({families:PRODUCT_FAMILIES.map(([name,factory])=>[name,name==='documents'?documents.family:name==='intents'?execution.family:name==='memory'?memoryFamily:factory])}),intentMountFor:execution.intentMountFor,...(relay?{readCredentialRelay:relay}:{})};
+   const [{createControlIntentExecution},{readSecret},{createControlCurrentAuthority}]=await Promise.all([import('./native-authority/execution-composition.mjs'),import('./config.mjs'),import('./native-authority/current-authority-adapters.mjs')]);
+   // Current tool authority (lane T): one observation per port call over Core identity/membership/context through the relay; it
+   // supplies the execution owners and the reads gateway authority/limits. Without a prepared candidate there is nothing to observe.
+   authority=c.nativeCandidate===undefined?null:createControlCurrentAuthority({configuration:c,readSecret,nativeCredentials:relay.port});
+   const execution=createControlIntentExecution({readSecret,...(authority?{owners:authority.owners}:{})});
+   const intents=authority?context=>{authority.bind(context);return execution.family(context);}:execution.family;
+   productPorts={productPortsFactory:createProductPortsFactory({families:PRODUCT_FAMILIES.map(([name,factory])=>[name,name==='documents'?documents.family:name==='intents'?intents:name==='memory'?memoryFamily:factory])}),intentMountFor:execution.intentMountFor,...(relay?{readCredentialRelay:relay}:{}),...(documents.runOptions?{documentsRunOptions:documents.runOptions}:{})};
   }
   // General reads (lane 2), only when declared: the composer is built before control (it prepares and measures handlers) and
   // gets the live-session relay, which startControl binds to this control's own action-session owner (RC1 option A).
   if(role==='control'&&c.reads?.enabled===true){
    const {createControlReadsComposer}=await import('./native-authority/reads-composer.mjs');
-   const reads=await createControlReadsComposer({configuration:c,secretFiles:{serviceSecret:c.reads.serviceSecretFile,...(c.reads.readModeServiceSecretFile===undefined?{}:{readModeServiceSecret:c.reads.readModeServiceSecretFile})},nativeCredentials:relay.port,...(c.reads.defaultCongress===undefined?{}:{defaultCongress:c.reads.defaultCongress})});
+   const reads=await createControlReadsComposer({configuration:c,secretFiles:{serviceSecret:c.reads.serviceSecretFile,...(c.reads.readModeServiceSecretFile===undefined?{}:{readModeServiceSecret:c.reads.readModeServiceSecretFile})},nativeCredentials:relay.port,...(authority?{gateway:{authority:authority.gateway.authority,limits:authority.gateway.limits}}:{}),...(c.reads.defaultCongress===undefined?{}:{defaultCongress:c.reads.defaultCongress})});
    if(reads.missing.length)process.stderr.write(JSON.stringify({event:'runtime.reads.unavailable',missing:reads.missing})+'\n');
    Object.assign(productPorts,{createReadsRuntime:reads.createReadsRuntime});
   }

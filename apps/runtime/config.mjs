@@ -18,6 +18,7 @@ import {compileCapabilityPlatform} from './product-ports/capability-policy.mjs';
 import {compileRuntimeArtifactsConfiguration} from './artifacts/configuration.mjs';
 import {compileIntentsConfiguration} from './product-ports/intents.mjs';
 import {compileMemoryConfiguration} from './product-ports/memory.mjs';
+import {compileGatewayLimits} from './native-authority/current-authority-limits.mjs';
 import {compileRoutinesCoreConfiguration} from './native-authority/routines-configuration.mjs';
 import {compileObjectiveGenerationConfiguration} from './objective-generation/configuration.mjs';
 export {compileControlUserPreferencesConfiguration};
@@ -107,7 +108,7 @@ export function validateConfiguration(raw,role){
  if(c.memory!==undefined){requireValue(role==='control','MEMORY_CONFIGURATION');compileMemoryConfiguration(c);if(c.memory.enabled)file(c.memory.serviceSecretFile);}
  // General reads (lane 2): control builds the reads composer before startControl only when declared enabled. Secrets are
  // server-side files; the user bearer is never a file (RC1 option A: the live-session relay supplies it per call).
- if(c.reads!==undefined){requireValue(role==='control','READS_CONFIGURATION');own(c.reads,['enabled'],['serviceSecretFile','readModeServiceSecretFile','defaultCongress']);requireValue(typeof c.reads.enabled==='boolean','READS_CONFIGURATION');
+ if(c.reads!==undefined){requireValue(role==='control','READS_CONFIGURATION');own(c.reads,['enabled'],['serviceSecretFile','readModeServiceSecretFile','defaultCongress','gateway']);if(c.reads.gateway!==undefined)compileGatewayLimits(c.reads.gateway);requireValue(typeof c.reads.enabled==='boolean','READS_CONFIGURATION');
   if(c.reads.enabled){file(c.reads.serviceSecretFile);if(c.reads.readModeServiceSecretFile!==undefined)file(c.reads.readModeServiceSecretFile);}else requireValue(c.reads.serviceSecretFile===undefined&&c.reads.readModeServiceSecretFile===undefined,'READS_CONFIGURATION');
   if(c.reads.defaultCongress!==undefined)requireValue(integer(c.reads.defaultCongress,1,1000),'READS_CONFIGURATION');}
  if(role!=='conversation-runner'){
