@@ -72,7 +72,7 @@ export const PLAN=Object.freeze([
  ['migration','apps/artifacts/migrations/0002_retention.sql','8212082ea875117afb2ba129474ba5f6ba4f937c3d0192ca07267738cd73cba6','integration'],
  ['migration','apps/artifacts/migrations/0003_previews.sql','d1eb7ea68a150f60e7fb63e654a0892044bf24840a785fcff58dded59129b300','integration'],
  ['migration','apps/control/memory/migrations/0001_memory_candidates.sql','d925ec36d5e4fa98efeb123fb86f602608dbf82b2caa59bd093366e1eb33067d','integration'],
- ['migration','apps/runtime/native-authority/read-delegation/migrations/0001_read_delegation_facts.sql','074ec99885778551d79607eaf44b57d6cc89d069f133af4155f3a53bc151189a','integration'],
+ ['migration','apps/runtime/native-authority/read-delegation/migrations/0001_read_delegation_facts.sql','700663d7b788ba594c2ebd3df7c197949a471e6382ce4a98d94ce038fa9b03eb','integration'],
  ['phase:integration_grants',INTEGRATION_SCRIPT,'78807257635a000a5092e737e3309333c0be373e05a484a63a87ba3a55844757','integration']
 ].map(([kind,path,pinned,declaredStage],index)=>Object.freeze({ordinal:index+1,kind,path,pinned,
  name:kind==='migration'?path:`${path}#${kind.slice(6)}`,
