@@ -53,7 +53,7 @@ export async function main(argv=process.argv.slice(2),{poststartTls,nativeFetch}
    // unless control declares intents.execution and its Core owners exist.
    const [{createControlIntentExecution},{readSecret}]=await Promise.all([import('./native-authority/execution-composition.mjs'),import('./config.mjs')]);
    const execution=createControlIntentExecution({readSecret});
-   productPorts={productPortsFactory:createProductPortsFactory({families:PRODUCT_FAMILIES.map(([name,factory])=>[name,name==='documents'?documents.family:name==='intents'?execution.family:name==='memory'?memoryFamily:factory])}),intentMountFor:execution.intentMountFor,...(relay?{readCredentialRelay:relay}:{})};
+   productPorts={productPortsFactory:createProductPortsFactory({families:PRODUCT_FAMILIES.map(([name,factory])=>[name,name==='documents'?documents.family:name==='intents'?execution.family:name==='memory'?memoryFamily:factory])}),intentMountFor:execution.intentMountFor,...(relay?{readCredentialRelay:relay}:{}),...(documents.runOptions?{documentsRunOptions:documents.runOptions}:{})};
   }
   // General reads (lane 2), only when declared: the composer is built before control (it prepares and measures handlers) and
   // gets the live-session relay, which startControl binds to this control's own action-session owner (RC1 option A).
