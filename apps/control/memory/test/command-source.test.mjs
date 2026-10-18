@@ -31,7 +31,7 @@ function setup(mutate){
 const personal=f=>{f.command.arguments.scope='personal';f.command.arguments.clientId=null;};
 
 test('personal memory.propose completes as one pending candidate through the canonical executor; replay never dispatches again',async()=>{
- const t=setup(personal),executor=t.create(createMemoryCommandSource({producer:t.producer}));await t.ready(executor);
+ const t=setup(personal),executor=t.create(createMemoryCommandSource({producer:t.producer,binding:t.f.binding,selectedClientId:t.f.context.conversationClientId}));await t.ready(executor);
  const value=await executor.execute(t.f.call(),'synthetic');
  assert.equal(value.status,'observed');
  const result=value.outcome.result;assert.equal(result.status,'pending');assert.equal(result.commandSha256,t.f.proposal.commandSha256);
@@ -50,14 +50,14 @@ test('the legacy route source still refuses personal before budget or source por
 test('a keyed conversational proposal matching an eligible memory becomes a correction pinned to that memory',async()=>{
  const t=setup(f=>{personal(f);f.command.arguments.key='brief-length';});
  t.core.addMemory({memoryId:'mem-own',key:'brief-length',memorySha256:'e'.repeat(64),tenantId:t.f.binding.tenantId,ownerActorId:t.f.binding.actorId});
- const executor=t.create(createMemoryCommandSource({producer:t.producer}));await t.ready(executor);
+ const executor=t.create(createMemoryCommandSource({producer:t.producer,binding:t.f.binding,selectedClientId:t.f.context.conversationClientId}));await t.ready(executor);
  assert.equal((await executor.execute(t.f.call(),'synthetic')).status,'observed');
  const [row]=t.journal.rows.values();assert.equal(row.candidate.kind,'correction');assert.deepEqual(row.candidate.corrects,{memoryId:'mem-own',memorySha256:'e'.repeat(64)});
 });
 
 test('an uncertain Core submission is an unknown command outcome, not a pending result',async()=>{
  const t=setup(personal);t.core.failSubmit='refuse';
- const executor=t.create(createMemoryCommandSource({producer:t.producer}));await t.ready(executor);
+ const executor=t.create(createMemoryCommandSource({producer:t.producer,binding:t.f.binding,selectedClientId:t.f.context.conversationClientId}));await t.ready(executor);
  await assert.rejects(executor.execute(t.f.call(),'synthetic'),/COMMAND_OUTCOME_UNKNOWN/);
  assert.equal([...t.journal.rows.values()][0].submission.state,'SUBMISSION_UNKNOWN');
  assert.equal((await executor.execute(t.f.call(),'synthetic')).status,'indeterminate');assert.equal(t.core.reviews.size,0);
@@ -65,13 +65,13 @@ test('an uncertain Core submission is an unknown command outcome, not a pending 
 
 test('a definite Core refusal keeps the candidate PREPARED (never "unknown" at Core); the executor still folds every post-claim source failure into an unknown command outcome; a keyed proposal becoming a correction drops the ttl',async()=>{
  const t=setup(personal);t.core.failSubmit='refused';
- const executor=t.create(createMemoryCommandSource({producer:t.producer}));await t.ready(executor);
+ const executor=t.create(createMemoryCommandSource({producer:t.producer,binding:t.f.binding,selectedClientId:t.f.context.conversationClientId}));await t.ready(executor);
  await assert.rejects(executor.execute(t.f.call(),'synthetic'),/COMMAND_OUTCOME_UNKNOWN/);
  assert.equal([...t.journal.rows.values()][0].submission.state,'PREPARED');assert.equal(t.core.reviews.size,0);
  assert.equal((await executor.execute(t.f.call(),'synthetic')).status,'indeterminate');
  const u=setup(f=>{personal(f);f.command.arguments.key='brief-length';f.command.arguments.ttlDays=3;});
  u.core.addMemory({memoryId:'clio:'+id(77),key:'brief-length',memorySha256:'e'.repeat(64),tenantId:u.f.binding.tenantId,ownerActorId:u.f.binding.actorId});
- const run=u.create(createMemoryCommandSource({producer:u.producer}));await u.ready(run);
+ const run=u.create(createMemoryCommandSource({producer:u.producer,binding:u.f.binding,selectedClientId:u.f.context.conversationClientId}));await u.ready(run);
  assert.equal((await run.execute(u.f.call(),'synthetic')).status,'observed');
  const [row]=u.journal.rows.values();assert.equal(row.candidate.kind,'correction');assert.equal(row.candidate.ttlDays,null);assert.equal(row.candidate.corrects.memoryId,'clio:'+id(77));
 });
@@ -83,4 +83,37 @@ test('eligibility derives only from the current decision: client scopes are clie
  assert.deepEqual(p.clientIds,[id(9)]);assert.deepEqual(p.permissions,[]);
  assert.deepEqual(principalFromCommandAuthority({binding,decision:{scopes:[scope('tenant','t')]}}).permissions,['memory.propose.firm']);
  assert.throws(()=>principalFromCommandAuthority({binding,decision:{scopes:[{...scope('client',id(9)),tenantId:'other'}]}}),/COMMAND_AUTHORITY_REFUSED/);
+ for(const bad of [null,{...scope('client',id(9)),resourceId:null},{...scope('client',id(9)),resourceId:'not-a-client'}])assert.throws(()=>principalFromCommandAuthority({binding,decision:{scopes:[bad]}}),/COMMAND_AUTHORITY_REFUSED/);
+});
+
+test('a source pins its executor and selected client before any producer call and rechecks at execution',async()=>{
+ const f=fixture('memory.propose'),calls=[];
+ const producer={async proposeFromCommand(v){calls.push(v);return {candidateId:id(70),review:{status:'pending'}};}};
+ const authority=()=>({binding:{...f.binding},decision:{scopes:f.scopes},claims:{capabilityId:id(8)},policyRevision:'p1',deadlineMs:NOW+1000});
+ assert.throws(()=>createMemoryCommandSource({producer}),/COMMAND_CONFIGURATION/);
+ const source=createMemoryCommandSource({producer,binding:f.binding,selectedClientId:id(9)});
+ for(const key of ['tenantId','actorId','conversationId','runId']){
+  const command=structuredClone(f.command);command.binding[key]=id(88);
+  await assert.rejects(source.prepare({command,authority:authority(),deadlineMs:NOW+1000}),/COMMAND_SOURCE_IDENTITY_REFUSED/);
+ }
+ const wrongClient=structuredClone(f.command);wrongClient.arguments={...wrongClient.arguments,scope:'client',clientId:id(10)};
+ await assert.rejects(source.prepare({command:wrongClient,authority:authority(),deadlineMs:NOW+1000}),/COMMAND_SOURCE_IDENTITY_REFUSED/);
+ const wrongExecutor=authority();wrongExecutor.binding.writerFence++;
+ await assert.rejects(source.prepare({command:f.command,authority:wrongExecutor,deadlineMs:NOW+1000}),/COMMAND_SOURCE_IDENTITY_REFUSED/);
+ const token=await source.prepare({command:f.command,authority:authority(),deadlineMs:NOW+1000});
+ await assert.rejects(source.execute(token,{authority:wrongExecutor}),/COMMAND_SOURCE_IDENTITY_REFUSED/);
+ assert.equal(calls.length,0);
+ await assert.rejects(source.execute(token,{authority:authority()}),/COMMAND_SOURCE_PREPARATION_REFUSED/);
+});
+
+test('prepared command custody is immutable and keeps original provenance on a fresh executor attempt',async()=>{
+ const f=fixture('memory.propose'),calls=[],original=structuredClone(f.command),binding={...f.binding,attemptId:id(81),workerId:id(82),writerFence:2};
+ const producer={async proposeFromCommand(v){calls.push(v);return {candidateId:id(70),review:{status:'pending'}};}};
+ const source=createMemoryCommandSource({producer,binding,selectedClientId:id(9)});
+ const authority={binding,decision:{scopes:f.scopes},claims:{capabilityId:id(8)},policyRevision:'p1',deadlineMs:NOW+1000};
+ const token=await source.prepare({command:f.command,authority,deadlineMs:NOW+1000});
+ f.command.arguments.content='Changed after preparation';
+ await source.execute(token,{authority});
+ assert.equal(calls.length,1);assert.deepEqual(calls[0].command,original);assert.equal(calls[0].commandSha256,canonicalSha256(original));
+ assert.deepEqual(calls[0].command.binding,f.binding,'candidate provenance remains the original approved run attempt');
 });

@@ -22,6 +22,7 @@ import {createConversationInitialInputApplication} from '../control/conversation
 import {conversationInitialInputMetadata} from '../../packages/contracts/conversation-initial-input/protocol.mjs';
 import {captureRuntimePorts,composeRuntimePorts,createRuntimeProductApplications,readRuntimeArtifactRecovery} from './product-applications.mjs';
 import {productReadiness} from './product-readiness.mjs';
+import {bindMemoryRetention} from './product-ports/memory.mjs';
 import {capabilityDigest} from './native-authority/task-verifier.mjs';
 import {compilePreparedCandidateConfiguration} from './prepared-candidate-config.mjs';
 import {createPostgresIssuanceStore} from './prepared-run-issuance-postgres.mjs';
@@ -92,6 +93,8 @@ export function assembleControl(options){
  const userPreferences=createRuntimeUserPreferences({configuration,pool,ports,now});
  if(ports.transitionAuthority&&typeof ports.identityContext.resolveTransitionContext!=='function')throw fault('PRODUCT_PORTS_CONFIGURATION');
  const retention=retentionGate(configuration,pool,ports,artifactRecovery,now);
+ // Memory shares the conversation retention fence; a captured route alone is not a bound producer.
+ const memoryRetentionBound=Boolean(productContext&&retention&&bindMemoryRetention(productContext,retention.gate));
  const store=createPostgresConversationStore({pool,now,...(ports.transitionAuthority?{transitionAuthority:ports.transitionAuthority}:{})});
  const sessions=createActionSessionOwner({mode:'process-local',verifyIdentity:ports.identityContext.verifyIdentity,resolveContext:ports.identityContext.resolveContext,now,...(ports.conversationMembership?{membership:ports.conversationMembership}:{}),...(ports.transitionAuthority?{
   readTransition:({signal,...input})=>store.lifecycle.readTransition({...input,signal},()=>signal?.throwIfAborted()),
@@ -113,7 +116,7 @@ export function assembleControl(options){
  // Composed intents need their journal table; a disabled family adds no table, so first-chat readiness is unchanged.
  const intentTables=Object.freeze(ports.intentApplication?['meri_intents.preparations','meri_commands.command_journal','meri_commands.approval_metadata']:[]);
  const memoryTables=Object.freeze(ports.memoryApplication?['meri_memory.candidates']:[]);
- return Object.freeze({service,store,sessions,retention,userPreferences,intentTables,memoryTables,productReadiness:()=>productReadiness({ports,retention,sourceEnabled:configuration.sourceEnabled,userPreferences:userPreferences.state()}),downloads:products.downloads,application:{handle:request=>{const product=products.handle(request);if(product!==null)return product;const path=new URL(request.url).pathname;return path==='/api/action-followthrough/session'?issuance.handle(request):path==='/api/conversations/input/admit'?input.handle(request):path===conversationInitialInputMetadata.routes.allocate.path?initialInput.handle(request):path.startsWith('/internal/')?worker.handle(request):conversation.handle(request);}},close(){userPreferences.close();return sessions.close();}});
+ return Object.freeze({service,store,sessions,retention,userPreferences,intentTables,memoryTables,productReadiness:()=>productReadiness({ports,retention,memoryRetentionBound,sourceEnabled:configuration.sourceEnabled,userPreferences:userPreferences.state()}),downloads:products.downloads,application:{handle:request=>{const product=products.handle(request);if(product!==null)return product;const path=new URL(request.url).pathname;return path==='/api/action-followthrough/session'?issuance.handle(request):path==='/api/conversations/input/admit'?input.handle(request):path===conversationInitialInputMetadata.routes.allocate.path?initialInput.handle(request):path.startsWith('/internal/')?worker.handle(request):conversation.handle(request);}},close(){userPreferences.close();return sessions.close();}});
 }
 /** Multi-run owners composed only by trusted startup (never named in configuration): the durable issuance store over the control
  * database (migration 0011) and the file-backed capability-material authority under the configured owner-only directory. A declared
