@@ -12,6 +12,7 @@ The activity reaches it through `prepareBrowserRun` (`runtime.mjs`) when a trust
 | `policy.mjs`, `resolution.mjs`, `public-web.mjs` | Policy shape, platform ∧ tenant ∧ role resolution, unremovable platform limits |
 | `egress.mjs` | Pure reference decision for every connection kind |
 | `egress-control.mjs`, `egress-proxy.mjs` | Run-bound grant (worker) and the enforceable admission the host proxy runs: allowlist, web ports, every resolved address public, pinned connect address, revocation and expiry; mapping of forward-proxy requests |
+| `../egress/proxy-server.mjs` | The socket-level proxy that serves a run's control on loopback (`startEgressProxy`): CONNECT, absolute-form and upgrade requests, dial only the checked address, no redirect following, revocation closes open tunnels. Shared with networked Bash (`../egress/bash-egress.mjs`) |
 | `server.mjs` | Playwright MCP 0.0.83 stdio configuration, including `--proxy-server` to the host control |
 | `permissions.mjs`, `approval-binding.mjs`, `page-context.mjs` | Pre-execution gate; canonical approval subject, receipt correlation and replay ledger; page-origin tracking |
 | `fragment.mjs` | Assembles the open fragment (module-internal, behind the gate) |

@@ -21,9 +21,10 @@ export {APPROVAL_REQUEST_SCHEMA} from './approval-binding.mjs';
 const MAX_APPROVAL_INPUT=16384;
 /** Approval deadline bounds in milliseconds; the runtime may configure a value inside them. */
 export const APPROVAL_DEADLINE_MS=Object.freeze({default:120000,min:1000,max:900000});
-const EXPIRED=Symbol('approval-expired'),ABORTED=Symbol('approval-aborted');
-/** Races `approvals.decide` against `signal` and the deadline; returns the port's answer, EXPIRED or ABORTED. */
-async function decideWithin(approvals,request,signal,deadlineMs){
+export const EXPIRED=Symbol('approval-expired'),ABORTED=Symbol('approval-aborted');
+/** Races `approvals.decide` against `signal` and the deadline; returns the port's answer, EXPIRED or ABORTED. Shared
+ * with the Bash approval gate (`capabilities/bash-approval.mjs`). */
+export async function decideWithin(approvals,request,signal,deadlineMs){
  const expiry=new AbortController(),portSignal=signal?AbortSignal.any([signal,expiry.signal]):expiry.signal;
  let timer,onAbort;
  const stopped=new Promise(resolve=>{

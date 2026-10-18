@@ -8,3 +8,6 @@ export async function meriConversationWorkflow(input:{binding:Binding}):Promise<
 
 // Separate opt-in definition preserves legacy in-flight workflow history.
 export {meriConversationLifecycleWorkflow} from './lifecycle/workflow.ts';
+
+// Separate opt-in server-owned Objective generation lifecycle (lane 7); activities are composed only with genuine ports.
+export {meriObjectiveGenerationWorkflow} from './objective-generation-workflow.ts';

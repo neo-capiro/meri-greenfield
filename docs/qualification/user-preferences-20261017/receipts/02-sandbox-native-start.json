@@ -1,0 +1,39 @@
+{
+  "startedAt": "2026-10-17T02:15:55.509Z",
+  "cutoff": "2026-10-17T02:33:23.000Z",
+  "head": "69a61c36b1b98e5bc02591f2b4a4c32f14b828cf",
+  "tree": "9f6df335b70b3c91a6ec1c9e71fd4a1dc0b9a1af",
+  "port": 55436,
+  "database": "meri_prefs_task6_qual_20261017",
+  "steps": [
+    {
+      "step": "preflight",
+      "at": "2026-10-17T02:15:55.800Z",
+      "freeBytes": 5352386560,
+      "migrationBlob": "048a834c4335f97aa5f8691afc3c310188ec4388"
+    },
+    {
+      "step": "initialized",
+      "at": "2026-10-17T02:16:02.358Z",
+      "clusterBytes": 41086944
+    },
+    {
+      "step": "failure",
+      "at": "2026-10-17T02:16:02.450Z",
+      "reason": "CHILD_FAILED_pg_ctl.exe_EXIT_1"
+    }
+  ],
+  "testExit": null,
+  "restore": null,
+  "cleanup": {
+    "stopped": true,
+    "dataRemoved": true,
+    "portFree": true,
+    "finishedBeforeDeadline": true
+  },
+  "failures": [
+    "CHILD_FAILED_pg_ctl.exe_EXIT_1"
+  ],
+  "finishedAt": "2026-10-17T02:16:02.574Z",
+  "freeBytesAfter": 5351268352
+}

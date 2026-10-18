@@ -54,3 +54,10 @@ test('list unavailable row must pass fresh row release authority',async()=>{cons
 test('history refuses contradictory SDK status name and code',async()=>{const f=fixture();f.workflowClient.getHandle=(workflowId,runId)=>({describe:async()=>({workflowId,runId,status:{code:2,name:'RUNNING'},historyLength:1,startTime:date()})});await assert.rejects(f.lifecycle.list(listRequest()));});
 test('history retains future status UNKNOWN without fabricating known label',async()=>{const f=fixture();f.workflowClient.getHandle=(workflowId,runId)=>({describe:async()=>({workflowId,runId,status:{code:99,name:'UNKNOWN'},historyLength:1,startTime:date()})});const out=await f.lifecycle.list(listRequest());assert.deepEqual(out.originalRuns.executions[0].status,{code:99,name:'UNKNOWN'});});
 for(const port of ['authorize','owner','history'])test(`list ${port} errors are sanitized`,async()=>{const f=fixture(),owner={...f.owner},canary='CREDENTIAL-CANARY';let authorize=auth;if(port==='authorize')authorize=()=>{throw Error(canary);};if(port==='owner')owner.list=async()=>{throw Error(canary);};if(port==='history')f.workflowClient.getHandle=()=>({describe:async()=>{throw Error(canary);}});const l=createScheduleLifecycle({scheduleClient:f.scheduleClient,workflowClient:f.workflowClient,scheduleOwner:owner,authorize,clock:()=>NOW});await assert.rejects(l.list(listRequest()),e=>e.message==='SCHEDULE_FAILED'&&e.code==='SCHEDULE_FAILED');});
+test('a client without a bounding connection is refused at construction, before any claim or SDK effect',()=>{
+ for(const side of ['scheduleClient','workflowClient'])for(const connection of [undefined,{withDeadline:(_d,fn)=>fn()},{withAbortSignal:(_s,fn)=>fn()}]){
+  const f=fixture(),clients={scheduleClient:f.scheduleClient,workflowClient:f.workflowClient};clients[side]={...clients[side],connection};
+  assert.throws(()=>createScheduleLifecycle({...clients,scheduleOwner:f.owner,authorize:auth,clock:()=>NOW}),e=>e.code==='SCHEDULE_SDK_PORT');
+  assert.deepEqual(f.calls,[]);
+ }
+});

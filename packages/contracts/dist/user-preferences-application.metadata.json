@@ -1,0 +1,156 @@
+{
+  "contractVersion": "0.1.0",
+  "schemaId": "urn:meri:user-preferences-application:0.1.0",
+  "routes": {
+    "read": {
+      "method": "POST",
+      "path": "/api/settings/user/read",
+      "response": "json"
+    },
+    "save": {
+      "method": "POST",
+      "path": "/api/settings/user/save",
+      "response": "json"
+    }
+  },
+  "authentication": {
+    "scheme": "Bearer",
+    "expectedOwner": "independently current Core tenantId and actorId; never response owner or Clerk identity"
+  },
+  "limits": {
+    "requestBytes": 8192,
+    "responseBytes": 16384,
+    "requestMs": 10000,
+    "jsonDepth": 64,
+    "jsonNodes": 100000
+  },
+  "errorStatuses": {
+    "INVALID_REQUEST": 400,
+    "UNAUTHENTICATED": 401,
+    "ACCESS_DENIED": 403,
+    "MEMBERSHIP_REVOKED": 403,
+    "NOT_FOUND": 404,
+    "METHOD_NOT_ALLOWED": 405,
+    "DEADLINE": 408,
+    "MEMBERSHIP_CHANGED": 409,
+    "REQUEST_TOO_LARGE": 413,
+    "UNSUPPORTED_MEDIA_TYPE": 415,
+    "CANCELLED": 499,
+    "PRODUCT_UNAVAILABLE": 502,
+    "SETTINGS_REQUEST_INVALID": 400,
+    "SETTINGS_DOCUMENT_INVALID": 400,
+    "SETTINGS_FIELD_INVALID": 400,
+    "SETTINGS_CLIENT_REFUSED": 403,
+    "SETTINGS_REVISION_CONFLICT": 409,
+    "SETTINGS_STORE_UNAVAILABLE": 503,
+    "SETTINGS_STORE_STATE": 500,
+    "SETTINGS_COMMIT_UNKNOWN": 503,
+    "SETTINGS_UNAVAILABLE": 503,
+    "USER_PREFERENCES_UNAVAILABLE": 503
+  },
+  "errorOutcomes": [
+    "UNKNOWN",
+    "RESULT_NOT_RELEASED"
+  ],
+  "semantics": {
+    "document": "complete canonical user preferences; unknown fields refuse",
+    "save": "captured expectedRevision plus one and exact captured document",
+    "uncertainty": "UNKNOWN and RESULT_NOT_RELEASED require read-only reconciliation; never blind retry",
+    "membership": "server owns current membership and default-client eligibility",
+    "integration": "isolated source contract; runtime mounting and persistence qualification remain handoff work"
+  },
+  "bundler": "rolldown",
+  "declarations": "json-schema-to-ts/typescript",
+  "sources": [
+    {
+      "path": "../../apps/control/product-access/errors.mjs",
+      "sha256": "8fa3c0f395f509d8f76704580f50408bcc56fc7088e4ce242638c3cc9d1eedd0",
+      "bytes": 1100
+    },
+    {
+      "path": "../../apps/control/product-access/http.mjs",
+      "sha256": "b0603665c72569ccc266e99ffec15e66885bf4e7c66072a6d07ce0c28adb0ddf",
+      "bytes": 6951
+    },
+    {
+      "path": "../../apps/control/settings/documents.mjs",
+      "sha256": "36dd580e23856f7c547d03f6bfd540586bf5615040f4c8696fc51b1fba1b9183",
+      "bytes": 2994
+    },
+    {
+      "path": "../../apps/control/settings/routes.mjs",
+      "sha256": "6a48091839c474f781e2db79f9640492005ec71a578ba1edf9aeda17f30bf2fb",
+      "bytes": 1526
+    },
+    {
+      "path": "../../apps/control/settings/user-application/protocol.mjs",
+      "sha256": "94bbc808e4d31b7654b544e68804aae50bf531105d24501901ce29ad8df37146",
+      "bytes": 1352
+    },
+    {
+      "path": "document-application/boundary.mjs",
+      "sha256": "6a82c49b1db426d2435d751eaf754731658ac1d448750e1a8f060fdada869982",
+      "bytes": 2216
+    },
+    {
+      "path": "generate-user-preferences.mjs",
+      "sha256": "165ce6a0ddcea02cea77d557f03c8c6f4322c7f45740acf6f9651554ae5182ec",
+      "bytes": 11146
+    },
+    {
+      "path": "meri.schema.json",
+      "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
+      "bytes": 50043
+    },
+    {
+      "path": "user-preferences-application/boundary.mjs",
+      "sha256": "a15f7be7419b286a0ae9470ead0b36f31e1150621baf8c435b823d0e813f50ae",
+      "bytes": 1758
+    },
+    {
+      "path": "user-preferences-application/declarations.mjs",
+      "sha256": "288f9938ee38e925debe711dc0ead443130f06961fd0792f63bf824579961356",
+      "bytes": 2947
+    },
+    {
+      "path": "user-preferences-application/document.mjs",
+      "sha256": "03576e356064fb89d2b81c9dbcf07581d23710a075e017be7019ef76e9591e9a",
+      "bytes": 4200
+    },
+    {
+      "path": "user-preferences-application/protocol.mjs",
+      "sha256": "07c10872446909dd97ad8edb67ea294e3e2028fa25ad3aa7da2d2e492e366419",
+      "bytes": 1376
+    },
+    {
+      "path": "user-preferences-application/README.md",
+      "sha256": "460c6bfc171250ec265f7fd8fca4fb6c8b8321af4ebc1b49f035bb80387cea15",
+      "bytes": 3410
+    },
+    {
+      "path": "user-preferences-application/receive.mjs",
+      "sha256": "a16b0d1903174248339e20bf2f38fae86521e9f43a0e682dcb7ba01c8fbc2c86",
+      "bytes": 2838
+    },
+    {
+      "path": "user-preferences-application/schema.mjs",
+      "sha256": "d8f6f48a67c9a2f6390782fdd6efd79084b3fb3caa1430d9c87b61c0845f2c00",
+      "bytes": 1204
+    }
+  ],
+  "schemaSha256": "505d936a2eecfbcebbebe740048eea1eab02f3cfbdd9f89b2d00698c64da7ac9",
+  "browserInputs": [
+    "document-application/boundary.mjs",
+    "node_modules/ajv/dist/runtime/ucs2length.js",
+    "node_modules/canonicalize/lib/canonicalize.js",
+    "user-preferences-application/boundary.mjs",
+    "user-preferences-application/document.mjs",
+    "user-preferences-application/protocol.mjs",
+    "user-preferences-application/receive.mjs",
+    "user-preferences-application/schema.mjs",
+    "virtual:rolldown/runtime.js",
+    "virtual:user-preferences-generated-protocol",
+    "virtual:user-preferences-generated-validator"
+  ],
+  "browserImports": []
+}

@@ -5,7 +5,8 @@
  * rules also govern Write). Any other call falls through to the permission callback, which denies it. The SDK
  * evaluates resolved paths, so this replaces the former textual path gate and its PreToolUse duplicate.
  * Bash is not a file tool: it is admitted only through `bash-sandbox.mjs` with its own policy flag. */
-import {isAbsolute,resolve} from 'node:path';
+import {posix} from 'node:path';
+const {isAbsolute,resolve}=posix;
 import {own} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {WORKSPACE_TOOLS} from './policy.mjs';
 /** Built-in tool names declared by the pinned SDK tool schemas; every name outside the run's `tools` is also disallowed. */

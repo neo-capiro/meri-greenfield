@@ -2,6 +2,7 @@
 import { canonicalSha256, validateShape as publicShape } from '../../../packages/contracts/validate.mjs';
 import { validateShape as privateShape } from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import { refuse } from './postgres-budget-store.mjs';
+import {assertOccurrenceCostScope} from './occurrence-cost-scope.mjs';
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 export const digest = value => { if (typeof value !== 'string' || !/^[0-9a-f]{64}$/.test(value)) refuse('INVALID_DIGEST'); return value; };
@@ -17,9 +18,10 @@ export function snapshot(raw) {
 }
 export function allocation(raw) {
   const a = snapshot(raw);
-  keys(a, ['run', 'manifest', 'manifestSha256', 'catalogSha256', 'budgets', 'schedule']);
+  keys(a, ['run', 'manifest', 'manifestSha256', 'catalogSha256', 'budgets', 'schedule',...(Object.hasOwn(a??{},'occurrenceCostScope')?['occurrenceCostScope']:[])]);
   keys(a.run, ['tenantId', 'actorId', 'conversationId', 'runId']);
   publicShape('RunBinding', { ...a.run, attemptId: a.run.runId, workerId: a.run.runId, writerFence: 1 });
+  if(Object.hasOwn(a,'occurrenceCostScope'))assertOccurrenceCostScope(a.occurrenceCostScope,a.run);
   digest(a.manifestSha256); digest(a.catalogSha256); privateShape('Budgets', a.budgets);
   privateShape('SkillManifest', a.manifest);
   if (canonicalSha256(a.manifest) !== a.manifestSha256 || !same(a.manifest.budgets,a.budgets)) refuse('MANIFEST_BUDGET_MISMATCH');
