@@ -10,9 +10,11 @@ import {fault} from '../config.mjs';
 import {createSettingsFamily} from './settings.mjs';
 import {createRoutinesFamily} from './routines.mjs';
 import {createMemoryFamily} from './memory.mjs';
+import {createDocumentsFamily} from './documents.mjs';
+import {createObjectiveFamily} from './objective.mjs';
 
 /** Ordered production family factories. Each entry is `[name, factory]`; the name is used only in refusals. */
-export const PRODUCT_FAMILIES=Object.freeze([['settings',createSettingsFamily],['routines',createRoutinesFamily],['memory',createMemoryFamily]]);
+export const PRODUCT_FAMILIES=Object.freeze([['settings',createSettingsFamily],['routines',createRoutinesFamily],['memory',createMemoryFamily],['documents',createDocumentsFamily],['objective',createObjectiveFamily]]);
 
 const ordinary=fn=>typeof fn==='function'&&!types.isProxy(fn)&&!types.isAsyncFunction(fn)&&!types.isGeneratorFunction(fn);
 

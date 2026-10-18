@@ -44,6 +44,8 @@ import {createRunnerPoststartCertificateIssuer} from './native-authority/runner-
 import {createRunnerPoststartApplication} from './native-authority/runner-poststart-http.mjs';
 import {createRuntimeUserPreferences} from './user-preferences.mjs';
 import {createConfiguredRunCapabilityPolicy} from './product-ports/capability-policy.mjs';
+import {bindDocumentsSessions} from './artifacts/session-binding.mjs';
+import {createObjectiveReaderApplication} from './product-ports/objective.mjs';
 function productBinding(options){
  const c=own(options,[],['productPorts','productPortsFactory']);
  if(c.productPorts!==undefined&&c.productPortsFactory!==undefined)throw fault('PRODUCT_PORTS_CONFIGURATION');
@@ -69,9 +71,10 @@ export function assembleControl(options){
  if(telemetry!==undefined&&typeof telemetry?.observeRunOwner!=='function')throw fault('TELEMETRY_CONFIGURATION');
  const captured=productBinding(binding),canonical=captureRuntimePorts(canonicalProductPorts);
  const artifactRecovery=configuration.retention===undefined?null:createArtifactRecoveryBinding({journal:createPostgresRetentionJournal({pool,now})});
- let supplied;
+ let supplied,productContext;
  if(captured.factory){
-  supplied=Reflect.apply(captured.factory,undefined,[Object.freeze({configuration,pool,client,native,now,canonicalProductPorts:canonical,...(artifactRecovery?{artifactRecovery:artifactRecovery.context}:{})})]);
+  productContext=Object.freeze({configuration,pool,client,native,now,canonicalProductPorts:canonical,...(artifactRecovery?{artifactRecovery:artifactRecovery.context}:{})});
+  supplied=Reflect.apply(captured.factory,undefined,[productContext]);
   if(supplied===undefined)throw fault('PRODUCT_PORTS_CONFIGURATION');
   // Ordinary functions can still return a rejected Promise. Consume only native
   // Promise rejection while refusing it; never inspect or execute then getters.
@@ -86,6 +89,8 @@ export function assembleControl(options){
   readTransition:({signal,...input})=>store.lifecycle.readTransition({...input,signal},()=>signal?.throwIfAborted()),
   resolveTransitionContext:ports.identityContext.resolveTransitionContext,
  }:{}),limits:{maxSessions:configuration.sessions.maxSessions,maxRequestMs:configuration.limits.requestMs,maxTtlMs:configuration.sessions.maxTtlMs,maxFactBytes:131072}});
+ // A documents options owner (composed only with a trusted Core artifact authority) is late-bound to these exact sessions.
+ if(productContext)bindDocumentsSessions(productContext,sessions);
  const dispatcher=createTemporalConversationDispatcher({client,taskQueue:configuration.temporal.taskQueue,lifecycle:true,now,maxRequestMs:configuration.limits.requestMs});
  const capabilityPolicy=configuration.capabilityPlatform===undefined?undefined:createConfiguredRunCapabilityPolicy(configuration);
  const basic=createConversationService({sessions,store,dispatcher,versions:configuration.versions,now,maxRequestMs:configuration.limits.requestMs,...(capabilityPolicy?{capabilityPolicy}:{}),...(ports.selectedSkillAdmission?{selectedSkillAdmission:ports.selectedSkillAdmission}:{}),...(ports.selectedOutputPublication?{selectedOutputPublication:ports.selectedOutputPublication}:{}),...(retention?{retention:retention.gate}:{})});
@@ -160,7 +165,7 @@ export async function startControl(configuration,options={}){
   // The download-link gate opens only after its owners verify; a closed gate leaves every other route as composed.
   checkAuthorization();const downloads=await assembly.downloads.open({signal});checkAuthorization();
   const mountedApplication=candidate?{async handle(request){return (await candidate.application.handle(request))??assembly.application.handle(request);}}:assembly.application;
-  const separated=configuration.privateHttp===undefined?null:createControlRouteApplications({assembly:assembly.application,candidate:candidate?.application,...(router?{router,privateIngress}:{}),...(poststartApplication?{poststart:poststartApplication}:{})});
+  const separated=configuration.privateHttp===undefined?null:createControlRouteApplications({assembly:assembly.application,candidate:candidate?.application,objectiveReader:createObjectiveReaderApplication(),...(router?{router,privateIngress}:{}),...(poststartApplication?{poststart:poststartApplication}:{})});
   const publicApplication=fence.wrap(separated?.public??mountedApplication),application=telemetry?telemetry.instrumentApplication(publicApplication):publicApplication;
   const privateApplication=separated===null?null:telemetry?telemetry.instrumentApplication(fence.wrap(separated.private)):fence.wrap(separated.private);
   async function readiness({signal}){fence.check();signal?.throwIfAborted();if(authorization&&!authorization.healthy())throw fault('TEMPORAL_AUTHORIZATION_UNAVAILABLE');await pool.query("SELECT to_regclass('meri_conversations.runs') AS runs, to_regclass('meri_conversations.events') AS events, to_regclass('meri_conversations.controls') AS controls, to_regclass('meri_conversations.selected_outputs') AS selected_outputs, to_regclass('meri_conversations.initial_inputs') AS initial_inputs").then(result=>{if(!result.rows[0]||typeof result.rows[0].initial_inputs!=='string'||Object.values(result.rows[0]).some(v=>v===null))throw fault('DATABASE_SCHEMA_UNAVAILABLE');});

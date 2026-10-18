@@ -15,6 +15,7 @@ import {assertNativeReadConfiguration} from '../../packages/contracts/runtime-0.
 import {compileControlUserPreferencesConfiguration} from './user-preferences.mjs';
 import {compileScheduleServiceConfiguration} from './schedule-service-configuration.mjs';
 import {compileCapabilityPlatform} from './product-ports/capability-policy.mjs';
+import {compileRuntimeArtifactsConfiguration} from './artifacts/configuration.mjs';
 export {compileControlUserPreferencesConfiguration};
 export const fault=code=>Object.assign(new Error(code),{code});
 const requireValue=(condition,code='RUNTIME_CONFIGURATION')=>{if(!condition)throw fault(code);};
@@ -59,7 +60,7 @@ export function validateConfiguration(raw,role){
  // The schedule worker is a separately supervised control-domain Temporal poller with a health-only listener. It holds no native
  // capability; its four domain owners are trusted in-process ports, never configuration, so JSON alone cannot start it.
  const common=['version','profile','sourceEnabled','limits',...(role==='schedule-worker'?[]:['native'])];
- own(c,[...common,...(role==='control'?['http','database','temporal','sessions','versions']:role==='temporal-worker'?['http','temporal']:role==='schedule-worker'?['http','temporal','versions','scheduledDispatch']:['binding','versions','workspace','proxyOrigin'])],role==='conversation-runner'?['bootstrap','captureOwnsClose','remoteTask']:role==='control'?['nativeCandidate','retention','telemetry','downloadLinks','privateHttp','taskRouter','userPreferences','tenantSettings','capabilityPlatform','routines']:role==='schedule-worker'?['database']:[]);
+ own(c,[...common,...(role==='control'?['http','database','temporal','sessions','versions']:role==='temporal-worker'?['http','temporal']:role==='schedule-worker'?['http','temporal','versions','scheduledDispatch']:['binding','versions','workspace','proxyOrigin'])],role==='conversation-runner'?['bootstrap','captureOwnsClose','remoteTask']:role==='control'?['nativeCandidate','retention','telemetry','downloadLinks','privateHttp','taskRouter','userPreferences','tenantSettings','capabilityPlatform','routines','artifacts']:role==='schedule-worker'?['database']:[]);
  if(c.userPreferences!==undefined){requireValue(role==='control','USER_PREFERENCES_CONFIGURATION');compileControlUserPreferencesConfiguration(c);}
  // Lane B control opt-ins (product-ports/settings.mjs, routines.mjs) and the trusted platform capability record (capability-policy.mjs, N3).
  for(const [key,code] of [['tenantSettings','TENANT_SETTINGS_CONFIGURATION'],['routines','ROUTINES_CONFIGURATION']])if(c[key]!==undefined){requireValue(role==='control',code);own(c[key],['enabled']);requireValue(typeof c[key].enabled==='boolean',code);}
@@ -82,6 +83,9 @@ export function validateConfiguration(raw,role){
  // Signed download links are an explicit control declaration: the owner-only signing key file (read through readSecret only by trusted
  // startup) and an optional link lifetime of at most five minutes. Absent or `enabled:false`, the link routes answer DOWNLOADS_UNAVAILABLE.
  if(c.downloadLinks!==undefined){requireValue(role==='control','DOWNLOAD_LINK_CONFIGURATION');own(c.downloadLinks,['enabled'],['keyFile','ttlMs']);requireValue(typeof c.downloadLinks.enabled==='boolean'&&(c.downloadLinks.enabled===false||c.downloadLinks.keyFile!==undefined)&&(c.downloadLinks.ttlMs===undefined||integer(c.downloadLinks.ttlMs,1000,300000)),'DOWNLOAD_LINK_CONFIGURATION');if(c.downloadLinks.keyFile!==undefined)file(c.downloadLinks.keyFile);}
+ // Private artifact storage is an explicit control declaration composed by product-ports/documents.mjs; `enabled:false` composes no
+ // artifact port. tenantId (publication custody) is required exactly when retention is declared.
+ if(c.artifacts!==undefined){requireValue(role==='control','ARTIFACT_CONFIGURATION');compileRuntimeArtifactsConfiguration(c);}
  if(role!=='conversation-runner'){
   own(c.http,['hostname','port','frontendOrigin']);requireValue(['127.0.0.1','0.0.0.0','::1','::'].includes(c.http.hostname)&&integer(c.http.port,0,65535)&&c.http.frontendOrigin===endpoint(c.http.frontendOrigin,c.native?.loopback??false));
   own(c.temporal,['address','namespace','taskQueue','tls'],['authorization','tokenWriter','issuerDelivery','issuerBootstrap']);if(c.temporal.authorization!==undefined)requireValue(parseTemporalAuthorizationConfiguration(c.temporal.authorization).namespace===c.temporal.namespace,'TEMPORAL_AUTHORIZATION_CONFIGURATION');requireValue(typeof c.temporal.address==='string'&&/^[a-zA-Z0-9.\-]+:[1-9][0-9]{0,4}$/u.test(c.temporal.address)&&Number(c.temporal.address.split(':').at(-1))<=65535);for(const k of ['namespace','taskQueue'])requireValue(typeof c.temporal[k]==='string'&&/^[a-zA-Z0-9._\-]{1,128}$/u.test(c.temporal[k]));own(c.temporal.tls,['caFile','certFile','keyFile']);Object.values(c.temporal.tls).forEach(file);

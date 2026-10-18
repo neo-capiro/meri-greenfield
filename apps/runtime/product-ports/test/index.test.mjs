@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {createProductPortsFactory,PRODUCT_FAMILIES} from '../index.mjs';
 const code=c=>e=>e?.code===c;
 test('the production factory is an ordinary function; with no configuration only the disabled routines feature is composed',()=>{
- assert.ok(Array.isArray(PRODUCT_FAMILIES)&&Object.isFrozen(PRODUCT_FAMILIES));assert.deepEqual(PRODUCT_FAMILIES.map(([name])=>name),['settings','routines','memory']);
+ assert.ok(Array.isArray(PRODUCT_FAMILIES)&&Object.isFrozen(PRODUCT_FAMILIES));assert.deepEqual(PRODUCT_FAMILIES.map(([name])=>name),['settings','routines','memory','documents','objective']);
  const factory=createProductPortsFactory();assert.equal(typeof factory,'function');const ports=factory({});assert.deepEqual(Object.keys(ports),['routinesApplicationFactory']);assert.equal(ports.routinesApplicationFactory.state(),'disabled');assert.ok(Object.isFrozen(ports));
 });
 test('family ports are joined, undefined entries skipped, and the trusted context reaches every family',()=>{
