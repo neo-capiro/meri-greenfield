@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "meri-focused-test-run/1",
+  "cwd": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-16\\task-4\\meri-resolution-next",
+  "executable": "C:\\Users\\Administrator\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe",
+  "arguments": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "--test-name-pattern=^all thirty-seven|^per-operation client prefilter|^synthetic (search_funding_opportunities|get_funding_opportunity_requirements|get_funding_opportunity|get_opportunity_client_context|get_opportunity_government_landscape):|^eight partial-input",
+    "apps/worker/conversation/reads/test/families.test.mjs",
+    "apps/worker/conversation/reads/test/source-slices.test.mjs"
+  ],
+  "startedAt": "2026-10-17T03:44:36.6755346Z",
+  "completedAt": "2026-10-17T03:44:39.3394796Z",
+  "exitCode": 0,
+  "scope": "Exactly8 affected existing SDK assertions after registry/metadata freeze: count65/37, client prefilter, five funding schemas and eightheld/sixfamily source subset. Unchanged38-case new SDK file not rerun.",
+  "coreReviewedCandidate": "51c157444ac43035eeb489ff46aee5a4e89ba3ac",
+  "metadataFreeze": "State owner signaled funding complete source63/8/11, SDK65/37 and27/27 ledger checks before this run; source/live installation qualification is separate."
+}

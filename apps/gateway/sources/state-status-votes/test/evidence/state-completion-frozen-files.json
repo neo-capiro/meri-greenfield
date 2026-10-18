@@ -1,0 +1,37 @@
+[
+  {
+    "path": "apps/gateway/sources/state-status-votes/handler.mjs",
+    "sha256": "7efd5c17cbf07c8468648f7fe19189e685d1b4670fa3c3634f25109e5f16117a",
+    "bytes": 1565
+  },
+  {
+    "path": "apps/gateway/sources/state-status-votes/request-context.mjs",
+    "sha256": "69b8f962f081171664863e5cb8c4f782700c430551e9238a1f4bfb6f69ce87ca",
+    "bytes": 686
+  },
+  {
+    "path": "apps/gateway/sources/state-status-votes/test/fixture.mjs",
+    "sha256": "abc6b26c072030a73d16cc0821d1e33f7fb48ef52f22369528f4b80a5ea1c178",
+    "bytes": 5035
+  },
+  {
+    "path": "apps/gateway/sources/state-status-votes/test/handler.test.mjs",
+    "sha256": "0038c0d2f91dfbb0ad1045f779df6b6007291b1d9e0a214fe7bf2e339bc5bcd4",
+    "bytes": 13543
+  },
+  {
+    "path": "apps/gateway/sources/state-status-votes/test/no-bill-delta.test.mjs",
+    "sha256": "e3838b95e7850629e7cc128664e05f92d725220c6fc6789d691af12fd43126e6",
+    "bytes": 8191
+  },
+  {
+    "path": "apps/gateway/sources/state-status-votes/test/completion.test.mjs",
+    "sha256": "124ada7ac644090cb8af94ab2c0c64f6803df744dd72b71d2fe1b33455df9dce",
+    "bytes": 9887
+  },
+  {
+    "path": "docs/coordination/reports/CODEX-STATE-READ-COMPLETION-20261017.md",
+    "sha256": "27cf3824fb7f5b4b39d9ead745d2a993fb52b3d72d26084210b04d0aaa64f2a8",
+    "bytes": 7515
+  }
+]

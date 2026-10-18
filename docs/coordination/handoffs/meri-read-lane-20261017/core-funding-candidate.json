@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "meri-read-core-candidate-handoff/1",
+  "repository": "neo-capiro/capiro-backend",
+  "pullRequest": "https://github.com/neo-capiro/capiro-backend/pull/52",
+  "head": "6bb17c00b610334e1aa354496d8a3acd152907d0",
+  "tree": "614c2219ec10fcb0f2c1fb8a649cdb87680a7dbc",
+  "prBase": "b525032222515d636b0dae2d46e40c7c3d8b5528",
+  "immediateParent": "3ea3292ab7bcd71bc1ce02f0d042277731fdf424",
+  "headBranch": "feat/core-funding-asof-observation-20261017",
+  "baseBranch": "feat/core-retained-authority",
+  "aheadOfPRBase": 2,
+  "draft": true,
+  "integratedIntoMeri": false,
+  "acceptedByThisLane": false,
+  "liveQualifiedByThisLane": false,
+  "safeStop": "Candidate recorded only. Fable must verify exact cross-repository wire/source compatibility before any integration or exposure. No late pin resumes this stopped lane.",
+  "meriWirePin": "b4daa4adf6e8269e7c341751db9a02bf6d4f062b",
+  "actualRoute": "POST /api/clio/tools/:name",
+  "routeEvidence": {
+    "path": "apps/api/src/meri/meri.controller.ts",
+    "blob": "2733fcafb06d1e744127f0c9b2288acd03eb253c",
+    "controllerLine": 314,
+    "admissionLine": 525,
+    "prDescriptionCorrection": "PR52 description says /api/meri/tools; actual controller is @Controller('clio'). Source path matches Meri's fixed routes."
+  },
+  "changedPaths": [
+    "apps/api/src/meri/meri-funding-read-observation.http.spec.ts",
+    "apps/api/src/meri/meri-funding-read-observation.spec.ts",
+    "apps/api/src/meri/meri-funding-read-observation.ts",
+    "apps/api/src/meri/meri-tools.registration.spec.ts",
+    "apps/api/src/meri/meri-tools.service.ts",
+    "apps/api/src/meri/meri.controller.ts",
+    "apps/api/src/meri/tool-service-secret.guard.ts"
+  ],
+  "ownerReportedChecks": {
+    "wireGuard": 17,
+    "existingGuard": 7,
+    "http": 4,
+    "selectedDispatch": 2,
+    "focusedImportGraphTypecheck": "PASS with task-scoped6GiB heap;27.88s;2.74GiB used",
+    "independentReview": "ACCEPT reported by Core owner; this lane has not repeated full acceptance",
+    "fullAPITypecheck": "Existing broad diagnostics remain; one bridge test callback diagnostic corrected before focused pass. Full API suite not repeated after correction.",
+    "allFiveGoldenCarrierCoverage": "Core owner identifies direct all-five golden-carrier exercise as follow-up."
+  }
+}

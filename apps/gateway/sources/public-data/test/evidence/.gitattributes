@@ -1,0 +1,3 @@
+# Preserve new mode evidence exactly.
+mode-*.txt -text -whitespace
+mode-*.json -text whitespace=cr-at-eol

@@ -1,0 +1,37 @@
+✔ 96 selected and43 excluded are reconciled separately from66 registered operations (1.147ms)
+✔ missing complete coverage counts eight incomplete adapters and ten absent adapters exactly once (0.9852ms)
+✔ economic subset and complete semantic/graph SDK family require actual canonical adapters (0.326ms)
+✔ bounded curated source declarations name eighteen operations and eight partial input/resource reads (2.9463ms)
+✔ the eight incomplete input/resource operations keep source evidence outside SDK exposure (0.3729ms)
+✔ only complete BD context and recent changes are promoted; evidence remains absent and SDK-held (3.2345ms)
+✔ all five complete funding sources are SDK-exposed only under the actual required-client family policy (9.9798ms)
+✔ funding completion projection preserves other incomplete reads and does not promote current source (6.5894ms)
+✔ semantic KB completion projection preserves graph, funding and all other read coverage (58.6977ms)
+✔ actual complete semantic and graph rows retain distinct clock and SDK client-scope policies (2.3883ms)
+✔ governed data adapter and corrected raw SDK selector are exposed as source only (0.2224ms)
+✔ only source-admitted original skills can establish a source route (0.2064ms)
+✔ historical action-items contract is an additional route for one selected successor (0.1499ms)
+✔ read-only product state is counted separately; writes and other product operations stay outside meri_reads (0.2571ms)
+✔ all43 exclusions remain absent from both selected mappings and general registration (0.226ms)
+✔ all63 reviewed producer records correlate exact operations, context keys and immutable report pointers (12.579ms)
+✔ current source provenance measures declared canonical paths without claiming qualification (10.2485ms)
+✔ directory source is exposed while retained research/Florida scope and zero-live gates remain explicit (0.1806ms)
+✔ registering a governed write family refuses instead of expanding the read server (1.5202ms)
+✔ registered family without adapter fails closed (1.6482ms)
+✔ wrong, foreign, duplicate, nonstring and empty SDK operationIds refuse (13.1856ms)
+✔ partialOperations must be unique nonempty IDs contained in that adapter declaration (10.1474ms)
+✔ registering an incomplete operation refuses even with a valid canonical operationIds subset (3.245ms)
+✔ renderer calls partial coverage missing complete implementation and never calls it exposed (48.9893ms)
+✔ a manifest declaration alone never manufactures an adapter or source route (2.4065ms)
+✔ duplicate adapter claims and changed selected scope refuse (2.4091ms)
+✔ a duplicate canonical binding refuses rather than choosing an arbitrary adapter family (1.1167ms)
+✔ targeted refresh preserves all eight historical fields from current base, PR107, PR106 and earlier base08f65a79 (1561.2495ms)
+✔ committed current exposure regenerates exactly with a scoped drift check (77.2719ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2108.1319

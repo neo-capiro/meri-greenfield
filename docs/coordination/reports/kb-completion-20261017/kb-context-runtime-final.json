@@ -1,0 +1,61 @@
+{
+  "captureKind": "process-stdio",
+  "captureIncomplete": false,
+  "executable": "C:\\Users\\Administrator\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe",
+  "nodeVersion": "v24.19.0",
+  "cwd": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-16\\task-4\\meri-resolution-next",
+  "argv": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "--test-timeout=30000",
+    "apps/runtime/native-authority/native-read-credentials/test/source-read-context.test.mjs",
+    "apps/runtime/native-authority/test/kb-asof-context.test.mjs",
+    "apps/runtime/test/kb-source-integration.test.mjs",
+    "apps/runtime/native-authority/test/funding-asof-context.test.mjs"
+  ],
+  "startedAt": "2026-10-17T04:04:14.974Z",
+  "finishedAt": "2026-10-17T04:04:23.130Z",
+  "exitCode": 0,
+  "signal": null,
+  "error": null,
+  "stdout": {
+    "path": "kb-context-runtime-final.stdout.txt",
+    "bytes": 9308,
+    "sha256": "289de2d55caa9386c0f1366797dba2d2582401dc5bcb3de7eab25fc59c25a1c9"
+  },
+  "stderr": {
+    "path": "kb-context-runtime-final.stderr.txt",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "sourceFiles": [
+    {
+      "path": "apps/runtime/native-authority/native-read-credentials/source-read-context.mjs",
+      "sha256": "ebfe2ed44465997a459332dd4975509351675a361ae16d91c6f4c7fad58c5ce8"
+    },
+    {
+      "path": "apps/runtime/native-authority/native-read-credentials/test/source-read-context.test.mjs",
+      "sha256": "f2fda3bb6c646e3ec4acc37dca8f1590cfde4da2ad028cb0603d537b9844ab18"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/kb-asof-context.test.mjs",
+      "sha256": "9d1e07f2b94bed80d8c8f4777b84c61304de8a94f7403d7c8cd4eaf6eecff441"
+    },
+    {
+      "path": "apps/runtime/test/kb-source-integration.test.mjs",
+      "sha256": "90b614c3908c26feaf365eb4d2be658d5cb04b4318b967c67acd68872cedcd1d"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/funding-asof-context.test.mjs",
+      "sha256": "bc66a21c532485e2c9e7c10cbfe49f8a8aa5da6f52b2d776fe6df38ed9d1828b"
+    }
+  ],
+  "priorEvidence": "kb-context-runtime-initial.json",
+  "rerunReason": [
+    "Malformed noncanonical two-entity single-client subject fails before the source helper; assert existing UNAVAILABLE plus zero IO, retain ACCESS_DENIED for valid unauthorized shapes.",
+    "Test-local compatibility delegates original actual authority.check, rewriting ONLY exact semantic0.2.0 raw empty client selector to null for the synthetic business-policy port. Assert source raw body/hash and service-secret request digest remain unchanged, with graph and truthy foreign selector exclusions."
+  ],
+  "scope": "Synthetic bridge/current-owner context tests and unchanged funding context regression; fixture-port compatibility is not production normalization or native policy qualification"
+}

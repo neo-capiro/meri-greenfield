@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "captureKind": "console-transcript",
+  "captureScope": "complete-final-stdout-and-process-status",
+  "captureIncomplete": false,
+  "rawOutputUnavailable": false,
+  "outputTruncated": false,
+  "toolChunkIds": [
+    "a34f99",
+    "7f7957",
+    "ca0f30"
+  ],
+  "execSessionId": 4571,
+  "exitCode": 0,
+  "counts": {
+    "tests": 44,
+    "suites": 0,
+    "pass": 44,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "testReportedDurationMs": 10012.3128,
+  "executable": "C:\\Users\\Administrator\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe",
+  "node": {
+    "version": "v24.19.0",
+    "platform": "win32",
+    "arch": "x64"
+  },
+  "argv": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "--test-timeout=20000",
+    "apps/runtime/native-authority/test/funding-runtime.test.mjs",
+    "apps/runtime/test/funding-source-integration.test.mjs"
+  ],
+  "workdir": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-16\\task-4\\meri-resolution-next",
+  "branch": "codex/meri-funding-completion-20261017",
+  "head": "6104c2c1edb9be1a1353a94552fef28e6b63b2e5",
+  "startedAt": null,
+  "finishedAt": null,
+  "stdout": {
+    "path": "funding-mounted-native-final.txt",
+    "bytes": 6012,
+    "sha256": "1f23c44c0d9fd96f86add81727811f59f602f647c92c77a917d007e57532a50a",
+    "lines": 52,
+    "normalization": "Available console output chunks joined in order; LF line endings; no output text or classifiers changed."
+  },
+  "sourceFiles": [
+    {
+      "path": "apps/runtime/test/funding-source-integration.test.mjs",
+      "sha256": "bb7a606dc01012261a53bf1ea8923b33392c0a128ac53398f65f743ecd460274"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/funding-runtime.test.mjs",
+      "sha256": "7425250f7a968906fbc6cf84613c411ae8d0b75dc4766dca4528ea63b9f6cf6a"
+    }
+  ],
+  "scope": "Offline synthetic source carrier consumption and durable gateway settlement; actual native owner/task verifier eligibility. No live Core bridge, provider, credential or deployment qualification."
+}

@@ -1,0 +1,423 @@
+{
+  "schemaVersion": "meri-read-lane-evidence-index/1",
+  "sourceCommit": "f7f4ed5b397fcd44576251739ed361aee6941d7a",
+  "pathBase": "repository root",
+  "qualification": "Historical sanitized synthetic/local evidence; no live qualification.",
+  "files": [
+    {
+      "path": "docs/coordination/reports/funding-asof-20261017/funding-source-command-metadata.json",
+      "blob": "0143c361682c21e97d7520ccda64a3a0be6126fd",
+      "sha256": "0b0efcea4858fe5b38bdbb767a22c52ae499dfa8e486ad59fcaa27de03134f03",
+      "bytes": 1195
+    },
+    {
+      "path": "docs/coordination/reports/funding-asof-20261017/funding-source-final.txt",
+      "blob": "dd97228e5f8982e791b496461bdccaad4ff7ebf1",
+      "sha256": "6801946f2e0a36c3858209d1bd19f5fe8c42d236edbbb3aad83cc39da98a9e08",
+      "bytes": 3432
+    },
+    {
+      "path": "docs/coordination/reports/funding-asof-20261017/funding-source-initial.txt",
+      "blob": "79e916c04f07309460588a28d34273654c7fad83",
+      "sha256": "9c98cf4be0b8fe3af4a817de9ae7a5d53e16bbc48aaa9c1e59ea1d12b6d4b970",
+      "bytes": 5102
+    },
+    {
+      "path": "docs/coordination/reports/funding-asof-20261017/integrated-final.json",
+      "blob": "16c7adedf8d8473526d639a28814143f2acbf60c",
+      "sha256": "1cdeca607280fefbb39aa60cb5d656cfd3cecf26d4988dec2d0db0f5932223ec",
+      "bytes": 1477
+    },
+    {
+      "path": "docs/coordination/reports/funding-asof-20261017/integrated-final.txt",
+      "blob": "d39b14ce06895856303bc270868248941a21e4ea",
+      "sha256": "7cda231cd0c5df83c4b7a5679ee2bfb221b104bfb5dd3fb07d6af50242d4fd60",
+      "bytes": 107988
+    },
+    {
+      "path": "docs/coordination/reports/funding-asof-20261017/log-whitespace-normalization.json",
+      "blob": "b61da6c5d1f40b8e1f36049263fb0b1e5d4b84cb",
+      "sha256": "042fbf4dc7502b2dcdcbeef1e6a1c4128d632871e0551fdd834f47dcfbe76504",
+      "bytes": 1108
+    },
+    {
+      "path": "docs/coordination/reports/funding-asof-20261017/owner-source-final.json",
+      "blob": "fb934fc94660b277e081ecf39fcf8a57042e33c6",
+      "sha256": "09bbb87a86ed16f47fa941cc9a280b1e72135cd487fb8d6ca0b317d86d979870",
+      "bytes": 723
+    },
+    {
+      "path": "docs/coordination/reports/funding-asof-20261017/owner-source-final.txt",
+      "blob": "3bcc46c8a9dee738d61beb18792801891bbb3671",
+      "sha256": "c50672a64c5b225b16c39fab442cfc4940b6a76d962ebb1e97f8b13ff2dcee67",
+      "bytes": 4734
+    },
+    {
+      "path": "docs/coordination/reports/funding-asof-20261017/owner-source-initial.json",
+      "blob": "b33141bfd80aaf7093b987dd2cf8acfac594122f",
+      "sha256": "5f2c2b9513a3ca4c20a938ac66912ad01ab8a0320c1db5e25e9dde826b437422",
+      "bytes": 593
+    },
+    {
+      "path": "docs/coordination/reports/funding-asof-20261017/owner-source-initial.txt",
+      "blob": "138d2b7f548cb99e095ae082dfd8a5d6af633003",
+      "sha256": "ec4f00cebc1652575be387fbc172144c084ba99aaea7e75029ba9d1799feaaf1",
+      "bytes": 9090
+    },
+    {
+      "path": "docs/coordination/reports/funding-asof-20261017/shared-mechanics.json",
+      "blob": "92e5139c22599d1f2012b486d18535d64d81d473",
+      "sha256": "a3309625393765f19b427cd100356f1698c4df840d7ad067616fec83475ea46e",
+      "bytes": 616
+    },
+    {
+      "path": "docs/coordination/reports/funding-asof-20261017/shared-mechanics.txt",
+      "blob": "6ed65cf95af65a27203a8df0d69210d78435e485",
+      "sha256": "d76549b9adc9f9d6be70ac290f07a174e3c4ed9a2f59eadbe23117f2454c6422",
+      "bytes": 42682
+    },
+    {
+      "path": "docs/coordination/reports/governed-next-20261017/.gitattributes",
+      "blob": "c16668eda1473f2875f3df56dac58e2830787300",
+      "sha256": "1f7afadb4489585072d7b484b7ddb42f6afb03306afdeb29c8a30240ea714f92",
+      "bytes": 102
+    },
+    {
+      "path": "docs/coordination/reports/governed-next-20261017/RUNS.md",
+      "blob": "a325a6f4769776f2579a816ebab3c7e83971c859",
+      "sha256": "4fc9ee74591335368140757dec39867bdde944c8bef6321a360791800f9cd941",
+      "bytes": 4643
+    },
+    {
+      "path": "docs/coordination/reports/governed-next-20261017/baseline-options.json",
+      "blob": "7618b2847823604f31a4023eb196df30711f9b4e",
+      "sha256": "e6b94d168b75b311affa3f32c4a576be8f9945b869adf6ed34d3198b7b6291f5",
+      "bytes": 381
+    },
+    {
+      "path": "docs/coordination/reports/governed-next-20261017/baseline-options.txt",
+      "blob": "f2418663ab9a305e675dc8b267899d779cadb0fc",
+      "sha256": "01c3f0ed3c3990dc8c9862a8f7f263c231ea1d37cb6d516df099c6bf50d51b7e",
+      "bytes": 3762
+    },
+    {
+      "path": "docs/coordination/reports/governed-next-20261017/data-request-integrated-rerun.json",
+      "blob": "43afb4ace647feeac4fac4cec68d18b6089c0039",
+      "sha256": "bbb1af9895122beb95ba4dc0e11c2d2787e339a263665f1c1c038fc9ea10c10c",
+      "bytes": 723
+    },
+    {
+      "path": "docs/coordination/reports/governed-next-20261017/data-request-integrated-rerun.txt",
+      "blob": "b6e3540e2452dcda3519e85c9b4dbe53f87f65cc",
+      "sha256": "10093378704115549c312f7b67404a27275fe92b556acc5a1e2912704df194fc",
+      "bytes": 36433
+    },
+    {
+      "path": "docs/coordination/reports/governed-next-20261017/data-request-integrated.json",
+      "blob": "b962979ad0038cb3e90cc19a770362306e50b294",
+      "sha256": "34e73a6bcf772d08f7cdf19e811db1d6a97198d661278b9c40254e23d335f669",
+      "bytes": 723
+    },
+    {
+      "path": "docs/coordination/reports/governed-next-20261017/data-request-integrated.txt",
+      "blob": "6904bf8a52f4edc9ba538b0de21e822579f6605a",
+      "sha256": "9392e96e46a418f52847c915c8c0014160ab6db762bb1f3e2edaaef15e0fbac6",
+      "bytes": 15670
+    },
+    {
+      "path": "docs/coordination/reports/governed-next-20261017/data-request-skill-assets-rerun.json",
+      "blob": "0014ca8722cf85b55250bacc9041c3fc7921abd5",
+      "sha256": "2c8716203bd90783d48e9edb1a257bf773980d86f3d126bbbf051a303ed7cc95",
+      "bytes": 365
+    },
+    {
+      "path": "docs/coordination/reports/governed-next-20261017/data-request-skill-assets-rerun.txt",
+      "blob": "6009c2ad031888705886380657c7a809e82cbf6f",
+      "sha256": "70420f0ba92ee4981fc0ce3afa0cb836ad34f808bb911942806e9760c3a9c928",
+      "bytes": 2877
+    },
+    {
+      "path": "docs/coordination/reports/governed-next-20261017/data-request-skills.json",
+      "blob": "3619de689fb6d0eaf3d8bea383fa2f2d9e197308",
+      "sha256": "a5d9bda4b51948cc89e954e729f0548f69d8b01b4add669a7825f63da7856ec9",
+      "bytes": 463
+    },
+    {
+      "path": "docs/coordination/reports/governed-next-20261017/data-request-skills.txt",
+      "blob": "ba33fe1b48559efda00786d3c288135c17713a0a",
+      "sha256": "9add696df95d1e730a40081e3625ac494ba18b3588936fe9dfef3f12d8fcdb20",
+      "bytes": 4374
+    },
+    {
+      "path": "docs/coordination/reports/governed-next-20261017/data-search-input-probe-result.json",
+      "blob": "bc9a8da7330d91030b6b69360272c88acdcd10c6",
+      "sha256": "fa42781b598d780f6374a046b71844de0d32b6107e63fefbad6ab80f94037275",
+      "bytes": 3066
+    },
+    {
+      "path": "docs/coordination/reports/governed-next-20261017/data-search-input-probe.mjs",
+      "blob": "b468f61b73fbf160ac82759ab25c3f75b81785bd",
+      "sha256": "3f0a1171ce395412dd0f401f79e31194289b95a39cdb0612cfe92a97fc04a51d",
+      "bytes": 5781
+    },
+    {
+      "path": "docs/coordination/reports/governed-next-20261017/data-search-request-candidate.json",
+      "blob": "6f7e69c74c288e771aa49e275507b70e57d8ebcb",
+      "sha256": "f4d7cc72c75b12e917b5c1661100e253dc551f16c5d6181652ebd750afa246d9",
+      "bytes": 2218
+    },
+    {
+      "path": "docs/coordination/reports/governed-next-20261017/integrated-read-tests.json",
+      "blob": "8c2c3ad32a39ebc65c665cb114a42358f8b14a98",
+      "sha256": "ad355fa70750635fac459ef3836d1a2c9b9cbb4dd74d6d9b179a4932e9f4c3cb",
+      "bytes": 589
+    },
+    {
+      "path": "docs/coordination/reports/governed-next-20261017/integrated-read-tests.txt",
+      "blob": "f473e3d7b4c575335b28283f856d37cc9affb63e",
+      "sha256": "f9026f6c5773fd4e88cdb0d418afcc23f1524230ed1b8cbc5b27d840157fa035",
+      "bytes": 59081
+    },
+    {
+      "path": "docs/coordination/reports/governed-next-20261017/integration-first-failures.txt",
+      "blob": "755a9055ed4fdd9f60cba8f2e13730914c95e831",
+      "sha256": "1594e36d5f75e1613fa0a1f78e83ee21e34688c7dd4dacf7946899ae9a98aab3",
+      "bytes": 4158
+    },
+    {
+      "path": "docs/coordination/reports/governed-next-20261017/ledger-and-helper.json",
+      "blob": "8f3b6ca97ef7c109103efe9c0b9ec5a19ab37ab9",
+      "sha256": "679470fd7f85312f10ecfb4b6b9b49b24a4d56b1757bfd40655619362ff44411",
+      "bytes": 441
+    },
+    {
+      "path": "docs/coordination/reports/governed-next-20261017/ledger-and-helper.txt",
+      "blob": "1070af15f1ad6f2b88841509fc1fa55ad3433212",
+      "sha256": "c9a26774f079a4e8e0def51a4014ba65ff7285268a16984356be913b857afdb9",
+      "bytes": 2769
+    },
+    {
+      "path": "docs/coordination/reports/governed-next-20261017/retained-and-worker-regression.json",
+      "blob": "4c3cbff6522ee55b15b1eb94442950b5235df399",
+      "sha256": "a4ddeb3eb0ed632b14d7d6f4ba0908f84c21006d7f163ab8a21f8cf29b7313a7",
+      "bytes": 1056
+    },
+    {
+      "path": "docs/coordination/reports/governed-next-20261017/retained-and-worker-regression.txt",
+      "blob": "d36b1215c83d595503fdbbf8d2beffc843bc29e1",
+      "sha256": "f89b2639f4a146f613a691550eb2ae3f1b81e536c8dfe407af1395e1d3fa63c4",
+      "bytes": 19519
+    },
+    {
+      "path": "docs/coordination/reports/governed-next-20261017/sdk-blocker-and-exposure.json",
+      "blob": "a2f9e6837f2fa5dc3da73c23499b3906b8ec5e54",
+      "sha256": "ccec558a20e0a4f3e47738d504f3b2d0176a5af7aaff964cdd84035879fc0f3e",
+      "bytes": 387
+    },
+    {
+      "path": "docs/coordination/reports/governed-next-20261017/sdk-blocker-and-exposure.txt",
+      "blob": "d5459170ebc8cf1641e723bbdabdd5c4a7e2f797",
+      "sha256": "87b18c7b2ecda71e9e611e0284c1c8a580d922f49f0f2169b7e349f8be2700f5",
+      "bytes": 5303
+    },
+    {
+      "path": "docs/coordination/reports/read-completion-20261017/bd-native-runtime-initial.json",
+      "blob": "f5318bc46401c57e504d6267a7ae5d4703ca307b",
+      "sha256": "92c45f6afe8392dbcedc3f5b860aae841cdf4572cb760e89c21e405e93c429d3",
+      "bytes": 809
+    },
+    {
+      "path": "docs/coordination/reports/read-completion-20261017/bd-native-runtime-initial.txt",
+      "blob": "d46fea13ee55cca668b669bcb388c0ed21f6f2e0",
+      "sha256": "2cd0713e00d482f9bc08f6ad8e5f0f228b9cc203f17365ceb52d5becf8df9a59",
+      "bytes": 286
+    },
+    {
+      "path": "docs/coordination/reports/read-completion-20261017/bd-owner-sdk-final.json",
+      "blob": "0953acf26770933739032fdb6cf01865fb199281",
+      "sha256": "3b12bbdf35f709b9b916fb6a73eebfe7ae59928369bd6d9d1daaee068ee9769a",
+      "bytes": 990
+    },
+    {
+      "path": "docs/coordination/reports/read-completion-20261017/bd-owner-sdk-final.txt",
+      "blob": "d81dbde2bbe9b7526c93a7a45f1676d0969724a7",
+      "sha256": "106447530babaa0d32b2fa18928ce7ef96861bd81642e058c8fcd06373d6e073",
+      "bytes": 5716
+    },
+    {
+      "path": "docs/coordination/reports/read-completion-20261017/bd-owner-sdk-initial.json",
+      "blob": "aa2e63a01fb23938db363d3997876497b835b54d",
+      "sha256": "bb9bf3487b750cfaa96c90775f8f7433aa7053aae7f60299a73e06877a16c8c8",
+      "bytes": 758
+    },
+    {
+      "path": "docs/coordination/reports/read-completion-20261017/bd-owner-sdk-initial.txt",
+      "blob": "8345402e9c3e3ee9d30159dc7b4d0c4d6e5e8a33",
+      "sha256": "b05edde8b8abd937d694a7f160b79d4b230b207b9efe6786090d1ea912b8ffd2",
+      "bytes": 7822
+    },
+    {
+      "path": "docs/coordination/reports/read-completion-20261017/bd-personal-source-focused.txt",
+      "blob": "e1ba5d060d015cec18c343f0e297c3f1aaed13d9",
+      "sha256": "4ba27b3b0c960493d230dc23a192593db32f3a37e5f3220474572c8e51159edf",
+      "bytes": 2957
+    },
+    {
+      "path": "docs/coordination/reports/read-completion-20261017/bd-promotion-initial.json",
+      "blob": "1d5b354f26679ba359db207518c73e54b66131d7",
+      "sha256": "7d95709d53e33d936be9ad5760b0f03598e24283a9b488be65d0a5c790a525b2",
+      "bytes": 957
+    },
+    {
+      "path": "docs/coordination/reports/read-completion-20261017/bd-promotion-initial.txt",
+      "blob": "44e60c9413b6ce81f427dfbeb4704c9ff176cce6",
+      "sha256": "1089b235595b8b6177834a921b11d81072d0f61b312aa312d3fc6012d360d1a0",
+      "bytes": 2174
+    },
+    {
+      "path": "docs/coordination/reports/read-completion-20261017/combined-affected-initial.json",
+      "blob": "01e377ca768f6151518d6bc3514bdf657d792999",
+      "sha256": "23027dad3cc542e75bf98691703294db6afaeedc43cb47035fe5b016bb236abf",
+      "bytes": 1742
+    },
+    {
+      "path": "docs/coordination/reports/read-completion-20261017/combined-affected-initial.txt",
+      "blob": "04c3066b9bcc77b85b4d1edb7a0dc2db40348701",
+      "sha256": "ae2d89a994b519ba8fa65cc71ce8e9c99925f8d878bafc2b5c5d67b99a0d2609",
+      "bytes": 113869
+    },
+    {
+      "path": "docs/coordination/reports/read-completion-20261017/evidence-normalization.json",
+      "blob": "b02cec245f4cb296f74a90b456a4fe419e805bf7",
+      "sha256": "2b6ea90fd8680ef09f6f29afb22086696f01d531f69bfe6c8cc55f71c4c1fe3b",
+      "bytes": 599
+    },
+    {
+      "path": "docs/coordination/reports/read-completion-20261017/legal-citation-precedence-focused.initial.json",
+      "blob": "82dc096567a8151393a0379ef9d092ab53902150",
+      "sha256": "4c485d4255ce20aa6c101e6c85c3aa2495b973f7fdfce8b1c1d492afc429c27b",
+      "bytes": 823
+    },
+    {
+      "path": "docs/coordination/reports/read-completion-20261017/legal-citation-precedence-focused.initial.txt",
+      "blob": "0382d6fa36b71c25abf9f20c06480aeeb3c4f7a5",
+      "sha256": "910ba317eae22f72e5ceab706e377cc733c8c97b19493603d947f5ceb8f2c9e4",
+      "bytes": 2418
+    },
+    {
+      "path": "docs/coordination/reports/remaining-next-20261017/root-native-sources-final.json",
+      "blob": "5ca51107784262281f2165fadc0627f933f25f54",
+      "sha256": "e46971280a52be7e92f1d9cebe3bd6dd475fbe4318fa28d6b62d73d3e9053a76",
+      "bytes": 1214
+    },
+    {
+      "path": "docs/coordination/reports/remaining-next-20261017/root-native-sources-final.txt",
+      "blob": "6cde06a0282532809cc92b25bb42d27f9f4d5003",
+      "sha256": "82c8e3c29dc9f3c1be8b59f1024b670ec8b0d6d81a36edc27fce4e1035b68591",
+      "bytes": 29677
+    },
+    {
+      "path": "docs/coordination/reports/remaining-next-20261017/source-slices-integration-full-initial.json",
+      "blob": "a759009cf9bfabacd6d786a37b5f4f6b0e09f986",
+      "sha256": "81d81adf661ea641184435d5e2f5e8c809ac7b9ff234cbc8e62f93d38bf5600a",
+      "bytes": 771
+    },
+    {
+      "path": "docs/coordination/reports/remaining-next-20261017/source-slices-integration-full-initial.txt",
+      "blob": "afa6d29765624dcbb334eade35974dc006030bfb",
+      "sha256": "4a6ac7c22a974604a231e0368986c43e9967c47cb2d9b69c47b0524d0cfb24ce",
+      "bytes": 75820
+    },
+    {
+      "path": "docs/coordination/reports/remaining-next-20261017/source-slices-integration-initial.json",
+      "blob": "7bf00249814a19a2f5f0c86479e14e6605c62317",
+      "sha256": "3aab46138e0ba4aad25420c373f17ef62ebbd38ee4992ec41ca1105f420c9623",
+      "bytes": 503
+    },
+    {
+      "path": "docs/coordination/reports/remaining-next-20261017/source-slices-integration-initial.txt",
+      "blob": "942f4d14f3474e5bf43b5d1b22922305ced8a1b9",
+      "sha256": "b39553390370ab21e35758b6dbf3f73ed80dba77afd7f8f4aa08b0975155e543",
+      "bytes": 24284
+    },
+    {
+      "path": "docs/coordination/reports/remaining-next-20261017/source-slices-integration-nine-initial.json",
+      "blob": "1b6eae935d44f0a7d5b08857fe5f442316d8f4e9",
+      "sha256": "9ae4d5523593e658c1e885c0a006c5c15b47a0520f5bd26506d2266d807aaaf5",
+      "bytes": 771
+    },
+    {
+      "path": "docs/coordination/reports/remaining-next-20261017/source-slices-integration-nine-initial.txt",
+      "blob": "3d33ee3348853e51e17a9cf23e842f87a728744c",
+      "sha256": "781379f00621c0617a5117a3eed9f73e57aeda6045f9b2b276cc658be9b5a6bb",
+      "bytes": 77927
+    },
+    {
+      "path": "docs/coordination/reports/remaining-next-20261017/source-slices-integration-ten-final.json",
+      "blob": "9f7714e80eea85487258fab2a01bfcf76a678ad5",
+      "sha256": "496fb8dee2fb7592db0c03dc6748421a2a2c8d676eadfe1a8c38810b50cbce10",
+      "bytes": 889
+    },
+    {
+      "path": "docs/coordination/reports/remaining-next-20261017/source-slices-integration-ten-final.txt",
+      "blob": "4bcbb78ec457cf29c5f4c56154f1742f50b7464c",
+      "sha256": "1962f8e06c3c973588540bd95287ce8fb09d1a7b568086ac784eaed2a62f6d8d",
+      "bytes": 80090
+    },
+    {
+      "path": "docs/coordination/reports/remaining-next-20261017/source-slices-integration-ten-initial.json",
+      "blob": "c635338c91487fbc7ed6faaa40972d3c31bc4b73",
+      "sha256": "3b25c63efdd2c280dc8a846c8bf47c5afc3145169d32bc1adecb8aa8f900d226",
+      "bytes": 771
+    },
+    {
+      "path": "docs/coordination/reports/remaining-next-20261017/source-slices-integration-ten-initial.txt",
+      "blob": "9e66ded0a47f99b1045e5c720d13f28c594f093c",
+      "sha256": "74c888564c87f0711ed0be525bc8fac67f14d980bb8e2cc03e74e221531abca1",
+      "bytes": 81886
+    },
+    {
+      "path": "docs/coordination/reports/resolution-next-20261017/combined-integration-final.json",
+      "blob": "9831d12a1876234668a2aa9db224a2755513b9f9",
+      "sha256": "431ceefe92c66aec413bd6cb870fc96c61eae02c86281c6e0ec809388282e11e",
+      "bytes": 2085
+    },
+    {
+      "path": "docs/coordination/reports/resolution-next-20261017/combined-integration-final.txt",
+      "blob": "73d49c59d7c0114d31e6ccd96f388bdefa8d446e",
+      "sha256": "f97dee43477908587161f2e815b91f1ed7ae9e08a40ca392e1a924570360910f",
+      "bytes": 117625
+    },
+    {
+      "path": "docs/coordination/reports/resolution-next-20261017/owner-resolution-delta-final.json",
+      "blob": "431d498c6c9d82a430fa53070662ae17c06ea703",
+      "sha256": "2f8733b386af8e3bbcf4e4bc005b66d6363df67aa0c5b233eae36cd835d97c84",
+      "bytes": 910
+    },
+    {
+      "path": "docs/coordination/reports/resolution-next-20261017/owner-resolution-delta-final.txt",
+      "blob": "27400b7830261441f4f92084011107590692df43",
+      "sha256": "438fae508224fd32cd32a9118e241222a7080370388a8fb141279c6ce1657a31",
+      "bytes": 5756
+    },
+    {
+      "path": "docs/coordination/reports/resolution-next-20261017/owner-resolution-delta-initial.json",
+      "blob": "11b37933510f8ed8b9f0f27ef9a0bd481b77b74b",
+      "sha256": "cb10b3c36cc0d4f1facb1e35f98bb9f4aa37b7858b7a4908498ea3b660137b46",
+      "bytes": 442
+    },
+    {
+      "path": "docs/coordination/reports/resolution-next-20261017/owner-resolution-delta-initial.txt",
+      "blob": "47329b57d2a2bff607e875d1d099d24cc531823a",
+      "sha256": "684f174fe95451deae9f9329a4e2f01824b5eaf48fabe01e09f4119084da6dac",
+      "bytes": 4528
+    }
+  ],
+  "independentPassiveProbe": {
+    "assertions": 217,
+    "evidence": "docs/coordination/reports/CODEX-READ-COMPLETION-REVIEW-20261017.md",
+    "executableArchived": false,
+    "rawReceiptArchived": false,
+    "disposition": "Historical supplementary reviewer report only; not required to reproduce the19-file1029 test selection."
+  }
+}

@@ -1,0 +1,58 @@
+First integrated test run: 530/540 passed, 10 failed, process exit 1.
+Node v24.19.0 --preserve-symlinks --max-old-space-size=256 --test --test-concurrency=1
+Files: apps/gateway/general-reads/families.test.mjs
+       apps/runtime/native-authority/native-read-credentials/test/family-wiring.test.mjs
+       apps/worker/conversation/reads/test/governed-next.test.mjs
+       apps/worker/conversation/reads/test/families.test.mjs
+Duration reported by Node: 27817.7477 ms.
+
+This is a condensed transcription of every failure from the original tool
+transcript. Full passing-test stdout was not saved during that first run; it is
+not reconstructed or represented as a captured full log here. Subsequent runner
+logs retain full stdout and executable/arguments/exit metadata.
+
+ACTUAL INTEGRATION BUG: data-search native raw admission (three failures)
+1. search_capiro_data: mounted native JSON, scoped credentials and complete carrier bytes settle once
+   Actual GatewayDenied: UNAVAILABLE before reservation/native HTTP.
+2. search_capiro_data: missing real service secret stays unavailable without fallback and retains UNKNOWN hold
+   TypeError: Cannot read properties of undefined (reading 'state') in unknown(f),
+   because the same raw-admission failure happened before a reservation existed.
+3. search_capiro_data: current native membership drift after producer withholds new-family release
+   Actual UNAVAILABLE; test expected ACCESS_DENIED. The same earlier refusal
+   prevented reaching the producer/release check.
+Diagnosis: owner.observation validated the original request as DataSearchInput,
+which is a normalized shape requiring queryClass, clientId, memoryItemId, cursors
+and window. The raw source request legitimately omits those fields. The shared
+owner now admits this raw grammar through canonical normalization; contracts stay
+unchanged. Final mounted tests retain the raw request/hash and exercise release.
+
+CENTRAL CONTRACT BLOCKER: data-search SDK schema (three failures)
+4. synthetic search_capiro_data: advertised arguments retain canonical constraints
+5. search_capiro_data: SDK schema preserves original literal selectors and refuses model authority/context
+6. search_capiro_data: measured installation/discovery exposes one MCP read and settles its exact result receipt
+   All raised READ_SCHEMA_CONFIGURATION from advertisedArguments conversion.
+Diagnosis: the advertised frozen normalized schema requires window and nullable
+selectors, while the raw request normalizer refuses window and explicit nulls.
+There is no valid selector accepted by both. No schema or safety check was
+weakened. Data-search remains implemented/mounted but is omitted from SDK family
+exposure pending central-contract-owner correction. A dedicated blocker test
+requires the schema refusal and absence from familyReads.
+
+TEST EXPECTATION CORRECTIONS: registry refusal code (two failures)
+7. lookup_client_registry: current native membership drift after producer withholds new-family release
+8. registry private existing-client result is withheld when the current native grant is revoked
+   Actual INVALID_RESULT; tests expected ACCESS_DENIED.
+Diagnosis: existing tool-dispatch intentionally maps producer failures to
+INVALID_RESULT, except deadline/cancellation and native UNAVAILABLE. The registry
+response-identity guard runs inside the producer. Output was correctly withheld.
+Tests now require that exact code, zero synthetic visibility-callback calls and
+the unchanged UNKNOWN budget hold; no production change was needed.
+
+TEST FIXTURE CORRECTIONS: query date support (two failures)
+9. global-query captured default date survives a later clock tick without exposing native SQL
+10. query_global_data: measured installation/discovery exposes one MCP read and settles its exact result receipt
+    Actual undefined native body asOfDate; tests expected null.
+Diagnosis: the default fixture dataset federal_grants does not support as-of.
+The adapter correctly omitted the field. Tests now assert the original body for
+unsupported datasets and use lda_registrations for the captured-default clock
+test, retaining original request hashes and withholding native SQL.

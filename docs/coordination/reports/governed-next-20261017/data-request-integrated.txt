@@ -1,0 +1,180 @@
+file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-governed-next/packages/skills/index.mjs:12
+const fail=code=>{throw new Error(code);};
+                        ^
+
+Error: SKILL_CATALOG_PIN
+    at fail (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-governed-next/packages/skills/index.mjs:12:25)
+    at verifyCatalog (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-governed-next/packages/skills/index.mjs:18:137)
+    at load (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-governed-next/packages/skills/index.mjs:26:3)
+    at selectSkill (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-governed-next/packages/skills/index.mjs:47:46)
+    at file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-governed-next/packages/skills/commitments/evidence.mjs:13:29
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.19.0
+✖ apps\runtime\native-authority\native-read-credentials\test\family-wiring.test.mjs (655.9242ms)
+✔ data-search advertises the raw definition with the actual whole-file hash and exact installed Zod (14.9776ms)
+✔ SDK preserves original raw arguments and null defaults without filling normalized fields (23.7754ms)
+✔ SDK admits every finite domain cursor and preserves a valid original window and exact memory selector (74.5922ms)
+✔ SDK refuses authority, normalized-only fields, null selectors, unknown cursors and invalid raw scalars (42.8345ms)
+✔ SDK raw duplicate and string bounds preserve the authoritative normalizer checks (9.044ms)
+✔ structural SDK acceptance leaves memory, requested-cursor and ordered-window decisions with the normalizer (20.8632ms)
+✔ all thirty-three constructible families remain unavailable without installation or discovery (10.3722ms)
+✔ per-operation client prefilter preserves personal meetings/tasks while withholding required-client reads (1.7007ms)
+✔ synthetic mail.read_thread: advertised arguments retain canonical constraints (10.9308ms)
+✔ synthetic mail.list_messages: advertised arguments retain canonical constraints (7.6831ms)
+✔ synthetic mail.search_messages: advertised arguments retain canonical constraints (4.9817ms)
+✔ synthetic meeting.list_upcoming_meetings: advertised arguments retain canonical constraints (2.1646ms)
+✔ synthetic meeting.read_client_meetings: advertised arguments retain canonical constraints (3.4854ms)
+✔ synthetic meeting.query_debriefs: advertised arguments retain canonical constraints (3.047ms)
+✔ synthetic query_tasks: advertised arguments retain canonical constraints (2.7988ms)
+✔ synthetic search_capiro_data: advertised arguments retain canonical constraints (5.2938ms)
+✔ synthetic search_federal_contract_awards: advertised arguments retain canonical constraints (4.1521ms)
+✔ synthetic search_federal_subawards: advertised arguments retain canonical constraints (3.1125ms)
+✔ synthetic search_contract_vehicles: advertised arguments retain canonical constraints (2.4914ms)
+✔ synthetic search_procurement_forecasts: advertised arguments retain canonical constraints (2.5216ms)
+✔ synthetic get_district_federal_market: advertised arguments retain canonical constraints (1.9674ms)
+✔ synthetic memory.list_own_proposals: advertised arguments retain canonical constraints (1.6789ms)
+✔ synthetic query_action_items: advertised arguments retain canonical constraints (2.3654ms)
+✔ synthetic lookup_client_registry: advertised arguments retain canonical constraints (1.0726ms)
+✔ synthetic get_research_portfolio: advertised arguments retain canonical constraints (1.2909ms)
+✔ synthetic get_research_portfolio_changes: advertised arguments retain canonical constraints (1.5518ms)
+✔ synthetic read_client_documents: advertised arguments retain canonical constraints (4.3873ms)
+✔ synthetic get_district_nexus_context: advertised arguments retain canonical constraints (1.4359ms)
+✔ synthetic get_district_nexus_changes: advertised arguments retain canonical constraints (1.4385ms)
+✔ synthetic search_state_bills: advertised arguments retain canonical constraints (1.8522ms)
+✔ synthetic get_state_legislator: advertised arguments retain canonical constraints (1.4268ms)
+✔ synthetic search_cbo_cost_estimates: advertised arguments retain canonical constraints (1.8603ms)
+✔ synthetic search_gao_reports: advertised arguments retain canonical constraints (1.2563ms)
+✔ synthetic search_crs_reports: advertised arguments retain canonical constraints (1.247ms)
+✔ synthetic search_sec_filings: advertised arguments retain canonical constraints (1.7034ms)
+✔ synthetic search_fara_registrations: advertised arguments retain canonical constraints (1.8498ms)
+✔ synthetic search_lda_filings: advertised arguments retain canonical constraints (2.1416ms)
+✔ synthetic search_acquisition_personnel: advertised arguments retain canonical constraints (1.9282ms)
+✔ synthetic get_acquisition_person: advertised arguments retain canonical constraints (1.1187ms)
+✔ synthetic get_bill_status: advertised arguments retain canonical constraints (1.3932ms)
+✔ synthetic search_floor_votes: advertised arguments retain canonical constraints (1.9379ms)
+✔ synthetic search_congress_bills: advertised arguments retain canonical constraints (2.0599ms)
+✔ synthetic read_bill_text: advertised arguments retain canonical constraints (1.7268ms)
+✔ synthetic get_committee_roster: advertised arguments retain canonical constraints (1.5519ms)
+✔ synthetic list_members: advertised arguments retain canonical constraints (1.393ms)
+✔ synthetic get_pe_contractors: advertised arguments retain canonical constraints (1.3574ms)
+✔ synthetic get_pe_bills: advertised arguments retain canonical constraints (1.1717ms)
+✔ synthetic get_pe_report_language: advertised arguments retain canonical constraints (1.071ms)
+✔ synthetic search_intel_articles: advertised arguments retain canonical constraints (1.2925ms)
+✔ synthetic list_global_datasets: advertised arguments retain canonical constraints (0.8154ms)
+✔ synthetic get_representation: advertised arguments retain canonical constraints (1.2367ms)
+✔ synthetic query_regulatory_dockets: advertised arguments retain canonical constraints (1.6235ms)
+✔ synthetic find_contacts: advertised arguments retain canonical constraints (1.4514ms)
+✔ synthetic resolve_entity: advertised arguments retain canonical constraints (1.2959ms)
+✔ synthetic query_intelligence: advertised arguments retain canonical constraints (0.9503ms)
+✔ synthetic search_public_web: advertised arguments retain canonical constraints (1.231ms)
+✔ synthetic scrape_web_page: advertised arguments retain canonical constraints (1.3512ms)
+✔ synthetic get_florida_budget_project: advertised arguments retain canonical constraints (1.977ms)
+✔ synthetic read_monday_client_boards: advertised arguments retain canonical constraints (1.538ms)
+✔ synthetic search_memory: advertised arguments retain canonical constraints (1.7858ms)
+✔ synthetic get_client_context: advertised arguments retain canonical constraints (2.1247ms)
+✔ synthetic query_global_data: advertised arguments retain canonical constraints (2.7763ms)
+✔ synthetic actions.query: advertised arguments retain canonical constraints (2.736ms)
+✔ synthetic get_research_evidence: advertised arguments retain canonical constraints (2.493ms)
+✔ unconvertible/widened schemas fail configuration; union, required and array constraints are checked (0.5099ms)
+✖ contacts canonical bytes and receipt hashes are preserved with a separate deferred-tool notice (36.4179ms)
+✖ contacts guidance counts toward the complete model-visible output limit (11.8168ms)
+file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-governed-next/packages/skills/index.mjs:12
+const fail=code=>{throw new Error(code);};
+                        ^
+
+Error: SKILL_CATALOG_PIN
+    at fail (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-governed-next/packages/skills/index.mjs:12:25)
+    at verifyCatalog (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-governed-next/packages/skills/index.mjs:18:137)
+    at load (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-governed-next/packages/skills/index.mjs:26:3)
+    at selectSkill (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-governed-next/packages/skills/index.mjs:47:46)
+    at file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-governed-next/apps/control/document-application/mail-history/source.mjs:6:20
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.19.0
+✖ apps\worker\conversation\reads\test\governed-next.test.mjs (822.46ms)
+✔ pins the schema id and the frozen domain and query-class vocabularies literally (1.714ms)
+✔ normalizes a minimal selector with the frozen defaults and omits an empty query (9.8294ms)
+✔ raw request has its own closed grammar while the normalized eight-field shape stays intact (7.1754ms)
+✔ raw nullish defaults remain accepted while null client and memory selectors remain refused (0.612ms)
+✔ historical data-search descriptor transition pins both old and current schema hashes exactly (3.2697ms)
+✔ raw cursors use a finite eighteen-domain map without changing normalized cursor admission (0.647ms)
+✔ raw window, memory and cursor cross-field rules remain owned by normalization (0.8284ms)
+✔ raw query, raw domain count and scalar boundaries remain enforced before normalization (0.5291ms)
+✔ normalizes a full selector and derives the frozen retrieval request selectors (0.3112ms)
+✔ keeps clientId a non-authoritative selector (0.2868ms)
+✔ enforces the conditional memoryItemId rule (0.5216ms)
+✔ scopes opaque cursors to requested domains and bounds their length (0.5395ms)
+✔ bounds the domain list and de-duplicates in first-seen order (0.3243ms)
+✔ bounds the query, queryClass, pageSize and window selectors (0.7934ms)
+✔ refuses unknown input properties and non-inert input data (0.5944ms)
+✔ validates the frozen result envelope and the tool envelope (24.5933ms)
+✔ discloses the result relations that are deliberately not asserted (0.2122ms)
+✔ declares every schema reference locally and closes every result shape (2.9965ms)
+✔ imports and runs with no filesystem, network or process side effect (433.9993ms)
+✔ canonical structural ownership preserves the closed data-search definition boundary (4.2117ms)
+✔ canonical composition retains selector relations beyond generic structural shape checks (0.3949ms)
+✔ raw query and domain bounds still precede normalization without mutating callers (0.7929ms)
+✔ 96 selected and43 excluded are reconciled separately from56 registered operations (0.9642ms)
+✔ implemented data-search has a consistent raw input contract; remaining28 are genuine adapter gaps (0.9284ms)
+✔ governed data adapter and corrected raw SDK selector are exposed as source only (0.1815ms)
+✔ only source-admitted original skills can establish a source route (0.2128ms)
+✔ historical action-items contract is an additional route for one selected successor (0.1505ms)
+✔ read-only product state is counted separately; writes and other product operations stay outside meri_reads (0.2528ms)
+✔ all43 exclusions remain absent from both selected mappings and general registration (0.4282ms)
+✔ all63 reviewed producer records correlate exact operations, context keys and immutable report pointers (11.3256ms)
+✔ current source provenance measures declared canonical paths without claiming qualification (6.8428ms)
+✔ directory source is exposed while retained research/Florida scope and zero-live gates remain explicit (0.2954ms)
+✔ registering a governed write family refuses instead of expanding the read server (1.5742ms)
+✔ registered family without adapter fails closed (1.5556ms)
+✔ a manifest declaration alone never manufactures an adapter or source route (3.1812ms)
+✔ duplicate adapter claims and changed selected scope refuse (2.6613ms)
+✔ a duplicate canonical binding refuses rather than choosing an arbitrary adapter family (1.3513ms)
+✔ targeted refresh preserves all139 historical rows, exclusions, source provenance and gates (38.9654ms)
+✔ committed current exposure regenerates exactly with a scoped drift check (49.7758ms)
+ℹ tests 108
+ℹ suites 0
+ℹ pass 104
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4629.0602
+
+✖ failing tests:
+
+test at apps\runtime\native-authority\native-read-credentials\test\family-wiring.test.mjs:1:1
+✖ apps\runtime\native-authority\native-read-credentials\test\family-wiring.test.mjs (655.9242ms)
+  'test failed'
+
+test at apps\worker\conversation\reads\test\families.test.mjs:42:1
+✖ contacts canonical bytes and receipt hashes are preserved with a separate deferred-tool notice (36.4179ms)
+  Error: SKILL_CATALOG_PIN
+      at fail (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-governed-next/packages/skills/index.mjs:12:25)
+      at verifyCatalog (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-governed-next/packages/skills/index.mjs:18:137)
+      at load (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-governed-next/packages/skills/index.mjs:26:3)
+      at selectSkill (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-governed-next/packages/skills/index.mjs:47:46)
+      at durableFamilyFixture (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-governed-next/apps/gateway/general-reads/test/durable-fixture.mjs:20:13)
+      at async TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-governed-next/apps/worker/conversation/reads/test/families.test.mjs:43:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps\worker\conversation\reads\test\families.test.mjs:59:1
+✖ contacts guidance counts toward the complete model-visible output limit (11.8168ms)
+  Error: SKILL_CATALOG_PIN
+      at fail (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-governed-next/packages/skills/index.mjs:12:25)
+      at verifyCatalog (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-governed-next/packages/skills/index.mjs:18:137)
+      at load (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-governed-next/packages/skills/index.mjs:26:3)
+      at selectSkill (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-governed-next/packages/skills/index.mjs:47:46)
+      at durableFamilyFixture (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-governed-next/apps/gateway/general-reads/test/durable-fixture.mjs:20:13)
+      at async TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-governed-next/apps/worker/conversation/reads/test/families.test.mjs:60:20)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps\worker\conversation\reads\test\governed-next.test.mjs:1:1
+✖ apps\worker\conversation\reads\test\governed-next.test.mjs (822.46ms)
+  'test failed'

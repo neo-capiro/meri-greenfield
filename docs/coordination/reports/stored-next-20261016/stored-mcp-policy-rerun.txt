@@ -1,0 +1,38 @@
+Γ£ö get_pe_bills: canonical schema preserves literal input while refusing model context/authority (13.7769ms)
+Γ£ö get_pe_bills: measured installation plus discovery exposes one MCP tool with an exact settled receipt (227.0954ms)
+Γ£ö get_pe_bills: source, installation, discovery and family policy remain mandatory (42.2315ms)
+Γ£ö get_pe_contractors: canonical schema preserves literal input while refusing model context/authority (4.2149ms)
+Γ£ö get_pe_contractors: measured installation plus discovery exposes one MCP tool with an exact settled receipt (95.3274ms)
+Γ£ö get_pe_contractors: source, installation, discovery and family policy remain mandatory (37.9332ms)
+Γ£ö get_pe_report_language: canonical schema preserves literal input while refusing model context/authority (4.5958ms)
+Γ£ö get_pe_report_language: measured installation plus discovery exposes one MCP tool with an exact settled receipt (96.3855ms)
+Γ£ö get_pe_report_language: source, installation, discovery and family policy remain mandatory (38.2348ms)
+Γ£ö get_bill_status: canonical schema preserves literal input while refusing model context/authority (6.7017ms)
+Γ£ö get_bill_status: measured installation plus discovery exposes one MCP tool with an exact settled receipt (90.3572ms)
+Γ£ö get_bill_status: source, installation, discovery and family policy remain mandatory (34.7758ms)
+Γ£ö search_floor_votes: canonical schema preserves literal input while refusing model context/authority (15.0901ms)
+Γ£ö search_floor_votes: measured installation plus discovery exposes one MCP tool with an exact settled receipt (177.3545ms)
+Γ£ö search_floor_votes: source, installation, discovery and family policy remain mandatory (61.962ms)
+Γ£ö search_state_bills: canonical schema preserves literal input while refusing model context/authority (10.203ms)
+Γ£ö search_state_bills: measured installation plus discovery exposes one MCP tool with an exact settled receipt (171.9748ms)
+Γ£ö search_state_bills: source, installation, discovery and family policy remain mandatory (31.6093ms)
+Γ£ö get_state_legislator: canonical schema preserves literal input while refusing model context/authority (5.3748ms)
+Γ£ö get_state_legislator: measured installation plus discovery exposes one MCP tool with an exact settled receipt (97.2303ms)
+Γ£ö get_state_legislator: source, installation, discovery and family policy remain mandatory (34.6044ms)
+Γ£ö search_intel_articles: canonical schema preserves literal input while refusing model context/authority (4.3797ms)
+Γ£ö search_intel_articles: measured installation plus discovery exposes one MCP tool with an exact settled receipt (69.1513ms)
+Γ£ö search_intel_articles: source, installation, discovery and family policy remain mandatory (29.4192ms)
+Γ£ö query_regulatory_dockets: canonical schema preserves literal input while refusing model context/authority (5.2438ms)
+Γ£ö query_regulatory_dockets: measured installation plus discovery exposes one MCP tool with an exact settled receipt (94.8251ms)
+Γ£ö query_regulatory_dockets: source, installation, discovery and family policy remain mandatory (31.9737ms)
+Γ£ö query_intelligence: canonical schema preserves literal input while refusing model context/authority (1.5939ms)
+Γ£ö query_intelligence: measured installation plus discovery exposes one MCP tool with an exact settled receipt (82.8833ms)
+Γ£ö query_intelligence: source, installation, discovery and family policy remain mandatory (24.8099ms)
+Γä╣ tests 30
+Γä╣ suites 0
+Γä╣ pass 30
+Γä╣ fail 0
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 2592.6876

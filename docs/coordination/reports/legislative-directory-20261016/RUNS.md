@@ -1,0 +1,15 @@
+# Offline check commands
+
+All commands used `C:/Users/Administrator/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe` (24.19.0), `--max-old-space-size=256 --test --test-concurrency=1`. Initial command used `--test-timeout=20000`; later regression commands used `--test-timeout=30000`. PowerShell redirected stdout/stderr to the corresponding UTF-8 text file; no output was edited.
+
+- `legislative-initial.txt`: `apps/gateway/sources/legislative-directory/test/handler.test.mjs apps/runtime/native-authority/native-read-credentials/test/family-wiring.test.mjs apps/worker/conversation/reads/test/legislative-directory.test.mjs`. Exit 1: 72 passed, MCP file missing Zod.
+- `legislative-mcp-rerun.txt`: `apps/worker/conversation/reads/test/legislative-directory.test.mjs`. Exit 0: 6/6 after borrowing existing worker qualification dependencies.
+- `legislative-regressions.txt`: `apps/gateway/general-reads/families.test.mjs apps/gateway/general-reads/registration.test.mjs apps/gateway/general-reads/retained.test.mjs apps/runtime/native-authority/native-read-credentials/test/owner.test.mjs apps/runtime/native-authority/native-read-credentials/test/disclosures-wiring.test.mjs packages/contracts/test/retrieval-legislative-directory.test.mjs packages/contracts/test/retrieval-legislative-directory-independent.test.mjs scripts/scope-ledger/source-exposure.test.mjs`. Exit 0: 362/362.
+- `legislative-worker-regressions.txt`: `apps/worker/conversation/reads/test/families.test.mjs apps/worker/conversation/reads/test/admission.test.mjs apps/worker/conversation/reads/test/availability.test.mjs apps/worker/conversation/reads/test/native-families.test.mjs apps/worker/conversation/reads/test/disclosures.test.mjs apps/worker/conversation/test/legacy-tools-excluded.test.mjs`. Exit 1: 66 passed, exclusion file missing sparse window-resolution module.
+- `legislative-exclusions-rerun.txt`: `apps/worker/conversation/test/legacy-tools-excluded.test.mjs`. Exit 1 after adding sparse window-resolution/UI source: missing Temporal polyfill dependency.
+- `legislative-exclusions-final.txt`: same exclusion file. Exit 1 after borrowing installed window-resolution dependencies: missing UI AI SDK dependency.
+- `legislative-exclusions-resolved.txt`: same exclusion file. Exit 1 after borrowing installed UI dependencies: 6/7 pass; unchanged Windows workspace-root refusal. Names containing `final` identify attempts, not passing acceptance.
+
+Additional checks: `scripts/scope-ledger/cli.mjs --refresh-exposure`, `--check-exposure`, `git diff --check`, and byte-unchanged comparison to base for `apps/worker/conversation/capabilities/workspace-tools.mjs` and `apps/worker/conversation/test/legacy-tools-excluded.test.mjs` all exited 0.
+
+Independent reviewer reran new adapter 22/22 and selected mounted new-family cases 16/16, inspected MCP 6/6, and recorded ACCEPT_SOURCE. No model, native database, Core HTTP, cloud or provider call occurred during these checks. No test assertion was weakened and no dependency was installed. Zod installed 4.6.5 versus requested 4.6.7 remains an exact-dependency qualification hold.

@@ -1,0 +1,63 @@
+{
+  "exitCode": 0,
+  "phase": "Separate legislative search SDK71/41 delta; preserves prior1056-code acceptance and64/2/10 SDK evidence.",
+  "sourceHashesBeforeRun": [
+    {
+      "sha256": "fdec4d24970a267544fa3d82cade3bd2dbe1bda81b4fd50f2e97a7e8928ec15c",
+      "path": "apps/worker/conversation/reads/families.mjs"
+    },
+    {
+      "sha256": "f470454afee57fb99d5d67bbe1afc81167490b1f5a6bad3b3fd153ad4ee2f969",
+      "path": "apps/worker/conversation/reads/test/research-legal.test.mjs"
+    },
+    {
+      "sha256": "573e5995f9bc69d7296891dd235172d7af5fd753adca754c450b21f1f0273e2e",
+      "path": "apps/runtime/native-authority/test/read-family-subsets.test.mjs"
+    },
+    {
+      "sha256": "25958ed882128ae47433dd1ba56e09ffaf5265a4979f9c17eeda896b287e8fb8",
+      "path": "apps/runtime/native-authority/native-read-credentials/owner.mjs"
+    },
+    {
+      "sha256": "af4afef63c89c206f6891c6806d3822ad54656c526fe0eeb3c21a0687ec7d6c9",
+      "path": "apps/runtime/native-authority/native-read-credentials/source-read-context.mjs"
+    },
+    {
+      "sha256": "e91f2152b115534250833b3a583d40123c768c25c2b2d9987c0be18f4b922305",
+      "path": "apps/runtime/native-authority/native-read-credentials/client-reference.mjs"
+    },
+    {
+      "sha256": "5579bd55c7624083b48d5dad3703fcc1407bf219a8d8d1ff879ebb709c18167c",
+      "path": "apps/gateway/sources/research-legal-legislation/handler.mjs"
+    },
+    {
+      "sha256": "1c6144b050768ce3ab00aed7e7f73c01eb28638637c404c797d35a1fb142be16",
+      "path": "apps/gateway/sources/research-legal-legislation/request-context.mjs"
+    },
+    {
+      "sha256": "b4b3e0dcc28a5954727e29b6d8a073dfbf658bb04dd230300394991ab3e6f5d3",
+      "path": "apps/gateway/sources/research-legal-legislation/test/fixture.mjs"
+    }
+  ],
+  "startedAt": "2026-10-17T04:55:55.1233385Z",
+  "executable": "C:/Users/Administrator/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe",
+  "qualification": "Actual MCP/CONTROL/gateway/task/native-reference reader with scripted SQL and synthetic fixed HTTP/legal DTOs; no actual Core folder query/parser/database or live qualification.",
+  "finishedAt": "2026-10-17T04:56:06.6257711Z",
+  "cwd": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-16\\task-4\\meri-resolution-next",
+  "argv": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "--test-timeout=20000",
+    "--test-name-pattern=^legal SDK|^legal native runtime|^all forty-one constructible|^per-operation client prefilter|^synthetic search_legislative_research:|^three remaining partial-input|^funding SDK: the complete five-operation|^KB SDK: complete family|^completion SDK71/41|^funding SDK71/41",
+    "apps/worker/conversation/reads/test/research-legal.test.mjs",
+    "apps/runtime/native-authority/test/read-family-subsets.test.mjs",
+    "apps/worker/conversation/reads/test/families.test.mjs",
+    "apps/worker/conversation/reads/test/source-slices.test.mjs",
+    "apps/worker/conversation/reads/test/funding.test.mjs",
+    "apps/worker/conversation/reads/test/kb.test.mjs",
+    "apps/worker/conversation/reads/test/completion.test.mjs",
+    "apps/runtime/test/funding-source-integration.test.mjs"
+  ]
+}

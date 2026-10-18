@@ -1,0 +1,3 @@
+# Preserve raw process evidence and diagnostic whitespace exactly.
+*.txt -text -whitespace
+*.json -text whitespace=cr-at-eol

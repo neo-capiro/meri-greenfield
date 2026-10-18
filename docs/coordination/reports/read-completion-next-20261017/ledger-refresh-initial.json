@@ -1,0 +1,13 @@
+{
+  "executable": "C:/Users/Administrator/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe",
+  "argv": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "scripts/scope-ledger/cli.mjs",
+    "--refresh-exposure"
+  ],
+  "startedAt": "2026-10-17T04:49:47.5839793Z",
+  "finishedAt": "2026-10-17T04:49:47.8753798Z",
+  "exitCode": 0,
+  "classification": "Bounded source accounting, canonical synthetic composition and immutable history; no live qualification"
+}

@@ -1,0 +1,13 @@
+Γ£ö all existing canonical family constructors satisfy the exact set before source measurement (354.7655ms)
+Γ£ö canonical handler order may differ without manufacturing a duplicate operation (1.0558ms)
+Γ£ö incomplete, extra, duplicate, foreign and wrong-version family sets refuse (3.913ms)
+Γ£ö invalid callable and authority-bearing operation fields cannot enter a measured handler set (2.6808ms)
+Γ£ö handler accessors and proxies are refused without invoking user code (1.4296ms)
+Γä╣ tests 5
+Γä╣ suites 0
+Γä╣ pass 5
+Γä╣ fail 0
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 976.4934

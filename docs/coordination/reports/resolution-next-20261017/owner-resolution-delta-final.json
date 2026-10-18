@@ -1,0 +1,18 @@
+{
+  "scope": "New resolution deltas plus only intentional changed count/refusal assertions; no broad integration.",
+  "args": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "--test-name-pattern",
+    "resolution delta|source slice fixtures|unsupported source selectors|partial-input operations|family registration",
+    "apps/runtime/native-authority/native-read-credentials/test/resolution-slices.test.mjs",
+    "apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs",
+    "apps/worker/conversation/reads/test/source-slices.test.mjs",
+    "apps/gateway/general-reads/families.test.mjs"
+  ],
+  "cwd": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-16\\task-4\\meri-resolution-next",
+  "executable": "C:/Users/Administrator/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe",
+  "status": 0
+}

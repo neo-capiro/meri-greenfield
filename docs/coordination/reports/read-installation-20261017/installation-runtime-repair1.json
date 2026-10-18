@@ -1,0 +1,41 @@
+{
+  "captureKind": "process-stdio",
+  "captureIncomplete": false,
+  "executable": "C:\\Users\\Administrator\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe",
+  "nodeVersion": "v24.19.0",
+  "cwd": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-16\\task-4\\meri-resolution-next",
+  "argv": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "--test-timeout=30000",
+    "apps/runtime/native-authority/general-read-installation/test/runtime.test.mjs"
+  ],
+  "startedAt": "2026-10-17T04:41:40.545Z",
+  "finishedAt": "2026-10-17T04:41:43.443Z",
+  "exitCode": 1,
+  "signal": null,
+  "error": null,
+  "stdout": {
+    "path": "installation-runtime-repair1.stdout.txt",
+    "bytes": 2241,
+    "sha256": "9e666ce404248629580fefba5f5eccd163c13c55237a32a976b894f9c1a1f7af"
+  },
+  "stderr": {
+    "path": "installation-runtime-repair1.stderr.txt",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "sourceFiles": [
+    {
+      "path": "apps/runtime/native-authority/general-read-installation/test/fixture.mjs",
+      "sha256": "c187dacf37e960dd8266a00326378445a66220e031e1bf0d112000127fc72eb6"
+    },
+    {
+      "path": "apps/runtime/native-authority/general-read-installation/test/runtime.test.mjs",
+      "sha256": "d75540bf1aacc740bc95530dd53c201ec61a113e740132e010d6083d8c5177aa"
+    }
+  ],
+  "rerunReason": "Correct test fixture to pass only canonical createPreparedNativeReads configuration keys, joining full remote admission tuple inside its synchronous hook; add final installed-file measurement regression."
+}

@@ -5,11 +5,13 @@ import {types} from 'node:util';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {ownFields} from '../sources/source-admission.mjs';
 import {deny} from '../dispatch/operation-result.mjs';
+import {NATIVE_READ_OPERATION_SUBSETS} from '../sources/retained-reads/native-families.mjs';
 export function familyOperations(family){
  return catalog.operations.filter(d=>d.sideEffect==='none'&&d.approvalBoundary==='none'&&
-  resolveOperationContract(d.operation).binding?.group===family).map(d=>Object.freeze({...d.operation}));
+  resolveOperationContract(d.operation).binding?.group===family&&
+  (!Object.hasOwn(NATIVE_READ_OPERATION_SUBSETS,family)||NATIVE_READ_OPERATION_SUBSETS[family].includes(d.operation.id))).map(d=>Object.freeze({...d.operation}));
 }
-/** A family is installable only as its exact canonical set; no partial or foreign handlers. */
+/** Install exactly the finite implemented source set using canonical references; no missing or foreign handlers. */
 export function assertFamilyHandlerSet(family,values){
  try{
   const expected=new Set(familyOperations(family).map(operation=>canonicalSha256(operation))),seen=new Set();

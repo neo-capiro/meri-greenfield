@@ -1,0 +1,64 @@
+{
+  "captureKind": "process-stdio",
+  "captureIncomplete": false,
+  "scope": "New mode observation reader and unchanged Core client boundary; actual identity HTTP adapter with synthetic mode server, no live endpoint or qualification.",
+  "executable": "C:\\Users\\Administrator\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe",
+  "nodeVersion": "v24.19.0",
+  "cwd": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-16\\task-4\\meri-resolution-next",
+  "argv": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "--test-timeout=30000",
+    "apps/runtime/native-authority/native-read-credentials/test/read-mode-observation.test.mjs",
+    "apps/runtime/native-authority/native-read-credentials/test/core-client.test.mjs"
+  ],
+  "startedAt": "2026-10-17T05:21:33.137Z",
+  "endedAt": "2026-10-17T05:21:34.848Z",
+  "status": 0,
+  "signal": null,
+  "error": null,
+  "stdout": {
+    "bytes": 8492,
+    "sha256": "92c8ad663eadaa5b0edd7facb6a5d5ebb41a291560254e337239c8e2232ba5bf"
+  },
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "sourceFiles": [
+    {
+      "path": "apps/runtime/native-authority/native-read-credentials/read-mode-observation.mjs",
+      "sha256": "19b1a22067bf964499ed5c706d1daa7e8a7c641cf469b0ae6dc2c8298a52233f"
+    },
+    {
+      "path": "apps/runtime/native-authority/native-read-credentials/core-client.mjs",
+      "sha256": "a5939600c8a8d45c5095865ad8ddd34e228ce9be44b38689ea45818e776c35d5"
+    },
+    {
+      "path": "apps/runtime/native-authority/native-read-credentials/test/read-mode-observation.test.mjs",
+      "sha256": "4b4a2a21e2636d7ac39b1d917574219b39cdb0154119bec7a1c71c8512da47c6"
+    },
+    {
+      "path": "apps/runtime/native-authority/native-read-credentials/test/core-client.test.mjs",
+      "sha256": "a1267f1445c0cf0374bd10d8e672b049eea4b3b041ea3237a87200db0e116037"
+    },
+    {
+      "path": "packages/contracts/native-read-observation-0.2/validate.mjs",
+      "sha256": "33bf8d112ed0ff1e2dcab5c3364528b1c449c9fec6a82224d18d88da2d2b697a"
+    },
+    {
+      "path": "packages/contracts/native-read-observation-0.2/schema.json",
+      "sha256": "c5451fb9e73cb8513d38270af54814c0c68216aacfee5325fcd1db41bdf4857f"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/authority-http.mjs",
+      "sha256": "ba9af89c706dc6bbb27f55e06c9e6331e5c655edabb3a22d2cc13269750ef993"
+    },
+    {
+      "path": "apps/runtime/native-authority/native-read-credentials/client-reference.mjs",
+      "sha256": "e91f2152b115534250833b3a583d40123c768c25c2b2d9987c0be18f4b922305"
+    }
+  ]
+}

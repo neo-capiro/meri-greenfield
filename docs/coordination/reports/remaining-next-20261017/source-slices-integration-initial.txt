@@ -1,0 +1,378 @@
+Γ£ö source slice fixtures enumerate eight native operations across six families (1.1077ms)
+Γ£û get_state_bill_status: unsupported source selectors refuse before native credentials, reservation and HTTP (206.842ms)
+Γ£û search_state_floor_votes: unsupported source selectors refuse before native credentials, reservation and HTTP (55.6127ms)
+Γ£û search_tracked_bills: unsupported source selectors refuse before native credentials, reservation and HTTP (56.253ms)
+Γ£û search_committee_hearings: unsupported source selectors refuse before native credentials, reservation and HTTP (59.3125ms)
+Γ£û search_legislative_research: unsupported source selectors refuse before native credentials, reservation and HTTP (75.5633ms)
+Γ£û get_legal_reference: unsupported source selectors refuse before native credentials, reservation and HTTP (58.434ms)
+Γ£ö graph UUID client: exact current visible selector reaches fixed native route and settles (177.595ms)
+Γ£ö graph client seed: exact current visible selector reaches fixed native route and settles (117.8442ms)
+Γ£ö graph UUID client and seed: exact current visible selector reaches fixed native route and settles (110.9735ms)
+Γ£û graph UUID selector: absent current visibility refuses before reservation (49.35ms)
+Γ£û graph client seed: absent current visibility refuses before reservation (57.8121ms)
+Γ£û query_knowledge_graph: current visibility cannot repair an incoherent client subject or scope (26.6272ms)
+Γ£û query_knowledge_graph: current visibility cannot repair an incoherent client subject or scope (25.878ms)
+Γ£û search_committee_hearings: current visibility cannot repair an incoherent client subject or scope (25.5342ms)
+Γ£û search_tracked_bills: current visibility cannot repair an incoherent client subject or scope (22.2952ms)
+Γ£û query_knowledge_graph: a client subject cannot open the global or unscoped source branch (42.7125ms)
+Γ£û search_committee_hearings: a client subject cannot open the global or unscoped source branch (41.0702ms)
+Γ£û search_legislative_research: a client subject cannot open the global or unscoped source branch (39.9113ms)
+Γ£û get_legal_reference: a client subject cannot open the global or unscoped source branch (38.1277ms)
+Γ£ö hearing UUID context is current tenant/client selection and remains the exact receiving proof (172.0486ms)
+Γ£ö tracked context retains exactly three fresh lineage fields across decision rotation and rejects stale or extra context (34.2354ms)
+Γ£ö query_economic_data: finite SDK family operation list excludes every canonical sibling even with forged installation/discovery (5.2622ms)
+Γ£ö query_economic_data: SDK arguments use the frozen raw contract and refuse model authority or normalization context (15.0139ms)
+Γ£ö query_economic_data: actual mounted owner and MCP tool preserve exact source bytes and durable receipt (338.5868ms)
+Γ£ö query_economic_data: current native revision revocation after source withholds SDK bytes and receipt (130.8616ms)
+Γ£ö query_economic_data: missing measured installation, discovery, source or family policy creates no MCP tool (49.7568ms)
+Γ£ö query_knowledge_graph: finite SDK family operation list excludes every canonical sibling even with forged installation/discovery (2.7013ms)
+Γ£ö query_knowledge_graph: SDK arguments use the frozen raw contract and refuse model authority or normalization context (7.7508ms)
+Γ£ö query_knowledge_graph: actual mounted owner and MCP tool preserve exact source bytes and durable receipt (140.2923ms)
+Γ£ö query_knowledge_graph: current native revision revocation after source withholds SDK bytes and receipt (115.8808ms)
+Γ£ö query_knowledge_graph: missing measured installation, discovery, source or family policy creates no MCP tool (45.5286ms)
+Γ£ö six partial-input operations remain absent from SDK policy and cannot be advertised by installation/discovery (227.4934ms)
+Γ£ö operation filters cannot name duplicate, unknown, foreign-family, deferred or empty operation sets (0.4722ms)
+Γä╣ tests 34
+Γä╣ suites 0
+Γä╣ pass 18
+Γä╣ fail 16
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 4649.7683
+
+Γ£û failing tests:
+
+test at apps\runtime\native-authority\native-read-credentials\test\source-slices.test.mjs:41:3
+Γ£û get_state_bill_status: unsupported source selectors refuse before native credentials, reservation and HTTP (206.842ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  1 !== 0
+
+      at beforeSource (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs:27:142)
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs:45:64)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps\runtime\native-authority\native-read-credentials\test\source-slices.test.mjs:41:3
+Γ£û search_state_floor_votes: unsupported source selectors refuse before native credentials, reservation and HTTP (55.6127ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  1 !== 0
+
+      at beforeSource (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs:27:142)
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs:45:64)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps\runtime\native-authority\native-read-credentials\test\source-slices.test.mjs:41:3
+Γ£û search_tracked_bills: unsupported source selectors refuse before native credentials, reservation and HTTP (56.253ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+    Comparison {
+  +   message: 'ACCESS_DENIED'
+  -   message: 'UNAVAILABLE'
+    }
+
+      at async TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs:45:7)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: GatewayDenied: ACCESS_DENIED
+        at safeFailure (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/gateway/dispatch/operation-result.mjs:55:10)
+        at Object.execute (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/gateway/general-reads/mount.mjs:46:23)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs:45:7)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    expected: { message: 'UNAVAILABLE' },
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps\runtime\native-authority\native-read-credentials\test\source-slices.test.mjs:41:3
+Γ£û search_committee_hearings: unsupported source selectors refuse before native credentials, reservation and HTTP (59.3125ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  1 !== 0
+
+      at beforeSource (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs:27:142)
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs:45:64)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps\runtime\native-authority\native-read-credentials\test\source-slices.test.mjs:41:3
+Γ£û search_legislative_research: unsupported source selectors refuse before native credentials, reservation and HTTP (75.5633ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  1 !== 0
+
+      at beforeSource (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs:27:142)
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs:45:64)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps\runtime\native-authority\native-read-credentials\test\source-slices.test.mjs:41:3
+Γ£û get_legal_reference: unsupported source selectors refuse before native credentials, reservation and HTTP (58.434ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  1 !== 0
+
+      at beforeSource (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs:27:142)
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs:45:64)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps\runtime\native-authority\native-read-credentials\test\source-slices.test.mjs:60:63
+Γ£û graph UUID selector: absent current visibility refuses before reservation (49.35ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  1 !== 0
+
+      at beforeSource (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs:27:142)
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs:62:65)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps\runtime\native-authority\native-read-credentials\test\source-slices.test.mjs:60:63
+Γ£û graph client seed: absent current visibility refuses before reservation (57.8121ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  1 !== 0
+
+      at beforeSource (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs:27:142)
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs:62:65)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps\runtime\native-authority\native-read-credentials\test\source-slices.test.mjs:71:3
+Γ£û query_knowledge_graph: current visibility cannot repair an incoherent client subject or scope (26.6272ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+    Comparison {
+  +   message: 'UNAVAILABLE'
+  -   message: 'ACCESS_DENIED'
+    }
+
+      at async TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs:82:7)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: GatewayDenied: UNAVAILABLE
+        at failure (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/owner.mjs:20:98)
+        at Object.readCurrent (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/owner.mjs:61:461)
+        at read (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs:14:69)
+        at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs:82:28)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    expected: { message: 'ACCESS_DENIED' },
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps\runtime\native-authority\native-read-credentials\test\source-slices.test.mjs:71:3
+Γ£û query_knowledge_graph: current visibility cannot repair an incoherent client subject or scope (25.878ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+    Comparison {
+  +   message: 'UNAVAILABLE'
+  -   message: 'ACCESS_DENIED'
+    }
+
+      at async TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs:82:7)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: GatewayDenied: UNAVAILABLE
+        at failure (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/owner.mjs:20:98)
+        at Object.readCurrent (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/owner.mjs:61:461)
+        at read (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs:14:69)
+        at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs:82:28)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    expected: { message: 'ACCESS_DENIED' },
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps\runtime\native-authority\native-read-credentials\test\source-slices.test.mjs:71:3
+Γ£û search_committee_hearings: current visibility cannot repair an incoherent client subject or scope (25.5342ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+    Comparison {
+  +   message: 'UNAVAILABLE'
+  -   message: 'ACCESS_DENIED'
+    }
+
+      at async TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs:82:7)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: GatewayDenied: UNAVAILABLE
+        at failure (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/owner.mjs:20:98)
+        at Object.readCurrent (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/owner.mjs:61:461)
+        at read (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs:14:69)
+        at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs:82:28)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    expected: { message: 'ACCESS_DENIED' },
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps\runtime\native-authority\native-read-credentials\test\source-slices.test.mjs:71:3
+Γ£û search_tracked_bills: current visibility cannot repair an incoherent client subject or scope (22.2952ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+    Comparison {
+  +   message: 'UNAVAILABLE'
+  -   message: 'ACCESS_DENIED'
+    }
+
+      at async TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs:82:7)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: GatewayDenied: UNAVAILABLE
+        at failure (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/owner.mjs:20:98)
+        at Object.readCurrent (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/owner.mjs:61:461)
+        at read (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs:14:69)
+        at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs:82:28)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    expected: { message: 'ACCESS_DENIED' },
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps\runtime\native-authority\native-read-credentials\test\source-slices.test.mjs:87:249
+Γ£û query_knowledge_graph: a client subject cannot open the global or unscoped source branch (42.7125ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  1 !== 0
+
+      at beforeSource (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs:27:142)
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs:89:65)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps\runtime\native-authority\native-read-credentials\test\source-slices.test.mjs:87:249
+Γ£û search_committee_hearings: a client subject cannot open the global or unscoped source branch (41.0702ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  1 !== 0
+
+      at beforeSource (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs:27:142)
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs:89:65)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps\runtime\native-authority\native-read-credentials\test\source-slices.test.mjs:87:249
+Γ£û search_legislative_research: a client subject cannot open the global or unscoped source branch (39.9113ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  1 !== 0
+
+      at beforeSource (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs:27:142)
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs:89:65)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps\runtime\native-authority\native-read-credentials\test\source-slices.test.mjs:87:249
+Γ£û get_legal_reference: a client subject cannot open the global or unscoped source branch (38.1277ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  1 !== 0
+
+      at beforeSource (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs:27:142)
+      at TestContext.<anonymous> (file:///C:/Users/Administrator/Documents/Codex/2026-10-16/task-4/meri-remaining-next/apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs:89:65)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

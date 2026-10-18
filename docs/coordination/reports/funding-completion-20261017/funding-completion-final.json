@@ -1,0 +1,32 @@
+{
+  "executable": "C:\\Users\\Administrator\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe",
+  "version": "v24.19.0",
+  "args": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "packages/contracts/native-read-observation-0.2/test/validate.test.mjs",
+    "packages/contracts/test/retrieval-funding-opportunities.test.mjs",
+    "packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs",
+    "apps/gateway/sources/funding-opportunities/test/handler.test.mjs",
+    "apps/gateway/general-reads/families.test.mjs",
+    "apps/gateway/general-reads/registration.test.mjs",
+    "apps/gateway/general-reads/mount.test.mjs",
+    "apps/runtime/native-authority/test/funding-asof-context.test.mjs",
+    "apps/runtime/native-authority/test/funding-runtime.test.mjs",
+    "apps/runtime/native-authority/test/read-family-subsets.test.mjs",
+    "apps/runtime/native-authority/native-read-credentials/test/source-read-context.test.mjs",
+    "apps/runtime/native-authority/native-read-credentials/test/owner.test.mjs",
+    "apps/runtime/test/funding-source-integration.test.mjs",
+    "apps/worker/conversation/reads/test/families.test.mjs",
+    "apps/worker/conversation/reads/test/source-slices.test.mjs",
+    "apps/worker/conversation/reads/test/funding.test.mjs",
+    "scripts/scope-ledger/source-exposure.test.mjs"
+  ],
+  "startedAt": "2026-10-17T03:48:17.310Z",
+  "endedAt": "2026-10-17T03:50:11.145Z",
+  "status": 0,
+  "signal": null,
+  "error": null
+}

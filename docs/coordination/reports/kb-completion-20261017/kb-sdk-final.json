@@ -1,0 +1,17 @@
+{
+  "exitCode": 1,
+  "executable": "C:/Users/Administrator/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe",
+  "rerunReason": "Initial25/30: four expectations assumed the existing client-scoped tenant-contacts fixture was personal; semantic is now correctly eligible there. Use a real semantic no-client personal fixture for the client-required negative. Fifth revoked durable task safely projects INTERNAL_ERROR at MCP, with no source/secret/reservation/receipt. No production change.",
+  "argv": [
+    "--preserve-symlinks",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "apps/worker/conversation/reads/test/kb.test.mjs",
+    "apps/runtime/native-authority/test/read-family-subsets.test.mjs"
+  ],
+  "finishedAt": "2026-10-17T04:05:31.8259384Z",
+  "qualification": "Offline actual SDK/CONTROL/gateway and task owners; scripted SQL and synthetic native HTTP; no live qualification.",
+  "startedAt": "2026-10-17T04:05:26.9475345Z",
+  "cwd": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-16\\task-4\\meri-resolution-next"
+}

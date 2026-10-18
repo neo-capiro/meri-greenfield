@@ -1,0 +1,35 @@
+✔ finite mechanics preserve native request, frozen result and exact private carrier (63.8827ms)
+✔ fixed route, family, side-effect and operation mismatch refuse at construction (0.6694ms)
+✔ foreign, duplicate, wrong-version, getter and proxy operations cannot cause effects (0.8259ms)
+✔ current decision, actor, policy, source and action coherence precede credentials (7.2511ms)
+✔ model authority, normalization context, digest and input substitutions refuse (3.5338ms)
+✔ missing broker and malformed credential correlation never fall back to source (11.4004ms)
+✔ request bridges change only native body while credential proof and result digest retain original selection (1.9895ms)
+✔ per-call credentials retain exact call and forbid static or proxy fallback (2.1933ms)
+✔ bounded response and native HTTP error cannot release invented or raw provider payloads (5.796ms)
+✔ pre-abort, expired authority and cancellation after source withhold effects or bytes (2.4933ms)
+✔ 96 selected and43 excluded are reconciled separately from55 registered operations (1.013ms)
+✔ implemented data-search awaits a consistent raw input contract; remaining28 are genuine adapter gaps (0.9862ms)
+✔ governed data adapter exists while the inconsistent SDK selector is withheld (0.1615ms)
+✔ only source-admitted original skills can establish a source route (0.2237ms)
+✔ historical action-items contract is an additional route for one selected successor (0.1626ms)
+✔ read-only product state is counted separately; writes and other product operations stay outside meri_reads (0.2664ms)
+✔ all43 exclusions remain absent from both selected mappings and general registration (0.2807ms)
+✔ all63 reviewed producer records correlate exact operations, context keys and immutable report pointers (11.4068ms)
+✔ current source provenance measures declared canonical paths without claiming qualification (7.2783ms)
+✔ directory source is exposed while retained research/Florida scope and zero-live gates remain explicit (0.3218ms)
+✔ registering a governed write family refuses instead of expanding the read server (1.5734ms)
+✔ registered family without adapter fails closed (1.6041ms)
+✔ a manifest declaration alone never manufactures an adapter or source route (3.2981ms)
+✔ duplicate adapter claims and changed selected scope refuse (2.7038ms)
+✔ a duplicate canonical binding refuses rather than choosing an arbitrary adapter family (1.4218ms)
+✔ targeted refresh preserves all139 historical rows, exclusions, source provenance and gates (42.0187ms)
+✔ committed current exposure regenerates exactly with a scoped drift check (51.4294ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 964.0477

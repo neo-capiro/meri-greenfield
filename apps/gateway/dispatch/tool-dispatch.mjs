@@ -5,6 +5,7 @@ import { deny, exactKeys, parseRawJson, rejectArgumentAuthority, safeFailure } f
 import { assertOperationArguments, prepareOperationContext } from './operation-context.mjs';
 import { assertDispatchResult } from './read-result-envelope.mjs';
 import { assertProjectionConfiguration } from './projection-read-context.mjs';
+import {nativeReadGroup} from './native-read-context.mjs';
 
 const sameBinding = (a, b) => canonicalSha256(a.binding) === canonicalSha256(b.binding) && a.policyRevision === b.policyRevision;
 const subjectSelection = subject => {
@@ -80,7 +81,7 @@ export function createToolDispatch({ catalog, authority, budget, limits, now, ne
       catch (error) {
         const failure = safeFailure(error);
         if (['DEADLINE', 'CANCELLED'].includes(failure.message)) throw failure;
-        if(failure.message==='UNAVAILABLE'&&['research-portfolio','florida-budget','bill-text','public-reports','acquisition-personnel','disclosures'].includes(entry.contract.binding?.group))throw failure;
+        if(failure.message==='UNAVAILABLE'&&(nativeReadGroup(entry)||['research-portfolio','florida-budget'].includes(entry.contract.binding?.group)))throw failure;
         deny('INVALID_RESULT');
       }
       const output = parseRawJson(outputJson, Math.min(limits.maxResponseBytes, effect.claims.budgets.maxOutputBytes), 'INVALID_RESULT');
