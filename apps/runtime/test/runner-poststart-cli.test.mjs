@@ -21,3 +21,13 @@ test('missing immutable pin refuses before poststart and cleanup uncertainty fai
  assert.equal(calls,0);
  assert.equal(await startRunnerProductTask({argv:['start'],environment,bootstrap,makeNativeFetch:async()=>async()=>{},runtime:async()=>0,release:async()=>{throw Error('uncertain');}}),3);
 });
+test('a failed startup reports one constant stage and code, never a message or value',async()=>{
+ const reports=[],report=(stage,error)=>reports.push([stage,typeof error?.code==='string'&&/^[A-Z][A-Z0-9_]{0,63}$/u.test(error.code)?error.code:'UNKNOWN']);
+ assert.equal(await startRunnerProductTask({argv:['start'],environment:{...environment,MERI_POSTSTART_CA_SHA256:'bad'},report}),2);
+ assert.deepEqual(reports.at(-1),['pins','UNKNOWN']);
+ assert.equal(await startRunnerProductTask({argv:['start'],environment,report,bootstrap:async()=>{throw Object.assign(Error('secret detail'),{code:'RUNNER_POSTSTART_REFUSED'});}}),2);
+ assert.deepEqual(reports.at(-1),['bootstrap','RUNNER_POSTSTART_REFUSED']);
+ const material={configFile:'/run/meri/x',controlCaFile:'/run/meri/ca.pem',tls:{},receipt:{}};
+ assert.equal(await startRunnerProductTask({argv:['start'],environment,report,bootstrap:async()=>material,makeNativeFetch:async()=>{throw Object.assign(Error('x'),{code:'not constant'});},release:async()=>{}}),2);
+ assert.deepEqual(reports.at(-1),['native-transport','UNKNOWN']);
+});

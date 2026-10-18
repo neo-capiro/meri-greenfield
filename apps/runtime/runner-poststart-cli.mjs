@@ -25,27 +25,34 @@ function pins(environment){
   metadataUri:environment.ECS_CONTAINER_METADATA_URI_V4,directory:'/run/meri/poststart'});
 }
 
+/** One constant stderr line per failed startup: the stage and a constant error code only (never a message, value or credential),
+ * so an exit 2 or 3 is diagnosable from the task log. Codes that are not constant identifiers are reported as UNKNOWN. */
+const constantCode=error=>typeof error?.code==='string'&&/^[A-Z][A-Z0-9_]{0,63}$/u.test(error.code)?error.code:'UNKNOWN';
+const constantStep=error=>typeof error?.step==='string'&&/^[a-z][a-z-]{0,31}$/u.test(error.step)?` step=${error.step}`:'';
+const stderrReport=(stage,error)=>{try{process.stderr.write(`RUNNER_STARTUP_FAILED stage=${stage}${constantStep(error)} code=${constantCode(error)}
+`);}catch{}};
+
 /** The injected ports are for inert tests only; the executable uses the real owners. */
-export async function startRunnerProductTask({argv=process.argv.slice(2),environment=process.env,bootstrap=runRunnerPoststart,runtime=runRuntime,release=releaseRunnerPoststart,makeNativeFetch=createPinnedNativeFetch}={}){
+export async function startRunnerProductTask({argv=process.argv.slice(2),environment=process.env,bootstrap=runRunnerPoststart,runtime=runRuntime,release=releaseRunnerPoststart,makeNativeFetch=createPinnedNativeFetch,report=stderrReport}={}){
  if(argv.length===1&&['--help','-h'].includes(argv[0])){
   process.stdout.write('Usage: node apps/runtime/runner-poststart-cli.mjs start\nExit: 0 completed or help; 2 startup/configuration failure; 3 runtime or cleanup failure.\n');
   return 0;
  }
  if(argv.length!==1||argv[0]!=='start')return 2;
- let fields;try{fields=pins(environment);}catch{return 2;}
+ let fields;try{fields=pins(environment);}catch(error){report('pins',error);return 2;}
  const controller=new AbortController(),abort=()=>controller.abort();
  process.once('SIGTERM',abort);process.once('SIGINT',abort);
- let material,code=2;
+ let material,code=2,stage='bootstrap';
  try{
   material=await bootstrap({...fields,signal:controller.signal});
   if(controller.signal.aborted||typeof material?.configFile!=='string'||typeof material?.controlCaFile!=='string'||!material?.tls||!material?.receipt)fail();
-  const nativeFetch=await makeNativeFetch({origin:fields.origin,caFile:material.controlCaFile,caSha256:fields.controlCaSha256});
+  stage='native-transport';const nativeFetch=await makeNativeFetch({origin:fields.origin,caFile:material.controlCaFile,caSha256:fields.controlCaSha256});
   if(controller.signal.aborted)fail();
-  code=await runtime(['conversation-runner','--config',material.configFile],{poststartTls:material.tls,nativeFetch});
- }catch{code=2;}
+  stage='runtime';code=await runtime(['conversation-runner','--config',material.configFile],{poststartTls:material.tls,nativeFetch});
+ }catch(error){report(stage,error);code=2;}
  finally{
   try{if(material)await release({directory:fields.directory,receipt:material.receipt});}
-  catch{code=3;}
+  catch(error){report('release',error);code=3;}
   process.removeListener('SIGTERM',abort);process.removeListener('SIGINT',abort);
  }
  return code;
