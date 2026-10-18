@@ -15,7 +15,7 @@ import {executionFault} from './execution-broker.mjs';
 import {SUBAGENT_TYPES} from '../../worker/conversation/capabilities/policy.mjs';
 const callbacks=new Set(['abortController','sessionStore','canUseTool','mcpServers','hooks']);
 const fields=['cwd','settingSources','settings','skills','allowedTools','tools','permissionMode','includePartialMessages','systemPrompt','model','maxTurns','maxBudgetUsd','sessionStoreFlush','env','resume','forkSession','resumeSessionAt','sessionId','outputFormat',
- 'disallowedTools','agents','plugins','managedSettings','agentProgressSummaries'];
+ 'disallowedTools','agents','plugins','managedSettings','agentProgressSummaries','thinking'];
 /** In-process SDK MCP servers a run may mount: the selected-skill reads, general reads and governed intents. */
 export const SDK_MCP_SERVER_NAMES=Object.freeze(['meri_original_reads','meri_reads','meri_intents']);
 /** Hook events a run's options may carry (capabilities/fragment.mjs CAPABILITY_HOOK_EVENTS; PreToolUse also from the MCP mounts). */
@@ -47,11 +47,13 @@ function assertCapabilityData(k,v){
  else if(k==='managedSettings')own(v,['permissions']);
  else if(k==='agents'){if(!Object.keys(own(v,[],[...SUBAGENT_TYPES])).length)refuse();}
 }
+/** The supported pinned SDK setting is deliberately narrower than its full thinking union. */
+function assertDisabledThinking(v){if(own(v,['type']).type!=='disabled')refuse();}
 const CAPABILITY_DATA=new Set(['disallowedTools','agents','plugins','managedSettings','agentProgressSummaries']);
 export function projectNativeSdkOptions(options){
  const o=own(options,[],[...fields,...callbacks]),result={};
  for(const [k,v]of Object.entries(o)){
-  if(!callbacks.has(k)){if(k==='env'){if(!v||typeof v!=='object'||types.isProxy(v)||![Object.prototype,null].includes(Object.getPrototypeOf(v)))refuse();const env=own(v,[],Object.keys(v));result.env=Object.fromEntries(Object.entries(env).map(([name,value])=>{if(name==='ANTHROPIC_AUTH_TOKEN'){if(typeof value!=='string'||!value)refuse();return [name,'issued-task-credential'];}return [name,value===undefined?null:value];}));}else{if(CAPABILITY_DATA.has(k))assertCapabilityData(k,v);result[k]=v;}continue;}
+  if(!callbacks.has(k)){if(k==='env'){if(!v||typeof v!=='object'||types.isProxy(v)||![Object.prototype,null].includes(Object.getPrototypeOf(v)))refuse();const env=own(v,[],Object.keys(v));result.env=Object.fromEntries(Object.entries(env).map(([name,value])=>{if(name==='ANTHROPIC_AUTH_TOKEN'){if(typeof value!=='string'||!value)refuse();return [name,'issued-task-credential'];}return [name,value===undefined?null:value];}));}else{if(k==='thinking')assertDisabledThinking(v);if(CAPABILITY_DATA.has(k))assertCapabilityData(k,v);result[k]=v;}continue;}
   if(k==='canUseTool')result[k]=callback(v);
   else if(k==='abortController'){if(types.isProxy(v)||!(v instanceof AbortController))refuse();result[k]='owned-abort-controller';}
   else if(k==='sessionStore'){const s=own(v,['load','append'],['listSubkeys']);if(Object.values(s).some(fn=>typeof fn!=='function'||types.isProxy(fn)))refuse();result[k]=Object.keys(s).sort();}
