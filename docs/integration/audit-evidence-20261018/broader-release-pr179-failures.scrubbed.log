@@ -1,0 +1,98 @@
+✔ read, monotonic advance and exact record round-trip through bounded transactions that return clean leases (37.889334ms)
+✔ lease faults: a lost COMMIT acknowledgement is unknown and retires the lease; a failed statement rolls back and returns it clean (3.066775ms)
+✖ through the watermarked journal, an advance whose commit is unknown leaves the projection standing and closes the serving fence (0.65801ms)
+✔ synthetic SQL: a guarded advance refuses a restored row in the same locked transaction (1.84102ms)
+✔ synthetic SQL: missing, changed or wrong-sequence projections cannot advance; exact proof and advance share one transaction (3.11017ms)
+✔ synthetic SQL snapshot: one joined data statement follows the shared recovery lock in the same clean transaction (3.732506ms)
+✔ synthetic SQL snapshot: another owner completing recovery before the shared lock grants is observed by the data snapshot (0.682897ms)
+✔ synthetic SQL snapshot: malformed data or lost commit returns no snapshot and retires unknown leases (2.302123ms)
+✖ trusted startup composes canonical session, submit and membership history, with missing lifecycle owners refused before writes (434.435145ms)
+✔ actual readiness response names composition gaps and keeps release held (81.911613ms)
+✔ removed member cannot obtain an action session at assembled startup (14.718063ms)
+✔ client removed cannot obtain an action session at assembled startup (5.936852ms)
+✔ removed member after allocation refuses input admission and submit before a run or dispatch (75.120306ms)
+✔ membership revision after allocation refuses input admission and submit before a run or dispatch (26.509302ms)
+✔ client roster after allocation refuses input admission and submit before a run or dispatch (34.088936ms)
+✔ removed member after dispatch refuses the old session's event stream and reload page (56.647404ms)
+✔ membership revision after dispatch refuses the old session's event stream and reload page (70.702009ms)
+✔ client roster after dispatch refuses the old session's event stream and reload page (33.242322ms)
+✖ membership revision changing during assembled transcript read withholds reload response (39.823293ms)
+✖ scripted worker delta streams publicly and reloads from the membership transcript (171.518179ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 16
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5077.100209
+
+✖ failing tests:
+
+test at apps/control/retention/test/postgres-watermark.test.mjs:50:1
+✖ through the watermarked journal, an advance whose commit is unknown leaves the projection standing and closes the serving fence (0.65801ms)
+  Error: RETENTION_CONFIGURATION
+      at fail (file://<parent-worktree>/apps/control/retention/boundary.mjs:5:48)
+      at watermarkedJournal (file://<parent-worktree>/apps/control/retention/recovery-watermark.mjs:32:405)
+      at TestContext.<anonymous> (file://<parent-worktree>/apps/control/retention/test/postgres-watermark.test.mjs:53:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'RETENTION_CONFIGURATION'
+  }
+
+test at apps/runtime/test/startup-history.test.mjs:29:1
+✖ trusted startup composes canonical session, submit and membership history, with missing lifecycle owners refused before writes (434.435145ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  503 !== 200
+  
+      at TestContext.<anonymous> (file://<parent-worktree>/apps/runtime/test/startup-history.test.mjs:35:107)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 503,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/runtime/test/startup-history.test.mjs:80:1
+✖ membership revision changing during assembled transcript read withholds reload response (39.823293ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  503 !== 409
+  
+      at TestContext.<anonymous> (file://<parent-worktree>/apps/runtime/test/startup-history.test.mjs:85:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 503,
+    expected: 409,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/runtime/test/startup-history.test.mjs:90:1
+✖ scripted worker delta streams publicly and reloads from the membership transcript (171.518179ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  503 !== 200
+  
+      at TestContext.<anonymous> (file://<parent-worktree>/apps/runtime/test/startup-history.test.mjs:100:109)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 503,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
