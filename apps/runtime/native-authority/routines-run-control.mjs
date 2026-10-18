@@ -23,16 +23,39 @@ import {verifyRoutineCancellationProof,cancellationCoversRun} from './routines-c
 const same=(a,b)=>hash(a)===hash(b),terminal=state=>['completed','failed','cancelled'].includes(state);
 const fault=code=>Object.assign(Error('ROUTINE_RUN_CONTROL_'+code),{code:'ROUTINE_RUN_CONTROL_'+code,outcome:'UNKNOWN'});
 const refuse=code=>{throw fault(code);};
+const configurationFault=()=>Object.assign(Error('ROUTINES_CONFIGURATION'),{code:'ROUTINES_CONFIGURATION'});
+/** The lifecycle Stop order over the existing owners (conversations/lifecycle/service.mjs `cancel`), shared by the attended
+ * (proof) and unattended (grant) run controls: `read` proves the current fence (store `readOptional`, STALE_WRITER otherwise),
+ * `stop` journals the terminal fence first and asks the dispatcher second. Neither needs a session. */
+export function createRunStopper({store,dispatcher,now,newId=randomUUID}){
+ let readRun,journalCancel,dispatchCancel;
+ try{
+  readRun=sdkMethod(store,'readOptional');const facet=Object.getOwnPropertyDescriptor(store,'lifecycle');if(!facet||!Object.hasOwn(facet,'value'))throw Error();
+  journalCancel=sdkMethod(facet.value,'cancel');dispatchCancel=sdkMethod(dispatcher,'cancel');
+  if(typeof now!=='function'||types.isProxy(now)||typeof newId!=='function'||types.isProxy(newId))throw Error();
+ }catch{throw configurationFault();}
+ async function read(binding,life){const saved=await life.run(()=>readRun(binding,{after:0,limit:1},life.check));if(saved===null||!same(saved.run?.binding,binding))refuse('FENCE');return saved;}
+ async function stop(binding,saved,life,cutoff){
+  let state=saved.run.state;
+  if(!terminal(state)){
+   const event={contractVersion:'0.1.0',eventId:newId(),createdAt:new Date(now()).toISOString(),type:'run.status',data:{state:'cancelled',reasonCode:'USER_CANCELLED'}};
+   try{await life.run(()=>journalCancel(binding,event,life.check,saved.run.scopes));state='cancelled';}
+   catch(error){life.check();const current=await read(binding,life);if(!terminal(current.run.state))throw error;state=current.run.state;}
+  }
+  const stopped=data(await life.run(signal=>dispatchCancel({binding,signal,deadlineMs:cutoff})));
+  if(!stopped||!['CANCEL_REQUESTED','NOT_FOUND'].includes(stopped.workflow))refuse('DISPATCH');life.check();
+  return data({state,workflow:stopped.workflow});
+ }
+ return Object.freeze({read,stop});
+}
 export function createRoutinesRunControl(configuration){
- let c,consume,readRun,journalCancel,dispatchCancel;
+ let c,consume,stopper;
  try{
   c=own(configuration,['trust','ledger','store','dispatcher','now','maxRequestMs'],['newId']);
-  consume=sdkMethod(c.ledger,'consume');readRun=sdkMethod(c.store,'readOptional');
-  const facet=Object.getOwnPropertyDescriptor(c.store,'lifecycle');if(!facet||!Object.hasOwn(facet,'value'))throw Error();
-  journalCancel=sdkMethod(facet.value,'cancel');dispatchCancel=sdkMethod(c.dispatcher,'cancel');
-  if(typeof c.now!=='function'||types.isProxy(c.now)||c.newId!==undefined&&typeof c.newId!=='function'||!Number.isSafeInteger(c.maxRequestMs)||c.maxRequestMs<1||c.maxRequestMs>30000||!c.trust)throw Error();
- }catch{throw Object.assign(Error('ROUTINES_CONFIGURATION'),{code:'ROUTINES_CONFIGURATION'});}
- const now=c.now,newId=c.newId??randomUUID;
+  consume=sdkMethod(c.ledger,'consume');stopper=createRunStopper({store:c.store,dispatcher:c.dispatcher,now:c.now,...(c.newId===undefined?{}:{newId:c.newId})});
+  if(!Number.isSafeInteger(c.maxRequestMs)||c.maxRequestMs<1||c.maxRequestMs>30000||!c.trust)throw Error();
+ }catch{throw configurationFault();}
+ const now=c.now;
  async function cancel(value){
   let v,binding,expected;
   try{
@@ -46,19 +69,10 @@ export function createRoutinesRunControl(configuration){
   const cutoff=Math.min(v.deadlineMs,began+c.maxRequestMs,verified.exp*1000);
   const life=createOperationLifetime({now,signal:v.signal,deadlineMs:cutoff,errorFactory:code=>fault(code)});
   try{
-   const read=async()=>{const saved=await life.run(()=>readRun(binding,{after:0,limit:1},life.check));if(saved===null||!same(saved.run?.binding,binding))refuse('FENCE');return saved;};
-   const saved=await read();
+   const saved=await stopper.read(binding,life);
    await life.run(()=>consume({issuer:verified.issuer,keyId:verified.kid,tokenId:verified.jti,tenantId:k.tenantId,ownerActorId:k.ownerActorId,scheduleId:k.scheduleId,intentId:k.intentId,
     intentSha256:k.intentSha256,decisionSha256:k.decisionSha256,claimsSha256:hash(k),proofSha256:verified.proofSha256,binding,issuedAtS:verified.iat,expiresAtS:verified.exp},life.check));
-   let state=saved.run.state;
-   if(!terminal(state)){
-    const event={contractVersion:'0.1.0',eventId:newId(),createdAt:new Date(now()).toISOString(),type:'run.status',data:{state:'cancelled',reasonCode:'USER_CANCELLED'}};
-    try{await life.run(()=>journalCancel(binding,event,life.check,saved.run.scopes));state='cancelled';}
-    catch(error){life.check();const current=await read();if(!terminal(current.run.state))throw error;state=current.run.state;}
-   }
-   const stopped=data(await life.run(signal=>dispatchCancel({binding,signal,deadlineMs:cutoff})));
-   if(!stopped||!['CANCEL_REQUESTED','NOT_FOUND'].includes(stopped.workflow))refuse('DISPATCH');life.check();
-   return data({state,workflow:stopped.workflow});
+   return await stopper.stop(binding,saved,life,cutoff);
   }finally{life.close();}
  }
  return Object.freeze({cancel});

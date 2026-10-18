@@ -44,8 +44,10 @@ export function createCoreDouble(){
   /** Core's own canonical decision (the only review authority in these tests). */
   decide(candidateId,status){const r=reviews.get(candidateId);r.status=status;r.decidedAt=new Date(NOW+1000).toISOString();r.publishedMemoryId=status==='approved'?`mem-${candidateId.slice(-4)}`:null;},
   addMemory(m){memories.set(m.memoryId,{tenantId:T1,memorySha256:'c'.repeat(64),scope:'personal',clientId:null,ownerActorId:'actor-1',key:null,state:'active',...m});},
-  transport:{async call(route,{tenantId,actorId,body},failure){
+  transport:{async call(route,{tenantId,actorId,body},failure,refused){
    calls.push({route,tenantId,actorId,body:JSON.parse(JSON.stringify(body))});
+   // A definite receiver refusal (Core answered 409 and recorded nothing), as the real transport maps it.
+   if(route==='submit'&&core.failSubmit==='refused')refuse(refused?.[409]??failure);
    try{
     if(Object.hasOwn(core.answer,route))return core.answer[route];
     if(route==='submit'){

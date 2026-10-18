@@ -33,7 +33,9 @@ export function createMemoryCommandSource({producer}){
    const command=prepared.command,commandSha256=canonicalSha256(command);
    let candidate;
    try{candidate=await producer.proposeFromCommand({principal:principalFromCommandAuthority(authority),command,commandSha256,signal,deadlineMs:Math.min(token.deadlineMs,authority.deadlineMs)});}
-   catch(error){const code=productFailure(error)?.code;fail(['MEMORY_SCOPE_REFUSED','MEMORY_CLIENT_REFUSED','MEMORY_TARGET_INELIGIBLE','MEMORY_TARGET_NOT_FOUND'].includes(code)?'COMMAND_AUTHORITY_REFUSED':'INVALID_SOURCE_RESULT');}
+   // A definite Core refusal of the candidate (`MEMORY_SUBMISSION_REFUSED`: wall, key or pin conflict) is a refusal of this command,
+   // not an unknown outcome: nothing was recorded at Core and a replay would be refused again.
+   catch(error){const code=productFailure(error)?.code;fail(['MEMORY_SCOPE_REFUSED','MEMORY_CLIENT_REFUSED','MEMORY_TARGET_INELIGIBLE','MEMORY_TARGET_NOT_FOUND','MEMORY_SUBMISSION_REFUSED'].includes(code)?'COMMAND_AUTHORITY_REFUSED':'INVALID_SOURCE_RESULT');}
    // Only an acknowledged pending submission is a result; anything else stays an unknown command outcome for reconciliation.
    if(candidate.review.status!=='pending')fail('INVALID_SOURCE_RESULT');
    return Object.freeze({candidateId:candidate.candidateId,commandSha256,status:'pending'});
