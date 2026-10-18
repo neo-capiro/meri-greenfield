@@ -17,7 +17,13 @@
  * runner-query.mjs reduces every run's options to that template after verifying the per-run values (cwd = the intent workspace,
  * CLAUDE_CONFIG_DIR = <configParent>/sdk-<runId>, request-context scopes = the intent's authoritySha256 scopes), so the one
  * configured value is valid for the static candidate and for every dynamic run prepared-run-bindings.mjs retargets. The receipt
- * must prove it: two probe runs give the same hash (sdkOptions.runInvariant) and the runnerSdkOptions gate passed for both. */
+ * must prove it: two probe runs give the same hash (sdkOptions.runInvariant) and the runnerSdkOptions gate passed for both.
+ *
+ * G3 (one SDK-options pin): when deployment-inputs `features.capabilityPlatform` resolves to a capability profile, every run's options
+ * carry that profile's SDK capabilities, so the measurement must project them too. The profile travels to the in-image module as
+ * --capability-profile <base64url JSON> (too large for the embedded form inside the 8192-byte override: use --shipped), the receipt must
+ * report inputs.capabilityProfileSha256, and the assembled runtime values carry it for render-material to pin against the rendered
+ * platform. Without the feature every argument, input and assembled byte is unchanged. */
 import {readFile,writeFile} from 'node:fs/promises';
 import {resolve,isAbsolute,posix} from 'node:path';
 import {brotliCompressSync,brotliDecompressSync,constants as zlib} from 'node:zlib';
@@ -29,7 +35,7 @@ import {RUNNER_SDK_CA_FILE} from '../../../apps/runtime/native-authority/prepara
 import {SDK_OPTIONS_TEMPLATE_SCHEMA} from '../../../apps/runtime/native-authority/sdk-option-template.mjs';
 import {PRODUCT_MAX_INPUT_TOKENS,PRODUCT_MAX_OUTPUT_TOKENS} from '../../../apps/gateway/model-proxy/product-envelope.mjs';
 import {RECEIPT_SCHEMA,PINNED_SDK,PINNED_CLI,WORKSPACE_ROOT,skillsDigest,probeTemplateSha256} from '../../../apps/runtime/build/first-chat-launch-measurement.mjs';
-import {parseRuntimeValues,SOURCE_ROOT} from './render-material.mjs';
+import {parseRuntimeValues,parseFeatures,capabilityProfileOf,SOURCE_ROOT} from './render-material.mjs';
 
 export const MEASUREMENT_MODULE='apps/runtime/build/first-chat-launch-measurement.mjs';
 export const POLICY_SCHEMA='meri.first-chat-policy.v1';
@@ -89,10 +95,18 @@ export async function parseAllocationFile(raw,policy,{sourceRoot=SOURCE_ROOT}={}
  return a;
 }
 
+/** The capability profile the deployment's features make every run resolve to (G3), or null. */
+export function measuredCapabilityProfile(deployment){
+ let features;try{features=parseFeatures(deployment?.features,{secrets:deployment?.secrets,checkpoint:deployment?.checkpoint});}catch(error){refuse(`deployment features ${error.message}`);}
+ return capabilityProfileOf(features?.capabilityPlatform);
+}
 /** The measurement inputs the receipt must have been taken with (and the source template is recomputed with). */
-export const measurementInputs=({policy,deployment,policyRevision})=>({proxyUrl:deployment.origins.proxyUrl,model:deployment.model.profileId,maxTurns:policy.runtime.maxTurns,
+export const measurementInputs=({policy,deployment,policyRevision})=>{const capability=measuredCapabilityProfile(deployment);
+ return {proxyUrl:deployment.origins.proxyUrl,model:deployment.model.profileId,maxTurns:policy.runtime.maxTurns,
  maxCostMicroUSD:deployment.model.perRunMaxCostMicroUSD,maxOutputBytes:policy.runtime.maxOutputBytes,configParentDirectory:policy.runnerLayout.configParentDirectory,
- secureStorageDirectory:policy.runnerLayout.secureStorageDirectory,policyRevision});
+ secureStorageDirectory:policy.runnerLayout.secureStorageDirectory,policyRevision,...(capability?{capabilityProfileSha256:capability.profileSha256}:{})};};
+/** --capability-profile value: the exact profile JSON, base64url (one shell-safe word). */
+export const encodeCapabilityProfile=profile=>Buffer.from(JSON.stringify(profile),'utf8').toString('base64url');
 /** The in-image receipt, checked against the policy/deployment inputs it was taken with and the source skills digest. */
 export function parseReceipt(receipt,{policy,deployment,policyRevision,sourceSkillsDigest,sourceSdkOptionsSha256,requireLinux=true}){
  const r=receipt;if(r?.schema!==RECEIPT_SCHEMA)refuse('receipt.schema');
@@ -122,11 +136,12 @@ export function parseReceipt(receipt,{policy,deployment,policyRevision,sourceSki
  return r;
 }
 
-export function assembleRuntimeValues({receipt,allocation,policy,policyRevision}){
+export function assembleRuntimeValues({receipt,allocation,policy,policyRevision,capabilityProfileSha256=null}){
  const runtime={schemaVersion:1,versions:{sdk:receipt.versions.sdk,cli:receipt.versions.cli,contracts:'0.1.0',skillsDigest:receipt.skills.digest,checkpointFormat:'0.1.0'},
   preparationIntent:{configParentDirectory:policy.runnerLayout.configParentDirectory,secureStorageDirectory:policy.runnerLayout.secureStorageDirectory,
    launchTemplate:structuredClone(receipt.launchTemplate),executableSha256:receipt.executable.sha256,sdkOptionsSha256:receipt.sdkOptions.sha256,runnerSha256:receipt.runner.sha256},
-  allocation:structuredClone(allocation),runtime:{maxTurns:policy.runtime.maxTurns,maxOutputBytes:policy.runtime.maxOutputBytes},qualification:{attempt:1,policyRevision}};
+  allocation:structuredClone(allocation),runtime:{maxTurns:policy.runtime.maxTurns,maxOutputBytes:policy.runtime.maxOutputBytes},qualification:{attempt:1,policyRevision},
+  ...(capabilityProfileSha256===null?{}:{capabilityProfileSha256})};
  try{parseRuntimeValues(runtime);}catch(error){refuse(`render-material parseRuntimeValues ${error.message}`);}
  return runtime;
 }
@@ -136,9 +151,15 @@ export async function runtimeValues({receipt,allocation,policy,deployment,requir
  const p=parsePolicy(policy,deployment),policyRevision=policyRevisionOf(policy);
  const a=await parseAllocationFile(allocation,p,{sourceRoot});
  const source=await skillsDigest({root:sourceRoot});
- const sourceSdkOptionsSha256=await probeTemplateSha256(measurementInputs({policy:p,deployment,policyRevision}),{root:sourceRoot});
+ const capability=measuredCapabilityProfile(deployment);
+ // The source template is recomputed with the same profile the image was asked to project (a module without profile support
+ // ignores it, so its template then differs from a profile receipt and the assembly refuses).
+ const sourceSdkOptionsSha256=await probeTemplateSha256({...measurementInputs({policy:p,deployment,policyRevision}),...(capability?{capabilityProfile:capability.profile}:{})},{root:sourceRoot});
+ // A profile that enables anything changes the projected options; an unchanged template means the source module cannot project it.
+ if(capability&&sourceSdkOptionsSha256===await probeTemplateSha256(measurementInputs({policy:p,deployment:{...deployment,features:undefined},policyRevision}),{root:sourceRoot}))
+  refuse(`${MEASUREMENT_MODULE} does not project capability profiles (G3 runtime change pending): no measurement can pin capability profile ${capability.profileSha256}`);
  const r=parseReceipt(receipt,{policy:p,deployment,policyRevision,sourceSkillsDigest:source.digest,sourceSdkOptionsSha256,requireLinux});
- return {runtime:assembleRuntimeValues({receipt:r,allocation:a,policy:p,policyRevision}),policyRevision,skillsDigest:source.digest};
+ return {runtime:assembleRuntimeValues({receipt:r,allocation:a,policy:p,policyRevision,capabilityProfileSha256:capability?.profileSha256??null}),policyRevision,skillsDigest:source.digest};
 }
 
 /** The one-shot measurement as the bash string for the meri-product-preview-d2-migrate container (entryPoint ["/bin/bash","-c"]).
@@ -154,9 +175,11 @@ mkdirSync(directory,{recursive:true,mode:0o700});const file=join(directory,"firs
 const m=await import(pathToFileURL(file).href);process.exitCode=await m.main(args);`;
 const quote=value=>`'${String(value).replaceAll("'","'\\''")}'`;
 export function measurementArguments({policy,deployment,policyRevision,root=IMAGE_ROOT}){
+ const capability=measuredCapabilityProfile(deployment);
  return ['--proxy-url',deployment.origins.proxyUrl,'--model',deployment.model.profileId,'--max-turns',String(policy.runtime.maxTurns),
   '--max-cost-micro-usd',String(deployment.model.perRunMaxCostMicroUSD),'--max-output-bytes',String(policy.runtime.maxOutputBytes),
-  '--config-parent',policy.runnerLayout.configParentDirectory,'--secure-storage',policy.runnerLayout.secureStorageDirectory,'--policy-revision',policyRevision,'--root',root];
+  '--config-parent',policy.runnerLayout.configParentDirectory,'--secure-storage',policy.runnerLayout.secureStorageDirectory,'--policy-revision',policyRevision,
+  ...(capability?['--capability-profile',encodeCapabilityProfile(capability.profile)]:[]),'--root',root];
 }
 /** node argv (after the executable) of the embedded form; the bash command is exactly these, quoted. */
 export function embeddedNodeArguments({moduleBytes,policy,deployment,policyRevision,root=IMAGE_ROOT,directory=MEASURE_DIRECTORY}){
@@ -170,7 +193,7 @@ export function measurementCommand({moduleBytes,policy,deployment,policyRevision
 }
 export function measurementOverrides(options){
  const command=measurementCommand(options),overrides={containerOverrides:[{name:CONTAINER,command:[command]}]};
- const bytes=Buffer.byteLength(JSON.stringify(overrides));if(bytes>8192)refuse(`ECS overrides are ${bytes} bytes (limit 8192)`);
+ const bytes=Buffer.byteLength(JSON.stringify(overrides));if(bytes>8192)refuse(`ECS overrides are ${bytes} bytes (limit 8192)${options.mode==='shipped'?'':'; use --shipped'}`);
  return overrides;
 }
 export const decodeEmbeddedModule=command=>{const m=/ '([A-Za-z0-9+/=]{100,})' '([a-f0-9]{64})' /u.exec(command);if(!m)refuse('no embedded module');return {bytes:brotliDecompressSync(Buffer.from(m[1],'base64')),sha256:m[2]};};
