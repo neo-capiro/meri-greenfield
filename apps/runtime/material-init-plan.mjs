@@ -113,6 +113,7 @@ export function compileProductMaterialPlan({role,configuration,runtimeUser,contr
  if(role==='control'){
   add(c.database.connectionFile,'database-connection');
   if(c.downloadLinks?.enabled)add(c.downloadLinks.keyFile,'download-signing-key');
+  if(c.reads?.enabled===true){add(c.reads.serviceSecretFile,'reads-service-secret');if(c.reads.readModeServiceSecretFile!==undefined)add(c.reads.readModeServiceSecretFile,'reads-read-mode-service-secret');}
   if(c.nativeCandidate){
    add(c.nativeCandidate.identity.credentialFile,'identity-capability');
    add(c.nativeCandidate.taskCapabilityFile,'task-capability');

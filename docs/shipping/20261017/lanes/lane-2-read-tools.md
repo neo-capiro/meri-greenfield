@@ -211,10 +211,11 @@ await startControl(configuration,{signal,createReadsRuntime:reads.createReadsRun
 **Bearer: RC1 option A (dot's source ack 6245772555, PR #121 6245757066).** The native read bearer is the user's own live action-session token for the same run.
 - Each read resolves it at call time through `relay.port.nativeCredentialFor({binding, selectedClientId})`. The selected client is the run's single client scope.
 - It is never read from a file, cached or persisted. The rule is the same for every refusal reason: an unbound or closed relay, no live session for the run's tenant/actor/conversation/run and client, an expired or revoked session, a caller binding drift, or any scope shape other than one client scope. Each of these refuses with `UNAVAILABLE` before any Core request.
+- **The session expiry is enforced as a hard ceiling (dot 6245911765).** The relay's `expiresAtMs` travels with the bearer (`{credential, expiresAtMs}`). The credential owner (`native-read-credentials/owner.mjs` `nativeBearer`) folds it into the operation deadline, which bounds every later Core call (identity, membership, check-ref, read-mode observation). It also caps the `expiresAtMs` handed to the source transport, which aborts an in-flight request at that moment. The composer re-checks the live session after its async service-file reads, and the owner re-checks the bearer once more before dispatch; a different or expired bearer refuses. Tests: `read-composer.test.mjs` (an in-flight read is aborted at session expiry, 800 ms here, not at the 3 s gateway deadline; expiry, revocation or replacement during the service-file read refuses) and `native-read-credentials/test/bearer-expiry.test.mjs` (8/8). Removing the propagation makes the in-flight read run to the gateway deadline (≈3.3 s); removing the re-check lets the expired bearer through.
 - Revocation is still checked on every read through Core `identity` and `membership`, which re-check the Clerk session by `sid`.
 - **Limitation (recorded per dot's ack 6245772555):** reads work only while the user has a live action session for that run, at most 300 s after the session was issued (the frontend re-issues while the page is open). Unattended runs get no reads. Option A cannot satisfy accepted schedules, the planner or long-running reads by itself; option B (a Core run-bound read delegation) is the durable path. Any persistent delegation goes to Neo before it is created or enabled. A static user's token is never substituted.
 
-**Credential invariant (Core #83), pinned by `apps/runtime/native-authority/test/read-composer.test.mjs`, 33/33:**
+**Credential invariant (Core #83), pinned by `apps/runtime/native-authority/test/read-composer.test.mjs`, 35/35:**
 - The marked control credential reaches only `application-authority/{identity,context,membership}`.
 - Service secret files must differ from all four candidate credential files (identity, task, control, proxy) by path and by bytes, checked at startup and on every call.
 - A relayed bearer is refused when it is any candidate credential or the current service secret.
@@ -233,7 +234,11 @@ There is no bearer file; `secretFiles.nativeReadCredential` is refused (`CONFIGU
 
 **Still needed (outside this lane), with the composer reporting each one in `missing` until supplied (plus `nativeCredentials.nativeCredentialFor` and `secretFiles.serviceSecret`):**
 1. `gateway.authority`: the `tool.read` current authority (`createReadAuthority`) over Core-backed `verifyCapability`, `currentRun`, `authorizeBusiness` and `authorizeSources` ports. No production producer exists.
-2. `gateway.readCurrentInstallation` (P2 installation receipt issuer) and `gateway.discoveryOwner.readDiscoveryGrant` (P1). Writing either would invent authority; they need dot's and the qualification owner's contract first.
+2. **P1/P2 now exist as source, composed disabled** (`FABLE-READ-GATE-CONTRACTS-20261018.md`).
+   - P2 is the in-image installation measurement plus a control-side issuer: `apps/gateway/general-reads/installation-issuer.mjs`.
+   - P1 is the per-run discovery grant over allocation ∩ approved reads ∩ the run capability policy: `discovery-producer.mjs`.
+   - The composer builds both. `reads.missing` lists `installation.enabled` and `discovery.enabled` until R0 renders the measurement pin and enables them.
+   - P3 (base allocation, tariffs, aggregate bytes) and P5 (context-key sources) are in the same contract doc.
 3. `gateway.limits`: gateway request/response/cleanup bounds (R0 render).
 4. Render: `approvedReads` and `sourceEnabled:true` (G1, treated as decided), the run capability policy `generalReads:true` and `readFamilies` (G2), and an SDK-options template that admits `meri_reads` (G3).
 5. Worker side: the runner's `meri_reads` server port (G4, apps/worker).

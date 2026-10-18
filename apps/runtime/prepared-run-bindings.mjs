@@ -19,7 +19,7 @@ import {createOperationLifetime} from '../../packages/runtime/operation-lifetime
 import {assertNativeReadConfiguration,nativeReadOperations} from '../../packages/contracts/runtime-0.2/reads.mjs';
 const fail=code=>{throw Object.assign(Error('PREPARED_RUN_BINDINGS_'+code),{code:'PREPARED_RUN_BINDINGS_'+code});};
 export function createPreparedRunBindings(options){
- const o=own(options,['configuration','pool','store','credentials'],['issuanceStore','capabilityAuthority','modelGrants','now','limits','initialBindings']),now=o.now??Date.now,limits=o.limits??{maxRequestMs:3000,maxFactBytes:131072};
+ const o=own(options,['configuration','pool','store','credentials'],['issuanceStore','capabilityAuthority','modelGrants','now','limits','initialBindings','objectiveFacts','objectiveExecutionSelection']),now=o.now??Date.now,limits=o.limits??{maxRequestMs:3000,maxFactBytes:131072};
  const config=compilePreparedCandidateConfiguration(o.configuration.nativeCandidate,o.configuration.versions);if(config.multiRun===undefined)fail('NOT_CONFIGURED');
  if(!o.issuanceStore||!o.capabilityAuthority)fail('UNAVAILABLE');if(typeof o.pool?.connect!=='function'||typeof o.store?.allocations?.read!=='function'||typeof o.store?.readOptional!=='function'||typeof o.issuanceStore.read!=='function')fail('CONFIGURATION');
  if(typeof o.modelGrants?.issue!=='function')fail('MODEL_GRANT_UNAVAILABLE');
@@ -61,6 +61,13 @@ export function createPreparedRunBindings(options){
  /** Trusted fact producer: the reviewed static configuration retargeted to the intent's binding and the issued grant, bound to the
   * current durable run record (binding, versions, policy revision) when one exists; a later run must have one. The per-entry
   * transport contract is part of the facts. */
+ // D7-4: composed only with BOTH the run-start reader and the issued execution selection; a run-start row then always decorates.
+ if((o.objectiveFacts===undefined)!==(o.objectiveExecutionSelection===undefined))fail('OBJECTIVE_CONFIGURATION');
+ const objective=o.objectiveFacts===undefined?null:{facts:o.objectiveFacts,executionSelection:o.objectiveExecutionSelection};
+ async function decorateObjective({intent,issuance,preparedFacts,signal}){const check=()=>{if(signal?.aborted)fail('CANCELLED');};
+  const saved=await o.store.readOptional(intent.binding,{},check);
+  if(!saved){if(await objective.facts.selectionFor({binding:intent.binding,signal})!==null)fail('OBJECTIVE_RUN_REQUIRED');return null;}
+  return objective.facts.decorate({accepted:{run:saved.run,request:saved.request},issuance,preparedFacts,executionSelection:objective.executionSelection,nowMs:now(),signal});}
  const facts={async compile({intent,issuance,signal}){const c=structuredClone(config),check=()=>{if(signal?.aborted)fail('CANCELLED');};
   const approvedReads=c.approvedReads===undefined?undefined:assertNativeReadConfiguration(c.approvedReads),operations=[...new Set([...c.operations,...(approvedReads===undefined?[]:nativeReadOperations)])];
   const saved=await o.store.readOptional(intent.binding,{},check);
@@ -70,7 +77,7 @@ export function createPreparedRunBindings(options){
   if(intent.binding.writerFence===1&&hash(intent.binding)!==hash(configuredBinding)){const admitted=await checkedInitial(intent.binding,check);if(intent.expiresAtMs!==admitted.expiresAtMs||!saved||!exactInitialScopes(saved.run.scopes,intent.binding,admitted.policyRevision))fail('INITIAL_EXPIRY_MISMATCH');}
   if(approvedReads!==undefined&&(!saved||hash(saved.request)!==intent.requestSha256))fail('RUN_REQUEST_MISMATCH');
   const model=await issueRunModelGrant({owner:o.modelGrants,intent,taskGrant:issuance,controlSha256:controlDigest,now,signal});
-  return {runtime:{...c.runtime,binding:intent.binding,deadlineMs:intent.expiresAtMs,proxyCredential:model.proxyCredential},plan:c.plan,preparationIntent:intent.binding.conversationId===configuredBinding.conversationId?c.preparationIntent:retargetPreparation(intent.binding,saved.run.scopes),allocationJson:retarget(intent.binding),qualification:c.qualification,grantIntents:[{grantId:issuance.grantId,capabilitySha256:issuance.capabilitySha256,expiresAtMs:intent.expiresAtMs},model.grantIntent],grantId:issuance.grantId,operations,...(approvedReads===undefined?{}:{approvedReads}),taskRequest:c.taskRequest,containerName:c.containerName,controlCapabilitySha256:controlDigest,transport:{origin:c.taskOrigin,http:c.taskHttp}};}};
+  return {runtime:{...c.runtime,binding:intent.binding,deadlineMs:intent.expiresAtMs,proxyCredential:model.proxyCredential},plan:c.plan,preparationIntent:intent.binding.conversationId===configuredBinding.conversationId?c.preparationIntent:retargetPreparation(intent.binding,saved.run.scopes),allocationJson:retarget(intent.binding),qualification:c.qualification,grantIntents:[{grantId:issuance.grantId,capabilitySha256:issuance.capabilitySha256,expiresAtMs:intent.expiresAtMs},model.grantIntent],grantId:issuance.grantId,operations,...(approvedReads===undefined?{}:{approvedReads}),taskRequest:c.taskRequest,containerName:c.containerName,controlCapabilitySha256:controlDigest,transport:{origin:c.taskOrigin,http:c.taskHttp}};},...(objective?{decorateObjective}:{})};
  const issuer=createPreparedRunIssuer({store:o.issuanceStore,authority:o.capabilityAuthority,now,maxRequestMs:limits.maxRequestMs});
  const runIssuance=createPreparedRunIssuance({issuer,facts,sourceOwners,now,maxRequestMs:limits.maxRequestMs});
  const prepareOriginal=createOriginalRunPreparation({binding:config.runtime.binding,expiresAtMs:config.runtime.deadlineMs,store:o.store,issuer,runIssuance,now,maxRequestMs:limits.maxRequestMs});
@@ -90,7 +97,8 @@ export function createPreparedRunBindings(options){
   // The issuer's immutable facts digest commits to the original plan and all dynamic grants without reopening a model credential.
   const approvedReads=config.approvedReads===undefined?undefined:assertNativeReadConfiguration(config.approvedReads),operations=[...new Set([...config.operations,...(approvedReads===undefined?[]:nativeReadOperations)])];
   const issuedFacts={original:record.original,allocationSha256:record.allocationSha256,taskRequestSha256:record.taskRequestSha256,qualification:record.qualification,grantIntents:record.grantIntents,grantId:issued.grantId,operations,controlCapabilitySha256:controlDigest,transport:{origin:config.taskOrigin,http:config.taskHttp},...(approvedReads===undefined?{}:{approvedReads})};
-  if(hash(issuedFacts)!==issued.factsSha256)fail('INITIAL_STOP_FACTS_DRIFT');
+  const pair=objective?await life.run(signal=>objective.facts.pairFor({binding:b,executionSelection:objective.executionSelection,signal})):null;
+  if(hash(pair?{...issuedFacts,...pair}:issuedFacts)!==issued.factsSha256)fail('INITIAL_STOP_FACTS_DRIFT');
   const allocationJson=retarget(b),admission=admissionFor(b,record),allocator=createNativeTaskAllocator({journal:o.store.allocations,authority:{async verify(){fail('INITIAL_STOP_REFUSED');}},admission,client,original:record.original,taskRequest:config.taskRequest,qualification:config.qualification,grantIntents:record.grantIntents,allocationSha256:hash(allocation(allocationJson)),containerName:config.containerName,enabled:true,now,maxRequestMs:limits.maxRequestMs});
   const {state:_,resource:__,...persistedIntent}=record;if(hash(persistedIntent)!==hash(allocator.intent))fail('INITIAL_STOP_CONFLICT');life.check();if(record.state==='RETIRED'&&record.resource?.physicalStopProven===true)return {physicalStopProven:true};return await life.run(()=>allocator.stop());
  }finally{life.close();}}:undefined;

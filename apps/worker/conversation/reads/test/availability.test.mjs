@@ -65,7 +65,10 @@ test('advertised schemas: canonical only when provably no wider; a hash mismatch
 
 test('P3 local budgets are upper bounds that a skill can only narrow; the ledger refuses past them',()=>{
  assert.deepEqual(effectiveReadBudgets(undefined),GENERAL_READ_CEILINGS);
- assert.deepEqual(effectiveReadBudgets({maxToolCalls:99,maxOutputBytes:9e9}),{maxToolCalls:24,maxOutputBytes:1048576,maxReadBytes:2097152,maxRecoveryAttempts:0});
+ assert.deepEqual(effectiveReadBudgets({maxToolCalls:99,maxOutputBytes:9e9}),{maxToolCalls:20,maxOutputBytes:1048576,maxReadBytes:2097152,maxRecoveryAttempts:0});
+ // D016-A 3: a run configured above the default keeps its own cap; a skill still narrows it.
+ assert.equal(effectiveReadBudgets(undefined,{maxToolCalls:40}).maxToolCalls,40);assert.equal(effectiveReadBudgets({maxToolCalls:99,maxOutputBytes:4},{maxToolCalls:40}).maxToolCalls,40);
+ assert.equal(effectiveReadBudgets({maxToolCalls:3,maxOutputBytes:4},{maxToolCalls:40}).maxToolCalls,3);assert.throws(()=>effectiveReadBudgets(undefined,{maxToolCalls:0}),/READ_CONFIGURATION/);
  const l=createReadLedger(effectiveReadBudgets({maxToolCalls:1,maxOutputBytes:4}));l.admit();assert.throws(()=>l.admit(),/RESOURCE_LIMIT/);
  l.account('1234');assert.throws(()=>l.account('12345'),/RESOURCE_LIMIT/);l.account('1234');assert.throws(()=>l.account('1'),/RESOURCE_LIMIT/,'aggregate read bytes');
 });

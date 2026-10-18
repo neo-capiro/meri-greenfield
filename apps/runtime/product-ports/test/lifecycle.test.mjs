@@ -15,12 +15,16 @@ function context({intents,withGate=true,calls=[]}={}){
   canonicalProductPorts:captureRuntimePorts(withGate?{conversationMembership:gate}:{})});
 }
 const states=(ctx,ports)=>Object.fromEntries(productReadiness({ports:composeRuntimePorts(ctx.canonicalProductPorts,captureRuntimePorts(ports)),sourceEnabled:false}).owners.filter(o=>o.name.startsWith('lifecycle.')).map(o=>[o.name,o.state]));
-test('production lifecycle family supplies no transition, admission or approval owner, with intents disabled or enabled',()=>{
- for(const intents of [undefined,{enabled:false},{enabled:true}]){
+test('production lifecycle family supplies no transition or admission owner; approvals only with intents composed',()=>{
+ for(const intents of [undefined,{enabled:false}]){
   const calls=[],ctx=context({intents,calls}),ports=createProductPortsFactory({families:[['lifecycle',createLifecycleFamily]]})(ctx);
   assert.deepEqual(ports,{});assert.deepEqual(calls,[]);
   assert.deepEqual(states(ctx,ports),{'lifecycle.currentAuthority':'unavailable','lifecycle.admissionRetirement':'unavailable','lifecycle.approvals':'unavailable'});
  }
+ // Enabled and gated: Meri's journal proposal reader + the shared decision adapter, composed inertly (no SQL, no native call).
+ const calls=[],ctx=context({intents:{enabled:true},calls}),ports=createProductPortsFactory({families:[['lifecycle',createLifecycleFamily]]})(ctx);
+ assert.deepEqual(Object.keys(ports),['approvals']);assert.deepEqual(calls,[]);
+ assert.deepEqual(states(ctx,ports),{'lifecycle.currentAuthority':'unavailable','lifecycle.admissionRetirement':'unavailable','lifecycle.approvals':'composed'});
 });
 test('a proposal reader alone never composes approvals while intents are disabled or ungated',()=>{
  let reads=0;const family=createLifecycleFamilyWith({readProposal:async()=>{reads++;}});

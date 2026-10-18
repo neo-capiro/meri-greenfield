@@ -24,6 +24,11 @@ const taskSelection=({operation,inputSha256,authorizationDecisionId,checkedAtMs,
 const nativeSelection=({checkedAtMs,expiresAtMs,...rest})=>rest;
 const failure=error=>{const code=nativeReadFailureCode(error)??safeFailure(error).message;return new GatewayDenied(code==='CONFIGURATION'?'GATEWAY_CONFIGURATION':code==='INTERNAL_ERROR'?'UNAVAILABLE':code);};
 const token=v=>typeof v==='string'&&/^[\x21-\x7e]{1,8192}$/u.test(v);
+/** A native bearer is a token string, or `{credential, expiresAtMs}` when it carries its own authority expiry (the live action
+ * session, RC1 option A). That expiry then bounds every later Core call and the source transport; it is never extended. */
+const nativeBearer=issued=>{if(typeof issued==='string')return token(issued)?{credential:issued}:refuse('UNAVAILABLE');
+ let v;try{v=data(own(issued,['credential','expiresAtMs']));}catch{refuse('UNAVAILABLE');}
+ if(!token(v.credential)||!Number.isSafeInteger(v.expiresAtMs))refuse('UNAVAILABLE');return v;};
 export function createNativeReadCredentialOwner(configuration){
  const c=own(configuration,['binding','expiresAtMs'],['store','taskVerifier','readCurrentEntry','taskCapability','allocationJson','approvedReads','coreAuthority','getNativeCredential','getServiceSecret','getReadModeServiceSecret','defaultCongress','now','enabled']),binding=data(c.binding),now=c.now??Date.now,enabled=c.enabled??false;
  validateShape('RunBinding',binding);if(typeof now!=='function'||typeof enabled!=='boolean'||!Number.isSafeInteger(c.expiresAtMs)||c.defaultCongress!==undefined&&(!Number.isSafeInteger(c.defaultCongress)||c.defaultCongress<1||c.defaultCongress>2147483647))refuse('CONFIGURATION');
@@ -58,7 +63,8 @@ export function createNativeReadCredentialOwner(configuration){
   try{
    const before=await admission(),row=data(await life.run(()=>read(binding,{},life.check)));validateShape('Run',row.run);
    if(!same(row.run.binding,binding)||!['queued','starting','running'].includes(row.run.state)||row.run.policyRevision!==proof.policyRevision||!same(row.run.scopes,before.scopes)||hash(row.request)!==before.runRequestSha256)refuse('ACCESS_DENIED');
-   const credential=await life.run(signal=>c.getNativeCredential({binding,operation:proof.operation,requestSha256:proof.requestSha256,signal,deadlineMs:cutoff}));if(!token(credential))refuse('UNAVAILABLE');
+   const bearer=nativeBearer(await life.run(signal=>c.getNativeCredential({binding,operation:proof.operation,requestSha256:proof.requestSha256,signal,deadlineMs:cutoff}))),credential=bearer.credential;
+   if(bearer.expiresAtMs!==undefined)limit(bearer.expiresAtMs);
    const began=now(),native=assertNativeToolAuthority(await life.run(signal=>currentCore({credential,signal,deadlineMs:cutoff})),{started:began,now});limit(native.expiresAtMs);
    // Equality is permitted only for the canonical Core UUID principal already captured by native startup. No conversion/mapping.
    if(native.principal.tenantId!==binding.tenantId||native.principal.actorId!==binding.actorId)refuse('UNAVAILABLE');
@@ -119,7 +125,12 @@ export function createNativeReadCredentialOwner(configuration){
   if(!pinned||v.origin!==origin)refuse('ACCESS_DENIED');const proof=observation(Object.fromEntries(['binding','subject','operation','request','requestSha256','policyRevision','sourceIds','deadlineMs'].map(key=>[key,v[key]]))),normalized=resolveOperationContract(v.operation).normalizeInput(v.request,v.normalizationContext);
   if(!same(normalized.input,v.input)||normalized.argumentsSha256!==v.argumentsSha256)refuse('ACCESS_DENIED');const before=await observe(proof,scopeSignal,signal);if(!same(before.context,v.normalizationContext))refuse('ACCESS_DENIED');
   const cutoff=Math.min(v.deadlineMs,before.expiresAtMs);life=createOperationLifetime({now,signal:signal?AbortSignal.any([scopeSignal,signal]):scopeSignal,deadlineMs:cutoff,errorFactory:nativeReadFault});const secret=await life.run(signal=>c.getServiceSecret({binding,operation:v.operation,origin,requestSha256:v.requestSha256,argumentsSha256:v.argumentsSha256,normalizationContext:v.normalizationContext,signal,deadlineMs:cutoff}));if(!token(secret))refuse('UNAVAILABLE');
-  const after=await observe({...proof,deadlineMs:cutoff},scopeSignal,signal);life.check();const {request,input,deadlineMs,...echo}=v;return data({...echo,bearerToken:before.credential,serviceSecret:secret,expiresAtMs:Math.min(cutoff,after.expiresAtMs)});
+  const after=await observe({...proof,deadlineMs:cutoff},scopeSignal,signal);life.check();
+  // Last check before dispatch: the same bearer must still be current; its expiry (if any) caps the transport.
+  const final=nativeBearer(await life.run(signal=>c.getNativeCredential({binding,operation:v.operation,requestSha256:v.requestSha256,signal,deadlineMs:Math.min(cutoff,after.expiresAtMs)})));
+  if(final.credential!==before.credential)refuse('ACCESS_DENIED');life.check();
+  const expiresAtMs=Math.min(cutoff,after.expiresAtMs,final.expiresAtMs??Infinity);if(expiresAtMs<=now())refuse('UNAVAILABLE');
+  const {request,input,deadlineMs,...echo}=v;return data({...echo,bearerToken:before.credential,serviceSecret:secret,expiresAtMs});
  }catch(error){throw failure(error);}finally{life?.close();}}
  // Trusted per-invocation composition binds the original request and gateway lifetime; the existing source callback stays unchanged.
  function credentialsForCall(operation,call){if(!available)throw failure(nativeReadFault('UNAVAILABLE'));const current=retainedCall(operation,call,now),expected=credentialProof(current,origin),scopeSignal=call.signal;

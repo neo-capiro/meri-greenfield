@@ -5,7 +5,7 @@ import {actionLookupSlice} from './action-lookup-slice-fixture.mjs';
 
 test('actual lookup delivery, durable gateway, fixed HTTP adapter and SQL result owner compose once',async()=>{
   const f=await actionLookupSlice(),delivered=await f.lookup(),read=await f.read();
-  assert.deepEqual(f.http,[{url:'https://synthetic.invalid/clio/tools/query_action_items',method:'POST'}]);
+  assert.deepEqual(f.http,[{url:'https://synthetic.invalid/api/clio/tools/query_action_items',method:'POST'}]);
   assert.equal(f.h.state().produced.size,1);assert.equal(f.h.state().reservations.size,1);
   assert.equal(f.h.state().budget.consumed_micro_usd,'10');
   assert.equal([...f.h.state().reservations.values()][0].state,'SETTLED');

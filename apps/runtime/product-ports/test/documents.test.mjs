@@ -17,6 +17,7 @@ const unused=()=>assert.fail('no SQL, SDK or native call during composition');
 const now=()=>1800000000000,pool=Object.freeze({connect:unused});
 const kmsKeyId='arn:aws:kms:us-east-1:111122223333:key/00000000-0000-4000-8000-000000000001';
 const artifacts=(extra={})=>({enabled:true,region:'us-east-1',bucket:'synthetic-artifact-bucket',prefix:'meri-artifacts',expectedBucketOwner:'111122223333',kmsKeyId,...extra});
+const coreAuthority=Object.freeze({origin:'https://core.synthetic.invalid',serviceSecretFile:'/run/meri/core-tool-service-secret'});
 const base=(extra={})=>({versions:contractVersions,sourceEnabled:false,sessions:{maxSessions:10,maxTtlMs:30000},limits:{requestMs:1000,requestBytes:131072},native:{maxResponseBytes:2097152},temporal:{taskQueue:'synthetic'},...extra});
 const code=c=>e=>e?.code===c;
 function privateBucketClient(){
@@ -41,7 +42,12 @@ test('the artifacts declaration is closed: required storage keys, same-region KM
   ownerShape:{artifacts:artifacts({expectedBucketOwner:'1111'})},trailingPrefix:{artifacts:artifacts({prefix:'meri/'})},
   tenantWithoutRetention:{artifacts:artifacts({tenantId:'tenant-a'})},retentionWithoutTenant:{retention:{enabled:true},artifacts:artifacts()},
   invalidWhileDisabled:{artifacts:{enabled:false,bucket:'UPPER'}},getter:{artifacts:Object.defineProperty(artifacts(),'bucket',{get:()=>'x',enumerable:true})},
+  authorityHttp:{artifacts:artifacts({authority:{...coreAuthority,origin:'http://core.synthetic.invalid'}})},authorityPath:{artifacts:artifacts({authority:{...coreAuthority,origin:'https://core.synthetic.invalid/api'}})},
+  authorityExtraKey:{artifacts:artifacts({authority:{...coreAuthority,bearerFile:'/run/meri/x'}})},authorityNoSecret:{artifacts:artifacts({authority:{origin:coreAuthority.origin}})},
+  authorityRelativeSecret:{artifacts:artifacts({authority:{...coreAuthority,serviceSecretFile:'run/meri/x'}})},authorityDotDot:{artifacts:artifacts({authority:{...coreAuthority,serviceSecretFile:'/run/../x'}})},
+  authorityOtherCore:{nativeCandidate:{identity:{origin:'https://other.synthetic.invalid'}},artifacts:artifacts({authority:coreAuthority})},
  }))assert.throws(()=>compileRuntimeArtifactsConfiguration(configuration),code('ARTIFACT_CONFIGURATION'),label);
+ assert.deepEqual(compileRuntimeArtifactsConfiguration({nativeCandidate:{identity:{origin:coreAuthority.origin}},artifacts:artifacts({authority:coreAuthority})}).authority,coreAuthority);
 });
 
 test('absent or disabled artifacts compose no port and construct no client',()=>{
@@ -93,7 +99,12 @@ test('actual control assembly: the store composes, retention recovery is compose
 test('a supplied Core authority composes a late-bound options owner that answers null until control binds its sessions',async()=>{
  const calls=[],mode={reply:'valid'},authority={async resolve(call){if(mode.reply==='null')return null;if(mode.reply==='extra')return {artifactOptions:{},selectedClientId:'x',credential:'y',limits:{},recheck(){},sessions:{}};calls.push(call);return {artifactOptions:{pool:{},allocationJson:{},producerContext:{},descriptor:{},context:{},validators:artifactValidators,authority:{},authorize:unused,versions:{},objects:{},executor:{},now,ids:{},newReservationId:unused,limits:{}},
   selectedClientId:'synthetic-client',credential:'synthetic-artifact-credential',limits:{},recheck(check){calls.push(['recheck',check.phase]);return {};}};}};
- const executor={execute:unused},budgetPool={connect:unused},f=family({authority,executor}),context=Object.freeze({configuration:base({artifacts:artifacts()}),pool:budgetPool,now});
+ const executor={execute:unused},budgetPool={connect:unused},f=family({authority,executor}),context=Object.freeze({configuration:base({artifacts:artifacts({authority:coreAuthority})}),pool:budgetPool,now});
+ // Composed disabled without a declared Core authority origin: the same supplied authority is never reached.
+ assert.deepEqual(Object.keys(family({authority,executor}).factory(Object.freeze({configuration:base({artifacts:artifacts()}),pool:budgetPool,now})).ports),['artifactStore']);
+ // An authority naming its origin or clock must match the declaration and control's clock.
+ for(const named of [{...authority,origin:'https://other.synthetic.invalid'},{...authority,now:()=>0}])
+  assert.throws(()=>family({authority:named,executor}).factory(Object.freeze({configuration:base({artifacts:artifacts({authority:coreAuthority})}),pool:budgetPool,now})),code('PRODUCT_PORTS_CONFIGURATION'));
  const {ports}=f.factory(context);assert.deepEqual(Object.keys(ports),['artifactStore','artifactOptionsOwner']);
  const owner=captureRuntimePorts(ports).artifactOptionsOwner,call={credential:'c',intent:'create',body:{},requestSha256:'a'.repeat(64),deadlineMs:now()+1000,signal:new AbortController().signal};
  assert.equal(await owner.resolve(call),null);assert.equal(calls.length,0,'no Core call before the sessions binding');

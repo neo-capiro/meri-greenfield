@@ -56,3 +56,10 @@ test('release removes only the recorded owned instance: a replaced directory (li
  await assert.rejects(materializeRunnerBootstrap({directory:lockedDirectory,delivery:bigCa,expected:bigExpected,now:clock}),e=>e.code==='RUNNER_BOOTSTRAP_CLEANUP_FAILED'&&e.failure==='RUNNER_BOOTSTRAP_FILE_REFUSED'&&typeof e.cleanup==='string','cleanup failure is reported with the original failure');
  chmodSync(parent,0o700);assert.ok(existsSync(lockedDirectory),'the directory the cleanup could not remove is still there for the owner');assert.deepEqual(readdirSync(lockedDirectory),[],'the partial files were removed before the directory removal failed');
 });
+test('G1: the runner configuration takes source enablement only from an explicit delivered true; any other delivered value refuses',async t=>{
+ const enabled=fixture(t),fetch=enabled.delivery.fetch;enabled.delivery.fetch=async q=>{const d=await fetch(q);return {...d,config:{...d.config,sourceEnabled:true}};};
+ const r=await materializeRunnerBootstrap({directory:enabled.directory,delivery:enabled.delivery,expected:enabled.expected,now:()=>enabled.now});
+ assert.equal(JSON.parse(readFileSync(r.configFile,'utf8')).sourceEnabled,true);
+ for(const value of [false,'true',1]){const f=fixture(t),inner=f.delivery.fetch;f.delivery.fetch=async q=>{const d=await inner(q);return {...d,config:{...d.config,sourceEnabled:value}};};
+  await assert.rejects(materializeRunnerBootstrap({directory:f.directory,delivery:f.delivery,expected:f.expected,now:()=>f.now}),JSON.stringify(value));assert.equal(existsSync(f.directory),false);}
+});

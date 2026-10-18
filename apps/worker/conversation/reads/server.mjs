@@ -26,19 +26,24 @@ const deny=(/** @type {string} */reason)=>({hookSpecificOutput:{hookEventName:/*
 /** @typedef {{id:string,version:string}} OperationRef */
 /** @typedef {{deliveryId:string,operation:OperationRef,argumentsSha256:string,resultSha256:string,decisionId:string|null,policyRevision:string|null,executionCatalogSha256:string}} ReadReceipt */
 /**
- * @param {{available:{operation:OperationRef,descriptor:any}[],unavailable:string[],binding:unknown,expectedSessionId?:string,
- *  budgets:import('./budget.mjs').ReadBudgets,timeoutMs:number,deadlineMs:number,now:()=>number,executionCatalogSha256:string,
+ * `mounted` (G3 profile mount, runtime.mjs `mount:'profile'`): the tools to register, a superset of `available`, which may then be
+ * empty. A mounted tool outside `available` is listed but deferred (never always-loaded) and its calls answer UNAVAILABLE through
+ * `stillAvailable`. Without `mounted` exactly the available tools are registered, as before.
+ * @param {{available:{operation:OperationRef,descriptor:any}[],unavailable:string[],mounted?:{operation:OperationRef,descriptor:any}[],binding:unknown,expectedSessionId?:string,
+ *  budgets:import('./budget.mjs').ReadBudgets,timeoutMs:number,deadlineMs:number,now:()=>number,executionCatalogSha256:string|null,
  *  stillAvailable:(operation:OperationRef,signal:AbortSignal)=>Promise<boolean>,
  *  execute:(call:{operation:OperationRef,arguments:unknown,deliveryId:string,signal:AbortSignal})=>Promise<unknown>}} c
  */
 export function createGeneralReadServer(c){
- if(!Array.isArray(c.available)||!c.available.length||typeof c.execute!=='function'||typeof c.stillAvailable!=='function'||typeof c.now!=='function'||
+ const profile=c.mounted!==undefined,registered=profile?c.mounted:c.available;
+ if(!Array.isArray(c.available)||!Array.isArray(registered)||!registered.length||!profile&&!c.available.length||typeof c.execute!=='function'||typeof c.stillAvailable!=='function'||typeof c.now!=='function'||
   !Number.isSafeInteger(c.timeoutMs)||c.timeoutMs<READ_TIMEOUT_MS.min||c.timeoutMs>READ_TIMEOUT_MS.max||!Number.isSafeInteger(c.deadlineMs)||
   c.expectedSessionId!==undefined&&!SESSION.test(c.expectedSessionId))throw fault('READ_SERVER_CONFIGURATION');
  const binding=data(c.binding),ledger=createReadLedger(c.budgets),correlations=new Map(),seenToolUses=new Set(),receipts=/** @type {ReadReceipt[]} */([]);
  let session=c.expectedSessionId??null,closed=false;
- const byName=new Map(c.available.map(row=>[readToolName(row),row]));
- if(byName.size!==c.available.length)throw fault('READ_TOOL_COLLISION');
+ const byName=new Map(registered.map(row=>[readToolName(row),row]));
+ if(byName.size!==registered.length)throw fault('READ_TOOL_COLLISION');
+ const availableNames=new Set(c.available.map(readToolName));if([...availableNames].some(name=>!byName.has(name)))throw fault('READ_SERVER_CONFIGURATION');
  /** @type {import('@anthropic-ai/claude-agent-sdk').HookCallback} */
  const hook=async(raw,toolUseID,options)=>{try{
   if(closed||options?.signal?.aborted)throw fault('CANCELLED');
@@ -71,12 +76,15 @@ export function createGeneralReadServer(c){
    return {content:[{type:'text',text:result},...notices]};
   }catch(error){return failureResult(failureCode(error),name);}finally{life?.close();}
  };
- const alwaysLoad=c.available.length<=ALWAYS_LOAD_MAX,tools=c.available.map(row=>defineReadTool(row,handler(row),alwaysLoad));
+ // Profile mount: only reads exposed for this run may load eagerly; the others stay deferred and answer UNAVAILABLE.
+ const alwaysLoad=c.available.length<=ALWAYS_LOAD_MAX,tools=registered.map(row=>defineReadTool(row,handler(row),alwaysLoad&&availableNames.has(readToolName(row))));
  for(const t of tools)assertConvertible(t.shape);
  const instructions=['Read-only Meri institutional sources for this conversation. Preserve exact source IDs, versions, hashes and scopes; separate inference; disclose partial or unavailable evidence. An error result establishes no evidence, absence or completeness. No write, external action or artifact is exposed here.',
-  `Available: ${c.available.map(row=>row.descriptor.displayName).join('; ')}.`,
-  ...(c.unavailable.length?[`Not available in this conversation: ${c.unavailable.join('; ')}.`]:[]),'Other institutional sources are not available in this conversation.'].join('\n');
- const server=createSdkMcpServer({name:READ_SERVER_NAME,version:'1.0.0',instructions,tools:tools.map(t=>t.definition),alwaysLoad,timeout:c.timeoutMs});
+  ...(profile?[c.available.length?`Available now: ${c.available.map(row=>row.descriptor.displayName).join('; ')}.`:'No institutional source tool is available in this conversation right now.',
+   'Every other tool of this server answers UNAVAILABLE in this conversation.']
+   :[`Available: ${c.available.map(row=>row.descriptor.displayName).join('; ')}.`,...(c.unavailable.length?[`Not available in this conversation: ${c.unavailable.join('; ')}.`]:[])]),
+  'Other institutional sources are not available in this conversation.'].join('\n');
+ const server=createSdkMcpServer({name:READ_SERVER_NAME,version:'1.0.0',instructions,tools:tools.map(t=>t.definition),alwaysLoad:!profile&&alwaysLoad,timeout:c.timeoutMs});
  const allowedTools=Object.freeze([...byName.keys()]),allowed=new Set(allowedTools);
  return Object.freeze({server,allowedTools,modes:Object.freeze(Object.fromEntries(tools.map((t,i)=>[allowedTools[i],t.mode]))),
   hooks:Object.freeze({PreToolUse:[{matcher:`${READ_TOOL_PREFIX}.*`,hooks:[hook]}]}),

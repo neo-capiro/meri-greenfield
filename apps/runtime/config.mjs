@@ -17,6 +17,8 @@ import {compileScheduleServiceConfiguration} from './schedule-service-configurat
 import {compileCapabilityPlatform} from './product-ports/capability-policy.mjs';
 import {compileRuntimeArtifactsConfiguration} from './artifacts/configuration.mjs';
 import {compileIntentsConfiguration} from './product-ports/intents.mjs';
+import {compileRoutinesCoreConfiguration} from './native-authority/routines-configuration.mjs';
+import {compileObjectiveGenerationConfiguration} from './objective-generation/configuration.mjs';
 export {compileControlUserPreferencesConfiguration};
 export const fault=code=>Object.assign(new Error(code),{code});
 const requireValue=(condition,code='RUNTIME_CONFIGURATION')=>{if(!condition)throw fault(code);};
@@ -61,16 +63,22 @@ export function validateConfiguration(raw,role){
  // The schedule worker is a separately supervised control-domain Temporal poller with a health-only listener. It holds no native
  // capability; its four domain owners are trusted in-process ports, never configuration, so JSON alone cannot start it.
  const common=['version','profile','sourceEnabled','limits',...(role==='schedule-worker'?[]:['native'])];
- own(c,[...common,...(role==='control'?['http','database','temporal','sessions','versions']:role==='temporal-worker'?['http','temporal']:role==='schedule-worker'?['http','temporal','versions','scheduledDispatch']:['binding','versions','workspace','proxyOrigin'])],role==='conversation-runner'?['bootstrap','captureOwnsClose','remoteTask']:role==='control'?['nativeCandidate','retention','telemetry','downloadLinks','privateHttp','taskRouter','userPreferences','tenantSettings','capabilityPlatform','routines','artifacts','intents','reads']:role==='schedule-worker'?['database']:[]);
+ own(c,[...common,...(role==='control'?['http','database','temporal','sessions','versions']:role==='temporal-worker'?['http','temporal']:role==='schedule-worker'?['http','temporal','versions','scheduledDispatch']:['binding','versions','workspace','proxyOrigin'])],role==='conversation-runner'?['bootstrap','captureOwnsClose','remoteTask']:role==='control'?['nativeCandidate','retention','telemetry','downloadLinks','privateHttp','taskRouter','userPreferences','tenantSettings','capabilityPlatform','routines','artifacts','intents','reads','objectiveGeneration']:role==='schedule-worker'?['database']:role==='temporal-worker'?['objectiveGeneration']:[]);
  if(c.userPreferences!==undefined){requireValue(role==='control','USER_PREFERENCES_CONFIGURATION');compileControlUserPreferencesConfiguration(c);}
  // Lane B control opt-ins (product-ports/settings.mjs, routines.mjs) and the trusted platform capability record (capability-policy.mjs, N3).
- for(const [key,code] of [['tenantSettings','TENANT_SETTINGS_CONFIGURATION'],['routines','ROUTINES_CONFIGURATION']])if(c[key]!==undefined){requireValue(role==='control',code);own(c[key],['enabled']);requireValue(typeof c[key].enabled==='boolean',code);}
+ for(const [key,code] of [['tenantSettings','TENANT_SETTINGS_CONFIGURATION'],['routines','ROUTINES_CONFIGURATION']])if(c[key]!==undefined){requireValue(role==='control',code);own(c[key],['enabled'],key==='routines'?['core']:[]);requireValue(typeof c[key].enabled==='boolean',code);}
+ // Routines Core owners (lane B2): the wire A policy client and the Core-proof run control compose only from this closed block.
+ if(c.routines?.core!==undefined)compileRoutinesCoreConfiguration(c);
  if(c.capabilityPlatform!==undefined){requireValue(role==='control','CAPABILITY_PLATFORM_CONFIGURATION');compileCapabilityPlatform(c);}
+ // Objective generation opt-ins (objective-generation/configuration.mjs): control `runs`/`start`, worker `runs`. Absent = disabled.
+ if(c.objectiveGeneration!==undefined)compileObjectiveGenerationConfiguration(c,role);
  // Retention serving is an explicit declaration: when enabled, control composes the canonical read gate over its own database and
  // readiness requires the retention projections; when absent, no gate exists and nothing pretends otherwise.
  // Purge is an explicit switch that this source only accepts off: activation is a reviewed change, never a configuration value.
  if(c.retention!==undefined){requireValue(role==='control','RETENTION_CONFIGURATION');own(c.retention,['enabled'],['purge']);requireValue(c.retention.enabled===true,'RETENTION_CONFIGURATION');if(c.retention.purge!==undefined){own(c.retention.purge,['enabled']);requireValue(c.retention.purge.enabled===false,'RETENTION_CONFIGURATION');}}
- requireValue(c.version===1&&c.profile==='isolated-preview'&&c.sourceEnabled===false);
+ // G1: source connectivity is an explicit boolean (decided: 10-15 #5, D015 #4a). The schedule worker stays source-disabled
+ // (schedule-service-configuration.mjs); every source owner keeps its own enablement, authority and fail-closed checks.
+ requireValue(c.version===1&&c.profile==='isolated-preview'&&typeof c.sourceEnabled==='boolean'&&(role!=='schedule-worker'||c.sourceEnabled===false));
  if(c.captureOwnsClose!==undefined)requireValue(typeof c.captureOwnsClose==='boolean','RUNNER_CAPTURE_CONFIGURATION');
  if(c.bootstrap!==undefined){own(c.bootstrap,['expiresAtMs'],['remote']);requireValue(c.bootstrap.remote===undefined||typeof c.bootstrap.remote==='boolean','TASK_BOOTSTRAP_CONFIGURATION');if(c.bootstrap.remote===true)requireValue(c.captureOwnsClose===true&&c.remoteTask===undefined,'TASK_BOOTSTRAP_CONFIGURATION');requireValue(Number.isSafeInteger(c.bootstrap.expiresAtMs)&&c.bootstrap.expiresAtMs>0,'TASK_BOOTSTRAP_CONFIGURATION');}
  own(c.limits,['startupMs','shutdownMs','requestMs','requestBytes']);requireValue(integer(c.limits.startupMs,100,30000)&&integer(c.limits.shutdownMs,100,30000)&&integer(c.limits.requestMs,10,30000)&&integer(c.limits.requestBytes,1,131072));

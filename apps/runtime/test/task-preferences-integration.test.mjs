@@ -104,12 +104,12 @@ test('public mounts are exact and both applications remain excluded from the pro
   assert.equal((await routes.private.handle(request('/v1/native-task/probe'))).status,200);assert.equal(s.privateCalls,1);assert.equal(s.taskResolutions,0);assert.equal(s.sql.connections(),0);
  }finally{assembly.close();}
 });
-test('actual configuration accepts only source-disabled control; composition metadata cannot enable a source',()=>{
+test('actual configuration takes source enablement only as an explicit boolean (G1); composition metadata cannot enable a source',()=>{
  const file=name=>resolve('synthetic-integration-inputs',name),configuration={version:1,profile:'isolated-preview',sourceEnabled:false,versions,
   limits:base.limits,userPreferences:{enabled:true},http:base.http,database:{connectionFile:file('db')},sessions:{mode:'process-local',replicas:1,maxSessions:10,maxTtlMs:3000},
   temporal:{address:'temporal.synthetic.invalid:7233',namespace:'synthetic',taskQueue:'synthetic',tls:{caFile:file('ca'),certFile:file('cert'),keyFile:file('key')}},
   native:{origin:'https://control.synthetic.invalid',capabilityFile:file('cap'),loopback:false,maxResponseBytes:131072}};
- assert.equal(actualConfig.validateConfiguration(configuration,'control').sourceEnabled,false);assert.throws(()=>actualConfig.validateConfiguration({...configuration,sourceEnabled:true},'control'),{code:'RUNTIME_CONFIGURATION'});
+ assert.equal(actualConfig.validateConfiguration(configuration,'control').sourceEnabled,false);assert.equal(actualConfig.validateConfiguration({...configuration,sourceEnabled:true},'control').sourceEnabled,true);for(const sourceEnabled of ['true',1,null])assert.throws(()=>actualConfig.validateConfiguration({...configuration,sourceEnabled},'control'),{code:'RUNTIME_CONFIGURATION'});
 });
 test('readiness distinguishes disabled, missing and composed task ownership without claiming live readiness',()=>{
  for(const [sourceEnabled,configuredOwners,expected]of [[false,[],'disabled'],[false,['taskCommandApplication'],'disabled'],[true,[],'unavailable'],[true,['taskCommandApplication'],'composed']]){

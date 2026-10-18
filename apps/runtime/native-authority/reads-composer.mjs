@@ -27,6 +27,9 @@ import {readSecret as readRuntimeSecret} from '../config.mjs';
 import {createNativeToolAuthorityClient} from './native-read-credentials/core-client.mjs';
 import {prepareGeneralReadInstallation,installationReadOperations} from './general-read-installation/runtime.mjs';
 import {taskTuple} from './general-read-installation/configuration.mjs';
+import catalog from '../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
+import {createGeneralReadInstallationIssuer} from '../../gateway/general-reads/installation-issuer.mjs';
+import {createGeneralReadDiscoveryProducer} from '../../gateway/general-reads/discovery-producer.mjs';
 
 /** Server-side secret files the control role renders for reads (absolute paths). `readModeServiceSecret` may name the same
  * file as `serviceSecret`. There is no bearer file: the bearer comes from the live-session relay. */
@@ -67,21 +70,32 @@ export async function createNativeReadCredentialBroker(options){
  /** Per task. Resolves the bearer at call time; nothing is cached past the call. */
  function bearerFor({binding,scopes}){
   const pinned=data(binding),selectedClientId=selectedClientOf(data(scopes)),same=value=>{try{return canonicalSha256(data(value))===canonicalSha256(pinned);}catch{return false;}};
-  return async request=>{
-   if(relay===null||selectedClientId===null||!request||!same(request.binding))refuse('UNAVAILABLE');
+  // One live-session lookup: exact run binding and selected client, a well-formed token, unexpired, never a candidate credential.
+  const lookup=request=>{
    let issued;try{issued=data(own(relay.nativeCredentialFor({binding:pinned,selectedClientId,...(request.signal===undefined?{}:{signal:request.signal})}),['credential','expiresAtMs']));}catch{refuse('UNAVAILABLE');}
    const token=typeof issued.credential==='string'&&TOKEN.test(issued.credential)?issued.credential:null;
    if(token===null||!Number.isSafeInteger(issued.expiresAtMs)||issued.expiresAtMs<=now()||forbidden.has(sha(token)))refuse('UNAVAILABLE');
-   for(const key of Object.keys(files))if(sha(await current(key))===sha(token))refuse('UNAVAILABLE');
-   return token;
+   return {credential:token,expiresAtMs:issued.expiresAtMs};
+  };
+  // Returns `{credential, expiresAtMs}`: the credential owner folds the session expiry into every later Core call and the
+  // source transport deadline (owner.mjs `nativeBearer`), so no read stays in flight past the live session.
+  return async request=>{
+   if(relay===null||selectedClientId===null||!request||!same(request.binding))refuse('UNAVAILABLE');
+   const first=lookup(request);
+   for(const key of Object.keys(files))if(sha(await current(key))===sha(first.credential))refuse('UNAVAILABLE');
+   // The service-file reads above are awaits: the same session must still be live (not expired, revoked or replaced).
+   const second=lookup(request);if(second.credential!==first.credential)refuse('UNAVAILABLE');
+   return Object.freeze({credential:first.credential,expiresAtMs:Math.min(first.expiresAtMs,second.expiresAtMs)});
   };
  }
  return Object.freeze({available:Boolean(relay&&getters.getServiceSecret),configured:Object.freeze(Object.keys(files)),bearerFor,...getters});
 }
 
-/** Returns `{createReadsRuntime, familyIds, missing}`. `missing` names each absent input (no secret values). */
+/** Returns `{createReadsRuntime, familyIds, missing}`. `missing` names each absent input (no secret values).
+ * P2 (`installation`) and P1 (`discovery`) producers are composed here and stay DISABLED unless their `enabled` is true; an
+ * explicit `gateway.readCurrentInstallation` / `gateway.discoveryOwner` port takes precedence (tests, future owners). */
 export async function createControlReadsComposer(options){
- const c=own(options,['configuration','secretFiles'],['now','newId','fetchImpl','gateway','nativeCredentials','defaultCongress','familyIds','readSecret','sourceRoot']);
+ const c=own(options,['configuration','secretFiles'],['now','newId','fetchImpl','gateway','nativeCredentials','defaultCongress','familyIds','readSecret','sourceRoot','installation','discovery']);
  const now=c.now??Date.now,newId=c.newId??randomUUID,fetchImpl=c.fetchImpl??globalThis.fetch;
  if(typeof now!=='function'||typeof newId!=='function'||typeof fetchImpl!=='function'||types.isProxy(fetchImpl)||
   c.defaultCongress!==undefined&&(!Number.isSafeInteger(c.defaultCongress)||c.defaultCongress<1))refuse('CONFIGURATION');
@@ -92,13 +106,24 @@ export async function createControlReadsComposer(options){
  const familyIds=c.familyIds===undefined?native:data(c.familyIds);
  if(!Array.isArray(familyIds)||!familyIds.length||new Set(familyIds).size!==familyIds.length||familyIds.some(id=>!native.includes(id)))refuse('CONFIGURATION');
  const gateway=c.gateway===undefined?{}:own(c.gateway,[],[...READ_GATEWAY_INPUTS,'namespace']);
+ const installation=c.installation===undefined?{}:own(c.installation,[],['enabled','measurement','measurementSha256','ttlMs','revokedOperations']);
+ const discovery=c.discovery===undefined?{}:own(c.discovery,[],['enabled','capabilityPolicy','ttlMs']);
+ if(installation.enabled!==undefined&&typeof installation.enabled!=='boolean'||discovery.enabled!==undefined&&typeof discovery.enabled!=='boolean')refuse('CONFIGURATION');
+ // P2: one issuer per process; an enabled issuer refuses construction unless its pinned measurement matches this source.
+ const issuer=gateway.readCurrentInstallation===undefined?createGeneralReadInstallationIssuer({catalogJson:JSON.stringify(catalog),now,...installation}):null;
+ const readCurrentInstallation=gateway.readCurrentInstallation??(issuer.enabled?issuer.readCurrentInstallation:undefined);
+ const discoveryEnabled=gateway.discoveryOwner===undefined&&discovery.enabled===true;
  const missing=Object.freeze([...(c.nativeCredentials===undefined?['nativeCredentials.nativeCredentialFor']:[]),...(broker.getServiceSecret===undefined?['secretFiles.serviceSecret']:[]),
-  ...READ_GATEWAY_INPUTS.filter(key=>gateway[key]===undefined).map(key=>`gateway.${key}`)]);
+  ...['authority','limits'].filter(key=>gateway[key]===undefined).map(key=>`gateway.${key}`),
+  ...(readCurrentInstallation===undefined?['installation.enabled']:[]),...(gateway.discoveryOwner===undefined&&!discoveryEnabled?['discovery.enabled']:[])]);
  function taskPorts(raw){
   // An empty gateway makes the installation runtime return its unavailable gateway for this task.
   if(missing.length)return {gateway:{},families:{}};
   const t=taskTuple(raw);
-  return {gateway:{authority:gateway.authority,limits:gateway.limits,readCurrentInstallation:gateway.readCurrentInstallation,discoveryOwner:gateway.discoveryOwner,
+  // P1: per task, over this run's own allocation and approved reads.
+  const discoveryOwner=gateway.discoveryOwner??createGeneralReadDiscoveryProducer({binding:t.binding,policyRevision:t.grant.qualificationBinding.policyRevision,
+   allocationJson:t.allocationJson,approvedReads:t.approvedReads,now,enabled:true,capabilityPolicy:discovery.capabilityPolicy,...(discovery.ttlMs===undefined?{}:{ttlMs:discovery.ttlMs})});
+  return {gateway:{authority:gateway.authority,limits:gateway.limits,readCurrentInstallation,discoveryOwner,
     producerContext:t.grant,producer:{namespace:'general-reads',executionId:t.original.executionId},credential:t.taskCapability,sourceEnabled:true,...(gateway.namespace===undefined?{}:{namespace:gateway.namespace})},
    families:Object.fromEntries(familyIds.map(id=>[id,{origin:coreAuthority.origin,fetchImpl}])),
    nativeCredentials:{coreAuthority,getNativeCredential:broker.bearerFor({binding:t.binding,scopes:t.scopes}),getServiceSecret:broker.getServiceSecret,

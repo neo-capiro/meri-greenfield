@@ -60,7 +60,7 @@ test('bundle refuses missing, duplicated, foreign, changed, malformed, empty and
 
 test('even fully repinned material must contain valid canonical role configuration with the exact declared inventory',()=>{
  for(const changed of [
-  c=>{c.sourceEnabled=true;},c=>{c.temporal.tls.keyFile='/run/meri/undeclared-key';},
+  c=>{c.sourceEnabled='true';},c=>{c.temporal.tls.keyFile='/run/meri/undeclared-key';},
   c=>{c.nativeCandidate.identity.credentialFile=c.nativeCandidate.proxyCredentialFile;},
   c=>{c.database.connectionFile='/other/database';},c=>{c.http.port=9999;},c=>{c.nativeCandidate.multiRun={...c.nativeCandidate.multiRun,materialDirectory:'/tmp/dynamic'};},
  ]){
