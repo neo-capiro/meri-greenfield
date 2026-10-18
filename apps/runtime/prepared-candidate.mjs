@@ -27,6 +27,8 @@ import {createPreparedNativeReads,captureReadRuntimeOptions} from './native-auth
 import {createTaskRouterAuthority} from './native-authority/task-router-authority.mjs';
 import {remoteOriginal} from './native-authority/remote-task-boundary.mjs';
 import {dirname,join} from 'node:path';
+import {createObjectiveRunStartFacts} from './objective-source/run-start-facts.mjs';
+import {createPostgresObjectiveRunStartStore} from './objective-source/postgres-run-starts.mjs';
 const refuse=()=>{throw Error('PREPARED_CANDIDATE_REFUSED');};
 const same=(a,b)=>hash(a)===hash(b);
 /** Check the configured first-run proxy bearer against the model grant intent before allocation. */
@@ -116,13 +118,18 @@ export function composePreparedRunBindings(b,initialBindings){
   ...(initialBindings?{initialBindings,prepareInitial:b.prepareInitial,retireInitial:b.retireInitial,configurationSha256:b.configurationSha256,proposeInitialExpiry:b.proposeInitialExpiry}:{})};
 }
 /** CLI-owned clients use the approved control workload role; task receives no AWS credentials. */
-export async function startPreparedCandidate({configuration,pool,signal,issuanceStore,capabilityAuthority,modelGrants,initialBindings,createReadsRuntime,generalReads}){
+export async function startPreparedCandidate({configuration,pool,signal,issuanceStore,capabilityAuthority,modelGrants,initialBindings,createReadsRuntime,generalReads,objectiveExecutionSelection}){
  const config=compilePreparedCandidateConfiguration(configuration.nativeCandidate,configuration.versions),reads=captureReadRuntimeOptions({...(createReadsRuntime===undefined?{}:{createReadsRuntime}),...(generalReads===undefined?{}:{generalReads})});signal?.throwIfAborted();
  if((config.multiRun?.dynamicInitialRuns===true)!==(initialBindings!==undefined))refuse();
  const [identity,task,control,proxy]=await Promise.all([config.identity.credentialFile,config.taskCapabilityFile,config.controlCapabilityFile,config.proxyCredentialFile].map(readSecret));signal?.throwIfAborted();
  // Multi-run mode (S2): the three ports are composed from startup-supplied owners; a declared multi-run mode without them fails startup
  // here instead of advertising the fixed first-run path.
- const bindings=config.multiRun===undefined?{}:composePreparedRunBindings(createPreparedRunBindings({configuration,pool,store:createPostgresConversationStore({pool}),credentials:{proxy:proxy.toString('utf8').trim(),control:control.toString('utf8').trim()},issuanceStore,capabilityAuthority,modelGrants,limits:{maxRequestMs:configuration.limits.requestMs,maxFactBytes:131072},...(initialBindings?{initialBindings}:{})}),initialBindings);
+ // D7-4 shared splice: with the run's issued execution selection (trusted startup option), every fact compilation and whole-facts
+ // reconstruction reads meri_objective_source.run_starts; only then may Objective runs be admitted (objectiveTemplate below).
+ const objectiveOwners=objectiveExecutionSelection===undefined||config.multiRun?.dynamicInitialRuns!==true?{}:{objectiveExecutionSelection,
+  objectiveFacts:createObjectiveRunStartFacts({runStarts:createPostgresObjectiveRunStartStore({enabled:true,pool,tenantId:config.runtime.binding.tenantId,maxRequestMs:Math.min(3000,configuration.limits.requestMs)})})};
+ const bindings=config.multiRun===undefined?{}:composePreparedRunBindings(createPreparedRunBindings({configuration,pool,store:createPostgresConversationStore({pool}),credentials:{proxy:proxy.toString('utf8').trim(),control:control.toString('utf8').trim()},issuanceStore,capabilityAuthority,modelGrants,limits:{maxRequestMs:configuration.limits.requestMs,maxFactBytes:131072},...(initialBindings?{initialBindings}:{}),...objectiveOwners}),initialBindings);
+ const objectiveTemplate=objectiveOwners.objectiveFacts?Object.freeze({versions:configuration.versions,policyRevision:config.qualification.policyRevision,configurationSha256:bindings.configurationSha256,runWindowMs:config.multiRun.runWindowMs}):undefined;
  // The private router borrows exactly the durable issuance/allocation/admission owners already used for multi-run execution.
  // A configuration declaration alone never supplies authorization or a task route.
  const taskRouterAuthority=configuration.taskRouter===undefined?null:(()=>{
@@ -130,7 +137,7 @@ export async function startPreparedCandidate({configuration,pool,signal,issuance
   return createTaskRouterAuthority({issuanceStore,allocations:createPostgresConversationStore({pool}).allocations,
    admissionForBinding:bindings.admissionForBinding,controlCapabilitySha256:capabilityDigest(control.toString('utf8').trim()),
    operations:config.operations,transport:{origin:config.taskOrigin,http:config.taskHttp},
-   ...(config.approvedReads===undefined?{}:{approvedReads:config.approvedReads})});
+   ...(config.approvedReads===undefined?{}:{approvedReads:config.approvedReads}),...objectiveOwners});
  })();
  const poststartOwners=configuration.taskRouter?.poststart===undefined?null:(()=>{
   if(!issuanceStore||!bindings.issuer||typeof bindings.admissionForBinding!=='function'||config.multiRun?.dynamicInitialRuns!==true)refuse();
@@ -145,11 +152,11 @@ export async function startPreparedCandidate({configuration,pool,signal,issuance
    admissionForBinding:bindings.admissionForBinding,issuer:bindings.issuer,runnerConfiguration,
    controlCapabilitySha256:capabilityDigest(control.toString('utf8').trim()),operations:config.operations,
    transport:{origin:config.taskOrigin,http:config.taskHttp},
-   ...(config.approvedReads===undefined?{}:{approvedReads:config.approvedReads})});
+   ...(config.approvedReads===undefined?{}:{approvedReads:config.approvedReads}),...objectiveOwners});
  })();
  // Approved control workload role is resolved by the adopted SDK at future effects.
  // The run issuer belongs to the poststart authority only; assemblePreparedCandidate's option record is closed.
  const {issuer:_poststartIssuer,...candidateBindings}=bindings;
  const ecs=new ECSClient({region:'us-east-1',maxAttempts:1}),s3=new S3Client({region:'us-east-1',maxAttempts:1});let candidate;
- try{const objects=createS3ArtifactObjects({client:s3,...config.objects,now:Date.now,maxRequestMs:configuration.limits.requestMs});candidate=assemblePreparedCandidate({configuration,pool,ecs,objects,credentials:{identity:identity.toString('utf8').trim(),task:task.toString('utf8').trim(),control:control.toString('utf8').trim(),proxy:proxy.toString('utf8').trim()},...candidateBindings,...reads});return Object.freeze({...candidate,...(taskRouterAuthority?{taskRouterAuthority}:{}),...(poststartOwners?{poststartOwners}:{}),async close(){try{await candidate.close();}finally{ecs.destroy();s3.destroy();}}});}catch(error){ecs.destroy();s3.destroy();throw error;}
+ try{const objects=createS3ArtifactObjects({client:s3,...config.objects,now:Date.now,maxRequestMs:configuration.limits.requestMs});candidate=assemblePreparedCandidate({configuration,pool,ecs,objects,credentials:{identity:identity.toString('utf8').trim(),task:task.toString('utf8').trim(),control:control.toString('utf8').trim(),proxy:proxy.toString('utf8').trim()},...candidateBindings,...reads});return Object.freeze({...candidate,...(taskRouterAuthority?{taskRouterAuthority}:{}),...(poststartOwners?{poststartOwners}:{}),...(objectiveTemplate?{objectiveTemplate}:{}),async close(){try{await candidate.close();}finally{ecs.destroy();s3.destroy();}}});}catch(error){ecs.destroy();s3.destroy();throw error;}
 }

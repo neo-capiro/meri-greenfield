@@ -23,7 +23,7 @@ function certificate(csr,certificatePem,caPem,taskName,nowMs,expiresAtMs){
  return certificatePem;
 }
 export function createRunnerPoststartAuthority(configuration){
- const c=own(configuration,['issuanceStore','allocations','admissionForBinding','taskReader','networkReader','issuer','runnerConfiguration','certificateIssuer','controlCa','runnerCa','zone','controlCapabilitySha256','operations','transport'],['approvedReads','now','maxRequestMs','maxChallenges']),now=c.now??Date.now,maxRequestMs=c.maxRequestMs??3000,maxChallenges=c.maxChallenges??1024;
+ const c=own(configuration,['issuanceStore','allocations','admissionForBinding','taskReader','networkReader','issuer','runnerConfiguration','certificateIssuer','controlCa','runnerCa','zone','controlCapabilitySha256','operations','transport'],['approvedReads','now','maxRequestMs','maxChallenges','objectiveFacts','objectiveExecutionSelection']),now=c.now??Date.now,maxRequestMs=c.maxRequestMs??3000,maxChallenges=c.maxChallenges??1024;
  const readIssuance=storageMethod(c.issuanceStore,'read'),readAllocation=storageMethod(c.allocations,'read'),readTask=storageMethod(c.taskReader,'read'),observe=storageMethod(c.networkReader,'observe'),resolve=storageMethod(c.issuer,'resolve'),configFor=storageMethod(c.runnerConfiguration,'forOriginal'),issueCert=storageMethod(c.certificateIssuer,'issue');
  if(typeof c.admissionForBinding!=='function'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000||!Number.isSafeInteger(maxChallenges)||maxChallenges<1||maxChallenges>4096||!digest(c.controlCapabilitySha256)||!Array.isArray(c.operations)||!c.operations.length||new Set(c.operations).size!==c.operations.length||!Buffer.isBuffer(c.controlCa)||!Buffer.isBuffer(c.runnerCa)||c.controlCa.length>16384||c.runnerCa.length>16384)fail();
  const runnerCa=singleCertificate(c.runnerCa.toString('utf8'));if(!runnerCa.ca)fail();
@@ -42,7 +42,9 @@ export function createRunnerPoststartAuthority(configuration){
   const grant=record.grantIntents.find(g=>g.grantId===issued.grantId);
   if(!grant||grant.capabilitySha256!==issued.capabilitySha256||grant.expiresAtMs!==issued.expiresAtMs||issued.capabilitySha256===c.controlCapabilitySha256)fail();
   const facts={original,allocationSha256:record.allocationSha256,taskRequestSha256:record.taskRequestSha256,qualification:record.qualification,grantIntents:record.grantIntents,grantId:issued.grantId,operations:c.operations,controlCapabilitySha256:c.controlCapabilitySha256,transport:c.transport,...(c.approvedReads===undefined?{}:{approvedReads:c.approvedReads})};
-  if(hash(facts)!==issued.factsSha256)fail();
+  if((c.objectiveFacts===undefined)!==(c.objectiveExecutionSelection===undefined))fail();
+  const pair=c.objectiveFacts===undefined?null:await life.run(signal=>c.objectiveFacts.pairFor({binding:issued.binding,executionSelection:c.objectiveExecutionSelection,signal}));check(life);
+  if(hash(pair?{...facts,...pair}:facts)!==issued.factsSha256)fail();
   const resource=data(Object.fromEntries(['taskArn','createdAtMs','clusterArn','taskDefinitionArn','containerName'].map(k=>[k,record.resource[k]])));
   const binding=compileEcsTaskBinding({original,...resource,enabled:true,now});assertEcsOwnedTask(task,binding);assertEcsRunningTask(task,binding);
   const candidate=await life.run(signal=>observe({original,resource,signal,check:()=>check(life)}));check(life);

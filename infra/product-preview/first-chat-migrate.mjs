@@ -64,10 +64,13 @@ export const PLAN=Object.freeze([
  ['migration','apps/control/schedules/migrations/0002_occurrences.sql','6a8369dc45e2bc330425550583daceb706652698ebbdecee1f5a1f2202a07242','integration'],
  ['migration','apps/control/task-lookup/migrations/0001_task_lookup.sql','ae3197c4f898c5a8a493b2bee4cd6c5da16c62730ad3447e4f07ebfeaf1c100f','integration'],
  ['migration','apps/runtime/objective-source/migrations/0001_objective_custody.sql','1e22b44fcc59ae88e593f6d15f63083bdff0c3421584646fc7a357e7f67b9b34','integration'],
+ // D7-4 run starts and the reader v2 JTI replay store (objective-source family; central reservation required before apply).
+ ['migration','apps/runtime/objective-source/migrations/0002_objective_run_starts.sql','659b5b400d3fe85ed122fbf75653cd5f7c60e5f2c99f055af90304f9fd1e8598','integration'],
+ ['migration','apps/runtime/objective-source/migrations/0003_objective_reader_replays.sql','13241e96f5294dffc3e616ef0163bd7eaee5c2e5f6030fd7ca05244314b89286','integration'],
  ['migration','apps/artifacts/migrations/0001_versions.sql','d654a24aa4f45c4b3c43d927263f96b8b2f406af509840819feda36c5f2dee19','integration'],
  ['migration','apps/artifacts/migrations/0002_retention.sql','8212082ea875117afb2ba129474ba5f6ba4f937c3d0192ca07267738cd73cba6','integration'],
  ['migration','apps/artifacts/migrations/0003_previews.sql','d1eb7ea68a150f60e7fb63e654a0892044bf24840a785fcff58dded59129b300','integration'],
- ['phase:integration_grants',INTEGRATION_SCRIPT,'5ece87c8d784298a9f289a1d685dbcb9e4162117f3170f0a9f7d6a39005b0306','integration']
+ ['phase:integration_grants',INTEGRATION_SCRIPT,'d01b7400870f6001ddb26aa05d79931a37be4f98fb9000098321e6eda51e75f9','integration']
 ].map(([kind,path,pinned,declaredStage],index)=>Object.freeze({ordinal:index+1,kind,path,pinned,
  name:kind==='migration'?path:`${path}#${kind.slice(6)}`,
  stage:declaredStage??(kind==='phase:temporal_grants'?'temporal':'meri')})));

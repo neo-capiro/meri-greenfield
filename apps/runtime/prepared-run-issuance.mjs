@@ -56,6 +56,10 @@ export function createPreparedRunIssuance(configuration){
  const c=own(configuration,['issuer','facts'],['sourceOwners','now','maxRequestMs']),now=c.now??Date.now,maxRequestMs=c.maxRequestMs??3000;
  if(typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('CONFIGURATION');
  const read=storageMethod(c.issuer,'read'),issue=storageMethod(c.issuer,'issue'),bindFacts=storageMethod(c.issuer,'bindFacts'),resolve=storageMethod(c.issuer,'resolve'),compile=storageMethod(c.facts,'compile'),uncertain=new Set();
+ // D7-4 shared splice: the trusted Objective decorator (objective-source/run-start-facts.mjs) returns null for ordinary chat and
+ // {facts,bindFactsInput} with the protected pair for an Objective run; every reconstruction compares the same final digest.
+ const decorate=c.facts&&Object.hasOwn(c.facts,'decorateObjective')?storageMethod(c.facts,'decorateObjective'):null;
+ async function finalFacts(base,{intent,issuance,life}){if(!decorate)return base;const d=await life.run(signal=>decorate({intent,issuance,preparedFacts:base,signal}));life.check();return d===null?base:d.facts;}
  let readAllocation,revoke;
  if(c.sourceOwners){const s=own(c.sourceOwners,['allocations','admission']);readAllocation=storageMethod(s.allocations,'read');revoke=storageMethod(s.admission,'revoke');}
  const earlier=(b,target)=>b.tenantId===target.tenantId&&b.actorId===target.actorId&&b.conversationId===target.conversationId&&b.runId!==target.runId&&b.attemptId!==target.attemptId&&b.workerId!==target.workerId&&b.writerFence<target.writerFence;
@@ -91,7 +95,7 @@ export function createPreparedRunIssuance(configuration){
     if(!issuance)fail('ISSUANCE_UNKNOWN');
    }
    uncertain.delete(intent.issuanceKey);life.check();if(source?.grantIntents?.some(g=>g.capabilitySha256===issuance.capabilitySha256||g.grantId===issuance.grantId))fail('SOURCE_CAPABILITY_REUSE');
-   const raw=await life.run(signal=>compile({intent,issuance,signal})),facts=compilePreparedRunFacts(raw,{intent,issuance,now});life.check();
+   const raw=await life.run(signal=>compile({intent,issuance,signal})),facts=await finalFacts(compilePreparedRunFacts(raw,{intent,issuance,now}),{intent,issuance,life});life.check();
    if(source?.grantIntents&&facts.grantIntents.some(target=>source.grantIntents.some(prior=>target.grantId===prior.grantId||target.capabilitySha256===prior.capabilitySha256)))fail('SOURCE_CAPABILITY_REUSE');
    const bound=receiptOf(await life.run(signal=>bindFacts({...intent,capabilitySha256:issuance.capabilitySha256,grantId:issuance.grantId,factsSha256:facts.factsSha256,signal})),intent);
    if(bound.capabilitySha256!==issuance.capabilitySha256||bound.grantId!==issuance.grantId||bound.factsSha256!==facts.factsSha256||issuance.factsSha256!==undefined&&issuance.factsSha256!==facts.factsSha256)fail('FACTS_REPLAY_REFUSED');
@@ -113,7 +117,7 @@ export function createPreparedRunIssuance(configuration){
   const life=createOperationLifetime({now,signal,deadlineMs:Math.min(receipt.expiresAtMs,now()+maxRequestMs),errorFactory:()=>Error('PREPARED_RUN_UNKNOWN')});
   try{
    life.check();const current=stateOf(await life.run(signal=>read({...intent,signal})),intent);if(!current||!same(current,receipt))fail('ISSUER_REFUSED');
-   const configuration=data(await life.run(signal=>compile({intent,issuance:current,signal}))),facts=compilePreparedRunFacts(configuration,{intent,issuance:current,now});life.check();
+   const configuration=data(await life.run(signal=>compile({intent,issuance:current,signal}))),facts=await finalFacts(compilePreparedRunFacts(configuration,{intent,issuance:current,now}),{intent,issuance:current,life});life.check();
    if(facts.factsSha256!==receipt.factsSha256)fail('FACTS_REPLAY_REFUSED');return configuration;
   }catch(error){if(typeof error?.code==='string'&&/^PREPARED_RUN_[A-Z_]+$/u.test(error.code))throw error;fail('UNKNOWN');}finally{life.close();}
  }

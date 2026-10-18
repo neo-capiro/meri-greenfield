@@ -70,7 +70,10 @@ export function createPreparedRunRegistry(configuration){
    const intent={binding,requestSha256:hash(row.request),expiresAtMs:policy.expiresAtMs};record.issuanceStarted=true;
    issued??=data(await life.run(signal=>prepare({...intent,source,signal})));const facts=data(await life.run(signal=>resolveFacts(issued.issuance,{signal}))),capability=await life.run(signal=>resolveCapability(issued.issuance,{signal}));life.check();
    const compiled=compilePreparedRunFacts(facts,{intent,issuance:issued.issuance,now});
-   if(!same(compiled.original,issued.original)||compiled.factsSha256!==issued.factsSha256||compiled.factsSha256!==issued.issuance.factsSha256||!same(compiled.original.versions,row.run.versions)||facts.qualification.policyRevision!==row.run.policyRevision||compiled.controlCapabilitySha256!==controlDigest||!matchesCapability(capability,issued.issuance.capabilitySha256))fail();
+   // An Objective entry carries the protected pair on top of the same base facts; resolveFacts already matched the final digest.
+   const {issuance:_issuance,factsSha256:_final,objectiveGeneration:pairGeneration,objectiveStrategy:pairStrategy,...issuedBase}=issued,paired=pairGeneration!==undefined;
+   if(paired!==(pairStrategy!==undefined)||hash(issuedBase)!==compiled.factsSha256||!paired&&compiled.factsSha256!==issued.factsSha256)fail();
+   if(!same(compiled.original,issued.original)||issued.factsSha256!==issued.issuance.factsSha256||!same(compiled.original.versions,row.run.versions)||facts.qualification.policyRevision!==row.run.policyRevision||compiled.controlCapabilitySha256!==controlDigest||!matchesCapability(capability,issued.issuance.capabilitySha256))fail();
    if(!same(compiled.approvedReads??null,c.approvedReads??null))fail();
    // The delivery/transport contract is this entry's own, bound into the immutable facts hash above; nothing here is shared across entries.
    const transport=parseTransport(compiled.transport);if(!same(transport,issued.transport))fail();

@@ -8,7 +8,8 @@ import {matchesCapability} from './task-verifier.mjs';
 import {taskRouterFault,taskRouterOperation,taskRouterRole} from './task-router-boundary.mjs';
 const refuse=()=>{throw taskRouterFault();};
 export function createTaskRouterAuthority(configuration){
- const c=own(configuration,['issuanceStore','allocations','admissionForBinding','controlCapabilitySha256','operations','transport'],['approvedReads','now']),now=c.now??Date.now;
+ const c=own(configuration,['issuanceStore','allocations','admissionForBinding','controlCapabilitySha256','operations','transport'],['approvedReads','now','objectiveFacts','objectiveExecutionSelection']),now=c.now??Date.now;
+ if((c.objectiveFacts===undefined)!==(c.objectiveExecutionSelection===undefined))refuse();
  const readIssuance=storageMethod(c.issuanceStore,'read'),readAllocation=storageMethod(c.allocations,'read'),transport=parseTransport(c.transport),operations=data(c.operations);
  if(typeof now!=='function'||typeof c.admissionForBinding!=='function'||!digest(c.controlCapabilitySha256)||!Array.isArray(operations)||!operations.length||new Set(operations).size!==operations.length)refuse();
  const approvedReads=c.approvedReads===undefined?{}:{approvedReads:data(c.approvedReads)};
@@ -26,7 +27,8 @@ export function createTaskRouterAuthority(configuration){
   const grant=record.grantIntents.find(g=>g.grantId===issued.grantId);
   if(!grant||grant.capabilitySha256!==issued.capabilitySha256||grant.expiresAtMs!==original.expiresAtMs)refuse();
   const facts={original,allocationSha256:record.allocationSha256,taskRequestSha256:record.taskRequestSha256,qualification:record.qualification,grantIntents:record.grantIntents,grantId:issued.grantId,operations,controlCapabilitySha256:c.controlCapabilitySha256,transport,...approvedReads};
-  if(hash(facts)!==issued.factsSha256)refuse();
+  const pair=c.objectiveFacts===undefined?null:await c.objectiveFacts.pairFor({binding:original.binding,executionSelection:c.objectiveExecutionSelection,signal:v.signal});check();
+  if(hash(pair?{...facts,...pair}:facts)!==issued.factsSha256)refuse();
   const keys=['taskArn','createdAtMs','clusterArn','taskDefinitionArn','containerName'],resource=data(Object.fromEntries(keys.map(k=>[k,record.resource[k]])));
   let expiresAtMs=original.expiresAtMs;
   if(!cleanup){

@@ -28,6 +28,7 @@ BEGIN
   'meri_intents.preparations','meri_commands.command_journal','meri_commands.approval_metadata',
   'meri_schedules.projections','meri_schedules.intents','meri_schedules.occurrences',
   'meri_task_lookup.lookups','meri_task_lookup.events','meri_objective_source.custody',
+  'meri_objective_source.run_starts','meri_objective_source.reader_replays',
   'meri_artifacts.versions','meri_artifacts.heads','meri_artifacts.retention_subjects','meri_artifacts.retention_purges',
   'meri_artifacts.preview_attempts','meri_artifacts.previews','meri_artifacts.preview_custody']) AS t
   WHERE to_regclass(t) IS NULL
@@ -68,6 +69,12 @@ GRANT UPDATE (event) ON meri_task_lookup.events TO meri_control_runtime;
 GRANT SELECT, INSERT ON TABLE meri_objective_source.custody TO meri_control_runtime;
 GRANT UPDATE (state,version,committed_at) ON meri_objective_source.custody TO meri_control_runtime;
 
+-- Control: Objective run starts (D7-4, objective-source 0002), insert-only (trigger-enforced; no UPDATE, DELETE or TRUNCATE).
+GRANT SELECT, INSERT ON TABLE meri_objective_source.run_starts TO meri_control_runtime;
+-- Control: Objective reader v2 replay store (0003), CLAIMED -> COMMITTED only (trigger-enforced; no DELETE or TRUNCATE).
+GRANT SELECT, INSERT ON TABLE meri_objective_source.reader_replays TO meri_control_runtime;
+GRANT UPDATE (state,version,value,value_sha256,committed_at) ON meri_objective_source.reader_replays TO meri_control_runtime;
+
 -- Control: artifact versions, heads and preview custody. versions UPDATE(record_sha256) is lock-only for the
 -- guard_preview_attempt FOR KEY SHARE read; immutable_artifact_versions already rejects every row UPDATE
 -- (same treatment as initial_run_bindings in EXISTING-DATABASE-GRANTS-20261016.md).
@@ -101,7 +108,8 @@ BEGIN
              'meri_artifacts.retention_purges','meri_artifacts.preview_custody']) AS t
              WHERE has_any_column_privilege('meri_control_runtime', t, 'SELECT, INSERT, UPDATE, REFERENCES'))
     OR has_any_column_privilege('meri_control_runtime', 'meri_settings.settings_audit', 'SELECT, UPDATE, REFERENCES')
-    OR has_table_privilege('meri_control_runtime', 'meri_schedules.occurrences', 'INSERT') THEN
+    OR has_table_privilege('meri_control_runtime', 'meri_schedules.occurrences', 'INSERT')
+    OR has_any_column_privilege('meri_control_runtime', 'meri_objective_source.run_starts', 'UPDATE, REFERENCES') THEN
   RAISE EXCEPTION 'MERI_D2_WITHHELD_PRIVILEGE_PRESENT';
  END IF;
 END $$;
