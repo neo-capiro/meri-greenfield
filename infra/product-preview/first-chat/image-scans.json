@@ -1,8 +1,8 @@
 {
  "proxy": "a503a2bd61ed49f1b0089a8cc5d7f260503dfa5dd5a76592d99e2b74e2885ace",
- "nodeRuntime": "ba99011747473035fb16f8886a0a35394b567a039a11bddd2555e5fca284a4f7",
+ "nodeRuntime": "916bf5cbefe0b817e708449b2cb8d6a2d0b6ace8c3a49a652a64bd751a58734b",
  "_receipts": {
   "proxy": "infra/product-preview/first-chat/b7-build-receipt.json",
-  "nodeRuntime": "infra/product-preview/first-chat/n15-build-receipt.json"
+  "nodeRuntime": "infra/product-preview/first-chat/n16-build-receipt.json"
  }
 }
