@@ -24,7 +24,10 @@ export function createRetentionReadGate({journal,serving}){
   return journal.withServing(keys,async(signal,scoped)=>{if(scoped!==undefined&&typeof scoped?.get!=='function')fail('RETENTION_CONFIGURATION');
    let active=true;const assertLockedServable=raw=>{if(!active)fail('RETENTION_READ_UNAVAILABLE');const s=subject(raw);
     if(!locked.has(subjectKey(s)))fail('RETENTION_INVALID_REQUEST');return assertServable(s,scoped?.get??journal.get);};
-   try{barrier();const result=await release(signal,assertLockedServable);barrier();return result;}finally{active=false;}},options);
+   const readScheduleOriginRows=scoped?.readScheduleOriginRows&&((selection)=>{
+    if(!active)fail('RETENTION_READ_UNAVAILABLE');return scoped.readScheduleOriginRows(selection);
+   });
+   try{barrier();const result=await release(signal,assertLockedServable,readScheduleOriginRows);barrier();return result;}finally{active=false;}},options);
  }
  return Object.freeze({isSuppressed,assertServable,withRelease});
 }

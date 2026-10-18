@@ -4,6 +4,7 @@ import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/ex
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {ProductError,asProductError} from '../product-access/errors.mjs';
+import {registerScheduledCurrentness} from '../product-access/currentness-serving-reader.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {snapshotScheduledJobSelection} from './scheduled-job-lineage.mjs';
 
@@ -30,7 +31,7 @@ export function createScheduledConversationCurrentness(configuration){
   c.maxRequestMs??=10000;
   if(typeof c.now!=='function'||!Number.isSafeInteger(c.maxRequestMs)||c.maxRequestMs<1||c.maxRequestMs>30000)fail();
  }catch{throw new ProductError('PRODUCT_CONFIGURATION');}
- return Object.freeze({async assertCurrent(value){
+ return registerScheduledCurrentness(Object.freeze({async assertCurrent(value,readScheduleOriginRows){
   let life;
   try{
    const call=own(value,['credential','principal','conversationId','scopes','deadlineMs'],['signal']);nativeSignal(call.signal);
@@ -41,7 +42,7 @@ export function createScheduledConversationCurrentness(configuration){
    const deadlineMs=Math.min(call.deadlineMs,c.now()+c.maxRequestMs),native={credential:call.credential,principal,deadlineMs};
    life=createOperationLifetime({now:c.now,deadlineMs,signal:call.signal,errorFactory:code=>new ProductError(code)});
    const member=async()=>{const result=await life.run(signal=>recheck({...native,signal}));if(!same(result,principal))fail();};
-   const origin=()=>life.run(()=>read({tenantId:principal.tenantId,conversationId:call.conversationId},life.check));
+   const origin=()=>life.run(()=>read({tenantId:principal.tenantId,conversationId:call.conversationId},life.check,readScheduleOriginRows));
    await member();const first=await origin();
    if(first===null)await life.run(signal=>core({...call,principal,scopes,signal,deadlineMs}));
    else snapshotScheduledConversationOrigin(first,{principal,conversationId:call.conversationId,scopes});
@@ -50,5 +51,5 @@ export function createScheduledConversationCurrentness(configuration){
    if(last!==null)snapshotScheduledConversationOrigin(last,{principal,conversationId:call.conversationId,scopes});
    life.check();
   }catch(error){throw asProductError(error,'CONVERSATION_UNAVAILABLE');}finally{life?.close();}
- }});
+ }}));
 }

@@ -58,7 +58,7 @@ export function watermarkedJournal({journal,watermark,fence,ledger}){
    return journal.withServing(keys,(signal,scoped)=>{
     if(scoped?.readProjection){if(typeof watermark.readProjectionFromServingLease!=='function')fail('RETENTION_CONFIGURATION');
      const servingGet=key=>readVerified(key,()=>watermark.readProjectionFromServingLease(key,scoped.readProjection));
-     return fn(signal,Object.freeze({get:servingGet}));}
+     return fn(signal,Object.freeze({get:servingGet,...(scoped.readScheduleOriginRows?{readScheduleOriginRows:scoped.readScheduleOriginRows}:{})}));}
     return fn(signal,Object.freeze({get}));},options);}});
 }
 /** The ledger every transition owner appends through: an append whose acknowledgement is missing may still be durable, so the decision

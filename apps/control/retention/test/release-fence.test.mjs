@@ -143,13 +143,17 @@ test('bounded pool: failed final authorization returns the session and cannot pu
  assert.equal(published,1);assert.equal(f.pool.clients.length,1,'the clean lease is reusable after an authorization denial');
  assert.deepEqual(f.pool.clients[0].releases,[undefined,undefined]);assert.equal(f.pool.queued(),0);
 });
-test('bounded pool: scoped read cannot escape its locked subjects or released lease',async()=>{
- const f=boundedHistory(1),a=subjectOf(),b=subjectOf();let saved;
- await f.retention.withRelease([a],async(_signal,assertLocked)=>{
-  saved=assertLocked;assert.throws(()=>assertLocked(b),/RETENTION_INVALID_REQUEST/);
+test('bounded pool: scoped projection and schedule reads cannot escape locked subjects or released lease',async()=>{
+ const f=boundedHistory(1),a=subjectOf(),b=subjectOf();let saved,scheduleRead;
+ await f.retention.withRelease([a],async(_signal,assertLocked,readScheduleOriginRows)=>{
+  saved=assertLocked;scheduleRead=readScheduleOriginRows;assert.equal(typeof scheduleRead,'function');
+  assert.throws(()=>assertLocked(b),/RETENTION_INVALID_REQUEST/);
+  await assert.rejects(scheduleRead({tenantId:b.tenantId,conversationId:b.subjectId}),/RETENTION_INVALID_REQUEST/);
+  assert.deepEqual(await scheduleRead({tenantId:a.tenantId,conversationId:a.subjectId}),[]);
   await assertLocked(a);
  });
  assert.throws(()=>saved(a),/RETENTION_READ_UNAVAILABLE/);
+ assert.throws(()=>scheduleRead({tenantId:a.tenantId,conversationId:a.subjectId}),/RETENTION_READ_UNAVAILABLE/);
  assert.equal(f.pool.connects(),1);assert.deepEqual(f.pool.clients[0].releases,[undefined]);
 });
 test('PostgreSQL page fence uses one lease and sorted shared locks matching suppression, then unlocks in reverse order',async()=>{
@@ -159,6 +163,18 @@ test('PostgreSQL page fence uses one lease and sorted shared locks matching supp
  assert.ok(calls[2].sql.includes('pg_advisory_lock_shared')&&calls[2].sql.includes('meri_retention_recovery'));
  assert.ok(calls[3].sql.includes('pg_advisory_unlock_shared')&&calls[3].sql.includes('meri_retention_recovery'));
  assert.deepEqual(calls.slice(4).map(c=>c.args[0]),keys.toReversed().map(k=>'meri_retention_transition:'+k));assert.deepEqual(pool.clients[0].releases,[undefined]);
+});
+test('PostgreSQL page fence drains an unawaited scheduled read before unlock and refuses its response',async()=>{
+ const entered=deferred(),resume=deferred(),pool=poolWith(),connect=pool.connect;
+ pool.connect=async()=>{const client=await connect.call(pool),query=client.query;client.query=async function(sql,args){
+  if(sql.startsWith('SELECT tenant_id,generation,occurrence_key')){entered.resolve();await resume.promise;return {rows:[]};}
+  return query.call(this,sql,args);
+ };return client;};
+ const journal=createPostgresRetentionJournal({pool,maxRequestMs:1000}),s=subjectOf(),key=subjectKey(s);
+ const result=journal.withServing([key],(_signal,scoped)=>{scoped.readScheduleOriginRows({tenantId:s.tenantId,conversationId:s.subjectId});return 'published';});
+ await entered.promise;assert.equal(pool.clients[0].queries.filter(q=>q.sql.startsWith('SELECT pg_advisory_unlock_shared')).length,0);
+ resume.resolve();await assert.rejects(result,/RETENTION_READ_UNAVAILABLE/);
+ assert.deepEqual(pool.clients[0].releases,[undefined],'a completed read leaves a clean unlocked session');
 });
 for(const mode of ['cancel','deadline','unlock-unknown','late-lease'])test(`PostgreSQL ${mode} page fence retires unknown session state`,async()=>{
  const pool=poolWith({hangLock:mode==='cancel'||mode==='deadline',unlock:mode==='unlock-unknown',connectDelay:mode==='late-lease'?60:0}),journal=createPostgresRetentionJournal({pool,maxRequestMs:1000}),controller=new AbortController();let calls=0;
