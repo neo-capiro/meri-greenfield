@@ -8,7 +8,7 @@ import {validateShape as privateShape,resolveOperationContract} from '../../../p
 import {refuse} from './postgres-budget-store.mjs';
 import {GENERAL_READ_TARIFFS,GENERAL_READ_TARIFF_ASSUMPTION_KEYS,GENERAL_READ_DOCUMENT_BOUNDS} from './general-read-tariffs.mjs';
 
-export const GENERAL_READ_PROFILE='meri.general_reads',GENERAL_READ_PROFILE_VERSION='1.0.0';
+export const GENERAL_READ_PROFILE='meri.general_reads',GENERAL_READ_PROFILE_VERSION='1.0.0',GENERAL_READ_TEXT_ONLY_PROFILE_VERSION='1.1.0';
 const MiB=1048576;
 /** Structural bounds of any base general-read allocation: the gateway's own response cap per result (16 MiB, the dispatch
  * `maxResponseBytes` limit) and a run aggregate of at most 16 results' worth. Tool calls and spend are not among them: the
@@ -22,6 +22,8 @@ export const GENERAL_READ_DEFAULT_READ_BYTES=Object.freeze({maxOutputBytes:MiB,m
 export const GENERAL_READ_DEFAULT_RUN_BUDGETS=Object.freeze({maxTurns:20,maxToolCalls:20,maxRuntimeSeconds:900,maxCostMicroUSD:2000000});
 const KEYS=['contractVersion','profile','profileVersion','allowedOperations','budgets','maxAggregateOutputBytes'],OPTIONAL=['tariffAssumptions','documentPricing'];
 export const DOCUMENT_READ='read_client_documents@0.2.0';
+export const DOCUMENT_TEXT_ONLY_MODE='source_text_only';
+export const DOCUMENT_TEXT_ONLY_ROUTE='/api/clio/tools/read_client_documents';
 const integer=(value,min,max)=>Number.isSafeInteger(value)&&value>=min&&value<=max;
 const EVIDENCE_KEYS=['id','configKey','configValue','coreSourceCommit','coreImageDigest','configurationSha256'];
 
@@ -44,10 +46,16 @@ const PROVENANCE=['coreSourceCommit','coreImageDigest','configurationSha256'];
 const provenance=v=>typeof v.coreSourceCommit==='string'&&/^[a-f0-9]{40}$/u.test(v.coreSourceCommit)&&typeof v.coreImageDigest==='string'&&/^sha256:[a-f0-9]{64}$/u.test(v.coreImageDigest)&&
  typeof v.configurationSha256==='string'&&/^[a-f0-9]{64}$/u.test(v.configurationSha256);
 const closed=(v,keys)=>v&&typeof v==='object'&&!Array.isArray(v)&&Object.keys(v).length===keys.length&&keys.every(key=>Object.hasOwn(v,key));
-/** Evidence for pricing read_client_documents: the vision model's prices and a one-page input-token bound, and Core's
- * transcription duration cap with whisper-1's price. Each is bound to the measured Core. Prices are µUSD per million tokens or
- * per audio minute. Returns the per-call charge: 1 + max(vision, transcription), rounded up. */
+/** Text-only evidence is valid only for a Core route that unconditionally blocks both paid extraction branches.
+ * The render must compare its source/image/config pins with the current Core deployment before issuing the allocation. */
+export function isDocumentTextOnlyPricing(raw){return raw?.mode===DOCUMENT_TEXT_ONLY_MODE;}
+/** Complete paid-branch pricing retains the original conservative maximum. A source-enforced text-only route costs only the
+ * 1 µUSD local-read floor. No input selector or returned MIME can choose the lower charge. */
 export function documentReadCharge(raw){
+ if(isDocumentTextOnlyPricing(raw)){
+  if(!closed(raw,['mode','route',...PROVENANCE])||raw.route!==DOCUMENT_TEXT_ONLY_ROUTE||!provenance(raw))refuse('INVALID_DOCUMENT_PRICING');
+  return GENERAL_READ_DOCUMENT_BOUNDS.textChargeMicrousd;
+ }
  if(!closed(raw,['vision','transcription']))refuse('INVALID_DOCUMENT_PRICING');
  const v=raw.vision,t=raw.transcription,b=GENERAL_READ_DOCUMENT_BOUNDS;
  if(!closed(v,['model','inputMicrousdPerMillionTokens','outputMicrousdPerMillionTokens','maxInputTokens',...PROVENANCE])||typeof v.model!=='string'||!/^[A-Za-z0-9._-]{1,64}$/u.test(v.model)||!provenance(v)||
@@ -64,7 +72,7 @@ export const isGeneralReadManifest=manifest=>Boolean(manifest&&typeof manifest==
 
 export function assertGeneralReadManifest(manifest){
  if(!isGeneralReadManifest(manifest)||KEYS.some(key=>!Object.hasOwn(manifest,key))||Object.keys(manifest).some(key=>!KEYS.includes(key)&&!OPTIONAL.includes(key))||manifest.contractVersion!=='0.2.0'||
-  manifest.profile!==GENERAL_READ_PROFILE||manifest.profileVersion!==GENERAL_READ_PROFILE_VERSION)refuse('INVALID_GENERAL_READ_MANIFEST');
+  manifest.profile!==GENERAL_READ_PROFILE||![GENERAL_READ_PROFILE_VERSION,GENERAL_READ_TEXT_ONLY_PROFILE_VERSION].includes(manifest.profileVersion))refuse('INVALID_GENERAL_READ_MANIFEST');
  const ops=manifest.allowedOperations,b=manifest.budgets;
  if(!Array.isArray(ops)||!ops.length||ops.length>GENERAL_READ_CEILINGS.maxOperations)refuse('INVALID_GENERAL_READ_MANIFEST');
  // The assumptions an allocated tariff relies on travel with the allocation (and its sha256); none may be dropped or invented.
@@ -79,7 +87,11 @@ export function assertGeneralReadManifest(manifest){
  if([...needed].some(id=>!held.has(id))||[...held].some(id=>!needed.has(id)))refuse('INVALID_GENERAL_READ_MANIFEST');
  // The document read is allocated only with its pricing evidence, and that evidence only with the document read.
  const documents=ops.some(op=>`${op.id}@${op.version}`===DOCUMENT_READ);
- if(documents!==Object.hasOwn(manifest,'documentPricing'))refuse('INVALID_GENERAL_READ_MANIFEST');if(documents)documentReadCharge(manifest.documentPricing);
+ if(documents!==Object.hasOwn(manifest,'documentPricing'))refuse('INVALID_GENERAL_READ_MANIFEST');
+ // The new manifest revision identifies exactly the source-only route, not a paid or document-free allocation.
+ if((manifest.profileVersion===GENERAL_READ_TEXT_ONLY_PROFILE_VERSION)!==
+    (documents&&isDocumentTextOnlyPricing(manifest.documentPricing)))refuse('INVALID_GENERAL_READ_MANIFEST');
+ if(documents)documentReadCharge(manifest.documentPricing);
  privateShape('Budgets',b);
  if(b.maxRecoveryAttempts!==GENERAL_READ_CEILINGS.maxRecoveryAttempts||!integer(b.maxToolCalls,1,Number.MAX_SAFE_INTEGER)||
   !integer(b.maxOutputBytes,1,GENERAL_READ_CEILINGS.maxOutputBytes)||
