@@ -2,6 +2,7 @@
 import {pathToFileURL} from 'node:url';
 import {loadConfiguration} from './config.mjs';
 import {assertProductRunnerMeasurement} from './native-authority/ecs-prepared-task-proof.mjs';
+import {withRunnerDiagnostics} from './runner-runtime-diagnostics.mjs';
 /** The product worker reaches control's private origin with global fetch, so Node's default store must also trust the one Meri
  * preview server CA. That anchor is exactly its pinned issuer server CA file (same CA; serverCaSha256 pinned, written by
  * material-init before this process starts), never another path. NODE_EXTRA_CA_CERTS is read once at process start. */
@@ -27,7 +28,7 @@ export async function main(argv=process.argv.slice(2),{poststartTls,nativeFetch}
  }catch{process.stderr.write('RUNTIME_CONFIGURATION\n');return 2;}
  const controller=new AbortController();let runtime,shutdownTimer,cleanupUnknown=false;const retire=()=>{shutdownTimer??=setTimeout(()=>{process.stderr.write('RUNTIME_SHUTDOWN_TIMEOUT\n');process.exit(3);},c.limits.shutdownMs+1000);};const stop=()=>{controller.abort();retire();};process.once('SIGTERM',stop);process.once('SIGINT',stop);
  const startupTimer=setTimeout(()=>{process.stderr.write('RUNTIME_STARTUP_TIMEOUT\n');process.exit(2);},c.limits.startupMs);startupTimer.unref();
- try{if(role==='conversation-runner'){const {runConversation}=await import('./conversation-runner.mjs');clearTimeout(startupTimer);await runConversation(c,{signal:controller.signal,...(poststartTls===undefined?{}:{poststartTls,nativeFetch})});return 0;}
+ try{if(role==='conversation-runner'){await withRunnerDiagnostics(async()=>{const {runConversation}=await import('./conversation-runner.mjs');clearTimeout(startupTimer);await runConversation(c,{signal:controller.signal,...(poststartTls===undefined?{}:{poststartTls,nativeFetch})});});return 0;}
   // The schedule service refuses before secret reads unless trusted in-process owners are supplied; the bare CLI supplies none.
   const [file,start]={control:['./control.mjs','startControl'],'temporal-worker':['./temporal-worker.mjs','startTemporalWorker'],'schedule-worker':['./schedule-service.mjs','startScheduleWorker']}[role];
   const module=await import(file);
