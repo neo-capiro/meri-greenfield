@@ -43,7 +43,7 @@ const admitted=(pin,run,options)=>typeof gate(pin,run)({prompt:'p',options})[Sym
 const measured=async profile=>probeTemplateSha256({...inputs,...(profile===undefined?{}:{capabilityProfile:profile})},{root});
 
 test('without a capability profile the measured template is unchanged: the committed receipt hash',async()=>{
- assert.equal(measuredProfile,undefined);
+ assert.ok(measuredProfile===undefined||measuredProfile===null,'no profile measured');
  assert.equal(await measured(),receipt.sdkOptions.sha256);
  assert.equal(receipt.sdkOptions.sha256,'af7f07b8f784884eae32e14e0b697d434d1668b0d68f55d203bf873c7af5431b');
 });
@@ -124,7 +124,7 @@ test('the run skill plugin copy is materialized read-only with the exact pinned 
  await materializeSkillPlugin({directory:reference});const plugin=describeSkillPlugin();
  const files=[{path:'.claude-plugin/plugin.json',sha256:createHash('sha256').update(readFileSync(join(reference,'.claude-plugin','plugin.json'))).digest('hex')},...plugin.skills.map(skill=>({path:`skills/${skill.name}/SKILL.md`,sha256:skill.proseSha256}))]
   .sort((x,y)=>x.path<y.path?-1:1);
- assert.equal(prepared.digest,canonicalSha256({schema:SKILL_PLUGIN_TREE_SCHEMA,files}));assert.equal(plugin.skills.length,13);
+ assert.equal(prepared.digest,canonicalSha256({schema:SKILL_PLUGIN_TREE_SCHEMA,files}));assert.equal(plugin.skills.length,14);
  const file=join(directory,'skills',plugin.skills[0].name,'SKILL.md');
  if(POSIX){assert.equal(lstatSync(file).mode&0o777,0o400);assert.equal(lstatSync(directory).mode&0o777,0o500);assert.equal(lstatSync(join(directory,'skills')).mode&0o777,0o500);}
  else assert.equal(lstatSync(file).mode&0o222,0,'read-only');

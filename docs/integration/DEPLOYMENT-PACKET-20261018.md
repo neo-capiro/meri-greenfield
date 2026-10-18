@@ -37,7 +37,7 @@ Last pinned runtime: N21 `176a8811`, `sha256:5534edfe…`, measured without a pr
  "retention": {"enabled": true},
  "artifacts": {"enabled": true, "region": "us-east-1", "bucket": "TBD (§3)", "prefix": "preview/", "expectedBucketOwner": "967807252336", "kmsKeyId": "arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042", "authority": {"enabled": true}},
  "downloadLinks": {"enabled": true},
- "capabilityPlatform": "<PROPOSED_PREVIEW_CAPABILITY_PLATFORM verbatim; profile sha256 323704ae… (re-measured with the 14th skill)>",
+ "capabilityPlatform": "<PROPOSED_PREVIEW_CAPABILITY_PLATFORM verbatim; profile sha256 908d728a… with 14 skills; measured with N22>",
  "reads": {"enabled": true, "serviceSecretArn": "TBD (Core INTERNAL_SERVICE_SECRET exact ARN)", "defaultCongress": 119, "approvedReads": "<lane 2 catalog, 76 operations>"}
 }
 ```

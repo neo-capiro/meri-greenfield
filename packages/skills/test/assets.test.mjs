@@ -29,8 +29,10 @@ const evidence={
  regulatory_docket_brief:['regulatory_dockets','rule_status','research_legal_legislation','public_web']
 };
 
-test('all 14 original identities have an explicit immutable asset; 13 absent recipes are implemented',()=>{
- assert.deepEqual(listSkills().map(s=>s.skillId).sort(),inventory.records.map(row=>row.fields.ID).sort());
+test('all 14 original identities have an explicit immutable asset (bill_watch at 1.0.0 and the plugin-admissible 1.0.1); 13 absent recipes are implemented',()=>{
+ assert.deepEqual([...new Set(listSkills().map(s=>s.skillId))].sort(),inventory.records.map(row=>row.fields.ID).sort());
+ assert.deepEqual(listSkills().filter(s=>s.skillId==='quick_skill.bill_watch').map(s=>s.skillVersion).sort(),['1.0.0','1.0.1']);
+ assert.equal(listSkills().length,15);
  assert.equal(Object.keys(evidence).length,13);
  for(const entry of listSkills()){
   const asset=selectSkill(entry.skillId,entry.skillVersion);validateShape('SkillManifest',asset.manifest);

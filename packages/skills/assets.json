@@ -113,6 +113,14 @@
       "prosePath": "./originals/research_company/1.0.0/SKILL.md",
       "manifestSha256": "93344aee6750efe2a9d99d9571bee8e6dfaaa500d4d13285501d67e36b988602",
       "proseSha256": "cbee7506868d65de5ef247add8390850de151398b074add2ce69d2aefd63b7ab"
+    },
+    {
+      "skillId": "quick_skill.bill_watch",
+      "skillVersion": "1.0.1",
+      "manifestPath": "./originals/bill_watch/1.0.1/manifest.json",
+      "prosePath": "./originals/bill_watch/1.0.1/SKILL.md",
+      "manifestSha256": "3aa78e8d41f7a83bb0499fd96660f875cfde3c29956a7c7bfbf2e34bb9d4d67d",
+      "proseSha256": "b73c8406c7525a437292ac6055bc60d5f9c1fa6b457158cf45eb125bac18f58c"
     }
   ]
 }
