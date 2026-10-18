@@ -56,13 +56,16 @@ async function fixture(t){
  const connection={host:config.host,user:'postgres',ssl:false,connectionTimeoutMillis:3000,
   options:'-c statement_timeout=5000 -c lock_timeout=2000'},
   admin=new pg.Client({...connection,database:config.database}),database=`meri_adoption_${randomUUID().replaceAll('-','')}`;
- const clients=[];let oid=null;
+ const clients=[],roles=[];let oid=null;
  await admin.connect();
  t.after(async()=>{
   await Promise.allSettled(clients.map(client=>client.end()));
+  let cleanupError;
   try{if(oid!==null){const rows=(await admin.query('SELECT oid::text FROM pg_database WHERE datname=$1',[database])).rows;
    assert.equal(rows.length,1);assert.equal(rows[0].oid,oid,'drop only the exact fixture-owned database');
-   await admin.query(`DROP DATABASE "${database}"`);}}finally{await admin.end();}
+   await admin.query(`DROP DATABASE "${database}"`);}}catch(error){cleanupError=error;}
+  for(const role of roles)try{await admin.query(`DROP ROLE "${role}"`);}catch(error){cleanupError??=error;}
+  await admin.end();if(cleanupError)throw cleanupError;
  });
  const server=(await admin.query("SELECT current_setting('server_version_num') AS version_num,current_setting('listen_addresses') AS addresses,current_setting('data_directory') AS data_directory")).rows[0];
  if(!/^16[0-9]{4}$/.test(server.version_num)||server.addresses!==''||server.data_directory!==config.dataDirectory)
@@ -79,7 +82,14 @@ async function fixture(t){
  await client.query(await readFile(new URL('../../../gateway/budget/migrations/0001_product_budget.sql',import.meta.url),'utf8'));
  await client.query(await readFile(new URL('../../../gateway/budget/migrations/0002_tenant_budgets.sql',import.meta.url),'utf8'));
  await client.query(sql);
- return {client,connect,admin};
+ async function syntheticAppRole(){
+  const role=`meri_adoption_app_${randomUUID().replaceAll('-','')}`;
+  await admin.query(`CREATE ROLE "${role}" NOLOGIN`);roles.push(role);
+  await client.query(`GRANT USAGE ON SCHEMA meri_conversations TO "${role}"`);
+  await client.query(`GRANT SELECT,INSERT ON meri_conversations.next_run_adoptions TO "${role}"`);
+  return role;
+ }
+ return {client,connect,admin,syntheticAppRole};
 }
 
 async function seed(client,{retired=false,sourceUnknown=false,missingGrant=false}={}){
@@ -207,6 +217,18 @@ test('0020 refuses claim relocation, deletion and a false task binding', {skip:!
   [x.grantId]),/NEXT_RUN_ADOPTION_CLAIM_DELETE_REFUSED/);
  await assert.rejects(f.client.query("INSERT INTO meri_conversations.run_issuances(issuance_key,tenant_id,conversation_id,run_id,binding,binding_sha256,request_sha256,expires_at_ms,state,claim_fence) VALUES($1,$2,$3,$4,$5,$1,$6,$7,'CLAIMED',$8)",
   [sha(x.target),x.tenantId,x.conversationId,x.target.runId,x.source,'3'.repeat(64),Date.now()+30000,randomUUID()]),/NEXT_RUN_ADOPTION_CLAIM_BINDING_REFUSED/);
+});
+
+test('0020 narrow conversation app role inserts and reads adoption through definer trigger without product SELECT', {skip:!pgEnabled},async t=>{
+ const f=await fixture(t),x=await seed(f.client),role=await f.syntheticAppRole();
+ await f.client.query(`SET ROLE "${role}"`);
+ try{
+  assert.equal((await f.client.query("SELECT has_schema_privilege(current_user,'meri_product_budget','USAGE') AS allowed")).rows[0].allowed,false);
+  await assert.rejects(f.client.query('SELECT count(*) FROM meri_product_budget.grants'),/permission denied/);
+  await x.adopt();
+  assert.equal((await f.client.query('SELECT receipt_sha256 FROM meri_conversations.next_run_adoptions WHERE target_run_id=$1',
+   [x.target.runId])).rows[0].receipt_sha256,x.receiptSha256);
+ }finally{await f.client.query('RESET ROLE');}
 });
 
 test('0020 existing task claim wins before adoption; rolled-back budget claim does not', {skip:!pgEnabled},async t=>{
