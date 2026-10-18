@@ -179,3 +179,14 @@ test('adapter: a reference resolving to another client is refused; mode tokens c
  await assert.rejects(x.toolCredential({credential,operation:read,argumentsSha256:'2'.repeat(64),target:{method:'POST',path:'/api/clio/tools/other',bodySha256:'1'.repeat(64)},deadlineMs:T0+MIN}),code('ACCESS_DENIED'));
  assert.equal(await x.toolCredential({credential:'SYNTHETIC_OPTION_A_BEARER',operation:read,argumentsSha256:'2'.repeat(64),target:{method:'POST',path:toolRoute(read),bodySha256:'1'.repeat(64)},deadlineMs:T0+MIN}),null,'option A credentials are left to option A');
 });
+
+test('adapter: every delegated target call carries the Stop signal of the run and is aborted by Stop',async()=>{
+ const clock={t:T0};const {client}=stub({clock}),{d}=delegation({clock,client});
+ client.issueToken=async()=>({schemaVersion:1,token:'tok-1',expiresAtMs:clock.t+MIN});
+ let aborted=false;client.target=({signal})=>new Promise((_,reject)=>signal.addEventListener('abort',()=>{aborted=true;reject(nativeReadFault('CANCELLED'));},{once:true}));
+ const x=composeDelegatedNativeCredentials({delegation:d,client,now:()=>clock.t});
+ const {credential}=await x.getNativeCredential({binding,callKey:'owned_1',deadlineMs:T0+MIN});
+ const pending=x.coreAuthority.readCurrent({credential,deadlineMs:T0+MIN});pending.catch(()=>{});
+ await new Promise(resolve=>setTimeout(resolve,5));await d.stop('cancelled');
+ await assert.rejects(pending);assert.equal(aborted,true);
+});

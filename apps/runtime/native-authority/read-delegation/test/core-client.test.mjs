@@ -49,11 +49,13 @@ test('bounded bodies; the service secret is never sent as a bearer; no client wi
 });
 
 const MIGRATION=new URL('../migrations/0001_read_delegation_facts.sql',import.meta.url);
-const READ_DELEGATION_FACTS_SHA256='074ec99885778551d79607eaf44b57d6cc89d069f133af4155f3a53bc151189a';
+const READ_DELEGATION_FACTS_SHA256='700663d7b788ba594c2ebd3df7c197949a471e6382ce4a98d94ce038fa9b03eb';
 test('the facts-view migration is CREATE-only over the product namespace and matches its plan pin',()=>{
  const bytes=readFileSync(MIGRATION),sql=bytes.toString('utf8'),code=sql.split('\n').filter(line=>!line.startsWith('--')).join('\n');
  assert.match(code,/^BEGIN;/mu);assert.match(code,/COMMIT;\s*$/u);
  for(const forbidden of [/\bDROP\b/iu,/\bALTER\b/iu,/\bGRANT\b/iu,/\bINSERT\b/iu,/\bUPDATE\b/iu,/\bDELETE\b/iu,/\bTRUNCATE\b/iu,/meri_qualification/iu])assert.doesNotMatch(code,forbidden,String(forbidden));
  assert.equal((code.match(/CREATE VIEW meri_read_delegation_facts\.\w+ WITH \(security_barrier = true\)/gu)??[]).length,4);
+ // Row existence is never authority: the canonical admission predicate is exposed for Core to require.
+ assert.match(code,/AS admitted,/u);assert.match(code,/AS admitted_until,/u);assert.match(code,/gr\.state = 'ACTIVE'/u);assert.match(code,/quarantined/u);
  assert.equal(createHash('sha256').update(bytes).digest('hex'),READ_DELEGATION_FACTS_SHA256);
 });

@@ -29,7 +29,7 @@ export async function prepareGeneralReadInstallation(configuration){
   const families=own(ports.families,[],ids),nativeIds=Object.keys(families).filter(id=>NATIVE_READ_FAMILIES.includes(id));let credentials;
   if(nativeIds.length){
    if(ports.nativeCredentials===undefined)return {gateway:unavailable(),handlers:new Map()};
-   const n=own(ports.nativeCredentials,['coreAuthority','getNativeCredential','getServiceSecret'],['defaultCongress','getReadModeServiceSecret','toolCredential']);
+   const n=own(ports.nativeCredentials,['coreAuthority','getNativeCredential','getServiceSecret'],['defaultCongress','getReadModeServiceSecret','toolCredential','stopSignal']);
    credentials=createNativeReadCredentialOwner({binding:tuple.binding,expiresAtMs:tuple.original.expiresAtMs,store:createPostgresConversationStore({pool:tuple.pool,now:tuple.now}),taskVerifier:tuple.taskVerifier,readCurrentEntry:tuple.readCurrentEntry,taskCapability:tuple.taskCapability,allocationJson:tuple.allocationJson,approvedReads:tuple.approvedReads,coreAuthority:n.coreAuthority,getNativeCredential:n.getNativeCredential,getServiceSecret:n.getServiceSecret,...(n.getReadModeServiceSecret===undefined?{}:{getReadModeServiceSecret:n.getReadModeServiceSecret}),...(n.defaultCongress===undefined?{}:{defaultCongress:n.defaultCongress}),...(n.toolCredential===undefined?{}:{toolCredential:n.toolCredential}),now:tuple.now,enabled:true});
    if(!credentials.available)return {gateway:unavailable(),handlers:new Map()};
   }
@@ -43,7 +43,7 @@ export async function prepareGeneralReadInstallation(configuration){
   }
   // A canonical family can retain source-only siblings. Only exact SDK-eligible operations enter installation.
   const handlers=new Map([...prepared.create({families:configured,now:tuple.now,newId:c.newId})].filter(([key])=>supported.has(key)));
-  const gateway=createControlGeneralReadRuntime({...ports.gateway,...ports.contextPorts,pool:tuple.pool,allocationJson:tuple.allocationJson,scopes:tuple.scopes,handlers,catalogJson:JSON.stringify(catalog),contracts:{resolveOperationContract},now:tuple.now,newId:c.newId,...(credentials?{nativeReadContextPorts:credentials.nativeReadContextPorts}:{}),...(c.sourceRoot===undefined?{}:{sourceRoot:c.sourceRoot})});
+  const gateway=createControlGeneralReadRuntime({...ports.gateway,...ports.contextPorts,pool:tuple.pool,allocationJson:tuple.allocationJson,scopes:tuple.scopes,handlers,catalogJson:JSON.stringify(catalog),contracts:{resolveOperationContract},now:tuple.now,newId:c.newId,...(credentials?{nativeReadContextPorts:credentials.nativeReadContextPorts}:{}),...(ports.nativeCredentials?.stopSignal===undefined?{}:{stopSignal:ports.nativeCredentials.stopSignal}),...(c.sourceRoot===undefined?{}:{sourceRoot:c.sourceRoot})});
   return {gateway,handlers};
  }
  return Object.freeze({createReadsRuntime:tuple=>createTask(tuple).gateway,createTaskHandlers:tuple=>createTask(tuple).handlers});

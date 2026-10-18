@@ -58,7 +58,9 @@ export function composeDelegatedNativeCredentials(configuration){
   if(delegation.delegationId!==issued.delegationId)refuse('ACCESS_DENIED');
   return {...v,expiresAtMs:Math.min(v.expiresAtMs,delegation.hardExpiry(),deadlineMs)};
  }
- const call=(raw,keys)=>{let v;try{v=own(raw,keys,['signal']);nativeSignal(v.signal);}catch{refuse('INVALID_ARGUMENTS');}if(v.signal?.aborted)refuse('CANCELLED');if(!Number.isSafeInteger(v.deadlineMs))refuse('INVALID_ARGUMENTS');return v;};
+ // Every outbound delegated call combines the caller's signal with the run's Stop signal, so Stop aborts it in flight.
+ const call=(raw,keys)=>{let v;try{v=own(raw,keys,['signal']);nativeSignal(v.signal);}catch{refuse('INVALID_ARGUMENTS');}if(v.signal?.aborted||delegation.signal.aborted)refuse('CANCELLED');if(!Number.isSafeInteger(v.deadlineMs))refuse('INVALID_ARGUMENTS');
+  return {...v,signal:v.signal===undefined?delegation.signal:AbortSignal.any([v.signal,delegation.signal])};};
  const identity=v=>({principal:v.principal,identityRevision:v.identityRevision});
  async function readCurrent(raw){
   const h=slotOf(raw?.credential);if(!h)return fallback?fallback.coreAuthority.readCurrent(raw):refuse('UNAVAILABLE');

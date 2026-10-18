@@ -16,13 +16,15 @@ import {safeFailure,deny,GatewayDenied} from '../dispatch/operation-result.mjs';
 import {createInstalledCatalogView} from '../catalog/installed-catalog.mjs';
 const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b),DELIVERY=/^[-A-Za-z0-9_.:@/]{1,255}$/u;
 export function createGeneralReadGatewayMount(configuration){
- const c=own(configuration,['pool','allocationJson','authority','limits','producerContext','producer','credential','installationOwner','discoveryOwner','catalogJson','contracts','now','newId'],['sourceEnabled','memoryContextPorts','mailContextPorts','retainedContextPorts','nativeReadContextPorts','defaultCongress','namespace']);
+ const c=own(configuration,['pool','allocationJson','authority','limits','producerContext','producer','credential','installationOwner','discoveryOwner','catalogJson','contracts','now','newId'],['sourceEnabled','memoryContextPorts','mailContextPorts','retainedContextPorts','nativeReadContextPorts','defaultCongress','namespace','stopSignal']);
  if(c.namespace!==undefined&&!['qualification','product'].includes(c.namespace))deny('GATEWAY_CONFIGURATION');
  const a=allocation(c.allocationJson),context=parseToolGrantFacts(JSON.stringify(data(c.producerContext)),a),producer=data(c.producer),limits=data(c.limits);
  const installation=own(c.installationOwner,['readCurrent','handlers']),discovery=own(c.discoveryOwner,['readDiscoveryGrant']);own(producer,['namespace','executionId']);
  if(typeof installation.readCurrent!=='function'||typeof discovery.readDiscoveryGrant!=='function'||typeof c.now!=='function'||typeof c.newId!=='function'||typeof c.credential!=='string'||typeof(c.sourceEnabled??false)!=='boolean'||!Number.isSafeInteger(limits.maxRequestMs)||limits.maxRequestMs<1)deny('GATEWAY_CONFIGURATION');
  const allocated=operation=>a.manifest.allowedOperations.some(op=>same(op,operation));
- const lifetime=signal=>createOperationLifetime({deadlineMs:c.now()+limits.maxRequestMs,now:c.now,signal,errorFactory:code=>new GatewayDenied(code)});
+ nativeSignal(c.stopSignal);
+ // A per-run stop (run-bound read delegation Stop) aborts every in-flight call of the run: dispatch, credential owner and source transport.
+ const lifetime=signal=>createOperationLifetime({deadlineMs:c.now()+limits.maxRequestMs,now:c.now,signal:c.stopSignal===undefined?signal:signal===undefined?c.stopSignal:AbortSignal.any([signal,c.stopSignal]),errorFactory:code=>new GatewayDenied(code)});
  // A refused or expired installation means the read is not available; it is never an empty success.
  const current=async life=>{try{const r=await life.run(signal=>installation.readCurrent.call(c.installationOwner,{signal}));if(!same(r.binding,context.binding))throw Error();return r;}catch{if(life.signal.aborted)life.check();deny('UNAVAILABLE');}};
  /** Trusted availability facts for the worker's gates 2 and 4: installed ∩ allocated operations, and the discovery grant. */
