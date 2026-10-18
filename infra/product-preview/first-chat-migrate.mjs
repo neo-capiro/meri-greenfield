@@ -74,7 +74,7 @@ export const PLAN=Object.freeze([
  ['migration','apps/artifacts/migrations/0003_previews.sql','d1eb7ea68a150f60e7fb63e654a0892044bf24840a785fcff58dded59129b300','integration'],
  ['migration','apps/control/memory/migrations/0001_memory_candidates.sql','d925ec36d5e4fa98efeb123fb86f602608dbf82b2caa59bd093366e1eb33067d','integration'],
  ['migration','apps/runtime/native-authority/read-delegation/migrations/0001_read_delegation_facts.sql','bc3ec0314839d953909ffd9eda5c9235da0fbf966ff28d46e19d7e76f7702745','integration'],
- ['phase:integration_grants',INTEGRATION_SCRIPT,'2a4891d2a8cf4f0a419f983c8b62b826f57663fa8a0372f75994fb1bd9240bc6','integration']
+ ['phase:integration_grants',INTEGRATION_SCRIPT,'298f74bb550194225976c275fe90dee3f218499f883bd5c9ed7b33da211e235f','integration']
 ].map(([kind,path,pinned,declaredStage],index)=>Object.freeze({ordinal:index+1,kind,path,pinned,
  name:kind==='migration'?path:`${path}#${kind.slice(6)}`,
  stage:declaredStage??(kind==='phase:temporal_grants'?'temporal':'meri')})));
