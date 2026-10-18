@@ -9875,7 +9875,7 @@
       "apps/gateway/sources/program-elements/request-context.mjs": "1b63c7479f92977234ce0945bf6d940515cb8619673665c22131e7b2e282f250",
       "apps/gateway/sources/client-knowledge-search/handler.mjs": "ca34df9e6f00ba3b899015274a061067c910efece1b916076e02f1fdfcc723b8",
       "apps/gateway/sources/client-knowledge-search/request-context.mjs": "58620b9ca1991105d0d5688324d170a336251e63d8bd61595abd810f74c9f803",
-      "apps/gateway/sources/retained-reads/http-transport.mjs": "f17a9c61c4a98fc9e53e7000bef05b9f836f746871ff707c07ada8e9aac0460e",
+      "apps/gateway/sources/retained-reads/http-transport.mjs": "c5df60736ae6fd2cc5e8b218ef1ca0782282ca2259890397adec7daf2fa392a3",
       "apps/gateway/sources/state-status-votes/handler.mjs": "7efd5c17cbf07c8468648f7fe19189e685d1b4670fa3c3634f25109e5f16117a",
       "apps/gateway/sources/state-status-votes/request-context.mjs": "69b8f962f081171664863e5cb8c4f782700c430551e9238a1f4bfb6f69ce87ca",
       "apps/gateway/sources/tracked-bills/handler.mjs": "7e189f6ac3a7925f663b3955a64478331ac806c27eafc8a0c931b7775990c054",

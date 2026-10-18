@@ -1,12 +1,13 @@
-# Run-bound read delegation (RC1 option B): contract draft, revision 2
+# Run-bound read delegation (RC1 option B): contract, revision 3 (Meri side implemented)
 
 | Field | Value |
 |---|---|
-| Status | **Draft, source design only.** No credential is minted, no route, table, view or key is created, and nothing is activated. Merging source activates nothing. |
+| Status | **Meri side implemented in source, composed disabled** (`apps/runtime/native-authority/read-delegation/`, §14). Core side (protected auth/middleware, routes, tables, key) is Core's lane. No credential is minted, no key, grant or migration is applied, and nothing is activated. Merging source activates nothing. |
 | Draft owner | Reads lane (rt-reads), per dot in PR #121 comment 6245899753 |
 | Reviewers | Core integration owner: issuance, storage, revocation, middleware. R0: Meri runtime consumption. dot: contract. |
 | Revision 2 | Closes dot's review comments 6246081306 and 6246089074, mapped below as R-a … R-g. Storage, key and grants are now chosen (§11). |
-| Neo, before activation only | (1) attended authority surviving the end of the browser session; (2) unattended per-occurrence authority. Each has a concrete maximum (§12). Protected middleware/auth source edits also need the repository's scoped approval. Everything else is an engineering choice made here. |
+| Revision 3 | Neo approved source implementation at 07:50 UTC (PR #121 6247327210; `DECISIONS.md` D016-A 4) with corrections, now in §8 and §12. Dot's remaining points (6246081306, 6246089074) are closed in code (§14). §5 ceilings are re-derived from the actual call path, and the `tool` token now carries the reservation's arguments hash. |
+| Neo decisions | Decided (§12): attended ≤ 30 min **total** from issuance, bounded by run expiry, may outlive the creating Clerk session, renewal only by a live login; unattended ≤ 15 min per occurrence under an explicit signed-in consent ≤ 30 days; pause or revoke ends authority; read delegation never authorizes writes. |
 | Basis | Core #84 @ `7dd72a0e`, Meri integration `497479c7`. Investigation: 6245757066. A ack: 6245772555. Expiry fix: #149. |
 
 ## 1. Purpose and non-goals
@@ -93,20 +94,25 @@ Meri's budget owner reserves before dispatch, so **Core only ever authorizes a t
 
 - **Allowance.** `remaining = max_tool_calls − reserved_calls` (view, §4). It is never derived from `allocation.schedule.operations`, which is unique operation/tariff entries and not an invocation count. The preview allocation today has `maxToolCalls: 1` (`infra/product-preview/first-chat/allocation.json`), so B allows exactly one tool call per run there.
 - **Call slot.** One per Meri invocation, identified by `callKey` = the Meri `invocationId` (≤ 128 chars, the budget's primary key). Repeated operations are separate invocations, so they are separate slots, each counted by Meri.
-- **Per-slot token ceilings** (fixed; Core counts them). They are derived from the current owner (`native-read-credentials/owner.mjs`):
-  - One tool call makes **3 observations**: the context read, then `getCredentials` before and after.
-  - client-registry makes **5**: two more for result authorization.
-  - Each observation makes at most 3 `current` calls (mode reads: initial, after the mode secret, after the mode observation), or 2 (reference reads). It makes at most one `mode` or one `reference` call.
-  - Mode reads and client-reference reads are disjoint operation sets.
+- **Per-slot token ceilings** (fixed; Core counts them; Meri refuses first). Revision 2 counted 3 observations per call; the real path makes more, so revision 3 derives them from the code (`contract.mjs` `readTokenCeilings`, pinned by tests):
+  - **Observations per call: 7.** The tool dispatch observes the current native context 5 times (prepare, before, effect after the reservation, release, final). The transport's credential acquisition observes twice (before and after the service secret). client-registry result authorization adds 2.
+  - **Core calls per observation.** Each delegated reader mirrors option A's identity / route / identity, with `current` in place of identity:
+
+| Class | `current` | `mode` | `reference` |
+|---|---|---|---|
+| plain read | 1 | 0 | 0 |
+| BD client task (conversation proof) | 2 | 0 | 0 |
+| named-client reference read | 4 | 0 | 1 |
+| mode read | 5 | 1 | 0 |
 
 | kind | Max per slot | Derivation |
 |---|---|---|
-| `tool` | 1 | One dispatch, which requires the Meri reservation (§4) |
-| `mode` | 3 | 3 observations × 1 (mode reads only) |
-| `reference` | 3 | 3 observations × 1 (named-client reads only) |
-| `current` | 9 | max(3 observations × 3 for mode reads, 5 observations × 1 for client-registry) |
+| `tool` | 1 | One dispatch, after Meri's own UNKNOWN reservation (§4) |
+| `mode` | 7 | 7 observations × 1 |
+| `reference` | 7 | 7 observations × 1 |
+| `current` | 35 | 7 observations × 5 (mode reads); also covers 9 × 1 for client-registry |
 
-  These are Core-enforced maxima, not targets. A later Meri change that reuses one observation lowers real use, never the bound.
+  These are Core-enforced maxima, not targets. A plain read uses exactly 7 `current` and 1 `tool` (composed test). Collapsing the owner's repeated observations would lower real use, never the bound, and is a later optimization.
 
 - **Open slots.** A slot may be opened (its first token issued) only while `open_unreserved_slots < remaining`. A slot whose `tool` token was never issued closes at its tokens' expiry.
 - **Retries.** At most 2 re-issues per (slot, kind), see §7. These never add slots.
@@ -166,7 +172,7 @@ Time is Core's database clock; skew is at most 5 s, as `isWellFormedMeriControlC
   - it is superseded;
   - an explicit Meri revoke.
 - **Consent states:** `active`, `paused`, `revoked`, `superseded`, `expired`.
-  - **Paused:** no occurrence delegations are issued; existing ones keep their short expiry only if the routine was paused after they started (Neo may choose immediate revoke; §12).
+  - **Paused:** authority ends at once (Neo, D016-A 4). No occurrence delegation is issued, and existing ones are revoked. Meri also re-reads the occurrence's consent before every unattended token and refuses locally.
   - **Revoked:** all occurrence delegations under the consent are revoked at once.
 - **Changed schedule scope.** The consent binds `scheduleId`, `clientId`, `operationsDigest`, `policyRevision`, and the schedule's `projection_sha256` (`meri_schedules.projections`, read through `schedules_v1`, whose `owner_actor_id` must equal the consenting user). Any change to client, operations, cadence or projection makes the consent non-matching. Issuance refuses, and a new attended consent is required.
 - **Occurrence issuance** also requires the `meri_schedules.occurrences` row `(tenant_id, occurrence_key)` to be in state `DISPATCHED`, with `effect.binding` equal to the delegation's run binding (tenant, conversation, run). Core reads this through the facts view `occurrences_v1` (§11.2).
@@ -193,9 +199,10 @@ All bodies are closed objects (additional properties refused) of at most 16 KiB,
 
 ```json
 {"schemaVersion":1,"kind":"tool","callKey":"<meri invocation id>","method":"POST","path":"/api/clio/tools/search_tracked_bills","bodySha256":"<64 hex>","operation":{"id":"search_tracked_bills","version":"0.2.0"},
- "toolRequestSha256":null,"referenceSha256":null,"retryOf":null}
+ "argumentsSha256":"<64 hex>","toolRequestSha256":null,"referenceSha256":null,"retryOf":null}
 ```
 
+- `argumentsSha256` is required for `tool` and null otherwise: Core matches it, with the operation, against the `reservations_v1` row for `callKey`. `retryOf` is null on a first request; a lost-response retry sends the same request with `retryOf` = sha256 of the first request (canonical JSON).
 - Response: `{"schemaVersion":1,"token":"<opaque>","expiresAtMs":0}`.
 - JWT claims (typ `capiro-meri-read+jwt`, ES256, header `kid`): `iss`, `aud` = `capiro:meri-native-read:v1`, `sub` = delegationId, `jti`, `iat`, `nbf`, `exp`, `kind`, `callKey`, `method`, `path`, `bodySha256`, `operation`, `toolRequestSha256`, `referenceSha256`, `tenantId`, `actorId`, `clientId`, `conversationId`, `runId`.
 
@@ -266,6 +273,14 @@ Rollback is `DROP TABLE` of these four tables, which hold no other data. Take a 
 
 ### 11.2 Meri migration: run-facts views (CREATE-only; created as the owner of the base schemas, `meri_product_migrator` per the grants proposal)
 
+In source: `apps/runtime/native-authority/read-delegation/migrations/0001_read_delegation_facts.sql`, sha256 `074ec99885778551d79607eaf44b57d6cc89d069f133af4155f3a53bc151189a` (pinned by `read-delegation/test/core-client.test.mjs`). It needs the meri stage plus schedules 0001–0002, so its plan line goes in the `integration` stage after `apps/artifacts/migrations/0003_previews.sql` and before `phase:integration_grants` (R0 edits `infra/product-preview/first-chat-migrate.mjs`; not edited here):
+
+```js
+['migration','apps/runtime/native-authority/read-delegation/migrations/0001_read_delegation_facts.sql','074ec99885778551d79607eaf44b57d6cc89d069f133af4155f3a53bc151189a','integration'],
+```
+
+The SQL below is the shape; the file is authoritative.
+
 ```sql
 CREATE SCHEMA meri_read_delegation_facts;
 CREATE VIEW meri_read_delegation_facts.run_facts_v1 WITH (security_barrier = true) AS
@@ -310,12 +325,14 @@ GRANT SELECT, INSERT, UPDATE ON meri_read_delegation_consents, meri_read_delegat
 - **Rotation:** create `-v2`, issue new tokens with it, and verify both `kid`s for 60 s (the maximum token lifetime). Then remove v1 from the verify set.
 - Creating the key is an AWS action and is **not** done here.
 
-## 12. Before activation: the only Neo decisions
+## 12. Neo's decisions (D016-A 4, PR #121 6247327210): decided
 
-1. **Attended authority surviving the end of the session.** Proposed maximum: **30 minutes** from issuance, never beyond the run deadline. It is renewable only from a new live session. The alternative is that delegations die with the creating Clerk session, which is safer but means long attended runs still fail.
-2. **Unattended per-occurrence authority.** Proposed maximums: **15 minutes** per occurrence delegation, under a consent of at most **30 days** that the signed-in user renews. Also: whether pausing a routine revokes in-flight occurrence delegations immediately (proposed: yes).
+1. **Attended:** at most 30 minutes **total** from issuance, never past the run deadline. It may outlive the creating Clerk session. Renewal is a new superseding delegation created only from a live login; there is no extension. Meri enforces the bound on every create receipt (`delegationBound`, `assertDelegationReceipt`).
+2. **Unattended:** at most 15 minutes per occurrence, under an explicit signed-in consent of at most 30 days. It is never renewed; the consent is renewed only by a live login. Pause or revoke of the consent ends authority: Meri refuses before asking Core (`assertOccurrence`), and Core refuses issuance.
+3. **No writes:** read delegation never authorizes a write. Only `sideEffect:'none'`, `approvalBoundary:'none'` operations get a token (`assertReadOnlyOperation`), and any write intent still needs attended approval.
+4. **Option A stays the attended fallback.** It is used only when Core delegation is *unavailable* for an attended run, never when Core refused, and never for unattended runs. One call never mixes the two.
 
-Nothing else in this document is a user question. Protected source edits (`tenant-context.middleware.ts`, auth module) still need the repository's scoped approval before code. Source merges activate nothing.
+Out of scope for source (the packet): live credential creation, KMS/IAM, the Core migration and grants, the Meri migration's application, and activation.
 
 ## 13. Acceptance tests the implementation must carry (source)
 
@@ -340,3 +357,41 @@ Nothing else in this document is a user question. Protected source edits (`tenan
   - Stop marks the run terminal first and refuses locally when revoke fails.
   - No token, bearer or secret is persisted or logged.
   - Unattended runs without consent stay `UNAVAILABLE`.
+
+## 14. Meri implementation (revision 3) and how each review point is closed in code
+
+| Module (`apps/runtime/native-authority/read-delegation/`) | Role |
+|---|---|
+| `contract.mjs` | Bounds (§12), routes, closed wire shapes, `readTokenCeilings`, occurrence and consent checks, read-only operation check |
+| `core-client.mjs` | Fixed-route Core client: service identity on every call; live bearer only on attended create and consent widen; `CapiroMeriRead` only on targets; ≤ 16 KiB bodies; status mapping; lost responses marked |
+| `delegation.mjs` | Per-run owner: mode from trusted facts, single-flight create/supersede, per-slot ceilings and call allowance, token retries, Stop order, `assertReleasable` |
+| `native-credentials.mjs` | Adapter for the unchanged native credential owner: per-call handle, delegated `current`/conversation/reference/mode readers, `tool` token exchange, attended fallback to option A |
+| `consent.mjs` | Approve (live login, ≤ 30 days), narrow (pause/revoke, service identity), resume (live login) |
+| `migrations/0001_read_delegation_facts.sql` | The §4 facts views |
+
+Shared changes:
+- **Durable dispatch** passes its trusted invocation id to the executor (`tool-budget-execution.mjs`, `tool-budget-dispatch.mjs`).
+- **Native context port:** `tool-dispatch.mjs` hands the invocation id only to a port that opted in (`acceptsInvocationId`, `native-read-context.mjs`). The real owner opts in; existing fakes are untouched.
+- **Owner** (`owner.mjs`): pins the call key per call and passes it to the credential lookup. It exchanges a delegated handle for the `tool` token at the transport's exact target. All option A paths are unchanged.
+- **Transport** (`http-transport.mjs`): hashes the exact body bytes it sends, passes `{method, path, bodySha256}` to the credential owner, and sends a delegated token with its own scheme.
+- **Composer** (`reads-composer.mjs`): `delegation:{enabled, readOccurrence}`, disabled by default. It returns `readDelegation.{enabled, stopRun, consents}`.
+
+| Review point | Closed in code by |
+|---|---|
+| 6246081306: B must not replace only the auth branch; the native owner calls identity/membership per observation | Delegated readers serve every owner observation from `current` receipts. Identity, context and membership are never called (composed test). The owner's checks run unchanged on the results |
+| 6246081306: BD context proof | `readConversation` uses `current` with `conversation:true`, only for the delegation's own conversation and client |
+| 6246081306: `maxReadTokens = schedule.operations.length` is not a call budget | Slots are keyed by the durable invocation id, and slot count ≤ the allocation's `maxToolCalls`. Per-slot ceilings are derived from the call path (§5). The `tool` token requires Meri's own UNKNOWN reservation |
+| 6246081306 / 6246089074 #1: trusted verification source | The `run_facts_v1` / `reservations_v1` / `occurrences_v1` / `schedules_v1` views (migration above). Meri sends the reservation's arguments hash for Core to match |
+| 6246089074 #2: bind decoded resources | A check-ref result for another client is refused (`ACCESS_DENIED`). The mode token carries the body's operation and request hash. The `tool` token is bound to the exact path and body bytes the transport sends. `current` must name exactly the delegated client |
+| 6246089074 #3: verified service identity | Every delegation call and delegated target carries the service secret, re-read per call. No client exists without it. The secret is never sent as a bearer |
+| 6246089074 #4: atomic counting, idempotency, lost responses, local stop, pre-release checks | **Retries:** a lost response is retried as `retryOf` the same request, at most 2 per slot and kind; refusals are never retried. **Idempotency:** create is single-flight and Core-idempotent. **Stop order:** refuse locally → abort in flight → bounded best-effort revoke. A stopped run keeps a tombstone, so a later task cannot re-create it. **Release:** the dispatch's release observation is a delegated `current`, and Core re-checks before release; a change withholds the result |
+| 6246089074 #5: consent duration, occurrence expiry, scope change, pause/revoke, the renewal contradiction | **Durations:** consent ≤ 30 days; occurrence ≤ min(start + 15 min, consent, run). **Scope:** any client, operations, policy or binding change refuses. **Pause/revoke:** paused, revoked or expired consent refuses before Core. **Renewal:** attended renewal by live login only; unattended never renewed |
+
+**Tests** (Node 24, serial):
+- `read-delegation/test/composed.test.mjs` 9/9 (real composer, installation, owner, durable dispatch, budget, session owner and relay; synthetic Core);
+- `delegation.test.mjs` 12/12;
+- `core-client.test.mjs` 4/4.
+
+**Remaining, outside this lane:**
+- **Core:** the routes, `TenantContextMiddleware` branch, `readDelegated`, the tables, and the ES256 key (§11), in Core's protected auth/middleware lane.
+- **R0:** the plan line and grants (§11.2–§11.3) in `infra/**`. In `cli.mjs`: pass `delegation:{enabled, readOccurrence}`, where `readOccurrence` is the schedule owner's trusted occurrence facts for a run binding. Call `reads.readDelegation.stopRun({binding, reason})` from the run Stop path after the run is recorded terminal. Wire `readDelegation.consents` into the routines approve/pause/delete paths.
