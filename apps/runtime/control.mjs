@@ -95,7 +95,7 @@ export function assembleControl(options){
  const retention=retentionGate(configuration,pool,ports,artifactRecovery,now);
  // Memory shares the conversation retention fence; a captured route alone is not a bound producer.
  const memoryRetentionBound=Boolean(productContext&&retention&&bindMemoryRetention(productContext,retention.gate));
- const store=createPostgresConversationStore({pool,now,...(retention?{retentionGate:retention.gate}:{}),
+ const store=createPostgresConversationStore({pool,now,...(retention?{retentionGate:retention.gate,retentionHead:retention.startup.ledger?.head}:{}),
   ...(ports.transitionAuthority?{transitionAuthority:ports.transitionAuthority}:{})});
  const sessions=createActionSessionOwner({mode:'process-local',verifyIdentity:ports.identityContext.verifyIdentity,resolveContext:ports.identityContext.resolveContext,now,...(ports.conversationMembership?{membership:ports.conversationMembership}:{}),...(ports.transitionAuthority?{
   readTransition:({signal,...input})=>store.lifecycle.readTransition({...input,signal},()=>signal?.throwIfAborted()),

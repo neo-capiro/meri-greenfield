@@ -53,10 +53,10 @@ function retainedRecord(raw,task,at,predecessor){
 
 /** Constructed by the canonical store. No pool connection or gate read occurs
  * until a selected task actually asks for a previous page or retains one. */
-export function createMemoryProposalContextJournal({tx,rowRun,retentionGate,now}){
- if(typeof tx!=='function'||typeof rowRun!=='function'||typeof now!=='function')fail('STORE_CONFIGURATION');
+export function createMemoryProposalContextJournal({tx,rowRun,pool,retentionGate,retentionHead,now}){
+ if(typeof tx!=='function'||typeof rowRun!=='function'||typeof pool?.connect!=='function'||typeof now!=='function')fail('STORE_CONFIGURATION');
  function forTask(raw){
-  if(typeof retentionGate?.assertServable!=='function')fail('MEMORY_CONTEXT_CONFIGURATION');
+  if(typeof retentionGate?.assertServable!=='function'||typeof retentionHead!=='function')fail('MEMORY_CONTEXT_CONFIGURATION');
   const fields=own(raw,['binding','clientId','policyRevision','expiresAtMs'],['signal']);
   const task=Object.freeze({...bounded({binding:fields.binding,clientId:fields.clientId,
    policyRevision:fields.policyRevision,expiresAtMs:fields.expiresAtMs},16384),signal:fields.signal});
@@ -69,11 +69,27 @@ export function createMemoryProposalContextJournal({tx,rowRun,retentionGate,now}
    if(task.signal?.aborted||signal?.aborted)fail('MEMORY_CONTEXT_CANCELLED');
    if(!Number.isSafeInteger(now())||now()>=task.expiresAtMs)fail('MEMORY_CONTEXT_EXPIRED');
   };
+  const head=async()=>{let value;try{value=await retentionHead();}catch{refuse();}
+   const current=own(value,['sequence','entrySha256']);
+   if(!Number.isSafeInteger(current.sequence)||current.sequence<0||
+      current.sequence===0&&current.entrySha256!==null||
+      current.sequence>0&&!digest(current.entrySha256))refuse();
+   return current;
+  };
   const serve=async(signal,body)=>{
    check(signal);
+   // Capture the authoritative generation before the first projection gate.
+   // The shared transition lock below excludes the append-to-projection window
+   // and makes any intervening suppression or release change detectable.
+   const initialHead=await head();check(signal);
    await retentionGate.assertServable(subject);check(signal);
-   const result=await tx(task.binding,()=>check(signal),c=>body(c,()=>check(signal)));
+   const result=await tx(task.binding,()=>check(signal),c=>body(c,()=>check(signal)),{
+    beforeConversation:async()=>{const lockedHead=await head();check(signal);
+     if(!same(lockedHead,initialHead))refuse();}});
    check(signal);await retentionGate.assertServable(subject);check(signal);
+   // A completed suppression followed by release can reopen the projection
+   // between COMMIT and this release check. Its ledger generation still differs.
+   if(!same(await head(),initialHead))refuse();check(signal);
    return result;
   };
   async function current(c,checked){
@@ -157,5 +173,61 @@ export function createMemoryProposalContextJournal({tx,rowRun,retentionGate,now}
   }
   return Object.freeze({loadPrevious,retain});
  }
- return Object.freeze({forTask});
+ /** A mandatory slice for the future canonical retention inventory producer.
+  * Include expired rows: expiry closes serving but does not erase a row. A
+  * repeatable-read transaction provides one coherent relation snapshot. */
+ async function inventoryForConversation(raw){
+  const subject=own(raw,['tenantId','conversationId']);
+  if(typeof subject.tenantId!=='string'||subject.tenantId.length<1||subject.tenantId.length>256)refuse();
+  uuid(subject.conversationId);
+  const seen=new Set(),targets=[];
+  function add(row){
+   const runId=uuid(row.run_id),keySha256=row.key_sha256,record=bounded(row.record,MAX_RECORD_BYTES);
+   if(row.tenant_id!==subject.tenantId||row.conversation_id!==subject.conversationId||
+      !digest(keySha256)||row.record_sha256!==hash(record)||
+      Number(row.expires_at_ms)!==record.expiresAtMs)refuse();
+   own(record,['key','previous','previousSha256','recordedAtMs','expiresAtMs']);
+   const binding=record.key?.binding,clientId=record.key?.subject?.entityIds?.[0],
+    policyRevision=record.key?.policyRevision;
+   if(binding?.tenantId!==subject.tenantId||binding?.conversationId!==subject.conversationId||
+      binding?.runId!==runId)refuse();
+   const key=selectedKey(record.key,{binding,clientId,policyRevision});
+   if(hash(key)!==keySha256||!digest(record.previousSha256)||
+      record.previousSha256!==hash(record.previous)||
+      !Number.isSafeInteger(record.recordedAtMs)||record.recordedAtMs<1||
+      !Number.isSafeInteger(record.expiresAtMs)||record.expiresAtMs<=record.recordedAtMs)refuse();
+   const previous=own(record.previous,['request','page']);
+   readShape('MemoryProposalSelection',previous.request);
+   readShape('MemoryProposalReadResult',previous.page);
+   if(previous.request.clientId!==clientId||previous.page.nextCursor!==key.cursor||
+      previous.page.enabled!==true)refuse();
+   const identity=`${runId}:${keySha256}`;if(seen.has(identity))refuse();seen.add(identity);
+   targets.push(Object.freeze({runId,keySha256}));
+  }
+  // Read an exact repeatable snapshot in bounded pages. Expired rows stay in
+  // scope; an excessive inventory refuses instead of silently dropping rows.
+  let c,begun=false,committing=false,reusable=false,failure,lastRun=null,lastKey=null;
+  try{
+   c=await pool.connect();await c.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');begun=true;
+   await c.query("SET LOCAL statement_timeout = '5s'");
+   for(;;){
+    const result=await c.query('SELECT run_id,key_sha256,record,record_sha256,expires_at_ms,tenant_id,conversation_id FROM meri_conversations.memory_proposal_contexts WHERE tenant_id=$1 AND conversation_id=$2 AND ($3::uuid IS NULL OR (run_id,key_sha256)>($3::uuid,$4::text)) ORDER BY run_id,key_sha256 LIMIT 33',
+     [subject.tenantId,subject.conversationId,lastRun,lastKey]);
+    if(!Array.isArray(result.rows)||result.rows.length>33)refuse();
+    const page=result.rows.slice(0,32);
+    for(const row of page){if(targets.length>=4096)refuse();add(row);}
+    if(result.rows.length<=32)break;
+    lastRun=page.at(-1).run_id;lastKey=page.at(-1).key_sha256;
+   }
+   committing=true;await c.query('COMMIT');reusable=true;
+  }catch(error){failure=error;
+   if(begun&&!committing)try{await c.query('ROLLBACK');reusable=true;}catch{reusable=false;}
+  }
+  if(c)try{c.release(reusable?undefined:failure??new Error('MEMORY_CONTEXT_INVENTORY_UNKNOWN'));}
+   catch(error){failure??=error;}
+  if(failure){if(failure.code==='MEMORY_CONTEXT_REFUSED')throw failure;
+   fail('MEMORY_CONTEXT_INVENTORY_UNAVAILABLE');}
+  return Object.freeze(targets);
+ }
+ return Object.freeze({forTask,inventoryForConversation});
 }

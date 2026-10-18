@@ -5,19 +5,38 @@ import {createPostgresConversationStore} from '../postgres-store.mjs';
 import {storeFixture,binding as baseBinding,scopes as baseScopes,versions,id} from './store-fixture.mjs';
 import {hash} from '../boundary.mjs';
 import {assertMemoryProposalReadResult} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {createSuppressionOwner} from '../../retention/suppression.mjs';
 
 const at=Date.parse('2026-10-18T12:00:00.000Z'),expiry=at+30000;
 const binding={...baseBinding,tenantId:id(9),actorId:id(10)};
 const scopes=[{...baseScopes[0],tenantId:binding.tenantId}];
 const rowKey=p=>p.slice(0,4).join(':');
+const deferred=()=>{let resolve;const promise=new Promise(done=>{resolve=done;});return {promise,resolve};};
+function transitionLock(){let readers=0,writer=false;const pending=[];
+ const wake=()=>{for(let i=0;i<pending.length;){const item=pending[i];if(item.write?(readers!==0||writer):writer){i++;continue;}
+  pending.splice(i,1);if(item.write)writer=true;else readers++;
+  item.resolve(()=>{if(item.write)writer=false;else readers--;wake();});if(item.write)break;}};
+ const acquire=write=>new Promise(resolve=>{pending.push({write,resolve});wake();});
+ return {shared:()=>acquire(false),async withTransition(_key,fn){const release=await acquire(true);try{return await fn();}finally{release();}}};
+}
 
 function fixture(){
- const base=storeFixture(),rows=new Map(),state={at,suppressed:false,suppressOnGateCall:null,gateCalls:0,commitUnknown:false};
+ const base=storeFixture(),rows=new Map(),transition=transitionLock(),state={at,suppressed:false,suppressOnGateCall:null,gateCalls:0,commitUnknown:false,
+  ledgerHead:{sequence:0,entrySha256:null},projectedSequence:0,sharedPause:null,advanceHeadOnGateCall:null,events:[]};
  const pool={async connect(){const c=await base.pool.connect();let snapshot;
   return {async query(sql,p=[]){
-   if(sql==='BEGIN')snapshot=structuredClone(rows);
+   if(sql==='BEGIN'||sql==='BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY')snapshot=structuredClone(rows);
+   if(sql.startsWith('SELECT pg_advisory_xact_lock_shared')&&p[0]?.startsWith('meri_retention_transition:')){
+    this.releaseTransition=await transition.shared();state.events.push('memory-lock');
+    if(state.sharedPause){state.sharedPause.entered.resolve();await state.sharedPause.release.promise;}
+    return {rows:[]};
+   }
    if(sql==='ROLLBACK'){rows.clear();for(const [key,value] of snapshot)rows.set(key,value);}
    if(sql.includes('meri_conversations.memory_proposal_contexts')){
+    if(sql.startsWith('SELECT run_id,key_sha256')){const page=[...snapshot.values()].filter(row=>row.tenant_id===p[0]&&row.conversation_id===p[1]&&
+      (p[2]===null||row.run_id>p[2]||row.run_id===p[2]&&row.key_sha256>p[3]))
+     .sort((a,b)=>a.run_id.localeCompare(b.run_id)||a.key_sha256.localeCompare(b.key_sha256)).slice(0,33)
+     .map(row=>structuredClone(row));return {rows:page,rowCount:page.length};}
     if(sql.startsWith('SELECT *')){const row=rows.get(rowKey(p));return {rows:row?[structuredClone(row)]:[]};}
     if(sql.startsWith('INSERT INTO')){
      const key=rowKey(p);if(rows.has(key))throw Object.assign(Error('duplicate'),{code:'23505'});
@@ -25,10 +44,12 @@ function fixture(){
     }
     throw Error('unexpected proposal context SQL');
    }
-   const result=await c.query(sql,p);
+   const result=sql==='BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY'||sql.startsWith('SET LOCAL statement_timeout')?{rows:[]}:await c.query(sql,p);
+   if(sql==='COMMIT'||sql==='ROLLBACK'){this.releaseTransition?.();this.releaseTransition=null;
+    if(sql==='COMMIT')state.events.push('memory-commit');}
    if(sql==='COMMIT'&&state.commitUnknown)throw Error('synthetic lost commit acknowledgement');
    return result;
-  },release:error=>c.release(error)};
+  },release(error){this.releaseTransition?.();this.releaseTransition=null;c.release(error);}};
  }};
  const createdAt=new Date(at).toISOString(),run={binding,state:'running',scopes,createdAt,policyRevision:scopes[0].policyRevision,versions},
   request={requestId:id(6),prompt:'synthetic',skill:null,window:null},conversation={conversationId:binding.conversationId,
@@ -54,8 +75,12 @@ function fixture(){
   tenant_id:binding.tenantId,conversation_id:binding.conversationId,run_id:binding.runId,record:allocation,record_sha256:hash(allocation)});
  const gate={async assertServable(subject){state.gateCalls++;assert.deepEqual(subject,{tenantId:binding.tenantId,kind:'conversation',subjectId:binding.conversationId});
   if(state.gateCalls===state.suppressOnGateCall)state.suppressed=true;
+  if(state.gateCalls===state.advanceHeadOnGateCall){state.ledgerHead={sequence:2,entrySha256:'f'.repeat(64)};
+   state.projectedSequence=2;state.suppressed=false;}
+  if(state.ledgerHead.sequence>state.projectedSequence)throw Object.assign(Error('RETENTION_RECOVERY_BARRIER'),{code:'RETENTION_RECOVERY_BARRIER'});
   if(state.suppressed)throw Object.assign(Error('RETENTION_SUPPRESSED'),{code:'RETENTION_SUPPRESSED'});}};
- const store=()=>createPostgresConversationStore({pool,now:()=>state.at,retentionGate:gate});
+ const store=()=>createPostgresConversationStore({pool,now:()=>state.at,retentionGate:gate,
+  retentionHead:async()=>({...state.ledgerHead})});
  const task={binding,clientId:id(5),policyRevision:scopes[0].policyRevision,expiresAtMs:expiry};
  const subject={kind:'client',entityType:'client',entityIds:[task.clientId],tenantId:binding.tenantId,
   actorId:binding.actorId,policyRevision:task.policyRevision,scopes,rosterVersionId:null};
@@ -69,7 +94,7 @@ function fixture(){
   subject,cursor:page.nextCursor};
  const previous={request:{clientId:task.clientId,cursor:null,limit:5},page};
  const record={key,previous,previousSha256:hash(previous),recordedAtMs:at,expiresAtMs:expiry};
- return {base,rows,state,store,task,record,key,pool};
+ return {base,rows,state,store,task,record,key,pool,transition};
 }
 
 test('task-bound journal retains exact page once and survives owner reconstruction',async()=>{
@@ -152,6 +177,13 @@ test('suppression after insert withholds receipt and all replay until reopened',
  f.state.suppressed=false;assert.deepEqual(JSON.parse(await ports.loadPrevious({key:f.key})).record,f.record);
 });
 
+test('suppression and release after commit cannot yield an ABA continuation receipt',async()=>{
+ const f=fixture(),ports=f.store().memoryProposalContexts.forTask(f.task);
+ f.state.advanceHeadOnGateCall=2;
+ await assert.rejects(ports.retain({record:f.record}),/MEMORY_CONTEXT_REFUSED/);
+ assert.equal(f.rows.size,1,'the row committed before the later generation');
+});
+
 test('commit uncertainty requires exact readback and never overwrites',async()=>{
  const f=fixture(),ports=f.store().memoryProposalContexts.forTask(f.task);
  f.state.commitUnknown=true;await assert.rejects(ports.retain({record:f.record}),/STORE_COMMIT_UNKNOWN/);
@@ -159,4 +191,66 @@ test('commit uncertainty requires exact readback and never overwrites',async()=>
  const replay=JSON.parse(await ports.retain({record:f.record}));assert.equal(replay.decision,'retained');
  const altered=structuredClone(f.record);altered.previous.page.candidates[0].title='Changed';altered.previousSha256=hash(altered.previous);
  await assert.rejects(ports.retain({record:altered}),/REPLAY_REFUSED/);
+});
+
+test('retention inventory lists every exact continuation row including expired rows and refuses corruption',async()=>{
+ const f=fixture(),ports=f.store().memoryProposalContexts.forTask(f.task);
+ await ports.retain({record:f.record});
+ const subject={tenantId:f.task.binding.tenantId,conversationId:f.task.binding.conversationId};
+ f.state.at=expiry+1;
+ assert.deepEqual(await f.store().memoryProposalContexts.inventoryForConversation(subject),
+  [{runId:f.task.binding.runId,keySha256:hash(f.key)}]);
+ const stored=[...f.rows.values()][0];stored.record_sha256='0'.repeat(64);
+ await assert.rejects(f.store().memoryProposalContexts.inventoryForConversation(subject),/MEMORY_CONTEXT_REFUSED/);
+ await assert.rejects(f.store().memoryProposalContexts.inventoryForConversation({...subject,extra:1}));
+});
+
+test('retention inventory walks the next exact page after 32 rows',async()=>{
+ const f=fixture(),subject={tenantId:f.task.binding.tenantId,conversationId:f.task.binding.conversationId};
+ const expected=[];
+ for(let n=0;n<35;n++){
+  const record=structuredClone(f.record),cursor=`inventory-${n}`;
+  record.key.cursor=cursor;record.previous.page.nextCursor=cursor;
+  record.previousSha256=hash(record.previous);
+  const keySha256=hash(record.key),runId=f.task.binding.runId;
+  f.rows.set([subject.tenantId,subject.conversationId,runId,keySha256].join(':'),{
+   tenant_id:subject.tenantId,conversation_id:subject.conversationId,run_id:runId,key_sha256:keySha256,
+   record,record_sha256:hash(record),expires_at_ms:expiry});
+  expected.push({runId,keySha256});
+ }
+ expected.sort((a,b)=>a.keySha256.localeCompare(b.keySha256));
+ assert.deepEqual(await f.store().memoryProposalContexts.inventoryForConversation(subject),expected);
+});
+
+test('suppression ledger append serializes with continuation commit in both interleavings',async()=>{
+ const make=()=>{const f=fixture(),subject={tenantId:f.task.binding.tenantId,kind:'conversation',
+  subjectId:f.task.binding.conversationId,ownerActorId:f.task.binding.actorId};let projection=null;
+  const journal={withTransition:(key,fn)=>f.transition.withTransition(key,fn),
+   async get(){return projection;},async set(_key,row){projection=row;f.state.projectedSequence=row.ledgerSequence;
+    f.state.suppressed=row.state==='SUPPRESSED';return row;}};
+  const ledger={async append(){if(f.state.appendPause){f.state.appendPause.entered.resolve();await f.state.appendPause.release.promise;}
+    f.state.events.push('ledger-append');f.state.ledgerHead={sequence:1,entrySha256:'f'.repeat(64)};
+    return {atMs:f.state.at,sequence:1,entrySha256:'f'.repeat(64)};}};
+  const owner=createSuppressionOwner({journal,ledger,ownership:{async ownerOf(){return subject.ownerActorId;}},
+   serving:{isEnabled:()=>true,disable(){}},now:()=>f.state.at});
+  return {f,subject,owner,principal:{tenantId:subject.tenantId,actorId:subject.ownerActorId}};
+ };
+ {
+  const {f,subject,owner,principal}=make(),ports=f.store().memoryProposalContexts.forTask(f.task);
+  f.state.sharedPause={entered:deferred(),release:deferred()};
+  const retained=ports.retain({record:f.record});await f.state.sharedPause.entered.promise;
+  const suppression=owner.suppress({principal,subject,reason:'owner request'});
+  await new Promise(setImmediate);assert.ok(!f.state.events.includes('ledger-append'));
+  f.state.sharedPause.release.resolve();await Promise.allSettled([retained,suppression]);
+  assert.equal(f.rows.size,1);assert.ok(f.state.events.indexOf('memory-commit')<f.state.events.indexOf('ledger-append'));
+ }
+ {
+  const {f,subject,owner,principal}=make(),ports=f.store().memoryProposalContexts.forTask(f.task);
+  f.state.appendPause={entered:deferred(),release:deferred()};
+  const suppression=owner.suppress({principal,subject,reason:'owner request'});await f.state.appendPause.entered.promise;
+  const retained=ports.retain({record:f.record});await new Promise(setImmediate);
+  assert.equal(f.rows.size,0,'no physical insert while the authoritative append is pending');
+  f.state.appendPause.release.resolve();await suppression;
+  await assert.rejects(retained);assert.equal(f.rows.size,0);
+ }
 });

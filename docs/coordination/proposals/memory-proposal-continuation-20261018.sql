@@ -1,8 +1,14 @@
 -- Source proposal only. A central owner must allocate a product migration ID,
--- register this table and SELECT/INSERT role grants in the migration tree, and
--- extend the canonical retention inventory producer and purge row owner before
--- installation. Startup readiness source already probes this relation. Never
--- apply this proposal file directly.
+-- register this table and narrow role grants in the migration tree. The
+-- conversation store already provides a bounded exact-row inventory slice;
+-- the complete canonical retention facts composer is still absent. The
+-- source-qualified row owner also expects a distinct
+-- meri_conversations.memory_proposal_retention_targets relation with
+-- (workflow_id,tenant_id,conversation_id,run_id,key_sha256,plan_sha256,state,
+-- ledger_sequence), plus a same-transaction exact-target DELETE trigger and
+-- UPDATE refusal on the journal. Those are held for central migration review.
+-- Startup readiness source already probes the journal relation. Never apply
+-- this proposal file directly. Candidate conversation slot 0018 is unallocated.
 -- The conversation-store journal owns immutable rows and exact-key replay.
 BEGIN;
 CREATE TABLE meri_conversations.memory_proposal_contexts (

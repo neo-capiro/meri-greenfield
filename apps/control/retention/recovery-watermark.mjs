@@ -29,7 +29,7 @@ export function createMemoryWatermarkStore({journal}={}){
  * and reconciliation re-proves the watermark before serving resumes). Ordinary reads require a store-owned atomic projection and
  * watermark snapshot; split reads cannot detect ABA across recovery owners. Exclusive recovery reads bypass the serving fence. */
 export function watermarkedJournal({journal,watermark,fence,ledger}){
- if(typeof journal?.get!=='function'||typeof journal?.set!=='function'||typeof journal?.exclusive!=='function'||typeof watermark?.advanceProjection!=='function'||typeof watermark?.read!=='function'||typeof watermark?.readProjection!=='function'||typeof ledger?.head!=='function'||['observe','disable','verify','state'].some(m=>typeof fence?.[m]!=='function'))fail('RETENTION_CONFIGURATION');
+ if(typeof journal?.get!=='function'||typeof journal?.set!=='function'||typeof journal?.exclusive!=='function'||typeof journal?.withTransition!=='function'||typeof watermark?.advanceProjection!=='function'||typeof watermark?.read!=='function'||typeof watermark?.readProjection!=='function'||typeof ledger?.head!=='function'||['observe','disable','verify','state'].some(m=>typeof fence?.[m]!=='function'))fail('RETENTION_CONFIGURATION');
  async function get(key,options={}){
   if(options.exclusive===true)return journal.get(key,options);
   if(!fence.state().enabled)fail('RETENTION_RECOVERY_BARRIER');
@@ -49,7 +49,8 @@ export function watermarkedJournal({journal,watermark,fence,ledger}){
   // Prove the acknowledged row still exists while advancing, as well as the predecessor completeness floor.
   const minimumSequence=options.exclusive===true?0:Math.max(0,fence.state().highWater,sequence-1);
   try{await watermark.advanceProjection({key,projectionSha256,sequence,minimumSequence},{exclusive:options.exclusive===true});fence.observe(sequence);}catch(error){fence.disable(['RETENTION_WATERMARK_STALE','RETENTION_PROJECTION_UNVERIFIED'].includes(error?.code)?error.code:'RETENTION_WATERMARK_UNKNOWN');}return result;}
- return Object.freeze({get,set,keys:options=>journal.keys(options),exclusive:fn=>journal.exclusive(fn)});
+ return Object.freeze({get,set,keys:options=>journal.keys(options),exclusive:fn=>journal.exclusive(fn),
+  withTransition:(key,fn)=>journal.withTransition(key,fn)});
 }
 /** The ledger every transition owner appends through: an append whose acknowledgement is missing may still be durable, so the decision
  * it carries is UNKNOWN to the projection; the fence closes until reconciliation replays the ledger. */
