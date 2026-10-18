@@ -3,7 +3,7 @@
  * Nothing here is PostgreSQL, Core, a secret file or a live session. */
 import test from 'node:test';import assert from 'node:assert/strict';
 import {createProductPortsFactory} from '../index.mjs';
-import {createMemoryFamily,createMemoryFamilyWith,memoryComposition,compileMemoryConfiguration,bindMemoryRetention,MEMORY_TABLES} from '../memory.mjs';
+import {createMemoryFamily,createMemoryFamilyWith,memoryComposition,compileMemoryConfiguration,bindMemoryRetention,bindMemoryCommandRetention,MEMORY_TABLES,MEMORY_COMMAND_RETENTION_CLASSES} from '../memory.mjs';
 import {captureRuntimePorts} from '../../product-applications.mjs';
 import {productReadiness} from '../../product-readiness.mjs';
 import {MEMORY_PATHS,memoryUnavailable} from '../../../control/memory/protocol.mjs';
@@ -12,13 +12,15 @@ import {createMemoryPoolFixture} from '../../../control/memory/test/pool-fixture
 import {createPostgresMemoryJournal} from '../../../control/memory/postgres-journal.mjs';
 import {buildCandidate} from '../../../control/memory/candidate.mjs';
 import {ids,id,NOW} from '../../../control/memory/test/fixtures.mjs';
-const TENANT='11111111-1111-4111-8111-111111111111',ACTOR='22222222-2222-4222-8222-222222222222',CLIENT=id(901),SECRET='memory-service-secret',BEARER='native-session-token';
+const TENANT='11111111-1111-4111-8111-111111111111',ACTOR='22222222-2222-4222-8222-222222222222',CLIENT='abcdefab-0000-4000-8000-000000000901',SECRET='memory-service-secret',BEARER='native-session-token';
 const code=c=>e=>e?.code===c;
 const base={version:1,profile:'isolated-preview',sourceEnabled:false,limits:{startupMs:1000,shutdownMs:1000,requestMs:5000,requestBytes:65536},native:{origin:'https://native.invalid',capabilityFile:'/run/native',loopback:false,maxResponseBytes:262144}};
 const memory={enabled:true,origin:'https://core.example',serviceSecretFile:'/run/meri/memory-service-secret'};
 const retention={enabled:true};
 const principal=()=>Object.freeze({tenantId:TENANT,actorId:ACTOR,role:'standard_user',permissions:Object.freeze([]),clientIds:Object.freeze([CLIENT]),membershipRevision:'m1'});
 const gate=Object.freeze({async admit(){return {principal:principal(),expiresAtMs:NOW+60000};},async recheck({principal:p}){return p;}});
+const commandRetentionProof=()=>({classNames:MEMORY_COMMAND_RETENTION_CLASSES,registryReady:true,targetSchemaReady:true,grantsReady:true,
+ recoveryReady:true,policyReady:true,metadata:{className:'meriMemoryApprovalMetadata',inventoryPage(){},present(){},purgeInTransaction(){}}});
 function untouchable(name){return new Proxy({},Object.fromEntries(['get','has','ownKeys','getOwnPropertyDescriptor','set','apply'].map(t=>[t,()=>{throw Error('touched '+name);}])));}
 function context({configuration=base,pool,gate:g}={}){
  return Object.freeze({configuration,pool:pool??untouchable('pool'),client:{},native:{},now:()=>NOW,canonicalProductPorts:captureRuntimePorts(g?{conversationMembership:g}:{})});
@@ -87,6 +89,8 @@ test('the enabled family refuses unowned surface writes while retaining review a
  const t=harness();
  assert.deepEqual(Object.keys(t.ports),['memoryApplication']);assert.equal(t.reads.length,0);assert.equal(t.pg.statements.length,0);
  assert.deepEqual(memoryComposition(t.ctx).tables,MEMORY_TABLES);assert.equal(memoryComposition(t.ctx).commandSourceFor,null,'no relay: the run path is absent, the surface composes');
+ assert.equal(bindMemoryCommandRetention(t.ctx,commandRetentionProof()),true);
+ assert.equal(memoryComposition(t.ctx).commandOptionsFor,null,'no relay: even fully bound retention cannot prepare a command');
  const proposed=await t.post(MEMORY_PATHS.propose,{idempotencyKey:id(1),scope:'personal',content:'Prefers morning briefings',key:'briefing-time'});
  assert.equal(proposed.status,503);assert.equal(proposed.body.error.code,'MEMORY_RETENTION_SUBJECT_UNAVAILABLE');
  assert.equal(proposed.body.error.outcome,'NOT_DISPATCHED');
@@ -121,10 +125,24 @@ test('with the live-session relay the run path composes the governed memory.prop
  const composition=memoryComposition(t.ctx);assert.equal(typeof composition.commandSourceFor,'function');
  assert.equal(composition.commandSourceFor({binding,selectedClientId:CLIENT}),null,'an unbound producer cannot enter the durable command owner');
  assert.equal(bindMemoryRetention(t.ctx,{async assertServable(){}}),true);
+ assert.equal(composition.commandSourceFor({binding,selectedClientId:CLIENT}),null,'an unowned memory metadata payload cannot enter the durable command owner');
+ assert.equal(composition.commandOptionsFor({binding,selectedClientId:CLIENT,preparePolicy:async()=>{},executor:{async execute(){}},limits:{maxRequestMs:1000,maxFactBytes:65536}}),null);
+ const proof=commandRetentionProof();
+ assert.throws(()=>bindMemoryCommandRetention(t.ctx,{className:'meriMemoryApprovalMetadata'}),code('PRODUCT_PORTS_CONFIGURATION'));
+ assert.throws(()=>bindMemoryCommandRetention(t.ctx,{...proof,classNames:['meriMemoryApprovalMetadata']}),code('PRODUCT_PORTS_CONFIGURATION'));
+ assert.throws(()=>bindMemoryCommandRetention(t.ctx,{...proof,recoveryReady:false}),code('PRODUCT_PORTS_CONFIGURATION'));
+ assert.equal(bindMemoryCommandRetention(t.ctx,proof),true);
+ assert.equal(composition.commandRetentionBound(),true);
  const source=composition.commandSourceFor({binding,scopes:[{tenantId:TENANT,kind:'client',resourceId:CLIENT.toUpperCase(),policyRevision:'p'}]});
  assert.equal(source.personalPending,true);assert.equal(typeof source.prepare,'function');assert.equal(typeof source.execute,'function');
+ const options=composition.commandOptionsFor({binding,selectedClientId:CLIENT,preparePolicy:async()=>{},executor:{async execute(){}},limits:{maxRequestMs:1000,maxFactBytes:65536}});
+ assert.equal(options.operation.id,'save_memory');assert.equal(options.commandContext.conversationClientId,CLIENT);
  assert.equal(composition.commandSourceFor({binding,selectedClientId:CLIENT}).personalPending,true);
- // A run whose admitted scopes are not exactly one client scope has no selected client and therefore no source.
+ assert.equal(composition.commandSourceFor({binding,selectedClientId:CLIENT.toUpperCase()}).personalPending,true);
+ // A personal proposal still needs the selected-client UUID of a live action session; its command arguments use clientId:null.
+ assert.throws(()=>composition.commandSourceFor({binding,selectedClientId:null}),code('MEMORY_CONFIGURATION'));
+ assert.throws(()=>composition.commandSourceFor({binding,selectedClientId:null,scopes:[{tenantId:TENANT,kind:'client',resourceId:CLIENT,policyRevision:'p'}]}),code('MEMORY_CONFIGURATION'));
+ assert.throws(()=>composition.commandOptionsFor({binding,selectedClientId:null,preparePolicy:async()=>{},executor:{async execute(){}},limits:{maxRequestMs:1000,maxFactBytes:65536}}),code('MEMORY_CONFIGURATION'));
  assert.throws(()=>composition.commandSourceFor({binding,scopes:[{tenantId:TENANT,kind:'tenant',resourceId:TENANT,policyRevision:'p'}]}),code('MEMORY_CONFIGURATION'));
  assert.throws(()=>composition.commandSourceFor({binding}),code('MEMORY_CONFIGURATION'));
  assert.throws(()=>composition.commandSourceFor({binding,selectedClientId:CLIENT,scopes:[{tenantId:TENANT,kind:'client',resourceId:id(902),policyRevision:'p'}]}),code('MEMORY_CONFIGURATION'));
@@ -134,7 +152,8 @@ test('with the live-session relay the run path composes the governed memory.prop
 test('bound conversational source uses the live member bearer and guarded journal; foreign commands touch neither',async()=>{
  const binding={tenantId:TENANT,actorId:ACTOR,conversationId:id(1),runId:id(2),attemptId:id(3),workerId:id(4),writerFence:1},lookups=[];
  const relay={nativeCredentialFor(v){lookups.push(v);return {credential:BEARER,expiresAtMs:NOW+30000};}};
- const t=harness({relay}),source=memoryComposition(t.ctx).commandSourceFor({binding,selectedClientId:CLIENT});
+ const t=harness({relay});assert.equal(bindMemoryCommandRetention(t.ctx,commandRetentionProof()),true);
+ const source=memoryComposition(t.ctx).commandSourceFor({binding,selectedClientId:CLIENT});
  const command={contractVersion:'0.1.0',commandId:id(5),idempotencyKey:id(6),binding,action:'memory.propose',attachments:[],scopes:[],
   arguments:{scope:'personal',content:'Prefers concise updates',key:null,ttlDays:null,clientId:null}};
  const authority={binding,policyRevision:'p',claims:{capabilityId:id(7)},decision:{scopes:[]},deadlineMs:NOW+1000};

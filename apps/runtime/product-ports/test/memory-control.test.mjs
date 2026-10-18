@@ -16,6 +16,8 @@ test('actual control binds memory to its canonical retention gate without openin
   productPortsFactory(c){context=c;const ports=factory(c);assert.equal(memoryComposition(c).retentionBound(),false);return ports;}});
  try{
   assert.equal(memoryComposition(context).retentionBound(),true);
+  assert.equal(memoryComposition(context).commandRetentionBound(),false,'production assembly has no complete memory command retention owner');
+  assert.equal(memoryComposition(context).commandOptionsFor,null,'production assembly has no live command relay');
   assert.equal(bindMemoryRetention(context,assembly.retention.gate),true,'exact gate identity is shared');
   assert.equal(assembly.productReadiness().owners.find(o=>o.name==='memory.producer').state,'composed');
   assert.ok(assembly.productReadiness().missingOwners.includes('retention.ledgerSink'));
