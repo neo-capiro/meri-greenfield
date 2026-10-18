@@ -1,0 +1,360 @@
+{
+  "source": "d117a7d4d6de94f25943d54c0b15d82c891b9b96",
+  "base": "48e84282bf164e873bf759f11ce815ee1bd3c2b4",
+  "scope": "source-only; synthetic subset is not a reviewed deployment selection",
+  "full": {
+    "operations": 76,
+    "families": 42,
+    "sha256": "8850af4b50666deef9e4c7edc23d32f25d663840748380c7baaa066585602f6a"
+  },
+  "selected": {
+    "operations": 10,
+    "families": 8,
+    "sha256": "028dd903f6fb0f0ba0650c9d7f0a12f124a98d94890d8a27bfc91fe140ef829e",
+    "refs": [
+      {
+        "id": "actions.query",
+        "version": "0.2.0"
+      },
+      {
+        "id": "find_contacts",
+        "version": "0.2.0"
+      },
+      {
+        "id": "get_client_context",
+        "version": "0.3.0"
+      },
+      {
+        "id": "list_global_datasets",
+        "version": "0.2.0"
+      },
+      {
+        "id": "meeting.list_upcoming_meetings",
+        "version": "0.2.0"
+      },
+      {
+        "id": "meeting.query_debriefs",
+        "version": "0.2.0"
+      },
+      {
+        "id": "meeting.read_client_meetings",
+        "version": "0.2.0"
+      },
+      {
+        "id": "query_action_items",
+        "version": "0.2.0"
+      },
+      {
+        "id": "read_client_documents",
+        "version": "0.2.0"
+      },
+      {
+        "id": "resolve_entity",
+        "version": "0.2.0"
+      }
+    ]
+  },
+  "remaining": [
+    {
+      "operation": {
+        "id": "get_florida_budget_project",
+        "version": "0.2.0"
+      },
+      "family": "florida-budget"
+    },
+    {
+      "operation": {
+        "id": "get_research_evidence",
+        "version": "0.2.0"
+      },
+      "family": "research-portfolio-evidence"
+    },
+    {
+      "operation": {
+        "id": "get_research_portfolio_changes",
+        "version": "0.2.0"
+      },
+      "family": "research-portfolio"
+    },
+    {
+      "operation": {
+        "id": "get_research_portfolio",
+        "version": "0.2.0"
+      },
+      "family": "research-portfolio"
+    },
+    {
+      "operation": {
+        "id": "mail.list_messages",
+        "version": "0.2.0"
+      },
+      "family": "mail"
+    },
+    {
+      "operation": {
+        "id": "mail.read_thread",
+        "version": "0.2.0"
+      },
+      "family": "mail"
+    },
+    {
+      "operation": {
+        "id": "mail.search_messages",
+        "version": "0.2.0"
+      },
+      "family": "mail"
+    },
+    {
+      "operation": {
+        "id": "memory.list_own_proposals",
+        "version": "0.2.0"
+      },
+      "family": "memory-proposals"
+    },
+    {
+      "operation": {
+        "id": "query_tasks",
+        "version": "0.2.0"
+      },
+      "family": "operational-reads"
+    },
+    {
+      "operation": {
+        "id": "read_monday_client_boards",
+        "version": "0.2.0"
+      },
+      "family": "client-knowledge-monday"
+    },
+    {
+      "operation": {
+        "id": "search_memory",
+        "version": "0.2.0"
+      },
+      "family": "client-knowledge-memory"
+    }
+  ],
+  "skills": [
+    {
+      "skillId": "quick_skill.client_changes",
+      "version": "1.0.1",
+      "total": 13,
+      "native": 4,
+      "received": [
+        "get_client_context",
+        "meeting.read_client_meetings",
+        "meeting.query_debriefs",
+        "read_client_documents",
+        "query_action_items"
+      ],
+      "pending": [
+        "mail.search_messages",
+        "mail.read_thread",
+        "query_tasks",
+        "read_monday_client_boards"
+      ],
+      "outside": []
+    },
+    {
+      "skillId": "quick_skill.commitments_audit",
+      "version": "1.0.0",
+      "total": 8,
+      "native": 0,
+      "received": [
+        "meeting.read_client_meetings",
+        "meeting.query_debriefs",
+        "read_client_documents",
+        "query_action_items"
+      ],
+      "pending": [
+        "mail.search_messages",
+        "mail.read_thread",
+        "query_tasks",
+        "read_monday_client_boards"
+      ],
+      "outside": []
+    },
+    {
+      "skillId": "quick_skill.funding_opportunity_match",
+      "version": "1.0.1",
+      "total": 9,
+      "native": 7,
+      "received": [
+        "get_client_context"
+      ],
+      "pending": [],
+      "outside": [
+        "search_sam_opportunities"
+      ]
+    },
+    {
+      "skillId": "quick_skill.hearing_watch",
+      "version": "1.0.1",
+      "total": 7,
+      "native": 6,
+      "received": [
+        "get_client_context"
+      ],
+      "pending": [],
+      "outside": []
+    },
+    {
+      "skillId": "quick_skill.mail_history",
+      "version": "1.0.0",
+      "total": 5,
+      "native": 0,
+      "received": [
+        "resolve_entity",
+        "find_contacts"
+      ],
+      "pending": [
+        "mail.list_messages",
+        "mail.search_messages",
+        "mail.read_thread"
+      ],
+      "outside": []
+    },
+    {
+      "skillId": "quick_skill.meeting_prep",
+      "version": "1.0.1",
+      "total": 16,
+      "native": 3,
+      "received": [
+        "resolve_entity",
+        "find_contacts",
+        "get_client_context",
+        "meeting.list_upcoming_meetings",
+        "meeting.read_client_meetings",
+        "meeting.query_debriefs",
+        "read_client_documents",
+        "query_action_items"
+      ],
+      "pending": [
+        "mail.search_messages",
+        "mail.read_thread",
+        "search_memory",
+        "query_tasks",
+        "read_monday_client_boards"
+      ],
+      "outside": []
+    },
+    {
+      "skillId": "quick_skill.pe_deep_dive",
+      "version": "1.0.0",
+      "total": 11,
+      "native": 11,
+      "received": [],
+      "pending": [],
+      "outside": []
+    },
+    {
+      "skillId": "quick_skill.portfolio_changes",
+      "version": "1.0.1",
+      "total": 14,
+      "native": 5,
+      "received": [
+        "get_client_context",
+        "meeting.read_client_meetings",
+        "meeting.query_debriefs",
+        "read_client_documents",
+        "query_action_items"
+      ],
+      "pending": [
+        "mail.search_messages",
+        "mail.read_thread",
+        "query_tasks",
+        "read_monday_client_boards"
+      ],
+      "outside": []
+    },
+    {
+      "skillId": "quick_skill.portfolio_overlap",
+      "version": "1.0.1",
+      "total": 11,
+      "native": 8,
+      "received": [
+        "get_client_context",
+        "resolve_entity",
+        "find_contacts"
+      ],
+      "pending": [],
+      "outside": []
+    },
+    {
+      "skillId": "quick_skill.regulatory_docket_brief",
+      "version": "1.0.1",
+      "total": 7,
+      "native": 3,
+      "received": [
+        "resolve_entity",
+        "get_client_context"
+      ],
+      "pending": [],
+      "outside": [
+        "get_state_rule_status",
+        "get_legal_reference"
+      ]
+    },
+    {
+      "skillId": "quick_skill.relationship_brief",
+      "version": "1.0.0",
+      "total": 11,
+      "native": 0,
+      "received": [
+        "resolve_entity",
+        "find_contacts",
+        "meeting.read_client_meetings",
+        "meeting.query_debriefs",
+        "read_client_documents",
+        "query_action_items"
+      ],
+      "pending": [
+        "mail.search_messages",
+        "mail.read_thread",
+        "search_memory",
+        "query_tasks",
+        "read_monday_client_boards"
+      ],
+      "outside": []
+    },
+    {
+      "skillId": "quick_skill.representation_lookup",
+      "version": "1.0.1",
+      "total": 7,
+      "native": 5,
+      "received": [
+        "get_client_context",
+        "find_contacts"
+      ],
+      "pending": [],
+      "outside": []
+    },
+    {
+      "skillId": "quick_skill.research_company",
+      "version": "1.0.1",
+      "total": 20,
+      "native": 15,
+      "received": [
+        "resolve_entity",
+        "get_client_context",
+        "find_contacts"
+      ],
+      "pending": [],
+      "outside": [
+        "search_sam_opportunities",
+        "get_certification_status"
+      ]
+    },
+    {
+      "skillId": "quick_skill.bill_watch",
+      "version": "1.0.1",
+      "total": 4,
+      "native": 3,
+      "received": [],
+      "pending": [],
+      "outside": [
+        "create_word"
+      ]
+    }
+  ],
+  "receipt": "c7d58584bd9bac7529f82ba7600ce600a733cb97"
+}
