@@ -47,3 +47,13 @@ Absent or source-disabled composition returns `TASK_COMMAND_UNAVAILABLE` with no
 `@capiro/meri-contracts/task-command-application`; desktop callers receive that generated module with immutable provenance.
 The task-6 integration report records the reviewed source and frontend pins. Host composition, credentials and live qualification
 remain with release owners; these changes do not activate a route in the shipment candidates or deploy a service.
+
+## Per-session composition (multi-run control)
+
+`createTaskUpdateFeature` binds one run. A control that serves many runs uses `createPerSessionTaskUpdateApplication`
+(`per-session.mjs`): for each request it selects the session's current run binding and selected client from the canonical
+session owner (selection only), asks the trusted grant owner `servicesFor({binding,selectedClientId,signal,deadlineMs})` for
+that run's `createTaskUpdateServices` result, and resolves the request with the existing native correlator over exactly those
+services. Services for another run are refused before any metadata, capability or Core call; prepare still requires the exact
+binding and execute the same tenant, actor, conversation and run. The runtime family `apps/runtime/product-ports/tasks.mjs`
+composes it only when `sourceEnabled` is true and a Core grant owner exists (neither holds today, so it reports `disabled`).
