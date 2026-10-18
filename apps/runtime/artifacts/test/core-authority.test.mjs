@@ -243,7 +243,8 @@ const control=(extra={})=>({nativeCandidate,limits:{requestMs:5000,requestBytes:
 test('startup composition is disabled unless every input exists, and names each gap by key only',async()=>{
  const s=secretFiles(),run=scriptedRunOptions(),executor={execute(){}};
  const missing=async(configuration,extra={})=>(await composeDocumentsFamily({configuration,readSecret:s.readSecret,fetchImpl:async()=>{},...extra})).missing;
- assert.deepEqual(await missing(control({artifacts:artifacts()})),['runOptions','executor'],'the production registration today');
+ // Lane X composes both Meri-local owners when their inputs exist; the production CLI supplies neither input today.
+ assert.deepEqual(await missing(control({artifacts:artifacts()})),['runOptions.authorityPorts','artifacts.executor'],'the production registration today');
  assert.deepEqual(await missing(control({artifacts:{enabled:false}}),{runOptions:run.port,executor}),['artifacts.enabled']);
  assert.deepEqual(await missing(control({artifacts:artifacts({authority:undefined})}),{runOptions:run.port,executor}),['artifacts.authority']);
  assert.deepEqual(await missing({...control({artifacts:artifacts()}),nativeCandidate:undefined},{runOptions:run.port,executor}),['nativeCandidate']);

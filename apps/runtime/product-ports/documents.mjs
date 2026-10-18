@@ -77,7 +77,8 @@ export function documentsFamily(owners={}){
   // Composed disabled: without a declared Core authority origin the supplied authority is never reached.
   if(o.authority===undefined||declared.authority===undefined)return {ports:{artifactStore:storage}};
   if(Object.hasOwn(o.authority,'origin')&&o.authority.origin!==declared.authority.origin||Object.hasOwn(o.authority,'now')&&o.authority.now!==now)throw fault();
-  const late=lateBoundOptionsOwner({authority:o.authority,compose:sessions=>createRuntimeDocumentOptionsComposer({storage,executor:o.executor,budgetPool:pool,sessions,now})});
+  // Production documents charge the admitted run's allocation in the product budget namespace (never the qualification one).
+  const late=lateBoundOptionsOwner({authority:o.authority,compose:sessions=>createRuntimeDocumentOptionsComposer({storage,executor:o.executor,budgetPool:pool,sessions,now,namespace:'product'})});
   registerDocumentsSessionBinder(context,late.bind);
   return {ports:{artifactStore:storage,artifactOptionsOwner:late.owner}};
  };
