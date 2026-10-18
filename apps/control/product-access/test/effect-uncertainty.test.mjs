@@ -57,3 +57,26 @@ test('cancellation during membership admission never invokes the effect route',{
  try{await entered.promise;controller.abort();const response=await pending;assert.deepEqual(await response.json(),{error:{code:'CANCELLED'}});assert.equal(calls,0);}
  finally{release.resolve();}
 });
+
+for(const mode of ['deadline','cancel'])test(`pending domain release after ${mode} withholds an acknowledged result`,{timeout:3000},async()=>{
+ const entered=deferred(),done=deferred(),controller=new AbortController();let acknowledged=0;
+ const app=application({'/api/test/save':{effect:true,async handle(){acknowledged++;return {saved:true};},
+  async release({signal,result,...context}){assert.equal(Object.hasOwn(context,'credential'),false);assert.deepEqual(result,{saved:true});entered.resolve();
+   await new Promise((_,reject)=>signal.addEventListener('abort',()=>{done.resolve();reject(signal.reason);},{once:true}));return result;}}});
+ const pending=post(app,'/api/test/save',{},controller.signal);
+ await entered.promise;if(mode==='cancel')controller.abort();
+ const response=await pending;assert.equal(response.status,mode==='deadline'?408:499);
+ assert.deepEqual(await response.json(),{error:{code:mode==='deadline'?'DEADLINE':'CANCELLED',outcome:'RESULT_NOT_RELEASED'}});
+ await done.promise;assert.equal(acknowledged,1,'withheld release never reruns the effect');
+});
+
+for(const recheck of [false,true])test(`domain release ${recheck?'uses':'cannot omit'} the generic final membership authorization`,async()=>{
+ const app=application({'/api/test/save':{async handle(){return {saved:true};},async release({result,publish,recheckMembership}){if(recheck)await recheckMembership();return publish(result);}}});
+ const response=await post(app,'/api/test/save',{});assert.equal(response.status,recheck?200:502);
+ assert.deepEqual(await response.json(),recheck?{saved:true}:{error:{code:'PRODUCT_UNAVAILABLE'}});
+});
+
+test('domain release serializes the exact measured response bytes once',async()=>{
+ let serializations=0;const app=application({'/api/test/save':{handle(){return {toJSON(){return {version:++serializations};}};},async release({result,publish,recheckMembership}){await recheckMembership();return publish(result);}}});
+ const response=await post(app,'/api/test/save',{});assert.equal(response.status,200);assert.deepEqual(await response.json(),{version:1});assert.equal(serializations,1);
+});

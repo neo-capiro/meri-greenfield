@@ -45,7 +45,7 @@ export async function scheduledConversationFixture({dispatch=true,destinationId=
  const principal=(await gate.admit({credential:'native',deadlineMs:NOW+30000})).principal;
  const core={async assertCurrent(){state.coreReads++;if(state.coreDenied)throw Error('synthetic Core refusal');}};
  const currentness=createScheduledConversationCurrentness({scheduleOwner:h.scheduleOwner,gate,core,now:()=>NOW});
- const retention={async assertServable(){if(!state.retained)throw Object.assign(Error('suppressed'),{code:'RETENTION_SUPPRESSED'});}};
+ const retention={async assertServable(){if(!state.retained)throw Object.assign(Error('suppressed'),{code:'RETENTION_SUPPRESSED'});},async withRelease(_subjects,release,{signal}){return release(signal);}};
  const receipts=createScheduledConversationReceipts({scheduleOwner:h.scheduleOwner,store:h.store,currentness,retention,now:()=>NOW});
  const history=createConversationHistoryApplication({service:createConversationHistoryService({store:h.store,gate,retention}),gate,currentness,now:()=>NOW,limits:{maxRequestMs:2000,maxRequestBytes:131072,maxResponseBytes:2097152}});
  const call={credential:'native',principal,conversationId:identity.binding.conversationId,scopes:p.scopes,deadlineMs:NOW+2000};

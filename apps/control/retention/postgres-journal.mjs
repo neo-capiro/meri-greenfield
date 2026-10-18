@@ -112,6 +112,23 @@ export function createPostgresRetentionJournal({pool,now=Date.now,maxRequestMs=1
   catch(error){failure=wrap(outcome??error);}
   if(!failure&&outcome)failure=wrap(outcome);failure=retire(c,acquiring,reusable,failure);if(failure)throw failure;return result;
  }
+ /** One lease holds every page subject's shared transition lock until the serving callback materializes response bytes.
+  * Suppression takes the matching exclusive lock before its ledger append, including the previously absent-row case. */
+ async function withServing(keys,fn,{signal,deadlineMs=now()+maxRequestMs}={}){
+  if(!Array.isArray(keys)||keys.length>100||typeof fn!=='function')fail('RETENTION_INVALID_REQUEST');const ordered=[...new Set(keys)].sort();ordered.forEach(parseKey);
+  const life=createOperationLifetime({deadlineMs:Math.min(deadlineMs,now()+maxRequestMs),now,signal,errorFactory:()=>storeError('RETENTION_READ_UNAVAILABLE')});
+  let c,reusable=false,failure,outcome,result;const acquiring=Promise.resolve().then(()=>pool.connect());
+  try{c=await life.run(()=>acquiring);
+   for(const key of ordered)await life.run(()=>c.query('SELECT pg_advisory_lock_shared(hashtextextended($1,0))',[`meri_retention_transition:${key}`]));
+   try{result=await life.run(fn);}catch(error){outcome=error;}
+   // A timed-out acquisition/callback retires the session rather than queueing unlocks behind uncertain work.
+   life.check();
+   for(const key of ordered.slice().reverse()){const unlocked=await life.run(()=>c.query('SELECT pg_advisory_unlock_shared(hashtextextended($1,0)) AS unlocked',[`meri_retention_transition:${key}`]));if(unlocked?.rows?.[0]?.unlocked!==true)fail('RETENTION_UNLOCK_UNKNOWN');}
+   reusable=true;
+  }catch(error){failure=wrap(error);}
+  finally{life.close();}
+  failure=retire(c,acquiring,reusable,failure);if(failure)throw failure;if(outcome)throw outcome;return result;
+ }
  /** Records the exact row and version targets a purge may delete, inside the caller's transaction, under the subject lock, only when the
   * subject is currently SUPPRESSED under the plan's suppression generation and the plan is the subject's current recorded plan. */
  async function planRows(c,key,plan){
@@ -152,6 +169,6 @@ export function createPostgresRetentionJournal({pool,now=Date.now,maxRequestMs=1
  async function ownerOf({tenantId,kind,subjectId}){if(!tables[kind])fail('RETENTION_INVALID_REQUEST');
   const rows=kind==='conversation'?(await pool.query('SELECT owner_actor_id AS owner FROM meri_conversations.conversations WHERE tenant_id=$1 AND conversation_id=$2',[tenantId,subjectId])).rows:(await pool.query('SELECT actor_id AS owner FROM meri_artifacts.heads WHERE tenant_id=$1 AND artifact_id=$2',[tenantId,subjectId])).rows;
   return rows[0]?.owner??null;}
- return Object.freeze({get,set,keys,exclusive,withTransition,planRows,rows,tx,readProjection,assertProjection,ownerOf,rowClasses:Object.freeze([...Object.keys(rowWhere),...(memoryContinuationPurgeSourceQualified?['conversation']:[])])});
+ return Object.freeze({get,set,keys,exclusive,withTransition,withServing,planRows,rows,tx,readProjection,assertProjection,ownerOf,rowClasses:Object.freeze([...Object.keys(rowWhere),...(memoryContinuationPurgeSourceQualified?['conversation']:[])])});
 }
 export {parseSubject};

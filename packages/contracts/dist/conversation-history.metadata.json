@@ -5,8 +5,8 @@
   "sources": [
     {
       "path": "../../apps/control/conversations/history/http.mjs",
-      "sha256": "e46f9333e94f0dc6be80f5026500a472105f4f799042dba158dde5b11cdd6ed3",
-      "bytes": 1514
+      "sha256": "f7e4b0377203a324579030515c782121df91deea9b19384c452aa375b1a80eaf",
+      "bytes": 1816
     },
     {
       "path": "../../apps/control/conversations/history/lineage.mjs",
@@ -20,8 +20,8 @@
     },
     {
       "path": "../../apps/control/conversations/history/service.mjs",
-      "sha256": "ef6f03c97ee0f56945a587f2fe4e601a765ad4d403f200817e1fdffd064c4981",
-      "bytes": 4021
+      "sha256": "08ff51ff8cd9c43f6fa66bbf2aa07b5cb863ee4dd1ae8433385d43253d1d434c",
+      "bytes": 6183
     },
     {
       "path": "../../apps/control/conversations/history/store.mjs",

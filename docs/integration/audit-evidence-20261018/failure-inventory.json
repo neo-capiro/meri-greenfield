@@ -1,0 +1,831 @@
+{
+  "sourcePins": {
+    "parent": "141f2ada6378382f2bf7462d8a2c5dc7758230d0",
+    "current": "43db1dfac9663962efb0e49fa24ec7ddea10f9d0",
+    "publishedCurrentPrefix": "7e4e7582",
+    "currentTreeSha": "ca3f3a59e556e191a2a76c74c5deb87cc356af5a"
+  },
+  "environment": {
+    "nodeVersion": "v24.19.0",
+    "npmVersion": "11.9.0",
+    "TZ": "America/Toronto",
+    "NODE_OPTIONS": null,
+    "dependencyStrategy": "All lockfiles equal parent/current. Identical installed dependency bytes reused. contracts/node_modules physically copied per pinned tree to preserve bundler source paths and Node permission sandbox; each root @capiro/meri-contracts resolves its own pinned contracts source. Other immutable installs linked.",
+    "tasks": [
+      {
+        "pin": "baseline",
+        "sha": "141f2ada6378382f2bf7462d8a2c5dc7758230d0",
+        "name": "runtime-typecheck",
+        "cwd": "<parent-worktree>",
+        "argv": [
+          "node",
+          "apps/runtime/node_modules/typescript/bin/tsc",
+          "--noEmit",
+          "--pretty",
+          "false",
+          "-p",
+          "apps/runtime/tsconfig.json"
+        ],
+        "startedAt": "2026-10-18T21:20:34.512762+00:00",
+        "log": "<evidence-dir>/baseline-runtime-typecheck.scrubbed.log",
+        "exitCode": 2,
+        "endedAt": "2026-10-18T21:20:48.278925+00:00",
+        "rawSha256": "f288361ede5079e593ded80e09b577ab897c5a0b6229de63f576d7a4662def8d",
+        "sha256": "f288361ede5079e593ded80e09b577ab897c5a0b6229de63f576d7a4662def8d"
+      },
+      {
+        "pin": "current",
+        "sha": "43db1dfac9663962efb0e49fa24ec7ddea10f9d0",
+        "name": "runtime-typecheck",
+        "cwd": "<current-worktree>",
+        "argv": [
+          "node",
+          "apps/runtime/node_modules/typescript/bin/tsc",
+          "--noEmit",
+          "--pretty",
+          "false",
+          "-p",
+          "apps/runtime/tsconfig.json"
+        ],
+        "startedAt": "2026-10-18T21:20:34.514128+00:00",
+        "log": "<evidence-dir>/current-runtime-typecheck.scrubbed.log",
+        "exitCode": 2,
+        "endedAt": "2026-10-18T21:20:48.524874+00:00",
+        "rawSha256": "f288361ede5079e593ded80e09b577ab897c5a0b6229de63f576d7a4662def8d",
+        "sha256": "f288361ede5079e593ded80e09b577ab897c5a0b6229de63f576d7a4662def8d"
+      },
+      {
+        "pin": "current",
+        "sha": "43db1dfac9663962efb0e49fa24ec7ddea10f9d0",
+        "name": "control-typecheck",
+        "cwd": "<current-worktree>",
+        "argv": [
+          "node",
+          "apps/runtime/node_modules/typescript/bin/tsc",
+          "--noEmit",
+          "--pretty",
+          "false",
+          "-p",
+          "apps/control/conversations/tsconfig.json"
+        ],
+        "startedAt": "2026-10-18T21:20:34.514420+00:00",
+        "log": "<evidence-dir>/current-control-typecheck.scrubbed.log",
+        "exitCode": 2,
+        "endedAt": "2026-10-18T21:20:51.493977+00:00",
+        "rawSha256": "0516385759864540947ba7cfdc4d3daf706deab55b44293d8f8f29ae24e37096",
+        "sha256": "0516385759864540947ba7cfdc4d3daf706deab55b44293d8f8f29ae24e37096"
+      },
+      {
+        "pin": "baseline",
+        "sha": "141f2ada6378382f2bf7462d8a2c5dc7758230d0",
+        "name": "control-typecheck",
+        "cwd": "<parent-worktree>",
+        "argv": [
+          "node",
+          "apps/runtime/node_modules/typescript/bin/tsc",
+          "--noEmit",
+          "--pretty",
+          "false",
+          "-p",
+          "apps/control/conversations/tsconfig.json"
+        ],
+        "startedAt": "2026-10-18T21:20:34.513323+00:00",
+        "log": "<evidence-dir>/baseline-control-typecheck.scrubbed.log",
+        "exitCode": 2,
+        "endedAt": "2026-10-18T21:20:52.105963+00:00",
+        "rawSha256": "0516385759864540947ba7cfdc4d3daf706deab55b44293d8f8f29ae24e37096",
+        "sha256": "0516385759864540947ba7cfdc4d3daf706deab55b44293d8f8f29ae24e37096"
+      },
+      {
+        "pin": "current",
+        "sha": "43db1dfac9663962efb0e49fa24ec7ddea10f9d0",
+        "name": "standard-check",
+        "cwd": "<current-worktree>",
+        "argv": [
+          "npm",
+          "run",
+          "check"
+        ],
+        "startedAt": "2026-10-18T21:20:34.513537+00:00",
+        "log": "<evidence-dir>/current-standard-check.scrubbed.log",
+        "exitCode": 1,
+        "endedAt": "2026-10-18T21:21:14.171533+00:00",
+        "rawSha256": "bb02bb7fafd75bfdd4ce6beba145f9e4c9d9dd8a272e0eb1f75fbf8f004bd7f1",
+        "sha256": "4e11d34dadd6819a0567561c053d6a79477d4ed2e99149db6f80b8c04413fef7"
+      },
+      {
+        "pin": "baseline",
+        "sha": "141f2ada6378382f2bf7462d8a2c5dc7758230d0",
+        "name": "standard-check",
+        "cwd": "<parent-worktree>",
+        "argv": [
+          "npm",
+          "run",
+          "check"
+        ],
+        "startedAt": "2026-10-18T21:20:34.512391+00:00",
+        "log": "<evidence-dir>/baseline-standard-check.scrubbed.log",
+        "exitCode": 1,
+        "endedAt": "2026-10-18T21:21:14.335822+00:00",
+        "rawSha256": "a985212527759f59c73839b6cb6d97936a78db876c87d96e87ed912a95e4a41d",
+        "sha256": "eded59891ec2c8fa35b705ce37062a489740272078c01f0e2804cfc6a53c9751"
+      }
+    ],
+    "typescriptVersion": "5.9.3"
+  },
+  "historicalCounts": {
+    "tests": 4389,
+    "suites": 0,
+    "pass": 4357,
+    "fail": 32,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "freshParentCounts": {
+    "tests": 4389,
+    "suites": 0,
+    "pass": 4356,
+    "fail": 33,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "freshCurrentCounts": {
+    "tests": 4389,
+    "suites": 0,
+    "pass": 4357,
+    "fail": 32,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "introducedFailures": [],
+  "resolvedParentFailures": [
+    {
+      "location": "packages/contracts/test/conversation-history-public.test.mjs:57:1",
+      "name": "browser distribution is self-contained and offline package resolves only public exports",
+      "error": "AssertionError [ERR_ASSERTION]: ../../apps/control/conversations/history/service.mjs",
+      "diagnostic": "AssertionError [ERR_ASSERTION]: ../../apps/control/conversations/history/service.mjs\n  + actual - expected\n  \n  + '2003dd90b7ec56b1f463fc1ec9ca3ea455f86565e2302afd82bed267de9fab87'\n  - 'ef6f03c97ee0f56945a587f2fe4e601a765ad4d403f200817e1fdffd064c4981'\n  \n      at TestContext.<anonymous> (file://<parent-worktree>/packages/contracts/test/conversation-history-public.test.mjs:62:238)\n      at async Test.run (node:internal/test_runner/test:1389:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: '2003dd90b7ec56b1f463fc1ec9ca3ea455f86565e2302afd82bed267de9fab87',\n    expected: 'ef6f03c97ee0f56945a587f2fe4e601a765ad4d403f200817e1fdffd064c4981',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }"
+    }
+  ],
+  "remainingFailures": [
+    {
+      "location": "packages/contracts/test/action-application-independent.test.mjs:17:128",
+      "name": "independent public receiver actual PR42 query/read",
+      "error": "Error: LOCAL_FLOW_REFUSED",
+      "diagnostic": "Error: LOCAL_FLOW_REFUSED\n      at requireOk (file://<current-worktree>/apps/control/action-application/local/flow.mjs:4:54)\n      at runLocalActionFlow (file://<current-worktree>/apps/control/action-application/local/flow.mjs:5:13)\n      at async file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:13:211\n      at async TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:17:212)\n      at async Test.run (node:internal/test_runner/test:1389:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)",
+      "number": 1,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited fixture/precondition failure",
+      "expected": "The local query route returns HTTP 200 so wire() can produce a fixture before the test assertions run.",
+      "actual": "runLocalActionFlow requireOk throws Error: LOCAL_FLOW_REFUSED at query; fixture promise is shared across these 23 tests. Their intended receiver assertions are not reached.",
+      "assertion": "apps/control/action-application/local/flow.mjs:4-5: value.status must equal 200; otherwise throw LOCAL_FLOW_REFUSED."
+    },
+    {
+      "location": "packages/contracts/test/action-application-independent.test.mjs:17:128",
+      "name": "independent public receiver actual PR42 draft/draft",
+      "error": "Error: LOCAL_FLOW_REFUSED",
+      "diagnostic": "Error: LOCAL_FLOW_REFUSED\n      at requireOk (file://<current-worktree>/apps/control/action-application/local/flow.mjs:4:54)\n      at runLocalActionFlow (file://<current-worktree>/apps/control/action-application/local/flow.mjs:5:13)\n      at async file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:13:211\n      at async TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:17:212)\n      at async Test.run (node:internal/test_runner/test:1389:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)",
+      "number": 2,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited fixture/precondition failure",
+      "expected": "The local query route returns HTTP 200 so wire() can produce a fixture before the test assertions run.",
+      "actual": "runLocalActionFlow requireOk throws Error: LOCAL_FLOW_REFUSED at query; fixture promise is shared across these 23 tests. Their intended receiver assertions are not reached.",
+      "assertion": "apps/control/action-application/local/flow.mjs:4-5: value.status must equal 200; otherwise throw LOCAL_FLOW_REFUSED."
+    },
+    {
+      "location": "packages/contracts/test/action-application-independent.test.mjs:17:128",
+      "name": "independent public receiver actual PR42 prepare/pending",
+      "error": "Error: LOCAL_FLOW_REFUSED",
+      "diagnostic": "Error: LOCAL_FLOW_REFUSED\n      at requireOk (file://<current-worktree>/apps/control/action-application/local/flow.mjs:4:54)\n      at runLocalActionFlow (file://<current-worktree>/apps/control/action-application/local/flow.mjs:5:13)\n      at async file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:13:211\n      at async TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:17:212)\n      at async Test.run (node:internal/test_runner/test:1389:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)",
+      "number": 3,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited fixture/precondition failure",
+      "expected": "The local query route returns HTTP 200 so wire() can produce a fixture before the test assertions run.",
+      "actual": "runLocalActionFlow requireOk throws Error: LOCAL_FLOW_REFUSED at query; fixture promise is shared across these 23 tests. Their intended receiver assertions are not reached.",
+      "assertion": "apps/control/action-application/local/flow.mjs:4-5: value.status must equal 200; otherwise throw LOCAL_FLOW_REFUSED."
+    },
+    {
+      "location": "packages/contracts/test/action-application-independent.test.mjs:17:128",
+      "name": "independent public receiver actual PR42 execute/executed",
+      "error": "Error: LOCAL_FLOW_REFUSED",
+      "diagnostic": "Error: LOCAL_FLOW_REFUSED\n      at requireOk (file://<current-worktree>/apps/control/action-application/local/flow.mjs:4:54)\n      at runLocalActionFlow (file://<current-worktree>/apps/control/action-application/local/flow.mjs:5:13)\n      at async file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:13:211\n      at async TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:17:212)\n      at async Test.run (node:internal/test_runner/test:1389:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)",
+      "number": 4,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited fixture/precondition failure",
+      "expected": "The local query route returns HTTP 200 so wire() can produce a fixture before the test assertions run.",
+      "actual": "runLocalActionFlow requireOk throws Error: LOCAL_FLOW_REFUSED at query; fixture promise is shared across these 23 tests. Their intended receiver assertions are not reached.",
+      "assertion": "apps/control/action-application/local/flow.mjs:4-5: value.status must equal 200; otherwise throw LOCAL_FLOW_REFUSED."
+    },
+    {
+      "location": "packages/contracts/test/action-application-independent.test.mjs:17:128",
+      "name": "independent public receiver actual PR42 execute/replay",
+      "error": "Error: LOCAL_FLOW_REFUSED",
+      "diagnostic": "Error: LOCAL_FLOW_REFUSED\n      at requireOk (file://<current-worktree>/apps/control/action-application/local/flow.mjs:4:54)\n      at runLocalActionFlow (file://<current-worktree>/apps/control/action-application/local/flow.mjs:5:13)\n      at async file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:13:211\n      at async TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:17:212)\n      at async Test.run (node:internal/test_runner/test:1389:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)",
+      "number": 5,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited fixture/precondition failure",
+      "expected": "The local query route returns HTTP 200 so wire() can produce a fixture before the test assertions run.",
+      "actual": "runLocalActionFlow requireOk throws Error: LOCAL_FLOW_REFUSED at query; fixture promise is shared across these 23 tests. Their intended receiver assertions are not reached.",
+      "assertion": "apps/control/action-application/local/flow.mjs:4-5: value.status must equal 200; otherwise throw LOCAL_FLOW_REFUSED."
+    },
+    {
+      "location": "packages/contracts/test/action-application-independent.test.mjs:18:1",
+      "name": "independent actual pending approval error and indeterminate accounting remain non-success",
+      "error": "Error: LOCAL_FLOW_REFUSED",
+      "diagnostic": "Error: LOCAL_FLOW_REFUSED\n      at requireOk (file://<current-worktree>/apps/control/action-application/local/flow.mjs:4:54)\n      at runLocalActionFlow (file://<current-worktree>/apps/control/action-application/local/flow.mjs:5:13)\n      at async file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:13:211\n      at async TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:17:212)\n      at async Test.run (node:internal/test_runner/test:1389:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)",
+      "number": 6,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited fixture/precondition failure",
+      "expected": "The local query route returns HTTP 200 so wire() can produce a fixture before the test assertions run.",
+      "actual": "runLocalActionFlow requireOk throws Error: LOCAL_FLOW_REFUSED at query; fixture promise is shared across these 23 tests. Their intended receiver assertions are not reached.",
+      "assertion": "apps/control/action-application/local/flow.mjs:4-5: value.status must equal 200; otherwise throw LOCAL_FLOW_REFUSED."
+    },
+    {
+      "location": "packages/contracts/test/action-application-independent.test.mjs:36:3",
+      "name": "independent receiving refusal accepted recommendation",
+      "error": "Error: LOCAL_FLOW_REFUSED",
+      "diagnostic": "Error: LOCAL_FLOW_REFUSED\n      at requireOk (file://<current-worktree>/apps/control/action-application/local/flow.mjs:4:54)\n      at runLocalActionFlow (file://<current-worktree>/apps/control/action-application/local/flow.mjs:5:13)\n      at async file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:13:211\n      at async TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:17:212)\n      at async Test.run (node:internal/test_runner/test:1389:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)",
+      "number": 7,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited fixture/precondition failure",
+      "expected": "The local query route returns HTTP 200 so wire() can produce a fixture before the test assertions run.",
+      "actual": "runLocalActionFlow requireOk throws Error: LOCAL_FLOW_REFUSED at query; fixture promise is shared across these 23 tests. Their intended receiver assertions are not reached.",
+      "assertion": "apps/control/action-application/local/flow.mjs:4-5: value.status must equal 200; otherwise throw LOCAL_FLOW_REFUSED."
+    },
+    {
+      "location": "packages/contracts/test/action-application-independent.test.mjs:36:3",
+      "name": "independent receiving refusal unknown query field",
+      "error": "Error: LOCAL_FLOW_REFUSED",
+      "diagnostic": "Error: LOCAL_FLOW_REFUSED\n      at requireOk (file://<current-worktree>/apps/control/action-application/local/flow.mjs:4:54)\n      at runLocalActionFlow (file://<current-worktree>/apps/control/action-application/local/flow.mjs:5:13)\n      at async file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:13:211\n      at async TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:17:212)\n      at async Test.run (node:internal/test_runner/test:1389:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)",
+      "number": 8,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited fixture/precondition failure",
+      "expected": "The local query route returns HTTP 200 so wire() can produce a fixture before the test assertions run.",
+      "actual": "runLocalActionFlow requireOk throws Error: LOCAL_FLOW_REFUSED at query; fixture promise is shared across these 23 tests. Their intended receiver assertions are not reached.",
+      "assertion": "apps/control/action-application/local/flow.mjs:4-5: value.status must equal 200; otherwise throw LOCAL_FLOW_REFUSED."
+    },
+    {
+      "location": "packages/contracts/test/action-application-independent.test.mjs:36:3",
+      "name": "independent receiving refusal query digest",
+      "error": "Error: LOCAL_FLOW_REFUSED",
+      "diagnostic": "Error: LOCAL_FLOW_REFUSED\n      at requireOk (file://<current-worktree>/apps/control/action-application/local/flow.mjs:4:54)\n      at runLocalActionFlow (file://<current-worktree>/apps/control/action-application/local/flow.mjs:5:13)\n      at async file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:13:211\n      at async TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:17:212)\n      at async Test.run (node:internal/test_runner/test:1389:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)",
+      "number": 9,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited fixture/precondition failure",
+      "expected": "The local query route returns HTTP 200 so wire() can produce a fixture before the test assertions run.",
+      "actual": "runLocalActionFlow requireOk throws Error: LOCAL_FLOW_REFUSED at query; fixture promise is shared across these 23 tests. Their intended receiver assertions are not reached.",
+      "assertion": "apps/control/action-application/local/flow.mjs:4-5: value.status must equal 200; otherwise throw LOCAL_FLOW_REFUSED."
+    },
+    {
+      "location": "packages/contracts/test/action-application-independent.test.mjs:36:3",
+      "name": "independent receiving refusal event binding",
+      "error": "Error: LOCAL_FLOW_REFUSED",
+      "diagnostic": "Error: LOCAL_FLOW_REFUSED\n      at requireOk (file://<current-worktree>/apps/control/action-application/local/flow.mjs:4:54)\n      at runLocalActionFlow (file://<current-worktree>/apps/control/action-application/local/flow.mjs:5:13)\n      at async file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:13:211\n      at async TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:17:212)\n      at async Test.run (node:internal/test_runner/test:1389:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)",
+      "number": 10,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited fixture/precondition failure",
+      "expected": "The local query route returns HTTP 200 so wire() can produce a fixture before the test assertions run.",
+      "actual": "runLocalActionFlow requireOk throws Error: LOCAL_FLOW_REFUSED at query; fixture promise is shared across these 23 tests. Their intended receiver assertions are not reached.",
+      "assertion": "apps/control/action-application/local/flow.mjs:4-5: value.status must equal 200; otherwise throw LOCAL_FLOW_REFUSED."
+    },
+    {
+      "location": "packages/contracts/test/action-application-independent.test.mjs:36:3",
+      "name": "independent receiving refusal event result ref",
+      "error": "Error: LOCAL_FLOW_REFUSED",
+      "diagnostic": "Error: LOCAL_FLOW_REFUSED\n      at requireOk (file://<current-worktree>/apps/control/action-application/local/flow.mjs:4:54)\n      at runLocalActionFlow (file://<current-worktree>/apps/control/action-application/local/flow.mjs:5:13)\n      at async file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:13:211\n      at async TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:17:212)\n      at async Test.run (node:internal/test_runner/test:1389:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)",
+      "number": 11,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited fixture/precondition failure",
+      "expected": "The local query route returns HTTP 200 so wire() can produce a fixture before the test assertions run.",
+      "actual": "runLocalActionFlow requireOk throws Error: LOCAL_FLOW_REFUSED at query; fixture promise is shared across these 23 tests. Their intended receiver assertions are not reached.",
+      "assertion": "apps/control/action-application/local/flow.mjs:4-5: value.status must equal 200; otherwise throw LOCAL_FLOW_REFUSED."
+    },
+    {
+      "location": "packages/contracts/test/action-application-independent.test.mjs:36:3",
+      "name": "independent receiving refusal draft digest",
+      "error": "Error: LOCAL_FLOW_REFUSED",
+      "diagnostic": "Error: LOCAL_FLOW_REFUSED\n      at requireOk (file://<current-worktree>/apps/control/action-application/local/flow.mjs:4:54)\n      at runLocalActionFlow (file://<current-worktree>/apps/control/action-application/local/flow.mjs:5:13)\n      at async file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:13:211\n      at async TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:17:212)\n      at async Test.run (node:internal/test_runner/test:1389:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)",
+      "number": 12,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited fixture/precondition failure",
+      "expected": "The local query route returns HTTP 200 so wire() can produce a fixture before the test assertions run.",
+      "actual": "runLocalActionFlow requireOk throws Error: LOCAL_FLOW_REFUSED at query; fixture promise is shared across these 23 tests. Their intended receiver assertions are not reached.",
+      "assertion": "apps/control/action-application/local/flow.mjs:4-5: value.status must equal 200; otherwise throw LOCAL_FLOW_REFUSED."
+    },
+    {
+      "location": "packages/contracts/test/action-application-independent.test.mjs:36:3",
+      "name": "independent receiving refusal recommendation hash",
+      "error": "Error: LOCAL_FLOW_REFUSED",
+      "diagnostic": "Error: LOCAL_FLOW_REFUSED\n      at requireOk (file://<current-worktree>/apps/control/action-application/local/flow.mjs:4:54)\n      at runLocalActionFlow (file://<current-worktree>/apps/control/action-application/local/flow.mjs:5:13)\n      at async file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:13:211\n      at async TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:17:212)\n      at async Test.run (node:internal/test_runner/test:1389:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)",
+      "number": 13,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited fixture/precondition failure",
+      "expected": "The local query route returns HTTP 200 so wire() can produce a fixture before the test assertions run.",
+      "actual": "runLocalActionFlow requireOk throws Error: LOCAL_FLOW_REFUSED at query; fixture promise is shared across these 23 tests. Their intended receiver assertions are not reached.",
+      "assertion": "apps/control/action-application/local/flow.mjs:4-5: value.status must equal 200; otherwise throw LOCAL_FLOW_REFUSED."
+    },
+    {
+      "location": "packages/contracts/test/action-application-independent.test.mjs:36:3",
+      "name": "independent receiving refusal prepare approval confusion",
+      "error": "Error: LOCAL_FLOW_REFUSED",
+      "diagnostic": "Error: LOCAL_FLOW_REFUSED\n      at requireOk (file://<current-worktree>/apps/control/action-application/local/flow.mjs:4:54)\n      at runLocalActionFlow (file://<current-worktree>/apps/control/action-application/local/flow.mjs:5:13)\n      at async file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:13:211\n      at async TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:17:212)\n      at async Test.run (node:internal/test_runner/test:1389:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)",
+      "number": 14,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited fixture/precondition failure",
+      "expected": "The local query route returns HTTP 200 so wire() can produce a fixture before the test assertions run.",
+      "actual": "runLocalActionFlow requireOk throws Error: LOCAL_FLOW_REFUSED at query; fixture promise is shared across these 23 tests. Their intended receiver assertions are not reached.",
+      "assertion": "apps/control/action-application/local/flow.mjs:4-5: value.status must equal 200; otherwise throw LOCAL_FLOW_REFUSED."
+    },
+    {
+      "location": "packages/contracts/test/action-application-independent.test.mjs:36:3",
+      "name": "independent receiving refusal proposal digest",
+      "error": "Error: LOCAL_FLOW_REFUSED",
+      "diagnostic": "Error: LOCAL_FLOW_REFUSED\n      at requireOk (file://<current-worktree>/apps/control/action-application/local/flow.mjs:4:54)\n      at runLocalActionFlow (file://<current-worktree>/apps/control/action-application/local/flow.mjs:5:13)\n      at async file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:13:211\n      at async TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:17:212)\n      at async Test.run (node:internal/test_runner/test:1389:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)",
+      "number": 15,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited fixture/precondition failure",
+      "expected": "The local query route returns HTTP 200 so wire() can produce a fixture before the test assertions run.",
+      "actual": "runLocalActionFlow requireOk throws Error: LOCAL_FLOW_REFUSED at query; fixture promise is shared across these 23 tests. Their intended receiver assertions are not reached.",
+      "assertion": "apps/control/action-application/local/flow.mjs:4-5: value.status must equal 200; otherwise throw LOCAL_FLOW_REFUSED."
+    },
+    {
+      "location": "packages/contracts/test/action-application-independent.test.mjs:36:3",
+      "name": "independent receiving refusal proposal task substitution",
+      "error": "Error: LOCAL_FLOW_REFUSED",
+      "diagnostic": "Error: LOCAL_FLOW_REFUSED\n      at requireOk (file://<current-worktree>/apps/control/action-application/local/flow.mjs:4:54)\n      at runLocalActionFlow (file://<current-worktree>/apps/control/action-application/local/flow.mjs:5:13)\n      at async file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:13:211\n      at async TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:17:212)\n      at async Test.run (node:internal/test_runner/test:1389:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)",
+      "number": 16,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited fixture/precondition failure",
+      "expected": "The local query route returns HTTP 200 so wire() can produce a fixture before the test assertions run.",
+      "actual": "runLocalActionFlow requireOk throws Error: LOCAL_FLOW_REFUSED at query; fixture promise is shared across these 23 tests. Their intended receiver assertions are not reached.",
+      "assertion": "apps/control/action-application/local/flow.mjs:4-5: value.status must equal 200; otherwise throw LOCAL_FLOW_REFUSED."
+    },
+    {
+      "location": "packages/contracts/test/action-application-independent.test.mjs:36:3",
+      "name": "independent receiving refusal prepare client substitution",
+      "error": "Error: LOCAL_FLOW_REFUSED",
+      "diagnostic": "Error: LOCAL_FLOW_REFUSED\n      at requireOk (file://<current-worktree>/apps/control/action-application/local/flow.mjs:4:54)\n      at runLocalActionFlow (file://<current-worktree>/apps/control/action-application/local/flow.mjs:5:13)\n      at async file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:13:211\n      at async TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:17:212)\n      at async Test.run (node:internal/test_runner/test:1389:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)",
+      "number": 17,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited fixture/precondition failure",
+      "expected": "The local query route returns HTTP 200 so wire() can produce a fixture before the test assertions run.",
+      "actual": "runLocalActionFlow requireOk throws Error: LOCAL_FLOW_REFUSED at query; fixture promise is shared across these 23 tests. Their intended receiver assertions are not reached.",
+      "assertion": "apps/control/action-application/local/flow.mjs:4-5: value.status must equal 200; otherwise throw LOCAL_FLOW_REFUSED."
+    },
+    {
+      "location": "packages/contracts/test/action-application-independent.test.mjs:36:3",
+      "name": "independent receiving refusal execute approval confusion",
+      "error": "Error: LOCAL_FLOW_REFUSED",
+      "diagnostic": "Error: LOCAL_FLOW_REFUSED\n      at requireOk (file://<current-worktree>/apps/control/action-application/local/flow.mjs:4:54)\n      at runLocalActionFlow (file://<current-worktree>/apps/control/action-application/local/flow.mjs:5:13)\n      at async file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:13:211\n      at async TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:17:212)\n      at async Test.run (node:internal/test_runner/test:1389:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)",
+      "number": 18,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited fixture/precondition failure",
+      "expected": "The local query route returns HTTP 200 so wire() can produce a fixture before the test assertions run.",
+      "actual": "runLocalActionFlow requireOk throws Error: LOCAL_FLOW_REFUSED at query; fixture promise is shared across these 23 tests. Their intended receiver assertions are not reached.",
+      "assertion": "apps/control/action-application/local/flow.mjs:4-5: value.status must equal 200; otherwise throw LOCAL_FLOW_REFUSED."
+    },
+    {
+      "location": "packages/contracts/test/action-application-independent.test.mjs:36:3",
+      "name": "independent receiving refusal execute unknown key",
+      "error": "Error: LOCAL_FLOW_REFUSED",
+      "diagnostic": "Error: LOCAL_FLOW_REFUSED\n      at requireOk (file://<current-worktree>/apps/control/action-application/local/flow.mjs:4:54)\n      at runLocalActionFlow (file://<current-worktree>/apps/control/action-application/local/flow.mjs:5:13)\n      at async file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:13:211\n      at async TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:17:212)\n      at async Test.run (node:internal/test_runner/test:1389:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)",
+      "number": 19,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited fixture/precondition failure",
+      "expected": "The local query route returns HTTP 200 so wire() can produce a fixture before the test assertions run.",
+      "actual": "runLocalActionFlow requireOk throws Error: LOCAL_FLOW_REFUSED at query; fixture promise is shared across these 23 tests. Their intended receiver assertions are not reached.",
+      "assertion": "apps/control/action-application/local/flow.mjs:4-5: value.status must equal 200; otherwise throw LOCAL_FLOW_REFUSED."
+    },
+    {
+      "location": "packages/contracts/test/action-application-independent.test.mjs:36:3",
+      "name": "independent receiving refusal execute tenant-scope mismatch",
+      "error": "Error: LOCAL_FLOW_REFUSED",
+      "diagnostic": "Error: LOCAL_FLOW_REFUSED\n      at requireOk (file://<current-worktree>/apps/control/action-application/local/flow.mjs:4:54)\n      at runLocalActionFlow (file://<current-worktree>/apps/control/action-application/local/flow.mjs:5:13)\n      at async file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:13:211\n      at async TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:17:212)\n      at async Test.run (node:internal/test_runner/test:1389:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)",
+      "number": 20,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited fixture/precondition failure",
+      "expected": "The local query route returns HTTP 200 so wire() can produce a fixture before the test assertions run.",
+      "actual": "runLocalActionFlow requireOk throws Error: LOCAL_FLOW_REFUSED at query; fixture promise is shared across these 23 tests. Their intended receiver assertions are not reached.",
+      "assertion": "apps/control/action-application/local/flow.mjs:4-5: value.status must equal 200; otherwise throw LOCAL_FLOW_REFUSED."
+    },
+    {
+      "location": "packages/contracts/test/action-application-independent.test.mjs:37:1",
+      "name": "independent route and status cannot reclassify an actual payload",
+      "error": "Error: LOCAL_FLOW_REFUSED",
+      "diagnostic": "Error: LOCAL_FLOW_REFUSED\n      at requireOk (file://<current-worktree>/apps/control/action-application/local/flow.mjs:4:54)\n      at runLocalActionFlow (file://<current-worktree>/apps/control/action-application/local/flow.mjs:5:13)\n      at async file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:13:211\n      at async TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:17:212)\n      at async Test.run (node:internal/test_runner/test:1389:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)",
+      "number": 21,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited fixture/precondition failure",
+      "expected": "The local query route returns HTTP 200 so wire() can produce a fixture before the test assertions run.",
+      "actual": "runLocalActionFlow requireOk throws Error: LOCAL_FLOW_REFUSED at query; fixture promise is shared across these 23 tests. Their intended receiver assertions are not reached.",
+      "assertion": "apps/control/action-application/local/flow.mjs:4-5: value.status must equal 200; otherwise throw LOCAL_FLOW_REFUSED."
+    },
+    {
+      "location": "packages/contracts/test/action-application-independent.test.mjs:42:1",
+      "name": "independent generated browser receiver has no external/private/Node imports",
+      "error": "Error: LOCAL_FLOW_REFUSED",
+      "diagnostic": "Error: LOCAL_FLOW_REFUSED\n      at requireOk (file://<current-worktree>/apps/control/action-application/local/flow.mjs:4:54)\n      at runLocalActionFlow (file://<current-worktree>/apps/control/action-application/local/flow.mjs:5:13)\n      at async file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:13:211\n      at async TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:17:212)\n      at async Test.run (node:internal/test_runner/test:1389:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)",
+      "number": 22,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited fixture/precondition failure",
+      "expected": "The local query route returns HTTP 200 so wire() can produce a fixture before the test assertions run.",
+      "actual": "runLocalActionFlow requireOk throws Error: LOCAL_FLOW_REFUSED at query; fixture promise is shared across these 23 tests. Their intended receiver assertions are not reached.",
+      "assertion": "apps/control/action-application/local/flow.mjs:4-5: value.status must equal 200; otherwise throw LOCAL_FLOW_REFUSED."
+    },
+    {
+      "location": "packages/contracts/test/action-application-independent.test.mjs:54:1",
+      "name": "independent receiving accepts canonical nonconsecutive reserved event sequence",
+      "error": "Error: LOCAL_FLOW_REFUSED",
+      "diagnostic": "Error: LOCAL_FLOW_REFUSED\n      at requireOk (file://<current-worktree>/apps/control/action-application/local/flow.mjs:4:54)\n      at runLocalActionFlow (file://<current-worktree>/apps/control/action-application/local/flow.mjs:5:13)\n      at async file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:13:211\n      at async TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/action-application-independent.test.mjs:17:212)\n      at async Test.run (node:internal/test_runner/test:1389:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)",
+      "number": 23,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited fixture/precondition failure",
+      "expected": "The local query route returns HTTP 200 so wire() can produce a fixture before the test assertions run.",
+      "actual": "runLocalActionFlow requireOk throws Error: LOCAL_FLOW_REFUSED at query; fixture promise is shared across these 23 tests. Their intended receiver assertions are not reached.",
+      "assertion": "apps/control/action-application/local/flow.mjs:4-5: value.status must equal 200; otherwise throw LOCAL_FLOW_REFUSED."
+    },
+    {
+      "location": "packages/contracts/test/conversation-initial-input-public.test.mjs:50:1",
+      "name": "initial-input generation records exact canonical provenance and one shared browser import",
+      "error": "AssertionError [ERR_ASSERTION]: ../../apps/control/conversations/postgres-store.mjs",
+      "diagnostic": "AssertionError [ERR_ASSERTION]: ../../apps/control/conversations/postgres-store.mjs\n  + actual - expected\n  \n  + '3943e94931fc0843faa6dac8c10c7083178996182804abe8f28f8cfedfb53a79'\n  - '96002cc66ed5658273af0cd4035e027efaaaa94708e020f28b79c22f1fc355a0'\n  \n      at TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/conversation-initial-input-public.test.mjs:53:110)\n      at async Test.run (node:internal/test_runner/test:1389:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: '3943e94931fc0843faa6dac8c10c7083178996182804abe8f28f8cfedfb53a79',\n    expected: '96002cc66ed5658273af0cd4035e027efaaaa94708e020f28b79c22f1fc355a0',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }",
+      "number": 24,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited generated provenance mismatch",
+      "expected": "96002cc66ed5658273af0cd4035e027efaaaa94708e020f28b79c22f1fc355a0",
+      "actual": "3943e94931fc0843faa6dac8c10c7083178996182804abe8f28f8cfedfb53a79",
+      "assertion": "conversation-initial-input-public.test.mjs:53:110: assert.equal(sha256(sourceBytes), row.sha256, row.path), first mismatch ../../apps/control/conversations/postgres-store.mjs."
+    },
+    {
+      "location": "packages/contracts/test/document-application-independent.test.mjs:76:1",
+      "name": "standalone browser module works with no Node or private graph",
+      "error": "TypeError: vm.SourceTextModule is not a constructor",
+      "diagnostic": "TypeError: vm.SourceTextModule is not a constructor\n      at TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/document-application-independent.test.mjs:76:384)\n      at async Test.run (node:internal/test_runner/test:1389:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)",
+      "number": 25,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited environment-sensitive runner failure",
+      "expected": "vm.SourceTextModule is constructible.",
+      "actual": "TypeError: vm.SourceTextModule is not a constructor",
+      "assertion": "document-application-independent.test.mjs:76:384: new vm.SourceTextModule(...). The public receiver assertions are not reached without --experimental-vm-modules."
+    },
+    {
+      "location": "packages/contracts/test/retrieval-action-item-binding.test.mjs:88:1",
+      "name": "all fourteen original descriptors and all139 native rows remain exact",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:",
+      "diagnostic": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n  + actual - expected\n  \n    {\n      id: 'get_client_context',\n  +   version: '0.3.0'\n  -   version: '0.2.0'\n    }\n  \n      at TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/retrieval-action-item-binding.test.mjs:95:43)\n      at Test.runInAsyncScope (node:async_hooks:227:14)\n      at Test.run (node:internal/test_runner/test:1382:25)\n      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)\n      at Test.postRun (node:internal/test_runner/test:1522:19)\n      at Test.run (node:internal/test_runner/test:1447:12)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: { id: 'get_client_context', version: '0.3.0' },\n    expected: { id: 'get_client_context', version: '0.2.0' },\n    operator: 'deepStrictEqual',\n    diff: 'simple'\n  }",
+      "number": 26,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited descriptor expectation mismatch",
+      "expected": "{ id: 'get_client_context', version: '0.2.0' }",
+      "actual": "{ id: 'get_client_context', version: '0.3.0' }",
+      "assertion": "packages/contracts/test/retrieval-action-item-binding.test.mjs:95: deepStrictEqual original operation descriptor."
+    },
+    {
+      "location": "packages/contracts/test/retrieval-action-item-independent.test.mjs:26:1",
+      "name": "partial binding preserves every original row and fourteen descriptors",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:",
+      "diagnostic": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n  + actual - expected\n  \n    {\n      id: 'get_client_context',\n  +   version: '0.3.0'\n  -   version: '0.2.0'\n    }\n  \n      at TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/retrieval-action-item-independent.test.mjs:32:46)\n      at Test.runInAsyncScope (node:async_hooks:227:14)\n      at Test.run (node:internal/test_runner/test:1382:25)\n      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)\n      at Test.postRun (node:internal/test_runner/test:1522:19)\n      at Test.run (node:internal/test_runner/test:1447:12)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: { id: 'get_client_context', version: '0.3.0' },\n    expected: { id: 'get_client_context', version: '0.2.0' },\n    operator: 'deepStrictEqual',\n    diff: 'simple'\n  }",
+      "number": 27,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited descriptor expectation mismatch",
+      "expected": "{ id: 'get_client_context', version: '0.2.0' }",
+      "actual": "{ id: 'get_client_context', version: '0.3.0' }",
+      "assertion": "packages/contracts/test/retrieval-action-item-independent.test.mjs:32: deepStrictEqual original operation descriptor."
+    },
+    {
+      "location": "packages/contracts/test/retrieval-meeting-source.test.mjs:361:1",
+      "name": "meeting schema objects stay closed and package public exports stay 0.1 only",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:",
+      "diagnostic": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  \n  '0.1.10' !== '0.1.5'\n  \n      at TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/retrieval-meeting-source.test.mjs:365:10)\n      at Test.runInAsyncScope (node:async_hooks:227:14)\n      at Test.run (node:internal/test_runner/test:1382:25)\n      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)\n      at Test.postRun (node:internal/test_runner/test:1522:19)\n      at Test.run (node:internal/test_runner/test:1447:12)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: '0.1.10',\n    expected: '0.1.5',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }",
+      "number": 28,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited package expectation mismatch",
+      "expected": "0.1.5",
+      "actual": "0.1.10",
+      "assertion": "packages/contracts/test/retrieval-meeting-source.test.mjs:365:10: strictEqual public package version."
+    },
+    {
+      "location": "packages/contracts/test/retrieval-memory-proposals.test.mjs:120:1",
+      "name": "operation is mapped but unavailable and public exports stay separate",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:",
+      "diagnostic": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  \n  '0.1.10' !== '0.1.5'\n  \n      at TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/retrieval-memory-proposals.test.mjs:127:10)\n      at Test.runInAsyncScope (node:async_hooks:227:14)\n      at Test.run (node:internal/test_runner/test:1382:25)\n      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)\n      at Test.postRun (node:internal/test_runner/test:1522:19)\n      at Test.run (node:internal/test_runner/test:1447:12)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: '0.1.10',\n    expected: '0.1.5',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }",
+      "number": 29,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited package expectation mismatch",
+      "expected": "0.1.5",
+      "actual": "0.1.10",
+      "assertion": "packages/contracts/test/retrieval-memory-proposals.test.mjs:127:10: strictEqual public package version."
+    },
+    {
+      "location": "packages/contracts/test/retrieval-operational-reads.test.mjs:394:1",
+      "name": "operational-read schema objects stay closed and package public exports stay 0.1 only",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:",
+      "diagnostic": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  \n  '0.1.10' !== '0.1.5'\n  \n      at TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/retrieval-operational-reads.test.mjs:398:10)\n      at Test.runInAsyncScope (node:async_hooks:227:14)\n      at Test.run (node:internal/test_runner/test:1382:25)\n      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)\n      at Test.postRun (node:internal/test_runner/test:1522:19)\n      at Test.run (node:internal/test_runner/test:1447:12)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: '0.1.10',\n    expected: '0.1.5',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }",
+      "number": 30,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited package expectation mismatch",
+      "expected": "0.1.5",
+      "actual": "0.1.10",
+      "assertion": "packages/contracts/test/retrieval-operational-reads.test.mjs:398:10: strictEqual public package version."
+    },
+    {
+      "location": "packages/contracts/test/retrieval-public-domain-query.test.mjs:101:1",
+      "name": "trusted default as-of is distinct from explicit date and generatedAt",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:",
+      "diagnostic": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  + actual - expected\n  \n  + '2020-01-01T05:00:00.000Z'\n  - '2020-01-01T00:00:00.000Z'\n                 ^\n  \n      at TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/retrieval-public-domain-query.test.mjs:104:9)\n      at Test.runInAsyncScope (node:async_hooks:227:14)\n      at Test.run (node:internal/test_runner/test:1382:25)\n      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)\n      at Test.postRun (node:internal/test_runner/test:1522:19)\n      at Test.run (node:internal/test_runner/test:1447:12)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: '2020-01-01T05:00:00.000Z',\n    expected: '2020-01-01T00:00:00.000Z',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }",
+      "number": 31,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited environment-sensitive timezone assertion",
+      "expected": "2020-01-01T00:00:00.000Z",
+      "actual": "2020-01-01T05:00:00.000Z",
+      "assertion": "retrieval-public-domain-query.test.mjs:104:9: assert.equal(normalize({...r, asOfDate:'January 1, 2020'}).input.asOfDate, '2020-01-01T00:00:00.000Z')."
+    },
+    {
+      "location": "packages/contracts/test/task-command-application-public.test.mjs:25:1",
+      "name": "actual prepare/approve/execute API wire admits canonical normalization and immutable correlated result",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:",
+      "diagnostic": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  + actual - expected\n  \n  + 'https://source.invalid/api/clio/tools/update_task'\n  - 'https://source.invalid/clio/tools/update_task'\n  \n      at TestContext.<anonymous> (file://<current-worktree>/packages/contracts/test/task-command-application-public.test.mjs:28:119)\n      at async Test.run (node:internal/test_runner/test:1389:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: 'https://source.invalid/api/clio/tools/update_task',\n    expected: 'https://source.invalid/clio/tools/update_task',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }",
+      "number": 32,
+      "baselineComparison": "same test fails in parent and current",
+      "classification": "inherited route expectation mismatch",
+      "expected": "https://source.invalid/clio/tools/update_task",
+      "actual": "https://source.invalid/api/clio/tools/update_task",
+      "assertion": "task-command-application-public.test.mjs:28:119: strictEqual command source URL."
+    }
+  ],
+  "typescript": {
+    "runtime": [
+      {
+        "path": "apps/worker/conversation/capabilities/policy-resolution.mjs",
+        "line": 65,
+        "column": 167,
+        "code": "TS2345",
+        "message": "Argument of type 'unknown' is not assignable to parameter of type 'readonly string[]'.",
+        "classification": "inherited: byte-identical parent and current compiler output"
+      },
+      {
+        "path": "apps/worker/conversation/capabilities/policy.mjs",
+        "line": 39,
+        "column": 24,
+        "code": "TS7006",
+        "message": "Parameter 'op' implicitly has an 'any' type.",
+        "classification": "inherited: byte-identical parent and current compiler output"
+      },
+      {
+        "path": "apps/worker/conversation/capabilities/policy.mjs",
+        "line": 49,
+        "column": 31,
+        "code": "TS7006",
+        "message": "Parameter 'value' implicitly has an 'any' type.",
+        "classification": "inherited: byte-identical parent and current compiler output"
+      }
+    ],
+    "control": [
+      {
+        "path": "apps/worker/conversation/capabilities/policy.mjs",
+        "line": 39,
+        "column": 24,
+        "code": "TS7006",
+        "message": "Parameter 'op' implicitly has an 'any' type.",
+        "classification": "inherited: byte-identical parent and current compiler output"
+      },
+      {
+        "path": "apps/worker/conversation/capabilities/policy.mjs",
+        "line": 49,
+        "column": 31,
+        "code": "TS7006",
+        "message": "Parameter 'value' implicitly has an 'any' type.",
+        "classification": "inherited: byte-identical parent and current compiler output"
+      },
+      {
+        "path": "apps/worker/conversation/capabilities/skill-plugin.mjs",
+        "line": 46,
+        "column": 48,
+        "code": "TS2345",
+        "message": "Argument of type 'unknown' is not assignable to parameter of type 'string'.",
+        "classification": "inherited: byte-identical parent and current compiler output"
+      },
+      {
+        "path": "apps/worker/conversation/capabilities/skill-plugin.mjs",
+        "line": 74,
+        "column": 30,
+        "code": "TS7006",
+        "message": "Parameter 'uid' implicitly has an 'any' type.",
+        "classification": "inherited: byte-identical parent and current compiler output"
+      },
+      {
+        "path": "apps/worker/conversation/capabilities/skill-plugin.mjs",
+        "line": 75,
+        "column": 58,
+        "code": "TS7034",
+        "message": "Variable 'directories' implicitly has type 'any[]' in some locations where its type cannot be determined.",
+        "classification": "inherited: byte-identical parent and current compiler output"
+      },
+      {
+        "path": "apps/worker/conversation/capabilities/skill-plugin.mjs",
+        "line": 81,
+        "column": 38,
+        "code": "TS7005",
+        "message": "Variable 'directories' implicitly has an 'any[]' type.",
+        "classification": "inherited: byte-identical parent and current compiler output"
+      },
+      {
+        "path": "apps/worker/conversation/capabilities/skill-plugin.mjs",
+        "line": 108,
+        "column": 26,
+        "code": "TS2339",
+        "message": "Property 'code' does not exist on type '{}'.",
+        "classification": "inherited: byte-identical parent and current compiler output"
+      },
+      {
+        "path": "apps/worker/conversation/capabilities/skill-plugin.mjs",
+        "line": 116,
+        "column": 79,
+        "code": "TS2379",
+        "message": "Argument of type '{ uid: number | undefined; }' is not assignable to parameter of type '{ uid?: number; }' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.\n  Types of property 'uid' are incompatible.\n    Type 'number | undefined' is not assignable to type 'number'.\n      Type 'undefined' is not assignable to type 'number'.",
+        "classification": "inherited: byte-identical parent and current compiler output"
+      },
+      {
+        "path": "apps/worker/conversation/egress/proxy-server.mjs",
+        "line": 63,
+        "column": 9,
+        "code": "TS2339",
+        "message": "Property 'destroySoon' does not exist on type 'Duplex'.",
+        "classification": "inherited: byte-identical parent and current compiler output"
+      },
+      {
+        "path": "apps/worker/conversation/egress/proxy-server.mjs",
+        "line": 96,
+        "column": 17,
+        "code": "TS7006",
+        "message": "Parameter 'error' implicitly has an 'any' type.",
+        "classification": "inherited: byte-identical parent and current compiler output"
+      },
+      {
+        "path": "apps/worker/conversation/egress/proxy-server.mjs",
+        "line": 98,
+        "column": 44,
+        "code": "TS7006",
+        "message": "Parameter 'error' implicitly has an 'any' type.",
+        "classification": "inherited: byte-identical parent and current compiler output"
+      },
+      {
+        "path": "apps/worker/conversation/egress/proxy-server.mjs",
+        "line": 143,
+        "column": 7,
+        "code": "TS2740",
+        "message": "Type 'Duplex' is missing the following properties from type 'Socket': destroySoon, connect, resetAndDestroy, setTimeout, and 17 more.",
+        "classification": "inherited: byte-identical parent and current compiler output"
+      },
+      {
+        "path": "apps/worker/conversation/egress/proxy-server.mjs",
+        "line": 167,
+        "column": 59,
+        "code": "TS2532",
+        "message": "Object is possibly 'undefined'.",
+        "classification": "inherited: byte-identical parent and current compiler output"
+      },
+      {
+        "path": "apps/worker/conversation/egress/proxy-server.mjs",
+        "line": 168,
+        "column": 35,
+        "code": "TS2345",
+        "message": "Argument of type 'number | undefined' is not assignable to parameter of type 'number'.\n  Type 'undefined' is not assignable to type 'number'.",
+        "classification": "inherited: byte-identical parent and current compiler output"
+      },
+      {
+        "path": "apps/worker/conversation/egress/proxy-server.mjs",
+        "line": 191,
+        "column": 75,
+        "code": "TS7006",
+        "message": "Parameter 'error' implicitly has an 'any' type.",
+        "classification": "inherited: byte-identical parent and current compiler output"
+      },
+      {
+        "path": "apps/worker/conversation/egress/proxy-server.mjs",
+        "line": 208,
+        "column": 68,
+        "code": "TS7034",
+        "message": "Variable 'wake' implicitly has type 'any' in some locations where its type cannot be determined.",
+        "classification": "inherited: byte-identical parent and current compiler output"
+      },
+      {
+        "path": "apps/worker/conversation/egress/proxy-server.mjs",
+        "line": 209,
+        "column": 122,
+        "code": "TS7005",
+        "message": "Variable 'wake' implicitly has an 'any' type.",
+        "classification": "inherited: byte-identical parent and current compiler output"
+      },
+      {
+        "path": "apps/worker/conversation/egress/proxy-server.mjs",
+        "line": 210,
+        "column": 18,
+        "code": "TS7005",
+        "message": "Variable 'wake' implicitly has an 'any' type.",
+        "classification": "inherited: byte-identical parent and current compiler output"
+      }
+    ]
+  },
+  "environmentControl": {
+    "command": "TZ=UTC node --experimental-vm-modules --test packages/contracts/test/document-application-independent.test.mjs packages/contracts/test/retrieval-public-domain-query.test.mjs",
+    "parent": {
+      "tests": 83,
+      "pass": 83,
+      "fail": 0
+    },
+    "current": {
+      "tests": 83,
+      "pass": 83,
+      "fail": 0
+    },
+    "meaning": "The VM constructor and date assertion failures are environment-sensitive and inherited; changing runner flags/timezone is diagnostic evidence, not a product source repair."
+  },
+  "dependencySetupAttempt": {
+    "parent": {
+      "tests": 4389,
+      "pass": 4354,
+      "fail": 35
+    },
+    "current": {
+      "tests": 4389,
+      "pass": 4355,
+      "fail": 34
+    },
+    "extraNames": [
+      "generated distribution check is independent of caller working directory",
+      "imports and runs with no filesystem, network or process side effect"
+    ],
+    "cause": "Disposable worktree linked contracts dependencies outside its repo root. esbuild encoded different source comments and Node permission child denied AJV read. Both pass after physical copy of identical dependency bytes; no tracked edits.",
+    "targetedSetupControl": {
+      "tests": 29,
+      "pass": 29,
+      "fail": 0
+    }
+  },
+  "logs": [
+    {
+      "file": "baseline-control-typecheck.scrubbed.log",
+      "sha256": "0516385759864540947ba7cfdc4d3daf706deab55b44293d8f8f29ae24e37096",
+      "bytes": 2826
+    },
+    {
+      "file": "baseline-environment-control.scrubbed.log",
+      "sha256": "19c7d252e17ba76ecec25d70bc4f56b783896bb0a8670246c19e3c697cd514b3",
+      "bytes": 6171
+    },
+    {
+      "file": "baseline-runtime-typecheck.scrubbed.log",
+      "sha256": "f288361ede5079e593ded80e09b577ab897c5a0b6229de63f576d7a4662def8d",
+      "bytes": 405
+    },
+    {
+      "file": "baseline-standard-check.linked-dependency-attempt1.scrubbed.log",
+      "sha256": "29a53de76df061fd0a3ddeb76944556f5107986334df4bc77b2dc7edb1179127",
+      "bytes": 423172
+    },
+    {
+      "file": "baseline-standard-check.scrubbed.log",
+      "sha256": "eded59891ec2c8fa35b705ce37062a489740272078c01f0e2804cfc6a53c9751",
+      "bytes": 420551
+    },
+    {
+      "file": "current-control-typecheck.scrubbed.log",
+      "sha256": "0516385759864540947ba7cfdc4d3daf706deab55b44293d8f8f29ae24e37096",
+      "bytes": 2826
+    },
+    {
+      "file": "current-dependency-setup-control.scrubbed.log",
+      "sha256": "b72c8e7099c34c4d844ec3ae0d77ac0bcac940d72414675a631e74c8e0842a80",
+      "bytes": 2763
+    },
+    {
+      "file": "current-environment-control.scrubbed.log",
+      "sha256": "eea8c1a7d212fd8a9ce6ef2b352b03aeafeccedf5b6828389af3b6fe3719725a",
+      "bytes": 6183
+    },
+    {
+      "file": "current-runtime-typecheck.scrubbed.log",
+      "sha256": "f288361ede5079e593ded80e09b577ab897c5a0b6229de63f576d7a4662def8d",
+      "bytes": 405
+    },
+    {
+      "file": "current-standard-check.linked-dependency-attempt1.scrubbed.log",
+      "sha256": "f5279a5272cdeb3462581447e9dd63139726492cbeba14a90b18c8fef18c884f",
+      "bytes": 422285
+    },
+    {
+      "file": "current-standard-check.scrubbed.log",
+      "sha256": "4e11d34dadd6819a0567561c053d6a79477d4ed2e99149db6f80b8c04413fef7",
+      "bytes": 419721
+    },
+    {
+      "file": "historical-standard-check.scrubbed.log",
+      "sha256": "63ba48850479931522b856e8b2f6767ba17eb000195d3085d68986fd9a9eadb5",
+      "bytes": 419110
+    }
+  ],
+  "comparisonDiagnosticEquality": "All32 current failing test diagnostic blocks byte-identical to parent after normalizing worktree stack roots."
+}

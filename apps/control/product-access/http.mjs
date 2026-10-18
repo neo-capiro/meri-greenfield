@@ -3,14 +3,17 @@
  * CORS policy, ambient configuration or credential is created here. */
 import {types} from 'node:util';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
-import {jsonBody,response} from '../action-application/http.mjs';
+import {jsonBody,response,serializedResponse} from '../action-application/http.mjs';
 import {ProductError,productFailure,refuse} from './errors.mjs';
 const getters=Object.fromEntries(['url','method','headers','signal','body'].map(k=>[k,Object.getOwnPropertyDescriptor(Request.prototype,k).get]));
 /** Transport and membership statuses shared by every product route; routes add their own domain codes. */
 export const PRODUCT_ERROR_STATUSES=Object.freeze({INVALID_REQUEST:400,UNAUTHENTICATED:401,ACCESS_DENIED:403,MEMBERSHIP_REVOKED:403,NOT_FOUND:404,
  METHOD_NOT_ALLOWED:405,DEADLINE:408,MEMBERSHIP_CHANGED:409,REQUEST_TOO_LARGE:413,UNSUPPORTED_MEDIA_TYPE:415,CANCELLED:499,PRODUCT_UNAVAILABLE:502});
 const ROUTE=/^\/api\/(?:[a-z][a-z-]{0,31}\/){1,3}[a-z][a-z-]{0,31}$/u;
-/** `routes` maps an exact path to `{handle({principal,body,signal,deadlineMs}), errors?:{CODE:status}, effect?:boolean}`. A route with
+/** `routes` maps an exact path to `{handle({principal,body,signal,deadlineMs}), release?, errors?:{CODE:status}, effect?:boolean}`.
+ * An optional domain release owner brackets final authorization and synchronous `publish(result)` with its serving fence.
+ * It must return the exact published response; the callback cannot be retained or reused beyond this request lifetime.
+ * A route with
  * `effect:true` reports UNKNOWN when an invoked route has an indeterminate outcome, and RESULT_NOT_RELEASED when its returned
  * result is withheld. Starting a route is not proof of an effect or of physical cancellation; callers must reconcile by identity. */
 export function createProductApplication(options){
@@ -25,7 +28,8 @@ export function createProductApplication(options){
   const errors=Object.freeze({...route.errors});
   if(Object.entries(errors).some(([code,status])=>!/^[A-Z][A-Z0-9_]{2,63}$/u.test(code)||Object.hasOwn(PRODUCT_ERROR_STATUSES,code)||!Number.isSafeInteger(status)||status<400||status>599))throw new ProductError('PRODUCT_CONFIGURATION');
   if(route.effect!==undefined&&typeof route.effect!=='boolean')throw new ProductError('PRODUCT_CONFIGURATION');
-  table.set(path,Object.freeze({handle:route.handle,errors,effect:route.effect===true}));
+  if(route.release!==undefined&&typeof route.release!=='function')throw new ProductError('PRODUCT_CONFIGURATION');
+  table.set(path,Object.freeze({handle:route.handle,release:route.release,errors,effect:route.effect===true}));
  }
  const failure=(error,route)=>{
   const owned=productFailure(error);let code=owned?.code??'PRODUCT_UNAVAILABLE';
@@ -53,11 +57,15 @@ export function createProductApplication(options){
    // The native bearer stays in this request closure. Domain owners receive only a bounded recheck callback, never the token.
    const recheckMembership=()=>lifetime.run(signal=>gate.recheck({principal,credential:auth.slice(7),signal,deadlineMs:accessDeadline}));
    const recheckConversation=conversationCurrentness===undefined?undefined:({conversationId,scopes})=>lifetime.run(signal=>conversationCurrentness.assertCurrent({credential:auth.slice(7),principal,conversationId,scopes,signal,deadlineMs:accessDeadline}));
-   const result=await lifetime.run(async signal=>{started=true;const result=await route.handle({principal,body,signal,deadlineMs:accessDeadline,recheckMembership,recheckConversation});handled=true;return result;});
-   // Stored data and effects are released only to a member who is still active at the admitted revision.
-   await recheckMembership();
-   const text=JSON.stringify(result);if(Buffer.byteLength(text)>maxResponseBytes)refuse('PRODUCT_UNAVAILABLE');
-   lifetime.check();return response(result,200);
+   let result=await lifetime.run(async signal=>{started=true;const result=await route.handle({principal,body,signal,deadlineMs:accessDeadline,recheckMembership,recheckConversation});handled=true;return result;});
+   // Materialize bytes synchronously inside the domain fence, after its final authorization.
+   let published,releaseMembershipChecked=false;const finalMembership=async()=>{await recheckMembership();releaseMembershipChecked=true;};
+   const publish=value=>{lifetime.check();if(published||route.release&&!releaseMembershipChecked)refuse('PRODUCT_UNAVAILABLE');
+    const text=JSON.stringify(value);if(Buffer.byteLength(text)>maxResponseBytes)refuse('PRODUCT_UNAVAILABLE');
+    lifetime.check();published=serializedResponse(text,200);return published;};
+   if(route.release){const released=await lifetime.run(signal=>route.release({principal,body,result,signal,deadlineMs:accessDeadline,recheckMembership:finalMembership,recheckConversation,publish}));
+    if(!published||released!==published)refuse('PRODUCT_UNAVAILABLE');return released;}
+   await recheckMembership();return publish(result);
   }catch(error){
    const owned=productFailure(error);
    if(started&&route.effect){

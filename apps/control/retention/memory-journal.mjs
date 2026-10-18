@@ -3,19 +3,23 @@
  * Transitions take the shared side of a recovery lock and recovery takes the exclusive side, so a transition that started before
  * recovery completes first and none can interleave with a recovery pass. */
 import {fail,hash} from './boundary.mjs';
+import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {assertExactProjection} from './projection-proof.mjs';
 export function createRecoveryLock(){
  let readers=0,writer=false;const waiters=[];
  const wake=()=>{while(waiters.length){const w=waiters[0];if(w.exclusive?(readers===0&&!writer):!writer){waiters.shift();if(w.exclusive)writer=true;else readers++;w.resolve();}else break;}};
- const acquire=exclusive=>new Promise(resolve=>{waiters.push({exclusive,resolve});wake();});
+ const acquire=(exclusive,signal)=>new Promise((resolve,reject)=>{if(signal?.aborted){reject(signal.reason);return;}
+  const abort=()=>{const i=waiters.indexOf(waiter);if(i!==-1){waiters.splice(i,1);reject(signal.reason);wake();}},waiter={exclusive,resolve:()=>{signal?.removeEventListener('abort',abort);resolve();}};
+  signal?.addEventListener('abort',abort,{once:true});waiters.push(waiter);wake();});
  return Object.freeze({
-  async shared(fn){await acquire(false);try{return await fn();}finally{readers--;wake();}},
-  async exclusive(fn){await acquire(true);try{return await fn();}finally{writer=false;wake();}},
+  async shared(fn,{signal}={}){await acquire(false,signal);try{return await fn();}finally{readers--;wake();}},
+  async exclusive(fn,{signal}={}){await acquire(true,signal);try{return await fn();}finally{writer=false;wake();}},
   state:()=>({readers,writer,waiting:waiters.length})
  });
 }
 export function createMemoryRetentionJournal(){
  let state=new Map();const lock=createRecoveryLock(),transitions=new Map();
+ const transitionFor=key=>{let transition=transitions.get(key);if(!transition){transition=createRecoveryLock();transitions.set(key,transition);}return transition;};
  const copy=m=>new Map([...m].map(([k,v])=>[k,structuredClone(v)]));
  return Object.freeze({
   async get(key){const v=state.get(key);return v?structuredClone(v):null;},
@@ -33,8 +37,12 @@ export function createMemoryRetentionJournal(){
   exclusive(fn){return lock.exclusive(fn);},
   /** Contract adapter for the PostgreSQL per-subject transition advisory lock. */
   withTransition(key,fn){if(typeof key!=='string'||!key||typeof fn!=='function')fail('RETENTION_INVALID_REQUEST');
-   let transition=transitions.get(key);if(!transition){transition=createRecoveryLock();transitions.set(key,transition);}
-   return transition.exclusive(fn);},
+   return transitionFor(key).exclusive(fn);},
+  /** Shared subject transition locks span the whole page; one cancellation/deadline bounds acquisition and the callback. */
+  async withServing(keys,fn,{signal,deadlineMs=Date.now()+10000}={}){if(!Array.isArray(keys)||keys.length>100||typeof fn!=='function'||keys.some(k=>typeof k!=='string'||!k))fail('RETENTION_INVALID_REQUEST');
+   const life=createOperationLifetime({deadlineMs,now:Date.now,signal,errorFactory:()=>Object.assign(new Error('RETENTION_READ_UNAVAILABLE'),{code:'RETENTION_READ_UNAVAILABLE'})});
+   const ordered=[...new Set(keys)].sort();const acquire=i=>i===ordered.length?life.run(fn):transitionFor(ordered[i]).shared(()=>acquire(i+1),{signal:life.signal});
+   try{return await acquire(0);}finally{life.close();}},
   lock,
   /** A backup at this moment. */
   snapshot(){return copy(state);},

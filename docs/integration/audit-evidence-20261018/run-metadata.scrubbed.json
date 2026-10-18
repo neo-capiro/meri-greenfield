@@ -1,0 +1,128 @@
+{
+  "nodeVersion": "v24.19.0",
+  "npmVersion": "11.9.0",
+  "TZ": "America/Toronto",
+  "NODE_OPTIONS": null,
+  "dependencyStrategy": "All lockfiles equal parent/current. Identical installed dependency bytes reused. contracts/node_modules physically copied per pinned tree to preserve bundler source paths and Node permission sandbox; each root @capiro/meri-contracts resolves its own pinned contracts source. Other immutable installs linked.",
+  "tasks": [
+    {
+      "pin": "baseline",
+      "sha": "141f2ada6378382f2bf7462d8a2c5dc7758230d0",
+      "name": "runtime-typecheck",
+      "cwd": "<parent-worktree>",
+      "argv": [
+        "node",
+        "apps/runtime/node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--pretty",
+        "false",
+        "-p",
+        "apps/runtime/tsconfig.json"
+      ],
+      "startedAt": "2026-10-18T21:20:34.512762+00:00",
+      "log": "<evidence-dir>/baseline-runtime-typecheck.scrubbed.log",
+      "exitCode": 2,
+      "endedAt": "2026-10-18T21:20:48.278925+00:00",
+      "rawSha256": "f288361ede5079e593ded80e09b577ab897c5a0b6229de63f576d7a4662def8d",
+      "sha256": "f288361ede5079e593ded80e09b577ab897c5a0b6229de63f576d7a4662def8d"
+    },
+    {
+      "pin": "current",
+      "sha": "43db1dfac9663962efb0e49fa24ec7ddea10f9d0",
+      "name": "runtime-typecheck",
+      "cwd": "<current-worktree>",
+      "argv": [
+        "node",
+        "apps/runtime/node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--pretty",
+        "false",
+        "-p",
+        "apps/runtime/tsconfig.json"
+      ],
+      "startedAt": "2026-10-18T21:20:34.514128+00:00",
+      "log": "<evidence-dir>/current-runtime-typecheck.scrubbed.log",
+      "exitCode": 2,
+      "endedAt": "2026-10-18T21:20:48.524874+00:00",
+      "rawSha256": "f288361ede5079e593ded80e09b577ab897c5a0b6229de63f576d7a4662def8d",
+      "sha256": "f288361ede5079e593ded80e09b577ab897c5a0b6229de63f576d7a4662def8d"
+    },
+    {
+      "pin": "current",
+      "sha": "43db1dfac9663962efb0e49fa24ec7ddea10f9d0",
+      "name": "control-typecheck",
+      "cwd": "<current-worktree>",
+      "argv": [
+        "node",
+        "apps/runtime/node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--pretty",
+        "false",
+        "-p",
+        "apps/control/conversations/tsconfig.json"
+      ],
+      "startedAt": "2026-10-18T21:20:34.514420+00:00",
+      "log": "<evidence-dir>/current-control-typecheck.scrubbed.log",
+      "exitCode": 2,
+      "endedAt": "2026-10-18T21:20:51.493977+00:00",
+      "rawSha256": "0516385759864540947ba7cfdc4d3daf706deab55b44293d8f8f29ae24e37096",
+      "sha256": "0516385759864540947ba7cfdc4d3daf706deab55b44293d8f8f29ae24e37096"
+    },
+    {
+      "pin": "baseline",
+      "sha": "141f2ada6378382f2bf7462d8a2c5dc7758230d0",
+      "name": "control-typecheck",
+      "cwd": "<parent-worktree>",
+      "argv": [
+        "node",
+        "apps/runtime/node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--pretty",
+        "false",
+        "-p",
+        "apps/control/conversations/tsconfig.json"
+      ],
+      "startedAt": "2026-10-18T21:20:34.513323+00:00",
+      "log": "<evidence-dir>/baseline-control-typecheck.scrubbed.log",
+      "exitCode": 2,
+      "endedAt": "2026-10-18T21:20:52.105963+00:00",
+      "rawSha256": "0516385759864540947ba7cfdc4d3daf706deab55b44293d8f8f29ae24e37096",
+      "sha256": "0516385759864540947ba7cfdc4d3daf706deab55b44293d8f8f29ae24e37096"
+    },
+    {
+      "pin": "current",
+      "sha": "43db1dfac9663962efb0e49fa24ec7ddea10f9d0",
+      "name": "standard-check",
+      "cwd": "<current-worktree>",
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "startedAt": "2026-10-18T21:20:34.513537+00:00",
+      "log": "<evidence-dir>/current-standard-check.scrubbed.log",
+      "exitCode": 1,
+      "endedAt": "2026-10-18T21:21:14.171533+00:00",
+      "rawSha256": "bb02bb7fafd75bfdd4ce6beba145f9e4c9d9dd8a272e0eb1f75fbf8f004bd7f1",
+      "sha256": "4e11d34dadd6819a0567561c053d6a79477d4ed2e99149db6f80b8c04413fef7"
+    },
+    {
+      "pin": "baseline",
+      "sha": "141f2ada6378382f2bf7462d8a2c5dc7758230d0",
+      "name": "standard-check",
+      "cwd": "<parent-worktree>",
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "startedAt": "2026-10-18T21:20:34.512391+00:00",
+      "log": "<evidence-dir>/baseline-standard-check.scrubbed.log",
+      "exitCode": 1,
+      "endedAt": "2026-10-18T21:21:14.335822+00:00",
+      "rawSha256": "a985212527759f59c73839b6cb6d97936a78db876c87d96e87ed912a95e4a41d",
+      "sha256": "eded59891ec2c8fa35b705ce37062a489740272078c01f0e2804cfc6a53c9751"
+    }
+  ],
+  "typescriptVersion": "5.9.3"
+}

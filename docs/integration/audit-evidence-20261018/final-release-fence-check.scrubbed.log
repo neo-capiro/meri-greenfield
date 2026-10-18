@@ -1,0 +1,26 @@
+✔ canonical release keeps earlier subject protected during awaited authorization (12.310763ms)
+✔ canonical release keeps earlier subject protected during awaited later-subject-read (2.541524ms)
+✔ canonical release sees suppression that acquired its transition lock first (1.672556ms)
+✔ canonical deadline release frees subject locks without late publication (32.42088ms)
+✔ canonical cancel release frees subject locks without late publication (2.892211ms)
+✔ canonical denied release frees subject locks without late publication (1.430582ms)
+✔ concurrent pages with reversed subject order share a deterministic fence without deadlock (1.039844ms)
+✔ PostgreSQL page fence uses one lease and sorted shared locks matching suppression, then unlocks in reverse order (0.883079ms)
+✔ PostgreSQL cancel page fence retires unknown session state (0.915787ms)
+✔ PostgreSQL deadline page fence retires unknown session state (29.734069ms)
+✔ PostgreSQL unlock-unknown page fence retires unknown session state (0.455425ms)
+✔ PostgreSQL late-lease page fence retires unknown session state (110.68707ms)
+✔ PostgreSQL clean fence preserves callback authorization denial and frees its session (0.765501ms)
+✔ history cannot publish after an internal memory fence deadline while its HTTP signal stays active (31.29507ms)
+✔ history cannot publish after an internal postgres fence deadline while its HTTP signal stays active (30.874421ms)
+✔ PostgreSQL failed-unlock page fence retires the session within its original bound (0.928597ms)
+✔ PostgreSQL stalled-unlock page fence retires the session within its original bound (31.049584ms)
+✔ PostgreSQL partial-acquire page fence retires the session within its original bound (31.125518ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 501.767476

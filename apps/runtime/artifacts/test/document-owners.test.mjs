@@ -15,7 +15,16 @@ import {createRuntimeDocumentRunOptions,DOCUMENTS_PRODUCER_NAMESPACE} from '../r
 import {createRuntimeArtifactApplication} from '../application.mjs';
 import {bindDocumentsSessions} from '../session-binding.mjs';
 import {captureRuntimePorts} from '../../product-applications.mjs';
-import {record as storedRecord} from '../../../artifacts/storage/test/sql-fixture.mjs';
+import {record as storedRecord,sqlFixture} from '../../../artifacts/storage/test/sql-fixture.mjs';
+import {publicationFixture} from '../../../artifacts/storage/test/publication-fixture.mjs';
+import {createRuntimeDocumentOptionsComposer} from '../composition.mjs';
+import {createLocalArtifactExecutor} from '../../../artifacts/local-executor.mjs';
+import {createLocalPreviewStore} from '../../../artifacts/preview/local-store.mjs';
+import {createRendererPort} from '../../../artifacts/renderer.mjs';
+import {syntheticAdmission,syntheticOfficeConverter} from '../../../artifacts/test/pdf-fixtures.mjs';
+import {mkdtemp,rm} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
 import {ARTIFACT_MIME_TYPES,artifactFilename} from '../../../../packages/contracts/artifacts-0.2/artifact-formats.mjs';
 import {executionGrantFixture} from '../../../gateway/budget/test/execution-grant-fixture.mjs';
 import {admittedSet,ISSUED_AT,RUN_BINDING,BUDGETS,POLICY_REVISION,CLIENT} from '../../native-authority/test/execution-capability-fixture.mjs';
@@ -188,6 +197,44 @@ test('run-options reader can recompose on one pool before registration, but cann
  const handle=owner.register(tuple);
  assert.throws(()=>owner.bindVersionReader({pool:tuple.pool,versions:first}),code('ARTIFACT_RUN_OPTIONS_CONFLICT'));
  handle.release();owner.bindVersionReader({pool:tuple.pool,versions:first});
+});
+
+test('retained Word and Excel traverse Core authority, canonical publication/retention and runtime HTTP for inspect, download and preview',{timeout:30000},async t=>{
+ const root=await mkdtemp(join(tmpdir(),'meri-read-family-'));t.after(()=>rm(root,{recursive:true,force:true}));
+ const now=Date.now,live=await liveSession(now);t.after(()=>live.sessions.revoke(live.credential));
+ const db=sqlFixture(),publication=publicationFixture(BINDING.tenantId,now);
+ const versions=db.create({now,tenantId:BINDING.tenantId,publication:publication.publication,maxRequestMs:1000});
+ const previews=await createLocalPreviewStore({root:join(root,'previews'),canonicalSha256:hash});t.after(()=>previews.dispose());
+ const executor=createLocalArtifactExecutor({pythonExecutable:process.env.MERI_DOCUMENT_PYTHON??'/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3',nodeExecutable:process.execPath,pptxModulePath:join(root,'unused-presentation-module'),tempRoot:root});
+ const objectsById=new Map(),objects={async put({objectId,bytes,scopes:objectScopes}){const copy=Buffer.from(bytes),sha256=createHash('sha256').update(copy).digest('hex');objectsById.set(objectId,copy);return {objectId,versionId:'synthetic-native-'+objectId,sha256,bytes:copy.length,scopes:objectScopes};},async get(object){return Buffer.from(objectsById.get(object.objectId));}};
+ const specs=[{operation:'create_word',format:'docx',title:'Retained brief',content:{blocks:[{kind:'paragraph',runs:[{text:'Retained Word content'}]}]}},createBody('create_excel').request],records=[];
+ for(const spec of specs){
+  const generated=await executor.execute({request:spec,assets:[],deadlineMs:now()+20000,maxBytes:262144}),versionId=randomUUID(),r=retainedDocument(spec.operation,versionId);
+  r.spec=spec;r.specSha256=hash(spec);r.requestSha256=hash({spec,versionId});r.inspection=generated.inspection;
+  r.version.artifactId=randomUUID();r.version.object=await objects.put({objectId:randomUUID(),bytes:generated.bytes,scopes:structuredClone(scopes)});
+  r.version.mimeType=ARTIFACT_MIME_TYPES[spec.format];r.version.filename=artifactFilename(spec);
+  await versions.commit({...r,expectedParentVersionId:null});records.push({record:r,bytes:generated.bytes});
+ }
+ const {tuple}=admittedRun(),core=scriptedCore(now),secrets=secretFiles(),composed=await composeDocumentsFamily({configuration:control({artifacts:artifacts()}),now,readSecret:secrets.readSecret,fetchImpl:core.fetch,executor,authorityPorts:authorityPorts({credential:tuple.taskCapability,calls:[]})});
+ composed.runOptions.bindVersionReader({pool:db.pool,versions});const registered=composed.runOptions.register({...tuple,pool:db.pool,original:{...tuple.original,expiresAtMs:now()+60000}});t.after(()=>registered.release());
+ const renderer=createRendererPort({admission:syntheticAdmission(),transformer:syntheticOfficeConverter()});
+ const compose=createRuntimeDocumentOptionsComposer({storage:{versions,objects},executor,budgetPool:db.pool,sessions:live.sessions,now,previews,renderer,namespace:'product'});
+ const owner={async resolve(call){const trusted=await composed.authority.resolve({...call,sessions:live.sessions});if(trusted===null)return null;const {recheck,...options}=trusted;return {documentOptions:compose(options),recheck};}};
+ const app=createRuntimeArtifactApplication({sessions:live.sessions,optionsOwner:owner,now,limits,retention:db.retention});
+ const send=(intent,body)=>app.handle(new Request('https://control.synthetic.invalid/api/documents/'+intent,{method:'POST',headers:{authorization:'Bearer '+live.credential,'content-type':'application/json'},body:JSON.stringify(body)}));
+ for(const {record:r,bytes}of records){
+  const body={versionId:r.version.versionId},inspection=await send('inspect',body),read=await inspection.json();assert.equal(inspection.status,200,JSON.stringify(read));assert.equal(read.inspection.currentBytesVerified,true);assert.equal(read.version.mimeType,r.version.mimeType);
+  const downloaded=await send('download',body);assert.equal(downloaded.status,200);assert.equal(downloaded.headers.get('content-type'),r.version.mimeType);assert.deepEqual(Buffer.from(await downloaded.arrayBuffer()),bytes);
+  const published=await send('preview-publish',body),receipt=await published.json();assert.equal(published.status,200,JSON.stringify(receipt));assert.equal(receipt.preview.versionId,r.version.versionId);
+  const preview=await send('preview',body);assert.equal(preview.status,200);assert.equal(preview.headers.get('content-type'),'application/pdf');assert.equal(Buffer.from(await preview.arrayBuffer()).subarray(0,5).toString(),'%PDF-');
+ }
+ const excel=records[1].record,selected={versionId:excel.version.versionId};
+ const readsBefore=db.events.length;assert.equal((await send('inspect',{...selected,request:{operation:'create_word'}})).status,400);assert.equal(db.events.length,readsBefore,'malformed body performs no retained metadata lookup');
+ db.suppressed.add(`${BINDING.tenantId}:artifact:${excel.version.artifactId}`);assert.notEqual((await send('download',selected)).status,200);db.suppressed.clear();
+ publication.state.deny=true;assert.notEqual((await send('inspect',selected)).status,200);publication.state.deny=false;
+ const persisted=db.state.versions.get(excel.version.versionId),original=persisted.record;persisted.record=structuredClone(original);persisted.record.version.binding.conversationId=randomUUID();persisted.record_sha256=hash(persisted.record);
+ assert.notEqual((await send('download',selected)).status,200,'cross-conversation retained metadata releases neither a family nor bytes');Object.assign(db.state.versions.get(excel.version.versionId),{record:original,record_sha256:hash(original)});
+ assert.equal((await send('download',selected)).status,200,'restoring valid custody restores ordinary readback');
 });
 
 test('startup composition composes both Meri-local owners from the declaration and the Core authority ports, naming each gap by key; nothing spawns, reads or connects',async()=>{

@@ -16,12 +16,17 @@ function fixture(id='mail.list_messages',opts={}){
 }
 const response=page=>new Response(JSON.stringify(page),{headers:{'content-type':'application/json'}});
 const execute=(f,config={},call=f.call())=>createMailReadHandler({operation:f.operation,adapter:createMailHttpAdapter({...f.config,...config}),now:()=>f.state.now})(call);
-function dispatcher(f,config={}){
+function dispatcher(f,config={},withInvocation=true){
  let revoked=false,n=0;const counts={reserved:0,settled:0,uncertain:0,credentials:0};const retained=new Map();
- const entry={descriptor:f.contract.descriptor,contract:f.contract,execute:createMailReadHandler({operation:f.operation,adapter:createMailHttpAdapter({...f.config,...config,getCredentials:async pins=>{counts.credentials++;return f.credentials(pins);}}),now:()=>f.state.now})};
+ // These dispatcher calls use the current trusted invocation/signed-source boundary, not legacy Bearer transport.
+ const endpoints=Object.fromEntries(Object.keys(f.config.endpoints).map(id=>[id,`https://canonical-mail.example.invalid/api/clio/tools/${id}`]));
+ const entry={descriptor:f.contract.descriptor,contract:f.contract,execute:createMailReadHandler({operation:f.operation,adapter:createMailHttpAdapter({...f.config,...config,endpoints,getCredentials:async pins=>{
+  counts.credentials++;return {...f.credentials(pins),invocationId:pins.invocationId,authorizationScheme:'CapiroMeriRead',
+   target:clone(pins.target),correlationSha256:pins.correlationSha256};
+ }}),now:()=>f.state.now})};
  const authority=createCurrentToolAuthority({ports:{async verifyCapability(){return JSON.stringify(f.claims);},async currentRun(){return JSON.stringify({binding:f.binding,policyRevision:f.authority.policyRevision,deadlineMs:NOW+10000,checkedAtMs:f.state.now});},async authorizeBusiness(){if(revoked)throw Error('revoked');return JSON.stringify({decision:f.authority.decision,subject:f.subject,grants:f.contract.descriptor.requiredGrants});},async authorizeSources(){return JSON.stringify({sourceIds:['mail'],enabled:true,policyRevision:f.authority.policyRevision,checkedAtMs:f.state.now});}},now:()=>f.state.now,maxFactBytes:1048576});
  const mailContextPorts={async retain({record}){retained.set(hash(record.key),clone(record));return JSON.stringify({decision:'retained',keySha256:hash(record.key),previousSha256:record.previousSha256,checkedAtMs:f.state.now});},async loadPrevious({key}){return JSON.stringify({record:retained.get(hash(key)),checkedAtMs:f.state.now});}};
- const d=createToolDispatch({catalog:{entry:()=>entry,discoverable:()=>[]},authority,budget:{async reserve({reservationId}){counts.reserved++;return JSON.stringify({reservationId,decision:'reserved'});},async settle({reservationId}){counts.settled++;return JSON.stringify({reservationId,decision:'settled'});},async markUncertain(){counts.uncertain++;}},limits:{maxRequestBytes:65536,maxResponseBytes:1048576,maxRequestMs:1000,maxCleanupMs:30},now:()=>f.state.now,newId:()=>uuid(String(++n)),sourceEnabled:true,mailContextPorts});
+ const d=createToolDispatch({catalog:{entry:()=>entry,discoverable:()=>[]},authority,budget:{async reserve({reservationId}){counts.reserved++;return JSON.stringify({reservationId,decision:'reserved'});},async settle({reservationId}){counts.settled++;return JSON.stringify({reservationId,decision:'settled'});},async markUncertain(){counts.uncertain++;}},limits:{maxRequestBytes:65536,maxResponseBytes:1048576,maxRequestMs:1000,maxCleanupMs:30},now:()=>f.state.now,newId:()=>uuid(String(++n)),sourceEnabled:true,...(withInvocation?{invocationId:'synthetic-mail-regression-invocation'}:{}),mailContextPorts});
  return {counts,retained,revoke:()=>revoked=true,execute:args=>d.execute(JSON.stringify({operation:f.operation,arguments:args}), 'synthetic-read-capability')};
 }
 test('Borrowed adapter read preserves its original receiver',async()=>{
@@ -44,23 +49,30 @@ for(const [name,mutate] of [['broker audience',f=>f.claims.audience='meri-broker
 test('Actual canonical dispatcher denies '+name+' before source credentials',async()=>{
  const f=fixture();mutate(f);const d=dispatcher(f);await assert.rejects(d.execute(f.args),/ACCESS_DENIED/);assert.equal(d.counts.credentials,0);assert.equal(d.counts.reserved,0);
 });
+test('Actual canonical dispatcher refuses missing trusted invocation before credentials or budget',async()=>{
+ const f=fixture(),missing=dispatcher(f,{},false);
+ await assert.rejects(missing.execute(f.args),/UNAVAILABLE/);
+ assert.equal(missing.counts.credentials,0);assert.equal(missing.counts.reserved,0);
+});
 test('Actual dispatcher first and retained later pages preserve full subject/anchor and explicit incomplete evidence',async()=>{
  const f=fixture(),d=dispatcher(f);const first=JSON.parse(await d.execute(f.args));
  assert.equal(first.evidenceReady,false);assert.equal(d.retained.size,1);
  const second=JSON.parse(await d.execute({...f.args,offset:first.nextOffset,asOf:first.queryScope.asOfInclusive}));
  assert.equal(second.selection.offset,1);assert.equal(second.queryScope.asOfInclusive,first.queryScope.asOfInclusive);assert.deepEqual(second.subject,first.subject);
  assert.equal(second.evidenceReady,false);assert.deepEqual(second.negativeAssertion,{kind:'none'});assert.equal(d.counts.reserved,2);assert.equal(d.counts.settled,2);
+ assert.equal(d.counts.credentials,2);assert.equal(f.wire.length,2);
 });
 test('Malformed nested later-page mailbox cannot pass actual dispatcher release',async()=>{
- const f=fixture();let corrupt=false;
- const d=dispatcher(f,{fetchImpl:async(url,options)=>{const p=f.page(JSON.parse(options.body).input);if(corrupt)p.messages[0].mailboxId=uuid('f');return response(p);}});
+ const f=fixture();let corrupt=false,sourceReads=0;
+ const d=dispatcher(f,{fetchImpl:async(url,options)=>{sourceReads++;const p=f.page(JSON.parse(options.body).input);if(corrupt)p.messages[0].mailboxId=uuid('f');return response(p);}});
  const first=JSON.parse(await d.execute(f.args));corrupt=true;
  await assert.rejects(d.execute({...f.args,offset:1,asOf:first.queryScope.asOfInclusive}),/INVALID_RESULT/);
- assert.equal(d.counts.settled,1);assert.equal(d.counts.uncertain,1);
+ assert.equal(d.counts.settled,1);assert.equal(d.counts.uncertain,1);assert.equal(sourceReads,2);
 });
 test('Current authority revocation after source bytes blocks dispatcher release/settlement',async()=>{
- const f=fixture();let d;d=dispatcher(f,{fetchImpl:async()=>{const p=f.page();d.revoke();return response(p);}});
+ const f=fixture();let d,sourceReads=0;d=dispatcher(f,{fetchImpl:async()=>{sourceReads++;const p=f.page();d.revoke();return response(p);}});
  await assert.rejects(d.execute(f.args),/ACCESS_DENIED/);assert.equal(d.counts.reserved,1);assert.equal(d.counts.settled,0);assert.equal(d.counts.uncertain,1);
+ assert.equal(sourceReads,1);
 });
 test('Split UTF8 response chunks retain late decisive full-body Unicode and original version/hash',async()=>{
  const f=fixture('mail.read_thread');f.args.maxCharacters=6000;const page=f.page(),raw=new TextEncoder().encode(JSON.stringify(page)),emoji=new TextEncoder().encode('😀');

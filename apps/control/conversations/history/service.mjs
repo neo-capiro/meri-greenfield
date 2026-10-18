@@ -3,7 +3,7 @@ import {ProductError,asProductError,productFailure,refuse} from '../../product-a
 import {TURN_SCHEMA} from './protocol.mjs';
 import {terminal} from '../boundary.mjs';
 export function createConversationHistoryService({store,nextRunOwner,gate,retention}){
- if(['list','transcript'].some(k=>typeof store?.history?.[k]!=='function')||typeof gate?.recheck!=='function'||retention!==undefined&&typeof retention.assertServable!=='function')refuse('PRODUCT_CONFIGURATION');
+ if(['list','transcript'].some(k=>typeof store?.history?.[k]!=='function')||typeof gate?.recheck!=='function'||retention!==undefined&&['assertServable','withRelease'].some(k=>typeof retention[k]!=='function'))refuse('PRODUCT_CONFIGURATION');
  const guard=fn=>async value=>{try{return await fn(value);}catch(error){throw asProductError(error,'CONVERSATION_UNAVAILABLE');}};
  const check=signal=>()=>signal?.throwIfAborted();
  async function servable(principal,conversationId){if(retention)await retention.assertServable({tenantId:principal.tenantId,kind:'conversation',subjectId:conversationId});}
@@ -26,6 +26,24 @@ export function createConversationHistoryService({store,nextRunOwner,gate,retent
    return {...result,conversations:visible};
   }),
   transcript:guard(transcript),
+  // One fence spans ALL subjects, final native membership/Core checks and response serialization.
+  recheckRelease:guard(async({principal,request,result,operation,signal,deadlineMs,recheckMembership,recheckConversation,publish})=>{
+   if(typeof recheckMembership!=='function'||typeof publish!=='function')refuse('PRODUCT_CONFIGURATION');
+   let conversations=operation==='list'?result.conversations:[result.conversation];
+   // Turn receipts do not carry scopes: re-read the trusted saved owner record for release authorization.
+   if(operation==='nextTurn'){const saved=await store.history.transcript({principal,conversationId:request.conversationId,after:0,limit:1},check(signal));conversations=[saved.conversation];}
+   const subjects=conversations.map(c=>({tenantId:principal.tenantId,kind:'conversation',subjectId:c.conversationId}));
+   const release=async fenceSignal=>{
+    check(signal)();await recheckMembership();
+    for(const conversation of conversations)await current(recheckConversation,conversation);
+    if(operation==='list'){const visible=[];
+     for(const conversation of conversations){try{await servable(principal,conversation.conversationId);}catch(error){if(error?.code==='RETENTION_SUPPRESSED')continue;throw error;}visible.push(conversation);}
+     check(signal)();check(fenceSignal)();return publish({...result,conversations:visible});
+    }
+    await servable(principal,request.conversationId);check(signal)();check(fenceSignal)();return publish(result);
+   };
+   return retention?retention.withRelease(subjects,release,{signal,deadlineMs}):release();
+  }),
   nextTurn:guard(async({principal,request,signal,deadlineMs,recheckMembership,recheckConversation})=>{
    if(typeof nextRunOwner?.admitTurn!=='function')refuse('CONVERSATION_TURN_UNAVAILABLE','NOT_DISPATCHED');
    let saved;try{saved=await transcript({principal,request:{conversationId:request.conversationId,after:0,limit:1},signal,recheckConversation});}

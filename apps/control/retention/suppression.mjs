@@ -17,7 +17,13 @@ export function createRetentionReadGate({journal,serving}){
  const barrier=()=>{if(!serving.isEnabled())fail('RETENTION_RECOVERY_BARRIER');};
  async function isSuppressed(rawSubject){barrier();const s=subject(rawSubject);let current;try{current=await journal.get(subjectKey(s));}catch(error){if(!serving.isEnabled()||error?.code==='RETENTION_RECOVERY_BARRIER')fail('RETENTION_RECOVERY_BARRIER');fail('RETENTION_READ_UNAVAILABLE');}barrier();return Boolean(current&&current.state!=='RELEASED');}
  async function assertServable(rawSubject){if(await isSuppressed(rawSubject))fail('RETENTION_SUPPRESSED');}
- return Object.freeze({isSuppressed,assertServable});
+ /** Serving owners provide authenticated subject identities and serialize their response inside this transition exclusion. */
+ async function withRelease(rawSubjects,release,options){
+  if(!Array.isArray(rawSubjects)||rawSubjects.length>100||typeof release!=='function'||typeof journal.withServing!=='function')fail('RETENTION_CONFIGURATION');
+  barrier();const keys=[...new Set(rawSubjects.map(s=>subjectKey(subject(s))))].sort();
+  return journal.withServing(keys,async signal=>{barrier();const result=await release(signal);barrier();return result;},options);
+ }
+ return Object.freeze({isSuppressed,assertServable,withRelease});
 }
 export function createSuppressionOwner({ledger,journal,ownership,authorization=refusingOwnerMediation,cancellation=null,serving,now}){
  if(typeof ledger?.append!=='function'||typeof journal?.get!=='function'||typeof journal?.set!=='function'||typeof journal?.withTransition!=='function'||typeof ownership?.ownerOf!=='function'||typeof authorization?.ownerMediated!=='function'||cancellation!==null&&typeof cancellation?.cancelInFlight!=='function'||typeof serving?.isEnabled!=='function'||typeof serving?.disable!=='function')fail('RETENTION_CONFIGURATION');const tick=clock(now);
@@ -59,5 +65,5 @@ export function createSuppressionOwner({ledger,journal,ownership,authorization=r
   });
  }
  const gate=createRetentionReadGate({journal,serving});
- return Object.freeze({suppress,release,isSuppressed:gate.isSuppressed,assertServable:gate.assertServable,now:tick});
+ return Object.freeze({suppress,release,isSuppressed:gate.isSuppressed,assertServable:gate.assertServable,withRelease:gate.withRelease,now:tick});
 }

@@ -88,7 +88,7 @@ export function createLifecycleJournal({tx,rowRun,cancelAppend,transitionAuthori
   if(typeof transitionAuthority?.readCurrent!=='function'||typeof now!=='function'||!Number.isSafeInteger(v.deadlineMs))fail('LIFECYCLE_TRANSITION_REFUSED');
   const check=()=>{callerCheck();if(v.signal?.aborted||!Number.isSafeInteger(now())||now()>=v.deadlineMs)fail('LIFECYCLE_TRANSITION_REFUSED');};check();
   const discovered=await tx(b,check,async c=>{const source=rowRun(await selectRun(c,b)),p=await lookup(c,b,v.controlId);check();if(!same(source.projection.binding,b)||!p||!same(p.sourceBinding,b)||!p.target||!['resume','fork'].includes(p.input.intent)||!['DISPATCHING','APPLIED'].includes(p.state))fail('LIFECYCLE_TRANSITION_REFUSED');return {binding:p.target.binding,scopes:p.scopes,selectedClientId:p.sourceSelectedClientId,policyRevision:source.projection.policyRevision};});
-  const current=await readTransitionAuthority({owner:transitionAuthority,expected:discovered,deadlineMs:v.deadlineMs,signal:v.signal,now,check});
+  const current=await readTransitionAuthority({owner:transitionAuthority,expected:discovered,committedContinuation:{sourceBinding:b,controlId:v.controlId},deadlineMs:v.deadlineMs,signal:v.signal,now,check});
   const locks=[b,discovered.binding].sort((a,z)=>`${a.tenantId}:${a.conversationId}`<`${z.tenantId}:${z.conversationId}`?-1:`${a.tenantId}:${a.conversationId}`>`${z.tenantId}:${z.conversationId}`?1:0),first=locks[0],second=locks[1];
   return tx(first,check,async c=>{
    if(first.tenantId!==second.tenantId||first.conversationId!==second.conversationId){await c.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))',[`${second.tenantId}:${second.conversationId}`]);check();}

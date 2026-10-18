@@ -1,0 +1,3 @@
+apps/worker/conversation/capabilities/policy-resolution.mjs(65,167): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'readonly string[]'.
+apps/worker/conversation/capabilities/policy.mjs(39,24): error TS7006: Parameter 'op' implicitly has an 'any' type.
+apps/worker/conversation/capabilities/policy.mjs(49,31): error TS7006: Parameter 'value' implicitly has an 'any' type.
