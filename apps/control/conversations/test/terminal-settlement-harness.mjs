@@ -3,20 +3,12 @@
  * allocation journal exactly as the allocator does. The SQL engine is the caller's pool (scripted fixture by default). */
 import assert from 'node:assert/strict';
 import {holdComposition,assertHoldSettled} from './lifecycle-hold-harness.mjs';
-import {id,versions,binding as fixtureBinding} from './lifecycle-fixture.mjs';
+import {id,binding as fixtureBinding,allocateOriginal,recordRetired} from './lifecycle-fixture.mjs';
 import {createRunReconciler,ATTEMPT_LOST} from '../run-reconciler.mjs';
-import {hash} from '../boundary.mjs';
-const check=()=>{};
+export {allocateOriginal,recordRetired};
 const terminalEvent=event=>event.type==='run.status'&&['failed','cancelled'].includes(event.data.state);
 /** Finite simulated recording/transport latency that honours the caller's abort signal, as in the review reproduction. */
 export function delay(ms,signal){return new Promise((resolve,reject)=>{if(signal?.aborted)return reject(signal.reason);const timer=setTimeout(resolve,ms);signal?.addEventListener('abort',()=>{clearTimeout(timer);reject(signal.reason);},{once:true});});}
-/** A claimed allocation for the original, as the prepared kickoff's allocator leaves it while the task runs (claim needs a queued run). */
-export async function allocateOriginal(store,b){const allocationKey=hash(b),expiresAtMs=Date.now()+60000,key={binding:b,allocationKey};
- const intent={...key,original:{binding:b,executionKey:allocationKey,executionId:allocationKey,planSha256:'a'.repeat(64),expiresAtMs,versions},qualification:{attempt:1,policyRevision:'b'.repeat(64)},grantIntents:[{grantId:id(240),capabilitySha256:'c'.repeat(64),expiresAtMs}],allocationSha256:'d'.repeat(64),taskRequestSha256:'e'.repeat(64),expiresAtMs};
- const resource={taskArn:`arn:aws:ecs:us-east-1:967807252336:task/Synthetic/${'a'.repeat(32)}`,clusterArn:'arn:aws:ecs:us-east-1:967807252336:cluster/Synthetic',taskDefinitionArn:'arn:aws:ecs:us-east-1:967807252336:task-definition/Synthetic:1',containerName:'worker',createdAtMs:Date.now()};
- await store.allocations.claim(intent,check);await store.allocations.record({...key,state:'ALLOCATED',resource},check);return {key,resource};}
-/** The native stop owner's journal effect: the allocator records RETIRED only after revocation and a proven physical stop. */
-export const recordRetired=(store,allocation)=>store.allocations.record({...allocation.key,state:'RETIRED',resource:{...allocation.resource,physicalStopProven:true}},check);
 export async function settlementComposition(options={}){
  const h=await holdComposition(options),f=h.f,binding=options.binding??fixtureBinding;h.retirements=0;h.retireMode='record';
  h.allocate=async()=>{h.allocation=await allocateOriginal(f.store,(await h.history()).run.binding);};

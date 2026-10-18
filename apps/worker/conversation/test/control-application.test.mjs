@@ -2,10 +2,10 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {createConversationActivity} from '../activity.mjs';
 import {createLifecycleRunOwner} from '../../../control/conversations/lifecycle/worker-owner.mjs';
-import {lifecycleFixture,binding,versions,id} from '../../../control/conversations/test/lifecycle-fixture.mjs';
+import {lifecycleFixture,binding,versions,id,allocateOriginal} from '../../../control/conversations/test/lifecycle-fixture.mjs';
 const stopped=()=>Promise.withResolvers(),success={type:'result',subtype:'success',is_error:false};
 for(const intent of ['pause','approval.wait'])test('actual authenticated journal/activity '+intent+' retains exact checkpoint then resumes in a fresh session',async t=>{
- const f=await lifecycleFixture();t.after(()=>f.close());await f.service.submit({credential:f.credential,input:f.input});
+ const f=await lifecycleFixture();t.after(()=>f.close());await f.service.allocateInput({credential:f.credential,input:f.input});await f.service.submit({credential:f.credential,input:f.input});await allocateOriginal(f.store,binding);
  let credential=f.credential,calls=0,closes=0,interrupts=0,targetOptions,targetPrompt;const stop=stopped();
  const runOwner=createLifecycleRunOwner({service:f.service,credentialForBinding:async()=>credential});
  const runtime=async({binding:target,continuation,sourceRequest})=>({binding:target,versions,cwd:`/workspace/conversations/${target.conversationId}`,proxyUrl:'https://trusted-proxy.invalid',proxyCredential:'synthetic-task',model:'qualified-model-pin',sessionStore:{async load(){return null;},async append(){}},deadlineMs:Date.now()+3000,maxTurns:2,maxCostMicroUSD:1000,maxOutputBytes:1024,

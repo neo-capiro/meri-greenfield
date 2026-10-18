@@ -4,6 +4,7 @@ import {assertLifecycleCommand,assertWorkerControl,assertContinuationEnvelope,as
 import {assertWorkspacePaths,assertProposalIntegrity} from '../../../../packages/contracts/validate.mjs';
 import {nativeSignal} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {closeSequenceRange} from '../sequence-ranges.mjs';
+import {recordContinuationReservation} from '../next-run-journal.mjs';
 import {readTransitionAuthority,requireTransitionAuthority} from './authority.mjs';
 /** The single worker failure a control hold admits (see failUncheckpointedHold); run.status reasonCode is free-form in the frozen UIEvent contract. */
 export const HOLD_CHECKPOINT_FAILED='HOLD_CHECKPOINT_FAILED';
@@ -73,6 +74,10 @@ export function createLifecycleJournal({tx,rowRun,cancelAppend,transitionAuthori
   if(old){if(p.input.intent==='fork'||hash(old.projection)!==old.projection_sha256||old.owner_actor_id!==t.actorId||!same({...old.projection,createdAt:conversation.createdAt},conversation))fail('TARGET_BINDING_REFUSED');}
   else await c.query('INSERT INTO meri_conversations.conversations(tenant_id,conversation_id,owner_actor_id,projection,projection_sha256) VALUES($1,$2,$3,$4,$5)',[t.tenantId,t.conversationId,t.actorId,conversation,hash(conversation)]);
   const sequenceBase=p.input.intent==='resume'?await closeSequenceRange(c,b,rowRun,check):0;
+  // The prepared-run registry serves a non-initial run only through an ACCEPTED next-run mapping: a resume successor gets it here,
+  // in this same locked transaction, over the source's proven retirement (its allocation RETIRED, physical stop proven; the receipt
+  // verified above names it). A fork successor is a writer-fence-1 run of its new conversation, served by its initial-run admission.
+  if(p.input.intent==='resume')await recordContinuationReservation(c,{source:b,target:t,scopes:run.scopes,versions:run.versions,policyRevision:run.policyRevision,reservedAt:run.createdAt},check);
   await c.query('INSERT INTO meri_conversations.runs(tenant_id,conversation_id,run_id,projection,projection_sha256,request_id,request,request_sha256,last_sequence,continuation,continuation_sha256,sequence_base) VALUES($1,$2,$3,$4,$5,$6,$7,$8,1,$9,$10,$11)',[t.tenantId,t.conversationId,t.runId,run,hash(run),request.requestId,request,hash(request),{continuation,sourceRequest:p.sourceRequest},hash({continuation,sourceRequest:p.sourceRequest}),sequenceBase]);
   await c.query('INSERT INTO meri_conversations.events(tenant_id,conversation_id,run_id,sequence,event_id,event,event_sha256) VALUES($1,$2,$3,$4,$5,$6,$7)',[t.tenantId,t.conversationId,t.runId,1,event.eventId,event,hash(event)]);
   const next={...p,target:admission,retirement,proof,checkpointId:proof.checkpoint.checkpointId};delete next.controlSequence;await save(c,b,next);return {...next,controlSequence:p.controlSequence};});}
