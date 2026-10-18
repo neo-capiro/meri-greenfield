@@ -12,16 +12,25 @@
  *     authority?: {                  // Core artifact current-authority wire (docs/integration/ARTIFACT-CURRENT-AUTHORITY-CONTRACT.md)
  *       origin,                      // bare https Core origin; equals nativeCandidate.identity.origin when that is declared
  *       serviceSecretFile            // absolute POSIX path of the Core service secret (x-internal-service-secret), never a bearer
+ *     },
+ *     executor?: {                   // the fixed generator owner (`./composition.mjs` createFixedRuntimeArtifactExecutor), image paths only
+ *       pythonExecutable,            // absolute POSIX path of the Python 3 interpreter that runs apps/artifacts/python (DOCX/XLSX/TXT)
+ *       nodeExecutable?,             // absolute POSIX path of the Node executable for PPTX; control's own process.execPath when absent
+ *       pptxModulePath,              // absolute POSIX path of the pinned pptxgenjs module directory
+ *       tempRoot,                    // absolute POSIX directory for per-generation temporary trees (a task-local mount, e.g. /tmp)
+ *       timeoutMs?                   // 1..60000, default 30000
  *     }
  *   }
  *
  * The five storage keys are required when `enabled` is true and validated whenever present. `tenantId` without a declared
  * `retention` is refused: publication custody needs the control-owned retention journal, which exists only then. `authority` only
- * names WHERE the Core artifact authority is and which service-secret file to send; it composes nothing by itself. The options owner
- * also needs `enabled: true` and the trusted Meri-local owners that only startup supplies (`./authority-composition.mjs`). */
+ * names WHERE the Core artifact authority is and which service-secret file to send; it composes nothing by itself. `executor` only
+ * names the generator paths; nothing is spawned or probed here. The options owner also needs `enabled: true` and the trusted
+ * Meri-local owners that startup composes (`./authority-composition.mjs`). */
 const fault=()=>Object.assign(new Error('ARTIFACT_CONFIGURATION'),{code:'ARTIFACT_CONFIGURATION'});
 const REQUIRED=Object.freeze(['region','bucket','prefix','expectedBucketOwner','kmsKeyId']);
-const KEYS=Object.freeze(['enabled',...REQUIRED,'tenantId','authority']);
+const KEYS=Object.freeze(['enabled',...REQUIRED,'tenantId','authority','executor']);
+const EXECUTOR_KEYS=Object.freeze(['pythonExecutable','nodeExecutable','pptxModulePath','tempRoot','timeoutMs']),EXECUTOR_PATHS=Object.freeze(['pythonExecutable','nodeExecutable','pptxModulePath','tempRoot']);
 const REGION=/^[a-z]{2}(?:-gov)?-[a-z]+-[0-9]$/u,BUCKET=/^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$/u,OWNER=/^[0-9]{12}$/u;
 const AUTHORITY_KEYS=Object.freeze(['origin','serviceSecretFile']),SECRET_FILE=/^\/[A-Za-z0-9._\/-]{1,4095}$/u;
 const PREFIX=/^[A-Za-z0-9][A-Za-z0-9/_-]{0,127}$/u,KMS_KEY=/^arn:aws(?:-us-gov|-cn)?:kms:([a-z0-9-]+):[0-9]{12}:key\/[a-f0-9-]{36}$/u;
@@ -54,6 +63,12 @@ export function compileRuntimeArtifactsConfiguration(configuration){
   const identityOrigin=configuration.nativeCandidate?.identity?.origin;if(identityOrigin!==undefined&&identityOrigin!==auth.origin)throw fault();
   if(typeof auth.serviceSecretFile!=='string'||!SECRET_FILE.test(auth.serviceSecretFile)||auth.serviceSecretFile.includes('//')||auth.serviceSecretFile.split('/').includes('..'))throw fault();
   a.authority=Object.freeze(auth);
+ }
+ if(a.executor!==undefined){
+  const e=plain(a.executor,EXECUTOR_KEYS);if(['pythonExecutable','pptxModulePath','tempRoot'].some(key=>!Object.hasOwn(e,key)))throw fault();
+  for(const key of EXECUTOR_PATHS)if(e[key]!==undefined&&(typeof e[key]!=='string'||!SECRET_FILE.test(e[key])||e[key].includes('//')||e[key].split('/').includes('..')))throw fault();
+  if(e.timeoutMs!==undefined&&(!Number.isSafeInteger(e.timeoutMs)||e.timeoutMs<1||e.timeoutMs>60000))throw fault();
+  a.executor=Object.freeze(e);
  }
  return Object.freeze(a);
 }

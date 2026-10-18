@@ -2,12 +2,14 @@
  * for the `schedule-worker` role over the trusted pool/client the service owns or borrows:
  *  authority    Core firing grant (wire C) + Meri's schedule fence (native-authority/routines-firing-authority.mjs)
  *  runControl   the unattended stop under a `before_stop` grant through the existing lifecycle Stop order
- *  runAdmission lane 1: scheduled native admission (native-authority/scheduled-admission.mjs over the prepared-run template)
- *  retirement   lane 1: native allocation retirement (prepared-run registry retireInitial)
- * The first two are produced here; the last two are trusted in-process owners the composer (cli.mjs) supplies once lane 1's
- * worker-side producers exist. Anything missing refuses with SCHEDULE_SERVICE_UNAVAILABLE before any secret read, connection
- * or SQL, so the service cannot start half-composed: fail closed until every owner exists. The result is exactly the
- * `runtimePorts` record `startScheduleWorker` / `composeScheduleService` capture. Construction is inert. */
+ *  runAdmission lane 1: scheduled native admission, served by control (native-authority/routines-occurrence-http.mjs `admit`)
+ *  retirement   lane 1: native allocation retirement, served by control (the same operations, `retire`)
+ * The first two are produced here. The last two are trusted ports: in production the worker-side native ports
+ * (native-authority/routines-occurrence-ports.mjs over the service's own native capability client), composed by
+ * `composeRoutinesWorkerRuntimePorts`, the `runtimePortsFactory` cli.mjs hands to startScheduleWorker; the worker itself holds no
+ * candidate, issuance store or capability authority. Anything missing refuses with SCHEDULE_SERVICE_UNAVAILABLE before any
+ * poller or listener starts, so the service cannot start half-composed: fail closed until every owner exists. The result is
+ * exactly the `runtimePorts` record `startScheduleWorker` / `composeScheduleService` capture. Construction is inert. */
 import {types} from 'node:util';
 import {own} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {storageMethod} from '../artifacts/storage/boundary.mjs';
@@ -18,16 +20,27 @@ import {compileRoutinesCoreConfiguration,routinesReservedSecretFiles} from './na
 import {createRoutinesCoreClient,createRoutinesServiceSecret} from './native-authority/routines-core-client.mjs';
 import {routineFiringTrust} from './native-authority/routines-firing-grant.mjs';
 import {createRoutinesFiringAuthority,createRoutinesUnattendedRunControl} from './native-authority/routines-firing-authority.mjs';
+import {createRoutinesOccurrencePorts} from './native-authority/routines-occurrence-ports.mjs';
 import {readSecret as readRuntimeSecret,fault} from './config.mjs';
 
 /** Who must produce each schedule-service owner. */
 export const SCHEDULE_SERVICE_OWNERS=Object.freeze({
  authority:'this composer from routines.core.unattendedGrant: Core wire C firing grant verified against the pinned key, after the schedule owner\'s own active/generation fence',
  runControl:'this composer from routines.core.unattendedGrant: before_stop grant for the run\'s own occurrence, then the lifecycle Stop order',
- runAdmission:'lane 1: scheduled native admission over the prepared-run template (native-authority/scheduled-admission.mjs)',
- retirement:'lane 1: native allocation retirement (prepared-run registry retireInitial)',
+ runAdmission:'composeRoutinesWorkerRuntimePorts: control native operation routines/occurrences/admit over the service\'s native capability client (native-authority/routines-occurrence-ports.mjs)',
+ retirement:'composeRoutinesWorkerRuntimePorts: control native operation routines/occurrences/retire over the same client',
 });
 const unavailable=()=>fault('SCHEDULE_SERVICE_UNAVAILABLE');
+/** The production `runtimePortsFactory` (schedule-service.mjs): called once by the service with the pool, Temporal client and
+ * native capability client it owns. Without the native client (the role did not declare `native`) there is no lane-1 owner, so
+ * the service refuses as unavailable rather than firing without admission or retirement. */
+export function composeRoutinesWorkerRuntimePorts(resources){
+ let r;
+ try{r=own(resources,['pool','client','configuration'],['native','now']);}catch{throw fault('SCHEDULE_SERVICE_CONFIGURATION');}
+ if(r.native===undefined)throw unavailable();
+ const ports=createRoutinesOccurrencePorts({native:r.native});
+ return composeRoutinesWorkerOwners({configuration:r.configuration,pool:r.pool,client:r.client,...(r.now===undefined?{}:{now:r.now}),runAdmission:ports.runAdmission,retirement:ports.retirement});
+}
 export function composeRoutinesWorkerOwners(options){
  let o,transport;
  try{

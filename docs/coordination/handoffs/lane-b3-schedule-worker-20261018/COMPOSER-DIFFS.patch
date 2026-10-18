@@ -1,0 +1,234 @@
+diff --git a/apps/runtime/cli.mjs b/apps/runtime/cli.mjs
+index 355c936e..38ccd167 100644
+--- a/apps/runtime/cli.mjs
++++ b/apps/runtime/cli.mjs
+@@ -16,8 +16,11 @@ export async function main(argv=process.argv.slice(2),{poststartTls,nativeFetch}
+   if(role==='temporal-worker'&&process.env.MERI_PRODUCT_PREVIEW_REQUIRED!==undefined&&
+      (process.env.MERI_PRODUCT_PREVIEW_REQUIRED!=='1'||c.native.preparedKickoff!==true||c.native.loopback!==false||
+       !c.native.origin.startsWith('https://')||c.http.port!==8081||c.temporal.authorization===undefined||c.temporal.tokenWriter?.enabled!==true||c.temporal.issuerDelivery===undefined||c.temporal.issuerBootstrap?.enabled!==true||!productWorkerTrustsPinnedServerCa(c)))throw Error('PRODUCT_WORKER_REFUSED');
+-  // Routines have no approved preview activation: the product preview never starts the schedule worker.
+-  if(role==='schedule-worker'&&process.env.MERI_PRODUCT_PREVIEW_REQUIRED!==undefined)throw Error('PRODUCT_SCHEDULE_WORKER_REFUSED');
++  // Routines (D016-A #5, lane B3): the product preview starts the schedule worker only under Core's unattended-firing pin, with its
++  // native client to control's private occurrence operations (HTTPS) and its own database file; its owners compose at startup below.
++  if(role==='schedule-worker'&&process.env.MERI_PRODUCT_PREVIEW_REQUIRED!==undefined&&
++     (process.env.MERI_PRODUCT_PREVIEW_REQUIRED!=='1'||c.routines?.enabled!==true||c.routines.core?.unattendedGrant===undefined||c.native===undefined||c.native.loopback!==false||
++      !c.native.origin.startsWith('https://')||c.database===undefined))throw Error('PRODUCT_SCHEDULE_WORKER_REFUSED');
+   if(role==='conversation-runner'&&process.env.MERI_PRODUCT_PREVIEW_REQUIRED!==undefined&&
+      (process.env.MERI_PRODUCT_PREVIEW_REQUIRED!=='1'||c.bootstrap?.remote!==true||c.remoteTask!==undefined||poststartTls===undefined||typeof nativeFetch!=='function'))throw Error('PRODUCT_RUNNER_TLS_REFUSED');
+   if(role==='conversation-runner'&&(c.remoteTask!==undefined||c.bootstrap?.remote===true)){
+@@ -28,11 +31,14 @@ export async function main(argv=process.argv.slice(2),{poststartTls,nativeFetch}
+  const controller=new AbortController();let runtime,shutdownTimer,cleanupUnknown=false;const retire=()=>{shutdownTimer??=setTimeout(()=>{process.stderr.write('RUNTIME_SHUTDOWN_TIMEOUT\n');process.exit(3);},c.limits.shutdownMs+1000);};const stop=()=>{controller.abort();retire();};process.once('SIGTERM',stop);process.once('SIGINT',stop);
+  const startupTimer=setTimeout(()=>{process.stderr.write('RUNTIME_STARTUP_TIMEOUT\n');process.exit(2);},c.limits.startupMs);startupTimer.unref();
+  try{if(role==='conversation-runner'){const {runConversation}=await import('./conversation-runner.mjs');clearTimeout(startupTimer);await runConversation(c,{signal:controller.signal,...(poststartTls===undefined?{}:{poststartTls,nativeFetch})});return 0;}
+-  // The schedule service refuses before secret reads unless trusted in-process owners are supplied; the bare CLI supplies none.
++  // The schedule service refuses before secret reads unless trusted owners are supplied; without `routines.enabled` the bare CLI supplies none.
+   const [file,start]={control:['./control.mjs','startControl'],'temporal-worker':['./temporal-worker.mjs','startTemporalWorker'],'schedule-worker':['./schedule-service.mjs','startScheduleWorker']}[role];
+   const module=await import(file);
+   // Control receives the production product-port composition (G4); the other roles take no product ports.
+   let productPorts={};
++  // The schedule worker's owners (lane B3): the service calls this factory once it owns its pool, Temporal client and native client;
++  // the factory composes Core's firing authority and unattended stop (B2) plus the admission/retirement ports over control's operations.
++  if(role==='schedule-worker'&&c.routines?.enabled===true){const {composeRoutinesWorkerRuntimePorts}=await import('./schedule-service-owners.mjs');productPorts={runtimePortsFactory:composeRoutinesWorkerRuntimePorts};}
+   if(role==='control'){
+    // Documents (D31): the Core artifact authority composes only with every input present; otherwise the store-only family stays
+    // and `missing` names the gaps by key (runOptions and executor are Meri-local owners not yet composed).
+diff --git a/apps/runtime/config.mjs b/apps/runtime/config.mjs
+index b4c87f55..da79a449 100644
+--- a/apps/runtime/config.mjs
++++ b/apps/runtime/config.mjs
+@@ -60,15 +60,20 @@ export function compileControlTaskRouterConfiguration(configuration){
+ }
+ export function validateConfiguration(raw,role){
+  requireValue(['control','temporal-worker','conversation-runner','schedule-worker'].includes(role));const c=data(raw);
+- // The schedule worker is a separately supervised control-domain Temporal poller with a health-only listener. It holds no native
+- // capability; its four domain owners are trusted in-process ports, never configuration, so JSON alone cannot start it.
++ // The schedule worker is a separately supervised control-domain Temporal poller with a health-only listener. Its four domain
++ // owners are trusted in-process ports, never configuration, so JSON alone cannot start it; it may declare `native` (its client to
++ // control's private occurrence operations, lane B3; schedule-service-configuration.mjs) and `routines` (Core's firing pin, lane B2).
+  const common=['version','profile','sourceEnabled','limits',...(role==='schedule-worker'?[]:['native'])];
+- own(c,[...common,...(role==='control'?['http','database','temporal','sessions','versions']:role==='temporal-worker'?['http','temporal']:role==='schedule-worker'?['http','temporal','versions','scheduledDispatch']:['binding','versions','workspace','proxyOrigin'])],role==='conversation-runner'?['bootstrap','captureOwnsClose','remoteTask']:role==='control'?['nativeCandidate','retention','telemetry','downloadLinks','privateHttp','taskRouter','userPreferences','tenantSettings','capabilityPlatform','routines','artifacts','intents','reads','objectiveGeneration']:role==='schedule-worker'?['database']:role==='temporal-worker'?['objectiveGeneration']:[]);
++ own(c,[...common,...(role==='control'?['http','database','temporal','sessions','versions']:role==='temporal-worker'?['http','temporal']:role==='schedule-worker'?['http','temporal','versions','scheduledDispatch']:['binding','versions','workspace','proxyOrigin'])],role==='conversation-runner'?['bootstrap','captureOwnsClose','remoteTask']:role==='control'?['nativeCandidate','retention','telemetry','downloadLinks','privateHttp','taskRouter','userPreferences','tenantSettings','capabilityPlatform','routines','artifacts','intents','reads','objectiveGeneration']:role==='schedule-worker'?['database','native','routines']:role==='temporal-worker'?['objectiveGeneration']:[]);
+  if(c.userPreferences!==undefined){requireValue(role==='control','USER_PREFERENCES_CONFIGURATION');compileControlUserPreferencesConfiguration(c);}
+  // Lane B control opt-ins (product-ports/settings.mjs, routines.mjs) and the trusted platform capability record (capability-policy.mjs, N3).
+- for(const [key,code] of [['tenantSettings','TENANT_SETTINGS_CONFIGURATION'],['routines','ROUTINES_CONFIGURATION']])if(c[key]!==undefined){requireValue(role==='control',code);own(c[key],['enabled'],key==='routines'?['core']:[]);requireValue(typeof c[key].enabled==='boolean',code);}
++ // `routines` is also the schedule worker's firing declaration (lane B2/B3); `routines.task` is control's routine task identity.
++ for(const [key,code] of [['tenantSettings','TENANT_SETTINGS_CONFIGURATION'],['routines','ROUTINES_CONFIGURATION']])if(c[key]!==undefined){requireValue(role==='control'||key==='routines'&&role==='schedule-worker',code);own(c[key],['enabled'],key==='routines'?['core','task']:[]);requireValue(typeof c[key].enabled==='boolean',code);}
+  // Routines Core owners (lane B2): the wire A policy client and the Core-proof run control compose only from this closed block.
+  if(c.routines?.core!==undefined)compileRoutinesCoreConfiguration(c);
++ // Routine task identity (lane B3): the one generic routine task of the allocation manifest, public facts of the candidate's scheduled-run
++ // template (prepared-candidate.mjs routinesOccurrenceOwners); the manifest digest is derived from the allocation, never configured.
++ if(c.routines?.task!==undefined){requireValue(role==='control','ROUTINES_CONFIGURATION');own(c.routines.task,['taskId','version']);requireValue(/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(c.routines.task.taskId)&&integer(c.routines.task.version,1,Number.MAX_SAFE_INTEGER),'ROUTINES_CONFIGURATION');}
+  if(c.capabilityPlatform!==undefined){requireValue(role==='control','CAPABILITY_PLATFORM_CONFIGURATION');compileCapabilityPlatform(c);}
+  // Objective generation opt-ins (objective-generation/configuration.mjs): control `runs`/`start`, worker `runs`. Absent = disabled.
+  if(c.objectiveGeneration!==undefined)compileObjectiveGenerationConfiguration(c,role);
+@@ -82,7 +87,7 @@ export function validateConfiguration(raw,role){
+  if(c.captureOwnsClose!==undefined)requireValue(typeof c.captureOwnsClose==='boolean','RUNNER_CAPTURE_CONFIGURATION');
+  if(c.bootstrap!==undefined){own(c.bootstrap,['expiresAtMs'],['remote']);requireValue(c.bootstrap.remote===undefined||typeof c.bootstrap.remote==='boolean','TASK_BOOTSTRAP_CONFIGURATION');if(c.bootstrap.remote===true)requireValue(c.captureOwnsClose===true&&c.remoteTask===undefined,'TASK_BOOTSTRAP_CONFIGURATION');requireValue(Number.isSafeInteger(c.bootstrap.expiresAtMs)&&c.bootstrap.expiresAtMs>0,'TASK_BOOTSTRAP_CONFIGURATION');}
+  own(c.limits,['startupMs','shutdownMs','requestMs','requestBytes']);requireValue(integer(c.limits.startupMs,100,30000)&&integer(c.limits.shutdownMs,100,30000)&&integer(c.limits.requestMs,10,30000)&&integer(c.limits.requestBytes,1,131072));
+- if(role!=='schedule-worker'){own(c.native,['origin','capabilityFile','loopback','maxResponseBytes'],role==='temporal-worker'?['preparedKickoff']:[]);
++ if(role!=='schedule-worker'||c.native!==undefined){own(c.native,['origin','capabilityFile','loopback','maxResponseBytes'],role==='temporal-worker'?['preparedKickoff']:[]);
+  // The poller admits only the prepared original kickoff (stop-owned cleanup); the legacy execution/start mode has no original stop owner (audit L5).
+  if(role==='temporal-worker'||c.native.preparedKickoff!==undefined)requireValue(c.native.preparedKickoff===true,'PREPARED_KICKOFF_CONFIGURATION');
+  requireValue(typeof c.native.loopback==='boolean'&&integer(c.native.maxResponseBytes,1024,2097152)&&c.native.origin===endpoint(c.native.origin,c.native.loopback));file(c.native.capabilityFile);}
+diff --git a/apps/runtime/control-route-boundary.mjs b/apps/runtime/control-route-boundary.mjs
+index 42d9cb0c..2777a483 100644
+--- a/apps/runtime/control-route-boundary.mjs
++++ b/apps/runtime/control-route-boundary.mjs
+@@ -7,13 +7,14 @@ import {ROUTINE_PATHS} from '../control/schedules/application-http.mjs';
+ import {TENANT_SETTINGS_PATHS} from '../control/settings/tenant-application/protocol.mjs';
+ import {OBJECTIVE_READER_PREFIX} from './product-ports/objective.mjs';
+ import {OBJECTIVE_RUNS_PREFIX} from './native-authority/objective-runs-http.mjs';
++import {ROUTINES_OCCURRENCE_PREFIX} from './native-authority/routines-occurrence-http.mjs';
+ import {OBJECTIVE_GENERATION_START_PATH} from './objective-generation/start-application.mjs';
+ const absent=()=>Response.json({error:{code:'ROUTE_NOT_FOUND'}},{status:404,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
+ const publicPath=path=>path==='/api/conversations'||path.startsWith('/api/conversations/')||path==='/api/action-followthrough/session'||Object.values(USER_PREFERENCES_PATHS).includes(path)||Object.values(taskCommandPaths).includes(path)||Object.values(ROUTINE_PATHS).includes(path)||Object.values(TENANT_SETTINGS_PATHS).includes(path)||path.startsWith('/api/documents/');
+ const privatePath=path=>path.startsWith('/v1/')||path.startsWith('/internal/conversations/')||path.startsWith(OBJECTIVE_READER_PREFIX);
+ 
+-export function createControlRouteApplications({assembly,candidate,router=null,poststart=null,privateIngress=null,objectiveReader=null,objectiveRuns=null,objectiveStart=null}){
+- if(typeof assembly?.handle!=='function'||typeof candidate?.handle!=='function'||[objectiveReader,objectiveRuns,objectiveStart].some(app=>app!==null&&typeof app?.handle!=='function'))throw Error('PRIVATE_CONTROL_CONFIGURATION');
++export function createControlRouteApplications({assembly,candidate,router=null,poststart=null,privateIngress=null,objectiveReader=null,objectiveRuns=null,objectiveStart=null,routinesOccurrences=null}){
++ if(typeof assembly?.handle!=='function'||typeof candidate?.handle!=='function'||[objectiveReader,objectiveRuns,objectiveStart,routinesOccurrences].some(app=>app!==null&&typeof app?.handle!=='function'))throw Error('PRIVATE_CONTROL_CONFIGURATION');
+  const marker=privateIngress?.issue();
+  if(router!==null&&(!marker||typeof router.privateApplication?.handle!=='function'))throw Error('PRIVATE_CONTROL_CONFIGURATION');
+  if(poststart!==null&&(!marker||typeof poststart.privateApplication?.handle!=='function'))throw Error('PRIVATE_CONTROL_CONFIGURATION');
+@@ -27,6 +28,8 @@ export function createControlRouteApplications({assembly,candidate,router=null,p
+    if(path.startsWith(OBJECTIVE_READER_PREFIX))return (objectiveReader===null?null:await objectiveReader.handle(request))??absent();
+    // The Temporal worker's Objective `runs` native operations (control capability only); disabled answers null, so 404.
+    if(path.startsWith(OBJECTIVE_RUNS_PREFIX))return (objectiveRuns===null?null:await objectiveRuns.handle(request))??absent();
++   // The schedule worker's routine occurrence operations (control capability only, lane B3); disabled answers null, so 404.
++   if(path.startsWith(ROUTINES_OCCURRENCE_PREFIX))return (routinesOccurrences===null?null:await routinesOccurrences.handle(request))??absent();
+    if(poststart!==null){const delivered=await poststart.privateApplication.handle(request,{ingress:marker});if(delivered!==null)return delivered;}
+    if(router!==null){const routed=await router.privateApplication.handle(request,{ingress:marker});if(routed!==null)return routed;}
+    const native=await candidate.handle(request);if(native!==null)return native;
+diff --git a/apps/runtime/control.mjs b/apps/runtime/control.mjs
+index e76c2925..76990814 100644
+--- a/apps/runtime/control.mjs
++++ b/apps/runtime/control.mjs
+@@ -47,6 +47,7 @@ import {createConfiguredRunCapabilityPolicy} from './product-ports/capability-po
+ import {bindDocumentsSessions} from './artifacts/session-binding.mjs';
+ import {createObjectiveReaderApplication} from './product-ports/objective.mjs';
+ import {composeObjectiveRuns} from './native-authority/objective-runs-composition.mjs';
++import {composeRoutinesOccurrences,ROUTINES_OCCURRENCE_OWNERS} from './native-authority/routines-occurrence-composition.mjs';
+ import {createObjectiveGenerationStartApplication} from './objective-generation/start-application.mjs';
+ import {compileObjectiveGenerationConfiguration} from './objective-generation/configuration.mjs';
+ import {createObjectiveGenerationDispatcher} from '../control/conversations/objective-generation-dispatch.mjs';
+@@ -178,13 +179,18 @@ export async function startControl(configuration,options={}){
+    ...(candidate?.objectiveTemplate?{template:candidate.objectiveTemplate,tenantId:candidate.original.binding.tenantId}:{}),...(objectiveRunAuthority===undefined?{}:{authority:objectiveRunAuthority})});
+   const objectiveStart=objectiveDeclared.start===null?null:createObjectiveGenerationStartApplication({enabled:true,sessions:assembly.sessions,windowMs:objectiveDeclared.start.windowMs,maxRequestMs:configuration.limits.requestMs,
+    dispatcher:createObjectiveGenerationDispatcher({client,taskQueue:configuration.temporal.taskQueue,maxRequestMs:configuration.limits.requestMs})});
+-  const separated=configuration.privateHttp===undefined?null:createControlRouteApplications({assembly:assembly.application,candidate:candidate?.application,objectiveReader:createObjectiveReaderApplication(),objectiveRuns:objectiveRuns.application,objectiveStart,...(router?{router,privateIngress}:{}),...(poststartApplication?{poststart:poststartApplication}:{})});
++  // Routine occurrences (lane B3): the schedule worker's admission and retirement native operations over the candidate's scheduled-run
++  // template and initial-run retirement, consented per occurrence by Core's firing grant. Declared without those owners, every call refuses.
++  const routinesOccurrences=composeRoutinesOccurrences({configuration,controlCapabilitySha256:capabilityDigest(capabilityBytes.toString('utf8').trim()),pool,...(candidate?.routinesOccurrenceOwners?{owners:candidate.routinesOccurrenceOwners}:{})});
++  if(routinesOccurrences.state==='owners-unavailable')process.stderr.write(JSON.stringify({event:'runtime.routines.occurrences.unavailable',missing:Object.keys(ROUTINES_OCCURRENCE_OWNERS).filter(k=>k!=='consent')})+'\n');
++  const separated=configuration.privateHttp===undefined?null:createControlRouteApplications({assembly:assembly.application,candidate:candidate?.application,objectiveReader:createObjectiveReaderApplication(),objectiveRuns:objectiveRuns.application,objectiveStart,routinesOccurrences:routinesOccurrences.application,...(router?{router,privateIngress}:{}),...(poststartApplication?{poststart:poststartApplication}:{})});
+   const publicApplication=fence.wrap(separated?.public??mountedApplication),application=telemetry?telemetry.instrumentApplication(publicApplication):publicApplication;
+   const privateApplication=separated===null?null:telemetry?telemetry.instrumentApplication(fence.wrap(separated.private)):fence.wrap(separated.private);
+   async function readiness({signal}){fence.check();signal?.throwIfAborted();if(authorization&&!authorization.healthy())throw fault('TEMPORAL_AUTHORIZATION_UNAVAILABLE');await pool.query("SELECT to_regclass('meri_conversations.runs') AS runs, to_regclass('meri_conversations.events') AS events, to_regclass('meri_conversations.controls') AS controls, to_regclass('meri_conversations.selected_outputs') AS selected_outputs, to_regclass('meri_conversations.initial_inputs') AS initial_inputs").then(result=>{if(!result.rows[0]||typeof result.rows[0].initial_inputs!=='string'||Object.values(result.rows[0]).some(v=>v===null))throw fault('DATABASE_SCHEMA_UNAVAILABLE');});
+    // Declared retention serving needs its projections present and a recovered watermark: a fenced or stale projection is reconciled from
+    // the ledger here before serving, and a missing dependency is exposed, never bypassed.
+    if(objectiveRuns.tables.length){const r=await pool.query('SELECT name,to_regclass(name) AS relation FROM unnest($1::text[]) AS names(name)',[objectiveRuns.tables]);if(r.rows.length!==objectiveRuns.tables.length||r.rows.some(row=>row.relation===null))throw fault('OBJECTIVE_SCHEMA_UNAVAILABLE');}
++   if(routinesOccurrences.tables.length){const r=await pool.query('SELECT name,to_regclass(name) AS relation FROM unnest($1::text[]) AS names(name)',[routinesOccurrences.tables]);if(r.rows.length!==routinesOccurrences.tables.length||r.rows.some(row=>row.relation===null))throw fault('ROUTINES_SCHEMA_UNAVAILABLE');}
+    if(assembly.intentTables?.length){const r=await pool.query('SELECT name,to_regclass(name) AS relation FROM unnest($1::text[]) AS names(name)',[assembly.intentTables]);if(r.rows.length!==assembly.intentTables.length||r.rows.some(row=>row.relation===null))throw fault('INTENTS_SCHEMA_UNAVAILABLE');}
+    if(assembly.retention){const r=await pool.query('SELECT name,to_regclass(name) AS relation FROM unnest($1::text[]) AS names(name)',[assembly.retention.tables]);if(r.rows.length!==assembly.retention.tables.length||r.rows.some(row=>row.relation===null))throw fault('RETENTION_SCHEMA_UNAVAILABLE');await assembly.retention.startup.ensureServing();}await connection.withDeadline(Date.now()+configuration.limits.requestMs,()=>signal?connection.withAbortSignal(signal,()=>connection.workflowService.getSystemInfo({})):connection.workflowService.getSystemInfo({}));await native.readiness({signal});await assembly.userPreferences.readiness({signal});signal?.throwIfAborted();return {product:assembly.productReadiness()};}
+   await readiness({signal});({publicListener:listener,privateListener}=await listenControlApplications({configuration,publicApplication:application,privateApplication,readiness,signal:candidate?undefined:externalSignal,listen:owners.listen??listenRuntime,checkStartup:checkAuthorization}));
+diff --git a/apps/runtime/prepared-candidate.mjs b/apps/runtime/prepared-candidate.mjs
+index 13178643..3a5ef55c 100644
+--- a/apps/runtime/prepared-candidate.mjs
++++ b/apps/runtime/prepared-candidate.mjs
+@@ -29,6 +29,8 @@ import {remoteOriginal} from './native-authority/remote-task-boundary.mjs';
+ import {dirname,join} from 'node:path';
+ import {createObjectiveRunStartFacts} from './objective-source/run-start-facts.mjs';
+ import {createPostgresObjectiveRunStartStore} from './objective-source/postgres-run-starts.mjs';
++import {allocation} from '../gateway/budget/tool-budget-binding.mjs';
++import {SCHEDULED_MERI_INBOX_DESTINATION} from '../control/schedules/scheduled-conversation-currentness.mjs';
+ const refuse=()=>{throw Error('PREPARED_CANDIDATE_REFUSED');};
+ const same=(a,b)=>hash(a)===hash(b);
+ /** Check the configured first-run proxy bearer against the model grant intent before allocation. */
+@@ -158,5 +160,14 @@ export async function startPreparedCandidate({configuration,pool,signal,issuance
+  // The run issuer belongs to the poststart authority only; assemblePreparedCandidate's option record is closed.
+  const {issuer:_poststartIssuer,...candidateBindings}=bindings;
+  const ecs=new ECSClient({region:'us-east-1',maxAttempts:1}),s3=new S3Client({region:'us-east-1',maxAttempts:1});let candidate;
+- try{const objects=createS3ArtifactObjects({client:s3,...config.objects,now:Date.now,maxRequestMs:configuration.limits.requestMs});candidate=assemblePreparedCandidate({configuration,pool,ecs,objects,credentials:{identity:identity.toString('utf8').trim(),task:task.toString('utf8').trim(),control:control.toString('utf8').trim(),proxy:proxy.toString('utf8').trim()},...candidateBindings,...reads,...(intentMountFor===undefined?{}:{intentMountFor})});return Object.freeze({...candidate,...(taskRouterAuthority?{taskRouterAuthority}:{}),...(poststartOwners?{poststartOwners}:{}),...(objectiveTemplate?{objectiveTemplate}:{}),async close(){try{await candidate.close();}finally{ecs.destroy();s3.destroy();}}});}catch(error){ecs.destroy();s3.destroy();throw error;}
++ // Routine occurrences (lane B3): the scheduled-run template and the initial-run retirement control serves to the schedule worker
++ // (native-authority/routines-occurrence-composition.mjs), only with dynamic initial runs (the path that prepares every scheduled run)
++ // and the configured routine task identity (`routines.task`, config.mjs); its manifest digest comes from the sealed allocation.
++ const routineTask=configuration.routines?.task;
++ const routinesOccurrenceOwners=config.multiRun?.dynamicInitialRuns===true&&typeof bindings.retireInitial==='function'&&routineTask!==undefined?Object.freeze({
++  template:Object.freeze({principal:{tenantId:config.runtime.binding.tenantId,actorId:config.runtime.binding.actorId},selectedClientId:config.identity.commandContext.clientResolution.clientId,
++   policyRevision:config.qualification.policyRevision,versions:configuration.versions,task:{taskId:routineTask.taskId,version:routineTask.version,manifestSha256:allocation(config.allocationJson).manifestSha256},
++   configurationSha256:bindings.configurationSha256,allocationJson:config.allocationJson,runWindowMs:config.multiRun.runWindowMs,destinationId:SCHEDULED_MERI_INBOX_DESTINATION}),
++  retirement:Object.freeze({retire:({binding,signal})=>bindings.retireInitial({binding,client:ecs,signal})})}):undefined;
++ try{const objects=createS3ArtifactObjects({client:s3,...config.objects,now:Date.now,maxRequestMs:configuration.limits.requestMs});candidate=assemblePreparedCandidate({configuration,pool,ecs,objects,credentials:{identity:identity.toString('utf8').trim(),task:task.toString('utf8').trim(),control:control.toString('utf8').trim(),proxy:proxy.toString('utf8').trim()},...candidateBindings,...reads,...(intentMountFor===undefined?{}:{intentMountFor})});return Object.freeze({...candidate,...(taskRouterAuthority?{taskRouterAuthority}:{}),...(poststartOwners?{poststartOwners}:{}),...(objectiveTemplate?{objectiveTemplate}:{}),...(routinesOccurrenceOwners?{routinesOccurrenceOwners}:{}),async close(){try{await candidate.close();}finally{ecs.destroy();s3.destroy();}}});}catch(error){ecs.destroy();s3.destroy();throw error;}
+ }
+diff --git a/apps/runtime/product-ports/routines.mjs b/apps/runtime/product-ports/routines.mjs
+index 05a7e6f7..18928401 100644
+--- a/apps/runtime/product-ports/routines.mjs
++++ b/apps/runtime/product-ports/routines.mjs
+@@ -51,7 +51,8 @@ export const CORE_PRODUCED_ROUTINE_OWNERS=Object.freeze(['context.policy','runCo
+ /** Control-only opt-in `{enabled:boolean, core?}`; absent is off. Also the config.mjs validator for the `routines` key. */
+ export function compileRoutinesConfiguration(configuration){
+  if(configuration?.routines===undefined)return false;
+- let c;try{c=own(configuration.routines,['enabled'],['core']);}catch{throw fault('ROUTINES_CONFIGURATION');}
++ // `task` (lane B3) is the routine task identity for control's occurrence admission template (config.mjs); not an owner.
++ let c;try{c=own(configuration.routines,['enabled'],['core','task']);}catch{throw fault('ROUTINES_CONFIGURATION');}
+  if(typeof c.enabled!=='boolean')throw fault('ROUTINES_CONFIGURATION');compileRoutinesCoreConfiguration(configuration);return c.enabled;
+ }
+ function captureOwners(owners){
+diff --git a/apps/runtime/test/schedule-worker-role.test.mjs b/apps/runtime/test/schedule-worker-role.test.mjs
+index f51fe0ea..16d7aa7e 100644
+--- a/apps/runtime/test/schedule-worker-role.test.mjs
++++ b/apps/runtime/test/schedule-worker-role.test.mjs
+@@ -16,22 +16,31 @@ function configuration(){
+   scheduledDispatch:{enabled:true,conversationTaskQueue:'meri-conversations',maxConcurrentActivities:1},database:{connectionFile:join(missing,'database')}};
+ }
+ 
+-test('schedule-worker configuration is its own closed role: no native capability, canonical schedule settings, no token writer',()=>{
++const native=()=>({origin:'https://control.synthetic.invalid',capabilityFile:join(missing,'capability'),loopback:false,maxResponseBytes:131072});
++/** Core's unattended-firing pin (routines-configuration.mjs): a syntactically valid Ed25519 public JWK, never key material. */
++const pin={issuer:'https://core.synthetic.invalid/meri-routines',kid:'routine-fire-1',publicKey:{kty:'OKP',crv:'Ed25519',x:'11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo'}};
++const routines=()=>({enabled:true,core:{origin:'https://core.synthetic.invalid',serviceSecretFile:join(missing,'routines-secret'),unattendedGrant:pin}});
++
++test('schedule-worker configuration is its own closed role: optional native client and firing pin, canonical schedule settings, no token writer',()=>{
+  const valid=validateConfiguration(configuration(),'schedule-worker');assert.equal(valid.scheduledDispatch.enabled,true);
+  const {database:ignored,...pooled}=configuration();assert.doesNotThrow(()=>validateConfiguration(pooled,'schedule-worker'));
++ // Lane B3: the worker may declare its native client to control's occurrence operations and the routines firing pin (B2); both stay closed.
++ assert.doesNotThrow(()=>validateConfiguration({...configuration(),native:native(),routines:routines()},'schedule-worker'));
+  for(const mutate of [
+-  c=>{c.native={origin:'https://native.synthetic.invalid',capabilityFile:join(missing,'capability'),loopback:false,maxResponseBytes:131072};},
++  c=>{c.native={...native(),preparedKickoff:true};},c=>{c.native={...native(),origin:'http://control.synthetic.invalid'};},c=>{c.native={...native(),capabilityFile:'relative/capability'};},
++  c=>{c.routines={enabled:'yes'};},c=>{c.routines={...routines(),task:{taskId:'33333333-3333-4333-8333-333333333333',version:1}};},c=>{c.routines={enabled:true,core:{origin:'https://core.synthetic.invalid',serviceSecretFile:join(missing,'routines-secret')}};},
+   c=>{c.sourceEnabled=true;},c=>{c.scheduledDispatch.enabled=false;},c=>{c.scheduledDispatch.conversationTaskQueue=c.temporal.taskQueue;},
+   c=>{c.scheduledDispatch.maxConcurrentActivities=11;},c=>{delete c.scheduledDispatch;},c=>{delete c.versions;},c=>{c.database={connectionFile:'relative/database'};},
+-  c=>{c.temporal.tokenWriter={enabled:true};},c=>{c.userPreferences={enabled:false};},c=>{c.sessions={mode:'process-local',replicas:1,maxSessions:1,maxTtlMs:1000};},
++  c=>{c.temporal.tokenWriter={enabled:true};},c=>{c.userPreferences={enabled:false};},c=>{c.sessions={mode:'process-local',replicas:1,maxSessions:1,maxTtlMs:1000};},c=>{c.tenantSettings={enabled:true};},
+  ]){const c=configuration();mutate(c);assert.throws(()=>validateConfiguration(c,'schedule-worker'));}
+ });
+ 
+-test('schedule settings are not admitted by any other role',()=>{
+- for(const role of ['control','temporal-worker','conversation-runner'])assert.throws(()=>validateConfiguration({...configuration(),native:{origin:'https://native.synthetic.invalid',capabilityFile:join(missing,'capability'),loopback:false,maxResponseBytes:131072}},role));
++test('schedule settings are not admitted by any other role; the routine task identity is control\'s alone',()=>{
++ for(const role of ['control','temporal-worker','conversation-runner'])assert.throws(()=>validateConfiguration({...configuration(),native:native()},role));
++ assert.throws(()=>validateConfiguration({...configuration(),routines:{enabled:true,task:{taskId:'33333333-3333-4333-8333-333333333333',version:1}}},'schedule-worker'),/ROUTINES_CONFIGURATION/u);
+ });
+ 
+-test('bare CLI schedule-worker refuses as unavailable without trusted owners, and the product preview refuses the role outright',async()=>{
++test('bare CLI schedule-worker refuses as unavailable without trusted owners; the product preview refuses the role without the firing pin, native client and database',async()=>{
+  const directory=await mkdtemp(join(tmpdir(),'meri-schedule-role-')),file=join(directory,'schedule.json'),previous=process.env.MERI_PRODUCT_PREVIEW_REQUIRED,write=process.stderr.write,out=process.stdout.write;
+  let diagnostic='',stdout='';
+  try{
+@@ -41,6 +50,14 @@ test('bare CLI schedule-worker refuses as unavailable without trusted owners, an
+   assert.equal(await main(['schedule-worker','--config',file]),3);assert.equal(diagnostic,'RUNTIME_UNAVAILABLE\n');assert.equal(stdout,'');
+   diagnostic='';process.env.MERI_PRODUCT_PREVIEW_REQUIRED='1';
+   assert.equal(await main(['schedule-worker','--config',file]),2);assert.equal(diagnostic,'RUNTIME_CONFIGURATION\n');assert.equal(stdout,'');
++  for(const partial of [{routines:routines()},{routines:routines(),native:native()},{routines:{enabled:true,core:{origin:'https://core.synthetic.invalid',serviceSecretFile:join(missing,'routines-secret'),cancellationProof:{...pin,kid:'routine-cancel-1',publicKey:{...pin.publicKey,x:'hv0D4pz9N0ZQk8mo0z7l4t3Mvi6wW1a3xKk1n2wQ6l0'}}}},native:native()},{routines:routines(),native:{...native(),origin:'http://127.0.0.1:8082',loopback:true}}]){
++   const {database:_,...c}=configuration();await writeFile(file,JSON.stringify({...c,...partial,...(partial.native?.loopback?{database:configuration().database}:{})}));
++   diagnostic='';assert.equal(await main(['schedule-worker','--config',file]),2,JSON.stringify(partial));assert.equal(diagnostic,'RUNTIME_CONFIGURATION\n');
++  }
++  // With the pin, the native client and the database file the preview starts the service, whose owner factory needs the secret files:
++  // the refusal is the service's own (no poller, listener or connection), proving the composition is reached without any resource.
++  await writeFile(file,JSON.stringify({...configuration(),routines:routines(),native:native()}));
++  diagnostic='';assert.equal(await main(['schedule-worker','--config',file]),3);assert.equal(diagnostic,'RUNTIME_UNAVAILABLE\n');assert.equal(stdout,'');
+  }finally{
+   process.stderr.write=write;process.stdout.write=out;
+   if(previous===undefined)delete process.env.MERI_PRODUCT_PREVIEW_REQUIRED;else process.env.MERI_PRODUCT_PREVIEW_REQUIRED=previous;

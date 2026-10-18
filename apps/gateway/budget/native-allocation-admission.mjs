@@ -1,5 +1,7 @@
 /** Install original trusted allocation against the actual qualified task, once.
  * Reuses the canonical budget lock/predicate; never mints capabilities or tasks.
+ * Grant rows on the run that this admission did not declare are tolerated ONLY as execution-capability grants
+ * (`execution-grant-admission.mjs`): bound to this exact run, allocation and qualification. Revocation revokes them too.
  */
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256,validateShape} from '../../../packages/contracts/validate.mjs';
@@ -10,6 +12,7 @@ import {readCurrentAdmission} from './admitted-run-current.mjs';
 import {PostgresBudgetStore,BudgetStateDenied,refuse} from './postgres-budget-store.mjs';
 import {nativeTenantBudget} from './tenant/native-admission.mjs';
 import {readOccurrenceCost} from './occurrence-cost-scope.mjs';
+import {assertExecutionGrantBinding} from './execution-grant-admission.mjs';
 
 export function createNativeAllocationAdmission(configuration){
  const c=own(configuration,['pool','allocationJson','grantIntents','qualification','binding','now','limits'],['namespace']);
@@ -41,13 +44,20 @@ export function createNativeAllocationAdmission(configuration){
   const allocations=(await client.query(`SELECT * FROM ${t.tool_run_allocations} WHERE run_id=$1${suffix}`,[binding.runId])).rows,row=allocations[0];
   if(allocations.length!==1||!same(row.allocation,a)||row.allocation_sha256!==configured.allocationSha256||integer(row.max_tool_calls)!==a.budgets.maxToolCalls||integer(row.max_cost_micro_usd)!==a.budgets.maxCostMicroUSD)refuse('NATIVE_ADMISSION_CONFLICT');
   const rows=(await client.query(`SELECT * FROM ${t.grants} WHERE run_id=$1 ORDER BY grant_id${suffix}`,[binding.runId])).rows;
-  if(rows.length!==intents.length)refuse('NATIVE_ADMISSION_CONFLICT');
+  const declared=rows.filter(row=>intents.some(i=>i.grantId===row.grant_id)),extra=rows.filter(row=>!intents.some(i=>i.grantId===row.grant_id));
+  if(declared.length!==intents.length)refuse('NATIVE_ADMISSION_CONFLICT');
   for(const fact of configured.facts){
-   const g=rows.find(row=>row.grant_id===fact.grantId),intent=intents.find(i=>i.grantId===fact.grantId);assertRun(g,fact);
+   const g=declared.find(row=>row.grant_id===fact.grantId),intent=intents.find(i=>i.grantId===fact.grantId);assertRun(g,fact);
    if(!g||!(revoking?['PENDING','ACTIVE','REVOKED']:['PENDING','ACTIVE']).includes(g.state)||g.capability_sha256!==fact.capabilitySha256||dbTime(g.expires_at)!==intent.expiresAtMs)refuse('NATIVE_ADMISSION_CONFLICT');
    const installed=(await client.query(`SELECT * FROM ${t.tool_grant_bindings} WHERE grant_id=$1${suffix}`,[fact.grantId])).rows;
    if(installed.length!==1||installed[0].run_id!==binding.runId||!same(installed[0].facts,fact))refuse('NATIVE_ADMISSION_CONFLICT');
   }
+  // Execution-capability grants installed later on this run's allocation; anything else on the run is a conflict.
+  for(const row of extra){
+   const installed=(await client.query(`SELECT * FROM ${t.tool_grant_bindings} WHERE grant_id=$1${suffix}`,[row.grant_id])).rows;
+   assertExecutionGrantBinding({grant:row,bound:installed.length===1?installed[0]:null,allocation:a,mapping:f.qualificationBinding});
+  }
+  return extra.map(row=>row.grant_id);
  }
  async function operation(value,install,revoking=false){
   const input=own(value,['taskArn'],['signal']);nativeSignal(input.signal);const admitted=configured(input.taskArn),at=c.now();
@@ -75,11 +85,12 @@ export function createNativeAllocationAdmission(configuration){
      await client.query(`INSERT INTO ${t.tool_grant_bindings}(grant_id,run_id,facts) VALUES($1,$2,$3) ON CONFLICT DO NOTHING`,[fact.grantId,binding.runId,fact]);check();
     }
    }
-   await exact(client,admitted,install||revoking,revoking);check();
+   const executionGrantIds=await exact(client,admitted,install||revoking,revoking);check();
    if(revoking){
-    for(const fact of admitted.facts){await client.query(`UPDATE ${t.grants} SET state='REVOKED' WHERE grant_id=$1 AND state IN ('ACTIVE','PENDING')`,[fact.grantId]);check();}
+    // The admitted set and every execution-capability grant of the run end together (run terminal).
+    for(const grantId of [...admitted.facts.map(f=>f.grantId),...executionGrantIds]){await client.query(`UPDATE ${t.grants} SET state='REVOKED' WHERE grant_id=$1 AND state IN ('ACTIVE','PENDING')`,[grantId]);check();}
     const revoked=(await client.query(`SELECT * FROM ${t.grants} WHERE run_id=$1 ORDER BY grant_id FOR UPDATE`,[binding.runId])).rows;check();
-    if(revoked.length!==intents.length||revoked.some(g=>g.state!=='REVOKED'))refuse('NATIVE_REVOCATION_UNKNOWN');
+    if(revoked.length!==intents.length+executionGrantIds.length||revoked.some(g=>g.state!=='REVOKED'))refuse('NATIVE_REVOCATION_UNKNOWN');
     await nativeTenantBudget({client,binding,nowMs:dbTime(budget.now),allocation:a,signal:life.signal,check}).revoke();check();
     return data({state:'REVOKED',taskArn:input.taskArn,grantIds:admitted.facts.map(f=>f.grantId),revocationProven:true});
    }

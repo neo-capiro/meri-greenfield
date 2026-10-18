@@ -15,14 +15,20 @@ export function keyFromSeed(seedHex,kid){
  return {privateKey,publicJwk:{kty,crv,x,kid,alg:'EdDSA',use:'sig'}};
 }
 const b64=value=>Buffer.from(value,'utf8').toString('base64url');
-/** Mint exactly what Core's draft §2 specifies for these inputs. */
-export function signExecution({seedHex=PRODUCTION_SEED_HEX,issuer=PRODUCTION_ISSUER,kid=PRODUCTION_KID,proposal,decision,executorBinding,requestId,capabilityId,budgets,iat,exp,mutate}){
- const {privateKey}=keyFromSeed(seedHex,kid),iso=s=>new Date(s*1000).toISOString();
+/** Core's `taskCreateSourceBody` (rev 2): the `create_task` body drops a null clientId/dueDate. */
+const sourceBody=a=>({title:a.title,...(a.clientId===null?{}:{clientId:a.clientId}),...(a.dueDate===null?{}:{dueDate:a.dueDate})});
+/** Mint exactly what Core's draft §2 (rev 3) specifies for these inputs. `allocation` is the authenticated currentAllocation the
+ * budgets are copied from (`maxCostMicroUSD` -> `maxCostMicrousd`) and whose JCS digest the token binds; `qualification` is the
+ * admitted `{runId, attempt, workerArn, fence, policyRevision}`. An explicit `budgets` overrides the copy (mismatch cases). */
+export function signExecution({seedHex=PRODUCTION_SEED_HEX,issuer=PRODUCTION_ISSUER,kid=PRODUCTION_KID,proposal,decision,executorBinding,requestId,capabilityId,allocation,qualification,budgets,iat,exp,mutate}){
+ const {privateKey}=keyFromSeed(seedHex,kid),iso=s=>new Date(s*1000).toISOString(),b=allocation.budgets;
+ const copied=budgets??{maxTurns:b.maxTurns,maxRuntimeSeconds:b.maxRuntimeSeconds,maxCostMicrousd:b.maxCostMicroUSD,maxOutputBytes:b.maxOutputBytes};
  const execution={contractVersion:'0.1.0',requestId,capabilityId,executorBinding,proposalId:proposal.proposalId,commandSha256:proposal.commandSha256,idempotencyKey:proposal.command.idempotencyKey};
  let payload={iss:issuer,aud:'meri-gateway',iat,nbf:iat,exp,jti:capabilityId,
-  capability:{capabilityId,issuer,audience:'meri-gateway',binding:executorBinding,actions:['command.execute'],scopes:proposal.command.scopes,issuedAt:iso(iat),expiresAt:iso(exp),policyRevision:decision.policyRevision,budgets},
+  capability:{capabilityId,issuer,audience:'meri-gateway',binding:executorBinding,actions:['command.execute'],scopes:proposal.command.scopes,issuedAt:iso(iat),expiresAt:iso(exp),policyRevision:decision.policyRevision,budgets:copied},
   execution:{requestId,proposalId:proposal.proposalId,commandSha256:proposal.commandSha256,idempotencyKey:proposal.command.idempotencyKey,action:proposal.command.action,
-   argumentsSha256:hash(proposal.command.arguments),clientIds:scopeClientIds(proposal.command.scopes),decisionSha256:hash(decision),approver:decision.approver,requestSha256:hash(execution)}};
+   argumentsSha256:hash(proposal.command.arguments),sourceBodySha256:hash(sourceBody(proposal.command.arguments)),clientIds:scopeClientIds(proposal.command.scopes),decisionSha256:hash(decision),approver:decision.approver,requestSha256:hash(execution),
+   allocationSha256:hash(allocation),qualification}};
  if(mutate)payload=mutate(structuredClone(payload));
  const input=b64(executionHeader(kid))+'.'+b64(canonicalize(payload));
  return {credential:input+'.'+sign(null,Buffer.from(input,'utf8'),privateKey).toString('base64url'),execution,payload};
@@ -48,12 +54,14 @@ export function productionProposal(argumentsValue,{n=1,binding=RUN_BINDING}={}){
 export const productionDecision=proposal=>({proposalId:proposal.proposalId,commandSha256:proposal.commandSha256,decision:'approved',decidedAt:'2026-10-18T14:01:41.000Z',
  expiresAt:proposal.expiresAt,approver:proposal.requiredApprover,policyRevision:POLICY_REVISION});
 export const CAPABILITY_ID='9c1e7a3b-5d2f-4b8e-a6c4-3f0d8e2b7a15';
-export function productionToken(name,{iat=ISSUED_AT,exp=ISSUED_AT+120,capabilityId=CAPABILITY_ID,mutate,proposal=productionProposal(CASES[name]),decision=productionDecision(proposal),executorBinding=RUN_BINDING,budgets=BUDGETS}={}){
+/** The admitted qualification of the production-shaped run (numeric attempt, the actual task ARN). */
+export const QUALIFICATION=Object.freeze({runId:RUN_BINDING.runId,attempt:1,workerArn:'arn:aws:ecs:us-east-1:967807252336:task/meri-preview/0123456789abcdef0123456789abcdef',fence:RUN_BINDING.writerFence,policyRevision:POLICY_REVISION});
+export function productionToken(name,{iat=ISSUED_AT,exp=ISSUED_AT+120,capabilityId=CAPABILITY_ID,mutate,proposal=productionProposal(CASES[name]),decision=productionDecision(proposal),executorBinding=RUN_BINDING,allocation=admittedSet({binding:executorBinding}).allocation,qualification=QUALIFICATION,budgets}={}){
  const requestId=executionRequestId({proposalId:proposal.proposalId,commandSha256:proposal.commandSha256,executorBinding});
- return {proposal,decision,requestId,executorBinding,...signExecution({proposal,decision,executorBinding,requestId,capabilityId,budgets,iat,exp,mutate})};
+ return {proposal,decision,requestId,executorBinding,allocation,qualification,...signExecution({proposal,decision,executorBinding,requestId,capabilityId,allocation,qualification,budgets,iat,exp,mutate})};
 }
 /** A production-shaped admitted grant set (model + task grants) and allocation for the run, as native admission installs it. */
-export const WORKER_ARN='arn:aws:ecs:us-east-1:967807252336:task/meri-preview/0123456789abcdef0123456789abcdef';
+export const WORKER_ARN=QUALIFICATION.workerArn;
 const OPERATION={id:'create_task',version:'0.2.0'};
 export function admittedSet({binding=RUN_BINDING,grants=[['1b2c3d4e-0000-4000-8000-00000000000a','model'],['1b2c3d4e-0000-4000-8000-00000000000b','task']],policyRevision=POLICY_REVISION}={}){
  const budgets={maxTurns:3,maxToolCalls:1,maxRecoveryAttempts:0,maxRuntimeSeconds:900,maxCostMicroUSD:2000000,maxOutputBytes:262144};

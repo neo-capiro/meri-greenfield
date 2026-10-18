@@ -51,7 +51,8 @@ export const CORE_PRODUCED_ROUTINE_OWNERS=Object.freeze(['context.policy','runCo
 /** Control-only opt-in `{enabled:boolean, core?}`; absent is off. Also the config.mjs validator for the `routines` key. */
 export function compileRoutinesConfiguration(configuration){
  if(configuration?.routines===undefined)return false;
- let c;try{c=own(configuration.routines,['enabled'],['core']);}catch{throw fault('ROUTINES_CONFIGURATION');}
+ // `task` (lane B3) is the routine task identity for control's occurrence admission template (config.mjs); not an owner.
+ let c;try{c=own(configuration.routines,['enabled'],['core','task']);}catch{throw fault('ROUTINES_CONFIGURATION');}
  if(typeof c.enabled!=='boolean')throw fault('ROUTINES_CONFIGURATION');compileRoutinesCoreConfiguration(configuration);return c.enabled;
 }
 function captureOwners(owners){
