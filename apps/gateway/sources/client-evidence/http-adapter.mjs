@@ -1,4 +1,5 @@
 /** Trusted configured client evidence protocol, bounded transport; import never performs I/O. */
+import {createHash} from 'node:crypto';
 import canonicalize from 'canonicalize';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {createDispatchLifetime} from '../../dispatch/dispatch-lifetime.mjs';
@@ -15,7 +16,8 @@ export function createClientEvidenceHttpAdapter(options) {
       !Number.isSafeInteger(maxResponseBytes)||maxResponseBytes<1||maxResponseBytes>16777216)deny('GATEWAY_CONFIGURATION');
   let endpoints;
   try {
-    endpoints=frozenData(ownFields(configured,operationIds));
+    endpoints=frozenData(ownFields(configured,[],operationIds));
+    if(Object.keys(endpoints).length===0)deny('GATEWAY_CONFIGURATION');
     for(const endpoint of Object.values(endpoints)) {
       if(typeof endpoint!=='string')deny('GATEWAY_CONFIGURATION');
       const url=new URL(endpoint);
@@ -26,29 +28,49 @@ export function createClientEvidenceHttpAdapter(options) {
     let lifetime,acquired;
     try {
       const context=readContext(call,now);
+      const endpoint=endpoints[context.operation.id];
+      if(endpoint===undefined)deny('UNAVAILABLE');
       const protocol=frozenData({input:context.input,metadata:context.metadata});
-      const requestSha256=canonicalSha256(protocol),body=canonicalize(protocol);
+      const requestSha256=canonicalSha256(protocol),body=JSON.stringify(protocol);
+      const target=Object.freeze({method:'POST',path:`/api/clio/tools/${context.operation.id}`,
+        bodySha256:createHash('sha256').update(body,'utf8').digest('hex')});
       let cutoff=Math.min(context.deadlineMs,context.active()+maxRequestMs);
       lifetime=createDispatchLifetime({deadlineMs:cutoff,now,signal:context.signal});
       const active=()=>{lifetime.check();return context.active(cutoff);};
       const correlation=frozenData({operation:context.operation,argumentsSha256:context.argumentsSha256,
         metadata:context.metadata,requestSha256,normalizationContext:context.options,binding:context.authority.binding,subject:context.authority.subject,
-        policyRevision:context.authority.policyRevision,sourceIds:context.authority.sourceIds});
+        policyRevision:context.authority.policyRevision,sourceIds:context.authority.sourceIds,
+        ...(context.invocationId===undefined?{}:{invocationId:context.invocationId})});
+      const correlationBytes=canonicalize(frozenData({binding:context.authority.binding,subject:context.authority.subject,
+        policyRevision:context.authority.policyRevision,normalizationContext:context.options}));
+      if(typeof correlationBytes!=='string'||Buffer.byteLength(correlationBytes,'utf8')>8192)deny('RESOURCE_LIMIT');
+      const correlationSha256=createHash('sha256').update(correlationBytes,'utf8').digest('hex');
       const credentials=frozenData(await lifetime.run(signal=>{
-        active();return getCredentials(Object.freeze({...correlation,input:context.input,deadlineMs:cutoff,signal}));
+        active();return getCredentials(Object.freeze({...correlation,input:context.input,deadlineMs:cutoff,target,correlationSha256,signal}));
       }));
-      ownFields(credentials,[...Object.keys(correlation),'bearerToken','serviceSecret','expiresAtMs']);
-      if(Object.keys(correlation).some(key=>!same(credentials[key],correlation[key]))||
+      ownFields(credentials,[...Object.keys(correlation),'bearerToken','serviceSecret','expiresAtMs'],['authorizationScheme','target','correlationSha256']);
+      if(Object.hasOwn(credentials,'target')&&!same(credentials.target,target)||
+          ![undefined,'Bearer','CapiroMeriRead'].includes(credentials.authorizationScheme)||
+          credentials.authorizationScheme!=='CapiroMeriRead'&&
+            (context.invocationId!==undefined||new URL(endpoint).pathname===target.path)||
+          credentials.authorizationScheme==='CapiroMeriRead'&&
+            (context.invocationId===undefined||!Object.hasOwn(credentials,'target'))||
+          credentials.authorizationScheme==='CapiroMeriRead'&&new URL(endpoint).pathname!==target.path||
+          credentials.authorizationScheme==='CapiroMeriRead'&&credentials.correlationSha256!==correlationSha256||
+          Object.hasOwn(credentials,'correlationSha256')&&credentials.correlationSha256!==correlationSha256||
+          Object.keys(correlation).some(key=>!same(credentials[key],correlation[key]))||
           !Number.isSafeInteger(credentials.expiresAtMs)||credentials.expiresAtMs<=active()||
+          credentials.authorizationScheme==='CapiroMeriRead'&&credentials.expiresAtMs>context.deadlineMs||
           ![credentials.bearerToken,credentials.serviceSecret].every(token=>typeof token==='string'&&
             token.length>0&&token.length<=8192&&/^[\x21-\x7e]+$/.test(token)))deny('ACCESS_DENIED');
       cutoff=Math.min(cutoff,credentials.expiresAtMs);lifetime.limitDeadline(cutoff);active();
       const response=await lifetime.run(async signal=>{
         active();
-        const result=await fetchImpl(endpoints[context.operation.id],{method:'POST',redirect:'error',credentials:'omit',
-          cache:'no-store',signal,headers:{authorization:`Bearer ${credentials.bearerToken}`,
+        const result=await fetchImpl(endpoint,{method:'POST',redirect:'error',credentials:'omit',
+          cache:'no-store',signal,headers:{authorization:`${credentials.authorizationScheme??'Bearer'} ${credentials.bearerToken}`,
             'x-internal-service-secret':credentials.serviceSecret,'content-type':'application/json',
-            accept:'application/json','accept-encoding':'identity'},body});
+            accept:'application/json','accept-encoding':'identity','x-meri-deadline-at':String(cutoff),
+            ...(credentials.authorizationScheme==='CapiroMeriRead'?{'x-meri-read-correlation':Buffer.from(correlationBytes,'utf8').toString('base64url')}:{})},body});
         acquired=result;
         try {active();return result;}catch(error){try {cancelBody(responseBody(result));}catch{}throw error;}
       });

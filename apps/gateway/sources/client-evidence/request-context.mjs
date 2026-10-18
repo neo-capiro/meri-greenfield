@@ -15,7 +15,9 @@ export function clientEvidenceContract(reference) {
   return {operation,contract:resolveOperationContract(operation)};
 }
 export function readContext(call,now) {
-  const fields=ownFields(call,['operation','input','request','authority','normalizationContext'],['signal']);
+  const fields=ownFields(call,['operation','input','request','authority','normalizationContext'],['signal','invocationId']);
+  if(fields.invocationId!==undefined&&
+      (typeof fields.invocationId!=='string'||!/^[A-Za-z0-9_-]{1,128}$/.test(fields.invocationId)))deny('INVALID_ARGUMENTS');
   const {operation,contract}=clientEvidenceContract(fields.operation);
   let input,request,authority,options;
   try {input=frozenData(fields.input);request=frozenData(fields.request);authority=frozenData(fields.authority);options=frozenData(fields.normalizationContext);}
@@ -57,7 +59,7 @@ export function readContext(call,now) {
   if(!same(normalized.input,input))deny('INVALID_ARGUMENTS');
   const clientId=input.clientId;
   if(subject.kind!=='client'||subject.entityType!=='client'||subject.entityIds[0]!==clientId)deny('ACCESS_DENIED');
-  return {operation,contract,input,request,authority,options,metadata:normalized.metadata,
+  return {operation,contract,input,request,authority,options,metadata:normalized.metadata,invocationId:fields.invocationId,
     argumentsSha256:normalized.argumentsSha256,signal,deadlineMs,active};
 }
 export function assertClientEvidenceResult(result,context) {
