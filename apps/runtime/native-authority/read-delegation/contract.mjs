@@ -14,6 +14,7 @@ import {resolveOperationContract,validateShape as readShape} from '../../../../p
 import {assertCorePrincipal} from '../../../../packages/contracts/runtime-0.2/retained-reads.mjs';
 import {nativeReadFault} from '../../../../packages/contracts/runtime-0.2/reads.mjs';
 import {MODE_READ_OPERATIONS} from '../../../../packages/contracts/native-read-observation-0.2/validate.mjs';
+import {signedRetainedSourceId,signedRetainedSourceOperation} from '../../../gateway/sources/retained-reads/signed-source-operations.mjs';
 
 const refuse=code=>{throw nativeReadFault(code);};
 const UUID=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u,SHA=/^[a-f0-9]{64}$/u,CALL_KEY=/^[A-Za-z0-9_-]{1,128}$/u;
@@ -97,16 +98,22 @@ export function assertDelegationReceipt(raw,{bound,started,now}){
   !Number.isSafeInteger(v.expiresAtMs)||v.expiresAtMs<=at||v.expiresAtMs>bound+READ_DELEGATION_LIMITS.clockSkewMs)refuse('ACCESS_DENIED');
  return Object.freeze({...v,expiresAtMs:Math.min(v.expiresAtMs,bound)});
 }
-export function tokenRequest({kind,callKey,method='POST',path,bodySha256,operation=null,argumentsSha256=null,toolRequestSha256=null,referenceSha256=null,retryOf=null}){
+export function tokenRequest({kind,callKey,method='POST',path,bodySha256,operation=null,argumentsSha256=null,toolRequestSha256=null,referenceSha256=null,correlationSha256,retryOf=null}){
  if(!READ_TOKEN_KINDS.includes(kind)||method!=='POST'||typeof path!=='string'||!path.startsWith('/api/clio/')||!SHA.test(bodySha256)||retryOf!==null&&!SHA.test(retryOf))refuse('INVALID_ARGUMENTS');
  assertCallKey(callKey);
- if(kind!=='tool'&&argumentsSha256!==null)refuse('INVALID_ARGUMENTS');
+ if(kind!=='tool'&&(argumentsSha256!==null||correlationSha256!==undefined))refuse('INVALID_ARGUMENTS');
  // `tool`: Core admits it only against Meri's UNKNOWN reservation for this call key with this operation and arguments hash.
- if(kind==='tool'){assertReadOnlyOperation(operation);if(path!==toolRoute(operation)||!SHA.test(argumentsSha256)||toolRequestSha256!==null||referenceSha256!==null)refuse('INVALID_ARGUMENTS');}
+ if(kind==='tool'){
+  assertReadOnlyOperation(operation);
+  const signed=signedRetainedSourceId(operation.id);
+  if(path!==toolRoute(operation)||!SHA.test(argumentsSha256)||toolRequestSha256!==null||referenceSha256!==null||
+    (signed?(!signedRetainedSourceOperation(operation)||!SHA.test(correlationSha256)):correlationSha256!==undefined))refuse('INVALID_ARGUMENTS');
+ }
  else if(kind==='mode'){assertReadOnlyOperation(operation);if(!MODE_READ_OPERATIONS.includes(operation.id)||path!==READ_DELEGATION_ROUTES.mode||!SHA.test(toolRequestSha256)||referenceSha256!==null)refuse('INVALID_ARGUMENTS');}
  else if(kind==='reference'){if(operation!==null||path!==READ_DELEGATION_ROUTES.reference||!SHA.test(referenceSha256)||toolRequestSha256!==null)refuse('INVALID_ARGUMENTS');}
  else if(operation!==null||toolRequestSha256!==null||referenceSha256!==null||!/\/read-delegations\/[a-f0-9-]{36}\/current$/u.test(path))refuse('INVALID_ARGUMENTS');
- return data({schemaVersion:1,kind,callKey,method,path,bodySha256,operation:operation===null?null:{id:operation.id,version:operation.version},argumentsSha256,toolRequestSha256,referenceSha256,retryOf});
+ return data({schemaVersion:1,kind,callKey,method,path,bodySha256,operation:operation===null?null:{id:operation.id,version:operation.version},argumentsSha256,toolRequestSha256,referenceSha256,
+  ...(correlationSha256===undefined?{}:{correlationSha256}),retryOf});
 }
 /** Token receipt: at most 60 s, and never past the delegation's hard expiry. */
 export function assertTokenReceipt(raw,{hardExpiryMs,started,now}){

@@ -41,6 +41,7 @@ import {createRunReadDelegation} from './read-delegation/delegation.mjs';
 import {composeDelegatedNativeCredentials} from './read-delegation/native-credentials.mjs';
 import {createReadDelegationConsents} from './read-delegation/consent.mjs';
 import {createReadDelegationRunOptions} from './read-delegation/run-options.mjs';
+import {createRetainedReadCredentialRelay} from './retained-read-credential-relay.mjs';
 
 /** Server-side secret files the control role renders for reads (absolute paths). `readModeServiceSecret` may name the same
  * file as `serviceSecret`. There is no bearer file: the bearer comes from the live-session relay. */
@@ -146,8 +147,13 @@ export async function createControlReadsComposer(options){
   if(missing.length)return {gateway:{},families:{}};
   const t=taskTuple(raw);
   const bearer=broker.bearerFor({binding:t.binding,scopes:t.scopes});
+  const nativeCredentials=nativeCredentialsFor(t,bearer);
+  const signedCredentials=createRetainedReadCredentialRelay({task:t,nativeCredentials,
+   getServiceSecret:broker.getServiceSecret,now});
   const supplied=retainedIds.length?own(synchronous(c.retainedTaskPorts(Object.freeze({task:t,
    getNativeCredential:async request=>(await bearer({binding:t.binding,...request})).credential,
+   getNativeCredentialWithExpiry:request=>nativeCredentials.getNativeCredential({...request,binding:t.binding}),
+   getSignedSourceCredentials:signedCredentials,
    getServiceSecret:broker.getServiceSecret}))),['families'],['contextPorts']):{families:{},contextPorts:{}};
   const retainedFamilies=own(supplied.families,retainedIds),contextPorts=own(supplied.contextPorts??{},[],['memoryContextPorts','mailContextPorts','retainedContextPorts']);
   if(retainedIds.includes('mail')&&contextPorts.mailContextPorts===undefined||retainedIds.includes('memory-proposals')&&contextPorts.memoryContextPorts===undefined||
@@ -159,7 +165,7 @@ export async function createControlReadsComposer(options){
     producerContext:t.grant,producer:{namespace:'general-reads',executionId:t.original.executionId},credential:t.taskCapability,sourceEnabled:true,...(gateway.namespace===undefined?{}:{namespace:gateway.namespace})},
    families:{...Object.fromEntries(familyIds.filter(id=>NATIVE_READ_FAMILIES.includes(id)).map(id=>[id,{origin:coreAuthority.origin,fetchImpl}])),...retainedFamilies},
    contextPorts,
-   nativeCredentials:{...nativeCredentialsFor(t,bearer),getServiceSecret:broker.getServiceSecret,
+   nativeCredentials:{...nativeCredentials,getServiceSecret:broker.getServiceSecret,
     ...(broker.getReadModeServiceSecret===undefined?{}:{getReadModeServiceSecret:broker.getReadModeServiceSecret}),...(c.defaultCongress===undefined?{}:{defaultCongress:c.defaultCongress})}};
  }
  /** Option A only, or option B with A as the attended fallback. One delegation per run attempt (binding), reused across its tasks. */

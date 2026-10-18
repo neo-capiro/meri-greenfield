@@ -190,3 +190,16 @@ test('adapter: every delegated target call carries the Stop signal of the run an
  await new Promise(resolve=>setTimeout(resolve,5));await d.stop('cancelled');
  await assert.rejects(pending);assert.equal(aborted,true);
 });
+
+test('adapter relays the signed retained source correlation into the one-use Core tool token',async()=>{
+ const clock={t:T0},{s,client}=stub({clock}),{d}=delegation({clock,client});
+ const x=composeDelegatedNativeCredentials({delegation:d,client,now:()=>clock.t});
+ const {credential}=await x.getNativeCredential({binding,callKey:'owned_signed_1',deadlineMs:T0+MIN});
+ const operation={id:'read_client_documents',version:'0.2.0'},correlationSha256='e'.repeat(64),bodySha256='f'.repeat(64);
+ const receipt=await x.toolCredential({credential,operation,argumentsSha256:'a'.repeat(64),
+  target:{method:'POST',path:toolRoute(operation),bodySha256},correlationSha256,deadlineMs:T0+MIN});
+ assert.equal(receipt.authorizationScheme,'CapiroMeriRead');
+ const issued=s.tokens.find(request=>request.kind==='tool');
+ assert.equal(issued.callKey,'owned_signed_1');assert.deepEqual(issued.operation,operation);
+ assert.equal(issued.correlationSha256,correlationSha256);assert.equal(issued.bodySha256,bodySha256);
+});

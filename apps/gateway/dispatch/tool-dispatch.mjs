@@ -6,6 +6,7 @@ import { assertOperationArguments, prepareOperationContext } from './operation-c
 import { assertDispatchResult } from './read-result-envelope.mjs';
 import { assertProjectionConfiguration } from './projection-read-context.mjs';
 import {nativeReadGroup,nativeContextPortsFor} from './native-read-context.mjs';
+import {signedRetainedSourceId,signedRetainedSourceOperation} from '../sources/retained-reads/signed-source-operations.mjs';
 
 const sameBinding = (a, b) => canonicalSha256(a.binding) === canonicalSha256(b.binding) && a.policyRevision === b.policyRevision;
 const subjectSelection = subject => {
@@ -38,6 +39,8 @@ export function createToolDispatch({ catalog, authority, budget, limits, now, ne
     const entry = catalog.entry(request.operation);
     if (!sourceEnabled || entry === null) deny('UNAVAILABLE');
     if (canonicalSha256(entry.descriptor.operation) !== canonicalSha256(request.operation)) deny('GATEWAY_CONFIGURATION');
+    const signedSource=signedRetainedSourceId(request.operation.id);
+    if(signedSource&&(!signedRetainedSourceOperation(request.operation)||invocationId===undefined))deny('UNAVAILABLE');
     assertOperationArguments(entry, request.arguments);
     let deadlineMs = now()+limits.maxRequestMs;
     const ownedLifetime = createDispatchLifetime({ deadlineMs, now, signal });
@@ -80,7 +83,8 @@ export function createToolDispatch({ catalog, authority, budget, limits, now, ne
       const projection = ['bound-projection/1','client-documents/1'].includes(entry.contract.binding?.dispatchProfile);
       try { outputJson = await lifetime.run(signal => entry.execute({ input: normalized.input,
         request: normalized.request, authority: effect, argumentsSha256: normalized.argumentsSha256,
-        ...(projection || context.handlerNormalization ? {normalizationContext:context.options(effect)} : {}), signal })); }
+        ...(projection || context.handlerNormalization ? {normalizationContext:context.options(effect)} : {}),
+        ...(signedSource?{invocationId}:{}),signal })); }
       catch (error) {
         const failure = safeFailure(error);
         if (['DEADLINE', 'CANCELLED'].includes(failure.message)) throw failure;
