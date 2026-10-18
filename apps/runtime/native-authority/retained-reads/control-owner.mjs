@@ -11,6 +11,15 @@ const same=(a,b)=>hash(a)===hash(b),refuse=code=>{throw nativeReadFault(code);};
 const subjectSelection=({authorizationDecisionId,...selection})=>selection;
 const taskSelection=({operation,inputSha256,authorizationDecisionId,checkedAtMs,expiresAtMs,...facts})=>facts;
 const failure=error=>{const code=nativeReadFailureCode(error)??safeFailure(error).message;return new GatewayDenied(code==='CONFIGURATION'?'GATEWAY_CONFIGURATION':code==='INTERNAL_ERROR'?'UNAVAILABLE':code);};
+function assertFloridaSelectedClient(proof,receipt,admitted){
+ if(proof.operation.id!=='get_florida_budget_project')return;
+ const clients=[receipt.effectiveScope.clientId,receipt.clientResolution?.clientId].filter(id=>id!==null&&id!==undefined);
+ if(clients.length===0)return;
+ const subject=proof.subject,selected=subject.entityIds[0];
+ if(subject.kind!=='client'||subject.entityType!=='client'||subject.entityIds.length!==1||clients.some(id=>id!==selected))refuse('ACCESS_DENIED');
+ const scope=subject.scopes.find(s=>s.kind==='client'&&s.tenantId===proof.binding.tenantId&&s.resourceId===selected&&s.policyRevision===proof.policyRevision);
+ if(!scope||!admitted.scopes.some(s=>same(s,scope)))refuse('ACCESS_DENIED');
+}
 export function createRetainedReadControlOwner(configuration){
  const c=own(configuration,[],['meri','core','broker','recipients','now','enabled']),now=c.now??Date.now,enabled=c.enabled??false;
  if(typeof now!=='function'||typeof enabled!=='boolean')refuse('CONFIGURATION');
@@ -28,6 +37,7 @@ export function createRetainedReadControlOwner(configuration){
    if(native.principal.tenantId!==proof.binding.tenantId||native.principal.actorId!==proof.binding.actorId)refuse('UNAVAILABLE');limit(native.expiresAtMs);
    const selector=coreRetainedSelector(proof.operation,proof.request,proof.subject),resourceBegan=now(),receipt=assertCoreRetainedReceipt(proof.operation,await life.run(signal=>resource({operation:proof.operation,selector,signal,deadlineMs:cutoff})),{selector,principal:native.principal,identityRevision:native.identityRevision,started:resourceBegan,now});limit(receipt.expiresAtMs);
    const after=data(await life.run(signal=>current({...proof,signal,deadlineMs:cutoff})));limit(after.expiresAtMs);if(!same(taskSelection(before.assertion),taskSelection(after.assertion)))refuse('ACCESS_DENIED');
+   assertFloridaSelectedClient(proof,receipt,after.assertion);
    const vector={identityRevision:native.identityRevision,resourceRevision:receipt.resourceRevision,principal:native.principal,selectorSha256:receipt.selectorSha256,task:taskSelection(after.assertion)};
    if(previous&&!same(previous.vector,vector))refuse('ACCESS_DENIED');
    const context=proof.operation.id==='get_florida_budget_project'?data({asOf:proof.observationAt,effectiveScope:receipt.effectiveScope,clientResolution:receipt.clientResolution}):data({binding:proof.binding,subject:proof.subject});
