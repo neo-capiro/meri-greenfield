@@ -14,6 +14,8 @@
  *              G3: --capability-profile (base64url CapabilityPolicy JSON) adds its parts (capabilities/measured-options.mjs).
  *  runner      measureProductRunner (ecs-prepared-task-proof.mjs), the same function cli.mjs and the ECS proof run.
  *  skills      skillsDigest over the image's verified skill assets (see skillsDigest below).
+ *  generalReadInstallation  P2 measurement (installation-issuer.mjs measureGeneralReadInstallation) over the image's retrieval catalog and
+ *              installable read operations; the render pins its measurementSha256 and ships the measurement bytes (see generalReadInstallation).
  * Exit 0 receipt printed (gate outcomes inside), 2 usage, 3 measurement refused. */
 import {createHash} from 'node:crypto';
 import {readFileSync,realpathSync,statSync} from 'node:fs';
@@ -46,6 +48,13 @@ export async function skillsDigest({root}){
  const assets=JSON.parse(readFileSync(join(root,'packages','skills','assets.json'),'utf8')),listed=skills.listSkills();
  for(const {skillId,skillVersion} of listed)skills.selectSkill(skillId,skillVersion);
  return {digest:canonicalSha256({schema:SKILLS_DIGEST_SCHEMA,catalogSha256:assets.catalogSha256,skills:listed}),catalogSha256:assets.catalogSha256,count:listed.length};
+}
+/** P2: `{measurement, measurementSha256}` of the general-read installation under `root`: exactly what the control issuer restates and
+ * re-measures (apps/gateway/general-reads/installation-issuer.mjs over general-read-installation/runtime.mjs installationReadOperations()).
+ * The same function runs on source (runtime-values.mjs refuses a receipt that differs) and in the image (receipt). */
+export async function generalReadInstallation({root}){
+ const [issuer,runtime]=await Promise.all([load(root,'apps/gateway/general-reads/installation-issuer.mjs'),load(root,'apps/runtime/native-authority/general-read-installation/runtime.mjs')]);
+ return issuer.measureGeneralReadInstallation({catalogJson:readFileSync(join(root,'packages','contracts','retrieval-0.2','catalog.json'),'utf8'),operations:runtime.installationReadOperations()});
 }
 
 function inputs(raw){
@@ -95,7 +104,7 @@ export async function measureFirstChatLaunch(raw,{root=resolve(fileURLToPath(new
  const optionsSha256=[first,second].map(p=>m.sdkOptionsTemplateSha256(p.options,p.run));
  const platformPackage=dirname(command),cliPackage=JSON.parse(readFileSync(join(platformPackage,'package.json'),'utf8'));
  const runner=await measureProductRunner({root});
- const skills=await skillsDigest({root});
+ const skills=await skillsDigest({root}),installation=await generalReadInstallation({root});
  // The launch gates the runtime applies to this template, run on a probe intent (Linux paths; fails off-Linux by design).
  const intent={workspace:first.runtime.cwd,configParentDirectory:v.configParentDirectory,secureStorageDirectory:v.secureStorageDirectory,launchTemplate,
   executableSha256:sha(bytes),imageSha256:'0'.repeat(64),runnerSha256:runner.runnerSha256,sdkOptionsSha256:optionsSha256[0],authoritySha256:first.authoritySha256};
@@ -118,7 +127,7 @@ export async function measureFirstChatLaunch(raw,{root=resolve(fileURLToPath(new
   executable:{path:command,sha256:sha(bytes),bytes:bytes.length},launchTemplate,launchTemplateRunInvariant,
   sdkOptions:{schema:m.SDK_OPTIONS_TEMPLATE_SCHEMA,sha256:optionsSha256[0],secondProbeSha256:optionsSha256[1],runInvariant:optionsSha256[0]===optionsSha256[1],
    probes:[first,second].map((p,n)=>({binding:PROBES[n],clientId:PROBE_CLIENT_ID,workspace:p.run.workspace,sdkConfigDirectory:p.run.configDirectory,authoritySha256:p.authoritySha256,scopes:p.scopes,window:null,skill:null}))},
-  runner:{path:runner.path,sha256:runner.runnerSha256,bytes:runner.bytes},skills,gates,
+  runner:{path:runner.path,sha256:runner.runnerSha256,bytes:runner.bytes},skills,generalReadInstallation:{measurement:installation.measurement,measurementSha256:installation.measurementSha256},gates,
   module:{sha256:sha(readFileSync(fileURLToPath(import.meta.url)))},
   scope:'Measurement only: no process spawned, no network or AWS call, no file written; probe identities and credential are synthetic.'};
  }finally{for(const p of probes)await p.close();}

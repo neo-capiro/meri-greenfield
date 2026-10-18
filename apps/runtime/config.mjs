@@ -12,6 +12,7 @@ import {parseTemporalProductTokenWriterConfiguration} from './temporal-product-t
 import {parseTemporalIssuerDeliveryConfiguration} from './temporal-issuer/client.mjs';
 import {parseTemporalProductBootstrapConfiguration} from './temporal-product-bootstrap-configuration.mjs';
 import {assertNativeReadConfiguration} from '../../packages/contracts/runtime-0.2/reads.mjs';
+import {validateShape as validateRetrievalShape} from '../../packages/contracts/retrieval-0.2/validate.mjs';
 import {compileControlUserPreferencesConfiguration} from './user-preferences.mjs';
 import {compileScheduleServiceConfiguration} from './schedule-service-configuration.mjs';
 import {compileCapabilityPlatform} from './product-ports/capability-policy.mjs';
@@ -102,9 +103,17 @@ export function validateConfiguration(raw,role){
  if(c.memory!==undefined){requireValue(role==='control','MEMORY_CONFIGURATION');compileMemoryConfiguration(c);if(c.memory.enabled)file(c.memory.serviceSecretFile);}
  // General reads (lane 2): control builds the reads composer before startControl only when declared enabled. Secrets are
  // server-side files; the user bearer is never a file (RC1 option A: the live-session relay supplies it per call).
- if(c.reads!==undefined){requireValue(role==='control','READS_CONFIGURATION');own(c.reads,['enabled'],['serviceSecretFile','readModeServiceSecretFile','defaultCongress']);requireValue(typeof c.reads.enabled==='boolean','READS_CONFIGURATION');
-  if(c.reads.enabled){file(c.reads.serviceSecretFile);if(c.reads.readModeServiceSecretFile!==undefined)file(c.reads.readModeServiceSecretFile);}else requireValue(c.reads.serviceSecretFile===undefined&&c.reads.readModeServiceSecretFile===undefined,'READS_CONFIGURATION');
-  if(c.reads.defaultCongress!==undefined)requireValue(integer(c.reads.defaultCongress,1,1000),'READS_CONFIGURATION');}
+ if(c.reads!==undefined){requireValue(role==='control','READS_CONFIGURATION');own(c.reads,['enabled'],['serviceSecretFile','readModeServiceSecretFile','defaultCongress','installation','discovery']);requireValue(typeof c.reads.enabled==='boolean','READS_CONFIGURATION');
+  if(c.reads.enabled){file(c.reads.serviceSecretFile);if(c.reads.readModeServiceSecretFile!==undefined)file(c.reads.readModeServiceSecretFile);}else requireValue(['serviceSecretFile','readModeServiceSecretFile','installation','discovery'].every(k=>c.reads[k]===undefined),'READS_CONFIGURATION');
+  if(c.reads.defaultCongress!==undefined)requireValue(integer(c.reads.defaultCongress,1,1000),'READS_CONFIGURATION');
+  // P2 installation (gateway/general-reads/installation-issuer.mjs): the render pins the in-image measurement's canonical sha256 and ships the
+  // measurement (brotli-compressed JSON) as a material file distinct from the secret files; revocations are exact catalog OperationRefs. Disabled names nothing.
+  if(c.reads.installation!==undefined){const i=c.reads.installation;own(i,['enabled'],['measurementSha256','measurementFile','revokedOperations']);requireValue(typeof i.enabled==='boolean','READS_CONFIGURATION');
+   if(i.enabled){requireValue(typeof i.measurementSha256==='string'&&/^[a-f0-9]{64}$/u.test(i.measurementSha256),'READS_CONFIGURATION');file(i.measurementFile);requireValue(i.measurementFile!==c.reads.serviceSecretFile&&i.measurementFile!==c.reads.readModeServiceSecretFile,'READS_CONFIGURATION');
+    if(i.revokedOperations!==undefined){const v=data(i.revokedOperations);requireValue(Array.isArray(v)&&v.length>=1&&v.length<=128,'READS_CONFIGURATION');for(const op of v)try{validateRetrievalShape('OperationRef',op);}catch{throw fault('READS_CONFIGURATION');}requireValue(new Set(v.map(op=>`${op.id}@${op.version}`)).size===v.length,'READS_CONFIGURATION');}}
+   else requireValue(i.measurementSha256===undefined&&i.measurementFile===undefined&&i.revokedOperations===undefined,'READS_CONFIGURATION');}
+  // P1 discovery (gateway/general-reads/discovery-producer.mjs) needs the trusted platform record: its run policy producer is createConfiguredRunCapabilityPolicy.
+  if(c.reads.discovery!==undefined){own(c.reads.discovery,['enabled']);requireValue(typeof c.reads.discovery.enabled==='boolean'&&(c.reads.discovery.enabled===false||c.capabilityPlatform!==undefined),'READS_CONFIGURATION');}}
  if(role!=='conversation-runner'){
   own(c.http,['hostname','port','frontendOrigin']);requireValue(['127.0.0.1','0.0.0.0','::1','::'].includes(c.http.hostname)&&integer(c.http.port,0,65535)&&c.http.frontendOrigin===endpoint(c.http.frontendOrigin,c.native?.loopback??false));
   own(c.temporal,['address','namespace','taskQueue','tls'],['authorization','tokenWriter','issuerDelivery','issuerBootstrap']);if(c.temporal.authorization!==undefined)requireValue(parseTemporalAuthorizationConfiguration(c.temporal.authorization).namespace===c.temporal.namespace,'TEMPORAL_AUTHORIZATION_CONFIGURATION');requireValue(typeof c.temporal.address==='string'&&/^[a-zA-Z0-9.\-]+:[1-9][0-9]{0,4}$/u.test(c.temporal.address)&&Number(c.temporal.address.split(':').at(-1))<=65535);for(const k of ['namespace','taskQueue'])requireValue(typeof c.temporal[k]==='string'&&/^[a-zA-Z0-9._\-]{1,128}$/u.test(c.temporal[k]));own(c.temporal.tls,['caFile','certFile','keyFile']);Object.values(c.temporal.tls).forEach(file);
