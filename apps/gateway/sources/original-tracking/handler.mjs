@@ -8,12 +8,13 @@ export function createOriginalTrackingReadHandler(options) {
   if(typeof read!=='function'||typeof now!=='function'||typeof newId!=='function')deny('GATEWAY_CONFIGURATION');
   return async function execute(call) {
     try {
-      const fields=ownFields(call,['input','request','authority','argumentsSha256'],['signal','normalizationContext']);
+      const fields=ownFields(call,['input','request','authority','argumentsSha256'],['signal','normalizationContext','invocationId']);
       const {argumentsSha256,...sourceCall}=fields;
       const context=readContext({operation,...sourceCall},now);
       if(argumentsSha256!==context.argumentsSha256)deny('INVALID_ARGUMENTS');context.active();
       const native=await read.call(adapter,{input:context.input,request:context.request,authority:context.authority,normalizationContext:context.normalizationContext,
-        ...(context.signal===undefined?{}:{signal:context.signal})});
+        ...(context.signal===undefined?{}:{signal:context.signal}),
+        ...(context.invocationId===undefined?{}:{invocationId:context.invocationId})});
       context.active();const requestId=newId();context.active();const traceId=newId();context.active();
       const page=projectOriginalTrackingPage(native,context,{requestId,traceId,retrievedAt:new Date(context.active()).toISOString()});
       const output=JSON.stringify(frozenData(page));context.active();return output;

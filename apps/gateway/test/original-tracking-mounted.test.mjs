@@ -181,3 +181,28 @@ test('original action: client-less mode remains unavailable and successor is unt
   const successor=contracts.resolveOperationContract({id:'actions.query',version:'0.2.0'});assert.equal(successor.descriptor.sourceRequirements[0].authority,'derived');
   assert.equal(successor.descriptor.sourceRequirements[0].sourceId,'action_items_complete');assert.equal(f.contract.binding.supersededBy,'actions.query');
 });
+
+test('original action: signed invocation binds the exact flat body and refuses altered token receipts',async()=>{
+ const invocationId='original_action_call_1',f=setup('query_action_items',{clientId:CLIENT,sort:'priority'});
+ const call={...f.direct(),invocationId};
+ const issued=[];
+ const signed=pins=>{issued.push(pins);return {...f.credential(pins),authorizationScheme:'CapiroMeriRead'};};
+ const output=JSON.parse(await createOriginalTrackingSourceMount({...f.config,getCredentials:async pins=>signed(pins)}).execute(call));
+ assert.equal(output.operation.id,'query_action_items');
+ const wire=f.wire[0],body=wire.options.body;
+ assert.deepEqual(JSON.parse(body),{limit:call.input.limit,clientId:CLIENT,sort:'priority'});
+ assert.equal(issued[0].argumentsSha256,call.argumentsSha256);
+ assert.equal(issued[0].invocationId,invocationId);
+ assert.deepEqual(issued[0].target,{method:'POST',path:'/api/clio/tools/query_action_items',
+  bodySha256:createHash('sha256').update(body,'utf8').digest('hex')});
+ assert.equal(wire.options.headers.authorization,'CapiroMeriRead SYNTHETIC_USER');
+ for(const change of [r=>{r.authorizationScheme='Bearer';},r=>{r.invocationId='different_call';},
+  r=>{r.target.bodySha256='0'.repeat(64);},r=>{r.expiresAtMs=NOW;}]){
+  const rejected=setup('query_action_items',{clientId:CLIENT,sort:'priority'});
+  const altered={...rejected.direct(),invocationId};
+  await assert.rejects(createOriginalTrackingSourceMount({...rejected.config,getCredentials:async pins=>{
+   const receipt=structuredClone({...rejected.credential(pins),authorizationScheme:'CapiroMeriRead'});change(receipt);return receipt;
+  }}).execute(altered));
+  assert.equal(rejected.wire.length,0);
+ }
+});

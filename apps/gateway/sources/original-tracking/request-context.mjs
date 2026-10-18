@@ -20,8 +20,10 @@ export function assertOriginalSourceIdentity(value,contract) {
   return identity;
 }
 export function readContext(call,now) {
-  const fields=ownFields(call,['operation','input','request','authority'],['signal','normalizationContext']);
+  const fields=ownFields(call,['operation','input','request','authority'],['signal','normalizationContext','invocationId']);
   const {operation,contract}=originalTrackingContract(fields.operation);
+  if(fields.invocationId!==undefined&&(operation.id!=='query_action_items'||
+      typeof fields.invocationId!=='string'||!/^[A-Za-z0-9_-]{1,128}$/u.test(fields.invocationId)))deny('ACCESS_DENIED');
   const input=frozenData(fields.input),request=frozenData(fields.request);
   let authority;
   try {
@@ -55,5 +57,6 @@ export function readContext(call,now) {
   if(!same(input,normalized.input))deny('INVALID_ARGUMENTS');
   if(input.clientId===null){if(operation.id!=='query_tasks'||subject.kind!=='portfolio')deny('ACCESS_DENIED');}
   else if(subject.kind!=='client'||subject.entityType!=='client'||subject.entityIds.length!==1||subject.entityIds[0]!==input.clientId)deny('ACCESS_DENIED');
-  active();return {operation,contract,input,request,authority,normalizationContext,argumentsSha256:normalized.argumentsSha256,deadlineMs,signal,active};
+  active();return {operation,contract,input,request,authority,normalizationContext,argumentsSha256:normalized.argumentsSha256,
+    invocationId:fields.invocationId,deadlineMs,signal,active};
 }
