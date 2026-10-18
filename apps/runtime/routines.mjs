@@ -1,5 +1,8 @@
 /** Compiled foreground feature factory. Constructed by the trusted host with borrowed pool/client and explicit policy;
- * actual opaque sessions are supplied only after the canonical control assembly creates them. No JSON authority selectors. */
+ * actual opaque sessions are supplied only after the canonical control assembly creates them. No JSON authority selectors.
+ * Optional trusted owners for the Core wires: `sessionRelay` (read-credential-relay.mjs) is bound ONCE to the actual sessions
+ * given to `create`, so Core calls use the owner's live native session; `cancellationProofs` (`{issue}`, Core wire B) makes
+ * running-work cancellation attended-only and hands its proof to `runControl`. */
 import {randomUUID} from 'node:crypto';
 import {ScheduleNotFoundError} from '@temporalio/client';
 import {own} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
@@ -13,7 +16,7 @@ import {createScheduledRunCancellation} from '../control/schedules/scheduled-run
 import {createPostgresConversationStore} from '../control/conversations/postgres-store.mjs';
 
 export function createRuntimeRoutinesFeature(configuration){
- const c=own(configuration,['enabled'],['pool','client','context','now','newId','limits','runControl','retirement']);
+ const c=own(configuration,['enabled'],['pool','client','context','now','newId','limits','runControl','retirement','cancellationProofs','sessionRelay']);
  if(typeof c.enabled!=='boolean')throw Error('ROUTINES_CONFIGURATION');
  // The kill switch does not inspect authority ports or allocate resources.
  if(c.enabled===false)return Object.freeze({state:()=> 'disabled',inboxState:()=> 'disabled',create:()=>createRoutinesApplication({enabled:false})});
@@ -25,14 +28,17 @@ export function createRuntimeRoutinesFeature(configuration){
  // Temporal SDK clients remain borrowed. No listener, timer, socket or query starts during construction.
  const scheduleClient=c.client?.schedule,workflowClient=c.client?.workflow;
  if(!scheduleClient||!workflowClient)throw Error('ROUTINES_CONFIGURATION');
- if((c.runControl===undefined)!==(c.retirement===undefined))throw Error('ROUTINES_CONFIGURATION');
- const runCancellation=c.runControl===undefined?undefined:createScheduledRunCancellation({scheduleOwner,store:createPostgresConversationStore({pool:c.pool,now}),runControl:c.runControl,retirement:c.retirement,client:c.client,now,maxRequestMs:limits.maxRequestMs});
+ if((c.runControl===undefined)!==(c.retirement===undefined)||c.cancellationProofs!==undefined&&c.runControl===undefined)throw Error('ROUTINES_CONFIGURATION');
+ if(c.sessionRelay!==undefined&&(typeof c.sessionRelay?.bind!=='function'||typeof c.sessionRelay?.state!=='function'))throw Error('ROUTINES_CONFIGURATION');
+ const runCancellation=c.runControl===undefined?undefined:createScheduledRunCancellation({scheduleOwner,store:createPostgresConversationStore({pool:c.pool,now}),runControl:c.runControl,retirement:c.retirement,client:c.client,now,maxRequestMs:limits.maxRequestMs,...(c.cancellationProofs===undefined?{}:{proofs:c.cancellationProofs})});
  let state='pending',inboxState='pending';
  return Object.freeze({state:()=>state,inboxState:()=>inboxState,historyCurrentness(value){
   const {gate,core}=own(value,['gate','core']);try{const owner=createScheduledConversationCurrentness({scheduleOwner,gate,core,now,maxRequestMs:limits.maxRequestMs});inboxState='composed';return owner;}catch(error){inboxState='unavailable';throw error;}
  },create(value){
   const {sessions}=own(value,['sessions']);
   try{
+   // The Core wires resolve the owner's native bearer from exactly these sessions (never another owner or credential).
+   if(c.sessionRelay!==undefined)c.sessionRelay.bind(sessions);
    const contextOwner=createScheduleRuntimeContext({...context,sessions,scheduleOwner,now,newId,...(runCancellation===undefined?{}:{runCancellation})});
    const service=createRoutinesService({contextOwner,journalStore,proposalReader,scheduleOwner,scheduleClient,workflowClient,scheduleNotFoundError:ScheduleNotFoundError,now,maxRequestMs:limits.maxRequestMs,...(runCancellation===undefined?{}:{runCancellation})});
    const application=createRoutinesApplication({service,now,limits,enabled:true});state='composed';return application;

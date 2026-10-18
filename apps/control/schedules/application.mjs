@@ -24,8 +24,13 @@ export function createRoutinesService(configuration){
  function input(value,parse){try{const v=call(value);return {v,b:parse(v.request)};}catch{deny('INVALID_REQUEST');}}
  function life(v){return createOperationLifetime({deadlineMs:Math.min(v.deadlineMs,c.now()+c.maxRequestMs),now:c.now,signal:v.signal,errorFactory:code=>Object.assign(Error(code),{code,outcome:'UNKNOWN'})});}
  function contextCall(v,body,l,extra={}){return {credential:v.credential,operation:body.operation,request:body.request,deadlineMs:Math.min(v.deadlineMs,c.now()+c.maxRequestMs),signal:l.signal,...extra};}
+ const cancelRuns=c.runCancellation===undefined?undefined:storageMethod(c.runCancellation,'cancel');
  function tools(resolved){
-  const lifecycle=createScheduleLifecycle({scheduleOwner:c.scheduleOwner,scheduleClient:c.scheduleClient,workflowClient:c.workflowClient,authorize:resolved.authorize,clock:c.now,...(c.runCancellation===undefined?{}:{runCancellation:c.runCancellation})});
+  // Run cancellation is attended: it carries this request's own resolved session selection (never request data), from which a
+  // Core-proof run control obtains the owner's live native session. Unattended callers have no such selection.
+  const attended=data({binding:resolved.current.binding,selectedClientId:resolved.current.selectedClientId});
+  const runCancellation=cancelRuns===undefined?undefined:Object.freeze({cancel:call=>cancelRuns({...call,attended})});
+  const lifecycle=createScheduleLifecycle({scheduleOwner:c.scheduleOwner,scheduleClient:c.scheduleClient,workflowClient:c.workflowClient,authorize:resolved.authorize,clock:c.now,...(runCancellation===undefined?{}:{runCancellation})});
   return createScheduleToolInterface({lifecycle,validators,authorize:resolved.authorize,clock:c.now});
  }
  async function current(v,body,l){const r=await l.run(()=>authorizeRequest(contextCall(v,body,l)));l.limitDeadline(r.expiresAtMs);l.check();return r;}
