@@ -2,12 +2,16 @@
  * (witnessed by `migration-source.test.mjs`), over in-memory rows. Not PostgreSQL: no constraints beyond the journal's own keys. */
 const COLUMNS=['candidate','candidate_sha256','request_sha256','submission_state','review_id'];
 export function createMemoryPoolFixture(){
- const rows=[],statements=[];
+ const rows=[],statements=[],queries=[],retentionRows=new Map();
  const project=row=>Object.fromEntries(COLUMNS.map(c=>[c,row[c]]));
  const byKey=(tenantId,proposer,key)=>rows.find(r=>r.tenant_id===tenantId&&r.proposer_actor_id===proposer&&r.idempotency_key===key);
  async function query(text,params=[]){
-  const sql=text.replace(/\s+/gu,' ').trim();statements.push(sql);
-  if(/^(BEGIN|COMMIT|ROLLBACK|SET LOCAL)/u.test(sql))return {rows:[],rowCount:0};
+  const sql=text.replace(/\s+/gu,' ').trim();statements.push(sql);queries.push({sql,params});
+  if(/^(BEGIN|COMMIT|ROLLBACK|SET LOCAL|SET TRANSACTION)/u.test(sql))return {rows:[],rowCount:0};
+  if(sql.startsWith('SELECT pg_advisory_xact_lock'))return {rows:[],rowCount:1};
+  if(sql.startsWith('SELECT state FROM meri_conversations.retention_subjects')){
+   const state=retentionRows.get(params[0]+'/'+params[1]);return {rows:state===undefined?[]:[{state}],rowCount:state===undefined?0:1};
+  }
   if(sql.startsWith('INSERT INTO meri_memory.candidates')){
    const [tenant_id,candidate_id,proposer_actor_id,idempotency_key,request_sha256,candidate,candidate_sha256,scope,client_id,created_at]=params;
    if(byKey(tenant_id,proposer_actor_id,idempotency_key)||rows.some(r=>r.tenant_id===tenant_id&&r.candidate_id===candidate_id))return {rows:[],rowCount:0};
@@ -30,9 +34,15 @@ export function createMemoryPoolFixture(){
     .sort((a,b)=>b.created_at.localeCompare(a.created_at)||b.candidate_id.localeCompare(a.candidate_id)).slice(0,limit);
    return {rows:out.map(project),rowCount:out.length};
   }
+  if(sql.startsWith('SELECT candidate_id FROM meri_memory.candidates')){
+   const [tenantId,conversationId,afterCandidateId,limit]=params;
+   const out=rows.filter(r=>r.tenant_id===tenantId&&r.candidate.origin.kind==='conversation'&&r.candidate.origin.conversationId===conversationId&&
+    (afterCandidateId===null||r.candidate_id>afterCandidateId)).sort((a,b)=>a.candidate_id.localeCompare(b.candidate_id)).slice(0,limit);
+   return {rows:out.map(r=>({candidate_id:r.candidate_id})),rowCount:out.length};
+  }
   if(sql.includes('AND idempotency_key=$3')){const row=byKey(params[0],params[1],params[2]);return {rows:row?[project(row)]:[],rowCount:row?1:0};}
   if(sql.includes('AND candidate_id=$3')){const row=rows.find(r=>r.tenant_id===params[0]&&r.proposer_actor_id===params[1]&&r.candidate_id===params[2]);return {rows:row?[project(row)]:[],rowCount:row?1:0};}
   throw Error('unexpected statement: '+sql);
  }
- return {rows,statements,pool:{async connect(){return {query,release(){}};}}};
+ return {rows,statements,queries,retentionRows,pool:{async connect(){return {query,release(){}};}}};
 }

@@ -10,9 +10,10 @@ import {correctRequest,listRequest,proposeRequest,statusRequest} from '../wire.m
 import {FIRM_PROPOSAL_PERMISSION} from '../eligibility.mjs';
 import {CLIENT_A,CLIENT_B,NOW,T2,createCoreDouble,createJournalDouble,id,ids,principal} from './fixtures.mjs';
 const surface={kind:'surface'};
-function setup(){
+function setup({retention=null,requireSurfaceRetentionSubject=false}={}){
  const journal=createJournalDouble(),core=createCoreDouble(),newId=ids();
- const producer=createMemoryProducer({journal,review:createCoreReview({transport:core.transport}),memory:createCoreMemoryReads({transport:core.transport}),newId,now:()=>NOW});
+ const producer=createMemoryProducer({journal,review:createCoreReview({transport:core.transport}),memory:createCoreMemoryReads({transport:core.transport}),retention,
+  requireSurfaceRetentionSubject,newId,now:()=>NOW});
  const propose=(p,body)=>producer.propose({principal:p,request:proposeRequest(body),origin:surface});
  const correct=(p,body)=>producer.correct({principal:p,request:correctRequest(body),origin:surface});
  const list=(p,body={})=>producer.list({principal:p,request:listRequest(body)});
@@ -148,6 +149,70 @@ test('review authority: status answers must correlate to the exact candidate has
  assert.equal((await t.status(principal(),view.candidateId)).review.status,'unavailable');
  delete t.core.answer.status;t.core.failStatus=true;
  const listed=await t.list(principal());assert.equal(listed.proposals[0].review.status,'unavailable');
+ const inbox=await t.producer.listPending({principal:principal(),request:listRequest({})});
+ assert.deepEqual(inbox.proposals,[]);assert.deepEqual(inbox.reviewAvailability,{state:'unavailable',unresolvedCount:1},'a Core outage is visible even when pending filtering leaves an empty page');
+ t.core.failStatus=false;
+ const recovered=await t.producer.listPending({principal:principal(),request:listRequest({})});
+ assert.deepEqual(recovered.proposals.map(p=>p.candidateId),[view.candidateId]);assert.deepEqual(recovered.reviewAvailability,{state:'available',unresolvedCount:0});
+});
+
+test('review inbox reports a partially unresolved page without treating an unacknowledged submission as pending',async()=>{
+ const t=setup();await t.propose(principal(),{idempotencyKey:id(1),scope:'personal',content:'A'});
+ t.core.failSubmit='refuse';const unknown=await t.propose(principal(),{idempotencyKey:id(2),scope:'personal',content:'B'});
+ assert.equal(unknown.review.status,'submission_unknown');
+ const inbox=await t.producer.listPending({principal:principal(),request:listRequest({})});
+ assert.equal(inbox.proposals.length,1);assert.deepEqual(inbox.reviewAvailability,{state:'partial',unresolvedCount:1});
+});
+
+test('conversation-origin candidate uses the canonical retention subject before submission and every retained read',async()=>{
+ const conversationId=id(700),command={binding:{conversationId,runId:id(701)},commandId:id(702),idempotencyKey:id(703),
+  arguments:{scope:'personal',clientId:null,content:'A conversation fact',key:null,ttlDays:null}};
+ const checked=[],gate={state:'allowed',async assertServable(subject){checked.push(subject);if(this.state==='suppressed')throw Object.assign(Error('suppressed'),{code:'RETENTION_SUPPRESSED'});
+  if(this.state==='unavailable')throw Object.assign(Error('unavailable'),{code:'RETENTION_READ_UNAVAILABLE'});}};
+ const t=setup({retention:gate}),sha='a'.repeat(64),run=()=>t.producer.proposeFromCommand({principal:principal(),command,commandSha256:sha});
+ gate.state='suppressed';await code(run(),'MEMORY_PROPOSAL_NOT_FOUND');assert.equal(t.journal.rows.size,0);assert.equal(t.core.calls.length,0);
+ gate.state='allowed';const view=await run();assert.equal(view.review.status,'pending');
+ assert.deepEqual(checked[0],{tenantId:principal().tenantId,kind:'conversation',subjectId:conversationId});
+ gate.state='suppressed';const before=t.core.calls.length;
+ await code(t.status(principal(),view.candidateId),'MEMORY_PROPOSAL_NOT_FOUND');
+ assert.deepEqual((await t.list(principal())).proposals,[]);
+ assert.deepEqual((await t.producer.listPending({principal:principal(),request:listRequest({})})).proposals,[]);
+ let decisions=0;const deciding=createMemoryProducer({journal:t.journal,review:createCoreReview({transport:t.core.transport}),memory:createCoreMemoryReads({transport:t.core.transport}),
+  decisions:{async decide(){decisions++;}},retention:gate,newId:ids(900),now:()=>NOW});
+ await code(deciding.decide({principal:principal(),request:{candidateId:view.candidateId,reason:null},decision:'approved'}),'MEMORY_PROPOSAL_NOT_FOUND');
+ assert.equal(decisions,0);
+ await code(run(),'MEMORY_PROPOSAL_NOT_FOUND');assert.equal(t.core.calls.length,before,'suppression withholds status and replay before any Core call');
+ gate.state='unavailable';await code(t.status(principal(),view.candidateId),'MEMORY_UNAVAILABLE');await code(t.list(principal()),'MEMORY_UNAVAILABLE');
+});
+
+test('a suppressed keyed conversational command cannot read a Core correction target before retention admission',async()=>{
+ const conversationId=id(720),checked=[],gate={async assertServable(subject){checked.push(subject);throw Object.assign(Error('suppressed'),{code:'RETENTION_SUPPRESSED'});}};
+ const t=setup({retention:gate}),command={binding:{conversationId,runId:id(721)},commandId:id(722),idempotencyKey:id(723),
+  arguments:{scope:'personal',clientId:null,content:'Changed fact',key:'known-key',ttlDays:null}};
+ t.core.addMemory({memoryId:'existing-target',key:'known-key'});
+ await code(t.producer.proposeFromCommand({principal:principal(),command,commandSha256:'c'.repeat(64)}),'MEMORY_PROPOSAL_NOT_FOUND');
+ assert.deepEqual(checked,[{tenantId:principal().tenantId,kind:'conversation',subjectId:conversationId}]);
+ assert.deepEqual(t.core.calls,[],'Core findByKey and submit are both beyond the retention gate');
+ assert.equal(t.journal.rows.size,0);
+});
+
+test('an unavailable conversation retention gate fails closed; surface candidates do not inherit a guessed conversation subject',async()=>{
+ const gate={async assertServable(){throw Object.assign(Error('retention unavailable'),{code:'RETENTION_READ_UNAVAILABLE'});}},t=setup({retention:gate});
+ const command={binding:{conversationId:id(710),runId:id(711)},commandId:id(712),idempotencyKey:id(713),arguments:{scope:'personal',clientId:null,content:'fact',key:null,ttlDays:null}};
+ await code(t.producer.proposeFromCommand({principal:principal(),command,commandSha256:'b'.repeat(64)}),'MEMORY_UNAVAILABLE');
+ assert.equal(t.journal.rows.size,0);assert.equal(t.core.calls.length,0);
+ const surfaceView=await t.propose(principal(),{idempotencyKey:id(714),scope:'personal',content:'surface fact'});
+ assert.equal(surfaceView.review.status,'pending','the separate surface subject policy is not guessed from a citation or proposer');
+});
+
+test('production surface writes fail closed before journal or Core until an actor/client retention subject is owned',async()=>{
+ const retention={async assertServable(){throw Error('a surface request has no conversation subject');}};
+ const t=setup({retention,requireSurfaceRetentionSubject:true});
+ await code(t.propose(principal(),{idempotencyKey:id(820),scope:'personal',content:'new'}),'MEMORY_RETENTION_SUBJECT_UNAVAILABLE');
+ await code(t.correct(principal(),{idempotencyKey:id(821),targetMemoryId:'clio:'+id(822),content:'changed',reason:'source changed',sources:[web]}),
+  'MEMORY_RETENTION_SUBJECT_UNAVAILABLE');
+ assert.equal(t.journal.rows.size,0);assert.equal(t.core.calls.length,0);
+ assert.throws(()=>setup({requireSurfaceRetentionSubject:true}),e=>productFailure(e)?.code==='PRODUCT_CONFIGURATION');
 });
 
 test('uncertain submission stays submission_unknown, is reconciled from Core on read, and replay resubmits only the identical candidate',async()=>{
