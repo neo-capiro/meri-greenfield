@@ -18,8 +18,8 @@ Status: **proposal for Neo's decision; nothing here is executed or authorized.**
 |---|---|---|---|---|
 | 1 | `apps/control/settings/migrations/0001_settings.sql` | schema `meri_settings`; tables `tenant_settings`, `user_preferences`, `settings_audit`; append-only audit function and trigger; one index | none | none |
 | 2 | `apps/control/intents/migrations/0001_intent_preparations.sql` | schema `meri_intents`; table `preparations`; immutability function and trigger | none | none |
-| 3 | `apps/control/commands/migrations/0001_commands.sql` | table **`public.meri_command_journal`** | none | **creates in `public` (blocker 1)** |
-| 4 | `apps/control/commands/approval-metadata/migrations/0001_approval_metadata.sql` | table **`public.meri_approval_metadata`** | none | **creates in `public` (blocker 1)** |
+| 3 | `apps/control/commands/migrations/0001_commands.sql` | schema `meri_commands` (IF NOT EXISTS); table `command_journal` | none | none (moved out of `public`, `f64543e0`) |
+| 4 | `apps/control/commands/approval-metadata/migrations/0001_approval_metadata.sql` | schema `meri_commands` (IF NOT EXISTS); table `approval_metadata` | none | none (moved out of `public`, `f64543e0`) |
 | 5 | `apps/control/schedules/migrations/0001_schedule_owner.sql` | schema `meri_schedules`; tables `projections`, `intents`; one index | none | none |
 | 6 | `apps/control/schedules/migrations/0002_occurrences.sql` | table `meri_schedules.occurrences`; one unique index | none | none |
 | 7 | `apps/control/task-lookup/migrations/0001_task_lookup.sql` | schema `meri_task_lookup`; tables `lookups`, `events` | none | none |
@@ -28,13 +28,13 @@ Status: **proposal for Neo's decision; nothing here is executed or authorized.**
 | 10 | `apps/artifacts/migrations/0002_retention.sql` (D015 #13) | tables `retention_subjects`, `retention_purges`; one index | `CREATE OR REPLACE FUNCTION meri_artifacts.reject_version_mutation` (its own function from #9) | none |
 | 11 | `apps/artifacts/migrations/0003_previews.sql` (D015 #13) | tables `preview_attempts`, `previews`; two guard functions and triggers; view `preview_custody` | `ALTER TABLE meri_artifacts.versions ADD CONSTRAINT` (its own table from #9, still empty at apply) | none |
 
-sha256 of each file at `291ff5d7` (the runner pins these):
+sha256 of each file at `2c30dba1` (the runner pins these in `PLAN`, ordinals 22–32; #3/#4 after the `meri_commands` move):
 
 ```
 7243fe1e45b4890fc36eeb5c96a6ec493bd92cb8572de11b8d6bae5f06d976e1  apps/control/settings/migrations/0001_settings.sql
 108b26fbb30d1e7aa2d38942ed5099413a09d7919f5e7fbf2c541ab92f9c68bc  apps/control/intents/migrations/0001_intent_preparations.sql
-252683e2db8ffd36dbc7b3cfdada9a28f59a0f192522253a852686369560704b  apps/control/commands/migrations/0001_commands.sql
-3270e42c779bbe5a367506142a45b31ed3d9ccbe90b88658d52ba3bcf5543e3b  apps/control/commands/approval-metadata/migrations/0001_approval_metadata.sql
+64f679e434dbc9d54d700af83357296ba3f4cb2c52e382c72e0d7c1caad7c936  apps/control/commands/migrations/0001_commands.sql
+448678c2241e40e28190987c1f60c3492f39f9a43da8bc6ae6f0708efdd2d1a5  apps/control/commands/approval-metadata/migrations/0001_approval_metadata.sql
 bf8c593de97dcdae728765ecd90dac6696b290028d4ffb0586bdae0fe87d91c7  apps/control/schedules/migrations/0001_schedule_owner.sql
 6a8369dc45e2bc330425550583daceb706652698ebbdecee1f5a1f2202a07242  apps/control/schedules/migrations/0002_occurrences.sql
 ae3197c4f898c5a8a493b2bee4cd6c5da16c62730ad3447e4f07ebfeaf1c100f  apps/control/task-lookup/migrations/0001_task_lookup.sql
@@ -46,7 +46,14 @@ d1eb7ea68a150f60e7fb63e654a0892044bf24840a785fcff58dded59129b300  apps/artifacts
 
 Data backfill: **none**; every file creates empty objects. Destructive operations: **none on any existing object.** The only `ALTER` (#11) and `CREATE OR REPLACE` (#10) touch objects that #9 in this same packet creates.
 
-## Blockers to fix in source before any apply
+## Source status (18 Oct, integration tip `2c30dba1`)
+
+- **Blocker 1 resolved in source** (`f64543e0`, lane A): both command tables now live in Meri-owned schema `meri_commands`; nothing is created in `public`.
+- **Blocker 2 resolved in source** (`2c30dba1`): the 11 migrations plus `phase:integration_grants` (`infra/product-preview/first-chat-database-integration.sql`, sha256 `5ece87c8d784298a9f289a1d685dbcb9e4162117f3170f0a9f7d6a39005b0306`) are plan ordinals 22–33 in a separate **`integration`** stage. `meri`/`temporal` runs stop before them; `node infra/product-preview/first-chat-migrate.mjs integration` refuses until both are ledgered.
+- **Blocker 3 open:** #8 FKs onto live tables, and whether #8 is the D7-4 run-start migration.
+- Not in the plan: `apps/control/memory/migrations/0001_memory_candidates.sql` (lane B, sha256 `d925ec36d5e4fa98efeb123fb86f602608dbf82b2caa59bd093366e1eb33067d`). Memory composes no port until Core M2 routes exist.
+
+## Blockers as originally found
 
 1. **#3 and #4 create tables in `public` of the shared `capiro` database.**
    - `public` belongs to Core's Prisma schema. The code also reads and writes `public.meri_command_journal` (`apps/control/commands/postgres-command-journal.mjs:40-59`) and `public.meri_approval_metadata` (`apps/control/commands/approval-metadata/postgres-store.mjs:26-33`).
