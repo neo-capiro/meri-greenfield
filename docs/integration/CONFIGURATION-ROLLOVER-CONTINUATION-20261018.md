@@ -27,4 +27,15 @@ The parent accepted **adopting the already reserved, unaccepted target binding**
 
 Extend the canonical initial/next-run journal and existing candidate, registry, prepared bindings and budget owners; do not create a parallel run launcher or grant system. Conversation 0018 and 0019 are centrally reserved for memory on newer branches; 0012 and 0014 remain held. `0020_next_run_adoptions.sql` is only the next **candidate**, not an allocation. The versioned intent/receipt must be a closed contract owned with conversation transitions. Source tests must exercise old receipt replay, old-to-new image/version adoption only for null checkpoint, reserved-vs-accept/issuance races, lost COMMIT, wrong tenant/actor/client/policy, changed current Core membership, unresolved stop/revocation, UNKNOWN budget liability, no credential reuse, and no old-prompt redispatch. The integration sequence must prove adopt → answer → reload → another successor → Stop. A disposable PostgreSQL role/concurrency/restore control and exact runtime image/config readback are later gates; no live SQL, AWS, prompt or deploy is authorized by this packet.
 
+Exact receiving junctions, held until the shared owner and database fence agree:
+
+| Existing owner | Required additive change |
+| --- | --- |
+| `next-run-journal.mjs` / `next-run.mjs` | Resolve the effective descriptor under the conversation lock; compare it in currentness, acceptance, execution and the next reservation, including inherited epoch and the source checkpoint rule. |
+| `prepared-candidate.mjs` / `action-host/application-adapters/context-adapter.mjs` | Keep the original 0017 record as historical evidence, select the target by its effective descriptor, and bind descriptor/transition SHA in the closed run fact and before/after context revision. |
+| `prepared-run-issuance-postgres.mjs` / `prepared-run-bindings.mjs` | Persist and compare the descriptor/transition SHA before task or model `CLAIMED`; compile target facts from its new pinned configuration, and source revocation from exact old allocation/grants. |
+| `prepared-run-registry.mjs` / `preallocation-authority.mjs` / `task-verifier.mjs` | Recheck the same descriptor and fresh Core selected-client facts at issuance, kickoff, bootstrap and effects; preserve stop-only lookup by old capsule after restart without issuing material. |
+| `native-preparation-journal.mjs` / product budget first-write adapters | Participate in the database epoch gate before allocation or budget claims; keep old UNKNOWN liability and use the existing canonical budget owner for fresh target admission. |
+| Runtime CLI / readiness composition | Mount only the centrally allocated qualified journal, historical Stop fact source and phase-currentness ports; do not make source-only validators into an enabled route. |
+
 **Current holds:** central `0020` allocation, one atomic fence against independent old writers, and exact old-cohort stop facts for already claimed runs. Adoption itself grants no spending authority or extension of the original admission. A fresh conversation can be an operational workaround, but does not complete same-conversation continuation.
