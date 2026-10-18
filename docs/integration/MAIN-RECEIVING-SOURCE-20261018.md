@@ -12,7 +12,7 @@ Verification is limited to affected composition, imports, syntax, types, targete
 
 ## Receipt and verification
 
-The receiving worktree was created at `85e8974175e83ef0971c33eeaed01f4696287af0`, itself a descendant of `main` `8b123bea4c90794dc2d766814b6ddbdbfe0928bc`. It already contains PR160–165, PR167 and PR171 by ancestry. PR169/170 were received within PR171 through equivalent patch-ID cherry-picks. The two files changed by deployed N21 `107af36b89686bb8545b200e05a39f2c4733b56b` match that commit's Git blobs exactly (`9646e3aa` runner authority, `c5a07525` test); replaying it would duplicate content. The main-facing diff is 19,018 files because it receives the whole published broader source; the incremental receipt above broader is 117 files. Historical evidence files account for most of the main-facing volume.
+The receiving worktree was created at `85e8974175e83ef0971c33eeaed01f4696287af0`, itself a descendant of `main` `8b123bea4c90794dc2d766814b6ddbdbfe0928bc`. It already contains PR160–165, PR167 and PR171 by ancestry. PR169/170 were received within PR171 through equivalent patch-ID cherry-picks. The two files changed by deployed N21 `107af36b89686bb8545b200e05a39f2c4733b56b` match that commit's Git blobs exactly (`9646e3aa` runner authority, `c5a07525` test); replaying it would duplicate content. At the post-audit source head, the main-facing diff is 19,020 files because it receives the whole published broader source; the incremental receipt above broader is 132 files. Historical evidence files account for most of the main-facing volume.
 
 | Published source | Receiving disposition |
 | --- | --- |
@@ -40,6 +40,23 @@ The published `0018` and `0019` SQL are source only. The fixed first-chat migrat
 | Whitespace, merge and provenance review | `git diff --check 85e89741 HEAD` passed; no unresolved merge entries. PR177 is an ancestor, and the `107af` Git blobs match exactly. The full main-facing diff contains pre-existing whitespace in historical evidence files; no mass evidence rewrite was made. |
 
 The first dependency/test launches failed on absent per-package local installs and `MERI_REVIEW_SOURCE_ROOT`; pinned `npm ci` in this disposable worktree and the explicit source root resolved those setup failures. Tests used synthetic fixtures only. No AWS build, image push, deploy, main merge, credential/IAM/network change, paid model call, or live SQL occurred.
+
+### Post-receipt finding ledger
+
+Neo's broader audit at `c200b03f` was reproduced against the exact receiving head `d185b610` before repair. The independent source fixes were received as the commits below. “Fixed” means the reproduced source behavior and its focused regression pass on Linux; it does not claim deployed availability.
+
+| Finding | Status | Receiving fix and evidence |
+| --- | --- | --- |
+| P1 history suppression during awaited Core currentness released saved transcript/list or next-turn result | **Fixed** | `7ed0b3451` adds final retention checks after awaited Core reads and before next-turn reservation. Three new cases failed before the fix; history HTTP 48/48 and turn settlement 4/4 passed afterward. |
+| P2 successor completed or failed before start acknowledgement became UNKNOWN and skipped continuation | **Fixed** | `a25b51aa3` accepts proven natural completed/failed successor state for the continuation. Cancellation still refuses, and lost start acknowledgement stays UNKNOWN. Two regressions failed before repair; focused lifecycle tests 61/61 passed. |
+| Stop commit plus lost acknowledgement plus session revocation skipped both cleanup owners | **Fixed** | `ced3bc490` retains the generated cancel event ID and original verified binding/scopes. A bounded, internal journal terminal-fence readback authorizes only the already requested cleanup; a revoked caller receives UNKNOWN. The combined regression failed before repair and now attempts both owners; an uncommitted negative attempts neither. Lifecycle/Stop tests passed 84/84. |
+| P2 mail page two refused a fresh authorization decision ID | **Fixed** | `77c003662` excludes only that ephemeral ID from prior/current subject equivalence; every page still requires fresh authority and stable subject/scope/anchor/filter checks. Gateway mail tests 91/91 passed. `0c7b580c8` updates a stale test assertion to require the public 0.1 minor rather than the obsolete 0.1.5 patch; contract mail tests then passed 38/38. Mail remains unavailable in production. |
+| P2 identical memory page with later recording timestamp was refused as replay | **Fixed** | `1ba828bd8` accepts only later timestamp drift for otherwise identical retained records, preserving the first durable row. Backdated, expiry and content changes still refuse. Journal/migration 17/17 and gateway 68/68 passed. |
+| P2 selected task required structured output without requesting it from the SDK | **Fixed** | `0878dc48e` supplies pinned JSON schema output format for both admitted original compilers and refuses unknown originals before native RPC. The actual activity query option is asserted; focused selected/next-turn tests passed 6/6. The separate existing selected MCP read test remains 16/17 and reproduced against the unfixed base. |
+| P2 XLSX read defaulted to Word for `{versionId}` | **Fixed** | `4d4efd3c5` selects the descriptor from canonical publication- and retention-gated immutable version metadata, checking version, actor, tenant, conversation, scopes, spec hash, MIME and filename. It preserves the public body, refuses unavailable/mismatched records and release during lookup. Artifact owner checks passed 21/21; the required authority ports are not yet composed by the current CLI, so this is source evidence only. |
+| Suppression committed after the last service-level retention check | **Current architectural hold** | A cross-owner atomic serving fence is still needed for absolute commit-order guarantees. The reproduced mid-Core leak above is fixed; no live retention availability is claimed. |
+
+The combined changed-area run on this receiving tree passed 150/150 conversation-control, 159/159 gateway, 27/27 runtime and 38/38 mail-contract tests. All 20 changed `.mjs` files passed Node syntax checks, and `git diff --check d185b610 HEAD` passed. This was a focused 374-test run, not a repeat of the broad 4,353-test suite. Retained capabilities, mail, selected output and XLSX reads were exercised with source/synthetic fixtures only; their live routing and image/config qualification remain held.
 
 ### Main-merge and release holds
 
