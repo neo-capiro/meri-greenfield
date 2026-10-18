@@ -38,7 +38,7 @@ Upstream codex stacks reach this branch through the lane PRs: product/task6 chai
 |---|---|---|
 | D14 | First chat: runner container exits 2 ~13 s after RUNNING, before `cli.main`; log empty. **Ruled out:** the pinned poststart CA matches and verifies the private ALB certificate. **Now observable:** `ac2d2a7a` makes the runner write `RUNNER_STARTUP_FAILED stage=… step=… code=…` (constants only); the first chat on the integrated candidate will name the step | Fable |
 | D11 | An admitted conversation whose unused 15-min binding expired is refused forever (`select()`/`claim()`) | **Mitigated:** only conversations with no turn are affected; frontend rotates once to a new chat (nothing is lost). Runtime renewal deferred |
-| H1 | `history` 502 for a conversation with no run row yet; `transcript` 404 (route not mounted) | **Control fixed** `00076b0a` (404 `NOT_FOUND`); frontend lane asked to treat it as an empty state; transcript route still open |
+| H1 | `history` 502 for a conversation with no run row yet; `transcript` 404 | **Control fixed** `00076b0a` (history 404 `NOT_FOUND`). Transcript 404 is correct before the first input (no conversation row yet). Frontend lane asked to show both as empty states |
 | T1 | ~9/s client TLS negotiation errors on `meri-preview-control-private` since 03:32 UTC, source unidentified | Fable |
 | K1 | Kickoff cancellation signal dropped between `prepared-run-registry` allocateNative and `allocateRemoteNativeController` / `allocate()` (pre-existing) | Fable |
 | S1 | Session owner re-fetches every Core fact per stage (~20 Core round trips per first send, ~36 s) | Fable + dot design |
@@ -53,9 +53,36 @@ Upstream codex stacks reach this branch through the lane PRs: product/task6 chai
 | R2 | Lane 2 read tools: 17 new failures on the integrated tree (read-family availability gate, `search_federal_grants` adapter, SDK tool count 76 vs 71) | Fable session `rt-reads` → PR into this branch |
 | X1 | Pre-existing test debt: `apps/worker/conversation/test/activity-capabilities.test.mjs` fails all 8 cases in this Windows environment (STORE_UNAVAILABLE; lane 8's new Bash case included); `start-control-port-boundary` pg mock lacks `initial_inputs`; `image-closure` fails on Windows; generators `generate-user-preferences`/`generate-task-commands` need the offline bundle toolchain env | Fable |
 
-## 5. Wiring inventory
+## 5. Wiring inventory (survey of the real import tree, 2026-10-18)
 
-Filled in by the next batch: for every feature family, whether it is mounted in the real control / temporal-worker / schedule-worker / runner composition, which flag or decision holds it, and the exact wiring left. See section 6 for lanes.
+Method: every module reachable from `apps/runtime/cli.mjs`, `apps/runtime/runner-poststart-cli.mjs` and the Temporal `workflowsPath` (`apps/control/conversations/workflow.ts`) — 511 files — joined with what `infra/product-preview/first-chat/render-material.mjs` renders and what `first-chat-migrate.mjs` applies.
+
+**Cross-cutting gates (hold most families):**
+- **G1 `sourceEnabled=false`** is enforced by `config.mjs:67`, written by `runner-bootstrap-files.mjs:40` and rendered false — gates reads, tasks, selected skills.
+- **G2 no run capability-policy producer** — `loadForExecution` returns no `capabilities`; `generalReads`, `governedIntents`, Bash, subagents, workspace tools and skill plugin are therefore off for every run.
+- **G3 single SDK-options pin** (`sdk-option-template.mjs`, `sdk-option-projection.mjs`, pin in `runtime-values.json`) — any MCP server other than `meri_original_reads` or any extra option key (sandbox, agents, plugins, outputFormat) is refused.
+- **G4 trusted composer seam** — production `startControl` gets only `{signal}`; no `productPorts`/`productPortsFactory`/`createReadsRuntime` is ever supplied outside tests.
+- **G5 migrations** — applied: conversations 0001–0017, budget 0001–0002, issuer 0001. Not applied: settings, schedules, intents, commands, approval-metadata, artifacts 0001–0003 (approved D015 #13), objective-source; memory has none.
+
+| Family | Mounted in production? | Held by | Remaining |
+|---|---|---|---|
+| Conversations: submit/history/cancel/events/stream, allocate/admit, list/transcript/next-turn, second turn, Stop/recovery, lifecycle steer/pause/inspect | **Yes** | — | D14 (runner), H1 frontend empty states |
+| Lifecycle resume/fork/approval.wait | partial (refuses `*_OWNER_UNAVAILABLE`) | G4, Core approval read/decision | Core + owners |
+| Budget, model grants | **Yes** | — | readiness census mislabels model grants (cosmetic) |
+| Read tools (lane 2) | **No** — gateway mount not imported; worker port dropped | G1, G2, G3, G4, `approvedReads` not rendered | Core retained-authority stack, P1–P3 contracts, render |
+| Selected skills | **No** — runner fails them `UNAVAILABLE` | G1, G3, Core reads | decision + Core |
+| Write intents (lane 3) | **No** — control mount/journal not imported; worker port not passed | G2, G3, no runner→control run-owner operation (P-INT-9) | Core approval routes, migrations intents/commands/approval-metadata, frontend card; inert mount possible |
+| User preferences (lane 5) | composed, **disabled** | render key absent; settings 0001 not applied (enabling without tables stops control startup) | migration approval, then one render key |
+| Tenant settings / capability policy | **No** | G2 decision (platform maximum) | mount + migration |
+| Tasks | routed, **503** | G1, `createTaskUpdateFeature` unimported | executor grant, Core, commands migration |
+| Memory | **No** | no migration, Core M2 routes, parser publication | Core + decision |
+| Routines / schedule-worker | routed 503 / role refused in preview | G4 composer, Core unattended grant; `schedule-service-configuration.mjs:10` requires `requestMs ≤ 3000` vs preview 25000 | Core + small config fix |
+| Documents / artifacts (lane 6) | app mounted but `/api/documents/*` not on the public allowlist; storage/options composers unimported | Core `artifactOptionsOwner`, bucket, artifacts migrations, link key, retention (D2) | Core + infra |
+| Objective / Planner (lane 7) | **No** — activities not registered; source custody unimported; `/v2/internal/objective-generation/*` outside private allowlist | D7-1…D7-4, Core keys/credential owner, custody migration | Core + decision |
+| Browser / Bash (lane 8) | imported, **held** (`BROWSER_EGRESS_UNQUALIFIED`); egress proxy only in qualification CLI | G2, G3, D005 placement (Bash on browser host, D015 #8), image packages | infra + decision |
+| Post-shipment (lane 9) | **No** (held: takeover, WOPI editor) | N1–N7 | later |
+
+**Decisions needed (Neo):** (1) lift G1 `sourceEnabled` for the preview; (2) G2 policy producer + tenant platform maximum; (3) G3 redesign of the single SDK-options pin to admit reads/intents/skills/browser/Bash/typed output; (4) apply migrations settings, intents, commands, approval-metadata, schedules, objective-source (artifacts already approved). Core work (dot/Core lane): approval record/decision, execution broker, artifact options owner, M2 memory routes, unattended grant, Objective keys/credential owner, retained read authority.
 
 ## 6. Parallel lanes
 
