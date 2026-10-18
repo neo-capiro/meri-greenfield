@@ -57,7 +57,7 @@ test('sdkOptionsSha256 is one run-invariant template hash runner-query.mjs admit
 test('runner and skills values equal the repository measurement functions; the environment scrub drops injected secrets',async()=>{
  const r=await measured();
  assert.equal(r.runner.sha256,(await measureProductRunner({root})).runnerSha256);
- assert.deepEqual(r.skills,await skillsDigest({root}));assert.equal(r.skills.count,14);
+ assert.deepEqual(r.skills,await skillsDigest({root}));assert.equal(r.skills.count,15);
  const env={PGPASSWORD:'x',PGUSER:'u',MERI_D2_CONTROL_PASSWORD:'y',AWS_SESSION_TOKEN:'z',DATABASE_URL:'d',ANTHROPIC_API_KEY:'k',PATH:'/usr/bin',HOME:'/home/node'};
  scrubEnvironment(env);assert.deepEqual(env,{PATH:'/usr/bin',HOME:'/home/node'});
 });
