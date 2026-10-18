@@ -57,10 +57,18 @@
     {
       "path": "apps/gateway/sources/public-data",
       "family": "public-data",
-      "declaredIn": ["apps/gateway/sources/public-data/handler.mjs", "apps/gateway/sources/retained-reads/native-families.mjs"],
-      "operations": ["query_economic_data"],
-      "adapterChecks": ["only the finite economic stored-read operation is implemented", "fixed original native POST and current native credentials", "exact series, observations, units and receiving contract preserved"],
-      "subject": "current native tenant/user; global stored economic data; grants and awards remain unimplemented"
+      "declaredIn": ["apps/gateway/sources/public-data/handler.mjs", "apps/gateway/sources/public-data/request-context.mjs", "apps/gateway/sources/retained-reads/native-families.mjs", "apps/gateway/sources/retained-reads/native-handler.mjs", "apps/runtime/native-authority/native-read-credentials/read-mode-observation.mjs", "packages/contracts/native-read-observation-0.2/validate.mjs", "packages/contracts/native-read-observation-0.2/schema.json"],
+      "operations": ["query_economic_data", "search_federal_grants", "search_federal_awards"],
+      "adapterChecks": ["economic stored read: fixed original native POST and current native credentials; exact series, observations, units and receiving contract preserved", "grants and awards are PR132 candidate source: fixed original native POSTs under the current private evidence-mode observation (native-read-observation-0.2 MODE_READ_OPERATIONS) with exact request admission; no legacy fallback or output rewriting", "grants and awards require Core PR68 head 8d6733c3 (read-mode observation), which has not run Jest/TypeScript and is not merged or deployed; the trusted qualification issuer must bind the deployed Core build/origin/configuration before any installation"],
+      "subject": "current native tenant/user; global stored economic, grant and award data; grants and awards are candidate source only, with no installation, qualification or live availability"
+    },
+    {
+      "path": "apps/gateway/sources/program-elements",
+      "family": "program-elements",
+      "declaredIn": ["apps/gateway/sources/program-elements/handler.mjs", "apps/gateway/sources/program-elements/request-context.mjs", "apps/gateway/general-reads/families/program-elements.mjs", "apps/gateway/sources/retained-reads/native-families.mjs", "apps/gateway/sources/retained-reads/native-handler.mjs", "apps/runtime/native-authority/native-read-credentials/read-mode-observation.mjs", "packages/contracts/native-read-observation-0.2/validate.mjs", "packages/contracts/native-read-observation-0.2/schema.json"],
+      "operations": ["search_program_elements", "get_program_element", "get_pe_budget_timeline"],
+      "adapterChecks": ["three fixed native program-element producers receiving under the current private evidence-mode observation with exact request admission; no legacy fallback or output rewriting", "PR132 candidate source: requires Core PR68 head 8d6733c3 (read-mode observation), which has not run Jest/TypeScript and is not merged or deployed; PE shadow lineage and original provider behavior must be preserved at qualification"],
+      "subject": "current native tenant/user; global program-element data; candidate source only, with no installation, qualification or live availability"
     },
     {
       "path": "apps/gateway/sources/client-knowledge-search",

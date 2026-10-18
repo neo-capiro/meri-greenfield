@@ -124,8 +124,8 @@ test('funding current native membership revocation after source withholds result
  finally{f.scope.abort();}
 });
 
-test('funding SDK71/41 contains all five source operations while every current installation gate stays separate',()=>{
- assert.equal(familyReads().length,71);assert.equal(READ_FAMILY_IDS.length,41);assert.equal(READ_FAMILY_IDS.includes('funding-opportunities'),true);
+test('funding SDK76/42 contains all five source operations while every current installation gate stays separate',()=>{
+ assert.equal(familyReads().length,76);assert.equal(READ_FAMILY_IDS.length,42);assert.equal(READ_FAMILY_IDS.includes('funding-opportunities'),true);
  assert.deepEqual(familyReads().filter(row=>row.family==='funding-opportunities').map(row=>row.operation.id),ids);
 });
 

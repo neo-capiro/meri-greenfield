@@ -174,10 +174,17 @@ test('all thirteen earlier bindings retain legacy context grammar and refuse mem
   }
 });
 
+// f33ea1a8 (read chain) split search_capiro_data's raw DataSearchRequest from its normalized input. Assert that exact reviewed
+// descriptor change, then undo only it so the historical hash below still proves every other descriptor is unchanged.
+const DATA_SEARCH_REQUEST={id:'urn:meri:retrieval:data-search:0.2.0#/$defs/DataSearchRequest',sha256:'b390270625b4662df487f04b13df745f422d10a2a8aa90e79e90a7ce75219d60'};
+const DATA_SEARCH_PRIOR_SHA='96e5d1ebc461dc53db86e2fd14e2863d93d5c651e134382a2da5daefd3836fec';
+const priorDataSearch=operations=>operations.map(op=>{if(op.operation.id!=='search_capiro_data')return op;
+ assert.deepEqual(op.inputSchema,DATA_SEARCH_REQUEST);assert.equal(op.outputSchema.sha256,DATA_SEARCH_REQUEST.sha256);
+ return {...op,inputSchema:{id:'urn:meri:retrieval:data-search:0.2.0#/$defs/DataSearchInput',sha256:DATA_SEARCH_PRIOR_SHA},outputSchema:{...op.outputSchema,sha256:DATA_SEARCH_PRIOR_SHA}};});
 test('catalog preserves the original thirteen descriptors and complete selected/deferred ledger',()=>{
   const catalog=JSON.parse(readFileSync(new URL('../retrieval-0.2/catalog.json',import.meta.url)));
   // Canonical hash of the thirteen descriptors at the assigned source base.
-  assert.equal(canonicalSha256(catalog.operations.filter(value=>![...verticalOperationIds,reference.id,'query_action_items','actions.query',
+  assert.equal(canonicalSha256(priorDataSearch(catalog.operations).filter(value=>![...verticalOperationIds,reference.id,'query_action_items','actions.query',
     'lookup_client_registry','get_business_development_context','get_business_development_evidence',
     'get_business_development_recent_changes','get_research_portfolio','get_research_portfolio_changes',...continuationIds].includes(value.operation.id))),
     'c60f90cf599299c1edb14538b653772b4f1d52b9c311636653aba7c08de29095');

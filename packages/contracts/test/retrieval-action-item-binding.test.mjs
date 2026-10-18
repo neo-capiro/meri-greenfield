@@ -78,9 +78,16 @@ test('family mode bounds and closed JSON admission retain strict behavior',()=>{
  assert.equal(effects,0);
 });
 
+// f33ea1a8 (read chain) split search_capiro_data's raw DataSearchRequest from its normalized input. Assert that exact reviewed
+// descriptor change, then undo only it so the historical hash below still proves every other descriptor is unchanged.
+const DATA_SEARCH_REQUEST={id:'urn:meri:retrieval:data-search:0.2.0#/$defs/DataSearchRequest',sha256:'b390270625b4662df487f04b13df745f422d10a2a8aa90e79e90a7ce75219d60'};
+const DATA_SEARCH_PRIOR_SHA='96e5d1ebc461dc53db86e2fd14e2863d93d5c651e134382a2da5daefd3836fec';
+const priorDataSearch=operations=>operations.map(op=>{if(op.operation.id!=='search_capiro_data')return op;
+ assert.deepEqual(op.inputSchema,DATA_SEARCH_REQUEST);assert.equal(op.outputSchema.sha256,DATA_SEARCH_REQUEST.sha256);
+ return {...op,inputSchema:{id:'urn:meri:retrieval:data-search:0.2.0#/$defs/DataSearchInput',sha256:DATA_SEARCH_PRIOR_SHA},outputSchema:{...op.outputSchema,sha256:DATA_SEARCH_PRIOR_SHA}};});
 test('all fourteen original descriptors and all139 native rows remain exact',()=>{
  const c=catalog();
- assert.equal(canonicalSha256(c.operations.slice(0,14)),'50d5baa13482e07e7e65bfcf88212aef7e1e41169719b9caf83a96246a000b92');
+ assert.equal(canonicalSha256(priorDataSearch(c.operations.slice(0,14))),'50d5baa13482e07e7e65bfcf88212aef7e1e41169719b9caf83a96246a000b92');
  const priorRows=structuredClone(c.originals).map(priorVerticalOriginal);
  for(const id of ['lookup_client_registry','get_business_development_context','get_business_development_evidence',
   'get_business_development_recent_changes','get_research_portfolio','get_research_portfolio_changes',...continuationIds]){

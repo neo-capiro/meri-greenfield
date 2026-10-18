@@ -10,11 +10,13 @@ import {nativeFamilyCase} from '../../../gateway/general-reads/test/native-famil
 import {NATIVE_READS_SCHEMA_VERSION as schemaVersion} from '../../../../packages/contracts/runtime-0.2/reads.mjs';
 
 const ref=id=>({id,version:'0.2.0'});
-const semantic=ref('search_client_knowledge'),selected=[ref('query_economic_data'),semantic,ref('query_knowledge_graph')];
-const excluded=['search_federal_grants','search_federal_awards','get_business_development_evidence','get_certification_status',
- 'search_program_elements','get_program_element','get_pe_budget_timeline','search_research_sources','get_state_rule_status','search_sam_opportunities'].map(ref);
-const forged=[excluded[0],selected[0],excluded[1],semantic,selected[2],...excluded.slice(2)];
-const args={query_economic_data:{source:'census',state:'TX',limit:1},search_client_knowledge:{query:'synthetic'},query_knowledge_graph:{depth:1}};
+// PR132 (bba4ef68) opened the whole public-data and program-elements families: the five Core PR68 read-mode candidates are complete source.
+const mode=['search_federal_grants','search_federal_awards','search_program_elements','get_program_element','get_pe_budget_timeline'].map(ref);
+const semantic=ref('search_client_knowledge'),selected=[ref('query_economic_data'),semantic,ref('query_knowledge_graph'),...mode];
+// Still absent: BD evidence (outside the finite business-development subset) and four reads with no registered family.
+const excluded=['get_business_development_evidence','get_certification_status','search_research_sources','get_state_rule_status','search_sam_opportunities'].map(ref);
+const forged=[excluded[0],selected[0],excluded[1],semantic,selected[2],...mode,...excluded.slice(2)];
+const args={query_economic_data:{source:'census',state:'TX',limit:1},search_client_knowledge:{query:'synthetic'},query_knowledge_graph:{depth:1}},argsFor=id=>args[id]??{query:'synthetic'};
 const ids=operations=>operations.map(op=>op.id);
 const code=expected=>error=>error.message===expected;
 
@@ -33,11 +35,11 @@ async function subsetFixture(){
    return JSON.stringify({synthetic:'runtime-subset-gateway-only',operation:operation.id});
   },
  }});
- const executeRequest=operation=>({...x.executeRequest,operation,arguments:args[operation.id]??{query:'synthetic'},deliveryId:`subset:${operation.id}`});
+ const executeRequest=operation=>({...x.executeRequest,operation,arguments:argsFor(operation.id),deliveryId:`subset:${operation.id}`});
  return {...x,owner,subset:state,executeRequest};
 }
 
-test('runtime availability intersects forged inventories with the public-data subset and current KB client requirement',async()=>{
+test('runtime availability intersects forged inventories with the finite family subsets and current KB client requirement',async()=>{
  const x=await subsetFixture(),out=await x.owner.handle('availability',x.request,x.credential);
  assert.deepEqual(ids(x.config.operations),ids(forged));assert.deepEqual(ids(x.subset.installed),ids(forged));assert.deepEqual(ids(x.subset.discovered),ids(forged));
  assert.deepEqual(out.installation.operations,selected);assert.deepEqual(out.discovery.operations,selected);
@@ -45,7 +47,7 @@ test('runtime availability intersects forged inventories with the public-data su
  assert.equal(x.wire.length,0);assert.equal(x.state.reservations.size,0);assert.ok(x.commands.every(sql=>!sql.includes('FOR UPDATE')));
 });
 
-test('all selected economic/semantic/graph operations execute through the actual client runtime owner with exact request/delivery binding',async()=>{
+test('all selected economic, mode-candidate, semantic and graph operations execute through the actual client runtime owner with exact request/delivery binding',async()=>{
  const x=await subsetFixture();
  for(const operation of selected){
   const request=x.executeRequest(operation),out=await x.owner.handle('execute',request,x.credential);
@@ -53,11 +55,11 @@ test('all selected economic/semantic/graph operations execute through the actual
   assert.deepEqual(JSON.parse(out.resultJson),{synthetic:'runtime-subset-gateway-only',operation:operation.id});
   assert.equal(out.resultSha256,hash(JSON.parse(out.resultJson)));assert.equal(out.outputBytes,Buffer.byteLength(out.resultJson,'utf8'));
  }
- assert.deepEqual(x.subset.executions,selected.map(operation=>({operation,arguments:args[operation.id],deliveryId:`subset:${operation.id}`})));
+ assert.deepEqual(x.subset.executions,selected.map(operation=>({operation,arguments:argsFor(operation.id),deliveryId:`subset:${operation.id}`})));
  assert.equal(x.wire.length,0);assert.equal(x.state.reservations.size,0,'borrowed synthetic gateway results do not claim source execution or settlement');
 });
 
-test('all ten absent source reads never reach gateway execution despite all three inventories claiming them',async()=>{
+test('all five absent source reads never reach gateway execution despite all three inventories claiming them',async()=>{
  const x=await subsetFixture();
  for(const operation of excluded){
   const before=x.subset.snapshots;await assert.rejects(x.owner.handle('execute',x.executeRequest(operation),x.credential),code('UNAVAILABLE'));
