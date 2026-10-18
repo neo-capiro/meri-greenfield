@@ -1,0 +1,373 @@
+{
+  "repository": "neo-capiro/meri-greenfield",
+  "sourceCommit": "1fe6baaedbd410089907bed2e52b804ec28482ce",
+  "versions": {
+    "sdk": "0.3.295",
+    "cli": "2.1.295",
+    "litellm": "1.104.2",
+    "node": "24.19.0",
+    "python": "3.13.5"
+  },
+  "providerCallsByThisReview": 0,
+  "productionEditsByThisReview": 0,
+  "files": [
+    {
+      "path": "<integration-worktree>-sdk/apps/proxy/qualification/runtime/bedrock_body.py",
+      "resolvedPath": "<integration-worktree>-sdk/apps/proxy/qualification/runtime/bedrock_body.py",
+      "sha256": "ad28eda69f2697ffecae7d8059d086edee145ff034a0f5a674342df1ddfa59f7"
+    },
+    {
+      "path": "<integration-worktree>-sdk/apps/proxy/qualification/runtime/native_usage.py",
+      "resolvedPath": "<integration-worktree>-sdk/apps/proxy/qualification/runtime/native_usage.py",
+      "sha256": "4f6264b2a12f3de263da61dfe9b8afb50a3e435539a41564d0d8dcaa160d584e"
+    },
+    {
+      "path": "<integration-worktree>-sdk/apps/worker/conversation/options.mjs",
+      "resolvedPath": "<integration-worktree>-sdk/apps/worker/conversation/options.mjs",
+      "sha256": "e5d248d027e933b8b847cdb280421af47f960365941230827229beee33c73b5b"
+    },
+    {
+      "path": "<integration-worktree>-sdk/apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk/sdk.d.ts",
+      "resolvedPath": "<workspace>/meri-greenfield/apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk/sdk.d.ts",
+      "sha256": "e4d91d71404ce4ffc918aa590f545c7a67df6a1dfe5de8cd28a05db0a7fe872b"
+    },
+    {
+      "path": "<integration-worktree>-sdk/apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs",
+      "resolvedPath": "<workspace>/meri-greenfield/apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs",
+      "sha256": "86ba133f4d52e80d03f04cb47f1022d5c8010a7971c7ed937a45a629c0bf2cf0"
+    },
+    {
+      "path": "<integration-worktree>-sdk/apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk-linux-x64/claude",
+      "resolvedPath": "<workspace>/meri-greenfield/apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk-linux-x64/claude",
+      "sha256": "4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358"
+    },
+    {
+      "path": "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/litellm/llms/bedrock/messages/invoke_transformations/anthropic_claude3_transformation.py",
+      "resolvedPath": "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/litellm/llms/bedrock/messages/invoke_transformations/anthropic_claude3_transformation.py",
+      "sha256": "ea6e2e78637f1a707ca255ec5586e0c464e401c322289a32dad7fdfa38807aa5"
+    },
+    {
+      "path": "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/litellm/types/llms/bedrock.py",
+      "resolvedPath": "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/litellm/types/llms/bedrock.py",
+      "sha256": "9bb784c844d9bbc7a0f4b1a156636f389665b5a9ab5148d37795eeb010a353e6"
+    },
+    {
+      "path": "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/litellm/llms/bedrock/common_utils.py",
+      "resolvedPath": "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/litellm/llms/bedrock/common_utils.py",
+      "sha256": "35bd3398cda259f830eb41d065304b8139c0453ab9eed40b235544315d4c777f"
+    }
+  ],
+  "observations": [
+    {
+      "path": "/tmp/meri-integration-sdk-review/sdk-shape-corrected.json",
+      "sha256": "523321032c796c62b98ca95c0aa014a5cb8f5b8db43df06b33f0936f140142eb",
+      "scope": "OFFLINE_PARTITION_ONLY",
+      "sourceCommit": "1fe6baaedbd410089907bed2e52b804ec28482ce",
+      "configurationCandidate": null,
+      "outputFormat": null,
+      "countRequests": 0,
+      "providerExecutions": 0,
+      "nativeRequest": {
+        "bytes": 2294,
+        "sha256": "01698ab8e22e0f1c1a4e64c2fd669985aabdc23bfcf1ef5069032d4498a76c6c",
+        "fieldNames": [
+          "anthropic_beta",
+          "anthropic_version",
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].content[].cache_control",
+          "messages[].content[].cache_control.type",
+          "messages[].content[].text",
+          "messages[].content[].type",
+          "messages[].role",
+          "metadata",
+          "metadata.user_id",
+          "output_config",
+          "output_config.effort",
+          "system",
+          "system[].cache_control",
+          "system[].cache_control.type",
+          "system[].text",
+          "system[].type",
+          "tools"
+        ],
+        "topLevelTypes": {
+          "messages": "list",
+          "max_tokens": "int",
+          "metadata": "dict",
+          "system": "list",
+          "tools": "list",
+          "output_config": "dict",
+          "anthropic_version": "str",
+          "anthropic_beta": "list"
+        },
+        "topLevelArrayLengths": {
+          "messages": 2,
+          "system": 2,
+          "tools": 0,
+          "anthropic_beta": 2
+        },
+        "metadataUserIdBytes": 150,
+        "metadataUserIdTypes": {
+          "device_id": "str",
+          "account_uuid": "str",
+          "session_id": "str"
+        },
+        "betaEnums": [
+          "context-management-2025-06-27",
+          "effort-2025-11-24"
+        ],
+        "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+        "headerNames": [
+          "accept",
+          "accept-encoding",
+          "anthropic-beta",
+          "anthropic-version",
+          "authorization",
+          "connection",
+          "content-length",
+          "content-type",
+          "host",
+          "user-agent",
+          "x-amz-date"
+        ]
+      },
+      "sdkResults": []
+    },
+    {
+      "path": "/tmp/meri-integration-sdk-review/sdk-configured-shape-corrected.json",
+      "sha256": "616bd84865867e48cd1918686e0f9d5f640c9a8728679ada7ba82b3e6bd7465d",
+      "scope": "OFFLINE_PARTITION_ONLY",
+      "sourceCommit": "1fe6baaedbd410089907bed2e52b804ec28482ce",
+      "configurationCandidate": {
+        "DISABLE_PROMPT_CACHING": "1",
+        "CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS": "1",
+        "CLAUDE_CODE_EFFORT_LEVEL": "unset"
+      },
+      "outputFormat": null,
+      "countRequests": 0,
+      "providerExecutions": 0,
+      "nativeRequest": {
+        "bytes": 2104,
+        "sha256": "37707213903c142dabd30d5b52c286d5925e0fea9950c88723ad3bcd470b8eb4",
+        "fieldNames": [
+          "anthropic_beta",
+          "anthropic_version",
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].content[].text",
+          "messages[].content[].type",
+          "messages[].role",
+          "metadata",
+          "metadata.user_id",
+          "system",
+          "system[].text",
+          "system[].type",
+          "tools"
+        ],
+        "topLevelTypes": {
+          "messages": "list",
+          "max_tokens": "int",
+          "metadata": "dict",
+          "system": "list",
+          "tools": "list",
+          "anthropic_version": "str",
+          "anthropic_beta": "list"
+        },
+        "topLevelArrayLengths": {
+          "messages": 2,
+          "system": 2,
+          "tools": 0,
+          "anthropic_beta": 1
+        },
+        "metadataUserIdBytes": 150,
+        "metadataUserIdTypes": {
+          "device_id": "str",
+          "account_uuid": "str",
+          "session_id": "str"
+        },
+        "betaEnums": [
+          "effort-2025-11-24"
+        ],
+        "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+        "headerNames": [
+          "accept",
+          "accept-encoding",
+          "anthropic-beta",
+          "anthropic-version",
+          "authorization",
+          "connection",
+          "content-length",
+          "content-type",
+          "host",
+          "user-agent",
+          "x-amz-date"
+        ]
+      },
+      "sdkResults": []
+    },
+    {
+      "path": "/tmp/meri-integration-sdk-review/sdk-constrained-none-final.json",
+      "sha256": "e6ec92f69bf47cd241cd601da2b02141201e5c19f416412cd2ddbe1dc8f20063",
+      "scope": "OFFLINE_PARTITION_ONLY",
+      "sourceCommit": "1fe6baaedbd410089907bed2e52b804ec28482ce",
+      "configurationCandidate": {
+        "DISABLE_PROMPT_CACHING": "1",
+        "CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS": "1",
+        "CLAUDE_CODE_EFFORT_LEVEL": "unset",
+        "ANTHROPIC_CUSTOM_MODEL_OPTION": "meri-sonnet-qualification",
+        "ANTHROPIC_CUSTOM_MODEL_OPTION_SUPPORTED_CAPABILITIES": ""
+      },
+      "outputFormat": "none",
+      "countRequests": 0,
+      "providerExecutions": 0,
+      "nativeRequest": {
+        "bytes": 2104,
+        "sha256": "06956f3e6938d103f3bdfac403287f0f62c0d9291498296727be692953937807",
+        "fieldNames": [
+          "anthropic_beta",
+          "anthropic_version",
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].content[].text",
+          "messages[].content[].type",
+          "messages[].role",
+          "metadata",
+          "metadata.user_id",
+          "system",
+          "system[].text",
+          "system[].type",
+          "tools"
+        ],
+        "topLevelTypes": {
+          "messages": "list",
+          "max_tokens": "int",
+          "metadata": "dict",
+          "system": "list",
+          "tools": "list",
+          "anthropic_version": "str",
+          "anthropic_beta": "list"
+        },
+        "topLevelArrayLengths": {
+          "messages": 2,
+          "system": 2,
+          "tools": 0,
+          "anthropic_beta": 1
+        },
+        "maxOutputTokens": 8192,
+        "metadataUserIdBytes": 150,
+        "metadataUserIdTypes": {
+          "device_id": "str",
+          "account_uuid": "str",
+          "session_id": "str"
+        },
+        "betaEnums": [
+          "effort-2025-11-24"
+        ],
+        "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+        "headerNames": [
+          "accept",
+          "accept-encoding",
+          "anthropic-beta",
+          "anthropic-version",
+          "authorization",
+          "connection",
+          "content-length",
+          "content-type",
+          "host",
+          "user-agent",
+          "x-amz-date"
+        ]
+      },
+      "sdkResults": []
+    },
+    {
+      "path": "/tmp/meri-integration-sdk-review/sdk-constrained-json-schema-final.json",
+      "sha256": "1c60fa3b11bdaf8b5b9c417ec587c215b78ed4d5ae9a300660c60815cd3501fc",
+      "scope": "OFFLINE_PARTITION_ONLY",
+      "sourceCommit": "1fe6baaedbd410089907bed2e52b804ec28482ce",
+      "configurationCandidate": {
+        "DISABLE_PROMPT_CACHING": "1",
+        "CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS": "1",
+        "CLAUDE_CODE_EFFORT_LEVEL": "unset",
+        "ANTHROPIC_CUSTOM_MODEL_OPTION": "meri-sonnet-qualification",
+        "ANTHROPIC_CUSTOM_MODEL_OPTION_SUPPORTED_CAPABILITIES": ""
+      },
+      "outputFormat": "json-schema",
+      "countRequests": 0,
+      "providerExecutions": 0,
+      "nativeRequest": {
+        "bytes": 2464,
+        "sha256": "0079cfbbc1d59090ace79e75881aaa88231433ad7841fc0ba8f13cc81832562a",
+        "fieldNames": [
+          "anthropic_beta",
+          "anthropic_version",
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].content[].text",
+          "messages[].content[].type",
+          "messages[].role",
+          "metadata",
+          "metadata.user_id",
+          "system",
+          "system[].text",
+          "system[].type",
+          "tools",
+          "tools[].description",
+          "tools[].input_schema",
+          "tools[].input_schema.additionalProperties",
+          "tools[].input_schema.properties",
+          "tools[].input_schema.properties.reply",
+          "tools[].input_schema.properties.reply.type",
+          "tools[].input_schema.required",
+          "tools[].input_schema.type",
+          "tools[].name"
+        ],
+        "topLevelTypes": {
+          "messages": "list",
+          "max_tokens": "int",
+          "metadata": "dict",
+          "system": "list",
+          "tools": "list",
+          "anthropic_version": "str",
+          "anthropic_beta": "list"
+        },
+        "topLevelArrayLengths": {
+          "messages": 2,
+          "system": 2,
+          "tools": 1,
+          "anthropic_beta": 1
+        },
+        "maxOutputTokens": 8192,
+        "metadataUserIdBytes": 150,
+        "metadataUserIdTypes": {
+          "device_id": "str",
+          "account_uuid": "str",
+          "session_id": "str"
+        },
+        "betaEnums": [
+          "effort-2025-11-24"
+        ],
+        "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+        "headerNames": [
+          "accept",
+          "accept-encoding",
+          "anthropic-beta",
+          "anthropic-version",
+          "authorization",
+          "connection",
+          "content-length",
+          "content-type",
+          "host",
+          "user-agent",
+          "x-amz-date"
+        ]
+      },
+      "sdkResults": []
+    }
+  ]
+}

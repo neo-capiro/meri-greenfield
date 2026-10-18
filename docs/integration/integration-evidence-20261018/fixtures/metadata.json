@@ -1,0 +1,88 @@
+{
+  "base": "60829243203b9e94c4b12b8e575f375cb27f6c9b",
+  "commit": "9c09c3c3c47db995b8cbefdbd59b203ac353b7e9",
+  "tree": "422034371a2414aad76695706e2bacdf70993c36",
+  "ownershipHandoff": "7252f483c59cd676e868e40d4bf73c2ca55c137f:docs/integration/COMBINED-SOURCE-HANDOFF-20261018.md",
+  "environment": {
+    "node": "v24.19.0",
+    "npm": "11.9.0",
+    "TZ": "America/Toronto",
+    "NODE_OPTIONS": "unset",
+    "matchingLockfiles": 15
+  },
+  "logs": [
+    {
+      "name": "before-60829243.scrubbed.log",
+      "source": "60829243203b9e94c4b12b8e575f375cb27f6c9b",
+      "capturedBeforeCommitWithIdenticalTree": false,
+      "bytes": 8139,
+      "sha256": "293318ee89f79dfb684f5995762f928dbf36cf1846e03fb2502793fd510e6d80",
+      "counts": {
+        "tests": 20,
+        "pass": 16,
+        "fail": 4,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "failures": [
+        "through the watermarked journal, an advance whose commit is unknown leaves the projection standing and closes the serving fence",
+        "trusted startup composes canonical session, submit and membership history, with missing lifecycle owners refused before writes",
+        "membership revision changing during assembled transcript read withholds reload response",
+        "scripted worker delta streams publicly and reloads from the membership transcript"
+      ]
+    },
+    {
+      "name": "after-fixture-composition.scrubbed.log",
+      "source": "9c09c3c3c47db995b8cbefdbd59b203ac353b7e9",
+      "capturedBeforeCommitWithIdenticalTree": true,
+      "bytes": 5431,
+      "sha256": "85c24d8966600fe5d7f3b0493417a782f9271a5da4b49c786bd6915ce71f991a",
+      "counts": {
+        "tests": 20,
+        "pass": 20,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "failures": []
+    },
+    {
+      "name": "affected-owner-regressions.scrubbed.log",
+      "source": "9c09c3c3c47db995b8cbefdbd59b203ac353b7e9",
+      "capturedBeforeCommitWithIdenticalTree": true,
+      "bytes": 7324,
+      "sha256": "28b09b420fcb70679b3cbfe785862c829c79a6dc4743cee5cb28f7796403d997",
+      "counts": {
+        "tests": 30,
+        "pass": 30,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "failures": []
+    }
+  ],
+  "commands": {
+    "before-and-after": "env -u NODE_OPTIONS TZ=America/Toronto node --test --test-reporter=tap apps/control/retention/test/postgres-watermark.test.mjs apps/runtime/test/startup-history.test.mjs",
+    "affected": "env -u NODE_OPTIONS TZ=America/Toronto node --test --test-reporter=tap apps/runtime/native-authority/test/conversation-currentness.test.mjs apps/control/retention/test/release-fence.test.mjs apps/control/schedules/test/scheduled-history-concurrent-pool.test.mjs",
+    "syntax": [
+      "node --check apps/control/retention/test/postgres-watermark.test.mjs",
+      "node --check apps/runtime/test/startup-history.test.mjs"
+    ],
+    "whitespace": "git diff --check"
+  },
+  "limits": [
+    "No production source or Core contract change",
+    "No claim to close separate Core whole-page membership/currentness race",
+    "Synthetic Fetch/SQL/Temporal boundaries; no real PostgreSQL/provider/AWS/build/deploy",
+    "All original test assertions unchanged, including HTTP409 membership revision during transcript read"
+  ],
+  "changedFileHashes": {
+    "apps/control/retention/test/postgres-watermark.test.mjs": "1898622cc6790e90948b3750b5dd577039390c87e3180534f339a46afb7b552d",
+    "apps/runtime/test/startup-history.test.mjs": "6b1e683571cacd5ac7a28d46bd2f2f12ad928bd683d8e3435a274cf1f9ce65be"
+  },
+  "startupTestBodiesByteIdentical": true
+}

@@ -1,0 +1,142 @@
+{
+  "scope": "OFFLINE_PARTITION_ONLY",
+  "mode": "truncated",
+  "client": "minimal-messages",
+  "fullOwnerHttps": "OPEN_RFC1918_INTERFACES_UNAVAILABLE",
+  "productImage": "UNRUN",
+  "postgresql": "UNRUN",
+  "providerCalls": 0,
+  "sdkResults": [],
+  "sdkSpawns": 0,
+  "versions": {
+    "sdk": "0.3.295",
+    "cli": "2.1.295",
+    "node": "v24.19.0"
+  },
+  "executableSha256": "4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358",
+  "clientResult": {
+    "interrupted": true,
+    "failure": "OFFLINE_RESPONSE_INTERRUPTED"
+  },
+  "native": {
+    "scope": "offline-partition-only",
+    "fullOwnerHttps": "OPEN_RFC1918_INTERFACES_UNAVAILABLE",
+    "syntheticIngress": true,
+    "ownerTransport": "private-subprocess-IPC",
+    "database": "scripted-SQL-canonical-JS-accounting",
+    "countTransport": "botocore-Stubber",
+    "providerTransport": "in-process-HTTPX-stub",
+    "providerExecutions": 1,
+    "countRequests": 1,
+    "sdkRequests": [
+      {
+        "bytes": 151,
+        "sha256": "ae5baca25964a93361f3b52f431a5118e87a8bde80c3f9656236d1de1213c63a",
+        "fieldNames": [
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].role",
+          "model",
+          "stream",
+          "temperature"
+        ]
+      }
+    ],
+    "nativeRequests": [
+      {
+        "bytes": 152,
+        "sha256": "050494ca4db1622e35d5405b99b0671df81ae67b1823887d11097120d8de8365",
+        "fieldNames": [
+          "anthropic_version",
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].role",
+          "temperature"
+        ],
+        "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+        "headerNames": [
+          "accept",
+          "accept-encoding",
+          "anthropic-version",
+          "authorization",
+          "connection",
+          "content-length",
+          "content-type",
+          "host",
+          "user-agent",
+          "x-amz-date"
+        ]
+      }
+    ],
+    "errors": [
+      "StateDenied",
+      {
+        "type": "StateDenied",
+        "trace": [
+          {
+            "file": "responses.py",
+            "line": 276,
+            "function": "wrap"
+          },
+          {
+            "file": "responses.py",
+            "line": 255,
+            "function": "stream_response"
+          },
+          {
+            "file": "_exception_handler.py",
+            "line": 39,
+            "function": "sender"
+          },
+          {
+            "file": "_exception_handler.py",
+            "line": 39,
+            "function": "sender"
+          },
+          {
+            "file": "security_headers_middleware.py",
+            "line": 48,
+            "function": "send_with_security_headers"
+          },
+          {
+            "file": "errors.py",
+            "line": 161,
+            "function": "_send"
+          },
+          {
+            "file": "upstream_callback.py",
+            "line": 139,
+            "function": "guarded_send"
+          },
+          {
+            "file": "upstream_callback.py",
+            "line": 23,
+            "function": "_deny"
+          }
+        ],
+        "code": "PRODUCT_NATIVE_LITELLM_REFUSED"
+      }
+    ],
+    "ledger": {
+      "requests": [
+        {
+          "requestId": "b4f33d36c8c149a3a7c4b7e86246196c",
+          "state": "UNKNOWN",
+          "holdMicroUSD": "344",
+          "actualMicroUSD": null,
+          "inputTokens": 12,
+          "maxOutputTokens": 16
+        }
+      ],
+      "consumedMicroUSD": "0",
+      "quarantined": false,
+      "reservationInserts": 1,
+      "settlementUpdates": 0
+    },
+    "nativeStarted": true,
+    "nativeStopped": true
+  },
+  "partitionPassed": true
+}

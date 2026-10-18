@@ -1,0 +1,55 @@
+{
+  "baseCommit": "78ceaf9bdfe00c8f013aac15eb8483312ae4f803",
+  "productionModified": false,
+  "approval": "NOT_GRANTED; proposal only",
+  "results": {
+    "proposal": {
+      "tests": 34,
+      "pass": 34,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0
+    },
+    "baseline": {
+      "tests": 34,
+      "pass": 2,
+      "fail": 32,
+      "skipped": 0,
+      "cancelled": 0
+    },
+    "published-core": {
+      "tests": 10,
+      "pass": 10,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0
+    }
+  },
+  "environment": {
+    "node": "24.19.0",
+    "npm": "11.9.0",
+    "typescript": "5.9.3",
+    "flags": [
+      "--experimental-vm-modules"
+    ]
+  },
+  "notRun": [
+    "Core semantic TypeScript check",
+    "full Nest admission suite",
+    "real Clerk",
+    "real PostgreSQL contention/RLS",
+    "deployment"
+  ],
+  "commands": [
+    "node scripts/prepare.mjs --output <fresh-absolute-run-root>",
+    "CORE_PROPOSAL_RUN_ROOT=<run-root> CORE_PROPOSAL_TYPESCRIPT_MODULE=<absolute-existing-typescript5.9.3-module> node --experimental-vm-modules --test --test-reporter=tap tests/native-identity-proposal.test.mjs",
+    "CORE_PROPOSAL_VARIANT=baseline (same command)",
+    "node --test <run-root>/baseline/apps/api/src/auth/history-release-source.focused.test.mjs <run-root>/baseline/apps/api/src/auth/history-release-batch-owner.focused.test.mjs"
+  ],
+  "materializationChecks": [
+    "Bundled exact source bytes: PASS",
+    "Caller-provided matching local source root: PASS",
+    "Scratch-only git apply --check and apply: PASS",
+    "Node syntax and help: PASS"
+  ]
+}

@@ -1,0 +1,940 @@
+TAP version 13
+# Subtest: Core currentness receives only its request value during final fenced release
+ok 1 - Core currentness receives only its request value during final fenced release
+  ---
+  duration_ms: 29.478879
+  type: 'test'
+  ...
+# Subtest: history enforces its public byte caps when startup permits larger transport limits
+ok 2 - history enforces its public byte caps when startup permits larger transport limits
+  ---
+  duration_ms: 50.608296
+  type: 'test'
+  ...
+# Subtest: three turns page and reload over one monotonic cursor while original UIEvent sequences and requests stay intact
+ok 3 - three turns page and reload over one monotonic cursor while original UIEvent sequences and requests stay intact
+  ---
+  duration_ms: 407.095553
+  type: 'test'
+  ...
+# Subtest: lost turn ACK and later replay recover the same source mapping without a new reservation
+ok 4 - lost turn ACK and later replay recover the same source mapping without a new reservation
+  ---
+  duration_ms: 95.216765
+  type: 'test'
+  ...
+# Subtest: next-turn uses the same native bearer for membership before effect and final release
+ok 5 - next-turn uses the same native bearer for membership before effect and final release
+  ---
+  duration_ms: 29.099038
+  type: 'test'
+  ...
+# Subtest: history requires a read-only currentness owner and confines the native bearer to product HTTP
+ok 6 - history requires a read-only currentness owner and confines the native bearer to product HTTP
+  ---
+  duration_ms: 18.741945
+  type: 'test'
+  ...
+# Subtest: archived or unavailable Core context withholds saved pages and cannot admit a next turn
+ok 7 - archived or unavailable Core context withholds saved pages and cannot admit a next turn
+  ---
+  duration_ms: 41.959245
+  type: 'test'
+  ...
+# Subtest: Core client mismatch refuses transcript and next-turn even with saved ownership
+ok 8 - Core client mismatch refuses transcript and next-turn even with saved ownership
+  ---
+  duration_ms: 21.021144
+  type: 'test'
+  ...
+# Subtest: saved conversations with multiple client scopes use configured Core client authority
+ok 9 - saved conversations with multiple client scopes use configured Core client authority
+  ---
+  duration_ms: 35.172093
+  type: 'test'
+  ...
+# Subtest: Core archive after saved read withholds transcript; archive after turn admission withholds its result
+ok 10 - Core archive after saved read withholds transcript; archive after turn admission withholds its result
+  ---
+  duration_ms: 30.13156
+  type: 'test'
+  ...
+# Subtest: owned Core denial after turn admission retains its code and RESULT_NOT_RELEASED
+ok 11 - owned Core denial after turn admission retains its code and RESULT_NOT_RELEASED
+  ---
+  duration_ms: 28.094856
+  type: 'test'
+  ...
+# Subtest: a Stop whose claimed original is not yet retired answers next-turn with a retryable NOT_DISPATCHED conflict and no reservation
+ok 12 - a Stop whose claimed original is not yet retired answers next-turn with a retryable NOT_DISPATCHED conflict and no reservation
+  ---
+  duration_ms: 24.250983
+  type: 'test'
+  ...
+# Subtest: membership revoked after saved read refuses next-turn before admission
+ok 13 - membership revoked after saved read refuses next-turn before admission
+  ---
+  duration_ms: 15.157864
+  type: 'test'
+  ...
+# Subtest: current tenant denial prevents disclosure or next-turn effects
+ok 14 - current tenant denial prevents disclosure or next-turn effects
+  ---
+  duration_ms: 15.662914
+  type: 'test'
+  ...
+# Subtest: current actor denial prevents disclosure or next-turn effects
+ok 15 - current actor denial prevents disclosure or next-turn effects
+  ---
+  duration_ms: 13.032897
+  type: 'test'
+  ...
+# Subtest: current client denial prevents disclosure or next-turn effects
+ok 16 - current client denial prevents disclosure or next-turn effects
+  ---
+  duration_ms: 15.0224
+  type: 'test'
+  ...
+# Subtest: member removal and retention suppression refuse history release
+ok 17 - member removal and retention suppression refuse history release
+  ---
+  duration_ms: 29.004345
+  type: 'test'
+  ...
+# Subtest: suppression during awaited Core currentness withholds saved transcript
+ok 18 - suppression during awaited Core currentness withholds saved transcript
+  ---
+  duration_ms: 26.689782
+  type: 'test'
+  ...
+# Subtest: suppression during awaited Core currentness withholds saved list
+ok 19 - suppression during awaited Core currentness withholds saved list
+  ---
+  duration_ms: 16.442326
+  type: 'test'
+  ...
+# Subtest: suppression during final next-turn Core currentness withholds its admitted result
+ok 20 - suppression during final next-turn Core currentness withholds its admitted result
+  ---
+  duration_ms: 14.440424
+  type: 'test'
+  ...
+# Subtest: suppression during pre-admission next-turn Core currentness prevents reservation
+ok 21 - suppression during pre-admission next-turn Core currentness prevents reservation
+  ---
+  duration_ms: 14.472453
+  type: 'test'
+  ...
+# Subtest: forged cursor, scope hints, corrupt event and identity substitution cannot become a successful page
+ok 22 - forged cursor, scope hints, corrupt event and identity substitution cannot become a successful page
+  ---
+  duration_ms: 17.551314
+  type: 'test'
+  ...
+# Subtest: discovery cursor pages owned conversations deterministically without dropping identity
+ok 23 - discovery cursor pages owned conversations deterministically without dropping identity
+  ---
+  duration_ms: 24.547329
+  type: 'test'
+  ...
+# Subtest: concurrent explicit turn admission reserves exactly one durable target
+ok 24 - concurrent explicit turn admission reserves exactly one durable target
+  ---
+  duration_ms: 20.790227
+  type: 'test'
+  ...
+# Subtest: submit ACK recovery keeps exact request identity and refuses prompt substitution or a new turn on its queued target
+ok 25 - submit ACK recovery keeps exact request identity and refuses prompt substitution or a new turn on its queued target
+  ---
+  duration_ms: 17.830996
+  type: 'test'
+  ...
+# Subtest: explicit null list limit is refused without coercion
+ok 26 - explicit null list limit is refused without coercion
+  ---
+  duration_ms: 11.002141
+  type: 'test'
+  ...
+# Subtest: explicit null transcript limit is refused without coercion
+ok 27 - explicit null transcript limit is refused without coercion
+  ---
+  duration_ms: 10.780599
+  type: 'test'
+  ...
+# Subtest: explicit null transcript after is refused without coercion
+ok 28 - explicit null transcript after is refused without coercion
+  ---
+  duration_ms: 18.848015
+  type: 'test'
+  ...
+# Subtest: foreign actor, suppression false: ownership denial has no retention observation
+ok 29 - foreign actor, suppression false: ownership denial has no retention observation
+  ---
+  duration_ms: 12.394626
+  type: 'test'
+  ...
+# Subtest: foreign actor, suppression true: ownership denial has no retention observation
+ok 30 - foreign actor, suppression true: ownership denial has no retention observation
+  ---
+  duration_ms: 15.051154
+  type: 'test'
+  ...
+# Subtest: foreign client, suppression false: ownership denial has no retention observation
+ok 31 - foreign client, suppression false: ownership denial has no retention observation
+  ---
+  duration_ms: 13.917006
+  type: 'test'
+  ...
+# Subtest: foreign client, suppression true: ownership denial has no retention observation
+ok 32 - foreign client, suppression true: ownership denial has no retention observation
+  ---
+  duration_ms: 12.168427
+  type: 'test'
+  ...
+# Subtest: membership revision changed during canonical read withholds the page with canonical409
+ok 33 - membership revision changed during canonical read withholds the page with canonical409
+  ---
+  duration_ms: 11.774934
+  type: 'test'
+  ...
+# Subtest: suppression during final membership recheck withholds transcript result
+ok 34 - suppression during final membership recheck withholds transcript result
+  ---
+  duration_ms: 13.046789
+  type: 'test'
+  ...
+# Subtest: suppression during final membership recheck withholds list result
+ok 35 - suppression during final membership recheck withholds list result
+  ---
+  duration_ms: 7.861908
+  type: 'test'
+  ...
+# Subtest: suppression during final membership recheck withholds next-turn result
+ok 36 - suppression during final membership recheck withholds next-turn result
+  ---
+  duration_ms: 14.647426
+  type: 'test'
+  ...
+# Subtest: canonical conversation-shape is an integrity500, without foreign database details
+ok 37 - canonical conversation-shape is an integrity500, without foreign database details
+  ---
+  duration_ms: 11.004486
+  type: 'test'
+  ...
+# Subtest: canonical run-shape is an integrity500, without foreign database details
+ok 38 - canonical run-shape is an integrity500, without foreign database details
+  ---
+  duration_ms: 11.527462
+  type: 'test'
+  ...
+# Subtest: canonical request-hash is an integrity500, without foreign database details
+ok 39 - canonical request-hash is an integrity500, without foreign database details
+  ---
+  duration_ms: 11.4594
+  type: 'test'
+  ...
+# Subtest: canonical event-shape is an integrity500, without foreign database details
+ok 40 - canonical event-shape is an integrity500, without foreign database details
+  ---
+  duration_ms: 22.311435
+  type: 'test'
+  ...
+# Subtest: canonical pending-shape is an integrity500, without foreign database details
+ok 41 - canonical pending-shape is an integrity500, without foreign database details
+  ---
+  duration_ms: 12.287905
+  type: 'test'
+  ...
+# Subtest: canonical pending-missing-scopes is an integrity500, without foreign database details
+ok 42 - canonical pending-missing-scopes is an integrity500, without foreign database details
+  ---
+  duration_ms: 10.977405
+  type: 'test'
+  ...
+# Subtest: canonical pending-missing-versions is an integrity500, without foreign database details
+ok 43 - canonical pending-missing-versions is an integrity500, without foreign database details
+  ---
+  duration_ms: 10.98118
+  type: 'test'
+  ...
+# Subtest: canonical pending-missing-facts is an integrity500, without foreign database details
+ok 44 - canonical pending-missing-facts is an integrity500, without foreign database details
+  ---
+  duration_ms: 11.567032
+  type: 'test'
+  ...
+# Subtest: canonical pending-missing-policyRevision is an integrity500, without foreign database details
+ok 45 - canonical pending-missing-policyRevision is an integrity500, without foreign database details
+  ---
+  duration_ms: 10.949883
+  type: 'test'
+  ...
+# Subtest: canonical pending-missing-reservedAt is an integrity500, without foreign database details
+ok 46 - canonical pending-missing-reservedAt is an integrity500, without foreign database details
+  ---
+  duration_ms: 15.510184
+  type: 'test'
+  ...
+# Subtest: resume, lost receipt and reload retain one logical prompt; identical-text new turn remains distinct
+ok 47 - resume, lost receipt and reload retain one logical prompt; identical-text new turn remains distinct
+  ---
+  duration_ms: 178.462332
+  type: 'test'
+  ...
+# Subtest: fork starts a conversation-local prompt identity while retaining exact external source lineage
+ok 48 - fork starts a conversation-local prompt identity while retaining exact external source lineage
+  ---
+  duration_ms: 87.152804
+  type: 'test'
+  ...
+# Subtest: resumed canonical digest substitution refuses prompt lineage
+ok 49 - resumed canonical digest substitution refuses prompt lineage
+  ---
+  duration_ms: 117.153909
+  type: 'test'
+  ...
+# Subtest: resumed canonical request substitution refuses prompt lineage
+ok 50 - resumed canonical request substitution refuses prompt lineage
+  ---
+  duration_ms: 102.011549
+  type: 'test'
+  ...
+# Subtest: resumed canonical source-binding substitution refuses prompt lineage
+ok 51 - resumed canonical source-binding substitution refuses prompt lineage
+  ---
+  duration_ms: 102.013231
+  type: 'test'
+  ...
+# Subtest: resumed canonical context substitution refuses prompt lineage
+ok 52 - resumed canonical context substitution refuses prompt lineage
+  ---
+  duration_ms: 106.689475
+  type: 'test'
+  ...
+# Subtest: Core archive during final membership withholds transcript at release
+ok 53 - Core archive during final membership withholds transcript at release
+  ---
+  duration_ms: 8.905658
+  type: 'test'
+  ...
+# Subtest: Core archive during final membership withholds list at release
+ok 54 - Core archive during final membership withholds list at release
+  ---
+  duration_ms: 7.502007
+  type: 'test'
+  ...
+# Subtest: Core archive during final membership withholds next-turn at release
+ok 55 - Core archive during final membership withholds next-turn at release
+  ---
+  duration_ms: 12.274736
+  type: 'test'
+  ...
+# Subtest: one list release fence holds every subject through final authorization and response serialization
+ok 56 - one list release fence holds every subject through final authorization and response serialization
+  ---
+  duration_ms: 26.069399
+  type: 'test'
+  ...
+# Subtest: read, monotonic advance and exact record round-trip through bounded transactions that return clean leases
+ok 57 - read, monotonic advance and exact record round-trip through bounded transactions that return clean leases
+  ---
+  duration_ms: 20.373981
+  type: 'test'
+  ...
+# Subtest: lease faults: a lost COMMIT acknowledgement is unknown and retires the lease; a failed statement rolls back and returns it clean
+ok 58 - lease faults: a lost COMMIT acknowledgement is unknown and retires the lease; a failed statement rolls back and returns it clean
+  ---
+  duration_ms: 2.27266
+  type: 'test'
+  ...
+# Subtest: through the watermarked journal, an advance whose commit is unknown leaves the projection standing and closes the serving fence
+ok 59 - through the watermarked journal, an advance whose commit is unknown leaves the projection standing and closes the serving fence
+  ---
+  duration_ms: 4.04777
+  type: 'test'
+  ...
+# Subtest: synthetic SQL: a guarded advance refuses a restored row in the same locked transaction
+ok 60 - synthetic SQL: a guarded advance refuses a restored row in the same locked transaction
+  ---
+  duration_ms: 1.464994
+  type: 'test'
+  ...
+# Subtest: synthetic SQL: missing, changed or wrong-sequence projections cannot advance; exact proof and advance share one transaction
+ok 61 - synthetic SQL: missing, changed or wrong-sequence projections cannot advance; exact proof and advance share one transaction
+  ---
+  duration_ms: 3.50314
+  type: 'test'
+  ...
+# Subtest: synthetic SQL snapshot: one joined data statement follows the shared recovery lock in the same clean transaction
+ok 62 - synthetic SQL snapshot: one joined data statement follows the shared recovery lock in the same clean transaction
+  ---
+  duration_ms: 1.599757
+  type: 'test'
+  ...
+# Subtest: synthetic SQL snapshot: another owner completing recovery before the shared lock grants is observed by the data snapshot
+ok 63 - synthetic SQL snapshot: another owner completing recovery before the shared lock grants is observed by the data snapshot
+  ---
+  duration_ms: 2.411458
+  type: 'test'
+  ...
+# Subtest: synthetic SQL snapshot: malformed data or lost commit returns no snapshot and retires unknown leases
+ok 64 - synthetic SQL snapshot: malformed data or lost commit returns no snapshot and retires unknown leases
+  ---
+  duration_ms: 5.585584
+  type: 'test'
+  ...
+# Subtest: canonical release keeps earlier subject protected during awaited authorization
+ok 65 - canonical release keeps earlier subject protected during awaited authorization
+  ---
+  duration_ms: 21.066128
+  type: 'test'
+  ...
+# Subtest: canonical release keeps earlier subject protected during awaited later-subject-read
+ok 66 - canonical release keeps earlier subject protected during awaited later-subject-read
+  ---
+  duration_ms: 7.197718
+  type: 'test'
+  ...
+# Subtest: canonical release sees suppression that acquired its transition lock first
+ok 67 - canonical release sees suppression that acquired its transition lock first
+  ---
+  duration_ms: 4.730256
+  type: 'test'
+  ...
+# Subtest: canonical deadline release frees subject locks without late publication
+ok 68 - canonical deadline release frees subject locks without late publication
+  ---
+  duration_ms: 37.069332
+  type: 'test'
+  ...
+# Subtest: canonical cancel release frees subject locks without late publication
+ok 69 - canonical cancel release frees subject locks without late publication
+  ---
+  duration_ms: 4.857808
+  type: 'test'
+  ...
+# Subtest: canonical denied release frees subject locks without late publication
+ok 70 - canonical denied release frees subject locks without late publication
+  ---
+  duration_ms: 9.458841
+  type: 'test'
+  ...
+# Subtest: concurrent pages with reversed subject order share a deterministic fence without deadlock
+ok 71 - concurrent pages with reversed subject order share a deterministic fence without deadlock
+  ---
+  duration_ms: 2.400171
+  type: 'test'
+  ...
+# Subtest: bounded pool: one PostgreSQL lease completes the canonical saved-history release and returns clean
+ok 72 - bounded pool: one PostgreSQL lease completes the canonical saved-history release and returns clean
+  ---
+  duration_ms: 12.062907
+  type: 'test'
+  ...
+# Subtest: bounded pool: two concurrent saved-history releases never request a third lease
+ok 73 - bounded pool: two concurrent saved-history releases never request a third lease
+  ---
+  duration_ms: 1.087556
+  type: 'test'
+  ...
+# Subtest: bounded pool: a saved page publishes before queued suppression acknowledges, then the subject is refused
+ok 74 - bounded pool: a saved page publishes before queued suppression acknowledges, then the subject is refused
+  ---
+  duration_ms: 13.239418
+  type: 'test'
+  ...
+# Subtest: bounded pool: suppression that owns the transition lock first prevents transcript publication
+ok 75 - bounded pool: suppression that owns the transition lock first prevents transcript publication
+  ---
+  duration_ms: 6.176362
+  type: 'test'
+  ...
+# Subtest: bounded pool: failed final authorization returns the session and cannot publish late
+ok 76 - bounded pool: failed final authorization returns the session and cannot publish late
+  ---
+  duration_ms: 2.226229
+  type: 'test'
+  ...
+# Subtest: bounded pool: scoped projection and schedule reads cannot escape locked subjects or released lease
+ok 77 - bounded pool: scoped projection and schedule reads cannot escape locked subjects or released lease
+  ---
+  duration_ms: 1.878856
+  type: 'test'
+  ...
+# Subtest: PostgreSQL page fence uses one lease and sorted shared locks matching suppression, then unlocks in reverse order
+ok 78 - PostgreSQL page fence uses one lease and sorted shared locks matching suppression, then unlocks in reverse order
+  ---
+  duration_ms: 1.429871
+  type: 'test'
+  ...
+# Subtest: PostgreSQL page fence drains an unawaited scheduled read before unlock and refuses its response
+ok 79 - PostgreSQL page fence drains an unawaited scheduled read before unlock and refuses its response
+  ---
+  duration_ms: 1.359014
+  type: 'test'
+  ...
+# Subtest: PostgreSQL cancel page fence retires unknown session state
+ok 80 - PostgreSQL cancel page fence retires unknown session state
+  ---
+  duration_ms: 9.382726
+  type: 'test'
+  ...
+# Subtest: PostgreSQL deadline page fence retires unknown session state
+ok 81 - PostgreSQL deadline page fence retires unknown session state
+  ---
+  duration_ms: 30.546285
+  type: 'test'
+  ...
+# Subtest: PostgreSQL unlock-unknown page fence retires unknown session state
+ok 82 - PostgreSQL unlock-unknown page fence retires unknown session state
+  ---
+  duration_ms: 0.516887
+  type: 'test'
+  ...
+# Subtest: PostgreSQL late-lease page fence retires unknown session state
+ok 83 - PostgreSQL late-lease page fence retires unknown session state
+  ---
+  duration_ms: 111.645982
+  type: 'test'
+  ...
+# Subtest: PostgreSQL clean fence preserves callback authorization denial and frees its session
+ok 84 - PostgreSQL clean fence preserves callback authorization denial and frees its session
+  ---
+  duration_ms: 1.175478
+  type: 'test'
+  ...
+# Subtest: history cannot publish after an internal memory fence deadline while its HTTP signal stays active
+ok 85 - history cannot publish after an internal memory fence deadline while its HTTP signal stays active
+  ---
+  duration_ms: 33.223602
+  type: 'test'
+  ...
+# Subtest: history cannot publish after an internal postgres fence deadline while its HTTP signal stays active
+ok 86 - history cannot publish after an internal postgres fence deadline while its HTTP signal stays active
+  ---
+  duration_ms: 34.540993
+  type: 'test'
+  ...
+# Subtest: PostgreSQL failed-unlock page fence retires the session within its original bound
+ok 87 - PostgreSQL failed-unlock page fence retires the session within its original bound
+  ---
+  duration_ms: 0.767785
+  type: 'test'
+  ...
+# Subtest: PostgreSQL stalled-unlock page fence retires the session within its original bound
+ok 88 - PostgreSQL stalled-unlock page fence retires the session within its original bound
+  ---
+  duration_ms: 31.334205
+  type: 'test'
+  ...
+# Subtest: PostgreSQL partial-acquire page fence retires the session within its original bound
+ok 89 - PostgreSQL partial-acquire page fence retires the session within its original bound
+  ---
+  duration_ms: 30.565784
+  type: 'test'
+  ...
+# Subtest: actual scheduled conversation is listed and transcript renders canonical completion/output without a Core conversation
+ok 90 - actual scheduled conversation is listed and transcript renders canonical completion/output without a Core conversation
+  ---
+  duration_ms: 250.118402
+  type: 'test'
+  ...
+# Subtest: receipt reports queued dispatch separately from actual completed run and pages canonical output
+ok 91 - receipt reports queued dispatch separately from actual completed run and pages canonical output
+  ---
+  duration_ms: 58.330793
+  type: 'test'
+  ...
+# Subtest: OPEN read facet returns only the exact canonical root and settlement does not imply completion
+ok 92 - OPEN read facet returns only the exact canonical root and settlement does not imply completion
+  ---
+  duration_ms: 6.757566
+  type: 'test'
+  ...
+# Subtest: OPEN with confirmed original absence is not delivery; DISPATCHED without its run refuses inconsistent evidence
+ok 93 - OPEN with confirmed original absence is not delivery; DISPATCHED without its run refuses inconsistent evidence
+  ---
+  duration_ms: 20.581073
+  type: 'test'
+  ...
+# Subtest: history stays readable after original routine update/cancellation without granting another execution
+ok 94 - history stays readable after original routine update/cancellation without granting another execution
+  ---
+  duration_ms: 17.112435
+  type: 'test'
+  ...
+# Subtest: positively absent origin delegates to Core; Core failure never becomes scheduled authorization
+ok 95 - positively absent origin delegates to Core; Core failure never becomes scheduled authorization
+  ---
+  duration_ms: 5.04559
+  type: 'test'
+  ...
+# Subtest: origin store failure and corrupt/rehashed foreign custody never call Core
+ok 96 - origin store failure and corrupt/rehashed foreign custody never call Core
+  ---
+  duration_ms: 26.544193
+  type: 'test'
+  ...
+# Subtest: ambiguous retained occurrence rows refuse both read facets
+ok 97 - ambiguous retained occurrence rows refuse both read facets
+  ---
+  duration_ms: 5.039491
+  type: 'test'
+  ...
+# Subtest: wrong actor, client scope and external/arbitrary destinations never obtain a scheduled history result
+ok 98 - wrong actor, client scope and external/arbitrary destinations never obtain a scheduled history result
+  ---
+  duration_ms: 33.708162
+  type: 'test'
+  ...
+# Subtest: native removal before or during read withholds canonical output and leaves all work counts unchanged
+ok 99 - native removal before or during read withholds canonical output and leaves all work counts unchanged
+  ---
+  duration_ms: 17.301995
+  type: 'test'
+  ...
+# Subtest: origin drift during native authorization never releases data or falls through to Core
+ok 100 - origin drift during native authorization never releases data or falls through to Core
+  ---
+  duration_ms: 8.134268
+  type: 'test'
+  ...
+# Subtest: absent-to-present custody during Core read refuses rather than changing authorization owners mid-request
+ok 101 - absent-to-present custody during Core read refuses rather than changing authorization owners mid-request
+  ---
+  duration_ms: 6.296071
+  type: 'test'
+  ...
+# Subtest: current client removal is denied even while original origin and saved run remain intact
+ok 102 - current client removal is denied even while original origin and saved run remain intact
+  ---
+  duration_ms: 13.061991
+  type: 'test'
+  ...
+# Subtest: retention suppresses receipt and history even with positive origin and native membership
+ok 103 - retention suppresses receipt and history even with positive origin and native membership
+  ---
+  duration_ms: 15.53416
+  type: 'test'
+  ...
+# Subtest: cancelled or expired reads do not start SQL/authority work and constructors remain inert
+ok 104 - cancelled or expired reads do not start SQL/authority work and constructors remain inert
+  ---
+  duration_ms: 5.814478
+  type: 'test'
+  ...
+# Subtest: concurrent scheduled and ordinary HTTP history requests complete on one connection with both final custody checks
+ok 105 - concurrent scheduled and ordinary HTTP history requests complete on one connection with both final custody checks
+  ---
+  duration_ms: 273.254063
+  type: 'test'
+  ...
+# Subtest: one-connection history release preserves absent custody and never nests a checkout
+ok 106 - one-connection history release preserves absent custody and never nests a checkout
+  ---
+  duration_ms: 252.864353
+  type: 'test'
+  ...
+# Subtest: one-connection history release preserves scheduled custody and never nests a checkout
+ok 107 - one-connection history release preserves scheduled custody and never nests a checkout
+  ---
+  duration_ms: 38.475439
+  type: 'test'
+  ...
+# Subtest: trusted startup composes canonical session, submit and membership history, with missing lifecycle owners refused before writes
+ok 108 - trusted startup composes canonical session, submit and membership history, with missing lifecycle owners refused before writes
+  ---
+  duration_ms: 252.714082
+  type: 'test'
+  ...
+# Subtest: actual readiness response names composition gaps and keeps release held
+ok 109 - actual readiness response names composition gaps and keeps release held
+  ---
+  duration_ms: 35.27989
+  type: 'test'
+  ...
+# Subtest: removed member cannot obtain an action session at assembled startup
+ok 110 - removed member cannot obtain an action session at assembled startup
+  ---
+  duration_ms: 2.699972
+  type: 'test'
+  ...
+# Subtest: client removed cannot obtain an action session at assembled startup
+ok 111 - client removed cannot obtain an action session at assembled startup
+  ---
+  duration_ms: 2.42582
+  type: 'test'
+  ...
+# Subtest: removed member after allocation refuses input admission and submit before a run or dispatch
+ok 112 - removed member after allocation refuses input admission and submit before a run or dispatch
+  ---
+  duration_ms: 23.801357
+  type: 'test'
+  ...
+# Subtest: membership revision after allocation refuses input admission and submit before a run or dispatch
+ok 113 - membership revision after allocation refuses input admission and submit before a run or dispatch
+  ---
+  duration_ms: 11.638198
+  type: 'test'
+  ...
+# Subtest: client roster after allocation refuses input admission and submit before a run or dispatch
+ok 114 - client roster after allocation refuses input admission and submit before a run or dispatch
+  ---
+  duration_ms: 14.17787
+  type: 'test'
+  ...
+# Subtest: removed member after dispatch refuses the old session's event stream and reload page
+ok 115 - removed member after dispatch refuses the old session's event stream and reload page
+  ---
+  duration_ms: 18.745911
+  type: 'test'
+  ...
+# Subtest: membership revision after dispatch refuses the old session's event stream and reload page
+ok 116 - membership revision after dispatch refuses the old session's event stream and reload page
+  ---
+  duration_ms: 16.718161
+  type: 'test'
+  ...
+# Subtest: client roster after dispatch refuses the old session's event stream and reload page
+ok 117 - client roster after dispatch refuses the old session's event stream and reload page
+  ---
+  duration_ms: 25.575246
+  type: 'test'
+  ...
+# Subtest: membership revision changing during assembled transcript read withholds reload response
+ok 118 - membership revision changing during assembled transcript read withholds reload response
+  ---
+  duration_ms: 19.291723
+  type: 'test'
+  ...
+# Subtest: scripted worker delta streams publicly and reloads from the membership transcript
+ok 119 - scripted worker delta streams publicly and reloads from the membership transcript
+  ---
+  duration_ms: 75.049416
+  type: 'test'
+  ...
+# Subtest: metadata supplies exact fixed transport limits, native auth, versions and statuses
+ok 120 - metadata supplies exact fixed transport limits, native auth, versions and statuses
+  ---
+  duration_ms: 2.271167
+  type: 'test'
+  ...
+# Subtest: shared Node/public list request shape and normalization agree
+ok 121 - shared Node/public list request shape and normalization agree
+  ---
+  duration_ms: 6.958257
+  type: 'test'
+  ...
+# Subtest: shared Node/public list request shape and normalization agree
+ok 122 - shared Node/public list request shape and normalization agree
+  ---
+  duration_ms: 3.439144
+  type: 'test'
+  ...
+# Subtest: shared Node/public transcript request shape and normalization agree
+ok 123 - shared Node/public transcript request shape and normalization agree
+  ---
+  duration_ms: 8.339276
+  type: 'test'
+  ...
+# Subtest: shared Node/public nextTurn request shape and normalization agree
+ok 124 - shared Node/public nextTurn request shape and normalization agree
+  ---
+  duration_ms: 4.481612
+  type: 'test'
+  ...
+# Subtest: closed list refuses {"limit":null}
+ok 125 - closed list refuses {"limit":null}
+  ---
+  duration_ms: 0.805833
+  type: 'test'
+  ...
+# Subtest: closed list refuses {"limit":"1"}
+ok 126 - closed list refuses {"limit":"1"}
+  ---
+  duration_ms: 0.521204
+  type: 'test'
+  ...
+# Subtest: closed list refuses {"before":{"createdAt":"not-time","conversationId":"00000001-0000-4000-8000-000000000000"}}
+ok 127 - closed list refuses {"before":{"createdAt":"not-time","conversationId":"00000001-0000-4000-8000-000000000000"}}
+  ---
+  duration_ms: 0.551199
+  type: 'test'
+  ...
+# Subtest: closed list refuses {"tenantId":"forged"}
+ok 128 - closed list refuses {"tenantId":"forged"}
+  ---
+  duration_ms: 0.368825
+  type: 'test'
+  ...
+# Subtest: closed transcript refuses {"conversationId":"00000001-0000-4000-8000-000000000000","after":null}
+ok 129 - closed transcript refuses {"conversationId":"00000001-0000-4000-8000-000000000000","after":null}
+  ---
+  duration_ms: 0.42554
+  type: 'test'
+  ...
+# Subtest: closed transcript refuses {"conversationId":"00000001-0000-4000-8000-000000000000","after":-1}
+ok 130 - closed transcript refuses {"conversationId":"00000001-0000-4000-8000-000000000000","after":-1}
+  ---
+  duration_ms: 0.265129
+  type: 'test'
+  ...
+# Subtest: closed transcript refuses {"conversationId":"00000001-0000-4000-8000-000000000000","after":9007199254740992}
+ok 131 - closed transcript refuses {"conversationId":"00000001-0000-4000-8000-000000000000","after":9007199254740992}
+  ---
+  duration_ms: 0.267732
+  type: 'test'
+  ...
+# Subtest: closed transcript refuses {"conversationId":"00000001-0000-4000-8000-000000000000","limit":101}
+ok 132 - closed transcript refuses {"conversationId":"00000001-0000-4000-8000-000000000000","limit":101}
+  ---
+  duration_ms: 0.168664
+  type: 'test'
+  ...
+# Subtest: closed transcript refuses {"conversationId":"00000001-0000-4000-8000-000000000000","clientId":"00000005-0000-4000-8000-000000000000"}
+ok 133 - closed transcript refuses {"conversationId":"00000001-0000-4000-8000-000000000000","clientId":"00000005-0000-4000-8000-000000000000"}
+  ---
+  duration_ms: 0.161102
+  type: 'test'
+  ...
+# Subtest: closed nextTurn refuses {"conversationId":"00000001-0000-4000-8000-000000000000","sourceRunId":null}
+ok 134 - closed nextTurn refuses {"conversationId":"00000001-0000-4000-8000-000000000000","sourceRunId":null}
+  ---
+  duration_ms: 0.14592
+  type: 'test'
+  ...
+# Subtest: byte receiving rejects hostile objects, invalid UTF8/Unicode, prototype keys and fixed bound overflow
+ok 135 - byte receiving rejects hostile objects, invalid UTF8/Unicode, prototype keys and fixed bound overflow
+  ---
+  duration_ms: 0.964671
+  type: 'test'
+  ...
+# Subtest: list receiving preserves suppression-short pages, ordering and exclusive cursor
+ok 136 - list receiving preserves suppression-short pages, ordering and exclusive cursor
+  ---
+  duration_ms: 4.336934
+  type: 'test'
+  ...
+# Subtest: transcript gives direct typed envelope, frozen canonical rows and distinct global/local sequences
+ok 137 - transcript gives direct typed envelope, frozen canonical rows and distinct global/local sequences
+  ---
+  duration_ms: 377.62798
+  type: 'test'
+  ...
+# Subtest: transcript refuses foreign actor substitution
+ok 138 - transcript refuses foreign actor substitution
+  ---
+  duration_ms: 1.290161
+  type: 'test'
+  ...
+# Subtest: transcript refuses foreign scope substitution
+ok 139 - transcript refuses foreign scope substitution
+  ---
+  duration_ms: 0.835777
+  type: 'test'
+  ...
+# Subtest: transcript refuses global sequence substitution
+ok 140 - transcript refuses global sequence substitution
+  ---
+  duration_ms: 0.97096
+  type: 'test'
+  ...
+# Subtest: transcript refuses local sequence substitution
+ok 141 - transcript refuses local sequence substitution
+  ---
+  duration_ms: 0.8972
+  type: 'test'
+  ...
+# Subtest: transcript refuses tail cursor substitution
+ok 142 - transcript refuses tail cursor substitution
+  ---
+  duration_ms: 0.639372
+  type: 'test'
+  ...
+# Subtest: transcript refuses unrepresented turn substitution
+ok 143 - transcript refuses unrepresented turn substitution
+  ---
+  duration_ms: 8.842614
+  type: 'test'
+  ...
+# Subtest: transcript refuses request identity substitution
+ok 144 - transcript refuses request identity substitution
+  ---
+  duration_ms: 1.317131
+  type: 'test'
+  ...
+# Subtest: resume lineage cannot substitute source request/root while genuine same-text submission stays distinct
+ok 145 - resume lineage cannot substitute source request/root while genuine same-text submission stays distinct
+  ---
+  duration_ms: 18.878751
+  type: 'test'
+  ...
+# Subtest: transcript refuses overlapping touched ranges and older overlap with an unrepresented latest run
+ok 146 - transcript refuses overlapping touched ranges and older overlap with an unrepresented latest run
+  ---
+  duration_ms: 1.858466
+  type: 'test'
+  ...
+# Subtest: next-turn response is correlated to immutable source and exact next target fence
+ok 147 - next-turn response is correlated to immutable source and exact next target fence
+  ---
+  duration_ms: 5.680445
+  type: 'test'
+  ...
+# Subtest: request provenance, route/status/error outcome and response bounds fail closed
+ok 148 - request provenance, route/status/error outcome and response bounds fail closed
+  ---
+  duration_ms: 1.51611
+  type: 'test'
+  ...
+# Subtest: browser distribution is self-contained and offline package resolves only public exports
+ok 149 - browser distribution is self-contained and offline package resolves only public exports
+  ---
+  duration_ms: 373.230649
+  type: 'test'
+  ...
+# Subtest: valid resumed prompt keeps a distinct stored requestId and contiguous global ranges
+ok 150 - valid resumed prompt keeps a distinct stored requestId and contiguous global ranges
+  ---
+  duration_ms: 343.086986
+  type: 'test'
+  ...
+# Subtest: adjacent touched ranges cannot overlap despite valid represented event sequence
+ok 151 - adjacent touched ranges cannot overlap despite valid represented event sequence
+  ---
+  duration_ms: 3.852977
+  type: 'test'
+  ...
+# Subtest: adjacent touched ranges cannot leave a global gap
+ok 152 - adjacent touched ranges cannot leave a global gap
+  ---
+  duration_ms: 5.309337
+  type: 'test'
+  ...
+# Subtest: older page range cannot extend into latest run when latest is outside this page
+ok 153 - older page range cannot extend into latest run when latest is outside this page
+  ---
+  duration_ms: 4.917748
+  type: 'test'
+  ...
+# Subtest: resume cannot change stored prompt while retaining source/logical IDs
+ok 154 - resume cannot change stored prompt while retaining source/logical IDs
+  ---
+  duration_ms: 2.549696
+  type: 'test'
+  ...
+# Subtest: resume cannot change stored windowRequest presence while retaining source/logical IDs
+ok 155 - resume cannot change stored windowRequest presence while retaining source/logical IDs
+  ---
+  duration_ms: 1.348099
+  type: 'test'
+  ...
+1..155
+# tests 155
+# suites 0
+# pass 155
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3827.707703

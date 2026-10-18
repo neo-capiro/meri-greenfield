@@ -1,0 +1,24 @@
+{
+  "processStatus": {
+    "Uid": "0\t0\t0\t0",
+    "Gid": "0\t0\t0\t0",
+    "CapInh": "0000000000000000",
+    "CapPrm": "0000000000000000",
+    "CapEff": "0000000000000000",
+    "CapBnd": "0000000000000000",
+    "CapAmb": "0000000000000000",
+    "NoNewPrivs": "1"
+  },
+  "containerTools": {
+    "docker": null,
+    "podman": null,
+    "bwrap": "/usr/bin/bwrap",
+    "setpriv": "/usr/bin/setpriv"
+  },
+  "nativePaths": {
+    "/run/meri": false,
+    "/opt/meri/certs/rds-global-bundle.pem": false,
+    "/tmp/meri-control-ca": false
+  },
+  "nativeInitQualification": "UNRUN: requires UID/GID1000 and task-local canonical owned paths plus root-owned0444 locked RDS mount. No platform/getuid/ownership bypass was attempted."
+}

@@ -1,0 +1,14 @@
+{
+  "command": [
+    "node",
+    "--experimental-test-module-mocks",
+    "--test",
+    "--test-reporter=tap",
+    "apps/runtime/test/prepared-candidate-fetch-propagation.test.mjs",
+    "apps/runtime/test/runner-kickoff-diagnostic.test.mjs",
+    "apps/runtime/test/dynamic-sdk-options.test.mjs",
+    "apps/worker/conversation/test/options-capabilities.test.mjs"
+  ],
+  "exit": 1,
+  "durationSeconds": 1.972
+}

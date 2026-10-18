@@ -1,0 +1,170 @@
+TAP version 13
+# Subtest: real Fetch submit/history reuses existing opaque session and persisted cursor
+ok 1 - real Fetch submit/history reuses existing opaque session and persisted cursor
+  ---
+  duration_ms: 197.809791
+  type: 'test'
+  ...
+# Subtest: a lost Temporal start ack keeps request recoverable on exact resubmission
+ok 2 - a lost Temporal start ack keeps request recoverable on exact resubmission
+  ---
+  duration_ms: 26.31889
+  type: 'test'
+  ...
+# Subtest: current revocation blocks old history, publication and replay submit
+ok 3 - current revocation blocks old history, publication and replay submit
+  ---
+  duration_ms: 18.932985
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed tenant before transcript release
+ok 4 - existing session refuses changed tenant before transcript release
+  ---
+  duration_ms: 15.517364
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed actor before transcript release
+ok 5 - existing session refuses changed actor before transcript release
+  ---
+  duration_ms: 13.549018
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed fence before transcript release
+ok 6 - existing session refuses changed fence before transcript release
+  ---
+  duration_ms: 13.278018
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed attempt before transcript release
+ok 7 - existing session refuses changed attempt before transcript release
+  ---
+  duration_ms: 13.114823
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed worker before transcript release
+ok 8 - existing session refuses changed worker before transcript release
+  ---
+  duration_ms: 11.783976
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed conversation before transcript release
+ok 9 - existing session refuses changed conversation before transcript release
+  ---
+  duration_ms: 11.947843
+  type: 'test'
+  ...
+# Subtest: normalizes actual last-week window and refuses unavailable selected skills
+ok 10 - normalizes actual last-week window and refuses unavailable selected skills
+  ---
+  duration_ms: 59.185522
+  type: 'test'
+  ...
+# Subtest: cancel fences late worker publications and cancellation survives repeat
+ok 11 - cancel fences late worker publications and cancellation survives repeat
+  ---
+  duration_ms: 24.393197
+  type: 'test'
+  ...
+# Subtest: reconnect emits only new events and source cancellation stops its polls
+ok 12 - reconnect emits only new events and source cancellation stops its polls
+  ---
+  duration_ms: 19.968295
+  type: 'test'
+  ...
+# Subtest: revocation after first stream event prevents subsequent disclosure
+ok 13 - revocation after first stream event prevents subsequent disclosure
+  ---
+  duration_ms: 24.705618
+  type: 'test'
+  ...
+# Subtest: upstream Temporal pins stable workflow and rejects reuse while accepting a current start
+ok 14 - upstream Temporal pins stable workflow and rejects reuse while accepting a current start
+  ---
+  duration_ms: 0.925856
+  type: 'test'
+  ...
+# Subtest: HTTP body read and dispatch share one deadline signal
+ok 15 - HTTP body read and dispatch share one deadline signal
+  ---
+  duration_ms: 21.849672
+  type: 'test'
+  ...
+# Subtest: the canonical retention gate composes, suppresses history and still permits cancellation cleanup
+ok 16 - the canonical retention gate composes, suppresses history and still permits cancellation cleanup
+  ---
+  duration_ms: 215.105949
+  type: 'test'
+  ...
+# Subtest: optional serving methods are typed and unknown retention keys remain closed without invoking any owner
+not ok 17 - optional serving methods are typed and unknown retention keys remain closed without invoking any owner
+  ---
+  duration_ms: 2.187167
+  type: 'test'
+  location: '<startup-worktree>/apps/control/conversations/test/retention-port.test.mjs:27:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + Comparison {}
+    - Comparison {
+    -   code: 'INVALID_COMMAND'
+    - }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    code: 'INVALID_COMMAND'
+  actual:
+  error: 'INVALID_COMMAND'
+  stack: |-
+    deny (file://<startup-worktree>/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+    own (file://<startup-worktree>/packages/contracts/commands-0.2/execution-boundary.mjs:10:166)
+    createConversationService (file://<startup-worktree>/apps/control/conversations/service.mjs:29:54)
+    assert.throws.code (file://<startup-worktree>/apps/control/conversations/test/retention-port.test.mjs:32:20)
+    getActual (node:assert:611:5)
+    strict.throws (node:assert:759:24)
+    TestContext.<anonymous> (file://<startup-worktree>/apps/control/conversations/test/retention-port.test.mjs:32:9)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file://<startup-worktree>/apps/control/conversations/test/retention-port.test.mjs:32:9)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# (node:16) ExperimentalWarning: Module mocking is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:16) DeprecationWarning: mock.module(): options.namedExports is deprecated. Use options.exports instead.
+# Subtest: a declared multi-run mode with the material directory reaches the candidate with the durable store over the pool and the file authority; without the directory the bindings refuse and startup fails after ordered cleanup
+ok 18 - a declared multi-run mode with the material directory reaches the candidate with the durable store over the pool and the file authority; without the directory the bindings refuse and startup fails after ordered cleanup
+  ---
+  duration_ms: 38.098971
+  type: 'test'
+  ...
+# Subtest: dynamic first-chat mount is explicit, uses the control pool, and invalid declarations fail before secret reads
+ok 19 - dynamic first-chat mount is explicit, uses the control pool, and invalid declarations fail before secret reads
+  ---
+  duration_ms: 8.422589
+  type: 'test'
+  ...
+# Subtest: declared retention serving composes the retention startup owner over the control database, fenced until a reconciliation over the authoritative ledger; without the ledger sink readiness fails closed after checking the projections; the declaration is control-only, explicit, and purge can only be declared off
+ok 20 - declared retention serving composes the retention startup owner over the control database, fenced until a reconciliation over the authoritative ledger; without the ledger sink readiness fails closed after checking the projections; the declaration is control-only, explicit, and purge can only be declared off
+  ---
+  duration_ms: 11.922906
+  type: 'test'
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 19
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1624.548269

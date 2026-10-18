@@ -1,0 +1,130 @@
+TAP version 13
+# Subtest: one SDK query persists streamed text once, hides reasoning and completes durable run
+ok 1 - one SDK query persists streamed text once, hides reasoning and completes durable run
+  ---
+  duration_ms: 349.047768
+  type: 'test'
+  ...
+# Subtest: nonstreamed final assistant text is displayed with a valid generated UUID
+ok 2 - nonstreamed final assistant text is displayed with a valid generated UUID
+  ---
+  duration_ms: 33.900448
+  type: 'test'
+  ...
+# Subtest: SDK mirror never leaks diagnostics or makes a duplicate model query
+ok 3 - SDK mirror never leaks diagnostics or makes a duplicate model query
+  ---
+  duration_ms: 36.615055
+  type: 'test'
+  ...
+# Subtest: SDK missing never leaks diagnostics or makes a duplicate model query
+ok 4 - SDK missing never leaks diagnostics or makes a duplicate model query
+  ---
+  duration_ms: 36.999704
+  type: 'test'
+  ...
+# Subtest: SDK sdkFailure never leaks diagnostics or makes a duplicate model query
+ok 5 - SDK sdkFailure never leaks diagnostics or makes a duplicate model query
+  ---
+  duration_ms: 39.795263
+  type: 'test'
+  ...
+# Subtest: SDK duplicate never leaks diagnostics or makes a duplicate model query
+ok 6 - SDK duplicate never leaks diagnostics or makes a duplicate model query
+  ---
+  duration_ms: 30.044823
+  type: 'test'
+  ...
+# Subtest: SDK subagent never leaks diagnostics or makes a duplicate model query
+ok 7 - SDK subagent never leaks diagnostics or makes a duplicate model query
+  ---
+  duration_ms: 47.877831
+  type: 'test'
+  ...
+# Subtest: revocation during query stops publication and closes SDK before another result
+ok 8 - revocation during query stops publication and closes SDK before another result
+  ---
+  duration_ms: 37.316932
+  type: 'test'
+  ...
+# Subtest: output limit fails instead of truncating a completed response
+ok 9 - output limit fails instead of truncating a completed response
+  ---
+  duration_ms: 46.666407
+  type: 'test'
+  ...
+# Subtest: late SDK iterator is bounded by deadline and closed without a second query
+ok 10 - late SDK iterator is bounded by deadline and closed without a second query
+  ---
+  duration_ms: 52.062221
+  type: 'test'
+  ...
+# Subtest: SDK options reject ambient config, wrong workspace and upstream keys
+ok 11 - SDK options reject ambient config, wrong workspace and upstream keys
+  ---
+  duration_ms: 2.081944
+  type: 'test'
+  ...
+# Subtest: final assistant frame repairs a missing streamed suffix without duplicate prefix
+ok 12 - final assistant frame repairs a missing streamed suffix without duplicate prefix
+  ---
+  duration_ms: 67.694892
+  type: 'test'
+  ...
+# Subtest: a conflicting final text refuses completion instead of silently dropping the mismatch
+ok 13 - a conflicting final text refuses completion instead of silently dropping the mismatch
+  ---
+  duration_ms: 64.853838
+  type: 'test'
+  ...
+# Subtest: runtime preparation mismatch records a failed run without invoking SDK
+ok 14 - runtime preparation mismatch records a failed run without invoking SDK
+  ---
+  duration_ms: 44.844265
+  type: 'test'
+  ...
+# Subtest: the pinned runner CA reaches the SDK subprocess env exactly once and is covered by the SDK options digest
+ok 15 - the pinned runner CA reaches the SDK subprocess env exactly once and is covered by the SDK options digest
+  ---
+  duration_ms: 4.387025
+  type: 'test'
+  ...
+# Subtest: any other CA path, or a CA without the admitted per-task SDK directories, refuses
+ok 16 - any other CA path, or a CA without the admitted per-task SDK directories, refuses
+  ---
+  duration_ms: 1.00274
+  type: 'test'
+  ...
+# Subtest: the per-attempt acknowledgement bound is the control service request bound, not 30 ms
+ok 17 - the per-attempt acknowledgement bound is the control service request bound, not 30 ms
+  ---
+  duration_ms: 1.472728
+  type: 'test'
+  ...
+# Subtest: terminal recording slower than 30 ms is acknowledged on the first attempt
+ok 18 - terminal recording slower than 30 ms is acknowledged on the first attempt
+  ---
+  duration_ms: 327.431365
+  type: 'test'
+  ...
+# Subtest: a lost acknowledgement is read back by replaying the same event ID; no second terminal event
+ok 19 - a lost acknowledgement is read back by replaying the same event ID; no second terminal event
+  ---
+  duration_ms: 85.520092
+  type: 'test'
+  ...
+# Subtest: never acknowledged: settlement is finite (two rounds over two fixed event IDs) and leaves the run nonterminal for the reconciler
+ok 20 - never acknowledged: settlement is finite (two rounds over two fixed event IDs) and leaves the run nonterminal for the reconciler
+  ---
+  duration_ms: 143.250197
+  type: 'test'
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2968.443301

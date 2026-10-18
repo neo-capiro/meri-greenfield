@@ -1,0 +1,32 @@
+diff --git a/apps/runtime/build/runtime-packages.mjs b/apps/runtime/build/runtime-packages.mjs
+index 7948d6f397d6164faa0d4b2bf4484a908ecf6dce..7c93b3120d2ecdcec7373bb955a22aeafac61200 100644
+--- a/apps/runtime/build/runtime-packages.mjs
++++ b/apps/runtime/build/runtime-packages.mjs
+@@ -195,12 +195,13 @@ async function runtimePath(root,name){const file=await fs.realpath(path.join(roo
+ function installedSet(bytes){
+  const text=utf8(bytes);need(!/[\0\r]/u.test(text),'VERIFY');const result=[],seen=new Set();
+  for(const block of text.split(/\n\n+/u)){
+-  if(!block.trim())continue;let name,version;
++  if(!block.trim())continue;let name,version,architecture;
+   for(const line of block.split('\n')){
+    if(line.startsWith('P:')){need(name===undefined,'VERIFY');name=line.slice(2);}
+    if(line.startsWith('V:')){need(version===undefined,'VERIFY');version=line.slice(2);}
++   if(line.startsWith('A:')){need(architecture===undefined,'VERIFY');architecture=line.slice(2);}
+   }
+-  need(typeof name==='string'&&NAME.test(name)&&typeof version==='string'&&VERSION.test(version)&&!seen.has(name),'VERIFY');
++  need(typeof name==='string'&&NAME.test(name)&&typeof version==='string'&&VERSION.test(version)&&architecture==='x86_64'&&!seen.has(name),'VERIFY');
+   seen.add(name);result.push({name,version});need(result.length<=2176,'VERIFY');
+  }
+  return result.sort((a,b)=>a.name<b.name?-1:a.name>b.name?1:0);
+diff --git a/apps/runtime/build/runtime-packages.test.mjs b/apps/runtime/build/runtime-packages.test.mjs
+index f7fc66c2760fbee2c492896bf27a82367ca95e42..aad54e4319550792b03b568a94c0ee0cac01e8c7 100644
+--- a/apps/runtime/build/runtime-packages.test.mjs
++++ b/apps/runtime/build/runtime-packages.test.mjs
+@@ -159,6 +159,7 @@ test('installed verification joins every base/addition name and version with exa
+ test('missing, extra, duplicate, wrong-version and malformed installed identities cannot verify',async t=>{
+  const x=await installedFixture(t);const variants=[x.rows.slice(1),[...x.rows,{name:'foreign',version:'1-r0'}],[...x.rows,x.rows[0]],x.rows.map((r,i)=>i===0?{...r,version:'0-r0'}:r)];
+  for(const rows of variants){await fs.writeFile(x.database,x.db(rows));await assert.rejects(verifyInstalledPackages(x.f.raw,{rootDirectory:x.root,measureRuntime:runtime}),/^Error: RUNTIME_PACKAGES_VERIFY$/u);}
++ for(const db of [x.db(x.rows).replace('A:x86_64','A:aarch64'),x.db(x.rows).replace('A:x86_64\n',''),x.db(x.rows).replace('A:x86_64','A:x86_64\nA:x86_64')]){await fs.writeFile(x.database,db);await assert.rejects(verifyInstalledPackages(x.f.raw,{rootDirectory:x.root,measureRuntime:runtime}),/^Error: RUNTIME_PACKAGES_VERIFY$/u);}
+  for(const text of ['P:glibc\nV:2.44-r4\nV:2.44-r4\n','private-only-data','P:glibc\nV:2.44-r4\0\n','P:glibc\nV:2.44-r4\r\n']){await fs.writeFile(x.database,text);await assert.rejects(verifyInstalledPackages(x.f.raw,{rootDirectory:x.root,measureRuntime:runtime}),/^Error: RUNTIME_PACKAGES_VERIFY$/u);}
+ });
+ 

@@ -1,0 +1,13 @@
+{
+  "command": [
+    "node",
+    "apps/runtime/node_modules/typescript/bin/tsc",
+    "--noEmit",
+    "--pretty",
+    "false",
+    "-p",
+    "apps/runtime/tsconfig.json"
+  ],
+  "exit": 0,
+  "durationSeconds": 5.21
+}

@@ -1,0 +1,331 @@
+TAP version 13
+# Subtest: product runner CLI refuses absent or incorrect measured entrypoint pin before runtime startup
+ok 1 - product runner CLI refuses absent or incorrect measured entrypoint pin before runtime startup
+  ---
+  duration_ms: 27.201038
+  type: 'test'
+  ...
+# Subtest: product control task definition requires split private listener before secret or network startup
+ok 2 - product control task definition requires split private listener before secret or network startup
+  ---
+  duration_ms: 6.618467
+  type: 'test'
+  ...
+# Subtest: product runner refuses a bootstrap-free plaintext receiver before secret or network startup
+ok 3 - product runner refuses a bootstrap-free plaintext receiver before secret or network startup
+  ---
+  duration_ms: 4.161395
+  type: 'test'
+  ...
+# Subtest: product Temporal poller refuses a loopback native origin before secret or network startup
+ok 4 - product Temporal poller refuses a loopback native origin before secret or network startup
+  ---
+  duration_ms: 3.694157
+  type: 'test'
+  ...
+# Subtest: product Temporal poller refuses missing issuer token configuration before startup
+ok 5 - product Temporal poller refuses missing issuer token configuration before startup
+  ---
+  duration_ms: 2.611017
+  type: 'test'
+  ...
+# Subtest: product Temporal poller trusts the control private origin only through its pinned issuer server CA file
+ok 6 - product Temporal poller trusts the control private origin only through its pinned issuer server CA file
+  ---
+  duration_ms: 0.467814
+  type: 'test'
+  ...
+# Subtest: composite preserves every locked RDS byte and appends exactly the pinned private server CA
+ok 7 - composite preserves every locked RDS byte and appends exactly the pinned private server CA
+  ---
+  duration_ms: 377.932233
+  type: 'test'
+  ...
+# Subtest: changed RDS bytes, a foreign private pin, a leaf, multiple PEMs and private key material refuse
+ok 8 - changed RDS bytes, a foreign private pin, a leaf, multiple PEMs and private key material refuse
+  ---
+  duration_ms: 6.563533
+  type: 'test'
+  ...
+# Subtest: control startup admits only the fixed composite path and refuses missing/wrong environment before resources
+ok 9 - control startup admits only the fixed composite path and refuses missing/wrong environment before resources
+  ---
+  duration_ms: 7.848606
+  type: 'test'
+  ...
+# Subtest: fresh Node global fetch trusts the private origin with composite roots, retains all RDS roots and verifies hostname
+ok 10 - fresh Node global fetch trusts the private origin with composite roots, retains all RDS roots and verifies hostname
+  ---
+  duration_ms: 469.535555
+  type: 'test'
+  ...
+# (node:14) ExperimentalWarning: Module mocking is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14) DeprecationWarning: mock.module(): options.namedExports is deprecated. Use options.exports instead.
+# Subtest: control CA flag rejects another role before canonical materialization and consumes the secret slot
+ok 11 - control CA flag rejects another role before canonical materialization and consumes the secret slot
+  ---
+  duration_ms: 3.158712
+  type: 'test'
+  ...
+# Subtest: ready is emitted after canonical materialization and composite initialization both complete
+ok 12 - ready is emitted after canonical materialization and composite initialization both complete
+  ---
+  duration_ms: 1.094006
+  type: 'test'
+  ...
+# Subtest: composite refusal releases the exact static receipt, emits no ready and hides private error text
+ok 13 - composite refusal releases the exact static receipt, emits no ready and hides private error text
+  ---
+  duration_ms: 0.573382
+  type: 'test'
+  ...
+# Subtest: static failure never starts the composite; rollback failure keeps the cleanup failure exit
+ok 14 - static failure never starts the composite; rollback failure keeps the cleanup failure exit
+  ---
+  duration_ms: 0.630038
+  type: 'test'
+  ...
+# Subtest: plain write retains its existing canonical initialization path
+ok 15 - plain write retains its existing canonical initialization path
+  ---
+  duration_ms: 0.39252
+  type: 'test'
+  ...
+# Subtest: production composer creates exact shared bytes with exclusive private permissions and verifies startup readback
+ok 16 - production composer creates exact shared bytes with exclusive private permissions and verifies startup readback
+  ---
+  duration_ms: 12.315486
+  type: 'test'
+  ...
+# Subtest: production startup rejects missing and changed composite output without removing material
+ok 17 - production startup rejects missing and changed composite output without removing material
+  ---
+  duration_ms: 4.594792
+  type: 'test'
+  ...
+# Subtest: production composer rolls back only its derived paths when output readback fails
+ok 18 - production composer rolls back only its derived paths when output readback fails
+  ---
+  duration_ms: 2.112829
+  type: 'test'
+  ...
+# Subtest: production composer preserves a preexisting foreign directory and refuses a foreign configuration path
+ok 19 - production composer preserves a preexisting foreign directory and refuses a foreign configuration path
+  ---
+  duration_ms: 1.804214
+  type: 'test'
+  ...
+# Subtest: closed opt-in first candidate accepts existing canonical runtime/allocation/task schemas without IO
+ok 20 - closed opt-in first candidate accepts existing canonical runtime/allocation/task schemas without IO
+  ---
+  duration_ms: 18.18133
+  type: 'test'
+  ...
+# Subtest: bad legacy cluster refuses before pool/client/effect access
+ok 21 - bad legacy cluster refuses before pool/client/effect access
+  ---
+  duration_ms: 2.150956
+  type: 'test'
+  ...
+# Subtest: bad ambient credentials refuses before pool/client/effect access
+ok 22 - bad ambient credentials refuses before pool/client/effect access
+  ---
+  duration_ms: 0.450708
+  type: 'test'
+  ...
+# Subtest: bad new issuer refuses before pool/client/effect access
+ok 23 - bad new issuer refuses before pool/client/effect access
+  ---
+  duration_ms: 0.982733
+  type: 'test'
+  ...
+# Subtest: bad caller module refuses before pool/client/effect access
+ok 24 - bad caller module refuses before pool/client/effect access
+  ---
+  duration_ms: 0.757439
+  type: 'test'
+  ...
+# Subtest: bad inline proxy credential refuses before pool/client/effect access
+ok 25 - bad inline proxy credential refuses before pool/client/effect access
+  ---
+  duration_ms: 0.991051
+  type: 'test'
+  ...
+# Subtest: bad budget excess refuses before pool/client/effect access
+ok 26 - bad budget excess refuses before pool/client/effect access
+  ---
+  duration_ms: 1.733448
+  type: 'test'
+  ...
+# Subtest: bad foreign authority refuses before pool/client/effect access
+ok 27 - bad foreign authority refuses before pool/client/effect access
+  ---
+  duration_ms: 3.87565
+  type: 'test'
+  ...
+# Subtest: bad public networking refuses before pool/client/effect access
+ok 28 - bad public networking refuses before pool/client/effect access
+  ---
+  duration_ms: 2.094851
+  type: 'test'
+  ...
+# Subtest: bad unknown launch flag refuses before pool/client/effect access
+ok 29 - bad unknown launch flag refuses before pool/client/effect access
+  ---
+  duration_ms: 1.78157
+  type: 'test'
+  ...
+# Subtest: bad foreign binding refuses before pool/client/effect access
+ok 30 - bad foreign binding refuses before pool/client/effect access
+  ---
+  duration_ms: 1.364392
+  type: 'test'
+  ...
+# Subtest: control and task capabilities stay distinct and native control file is the same explicit binding
+ok 31 - control and task capabilities stay distinct and native control file is the same explicit binding
+  ---
+  duration_ms: 3.596961
+  type: 'test'
+  ...
+# Subtest: only temporal role accepts explicitly enabled prepared kickoff flag
+ok 32 - only temporal role accepts explicitly enabled prepared kickoff flag
+  ---
+  duration_ms: 1.072333
+  type: 'test'
+  ...
+# Subtest: restart can construct retained inspector with expired original task, without allocation or credential renewal
+ok 33 - restart can construct retained inspector with expired original task, without allocation or credential renewal
+  ---
+  duration_ms: 16.622016
+  type: 'test'
+  ...
+# Subtest: readiness missing-table refuses before allocation/backend reads
+ok 34 - readiness missing-table refuses before allocation/backend reads
+  ---
+  duration_ms: 5.496491
+  type: 'test'
+  ...
+# Subtest: readiness duplicate-table refuses before allocation/backend reads
+ok 35 - readiness duplicate-table refuses before allocation/backend reads
+  ---
+  duration_ms: 4.67911
+  type: 'test'
+  ...
+# Subtest: readiness missing-budget refuses before allocation/backend reads
+ok 36 - readiness missing-budget refuses before allocation/backend reads
+  ---
+  duration_ms: 4.604568
+  type: 'test'
+  ...
+# Subtest: readiness quarantined-budget refuses before allocation/backend reads
+ok 37 - readiness quarantined-budget refuses before allocation/backend reads
+  ---
+  duration_ms: 4.213328
+  type: 'test'
+  ...
+# Subtest: readiness zero-cap refuses before allocation/backend reads
+ok 38 - readiness zero-cap refuses before allocation/backend reads
+  ---
+  duration_ms: 3.908629
+  type: 'test'
+  ...
+# Subtest: ECS role-only CMD combines with image ENTRYPOINT into accepted actual CLI argv
+ok 39 - ECS role-only CMD combines with image ENTRYPOINT into accepted actual CLI argv
+  ---
+  duration_ms: 25.190883
+  type: 'test'
+  ...
+# (node:21) ExperimentalWarning: Module mocking is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:21) DeprecationWarning: mock.module(): options.namedExports is deprecated. Use options.exports instead.
+# Subtest: assembled multi-run registry receives the same injected HTTP transport as first-run and Core authority
+ok 40 - assembled multi-run registry receives the same injected HTTP transport as first-run and Core authority
+  ---
+  duration_ms: 22.74822
+  type: 'test'
+  ...
+# (node:32) ExperimentalWarning: Module mocking is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:32) DeprecationWarning: mock.module(): options.namedExports is deprecated. Use options.exports instead.
+# Subtest: a declared multi-run mode with the material directory reaches the candidate with the durable store over the pool and the file authority; without the directory the bindings refuse and startup fails after ordered cleanup
+ok 41 - a declared multi-run mode with the material directory reaches the candidate with the durable store over the pool and the file authority; without the directory the bindings refuse and startup fails after ordered cleanup
+  ---
+  duration_ms: 38.612834
+  type: 'test'
+  ...
+# Subtest: dynamic first-chat mount is explicit, uses the control pool, and invalid declarations fail before secret reads
+ok 42 - dynamic first-chat mount is explicit, uses the control pool, and invalid declarations fail before secret reads
+  ---
+  duration_ms: 9.010745
+  type: 'test'
+  ...
+# Subtest: declared retention serving composes the retention startup owner over the control database, fenced until a reconciliation over the authoritative ledger; without the ledger sink readiness fails closed after checking the projections; the declaration is control-only, explicit, and purge can only be declared off
+ok 43 - declared retention serving composes the retention startup owner over the control database, fenced until a reconciliation over the authoritative ledger; without the ledger sink readiness fails closed after checking the projections; the declaration is control-only, explicit, and purge can only be declared off
+  ---
+  duration_ms: 11.72161
+  type: 'test'
+  ...
+# Subtest: kickoff diagnostics retain the exact prefixed execution fault without private error text
+ok 44 - kickoff diagnostics retain the exact prefixed execution fault without private error text
+  ---
+  duration_ms: 1.936563
+  type: 'test'
+  ...
+# Subtest: control/poller delivery validates exact independent pins and returns only a content-free startup receipt
+ok 45 - control/poller delivery validates exact independent pins and returns only a content-free startup receipt
+  ---
+  duration_ms: 53.138495
+  type: 'test'
+  ...
+# Subtest: expected contract rejects changes, foreign fields, unsafe paths, roles, users and unpinned source/image before delivery
+ok 46 - expected contract rejects changes, foreign fields, unsafe paths, roles, users and unpinned source/image before delivery
+  ---
+  duration_ms: 7.853934
+  type: 'test'
+  ...
+# Subtest: bundle refuses missing, duplicated, foreign, changed, malformed, empty and oversized files without trusting echoes
+ok 47 - bundle refuses missing, duplicated, foreign, changed, malformed, empty and oversized files without trusting echoes
+  ---
+  duration_ms: 60.916725
+  type: 'test'
+  ...
+# Subtest: even fully repinned material must contain valid canonical role configuration with the exact declared inventory
+ok 48 - even fully repinned material must contain valid canonical role configuration with the exact declared inventory
+  ---
+  duration_ms: 64.553996
+  type: 'test'
+  ...
+# Subtest: optional static signing/token files are included while token rotation remains a separate runtime responsibility
+ok 49 - optional static signing/token files are included while token rotation remains a separate runtime responsibility
+  ---
+  duration_ms: 5.828487
+  type: 'test'
+  ...
+# Subtest: missing delivery/invalid deadline/unsupported host refuse before any delivery effect and forged cleanup receipts refuse
+ok 50 - missing delivery/invalid deadline/unsupported host refuse before any delivery effect and forged cleanup receipts refuse
+  ---
+  duration_ms: 3.242838
+  type: 'test'
+  ...
+# Subtest: CLI has import-safe help, closed arguments, bounded material refusal and no material in diagnostics
+ok 51 - CLI has import-safe help, closed arguments, bounded material refusal and no material in diagnostics
+  ---
+  duration_ms: 905.894335
+  type: 'test'
+  ...
+# Subtest: a deadline crossed during file open/stat writes no material bytes and leaves no owned path
+ok 52 - a deadline crossed during file open/stat writes no material bytes and leaves no owned path # SKIP UNRUN: requires nonroot Linux UID/GID 1000 and a writable /run without /run/meri
+  ---
+  duration_ms: 0.192099
+  type: 'test'
+  ...
+1..52
+# tests 52
+# suites 0
+# pass 51
+# fail 0
+# cancelled 0
+# skipped 1
+# todo 0
+# duration_ms 2864.238861

@@ -1,0 +1,87 @@
+{
+  "scope": "OFFLINE_PARTITION_ONLY",
+  "mode": "complete",
+  "client": "minimal-messages",
+  "fullOwnerHttps": "OPEN_RFC1918_INTERFACES_UNAVAILABLE",
+  "productImage": "UNRUN",
+  "postgresql": "UNRUN",
+  "providerCalls": 0,
+  "sdkResults": [],
+  "sdkSpawns": 0,
+  "versions": {
+    "sdk": "0.3.295",
+    "cli": "2.1.295",
+    "node": "v24.19.0"
+  },
+  "executableSha256": "4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358",
+  "clientResult": {
+    "status": 503,
+    "bytes": 241,
+    "sha256": "dc875a18f140a30f3fde286a04b5c9763500752ea4fcb1a991518743b607b3d0",
+    "events": []
+  },
+  "native": {
+    "scope": "offline-partition-only",
+    "fullOwnerHttps": "OPEN_RFC1918_INTERFACES_UNAVAILABLE",
+    "syntheticIngress": true,
+    "ownerTransport": "private-subprocess-IPC",
+    "database": "scripted-SQL-canonical-JS-accounting",
+    "countTransport": "botocore-Stubber",
+    "providerTransport": "in-process-HTTPX-stub",
+    "providerExecutions": 0,
+    "countRequests": 1,
+    "sdkRequests": [
+      {
+        "bytes": 153,
+        "sha256": "fdae4bc2a74f49a7968865f07451bfcb80c5592eb0e76177fe4e6424766d71b3",
+        "fieldNames": [
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].role",
+          "model",
+          "stream",
+          "temperature"
+        ]
+      }
+    ],
+    "nativeRequests": [
+      {
+        "bytes": 154,
+        "sha256": "103179b2bfc61adfbfcbf1b5de0fb79a084c12f7f07daabc14314d811137acfc",
+        "fieldNames": [
+          "anthropic_version",
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].role",
+          "temperature"
+        ],
+        "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+        "headerNames": [
+          "accept",
+          "accept-encoding",
+          "anthropic-version",
+          "authorization",
+          "connection",
+          "content-length",
+          "content-type",
+          "host",
+          "user-agent",
+          "x-amz-date"
+        ]
+      }
+    ],
+    "errors": [],
+    "ledger": {
+      "requests": [],
+      "consumedMicroUSD": "0",
+      "quarantined": false,
+      "reservationInserts": 0,
+      "settlementUpdates": 0
+    },
+    "nativeStarted": true,
+    "nativeStopped": true
+  },
+  "partitionPassed": false
+}

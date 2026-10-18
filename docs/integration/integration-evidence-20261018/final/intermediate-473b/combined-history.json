@@ -1,0 +1,19 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "apps/control/conversations/test/history-http.test.mjs",
+    "apps/control/conversations/test/history-currentness-capability.test.mjs",
+    "apps/control/retention/test/release-fence.test.mjs",
+    "apps/control/schedules/test/scheduled-conversation.test.mjs",
+    "apps/control/schedules/test/scheduled-history-pool.test.mjs",
+    "apps/control/schedules/test/scheduled-history-concurrent-pool.test.mjs",
+    "packages/contracts/test/conversation-history-public.test.mjs",
+    "packages/contracts/test/conversation-history-source.test.mjs",
+    "apps/control/retention/test/postgres-watermark.test.mjs",
+    "apps/runtime/test/startup-history.test.mjs"
+  ],
+  "exit": 0,
+  "durationSeconds": 3.903
+}

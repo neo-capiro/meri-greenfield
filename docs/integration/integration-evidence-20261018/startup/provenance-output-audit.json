@@ -1,0 +1,9 @@
+{
+  "changed": [
+    "packages/contracts/dist/conversation-application.metadata.json",
+    "packages/contracts/dist/conversation-input.metadata.json",
+    "packages/contracts/dist/conversation-initial-input.metadata.json"
+  ],
+  "browserCodeTypesSchemasUnchanged": true,
+  "unchangedCount": 9
+}

@@ -1,0 +1,64 @@
+{
+  "repository": "neo-capiro/capiro-backend",
+  "baseCommit": "78ceaf9bdfe00c8f013aac15eb8483312ae4f803",
+  "files": [
+    {
+      "path": "apps/api/src/auth/application-authority.ts",
+      "gitBlob": "b97c75ed273def1facec907e305507745d8f2c4c",
+      "sha256": "9e24228be90fb021a7501a61dd1eb27195cffdc8bb4341b3494bd8864afd9b3f",
+      "bytes": 14925
+    },
+    {
+      "path": "apps/api/src/auth/history-release-batch-owner.focused.test.mjs",
+      "gitBlob": "4027ab8b9ffccb725452437bf49de27513f51bac",
+      "sha256": "e12cb6b7353b0c31b20e815b15fc16ce8c7e9538a9b61f39dfe03c123022548e",
+      "bytes": 7394
+    },
+    {
+      "path": "apps/api/src/auth/history-release-batch-owner.ts",
+      "gitBlob": "3f83d8186004330c3d2ce4b956530f3067d3fa1e",
+      "sha256": "a20094b33d1ce4f65f4083cd4fe7a612f414457b5052722864caf0c99c86e869",
+      "bytes": 6945
+    },
+    {
+      "path": "apps/api/src/auth/history-release-selected-client-owner.ts",
+      "gitBlob": "342708fa912a580dd60fac0ea816cd10596e43af",
+      "sha256": "ec8b3ea0c2ecb2098aa23fc5e16884165c79d2115e32ceda5e0c113b192520ac",
+      "bytes": 6597
+    },
+    {
+      "path": "apps/api/src/auth/history-release-source.focused.test.mjs",
+      "gitBlob": "30a39a0ddc4d0667fdf57796084b95568b4df46c",
+      "sha256": "47d54394503d9c23ace390ef76b640d94b5a30871bd78fa09dbc9a4eca24edae",
+      "bytes": 10101
+    },
+    {
+      "path": "apps/api/src/auth/history-release-source.ts",
+      "gitBlob": "8bb0e388fcc5c48d70c9d873610e189ba30fa717",
+      "sha256": "4135dc4740ca41c13560c244bf1cc6fb5342b3e991f04746dff75c74b96b33d4",
+      "bytes": 9768
+    },
+    {
+      "path": "apps/api/src/tenant/tenant-context.middleware.ts",
+      "gitBlob": "dda870eedf9efb389e0f120029cdf8a69b78f15d",
+      "sha256": "cad811e48368c01519aa720d419a281f03190907966819feca9276d3852fcaa9",
+      "bytes": 47280
+    },
+    {
+      "path": "packages/shared/src/core-retained-jcs.ts",
+      "gitBlob": "899e9f00705adffe34d1cfbb35c93af8edc84e1b",
+      "sha256": "f3a64c78d9f00776c75b7b0645b523fb141b39d659b0b9e6c630fdce48b27b20",
+      "bytes": 3260
+    }
+  ],
+  "patch": {
+    "target": "apps/api/src/tenant/tenant-context.middleware.ts",
+    "sha256": "9f4ded7f8a111154cf32dea7888fb145c7bcb72b73b4eef1d7f3870a6e7f4043",
+    "proposedSha256": "d9931a98db2de9ca10cbd2aa161983747c159773e30bbc04bcb36474530095e0"
+  },
+  "testedEnvironment": {
+    "node": "24.19.0",
+    "typescript": "5.9.3",
+    "npm": "11.9.0"
+  }
+}

@@ -1,0 +1,219 @@
+{
+  "publishedApprovedSource": "51f4a38e2e43d6ff050db08e3235b2b447b708cf",
+  "approvedParent": "58b13b1644726bb307ea3e58461c7c0a970215f9",
+  "pr": 187,
+  "combinedQualificationBase": "473b8588592149eaa762ee352ae67d1b820c72fb",
+  "localFixCommit": "c02ddcfb6a1138b968673be2bd9f46a4b3508b82",
+  "localFixTree": "45842771f68699256614b88eeb7ce74910cf6d6e",
+  "pre51CauseBaseline": "9c09c3c3c47db995b8cbefdbd59b203ac353b7e9",
+  "environment": {
+    "node": "v24.19.0",
+    "npm": "11.9.0",
+    "openssl": "3.0.13",
+    "TZ": "America/Toronto",
+    "NODE_OPTIONS": "unset",
+    "testFlag": "--experimental-test-module-mocks",
+    "matchingLockfiles": 15
+  },
+  "startupCommand": "env -u NODE_OPTIONS TZ=America/Toronto node --experimental-test-module-mocks --test --test-reporter=tap apps/runtime/test/control-ca-bundle.test.mjs apps/runtime/test/control-ca-init.test.mjs apps/runtime/test/cli-product-runner-pin.test.mjs infra/product-preview/material-init.test.mjs apps/runtime/test/prepared-candidate-startup.test.mjs apps/runtime/test/prepared-candidate-config.test.mjs apps/runtime/test/prepared-candidate-fetch-propagation.test.mjs apps/runtime/test/runner-kickoff-diagnostic.test.mjs",
+  "newRegressionCommand": "env -u NODE_OPTIONS TZ=America/Toronto node --test --test-reporter=tap apps/control/conversations/test/retention-port.test.mjs",
+  "failureCause": "Canonical retention gate gained withRelease; closed createConversationService retention interface accepted only assertServable/isSuppressed. Actual assembly threw INVALID_COMMAND before retained correct RETENTION_LEDGER_UNAVAILABLE assertion. Same failure at combined473b and pre519c09; not introduced by51.",
+  "fix": "Accept exact optional withRelease closed key; require function when present, leave service calls and cleanup semantics unchanged. New canonical gate composition/suppression/cancel cleanup and malformed/unknown key regressions.",
+  "logs": [
+    {
+      "file": "baseline-9c09-cause-control-resolved.scrubbed.log",
+      "bytes": 2645,
+      "sha256": "32dae18f6981dd649c87f6dfcbc629080a47ff189ef16762de84f30bd17324c3",
+      "counts": {
+        "tests": 3,
+        "pass": 2,
+        "fail": 1,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "failingNames": [
+        "declared retention serving composes the retention startup owner over the control database, fenced until a reconciliation over the authoritative ledger; without the ledger sink readiness fails closed after checking the projections; the declaration is control-only, explicit, and purge can only be declared off"
+      ],
+      "skippedNames": []
+    },
+    {
+      "file": "baseline-9c09-cause-control.scrubbed.log",
+      "bytes": 1575,
+      "sha256": "c65af79ff77dd6fcb4b11b774cb5835c226d5456990af2b5736810e79aa6a832",
+      "counts": {
+        "tests": 1,
+        "pass": 0,
+        "fail": 1,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "failingNames": [
+        "/tmp/meri-startup-qualification-evidence/baseline-9c09-cause-control.test.mjs"
+      ],
+      "skippedNames": []
+    },
+    {
+      "file": "canonical-init-first-multi-final.scrubbed.log",
+      "bytes": 14522,
+      "sha256": "c32af6f99c1a87c88d58727477a1dbb89186b7f021efe295ca041719f6552b5c",
+      "counts": {
+        "tests": 52,
+        "pass": 51,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 1,
+        "todo": 0
+      },
+      "failingNames": [],
+      "skippedNames": [
+        [
+          "a deadline crossed during file open/stat writes no material bytes and leaves no owned path",
+          "UNRUN: requires nonroot Linux UID/GID 1000 and a writable /run without /run/meri"
+        ]
+      ]
+    },
+    {
+      "file": "canonical-init-first-multi.scrubbed.log",
+      "bytes": 15209,
+      "sha256": "c5f272428fe94e80e679664ec95ad55380e71f8701c6a23a9ee90a33369700c8",
+      "counts": {
+        "tests": 52,
+        "pass": 50,
+        "fail": 1,
+        "cancelled": 0,
+        "skipped": 1,
+        "todo": 0
+      },
+      "failingNames": [
+        "declared retention serving composes the retention startup owner over the control database, fenced until a reconciliation over the authoritative ledger; without the ledger sink readiness fails closed after checking the projections; the declaration is control-only, explicit, and purge can only be declared off"
+      ],
+      "skippedNames": [
+        [
+          "a deadline crossed during file open/stat writes no material bytes and leaves no owned path",
+          "UNRUN: requires nonroot Linux UID/GID 1000 and a writable /run without /run/meri"
+        ]
+      ]
+    },
+    {
+      "file": "current-473b-cause-control-resolved.scrubbed.log",
+      "bytes": 2641,
+      "sha256": "e56743587288b642b7c444277e8ec70d806b33ceb270a65cf2e8c6dd9d0ffeab",
+      "counts": {
+        "tests": 3,
+        "pass": 2,
+        "fail": 1,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "failingNames": [
+        "declared retention serving composes the retention startup owner over the control database, fenced until a reconciliation over the authoritative ledger; without the ledger sink readiness fails closed after checking the projections; the declaration is control-only, explicit, and purge can only be declared off"
+      ],
+      "skippedNames": []
+    },
+    {
+      "file": "current-473b-cause-control.scrubbed.log",
+      "bytes": 1572,
+      "sha256": "e85d93504dc74a895381e1bc5b33d212a2e9e566cfd7674591a8323ee040aeca",
+      "counts": {
+        "tests": 1,
+        "pass": 0,
+        "fail": 1,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "failingNames": [
+        "/tmp/meri-startup-qualification-evidence/current-473b-cause-control.test.mjs"
+      ],
+      "skippedNames": []
+    },
+    {
+      "file": "current-473b-cause-frames.scrubbed.log",
+      "bytes": 3318,
+      "sha256": "e58b9e6b5f750f54d3118ad9ba9940627b4393873bd006acfc4761f8ff6022e8",
+      "counts": {
+        "tests": 3,
+        "pass": 2,
+        "fail": 1,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "failingNames": [
+        "declared retention serving composes the retention startup owner over the control database, fenced until a reconciliation over the authoritative ledger; without the ledger sink readiness fails closed after checking the projections; the declaration is control-only, explicit, and purge can only be declared off"
+      ],
+      "skippedNames": []
+    },
+    {
+      "file": "retention-port-before.scrubbed.log",
+      "bytes": 3151,
+      "sha256": "96b4c1c2f2e97385411bee176b7b4771f9c7ec231c9dc08bb634f8c39e8659aa",
+      "counts": {
+        "tests": 2,
+        "pass": 0,
+        "fail": 2,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "failingNames": [
+        "the canonical retention gate composes, suppresses history and still permits cancellation cleanup",
+        "optional serving methods are typed and unknown retention keys remain closed without invoking any owner"
+      ],
+      "skippedNames": []
+    },
+    {
+      "file": "retention-port-final.scrubbed.log",
+      "bytes": 659,
+      "sha256": "3085ad06235173777b5e9854cc11edd0c2ef9d3b239cb1481688e1be5cffd1fc",
+      "counts": {
+        "tests": 2,
+        "pass": 2,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "failingNames": [],
+      "skippedNames": []
+    },
+    {
+      "file": "retention-port-startup-after.scrubbed.log",
+      "bytes": 7339,
+      "sha256": "be30e1c0340c9a6b85c24210e50e346c38b720068f3eb35e5cb3d3ce94d09348",
+      "counts": {
+        "tests": 20,
+        "pass": 19,
+        "fail": 1,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "failingNames": [
+        "optional serving methods are typed and unknown retention keys remain closed without invoking any owner"
+      ],
+      "skippedNames": []
+    }
+  ],
+  "provenanceAudit": {
+    "changed": [
+      "packages/contracts/dist/conversation-application.metadata.json",
+      "packages/contracts/dist/conversation-input.metadata.json",
+      "packages/contracts/dist/conversation-initial-input.metadata.json"
+    ],
+    "browserCodeTypesSchemasUnchanged": true,
+    "unchangedCount": 9
+  },
+  "limitations": [
+    "Native Linux UID/GID1000 material-init/readback is UNRUN; exact environment in native-environment.json. Existing nativeIO test remains explicitly skipped by source prerequisite and not counted pass.",
+    "No actual native init-to-fresh-Control end-to-end qualification. Source sequencing/mock filesystem plus separate fresh global-fetch TLS checks are passing partial evidence.",
+    "RDS certificate bytes and all114root fingerprints preserved; no real PostgreSQL TLS handshake or credential was exercised.",
+    "First/multi readiness schema/budget and startup composition are synthetic. No real AWS/ECS/Temporal/Core/provider operation or model query.",
+    "Original shipping container/DNS harness is not published; historical67a7 mechanism log only proves it failed before product entry. No duplicate DNS fixture created.",
+    "Scratch diagnostic import-only attempts initially lacked @temporalio/client at /tmp; setup failures retained separately. Resolved controls reproduce actual cause.",
+    "Intermediate new negative assertion expected Error.code while canonical own uses message only; corrected new test to exact INVALID_COMMAND message without changing existing assertions."
+  ]
+}

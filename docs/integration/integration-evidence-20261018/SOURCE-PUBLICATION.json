@@ -1,0 +1,17 @@
+{
+  "publishedCodeCommit": "88026e7e5ff5a568b9c2c250c6ebb1573abe09b3",
+  "tree": "7b599373392e91b0ffd04f0e80b4f5a5291024c6",
+  "reviewedLocalCodeCommit": "ae62b15195bbeb3ad99cdcb5c3d5105736eadf59",
+  "orderedParents": [
+    "7252f483c59cd676e868e40d4bf73c2ca55c137f",
+    "665405cd23680c2c40d4df95fe183799d272fc61",
+    "51f4a38e2e43d6ff050db08e3235b2b447b708cf",
+    "d2f054362521f622b9dd63c65ef5eaa3bdde8d5a"
+  ],
+  "branch": "integration/meri-receiving-20261018",
+  "frozenPR175": "993f52a97e5d9edcf65c9f89423c097aa52831c7",
+  "preservedFrontendPR98": "5c784e3e46114816ba57db17ad7a2c2013a8d81a",
+  "checkedAtUTC": "2026-10-18T23:01:22.261125+00:00",
+  "publicationMethod": "existingGitHubGitDataconnector; noforce; newbranchonly; directgitpushblockedbyabsentcredentialhelper",
+  "noMergeDeployMigrationCredentialAWSorPaidModelCall": true
+}

@@ -1,0 +1,93 @@
+{
+  "scope": "OFFLINE_PARTITION_ONLY",
+  "mode": "complete",
+  "client": "minimal-messages",
+  "fullOwnerHttps": "OPEN_RFC1918_INTERFACES_UNAVAILABLE",
+  "productImage": "UNRUN",
+  "postgresql": "UNRUN",
+  "providerCalls": 0,
+  "sdkResults": [],
+  "sdkSpawns": 0,
+  "versions": {
+    "sdk": "0.3.295",
+    "cli": "2.1.295",
+    "node": "v24.19.0"
+  },
+  "executableSha256": "4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358",
+  "clientResult": {
+    "status": 500,
+    "bytes": 21,
+    "sha256": "e41656eb2ba6c6293bf6dd928e5a88cdbc50535cab661c1969e0f598e497ed62",
+    "events": []
+  },
+  "native": {
+    "scope": "offline-partition-only",
+    "fullOwnerHttps": "OPEN_RFC1918_INTERFACES_UNAVAILABLE",
+    "syntheticIngress": true,
+    "ownerTransport": "private-subprocess-IPC",
+    "database": "scripted-SQL-canonical-JS-accounting",
+    "countTransport": "botocore-Stubber",
+    "providerTransport": "in-process-HTTPX-stub",
+    "providerExecutions": 0,
+    "countRequests": 0,
+    "sdkRequests": [
+      {
+        "bytes": 153,
+        "sha256": "fdae4bc2a74f49a7968865f07451bfcb80c5592eb0e76177fe4e6424766d71b3",
+        "fieldNames": [
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].role",
+          "model",
+          "stream",
+          "temperature"
+        ]
+      }
+    ],
+    "nativeRequests": [],
+    "errors": [
+      {
+        "type": "StateDenied",
+        "trace": [
+          {
+            "file": "native_proxy.py",
+            "line": 259,
+            "function": "app"
+          },
+          {
+            "file": "native_proxy.py",
+            "line": 213,
+            "function": "route"
+          },
+          {
+            "file": "native_proxy.py",
+            "line": 159,
+            "function": "fixture_lifetime"
+          },
+          {
+            "file": "lifetime.py",
+            "line": 138,
+            "function": "start"
+          },
+          {
+            "file": "ingress.py",
+            "line": 79,
+            "function": "validate_scope"
+          }
+        ],
+        "code": "INFERENCE_ROUTE_REQUIRED"
+      }
+    ],
+    "ledger": {
+      "requests": [],
+      "consumedMicroUSD": "0",
+      "quarantined": false,
+      "reservationInserts": 0,
+      "settlementUpdates": 0
+    },
+    "nativeStarted": true,
+    "nativeStopped": true
+  },
+  "partitionPassed": false
+}

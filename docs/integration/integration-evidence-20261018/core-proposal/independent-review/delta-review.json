@@ -1,0 +1,34 @@
+{
+  "readAt": "2026-10-18T22:58:27.920199+00:00",
+  "baseCommit": "78ceaf9bdfe00c8f013aac15eb8483312ae4f803",
+  "verdict": "APPROVE_FOR_PROPOSAL_PUBLICATION_ONLY",
+  "implementationAuthorization": false,
+  "sourceEdited": false,
+  "testsRerun": false,
+  "earlierFindings": {
+    "R1": "addressed-synthetic",
+    "R2": "addressed-synthetic",
+    "R3": "header coverage addressed; future route/admission outside packet",
+    "R4": "addressed-synthetic"
+  },
+  "retainedResults": {
+    "portable": {
+      "pass": 34,
+      "fail": 0,
+      "skipped": 0
+    },
+    "portableBaseline": {
+      "pass": 2,
+      "fail": 32,
+      "skipped": 0
+    },
+    "publishedWireBatch": {
+      "pass": 10,
+      "fail": 0
+    }
+  },
+  "sourceFilesManifestVerified": 8,
+  "reportSHA256": "ffb480819972a653dc1a26da31138ef635be2454f1b5abdbb756a3ef36c7f426",
+  "publicationMetadataReview": "Final authoritative portable README/evidence reviewed; exact counts/limits/protected scope are accurate. All17 manifest entries match, cover all payload files and internal links resolve.",
+  "packetManifestSHA256": "a2dc379fc7c34b110d4a20c2032da09682571a74320165e0bf4ca4c3a1c3ed59"
+}

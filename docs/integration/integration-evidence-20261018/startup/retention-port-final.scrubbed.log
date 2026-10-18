@@ -1,0 +1,22 @@
+TAP version 13
+# Subtest: the canonical retention gate composes, suppresses history and still permits cancellation cleanup
+ok 1 - the canonical retention gate composes, suppresses history and still permits cancellation cleanup
+  ---
+  duration_ms: 172.092609
+  type: 'test'
+  ...
+# Subtest: optional serving methods are typed and unknown retention keys remain closed without invoking any owner
+ok 2 - optional serving methods are typed and unknown retention keys remain closed without invoking any owner
+  ---
+  duration_ms: 0.788438
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 849.543647

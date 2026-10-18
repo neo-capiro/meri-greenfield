@@ -1,0 +1,11 @@
+{
+  "commit": "ae62b15195bbeb3ad99cdcb5c3d5105736eadf59",
+  "tree": "7b599373392e91b0ffd04f0e80b4f5a5291024c6",
+  "node": "v24.19.0",
+  "npm": "11.9.0",
+  "typescript": "5.9.3",
+  "TZ": "America/Toronto",
+  "NODE_OPTIONS": "unset",
+  "platform": "linux/x86_64",
+  "reasonForRerun": "Canonical retention port production fix and its audited metadata; accepted final code includes stale option-fixture repairs."
+}

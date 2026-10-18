@@ -1,0 +1,139 @@
+{
+  "reviewSource": "139e0a145d0b0d8d8d5161b048a8e50643856c1b",
+  "originalRequestedPin": "a50ce248337f3ce1ab7103e045bb8ab826ca92dc",
+  "pr": 181,
+  "publishedSuccessorReadbackComment": 6255782247,
+  "currentBranchReadback": "dot/meri-fence-pool-20261018",
+  "environment": {
+    "node": "v24.19.0",
+    "TZ": "America/Toronto",
+    "NODE_OPTIONS": "unset",
+    "dependencies": "14 matching byte-equal package-lock.json; existing installed dependency bytes reused; own contracts resolves locally"
+  },
+  "logs": [
+    {
+      "name": "successor-focused.scrubbed.log",
+      "bytes": 23293,
+      "sha256": "951bcc1e5a7d55ed5ace3a75002863dd7b77a63e0c4b47834752869072e21e89",
+      "counts": {
+        "tests": 98,
+        "pass": 98,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "failedNames": []
+    },
+    {
+      "name": "successor-final-focused-7files.scrubbed.log",
+      "bytes": 31273,
+      "sha256": "e458f6d872fd391e669367d4901b2b4c3bc158ef2c768c01f910e07187ecab9a",
+      "counts": {
+        "tests": 134,
+        "pass": 134,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "failedNames": []
+    },
+    {
+      "name": "successor-contract-cleanup-watermark.scrubbed.log",
+      "bytes": 12525,
+      "sha256": "20e18bd1b8be3ec530882ab2ee260a4d6e6da4f42f49bb7d122ed2e46f759ad6",
+      "counts": {
+        "tests": 50,
+        "pass": 49,
+        "fail": 1,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "failedNames": [
+        "through the watermarked journal, an advance whose commit is unknown leaves the projection standing and closes the serving fence"
+      ]
+    },
+    {
+      "name": "concurrent-http-new.scrubbed.log",
+      "bytes": 419,
+      "sha256": "bef065b9b7616920e56ee0132a3fe70d379610782965c1a7241a3f74e3fa4f9e",
+      "counts": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "failedNames": []
+    },
+    {
+      "name": "concurrent-http-a50-control.scrubbed.log",
+      "bytes": 1080,
+      "sha256": "06c22d525757e19350f3608c102cdce495c7a6418fe5aa6bbfadcfc5cab80245",
+      "counts": {
+        "tests": 1,
+        "pass": 0,
+        "fail": 1,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "failedNames": [
+        "concurrent scheduled and ordinary HTTP history requests complete on one connection with both final custody checks"
+      ]
+    },
+    {
+      "name": "concurrent-http-a50-control-initial-diagnostic.scrubbed.log",
+      "bytes": 1046,
+      "sha256": "b54eb76a361d9e0764a3a6390c8dd88261dc1b2ce52cebb58e8f4df325427d53",
+      "counts": {
+        "tests": 1,
+        "pass": 0,
+        "fail": 1,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "failedNames": [
+        "concurrent scheduled and ordinary HTTP history requests complete on one connection with both final custody checks"
+      ]
+    }
+  ],
+  "scopeLimits": [
+    "Scripted PostgreSQL-compatible pool; no real database",
+    "Concurrent capacity-two canonical service test passes; existing routines-enabled actual HTTP test covers sequential capacity-one positive/absent cases",
+    "Core batch authorization race remains separate owner",
+    "Known watermark fixture still omits required withTransition",
+    "New concurrent HTTP capacity-one regression closes the source coverage gap; production PostgreSQL pool qualification remains unrun."
+  ],
+  "commands": [
+    {
+      "label": "intermediate-five-existing-files",
+      "command": "env -u NODE_OPTIONS TZ=America/Toronto node --test --test-reporter=tap apps/control/conversations/test/history-http.test.mjs apps/control/conversations/test/history-currentness-capability.test.mjs apps/control/retention/test/release-fence.test.mjs apps/control/schedules/test/scheduled-conversation.test.mjs apps/control/schedules/test/scheduled-history-pool.test.mjs packages/contracts/test/conversation-history.test.mjs",
+      "note": "Last requested path does not exist; Node ignored it. Correct explicit seven-file run below was then performed."
+    },
+    {
+      "label": "final-seven-files",
+      "command": "env -u NODE_OPTIONS TZ=America/Toronto node --test --test-reporter=tap apps/control/conversations/test/history-http.test.mjs apps/control/conversations/test/history-currentness-capability.test.mjs apps/control/retention/test/release-fence.test.mjs apps/control/schedules/test/scheduled-conversation.test.mjs apps/control/schedules/test/scheduled-history-pool.test.mjs packages/contracts/test/conversation-history-public.test.mjs packages/contracts/test/conversation-history-source.test.mjs"
+    },
+    {
+      "label": "adjacent-contract-cleanup-watermark",
+      "command": "env -u NODE_OPTIONS TZ=America/Toronto node --test --test-reporter=tap packages/contracts/test/conversation-history-public.test.mjs apps/control/product-access/test/effect-uncertainty.test.mjs apps/control/retention/test/postgres-watermark.test.mjs"
+    }
+  ],
+  "concurrentQualification": {
+    "commit": "172bd256e8ac4d20f08cc22e4e991399e427928c",
+    "parent": "139e0a145d0b0d8d8d5161b048a8e50643856c1b",
+    "path": "apps/control/schedules/test/scheduled-history-concurrent-pool.test.mjs",
+    "result": "1/1 pass",
+    "originalPinControl": "a50ce248337f3ce1ab7103e045bb8ab826ca92dc",
+    "originalPinControlResult": "0/1 pass; assertion expected first final origin read on held lease, but HTTP request expired with status408 before that read. Actual duration1186ms. Initial diagnostic output used opaque Response object and is separately retained.",
+    "controlPreparation": "Scratch copy of final test rewrites only relative imports to absolute file URLs under a new detached a50ce248 worktree; no old tracked files changed.",
+    "command": "env -u NODE_OPTIONS TZ=America/Toronto node --test --test-reporter=tap apps/control/schedules/test/scheduled-history-concurrent-pool.test.mjs",
+    "oldSourceCommand": "env -u NODE_OPTIONS TZ=America/Toronto node --test --test-reporter=tap /tmp/meri-integration-pool-review/concurrent-http-a50-control.test.mjs",
+    "sha256": "927c8dde75fb53ecb150ff079666badb6e6546792922577972c888642bb25c68"
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "scope": "OFFLINE_PARTITION_ONLY",
+  "mode": "complete",
+  "client": "minimal-messages",
+  "fullOwnerHttps": "OPEN_RFC1918_INTERFACES_UNAVAILABLE",
+  "productImage": "UNRUN",
+  "postgresql": "UNRUN",
+  "providerCalls": 0,
+  "sdkResults": [],
+  "sdkSpawns": 0,
+  "versions": {
+    "sdk": "0.3.295",
+    "cli": "2.1.295",
+    "node": "v24.19.0"
+  },
+  "executableSha256": "4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358",
+  "clientResult": {
+    "status": 200,
+    "bytes": 872,
+    "sha256": "4f4f39052252bc8c6823e9541bbc775838665a6935e6ebf5ce51fcd55e9bc8e2",
+    "events": [
+      "message_start",
+      "content_block_start",
+      "content_block_delta",
+      "content_block_stop",
+      "message_delta",
+      "message_stop"
+    ]
+  },
+  "native": {
+    "scope": "offline-partition-only",
+    "fullOwnerHttps": "OPEN_RFC1918_INTERFACES_UNAVAILABLE",
+    "syntheticIngress": true,
+    "ownerTransport": "private-subprocess-IPC",
+    "database": "scripted-SQL-canonical-JS-accounting",
+    "countTransport": "botocore-Stubber",
+    "providerTransport": "in-process-HTTPX-stub",
+    "providerExecutions": 1,
+    "countRequests": 1,
+    "sdkRequests": [
+      {
+        "bytes": 151,
+        "sha256": "ae5baca25964a93361f3b52f431a5118e87a8bde80c3f9656236d1de1213c63a",
+        "fieldNames": [
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].role",
+          "model",
+          "stream",
+          "temperature"
+        ]
+      }
+    ],
+    "nativeRequests": [
+      {
+        "bytes": 152,
+        "sha256": "050494ca4db1622e35d5405b99b0671df81ae67b1823887d11097120d8de8365",
+        "fieldNames": [
+          "anthropic_version",
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].role",
+          "temperature"
+        ],
+        "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+        "headerNames": [
+          "accept",
+          "accept-encoding",
+          "anthropic-version",
+          "authorization",
+          "connection",
+          "content-length",
+          "content-type",
+          "host",
+          "user-agent",
+          "x-amz-date"
+        ]
+      }
+    ],
+    "errors": [],
+    "ledger": {
+      "requests": [
+        {
+          "requestId": "019326c5fba34758b72cd03e02b5679d",
+          "state": "SETTLED",
+          "holdMicroUSD": "344",
+          "actualMicroUSD": "90",
+          "inputTokens": 12,
+          "maxOutputTokens": 16
+        }
+      ],
+      "consumedMicroUSD": "90",
+      "quarantined": false,
+      "reservationInserts": 1,
+      "settlementUpdates": 1
+    },
+    "nativeStarted": true,
+    "nativeStopped": true
+  },
+  "partitionPassed": true
+}

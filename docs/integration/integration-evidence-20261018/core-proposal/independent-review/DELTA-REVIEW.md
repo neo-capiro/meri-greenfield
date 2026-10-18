@@ -1,0 +1,22 @@
+# Final Core proposal delta review
+
+Decision: **approve this revised packet for proposal publication and an explicit approval request.** This is not implementation authorization. No concrete authorization bypass or new source-design blocker was found. Review was read-only; no tests were rerun and no protected source was edited.
+
+Authoritative source packet: `/tmp/meri-integration-core-proposal/publishable/core-proposal`, against published Core `78ceaf9bdfe00c8f013aac15eb8483312ae4f803`. Earlier top-level24-case evidence is historical and must not represent the portable packet's current results.
+
+| Earlier finding | Final delta | Assessment |
+|---|---|---|
+| R1 actual adapter composition | Portable tests instantiate the proposed middleware and pass it to unchanged published batch and wire owners, with empty list and selected-client cases, two online observations, exact lock order, single system lease before transaction and post-callback commit refusal. | Addressed at synthetic source-test level. |
+| R2 expiry and provenance | Portable tests cover session expiry, expiry during final membership read, expiry at commit, changed computed session revision, replacement membership ID, and private provenance captured by actual middleware `use()` with synthetic external dependencies. | Addressed at synthetic source-test level. It does not establish real Nest admission, Clerk freshness or PostgreSQL behavior. |
+| R3 pre-auth no-store scope | Patch now adds exactly `/api/clio/application-authority/history-release` and `/clio/application-authority/history-release` to the existing pre-auth `authorityPaths` header list. It does not add either path to `MERI_CONTROL_POST_PATHS`; a marked token denial test checks no-store and zero tenant/online work. | Header coverage addressed. The explicit approval scope must include this protected-file addition. Route mounting and admission design remain outside this packet. |
+| R4 SQL predicates | Synthetic raw-query stub now asserts canonical user/Clerk, tenant and original membership/tenant/actor WHERE predicates as well as arguments and FOR SHARE. | Addressed. Not a real DB contention/grant result. |
+
+The 34/34 portable TAP log has zero failures, skips or cancellations. Its baseline has2 pass/32 fail because the proposed methods/header coverage are absent. The unchanged published wire/batch log has10/10. These are retained executed logs inspected by this reviewer, not independent reruns.
+
+All eight retained source files match their manifest SHA256, Git blob and byte count. The middleware source remains the published baseline blob `dda870eedf9efb389e0f120029cdf8a69b78f15d`. The portable patch SHA256 is `9f4ded7f8a111154cf32dea7888fb145c7bcb72b73b4eef1d7f3870a6e7f4043`; expected patched middleware SHA256 is `d9931a98db2de9ca10cbd2aa161983747c159773e30bbc04bcb36474530095e0`. Portable tests SHA256 is `7ed7912bb2b7062072ee3cdccb4f3a2d0421de53fc67cc678119e266cb1e5852`; prepare script SHA256 is `e19cf28b59431d02f4ec28b31f91f81065b74852ef26efd7812124c557324ee7`.
+
+The prepare script verifies source bytes and a single protected-file patch, then materializes only into an independent empty scratch directory. It does not fetch, install, change a source checkout or grant authority. Proposed middleware still reuses the original identity reader, original membership selection and same-transaction checks; its normal default read path stays intact. The added header list entry does not change credential admission.
+
+Remaining limits: syntax transpilation only, no semantic production typecheck; no real Nest/Clerk/PostgreSQL/RLS/grants/lock-contention qualification; no route mounted; no scheduled/multiclient/special-scope authorizer; no complete Meri lineage/cursor/frozen-byte receipt integration; no native bearer relay or live release qualification. Holding local rows across online I/O needs supported-environment contention/pool checks. The protected-header explicit prior approval and deployment/chat hold remain active. No broader auth/admission/allowlist/credential/migration/deployment authorization follows from this proposal review.
+
+Final metadata QA: authoritative README and evidence/results.json match the34/34,2/32 and10/10 retained logs, clearly distinguish proposal baseline32 from original Meri32, describe the65-addition/two-deletion scope, and retain runtime/approval limitations. All17 packet-manifest entries match and cover every payload file; internal links resolve. Packet-manifest SHA256: `a2dc379fc7c34b110d4a20c2032da09682571a74320165e0bf4ca4c3a1c3ed59`.
