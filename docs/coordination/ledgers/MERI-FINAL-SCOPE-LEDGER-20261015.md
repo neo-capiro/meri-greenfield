@@ -201,14 +201,14 @@ This is source reconciliation only. The historical proposal tables below retain 
 | --- | --- |
 | Selected capabilities / continued exclusions | 96 / 43 |
 | Selected source reads / separate product or governed capabilities | 82 / 14 |
-| Selected source adapter coverage | 69 complete + 3 partial + 10 absent = 82 |
-| Single meri_reads registry | 71 operations / 41 families |
-| Registry accounting | 69 selected source reads + 1 product-state read + 1 historical contract |
+| Selected source adapter coverage | 74 complete + 3 partial + 5 absent = 82 |
+| Single meri_reads registry | 76 operations / 42 families |
+| Registry accounting | 74 selected source reads + 1 product-state read + 1 historical contract |
 | Selected source reads declared in skill manifests | 52 current contracts + 1 historical-only contract |
 | Selected source reads reachable through admitted skill source | 11 |
 | Complete source adapters lacking general-conversation registration | 0 |
 | Partial source adapters withheld from SDK exposure | 3 |
-| Selected source reads lacking complete adapters | 13 (3 partial + 10 absent; 9 declared by skills; 4 without a skill declaration) |
+| Selected source reads lacking complete adapters | 8 (3 partial + 5 absent; 4 declared by skills; 4 without a skill declaration) |
 | Pinned actual Core producer mappings (not qualification) | 63 |
 | Live | 0 |
 
@@ -248,7 +248,8 @@ Only `quick_skill.relationship_brief`, `quick_skill.commitments_audit` are admit
 | `memory-proposals` | `memory.list_own_proposals` |
 | `operational-reads` | `query_action_items`, `query_tasks` |
 | `pe-references` | `get_pe_bills`, `get_pe_contractors`, `get_pe_report_language` |
-| `public-data` | `query_economic_data` |
+| `program-elements` | `get_pe_budget_timeline`, `get_program_element`, `search_program_elements` |
+| `public-data` | `query_economic_data`, `search_federal_awards`, `search_federal_grants` |
 | `public-domain-hearings` | `search_committee_hearings` |
 | `public-domain-query` | `query_global_data` |
 | `public-reports` | `search_cbo_cost_estimates`, `search_crs_reports`, `search_gao_reports` |
@@ -280,8 +281,6 @@ The finite native families listed above retain their receiving-contract truth li
 | `business-development` | `get_business_development_evidence` |
 | `certification-status` | `get_certification_status` |
 | `outreach-query` | `query_outreach` |
-| `program-elements` | `get_pe_budget_timeline`, `get_program_element`, `search_program_elements` |
-| `public-data` | `search_federal_awards`, `search_federal_grants` |
 | `research-legal-candidates` | `search_research_sources` |
 | `research-legal-legislation` | `get_legal_reference` |
 | `research-legal-news` | `search_legiwatch_news` |
