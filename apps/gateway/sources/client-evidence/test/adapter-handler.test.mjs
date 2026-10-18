@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import canonicalize from 'canonicalize';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {createClientEvidenceHttpAdapter} from '../http-adapter.mjs';
 import {createClientEvidenceReadHandler} from '../handler.mjs';
@@ -21,18 +22,115 @@ for(const section of sections)test(`profile exact full ${section} section surviv
  assert.deepEqual(f.credentialRequests[0].normalizationContext,f.normalizationContext);
  assert.equal(f.credentialRequests[0].requestSha256,canonicalSha256({input:f.input,metadata:f.metadata}));
  assert.equal(f.wire[0].options.credentials,'omit');assert.equal(f.wire[0].options.redirect,'error');
+ assert.equal(f.wire[0].options.headers['x-meri-read-correlation'],undefined);
  assert.equal(output.result.profileSections[section].status,'complete');assert.equal(output.result.profile[section].length,1);
  for(const other of sections.filter(s=>s!==section))assert.equal(output.result.profileSections[other].status,'not_requested');
  assert.equal(f.metadata.engagementCoverage,'recent-only');assert.equal(f.metadata.currentPolicyQualified,false);assert.equal(f.metadata.authoritative,false);
  if(section==='people')assert.equal(output.result.profile.people[0].placementConfidence,'9.999');
  assert.ok(!f.wire[0].options.body.includes('bearerToken'));assert.ok(!f.wire[0].options.body.includes('normalizationContext'));
 });
-test('broker whole-request digest equals the exact canonical UTF-8 bytes emitted to Fetch',async()=>{
+test('broker binds the normalized request and the exact UTF-8 body bytes emitted to Fetch',async()=>{
  for(const [operation,request] of [[operations.profile,rawProfile],[operations.documents,rawDocument]]) {
   const f=setup(operation,request);await f.create()(f.call);
-  assert.equal(sha(f.wire[0].options.body),f.credentialRequests[0].requestSha256);
+  assert.equal(f.credentialRequests[0].requestSha256,canonicalSha256(JSON.parse(f.wire[0].options.body)));
+  assert.equal(f.wire[0].options.body,JSON.stringify(JSON.parse(f.wire[0].options.body)));
+  assert.deepEqual(f.credentialRequests[0].target,{method:'POST',path:`/api/clio/tools/${operation.id}`,
+   bodySha256:sha(f.wire[0].options.body)});
+  assert.equal(f.wire[0].options.headers['x-meri-deadline-at'],String(NOW+500));
  }
 });
+for(const [operation,request] of [[operations.profile,rawProfile],[operations.documents,rawDocument]])
+ test(`${operation.id} Option B token binds the exact Core path and emitted body`,async()=>{
+  const f=setup(operation,request),path=`/api/clio/tools/${operation.id}`,invocationId='synthetic_invocation_1';
+  const endpoint=`https://client-evidence.example.invalid${path}`;
+  await f.create({endpoints:{[operation.id]:endpoint},getCredentials:async pins=>{
+   f.credentialRequests.push(pins);return {...credentialReceipt(pins),authorizationScheme:'CapiroMeriRead',expiresAtMs:NOW+100};
+  }})({...f.call,invocationId});
+  assert.equal(f.wire[0].url,endpoint);
+  assert.equal(f.wire[0].options.headers.authorization,'CapiroMeriRead SYNTHETIC_BEARER');
+  assert.equal(f.wire[0].options.headers['x-meri-deadline-at'],String(NOW+100));
+  const correlationBytes=Buffer.from(f.wire[0].options.headers['x-meri-read-correlation'],'base64url').toString('utf8');
+  assert.equal(f.wire[0].options.headers['x-meri-read-correlation'],Buffer.from(correlationBytes,'utf8').toString('base64url'));
+  assert.equal(correlationBytes,canonicalize({binding:f.authority.binding,subject:f.authority.subject,
+   policyRevision:f.authority.policyRevision,normalizationContext:f.normalizationContext}));
+  assert.deepEqual(Object.keys(JSON.parse(correlationBytes)).sort(),['binding','subject','policyRevision','normalizationContext'].sort());
+  assert.equal(f.credentialRequests[0].correlationSha256,sha(correlationBytes));
+  assert.equal(f.credentialRequests[0].invocationId,invocationId);
+  assert.equal(f.credentialRequests[0].target.bodySha256,sha(f.wire[0].options.body));
+  const wrongPath=setup(operation,request);
+  await assert.rejects(wrongPath.create({getCredentials:async pins=>{
+   wrongPath.credentialRequests.push(pins);return {...credentialReceipt(pins),authorizationScheme:'CapiroMeriRead'};
+  }})({...wrongPath.call,invocationId}),/ACCESS_DENIED/);
+  assert.equal(wrongPath.wire.length,0);
+  for(const change of [target=>({...target,path:'/api/clio/tools/other'}),
+   target=>({...target,bodySha256:'0'.repeat(64)})]){
+   const rejected=setup(operation,request);
+   await assert.rejects(rejected.create({endpoints:{[operation.id]:endpoint},getCredentials:async pins=>({
+    ...credentialReceipt(pins),authorizationScheme:'CapiroMeriRead',target:change(pins.target)})})({...rejected.call,invocationId}),/ACCESS_DENIED/);
+   assert.equal(rejected.wire.length,0);
+  }
+  for(const receipt of [pins=>{const {correlationSha256,...rest}=credentialReceipt(pins);return rest;},
+   pins=>({...credentialReceipt(pins),correlationSha256:'0'.repeat(64)})]){
+   const rejected=setup(operation,request);
+   await assert.rejects(rejected.create({endpoints:{[operation.id]:endpoint},getCredentials:async pins=>({
+    ...receipt(pins),authorizationScheme:'CapiroMeriRead'})})({...rejected.call,invocationId}),/ACCESS_DENIED/);
+   assert.equal(rejected.wire.length,0);
+  }
+  const missingTarget=setup(operation,request);
+  await assert.rejects(missingTarget.create({endpoints:{[operation.id]:endpoint},getCredentials:async pins=>{
+   const {target:unused,...receipt}=credentialReceipt(pins);
+   return {...receipt,authorizationScheme:'CapiroMeriRead'};
+  }})({...missingTarget.call,invocationId}),/ACCESS_DENIED/);
+  assert.equal(missingTarget.wire.length,0);
+  const missingInvocation=setup(operation,request);
+  await assert.rejects(missingInvocation.create({endpoints:{[operation.id]:endpoint},getCredentials:async pins=>({
+   ...credentialReceipt(pins),authorizationScheme:'CapiroMeriRead'})})(missingInvocation.call),/ACCESS_DENIED/);
+  assert.equal(missingInvocation.wire.length,0);
+  const bearerOnCoreRoute=setup(operation,request);
+  await assert.rejects(bearerOnCoreRoute.create({endpoints:{[operation.id]:endpoint},getCredentials:async pins=>({
+   ...credentialReceipt(pins),authorizationScheme:'Bearer'})})(bearerOnCoreRoute.call),/ACCESS_DENIED/);
+  assert.equal(bearerOnCoreRoute.wire.length,0);
+  const bearerOnReservedCall=setup(operation,request);
+  await assert.rejects(bearerOnReservedCall.create({getCredentials:async pins=>({
+   ...credentialReceipt(pins),authorizationScheme:'Bearer'})})({...bearerOnReservedCall.call,invocationId}),/ACCESS_DENIED/);
+  assert.equal(bearerOnReservedCall.wire.length,0);
+  const overDeadline=setup(operation,request);
+  await assert.rejects(overDeadline.create({endpoints:{[operation.id]:endpoint},getCredentials:async pins=>({
+   ...credentialReceipt(pins),authorizationScheme:'CapiroMeriRead',expiresAtMs:NOW+10001})})({...overDeadline.call,invocationId}),/ACCESS_DENIED/);
+  assert.equal(overDeadline.wire.length,0);
+ });
+test('trusted invocation ID is pinned in the signed broker receipt before Fetch',async()=>{
+ const f=setup(),call={...f.call,invocationId:'synthetic_invocation_1'},endpoint=`https://client-evidence.example.invalid/api/clio/tools/${f.operation.id}`;
+ await f.create({endpoints:{[f.operation.id]:endpoint},getCredentials:async pins=>{
+  f.credentialRequests.push(pins);return {...credentialReceipt(pins),authorizationScheme:'CapiroMeriRead'};
+ }})(call);
+ assert.equal(f.credentialRequests[0].invocationId,call.invocationId);
+ const denied=setup();
+ await assert.rejects(denied.create({endpoints:{[denied.operation.id]:endpoint},getCredentials:async pins=>({
+  ...credentialReceipt(pins),authorizationScheme:'CapiroMeriRead',invocationId:'different_invocation'})})({...denied.call,invocationId:call.invocationId}),/ACCESS_DENIED/);
+ assert.equal(denied.wire.length,0);
+});
+test('correlation decoded JSON over 8192 UTF-8 bytes refuses before credentials',async()=>{
+ const f=setup(),call=structuredClone(f.call);
+ for(let index=0;index<90;index++){
+  const scope={...call.authority.subject.scopes[0],resourceId:`synthetic-client-${index}`};
+  call.authority.subject.scopes.push(scope);call.authority.claims.scopes.push({...scope});call.authority.decision.scopes.push({...scope});
+ }
+ assert.ok(Buffer.byteLength(canonicalize({binding:call.authority.binding,subject:call.authority.subject,
+  policyRevision:call.authority.policyRevision,normalizationContext:call.normalizationContext}),'utf8')>8192);
+ await assert.rejects(f.create()(call),/RESOURCE_LIMIT/);
+ assert.equal(f.credentialRequests.length,0);assert.equal(f.wire.length,0);
+});
+for(const [operation,request] of [[operations.profile,rawProfile],[operations.documents,rawDocument]])
+ test(`${operation.id} accepts only its configured endpoint and refuses a missing route before credentials`,async()=>{
+  const f=setup(operation,request),ownEndpoint={[operation.id]:endpoints[operation.id]};
+  await f.create({endpoints:ownEndpoint})(f.call);
+  assert.equal(f.wire.at(-1).url,endpoints[operation.id]);
+  const otherId=Object.keys(endpoints).find(id=>id!==operation.id);
+  const missing=setup(operation,request);
+  await assert.rejects(missing.create({endpoints:{[otherId]:endpoints[otherId]}})(missing.call),/UNAVAILABLE/);
+  assert.equal(missing.credentialRequests.length,0);assert.equal(missing.wire.length,0);
+ });
 test('profile overview preserves all requested and unavailable sections without equating a gap to empty',async()=>{
  const f=setup(operations.profile,{clientId}),section=f.page.profileSections.people;
  Object.assign(section,{status:'unavailable',total:null,truncated:null,error:'section_unavailable'});
@@ -108,7 +206,8 @@ test('closed broker receipt pins full authority, normalization context, metadata
   c=>c.binding.attemptId=id('a'),c=>c.binding.workerId=id('a'),c=>c.binding.writerFence=2,c=>c.subject.entityIds=[id('a')],
   c=>c.subject.scopes[0].resourceId=id('a'),c=>c.operation=operations.documents,c=>c.normalizationContext.asOf='2026-10-12T00:00:00.000Z',
   c=>c.metadata={other:'changed'},c=>c.argumentsSha256='0'.repeat(64),c=>c.requestSha256='0'.repeat(64),
-  c=>c.policyRevision='old',c=>c.sourceIds=['other'],c=>c.expiresAtMs=NOW,c=>c.bearerToken='bad\nheader',c=>c.extra=true]) {
+  c=>c.policyRevision='old',c=>c.sourceIds=['other'],c=>c.expiresAtMs=NOW,c=>c.bearerToken='bad\nheader',
+  c=>c.authorizationScheme='Basic',c=>c.extra=true]) {
   const f=setup();await assert.rejects(f.create({getCredentials:async r=>{const c=credentialReceipt(r);mutate(c);return c;}})(f.call));assert.equal(f.wire.length,0);
  }
 });

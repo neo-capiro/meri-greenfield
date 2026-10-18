@@ -1,0 +1,121 @@
+{
+  "contractVersion": "0.2.0",
+  "skillId": "quick_skill.funding_opportunity_match",
+  "skillVersion": "1.0.1",
+  "prose": {
+    "id": "urn:meri:original:funding-opportunity-match:1.0.1",
+    "sha256": "7fcb2c315a84d5b5bb5438b0739672858083c210a15b33490c8ac8a52a262c7e"
+  },
+  "requiredSources": [
+    {
+      "sourceId": "client_knowledge_profile",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "funding_opportunities",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "stored_public_data",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "sam_opportunities",
+      "authority": "derived",
+      "purpose": "evidence"
+    }
+  ],
+  "allowedOperations": [
+    {
+      "id": "get_client_context",
+      "version": "0.3.0"
+    },
+    {
+      "id": "search_funding_opportunities",
+      "version": "0.2.0"
+    },
+    {
+      "id": "get_funding_opportunity",
+      "version": "0.2.0"
+    },
+    {
+      "id": "get_funding_opportunity_requirements",
+      "version": "0.2.0"
+    },
+    {
+      "id": "get_opportunity_client_context",
+      "version": "0.2.0"
+    },
+    {
+      "id": "get_opportunity_government_landscape",
+      "version": "0.2.0"
+    },
+    {
+      "id": "search_federal_grants",
+      "version": "0.2.0"
+    },
+    {
+      "id": "search_federal_awards",
+      "version": "0.2.0"
+    },
+    {
+      "id": "search_sam_opportunities",
+      "version": "0.2.0"
+    }
+  ],
+  "subjectKinds": [
+    "client"
+  ],
+  "windowBases": [
+    "explicit",
+    "fiscal-year",
+    "unbounded"
+  ],
+  "completion": {
+    "requireAllSources": true,
+    "allowDisclosedPartial": true,
+    "negativeClaims": "complete-covered-only",
+    "rubric": [
+      {
+        "id": "eligibility-and-fit",
+        "requirement": "Read notice/requirements and compare capability/past-award evidence; show eligibility gaps and explained fit verdict.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "top-k-and-active",
+        "requirement": "Retain deadlines/amendments and active status; disclose top-k discovery and unavailable sources.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "decisive-evidence",
+        "requirement": "Read exact material records/passages and retain source/version/hash/scope/time binding; separate free-form inference from source excerpts.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "coverage",
+        "requirement": "Expose per-required-source freshness, pagination, decisive-read and history limits; absence requires complete relevant current coverage.",
+        "evidenceRequired": true
+      }
+    ]
+  },
+  "approval": {
+    "mutations": "separate-immutable-proposal",
+    "autoCreateTasks": false
+  },
+  "budgets": {
+    "maxTurns": 12,
+    "maxToolCalls": 24,
+    "maxRecoveryAttempts": 0,
+    "maxRuntimeSeconds": 60,
+    "maxCostMicroUSD": 1000,
+    "maxOutputBytes": 1048576
+  },
+  "versionPolicy": {
+    "existingRuns": "pin-immutable",
+    "resume": "exact-or-explicit-migration",
+    "fork": "preserve-unless-explicit-reselection"
+  }
+}

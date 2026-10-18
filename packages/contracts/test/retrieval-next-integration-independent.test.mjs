@@ -20,7 +20,7 @@ const names = ['lookup_client_registry','get_business_development_context','get_
 const [REG,BCTX,BEV,BCH,PDET,PCH]=names;
 const U='91abcdef-2345-4678-9abc-001122334455', V='82abcdef-2345-4678-9abc-001122334455';
 const T='2026-09-19T04:05:06.000Z';
-const resolve=id=>resolveOperationContract({id,version:'0.2.0'});
+const resolve=id=>resolveOperationContract({id,version:id==='get_client_context'?'0.3.0':'0.2.0'});
 const clone=structuredClone;
 function scope(){return {
   binding:{tenantId:'integration-tenant',actorId:'integration-actor',conversationId:U,runId:V,
@@ -75,7 +75,7 @@ test('independent exact baseline: only the six prior and16 reviewed continuation
   assert.deepEqual(catalog.operations.filter(x=>!verticalOperationIds.includes(x.operation.id)&&!names.includes(x.operation.id)&&!continuationIds.includes(x.operation.id)&&x.operation.id!=='actions.query'),baseline.descriptors.map(expectedExistingDescriptor));
   for(const old of baseline.originals.map(expectedExistingOriginal)){
     const current=catalog.originals.find(x=>x.id===old.id);assert.ok(current);
-    assert.deepEqual(current,(names.includes(old.id)||continuationIds.includes(old.id))?{...old,state:'mapped',replacement:{id:old.id,version:'0.2.0'}}:old);
+    assert.deepEqual(current,(names.includes(old.id)||continuationIds.includes(old.id))?{...old,state:'mapped',replacement:{id:old.id,version:old.id==='get_client_context'?'0.3.0':'0.2.0'}}:old);
   }
   assert.equal(resolve('query_action_items').binding.nativeCoverage,'partial');
   for(const id of ['get_research_evidence','get_business_development_brief','create_client'])

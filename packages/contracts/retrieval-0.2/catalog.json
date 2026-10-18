@@ -1,7 +1,7 @@
 {
   "contractVersion": "0.2.0",
   "catalogId": "meri.retrieval",
-  "catalogVersion": "0.2.15",
+  "catalogVersion": "0.2.16",
   "sourceRegistryCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
   "originals": [
     {
@@ -189,7 +189,7 @@
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
       "replacement": {
         "id": "get_client_context",
-        "version": "0.2.0"
+        "version": "0.3.0"
       },
       "state": "mapped"
     },
@@ -6559,7 +6559,7 @@
     {
       "operation": {
         "id": "get_client_context",
-        "version": "0.2.0"
+        "version": "0.3.0"
       },
       "displayName": "Get client context",
       "whenToUse": "Inspect the declared source projection through a qualified source owner under current authorization.",
@@ -6583,12 +6583,12 @@
         }
       ],
       "inputSchema": {
-        "id": "urn:meri:retrieval:client-knowledge-profile:0.2.0#/$defs/ClientKnowledgeProfileRequest",
-        "sha256": "67ad0fd59fe7b995e5e9c73d60a82a12220c58d74a81672b485d9279458ba27d"
+        "id": "urn:meri:retrieval:client-knowledge-profile:0.3.0#/$defs/ClientKnowledgeProfileRequest",
+        "sha256": "7d422f92a4771b2d7e869e45371396c12b8a69934f9cb8ca50f5821ccab514a2"
       },
       "outputSchema": {
-        "id": "urn:meri:retrieval:client-knowledge-profile:0.2.0#/$defs/ClientKnowledgeProfileOutput",
-        "sha256": "67ad0fd59fe7b995e5e9c73d60a82a12220c58d74a81672b485d9279458ba27d"
+        "id": "urn:meri:retrieval:client-knowledge-profile:0.3.0#/$defs/ClientKnowledgeProfileOutput",
+        "sha256": "7d422f92a4771b2d7e869e45371396c12b8a69934f9cb8ca50f5821ccab514a2"
       },
       "aliases": [],
       "sideEffect": "none",

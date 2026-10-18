@@ -43,7 +43,8 @@ test('all 14 original identities have an explicit immutable asset (bill_watch at
  }
 });
 for(const [id,required]of Object.entries(evidence))test(`${id}: workflow-specific evidence and original explicit-selection prose`,()=>{
- const {manifest,prose}=selectSkill(`quick_skill.${id}`,'1.0.0');
+ const selected=listSkills().find(row=>row.skillId===`quick_skill.${id}`);
+ const {manifest,prose}=selectSkill(selected.skillId,selected.skillVersion);
  for(const sourceId of required)assert(manifest.requiredSources.some(row=>row.sourceId===sourceId),sourceId);
  assert.match(prose,/^---\nname: meri-[a-z-]+\ndescription: .+\ndisable-model-invocation: true\n---\n/u);
  assert(prose.includes(`quick_skill.${id}`));assert.match(prose,/decisive|exact opportunity|exact schedule/u);

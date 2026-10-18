@@ -15,7 +15,7 @@ const ids=['query_outreach','search_program_elements','get_program_element','get
 const [OUTREACH,SEARCH,DETAIL,TIMELINE]=ids,T='2026-10-12T12:00:00.000Z',U='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',V='bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
 const ev=new URL('../../../docs/qualification/candidates/read-continuation-20261012/backend-next-review/',import.meta.url);
 const oldCatalog=JSON.parse(readFileSync(new URL('baseline-catalog.json',ev))),oldBindings=JSON.parse(readFileSync(new URL('baseline-bindings.json',ev)));
-const copy=structuredClone,resolve=id=>resolveOperationContract({id,version:'0.2.0'});
+const copy=structuredClone,resolve=id=>resolveOperationContract({id,version:id==='get_client_context'?'0.3.0':'0.2.0'});
 const schema=group=>JSON.parse(readFileSync(new URL(schemaRelativePath(group),import.meta.url)));
 const context=id=>id===OUTREACH?{clientResolution:null}:{evidenceAccuracyMode:'off'};
 const request=id=>[DETAIL,TIMELINE].includes(id)?{peCode:'review-pe'}:{};
@@ -31,12 +31,12 @@ function output(id){
 const check=(id,page=output(id),raw=request(id),ctx=context(id))=>resolve(id).assertOutput(page,{...ctx,request:raw});
 
 test('all139 originals and67 prior descriptors/callbacks survive exactly four new mappings',()=>{
- assertCatalog(catalog);assert.equal(catalog.catalogVersion,'0.2.15');assert.equal(catalog.operations.length,97);assert.equal(bindings.length,97);
+ assertCatalog(catalog);assert.equal(catalog.catalogVersion,'0.2.16');assert.equal(catalog.operations.length,97);assert.equal(bindings.length,97);
  assert.deepEqual(catalog.operations.filter(x=>!verticalOperationIds.includes(x.operation.id)&&!ids.includes(x.operation.id)&&!addedOperations.includes(x.operation.id)&&x.operation.id!=='actions.query'),oldCatalog.operations.map(expectedExistingDescriptor));
  assert.deepEqual(JSON.parse(JSON.stringify(bindings.filter(x=>!verticalOperationIds.includes(x.id)&&!ids.includes(x.id)&&!addedOperations.includes(x.id)),(k,v)=>typeof v==='function'?{source:v.toString()}:v)),oldBindings.map(expectedExistingBinding));
  assert.deepEqual(catalog.originals.map(x=>x.id),oldCatalog.originals.map(expectedExistingOriginal).map(x=>x.id));
  assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);assert.equal(catalog.originals.filter(x=>x.disposition==='deferred').length,43);assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,96);assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.state==='pending').length,0);
- for(const old of oldCatalog.originals.map(expectedExistingOriginal))assert.deepEqual(catalog.originals.find(x=>x.id===old.id),ids.includes(old.id)?{...old,state:'mapped',replacement:{id:old.id,version:'0.2.0'}}:old);
+ for(const old of oldCatalog.originals.map(expectedExistingOriginal))assert.deepEqual(catalog.originals.find(x=>x.id===old.id),ids.includes(old.id)?{...old,state:'mapped',replacement:{id:old.id,version:old.id==='get_client_context'?'0.3.0':'0.2.0'}}:old);
  assert.deepEqual(catalog.originals.find(x=>x.id==='query_action_items').replacement,fullActionReference);
  for(const id of ['create_task','save_memory','get_pe_buyer_workspace'])if(verticalOperationIds.includes(id))assert.doesNotThrow(()=>resolve(id));else assert.throws(()=>resolve(id));
 });

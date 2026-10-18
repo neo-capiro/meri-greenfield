@@ -1,0 +1,125 @@
+{
+  "contractVersion": "0.2.0",
+  "skillId": "quick_skill.regulatory_docket_brief",
+  "skillVersion": "1.0.1",
+  "prose": {
+    "id": "urn:meri:original:regulatory-docket-brief:1.0.1",
+    "sha256": "413fe92d76e3e68282906fc93412e3f06afec07e2cb1e321e8df038e36d86c4e"
+  },
+  "requiredSources": [
+    {
+      "sourceId": "entity_candidates",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "regulatory_dockets",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "rule_status",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "research_legal_legislation",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "public_web",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "client_knowledge_profile",
+      "authority": "derived",
+      "purpose": "evidence"
+    }
+  ],
+  "allowedOperations": [
+    {
+      "id": "resolve_entity",
+      "version": "0.2.0"
+    },
+    {
+      "id": "query_regulatory_dockets",
+      "version": "0.2.0"
+    },
+    {
+      "id": "get_state_rule_status",
+      "version": "0.2.0"
+    },
+    {
+      "id": "get_legal_reference",
+      "version": "0.2.0"
+    },
+    {
+      "id": "search_public_web",
+      "version": "0.2.0"
+    },
+    {
+      "id": "scrape_web_page",
+      "version": "0.2.0"
+    },
+    {
+      "id": "get_client_context",
+      "version": "0.3.0"
+    }
+  ],
+  "subjectKinds": [
+    "entity",
+    "client"
+  ],
+  "windowBases": [
+    "calendar-week",
+    "calendar-month",
+    "explicit",
+    "unbounded"
+  ],
+  "completion": {
+    "requireAllSources": true,
+    "allowDisclosedPartial": true,
+    "negativeClaims": "complete-covered-only",
+    "rubric": [
+      {
+        "id": "docket-and-stage",
+        "requirement": "Resolve exact federal/state IDs and read versioned rule documents, procedural stage and deadlines.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "jurisdiction-and-coverage",
+        "requirement": "Keep federal/state lanes separate, proposed/effective obligations distinct and unchecked registers visible.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "decisive-evidence",
+        "requirement": "Read exact material records/passages and retain source/version/hash/scope/time binding; separate free-form inference from source excerpts.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "coverage",
+        "requirement": "Expose per-required-source freshness, pagination, decisive-read and history limits; absence requires complete relevant current coverage.",
+        "evidenceRequired": true
+      }
+    ]
+  },
+  "approval": {
+    "mutations": "separate-immutable-proposal",
+    "autoCreateTasks": false
+  },
+  "budgets": {
+    "maxTurns": 12,
+    "maxToolCalls": 24,
+    "maxRecoveryAttempts": 0,
+    "maxRuntimeSeconds": 60,
+    "maxCostMicroUSD": 1000,
+    "maxOutputBytes": 1048576
+  },
+  "versionPolicy": {
+    "existingRuns": "pin-immutable",
+    "resume": "exact-or-explicit-migration",
+    "fork": "preserve-unless-explicit-reselection"
+  }
+}

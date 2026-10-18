@@ -40,11 +40,11 @@ function output(id){
     note:'No current complete bill-text revision is available for 119-hr-1.'};
 }
 test('nine selected contracts preserve exact prior37 descriptors and139 original boundaries',()=>{
-  assertCatalog(catalog);assert.equal(catalog.catalogVersion,'0.2.15');assert.equal(catalog.operations.length,97);
+  assertCatalog(catalog);assert.equal(catalog.catalogVersion,'0.2.16');assert.equal(catalog.operations.length,97);
   const baseline=JSON.parse(readFileSync(new URL('../../../docs/qualification/candidates/read-continuation-20261012/integration-next/pr26-catalog-baseline.json',import.meta.url)));
   assert.deepEqual(catalog.operations.filter(row=>!additions.includes(row.operation.id)&&!referenceIds.includes(row.operation.id)&&row.operation.id!=='actions.query'),baseline.operations.map(expectedExistingDescriptor));
   for(const old of baseline.originals.map(expectedExistingOriginal))assert.deepEqual(catalog.originals.find(row=>row.id===old.id),
-    (additions.includes(old.id)||referenceIds.includes(old.id))?{...old,state:'mapped',replacement:{id:old.id,version:'0.2.0'}}:old);
+    (additions.includes(old.id)||referenceIds.includes(old.id))?{...old,state:'mapped',replacement:{id:old.id,version:old.id==='get_client_context'?'0.3.0':'0.2.0'}}:old);
   assert.equal(catalog.originals.length,139);assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);
   assert.equal(catalog.originals.filter(x=>x.disposition==='deferred').length,43);
   assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,96);

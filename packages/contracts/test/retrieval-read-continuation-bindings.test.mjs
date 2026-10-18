@@ -48,7 +48,7 @@ function output(id) {
 }
 
 test('reviewed continuation preserves139 originals and the exact prior21 descriptors',()=>{
-  assertCatalog(catalog);assert.equal(catalog.catalogVersion,'0.2.15');
+  assertCatalog(catalog);assert.equal(catalog.catalogVersion,'0.2.16');
   assert.equal(catalog.originals.length,139);assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);
   assert.equal(catalog.originals.filter(x=>x.disposition==='deferred').length,43);
   assert.equal(catalog.operations.length,97);assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,96);
@@ -56,7 +56,7 @@ test('reviewed continuation preserves139 originals and the exact prior21 descrip
   const baseline=JSON.parse(readFileSync(new URL('../../../docs/qualification/candidates/read-continuation-20261012/integration/pr24-catalog-baseline.json',import.meta.url)));
   assert.deepEqual(catalog.operations.filter(x=>!verticalOperationIds.includes(x.operation.id)&&!additions.includes(x.operation.id)&&!nextIds.includes(x.operation.id)&&x.operation.id!=='actions.query'),baseline.operations.map(expectedExistingDescriptor));
   for(const old of baseline.originals.map(expectedExistingOriginal))assert.deepEqual(catalog.originals.find(x=>x.id===old.id),
-    (additions.includes(old.id)||nextIds.includes(old.id))?{...old,state:'mapped',replacement:{id:old.id,version:'0.2.0'}}:old);
+    (additions.includes(old.id)||nextIds.includes(old.id))?{...old,state:'mapped',replacement:{id:old.id,version:old.id==='get_client_context'?'0.3.0':'0.2.0'}}:old);
 });
 
 for(const id of additions) {

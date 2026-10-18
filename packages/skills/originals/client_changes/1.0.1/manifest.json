@@ -1,0 +1,172 @@
+{
+  "contractVersion": "0.2.0",
+  "skillId": "quick_skill.client_changes",
+  "skillVersion": "1.0.1",
+  "prose": {
+    "id": "urn:meri:original:client-changes:1.0.1",
+    "sha256": "a301ff3409d72d822d90a366693ec918288c3c0cf3870cf430759e8905623333"
+  },
+  "requiredSources": [
+    {
+      "sourceId": "client_knowledge_profile",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "mail",
+      "authority": "authoritative",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "meetings",
+      "authority": "authoritative",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "client_documents",
+      "authority": "authoritative",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "tasks",
+      "authority": "authoritative",
+      "purpose": "enumeration"
+    },
+    {
+      "sourceId": "action_recommendation",
+      "authority": "authoritative",
+      "purpose": "enumeration"
+    },
+    {
+      "sourceId": "client_knowledge_monday",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "tracked_bills",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "federal_legislation",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "district_nexus",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "business_development",
+      "authority": "authoritative",
+      "purpose": "evidence"
+    }
+  ],
+  "allowedOperations": [
+    {
+      "id": "get_client_context",
+      "version": "0.3.0"
+    },
+    {
+      "id": "mail.search_messages",
+      "version": "0.2.0"
+    },
+    {
+      "id": "mail.read_thread",
+      "version": "0.2.0"
+    },
+    {
+      "id": "meeting.read_client_meetings",
+      "version": "0.2.0"
+    },
+    {
+      "id": "meeting.query_debriefs",
+      "version": "0.2.0"
+    },
+    {
+      "id": "read_client_documents",
+      "version": "0.2.0"
+    },
+    {
+      "id": "query_tasks",
+      "version": "0.2.0"
+    },
+    {
+      "id": "query_action_items",
+      "version": "0.2.0"
+    },
+    {
+      "id": "read_monday_client_boards",
+      "version": "0.2.0"
+    },
+    {
+      "id": "search_tracked_bills",
+      "version": "0.2.0"
+    },
+    {
+      "id": "get_bill_status",
+      "version": "0.2.0"
+    },
+    {
+      "id": "get_district_nexus_changes",
+      "version": "0.2.0"
+    },
+    {
+      "id": "get_business_development_recent_changes",
+      "version": "0.2.0"
+    }
+  ],
+  "subjectKinds": [
+    "client"
+  ],
+  "windowBases": [
+    "calendar-week",
+    "calendar-month",
+    "explicit"
+  ],
+  "completion": {
+    "requireAllSources": true,
+    "allowDisclosedPartial": true,
+    "negativeClaims": "complete-covered-only",
+    "rubric": [
+      {
+        "id": "calendar-and-carryover",
+        "requirement": "Normalized calendar dates are retained; new substantive events and unresolved carryover are separate.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "client-coverage",
+        "requirement": "Every required source is checked or disclosed unavailable for the exact client.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "decisive-evidence",
+        "requirement": "Read exact material records/passages and retain source/version/hash/scope/time binding; separate free-form inference from source excerpts.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "coverage",
+        "requirement": "Expose per-required-source freshness, pagination, decisive-read and history limits; absence requires complete relevant current coverage.",
+        "evidenceRequired": true
+      }
+    ]
+  },
+  "approval": {
+    "mutations": "separate-immutable-proposal",
+    "autoCreateTasks": false
+  },
+  "budgets": {
+    "maxTurns": 12,
+    "maxToolCalls": 24,
+    "maxRecoveryAttempts": 0,
+    "maxRuntimeSeconds": 60,
+    "maxCostMicroUSD": 1000,
+    "maxOutputBytes": 1048576
+  },
+  "versionPolicy": {
+    "existingRuns": "pin-immutable",
+    "resume": "exact-or-explicit-migration",
+    "fork": "preserve-unless-explicit-reselection"
+  }
+}

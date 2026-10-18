@@ -34,7 +34,7 @@ export const GENERAL_READ_TARIFFS=Object.freeze({
  'get_bill_status@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/get_bill_status: Capiro database only, no outbound paid call"}),
  'get_business_development_context@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/get_business_development_context: Capiro database only, no outbound paid call"}),
  'get_business_development_recent_changes@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/get_business_development_recent_changes: Capiro database only, no outbound paid call"}),
- 'get_client_context@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/get_client_context: Capiro database only, no outbound paid call"}),
+ 'get_client_context@0.3.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/get_client_context: Capiro database only, no outbound paid call"}),
  'get_committee_roster@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/get_committee_roster: Capiro database only, no outbound paid call"}),
  'get_district_federal_market@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/get_district_federal_market: Capiro database only, no outbound paid call"}),
  'get_district_nexus_changes@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/get_district_nexus_changes: Capiro database only, no outbound paid call"}),
