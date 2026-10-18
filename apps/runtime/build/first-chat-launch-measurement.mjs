@@ -8,11 +8,10 @@
  *
  * Receipt (one JSON line on stdout):
  *  executable  realpath + sha256 of the CLI the SDK launches (= preparationIntent.executableSha256; session-launcher.mjs re-hashes it).
- *  launchTemplate  descriptor {command,args,env} minus CLAUDE_CONFIG_DIR and ANTHROPIC_AUTH_TOKEN (preparation-intent.mjs matchPreparedDescriptor).
+ *  launchTemplate  descriptor minus CLAUDE_CONFIG_DIR, ANTHROPIC_AUTH_TOKEN (launchTemplateArgs); one for both probes.
  *  sdkOptions  sdk-option-template.mjs run-invariant template hash (= preparationIntent.sdkOptionsSha256, checked by runner-query.mjs);
  *              two probe runs must hash equal (runInvariant) and pass the real runner-query gate (runnerSdkOptions).
  *              G3: --capability-profile (base64url CapabilityPolicy JSON) adds its parts (capabilities/measured-options.mjs).
- *  launchTemplateRunInvariant  both probes launch with one template (matchPreparedDescriptor: each probe, its own intent).
  *  runner      measureProductRunner (ecs-prepared-task-proof.mjs), the same function cli.mjs and the ECS proof run.
  *  skills      skillsDigest over the image's verified skill assets (see skillsDigest below).
  * Exit 0 receipt printed (gate outcomes inside), 2 usage, 3 measurement refused. */
@@ -90,9 +89,9 @@ export async function measureFirstChatLaunch(raw,{root=resolve(fileURLToPath(new
  const probes=[];try{for(const binding of PROBES)probes.push(await productOptions(m,v,binding));
  const [first,second]=probes;
  const {descriptor,env}=captureDescriptor(query,first),{descriptor:secondDescriptor,env:secondEnv}=captureDescriptor(query,second);
- const launchTemplateRunInvariant=JSON.stringify([descriptor.command,descriptor.args,env])===JSON.stringify([secondDescriptor.command,secondDescriptor.args,secondEnv]);
+ const template=(d,e,p)=>({command:d.command,args:m.launchTemplateArgs(d.args,p.runtime.cwd),env:e});
+ const launchTemplate=template(descriptor,env,first),launchTemplateRunInvariant=JSON.stringify(launchTemplate)===JSON.stringify(template(secondDescriptor,secondEnv,second));
  const command=realpathSync(descriptor.command),stat=statSync(command),bytes=readFileSync(command);
- const launchTemplate={command:descriptor.command,args:descriptor.args,env};
  const optionsSha256=[first,second].map(p=>m.sdkOptionsTemplateSha256(p.options,p.run));
  const platformPackage=dirname(command),cliPackage=JSON.parse(readFileSync(join(platformPackage,'package.json'),'utf8'));
  const runner=await measureProductRunner({root});

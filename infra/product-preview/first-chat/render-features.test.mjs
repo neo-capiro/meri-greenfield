@@ -288,9 +288,14 @@ test('runtime values: the capability profile reaches the measurement and the ass
  assert.throws(()=>RV.measurementOverrides({moduleBytes,policy,deployment:featured,policyRevision}),/use --shipped/u);
  const shipped=RV.measurementOverrides({moduleBytes,policy,deployment:featured,policyRevision,mode:'shipped'});
  assert.ok(Buffer.byteLength(JSON.stringify(shipped))<=8192);assert.match(shipped.containerOverrides[0].command[0],/'--capability-profile' '[A-Za-z0-9_-]+'/u);
- // The committed measurement module cannot project a profile yet (proposed runtime change), so assembly refuses instead of pinning it.
- await assert.rejects(RV.runtimeValues({receipt:{},allocation:JSON.parse(await readFile(join(here,'allocation.json'),'utf8')),policy,deployment:featured,requireLinux:false}),
-  {code:'RUNTIME_VALUES_REFUSED',message:/does not project capability profiles/u});
+ // G3: the measurement module projects the profile (capabilities/measured-options.mjs), so its source template differs from the
+ // first-chat one and assembly no longer refuses on projection; only the receipt decides. An empty receipt refuses on its schema, and the
+ // committed first-chat receipt (measured without the profile) on its capabilityProfileSha256 input, never pinning unmeasured options.
+ const {probeTemplateSha256}=await import(pathToFileURL(join(SOURCE_ROOT,RV.MEASUREMENT_MODULE)).href),{capabilityProfileSha256:_,...plain}=RV.measurementInputs({policy,deployment:featured,policyRevision});
+ assert.notEqual(await probeTemplateSha256({...plain,capabilityProfile:profile.profile},{root:SOURCE_ROOT}),await probeTemplateSha256(plain,{root:SOURCE_ROOT}));
+ const allocationFile=JSON.parse(await readFile(join(here,'allocation.json'),'utf8')),committedReceipt=JSON.parse(await readFile(join(here,'launch-measurement-receipt.json'),'utf8'));
+ await assert.rejects(RV.runtimeValues({receipt:{},allocation:allocationFile,policy,deployment:featured,requireLinux:false}),{code:'RUNTIME_VALUES_REFUSED',message:/receipt\.schema/u});
+ await assert.rejects(RV.runtimeValues({receipt:committedReceipt,allocation:allocationFile,policy,deployment:featured,requireLinux:false}),{code:'RUNTIME_VALUES_REFUSED',message:/capabilityProfileSha256/u});
  const assembled=RV.assembleRuntimeValues({receipt:{versions:{sdk:'0.3.295',cli:'2.1.295'},skills:{digest:'b'.repeat(64)},launchTemplate:{command:'/x',args:[],env:{}},executable:{sha256:'c'.repeat(64)},
   sdkOptions:{sha256:'d'.repeat(64)},runner:{sha256:'e'.repeat(64)}},allocation:(await inputs()).runtime.allocation,policy,policyRevision,capabilityProfileSha256:profile.profileSha256});
  assert.equal(assembled.capabilityProfileSha256,profile.profileSha256);assert.equal(R.parseRuntimeValues(assembled).capabilityProfileSha256,profile.profileSha256);
