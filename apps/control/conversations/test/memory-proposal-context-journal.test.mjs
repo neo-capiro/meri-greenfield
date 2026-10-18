@@ -6,6 +6,7 @@ import {storeFixture,binding as baseBinding,scopes as baseScopes,versions,id} fr
 import {hash} from '../boundary.mjs';
 import {assertMemoryProposalReadResult} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {createSuppressionOwner} from '../../retention/suppression.mjs';
+import {scanMemoryProposalContextRows} from '../memory-proposal-context-journal.mjs';
 
 const at=Date.parse('2026-10-18T12:00:00.000Z'),expiry=at+30000;
 const binding={...baseBinding,tenantId:id(9),actorId:id(10)};
@@ -203,6 +204,22 @@ test('retention inventory lists every exact continuation row including expired r
  const stored=[...f.rows.values()][0];stored.record_sha256='0'.repeat(64);
  await assert.rejects(f.store().memoryProposalContexts.inventoryForConversation(subject),/MEMORY_CONTEXT_REFUSED/);
  await assert.rejects(f.store().memoryProposalContexts.inventoryForConversation({...subject,extra:1}));
+});
+
+test('continuation row scanner uses the caller snapshot and checks each page',async()=>{
+ const f=fixture(),ports=f.store().memoryProposalContexts.forTask(f.task);
+ await ports.retain({record:f.record});
+ const subject={tenantId:f.task.binding.tenantId,conversationId:f.task.binding.conversationId};
+ const c=await f.pool.connect();let checks=0;const validated=[];
+ try{
+  await c.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
+  assert.deepEqual(await scanMemoryProposalContextRows(c,subject,()=>{checks++;},row=>validated.push(row)),
+   [{runId:f.task.binding.runId,keySha256:hash(f.key)}]);
+  assert.equal(checks,2);
+  assert.deepEqual(validated.map(row=>({runId:row.run_id,keySha256:row.key_sha256})),
+   [{runId:f.task.binding.runId,keySha256:hash(f.key)}]);
+  await c.query('COMMIT');
+ }finally{c.release();}
 });
 
 test('retention inventory walks the next exact page after 32 rows',async()=>{
