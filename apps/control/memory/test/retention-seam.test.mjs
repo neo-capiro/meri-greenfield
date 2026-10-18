@@ -4,7 +4,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {buildCandidate} from '../candidate.mjs';
 import {createPostgresMemoryJournal} from '../postgres-journal.mjs';
+import {createMemoryCandidateRetentionPayloadOwner,MEMORY_CANDIDATE_ROW_CLASS} from '../retention-payload-owner.mjs';
 import {productFailure} from '../../product-access/errors.mjs';
+import {hash,subjectKey} from '../../retention/boundary.mjs';
+import {planDigest} from '../../retention/purge.mjs';
 import {createMemoryPoolFixture} from './pool-fixture.mjs';
 import {id,NOW,principal} from './fixtures.mjs';
 
@@ -32,6 +35,71 @@ test('conversation inventory refuses unbounded or malformed enumeration before o
   await assert.rejects(journal.listConversationCandidateIds(request),e=>productFailure(e)?.code==='MEMORY_JOURNAL_STATE');
  }
  assert.equal(connects,0);
+});
+
+test('payload owner pages local IDs and verifies exact tenant, conversation and candidate without reading candidate content',async()=>{
+ const f=createMemoryPoolFixture(),journal=createPostgresMemoryJournal({pool:f.pool}),owner=createMemoryCandidateRetentionPayloadOwner({pool:f.pool});
+ const conversationId=id(801),subject={tenantId:principal().tenantId,kind:'conversation',subjectId:conversationId};
+ const origin={kind:'conversation',conversationId,runId:id(802),commandId:id(803),commandSha256:'a'.repeat(64)};
+ for(const [n,tenantId,from] of [[1,subject.tenantId,origin],[2,'other-tenant',origin],[3,subject.tenantId,{kind:'surface'}],
+  [4,subject.tenantId,{...origin,conversationId:id(804)}]]){
+  const built=buildCandidate({candidateId:id(n),principal:principal({tenantId}),scope:'personal',clientId:null,content:'fact '+n,key:null,ttlDays:null,
+   sources:[],origin:from,idempotencyKey:id(n+100),createdAt:new Date(NOW).toISOString()});
+  await journal.insert({...built,requestSha256:'b'.repeat(64)});
+ }
+ assert.equal(owner.className,MEMORY_CANDIDATE_ROW_CLASS);
+ assert.deepEqual(await owner.inventoryPage({subject,limit:1}),[id(1)]);
+ assert.deepEqual(await owner.inventoryPage({subject,afterCandidateId:id(1),limit:1}),[]);
+ assert.equal(await owner.present({subject,candidateId:id(1)}),true);
+ for(const candidateId of [id(2),id(3),id(4),id(99)])assert.equal(await owner.present({subject,candidateId}),false);
+ assert.ok(f.statements.filter(s=>s.startsWith('SELECT 1 FROM meri_memory.candidates')).every(s=>!s.includes('candidate_sha256')));
+ assert.throws(()=>owner.present({subject:{...subject,kind:'artifact'},candidateId:id(1)}),e=>e.code==='RETENTION_INVALID_REQUEST');
+});
+
+function candidatePlan(){
+ const subject={tenantId:principal().tenantId,kind:'conversation',subjectId:id(801),ownerActorId:principal().actorId},workflowId='c'.repeat(64);
+ const rowStep={workflowId,className:MEMORY_CANDIDATE_ROW_CLASS,target:{className:MEMORY_CANDIDATE_ROW_CLASS,key:id(1)}};
+ const base={subject,subjectKey:subjectKey(subject),suppression:{ledgerSequence:1,entrySha256:'a'.repeat(64)},policyId:'policy',policyVersion:1,
+  policySha256:'b'.repeat(64),inventorySha256:'d'.repeat(64),steps:[],rowSteps:[rowStep],blocks:[],state:'PLANNED',plannedAtMs:NOW};
+ return {plan:{...base,planSha256:planDigest(base)},workflowId};
+}
+
+function purgeFixture(plan,{subjectState='SUPPRESSED',generation=1,targetPresent=true,candidatePresent=false,ownerActorId=principal().actorId}={}){
+ const statements=[],queries=[];
+ const projection={state:subjectState,ownerActorId,ledgerSequence:generation,entrySha256:'a'.repeat(64),
+  purge:{state:'UNKNOWN',planSha256:plan.planSha256,ledgerSequence:2}};
+ const client={async query(text,params=[]){const sql=text.replace(/\s+/gu,' ').trim();statements.push(sql);queries.push({sql,params});
+  if(sql.startsWith('SELECT pg_advisory_xact_lock'))return {rows:[]};
+  if(sql.startsWith('SELECT owner_actor_id,state,ledger_sequence'))return {rows:[{owner_actor_id:ownerActorId,state:subjectState,ledger_sequence:generation,entry_sha256:projection.entrySha256,
+   projection,projection_sha256:hash(projection)}]};
+  if(sql.startsWith('SELECT workflow_id FROM meri_conversations.retention_purge_targets'))return {rows:targetPresent?[{workflow_id:plan.rowSteps[0].workflowId}]:[]};
+  if(sql.startsWith('DELETE FROM meri_memory.candidates'))return {rowCount:candidatePresent?0:1};
+  if(sql.startsWith('SELECT 1 FROM meri_memory.candidates'))return {rows:candidatePresent?[{'?column?':1}]:[]};
+  throw Error('unexpected SQL');}};
+ return {client,statements,queries};
+}
+
+test('payload purge requires a matching same-transaction target and current suppression generation before any delete',async()=>{
+ const {plan,workflowId}=candidatePlan(),owner=createMemoryCandidateRetentionPayloadOwner({pool:{connect(){throw Error('unused');}}});
+ for(const options of [{targetPresent:false},{subjectState:'RELEASED'},{generation:3},{ownerActorId:'other-owner'}]){
+  const f=purgeFixture(plan,options);
+  await assert.rejects(owner.purgeInTransaction({client:f.client,plan,workflowId}),e=>e.code?.startsWith('RETENTION_'));
+  assert.equal(f.statements.some(sql=>sql.startsWith('DELETE FROM meri_memory.candidates')),false);
+ }
+ const f=purgeFixture(plan),tampered={...plan,rowSteps:[{...plan.rowSteps[0],target:{...plan.rowSteps[0].target,key:id(2)}}]};
+ await assert.rejects(owner.purgeInTransaction({client:f.client,plan:tampered,workflowId}),e=>e.code==='RETENTION_PLAN_DIGEST_REFUSED');
+ assert.deepEqual(f.statements,[]);
+});
+
+test('payload purge is exact and returns readback; it neither opens nor commits a transaction',async()=>{
+ const {plan,workflowId}=candidatePlan(),owner=createMemoryCandidateRetentionPayloadOwner({pool:{connect(){throw Error('unused');}}}),f=purgeFixture(plan);
+ const result=await owner.purgeInTransaction({client:f.client,plan,workflowId});
+ assert.deepEqual(result,{workflowId,className:MEMORY_CANDIDATE_ROW_CLASS,target:plan.rowSteps[0].target,deleted:1,state:'EXECUTED'});
+ assert.deepEqual(f.statements.map(s=>s.split(' ')[0]),['SELECT','SELECT','SELECT','SELECT','DELETE','SELECT']);
+ assert.deepEqual(f.queries.at(-2).params,[plan.subject.tenantId,plan.subject.subjectId,id(1)]);
+ assert.match(f.queries[3].sql,/candidate_id=\$4 AND plan_sha256=\$5 AND ledger_sequence=\$6 AND state='PLANNED' AND xmin=pg_current_xact_id\(\)::xid FOR UPDATE$/u);
+ const unknown=purgeFixture(plan,{candidatePresent:true});
+ assert.equal((await owner.purgeInTransaction({client:unknown.client,plan,workflowId})).state,'UNKNOWN');
 });
 
 test('conversation candidate insert checks canonical projection under recovery and subject locks before writing',async()=>{

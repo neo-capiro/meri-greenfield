@@ -93,5 +93,16 @@ export function createPostgresMemoryJournal({pool,guardConversationRetention=fal
     return Object.freeze(rows.map(row=>row.candidate_id));
    },true);
   },
+  /** Exact local row readback for the central retention owner's restore and purge verification. */
+  hasConversationCandidate({tenantId,conversationId,candidateId,signal}){
+   if(typeof tenantId!=='string'||tenantId.length<1||tenantId.length>128||typeof conversationId!=='string'||!UUID.test(conversationId)||
+    typeof candidateId!=='string'||!UUID.test(candidateId))refuse('MEMORY_JOURNAL_STATE');
+   return tx(signal,async client=>{
+    const rows=(await client.query(`SELECT 1 FROM ${table} WHERE tenant_id=$1 AND candidate_id=$3 AND candidate->'origin'->>'kind'='conversation'
+     AND candidate->'origin'->>'conversationId'=$2`,[tenantId,conversationId,candidateId])).rows;
+    if(rows.length>1)refuse('MEMORY_JOURNAL_STATE');
+    return rows.length===1;
+   },true);
+  },
  });
 }

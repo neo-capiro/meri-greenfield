@@ -191,3 +191,23 @@ Exact shared-owner work: register a distinct `meriMemoryCandidates` conversation
 `{tenantId,conversationId,candidateId}` under the canonical suppression generation; allocate an additive migration with an exact
 target ledger, guarded `BEFORE DELETE` trigger and restricted purge-only DELETE grant. The current retention PG row port accepts
 only `sdkSession` and `artifactVersions`, and runtime purge remains disabled. No standalone memory DELETE worker should bypass it.
+
+### Memory-owned payload port, follow-up source checkpoint
+
+`retention-payload-owner.mjs` now exposes `createMemoryCandidateRetentionPayloadOwner({pool})` with the distinct class
+`meriMemoryCandidates`. Its `inventoryPage({subject,afterCandidateId,limit})` uses the journal's bounded keyset; the shared retention
+inventory owner must drain pages to exhaustion. `present({subject,candidateId})` reads exact tenant, conversation origin and candidate
+identity without returning payload content. `purgeInTransaction({client,plan,workflowId})` runs only inside the shared row owner's
+READ COMMITTED transaction after its exact `planRows`: it validates the plan digest, locks the recovery and subject keys, reads the
+current SUPPRESSED projection, owner and generation, requires a matching PLANNED target inserted in this transaction, then deletes exactly
+one scoped candidate row and rereads it. It does not open a transaction, expose an HTTP route, or grant DELETE. The future database
+trigger must enforce the same target check independently; source tests simulate the required SQL, not a live database trigger.
+
+**freshIDneeded:** the central ledger reserves `meri_memory` `0001` for the original producer outbox; its source is pinned, so an
+additive guarded candidate DELETE trigger needs a new centrally allocated memory migration ID. The ledger reserves
+`meri_conversations` `0014_retention_row_targets.sql` to the retention owner under an **AUTHORING HOLD**; the owner must decide
+whether to release that exact reservation or allocate a successor for `retention_purge_targets` to carry the distinct class and
+`candidate_id`. Neither ID nor migration placement is chosen here. The shared owner must also add class policy/inventory, exact
+target plan/record/update/reverification, recovery behavior and a restricted purge role/grant before binding the port. Surface-origin
+candidate payloads still lack an actor/client retention subject and remain held for new writes; this conversation port does not
+purport to cover them or Core's separately owned received payload.
