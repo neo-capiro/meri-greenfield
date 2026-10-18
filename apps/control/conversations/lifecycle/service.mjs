@@ -54,7 +54,8 @@ export function createConversationLifecycleService({service,store,dispatcher,che
    if(retained&&(!same(verified.checkpoint,retained.proof.checkpoint)||verified.sourceRequestSha256!==retained.proof.sourceRequestSha256||verified.contextSha256!==retained.proof.contextSha256||verified.resumeSessionAt!==retained.proof.resumeSessionAt))fail('CHECKPOINT_REFUSED');
    if(i.intent==='resume'&&saved.run.state==='waiting-for-approval'){
     if(!retained.approval||typeof approvals?.readDecision!=='function')fail('APPROVAL_REFUSED');const a=await proposal(retained.approval.proposalId,saved,life,fresh);if(hash(a)!==hash(retained.approval))fail('APPROVAL_REFUSED');
-    const d=await effect(life,fresh,signal=>approvals.readDecision({proposalId:a.proposalId,commandSha256:a.commandSha256,binding:b,signal}));validateShape('ApprovalDecision',d);
+    // The decision owner answers null for an undecided proposal (Core P-INT-10 `approval/decision`): no approval, a typed refusal.
+    const d=await effect(life,fresh,signal=>approvals.readDecision({proposalId:a.proposalId,commandSha256:a.commandSha256,binding:b,signal}));if(d===null)fail('APPROVAL_REFUSED');validateShape('ApprovalDecision',d);
     if(d.decision!=='approved'||d.proposalId!==a.proposalId||d.commandSha256!==a.commandSha256||!same(d.approver,a.requiredApprover)||d.policyRevision!==saved.run.policyRevision||Date.parse(d.expiresAt)<=now()||Date.parse(d.decidedAt)>now())fail('APPROVAL_REFUSED');
    }
    if(i.intent==='resume'&&typeof dispatcher.continued!=='function')fail('TEMPORAL_LIFECYCLE_UNAVAILABLE');
