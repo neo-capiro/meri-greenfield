@@ -1,0 +1,64 @@
+{"source":"9c9e92440e0bd358fad04456c2955603f4512a20","sourcePath":"packages/contracts/retrieval-0.2/public-domain-query-validation.mjs","sourceSha256":"8719b91441bf2fd5ce2e406a5b71036c856ad138820287b25f3b5730127be43b","node":"v24.19.0","TZ":"Asia/Tokyo","NODE_TEST_CONTEXT":null,"control":"independent actual public normalizer"}
+{"kind":"asOf","value":"January 1, 2020 12:30 PM -0500","expected":"2020-01-01T17:30:00.000Z","actual":"2020-01-01T17:30:00.000Z","pass":true}
+{"kind":"filter","value":"January 1, 2020 12:30 PM -0500","expected":"2020-01-01T17:30:00.000Z","actual":"2020-01-01T17:30:00.000Z","pass":true}
+{"kind":"asOf","value":"Jan 1 12:30:00 -0500 2020","expected":"2020-01-01T17:30:00.000Z","actual":"2020-01-01T17:30:00.000Z","pass":true}
+{"kind":"filter","value":"Jan 1 12:30:00 -0500 2020","expected":"2020-01-01T17:30:00.000Z","actual":"2020-01-01T17:30:00.000Z","pass":true}
+{"kind":"asOf","value":"Jan 1 2020 12:30 PM,-0500","expected":"2020-01-01T17:30:00.000Z","actual":"2020-01-01T17:30:00.000Z","pass":true}
+{"kind":"filter","value":"Jan 1 2020 12:30 PM,-0500","expected":"2020-01-01T17:30:00.000Z","actual":"2020-01-01T17:30:00.000Z","pass":true}
+{"kind":"asOf","value":"Jan 1 2020 12:30 PM-0500","expected":"2020-01-01T17:30:00.000Z","actual":"2020-01-01T17:30:00.000Z","pass":true}
+{"kind":"filter","value":"Jan 1 2020 12:30 PM-0500","expected":"2020-01-01T17:30:00.000Z","actual":"2020-01-01T17:30:00.000Z","pass":true}
+{"kind":"asOf","value":"Jan 1 2020 12:30 -0500 PM","expected":"2020-01-01T17:30:00.000Z","actual":"2020-01-01T17:30:00.000Z","pass":true}
+{"kind":"filter","value":"Jan 1 2020 12:30 -0500 PM","expected":"2020-01-01T17:30:00.000Z","actual":"2020-01-01T17:30:00.000Z","pass":true}
+{"kind":"asOf","value":"Jan 1 2020 12:30 +5:3","expected":"2020-01-01T07:27:00.000Z","actual":"2020-01-01T07:27:00.000Z","pass":true}
+{"kind":"filter","value":"Jan 1 2020 12:30 +5:3","expected":"2020-01-01T07:27:00.000Z","actual":"2020-01-01T07:27:00.000Z","pass":true}
+{"kind":"asOf","value":"Jan 1 2020 12:30 +05:3","expected":"2020-01-01T07:27:00.000Z","actual":"2020-01-01T07:27:00.000Z","pass":true}
+{"kind":"filter","value":"Jan 1 2020 12:30 +05:3","expected":"2020-01-01T07:27:00.000Z","actual":"2020-01-01T07:27:00.000Z","pass":true}
+{"kind":"asOf","value":"Jan 1 2020 12:30 -5:3","expected":"2020-01-01T17:33:00.000Z","actual":"2020-01-01T17:33:00.000Z","pass":true}
+{"kind":"filter","value":"Jan 1 2020 12:30 -5:3","expected":"2020-01-01T17:33:00.000Z","actual":"2020-01-01T17:33:00.000Z","pass":true}
+{"kind":"asOf","value":"Jan 1 2020 12:30 +5:030","expected":"2020-01-01T07:00:00.000Z","actual":"2020-01-01T07:00:00.000Z","pass":true}
+{"kind":"filter","value":"Jan 1 2020 12:30 +5:030","expected":"2020-01-01T07:00:00.000Z","actual":"2020-01-01T07:00:00.000Z","pass":true}
+{"kind":"asOf","value":"Jan 1 2020 12:30 +5:","expected":"2020-01-01T07:30:00.000Z","actual":"2020-01-01T07:30:00.000Z","pass":true}
+{"kind":"filter","value":"Jan 1 2020 12:30 +5:","expected":"2020-01-01T07:30:00.000Z","actual":"2020-01-01T07:30:00.000Z","pass":true}
+{"kind":"asOf","value":"Jan 1 2020 12:30 +5:000030","expected":"2020-01-01T07:00:00.000Z","actual":"2020-01-01T07:00:00.000Z","pass":true}
+{"kind":"filter","value":"Jan 1 2020 12:30 +5:000030","expected":"2020-01-01T07:00:00.000Z","actual":"2020-01-01T07:00:00.000Z","pass":true}
+{"kind":"asOf","value":"Jan 1 2020 1:2 -0500","expected":"2020-01-01T06:02:00.000Z","actual":"2020-01-01T01:02:00.000Z","assertion":"Expected values to be strictly equal:\n+ actual - expected\n\n+ '2020-01-01T01:02:00.000Z'\n- '2020-01-01T06:02:00.000Z'\n               ^\n","pass":false}
+{"kind":"filter","value":"Jan 1 2020 1:2 -0500","expected":"2020-01-01T06:02:00.000Z","actual":"2020-01-01T01:02:00.000Z","assertion":"Expected values to be strictly equal:\n+ actual - expected\n\n+ '2020-01-01T01:02:00.000Z'\n- '2020-01-01T06:02:00.000Z'\n               ^\n","pass":false}
+{"kind":"asOf","value":"Jan 1 2020 12:3 PM -0500","expected":"2020-01-01T17:03:00.000Z","actual":"2020-01-01T12:03:00.000Z","assertion":"Expected values to be strictly equal:\n+ actual - expected\n\n+ '2020-01-01T12:03:00.000Z'\n- '2020-01-01T17:03:00.000Z'\n               ^\n","pass":false}
+{"kind":"filter","value":"Jan 1 2020 12:3 PM -0500","expected":"2020-01-01T17:03:00.000Z","actual":"2020-01-01T12:03:00.000Z","assertion":"Expected values to be strictly equal:\n+ actual - expected\n\n+ '2020-01-01T12:03:00.000Z'\n- '2020-01-01T17:03:00.000Z'\n               ^\n","pass":false}
+{"kind":"asOf","value":"Jan 1 2020 1:2:3 -0500","expected":"2020-01-01T06:02:03.000Z","actual":"2020-01-01T01:02:03.000Z","assertion":"Expected values to be strictly equal:\n+ actual - expected\n\n+ '2020-01-01T01:02:03.000Z'\n- '2020-01-01T06:02:03.000Z'\n               ^\n","pass":false}
+{"kind":"filter","value":"Jan 1 2020 1:2:3 -0500","expected":"2020-01-01T06:02:03.000Z","actual":"2020-01-01T01:02:03.000Z","assertion":"Expected values to be strictly equal:\n+ actual - expected\n\n+ '2020-01-01T01:02:03.000Z'\n- '2020-01-01T06:02:03.000Z'\n               ^\n","pass":false}
+{"kind":"asOf","value":"12:30:00 -5 Jan 1 2020","expected":"2020-01-01T17:30:00.000Z","actual":"2020-01-01T17:30:00.000Z","pass":true}
+{"kind":"filter","value":"12:30:00 -5 Jan 1 2020","expected":"2020-01-01T17:30:00.000Z","actual":"2020-01-01T17:30:00.000Z","pass":true}
+{"kind":"asOf","value":"12:30:00 2020-01-01","expected":"2020-01-01T12:30:00.000Z","actual":"2020-01-01T12:30:00.000Z","pass":true}
+{"kind":"filter","value":"12:30:00 2020-01-01","expected":"2020-01-01T12:30:00.000Z","actual":"2020-01-01T12:30:00.000Z","pass":true}
+{"kind":"asOf","value":"Jan-1-2020 12:30","expected":"2020-01-01T12:30:00.000Z","actual":"2020-01-01T12:30:00.000Z","pass":true}
+{"kind":"filter","value":"Jan-1-2020 12:30","expected":"2020-01-01T12:30:00.000Z","actual":"2020-01-01T12:30:00.000Z","pass":true}
+{"kind":"asOf","value":"-0500 Jan 1 2020 12:30","expected":"0500-01-01T12:30:00.000Z","actual":"0500-01-01T12:30:00.000Z","pass":true}
+{"kind":"filter","value":"-0500 Jan 1 2020 12:30","expected":"0500-01-01T12:30:00.000Z","actual":"0500-01-01T12:30:00.000Z","pass":true}
+{"kind":"asOf","value":"+002020-01-01T12:30:00","expected":"2020-01-01T12:30:00.000Z","actual":"2020-01-01T12:30:00.000Z","pass":true}
+{"kind":"filter","value":"+002020-01-01T12:30:00","expected":"2020-01-01T12:30:00.000Z","actual":"2020-01-01T12:30:00.000Z","pass":true}
+{"kind":"asOf","value":"-000001-01-01T12:30:00","expected":"reject","actual":"reject","pass":true}
+{"kind":"filter","value":"-000001-01-01T12:30:00","expected":"-000001-01-01T12:30:00.000Z","actual":"-000001-01-01T12:30:00.000Z","pass":true}
+{"kind":"asOf","value":"-000001-01-01T12:30:00Z","expected":"reject","actual":"reject","pass":true}
+{"kind":"filter","value":"-000001-01-01T12:30:00Z","expected":"-000001-01-01T12:30:00.000Z","actual":"-000001-01-01T12:30:00.000Z","pass":true}
+{"kind":"asOf","value":"January 1, 2020 (foo","expected":"2020-01-01T00:00:00.000Z","actual":"2020-01-01T00:00:00.000Z","pass":true}
+{"kind":"filter","value":"January 1, 2020 (foo","expected":"2020-01-01T00:00:00.000Z","actual":"2020-01-01T00:00:00.000Z","pass":true}
+{"kind":"asOf","value":"January 1, 2020 12:30:00 (foo","expected":"2020-01-01T12:30:00.000Z","actual":"2020-01-01T12:30:00.000Z","pass":true}
+{"kind":"filter","value":"January 1, 2020 12:30:00 (foo","expected":"2020-01-01T12:30:00.000Z","actual":"2020-01-01T12:30:00.000Z","pass":true}
+{"kind":"asOf","value":"Jan 1 2020 UTC 12:30","expected":"2020-01-01T12:30:00.000Z","actual":"2020-01-01T12:30:00.000Z","pass":true}
+{"kind":"filter","value":"Jan 1 2020 UTC 12:30","expected":"2020-01-01T12:30:00.000Z","actual":"2020-01-01T12:30:00.000Z","pass":true}
+{"kind":"asOf","value":"Jan 1 12:30:00 -000001","expected":"reject","actual":"reject","pass":true}
+{"kind":"filter","value":"Jan 1 12:30:00 -000001","expected":"reject","actual":"reject","pass":true}
+{"kind":"asOf","value":"January 1, -2020 12:30:00","expected":"reject","actual":"reject","pass":true}
+{"kind":"filter","value":"January 1, -2020 12:30:00","expected":"reject","actual":"reject","pass":true}
+{"kind":"asOf","value":"Jan 1 2020 12:30 --0500","expected":"reject","actual":"reject","pass":true}
+{"kind":"filter","value":"Jan 1 2020 12:30 --0500","expected":"reject","actual":"reject","pass":true}
+{"kind":"asOf","value":"Jan 1 2020 12:30 +-0500","expected":"reject","actual":"reject","pass":true}
+{"kind":"filter","value":"Jan 1 2020 12:30 +-0500","expected":"reject","actual":"reject","pass":true}
+{"kind":"asOf","value":"Jan 1 2020 12:30 -+0500","expected":"reject","actual":"reject","pass":true}
+{"kind":"filter","value":"Jan 1 2020 12:30 -+0500","expected":"reject","actual":"reject","pass":true}
+{"kind":"asOf","value":"2020-01-01T12:30:00 invalid","expected":"reject","actual":"reject","pass":true}
+{"kind":"filter","value":"2020-01-01T12:30:00 invalid","expected":"reject","actual":"reject","pass":true}
+{"kind":"asOf","value":" 2020-01-01T12:30:00Z ","expected":"reject","actual":"reject","pass":true}
+{"kind":"filter","value":" 2020-01-01T12:30:00Z ","expected":"reject","actual":"reject","pass":true}
+{"assertions":62,"passed":56,"failed":6}
