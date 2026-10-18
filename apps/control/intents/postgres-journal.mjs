@@ -1,6 +1,6 @@
 /** Canonical createIntentJournal store adapter. Sole table meri_intents.preparations; no public fallback or DDL execution.
  * Parent released exact DDL source authoring in central allocation 0b0b7abd; SQL execution/integration qualification remain pending. */
-import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
+import {canonicalSha256 as hash,validateShape,assertProposalIntegrity} from '../../../packages/contracts/validate.mjs';
 import {validateShape as validateToolShape} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {data,own,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {assertPool,transact} from '../product-persistence/transaction.mjs';
@@ -130,4 +130,37 @@ export function createPostgresPreparedScheduleReader({pool}){return scheduleRead
 /** Human approval reads all canonical schedule proposals, including cancellation. It confers no approval or firing authority. */
 export function createPostgresScheduleProposalReader({pool}){
  const reader=scheduleReader(pool,false);return Object.freeze({readProposal:reader.readPreparedSchedule});
+}
+
+/** Read-only custody of one PREPARED command proposal by id, for the lifecycle's approval wait (`approvals.read`). Meri owns this
+ * read (dot item 4): the proposal is the immutable text the intent mount released, retained under its tenant/actor/conversation key.
+ * Every row of the tenant naming the proposal is selected (at most two) so ambiguity or corrupt custody is refused, never hidden
+ * by a narrower filter. It returns the proposal only to the same tenant, actor and conversation; it confers no approval, decision
+ * or execution authority, and it takes no credential (an execution capability can never reach it). */
+export function createPostgresCommandProposalReader({pool}){
+ const tx=journalTransaction(pool),uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u;
+ return Object.freeze({async readProposal(selection){
+  const {signal,...raw}=own(selection,['tenantId','actorId','conversationId','proposalId'],['signal']),s=data(raw);nativeSignal(signal);
+  try{validateShape('Identity',{tenantId:s.tenantId,actorId:s.actorId});}catch{throw intentFault('INVALID_ARGUMENTS');}
+  if(typeof s.conversationId!=='string'||!uuid.test(s.conversationId)||typeof s.proposalId!=='string'||!uuid.test(s.proposalId))throw intentFault('INVALID_ARGUMENTS');
+  return tx(signal,async client=>{
+   const rows=(await client.query(`SELECT tenant_id,actor_id,conversation_id,delivery_id,${COLUMNS} FROM ${TABLE} WHERE tenant_id=$1 AND outcome->'result'->'proposal'->>'proposalId'=$2 LIMIT 2`,[s.tenantId,s.proposalId])).rows;
+   if(!Array.isArray(rows)||rows.length>1)refuse('INTENT_JOURNAL_STATE');
+   if(rows.length===0)return null;
+   try{
+    const row=data(rows[0]),storedKey={tenantId:row.tenant_id,actorId:row.actor_id,conversationId:row.conversation_id,deliveryId:row.delivery_id};key(storedKey);
+    const retained=entry(row);
+    if(retained.state!=='PREPARED'||storedKey.tenantId!==s.tenantId)refuse('INTENT_JOURNAL_STATE');
+    // Another actor's or conversation's proposal is absent to this caller, never disclosed.
+    if(storedKey.actorId!==s.actorId||storedKey.conversationId!==s.conversationId)return null;
+    const custody=own(retained.outcome,['result','release']),result=own(custody.result,['status','proposal']),proposal=result.proposal;
+    if(result.status!=='approval_required'||!proposal||typeof proposal!=='object'||!Object.hasOwn(proposal,'command'))refuse('INTENT_JOURNAL_STATE');
+    assertProposalIntegrity(proposal);
+    const b=proposal.command.binding,r=custody.release.binding;
+    if(proposal.proposalId!==s.proposalId||b.tenantId!==storedKey.tenantId||b.actorId!==storedKey.actorId||b.conversationId!==storedKey.conversationId||
+     hash(r)!==hash(b)||!['create_task','update_task'].includes(retained.record.operation.id))refuse('INTENT_JOURNAL_STATE');
+    return data(proposal);
+   }catch{refuse('INTENT_JOURNAL_STATE');}
+  },{readOnly:true});
+ }});
 }
