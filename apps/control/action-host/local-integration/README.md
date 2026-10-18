@@ -39,7 +39,7 @@ Required existing schemas, applied only by the native fixture owner in its exist
 - `apps/control/commands/approval-metadata/migrations/0001_approval_metadata.sql`
 - `apps/control/commands/migrations/0001_commands.sql`
 
-The existing driver pin is pg8.23.1. Verify relation/search-path resolution for unqualified `meri_approval_metadata` and `meri_command_journal`; source hashes are not installation evidence. There are no new migration IDs.
+The existing driver pin is pg8.23.1. Verify relation resolution for the schema-qualified `meri_commands.approval_metadata` and `meri_commands.command_journal`; source hashes are not installation evidence. There are no new migration IDs.
 
 `readLocalApplicationAccounting({pool,ownedRows,deadlineMs?,signal?})` takes the canonical budget lock and observes one allocation/hash, both grant bindings and exactly two settled10microUSD reservations. The returned `kind:'database-readback'` describes the query projection only: our test supplies a scripted pool, so it is **not native database evidence**. Root's standalone receipt identifies `poolEvidence:'scripted-shared-state'`. The nested existing recovery receipt keeps `nativeDatabase:false`.
 

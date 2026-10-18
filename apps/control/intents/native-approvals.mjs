@@ -8,7 +8,7 @@
  * `approval/decision` is listed as a required provider contract in `apps/runtime/README.md`; `approval/record` is a NEW
  * required Core contract (lane 3 proposal P-INT-10). Core implements neither today, so no composition may claim this live.
  *
- * `createCommandJournalOutcomes({journal,contextFor})` reads the executor's durable result (`meri_command_journal`) for a
+ * `createCommandJournalOutcomes({journal,contextFor})` reads the executor's durable result (`meri_commands.command_journal`) for a
  * proposal: `journal` is the executor's own `createPostgresCommandJournal` and `contextFor(proposal)` the exact executor
  * context the composition gave `createCommandExecutor` for that run. Read-only. */
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';

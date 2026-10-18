@@ -19,8 +19,8 @@ const specs=[
  ['meri_qualification.budget_liabilities','kind:s? slot:s? run_id:u? grant_id:u? state:s? hold_micro_usd:b? consumed_micro_usd:b?',{}],
  ['meri_task_lookup.lookups','tenant_id:s lookup_id:u result_reference:u payload:j state:s record:j?',{p:1,u:1,c:2}],
  ['meri_task_lookup.events','tenant_id:s run_id:u sequence:b event_id:u lookup_id:u kind:s event:j?',{p:1,u:2,f:1,c:2}],
- ['public.meri_approval_metadata','tenant_id:s actor_id:s proposal_id:u command_id:u idempotency_key:v command_sha256:h payload_sha256:h payload:j',{p:1,u:2,c:3}],
- ['public.meri_command_journal','tenant_id:s actor_id:s idempotency_key:s command_id:u command_sha256:s proposal_sha256:s payload_sha256:s payload:j executor:j state:s outcome:j? created_at:t= updated_at:t=',{p:1,u:1,c:8}]
+ ['meri_commands.approval_metadata','tenant_id:s actor_id:s proposal_id:u command_id:u idempotency_key:v command_sha256:h payload_sha256:h payload:j',{p:1,u:2,c:3}],
+ ['meri_commands.command_journal','tenant_id:s actor_id:s idempotency_key:s command_id:u command_sha256:s proposal_sha256:s payload_sha256:s payload:j executor:j state:s outcome:j? created_at:t= updated_at:t=',{p:1,u:1,c:8}]
 ];
 export function catalog(){return specs.map(([name,cols,counts],n)=>{
  const view=name.endsWith('budget_liabilities'),partial=n===3||n===6;
@@ -41,8 +41,7 @@ export function scripted({verify=false,onQuery,onConnect,onRelease,catalogChange
   if(ddl.includes(text)){state.ddl.push(text);return{rows:[]};}
   if(text.startsWith('SELECT current_database()'))return{rows:[identity]};
   if(text.includes('pg_try_advisory_xact_lock'))return{rows:[{acquired:true}]};
-  if(text.startsWith('SELECT nspname AS name'))return{rows:verify||ddl.every(sql=>state.queries.some(q=>q.text===sql))?[{name:'meri_qualification',owner:'qualification_owner',acl:null},{name:'meri_task_lookup',owner:'qualification_owner',acl:null}]:[]};
-  if(text.startsWith('SELECT t.typname'))return{rows:[]};
+  if(text.startsWith('SELECT nspname AS name'))return{rows:verify||ddl.every(sql=>state.queries.some(q=>q.text===sql))?[{name:'meri_qualification',owner:'qualification_owner',acl:null},{name:'meri_task_lookup',owner:'qualification_owner',acl:null},{name:'meri_commands',owner:'qualification_owner',acl:null}]:[]};
   if(text.startsWith('SELECT n.nspname')){state.catalogReads++;return{rows:!verify&&state.catalogReads===1?[]:cat};}
   if(text.startsWith('SELECT id,cap_micro_usd'))return{rows:[{id:1,cap_micro_usd:'10000000',consumed_micro_usd:'0',quarantined:false}]};
   if(text.startsWith("SELECT 'meri_qualification.budget'"))return{rows:specs.filter(([n])=>!n.endsWith('budget_liabilities')).map(([name])=>({name,count:name==='meri_qualification.budget'?'1':'0'}))};

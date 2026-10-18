@@ -7,7 +7,7 @@ export function createSharedPool(){
  const h=harness(),lookup=createTaskLookupPoolFixture(),metadata=createMetadataPoolFixture(),journal=scriptedPool({}),seed=[];let opened=0,closed=0;
  h.state().run=null;h.state().grant=null;h.state().grants.clear();
  function pool(){return {options:{connectionTimeoutMillis:1000,query_timeout:1000},async connect(){let c,kind,setup=[];
-  async function select(sql){if(c)return;c=await (sql.includes('meri_approval_metadata')?metadata.pool:sql.includes('meri_command_journal')?journal.pool:sql.includes('meri_task_')?lookup.pool:h.pool).connect();kind=sql.includes('meri_approval_metadata')?'metadata':sql.includes('meri_command_journal')?'journal':sql.includes('meri_task_')?'lookup':'budget';for(const q of setup)await c.query(q);setup=[];}
+  async function select(sql){if(c)return;c=await (sql.includes('meri_commands.approval_metadata')?metadata.pool:sql.includes('meri_commands.command_journal')?journal.pool:sql.includes('meri_task_')?lookup.pool:h.pool).connect();kind=sql.includes('meri_commands.approval_metadata')?'metadata':sql.includes('meri_commands.command_journal')?'journal':sql.includes('meri_task_')?'lookup':'budget';for(const q of setup)await c.query(q);setup=[];}
   return {async query(sql,args=[]){const text=typeof sql==='string'?sql:sql.text;if(text==='BEGIN'||text.startsWith('SET LOCAL')){if(c)return c.query(sql,args);setup.push(sql);return {rows:[]};}
    if(text.startsWith('INSERT INTO meri_qualification.runs')){seed.push({kind:'run',args});return {rows:[]};}
    if(text.startsWith('INSERT INTO meri_qualification.grants')){seed.push({kind:'grant',args});return {rows:[]};}

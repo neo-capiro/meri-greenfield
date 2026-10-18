@@ -1,6 +1,8 @@
 -- Explicit source-only migration. No apply, role, permission or connection owner.
 -- Append-only through this API; existing approval/execution journals are separate.
-CREATE TABLE meri_approval_metadata (
+-- Meri-owned schema, never Core's shared public schema. Either command migration may run first.
+CREATE SCHEMA IF NOT EXISTS meri_commands;
+CREATE TABLE meri_commands.approval_metadata (
  tenant_id text NOT NULL,
  actor_id text NOT NULL,
  proposal_id uuid NOT NULL,

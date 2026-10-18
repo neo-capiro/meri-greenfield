@@ -1,6 +1,8 @@
 -- Source-only command intent journal. Apply explicitly to separately admitted state.
 -- No source candidate/task/document table or automatic migration is created.
-CREATE TABLE meri_command_journal (
+-- Meri-owned schema, never Core's shared public schema. Either command migration may run first.
+CREATE SCHEMA IF NOT EXISTS meri_commands;
+CREATE TABLE meri_commands.command_journal (
  tenant_id text NOT NULL,
  actor_id text NOT NULL,
  idempotency_key text NOT NULL CHECK (length(idempotency_key) BETWEEN 1 AND 128),

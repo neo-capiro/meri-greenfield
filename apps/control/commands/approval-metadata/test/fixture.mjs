@@ -8,12 +8,12 @@ export function createMetadataPoolFixture(){
  const rows=new Map(),calls=[],releases=[];
  const pool={options:{connectionTimeoutMillis:1000,query_timeout:1000},async connect(){calls.push('connect');return {async query(config){
   calls.push(config);const {text:statement,values}=config;
-  const text=statement.replace(/^(INSERT INTO |SELECT payload,payload_sha256 FROM )public\.meri_approval_metadata /u,'$1meri_approval_metadata ');
-  if(text.startsWith('INSERT INTO meri_approval_metadata ')){
+  const text=statement.replace(/^(INSERT INTO |SELECT payload,payload_sha256 FROM )meri_commands\.approval_metadata /u,'$1approval_metadata ');
+  if(text.startsWith('INSERT INTO approval_metadata ')){
    const [tenant,actor,proposal,,,,hash,raw]=values,key=JSON.stringify([tenant,actor,proposal.toLowerCase()]);
    if(rows.has(key))throw new Error('synthetic unique conflict');const record={payload:JSON.parse(raw),payload_sha256:hash};rows.set(key,record);return {rows:[structuredClone(record)]};
   }
-  if(text.startsWith('SELECT payload,payload_sha256 FROM meri_approval_metadata ')){const key=JSON.stringify([values[0],values[1],values[2].toLowerCase()]);return {rows:rows.has(key)?[structuredClone(rows.get(key))]:[]};}
+  if(text.startsWith('SELECT payload,payload_sha256 FROM approval_metadata ')){const key=JSON.stringify([values[0],values[1],values[2].toLowerCase()]);return {rows:rows.has(key)?[structuredClone(rows.get(key))]:[]};}
   throw new Error('not a metadata fixture statement');
  },release(error){releases.push(error);}};}};
  return {pool,rows,calls,releases};
