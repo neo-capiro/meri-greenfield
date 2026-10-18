@@ -40,7 +40,8 @@ function fixture({authorizationError,initialLoss=false,onListen,cleanup={},memor
  const connection={async withDeadline(_at,operation){return operation();},async withAbortSignal(signal,operation){signal.throwIfAborted();return operation();},
   workflowService:{async getSystemInfo(){events.push('temporal-health');return {};}},close:close('connection')};
  const memoryContextRelay=memoryContext?createMemoryContextRelay():null;
- const memoryPorts=Object.freeze({loadPrevious(){},retain(){}});
+ const memoryCalls=[];
+ const memoryPorts=Object.freeze({loadPrevious(request){memoryCalls.push(['loadPrevious',request]);return {previous:true};},retain(request){memoryCalls.push(['retain',request]);return {retained:true};}});
  const memoryStore=Object.freeze({forTask(task){assert.deepEqual(task,{clientId:'selected'});return memoryPorts;}});
  const assembly={userPreferences:{state:()=>'disabled',async readiness(){events.push('user-preferences-readiness');}},application:{async handle(request){request.signal.throwIfAborted();return Response.json({synthetic:true});}},
   downloads:{async open({signal}){signal.throwIfAborted();events.push('downloads');return {reason:'synthetic-only'};}},
@@ -64,19 +65,24 @@ function fixture({authorizationError,initialLoss=false,onListen,cleanup={},memor
    return {address:{address:'127.0.0.1',port:options.configuration.http.port},close:close(role+'-listener')};
   },
  };
- return {configuration,binding,executionId,events,closed,state,lose,owners,memoryContextRelay,memoryPorts,
+ return {configuration,binding,executionId,events,closed,state,lose,owners,memoryContextRelay,memoryCalls,
   start:()=>startControl(configuration,{testOwners:owners,...(memoryContextRelay?{memoryContextRelay}:{})})};
 }
 
 test('control binds the selected proposal continuation relay only to its own ready store',async()=>{
  const f=fixture({memoryContext:true}),runtime=await f.start();
+ let ports;
  try{
   assert.equal(f.memoryContextRelay.state(),'bound');
-  assert.equal(f.memoryContextRelay.forTask({clientId:'selected'}),f.memoryPorts);
+  ports=f.memoryContextRelay.forTask({clientId:'selected'});
+  assert.deepEqual(await ports.loadPrevious({key:'first'}),{previous:true});
+  assert.deepEqual(await ports.retain({key:'second'}),{retained:true});
+  assert.deepEqual(f.memoryCalls,[['loadPrevious',{key:'first'}],['retain',{key:'second'}]]);
   assert.ok(f.events.includes('retention-serving'));
   assert.deepEqual(f.events.filter(event=>event.startsWith('listen:')),['listen:private','listen:public']);
  }finally{await runtime.close();}
  assert.equal(f.memoryContextRelay.state(),'closed');
+ await assert.rejects(ports.loadPrevious({key:'after-close'}),/MEMORY_CONTEXT_UNAVAILABLE/u);
  const absent=fixture({memoryContext:'missing-retention'});
  await assert.rejects(absent.start(),error=>error.code==='CONTROL_STARTUP_FAILED'&&
   error.cause?.code==='MEMORY_CONTEXT_UNAVAILABLE');
