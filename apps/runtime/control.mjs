@@ -46,6 +46,7 @@ import {createRuntimeUserPreferences} from './user-preferences.mjs';
 import {createPostgresScheduleOwner} from '../control/schedules/postgres-schedule-owner.mjs';
 import {createConfiguredRunCapabilityPolicy} from './product-ports/capability-policy.mjs';
 import {bindDocumentsSessions} from './artifacts/session-binding.mjs';
+import {bindApprovalSessions} from './native-authority/approval-forwarder.mjs';
 import {createObjectiveReaderApplication} from './product-ports/objective.mjs';
 import {composeObjectiveRuns} from './native-authority/objective-runs-composition.mjs';
 import {composeRoutinesOccurrences,ROUTINES_OCCURRENCE_OWNERS} from './native-authority/routines-occurrence-composition.mjs';
@@ -97,6 +98,8 @@ export function assembleControl(options){
  }:{}),limits:{maxSessions:configuration.sessions.maxSessions,maxRequestMs:configuration.limits.requestMs,maxTtlMs:configuration.sessions.maxTtlMs,maxFactBytes:131072}});
  // A documents options owner (composed only with a trusted Core artifact authority) is late-bound to these exact sessions.
  if(productContext)bindDocumentsSessions(productContext,sessions);
+ // Approval forwarder (lane L): the per-context approver session binder reaches these exact sessions.
+ if(productContext)bindApprovalSessions(productContext,sessions);
  const dispatcher=createTemporalConversationDispatcher({client,taskQueue:configuration.temporal.taskQueue,lifecycle:true,now,maxRequestMs:configuration.limits.requestMs});
  const capabilityPolicy=configuration.capabilityPlatform===undefined?undefined:createConfiguredRunCapabilityPolicy(configuration);
  const basic=createConversationService({sessions,store,dispatcher,versions:configuration.versions,now,maxRequestMs:configuration.limits.requestMs,...(capabilityPolicy?{capabilityPolicy}:{}),...(ports.selectedSkillAdmission?{selectedSkillAdmission:ports.selectedSkillAdmission}:{}),...(ports.selectedOutputPublication?{selectedOutputPublication:ports.selectedOutputPublication}:{}),...(retention?{retention:retention.gate}:{})});
