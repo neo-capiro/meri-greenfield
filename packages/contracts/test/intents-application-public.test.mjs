@@ -249,6 +249,14 @@ test('owner-valid timestamps without milliseconds are admitted; impossible or of
   const proposalBad=clone(f.list);proposalBad.intents[0].proposal.createdAt=bad;await assert.rejects(receive('list',200,JSON.stringify(proposalBad),{request:f.listBody}),e=>e instanceof IntentsResponseError);
  }
 });
+test('journal createdAt is read exactly: an impossible calendar day cannot roll into the next month',async()=>{
+ const f=await executedFixture();
+ for(const bad of ['2026-02-30T07:00:00.000Z','2026-02-29T07:00:00.000Z','2026-04-31T07:00:00.000Z','2026-13-01T07:00:00.000Z','2026-10-13T24:00:00.000Z']){
+  assert.ok(!Number.isNaN(Date.parse(bad))||bad.startsWith('2026-13')||bad.includes('T24'),'the producer-side parse alone would not catch '+bad);
+  const value=clone(f.list);value.intents[0].createdAt=bad;await assert.rejects(receive('list',200,JSON.stringify(value),{request:f.listBody}),e=>e instanceof IntentsResponseError&&['INTENTS_SHAPE','INTENTS_CORRELATION'].includes(e.code),bad);
+ }
+ const good=clone(f.list);good.intents[0].createdAt='2028-02-29T07:00:00.000Z';assert.equal((await receive('list',200,JSON.stringify(good),{request:f.listBody})).intents.length,1,'a real leap day is admitted');
+});
 test('generated bundle is independent of the checkout layout',async()=>{
  const source=await readFile(new URL('../dist/intents-application.mjs',import.meta.url),'utf8'),metadata=JSON.parse(await readFile(new URL('../dist/intents-application.metadata.json',import.meta.url),'utf8'));
  // A drive letter is a lone letter before `:\` or `:/` (not the end of a URL scheme such as `http://`).

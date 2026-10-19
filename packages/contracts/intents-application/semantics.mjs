@@ -44,7 +44,9 @@ function phase(item){
  if(!(d===null?['awaiting_approval','expired']:['expired','unknown_decision']).includes(p))conflict();
 }
 async function item(value,conversationId){
- parsed(value.createdAt);
+ // The journal's createdAt is a bare millisecond-spelling pattern in the schema (no calendar check) and the journal writes toISOString(): read it exactly, so
+ // an impossible day such as 2026-02-30 can not roll into March.
+ exact(value.createdAt);
  if(!Object.hasOwn(value,'proposal'))return;
  await proposal(value.proposal,conversationId);
  if(value.decision!==null&&typeof value.decision==='object')decision(value.decision,value.proposal);

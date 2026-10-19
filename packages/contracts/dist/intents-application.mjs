@@ -8909,7 +8909,7 @@ function phase(item2) {
   if (!(d === null ? ["awaiting_approval", "expired"] : ["expired", "unknown_decision"]).includes(p)) conflict();
 }
 async function item(value, conversationId) {
-  parsed(value.createdAt);
+  exact(value.createdAt);
   if (!Object.hasOwn(value, "proposal")) return;
   await proposal(value.proposal, conversationId);
   if (value.decision !== null && typeof value.decision === "object") decision(value.decision, value.proposal);
