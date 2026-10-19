@@ -1,5 +1,12 @@
 # Canonical dependency probe fix
 
+**Historical, superseded:** the installed-dependency test below did not establish
+fresh-checkout preparation. Neo's subsequent refusal and the clean-checkout
+reproduction exposed a missing qualification lock owner. See
+[COLD-DEPENDENCY-PREPARATION.md](COLD-DEPENDENCY-PREPARATION.md) for the successor
+implementation and its separate cold-test evidence. The hashes and three-check
+output below describe the earlier revision; the current offline test has changed.
+
 The public preparation refusal was reproduced on Windows PowerShell
 5.1.26100.33451 with Node v24.19.0 against exact source
 `5b395d4ce9218b872b21c420dc00a3af31739824`.

@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "recordedAtUtc": "2026-10-19T21:09:19.0882483Z",
+  "sourceCommit": "5b395d4ce9218b872b21c420dc00a3af31739824",
+  "powershellVersion": "5.1.26100.33451",
+  "nodeVersion": "v24.19.0",
+  "npmVersion": "10.9.9",
+  "initialDependencyDirectories": 0,
+  "ancestorDependencyDirectories": 0,
+  "npmDownloadCacheMayBeWarm": true,
+  "importedSourceValidatedBefore": true,
+  "importedSourceRawBytesValidatedAfter": true,
+  "original7f16RefusalReproduced": true,
+  "firstMissingPackage": "ajv",
+  "firstMissingImporter": "packages/contracts/validate.mjs",
+  "firstSelectedOwner": "ROOT",
+  "nextMissingPackage": "@capiro/meri-contracts",
+  "nextMissingImporter": "apps/worker/qualification/checkpoint/bound-session-store.mjs",
+  "missingOwnerInPriorWrapper": "QUALIFICATION",
+  "actualInstallSequence": [
+    "ROOT",
+    "QUALIFICATION",
+    "RUNTIME",
+    "CONTROL_CONVERSATIONS"
+  ],
+  "installFlags": [
+    "ci",
+    "--ignore-scripts",
+    "--no-audit",
+    "--no-fund",
+    "--loglevel=error",
+    "--progress=false"
+  ],
+  "processExitCode": 0,
+  "completionCode": "PR193_COLD_CANONICAL_DEPENDENCIES_COMPLETE",
+  "privateInputsRead": false,
+  "awsCalls": false,
+  "helperSha256": "7ac62ebd3324c31b551b3fa75a450ad122fd54de8fe2351bc29d678ad6545f1a",
+  "publicInputsSha256": "01ca154e42609bf3327e0947fc2d61d9a3660d8b18af7a4326c57cc188d38889",
+  "coldDriverSha256": "65b770d43ed81d712cec8dbedf1228bd10b180617fa008e799ae6b3eb9733bdc",
+  "locks": [
+    {
+      "path": "package-lock.json",
+      "sha256": "4a18a2e5eeb672758df381eba55653da2dc0d9e9ab26e3f6f7943ad19120753c"
+    },
+    {
+      "path": "apps/worker/qualification/package-lock.json",
+      "sha256": "93e3c41b6c1663e3bdcae9243f5939ba435f7feb640e8665ddcc8fe1aa261def"
+    },
+    {
+      "path": "apps/runtime/package-lock.json",
+      "sha256": "4de8254a956ef18c4de43becdb3544a56013c2be0421884636739dcaa03c23c9"
+    },
+    {
+      "path": "apps/control/conversations/package-lock.json",
+      "sha256": "3225d67c562631322a1ca6a6ef74f8f246975cdad2120e107acd9840670e98e2"
+    }
+  ]
+}

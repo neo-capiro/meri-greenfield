@@ -132,27 +132,41 @@ function Initialize-Pr193PublicInputs {
 function Initialize-Pr193CanonicalDependencies {
     param([string]$Node, [string]$Source, [string]$Git)
     $nodeEnvironment = @{ NODE_OPTIONS=$null; NODE_PATH=$null }
-    # Keep argv[1] inert: canonical modules use it to distinguish CLI execution from import.
-    $probeCode = 'import {pathToFileURL} from "node:url";try{await import(pathToFileURL(process.argv[2]).href);await import(pathToFileURL(process.argv[3]).href)}catch(e){if(e.code==="ERR_MODULE_NOT_FOUND")process.stdout.write(String(e.message));process.exit(1)}'
-    $modules = @((Join-Path $Source 'infra/product-preview/first-chat/render-material.mjs'), (Join-Path $Source 'infra/product-preview/first-chat/stage3-deploy.mjs'))
+    $probePath = Join-Path $PSScriptRoot 'Pr193DependencyProbe.mjs'
+    $owners = @{ ROOT='.'; RUNTIME='apps/runtime'; CONVERSATION='apps/worker/conversation';
+        CONTROL_CONVERSATIONS='apps/control/conversations'; QUALIFICATION='apps/worker/qualification'; ARTIFACT_STORAGE='apps/artifacts/storage' }
+    $reasons = @('NATIVE_IMPORT_FAILURE','PACKAGE_EXPORTS_REFUSED','IMPORT_SYNTAX_REFUSED','IMPORT_OTHER_REFUSED',
+        'MISSING_PACKAGE_UNATTRIBUTED','IMPORTER_UNVERIFIED','IMPORTER_OUTSIDE_SOURCE','OWNER_PATH_UNVERIFIED',
+        'OWNER_LOCK_UNVERIFIED','TRANSITIVE_PACKAGE_UNDECLARED','TRANSITIVE_OWNER_UNMAPPED','MISSING_OWNER_UNMAPPED',
+        'PROBE_ARGUMENTS_REFUSED','PROBE_INTERNAL_REFUSED')
     $installed = @{}
-    for ($attempt=0; $attempt -lt 5; $attempt++) {
-        $probe = Invoke-Pr193Captured $Node (@('--input-type=module','--eval',$probeCode,'pr193-dependency-probe') + $modules) $Source 120 $nodeEnvironment
-        if ($probe.ExitCode -eq 0) { Assert-Pr193Source $Git $Source; return }
-        # The missing import's source file selects only these existing lockfile owners.
-        $owner = $null
-        foreach ($prefix in @('apps/worker/conversation','apps/control/conversations','apps/runtime','packages/contracts')) {
-            if ($probe.Stdout.Replace('\','/').Contains('/' + $prefix + '/')) { $owner = $prefix; break }
+    for ($attempt=0; $attempt -le $owners.Count; $attempt++) {
+        $probe = Invoke-Pr193Captured $Node @($probePath,'--source',$Source) $Source 120 $nodeEnvironment
+        if ($probe.Stdout.Length -gt 2048) { throw 'PR193_DEPENDENCY_DIAGNOSTIC_REFUSED' }
+        try { $diagnostic = $probe.Stdout | ConvertFrom-Json -ErrorAction Stop } catch { throw 'PR193_DEPENDENCY_DIAGNOSTIC_REFUSED' }
+        $keys = @($diagnostic.PSObject.Properties.Name | Sort-Object) -join ','
+        if ($diagnostic.schemaVersion -ne 1) { throw 'PR193_DEPENDENCY_DIAGNOSTIC_REFUSED' }
+        if ($probe.ExitCode -eq 0 -and $diagnostic.status -eq 'READY' -and $keys -eq 'schemaVersion,status') {
+            Assert-Pr193Source $Git $Source; return
         }
-        if ($owner -eq 'packages/contracts') { $owner = '.' }
-        if ($null -eq $owner -or $installed.ContainsKey($owner)) { throw 'PR193_CANONICAL_DEPENDENCIES_REFUSED' }
-        $prefixPath = Join-Path $Source $owner
+        if ($probe.ExitCode -eq 1 -and $diagnostic.status -eq 'REFUSED' -and $keys -eq 'reason,schemaVersion,status' -and $reasons -contains $diagnostic.reason) {
+            throw ('PR193_DEPENDENCY_' + $diagnostic.reason)
+        }
+        if ($probe.ExitCode -ne 1 -or $diagnostic.status -ne 'MISSING' -or $keys -ne 'category,owner,package,schemaVersion,status' -or
+            @('ESM_MODULE_MISSING','CJS_MODULE_MISSING') -notcontains $diagnostic.category -or
+            -not $owners.ContainsKey([string]$diagnostic.owner) -or $diagnostic.package -notmatch '^(?:@[a-z0-9._-]+/)?[a-z0-9._-]+$') {
+            throw 'PR193_DEPENDENCY_DIAGNOSTIC_REFUSED'
+        }
+        $owner = [string]$diagnostic.owner
+        if ($installed.ContainsKey($owner)) { throw ('PR193_DEPENDENCY_STILL_MISSING_' + $owner) }
+        $prefixPath = Join-Path $Source $owners[$owner]
         if (-not (Test-Path -LiteralPath (Join-Path $prefixPath 'package-lock.json'))) { throw 'PR193_LOCKFILE_REQUIRED' }
         $npmCli = Join-Path ([IO.Path]::GetDirectoryName($Node)) 'node_modules/npm/bin/npm-cli.js'
         if (-not (Test-Path -LiteralPath $npmCli -PathType Leaf)) { throw 'PR193_NPM_CLI_REQUIRED' }
+        Write-Output ('PR193_DEPENDENCY_INSTALL_' + $owner)
         $install = Invoke-Pr193Captured $Node @($npmCli,'ci','--prefix',$prefixPath,'--ignore-scripts','--no-audit','--no-fund','--loglevel=error','--progress=false') $Source 600 $nodeEnvironment
-        if ($install.ExitCode -ne 0) { throw 'PR193_LOCKED_INSTALL_REFUSED' }
+        if ($install.ExitCode -ne 0) { throw ('PR193_DEPENDENCY_INSTALL_FAILED_' + $owner) }
         $installed[$owner] = $true
     }
-    throw 'PR193_CANONICAL_DEPENDENCIES_REFUSED'
+    throw 'PR193_DEPENDENCY_ATTEMPT_LIMIT'
 }
