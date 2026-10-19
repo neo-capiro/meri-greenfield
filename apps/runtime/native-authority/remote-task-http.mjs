@@ -17,7 +17,7 @@ export function createRemoteNativeTaskApplication(configuration){
  const authorizer=c.preparationAuthorizer,prepareAuthority=authorizer&&storageMethod(authorizer,'prepare'),verifyAuthority=authorizer&&storageMethod(authorizer,'verify'),startAuthority=authorizer&&storageMethod(authorizer,'start'),startedAuthority=authorizer&&Object.hasOwn(authorizer,'started')?storageMethod(authorizer,'started'):undefined;
  const admittedAuthority=c.parkedWorkspace&&authorizer?storageMethod(authorizer,'admitted'):undefined;if(c.parkedWorkspace&&!admittedAuthority)throw remoteFault();
  const policy=!legacy?data(own(c.descriptorPolicy,['workspace','command','configParentDirectory','secureStorageDirectory'])):null;
- let state='pristine',pins,ack,processPort,configurationTree,ended=false,exitCode=null,signalCode=null,queued=0,outputSequence=0,inputSequence=0,lastInput,lastOutput,pendingWriter=false,pendingReader=false,stopPromise;const output=[],waiters=new Set();
+ let state='pristine',pins,ack,processPort,configurationTree,ended=false,exited=false,stdoutEnded=false,exitCode=null,signalCode=null,queued=0,outputSequence=0,inputSequence=0,lastInput,lastOutput,pendingWriter=false,pendingReader=false,stopPromise;const output=[],waiters=new Set();
  const reply=(value,status=200)=>Response.json(value,{status,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
  const notify=()=>{for(const resolve of waiters)resolve();waiters.clear();};
  async function stop(){if(stopPromise)return stopPromise;if(state!=='unknown')state='closing';stopPromise=(async()=>{let receipt;if(!task)receipt={physicalStopProven:false,notAllocated:true};else{await task.close();if(task.status().supervisorPid===null)receipt={physicalStopProven:false,notAllocated:true};else{receipt=assertNativeExecution(await task.inspect(original),original);if(receipt.state!=='stopped'||!receipt.physicalStopProven)throw remoteFault();}}if(state!=='unknown')state='stopped';ended=true;notify();return {original,receipt};})().catch(error=>{state='unknown';notify();throw error;});stopPromise.catch(()=>{});return stopPromise;}
@@ -33,8 +33,16 @@ export function createRemoteNativeTaskApplication(configuration){
     if(state!=='preparing'||signal.aborted||now()>=original.expiresAtMs)throw remoteFault();const made=c.nativeFactory({original,descriptor:d,ack});if(types.isPromise(made)){Promise.prototype.then.call(made,async late=>{try{const bound=own(late,['task','launchConfiguration']);await storageMethod(bound.task,'close')();}catch{}},()=>{}).catch(()=>{});throw remoteFault();}const bound=own(made,['task','launchConfiguration']);task=bound.task;p=compileNativeLaunch(bound.launchConfiguration);matchNativeLaunch(d,p);
     if(hash(p.binding)!==hash(original.binding)||p.expiresAtMs!==original.expiresAtMs)throw remoteFault();verifySdkConfiguration(tree,configs());
    }
-   processPort=task.spawnClaudeCodeProcess(d);processPort.stdout.on('data',raw=>{if(['closing','stopped'].includes(state))return;const bytes=Buffer.from(raw);for(let at=0;at<bytes.length;at+=limits.maxFrameBytes){const part=bytes.subarray(at,at+limits.maxFrameBytes);queued+=part.length;if(queued>limits.maxBufferedBytes){state='unknown';void stop().catch(()=>{});return;}output.push(Buffer.from(part));}notify();});
-   processPort.stdout.on('error',()=>{if(['closing','stopped'].includes(state))return;state='unknown';notify();void stop().catch(()=>{});});processPort.on('exit',(code,signal)=>{ended=true;exitCode=code;signalCode=signal;notify();});await fresh(signal);if(state!=='preparing'||signal.aborted)throw remoteFault();state='prepared';return {original,...pins,...(ack?{ack}:{})};
+   processPort=task.spawnClaudeCodeProcess(d);stdoutEnded=processPort.stdout.readableEnded===true;
+   const outputFailed=()=>{if(['closing','stopped'].includes(state))return;state='unknown';notify();void stop().catch(()=>{});};
+   // Exit arrives on IPC independently of stdout. Natural completion needs both;
+   // proven explicit stop retains its separate terminal path above.
+   processPort.stdout.on('end',()=>{stdoutEnded=true;ended ||= exited;notify();});
+   processPort.stdout.on('error',outputFailed);processPort.stdout.on('close',()=>{if(!stdoutEnded)outputFailed();});
+   processPort.on('exit',(code,signal)=>{exited=true;ended ||= stdoutEnded;exitCode=code;signalCode=signal;notify();});
+   if(processPort.stdout.destroyed&&!stdoutEnded)outputFailed();
+   processPort.stdout.on('data',raw=>{if(['closing','stopped'].includes(state))return;const bytes=Buffer.from(raw);for(let at=0;at<bytes.length;at+=limits.maxFrameBytes){const part=bytes.subarray(at,at+limits.maxFrameBytes);queued+=part.length;if(queued>limits.maxBufferedBytes){state='unknown';void stop().catch(()=>{});return;}output.push(Buffer.from(part));}notify();});
+   await fresh(signal);if(state!=='preparing'||signal.aborted)throw remoteFault();state='prepared';return {original,...pins,...(ack?{ack}:{})};
   }catch(error){if(!['closing','stopped'].includes(state))state='unknown';try{await stop();}catch{}throw error;}
  }
  async function operation(name,request,signal){

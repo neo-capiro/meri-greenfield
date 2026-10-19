@@ -4,10 +4,10 @@ import {createRemoteNativeTaskApplication} from '../remote-task-http.mjs';import
 import {createIndependentNativeTask} from '../independent-task.mjs';
 import {createExecutionBinding} from '../../../control/conversations/execution-boundary.mjs';
 const sha=b=>createHash('sha256').update(b).digest('hex'),taskToken='synthetic-task-only',controlToken='synthetic-control-only';
-function fixture(t,{real=false,prepared=false,dispatch=true,physicalWorkspace=false}={}){const root=mkdtempSync(join(tmpdir(),'meri-remote-task-')),workspace=join(root,'workspace'),configDirectory=join(root,'config');mkdirSync(workspace);mkdirSync(configDirectory);t.after(()=>rmSync(root,{recursive:true,force:true}));const {binding,target}=continuationFixture();const command=realpathSync(process.execPath),args=[new URL('./launcher-child.mjs',import.meta.url).pathname,workspace,configDirectory,'11111111-1111-4111-8111-000000000005','normal'],env={CLAUDE_CONFIG_DIR:configDirectory,CLAUDE_SECURESTORAGE_CONFIG_DIR:configDirectory},descriptor={command,args,cwd:workspace,env},executionKey=hash(binding),original={binding,executionKey,executionId:executionKey,planSha256:hash(descriptor),expiresAtMs:Date.now()+30000,versions:target.versions},launchConfiguration={binding,workspace,configDirectory,versions:{sdk:target.versions.sdk,cli:target.versions.cli},expiresAtMs:original.expiresAtMs,executableSha256:sha(readFileSync(command)),launch:{command,args,env},enabled:true};let launches=0,starts=0,booted=false,closed=false;
+function fixture(t,{real=false,prepared=false,dispatch=true,physicalWorkspace=false,cleanupRefused=false}={}){const root=mkdtempSync(join(tmpdir(),'meri-remote-task-')),workspace=join(root,'workspace'),configDirectory=join(root,'config');mkdirSync(workspace);mkdirSync(configDirectory);t.after(()=>rmSync(root,{recursive:true,force:true}));const {binding,target}=continuationFixture();const command=realpathSync(process.execPath),args=[new URL('./launcher-child.mjs',import.meta.url).pathname,workspace,configDirectory,'11111111-1111-4111-8111-000000000005','normal'],env={CLAUDE_CONFIG_DIR:configDirectory,CLAUDE_SECURESTORAGE_CONFIG_DIR:configDirectory},descriptor={command,args,cwd:workspace,env},executionKey=hash(binding),original={binding,executionKey,executionId:executionKey,planSha256:hash(descriptor),expiresAtMs:Date.now()+30000,versions:target.versions},launchConfiguration={binding,workspace,configDirectory,versions:{sdk:target.versions.sdk,cli:target.versions.cli},expiresAtMs:original.expiresAtMs,executableSha256:sha(readFileSync(command)),launch:{command,args,env},enabled:true};let launches=0,starts=0,booted=false,closed=false;
  const events=new EventEmitter(),stdin=new PassThrough(),stdout=new PassThrough(),receipt={binding,executionId:executionKey,planSha256:original.planSha256,expiresAtMs:original.expiresAtMs,versions:original.versions,taskId:'synthetic-task',state:'executing',physicalStopProven:false};
  const task=real?createIndependentNativeTask({original,launchConfiguration,deferredSpawn:true,maxRequestMs:8000}):{launch:async()=>{launches++;booted=true;return receipt;},startPreparedProcess:async()=>{starts++;},spawnClaudeCodeProcess:()=>({stdin,stdout,on:(...a)=>events.on(...a)}),status:()=>({booted,supervisorPid:booted?10:null}),inspect:async()=>closed?({...receipt,state:'stopped',physicalStopProven:true}):receipt,retire:async()=>({...receipt,state:'stopped',physicalStopProven:true}),close:async()=>{closed=true;},readiness:async()=>{},registration:{read:async v=>({binding:v.binding,key:v.key})},workspace:{restore:async({signal,...v})=>v,verify:async({signal,...v})=>v}};
- const taskArn='arn:aws:ecs:us-east-1:967807252336:task/synthetic/'+'a'.repeat(32),preparationId='11111111-1111-4111-8111-000000000009';let factoryCalls=0,startedCalls=0,admittedCalls=0,authorityCurrent=true,admittedHook=async()=>{},prepareHook=async()=>{};const acknowledgment=pins=>({original,descriptorSha256:pins.descriptorSha256,configTreeSha256:pins.configTreeSha256,preparationId,taskArn,checkedAtMs:Date.now(),expiresAtMs:original.expiresAtMs});const authorizer={prepare:async pins=>{await prepareHook();return acknowledgment(pins);},verify:async pins=>{if(!authorityCurrent)throw Error('original-authority-lost');return acknowledgment(pins);},start:async pins=>{if(dispatch)await task.launch(original);return {...acknowledgment(pins),dispatch};},started:async pins=>{startedCalls++;return acknowledgment(pins);},admitted:async()=>{admittedCalls++;await admittedHook();}};const app=createRemoteNativeTaskApplication({original,...(prepared?{preparationAuthorizer:authorizer,taskArn,descriptorPolicy:{workspace,command,configParentDirectory:root,secureStorageDirectory:configDirectory},nativeFactory:()=>{factoryCalls++;return {task,launchConfiguration};},parkedWorkspace:physicalWorkspace?createSupervisorWorkspace({binding,workspace,expiresAtMs:original.expiresAtMs}):task.workspace}:{task,launchConfiguration}),controlCapabilitySha256:sha(controlToken),taskCapabilitySha256:sha(taskToken),enabled:true});t.after(async()=>{await app.close();});const fetchImpl=(url,init)=>app.handle(new Request(url,init)),channel={original,origin:'https://synthetic-task.invalid',fetchImpl};const controller=createRemoteNativeTaskController({...channel,credential:controlToken}),client=createRemoteSdkProcessClient({...channel,credential:taskToken});return {root,workspace,configDirectory,original,descriptor,app,controller,client,task,stdout,stdin,receipt,counts:()=>({launches,starts}),preparationCounts:()=>({factoryCalls,startedCalls,admittedCalls}),loseAuthority:()=>{authorityCurrent=false;},onAdmitted:hook=>{admittedHook=hook;},onPrepare:hook=>{prepareHook=hook;},fetchImpl};}
+ const taskArn='arn:aws:ecs:us-east-1:967807252336:task/synthetic/'+'a'.repeat(32),preparationId='11111111-1111-4111-8111-000000000009';let factoryCalls=0,startedCalls=0,admittedCalls=0,authorityCurrent=true,admittedHook=async()=>{},prepareHook=async()=>{};const acknowledgment=pins=>({original,descriptorSha256:pins.descriptorSha256,configTreeSha256:pins.configTreeSha256,preparationId,taskArn,checkedAtMs:Date.now(),expiresAtMs:original.expiresAtMs});const authorizer={prepare:async pins=>{await prepareHook();return acknowledgment(pins);},verify:async pins=>{if(!authorityCurrent)throw Error('original-authority-lost');return acknowledgment(pins);},start:async pins=>{if(dispatch)await task.launch(original);return {...acknowledgment(pins),dispatch};},started:async pins=>{startedCalls++;return acknowledgment(pins);},admitted:async()=>{admittedCalls++;await admittedHook();}};const app=createRemoteNativeTaskApplication({original,...(prepared?{preparationAuthorizer:authorizer,taskArn,descriptorPolicy:{workspace,command,configParentDirectory:root,secureStorageDirectory:configDirectory},nativeFactory:()=>{factoryCalls++;return {task,launchConfiguration};},parkedWorkspace:physicalWorkspace?createSupervisorWorkspace({binding,workspace,expiresAtMs:original.expiresAtMs}):task.workspace}:{task,launchConfiguration}),controlCapabilitySha256:sha(controlToken),taskCapabilitySha256:sha(taskToken),enabled:true,now:()=>Date.now()});t.after(async()=>{if(cleanupRefused)await assert.rejects(app.close(),/REMOTE_TASK_REFUSED/);else await app.close();});const fetchImpl=(url,init)=>app.handle(new Request(url,init)),channel={original,origin:'https://synthetic-task.invalid',fetchImpl};const controller=createRemoteNativeTaskController({...channel,credential:controlToken}),client=createRemoteSdkProcessClient({...channel,credential:taskToken});return {root,workspace,configDirectory,original,descriptor,app,controller,client,task,stdout,stdin,receipt,events,counts:()=>({launches,starts}),preparationCounts:()=>({factoryCalls,startedCalls,admittedCalls}),loseAuthority:()=>{authorityCurrent=false;},onAdmitted:hook=>{admittedHook=hook;},onPrepare:hook=>{prepareHook=hook;},fetchImpl};}
 async function post(x,op,token,body={}){return x.fetchImpl('https://synthetic-task.invalid/v1/native-task/'+op,{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+token},body:JSON.stringify({original:x.original,...body})});}
 test('control task ports unwrap canonical receipts; control cannot prepare/start/bytes and task cannot launch',async t=>{const x=fixture(t);for(const op of ['prepare','start','stdin','stdout'])assert.equal((await post(x,op,controlToken)).status,403);for(const op of ['launch','inspect','registration','capture','readiness'])assert.equal((await post(x,op,taskToken)).status,403);assert.deepEqual(await x.controller.inspect(x.original),x.receipt);await x.controller.readiness();assert.deepEqual(await x.controller.registration.read({binding:x.original.binding,key:{projectKey:'synthetic',sessionId:'11111111-1111-4111-8111-000000000005'}}),{binding:x.original.binding,key:{projectKey:'synthetic',sessionId:'11111111-1111-4111-8111-000000000005'}});assert.equal((await x.controller.retire(x.original)).physicalStopProven,true);});
 test('controller launch boots original once; worker start uses booted original without duplicate launch',async t=>{const x=fixture(t);assert.equal((await post(x,'prepare',taskToken,{descriptor:x.descriptor})).status,200);assert.deepEqual(await x.controller.launch(x.original),x.receipt);assert.equal((await post(x,'start',taskToken,{descriptorSha256:hash(x.descriptor)})).status,200);assert.deepEqual(x.counts(),{launches:1,starts:1});assert.equal((await post(x,'start',taskToken,{descriptorSha256:hash(x.descriptor)})).status,403);});
@@ -56,3 +56,72 @@ test('late stdout close error cannot overwrite already proven original stop',asy
 test('pending stdin completion after original stop refuses ACK without discarding physical proof',async t=>{const x=fixture(t,{prepared:true});await post(x,'prepare',taskToken,{descriptor:x.descriptor});await post(x,'start',taskToken,{descriptorSha256:hash(x.descriptor)});const entered=Promise.withResolvers();let complete;x.stdin.write=(bytes,callback)=>{complete=callback;entered.resolve();};const bytes=Buffer.from('exit\n'),pending=post(x,'stdin',taskToken,{sequence:0,end:false,frame:{bytes:bytes.length,sha256:sha(bytes),base64:bytes.toString('base64')}});await entered.promise;await x.app.close();complete();assert.equal((await pending).status,403);assert.equal(x.app.status().inputSequence,0);assert.equal(x.app.status().state,'stopped');assert.equal((await x.controller.bindingRead()).native.physicalStopProven,true);});
 
 test('late stdout data after original stop cannot discard physical proof or buffer bytes',async t=>{const x=fixture(t,{prepared:true});await post(x,'prepare',taskToken,{descriptor:x.descriptor});await post(x,'start',taskToken,{descriptorSha256:hash(x.descriptor)});await x.app.close();x.stdout.emit('data',Buffer.alloc(8388609));assert.equal(x.app.status().queuedBytes,0);assert.equal(x.app.status().state,'stopped');assert.equal((await x.controller.bindingRead()).native.physicalStopProven,true);});
+
+async function startedOutput(t,options){
+ const x=fixture(t,options);
+ assert.equal((await post(x,'prepare',taskToken,{descriptor:x.descriptor})).status,200);
+ assert.equal((await post(x,'start',taskToken,{descriptorSha256:hash(x.descriptor)})).status,200);
+ return x;
+}
+async function readOutput(x,sequence){
+ const response=await post(x,'stdout',taskToken,{sequence});assert.equal(response.status,200);return response.json();
+}
+const outputText=reply=>Buffer.from(reply.frame.base64,'base64').toString();
+
+test('stdout completion: exit before final bytes waits for EOF and delivers the final SDK result',async t=>{
+ const x=await startedOutput(t),pending=readOutput(x,0);
+ await new Promise(resolve=>setImmediate(resolve));
+ x.events.emit('exit',0,null);
+ const first=await pending;assert.equal(first.end,false);assert.equal(first.frame.bytes,0);
+ const result='{"type":"result","subtype":"success","is_error":false}\n';
+ const ended=once(x.stdout,'end');x.stdout.end(result);await ended;
+ const final=await readOutput(x,1);assert.equal(outputText(final),result);assert.equal(final.end,true);assert.equal(final.exitCode,0);
+ assert.deepEqual(await readOutput(x,1),final,'terminal replay retains the exact frame');
+ assert.equal(x.app.status().queuedBytes,0);
+});
+
+test('stdout completion: EOF before exit delivers bytes without inventing terminal status',async t=>{
+ const x=await startedOutput(t),ended=once(x.stdout,'end');x.stdout.end('final bytes');await ended;
+ const first=await readOutput(x,0);assert.equal(outputText(first),'final bytes');assert.equal(first.end,false);assert.equal(first.exitCode,null);
+ const pending=readOutput(x,1);await new Promise(resolve=>setImmediate(resolve));x.events.emit('exit',7,'SIGTERM');
+ const final=await pending;assert.equal(final.end,true);assert.equal(final.frame.bytes,0);assert.equal(final.exitCode,7);assert.equal(final.signal,'SIGTERM');
+ assert.equal(x.app.status().state,'running','normal autoDestroy close after EOF is not an error');
+});
+
+test('stdout completion: exit and EOF drain every queued frame and preserve sequence replay',async t=>{
+ const x=await startedOutput(t),ended=once(x.stdout,'end');
+ x.stdout.write('first');x.stdout.end('second');await ended;x.events.emit('exit',0,null);
+ const first=await readOutput(x,0);assert.equal(outputText(first),'first');assert.equal(first.end,false);
+ assert.deepEqual(await readOutput(x,0),first);assert.equal(x.app.status().queuedBytes,6);
+ const final=await readOutput(x,1);assert.equal(outputText(final),'second');assert.equal(final.end,true);assert.equal(x.app.status().queuedBytes,0);
+});
+
+test('stdout completion: proven stop drains queued bytes without requiring natural EOF',async t=>{
+ const x=await startedOutput(t);x.stdout.write('retained');
+ const proof=await (await post(x,'stop',taskToken)).json();assert.equal(proof.receipt.physicalStopProven,true);
+ x.events.emit('exit',null,'SIGTERM');
+ const final=await readOutput(x,0);assert.equal(outputText(final),'retained');assert.equal(final.end,true);
+ assert.equal(x.stdout.readableEnded,false);assert.equal(x.app.status().state,'stopped');
+});
+
+test('stdout completion: missing stop proof never publishes terminal output',async t=>{
+ const x=await startedOutput(t,{cleanupRefused:true}),inspect=x.task.inspect;x.task.inspect=async()=>x.receipt;
+ try{assert.equal((await post(x,'stop',taskToken)).status,403);assert.equal(x.app.status().state,'unknown');assert.equal((await post(x,'stdout',taskToken,{sequence:0})).status,403);}
+ finally{x.task.inspect=inspect;/* Failed close remains latched; teardown must retain that failure. */x.app.close().catch(()=>{});}
+});
+
+for(const failure of ['error','close'])test(`stdout completion: premature stream ${failure} refuses clean completion`,async t=>{
+ const x=await startedOutput(t),pending=post(x,'stdout',taskToken,{sequence:0});
+ await new Promise(resolve=>setImmediate(resolve));
+ x.stdout.destroy(failure==='error'?Error('synthetic pipe failure'):undefined);
+ assert.equal((await pending).status,403);assert.equal(x.app.status().state,'unknown');
+ assert.equal((await post(x,'stdout',taskToken,{sequence:0})).status,403);
+});
+
+test('stdout completion: cancellation and original expiry still bound incomplete output',async t=>{
+ const x=await startedOutput(t),abort=new AbortController();
+ x.events.emit('exit',0,null);
+ const pending=x.fetchImpl('https://synthetic-task.invalid/v1/native-task/stdout',{method:'POST',signal:abort.signal,headers:{'content-type':'application/json',authorization:'Bearer '+taskToken},body:JSON.stringify({original:x.original,sequence:0})});
+ await new Promise(resolve=>setImmediate(resolve));abort.abort();assert.equal((await pending).status,403);assert.equal(x.app.status().outputSequence,0);
+ t.mock.method(Date,'now',()=>x.original.expiresAtMs);assert.equal((await post(x,'stdout',taskToken,{sequence:0})).status,403);
+});
