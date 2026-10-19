@@ -21,7 +21,7 @@ test('runtime preparation retains its stage and allowed code through generic act
    throw Error('unexpected publication');
   }},query(){queries++;throw Error('No SDK Query allowed');}});
   await assert.rejects(withRunnerDiagnostics(()=>execute({binding}),{write:line=>lines.push(line)}),{code:'EXECUTION_FAILED'});
-  assert.deepEqual(lines,['RUNNER_RUNTIME_FAILED stage=runtime-admission code=NATIVE_UNAVAILABLE\n']);
+  assert.deepEqual(lines,['RUNNER_FIRST_FAILURE origin=runtime code=NATIVE_UNAVAILABLE\n','RUNNER_RUNTIME_FAILED stage=runtime-admission code=NATIVE_UNAVAILABLE\n']);
   assert.equal(queries,0);assert.equal(saved.run.state,'queued');assert.deepEqual(operations,['runner/load','runner/runtime']);
 });
 
@@ -32,7 +32,7 @@ test('first failure survives cleanup replacement without emitting error text, dy
   try{await atRunnerStage('remote-listen',async()=>{throw initial;});}
   finally{markRunnerStage('remote-cleanup');throw cleanup;}
  },{write:line=>lines.push(line)}),error=>error===cleanup);
- assert.deepEqual(lines,['RUNNER_RUNTIME_FAILED stage=remote-listen code=UNKNOWN\n']);
+ assert.deepEqual(lines,['RUNNER_FIRST_FAILURE origin=runtime code=UNKNOWN\n','RUNNER_RUNTIME_FAILED stage=remote-listen code=UNKNOWN\n']);
  const accessor=Object.defineProperty({},'code',{get(){throw Error('code getter must not run');}});
  await assert.rejects(withRunnerDiagnostics(()=>atRunnerStage('remote-tls',async()=>{throw accessor;}),{write:line=>lines.push(line)}),error=>error===accessor);
  assert.equal(lines.at(-1),'RUNNER_RUNTIME_FAILED stage=remote-tls code=UNKNOWN\n');
@@ -45,7 +45,7 @@ test('concurrent task contexts remain independent and successful completion emit
  await ready.promise;
  await assert.rejects(withRunnerDiagnostics(()=>atRunnerStage('binding-bootstrap',async()=>{throw Object.assign(Error('second'),{code:'TASK_BOOTSTRAP_REFUSED'});}),{write:line=>lines.push(line)}),{code:'TASK_BOOTSTRAP_REFUSED'});
  resume.resolve();await firstCheck;
- assert.deepEqual(lines,['RUNNER_RUNTIME_FAILED stage=binding-bootstrap code=TASK_BOOTSTRAP_REFUSED\n','RUNNER_RUNTIME_FAILED stage=remote-listen code=EADDRINUSE\n']);
+ assert.deepEqual(lines,['RUNNER_FIRST_FAILURE origin=runtime code=TASK_BOOTSTRAP_REFUSED\n','RUNNER_RUNTIME_FAILED stage=binding-bootstrap code=TASK_BOOTSTRAP_REFUSED\n','RUNNER_FIRST_FAILURE origin=runtime code=EADDRINUSE\n','RUNNER_RUNTIME_FAILED stage=remote-listen code=EADDRINUSE\n']);
  assert.equal(await withRunnerDiagnostics(async()=>{markRunnerStage('remote-cleanup');return 'completed';},{write:()=>assert.fail('success must not report')}),'completed');
 });
 
@@ -54,7 +54,7 @@ test('CLI retains exit 3 and RUNTIME_UNAVAILABLE while adding the preflight diag
  t.after(()=>rm(root,{recursive:true,force:true}));await writeFile(file,JSON.stringify(runner));
  t.mock.method(process.stderr,'write',line=>{lines.push(String(line));return true;});
  assert.equal(await main(['conversation-runner','--config',file]),3);
- assert.deepEqual(lines,['RUNNER_RUNTIME_FAILED stage=runner-preflight code=ENOENT\n','RUNTIME_UNAVAILABLE\n']);
+ assert.deepEqual(lines,['RUNNER_FIRST_FAILURE origin=runtime code=ENOENT\n','RUNNER_RUNTIME_FAILED stage=runner-preflight code=ENOENT\n','RUNTIME_UNAVAILABLE\n']);
 });
 
 test('diagnostic write failure cannot change the original rejection',async()=>{

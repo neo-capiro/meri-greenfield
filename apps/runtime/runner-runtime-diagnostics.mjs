@@ -3,6 +3,7 @@ import {AsyncLocalStorage} from 'node:async_hooks';
 import {types} from 'node:util';
 
 const context=new AsyncLocalStorage();
+const origins=new Set(['runtime','sdk-prepare','native-prepare','native-start']);
 const stages=new Set(['module-import','runner-preflight','capability-load','binding-bootstrap','remote-module-import','admission-wait','activity',
  'runtime-prepare','runtime-admission','sdk-session','sdk-directories','skill-plugin','runner-cleanup',
  'activity-input','activity-load','activity-policy','activity-setup','activity-starting','activity-running','activity-query',
@@ -16,7 +17,10 @@ const codes=new Set(['UNKNOWN','ENOENT','EACCES','EPERM','ENOTDIR','EEXIST','EAD
  'EXECUTION_FAILED','EXECUTION_STOPPED','SDK_CLEANUP_UNKNOWN','KICKOFF_UNKNOWN','NATIVE_EXECUTION_KICKOFF_UNKNOWN','TASK_ROUTER_REFUSED','TASK_ROUTER_UNKNOWN',
  'RUN_NOT_QUEUED','CONTINUATION_REFUSED','CONTINUATION_UNAVAILABLE','RUNTIME_PIN_REFUSED','SKILL_PIN_REFUSED','SKILL_RUNTIME_REFUSED',
  'SDK_STREAM_REFUSED','SESSION_PERSISTENCE_FAILED','OUTPUT_LIMIT','SDK_RESULT_DUPLICATE','SDK_EXECUTION_FAILED','SDK_RESULT_MISSING',
- 'OUTPUT_PUBLICATION_UNAVAILABLE','OBJECTIVE_COMPLETION_UNAVAILABLE','STORE_UNAVAILABLE','STORE_COMMIT_UNKNOWN']);
+ 'OUTPUT_PUBLICATION_UNAVAILABLE','OBJECTIVE_COMPLETION_UNAVAILABLE','STORE_UNAVAILABLE','STORE_COMMIT_UNKNOWN',
+ 'REMOTE_TASK_REFUSED','NATIVE_EXECUTION_SDK_PREPARATION_CONFIGURATION','NATIVE_EXECUTION_SDK_PREPARATION_REFUSED',
+ 'NATIVE_EXECUTION_SDK_PREPARATION_BINDING_UNKNOWN','NATIVE_EXECUTION_SDK_PREPARATION_NO_LAUNCH',
+ 'NATIVE_EXECUTION_SDK_PREPARATION_CLEANUP_UNKNOWN','NATIVE_EXECUTION_SDK_ITERATOR_REUSED']);
 
 function codeOf(error){
  if(error===null||typeof error!=='object'||types.isProxy(error))return 'UNKNOWN';
@@ -26,18 +30,23 @@ function codeOf(error){
 export function markRunnerStage(stage){
  const active=context.getStore();if(active)active.stage=stages.has(stage)?stage:'runner-preflight';
 }
-export function captureRunnerFailure(error){
- const active=context.getStore();if(active&&active.failure===undefined)active.failure={stage:active.stage,code:codeOf(error)};
+function emit(active,line){try{Promise.resolve(active.write(line)).catch(()=>{});}catch{}}
+/** First observed terminal error, not proof of an unexpected cause or provider contact. */
+export function captureRunnerFailure(error,origin='runtime'){
+ const active=context.getStore();if(active&&active.failure===undefined){
+  active.failure=Object.freeze({stage:active.stage,origin:origins.has(origin)?origin:'runtime',code:codeOf(error)});
+  emit(active,`RUNNER_FIRST_FAILURE origin=${active.failure.origin} code=${active.failure.code}\n`);
+ }
 }
 /** A nested failure is captured before activity translation or cleanup can replace it. */
 export async function atRunnerStage(stage,operation){
  markRunnerStage(stage);try{return await operation();}catch(error){captureRunnerFailure(error);throw error;}
 }
 export async function withRunnerDiagnostics(operation,{write=line=>process.stderr.write(line)}={}){
- return context.run({stage:'module-import'},async()=>{
+ return context.run({stage:'module-import',write},async()=>{
   try{return await operation();}catch(error){
    captureRunnerFailure(error);const {stage,code}=context.getStore().failure;
-   try{write(`RUNNER_RUNTIME_FAILED stage=${stage} code=${code}\n`);}catch{}
+   emit(context.getStore(),`RUNNER_RUNTIME_FAILED stage=${stage} code=${code}\n`);
    throw error;
   }
  });

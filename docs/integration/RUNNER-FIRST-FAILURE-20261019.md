@@ -1,0 +1,39 @@
+# Runner first-failure diagnostic correction
+
+## Authorized scope and outline
+
+- Base: exact deployed `5b395d4ce9218b872b21c420dc00a3af31739824`.
+- Branch: `fix/runner-first-failure-20261019`; separate worktree. PR175 is unchanged.
+- Source only: no build, deploy, model call, credential access, authorization or security change.
+- Canonical diagnostic owner: `apps/runtime/runner-runtime-diagnostics.mjs`. Retain its task-local first failure and existing final diagnostic; emit a constant-only first-capture event immediately.
+- Capture the original SDK preparation error before cleanup aggregation in `native-authority/sdk-query-preparation.mjs`. Capture failed prepare/start at their existing rejecting owner boundary in `native-authority/remote-task-client.mjs`, using a local fixed origin and excluding already closed/aborted startup.
+- Preserve the same returned/thrown errors, cleanup order, request data, authorization checks, deadlines, retries and shutdown/retirement waits. No generic channel logging, SDK replacement, new transport or diagnostic payloads.
+- New event: `RUNNER_FIRST_FAILURE origin=<fixed allowlisted origin> code=<fixed allowlisted code>`. No arbitrary message, stack, identifier, prompt, descriptor, payload or credential field. The existing final `RUNNER_RUNTIME_FAILED stage=... code=...` remains separate.
+- Focused checks: known preparation/remote failures, preparation-plus-cleanup aggregation, immediate capture while cleanup is pending, one immutable first record, redaction/hostile error values, concurrent contexts, unchanged transport/auth/deadline semantics, existing activity and CLI diagnostic behavior. No broad test sweep.
+
+This corrects diagnostic loss and emission timing only. It does not identify or repair the failed live chat's transport, prove provider reach, or establish durable settlement.
+
+## Verification
+
+- Node 24.19.0, sequential focused diagnostic/activity/facade suite: **36/36 passed**.
+- Eight selected existing remote transport contract tests: **8/8 passed**. They retain role separation, request envelope, distinct startup/ordinary deadlines, absolute cutoff and cancellation, late-response retirement, positive-stop ordering and refusal of late start.
+- The 12 new tests use the actual preparation function and remote client with only a mocked adopted SDK and in-memory transport. They check native prepare/start refusal, canonical SDK no-launch/preparation refusal, an already assembled aggregate remaining UNKNOWN, original error retention before a held cleanup aggregate, silent success, cancellation, cutoff, immutable single capture, hostile values and writer failure.
+- Existing activity/CLI checks retain publication states, cleanup counts, returned codes, CLI exit 3 and `RUNTIME_UNAVAILABLE`; only the additional first-capture diagnostic is expected.
+- Independent read-only review approved the three production changes and the new test file; `git diff --check` passed. Production changes are limited to the three modules named above. No authorization, request, timeout, retry, process-release or cleanup-return branch changed.
+- First local test attempt was retained: 16 passed / 4 failed because the new worktree lacked the existing conversation SDK dependency link and Node's `assert.rejects` itself inspected a hostile proxy. The test uses an inert rejection envelope now. Second attempt retained: 18 passed / 2 failed because the existing control-conversation Temporal dependency link was also missing. The final run uses the same existing installed dependency paths as the base; no package or lockfile was changed or installed.
+- A command transport disconnect during the second attempt was reconciled by reading its completed log before any rerun. Both failed logs and final passing logs remain in the task's `pr193-one-chat-20261019` evidence directory.
+
+Reproduction commands from the branch root:
+
+```text
+node --experimental-test-module-mocks --test --test-concurrency=1 apps/runtime/test/runner-first-failure.test.mjs apps/runtime/test/runner-runtime-diagnostics.test.mjs apps/runtime/test/activity-runtime-diagnostics.test.mjs apps/runtime/test/runner-kickoff-diagnostic.test.mjs apps/runtime/native-authority/test/runner-query.test.mjs
+node --test --test-concurrency=1 --test-name-pattern="^(control task ports|startup prepare and start|startup stage cutoff|timed out fetch|client close during prepare|client ignores late stdout|stdout refusal during close|stdin refusal)" apps/runtime/native-authority/test/remote-task.test.mjs
+```
+
+## Limits and retained startup evidence
+
+The new event identifies the first observed terminal error at a rejecting boundary. A cancellation can still produce an outer SDK terminal rejection; the native prepare/start origin is suppressed once that client is closed or its spawn signal aborted. Concurrent failures may race to capture first. The event does not prove root cause or provider contact. An already assembled aggregate remains UNKNOWN; its members, cause and message are never inspected.
+
+The paired 37-character startup lines at 22:43:51.818 (control) and 22:43:51.823 (runner), 19 October 2026, remain **UNCLASSIFIED**. A bounded private equality comparison against 26 local first-party/dependency source files found no exact substring match. Only timestamps, length, classification and empty match lists were persisted; raw messages and message digests were not emitted or stored. Local dependency version/source equality is not deployed-byte attestation.
+
+Original task STOPPED evidence, prior startup failures and APP STOP_FAILURE remain unchanged. Current conversation transcript and durable settlement remain pending. This source-only change does not authorize a model call, image build, deployment or security/configuration change.
