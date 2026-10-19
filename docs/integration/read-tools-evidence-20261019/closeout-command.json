@@ -1,0 +1,19 @@
+{
+  "sourceCommit": "0db7732b7a8cbcd703a787fed5e3e1e4e49ac472",
+  "argv": [
+    "node",
+    "--experimental-test-module-mocks",
+    "--test",
+    "--test-concurrency=4",
+    "apps/gateway/general-reads/mount.test.mjs",
+    "apps/gateway/sources/research-legal-legislation/test/search-completion.test.mjs",
+    "apps/runtime/native-authority/general-read-installation/test/phase2-legal.test.mjs",
+    "apps/runtime/native-authority/native-read-credentials/test/resolution-slices.test.mjs",
+    "apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs",
+    "apps/runtime/native-authority/read-delegation/test/approval-facts-projection-source.test.mjs",
+    "apps/runtime/native-authority/read-delegation/test/composed.test.mjs",
+    "apps/runtime/native-authority/test/retained-read-credential-relay.test.mjs",
+    "apps/runtime/native-authority/retained-reads/test/memory-task-ports.test.mjs",
+    "apps/runtime/native-authority/retained-reads/test/mail-task-ports.test.mjs"
+  ]
+}

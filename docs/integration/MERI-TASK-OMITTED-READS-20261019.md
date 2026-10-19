@@ -1,5 +1,13 @@
 # Task and omitted read completion
 
+Test reconciliation outline at receiving base `fde87b6c035261eab7073dbfbc095cd3947693bf`: update the four allocated test modules whose old assertions still withhold the now-eligible legal reference or expect raw client spelling in a Core request that is now bound to the trusted resolved UUID. Keep original raw request hashes, non-client selectors, source coverage and all authorization/revocation/installation negatives. Replace obsolete sibling exclusion with exact source-measurement and actual installation rejection checks, plus a qualified-fixture legal-reference positive. Run only those affected modules; no production behavior or broader suite changes.
+
+Test reconciliation receipt: the four-module focused command below passes **85/85, zero failed/skipped**. Existing negative cases remain; legal-reference source eligibility is now distinguished from its current measured installation. A changed handler source still refuses, overclaimed outer inventories still cannot bypass the underlying gateway installation, and an exact selected-client installed legal reference now succeeds through the prepared runtime. Research/news/outreach Core body assertions now require only `clientId` to use the trusted resolved UUID; all other raw selectors, original request hashes and partial source results remain asserted. The source fixture inventory is thirteen operations across ten families: the thirteenth row is `search_research_sources`, not BD evidence (which has separate focused cases).
+
+Command: `node --test apps/runtime/native-authority/general-read-installation/test/phase2-legal.test.mjs apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs apps/runtime/native-authority/native-read-credentials/test/resolution-slices.test.mjs apps/gateway/sources/research-legal-legislation/test/search-completion.test.mjs`.
+
+The first focused attempt was 80 passed / 2 failed: a missing per-package `zod` dependency symlink prevented the installation test from loading, and the new count assertion initially misidentified the added fixture family. Existing exact dependency symlinks and the correct explicit fixture row resolved these setup/test-expectation errors. The affected legal installation module then passed 4/4 before the final four-module run. No production file, source contract, qualification gate, provider, database or deployment changed in this reconciliation.
+
 Base: `98d3c96a2c944a8211856e98b5bd62e824b4b5f7`. This independent source branch does not advance the frozen image candidate or authorize activation.
 
 ## Implementation outline

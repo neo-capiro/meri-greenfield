@@ -9,6 +9,7 @@ import {applicationFixture,binding,versions,id} from '../../../../control/conver
 import {preparedWorkspace} from '../../test/capability-fixture.mjs';
 import {generalReadFixture,mountReads} from './fixture.mjs';
 const cwd=preparedWorkspace(binding.conversationId),DEFAULT_SENTENCE='No institutional source tool is enabled for this activity.';
+const MAIL_REFS=catalog.operations.filter(d=>d.operation.id.startsWith('mail.')).map(d=>d.operation);
 const runtime=()=>({binding,versions,cwd,proxyUrl:'https://trusted-proxy.invalid',proxyCredential:'synthetic-task-capability',model:'qualified-model-pin',sessionStore:{async load(){return null;},async append(){}},deadlineMs:Date.now()+1000,maxTurns:2,maxCostMicroUSD:1000,maxOutputBytes:1024});
 const skillOptions=name=>({mcpServers:{meri_original_reads:{type:'sdk',name:'meri_original_reads',instance:{close(){}}}},allowedTools:[`mcp__meri_original_reads__${name}`],canUseTool:async n=>n===`mcp__meri_original_reads__${name}`?{behavior:'allow',updatedInput:{}}:{behavior:'deny',message:'Tool unavailable'},hooks:{PreToolUse:[{matcher:'mcp__meri_original_reads__.*',hooks:[async()=>({})]}]}});
 async function reads(){const f=await generalReadFixture();return {f,m:await mountReads(f)};}
@@ -44,9 +45,11 @@ test('the skill and general servers may never expose the same operation; malform
 
 /** Activity with a scripted query and a synthetic general-read port answering for the saved run. */
 async function activity({capabilities,installed=true,skill}={}){
- const f=await applicationFixture();await f.service.submit({credential:f.credential,input:f.input});let n=300,seen,asked=0;
+ const f=await applicationFixture({initialInput:true});
+ await f.service.allocateInput({credential:f.credential,input:f.input});
+ await f.service.submit({credential:f.credential,input:f.input});let n=300,seen,asked=0;
  const runOwner={load:async a=>{const saved=await f.runOwner.load(a);return {...saved,...(capabilities?{capabilities}:{}),...(skill?{request:{...saved.request,skill}}:{})};},append:a=>f.runOwner.append(a)};
- const ops=catalog.operations.filter(d=>d.operation.id.startsWith('mail.')).map(d=>d.operation);
+ const ops=MAIL_REFS;
  const generalReads={async readAvailability(){asked++;const saved=await f.runOwner.load({binding});const at=Date.now();
    return {installation:{installationId:id(80),baseCatalogSha256:canonicalSha256(catalog),executionCatalogSha256:'e'.repeat(64),operations:installed?ops:[],checkedAtMs:at,expiresAtMs:at+60000},
     discovery:{binding,policyRevision:saved.run.scopes[0].policyRevision,operations:ops,checkedAtMs:at,expiresAtMs:at+60000}};},async execute(){throw Error('not called');}};
@@ -55,11 +58,13 @@ async function activity({capabilities,installed=true,skill}={}){
  return {f,run:()=>execute({binding}),options:()=>seen,asked:()=>asked};
 }
 
-test('the activity mounts meri_reads only when policy enables general reads and a read is available',async()=>{
- const on=await activity({capabilities:{generalReads:true}});
+test('the activity mounts only the explicit active profile and keeps per-run availability separate',async()=>{
+ const on=await activity({capabilities:{generalReads:true,activeReadOperations:MAIL_REFS}});
  try{assert.deepEqual(await on.run(),{state:'completed'});const o=on.options();assert.deepEqual(Object.keys(o.mcpServers),['meri_reads']);assert.equal(o.allowedTools.filter(t=>t.startsWith('mcp__meri_reads__')).length,3);assert.equal(o.systemPrompt.includes(DEFAULT_SENTENCE),false);}finally{on.f.close();}
- const none=await activity({capabilities:{generalReads:true},installed:false});
- try{await none.run();assert.equal(none.asked(),1);assert.equal(none.options().mcpServers,undefined);assert.ok(none.options().systemPrompt.includes(DEFAULT_SENTENCE),'no installation receipt: no server, default sentence stays true');}finally{none.f.close();}
+ const none=await activity({capabilities:{generalReads:true,activeReadOperations:MAIL_REFS},installed:false});
+ try{await none.run();assert.equal(none.asked(),1);assert.deepEqual(Object.keys(none.options().mcpServers),['meri_reads']);assert.equal(none.options().allowedTools.filter(t=>t.startsWith('mcp__meri_reads__')).length,3,'the measured profile remains fixed when current installation is unavailable');}finally{none.f.close();}
+ const noActive=await activity({capabilities:{generalReads:true}});
+ try{await noActive.run();assert.equal(noActive.asked(),0);assert.equal(noActive.options().mcpServers,undefined);assert.ok(noActive.options().systemPrompt.includes(DEFAULT_SENTENCE),'an omitted active list never derives authority from the catalog');}finally{noActive.f.close();}
  const off=await activity({capabilities:{auditHooks:true}});
  try{await off.run();assert.equal(off.asked(),0,'policy off: the port is never asked');assert.equal(off.options().mcpServers,undefined);}finally{off.f.close();}
  const absent=await activity();

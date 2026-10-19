@@ -31,9 +31,10 @@ function beforeSource(f){
  for(const invocation of f.state.produced.values()){assert.equal(invocation.reservation_id,null);assert.equal(invocation.arguments_sha256,null);assert.equal(invocation.completion,null);}
 }
 
-test('source slice fixtures enumerate twelve native operations across nine families',()=>{
- assert.equal(SOURCE_SLICE_CASES.length,12);assert.equal(new Set(SOURCE_SLICE_CASES.map(([family])=>family)).size,9);
- assert.equal(new Set(SOURCE_SLICE_CASES.map(([,id])=>id)).size,12);
+test('source slice fixtures enumerate thirteen native operations across ten families including research candidates',()=>{
+ assert.equal(SOURCE_SLICE_CASES.length,13);assert.equal(new Set(SOURCE_SLICE_CASES.map(([family])=>family)).size,10);
+ assert.equal(new Set(SOURCE_SLICE_CASES.map(([,id])=>id)).size,13);
+ assert.ok(SOURCE_SLICE_CASES.some(([family,id])=>family==='research-legal-candidates'&&id==='search_research_sources'));
 });
 
 for(const [family,id,selectors] of [
@@ -125,9 +126,9 @@ test('outreach explicit UUID list preserves raw filters and exact current client
  const scene=nativeFamilyCase('outreach-query','query_outreach'),selected=scene.arguments.clientId;
  const request={clientId:` ${selected} `,status:' draft ',limit:'2.8'},f=await mounted(nativeFamilyCase('outreach-query','query_outreach',{request}));
  try{
-  const out=JSON.parse(await f.invoke());assert.deepEqual(out.result,JSON.parse(JSON.stringify(f.page)));assert.deepEqual(f.wire[0].body,request);
+  const out=JSON.parse(await f.invoke());assert.deepEqual(out.result,JSON.parse(JSON.stringify(f.page)));assert.deepEqual(f.wire[0].body,{...request,clientId:selected});
   assert.deepEqual(f.stateOwner.secretProof.normalizationContext,{clientResolution:{reference:selected,clientId:selected}});
-  assert.equal(f.stateOwner.secretProof.requestSha256,hash(request));assert.equal(Object.hasOwn(out.result,'record'),false);
+  assert.equal(f.stateOwner.secretProof.requestSha256,hash(request));assert.notEqual(f.stateOwner.secretProof.requestSha256,hash(f.wire[0].body));assert.equal(Object.hasOwn(out.result,'record'),false);
   assert.ok(out.result.campaigns.every(row=>row.clientId===selected));assert.equal([...f.state.reservations.values()][0].state,'SETTLED');
  }finally{f.scope.abort();}
 });

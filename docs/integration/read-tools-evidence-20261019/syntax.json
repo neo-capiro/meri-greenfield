@@ -1,0 +1,266 @@
+{
+  "sourceCommit": "3751b35326aef3169cef98a16d2c1d7ba502c043",
+  "files": [
+    {
+      "path": "apps/gateway/dispatch/tool-dispatch.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/gateway/general-reads/families.test.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/gateway/general-reads/families/research-legal-candidates.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/gateway/general-reads/fixture.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/gateway/general-reads/integration.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/gateway/general-reads/mount.test.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/gateway/general-reads/test/family-cases.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/gateway/general-reads/test/native-family-cases.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/gateway/sources/business-development/handler.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/gateway/sources/business-development/request-context.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/gateway/sources/business-development/test/evidence.test.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/gateway/sources/business-development/test/fixture.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/gateway/sources/business-development/test/handler.test.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/gateway/sources/client-knowledge/monday-signed-adapter.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/gateway/sources/client-knowledge/test/monday-signed.test.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/gateway/sources/original-tracking/request-context.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/gateway/sources/research-legal-candidates/handler.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/gateway/sources/research-legal-candidates/request-context.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/gateway/sources/research-legal-candidates/test/fixture.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/gateway/sources/research-legal-candidates/test/handler.test.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/gateway/sources/research-legal-legislation/test/search-completion.test.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/gateway/sources/retained-reads/native-families.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/gateway/test/original-tracking-mounted.test.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/gateway/test/research-evidence-independent.test.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/runtime/cli.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/runtime/config.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/runtime/native-authority/general-read-installation/test/phase2-legal.test.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/runtime/native-authority/general-read-installation/test/phase3-mode.test.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/runtime/native-authority/general-read-installation/test/preparation.test.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/runtime/native-authority/native-read-credentials/source-read-context.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/runtime/native-authority/native-read-credentials/test/omitted-read-completion.test.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/runtime/native-authority/native-read-credentials/test/research-candidates.test.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/runtime/native-authority/native-read-credentials/test/resolution-slices.test.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/runtime/native-authority/native-read-credentials/test/source-slices.test.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/runtime/native-authority/read-delegation/test/composed.test.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/runtime/native-authority/reads-composer.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/runtime/native-authority/retained-read-credential-relay.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/runtime/native-authority/retained-reads/configuration.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/runtime/native-authority/retained-reads/mail-monday-task-ports.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/runtime/native-authority/retained-reads/operational-task-ports.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/runtime/native-authority/retained-reads/research-florida-task-ports.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/runtime/native-authority/retained-reads/selected-task-ports.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/runtime/native-authority/retained-reads/task-ports.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/runtime/native-authority/retained-reads/test/mail-monday-task-ports.test.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/runtime/native-authority/retained-reads/test/mail-task-ports.test.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/runtime/native-authority/retained-reads/test/operational-task-ports.test.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/runtime/native-authority/retained-reads/test/research-florida-task-ports.test.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/runtime/native-authority/retained-reads/test/selected-task-ports.test.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/runtime/native-authority/test/business-development-personal.test.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/runtime/native-authority/test/read-composer.test.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/runtime/native-authority/test/retained-read-credential-relay.test.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/runtime/test/cli-reads-composition.test.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/runtime/test/config-reads.test.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/runtime/test/funding-source-integration.test.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/worker/conversation/reads/families.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/worker/conversation/reads/test/business-development.test.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/worker/conversation/reads/test/completion.test.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/worker/conversation/reads/test/families.test.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/worker/conversation/reads/test/funding.test.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/worker/conversation/reads/test/kb.test.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/worker/conversation/reads/test/newmode.test.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/worker/conversation/reads/test/options.test.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/worker/conversation/reads/test/research-legal.test.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/worker/conversation/reads/test/selected-continuation.test.mjs",
+      "exit": 0
+    },
+    {
+      "path": "apps/worker/conversation/reads/test/source-slices.test.mjs",
+      "exit": 0
+    }
+  ],
+  "failures": 0
+}

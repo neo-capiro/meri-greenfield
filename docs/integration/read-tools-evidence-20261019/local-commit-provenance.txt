@@ -1,0 +1,27 @@
+56159ef1f619634ddf02ca8644bee6d026550716 Add scoped research source candidate native adapter
+6210659c9a4c898409252f644e5620e176152dba Model authoritative revoked research credential refusal
+96cce8e36a67249db238a21296bc6edf465c89e6 Compose selected research and Florida retained task reads
+ebe9fc60f372b5c5b995617bdd4ca16ff1c76bc9 Wire task queries through exact-body delegated read credentials
+5b21f61d18276823958d5ddfc27334a0ca6a8934 Wire Monday retained task ports to the authoritative Core read contract
+e1a9a57d640372be1f9004528ad79286e005f21d Record research and Florida read composition handoff
+c35a8769faf73c244d595e0c5169c69c55b0fe3e Record exact producer contracts blocking four read families
+f2498a428604bcc76f592bf9201a5cdd57b3be7a Exercise research candidate current-authority and result-release owners
+1b45ac8f2e94fcf16243393644566f9cecdb2ce8 Register research candidates in shared native read test inventory
+b2bf791c50127be2c7d65d8d411a3ec63bd09b8e Repair stale signed action fixture without weakening family assertions
+0d39e67d8d6ac788620efc3c1507b99270f7bcdc Keep fixture clock at the family composition boundary
+d7edcd9f389f5281384acbb93a678773cf59fbcb Connect selected-client business-development evidence to the native read boundary
+4ad34b0db8e0f862a817189dda283374b41ab709 Repair signed memory cancellation fixture without changing assertions
+6f4d480de987e42e8c1ccff43e5cd9f317f69218 Compose mail source ports only with pre-admitted mailbox scope and durable context
+d4e1ac113fba71a48335716488ed6a579980e7a5 Record Monday producer contract and exact mail admission dependencies
+7aa91e00537ce5d7e9c8a0df50f5c8df66636119 Keep native authority and signed expiry assertions precise in new read fixtures
+4bf3dd4cef67fa5082303d41fbe8c24becb5cab0 Scope named candidate check to actual native resolver boundary
+c07cdf00fba0979d01186e2d14eb903ed940fc31 Preserve evidence credential callback boundary through signed-only wrapping
+f4fc3a0c9c90e1c10ed4d33e2b267774efe2c074 Record task and omitted-read source pins and receiving verification
+fde87b6c035261eab7073dbfbc095cd3947693bf Compose retained read families with distinct authority and measured discovery
+26c748dcf03dcf469baa178140e4c53a11660e3e Keep helper-only memory credentials out of generic native transport
+ea5e60e053b8d9129ae025496ee1e21a41ab8af0 Align durable mail mount fixture with canonical signed Core routes
+a9fe82756ce25868c0d24df9386ff630a9ce3637 Reconcile legal installation and resolved-client read expectations
+0db7732b7a8cbcd703a787fed5e3e1e4e49ac472 Guard retained memory helper boundary in composed delegation reads
+3751b35326aef3169cef98a16d2c1d7ba502c043 Verify selected read discovery and signed calls in ordinary profiles
+bec268a7ec868864bf11b1a08eff5237767de707 Record independent read source review and worker verification
+0ccd36db02d4d617c18e1d075da2a8dbf6d92fea Clarify focused worker rerun evidence

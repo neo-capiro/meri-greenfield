@@ -15,6 +15,7 @@ import {nativeFamilyCase} from '../../../../gateway/general-reads/test/native-fa
 import {origin as coreOrigin} from '../../native-read-credentials/test/fixture.mjs';
 import {allocation} from '../../../../gateway/budget/tool-budget-binding.mjs';
 import {delegationCoreFixture} from './fixture.mjs';
+import {datasetMetadataTaskPort} from '../../retained-reads/dataset-metadata-port.mjs';
 import {OBSERVATION_CALLS,DISPATCH_OBSERVATIONS,CREDENTIAL_OBSERVATIONS,READ_TOKEN_CEILINGS,operationsDigest} from '../contract.mjs';
 
 const CANDIDATE={identity:'/run/meri/identity',task:'/run/meri/task-capability',control:'/run/meri/control-capability',proxy:'/run/meri/proxy-capability'};
@@ -36,7 +37,7 @@ function sessions({binding,scopes,now,ttlMs=60000}){
  return {owner,relay,issue:token=>owner.issue({identityCredential:token}),advance:ms=>{clock+=ms;},close:()=>{relay.close();owner.close();}};
 }
 
-async function composed({unattended=false,consent='active',delegation=true,hangTools=false}={}){
+async function composed({unattended=false,consent='active',delegation=true,hangTools=false,retainedProbe}={}){
  const inflight=[];
  // An in-flight source request that ends only when its transport aborts it.
  const hanging=(url,init)=>{const entry={startedAt:Date.now(),abortedAt:null};inflight.push(entry);
@@ -52,7 +53,9 @@ async function composed({unattended=false,consent='active',delegation=true,hangT
    occurrenceKey:'e'.repeat(64),startedAtMs:f.now(),clientId,operationsDigest:operationsDigest(a.manifest.allowedOperations),policyRevision:f.policyRevision,runBinding:f.binding};};
  const composer=await createControlReadsComposer({configuration:s.configuration,secretFiles:READ,readSecret:s.readSecret,now:f.now,fetchImpl:core.fetchImpl,
   gateway:{authority:f.gatewayConfiguration.authority,limits:f.gatewayConfiguration.limits,discoveryOwner:f.gatewayConfiguration.discoveryOwner,readCurrentInstallation:proof=>f.installationOwner.readCurrent({signal:proof.signal})},
-  ...(unattended?{}:{nativeCredentials:session.relay.port}),familyIds:[f.family],...(delegation?{delegation:{enabled:true,readOccurrence}}:{})});
+  ...(unattended?{}:{nativeCredentials:session.relay.port}),familyIds:[f.family,...(retainedProbe?['dataset-metadata']:[])],
+  ...(retainedProbe?{retainedTaskPorts:ports=>{retainedProbe(ports);return {families:{'dataset-metadata':datasetMetadataTaskPort()}};}}:{}),
+  ...(delegation?{delegation:{enabled:true,readOccurrence}}:{})});
  let n=0;
  /** A new task of the same run: fresh reads runtime, task ports and credential owner over the same composer. */
  const mount=()=>{const mounted=f.prepared({createReadsRuntime:inner=>composer.createReadsRuntime({...f.tuple,...inner})});
@@ -79,6 +82,25 @@ test('an attended delegated read uses single-use per-route tokens and never the 
   const [[slotKey,slot]]=[...x.core.state.slots];assert.match(slotKey.split('|')[1],/^owned_/u);
   assert.deepEqual(slot.counts,{current:(DISPATCH_OBSERVATIONS+CREDENTIAL_OBSERVATIONS)*OBSERVATION_CALLS.plain.current,tool:1,mode:0,reference:0});
   for(const [kind,count] of Object.entries(slot.counts))assert.ok(count<=READ_TOKEN_CEILINGS[kind],kind);
+ }finally{x.close();}
+});
+
+test('retained helper credentials stay behind their signed callback while the strict native owner admits Option B',async()=>{
+ let retained;
+ const x=await composed({retainedProbe:ports=>{retained=ports;}});
+ try{
+  assert.equal(typeof retained.getMemoryEligibilityCredentials,'function');
+  assert.equal(Object.hasOwn(retained,'nativeCredentials'),false,'retained ports receive narrow callbacks');
+  const before=x.core.state.calls.length;
+  await assert.rejects(retained.getMemoryEligibilityCredentials({}),/ACCESS_DENIED/);
+  assert.equal(x.core.state.calls.length,before,'invalid helper pins cannot acquire a token');
+  // Construction and execution cross the unchanged closed native credential DTO.
+  // An extra helper-only member there would fail before this real source read.
+  await x.login('SYNTHETIC_NATIVE');
+  assert.deepEqual(JSON.parse(await x.execute()).binding,x.f.binding);
+  assert.equal(x.f.wire.length,1);
+  assert.match(x.f.wire[0].options.headers.authorization,/^CapiroMeriRead synthetic-read-token-/u);
+  assert.equal(x.calls(IDENTITY).length,0);
  }finally{x.close();}
 });
 

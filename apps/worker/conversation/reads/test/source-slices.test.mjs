@@ -6,7 +6,7 @@ import catalog from '../../../../../packages/contracts/retrieval-0.2/catalog.jso
 import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {canonicalSha256 as hash} from '../../../../../packages/contracts/validate.mjs';
 import {familyReads,resolveAvailableReads} from '../availability.mjs';
-import {READ_FAMILIES,READ_FAMILY_IDS} from '../families.mjs';
+import {READ_FAMILIES} from '../families.mjs';
 import {advertisedArguments} from '../schema.mjs';
 import {assertCapabilityPolicy} from '../../capabilities/policy.mjs';
 import {nativeFamilyCase,SOURCE_SLICE_CASES} from '../../../../gateway/general-reads/test/native-family-cases.mjs';
@@ -18,7 +18,7 @@ import {mountReads} from './fixture.mjs';
 const complete=[['public-data',['query_economic_data']],['client-knowledge-search',['query_knowledge_graph']],
  ['business-development',['get_business_development_context','get_business_development_recent_changes']]];
 const completedSourceOperations=new Set(['get_state_bill_status','search_state_floor_votes','search_tracked_bills','search_committee_hearings','search_legislative_research']);
-const partial=SOURCE_SLICE_CASES.filter(([family,id])=>!completedSourceOperations.has(id)&&!complete.some(([selected,ids])=>selected===family&&ids.includes(id)));
+const received=SOURCE_SLICE_CASES.filter(([family,id])=>!completedSourceOperations.has(id)&&!complete.some(([selected,ids])=>selected===family&&ids.includes(id)));
 const familyOperations=family=>catalog.operations.filter(row=>resolveOperationContract(row.operation).binding.group===family).map(row=>row.operation);
 async function mounted(id,options={}){
  const f=await ownerFixture(id,options),{getCredentials,authorizeResultForCall,...transport}=f.transport;
@@ -46,13 +46,14 @@ for(const [family,ids] of complete){
   assert.deepEqual(gates.available.map(row=>row.operation.id),expected);
  });
  else{
- test(`${family}: finite SDK family operation list excludes every unsupported canonical sibling even with forged installation/discovery`,()=>{
-  const operations=familyOperations(family),siblings=operations.filter(row=>!ids.includes(row.id));
-  assert.ok(siblings.length>0);assert.deepEqual(READ_FAMILIES[family].operationIds,ids);
-  assert.deepEqual(familyReads().filter(row=>row.family===family).map(row=>row.operation.id),ids);
-  const gates=resolveAvailableReads({policy:{generalReads:true,readFamilies:[family]},installation:{operations},discovery:{operations},scopes:[{kind:'client'}]});
-  assert.deepEqual(gates.available.map(row=>row.operation.id),ids);
-  for(const sibling of siblings)assert.equal(familyReads().some(row=>row.operation.id===sibling.id),false);
+ test(`${family}: optional context/change reads retain a separate selected-client evidence requirement`,()=>{
+  const operations=familyOperations(family),evidence='get_business_development_evidence',expected=[ids[0],evidence,ids[1]];
+  assert.deepEqual(READ_FAMILIES[family].operationIds,[...ids,evidence]);
+  assert.deepEqual(READ_FAMILIES[family].requiredClientOperations,[evidence]);
+  assert.deepEqual(familyReads().filter(row=>row.family===family).map(row=>row.operation.id),expected);
+  const select=scopes=>resolveAvailableReads({policy:{generalReads:true,readFamilies:[family]},installation:{operations},discovery:{operations},scopes});
+  assert.deepEqual(select([{kind:'client'}]).available.map(row=>row.operation.id),expected);
+  assert.deepEqual(select([{kind:'private-user'}]).available.map(row=>row.operation.id),ids);
  });
  }
  for(const id of ids){
@@ -95,20 +96,15 @@ for(const [family,ids] of complete){
  }
 }
 
-test('three remaining partial-input operations remain absent from SDK policy and cannot be advertised by installation/discovery',async()=>{
- assert.equal(partial.length,3);
- assert.deepEqual([...new Set(partial.map(([family])=>family))].sort(),['outreach-query','research-legal-legislation','research-legal-news']);
- assert.equal(partial.some(([family])=>family==='funding-opportunities'),false,'funding uses its complete-family SDK coverage, separate from SOURCE_SLICE_CASES');
- const operations=partial.map(([,id])=>({id,version:'0.2.0'})),families=[...new Set(partial.map(([family])=>family))];
- const gates=resolveAvailableReads({policy:{generalReads:true,readFamilies:[...READ_FAMILY_IDS,...families]},installation:{operations},discovery:{operations},scopes:[{kind:'client'}]});
- assert.deepEqual(gates.available,[]);
- for(const [family,id] of partial){
-  assert.equal(familyReads().some(row=>row.operation.id===id),false);
-  if(Object.hasOwn(READ_FAMILIES,family)){
-   assert.equal(family,'research-legal-legislation');assert.deepEqual(READ_FAMILIES[family].operationIds,['search_legislative_research']);
-   assert.equal(READ_FAMILIES[family].operationIds.includes(id),false);assertCapabilityPolicy({generalReads:true,readFamilies:[family]});
-  }else assert.throws(()=>assertCapabilityPolicy({generalReads:true,readFamilies:[family]}),{code:'CAPABILITY_POLICY_REFUSED'});
-  const f=await mounted(id);try{assert.equal(await mountReads(f,{port:f.port}),null);assert.equal(f.wire.length,0);assert.equal(f.state.reservations.size,0);}finally{f.scope.abort();}
+test('received source slices require current installation and discovery despite registry presence',()=>{
+ assert.deepEqual(received.map(([,id])=>id).sort(),['get_legal_reference','query_outreach','search_legiwatch_news','search_research_sources']);
+ assert.equal(received.some(([family])=>family==='funding-opportunities'),false,'funding retains separate complete-family coverage');
+ for(const [family,id] of received){
+  const operation={id,version:'0.2.0'},policy={generalReads:true,readFamilies:[family]},scopes=[{kind:'client'}];
+  assertCapabilityPolicy(policy);assert.equal(familyReads().some(row=>row.operation.id===id),true);
+  const select=(installation,discovery)=>resolveAvailableReads({policy,installation:{operations:installation},discovery:{operations:discovery},scopes});
+  assert.deepEqual(select([operation],[operation]).available.map(row=>row.operation),[operation]);
+  assert.deepEqual(select([],[operation]).available,[]);assert.deepEqual(select([operation],[]).available,[]);
  }
 });
 
