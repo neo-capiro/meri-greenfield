@@ -15,7 +15,7 @@ This branch adds one additive browser contract, `@capiro/meri-contracts/intents-
 | `packages/contracts/test/intents-application-public{.test.mjs,-types.ts}` | new tests |
 | `packages/contracts/package.json` | additive: two `exports`, `build`/`check:generated` chain entries, `build:intents`/`check:intents`, test and typecheck entries |
 
-Output SHA-256: `.mjs` `5f57a563…c2c6`, `.d.ts` `47ffb16e…b145`, `.schema.json` `050f8e8e…0d37`, `.metadata.json` `ce79fe75…5e46`.
+Output SHA-256 (at the review-correction commit): `.mjs` `642f8fe3f1ebeefdd5797bd28c51794e6d884068275bd0fecc1076a81f57b460`, `.d.ts` `cc6900ef…5f31`, `.schema.json` `c33a0fe0…576a`, `.metadata.json` `4f6a0c87…2323` (full values in `dist/intents-application.metadata.json` sources and by `sha256sum`).
 
 ## Derived from the handlers, not copied
 
@@ -33,7 +33,11 @@ The generator records the SHA-256 of every source it read; changing a handler ta
 
 ## What the receiver refuses
 
-Beyond the closed JSON schema, `receiveIntentsResponse(route, status, text, {request})` requires the response to answer exactly the captured request: same conversation; no more items than `limit`; unique delivery ids; a cursor only on a full page and equal to its last entry; every proposal's `commandSha256` equal to the canonical hash of its command, its command bound to the requested conversation and tenant, `expiresAt` after `createdAt`; decisions and receipts for that proposal and command; `phase` consistent with the decision and execution evidence; decide answers for the same delivery, proposal, hash and decision; `rejected` only for a rejection. Hash checking uses WebCrypto inside the bundle.
+Beyond the closed JSON schema, `receiveIntentsResponse(route, status, text, expectation)` requires the response to answer exactly the captured context: `{request}` for list, `{request, proposal}` for decide, where `proposal` is the one admitted from an earlier list answer. List: same conversation; no more items than `limit`; unique delivery ids; a cursor only on a full page and equal to its last entry; every proposal's `commandSha256` equal to the canonical hash of its command, its command bound to the requested conversation and tenant, `expiresAt` after `createdAt`, and a task.create command carrying canonical arguments and no attachments; decisions for that proposal; `phase` consistent with the decision and execution evidence; a completed execution that is the executor's own outcome (below). Decide: the request's conversation equals the retained proposal's command binding; the retained proposal is the request's proposal and hash and an approvable action; same delivery, proposal, hash and decision; the decision is by the proposal's required approver and not before the proposal; `rejected` only for a rejection; an `executed` outcome as below. Rejected and indeterminate replies contain no conversation, command or binding of their own, so only the retained proposal binds them; nothing is claimed that they do not carry.
+
+**Executor outcome** (mirrors `commands-0.2/execution-intent.mjs` `outcome` and `task-create-validation.mjs`, interpreted only for `task.create`): receipt command id, command hash, idempotency key, scopes and stable tenant/actor/conversation/run binding equal the command's (attempt, worker and fence may differ); the receipt is `succeeded` with no source transaction and an exactly spelled `completedAt`; the task result's title, client and due date equal the immutable arguments. Hash checking uses WebCrypto inside the bundle.
+
+**Timestamps** follow their producers: proposal and decision times are any schema-valid date-time ending in `Z` that `Date.parse` accepts (`…:00Z` is admitted, as `approval.mjs` admits it; impossible dates and offsets are refused); receipt and task-result times use the canonical exact spelling.
 
 ## Preserved behavior (each exercised against the real owner)
 
@@ -43,11 +47,21 @@ Beyond the closed JSON schema, `receiveIntentsResponse(route, status, text, {req
 - **Unknown outcomes.** `APPROVAL_DECISION_UNKNOWN` and `COMMAND_OUTCOME_UNKNOWN` (502, `UNKNOWN`) are admitted; `indeterminate` is admitted without an outcome and never as execution.
 - **Identical-request reconciliation.** After a lost decision acknowledgement, and after a lost executor outcome, the identical decide request returns `executed` with the durable outcome and no second effect.
 
+## Review corrections (dot, PR #191 independent review of `110917c0`)
+
+| Finding | Change | Tests |
+| --- | --- | --- |
+| 1. decide ignored the request conversation | decide needs the retained proposal; request conversation must equal its command binding; executed receipt binding checked; replies without conversation are bound by the retained proposal only | `decide answers are bound to the request conversation and the retained proposal`; `rejected and indeterminate replies are bound by the retained proposal…` |
+| 2. exact `toISOString` spelling too strict | proposal/decision times parsed as the producers parse them; receipts and task results keep the canonical exact spelling | `owner-valid timestamps without milliseconds are admitted; impossible or offset dates are refused` |
+| 3. completed outcome only checked hash and command id | executor outcome rules (binding, idempotency, scopes, succeeded receipt, result equals arguments), task.create only, task.create argument checks | 15 outcome mutations × (list, decide), attempt/worker/fence variation, `a task result is never interpreted for a memory.propose / artifact.file proposal`, `a task.create proposal must carry canonical, normalized arguments…` |
+| 4. bundle embedded checkout paths | `preserveSymlinks` build, generator refuses layout paths, clean-layout reproduction | `generated bundle is independent of the checkout layout` |
+
 ## Evidence
 
 All on Windows (Git Bash), Node v24.19.0, synthetic decision owner, journal and fixtures; no PostgreSQL, Core, runtime mount or deployment.
 
-- `node --test test/intents-application-public.test.mjs`: **44 tests, 44 pass**.
+- `node --test test/intents-application-public.test.mjs`: **81 tests, 81 pass**.
+- **Clean-layout reproducibility:** a fresh worktree of the correction commit at a different path, with a real copied `packages/contracts/node_modules` directory (no junction, no root install), regenerates all four outputs byte-identically (`node generate-intents.mjs --check` passes there).
 - `npm run typecheck` (all public type files including the new one, strict): pass. `node generate-intents.mjs --check`: pass.
 - The other public suites (eleven files, 273 tests, including the document receiver tests) fail the same six tests on a pristine PR190 checkout and with this branch; with this branch the same run is 316 tests, 310 pass. Five of the six are Windows path handling (`C:\C:\…` ENOENT in their child-process and URL helpers). The sixth, `public-package` "generated distribution check", reports `Generated drift: browser.mjs` from the existing `generate.mjs --check`, which fails identically on the pristine base on this host. No test that passed at the base fails.
 - Toolchain used for generation: esbuild 0.28.2, json-schema-to-typescript 16.0.0, ajv 8.20.0, ajv-formats 3.0.1, canonicalize 5.1.0, typescript 5.9.3 (exactly the package.json pins). `--check` passes on this host; reproduction on another host is not verified (the existing base `generate.mjs --check` does not pass here, cause not investigated).
@@ -57,7 +71,7 @@ All on Windows (Git Bash), Node v24.19.0, synthetic decision owner, journal and 
 
 1. **Distribution path.** The export is additive, but a new package export normally means a package version. Raising `0.1.10` also moves `previewMeriContractsPackageVersion` in the frontend allowlist and the runtime's `CAPIRO_PREVIEW_MERI_CONTRACT_PACKAGE_VERSION` binding. Vendoring this contract under `packages/meri-client/vendor/intents-application/0.1.0/` (as the task-command and user-preferences contracts already are) avoids touching that binding. Recommendation only; not done here.
 2. `execution.outcome` is typed for `task.create`. Widening it for memory or filing needs a new contract version after Core defines those payloads; none is invented here.
-3. `executed` does not assert success; callers read `receipt.outcome`.
+3. API consequence of the review: a decide answer is admitted only with the proposal the caller admitted from an earlier list answer (`{request, proposal}`); a caller cannot decide without listing, because `deliveryId` comes only from list.
 4. The request ceiling (4096 bytes) is this contract's own choice. Response and deadline ceilings are the product-access maxima; a composition may be lower.
 5. Real-preparer coverage: `task.create`, `memory.propose` and `artifact.file` proposals. `draft` and `schedule_proposal` items are exercised from journal rows shaped like the handler's retained results, not from the document, analysis or schedule preparers.
 6. Independent-approver review is not representable: the handler refuses any approver other than the conversation owner (`APPROVER_REFUSED`).
