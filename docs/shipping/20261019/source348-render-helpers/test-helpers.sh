@@ -69,6 +69,14 @@ d=$(fresh); mexp "$d" control "delete e.imageDigest"; msum "$d" "delete s.roles.
 d=$(fresh); mexp "$d" control "e.imageDigest='$A'"; msum "$d" "s.roles.control.imageDigest='$A'";                          expect 1 "imageDigest without the sha256: prefix in both files fails" $V "$d" "$A" "$B" "$SA" "$SB"
 d=$(fresh); msum "$d" "delete s.roles.control.configPath";                                                                 expect 1 "configPath absent fails"                        $V "$d" "$A" "$B" "$SA" "$SB"
 d=$(fresh); msum "$d" "delete s.roles.control.configSha256";                                                               expect 1 "configSha256 absent fails"                      $V "$d" "$A" "$B" "$SA" "$SB"
+echo "-- expected.json that is valid JSON but not an object"
+for body in '[]' '5' '"str"' 'true' '[{"role":"control"}]'; do
+  d=$(fresh); printf '%s' "$body" > "$d/control/expected.json"; expect 1 "expected.json containing $body fails" $V "$d" "$A" "$B" "$SA" "$SB"
+done
+d=$(fresh); printf '%s' '{}' > "$d/model-proxy/expected.json"; expect 1 "expected.json containing {} fails" $V "$d" "$A" "$B" "$SA" "$SB"
+d=$(fresh); printf '%s' 'null' > "$d/temporal-issuer/expected.json"; expect 1 "expected.json containing null fails" $V "$d" "$A" "$B" "$SA" "$SB"
+d=$(fresh); node -e "const fs=require('fs');const p=process.argv[1]+'/summary.json';const s=JSON.parse(fs.readFileSync(p));s.roles=[];fs.writeFileSync(p,JSON.stringify(s));" "$d"; expect 1 "summary.roles as an array fails" $V "$d" "$A" "$B" "$SA" "$SB"
+d=$(fresh); node -e "const fs=require('fs');const p=process.argv[1]+'/summary.json';const s=JSON.parse(fs.readFileSync(p));s.roles.control=[];fs.writeFileSync(p,JSON.stringify(s));" "$d"; expect 1 "a summary role entry that is an array fails" $V "$d" "$A" "$B" "$SA" "$SB"
 echo "-- validity fields"
 d=$(fresh); msum "$d" "delete s.validity";                                                                                 expect 1 "validity absent fails"                          $V "$d" "$A" "$B" "$SA" "$SB"
 d=$(fresh); msum "$d" "delete s.validity.validityDays";                                                                    expect 1 "validityDays absent fails"                      $V "$d" "$A" "$B" "$SA" "$SB"

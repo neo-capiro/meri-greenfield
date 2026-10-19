@@ -54,6 +54,7 @@ for (const [role, wantDigest, wantSource] of ROLES) {
   const r = isObject(summary?.roles) ? summary.roles[role] : undefined;
   const problems = [];
   if (e === null) problems.push('expected.json missing or unreadable');
+  else if (!isObject(e)) problems.push('expected.json is not a JSON object (an array or a scalar is never a valid record)');
   if (!isObject(r)) problems.push('role absent from summary.json');
   if (isObject(e)) {
     if (e.role !== role) problems.push('expected.json names another role');
