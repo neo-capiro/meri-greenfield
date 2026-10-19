@@ -12,7 +12,28 @@ This directory makes the reviewed **public inputs** portable to the neomart chec
 | [node-terminal-readback.json](node-terminal-readback.json) | `ec89528ec9dae32689b086dbc9040a75e9ceac6aeaf8c9e4da4c6141cbe000c8` |
 | Root `package-lock.json` at source348 | `4a18a2e5eeb672758df381eba55653da2dc0d9e9ab26e3f6f7943ad19120753c` |
 
-Source HEAD: `34851020aa0d73fead4db59ba6e26a098e2d0313`. Use Node `>=24 <25` and dependencies installed from this lockfile. The repository's earlier `infra/product-preview/first-chat/deployment-inputs.json` pins older images; do not substitute it for the candidate here.
+Source HEAD: `34851020aa0d73fead4db59ba6e26a098e2d0313`. Use Node `>=24 <25`. The repository's earlier `infra/product-preview/first-chat/deployment-inputs.json` pins older images; do not substitute it for the candidate here.
+
+### Source348 import setup on the Linux jumpbox
+
+Root `npm ci` alone does not install the modules needed to import `infra/product-preview/first-chat/render-material.mjs`. From the repository root of a checkout with the source348 application tree and its tracked lockfiles, mirror the JavaScript install and link layout in frozen `apps/runtime/Dockerfile` (builder stage):
+
+```sh
+npm ci --ignore-scripts --no-audit --no-fund
+npm ci --prefix apps/runtime --ignore-scripts --no-audit --no-fund
+npm ci --prefix apps/worker/conversation --ignore-scripts --no-audit --no-fund
+npm ci --prefix packages/ui-stream --ignore-scripts --no-audit --no-fund
+npm ci --prefix packages/window-resolution --ignore-scripts --no-audit --no-fund
+npm ci --prefix apps/control/conversations --ignore-scripts --no-audit --no-fund
+npm ci --prefix apps/artifacts/storage --omit=dev --ignore-scripts --no-audit --no-fund
+npm ci --prefix apps/artifacts/generation --omit=dev --ignore-scripts --no-audit --no-fund
+mkdir -p node_modules/@capiro node_modules/@anthropic-ai node_modules/@aws-sdk
+ln -s ../../packages/contracts node_modules/@capiro/meri-contracts
+ln -s ../../apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk node_modules/@anthropic-ai/claude-agent-sdk
+ln -s ../../apps/artifacts/storage/node_modules/@aws-sdk/client-s3 node_modules/@aws-sdk/client-s3
+```
+
+Use a fresh checkout or verify that these exact links do not already exist before creating them. These are dependency preparation steps; an import or fake-input render does not qualify private material or a live deployment.
 
 | Image role | Immutable image | Source commit |
 | --- | --- | --- |
@@ -26,7 +47,9 @@ The nine missing composer operations are `get_research_portfolio@0.2.0`, `get_re
 
 The deployment candidate intentionally retains `PENDING_CORE` under top-level `core`, `origins.coreOrigin`, and `origins.frontendOrigin`. These values are **not current Core authority**. The separate private `--core` input must come from a fresh authorized membership read. Any additional placeholder is a blocker. The intended frontend origin is `https://portfolio-preview.app.capiro.ai`; a read-only check of current Core task definition `capiro-preview-first-chat-core:2` found the same `WEB_ORIGIN` on 2026-10-19 at 03:27 UTC. The current deployment packet targets Linux X86_64/amd64; older ARM64 wording is stale.
 
-The candidate has no top-level `features` block and the renderer has not run. Source348 treats absent `features` as no product-family activation; a later feature change needs a separately reviewed input and compatible runtime measurement. The certificate pins in the candidate are historical until the private custodian checks their current validity. [Image-scan evidence](IMAGE-SCAN-EVIDENCE.md) records the reviewed Node replacement evidence and the missing original producer receipt; the [measurement ZIP index](MEASUREMENT-ZIP-INDEX.md) distinguishes the successful and failed archives without publishing either ZIP.
+The candidate has no top-level `features` block, and this packet contains no private material render. A fake-input render exercises the import and renderer path but does not qualify private material. Source348 treats absent `features` as no product-family activation; a later feature change needs a separately reviewed input and compatible runtime measurement. The certificate pins in the candidate are historical until the private custodian checks their current validity. [Image-scan evidence](IMAGE-SCAN-EVIDENCE.md) records the reviewed Node replacement evidence and the missing original producer receipt; the [measurement ZIP index](MEASUREMENT-ZIP-INDEX.md) distinguishes the successful and failed archives without publishing either ZIP.
+
+The immutable [Node terminal readback](node-terminal-readback.json) says `See node-success-receipt-gap.md`. That name refers to a contemporaneous local approval-packet audit note, not a file in this public directory. It records that the original CodeBuild request used `NO_ARTIFACTS`, so the locally generated producer receipt was not exported. The [image-scan evidence](IMAGE-SCAN-EVIDENCE.md) explains the separately accepted exact-image replacement measurement and preserves the original producer receipt as missing. The readback bytes and its hash above remain unchanged.
 
 ## Neomart handoff boundary
 
