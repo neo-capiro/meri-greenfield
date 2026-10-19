@@ -1,0 +1,19 @@
+{
+    "schemaVersion":  1,
+    "startedAt":  "2026-10-19T21:36:12.7035271Z",
+    "completedAt":  "2026-10-19T21:36:26.6331330Z",
+    "account":  "967807252336",
+    "region":  "us-east-1",
+    "label":  "FIRST_CHAT_20261019D",
+    "roles":  5,
+    "baselineSha256":  "37853ca911277baefbce225c5317313177d46f6bd9029ee6dd04bdab81126aa2",
+    "approvedManifestSha256":  "870bc3e9abd6a53f6da97d220261ccb83ff5f9947ec1be5c8d0623fe54c19c50",
+    "renderReceiptSha256":  "99b01a2ea89e25162fc03a63fca6541d28e926a2e129026a0a2189ee7bd4b649",
+    "uploadStateSha256":  "3918eb073034231b85c0576ba6e4455ada69466604feaffd41594618f16e2d1e",
+    "secretVersionsSha256":  "8cb6bac16a69bfb4b88a561e66273846b6bb1baf532ba7edfcf9e532ee93e257",
+    "allVersionIdsMatchNeoReceipt":  true,
+    "allOriginalVersionsAndStagesPreserved":  true,
+    "allCurrentAndKmsPreserved":  true,
+    "privateValuesRead":  false,
+    "mutations":  0
+}

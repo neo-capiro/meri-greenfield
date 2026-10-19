@@ -36,3 +36,26 @@ Success prints only `PR193_PUBLIC_PREPARATION` then `PR193_LOCAL_RENDER_COMPLETE
 Successful output contains `stage3.json`, `rendered/` and `local-render-receipt.json`. The receipt records exact public/source/readback hashes, summary/stage hashes and exactly five relative bundle paths with sizes/SHA256. It contains no absolute private path or secret value. Return only the success status and the receipt's safe pin/hash metadata to root; keep the private directory, bundles, configs, credentials and real paths local. Root's upstream approval is still required before the separately invoked private upload; this render command never uploads or deploys.
 
 The public cache layout is `source-<sourceCommit>/`, `packet-<packetCommit>/` (evidence contents directly, including `public-candidate/`) and `readbacks-<readbackCommit>/` (readback contents directly). Keep it separate from private output. Raw Git archive bytes preserve the reviewed file hashes regardless of local checkout line-ending settings.
+
+## Separate approved upload, then local bindings
+
+Use these only after root publishes the separately reviewed upload/bind scripts. Obtain explicit upstream approval for the five private uploads first. The upload script requires the explicit approval switch, Neo's own existing AWS executable/profile, the same public cache and the successful private output. It keeps its per-role request tokens/state locally, confirms the five exact versions under `FIRST_CHAT_20261019D` and preserves AWSCURRENT. On an uncertain outcome keep the original state and bytes; do not invent new tokens, change bundles or manually remove state.
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\docs\integration\pr193-retention-build-20261019\windows\Invoke-Pr193PrivateUpload.ps1 `
+  -OutputDirectory '<SUCCESSFUL_PRIVATE_OUTPUT_DIRECTORY>' `
+  -PublicCacheRoot '<SAME_PUBLIC_CACHE_DIRECTORY>' `
+  -ReadbackCommit '05b73a61cb4f2bbfa52eae38ea23e44598c33e9f' `
+  -AwsExecutable '<EXISTING_AWS_EXE>' -AwsProfile '<NEOS_EXISTING_PROFILE>' `
+  -NeoApprovedPrivateUpload
+```
+
+After upload prints `PR193_PRIVATE_UPLOAD_VERIFIED_BIND_READY` and root confirms read-only version preservation, use the separately reviewed local-only stage described in [BINDINGS-DEPLOYMENT-HANDOFF.md](BINDINGS-DEPLOYMENT-HANDOFF.md):
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\docs\integration\pr193-retention-build-20261019\windows\Invoke-Pr193LocalBindings.ps1 `
+  -OutputDirectory '<SAME_SUCCESSFUL_PRIVATE_OUTPUT_DIRECTORY>' `
+  -PublicCacheRoot '<SAME_PUBLIC_CACHE_DIRECTORY>'
+```
+
+Bindings require the final `upload-receipt.json`, all five COMPLETE state entries, exact TSV/byte/hash joins and the approved manifest hash on both upload records. This command makes no AWS or Git fetch call. It rechecks the fixed cached packet/readbacks/source, calls canonical `stage3-deploy.mjs bindings`, then the exact preserved C `build-update-compatible-v2.mjs` helper. It checks consumed inputs again and refuses existing `bindings/`, `update-compatible-v2/` or final binding receipt outputs. Success writes `local-bindings-receipt.json` and prints `PR193_LOCAL_BINDINGS_COMPLETE_NO_DEPLOYMENT`; return its safe metadata to root. The parent then needs the three generated helper templates for exact diff review. These templates authorize no registration, change set, service change or deployment; do not execute the raw canonical deploy-plan command arguments.

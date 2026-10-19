@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    {
+      "path": "caller.json",
+      "bytes": 93,
+      "sha256": "3b06685a77fe00a495d5bcdb0d8ccdde7dde4f7e43c1a356d3608b227ffd0c6c"
+    },
+    {
+      "path": "first-read-attempt.ps1",
+      "bytes": 6113,
+      "sha256": "fe63403aa0e5abfe5cb673e8129bacd512a8b773f81850a54f4e16fbdfe0569e"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1599,
+      "sha256": "9b73670e4c3e49495c3ddae0f6f59c91e496e96c069f81403ff477047ee0eca2"
+    },
+    {
+      "path": "verified/caller.json",
+      "bytes": 93,
+      "sha256": "3b06685a77fe00a495d5bcdb0d8ccdde7dde4f7e43c1a356d3608b227ffd0c6c"
+    },
+    {
+      "path": "verified/secret-version-metadata.json",
+      "bytes": 52105,
+      "sha256": "fe31fb92e6237c75047f342ab23f75fd04e5300bc65f89319e481a78d04d8a61"
+    },
+    {
+      "path": "verified/verification-summary.json",
+      "bytes": 929,
+      "sha256": "cdcee1eb28011a83a7743cc6de992f96257a8c74ddac9885ac70ad4b156557fa"
+    },
+    {
+      "path": "verified/verify-public-metadata.ps1",
+      "bytes": 6358,
+      "sha256": "63be5418f0375cd1140afb2f867ff4f7fd90e09e0f3eb2fcfb3e64a3f99fee7a"
+    }
+  ]
+}
