@@ -39,10 +39,6 @@ Run these from the repository root. Output paths must be absolute.
 ```sh
 node scripts/qualification/sdk-proxy-offline/run.mjs --python /tmp/meri-integration-sdk-env/bin/python --out /tmp/sdk-default.json
 node scripts/qualification/sdk-proxy-offline/run.mjs --python /tmp/meri-integration-sdk-env/bin/python --out /tmp/sdk-schema.json --output-format json-schema
-node scripts/qualification/sdk-proxy-offline/run.mjs --python /tmp/meri-integration-sdk-env/bin/python --out /tmp/sdk-profiled.json --client sdk-profiled --output-format json-schema
-node scripts/qualification/sdk-proxy-offline/run.mjs --python /tmp/meri-integration-sdk-env/bin/python --out /tmp/sdk-configured.json --client sdk-configured
-node scripts/qualification/sdk-proxy-offline/run.mjs --python /tmp/meri-integration-sdk-env/bin/python --out /tmp/sdk-constrained.json --client sdk-constrained
-node scripts/qualification/sdk-proxy-offline/run.mjs --python /tmp/meri-integration-sdk-env/bin/python --out /tmp/sdk-constrained-schema.json --client sdk-constrained --output-format json-schema
 node scripts/qualification/sdk-proxy-offline/run.mjs --python /tmp/meri-integration-sdk-env/bin/python --out /tmp/minimal-complete.json --client minimal-messages --mode complete
 /tmp/meri-integration-sdk-env/bin/python -B -m unittest -v apps.proxy.product.test.test_sdk_proxy_offline
 ```
@@ -118,15 +114,17 @@ refused before CountTokens, budget reservation or provider execution. A bounded
 run observed six SDK ingress requests and three final native attempts, all with
 zero counting/reservation/provider execution.
 
-`sdk-configured` is a marked configuration-only candidate: it adds
+Archived `sdk-configured` was a marked configuration-only candidate: it added
 `DISABLE_PROMPT_CACHING=1`, `CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS=1` and
 `CLAUDE_CODE_EFFORT_LEVEL=unset` after constructing actual production options.
-It removes cache fields, `output_config` and the context-management beta, but
-retains `metadata.user_id`, empty tools and the effort beta. It remains blocked.
-`sdk-constrained` additionally declares the fixed custom model alias with an
+It removed cache fields, `output_config` and the context-management beta, but
+retained `metadata.user_id`, empty tools and the effort beta. It stayed blocked.
+Archived `sdk-constrained` additionally declared the fixed custom model alias with an
 empty supported-capability set. This gateway run still emits the effort beta;
 the installed parser's provider guard can ignore custom capability overrides.
-These are experiments, not production changes.
+These experiments remain reproducible at historical harness commit
+`5fa5545898717e1148a28447bb93254a07fa6459`; they are removed from the current
+entry point. Current clients are `sdk` and `minimal-messages` only.
 `--output-format json-schema` routes a small schema through the canonical
 Objective output-format option so capability experiments cannot silently hide
 that behavior in the recorded request shape. With experimental betas disabled,
@@ -136,17 +134,18 @@ SDK orchestration, not proof of incorrect model metadata. The SDK structured
 output contract promises validated `result.structured_output`, without promising
 a particular native `output_config.format` transport.
 
-The `sdk-profiled` candidate uses supported
+Archived `sdk-profiled` tested supported
 `settings.modelOverrides:{"claude-sonnet-4-6":"meri-sonnet-qualification"}`,
 `thinking:{"type":"disabled"}`, `DISABLE_PROMPT_CACHING=1` and
 `CLAUDE_CODE_EFFORT_LEVEL=unset`. It preserves the exact transmitted model alias,
 all tool/Objective options, and experimental beta capabilities. The actual
 translated request emits disabled thinking, temperature `1`, and matching native
 header/body beta enums `context-management-2025-06-27` and `effort-2025-11-24`.
-The closed guard admits only these reviewed semantics; cache fields, semantic
+The production options now own these controls. The closed guard admits only
+these reviewed semantics; cache fields, semantic
 context edits and unbound schemas remain refused.
 
-Post-guard plain and schema runs passed both as `sdk-profiled` candidates and
+Post-guard plain and schema runs passed both as archived `sdk-profiled` candidates and
 with the integrated production options (`--client sdk`): one CountTokens, one
 canonical reservation insert, one stub execution and one settlement. The schema
 SDK result contains validated `structured_output`, and the terminal tool does

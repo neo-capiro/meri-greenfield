@@ -17,7 +17,7 @@ import {QUALIFICATION_BUDGET_MICRO_USD,STRUCTURED_OUTPUT_SCHEMA_JSON} from './mo
 const here=dirname(fileURLToPath(import.meta.url)),root=resolve(here,'../../..');
 const modes=new Set(['complete','truncated','cached','missing-usage','reservation-ack-lost',
  'settlement-ack-committed','settlement-ack-unresolved']);
-const usage='node scripts/qualification/sdk-proxy-offline/run.mjs --python /absolute/pinned/python --out /absolute/receipt.json [--mode complete] [--client sdk|sdk-profiled|sdk-configured|sdk-constrained|minimal-messages] [--output-format none|json-schema]\nExit 0: executed partition passed; 2: refused, failed or blocked. Full owner HTTPS is always an explicit separate OPEN gate here.\n';
+const usage='node scripts/qualification/sdk-proxy-offline/run.mjs --python /absolute/pinned/python --out /absolute/receipt.json [--mode complete] [--client sdk|minimal-messages] [--output-format none|json-schema]\nExit 0: executed partition passed; 2: refused, failed or blocked. Full owner HTTPS is always an explicit separate OPEN gate here.\n';
 const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 const ended=child=>child.exitCode!==null||child.signalCode!==null||child.pid===undefined;
 async function shaFile(path){const hash=createHash('sha256');for await(const part of createReadStream(path))hash.update(part);return hash.digest('hex');}
@@ -60,7 +60,7 @@ export async function main(argv){
   else if(arg==='--mode')mode=argv[++n];else if(arg==='--client')client=argv[++n];
   else if(arg==='--output-format')format=argv[++n];
   else{process.stderr.write(usage);return 2;}}
- if(!python?.startsWith('/')||!out?.startsWith('/')||!modes.has(mode)||!['sdk','sdk-profiled','sdk-configured','sdk-constrained','minimal-messages'].includes(client)||!['none','json-schema'].includes(format)||
+ if(!python?.startsWith('/')||!out?.startsWith('/')||!modes.has(mode)||!['sdk','minimal-messages'].includes(client)||!['none','json-schema'].includes(format)||
   (client==='minimal-messages'&&format!=='none')){process.stderr.write(usage);return 2;}
  const directory=mkdtempSync(join(tmpdir(),'meri-sdk-proxy-offline-'));
  const receipt={scope:'OFFLINE_PARTITION_ONLY',mode,client,outputFormat:format,fullOwnerHttps:'OPEN_RFC1918_INTERFACES_UNAVAILABLE',
@@ -111,24 +111,10 @@ export async function main(argv){
    undefined,undefined,undefined,undefined,undefined,undefined,
    format==='json-schema'?{type:'json_schema',schema:JSON.parse(STRUCTURED_OUTPUT_SCHEMA_JSON)}:undefined);
   const fixtureEnv={PATH:process.env.PATH,HOME:directory,NODE_EXTRA_CA_CERTS:join(directory,'ca.crt'),
-   CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC:'1',DISABLE_TELEMETRY:'1',DO_NOT_TRACK:'1',
-   ...(client==='sdk-profiled'?{DISABLE_PROMPT_CACHING:'1',CLAUDE_CODE_EFFORT_LEVEL:'unset'}:{}),
-   ...(['sdk-configured','sdk-constrained'].includes(client)?{DISABLE_PROMPT_CACHING:'1',CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS:'1',
-    CLAUDE_CODE_EFFORT_LEVEL:'unset'}:{})};
-  if(client==='sdk-constrained')Object.assign(fixtureEnv,{ANTHROPIC_CUSTOM_MODEL_OPTION:PRODUCT_PROXY_MODEL_ALIAS,
-   ANTHROPIC_CUSTOM_MODEL_OPTION_SUPPORTED_CAPABILITIES:''});
-  if(['sdk-configured','sdk-constrained'].includes(client))receipt.configurationCandidate={DISABLE_PROMPT_CACHING:'1',
-   CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS:'1',CLAUDE_CODE_EFFORT_LEVEL:'unset'};
-  if(client==='sdk-constrained')Object.assign(receipt.configurationCandidate,{ANTHROPIC_CUSTOM_MODEL_OPTION:PRODUCT_PROXY_MODEL_ALIAS,
-   ANTHROPIC_CUSTOM_MODEL_OPTION_SUPPORTED_CAPABILITIES:''});
-  const selectedOptions=client==='sdk-profiled'?{...options,thinking:{type:'disabled'},settings:{...options.settings,
-   modelOverrides:{'claude-sonnet-4-6':PRODUCT_PROXY_MODEL_ALIAS}}}:options;
-  if(client==='sdk-profiled')receipt.configurationCandidate={supportedModelMetadata:true,
-   modelOverrides:{'claude-sonnet-4-6':PRODUCT_PROXY_MODEL_ALIAS},thinking:{type:'disabled'},
-   DISABLE_PROMPT_CACHING:'1',CLAUDE_CODE_EFFORT_LEVEL:'unset'};
+   CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC:'1',DISABLE_TELEMETRY:'1',DO_NOT_TRACK:'1'};
   const allowed=new Set([...Object.keys(options.env),...Object.keys(fixtureEnv),
    'CLAUDE_CODE_ENTRYPOINT','CLAUDE_AGENT_SDK_VERSION','CLAUDE_CODE_SDK_READS_SESSION_STATE']);
-  run=query({prompt:'Return one short greeting.',options:{...selectedOptions,env:{...options.env,...fixtureEnv},
+  run=query({prompt:'Return one short greeting.',options:{...options,env:{...options.env,...fixtureEnv},
    spawnClaudeCodeProcess:spec=>{
     if(realpathSync(spec.command)!==executable)throw Error('OFFLINE_CLI_EXECUTABLE_REFUSED');
     receipt.sdkSpawns++;
