@@ -1,0 +1,194 @@
+✔ authenticateSession: request cancellation during identity preserves the live session and rejects late release (32.912664ms)
+✔ authenticateSession: request cancellation during context preserves the live session and rejects late release (6.440041ms)
+✔ authenticateSession: request cancellation during membership preserves the live session and rejects late release (5.773967ms)
+✔ readCurrentState: request cancellation during identity preserves the live session and rejects late release (16.136932ms)
+✔ readCurrentState: request cancellation during context preserves the live session and rejects late release (5.844091ms)
+✔ readCurrentState: request cancellation during membership preserves the live session and rejects late release (4.266801ms)
+✔ authenticateSession: request cancellation cannot preserve expiry invalidation (2.856232ms)
+✔ authenticateSession: request cancellation cannot preserve revocation invalidation (2.836904ms)
+✔ authenticateSession: request cancellation cannot preserve invalid clock invalidation (2.29005ms)
+✔ authenticateSession: request cancellation cannot preserve identity invalidation (3.551336ms)
+✔ authenticateSession: request cancellation cannot preserve context invalidation (3.414023ms)
+✔ authenticateSession: request cancellation cannot preserve membership invalidation (3.155487ms)
+✔ readCurrentState: request cancellation cannot preserve expiry invalidation (2.588177ms)
+✔ readCurrentState: request cancellation cannot preserve revocation invalidation (2.691455ms)
+✔ readCurrentState: request cancellation cannot preserve invalid clock invalidation (2.625479ms)
+✔ readCurrentState: request cancellation cannot preserve identity invalidation (2.948026ms)
+✔ readCurrentState: request cancellation cannot preserve context invalidation (3.355199ms)
+✔ readCurrentState: request cancellation cannot preserve membership invalidation (2.792285ms)
+✔ authenticateSession: unknown without a cancelled request still invalidates (2.155821ms)
+✔ authenticateSession: AbortError without a cancelled request still invalidates (2.227412ms)
+✔ authenticateSession: CANCELLED without a cancelled request still invalidates (1.780649ms)
+✔ authenticateSession: DEADLINE without a cancelled request still invalidates (2.071ms)
+✔ readCurrentState: unknown without a cancelled request still invalidates (1.750195ms)
+✔ readCurrentState: AbortError without a cancelled request still invalidates (1.863718ms)
+✔ readCurrentState: CANCELLED without a cancelled request still invalidates (2.152157ms)
+✔ readCurrentState: DEADLINE without a cancelled request still invalidates (2.048059ms)
+✔ authenticateSession: owner-only timeout invalidates despite a still-live request (22.810176ms)
+✔ readCurrentState: owner-only timeout invalidates despite a still-live request (22.615355ms)
+✔ authenticateSession: identity unknown winning before caller abort still invalidates (1.43265ms)
+✔ authenticateSession: identity authority refusal winning before caller abort still invalidates (2.396726ms)
+✔ authenticateSession: context unknown winning before caller abort still invalidates (1.702858ms)
+✔ authenticateSession: context authority refusal winning before caller abort still invalidates (1.922348ms)
+✔ authenticateSession: membership unknown winning before caller abort still invalidates (2.01639ms)
+✔ authenticateSession: membership authority refusal winning before caller abort still invalidates (1.90925ms)
+✔ readCurrentState: identity unknown winning before caller abort still invalidates (1.713706ms)
+✔ readCurrentState: identity authority refusal winning before caller abort still invalidates (1.622913ms)
+✔ readCurrentState: context unknown winning before caller abort still invalidates (1.763028ms)
+✔ readCurrentState: context authority refusal winning before caller abort still invalidates (2.092254ms)
+✔ readCurrentState: membership unknown winning before caller abort still invalidates (1.883696ms)
+✔ readCurrentState: membership authority refusal winning before caller abort still invalidates (1.763594ms)
+✔ authenticateSession: owner deadline winning before caller abort still invalidates (22.864468ms)
+✔ readCurrentState: owner deadline winning before caller abort still invalidates (22.52873ms)
+✔ event request abort reconnects with the same credential and accepted cursor (21.34776ms)
+✔ event subscription deadline reconnects with the same credential and accepted cursor (109.211769ms)
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: explicit source root required
+    at file:///workspace/meri-session-cancel-repair/docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs:6:8
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
+✖ apps/control/action-host/session/http-independent.test.mjs (778.023161ms)
+✔ the relay returns the live session credential only for the exact run and selected client (11.728203ms)
+✔ the freshest matching session wins; expiry, revocation and close refuse (3.34736ms)
+✔ malformed requests refuse before any session is inspected (0.536296ms)
+✔ independent opaque sessions: inert constructor and exact detached public context, fresh canonical owner receipts (15.071113ms)
+✔ independent hints are selectors only: reject mismatched conversationId (1.30586ms)
+✔ independent hints are selectors only: reject mismatched runId (0.798074ms)
+✔ independent hints are selectors only: reject mismatched clientId (0.704398ms)
+✔ independent issuance rejects current owner identity hash (0.775243ms)
+✔ independent issuance rejects current owner tenant (0.596962ms)
+✔ independent issuance rejects current owner actor (1.855996ms)
+✔ independent issuance rejects current owner missing selected scope (0.544745ms)
+✔ independent issuance rejects current owner stale (0.515841ms)
+✔ independent issuance rejects current owner expired (0.486168ms)
+✔ independent current revision change invalidates issued token (1.200732ms)
+✔ independent current contextRevision change invalidates issued token (0.871854ms)
+✔ independent issued receipt cannot be forged or exchanged across session records (1.706994ms)
+✔ independent capacity is bounded and explicit revocation frees only its issued record (2.020945ms)
+✔ independent late revocation refuses in-flight authenticateSession (1.371147ms)
+✔ independent late revocation refuses in-flight readCurrentState (1.072005ms)
+✔ independent parked issue cancellation/close cannot leak a session after late owner return (11.149927ms)
+✔ independent hostile receipt and rejection are refused without traps or secret reflection (0.995292ms)
+✔ independent caller cutoff is passed unchanged or earlier to both owner ports (0.911843ms)
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: explicit source root required
+    at file:///workspace/meri-session-cancel-repair/docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs:6:8
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
+✖ apps/control/action-host/session/session.test.mjs (640.618185ms)
+✔ resume transition verifies trusted mapping without repinning original session (21.395061ms)
+✔ fork transition verifies trusted mapping without repinning original session (4.19075ms)
+✔ absent optional ports keeps fixed authentication and refuses transition verification (2.923464ms)
+✔ optional transition ports must be paired callable inert properties (1.859574ms)
+✔ DISPATCHING/dispatch-start enforces purpose inside session owner (4.30127ms)
+✔ DISPATCHING/dispatch-continued enforces purpose inside session owner (3.462709ms)
+✔ DISPATCHING/commit-applied enforces purpose inside session owner (3.126671ms)
+✔ DISPATCHING/receipt-readback enforces purpose inside session owner (2.400911ms)
+✔ APPLIED/dispatch-start enforces purpose inside session owner (2.127767ms)
+✔ APPLIED/dispatch-continued enforces purpose inside session owner (2.237091ms)
+✔ APPLIED/commit-applied enforces purpose inside session owner (1.872158ms)
+✔ APPLIED/receipt-readback enforces purpose inside session owner (2.308724ms)
+✔ UNKNOWN/dispatch-start enforces purpose inside session owner (1.616185ms)
+✔ UNKNOWN/receipt-readback enforces purpose inside session owner (2.465453ms)
+✔ PENDING/dispatch-start enforces purpose inside session owner (1.581961ms)
+✔ fork cannot authorize source continued notification (1.671543ms)
+✔ APPLIED readback and shorter rolling deadlines preserve immutable equality (11.268027ms)
+✔ state change to APPLIED during context read cannot authorize another dispatch (7.603348ms)
+✔ trusted source substitution refuses without repinning (6.697966ms)
+✔ trusted target substitution refuses without repinning (2.749217ms)
+✔ trusted tenant substitution refuses without repinning (2.718569ms)
+✔ trusted actor substitution refuses without repinning (2.626009ms)
+✔ trusted conversation substitution refuses without repinning (2.324765ms)
+✔ trusted worker reuse substitution refuses without repinning (2.26363ms)
+✔ trusted control substitution refuses without repinning (2.393458ms)
+✔ trusted admission substitution refuses without repinning (3.021937ms)
+✔ trusted retirement substitution refuses without repinning (2.594748ms)
+✔ trusted client substitution refuses without repinning (2.491643ms)
+✔ trusted scopes substitution refuses without repinning (2.593054ms)
+✔ trusted policy substitution refuses without repinning (2.368652ms)
+✔ trusted checkpoint digest substitution refuses without repinning (2.690503ms)
+✔ trusted target session substitution refuses without repinning (3.502985ms)
+✔ trusted extra authority substitution refuses without repinning (5.032036ms)
+✔ immutable inputSha256 drift across backend read refuses (2.306299ms)
+✔ immutable checkpointId drift across backend read refuses (1.972849ms)
+✔ immutable checkpointSha256 drift across backend read refuses (2.087591ms)
+✔ immutable sourceRequestSha256 drift across backend read refuses (2.425676ms)
+✔ immutable contextSha256 drift across backend read refuses (2.778091ms)
+✔ immutable resumeSessionAt drift across backend read refuses (3.033279ms)
+✔ effective identity deadline cannot widen (4.459756ms)
+✔ effective target deadline cannot widen (2.400262ms)
+✔ effective admission deadline cannot widen (1.992432ms)
+✔ effective retirement deadline cannot widen (2.493499ms)
+✔ effective reader deadline cannot widen (2.125566ms)
+✔ effective caller deadline cannot widen (1.947749ms)
+✔ effective original deadline cannot widen (2.107544ms)
+✔ invalid current native principal invalidates retained session (1.647464ms)
+✔ invalid current native identityRevision invalidates retained session (1.693688ms)
+✔ invalid current native expiresAtMs invalidates retained session (1.191227ms)
+✔ current target context identity hash refusal invalidates session (1.870095ms)
+✔ current target context binding refusal invalidates session (2.056673ms)
+✔ current target context scopes refusal invalidates session (2.554135ms)
+✔ current target context client refusal invalidates session (1.625614ms)
+✔ current target context stale refusal invalidates session (2.001857ms)
+✔ current target context expired refusal invalidates session (6.108183ms)
+✔ expired original record cannot be revived by longer native and target receipts (1.529956ms)
+✔ revocation during final journal check cannot release verified facts (2.787951ms)
+✔ concurrent verifications do not mutate session revision or original expiry (4.186011ms)
+✔ revocation while trusted reader is parked cannot release transition facts (2.016474ms)
+✔ cancellation of parked target context refuses and aborts owned signal (28.930158ms)
+✔ parked trusted port is bounded by original effective deadline (22.158223ms)
+✔ historical ordinary authentication still refuses and cannot recreate a transition session (2.679141ms)
+✔ membership revision change refuses transition before reading the journal (5.629878ms)
+✔ client removal during final transition read withholds verified facts (3.143934ms)
+✔ unknown purpose, forged credential and active input getters have no trusted effects (1.32543ms)
+✔ hostile signal and coercible deadline are rejected before identity or reader ports (1.175593ms)
+✔ cancelled identity verification preserves live original session for effect-free APPLIED readback (4.711131ms)
+✔ cancelled target verification preserves live original session for effect-free APPLIED readback (3.849975ms)
+✔ operation timeout preserves original session while fresh readback still rechecks identity (22.237271ms)
+✔ live AI SDK transport preserves durable ids/sequences and upstream stream protocol (166.825903ms)
+✔ upstream reader cancellation reaches the owned live event source (1.193594ms)
+✔ live producer suppresses internal source error details (1.022272ms)
+ℹ tests 140
+ℹ suites 0
+ℹ pass 138
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2379.752838
+
+✖ failing tests:
+
+test at apps/control/action-host/session/http-independent.test.mjs:1:1
+✖ apps/control/action-host/session/http-independent.test.mjs (778.023161ms)
+  'test failed'
+
+test at apps/control/action-host/session/session.test.mjs:1:1
+✖ apps/control/action-host/session/session.test.mjs (640.618185ms)
+  'test failed'

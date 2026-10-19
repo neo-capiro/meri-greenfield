@@ -53,23 +53,23 @@ const delay=(ms,signal)=>new Promise((done,fail)=>{
   signal?.addEventListener('abort',aborted,{once:true});
 });
 const gate=()=>({started:Promise.withResolvers(),release:Promise.withResolvers()});
-async function one({mode,latencyMs=0,serverMs=3000,nativeMs=3000,loadNativeMs=nativeMs,signal,duringJournal,journalDelayMs=0,coreGate,storeReadGate,nextTurn=false,journalExtra=true,foreignStoredBinding=false}={}){
-  const started=performance.now(),counts={identity:0,context:0,membership:0,taskAuthorization:0,currentRun:0,read:0,journalExecution:0,retention:0};
+async function one({mode,route='load',latencyMs=0,serverMs=3000,nativeMs=3000,loadNativeMs=nativeMs,signal,duringJournal,duringFinalRead,beforeInitialRead,duringTaskAuthorization,journalDelayMs=0,coreGate,storeReadGate,nextTurn=false,journalExtra=true,foreignStoredBinding=false,legacySessions=false}={}){
+  const started=performance.now(),counts={identity:0,context:0,membership:0,taskAuthorization:0,currentRun:0,read:0,append:0,journalExecution:0,retention:0};
   const principal={tenantId:binding.tenantId,actorId:binding.actorId};
   const commandBinding=mode==='dynamic'?{...binding,conversationId:id(901),runId:id(902)}:binding;
   const clientId=id(5),expiry=()=>Date.now()+60000;
-  const state={membershipStatus:'active',membershipRevision:'membership-revision',policyRevision:scopes[0].policyRevision,selectedClientId:clientId,retention:'servable'};
+  const state={membershipStatus:'active',membershipRevision:'membership-revision',identityRevision:'identity-revision',identityRevoked:false,policyRevision:scopes[0].policyRevision,selectedClientId:clientId,retention:'servable'};
   async function coreFetch(url,init){
     const path=new URL(url).pathname;
     const route=path.endsWith('/identity')?'identity':path.endsWith('/context')?'context':path.endsWith('/membership')?'membership':null;
     if(!route)throw Error('unknown local Core route');
     counts[route]++;
     if(coreGate&&route==='identity'&&counts.identity===1){coreGate.started.resolve();await coreGate.release.promise;}
-    await delay(latencyMs,init.signal);
+    await delay(typeof latencyMs==='function'?latencyMs(route,counts[route]):latencyMs,init.signal);
     const at=Date.now(),body=JSON.parse(init.body);
-    if(route==='identity')return Response.json({principal,identityRevision:'identity-revision',checkedAtMs:at,expiresAtMs:expiry()});
+    if(route==='identity')return state.identityRevoked?Response.json({error:'refused'},{status:403}):Response.json({principal,identityRevision:state.identityRevision,checkedAtMs:at,expiresAtMs:expiry()});
     if(route==='membership')return Response.json({...principal,status:state.membershipStatus,role:'standard_user',permissions:[],clientIds:[clientId],membershipRevision:state.membershipRevision,checkedAtMs:at,expiresAtMs:expiry()});
-    return Response.json({principal,identityRevision:'identity-revision',identitySha256:body.identitySha256,conversationId:body.conversationId,selectedClientId:state.selectedClientId,contextRevision:'context-revision',checkedAtMs:at,expiresAtMs:expiry()});
+    return Response.json({principal,identityRevision:state.identityRevision,identitySha256:body.identitySha256,conversationId:body.conversationId,selectedClientId:state.selectedClientId,contextRevision:'context-revision',checkedAtMs:at,expiresAtMs:expiry()});
   }
   const runFact=()=>({binding,policyRevision:state.policyRevision,deadlineMs:expiry(),checkedAtMs:Date.now()});
   const identityContext=createNativeIdentityContext({origin:'https://core.synthetic.invalid',commandContext:{binding:commandBinding,clientResolution:{reference:clientId,clientId}},
@@ -84,28 +84,33 @@ async function one({mode,latencyMs=0,serverMs=3000,nativeMs=3000,loadNativeMs=na
   const membership=createCoreMembershipGate({origin:'https://core.synthetic.invalid',identityContext,fetchImpl:coreFetch,now:Date.now,limits:{maxRequestMs:serverMs,maxFactBytes:65536}});
   const sessions=createActionSessionOwner({mode:'process-local',verifyIdentity:identityContext.verifyIdentity,resolveContext:identityContext.resolveContext,membership:{admit:membership.admit,recheck:membership.recheck},now:Date.now,
     limits:{maxSessions:4,maxRequestMs:serverMs,maxTtlMs:60000,maxFactBytes:65536}});
+  // A plain copy is a legacy port, not the registered owner: it must retain the original paired observations.
+  const sessionPort=legacySessions?{...sessions}:sessions;
   const saved={run:{binding,state:'queued',scopes,versions,createdAt:new Date().toISOString(),policyRevision:scopes[0].policyRevision},request:{requestId:id(6),prompt:'Synthetic only',skill:null,window:null,windowRequest:null},lastSequence:1};
   if(foreignStoredBinding)saved.run.binding={...binding,tenantId:'other-tenant'};
   const stub=async()=>{throw Error('unused');};
-  const store={accept:stub,append:stub,async read(){counts.read++;if(storeReadGate&&counts.read===1){storeReadGate.started.resolve();await storeReadGate.release.promise;}return structuredClone(saved);},
+  const store={accept:stub,async append(){counts.append++;return {scopes};},async read(){counts.read++;if(counts.read===2)duringFinalRead?.({state,saved});if(storeReadGate&&counts.read===1){storeReadGate.started.resolve();await storeReadGate.release.promise;}return structuredClone(saved);},
     ...(nextTurn?{nextRuns:{async execution(){return {nextTurn:{fixtureMarker:'new-turn'}};}}}:{}),
     lifecycle:{begin:stub,change:stub,get:stub,controls:stub,claim:stub,checkpoint:stub,readCheckpoint:stub,async execution(){counts.journalExecution++;duringJournal?.({state,saved});await delay(journalDelayMs);return journalExtra?{fixtureMarker:'journal-read'}:null;},continuation:stub,cancel:stub,readStopFence:stub}};
   const dispatcher={start:stub,cancel:stub,signal:stub};
   const retention={async assertServable(){counts.retention++;if(state.retention!=='servable')throw Error('RETENTION_SUPPRESSED');}};
-  const basic=createConversationService({sessions,store,dispatcher,versions,maxRequestMs:serverMs,retention});
-  const service=createConversationLifecycleService({service:basic,store,dispatcher,sessions,maxRequestMs:serverMs,reconcileOriginal:stub,checkpoints:{read:stub}});
+  const basic=createConversationService({sessions:sessionPort,store,dispatcher,versions,maxRequestMs:serverMs,retention});
+  const service=createConversationLifecycleService({service:basic,store,dispatcher,sessions:sessionPort,maxRequestMs:serverMs,reconcileOriginal:stub,checkpoints:{read:stub}});
   const native={async call(operation,input,{signal}={}){if(operation!=='worker/authorize')throw Error('unexpected native operation');counts.taskAuthorization++;
+    duringTaskAuthorization?.({state,count:counts.taskAuthorization});
     const verified=await verifierContext.verifyIdentity({credential:'synthetic-native',deadlineMs:Date.now()+serverMs,signal});
     await verifierContext.resolveContext({identityCredential:'synthetic-native',identity:verified,identitySha256:hash(verified),hints:{conversationId:binding.conversationId,runId:binding.runId},deadlineMs:Date.now()+serverMs,signal});
+    if(counts.taskAuthorization===2)beforeInitialRead?.({state});
     const at=Date.now();return {binding,operation:input.operation,inputSha256:input.inputSha256,identityCredential:'synthetic-native',scopes,selectedClientId:clientId,
       policyRevision:scopes[0].policyRevision,authorizationDecisionId:'synthetic-decision',checkedAtMs:at,expiresAtMs:expiry()};}};
-  const app=createWorkerRunApplication({service,sessions,native,configuration:{limits:{requestMs:serverMs,requestBytes:131072}},now:Date.now});
+  const app=createWorkerRunApplication({service,sessions:sessionPort,native,configuration:{limits:{requestMs:serverMs,requestBytes:131072}},now:Date.now});
   let responseStatus;
   const pendingServer=[];
   const client=createNativeCapabilityClient({configuration:{origin:'https://control.synthetic.invalid',maxResponseBytes:2097152},credential:'synthetic-task',now:Date.now,maxRequestMs:nativeMs,loadMaxRequestMs:loadNativeMs,
-    fetch:async(url,init)=>{const request=app.handle(new Request(url.replace('/v1/runner/load','/internal/conversations/load'),init));pendingServer.push(request);const response=await request;responseStatus=response.status;return response;}});
+    fetch:async(url,init)=>{const request=app.handle(new Request(url.replace('/v1/runner/'+route,'/internal/conversations/'+route),init));pendingServer.push(request);const response=await request;responseStatus=response.status;return response;}});
   let outcome,value,serverSettled;
-  const transport=client.call('runner/load',{binding},{deadlineMs:Date.now()+serverMs,signal});
+  const input=route==='load'?{binding}:{binding,event:{eventId:id(88),createdAt:new Date().toISOString(),type:'run.status',data:{state:'starting',reasonCode:null}}};
+  const transport=client.call('runner/'+route,input,{deadlineMs:Date.now()+serverMs,signal});
   try{value=await transport;outcome='200';}
   catch(error){outcome=error?.code??error?.message??'error';}
   finally{if(coreGate||storeReadGate){coreGate?.release.resolve();storeReadGate?.release.resolve();const timeout=new AbortController();
@@ -119,25 +124,48 @@ test('fused runner/load keeps the original authority gates with bounded Core fan
   assert.equal(dynamic.outcome,'200',JSON.stringify(dynamic));
   assert.equal(fixed.value.fixtureMarker,'journal-read');
   assert.equal(dynamic.value.fixtureMarker,'journal-read');
-  assert.equal(fixed.coreCalls,51,JSON.stringify(fixed));
-  assert.equal(dynamic.coreCalls,62,JSON.stringify(dynamic));
+  assert.equal(fixed.coreCalls,31,JSON.stringify(fixed));
+  assert.equal(dynamic.coreCalls,37,JSON.stringify(dynamic));
+  assert.deepEqual([fixed.counts.identity,fixed.counts.context,fixed.counts.membership],[10,9,12]);
+  assert.deepEqual([dynamic.counts.identity,dynamic.counts.context,dynamic.counts.membership],[10,15,12]);
   for(const result of [fixed,dynamic]){
     assert.equal(result.counts.taskAuthorization,3);
+    assert.equal(result.counts.append,0,'load must never publish');
     assert.equal(result.counts.journalExecution,1);
     assert.equal(result.counts.read,2,'initial and post-journal run/request reads');
     assert.equal(result.counts.retention,4,'before, across and after journal plus outer release');
   }
 });
 
+test('legacy session ports retain the original fresh pair at every load boundary',async()=>{
+  for(const [mode,coreCalls] of [['fixed',51],['dynamic',62]]){
+    const result=await one({mode,legacySessions:true});
+    assert.equal(result.outcome,'200',JSON.stringify(result));assert.equal(result.coreCalls,coreCalls,JSON.stringify(result));
+    assert.equal(result.counts.append,0,'legacy load must never publish');
+    assert.equal(result.counts.taskAuthorization,3);assert.equal(result.counts.read,2);assert.equal(result.counts.retention,4);
+    assert.equal(result.value.fixtureMarker,'journal-read');
+  }
+});
+
+test('non-load worker publish retains separate authentication and current observations',async()=>{
+  const current=await one({mode:'dynamic',route:'publish'}),legacy=await one({mode:'dynamic',route:'publish',legacySessions:true});
+  for(const result of [current,legacy]){
+    assert.equal(result.outcome,'200',JSON.stringify(result));assert.equal(result.coreCalls,42,JSON.stringify(result));
+    assert.equal(result.counts.taskAuthorization,3);assert.equal(result.counts.append,1);assert.equal(result.counts.retention,2);
+    assert.equal(result.counts.journalExecution,0);assert.deepEqual(result.value.scopes,scopes);
+  }
+  assert.deepEqual(current.counts,legacy.counts);
+});
+
 test('35 ms serial Core responses fit the fused load deadline',async()=>{
   const result=await one({mode:'dynamic',latencyMs:35});
   assert.equal(result.outcome,'200',JSON.stringify(result));
-  assert.equal(result.coreCalls,62);
+  assert.equal(result.coreCalls,37);
   assert.ok(result.durationMs<3000,JSON.stringify(result));
 });
 
 test('native client retains its independent three-second cap',async()=>{
-  const result=await one({mode:'dynamic',latencyMs:85,serverMs:5000,nativeMs:3000});
+  const result=await one({mode:'dynamic',latencyMs:100,serverMs:5000,nativeMs:3000});
   assert.equal(result.outcome,'DEADLINE',JSON.stringify(result));
   assert.ok(result.durationMs>=2900&&result.durationMs<4000,JSON.stringify(result));
 });
@@ -188,11 +216,33 @@ test('nested remote runner passes its load budget into the activity',async()=>{
   assert.equal(runtimeCalls,1,'a 19-second load reaches runtime admission through nested runner wiring');
 });
 
-test('300 ms Core replies fit the load-specific bounded path', {timeout:30000},async()=>{
-  const result=await one({mode:'dynamic',latencyMs:300,serverMs:25000,nativeMs:3000,loadNativeMs:23000});
+test('500 ms Core replies fit the unchanged 23-second load budget after removing duplicate observations', {timeout:30000},async()=>{
+  const result=await one({mode:'dynamic',latencyMs:500,serverMs:25000,nativeMs:3000,loadNativeMs:23000});
   assert.equal(result.outcome,'200',JSON.stringify(result));
-  assert.equal(result.coreCalls,62);
-  assert.ok(result.durationMs>=18600&&result.durationMs<23000,JSON.stringify(result));
+  assert.equal(result.coreCalls,37);
+  assert.ok(result.durationMs>=18500&&result.durationMs<23000,JSON.stringify(result));
+});
+
+test('the original paired path exceeds that same 23-second budget at 500 ms per Core response', {timeout:30000},async()=>{
+  const result=await one({mode:'dynamic',legacySessions:true,latencyMs:500,serverMs:25000,nativeMs:3000,loadNativeMs:23000});
+  assert.equal(result.outcome,'DEADLINE',JSON.stringify(result));assert.equal(result.value,undefined);
+  assert.ok(result.durationMs>=22500&&result.durationMs<25000,JSON.stringify(result));
+});
+
+test('conservative tail-heavy stress using observed per-route bounds fits the unchanged load budget', {timeout:30000},async t=>{
+  // Aggregate, uncorrelated observations supplied for diagnosis: mean/p95/max in milliseconds.
+  // Cycling mean,p95,mean,max,p95 is deliberately tail-heavy stress, NOT a reconstructed live distribution.
+  const observed={identity:{mean:119,p95:193,max:579},context:{mean:341,p95:653,max:1201},membership:{mean:300,p95:535,max:1002}};
+  let scheduledMs=0;
+  const latencyMs=(route,count)=>{const v=observed[route],ms=[v.mean,v.p95,v.mean,v.max,v.p95][(count-1)%5];scheduledMs+=ms;return ms;};
+  const result=await one({mode:'dynamic',latencyMs,serverMs:25000,nativeMs:3000,loadNativeMs:23000});
+  t.diagnostic(JSON.stringify({profile:'conservative tail-heavy stress, not a reconstructed live distribution',scheduledMs,durationMs:result.durationMs,coreCalls:result.coreCalls,counts:result.counts,outcome:result.outcome}));
+  assert.equal(result.outcome,'200',JSON.stringify(result));assert.equal(result.coreCalls,37);
+  assert.deepEqual([result.counts.identity,result.counts.context,result.counts.membership],[10,15,12]);
+  assert.equal(scheduledMs,18152);assert.ok(result.durationMs>=scheduledMs&&result.durationMs<23000,JSON.stringify(result));
+  assert.equal(result.counts.taskAuthorization,3);assert.equal(result.counts.retention,4);
+  assert.equal(result.counts.read,2);assert.equal(result.counts.append,0);assert.equal(result.counts.journalExecution,1);
+  assert.equal(result.value.fixtureMarker,'journal-read');
 });
 
 test('only runner/load receives the longer native allowance',async()=>{
@@ -280,6 +330,8 @@ test('the fused load independently refuses an out-of-scope selected client',asyn
 });
 
 for(const [name,mutate] of [
+  ['identity revocation',({state})=>{state.identityRevoked=true;}],
+  ['identity revision drift',({state})=>{state.identityRevision='changed';}],
   ['membership revocation',({state})=>{state.membershipStatus='removed';}],
   ['selected client drift',({state})=>{state.selectedClientId=id(777);}],
   ['current policy drift',({state})=>{state.policyRevision='changed';}],
@@ -292,4 +344,31 @@ for(const [name,mutate] of [
   assert.equal(result.outcome,'NATIVE_UNAVAILABLE',JSON.stringify(result));
   assert.equal(result.responseStatus,403,JSON.stringify(result));
   assert.equal(result.value,undefined);
+});
+
+for(const [name,mutate] of [
+  ['identity',state=>{state.identityRevoked=true;}],
+  ['membership',state=>{state.membershipStatus='removed';}],
+  ['selected client',state=>{state.selectedClientId=id(777);}],
+  ['policy',state=>{state.policyRevision='changed';}],
+  ['retention',state=>{state.retention='suppressed';}],
+]){
+  test(`${name} refusal before initial authorization prevents all stored reads`,async()=>{
+    const result=await one({mode:'dynamic',beforeInitialRead:({state})=>mutate(state)});
+    assert.equal(result.outcome,'NATIVE_UNAVAILABLE',JSON.stringify(result));assert.equal(result.responseStatus,403);
+    assert.equal(result.counts.read,0);assert.equal(result.counts.journalExecution,0);assert.equal(result.value,undefined);
+  });
+  test(`${name} revocation during final stored read is caught by fresh release authorization`,async()=>{
+    const result=await one({mode:'dynamic',duringFinalRead:({state})=>mutate(state)});
+    assert.equal(result.outcome,'NATIVE_UNAVAILABLE',JSON.stringify(result));assert.equal(result.responseStatus,403);
+    assert.equal(result.counts.read,2);assert.equal(result.counts.journalExecution,1);assert.equal(result.value,undefined);
+    assert.equal(result.counts.taskAuthorization,2,'service final authorization must refuse before the last task gate');
+  });
+}
+
+test('task revocation at the final worker gate withholds the completed service receipt',async()=>{
+  const result=await one({mode:'dynamic',duringTaskAuthorization:({count})=>{if(count===3)throw Error('task revoked');}});
+  assert.equal(result.outcome,'NATIVE_UNAVAILABLE',JSON.stringify(result));assert.equal(result.responseStatus,403);
+  assert.equal(result.counts.taskAuthorization,3);assert.equal(result.counts.retention,4);
+  assert.equal(result.counts.read,2);assert.equal(result.value,undefined);
 });

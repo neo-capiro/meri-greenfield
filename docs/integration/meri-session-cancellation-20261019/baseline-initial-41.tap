@@ -1,0 +1,363 @@
+TAP version 13
+# Subtest: authenticateSession: request cancellation during identity preserves the live session and rejects late release
+not ok 1 - authenticateSession: request cancellation during identity preserves the live session and rejects late release
+  ---
+  duration_ms: 19.049779
+  type: 'test'
+  location: '/workspace/meri-session-cancel-repair/apps/control/action-host/session/cancellation.test.mjs:39:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    a cancelled read must not revoke the shared live session
+
+    0 !== 1
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-session-cancel-repair/apps/control/action-host/session/cancellation.test.mjs:51:10)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: authenticateSession: request cancellation during context preserves the live session and rejects late release
+not ok 2 - authenticateSession: request cancellation during context preserves the live session and rejects late release
+  ---
+  duration_ms: 4.465914
+  type: 'test'
+  location: '/workspace/meri-session-cancel-repair/apps/control/action-host/session/cancellation.test.mjs:39:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    a cancelled read must not revoke the shared live session
+
+    0 !== 1
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-session-cancel-repair/apps/control/action-host/session/cancellation.test.mjs:51:10)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: authenticateSession: request cancellation during membership preserves the live session and rejects late release
+not ok 3 - authenticateSession: request cancellation during membership preserves the live session and rejects late release
+  ---
+  duration_ms: 4.070741
+  type: 'test'
+  location: '/workspace/meri-session-cancel-repair/apps/control/action-host/session/cancellation.test.mjs:39:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    a cancelled read must not revoke the shared live session
+
+    0 !== 1
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-session-cancel-repair/apps/control/action-host/session/cancellation.test.mjs:51:10)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: readCurrentState: request cancellation during identity preserves the live session and rejects late release
+not ok 4 - readCurrentState: request cancellation during identity preserves the live session and rejects late release
+  ---
+  duration_ms: 3.289477
+  type: 'test'
+  location: '/workspace/meri-session-cancel-repair/apps/control/action-host/session/cancellation.test.mjs:39:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    a cancelled read must not revoke the shared live session
+
+    0 !== 1
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-session-cancel-repair/apps/control/action-host/session/cancellation.test.mjs:51:10)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: readCurrentState: request cancellation during context preserves the live session and rejects late release
+not ok 5 - readCurrentState: request cancellation during context preserves the live session and rejects late release
+  ---
+  duration_ms: 3.95343
+  type: 'test'
+  location: '/workspace/meri-session-cancel-repair/apps/control/action-host/session/cancellation.test.mjs:39:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    a cancelled read must not revoke the shared live session
+
+    0 !== 1
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-session-cancel-repair/apps/control/action-host/session/cancellation.test.mjs:51:10)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: readCurrentState: request cancellation during membership preserves the live session and rejects late release
+not ok 6 - readCurrentState: request cancellation during membership preserves the live session and rejects late release
+  ---
+  duration_ms: 2.444665
+  type: 'test'
+  location: '/workspace/meri-session-cancel-repair/apps/control/action-host/session/cancellation.test.mjs:39:2'
+  failureType: 'testCodeFailure'
+  error: |-
+    a cancelled read must not revoke the shared live session
+
+    0 !== 1
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-session-cancel-repair/apps/control/action-host/session/cancellation.test.mjs:51:10)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: authenticateSession: request cancellation cannot preserve expiry invalidation
+ok 7 - authenticateSession: request cancellation cannot preserve expiry invalidation
+  ---
+  duration_ms: 2.712588
+  type: 'test'
+  ...
+# Subtest: authenticateSession: request cancellation cannot preserve revocation invalidation
+ok 8 - authenticateSession: request cancellation cannot preserve revocation invalidation
+  ---
+  duration_ms: 2.030861
+  type: 'test'
+  ...
+# Subtest: authenticateSession: request cancellation cannot preserve identity invalidation
+ok 9 - authenticateSession: request cancellation cannot preserve identity invalidation
+  ---
+  duration_ms: 2.381221
+  type: 'test'
+  ...
+# Subtest: authenticateSession: request cancellation cannot preserve context invalidation
+ok 10 - authenticateSession: request cancellation cannot preserve context invalidation
+  ---
+  duration_ms: 2.293648
+  type: 'test'
+  ...
+# Subtest: authenticateSession: request cancellation cannot preserve membership invalidation
+ok 11 - authenticateSession: request cancellation cannot preserve membership invalidation
+  ---
+  duration_ms: 2.41014
+  type: 'test'
+  ...
+# Subtest: readCurrentState: request cancellation cannot preserve expiry invalidation
+ok 12 - readCurrentState: request cancellation cannot preserve expiry invalidation
+  ---
+  duration_ms: 2.00528
+  type: 'test'
+  ...
+# Subtest: readCurrentState: request cancellation cannot preserve revocation invalidation
+ok 13 - readCurrentState: request cancellation cannot preserve revocation invalidation
+  ---
+  duration_ms: 2.58502
+  type: 'test'
+  ...
+# Subtest: readCurrentState: request cancellation cannot preserve identity invalidation
+ok 14 - readCurrentState: request cancellation cannot preserve identity invalidation
+  ---
+  duration_ms: 4.603645
+  type: 'test'
+  ...
+# Subtest: readCurrentState: request cancellation cannot preserve context invalidation
+ok 15 - readCurrentState: request cancellation cannot preserve context invalidation
+  ---
+  duration_ms: 3.406676
+  type: 'test'
+  ...
+# Subtest: readCurrentState: request cancellation cannot preserve membership invalidation
+ok 16 - readCurrentState: request cancellation cannot preserve membership invalidation
+  ---
+  duration_ms: 2.500753
+  type: 'test'
+  ...
+# Subtest: authenticateSession: unknown without a cancelled request still invalidates
+ok 17 - authenticateSession: unknown without a cancelled request still invalidates
+  ---
+  duration_ms: 1.662934
+  type: 'test'
+  ...
+# Subtest: authenticateSession: AbortError without a cancelled request still invalidates
+ok 18 - authenticateSession: AbortError without a cancelled request still invalidates
+  ---
+  duration_ms: 1.418056
+  type: 'test'
+  ...
+# Subtest: authenticateSession: CANCELLED without a cancelled request still invalidates
+ok 19 - authenticateSession: CANCELLED without a cancelled request still invalidates
+  ---
+  duration_ms: 1.748343
+  type: 'test'
+  ...
+# Subtest: authenticateSession: DEADLINE without a cancelled request still invalidates
+ok 20 - authenticateSession: DEADLINE without a cancelled request still invalidates
+  ---
+  duration_ms: 1.293947
+  type: 'test'
+  ...
+# Subtest: readCurrentState: unknown without a cancelled request still invalidates
+ok 21 - readCurrentState: unknown without a cancelled request still invalidates
+  ---
+  duration_ms: 1.236881
+  type: 'test'
+  ...
+# Subtest: readCurrentState: AbortError without a cancelled request still invalidates
+ok 22 - readCurrentState: AbortError without a cancelled request still invalidates
+  ---
+  duration_ms: 1.466979
+  type: 'test'
+  ...
+# Subtest: readCurrentState: CANCELLED without a cancelled request still invalidates
+ok 23 - readCurrentState: CANCELLED without a cancelled request still invalidates
+  ---
+  duration_ms: 1.355303
+  type: 'test'
+  ...
+# Subtest: readCurrentState: DEADLINE without a cancelled request still invalidates
+ok 24 - readCurrentState: DEADLINE without a cancelled request still invalidates
+  ---
+  duration_ms: 1.433608
+  type: 'test'
+  ...
+# Subtest: authenticateSession: owner-only timeout invalidates despite a still-live request
+ok 25 - authenticateSession: owner-only timeout invalidates despite a still-live request
+  ---
+  duration_ms: 21.018013
+  type: 'test'
+  ...
+# Subtest: readCurrentState: owner-only timeout invalidates despite a still-live request
+ok 26 - readCurrentState: owner-only timeout invalidates despite a still-live request
+  ---
+  duration_ms: 23.58112
+  type: 'test'
+  ...
+# Subtest: authenticateSession: identity unknown winning before caller abort still invalidates
+ok 27 - authenticateSession: identity unknown winning before caller abort still invalidates
+  ---
+  duration_ms: 1.417582
+  type: 'test'
+  ...
+# Subtest: authenticateSession: identity authority refusal winning before caller abort still invalidates
+ok 28 - authenticateSession: identity authority refusal winning before caller abort still invalidates
+  ---
+  duration_ms: 1.155067
+  type: 'test'
+  ...
+# Subtest: authenticateSession: context unknown winning before caller abort still invalidates
+ok 29 - authenticateSession: context unknown winning before caller abort still invalidates
+  ---
+  duration_ms: 1.281453
+  type: 'test'
+  ...
+# Subtest: authenticateSession: context authority refusal winning before caller abort still invalidates
+ok 30 - authenticateSession: context authority refusal winning before caller abort still invalidates
+  ---
+  duration_ms: 1.223374
+  type: 'test'
+  ...
+# Subtest: authenticateSession: membership unknown winning before caller abort still invalidates
+ok 31 - authenticateSession: membership unknown winning before caller abort still invalidates
+  ---
+  duration_ms: 1.018563
+  type: 'test'
+  ...
+# Subtest: authenticateSession: membership authority refusal winning before caller abort still invalidates
+ok 32 - authenticateSession: membership authority refusal winning before caller abort still invalidates
+  ---
+  duration_ms: 0.95023
+  type: 'test'
+  ...
+# Subtest: readCurrentState: identity unknown winning before caller abort still invalidates
+ok 33 - readCurrentState: identity unknown winning before caller abort still invalidates
+  ---
+  duration_ms: 1.012069
+  type: 'test'
+  ...
+# Subtest: readCurrentState: identity authority refusal winning before caller abort still invalidates
+ok 34 - readCurrentState: identity authority refusal winning before caller abort still invalidates
+  ---
+  duration_ms: 1.202297
+  type: 'test'
+  ...
+# Subtest: readCurrentState: context unknown winning before caller abort still invalidates
+ok 35 - readCurrentState: context unknown winning before caller abort still invalidates
+  ---
+  duration_ms: 1.064058
+  type: 'test'
+  ...
+# Subtest: readCurrentState: context authority refusal winning before caller abort still invalidates
+ok 36 - readCurrentState: context authority refusal winning before caller abort still invalidates
+  ---
+  duration_ms: 1.085766
+  type: 'test'
+  ...
+# Subtest: readCurrentState: membership unknown winning before caller abort still invalidates
+ok 37 - readCurrentState: membership unknown winning before caller abort still invalidates
+  ---
+  duration_ms: 2.985073
+  type: 'test'
+  ...
+# Subtest: readCurrentState: membership authority refusal winning before caller abort still invalidates
+ok 38 - readCurrentState: membership authority refusal winning before caller abort still invalidates
+  ---
+  duration_ms: 3.627806
+  type: 'test'
+  ...
+# Subtest: authenticateSession: owner deadline winning before caller abort still invalidates
+ok 39 - authenticateSession: owner deadline winning before caller abort still invalidates
+  ---
+  duration_ms: 22.22652
+  type: 'test'
+  ...
+# Subtest: readCurrentState: owner deadline winning before caller abort still invalidates
+ok 40 - readCurrentState: owner deadline winning before caller abort still invalidates
+  ---
+  duration_ms: 21.790213
+  type: 'test'
+  ...
+# Subtest: cancelled event subscription reconnects with the same credential and accepted cursor
+not ok 41 - cancelled event subscription reconnects with the same credential and accepted cursor
+  ---
+  duration_ms: 12.873296
+  type: 'test'
+  location: '/workspace/meri-session-cancel-repair/apps/control/action-host/session/cancellation.test.mjs:135:1'
+  failureType: 'testCodeFailure'
+  error: 'SESSION_REFUSED'
+  code: 'SESSION_REFUSED'
+  name: 'ActionSessionError'
+  stack: |-
+    deny (file:///workspace/meri-session-cancel-repair/apps/control/action-host/session/owner.mjs:13:45)
+    valid (file:///workspace/meri-session-cancel-repair/apps/control/action-host/session/owner.mjs:30:147)
+    Object.authenticateSession (file:///workspace/meri-session-cancel-repair/apps/control/action-host/session/owner.mjs:84:266)
+    file:///workspace/meri-session-cancel-repair/apps/control/conversations/service.mjs:35:107
+    file:///workspace/meri-session-cancel-repair/packages/runtime/operation-lifetime.mjs:38:65
+  ...
+1..41
+# tests 41
+# suites 0
+# pass 34
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 734.901778

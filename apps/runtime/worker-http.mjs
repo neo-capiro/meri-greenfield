@@ -5,16 +5,34 @@ import {canonicalSha256} from '../../packages/contracts/validate.mjs';
 import {assertRunOwnerRequest,same,runOwnerOperations} from '../../packages/contracts/runtime-0.2/validate.mjs';
 import {fault} from './config.mjs';
 import {createNativeTaskAuthority} from './native-authority/task-authority.mjs';
-export function createWorkerRunApplication({service,sessions,native,configuration,now=Date.now}){
+import {authenticatedCurrentState} from '../control/action-host/session/owner.mjs';
+import {storageMethod} from '../artifacts/storage/boundary.mjs';
+export function createWorkerRunApplication({service,sessions,native,configuration,retention,now=Date.now}){
+ let withRelease;try{withRelease=retention===undefined?null:storageMethod(retention,'withRelease');if(configuration.retention!==undefined&&!withRelease)throw Error();}catch{throw fault('WORKER_RETENTION_CONFIGURATION');}
  const authority=createNativeTaskAuthority({native,enabled:true,now,maxRequestMs:configuration.limits.requestMs});
+ const readCurrent=authenticatedCurrentState(sessions);
  return Object.freeze({async handle(request){let life,session;try{
   const url=new URL(request.url),route=/^\/internal\/conversations\/([a-z-]+)$/u.exec(url.pathname);if(!route||!Object.hasOwn(runOwnerOperations,route[1])||url.search)return Response.json({error:{code:'NOT_FOUND'}},{status:404});if(request.method!=='POST')return Response.json({error:{code:'METHOD_NOT_ALLOWED'}},{status:405});
   const capability=request.headers.get('authorization');if(!/^Bearer [A-Za-z0-9._~+\/-]{1,8192}={0,2}$/u.test(capability??''))throw fault('WORKER_AUTHORITY_REFUSED');if(!/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(request.headers.get('content-type')??'')||request.headers.get('content-encoding'))throw fault('WORKER_REQUEST_REFUSED');
-  life=createOperationLifetime({deadlineMs:now()+configuration.limits.requestMs,now,signal:request.signal,errorFactory:fault});const length=request.headers.get('content-length');if(length!==null&&!/^(0|[1-9][0-9]*)$/u.test(length))throw fault('WORKER_REQUEST_REFUSED');
+  let deadlineMs=now()+configuration.limits.requestMs;life=createOperationLifetime({deadlineMs,now,signal:request.signal,errorFactory:fault});const length=request.headers.get('content-length');if(length!==null&&!/^(0|[1-9][0-9]*)$/u.test(length))throw fault('WORKER_REQUEST_REFUSED');
   const input=assertRunOwnerRequest(route[1],await jsonBody({body:request.body,length:length===null?null:Number(length)},configuration.limits.requestBytes,life,life.check)),inputSha256=canonicalSha256(input);let pinned;
-  async function fresh(){const value=await life.run(signal=>authority.verify({capability:capability.slice(7),binding:input.binding,operation:route[1],inputSha256,signal}));const identity={binding:value.binding,scopes:value.scopes,selectedClientId:value.selectedClientId,policyRevision:value.policyRevision};if(pinned&&!same(pinned,identity))throw fault('WORKER_AUTHORITY_CHANGED');pinned??=identity;life.limitDeadline(value.expiresAtMs);return value;}
+  async function fresh(){const value=await life.run(signal=>authority.verify({capability:capability.slice(7),binding:input.binding,operation:route[1],inputSha256,signal}));const identity={binding:value.binding,scopes:value.scopes,selectedClientId:value.selectedClientId,policyRevision:value.policyRevision};if(pinned&&!same(pinned,identity))throw fault('WORKER_AUTHORITY_CHANGED');pinned??=identity;deadlineMs=Math.min(deadlineMs,value.expiresAtMs);life.limitDeadline(deadlineMs);return value;}
   const authorization=await fresh();session=await life.run(signal=>sessions.issue({identityCredential:authorization.identityCredential,hints:{conversationId:input.binding.conversationId,runId:input.binding.runId,clientId:authorization.selectedClientId},signal}));
-  const auth=await life.run(signal=>sessions.authenticateSession({credential:session.credential,signal})),current=await life.run(signal=>sessions.readCurrentState({authentication:auth,signal}));if(!same(current.binding,pinned.binding)||!same(current.scopes,pinned.scopes)||current.selectedClientId!==pinned.selectedClientId)throw fault('WORKER_AUTHORITY_CHANGED');
-  await fresh();const result=await life.run(signal=>service[runOwnerOperations[route[1]]]({credential:session.credential,...input,signal}));await fresh();life.check();return Response.json(result,{headers:{'cache-control':'no-store'}});
+  let current;
+  if(route[1]==='load'&&readCurrent)({current}=await life.run(signal=>readCurrent({credential:session.credential,signal})));
+  else{const authentication=await life.run(signal=>sessions.authenticateSession({credential:session.credential,signal}));current=await life.run(signal=>sessions.readCurrentState({authentication,signal}));}
+  if(!same(current.binding,pinned.binding)||!same(current.scopes,pinned.scopes)||current.selectedClientId!==pinned.selectedClientId)throw fault('WORKER_AUTHORITY_CHANGED');
+  await fresh();const result=await life.run(signal=>service[runOwnerOperations[route[1]]]({credential:session.credential,...input,signal}));await fresh();life.check();
+  if(route[1]==='load'&&withRelease){
+   const subject={tenantId:pinned.binding.tenantId,kind:'conversation',subjectId:pinned.binding.conversationId};
+   // The final task check is awaited: suppression must be rechecked under the
+   // canonical serving lock and that lock must cover response serialization.
+   return await life.run(signal=>withRelease([subject],async(fenceSignal,assertReleaseServable)=>{
+    if(typeof assertReleaseServable!=='function')throw fault('WORKER_RETENTION_CONFIGURATION');
+    life.check();fenceSignal.throwIfAborted();await assertReleaseServable(subject);life.check();fenceSignal.throwIfAborted();
+    return Response.json(result,{headers:{'cache-control':'no-store'}});
+   },{signal,deadlineMs}));
+  }
+  return Response.json(result,{headers:{'cache-control':'no-store'}});
  }catch(error){const code=['DEADLINE','CANCELLED'].includes(error?.code)?error.code:'WORKER_REQUEST_REFUSED';return Response.json({error:{code}},{status:code==='WORKER_REQUEST_REFUSED'?403:408});}finally{if(session)sessions.revoke(session.credential);life?.close();}}});
 }

@@ -1,0 +1,239 @@
+TAP version 13
+# Subtest: the canonical retention gate composes, suppresses history and still permits cancellation cleanup
+ok 1 - the canonical retention gate composes, suppresses history and still permits cancellation cleanup
+  ---
+  duration_ms: 154.82066
+  type: 'test'
+  ...
+# Subtest: optional serving methods are typed and unknown retention keys remain closed without invoking any owner
+ok 2 - optional serving methods are typed and unknown retention keys remain closed without invoking any owner
+  ---
+  duration_ms: 0.774734
+  type: 'test'
+  ...
+# Subtest: canonical release keeps earlier subject protected during awaited authorization
+ok 3 - canonical release keeps earlier subject protected during awaited authorization
+  ---
+  duration_ms: 24.322911
+  type: 'test'
+  ...
+# Subtest: canonical release keeps earlier subject protected during awaited later-subject-read
+ok 4 - canonical release keeps earlier subject protected during awaited later-subject-read
+  ---
+  duration_ms: 5.46563
+  type: 'test'
+  ...
+# Subtest: canonical release sees suppression that acquired its transition lock first
+ok 5 - canonical release sees suppression that acquired its transition lock first
+  ---
+  duration_ms: 3.027125
+  type: 'test'
+  ...
+# Subtest: canonical deadline release frees subject locks without late publication
+ok 6 - canonical deadline release frees subject locks without late publication
+  ---
+  duration_ms: 33.505413
+  type: 'test'
+  ...
+# Subtest: canonical cancel release frees subject locks without late publication
+ok 7 - canonical cancel release frees subject locks without late publication
+  ---
+  duration_ms: 3.026853
+  type: 'test'
+  ...
+# Subtest: canonical denied release frees subject locks without late publication
+ok 8 - canonical denied release frees subject locks without late publication
+  ---
+  duration_ms: 5.081694
+  type: 'test'
+  ...
+# Subtest: concurrent pages with reversed subject order share a deterministic fence without deadlock
+ok 9 - concurrent pages with reversed subject order share a deterministic fence without deadlock
+  ---
+  duration_ms: 1.97943
+  type: 'test'
+  ...
+# Subtest: bounded pool: one PostgreSQL lease completes the canonical saved-history release and returns clean
+ok 10 - bounded pool: one PostgreSQL lease completes the canonical saved-history release and returns clean
+  ---
+  duration_ms: 4.311778
+  type: 'test'
+  ...
+# Subtest: bounded pool: two concurrent saved-history releases never request a third lease
+ok 11 - bounded pool: two concurrent saved-history releases never request a third lease
+  ---
+  duration_ms: 1.624048
+  type: 'test'
+  ...
+# Subtest: bounded pool: a saved page publishes before queued suppression acknowledges, then the subject is refused
+ok 12 - bounded pool: a saved page publishes before queued suppression acknowledges, then the subject is refused
+  ---
+  duration_ms: 3.674255
+  type: 'test'
+  ...
+# Subtest: bounded pool: suppression that owns the transition lock first prevents transcript publication
+ok 13 - bounded pool: suppression that owns the transition lock first prevents transcript publication
+  ---
+  duration_ms: 2.387787
+  type: 'test'
+  ...
+# Subtest: bounded pool: failed final authorization returns the session and cannot publish late
+ok 14 - bounded pool: failed final authorization returns the session and cannot publish late
+  ---
+  duration_ms: 1.553901
+  type: 'test'
+  ...
+# Subtest: bounded pool: scoped projection and schedule reads cannot escape locked subjects or released lease
+ok 15 - bounded pool: scoped projection and schedule reads cannot escape locked subjects or released lease
+  ---
+  duration_ms: 1.387666
+  type: 'test'
+  ...
+# Subtest: PostgreSQL page fence uses one lease and sorted shared locks matching suppression, then unlocks in reverse order
+ok 16 - PostgreSQL page fence uses one lease and sorted shared locks matching suppression, then unlocks in reverse order
+  ---
+  duration_ms: 0.946035
+  type: 'test'
+  ...
+# Subtest: PostgreSQL page fence drains an unawaited scheduled read before unlock and refuses its response
+ok 17 - PostgreSQL page fence drains an unawaited scheduled read before unlock and refuses its response
+  ---
+  duration_ms: 1.424539
+  type: 'test'
+  ...
+# Subtest: PostgreSQL cancel page fence retires unknown session state
+ok 18 - PostgreSQL cancel page fence retires unknown session state
+  ---
+  duration_ms: 1.890543
+  type: 'test'
+  ...
+# Subtest: PostgreSQL deadline page fence retires unknown session state
+ok 19 - PostgreSQL deadline page fence retires unknown session state
+  ---
+  duration_ms: 31.225661
+  type: 'test'
+  ...
+# Subtest: PostgreSQL unlock-unknown page fence retires unknown session state
+ok 20 - PostgreSQL unlock-unknown page fence retires unknown session state
+  ---
+  duration_ms: 0.660086
+  type: 'test'
+  ...
+# Subtest: PostgreSQL late-lease page fence retires unknown session state
+ok 21 - PostgreSQL late-lease page fence retires unknown session state
+  ---
+  duration_ms: 110.919806
+  type: 'test'
+  ...
+# Subtest: PostgreSQL clean fence preserves callback authorization denial and frees its session
+ok 22 - PostgreSQL clean fence preserves callback authorization denial and frees its session
+  ---
+  duration_ms: 0.648715
+  type: 'test'
+  ...
+# Subtest: history cannot publish after an internal memory fence deadline while its HTTP signal stays active
+ok 23 - history cannot publish after an internal memory fence deadline while its HTTP signal stays active
+  ---
+  duration_ms: 33.141566
+  type: 'test'
+  ...
+# Subtest: history cannot publish after an internal postgres fence deadline while its HTTP signal stays active
+ok 24 - history cannot publish after an internal postgres fence deadline while its HTTP signal stays active
+  ---
+  duration_ms: 31.47785
+  type: 'test'
+  ...
+# Subtest: PostgreSQL failed-unlock page fence retires the session within its original bound
+ok 25 - PostgreSQL failed-unlock page fence retires the session within its original bound
+  ---
+  duration_ms: 0.615196
+  type: 'test'
+  ...
+# Subtest: PostgreSQL stalled-unlock page fence retires the session within its original bound
+ok 26 - PostgreSQL stalled-unlock page fence retires the session within its original bound
+  ---
+  duration_ms: 30.667449
+  type: 'test'
+  ...
+# Subtest: PostgreSQL partial-acquire page fence retires the session within its original bound
+ok 27 - PostgreSQL partial-acquire page fence retires the session within its original bound
+  ---
+  duration_ms: 30.955055
+  type: 'test'
+  ...
+# Subtest: suppression committed during final task verification withholds the saved load response
+ok 28 - suppression committed during final task verification withholds the saved load response
+  ---
+  duration_ms: 44.323794
+  type: 'test'
+  ...
+# {"status":403,"promptPresent":false,"projection":"SUPPRESSED","counts":{"task":3,"retention":4,"release":1,"scoped":1,"serialized":0,"reads":2,"journal":1,"writes":0}}
+# Subtest: earlier canonical suppression still refuses before loading saved data
+ok 29 - earlier canonical suppression still refuses before loading saved data
+  ---
+  duration_ms: 9.851202
+  type: 'test'
+  ...
+# Subtest: successful load serializes under its authenticated subject release fence
+ok 30 - successful load serializes under its authenticated subject release fence
+  ---
+  duration_ms: 22.478815
+  type: 'test'
+  ...
+# Subtest: cancel during release acquisition frees locks and prevents late serialization
+ok 31 - cancel during release acquisition frees locks and prevents late serialization
+  ---
+  duration_ms: 9.864499
+  type: 'test'
+  ...
+# Subtest: deadline during release acquisition frees locks and prevents late serialization
+ok 32 - deadline during release acquisition frees locks and prevents late serialization
+  ---
+  duration_ms: 203.996575
+  type: 'test'
+  ...
+# Subtest: cancel during release scoped read frees locks and prevents late serialization
+ok 33 - cancel during release scoped read frees locks and prevents late serialization
+  ---
+  duration_ms: 8.922646
+  type: 'test'
+  ...
+# Subtest: deadline during release scoped read frees locks and prevents late serialization
+ok 34 - deadline during release scoped read frees locks and prevents late serialization
+  ---
+  duration_ms: 203.661059
+  type: 'test'
+  ...
+# Subtest: serialization failure frees the canonical subject lock and revokes the temporary session
+ok 35 - serialization failure frees the canonical subject lock and revokes the temporary session
+  ---
+  duration_ms: 9.051846
+  type: 'test'
+  ...
+# Subtest: the final verified authority expiry bounds release acquisition
+ok 36 - the final verified authority expiry bounds release acquisition
+  ---
+  duration_ms: 81.261972
+  type: 'test'
+  ...
+# Subtest: declared retention requires a release gate and supplied malformed ports fail closed
+ok 37 - declared retention requires a release gate and supplied malformed ports fail closed
+  ---
+  duration_ms: 1.949986
+  type: 'test'
+  ...
+# Subtest: a gate without its scoped assertion cannot serialize load data
+ok 38 - a gate without its scoped assertion cannot serialize load data
+  ---
+  duration_ms: 6.01627
+  type: 'test'
+  ...
+1..38
+# tests 38
+# suites 0
+# pass 38
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1344.590761
