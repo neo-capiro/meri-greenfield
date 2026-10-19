@@ -9,6 +9,10 @@ const transitionKeys=['controlId','intent','inputSha256','sourceBinding','target
 const transitionFactKeys=[...transitionKeys,'state','admissionExpiresAtMs','retirementExpiresAtMs','targetExpiresAtMs','checkedAtMs','expiresAtMs'];
 const transitionHash=v=>canonicalSha256(Object.fromEntries(transitionKeys.map(k=>[k,v[k]])));
 const errors=new WeakSet();
+// Private owner capability only: no facts are retained here and the strict public session port stays unchanged.
+const currentReaders=new WeakMap();
+/** Trusted load composition: each call to the reader performs one complete fresh observation. */
+export const authenticatedCurrentState=owner=>currentReaders.get(owner);
 export class ActionSessionError extends Error{constructor(code){super(code);this.name='ActionSessionError';this.code=code;errors.add(this);}}
 const deny=(code='SESSION_REFUSED')=>{throw new ActionSessionError(code);};
 // One minimal issuance wire owner, reused at construction and HTTP release.
@@ -81,11 +85,15 @@ export function createActionSessionOwner(configuration){
    const b=record.context.binding,out=assertActionSessionReceipt({credential,expiresAtMs:record.expiresAtMs,context:{tenantId:b.tenantId,actorId:b.actorId,conversationId:b.conversationId,runId:b.runId,selectedClientId:record.context.selectedClientId}},active(t.signal));release(record,t);return out;
   }catch(error){if(record)remove(record);if(errors.has(error))throw error;deny();}finally{t.close();}
  }
- async function authenticateSession(value){const {credential,signal,deadlineMs}=own(value,['credential'],['signal','deadlineMs']);if(typeof credential!=='string'||!/^action_session_[A-Za-z0-9_-]{43}$/u.test(credential))deny();const r=sessions.get(hash(credential));valid(r,signal);const t=life(Math.min(deadlineMs??r.expiresAtMs,r.expiresAtMs),signal);
-  try{const current=await resolve(r.nativeCredential,r.hints,t,r);valid(r,t.signal);r.expiresAtMs=current.expiresAtMs;const b=r.context.binding,out=data({principal:{sessionId:r.sessionId,tenantId:b.tenantId,actorId:b.actorId,conversationId:b.conversationId,runId:b.runId},sessionRevision:r.sessionRevision,checkedAtMs:active(t.signal),expiresAtMs:r.expiresAtMs});t.check();r.receipts.add(canonicalSha256(out));if(r.receipts.size>64)r.receipts.delete(r.receipts.values().next().value);release(r,t);return out;}catch{remove(r);deny();}finally{t.close();}
+ function currentReceipt(r,authentication,current,t){return data({authenticationSha256:canonicalSha256(authentication),binding:current.context.binding,scopes:current.context.scopes,selectedClientId:current.context.selectedClientId,checkedAtMs:active(t.signal),expiresAtMs:r.expiresAtMs});}
+ async function authenticate(value,includeCurrent){const {credential,signal,deadlineMs}=own(value,['credential'],['signal','deadlineMs']);if(typeof credential!=='string'||!/^action_session_[A-Za-z0-9_-]{43}$/u.test(credential))deny();const r=sessions.get(hash(credential));valid(r,signal);const t=life(Math.min(deadlineMs??r.expiresAtMs,r.expiresAtMs),signal);
+  try{const current=await resolve(r.nativeCredential,r.hints,t,r);valid(r,t.signal);r.expiresAtMs=current.expiresAtMs;const b=r.context.binding,authentication=data({principal:{sessionId:r.sessionId,tenantId:b.tenantId,actorId:b.actorId,conversationId:b.conversationId,runId:b.runId},sessionRevision:r.sessionRevision,checkedAtMs:active(t.signal),expiresAtMs:r.expiresAtMs});t.check();r.receipts.add(canonicalSha256(authentication));if(r.receipts.size>64)r.receipts.delete(r.receipts.values().next().value);
+   const out=includeCurrent?data({authentication,current:currentReceipt(r,authentication,current,t)}):authentication;release(r,t);return out;
+  }catch{remove(r);deny();}finally{t.close();}
  }
+ const authenticateSession=value=>authenticate(value,false);
  async function readCurrentState(value){const {authentication,signal,deadlineMs}=own(value,['authentication'],['signal','deadlineMs']),a=data(authentication);const r=ids.get(a.principal?.sessionId);valid(r,signal);if(!r.receipts.has(canonicalSha256(a)))deny();const t=life(Math.min(deadlineMs??r.expiresAtMs,r.expiresAtMs),signal);
-  try{const current=await resolve(r.nativeCredential,r.hints,t,r);valid(r,t.signal);r.expiresAtMs=current.expiresAtMs;t.check();const out=data({authenticationSha256:canonicalSha256(a),binding:current.context.binding,scopes:current.context.scopes,selectedClientId:current.context.selectedClientId,checkedAtMs:active(t.signal),expiresAtMs:r.expiresAtMs});release(r,t);return out;}catch{remove(r);deny();}finally{t.close();}
+  try{const current=await resolve(r.nativeCredential,r.hints,t,r);valid(r,t.signal);r.expiresAtMs=current.expiresAtMs;t.check();const out=currentReceipt(r,a,current,t);release(r,t);return out;}catch{remove(r);deny();}finally{t.close();}
  }
  async function verifyTransition(value){
   let t,r;try{
@@ -139,5 +147,6 @@ export function createActionSessionOwner(configuration){
   if(best===null)deny('SESSION_UNAVAILABLE');valid(best,v.signal);
   return Object.freeze({credential:best.nativeCredential,expiresAtMs:best.expiresAtMs});
  }
- return Object.freeze({issue,authenticateSession,readCurrentState,verifyTransition,nativeCredentialFor,revoke(credential){if(typeof credential!=='string')deny();const r=sessions.get(hash(credential));if(r)remove(r);},close(){closed=true;for(const r of sessions.values())remove(r);},status:()=>data({mode,closed,sessions:sessions.size})});
+ const owner=Object.freeze({issue,authenticateSession,readCurrentState,verifyTransition,nativeCredentialFor,revoke(credential){if(typeof credential!=='string')deny();const r=sessions.get(hash(credential));if(r)remove(r);},close(){closed=true;for(const r of sessions.values())remove(r);},status:()=>data({mode,closed,sessions:sessions.size})});
+ currentReaders.set(owner,value=>authenticate(value,true));return owner;
 }
