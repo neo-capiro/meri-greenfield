@@ -1,0 +1,16 @@
+test_both_arrival_orders_preserve_one_capture (__main__.OwnerChannelTests.test_both_arrival_orders_preserve_one_capture) ... ok
+test_caller_cancellation_aborts_persistent_connections (__main__.OwnerChannelTests.test_caller_cancellation_aborts_persistent_connections) ... ok
+test_foreign_capability_selector_never_opens_a_session (__main__.OwnerChannelTests.test_foreign_capability_selector_never_opens_a_session) ... ok
+test_late_exchange_after_cancellation_cannot_reuse_channel (__main__.OwnerChannelTests.test_late_exchange_after_cancellation_cannot_reuse_channel) ... ok
+test_late_host_capture_poison_blocks_another_session (__main__.OwnerChannelTests.test_late_host_capture_poison_blocks_another_session) ... ok
+test_malformed_open_aborts_both_channels_without_reuse (__main__.OwnerChannelTests.test_malformed_open_aborts_both_channels_without_reuse) ... ok
+test_malformed_reservation_receipt_aborts_without_reuse (__main__.OwnerChannelTests.test_malformed_reservation_receipt_aborts_without_reuse) ... ok
+test_reservation_and_settlement_use_distinct_fresh_capture (__main__.OwnerChannelTests.test_reservation_and_settlement_use_distinct_fresh_capture) ... Executing <Task pending name='Task-62' coro=<OwnerChannelTests.test_reservation_and_settlement_use_distinct_fresh_capture() running at /tmp/meri-owner-channel-baseline-20261019.py:174> wait_for=<Future pending cb=[Task.task_wakeup()] created at /tmp/meri-integration-python/cpython-3.13.5-linux-x86_64-gnu/lib/python3.13/asyncio/base_events.py:459> cb=[_run_until_complete_cb() at /tmp/meri-integration-python/cpython-3.13.5-linux-x86_64-gnu/lib/python3.13/asyncio/base_events.py:181] created at /tmp/meri-integration-python/cpython-3.13.5-linux-x86_64-gnu/lib/python3.13/asyncio/runners.py:100> took 0.395 seconds
+ok
+test_same_tls_connection_and_late_reply_poison_without_retry (__main__.OwnerChannelTests.test_same_tls_connection_and_late_reply_poison_without_retry) ... ok
+test_second_gate_for_same_service_is_refused_even_with_new_timeout (__main__.OwnerChannelTests.test_second_gate_for_same_service_is_refused_even_with_new_timeout) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.446s
+
+OK

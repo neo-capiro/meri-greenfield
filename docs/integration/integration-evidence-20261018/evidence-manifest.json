@@ -1,8 +1,8 @@
 {
   "initialPublishedCodeCommit": "88026e7e5ff5a568b9c2c250c6ebb1573abe09b3",
-  "latestPublishedCodeCommit": "0d3388a88aa575fba2bf9ee9c1c219053ea09418",
-  "latestReviewedCompleteCodeTree": "be5ece2d8ff81d6112fb55c29e60beb69c8c4c09",
-  "scrubbing": "copiedlogsarepath-scrubbedunlessretainedasexactimmutableCoretransferpayload; source-time manifests retained",
+  "latestPublishedCodeCommit": "34851020aa0d73fead4db59ba6e26a098e2d0313",
+  "latestReviewedCompleteCodeTree": "d5d1b5599c812d49428bb113badd89092f9d05f3",
+  "scrubbing": "Copied SDK logs remove ANSI decoration and local scratch prefixes; source-time manifests remain historical. Exact immutable Core transfer payload remains unchanged.",
   "files": [
     {
       "path": "BEFORE-AFTER.json",
@@ -540,6 +540,71 @@
       "sha256": "fc54222416280301f1d6ab14f0e6a266771525efcafd02b48272d9b0d87c2f9f"
     },
     {
+      "path": "image-candidate/CANDIDATE.md",
+      "bytes": 9044,
+      "sha256": "ae0fe326ea662779616528027a18ae220eb45530f35757d591b12426adf58474"
+    },
+    {
+      "path": "image-candidate/CANONICAL-SEQUENCE.md",
+      "bytes": 8857,
+      "sha256": "287014474c9746d2c62597126d5abd05e765d93e16aa0f8e348e9a7736d749df"
+    },
+    {
+      "path": "image-candidate/COORDINATION-STATUS.json",
+      "bytes": 1933,
+      "sha256": "e23194e5ac6038aea264134c29c7371d427e4cff04cfbd84a5cf0ada611cfc5d"
+    },
+    {
+      "path": "image-candidate/QUALIFICATION-STATUS.json",
+      "bytes": 1605,
+      "sha256": "927e5360f003765af8023ea92767b607af683e73a0436295507fec4a2182bed6"
+    },
+    {
+      "path": "image-candidate/SELECTED-SCHEMA-CUSTODY-GATE.md",
+      "bytes": 4774,
+      "sha256": "5661c26c35f18d80a5be969b7ba3de64f4a4c1dc69d520d43cdf228f57e5f667"
+    },
+    {
+      "path": "image-candidate/final-source-readback.json",
+      "bytes": 4786,
+      "sha256": "29ff2de279156e64e4b5b183bd70bc7d1d54199cb902e0f2a16d333779efb284"
+    },
+    {
+      "path": "image-candidate/historical-builder-reference.json",
+      "bytes": 1054,
+      "sha256": "be3e8f664ede41d20cc4fc66032cd7330015ebaf2e655188ab34d602c8cb7d54"
+    },
+    {
+      "path": "image-candidate/packet-manifest.json",
+      "bytes": 2154,
+      "sha256": "8673da31b83cdcdc9c3ebbce99b20ad14542a190f0d695a69f23f7adcb3ed93d"
+    },
+    {
+      "path": "image-candidate/pr187-final-thread-readback.json",
+      "bytes": 8801,
+      "sha256": "823008f4239c23b78a40f623ea0548048065d6902d52bc5d53024215a07b8813"
+    },
+    {
+      "path": "image-candidate/recipe-input-plan.json",
+      "bytes": 10337,
+      "sha256": "97c8b41b396cf3b799d702deee1b45121c44c1becaf3162a2d3aa549e84e4f66"
+    },
+    {
+      "path": "image-candidate/reference-0d3388a8-source-pins.json",
+      "bytes": 6861,
+      "sha256": "26bc6f81591fe05bffd18860c88abdb3f6740b2281055186abc0677ab7f4ed2e"
+    },
+    {
+      "path": "image-candidate/source-pins.json",
+      "bytes": 9378,
+      "sha256": "5f3a63427565a0e9e948050871ee06f2a3c5157dd72d5e72ed4fc9f19056ac1f"
+    },
+    {
+      "path": "image-candidate/thread-and-source-readback.json",
+      "bytes": 57727,
+      "sha256": "efdfdcf8e67e518002d8050e2ec3ae62e6b519d3ba02026638f275b0c7212aff"
+    },
+    {
       "path": "options-fixture/meri-options-capabilities-473b-after.tap",
       "bytes": 1824,
       "sha256": "b6946272f9fa2146f8459906be7e60daee43b5b9dee11506f42426e55d3ab05a"
@@ -935,6 +1000,586 @@
       "sha256": "04a5bfb1c245e2f2069ee0ece2bd30a14bddeae919bf14c561d26c777bb1364e"
     },
     {
+      "path": "sdk-compatibility/COMMANDS.json",
+      "bytes": 2926,
+      "sha256": "838644fa33e311ef2c8f3db93d53aae4e57a6e51fb01d73f7279e6c9aa5b5980"
+    },
+    {
+      "path": "sdk-compatibility/CONTEXT-STRUCTURED-REVIEW-20261019.md",
+      "bytes": 6388,
+      "sha256": "04508c985332cc2fb5a63124591c474cecf08389d0c3e239d96a5d47d76f8168"
+    },
+    {
+      "path": "sdk-compatibility/MERI-STRUCTURED-SCHEMA-CUSTODY-GATE.md",
+      "bytes": 4774,
+      "sha256": "5661c26c35f18d80a5be969b7ba3de64f4a4c1dc69d520d43cdf228f57e5f667"
+    },
+    {
+      "path": "sdk-compatibility/MERI-STRUCTURED-SCHEMA-CUSTODY-REVIEW-5e76d962a.md",
+      "bytes": 14090,
+      "sha256": "76273b26791933ba0bed4a6de2b81ecf2e6ba2907ab3dd59fff4cb42c3fae11c"
+    },
+    {
+      "path": "sdk-compatibility/README.md",
+      "bytes": 2405,
+      "sha256": "bc5260f8afa6d2adfa06facef72305e9c54122a84779324751b6c1ffd4f05b50"
+    },
+    {
+      "path": "sdk-compatibility/SOURCE-EQUIVALENCE.json",
+      "bytes": 2426,
+      "sha256": "1c75745b9e49b654185b3958044f24d35a8b06b45c376d40dd08810aeafc787f"
+    },
+    {
+      "path": "sdk-compatibility/body/IMPLEMENTATION-OUTLINE.md",
+      "bytes": 1508,
+      "sha256": "0cf0736e85bd3e4bc0dd379ee96ef98062234b858e86377db0b7291d952f5a82"
+    },
+    {
+      "path": "sdk-compatibility/body/REVIEW.md",
+      "bytes": 6772,
+      "sha256": "ff0fe6669e94ee5986f693967dcfd37bfc10ebb306c6b9e98a23d4be327ba5bc"
+    },
+    {
+      "path": "sdk-compatibility/body/baseline.scrubbed.log",
+      "bytes": 16043,
+      "sha256": "5618332ce53847a47fc128208e7b327ee8156ef65e0effe1e61c59f969bb1e1e"
+    },
+    {
+      "path": "sdk-compatibility/body/body-header-after.scrubbed.log",
+      "bytes": 15050,
+      "sha256": "bf10e5b0230c2d361633b48013c7fdd80e41fe7a56b144f9144ae25ead091d66"
+    },
+    {
+      "path": "sdk-compatibility/body/body-red.scrubbed.log",
+      "bytes": 3605,
+      "sha256": "a9b152085cacc8e267ed36e550e338b26ca5caa94480b9182dd83dbd15794235"
+    },
+    {
+      "path": "sdk-compatibility/body/final-focused.scrubbed.log",
+      "bytes": 17728,
+      "sha256": "59d0d784f5493535299fdae3f70f36d9081b0199e9070c4a5f76f93e7af2eb37"
+    },
+    {
+      "path": "sdk-compatibility/body/manifest.json",
+      "bytes": 3481,
+      "sha256": "8c1fb460bea99a1b14d0afbe7bf287875bb6c344039903f3dbf9905331370d0e"
+    },
+    {
+      "path": "sdk-compatibility/body/response-after.scrubbed.log",
+      "bytes": 2577,
+      "sha256": "5ef8186ee352a78194e4f8ee26a51186053d933e179ac618e3b749cc85a15f0a"
+    },
+    {
+      "path": "sdk-compatibility/body/response-red.scrubbed.log",
+      "bytes": 1054,
+      "sha256": "5bb62967ae465c46543a93c5467f1e3dba327445a609049d0e01d59fab5dcb40"
+    },
+    {
+      "path": "sdk-compatibility/body/thinking-red.scrubbed.log",
+      "bytes": 1940,
+      "sha256": "4f7aeb643af2bbf1be3dcef331c5da33f625c586796ea14cc7c628b3b0438ff0"
+    },
+    {
+      "path": "sdk-compatibility/owner-ack-independent/EVIDENCE.json",
+      "bytes": 1858,
+      "sha256": "87ae33088f0f7595a99ee93899731e9e16ba2b9557b986f3cf7c7c905b3234fc"
+    },
+    {
+      "path": "sdk-compatibility/owner-ack-independent/REVIEW.md",
+      "bytes": 4390,
+      "sha256": "35821e13cb5b046a9e685d5f4d32ea9cf70fa92226df37f32967ecc14ff9cd3c"
+    },
+    {
+      "path": "sdk-compatibility/owner-gate-regression/EVIDENCE.json",
+      "bytes": 4572,
+      "sha256": "cbe36fc110bbdc30938994f04b33bf0d0dc766989144411bf617e7578145fc51"
+    },
+    {
+      "path": "sdk-compatibility/owner-gate-regression/REPORT.md",
+      "bytes": 3570,
+      "sha256": "b10da1915cda7b5a7000d5f510121592d7981e5bc16569f56d2ce5ec7d04f30c"
+    },
+    {
+      "path": "sdk-compatibility/owner-gate-regression/meri-owner-readback-gate-baseline-20261019.log",
+      "bytes": 2206,
+      "sha256": "11dd89384f7909c3393e4d26839167f28e5b070814e380b5cecbc0967e955d56"
+    },
+    {
+      "path": "sdk-compatibility/owner-gate-regression/meri-owner-readback-gate-final-20261019.log",
+      "bytes": 5082,
+      "sha256": "373b6ac3fcd10b7221c924a7d39f9f35d8ff7763d9083765ca6e1053ea9feb3e"
+    },
+    {
+      "path": "sdk-compatibility/owner-gate-regression/meri-owner-readback-gate-final2-20261019.log",
+      "bytes": 6947,
+      "sha256": "432a48e81bb478c52fb83cd2c309211ad5b2e3a1961e147ede5bb23fda7c721e"
+    },
+    {
+      "path": "sdk-compatibility/owner-gate-regression/meri-owner-readback-gate-final3-20261019.log",
+      "bytes": 5082,
+      "sha256": "77598f50065ebaacdd8cefe05c5b378649d7ac54615853513dde91d8dc3cac8f"
+    },
+    {
+      "path": "sdk-compatibility/owner-gate-regression/meri-owner-readback-gate-final4-20261019.log",
+      "bytes": 5082,
+      "sha256": "9c3b19a0e288811354ce52390aa839fe64bbfe61c2ddbbe37d01ffa29b3c3243"
+    },
+    {
+      "path": "sdk-compatibility/owner-gate-regression/meri-owner-readback-gate-focused-20261019.log",
+      "bytes": 5656,
+      "sha256": "64b8af0945d15668bfd18a56b2d8e050b5137e3670ef99f5788846055aa71a1a"
+    },
+    {
+      "path": "sdk-compatibility/owner-js/EVIDENCE.json",
+      "bytes": 3274,
+      "sha256": "f89dfb07325228cd4319faca4c83235242885f1755bcf042b51d14f83818bccf"
+    },
+    {
+      "path": "sdk-compatibility/owner-js/REVIEW.md",
+      "bytes": 1614,
+      "sha256": "fd76f2c5c1c134a2d217a140f0ec561a472133c265a9272ab96b12320b13276e"
+    },
+    {
+      "path": "sdk-compatibility/owner-js/meri-js-beta-observation-after-20261019.tap",
+      "bytes": 1269,
+      "sha256": "a8758093957af8bfb0db7860784f597f286001fc5e251c4c383dce3b76b616e4"
+    },
+    {
+      "path": "sdk-compatibility/owner-js/meri-js-beta-observation-before-20261019.tap",
+      "bytes": 1157,
+      "sha256": "ad5ea1c1693f48b95ed89ad7d40fd7627b1ab66765a1c7a368065f1b907bf0c3"
+    },
+    {
+      "path": "sdk-compatibility/owner-js/meri-js-beta-observation-before2-20261019.tap",
+      "bytes": 779,
+      "sha256": "e192958f7812127cb35df605d1ef41b9392a648fc34af3fe2c087cf5faca7484"
+    },
+    {
+      "path": "sdk-compatibility/owner-js/meri-js-beta-observation-focused-20261019.tap",
+      "bytes": 4772,
+      "sha256": "e95769708b3b4c2b9dc6f5879025083a270b86ca812332fe124352f25f4c9781"
+    },
+    {
+      "path": "sdk-compatibility/runtime/EVIDENCE.json",
+      "bytes": 3410,
+      "sha256": "ed00a0fc7026d67da7fadcaf63092fded38a19ac90c006a63bb9ae5582873129"
+    },
+    {
+      "path": "sdk-compatibility/runtime/REPORT.md",
+      "bytes": 3797,
+      "sha256": "d9cddedc753c68b4d651628e0cd1abaea3f6b178e3d1b8132464edaf57e40c7c"
+    },
+    {
+      "path": "sdk-compatibility/runtime/meri-runtime-sdk-controls-after-20261019.tap",
+      "bytes": 10459,
+      "sha256": "7ed46541cc459a87a1d2223ea2a951c48a9469bf3a2ae528549715891ea18842"
+    },
+    {
+      "path": "sdk-compatibility/runtime/meri-runtime-sdk-controls-before-20261019.tap",
+      "bytes": 12234,
+      "sha256": "dd206f8a6ecf3f58faaa2ab0db950f96eb0fd652b24366d4cc635c5de2711b04"
+    },
+    {
+      "path": "sdk-compatibility/runtime/meri-runtime-sdk-controls-final-20261019.tap",
+      "bytes": 8481,
+      "sha256": "bc6cef97e01cea65b1af84f05efe05ea3f497f79867c01e3725f036536c0ed26"
+    },
+    {
+      "path": "sdk-compatibility/sdk-before-owner-channel/INTEROP-FINAL-COMMANDS.json",
+      "bytes": 9455,
+      "sha256": "7c68fe0bb49b8081091ed860e2af1cbcbe5867657bd55379a645769de24bd495"
+    },
+    {
+      "path": "sdk-compatibility/sdk-before-owner-channel/INTEROP-UNRESOLVED-REQUEST-HASHES.json",
+      "bytes": 6548,
+      "sha256": "c8250d18d3b43b5938b17d6950d0d4588f60f527e2d708ec5e49864751a702bf"
+    },
+    {
+      "path": "sdk-compatibility/sdk-before-owner-channel/SNAPSHOT-MANIFEST.json",
+      "bytes": 2837,
+      "sha256": "51205a1812176e0e4cc7c531c0dc21b3a8cb7670f5afbb1563d01d8c7150515f"
+    },
+    {
+      "path": "sdk-compatibility/sdk-before-owner-channel/interop-final-minimal-messages-cached.json",
+      "bytes": 4587,
+      "sha256": "4faef442c793b302d685c70715221bdcb822c04cdfc755b693f7d9309d9a94fa"
+    },
+    {
+      "path": "sdk-compatibility/sdk-before-owner-channel/interop-final-minimal-messages-complete.json",
+      "bytes": 4767,
+      "sha256": "ea0a43c5add1e4a36a8ead96765501116e85d4e856fe0daa68a438711aa89a79"
+    },
+    {
+      "path": "sdk-compatibility/sdk-before-owner-channel/interop-final-minimal-messages-missing-usage.json",
+      "bytes": 5708,
+      "sha256": "58dafc13c1091803d703d704be002d2ed548a17cd38f68bfffd35d33971de45e"
+    },
+    {
+      "path": "sdk-compatibility/sdk-before-owner-channel/interop-final-minimal-messages-reservation-ack-lost.json",
+      "bytes": 4694,
+      "sha256": "62dbee08b9e7d19fbc4af0c7c63d170ffe307c6d526793fb1f6b4dba980b6166"
+    },
+    {
+      "path": "sdk-compatibility/sdk-before-owner-channel/interop-final-minimal-messages-settlement-ack-committed.json",
+      "bytes": 4895,
+      "sha256": "86e1f43f8e11e70364fe2b80cf6a8ce733494af88e77b65df56e8669f632421e"
+    },
+    {
+      "path": "sdk-compatibility/sdk-before-owner-channel/interop-final-minimal-messages-settlement-ack-unresolved.json",
+      "bytes": 5944,
+      "sha256": "61f9e9860385c870e24b52383767d349e1f736fc883a209a1335398a7f7088e4"
+    },
+    {
+      "path": "sdk-compatibility/sdk-before-owner-channel/interop-final-minimal-messages-truncated.json",
+      "bytes": 5704,
+      "sha256": "082f505a144e9cd0f7aecf1fd9f203e45eb55d9eeb97d1fce518a1636af9146a"
+    },
+    {
+      "path": "sdk-compatibility/sdk-before-owner-channel/interop-final-sdk-cached.json",
+      "bytes": 21086,
+      "sha256": "7f2c53ac4b1aa98cab9a9e35da85ff5c44085186f55d75a48a28a807b67bc5aa"
+    },
+    {
+      "path": "sdk-compatibility/sdk-before-owner-channel/interop-final-sdk-complete-schema.json",
+      "bytes": 7434,
+      "sha256": "cc8fc50e7abd8ecb2e29c9a6269888d858cc78a33fc10a21f6df93e3f1a0d0f2"
+    },
+    {
+      "path": "sdk-compatibility/sdk-before-owner-channel/interop-final-sdk-complete.json",
+      "bytes": 6403,
+      "sha256": "14f966efdac429e4cde18bc7457773d38a611391e47b620d0c0041c1b6634c7e"
+    },
+    {
+      "path": "sdk-compatibility/sdk-before-owner-channel/interop-final-sdk-missing-usage.json",
+      "bytes": 23931,
+      "sha256": "673e4980710a4f2a477b592b1655e89d17259177eaafd03a7c0aefaf760e5c15"
+    },
+    {
+      "path": "sdk-compatibility/sdk-before-owner-channel/interop-final-sdk-reservation-ack-lost.json",
+      "bytes": 19050,
+      "sha256": "471567cfe909404846dbe1146a7b6049a4746ee2167cac2528469def2f225937"
+    },
+    {
+      "path": "sdk-compatibility/sdk-before-owner-channel/interop-final-sdk-settlement-ack-committed.json",
+      "bytes": 6531,
+      "sha256": "1823cfeb23c4ec78b24e099189ef9ce4304a838ec13019e1075c73702b51877d"
+    },
+    {
+      "path": "sdk-compatibility/sdk-before-owner-channel/interop-final-sdk-settlement-ack-unresolved-schema.json",
+      "bytes": 25689,
+      "sha256": "13c4bbcb84b8b3aa6a4f8e661c68b7d8540957cafff90a27abec03302e35b71f"
+    },
+    {
+      "path": "sdk-compatibility/sdk-before-owner-channel/interop-final-sdk-settlement-ack-unresolved.json",
+      "bytes": 24320,
+      "sha256": "ace7b9dbaf3afac5969d5e1184e6689a90a85864af83decfcc6c46a1a4f39881"
+    },
+    {
+      "path": "sdk-compatibility/sdk-before-owner-channel/interop-final-sdk-truncated-schema.json",
+      "bytes": 25296,
+      "sha256": "051fa0cca04c437fd466ea488793ec7aeb9698cd5d6612154bbab60ac8e91b71"
+    },
+    {
+      "path": "sdk-compatibility/sdk-before-owner-channel/interop-final-sdk-truncated.json",
+      "bytes": 23927,
+      "sha256": "1b569ef0943b76d368892aff9940caa31aaa71e92d913dc9ba53585503e49e26"
+    },
+    {
+      "path": "sdk-compatibility/sdk-before-terminal/INTEROP-BEFORE-TERMINAL-SUMMARY.json",
+      "bytes": 15445,
+      "sha256": "fc5f19113161e63818a780901c82102352eb22631ef5de8f36b48292fb968f33"
+    },
+    {
+      "path": "sdk-compatibility/sdk-before-terminal/interop-default-plain-before-terminal.json",
+      "bytes": 6403,
+      "sha256": "84de17c967bff8dded4371843acc7bd45217c2f0e0779e7362b02e563c124a1a"
+    },
+    {
+      "path": "sdk-compatibility/sdk-before-terminal/interop-default-schema-before-terminal.json",
+      "bytes": 7434,
+      "sha256": "1d7c852e2536059d0e2353738064a874d7dfe2c157d62601eaba0170f93e5e57"
+    },
+    {
+      "path": "sdk-compatibility/sdk-before-terminal/interop-profiled-reservation-ack-lost-first.json",
+      "bytes": 19311,
+      "sha256": "c354c4fb53591076bf9a72b426b1a64efa7131558a712b1dac94fd927e8c8c3b"
+    },
+    {
+      "path": "sdk-compatibility/sdk-before-terminal/interop-profiled-settlement-ack-unresolved-first.json",
+      "bytes": 8065,
+      "sha256": "b28e64e117e4cfcd55a5083c14614001415d892bdbf34d4721b710176c20f545"
+    },
+    {
+      "path": "sdk-compatibility/sdk-before-terminal/interop-profiled-truncated-first.json",
+      "bytes": 7825,
+      "sha256": "270244f6f8921875f360300ecbd99d7bd830707477df5adcd6da99796be5c1e2"
+    },
+    {
+      "path": "sdk-compatibility/sdk-before-terminal/profiled-exact-parameters-before-guard.json",
+      "bytes": 22449,
+      "sha256": "1618ace63ae3bb191da54c739bc9c2033b45b08126a4f5c27dd34394f1eeec16"
+    },
+    {
+      "path": "sdk-compatibility/sdk-final/CANONICAL-CLEANUP.json",
+      "bytes": 344,
+      "sha256": "59d089cb2fadcd39715decc66d8deeebf784ea96d0a240b8373a3ea283900a70"
+    },
+    {
+      "path": "sdk-compatibility/sdk-final/CANONICAL-FINAL-COMMANDS.json",
+      "bytes": 9524,
+      "sha256": "63be3d8bbe50592ce8859fa09273ec501272a3b6760c14dac71220f3d8046156"
+    },
+    {
+      "path": "sdk-compatibility/sdk-final/CANONICAL-FINAL-MANIFEST.json",
+      "bytes": 4338,
+      "sha256": "c3c70d383bf7366c83c2046b13eaa2783c08962219d395d5341e1af418cd425d"
+    },
+    {
+      "path": "sdk-compatibility/sdk-final/CANONICAL-FINAL-SUMMARY.json",
+      "bytes": 57033,
+      "sha256": "78f263e0c529b8bcd9ade62731a63da47ed3ce61b959648237c647002905c0a6"
+    },
+    {
+      "path": "sdk-compatibility/sdk-final/CANONICAL-FOCUSED-COMMAND.json",
+      "bytes": 328,
+      "sha256": "f599bc114757a770aa2c535914533d1a408b52fff050cdb7095c16fbca005423"
+    },
+    {
+      "path": "sdk-compatibility/sdk-final/CANONICAL-QUALIFICATION-RESULTS.md",
+      "bytes": 4233,
+      "sha256": "a947951d77e7fd4dbce6a15c2b9544e428757f9c2fb50eb787fce05b231b7b6b"
+    },
+    {
+      "path": "sdk-compatibility/sdk-final/canonical-final-focused-tests.log",
+      "bytes": 1131,
+      "sha256": "3fda2e254a3ee299ecac216178db7f6dd4d90ede82c288e250513dcf6902d641"
+    },
+    {
+      "path": "sdk-compatibility/sdk-final/canonical-final-minimal-messages-cached.json",
+      "bytes": 4859,
+      "sha256": "102015da949acb534c78f6dbbcee68331d6a3937c1c3d1805d5e052a8b82614c"
+    },
+    {
+      "path": "sdk-compatibility/sdk-final/canonical-final-minimal-messages-complete.json",
+      "bytes": 5039,
+      "sha256": "9063891da3a2323855bbcdc8b414a8fb103be08a573f3623f0ca9a30c234a6d7"
+    },
+    {
+      "path": "sdk-compatibility/sdk-final/canonical-final-minimal-messages-missing-usage.json",
+      "bytes": 5980,
+      "sha256": "c5ad18f2d2f89505071bcf61c317f1ae835741361c1696c3f856087157038b9b"
+    },
+    {
+      "path": "sdk-compatibility/sdk-final/canonical-final-minimal-messages-reservation-ack-lost.json",
+      "bytes": 5005,
+      "sha256": "980b190ed56e8fc33614d085946ea538b9f60a603765c212aea4605cbba39e1d"
+    },
+    {
+      "path": "sdk-compatibility/sdk-final/canonical-final-minimal-messages-settlement-ack-committed.json",
+      "bytes": 5075,
+      "sha256": "f16184572e0b3aa7bc7184af74666355bec78b02ac2ed6c8430062b84bdffff1"
+    },
+    {
+      "path": "sdk-compatibility/sdk-final/canonical-final-minimal-messages-settlement-ack-unresolved.json",
+      "bytes": 6160,
+      "sha256": "6e6e14fdd3d404711b3f5a1b106c47e553165b86e737d4052abbc8cd8efe9553"
+    },
+    {
+      "path": "sdk-compatibility/sdk-final/canonical-final-minimal-messages-truncated.json",
+      "bytes": 5976,
+      "sha256": "164ba374e251cd13061cd786a4905f209ce958a6be1411b50646b988662dd707"
+    },
+    {
+      "path": "sdk-compatibility/sdk-final/canonical-final-sdk-cached.json",
+      "bytes": 22616,
+      "sha256": "757c397011e6d3dffbc5b3af4dd0111586dc1582741381c76895093651cbf61f"
+    },
+    {
+      "path": "sdk-compatibility/sdk-final/canonical-final-sdk-complete-schema.json",
+      "bytes": 7838,
+      "sha256": "4ba219bb9d3ca65c2365c559e3f10d8dc8db22d30159f1e4e2876e138f8f6bf6"
+    },
+    {
+      "path": "sdk-compatibility/sdk-final/canonical-final-sdk-complete.json",
+      "bytes": 6807,
+      "sha256": "f079a6bf6556f652f5501e53cd39d983902fdae946db7816fd1a3a01933b2600"
+    },
+    {
+      "path": "sdk-compatibility/sdk-final/canonical-final-sdk-missing-usage.json",
+      "bytes": 26761,
+      "sha256": "37f8292b1ad5683bf068657317fe27f915ed11cfcba635c13276b995e7aba2d9"
+    },
+    {
+      "path": "sdk-compatibility/sdk-final/canonical-final-sdk-reservation-ack-lost.json",
+      "bytes": 21715,
+      "sha256": "df2ffb11094286c3ba3fbdeeb1fadd78eeea835e415af49e31e236c69e9aae6b"
+    },
+    {
+      "path": "sdk-compatibility/sdk-final/canonical-final-sdk-settlement-ack-committed.json",
+      "bytes": 6843,
+      "sha256": "f01b12619689f0f8693197804c2edf867d56a478dabeb0f00ce3037872b6ba3e"
+    },
+    {
+      "path": "sdk-compatibility/sdk-final/canonical-final-sdk-settlement-ack-unresolved-schema.json",
+      "bytes": 24707,
+      "sha256": "f830f0d047b4052c47688a5ce95d6bbd932d2196b07e658cc71fc96c31045092"
+    },
+    {
+      "path": "sdk-compatibility/sdk-final/canonical-final-sdk-settlement-ack-unresolved.json",
+      "bytes": 25898,
+      "sha256": "335c0734e396faecfc0cba0ffb41f029e871bf844dcb56e83e5d9bf6a814ce26"
+    },
+    {
+      "path": "sdk-compatibility/sdk-final/canonical-final-sdk-truncated-schema.json",
+      "bytes": 25986,
+      "sha256": "2e410c1cba00ed40dc249854399d3274ba15b8dc616c7e390e780ffdff8f061f"
+    },
+    {
+      "path": "sdk-compatibility/sdk-final/canonical-final-sdk-truncated.json",
+      "bytes": 26757,
+      "sha256": "a7de9a91deb60411d4989227e93793366148c6d623a4aae63b5b020a01a81770"
+    },
+    {
+      "path": "sdk-compatibility/source-focused/activity-capabilities-parent.log",
+      "bytes": 4262,
+      "sha256": "f9982799812aef8de4dc30e614f1cbee5465f6ffaa3bebc11f61760c41f75ba1"
+    },
+    {
+      "path": "sdk-compatibility/source-focused/focused-corrected.log",
+      "bytes": 3326,
+      "sha256": "c616c27a480613052b99020d5d5945aa3dd9d6259a9709d10c657d0d6325cf4c"
+    },
+    {
+      "path": "sdk-compatibility/source-focused/focused.log",
+      "bytes": 6259,
+      "sha256": "891b4692638cca2b1690a050ec9a20acfa0b9be0adc79467ecba208fc4815a46"
+    },
+    {
+      "path": "sdk-compatibility/source-focused/js-owner-focused.log",
+      "bytes": 4774,
+      "sha256": "6b61eebcc49a2ace2a0523690713e0f1507aeae32d86f607872bfed72ba5bf11"
+    },
+    {
+      "path": "sdk-compatibility/source-focused/owner-carrier-final.log",
+      "bytes": 6115,
+      "sha256": "5a42e4f1344ab62e531ce868fee29ac31cc82473cfdff890201b6135ea10bbed"
+    },
+    {
+      "path": "sdk-compatibility/source-focused/publication-final-map.json",
+      "bytes": 913,
+      "sha256": "3418d736cbb13f862fccb5478eda3668970ac3b415d47856e8bd27fcbcc03150"
+    },
+    {
+      "path": "sdk-compatibility/source-focused/publication-map.json",
+      "bytes": 913,
+      "sha256": "bca1c36dc705332a359004b5ba312c047f4a36a274515723b7c9d84e8b7a8422"
+    },
+    {
+      "path": "sdk-compatibility/source-focused/publication-owner-map.json",
+      "bytes": 367,
+      "sha256": "06d14def5e515af4e0e80ffd8853969941e3035aef87c1b7f0a7d5b555b1fd0d"
+    },
+    {
+      "path": "sdk-compatibility/source-focused/python-contract-combined.log",
+      "bytes": 17740,
+      "sha256": "f4ff0f437de087096d6fdf4501ca2025052577f8e0715120294a72dbb2e0702f"
+    },
+    {
+      "path": "sdk-compatibility/source-focused/python-final-combined.log",
+      "bytes": 25688,
+      "sha256": "7f7ae8be3e8f9c30485d9dbfa36fa32509b17594e18432f1ad4032405de68faf"
+    },
+    {
+      "path": "sdk-compatibility/source-focused/python-final-corrected.log",
+      "bytes": 76267,
+      "sha256": "83fc9b8a27925bc3667423ab8908f51063ec5dc74666b9b9984ffde4d7052020"
+    },
+    {
+      "path": "sdk-compatibility/source-focused/python-final.log",
+      "bytes": 27748,
+      "sha256": "fb8ba7559967a1684db96706ec0cebaf9036c8dd0ac31c42a2fb1bf8b03e0f9b"
+    },
+    {
+      "path": "sdk-compatibility/source-focused/runtime-types.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "sdk-compatibility/source-focused/source-and-results.json",
+      "bytes": 3004,
+      "sha256": "517df1c0cb4638e01eb9eb63d46a238d6cbb5d55b5ccbb88972323effe79072f"
+    },
+    {
+      "path": "sdk-compatibility/source-focused/worker-focused-final.log",
+      "bytes": 5291,
+      "sha256": "896de1ff80c19c33b33c919dd8e6ed45b344370e1d42c5f2832692b2a3f5631b"
+    },
+    {
+      "path": "sdk-compatibility/terminal/REVIEW.md",
+      "bytes": 5679,
+      "sha256": "b1c6a0e105ff784a1146611acec635c9cfd56e6259a99fe221c30af8db27129d"
+    },
+    {
+      "path": "sdk-compatibility/terminal/affected-after.scrubbed.log",
+      "bytes": 8312,
+      "sha256": "d1bfd23c5ab94d30b369689072b2d2af37a2e17853cd5bd73ab2b22067a9fb03"
+    },
+    {
+      "path": "sdk-compatibility/terminal/affected-final.scrubbed.log",
+      "bytes": 8312,
+      "sha256": "d0f886169f42bd168924e7576c604b3bb5bdb98e7a8b34d9bf781a50539e5a68"
+    },
+    {
+      "path": "sdk-compatibility/terminal/affected-first.scrubbed.log",
+      "bytes": 13478,
+      "sha256": "08c08e88ba3626518fab759208f30a3f956a63965377b59cf0c5ec891ea485d1"
+    },
+    {
+      "path": "sdk-compatibility/terminal/manifest.json",
+      "bytes": 4766,
+      "sha256": "b9d54bc73a568af78f442e165167251f20eac11eff2ee1d35773b55c11a1aa23"
+    },
+    {
+      "path": "sdk-compatibility/terminal/qualification-expectations-after.scrubbed.log",
+      "bytes": 3878,
+      "sha256": "5e75e0d1d2b2ae42432d98c6ad41391fe14e66a546c0215f329749e0f0c65937"
+    },
+    {
+      "path": "sdk-compatibility/terminal/run-pinned-red.py",
+      "bytes": 955,
+      "sha256": "e432ba61c66084570e89833f9f676d4f6db22005ea3c684ddfcaf1006eb3c6f3"
+    },
+    {
+      "path": "sdk-compatibility/terminal/terminal-after.scrubbed.log",
+      "bytes": 1117,
+      "sha256": "45c24cf9c285a6b8334da2ea7418eb624fd4ce62a9176d7c08527f7bcb94c863"
+    },
+    {
+      "path": "sdk-compatibility/terminal/terminal-pinned-red.scrubbed.log",
+      "bytes": 26263,
+      "sha256": "c767be221f9b0aa13a57f4938bca261f99a47d0e35624cc7b341b0deadd52c6c"
+    },
+    {
+      "path": "sdk-compatibility/terminal/terminal-red.scrubbed.log",
+      "bytes": 26263,
+      "sha256": "c4f14915bd9879fc3271bb167d462421c6f7cdb6fe78d1b7c723a948a402b81d"
+    },
+    {
+      "path": "sdk-compatibility/terminal-independent/EVIDENCE.json",
+      "bytes": 3925,
+      "sha256": "1b4449c23770e2d5affb553bddd1c7bd7536651b7596ee4a823cc40db53741e7"
+    },
+    {
+      "path": "sdk-compatibility/terminal-independent/REVIEW.md",
+      "bytes": 4491,
+      "sha256": "43e3daa21c9a899f4cc8064379bb19c8b9c068d179d56b1e16d43f662df59302"
+    },
+    {
+      "path": "sdk-compatibility/terminal-independent/meri-terminal-gate-independent-20261019.log",
+      "bytes": 8312,
+      "sha256": "f03fb297746d35c1d86c0edc33c4b2478e55c3bd965250f719ba8f30a5c120e8"
+    },
+    {
       "path": "sdk-contract/CONTRACT-REVIEW.md",
       "bytes": 8779,
       "sha256": "8f53cff83cde32e049429425142020c50a0e0c421160db3395ce40841827ff5f"
@@ -1044,5 +1689,11 @@
       "bytes": 9543,
       "sha256": "a670c862d4eba2bd1f9b321571a7eb340c81fb35b6135dbfe0c7c10379822ae7"
     }
-  ]
+  ],
+  "latestSdkMatrix": {
+    "executedCommit": "90f82dc692fd017f4f8957cfaf8402000bb2f92f",
+    "pass": 17,
+    "fail": 0,
+    "scope": "Offline stand-ins; actual Python/JS owner channels; no real provider/HTTPS/SQL/image"
+  }
 }

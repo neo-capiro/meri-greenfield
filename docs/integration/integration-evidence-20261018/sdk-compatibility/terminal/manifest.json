@@ -1,0 +1,85 @@
+{
+  "base": "87b6e8beac3af3ed72d22247c59ac461b7edd3d5",
+  "fixCommit": "8c65bdc33b51b5d83bce48050b1d8791ad2c31d5",
+  "actualSdkRedSource": "781047bc0e90b53b737d408a4faa5d1467089251",
+  "branch": "fix/sdk-proxy-body-contract-20261019",
+  "versions": {
+    "python": "3.13.5",
+    "litellm": "1.104.2",
+    "httpx": "0.28.1",
+    "botocore": "1.43.111"
+  },
+  "focusedCommand": "env -i PATH=/usr/bin:/bin TZ=America/Toronto PYTHONDONTWRITEBYTECODE=1 LITELLM_LOCAL_MODEL_COST_MAP=True AWS_EC2_METADATA_DISABLED=true /tmp/meri-integration-sdk-env/bin/python -m unittest apps.proxy.product.test.test_response_terminal_gate apps.proxy.product.test.test_host_observation apps.proxy.product.test.test_host_composition apps.proxy.product.test.test_upstream_callback -v",
+  "results": {
+    "pinnedRedFinalTests": {
+      "tests": 5,
+      "failedSubassertions": 21,
+      "exit": 1
+    },
+    "focusedFinal": {
+      "tests": 42,
+      "pass": 42,
+      "exit": 0
+    },
+    "firstAffected": {
+      "tests": 42,
+      "failedSubassertions": 3,
+      "errors": 1,
+      "exit": 1,
+      "cause": "Expected old later-refusal timing in two existing tests; corrected to earlier refusal and zero ASGI bytes, without weakening counter/capture assertions"
+    },
+    "qualificationExpectationFollowup": {
+      "tests": 18,
+      "pass": 18,
+      "exit": 0,
+      "command": "env -i PATH=/usr/bin:/bin TZ=America/Toronto PYTHONDONTWRITEBYTECODE=1 LITELLM_LOCAL_MODEL_COST_MAP=True AWS_EC2_METADATA_DISABLED=true /tmp/meri-integration-sdk-env/bin/python -m unittest apps.proxy.qualification.test.test_product_response_settlement apps.proxy.product.test.test_response_terminal_gate -v"
+    }
+  },
+  "sourceSha256": {
+    "apps/proxy/product/response_settlement.py": "662a905f03f5c3ee752135f06ab3576baa6f2ef3545e7e26b2a8bffb6087c133",
+    "apps/proxy/product/test/test_response_terminal_gate.py": "04ae86b33949faf5a79d99c8aeff6a06a612e38ec6e2048e7bb48e6b22128cd0",
+    "apps/proxy/product/test/test_host_observation.py": "2f385753f715b4ccfbd785e0ddf995e488177a6e09adbe8e7d99a2fb42415eb1",
+    "apps/proxy/product/test/test_host_composition.py": "52b3ae925669ce1b6b71631ba5cadfef7c7252b5dd8ab304f610f7398d37f7d6",
+    "apps/proxy/qualification/test/test_product_response_settlement.py": "0b0c23b75c4c722917a96b96205a2692e5707c9a34870af7041e8c5cf6a52248"
+  },
+  "pinnedResponseSha256": "7d2dec0f2b776575ca1b31eaaf003b9e54cd64514c95f3e8808e73e34a381da5",
+  "scrubbedLogs": {
+    "terminal-red.scrubbed.log": "c4f14915bd9879fc3271bb167d462421c6f7cdb6fe78d1b7c723a948a402b81d",
+    "affected-first.scrubbed.log": "08c08e88ba3626518fab759208f30a3f956a63965377b59cf0c5ec891ea485d1",
+    "affected-after.scrubbed.log": "d1bfd23c5ab94d30b369689072b2d2af37a2e17853cd5bd73ab2b22067a9fb03",
+    "terminal-after.scrubbed.log": "45c24cf9c285a6b8334da2ea7418eb624fd4ce62a9176d7c08527f7bcb94c863",
+    "terminal-pinned-red.scrubbed.log": "c767be221f9b0aa13a57f4938bca261f99a47d0e35624cc7b341b0deadd52c6c",
+    "affected-final.scrubbed.log": "d0f886169f42bd168924e7576c604b3bb5bdb98e7a8b34d9bf781a50539e5a68",
+    "qualification-expectations-after.scrubbed.log": "5e75e0d1d2b2ae42432d98c6ad41391fe14e66a546c0215f329749e0f0c65937"
+  },
+  "externalCalls": 0,
+  "actualSdkAfter": "Independent egress lane, pending",
+  "separateFromOriginalMeri32": true,
+  "pinnedRedCommand": "env -i PATH=/usr/bin:/bin TZ=America/Toronto PYTHONDONTWRITEBYTECODE=1 LITELLM_LOCAL_MODEL_COST_MAP=True AWS_EC2_METADATA_DISABLED=true /tmp/meri-integration-sdk-env/bin/python /tmp/meri-native-terminal-gate-evidence/run-pinned-red.py",
+  "workingDirectory": "/workspace/scratch/f840037f8c71/meri-startup-qualification",
+  "pinnedLoaderSha256": "e432ba61c66084570e89833f9f676d4f6db22005ea3c684ddfcaf1006eb3c6f3",
+  "expectationFollowupCommit": "8e91befe122b4b4e37b4954ba1544ba02f4c3c8c",
+  "rootAdditionalFailedControl": {
+    "source": "Root integration after8c65bdc3 before8e91befe",
+    "log": "/tmp/meri-sdk-options-evidence/python-final-corrected.log",
+    "tests": 98,
+    "failedAssertions": 1,
+    "suberrors": 15,
+    "names": [
+      "test_early_close_and_stream_exception_do_not_settle",
+      "test_eventstream_crc_truncated_frame_and_missing_terminal_stay_unknown",
+      "test_http_error_malformed_or_semantically_incomplete_stays_unknown",
+      "test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown"
+    ],
+    "classification": "Stale expectations following deliberately stronger early refusal; no production change in followup"
+  },
+  "independentReview": {
+    "source": "8c65bdc33b51b5d83bce48050b1d8791ad2c31d5",
+    "result": "APPROVE_NO_BLOCKING_FINDINGS",
+    "tests": [
+      42,
+      49
+    ],
+    "evidence": "/tmp/meri-terminal-gate-independent-review-20261019/REVIEW.md"
+  }
+}

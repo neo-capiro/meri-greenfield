@@ -1,0 +1,142 @@
+TAP version 13
+# Subtest: one SDK query persists streamed text once, hides reasoning and completes durable run
+ok 1 - one SDK query persists streamed text once, hides reasoning and completes durable run
+  ---
+  duration_ms: 164.060162
+  type: 'test'
+  ...
+# Subtest: nonstreamed final assistant text is displayed with a valid generated UUID
+ok 2 - nonstreamed final assistant text is displayed with a valid generated UUID
+  ---
+  duration_ms: 27.321748
+  type: 'test'
+  ...
+# Subtest: SDK mirror never leaks diagnostics or makes a duplicate model query
+ok 3 - SDK mirror never leaks diagnostics or makes a duplicate model query
+  ---
+  duration_ms: 25.920325
+  type: 'test'
+  ...
+# Subtest: SDK missing never leaks diagnostics or makes a duplicate model query
+ok 4 - SDK missing never leaks diagnostics or makes a duplicate model query
+  ---
+  duration_ms: 24.874395
+  type: 'test'
+  ...
+# Subtest: SDK sdkFailure never leaks diagnostics or makes a duplicate model query
+ok 5 - SDK sdkFailure never leaks diagnostics or makes a duplicate model query
+  ---
+  duration_ms: 17.800315
+  type: 'test'
+  ...
+# Subtest: SDK duplicate never leaks diagnostics or makes a duplicate model query
+ok 6 - SDK duplicate never leaks diagnostics or makes a duplicate model query
+  ---
+  duration_ms: 18.704087
+  type: 'test'
+  ...
+# Subtest: SDK subagent never leaks diagnostics or makes a duplicate model query
+ok 7 - SDK subagent never leaks diagnostics or makes a duplicate model query
+  ---
+  duration_ms: 24.698646
+  type: 'test'
+  ...
+# Subtest: revocation during query stops publication and closes SDK before another result
+ok 8 - revocation during query stops publication and closes SDK before another result
+  ---
+  duration_ms: 15.453263
+  type: 'test'
+  ...
+# Subtest: output limit fails instead of truncating a completed response
+ok 9 - output limit fails instead of truncating a completed response
+  ---
+  duration_ms: 23.599669
+  type: 'test'
+  ...
+# Subtest: late SDK iterator is bounded by deadline and closed without a second query
+ok 10 - late SDK iterator is bounded by deadline and closed without a second query
+  ---
+  duration_ms: 44.932996
+  type: 'test'
+  ...
+# Subtest: SDK options reject ambient config, wrong workspace and upstream keys
+ok 11 - SDK options reject ambient config, wrong workspace and upstream keys
+  ---
+  duration_ms: 0.811441
+  type: 'test'
+  ...
+# Subtest: final assistant frame repairs a missing streamed suffix without duplicate prefix
+ok 12 - final assistant frame repairs a missing streamed suffix without duplicate prefix
+  ---
+  duration_ms: 21.250948
+  type: 'test'
+  ...
+# Subtest: a conflicting final text refuses completion instead of silently dropping the mismatch
+ok 13 - a conflicting final text refuses completion instead of silently dropping the mismatch
+  ---
+  duration_ms: 19.061444
+  type: 'test'
+  ...
+# Subtest: runtime preparation mismatch records a failed run without invoking SDK
+ok 14 - runtime preparation mismatch records a failed run without invoking SDK
+  ---
+  duration_ms: 15.336329
+  type: 'test'
+  ...
+# Subtest: the pinned runner CA reaches the SDK subprocess env exactly once and is covered by the SDK options digest
+ok 15 - the pinned runner CA reaches the SDK subprocess env exactly once and is covered by the SDK options digest
+  ---
+  duration_ms: 3.152003
+  type: 'test'
+  ...
+# Subtest: any other CA path, or a CA without the admitted per-task SDK directories, refuses
+ok 16 - any other CA path, or a CA without the admitted per-task SDK directories, refuses
+  ---
+  duration_ms: 0.736218
+  type: 'test'
+  ...
+# Subtest: public SDK controls identify the fixed proxy model and keep schema, tool and budget authority intact
+ok 17 - public SDK controls identify the fixed proxy model and keep schema, tool and budget authority intact
+  ---
+  duration_ms: 0.87105
+  type: 'test'
+  ...
+# Subtest: the native options projection refuses every enabled or malformed thinking setting without invoking getters
+ok 18 - the native options projection refuses every enabled or malformed thinking setting without invoking getters
+  ---
+  duration_ms: 0.455285
+  type: 'test'
+  ...
+# Subtest: the per-attempt acknowledgement bound is the control service request bound, not 30 ms
+ok 19 - the per-attempt acknowledgement bound is the control service request bound, not 30 ms
+  ---
+  duration_ms: 1.049269
+  type: 'test'
+  ...
+# Subtest: terminal recording slower than 30 ms is acknowledged on the first attempt
+ok 20 - terminal recording slower than 30 ms is acknowledged on the first attempt
+  ---
+  duration_ms: 179.347541
+  type: 'test'
+  ...
+# Subtest: a lost acknowledgement is read back by replaying the same event ID; no second terminal event
+ok 21 - a lost acknowledgement is read back by replaying the same event ID; no second terminal event
+  ---
+  duration_ms: 36.88223
+  type: 'test'
+  ...
+# Subtest: never acknowledged: settlement is finite (two rounds over two fixed event IDs) and leaves the run nonterminal for the reconciler
+ok 22 - never acknowledged: settlement is finite (two rounds over two fixed event IDs) and leaves the run nonterminal for the reconciler
+  ---
+  duration_ms: 107.684383
+  type: 'test'
+  ...
+1..22
+# tests 22
+# suites 0
+# pass 22
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1685.958356

@@ -1,0 +1,10 @@
+test_cancellation_and_wire_bounds_never_flush_held_terminals (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_cancellation_and_wire_bounds_never_flush_held_terminals) ... ok
+test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle) ... ok
+test_json_body_is_withheld_until_ack (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_json_body_is_withheld_until_ack) ... ok
+test_lost_ack_releases_only_after_exact_settled_readback (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_lost_ack_releases_only_after_exact_settled_readback) ... ok
+test_terminal_is_withheld_through_ack_for_coalesced_split_and_structured_frames (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_terminal_is_withheld_through_ack_for_coalesced_split_and_structured_frames) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.028s
+
+OK

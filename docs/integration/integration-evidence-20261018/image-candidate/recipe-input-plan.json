@@ -1,0 +1,189 @@
+{
+  "status": "EXACT_REVIEWED_SOURCE_PINNED; INERT_RECIPE_INPUT_PLAN; NO_BUILD_OR_IMAGE",
+  "buildAuthorized": false,
+  "rolloutAuthorized": false,
+  "chatAuthorized": false,
+  "singleCandidateOnly": true,
+  "coordinationThread": "https://github.com/neo-capiro/meri-greenfield/pull/187#issuecomment-6256612108",
+  "referenceSnapshot": {
+    "codeCommit": "0d3388a88aa575fba2bf9ee9c1c219053ea09418",
+    "codeTree": "be5ece2d8ff81d6112fb55c29e60beb69c8c4c09",
+    "evidenceCommit": "4f59cb3d7e811ff1409b1161920c1bce6eb5ea48",
+    "pr": 188,
+    "isFinalBuildSource": false
+  },
+  "referenceRecipePins": {
+    "schemaVersion": 2,
+    "sourceCommit": "0d3388a88aa575fba2bf9ee9c1c219053ea09418",
+    "dockerfileSha256": "e7e0427aca562ba0747ca0874ff284915af2ce40f32f4d5330857824e8d43022",
+    "runtimePackagesSha256": "5dc3b335d8dc7f0377c75852c28addc1a2517bb4bcc05e2125d0e1e31a97bdea",
+    "runnerSha256": "177a982b7b710eb1c13cdd372f44c8ba4043fbc429d0646e299b22dea0e992c2",
+    "verifierSha256": "c373ff556873823e1fd7cb5a00945ed2f70f41acb74c96d2d9756d0f12bf461d",
+    "producerSha256": "a1002c79952fb8c5f3ee81443ca645ee9bce58d074bfd93bbcd83518947cdae8",
+    "nodeImageUri": "public.ecr.aws/docker/library/node@sha256:c83040f7e24bacea68e58a0b96a484ba430bf24abb2973eab7ba4701144b7b63",
+    "nodeVersion": "v24.21.0",
+    "runtimeBaseImageUri": "cgr.dev/chainguard/wolfi-base@sha256:030e45cb37187dff322bbefe9658bcaec31b824a5d523380771a64864c9f45d4",
+    "runtimeUser": "1000:1000"
+  },
+  "finalRecipeInputPlan": {
+    "schemaVersion": 2,
+    "sourceCommit": "34851020aa0d73fead4db59ba6e26a098e2d0313",
+    "archive": {
+      "bucket": "meri-greenfield-qual-build-967807252336-us-east-1",
+      "key": null,
+      "versionId": null,
+      "sha256": null
+    },
+    "manifest": {
+      "bucket": "meri-greenfield-qual-build-967807252336-us-east-1",
+      "key": null,
+      "versionId": null,
+      "sha256": null
+    },
+    "dockerfileSha256": "e7e0427aca562ba0747ca0874ff284915af2ce40f32f4d5330857824e8d43022",
+    "nodeImageUri": null,
+    "nodeVersion": "v24.21.0",
+    "runtimeBaseImageUri": "cgr.dev/chainguard/wolfi-base@sha256:030e45cb37187dff322bbefe9658bcaec31b824a5d523380771a64864c9f45d4",
+    "runtimePackagesSha256": "5dc3b335d8dc7f0377c75852c28addc1a2517bb4bcc05e2125d0e1e31a97bdea",
+    "runnerSha256": "177a982b7b710eb1c13cdd372f44c8ba4043fbc429d0646e299b22dea0e992c2",
+    "runtimeUser": "1000:1000",
+    "codeBuildProjectArn": null,
+    "ecrRepositoryUri": null,
+    "imageTag": null,
+    "verifierSha256": "c373ff556873823e1fd7cb5a00945ed2f70f41acb74c96d2d9756d0f12bf461d",
+    "producerSha256": "a1002c79952fb8c5f3ee81443ca645ee9bce58d074bfd93bbcd83518947cdae8"
+  },
+  "missingInputOwners": {
+    "sourceCommit and source-derived hashes": "Complete: exact published34851020/tree d5d1b559;14 source files independently compared to published blobs and unchanged.",
+    "archive/manifest exact hashes": "Canonical offline sealer after final committed source; no seal generated yet",
+    "archive/manifest keys and immutable VersionIds": "Existing shipping operator via approved channel; no upload or AWS operation in this lane",
+    "codeBuildProjectArn/ecrRepositoryUri": "Existing shipping owner receipt; fixture project names are not approved infrastructure",
+    "imageTag": "Existing shipping owner supplies one32-hex attempt identity for final full commit",
+    "imageDigest/currentLiveState/rollback": "Unavailable until separately authorized qualification and owner readback",
+    "nodeImageUri": "Existing shipping owner must confirm immutable official Node builder digest; N21 historical digest remains proposal only."
+  },
+  "historicalBuilderContext": {
+    "source": "historical-builder-reference.json",
+    "nodeImageUri": "public.ecr.aws/docker/library/node@sha256:c83040f7e24bacea68e58a0b96a484ba430bf24abb2973eab7ba4701144b7b63",
+    "buildProjectName": "meri-greenfield-qualification-build",
+    "warning": "Historical N21 used meri-greenfield-qualification-build; unit fixtures use meri-product-preview-build. Neither is a fresh infrastructure approval. N21 image/launch receipts are not final-source proof."
+  },
+  "packageInputs": {
+    "additionalAPKs": 44,
+    "basePackageIdentities": 19,
+    "requiredPaths": 20,
+    "wheels": 4,
+    "platform": "linux/amd64",
+    "glibcVersion": "2.44",
+    "python": "3.13.16",
+    "pptxgenjs": "4.0.1"
+  },
+  "prohibitedNow": [
+    "source build",
+    "CodeBuild StartBuild",
+    "ECR publication",
+    "AWS readback/mutation",
+    "Docker image construction",
+    "credential or trust changes",
+    "deployment or chat",
+    "migration execution",
+    "provider/model calls",
+    "regenerating final-image receipts from historical source data"
+  ],
+  "actionsPerformed": [
+    "Read current PR187/188/185 metadata/comments and source files",
+    "Verify14 reference published Git blobs and SHA256 pins",
+    "Post one source-planning coordination note on existing PR187 thread",
+    "Prepare this pending recipe-input plan; no seal, buildspec, image or launch receipt generated",
+    "Verify the14 published34851020 source blobs against exact committed local e104 tree; all14 unchanged from0d reference",
+    "Populate only source-derived canonical recipe fields; preserve unavailable operator/object/image/tag/rollback fields null"
+  ],
+  "sourceAdvance": {
+    "reportedPublishedIntermediateCommit": "046087d122b5f4274aee8c6769f5d05ea499ea3b",
+    "isFinalBuildSource": false,
+    "reason": "Root supplied final reviewed source/tree after terminal-byte repairs; no image or runtime acceptance follows from source pinning.",
+    "reportedChecks": "Superseded intermediate046 checks retained as historical; final candidate34851020 has root-reported17/17 canonical owner-channel matrix and30/30 final owner/admission/harness focused checks.",
+    "supersededByPublishedCommit": "34851020aa0d73fead4db59ba6e26a098e2d0313"
+  },
+  "requiredGates": {
+    "plainDefaultFirstChat": {
+      "separateFromSelectedSchema": true,
+      "selectionAtInvestigationPin": "Default skill:null; outputFormat added only for selected skill or explicitly composed Objective runtime; runtime conversation runner does not supply an Objective runtime.",
+      "currentSourceReadiness": "Exact reviewed34851020 source includes SDK/terminal-byte repairs. Final canonical owner-channel matrix17/17 and final owner/admission/harness30/30 reported passing; exact image/native startup/live acceptance remain unqualified.",
+      "requiredBeforeFreeze": "Source is pinned; a complete actual operator request, exact build, final-image launch and native/live qualification remain separate prerequisites."
+    },
+    "selectedStructuredOutput": {
+      "status": "UNRESOLVED_PRODUCTION_SCHEMA_CUSTODY",
+      "investigationSourceCommit": "5e76d962af234fc975d6da88ab5b41163b6461d6",
+      "plan": "SELECTED-SCHEMA-CUSTODY-GATE.md",
+      "notDefaultPlainStartupBlocker": true,
+      "standInLimit": "Selected-schema stand-in establishes structured transport only with explicitly injected trusted fixture BodyLimits; it does not establish production dynamic schema custody.",
+      "requiredChain": [
+        "Canonical immutable selected-skill schema or positively qualified Objective accepted/protected custody",
+        "Trusted accepted model request binding/requestSha256/model-grant/allocation/expiry",
+        "Authenticated existing owner source tuple carries exact schema/tool or explicit ordinary null",
+        "Session-local BodyLimits with unchanged numeric bounds and freshness",
+        "The same trusted policy drives count parser/callback and final native schema/tool validation",
+        "Existing native/settlement/unknown-liability guards preserved"
+      ],
+      "invalidShortcuts": [
+        "Global StructuredOutput allow",
+        "Resolver-only patch leaving app-global equality fence/count callback unchanged",
+        "Worker-uploaded schema treated as authority",
+        "Unqualified Objective custody treated as ordinary absence"
+      ],
+      "acceptance": [
+        "Actual-source accepted owner\u2192wire\u2192session\u2192SDK/count/native checks for plain and selected skill",
+        "Exact schema/tool tamper",
+        "Same text with different request IDs",
+        "Cross-run/model-grant drift",
+        "Expiry/retirement between count and native send",
+        "Concurrent different schemas",
+        "Unavailable Objective custody refuses"
+      ],
+      "scope": "Required for selected-structured feature release; ordinary default chat qualification is tracked independently. No waiver or product scope cut is implied."
+    }
+  },
+  "candidateSnapshot": {
+    "codeCommit": "34851020aa0d73fead4db59ba6e26a098e2d0313",
+    "codeTree": "d5d1b5599c812d49428bb113badd89092f9d05f3",
+    "localReviewedCommit": "e104f6934e13b5ecce477f89ed842dfd791a1ab1",
+    "pr": 188,
+    "isExactReviewedSourceForFutureImage": true,
+    "imageExists": false,
+    "evidenceHead": "AWAITING_ROOT_FINAL_AUDIT_PUBLICATION",
+    "unchangedSourcePinFiles": 14
+  },
+  "operatorReceipt": null,
+  "imageDigest": null,
+  "rollbackTarget": null,
+  "sdkOwnerChannelMatrix": {
+    "status": "PASS_OFFLINE_SYNTHETIC_BOUNDARIES",
+    "pass": 17,
+    "total": 17,
+    "runCommit": "90f82dc692fd017f4f8957cfaf8402000bb2f92f",
+    "sourceCommit": "34851020aa0d73fead4db59ba6e26a098e2d0313",
+    "sourceTree": "d5d1b5599c812d49428bb113badd89092f9d05f3",
+    "executableProductionAndHarnessMatchCandidate": true,
+    "basis": "Final root-reported egress receipt; no test or matrix rerun by this planning lane. Real owner channel/bridge/accounting paths exercised over synthetic transport/facts/SQL/count/provider; not live AWS/provider/Clerk/PostgreSQL or an image receipt."
+  },
+  "focusedQualification": {
+    "finalOwnerAdmissionHarness": {
+      "pass": 30,
+      "total": 30,
+      "sourceCommit": "34851020aa0d73fead4db59ba6e26a098e2d0313",
+      "basis": "Root-reported final checks"
+    },
+    "earlierAffectedProduct": {
+      "pass": 98,
+      "total": 98,
+      "pinStatus": "Retain exact run pins in final SDK audit; do not add counts to other overlapping groups"
+    },
+    "earlierRuntime": {
+      "pass": 28,
+      "total": 28,
+      "pinStatus": "Retain exact run pins in final SDK audit; do not add counts to other overlapping groups"
+    },
+    "planningLaneReruns": false
+  }
+}

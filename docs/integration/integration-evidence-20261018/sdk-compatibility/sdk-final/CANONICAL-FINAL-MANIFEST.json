@@ -1,0 +1,125 @@
+{
+  "sourceCommit": "90f82dc692fd017f4f8957cfaf8402000bb2f92f",
+  "files": [
+    {
+      "path": "CANONICAL-CLEANUP.json",
+      "bytes": 344,
+      "sha256": "59d089cb2fadcd39715decc66d8deeebf784ea96d0a240b8373a3ea283900a70"
+    },
+    {
+      "path": "CANONICAL-FINAL-COMMANDS.json",
+      "bytes": 9524,
+      "sha256": "63be3d8bbe50592ce8859fa09273ec501272a3b6760c14dac71220f3d8046156"
+    },
+    {
+      "path": "CANONICAL-FINAL-SUMMARY.json",
+      "bytes": 57033,
+      "sha256": "78f263e0c529b8bcd9ade62731a63da47ed3ce61b959648237c647002905c0a6"
+    },
+    {
+      "path": "CANONICAL-FOCUSED-COMMAND.json",
+      "bytes": 328,
+      "sha256": "f599bc114757a770aa2c535914533d1a408b52fff050cdb7095c16fbca005423"
+    },
+    {
+      "path": "CANONICAL-QUALIFICATION-RESULTS.md",
+      "bytes": 4233,
+      "sha256": "a947951d77e7fd4dbce6a15c2b9544e428757f9c2fb50eb787fce05b231b7b6b"
+    },
+    {
+      "path": "before-canonical-owner/SNAPSHOT-MANIFEST.json",
+      "bytes": 2837,
+      "sha256": "51205a1812176e0e4cc7c531c0dc21b3a8cb7670f5afbb1563d01d8c7150515f"
+    },
+    {
+      "path": "canonical-final-focused-tests.log",
+      "bytes": 1131,
+      "sha256": "3fda2e254a3ee299ecac216178db7f6dd4d90ede82c288e250513dcf6902d641"
+    },
+    {
+      "path": "canonical-final-minimal-messages-cached.json",
+      "bytes": 4859,
+      "sha256": "102015da949acb534c78f6dbbcee68331d6a3937c1c3d1805d5e052a8b82614c"
+    },
+    {
+      "path": "canonical-final-minimal-messages-complete.json",
+      "bytes": 5039,
+      "sha256": "9063891da3a2323855bbcdc8b414a8fb103be08a573f3623f0ca9a30c234a6d7"
+    },
+    {
+      "path": "canonical-final-minimal-messages-missing-usage.json",
+      "bytes": 5980,
+      "sha256": "c5ad18f2d2f89505071bcf61c317f1ae835741361c1696c3f856087157038b9b"
+    },
+    {
+      "path": "canonical-final-minimal-messages-reservation-ack-lost.json",
+      "bytes": 5005,
+      "sha256": "980b190ed56e8fc33614d085946ea538b9f60a603765c212aea4605cbba39e1d"
+    },
+    {
+      "path": "canonical-final-minimal-messages-settlement-ack-committed.json",
+      "bytes": 5075,
+      "sha256": "f16184572e0b3aa7bc7184af74666355bec78b02ac2ed6c8430062b84bdffff1"
+    },
+    {
+      "path": "canonical-final-minimal-messages-settlement-ack-unresolved.json",
+      "bytes": 6160,
+      "sha256": "6e6e14fdd3d404711b3f5a1b106c47e553165b86e737d4052abbc8cd8efe9553"
+    },
+    {
+      "path": "canonical-final-minimal-messages-truncated.json",
+      "bytes": 5976,
+      "sha256": "164ba374e251cd13061cd786a4905f209ce958a6be1411b50646b988662dd707"
+    },
+    {
+      "path": "canonical-final-sdk-cached.json",
+      "bytes": 22616,
+      "sha256": "757c397011e6d3dffbc5b3af4dd0111586dc1582741381c76895093651cbf61f"
+    },
+    {
+      "path": "canonical-final-sdk-complete-schema.json",
+      "bytes": 7838,
+      "sha256": "4ba219bb9d3ca65c2365c559e3f10d8dc8db22d30159f1e4e2876e138f8f6bf6"
+    },
+    {
+      "path": "canonical-final-sdk-complete.json",
+      "bytes": 6807,
+      "sha256": "f079a6bf6556f652f5501e53cd39d983902fdae946db7816fd1a3a01933b2600"
+    },
+    {
+      "path": "canonical-final-sdk-missing-usage.json",
+      "bytes": 26761,
+      "sha256": "37f8292b1ad5683bf068657317fe27f915ed11cfcba635c13276b995e7aba2d9"
+    },
+    {
+      "path": "canonical-final-sdk-reservation-ack-lost.json",
+      "bytes": 21715,
+      "sha256": "df2ffb11094286c3ba3fbdeeb1fadd78eeea835e415af49e31e236c69e9aae6b"
+    },
+    {
+      "path": "canonical-final-sdk-settlement-ack-committed.json",
+      "bytes": 6843,
+      "sha256": "f01b12619689f0f8693197804c2edf867d56a478dabeb0f00ce3037872b6ba3e"
+    },
+    {
+      "path": "canonical-final-sdk-settlement-ack-unresolved-schema.json",
+      "bytes": 24707,
+      "sha256": "f830f0d047b4052c47688a5ce95d6bbd932d2196b07e658cc71fc96c31045092"
+    },
+    {
+      "path": "canonical-final-sdk-settlement-ack-unresolved.json",
+      "bytes": 25898,
+      "sha256": "335c0734e396faecfc0cba0ffb41f029e871bf844dcb56e83e5d9bf6a814ce26"
+    },
+    {
+      "path": "canonical-final-sdk-truncated-schema.json",
+      "bytes": 25986,
+      "sha256": "2e410c1cba00ed40dc249854399d3274ba15b8dc616c7e390e780ffdff8f061f"
+    },
+    {
+      "path": "canonical-final-sdk-truncated.json",
+      "bytes": 26757,
+      "sha256": "a7de9a91deb60411d4989227e93793366148c6d623a4aae63b5b020a01a81770"
+    }
+  ]
+}

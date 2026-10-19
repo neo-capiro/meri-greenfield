@@ -1,0 +1,748 @@
+{
+  "readAt": "2026-10-18T23:41:56.167Z",
+  "threads": [
+    {
+      "pr": 187,
+      "info": {
+        "url": "https://github.com/neo-capiro/meri-greenfield/pull/187",
+        "number": 187,
+        "state": "open",
+        "merged": false,
+        "mergeable": true,
+        "draft": true,
+        "body": "## Scope\n\nStacked directly on draft PR #182 (`58b13b1644726bb307ea3e58461c7c0a970215f9`). This follow-up publishes exact commit `51f4a38e2e43d6ff050db08e3235b2b447b708cf`.\n\n- Forward the already injected `fetchImpl` into the multi-run registry.\n- Preserve the producer's `NATIVE_EXECUTION_KICKOFF_UNKNOWN` diagnostic code.\n- Add one focused test for each correction.\n\nNo deployment manifest, credential, CA material, Core HTTP behavior, or live task changes are included.\n\n## Verification\n\n- `git diff --check 58b13b16..51f4a38e` passed.\n- `node --test apps/runtime/test/runner-kickoff-diagnostic.test.mjs`: 1 passed, 0 failed on Node 22.23.3.\n- `node --test apps/runtime/test/prepared-candidate-fetch-propagation.test.mjs`: blocked before its assertion because this checkout lacks `@js-temporal/polyfill`. This is not counted as a pass.\n\nNode 24/Fargate trust IO, live startup, and a fresh chat remain unverified. The existing deployment and chat hold remains in force. This PR is source-only and draft.\n",
+        "title": "Forward control fetch and preserve kickoff diagnostic",
+        "base": "dot/control-ca-trust-20261018",
+        "base_sha": "58b13b1644726bb307ea3e58461c7c0a970215f9",
+        "head": "dot/control-startup-reconciliation-20261018",
+        "head_sha": "51f4a38e2e43d6ff050db08e3235b2b447b708cf",
+        "head_repo_id": 1412315060,
+        "head_repo_full_name": "neo-capiro/meri-greenfield",
+        "merge_commit_sha": "d72951032416e838bce1c5c06e75038fb69f33e2",
+        "user": {
+          "login": "neo-capiro",
+          "name": "neo-capiro",
+          "email": null,
+          "avatar_url": "https://avatars.githubusercontent.com/u/276034435?v=4",
+          "id": 276034435
+        },
+        "requested_reviewers": null,
+        "requested_team_reviewers": null,
+        "diff": null,
+        "comments": null,
+        "created_at": "2026-10-18T22:39:10Z",
+        "updated_at": "2026-10-18T23:24:55Z",
+        "closed_at": null,
+        "merged_at": null,
+        "commits": 1,
+        "changed_files": 4,
+        "additions": 32,
+        "deletions": 2,
+        "display_url": "https://github.com/neo-capiro/meri-greenfield/pull/187",
+        "display_title": "Forward control fetch and preserve kickoff diagnostic"
+      },
+      "comments": {
+        "comments": [
+          {
+            "url": "https://github.com/neo-capiro/meri-greenfield/pull/187#issuecomment-6256468261",
+            "body": "Received approved `51f4a38e` into consolidated draft [PR188](https://github.com/neo-capiro/meri-greenfield/pull/188). Tested code: `88026e7e`; report head: `b205d626`; branch: `integration/meri-receiving-20261018`, based on dot's `7252f483`. Both PR187 tests pass on Node 24 with matching dependencies and the required module-mock flag. The conflict resolution retains document, intent and read-delegation options while adding `fetchImpl`; PR182's CA patch was not applied twice.\n\nExpanded startup qualification found an inherited product defect: the closed conversation-service port rejected the canonical retention gate's `withRelease` method before reaching retention readiness. The minimal typed-port correction and two regressions are received. Only three audited source-provenance metadata files changed. Final checks: 4,391 standard tests, 20 worker tests and runtime/control types pass; the combined history/startup group has 219 pass / 0 fail / 1 native IO case explicitly UNRUN.\n\nThe original jumpbox fresh-process DNS diagnostic harness was not included in PR187. The published TLS fixture already binds loopback before its child DNS override. Please preserve that original harness and publish its nonsecret fixture through this thread if available. Native UID1000 init, fresh Control, actual database trust and exact-image qualification remain open. The shipping packet and failed controls are in PR188. No AWS action, deployment or chat; HOLD remains active.",
+            "user": {
+              "login": "neo-capiro",
+              "name": "neo-capiro",
+              "email": null,
+              "avatar_url": "https://avatars.githubusercontent.com/u/276034435?v=4",
+              "id": 276034435
+            },
+            "id": 6256468261,
+            "pull_request_review_id": null,
+            "in_reply_to_id": null,
+            "created_at": "2026-10-18T23:24:36Z",
+            "updated_at": "2026-10-18T23:24:55Z",
+            "review": null,
+            "side": null,
+            "line": null,
+            "start_line": null,
+            "path": null,
+            "body_html": "<p dir=\"auto\">Received approved <code class=\"notranslate\">51f4a38e</code> into consolidated draft <a href=\"https://github.com/neo-capiro/meri-greenfield/pull/188\" data-hovercard-type=\"pull_request\" data-hovercard-url=\"/neo-capiro/meri-greenfield/pull/188/hovercard\">PR188</a>. Tested code: <code class=\"notranslate\">88026e7e</code>; report head: <code class=\"notranslate\">b205d626</code>; branch: <code class=\"notranslate\">integration/meri-receiving-20261018</code>, based on dot's <code class=\"notranslate\">7252f483</code>. Both PR187 tests pass on Node 24 with matching dependencies and the required module-mock flag. The conflict resolution retains document, intent and read-delegation options while adding <code class=\"notranslate\">fetchImpl</code>; PR182's CA patch was not applied twice.</p>\n<p dir=\"auto\">Expanded startup qualification found an inherited product defect: the closed conversation-service port rejected the canonical retention gate's <code class=\"notranslate\">withRelease</code> method before reaching retention readiness. The minimal typed-port correction and two regressions are received. Only three audited source-provenance metadata files changed. Final checks: 4,391 standard tests, 20 worker tests and runtime/control types pass; the combined history/startup group has 219 pass / 0 fail / 1 native IO case explicitly UNRUN.</p>\n<p dir=\"auto\">The original jumpbox fresh-process DNS diagnostic harness was not included in PR187. The published TLS fixture already binds loopback before its child DNS override. Please preserve that original harness and publish its nonsecret fixture through this thread if available. Native UID1000 init, fresh Control, actual database trust and exact-image qualification remain open. The shipping packet and failed controls are in PR188. No AWS action, deployment or chat; HOLD remains active.</p>"
+          }
+        ],
+        "url": "https://github.com/neo-capiro/meri-greenfield/pull/187",
+        "title": "neo-capiro/meri-greenfield PR #187 comments",
+        "display_url": "https://github.com/neo-capiro/meri-greenfield/pull/187",
+        "display_title": "neo-capiro/meri-greenfield PR #187 comments"
+      }
+    },
+    {
+      "pr": 188,
+      "info": {
+        "url": "https://github.com/neo-capiro/meri-greenfield/pull/188",
+        "number": 188,
+        "state": "open",
+        "merged": false,
+        "mergeable": true,
+        "draft": true,
+        "body": "Latest follow-up: `12:30 Jan 1 2020+0530` now normalizes to **07:00Z** for both as-of and date filters. Current tested code is `0d3388a88aa575fba2bf9ee9c1c219053ea09418`, exact reviewed tree `be5ece2d8ff81d6112fb55c29e60beb69c8c4c09`; current report/evidence head is `4f59cb3d7e811ff1409b1161920c1bce6eb5ea48`. The previous repair missed the attached plus. It now has an exact three-timezone regression, 948 native-reference tuples, independent 84/84 public assertions per timezone and actual 2/2 selected tests per timezone. Final standard4,391, worker20 and runtime/control types0/0 reran successfully at this corrected tree.\n\n**SDK status is still BLOCKED.** The pin-specific override removed only the effort beta. Context-management and structured-output/tool compatibility still prevent actual SDK admission; no actual SDK request has reached a provider execution. No product admission rule or setting was changed for this date repair.\n\nControl assembly rejected the canonical retention gate's `withRelease` method, failing with `INVALID_COMMAND` before retention readiness. This receiving candidate fixes that port mismatch, preserves suppression/cancellation behavior, receives the approved startup forwarding/diagnostic repairs, and consolidates the existing pool, stream, CA, model-alias, date and document-dependency work.\n\n**Draft; deployment/chat HOLD.** No merge, deployment, migration, credential change, AWS mutation or paid model call. Frozen PR175 remains `993f52a9`; frontend PR98 remains `5c784e3e`.\n\n## Exact candidate\n\n- Base: dot combined handoff `7252f483c59cd676e868e40d4bf73c2ca55c137f`.\n- Initial tested published code: `88026e7e5ff5a568b9c2c250c6ebb1573abe09b3`; exact complete tree `7b599373392e91b0ffd04f0e80b4f5a5291024c6`, identical to reviewed local `ae62b151`.\n- Initial report/evidence head: `b3611559582be27f4545509d9c2f03dc3b1332cd`; documentation only after the tested code.\n- Additional received parents: corrected PR186 `665405cd`, approved PR187 `51f4a38e`, complete three-commit document closure `d2f05436`.\n- PR180 `a1876afa`, PR181 successor `139e0a14`, PR183 `b51687d4` and PR185 `67a7bfbc` are preserved through the reviewed handoff/source receipt. PR182 CA is not applied twice. PR183/185 sibling ancestry is documented.\n\n## Repairs and verification\n\nFour additional retention/history fixtures now compose their canonical owners without changing their original assertions. A separate inherited options fixture now checks the exact four environment keys, 8192/0 limits and verified 14-skill catalog. The service-port fix adds two real canonical-gate regressions; only three audited source-provenance metadata files were regenerated, with browser/types/schema bytes unchanged. The new capacity-one concurrent HTTP test preserves positive/absent scheduled custody and cleanup.\n\nOn Node24.19.0/npm11.9.0/TypeScript5.9.3, TZ=America/Toronto and NODE_OPTIONS unset:\n\n| Check | Result |\n| --- | --- |\n| Standard | **4,391 passed / 0 failed**, no skips |\n| Focused worker | **20 passed / 0 failed**, no skips |\n| Runtime/control types | **0 / 0 diagnostics** |\n| Combined 21-file history/startup group | **219 passed / 0 failed / 1 explicitly UNRUN native IO case** |\n| Image-source group | **74 passed / 0 failed / 1 inherited conditional skip** |\n| Stream/offline focused | **29/29** |\n| Offline native/accounting matrix | **7 minimal-client passes; 4 actual SDK variants BLOCKED; zero provider calls** |\n\nThe original candidate and both parent comparisons remain published: 32 standard+16 worker failures and 21 diagnostic occurrences are individually mapped to causes, original repair commits and final literal-name verification. Failed setup/intermediate controls remain visible; the date helper's introduced explicit-offset/control errors are corrected and labeled separately. Focused counts overlap and must not be added.\n\n## Open blockers\n\n- Core `78ceaf9b` batch is unmounted. Neo subsequently approved the exact narrow native middleware patch; its separate implementation lane is in progress. The portable 65-addition/2-deletion proposal is reviewable, **34/34** composed scratch checks plus **10/10** published checks; the proposed source patch does not mount the route or close the remaining subject contract. Scheduled/multiscope/lineage/cursor contract and Meri final-byte publication still require integration.\n- Actual SDK requests fail closed before counting/reservation/provider. Supported settings still leave an effort beta; selected structured output uses a synthetic tool path. No blanket admission expansion or cache-liability bypass was made.\n- Positive product owner HTTPS needs real distinct RFC1918 interfaces; this host has loopback only. ScriptedSQL/IPC and provider/count stubs are explicitly partial evidence.\n- Native UID1000 init\u2192fresh Control/real database trust and exact linux-amd64 image/launch measurements remain unqualified. The previous adapted diagnostic image is not a release image.\n- Sole shipping owner reports execution access offline. Fresh AWS/live state and rollback target are unrefreshed. HOLD remains until qualified review and explicit clearance; eventual authenticated prompt/reply/reload/second-turn/Stop acceptance remains mandatory.\n\n## Review packet\n\n- [Integration ledger and exact pins](https://github.com/neo-capiro/meri-greenfield/blob/4f59cb3d7e811ff1409b1161920c1bce6eb5ea48/docs/integration/MERI-INTEGRATION-20261018.md)\n- [Every original failure and diagnostic, current verification](https://github.com/neo-capiro/meri-greenfield/blob/4f59cb3d7e811ff1409b1161920c1bce6eb5ea48/docs/integration/integration-evidence-20261018/BEFORE-AFTER.md)\n- [Scrubbed logs, commands, source receipts and manifest](https://github.com/neo-capiro/meri-greenfield/tree/4f59cb3d7e811ff1409b1161920c1bce6eb5ea48/docs/integration/integration-evidence-20261018)\n- [Protected Core approval proposal](https://github.com/neo-capiro/meri-greenfield/blob/4f59cb3d7e811ff1409b1161920c1bce6eb5ea48/docs/integration/integration-evidence-20261018/core-proposal/README.md)\n- [Shipping packet under HOLD: digest/rollback explicitly unavailable](https://github.com/neo-capiro/meri-greenfield/blob/4f59cb3d7e811ff1409b1161920c1bce6eb5ea48/docs/integration/MERI-SHIPPING-PACKET-20261018.md)\n\nRelated: #180, #181, #183, #185, #186, #187; capiro-backend#96; capiro-frontend#98. Dot retains Portfolio/Modules.\n\nA final [bounded beta diagnostic](https://github.com/neo-capiro/meri-greenfield/blob/4f59cb3d7e811ff1409b1161920c1bce6eb5ea48/docs/integration/integration-evidence-20261018/sdk/effort-beta-addendum/EFFORT-BETA-RESEARCH.md) isolates the CLI's intentional effort-beta behavior. An undocumented pin-specific override removes that beta but leaves other gates and the synthetic schema-tool path unresolved. This extra failed diagnostic is preserved separately; no production option or admission rule changed.\n\n[Current attached-offset evidence, failed controls and exact commands](https://github.com/neo-capiro/meri-greenfield/tree/4f59cb3d7e811ff1409b1161920c1bce6eb5ea48/docs/integration/integration-evidence-20261018/attached-date-offset).\n",
+        "title": "Receive combined Meri repairs and qualify integration source; release HOLD",
+        "base": "dot/meri-release-combined-20261018",
+        "base_sha": "7252f483c59cd676e868e40d4bf73c2ca55c137f",
+        "head": "integration/meri-receiving-20261018",
+        "head_sha": "4f59cb3d7e811ff1409b1161920c1bce6eb5ea48",
+        "head_repo_id": 1412315060,
+        "head_repo_full_name": "neo-capiro/meri-greenfield",
+        "merge_commit_sha": "25c90898ce8a3a9d9422dae038a2f20443ae6c73",
+        "user": {
+          "login": "neo-capiro",
+          "name": "neo-capiro",
+          "email": null,
+          "avatar_url": "https://avatars.githubusercontent.com/u/276034435?v=4",
+          "id": 276034435
+        },
+        "requested_reviewers": null,
+        "requested_team_reviewers": null,
+        "diff": null,
+        "comments": null,
+        "created_at": "2026-10-18T23:24:08Z",
+        "updated_at": "2026-10-18T23:38:48Z",
+        "closed_at": null,
+        "merged_at": null,
+        "commits": 20,
+        "changed_files": 340,
+        "additions": 56936,
+        "deletions": 39,
+        "display_url": "https://github.com/neo-capiro/meri-greenfield/pull/188",
+        "display_title": "Receive combined Meri repairs and qualify integration source; release HOLD"
+      },
+      "comments": {
+        "comments": [
+          {
+            "url": "https://github.com/neo-capiro/meri-greenfield/pull/188#issuecomment-6256594935",
+            "body": "The newly reported attached-positive-offset regression is fixed in `0d3388a88aa575fba2bf9ee9c1c219053ea09418` (reviewed complete tree `be5ece2d8ff81d6112fb55c29e60beb69c8c4c09`). Report head: `4f59cb3d7e811ff1409b1161920c1bce6eb5ea48`.\n\nExact case `12:30 Jan 1 2020+0530` now yields `2020-01-01T07:00:00.000Z` for both as-of and date-filter inputs. Plus detection accepts attachment to the year; minus detection retains the boundary required by native legacy date fields. The original native validity guard remains. Before: both new selected regressions failed. After: query27/27; independent84/84 public assertions and actual2/2 selected tests per timezone (UTC/Toronto/Tokyo), including948 native reference tuples. Final4391 standard,20 worker and runtime/control types0/0 pass. All failed/passing controls and exact commands are retained in the new attached-date-offset evidence folder.\n\nSDK status is unchanged: effort-beta removal alone does not resolve context-management or structured-output/tool compatibility. Actual SDK admission is still blocked, with zero provider executions. This follow-up changes no SDK admission rule, model setting, deployment or chat hold. PR175 and frontend98 remain unchanged.",
+            "user": {
+              "login": "neo-capiro",
+              "name": "neo-capiro",
+              "email": null,
+              "avatar_url": "https://avatars.githubusercontent.com/u/276034435?v=4",
+              "id": 276034435
+            },
+            "id": 6256594935,
+            "pull_request_review_id": null,
+            "in_reply_to_id": null,
+            "created_at": "2026-10-18T23:38:48Z",
+            "updated_at": "2026-10-18T23:38:48Z",
+            "review": null,
+            "side": null,
+            "line": null,
+            "start_line": null,
+            "path": null,
+            "body_html": "<p dir=\"auto\">The newly reported attached-positive-offset regression is fixed in <code class=\"notranslate\">0d3388a88aa575fba2bf9ee9c1c219053ea09418</code> (reviewed complete tree <code class=\"notranslate\">be5ece2d8ff81d6112fb55c29e60beb69c8c4c09</code>). Report head: <code class=\"notranslate\">4f59cb3d7e811ff1409b1161920c1bce6eb5ea48</code>.</p>\n<p dir=\"auto\">Exact case <code class=\"notranslate\">12:30 Jan 1 2020+0530</code> now yields <code class=\"notranslate\">2020-01-01T07:00:00.000Z</code> for both as-of and date-filter inputs. Plus detection accepts attachment to the year; minus detection retains the boundary required by native legacy date fields. The original native validity guard remains. Before: both new selected regressions failed. After: query27/27; independent84/84 public assertions and actual2/2 selected tests per timezone (UTC/Toronto/Tokyo), including948 native reference tuples. Final4391 standard,20 worker and runtime/control types0/0 pass. All failed/passing controls and exact commands are retained in the new attached-date-offset evidence folder.</p>\n<p dir=\"auto\">SDK status is unchanged: effort-beta removal alone does not resolve context-management or structured-output/tool compatibility. Actual SDK admission is still blocked, with zero provider executions. This follow-up changes no SDK admission rule, model setting, deployment or chat hold. PR175 and frontend98 remain unchanged.</p>"
+          }
+        ],
+        "url": "https://github.com/neo-capiro/meri-greenfield/pull/188",
+        "title": "neo-capiro/meri-greenfield PR #188 comments",
+        "display_url": "https://github.com/neo-capiro/meri-greenfield/pull/188",
+        "display_title": "neo-capiro/meri-greenfield PR #188 comments"
+      }
+    },
+    {
+      "pr": 185,
+      "info": {
+        "url": "https://github.com/neo-capiro/meri-greenfield/pull/185",
+        "number": 185,
+        "state": "open",
+        "merged": false,
+        "mergeable": true,
+        "draft": true,
+        "body": "## Source receipt\n\nStacked on PR #180 at exact `a1876afaeaa59d9da47729487d490cba8cfc9d9c`. Cherry-picks PR #182 `58b13b1644726bb307ea3e58461c7c0a970215f9` as `8753a2fb` and PR #184 `6be3e4abccebb5da56092572ccb0feddaf514d0e` as `2bc282d8`; the final receipt is `67a7bfbc` (the earlier `85e71366` receipt was clarified). PR #182's PR175 parent was previously replayed into the receiving line with different SHAs. This branch does not alter PR175, PR180, PR182 or PR184 owner branches.\n\nThe shared renderer composes both changes without a manual conflict: control material init and main task bind the pinned composite CA path, while first-chat SDK options and in-image measurement select the authorized proxy alias. The Bedrock profile, provider mapping, pricing, native allowlist and existing feature rendering remain intact.\n\n## Focused Linux evidence\n\n- Node 24.19.0, UID/GID 1000: CA/task/material checks 40/41; the sole failure is an unchanged Linux-only deadline test that cannot create `/run/meri` on this host (`/run` is mode 0755, UID 65534). The CA source tests themselves pass 13/13, including fresh Node global-fetch TLS and wrong-hostname refusal.\n- With Python `cryptography` 50.0.0 and throwaway PKI: integrated render-material and Stage 3 bindings 13/13.\n- Pinned SDK 0.3.295 local HTTPS stand-in and runtime values: 9/9; the real SDK request carried the authorized alias, without a provider call. Pinned native authorization tests: 8/8 in the installed LiteLLM virtualenv.\n- A disposable offline Node 24.21.0 linux/amd64 container, UID 1000, read-only root and writable task-like `/run` and `/tmp` mounted PR182's exact source (identical CA files after cherry-pick) and passed the deadline fixture 1/1. A second synthetic control init succeeded with 15 files and owner-only modes. This did not exercise the whole combined branch. Its fresh-process startup readback/fetch probe stopped in the diagnostic DNS fixture before product code, so that result is explicitly unverified.\n- Six changed production modules passed `node --check`; `git diff --check` passed. Test-only local dependency links were removed from the worktree.\n\n## Release status\n\nThis is source receipt only. The product Dockerfile/image was not built or qualified, the N21 runtime measurement is stale after the alias change, and physical material VersionIds and live trust behavior are unproven. PR #180's history hold and first-chat activation hold remain. No deployment, live SQL, AWS, paid build, remote model call or provider call occurred.\n\nDetails: `docs/integration/CA-MODEL-SOURCE-RECEIVE-20261018.md`.\n",
+        "title": "Receive control CA trust and model alias source",
+        "base": "fix/audit-nine-20261018",
+        "base_sha": "a1876afaeaa59d9da47729487d490cba8cfc9d9c",
+        "head": "dot/meri-ca-model-receive-20261018",
+        "head_sha": "67a7bfbc7df47f326e4287de8df7f0f59b110b8c",
+        "head_repo_id": 1412315060,
+        "head_repo_full_name": "neo-capiro/meri-greenfield",
+        "merge_commit_sha": "81f10817cfd571ffc1ef35414eeaed9e0836b4b6",
+        "user": {
+          "login": "neo-capiro",
+          "name": "neo-capiro",
+          "email": null,
+          "avatar_url": "https://avatars.githubusercontent.com/u/276034435?v=4",
+          "id": 276034435
+        },
+        "requested_reviewers": null,
+        "requested_team_reviewers": null,
+        "diff": null,
+        "comments": null,
+        "created_at": "2026-10-18T21:56:58Z",
+        "updated_at": "2026-10-18T22:20:28Z",
+        "closed_at": null,
+        "merged_at": null,
+        "commits": 4,
+        "changed_files": 25,
+        "additions": 1374,
+        "deletions": 30,
+        "display_url": "https://github.com/neo-capiro/meri-greenfield/pull/185",
+        "display_title": "Receive control CA trust and model alias source"
+      },
+      "comments": {
+        "comments": [
+          {
+            "url": "https://github.com/neo-capiro/meri-greenfield/pull/185#issuecomment-6255867255",
+            "body": "Meri integration transfer request: Neo has assigned this session Meri integration while dot continues Portfolio/Modules and the existing shipping session remains sole AWS operator. Full ownership request is in PR181 comment 6255812843.\n\nBefore overlapping startup edits, please export/publish exact shipping-local commit 51f4a38e2e43d6ff050db08e3235b2b447b708cf, its parent/tree and any dirty/untracked startup source. It is absent locally and GitHub returns no such commit. Please also transfer the original fresh-process diagnostic harness/DNS fixture that stopped before product code, so we repair that harness rather than create a duplicate.\n\nIndependent source review confirms the DNS failure mechanism: a restrictive dns.lookup override installed before HTTPS listen rejects lookup('127.0.0.1',{all:true}). Keep exact hostname aliases and callback shape, and install after listener startup or permit only literal loopback.\n\nPR185's existing CA tests pass independently, but they do not establish actual material-init -> fresh Control CLI -> global-fetch first/multiple runner readiness. This host cannot run the native UID1000 init (UID0 with no capabilities; user namespace map denied; no container builder), and exact linux-amd64 release-image construction also needs the shipping environment. Please provide the existing approved build/test execution channel and refreshed source/image/config/rollback evidence. No credential values requested or copied.\n\nNo overlapping startup edits, AWS mutations, deployments or chat attempts have occurred. PR175 frozen; deployment/chat HOLD remains.",
+            "user": {
+              "login": "neo-capiro",
+              "name": "neo-capiro",
+              "email": null,
+              "avatar_url": "https://avatars.githubusercontent.com/u/276034435?v=4",
+              "id": 276034435
+            },
+            "id": 6255867255,
+            "pull_request_review_id": null,
+            "in_reply_to_id": null,
+            "created_at": "2026-10-18T22:20:28Z",
+            "updated_at": "2026-10-18T22:20:28Z",
+            "review": null,
+            "side": null,
+            "line": null,
+            "start_line": null,
+            "path": null,
+            "body_html": "<p dir=\"auto\">Meri integration transfer request: Neo has assigned this session Meri integration while dot continues Portfolio/Modules and the existing shipping session remains sole AWS operator. Full ownership request is in PR181 comment 6255812843.</p>\n<p dir=\"auto\">Before overlapping startup edits, please export/publish exact shipping-local commit <a class=\"commit-link\" data-hovercard-type=\"commit\" data-hovercard-url=\"https://github.com/neo-capiro/meri-greenfield/commit/51f4a38e2e43d6ff050db08e3235b2b447b708cf/hovercard\" href=\"https://github.com/neo-capiro/meri-greenfield/commit/51f4a38e2e43d6ff050db08e3235b2b447b708cf\"><tt>51f4a38</tt></a>, its parent/tree and any dirty/untracked startup source. It is absent locally and GitHub returns no such commit. Please also transfer the original fresh-process diagnostic harness/DNS fixture that stopped before product code, so we repair that harness rather than create a duplicate.</p>\n<p dir=\"auto\">Independent source review confirms the DNS failure mechanism: a restrictive dns.lookup override installed before HTTPS listen rejects lookup('127.0.0.1',{all:true}). Keep exact hostname aliases and callback shape, and install after listener startup or permit only literal loopback.</p>\n<p dir=\"auto\">PR185's existing CA tests pass independently, but they do not establish actual material-init -&gt; fresh Control CLI -&gt; global-fetch first/multiple runner readiness. This host cannot run the native UID1000 init (UID0 with no capabilities; user namespace map denied; no container builder), and exact linux-amd64 release-image construction also needs the shipping environment. Please provide the existing approved build/test execution channel and refreshed source/image/config/rollback evidence. No credential values requested or copied.</p>\n<p dir=\"auto\">No overlapping startup edits, AWS mutations, deployments or chat attempts have occurred. PR175 frozen; deployment/chat HOLD remains.</p>"
+          }
+        ],
+        "url": "https://github.com/neo-capiro/meri-greenfield/pull/185",
+        "title": "neo-capiro/meri-greenfield PR #185 comments",
+        "display_url": "https://github.com/neo-capiro/meri-greenfield/pull/185",
+        "display_title": "neo-capiro/meri-greenfield PR #185 comments"
+      }
+    }
+  ],
+  "shippingPacket": {
+    "content": "# Meri receiving candidate \u2014 shipping packet, HOLD\n\nThis packet is for the existing shipping owner. It is a source receipt and a list of required qualification inputs, **not permission to deploy or run a chat**. Dot retains Portfolio/Modules. No competing AWS operator, merge, deployment, migration, credential change or paid model call was used for this integration.\n\n## Candidate and operator receipt\n\n| Item | Receipt / required value |\n| --- | --- |\n| Receiving branch | `integration/meri-receiving-20261018` |\n| Combined handoff parent | `7252f483c59cd676e868e40d4bf73c2ca55c137f`, `dot/meri-release-combined-20261018` |\n| Final reviewed code and evidence pins | See [integration report](MERI-INTEGRATION-20261018.md); documentation commits do not replace the tested code/tree pin |\n| Startup successor | PR187 `51f4a38e2e43d6ff050db08e3235b2b447b708cf`, stacked on PR182; received once, retaining document/delegation options during the conflict resolution |\n| Frontend | PR98 `5c784e3e46114816ba57db17ad7a2c2013a8d81a`; composer recovery unchanged |\n| Core | Published batch `78ceaf9bdfe00c8f013aac15eb8483312ae4f803` is unmounted; proposed protected methods are not applied |\n| Release image digest | **UNAVAILABLE \u2014 exact final Dockerfile has not been built/qualified. Do not use the adapted diagnostic image.** |\n| Region/account | `us-east-1` / `967807252336`; supplied deployment context, not a fresh AWS observation |\n| Current live state | **UNREFRESHED.** Shipping owner reports its execution session offline with networking disabled and no visible prior AWS profile; this is not evidence that credentials were deleted |\n| Rollback target | **UNREFRESHED.** Sole shipping owner must read actual task/image/configuration state after existing authorized access is restored |\n| Historical reference | PR175 `993f52a97e5d9edcf65c9f89423c097aa52831c7`, image `sha256:bd8bb81f29e084e494263741fea0ed297421d36165dc55722429ad1e4dfb8802`; historical evidence only, not a verified current rollback target |\n\nPreview UI is `https://portfolio-preview.app.capiro.ai`; Meri origin is `https://meri-preview.capiro.ai`. Production `os.capiro.ai` remains unchanged. Existing deployment/chat HOLD remains active.\n\n## Configuration that must survive qualification\n\n- Runtime architecture is **linux/amd64, x86_64**, UID/GID `1000:1000`. The received image closure pins Wolfi Node `24.21.0`, glibc `2.44`, executor Python `3.13.16`. Local source checks use Node `24.19.0`; the separate proxy partition uses Python `3.13.5`. These are different receipts.\n- Worker SDK `0.3.295` / CLI `2.1.295` must use exactly `meri-sonnet-qualification`. LiteLLM `1.104.2` maps it to `bedrock/invoke/us.anthropic.claude-sonnet-4-6`, retaining the fixed regional profile, allowlist, pricing, `65536` input / `8192` output bounds and reservation accounting. Provider identity is Claude Sonnet 4.6 via Bedrock.\n- Control starts in a **fresh process** with the composite `NODE_EXTRA_CA_CERTS` path produced by `apps/runtime/control-ca-bundle.mjs`. Preserve all 114 unchanged RDS roots and the pinned private issuer. Init precedes Control; verify fresh-process global-fetch hostname checks and actual database trust. Never replace that with `NODE_TLS_REJECT_UNAUTHORIZED=0` or a mocked TLS check.\n- Retention history keeps the held read session through scheduled-origin resolution, positive versus absent custody, both freshness checks and cleanup. Core's final whole-response decision remains blocked; retention locks alone do not settle membership or archival authority.\n- UNKNOWN usage, truncation, cache usage, conflicting totals and lost/unresolved acknowledgements retain liability. Passing the minimal Messages client partition does not qualify actual SDK requests, selected-tool authority or structured output.\n\n## Build and material sequence\n\nUse the existing canonical tooling and the [reviewed closure commands C1\u2013C10](integration-evidence-20261018/image/EXECUTOR-CLOSURE-REVIEW.md). The complete three-commit document closure is included; retained source verifies **44 additional APKs and four wheels**, all locked hashes matching. Source test exit alone is insufficient: its pending-record case is conditionally skipped after all additions are retained.\n\n1. Finish the source blockers in the integration ledger. Seal the exact reviewed committed Git source with `image-build-source.py seal`, then verify the source request/archive/member manifest with `image-build-source.py verify`. Bind immutable base images and the exact Dockerfile, lock, runner, verifier and producer bytes. Do not source-rehash historical image receipts into fresh proof.\n2. Build the **exact** runtime Dockerfile on supported linux-amd64 using the existing producer. The previous exact build failed under local disk exhaustion; an adapted diagnostic Dockerfile is not accepted. Retain build logs, image digest, installed lock verification, runtime-base probe, runner and the producer's 24 Linux fixture results.\n3. Run the sealed executor-generation helper inside that image under actual UID1000, no network, read-only root, dropped capabilities, no-new-privileges and bounded resources. Verify TXT/DOCX/XLSX/PPTX artifacts and process-group cleanup. Its printed `readOnlyRootChecked` literal does not establish the sandbox. No claim is made for PDF rendering, Portfolio preview or pandas analysis.\n4. Generate canonical measurement arguments using `runtime-values.mjs measurement-override`; execute them in the **final image** with the existing provider-call-free spawn capture. Regenerate launch/options/skills/policy receipts after the alias and document changes. Historical launch/options hashes and 15-Oct image-closure hashes are stale.\n5. Assemble runtime values with `runtime-values.mjs assemble`, then have the sole shipping owner render material with `render-material.mjs` using the existing authorized private inputs. Record source/image/configuration/material versions together. This packet creates no replacement private input, trust issuer or credential.\n\n## Migration requirements\n\nThis receiving increment adds **no SQL migrations relative to `7252f483`**. No migration was executed. Do not infer database readiness from this absence: the shipping owner must compare the candidate's existing migration ledger with the actual deployed schema, then report any required already-reviewed migrations without executing them under the current hold. The document closure itself changes packages/image inputs, not database schema. Pending artifact/memory/adoption work is not approved by receiving these dependencies.\n\n## Required release gates and eventual acceptance\n\nStill required: approved Core native identity/route integration and the exact scheduled/lineage/cursor subject contract; actual SDK\u2192LiteLLM request admission, selected schema/tool roundtrips and retry liability; real private owner HTTPS and PostgreSQL qualification; actual init\u2192fresh Control first-run/multi-run readiness and database trust; exact image/launch/material receipts; restored sole-operator readback and refreshed rollback target.\n\nAfter those pass review and Neo **explicitly clears the hold**, the existing shipping owner may perform only the then-authorized shipment. Acceptance must use a real authenticated prompt and verify the assistant reply, history after reload, a second turn, and Stop cleanup. Preserve failed attempts and inspect unresolved reservations/process cleanup. Healthy endpoints, passing source tests and a produced image are not those acceptance checks.\n",
+    "encoding": "utf-8",
+    "sha": "281dc0f4263db75ad711355ef4fb853c090e7d69",
+    "display_url": "https://github.com/neo-capiro/meri-greenfield/blob/4f59cb3d7e811ff1409b1161920c1bce6eb5ea48/docs/integration/MERI-SHIPPING-PACKET-20261018.md",
+    "display_title": "MERI-SHIPPING-PACKET-20261018.md"
+  },
+  "coordination": {
+    "comment": "Source-candidate coordination only \u2014 no build or rollout is starting.\n\nWe are preparing ONE exact image recipe against the consolidated PR188 source. Current tested source is `0d3388a88aa575fba2bf9ee9c1c219053ea09418` (tree `be5ece2d8ff81d6112fb55c29e60beb69c8c4c09`); current evidence head is `4f59cb3d7e811ff1409b1161920c1bce6eb5ea48`. This is a planning reference, not the final build pin: the SDK compatibility repair is still advancing. The final committed source must be reviewed and sealed once, then the existing canonical recipe must bind its archive/member manifest, exact Dockerfile, locked APK/wheels, runner/verifier/producer bytes and immutable base images. We will not build an alternate diagnostic image or rewrite historical launch measurements into new proof.\n\nThe existing shipping session remains the sole operator. The last supplied access report was offline/network disabled with no visible prior AWS profile; current access, live state and rollback remain UNREFRESHED. Please reply here with the current availability of that existing authorized execution channel, any preserved nonsecret original fresh-process DNS harness, and the nonsecret source/image/configuration/rollback receipts already held. No credential values, new access, fresh AWS action or deployment is requested by this comment.\n\nPlease coordinate the exact final candidate and the existing owner\u2019s readiness here before any separately authorized build. Exact-Dockerfile linux/amd64 qualification, native UID1000 init\u2192fresh Control/database trust, canonical final-image model/launch measurements and the other PR188 blockers remain open. Deployment/chat HOLD remains active; no StartBuild, push to ECR, rollout, migration, credential change, AWS mutation or model/chat call is authorized by this note. Dot retains Portfolio/Modules.",
+    "result": {
+      "id": 6256612108
+    }
+  },
+  "runtimeLock": {
+    "schemaVersion": 1,
+    "platform": "linux/amd64",
+    "runtimeImageUri": "cgr.dev/chainguard/wolfi-base@sha256:030e45cb37187dff322bbefe9658bcaec31b824a5d523380771a64864c9f45d4",
+    "nodeVersion": "v24.21.0",
+    "glibcVersion": "2.44",
+    "basePackages": [
+      {
+        "name": "apk-tools",
+        "version": "2.14.10-r17"
+      },
+      {
+        "name": "busybox",
+        "version": "1.38.0-r3"
+      },
+      {
+        "name": "ca-certificates-bundle",
+        "version": "20260909-r2"
+      },
+      {
+        "name": "glibc-2.44",
+        "version": "2.44-r8"
+      },
+      {
+        "name": "glibc-2.44-locale-posix",
+        "version": "2.44-r8"
+      },
+      {
+        "name": "ld-linux-2.44",
+        "version": "2.44-r8"
+      },
+      {
+        "name": "libbrotlicommon1",
+        "version": "1.2.0-r6"
+      },
+      {
+        "name": "libbrotlidec1",
+        "version": "1.2.0-r6"
+      },
+      {
+        "name": "libbrotlienc1",
+        "version": "1.2.0-r6"
+      },
+      {
+        "name": "libcrypt1-2.44",
+        "version": "2.44-r8"
+      },
+      {
+        "name": "libgcc",
+        "version": "16.2.0-r1"
+      },
+      {
+        "name": "libxcrypt",
+        "version": "4.5.2-r6"
+      },
+      {
+        "name": "openssl-4.0-libcrypto",
+        "version": "4.0.3-r6"
+      },
+      {
+        "name": "openssl-4.0-libssl",
+        "version": "4.0.3-r6"
+      },
+      {
+        "name": "openssl-provider-legacy-allowed",
+        "version": "4.0.3-r1"
+      },
+      {
+        "name": "wolfi-base",
+        "version": "1-r7"
+      },
+      {
+        "name": "wolfi-baselayout",
+        "version": "20230201-r30"
+      },
+      {
+        "name": "wolfi-keys",
+        "version": "1-r13"
+      },
+      {
+        "name": "zlib",
+        "version": "1.3.2.1_rc20260921-r0"
+      }
+    ],
+    "repositoryIndex": {
+      "file": "APKINDEX.tar.gz",
+      "url": "https://packages.wolfi.dev/os/x86_64/APKINDEX.tar.gz",
+      "sha256": "01398efd4ae98d03bf5cb2c9c5fe397399bca61b81c8cb0cb36bd90e230137c6",
+      "bytes": 10635138,
+      "signingKeySha256": "f0031424cf46f7db780ce63a45f0fd6aa6f85f601e6bb3b7a91fe3d4d5b7d2cc"
+    },
+    "additionalPackages": [
+      {
+        "name": "bash",
+        "version": "5.3-r14",
+        "file": "bash-5.3-r14.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/bash-5.3-r14.apk",
+        "sha256": "28274b1abce489dd947e0b517935992a3b069647b7f3a4d8eb95bb262c0751d1",
+        "bytes": 784966
+      },
+      {
+        "name": "freetype",
+        "version": "2.14.3-r7",
+        "file": "freetype-2.14.3-r7.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/freetype-2.14.3-r7.apk",
+        "sha256": "81694e54dd1c00ae479310aed0b45e492b31b15d2ae81865ee5393604354cf92",
+        "bytes": 478404
+      },
+      {
+        "name": "gdbm",
+        "version": "1.26-r7",
+        "file": "gdbm-1.26-r7.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/gdbm-1.26-r7.apk",
+        "sha256": "b353e1fb3f7702fe2faba2fd6800bbfd3db63a726e17d294a626aacbf239629b",
+        "bytes": 280622
+      },
+      {
+        "name": "lcms2",
+        "version": "2.19.1-r3",
+        "file": "lcms2-2.19.1-r3.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/lcms2-2.19.1-r3.apk",
+        "sha256": "f2c5857cab8fd797f0a07e56042e41e93522bca988281e8765d275614ee23933",
+        "bytes": 237648
+      },
+      {
+        "name": "libbz2-1",
+        "version": "1.0.8-r25",
+        "file": "libbz2-1-1.0.8-r25.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/libbz2-1-1.0.8-r25.apk",
+        "sha256": "52d98e5a8b0ea3e1f301d565bf8c8fed6b106f881d9d120dbde0d38fbd4f9fb8",
+        "bytes": 50263
+      },
+      {
+        "name": "libexpat1",
+        "version": "2.9.0-r0",
+        "file": "libexpat1-2.9.0-r0.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/libexpat1-2.9.0-r0.apk",
+        "sha256": "49291dad97f2292a5796c2cdb766f6476b274332ae2bbd3c35447d7f305f81a8",
+        "bytes": 113449
+      },
+      {
+        "name": "libffi",
+        "version": "3.8.0-r2",
+        "file": "libffi-3.8.0-r2.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/libffi-3.8.0-r2.apk",
+        "sha256": "93fe2f937802653775e8537c7a2840c6de8a1d83c396559be200c0d5d86375f6",
+        "bytes": 47462
+      },
+      {
+        "name": "libgfortran",
+        "version": "16.2.0-r1",
+        "file": "libgfortran-16.2.0-r1.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/libgfortran-16.2.0-r1.apk",
+        "sha256": "de6d40b1510125b2530c7b7e1d37c1c3f70c49a1c7dfc33826c3725e3d92f4e2",
+        "bytes": 1312300
+      },
+      {
+        "name": "libjpeg-turbo",
+        "version": "3.2.0-r5",
+        "file": "libjpeg-turbo-3.2.0-r5.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/libjpeg-turbo-3.2.0-r5.apk",
+        "sha256": "0a30d14964216ff18d89107d75bf7903d5ef7d7a1bddf33c7d5f93715a72511a",
+        "bytes": 638577
+      },
+      {
+        "name": "libopenblas-0",
+        "version": "0.3.34-r1",
+        "file": "libopenblas-0-0.3.34-r1.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/libopenblas-0-0.3.34-r1.apk",
+        "sha256": "1eab6e1b9049452dcad27dc3ef02dcbf1575648d6f01ee991966021b0794402a",
+        "bytes": 11799709
+      },
+      {
+        "name": "libpng",
+        "version": "1.6.59-r0",
+        "file": "libpng-1.6.59-r0.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/libpng-1.6.59-r0.apk",
+        "sha256": "658ba44b0ae145eac273d5822093e891be48967dd482067af79b189a00b8eb9b",
+        "bytes": 143584
+      },
+      {
+        "name": "libstdc++",
+        "version": "16.2.0-r1",
+        "file": "libstdc++-16.2.0-r1.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/libstdc++-16.2.0-r1.apk",
+        "sha256": "fc233c091aa551d6ba6da3e444d99a94e9947d53814d20183a0a7ded9a668f80",
+        "bytes": 1260650
+      },
+      {
+        "name": "libuuid",
+        "version": "2.42.4-r0",
+        "file": "libuuid-2.42.4-r0.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/libuuid-2.42.4-r0.apk",
+        "sha256": "e1f5d85296afc0074e4d69fb3bdf7cb12b82233768ea5ad38330d53c76724785",
+        "bytes": 33422
+      },
+      {
+        "name": "libwebp",
+        "version": "1.6.0-r7",
+        "file": "libwebp-1.6.0-r7.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/libwebp-1.6.0-r7.apk",
+        "sha256": "e1dcd7b76e2a53791462c84e4b8fa8f15892665e16f60a54c1751cb7a9804000",
+        "bytes": 339709
+      },
+      {
+        "name": "libxau",
+        "version": "1.0.12-r9",
+        "file": "libxau-1.0.12-r9.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/libxau-1.0.12-r9.apk",
+        "sha256": "fa4cab03a805ef6996e7540d69096d3185903ca0a3101a3d57d9c6526df41793",
+        "bytes": 16465
+      },
+      {
+        "name": "libxcb",
+        "version": "1.17.0-r17",
+        "file": "libxcb-1.17.0-r17.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/libxcb-1.17.0-r17.apk",
+        "sha256": "5b395537596061fb0bc6a55a1e5b89162b0f64d29ae0d3c882a3be3d338dbd3c",
+        "bytes": 399741
+      },
+      {
+        "name": "libxdmcp",
+        "version": "1.1.5-r12",
+        "file": "libxdmcp-1.1.5-r12.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/libxdmcp-1.1.5-r12.apk",
+        "sha256": "7cc7cb88364210cd1d48016f7a1c4caf50525ea1c84516588f837020c0768d03",
+        "bytes": 20709
+      },
+      {
+        "name": "libxml2-16",
+        "version": "2.15.4-r1",
+        "file": "libxml2-16-2.15.4-r1.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/libxml2-16-2.15.4-r1.apk",
+        "sha256": "461b0e802a5ffb3428f61e85eb56395361c1b2fd0cc0d4cc2666abb672c16471",
+        "bytes": 709117
+      },
+      {
+        "name": "libxslt",
+        "version": "1.1.45-r5",
+        "file": "libxslt-1.1.45-r5.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/libxslt-1.1.45-r5.apk",
+        "sha256": "774aa16154ab1fe6ba8059ffabde298f2cc6ed3c3485de645e3db875108f46f6",
+        "bytes": 292610
+      },
+      {
+        "name": "libzstd1",
+        "version": "1.5.7-r10",
+        "file": "libzstd1-1.5.7-r10.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/libzstd1-1.5.7-r10.apk",
+        "sha256": "6660523fbffeca75cd601b0c61f201f0054a568bac72204bb13be0dba36da176",
+        "bytes": 639525
+      },
+      {
+        "name": "mpdecimal",
+        "version": "4.0.1-r4",
+        "file": "mpdecimal-4.0.1-r4.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/mpdecimal-4.0.1-r4.apk",
+        "sha256": "823156afdf095874d8e386ab453e69bf5677ab76dd249da7f6451929e6f9ccd4",
+        "bytes": 131249
+      },
+      {
+        "name": "ncurses",
+        "version": "6.6.20261010-r0",
+        "file": "ncurses-6.6.20261010-r0.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/ncurses-6.6.20261010-r0.apk",
+        "sha256": "475d8c2ec463637844149030a9cc3fc607782cfe681e3c16f80d2a6bc940bb63",
+        "bytes": 625682
+      },
+      {
+        "name": "ncurses-terminfo-base",
+        "version": "6.6.20261010-r0",
+        "file": "ncurses-terminfo-base-6.6.20261010-r0.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/ncurses-terminfo-base-6.6.20261010-r0.apk",
+        "sha256": "fac2c47f1e85175a8cb6842c374b5462aa8a10d548b5d602d28ee7829b00a751",
+        "bytes": 119342
+      },
+      {
+        "name": "openjpeg",
+        "version": "2.5.4-r3",
+        "file": "openjpeg-2.5.4-r3.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/openjpeg-2.5.4-r3.apk",
+        "sha256": "eca7c6ea6d158a9d07cef353b9a7af8b2080e92c7a58dddae74f5a92f9fcd83d",
+        "bytes": 244855
+      },
+      {
+        "name": "py3-pip-wheel",
+        "version": "26.2.1-r4",
+        "file": "py3-pip-wheel-26.2.1-r4.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/py3-pip-wheel-26.2.1-r4.apk",
+        "sha256": "9e7ff37eeaa621df6d066b9904a91555848c5c13db95dab7efd2ad67c11fae7a",
+        "bytes": 1814451
+      },
+      {
+        "name": "py3.13-contourpy",
+        "version": "1.4.0-r1",
+        "file": "py3.13-contourpy-1.4.0-r1.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/py3.13-contourpy-1.4.0-r1.apk",
+        "sha256": "cb321f90a0d52f888d78d1b3a561dbd6c860dc0a764ea76551ca9affa949849e",
+        "bytes": 462780
+      },
+      {
+        "name": "py3.13-cycler",
+        "version": "0.12.1-r8",
+        "file": "py3.13-cycler-0.12.1-r8.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/py3.13-cycler-0.12.1-r8.apk",
+        "sha256": "ca1b3cc9bed9249546f77bcbb211f5268df09ead37f236b9e6b19a124ba89328",
+        "bytes": 27301
+      },
+      {
+        "name": "py3.13-fonttools",
+        "version": "4.67.0-r0",
+        "file": "py3.13-fonttools-4.67.0-r0.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/py3.13-fonttools-4.67.0-r0.apk",
+        "sha256": "0161c9847bf6b62452c7fa29a831d3b08699f6af95677455a86d67ff832d2c50",
+        "bytes": 3354281
+      },
+      {
+        "name": "py3.13-kiwisolver",
+        "version": "1.5.1-r1",
+        "file": "py3.13-kiwisolver-1.5.1-r1.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/py3.13-kiwisolver-1.5.1-r1.apk",
+        "sha256": "31d9b285bc8d5535ae89906ff5705971e6e51f8e1a9344d785436b7ec09d655f",
+        "bytes": 115891
+      },
+      {
+        "name": "py3.13-lxml",
+        "version": "6.1.3-r0",
+        "file": "py3.13-lxml-6.1.3-r0.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/py3.13-lxml-6.1.3-r0.apk",
+        "sha256": "b77cf8d2a37b5a68351b9d8387a6fffc6da785bd44060a150b1eeebaa3afff5f",
+        "bytes": 2581465
+      },
+      {
+        "name": "py3.13-matplotlib",
+        "version": "3.11.2-r0",
+        "file": "py3.13-matplotlib-3.11.2-r0.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/py3.13-matplotlib-3.11.2-r0.apk",
+        "sha256": "6f16b931d0208a6f296fb129529547430024eb997bdfe1a9e976e99ce4dacee4",
+        "bytes": 14295686
+      },
+      {
+        "name": "py3.13-numpy-2.2",
+        "version": "2.2.6-r5",
+        "file": "py3.13-numpy-2.2-2.2.6-r5.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/py3.13-numpy-2.2-2.2.6-r5.apk",
+        "sha256": "82242789cf3bcbe8a3c64093d2782380a92de9ec3a4807d70ff975260203b219",
+        "bytes": 12477950
+      },
+      {
+        "name": "py3.13-packaging",
+        "version": "26.3-r0",
+        "file": "py3.13-packaging-26.3-r0.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/py3.13-packaging-26.3-r0.apk",
+        "sha256": "fc9f3c999a5963b1b6634b1c481af9942658920a93f444642166051f5defe3ec",
+        "bytes": 343989
+      },
+      {
+        "name": "py3.13-pillow",
+        "version": "12.3.0-r1",
+        "file": "py3.13-pillow-12.3.0-r1.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/py3.13-pillow-12.3.0-r1.apk",
+        "sha256": "30204e23855c47ed5ca62de88df3cbc8ff81ef4d1820d9b2323ef41aa46507d3",
+        "bytes": 1396143
+      },
+      {
+        "name": "py3.13-pygments",
+        "version": "2.21.0-r0",
+        "file": "py3.13-pygments-2.21.0-r0.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/py3.13-pygments-2.21.0-r0.apk",
+        "sha256": "80b8019c2aeeeea4abeea2053eabc46997adc404ab20354e9c5ec8991f840416",
+        "bytes": 2899203
+      },
+      {
+        "name": "py3.13-pyparsing",
+        "version": "3.3.3-r0",
+        "file": "py3.13-pyparsing-3.3.3-r0.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/py3.13-pyparsing-3.3.3-r0.apk",
+        "sha256": "628ce308e90f234dfd34db2146f28bf4e25da682c8273c07f240b86f4f2b3ace",
+        "bytes": 362378
+      },
+      {
+        "name": "py3.13-python-dateutil",
+        "version": "2.9.0-r13",
+        "file": "py3.13-python-dateutil-2.9.0-r13.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/py3.13-python-dateutil-2.9.0-r13.apk",
+        "sha256": "9f363a36fdcc074d0952d032dea5c3860eb6bfc6ea37f5dbea4f2a15b56a1521",
+        "bytes": 389607
+      },
+      {
+        "name": "py3.13-six",
+        "version": "1.17.0-r7",
+        "file": "py3.13-six-1.17.0-r7.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/py3.13-six-1.17.0-r7.apk",
+        "sha256": "fcc24f3d528239978d16c215f379b103bf3115d9915d0a2dbb71a53e30cc3c47",
+        "bytes": 41637
+      },
+      {
+        "name": "py3.13-typing-extensions",
+        "version": "4.16.0-r0",
+        "file": "py3.13-typing-extensions-4.16.0-r0.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/py3.13-typing-extensions-4.16.0-r0.apk",
+        "sha256": "1b2911197709c8700828f33a8da32159b490df009fdd36a4c634dd58b505fe96",
+        "bytes": 130024
+      },
+      {
+        "name": "python-3.13-base",
+        "version": "3.13.16_git20261016-r0",
+        "file": "python-3.13-base-3.13.16_git20261016-r0.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/python-3.13-base-3.13.16_git20261016-r0.apk",
+        "sha256": "081235dc7cc8a68e0896b80cd6b0ec27d9c0f38cdd6dcfd8df052e083735881d",
+        "bytes": 12199161
+      },
+      {
+        "name": "readline",
+        "version": "8.3-r3",
+        "file": "readline-8.3-r3.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/readline-8.3-r3.apk",
+        "sha256": "bc694bcbfcf3d3d48c890b2701714269c9c0851a85c44bb5bf38347e4999f80b",
+        "bytes": 349087
+      },
+      {
+        "name": "sqlite-libs",
+        "version": "3.54.1-r0",
+        "file": "sqlite-libs-3.54.1-r0.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/sqlite-libs-3.54.1-r0.apk",
+        "sha256": "5ea68a7dad00791dbc5eff42aad9022b0984f82e271058811a4d72181e450144",
+        "bytes": 989586
+      },
+      {
+        "name": "tiff",
+        "version": "4.7.2-r3",
+        "file": "tiff-4.7.2-r3.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/tiff-4.7.2-r3.apk",
+        "sha256": "2ff8e1ab80b34e531013dac8e42c546ac5fa0c097217f46a1ee74fc12d931587",
+        "bytes": 544160
+      },
+      {
+        "name": "xz",
+        "version": "5.8.4-r0",
+        "file": "xz-5.8.4-r0.apk",
+        "url": "https://packages.wolfi.dev/os/x86_64/xz-5.8.4-r0.apk",
+        "sha256": "d015b40af8b300a0a33e710573e1e7d6cdc31ae5124bcac2fd299bea90a8506a",
+        "bytes": 397390
+      }
+    ],
+    "requiredPaths": [
+      "/bin/sh",
+      "/etc/ssl/certs/ca-certificates.crt",
+      "/lib64/ld-linux-x86-64.so.2",
+      "/usr/bin/bash",
+      "/usr/lib/libgcc_s.so.1",
+      "/usr/lib/libstdc++.so.6",
+      "/usr/local/bin/node",
+      "/usr/bin/python3.13",
+      "/usr/lib/libpython3.13.so.1.0",
+      "/usr/lib/python3.13/site-packages/PIL/__init__.py",
+      "/usr/lib/python3.13/site-packages/lxml/__init__.py",
+      "/usr/lib/python3.13/site-packages/matplotlib/__init__.py",
+      "/usr/lib/python3.13/site-packages/numpy/__init__.py",
+      "/usr/lib/python3.13/site-packages/docx/__init__.py",
+      "/usr/lib/python3.13/site-packages/openpyxl/__init__.py",
+      "/usr/lib/python3.13/site-packages/xlsxwriter/__init__.py",
+      "/usr/lib/python3.13/site-packages/et_xmlfile/__init__.py",
+      "/opt/meri/apps/artifacts/python/entry.py",
+      "/opt/meri/apps/artifacts/presentation.mjs",
+      "/opt/meri/apps/artifacts/generation/node_modules/pptxgenjs/package.json"
+    ]
+  },
+  "wheelLock": {
+    "schemaVersion": 1,
+    "platform": "linux/amd64",
+    "pythonMinor": "3.13",
+    "sitePackages": "/usr/lib/python3.13/site-packages",
+    "provenance": "Exact identities reviewed in docs/qualification/candidates/dot-artifact-lock-20261015/wheel-inventory.json (PEP 658 metadata and simple-index hashes matched) and pinned by apps/worker/qualification/requirements.lock.txt; bytes retained under infra/product-preview/runtime-packages/wheels.",
+    "wheels": [
+      {
+        "name": "et_xmlfile",
+        "version": "2.0.0",
+        "file": "et_xmlfile-2.0.0-py3-none-any.whl",
+        "url": "https://files.pythonhosted.org/packages/c1/8b/5fe2cc11fee489817272089c4203e679c63b570a5aaeb18d852ae3cbba6a/et_xmlfile-2.0.0-py3-none-any.whl",
+        "sha256": "7a91720bc756843502c3b7504c77b8fe44217c85c537d85037f0f536151b2caa",
+        "bytes": 18059,
+        "license": "MIT",
+        "importName": "et_xmlfile"
+      },
+      {
+        "name": "openpyxl",
+        "version": "3.1.5",
+        "file": "openpyxl-3.1.5-py2.py3-none-any.whl",
+        "url": "https://files.pythonhosted.org/packages/c0/da/977ded879c29cbd04de313843e76868e6e13408a94ed6b987245dc7c8506/openpyxl-3.1.5-py2.py3-none-any.whl",
+        "sha256": "5282c12b107bffeef825f4617dc029afaf41d0ea60823bbb665ef3079dc79de2",
+        "bytes": 250910,
+        "license": "MIT",
+        "importName": "openpyxl"
+      },
+      {
+        "name": "python-docx",
+        "version": "1.2.0",
+        "file": "python_docx-1.2.0-py3-none-any.whl",
+        "url": "https://files.pythonhosted.org/packages/d0/00/1e03a4989fa5795da308cd774f05b704ace555a70f9bf9d3be057b680bcf/python_docx-1.2.0-py3-none-any.whl",
+        "sha256": "3fd478f3250fbbbfd3b94fe1e985955737c145627498896a8a6bf81f4baf66c7",
+        "bytes": 252987,
+        "license": "MIT",
+        "importName": "docx"
+      },
+      {
+        "name": "XlsxWriter",
+        "version": "3.2.9",
+        "file": "xlsxwriter-3.2.9-py3-none-any.whl",
+        "url": "https://files.pythonhosted.org/packages/3a/0c/3662f4a66880196a590b202f0db82d919dd2f89e99a27fadef91c4a33d41/xlsxwriter-3.2.9-py3-none-any.whl",
+        "sha256": "9a5db42bc5dff014806c58a20b9eae7322a134abb6fce3c92c181bfb275ec5b3",
+        "bytes": 175315,
+        "license": "BSD-2-Clause",
+        "importName": "xlsxwriter"
+      }
+    ]
+  }
+}

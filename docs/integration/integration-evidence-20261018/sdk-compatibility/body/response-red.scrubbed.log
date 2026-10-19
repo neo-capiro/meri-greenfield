@@ -1,0 +1,18 @@
+test_absent_null_and_exact_empty_context_metadata_preserve_complete_usage (apps.proxy.qualification.test.test_native_usage.UsageTests.test_absent_null_and_exact_empty_context_metadata_preserve_complete_usage) ... FAIL
+
+======================================================================
+FAIL: test_absent_null_and_exact_empty_context_metadata_preserve_complete_usage (apps.proxy.qualification.test.test_native_usage.UsageTests.test_absent_null_and_exact_empty_context_metadata_preserve_complete_usage)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>/apps/proxy/qualification/test/test_native_usage.py", line 157, in test_absent_null_and_exact_empty_context_metadata_preserve_complete_usage
+    self.assertEqual(parse(raw(m)).status,"COMPLETE")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'UNKNOWN' != 'COMPLETE'
+- UNKNOWN
++ COMPLETE
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (failures=1)

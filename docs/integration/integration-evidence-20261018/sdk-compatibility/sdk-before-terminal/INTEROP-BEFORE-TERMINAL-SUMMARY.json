@@ -1,0 +1,469 @@
+[
+  {
+    "receipt": "interop-profiled-plain-first.json",
+    "sha256": "9f31b87b65533bd83d26df36786b4feb18cea5c75aea10104bb5af1a7765ead2",
+    "sourceCommit": "781047bc0e90b53b737d408a4faa5d1467089251",
+    "sourceFiles": {
+      "run.mjs": "ea15669f3de659645189372e5ccf2d61b06cf3009224acdb6d89f9cdcd325ad5",
+      "native_proxy.py": "f7754ecd70a9158f65286ee8d55361b3c50381d037dbcecf93197b7828ed154a",
+      "provider_stub.py": "8d8b31f2feff3b37b9d8c5a4186a0b90475088bbd07b74ed5e178f77fde20757",
+      "owner_peer.mjs": "8f12e58c29060d4f7b7d4c04de9af2d45fbc1ea919311943c5815130efaeb9d7",
+      "model_ledger_fixture.mjs": "46fe63c2795c60588142881bd81bb983dfabaf6ff021911ee1e50a530e5dd313"
+    },
+    "client": "sdk-profiled",
+    "mode": "complete",
+    "outputFormat": "none",
+    "partitionPassed": true,
+    "sdkResults": [
+      {
+        "subtype": "success",
+        "isError": false
+      }
+    ],
+    "sdkIterationFailure": null,
+    "countRequests": 1,
+    "providerExecutions": 1,
+    "ownerOperations": {
+      "reserve": 1,
+      "settle": 1
+    },
+    "ledger": {
+      "syntheticAllocation": true,
+      "maxCostMicroUSD": 250000,
+      "allocationSha256": "ae1e03da0917e28972ca17e6e13ccc4dbfee70d6568b8c3868d8286bbafe3e76",
+      "manifestSha256": "0f415cc9ad01ed8d1303fbff11976627b3829ef829e75a27ffde4f6d8160c6a9",
+      "requests": [
+        {
+          "requestId": "0e994f74298249139dc9706aa9e4acbd",
+          "state": "SETTLED",
+          "holdMicroUSD": "135248",
+          "actualMicroUSD": "90",
+          "inputTokens": 12,
+          "maxOutputTokens": 8192
+        }
+      ],
+      "consumedMicroUSD": "90",
+      "quarantined": false,
+      "reservationInserts": 1,
+      "settlementUpdates": 1
+    },
+    "errors": []
+  },
+  {
+    "receipt": "interop-profiled-reservation-ack-lost-first.json",
+    "sha256": "c354c4fb53591076bf9a72b426b1a64efa7131558a712b1dac94fd927e8c8c3b",
+    "sourceCommit": "781047bc0e90b53b737d408a4faa5d1467089251",
+    "sourceFiles": {
+      "run.mjs": "ea15669f3de659645189372e5ccf2d61b06cf3009224acdb6d89f9cdcd325ad5",
+      "native_proxy.py": "f7754ecd70a9158f65286ee8d55361b3c50381d037dbcecf93197b7828ed154a",
+      "provider_stub.py": "8d8b31f2feff3b37b9d8c5a4186a0b90475088bbd07b74ed5e178f77fde20757",
+      "owner_peer.mjs": "8f12e58c29060d4f7b7d4c04de9af2d45fbc1ea919311943c5815130efaeb9d7",
+      "model_ledger_fixture.mjs": "46fe63c2795c60588142881bd81bb983dfabaf6ff021911ee1e50a530e5dd313"
+    },
+    "client": "sdk-profiled",
+    "mode": "reservation-ack-lost",
+    "outputFormat": "none",
+    "partitionPassed": false,
+    "sdkResults": [],
+    "sdkIterationFailure": "Error",
+    "countRequests": 3,
+    "providerExecutions": 0,
+    "ownerOperations": {
+      "reserve": 3
+    },
+    "ledger": {
+      "syntheticAllocation": true,
+      "maxCostMicroUSD": 250000,
+      "allocationSha256": "809d4f670f07c379b72a4db7861e580154170fec430d19e08c01a58efa73b76d",
+      "manifestSha256": "0f415cc9ad01ed8d1303fbff11976627b3829ef829e75a27ffde4f6d8160c6a9",
+      "requests": [
+        {
+          "requestId": "ed879e5e40d24ec1825e5aed54f2cf17",
+          "state": "UNKNOWN",
+          "holdMicroUSD": "135248",
+          "actualMicroUSD": null,
+          "inputTokens": 12,
+          "maxOutputTokens": 8192
+        }
+      ],
+      "consumedMicroUSD": "0",
+      "quarantined": false,
+      "reservationInserts": 1,
+      "settlementUpdates": 0
+    },
+    "errors": [
+      {
+        "operation": "reserve",
+        "code": "BudgetCommitUncertain"
+      },
+      {
+        "operation": "reserve",
+        "code": "PRODUCT_MODEL_SLOT_USED"
+      },
+      {
+        "operation": "reserve",
+        "code": "PRODUCT_MODEL_SLOT_USED"
+      }
+    ]
+  },
+  {
+    "receipt": "interop-profiled-schema-first.json",
+    "sha256": "842a4840864024160040058d9082700045e1cd499447e6b01e59dee441a372d8",
+    "sourceCommit": "781047bc0e90b53b737d408a4faa5d1467089251",
+    "sourceFiles": {
+      "run.mjs": "ea15669f3de659645189372e5ccf2d61b06cf3009224acdb6d89f9cdcd325ad5",
+      "native_proxy.py": "f7754ecd70a9158f65286ee8d55361b3c50381d037dbcecf93197b7828ed154a",
+      "provider_stub.py": "8d8b31f2feff3b37b9d8c5a4186a0b90475088bbd07b74ed5e178f77fde20757",
+      "owner_peer.mjs": "8f12e58c29060d4f7b7d4c04de9af2d45fbc1ea919311943c5815130efaeb9d7",
+      "model_ledger_fixture.mjs": "46fe63c2795c60588142881bd81bb983dfabaf6ff021911ee1e50a530e5dd313"
+    },
+    "client": "sdk-profiled",
+    "mode": "complete",
+    "outputFormat": "json-schema",
+    "partitionPassed": true,
+    "sdkResults": [
+      {
+        "subtype": "success",
+        "isError": false,
+        "structuredOutputPresent": true,
+        "structuredOutputMatchesSchema": true,
+        "structuredOutputSha256": "e33ca54cc6604ab5903a59f587ef7286b74188573abe51cde11d22f46878c941"
+      }
+    ],
+    "sdkIterationFailure": null,
+    "countRequests": 1,
+    "providerExecutions": 1,
+    "ownerOperations": {
+      "reserve": 1,
+      "settle": 1
+    },
+    "ledger": {
+      "syntheticAllocation": true,
+      "maxCostMicroUSD": 250000,
+      "allocationSha256": "5b8c32d8ea07e55a00c7a571e65b2a0ca499785d779373a4c09f70c6e2581564",
+      "manifestSha256": "0f415cc9ad01ed8d1303fbff11976627b3829ef829e75a27ffde4f6d8160c6a9",
+      "requests": [
+        {
+          "requestId": "9b9efc1a01d44353b751248f50d0c921",
+          "state": "SETTLED",
+          "holdMicroUSD": "135248",
+          "actualMicroUSD": "90",
+          "inputTokens": 12,
+          "maxOutputTokens": 8192
+        }
+      ],
+      "consumedMicroUSD": "90",
+      "quarantined": false,
+      "reservationInserts": 1,
+      "settlementUpdates": 1
+    },
+    "errors": []
+  },
+  {
+    "receipt": "interop-profiled-settlement-ack-unresolved-first.json",
+    "sha256": "b28e64e117e4cfcd55a5083c14614001415d892bdbf34d4721b710176c20f545",
+    "sourceCommit": "781047bc0e90b53b737d408a4faa5d1467089251",
+    "sourceFiles": {
+      "run.mjs": "ea15669f3de659645189372e5ccf2d61b06cf3009224acdb6d89f9cdcd325ad5",
+      "native_proxy.py": "f7754ecd70a9158f65286ee8d55361b3c50381d037dbcecf93197b7828ed154a",
+      "provider_stub.py": "8d8b31f2feff3b37b9d8c5a4186a0b90475088bbd07b74ed5e178f77fde20757",
+      "owner_peer.mjs": "8f12e58c29060d4f7b7d4c04de9af2d45fbc1ea919311943c5815130efaeb9d7",
+      "model_ledger_fixture.mjs": "46fe63c2795c60588142881bd81bb983dfabaf6ff021911ee1e50a530e5dd313"
+    },
+    "client": "sdk-profiled",
+    "mode": "settlement-ack-unresolved",
+    "outputFormat": "none",
+    "partitionPassed": false,
+    "sdkResults": [
+      {
+        "subtype": "success",
+        "isError": false
+      }
+    ],
+    "sdkIterationFailure": null,
+    "countRequests": 1,
+    "providerExecutions": 1,
+    "ownerOperations": {
+      "reserve": 1,
+      "settle": 1,
+      "outcome": 1
+    },
+    "ledger": {
+      "syntheticAllocation": true,
+      "maxCostMicroUSD": 250000,
+      "allocationSha256": "f221af0d9cdc15a9c3659f7e788c5203249bd1609555389a45681fcbd0b80842",
+      "manifestSha256": "0f415cc9ad01ed8d1303fbff11976627b3829ef829e75a27ffde4f6d8160c6a9",
+      "requests": [
+        {
+          "requestId": "51a14211d2c5430ca305178ade9a0559",
+          "state": "SETTLED",
+          "holdMicroUSD": "135248",
+          "actualMicroUSD": "90",
+          "inputTokens": 12,
+          "maxOutputTokens": 8192
+        }
+      ],
+      "consumedMicroUSD": "90",
+      "quarantined": false,
+      "reservationInserts": 1,
+      "settlementUpdates": 1
+    },
+    "errors": [
+      {
+        "operation": "settle",
+        "code": "BudgetCommitUncertain"
+      },
+      {
+        "operation": "outcome",
+        "code": "OFFLINE_READBACK_UNAVAILABLE"
+      },
+      "StateDenied",
+      {
+        "type": "StateDenied",
+        "trace": [
+          {
+            "file": "responses.py",
+            "line": 276,
+            "function": "wrap"
+          },
+          {
+            "file": "responses.py",
+            "line": 255,
+            "function": "stream_response"
+          },
+          {
+            "file": "_exception_handler.py",
+            "line": 39,
+            "function": "sender"
+          },
+          {
+            "file": "_exception_handler.py",
+            "line": 39,
+            "function": "sender"
+          },
+          {
+            "file": "security_headers_middleware.py",
+            "line": 48,
+            "function": "send_with_security_headers"
+          },
+          {
+            "file": "errors.py",
+            "line": 161,
+            "function": "_send"
+          },
+          {
+            "file": "upstream_callback.py",
+            "line": 139,
+            "function": "guarded_send"
+          },
+          {
+            "file": "upstream_callback.py",
+            "line": 23,
+            "function": "_deny"
+          }
+        ],
+        "code": "PRODUCT_NATIVE_LITELLM_REFUSED"
+      }
+    ]
+  },
+  {
+    "receipt": "interop-profiled-truncated-first.json",
+    "sha256": "270244f6f8921875f360300ecbd99d7bd830707477df5adcd6da99796be5c1e2",
+    "sourceCommit": "781047bc0e90b53b737d408a4faa5d1467089251",
+    "sourceFiles": {
+      "run.mjs": "ea15669f3de659645189372e5ccf2d61b06cf3009224acdb6d89f9cdcd325ad5",
+      "native_proxy.py": "f7754ecd70a9158f65286ee8d55361b3c50381d037dbcecf93197b7828ed154a",
+      "provider_stub.py": "8d8b31f2feff3b37b9d8c5a4186a0b90475088bbd07b74ed5e178f77fde20757",
+      "owner_peer.mjs": "8f12e58c29060d4f7b7d4c04de9af2d45fbc1ea919311943c5815130efaeb9d7",
+      "model_ledger_fixture.mjs": "46fe63c2795c60588142881bd81bb983dfabaf6ff021911ee1e50a530e5dd313"
+    },
+    "client": "sdk-profiled",
+    "mode": "truncated",
+    "outputFormat": "none",
+    "partitionPassed": false,
+    "sdkResults": [
+      {
+        "subtype": "success",
+        "isError": false
+      }
+    ],
+    "sdkIterationFailure": null,
+    "countRequests": 1,
+    "providerExecutions": 1,
+    "ownerOperations": {
+      "reserve": 1
+    },
+    "ledger": {
+      "syntheticAllocation": true,
+      "maxCostMicroUSD": 250000,
+      "allocationSha256": "6f8394e0762142e65c5cff66fd35f6f6c4bac7bbb425e6942db9a466b7083d00",
+      "manifestSha256": "0f415cc9ad01ed8d1303fbff11976627b3829ef829e75a27ffde4f6d8160c6a9",
+      "requests": [
+        {
+          "requestId": "ee1bd79986984f6c9ba4cc008d8eddef",
+          "state": "UNKNOWN",
+          "holdMicroUSD": "135248",
+          "actualMicroUSD": null,
+          "inputTokens": 12,
+          "maxOutputTokens": 8192
+        }
+      ],
+      "consumedMicroUSD": "0",
+      "quarantined": false,
+      "reservationInserts": 1,
+      "settlementUpdates": 0
+    },
+    "errors": [
+      "StateDenied",
+      {
+        "type": "StateDenied",
+        "trace": [
+          {
+            "file": "responses.py",
+            "line": 276,
+            "function": "wrap"
+          },
+          {
+            "file": "responses.py",
+            "line": 255,
+            "function": "stream_response"
+          },
+          {
+            "file": "_exception_handler.py",
+            "line": 39,
+            "function": "sender"
+          },
+          {
+            "file": "_exception_handler.py",
+            "line": 39,
+            "function": "sender"
+          },
+          {
+            "file": "security_headers_middleware.py",
+            "line": 48,
+            "function": "send_with_security_headers"
+          },
+          {
+            "file": "errors.py",
+            "line": 161,
+            "function": "_send"
+          },
+          {
+            "file": "upstream_callback.py",
+            "line": 139,
+            "function": "guarded_send"
+          },
+          {
+            "file": "upstream_callback.py",
+            "line": 23,
+            "function": "_deny"
+          }
+        ],
+        "code": "PRODUCT_NATIVE_LITELLM_REFUSED"
+      }
+    ]
+  },
+  {
+    "receipt": "interop-default-plain-before-terminal.json",
+    "sha256": "84de17c967bff8dded4371843acc7bd45217c2f0e0779e7362b02e563c124a1a",
+    "sourceCommit": "ecb192b4909cac1481c99cc196156633e571efcc",
+    "sourceFiles": {
+      "run.mjs": "e4374d431f750cff842e043e590d3bbaa49589bdfac1f27f4726a4ded703ded1",
+      "native_proxy.py": "f7754ecd70a9158f65286ee8d55361b3c50381d037dbcecf93197b7828ed154a",
+      "provider_stub.py": "8d8b31f2feff3b37b9d8c5a4186a0b90475088bbd07b74ed5e178f77fde20757",
+      "owner_peer.mjs": "8f12e58c29060d4f7b7d4c04de9af2d45fbc1ea919311943c5815130efaeb9d7",
+      "model_ledger_fixture.mjs": "46fe63c2795c60588142881bd81bb983dfabaf6ff021911ee1e50a530e5dd313"
+    },
+    "client": "sdk",
+    "mode": "complete",
+    "outputFormat": "none",
+    "partitionPassed": true,
+    "sdkResults": [
+      {
+        "subtype": "success",
+        "isError": false
+      }
+    ],
+    "sdkIterationFailure": null,
+    "countRequests": 1,
+    "providerExecutions": 1,
+    "ownerOperations": {
+      "reserve": 1,
+      "settle": 1
+    },
+    "ledger": {
+      "syntheticAllocation": true,
+      "maxCostMicroUSD": 250000,
+      "allocationSha256": "2ae863723bf6409610fcac14e236b732aec52d57364bb858f5316a4dc86099c1",
+      "manifestSha256": "0f415cc9ad01ed8d1303fbff11976627b3829ef829e75a27ffde4f6d8160c6a9",
+      "requests": [
+        {
+          "requestId": "9c29383a49ab4bbdaa98a2e7712d085d",
+          "state": "SETTLED",
+          "holdMicroUSD": "135248",
+          "actualMicroUSD": "90",
+          "inputTokens": 12,
+          "maxOutputTokens": 8192
+        }
+      ],
+      "consumedMicroUSD": "90",
+      "quarantined": false,
+      "reservationInserts": 1,
+      "settlementUpdates": 1
+    },
+    "errors": []
+  },
+  {
+    "receipt": "interop-default-schema-before-terminal.json",
+    "sha256": "1d7c852e2536059d0e2353738064a874d7dfe2c157d62601eaba0170f93e5e57",
+    "sourceCommit": "ecb192b4909cac1481c99cc196156633e571efcc",
+    "sourceFiles": {
+      "run.mjs": "e4374d431f750cff842e043e590d3bbaa49589bdfac1f27f4726a4ded703ded1",
+      "native_proxy.py": "f7754ecd70a9158f65286ee8d55361b3c50381d037dbcecf93197b7828ed154a",
+      "provider_stub.py": "8d8b31f2feff3b37b9d8c5a4186a0b90475088bbd07b74ed5e178f77fde20757",
+      "owner_peer.mjs": "8f12e58c29060d4f7b7d4c04de9af2d45fbc1ea919311943c5815130efaeb9d7",
+      "model_ledger_fixture.mjs": "46fe63c2795c60588142881bd81bb983dfabaf6ff021911ee1e50a530e5dd313"
+    },
+    "client": "sdk",
+    "mode": "complete",
+    "outputFormat": "json-schema",
+    "partitionPassed": true,
+    "sdkResults": [
+      {
+        "subtype": "success",
+        "isError": false,
+        "structuredOutputPresent": true,
+        "structuredOutputMatchesSchema": true,
+        "structuredOutputSha256": "e33ca54cc6604ab5903a59f587ef7286b74188573abe51cde11d22f46878c941"
+      }
+    ],
+    "sdkIterationFailure": null,
+    "countRequests": 1,
+    "providerExecutions": 1,
+    "ownerOperations": {
+      "reserve": 1,
+      "settle": 1
+    },
+    "ledger": {
+      "syntheticAllocation": true,
+      "maxCostMicroUSD": 250000,
+      "allocationSha256": "4167f2d1b318cf9f7e9d55c5318fb3c5658e2c51ed8322eb2ff7e9a49330814d",
+      "manifestSha256": "0f415cc9ad01ed8d1303fbff11976627b3829ef829e75a27ffde4f6d8160c6a9",
+      "requests": [
+        {
+          "requestId": "ceca9f4dadda479fb374c37dfb0ee908",
+          "state": "SETTLED",
+          "holdMicroUSD": "135248",
+          "actualMicroUSD": "90",
+          "inputTokens": 12,
+          "maxOutputTokens": 8192
+        }
+      ],
+      "consumedMicroUSD": "90",
+      "quarantined": false,
+      "reservationInserts": 1,
+      "settlementUpdates": 1
+    },
+    "errors": []
+  }
+]

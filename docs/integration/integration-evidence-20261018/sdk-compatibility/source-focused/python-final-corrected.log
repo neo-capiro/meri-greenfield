@@ -1,0 +1,842 @@
+test_body_limits_default_to_and_cap_at_the_envelope (apps.proxy.product.test.test_envelope.EnvelopeTests.test_body_limits_default_to_and_cap_at_the_envelope) ... ok
+test_structured_schema_binding_is_trusted_immutable_json (apps.proxy.product.test.test_envelope.EnvelopeTests.test_structured_schema_binding_is_trusted_immutable_json) ... ok
+test_usage_binding_and_reserve_liability_follow_the_envelope (apps.proxy.product.test.test_envelope.EnvelopeTests.test_usage_binding_and_reserve_liability_follow_the_envelope) ... ok
+test_values_match_the_node_owner_exactly (apps.proxy.product.test.test_envelope.EnvelopeTests.test_values_match_the_node_owner_exactly) ... ok
+test_duplicate_nonfinite_truncated_and_bounded_raw_bytes (apps.proxy.qualification.test.test_bedrock_transport.BodyTests.test_duplicate_nonfinite_truncated_and_bounded_raw_bytes) ... ok
+test_native_semantic_feature_and_shape_negatives (apps.proxy.qualification.test.test_bedrock_transport.BodyTests.test_native_semantic_feature_and_shape_negatives) ... ok
+test_observed_disabled_thinking_and_default_sampling_are_closed (apps.proxy.qualification.test.test_bedrock_transport.BodyTests.test_observed_disabled_thinking_and_default_sampling_are_closed) ... ok
+test_qualification_limits_refuse_widening_or_malformed_names (apps.proxy.qualification.test.test_bedrock_transport.BodyTests.test_qualification_limits_refuse_widening_or_malformed_names) ... ok
+test_sdk_metadata_beta_enums_and_empty_tools_preserve_counted_bytes (apps.proxy.qualification.test.test_bedrock_transport.BodyTests.test_sdk_metadata_beta_enums_and_empty_tools_preserve_counted_bytes) ... ok
+test_structured_output_requires_exact_trusted_schema_and_tool_authority (apps.proxy.qualification.test.test_bedrock_transport.BodyTests.test_structured_output_requires_exact_trusted_schema_and_tool_authority) ... ok
+test_actual_customlogger_deployment_hook_can_inject_client (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_actual_customlogger_deployment_hook_can_inject_client) ... ok
+test_actual_http400_thinking_retry_is_blocked_even_without_thinking_body (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_actual_http400_thinking_retry_is_blocked_even_without_thinking_body) ... ok
+test_actual_public_route_foreign_profile_never_sends (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_actual_public_route_foreign_profile_never_sends) ... ok
+test_actual_stream_truncation_and_semantic_error_remain_visible_and_unknown (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_actual_stream_truncation_and_semantic_error_remain_visible_and_unknown) ... /tmp/meri-integration-sdk-env/lib/python3.13/site-packages/pydantic/_internal/_generate_schema.py:1475: UserWarning: Items 'run_id', 'status', 'num_of_steps', 'result', 'error', 'type' on TypedDict class 'TinyfishRun' are using the `ReadOnly` qualifier. Pydantic will not protect items from any mutation on dictionary instances.
+  warnings.warn(
+Executing <Task pending name='Task-29' coro=<TransportTests.test_actual_stream_truncation_and_semantic_error_remain_visible_and_unknown() running at /workspace/meri-source/apps/proxy/qualification/test/test_bedrock_transport.py:242> wait_for=<Future pending cb=[Task.task_wakeup()] created at /tmp/meri-integration-python/cpython-3.13.5-linux-x86_64-gnu/lib/python3.13/asyncio/base_events.py:459> cb=[_run_until_complete_cb() at /tmp/meri-integration-python/cpython-3.13.5-linux-x86_64-gnu/lib/python3.13/asyncio/base_events.py:181] created at /tmp/meri-integration-python/cpython-3.13.5-linux-x86_64-gnu/lib/python3.13/asyncio/runners.py:100> took 0.603 seconds
+/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/pydantic/_internal/_generate_schema.py:1475: UserWarning: Item 'summary' on TypedDict class 'ChatCompletionReasoningItem' is using the `ReadOnly` qualifier. Pydantic will not protect items from any mutation on dictionary instances.
+  warnings.warn(
+/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/pydantic/_internal/_generate_schema.py:1475: UserWarning: Items 'hours_utc', 'weekdays' on TypedDict class 'OffPeakWindow' are using the `ReadOnly` qualifier. Pydantic will not protect items from any mutation on dictionary instances.
+  warnings.warn(
+/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/pydantic/_internal/_generate_schema.py:1475: UserWarning: Items 'hours_utc', 'windows', 'weekday_timezone', 'input_cost_per_token', 'output_cost_per_token', 'output_cost_per_reasoning_token', 'cache_read_input_token_cost', 'cache_creation_input_token_cost' on TypedDict class 'OffPeakPricing' are using the `ReadOnly` qualifier. Pydantic will not protect items from any mutation on dictionary instances.
+  warnings.warn(
+/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/pydantic/_internal/_generate_schema.py:1475: UserWarning: Items 'supports_prompt_cache_breakpoint', 'supports_thinking_cache_preservation', 'supports_legacy_thinking', 'thinking_always_on', 'reasoning_effort_levels', 'default_reasoning_effort', 'supports_anthropic_thinking_payload', 'supports_anthropic_compaction', 'supported_audio_formats', 'vertex_ai_audio_api', 'input_cost_per_token_ultrafast', 'cache_creation_input_token_cost_ultrafast', 'cache_read_input_audio_token_cost', 'cache_read_input_image_token_cost', 'cache_read_input_token_cost_ultrafast', 'cache_read_input_token_cost_batches', 'cache_read_input_token_cost_above_272k_tokens_batches', 'cache_creation_input_token_cost_batches', 'cache_creation_input_token_cost_above_200k_tokens_batches', 'cache_creation_input_token_cost_above_272k_tokens_batches', 'off_peak_pricing', 'input_cost_per_audio_token_batches', 'input_cost_per_image_token_batches', 'input_cost_per_video_token_batches', 'input_cost_per_token_above_272k_tokens_batches', 'output_cost_per_token_above_272k_tokens_batches', 'output_cost_per_token_ultrafast', 'regional_endpoint_uplift_multiplier', 'output_cost_per_pixel', 'output_cost_per_second_480p', 'output_cost_per_second_720p', 'output_cost_per_second_768p', 'output_cost_per_second_2k', 'output_cost_per_second_4k', 'output_cost_per_image_512', 'output_cost_per_image_1024', 'output_cost_per_image_1536', 'ocr_cost_per_page_batches', 'annotation_cost_per_page_batches', 'google_maps_grounding_cost_per_query' on TypedDict class 'ModelInfo' are using the `ReadOnly` qualifier. Pydantic will not protect items from any mutation on dictionary instances.
+  warnings.warn(
+/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/pydantic/_internal/_generate_schema.py:1475: UserWarning: Items 'langfuse_environment', 'langfuse_span_scope', 'arize_success_sampling_rate', 'arize_error_sampling_rate' on TypedDict class 'StandardCallbackDynamicParams' are using the `ReadOnly` qualifier. Pydantic will not protect items from any mutation on dictionary instances.
+  warnings.warn(
+Executing <Task finished name='Task-34' coro=<BaseAnthropicMessagesStreamingIterator._pump_upstream_to_queue() done, defined at /tmp/meri-integration-sdk-env/lib/python3.13/site-packages/litellm/llms/anthropic/experimental_pass_through/messages/streaming_iterator.py:605> result=None created at /tmp/meri-integration-python/cpython-3.13.5-linux-x86_64-gnu/lib/python3.13/asyncio/tasks.py:410> took 0.551 seconds
+/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/pydantic/_internal/_generate_schema.py:1475: UserWarning: Item 'summary' on TypedDict class 'ChatCompletionReasoningItem' is using the `ReadOnly` qualifier. Pydantic will not protect items from any mutation on dictionary instances.
+  warnings.warn(
+/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/pydantic/_internal/_generate_schema.py:1475: UserWarning: Items 'probabilities', 'threshold', 'predicted_tier', 'request_type' on TypedDict class 'StandardLoggingHeuristicV2Forecast' are using the `ReadOnly` qualifier. Pydantic will not protect items from any mutation on dictionary instances.
+  warnings.warn(
+/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/pydantic/_internal/_generate_schema.py:1475: UserWarning: Items 'classifier_probabilities', 'classifier_confidence', 'heuristic_v2_forecast', 'classifier_calibrated_p_solve', 'classifier_calibration_version', 'classifier_efficient_p_solve', 'classifier_capable_p_solve', 'classifier_calibrated_efficient_p_solve', 'classifier_calibrated_capable_p_solve', 'classifier_max_quality_gap', 'classifier_prompt_version' on TypedDict class 'StandardLoggingRoutingDecision' are using the `ReadOnly` qualifier. Pydantic will not protect items from any mutation on dictionary instances.
+  warnings.warn(
+ok
+test_actual_tools_translation_preserves_counted_final_body (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_actual_tools_translation_preserves_counted_final_body) ... ok
+test_beta_header_duplicates_unknowns_and_body_mismatches_never_count_or_send (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_beta_header_duplicates_unknowns_and_body_mismatches_never_count_or_send) ... ok
+test_cancellation_after_ledger_commit_preserves_unknown_without_send (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_cancellation_after_ledger_commit_preserves_unknown_without_send) ... ok
+test_closed_beta_headers_match_body_without_changing_signed_or_counted_bytes (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_closed_beta_headers_match_body_without_changing_signed_or_counted_bytes) ... ok
+test_count_failures_and_forged_observations_prevent_send (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_count_failures_and_forged_observations_prevent_send) ... ok
+test_count_timeout_denies_without_reservation_or_send (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_count_timeout_denies_without_reservation_or_send) ... ok
+test_counter_body_drift_denies_before_ledger_or_send (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_counter_body_drift_denies_before_ledger_or_send) ... ok
+test_explicit_frozen_sdk_echo_name_uses_same_supported_client_seam (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_explicit_frozen_sdk_echo_name_uses_same_supported_client_seam) ... ok
+test_guard_prevents_internal_connection_retries_and_retains_unknown (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_guard_prevents_internal_connection_retries_and_retains_unknown) ... ok
+test_http_failure_and_redirect_never_release_or_follow (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_http_failure_and_redirect_never_release_or_follow) ... ok
+test_invalid_receipt_denies_and_preserves_unknown (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_invalid_receipt_denies_and_preserves_unknown) ... ok
+test_ledger_failures_and_lost_commit_ack_never_send (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_ledger_failures_and_lost_commit_ack_never_send) ... ok
+test_lifetime_denied_before_count_has_no_hold_or_dispatch (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_lifetime_denied_before_count_has_no_hold_or_dispatch) ... ok
+test_lifetime_revoked_after_count_prevents_hold_and_dispatch (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_lifetime_revoked_after_count_prevents_hold_and_dispatch) ... ok
+test_lifetime_revoked_after_hold_keeps_unknown_without_dispatch (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_lifetime_revoked_after_hold_keeps_unknown_without_dispatch) ... ok
+test_original_deadline_crossed_at_commit_keeps_unknown_without_send (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_original_deadline_crossed_at_commit_keeps_unknown_without_send) ... ok
+test_parallel_calls_share_only_one_slot (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_parallel_calls_share_only_one_slot) ... ok
+test_public_bedrock_route_uses_real_handler_and_exact_count_blob (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_public_bedrock_route_uses_real_handler_and_exact_count_blob) ... ok
+test_real_upstream_connection_retry_without_guard_sends_twice (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_real_upstream_connection_retry_without_guard_sends_twice) ... ok
+test_route_method_encoding_and_content_type_denied_before_count (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_route_method_encoding_and_content_type_denied_before_count) ... ok
+test_streaming_route_count_blob_matches_actual_signed_body (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_streaming_route_count_blob_matches_actual_signed_body) ... ok
+test_absent_null_and_exact_empty_context_metadata_preserve_complete_usage (apps.proxy.qualification.test.test_native_usage.UsageTests.test_absent_null_and_exact_empty_context_metadata_preserve_complete_usage) ... ok
+test_applied_unknown_or_malformed_context_edits_remain_sticky_unknown (apps.proxy.qualification.test.test_native_usage.UsageTests.test_applied_unknown_or_malformed_context_edits_remain_sticky_unknown) ... ok
+test_bare_stop_requires_bound_start_and_cumulative_delta_usage (apps.proxy.qualification.test.test_native_usage.UsageTests.test_bare_stop_requires_bound_start_and_cumulative_delta_usage) ... ok
+test_bedrock_terminal_metrics_are_closed_and_match_bound_usage (apps.proxy.qualification.test.test_native_usage.UsageTests.test_bedrock_terminal_metrics_are_closed_and_match_bound_usage) ... ok
+test_binding_refuses_forged_shape (apps.proxy.qualification.test.test_native_usage.UsageTests.test_binding_refuses_forged_shape) ... ok
+test_complete_nonstream_exact_hash_and_binding (apps.proxy.qualification.test.test_native_usage.UsageTests.test_complete_nonstream_exact_hash_and_binding) ... ok
+test_complete_tool_and_unsupported_content (apps.proxy.qualification.test.test_native_usage.UsageTests.test_complete_tool_and_unsupported_content) ... ok
+test_http_incomplete_error_cancel_remain_unknown (apps.proxy.qualification.test.test_native_usage.UsageTests.test_http_incomplete_error_cancel_remain_unknown) ... ok
+test_stream_complete_requires_marker_and_transport_eof (apps.proxy.qualification.test.test_native_usage.UsageTests.test_stream_complete_requires_marker_and_transport_eof) ... ok
+test_stream_cumulative_usage_regression_and_bounds (apps.proxy.qualification.test.test_native_usage.UsageTests.test_stream_cumulative_usage_regression_and_bounds) ... ok
+test_stream_invalid_order_unknown_fields_and_error_are_sticky (apps.proxy.qualification.test.test_native_usage.UsageTests.test_stream_invalid_order_unknown_fields_and_error_are_sticky) ... ok
+test_stream_raw_byte_framed_evidence_and_single_finish (apps.proxy.qualification.test.test_native_usage.UsageTests.test_stream_raw_byte_framed_evidence_and_single_finish) ... ok
+test_stream_tool_atomic_json_and_identity (apps.proxy.qualification.test.test_native_usage.UsageTests.test_stream_tool_atomic_json_and_identity) ... ok
+test_usage_features_wrong_model_and_counts_fail_closed (apps.proxy.qualification.test.test_native_usage.UsageTests.test_usage_features_wrong_model_and_counts_fail_closed) ... ok
+test_cancellation_and_wire_bounds_never_flush_held_terminals (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_cancellation_and_wire_bounds_never_flush_held_terminals) ... ok
+test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle) ... ok
+test_json_body_is_withheld_until_ack (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_json_body_is_withheld_until_ack) ... ok
+test_lost_ack_releases_only_after_exact_settled_readback (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_lost_ack_releases_only_after_exact_settled_readback) ... ok
+test_terminal_is_withheld_through_ack_for_coalesced_split_and_structured_frames (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_terminal_is_withheld_through_ack_for_coalesced_split_and_structured_frames) ... ok
+test_bare_stop_with_bound_start_and_delta_usage_settles_once (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_bare_stop_with_bound_start_and_delta_usage_settles_once) ... ok
+test_binding_is_derived_after_guard_arms_with_exact_receipt_and_source_hash (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_binding_is_derived_after_guard_arms_with_exact_receipt_and_source_hash) ... ok
+test_early_close_and_stream_exception_do_not_settle (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_early_close_and_stream_exception_do_not_settle) ... FAIL
+test_eventstream_crc_truncated_frame_and_missing_terminal_stay_unknown (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_eventstream_crc_truncated_frame_and_missing_terminal_stay_unknown) ... 
+  test_eventstream_crc_truncated_frame_and_missing_terminal_stay_unknown (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_eventstream_crc_truncated_frame_and_missing_terminal_stay_unknown) (wire_length=1546) ... ERROR
+  test_eventstream_crc_truncated_frame_and_missing_terminal_stay_unknown (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_eventstream_crc_truncated_frame_and_missing_terminal_stay_unknown) (wire_length=1545) ... ERROR
+  test_eventstream_crc_truncated_frame_and_missing_terminal_stay_unknown (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_eventstream_crc_truncated_frame_and_missing_terminal_stay_unknown) (wire_length=1243) ... ERROR
+test_http_error_malformed_or_semantically_incomplete_stays_unknown (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_http_error_malformed_or_semantically_incomplete_stays_unknown) ... 
+  test_http_error_malformed_or_semantically_incomplete_stays_unknown (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_http_error_malformed_or_semantically_incomplete_stays_unknown) (status=500, headers=None) ... ERROR
+  test_http_error_malformed_or_semantically_incomplete_stays_unknown (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_http_error_malformed_or_semantically_incomplete_stays_unknown) (status=200, headers=None) ... ERROR
+  test_http_error_malformed_or_semantically_incomplete_stays_unknown (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_http_error_malformed_or_semantically_incomplete_stays_unknown) (status=200, headers={'content-type': 'text/plain'}) ... ERROR
+  test_http_error_malformed_or_semantically_incomplete_stays_unknown (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_http_error_malformed_or_semantically_incomplete_stays_unknown) (status=200, headers={'content-type': 'application/json', 'content-length': '1'}) ... ERROR
+  test_http_error_malformed_or_semantically_incomplete_stays_unknown (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_http_error_malformed_or_semantically_incomplete_stays_unknown) (status=200, headers={'content-type': 'application/json', 'content-encoding': 'gzip'}) ... ERROR
+test_lost_ack_reads_committed_settlement_without_second_inference (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_lost_ack_reads_committed_settlement_without_second_inference) ... ok
+test_native_stream_fragmented_frames_settle_only_on_eof (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_native_stream_fragmented_frames_settle_only_on_eof) ... ok
+test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown) ... 
+  test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown) (field='inputTokenCount') ... ERROR
+  test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown) (field='outputTokenCount') ... ERROR
+  test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown) (field='invocationLatency') ... ERROR
+  test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown) (field='cacheReadInputTokenCount') ... ERROR
+  test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown) (field='cacheWriteInputTokenCount') ... ERROR
+  test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown) (field='unexpectedCost') ... ERROR
+test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown) ... ERROR
+test_nonstream_complete_settles_after_actual_eof_with_exact_usage (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_nonstream_complete_settles_after_actual_eof_with_exact_usage) ... ok
+test_unarmed_or_drifted_slot_denies_before_send (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_unarmed_or_drifted_slot_denies_before_send) ... ok
+test_uncertain_bridge_failure_never_rearms_send (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_uncertain_bridge_failure_never_rearms_send) ... ok
+test_unresolved_or_mismatched_read_outcome_preserves_failure (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_unresolved_or_mismatched_read_outcome_preserves_failure) ... ok
+test_validation_refusal_cannot_be_masked_by_old_settled_outcome (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_validation_refusal_cannot_be_masked_by_old_settled_outcome) ... ok
+test_archive_after_count_refuses_reservation_and_after_hold_refuses_native_send (apps.proxy.product.test.test_host_observation.HostObservationTests.test_archive_after_count_refuses_reservation_and_after_hold_refuses_native_send) ... ok
+test_archive_after_provider_dispatch_preserves_complete_usage_evidence (apps.proxy.product.test.test_host_observation.HostObservationTests.test_archive_after_provider_dispatch_preserves_complete_usage_evidence) ... ok
+test_claim_or_mutation_cannot_create_host_request_evidence (apps.proxy.product.test.test_host_observation.HostObservationTests.test_claim_or_mutation_cannot_create_host_request_evidence) ... ok
+test_missing_or_denied_core_currentness_refuses_before_count_or_hold (apps.proxy.product.test.test_host_observation.HostObservationTests.test_missing_or_denied_core_currentness_refuses_before_count_or_hold) ... ok
+test_real_httpx_hooks_and_fragmented_native_stream_require_eof (apps.proxy.product.test.test_host_observation.HostObservationTests.test_real_httpx_hooks_and_fragmented_native_stream_require_eof) ... ok
+test_request_hook_and_count_are_separate_one_shot_sources (apps.proxy.product.test.test_host_observation.HostObservationTests.test_request_hook_and_count_are_separate_one_shot_sources) ... ok
+test_response_requires_actual_inner_stream_eof_and_complete_usage (apps.proxy.product.test.test_host_observation.HostObservationTests.test_response_requires_actual_inner_stream_eof_and_complete_usage) ... ok
+test_response_slot_binding_and_raw_hash_mismatch_denied_before_lower_send (apps.proxy.product.test.test_host_observation.HostObservationTests.test_response_slot_binding_and_raw_hash_mismatch_denied_before_lower_send) ... ok
+test_truncated_or_cancelled_response_never_records_completion (apps.proxy.product.test.test_host_observation.HostObservationTests.test_truncated_or_cancelled_response_never_records_completion) ... ok
+test_cancellation_quarantines_outstanding_lookup (apps.proxy.product.test.test_host_composition.BoundedBootstrapTests.test_cancellation_quarantines_outstanding_lookup) ... ok
+test_child_copy_of_context_is_revoked_after_response (apps.proxy.product.test.test_host_composition.BoundedBootstrapTests.test_child_copy_of_context_is_revoked_after_response) ... ok
+test_hung_sync_lookup_does_not_block_loop_and_poison_is_sticky (apps.proxy.product.test.test_host_composition.BoundedBootstrapTests.test_hung_sync_lookup_does_not_block_loop_and_poison_is_sticky) ... ok
+test_success_uses_one_request_bound_trusted_context (apps.proxy.product.test.test_host_composition.BoundedBootstrapTests.test_success_uses_one_request_bound_trusted_context) ... ok
+test_archived_core_refuses_before_count_or_reservation (apps.proxy.product.test.test_host_composition.HostCompositionTests.test_archived_core_refuses_before_count_or_reservation) ... ok
+test_asgi_host_mounts_only_admitted_messages_and_closes_handler (apps.proxy.product.test.test_host_composition.HostCompositionTests.test_asgi_host_mounts_only_admitted_messages_and_closes_handler) ... ok
+test_bounded_bootstrap_reaches_existing_count_lifetime (apps.proxy.product.test.test_host_composition.HostCompositionTests.test_bounded_bootstrap_reaches_existing_count_lifetime) ... ok
+test_cli_count_refuses_archived_core_before_aws_count (apps.proxy.product.test.test_host_composition.HostCompositionTests.test_cli_count_refuses_archived_core_before_aws_count) ... ok
+test_cli_count_refuses_context_change_during_aws_count (apps.proxy.product.test.test_host_composition.HostCompositionTests.test_cli_count_refuses_context_change_during_aws_count) ... ok
+test_cli_count_route_uses_admitted_lifetime_without_model_send (apps.proxy.product.test.test_host_composition.HostCompositionTests.test_cli_count_route_uses_admitted_lifetime_without_model_send) ... ok
+test_missing_owner_capture_refuses_before_count_or_provider (apps.proxy.product.test.test_host_composition.HostCompositionTests.test_missing_owner_capture_refuses_before_count_or_provider) ... ok
+test_missing_trusted_host_or_litellm_invoker_refuses_mount (apps.proxy.product.test.test_host_composition.HostCompositionTests.test_missing_trusted_host_or_litellm_invoker_refuses_mount) ... ok
+test_native_callback_final_body_requires_valid_usage_settlement (apps.proxy.product.test.test_host_composition.HostCompositionTests.test_native_callback_final_body_requires_valid_usage_settlement) ... ok
+test_native_callback_lost_settlement_ack_uses_one_committed_readback (apps.proxy.product.test.test_host_composition.HostCompositionTests.test_native_callback_lost_settlement_ack_uses_one_committed_readback) ... ok
+test_native_callback_suppresses_final_body_for_invalid_terminal_metrics (apps.proxy.product.test.test_host_composition.HostCompositionTests.test_native_callback_suppresses_final_body_for_invalid_terminal_metrics) ... ok
+test_single_final_native_send_and_complete_eof_settlement (apps.proxy.product.test.test_host_composition.HostCompositionTests.test_single_final_native_send_and_complete_eof_settlement) ... ok
+test_wrong_persisted_grant_refuses_before_provider_transport (apps.proxy.product.test.test_host_composition.HostCompositionTests.test_wrong_persisted_grant_refuses_before_provider_transport) ... ok
+test_observation_exports_structure_and_hashes_without_content (apps.proxy.product.test.test_sdk_proxy_offline.OfflineStreamBoundaryTests.test_observation_exports_structure_and_hashes_without_content) ... ok
+test_real_crc_native_parser_settles_complete_cumulative_usage (apps.proxy.product.test.test_sdk_proxy_offline.OfflineStreamBoundaryTests.test_real_crc_native_parser_settles_complete_cumulative_usage) ... ok
+test_structured_terminal_tool_requires_exact_admission_and_complete_usage (apps.proxy.product.test.test_sdk_proxy_offline.OfflineStreamBoundaryTests.test_structured_terminal_tool_requires_exact_admission_and_complete_usage) ... ok
+test_stub_records_second_execution_attempt_and_refuses_it (apps.proxy.product.test.test_sdk_proxy_offline.OfflineStreamBoundaryTests.test_stub_records_second_execution_attempt_and_refuses_it) ... ok
+test_truncation_cache_and_missing_usage_never_settle (apps.proxy.product.test.test_sdk_proxy_offline.OfflineStreamBoundaryTests.test_truncation_cache_and_missing_usage_never_settle) ... ok
+
+======================================================================
+ERROR: test_eventstream_crc_truncated_frame_and_missing_terminal_stay_unknown (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_eventstream_crc_truncated_frame_and_missing_terminal_stay_unknown) (wire_length=1546)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/meri-source/apps/proxy/qualification/test/test_product_response_settlement.py", line 219, in test_eventstream_crc_truncated_frame_and_missing_terminal_stay_unknown
+    await self.call(transport)
+  File "/workspace/meri-source/apps/proxy/qualification/test/test_product_response_settlement.py", line 117, in call
+    return await client.post("https://bedrock-runtime.us-east-1.amazonaws.com/model/selected/invoke",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                             content=RAW_REQUEST)
+                             ^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1859, in post
+    return await self.request(
+           ^^^^^^^^^^^^^^^^^^^
+    ...<13 lines>...
+    )
+    ^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1540, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1643, in send
+    raise exc
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1637, in send
+    await response.aread()
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 979, in aread
+    self._content = b"".join([part async for part in self.aiter_bytes()])
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 997, in aiter_bytes
+    async for raw_bytes in self.aiter_raw():
+    ...<2 lines>...
+            yield chunk
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 1055, in aiter_raw
+    async for raw_stream_bytes in self.stream:
+    ...<2 lines>...
+            yield chunk
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 176, in __aiter__
+    async for chunk in self._stream:
+        yield chunk
+  File "/workspace/meri-source/apps/proxy/product/response_settlement.py", line 165, in __aiter__
+    raise AdmissionDenied("INCOMPLETE_NATIVE_RESPONSE")
+apps.proxy.qualification.runtime.bedrock_body.AdmissionDenied: INCOMPLETE_NATIVE_RESPONSE
+
+======================================================================
+ERROR: test_eventstream_crc_truncated_frame_and_missing_terminal_stay_unknown (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_eventstream_crc_truncated_frame_and_missing_terminal_stay_unknown) (wire_length=1545)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/meri-source/apps/proxy/qualification/test/test_product_response_settlement.py", line 219, in test_eventstream_crc_truncated_frame_and_missing_terminal_stay_unknown
+    await self.call(transport)
+  File "/workspace/meri-source/apps/proxy/qualification/test/test_product_response_settlement.py", line 117, in call
+    return await client.post("https://bedrock-runtime.us-east-1.amazonaws.com/model/selected/invoke",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                             content=RAW_REQUEST)
+                             ^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1859, in post
+    return await self.request(
+           ^^^^^^^^^^^^^^^^^^^
+    ...<13 lines>...
+    )
+    ^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1540, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1643, in send
+    raise exc
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1637, in send
+    await response.aread()
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 979, in aread
+    self._content = b"".join([part async for part in self.aiter_bytes()])
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 997, in aiter_bytes
+    async for raw_bytes in self.aiter_raw():
+    ...<2 lines>...
+            yield chunk
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 1055, in aiter_raw
+    async for raw_stream_bytes in self.stream:
+    ...<2 lines>...
+            yield chunk
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 176, in __aiter__
+    async for chunk in self._stream:
+        yield chunk
+  File "/workspace/meri-source/apps/proxy/product/response_settlement.py", line 181, in __aiter__
+    raise AdmissionDenied("INCOMPLETE_NATIVE_RESPONSE")
+apps.proxy.qualification.runtime.bedrock_body.AdmissionDenied: INCOMPLETE_NATIVE_RESPONSE
+
+======================================================================
+ERROR: test_eventstream_crc_truncated_frame_and_missing_terminal_stay_unknown (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_eventstream_crc_truncated_frame_and_missing_terminal_stay_unknown) (wire_length=1243)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/meri-source/apps/proxy/qualification/test/test_product_response_settlement.py", line 219, in test_eventstream_crc_truncated_frame_and_missing_terminal_stay_unknown
+    await self.call(transport)
+  File "/workspace/meri-source/apps/proxy/qualification/test/test_product_response_settlement.py", line 117, in call
+    return await client.post("https://bedrock-runtime.us-east-1.amazonaws.com/model/selected/invoke",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                             content=RAW_REQUEST)
+                             ^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1859, in post
+    return await self.request(
+           ^^^^^^^^^^^^^^^^^^^
+    ...<13 lines>...
+    )
+    ^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1540, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1643, in send
+    raise exc
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1637, in send
+    await response.aread()
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 979, in aread
+    self._content = b"".join([part async for part in self.aiter_bytes()])
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 997, in aiter_bytes
+    async for raw_bytes in self.aiter_raw():
+    ...<2 lines>...
+            yield chunk
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 1055, in aiter_raw
+    async for raw_stream_bytes in self.stream:
+    ...<2 lines>...
+            yield chunk
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 176, in __aiter__
+    async for chunk in self._stream:
+        yield chunk
+  File "/workspace/meri-source/apps/proxy/product/response_settlement.py", line 181, in __aiter__
+    raise AdmissionDenied("INCOMPLETE_NATIVE_RESPONSE")
+apps.proxy.qualification.runtime.bedrock_body.AdmissionDenied: INCOMPLETE_NATIVE_RESPONSE
+
+======================================================================
+ERROR: test_http_error_malformed_or_semantically_incomplete_stays_unknown (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_http_error_malformed_or_semantically_incomplete_stays_unknown) (status=500, headers=None)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/meri-source/apps/proxy/qualification/test/test_product_response_settlement.py", line 208, in test_http_error_malformed_or_semantically_incomplete_stays_unknown
+    await self.call(transport)
+  File "/workspace/meri-source/apps/proxy/qualification/test/test_product_response_settlement.py", line 117, in call
+    return await client.post("https://bedrock-runtime.us-east-1.amazonaws.com/model/selected/invoke",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                             content=RAW_REQUEST)
+                             ^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1859, in post
+    return await self.request(
+           ^^^^^^^^^^^^^^^^^^^
+    ...<13 lines>...
+    )
+    ^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1540, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1643, in send
+    raise exc
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1637, in send
+    await response.aread()
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 979, in aread
+    self._content = b"".join([part async for part in self.aiter_bytes()])
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 997, in aiter_bytes
+    async for raw_bytes in self.aiter_raw():
+    ...<2 lines>...
+            yield chunk
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 1055, in aiter_raw
+    async for raw_stream_bytes in self.stream:
+    ...<2 lines>...
+            yield chunk
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 176, in __aiter__
+    async for chunk in self._stream:
+        yield chunk
+  File "/workspace/meri-source/apps/proxy/product/response_settlement.py", line 181, in __aiter__
+    raise AdmissionDenied("INCOMPLETE_NATIVE_RESPONSE")
+apps.proxy.qualification.runtime.bedrock_body.AdmissionDenied: INCOMPLETE_NATIVE_RESPONSE
+
+======================================================================
+ERROR: test_http_error_malformed_or_semantically_incomplete_stays_unknown (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_http_error_malformed_or_semantically_incomplete_stays_unknown) (status=200, headers=None)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/meri-source/apps/proxy/qualification/test/test_product_response_settlement.py", line 208, in test_http_error_malformed_or_semantically_incomplete_stays_unknown
+    await self.call(transport)
+  File "/workspace/meri-source/apps/proxy/qualification/test/test_product_response_settlement.py", line 117, in call
+    return await client.post("https://bedrock-runtime.us-east-1.amazonaws.com/model/selected/invoke",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                             content=RAW_REQUEST)
+                             ^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1859, in post
+    return await self.request(
+           ^^^^^^^^^^^^^^^^^^^
+    ...<13 lines>...
+    )
+    ^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1540, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1643, in send
+    raise exc
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1637, in send
+    await response.aread()
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 979, in aread
+    self._content = b"".join([part async for part in self.aiter_bytes()])
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 997, in aiter_bytes
+    async for raw_bytes in self.aiter_raw():
+    ...<2 lines>...
+            yield chunk
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 1055, in aiter_raw
+    async for raw_stream_bytes in self.stream:
+    ...<2 lines>...
+            yield chunk
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 176, in __aiter__
+    async for chunk in self._stream:
+        yield chunk
+  File "/workspace/meri-source/apps/proxy/product/response_settlement.py", line 181, in __aiter__
+    raise AdmissionDenied("INCOMPLETE_NATIVE_RESPONSE")
+apps.proxy.qualification.runtime.bedrock_body.AdmissionDenied: INCOMPLETE_NATIVE_RESPONSE
+
+======================================================================
+ERROR: test_http_error_malformed_or_semantically_incomplete_stays_unknown (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_http_error_malformed_or_semantically_incomplete_stays_unknown) (status=200, headers={'content-type': 'text/plain'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/meri-source/apps/proxy/qualification/test/test_product_response_settlement.py", line 208, in test_http_error_malformed_or_semantically_incomplete_stays_unknown
+    await self.call(transport)
+  File "/workspace/meri-source/apps/proxy/qualification/test/test_product_response_settlement.py", line 117, in call
+    return await client.post("https://bedrock-runtime.us-east-1.amazonaws.com/model/selected/invoke",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                             content=RAW_REQUEST)
+                             ^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1859, in post
+    return await self.request(
+           ^^^^^^^^^^^^^^^^^^^
+    ...<13 lines>...
+    )
+    ^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1540, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1643, in send
+    raise exc
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1637, in send
+    await response.aread()
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 979, in aread
+    self._content = b"".join([part async for part in self.aiter_bytes()])
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 997, in aiter_bytes
+    async for raw_bytes in self.aiter_raw():
+    ...<2 lines>...
+            yield chunk
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 1055, in aiter_raw
+    async for raw_stream_bytes in self.stream:
+    ...<2 lines>...
+            yield chunk
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 176, in __aiter__
+    async for chunk in self._stream:
+        yield chunk
+  File "/workspace/meri-source/apps/proxy/product/response_settlement.py", line 181, in __aiter__
+    raise AdmissionDenied("INCOMPLETE_NATIVE_RESPONSE")
+apps.proxy.qualification.runtime.bedrock_body.AdmissionDenied: INCOMPLETE_NATIVE_RESPONSE
+
+======================================================================
+ERROR: test_http_error_malformed_or_semantically_incomplete_stays_unknown (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_http_error_malformed_or_semantically_incomplete_stays_unknown) (status=200, headers={'content-type': 'application/json', 'content-length': '1'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/meri-source/apps/proxy/qualification/test/test_product_response_settlement.py", line 208, in test_http_error_malformed_or_semantically_incomplete_stays_unknown
+    await self.call(transport)
+  File "/workspace/meri-source/apps/proxy/qualification/test/test_product_response_settlement.py", line 117, in call
+    return await client.post("https://bedrock-runtime.us-east-1.amazonaws.com/model/selected/invoke",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                             content=RAW_REQUEST)
+                             ^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1859, in post
+    return await self.request(
+           ^^^^^^^^^^^^^^^^^^^
+    ...<13 lines>...
+    )
+    ^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1540, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1643, in send
+    raise exc
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1637, in send
+    await response.aread()
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 979, in aread
+    self._content = b"".join([part async for part in self.aiter_bytes()])
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 997, in aiter_bytes
+    async for raw_bytes in self.aiter_raw():
+    ...<2 lines>...
+            yield chunk
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 1055, in aiter_raw
+    async for raw_stream_bytes in self.stream:
+    ...<2 lines>...
+            yield chunk
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 176, in __aiter__
+    async for chunk in self._stream:
+        yield chunk
+  File "/workspace/meri-source/apps/proxy/product/response_settlement.py", line 181, in __aiter__
+    raise AdmissionDenied("INCOMPLETE_NATIVE_RESPONSE")
+apps.proxy.qualification.runtime.bedrock_body.AdmissionDenied: INCOMPLETE_NATIVE_RESPONSE
+
+======================================================================
+ERROR: test_http_error_malformed_or_semantically_incomplete_stays_unknown (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_http_error_malformed_or_semantically_incomplete_stays_unknown) (status=200, headers={'content-type': 'application/json', 'content-encoding': 'gzip'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/meri-source/apps/proxy/qualification/test/test_product_response_settlement.py", line 208, in test_http_error_malformed_or_semantically_incomplete_stays_unknown
+    await self.call(transport)
+  File "/workspace/meri-source/apps/proxy/qualification/test/test_product_response_settlement.py", line 117, in call
+    return await client.post("https://bedrock-runtime.us-east-1.amazonaws.com/model/selected/invoke",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                             content=RAW_REQUEST)
+                             ^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1859, in post
+    return await self.request(
+           ^^^^^^^^^^^^^^^^^^^
+    ...<13 lines>...
+    )
+    ^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1540, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1643, in send
+    raise exc
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1637, in send
+    await response.aread()
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 979, in aread
+    self._content = b"".join([part async for part in self.aiter_bytes()])
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 997, in aiter_bytes
+    async for raw_bytes in self.aiter_raw():
+    ...<2 lines>...
+            yield chunk
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 1055, in aiter_raw
+    async for raw_stream_bytes in self.stream:
+    ...<2 lines>...
+            yield chunk
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 176, in __aiter__
+    async for chunk in self._stream:
+        yield chunk
+  File "/workspace/meri-source/apps/proxy/product/response_settlement.py", line 181, in __aiter__
+    raise AdmissionDenied("INCOMPLETE_NATIVE_RESPONSE")
+apps.proxy.qualification.runtime.bedrock_body.AdmissionDenied: INCOMPLETE_NATIVE_RESPONSE
+
+======================================================================
+ERROR: test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown) (field='inputTokenCount')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/meri-source/apps/proxy/qualification/test/test_product_response_settlement.py", line 176, in test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown
+    await self.call(transport)
+  File "/workspace/meri-source/apps/proxy/qualification/test/test_product_response_settlement.py", line 117, in call
+    return await client.post("https://bedrock-runtime.us-east-1.amazonaws.com/model/selected/invoke",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                             content=RAW_REQUEST)
+                             ^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1859, in post
+    return await self.request(
+           ^^^^^^^^^^^^^^^^^^^
+    ...<13 lines>...
+    )
+    ^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1540, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1643, in send
+    raise exc
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1637, in send
+    await response.aread()
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 979, in aread
+    self._content = b"".join([part async for part in self.aiter_bytes()])
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 997, in aiter_bytes
+    async for raw_bytes in self.aiter_raw():
+    ...<2 lines>...
+            yield chunk
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 1055, in aiter_raw
+    async for raw_stream_bytes in self.stream:
+    ...<2 lines>...
+            yield chunk
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 176, in __aiter__
+    async for chunk in self._stream:
+        yield chunk
+  File "/workspace/meri-source/apps/proxy/product/response_settlement.py", line 165, in __aiter__
+    raise AdmissionDenied("INCOMPLETE_NATIVE_RESPONSE")
+apps.proxy.qualification.runtime.bedrock_body.AdmissionDenied: INCOMPLETE_NATIVE_RESPONSE
+
+======================================================================
+ERROR: test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown) (field='outputTokenCount')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/meri-source/apps/proxy/qualification/test/test_product_response_settlement.py", line 176, in test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown
+    await self.call(transport)
+  File "/workspace/meri-source/apps/proxy/qualification/test/test_product_response_settlement.py", line 117, in call
+    return await client.post("https://bedrock-runtime.us-east-1.amazonaws.com/model/selected/invoke",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                             content=RAW_REQUEST)
+                             ^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1859, in post
+    return await self.request(
+           ^^^^^^^^^^^^^^^^^^^
+    ...<13 lines>...
+    )
+    ^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1540, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1643, in send
+    raise exc
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1637, in send
+    await response.aread()
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 979, in aread
+    self._content = b"".join([part async for part in self.aiter_bytes()])
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 997, in aiter_bytes
+    async for raw_bytes in self.aiter_raw():
+    ...<2 lines>...
+            yield chunk
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 1055, in aiter_raw
+    async for raw_stream_bytes in self.stream:
+    ...<2 lines>...
+            yield chunk
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 176, in __aiter__
+    async for chunk in self._stream:
+        yield chunk
+  File "/workspace/meri-source/apps/proxy/product/response_settlement.py", line 165, in __aiter__
+    raise AdmissionDenied("INCOMPLETE_NATIVE_RESPONSE")
+apps.proxy.qualification.runtime.bedrock_body.AdmissionDenied: INCOMPLETE_NATIVE_RESPONSE
+
+======================================================================
+ERROR: test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown) (field='invocationLatency')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/meri-source/apps/proxy/qualification/test/test_product_response_settlement.py", line 176, in test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown
+    await self.call(transport)
+  File "/workspace/meri-source/apps/proxy/qualification/test/test_product_response_settlement.py", line 117, in call
+    return await client.post("https://bedrock-runtime.us-east-1.amazonaws.com/model/selected/invoke",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                             content=RAW_REQUEST)
+                             ^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1859, in post
+    return await self.request(
+           ^^^^^^^^^^^^^^^^^^^
+    ...<13 lines>...
+    )
+    ^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1540, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1643, in send
+    raise exc
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1637, in send
+    await response.aread()
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 979, in aread
+    self._content = b"".join([part async for part in self.aiter_bytes()])
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 997, in aiter_bytes
+    async for raw_bytes in self.aiter_raw():
+    ...<2 lines>...
+            yield chunk
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 1055, in aiter_raw
+    async for raw_stream_bytes in self.stream:
+    ...<2 lines>...
+            yield chunk
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 176, in __aiter__
+    async for chunk in self._stream:
+        yield chunk
+  File "/workspace/meri-source/apps/proxy/product/response_settlement.py", line 165, in __aiter__
+    raise AdmissionDenied("INCOMPLETE_NATIVE_RESPONSE")
+apps.proxy.qualification.runtime.bedrock_body.AdmissionDenied: INCOMPLETE_NATIVE_RESPONSE
+
+======================================================================
+ERROR: test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown) (field='cacheReadInputTokenCount')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/meri-source/apps/proxy/qualification/test/test_product_response_settlement.py", line 176, in test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown
+    await self.call(transport)
+  File "/workspace/meri-source/apps/proxy/qualification/test/test_product_response_settlement.py", line 117, in call
+    return await client.post("https://bedrock-runtime.us-east-1.amazonaws.com/model/selected/invoke",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                             content=RAW_REQUEST)
+                             ^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1859, in post
+    return await self.request(
+           ^^^^^^^^^^^^^^^^^^^
+    ...<13 lines>...
+    )
+    ^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1540, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1643, in send
+    raise exc
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1637, in send
+    await response.aread()
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 979, in aread
+    self._content = b"".join([part async for part in self.aiter_bytes()])
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 997, in aiter_bytes
+    async for raw_bytes in self.aiter_raw():
+    ...<2 lines>...
+            yield chunk
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 1055, in aiter_raw
+    async for raw_stream_bytes in self.stream:
+    ...<2 lines>...
+            yield chunk
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 176, in __aiter__
+    async for chunk in self._stream:
+        yield chunk
+  File "/workspace/meri-source/apps/proxy/product/response_settlement.py", line 165, in __aiter__
+    raise AdmissionDenied("INCOMPLETE_NATIVE_RESPONSE")
+apps.proxy.qualification.runtime.bedrock_body.AdmissionDenied: INCOMPLETE_NATIVE_RESPONSE
+
+======================================================================
+ERROR: test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown) (field='cacheWriteInputTokenCount')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/meri-source/apps/proxy/qualification/test/test_product_response_settlement.py", line 176, in test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown
+    await self.call(transport)
+  File "/workspace/meri-source/apps/proxy/qualification/test/test_product_response_settlement.py", line 117, in call
+    return await client.post("https://bedrock-runtime.us-east-1.amazonaws.com/model/selected/invoke",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                             content=RAW_REQUEST)
+                             ^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1859, in post
+    return await self.request(
+           ^^^^^^^^^^^^^^^^^^^
+    ...<13 lines>...
+    )
+    ^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1540, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1643, in send
+    raise exc
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1637, in send
+    await response.aread()
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 979, in aread
+    self._content = b"".join([part async for part in self.aiter_bytes()])
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 997, in aiter_bytes
+    async for raw_bytes in self.aiter_raw():
+    ...<2 lines>...
+            yield chunk
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 1055, in aiter_raw
+    async for raw_stream_bytes in self.stream:
+    ...<2 lines>...
+            yield chunk
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 176, in __aiter__
+    async for chunk in self._stream:
+        yield chunk
+  File "/workspace/meri-source/apps/proxy/product/response_settlement.py", line 165, in __aiter__
+    raise AdmissionDenied("INCOMPLETE_NATIVE_RESPONSE")
+apps.proxy.qualification.runtime.bedrock_body.AdmissionDenied: INCOMPLETE_NATIVE_RESPONSE
+
+======================================================================
+ERROR: test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown) (field='unexpectedCost')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/meri-source/apps/proxy/qualification/test/test_product_response_settlement.py", line 176, in test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown
+    await self.call(transport)
+  File "/workspace/meri-source/apps/proxy/qualification/test/test_product_response_settlement.py", line 117, in call
+    return await client.post("https://bedrock-runtime.us-east-1.amazonaws.com/model/selected/invoke",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                             content=RAW_REQUEST)
+                             ^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1859, in post
+    return await self.request(
+           ^^^^^^^^^^^^^^^^^^^
+    ...<13 lines>...
+    )
+    ^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1540, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1643, in send
+    raise exc
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1637, in send
+    await response.aread()
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 979, in aread
+    self._content = b"".join([part async for part in self.aiter_bytes()])
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 997, in aiter_bytes
+    async for raw_bytes in self.aiter_raw():
+    ...<2 lines>...
+            yield chunk
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 1055, in aiter_raw
+    async for raw_stream_bytes in self.stream:
+    ...<2 lines>...
+            yield chunk
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 176, in __aiter__
+    async for chunk in self._stream:
+        yield chunk
+  File "/workspace/meri-source/apps/proxy/product/response_settlement.py", line 165, in __aiter__
+    raise AdmissionDenied("INCOMPLETE_NATIVE_RESPONSE")
+apps.proxy.qualification.runtime.bedrock_body.AdmissionDenied: INCOMPLETE_NATIVE_RESPONSE
+
+======================================================================
+ERROR: test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/meri-integration-python/cpython-3.13.5-linux-x86_64-gnu/lib/python3.13/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/tmp/meri-integration-python/cpython-3.13.5-linux-x86_64-gnu/lib/python3.13/asyncio/base_events.py", line 725, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "/workspace/meri-source/apps/proxy/qualification/test/test_product_response_settlement.py", line 185, in test_native_terminal_metrics_mismatch_or_cache_usage_keeps_hold_unknown
+    await self.call(transport)
+  File "/workspace/meri-source/apps/proxy/qualification/test/test_product_response_settlement.py", line 117, in call
+    return await client.post("https://bedrock-runtime.us-east-1.amazonaws.com/model/selected/invoke",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                             content=RAW_REQUEST)
+                             ^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1859, in post
+    return await self.request(
+           ^^^^^^^^^^^^^^^^^^^
+    ...<13 lines>...
+    )
+    ^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1540, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1643, in send
+    raise exc
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 1637, in send
+    await response.aread()
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 979, in aread
+    self._content = b"".join([part async for part in self.aiter_bytes()])
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 997, in aiter_bytes
+    async for raw_bytes in self.aiter_raw():
+    ...<2 lines>...
+            yield chunk
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_models.py", line 1055, in aiter_raw
+    async for raw_stream_bytes in self.stream:
+    ...<2 lines>...
+            yield chunk
+  File "/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/httpx/_client.py", line 176, in __aiter__
+    async for chunk in self._stream:
+        yield chunk
+  File "/workspace/meri-source/apps/proxy/product/response_settlement.py", line 165, in __aiter__
+    raise AdmissionDenied("INCOMPLETE_NATIVE_RESPONSE")
+apps.proxy.qualification.runtime.bedrock_body.AdmissionDenied: INCOMPLETE_NATIVE_RESPONSE
+
+======================================================================
+FAIL: test_early_close_and_stream_exception_do_not_settle (apps.proxy.qualification.test.test_product_response_settlement.SettlementTests.test_early_close_and_stream_exception_do_not_settle)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/meri-integration-python/cpython-3.13.5-linux-x86_64-gnu/lib/python3.13/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/tmp/meri-integration-python/cpython-3.13.5-linux-x86_64-gnu/lib/python3.13/asyncio/base_events.py", line 725, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "/workspace/meri-source/apps/proxy/qualification/test/test_product_response_settlement.py", line 228, in test_early_close_and_stream_exception_do_not_settle
+    self.assertEqual(await anext(response.aiter_raw()), payload[:3])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'{"id":"synthetic-message","type":"message","[180 chars]:3}}' != b'{"i'
+
+----------------------------------------------------------------------
+Ran 98 tests in 2.203s
+
+FAILED (failures=1, errors=15)
+
+Give Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+Give Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+Give Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+Give Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+Give Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+Give Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+Give Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+Give Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+Give Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+Give Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+Give Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+Give Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+Give Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+{"countBlobSha256": "5c310926328b0dd5a83d897633847e5c7cd07955391e9501a055df4245e3a865", "countOrigin": "fixture", "invokeBytes": 175, "invokeSha256": "5c310926328b0dd5a83d897633847e5c7cd07955391e9501a055df4245e3a865", "proof": "actual-upstream-final-body", "serializedCountBlobSha256": "5c310926328b0dd5a83d897633847e5c7cd07955391e9501a055df4245e3a865"}

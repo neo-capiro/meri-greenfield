@@ -1,0 +1,789 @@
+{
+  "scope": "OFFLINE_PARTITION_ONLY",
+  "mode": "reservation-ack-lost",
+  "client": "sdk",
+  "outputFormat": "none",
+  "fullOwnerHttps": "OPEN_RFC1918_INTERFACES_UNAVAILABLE",
+  "productImage": "UNRUN",
+  "postgresql": "UNRUN",
+  "providerCalls": 0,
+  "sdkResults": [],
+  "sdkSpawns": 1,
+  "sourceCommit": "90f82dc692fd017f4f8957cfaf8402000bb2f92f",
+  "sourceFiles": {
+    "run.mjs": "93a60df41f16ee87c080f600322a2c780897b7e2869455289b46491b61a77eb1",
+    "native_proxy.py": "876d8e71d98489c198251aaf400b8b7fc14d513500603022226ed32624a6214a",
+    "provider_stub.py": "8d8b31f2feff3b37b9d8c5a4186a0b90475088bbd07b74ed5e178f77fde20757",
+    "owner_peer.mjs": "bc2515160ace8f696f6317ffd4ac7a999e211d3068a31ac049294aff9abe528c",
+    "model_ledger_fixture.mjs": "70f4d7fe2deafe5c58682923f957f8ea247072a3f7d21a166934f8403240cf56"
+  },
+  "productConfigSha256": "64860d829d7c022f6640b1a75eb48ad05dc2421d8e5e2bcdfdda50b421754d19",
+  "versions": {
+    "sdk": "0.3.295",
+    "cli": "2.1.295",
+    "node": "v24.19.0"
+  },
+  "executableSha256": "4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358",
+  "sdkIterationFailure": "Error",
+  "native": {
+    "scope": "offline-partition-only",
+    "fullOwnerHttps": "OPEN_RFC1918_INTERFACES_UNAVAILABLE",
+    "syntheticIngress": true,
+    "ownerTransport": "private-subprocess-IPC",
+    "database": "scripted-SQL-canonical-JS-accounting",
+    "countTransport": "botocore-Stubber",
+    "providerTransport": "in-process-HTTPX-stub",
+    "providerExecutions": 0,
+    "countRequests": 1,
+    "sdkRequests": [
+      {
+        "bytes": 2398,
+        "sha256": "1143b3216d61aac6e80429bff76c45d8c605aedf7dfff367bd5044dd129cd34a",
+        "fieldNames": [
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].content[].text",
+          "messages[].content[].type",
+          "messages[].role",
+          "metadata",
+          "metadata.user_id",
+          "model",
+          "stream",
+          "system",
+          "system[].text",
+          "system[].type",
+          "temperature",
+          "thinking",
+          "thinking.type",
+          "tools"
+        ],
+        "topLevelTypes": {
+          "model": "str",
+          "messages": "list",
+          "system": "list",
+          "tools": "list",
+          "metadata": "dict",
+          "max_tokens": "int",
+          "thinking": "dict",
+          "temperature": "int",
+          "stream": "bool"
+        },
+        "topLevelArrayLengths": {
+          "messages": 1,
+          "system": 3,
+          "tools": 0
+        },
+        "modelAlias": "meri-sonnet-qualification",
+        "maxOutputTokens": 8192,
+        "stream": true,
+        "temperature": 1,
+        "thinkingDisabled": true,
+        "toolNames": [],
+        "metadataUserIdBytes": 150,
+        "metadataUserIdTypes": {
+          "device_id": "str",
+          "account_uuid": "str",
+          "session_id": "str"
+        },
+        "headerBetaEnums": [
+          "claude-code-20250219",
+          "interleaved-thinking-2025-05-14",
+          "thinking-token-count-2026-05-13",
+          "context-management-2025-06-27",
+          "prompt-caching-scope-2026-01-05",
+          "effort-2025-11-24"
+        ],
+        "ingressRetryHeaders": [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ]
+      },
+      {
+        "bytes": 2398,
+        "sha256": "1143b3216d61aac6e80429bff76c45d8c605aedf7dfff367bd5044dd129cd34a",
+        "fieldNames": [
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].content[].text",
+          "messages[].content[].type",
+          "messages[].role",
+          "metadata",
+          "metadata.user_id",
+          "model",
+          "stream",
+          "system",
+          "system[].text",
+          "system[].type",
+          "temperature",
+          "thinking",
+          "thinking.type",
+          "tools"
+        ],
+        "topLevelTypes": {
+          "model": "str",
+          "messages": "list",
+          "system": "list",
+          "tools": "list",
+          "metadata": "dict",
+          "max_tokens": "int",
+          "thinking": "dict",
+          "temperature": "int",
+          "stream": "bool"
+        },
+        "topLevelArrayLengths": {
+          "messages": 1,
+          "system": 3,
+          "tools": 0
+        },
+        "modelAlias": "meri-sonnet-qualification",
+        "maxOutputTokens": 8192,
+        "stream": true,
+        "temperature": 1,
+        "thinkingDisabled": true,
+        "toolNames": [],
+        "metadataUserIdBytes": 150,
+        "metadataUserIdTypes": {
+          "device_id": "str",
+          "account_uuid": "str",
+          "session_id": "str"
+        },
+        "headerBetaEnums": [
+          "claude-code-20250219",
+          "interleaved-thinking-2025-05-14",
+          "thinking-token-count-2026-05-13",
+          "context-management-2025-06-27",
+          "prompt-caching-scope-2026-01-05",
+          "effort-2025-11-24"
+        ],
+        "ingressRetryHeaders": [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ]
+      },
+      {
+        "bytes": 2398,
+        "sha256": "1143b3216d61aac6e80429bff76c45d8c605aedf7dfff367bd5044dd129cd34a",
+        "fieldNames": [
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].content[].text",
+          "messages[].content[].type",
+          "messages[].role",
+          "metadata",
+          "metadata.user_id",
+          "model",
+          "stream",
+          "system",
+          "system[].text",
+          "system[].type",
+          "temperature",
+          "thinking",
+          "thinking.type",
+          "tools"
+        ],
+        "topLevelTypes": {
+          "model": "str",
+          "messages": "list",
+          "system": "list",
+          "tools": "list",
+          "metadata": "dict",
+          "max_tokens": "int",
+          "thinking": "dict",
+          "temperature": "int",
+          "stream": "bool"
+        },
+        "topLevelArrayLengths": {
+          "messages": 1,
+          "system": 3,
+          "tools": 0
+        },
+        "modelAlias": "meri-sonnet-qualification",
+        "maxOutputTokens": 8192,
+        "stream": true,
+        "temperature": 1,
+        "thinkingDisabled": true,
+        "toolNames": [],
+        "metadataUserIdBytes": 150,
+        "metadataUserIdTypes": {
+          "device_id": "str",
+          "account_uuid": "str",
+          "session_id": "str"
+        },
+        "headerBetaEnums": [
+          "claude-code-20250219",
+          "interleaved-thinking-2025-05-14",
+          "thinking-token-count-2026-05-13",
+          "context-management-2025-06-27",
+          "prompt-caching-scope-2026-01-05",
+          "effort-2025-11-24"
+        ],
+        "ingressRetryHeaders": [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ]
+      },
+      {
+        "bytes": 2398,
+        "sha256": "1143b3216d61aac6e80429bff76c45d8c605aedf7dfff367bd5044dd129cd34a",
+        "fieldNames": [
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].content[].text",
+          "messages[].content[].type",
+          "messages[].role",
+          "metadata",
+          "metadata.user_id",
+          "model",
+          "stream",
+          "system",
+          "system[].text",
+          "system[].type",
+          "temperature",
+          "thinking",
+          "thinking.type",
+          "tools"
+        ],
+        "topLevelTypes": {
+          "model": "str",
+          "messages": "list",
+          "system": "list",
+          "tools": "list",
+          "metadata": "dict",
+          "max_tokens": "int",
+          "thinking": "dict",
+          "temperature": "int",
+          "stream": "bool"
+        },
+        "topLevelArrayLengths": {
+          "messages": 1,
+          "system": 3,
+          "tools": 0
+        },
+        "modelAlias": "meri-sonnet-qualification",
+        "maxOutputTokens": 8192,
+        "stream": true,
+        "temperature": 1,
+        "thinkingDisabled": true,
+        "toolNames": [],
+        "metadataUserIdBytes": 150,
+        "metadataUserIdTypes": {
+          "device_id": "str",
+          "account_uuid": "str",
+          "session_id": "str"
+        },
+        "headerBetaEnums": [
+          "claude-code-20250219",
+          "interleaved-thinking-2025-05-14",
+          "thinking-token-count-2026-05-13",
+          "context-management-2025-06-27",
+          "prompt-caching-scope-2026-01-05",
+          "effort-2025-11-24"
+        ],
+        "ingressRetryHeaders": [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ]
+      },
+      {
+        "bytes": 2398,
+        "sha256": "1143b3216d61aac6e80429bff76c45d8c605aedf7dfff367bd5044dd129cd34a",
+        "fieldNames": [
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].content[].text",
+          "messages[].content[].type",
+          "messages[].role",
+          "metadata",
+          "metadata.user_id",
+          "model",
+          "stream",
+          "system",
+          "system[].text",
+          "system[].type",
+          "temperature",
+          "thinking",
+          "thinking.type",
+          "tools"
+        ],
+        "topLevelTypes": {
+          "model": "str",
+          "messages": "list",
+          "system": "list",
+          "tools": "list",
+          "metadata": "dict",
+          "max_tokens": "int",
+          "thinking": "dict",
+          "temperature": "int",
+          "stream": "bool"
+        },
+        "topLevelArrayLengths": {
+          "messages": 1,
+          "system": 3,
+          "tools": 0
+        },
+        "modelAlias": "meri-sonnet-qualification",
+        "maxOutputTokens": 8192,
+        "stream": true,
+        "temperature": 1,
+        "thinkingDisabled": true,
+        "toolNames": [],
+        "metadataUserIdBytes": 150,
+        "metadataUserIdTypes": {
+          "device_id": "str",
+          "account_uuid": "str",
+          "session_id": "str"
+        },
+        "headerBetaEnums": [
+          "claude-code-20250219",
+          "interleaved-thinking-2025-05-14",
+          "thinking-token-count-2026-05-13",
+          "context-management-2025-06-27",
+          "prompt-caching-scope-2026-01-05",
+          "effort-2025-11-24"
+        ],
+        "ingressRetryHeaders": [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ]
+      },
+      {
+        "bytes": 2398,
+        "sha256": "1143b3216d61aac6e80429bff76c45d8c605aedf7dfff367bd5044dd129cd34a",
+        "fieldNames": [
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].content[].text",
+          "messages[].content[].type",
+          "messages[].role",
+          "metadata",
+          "metadata.user_id",
+          "model",
+          "stream",
+          "system",
+          "system[].text",
+          "system[].type",
+          "temperature",
+          "thinking",
+          "thinking.type",
+          "tools"
+        ],
+        "topLevelTypes": {
+          "model": "str",
+          "messages": "list",
+          "system": "list",
+          "tools": "list",
+          "metadata": "dict",
+          "max_tokens": "int",
+          "thinking": "dict",
+          "temperature": "int",
+          "stream": "bool"
+        },
+        "topLevelArrayLengths": {
+          "messages": 1,
+          "system": 3,
+          "tools": 0
+        },
+        "modelAlias": "meri-sonnet-qualification",
+        "maxOutputTokens": 8192,
+        "stream": true,
+        "temperature": 1,
+        "thinkingDisabled": true,
+        "toolNames": [],
+        "metadataUserIdBytes": 150,
+        "metadataUserIdTypes": {
+          "device_id": "str",
+          "account_uuid": "str",
+          "session_id": "str"
+        },
+        "headerBetaEnums": [
+          "claude-code-20250219",
+          "interleaved-thinking-2025-05-14",
+          "thinking-token-count-2026-05-13",
+          "context-management-2025-06-27",
+          "prompt-caching-scope-2026-01-05",
+          "effort-2025-11-24"
+        ],
+        "ingressRetryHeaders": [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ]
+      }
+    ],
+    "nativeRequests": [
+      {
+        "bytes": 2414,
+        "sha256": "3681938b8e5282e06114c5660771105b6788f146d4710572fc44080706e28250",
+        "fieldNames": [
+          "anthropic_beta",
+          "anthropic_version",
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].content[].text",
+          "messages[].content[].type",
+          "messages[].role",
+          "metadata",
+          "metadata.user_id",
+          "system",
+          "system[].text",
+          "system[].type",
+          "temperature",
+          "thinking",
+          "thinking.type",
+          "tools"
+        ],
+        "topLevelTypes": {
+          "messages": "list",
+          "max_tokens": "int",
+          "metadata": "dict",
+          "system": "list",
+          "thinking": "dict",
+          "tools": "list",
+          "temperature": "int",
+          "anthropic_version": "str",
+          "anthropic_beta": "list"
+        },
+        "topLevelArrayLengths": {
+          "messages": 1,
+          "system": 2,
+          "tools": 0,
+          "anthropic_beta": 2
+        },
+        "maxOutputTokens": 8192,
+        "temperature": 1,
+        "thinkingDisabled": true,
+        "toolNames": [],
+        "metadataUserIdBytes": 150,
+        "metadataUserIdTypes": {
+          "device_id": "str",
+          "account_uuid": "str",
+          "session_id": "str"
+        },
+        "betaEnums": [
+          "context-management-2025-06-27",
+          "effort-2025-11-24"
+        ],
+        "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+        "headerNames": [
+          "accept",
+          "accept-encoding",
+          "anthropic-beta",
+          "anthropic-version",
+          "authorization",
+          "connection",
+          "content-length",
+          "content-type",
+          "host",
+          "user-agent",
+          "x-amz-date"
+        ],
+        "nativeHeaderBetaEnums": [
+          "context-management-2025-06-27",
+          "effort-2025-11-24"
+        ]
+      }
+    ],
+    "errors": [
+      {
+        "operation": "wire",
+        "code": "PRODUCT_OWNER_CHANNEL_DENIED"
+      },
+      {
+        "type": "StateDenied",
+        "trace": [
+          {
+            "file": "native_proxy.py",
+            "line": 238,
+            "function": "route"
+          },
+          {
+            "file": "native_proxy.py",
+            "line": 149,
+            "function": "fixture_lifetime"
+          },
+          {
+            "file": "threads.py",
+            "line": 25,
+            "function": "to_thread"
+          },
+          {
+            "file": "thread.py",
+            "line": 59,
+            "function": "run"
+          },
+          {
+            "file": "owner_admission.py",
+            "line": 236,
+            "function": "resolve_for_issued_sync"
+          },
+          {
+            "file": "owner_admission.py",
+            "line": 203,
+            "function": "_sync_read"
+          },
+          {
+            "file": "owner_admission.py",
+            "line": 132,
+            "function": "_remaining"
+          },
+          {
+            "file": "owner_admission.py",
+            "line": 26,
+            "function": "_deny"
+          }
+        ],
+        "code": "PRODUCT_OWNER_ADMISSION_DENIED"
+      },
+      {
+        "type": "StateDenied",
+        "trace": [
+          {
+            "file": "native_proxy.py",
+            "line": 238,
+            "function": "route"
+          },
+          {
+            "file": "native_proxy.py",
+            "line": 149,
+            "function": "fixture_lifetime"
+          },
+          {
+            "file": "threads.py",
+            "line": 25,
+            "function": "to_thread"
+          },
+          {
+            "file": "thread.py",
+            "line": 59,
+            "function": "run"
+          },
+          {
+            "file": "owner_admission.py",
+            "line": 236,
+            "function": "resolve_for_issued_sync"
+          },
+          {
+            "file": "owner_admission.py",
+            "line": 203,
+            "function": "_sync_read"
+          },
+          {
+            "file": "owner_admission.py",
+            "line": 132,
+            "function": "_remaining"
+          },
+          {
+            "file": "owner_admission.py",
+            "line": 26,
+            "function": "_deny"
+          }
+        ],
+        "code": "PRODUCT_OWNER_ADMISSION_DENIED"
+      },
+      {
+        "type": "StateDenied",
+        "trace": [
+          {
+            "file": "native_proxy.py",
+            "line": 238,
+            "function": "route"
+          },
+          {
+            "file": "native_proxy.py",
+            "line": 149,
+            "function": "fixture_lifetime"
+          },
+          {
+            "file": "threads.py",
+            "line": 25,
+            "function": "to_thread"
+          },
+          {
+            "file": "thread.py",
+            "line": 59,
+            "function": "run"
+          },
+          {
+            "file": "owner_admission.py",
+            "line": 236,
+            "function": "resolve_for_issued_sync"
+          },
+          {
+            "file": "owner_admission.py",
+            "line": 203,
+            "function": "_sync_read"
+          },
+          {
+            "file": "owner_admission.py",
+            "line": 132,
+            "function": "_remaining"
+          },
+          {
+            "file": "owner_admission.py",
+            "line": 26,
+            "function": "_deny"
+          }
+        ],
+        "code": "PRODUCT_OWNER_ADMISSION_DENIED"
+      },
+      {
+        "type": "StateDenied",
+        "trace": [
+          {
+            "file": "native_proxy.py",
+            "line": 238,
+            "function": "route"
+          },
+          {
+            "file": "native_proxy.py",
+            "line": 149,
+            "function": "fixture_lifetime"
+          },
+          {
+            "file": "threads.py",
+            "line": 25,
+            "function": "to_thread"
+          },
+          {
+            "file": "thread.py",
+            "line": 59,
+            "function": "run"
+          },
+          {
+            "file": "owner_admission.py",
+            "line": 236,
+            "function": "resolve_for_issued_sync"
+          },
+          {
+            "file": "owner_admission.py",
+            "line": 203,
+            "function": "_sync_read"
+          },
+          {
+            "file": "owner_admission.py",
+            "line": 132,
+            "function": "_remaining"
+          },
+          {
+            "file": "owner_admission.py",
+            "line": 26,
+            "function": "_deny"
+          }
+        ],
+        "code": "PRODUCT_OWNER_ADMISSION_DENIED"
+      },
+      {
+        "type": "StateDenied",
+        "trace": [
+          {
+            "file": "native_proxy.py",
+            "line": 238,
+            "function": "route"
+          },
+          {
+            "file": "native_proxy.py",
+            "line": 149,
+            "function": "fixture_lifetime"
+          },
+          {
+            "file": "threads.py",
+            "line": 25,
+            "function": "to_thread"
+          },
+          {
+            "file": "thread.py",
+            "line": 59,
+            "function": "run"
+          },
+          {
+            "file": "owner_admission.py",
+            "line": 236,
+            "function": "resolve_for_issued_sync"
+          },
+          {
+            "file": "owner_admission.py",
+            "line": 203,
+            "function": "_sync_read"
+          },
+          {
+            "file": "owner_admission.py",
+            "line": 132,
+            "function": "_remaining"
+          },
+          {
+            "file": "owner_admission.py",
+            "line": 26,
+            "function": "_deny"
+          }
+        ],
+        "code": "PRODUCT_OWNER_ADMISSION_DENIED"
+      }
+    ],
+    "versions": {
+      "python": "3.13.5",
+      "litellm": "1.104.2",
+      "boto3": "1.43.111",
+      "botocore": "1.43.111",
+      "httpx": "0.28.1",
+      "fastapi": "0.136.3",
+      "uvicorn": "0.51.0"
+    },
+    "ownerOperations": {
+      "reserve": 1
+    },
+    "ownerExchangeAborted": true,
+    "ledger": {
+      "syntheticAllocation": true,
+      "maxCostMicroUSD": 250000,
+      "allocationSha256": "efda2ef258cdb2b7634a9e14c95fdbc98f783a66266912fc369252eb53303ce3",
+      "manifestSha256": "0f415cc9ad01ed8d1303fbff11976627b3829ef829e75a27ffde4f6d8160c6a9",
+      "requests": [
+        {
+          "requestId": "3f2d2a530cf8443aa398ef3157c5eac0",
+          "state": "UNKNOWN",
+          "holdMicroUSD": "135248",
+          "actualMicroUSD": null,
+          "inputTokens": 12,
+          "maxOutputTokens": 8192
+        }
+      ],
+      "consumedMicroUSD": "0",
+      "quarantined": false,
+      "reservationInserts": 1,
+      "settlementUpdates": 0,
+      "ownerServiceGateAvailable": true,
+      "ownerChannelCount": 1
+    },
+    "nativeStarted": true,
+    "nativeStopped": true,
+    "ownerHostGateAvailable": false,
+    "ownerBridge": "actual-ProductOwnerBridge-and-JS-owner-channel",
+    "ownerTlsEvidence": "SYNTHETIC_NOT_HTTPS_QUALIFICATION"
+  },
+  "sdkSuccessObserved": false,
+  "partitionPassed": true
+}

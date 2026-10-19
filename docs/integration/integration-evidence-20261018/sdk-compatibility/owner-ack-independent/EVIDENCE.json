@@ -1,0 +1,41 @@
+{
+  "reviewedLocalHead": "f45b9b599ada9438fd443e878641a91602c32b92",
+  "kind": "READ_ONLY_SOURCE_REVIEW",
+  "files": {
+    "apps/proxy/product/owner_channel.py": {
+      "sha256": "7ec8278885bdbc1e4d14d81de97ab7b0c6c570d5798bdcb08fe125bde935677c",
+      "matches9f54238": true
+    },
+    "apps/proxy/product/owner_startup.py": {
+      "sha256": "573a49043a0aaccbccc1642d586675e2dc902d66e347abc95bf3c6d5c0d404e8",
+      "matches9f54238": true
+    },
+    "apps/proxy/product/owner_admission.py": {
+      "sha256": "5c75a9a76c4cdae6c19dd1beeceafc3d92b99dbcafeee1fa5c1b6196b816070c",
+      "matches9f54238": true
+    },
+    "apps/proxy/product/host_composition.py": {
+      "sha256": "79fa16821560a59c66f668a472a68b0b8a8acd614867873de3f761b9be2401d6",
+      "matches9f54238": true
+    },
+    "apps/proxy/qualification/state/admission.py": {
+      "sha256": "0bb69fe5c52ec7fd3ec7f15b6280df8469aae053b8d92b7400be6edfc1c59c69",
+      "matches9f54238": true
+    },
+    "apps/gateway/budget/product-model-budget.mjs": {
+      "sha256": "97e72045bc55d9c7e21d275f8c3e2b4bf0976e86beaf738be06e1adb08490a81",
+      "matches9f54238": true
+    },
+    "apps/gateway/budget/product-model-settlement.mjs": {
+      "sha256": "07c1683ce7f55f4bd14b55edc0fd9e32ee64a5f1bbd9bac00c4214557f540a5a",
+      "matches9f54238": true
+    },
+    "scripts/qualification/sdk-proxy-offline/native_proxy.py": {
+      "sha256": "f7754ecd70a9158f65286ee8d55361b3c50381d037dbcecf93197b7828ed154a",
+      "matches9f54238": false
+    }
+  },
+  "tests": "Not rerun; capabilities lane owns focused regression and egress owns actual SDK wire fixture upgrade",
+  "changes": [],
+  "conclusion": "Existing canonical ProductOwnerBridge process-shared host gate handles unresolved settlement readback; AccountingBridge harness omits it. No production SQL/source change warranted for sequential retry case."
+}

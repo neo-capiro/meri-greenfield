@@ -1,0 +1,29 @@
+{
+  "publishedCodeCommit": "34851020aa0d73fead4db59ba6e26a098e2d0313",
+  "completeTree": "d5d1b5599c812d49428bb113badd89092f9d05f3",
+  "localEquivalent": "e104f6934e13b5ecce477f89ed842dfd791a1ab1",
+  "sdkExecutedCommit": "90f82dc692fd017f4f8957cfaf8402000bb2f92f",
+  "committedDifferencesOnlyDocsOrUnexecutedTests": [
+    "apps/proxy/product/test/test_owner_channel.py",
+    "apps/proxy/qualification/test/test_product_response_settlement.py",
+    "apps/runtime/build/first-chat-launch-measurement.test.mjs",
+    "apps/runtime/test/capability-sdk-pin.test.mjs",
+    "apps/runtime/test/dynamic-sdk-options.test.mjs",
+    "docs/integration/MERI-INTEGRATION-20261018.md",
+    "docs/integration/integration-evidence-20261018/core-transfer-for-dot/README.md",
+    "docs/integration/integration-evidence-20261018/core-transfer-for-dot/TRANSFER-MANIFEST.json",
+    "docs/integration/integration-evidence-20261018/core-transfer-for-dot/files/apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs",
+    "docs/integration/integration-evidence-20261018/core-transfer-for-dot/files/apps/api/src/tenant/tenant-context.middleware.ts",
+    "docs/integration/integration-evidence-20261018/core-transfer-for-dot/files/docs/integration/core-history-native-20261019/MANIFEST.json",
+    "docs/integration/integration-evidence-20261018/core-transfer-for-dot/files/docs/integration/core-history-native-20261019/REPORT.md",
+    "docs/integration/integration-evidence-20261018/core-transfer-for-dot/files/docs/integration/core-history-native-20261019/baseline.tap",
+    "docs/integration/integration-evidence-20261018/core-transfer-for-dot/files/docs/integration/core-history-native-20261019/native-focused.tap",
+    "docs/integration/integration-evidence-20261018/core-transfer-for-dot/files/docs/integration/core-history-native-20261019/published-focused.tap",
+    "docs/integration/integration-evidence-20261018/core-transfer-for-dot/independent-review/REVIEW-RECEIPT.json",
+    "docs/integration/integration-evidence-20261018/core-transfer-for-dot/independent-review/REVIEW-RECEIPT.md",
+    "docs/integration/integration-evidence-20261018/core-transfer-for-dot/net-against-78ceaf9.patch",
+    "docs/integration/integration-evidence-20261018/evidence-manifest.json"
+  ],
+  "noSqlIncrement": true,
+  "qualification": "All executable runtime/harness source bytes match; current uncommitted changes are reports/evidence only."
+}

@@ -1,0 +1,80 @@
+{
+  "decision": "APPROVE_WITH_LIMITS",
+  "sourceCommit": "8c65bdc33b51b5d83bce48050b1d8791ad2c31d5",
+  "sourceParent": "87b6e8beac3af3ed72d22247c59ac461b7edd3d5",
+  "sourceWorktree": "/workspace/scratch/f840037f8c71/meri-startup-qualification",
+  "sourceWorktreeClean": true,
+  "rootOptionsCommit": "d2fb6003abf0950bffdccb404cf87cb238891066",
+  "rootRuntimeTestCommit": "9c17f38b9f4efd6705a2a454f8d40584cafa5e19",
+  "environment": {
+    "python": "3.13.5",
+    "httpx": "0.28.1",
+    "botocore": "1.43.111",
+    "litellm": "1.104.2"
+  },
+  "commands": [
+    "env -i PATH=/usr/bin:/bin TZ=America/Toronto PYTHONDONTWRITEBYTECODE=1 LITELLM_LOCAL_MODEL_COST_MAP=True AWS_EC2_METADATA_DISABLED=true /tmp/meri-integration-sdk-env/bin/python -m unittest apps.proxy.product.test.test_response_terminal_gate apps.proxy.product.test.test_host_observation apps.proxy.product.test.test_host_composition apps.proxy.product.test.test_upstream_callback -v",
+    "env -i PATH=/usr/bin:/bin TZ=America/Toronto PYTHONDONTWRITEBYTECODE=1 LITELLM_LOCAL_MODEL_COST_MAP=True AWS_EC2_METADATA_DISABLED=true /tmp/meri-integration-sdk-env/bin/python -m unittest apps.proxy.qualification.test.test_bedrock_transport apps.proxy.qualification.test.test_native_usage apps.proxy.product.test.test_envelope -v"
+  ],
+  "files": [
+    {
+      "path": "apps/proxy/product/response_settlement.py",
+      "sha256": "662a905f03f5c3ee752135f06ab3576baa6f2ef3545e7e26b2a8bffb6087c133"
+    },
+    {
+      "path": "apps/proxy/product/test/test_response_terminal_gate.py",
+      "sha256": "04ae86b33949faf5a79d99c8aeff6a06a612e38ec6e2048e7bb48e6b22128cd0"
+    },
+    {
+      "path": "apps/proxy/product/test/test_host_composition.py",
+      "sha256": "52b3ae925669ce1b6b71631ba5cadfef7c7252b5dd8ab304f610f7398d37f7d6"
+    },
+    {
+      "path": "apps/proxy/product/test/test_host_observation.py",
+      "sha256": "2f385753f715b4ccfbd785e0ddf995e488177a6e09adbe8e7d99a2fb42415eb1"
+    },
+    {
+      "path": "apps/proxy/product/host_composition.py",
+      "sha256": "79fa16821560a59c66f668a472a68b0b8a8acd614867873de3f761b9be2401d6"
+    },
+    {
+      "path": "apps/proxy/product/owner_channel.py",
+      "sha256": "7ec8278885bdbc1e4d14d81de97ab7b0c6c570d5798bdcb08fe125bde935677c"
+    },
+    {
+      "path": "apps/proxy/qualification/runtime/bedrock_body.py",
+      "sha256": "bac0408d7dc1003b084643f3f2ad1c943bea460bd61acc8c51a0ea97547ad1e3"
+    },
+    {
+      "path": "apps/proxy/qualification/runtime/native_usage.py",
+      "sha256": "fc9654eb96ba3cec039d7cd6f1e0bf6d187088b7c9dd07006554fe4e4963110a"
+    }
+  ],
+  "logs": [
+    {
+      "rawPath": "/tmp/meri-terminal-gate-independent-20261019.log",
+      "rawSha256": "f03fb297746d35c1d86c0edc33c4b2478e55c3bd965250f719ba8f30a5c120e8",
+      "scrubbedPath": "/tmp/meri-terminal-gate-independent-review-20261019/meri-terminal-gate-independent-20261019.log",
+      "scrubbedSha256": "f03fb297746d35c1d86c0edc33c4b2478e55c3bd965250f719ba8f30a5c120e8",
+      "tests": 42,
+      "failures": 0,
+      "skipped": 0
+    },
+    {
+      "rawPath": "/tmp/meri-sdk-body-controls-independent-20261019.log",
+      "rawSha256": "eb2302daaa70716d41d1b81827c406a032113b75db6d5df8ee33b1b7d3da51e6",
+      "scrubbedPath": "/tmp/meri-terminal-gate-independent-review-20261019/meri-sdk-body-controls-independent-20261019.log",
+      "scrubbedSha256": "939e93505ba624da4a698e8e58333c8f9db0316229f6838405aa1976eff42aad",
+      "tests": 49,
+      "failures": 0,
+      "skipped": 0
+    }
+  ],
+  "limitations": [
+    "No source edits or publication.",
+    "No actual SDK subprocess replay by this reviewer; egress owner runs that matrix separately.",
+    "No AWS/provider/live SQL/Core access or mutation.",
+    "No image build or in-image receipt regeneration; exact source/image acceptance remains blocked.",
+    "Existing per-run trusted schema binding and broader MCP/tool integration are not proven by native shape admission."
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "comments": [
+    {
+      "url": "https://github.com/neo-capiro/meri-greenfield/pull/187#issuecomment-6256468261",
+      "body": "Received approved `51f4a38e` into consolidated draft [PR188](https://github.com/neo-capiro/meri-greenfield/pull/188). Tested code: `88026e7e`; report head: `b205d626`; branch: `integration/meri-receiving-20261018`, based on dot's `7252f483`. Both PR187 tests pass on Node 24 with matching dependencies and the required module-mock flag. The conflict resolution retains document, intent and read-delegation options while adding `fetchImpl`; PR182's CA patch was not applied twice.\n\nExpanded startup qualification found an inherited product defect: the closed conversation-service port rejected the canonical retention gate's `withRelease` method before reaching retention readiness. The minimal typed-port correction and two regressions are received. Only three audited source-provenance metadata files changed. Final checks: 4,391 standard tests, 20 worker tests and runtime/control types pass; the combined history/startup group has 219 pass / 0 fail / 1 native IO case explicitly UNRUN.\n\nThe original jumpbox fresh-process DNS diagnostic harness was not included in PR187. The published TLS fixture already binds loopback before its child DNS override. Please preserve that original harness and publish its nonsecret fixture through this thread if available. Native UID1000 init, fresh Control, actual database trust and exact-image qualification remain open. The shipping packet and failed controls are in PR188. No AWS action, deployment or chat; HOLD remains active.",
+      "user": {
+        "login": "neo-capiro",
+        "name": "neo-capiro",
+        "email": null,
+        "avatar_url": "https://avatars.githubusercontent.com/u/276034435?v=4",
+        "id": 276034435
+      },
+      "id": 6256468261,
+      "pull_request_review_id": null,
+      "in_reply_to_id": null,
+      "created_at": "2026-10-18T23:24:36Z",
+      "updated_at": "2026-10-18T23:24:55Z",
+      "review": null,
+      "side": null,
+      "line": null,
+      "start_line": null,
+      "path": null,
+      "body_html": "<p dir=\"auto\">Received approved <code class=\"notranslate\">51f4a38e</code> into consolidated draft <a href=\"https://github.com/neo-capiro/meri-greenfield/pull/188\" data-hovercard-type=\"pull_request\" data-hovercard-url=\"/neo-capiro/meri-greenfield/pull/188/hovercard\">PR188</a>. Tested code: <code class=\"notranslate\">88026e7e</code>; report head: <code class=\"notranslate\">b205d626</code>; branch: <code class=\"notranslate\">integration/meri-receiving-20261018</code>, based on dot's <code class=\"notranslate\">7252f483</code>. Both PR187 tests pass on Node 24 with matching dependencies and the required module-mock flag. The conflict resolution retains document, intent and read-delegation options while adding <code class=\"notranslate\">fetchImpl</code>; PR182's CA patch was not applied twice.</p>\n<p dir=\"auto\">Expanded startup qualification found an inherited product defect: the closed conversation-service port rejected the canonical retention gate's <code class=\"notranslate\">withRelease</code> method before reaching retention readiness. The minimal typed-port correction and two regressions are received. Only three audited source-provenance metadata files changed. Final checks: 4,391 standard tests, 20 worker tests and runtime/control types pass; the combined history/startup group has 219 pass / 0 fail / 1 native IO case explicitly UNRUN.</p>\n<p dir=\"auto\">The original jumpbox fresh-process DNS diagnostic harness was not included in PR187. The published TLS fixture already binds loopback before its child DNS override. Please preserve that original harness and publish its nonsecret fixture through this thread if available. Native UID1000 init, fresh Control, actual database trust and exact-image qualification remain open. The shipping packet and failed controls are in PR188. No AWS action, deployment or chat; HOLD remains active.</p>"
+    },
+    {
+      "url": "https://github.com/neo-capiro/meri-greenfield/pull/187#issuecomment-6256612108",
+      "body": "Source-candidate coordination only \u2014 no build or rollout is starting.\n\nWe are preparing ONE exact image recipe against the consolidated PR188 source. Current tested source is `0d3388a88aa575fba2bf9ee9c1c219053ea09418` (tree `be5ece2d8ff81d6112fb55c29e60beb69c8c4c09`); current evidence head is `4f59cb3d7e811ff1409b1161920c1bce6eb5ea48`. This is a planning reference, not the final build pin: the SDK compatibility repair is still advancing. The final committed source must be reviewed and sealed once, then the existing canonical recipe must bind its archive/member manifest, exact Dockerfile, locked APK/wheels, runner/verifier/producer bytes and immutable base images. We will not build an alternate diagnostic image or rewrite historical launch measurements into new proof.\n\nThe existing shipping session remains the sole operator. The last supplied access report was offline/network disabled with no visible prior AWS profile; current access, live state and rollback remain UNREFRESHED. Please reply here with the current availability of that existing authorized execution channel, any preserved nonsecret original fresh-process DNS harness, and the nonsecret source/image/configuration/rollback receipts already held. No credential values, new access, fresh AWS action or deployment is requested by this comment.\n\nPlease coordinate the exact final candidate and the existing owner\u2019s readiness here before any separately authorized build. Exact-Dockerfile linux/amd64 qualification, native UID1000 init\u2192fresh Control/database trust, canonical final-image model/launch measurements and the other PR188 blockers remain open. Deployment/chat HOLD remains active; no StartBuild, push to ECR, rollout, migration, credential change, AWS mutation or model/chat call is authorized by this note. Dot retains Portfolio/Modules.",
+      "user": {
+        "login": "neo-capiro",
+        "name": "neo-capiro",
+        "email": null,
+        "avatar_url": "https://avatars.githubusercontent.com/u/276034435?v=4",
+        "id": 276034435
+      },
+      "id": 6256612108,
+      "pull_request_review_id": null,
+      "in_reply_to_id": null,
+      "created_at": "2026-10-18T23:40:42Z",
+      "updated_at": "2026-10-18T23:40:42Z",
+      "review": null,
+      "side": null,
+      "line": null,
+      "start_line": null,
+      "path": null,
+      "body_html": "<p dir=\"auto\">Source-candidate coordination only \u2014 no build or rollout is starting.</p>\n<p dir=\"auto\">We are preparing ONE exact image recipe against the consolidated PR188 source. Current tested source is <code class=\"notranslate\">0d3388a88aa575fba2bf9ee9c1c219053ea09418</code> (tree <code class=\"notranslate\">be5ece2d8ff81d6112fb55c29e60beb69c8c4c09</code>); current evidence head is <code class=\"notranslate\">4f59cb3d7e811ff1409b1161920c1bce6eb5ea48</code>. This is a planning reference, not the final build pin: the SDK compatibility repair is still advancing. The final committed source must be reviewed and sealed once, then the existing canonical recipe must bind its archive/member manifest, exact Dockerfile, locked APK/wheels, runner/verifier/producer bytes and immutable base images. We will not build an alternate diagnostic image or rewrite historical launch measurements into new proof.</p>\n<p dir=\"auto\">The existing shipping session remains the sole operator. The last supplied access report was offline/network disabled with no visible prior AWS profile; current access, live state and rollback remain UNREFRESHED. Please reply here with the current availability of that existing authorized execution channel, any preserved nonsecret original fresh-process DNS harness, and the nonsecret source/image/configuration/rollback receipts already held. No credential values, new access, fresh AWS action or deployment is requested by this comment.</p>\n<p dir=\"auto\">Please coordinate the exact final candidate and the existing owner\u2019s readiness here before any separately authorized build. Exact-Dockerfile linux/amd64 qualification, native UID1000 init\u2192fresh Control/database trust, canonical final-image model/launch measurements and the other PR188 blockers remain open. Deployment/chat HOLD remains active; no StartBuild, push to ECR, rollout, migration, credential change, AWS mutation or model/chat call is authorized by this note. Dot retains Portfolio/Modules.</p>"
+    }
+  ],
+  "url": "https://github.com/neo-capiro/meri-greenfield/pull/187",
+  "title": "neo-capiro/meri-greenfield PR #187 comments",
+  "display_url": "https://github.com/neo-capiro/meri-greenfield/pull/187",
+  "display_title": "neo-capiro/meri-greenfield PR #187 comments"
+}

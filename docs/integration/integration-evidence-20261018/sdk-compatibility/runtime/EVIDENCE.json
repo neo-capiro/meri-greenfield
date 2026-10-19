@@ -1,0 +1,92 @@
+{
+  "sourceCommit": "e305da993979db0770f31c9cfb050d5600a55744",
+  "rootProductionCommit": "d2fb6003abf0950bffdccb404cf87cb238891066",
+  "localProductionCherryPick": "4e4e7d701",
+  "historicalSdkOptionsSha256": "af7f07b8f784884eae32e14e0b697d434d1668b0d68f55d203bf873c7af5431b",
+  "freshSdkOptionsSha256": "0f1f8bf276b4baf0310852c917174a0952cd1b655df160888c825242a9fe57e9",
+  "measurementInputs": {
+    "proxyUrl": "https://proxy.meri.internal:8443",
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "maxTurns": 3,
+    "maxCostMicroUSD": 2000000,
+    "maxOutputBytes": 262144,
+    "configParentDirectory": "/run/meri",
+    "secureStorageDirectory": "/run/meri/sdk-secure",
+    "policyRevision": "91063196140bb55ee8c9ccec8f5aba3c85e0ef0c3f2231b38afa3adeda221af5"
+  },
+  "fixedOptions": {
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "settings": {
+      "autoMemoryEnabled": false,
+      "modelOverrides": {
+        "claude-sonnet-4-6": "meri-sonnet-qualification"
+      }
+    },
+    "thinking": {
+      "type": "disabled"
+    },
+    "env": {
+      "CLAUDE_CODE_MAX_OUTPUT_TOKENS": "8192",
+      "MAX_THINKING_TOKENS": "0",
+      "DISABLE_PROMPT_CACHING": "1",
+      "CLAUDE_CODE_EFFORT_LEVEL": "unset"
+    }
+  },
+  "environment": {
+    "node": "v24.19.0",
+    "os": "linux",
+    "arch": "x64",
+    "uid": 0
+  },
+  "frozen": [
+    {
+      "path": "infra/product-preview/first-chat/launch-measurement-receipt.json",
+      "sha256": "859b0842c9ea6e25166f2c18a035c4dbef0f7a97928d30ee2d60feab3e7e538b",
+      "unchangedFromTaskBase": true
+    },
+    {
+      "path": "infra/product-preview/first-chat/runtime-values.json",
+      "sha256": "7c5fa1b073671e8307b6ca46c5d99972a47d4aaa08d06cbfd62fad832019b6eb",
+      "unchangedFromTaskBase": true
+    }
+  ],
+  "files": [
+    {
+      "path": "apps/runtime/build/first-chat-launch-measurement.test.mjs",
+      "sha256": "899cea3cc09aace2b9e84a8ea723d4b7f1c8e9923b1878155485d567c9b9fd46"
+    },
+    {
+      "path": "apps/runtime/test/capability-sdk-pin.test.mjs",
+      "sha256": "03e5c8018e906c62152994c73af345521730d5594978147ed795a4ac4dd57910"
+    },
+    {
+      "path": "apps/runtime/test/dynamic-sdk-options.test.mjs",
+      "sha256": "7a77b046be75147137ae1fccbfcb8c99e5cd1d8b58cdb08207e5f6f9a847d37f"
+    }
+  ],
+  "logs": [
+    {
+      "path": "/tmp/meri-runtime-sdk-controls-before-20261019.tap",
+      "sha256": "db32503988d42d46fb8d8bda6b5677798b8c42971e3be682403fa7731e8d64e1",
+      "pass": 25,
+      "fail": 3,
+      "skip": 0
+    },
+    {
+      "path": "/tmp/meri-runtime-sdk-controls-after-20261019.tap",
+      "sha256": "b0e4b062f9128578d60ff3baffc2a838b00978019fab5e0ecab4b057c2b57bbc",
+      "pass": 27,
+      "fail": 1,
+      "skip": 0
+    },
+    {
+      "path": "/tmp/meri-runtime-sdk-controls-final-20261019.tap",
+      "sha256": "bc6cef97e01cea65b1af84f05efe05ea3f497f79867c01e3725f036536c0ed26",
+      "pass": 28,
+      "fail": 0,
+      "skip": 0
+    }
+  ],
+  "command": "node --experimental-test-module-mocks --test --test-reporter=tap apps/runtime/test/capability-sdk-pin.test.mjs apps/runtime/test/dynamic-sdk-options.test.mjs apps/runtime/build/first-chat-launch-measurement.test.mjs",
+  "limits": "Focused source/descriptor evidence only. No in-image measurement, image/provenance regeneration, provider/network/AWS/database call, source production edit, or receipt mutation. Exact source-image qualification remains a shipping blocker."
+}

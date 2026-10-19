@@ -1,0 +1,252 @@
+[
+  {
+    "receipt": "interop-final-sdk-settlement-ack-unresolved.json",
+    "sourceCommit": "216072a76e68d1125e8d2432f457fa900e44e49c",
+    "sdkRequests": [
+      {
+        "index": 1,
+        "bytes": 2398,
+        "sha256": "13a0d565329418b11178df07cec7838dc556b77d42b0f9fe8c2efe6fb58b87ea"
+      },
+      {
+        "index": 2,
+        "bytes": 2699,
+        "sha256": "06788de789a12716b2fbcc57d2237a263712b5cab8c11ca1390401d80137d60f"
+      },
+      {
+        "index": 3,
+        "bytes": 2699,
+        "sha256": "06788de789a12716b2fbcc57d2237a263712b5cab8c11ca1390401d80137d60f"
+      },
+      {
+        "index": 4,
+        "bytes": 2699,
+        "sha256": "06788de789a12716b2fbcc57d2237a263712b5cab8c11ca1390401d80137d60f"
+      },
+      {
+        "index": 5,
+        "bytes": 2699,
+        "sha256": "06788de789a12716b2fbcc57d2237a263712b5cab8c11ca1390401d80137d60f"
+      },
+      {
+        "index": 6,
+        "bytes": 2699,
+        "sha256": "06788de789a12716b2fbcc57d2237a263712b5cab8c11ca1390401d80137d60f"
+      },
+      {
+        "index": 7,
+        "bytes": 2699,
+        "sha256": "06788de789a12716b2fbcc57d2237a263712b5cab8c11ca1390401d80137d60f"
+      }
+    ],
+    "nativeRequests": [
+      {
+        "index": 1,
+        "bytes": 2414,
+        "sha256": "f3b349a22d943dca2207735707a0e10cdbcd9184d999879006184d0a0fa1e50f"
+      },
+      {
+        "index": 2,
+        "bytes": 2732,
+        "sha256": "a211e26f0047dd2dfa706b97ae15741650fe43499f99b91bde66714f97509171"
+      },
+      {
+        "index": 3,
+        "bytes": 2732,
+        "sha256": "a211e26f0047dd2dfa706b97ae15741650fe43499f99b91bde66714f97509171"
+      },
+      {
+        "index": 4,
+        "bytes": 2732,
+        "sha256": "a211e26f0047dd2dfa706b97ae15741650fe43499f99b91bde66714f97509171"
+      }
+    ],
+    "durableRequests": [
+      {
+        "requestId": "22e66134b0974ebfbd8a7aa85befe7cf",
+        "state": "SETTLED",
+        "holdMicroUSD": "135248",
+        "actualMicroUSD": "90",
+        "inputTokens": 12,
+        "maxOutputTokens": 8192
+      },
+      {
+        "requestId": "327205821fae4c21bd4217f07c3b45ea",
+        "state": "UNKNOWN",
+        "holdMicroUSD": "135248",
+        "actualMicroUSD": null,
+        "inputTokens": 12,
+        "maxOutputTokens": 8192
+      }
+    ],
+    "errors": [
+      {
+        "operation": "settle",
+        "code": "BudgetCommitUncertain"
+      },
+      {
+        "operation": "outcome",
+        "code": "OFFLINE_READBACK_UNAVAILABLE"
+      },
+      "StateDenied",
+      {
+        "type": "StateDenied",
+        "trace": [
+          {
+            "file": "responses.py",
+            "line": 276,
+            "function": "wrap"
+          },
+          {
+            "file": "responses.py",
+            "line": 255,
+            "function": "stream_response"
+          },
+          {
+            "file": "_exception_handler.py",
+            "line": 39,
+            "function": "sender"
+          },
+          {
+            "file": "_exception_handler.py",
+            "line": 39,
+            "function": "sender"
+          },
+          {
+            "file": "security_headers_middleware.py",
+            "line": 48,
+            "function": "send_with_security_headers"
+          },
+          {
+            "file": "errors.py",
+            "line": 161,
+            "function": "_send"
+          },
+          {
+            "file": "upstream_callback.py",
+            "line": 139,
+            "function": "guarded_send"
+          },
+          {
+            "file": "upstream_callback.py",
+            "line": 23,
+            "function": "_deny"
+          }
+        ],
+        "code": "PRODUCT_NATIVE_LITELLM_REFUSED"
+      },
+      {
+        "operation": "reserve",
+        "code": "PRODUCT_MODEL_SLOT_USED"
+      },
+      {
+        "operation": "reserve",
+        "code": "PRODUCT_MODEL_SLOT_USED"
+      }
+    ],
+    "ownerOperations": {
+      "reserve": 4,
+      "settle": 1,
+      "outcome": 1
+    }
+  },
+  {
+    "receipt": "interop-final-sdk-settlement-ack-unresolved-schema.json",
+    "sourceCommit": "216072a76e68d1125e8d2432f457fa900e44e49c",
+    "sdkRequests": [
+      {
+        "index": 1,
+        "bytes": 2744,
+        "sha256": "f121cf57fccfbfd7ca51d628a8fcfda503ea57d5ab14f1b846c13711f37912f0"
+      },
+      {
+        "index": 2,
+        "bytes": 2744,
+        "sha256": "f121cf57fccfbfd7ca51d628a8fcfda503ea57d5ab14f1b846c13711f37912f0"
+      },
+      {
+        "index": 3,
+        "bytes": 2744,
+        "sha256": "f121cf57fccfbfd7ca51d628a8fcfda503ea57d5ab14f1b846c13711f37912f0"
+      },
+      {
+        "index": 4,
+        "bytes": 2744,
+        "sha256": "f121cf57fccfbfd7ca51d628a8fcfda503ea57d5ab14f1b846c13711f37912f0"
+      },
+      {
+        "index": 5,
+        "bytes": 2744,
+        "sha256": "f121cf57fccfbfd7ca51d628a8fcfda503ea57d5ab14f1b846c13711f37912f0"
+      },
+      {
+        "index": 6,
+        "bytes": 2744,
+        "sha256": "f121cf57fccfbfd7ca51d628a8fcfda503ea57d5ab14f1b846c13711f37912f0"
+      }
+    ],
+    "nativeRequests": [
+      {
+        "index": 1,
+        "bytes": 2774,
+        "sha256": "b6ac70dda19b3d4ec86205e22da3ca426c450d5e5b3d67fa54eb18c505d790d6"
+      },
+      {
+        "index": 2,
+        "bytes": 2774,
+        "sha256": "b6ac70dda19b3d4ec86205e22da3ca426c450d5e5b3d67fa54eb18c505d790d6"
+      },
+      {
+        "index": 3,
+        "bytes": 2774,
+        "sha256": "b6ac70dda19b3d4ec86205e22da3ca426c450d5e5b3d67fa54eb18c505d790d6"
+      },
+      {
+        "index": 4,
+        "bytes": 2774,
+        "sha256": "b6ac70dda19b3d4ec86205e22da3ca426c450d5e5b3d67fa54eb18c505d790d6"
+      }
+    ],
+    "durableRequests": [
+      {
+        "requestId": "086826afd1a245ad9251d5843acd618f",
+        "state": "SETTLED",
+        "holdMicroUSD": "135248",
+        "actualMicroUSD": "90",
+        "inputTokens": 12,
+        "maxOutputTokens": 8192
+      },
+      {
+        "requestId": "d49cee0e0c1a48bb9e20785d13d5fe61",
+        "state": "UNKNOWN",
+        "holdMicroUSD": "135248",
+        "actualMicroUSD": null,
+        "inputTokens": 12,
+        "maxOutputTokens": 8192
+      }
+    ],
+    "errors": [
+      {
+        "operation": "settle",
+        "code": "BudgetCommitUncertain"
+      },
+      {
+        "operation": "outcome",
+        "code": "OFFLINE_READBACK_UNAVAILABLE"
+      },
+      {
+        "operation": "reserve",
+        "code": "PRODUCT_MODEL_SLOT_USED"
+      },
+      {
+        "operation": "reserve",
+        "code": "PRODUCT_MODEL_SLOT_USED"
+      }
+    ],
+    "ownerOperations": {
+      "reserve": 4,
+      "settle": 1,
+      "outcome": 1
+    }
+  }
+]

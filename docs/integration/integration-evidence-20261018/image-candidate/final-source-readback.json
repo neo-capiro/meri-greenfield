@@ -1,0 +1,80 @@
+{
+  "readAt": "2026-10-19T00:16:44.575Z",
+  "publishedCommit": {
+    "sha": "34851020aa0d73fead4db59ba6e26a098e2d0313",
+    "message": "Exercise canonical owner channels in offline SDK qualification\n\nExact reviewed local e104f6934e13b5ecce477f89ed842dfd791a1ab1; complete tree d5d1b5599c812d49428bb113badd89092f9d05f3.\nReal owner bridge/channel and accounting; synthetic transport/facts/SQL/count/provider. No deployment/chat clearance.",
+    "url": "https://github.com/neo-capiro/meri-greenfield/commit/34851020aa0d73fead4db59ba6e26a098e2d0313"
+  },
+  "files": [
+    {
+      "path": "apps/runtime/Dockerfile",
+      "gitBlob": "48005795530d312f6ee236ac58d41cc121210c45",
+      "sourceUrl": "https://github.com/neo-capiro/meri-greenfield/blob/34851020aa0d73fead4db59ba6e26a098e2d0313/apps/runtime/Dockerfile"
+    },
+    {
+      "path": "infra/product-preview/runtime-packages.lock.json",
+      "gitBlob": "a914d229530bd9f5711fb1e2cd968ecad2c22740",
+      "sourceUrl": "https://github.com/neo-capiro/meri-greenfield/blob/34851020aa0d73fead4db59ba6e26a098e2d0313/infra/product-preview/runtime-packages.lock.json"
+    },
+    {
+      "path": "apps/runtime/conversation-runner.mjs",
+      "gitBlob": "7ff973c466b73b759824389873309725bc885951",
+      "sourceUrl": "https://github.com/neo-capiro/meri-greenfield/blob/34851020aa0d73fead4db59ba6e26a098e2d0313/apps/runtime/conversation-runner.mjs"
+    },
+    {
+      "path": "infra/product-preview/image-build-source.py",
+      "gitBlob": "3ba88bcc42baeac5285d51f33f00f73e94010e77",
+      "sourceUrl": "https://github.com/neo-capiro/meri-greenfield/blob/34851020aa0d73fead4db59ba6e26a098e2d0313/infra/product-preview/image-build-source.py"
+    },
+    {
+      "path": "infra/product-preview/image-build-producer.py",
+      "gitBlob": "d0c9fd34c49ead8b50407b9cbbcc484ed0628c80",
+      "sourceUrl": "https://github.com/neo-capiro/meri-greenfield/blob/34851020aa0d73fead4db59ba6e26a098e2d0313/infra/product-preview/image-build-producer.py"
+    },
+    {
+      "path": "infra/product-preview/image-build-recipe.mjs",
+      "gitBlob": "30aa50f21850cf98f30140c39387a9c860b70629",
+      "sourceUrl": "https://github.com/neo-capiro/meri-greenfield/blob/34851020aa0d73fead4db59ba6e26a098e2d0313/infra/product-preview/image-build-recipe.mjs"
+    },
+    {
+      "path": "infra/product-preview/runtime-wheels.lock.json",
+      "gitBlob": "9c2727acb080ef0d6516b67f02c1a831eb01ccb9",
+      "sourceUrl": "https://github.com/neo-capiro/meri-greenfield/blob/34851020aa0d73fead4db59ba6e26a098e2d0313/infra/product-preview/runtime-wheels.lock.json"
+    },
+    {
+      "path": "infra/product-preview/runtime-packages/retained-additions-receipt.json",
+      "gitBlob": "131ee111959c31d0c41d8fe0da13e185b4d662b1",
+      "sourceUrl": "https://github.com/neo-capiro/meri-greenfield/blob/34851020aa0d73fead4db59ba6e26a098e2d0313/infra/product-preview/runtime-packages/retained-additions-receipt.json"
+    },
+    {
+      "path": "infra/product-preview/first-chat/runtime-values.mjs",
+      "gitBlob": "6c5ea1dfb15a937d032425e8105efb9a4808da79",
+      "sourceUrl": "https://github.com/neo-capiro/meri-greenfield/blob/34851020aa0d73fead4db59ba6e26a098e2d0313/infra/product-preview/first-chat/runtime-values.mjs"
+    },
+    {
+      "path": "infra/product-preview/first-chat/render-material.mjs",
+      "gitBlob": "fbf62e2de99a1d9b6182c9070fdb7f3bc0ddad5f",
+      "sourceUrl": "https://github.com/neo-capiro/meri-greenfield/blob/34851020aa0d73fead4db59ba6e26a098e2d0313/infra/product-preview/first-chat/render-material.mjs"
+    },
+    {
+      "path": "apps/runtime/build/first-chat-launch-measurement.mjs",
+      "gitBlob": "0d851b11554ee44c76c318507767440d814bc954",
+      "sourceUrl": "https://github.com/neo-capiro/meri-greenfield/blob/34851020aa0d73fead4db59ba6e26a098e2d0313/apps/runtime/build/first-chat-launch-measurement.mjs"
+    },
+    {
+      "path": "apps/runtime/native-authority/sdk-option-template.mjs",
+      "gitBlob": "6019a5a7e8d07c88e65901e88d8290131d168376",
+      "sourceUrl": "https://github.com/neo-capiro/meri-greenfield/blob/34851020aa0d73fead4db59ba6e26a098e2d0313/apps/runtime/native-authority/sdk-option-template.mjs"
+    },
+    {
+      "path": "apps/runtime/control-ca-bundle.mjs",
+      "gitBlob": "03f932d5723ac200c1328aef7e53e2f1a5c37434",
+      "sourceUrl": "https://github.com/neo-capiro/meri-greenfield/blob/34851020aa0d73fead4db59ba6e26a098e2d0313/apps/runtime/control-ca-bundle.mjs"
+    },
+    {
+      "path": "infra/product-preview/runtime-packages/executor-generation-smoke.mjs",
+      "gitBlob": "2bf478f3b29212b138d58c4977676a14bb782ea5",
+      "sourceUrl": "https://github.com/neo-capiro/meri-greenfield/blob/34851020aa0d73fead4db59ba6e26a098e2d0313/infra/product-preview/runtime-packages/executor-generation-smoke.mjs"
+    }
+  ]
+}

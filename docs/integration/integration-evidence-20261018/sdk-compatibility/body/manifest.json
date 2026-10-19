@@ -1,0 +1,85 @@
+{
+  "base": "9f54238c84dc03f0505ccac99be5652dbb2d16db",
+  "commits": [
+    "2ea14a7be74d6acc8d8e1eba6221e43717f79b37",
+    "13a97be2c552eb7addf6ed508ae945f7df30fcc0",
+    "87b6e8beac3af3ed72d22247c59ac461b7edd3d5"
+  ],
+  "branch": "fix/sdk-proxy-body-contract-20261019",
+  "python": "3.13.5 (main, Jul 23 2025, 00:37:22) [Clang 20.1.4 ]",
+  "versions": {
+    "litellm": "1.104.2",
+    "boto3": "1.43.111",
+    "botocore": "1.43.111",
+    "httpx": "0.28.1"
+  },
+  "environment": {
+    "TZ": "America/Toronto",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "LITELLM_LOCAL_MODEL_COST_MAP": "True",
+    "AWS_EC2_METADATA_DISABLED": "true",
+    "other_variables": "removed via env -i"
+  },
+  "focusedCommand": "env -i PATH=/usr/bin:/bin TZ=America/Toronto PYTHONDONTWRITEBYTECODE=1 LITELLM_LOCAL_MODEL_COST_MAP=True AWS_EC2_METADATA_DISABLED=true /tmp/meri-integration-sdk-env/bin/python -m unittest apps.proxy.product.test.test_envelope apps.proxy.qualification.test.test_bedrock_transport apps.proxy.qualification.test.test_native_usage -v",
+  "results": {
+    "baseline": {
+      "tests": 41,
+      "pass": 41,
+      "exit": 0
+    },
+    "body_red": {
+      "tests": 3,
+      "errors": 3,
+      "exit": 1
+    },
+    "response_red": {
+      "tests": 1,
+      "fail": 1,
+      "exit": 1
+    },
+    "thinking_red": {
+      "tests": 1,
+      "errors": 1,
+      "exit": 1
+    },
+    "body_header_after": {
+      "tests": 34,
+      "pass": 34,
+      "exit": 0
+    },
+    "response_after": {
+      "tests": 14,
+      "pass": 14,
+      "exit": 0
+    },
+    "final_focused": {
+      "tests": 49,
+      "pass": 49,
+      "exit": 0
+    }
+  },
+  "sourceSha256": {
+    "apps/proxy/qualification/runtime/bedrock_body.py": "bac0408d7dc1003b084643f3f2ad1c943bea460bd61acc8c51a0ea97547ad1e3",
+    "apps/proxy/qualification/runtime/bedrock_transport.py": "bd4030cd52f8d0d2d7e90575f09ab594024e6149d4e4c3e7bdd821e9906bcee1",
+    "apps/proxy/qualification/runtime/native_usage.py": "fc9654eb96ba3cec039d7cd6f1e0bf6d187088b7c9dd07006554fe4e4963110a",
+    "apps/proxy/product/test/test_envelope.py": "bdd59e02e96fbebf11593a7ae6187d86f0b9971aef3b1440fec5cf9126c6c439",
+    "apps/proxy/qualification/test/test_bedrock_transport.py": "4187be408fb7addc613eab2833c809c6c48b08c71b32f2da9292bc3c4e57f0f2",
+    "apps/proxy/qualification/test/test_native_usage.py": "0a63e8106c316cb645964d98cffc6f7b8ad0fb95bdd0f9d8240886dd92fac81d"
+  },
+  "scrubbedLogSha256": {
+    "final-focused.scrubbed.log": "59d0d784f5493535299fdae3f70f36d9081b0199e9070c4a5f76f93e7af2eb37",
+    "thinking-red.scrubbed.log": "4f7aeb643af2bbf1be3dcef331c5da33f625c586796ea14cc7c628b3b0438ff0",
+    "body-red.scrubbed.log": "a9b152085cacc8e267ed36e550e338b26ca5caa94480b9182dd83dbd15794235",
+    "response-after.scrubbed.log": "5ef8186ee352a78194e4f8ee26a51186053d933e179ac618e3b749cc85a15f0a",
+    "response-red.scrubbed.log": "5bb62967ae465c46543a93c5467f1e3dba327445a609049d0e01d59fab5dcb40",
+    "body-header-after.scrubbed.log": "bf10e5b0230c2d361633b48013c7fdd80e41fe7a56b144f9144ae25ead091d66",
+    "baseline.scrubbed.log": "5618332ce53847a47fc128208e7b327ee8156ef65e0effe1e61c59f969bb1e1e"
+  },
+  "nativeCaptureSha256": "1618ace63ae3bb191da54c739bc9c2033b45b08126a4f5c27dd34394f1eeec16",
+  "externalCalls": 0,
+  "limitations": [
+    "No real Bedrock acceptance or CountTokens",
+    "No production per-run trusted schema custody or MCP policy activation",
+    "No image build, DB, private owner HTTPS, deploy or live chat qualification"
+  ]
+}

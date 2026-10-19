@@ -1,0 +1,40 @@
+{
+  "sourceCommit": "34851020aa0d73fead4db59ba6e26a098e2d0313",
+  "sourceTree": "d5d1b5599c812d49428bb113badd89092f9d05f3",
+  "localReviewedCommit": "e104f6934e13b5ecce477f89ed842dfd791a1ab1",
+  "sourcePinFiles": 14,
+  "unchangedSourcePinFiles": 14,
+  "matrix": {
+    "status": "PASS_OFFLINE_SYNTHETIC_BOUNDARIES",
+    "pass": 17,
+    "total": 17,
+    "runCommit": "90f82dc692fd017f4f8957cfaf8402000bb2f92f",
+    "sourceCommit": "34851020aa0d73fead4db59ba6e26a098e2d0313",
+    "sourceTree": "d5d1b5599c812d49428bb113badd89092f9d05f3",
+    "executableProductionAndHarnessMatchCandidate": true,
+    "basis": "Final root-reported egress receipt; no test or matrix rerun by this planning lane. Real owner channel/bridge/accounting paths exercised over synthetic transport/facts/SQL/count/provider; not live AWS/provider/Clerk/PostgreSQL or an image receipt."
+  },
+  "focused": {
+    "finalOwnerAdmissionHarness": {
+      "pass": 30,
+      "total": 30,
+      "sourceCommit": "34851020aa0d73fead4db59ba6e26a098e2d0313",
+      "basis": "Root-reported final checks"
+    },
+    "earlierAffectedProduct": {
+      "pass": 98,
+      "total": 98,
+      "pinStatus": "Retain exact run pins in final SDK audit; do not add counts to other overlapping groups"
+    },
+    "earlierRuntime": {
+      "pass": 28,
+      "total": 28,
+      "pinStatus": "Retain exact run pins in final SDK audit; do not add counts to other overlapping groups"
+    },
+    "planningLaneReruns": false
+  },
+  "planningLaneTestsRun": false,
+  "noSourceSealBuildImageOrAWS": true,
+  "imageExists": false,
+  "operatorAcknowledgementObserved": false
+}

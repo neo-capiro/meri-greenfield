@@ -1,0 +1,66 @@
+{
+  "branch": "fix/sdk-proxy-beta-observation-20261019",
+  "base": "9f54238c84dc03f0505ccac99be5652dbb2d16db",
+  "commit": "b3f55c901fe313d4c0be1d477490c19a54a8e6e7",
+  "node": "24.19.0",
+  "files": {
+    "apps/gateway/model-proxy/product-request-owner.mjs": "7d689d2ce1fb118a5d2721f1d115d0a19f9a818b61148f8322a7b452c474beac",
+    "apps/gateway/model-proxy/product-request-owner.test.mjs": "5c4fa75f1114fbeab2f20588a6f9cd355547e731587d748d6fe45a8852c2bd60"
+  },
+  "scope": "Only two assigned JS owner/test files; no header rewriting, authority/model/count/pricing/output/schema/tool expansion",
+  "agreedContract": {
+    "bodyBetaList": "optional/empty accepted; <=2 unique exact enums",
+    "enums": [
+      "context-management-2025-06-27",
+      "effort-2025-11-24"
+    ],
+    "absentHeader": "allowed even with admitted body betas",
+    "presentHeader": "nonempty; comma separated; SP/HTAB OWS only; <=2 unique exact enums; same set as body",
+    "context_management": "any body key presence denied, including null/empty",
+    "featureHeaders": "duplicate headers and all x-amzn-bedrock-* remain denied"
+  },
+  "positiveShapes": 9,
+  "newNoSqlRefusalShapes": 43,
+  "logs": {
+    "setupFailure": {
+      "path": "/tmp/meri-js-beta-observation-before-20261019.tap",
+      "sha256": "d84e4ae8fae84b7395b99988b561ed70e04ba03d71652a8603cd95cd7030b62c",
+      "tests": 1,
+      "pass": 0,
+      "fail": 1
+    },
+    "baseline": {
+      "path": "/tmp/meri-js-beta-observation-before2-20261019.tap",
+      "sha256": "e192958f7812127cb35df605d1ef41b9392a648fc34af3fe2c087cf5faca7484",
+      "tests": 3,
+      "pass": 3,
+      "fail": 0
+    },
+    "owner": {
+      "path": "/tmp/meri-js-beta-observation-after-20261019.tap",
+      "sha256": "a8758093957af8bfb0db7860784f597f286001fc5e251c4c383dce3b76b616e4",
+      "tests": 5,
+      "pass": 5,
+      "fail": 0
+    },
+    "focused": {
+      "path": "/tmp/meri-js-beta-observation-focused-20261019.tap",
+      "sha256": "e95769708b3b4c2b9dc6f5879025083a270b86ca812332fe124352f25f4c9781",
+      "tests": 21,
+      "pass": 21,
+      "fail": 0
+    }
+  },
+  "commands": {
+    "baseline": "MERI_REVIEW_SOURCE_ROOT=/workspace/scratch/f840037f8c71/meri-closeout-capabilities node --test --test-reporter=tap apps/gateway/model-proxy/product-request-owner.test.mjs",
+    "focused": "MERI_REVIEW_SOURCE_ROOT=/workspace/scratch/f840037f8c71/meri-closeout-capabilities node --test --test-reporter=tap apps/gateway/model-proxy/product-request-owner.test.mjs apps/gateway/model-proxy/product-boundary-codec.test.mjs apps/gateway/model-proxy/product-reservation-bridge.test.mjs apps/gateway/model-proxy/product-settlement-bridge.test.mjs apps/gateway/model-proxy/product-envelope.test.mjs"
+  },
+  "setupFailureExplanation": "First attempt omitted required MERI_REVIEW_SOURCE_ROOT and failed before tests; corrected explicit root baseline passes3/3. Failed output preserved.",
+  "independentParityReview": "Python owner closeout_worker_fixtures read-only reviewed and confirmed exact agreed beta semantics.",
+  "limitations": [
+    "Native AWS beta/header/CountTokens acceptance unrun",
+    "No provider calls",
+    "No real SQL/HTTPS/image/route or SDK schema qualification from these unit checks",
+    "Core ownership stays exclusively dot"
+  ]
+}
