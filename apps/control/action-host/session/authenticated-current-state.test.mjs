@@ -1,6 +1,7 @@
 /** Focused owner-bound observation checks; synthetic authority only, with no network or database. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {setImmediate as nextTurn} from 'node:timers/promises';
 import {createActionSessionOwner,authenticatedCurrentState} from './owner.mjs';
 import {createActionSessionApplication} from './http.mjs';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
@@ -106,11 +107,35 @@ test('expired sessions refuse before authority reads and caller cutoffs reach ev
  await assert.rejects(f.read({credential:issued.credential}),/SESSION_REFUSED/u);assert.equal(f.state.calls.length,0);
 });
 
-test('deadline expiry and cancellation during context cannot release combined authority',async t=>{
- for(const action of ['deadline','cancel']){
-  const f=fixture(t),issued=await f.issue(),abort=new AbortController(),deadlineMs=f.state.now+25;
-  f.state.hook=stage=>{if(stage==='context'){if(action==='deadline')f.state.now=deadlineMs;else abort.abort();}};
-  await assert.rejects(f.read({credential:issued.credential,deadlineMs,signal:abort.signal}),/SESSION_REFUSED/u);
-  assert.equal(f.owner.status().sessions,0);
- }
+test('deadline expiry during context cannot release combined authority and invalidates the session',async t=>{
+ const f=fixture(t),issued=await f.issue(),abort=new AbortController(),deadlineMs=f.state.now+25;
+ f.state.hook=stage=>{if(stage==='context')f.state.now=deadlineMs;};
+ await assert.rejects(f.read({credential:issued.credential,deadlineMs,signal:abort.signal}),/SESSION_REFUSED/u);
+ assert.equal(abort.signal.aborted,false);
+ assert.equal(f.owner.status().sessions,0);
+});
+
+for(const stage of ['identity','context','member'])test(`caller cancellation while ${stage} is pending preserves the session for a fresh combined observation`,async t=>{
+ const f=fixture(t),issued=await f.issue(),before=await f.read({credential:issued.credential});
+ const abort=new AbortController(),entered=Promise.withResolvers(),release=Promise.withResolvers();let released=0,ownedSignal;
+ t.after(()=>release.resolve());
+ f.state.hook=async(at,_value,call)=>{if(at===stage){ownedSignal=call.signal;entered.resolve();await release.promise;}};
+ const pending=f.read({credential:issued.credential,signal:abort.signal}).then(value=>{released++;return value;});
+ const rejected=assert.rejects(pending,/SESSION_REFUSED/u);
+ await entered.promise;abort.abort();await rejected;
+ assert.equal(ownedSignal.aborted,true);
+ f.state.hook=null;release.resolve();await nextTurn();
+ assert.equal(released,0,'the cancelled request cannot release late combined authority');
+ assert.equal(f.owner.status().sessions,1);
+ f.state.now++;f.state.calls=[];
+ const after=await f.read({credential:issued.credential});
+ assert.deepEqual(f.state.calls.map(c=>c.stage),['identity','member','context','member'],'reconnect must make a complete fresh observation');
+ assert.deepEqual(after.authentication.principal,before.authentication.principal);
+ assert.equal(after.authentication.sessionRevision,before.authentication.sessionRevision);
+ assert.equal(after.authentication.expiresAtMs,issued.expiresAtMs);
+ assert.equal(after.current.expiresAtMs,issued.expiresAtMs);
+ assert.equal(after.current.authenticationSha256,hash(after.authentication));
+ assert.ok(after.authentication.checkedAtMs>before.authentication.checkedAtMs);
+ assert.deepEqual(after.current.binding,f.binding);
+ assert.deepEqual(after.current.scopes,f.scopes);
 });

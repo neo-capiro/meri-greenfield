@@ -1,0 +1,274 @@
+TAP version 13
+# Subtest: authenticateSession: request cancellation during identity preserves the live session and rejects late release
+ok 1 - authenticateSession: request cancellation during identity preserves the live session and rejects late release
+  ---
+  duration_ms: 25.403517
+  type: 'test'
+  ...
+# Subtest: authenticateSession: request cancellation during context preserves the live session and rejects late release
+ok 2 - authenticateSession: request cancellation during context preserves the live session and rejects late release
+  ---
+  duration_ms: 7.603057
+  type: 'test'
+  ...
+# Subtest: authenticateSession: request cancellation during membership preserves the live session and rejects late release
+ok 3 - authenticateSession: request cancellation during membership preserves the live session and rejects late release
+  ---
+  duration_ms: 7.420167
+  type: 'test'
+  ...
+# Subtest: readCurrentState: request cancellation during identity preserves the live session and rejects late release
+ok 4 - readCurrentState: request cancellation during identity preserves the live session and rejects late release
+  ---
+  duration_ms: 4.445885
+  type: 'test'
+  ...
+# Subtest: readCurrentState: request cancellation during context preserves the live session and rejects late release
+ok 5 - readCurrentState: request cancellation during context preserves the live session and rejects late release
+  ---
+  duration_ms: 4.654695
+  type: 'test'
+  ...
+# Subtest: readCurrentState: request cancellation during membership preserves the live session and rejects late release
+ok 6 - readCurrentState: request cancellation during membership preserves the live session and rejects late release
+  ---
+  duration_ms: 3.503545
+  type: 'test'
+  ...
+# Subtest: authenticateSession: request cancellation cannot preserve expiry invalidation
+ok 7 - authenticateSession: request cancellation cannot preserve expiry invalidation
+  ---
+  duration_ms: 2.615348
+  type: 'test'
+  ...
+# Subtest: authenticateSession: request cancellation cannot preserve revocation invalidation
+ok 8 - authenticateSession: request cancellation cannot preserve revocation invalidation
+  ---
+  duration_ms: 3.082688
+  type: 'test'
+  ...
+# Subtest: authenticateSession: request cancellation cannot preserve invalid clock invalidation
+ok 9 - authenticateSession: request cancellation cannot preserve invalid clock invalidation
+  ---
+  duration_ms: 2.74207
+  type: 'test'
+  ...
+# Subtest: authenticateSession: request cancellation cannot preserve identity invalidation
+ok 10 - authenticateSession: request cancellation cannot preserve identity invalidation
+  ---
+  duration_ms: 2.28755
+  type: 'test'
+  ...
+# Subtest: authenticateSession: request cancellation cannot preserve context invalidation
+ok 11 - authenticateSession: request cancellation cannot preserve context invalidation
+  ---
+  duration_ms: 2.630722
+  type: 'test'
+  ...
+# Subtest: authenticateSession: request cancellation cannot preserve membership invalidation
+ok 12 - authenticateSession: request cancellation cannot preserve membership invalidation
+  ---
+  duration_ms: 2.135417
+  type: 'test'
+  ...
+# Subtest: readCurrentState: request cancellation cannot preserve expiry invalidation
+ok 13 - readCurrentState: request cancellation cannot preserve expiry invalidation
+  ---
+  duration_ms: 1.754893
+  type: 'test'
+  ...
+# Subtest: readCurrentState: request cancellation cannot preserve revocation invalidation
+ok 14 - readCurrentState: request cancellation cannot preserve revocation invalidation
+  ---
+  duration_ms: 2.2562
+  type: 'test'
+  ...
+# Subtest: readCurrentState: request cancellation cannot preserve invalid clock invalidation
+ok 15 - readCurrentState: request cancellation cannot preserve invalid clock invalidation
+  ---
+  duration_ms: 2.130211
+  type: 'test'
+  ...
+# Subtest: readCurrentState: request cancellation cannot preserve identity invalidation
+ok 16 - readCurrentState: request cancellation cannot preserve identity invalidation
+  ---
+  duration_ms: 1.718047
+  type: 'test'
+  ...
+# Subtest: readCurrentState: request cancellation cannot preserve context invalidation
+ok 17 - readCurrentState: request cancellation cannot preserve context invalidation
+  ---
+  duration_ms: 3.698925
+  type: 'test'
+  ...
+# Subtest: readCurrentState: request cancellation cannot preserve membership invalidation
+ok 18 - readCurrentState: request cancellation cannot preserve membership invalidation
+  ---
+  duration_ms: 2.957931
+  type: 'test'
+  ...
+# Subtest: authenticateSession: unknown without a cancelled request still invalidates
+ok 19 - authenticateSession: unknown without a cancelled request still invalidates
+  ---
+  duration_ms: 2.055663
+  type: 'test'
+  ...
+# Subtest: authenticateSession: AbortError without a cancelled request still invalidates
+ok 20 - authenticateSession: AbortError without a cancelled request still invalidates
+  ---
+  duration_ms: 1.293407
+  type: 'test'
+  ...
+# Subtest: authenticateSession: CANCELLED without a cancelled request still invalidates
+ok 21 - authenticateSession: CANCELLED without a cancelled request still invalidates
+  ---
+  duration_ms: 1.046422
+  type: 'test'
+  ...
+# Subtest: authenticateSession: DEADLINE without a cancelled request still invalidates
+ok 22 - authenticateSession: DEADLINE without a cancelled request still invalidates
+  ---
+  duration_ms: 1.018176
+  type: 'test'
+  ...
+# Subtest: readCurrentState: unknown without a cancelled request still invalidates
+ok 23 - readCurrentState: unknown without a cancelled request still invalidates
+  ---
+  duration_ms: 1.585761
+  type: 'test'
+  ...
+# Subtest: readCurrentState: AbortError without a cancelled request still invalidates
+ok 24 - readCurrentState: AbortError without a cancelled request still invalidates
+  ---
+  duration_ms: 1.707615
+  type: 'test'
+  ...
+# Subtest: readCurrentState: CANCELLED without a cancelled request still invalidates
+ok 25 - readCurrentState: CANCELLED without a cancelled request still invalidates
+  ---
+  duration_ms: 1.568049
+  type: 'test'
+  ...
+# Subtest: readCurrentState: DEADLINE without a cancelled request still invalidates
+ok 26 - readCurrentState: DEADLINE without a cancelled request still invalidates
+  ---
+  duration_ms: 1.668665
+  type: 'test'
+  ...
+# Subtest: authenticateSession: owner-only timeout invalidates despite a still-live request
+ok 27 - authenticateSession: owner-only timeout invalidates despite a still-live request
+  ---
+  duration_ms: 21.991046
+  type: 'test'
+  ...
+# Subtest: readCurrentState: owner-only timeout invalidates despite a still-live request
+ok 28 - readCurrentState: owner-only timeout invalidates despite a still-live request
+  ---
+  duration_ms: 22.491597
+  type: 'test'
+  ...
+# Subtest: authenticateSession: identity unknown winning before caller abort still invalidates
+ok 29 - authenticateSession: identity unknown winning before caller abort still invalidates
+  ---
+  duration_ms: 1.746669
+  type: 'test'
+  ...
+# Subtest: authenticateSession: identity authority refusal winning before caller abort still invalidates
+ok 30 - authenticateSession: identity authority refusal winning before caller abort still invalidates
+  ---
+  duration_ms: 1.420094
+  type: 'test'
+  ...
+# Subtest: authenticateSession: context unknown winning before caller abort still invalidates
+ok 31 - authenticateSession: context unknown winning before caller abort still invalidates
+  ---
+  duration_ms: 1.332854
+  type: 'test'
+  ...
+# Subtest: authenticateSession: context authority refusal winning before caller abort still invalidates
+ok 32 - authenticateSession: context authority refusal winning before caller abort still invalidates
+  ---
+  duration_ms: 1.470395
+  type: 'test'
+  ...
+# Subtest: authenticateSession: membership unknown winning before caller abort still invalidates
+ok 33 - authenticateSession: membership unknown winning before caller abort still invalidates
+  ---
+  duration_ms: 1.69492
+  type: 'test'
+  ...
+# Subtest: authenticateSession: membership authority refusal winning before caller abort still invalidates
+ok 34 - authenticateSession: membership authority refusal winning before caller abort still invalidates
+  ---
+  duration_ms: 1.428014
+  type: 'test'
+  ...
+# Subtest: readCurrentState: identity unknown winning before caller abort still invalidates
+ok 35 - readCurrentState: identity unknown winning before caller abort still invalidates
+  ---
+  duration_ms: 1.583668
+  type: 'test'
+  ...
+# Subtest: readCurrentState: identity authority refusal winning before caller abort still invalidates
+ok 36 - readCurrentState: identity authority refusal winning before caller abort still invalidates
+  ---
+  duration_ms: 1.108939
+  type: 'test'
+  ...
+# Subtest: readCurrentState: context unknown winning before caller abort still invalidates
+ok 37 - readCurrentState: context unknown winning before caller abort still invalidates
+  ---
+  duration_ms: 1.264686
+  type: 'test'
+  ...
+# Subtest: readCurrentState: context authority refusal winning before caller abort still invalidates
+ok 38 - readCurrentState: context authority refusal winning before caller abort still invalidates
+  ---
+  duration_ms: 4.533011
+  type: 'test'
+  ...
+# Subtest: readCurrentState: membership unknown winning before caller abort still invalidates
+ok 39 - readCurrentState: membership unknown winning before caller abort still invalidates
+  ---
+  duration_ms: 0.995186
+  type: 'test'
+  ...
+# Subtest: readCurrentState: membership authority refusal winning before caller abort still invalidates
+ok 40 - readCurrentState: membership authority refusal winning before caller abort still invalidates
+  ---
+  duration_ms: 1.022577
+  type: 'test'
+  ...
+# Subtest: authenticateSession: owner deadline winning before caller abort still invalidates
+ok 41 - authenticateSession: owner deadline winning before caller abort still invalidates
+  ---
+  duration_ms: 21.552538
+  type: 'test'
+  ...
+# Subtest: readCurrentState: owner deadline winning before caller abort still invalidates
+ok 42 - readCurrentState: owner deadline winning before caller abort still invalidates
+  ---
+  duration_ms: 20.820918
+  type: 'test'
+  ...
+# Subtest: event request abort reconnects with the same credential and accepted cursor
+ok 43 - event request abort reconnects with the same credential and accepted cursor
+  ---
+  duration_ms: 19.660667
+  type: 'test'
+  ...
+# Subtest: event subscription deadline reconnects with the same credential and accepted cursor
+ok 44 - event subscription deadline reconnects with the same credential and accepted cursor
+  ---
+  duration_ms: 106.719897
+  type: 'test'
+  ...
+1..44
+# tests 44
+# suites 0
+# pass 44
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 877.613801
