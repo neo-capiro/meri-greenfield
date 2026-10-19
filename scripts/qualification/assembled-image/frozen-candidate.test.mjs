@@ -23,14 +23,14 @@ function edited(editCandidate=c=>c,editHistorical=h=>h){
  return {read:name=>name===HISTORICAL_MANIFEST?historical:candidateBytes,frozen:{file:FROZEN_CANDIDATE.file,sha256:sha256(candidateBytes)}};
 }
 
-test('the reviewed candidate f is selected and bound to every historical row: 45 paths, 18 changed, 27 unchanged',()=>{
+test('the source successor i is selected and bound to every historical row: 45 paths, 28 changed, 17 unchanged',()=>{
  const s=selectFrozenCandidate();
- assert.equal(s.candidate.sha256,'3215210633f64dcb4c8d98aa1c7e17af658c512511bc4f7bdf3df4f8a4085017');
- assert.equal(s.historical.files.length,45);assert.equal(s.expected.size,45);assert.equal(s.candidate.changedRows,18);
- assert.equal(s.historical.files.filter(row=>row.sha256===s.expected.get(row.path)).length,27);
+ assert.equal(s.candidate.sha256,'9612902e156cffbdce71bd71b9115bd8ce642d979583795fd2a5ac5df549f5e2');
+ assert.equal(s.historical.files.length,45);assert.equal(s.expected.size,45);assert.equal(s.candidate.changedRows,28);
+ assert.equal(s.historical.files.filter(row=>row.sha256===s.expected.get(row.path)).length,17);
  const old=s.historical.files.find(row=>row.path===journal);
  assert.equal(old.sha256,'6f0d34c67d179af93f15dd6179c56a4ae437f1ca63250baf637a836df8dd63a5','historical bytes are retained and verified');
- assert.equal(s.expected.get(journal),'b8aadcb9ca7b06cb5ad9571da5b72b1134827b7c949498a949a54dcbafb439c9','current bytes come from the frozen candidate');
+ assert.equal(s.expected.get(journal),'0297baf0a33da0241ccdae25c82f4fe4f5c8fcc5a26e9264e0eb8c21260816fa','current bytes come from the frozen candidate');
 });
 
 test('a COPY tree holding the current reviewed bytes passes; the obsolete historical hashes could never match it',t=>{
@@ -38,7 +38,7 @@ test('a COPY tree holding the current reviewed bytes passes; the obsolete histor
  assert.deepEqual(proofCopyMismatches(tree,s),[]);
  // The former assertion compared the copy with the historical manifest: every changed row fails regardless of Docker.
  const stale=s.historical.files.filter(row=>sha256(readFileSync(join(tree,row.path)))!==row.sha256).map(row=>row.path);
- assert.equal(stale.length,18);assert.ok(stale.includes(journal));
+ assert.equal(stale.length,28);assert.ok(stale.includes(journal));
 });
 
 test('a copy that is excluded or differs from the frozen bytes is reported per path',t=>{
