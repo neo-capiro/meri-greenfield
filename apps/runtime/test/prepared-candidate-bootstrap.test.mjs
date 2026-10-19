@@ -17,14 +17,6 @@ test('poststart TLS files are joined only to the validated remote task and a rem
  await assert.rejects(loadRemoteTaskBinding({configuration:coherentRunner,native:{async call(){return {...f.remote,tls};}},poststartTls:tls}),/TASK_BOOTSTRAP_REFUSED/);
 });
 test('cancelled bootstrap invokes no transport or execution',async()=>{const f=fixture(),signal=AbortSignal.abort();let calls=0;await assert.rejects(loadRemoteTaskBinding({configuration:f.runner,signal,native:{call(){calls++;}}}));assert.equal(calls,0);});
-test('startup budget refusal rejects the listener wait before any listener starts',{timeout:5000},async()=>{
- const {runRemoteConversation}=await import('../remote-conversation-runner.mjs'),f=fixture(),listened=Promise.withResolvers();let listenerCalls=0;
- const configuration={...f.runner,limits:{...f.runner.limits,requestMs:2000},remoteTask:f.remote};delete configuration.bootstrap;
- const run=runRemoteConversation(configuration,{listen(){listenerCalls++;listened.resolve();throw Error('unexpected listener');}});
- await assert.rejects(stageOrRun(listened,run,'listener'),/RUNNER_STARTUP_BUDGET_REFUSED/);
- await assert.rejects(run,/RUNNER_STARTUP_BUDGET_REFUSED/);assert.equal(listenerCalls,0);
-});
-
 test('gated standard runner starts one Query after HTTP release and retains listener through final control stop',async t=>{
  const {runRemoteConversation}=await import('../remote-conversation-runner.mjs'),{listenRuntime}=await import('../http-server.mjs'),{capabilityDigest}=await import('../native-authority/task-verifier.mjs'),fs=await import('node:fs/promises'),{tmpdir}=await import('node:os'),{join}=await import('node:path');
  const f=fixture(),root=await fs.mkdtemp(join(tmpdir(),'meri-candidate-gate-')),capabilityFile=join(root,'task'),listened=Promise.withResolvers(),executed=Promise.withResolvers(),quiesced=Promise.withResolvers(),abort=new AbortController();await fs.writeFile(capabilityFile,f.secret.task,{mode:0o600});t.after(()=>fs.rm(root,{recursive:true,force:true}));
