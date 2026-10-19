@@ -23,14 +23,15 @@ function edited(editCandidate=c=>c,editHistorical=h=>h){
  return {read:name=>name===HISTORICAL_MANIFEST?historical:candidateBytes,frozen:{file:FROZEN_CANDIDATE.file,sha256:sha256(candidateBytes)}};
 }
 
-test('the source successor i is selected and bound to every historical row: 45 paths, 28 changed, 17 unchanged',()=>{
+test('the source successor j is selected and bound to every historical row: 45 paths, 28 changed, 17 unchanged',()=>{
  const s=selectFrozenCandidate();
- assert.equal(s.candidate.sha256,'9612902e156cffbdce71bd71b9115bd8ce642d979583795fd2a5ac5df549f5e2');
+ assert.equal(s.candidate.sha256,'2b4378802ccdd85775224c727b609a2bd8a220ffbe3d38bae5bba49820dadc88');
  assert.equal(s.historical.files.length,45);assert.equal(s.expected.size,45);assert.equal(s.candidate.changedRows,28);
  assert.equal(s.historical.files.filter(row=>row.sha256===s.expected.get(row.path)).length,17);
  const old=s.historical.files.find(row=>row.path===journal);
  assert.equal(old.sha256,'6f0d34c67d179af93f15dd6179c56a4ae437f1ca63250baf637a836df8dd63a5','historical bytes are retained and verified');
  assert.equal(s.expected.get(journal),'0297baf0a33da0241ccdae25c82f4fe4f5c8fcc5a26e9264e0eb8c21260816fa','current bytes come from the frozen candidate');
+ assert.equal(s.expected.get('apps/runtime/test/prepared-candidate-bootstrap.test.mjs'),'1929585d2a55c22dc3ef78b33eb6e9be53f5bdcbfeb27c2dfad9de74f00c5cda');
 });
 
 test('a COPY tree holding the current reviewed bytes passes; the obsolete historical hashes could never match it',t=>{
