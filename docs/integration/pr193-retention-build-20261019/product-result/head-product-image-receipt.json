@@ -1,0 +1,15 @@
+{
+    "AcceptRanges": "bytes",
+    "LastModified": "2026-10-19T19:29:48+00:00",
+    "ContentLength": 2479,
+    "ChecksumCRC64NVME": "xQxEWXV4lIs=",
+    "ChecksumType": "FULL_OBJECT",
+    "ETag": "\"0cd30984d8de1f580de0b69f3c84dbb1\"",
+    "VersionId": "QB..1ACwXHizqlDslq_QFvZPpFUpueag",
+    "ContentType": "binary/octet-stream",
+    "ServerSideEncryption": "aws:kms",
+    "Metadata": {
+        "codebuild-buildarn": "arn:aws:codebuild:us-east-1:967807252336:build/meri-greenfield-qualification-build:2d0c9e04-a170-46d2-9d0b-f4094e6a48e8"
+    },
+    "SSEKMSKeyId": "arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042"
+}

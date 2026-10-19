@@ -1,0 +1,118 @@
+{
+    "id": "meri-greenfield-qualification-build:2d0c9e04-a170-46d2-9d0b-f4094e6a48e8",
+    "status": "SUCCEEDED",
+    "complete": true,
+    "phase": "COMPLETED",
+    "start": "2026-10-19T19:23:50.451000+00:00",
+    "end": "2026-10-19T19:29:48.443000+00:00",
+    "sourceVersion": "wzj36s_GpR.73i.Gs6_AwP5BiWHAvXtw",
+    "phases": [
+        {
+            "phase": "SUBMITTED",
+            "status": "SUCCEEDED",
+            "duration": 0,
+            "contexts": null
+        },
+        {
+            "phase": "QUEUED",
+            "status": "SUCCEEDED",
+            "duration": 0,
+            "contexts": null
+        },
+        {
+            "phase": "PROVISIONING",
+            "status": "SUCCEEDED",
+            "duration": 8,
+            "contexts": [
+                {
+                    "statusCode": "",
+                    "message": ""
+                }
+            ]
+        },
+        {
+            "phase": "DOWNLOAD_SOURCE",
+            "status": "SUCCEEDED",
+            "duration": 6,
+            "contexts": [
+                {
+                    "statusCode": "",
+                    "message": ""
+                }
+            ]
+        },
+        {
+            "phase": "INSTALL",
+            "status": "SUCCEEDED",
+            "duration": 0,
+            "contexts": [
+                {
+                    "statusCode": "",
+                    "message": ""
+                }
+            ]
+        },
+        {
+            "phase": "PRE_BUILD",
+            "status": "SUCCEEDED",
+            "duration": 0,
+            "contexts": [
+                {
+                    "statusCode": "",
+                    "message": ""
+                }
+            ]
+        },
+        {
+            "phase": "BUILD",
+            "status": "SUCCEEDED",
+            "duration": 340,
+            "contexts": [
+                {
+                    "statusCode": "",
+                    "message": ""
+                }
+            ]
+        },
+        {
+            "phase": "POST_BUILD",
+            "status": "SUCCEEDED",
+            "duration": 0,
+            "contexts": [
+                {
+                    "statusCode": "",
+                    "message": ""
+                }
+            ]
+        },
+        {
+            "phase": "UPLOAD_ARTIFACTS",
+            "status": "SUCCEEDED",
+            "duration": 1,
+            "contexts": [
+                {
+                    "statusCode": "",
+                    "message": ""
+                }
+            ]
+        },
+        {
+            "phase": "FINALIZING",
+            "status": "SUCCEEDED",
+            "duration": 0,
+            "contexts": [
+                {
+                    "statusCode": "",
+                    "message": ""
+                }
+            ]
+        },
+        {
+            "phase": "COMPLETED",
+            "status": null,
+            "duration": null,
+            "contexts": null
+        }
+    ],
+    "artifacts": "arn:aws:s3:::meri-greenfield-qual-build-967807252336-us-east-1/results/product-image/5b395d4ce9218b872b21c420dc00a3af31739824/ef2439c9e0afe141d11e27836503975f"
+}

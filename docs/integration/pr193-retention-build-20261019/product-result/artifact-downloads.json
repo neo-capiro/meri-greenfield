@@ -1,0 +1,18 @@
+[
+  {
+    "file": "product-image-receipt.json",
+    "bucket": "meri-greenfield-qual-build-967807252336-us-east-1",
+    "key": "results/product-image/5b395d4ce9218b872b21c420dc00a3af31739824/ef2439c9e0afe141d11e27836503975f/product-image-receipt.json",
+    "versionId": "QB..1ACwXHizqlDslq_QFvZPpFUpueag",
+    "bytes": 2479,
+    "sha256": "0ce6958ec9c9268ee32fa5ae22ba07e3e13de336419448f8ea635997d45607d5"
+  },
+  {
+    "file": "product-image-diagnostic.json",
+    "bucket": "meri-greenfield-qual-build-967807252336-us-east-1",
+    "key": "results/product-image/5b395d4ce9218b872b21c420dc00a3af31739824/ef2439c9e0afe141d11e27836503975f/product-image-diagnostic.json",
+    "versionId": "R9cPtPv9LOKLFqJ6NCYXy5Dai.vAAgBn",
+    "bytes": 192,
+    "sha256": "49cb04ff0b16011c5559b0e1a30adc06fd363904272614ddbf470572d5f1852a"
+  }
+]

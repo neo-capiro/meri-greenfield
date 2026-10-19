@@ -39,4 +39,19 @@ Source/proof/seal complete. Both nonsecret files were conditionally uploaded wit
 
 The official verifier returned `VERIFIED_SOURCE_ONLY`. The canonical buildspec is25,495bytes, SHA-256 `fd1c57c774d5afa29c77f674e2745c345c9a4c3055d9efa7c6328edfaf21b26e`; canonical request SHA-256 `456df153a53d9b52c0038447e93926e43f1d8e6acf6c994d1e3e4fa6163999cd`. StartBuild request file SHA-256 `80a3865b346c57c21c6280d28da2cd3288e44907648e577cee667686248e873d`. At19:23:31UTC the final check found10recent builds terminal and the exact attempt tag absent.
 
-Build **`meri-greenfield-qualification-build:2d0c9e04-a170-46d2-9d0b-f4094e6a48e8`** started at **2026-10-19T19:23:50.451Z**, using the verified source version, timeout30/queue5 and automatic retry limit0. This is the first authorized image-build attempt of this cycle. Terminal result and exact-image launch measurement are pending. No deployment or live acceptance is claimed.
+Build **`meri-greenfield-qualification-build:2d0c9e04-a170-46d2-9d0b-f4094e6a48e8`** started at **2026-10-19T19:23:50.451Z** and **SUCCEEDED at19:29:48.443Z**, using the verified source version, timeout30/queue5 and automatic retry limit0. BUILD took340seconds; artifact upload succeeded. This is the first authorized image-build attempt of this cycle.
+
+The resulting image is `967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:ea0e9ad4cfcec1052c33b39ae2f41c1df6e591b7ab2e74c762a1f68f54990b49`, tag `product-5b395d4ce9218b872b21c420dc00a3af31739824-ef2439c9e0afe141d11e27836503975f`, pushed19:28:58.218Z. Independent ECR readback reports COMPLETE with an empty finding-count map. The canonical producer receipt reports Nodev24.21.0, glibc2.44, uid/gid1000:1000 and verified native dependencies. The diagnostic reports SUCCEEDED, phase RECEIPT, cleanup OK and no primary or cleanup failure.
+
+Both producer outputs were downloaded by the VersionId selected from authenticated HEAD, checked against GET VersionId/length, then hashed locally:
+
+| Output | S3 VersionId | Bytes | SHA-256 |
+| --- | --- | ---: | --- |
+| `product-image-receipt.json` | `QB..1ACwXHizqlDslq_QFvZPpFUpueag` | 2,479 | `0ce6958ec9c9268ee32fa5ae22ba07e3e13de336419448f8ea635997d45607d5` |
+| `product-image-diagnostic.json` | `R9cPtPv9LOKLFqJ6NCYXy5Dai.vAAgBn` | 192 | `49cb04ff0b16011c5559b0e1a30adc06fd363904272614ddbf470572d5f1852a` |
+
+Exact-image launch measurement remains pending. Its initial reviewed packet preserves C's three turns/one tool and absent feature selectors; 34/34 focused synthetic checks and independent packet review passed for those recorded bytes. Local preparation initially refused missing locked runtime/conversation dependencies; those were installed with scripts disabled, and preparation continues under bundled Node24. The inline packet then exceeded CodeBuild's25,600-byte limit; the raw UTF8 and concatenated encodings were also refused locally at26,725 and26,418bytes. No second AWS job was submitted.
+
+The parent authorized continuing through the remaining single measurement job and preferred an established pinned external artifact pattern. The author/reviewer are preparing one public payload under the existing bucket's `inputs/launch-measurement/` prefix, using the canonical producer's exact VersionId, length and SHA-256 download checks through its bounded command adapter. No IAM change or source archive/image change is required. This packaging successor requires its own independent preflight before upload/start. These local dependency and packaging steps are not additional AWS attempts.
+
+The `product-result/` directory retains the full public producer receipt, diagnostic, terminal build record, selected-version download records and independent image/scan readbacks. `public-candidate/` preserves the reviewed C policy/allocation unchanged and updates only its deployment image/source fields. It remains a public measurement candidate with the existing placeholder external origins. Fresh runtime-values and launch receipts are still pending; no deployment or live acceptance is claimed.
