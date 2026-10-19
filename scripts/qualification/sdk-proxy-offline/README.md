@@ -60,9 +60,17 @@ lifespan and `load_pinned_product_litellm_invoker`. Its handler is the unchanged
 `create_guarded_product_handler`: final native bytes, `AwsNativeCounter`, UNKNOWN
 reservation before send, raw response observation and settlement all execute.
 
-`owner_peer.mjs` composes the real `createProductProxyOwnerComposition`, model
-reservation and model settlement owners. They request independent host capture
-callbacks over private inherited pipes. `model_ledger_fixture.mjs` reuses
+`owner_peer.mjs` runs the real `createProductOwnerChannel`, which composes the
+canonical model reservation and settlement owners. The thin inherited-pipe
+carrier relays OPEN/POLL/REPLY/OPERATION wire bytes to the actual Python
+`ProductOwnerBridge`. Both sides use canonical capture and claim codecs: the
+JavaScript owner's independent host-capture callbacks issue fresh challenges,
+and the bridge answers from the actual native request/response observations.
+Admission and every request bridge share one policy, exchange and host gate;
+all JavaScript channels share one service gate and pool. `OwnerTlsEvidence` and
+persisted-facts/admission replies are explicitly synthetic, including distinct
+carrier IDs; they do not prove mTLS, Core freshness or real persisted custody.
+`model_ledger_fixture.mjs` reuses
 `occurrenceCostFixture` for row storage and SQL transaction/commit-fault behavior.
 It does not implement budget admission, pricing or settlement decisions. It
 constructs an explicitly synthetic 250000 microUSD manifest/allocation with
@@ -102,10 +110,15 @@ text and admitted structured tool responses, refusals, truncation and caching.
 | Settlement committed, ACK lost, exact readback | 1 | 1 | 1 | SETTLED, 90 microUSD | Yes |
 | Settlement committed, ACK lost, readback unavailable | 1 | 1 | 1 | SETTLED in fixture; host proof unresolved | No |
 
-Every case asserts exactly one count and reservation attempt, expected settlement
-and readback counts, no quarantine and native startup/shutdown. No case produced
-a duplicate provider execution. This is not a complete cross-request SDK retry
-qualification; that requires resolving the SDK request contract first.
+Minimal cases assert exactly one count and reservation attempt, expected
+settlement/readback counts, no quarantine and native startup/shutdown. SDK
+negatives also assert no reported SDK success, one persisted request and no
+second provider execution. A retry refused at the owner channel may add one
+count/reservation attempt before the actual bridge retires the shared carrier.
+After unavailable acknowledgement readback, the real shared host gate refuses
+later admission before another count, reservation or provider attempt. These
+negative SDK runs use an explicit 30-second SDK deadline; they do not establish
+that an unbounded SDK retry loop terminates naturally.
 
 Before the interoperability repair, SDK defaults produced nested `cache_control`, `metadata.user_id`,
 `output_config.effort`, `tools:[]`, and final native beta values
@@ -156,6 +169,18 @@ the SDK can report success after truncated final provider bytes or unresolved
 settlement readback. Those receipts fail; the harness never translates host
 refusal into a successful qualification. Final negative results must name the
 canonical terminal-release repair commit independently of request admission.
+
+The first 17-case matrix at local source
+`216072a76e68d1125e8d2432f457fa900e44e49c` preserved 15 passing and two failing
+results. Its direct accounting bridge omitted the production owner channel's
+uncertainty gate. On unresolved settlement readback, the SDK could obtain a
+second slot after the first durable SETTLED row; this exposed a qualification
+fidelity gap. The replacement uses the actual Python/JavaScript owner channels,
+without adding a fixture poison rule or changing production SQL policy. Both
+actual-SDK unresolved-readback controls then retain one provider attempt and
+one settlement, retire the real shared host gate/carrier, and report no SDK
+success. Old receipts remain pinned to the earlier source and are not relabeled
+as passing.
 
 Supported configuration references, checked 2026-10-18:
 [environment variables](https://code.claude.com/docs/en/env-vars) and

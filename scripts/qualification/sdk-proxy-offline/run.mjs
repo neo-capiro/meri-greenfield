@@ -145,11 +145,11 @@ export async function main(argv){
    r.isError===false&&r.structuredOutputMatchesSchema===true));
   receipt.sdkSuccessObserved=client==='minimal-messages'?null:reportedSuccess;
   const expectedHold=client==='minimal-messages'?'344':'135248';
-  const retries=n.countRequests-1;
-  const slotDenials=(n.errors??[]).filter(error=>error?.operation==='reserve'&&error.code==='PRODUCT_MODEL_SLOT_USED').length;
+  const channelDenials=(n.errors??[]).filter(error=>error?.operation==='wire'&&error.code==='PRODUCT_OWNER_CHANNEL_DENIED').length;
   const attemptsBound=client==='minimal-messages'||positive
    ?n.countRequests===1&&ops.reserve===1
-   :Number.isSafeInteger(retries)&&retries>=0&&ops.reserve===n.countRequests&&slotDenials===retries;
+   :ops.reserve===n.countRequests&&(n.countRequests===1||n.countRequests===2&&channelDenials===1&&
+    n.ownerHostGateAvailable===false&&n.ownerExchangeAborted===true);
   receipt.partitionPassed=positive
    ?succeeded&&n.providerExecutions===1&&n.countRequests===1&&
     l.reservationInserts===1&&l.settlementUpdates===1&&l.requests[0]?.state==='SETTLED'&&l.consumedMicroUSD==='90'
@@ -160,8 +160,13 @@ export async function main(argv){
     l.requests[0].holdMicroUSD===expectedHold&&
     l.consumedMicroUSD===(mode==='settlement-ack-unresolved'?'90':'0');
   receipt.partitionPassed&&=n.nativeStarted===true&&n.nativeStopped===true&&l.quarantined===false&&
+   n.ownerBridge==='actual-ProductOwnerBridge-and-JS-owner-channel'&&
+   n.ownerTlsEvidence==='SYNTHETIC_NOT_HTTPS_QUALIFICATION'&&
    attemptsBound&&(ops.settle??0)===(positive||mode==='settlement-ack-unresolved'?1:0)&&
    (ops.outcome??0)===(mode.startsWith('settlement-ack-')?1:0);
+  if(positive)receipt.partitionPassed&&=n.ownerHostGateAvailable===true&&!n.ownerExchangeAborted;
+  if(['reservation-ack-lost','settlement-ack-unresolved'].includes(mode))
+   receipt.partitionPassed&&=n.ownerHostGateAvailable===false&&n.ownerExchangeAborted===true;
   return receipt.partitionPassed?0:2;
  }catch(error){receipt.partitionPassed=false;receipt.failure=/^[A-Z][A-Z0-9_]+$/u.test(error?.message)?error.message:error?.name??'Error';return 2;}
  finally{

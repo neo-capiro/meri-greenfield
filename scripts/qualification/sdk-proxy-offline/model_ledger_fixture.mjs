@@ -42,7 +42,11 @@ export async function createModelLedgerFixture(){
     resourceId:prepared.modelConfig.selectedClientId,policyRevision:selected.qualificationBinding.policyRevision}],
    selectedClientId:prepared.modelConfig.selectedClientId,contextRevision:'b'.repeat(64),
    checkedAtMs:at,expiresAtMs:at+10000};}};
- return {seed,selected,config,syncClock(){seed.advance(Date.now()-seed.now());},
+ const ownerFacts={binding:selected.binding,allocationJson,grantFactsJsons:config.grantFactsJsons,
+  modelGrantId:selected.grantId,selectedClientId:config.selectedClientId,original:{},
+  resource:{taskArn:selected.qualificationBinding.workerArn},requestSha256:'e'.repeat(64),
+  expiresAtMs:grantIntents[1].expiresAtMs};
+ return {seed,selected,config,ownerFacts,syncClock(){seed.advance(Date.now()-seed.now());},
   snapshot(){return {syntheticAllocation:true,maxCostMicroUSD:QUALIFICATION_BUDGET_MICRO_USD,
    allocationSha256:canonicalSha256(allocation),manifestSha256:canonicalSha256(manifest),
    requests:[...seed.state().requests.values()].map(r=>({requestId:r.request_id,

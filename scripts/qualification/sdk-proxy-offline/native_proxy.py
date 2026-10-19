@@ -7,7 +7,7 @@ import argparse
 import asyncio
 import base64
 from contextlib import redirect_stdout, redirect_stderr
-from dataclasses import asdict, replace
+from dataclasses import replace
 import hashlib
 import ipaddress
 from importlib.metadata import version
@@ -53,43 +53,25 @@ class OwnerRpc:
     def __init__(self, process, receipt):
         self.process, self.sequence = process, 0
         self.receipt = receipt
-        self.waiters, self.captures, self.capture_tasks = {}, {}, set()
+        self.waiters = {}
         self.reader = asyncio.create_task(self.read())
 
     async def write(self, value):
         self.process.stdin.write((json.dumps(encode(value), separators=(",", ":")) + "\n").encode())
         await self.process.stdin.drain()
 
-    async def capture(self, message):
-        try:
-            callback = self.captures[message["request"]["requestId"]][message["kind"]]
-            value = await callback(decode(message["request"]))
-            await self.write({"type": "capture-result", "id": message["id"], "ok": True, "value": value})
-        except BaseException as error:
-            self.receipt["errors"].append({"operation": "capture", "type": type(error).__name__})
-            await self.write({"type": "capture-result", "id": message["id"], "ok": False})
-
     async def read(self):
         while line := await self.process.stdout.readline():
             message = json.loads(line)
-            if message.get("type") == "capture":
-                task = asyncio.create_task(self.capture(message))
-                self.capture_tasks.add(task)
-                task.add_done_callback(self.capture_tasks.discard)
-            else:
-                waiter = self.waiters.pop(message["id"], None)
-                if waiter is not None and not waiter.done():
-                    waiter.set_result(message)
+            waiter = self.waiters.pop(message["id"], None)
+            if waiter is not None and not waiter.done():
+                waiter.set_result(message)
         for waiter in self.waiters.values():
             if not waiter.done():
                 waiter.set_exception(RuntimeError("OFFLINE_OWNER_EXITED"))
 
     async def call(self, method, **values):
-        from apps.proxy.product.response_settlement import SettlementCommitUncertain
         self.sequence += 1
-        if method in ("reserve", "settle", "outcome"):
-            operations = self.receipt.setdefault("ownerOperations", {})
-            operations[method] = operations.get(method, 0) + 1
         identifier = str(self.sequence)
         waiter = asyncio.get_running_loop().create_future()
         self.waiters[identifier] = waiter
@@ -97,8 +79,6 @@ class OwnerRpc:
         result = await asyncio.wait_for(waiter, 5)
         if not result["ok"]:
             self.receipt["errors"].append({"operation": method, "code": result["code"]})
-            if result["code"] == "BudgetCommitUncertain":
-                raise SettlementCommitUncertain("OFFLINE_COMMIT_ACK_UNKNOWN")
             raise RuntimeError(result["code"])
         return decode(result["value"])
 
@@ -109,52 +89,63 @@ class OwnerRpc:
         except TimeoutError:
             self.process.kill()
             await self.process.wait()
-        await asyncio.gather(self.reader, *self.capture_tasks, return_exceptions=True)
+        await asyncio.gather(self.reader, return_exceptions=True)
 
 
-class AccountingBridge:
-    def __init__(self, rpc, request_id, capture):
-        self.rpc, self.request_id = rpc, request_id
-        rpc.captures[request_id] = {"request": capture}
-
-    async def reserve(self, value, claim):
-        return await self.rpc.call("reserve", requestId=self.request_id, value=value, claim=claim)
-
-    def bind_complete_capture(self, capture):
-        self.rpc.captures[self.request_id]["complete"] = capture
-
-    async def settle_complete(self, request_id, claim):
-        return await self.rpc.call("settle", requestId=request_id, claim=asdict(claim))
-
-    async def read_outcome(self, request_id):
-        return await self.rpc.call("outcome", requestId=request_id)
-
-
-async def fixture_lifetime(metadata, scope, body, host_gate):
-    """Synthetic trusted source only; genuine product auth refreshes it."""
+def fixture_issued(metadata):
+    """One immutable synthetic issuance, reused by every request and retry."""
     from apps.proxy.product.test.test_bearer_eni_admission import source
-    from apps.proxy.product.test.test_owner_admission import Exchange
-    from apps.proxy.product.owner_admission import ProductOwnerAdmissionReader
-    from apps.proxy.product.owner_channel import OwnerPeerPolicy
     from apps.proxy.qualification.state.grants import RunBinding
-    from apps.proxy.qualification.runtime.ingress import PeerLease, IngressAdmission
-    from apps.proxy.qualification.runtime.lifetime import RequestLifetime, LifetimeLimits, PendingWork
     b, q = metadata["binding"], metadata["qualificationBinding"]
     binding = RunBinding(q["runId"], q["attempt"], q["workerArn"], q["fence"], q["policyRevision"])
     identity = hashlib.sha256(json.dumps(b, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
     template = source()[0].issued
-    issued = replace(template, binding=binding, grant_id=metadata["grantId"],
+    issued = replace(template, binding=binding, grant_id=metadata["grantId"], expires_at_ms=metadata["expiresAtMs"],
                      cluster_arn=q["workerArn"].split(":task/")[0] + ":cluster/Synthetic",
                      execution_binding=b, started_by=identity, group="meri:" + identity,
-                     tags=tuple((key, identity if key in ("meri:execution-id", "meri:binding-sha256") else value)
+                     tags=tuple((key, identity if key in ("meri:execution-id", "meri:binding-sha256") else
+                                 str(metadata["expiresAtMs"]) if key == "meri:expires-at-ms" else value)
                                 for key, value in template.tags))
-    policy = OwnerPeerPolicy("https://owner.invalid:8444", "owner.invalid", "owner-task", "proxy-task",
-                             "1" * 64, "2" * 64, "3" * 64, "proxy-subject")
-    exchange = Exchange(policy, issued)
+    return issued
+
+
+def pipe_owner_exchange(policy, issued, metadata, rpc, receipt):
+    """Synthetic TLS carrier only; real bridge/channel own every protocol rule."""
+    from apps.proxy.product.test.test_owner_admission import Exchange
+    from apps.proxy.product.owner_channel import OwnerReply
+
+    class PipeOwnerExchange(Exchange):
+        def abort(self):
+            super().abort()
+            receipt["ownerExchangeAborted"] = True
+
+        async def __call__(self, channel, path, body, timeout):
+            if self.aborted:
+                raise RuntimeError("OFFLINE_OWNER_CARRIER_RETIRED")
+            frame = json.loads(body)
+            if frame[0] == "meri.proxy.admission-read/1":
+                return await super().__call__(channel, path, body, timeout)
+            self.calls.append((channel, path, frame, timeout))
+            operation = {"meri.proxy.reservation/1": "reserve", "meri.proxy.settlement/1": "settle",
+                         "meri.proxy.outcome/1": "outcome"}.get(frame[2][0]) if frame[0] == "meri.proxy.operation/1" else None
+            if operation:
+                operations = receipt.setdefault("ownerOperations", {})
+                operations[operation] = operations.get(operation, 0) + 1
+            raw = await rpc.call("wire", channel=channel, path=path, body=body)
+            synthetic = self.reply([], channel)
+            return OwnerReply(raw, synthetic.evidence)
+
+    exchange = PipeOwnerExchange(policy, issued)
     exchange.source[2] = metadata["capabilitySha256"]
     exchange.source[7] = metadata["clientId"]
-    reader = ProductOwnerAdmissionReader(policy=policy, exchange=exchange, host_gate=host_gate,
-                                         owner_loop=asyncio.get_running_loop())
+    return exchange
+
+
+async def fixture_lifetime(metadata, scope, body, reader, issued):
+    """Synthetic trusted source; real admission/bridge share one carrier/gate."""
+    from apps.proxy.qualification.runtime.ingress import PeerLease, IngressAdmission
+    from apps.proxy.qualification.runtime.lifetime import RequestLifetime, LifetimeLimits, PendingWork
+    binding = issued.binding
     result = await asyncio.to_thread(reader.resolve_for_issued_sync, issued=issued,
                                     capability_sha256=metadata["capabilitySha256"],
                                     deadline_ms=time.time_ns() // 1000000 + 3000)
@@ -176,7 +167,8 @@ async def serve(args, receipt):
     from apps.proxy.product import main
     from apps.proxy.product.host_composition import ProductSession, create_guarded_product_handler
     from apps.proxy.product.upstream_callback import load_pinned_product_litellm_invoker
-    from apps.proxy.product.owner_channel import OwnerHostGate
+    from apps.proxy.product.owner_channel import OwnerHostGate, OwnerPeerPolicy, make_product_owner_bridge
+    from apps.proxy.product.owner_admission import ProductOwnerAdmissionReader
     from apps.proxy.qualification.runtime.bedrock_body import BodyLimits
     from apps.proxy.qualification.runtime.lifetime import _request_lifetime
     receipt["versions"] = {"python": ".".join(map(str, sys.version_info[:3])),
@@ -192,6 +184,12 @@ async def serve(args, receipt):
     rpc = OwnerRpc(process, receipt)
     metadata = await rpc.call("init")
     admission_gate = OwnerHostGate()
+    policy = OwnerPeerPolicy("https://owner.invalid:8444", "owner.invalid", "owner-task", "proxy-task",
+                             "1" * 64, "2" * 64, "3" * 64, "proxy-subject")
+    issued = fixture_issued(metadata)
+    exchange = pipe_owner_exchange(policy, issued, metadata, rpc, receipt)
+    reader = ProductOwnerAdmissionReader(policy=policy, exchange=exchange, host_gate=admission_gate,
+                                         owner_loop=asyncio.get_running_loop())
     resources, gate, server_task = main._Resources(), None, None
     counter = boto3.client("bedrock-runtime", region_name="us-east-1", aws_access_key_id="synthetic-offline",
                            aws_secret_access_key="synthetic-offline-never-an-account-key",
@@ -228,13 +226,19 @@ async def serve(args, receipt):
             betas = [value.decode("ascii") for name, value in scope["headers"] if name == b"anthropic-beta"]
             observation["headerBetaEnums"] = [item.strip() for value in betas for item in value.split(",")
                 if len(item.strip()) < 120 and all(c.isalnum() or c in "-_" for c in item.strip())]
+            retry_names = {b"idempotency-key", b"x-client-request-id", b"anthropic-request-id",
+                           b"x-request-id", b"request-id", b"x-stainless-retry-count"}
+            observation["ingressRetryHeaders"] = [{"name": name.decode("ascii"), "bytes": len(value),
+                **({"retryCount": int(value)} if name == b"x-stainless-retry-count"
+                   and value.isdigit() and len(value) <= 2 else {"sha256": hashlib.sha256(value).hexdigest()})}
+                for name, value in scope["headers"] if name in retry_names]
             receipt["sdkRequests"].append(observation)
             # Explicitly synthetic ingress boundary: this is not a real ECS peer.
             selected_scope = {**scope, "client": ("10.77.0.9", 4321)}
-            life = await fixture_lifetime(metadata, selected_scope, body, admission_gate)
+            life = await fixture_lifetime(metadata, selected_scope, body, reader, issued)
             token = _request_lifetime.set(life)
             identifier = uuid.uuid4().hex
-            deadline = time.time_ns() // 1000000 + 25000
+            deadline = min(time.time_ns() // 1000000 + 25000, metadata["expiresAtMs"])
             async def current(_request):
                 at = time.time_ns() // 1000000
                 return {"identitySha256": "a" * 64, "binding": metadata["binding"],
@@ -245,7 +249,10 @@ async def serve(args, receipt):
             session = ProductSession(identifier, metadata["binding"], metadata["grantId"], deadline,
                                      metadata["clientId"], metadata["pricing"]["revision"], counter,
                                      lambda: ProviderStub(args.mode, receipt, structured=args.output_format == "json-schema"),
-                                     lambda capture: AccountingBridge(rpc, identifier, capture), current, limits=body_limits)
+                                     make_product_owner_bridge(policy=policy, exchange=exchange, host_gate=admission_gate,
+                                         request_id=identifier, binding=metadata["binding"], deadline_ms=deadline,
+                                         grant_id=metadata["grantId"], capability_sha256=metadata["capabilitySha256"]),
+                                     current, limits=body_limits)
             handler = await create_guarded_product_handler(life, session)
             async def observe_native(request):
                 observation = request_observation(request.content)
@@ -316,6 +323,9 @@ async def serve(args, receipt):
     finally:
         receipt["ledger"] = await rpc.call("snapshot")
         receipt["nativeStarted"], receipt["nativeStopped"] = resources.native_started, resources.native_stopped
+        receipt["ownerHostGateAvailable"] = admission_gate.available
+        receipt["ownerBridge"] = "actual-ProductOwnerBridge-and-JS-owner-channel"
+        receipt["ownerTlsEvidence"] = "SYNTHETIC_NOT_HTTPS_QUALIFICATION"
         await rpc.close()
         stub.deactivate()
         counter.close()
