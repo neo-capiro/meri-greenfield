@@ -11,6 +11,7 @@ test('fixed Core route preserves raw request, candidate DTO and current per-call
  assert.deepEqual(out,{binding:f.authority.binding,subject:f.authority.subject,operation,argumentsSha256:call.argumentsSha256,result:f.page});
  assert.equal(f.wire[0].url,'https://native-core.example.invalid/api/clio/tools/search_research_sources');
  assert.equal(f.wire[0].options.method,'POST');assert.deepEqual(f.wire[0].body,f.arguments);
+ assert.equal(f.wire[0].options.headers.authorization,'CapiroMeriRead SYNTHETIC_NATIVE_USER');
  assert.equal(f.wire[0].options.headers['x-internal-service-secret'],'SYNTHETIC_INTERNAL_SERVICE');
  assert.equal(f.wire[0].options.redirect,'error');assert.equal(f.wire[0].options.cache,'no-store');
  assert.equal(f.credentialCalls[0].requestSha256,hash(f.arguments));
@@ -61,13 +62,21 @@ test('no ambient credential fallback is permitted for private candidate search',
  await assert.rejects(handler.execute(f.call()),{message:'UNAVAILABLE'});assert.equal(f.wire.length,0);
 });
 
+for(const scheme of [undefined,'Bearer'])test(`private research source refuses ${scheme??'missing'} credential scheme before HTTP`,async()=>{
+ const f=storedCase({request:{query:'priority',clientId}});let failure;
+ f.state.credentialMutator=proof=>{if(scheme===undefined)delete proof.authorizationScheme;else proof.authorizationScheme=scheme;};
+ try{await f.handler()(f.call());}catch(error){failure=error;}
+ assert.equal(f.wire.length,0,'ordinary attended credentials must never dispatch the private candidate source');
+ assert.equal(failure?.message,'UNAVAILABLE');
+});
+
 test('expired or revoked credentials and wrong tenant/actor/current decision cannot read Core',async()=>{
  for(const mutate of [a=>a.binding.tenantId='other',a=>a.decision.actor.actorId='other',a=>a.decision.decision='denied',
   a=>a.decision.operation='other@0.2.0',a=>a.claims.actions=[],a=>a.sourceIds=[],a=>a.deadlineMs=0]){
   const f=storedCase(),call=structuredClone(f.call());mutate(call.authority);
   await assert.rejects(f.handler()(call));assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
  }
- const f=storedCase();f.state.credentialMutator=proof=>proof.expiresAtMs=f.now();
+ const f=storedCase();f.state.credentialMutator=proof=>{proof.authorizationScheme='CapiroMeriRead';proof.expiresAtMs=f.now();};
  await assert.rejects(f.handler()(f.call()),{message:'ACCESS_DENIED'});assert.equal(f.wire.length,0);
  const revoked=storedCase();revoked.transport.credentialsForCall=()=>async()=>deny('ACCESS_DENIED');
  await assert.rejects(revoked.handler()(revoked.call()),{message:'ACCESS_DENIED'});assert.equal(revoked.wire.length,0);

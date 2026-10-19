@@ -11,6 +11,9 @@ export const clientId=uuid('a'),otherClientId=uuid('c');
 export function storedCase({request={query:'priority'},resolution,page}={}){
  const scene=billTextCase(),contract=resolveOperationContract(operation),context=researchCandidatesContext(operation,request,resolution);
  const {authority,state,now,wire,credentialCalls}=scene;
+ // Explicit synthetic signed-source admission. Actual native/delegation owners
+ // are exercised separately; an ordinary user bearer is never this fixture grant.
+ state.credentialMutator=proof=>{proof.authorizationScheme='CapiroMeriRead';};
  authority.decision.operation=`${operation.id}@${operation.version}`;
  authority.sourceIds=[...new Set(contract.descriptor.sourceRequirements.map(source=>source.sourceId))];
  const visibleClientIds=context.clientResolution?[context.clientResolution.clientId]:[];

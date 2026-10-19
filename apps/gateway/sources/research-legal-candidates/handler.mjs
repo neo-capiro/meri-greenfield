@@ -1,7 +1,8 @@
 /** Six capped tenant candidate branches; Core remains the authoritative owner of source visibility and ownership. */
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
+import {types} from 'node:util';
 import {deny,safeFailure} from '../../dispatch/operation-result.mjs';
-import {ownFields} from '../source-admission.mjs';
+import {ownFields,frozenData} from '../source-admission.mjs';
 import {createStoredNativeReadHandlers} from '../retained-reads/native-handler.mjs';
 import {assertResearchClientSubject} from '../research-legal-legislation/request-context.mjs';
 import {researchCandidatesContext} from './request-context.mjs';
@@ -17,7 +18,20 @@ function selectedContext(operation,request,normalizationContext,authority){
 }
 
 export function createResearchLegalCandidatesHandlers(configuration,operations){
- const handlers=createStoredNativeReadHandlers(configuration,operations,{family:'research-legal-candidates',routes,
+ const config=ownFields(configuration,['origin','now'],['getCredentials','credentialsForCall','fetchImpl','maxRequestMs','maxResponseBytes']);
+ if(config.credentialsForCall!==undefined&&(typeof config.credentialsForCall!=='function'||types.isProxy(config.credentialsForCall)))deny('GATEWAY_CONFIGURATION');
+ // Private candidate reads require the exact delegated source admission. A
+ // current attended owner or unavailable-delegation fallback is not that grant.
+ const transport=config.credentialsForCall?{...config,credentialsForCall(operation,call){
+  const get=config.credentialsForCall(operation,call);
+  if(typeof get!=='function'||types.isProxy(get))deny('GATEWAY_CONFIGURATION');
+  return async request=>{
+   const credentials=frozenData(await get(request));
+   if(credentials.authorizationScheme!=='CapiroMeriRead')deny('UNAVAILABLE');
+   return credentials;
+  };
+ }}:config;
+ const handlers=createStoredNativeReadHandlers(transport,operations,{family:'research-legal-candidates',routes,
   // Private multi-source reads must use the current per-call native credential owner.
   requirePerCall:()=>true,
   requestBody(current){
