@@ -58,6 +58,7 @@ import {createPostgresConversationStore} from '../../control/conversations/postg
 import {compilePreparedCandidateConfiguration} from '../prepared-candidate-config.mjs';
 import {compileIntentsConfiguration,createIntentsFamilyWith} from '../product-ports/intents.mjs';
 import {executionGrantFacts,bindExecutionGrant} from './execution-grant.mjs';
+import {documentIntentPreparersFor} from '../artifacts/intent-binding.mjs';
 const entry=resolveOperationContract({id:'create_task',version:'0.2.0'}).descriptor;
 const DESCRIPTOR=Object.freeze({action:'task.create',operation:entry.operation,requiredGrants:entry.requiredGrants,sourceRequirements:entry.sourceRequirements});
 export const EXECUTION_PRODUCER_NAMESPACE='meri.intents.execution';
@@ -85,7 +86,8 @@ export function createAdmittedRunSource({pool,allocations,now,limits}){
  }});
 }
 export function createIntentExecutionOwner(configuration){
- const c=own(configuration??{},['enabled'],[...OWNERS,'sourceEnabled','fetchImpl','now','newId','limits']);
+ const c=own(configuration??{},['enabled'],[...OWNERS,'sourceEnabled','fetchImpl','now','newId','limits','preparersFor','preparationEnabled']);
+ if(c.preparationEnabled!==undefined&&typeof c.preparationEnabled!=='boolean')throw configurationFault();
  if(typeof c.enabled!=='boolean'||c.sourceEnabled!==undefined&&typeof c.sourceEnabled!=='boolean')throw configurationFault();
  const now=c.now??Date.now,newId=c.newId??(()=>globalThis.crypto.randomUUID()),fetchImpl=c.fetchImpl??globalThis.fetch;
  const limits=c.limits===undefined?{maxRequestMs:10000,maxFactBytes:131072,maxResponseBytes:262144,maxCleanupMs:3000}:data(own(c.limits,['maxRequestMs','maxFactBytes','maxResponseBytes','maxCleanupMs']));
@@ -96,7 +98,7 @@ export function createIntentExecutionOwner(configuration){
  const trust=c.trust===undefined?undefined:compileExecutionTrust(c.trust);
  const core=c.core===undefined?undefined:own(c.core,['origin','getCredentials']);
  const source=c.source===undefined?undefined:own(c.source,['origin','getServiceSecret']);
- for(const fn of [c.selectionFor,c.preparePolicy,c.authorizeBusiness,c.authorizeSources,c.currentRights,core?.getCredentials,source?.getServiceSecret])if(fn!==undefined&&!ordinary(fn))throw configurationFault();
+ for(const fn of [c.selectionFor,c.preparePolicy,c.authorizeBusiness,c.authorizeSources,c.currentRights,core?.getCredentials,source?.getServiceSecret,c.preparersFor])if(fn!==undefined&&!ordinary(fn))throw configurationFault();
  if(c.pool!==undefined&&(c.pool===null||typeof c.pool!=='object'||types.isProxy(c.pool)||typeof c.pool.connect!=='function'))throw configurationFault();
  const admitted=c.pool===undefined||c.allocations===undefined?undefined:createAdmittedRunSource({pool:c.pool,allocations:c.allocations,now,limits:{maxRequestMs:limits.maxRequestMs,maxFactBytes:limits.maxFactBytes}});
  let approvals=null;
@@ -166,13 +168,15 @@ export function createIntentExecutionOwner(configuration){
  /** P-INT-9 per-run intent mount for `createPreparedRunRegistry({intentMountFor})`. Prepare-only; never executes. */
  async function intentMountFor(value){
   const v=own(value,['binding','original'],['signal']);nativeSignal(v.signal);
-  if(state()!=='composed')throw intentFault('UNAVAILABLE');
+  if((state()!=='composed'&&!c.preparersFor)||(c.preparationEnabled??c.enabled)!==true||c.sourceEnabled!==true||!admitted||!ordinary(c.selectionFor)||!ordinary(c.currentRights))throw intentFault('UNAVAILABLE');
   const binding=data(v.binding);validateShape('RunBinding',binding);if(!same(v.original?.binding,binding))throw intentFault('UNAVAILABLE');
   let run,clientResolution;
   try{run=await admitted.admittedFor({binding,signal:v.signal});clientResolution=data(await c.selectionFor({binding,signal:v.signal}));}catch{throw intentFault('UNAVAILABLE');}
   const refuseExecution={async execute(){throw intentFault('REFUSED');}};
-  const preparer=createCommandIntentPreparer({commandOptions:taskCreateOptions(data({binding,clientResolution}),refuseExecution)});
-  return createIntentMount({binding,preparers:[preparer],journalStore:createPostgresIntentJournalStore({pool:c.pool}),now,limits:{maxRequestMs:limits.maxRequestMs},enabled:true,
+  const preparers=state()==='composed'?[createCommandIntentPreparer({commandOptions:taskCreateOptions(data({binding,clientResolution}),refuseExecution)})]:[];
+  if(c.preparersFor)preparers.push(...await c.preparersFor({binding,original:v.original,clientResolution,signal:v.signal}));
+  if(!preparers.length)throw intentFault('UNAVAILABLE');
+  return createIntentMount({binding,preparers,journalStore:createPostgresIntentJournalStore({pool:c.pool}),now,limits:{maxRequestMs:limits.maxRequestMs},enabled:true,
    resultRelease:createIntentResultReleaseAuthority({binding,currentRun:(b,o)=>run.owner.currentRun(b,o),currentRights:value=>c.currentRights(value),now,maxFactBytes:limits.maxFactBytes})});
  }
  return Object.freeze({state,missing,
@@ -187,7 +191,7 @@ export function createIntentExecutionOwner(configuration){
  * into the shared intents composition. `intentMountFor` is the registry's P-INT-9 seam, late-bound to that owner (UNAVAILABLE
  * until built). With `intents.enabled` but no `intents.execution` block the owner is `disabled`; with the block it stays
  * `unavailable` until Core's issuance credentials, approval-metadata policy, business/source authority and result-release rights
- * owners are supplied (`owners`), which no production code does today. */
+ * owners are supplied (`owners`), supplied by the current-authority adapters at CLI composition. Artifact preparations have their own trusted owner binding and still require current admission, rights and source enablement. */
 export function createControlIntentExecution({readSecret,owners={}}={}){
  if(!ordinary(readSecret))throw configurationFault();
  const extra=own(owners,[],['core','preparePolicy','authorizeBusiness','authorizeSources','currentRights']);
@@ -195,9 +199,10 @@ export function createControlIntentExecution({readSecret,owners={}}={}){
  function build(context){
   const configuration=context.configuration,intents=compileIntentsConfiguration(configuration),e=intents.execution;
   const clientResolution=configuration.nativeCandidate===undefined?null:compilePreparedCandidateConfiguration(configuration.nativeCandidate,configuration.versions).identity.commandContext.clientResolution;
-  return createIntentExecutionOwner({enabled:intents.enabled===true&&e!==undefined,now:context.now,sourceEnabled:configuration.sourceEnabled===true,
-   ...(intents.enabled===true&&e!==undefined?{trust:{issuer:e.issuer,keys:e.keys},pool:context.pool,allocations:createPostgresConversationStore({pool:context.pool}).allocations,
-    selectionFor:async()=>clientResolution,source:{origin:e.coreOrigin,getServiceSecret:async()=>(await readSecret(e.serviceSecretFile)).toString('utf8').trim()},...extra}:{})});
+  return createIntentExecutionOwner({enabled:intents.enabled===true&&e!==undefined,preparationEnabled:intents.enabled===true,now:context.now,sourceEnabled:configuration.sourceEnabled===true,
+   ...(intents.enabled===true?{pool:context.pool,allocations:createPostgresConversationStore({pool:context.pool}).allocations,selectionFor:async()=>clientResolution,
+    preparersFor:value=>documentIntentPreparersFor(context,value),...extra,
+    ...(e?{trust:{issuer:e.issuer,keys:e.keys},source:{origin:e.coreOrigin,getServiceSecret:async()=>(await readSecret(e.serviceSecretFile)).toString('utf8').trim()}}:{})}:{})});
  }
  return Object.freeze({
   family(context){if(built===null)built={context,owner:build(context)};else if(built.context!==context)throw configurationFault();return createIntentsFamilyWith({execution:built.owner})(context);},

@@ -17,8 +17,7 @@
  *    `documentsFamily({authority,executor})` (never configuration) AND the `artifacts` block declares `authority` (the Core origin
  *    and service-secret file of docs/integration/ARTIFACT-CURRENT-AUTHORITY-CONTRACT.md). An authority that names its `origin` or
  *    `now` must match the declared origin and control's clock. Startup builds that authority with `composeDocumentsFamily`
- *    (`../artifacts/authority-composition.mjs`). The production registration supplies neither (no Core receiver and no Meri-local
- *    run-options owner exist yet), so it stays absent and `/api/documents/*` answers 503 UNAVAILABLE. When composed, the owner is late-bound to
+ *    (`../artifacts/authority-composition.mjs`). The CLI supplies current artifact authority ports and the fixed executor only when their declared bindings exist; absent inputs keep `/api/documents/*` unavailable. When composed, the owner is late-bound to
  *    control's own action-session owner: `createRuntimeDocumentOptionsComposer` and the runtime document application both require
  *    the exact `sessions` object, which `assembleControl` creates after the product-port factory returns. Until trusted assembly
  *    calls `bindDocumentsSessions(context, sessions)` (`../artifacts/session-binding.mjs`) every resolve answers null (the
@@ -30,6 +29,8 @@ import {own} from '../../../packages/contracts/commands-0.2/execution-boundary.m
 import {createRuntimeArtifactStorage,createRuntimeDocumentOptionsComposer} from '../artifacts/composition.mjs';
 import {compileRuntimeArtifactsConfiguration} from '../artifacts/configuration.mjs';
 import {registerDocumentsSessionBinder,bindDocumentsSessions} from '../artifacts/session-binding.mjs';
+import {createRuntimeDocumentIntentPreparers} from '../artifacts/intent-preparers.mjs';
+import {registerDocumentIntentOwner} from '../artifacts/intent-binding.mjs';
 const fault=()=>Object.assign(new Error('PRODUCT_PORTS_CONFIGURATION'),{code:'PRODUCT_PORTS_CONFIGURATION'});
 const ordinary=fn=>typeof fn==='function'&&!types.isProxy(fn)&&!types.isAsyncFunction(fn)&&!types.isGeneratorFunction(fn);
 /** Re-exported for tests; trusted assembly imports it from `../artifacts/session-binding.mjs`, which loads no storage graph. */
@@ -37,10 +38,10 @@ export {bindDocumentsSessions};
 
 function lateBoundOptionsOwner({authority,compose}){
  const resolveAuthority=storageMethod(authority,'resolve');let bound=null;
- const bind=sessions=>{
+ const bind=(sessions,retention)=>{
   if(sessions===null||typeof sessions!=='object'||types.isProxy(sessions))throw fault();
-  if(bound!==null){if(bound.sessions!==sessions)throw fault();return;}
-  bound=Object.freeze({sessions,compose:compose(sessions)});
+  if(bound!==null){if(bound.sessions!==sessions||bound.retention!==retention)throw fault();return;}
+  bound=Object.freeze({sessions,retention,compose:compose(sessions)});
  };
  // The resolved shape is closed; `recheck` must be the authority's own method and is called with the application's exact check.
  const owner=Object.freeze({async resolve(call){
@@ -50,7 +51,7 @@ function lateBoundOptionsOwner({authority,compose}){
   const documentOptions=current.compose({artifactOptions:r.artifactOptions,selectedClientId:r.selectedClientId,credential:r.credential,limits:r.limits,...(r.enabled===undefined?{}:{enabled:r.enabled})});
   return {documentOptions,recheck:check=>recheck(check)};
  }});
- return {owner,bind};
+ return {owner,bind,current:()=>bound};
 }
 
 /** Family factory with optional trusted owners. `createS3Client({region})` exists for synthetic tests only; production uses the
@@ -58,8 +59,9 @@ function lateBoundOptionsOwner({authority,compose}){
  * body,requestSha256,deadlineMs,signal})` -> `{artifactOptions,selectedClientId,credential,limits,enabled?,recheck}` or null) and
  * `executor` (`createFixedRuntimeArtifactExecutor(...)` over approved image paths) must be supplied together. */
 export function documentsFamily(owners={}){
- const o=own(owners,[],['authority','executor','createS3Client','bindVersionReader']);
+ const o=own(owners,[],['authority','executor','createS3Client','bindVersionReader','nativeCredentials']);
  if(o.createS3Client!==undefined&&!ordinary(o.createS3Client))throw fault();
+ if(o.nativeCredentials!==undefined)storageMethod(o.nativeCredentials,'nativeCredentialFor');
  if(o.bindVersionReader!==undefined&&!ordinary(o.bindVersionReader))throw fault();
  if((o.authority===undefined)!==(o.executor===undefined))throw fault();
  if(o.authority!==undefined){storageMethod(o.authority,'resolve');storageMethod(o.executor,'execute');}
@@ -82,6 +84,13 @@ export function documentsFamily(owners={}){
   // Production documents charge the admitted run's allocation in the product budget namespace (never the qualification one).
   const late=lateBoundOptionsOwner({authority:o.authority,compose:sessions=>createRuntimeDocumentOptionsComposer({storage,executor:o.executor,budgetPool:pool,sessions,now,namespace:'product'})});
   registerDocumentsSessionBinder(context,late.bind);
+  if(o.nativeCredentials)registerDocumentIntentOwner(context,value=>{
+   const bound=late.current(),selectedClientId=value.clientResolution?.clientId;
+   if(!bound||retention&&!bound.retention||typeof selectedClientId!=='string')return [];
+   return createRuntimeDocumentIntentPreparers({binding:value.binding,selectedClientId,sessions:bound.sessions,optionsOwner:late.owner,nativeCredentials:o.nativeCredentials,now,
+    limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes},
+    ...(bound.retention?{retention:bound.retention}:{})});
+  });
   return {ports:{artifactStore:storage,artifactOptionsOwner:late.owner}};
  };
 }

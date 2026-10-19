@@ -103,7 +103,7 @@ export function assembleControl(options){
   resolveTransitionContext:ports.identityContext.resolveTransitionContext,
  }:{}),limits:{maxSessions:configuration.sessions.maxSessions,maxRequestMs:configuration.limits.requestMs,maxTtlMs:configuration.sessions.maxTtlMs,maxFactBytes:131072}});
  // A documents options owner (composed only with a trusted Core artifact authority) is late-bound to these exact sessions.
- if(productContext)bindDocumentsSessions(productContext,sessions);
+ if(productContext)bindDocumentsSessions(productContext,sessions,retention?.gate);
  // Approval forwarder (lane L): the per-context approver session binder reaches these exact sessions.
  if(productContext)bindApprovalSessions(productContext,sessions);
  const dispatcher=createTemporalConversationDispatcher({client,taskQueue:configuration.temporal.taskQueue,lifecycle:true,now,maxRequestMs:configuration.limits.requestMs});

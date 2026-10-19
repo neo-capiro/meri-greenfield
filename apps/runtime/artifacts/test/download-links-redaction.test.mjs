@@ -9,9 +9,22 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {listenRuntime} from '../../http-server.mjs';
 import {instrumentApplication} from '../../telemetry/http.mjs';
-import {inMemoryInstruments} from '../../telemetry/test/fixture.mjs';
+import {tracing,metrics} from '@opentelemetry/sdk-node';
+import {createRuntimeInstruments} from '../../telemetry/instruments.mjs';
 import {createDownloadLinkGate} from '../index.mjs';
 import {T,key,versionId,harness} from './link-fixture.mjs';
+
+// Security assertions inspect every synthetic request, independent of the host's
+// production sampling settings (a ratio sampler can silently drop these spans).
+function inMemoryInstruments(){
+ const exporter=new tracing.InMemorySpanExporter();
+ const tracerProvider=new tracing.BasicTracerProvider({sampler:new tracing.AlwaysOnSampler(),spanProcessors:[new tracing.SimpleSpanProcessor(exporter)]});
+ class Reader extends metrics.MetricReader{async onForceFlush(){}async onShutdown(){}}
+ const reader=new Reader(),meterProvider=new metrics.MeterProvider({readers:[reader]});
+ return {instruments:createRuntimeInstruments({tracerProvider,meterProvider}),spans:()=>exporter.getFinishedSpans(),
+  async points(name){const {resourceMetrics}=await reader.collect();return resourceMetrics.scopeMetrics.flatMap(scope=>scope.metrics).find(metric=>metric.descriptor.name===name)?.dataPoints??[];},
+  async close(){await tracerProvider.shutdown();await meterProvider.shutdown();}};
+}
 
 function captureOutput(){
  const seen=[],originals={stdout:process.stdout.write,stderr:process.stderr.write},consoles={};

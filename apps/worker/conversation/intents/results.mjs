@@ -29,9 +29,11 @@ export function intentFailureResult(code,tool){
  return {isError:true,content:[{type:/** @type {const} */('text'),text:(Object.hasOwn(TEXTS,code)?TEXTS[code]:TEXTS.INTERNAL_ERROR)(tool)}]};
 }
 /** The prepared result exactly as the owner returned it, then one fixed instruction block.
- * @param {string} json @param {'approval_required'|'draft'} status */
+ * @param {string} json @param {'approval_required'|'draft'|'analysis_pending'} status */
 export function preparedResult(json,status){
- const notice=status==='draft'
+ const notice=status==='analysis_pending'
+  ?'ANALYSIS OUTPUTS PENDING: the admitted analysis owner returned durable output references. Inspection and publication remain pending; do not say these outputs are published or filed.'
+  :status==='draft'
   ?'PREPARED DRAFT: an immutable draft version was created for the user to review. Nothing else has been changed; filing or sharing it is a separate request.'
   :'PREPARED PROPOSAL: nothing has been changed. The user must approve this exact proposal in Meri\'s approval control before anything happens, and current permissions are checked again then. Do not say it is done.';
  return {content:[{type:/** @type {const} */('text'),text:json},{type:/** @type {const} */('text'),text:notice}]};

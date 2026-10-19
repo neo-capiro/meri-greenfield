@@ -36,7 +36,7 @@ for(const operation of ['schedule_task','update_scheduled_task'])test(`reads exa
 
 test('confirmed absence commits a read-only namespaced transaction; the journal facade remains closed and compatible',async()=>{
  const f=createPreparedSchedulePoolFixture(),store=createPostgresIntentJournalStore({pool:f.pool}),reader=createPostgresPreparedScheduleReader({pool:f.pool});
- assert.deepEqual(Object.keys(store),['claim','settle']);assert.deepEqual(Object.keys(reader),['readPreparedSchedule']);assert.ok(Object.isFrozen(store)&&Object.isFrozen(reader));
+ assert.deepEqual(Object.keys(store),['claim','read','list','settle']);assert.deepEqual(Object.keys(reader),['readPreparedSchedule']);assert.ok(Object.isFrozen(store)&&Object.isFrozen(reader));
  const journal=createIntentJournal(store),p=preparation();assert.equal(f.state.connects,0);
  assert.equal(await reader.readPreparedSchedule(p.selection),null);
  assert.equal(f.state.queries[0].sql,'BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');assert.equal(f.state.queries.at(-1).sql,'COMMIT');assert.equal(f.state.releases.at(-1),undefined);

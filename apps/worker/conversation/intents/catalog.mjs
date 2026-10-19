@@ -22,15 +22,15 @@ const row=(/** @type {string} */id,/** @type {string} */tool,/** @type {OwnerKin
 export const INTENT_ROWS=Object.freeze([
  row('create_word','request_document','document'),
  row('create_excel','request_document','document'),
- row('create_powerpoint','request_document','document','ROUTE_GAP: the document application admits only create_word and create_excel; the PowerPoint layout defect (DA-3) and ARTIFACT-ADMISSION are open.'),
- row('run_analysis','request_analysis','artifact','ROUTE_GAP: no governed analysis route exists; general analysis also needs an admitted sandbox (ANALYSIS-SANDBOX).'),
+ row('create_powerpoint','request_document','document'),
+ row('run_analysis','request_analysis','artifact'),
  row('schedule_task','propose_schedule','schedule'),
  row('update_scheduled_task','propose_schedule_change','schedule'),
  row('cancel_scheduled_task','propose_schedule_change','schedule'),
  row('create_task','propose_task','command'),
  row('update_task','propose_task_update','command'),
- row('save_memory','propose_memory','command','OWNER_MISSING: the approval-metadata owner admits task commands only; memory.propose has no proposal metadata codec yet.'),
- row('save_chat_attachments','propose_attachment_filing','command','OWNER_MISSING: the approval-metadata owner admits task commands only; artifact.file has no proposal metadata codec yet.'),
+ row('save_memory','propose_memory','command','OWNER_MISSING: Core native approval and execution issuance admit only task.create; governed memory candidate execution needs its own exact approved-payload binding.'),
+ row('save_chat_attachments','propose_attachment_filing','command','OWNER_MISSING: Core native approval/execution and exact-version attachment registration custody are required before client filing can be offered.'),
 ]);
 /** Selected capabilities the ledger also routes to `meri_intents` but which are reads, so never a prepare-only intent. */
 export const NOT_INTENTS=Object.freeze({list_scheduled_tasks:'READ: listing schedules has no effect to approve; it belongs on a read route (proposal P-INT-5).'});

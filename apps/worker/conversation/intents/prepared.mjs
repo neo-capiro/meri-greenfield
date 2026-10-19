@@ -9,6 +9,7 @@
  * - document: `{status:'draft', version}` with an immutable artifact version in `generationStatus:'draft'`. */
 import {own,data} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {assertProposalIntegrity,canonicalSha256,validateShape} from '../../../../packages/contracts/validate.mjs';
+import {artifactValidators} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {assertTaskUpdateProposal} from '../../../../packages/contracts/commands-0.2/validate.mjs';
 const ACTIONS=Object.freeze({create_task:'task.create',update_task:'task.update',save_memory:'memory.propose',save_chat_attachments:'artifact.file'});
 const refuse=()=>{throw Object.assign(Error('INVALID_RESULT'),{code:'INVALID_RESULT'});};
@@ -21,7 +22,7 @@ const currentScopes=(scopes,binding,current)=>Array.isArray(scopes)&&scopes.leng
 /**
  * @param {'command'|'schedule'|'document'|'artifact'} owner @param {{id:string,version:string}} operation @param {unknown} value @param {any} binding
  * @param {{scopes:any[],nowMs:number}} current
- * @returns {{status:'approval_required'|'draft',reference:string,value:any}}
+ * @returns {{status:'approval_required'|'draft'|'analysis_pending',reference:string,value:any}}
  */
 export function assertPreparedResult(owner,operation,value,binding,current){
  try{
@@ -40,7 +41,12 @@ export function assertPreparedResult(owner,operation,value,binding,current){
     p.projection?.owner?.tenantId!==binding.tenantId||!currentScopes(p.projection.scopes,binding,current.scopes))refuse();
    return {status:'approval_required',reference:p.proposalId,value:v};
   }
-  if(owner==='document'){
+  if(owner==='artifact'&&v.status==='analysis_pending'){
+   own(v,['status','binding','scopes','result']);artifactValidators.analysisResult(v.result);
+   if(operation.id!=='run_analysis'||!sameRun(v.binding,binding)||!currentScopes(v.scopes,binding,current.scopes)||v.result.outputs.some(o=>!currentScopes(o.object.scopes,binding,v.scopes)))refuse();
+   return {status:'analysis_pending',reference:v.result.intentSha256,value:v};
+  }
+  if(owner==='document'||owner==='artifact'){
    own(v,['status','version']);const r=v.version;
    if(v.status!=='draft'||r?.generationStatus!=='draft'||typeof r.versionId!=='string'||!sameRun(r.binding,binding)||!currentScopes(r.scopes,binding,current.scopes))refuse();
    return {status:'draft',reference:r.versionId,value:v};

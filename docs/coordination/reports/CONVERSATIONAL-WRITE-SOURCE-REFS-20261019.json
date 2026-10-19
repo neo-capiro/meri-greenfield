@@ -253,6 +253,12 @@
       "ref": "5c784e3e46114816ba57db17ad7a2c2013a8d81a",
       "path": "apps/web/src/shared/meri-actions/workflow-port.ts",
       "url": "https://github.com/neo-capiro/capiro-frontend/blob/5c784e3e46114816ba57db17ad7a2c2013a8d81a/apps/web/src/shared/meri-actions/workflow-port.ts"
+    },
+    {
+      "repository": "neo-capiro/capiro-backend",
+      "ref": "138c04373b18bb730b1ad0f8f9338342f628b8c6",
+      "path": "apps/api/src/context/application-authority-resource.helpers.ts",
+      "url": "https://github.com/neo-capiro/capiro-backend/blob/138c04373b18bb730b1ad0f8f9338342f628b8c6/apps/api/src/context/application-authority-resource.helpers.ts"
     }
   ]
 }

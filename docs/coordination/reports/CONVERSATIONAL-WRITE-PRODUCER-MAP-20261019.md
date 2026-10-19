@@ -10,6 +10,8 @@ Do not infer current frontend behavior from its older default branch.
 
 Owned change: this report and its source-reference manifest only. Core, frontend, shared Meri implementation, frozen build inputs and infrastructure were not changed. No API action, provider, live database, image build or deployment was run.
 
+Receiving correction: format-generic artifact authority is not greenfield conversation custody. An additional pinned source read confirmed `application-authority-resource.helpers.ts` queries `clioConversation` only; see the receiving `MERI-WRITE-DEPENDENCIES-20261019.md` for the exact current-context dependency. Historical task-only metadata and Word/Excel descriptions below record this map's inspection base; the consolidated write handoff supersedes those Meri-side gaps after integration.
+
 ## Findings that determine integration order
 
 1. **PowerPoint draft generation can reuse Core's existing generic artifact authority.** The Core authority route does not restrict format to Word/Excel. Its `artifact.generate` permission is draft generation authority, not document filing or arbitrary analysis qualification.

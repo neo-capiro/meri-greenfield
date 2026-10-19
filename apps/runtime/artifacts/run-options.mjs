@@ -37,7 +37,7 @@ import {parseAdmittedGrantSet} from '../../gateway/budget/admitted-run-binding.m
 import {matchesCapability} from '../native-authority/task-verifier.mjs';
 import {INTENT_OPERATIONS} from './core-authority-wire.mjs';
 export const DOCUMENTS_PRODUCER_NAMESPACE='meri.documents';
-export const DOCUMENT_OPERATIONS=Object.freeze(['create_word','create_excel']);
+export const DOCUMENT_OPERATIONS=Object.freeze(['create_word','create_excel','create_powerpoint','run_analysis']);
 const AUTHORITY_PORTS=Object.freeze(['verifyCapability','authorizeBusiness','authorizeSources']);
 const TUPLE=Object.freeze(['pool','binding','original','allocationJson','grantFactsJsons','grantId','taskCapability','scopes']);
 const READ_INTENTS=new Set(['inspect','download','preview','preview-publish']);

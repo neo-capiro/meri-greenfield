@@ -47,6 +47,8 @@ export function createArtifactValidators({validateShape,validatePublicShape,cano
   function version(value){const data=snapshot(value);validatePublicShape('ArtifactVersion',data);return data;}
   function object(value){const data=snapshot(value);validatePublicShape('ObjectReference',data);return data;}
   function inspection(value){const data=snapshot(value);validateShape('ArtifactInspection',data);return data;}
+  /** Closed pending output DTO; provenance against its immutable input remains assertArtifactOutput's responsibility. */
+  function analysisResult(value){const data=snapshot(value);validateShape('GeneralAnalysisResult',data);return data;}
   function normalizeArtifactInput(id,value,options){
     if(typeof id!=='string'||!ARTIFACT_OPERATION_IDS.includes(id))fail('Unknown artifact operation');
     const input=request(value),ctx=context(options);if(input.operation!==id)fail('Artifact operation mismatch');
@@ -69,7 +71,7 @@ export function createArtifactValidators({validateShape,validatePublicShape,cano
     }
     return data;
   }
-  return Object.freeze({request,context,version,object,inspection,normalizeArtifactInput,assertArtifactOutput,snapshot,hash:canonicalSha256});
+  return Object.freeze({request,context,version,object,inspection,analysisResult,normalizeArtifactInput,assertArtifactOutput,snapshot,hash:canonicalSha256});
 }
 export function artifactInputDefinition(id){if(typeof id!=='string'||!ARTIFACT_OPERATION_IDS.includes(id))fail('Unknown artifact operation');return {create_word:'WordRequest',create_excel:'ExcelRequest',create_powerpoint:'PowerpointRequest',run_analysis:'AnalysisRequest'}[id];}
 export function artifactOutputDefinition(id){if(typeof id!=='string'||!ARTIFACT_OPERATION_IDS.includes(id))fail('Unknown artifact operation');return id==='run_analysis'?'ArtifactOperationResult':'ArtifactCreatedResult';}

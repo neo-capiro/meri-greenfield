@@ -1,0 +1,13 @@
+{
+  "base": "98d3c96a2c944a8211856e98b5bd62e824b4b5f7",
+  "readsHead": "e82d199fc88f8493fab6845770218a8ded29d41d",
+  "writesSource": "927537b76a6be3f09866d9dda0a3b9f129e70b0e",
+  "workingTreeMutation": false,
+  "overlaps": [
+    {
+      "path": "apps/runtime/cli.mjs",
+      "threeWayExit": 0,
+      "conflict": false
+    }
+  ]
+}
