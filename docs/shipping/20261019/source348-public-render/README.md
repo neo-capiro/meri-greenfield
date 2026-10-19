@@ -9,6 +9,7 @@ This directory makes the reviewed **public inputs** portable to the neomart chec
 | [deployment-inputs.candidate.json](deployment-inputs.candidate.json) | `40d92b957a50dc70fa25f9495125679a0d3f1cb3b0c65451959d93dc239832d5` |
 | [runtime-values.candidate.json](runtime-values.candidate.json) | `1f51b015ed9842ed7ebecb1510e6bd8c8f0993889400d1f63d6352878db678b1` |
 | [image-scans.candidate.json](image-scans.candidate.json) | `160198f9187ee1ce125758a9ab096d480c022275535e7e2ba1e70648d620a6f7` |
+| [node-terminal-readback.json](node-terminal-readback.json) | `ec89528ec9dae32689b086dbc9040a75e9ceac6aeaf8c9e4da4c6141cbe000c8` |
 | Root `package-lock.json` at source348 | `4a18a2e5eeb672758df381eba55653da2dc0d9e9ab26e3f6f7943ad19120753c` |
 
 Source HEAD: `34851020aa0d73fead4db59ba6e26a098e2d0313`. Use Node `>=24 <25` and dependencies installed from this lockfile. The repository's earlier `infra/product-preview/first-chat/deployment-inputs.json` pins older images; do not substitute it for the candidate here.
@@ -25,7 +26,7 @@ The nine missing composer operations are `get_research_portfolio@0.2.0`, `get_re
 
 The deployment candidate intentionally retains `PENDING_CORE` under top-level `core`, `origins.coreOrigin`, and `origins.frontendOrigin`. These values are **not current Core authority**. The separate private `--core` input must come from a fresh authorized membership read. Any additional placeholder is a blocker. The intended frontend origin is `https://portfolio-preview.app.capiro.ai`; a read-only check of current Core task definition `capiro-preview-first-chat-core:2` found the same `WEB_ORIGIN` on 2026-10-19 at 03:27 UTC. The current deployment packet targets Linux X86_64/amd64; older ARM64 wording is stale.
 
-The candidate has no top-level `features` block and the renderer has not run. Source348 treats absent `features` as no product-family activation; a later feature change needs a separately reviewed input and compatible runtime measurement. The certificate pins in the candidate are historical until the private custodian checks their current validity. [Image-scan evidence](IMAGE-SCAN-EVIDENCE.md) records the reviewed Node replacement evidence and the missing original producer receipt.
+The candidate has no top-level `features` block and the renderer has not run. Source348 treats absent `features` as no product-family activation; a later feature change needs a separately reviewed input and compatible runtime measurement. The certificate pins in the candidate are historical until the private custodian checks their current validity. [Image-scan evidence](IMAGE-SCAN-EVIDENCE.md) records the reviewed Node replacement evidence and the missing original producer receipt; the [measurement ZIP index](MEASUREMENT-ZIP-INDEX.md) distinguishes the successful and failed archives without publishing either ZIP.
 
 ## Neomart handoff boundary
 

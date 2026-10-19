@@ -1,0 +1,20 @@
+{
+  "status": "BUILD_SUCCEEDED_IMAGE_SCAN_COMPLETE_MEASUREMENT_RECEIPT_MISSING",
+  "buildId": "meri-greenfield-qualification-build:526c3e16-753b-4fa9-b6ca-9ed811eb8fc7",
+  "start": "2026-10-19T00:49:30.576000+00:00",
+  "end": "2026-10-19T00:54:55.603000+00:00",
+  "sourceCommit": "34851020aa0d73fead4db59ba6e26a098e2d0313",
+  "sourceVersion": "_WdUGrhT2PyMqVzG6uJbRLCGsm8CHzqX",
+  "attempt": "472285428fbc481f2b632dacf5bf67c1",
+  "repositoryUri": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker",
+  "imageTag": "product-34851020aa0d73fead4db59ba6e26a098e2d0313-472285428fbc481f2b632dacf5bf67c1",
+  "imageDigest": "sha256:7b295b4265141ff8feefc86dd3fec18e10be5e1a72cd88b7a50511ef53501044",
+  "imageSizeBytes": 596517145,
+  "imagePushedAt": "2026-10-19T00:54:16.525000+00:00",
+  "scanStatus": "COMPLETE",
+  "scanCompletedAt": "2026-10-19T00:54:46+00:00",
+  "scanSeverityCounts": {},
+  "scanNextToken": null,
+  "productImageReceiptKeyStatus": "404_NOT_FOUND",
+  "note": "NO_ARTIFACTS prevented export of the locally generated success measurement receipt. Build and scan success must not be promoted to full runtime qualification. See node-success-receipt-gap.md."
+}
