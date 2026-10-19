@@ -1,0 +1,211 @@
+{
+  "contractVersion": "0.1.0",
+  "schemaId": "urn:meri:document-access-application:0.1.0",
+  "routes": {
+    "inspect": {
+      "method": "POST",
+      "path": "/api/documents/inspect",
+      "response": "json"
+    },
+    "download": {
+      "method": "POST",
+      "path": "/api/documents/download",
+      "response": "bytes"
+    }
+  },
+  "formats": [
+    "docx",
+    "txt",
+    "xlsx",
+    "pptx",
+    "pdf",
+    "zip"
+  ],
+  "mimeTypes": {
+    "docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "txt": "text/plain; charset=utf-8",
+    "xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    "pdf": "application/pdf",
+    "zip": "application/zip"
+  },
+  "previewFormats": [
+    "docx",
+    "xlsx",
+    "pptx",
+    "pdf"
+  ],
+  "operationFormats": {
+    "create_word": [
+      "docx",
+      "txt"
+    ],
+    "create_word_with_pdf": [
+      "docx",
+      "txt",
+      "pdf"
+    ],
+    "create_excel": [
+      "xlsx"
+    ],
+    "create_powerpoint": [
+      "pptx"
+    ],
+    "run_analysis": [
+      "zip"
+    ]
+  },
+  "errorStatuses": {
+    "ACCESS_DENIED": 403,
+    "ARTIFACT_BUDGET_RESERVATION_UNKNOWN": 502,
+    "ARTIFACT_BUDGET_SETTLEMENT_UNKNOWN": 502,
+    "ARTIFACT_CANCELLED": 499,
+    "ARTIFACT_DEADLINE": 408,
+    "ARTIFACT_EFFECT_UNKNOWN": 502,
+    "ARTIFACT_PREVIEW_PENDING": 409,
+    "ARTIFACT_PREVIEW_UNSUPPORTED": 422,
+    "ARTIFACT_RENDERER_UNAVAILABLE": 503,
+    "CANCELLED": 499,
+    "DEADLINE": 408,
+    "DOCUMENT_CLOCK": 500,
+    "DOCUMENT_CONFIGURATION": 500,
+    "DOCUMENT_READ_BUDGET_REFUSED": 500,
+    "DOCUMENT_REFUSED": 502,
+    "DOCUMENT_RESPONSE_LIMIT": 413,
+    "DOCUMENT_RESULT_REFUSED": 502,
+    "INVALID_BODY": 400,
+    "INVALID_CONTENT_LENGTH": 400,
+    "INVALID_JSON": 400,
+    "INVALID_REQUEST": 400,
+    "METHOD_NOT_ALLOWED": 405,
+    "NOT_FOUND": 404,
+    "PREVIEW_UNAVAILABLE": 503,
+    "REQUEST_FAILED": 502,
+    "REQUEST_TOO_LARGE": 413,
+    "SESSION_REFUSED": 403,
+    "UNAUTHENTICATED": 401,
+    "UNAVAILABLE": 503,
+    "UNSUPPORTED_DOCUMENT_FORMAT": 422,
+    "UNSUPPORTED_MEDIA_TYPE": 415
+  },
+  "semantics": {
+    "inspection": "structural facts about one exact stored version; nativeOpened, rendered and recalculated are always false, pptx visualInspection and pdf renderInspection are always pending, so no inspection describes a rendered or visually checked file",
+    "download": "a download is admitted only for a version this receiver admitted from an inspect answer in the same session of use; inspect first, never a link or bytes alone",
+    "preview": "previewFormats are the only formats the artifact preview owner will render (any other format answers ARTIFACT_PREVIEW_UNSUPPORTED); every previewFormat except pdf also needs a qualified converter or answers ARTIFACT_RENDERER_UNAVAILABLE; this contract carries no preview route and no renderer qualification",
+    "statuses": "the document application releases only generationStatus draft and previewStatus pending, so previewStatus never reports unsupported or validated here",
+    "composition": "a document application instance is composed with one operation descriptor (operationFormats) and answers DOCUMENT_RESULT_REFUSED for versions of formats outside it; which descriptor serves a conversation is a composition fact this contract cannot assert",
+    "integration": "isolated source contract; mounting, Core authority wiring and renderer qualification remain handoff work"
+  },
+  "bundler": "esbuild",
+  "declarations": "json-schema-to-typescript",
+  "sources": [
+    {
+      "path": "../../apps/artifacts/preview/render.mjs",
+      "sha256": "6aef5ddca11bcdd9d2142efef23096c488d4bbc67d2f46e713feead56cc7522d",
+      "bytes": 2456
+    },
+    {
+      "path": "../../apps/artifacts/preview/service.mjs",
+      "sha256": "d28b6b6866b7bf3af2c63ad9abc06666a267fffc24750196da25b894273fd72a",
+      "bytes": 7641
+    },
+    {
+      "path": "../../apps/control/action-application/http.mjs",
+      "sha256": "5cc1a6be3e5db1bd862f0c94d70bfbd0f7579dcd0ae2ed7241f15dc4aa488740",
+      "bytes": 4925
+    },
+    {
+      "path": "../../apps/control/document-application/current.mjs",
+      "sha256": "0c31c70a46b5bfe2f2bcda0601c51f827103d35f2c64c436fb5f752fb0d16b34",
+      "bytes": 5986
+    },
+    {
+      "path": "../../apps/control/document-application/format-admission.mjs",
+      "sha256": "3903a93cb0335bf371e01727e512616c28b0950776b34d8ee48b8b33b7cf0b99",
+      "bytes": 1688
+    },
+    {
+      "path": "../../apps/control/document-application/http.mjs",
+      "sha256": "27f6930dadb6241b5aed2258a34ebef552a76548bb19b09172226dde0b4f7548",
+      "bytes": 2641
+    },
+    {
+      "path": "../../apps/control/document-application/index.mjs",
+      "sha256": "c788ca4a19183e3254bd7827ca7a645170bc8963fbd94876cc0155c9a7426554",
+      "bytes": 7142
+    },
+    {
+      "path": "artifacts-0.2/artifact-formats.mjs",
+      "sha256": "0ff685fcaf1bd06b5ac2f13aa55b60b77d068e0592c19a0137421ca29ae2e772",
+      "bytes": 599
+    },
+    {
+      "path": "artifacts-0.2/artifact.schema.json",
+      "sha256": "d90585d5e8ce60fb803fffc345ee9dd8c1e685c03b0319724afce8603094d486",
+      "bytes": 40724
+    },
+    {
+      "path": "document-access-application/protocol.mjs",
+      "sha256": "ff11352d06c7b806486bdea3449bc2929d8ffc0200ff6e2b65f488b7ff31783e",
+      "bytes": 2156
+    },
+    {
+      "path": "document-access-application/README.md",
+      "sha256": "f6d572c50a94a2ae8b1f68fc1a4a0ef94480e912bfda908b1f657164187113f2",
+      "bytes": 4325
+    },
+    {
+      "path": "document-access-application/receive.mjs",
+      "sha256": "2264bfb349e0847351c0925b7205d53494f7f06615922f7ff8e4e0ed1b0af5e9",
+      "bytes": 2634
+    },
+    {
+      "path": "document-access-application/schema.mjs",
+      "sha256": "873d0799066da92569cc9bf2e5a216c305a6dfc48440b1db3368c30b37a0e675",
+      "bytes": 2799
+    },
+    {
+      "path": "document-application/boundary.mjs",
+      "sha256": "6a82c49b1db426d2435d751eaf754731658ac1d448750e1a8f060fdada869982",
+      "bytes": 2216
+    },
+    {
+      "path": "document-application/download.mjs",
+      "sha256": "fd74698f6d0245381ca504300dabe1cfba2b7ed4ed6bc2054d805aaeadf02246",
+      "bytes": 3435
+    },
+    {
+      "path": "generate-document-access.mjs",
+      "sha256": "0b82a175ccac59b30d05fc2f365c1a4c54fa67f5f683d98719a09dfd573c1902",
+      "bytes": 13356
+    },
+    {
+      "path": "meri.schema.json",
+      "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
+      "bytes": 50043
+    },
+    {
+      "path": "retrieval-0.2/catalog.json",
+      "sha256": "053d2661e042c960a914fffc262bb89c486da785af7047165c88274c3b896fe4",
+      "bytes": 330501
+    }
+  ],
+  "schemaSha256": "8db4444d1d8731baf91e3d1e862d18b2a1017130b62fc6a26f68e536b75d69d6",
+  "browserInputs": [
+    "artifacts-0.2/artifact-formats.mjs",
+    "document-access-application/document-access-application-receiver.mjs",
+    "document-access-application/protocol.mjs",
+    "document-access-application/schema.mjs",
+    "document-access-generated:./generated-protocol.mjs",
+    "document-access-generated:./generated-status.mjs",
+    "document-access-generated:./generated-validator.mjs",
+    "document-application/boundary.mjs",
+    "document-application/download.mjs",
+    "node_modules/ajv-formats/dist/formats.js",
+    "node_modules/ajv/dist/runtime/equal.js",
+    "node_modules/ajv/dist/runtime/ucs2length.js",
+    "node_modules/canonicalize/lib/canonicalize.js",
+    "node_modules/fast-deep-equal/index.js"
+  ],
+  "browserImports": []
+}
