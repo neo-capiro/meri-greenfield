@@ -1,0 +1,19 @@
+{
+  "sourceCommit": "5b395d4ce9218b872b21c420dc00a3af31739824",
+  "candidateSha256": "9350fb7a077d42369a5a2dc14f598dd228c67a21de76cd6791465581db6d381c",
+  "command": "C:\\Users\\Administrator\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe",
+  "args": [
+    "--test",
+    "--test-reporter=tap",
+    "scripts/qualification/assembled-image/source-proof.test.mjs",
+    "scripts/qualification/assembled-image/frozen-candidate.test.mjs",
+    "scripts/qualification/assembled-image/generate-pr193-candidate.test.mjs"
+  ],
+  "start": "2026-10-19T19:19:38.714Z",
+  "finished": "2026-10-19T19:19:44.302Z",
+  "exitCode": 0,
+  "signal": null,
+  "error": null,
+  "stdoutSha256": "9465dc87c130c7d7b3bb2f66ddd3797766504d42c088c5e06ef8072f42c1ed06",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

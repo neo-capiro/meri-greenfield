@@ -1,0 +1,1 @@
+{"file":"candidate-manifest-fable-20261015m.json","sha256":"9350fb7a077d42369a5a2dc14f598dd228c67a21de76cd6791465581db6d381c","bytes":35352,"sourceCommit":"5b395d4ce9218b872b21c420dc00a3af31739824","historicalPaths":45,"supplementalPaths":7,"dockerCopyPaths":50}

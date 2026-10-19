@@ -4,19 +4,25 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import {execFileSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 const root=fileURLToPath(new URL('../../../',import.meta.url));
 const hash=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
 const proof=JSON.parse(fs.readFileSync(new URL('./source-manifest.json',import.meta.url),'utf8'));
-const candidate=JSON.parse(fs.readFileSync(new URL('./candidate-manifest-fable-20261015i.json',import.meta.url),'utf8'));
+const fable15j=JSON.parse(fs.readFileSync(new URL('./candidate-manifest-fable-20261015j.json',import.meta.url),'utf8'));
+const fable15k=JSON.parse(fs.readFileSync(new URL('./candidate-manifest-fable-20261015k.json',import.meta.url),'utf8'));
+const predecessor=JSON.parse(fs.readFileSync(new URL('./candidate-manifest-fable-20261015l.json',import.meta.url),'utf8'));
+const candidate=JSON.parse(fs.readFileSync(new URL('./candidate-manifest-fable-20261015m.json',import.meta.url),'utf8'));
 
-test('every preceding candidate through h is preserved byte-exact and the successor carries no image acceptance',()=>{
+test('every preceding candidate through l is preserved byte-exact and the successor carries no image acceptance',()=>{
  const read=name=>fs.readFileSync(new URL('./'+name,import.meta.url)),fable14=hash(read('candidate-manifest-fable-20261014.json')),dot=JSON.parse(read('candidate-manifest-dot-20261014.json').toString('utf8')),dot14=hash(read('candidate-manifest-dot-20261014.json')),fable15=JSON.parse(read('candidate-manifest-fable-20261015.json').toString('utf8')),fable15Sha=hash(read('candidate-manifest-fable-20261015.json')),fable15b=JSON.parse(read('candidate-manifest-fable-20261015b.json').toString('utf8')),fable15bSha=hash(read('candidate-manifest-fable-20261015b.json')),fable15c=JSON.parse(read('candidate-manifest-fable-20261015c.json').toString('utf8')),fable15cSha=hash(read('candidate-manifest-fable-20261015c.json'));
  const fable15d=JSON.parse(read('candidate-manifest-fable-20261015d.json').toString('utf8')),fable15dSha=hash(read('candidate-manifest-fable-20261015d.json'));
  const fable15e=JSON.parse(read('candidate-manifest-fable-20261015e.json').toString('utf8')),fable15eSha=hash(read('candidate-manifest-fable-20261015e.json'));
  const fable15f=JSON.parse(read('candidate-manifest-fable-20261015f.json').toString('utf8')),fable15fSha=hash(read('candidate-manifest-fable-20261015f.json'));
  const fable15g=JSON.parse(read('candidate-manifest-fable-20261015g.json').toString('utf8')),fable15gSha=hash(read('candidate-manifest-fable-20261015g.json'));
  const fable15h=JSON.parse(read('candidate-manifest-fable-20261015h.json').toString('utf8')),fable15hSha=hash(read('candidate-manifest-fable-20261015h.json'));
+ const fable15i=JSON.parse(read('candidate-manifest-fable-20261015i.json').toString('utf8')),fable15iSha=hash(read('candidate-manifest-fable-20261015i.json'));
+ const fable15jSha=hash(read('candidate-manifest-fable-20261015j.json'));
  assert.equal(fable14,'dc425cffa60a5a6bffc2d089cdf421be33694c3682d99d7c6b2b7818d3e1c627');assert.equal(dot.previousCandidate.sha256,fable14);
  assert.equal(dot14,'fb97f11639d173fd15781df776ea8c49d9c2c53cc868dc9e8512e957195b310b');assert.equal(fable15.previousCandidate.sha256,dot14);assert.equal(fable15.pickupHead,'215930c8092577e84da563b1496d1cca9a4ad4d7');
  assert.equal(fable15Sha,'59a67fa2d8685f743f1b1a1e4a46360632c30bfead683b119ebccfa424b3c6a4');assert.equal(fable15b.previousCandidate.sha256,fable15Sha);assert.equal(fable15b.status,'CANDIDATE_HOLD_SOURCE_REVIEW');
@@ -26,21 +32,47 @@ test('every preceding candidate through h is preserved byte-exact and the succes
  assert.equal(fable15eSha,'41814143b72e4288f83bf3137b4cfcd7f14c9a93df467772b3685b0f1b35c341');assert.equal(fable15f.previousCandidate.sha256,fable15eSha);assert.equal(fable15f.status,'CANDIDATE_HOLD_SOURCE_REVIEW');assert.equal(fable15f.pickupHead,fable15e.pickupHead);
  assert.equal(fable15fSha,'3215210633f64dcb4c8d98aa1c7e17af658c512511bc4f7bdf3df4f8a4085017');assert.equal(fable15g.previousCandidate.sha256,fable15fSha);assert.equal(fable15g.status,'CANDIDATE_HOLD_SOURCE_REVIEW');assert.equal(fable15g.pickupHead,fable15f.pickupHead);
  assert.equal(fable15gSha,'b74243e64a2a6d031434315cd7e4699ecc151f6ba2ca13959c04c31a75edfcd6');assert.equal(fable15h.previousCandidate.sha256,fable15gSha);assert.equal(fable15h.status,'CANDIDATE_HOLD_SOURCE_REVIEW');assert.equal(fable15h.pickupHead,fable15g.pickupHead);
- assert.equal(fable15hSha,'79a5f7fc5254c0152c0119264d653cdb5b561f27ded91d379569d00ba73a5c1e');assert.deepEqual(candidate.previousCandidate,{path:'candidate-manifest-fable-20261015h.json',sha256:fable15hSha});assert.equal(candidate.status,'CANDIDATE_HOLD_SOURCE_REVIEW');assert.equal(candidate.pickupHead,fable15h.pickupHead);assert.equal(candidate.candidateSourceCommit,'abfba7c5f3424f61a774815181ed9793b9add877');
- assert.deepEqual(candidate.historicalManifest,dot.historicalManifest);assert.deepEqual(candidate.priorPublishedDotManifest,dot.priorPublishedDotManifest);
- for(const row of dot.changedRows){const current=candidate.changedRows.find(r=>r.path===row.path);assert.ok(current,row.path);assert.equal(current.historicalSha256,row.historicalSha256,row.path+': the historical hash of every dot-enumerated change is carried unchanged');}
- for(const row of fable15.changedRows){const current=candidate.changedRows.find(r=>r.path===row.path);assert.ok(current,row.path);assert.equal(current.historicalSha256,row.historicalSha256,row.path);}
- for(const row of fable15b.changedRows){const current=candidate.changedRows.find(r=>r.path===row.path);assert.ok(current,row.path);assert.equal(current.historicalSha256,row.historicalSha256,row.path);}
- for(const row of fable15c.files){const current=candidate.changedRows.find(r=>r.path===row.path),before=fable15c.changedRows.find(r=>r.path===row.path);if(before){assert.ok(current,row.path);assert.equal(current.historicalSha256,before.historicalSha256,row.path);}}
- for(const row of fable15d.files){const current=candidate.changedRows.find(r=>r.path===row.path),before=fable15d.changedRows.find(r=>r.path===row.path);if(before){assert.ok(current,row.path);assert.equal(current.historicalSha256,before.historicalSha256,row.path);}}
- for(const row of fable15e.files){const current=candidate.changedRows.find(r=>r.path===row.path),before=fable15e.changedRows.find(r=>r.path===row.path);if(before){assert.ok(current,row.path);assert.equal(current.historicalSha256,before.historicalSha256,row.path);}}
- for(const row of fable15f.files){const current=candidate.changedRows.find(r=>r.path===row.path),before=fable15f.changedRows.find(r=>r.path===row.path);if(before){assert.ok(current,row.path);assert.equal(current.historicalSha256,before.historicalSha256,row.path);}}
+ assert.equal(fable15hSha,'79a5f7fc5254c0152c0119264d653cdb5b561f27ded91d379569d00ba73a5c1e');assert.equal(fable15iSha,'9612902e156cffbdce71bd71b9115bd8ce642d979583795fd2a5ac5df549f5e2');assert.deepEqual(fable15i.previousCandidate,{path:'candidate-manifest-fable-20261015h.json',sha256:fable15hSha});assert.equal(fable15i.candidateSourceCommit,'abfba7c5f3424f61a774815181ed9793b9add877');
+ assert.equal(fable15jSha,'2b4378802ccdd85775224c727b609a2bd8a220ffbe3d38bae5bba49820dadc88');assert.deepEqual(fable15j.previousCandidate,{path:'candidate-manifest-fable-20261015i.json',sha256:fable15iSha});assert.equal(fable15j.candidateSourceCommit,'31f4fbd916cdc001a9300c8ae5271284c64c70b8');
+ assert.deepEqual(fable15k.previousCandidate,{path:'candidate-manifest-fable-20261015j.json',sha256:fable15jSha});assert.equal(fable15k.status,'CANDIDATE_HOLD_SOURCE_REVIEW');assert.equal(fable15k.pickupHead,fable15j.pickupHead);assert.equal(fable15k.candidateSourceCommit,'a16cc40d2a7ca3695eb6cc5a8d45440d0c40d040');
+ assert.deepEqual(fable15k.historicalManifest,dot.historicalManifest);assert.deepEqual(fable15k.priorPublishedDotManifest,dot.priorPublishedDotManifest);
+ for(const row of dot.changedRows){const current=fable15k.changedRows.find(r=>r.path===row.path);assert.ok(current,row.path);assert.equal(current.historicalSha256,row.historicalSha256,row.path+': the historical hash of every dot-enumerated change is carried unchanged');}
+ for(const row of fable15.changedRows){const current=fable15k.changedRows.find(r=>r.path===row.path);assert.ok(current,row.path);assert.equal(current.historicalSha256,row.historicalSha256,row.path);}
+ for(const row of fable15b.changedRows){const current=fable15k.changedRows.find(r=>r.path===row.path);assert.ok(current,row.path);assert.equal(current.historicalSha256,row.historicalSha256,row.path);}
+ for(const row of fable15c.files){const current=fable15k.changedRows.find(r=>r.path===row.path),before=fable15c.changedRows.find(r=>r.path===row.path);if(before){assert.ok(current,row.path);assert.equal(current.historicalSha256,before.historicalSha256,row.path);}}
+ for(const row of fable15d.files){const current=fable15k.changedRows.find(r=>r.path===row.path),before=fable15d.changedRows.find(r=>r.path===row.path);if(before){assert.ok(current,row.path);assert.equal(current.historicalSha256,before.historicalSha256,row.path);}}
+ for(const row of fable15e.files){const current=fable15k.changedRows.find(r=>r.path===row.path),before=fable15e.changedRows.find(r=>r.path===row.path);if(before){assert.ok(current,row.path);assert.equal(current.historicalSha256,before.historicalSha256,row.path);}}
+ for(const row of fable15f.files){const current=fable15k.changedRows.find(r=>r.path===row.path),before=fable15f.changedRows.find(r=>r.path===row.path);if(before){assert.ok(current,row.path);assert.equal(current.historicalSha256,before.historicalSha256,row.path);}}
  for(const row of fable15g.files){const current=fable15h.changedRows.find(r=>r.path===row.path),before=fable15g.changedRows.find(r=>r.path===row.path);if(before){assert.ok(current,row.path);assert.equal(current.historicalSha256,before.historicalSha256,row.path);}
   if(current&&current.sha256!==row.sha256)assert.equal(current.previousCandidateSha256,row.sha256,row.path+': a row changed since the preceding candidate names its bytes there');}
  let changedSinceH=0;
- for(const row of fable15h.files){const current=candidate.changedRows.find(r=>r.path===row.path),before=fable15h.changedRows.find(r=>r.path===row.path),successor=candidate.files.find(r=>r.path===row.path);if(before){assert.ok(current,row.path);assert.equal(current.historicalSha256,before.historicalSha256,row.path);}
+ for(const row of fable15h.files){const current=fable15i.changedRows.find(r=>r.path===row.path),before=fable15h.changedRows.find(r=>r.path===row.path),successor=fable15i.files.find(r=>r.path===row.path);if(before){assert.ok(current,row.path);assert.equal(current.historicalSha256,before.historicalSha256,row.path);}
   if(successor.sha256!==row.sha256){changedSinceH++;assert.ok(current,row.path);assert.equal(current.previousCandidateSha256,row.sha256,row.path+': successor names its exact h predecessor bytes');}}
  assert.equal(changedSinceH,24);
+ const changedSinceI=[];
+ for(const row of fable15i.files){const successor=fable15j.files.find(r=>r.path===row.path);assert.ok(successor,row.path);if(successor.sha256!==row.sha256){changedSinceI.push(row.path);const change=fable15j.changedRows.find(r=>r.path===row.path);assert.ok(change,row.path);assert.equal(change.previousCandidateSha256,row.sha256,row.path+': j names its exact i predecessor bytes');}}
+ assert.deepEqual(changedSinceI,['apps/runtime/test/prepared-candidate-bootstrap.test.mjs']);
+ const changedSinceJ=[];
+ for(const row of fable15j.files){const successor=fable15k.files.find(r=>r.path===row.path);assert.ok(successor,row.path);if(successor.sha256!==row.sha256){changedSinceJ.push(row.path);const change=fable15k.changedRows.find(r=>r.path===row.path);assert.ok(change,row.path);assert.equal(change.previousCandidateSha256,row.sha256,row.path+': k names its exact j predecessor bytes');}}
+ assert.deepEqual(changedSinceJ,['apps/runtime/test/prepared-candidate-bootstrap.test.mjs']);
+ assert.equal(hash(read('candidate-manifest-fable-20261015k.json')),'11ad803b6076666bcef79ab0360cfef6cea3546c86cf50384a8eb8501ce5d71f');
+ assert.deepEqual(predecessor.previousCandidate,{path:'candidate-manifest-fable-20261015k.json',sha256:'11ad803b6076666bcef79ab0360cfef6cea3546c86cf50384a8eb8501ce5d71f'});
+ assert.equal(predecessor.candidateSourceCommit,'9acbfe7168eb4e9c1e2c3acb02e2a28d08bbd262');
+ assert.equal(predecessor.status,'CANDIDATE_HOLD_SOURCE_REVIEW');
+ assert.deepEqual(predecessor.files,fable15k.files,'all45 original proof rows remain byte-exact from k');
+ assert.deepEqual(predecessor.changedRows,fable15k.changedRows,'every historical and predecessor hash and decision remains intact');
+ assert.deepEqual(predecessor.historicalManifest,fable15k.historicalManifest);
+ assert.deepEqual(predecessor.priorPublishedDotManifest,fable15k.priorPublishedDotManifest);
+ assert.equal(predecessor.pickupHead,fable15k.pickupHead);
+ assert.equal(hash(read('candidate-manifest-fable-20261015l.json')),'81d3edec29a2d720089e3d5ff127732ceed11950c17707ca3f58141644925c45');
+ assert.deepEqual(candidate.previousCandidate,{path:'candidate-manifest-fable-20261015l.json',sha256:'81d3edec29a2d720089e3d5ff127732ceed11950c17707ca3f58141644925c45'});
+ assert.equal(candidate.candidateSourceCommit,'5b395d4ce9218b872b21c420dc00a3af31739824');
+ assert.equal(candidate.status,'CANDIDATE_HOLD_SOURCE_REVIEW');
+ assert.deepEqual(candidate.files.filter(row=>row.sha256!==predecessor.files.find(old=>old.path===row.path).sha256).map(row=>row.path),['apps/runtime/control.mjs']);
+ for(const row of candidate.changedRows){const old=predecessor.changedRows.find(previous=>previous.path===row.path);assert.equal(row.historicalSha256,old.historicalSha256,row.path);if(row.path==='apps/runtime/control.mjs'){assert.equal(row.previousCandidateSha256,old.sha256);assert.equal(row.sha256,'c203cba5586897db8954d9865add0881132b1ce8036a5562651651d44af19b28');}else assert.deepEqual(row,old,row.path);}
+ assert.deepEqual(candidate.historicalManifest,predecessor.historicalManifest);
+ assert.deepEqual(candidate.priorPublishedDotManifest,predecessor.priorPublishedDotManifest);
+ assert.equal(candidate.pickupHead,predecessor.pickupHead);
 });
 
 test('all45 historical proof paths and44 non-recipe hashes remain in the preserved historical manifest',()=>{
@@ -71,6 +103,9 @@ test('exact16 proof-test files are allowlisted with parent reopening and sibling
   const patterns=fs.readFileSync(path.join(root,'.dockerignore'),'utf8').split(/\r?\n/).map(line=>line.trim()).filter(line=>line&&!line.startsWith('#'));
   const exceptions=patterns.filter(line=>line.startsWith('!')&&line.includes('/test/')&&!line.endsWith('/')).map(line=>line.slice(1)).sort();
   assert.deepEqual(exceptions,paths);
+  const separateRegression='apps/runtime/test/remote-runner-startup-budget.test.mjs';
+  assert.ok(fs.existsSync(path.join(root,separateRegression)),'the separate Linux regression remains in the source tree');
+  assert.ok(!exceptions.includes(separateRegression),'the separate Linux regression is outside Docker COPY');
   for(const parent of new Set(paths.map(file=>path.posix.dirname(file)))){
     const i=patterns.indexOf('!'+parent+'/');assert.ok(i>=0,parent);assert.equal(patterns[i+1],parent+'/*');
   }
@@ -84,4 +119,51 @@ test('exact observed Linux helper bytes and network-isolated build recipe are pr
   assert.ok(recipe.indexOf(step)>recipe.indexOf('COPY packages ./packages'));
   assert.ok(recipe.indexOf(step)<recipe.indexOf('\nUSER node'));
   assert.ok(!recipe.includes('SWC_NATIVE_BINDING_CACHE_SKIP_SECURITY_CHECK'));
+});
+
+test('historical and supplemental proof cover every non-doc final change with exact current and predecessor Git bytes',()=>{
+ const extra=candidate.supplementalSourceProof;
+ assert.equal(extra.baseSourceCommit,'a16cc40d2a7ca3695eb6cc5a8d45440d0c40d040');
+ assert.equal(extra.sourceCommit,candidate.candidateSourceCommit);
+ assert.equal(extra.previousCandidateSourceCommit,predecessor.candidateSourceCommit);
+ const git=(...args)=>execFileSync('git',args,{cwd:root,maxBuffer:8*1024*1024});
+ const changed=git('diff','--name-only','--no-renames',extra.baseSourceCommit,extra.sourceCommit).toString('utf8').trim().split('\n').filter(name=>!name.startsWith('docs/')).sort();
+ assert.deepEqual([...extra.files.map(row=>row.path),'apps/runtime/control.mjs'].sort(),changed);
+ assert.equal(extra.files.length,7);assert.equal(extra.productionFileCount,3);assert.equal(extra.regressionFileCount,4);assert.equal(extra.dockerCopyFileCount,5);
+ for(const row of extra.files){
+  assert.ok(!proof.files.some(old=>old.path===row.path),row.path);
+  const current=git('show',`${extra.sourceCommit}:${row.path}`);
+  assert.equal(hash(current),row.sha256,row.path);assert.equal(current.length,row.bytes,row.path);
+  assert.deepEqual(fs.readFileSync(path.join(root,row.path)),current,row.path+': current checkout must equal the exact combined tree');
+  const existed=git('ls-tree',extra.baseSourceCommit,'--',row.path).length>0;
+  assert.equal(row.change,existed?'modified':'added',row.path);
+  assert.equal(row.previousSha256,existed?hash(git('show',`${extra.baseSourceCommit}:${row.path}`)):null,row.path);
+  const previousExists=git('ls-tree',extra.previousCandidateSourceCommit,'--',row.path).length>0;
+  assert.equal(row.previousCandidateSha256,previousExists?hash(git('show',`${extra.previousCandidateSourceCommit}:${row.path}`)):null,row.path);
+ }
+ assert.deepEqual(extra.files.filter(row=>row.kind==='production').map(row=>row.path),[
+  'apps/control/action-host/session/owner.mjs','apps/control/conversations/service.mjs','apps/runtime/worker-http.mjs',
+ ]);
+ // Preserve the original repair commits, not reconstructed replacements.
+ for(const commit of ['546782fb28f0e496004f6fca790734409ff96969','816b5873d693f49d0383c0808d1d2319f246052a'])git('merge-base','--is-ancestor',commit,extra.sourceCommit);
+ git('merge-base','--is-ancestor',extra.previousCandidateSourceCommit,extra.sourceCommit);
+ const finalDelta=git('diff','--name-only','--no-renames',extra.previousCandidateSourceCommit,extra.sourceCommit).toString('utf8').trim().split('\n').filter(name=>!name.startsWith('docs/')).sort();
+ assert.deepEqual(finalDelta,['apps/runtime/control.mjs','apps/runtime/test/worker-load-retention.test.mjs','apps/runtime/worker-http.mjs']);
+ const control=candidate.files.find(row=>row.path==='apps/runtime/control.mjs');
+ assert.equal(control.sha256,hash(git('show',`${extra.sourceCommit}:${control.path}`)));
+ assert.equal(candidate.changedRows.find(row=>row.path===control.path).previousCandidateSha256,hash(git('show',`${extra.previousCandidateSourceCommit}:${control.path}`)));
+});
+
+test('five supplemental paths enter COPY while both source-only regressions and proof artifacts stay excluded',()=>{
+ const files=candidate.supplementalSourceProof.files;
+ assert.deepEqual(files.filter(row=>!row.dockerCopy).map(row=>row.path),['apps/control/conversations/test/load-amplification.test.mjs','apps/runtime/test/worker-load-retention.test.mjs']);
+ const ignore=fs.readFileSync(path.join(root,'.dockerignore'),'utf8');
+ const recipe=fs.readFileSync(path.join(root,'apps/runtime/Dockerfile'),'utf8');
+ assert.ok(recipe.split('\n').includes('COPY apps ./apps'));
+ assert.match(ignore,/^\*\*\/test$/mu);assert.match(ignore,/^\*\*\/tests$/mu);
+ assert.ok(!ignore.includes('*.test.mjs'),'adjacent session regression files are copied with apps');
+ assert.ok(!ignore.includes('!apps/control/conversations/test/load-amplification.test.mjs'));
+ assert.ok(!ignore.includes('!apps/runtime/test/worker-load-retention.test.mjs'));
+ assert.match(ignore,/^docs$/mu);assert.match(ignore,/^scripts$/mu);
+ assert.ok(!/^COPY(?:\s+--\S+)*\s+(?:docs|scripts)(?:\/|\s)/mu.test(recipe),'proof-only artifacts are outside COPY');
 });

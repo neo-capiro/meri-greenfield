@@ -1,0 +1,53 @@
+{
+  "status": "SOURCE_PROOF_PASS_IMAGE_ADMISSION_HOLD",
+  "sourceCommit": "5b395d4ce9218b872b21c420dc00a3af31739824",
+  "predecessorSourceCommit": "9acbfe7168eb4e9c1e2c3acb02e2a28d08bbd262",
+  "predecessorStatus": "SUPERSEDED_DO_NOT_BUILD",
+  "historicalRows": 45,
+  "historicalChangedRows": 28,
+  "historicalUnchangedRows": 17,
+  "changedHistoricalRowsSincePredecessor": 1,
+  "supplementalRows": 7,
+  "totalSourceRows": 52,
+  "copyRows": 50,
+  "focusedTests": {
+    "passed": 22,
+    "failed": 0,
+    "skipped": 0
+  },
+  "generatorCheck": "PASS",
+  "runtimeEdits": false,
+  "committed": false,
+  "files": [
+    {
+      "path": "scripts/qualification/assembled-image/candidate-manifest-fable-20261015m.json",
+      "bytes": 35352,
+      "sha256": "9350fb7a077d42369a5a2dc14f598dd228c67a21de76cd6791465581db6d381c"
+    },
+    {
+      "path": "scripts/qualification/assembled-image/frozen-candidate.mjs",
+      "bytes": 4989,
+      "sha256": "09c7fa2676949d159a93b3c752b651ae8ae7bc8cc77fa307859f000b6af4198d"
+    },
+    {
+      "path": "scripts/qualification/assembled-image/frozen-candidate.test.mjs",
+      "bytes": 9264,
+      "sha256": "2ac957e1c4400fca680239a361257bf29f1aa3dd60c6342a4609b33ccdae376a"
+    },
+    {
+      "path": "scripts/qualification/assembled-image/source-proof.test.mjs",
+      "bytes": 20598,
+      "sha256": "8043aec96fdc7f1e0563eba7d799d5599aac02dc3ad672b0ee69b2a4de835d27"
+    },
+    {
+      "path": "scripts/qualification/assembled-image/generate-pr193-candidate.mjs",
+      "bytes": 8275,
+      "sha256": "421b453d18689566ef0501afd442dccadfa1b27d5d4b0f0d1a23a044f91be342"
+    },
+    {
+      "path": "scripts/qualification/assembled-image/generate-pr193-candidate.test.mjs",
+      "bytes": 2910,
+      "sha256": "8b8ade586bf14ab5130d4efa4a4ba86f22b09f5349604b0ce45aa5fd50548db7"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+    "id": "meri-greenfield-qualification-build:2d0c9e04-a170-46d2-9d0b-f4094e6a48e8",
+    "arn": "arn:aws:codebuild:us-east-1:967807252336:build/meri-greenfield-qualification-build:2d0c9e04-a170-46d2-9d0b-f4094e6a48e8",
+    "status": "IN_PROGRESS",
+    "startTime": "2026-10-19T19:23:50.451000+00:00",
+    "sourceVersion": "wzj36s_GpR.73i.Gs6_AwP5BiWHAvXtw",
+    "retry": {
+        "autoRetryLimit": 0,
+        "autoRetryNumber": 0
+    },
+    "timeout": 30,
+    "queueTimeout": 5,
+    "artifacts": "arn:aws:s3:::meri-greenfield-qual-build-967807252336-us-east-1/results/product-image/5b395d4ce9218b872b21c420dc00a3af31739824/ef2439c9e0afe141d11e27836503975f"
+}

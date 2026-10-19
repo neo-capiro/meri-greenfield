@@ -1,0 +1,12 @@
+{
+    "images": [],
+    "failures": [
+        {
+            "imageId": {
+                "imageTag": "product-5b395d4ce9218b872b21c420dc00a3af31739824-ef2439c9e0afe141d11e27836503975f"
+            },
+            "failureCode": "ImageNotFound",
+            "failureReason": "Requested image not found"
+        }
+    ]
+}

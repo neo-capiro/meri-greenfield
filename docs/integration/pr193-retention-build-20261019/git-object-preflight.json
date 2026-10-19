@@ -1,0 +1,16 @@
+{
+  "repository": "C:/Users/Administrator/Documents/Codex/2026-10-18/task-2/ml-proof-pr193",
+  "sourceCommit": "5b395d4ce9218b872b21c420dc00a3af31739824",
+  "sourceTree": "22860a8dc42fc63d9d2f0016432f7c1b7ff41858",
+  "status": "ALL_REQUIRED_GIT_OBJECTS_PRESENT",
+  "gitNoLazyFetch": "1",
+  "gitProtocolAllow": "never",
+  "fileCount": 20254,
+  "treeCount": 1353,
+  "uniqueObjectsChecked": 17503,
+  "uniqueBlobObjects": 16157,
+  "rawMemberBytes": 410012145,
+  "missingGitObjects": [],
+  "unexpectedMembers": [],
+  "scope": "Exact commit and every listed tree/blob; no ancestry scan, no network, no archive generation."
+}

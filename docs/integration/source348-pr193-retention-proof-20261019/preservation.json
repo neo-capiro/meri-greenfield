@@ -1,0 +1,135 @@
+{
+  "nodeVersion": "v24.19.0",
+  "sourceCommit": "5b395d4ce9218b872b21c420dc00a3af31739824",
+  "candidateSha256": "9350fb7a077d42369a5a2dc14f598dd228c67a21de76cd6791465581db6d381c",
+  "preservedFiles": [
+    {
+      "path": "docs/integration/SOURCE348-A16-PROOF-20261019.md",
+      "sha256": "89e2775aad67355a9d6a8f27705c779632eca76deef253a1180660054e8b570d",
+      "bytes": 3402,
+      "matchesPrevious": true
+    },
+    {
+      "path": "docs/integration/SOURCE348-FIXTURE-PARITY-20261019.md",
+      "sha256": "9ede18ceee34dbe3b563423ef089cc883cf17e981efd2f2b1d8cadeebfbc426d",
+      "bytes": 3301,
+      "matchesPrevious": true
+    },
+    {
+      "path": "docs/integration/SOURCE348-PR193-PROOF-20261019.md",
+      "sha256": "ce4722e061c6bff2d6db0a98d0dff02333d34ebaa13548337712544bba5e390c",
+      "bytes": 7981,
+      "matchesPrevious": true
+    },
+    {
+      "path": "scripts/qualification/assembled-image/source-manifest.json",
+      "sha256": "d7f743dcf6b0514310ccf5b2b7bdcf2a5ed40d4359caac3d78add7310c74587f",
+      "bytes": 7835,
+      "matchesPrevious": true
+    },
+    {
+      "path": "scripts/qualification/assembled-image/candidate-manifest-fable-20261015h.json",
+      "sha256": "79a5f7fc5254c0152c0119264d653cdb5b561f27ded91d379569d00ba73a5c1e",
+      "bytes": 21140,
+      "matchesPrevious": true
+    },
+    {
+      "path": "scripts/qualification/assembled-image/candidate-manifest-fable-20261015i.json",
+      "sha256": "9612902e156cffbdce71bd71b9115bd8ce642d979583795fd2a5ac5df549f5e2",
+      "bytes": 29397,
+      "matchesPrevious": true
+    },
+    {
+      "path": "scripts/qualification/assembled-image/candidate-manifest-fable-20261015j.json",
+      "sha256": "2b4378802ccdd85775224c727b609a2bd8a220ffbe3d38bae5bba49820dadc88",
+      "bytes": 29647,
+      "matchesPrevious": true
+    },
+    {
+      "path": "scripts/qualification/assembled-image/candidate-manifest-fable-20261015k.json",
+      "sha256": "11ad803b6076666bcef79ab0360cfef6cea3546c86cf50384a8eb8501ce5d71f",
+      "bytes": 29629,
+      "matchesPrevious": true
+    },
+    {
+      "path": "scripts/qualification/assembled-image/candidate-manifest-fable-20261015l.json",
+      "sha256": "81d3edec29a2d720089e3d5ff127732ceed11950c17707ca3f58141644925c45",
+      "bytes": 33606,
+      "matchesPrevious": true
+    },
+    {
+      "path": "docs/integration/source348-pr193-proof-20261019/.gitattributes",
+      "sha256": "705fd4d6451a31d36b3df7de96f83f30ac976c9b4a6d1e51671d8e2f33e2d0da",
+      "bytes": 8,
+      "matchesPrevious": true
+    },
+    {
+      "path": "docs/integration/source348-pr193-proof-20261019/diff-check.json",
+      "sha256": "7481b56bdeb0725bebda7e97579198acdc1dc5519cb42c36183f8d5a66d8b25f",
+      "bytes": 522,
+      "matchesPrevious": true
+    },
+    {
+      "path": "docs/integration/source348-pr193-proof-20261019/diff-check.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "matchesPrevious": true
+    },
+    {
+      "path": "docs/integration/source348-pr193-proof-20261019/diff-check.stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "matchesPrevious": true
+    },
+    {
+      "path": "docs/integration/source348-pr193-proof-20261019/focused-proof.json",
+      "sha256": "5d7f64bb955786005bd6ce896796721c1677bcd53205aaf427dfc1c52a8cea5d",
+      "bytes": 856,
+      "matchesPrevious": true
+    },
+    {
+      "path": "docs/integration/source348-pr193-proof-20261019/focused-proof.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "matchesPrevious": true
+    },
+    {
+      "path": "docs/integration/source348-pr193-proof-20261019/focused-proof.stdout.txt",
+      "sha256": "5255bd8486a0032deb67d4333b4511b333f8b7f4f9f8c43f5c8265b5832509cc",
+      "bytes": 5337,
+      "matchesPrevious": true
+    },
+    {
+      "path": "docs/integration/source348-pr193-proof-20261019/generator-check.json",
+      "sha256": "2b0bba917f812a4879ef128173966936586eaae19f25e7dc0fdcbce5a1af685a",
+      "bytes": 687,
+      "matchesPrevious": true
+    },
+    {
+      "path": "docs/integration/source348-pr193-proof-20261019/generator-check.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "matchesPrevious": true
+    },
+    {
+      "path": "docs/integration/source348-pr193-proof-20261019/generator-check.stdout.txt",
+      "sha256": "e88f2ec4f04dfcc6302949a6167212bd713adadeecdbe5c4bb838a3d74b85f85",
+      "bytes": 263,
+      "matchesPrevious": true
+    },
+    {
+      "path": "docs/integration/source348-pr193-proof-20261019/preservation.json",
+      "sha256": "b4a53d42d5ef18a7924130c827ff10468f7da5e70794575e2b717bf52fb672ec",
+      "bytes": 1045,
+      "matchesPrevious": true
+    },
+    {
+      "path": "docs/integration/source348-pr193-proof-20261019/superseded.json",
+      "sha256": "9ae09147469f0aa904778640c2c10d5e57b4e39ed64ecd699aaba43cb67ede73",
+      "bytes": 1084,
+      "matchesPrevious": true
+    }
+  ],
+  "runtimeDiff": "",
+  "pass": true
+}

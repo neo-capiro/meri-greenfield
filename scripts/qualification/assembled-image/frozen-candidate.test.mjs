@@ -23,14 +23,20 @@ function edited(editCandidate=c=>c,editHistorical=h=>h){
  return {read:name=>name===HISTORICAL_MANIFEST?historical:candidateBytes,frozen:{file:FROZEN_CANDIDATE.file,sha256:sha256(candidateBytes)}};
 }
 
-test('the source successor i is selected and bound to every historical row: 45 paths, 28 changed, 17 unchanged',()=>{
+test('the source successor m is selected and bound to every historical row: 45 paths, 28 changed, 17 unchanged',()=>{
  const s=selectFrozenCandidate();
- assert.equal(s.candidate.sha256,'9612902e156cffbdce71bd71b9115bd8ce642d979583795fd2a5ac5df549f5e2');
- assert.equal(s.historical.files.length,45);assert.equal(s.expected.size,45);assert.equal(s.candidate.changedRows,28);
+ assert.equal(s.candidate.sha256,'9350fb7a077d42369a5a2dc14f598dd228c67a21de76cd6791465581db6d381c');
+ assert.equal(s.historical.files.length,45);assert.equal(s.expected.size,50);assert.equal(s.candidate.changedRows,28);
  assert.equal(s.historical.files.filter(row=>row.sha256===s.expected.get(row.path)).length,17);
  const old=s.historical.files.find(row=>row.path===journal);
  assert.equal(old.sha256,'6f0d34c67d179af93f15dd6179c56a4ae437f1ca63250baf637a836df8dd63a5','historical bytes are retained and verified');
  assert.equal(s.expected.get(journal),'0297baf0a33da0241ccdae25c82f4fe4f5c8fcc5a26e9264e0eb8c21260816fa','current bytes come from the frozen candidate');
+ assert.equal(s.expected.get('apps/runtime/test/prepared-candidate-bootstrap.test.mjs'),'a86e6ea21c7d6743e7b980874f4e527d8c314e752894ceb4fef8b5004a3520c8');
+ assert.equal(s.supplemental.files.length,7);assert.equal(s.supplemental.copiedFiles,5);
+ assert.equal(s.expected.get('apps/control/action-host/session/owner.mjs'),'9ea420929c1dd24902edbf6ccc886328fe17d39cef4fbea859c409bb30576e32');
+ assert.equal(s.expected.get('apps/control/conversations/service.mjs'),'461ac846980955e5d9886e63e95f45e02e605f88dbcd0f865bad89158c596889');
+ assert.equal(s.expected.get('apps/runtime/worker-http.mjs'),'5354470ab49ec4148ea947989d46f0e979ae7920cea3908529b6acc451105f18');
+ assert.equal(s.expected.get('apps/runtime/control.mjs'),'c203cba5586897db8954d9865add0881132b1ce8036a5562651651d44af19b28');
 });
 
 test('a COPY tree holding the current reviewed bytes passes; the obsolete historical hashes could never match it',t=>{
@@ -76,4 +82,35 @@ test('internally inconsistent candidates refuse: unbound changed/unchanged rows,
 test('the static source proof and the Docker COPY check select the same frozen candidate file',()=>{
  assert.ok(readFileSync(join(root,'scripts/qualification/assembled-image/source-proof.test.mjs'),'utf8').includes(`'./${FROZEN_CANDIDATE.file}'`));
  assert.match(readFileSync(join(root,'apps/runtime/test/image-closure.test.mjs'),'utf8'),/proofCopyMismatches\(tree,proof\)/u);
+});
+
+test('every additional copied production or regression file is required and checked for drift',t=>{
+ const selection=selectFrozenCandidate(),tree=copiedTree(t,[...selection.expected.keys()]);
+ const sourceOnly='apps/control/conversations/test/load-amplification.test.mjs';
+ assert.ok(!selection.expected.has(sourceOnly));
+ assert.ok(!selection.expected.has('apps/runtime/test/worker-load-retention.test.mjs'));
+ assert.deepEqual(proofCopyMismatches(tree,selection),[],'the excluded load fixture is not a COPY obligation');
+ for(const row of selection.supplemental.files.filter(row=>row.dockerCopy)){
+  const file=join(tree,row.path),original=readFileSync(file);
+  writeFileSync(file,Buffer.concat([original,Buffer.from('\n// drift\n')]));
+  assert.deepEqual(proofCopyMismatches(tree,selection).map(found=>found.path),[row.path]);
+  rmSync(file);
+  assert.deepEqual(proofCopyMismatches(tree,selection),[{path:row.path,expected:row.sha256,actual:null}]);
+  writeFileSync(file,original);
+ }
+});
+
+test('supplemental source, path, row and count inconsistencies refuse selection',()=>{
+ const refuses=(code,edit)=>assert.throws(()=>selectFrozenCandidate(edited(edit)),{code});
+ refuses('SUPPLEMENTAL_SOURCE_NOT_BOUND',c=>{delete c.supplementalSourceProof;return c;});
+ refuses('SUPPLEMENTAL_SOURCE_NOT_BOUND',c=>{c.supplementalSourceProof.sourceCommit='0'.repeat(40);return c;});
+ refuses('SUPPLEMENTAL_SOURCE_NOT_BOUND',c=>{delete c.supplementalSourceProof.previousCandidateSourceCommit;return c;});
+ refuses('SUPPLEMENTAL_PATH_COLLIDES_WITH_HISTORY',c=>{c.supplementalSourceProof.files[0].path=journal;return c;});
+ refuses('DUPLICATE_PROOF_ROW',c=>{c.supplementalSourceProof.files.push(c.supplementalSourceProof.files[0]);return c;});
+ refuses('SUPPLEMENTAL_COUNTS_DIFFER',c=>{c.supplementalSourceProof.files.pop();return c;});
+ refuses('INVALID_SUPPLEMENTAL_ROW',c=>{c.supplementalSourceProof.files.find(row=>row.kind==='production').dockerCopy=false;return c;});
+ refuses('INVALID_SUPPLEMENTAL_ROW',c=>{c.supplementalSourceProof.files[0].sha256='bad';return c;});
+ refuses('INVALID_SUPPLEMENTAL_ROW',c=>{c.supplementalSourceProof.files[0].path='apps/../outside.mjs';return c;});
+ refuses('INVALID_SUPPLEMENTAL_ROW',c=>{c.supplementalSourceProof.files[0].previousSha256='0'.repeat(64);return c;});
+ refuses('INVALID_SUPPLEMENTAL_ROW',c=>{delete c.supplementalSourceProof.files[0].previousCandidateSha256;return c;});
 });

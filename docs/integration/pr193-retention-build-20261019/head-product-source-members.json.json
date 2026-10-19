@@ -1,0 +1,13 @@
+{
+    "AcceptRanges": "bytes",
+    "LastModified": "2026-10-19T19:22:13+00:00",
+    "ContentLength": 4126429,
+    "ChecksumSHA256": "1AjDLVwvBWpcGuxjxL/b5LZ/peShFI6qTWHWfaSPIz4=",
+    "ChecksumType": "FULL_OBJECT",
+    "ETag": "\"20d6081daa97f017637fa01b8a564ba0\"",
+    "VersionId": "JSV4IDhthFSNgfIaqNXWEcYsumTN45iP",
+    "ContentType": "application/json",
+    "ServerSideEncryption": "aws:kms",
+    "Metadata": {},
+    "SSEKMSKeyId": "arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042"
+}

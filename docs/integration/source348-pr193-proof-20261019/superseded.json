@@ -1,0 +1,13 @@
+{
+  "status": "SUPERSEDED_SOURCE_REJECTED_AWAITING_SUCCESSOR",
+  "sourceCommit": "9acbfe7168eb4e9c1e2c3acb02e2a28d08bbd262",
+  "candidateFile": "scripts/qualification/assembled-image/candidate-manifest-fable-20261015l.json",
+  "candidateSha256": "81d3edec29a2d720089e3d5ff127732ceed11950c17707ca3f58141644925c45",
+  "candidateBytesPreserved": true,
+  "reason": "Parent rejected this source after a reproduced retention-release race following final task verification; canonical withRelease around scoped retention assertion and response serialization is pending with the source owner.",
+  "instruction": "Do not upload or build this source. Preserve existing evidence and await the exact corrected source before recomputing any seal or proof.",
+  "proofChanges": "UNCOMMITTED_PENDING_NOT_ADMITTED",
+  "historicalProofTests": {"passed": 21, "failed": 0, "skipped": 0},
+  "independentProofReview": "No substantive proof issue found; reusable historical structure only, no runtime-source acceptance.",
+  "nextAction": "Await corrected exact source and parent continuation instruction."
+}

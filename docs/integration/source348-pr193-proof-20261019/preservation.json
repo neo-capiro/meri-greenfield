@@ -1,0 +1,31 @@
+{
+  "importSource": "c10e8e548831705b6cd2d7d92e4b8673d5a3ed3c",
+  "imports": [
+    {
+      "path": "docs/integration/SOURCE348-A16-PROOF-20261019.md",
+      "sha256": "89e2775aad67355a9d6a8f27705c779632eca76deef253a1180660054e8b570d",
+      "bytes": 3402,
+      "matchesOriginal": true
+    },
+    {
+      "path": "docs/integration/SOURCE348-FIXTURE-PARITY-20261019.md",
+      "sha256": "9ede18ceee34dbe3b563423ef089cc883cf17e981efd2f2b1d8cadeebfbc426d",
+      "bytes": 3301,
+      "matchesOriginal": true
+    },
+    {
+      "path": "scripts/qualification/assembled-image/candidate-manifest-fable-20261015j.json",
+      "sha256": "2b4378802ccdd85775224c727b609a2bd8a220ffbe3d38bae5bba49820dadc88",
+      "bytes": 29647,
+      "matchesOriginal": true
+    },
+    {
+      "path": "scripts/qualification/assembled-image/candidate-manifest-fable-20261015k.json",
+      "sha256": "11ad803b6076666bcef79ab0360cfef6cea3546c86cf50384a8eb8501ce5d71f",
+      "bytes": 29629,
+      "matchesOriginal": true
+    }
+  ],
+  "productionDiff": "",
+  "pass": true
+}

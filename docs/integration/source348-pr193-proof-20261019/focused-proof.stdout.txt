@@ -1,0 +1,136 @@
+TAP version 13
+# Subtest: the source successor l is selected and bound to every historical row: 45 paths, 28 changed, 17 unchanged
+ok 1 - the source successor l is selected and bound to every historical row: 45 paths, 28 changed, 17 unchanged
+  ---
+  duration_ms: 3.3564
+  type: 'test'
+  ...
+# Subtest: a COPY tree holding the current reviewed bytes passes; the obsolete historical hashes could never match it
+ok 2 - a COPY tree holding the current reviewed bytes passes; the obsolete historical hashes could never match it
+  ---
+  duration_ms: 532.8456
+  type: 'test'
+  ...
+# Subtest: a copy that is excluded or differs from the frozen bytes is reported per path
+ok 3 - a copy that is excluded or differs from the frozen bytes is reported per path
+  ---
+  duration_ms: 460.3248
+  type: 'test'
+  ...
+# Subtest: any edit to the frozen candidate bytes refuses selection, even a whitespace-only one
+ok 4 - any edit to the frozen candidate bytes refuses selection, even a whitespace-only one
+  ---
+  duration_ms: 1.2521
+  type: 'test'
+  ...
+# Subtest: a historical manifest that the candidate does not name byte-exact refuses selection
+ok 5 - a historical manifest that the candidate does not name byte-exact refuses selection
+  ---
+  duration_ms: 0.7965
+  type: 'test'
+  ...
+# Subtest: internally inconsistent candidates refuse: unbound changed/unchanged rows, path drift and duplicate rows
+ok 6 - internally inconsistent candidates refuse: unbound changed/unchanged rows, path drift and duplicate rows
+  ---
+  duration_ms: 7.0823
+  type: 'test'
+  ...
+# Subtest: the static source proof and the Docker COPY check select the same frozen candidate file
+ok 7 - the static source proof and the Docker COPY check select the same frozen candidate file
+  ---
+  duration_ms: 0.6977
+  type: 'test'
+  ...
+# Subtest: every additional copied production or regression file is required and checked for drift
+ok 8 - every additional copied production or regression file is required and checked for drift
+  ---
+  duration_ms: 587.6059
+  type: 'test'
+  ...
+# Subtest: supplemental source, path, row and count inconsistencies refuse selection
+ok 9 - supplemental source, path, row and count inconsistencies refuse selection
+  ---
+  duration_ms: 7.8771
+  type: 'test'
+  ...
+# Subtest: exact Git objects regenerate the byte-frozen l receipt independently of working production files
+ok 10 - exact Git objects regenerate the byte-frozen l receipt independently of working production files
+  ---
+  duration_ms: 3216.7389
+  type: 'test'
+  ...
+# Subtest: an unreviewed non-doc source delta fails before generation
+ok 11 - an unreviewed non-doc source delta fails before generation
+  ---
+  duration_ms: 50.0381
+  type: 'test'
+  ...
+# Subtest: predecessor or original manifest edits refuse before any Git read
+ok 12 - predecessor or original manifest edits refuse before any Git read
+  ---
+  duration_ms: 1.1045
+  type: 'test'
+  ...
+# Subtest: unexpected changes to a historical proof row require a separately reviewed successor
+ok 13 - unexpected changes to a historical proof row require a separately reviewed successor
+  ---
+  duration_ms: 167.0583
+  type: 'test'
+  ...
+# Subtest: the bounded CLI documents its modes and rejects missing or extra arguments
+ok 14 - the bounded CLI documents its modes and rejects missing or extra arguments
+  ---
+  duration_ms: 269.6642
+  type: 'test'
+  ...
+# Subtest: every preceding candidate through k is preserved byte-exact and the successor carries no image acceptance
+ok 15 - every preceding candidate through k is preserved byte-exact and the successor carries no image acceptance
+  ---
+  duration_ms: 6.8332
+  type: 'test'
+  ...
+# Subtest: all45 historical proof paths and44 non-recipe hashes remain in the preserved historical manifest
+ok 16 - all45 historical proof paths and44 non-recipe hashes remain in the preserved historical manifest
+  ---
+  duration_ms: 9.4833
+  type: 'test'
+  ...
+# Subtest: the candidate manifest enumerates every changed proof row and the reviewed recipe with historical and predecessor hashes
+ok 17 - the candidate manifest enumerates every changed proof row and the reviewed recipe with historical and predecessor hashes
+  ---
+  duration_ms: 4.7281
+  type: 'test'
+  ...
+# Subtest: exact16 proof-test files are allowlisted with parent reopening and sibling denial
+ok 18 - exact16 proof-test files are allowlisted with parent reopening and sibling denial
+  ---
+  duration_ms: 0.8938
+  type: 'test'
+  ...
+# Subtest: exact observed Linux helper bytes and network-isolated build recipe are promoted
+ok 19 - exact observed Linux helper bytes and network-isolated build recipe are promoted
+  ---
+  duration_ms: 0.608
+  type: 'test'
+  ...
+# Subtest: supplemental proof covers every non-doc combined change with exact current and predecessor Git bytes
+ok 20 - supplemental proof covers every non-doc combined change with exact current and predecessor Git bytes
+  ---
+  duration_ms: 959.3441
+  type: 'test'
+  ...
+# Subtest: five supplemental paths enter COPY while the source-only load regression and proof artifacts stay excluded
+ok 21 - five supplemental paths enter COPY while the source-only load regression and proof artifacts stay excluded
+  ---
+  duration_ms: 1.0087
+  type: 'test'
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3805.8412

@@ -1,0 +1,16 @@
+{
+  "sourceCommit": "9acbfe7168eb4e9c1e2c3acb02e2a28d08bbd262",
+  "candidateSha256": "81d3edec29a2d720089e3d5ff127732ceed11950c17707ca3f58141644925c45",
+  "command": "git",
+  "args": [
+    "diff",
+    "--check"
+  ],
+  "start": "2026-10-19T19:02:42.621Z",
+  "finished": "2026-10-19T19:02:42.695Z",
+  "exitCode": 0,
+  "signal": null,
+  "error": null,
+  "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

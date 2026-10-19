@@ -1,0 +1,80 @@
+{
+  "status": "OFFLINE_PINS_ONLY_IMMUTABLE_VERSIONS_PENDING",
+  "sourceCommit": "5b395d4ce9218b872b21c420dc00a3af31739824",
+  "attempt": "ef2439c9e0afe141d11e27836503975f",
+  "imageTag": "product-5b395d4ce9218b872b21c420dc00a3af31739824-ef2439c9e0afe141d11e27836503975f",
+  "resultPrefix": "results/product-image/5b395d4ce9218b872b21c420dc00a3af31739824/ef2439c9e0afe141d11e27836503975f",
+  "archive": {
+    "bucket": "meri-greenfield-qual-build-967807252336-us-east-1",
+    "key": "inputs/product-runtime/5b395d4ce9218b872b21c420dc00a3af31739824/product-source.zip",
+    "versionId": null,
+    "sha256": "cee8da7ad937cc120b56ca653f56725466eb8376e38fafc5c41447d73bdfa11a",
+    "bytes": 276999220,
+    "checksumSHA256": "zujaetk3zBILVsplP1ZyVGbrg3bjj6/FxBRH1zvfoRo=",
+    "serverSideEncryption": "aws:kms",
+    "kmsKeyArn": "arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042"
+  },
+  "manifest": {
+    "bucket": "meri-greenfield-qual-build-967807252336-us-east-1",
+    "key": "inputs/product-runtime/5b395d4ce9218b872b21c420dc00a3af31739824/product-source-members.json",
+    "versionId": null,
+    "sha256": "d408c32d5c2f056a5c1aec63c4bfdbe4b67fa5e4a1148eaa4d61d67da48f233e",
+    "bytes": 4126429,
+    "checksumSHA256": "1AjDLVwvBWpcGuxjxL/b5LZ/peShFI6qTWHWfaSPIz4=",
+    "serverSideEncryption": "aws:kms",
+    "kmsKeyArn": "arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042"
+  },
+  "filePins": {
+    "dockerfileSha256": "e7e0427aca562ba0747ca0874ff284915af2ce40f32f4d5330857824e8d43022",
+    "runtimePackagesSha256": "5dc3b335d8dc7f0377c75852c28addc1a2517bb4bcc05e2125d0e1e31a97bdea",
+    "runnerSha256": "166742d9e0068ebd193d330c5a06799791d2f8219f312a285e1b3dd687dc96f5",
+    "verifierSha256": "c373ff556873823e1fd7cb5a00945ed2f70f41acb74c96d2d9756d0f12bf461d",
+    "producerSha256": "a1002c79952fb8c5f3ee81443ca645ee9bce58d074bfd93bbcd83518947cdae8"
+  },
+  "canonicalFiles": {
+    "apps/runtime/Dockerfile": {
+      "sha256": "e7e0427aca562ba0747ca0874ff284915af2ce40f32f4d5330857824e8d43022",
+      "bytes": 10482
+    },
+    "infra/product-preview/runtime-packages.lock.json": {
+      "sha256": "5dc3b335d8dc7f0377c75852c28addc1a2517bb4bcc05e2125d0e1e31a97bdea",
+      "bytes": 16159
+    },
+    "apps/runtime/conversation-runner.mjs": {
+      "sha256": "166742d9e0068ebd193d330c5a06799791d2f8219f312a285e1b3dd687dc96f5",
+      "bytes": 17250
+    },
+    "infra/product-preview/image-build-source.py": {
+      "sha256": "c373ff556873823e1fd7cb5a00945ed2f70f41acb74c96d2d9756d0f12bf461d",
+      "bytes": 19742
+    },
+    "infra/product-preview/image-build-producer.py": {
+      "sha256": "a1002c79952fb8c5f3ee81443ca645ee9bce58d074bfd93bbcd83518947cdae8",
+      "bytes": 37171
+    },
+    "infra/product-preview/image-build-recipe.mjs": {
+      "sha256": "d04b6fe75b7e04cf632c664077bae600f7ff05dc8bcdfc956b02622a41b342c9",
+      "bytes": 30057
+    },
+    "docs/handover/20261017/fable-shipping/scripts/check-product-buildspec.mjs": {
+      "sha256": "313efe3aa54a965420c07d0a33273492ca25b3409bd4a49f5db075ec790b4583",
+      "bytes": 789
+    }
+  },
+  "nodeImageUri": "public.ecr.aws/docker/library/node@sha256:c83040f7e24bacea68e58a0b96a484ba430bf24abb2973eab7ba4701144b7b63",
+  "nodeVersion": "v24.21.0",
+  "runtimeBaseImageUri": "cgr.dev/chainguard/wolfi-base@sha256:030e45cb37187dff322bbefe9658bcaec31b824a5d523380771a64864c9f45d4",
+  "runtimeUser": "1000:1000",
+  "codeBuildProjectArn": "arn:aws:codebuild:us-east-1:967807252336:project/meri-greenfield-qualification-build",
+  "ecrRepositoryUri": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker",
+  "requiredProject": {
+    "environmentType": "LINUX_CONTAINER",
+    "computeType": "BUILD_GENERAL1_SMALL",
+    "image": "aws/codebuild/standard:7.0",
+    "privilegedMode": true,
+    "concurrentBuildLimit": 1,
+    "timeoutInMinutes": 30,
+    "queuedTimeoutInMinutes": 5,
+    "autoRetryLimit": 0
+  }
+}
