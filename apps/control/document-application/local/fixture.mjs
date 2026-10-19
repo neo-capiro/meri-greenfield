@@ -13,9 +13,10 @@ import {createPostgresArtifactService} from '../../../artifacts/postgres-service
 import {createLocalDocumentPorts} from './ports.mjs';
 
 const root = fileURLToPath(new URL('../../../../',import.meta.url));
-export async function createLocalDocumentFixture({mode,pythonExecutable,operation = 'create_word',skillManifest,mailboxIds = [],identityIds}) {
+export async function createLocalDocumentFixture({mode,pythonExecutable,operation = 'create_word',pptxModulePath,skillManifest,mailboxIds = [],identityIds}) {
   if (mode !== 'synthetic-local' || typeof pythonExecutable !== 'string' || !isAbsolute(pythonExecutable) ||
-      !['create_word','create_excel'].includes(operation) ||
+      !['create_word','create_excel','create_powerpoint','run_analysis'].includes(operation) ||
+      operation==='create_powerpoint'&&(typeof pptxModulePath!=='string'||!isAbsolute(pptxModulePath)) ||
       !Array.isArray(mailboxIds) || mailboxIds.length > 8 || new Set(mailboxIds).size !== mailboxIds.length ||
       mailboxIds.some(id => typeof id !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/iu.test(id)) ||
       !process.env.MERI_REVIEW_SOURCE_ROOT || resolve(process.env.MERI_REVIEW_SOURCE_ROOT) !== resolve(root)) throw Error('LOCAL_DOCUMENT_CONFIGURATION');
@@ -63,9 +64,9 @@ export async function createLocalDocumentFixture({mode,pythonExecutable,operatio
   try {
     directory = await mkdtemp(join(tmpdir(),'meri-document-fixture-'));
     store = await createLocalArtifactStore({root: join(directory,'store'),canonicalSha256});
-    // PPTX is outside this fixture. The existing executor only uses this path for that format.
+    // The fixed entry verifies the exact pinned PptxGenJS version before generating.
     const executor = createLocalArtifactExecutor({pythonExecutable,nodeExecutable: process.execPath,
-      pptxModulePath: join(directory,'pptx-not-configured'),tempRoot: directory,timeoutMs: 15000});
+      pptxModulePath: pptxModulePath??join(directory,'pptx-not-configured'),tempRoot: directory,timeoutMs: 15000});
     const artifactOptions = {pool: ledger.pool,allocationJson: JSON.stringify(ledger.allocation),
       producerContext: {context: ledger.context(),producer: ledger.producer},descriptor,context,validators: artifactValidators,
       authority: ports.authority,authorize: ports.authorize,versions: store.versions,objects: store.objects,

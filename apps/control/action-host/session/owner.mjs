@@ -75,9 +75,9 @@ export function createActionSessionOwner(configuration){
   const context=data({binding:current.binding,scopes:current.scopes,selectedClientId:current.selectedClientId,contextRevision:current.contextRevision});if(record&&!same(context,record.context))deny();
   const expiresAtMs=Math.min(identity.expiresAtMs,current.expiresAtMs,record?.expiresAtMs??ceiling,membershipAdmission?.expiresAtMs??Infinity);t.limitDeadline(expiresAtMs);active(t.signal);t.check();return {identity,context,expiresAtMs,...(member?{membershipPrincipal}:{})};
  }
- async function issue(value){const {identityCredential,hints:rawHints={},signal,deadlineMs}=own(value,['identityCredential'],['hints','signal','deadlineMs']);if(typeof identityCredential!=='string'||!identityCredential||identityCredential.length>8192||!/^\S+$/u.test(identityCredential))deny();const selected=hints(rawHints),t=life(deadlineMs,signal);let record;
+ async function issueWith(value,relayEligible){const {identityCredential,hints:rawHints={},signal,deadlineMs}=own(value,['identityCredential'],['hints','signal','deadlineMs']);if(typeof identityCredential!=='string'||!identityCredential||identityCredential.length>8192||!/^\S+$/u.test(identityCredential))deny();const selected=hints(rawHints),t=life(deadlineMs,signal);let record;
   try{const started=active(t.signal);for(const r of sessions.values())if(r.expiresAtMs<=started)remove(r);if(sessions.size>=l.maxSessions)deny('SESSION_CAPACITY');const resolved=await resolve(identityCredential,selected,t,undefined,started+l.maxTtlMs);
-   active(t.signal);t.check();if(sessions.size>=l.maxSessions)deny('SESSION_CAPACITY');const credential=`action_session_${randomBytes(32).toString('base64url')}`,sessionId=randomUUID();record={...resolved,digest:hash(credential),sessionId,sessionRevision:randomUUID(),nativeCredential:identityCredential,hints:selected,receipts:new Set()};sessions.set(record.digest,record);ids.set(sessionId,record);
+   active(t.signal);t.check();if(sessions.size>=l.maxSessions)deny('SESSION_CAPACITY');const credential=`action_session_${randomBytes(32).toString('base64url')}`,sessionId=randomUUID();record={...resolved,relayEligible,digest:hash(credential),sessionId,sessionRevision:randomUUID(),nativeCredential:identityCredential,hints:selected,receipts:new Set()};sessions.set(record.digest,record);ids.set(sessionId,record);
    const b=record.context.binding,out=assertActionSessionReceipt({credential,expiresAtMs:record.expiresAtMs,context:{tenantId:b.tenantId,actorId:b.actorId,conversationId:b.conversationId,runId:b.runId,selectedClientId:record.context.selectedClientId}},active(t.signal));release(record,t);return out;
   }catch(error){if(record)remove(record);if(errors.has(error))throw error;deny();}finally{t.close();}
  }
@@ -135,9 +135,9 @@ export function createActionSessionOwner(configuration){
   const b=data(v.binding);if(b===null||typeof b!=='object'||Array.isArray(b))deny();
   const keys=['tenantId','actorId','conversationId','runId'];if(keys.some(k=>typeof b[k]!=='string'||!b[k])||!uuid.test(b.conversationId)||!uuid.test(b.runId)||typeof v.selectedClientId!=='string'||!uuid.test(v.selectedClientId))deny();
   let best=null;
-  for(const r of sessions.values()){const c=r.context.binding;if(r.expiresAtMs<=at||!r.nativeCredential||keys.some(k=>c?.[k]!==b[k])||r.context.selectedClientId!==v.selectedClientId)continue;if(best===null||r.expiresAtMs>best.expiresAtMs)best=r;}
+  for(const r of sessions.values()){const c=r.context.binding;if(r.relayEligible!==true||r.expiresAtMs<=at||!r.nativeCredential||keys.some(k=>c?.[k]!==b[k])||r.context.selectedClientId!==v.selectedClientId)continue;if(best===null||r.expiresAtMs>best.expiresAtMs)best=r;}
   if(best===null)deny('SESSION_UNAVAILABLE');valid(best,v.signal);
   return Object.freeze({credential:best.nativeCredential,expiresAtMs:best.expiresAtMs});
  }
- return Object.freeze({issue,authenticateSession,readCurrentState,verifyTransition,nativeCredentialFor,revoke(credential){if(typeof credential!=='string')deny();const r=sessions.get(hash(credential));if(r)remove(r);},close(){closed=true;for(const r of sessions.values())remove(r);},status:()=>data({mode,closed,sessions:sessions.size})});
+ return Object.freeze({issue:value=>issueWith(value,true),issueDerived:value=>issueWith(value,false),authenticateSession,readCurrentState,verifyTransition,nativeCredentialFor,revoke(credential){if(typeof credential!=='string')deny();const r=sessions.get(hash(credential));if(r)remove(r);},close(){closed=true;for(const r of sessions.values())remove(r);},status:()=>data({mode,closed,sessions:sessions.size})});
 }

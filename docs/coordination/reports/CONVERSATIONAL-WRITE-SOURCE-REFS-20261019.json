@@ -1,0 +1,258 @@
+{
+  "schemaVersion": 1,
+  "scope": "Read-only source references; no implementation copies or runtime qualification.",
+  "sources": [
+    {
+      "repository": "neo-capiro/capiro-backend",
+      "ref": "138c04373b18bb730b1ad0f8f9338342f628b8c6",
+      "path": "apps/api/src/meri/native-approvals/native-approval.controller.ts",
+      "url": "https://github.com/neo-capiro/capiro-backend/blob/138c04373b18bb730b1ad0f8f9338342f628b8c6/apps/api/src/meri/native-approvals/native-approval.controller.ts"
+    },
+    {
+      "repository": "neo-capiro/capiro-backend",
+      "ref": "138c04373b18bb730b1ad0f8f9338342f628b8c6",
+      "path": "apps/api/src/meri/native-approvals/native-approval.service.ts",
+      "url": "https://github.com/neo-capiro/capiro-backend/blob/138c04373b18bb730b1ad0f8f9338342f628b8c6/apps/api/src/meri/native-approvals/native-approval.service.ts"
+    },
+    {
+      "repository": "neo-capiro/capiro-backend",
+      "ref": "138c04373b18bb730b1ad0f8f9338342f628b8c6",
+      "path": "apps/api/src/meri/native-approvals/native-approval.contract.ts",
+      "url": "https://github.com/neo-capiro/capiro-backend/blob/138c04373b18bb730b1ad0f8f9338342f628b8c6/apps/api/src/meri/native-approvals/native-approval.contract.ts"
+    },
+    {
+      "repository": "neo-capiro/capiro-backend",
+      "ref": "138c04373b18bb730b1ad0f8f9338342f628b8c6",
+      "path": "apps/api/src/meri/native-approvals/native-approval-metadata.ts",
+      "url": "https://github.com/neo-capiro/capiro-backend/blob/138c04373b18bb730b1ad0f8f9338342f628b8c6/apps/api/src/meri/native-approvals/native-approval-metadata.ts"
+    },
+    {
+      "repository": "neo-capiro/capiro-backend",
+      "ref": "138c04373b18bb730b1ad0f8f9338342f628b8c6",
+      "path": "apps/api/src/meri/native-approvals/native-execution.service.ts",
+      "url": "https://github.com/neo-capiro/capiro-backend/blob/138c04373b18bb730b1ad0f8f9338342f628b8c6/apps/api/src/meri/native-approvals/native-execution.service.ts"
+    },
+    {
+      "repository": "neo-capiro/capiro-backend",
+      "ref": "138c04373b18bb730b1ad0f8f9338342f628b8c6",
+      "path": "apps/api/src/meri/execution-capability/meri-execution-receiver.service.ts",
+      "url": "https://github.com/neo-capiro/capiro-backend/blob/138c04373b18bb730b1ad0f8f9338342f628b8c6/apps/api/src/meri/execution-capability/meri-execution-receiver.service.ts"
+    },
+    {
+      "repository": "neo-capiro/capiro-backend",
+      "ref": "138c04373b18bb730b1ad0f8f9338342f628b8c6",
+      "path": "apps/api/src/meri/execution-capability/meri-execution-capability.ts",
+      "url": "https://github.com/neo-capiro/capiro-backend/blob/138c04373b18bb730b1ad0f8f9338342f628b8c6/apps/api/src/meri/execution-capability/meri-execution-capability.ts"
+    },
+    {
+      "repository": "neo-capiro/capiro-backend",
+      "ref": "138c04373b18bb730b1ad0f8f9338342f628b8c6",
+      "path": "apps/api/src/meri/memory-receiving/meri-memory-receiving.controller.ts",
+      "url": "https://github.com/neo-capiro/capiro-backend/blob/138c04373b18bb730b1ad0f8f9338342f628b8c6/apps/api/src/meri/memory-receiving/meri-memory-receiving.controller.ts"
+    },
+    {
+      "repository": "neo-capiro/capiro-backend",
+      "ref": "138c04373b18bb730b1ad0f8f9338342f628b8c6",
+      "path": "apps/api/src/meri/memory-receiving/meri-memory-receiving.service.ts",
+      "url": "https://github.com/neo-capiro/capiro-backend/blob/138c04373b18bb730b1ad0f8f9338342f628b8c6/apps/api/src/meri/memory-receiving/meri-memory-receiving.service.ts"
+    },
+    {
+      "repository": "neo-capiro/capiro-backend",
+      "ref": "138c04373b18bb730b1ad0f8f9338342f628b8c6",
+      "path": "apps/api/src/meri/memory-receiving/meri-memory.contract.ts",
+      "url": "https://github.com/neo-capiro/capiro-backend/blob/138c04373b18bb730b1ad0f8f9338342f628b8c6/apps/api/src/meri/memory-receiving/meri-memory.contract.ts"
+    },
+    {
+      "repository": "neo-capiro/capiro-backend",
+      "ref": "138c04373b18bb730b1ad0f8f9338342f628b8c6",
+      "path": "apps/api/src/meri/meri-client-filing.service.ts",
+      "url": "https://github.com/neo-capiro/capiro-backend/blob/138c04373b18bb730b1ad0f8f9338342f628b8c6/apps/api/src/meri/meri-client-filing.service.ts"
+    },
+    {
+      "repository": "neo-capiro/capiro-backend",
+      "ref": "138c04373b18bb730b1ad0f8f9338342f628b8c6",
+      "path": "apps/api/src/client-documents/client-document-writer.service.ts",
+      "url": "https://github.com/neo-capiro/capiro-backend/blob/138c04373b18bb730b1ad0f8f9338342f628b8c6/apps/api/src/client-documents/client-document-writer.service.ts"
+    },
+    {
+      "repository": "neo-capiro/capiro-backend",
+      "ref": "138c04373b18bb730b1ad0f8f9338342f628b8c6",
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "url": "https://github.com/neo-capiro/capiro-backend/blob/138c04373b18bb730b1ad0f8f9338342f628b8c6/apps/api/src/meri/meri-tools.service.ts"
+    },
+    {
+      "repository": "neo-capiro/capiro-backend",
+      "ref": "138c04373b18bb730b1ad0f8f9338342f628b8c6",
+      "path": "apps/api/src/meri/meri.controller.ts",
+      "url": "https://github.com/neo-capiro/capiro-backend/blob/138c04373b18bb730b1ad0f8f9338342f628b8c6/apps/api/src/meri/meri.controller.ts"
+    },
+    {
+      "repository": "neo-capiro/capiro-backend",
+      "ref": "138c04373b18bb730b1ad0f8f9338342f628b8c6",
+      "path": "apps/api/src/meri/meri.service.ts",
+      "url": "https://github.com/neo-capiro/capiro-backend/blob/138c04373b18bb730b1ad0f8f9338342f628b8c6/apps/api/src/meri/meri.service.ts"
+    },
+    {
+      "repository": "neo-capiro/capiro-backend",
+      "ref": "138c04373b18bb730b1ad0f8f9338342f628b8c6",
+      "path": "apps/api/src/auth/application-authority.controller.ts",
+      "url": "https://github.com/neo-capiro/capiro-backend/blob/138c04373b18bb730b1ad0f8f9338342f628b8c6/apps/api/src/auth/application-authority.controller.ts"
+    },
+    {
+      "repository": "neo-capiro/capiro-backend",
+      "ref": "138c04373b18bb730b1ad0f8f9338342f628b8c6",
+      "path": "apps/api/src/auth/application-authority.ts",
+      "url": "https://github.com/neo-capiro/capiro-backend/blob/138c04373b18bb730b1ad0f8f9338342f628b8c6/apps/api/src/auth/application-authority.ts"
+    },
+    {
+      "repository": "neo-capiro/capiro-backend",
+      "ref": "138c04373b18bb730b1ad0f8f9338342f628b8c6",
+      "path": "apps/api/src/memory/memory.controller.ts",
+      "url": "https://github.com/neo-capiro/capiro-backend/blob/138c04373b18bb730b1ad0f8f9338342f628b8c6/apps/api/src/memory/memory.controller.ts"
+    },
+    {
+      "repository": "neo-capiro/capiro-backend",
+      "ref": "138c04373b18bb730b1ad0f8f9338342f628b8c6",
+      "path": "apps/api/src/memory/memory-version.controller.ts",
+      "url": "https://github.com/neo-capiro/capiro-backend/blob/138c04373b18bb730b1ad0f8f9338342f628b8c6/apps/api/src/memory/memory-version.controller.ts"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "98d3c96a2c944a8211856e98b5bd62e824b4b5f7",
+      "path": "apps/runtime/native-authority/execution-capability.mjs",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/98d3c96a2c944a8211856e98b5bd62e824b4b5f7/apps/runtime/native-authority/execution-capability.mjs"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "98d3c96a2c944a8211856e98b5bd62e824b4b5f7",
+      "path": "apps/runtime/native-authority/execution-composition.mjs",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/98d3c96a2c944a8211856e98b5bd62e824b4b5f7/apps/runtime/native-authority/execution-composition.mjs"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "98d3c96a2c944a8211856e98b5bd62e824b4b5f7",
+      "path": "apps/runtime/native-authority/execution-issuance.mjs",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/98d3c96a2c944a8211856e98b5bd62e824b4b5f7/apps/runtime/native-authority/execution-issuance.mjs"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "98d3c96a2c944a8211856e98b5bd62e824b4b5f7",
+      "path": "apps/runtime/native-authority/approval-forwarder.mjs",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/98d3c96a2c944a8211856e98b5bd62e824b4b5f7/apps/runtime/native-authority/approval-forwarder.mjs"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "98d3c96a2c944a8211856e98b5bd62e824b4b5f7",
+      "path": "apps/runtime/native-authority/memory-credentials.mjs",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/98d3c96a2c944a8211856e98b5bd62e824b4b5f7/apps/runtime/native-authority/memory-credentials.mjs"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "98d3c96a2c944a8211856e98b5bd62e824b4b5f7",
+      "path": "apps/runtime/product-ports/memory.mjs",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/98d3c96a2c944a8211856e98b5bd62e824b4b5f7/apps/runtime/product-ports/memory.mjs"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "98d3c96a2c944a8211856e98b5bd62e824b4b5f7",
+      "path": "apps/runtime/artifacts/run-options.mjs",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/98d3c96a2c944a8211856e98b5bd62e824b4b5f7/apps/runtime/artifacts/run-options.mjs"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "98d3c96a2c944a8211856e98b5bd62e824b4b5f7",
+      "path": "apps/control/commands/approval-metadata/owner.mjs",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/98d3c96a2c944a8211856e98b5bd62e824b4b5f7/apps/control/commands/approval-metadata/owner.mjs"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "98d3c96a2c944a8211856e98b5bd62e824b4b5f7",
+      "path": "apps/control/commands/approval-metadata/task-kind.mjs",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/98d3c96a2c944a8211856e98b5bd62e824b4b5f7/apps/control/commands/approval-metadata/task-kind.mjs"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "98d3c96a2c944a8211856e98b5bd62e824b4b5f7",
+      "path": "apps/control/commands/source-http.mjs",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/98d3c96a2c944a8211856e98b5bd62e824b4b5f7/apps/control/commands/source-http.mjs"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "98d3c96a2c944a8211856e98b5bd62e824b4b5f7",
+      "path": "apps/control/commands/source-projection.mjs",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/98d3c96a2c944a8211856e98b5bd62e824b4b5f7/apps/control/commands/source-projection.mjs"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "98d3c96a2c944a8211856e98b5bd62e824b4b5f7",
+      "path": "apps/control/memory/producer.mjs",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/98d3c96a2c944a8211856e98b5bd62e824b4b5f7/apps/control/memory/producer.mjs"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "98d3c96a2c944a8211856e98b5bd62e824b4b5f7",
+      "path": "apps/control/memory/command-source.mjs",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/98d3c96a2c944a8211856e98b5bd62e824b4b5f7/apps/control/memory/command-source.mjs"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "98d3c96a2c944a8211856e98b5bd62e824b4b5f7",
+      "path": "apps/control/memory/core-http.mjs",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/98d3c96a2c944a8211856e98b5bd62e824b4b5f7/apps/control/memory/core-http.mjs"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "98d3c96a2c944a8211856e98b5bd62e824b4b5f7",
+      "path": "apps/control/memory/core-review.mjs",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/98d3c96a2c944a8211856e98b5bd62e824b4b5f7/apps/control/memory/core-review.mjs"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "98d3c96a2c944a8211856e98b5bd62e824b4b5f7",
+      "path": "apps/control/memory/core-decisions.mjs",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/98d3c96a2c944a8211856e98b5bd62e824b4b5f7/apps/control/memory/core-decisions.mjs"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "98d3c96a2c944a8211856e98b5bd62e824b4b5f7",
+      "path": "apps/artifacts/filing.mjs",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/98d3c96a2c944a8211856e98b5bd62e824b4b5f7/apps/artifacts/filing.mjs"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "98d3c96a2c944a8211856e98b5bd62e824b4b5f7",
+      "path": "packages/contracts/commands-0.2/memory-propose-validation.mjs",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/98d3c96a2c944a8211856e98b5bd62e824b4b5f7/packages/contracts/commands-0.2/memory-propose-validation.mjs"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "98d3c96a2c944a8211856e98b5bd62e824b4b5f7",
+      "path": "packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/98d3c96a2c944a8211856e98b5bd62e824b4b5f7/packages/contracts/commands-0.2/artifact-file-validation.mjs"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "ref": "98d3c96a2c944a8211856e98b5bd62e824b4b5f7",
+      "path": "apps/control/intents/http.mjs",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/98d3c96a2c944a8211856e98b5bd62e824b4b5f7/apps/control/intents/http.mjs"
+    },
+    {
+      "repository": "neo-capiro/capiro-frontend",
+      "ref": "5c784e3e46114816ba57db17ad7a2c2013a8d81a",
+      "path": "apps/web/src/features/meri/conversation/ConversationTurn.tsx",
+      "url": "https://github.com/neo-capiro/capiro-frontend/blob/5c784e3e46114816ba57db17ad7a2c2013a8d81a/apps/web/src/features/meri/conversation/ConversationTurn.tsx"
+    },
+    {
+      "repository": "neo-capiro/capiro-frontend",
+      "ref": "5c784e3e46114816ba57db17ad7a2c2013a8d81a",
+      "path": "apps/web/src/features/meri/actions/ProposalPanel.tsx",
+      "url": "https://github.com/neo-capiro/capiro-frontend/blob/5c784e3e46114816ba57db17ad7a2c2013a8d81a/apps/web/src/features/meri/actions/ProposalPanel.tsx"
+    },
+    {
+      "repository": "neo-capiro/capiro-frontend",
+      "ref": "5c784e3e46114816ba57db17ad7a2c2013a8d81a",
+      "path": "apps/web/src/shared/meri-actions/workflow-port.ts",
+      "url": "https://github.com/neo-capiro/capiro-frontend/blob/5c784e3e46114816ba57db17ad7a2c2013a8d81a/apps/web/src/shared/meri-actions/workflow-port.ts"
+    }
+  ]
+}

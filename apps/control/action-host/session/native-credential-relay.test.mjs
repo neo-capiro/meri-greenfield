@@ -39,3 +39,16 @@ test('malformed requests refuse before any session is inspected',()=>{
   assert.throws(()=>f.owner.nativeCredentialFor(input),e=>e?.name==='ActionSessionError'||e instanceof Error);
  f.owner.close();
 });
+
+test('derived sessions cannot keep a revoked original session alive in the native relay',async()=>{
+ const f=fixture();try{
+  const original=await f.owner.issue({identityCredential:'native-original'});
+  f.advance(1000);const derived=await f.owner.issueDerived({identityCredential:'native-derived'});
+  assert.equal(f.owner.nativeCredentialFor({binding:f.binding,selectedClientId:id(5)}).credential,'native-original');
+  await f.owner.authenticateSession({credential:derived.credential});
+  f.owner.revoke(original.credential);
+  assert.throws(()=>f.owner.nativeCredentialFor({binding:f.binding,selectedClientId:id(5)}),code('SESSION_UNAVAILABLE'));
+  assert.equal(f.owner.status().sessions,1);
+  f.owner.revoke(derived.credential);assert.equal(f.owner.status().sessions,0);
+ }finally{f.owner.close();}
+});

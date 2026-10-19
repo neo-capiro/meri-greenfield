@@ -11,7 +11,7 @@ export async function recoverArtifact(owner,baseVersionId,requestValue,contextVa
   const stableVersionId=documentInvocationVersion(evidence),life=operation(context,signal);
   let versionId=stableVersionId,verified=false;
   try{
-    if(!['create_word','create_excel'].includes(request.operation)||request.format==='sandbox'||context.analysisAdmission||
+    if(!['create_word','create_excel','create_powerpoint','run_analysis'].includes(request.operation)||request.format==='sandbox'||context.analysisAdmission||
       !['UNKNOWN','SETTLED'].includes(evidence.stage)||typeof evidence.reservationId!=='string'||!evidence.reservationId||
       evidence.argumentsSha256!==requestSha256||!Number.isSafeInteger(evidence.maxOutputBytes)||evidence.maxOutputBytes<1)fail('ARTIFACT_REPLAY_EVIDENCE');
     const action=baseVersionId===null?'artifact.generate':'artifact.revise';

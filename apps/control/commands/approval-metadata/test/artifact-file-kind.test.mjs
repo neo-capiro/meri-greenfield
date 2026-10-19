@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {artifactFileKind} from '../artifact-file-kind.mjs';
-import {fixture,id,NOW} from '../../../test/commands-fixture.mjs';
+import {fixture,id} from '../../../test/commands-fixture.mjs';
 
 test('attachment codec preserves exact immutable objects and the trusted client destination',()=>{
  const f=fixture('artifact.file'),kind=artifactFileKind('artifact.file');
