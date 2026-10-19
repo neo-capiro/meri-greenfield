@@ -132,11 +132,12 @@ function Initialize-Pr193PublicInputs {
 function Initialize-Pr193CanonicalDependencies {
     param([string]$Node, [string]$Source, [string]$Git)
     $nodeEnvironment = @{ NODE_OPTIONS=$null; NODE_PATH=$null }
-    $probeCode = 'import {pathToFileURL} from "node:url";try{await import(pathToFileURL(process.argv[1]).href);await import(pathToFileURL(process.argv[2]).href)}catch(e){if(e.code==="ERR_MODULE_NOT_FOUND")process.stdout.write(String(e.message));process.exit(1)}'
+    # Keep argv[1] inert: canonical modules use it to distinguish CLI execution from import.
+    $probeCode = 'import {pathToFileURL} from "node:url";try{await import(pathToFileURL(process.argv[2]).href);await import(pathToFileURL(process.argv[3]).href)}catch(e){if(e.code==="ERR_MODULE_NOT_FOUND")process.stdout.write(String(e.message));process.exit(1)}'
     $modules = @((Join-Path $Source 'infra/product-preview/first-chat/render-material.mjs'), (Join-Path $Source 'infra/product-preview/first-chat/stage3-deploy.mjs'))
     $installed = @{}
     for ($attempt=0; $attempt -lt 5; $attempt++) {
-        $probe = Invoke-Pr193Captured $Node (@('--input-type=module','--eval',$probeCode) + $modules) $Source 120 $nodeEnvironment
+        $probe = Invoke-Pr193Captured $Node (@('--input-type=module','--eval',$probeCode,'pr193-dependency-probe') + $modules) $Source 120 $nodeEnvironment
         if ($probe.ExitCode -eq 0) { Assert-Pr193Source $Git $Source; return }
         # The missing import's source file selects only these existing lockfile owners.
         $owner = $null
