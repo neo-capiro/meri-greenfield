@@ -6,11 +6,14 @@ It changes no production defaults and makes no real provider or AWS calls.
 Exit 0 means the explicitly named partition passed. Exit 2 preserves a failed or
 blocked result. Neither exit qualifies the complete product path.
 
-The exact starting source is `1fe6baaedbd410089907bed2e52b804ec28482ce`, combining
+The original harness started at `1fe6baaedbd410089907bed2e52b804ec28482ce`, combining
 PR183 `b51687d4dadbb8cbf8ee817490e5f95c01e60d54` and PR185
 `67a7bfbc7df47f326e4287de8df7f0f59b110b8c`, which were siblings on
 `a1876afaeaa59d9da47729487d490cba8cfc9d9c`. Each receipt includes its actual
-checkout commit and SHA256 of all five executable harness modules.
+checkout commit and SHA256 of all five executable harness modules. The SDK
+interoperability follow-up starts at local `9f54238c84dc03f0505ccac99be5652dbb2d16db`
+(published PR188 evidence `4f59cb3d7e811ff1409b1161920c1bce6eb5ea48`). Failed
+pre-repair receipts remain separate from post-repair qualification results.
 
 ## Required local environment
 
@@ -35,6 +38,8 @@ Run these from the repository root. Output paths must be absolute.
 
 ```sh
 node scripts/qualification/sdk-proxy-offline/run.mjs --python /tmp/meri-integration-sdk-env/bin/python --out /tmp/sdk-default.json
+node scripts/qualification/sdk-proxy-offline/run.mjs --python /tmp/meri-integration-sdk-env/bin/python --out /tmp/sdk-schema.json --output-format json-schema
+node scripts/qualification/sdk-proxy-offline/run.mjs --python /tmp/meri-integration-sdk-env/bin/python --out /tmp/sdk-profiled.json --client sdk-profiled --output-format json-schema
 node scripts/qualification/sdk-proxy-offline/run.mjs --python /tmp/meri-integration-sdk-env/bin/python --out /tmp/sdk-configured.json --client sdk-configured
 node scripts/qualification/sdk-proxy-offline/run.mjs --python /tmp/meri-integration-sdk-env/bin/python --out /tmp/sdk-constrained.json --client sdk-constrained
 node scripts/qualification/sdk-proxy-offline/run.mjs --python /tmp/meri-integration-sdk-env/bin/python --out /tmp/sdk-constrained-schema.json --client sdk-constrained --output-format json-schema
@@ -63,10 +68,22 @@ reservation before send, raw response observation and settlement all execute.
 reservation and model settlement owners. They request independent host capture
 callbacks over private inherited pipes. `model_ledger_fixture.mjs` reuses
 `occurrenceCostFixture` for row storage and SQL transaction/commit-fault behavior.
-It does not implement budget admission, pricing or settlement decisions. The
-original manifest and its 1000 microUSD budget stay intact. The minimal client
-uses `max_tokens:16`, requiring a 344 microUSD hold; 12 input and 3 output tokens
-settle to 90 microUSD at the unchanged Sonnet pricing revision.
+It does not implement budget admission, pricing or settlement decisions. It
+constructs an explicitly synthetic 250000 microUSD manifest/allocation with
+matching hashes, facts and dates, then uses canonical allocation admission
+before any reservation. It never modifies persisted fixture rows or claims
+the original manifest's source pin. The SDK's production `max_tokens:8192`
+requires a 135248 microUSD hold. The minimal client uses `max_tokens:16`,
+requiring a 344 microUSD hold. Both settle 12 input and 3 output tokens to
+90 microUSD at the unchanged Sonnet pricing revision.
+
+The schema case binds a static trusted JSON schema to `BodyLimits` before
+request observation and explicitly admits only `StructuredOutput`. The request
+cannot choose its own schema authority. The stub emits a real terminal tool-use
+response, and success requires the actual SDK `result.structured_output` to
+match the schema and expected synthetic value. Mere schema presence or text
+success cannot pass. Production per-run schema/MCP binding custody remains a
+separate integration gate; this static fixture does not establish it.
 
 The CountTokens boundary uses an actual pinned boto3 client with botocore
 `Stubber`; it does not prove AWS accepts a particular request body. The provider
@@ -75,9 +92,9 @@ frames with CRCs, fragmented into 11-byte parts. No network provider executes.
 
 ## Executed results
 
-The seven minimal-client cases below passed the real native route and canonical
-JavaScript accounting owners. Four focused fixture/parser tests also passed.
-These results do not qualify the SDK request shape.
+The seven original minimal-client cases below passed the real native route and
+canonical JavaScript accounting owners. Five focused fixture/parser tests cover
+text and admitted structured tool responses, refusals, truncation and caching.
 
 | Minimal-client case | Stub sends | Reservation inserts | Settlement updates | Durable fixture result | Client success |
 | --- | ---: | ---: | ---: | --- | --- |
@@ -94,10 +111,10 @@ and readback counts, no quarantine and native startup/shutdown. No case produced
 a duplicate provider execution. This is not a complete cross-request SDK retry
 qualification; that requires resolving the SDK request contract first.
 
-The unchanged SDK defaults produce nested `cache_control`, `metadata.user_id`,
+Before the interoperability repair, SDK defaults produced nested `cache_control`, `metadata.user_id`,
 `output_config.effort`, `tools:[]`, and final native beta values
 `context-management-2025-06-27` and `effort-2025-11-24`. The native closed contract
-refuses before CountTokens, budget reservation or provider execution. A bounded
+refused before CountTokens, budget reservation or provider execution. A bounded
 run observed six SDK ingress requests and three final native attempts, all with
 zero counting/reservation/provider execution.
 
@@ -113,11 +130,33 @@ These are experiments, not production changes.
 `--output-format json-schema` routes a small schema through the canonical
 Objective output-format option so capability experiments cannot silently hide
 that behavior in the recorded request shape. With experimental betas disabled,
-the pinned SDK uses a synthetic structured-output tool rather than native
-`output_config.format`. Neither a text-only stub nor mere schema presence proves
-the SDK emitted a valid `structured_result`; that positive qualification remains
-OPEN. Any production repair must preserve selected tools, schemas and Objective
-output validation, rather than disable those features to obtain a text success.
+the pinned SDK uses its `StructuredOutput` terminal tool. The same tool is also
+used with accurate Sonnet metadata and experimental betas enabled; it is normal
+SDK orchestration, not proof of incorrect model metadata. The SDK structured
+output contract promises validated `result.structured_output`, without promising
+a particular native `output_config.format` transport.
+
+The `sdk-profiled` candidate uses supported
+`settings.modelOverrides:{"claude-sonnet-4-6":"meri-sonnet-qualification"}`,
+`thinking:{"type":"disabled"}`, `DISABLE_PROMPT_CACHING=1` and
+`CLAUDE_CODE_EFFORT_LEVEL=unset`. It preserves the exact transmitted model alias,
+all tool/Objective options, and experimental beta capabilities. The actual
+translated request emits disabled thinking, temperature `1`, and matching native
+header/body beta enums `context-management-2025-06-27` and `effort-2025-11-24`.
+The closed guard admits only these reviewed semantics; cache fields, semantic
+context edits and unbound schemas remain refused.
+
+Post-guard plain and schema runs passed both as `sdk-profiled` candidates and
+with the integrated production options (`--client sdk`): one CountTokens, one
+canonical reservation insert, one stub execution and one settlement. The schema
+SDK result contains validated `structured_output`, and the terminal tool does
+not trigger a second provider execution. Each starts with hold 135248 and
+settles to 90 microUSD. Exact source pins and commands are in the run receipts.
+Pre-terminal-repair negative receipts also expose a distinct product defect:
+the SDK can report success after truncated final provider bytes or unresolved
+settlement readback. Those receipts fail; the harness never translates host
+refusal into a successful qualification. Final negative results must name the
+canonical terminal-release repair commit independently of request admission.
 
 Supported configuration references, checked 2026-10-18:
 [environment variables](https://code.claude.com/docs/en/env-vars) and
@@ -128,8 +167,8 @@ the `unset` effort sentinel. The
 describes `metadata.user_id` as an opaque trace identifier with a 512-character
 bound; the
 [AWS InvokeModel request page](https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-anthropic-claude-messages-request-response.html)
-does not document that field. This evidence alone cannot prove Bedrock accepts
-it; no production guard has been expanded on that assumption.
+does not document that field. The offline stub does not prove AWS acceptance.
+The service trace never supplies tenant, client or authorization authority.
 
 ## Open gates
 
@@ -142,6 +181,8 @@ its resolved private addresses return errno 99. Guards and host networking were
 not changed to bypass that requirement. Full owner HTTPS remains OPEN.
 
 Genuine ECS/Core currentness, PostgreSQL durability/isolation, shipping image
-execution, SDK retries after an admitted UNKNOWN request, and provider request
-acceptance remain unqualified. No deployment, model call, AWS operation,
-migration or shared production source change is part of this harness.
+execution, trusted per-run schema/MCP custody, and provider request acceptance
+remain unqualified. Retry evidence is bounded by the explicit synthetic budget:
+250000 cannot fund two concurrent 135248 holds, so no duplicate observed at that
+budget does not establish general cross-request deduplication at larger budgets.
+No deployment, model call, AWS operation or migration is part of this harness.

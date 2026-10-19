@@ -12,11 +12,12 @@ import {fileURLToPath,pathToFileURL} from 'node:url';
 import {request as httpsRequest} from 'node:https';
 import {buildConversationOptions} from '../../../apps/worker/conversation/options.mjs';
 import {PRODUCT_PROXY_MODEL_ALIAS} from '../../../apps/proxy/product/startup-config.mjs';
+import {QUALIFICATION_BUDGET_MICRO_USD,STRUCTURED_OUTPUT_SCHEMA_JSON} from './model_ledger_fixture.mjs';
 
 const here=dirname(fileURLToPath(import.meta.url)),root=resolve(here,'../../..');
 const modes=new Set(['complete','truncated','cached','missing-usage','reservation-ack-lost',
  'settlement-ack-committed','settlement-ack-unresolved']);
-const usage='node scripts/qualification/sdk-proxy-offline/run.mjs --python /absolute/pinned/python --out /absolute/receipt.json [--mode complete] [--client sdk|sdk-configured|sdk-constrained|minimal-messages] [--output-format none|json-schema]\nExit 0: executed partition passed; 2: refused, failed or blocked. Full owner HTTPS is always an explicit separate OPEN gate here.\n';
+const usage='node scripts/qualification/sdk-proxy-offline/run.mjs --python /absolute/pinned/python --out /absolute/receipt.json [--mode complete] [--client sdk|sdk-profiled|sdk-configured|sdk-constrained|minimal-messages] [--output-format none|json-schema]\nExit 0: executed partition passed; 2: refused, failed or blocked. Full owner HTTPS is always an explicit separate OPEN gate here.\n';
 const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 const ended=child=>child.exitCode!==null||child.signalCode!==null||child.pid===undefined;
 async function shaFile(path){const hash=createHash('sha256');for await(const part of createReadStream(path))hash.update(part);return hash.digest('hex');}
@@ -31,8 +32,8 @@ async function ready(child){return new Promise((resolve,reject)=>{
  child.once('exit',exited);lines.on('line',line=>{try{const value=JSON.parse(line);if(value.ready===true)done(null,value);}catch{}});
 });}
 async function minimalMessages(port,ca){
- // This separate small client stays within the seeded original's 1000 microUSD
- // allocation. It does not change the SDK's production 8192-token setting.
+ // A small request independently characterizes the accounting boundary. The
+ // SDK keeps its production 8192-token setting in the same admitted fixture.
  const body=JSON.stringify({model:PRODUCT_PROXY_MODEL_ALIAS,max_tokens:16,
   messages:[{role:'user',content:'Return one short greeting.'}],stream:true,temperature:0});
  return new Promise((resolve,reject)=>{
@@ -59,7 +60,8 @@ export async function main(argv){
   else if(arg==='--mode')mode=argv[++n];else if(arg==='--client')client=argv[++n];
   else if(arg==='--output-format')format=argv[++n];
   else{process.stderr.write(usage);return 2;}}
- if(!python?.startsWith('/')||!out?.startsWith('/')||!modes.has(mode)||!['sdk','sdk-configured','sdk-constrained','minimal-messages'].includes(client)||!['none','json-schema'].includes(format)){process.stderr.write(usage);return 2;}
+ if(!python?.startsWith('/')||!out?.startsWith('/')||!modes.has(mode)||!['sdk','sdk-profiled','sdk-configured','sdk-constrained','minimal-messages'].includes(client)||!['none','json-schema'].includes(format)||
+  (client==='minimal-messages'&&format!=='none')){process.stderr.write(usage);return 2;}
  const directory=mkdtempSync(join(tmpdir(),'meri-sdk-proxy-offline-'));
  const receipt={scope:'OFFLINE_PARTITION_ONLY',mode,client,outputFormat:format,fullOwnerHttps:'OPEN_RFC1918_INTERFACES_UNAVAILABLE',
   productImage:'UNRUN',postgresql:'UNRUN',providerCalls:0,sdkResults:[],sdkSpawns:0};
@@ -82,7 +84,8 @@ export async function main(argv){
    AWS_ACCESS_KEY_ID:'synthetic-offline',AWS_SECRET_ACCESS_KEY:'synthetic-offline-never-an-account-key',AWS_DEFAULT_REGION:'us-east-1'};
   const nativeReceipt=join(directory,'native-receipt.json');
   child=spawn(python,[join(here,'native_proxy.py'),'--cert',join(directory,'server.crt'),
-   '--key',join(directory,'server.key'),'--receipt',nativeReceipt,'--mode',mode],
+   '--key',join(directory,'server.key'),'--receipt',nativeReceipt,'--mode',mode,
+   '--output-format',format,...(format==='json-schema'?['--schema-json',STRUCTURED_OUTPUT_SCHEMA_JSON]:[])],
    {cwd:root,env:baseEnv,stdio:['pipe','pipe','pipe']});
   child.stderr.on('data',()=>{});
   child.stdin.on('error',()=>{});
@@ -103,13 +106,13 @@ export async function main(argv){
   const options=buildConversationOptions({binding:{conversationId},versions:{sdk:'0.3.295',cli:'2.1.295'},cwd:work,
    proxyUrl:`https://127.0.0.1:${endpoint.port}/`,proxyCredential:'synthetic-offline-sdk-proxy-key-000001',
    model:PRODUCT_PROXY_MODEL_ALIAS,sessionStore:{async load(){return null;},async append(){}},
-   deadlineMs:Date.now()+30000,maxTurns:1,maxCostMicroUSD:2000000,maxOutputBytes:262144,
+   deadlineMs:Date.now()+30000,maxTurns:1,maxCostMicroUSD:QUALIFICATION_BUDGET_MICRO_USD,maxOutputBytes:262144,
    sdkConfigDirectory:join(directory,'config'),sdkSecureStorageDirectory:join(directory,'secure')},controller,
    undefined,undefined,undefined,undefined,undefined,undefined,
-   format==='json-schema'?{type:'json_schema',schema:{type:'object',properties:{reply:{type:'string'}},
-    required:['reply'],additionalProperties:false}}:undefined);
+   format==='json-schema'?{type:'json_schema',schema:JSON.parse(STRUCTURED_OUTPUT_SCHEMA_JSON)}:undefined);
   const fixtureEnv={PATH:process.env.PATH,HOME:directory,NODE_EXTRA_CA_CERTS:join(directory,'ca.crt'),
    CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC:'1',DISABLE_TELEMETRY:'1',DO_NOT_TRACK:'1',
+   ...(client==='sdk-profiled'?{DISABLE_PROMPT_CACHING:'1',CLAUDE_CODE_EFFORT_LEVEL:'unset'}:{}),
    ...(['sdk-configured','sdk-constrained'].includes(client)?{DISABLE_PROMPT_CACHING:'1',CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS:'1',
     CLAUDE_CODE_EFFORT_LEVEL:'unset'}:{})};
   if(client==='sdk-constrained')Object.assign(fixtureEnv,{ANTHROPIC_CUSTOM_MODEL_OPTION:PRODUCT_PROXY_MODEL_ALIAS,
@@ -118,9 +121,14 @@ export async function main(argv){
    CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS:'1',CLAUDE_CODE_EFFORT_LEVEL:'unset'};
   if(client==='sdk-constrained')Object.assign(receipt.configurationCandidate,{ANTHROPIC_CUSTOM_MODEL_OPTION:PRODUCT_PROXY_MODEL_ALIAS,
    ANTHROPIC_CUSTOM_MODEL_OPTION_SUPPORTED_CAPABILITIES:''});
+  const selectedOptions=client==='sdk-profiled'?{...options,thinking:{type:'disabled'},settings:{...options.settings,
+   modelOverrides:{'claude-sonnet-4-6':PRODUCT_PROXY_MODEL_ALIAS}}}:options;
+  if(client==='sdk-profiled')receipt.configurationCandidate={supportedModelMetadata:true,
+   modelOverrides:{'claude-sonnet-4-6':PRODUCT_PROXY_MODEL_ALIAS},thinking:{type:'disabled'},
+   DISABLE_PROMPT_CACHING:'1',CLAUDE_CODE_EFFORT_LEVEL:'unset'};
   const allowed=new Set([...Object.keys(options.env),...Object.keys(fixtureEnv),
    'CLAUDE_CODE_ENTRYPOINT','CLAUDE_AGENT_SDK_VERSION','CLAUDE_CODE_SDK_READS_SESSION_STATE']);
-  run=query({prompt:'Return one short greeting.',options:{...options,env:{...options.env,...fixtureEnv},
+  run=query({prompt:'Return one short greeting.',options:{...selectedOptions,env:{...options.env,...fixtureEnv},
    spawnClaudeCodeProcess:spec=>{
     if(realpathSync(spec.command)!==executable)throw Error('OFFLINE_CLI_EXECUTABLE_REFUSED');
     receipt.sdkSpawns++;
@@ -128,25 +136,45 @@ export async function main(argv){
     const process=spawn(spec.command,spec.args,{cwd:spec.cwd,env,stdio:['pipe','pipe','pipe']});
     process.stdin.on('error',()=>{});sdkChildren.push(process);return process;
    }}});
-  for await(const event of run){if(event.type==='result')receipt.sdkResults.push({subtype:event.subtype,isError:event.is_error});}
+  try{for await(const event of run){if(event.type==='result'){
+   const result={subtype:event.subtype,isError:event.is_error};
+   if(format==='json-schema'){
+    const output=event.structured_output;
+    result.structuredOutputPresent=output!==undefined;
+    result.structuredOutputMatchesSchema=output!==null&&typeof output==='object'&&!Array.isArray(output)&&
+     Object.keys(output).length===1&&typeof output.reply==='string'&&output.reply==='Offline synthetic reply.';
+    if(output!==undefined)result.structuredOutputSha256=createHash('sha256').update(JSON.stringify(output)).digest('hex');
+   }
+   receipt.sdkResults.push(result);
+  }}}
+  catch(error){receipt.sdkIterationFailure=error?.name??'Error';}
   await run.close();run=null;clearTimeout(timer);timer=null;
   }
   await stop(child);receipt.native=JSON.parse(readFileSync(nativeReceipt,'utf8'));
   const positive=['complete','settlement-ack-committed'].includes(mode);
   const n=receipt.native,l=n.ledger,ops=n.ownerOperations??{};
-  const succeeded=client!=='minimal-messages'?receipt.sdkResults.some(r=>r.subtype==='success'&&r.isError===false):
+  const reportedSuccess=client!=='minimal-messages'?receipt.sdkResults.some(r=>r.subtype==='success'&&r.isError===false):
    receipt.clientResult.status===200&&receipt.clientResult.events.includes('message_stop');
+  const succeeded=reportedSuccess&&(format==='none'||receipt.sdkResults.some(r=>r.subtype==='success'&&
+   r.isError===false&&r.structuredOutputMatchesSchema===true));
+  receipt.sdkSuccessObserved=client==='minimal-messages'?null:reportedSuccess;
+  const expectedHold=client==='minimal-messages'?'344':'135248';
+  const retries=n.countRequests-1;
+  const slotDenials=(n.errors??[]).filter(error=>error?.operation==='reserve'&&error.code==='PRODUCT_MODEL_SLOT_USED').length;
+  const attemptsBound=client==='minimal-messages'||positive
+   ?n.countRequests===1&&ops.reserve===1
+   :Number.isSafeInteger(retries)&&retries>=0&&ops.reserve===n.countRequests&&slotDenials===retries;
   receipt.partitionPassed=positive
    ?succeeded&&n.providerExecutions===1&&n.countRequests===1&&
     l.reservationInserts===1&&l.settlementUpdates===1&&l.requests[0]?.state==='SETTLED'&&l.consumedMicroUSD==='90'
-   :!succeeded&&n.countRequests===1&&l.reservationInserts===1&&l.requests.length===1&&
+   :!reportedSuccess&&l.reservationInserts===1&&l.requests.length===1&&
     n.providerExecutions===(mode==='reservation-ack-lost'?0:1)&&
     l.requests[0].state===(mode==='settlement-ack-unresolved'?'SETTLED':'UNKNOWN')&&
     l.settlementUpdates===(mode==='settlement-ack-unresolved'?1:0)&&
-    l.requests[0].holdMicroUSD==='344'&&
+    l.requests[0].holdMicroUSD===expectedHold&&
     l.consumedMicroUSD===(mode==='settlement-ack-unresolved'?'90':'0');
   receipt.partitionPassed&&=n.nativeStarted===true&&n.nativeStopped===true&&l.quarantined===false&&
-   ops.reserve===1&&(ops.settle??0)===(positive||mode==='settlement-ack-unresolved'?1:0)&&
+   attemptsBound&&(ops.settle??0)===(positive||mode==='settlement-ack-unresolved'?1:0)&&
    (ops.outcome??0)===(mode.startsWith('settlement-ack-')?1:0);
   return receipt.partitionPassed?0:2;
  }catch(error){receipt.partitionPassed=false;receipt.failure=/^[A-Z][A-Z0-9_]+$/u.test(error?.message)?error.message:error?.name??'Error';return 2;}

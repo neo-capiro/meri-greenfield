@@ -35,7 +35,7 @@ def frame(event):
     return wire + struct.pack(">I", zlib.crc32(wire))
 
 
-def response_frames(mode="complete"):
+def response_frames(mode="complete", *, structured=False):
     usage = {"input_tokens": 12, "output_tokens": 1}
     if mode == "cached":
         usage["cache_read_input_tokens"] = 1
@@ -52,6 +52,12 @@ def response_frames(mode="complete"):
         {"type": "message_stop", "amazon-bedrock-invocationMetrics": {
          "inputTokenCount": 12, "outputTokenCount": 3, "invocationLatency": 1, "firstByteLatency": 1}},
     ]
+    if structured:
+        events[1] = {"type": "content_block_start", "index": 0,
+            "content_block": {"type": "tool_use", "id": "toolu_offline", "name": "StructuredOutput", "input": {}}}
+        events[2] = {"type": "content_block_delta", "index": 0,
+            "delta": {"type": "input_json_delta", "partial_json": '{"reply":"Offline synthetic reply."}'}}
+        events[-2]["delta"]["stop_reason"] = "tool_use"
     if mode == "missing-usage":
         del events[-2]["usage"]
     raw = b"".join(frame(event) for event in events)
@@ -71,15 +77,15 @@ class RawStream(httpx.AsyncByteStream):
 
 
 class ProviderStub(httpx.AsyncBaseTransport):
-    def __init__(self, mode, receipt):
-        self.mode, self.receipt = mode, receipt
+    def __init__(self, mode, receipt, *, structured=False):
+        self.mode, self.receipt, self.structured = mode, receipt, structured
 
     async def handle_async_request(self, request):
         self.receipt["providerExecutions"] += 1
         if self.receipt["providerExecutions"] > 1:
             raise RuntimeError("OFFLINE_DUPLICATE_PROVIDER_EXECUTION")
         return httpx.Response(200, headers={"content-type": "application/vnd.amazon.eventstream"},
-                              stream=RawStream(response_frames(self.mode)))
+                              stream=RawStream(response_frames(self.mode, structured=self.structured)))
 
     async def aclose(self):
         pass
@@ -96,6 +102,10 @@ def request_observation(raw):
         result["maxOutputTokens"] = value["max_tokens"]
     if type(value.get("stream")) is bool:
         result["stream"] = value["stream"]
+    if type(value.get("temperature")) in (int, float) and 0 <= value["temperature"] <= 1:
+        result["temperature"] = value["temperature"]
+    if value.get("thinking") == {"type": "disabled"}:
+        result["thinkingDisabled"] = True
     if type(value.get("tools")) is list:
         result["toolNames"] = [item["name"] for item in value["tools"] if type(item) is dict
             and type(item.get("name")) is str and 1 <= len(item["name"]) <= 128

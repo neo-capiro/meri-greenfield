@@ -20,12 +20,13 @@ SPEC.loader.exec_module(STUB)
 
 
 class OfflineStreamBoundaryTests(unittest.IsolatedAsyncioTestCase):
-    async def observe(self, mode):
+    async def observe(self, mode, *, structured=False, admitted=False):
         settled = []
         async def complete(identifier, result):
             settled.append((identifier, result))
-        binding = UsageBinding("offline_request", "a" * 64, "b" * 64, "c" * 64, 12, 16)
-        stream = _ObservedResponseStream(STUB.RawStream(STUB.response_frames(mode)), 200,
+        binding = UsageBinding("offline_request", "a" * 64, "b" * 64, "c" * 64, 12, 16,
+            frozenset({"StructuredOutput"}) if admitted else frozenset({"local_echo"}))
+        stream = _ObservedResponseStream(STUB.RawStream(STUB.response_frames(mode, structured=structured)), 200,
             {"content-type": "application/vnd.amazon.eventstream"}, binding, complete, None)
         parts = [part async for part in stream]
         await stream.aclose()
@@ -43,6 +44,18 @@ class OfflineStreamBoundaryTests(unittest.IsolatedAsyncioTestCase):
         for mode in ("truncated", "cached", "missing-usage"):
             with self.subTest(mode=mode):
                 settled, raw = await self.observe(mode)
+                self.assertTrue(raw)
+                self.assertEqual(settled, [])
+
+    async def test_structured_terminal_tool_requires_exact_admission_and_complete_usage(self):
+        settled, raw = await self.observe("complete", structured=True, admitted=True)
+        self.assertEqual(raw, STUB.response_frames("complete", structured=True))
+        self.assertEqual(len(settled), 1)
+        self.assertEqual((settled[0][1].status, settled[0][1].input_tokens,
+                          settled[0][1].output_tokens), ("COMPLETE", 12, 3))
+        for mode, admitted in (("complete", False), ("truncated", True), ("cached", True)):
+            with self.subTest(mode=mode, admitted=admitted):
+                settled, raw = await self.observe(mode, structured=True, admitted=admitted)
                 self.assertTrue(raw)
                 self.assertEqual(settled, [])
 

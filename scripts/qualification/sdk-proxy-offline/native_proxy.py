@@ -177,12 +177,15 @@ async def serve(args, receipt):
     from apps.proxy.product.host_composition import ProductSession, create_guarded_product_handler
     from apps.proxy.product.upstream_callback import load_pinned_product_litellm_invoker
     from apps.proxy.product.owner_channel import OwnerHostGate
+    from apps.proxy.qualification.runtime.bedrock_body import BodyLimits
     from apps.proxy.qualification.runtime.lifetime import _request_lifetime
     receipt["versions"] = {"python": ".".join(map(str, sys.version_info[:3])),
         **{name: version(name) for name in ("litellm", "boto3", "botocore", "httpx", "fastapi", "uvicorn")}}
     if (receipt["versions"]["python"] != "3.13.5" or receipt["versions"]["litellm"] != "1.104.2"
             or receipt["versions"]["botocore"] != "1.43.111" or receipt["versions"]["boto3"] != "1.43.111"):
         raise RuntimeError("OFFLINE_PYTHON_DEPENDENCY_PIN_REFUSED")
+    body_limits = (BodyLimits(structured_output_schema_json=args.schema_json,
+        allowed_tool_names=frozenset({"StructuredOutput"})) if args.output_format == "json-schema" else BodyLimits())
     process = await asyncio.create_subprocess_exec("node", str(Path(__file__).with_name("owner_peer.mjs")), args.mode,
                                                   stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE,
                                                   stderr=asyncio.subprocess.DEVNULL, limit=16 * 1024 * 1024)
@@ -241,8 +244,8 @@ async def serve(args, receipt):
                         "checkedAtMs": at, "expiresAtMs": at + 10000}
             session = ProductSession(identifier, metadata["binding"], metadata["grantId"], deadline,
                                      metadata["clientId"], metadata["pricing"]["revision"], counter,
-                                     lambda: ProviderStub(args.mode, receipt),
-                                     lambda capture: AccountingBridge(rpc, identifier, capture), current)
+                                     lambda: ProviderStub(args.mode, receipt, structured=args.output_format == "json-schema"),
+                                     lambda capture: AccountingBridge(rpc, identifier, capture), current, limits=body_limits)
             handler = await create_guarded_product_handler(life, session)
             async def observe_native(request):
                 observation = request_observation(request.content)
@@ -251,7 +254,10 @@ async def serve(args, receipt):
                     observation["betaEnums"] = [item for item in value["anthropic_beta"]
                         if type(item) is str and len(item) < 120 and all(c.isalnum() or c in "-_" for c in item)]
                 receipt["nativeRequests"].append({**observation,
-                    "url": str(request.url), "headerNames": sorted(request.headers.keys())})
+                    "url": str(request.url), "headerNames": sorted(request.headers.keys()),
+                    "nativeHeaderBetaEnums": [item.strip() for value in request.headers.get_list("anthropic-beta")
+                        for item in value.split(",") if len(item.strip()) < 120
+                        and all(c.isalnum() or c in "-_" for c in item.strip())]})
             handler.client.event_hooks["request"].insert(0, observe_native)
             sent = False
             async def once():
@@ -323,9 +329,13 @@ def main():
     parser.add_argument("--cert", required=True)
     parser.add_argument("--key", required=True)
     parser.add_argument("--receipt", required=True)
+    parser.add_argument("--output-format", choices=("none", "json-schema"), default="none")
+    parser.add_argument("--schema-json")
     parser.add_argument("--mode", default="complete", choices=("complete", "truncated", "cached", "missing-usage",
                         "reservation-ack-lost", "settlement-ack-committed", "settlement-ack-unresolved"))
     args = parser.parse_args()
+    if (args.output_format == "json-schema") != (args.schema_json is not None):
+        parser.error("the structured fixture requires its trusted schema argument")
     receipt = {"scope": "offline-partition-only", "fullOwnerHttps": "OPEN_RFC1918_INTERFACES_UNAVAILABLE",
                "syntheticIngress": True, "ownerTransport": "private-subprocess-IPC",
                "database": "scripted-SQL-canonical-JS-accounting", "countTransport": "botocore-Stubber",
