@@ -1,0 +1,156 @@
+{
+  "scope": "OFFLINE_PARTITION_ONLY",
+  "mode": "settlement-ack-committed",
+  "client": "minimal-messages",
+  "outputFormat": "none",
+  "fullOwnerHttps": "OPEN_RFC1918_INTERFACES_UNAVAILABLE",
+  "productImage": "UNRUN",
+  "postgresql": "UNRUN",
+  "providerCalls": 0,
+  "sdkResults": [],
+  "sdkSpawns": 0,
+  "sourceCommit": "5fa5545898717e1148a28447bb93254a07fa6459",
+  "sourceFiles": {
+    "run.mjs": "dc1c6021bd645c982aa92e0d312770b302a7407603dec3bc1dad0e342d509861",
+    "native_proxy.py": "bb3df83e773c6186f58672e080f9422ee24b08b92bfe310096a138d19cea5b66",
+    "provider_stub.py": "dee986b4b4bc5ce44dbd4cf6b38bc5c20423d89f64d74e72d5b0237c8b344639",
+    "owner_peer.mjs": "8f12e58c29060d4f7b7d4c04de9af2d45fbc1ea919311943c5815130efaeb9d7",
+    "model_ledger_fixture.mjs": "85f907ec737b10ffcc1fc3bbff68af77ac5c0f31c6de7cd92441edea979bd964"
+  },
+  "productConfigSha256": "64860d829d7c022f6640b1a75eb48ad05dc2421d8e5e2bcdfdda50b421754d19",
+  "versions": {
+    "sdk": "0.3.295",
+    "cli": "2.1.295",
+    "node": "v24.19.0"
+  },
+  "executableSha256": "4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358",
+  "clientResult": {
+    "status": 200,
+    "bytes": 872,
+    "sha256": "4f4f39052252bc8c6823e9541bbc775838665a6935e6ebf5ce51fcd55e9bc8e2",
+    "events": [
+      "message_start",
+      "content_block_start",
+      "content_block_delta",
+      "content_block_stop",
+      "message_delta",
+      "message_stop"
+    ]
+  },
+  "native": {
+    "scope": "offline-partition-only",
+    "fullOwnerHttps": "OPEN_RFC1918_INTERFACES_UNAVAILABLE",
+    "syntheticIngress": true,
+    "ownerTransport": "private-subprocess-IPC",
+    "database": "scripted-SQL-canonical-JS-accounting",
+    "countTransport": "botocore-Stubber",
+    "providerTransport": "in-process-HTTPX-stub",
+    "providerExecutions": 1,
+    "countRequests": 1,
+    "sdkRequests": [
+      {
+        "bytes": 151,
+        "sha256": "ae5baca25964a93361f3b52f431a5118e87a8bde80c3f9656236d1de1213c63a",
+        "fieldNames": [
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].role",
+          "model",
+          "stream",
+          "temperature"
+        ],
+        "topLevelTypes": {
+          "model": "str",
+          "max_tokens": "int",
+          "messages": "list",
+          "stream": "bool",
+          "temperature": "int"
+        },
+        "topLevelArrayLengths": {
+          "messages": 1
+        },
+        "modelAlias": "meri-sonnet-qualification",
+        "maxOutputTokens": 16,
+        "stream": true,
+        "headerBetaEnums": []
+      }
+    ],
+    "nativeRequests": [
+      {
+        "bytes": 152,
+        "sha256": "050494ca4db1622e35d5405b99b0671df81ae67b1823887d11097120d8de8365",
+        "fieldNames": [
+          "anthropic_version",
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].role",
+          "temperature"
+        ],
+        "topLevelTypes": {
+          "messages": "list",
+          "max_tokens": "int",
+          "temperature": "int",
+          "anthropic_version": "str"
+        },
+        "topLevelArrayLengths": {
+          "messages": 1
+        },
+        "maxOutputTokens": 16,
+        "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+        "headerNames": [
+          "accept",
+          "accept-encoding",
+          "anthropic-version",
+          "authorization",
+          "connection",
+          "content-length",
+          "content-type",
+          "host",
+          "user-agent",
+          "x-amz-date"
+        ]
+      }
+    ],
+    "errors": [
+      {
+        "operation": "settle",
+        "code": "BudgetCommitUncertain"
+      }
+    ],
+    "versions": {
+      "python": "3.13.5",
+      "litellm": "1.104.2",
+      "boto3": "1.43.111",
+      "botocore": "1.43.111",
+      "httpx": "0.28.1",
+      "fastapi": "0.136.3",
+      "uvicorn": "0.51.0"
+    },
+    "ownerOperations": {
+      "reserve": 1,
+      "settle": 1,
+      "outcome": 1
+    },
+    "ledger": {
+      "requests": [
+        {
+          "requestId": "62685e4cf9344f3c9c7a1391a8fb8242",
+          "state": "SETTLED",
+          "holdMicroUSD": "344",
+          "actualMicroUSD": "90",
+          "inputTokens": 12,
+          "maxOutputTokens": 16
+        }
+      ],
+      "consumedMicroUSD": "90",
+      "quarantined": false,
+      "reservationInserts": 1,
+      "settlementUpdates": 1
+    },
+    "nativeStarted": true,
+    "nativeStopped": true
+  },
+  "partitionPassed": true
+}

@@ -1,0 +1,324 @@
+TAP version 13
+# Subtest: pending settings COMMIT after deadline stays UNKNOWN even if the commit later succeeds
+ok 1 - pending settings COMMIT after deadline stays UNKNOWN even if the commit later succeeds
+  ---
+  duration_ms: 106.944599
+  type: 'test'
+  ...
+# Subtest: pending settings COMMIT after cancel stays UNKNOWN even if the commit later succeeds
+ok 2 - pending settings COMMIT after cancel stays UNKNOWN even if the commit later succeeds
+  ---
+  duration_ms: 2.944571
+  type: 'test'
+  ...
+# Subtest: pending memory propose Core submit after deadline stays UNKNOWN
+ok 3 - pending memory propose Core submit after deadline stays UNKNOWN
+  ---
+  duration_ms: 101.576631
+  type: 'test'
+  ...
+# Subtest: pending memory correct Core submit after deadline stays UNKNOWN
+ok 4 - pending memory correct Core submit after deadline stays UNKNOWN
+  ---
+  duration_ms: 102.039278
+  type: 'test'
+  ...
+# Subtest: pending memory propose Core submit after cancel stays UNKNOWN
+ok 5 - pending memory propose Core submit after cancel stays UNKNOWN
+  ---
+  duration_ms: 6.107409
+  type: 'test'
+  ...
+# Subtest: pending memory correct Core submit after cancel stays UNKNOWN
+ok 6 - pending memory correct Core submit after cancel stays UNKNOWN
+  ---
+  duration_ms: 3.260616
+  type: 'test'
+  ...
+# Subtest: cancellation during membership admission never invokes the effect route
+ok 7 - cancellation during membership admission never invokes the effect route
+  ---
+  duration_ms: 0.999725
+  type: 'test'
+  ...
+# Subtest: pending domain release after deadline withholds an acknowledged result
+ok 8 - pending domain release after deadline withholds an acknowledged result
+  ---
+  duration_ms: 101.008136
+  type: 'test'
+  ...
+# Subtest: pending domain release after cancel withholds an acknowledged result
+ok 9 - pending domain release after cancel withholds an acknowledged result
+  ---
+  duration_ms: 1.175709
+  type: 'test'
+  ...
+# Subtest: domain release cannot omit the generic final membership authorization
+ok 10 - domain release cannot omit the generic final membership authorization
+  ---
+  duration_ms: 1.255359
+  type: 'test'
+  ...
+# Subtest: domain release uses the generic final membership authorization
+ok 11 - domain release uses the generic final membership authorization
+  ---
+  duration_ms: 0.679762
+  type: 'test'
+  ...
+# Subtest: domain release serializes the exact measured response bytes once
+ok 12 - domain release serializes the exact measured response bytes once
+  ---
+  duration_ms: 1.087427
+  type: 'test'
+  ...
+# Subtest: read, monotonic advance and exact record round-trip through bounded transactions that return clean leases
+ok 13 - read, monotonic advance and exact record round-trip through bounded transactions that return clean leases
+  ---
+  duration_ms: 9.335858
+  type: 'test'
+  ...
+# Subtest: lease faults: a lost COMMIT acknowledgement is unknown and retires the lease; a failed statement rolls back and returns it clean
+ok 14 - lease faults: a lost COMMIT acknowledgement is unknown and retires the lease; a failed statement rolls back and returns it clean
+  ---
+  duration_ms: 1.630885
+  type: 'test'
+  ...
+# Subtest: through the watermarked journal, an advance whose commit is unknown leaves the projection standing and closes the serving fence
+not ok 15 - through the watermarked journal, an advance whose commit is unknown leaves the projection standing and closes the serving fence
+  ---
+  duration_ms: 0.468846
+  type: 'test'
+  location: '<pr181-successor-worktree>/apps/control/retention/test/postgres-watermark.test.mjs:50:1'
+  failureType: 'testCodeFailure'
+  error: 'RETENTION_CONFIGURATION'
+  code: 'RETENTION_CONFIGURATION'
+  stack: |-
+    fail (file://<pr181-successor-worktree>/apps/control/retention/boundary.mjs:5:48)
+    watermarkedJournal (file://<pr181-successor-worktree>/apps/control/retention/recovery-watermark.mjs:32:405)
+    TestContext.<anonymous> (file://<pr181-successor-worktree>/apps/control/retention/test/postgres-watermark.test.mjs:53:16)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: synthetic SQL: a guarded advance refuses a restored row in the same locked transaction
+ok 16 - synthetic SQL: a guarded advance refuses a restored row in the same locked transaction
+  ---
+  duration_ms: 1.440759
+  type: 'test'
+  ...
+# Subtest: synthetic SQL: missing, changed or wrong-sequence projections cannot advance; exact proof and advance share one transaction
+ok 17 - synthetic SQL: missing, changed or wrong-sequence projections cannot advance; exact proof and advance share one transaction
+  ---
+  duration_ms: 2.029914
+  type: 'test'
+  ...
+# Subtest: synthetic SQL snapshot: one joined data statement follows the shared recovery lock in the same clean transaction
+ok 18 - synthetic SQL snapshot: one joined data statement follows the shared recovery lock in the same clean transaction
+  ---
+  duration_ms: 1.081277
+  type: 'test'
+  ...
+# Subtest: synthetic SQL snapshot: another owner completing recovery before the shared lock grants is observed by the data snapshot
+ok 19 - synthetic SQL snapshot: another owner completing recovery before the shared lock grants is observed by the data snapshot
+  ---
+  duration_ms: 0.65831
+  type: 'test'
+  ...
+# Subtest: synthetic SQL snapshot: malformed data or lost commit returns no snapshot and retires unknown leases
+ok 20 - synthetic SQL snapshot: malformed data or lost commit returns no snapshot and retires unknown leases
+  ---
+  duration_ms: 1.326497
+  type: 'test'
+  ...
+# Subtest: metadata supplies exact fixed transport limits, native auth, versions and statuses
+ok 21 - metadata supplies exact fixed transport limits, native auth, versions and statuses
+  ---
+  duration_ms: 1.733479
+  type: 'test'
+  ...
+# Subtest: shared Node/public list request shape and normalization agree
+ok 22 - shared Node/public list request shape and normalization agree
+  ---
+  duration_ms: 6.34642
+  type: 'test'
+  ...
+# Subtest: shared Node/public list request shape and normalization agree
+ok 23 - shared Node/public list request shape and normalization agree
+  ---
+  duration_ms: 0.459251
+  type: 'test'
+  ...
+# Subtest: shared Node/public transcript request shape and normalization agree
+ok 24 - shared Node/public transcript request shape and normalization agree
+  ---
+  duration_ms: 2.796078
+  type: 'test'
+  ...
+# Subtest: shared Node/public nextTurn request shape and normalization agree
+ok 25 - shared Node/public nextTurn request shape and normalization agree
+  ---
+  duration_ms: 2.834716
+  type: 'test'
+  ...
+# Subtest: closed list refuses {"limit":null}
+ok 26 - closed list refuses {"limit":null}
+  ---
+  duration_ms: 0.504259
+  type: 'test'
+  ...
+# Subtest: closed list refuses {"limit":"1"}
+ok 27 - closed list refuses {"limit":"1"}
+  ---
+  duration_ms: 0.212409
+  type: 'test'
+  ...
+# Subtest: closed list refuses {"before":{"createdAt":"not-time","conversationId":"00000001-0000-4000-8000-000000000000"}}
+ok 28 - closed list refuses {"before":{"createdAt":"not-time","conversationId":"00000001-0000-4000-8000-000000000000"}}
+  ---
+  duration_ms: 0.243166
+  type: 'test'
+  ...
+# Subtest: closed list refuses {"tenantId":"forged"}
+ok 29 - closed list refuses {"tenantId":"forged"}
+  ---
+  duration_ms: 0.288113
+  type: 'test'
+  ...
+# Subtest: closed transcript refuses {"conversationId":"00000001-0000-4000-8000-000000000000","after":null}
+ok 30 - closed transcript refuses {"conversationId":"00000001-0000-4000-8000-000000000000","after":null}
+  ---
+  duration_ms: 0.284187
+  type: 'test'
+  ...
+# Subtest: closed transcript refuses {"conversationId":"00000001-0000-4000-8000-000000000000","after":-1}
+ok 31 - closed transcript refuses {"conversationId":"00000001-0000-4000-8000-000000000000","after":-1}
+  ---
+  duration_ms: 0.23887
+  type: 'test'
+  ...
+# Subtest: closed transcript refuses {"conversationId":"00000001-0000-4000-8000-000000000000","after":9007199254740992}
+ok 32 - closed transcript refuses {"conversationId":"00000001-0000-4000-8000-000000000000","after":9007199254740992}
+  ---
+  duration_ms: 0.162684
+  type: 'test'
+  ...
+# Subtest: closed transcript refuses {"conversationId":"00000001-0000-4000-8000-000000000000","limit":101}
+ok 33 - closed transcript refuses {"conversationId":"00000001-0000-4000-8000-000000000000","limit":101}
+  ---
+  duration_ms: 0.185409
+  type: 'test'
+  ...
+# Subtest: closed transcript refuses {"conversationId":"00000001-0000-4000-8000-000000000000","clientId":"00000005-0000-4000-8000-000000000000"}
+ok 34 - closed transcript refuses {"conversationId":"00000001-0000-4000-8000-000000000000","clientId":"00000005-0000-4000-8000-000000000000"}
+  ---
+  duration_ms: 0.115013
+  type: 'test'
+  ...
+# Subtest: closed nextTurn refuses {"conversationId":"00000001-0000-4000-8000-000000000000","sourceRunId":null}
+ok 35 - closed nextTurn refuses {"conversationId":"00000001-0000-4000-8000-000000000000","sourceRunId":null}
+  ---
+  duration_ms: 0.110937
+  type: 'test'
+  ...
+# Subtest: byte receiving rejects hostile objects, invalid UTF8/Unicode, prototype keys and fixed bound overflow
+ok 36 - byte receiving rejects hostile objects, invalid UTF8/Unicode, prototype keys and fixed bound overflow
+  ---
+  duration_ms: 0.37874
+  type: 'test'
+  ...
+# Subtest: list receiving preserves suppression-short pages, ordering and exclusive cursor
+ok 37 - list receiving preserves suppression-short pages, ordering and exclusive cursor
+  ---
+  duration_ms: 2.402184
+  type: 'test'
+  ...
+# Subtest: transcript gives direct typed envelope, frozen canonical rows and distinct global/local sequences
+ok 38 - transcript gives direct typed envelope, frozen canonical rows and distinct global/local sequences
+  ---
+  duration_ms: 130.303239
+  type: 'test'
+  ...
+# Subtest: transcript refuses foreign actor substitution
+ok 39 - transcript refuses foreign actor substitution
+  ---
+  duration_ms: 0.528685
+  type: 'test'
+  ...
+# Subtest: transcript refuses foreign scope substitution
+ok 40 - transcript refuses foreign scope substitution
+  ---
+  duration_ms: 0.506312
+  type: 'test'
+  ...
+# Subtest: transcript refuses global sequence substitution
+ok 41 - transcript refuses global sequence substitution
+  ---
+  duration_ms: 0.562727
+  type: 'test'
+  ...
+# Subtest: transcript refuses local sequence substitution
+ok 42 - transcript refuses local sequence substitution
+  ---
+  duration_ms: 5.491033
+  type: 'test'
+  ...
+# Subtest: transcript refuses tail cursor substitution
+ok 43 - transcript refuses tail cursor substitution
+  ---
+  duration_ms: 0.598731
+  type: 'test'
+  ...
+# Subtest: transcript refuses unrepresented turn substitution
+ok 44 - transcript refuses unrepresented turn substitution
+  ---
+  duration_ms: 0.353863
+  type: 'test'
+  ...
+# Subtest: transcript refuses request identity substitution
+ok 45 - transcript refuses request identity substitution
+  ---
+  duration_ms: 0.495776
+  type: 'test'
+  ...
+# Subtest: resume lineage cannot substitute source request/root while genuine same-text submission stays distinct
+ok 46 - resume lineage cannot substitute source request/root while genuine same-text submission stays distinct
+  ---
+  duration_ms: 2.547874
+  type: 'test'
+  ...
+# Subtest: transcript refuses overlapping touched ranges and older overlap with an unrepresented latest run
+ok 47 - transcript refuses overlapping touched ranges and older overlap with an unrepresented latest run
+  ---
+  duration_ms: 1.301068
+  type: 'test'
+  ...
+# Subtest: next-turn response is correlated to immutable source and exact next target fence
+ok 48 - next-turn response is correlated to immutable source and exact next target fence
+  ---
+  duration_ms: 1.098523
+  type: 'test'
+  ...
+# Subtest: request provenance, route/status/error outcome and response bounds fail closed
+ok 49 - request provenance, route/status/error outcome and response bounds fail closed
+  ---
+  duration_ms: 0.89097
+  type: 'test'
+  ...
+# Subtest: browser distribution is self-contained and offline package resolves only public exports
+ok 50 - browser distribution is self-contained and offline package resolves only public exports
+  ---
+  duration_ms: 77.857103
+  type: 'test'
+  ...
+1..50
+# tests 50
+# suites 0
+# pass 49
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 850.851946

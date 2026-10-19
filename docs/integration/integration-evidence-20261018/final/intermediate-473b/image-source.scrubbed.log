@@ -1,0 +1,465 @@
+TAP version 13
+# Subtest: strict Buffer/string lock parser is inert and preserves frozen complete identities
+ok 1 - strict Buffer/string lock parser is inert and preserves frozen complete identities
+  ---
+  duration_ms: 3.081397
+  type: 'test'
+  ...
+# Subtest: lock refuses malformed UTF8, duplicate/escaped keys, excess nesting and closed-shape changes
+ok 2 - lock refuses malformed UTF8, duplicate/escaped keys, excess nesting and closed-shape changes
+  ---
+  duration_ms: 10.771786
+  type: 'test'
+  ...
+# Subtest: lock permits only exact public APK/index URLs and strict per-file/combined byte bounds
+ok 3 - lock permits only exact public APK/index URLs and strict per-file/combined byte bounds
+  ---
+  duration_ms: 1.389651
+  type: 'test'
+  ...
+# Subtest: fetch verifies index and APK bytes into only the new x86_64 directory without credential/redirect options
+ok 4 - fetch verifies index and APK bytes into only the new x86_64 directory without credential/redirect options
+  ---
+  duration_ms: 30.221008
+  type: 'test'
+  ...
+# Subtest: existing or malformed destinations/locks make no fetch and preserve unrelated files
+ok 5 - existing or malformed destinations/locks make no fetch and preserve unrelated files
+  ---
+  duration_ms: 5.760516
+  type: 'test'
+  ...
+# Subtest: hash, length, encoding and HTTP/redirect failures remove only generated files
+ok 6 - hash, length, encoding and HTTP/redirect failures remove only generated files
+  ---
+  duration_ms: 14.18358
+  type: 'test'
+  ...
+# Subtest: a later package mismatch cleans earlier verified generated files and never exposes remote errors
+ok 7 - a later package mismatch cleans earlier verified generated files and never exposes remote errors
+  ---
+  duration_ms: 7.538501
+  type: 'test'
+  ...
+# Subtest: per-request and total deadlines reject late responses and cancel their owned bodies
+ok 8 - per-request and total deadlines reject late responses and cancel their owned bodies
+  ---
+  duration_ms: 11.358269
+  type: 'test'
+  ...
+# Subtest: unsettled fetch refuses as cleanup unknown; a late response is cancelled without writing
+ok 9 - unsettled fetch refuses as cleanup unknown; a late response is cancelled without writing
+  ---
+  duration_ms: 19.043781
+  type: 'test'
+  ...
+# Subtest: hung body cancellation remains cleanup unknown and never admits a partial package
+ok 10 - hung body cancellation remains cleanup unknown and never admits a partial package
+  ---
+  duration_ms: 14.738885
+  type: 'test'
+  ...
+# Subtest: foreign files cause cleanup unknown and are preserved
+ok 11 - foreign files cause cleanup unknown and are preserved
+  ---
+  duration_ms: 14.40945
+  type: 'test'
+  ...
+# Subtest: concurrently occupied package files are preserved, never overwritten or deleted
+ok 12 - concurrently occupied package files are preserved, never overwritten or deleted
+  ---
+  duration_ms: 5.002366
+  type: 'test'
+  ...
+# Subtest: invalid destination parents and dependency failures remain static before resource ownership
+ok 13 - invalid destination parents and dependency failures remain static before resource ownership
+  ---
+  duration_ms: 2.151748
+  type: 'test'
+  ...
+# Subtest: default public transport fixes TLS validation, headers and no redirect without contacting a network
+ok 14 - default public transport fixes TLS validation, headers and no redirect without contacting a network
+  ---
+  duration_ms: 8.143381
+  type: 'test'
+  ...
+# Subtest: installed verification joins every base/addition name and version with exact lock-byte and sorted set hashes
+ok 15 - installed verification joins every base/addition name and version with exact lock-byte and sorted set hashes
+  ---
+  duration_ms: 10.891757
+  type: 'test'
+  ...
+# Subtest: missing, extra, duplicate, wrong-version and malformed installed identities cannot verify
+ok 16 - missing, extra, duplicate, wrong-version and malformed installed identities cannot verify
+  ---
+  duration_ms: 29.00608
+  type: 'test'
+  ...
+# Subtest: one physical database may have symlink aliases; distinct databases and escaped targets refuse
+ok 17 - one physical database may have symlink aliases; distinct databases and escaped targets refuse
+  ---
+  duration_ms: 22.150566
+  type: 'test'
+  ...
+# Subtest: oversized database refuses before read and bounded required-file probes accept large regular files
+ok 18 - oversized database refuses before read and bounded required-file probes accept large regular files
+  ---
+  duration_ms: 8.360287
+  type: 'test'
+  ...
+# Subtest: measured Node/glibc/platform mismatches and missing or escaped required paths refuse
+ok 19 - measured Node/glibc/platform mismatches and missing or escaped required paths refuse
+  ---
+  duration_ms: 9.291469
+  type: 'test'
+  ...
+# Subtest: import/help and invalid CLI are inert, bounded and redact private input
+ok 20 - import/help and invalid CLI are inert, bounded and redact private input
+  ---
+  duration_ms: 334.264176
+  type: 'test'
+  ...
+# Subtest: retained snapshot stages the real lock offline through the same exact integrity path
+ok 21 - retained snapshot stages the real lock offline through the same exact integrity path
+  ---
+  duration_ms: 760.134785
+  type: 'test'
+  ...
+# Subtest: retained snapshot refuses tampered or missing bytes and non-origin or path-like URLs, leaving nothing behind
+ok 22 - retained snapshot refuses tampered or missing bytes and non-origin or path-like URLs, leaving nothing behind
+  ---
+  duration_ms: 23.579396
+  type: 'test'
+  ...
+# Subtest: inline reporter emits only fixed case IDs and counts for foreign, skipped and failed outcomes
+ok 23 - inline reporter emits only fixed case IDs and counts for foreign, skipped and failed outcomes
+  ---
+  duration_ms: 7.187264
+  type: 'test'
+  ...
+# Subtest: offline recipe produces deterministic reviewable override bytes with digest pins and verifier bootstrap
+ok 24 - offline recipe produces deterministic reviewable override bytes with digest pins and verifier bootstrap
+  ---
+  duration_ms: 146.48581
+  type: 'test'
+  ...
+# Subtest: bootstrap failures produce bounded artifact before and after producer import
+    # Subtest: source-hash
+    ok 1 - source-hash
+      ---
+      duration_ms: 203.432277
+      type: 'test'
+      ...
+    # Subtest: producer-import
+    ok 2 - producer-import
+      ---
+      duration_ms: 185.918097
+      type: 'test'
+      ...
+    # Subtest: request-decode
+    ok 3 - request-decode
+      ---
+      duration_ms: 185.98074
+      type: 'test'
+      ...
+    # Subtest: request-decode-cleanup
+    ok 4 - request-decode-cleanup
+      ---
+      duration_ms: 173.833911
+      type: 'test'
+      ...
+    # Subtest: child-timeout
+    ok 5 - child-timeout
+      ---
+      duration_ms: 203.293123
+      type: 'test'
+      ...
+    # Subtest: child-receipt-timeout
+    ok 6 - child-receipt-timeout
+      ---
+      duration_ms: 576.049476
+      type: 'test'
+      ...
+    # Subtest: linux-failure
+    ok 7 - linux-failure
+      ---
+      duration_ms: 178.352739
+      type: 'test'
+      ...
+    # Subtest: runtime-error
+    ok 8 - runtime-error
+      ---
+      duration_ms: 178.844309
+      type: 'test'
+      ...
+    # Subtest: producer-check
+    ok 9 - producer-check
+      ---
+      duration_ms: 220.530396
+      type: 'test'
+      ...
+    # Subtest: bootstrap-cleanup
+    ok 10 - bootstrap-cleanup
+      ---
+      duration_ms: 229.291478
+      type: 'test'
+      ...
+    1..10
+ok 25 - bootstrap failures produce bounded artifact before and after producer import
+  ---
+  duration_ms: 2337.923692
+  type: 'test'
+  ...
+# Subtest: controlled bootstrap failure retains one bounded diagnostic with conditional encrypted Put
+    # Subtest: ack
+    ok 1 - ack
+      ---
+      duration_ms: 188.093961
+      type: 'test'
+      ...
+    # Subtest: uncertain
+    ok 2 - uncertain
+      ---
+      duration_ms: 183.346042
+      type: 'test'
+      ...
+    1..2
+ok 26 - controlled bootstrap failure retains one bounded diagnostic with conditional encrypted Put
+  ---
+  duration_ms: 371.933886
+  type: 'test'
+  ...
+# Subtest: failure retention caps child CLI stdout while running and emits no child bytes
+ok 27 - failure retention caps child CLI stdout while running and emits no child bytes
+  ---
+  duration_ms: 160.717872
+  type: 'test'
+  ...
+# Subtest: sealing proves ZIP file bytes and modes against exact Git objects; verification joins all sealed pins
+ok 28 - sealing proves ZIP file bytes and modes against exact Git objects; verification joins all sealed pins
+  ---
+  duration_ms: 346.352353
+  type: 'test'
+  ...
+# Subtest: altered archive/manifest, extra, duplicate, unsafe and symlink members refuse even after outer archive hash is updated
+    # Subtest: alter
+    ok 1 - alter
+      ---
+      duration_ms: 188.27041
+      type: 'test'
+      ...
+    # Subtest: extra
+    ok 2 - extra
+      ---
+      duration_ms: 188.414332
+      type: 'test'
+      ...
+    # Subtest: duplicate
+    ok 3 - duplicate
+      ---
+      duration_ms: 191.349714
+      type: 'test'
+      ...
+    # Subtest: unsafe
+    ok 4 - unsafe
+      ---
+      duration_ms: 193.635193
+      type: 'test'
+      ...
+    # Subtest: symlink
+    ok 5 - symlink
+      ---
+      duration_ms: 207.682312
+      type: 'test'
+      ...
+    1..5
+ok 29 - altered archive/manifest, extra, duplicate, unsafe and symlink members refuse even after outer archive hash is updated
+  ---
+  duration_ms: 1132.657035
+  type: 'test'
+  ...
+# Subtest: the sealed source admits exactly one certificate-only public CA bundle, pinned by its committed lock
+    # Subtest: another .pem stays a private member
+    ok 1 - another .pem stays a private member
+      ---
+      duration_ms: 196.045765
+      type: 'test'
+      ...
+    # Subtest: a key block appended to the bundle refuses at seal
+    ok 2 - a key block appended to the bundle refuses at seal
+      ---
+      duration_ms: 197.758226
+      type: 'test'
+      ...
+    # Subtest: lock-digest
+    ok 3 - lock-digest
+      ---
+      duration_ms: 241.504146
+      type: 'test'
+      ...
+    # Subtest: lock-count
+    ok 4 - lock-count
+      ---
+      duration_ms: 242.131627
+      type: 'test'
+      ...
+    # Subtest: missing-lock
+    ok 5 - missing-lock
+      ---
+      duration_ms: 241.103372
+      type: 'test'
+      ...
+    1..5
+ok 30 - the sealed source admits exactly one certificate-only public CA bundle, pinned by its committed lock
+  ---
+  duration_ms: 1120.295842
+  type: 'test'
+  ...
+# Subtest: runtime Dockerfile bakes the locked RDS bundle read-only and points NODE_EXTRA_CA_CERTS at it
+ok 31 - runtime Dockerfile bakes the locked RDS bundle read-only and points NODE_EXTRA_CA_CERTS at it
+  ---
+  duration_ms: 0.913194
+  type: 'test'
+  ...
+# Subtest: runtime Dockerfile pins exactly the locked additional packages plus the pending retained downloads, and bakes the executor wheels
+ok 32 - runtime Dockerfile pins exactly the locked additional packages plus the pending retained downloads, and bakes the executor wheels
+  ---
+  duration_ms: 1.946278
+  type: 'test'
+  ...
+# Subtest: the rendered artifacts.executor image paths validate and name files the lock verifies in the image
+ok 33 - the rendered artifacts.executor image paths validate and name files the lock verifies in the image
+  ---
+  duration_ms: 0.855667
+  type: 'test'
+  ...
+# Subtest: Python entrypoint help/import/missing configuration are bounded and inert
+ok 34 - Python entrypoint help/import/missing configuration are bounded and inert
+  ---
+  duration_ms: 124.011568
+  type: 'test'
+  ...
+# Subtest: subprocess adapter caps stdout and stderr while the command is running
+ok 35 - subprocess adapter caps stdout and stderr while the command is running
+  ---
+  duration_ms: 137.933813
+  type: 'test'
+  ...
+# Subtest: producer rejects an oversized exact S3 version before get-object writes scratch
+ok 36 - producer rejects an oversized exact S3 version before get-object writes scratch
+  ---
+  duration_ms: 46.710787
+  type: 'test'
+  ...
+# Subtest: producer gates auth/push on measured image bytes and emits joined receipt only after clean scan
+    # Subtest: success
+    ok 1 - success
+      ---
+      duration_ms: 151.153292
+      type: 'test'
+      ...
+    # Subtest: rds-env-missing
+    ok 2 - rds-env-missing
+      ---
+      duration_ms: 171.559514
+      type: 'test'
+      ...
+    # Subtest: rds-bundle-mismatch
+    ok 3 - rds-bundle-mismatch
+      ---
+      duration_ms: 184.928699
+      type: 'test'
+      ...
+    # Subtest: runner-mismatch
+    ok 4 - runner-mismatch
+      ---
+      duration_ms: 172.763585
+      type: 'test'
+      ...
+    # Subtest: runtime-packages-mismatch
+    ok 5 - runtime-packages-mismatch
+      ---
+      duration_ms: 184.265109
+      type: 'test'
+      ...
+    # Subtest: runtime-native-mismatch
+    ok 6 - runtime-native-mismatch
+      ---
+      duration_ms: 169.090425
+      type: 'test'
+      ...
+    # Subtest: linux-test-hold
+    ok 7 - linux-test-hold
+      ---
+      duration_ms: 160.848048
+      type: 'test'
+      ...
+    # Subtest: scan-hold
+    ok 8 - scan-hold
+      ---
+      duration_ms: 187.711636
+      type: 'test'
+      ...
+    # Subtest: source-mismatch
+    ok 9 - source-mismatch
+      ---
+      duration_ms: 151.757551
+      type: 'test'
+      ...
+    # Subtest: cleanup-unknown
+    ok 10 - cleanup-unknown
+      ---
+      duration_ms: 191.348547
+      type: 'test'
+      ...
+    1..10
+ok 37 - producer gates auth/push on measured image bytes and emits joined receipt only after clean scan
+  ---
+  duration_ms: 1727.38303
+  type: 'test'
+  ...
+# Subtest: every retained APK re-identifies against the signed index: control checksum, .PKGINFO name/version/datahash, size, lock sha256
+ok 38 - every retained APK re-identifies against the signed index: control checksum, .PKGINFO name/version/datahash, size, lock sha256
+  ---
+  duration_ms: 2851.2333
+  type: 'test'
+  ...
+# Subtest: the pending record (while present) names only indexed packages absent from the lock, with index-derived sizes and checksums
+ok 39 - the pending record (while present) names only indexed packages absent from the lock, with index-derived sizes and checksums # SKIP no pending-additions.json: every executor addition is retained
+  ---
+  duration_ms: 1.558735
+  type: 'test'
+  ...
+# Subtest: the wheel lock is closed, hash-pinned to the qualification requirements and retained wheels (if any) match it
+ok 40 - the wheel lock is closed, hash-pinned to the qualification requirements and retained wheels (if any) match it
+  ---
+  duration_ms: 3.863763
+  type: 'test'
+  ...
+# Subtest: synthetic APK identity, tampered control/data/size/name refusals and closed record shapes
+ok 41 - synthetic APK identity, tampered control/data/size/name refusals and closed record shapes
+  ---
+  duration_ms: 3.568769
+  type: 'test'
+  ...
+# Subtest: exact fetch refuses redirects, wrong length, encoded bodies and over-long bodies without following anything
+ok 42 - exact fetch refuses redirects, wrong length, encoded bodies and over-long bodies without following anything
+  ---
+  duration_ms: 1.448128
+  type: 'test'
+  ...
+# Subtest: CLI: help and check are inert; unknown or extra arguments refuse with a static code
+ok 43 - CLI: help and check are inert; unknown or extra arguments refuse with a static code
+  ---
+  duration_ms: 1746.906189
+  type: 'test'
+  ...
+1..43
+# tests 75
+# suites 0
+# pass 74
+# fail 0
+# cancelled 0
+# skipped 1
+# todo 0
+# duration_ms 7782.074093

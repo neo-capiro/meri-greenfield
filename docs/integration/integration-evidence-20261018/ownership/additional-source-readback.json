@@ -1,0 +1,567 @@
+{
+  "missingSourceLookups": [
+    {
+      "requested": "51f4a38e2e43d6ff050db08e3235b2b447b708cf",
+      "isError": true,
+      "structuredContent": {
+        "error": "GitHub API error 422: {\"message\":\"No commit found for SHA: 51f4a38e2e43d6ff050db08e3235b2b447b708cf\",\"documentation_url\":\"https://docs.github.com/rest/commits/commits#get-a-commit\",\"status\":\"422\"}",
+        "error_code": "INVALID_ARGUMENT",
+        "error_data": {
+          "message": "No commit found for SHA: 51f4a38e2e43d6ff050db08e3235b2b447b708cf",
+          "documentation_url": "https://docs.github.com/rest/commits/commits#get-a-commit",
+          "status": "422"
+        }
+      }
+    },
+    {
+      "requested": "d2f05436",
+      "isError": false,
+      "structuredContent": {
+        "commit": {
+          "sha": "d2f054362521f622b9dd63c65ef5eaa3bdde8d5a",
+          "message": "Verify installed Wolfi package architecture for image lock",
+          "url": "https://api.github.com/repos/neo-capiro/meri-greenfield/commits/d2f054362521f622b9dd63c65ef5eaa3bdde8d5a",
+          "html_url": "https://github.com/neo-capiro/meri-greenfield/commit/d2f054362521f622b9dd63c65ef5eaa3bdde8d5a",
+          "diff": "@@ -195,12 +195,13 @@ async function runtimePath(root,name){const file=await fs.realpath(path.join(roo\n function installedSet(bytes){\n  const text=utf8(bytes);need(!/[\\0\\r]/u.test(text),'VERIFY');const result=[],seen=new Set();\n  for(const block of text.split(/\\n\\n+/u)){\n-  if(!block.trim())continue;let name,version;\n+  if(!block.trim())continue;let name,version,architecture;\n   for(const line of block.split('\\n')){\n    if(line.startsWith('P:')){need(name===undefined,'VERIFY');name=line.slice(2);}\n    if(line.startsWith('V:')){need(version===undefined,'VERIFY');version=line.slice(2);}\n+   if(line.startsWith('A:')){need(architecture===undefined,'VERIFY');architecture=line.slice(2);}\n   }\n-  need(typeof name==='string'&&NAME.test(name)&&typeof version==='string'&&VERSION.test(version)&&!seen.has(name),'VERIFY');\n+  need(typeof name==='string'&&NAME.test(name)&&typeof version==='string'&&VERSION.test(version)&&architecture==='x86_64'&&!seen.has(name),'VERIFY');\n   seen.add(name);result.push({name,version});need(result.length<=2176,'VERIFY');\n  }\n  return result.sort((a,b)=>a.name<b.name?-1:a.name>b.name?1:0);\n@@ -159,6 +159,7 @@ test('installed verification joins every base/addition name and version with exa\n test('missing, extra, duplicate, wrong-version and malformed installed identities cannot verify',async t=>{\n  const x=await installedFixture(t);const variants=[x.rows.slice(1),[...x.rows,{name:'foreign',version:'1-r0'}],[...x.rows,x.rows[0]],x.rows.map((r,i)=>i===0?{...r,version:'0-r0'}:r)];\n  for(const rows of variants){await fs.writeFile(x.database,x.db(rows));await assert.rejects(verifyInstalledPackages(x.f.raw,{rootDirectory:x.root,measureRuntime:runtime}),/^Error: RUNTIME_PACKAGES_VERIFY$/u);}\n+ for(const db of [x.db(x.rows).replace('A:x86_64','A:aarch64'),x.db(x.rows).replace('A:x86_64\\n',''),x.db(x.rows).replace('A:x86_64','A:x86_64\\nA:x86_64')]){await fs.writeFile(x.database,db);await assert.rejects(verifyInstalledPackages(x.f.raw,{rootDirectory:x.root,measureRuntime:runtime}),/^Error: RUNTIME_PACKAGES_VERIFY$/u);}\n  for(const text of ['P:glibc\\nV:2.44-r4\\nV:2.44-r4\\n','private-only-data','P:glibc\\nV:2.44-r4\\0\\n','P:glibc\\nV:2.44-r4\\r\\n']){await fs.writeFile(x.database,text);await assert.rejects(verifyInstalledPackages(x.f.raw,{rootDirectory:x.root,measureRuntime:runtime}),/^Error: RUNTIME_PACKAGES_VERIFY$/u);}\n });\n ",
+          "files": [
+            {
+              "filename": "apps/runtime/build/runtime-packages.mjs",
+              "patch": "@@ -195,12 +195,13 @@ async function runtimePath(root,name){const file=await fs.realpath(path.join(roo\n function installedSet(bytes){\n  const text=utf8(bytes);need(!/[\\0\\r]/u.test(text),'VERIFY');const result=[],seen=new Set();\n  for(const block of text.split(/\\n\\n+/u)){\n-  if(!block.trim())continue;let name,version;\n+  if(!block.trim())continue;let name,version,architecture;\n   for(const line of block.split('\\n')){\n    if(line.startsWith('P:')){need(name===undefined,'VERIFY');name=line.slice(2);}\n    if(line.startsWith('V:')){need(version===undefined,'VERIFY');version=line.slice(2);}\n+   if(line.startsWith('A:')){need(architecture===undefined,'VERIFY');architecture=line.slice(2);}\n   }\n-  need(typeof name==='string'&&NAME.test(name)&&typeof version==='string'&&VERSION.test(version)&&!seen.has(name),'VERIFY');\n+  need(typeof name==='string'&&NAME.test(name)&&typeof version==='string'&&VERSION.test(version)&&architecture==='x86_64'&&!seen.has(name),'VERIFY');\n   seen.add(name);result.push({name,version});need(result.length<=2176,'VERIFY');\n  }\n  return result.sort((a,b)=>a.name<b.name?-1:a.name>b.name?1:0);"
+            },
+            {
+              "filename": "apps/runtime/build/runtime-packages.test.mjs",
+              "patch": "@@ -159,6 +159,7 @@ test('installed verification joins every base/addition name and version with exa\n test('missing, extra, duplicate, wrong-version and malformed installed identities cannot verify',async t=>{\n  const x=await installedFixture(t);const variants=[x.rows.slice(1),[...x.rows,{name:'foreign',version:'1-r0'}],[...x.rows,x.rows[0]],x.rows.map((r,i)=>i===0?{...r,version:'0-r0'}:r)];\n  for(const rows of variants){await fs.writeFile(x.database,x.db(rows));await assert.rejects(verifyInstalledPackages(x.f.raw,{rootDirectory:x.root,measureRuntime:runtime}),/^Error: RUNTIME_PACKAGES_VERIFY$/u);}\n+ for(const db of [x.db(x.rows).replace('A:x86_64','A:aarch64'),x.db(x.rows).replace('A:x86_64\\n',''),x.db(x.rows).replace('A:x86_64','A:x86_64\\nA:x86_64')]){await fs.writeFile(x.database,db);await assert.rejects(verifyInstalledPackages(x.f.raw,{rootDirectory:x.root,measureRuntime:runtime}),/^Error: RUNTIME_PACKAGES_VERIFY$/u);}\n  for(const text of ['P:glibc\\nV:2.44-r4\\nV:2.44-r4\\n','private-only-data','P:glibc\\nV:2.44-r4\\0\\n','P:glibc\\nV:2.44-r4\\r\\n']){await fs.writeFile(x.database,text);await assert.rejects(verifyInstalledPackages(x.f.raw,{rootDirectory:x.root,measureRuntime:runtime}),/^Error: RUNTIME_PACKAGES_VERIFY$/u);}\n });\n "
+            }
+          ],
+          "repository_full_name": "neo-capiro/meri-greenfield",
+          "comments": null,
+          "author": {
+            "login": "neo-capiro",
+            "name": null,
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/276034435?v=4",
+            "id": 276034435
+          },
+          "committer": {
+            "login": "neo-capiro",
+            "name": null,
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/276034435?v=4",
+            "id": 276034435
+          },
+          "created_at": "2026-10-18T12:09:26Z",
+          "git_author_email": null,
+          "display_url": "https://github.com/neo-capiro/meri-greenfield/commit/d2f054362521f622b9dd63c65ef5eaa3bdde8d5a",
+          "display_title": "Verify installed Wolfi package architecture for image lock"
+        },
+        "url": "https://github.com/neo-capiro/meri-greenfield/commit/d2f054362521f622b9dd63c65ef5eaa3bdde8d5a",
+        "title": "Verify installed Wolfi package architecture for image lock",
+        "diff": "@@ -195,12 +195,13 @@ async function runtimePath(root,name){const file=await fs.realpath(path.join(roo\n function installedSet(bytes){\n  const text=utf8(bytes);need(!/[\\0\\r]/u.test(text),'VERIFY');const result=[],seen=new Set();\n  for(const block of text.split(/\\n\\n+/u)){\n-  if(!block.trim())continue;let name,version;\n+  if(!block.trim())continue;let name,version,architecture;\n   for(const line of block.split('\\n')){\n    if(line.startsWith('P:')){need(name===undefined,'VERIFY');name=line.slice(2);}\n    if(line.startsWith('V:')){need(version===undefined,'VERIFY');version=line.slice(2);}\n+   if(line.startsWith('A:')){need(architecture===undefined,'VERIFY');architecture=line.slice(2);}\n   }\n-  need(typeof name==='string'&&NAME.test(name)&&typeof version==='string'&&VERSION.test(version)&&!seen.has(name),'VERIFY');\n+  need(typeof name==='string'&&NAME.test(name)&&typeof version==='string'&&VERSION.test(version)&&architecture==='x86_64'&&!seen.has(name),'VERIFY');\n   seen.add(name);result.push({name,version});need(result.length<=2176,'VERIFY');\n  }\n  return result.sort((a,b)=>a.name<b.name?-1:a.name>b.name?1:0);\n@@ -159,6 +159,7 @@ test('installed verification joins every base/addition name and version with exa\n test('missing, extra, duplicate, wrong-version and malformed installed identities cannot verify',async t=>{\n  const x=await installedFixture(t);const variants=[x.rows.slice(1),[...x.rows,{name:'foreign',version:'1-r0'}],[...x.rows,x.rows[0]],x.rows.map((r,i)=>i===0?{...r,version:'0-r0'}:r)];\n  for(const rows of variants){await fs.writeFile(x.database,x.db(rows));await assert.rejects(verifyInstalledPackages(x.f.raw,{rootDirectory:x.root,measureRuntime:runtime}),/^Error: RUNTIME_PACKAGES_VERIFY$/u);}\n+ for(const db of [x.db(x.rows).replace('A:x86_64','A:aarch64'),x.db(x.rows).replace('A:x86_64\\n',''),x.db(x.rows).replace('A:x86_64','A:x86_64\\nA:x86_64')]){await fs.writeFile(x.database,db);await assert.rejects(verifyInstalledPackages(x.f.raw,{rootDirectory:x.root,measureRuntime:runtime}),/^Error: RUNTIME_PACKAGES_VERIFY$/u);}\n  for(const text of ['P:glibc\\nV:2.44-r4\\nV:2.44-r4\\n','private-only-data','P:glibc\\nV:2.44-r4\\0\\n','P:glibc\\nV:2.44-r4\\r\\n']){await fs.writeFile(x.database,text);await assert.rejects(verifyInstalledPackages(x.f.raw,{rootDirectory:x.root,measureRuntime:runtime}),/^Error: RUNTIME_PACKAGES_VERIFY$/u);}\n });\n ",
+        "display_url": "https://github.com/neo-capiro/meri-greenfield/commit/d2f054362521f622b9dd63c65ef5eaa3bdde8d5a",
+        "display_title": "Verify installed Wolfi package architecture for image lock"
+      }
+    }
+  ],
+  "d2Compare": {
+    "repository_full_name": "neo-capiro/meri-greenfield",
+    "base": "a1876afaeaa59d9da47729487d490cba8cfc9d9c",
+    "head": "d2f054362521f622b9dd63c65ef5eaa3bdde8d5a",
+    "status": "diverged",
+    "ahead_by": 3,
+    "behind_by": 139,
+    "total_commits": 3,
+    "too_large": null,
+    "base_commit": {
+      "sha": "a1876afaeaa59d9da47729487d490cba8cfc9d9c",
+      "url": "https://api.github.com/repos/neo-capiro/meri-greenfield/commits/a1876afaeaa59d9da47729487d490cba8cfc9d9c",
+      "html_url": "https://github.com/neo-capiro/meri-greenfield/commit/a1876afaeaa59d9da47729487d490cba8cfc9d9c"
+    },
+    "merge_base_commit": {
+      "sha": "21862a5e7c557f9089b245d0e2685b91420ef128",
+      "url": "https://api.github.com/repos/neo-capiro/meri-greenfield/commits/21862a5e7c557f9089b245d0e2685b91420ef128",
+      "html_url": "https://github.com/neo-capiro/meri-greenfield/commit/21862a5e7c557f9089b245d0e2685b91420ef128"
+    },
+    "files": [
+      {
+        "filename": ".dockerignore",
+        "status": "modified",
+        "additions": 1,
+        "deletions": 0,
+        "changes": 1,
+        "previous_filename": null
+      },
+      {
+        "filename": "apps/artifacts/generation/licenses/pptxgenjs-LICENSE",
+        "status": "added",
+        "additions": 21,
+        "deletions": 0,
+        "changes": 21,
+        "previous_filename": null
+      },
+      {
+        "filename": "apps/artifacts/generation/package-lock.json",
+        "status": "added",
+        "additions": 174,
+        "deletions": 0,
+        "changes": 174,
+        "previous_filename": null
+      },
+      {
+        "filename": "apps/artifacts/generation/package.json",
+        "status": "added",
+        "additions": 13,
+        "deletions": 0,
+        "changes": 13,
+        "previous_filename": null
+      },
+      {
+        "filename": "apps/runtime/Dockerfile",
+        "status": "modified",
+        "additions": 39,
+        "deletions": 2,
+        "changes": 41,
+        "previous_filename": null
+      },
+      {
+        "filename": "apps/runtime/build/runtime-packages.mjs",
+        "status": "modified",
+        "additions": 5,
+        "deletions": 3,
+        "changes": 8,
+        "previous_filename": null
+      },
+      {
+        "filename": "apps/runtime/build/runtime-packages.test.mjs",
+        "status": "modified",
+        "additions": 2,
+        "deletions": 1,
+        "changes": 3,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/image-build.test.mjs",
+        "status": "modified",
+        "additions": 51,
+        "deletions": 0,
+        "changes": 51,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages.lock.json",
+        "status": "modified",
+        "additions": 334,
+        "deletions": 1,
+        "changes": 335,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/.gitattributes",
+        "status": "modified",
+        "additions": 1,
+        "deletions": 0,
+        "changes": 1,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/build-attempt-20261018.txt",
+        "status": "added",
+        "additions": 149,
+        "deletions": 0,
+        "changes": 149,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/complete-pending-additions.mjs",
+        "status": "added",
+        "additions": 199,
+        "deletions": 0,
+        "changes": 199,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/complete-pending-additions.test.mjs",
+        "status": "added",
+        "additions": 86,
+        "deletions": 0,
+        "changes": 86,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/executor-generation-smoke.mjs",
+        "status": "added",
+        "additions": 19,
+        "deletions": 0,
+        "changes": 19,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/retained-additions-receipt.json",
+        "status": "added",
+        "additions": 390,
+        "deletions": 0,
+        "changes": 390,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/wheels/et_xmlfile-2.0.0-py3-none-any.whl",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/wheels/openpyxl-3.1.5-py2.py3-none-any.whl",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/wheels/python_docx-1.2.0-py3-none-any.whl",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/wheels/xlsxwriter-3.2.9-py3-none-any.whl",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/freetype-2.14.3-r7.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/gdbm-1.26-r7.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/lcms2-2.19.1-r3.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/libbz2-1-1.0.8-r25.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/libexpat1-2.9.0-r0.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/libffi-3.8.0-r2.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/libgfortran-16.2.0-r1.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/libjpeg-turbo-3.2.0-r5.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/libopenblas-0-0.3.34-r1.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/libpng-1.6.59-r0.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/libuuid-2.42.4-r0.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/libwebp-1.6.0-r7.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/libxau-1.0.12-r9.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/libxcb-1.17.0-r17.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/libxdmcp-1.1.5-r12.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/libxml2-16-2.15.4-r1.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/libxslt-1.1.45-r5.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/libzstd1-1.5.7-r10.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/mpdecimal-4.0.1-r4.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/openjpeg-2.5.4-r3.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/py3-pip-wheel-26.2.1-r4.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/py3.13-contourpy-1.4.0-r1.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/py3.13-cycler-0.12.1-r8.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/py3.13-fonttools-4.67.0-r0.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/py3.13-kiwisolver-1.5.1-r1.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/py3.13-lxml-6.1.3-r0.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/py3.13-matplotlib-3.11.2-r0.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/py3.13-numpy-2.2-2.2.6-r5.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/py3.13-packaging-26.3-r0.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/py3.13-pillow-12.3.0-r1.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/py3.13-pygments-2.21.0-r0.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/py3.13-pyparsing-3.3.3-r0.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/py3.13-python-dateutil-2.9.0-r13.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/py3.13-six-1.17.0-r7.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/py3.13-typing-extensions-4.16.0-r0.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/python-3.13-base-3.13.16_git20261016-r0.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/readline-8.3-r3.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/sqlite-libs-3.54.1-r0.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/tiff-4.7.2-r3.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-packages/x86_64/xz-5.8.4-r0.apk",
+        "status": "added",
+        "additions": 0,
+        "deletions": 0,
+        "changes": 0,
+        "previous_filename": null
+      },
+      {
+        "filename": "infra/product-preview/runtime-wheels.lock.json",
+        "status": "added",
+        "additions": 49,
+        "deletions": 0,
+        "changes": 49,
+        "previous_filename": null
+      }
+    ]
+  }
+}

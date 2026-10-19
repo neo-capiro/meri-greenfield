@@ -1,0 +1,112 @@
+{
+  "review": "read-only independent attached-plus offset correction",
+  "baseCommit": "f101c5072ad637af2bdb8850a9b58a466f677d59",
+  "publishedSourceReportedByRoot": "b3611559; not available as a local git object to this reviewer",
+  "headWhenRecorded": "78a5ef00ea16cedcf188602ab6904af1d939d6b8",
+  "node": "v24.19.0",
+  "NODE_TEST_CONTEXT": null,
+  "sourceHashes": {
+    "packages/contracts/retrieval-0.2/public-domain-query-validation.mjs": "0f45c40554f489c8993c71d23e297bd6fe3ab35c5e3166eee928e8c02dd576e2",
+    "packages/contracts/test/retrieval-public-domain-query.test.mjs": "3085f622da185ba783e52b47b318da497f2b87939dc5c5ed9a061ba3a79fc264"
+  },
+  "beforeProductionSha256": "49712cef83a0ce6fd6c97fab8916165341444c3da4845b434be059cf97c8b3e6",
+  "cases": 42,
+  "publicAssertionsPerTimezone": 84,
+  "timezones": {
+    "UTC": {
+      "before": {
+        "assertions": 84,
+        "passed": 60,
+        "failed": 24,
+        "path": "/tmp/meri-date-attached-offset-review/public-before-UTC.log"
+      },
+      "after": {
+        "assertions": 84,
+        "passed": 84,
+        "failed": 0,
+        "path": "/tmp/meri-date-attached-offset-review/public-after-UTC.log"
+      },
+      "selectedTests": {
+        "tests": 2,
+        "passed": 2,
+        "failed": 0,
+        "skipped": 0,
+        "nativeReferenceCases": 948,
+        "path": "/tmp/meri-date-attached-offset-review/selected-after-UTC.tap"
+      },
+      "commands": [
+        "env -u NODE_TEST_CONTEXT TZ=UTC node /tmp/meri-date-attached-offset-review/public-probe.mjs <integration-worktree>",
+        "env -u NODE_TEST_CONTEXT TZ=UTC node --test --test-reporter=tap '--test-name-pattern=^(trusted default as-of is distinct from explicit date and generatedAt|legacy explicit query dates preserve the native UTC parser reference)$' packages/contracts/test/retrieval-public-domain-query.test.mjs"
+      ],
+      "logSha256": {
+        "public-before-UTC.log": "85180140672972295cee17cf57f00cc50c967f6861b3f4607806fc99fd496cc5",
+        "public-after-UTC.log": "9e34ef64f8cdadcf48fb386d6270ca319d70518f1dd80ccea3ef0accd0709dfc",
+        "selected-after-UTC.tap": "59b88688b3d498976367b8703fa06891fa03983b95baee5af545f8dc070efbb9"
+      }
+    },
+    "America/Toronto": {
+      "before": {
+        "assertions": 84,
+        "passed": 60,
+        "failed": 24,
+        "path": "/tmp/meri-date-attached-offset-review/public-before-America-Toronto.log"
+      },
+      "after": {
+        "assertions": 84,
+        "passed": 84,
+        "failed": 0,
+        "path": "/tmp/meri-date-attached-offset-review/public-after-America-Toronto.log"
+      },
+      "selectedTests": {
+        "tests": 2,
+        "passed": 2,
+        "failed": 0,
+        "skipped": 0,
+        "nativeReferenceCases": 948,
+        "path": "/tmp/meri-date-attached-offset-review/selected-after-America-Toronto.tap"
+      },
+      "commands": [
+        "env -u NODE_TEST_CONTEXT TZ=America/Toronto node /tmp/meri-date-attached-offset-review/public-probe.mjs <integration-worktree>",
+        "env -u NODE_TEST_CONTEXT TZ=America/Toronto node --test --test-reporter=tap '--test-name-pattern=^(trusted default as-of is distinct from explicit date and generatedAt|legacy explicit query dates preserve the native UTC parser reference)$' packages/contracts/test/retrieval-public-domain-query.test.mjs"
+      ],
+      "logSha256": {
+        "public-before-America-Toronto.log": "5985bfd820161d361e12ebbc8f5b474c1272b1350ba71a2f7765f35eac7ee452",
+        "public-after-America-Toronto.log": "abce6d8388dde75fc683ed4d4822b51855a01b2f677bc4714dce0f937572627a",
+        "selected-after-America-Toronto.tap": "ea1cb2eada3254fbec6d8a197c9756776e9ff114f476ff602dd0be0a6d01e8bc"
+      }
+    },
+    "Asia/Tokyo": {
+      "before": {
+        "assertions": 84,
+        "passed": 60,
+        "failed": 24,
+        "path": "/tmp/meri-date-attached-offset-review/public-before-Asia-Tokyo.log"
+      },
+      "after": {
+        "assertions": 84,
+        "passed": 84,
+        "failed": 0,
+        "path": "/tmp/meri-date-attached-offset-review/public-after-Asia-Tokyo.log"
+      },
+      "selectedTests": {
+        "tests": 2,
+        "passed": 2,
+        "failed": 0,
+        "skipped": 0,
+        "nativeReferenceCases": 948,
+        "path": "/tmp/meri-date-attached-offset-review/selected-after-Asia-Tokyo.tap"
+      },
+      "commands": [
+        "env -u NODE_TEST_CONTEXT TZ=Asia/Tokyo node /tmp/meri-date-attached-offset-review/public-probe.mjs <integration-worktree>",
+        "env -u NODE_TEST_CONTEXT TZ=Asia/Tokyo node --test --test-reporter=tap '--test-name-pattern=^(trusted default as-of is distinct from explicit date and generatedAt|legacy explicit query dates preserve the native UTC parser reference)$' packages/contracts/test/retrieval-public-domain-query.test.mjs"
+      ],
+      "logSha256": {
+        "public-before-Asia-Tokyo.log": "42d18568477af1dd789d1b0308281f543edb59fe40853f2a3ec349958785bc3a",
+        "public-after-Asia-Tokyo.log": "69884a0c4cd422513f36b418781496559d291d828fb10c995cc206a12a7f2f4c",
+        "selected-after-Asia-Tokyo.tap": "3e3a50200d755bee52fe4cef859d0f93f196060fbb7e8e9f88b991975e9d0164"
+      }
+    }
+  },
+  "scope": "finite attached-plus regression correction; not exhaustive native grammar qualification",
+  "productionEditsByReviewer": 0
+}

@@ -1,0 +1,22 @@
+# Independent native terminal-gate review
+
+Decision: **approve the bounded source change**, with the acceptance limits below. Reviewed clean commit `8c65bdc33b51b5d83bce48050b1d8791ad2c31d5`, parent `87b6e8beac3af3ed72d22247c59ac461b7edd3d5`, in the worker-owned startup qualification worktree. This reviewer made no edits. Exact source/log hashes and commands are in `EVIDENCE.json`.
+
+The mandatory outer `NativeSettlementTransport` now enables the gate on its `_ObservedResponseStream`. The independent inner host observer retains its observational mode, reaches validated EOF and closed state, and supplies canonical capture before outer settlement. JSON bodies are withheld in full. For event streams, the chunk that completes any tool-use start or terminal delta/stop is retained, together with every later chunk. A previously emitted partial frame prefix cannot complete a downstream tool or terminal frame without those retained bytes. Text frames preceding that boundary remain streamable. Coalesced chunks can delay text together with a terminal; the exact wire bytes are preserved instead of being rewritten.
+
+Release requires the existing strict native parser's COMPLETE result at actual transport EOF, then canonical settlement ACK. I traced the production callback through `host_composition.py` into `ProductOwnerBridge`: its normal return requires an exact authenticated session/request SETTLED receipt. Only `SettlementCommitUncertain` invokes read-only reconciliation, and only the exact same-request canonical SETTLED outcome with bounded decimal money succeeds. Generic validation/transport/capture failures and unresolved/wrong-request/unavailable readback cannot release held bytes. This does not treat a caller-constructed usage object or arbitrary callback return value as production authority.
+
+The source closes before releasing terminal bytes, checks external-close state around the await, clears its held buffer in both `finally` and `aclose`, and closes the lower source once. Truncation, CRC damage, trailing bytes/events, parser failure and size overflow fail without terminal flush. Existing native-byte, JSON and wire bounds continue to apply before retaining each chunk. Cancellation during pending ACK and external close during that await are exercised. The existing host tests were aligned with the stronger refusal point; their no-reservation/no-settlement counts and suppressed output assertions remain strict.
+
+Independent focused checks at this exact commit:
+
+| Group | Result |
+| --- | --- |
+| terminal gate, host observation/composition, upstream callback | 42/42 pass, no skips |
+| native body/transport, native usage, product envelope | 49/49 pass, no skips |
+
+The first group includes coalesced, per-frame and 11-byte fragments for both text and StructuredOutput, exact byte/digest replay after ACK, withheld JSON, corrupt/truncated/trailing streams, lost ACK with exact/unknown/wrong/unavailable readback, cancellation, external close and size bounds. No new failure was observed. `git diff --check HEAD^ HEAD` passed and the worker worktree was clean.
+
+Related contract review found no material authorization or budget weakening. Native model route remains fixed; raw request bytes still bind CountTokens, reservation and invocation; input/output limits stay 65536/8192. Beta admission is the exact two-value subset and a present header must match it; body semantic context edits remain disallowed. Response context observations admit only absent/null/empty applied edits. Cache use and nonzero cache usage remain refused. StructuredOutput/native format require trusted schema equality and existing tool allowlist membership; request schema does not create authority. Root's `d2fb6003` options preserve fixed model alias, disable thinking, suppress prompt cache/effort, and are bound by the refreshed source options gate tests. Capability fragments cannot replace those fixed controls through their closed settings/environment shapes.
+
+This is source/unit/host-composition evidence, not a live provider or whole-product SDK acceptance claim. Actual SDK negative-case replay is separately owned by the egress reviewer. Exact in-image regeneration and source/image/receipt acceptance remain shipping blockers. Broader selected-skill/MCP integration and trusted per-run schema provisioning are not established by allowing a native shape. No Core work, real provider/AWS/SQL call, build, credential change, merge, deployment or publication occurred.

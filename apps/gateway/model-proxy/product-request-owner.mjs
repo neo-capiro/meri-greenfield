@@ -13,10 +13,26 @@ const modelId='anthropic.claude-sonnet-4-6';
 const profileId='us.anthropic.claude-sonnet-4-6';
 const host='bedrock-runtime.us-east-1.amazonaws.com';
 const urls=new Set(['invoke','invoke-with-response-stream'].map(s=>`https://${host}/model/${profileId}/${s}`));
+const nativeBetas=new Set(['context-management-2025-06-27','effort-2025-11-24']);
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const deny=()=>refuse('PRODUCT_PROXY_OBSERVATION_REFUSED');
 function bytes(value){if(!Buffer.isBuffer(value)||value.length<1||value.length>4*1024*1024)deny();return value;}
 function equalDigest(a,b){digest(a);digest(b);return timingSafeEqual(Buffer.from(a,'hex'),Buffer.from(b,'hex'));}
+function betaSet(values){
+ if(!Array.isArray(values)||values.length>2||new Set(values).size!==values.length||values.some(value=>typeof value!=='string'||!nativeBetas.has(value)))deny();
+ return new Set(values);
+}
+function checkNativeBetas(body,header){
+ // Context edits cannot use the exact-byte Bedrock CountTokens contract.
+ if(Object.hasOwn(body,'context_management'))deny();
+ const bodyBetas=betaSet(Object.hasOwn(body,'anthropic_beta')?body.anthropic_beta:[]);
+ // InvokeModel carries betas in the body; a repeated header must agree.
+ if(header===undefined)return;
+ const parts=header.split(',');
+ if(parts.some(value=>!/^[ \t]*[a-z0-9-]+[ \t]*$/u.test(value)))deny();
+ const headerBetas=betaSet(parts.map(value=>value.replace(/^[ \t]+|[ \t]+$/gu,'')));
+ if(headerBetas.size!==bodyBetas.size||[...headerBetas].some(value=>!bodyBetas.has(value)))deny();
+}
 
 export function observeProductProxyRequest(source,selected,pricing,requestId,now){
  const observed=own(source,['requestId','peer','proxyCredential','rawRequestBody','nativeRequest','count']);
@@ -31,7 +47,7 @@ export function observeProductProxyRequest(source,selected,pricing,requestId,now
  for(const item of native.headers){
   if(!Array.isArray(item)||item.length!==2||typeof item[0]!=='string'||typeof item[1]!=='string')deny();
   const name=item[0].toLowerCase();
-  if(names.has(name)||name==='content-encoding'||name==='anthropic-beta'||name.startsWith('x-amzn-bedrock-'))deny();
+  if(names.has(name)||name==='content-encoding'||name.startsWith('x-amzn-bedrock-'))deny();
   names.set(name,item[1]);
  }
  if(names.get('host')!==host||names.get('content-type')!=='application/json')deny();
@@ -39,6 +55,7 @@ export function observeProductProxyRequest(source,selected,pricing,requestId,now
  let parsed;
  try{parsed=JSON.parse(nativeBody.toString('utf8'));}catch{deny();}
  if(!parsed||typeof parsed!=='object'||Array.isArray(parsed)||parsed.anthropic_version!=='bedrock-2023-05-31'||!Array.isArray(parsed.messages)||parsed.messages.length<1||!Number.isSafeInteger(parsed.max_tokens)||parsed.max_tokens<1||parsed.max_tokens>pricing.maxOutputTokens)deny();
+ checkNativeBetas(parsed,names.get('anthropic-beta'));
  if(count.origin!=='aws-counttokens'||count.modelId!==modelId||count.nativeBodySha256!==nativeBodySha256||!Number.isSafeInteger(count.inputTokens)||count.inputTokens<1||count.inputTokens>pricing.maxInputTokens)deny();
  return {binding:selected.binding,taskArn:peer.taskArn,capabilitySha256:selected.capabilitySha256,nativeBodySha256,rawRequestSha256:sha(rawBody),modelId,profileId,maxOutputTokens:parsed.max_tokens,count:{nativeBodySha256,modelId,inputTokens:count.inputTokens}};
 }

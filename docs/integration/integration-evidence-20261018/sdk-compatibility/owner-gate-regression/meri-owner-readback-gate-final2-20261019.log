@@ -1,0 +1,55 @@
+test_both_arrival_orders_preserve_one_capture (apps.proxy.product.test.test_owner_channel.OwnerChannelTests.test_both_arrival_orders_preserve_one_capture) ... ok
+test_caller_cancellation_aborts_persistent_connections (apps.proxy.product.test.test_owner_channel.OwnerChannelTests.test_caller_cancellation_aborts_persistent_connections) ... ok
+test_foreign_capability_selector_never_opens_a_session (apps.proxy.product.test.test_owner_channel.OwnerChannelTests.test_foreign_capability_selector_never_opens_a_session) ... ok
+test_late_exchange_after_cancellation_cannot_reuse_channel (apps.proxy.product.test.test_owner_channel.OwnerChannelTests.test_late_exchange_after_cancellation_cannot_reuse_channel) ... ok
+test_late_host_capture_poison_blocks_another_session (apps.proxy.product.test.test_owner_channel.OwnerChannelTests.test_late_host_capture_poison_blocks_another_session) ... ok
+test_malformed_open_aborts_both_channels_without_reuse (apps.proxy.product.test.test_owner_channel.OwnerChannelTests.test_malformed_open_aborts_both_channels_without_reuse) ... ok
+test_malformed_reservation_receipt_aborts_without_reuse (apps.proxy.product.test.test_owner_channel.OwnerChannelTests.test_malformed_reservation_receipt_aborts_without_reuse) ... ok
+test_reservation_and_settlement_use_distinct_fresh_capture (apps.proxy.product.test.test_owner_channel.OwnerChannelTests.test_reservation_and_settlement_use_distinct_fresh_capture) ... ok
+test_same_tls_connection_and_late_reply_poison_without_retry (apps.proxy.product.test.test_owner_channel.OwnerChannelTests.test_same_tls_connection_and_late_reply_poison_without_retry) ... ok
+test_second_gate_for_same_service_is_refused_even_with_new_timeout (apps.proxy.product.test.test_owner_channel.OwnerChannelTests.test_second_gate_for_same_service_is_refused_even_with_new_timeout) ... ok
+test_settled_readback_allows_a_distinct_request_with_identical_bytes (apps.proxy.product.test.test_owner_channel.OwnerChannelTests.test_settled_readback_allows_a_distinct_request_with_identical_bytes) ... ok
+test_unavailable_settlement_readback_stops_next_bridge_and_admission_without_exchange (apps.proxy.product.test.test_owner_channel.OwnerChannelTests.test_unavailable_settlement_readback_stops_next_bridge_and_admission_without_exchange) ... ERROR
+test_deadline_includes_lock_wait_and_timeout_is_sticky (apps.proxy.product.test.test_owner_admission.AdmissionTests.test_deadline_includes_lock_wait_and_timeout_is_sticky) ... ok
+test_existing_request_lifetime_uses_fresh_product_reader_on_start_and_refresh (apps.proxy.product.test.test_owner_admission.AdmissionTests.test_existing_request_lifetime_uses_fresh_product_reader_on_start_and_refresh) ... ok
+test_expired_queued_claim_never_polls_or_aborts_another_bridge (apps.proxy.product.test.test_owner_admission.AdmissionTests.test_expired_queued_claim_never_polls_or_aborts_another_bridge) ... ok
+test_factory_rejects_boolean_callback_and_binding_validator_preserves_unicode_rules (apps.proxy.product.test.test_owner_admission.AdmissionTests.test_factory_rejects_boolean_callback_and_binding_validator_preserves_unicode_rules) ... ok
+test_foreign_issued_source_and_mutable_input_cannot_change_bound_identity (apps.proxy.product.test.test_owner_admission.AdmissionTests.test_foreign_issued_source_and_mutable_input_cannot_change_bound_identity) ... ok
+test_fresh_check_rejects_boolean_none_cached_foreign_and_late_receipts (apps.proxy.product.test.test_owner_admission.AdmissionTests.test_fresh_check_rejects_boolean_none_cached_foreign_and_late_receipts) ... ok
+test_late_reply_after_timeout_cannot_restore_authority (apps.proxy.product.test.test_owner_admission.AdmissionTests.test_late_reply_after_timeout_cannot_restore_authority) ... ok
+test_owner_loop_sync_call_refuses_before_scheduling (apps.proxy.product.test.test_owner_admission.AdmissionTests.test_owner_loop_sync_call_refuses_before_scheduling) ... ok
+test_real_bridge_capture_refresh_uses_second_connection_and_revokes_copied_context (apps.proxy.product.test.test_owner_admission.AdmissionTests.test_real_bridge_capture_refresh_uses_second_connection_and_revokes_copied_context) ... ok
+test_real_exact_admission_type_rechecks_owner_without_python_store (apps.proxy.product.test.test_owner_admission.AdmissionTests.test_real_exact_admission_type_rechecks_owner_without_python_store) ... ok
+test_two_real_bridges_serialize_open_and_capture_while_each_refreshes_fresh_authority (apps.proxy.product.test.test_owner_admission.AdmissionTests.test_two_real_bridges_serialize_open_and_capture_while_each_refreshes_fresh_authority) ... ok
+test_two_thread_checks_serialize_and_use_distinct_read_ids (apps.proxy.product.test.test_owner_admission.AdmissionTests.test_two_thread_checks_serialize_and_use_distinct_read_ids) ... ok
+test_wrong_tls_peer_or_capture_connection_cannot_authenticate_an_admission (apps.proxy.product.test.test_owner_admission.AdmissionTests.test_wrong_tls_peer_or_capture_connection_cannot_authenticate_an_admission) ... ok
+
+======================================================================
+ERROR: test_unavailable_settlement_readback_stops_next_bridge_and_admission_without_exchange (apps.proxy.product.test.test_owner_channel.OwnerChannelTests.test_unavailable_settlement_readback_stops_next_bridge_and_admission_without_exchange)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/meri-integration-python/cpython-3.13.5-linux-x86_64-gnu/lib/python3.13/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/tmp/meri-integration-python/cpython-3.13.5-linux-x86_64-gnu/lib/python3.13/asyncio/base_events.py", line 725, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "/workspace/meri-source/apps/proxy/product/test/test_owner_channel.py", line 229, in test_unavailable_settlement_readback_stops_next_bridge_and_admission_without_exchange
+    issued = replace(issued_fixture()[0].issued, expires_at_ms=self.value["deadlineMs"])
+  File "/tmp/meri-integration-python/cpython-3.13.5-linux-x86_64-gnu/lib/python3.13/dataclasses.py", line 1596, in replace
+    return _replace(obj, **changes)
+  File "/tmp/meri-integration-python/cpython-3.13.5-linux-x86_64-gnu/lib/python3.13/dataclasses.py", line 1630, in _replace
+    return self.__class__(**changes)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "<string>", line 18, in __init__
+  File "/workspace/meri-source/apps/proxy/product/bearer_eni_admission.py", line 149, in __post_init__
+    _deny()
+    ~~~~~^^
+  File "/workspace/meri-source/apps/proxy/product/bearer_eni_admission.py", line 32, in _deny
+    raise StateDenied("PRODUCT_DIRECT_PEER_DENIED")
+apps.proxy.qualification.state.pricing.StateDenied: PRODUCT_DIRECT_PEER_DENIED
+
+----------------------------------------------------------------------
+Ran 25 tests in 0.287s
+
+FAILED (errors=1)

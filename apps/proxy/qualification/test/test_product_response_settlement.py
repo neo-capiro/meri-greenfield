@@ -13,7 +13,7 @@ import httpx
 from apps.proxy.product.response_settlement import (
     NativeSettlementTransport, SettlementCommitUncertain, SettlementContext,
 )
-from apps.proxy.qualification.runtime.bedrock_body import NativeBody
+from apps.proxy.qualification.runtime.bedrock_body import AdmissionDenied, NativeBody
 from apps.proxy.qualification.runtime.native_usage import UsageBinding
 
 RAW_REQUEST = b'{"synthetic":"final-native-body"}'
@@ -173,7 +173,8 @@ class SettlementTests(unittest.IsolatedAsyncioTestCase):
                 payload = b"".join(frame(event) for event in invalid)
                 inner, transport = self.setup_transport([payload], headers={
                     "content-type": "application/vnd.amazon.eventstream"})
-                await self.call(transport)
+                with self.assertRaisesRegex(AdmissionDenied, "^INCOMPLETE_NATIVE_RESPONSE$"):
+                    await self.call(transport)
                 self.assertEqual(inner.sends, 1)
                 self.assertEqual(self.calls, [])
         missing = events()
@@ -182,7 +183,8 @@ class SettlementTests(unittest.IsolatedAsyncioTestCase):
         inner, transport = self.setup_transport(
             [b"".join(frame(event) for event in missing)],
             headers={"content-type": "application/vnd.amazon.eventstream"})
-        await self.call(transport)
+        with self.assertRaisesRegex(AdmissionDenied, "^INCOMPLETE_NATIVE_RESPONSE$"):
+            await self.call(transport)
         self.assertEqual(inner.sends, 1)
         self.assertEqual(self.calls, [])
 
@@ -205,7 +207,8 @@ class SettlementTests(unittest.IsolatedAsyncioTestCase):
                                        ([gzip.compress(valid)], 200, {"content-type": "application/json", "content-encoding": "gzip"})):
             with self.subTest(status=status, headers=headers):
                 _, transport = self.setup_transport(parts, status=status, headers=headers)
-                await self.call(transport)
+                with self.assertRaisesRegex(AdmissionDenied, "^INCOMPLETE_NATIVE_RESPONSE$"):
+                    await self.call(transport)
                 self.assertEqual(self.calls, [])
 
     async def test_eventstream_crc_truncated_frame_and_missing_terminal_stay_unknown(self):
@@ -216,17 +219,22 @@ class SettlementTests(unittest.IsolatedAsyncioTestCase):
                      b"".join(frame(event) for event in events()[:-1])):
             with self.subTest(wire_length=len(wire)):
                 _, transport = self.setup_transport([wire], headers={"content-type": "application/vnd.amazon.eventstream"})
-                await self.call(transport)
+                with self.assertRaisesRegex(AdmissionDenied, "^INCOMPLETE_NATIVE_RESPONSE$"):
+                    await self.call(transport)
                 self.assertEqual(self.calls, [])
 
     async def test_early_close_and_stream_exception_do_not_settle(self):
-        payload = raw(message())
-        _, transport = self.setup_transport([payload[:3], payload[3:]])
+        native = [frame(event) for event in events()]
+        early_text = b"".join(native[:3])
+        inner, transport = self.setup_transport([early_text, b"".join(native[3:])], headers={
+            "content-type": "application/vnd.amazon.eventstream"})
         async with httpx.AsyncClient(transport=transport) as client:
             async with client.stream("POST", "https://bedrock-runtime.us-east-1.amazonaws.com/model/selected/invoke",
                                      content=RAW_REQUEST) as response:
-                self.assertEqual(await anext(response.aiter_raw()), payload[:3])
+                self.assertEqual(await anext(response.aiter_raw()), early_text)
+        self.assertEqual(inner.sends, 1)
         self.assertEqual(self.calls, [])
+        payload = raw(message())
         _, transport = self.setup_transport([payload[:3]], error=RuntimeError("synthetic stream failure"))
         with self.assertRaisesRegex(RuntimeError, "synthetic stream failure"):
             await self.call(transport)

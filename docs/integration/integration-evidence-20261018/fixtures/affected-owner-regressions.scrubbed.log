@@ -1,0 +1,190 @@
+TAP version 13
+# Subtest: canonical release keeps earlier subject protected during awaited authorization
+ok 1 - canonical release keeps earlier subject protected during awaited authorization
+  ---
+  duration_ms: 14.296399
+  type: 'test'
+  ...
+# Subtest: canonical release keeps earlier subject protected during awaited later-subject-read
+ok 2 - canonical release keeps earlier subject protected during awaited later-subject-read
+  ---
+  duration_ms: 3.309513
+  type: 'test'
+  ...
+# Subtest: canonical release sees suppression that acquired its transition lock first
+ok 3 - canonical release sees suppression that acquired its transition lock first
+  ---
+  duration_ms: 1.679369
+  type: 'test'
+  ...
+# Subtest: canonical deadline release frees subject locks without late publication
+ok 4 - canonical deadline release frees subject locks without late publication
+  ---
+  duration_ms: 33.457123
+  type: 'test'
+  ...
+# Subtest: canonical cancel release frees subject locks without late publication
+ok 5 - canonical cancel release frees subject locks without late publication
+  ---
+  duration_ms: 3.155241
+  type: 'test'
+  ...
+# Subtest: canonical denied release frees subject locks without late publication
+ok 6 - canonical denied release frees subject locks without late publication
+  ---
+  duration_ms: 1.822635
+  type: 'test'
+  ...
+# Subtest: concurrent pages with reversed subject order share a deterministic fence without deadlock
+ok 7 - concurrent pages with reversed subject order share a deterministic fence without deadlock
+  ---
+  duration_ms: 1.083332
+  type: 'test'
+  ...
+# Subtest: bounded pool: one PostgreSQL lease completes the canonical saved-history release and returns clean
+ok 8 - bounded pool: one PostgreSQL lease completes the canonical saved-history release and returns clean
+  ---
+  duration_ms: 2.696541
+  type: 'test'
+  ...
+# Subtest: bounded pool: two concurrent saved-history releases never request a third lease
+ok 9 - bounded pool: two concurrent saved-history releases never request a third lease
+  ---
+  duration_ms: 0.834107
+  type: 'test'
+  ...
+# Subtest: bounded pool: a saved page publishes before queued suppression acknowledges, then the subject is refused
+ok 10 - bounded pool: a saved page publishes before queued suppression acknowledges, then the subject is refused
+  ---
+  duration_ms: 2.80207
+  type: 'test'
+  ...
+# Subtest: bounded pool: suppression that owns the transition lock first prevents transcript publication
+ok 11 - bounded pool: suppression that owns the transition lock first prevents transcript publication
+  ---
+  duration_ms: 2.369298
+  type: 'test'
+  ...
+# Subtest: bounded pool: failed final authorization returns the session and cannot publish late
+ok 12 - bounded pool: failed final authorization returns the session and cannot publish late
+  ---
+  duration_ms: 0.934247
+  type: 'test'
+  ...
+# Subtest: bounded pool: scoped projection and schedule reads cannot escape locked subjects or released lease
+ok 13 - bounded pool: scoped projection and schedule reads cannot escape locked subjects or released lease
+  ---
+  duration_ms: 0.862058
+  type: 'test'
+  ...
+# Subtest: PostgreSQL page fence uses one lease and sorted shared locks matching suppression, then unlocks in reverse order
+ok 14 - PostgreSQL page fence uses one lease and sorted shared locks matching suppression, then unlocks in reverse order
+  ---
+  duration_ms: 2.657573
+  type: 'test'
+  ...
+# Subtest: PostgreSQL page fence drains an unawaited scheduled read before unlock and refuses its response
+ok 15 - PostgreSQL page fence drains an unawaited scheduled read before unlock and refuses its response
+  ---
+  duration_ms: 0.533213
+  type: 'test'
+  ...
+# Subtest: PostgreSQL cancel page fence retires unknown session state
+ok 16 - PostgreSQL cancel page fence retires unknown session state
+  ---
+  duration_ms: 1.145575
+  type: 'test'
+  ...
+# Subtest: PostgreSQL deadline page fence retires unknown session state
+ok 17 - PostgreSQL deadline page fence retires unknown session state
+  ---
+  duration_ms: 29.993146
+  type: 'test'
+  ...
+# Subtest: PostgreSQL unlock-unknown page fence retires unknown session state
+ok 18 - PostgreSQL unlock-unknown page fence retires unknown session state
+  ---
+  duration_ms: 0.488566
+  type: 'test'
+  ...
+# Subtest: PostgreSQL late-lease page fence retires unknown session state
+ok 19 - PostgreSQL late-lease page fence retires unknown session state
+  ---
+  duration_ms: 112.184667
+  type: 'test'
+  ...
+# Subtest: PostgreSQL clean fence preserves callback authorization denial and frees its session
+ok 20 - PostgreSQL clean fence preserves callback authorization denial and frees its session
+  ---
+  duration_ms: 0.82382
+  type: 'test'
+  ...
+# Subtest: history cannot publish after an internal memory fence deadline while its HTTP signal stays active
+ok 21 - history cannot publish after an internal memory fence deadline while its HTTP signal stays active
+  ---
+  duration_ms: 31.041936
+  type: 'test'
+  ...
+# Subtest: history cannot publish after an internal postgres fence deadline while its HTTP signal stays active
+ok 22 - history cannot publish after an internal postgres fence deadline while its HTTP signal stays active
+  ---
+  duration_ms: 30.691157
+  type: 'test'
+  ...
+# Subtest: PostgreSQL failed-unlock page fence retires the session within its original bound
+ok 23 - PostgreSQL failed-unlock page fence retires the session within its original bound
+  ---
+  duration_ms: 0.579322
+  type: 'test'
+  ...
+# Subtest: PostgreSQL stalled-unlock page fence retires the session within its original bound
+ok 24 - PostgreSQL stalled-unlock page fence retires the session within its original bound
+  ---
+  duration_ms: 30.045956
+  type: 'test'
+  ...
+# Subtest: PostgreSQL partial-acquire page fence retires the session within its original bound
+ok 25 - PostgreSQL partial-acquire page fence retires the session within its original bound
+  ---
+  duration_ms: 30.209022
+  type: 'test'
+  ...
+# Subtest: concurrent scheduled and ordinary HTTP history requests complete on one connection with both final custody checks
+ok 26 - concurrent scheduled and ordinary HTTP history requests complete on one connection with both final custody checks
+  ---
+  duration_ms: 112.084977
+  type: 'test'
+  ...
+# Subtest: multi-client and tenant-scoped saved currentness reads configured Core context using the request bearer only
+ok 27 - multi-client and tenant-scoped saved currentness reads configured Core context using the request bearer only
+  ---
+  duration_ms: 13.895184
+  type: 'test'
+  ...
+# Subtest: foreign membership scope and foreign native identity refuse before Core context
+ok 28 - foreign membership scope and foreign native identity refuse before Core context
+  ---
+  duration_ms: 1.65358
+  type: 'test'
+  ...
+# Subtest: archived and unavailable Core context both withhold the saved conversation
+ok 29 - archived and unavailable Core context both withhold the saved conversation
+  ---
+  duration_ms: 1.94593
+  type: 'test'
+  ...
+# Subtest: changed native context identity or client never validates the saved conversation
+ok 30 - changed native context identity or client never validates the saved conversation
+  ---
+  duration_ms: 3.51885
+  type: 'test'
+  ...
+1..30
+# tests 30
+# suites 0
+# pass 30
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 820.236501

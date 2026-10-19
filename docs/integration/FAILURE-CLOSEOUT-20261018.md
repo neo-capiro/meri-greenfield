@@ -1,5 +1,9 @@
 # Remaining Meri failure closeout — 2026-10-18
 
+> Later combined integration: [current source, exact gates and blocker ledger](MERI-INTEGRATION-20261018.md) receives PR187 and the complete document lane, repairs the four named fixtures plus the canonical retention-port startup composition and additional stale option assertions. This report's original failure inventories/logs remain historical evidence.
+
+> Query-date correction: valid explicit offset forms and ineffective nested timezone controls were found after this checkpoint. [The reviewed follow-up](QUERY-DATE-OFFSET-FOLLOWUP-20261018.md) fixes the validator and requires real child execution. The earlier standard/worker/type receipts below remain historical; their timezone-control claim is superseded.
+
 The **48 original test failures and all 21 TypeScript diagnostic occurrences are resolved** in this source-only follow-up to [PR180](https://github.com/neo-capiro/meri-greenfield/pull/180). Independent worktree lanes were reviewed and consolidated into one branch, `fix/remaining-audit-failures-20261018`. The reviewed local code commit is `e79ceba058343f2a78c655c50c82006604dda4e7`; its published equivalent is `3ce470a28be602499406359f40fd2b5998d0c58e`, with identical complete tree `859f84abf40d0ed565088b621f5c26a6f824877d`. The final documentation commit adds evidence only.
 
 Four additional inherited retention/history fixture failures remain named dependencies on dot's integration lane. This is not complete release qualification. The deployment/chat hold remains active.

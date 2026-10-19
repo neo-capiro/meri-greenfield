@@ -33,9 +33,13 @@ test('descriptor capture yields a credential-free launch template bound to the p
  const {command,args,env}=r.launchTemplate;
  assert.equal(command,r.executable.path);assert.match(r.executable.sha256,/^[a-f0-9]{64}$/u);
  assert.ok(args.includes('--max-turns=3')&&args.includes('--model=us.anthropic.claude-sonnet-4-6')&&args.includes('--max-budget-usd=2'));
+ assert.ok(args.includes('--thinking=disabled'));
  assert.equal(Object.hasOwn(env,'CLAUDE_CONFIG_DIR'),false);assert.equal(Object.hasOwn(env,'ANTHROPIC_AUTH_TOKEN'),false);
  assert.equal(env.ANTHROPIC_BASE_URL,'https://proxy.meri.internal:8443/');assert.equal(env.NODE_EXTRA_CA_CERTS,'/run/meri/poststart/bootstrap/control-ca.pem');
  assert.equal(env.CLAUDE_SECURESTORAGE_CONFIG_DIR,'/run/meri/sdk-secure');assert.equal(env.CLAUDE_CODE_MAX_OUTPUT_TOKENS,'8192');
+ assert.equal(env.MAX_THINKING_TOKENS,'0');assert.equal(env.DISABLE_PROMPT_CACHING,'1');assert.equal(env.CLAUDE_CODE_EFFORT_LEVEL,'unset');
+ const settingsAt=args.indexOf('--settings')+1;assert.ok(settingsAt>0);
+ assert.deepEqual(JSON.parse(args[settingsAt]),{autoMemoryEnabled:false,modelOverrides:{'claude-sonnet-4-6':'meri-sonnet-qualification'}});
  assert.equal(JSON.stringify(r).includes('meri-measurement-synthetic-credential'),false,'the probe credential never reaches the receipt');
  for(const k of ['commandIsRealpath','runnerCaTrust','secureStorage'])assert.equal(r.gates[k],'PASS',k);
  if(process.platform==='linux')for(const [k,v] of Object.entries(r.gates))assert.equal(v,'PASS',k);

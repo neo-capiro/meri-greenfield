@@ -1,0 +1,50 @@
+{
+  "status": "fulfilled",
+  "value": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Action completed."
+      }
+    ],
+    "structuredContent": {
+      "url": "https://github.com/neo-capiro/meri-greenfield/pull/187",
+      "number": 187,
+      "state": "open",
+      "merged": false,
+      "mergeable": true,
+      "draft": true,
+      "body": "## Scope\n\nStacked directly on draft PR #182 (`58b13b1644726bb307ea3e58461c7c0a970215f9`). This follow-up publishes exact commit `51f4a38e2e43d6ff050db08e3235b2b447b708cf`.\n\n- Forward the already injected `fetchImpl` into the multi-run registry.\n- Preserve the producer's `NATIVE_EXECUTION_KICKOFF_UNKNOWN` diagnostic code.\n- Add one focused test for each correction.\n\nNo deployment manifest, credential, CA material, Core HTTP behavior, or live task changes are included.\n\n## Verification\n\n- `git diff --check 58b13b16..51f4a38e` passed.\n- `node --test apps/runtime/test/runner-kickoff-diagnostic.test.mjs`: 1 passed, 0 failed on Node 22.23.3.\n- `node --test apps/runtime/test/prepared-candidate-fetch-propagation.test.mjs`: blocked before its assertion because this checkout lacks `@js-temporal/polyfill`. This is not counted as a pass.\n\nNode 24/Fargate trust IO, live startup, and a fresh chat remain unverified. The existing deployment and chat hold remains in force. This PR is source-only and draft.\n",
+      "title": "Forward control fetch and preserve kickoff diagnostic",
+      "base": "dot/control-ca-trust-20261018",
+      "base_sha": "58b13b1644726bb307ea3e58461c7c0a970215f9",
+      "head": "dot/control-startup-reconciliation-20261018",
+      "head_sha": "51f4a38e2e43d6ff050db08e3235b2b447b708cf",
+      "head_repo_id": 1412315060,
+      "head_repo_full_name": "neo-capiro/meri-greenfield",
+      "merge_commit_sha": "d72951032416e838bce1c5c06e75038fb69f33e2",
+      "user": {
+        "login": "neo-capiro",
+        "name": "neo-capiro",
+        "email": null,
+        "avatar_url": "https://avatars.githubusercontent.com/u/276034435?v=4",
+        "id": 276034435
+      },
+      "requested_reviewers": null,
+      "requested_team_reviewers": null,
+      "diff": null,
+      "comments": null,
+      "created_at": "2026-10-18T22:39:10Z",
+      "updated_at": "2026-10-18T22:39:10Z",
+      "closed_at": null,
+      "merged_at": null,
+      "commits": 1,
+      "changed_files": 4,
+      "additions": 32,
+      "deletions": 2,
+      "display_url": "https://github.com/neo-capiro/meri-greenfield/pull/187",
+      "display_title": "Forward control fetch and preserve kickoff diagnostic"
+    },
+    "isError": false
+  }
+}

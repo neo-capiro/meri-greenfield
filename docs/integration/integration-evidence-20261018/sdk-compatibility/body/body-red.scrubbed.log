@@ -1,0 +1,43 @@
+test_structured_schema_binding_is_trusted_immutable_json (apps.proxy.product.test.test_envelope.EnvelopeTests.test_structured_schema_binding_is_trusted_immutable_json) ... ERROR
+test_sdk_metadata_beta_enums_and_empty_tools_preserve_counted_bytes (apps.proxy.qualification.test.test_bedrock_transport.BodyTests.test_sdk_metadata_beta_enums_and_empty_tools_preserve_counted_bytes) ... ERROR
+test_structured_output_requires_exact_trusted_schema_and_tool_authority (apps.proxy.qualification.test.test_bedrock_transport.BodyTests.test_structured_output_requires_exact_trusted_schema_and_tool_authority) ... ERROR
+
+======================================================================
+ERROR: test_structured_schema_binding_is_trusted_immutable_json (apps.proxy.product.test.test_envelope.EnvelopeTests.test_structured_schema_binding_is_trusted_immutable_json)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>/apps/proxy/product/test/test_envelope.py", line 51, in test_structured_schema_binding_is_trusted_immutable_json
+    limits = bb.BodyLimits(structured_output_schema_json=json.dumps(schema))
+TypeError: BodyLimits.__init__() got an unexpected keyword argument 'structured_output_schema_json'
+
+======================================================================
+ERROR: test_sdk_metadata_beta_enums_and_empty_tools_preserve_counted_bytes (apps.proxy.qualification.test.test_bedrock_transport.BodyTests.test_sdk_metadata_beta_enums_and_empty_tools_preserve_counted_bytes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>/apps/proxy/qualification/test/test_bedrock_transport.py", line 545, in test_sdk_metadata_beta_enums_and_empty_tools_preserve_counted_bytes
+    native = inspect_native_request("POST", URL, raw, BodyLimits())
+  File "<worktree>/apps/proxy/qualification/runtime/bedrock_body.py", line 158, in inspect_native_request
+    _object(body, ("anthropic_version", "max_tokens", "messages", "system", "tools", "tool_choice", "temperature"),
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            ("anthropic_version", "max_tokens", "messages"))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<worktree>/apps/proxy/qualification/runtime/bedrock_body.py", line 66, in _object
+    _deny("UNSUPPORTED_BODY_SHAPE")
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<worktree>/apps/proxy/qualification/runtime/bedrock_body.py", line 61, in _deny
+    raise AdmissionDenied(reason)
+runtime.bedrock_body.AdmissionDenied: UNSUPPORTED_BODY_SHAPE
+
+======================================================================
+ERROR: test_structured_output_requires_exact_trusted_schema_and_tool_authority (apps.proxy.qualification.test.test_bedrock_transport.BodyTests.test_structured_output_requires_exact_trusted_schema_and_tool_authority)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>/apps/proxy/qualification/test/test_bedrock_transport.py", line 566, in test_structured_output_requires_exact_trusted_schema_and_tool_authority
+    limits = BodyLimits(allowed_tool_names=frozenset({"StructuredOutput"}),
+                        structured_output_schema_json=json.dumps(schema))
+TypeError: BodyLimits.__init__() got an unexpected keyword argument 'structured_output_schema_json'
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.001s
+
+FAILED (errors=3)

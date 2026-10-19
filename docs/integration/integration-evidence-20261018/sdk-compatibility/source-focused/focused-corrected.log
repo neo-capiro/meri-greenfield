@@ -1,0 +1,34 @@
+✔ synchronous facade retains one preparation and iterator; interrupt and close use same Query (1.839078ms)
+✔ close before first iteration retires transport without preparing a Query (0.299721ms)
+✔ data options pin rejects drift before transport construction and invokes no getters (1.896975ms)
+✔ projection rejects hostile nested proxy and callback getter without evaluating either (0.509637ms)
+✔ actual adopted SDK MCP server prototype close is admitted effect-free (85.174603ms)
+✔ without a declared policy the SDK query receives exactly the default first-chat options and no progress is displayed (129.730753ms)
+✔ a declared subagent policy configures SDK agents and displays only the admitted progress summary (28.339272ms)
+✔ audit hooks publish only hashes through the run owner append port during the activity (24.473544ms)
+✔ a run owner that refuses capability events denies the tool and fails the run instead of completing unaudited (26.436048ms)
+✔ an invalid declared policy is refused before claim and before any SDK query (16.192992ms)
+✔ a malformed hook input latches: the tool is denied, no later output is published and the run fails instead of completing (25.760331ms)
+✔ a latched failure after the last output still prevents completion; post-tool, compaction and subagent hook paths each latch (172.732478ms)
+✔ Bash reaches the SDK only with explicit policy eligibility and the trusted sandbox attestation from runtime preparation; networked Bash also needs the egress fact and the approval port (201.491381ms)
+✔ the attestation is a closed trusted fact; weaker nested sandboxing needs the outer disposable worker as the boundary (2.616328ms)
+✔ Bash is admitted only with explicit policy eligibility AND an available attestation; workspaceTools alone never admits it (7.452176ms)
+✔ the SDK sandbox settings lock every escape hatch, scrub every worker credential and confine writes to the task workspace (1.748922ms)
+✔ a fragment can never carry Bash without the locked sandbox, its policy-tier locks and the credential scrub (4.595297ms)
+✔ conversation options keep the fixed base: settings and env are extended, never replaced, and every worker credential is scrubbed (1.859949ms)
+✔ every hook validation, projection or publication failure latches and check() refuses completion; no event follows a latch (3.794892ms)
+✔ an absent or all-off capability fragment keeps the default options byte-identical in shape and order (6.130246ms)
+✔ the capability fragment is merged additively: allowedTools union, hooks by event, permission callbacks chained (11.354158ms)
+✔ fragment validation refuses unknown keys, undeclared hook events, foreign agent types and cwd plugin paths (1.500318ms)
+✔ the pinned runner CA reaches the SDK subprocess env exactly once and is covered by the SDK options digest (2.954587ms)
+✔ any other CA path, or a CA without the admitted per-task SDK directories, refuses (0.775948ms)
+✔ public SDK controls identify the fixed proxy model and keep schema, tool and budget authority intact (0.753294ms)
+✔ the native options projection refuses every enabled or malformed thinking setting without invoking getters (0.509207ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5292.498952

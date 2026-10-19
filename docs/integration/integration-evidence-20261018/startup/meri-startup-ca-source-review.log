@@ -1,0 +1,12 @@
+✔ composite preserves every locked RDS byte and appends exactly the pinned private server CA (249.350928ms)
+✔ changed RDS bytes, a foreign private pin, a leaf, multiple PEMs and private key material refuse (3.061176ms)
+✔ control startup admits only the fixed composite path and refuses missing/wrong environment before resources (0.776889ms)
+✔ fresh Node global fetch trusts the private origin with composite roots, retains all RDS roots and verifies hostname (279.019909ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 617.721201

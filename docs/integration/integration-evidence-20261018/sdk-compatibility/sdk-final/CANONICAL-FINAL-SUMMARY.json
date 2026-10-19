@@ -1,0 +1,1676 @@
+{
+  "scope": "OFFLINE_PARTITION_ONLY",
+  "date": "2026-10-19",
+  "sourceCommit": "90f82dc692fd017f4f8957cfaf8402000bb2f92f",
+  "branch": "qual/sdk-proxy-interop-20261018",
+  "sourceTree": "efafefbe23638750224906c65deb28ad736e6e98",
+  "versions": {
+    "sdk": "0.3.295",
+    "cli": "2.1.295",
+    "node": "v24.19.0",
+    "python": "3.13.5",
+    "litellm": "1.104.2",
+    "boto3": "1.43.111",
+    "botocore": "1.43.111",
+    "httpx": "0.28.1",
+    "fastapi": "0.136.3",
+    "uvicorn": "0.51.0"
+  },
+  "executableSha256": "4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358",
+  "productConfigSha256": "64860d829d7c022f6640b1a75eb48ad05dc2421d8e5e2bcdfdda50b421754d19",
+  "matrix": {
+    "passed": 17,
+    "failed": 0,
+    "supervisorTimeouts": 0,
+    "sdkDeadlineMs": 30000,
+    "supervisorTimeoutSeconds": 75
+  },
+  "focusedTests": {
+    "command": [
+      "/tmp/meri-integration-sdk-env/bin/python",
+      "-B",
+      "-m",
+      "unittest",
+      "-v",
+      "apps.proxy.product.test.test_sdk_proxy_offline"
+    ],
+    "sourceCommit": "90f82dc692fd017f4f8957cfaf8402000bb2f92f",
+    "exit": 0,
+    "logSha256": "3fda2e254a3ee299ecac216178db7f6dd4d90ede82c288e250513dcf6902d641"
+  },
+  "beforeSnapshot": {
+    "path": "before-canonical-owner",
+    "passed": 15,
+    "failed": 2,
+    "classification": "qualification carrier omitted actual production uncertainty gate",
+    "manifestSha256": "51205a1812176e0e4cc7c531c0dc21b3a8cb7670f5afbb1563d01d8c7150515f"
+  },
+  "boundaries": {
+    "ownerHttps": "OPEN_RFC1918_INTERFACES_UNAVAILABLE",
+    "tlsEvidence": "SYNTHETIC_NOT_HTTPS_QUALIFICATION",
+    "ownerProtocol": "ACTUAL_PYTHON_ProductOwnerBridge_AND_JS_createProductOwnerChannel",
+    "database": "scripted SQL storage; actual canonical JS admission/reservation/settlement decisions",
+    "admissionFacts": "synthetic trusted fact source; actual Python admission reader and shared carrier/gate",
+    "countTokens": "actual boto3 client with botocore Stubber; not AWS acceptance",
+    "provider": "in-process HTTPX stub with raw CRC-protected Bedrock frames; zero real provider/AWS calls",
+    "shippingImage": "UNRUN",
+    "postgresql": "UNRUN",
+    "genuineCoreEcsCurrentness": "UNRUN",
+    "perRunProductionSchemaMcpCustody": "OPEN",
+    "sdkNegativeTermination": "bounded 30-second no-success evidence; not natural termination of an unbounded retry loop",
+    "budget": "explicit canonically admitted synthetic250000 microUSD; nativeSDK max_tokens8192, hold135248"
+  },
+  "cases": [
+    {
+      "case": "canonical-final-minimal-messages-cached",
+      "receipt": "canonical-final-minimal-messages-cached.json",
+      "sha256": "102015da949acb534c78f6dbbcee68331d6a3937c1c3d1805d5e052a8b82614c",
+      "sourceCommit": "90f82dc692fd017f4f8957cfaf8402000bb2f92f",
+      "sourceFiles": {
+        "run.mjs": "93a60df41f16ee87c080f600322a2c780897b7e2869455289b46491b61a77eb1",
+        "native_proxy.py": "876d8e71d98489c198251aaf400b8b7fc14d513500603022226ed32624a6214a",
+        "provider_stub.py": "8d8b31f2feff3b37b9d8c5a4186a0b90475088bbd07b74ed5e178f77fde20757",
+        "owner_peer.mjs": "bc2515160ace8f696f6317ffd4ac7a999e211d3068a31ac049294aff9abe528c",
+        "model_ledger_fixture.mjs": "70f4d7fe2deafe5c58682923f957f8ea247072a3f7d21a166934f8403240cf56"
+      },
+      "client": "minimal-messages",
+      "mode": "cached",
+      "outputFormat": "none",
+      "sdkSuccessObserved": null,
+      "sdkResults": [],
+      "sdkIterationFailure": null,
+      "countRequests": 1,
+      "providerStubAttempts": 1,
+      "ownerOperations": {
+        "reserve": 1
+      },
+      "reservationInserts": 1,
+      "settlementUpdates": 0,
+      "durableRequests": [
+        {
+          "requestId": "8a8c20c30268483c8bc986b82d8e5ced",
+          "state": "UNKNOWN",
+          "holdMicroUSD": "344",
+          "actualMicroUSD": null,
+          "inputTokens": 12,
+          "maxOutputTokens": 16
+        }
+      ],
+      "consumedMicroUSD": "0",
+      "quarantined": false,
+      "ownerHostGateAvailable": true,
+      "ownerExchangeAborted": false,
+      "ownerServiceGateAvailable": true,
+      "ownerChannelCount": 1,
+      "nativeStarted": true,
+      "nativeStopped": true,
+      "ingressAttempts": 1,
+      "ingressRetryHeaders": [
+        []
+      ],
+      "rawRequestHashes": [
+        "ae5baca25964a93361f3b52f431a5118e87a8bde80c3f9656236d1de1213c63a"
+      ],
+      "nativeRequestHashes": [
+        "050494ca4db1622e35d5405b99b0671df81ae67b1823887d11097120d8de8365"
+      ],
+      "nativeRequests": [
+        {
+          "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+          "betaEnums": [],
+          "nativeHeaderBetaEnums": [],
+          "thinkingDisabled": null,
+          "temperature": 0,
+          "toolNames": []
+        }
+      ]
+    },
+    {
+      "case": "canonical-final-minimal-messages-complete",
+      "receipt": "canonical-final-minimal-messages-complete.json",
+      "sha256": "9063891da3a2323855bbcdc8b414a8fb103be08a573f3623f0ca9a30c234a6d7",
+      "sourceCommit": "90f82dc692fd017f4f8957cfaf8402000bb2f92f",
+      "sourceFiles": {
+        "run.mjs": "93a60df41f16ee87c080f600322a2c780897b7e2869455289b46491b61a77eb1",
+        "native_proxy.py": "876d8e71d98489c198251aaf400b8b7fc14d513500603022226ed32624a6214a",
+        "provider_stub.py": "8d8b31f2feff3b37b9d8c5a4186a0b90475088bbd07b74ed5e178f77fde20757",
+        "owner_peer.mjs": "bc2515160ace8f696f6317ffd4ac7a999e211d3068a31ac049294aff9abe528c",
+        "model_ledger_fixture.mjs": "70f4d7fe2deafe5c58682923f957f8ea247072a3f7d21a166934f8403240cf56"
+      },
+      "client": "minimal-messages",
+      "mode": "complete",
+      "outputFormat": "none",
+      "sdkSuccessObserved": null,
+      "sdkResults": [],
+      "sdkIterationFailure": null,
+      "countRequests": 1,
+      "providerStubAttempts": 1,
+      "ownerOperations": {
+        "reserve": 1,
+        "settle": 1
+      },
+      "reservationInserts": 1,
+      "settlementUpdates": 1,
+      "durableRequests": [
+        {
+          "requestId": "b3824d47edbd465bae884eefe87531e2",
+          "state": "SETTLED",
+          "holdMicroUSD": "344",
+          "actualMicroUSD": "90",
+          "inputTokens": 12,
+          "maxOutputTokens": 16
+        }
+      ],
+      "consumedMicroUSD": "90",
+      "quarantined": false,
+      "ownerHostGateAvailable": true,
+      "ownerExchangeAborted": false,
+      "ownerServiceGateAvailable": true,
+      "ownerChannelCount": 1,
+      "nativeStarted": true,
+      "nativeStopped": true,
+      "ingressAttempts": 1,
+      "ingressRetryHeaders": [
+        []
+      ],
+      "rawRequestHashes": [
+        "ae5baca25964a93361f3b52f431a5118e87a8bde80c3f9656236d1de1213c63a"
+      ],
+      "nativeRequestHashes": [
+        "050494ca4db1622e35d5405b99b0671df81ae67b1823887d11097120d8de8365"
+      ],
+      "nativeRequests": [
+        {
+          "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+          "betaEnums": [],
+          "nativeHeaderBetaEnums": [],
+          "thinkingDisabled": null,
+          "temperature": 0,
+          "toolNames": []
+        }
+      ]
+    },
+    {
+      "case": "canonical-final-minimal-messages-missing-usage",
+      "receipt": "canonical-final-minimal-messages-missing-usage.json",
+      "sha256": "c5ad18f2d2f89505071bcf61c317f1ae835741361c1696c3f856087157038b9b",
+      "sourceCommit": "90f82dc692fd017f4f8957cfaf8402000bb2f92f",
+      "sourceFiles": {
+        "run.mjs": "93a60df41f16ee87c080f600322a2c780897b7e2869455289b46491b61a77eb1",
+        "native_proxy.py": "876d8e71d98489c198251aaf400b8b7fc14d513500603022226ed32624a6214a",
+        "provider_stub.py": "8d8b31f2feff3b37b9d8c5a4186a0b90475088bbd07b74ed5e178f77fde20757",
+        "owner_peer.mjs": "bc2515160ace8f696f6317ffd4ac7a999e211d3068a31ac049294aff9abe528c",
+        "model_ledger_fixture.mjs": "70f4d7fe2deafe5c58682923f957f8ea247072a3f7d21a166934f8403240cf56"
+      },
+      "client": "minimal-messages",
+      "mode": "missing-usage",
+      "outputFormat": "none",
+      "sdkSuccessObserved": null,
+      "sdkResults": [],
+      "sdkIterationFailure": null,
+      "countRequests": 1,
+      "providerStubAttempts": 1,
+      "ownerOperations": {
+        "reserve": 1
+      },
+      "reservationInserts": 1,
+      "settlementUpdates": 0,
+      "durableRequests": [
+        {
+          "requestId": "418ca82801c64c9bba1426c2318903c3",
+          "state": "UNKNOWN",
+          "holdMicroUSD": "344",
+          "actualMicroUSD": null,
+          "inputTokens": 12,
+          "maxOutputTokens": 16
+        }
+      ],
+      "consumedMicroUSD": "0",
+      "quarantined": false,
+      "ownerHostGateAvailable": true,
+      "ownerExchangeAborted": false,
+      "ownerServiceGateAvailable": true,
+      "ownerChannelCount": 1,
+      "nativeStarted": true,
+      "nativeStopped": true,
+      "ingressAttempts": 1,
+      "ingressRetryHeaders": [
+        []
+      ],
+      "rawRequestHashes": [
+        "ae5baca25964a93361f3b52f431a5118e87a8bde80c3f9656236d1de1213c63a"
+      ],
+      "nativeRequestHashes": [
+        "050494ca4db1622e35d5405b99b0671df81ae67b1823887d11097120d8de8365"
+      ],
+      "nativeRequests": [
+        {
+          "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+          "betaEnums": [],
+          "nativeHeaderBetaEnums": [],
+          "thinkingDisabled": null,
+          "temperature": 0,
+          "toolNames": []
+        }
+      ]
+    },
+    {
+      "case": "canonical-final-minimal-messages-reservation-ack-lost",
+      "receipt": "canonical-final-minimal-messages-reservation-ack-lost.json",
+      "sha256": "980b190ed56e8fc33614d085946ea538b9f60a603765c212aea4605cbba39e1d",
+      "sourceCommit": "90f82dc692fd017f4f8957cfaf8402000bb2f92f",
+      "sourceFiles": {
+        "run.mjs": "93a60df41f16ee87c080f600322a2c780897b7e2869455289b46491b61a77eb1",
+        "native_proxy.py": "876d8e71d98489c198251aaf400b8b7fc14d513500603022226ed32624a6214a",
+        "provider_stub.py": "8d8b31f2feff3b37b9d8c5a4186a0b90475088bbd07b74ed5e178f77fde20757",
+        "owner_peer.mjs": "bc2515160ace8f696f6317ffd4ac7a999e211d3068a31ac049294aff9abe528c",
+        "model_ledger_fixture.mjs": "70f4d7fe2deafe5c58682923f957f8ea247072a3f7d21a166934f8403240cf56"
+      },
+      "client": "minimal-messages",
+      "mode": "reservation-ack-lost",
+      "outputFormat": "none",
+      "sdkSuccessObserved": null,
+      "sdkResults": [],
+      "sdkIterationFailure": null,
+      "countRequests": 1,
+      "providerStubAttempts": 0,
+      "ownerOperations": {
+        "reserve": 1
+      },
+      "reservationInserts": 1,
+      "settlementUpdates": 0,
+      "durableRequests": [
+        {
+          "requestId": "9d2489594b8142929483875bfa60c645",
+          "state": "UNKNOWN",
+          "holdMicroUSD": "344",
+          "actualMicroUSD": null,
+          "inputTokens": 12,
+          "maxOutputTokens": 16
+        }
+      ],
+      "consumedMicroUSD": "0",
+      "quarantined": false,
+      "ownerHostGateAvailable": false,
+      "ownerExchangeAborted": true,
+      "ownerServiceGateAvailable": true,
+      "ownerChannelCount": 1,
+      "nativeStarted": true,
+      "nativeStopped": true,
+      "ingressAttempts": 1,
+      "ingressRetryHeaders": [
+        []
+      ],
+      "rawRequestHashes": [
+        "ae5baca25964a93361f3b52f431a5118e87a8bde80c3f9656236d1de1213c63a"
+      ],
+      "nativeRequestHashes": [
+        "050494ca4db1622e35d5405b99b0671df81ae67b1823887d11097120d8de8365"
+      ],
+      "nativeRequests": [
+        {
+          "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+          "betaEnums": [],
+          "nativeHeaderBetaEnums": [],
+          "thinkingDisabled": null,
+          "temperature": 0,
+          "toolNames": []
+        }
+      ]
+    },
+    {
+      "case": "canonical-final-minimal-messages-settlement-ack-committed",
+      "receipt": "canonical-final-minimal-messages-settlement-ack-committed.json",
+      "sha256": "f16184572e0b3aa7bc7184af74666355bec78b02ac2ed6c8430062b84bdffff1",
+      "sourceCommit": "90f82dc692fd017f4f8957cfaf8402000bb2f92f",
+      "sourceFiles": {
+        "run.mjs": "93a60df41f16ee87c080f600322a2c780897b7e2869455289b46491b61a77eb1",
+        "native_proxy.py": "876d8e71d98489c198251aaf400b8b7fc14d513500603022226ed32624a6214a",
+        "provider_stub.py": "8d8b31f2feff3b37b9d8c5a4186a0b90475088bbd07b74ed5e178f77fde20757",
+        "owner_peer.mjs": "bc2515160ace8f696f6317ffd4ac7a999e211d3068a31ac049294aff9abe528c",
+        "model_ledger_fixture.mjs": "70f4d7fe2deafe5c58682923f957f8ea247072a3f7d21a166934f8403240cf56"
+      },
+      "client": "minimal-messages",
+      "mode": "settlement-ack-committed",
+      "outputFormat": "none",
+      "sdkSuccessObserved": null,
+      "sdkResults": [],
+      "sdkIterationFailure": null,
+      "countRequests": 1,
+      "providerStubAttempts": 1,
+      "ownerOperations": {
+        "reserve": 1,
+        "settle": 1,
+        "outcome": 1
+      },
+      "reservationInserts": 1,
+      "settlementUpdates": 1,
+      "durableRequests": [
+        {
+          "requestId": "105aae78070b4515820f34afc4f7d105",
+          "state": "SETTLED",
+          "holdMicroUSD": "344",
+          "actualMicroUSD": "90",
+          "inputTokens": 12,
+          "maxOutputTokens": 16
+        }
+      ],
+      "consumedMicroUSD": "90",
+      "quarantined": false,
+      "ownerHostGateAvailable": true,
+      "ownerExchangeAborted": false,
+      "ownerServiceGateAvailable": true,
+      "ownerChannelCount": 1,
+      "nativeStarted": true,
+      "nativeStopped": true,
+      "ingressAttempts": 1,
+      "ingressRetryHeaders": [
+        []
+      ],
+      "rawRequestHashes": [
+        "ae5baca25964a93361f3b52f431a5118e87a8bde80c3f9656236d1de1213c63a"
+      ],
+      "nativeRequestHashes": [
+        "050494ca4db1622e35d5405b99b0671df81ae67b1823887d11097120d8de8365"
+      ],
+      "nativeRequests": [
+        {
+          "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+          "betaEnums": [],
+          "nativeHeaderBetaEnums": [],
+          "thinkingDisabled": null,
+          "temperature": 0,
+          "toolNames": []
+        }
+      ]
+    },
+    {
+      "case": "canonical-final-minimal-messages-settlement-ack-unresolved",
+      "receipt": "canonical-final-minimal-messages-settlement-ack-unresolved.json",
+      "sha256": "6e6e14fdd3d404711b3f5a1b106c47e553165b86e737d4052abbc8cd8efe9553",
+      "sourceCommit": "90f82dc692fd017f4f8957cfaf8402000bb2f92f",
+      "sourceFiles": {
+        "run.mjs": "93a60df41f16ee87c080f600322a2c780897b7e2869455289b46491b61a77eb1",
+        "native_proxy.py": "876d8e71d98489c198251aaf400b8b7fc14d513500603022226ed32624a6214a",
+        "provider_stub.py": "8d8b31f2feff3b37b9d8c5a4186a0b90475088bbd07b74ed5e178f77fde20757",
+        "owner_peer.mjs": "bc2515160ace8f696f6317ffd4ac7a999e211d3068a31ac049294aff9abe528c",
+        "model_ledger_fixture.mjs": "70f4d7fe2deafe5c58682923f957f8ea247072a3f7d21a166934f8403240cf56"
+      },
+      "client": "minimal-messages",
+      "mode": "settlement-ack-unresolved",
+      "outputFormat": "none",
+      "sdkSuccessObserved": null,
+      "sdkResults": [],
+      "sdkIterationFailure": null,
+      "countRequests": 1,
+      "providerStubAttempts": 1,
+      "ownerOperations": {
+        "reserve": 1,
+        "settle": 1,
+        "outcome": 1
+      },
+      "reservationInserts": 1,
+      "settlementUpdates": 1,
+      "durableRequests": [
+        {
+          "requestId": "275d777eaea54ac5bbbddb61dac6ca00",
+          "state": "SETTLED",
+          "holdMicroUSD": "344",
+          "actualMicroUSD": "90",
+          "inputTokens": 12,
+          "maxOutputTokens": 16
+        }
+      ],
+      "consumedMicroUSD": "90",
+      "quarantined": false,
+      "ownerHostGateAvailable": false,
+      "ownerExchangeAborted": true,
+      "ownerServiceGateAvailable": true,
+      "ownerChannelCount": 1,
+      "nativeStarted": true,
+      "nativeStopped": true,
+      "ingressAttempts": 1,
+      "ingressRetryHeaders": [
+        []
+      ],
+      "rawRequestHashes": [
+        "ae5baca25964a93361f3b52f431a5118e87a8bde80c3f9656236d1de1213c63a"
+      ],
+      "nativeRequestHashes": [
+        "050494ca4db1622e35d5405b99b0671df81ae67b1823887d11097120d8de8365"
+      ],
+      "nativeRequests": [
+        {
+          "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+          "betaEnums": [],
+          "nativeHeaderBetaEnums": [],
+          "thinkingDisabled": null,
+          "temperature": 0,
+          "toolNames": []
+        }
+      ]
+    },
+    {
+      "case": "canonical-final-minimal-messages-truncated",
+      "receipt": "canonical-final-minimal-messages-truncated.json",
+      "sha256": "164ba374e251cd13061cd786a4905f209ce958a6be1411b50646b988662dd707",
+      "sourceCommit": "90f82dc692fd017f4f8957cfaf8402000bb2f92f",
+      "sourceFiles": {
+        "run.mjs": "93a60df41f16ee87c080f600322a2c780897b7e2869455289b46491b61a77eb1",
+        "native_proxy.py": "876d8e71d98489c198251aaf400b8b7fc14d513500603022226ed32624a6214a",
+        "provider_stub.py": "8d8b31f2feff3b37b9d8c5a4186a0b90475088bbd07b74ed5e178f77fde20757",
+        "owner_peer.mjs": "bc2515160ace8f696f6317ffd4ac7a999e211d3068a31ac049294aff9abe528c",
+        "model_ledger_fixture.mjs": "70f4d7fe2deafe5c58682923f957f8ea247072a3f7d21a166934f8403240cf56"
+      },
+      "client": "minimal-messages",
+      "mode": "truncated",
+      "outputFormat": "none",
+      "sdkSuccessObserved": null,
+      "sdkResults": [],
+      "sdkIterationFailure": null,
+      "countRequests": 1,
+      "providerStubAttempts": 1,
+      "ownerOperations": {
+        "reserve": 1
+      },
+      "reservationInserts": 1,
+      "settlementUpdates": 0,
+      "durableRequests": [
+        {
+          "requestId": "ec15a798be2c4a839372cfccba671aa0",
+          "state": "UNKNOWN",
+          "holdMicroUSD": "344",
+          "actualMicroUSD": null,
+          "inputTokens": 12,
+          "maxOutputTokens": 16
+        }
+      ],
+      "consumedMicroUSD": "0",
+      "quarantined": false,
+      "ownerHostGateAvailable": true,
+      "ownerExchangeAborted": false,
+      "ownerServiceGateAvailable": true,
+      "ownerChannelCount": 1,
+      "nativeStarted": true,
+      "nativeStopped": true,
+      "ingressAttempts": 1,
+      "ingressRetryHeaders": [
+        []
+      ],
+      "rawRequestHashes": [
+        "ae5baca25964a93361f3b52f431a5118e87a8bde80c3f9656236d1de1213c63a"
+      ],
+      "nativeRequestHashes": [
+        "050494ca4db1622e35d5405b99b0671df81ae67b1823887d11097120d8de8365"
+      ],
+      "nativeRequests": [
+        {
+          "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+          "betaEnums": [],
+          "nativeHeaderBetaEnums": [],
+          "thinkingDisabled": null,
+          "temperature": 0,
+          "toolNames": []
+        }
+      ]
+    },
+    {
+      "case": "canonical-final-sdk-cached",
+      "receipt": "canonical-final-sdk-cached.json",
+      "sha256": "757c397011e6d3dffbc5b3af4dd0111586dc1582741381c76895093651cbf61f",
+      "sourceCommit": "90f82dc692fd017f4f8957cfaf8402000bb2f92f",
+      "sourceFiles": {
+        "run.mjs": "93a60df41f16ee87c080f600322a2c780897b7e2869455289b46491b61a77eb1",
+        "native_proxy.py": "876d8e71d98489c198251aaf400b8b7fc14d513500603022226ed32624a6214a",
+        "provider_stub.py": "8d8b31f2feff3b37b9d8c5a4186a0b90475088bbd07b74ed5e178f77fde20757",
+        "owner_peer.mjs": "bc2515160ace8f696f6317ffd4ac7a999e211d3068a31ac049294aff9abe528c",
+        "model_ledger_fixture.mjs": "70f4d7fe2deafe5c58682923f957f8ea247072a3f7d21a166934f8403240cf56"
+      },
+      "client": "sdk",
+      "mode": "cached",
+      "outputFormat": "none",
+      "sdkSuccessObserved": false,
+      "sdkResults": [],
+      "sdkIterationFailure": "Error",
+      "countRequests": 2,
+      "providerStubAttempts": 1,
+      "ownerOperations": {
+        "reserve": 2
+      },
+      "reservationInserts": 1,
+      "settlementUpdates": 0,
+      "durableRequests": [
+        {
+          "requestId": "81f97ec941dc4ed7a8457685e6dc51b7",
+          "state": "UNKNOWN",
+          "holdMicroUSD": "135248",
+          "actualMicroUSD": null,
+          "inputTokens": 12,
+          "maxOutputTokens": 8192
+        }
+      ],
+      "consumedMicroUSD": "0",
+      "quarantined": false,
+      "ownerHostGateAvailable": false,
+      "ownerExchangeAborted": true,
+      "ownerServiceGateAvailable": true,
+      "ownerChannelCount": 2,
+      "nativeStarted": true,
+      "nativeStopped": true,
+      "ingressAttempts": 6,
+      "ingressRetryHeaders": [
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ]
+      ],
+      "rawRequestHashes": [
+        "567442c8a0fb5eefe173c9fa58f1f23f57698c82c26bb46fdcab266a9cbf0275",
+        "567442c8a0fb5eefe173c9fa58f1f23f57698c82c26bb46fdcab266a9cbf0275",
+        "567442c8a0fb5eefe173c9fa58f1f23f57698c82c26bb46fdcab266a9cbf0275",
+        "567442c8a0fb5eefe173c9fa58f1f23f57698c82c26bb46fdcab266a9cbf0275",
+        "567442c8a0fb5eefe173c9fa58f1f23f57698c82c26bb46fdcab266a9cbf0275",
+        "567442c8a0fb5eefe173c9fa58f1f23f57698c82c26bb46fdcab266a9cbf0275"
+      ],
+      "nativeRequestHashes": [
+        "d8ac59db257d0b369bac276514ef4168236d874559b17078a8b7f1c416f10430",
+        "d8ac59db257d0b369bac276514ef4168236d874559b17078a8b7f1c416f10430"
+      ],
+      "nativeRequests": [
+        {
+          "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+          "betaEnums": [
+            "context-management-2025-06-27",
+            "effort-2025-11-24"
+          ],
+          "nativeHeaderBetaEnums": [
+            "context-management-2025-06-27",
+            "effort-2025-11-24"
+          ],
+          "thinkingDisabled": true,
+          "temperature": 1,
+          "toolNames": []
+        },
+        {
+          "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+          "betaEnums": [
+            "context-management-2025-06-27",
+            "effort-2025-11-24"
+          ],
+          "nativeHeaderBetaEnums": [
+            "context-management-2025-06-27",
+            "effort-2025-11-24"
+          ],
+          "thinkingDisabled": true,
+          "temperature": 1,
+          "toolNames": []
+        }
+      ]
+    },
+    {
+      "case": "canonical-final-sdk-complete",
+      "receipt": "canonical-final-sdk-complete.json",
+      "sha256": "f079a6bf6556f652f5501e53cd39d983902fdae946db7816fd1a3a01933b2600",
+      "sourceCommit": "90f82dc692fd017f4f8957cfaf8402000bb2f92f",
+      "sourceFiles": {
+        "run.mjs": "93a60df41f16ee87c080f600322a2c780897b7e2869455289b46491b61a77eb1",
+        "native_proxy.py": "876d8e71d98489c198251aaf400b8b7fc14d513500603022226ed32624a6214a",
+        "provider_stub.py": "8d8b31f2feff3b37b9d8c5a4186a0b90475088bbd07b74ed5e178f77fde20757",
+        "owner_peer.mjs": "bc2515160ace8f696f6317ffd4ac7a999e211d3068a31ac049294aff9abe528c",
+        "model_ledger_fixture.mjs": "70f4d7fe2deafe5c58682923f957f8ea247072a3f7d21a166934f8403240cf56"
+      },
+      "client": "sdk",
+      "mode": "complete",
+      "outputFormat": "none",
+      "sdkSuccessObserved": true,
+      "sdkResults": [
+        {
+          "subtype": "success",
+          "isError": false
+        }
+      ],
+      "sdkIterationFailure": null,
+      "countRequests": 1,
+      "providerStubAttempts": 1,
+      "ownerOperations": {
+        "reserve": 1,
+        "settle": 1
+      },
+      "reservationInserts": 1,
+      "settlementUpdates": 1,
+      "durableRequests": [
+        {
+          "requestId": "472d3c780a684d75bf408b93e5d084dc",
+          "state": "SETTLED",
+          "holdMicroUSD": "135248",
+          "actualMicroUSD": "90",
+          "inputTokens": 12,
+          "maxOutputTokens": 8192
+        }
+      ],
+      "consumedMicroUSD": "90",
+      "quarantined": false,
+      "ownerHostGateAvailable": true,
+      "ownerExchangeAborted": false,
+      "ownerServiceGateAvailable": true,
+      "ownerChannelCount": 1,
+      "nativeStarted": true,
+      "nativeStopped": true,
+      "ingressAttempts": 1,
+      "ingressRetryHeaders": [
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ]
+      ],
+      "rawRequestHashes": [
+        "3062e1728fde4c389154168aac806d18212e80e761b96bc870d45e8389b64989"
+      ],
+      "nativeRequestHashes": [
+        "467ad24a5c292b83741b86b1f9095e2b5a7aeab4d14b165ff59338d5302df45f"
+      ],
+      "nativeRequests": [
+        {
+          "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+          "betaEnums": [
+            "context-management-2025-06-27",
+            "effort-2025-11-24"
+          ],
+          "nativeHeaderBetaEnums": [
+            "context-management-2025-06-27",
+            "effort-2025-11-24"
+          ],
+          "thinkingDisabled": true,
+          "temperature": 1,
+          "toolNames": []
+        }
+      ]
+    },
+    {
+      "case": "canonical-final-sdk-complete-schema",
+      "receipt": "canonical-final-sdk-complete-schema.json",
+      "sha256": "4ba219bb9d3ca65c2365c559e3f10d8dc8db22d30159f1e4e2876e138f8f6bf6",
+      "sourceCommit": "90f82dc692fd017f4f8957cfaf8402000bb2f92f",
+      "sourceFiles": {
+        "run.mjs": "93a60df41f16ee87c080f600322a2c780897b7e2869455289b46491b61a77eb1",
+        "native_proxy.py": "876d8e71d98489c198251aaf400b8b7fc14d513500603022226ed32624a6214a",
+        "provider_stub.py": "8d8b31f2feff3b37b9d8c5a4186a0b90475088bbd07b74ed5e178f77fde20757",
+        "owner_peer.mjs": "bc2515160ace8f696f6317ffd4ac7a999e211d3068a31ac049294aff9abe528c",
+        "model_ledger_fixture.mjs": "70f4d7fe2deafe5c58682923f957f8ea247072a3f7d21a166934f8403240cf56"
+      },
+      "client": "sdk",
+      "mode": "complete",
+      "outputFormat": "json-schema",
+      "sdkSuccessObserved": true,
+      "sdkResults": [
+        {
+          "subtype": "success",
+          "isError": false,
+          "structuredOutputPresent": true,
+          "structuredOutputMatchesSchema": true,
+          "structuredOutputSha256": "e33ca54cc6604ab5903a59f587ef7286b74188573abe51cde11d22f46878c941"
+        }
+      ],
+      "sdkIterationFailure": null,
+      "countRequests": 1,
+      "providerStubAttempts": 1,
+      "ownerOperations": {
+        "reserve": 1,
+        "settle": 1
+      },
+      "reservationInserts": 1,
+      "settlementUpdates": 1,
+      "durableRequests": [
+        {
+          "requestId": "b2d76d545aab432aa57e42cc450270ca",
+          "state": "SETTLED",
+          "holdMicroUSD": "135248",
+          "actualMicroUSD": "90",
+          "inputTokens": 12,
+          "maxOutputTokens": 8192
+        }
+      ],
+      "consumedMicroUSD": "90",
+      "quarantined": false,
+      "ownerHostGateAvailable": true,
+      "ownerExchangeAborted": false,
+      "ownerServiceGateAvailable": true,
+      "ownerChannelCount": 1,
+      "nativeStarted": true,
+      "nativeStopped": true,
+      "ingressAttempts": 1,
+      "ingressRetryHeaders": [
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ]
+      ],
+      "rawRequestHashes": [
+        "1723d1d540ccb23f3a237fae040eaa1890254c1f959fd22b5a8b1a2d31efb77a"
+      ],
+      "nativeRequestHashes": [
+        "5b0e32e0ba1243366f4e0c458aedec4787d5931807971de4547463ca8e946dec"
+      ],
+      "nativeRequests": [
+        {
+          "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+          "betaEnums": [
+            "context-management-2025-06-27",
+            "effort-2025-11-24"
+          ],
+          "nativeHeaderBetaEnums": [
+            "context-management-2025-06-27",
+            "effort-2025-11-24"
+          ],
+          "thinkingDisabled": true,
+          "temperature": 1,
+          "toolNames": [
+            "StructuredOutput"
+          ]
+        }
+      ]
+    },
+    {
+      "case": "canonical-final-sdk-missing-usage",
+      "receipt": "canonical-final-sdk-missing-usage.json",
+      "sha256": "37f8292b1ad5683bf068657317fe27f915ed11cfcba635c13276b995e7aba2d9",
+      "sourceCommit": "90f82dc692fd017f4f8957cfaf8402000bb2f92f",
+      "sourceFiles": {
+        "run.mjs": "93a60df41f16ee87c080f600322a2c780897b7e2869455289b46491b61a77eb1",
+        "native_proxy.py": "876d8e71d98489c198251aaf400b8b7fc14d513500603022226ed32624a6214a",
+        "provider_stub.py": "8d8b31f2feff3b37b9d8c5a4186a0b90475088bbd07b74ed5e178f77fde20757",
+        "owner_peer.mjs": "bc2515160ace8f696f6317ffd4ac7a999e211d3068a31ac049294aff9abe528c",
+        "model_ledger_fixture.mjs": "70f4d7fe2deafe5c58682923f957f8ea247072a3f7d21a166934f8403240cf56"
+      },
+      "client": "sdk",
+      "mode": "missing-usage",
+      "outputFormat": "none",
+      "sdkSuccessObserved": false,
+      "sdkResults": [],
+      "sdkIterationFailure": "Error",
+      "countRequests": 2,
+      "providerStubAttempts": 1,
+      "ownerOperations": {
+        "reserve": 2
+      },
+      "reservationInserts": 1,
+      "settlementUpdates": 0,
+      "durableRequests": [
+        {
+          "requestId": "9df77368842c44cf87fe924b595f2067",
+          "state": "UNKNOWN",
+          "holdMicroUSD": "135248",
+          "actualMicroUSD": null,
+          "inputTokens": 12,
+          "maxOutputTokens": 8192
+        }
+      ],
+      "consumedMicroUSD": "0",
+      "quarantined": false,
+      "ownerHostGateAvailable": false,
+      "ownerExchangeAborted": true,
+      "ownerServiceGateAvailable": true,
+      "ownerChannelCount": 2,
+      "nativeStarted": true,
+      "nativeStopped": true,
+      "ingressAttempts": 7,
+      "ingressRetryHeaders": [
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ]
+      ],
+      "rawRequestHashes": [
+        "4a1828df5a65ef11c471572b10cdbdb72df7dfa3afeb9ff633ae0e3f1acde31e",
+        "7a25e6c26858a76914f5a3667d65526daf03e4379fe79f5bb3296406b2474c2c",
+        "7a25e6c26858a76914f5a3667d65526daf03e4379fe79f5bb3296406b2474c2c",
+        "7a25e6c26858a76914f5a3667d65526daf03e4379fe79f5bb3296406b2474c2c",
+        "7a25e6c26858a76914f5a3667d65526daf03e4379fe79f5bb3296406b2474c2c",
+        "7a25e6c26858a76914f5a3667d65526daf03e4379fe79f5bb3296406b2474c2c",
+        "7a25e6c26858a76914f5a3667d65526daf03e4379fe79f5bb3296406b2474c2c"
+      ],
+      "nativeRequestHashes": [
+        "e0cbcfffd8ff9f6d6dce9d3f82ca96db8d8edfac0a15caf74ebe5ac8cfa767a1",
+        "4b1cd9931dd768d42c0a841cf1b161cc9ab61b10d8af8ad838d929bc744c5911"
+      ],
+      "nativeRequests": [
+        {
+          "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+          "betaEnums": [
+            "context-management-2025-06-27",
+            "effort-2025-11-24"
+          ],
+          "nativeHeaderBetaEnums": [
+            "context-management-2025-06-27",
+            "effort-2025-11-24"
+          ],
+          "thinkingDisabled": true,
+          "temperature": 1,
+          "toolNames": []
+        },
+        {
+          "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+          "betaEnums": [
+            "context-management-2025-06-27",
+            "effort-2025-11-24"
+          ],
+          "nativeHeaderBetaEnums": [
+            "context-management-2025-06-27",
+            "effort-2025-11-24"
+          ],
+          "thinkingDisabled": true,
+          "temperature": 1,
+          "toolNames": []
+        }
+      ]
+    },
+    {
+      "case": "canonical-final-sdk-reservation-ack-lost",
+      "receipt": "canonical-final-sdk-reservation-ack-lost.json",
+      "sha256": "df2ffb11094286c3ba3fbdeeb1fadd78eeea835e415af49e31e236c69e9aae6b",
+      "sourceCommit": "90f82dc692fd017f4f8957cfaf8402000bb2f92f",
+      "sourceFiles": {
+        "run.mjs": "93a60df41f16ee87c080f600322a2c780897b7e2869455289b46491b61a77eb1",
+        "native_proxy.py": "876d8e71d98489c198251aaf400b8b7fc14d513500603022226ed32624a6214a",
+        "provider_stub.py": "8d8b31f2feff3b37b9d8c5a4186a0b90475088bbd07b74ed5e178f77fde20757",
+        "owner_peer.mjs": "bc2515160ace8f696f6317ffd4ac7a999e211d3068a31ac049294aff9abe528c",
+        "model_ledger_fixture.mjs": "70f4d7fe2deafe5c58682923f957f8ea247072a3f7d21a166934f8403240cf56"
+      },
+      "client": "sdk",
+      "mode": "reservation-ack-lost",
+      "outputFormat": "none",
+      "sdkSuccessObserved": false,
+      "sdkResults": [],
+      "sdkIterationFailure": "Error",
+      "countRequests": 1,
+      "providerStubAttempts": 0,
+      "ownerOperations": {
+        "reserve": 1
+      },
+      "reservationInserts": 1,
+      "settlementUpdates": 0,
+      "durableRequests": [
+        {
+          "requestId": "3f2d2a530cf8443aa398ef3157c5eac0",
+          "state": "UNKNOWN",
+          "holdMicroUSD": "135248",
+          "actualMicroUSD": null,
+          "inputTokens": 12,
+          "maxOutputTokens": 8192
+        }
+      ],
+      "consumedMicroUSD": "0",
+      "quarantined": false,
+      "ownerHostGateAvailable": false,
+      "ownerExchangeAborted": true,
+      "ownerServiceGateAvailable": true,
+      "ownerChannelCount": 1,
+      "nativeStarted": true,
+      "nativeStopped": true,
+      "ingressAttempts": 6,
+      "ingressRetryHeaders": [
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ]
+      ],
+      "rawRequestHashes": [
+        "1143b3216d61aac6e80429bff76c45d8c605aedf7dfff367bd5044dd129cd34a",
+        "1143b3216d61aac6e80429bff76c45d8c605aedf7dfff367bd5044dd129cd34a",
+        "1143b3216d61aac6e80429bff76c45d8c605aedf7dfff367bd5044dd129cd34a",
+        "1143b3216d61aac6e80429bff76c45d8c605aedf7dfff367bd5044dd129cd34a",
+        "1143b3216d61aac6e80429bff76c45d8c605aedf7dfff367bd5044dd129cd34a",
+        "1143b3216d61aac6e80429bff76c45d8c605aedf7dfff367bd5044dd129cd34a"
+      ],
+      "nativeRequestHashes": [
+        "3681938b8e5282e06114c5660771105b6788f146d4710572fc44080706e28250"
+      ],
+      "nativeRequests": [
+        {
+          "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+          "betaEnums": [
+            "context-management-2025-06-27",
+            "effort-2025-11-24"
+          ],
+          "nativeHeaderBetaEnums": [
+            "context-management-2025-06-27",
+            "effort-2025-11-24"
+          ],
+          "thinkingDisabled": true,
+          "temperature": 1,
+          "toolNames": []
+        }
+      ]
+    },
+    {
+      "case": "canonical-final-sdk-settlement-ack-committed",
+      "receipt": "canonical-final-sdk-settlement-ack-committed.json",
+      "sha256": "f01b12619689f0f8693197804c2edf867d56a478dabeb0f00ce3037872b6ba3e",
+      "sourceCommit": "90f82dc692fd017f4f8957cfaf8402000bb2f92f",
+      "sourceFiles": {
+        "run.mjs": "93a60df41f16ee87c080f600322a2c780897b7e2869455289b46491b61a77eb1",
+        "native_proxy.py": "876d8e71d98489c198251aaf400b8b7fc14d513500603022226ed32624a6214a",
+        "provider_stub.py": "8d8b31f2feff3b37b9d8c5a4186a0b90475088bbd07b74ed5e178f77fde20757",
+        "owner_peer.mjs": "bc2515160ace8f696f6317ffd4ac7a999e211d3068a31ac049294aff9abe528c",
+        "model_ledger_fixture.mjs": "70f4d7fe2deafe5c58682923f957f8ea247072a3f7d21a166934f8403240cf56"
+      },
+      "client": "sdk",
+      "mode": "settlement-ack-committed",
+      "outputFormat": "none",
+      "sdkSuccessObserved": true,
+      "sdkResults": [
+        {
+          "subtype": "success",
+          "isError": false
+        }
+      ],
+      "sdkIterationFailure": null,
+      "countRequests": 1,
+      "providerStubAttempts": 1,
+      "ownerOperations": {
+        "reserve": 1,
+        "settle": 1,
+        "outcome": 1
+      },
+      "reservationInserts": 1,
+      "settlementUpdates": 1,
+      "durableRequests": [
+        {
+          "requestId": "00b4839b733d4319a97780ba90768fa4",
+          "state": "SETTLED",
+          "holdMicroUSD": "135248",
+          "actualMicroUSD": "90",
+          "inputTokens": 12,
+          "maxOutputTokens": 8192
+        }
+      ],
+      "consumedMicroUSD": "90",
+      "quarantined": false,
+      "ownerHostGateAvailable": true,
+      "ownerExchangeAborted": false,
+      "ownerServiceGateAvailable": true,
+      "ownerChannelCount": 1,
+      "nativeStarted": true,
+      "nativeStopped": true,
+      "ingressAttempts": 1,
+      "ingressRetryHeaders": [
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ]
+      ],
+      "rawRequestHashes": [
+        "088d4fe5ae645658e5e58f282c0f6bf36d137f6d03333e87cbaef23bd4d72d3f"
+      ],
+      "nativeRequestHashes": [
+        "db18c382b99f8e960bb903590f98d34e4ad679cfcb2df9bb9501b533d80ab064"
+      ],
+      "nativeRequests": [
+        {
+          "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+          "betaEnums": [
+            "context-management-2025-06-27",
+            "effort-2025-11-24"
+          ],
+          "nativeHeaderBetaEnums": [
+            "context-management-2025-06-27",
+            "effort-2025-11-24"
+          ],
+          "thinkingDisabled": true,
+          "temperature": 1,
+          "toolNames": []
+        }
+      ]
+    },
+    {
+      "case": "canonical-final-sdk-settlement-ack-unresolved",
+      "receipt": "canonical-final-sdk-settlement-ack-unresolved.json",
+      "sha256": "335c0734e396faecfc0cba0ffb41f029e871bf844dcb56e83e5d9bf6a814ce26",
+      "sourceCommit": "90f82dc692fd017f4f8957cfaf8402000bb2f92f",
+      "sourceFiles": {
+        "run.mjs": "93a60df41f16ee87c080f600322a2c780897b7e2869455289b46491b61a77eb1",
+        "native_proxy.py": "876d8e71d98489c198251aaf400b8b7fc14d513500603022226ed32624a6214a",
+        "provider_stub.py": "8d8b31f2feff3b37b9d8c5a4186a0b90475088bbd07b74ed5e178f77fde20757",
+        "owner_peer.mjs": "bc2515160ace8f696f6317ffd4ac7a999e211d3068a31ac049294aff9abe528c",
+        "model_ledger_fixture.mjs": "70f4d7fe2deafe5c58682923f957f8ea247072a3f7d21a166934f8403240cf56"
+      },
+      "client": "sdk",
+      "mode": "settlement-ack-unresolved",
+      "outputFormat": "none",
+      "sdkSuccessObserved": false,
+      "sdkResults": [],
+      "sdkIterationFailure": "Error",
+      "countRequests": 1,
+      "providerStubAttempts": 1,
+      "ownerOperations": {
+        "reserve": 1,
+        "settle": 1,
+        "outcome": 1
+      },
+      "reservationInserts": 1,
+      "settlementUpdates": 1,
+      "durableRequests": [
+        {
+          "requestId": "bc7bcbf102bd4825a46d6e9f3010091b",
+          "state": "SETTLED",
+          "holdMicroUSD": "135248",
+          "actualMicroUSD": "90",
+          "inputTokens": 12,
+          "maxOutputTokens": 8192
+        }
+      ],
+      "consumedMicroUSD": "90",
+      "quarantined": false,
+      "ownerHostGateAvailable": false,
+      "ownerExchangeAborted": true,
+      "ownerServiceGateAvailable": true,
+      "ownerChannelCount": 1,
+      "nativeStarted": true,
+      "nativeStopped": true,
+      "ingressAttempts": 7,
+      "ingressRetryHeaders": [
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ]
+      ],
+      "rawRequestHashes": [
+        "e641c473405371303a1c62eb25297ca1338bcbe1ac76a7ec466d582d78083c00",
+        "161c433887195a33838e0e0d7fbcf148991374377f6f949e44516bdc81ce0009",
+        "161c433887195a33838e0e0d7fbcf148991374377f6f949e44516bdc81ce0009",
+        "161c433887195a33838e0e0d7fbcf148991374377f6f949e44516bdc81ce0009",
+        "161c433887195a33838e0e0d7fbcf148991374377f6f949e44516bdc81ce0009",
+        "161c433887195a33838e0e0d7fbcf148991374377f6f949e44516bdc81ce0009",
+        "161c433887195a33838e0e0d7fbcf148991374377f6f949e44516bdc81ce0009"
+      ],
+      "nativeRequestHashes": [
+        "50a0582f30cac303ab69c8afc081709524ac2cc868eba0dc24ad00e4edbb0ed5"
+      ],
+      "nativeRequests": [
+        {
+          "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+          "betaEnums": [
+            "context-management-2025-06-27",
+            "effort-2025-11-24"
+          ],
+          "nativeHeaderBetaEnums": [
+            "context-management-2025-06-27",
+            "effort-2025-11-24"
+          ],
+          "thinkingDisabled": true,
+          "temperature": 1,
+          "toolNames": []
+        }
+      ]
+    },
+    {
+      "case": "canonical-final-sdk-settlement-ack-unresolved-schema",
+      "receipt": "canonical-final-sdk-settlement-ack-unresolved-schema.json",
+      "sha256": "f830f0d047b4052c47688a5ce95d6bbd932d2196b07e658cc71fc96c31045092",
+      "sourceCommit": "90f82dc692fd017f4f8957cfaf8402000bb2f92f",
+      "sourceFiles": {
+        "run.mjs": "93a60df41f16ee87c080f600322a2c780897b7e2869455289b46491b61a77eb1",
+        "native_proxy.py": "876d8e71d98489c198251aaf400b8b7fc14d513500603022226ed32624a6214a",
+        "provider_stub.py": "8d8b31f2feff3b37b9d8c5a4186a0b90475088bbd07b74ed5e178f77fde20757",
+        "owner_peer.mjs": "bc2515160ace8f696f6317ffd4ac7a999e211d3068a31ac049294aff9abe528c",
+        "model_ledger_fixture.mjs": "70f4d7fe2deafe5c58682923f957f8ea247072a3f7d21a166934f8403240cf56"
+      },
+      "client": "sdk",
+      "mode": "settlement-ack-unresolved",
+      "outputFormat": "json-schema",
+      "sdkSuccessObserved": false,
+      "sdkResults": [],
+      "sdkIterationFailure": "Error",
+      "countRequests": 1,
+      "providerStubAttempts": 1,
+      "ownerOperations": {
+        "reserve": 1,
+        "settle": 1,
+        "outcome": 1
+      },
+      "reservationInserts": 1,
+      "settlementUpdates": 1,
+      "durableRequests": [
+        {
+          "requestId": "8a923ffbe3c846c99b5c8f9cbbf491e6",
+          "state": "SETTLED",
+          "holdMicroUSD": "135248",
+          "actualMicroUSD": "90",
+          "inputTokens": 12,
+          "maxOutputTokens": 8192
+        }
+      ],
+      "consumedMicroUSD": "90",
+      "quarantined": false,
+      "ownerHostGateAvailable": false,
+      "ownerExchangeAborted": true,
+      "ownerServiceGateAvailable": true,
+      "ownerChannelCount": 1,
+      "nativeStarted": true,
+      "nativeStopped": true,
+      "ingressAttempts": 6,
+      "ingressRetryHeaders": [
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ]
+      ],
+      "rawRequestHashes": [
+        "27d14b09f66236aa80f8d406fbc5812d7a023ebbdf650da22783b6d6392ab195",
+        "27d14b09f66236aa80f8d406fbc5812d7a023ebbdf650da22783b6d6392ab195",
+        "27d14b09f66236aa80f8d406fbc5812d7a023ebbdf650da22783b6d6392ab195",
+        "27d14b09f66236aa80f8d406fbc5812d7a023ebbdf650da22783b6d6392ab195",
+        "27d14b09f66236aa80f8d406fbc5812d7a023ebbdf650da22783b6d6392ab195",
+        "27d14b09f66236aa80f8d406fbc5812d7a023ebbdf650da22783b6d6392ab195"
+      ],
+      "nativeRequestHashes": [
+        "369350cc8d3e4b2477bcf74d5a3f7fe12cad4caf4dca64cf0a1692e90a65cbf6"
+      ],
+      "nativeRequests": [
+        {
+          "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+          "betaEnums": [
+            "context-management-2025-06-27",
+            "effort-2025-11-24"
+          ],
+          "nativeHeaderBetaEnums": [
+            "context-management-2025-06-27",
+            "effort-2025-11-24"
+          ],
+          "thinkingDisabled": true,
+          "temperature": 1,
+          "toolNames": [
+            "StructuredOutput"
+          ]
+        }
+      ]
+    },
+    {
+      "case": "canonical-final-sdk-truncated",
+      "receipt": "canonical-final-sdk-truncated.json",
+      "sha256": "a7de9a91deb60411d4989227e93793366148c6d623a4aae63b5b020a01a81770",
+      "sourceCommit": "90f82dc692fd017f4f8957cfaf8402000bb2f92f",
+      "sourceFiles": {
+        "run.mjs": "93a60df41f16ee87c080f600322a2c780897b7e2869455289b46491b61a77eb1",
+        "native_proxy.py": "876d8e71d98489c198251aaf400b8b7fc14d513500603022226ed32624a6214a",
+        "provider_stub.py": "8d8b31f2feff3b37b9d8c5a4186a0b90475088bbd07b74ed5e178f77fde20757",
+        "owner_peer.mjs": "bc2515160ace8f696f6317ffd4ac7a999e211d3068a31ac049294aff9abe528c",
+        "model_ledger_fixture.mjs": "70f4d7fe2deafe5c58682923f957f8ea247072a3f7d21a166934f8403240cf56"
+      },
+      "client": "sdk",
+      "mode": "truncated",
+      "outputFormat": "none",
+      "sdkSuccessObserved": false,
+      "sdkResults": [],
+      "sdkIterationFailure": "Error",
+      "countRequests": 2,
+      "providerStubAttempts": 1,
+      "ownerOperations": {
+        "reserve": 2
+      },
+      "reservationInserts": 1,
+      "settlementUpdates": 0,
+      "durableRequests": [
+        {
+          "requestId": "e120a06d994f48d1a707b2c2a387bcbf",
+          "state": "UNKNOWN",
+          "holdMicroUSD": "135248",
+          "actualMicroUSD": null,
+          "inputTokens": 12,
+          "maxOutputTokens": 8192
+        }
+      ],
+      "consumedMicroUSD": "0",
+      "quarantined": false,
+      "ownerHostGateAvailable": false,
+      "ownerExchangeAborted": true,
+      "ownerServiceGateAvailable": true,
+      "ownerChannelCount": 2,
+      "nativeStarted": true,
+      "nativeStopped": true,
+      "ingressAttempts": 7,
+      "ingressRetryHeaders": [
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ]
+      ],
+      "rawRequestHashes": [
+        "6abf3a03de4051a9c4425b62ab932a571f1f361f6f259065cc2dea1a8fa8a844",
+        "49ab05105a4d3c6aea060d5658cb8a7c59e942f1b013d8ca738c326d985c71d7",
+        "49ab05105a4d3c6aea060d5658cb8a7c59e942f1b013d8ca738c326d985c71d7",
+        "49ab05105a4d3c6aea060d5658cb8a7c59e942f1b013d8ca738c326d985c71d7",
+        "49ab05105a4d3c6aea060d5658cb8a7c59e942f1b013d8ca738c326d985c71d7",
+        "49ab05105a4d3c6aea060d5658cb8a7c59e942f1b013d8ca738c326d985c71d7",
+        "49ab05105a4d3c6aea060d5658cb8a7c59e942f1b013d8ca738c326d985c71d7"
+      ],
+      "nativeRequestHashes": [
+        "9204bdea5787309b0a3bb04a4b7c983368263b3ebeaea136bb6cafe7c28ce879",
+        "47fb0e73f6fe679080977b077ffcbf0b5395928107d360a53b3b52a0b733f8cf"
+      ],
+      "nativeRequests": [
+        {
+          "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+          "betaEnums": [
+            "context-management-2025-06-27",
+            "effort-2025-11-24"
+          ],
+          "nativeHeaderBetaEnums": [
+            "context-management-2025-06-27",
+            "effort-2025-11-24"
+          ],
+          "thinkingDisabled": true,
+          "temperature": 1,
+          "toolNames": []
+        },
+        {
+          "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+          "betaEnums": [
+            "context-management-2025-06-27",
+            "effort-2025-11-24"
+          ],
+          "nativeHeaderBetaEnums": [
+            "context-management-2025-06-27",
+            "effort-2025-11-24"
+          ],
+          "thinkingDisabled": true,
+          "temperature": 1,
+          "toolNames": []
+        }
+      ]
+    },
+    {
+      "case": "canonical-final-sdk-truncated-schema",
+      "receipt": "canonical-final-sdk-truncated-schema.json",
+      "sha256": "2e410c1cba00ed40dc249854399d3274ba15b8dc616c7e390e780ffdff8f061f",
+      "sourceCommit": "90f82dc692fd017f4f8957cfaf8402000bb2f92f",
+      "sourceFiles": {
+        "run.mjs": "93a60df41f16ee87c080f600322a2c780897b7e2869455289b46491b61a77eb1",
+        "native_proxy.py": "876d8e71d98489c198251aaf400b8b7fc14d513500603022226ed32624a6214a",
+        "provider_stub.py": "8d8b31f2feff3b37b9d8c5a4186a0b90475088bbd07b74ed5e178f77fde20757",
+        "owner_peer.mjs": "bc2515160ace8f696f6317ffd4ac7a999e211d3068a31ac049294aff9abe528c",
+        "model_ledger_fixture.mjs": "70f4d7fe2deafe5c58682923f957f8ea247072a3f7d21a166934f8403240cf56"
+      },
+      "client": "sdk",
+      "mode": "truncated",
+      "outputFormat": "json-schema",
+      "sdkSuccessObserved": false,
+      "sdkResults": [],
+      "sdkIterationFailure": "Error",
+      "countRequests": 2,
+      "providerStubAttempts": 1,
+      "ownerOperations": {
+        "reserve": 2
+      },
+      "reservationInserts": 1,
+      "settlementUpdates": 0,
+      "durableRequests": [
+        {
+          "requestId": "8a3a83a9af79449e910b434b4f7e0b4e",
+          "state": "UNKNOWN",
+          "holdMicroUSD": "135248",
+          "actualMicroUSD": null,
+          "inputTokens": 12,
+          "maxOutputTokens": 8192
+        }
+      ],
+      "consumedMicroUSD": "0",
+      "quarantined": false,
+      "ownerHostGateAvailable": false,
+      "ownerExchangeAborted": true,
+      "ownerServiceGateAvailable": true,
+      "ownerChannelCount": 2,
+      "nativeStarted": true,
+      "nativeStopped": true,
+      "ingressAttempts": 6,
+      "ingressRetryHeaders": [
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ],
+        [
+          {
+            "name": "x-stainless-retry-count",
+            "bytes": 1,
+            "retryCount": 0
+          }
+        ]
+      ],
+      "rawRequestHashes": [
+        "7c9ecc2ebbdef0d3f6f8b1e3b01df7f09c88f0ff667cc616627d6d22c2847025",
+        "7c9ecc2ebbdef0d3f6f8b1e3b01df7f09c88f0ff667cc616627d6d22c2847025",
+        "7c9ecc2ebbdef0d3f6f8b1e3b01df7f09c88f0ff667cc616627d6d22c2847025",
+        "7c9ecc2ebbdef0d3f6f8b1e3b01df7f09c88f0ff667cc616627d6d22c2847025",
+        "7c9ecc2ebbdef0d3f6f8b1e3b01df7f09c88f0ff667cc616627d6d22c2847025",
+        "7c9ecc2ebbdef0d3f6f8b1e3b01df7f09c88f0ff667cc616627d6d22c2847025"
+      ],
+      "nativeRequestHashes": [
+        "43edc08d637ae28365ccb906a826aff1ce53ef5ab0bcd11431921bba2bc657ed",
+        "43edc08d637ae28365ccb906a826aff1ce53ef5ab0bcd11431921bba2bc657ed"
+      ],
+      "nativeRequests": [
+        {
+          "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+          "betaEnums": [
+            "context-management-2025-06-27",
+            "effort-2025-11-24"
+          ],
+          "nativeHeaderBetaEnums": [
+            "context-management-2025-06-27",
+            "effort-2025-11-24"
+          ],
+          "thinkingDisabled": true,
+          "temperature": 1,
+          "toolNames": [
+            "StructuredOutput"
+          ]
+        },
+        {
+          "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+          "betaEnums": [
+            "context-management-2025-06-27",
+            "effort-2025-11-24"
+          ],
+          "nativeHeaderBetaEnums": [
+            "context-management-2025-06-27",
+            "effort-2025-11-24"
+          ],
+          "thinkingDisabled": true,
+          "temperature": 1,
+          "toolNames": [
+            "StructuredOutput"
+          ]
+        }
+      ]
+    }
+  ]
+}

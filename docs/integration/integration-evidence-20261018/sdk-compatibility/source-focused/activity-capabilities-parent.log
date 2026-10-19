@@ -1,0 +1,74 @@
+✖ without a declared policy the SDK query receives exactly the default first-chat options and no progress is displayed (14.760616ms)
+✖ a declared subagent policy configures SDK agents and displays only the admitted progress summary (2.237748ms)
+✖ audit hooks publish only hashes through the run owner append port during the activity (1.946991ms)
+✖ a run owner that refuses capability events denies the tool and fails the run instead of completing unaudited (1.815332ms)
+✖ an invalid declared policy is refused before claim and before any SDK query (1.698596ms)
+✖ a malformed hook input latches: the tool is denied, no later output is published and the run fails instead of completing (1.711786ms)
+✖ a latched failure after the last output still prevents completion; post-tool, compaction and subagent hook paths each latch (1.488971ms)
+✖ Bash reaches the SDK only with explicit policy eligibility and the trusted sandbox attestation from runtime preparation; networked Bash also needs the egress fact and the approval port (1.801862ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 0
+ℹ fail 8
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 966.29275
+
+✖ failing tests:
+
+test at ../../../../tmp/meri-sdk-options-evidence/activity-capabilities-parent.test.mjs:22:1
+✖ without a declared policy the SDK query receives exactly the default first-chat options and no progress is displayed (14.760616ms)
+  Error: STORE_UNAVAILABLE
+      at tx (file:///workspace/meri-source/apps/control/conversations/postgres-store.mjs:24:68) {
+    code: 'STORE_UNAVAILABLE'
+  }
+
+test at ../../../../tmp/meri-sdk-options-evidence/activity-capabilities-parent.test.mjs:28:1
+✖ a declared subagent policy configures SDK agents and displays only the admitted progress summary (2.237748ms)
+  Error: STORE_UNAVAILABLE
+      at tx (file:///workspace/meri-source/apps/control/conversations/postgres-store.mjs:24:68) {
+    code: 'STORE_UNAVAILABLE'
+  }
+
+test at ../../../../tmp/meri-sdk-options-evidence/activity-capabilities-parent.test.mjs:35:1
+✖ audit hooks publish only hashes through the run owner append port during the activity (1.946991ms)
+  Error: STORE_UNAVAILABLE
+      at tx (file:///workspace/meri-source/apps/control/conversations/postgres-store.mjs:24:68) {
+    code: 'STORE_UNAVAILABLE'
+  }
+
+test at ../../../../tmp/meri-sdk-options-evidence/activity-capabilities-parent.test.mjs:43:1
+✖ a run owner that refuses capability events denies the tool and fails the run instead of completing unaudited (1.815332ms)
+  Error: STORE_UNAVAILABLE
+      at tx (file:///workspace/meri-source/apps/control/conversations/postgres-store.mjs:24:68) {
+    code: 'STORE_UNAVAILABLE'
+  }
+
+test at ../../../../tmp/meri-sdk-options-evidence/activity-capabilities-parent.test.mjs:48:1
+✖ an invalid declared policy is refused before claim and before any SDK query (1.698596ms)
+  Error: STORE_UNAVAILABLE
+      at tx (file:///workspace/meri-source/apps/control/conversations/postgres-store.mjs:24:68) {
+    code: 'STORE_UNAVAILABLE'
+  }
+
+test at ../../../../tmp/meri-sdk-options-evidence/activity-capabilities-parent.test.mjs:53:1
+✖ a malformed hook input latches: the tool is denied, no later output is published and the run fails instead of completing (1.711786ms)
+  Error: STORE_UNAVAILABLE
+      at tx (file:///workspace/meri-source/apps/control/conversations/postgres-store.mjs:24:68) {
+    code: 'STORE_UNAVAILABLE'
+  }
+
+test at ../../../../tmp/meri-sdk-options-evidence/activity-capabilities-parent.test.mjs:58:1
+✖ a latched failure after the last output still prevents completion; post-tool, compaction and subagent hook paths each latch (1.488971ms)
+  Error: STORE_UNAVAILABLE
+      at tx (file:///workspace/meri-source/apps/control/conversations/postgres-store.mjs:24:68) {
+    code: 'STORE_UNAVAILABLE'
+  }
+
+test at ../../../../tmp/meri-sdk-options-evidence/activity-capabilities-parent.test.mjs:74:1
+✖ Bash reaches the SDK only with explicit policy eligibility and the trusted sandbox attestation from runtime preparation; networked Bash also needs the egress fact and the approval port (1.801862ms)
+  Error: STORE_UNAVAILABLE
+      at tx (file:///workspace/meri-source/apps/control/conversations/postgres-store.mjs:24:68) {
+    code: 'STORE_UNAVAILABLE'
+  }

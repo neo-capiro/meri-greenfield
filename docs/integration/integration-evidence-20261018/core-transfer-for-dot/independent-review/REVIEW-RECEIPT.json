@@ -1,0 +1,61 @@
+{
+  "status": "read-only receipt only; user reassigned exclusive Core integration to dot; no publication approval",
+  "dotOwnershipRoster": "b5071e8156899c1a5d01c19e64d647cb44e40789",
+  "baselineCommit": "78ceaf9bdfe00c8f013aac15eb8483312ae4f803",
+  "approvedMiddlewareSha256": "d9931a98db2de9ca10cbd2aa161983747c159773e30bbc04bcb36474530095e0",
+  "approvedPatchSha256": "9f4ded7f8a111154cf32dea7888fb145c7bcb72b73b4eef1d7f3870a6e7f4043",
+  "approvedScope": {
+    "middlewareAdditions": 65,
+    "middlewareDeletions": 2,
+    "otherSevenBaselineFiles": "all exactSHA256 matchedimmutablepublished78manifest"
+  },
+  "focusedTestSha256AtReview": "77dabab03b627a260a78ebdfd11d20b2890c9289c7f160dd11c213bd5231f5dc",
+  "sourceReview": [
+    "ActualmiddlewarebytesidenticalapprovedproposedandimmutableMeriproposal",
+    "Newhelperusesprivateoriginalrequest/context/membershipprovenance; markedcontrolandimpersonationdenied",
+    "Lockqueriesexplicituser/tenant/membershippredicates;FORSHAREonthecallertransaction",
+    "FreshonlineClerkthenlocalthroughsametx;olddefaultwithSystem/impersonationpathpreserved",
+    "OnlyauthorityPathsno-storelistchangedinuse;controlcredentialrouteallowlistunchanged",
+    "PrivateprovenanceinjectionexistsinVMteststringonly,notproduction",
+    "Testloadsactualneighboringrepositorysourcefiles;normaltypescriptlookupdefault,explicitabsoluteoverrideoptional"
+  ],
+  "runtime": {
+    "node": "24.19.0",
+    "typescript": "5.9.3",
+    "module": "/workspace/scratch/f840037f8c71/meri-greenfield/apps/runtime/node_modules/typescript/lib/typescript.js"
+  },
+  "logs": {
+    "actual-focused.tap": {
+      "sha256": "d59ff1cebba1535daae3f83f79e0c91f2e5f69e91f2a0aae4d4ae092181116b8",
+      "tests": 34,
+      "pass": 34,
+      "fail": 0,
+      "skipped": 0
+    },
+    "baseline-focused.tap": {
+      "sha256": "c845eabf6a2369a4bbabadbb9ab609968c5552b0feaa831a20a7c80597bc2608",
+      "tests": 34,
+      "pass": 2,
+      "fail": 32,
+      "skipped": 0
+    },
+    "published-focused.tap": {
+      "sha256": "154271dd617ef49e899fc9b4dbff84395b48ddff27a2fa26cf9d2ec5a7cec659",
+      "tests": 10,
+      "pass": 10,
+      "fail": 0,
+      "skipped": 0
+    }
+  },
+  "normalLookup": "blockedMODULE_NOT_FOUNDtypescriptinthepartialmaterialization;fullNest/Express/Prisma/shareddependenciesalsoabsent",
+  "semanticTypes": "unsupported/unrun;transpileModulecheckssyntaxonly;noCorepackage/tsconfig/fullinstalledtree",
+  "limits": [
+    "Partialmaterialized8sourcefilesnotGitcheckout",
+    "NoactualNestHTTPapplicationorrouteintegration",
+    "NoactualClerksessionfreshness",
+    "NoPostgreSQLlocks/snapshotconflicts/RLS/poolverification",
+    "NoCorebranch/commit/PRorremotechangesbyreviewer"
+  ],
+  "editsByReviewer": 0,
+  "installsByReviewer": 0
+}

@@ -1,0 +1,136 @@
+TAP version 13
+# Subtest: Python reservation frame becomes the two exact bridge argument shapes
+ok 1 - Python reservation frame becomes the two exact bridge argument shapes
+  ---
+  duration_ms: 3.289379
+  type: 'test'
+  ...
+# Subtest: reservation decoder refuses extra positions, duplicate headers, malformed bytes and object keys
+ok 2 - reservation decoder refuses extra positions, duplicate headers, malformed bytes and object keys
+  ---
+  duration_ms: 6.405618
+  type: 'test'
+  ...
+# Subtest: Python UsageResult frame becomes sorted JS settlement claim
+ok 3 - Python UsageResult frame becomes sorted JS settlement claim
+  ---
+  duration_ms: 0.541886
+  type: 'test'
+  ...
+# Subtest: settlement decoder refuses incomplete, changed count, duplicate tools and extra fields
+ok 4 - settlement decoder refuses incomplete, changed count, duplicate tools and extra fields
+  ---
+  duration_ms: 1.444623
+  type: 'test'
+  ...
+# Subtest: D1 values are 64k input / 8k output and match the Python proxy envelope exactly
+ok 5 - D1 values are 64k input / 8k output and match the Python proxy envelope exactly
+  ---
+  duration_ms: 1.345394
+  type: 'test'
+  ...
+# Subtest: the boundary codec admits the exact envelope and refuses one token past it
+ok 6 - the boundary codec admits the exact envelope and refuses one token past it
+  ---
+  duration_ms: 2.180941
+  type: 'test'
+  ...
+# Subtest: the SDK subprocess is pinned to the envelope output ceiling with thinking off
+ok 7 - the SDK subprocess is pinned to the envelope output ceiling with thinking off
+  ---
+  duration_ms: 0.740674
+  type: 'test'
+  ...
+# Subtest: trusted final native bytes and one AWS count become exact budget evidence
+ok 8 - trusted final native bytes and one AWS count become exact budget evidence
+  ---
+  duration_ms: 9.31051
+  type: 'test'
+  ...
+# Subtest: wrong direct peer, bearer, final bytes, count or route refuses before any product SQL
+ok 9 - wrong direct peer, bearer, final bytes, count or route refuses before any product SQL
+  ---
+  duration_ms: 35.578133
+  type: 'test'
+  ...
+# Subtest: worker-supplied observation cannot enter the private reserve port
+ok 10 - worker-supplied observation cannot enter the private reserve port
+  ---
+  duration_ms: 3.934164
+  type: 'test'
+  ...
+# Subtest: closed native beta subsets preserve exact bytes and permit only an agreeing optional header
+ok 11 - closed native beta subsets preserve exact bytes and permit only an agreeing optional header
+  ---
+  duration_ms: 43.56414
+  type: 'test'
+  ...
+# Subtest: unknown, duplicate or mismatched native betas and context fields refuse before SQL
+ok 12 - unknown, duplicate or mismatched native betas and context fields refuse before SQL
+  ---
+  duration_ms: 156.986567
+  type: 'test'
+  ...
+# Subtest: bridge requires a constructor-captured host authenticator
+ok 13 - bridge requires a constructor-captured host authenticator
+  ---
+  duration_ms: 18.481358
+  type: 'test'
+  ...
+# Subtest: caller observation is cross-checked against independent host capture before SQL
+ok 14 - caller observation is cross-checked against independent host capture before SQL
+  ---
+  duration_ms: 6.716426
+  type: 'test'
+  ...
+# Subtest: exact authenticated observation reaches canonical reservation once
+ok 15 - exact authenticated observation reaches canonical reservation once
+  ---
+  duration_ms: 36.314661
+  type: 'test'
+  ...
+# Subtest: extra caller evidence and binding substitution cannot reach SQL
+ok 16 - extra caller evidence and binding substitution cannot reach SQL
+  ---
+  duration_ms: 7.161225
+  type: 'test'
+  ...
+# Subtest: private bridge requires a constructor-captured complete-response observer
+ok 17 - private bridge requires a constructor-captured complete-response observer
+  ---
+  duration_ms: 8.664858
+  type: 'test'
+  ...
+# Subtest: a Python usage claim cannot settle without matching independent host capture
+ok 18 - a Python usage claim cannot settle without matching independent host capture
+  ---
+  duration_ms: 34.714835
+  type: 'test'
+  ...
+# Subtest: complete authenticated observation reaches only canonical settlement SQL once
+ok 19 - complete authenticated observation reaches only canonical settlement SQL once
+  ---
+  duration_ms: 12.701521
+  type: 'test'
+  ...
+# Subtest: receipt, request bytes, native bytes, EOF and run identity are checked before SQL
+ok 20 - receipt, request bytes, native bytes, EOF and run identity are checked before SQL
+  ---
+  duration_ms: 9.355036
+  type: 'test'
+  ...
+# Subtest: read-only outcome is restricted to the constructor-captured slot
+ok 21 - read-only outcome is restricted to the constructor-captured slot
+  ---
+  duration_ms: 6.070734
+  type: 'test'
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1202.136265

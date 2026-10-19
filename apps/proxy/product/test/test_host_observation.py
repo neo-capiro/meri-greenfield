@@ -465,7 +465,8 @@ class HostObservationTests(unittest.IsolatedAsyncioTestCase):
                     settle_complete=lambda *_: (_ for _ in ()).throw(AssertionError("must not settle")))
                 response = await outer.handle_async_request(request)
                 if consume:
-                    _ = [chunk async for chunk in response.stream]
+                    with self.assertRaisesRegex(Exception, "INCOMPLETE_NATIVE_RESPONSE"):
+                        _ = [chunk async for chunk in response.stream]
                 else:
                     await response.stream.aclose()
                 with self.assertRaisesRegex(Exception, "PRODUCT_HOST_OBSERVATION_REFUSED"):

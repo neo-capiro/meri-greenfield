@@ -1,0 +1,272 @@
+[
+  {
+    "client": "minimal-messages",
+    "format": "none",
+    "mode": "cached",
+    "sourceCommit": "5fa5545898717e1148a28447bb93254a07fa6459",
+    "exitCode": 0,
+    "passed": true,
+    "sdkIngress": 1,
+    "nativeAttempts": 1,
+    "counts": 1,
+    "providerExecutions": 1,
+    "reservationInserts": 1,
+    "settlementUpdates": 0,
+    "state": [
+      "UNKNOWN"
+    ],
+    "holdMicroUSD": [
+      "344"
+    ],
+    "consumedMicroUSD": "0",
+    "nativeStarted": true,
+    "nativeStopped": true,
+    "cleanupError": null,
+    "receipt": "/tmp/meri-integration-sdk-review/pinned-minimal-messages-cached-none.json",
+    "sha256": "dd4b2265a42705d17285e5ade3b5b18f371aa19a0d72e60b78220d614675b964"
+  },
+  {
+    "client": "minimal-messages",
+    "format": "none",
+    "mode": "complete",
+    "sourceCommit": "5fa5545898717e1148a28447bb93254a07fa6459",
+    "exitCode": 0,
+    "passed": true,
+    "sdkIngress": 1,
+    "nativeAttempts": 1,
+    "counts": 1,
+    "providerExecutions": 1,
+    "reservationInserts": 1,
+    "settlementUpdates": 1,
+    "state": [
+      "SETTLED"
+    ],
+    "holdMicroUSD": [
+      "344"
+    ],
+    "consumedMicroUSD": "90",
+    "nativeStarted": true,
+    "nativeStopped": true,
+    "cleanupError": null,
+    "receipt": "/tmp/meri-integration-sdk-review/pinned-minimal-messages-complete-none.json",
+    "sha256": "6debd03c7d3505f35609eef18c45e6705b393f9ce7f57f4da04241dc968e89ea"
+  },
+  {
+    "client": "minimal-messages",
+    "format": "none",
+    "mode": "missing-usage",
+    "sourceCommit": "5fa5545898717e1148a28447bb93254a07fa6459",
+    "exitCode": 0,
+    "passed": true,
+    "sdkIngress": 1,
+    "nativeAttempts": 1,
+    "counts": 1,
+    "providerExecutions": 1,
+    "reservationInserts": 1,
+    "settlementUpdates": 0,
+    "state": [
+      "UNKNOWN"
+    ],
+    "holdMicroUSD": [
+      "344"
+    ],
+    "consumedMicroUSD": "0",
+    "nativeStarted": true,
+    "nativeStopped": true,
+    "cleanupError": null,
+    "receipt": "/tmp/meri-integration-sdk-review/pinned-minimal-messages-missing-usage-none.json",
+    "sha256": "fa1b7f4cc82c31b4b142f1f17f2b9bca15847b94fdf147f707f99f90102526bf"
+  },
+  {
+    "client": "minimal-messages",
+    "format": "none",
+    "mode": "reservation-ack-lost",
+    "sourceCommit": "5fa5545898717e1148a28447bb93254a07fa6459",
+    "exitCode": 0,
+    "passed": true,
+    "sdkIngress": 1,
+    "nativeAttempts": 1,
+    "counts": 1,
+    "providerExecutions": 0,
+    "reservationInserts": 1,
+    "settlementUpdates": 0,
+    "state": [
+      "UNKNOWN"
+    ],
+    "holdMicroUSD": [
+      "344"
+    ],
+    "consumedMicroUSD": "0",
+    "nativeStarted": true,
+    "nativeStopped": true,
+    "cleanupError": null,
+    "receipt": "/tmp/meri-integration-sdk-review/pinned-minimal-messages-reservation-ack-lost-none.json",
+    "sha256": "96fee853bf4b113fe18ab13f2273f5b95ab655b75e2225b49cb975e8b7612671"
+  },
+  {
+    "client": "minimal-messages",
+    "format": "none",
+    "mode": "settlement-ack-committed",
+    "sourceCommit": "5fa5545898717e1148a28447bb93254a07fa6459",
+    "exitCode": 0,
+    "passed": true,
+    "sdkIngress": 1,
+    "nativeAttempts": 1,
+    "counts": 1,
+    "providerExecutions": 1,
+    "reservationInserts": 1,
+    "settlementUpdates": 1,
+    "state": [
+      "SETTLED"
+    ],
+    "holdMicroUSD": [
+      "344"
+    ],
+    "consumedMicroUSD": "90",
+    "nativeStarted": true,
+    "nativeStopped": true,
+    "cleanupError": null,
+    "receipt": "/tmp/meri-integration-sdk-review/pinned-minimal-messages-settlement-ack-committed-none.json",
+    "sha256": "4217575e622ec80f36d4fcbafc99b990800dc8387dddec9a9d8b97addf82f016"
+  },
+  {
+    "client": "minimal-messages",
+    "format": "none",
+    "mode": "settlement-ack-unresolved",
+    "sourceCommit": "5fa5545898717e1148a28447bb93254a07fa6459",
+    "exitCode": 0,
+    "passed": true,
+    "sdkIngress": 1,
+    "nativeAttempts": 1,
+    "counts": 1,
+    "providerExecutions": 1,
+    "reservationInserts": 1,
+    "settlementUpdates": 1,
+    "state": [
+      "SETTLED"
+    ],
+    "holdMicroUSD": [
+      "344"
+    ],
+    "consumedMicroUSD": "90",
+    "nativeStarted": true,
+    "nativeStopped": true,
+    "cleanupError": null,
+    "receipt": "/tmp/meri-integration-sdk-review/pinned-minimal-messages-settlement-ack-unresolved-none.json",
+    "sha256": "c8206ef4f821df90da40014b0c3cef0c7307fabafb8ca9c8c4f985424274a07b"
+  },
+  {
+    "client": "minimal-messages",
+    "format": "none",
+    "mode": "truncated",
+    "sourceCommit": "5fa5545898717e1148a28447bb93254a07fa6459",
+    "exitCode": 0,
+    "passed": true,
+    "sdkIngress": 1,
+    "nativeAttempts": 1,
+    "counts": 1,
+    "providerExecutions": 1,
+    "reservationInserts": 1,
+    "settlementUpdates": 0,
+    "state": [
+      "UNKNOWN"
+    ],
+    "holdMicroUSD": [
+      "344"
+    ],
+    "consumedMicroUSD": "0",
+    "nativeStarted": true,
+    "nativeStopped": true,
+    "cleanupError": null,
+    "receipt": "/tmp/meri-integration-sdk-review/pinned-minimal-messages-truncated-none.json",
+    "sha256": "e63eebfa06d61b748ee4851c8f547bf096d349bf05daa850f740672b3faa588e"
+  },
+  {
+    "client": "sdk",
+    "format": "none",
+    "mode": "complete",
+    "sourceCommit": "5fa5545898717e1148a28447bb93254a07fa6459",
+    "exitCode": 2,
+    "passed": false,
+    "sdkIngress": 6,
+    "nativeAttempts": 3,
+    "counts": 0,
+    "providerExecutions": 0,
+    "reservationInserts": 0,
+    "settlementUpdates": 0,
+    "state": [],
+    "holdMicroUSD": [],
+    "consumedMicroUSD": "0",
+    "nativeStarted": true,
+    "nativeStopped": true,
+    "cleanupError": null,
+    "receipt": "/tmp/meri-integration-sdk-review/pinned-sdk-complete-none.json",
+    "sha256": "4a7ca8eb2fb68d456904dac9840113c3d428bf0855efc1c9fbf34823e538c199"
+  },
+  {
+    "client": "sdk-configured",
+    "format": "none",
+    "mode": "complete",
+    "sourceCommit": "5fa5545898717e1148a28447bb93254a07fa6459",
+    "exitCode": 2,
+    "passed": false,
+    "sdkIngress": 6,
+    "nativeAttempts": 3,
+    "counts": 0,
+    "providerExecutions": 0,
+    "reservationInserts": 0,
+    "settlementUpdates": 0,
+    "state": [],
+    "holdMicroUSD": [],
+    "consumedMicroUSD": "0",
+    "nativeStarted": true,
+    "nativeStopped": true,
+    "cleanupError": null,
+    "receipt": "/tmp/meri-integration-sdk-review/pinned-sdk-configured-complete-none.json",
+    "sha256": "84aefa0a7653360003f4e12b5453ccbd77dae88b1f154c59379b379af333a45a"
+  },
+  {
+    "client": "sdk-constrained",
+    "format": "json-schema",
+    "mode": "complete",
+    "sourceCommit": "5fa5545898717e1148a28447bb93254a07fa6459",
+    "exitCode": 2,
+    "passed": false,
+    "sdkIngress": 6,
+    "nativeAttempts": 3,
+    "counts": 0,
+    "providerExecutions": 0,
+    "reservationInserts": 0,
+    "settlementUpdates": 0,
+    "state": [],
+    "holdMicroUSD": [],
+    "consumedMicroUSD": "0",
+    "nativeStarted": true,
+    "nativeStopped": true,
+    "cleanupError": null,
+    "receipt": "/tmp/meri-integration-sdk-review/pinned-sdk-constrained-complete-json-schema.json",
+    "sha256": "d37425a4dcef86fae8059cdbb9e038b5a8ebcb736eba896dc3f87fdadce1c48f"
+  },
+  {
+    "client": "sdk-constrained",
+    "format": "none",
+    "mode": "complete",
+    "sourceCommit": "5fa5545898717e1148a28447bb93254a07fa6459",
+    "exitCode": 2,
+    "passed": false,
+    "sdkIngress": 6,
+    "nativeAttempts": 3,
+    "counts": 0,
+    "providerExecutions": 0,
+    "reservationInserts": 0,
+    "settlementUpdates": 0,
+    "state": [],
+    "holdMicroUSD": [],
+    "consumedMicroUSD": "0",
+    "nativeStarted": true,
+    "nativeStopped": true,
+    "cleanupError": null,
+    "receipt": "/tmp/meri-integration-sdk-review/pinned-sdk-constrained-complete-none.json",
+    "sha256": "440f8e80ac324a141fc4f3de0ef4e08a1ea3a17cfbc53bbc1d3d190d398c39a5"
+  }
+]

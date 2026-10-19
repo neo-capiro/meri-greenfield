@@ -1,0 +1,673 @@
+{
+  "scope": "OFFLINE_PARTITION_ONLY",
+  "mode": "reservation-ack-lost",
+  "client": "sdk-profiled",
+  "outputFormat": "none",
+  "fullOwnerHttps": "OPEN_RFC1918_INTERFACES_UNAVAILABLE",
+  "productImage": "UNRUN",
+  "postgresql": "UNRUN",
+  "providerCalls": 0,
+  "sdkResults": [],
+  "sdkSpawns": 1,
+  "sourceCommit": "781047bc0e90b53b737d408a4faa5d1467089251",
+  "sourceFiles": {
+    "run.mjs": "ea15669f3de659645189372e5ccf2d61b06cf3009224acdb6d89f9cdcd325ad5",
+    "native_proxy.py": "f7754ecd70a9158f65286ee8d55361b3c50381d037dbcecf93197b7828ed154a",
+    "provider_stub.py": "8d8b31f2feff3b37b9d8c5a4186a0b90475088bbd07b74ed5e178f77fde20757",
+    "owner_peer.mjs": "8f12e58c29060d4f7b7d4c04de9af2d45fbc1ea919311943c5815130efaeb9d7",
+    "model_ledger_fixture.mjs": "46fe63c2795c60588142881bd81bb983dfabaf6ff021911ee1e50a530e5dd313"
+  },
+  "productConfigSha256": "64860d829d7c022f6640b1a75eb48ad05dc2421d8e5e2bcdfdda50b421754d19",
+  "versions": {
+    "sdk": "0.3.295",
+    "cli": "2.1.295",
+    "node": "v24.19.0"
+  },
+  "executableSha256": "4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358",
+  "configurationCandidate": {
+    "supportedModelMetadata": true,
+    "modelOverrides": {
+      "claude-sonnet-4-6": "meri-sonnet-qualification"
+    },
+    "thinking": {
+      "type": "disabled"
+    },
+    "DISABLE_PROMPT_CACHING": "1",
+    "CLAUDE_CODE_EFFORT_LEVEL": "unset"
+  },
+  "sdkIterationFailure": "Error",
+  "native": {
+    "scope": "offline-partition-only",
+    "fullOwnerHttps": "OPEN_RFC1918_INTERFACES_UNAVAILABLE",
+    "syntheticIngress": true,
+    "ownerTransport": "private-subprocess-IPC",
+    "database": "scripted-SQL-canonical-JS-accounting",
+    "countTransport": "botocore-Stubber",
+    "providerTransport": "in-process-HTTPX-stub",
+    "providerExecutions": 0,
+    "countRequests": 3,
+    "sdkRequests": [
+      {
+        "bytes": 2398,
+        "sha256": "4d680cd3849756824b212e12ca4866cfda900c2261c95aa2ab27e47ec70f014b",
+        "fieldNames": [
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].content[].text",
+          "messages[].content[].type",
+          "messages[].role",
+          "metadata",
+          "metadata.user_id",
+          "model",
+          "stream",
+          "system",
+          "system[].text",
+          "system[].type",
+          "temperature",
+          "thinking",
+          "thinking.type",
+          "tools"
+        ],
+        "topLevelTypes": {
+          "model": "str",
+          "messages": "list",
+          "system": "list",
+          "tools": "list",
+          "metadata": "dict",
+          "max_tokens": "int",
+          "thinking": "dict",
+          "temperature": "int",
+          "stream": "bool"
+        },
+        "topLevelArrayLengths": {
+          "messages": 1,
+          "system": 3,
+          "tools": 0
+        },
+        "modelAlias": "meri-sonnet-qualification",
+        "maxOutputTokens": 8192,
+        "stream": true,
+        "temperature": 1,
+        "thinkingDisabled": true,
+        "toolNames": [],
+        "metadataUserIdBytes": 150,
+        "metadataUserIdTypes": {
+          "device_id": "str",
+          "account_uuid": "str",
+          "session_id": "str"
+        },
+        "headerBetaEnums": [
+          "claude-code-20250219",
+          "interleaved-thinking-2025-05-14",
+          "thinking-token-count-2026-05-13",
+          "context-management-2025-06-27",
+          "prompt-caching-scope-2026-01-05",
+          "effort-2025-11-24"
+        ]
+      },
+      {
+        "bytes": 2398,
+        "sha256": "4d680cd3849756824b212e12ca4866cfda900c2261c95aa2ab27e47ec70f014b",
+        "fieldNames": [
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].content[].text",
+          "messages[].content[].type",
+          "messages[].role",
+          "metadata",
+          "metadata.user_id",
+          "model",
+          "stream",
+          "system",
+          "system[].text",
+          "system[].type",
+          "temperature",
+          "thinking",
+          "thinking.type",
+          "tools"
+        ],
+        "topLevelTypes": {
+          "model": "str",
+          "messages": "list",
+          "system": "list",
+          "tools": "list",
+          "metadata": "dict",
+          "max_tokens": "int",
+          "thinking": "dict",
+          "temperature": "int",
+          "stream": "bool"
+        },
+        "topLevelArrayLengths": {
+          "messages": 1,
+          "system": 3,
+          "tools": 0
+        },
+        "modelAlias": "meri-sonnet-qualification",
+        "maxOutputTokens": 8192,
+        "stream": true,
+        "temperature": 1,
+        "thinkingDisabled": true,
+        "toolNames": [],
+        "metadataUserIdBytes": 150,
+        "metadataUserIdTypes": {
+          "device_id": "str",
+          "account_uuid": "str",
+          "session_id": "str"
+        },
+        "headerBetaEnums": [
+          "claude-code-20250219",
+          "interleaved-thinking-2025-05-14",
+          "thinking-token-count-2026-05-13",
+          "context-management-2025-06-27",
+          "prompt-caching-scope-2026-01-05",
+          "effort-2025-11-24"
+        ]
+      },
+      {
+        "bytes": 2398,
+        "sha256": "4d680cd3849756824b212e12ca4866cfda900c2261c95aa2ab27e47ec70f014b",
+        "fieldNames": [
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].content[].text",
+          "messages[].content[].type",
+          "messages[].role",
+          "metadata",
+          "metadata.user_id",
+          "model",
+          "stream",
+          "system",
+          "system[].text",
+          "system[].type",
+          "temperature",
+          "thinking",
+          "thinking.type",
+          "tools"
+        ],
+        "topLevelTypes": {
+          "model": "str",
+          "messages": "list",
+          "system": "list",
+          "tools": "list",
+          "metadata": "dict",
+          "max_tokens": "int",
+          "thinking": "dict",
+          "temperature": "int",
+          "stream": "bool"
+        },
+        "topLevelArrayLengths": {
+          "messages": 1,
+          "system": 3,
+          "tools": 0
+        },
+        "modelAlias": "meri-sonnet-qualification",
+        "maxOutputTokens": 8192,
+        "stream": true,
+        "temperature": 1,
+        "thinkingDisabled": true,
+        "toolNames": [],
+        "metadataUserIdBytes": 150,
+        "metadataUserIdTypes": {
+          "device_id": "str",
+          "account_uuid": "str",
+          "session_id": "str"
+        },
+        "headerBetaEnums": [
+          "claude-code-20250219",
+          "interleaved-thinking-2025-05-14",
+          "thinking-token-count-2026-05-13",
+          "context-management-2025-06-27",
+          "prompt-caching-scope-2026-01-05",
+          "effort-2025-11-24"
+        ]
+      },
+      {
+        "bytes": 2398,
+        "sha256": "4d680cd3849756824b212e12ca4866cfda900c2261c95aa2ab27e47ec70f014b",
+        "fieldNames": [
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].content[].text",
+          "messages[].content[].type",
+          "messages[].role",
+          "metadata",
+          "metadata.user_id",
+          "model",
+          "stream",
+          "system",
+          "system[].text",
+          "system[].type",
+          "temperature",
+          "thinking",
+          "thinking.type",
+          "tools"
+        ],
+        "topLevelTypes": {
+          "model": "str",
+          "messages": "list",
+          "system": "list",
+          "tools": "list",
+          "metadata": "dict",
+          "max_tokens": "int",
+          "thinking": "dict",
+          "temperature": "int",
+          "stream": "bool"
+        },
+        "topLevelArrayLengths": {
+          "messages": 1,
+          "system": 3,
+          "tools": 0
+        },
+        "modelAlias": "meri-sonnet-qualification",
+        "maxOutputTokens": 8192,
+        "stream": true,
+        "temperature": 1,
+        "thinkingDisabled": true,
+        "toolNames": [],
+        "metadataUserIdBytes": 150,
+        "metadataUserIdTypes": {
+          "device_id": "str",
+          "account_uuid": "str",
+          "session_id": "str"
+        },
+        "headerBetaEnums": [
+          "claude-code-20250219",
+          "interleaved-thinking-2025-05-14",
+          "thinking-token-count-2026-05-13",
+          "context-management-2025-06-27",
+          "prompt-caching-scope-2026-01-05",
+          "effort-2025-11-24"
+        ]
+      },
+      {
+        "bytes": 2398,
+        "sha256": "4d680cd3849756824b212e12ca4866cfda900c2261c95aa2ab27e47ec70f014b",
+        "fieldNames": [
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].content[].text",
+          "messages[].content[].type",
+          "messages[].role",
+          "metadata",
+          "metadata.user_id",
+          "model",
+          "stream",
+          "system",
+          "system[].text",
+          "system[].type",
+          "temperature",
+          "thinking",
+          "thinking.type",
+          "tools"
+        ],
+        "topLevelTypes": {
+          "model": "str",
+          "messages": "list",
+          "system": "list",
+          "tools": "list",
+          "metadata": "dict",
+          "max_tokens": "int",
+          "thinking": "dict",
+          "temperature": "int",
+          "stream": "bool"
+        },
+        "topLevelArrayLengths": {
+          "messages": 1,
+          "system": 3,
+          "tools": 0
+        },
+        "modelAlias": "meri-sonnet-qualification",
+        "maxOutputTokens": 8192,
+        "stream": true,
+        "temperature": 1,
+        "thinkingDisabled": true,
+        "toolNames": [],
+        "metadataUserIdBytes": 150,
+        "metadataUserIdTypes": {
+          "device_id": "str",
+          "account_uuid": "str",
+          "session_id": "str"
+        },
+        "headerBetaEnums": [
+          "claude-code-20250219",
+          "interleaved-thinking-2025-05-14",
+          "thinking-token-count-2026-05-13",
+          "context-management-2025-06-27",
+          "prompt-caching-scope-2026-01-05",
+          "effort-2025-11-24"
+        ]
+      },
+      {
+        "bytes": 2398,
+        "sha256": "4d680cd3849756824b212e12ca4866cfda900c2261c95aa2ab27e47ec70f014b",
+        "fieldNames": [
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].content[].text",
+          "messages[].content[].type",
+          "messages[].role",
+          "metadata",
+          "metadata.user_id",
+          "model",
+          "stream",
+          "system",
+          "system[].text",
+          "system[].type",
+          "temperature",
+          "thinking",
+          "thinking.type",
+          "tools"
+        ],
+        "topLevelTypes": {
+          "model": "str",
+          "messages": "list",
+          "system": "list",
+          "tools": "list",
+          "metadata": "dict",
+          "max_tokens": "int",
+          "thinking": "dict",
+          "temperature": "int",
+          "stream": "bool"
+        },
+        "topLevelArrayLengths": {
+          "messages": 1,
+          "system": 3,
+          "tools": 0
+        },
+        "modelAlias": "meri-sonnet-qualification",
+        "maxOutputTokens": 8192,
+        "stream": true,
+        "temperature": 1,
+        "thinkingDisabled": true,
+        "toolNames": [],
+        "metadataUserIdBytes": 150,
+        "metadataUserIdTypes": {
+          "device_id": "str",
+          "account_uuid": "str",
+          "session_id": "str"
+        },
+        "headerBetaEnums": [
+          "claude-code-20250219",
+          "interleaved-thinking-2025-05-14",
+          "thinking-token-count-2026-05-13",
+          "context-management-2025-06-27",
+          "prompt-caching-scope-2026-01-05",
+          "effort-2025-11-24"
+        ]
+      }
+    ],
+    "nativeRequests": [
+      {
+        "bytes": 2414,
+        "sha256": "7d9cf63d10b04188e4c7e8b2d1ec3accd4d9bf721474947036d075bcbaadfc38",
+        "fieldNames": [
+          "anthropic_beta",
+          "anthropic_version",
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].content[].text",
+          "messages[].content[].type",
+          "messages[].role",
+          "metadata",
+          "metadata.user_id",
+          "system",
+          "system[].text",
+          "system[].type",
+          "temperature",
+          "thinking",
+          "thinking.type",
+          "tools"
+        ],
+        "topLevelTypes": {
+          "messages": "list",
+          "max_tokens": "int",
+          "metadata": "dict",
+          "system": "list",
+          "thinking": "dict",
+          "tools": "list",
+          "temperature": "int",
+          "anthropic_version": "str",
+          "anthropic_beta": "list"
+        },
+        "topLevelArrayLengths": {
+          "messages": 1,
+          "system": 2,
+          "tools": 0,
+          "anthropic_beta": 2
+        },
+        "maxOutputTokens": 8192,
+        "temperature": 1,
+        "thinkingDisabled": true,
+        "toolNames": [],
+        "metadataUserIdBytes": 150,
+        "metadataUserIdTypes": {
+          "device_id": "str",
+          "account_uuid": "str",
+          "session_id": "str"
+        },
+        "betaEnums": [
+          "context-management-2025-06-27",
+          "effort-2025-11-24"
+        ],
+        "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+        "headerNames": [
+          "accept",
+          "accept-encoding",
+          "anthropic-beta",
+          "anthropic-version",
+          "authorization",
+          "connection",
+          "content-length",
+          "content-type",
+          "host",
+          "user-agent",
+          "x-amz-date"
+        ],
+        "nativeHeaderBetaEnums": [
+          "context-management-2025-06-27",
+          "effort-2025-11-24"
+        ]
+      },
+      {
+        "bytes": 2414,
+        "sha256": "7d9cf63d10b04188e4c7e8b2d1ec3accd4d9bf721474947036d075bcbaadfc38",
+        "fieldNames": [
+          "anthropic_beta",
+          "anthropic_version",
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].content[].text",
+          "messages[].content[].type",
+          "messages[].role",
+          "metadata",
+          "metadata.user_id",
+          "system",
+          "system[].text",
+          "system[].type",
+          "temperature",
+          "thinking",
+          "thinking.type",
+          "tools"
+        ],
+        "topLevelTypes": {
+          "messages": "list",
+          "max_tokens": "int",
+          "metadata": "dict",
+          "system": "list",
+          "thinking": "dict",
+          "tools": "list",
+          "temperature": "int",
+          "anthropic_version": "str",
+          "anthropic_beta": "list"
+        },
+        "topLevelArrayLengths": {
+          "messages": 1,
+          "system": 2,
+          "tools": 0,
+          "anthropic_beta": 2
+        },
+        "maxOutputTokens": 8192,
+        "temperature": 1,
+        "thinkingDisabled": true,
+        "toolNames": [],
+        "metadataUserIdBytes": 150,
+        "metadataUserIdTypes": {
+          "device_id": "str",
+          "account_uuid": "str",
+          "session_id": "str"
+        },
+        "betaEnums": [
+          "context-management-2025-06-27",
+          "effort-2025-11-24"
+        ],
+        "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+        "headerNames": [
+          "accept",
+          "accept-encoding",
+          "anthropic-beta",
+          "anthropic-version",
+          "authorization",
+          "connection",
+          "content-length",
+          "content-type",
+          "host",
+          "user-agent",
+          "x-amz-date"
+        ],
+        "nativeHeaderBetaEnums": [
+          "context-management-2025-06-27",
+          "effort-2025-11-24"
+        ]
+      },
+      {
+        "bytes": 2414,
+        "sha256": "7d9cf63d10b04188e4c7e8b2d1ec3accd4d9bf721474947036d075bcbaadfc38",
+        "fieldNames": [
+          "anthropic_beta",
+          "anthropic_version",
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].content[].text",
+          "messages[].content[].type",
+          "messages[].role",
+          "metadata",
+          "metadata.user_id",
+          "system",
+          "system[].text",
+          "system[].type",
+          "temperature",
+          "thinking",
+          "thinking.type",
+          "tools"
+        ],
+        "topLevelTypes": {
+          "messages": "list",
+          "max_tokens": "int",
+          "metadata": "dict",
+          "system": "list",
+          "thinking": "dict",
+          "tools": "list",
+          "temperature": "int",
+          "anthropic_version": "str",
+          "anthropic_beta": "list"
+        },
+        "topLevelArrayLengths": {
+          "messages": 1,
+          "system": 2,
+          "tools": 0,
+          "anthropic_beta": 2
+        },
+        "maxOutputTokens": 8192,
+        "temperature": 1,
+        "thinkingDisabled": true,
+        "toolNames": [],
+        "metadataUserIdBytes": 150,
+        "metadataUserIdTypes": {
+          "device_id": "str",
+          "account_uuid": "str",
+          "session_id": "str"
+        },
+        "betaEnums": [
+          "context-management-2025-06-27",
+          "effort-2025-11-24"
+        ],
+        "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+        "headerNames": [
+          "accept",
+          "accept-encoding",
+          "anthropic-beta",
+          "anthropic-version",
+          "authorization",
+          "connection",
+          "content-length",
+          "content-type",
+          "host",
+          "user-agent",
+          "x-amz-date"
+        ],
+        "nativeHeaderBetaEnums": [
+          "context-management-2025-06-27",
+          "effort-2025-11-24"
+        ]
+      }
+    ],
+    "errors": [
+      {
+        "operation": "reserve",
+        "code": "BudgetCommitUncertain"
+      },
+      {
+        "operation": "reserve",
+        "code": "PRODUCT_MODEL_SLOT_USED"
+      },
+      {
+        "operation": "reserve",
+        "code": "PRODUCT_MODEL_SLOT_USED"
+      }
+    ],
+    "versions": {
+      "python": "3.13.5",
+      "litellm": "1.104.2",
+      "boto3": "1.43.111",
+      "botocore": "1.43.111",
+      "httpx": "0.28.1",
+      "fastapi": "0.136.3",
+      "uvicorn": "0.51.0"
+    },
+    "ownerOperations": {
+      "reserve": 3
+    },
+    "ledger": {
+      "syntheticAllocation": true,
+      "maxCostMicroUSD": 250000,
+      "allocationSha256": "809d4f670f07c379b72a4db7861e580154170fec430d19e08c01a58efa73b76d",
+      "manifestSha256": "0f415cc9ad01ed8d1303fbff11976627b3829ef829e75a27ffde4f6d8160c6a9",
+      "requests": [
+        {
+          "requestId": "ed879e5e40d24ec1825e5aed54f2cf17",
+          "state": "UNKNOWN",
+          "holdMicroUSD": "135248",
+          "actualMicroUSD": null,
+          "inputTokens": 12,
+          "maxOutputTokens": 8192
+        }
+      ],
+      "consumedMicroUSD": "0",
+      "quarantined": false,
+      "reservationInserts": 1,
+      "settlementUpdates": 0
+    },
+    "nativeStarted": true,
+    "nativeStopped": true
+  },
+  "partitionPassed": false
+}

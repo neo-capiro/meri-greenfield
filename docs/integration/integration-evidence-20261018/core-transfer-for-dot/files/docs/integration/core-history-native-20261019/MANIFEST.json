@@ -1,0 +1,130 @@
+{
+  "repository": "neo-capiro/capiro-backend",
+  "parentCommit": "78ceaf9bdfe00c8f013aac15eb8483312ae4f803",
+  "parentTree": "6cae619af4ad0d67a6693c57a6721fc775037172",
+  "proposalPacketRepository": "neo-capiro/meri-greenfield",
+  "proposalPacketCommit": "b3611559582be27f4545509d9c2f03dc3b1332cd",
+  "proposalPacketPath": "docs/integration/integration-evidence-20261018/core-proposal",
+  "approvedMiddlewareDiff": {
+    "additions": 65,
+    "deletions": 2,
+    "target": "apps/api/src/tenant/tenant-context.middleware.ts",
+    "sha256": "9f4ded7f8a111154cf32dea7888fb145c7bcb72b73b4eef1d7f3870a6e7f4043",
+    "proposedSha256": "d9931a98db2de9ca10cbd2aa161983747c159773e30bbc04bcb36474530095e0"
+  },
+  "basisFiles": [
+    {
+      "path": "apps/api/src/auth/application-authority.ts",
+      "gitBlob": "b97c75ed273def1facec907e305507745d8f2c4c",
+      "sha256": "9e24228be90fb021a7501a61dd1eb27195cffdc8bb4341b3494bd8864afd9b3f",
+      "bytes": 14925
+    },
+    {
+      "path": "apps/api/src/auth/history-release-batch-owner.focused.test.mjs",
+      "gitBlob": "4027ab8b9ffccb725452437bf49de27513f51bac",
+      "sha256": "e12cb6b7353b0c31b20e815b15fc16ce8c7e9538a9b61f39dfe03c123022548e",
+      "bytes": 7394
+    },
+    {
+      "path": "apps/api/src/auth/history-release-batch-owner.ts",
+      "gitBlob": "3f83d8186004330c3d2ce4b956530f3067d3fa1e",
+      "sha256": "a20094b33d1ce4f65f4083cd4fe7a612f414457b5052722864caf0c99c86e869",
+      "bytes": 6945
+    },
+    {
+      "path": "apps/api/src/auth/history-release-selected-client-owner.ts",
+      "gitBlob": "342708fa912a580dd60fac0ea816cd10596e43af",
+      "sha256": "ec8b3ea0c2ecb2098aa23fc5e16884165c79d2115e32ceda5e0c113b192520ac",
+      "bytes": 6597
+    },
+    {
+      "path": "apps/api/src/auth/history-release-source.focused.test.mjs",
+      "gitBlob": "30a39a0ddc4d0667fdf57796084b95568b4df46c",
+      "sha256": "47d54394503d9c23ace390ef76b640d94b5a30871bd78fa09dbc9a4eca24edae",
+      "bytes": 10101
+    },
+    {
+      "path": "apps/api/src/auth/history-release-source.ts",
+      "gitBlob": "8bb0e388fcc5c48d70c9d873610e189ba30fa717",
+      "sha256": "4135dc4740ca41c13560c244bf1cc6fb5342b3e991f04746dff75c74b96b33d4",
+      "bytes": 9768
+    },
+    {
+      "path": "apps/api/src/tenant/tenant-context.middleware.ts",
+      "gitBlob": "dda870eedf9efb389e0f120029cdf8a69b78f15d",
+      "sha256": "cad811e48368c01519aa720d419a281f03190907966819feca9276d3852fcaa9",
+      "bytes": 47280
+    },
+    {
+      "path": "packages/shared/src/core-retained-jcs.ts",
+      "gitBlob": "899e9f00705adffe34d1cfbb35c93af8edc84e1b",
+      "sha256": "f3a64c78d9f00776c75b7b0645b523fb141b39d659b0b9e6c630fdce48b27b20",
+      "bytes": 3260
+    }
+  ],
+  "payloadFiles": [
+    {
+      "path": "apps/api/src/tenant/tenant-context.middleware.ts",
+      "bytes": 50985,
+      "gitBlob": "b43e9102b955ea18bd1920002118d8e3d767c596",
+      "sha256": "d9931a98db2de9ca10cbd2aa161983747c159773e30bbc04bcb36474530095e0"
+    },
+    {
+      "path": "apps/api/src/tenant/tenant-context.history-release-native.focused.test.mjs",
+      "bytes": 18479,
+      "gitBlob": "2a037ca1dca198365752d64ad37cc664e55b4dab",
+      "sha256": "77dabab03b627a260a78ebdfd11d20b2890c9289c7f160dd11c213bd5231f5dc"
+    },
+    {
+      "path": "docs/integration/core-history-native-20261019/REPORT.md",
+      "bytes": 7846,
+      "gitBlob": "74bd36fd54e0ef735d681379d723d0582655cea2",
+      "sha256": "7fa37ffb873bc12d9a45fa5c7ad358b95a49ac32d3ff27908cc0ecea432b443c"
+    },
+    {
+      "path": "docs/integration/core-history-native-20261019/baseline.tap",
+      "bytes": 105811,
+      "gitBlob": "955f50f0645dd4c7c9deef435b51d63c53159c57",
+      "sha256": "f94155a206bd57ce816759285a0a951cd9b69898b83f13a0f116175d39768f0c"
+    },
+    {
+      "path": "docs/integration/core-history-native-20261019/native-focused.tap",
+      "bytes": 7408,
+      "gitBlob": "f9e148cc8b83cbbac9029adbd747c37d39859cbe",
+      "sha256": "7f9ab81c029ca817b5d72d5df2b57968b1952b3e8ad3c7d622c3b3c72d3732d7"
+    },
+    {
+      "path": "docs/integration/core-history-native-20261019/published-focused.tap",
+      "bytes": 2927,
+      "gitBlob": "5e2072b352b6de6b0c4b32cc8d5f36443d073c0c",
+      "sha256": "e383ed31247faa959bb22ea529d993ae584a2a411f19bb6aef8dac18fb0ce8e4"
+    }
+  ],
+  "manifestSelfExcluded": true,
+  "checks": {
+    "before": {
+      "pass": 2,
+      "fail": 32,
+      "exitCode": 1
+    },
+    "nativeFocused": {
+      "pass": 34,
+      "fail": 0,
+      "exitCode": 0
+    },
+    "publishedFocused": {
+      "pass": 10,
+      "fail": 0,
+      "exitCode": 0
+    },
+    "jsSyntax": "pass",
+    "semanticTypecheck": "UNRUN: supported Core dependency/generated-client graph absent"
+  },
+  "environment": {
+    "node": "24.19.0",
+    "npm": "11.9.0",
+    "typescript": "5.9.3",
+    "coreDeclaredNode": ">=20.11.0",
+    "coreDeclaredPackageManager": "pnpm@9.12.0"
+  }
+}

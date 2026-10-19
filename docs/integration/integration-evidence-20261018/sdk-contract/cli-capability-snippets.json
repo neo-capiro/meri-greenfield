@@ -1,0 +1,12 @@
+[
+  {
+    "term": "function NF(e,n){if(zd())return;",
+    "offset": 209467871,
+    "snippet": "function NF(e,n){if(zd())return;for(let r of DF){let s=process.env[r.modelEnvVar]?.trim(),h=process.env[r.capabilitiesEnvVar];if(!s||h===void 0)continue;if(e!==s.toLowerCase())continue;return h.toLowerCase().split(\",\").map((y)=>y.trim()).includes(n)}return}var Xv=[\"claude-opus-4-0\",\"claude-sonnet-4-0\",\"claude-opus-4-1\",\"claude-sonnet-4-5\",\"claude-haiku-4-5\",\"claude-opus-4-5\",\"claude-opus-4-6\",\"claude-sonnet-4-6\",\"claude-opus-4-7\",\"claude-opus-4-8\"];function gr(e,n){if(e.includes(\"claude-3-\"))return!0;let r=Xv.indexOf(e);return r!==-1&&r<Xv.indexOf(n)}function fUn(){return ft().showThinkingSummaries??!1}function Fvs(e){if(e!==void 0)return{dis"
+  },
+  {
+    "term": "function gUn(e)",
+    "offset": 209472844,
+    "snippet": "function gUn(e){let n=We(e),r=cc(e);if(!kz(r))return!1;if(PV())return!1;if(a.CLAUDE_CODE_DISABLE_STRUCTURED_OUTPUTS)return!1;return!gr(n,\"claude-opus-4-1\")}function HF(){let e=Dr();return moe()?e.betasCompiledOnly:e.betas}function Ca(e,n,r){let s=e(HF()),h=s.get(n);if(h!==void 0)"
+  }
+]

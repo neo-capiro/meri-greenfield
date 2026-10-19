@@ -1,0 +1,27 @@
+test_observed_disabled_thinking_and_default_sampling_are_closed (apps.proxy.qualification.test.test_bedrock_transport.BodyTests.test_observed_disabled_thinking_and_default_sampling_are_closed) ... ERROR
+
+======================================================================
+ERROR: test_observed_disabled_thinking_and_default_sampling_are_closed (apps.proxy.qualification.test.test_bedrock_transport.BodyTests.test_observed_disabled_thinking_and_default_sampling_are_closed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>/apps/proxy/qualification/test/test_bedrock_transport.py", line 588, in test_observed_disabled_thinking_and_default_sampling_are_closed
+    self.assertIs(inspect_native_request("POST", URL, raw, BodyLimits()).raw, raw)
+                  ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<worktree>/apps/proxy/qualification/runtime/bedrock_body.py", line 193, in inspect_native_request
+    _object(body, ("anthropic_version", "max_tokens", "messages", "system", "tools", "tool_choice", "temperature",
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                   "metadata", "anthropic_beta", "output_config"),
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            ("anthropic_version", "max_tokens", "messages"))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<worktree>/apps/proxy/qualification/runtime/bedrock_body.py", line 85, in _object
+    _deny("UNSUPPORTED_BODY_SHAPE")
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<worktree>/apps/proxy/qualification/runtime/bedrock_body.py", line 80, in _deny
+    raise AdmissionDenied(reason)
+runtime.bedrock_body.AdmissionDenied: UNSUPPORTED_BODY_SHAPE
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+FAILED (errors=1)

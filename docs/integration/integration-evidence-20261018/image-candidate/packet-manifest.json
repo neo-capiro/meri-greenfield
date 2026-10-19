@@ -1,0 +1,67 @@
+{
+  "status": "ONE_EXACT_REVIEWED_SOURCE_FOR_FUTURE_IMAGE; INERT; NO_IMAGE_EXISTS",
+  "sourceCommit": "34851020aa0d73fead4db59ba6e26a098e2d0313",
+  "sourceTree": "d5d1b5599c812d49428bb113badd89092f9d05f3",
+  "files": [
+    {
+      "path": "CANDIDATE.md",
+      "bytes": 9044,
+      "sha256": "ae0fe326ea662779616528027a18ae220eb45530f35757d591b12426adf58474"
+    },
+    {
+      "path": "CANONICAL-SEQUENCE.md",
+      "bytes": 8857,
+      "sha256": "287014474c9746d2c62597126d5abd05e765d93e16aa0f8e348e9a7736d749df"
+    },
+    {
+      "path": "COORDINATION-STATUS.json",
+      "bytes": 1933,
+      "sha256": "e23194e5ac6038aea264134c29c7371d427e4cff04cfbd84a5cf0ada611cfc5d"
+    },
+    {
+      "path": "QUALIFICATION-STATUS.json",
+      "bytes": 1605,
+      "sha256": "927e5360f003765af8023ea92767b607af683e73a0436295507fec4a2182bed6"
+    },
+    {
+      "path": "SELECTED-SCHEMA-CUSTODY-GATE.md",
+      "bytes": 4774,
+      "sha256": "5661c26c35f18d80a5be969b7ba3de64f4a4c1dc69d520d43cdf228f57e5f667"
+    },
+    {
+      "path": "final-source-readback.json",
+      "bytes": 4786,
+      "sha256": "29ff2de279156e64e4b5b183bd70bc7d1d54199cb902e0f2a16d333779efb284"
+    },
+    {
+      "path": "historical-builder-reference.json",
+      "bytes": 1054,
+      "sha256": "be3e8f664ede41d20cc4fc66032cd7330015ebaf2e655188ab34d602c8cb7d54"
+    },
+    {
+      "path": "pr187-final-thread-readback.json",
+      "bytes": 8801,
+      "sha256": "823008f4239c23b78a40f623ea0548048065d6902d52bc5d53024215a07b8813"
+    },
+    {
+      "path": "recipe-input-plan.json",
+      "bytes": 10337,
+      "sha256": "97c8b41b396cf3b799d702deee1b45121c44c1becaf3162a2d3aa549e84e4f66"
+    },
+    {
+      "path": "reference-0d3388a8-source-pins.json",
+      "bytes": 6861,
+      "sha256": "26bc6f81591fe05bffd18860c88abdb3f6740b2281055186abc0677ab7f4ed2e"
+    },
+    {
+      "path": "source-pins.json",
+      "bytes": 9378,
+      "sha256": "5f3a63427565a0e9e948050871ee06f2a3c5157dd72d5e72ed4fc9f19056ac1f"
+    },
+    {
+      "path": "thread-and-source-readback.json",
+      "bytes": 57727,
+      "sha256": "efdfdcf8e67e518002d8050e2ec3ae62e6b519d3ba02026638f275b0c7212aff"
+    }
+  ]
+}

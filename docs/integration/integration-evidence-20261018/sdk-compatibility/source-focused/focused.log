@@ -1,0 +1,92 @@
+✔ synchronous facade retains one preparation and iterator; interrupt and close use same Query (1.825247ms)
+✔ close before first iteration retires transport without preparing a Query (0.338239ms)
+✔ data options pin rejects drift before transport construction and invokes no getters (1.930045ms)
+✔ projection rejects hostile nested proxy and callback getter without evaluating either (0.472641ms)
+✔ actual adopted SDK MCP server prototype close is admitted effect-free (85.180008ms)
+✖ without a declared policy the SDK query receives exactly the default first-chat options and no progress is displayed (13.514909ms)
+✖ a declared subagent policy configures SDK agents and displays only the admitted progress summary (2.413583ms)
+✖ audit hooks publish only hashes through the run owner append port during the activity (2.157306ms)
+✖ a run owner that refuses capability events denies the tool and fails the run instead of completing unaudited (1.931757ms)
+✖ an invalid declared policy is refused before claim and before any SDK query (1.916253ms)
+✖ a malformed hook input latches: the tool is denied, no later output is published and the run fails instead of completing (2.082093ms)
+✖ a latched failure after the last output still prevents completion; post-tool, compaction and subagent hook paths each latch (1.556943ms)
+✖ Bash reaches the SDK only with explicit policy eligibility and the trusted sandbox attestation from runtime preparation; networked Bash also needs the egress fact and the approval port (2.025608ms)
+✔ the attestation is a closed trusted fact; weaker nested sandboxing needs the outer disposable worker as the boundary (2.333732ms)
+✔ Bash is admitted only with explicit policy eligibility AND an available attestation; workspaceTools alone never admits it (8.602727ms)
+✔ the SDK sandbox settings lock every escape hatch, scrub every worker credential and confine writes to the task workspace (1.516772ms)
+✔ a fragment can never carry Bash without the locked sandbox, its policy-tier locks and the credential scrub (4.370838ms)
+✔ conversation options keep the fixed base: settings and env are extended, never replaced, and every worker credential is scrubbed (1.775582ms)
+✔ every hook validation, projection or publication failure latches and check() refuses completion; no event follows a latch (4.808056ms)
+✔ an absent or all-off capability fragment keeps the default options byte-identical in shape and order (8.636027ms)
+✔ the capability fragment is merged additively: allowedTools union, hooks by event, permission callbacks chained (12.104707ms)
+✔ fragment validation refuses unknown keys, undeclared hook events, foreign agent types and cwd plugin paths (1.44894ms)
+✔ the pinned runner CA reaches the SDK subprocess env exactly once and is covered by the SDK options digest (2.779833ms)
+✔ any other CA path, or a CA without the admitted per-task SDK directories, refuses (0.739713ms)
+✔ public SDK controls identify the fixed proxy model and keep schema, tool and budget authority intact (0.725432ms)
+✔ the native options projection refuses every enabled or malformed thinking setting without invoking getters (0.441916ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 18
+ℹ fail 8
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4647.218733
+
+✖ failing tests:
+
+test at apps/worker/conversation/test/activity-capabilities.test.mjs:22:1
+✖ without a declared policy the SDK query receives exactly the default first-chat options and no progress is displayed (13.514909ms)
+  Error: STORE_UNAVAILABLE
+      at tx (file:///workspace/meri-source/apps/control/conversations/postgres-store.mjs:24:68) {
+    code: 'STORE_UNAVAILABLE'
+  }
+
+test at apps/worker/conversation/test/activity-capabilities.test.mjs:28:1
+✖ a declared subagent policy configures SDK agents and displays only the admitted progress summary (2.413583ms)
+  Error: STORE_UNAVAILABLE
+      at tx (file:///workspace/meri-source/apps/control/conversations/postgres-store.mjs:24:68) {
+    code: 'STORE_UNAVAILABLE'
+  }
+
+test at apps/worker/conversation/test/activity-capabilities.test.mjs:35:1
+✖ audit hooks publish only hashes through the run owner append port during the activity (2.157306ms)
+  Error: STORE_UNAVAILABLE
+      at tx (file:///workspace/meri-source/apps/control/conversations/postgres-store.mjs:24:68) {
+    code: 'STORE_UNAVAILABLE'
+  }
+
+test at apps/worker/conversation/test/activity-capabilities.test.mjs:43:1
+✖ a run owner that refuses capability events denies the tool and fails the run instead of completing unaudited (1.931757ms)
+  Error: STORE_UNAVAILABLE
+      at tx (file:///workspace/meri-source/apps/control/conversations/postgres-store.mjs:24:68) {
+    code: 'STORE_UNAVAILABLE'
+  }
+
+test at apps/worker/conversation/test/activity-capabilities.test.mjs:48:1
+✖ an invalid declared policy is refused before claim and before any SDK query (1.916253ms)
+  Error: STORE_UNAVAILABLE
+      at tx (file:///workspace/meri-source/apps/control/conversations/postgres-store.mjs:24:68) {
+    code: 'STORE_UNAVAILABLE'
+  }
+
+test at apps/worker/conversation/test/activity-capabilities.test.mjs:53:1
+✖ a malformed hook input latches: the tool is denied, no later output is published and the run fails instead of completing (2.082093ms)
+  Error: STORE_UNAVAILABLE
+      at tx (file:///workspace/meri-source/apps/control/conversations/postgres-store.mjs:24:68) {
+    code: 'STORE_UNAVAILABLE'
+  }
+
+test at apps/worker/conversation/test/activity-capabilities.test.mjs:58:1
+✖ a latched failure after the last output still prevents completion; post-tool, compaction and subagent hook paths each latch (1.556943ms)
+  Error: STORE_UNAVAILABLE
+      at tx (file:///workspace/meri-source/apps/control/conversations/postgres-store.mjs:24:68) {
+    code: 'STORE_UNAVAILABLE'
+  }
+
+test at apps/worker/conversation/test/activity-capabilities.test.mjs:74:1
+✖ Bash reaches the SDK only with explicit policy eligibility and the trusted sandbox attestation from runtime preparation; networked Bash also needs the egress fact and the approval port (2.025608ms)
+  Error: STORE_UNAVAILABLE
+      at tx (file:///workspace/meri-source/apps/control/conversations/postgres-store.mjs:24:68) {
+    code: 'STORE_UNAVAILABLE'
+  }

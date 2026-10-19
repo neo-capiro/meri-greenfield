@@ -1,0 +1,127 @@
+test_body_limits_default_to_and_cap_at_the_envelope (apps.proxy.product.test.test_envelope.EnvelopeTests.test_body_limits_default_to_and_cap_at_the_envelope) ... ok
+test_structured_schema_binding_is_trusted_immutable_json (apps.proxy.product.test.test_envelope.EnvelopeTests.test_structured_schema_binding_is_trusted_immutable_json) ... ok
+test_usage_binding_and_reserve_liability_follow_the_envelope (apps.proxy.product.test.test_envelope.EnvelopeTests.test_usage_binding_and_reserve_liability_follow_the_envelope) ... ok
+test_values_match_the_node_owner_exactly (apps.proxy.product.test.test_envelope.EnvelopeTests.test_values_match_the_node_owner_exactly) ... ok
+test_duplicate_nonfinite_truncated_and_bounded_raw_bytes (apps.proxy.qualification.test.test_bedrock_transport.BodyTests.test_duplicate_nonfinite_truncated_and_bounded_raw_bytes) ... ok
+test_native_semantic_feature_and_shape_negatives (apps.proxy.qualification.test.test_bedrock_transport.BodyTests.test_native_semantic_feature_and_shape_negatives) ... ok
+test_observed_disabled_thinking_and_default_sampling_are_closed (apps.proxy.qualification.test.test_bedrock_transport.BodyTests.test_observed_disabled_thinking_and_default_sampling_are_closed) ... ok
+test_qualification_limits_refuse_widening_or_malformed_names (apps.proxy.qualification.test.test_bedrock_transport.BodyTests.test_qualification_limits_refuse_widening_or_malformed_names) ... ok
+test_sdk_metadata_beta_enums_and_empty_tools_preserve_counted_bytes (apps.proxy.qualification.test.test_bedrock_transport.BodyTests.test_sdk_metadata_beta_enums_and_empty_tools_preserve_counted_bytes) ... ok
+test_structured_output_requires_exact_trusted_schema_and_tool_authority (apps.proxy.qualification.test.test_bedrock_transport.BodyTests.test_structured_output_requires_exact_trusted_schema_and_tool_authority) ... ok
+test_actual_customlogger_deployment_hook_can_inject_client (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_actual_customlogger_deployment_hook_can_inject_client) ... ok
+test_actual_http400_thinking_retry_is_blocked_even_without_thinking_body (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_actual_http400_thinking_retry_is_blocked_even_without_thinking_body) ... ok
+test_actual_public_route_foreign_profile_never_sends (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_actual_public_route_foreign_profile_never_sends) ... ok
+test_actual_stream_truncation_and_semantic_error_remain_visible_and_unknown (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_actual_stream_truncation_and_semantic_error_remain_visible_and_unknown) ... /tmp/meri-integration-sdk-env/lib/python3.13/site-packages/pydantic/_internal/_generate_schema.py:1475: UserWarning: Items 'run_id', 'status', 'num_of_steps', 'result', 'error', 'type' on TypedDict class 'TinyfishRun' are using the `ReadOnly` qualifier. Pydantic will not protect items from any mutation on dictionary instances.
+  warnings.warn(
+Executing <Task pending name='Task-29' coro=<TransportTests.test_actual_stream_truncation_and_semantic_error_remain_visible_and_unknown() running at <worktree>/apps/proxy/qualification/test/test_bedrock_transport.py:242> wait_for=<Future pending cb=[Task.task_wakeup()] created at /tmp/meri-integration-python/cpython-3.13.5-linux-x86_64-gnu/lib/python3.13/asyncio/base_events.py:459> cb=[_run_until_complete_cb() at /tmp/meri-integration-python/cpython-3.13.5-linux-x86_64-gnu/lib/python3.13/asyncio/base_events.py:181] created at /tmp/meri-integration-python/cpython-3.13.5-linux-x86_64-gnu/lib/python3.13/asyncio/runners.py:100> took 0.542 seconds
+/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/pydantic/_internal/_generate_schema.py:1475: UserWarning: Item 'summary' on TypedDict class 'ChatCompletionReasoningItem' is using the `ReadOnly` qualifier. Pydantic will not protect items from any mutation on dictionary instances.
+  warnings.warn(
+/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/pydantic/_internal/_generate_schema.py:1475: UserWarning: Items 'hours_utc', 'weekdays' on TypedDict class 'OffPeakWindow' are using the `ReadOnly` qualifier. Pydantic will not protect items from any mutation on dictionary instances.
+  warnings.warn(
+/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/pydantic/_internal/_generate_schema.py:1475: UserWarning: Items 'hours_utc', 'windows', 'weekday_timezone', 'input_cost_per_token', 'output_cost_per_token', 'output_cost_per_reasoning_token', 'cache_read_input_token_cost', 'cache_creation_input_token_cost' on TypedDict class 'OffPeakPricing' are using the `ReadOnly` qualifier. Pydantic will not protect items from any mutation on dictionary instances.
+  warnings.warn(
+/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/pydantic/_internal/_generate_schema.py:1475: UserWarning: Items 'supports_prompt_cache_breakpoint', 'supports_thinking_cache_preservation', 'supports_legacy_thinking', 'thinking_always_on', 'reasoning_effort_levels', 'default_reasoning_effort', 'supports_anthropic_thinking_payload', 'supports_anthropic_compaction', 'supported_audio_formats', 'vertex_ai_audio_api', 'input_cost_per_token_ultrafast', 'cache_creation_input_token_cost_ultrafast', 'cache_read_input_audio_token_cost', 'cache_read_input_image_token_cost', 'cache_read_input_token_cost_ultrafast', 'cache_read_input_token_cost_batches', 'cache_read_input_token_cost_above_272k_tokens_batches', 'cache_creation_input_token_cost_batches', 'cache_creation_input_token_cost_above_200k_tokens_batches', 'cache_creation_input_token_cost_above_272k_tokens_batches', 'off_peak_pricing', 'input_cost_per_audio_token_batches', 'input_cost_per_image_token_batches', 'input_cost_per_video_token_batches', 'input_cost_per_token_above_272k_tokens_batches', 'output_cost_per_token_above_272k_tokens_batches', 'output_cost_per_token_ultrafast', 'regional_endpoint_uplift_multiplier', 'output_cost_per_pixel', 'output_cost_per_second_480p', 'output_cost_per_second_720p', 'output_cost_per_second_768p', 'output_cost_per_second_2k', 'output_cost_per_second_4k', 'output_cost_per_image_512', 'output_cost_per_image_1024', 'output_cost_per_image_1536', 'ocr_cost_per_page_batches', 'annotation_cost_per_page_batches', 'google_maps_grounding_cost_per_query' on TypedDict class 'ModelInfo' are using the `ReadOnly` qualifier. Pydantic will not protect items from any mutation on dictionary instances.
+  warnings.warn(
+/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/pydantic/_internal/_generate_schema.py:1475: UserWarning: Items 'langfuse_environment', 'langfuse_span_scope', 'arize_success_sampling_rate', 'arize_error_sampling_rate' on TypedDict class 'StandardCallbackDynamicParams' are using the `ReadOnly` qualifier. Pydantic will not protect items from any mutation on dictionary instances.
+  warnings.warn(
+Executing <Task finished name='Task-34' coro=<BaseAnthropicMessagesStreamingIterator._pump_upstream_to_queue() done, defined at /tmp/meri-integration-sdk-env/lib/python3.13/site-packages/litellm/llms/anthropic/experimental_pass_through/messages/streaming_iterator.py:605> result=None created at /tmp/meri-integration-python/cpython-3.13.5-linux-x86_64-gnu/lib/python3.13/asyncio/tasks.py:410> took 0.549 seconds
+/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/pydantic/_internal/_generate_schema.py:1475: UserWarning: Item 'summary' on TypedDict class 'ChatCompletionReasoningItem' is using the `ReadOnly` qualifier. Pydantic will not protect items from any mutation on dictionary instances.
+  warnings.warn(
+/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/pydantic/_internal/_generate_schema.py:1475: UserWarning: Items 'probabilities', 'threshold', 'predicted_tier', 'request_type' on TypedDict class 'StandardLoggingHeuristicV2Forecast' are using the `ReadOnly` qualifier. Pydantic will not protect items from any mutation on dictionary instances.
+  warnings.warn(
+/tmp/meri-integration-sdk-env/lib/python3.13/site-packages/pydantic/_internal/_generate_schema.py:1475: UserWarning: Items 'classifier_probabilities', 'classifier_confidence', 'heuristic_v2_forecast', 'classifier_calibrated_p_solve', 'classifier_calibration_version', 'classifier_efficient_p_solve', 'classifier_capable_p_solve', 'classifier_calibrated_efficient_p_solve', 'classifier_calibrated_capable_p_solve', 'classifier_max_quality_gap', 'classifier_prompt_version' on TypedDict class 'StandardLoggingRoutingDecision' are using the `ReadOnly` qualifier. Pydantic will not protect items from any mutation on dictionary instances.
+  warnings.warn(
+ok
+test_actual_tools_translation_preserves_counted_final_body (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_actual_tools_translation_preserves_counted_final_body) ... ok
+test_beta_header_duplicates_unknowns_and_body_mismatches_never_count_or_send (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_beta_header_duplicates_unknowns_and_body_mismatches_never_count_or_send) ... ok
+test_cancellation_after_ledger_commit_preserves_unknown_without_send (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_cancellation_after_ledger_commit_preserves_unknown_without_send) ... ok
+test_closed_beta_headers_match_body_without_changing_signed_or_counted_bytes (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_closed_beta_headers_match_body_without_changing_signed_or_counted_bytes) ... ok
+test_count_failures_and_forged_observations_prevent_send (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_count_failures_and_forged_observations_prevent_send) ... ok
+test_count_timeout_denies_without_reservation_or_send (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_count_timeout_denies_without_reservation_or_send) ... ok
+test_counter_body_drift_denies_before_ledger_or_send (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_counter_body_drift_denies_before_ledger_or_send) ... ok
+test_explicit_frozen_sdk_echo_name_uses_same_supported_client_seam (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_explicit_frozen_sdk_echo_name_uses_same_supported_client_seam) ... ok
+test_guard_prevents_internal_connection_retries_and_retains_unknown (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_guard_prevents_internal_connection_retries_and_retains_unknown) ... ok
+test_http_failure_and_redirect_never_release_or_follow (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_http_failure_and_redirect_never_release_or_follow) ... ok
+test_invalid_receipt_denies_and_preserves_unknown (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_invalid_receipt_denies_and_preserves_unknown) ... ok
+test_ledger_failures_and_lost_commit_ack_never_send (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_ledger_failures_and_lost_commit_ack_never_send) ... ok
+test_lifetime_denied_before_count_has_no_hold_or_dispatch (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_lifetime_denied_before_count_has_no_hold_or_dispatch) ... ok
+test_lifetime_revoked_after_count_prevents_hold_and_dispatch (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_lifetime_revoked_after_count_prevents_hold_and_dispatch) ... ok
+test_lifetime_revoked_after_hold_keeps_unknown_without_dispatch (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_lifetime_revoked_after_hold_keeps_unknown_without_dispatch) ... ok
+test_original_deadline_crossed_at_commit_keeps_unknown_without_send (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_original_deadline_crossed_at_commit_keeps_unknown_without_send) ... ok
+test_parallel_calls_share_only_one_slot (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_parallel_calls_share_only_one_slot) ... ok
+test_public_bedrock_route_uses_real_handler_and_exact_count_blob (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_public_bedrock_route_uses_real_handler_and_exact_count_blob) ... ok
+test_real_upstream_connection_retry_without_guard_sends_twice (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_real_upstream_connection_retry_without_guard_sends_twice) ... ok
+test_route_method_encoding_and_content_type_denied_before_count (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_route_method_encoding_and_content_type_denied_before_count) ... ok
+test_streaming_route_count_blob_matches_actual_signed_body (apps.proxy.qualification.test.test_bedrock_transport.TransportTests.test_streaming_route_count_blob_matches_actual_signed_body) ... ok
+test_absent_null_and_exact_empty_context_metadata_preserve_complete_usage (apps.proxy.qualification.test.test_native_usage.UsageTests.test_absent_null_and_exact_empty_context_metadata_preserve_complete_usage) ... ok
+test_applied_unknown_or_malformed_context_edits_remain_sticky_unknown (apps.proxy.qualification.test.test_native_usage.UsageTests.test_applied_unknown_or_malformed_context_edits_remain_sticky_unknown) ... ok
+test_bare_stop_requires_bound_start_and_cumulative_delta_usage (apps.proxy.qualification.test.test_native_usage.UsageTests.test_bare_stop_requires_bound_start_and_cumulative_delta_usage) ... ok
+test_bedrock_terminal_metrics_are_closed_and_match_bound_usage (apps.proxy.qualification.test.test_native_usage.UsageTests.test_bedrock_terminal_metrics_are_closed_and_match_bound_usage) ... ok
+test_binding_refuses_forged_shape (apps.proxy.qualification.test.test_native_usage.UsageTests.test_binding_refuses_forged_shape) ... ok
+test_complete_nonstream_exact_hash_and_binding (apps.proxy.qualification.test.test_native_usage.UsageTests.test_complete_nonstream_exact_hash_and_binding) ... ok
+test_complete_tool_and_unsupported_content (apps.proxy.qualification.test.test_native_usage.UsageTests.test_complete_tool_and_unsupported_content) ... ok
+test_http_incomplete_error_cancel_remain_unknown (apps.proxy.qualification.test.test_native_usage.UsageTests.test_http_incomplete_error_cancel_remain_unknown) ... ok
+test_stream_complete_requires_marker_and_transport_eof (apps.proxy.qualification.test.test_native_usage.UsageTests.test_stream_complete_requires_marker_and_transport_eof) ... ok
+test_stream_cumulative_usage_regression_and_bounds (apps.proxy.qualification.test.test_native_usage.UsageTests.test_stream_cumulative_usage_regression_and_bounds) ... ok
+test_stream_invalid_order_unknown_fields_and_error_are_sticky (apps.proxy.qualification.test.test_native_usage.UsageTests.test_stream_invalid_order_unknown_fields_and_error_are_sticky) ... ok
+test_stream_raw_byte_framed_evidence_and_single_finish (apps.proxy.qualification.test.test_native_usage.UsageTests.test_stream_raw_byte_framed_evidence_and_single_finish) ... ok
+test_stream_tool_atomic_json_and_identity (apps.proxy.qualification.test.test_native_usage.UsageTests.test_stream_tool_atomic_json_and_identity) ... ok
+test_usage_features_wrong_model_and_counts_fail_closed (apps.proxy.qualification.test.test_native_usage.UsageTests.test_usage_features_wrong_model_and_counts_fail_closed) ... ok
+
+----------------------------------------------------------------------
+Ran 49 tests in 1.627s
+
+OK
+
+Give Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+Give Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+Give Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+Give Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+Give Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+Give Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+Give Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+Give Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+Give Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+Give Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+Give Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+Give Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+Give Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+{"countBlobSha256": "5c310926328b0dd5a83d897633847e5c7cd07955391e9501a055df4245e3a865", "countOrigin": "fixture", "invokeBytes": 175, "invokeSha256": "5c310926328b0dd5a83d897633847e5c7cd07955391e9501a055df4245e3a865", "proof": "actual-upstream-final-body", "serializedCountBlobSha256": "5c310926328b0dd5a83d897633847e5c7cd07955391e9501a055df4245e3a865"}

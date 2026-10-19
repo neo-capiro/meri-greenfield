@@ -1,0 +1,591 @@
+{
+  "scope": "OFFLINE_PARTITION_ONLY",
+  "mode": "complete",
+  "client": "sdk",
+  "fullOwnerHttps": "OPEN_RFC1918_INTERFACES_UNAVAILABLE",
+  "productImage": "UNRUN",
+  "postgresql": "UNRUN",
+  "providerCalls": 0,
+  "sdkResults": [],
+  "sdkSpawns": 1,
+  "sourceCommit": "1fe6baaedbd410089907bed2e52b804ec28482ce",
+  "sourceFiles": {
+    "run.mjs": "df689477d0fe80cb50bce7f641ff3b6985cac28bf071e9186b9932d66727f883",
+    "native_proxy.py": "5f2e77e075a3f32d693060f2ce5602ed80580cf0283964bc0413cb7df18402c2",
+    "provider_stub.py": "3a134ecf7105e9784313fe95bdcc738b1aae96478fb2bc462149dde6c3ecc018",
+    "owner_peer.mjs": "8f12e58c29060d4f7b7d4c04de9af2d45fbc1ea919311943c5815130efaeb9d7",
+    "model_ledger_fixture.mjs": "85f907ec737b10ffcc1fc3bbff68af77ac5c0f31c6de7cd92441edea979bd964"
+  },
+  "productConfigSha256": "64860d829d7c022f6640b1a75eb48ad05dc2421d8e5e2bcdfdda50b421754d19",
+  "versions": {
+    "sdk": "0.3.295",
+    "cli": "2.1.295",
+    "node": "v24.19.0"
+  },
+  "executableSha256": "4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358",
+  "partitionPassed": false,
+  "failure": "Error",
+  "native": {
+    "scope": "offline-partition-only",
+    "fullOwnerHttps": "OPEN_RFC1918_INTERFACES_UNAVAILABLE",
+    "syntheticIngress": true,
+    "ownerTransport": "private-subprocess-IPC",
+    "database": "scripted-SQL-canonical-JS-accounting",
+    "countTransport": "botocore-Stubber",
+    "providerTransport": "in-process-HTTPX-stub",
+    "providerExecutions": 0,
+    "countRequests": 0,
+    "sdkRequests": [
+      {
+        "bytes": 2152,
+        "sha256": "12fa7594550ee4636d79e5798ca169efbdfeac67347b40b460ad4c9c79fe0030",
+        "fieldNames": [
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].content[].cache_control",
+          "messages[].content[].cache_control.type",
+          "messages[].content[].text",
+          "messages[].content[].type",
+          "messages[].role",
+          "metadata",
+          "metadata.user_id",
+          "model",
+          "output_config",
+          "output_config.effort",
+          "stream",
+          "system",
+          "system[].cache_control",
+          "system[].cache_control.type",
+          "system[].text",
+          "system[].type",
+          "tools"
+        ],
+        "topLevelTypes": {
+          "model": "str",
+          "messages": "list",
+          "system": "list",
+          "tools": "list",
+          "metadata": "dict",
+          "max_tokens": "int",
+          "output_config": "dict",
+          "stream": "bool"
+        },
+        "topLevelArrayLengths": {
+          "messages": 2,
+          "system": 3,
+          "tools": 0
+        },
+        "metadataUserIdBytes": 150,
+        "metadataUserIdTypes": {
+          "device_id": "str",
+          "account_uuid": "str",
+          "session_id": "str"
+        }
+      },
+      {
+        "bytes": 2152,
+        "sha256": "12fa7594550ee4636d79e5798ca169efbdfeac67347b40b460ad4c9c79fe0030",
+        "fieldNames": [
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].content[].cache_control",
+          "messages[].content[].cache_control.type",
+          "messages[].content[].text",
+          "messages[].content[].type",
+          "messages[].role",
+          "metadata",
+          "metadata.user_id",
+          "model",
+          "output_config",
+          "output_config.effort",
+          "stream",
+          "system",
+          "system[].cache_control",
+          "system[].cache_control.type",
+          "system[].text",
+          "system[].type",
+          "tools"
+        ],
+        "topLevelTypes": {
+          "model": "str",
+          "messages": "list",
+          "system": "list",
+          "tools": "list",
+          "metadata": "dict",
+          "max_tokens": "int",
+          "output_config": "dict",
+          "stream": "bool"
+        },
+        "topLevelArrayLengths": {
+          "messages": 2,
+          "system": 3,
+          "tools": 0
+        },
+        "metadataUserIdBytes": 150,
+        "metadataUserIdTypes": {
+          "device_id": "str",
+          "account_uuid": "str",
+          "session_id": "str"
+        }
+      },
+      {
+        "bytes": 2152,
+        "sha256": "12fa7594550ee4636d79e5798ca169efbdfeac67347b40b460ad4c9c79fe0030",
+        "fieldNames": [
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].content[].cache_control",
+          "messages[].content[].cache_control.type",
+          "messages[].content[].text",
+          "messages[].content[].type",
+          "messages[].role",
+          "metadata",
+          "metadata.user_id",
+          "model",
+          "output_config",
+          "output_config.effort",
+          "stream",
+          "system",
+          "system[].cache_control",
+          "system[].cache_control.type",
+          "system[].text",
+          "system[].type",
+          "tools"
+        ],
+        "topLevelTypes": {
+          "model": "str",
+          "messages": "list",
+          "system": "list",
+          "tools": "list",
+          "metadata": "dict",
+          "max_tokens": "int",
+          "output_config": "dict",
+          "stream": "bool"
+        },
+        "topLevelArrayLengths": {
+          "messages": 2,
+          "system": 3,
+          "tools": 0
+        },
+        "metadataUserIdBytes": 150,
+        "metadataUserIdTypes": {
+          "device_id": "str",
+          "account_uuid": "str",
+          "session_id": "str"
+        }
+      },
+      {
+        "bytes": 2152,
+        "sha256": "12fa7594550ee4636d79e5798ca169efbdfeac67347b40b460ad4c9c79fe0030",
+        "fieldNames": [
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].content[].cache_control",
+          "messages[].content[].cache_control.type",
+          "messages[].content[].text",
+          "messages[].content[].type",
+          "messages[].role",
+          "metadata",
+          "metadata.user_id",
+          "model",
+          "output_config",
+          "output_config.effort",
+          "stream",
+          "system",
+          "system[].cache_control",
+          "system[].cache_control.type",
+          "system[].text",
+          "system[].type",
+          "tools"
+        ],
+        "topLevelTypes": {
+          "model": "str",
+          "messages": "list",
+          "system": "list",
+          "tools": "list",
+          "metadata": "dict",
+          "max_tokens": "int",
+          "output_config": "dict",
+          "stream": "bool"
+        },
+        "topLevelArrayLengths": {
+          "messages": 2,
+          "system": 3,
+          "tools": 0
+        },
+        "metadataUserIdBytes": 150,
+        "metadataUserIdTypes": {
+          "device_id": "str",
+          "account_uuid": "str",
+          "session_id": "str"
+        }
+      },
+      {
+        "bytes": 2152,
+        "sha256": "12fa7594550ee4636d79e5798ca169efbdfeac67347b40b460ad4c9c79fe0030",
+        "fieldNames": [
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].content[].cache_control",
+          "messages[].content[].cache_control.type",
+          "messages[].content[].text",
+          "messages[].content[].type",
+          "messages[].role",
+          "metadata",
+          "metadata.user_id",
+          "model",
+          "output_config",
+          "output_config.effort",
+          "stream",
+          "system",
+          "system[].cache_control",
+          "system[].cache_control.type",
+          "system[].text",
+          "system[].type",
+          "tools"
+        ],
+        "topLevelTypes": {
+          "model": "str",
+          "messages": "list",
+          "system": "list",
+          "tools": "list",
+          "metadata": "dict",
+          "max_tokens": "int",
+          "output_config": "dict",
+          "stream": "bool"
+        },
+        "topLevelArrayLengths": {
+          "messages": 2,
+          "system": 3,
+          "tools": 0
+        },
+        "metadataUserIdBytes": 150,
+        "metadataUserIdTypes": {
+          "device_id": "str",
+          "account_uuid": "str",
+          "session_id": "str"
+        }
+      },
+      {
+        "bytes": 2152,
+        "sha256": "12fa7594550ee4636d79e5798ca169efbdfeac67347b40b460ad4c9c79fe0030",
+        "fieldNames": [
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].content[].cache_control",
+          "messages[].content[].cache_control.type",
+          "messages[].content[].text",
+          "messages[].content[].type",
+          "messages[].role",
+          "metadata",
+          "metadata.user_id",
+          "model",
+          "output_config",
+          "output_config.effort",
+          "stream",
+          "system",
+          "system[].cache_control",
+          "system[].cache_control.type",
+          "system[].text",
+          "system[].type",
+          "tools"
+        ],
+        "topLevelTypes": {
+          "model": "str",
+          "messages": "list",
+          "system": "list",
+          "tools": "list",
+          "metadata": "dict",
+          "max_tokens": "int",
+          "output_config": "dict",
+          "stream": "bool"
+        },
+        "topLevelArrayLengths": {
+          "messages": 2,
+          "system": 3,
+          "tools": 0
+        },
+        "metadataUserIdBytes": 150,
+        "metadataUserIdTypes": {
+          "device_id": "str",
+          "account_uuid": "str",
+          "session_id": "str"
+        }
+      }
+    ],
+    "nativeRequests": [
+      {
+        "bytes": 2294,
+        "sha256": "0c47a8a690e270511e037538df44aab0003b91ab14ea6df85a2705669f0a8a2b",
+        "fieldNames": [
+          "anthropic_beta",
+          "anthropic_version",
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].content[].cache_control",
+          "messages[].content[].cache_control.type",
+          "messages[].content[].text",
+          "messages[].content[].type",
+          "messages[].role",
+          "metadata",
+          "metadata.user_id",
+          "output_config",
+          "output_config.effort",
+          "system",
+          "system[].cache_control",
+          "system[].cache_control.type",
+          "system[].text",
+          "system[].type",
+          "tools"
+        ],
+        "topLevelTypes": {
+          "messages": "list",
+          "max_tokens": "int",
+          "metadata": "dict",
+          "system": "list",
+          "tools": "list",
+          "output_config": "dict",
+          "anthropic_version": "str",
+          "anthropic_beta": "list"
+        },
+        "topLevelArrayLengths": {
+          "messages": 2,
+          "system": 2,
+          "tools": 0,
+          "anthropic_beta": 2
+        },
+        "metadataUserIdBytes": 150,
+        "metadataUserIdTypes": {
+          "device_id": "str",
+          "account_uuid": "str",
+          "session_id": "str"
+        },
+        "betaEnums": [
+          "context-management-2025-06-27",
+          "effort-2025-11-24"
+        ],
+        "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+        "headerNames": [
+          "accept",
+          "accept-encoding",
+          "anthropic-beta",
+          "anthropic-version",
+          "authorization",
+          "connection",
+          "content-length",
+          "content-type",
+          "host",
+          "user-agent",
+          "x-amz-date"
+        ]
+      }
+    ],
+    "errors": [
+      {
+        "type": "StateDenied",
+        "trace": [
+          {
+            "file": "native_proxy.py",
+            "line": 271,
+            "function": "app"
+          },
+          {
+            "file": "native_proxy.py",
+            "line": 225,
+            "function": "route"
+          },
+          {
+            "file": "native_proxy.py",
+            "line": 156,
+            "function": "fixture_lifetime"
+          },
+          {
+            "file": "owner_admission.py",
+            "line": 114,
+            "function": "__init__"
+          },
+          {
+            "file": "owner_channel.py",
+            "line": 195,
+            "function": "owner_exchange_state"
+          },
+          {
+            "file": "owner_channel.py",
+            "line": 41,
+            "function": "_deny"
+          }
+        ],
+        "code": "PRODUCT_OWNER_CHANNEL_DENIED"
+      },
+      {
+        "type": "StateDenied",
+        "trace": [
+          {
+            "file": "native_proxy.py",
+            "line": 271,
+            "function": "app"
+          },
+          {
+            "file": "native_proxy.py",
+            "line": 225,
+            "function": "route"
+          },
+          {
+            "file": "native_proxy.py",
+            "line": 156,
+            "function": "fixture_lifetime"
+          },
+          {
+            "file": "owner_admission.py",
+            "line": 114,
+            "function": "__init__"
+          },
+          {
+            "file": "owner_channel.py",
+            "line": 195,
+            "function": "owner_exchange_state"
+          },
+          {
+            "file": "owner_channel.py",
+            "line": 41,
+            "function": "_deny"
+          }
+        ],
+        "code": "PRODUCT_OWNER_CHANNEL_DENIED"
+      },
+      {
+        "type": "StateDenied",
+        "trace": [
+          {
+            "file": "native_proxy.py",
+            "line": 271,
+            "function": "app"
+          },
+          {
+            "file": "native_proxy.py",
+            "line": 225,
+            "function": "route"
+          },
+          {
+            "file": "native_proxy.py",
+            "line": 156,
+            "function": "fixture_lifetime"
+          },
+          {
+            "file": "owner_admission.py",
+            "line": 114,
+            "function": "__init__"
+          },
+          {
+            "file": "owner_channel.py",
+            "line": 195,
+            "function": "owner_exchange_state"
+          },
+          {
+            "file": "owner_channel.py",
+            "line": 41,
+            "function": "_deny"
+          }
+        ],
+        "code": "PRODUCT_OWNER_CHANNEL_DENIED"
+      },
+      {
+        "type": "StateDenied",
+        "trace": [
+          {
+            "file": "native_proxy.py",
+            "line": 271,
+            "function": "app"
+          },
+          {
+            "file": "native_proxy.py",
+            "line": 225,
+            "function": "route"
+          },
+          {
+            "file": "native_proxy.py",
+            "line": 156,
+            "function": "fixture_lifetime"
+          },
+          {
+            "file": "owner_admission.py",
+            "line": 114,
+            "function": "__init__"
+          },
+          {
+            "file": "owner_channel.py",
+            "line": 195,
+            "function": "owner_exchange_state"
+          },
+          {
+            "file": "owner_channel.py",
+            "line": 41,
+            "function": "_deny"
+          }
+        ],
+        "code": "PRODUCT_OWNER_CHANNEL_DENIED"
+      },
+      {
+        "type": "StateDenied",
+        "trace": [
+          {
+            "file": "native_proxy.py",
+            "line": 271,
+            "function": "app"
+          },
+          {
+            "file": "native_proxy.py",
+            "line": 225,
+            "function": "route"
+          },
+          {
+            "file": "native_proxy.py",
+            "line": 156,
+            "function": "fixture_lifetime"
+          },
+          {
+            "file": "owner_admission.py",
+            "line": 114,
+            "function": "__init__"
+          },
+          {
+            "file": "owner_channel.py",
+            "line": 195,
+            "function": "owner_exchange_state"
+          },
+          {
+            "file": "owner_channel.py",
+            "line": 41,
+            "function": "_deny"
+          }
+        ],
+        "code": "PRODUCT_OWNER_CHANNEL_DENIED"
+      }
+    ],
+    "versions": {
+      "python": "3.13.5",
+      "litellm": "1.104.2",
+      "boto3": "1.43.111",
+      "botocore": "1.43.111",
+      "httpx": "0.28.1",
+      "fastapi": "0.136.3",
+      "uvicorn": "0.51.0"
+    },
+    "ledger": {
+      "requests": [],
+      "consumedMicroUSD": "0",
+      "quarantined": false,
+      "reservationInserts": 0,
+      "settlementUpdates": 0
+    },
+    "nativeStarted": true,
+    "nativeStopped": true
+  }
+}

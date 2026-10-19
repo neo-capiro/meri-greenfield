@@ -151,4 +151,32 @@ class UsageTests(unittest.TestCase):
             with self.assertRaises(ValueError):UsageBinding(*args)
         with self.assertRaises(ValueError):NativeStreamUsage(object())
 
+    def test_absent_null_and_exact_empty_context_metadata_preserve_complete_usage(self):
+        for context in (None, {"applied_edits": []}):
+            m=message();m["context_management"]=context
+            self.assertEqual(parse(raw(m)).status,"COMPLETE")
+            for location in ("start", "delta"):
+                ev=events()
+                target=ev[0]["message"] if location=="start" else ev[-2]
+                target["context_management"]=context
+                result=stream(ev)
+                self.assertEqual((result.status,result.input_tokens,result.output_tokens),("COMPLETE",7,3))
+
+    def test_applied_unknown_or_malformed_context_edits_remain_sticky_unknown(self):
+        for context in ({}, [], False, {"applied_edits": None}, {"applied_edits": {}},
+                        {"applied_edits": [{"type":"clear_tool_uses_20250919","cleared_input_tokens":0}]},
+                        {"applied_edits": [], "extra": None}):
+            m=message();m["context_management"]=context
+            self.assertEqual(parse(raw(m)).status,"UNKNOWN")
+            for location in ("start", "delta"):
+                ev=events()
+                target=ev[0]["message"] if location=="start" else ev[-2]
+                target["context_management"]=context
+                self.assertEqual(stream(ev).status,"UNKNOWN")
+        # The native observation belongs to message/message_delta, not arbitrary fields.
+        ev=events();ev[-2]["delta"]["context_management"]={"applied_edits":[]}
+        self.assertEqual(stream(ev).status,"UNKNOWN")
+        ev=events();ev[-1]["context_management"]={"applied_edits":[]}
+        self.assertEqual(stream(ev).status,"UNKNOWN")
+
 if __name__=="__main__":unittest.main()

@@ -1,0 +1,19 @@
+{
+  "README.md": "79883f23e3374212cf6f83c4800bcd22f3b68f77fdab245a526d10fe643b2436",
+  "evidence/baseline.tap": "fd1ce9ba63b6ffa88a00bd30c6ba7542466f27d3f56d912e8b0d825f676ef7ca",
+  "evidence/proposal.tap": "d246cd2e4130aa6fa6f1880444226a224648b52653123d0372b1b041f0b354f0",
+  "evidence/published-core.tap": "69ebb903778b703c867d9d7d45f85207b87d21919a12c4323e3ff0053f6c7525",
+  "evidence/results.json": "483de485d15e1fc9da9072d68abbbfe5b128e65ed2f1970e263788da7cbe302e",
+  "scripts/prepare.mjs": "e19cf28b59431d02f4ec28b31f91f81065b74852ef26efd7812124c557324ee7",
+  "source/apps/api/src/auth/application-authority.ts": "9e24228be90fb021a7501a61dd1eb27195cffdc8bb4341b3494bd8864afd9b3f",
+  "source/apps/api/src/auth/history-release-batch-owner.focused.test.mjs": "e12cb6b7353b0c31b20e815b15fc16ce8c7e9538a9b61f39dfe03c123022548e",
+  "source/apps/api/src/auth/history-release-batch-owner.ts": "a20094b33d1ce4f65f4083cd4fe7a612f414457b5052722864caf0c99c86e869",
+  "source/apps/api/src/auth/history-release-selected-client-owner.ts": "ec8b3ea0c2ecb2098aa23fc5e16884165c79d2115e32ceda5e0c113b192520ac",
+  "source/apps/api/src/auth/history-release-source.focused.test.mjs": "47d54394503d9c23ace390ef76b640d94b5a30871bd78fa09dbc9a4eca24edae",
+  "source/apps/api/src/auth/history-release-source.ts": "4135dc4740ca41c13560c244bf1cc6fb5342b3e991f04746dff75c74b96b33d4",
+  "source/apps/api/src/tenant/tenant-context.middleware.ts": "cad811e48368c01519aa720d419a281f03190907966819feca9276d3852fcaa9",
+  "source/packages/shared/src/core-retained-jcs.ts": "f3a64c78d9f00776c75b7b0645b523fb141b39d659b0b9e6c630fdce48b27b20",
+  "source-manifest.json": "df4017bd47d50c6f5414932c7b5f9b459dc64435afd06059a698f131204138a2",
+  "tenant-context.patch": "9f4ded7f8a111154cf32dea7888fb145c7bcb72b73b4eef1d7f3870a6e7f4043",
+  "tests/native-identity-proposal.test.mjs": "7ed7912bb2b7062072ee3cdccb4f3a2d0421de53fc67cc678119e266cb1e5852"
+}

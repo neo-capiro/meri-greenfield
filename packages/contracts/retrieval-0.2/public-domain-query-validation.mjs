@@ -14,18 +14,28 @@ const nullOps=new Set(['is_null','is_not_null']);
 function queryDate(value){
   const original=Date.parse(value);if(!Number.isFinite(original))return original;
   // Comments are ignored by legacy date syntax, including nested comments.
-  // Strip them for zone detection and UTC insertion; the raw parse remains the validity gate.
-  let text='',depth=0;
-  for(const character of value){
-    if(character==='('){depth++;continue;}
-    if(character===')'&&depth){depth--;continue;}
+  // Strip them for zone detection. Keep raw token boundaries for UTC insertion,
+  // stopping before an unclosed comment so it cannot swallow the UTC suffix.
+  let text='',depth=0,unclosedAt=-1;
+  for(let index=0;index<value.length;index++){
+    const character=value[index];
+    if(character==='('){if(depth===0){unclosedAt=index;text+=' ';}depth++;continue;}
+    if(character===')'&&depth){depth--;if(depth===0)unclosedAt=-1;continue;}
     if(!depth)text+=character;
   }
   text=text.trimEnd();
-  const namedZone=/Z$|\b(?:UT|UTC|GMT|[ECMP][SD]T)\b/i.test(text);
-  const numericZone=/\d:\d{2}(?::\d{2}(?:\.\d+)?)?\s*[+-]\d{1,2}(?::?\d{2})?$/.test(text);
-  const localIso=/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?$/i.test(value);
-  return namedZone||numericZone?original:Date.parse(localIso?value+'Z':text+' UTC');
+  // Legacy parsing ignores zone words until it has consumed a numeric date token.
+  const firstNumber=text.search(/\d/u);
+  const namedZone=firstNumber>=0&&/(?:^|[^A-Za-z])(?:UT|UTC|GMT|[ECMP][SD]T|Z)(?![A-Za-z])/i.test(text.slice(firstNumber));
+  // Legacy syntax allows a meridiem before the offset or a year after it.
+  // Recognize the signed token, leaving its grammar to the original native parse.
+  // A plus may directly follow a date number. A minus still needs a token
+  // boundary because native legacy parsing also uses it for date fields.
+  const clock=/\d+\s*:\s*\d+(?:\s*:\s*\d+(?:\s*\.\s*\d+)?)?(?:\s*[AP]M)?/i.exec(text);
+  const numericZone=clock!==null&&/\+\d|(?:^|[^A-Za-z0-9])-\d/.test(text.slice(clock.index+clock[0].length));
+  const localIso=/^(?:\d{4}|[+-]\d{6})-\d{2}-\d{2}(?:T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?)?$/i.test(value);
+  const utcText=unclosedAt<0?value:value.slice(0,unclosedAt);
+  return namedZone||numericZone?original:Date.parse(localIso?value+'Z':utcText+' UTC');
 }
 function freeze(value) {
   if(value&&typeof value==='object'){for(const item of Object.values(value))freeze(item);Object.freeze(value);}return value;

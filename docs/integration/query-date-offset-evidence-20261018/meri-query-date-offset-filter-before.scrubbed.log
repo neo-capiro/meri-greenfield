@@ -1,0 +1,58 @@
+✖ trusted default as-of is distinct from explicit date and generatedAt (13.636297ms)
+✖ legacy explicit query dates preserve the native UTC parser reference (68.628004ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 307.814182
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-public-domain-query.test.mjs:103:1
+✖ trusted default as-of is distinct from explicit date and generatedAt (13.636297ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + '2020-01-01T12:30:00.000Z'
+  - '2020-01-01T17:30:00.000Z'
+                 ^
+  
+      at TestContext.<anonymous> (file://<query-date-worktree>/packages/contracts/test/retrieval-public-domain-query.test.mjs:124:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '2020-01-01T12:30:00.000Z',
+    expected: '2020-01-01T17:30:00.000Z',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-public-domain-query.test.mjs:134:1
+✖ legacy explicit query dates preserve the native UTC parser reference (68.628004ms)
+  AssertionError [ERR_ASSERTION]: January 1, 2020 12:30 PM +05
+  + actual - expected
+  
+  + '2020-01-01T12:30:00.000Z'
+  - '2020-01-01T07:30:00.000Z'
+                ^
+  
+      at TestContext.<anonymous> (file://<query-date-worktree>/packages/contracts/test/retrieval-public-domain-query.test.mjs:151:52)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: '2020-01-01T12:30:00.000Z',
+    expected: '2020-01-01T07:30:00.000Z',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

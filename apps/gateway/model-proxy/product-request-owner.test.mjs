@@ -20,6 +20,14 @@ function fixture(){
   count:{inputTokens:12,nativeBodySha256:hash(body),modelId:pin.modelId,origin:'aws-counttokens'}};
  return {seed,selected,source};
 }
+const contextBeta='context-management-2025-06-27',effortBeta='effort-2025-11-24';
+function nativeFixture(fields,header){
+ const f=fixture(),native=f.source.nativeRequest;
+ native.body=Buffer.from(JSON.stringify({...JSON.parse(native.body),...fields}));
+ f.source.count.nativeBodySha256=hash(native.body);
+ if(header!==undefined)native.headers.push(...(Array.isArray(header)?header:[['anthropic-beta',header]]));
+ return f;
+}
 
 test('trusted final native bytes and one AWS count become exact budget evidence',()=>{
  const {selected,source}=fixture(),observed=observeProductProxyRequest(source,selected,pin,'request_A',()=>NOW);
@@ -49,4 +57,46 @@ test('worker-supplied observation cannot enter the private reserve port',async()
  const owner=createProductProxyRequestOwner({pool:{connect(){throw Error('unexpected SQL');}},allocationJson:JSON.stringify(seed.allocation),grantFactsJsons:[JSON.stringify(selected)],modelGrantId:selected.grantId,selectedClientId:clientId,pricing:pin,now:()=>NOW,limits:{maxRequestMs:1000,maxFactBytes:65536},observeProxy:async()=>{observed++;return source;},checkCurrentConversation:current(selected)});
  await assert.rejects(owner.reserve({requestId:'request_A',binding:selected.binding,deadlineMs:NOW+5000,count:source.count}));
  assert.equal(observed,0);
+});
+
+test('closed native beta subsets preserve exact bytes and permit only an agreeing optional header',()=>{
+ for(const [fields,header] of [
+  [{},undefined],[{anthropic_beta:[]},undefined],
+  [{anthropic_beta:[contextBeta]},undefined],[{anthropic_beta:[effortBeta]},undefined],
+  [{anthropic_beta:[contextBeta,effortBeta]},undefined],
+  [{anthropic_beta:[contextBeta]},contextBeta],
+  [{anthropic_beta:[effortBeta]},[['Anthropic-Beta',` \t${effortBeta}\t `]]],
+  [{anthropic_beta:[contextBeta,effortBeta]},` \t${effortBeta} ,\t ${contextBeta}\t `],
+  [{anthropic_beta:[effortBeta,contextBeta]},`${contextBeta},${effortBeta}`],
+ ]){
+  const {selected,source}=nativeFixture(fields,header),before=Buffer.from(source.nativeRequest.body),headers=structuredClone(source.nativeRequest.headers);
+  const observed=observeProductProxyRequest(source,selected,pin,'request_A',()=>NOW);
+  assert.equal(observed.nativeBodySha256,hash(before));assert.equal(observed.count.nativeBodySha256,hash(before));
+  assert.equal(observed.rawRequestSha256,hash(source.rawRequestBody));
+  assert.deepEqual(source.nativeRequest.body,before);assert.deepEqual(source.nativeRequest.headers,headers,'observation must not rewrite signed headers');
+ }
+});
+
+test('unknown, duplicate or mismatched native betas and context fields refuse before SQL',async()=>{
+ const attempts=[],cases=[
+  ...[null,{},contextBeta,1,[null],[contextBeta,contextBeta],[contextBeta,effortBeta,contextBeta],['unknown-2026-01-01'],['Context-management-2025-06-27'],[` ${contextBeta}`]].map(value=>[{anthropic_beta:value},undefined]),
+  ...['',' ','\t',',',`${contextBeta},`,`,${contextBeta}`,`${contextBeta},,${effortBeta}`,`${contextBeta},${contextBeta}`,`${contextBeta},${effortBeta},${contextBeta}`,'unknown-2026-01-01','Context-management-2025-06-27',`\u00a0${contextBeta}`,`${contextBeta}\n`,`${contextBeta}\r\n`,`${contextBeta}\v`].map(header=>[{anthropic_beta:[contextBeta]},header]),
+  [{},contextBeta],[{anthropic_beta:[]},contextBeta],
+  [{anthropic_beta:[contextBeta]},effortBeta],
+  [{anthropic_beta:[contextBeta,effortBeta]},contextBeta],
+  [{anthropic_beta:[contextBeta]},`${contextBeta},${effortBeta}`],
+  [{anthropic_beta:[contextBeta]},[['anthropic-beta',contextBeta],['Anthropic-Beta',contextBeta]]],
+  ...[null,{},[],{edits:[]},{edits:[{type:'clear_tool_uses_20250919'}]}].flatMap(context_management=>[
+   [{context_management},undefined],
+   [{anthropic_beta:[contextBeta],context_management},contextBeta],
+  ]),
+  [{anthropic_beta:[contextBeta]},[['anthropic-beta',contextBeta],['x-amzn-bedrock-trace','ENABLED']]],
+  [{anthropic_beta:[contextBeta]},[['anthropic-beta',contextBeta],['x-amzn-bedrock-service-tier','priority']]],
+ ];
+ for(const [fields,header] of cases){
+  const {seed,selected,source}=nativeFixture(fields,header);
+  const owner=createProductProxyRequestOwner({pool:{connect(){attempts.push('sql');throw Error('should not connect');}},allocationJson:JSON.stringify(seed.allocation),grantFactsJsons:[JSON.stringify(selected)],modelGrantId:selected.grantId,selectedClientId:clientId,pricing:pin,now:()=>NOW,limits:{maxRequestMs:1000,maxFactBytes:65536},observeProxy:async()=>source,checkCurrentConversation:current(selected)});
+  await assert.rejects(owner.reserve({requestId:'request_A',binding:selected.binding,deadlineMs:NOW+5000}),/PRODUCT_PROXY_OBSERVATION_REFUSED/,JSON.stringify({fields,header}));
+ }
+ assert.deepEqual(attempts,[]);
 });

@@ -1,0 +1,122 @@
+[
+  {
+    "path": "/tmp/meri-integration-python-install-result.json",
+    "bytes": 121,
+    "sha256": "73329d035ceb1e2ef284adea7c12bab9306526161c80a7c9cefffb4aa7899889",
+    "possibleCredentialUrl": false
+  },
+  {
+    "path": "/tmp/meri-integration-python-install.log",
+    "bytes": 188,
+    "sha256": "8ad5d05d824afa8911bea27e35bf5dcd593b8b5f649024cf4431fd92447bfb47",
+    "possibleCredentialUrl": false
+  },
+  {
+    "path": "/tmp/meri-integration-sdk-313-install-result.json",
+    "bytes": 146,
+    "sha256": "cc23ed7448da6bebd9596d3feb3eb97350c7f339050facf3b9ce07cc5dec55f0",
+    "possibleCredentialUrl": false
+  },
+  {
+    "path": "/tmp/meri-integration-sdk-313-install.log",
+    "bytes": 1910,
+    "sha256": "8129108fbb49a6dcc6ce23019266c6780082230a25e43b9d0b7c6ed96163b870",
+    "possibleCredentialUrl": false
+  },
+  {
+    "path": "/tmp/meri-integration-sdk-extra-install-result.json",
+    "bytes": 114,
+    "sha256": "f3840e7eadd31232f1cf1e27a307c9a90921ece2e15a8b471ccace3c2a104a90",
+    "possibleCredentialUrl": false
+  },
+  {
+    "path": "/tmp/meri-integration-sdk-extra-install.log",
+    "bytes": 603,
+    "sha256": "19619c5c6c3386ea343ba42a79bd7fd226afa6dfeeda0ae9a669d0c7bf6b1cc8",
+    "possibleCredentialUrl": false
+  },
+  {
+    "path": "/tmp/meri-integration-sdk-extra2-install-result.json",
+    "bytes": 115,
+    "sha256": "f6d643fc112321852b6753e46436bf6b082e5d3bd58d8ae063ead7da4a931690",
+    "possibleCredentialUrl": false
+  },
+  {
+    "path": "/tmp/meri-integration-sdk-extra2-install.log",
+    "bytes": 798,
+    "sha256": "1f844e77d0de6d50dfb4f63d8e5382a3cf5c43f08d4a5fc1a83b2b9a5efa4c95",
+    "possibleCredentialUrl": false
+  },
+  {
+    "path": "/tmp/meri-integration-sdk-extra3-install-result.json",
+    "bytes": 135,
+    "sha256": "da193744a2bdb77b84c68f590c25fd3de1d8705cb72f577640c3e0bf9305ece4",
+    "possibleCredentialUrl": false
+  },
+  {
+    "path": "/tmp/meri-integration-sdk-extra3-install.log",
+    "bytes": 193,
+    "sha256": "8a83452908d7440b745890baa4a6cb4830a9c32fa18200a0330c338b09b4eacf",
+    "possibleCredentialUrl": false
+  },
+  {
+    "path": "/tmp/meri-integration-sdk-extra4-install-result.json",
+    "bytes": 113,
+    "sha256": "898b67027a106e20de958bde06cb9ffdf7c0b38a21d60f26db5cccb0c87a131b",
+    "possibleCredentialUrl": false
+  },
+  {
+    "path": "/tmp/meri-integration-sdk-extra4-install.log",
+    "bytes": 289,
+    "sha256": "8ef6d20c6f372e862ebd72ae951cbae0d217581c0f6989afd1e33004cb95f2d7",
+    "possibleCredentialUrl": false
+  },
+  {
+    "path": "/tmp/meri-integration-sdk-install-result.json",
+    "bytes": 144,
+    "sha256": "b6466c25c54b9a2b6af535e48d73cc107696cfb2792d296c78e19b07fbe40448",
+    "possibleCredentialUrl": false
+  },
+  {
+    "path": "/tmp/meri-integration-sdk-native-import-2.log",
+    "bytes": 138,
+    "sha256": "dcd59661dab8cc80f465ac3c3dc529cb5fd0126b307619693495a12afb89db9b",
+    "possibleCredentialUrl": false
+  },
+  {
+    "path": "/tmp/meri-integration-sdk-native-import-3.log",
+    "bytes": 141,
+    "sha256": "cf388d4d342adb5f986f0f020f9809f28686f914e80cd476433bfefd328c7ce2",
+    "possibleCredentialUrl": false
+  },
+  {
+    "path": "/tmp/meri-integration-sdk-native-import.log",
+    "bytes": 142,
+    "sha256": "04a5bfb1c245e2f2069ee0ece2bd30a14bddeae919bf14c561d26c777bb1364e",
+    "possibleCredentialUrl": false
+  },
+  {
+    "path": "/tmp/meri-integration-sdk-pip-install.log",
+    "bytes": 13533,
+    "sha256": "8e8adc7a6b9d3f0256addf057158955b4630301b28fef42c28fb0a9d942f724b",
+    "possibleCredentialUrl": false
+  },
+  {
+    "path": "/tmp/meri-integration-sdk-pip-pinned-plan.log",
+    "bytes": 16463,
+    "sha256": "8843cef7ee762bbbcccf068e611389272042ff96c4cb7c3add07a6d98fa26e42",
+    "possibleCredentialUrl": false
+  },
+  {
+    "path": "/tmp/meri-integration-sdk-pip-plan.log",
+    "bytes": 16466,
+    "sha256": "ad94766da2bfa57b19968fa432a56c7aa0bbee133f21f22ac5e3b4c9ba56c2ce",
+    "possibleCredentialUrl": false
+  },
+  {
+    "path": "/tmp/meri-integration-sdk-sparse-checkout.log",
+    "bytes": 92,
+    "sha256": "756ba4b7c3e53aa0346dfd849915e3d819371f7c218c97a357c3aaa1f2b0ce6e",
+    "possibleCredentialUrl": false
+  }
+]

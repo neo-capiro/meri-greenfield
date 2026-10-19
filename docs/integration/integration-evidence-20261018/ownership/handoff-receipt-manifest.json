@@ -1,0 +1,34 @@
+{
+  "files": [
+    {
+      "path": "OWNERSHIP-TRANSFER-7252f483.md",
+      "bytes": 5618,
+      "sha256": "d401451345eadabd7066703ddd471f93c2bb32a4cb54f11cd04c9c5c4800d339"
+    },
+    {
+      "path": "OWNERSHIP-TRANSFER-7252f483.json",
+      "bytes": 32996,
+      "sha256": "987e47fa8fd8078760f4016937c48f6eb4529e79e7ade036a979aad5928d4142"
+    },
+    {
+      "path": "published-7252f483-readback.json",
+      "bytes": 6731,
+      "sha256": "a34a31cb060bca35e0adc4ed66dbf136ef7f251df4d00adf5a59ad55a786cbfe"
+    },
+    {
+      "path": "core-78ceaf9-source-readback.json",
+      "bytes": 5187,
+      "sha256": "34bed355b3ec148496e29e56e7722cce45b81cab0158d82feed994471c2d754f"
+    },
+    {
+      "path": "OWNERSHIP-ANCESTRY.md",
+      "bytes": 14159,
+      "sha256": "31d603b99fe31972236f7157d00d88c0f324912b2f9188ef498aa58756e76648"
+    },
+    {
+      "path": "OWNERSHIP-ANCESTRY.json",
+      "bytes": 113009,
+      "sha256": "f6c14b9c570cc8573ed657b6f1965c8d2d6d6794f96b0f1d815e21e445bc5c97"
+    }
+  ]
+}

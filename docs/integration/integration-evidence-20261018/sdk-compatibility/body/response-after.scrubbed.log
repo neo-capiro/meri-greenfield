@@ -1,0 +1,19 @@
+test_absent_null_and_exact_empty_context_metadata_preserve_complete_usage (apps.proxy.qualification.test.test_native_usage.UsageTests.test_absent_null_and_exact_empty_context_metadata_preserve_complete_usage) ... ok
+test_applied_unknown_or_malformed_context_edits_remain_sticky_unknown (apps.proxy.qualification.test.test_native_usage.UsageTests.test_applied_unknown_or_malformed_context_edits_remain_sticky_unknown) ... ok
+test_bare_stop_requires_bound_start_and_cumulative_delta_usage (apps.proxy.qualification.test.test_native_usage.UsageTests.test_bare_stop_requires_bound_start_and_cumulative_delta_usage) ... ok
+test_bedrock_terminal_metrics_are_closed_and_match_bound_usage (apps.proxy.qualification.test.test_native_usage.UsageTests.test_bedrock_terminal_metrics_are_closed_and_match_bound_usage) ... ok
+test_binding_refuses_forged_shape (apps.proxy.qualification.test.test_native_usage.UsageTests.test_binding_refuses_forged_shape) ... ok
+test_complete_nonstream_exact_hash_and_binding (apps.proxy.qualification.test.test_native_usage.UsageTests.test_complete_nonstream_exact_hash_and_binding) ... ok
+test_complete_tool_and_unsupported_content (apps.proxy.qualification.test.test_native_usage.UsageTests.test_complete_tool_and_unsupported_content) ... ok
+test_http_incomplete_error_cancel_remain_unknown (apps.proxy.qualification.test.test_native_usage.UsageTests.test_http_incomplete_error_cancel_remain_unknown) ... ok
+test_stream_complete_requires_marker_and_transport_eof (apps.proxy.qualification.test.test_native_usage.UsageTests.test_stream_complete_requires_marker_and_transport_eof) ... ok
+test_stream_cumulative_usage_regression_and_bounds (apps.proxy.qualification.test.test_native_usage.UsageTests.test_stream_cumulative_usage_regression_and_bounds) ... ok
+test_stream_invalid_order_unknown_fields_and_error_are_sticky (apps.proxy.qualification.test.test_native_usage.UsageTests.test_stream_invalid_order_unknown_fields_and_error_are_sticky) ... ok
+test_stream_raw_byte_framed_evidence_and_single_finish (apps.proxy.qualification.test.test_native_usage.UsageTests.test_stream_raw_byte_framed_evidence_and_single_finish) ... ok
+test_stream_tool_atomic_json_and_identity (apps.proxy.qualification.test.test_native_usage.UsageTests.test_stream_tool_atomic_json_and_identity) ... ok
+test_usage_features_wrong_model_and_counts_fail_closed (apps.proxy.qualification.test.test_native_usage.UsageTests.test_usage_features_wrong_model_and_counts_fail_closed) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.019s
+
+OK

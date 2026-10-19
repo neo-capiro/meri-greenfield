@@ -1,0 +1,550 @@
+{
+  "scope": "OFFLINE_PARTITION_ONLY",
+  "mode": "complete",
+  "client": "sdk-constrained",
+  "outputFormat": "none",
+  "fullOwnerHttps": "OPEN_RFC1918_INTERFACES_UNAVAILABLE",
+  "productImage": "UNRUN",
+  "postgresql": "UNRUN",
+  "providerCalls": 0,
+  "sdkResults": [],
+  "sdkSpawns": 1,
+  "sourceCommit": "5fa5545898717e1148a28447bb93254a07fa6459",
+  "sourceFiles": {
+    "run.mjs": "dc1c6021bd645c982aa92e0d312770b302a7407603dec3bc1dad0e342d509861",
+    "native_proxy.py": "bb3df83e773c6186f58672e080f9422ee24b08b92bfe310096a138d19cea5b66",
+    "provider_stub.py": "dee986b4b4bc5ce44dbd4cf6b38bc5c20423d89f64d74e72d5b0237c8b344639",
+    "owner_peer.mjs": "8f12e58c29060d4f7b7d4c04de9af2d45fbc1ea919311943c5815130efaeb9d7",
+    "model_ledger_fixture.mjs": "85f907ec737b10ffcc1fc3bbff68af77ac5c0f31c6de7cd92441edea979bd964"
+  },
+  "productConfigSha256": "64860d829d7c022f6640b1a75eb48ad05dc2421d8e5e2bcdfdda50b421754d19",
+  "versions": {
+    "sdk": "0.3.295",
+    "cli": "2.1.295",
+    "node": "v24.19.0"
+  },
+  "executableSha256": "4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358",
+  "configurationCandidate": {
+    "DISABLE_PROMPT_CACHING": "1",
+    "CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS": "1",
+    "CLAUDE_CODE_EFFORT_LEVEL": "unset",
+    "ANTHROPIC_CUSTOM_MODEL_OPTION": "meri-sonnet-qualification",
+    "ANTHROPIC_CUSTOM_MODEL_OPTION_SUPPORTED_CAPABILITIES": ""
+  },
+  "partitionPassed": false,
+  "failure": "Error",
+  "native": {
+    "scope": "offline-partition-only",
+    "fullOwnerHttps": "OPEN_RFC1918_INTERFACES_UNAVAILABLE",
+    "syntheticIngress": true,
+    "ownerTransport": "private-subprocess-IPC",
+    "database": "scripted-SQL-canonical-JS-accounting",
+    "countTransport": "botocore-Stubber",
+    "providerTransport": "in-process-HTTPX-stub",
+    "providerExecutions": 0,
+    "countRequests": 0,
+    "sdkRequests": [
+      {
+        "bytes": 1982,
+        "sha256": "32252b881e4319dfa75487ae2f974d80c75e01ec19d3369e34bdb3538a4ce96a",
+        "fieldNames": [
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].content[].text",
+          "messages[].content[].type",
+          "messages[].role",
+          "metadata",
+          "metadata.user_id",
+          "model",
+          "stream",
+          "system",
+          "system[].text",
+          "system[].type",
+          "tools"
+        ],
+        "topLevelTypes": {
+          "model": "str",
+          "messages": "list",
+          "system": "list",
+          "tools": "list",
+          "metadata": "dict",
+          "max_tokens": "int",
+          "stream": "bool"
+        },
+        "topLevelArrayLengths": {
+          "messages": 2,
+          "system": 3,
+          "tools": 0
+        },
+        "modelAlias": "meri-sonnet-qualification",
+        "maxOutputTokens": 8192,
+        "stream": true,
+        "toolNames": [],
+        "metadataUserIdBytes": 150,
+        "metadataUserIdTypes": {
+          "device_id": "str",
+          "account_uuid": "str",
+          "session_id": "str"
+        },
+        "headerBetaEnums": [
+          "claude-code-20250219",
+          "interleaved-thinking-2025-05-14",
+          "mid-conversation-system-2026-04-07",
+          "effort-2025-11-24"
+        ]
+      },
+      {
+        "bytes": 1982,
+        "sha256": "32252b881e4319dfa75487ae2f974d80c75e01ec19d3369e34bdb3538a4ce96a",
+        "fieldNames": [
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].content[].text",
+          "messages[].content[].type",
+          "messages[].role",
+          "metadata",
+          "metadata.user_id",
+          "model",
+          "stream",
+          "system",
+          "system[].text",
+          "system[].type",
+          "tools"
+        ],
+        "topLevelTypes": {
+          "model": "str",
+          "messages": "list",
+          "system": "list",
+          "tools": "list",
+          "metadata": "dict",
+          "max_tokens": "int",
+          "stream": "bool"
+        },
+        "topLevelArrayLengths": {
+          "messages": 2,
+          "system": 3,
+          "tools": 0
+        },
+        "modelAlias": "meri-sonnet-qualification",
+        "maxOutputTokens": 8192,
+        "stream": true,
+        "toolNames": [],
+        "metadataUserIdBytes": 150,
+        "metadataUserIdTypes": {
+          "device_id": "str",
+          "account_uuid": "str",
+          "session_id": "str"
+        },
+        "headerBetaEnums": [
+          "claude-code-20250219",
+          "interleaved-thinking-2025-05-14",
+          "mid-conversation-system-2026-04-07",
+          "effort-2025-11-24"
+        ]
+      },
+      {
+        "bytes": 1982,
+        "sha256": "32252b881e4319dfa75487ae2f974d80c75e01ec19d3369e34bdb3538a4ce96a",
+        "fieldNames": [
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].content[].text",
+          "messages[].content[].type",
+          "messages[].role",
+          "metadata",
+          "metadata.user_id",
+          "model",
+          "stream",
+          "system",
+          "system[].text",
+          "system[].type",
+          "tools"
+        ],
+        "topLevelTypes": {
+          "model": "str",
+          "messages": "list",
+          "system": "list",
+          "tools": "list",
+          "metadata": "dict",
+          "max_tokens": "int",
+          "stream": "bool"
+        },
+        "topLevelArrayLengths": {
+          "messages": 2,
+          "system": 3,
+          "tools": 0
+        },
+        "modelAlias": "meri-sonnet-qualification",
+        "maxOutputTokens": 8192,
+        "stream": true,
+        "toolNames": [],
+        "metadataUserIdBytes": 150,
+        "metadataUserIdTypes": {
+          "device_id": "str",
+          "account_uuid": "str",
+          "session_id": "str"
+        },
+        "headerBetaEnums": [
+          "claude-code-20250219",
+          "interleaved-thinking-2025-05-14",
+          "mid-conversation-system-2026-04-07",
+          "effort-2025-11-24"
+        ]
+      },
+      {
+        "bytes": 1982,
+        "sha256": "32252b881e4319dfa75487ae2f974d80c75e01ec19d3369e34bdb3538a4ce96a",
+        "fieldNames": [
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].content[].text",
+          "messages[].content[].type",
+          "messages[].role",
+          "metadata",
+          "metadata.user_id",
+          "model",
+          "stream",
+          "system",
+          "system[].text",
+          "system[].type",
+          "tools"
+        ],
+        "topLevelTypes": {
+          "model": "str",
+          "messages": "list",
+          "system": "list",
+          "tools": "list",
+          "metadata": "dict",
+          "max_tokens": "int",
+          "stream": "bool"
+        },
+        "topLevelArrayLengths": {
+          "messages": 2,
+          "system": 3,
+          "tools": 0
+        },
+        "modelAlias": "meri-sonnet-qualification",
+        "maxOutputTokens": 8192,
+        "stream": true,
+        "toolNames": [],
+        "metadataUserIdBytes": 150,
+        "metadataUserIdTypes": {
+          "device_id": "str",
+          "account_uuid": "str",
+          "session_id": "str"
+        },
+        "headerBetaEnums": [
+          "claude-code-20250219",
+          "interleaved-thinking-2025-05-14",
+          "mid-conversation-system-2026-04-07",
+          "effort-2025-11-24"
+        ]
+      },
+      {
+        "bytes": 1982,
+        "sha256": "32252b881e4319dfa75487ae2f974d80c75e01ec19d3369e34bdb3538a4ce96a",
+        "fieldNames": [
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].content[].text",
+          "messages[].content[].type",
+          "messages[].role",
+          "metadata",
+          "metadata.user_id",
+          "model",
+          "stream",
+          "system",
+          "system[].text",
+          "system[].type",
+          "tools"
+        ],
+        "topLevelTypes": {
+          "model": "str",
+          "messages": "list",
+          "system": "list",
+          "tools": "list",
+          "metadata": "dict",
+          "max_tokens": "int",
+          "stream": "bool"
+        },
+        "topLevelArrayLengths": {
+          "messages": 2,
+          "system": 3,
+          "tools": 0
+        },
+        "modelAlias": "meri-sonnet-qualification",
+        "maxOutputTokens": 8192,
+        "stream": true,
+        "toolNames": [],
+        "metadataUserIdBytes": 150,
+        "metadataUserIdTypes": {
+          "device_id": "str",
+          "account_uuid": "str",
+          "session_id": "str"
+        },
+        "headerBetaEnums": [
+          "claude-code-20250219",
+          "interleaved-thinking-2025-05-14",
+          "mid-conversation-system-2026-04-07",
+          "effort-2025-11-24"
+        ]
+      },
+      {
+        "bytes": 1982,
+        "sha256": "32252b881e4319dfa75487ae2f974d80c75e01ec19d3369e34bdb3538a4ce96a",
+        "fieldNames": [
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].content[].text",
+          "messages[].content[].type",
+          "messages[].role",
+          "metadata",
+          "metadata.user_id",
+          "model",
+          "stream",
+          "system",
+          "system[].text",
+          "system[].type",
+          "tools"
+        ],
+        "topLevelTypes": {
+          "model": "str",
+          "messages": "list",
+          "system": "list",
+          "tools": "list",
+          "metadata": "dict",
+          "max_tokens": "int",
+          "stream": "bool"
+        },
+        "topLevelArrayLengths": {
+          "messages": 2,
+          "system": 3,
+          "tools": 0
+        },
+        "modelAlias": "meri-sonnet-qualification",
+        "maxOutputTokens": 8192,
+        "stream": true,
+        "toolNames": [],
+        "metadataUserIdBytes": 150,
+        "metadataUserIdTypes": {
+          "device_id": "str",
+          "account_uuid": "str",
+          "session_id": "str"
+        },
+        "headerBetaEnums": [
+          "claude-code-20250219",
+          "interleaved-thinking-2025-05-14",
+          "mid-conversation-system-2026-04-07",
+          "effort-2025-11-24"
+        ]
+      }
+    ],
+    "nativeRequests": [
+      {
+        "bytes": 2104,
+        "sha256": "5e4b6065d19cdb7f97a60f18f42782c109d247164cfe5510ff2b7954534f0ed5",
+        "fieldNames": [
+          "anthropic_beta",
+          "anthropic_version",
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].content[].text",
+          "messages[].content[].type",
+          "messages[].role",
+          "metadata",
+          "metadata.user_id",
+          "system",
+          "system[].text",
+          "system[].type",
+          "tools"
+        ],
+        "topLevelTypes": {
+          "messages": "list",
+          "max_tokens": "int",
+          "metadata": "dict",
+          "system": "list",
+          "tools": "list",
+          "anthropic_version": "str",
+          "anthropic_beta": "list"
+        },
+        "topLevelArrayLengths": {
+          "messages": 2,
+          "system": 2,
+          "tools": 0,
+          "anthropic_beta": 1
+        },
+        "maxOutputTokens": 8192,
+        "toolNames": [],
+        "metadataUserIdBytes": 150,
+        "metadataUserIdTypes": {
+          "device_id": "str",
+          "account_uuid": "str",
+          "session_id": "str"
+        },
+        "betaEnums": [
+          "effort-2025-11-24"
+        ],
+        "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+        "headerNames": [
+          "accept",
+          "accept-encoding",
+          "anthropic-beta",
+          "anthropic-version",
+          "authorization",
+          "connection",
+          "content-length",
+          "content-type",
+          "host",
+          "user-agent",
+          "x-amz-date"
+        ]
+      },
+      {
+        "bytes": 2104,
+        "sha256": "5e4b6065d19cdb7f97a60f18f42782c109d247164cfe5510ff2b7954534f0ed5",
+        "fieldNames": [
+          "anthropic_beta",
+          "anthropic_version",
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].content[].text",
+          "messages[].content[].type",
+          "messages[].role",
+          "metadata",
+          "metadata.user_id",
+          "system",
+          "system[].text",
+          "system[].type",
+          "tools"
+        ],
+        "topLevelTypes": {
+          "messages": "list",
+          "max_tokens": "int",
+          "metadata": "dict",
+          "system": "list",
+          "tools": "list",
+          "anthropic_version": "str",
+          "anthropic_beta": "list"
+        },
+        "topLevelArrayLengths": {
+          "messages": 2,
+          "system": 2,
+          "tools": 0,
+          "anthropic_beta": 1
+        },
+        "maxOutputTokens": 8192,
+        "toolNames": [],
+        "metadataUserIdBytes": 150,
+        "metadataUserIdTypes": {
+          "device_id": "str",
+          "account_uuid": "str",
+          "session_id": "str"
+        },
+        "betaEnums": [
+          "effort-2025-11-24"
+        ],
+        "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+        "headerNames": [
+          "accept",
+          "accept-encoding",
+          "anthropic-beta",
+          "anthropic-version",
+          "authorization",
+          "connection",
+          "content-length",
+          "content-type",
+          "host",
+          "user-agent",
+          "x-amz-date"
+        ]
+      },
+      {
+        "bytes": 2104,
+        "sha256": "5e4b6065d19cdb7f97a60f18f42782c109d247164cfe5510ff2b7954534f0ed5",
+        "fieldNames": [
+          "anthropic_beta",
+          "anthropic_version",
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].content[].text",
+          "messages[].content[].type",
+          "messages[].role",
+          "metadata",
+          "metadata.user_id",
+          "system",
+          "system[].text",
+          "system[].type",
+          "tools"
+        ],
+        "topLevelTypes": {
+          "messages": "list",
+          "max_tokens": "int",
+          "metadata": "dict",
+          "system": "list",
+          "tools": "list",
+          "anthropic_version": "str",
+          "anthropic_beta": "list"
+        },
+        "topLevelArrayLengths": {
+          "messages": 2,
+          "system": 2,
+          "tools": 0,
+          "anthropic_beta": 1
+        },
+        "maxOutputTokens": 8192,
+        "toolNames": [],
+        "metadataUserIdBytes": 150,
+        "metadataUserIdTypes": {
+          "device_id": "str",
+          "account_uuid": "str",
+          "session_id": "str"
+        },
+        "betaEnums": [
+          "effort-2025-11-24"
+        ],
+        "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+        "headerNames": [
+          "accept",
+          "accept-encoding",
+          "anthropic-beta",
+          "anthropic-version",
+          "authorization",
+          "connection",
+          "content-length",
+          "content-type",
+          "host",
+          "user-agent",
+          "x-amz-date"
+        ]
+      }
+    ],
+    "errors": [],
+    "versions": {
+      "python": "3.13.5",
+      "litellm": "1.104.2",
+      "boto3": "1.43.111",
+      "botocore": "1.43.111",
+      "httpx": "0.28.1",
+      "fastapi": "0.136.3",
+      "uvicorn": "0.51.0"
+    },
+    "ledger": {
+      "requests": [],
+      "consumedMicroUSD": "0",
+      "quarantined": false,
+      "reservationInserts": 0,
+      "settlementUpdates": 0
+    },
+    "nativeStarted": true,
+    "nativeStopped": true
+  }
+}

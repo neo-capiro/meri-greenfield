@@ -1,0 +1,28 @@
+✔ one SDK query persists streamed text once, hides reasoning and completes durable run (361.906989ms)
+✔ nonstreamed final assistant text is displayed with a valid generated UUID (43.25253ms)
+✔ SDK mirror never leaks diagnostics or makes a duplicate model query (36.431162ms)
+✔ SDK missing never leaks diagnostics or makes a duplicate model query (28.488112ms)
+✔ SDK sdkFailure never leaks diagnostics or makes a duplicate model query (21.738366ms)
+✔ SDK duplicate never leaks diagnostics or makes a duplicate model query (23.47562ms)
+✔ SDK subagent never leaks diagnostics or makes a duplicate model query (30.106606ms)
+✔ revocation during query stops publication and closes SDK before another result (29.329587ms)
+✔ output limit fails instead of truncating a completed response (25.073714ms)
+✔ late SDK iterator is bounded by deadline and closed without a second query (47.327216ms)
+✔ SDK options reject ambient config, wrong workspace and upstream keys (1.204552ms)
+✔ final assistant frame repairs a missing streamed suffix without duplicate prefix (34.905161ms)
+✔ a conflicting final text refuses completion instead of silently dropping the mismatch (34.37246ms)
+✔ runtime preparation mismatch records a failed run without invoking SDK (18.611727ms)
+✔ the pinned runner CA reaches the SDK subprocess env exactly once and is covered by the SDK options digest (5.161155ms)
+✔ any other CA path, or a CA without the admitted per-task SDK directories, refuses (0.949448ms)
+✔ the per-attempt acknowledgement bound is the control service request bound, not 30 ms (1.517393ms)
+✔ terminal recording slower than 30 ms is acknowledged on the first attempt (243.491994ms)
+✔ a lost acknowledgement is read back by replaying the same event ID; no second terminal event (41.344821ms)
+✔ never acknowledged: settlement is finite (two rounds over two fixed event IDs) and leaves the run nonterminal for the reconciler (129.546708ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2560.692827

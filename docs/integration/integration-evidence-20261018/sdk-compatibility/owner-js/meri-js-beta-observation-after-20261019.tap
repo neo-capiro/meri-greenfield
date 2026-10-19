@@ -1,0 +1,40 @@
+TAP version 13
+# Subtest: trusted final native bytes and one AWS count become exact budget evidence
+ok 1 - trusted final native bytes and one AWS count become exact budget evidence
+  ---
+  duration_ms: 7.50319
+  type: 'test'
+  ...
+# Subtest: wrong direct peer, bearer, final bytes, count or route refuses before any product SQL
+ok 2 - wrong direct peer, bearer, final bytes, count or route refuses before any product SQL
+  ---
+  duration_ms: 28.134049
+  type: 'test'
+  ...
+# Subtest: worker-supplied observation cannot enter the private reserve port
+ok 3 - worker-supplied observation cannot enter the private reserve port
+  ---
+  duration_ms: 4.157781
+  type: 'test'
+  ...
+# Subtest: closed native beta subsets preserve exact bytes and permit only an agreeing optional header
+ok 4 - closed native beta subsets preserve exact bytes and permit only an agreeing optional header
+  ---
+  duration_ms: 29.371803
+  type: 'test'
+  ...
+# Subtest: unknown, duplicate or mismatched native betas and context fields refuse before SQL
+ok 5 - unknown, duplicate or mismatched native betas and context fields refuse before SQL
+  ---
+  duration_ms: 114.509018
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 589.214765

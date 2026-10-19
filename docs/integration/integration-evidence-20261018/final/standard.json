@@ -1,0 +1,13 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "check"
+  ],
+  "exit": 0,
+  "sourceCommit": "ae62b15195bbeb3ad99cdcb5c3d5105736eadf59",
+  "sourceTree": "7b599373392e91b0ffd04f0e80b4f5a5291024c6",
+  "durationSeconds": 20.348,
+  "logCompletedMtimeUTC": "2026-10-18T22:57:42.109532+00:00",
+  "publishedCodeCommit": "88026e7e5ff5a568b9c2c250c6ebb1573abe09b3"
+}

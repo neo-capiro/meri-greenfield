@@ -1,0 +1,17 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "check"
+  ],
+  "exit": 0,
+  "sourceCommit": "78a5ef00ea16cedcf188602ab6904af1d939d6b8",
+  "sourceTree": "be5ece2d8ff81d6112fb55c29e60beb69c8c4c09",
+  "durationSeconds": 18.280484199523926,
+  "environment": {
+    "node": "24.19.0",
+    "npm": "11.9.0",
+    "TZ": "America/Toronto",
+    "NODE_OPTIONS": "unset"
+  }
+}

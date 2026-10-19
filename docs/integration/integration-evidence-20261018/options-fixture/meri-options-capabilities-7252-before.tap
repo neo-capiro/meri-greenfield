@@ -1,0 +1,60 @@
+TAP version 13
+# Subtest: an absent or all-off capability fragment keeps the default options byte-identical in shape and order
+ok 1 - an absent or all-off capability fragment keeps the default options byte-identical in shape and order
+  ---
+  duration_ms: 6.276454
+  type: 'test'
+  ...
+# Subtest: the capability fragment is merged additively: allowedTools union, hooks by event, permission callbacks chained
+not ok 2 - the capability fragment is merged additively: allowedTools union, hooks by event, permission callbacks chained
+  ---
+  duration_ms: 10.791428
+  type: 'test'
+  location: '<workspace>/meri-closeout-capabilities/apps/worker/conversation/test/options-capabilities.test.mjs:27:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        'ANTHROPIC_BASE_URL',
+        'ANTHROPIC_AUTH_TOKEN',
+    +   'CLAUDE_CODE_MAX_OUTPUT_TOKENS',
+    +   'MAX_THINKING_TOKENS'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'ANTHROPIC_BASE_URL'
+    1: 'ANTHROPIC_AUTH_TOKEN'
+  actual:
+    0: 'ANTHROPIC_BASE_URL'
+    1: 'ANTHROPIC_AUTH_TOKEN'
+    2: 'CLAUDE_CODE_MAX_OUTPUT_TOKENS'
+    3: 'MAX_THINKING_TOKENS'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file://<workspace>/meri-closeout-capabilities/apps/worker/conversation/test/options-capabilities.test.mjs:33:404)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: fragment validation refuses unknown keys, undeclared hook events, foreign agent types and cwd plugin paths
+ok 3 - fragment validation refuses unknown keys, undeclared hook events, foreign agent types and cwd plugin paths
+  ---
+  duration_ms: 1.381668
+  type: 'test'
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 2
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1199.8347

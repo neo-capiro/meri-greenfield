@@ -1,0 +1,130 @@
+TAP version 13
+# Subtest: read, monotonic advance and exact record round-trip through bounded transactions that return clean leases
+ok 1 - read, monotonic advance and exact record round-trip through bounded transactions that return clean leases
+  ---
+  duration_ms: 8.964769
+  type: 'test'
+  ...
+# Subtest: lease faults: a lost COMMIT acknowledgement is unknown and retires the lease; a failed statement rolls back and returns it clean
+ok 2 - lease faults: a lost COMMIT acknowledgement is unknown and retires the lease; a failed statement rolls back and returns it clean
+  ---
+  duration_ms: 1.397203
+  type: 'test'
+  ...
+# Subtest: through the watermarked journal, an advance whose commit is unknown leaves the projection standing and closes the serving fence
+ok 3 - through the watermarked journal, an advance whose commit is unknown leaves the projection standing and closes the serving fence
+  ---
+  duration_ms: 2.047914
+  type: 'test'
+  ...
+# Subtest: synthetic SQL: a guarded advance refuses a restored row in the same locked transaction
+ok 4 - synthetic SQL: a guarded advance refuses a restored row in the same locked transaction
+  ---
+  duration_ms: 0.960066
+  type: 'test'
+  ...
+# Subtest: synthetic SQL: missing, changed or wrong-sequence projections cannot advance; exact proof and advance share one transaction
+ok 5 - synthetic SQL: missing, changed or wrong-sequence projections cannot advance; exact proof and advance share one transaction
+  ---
+  duration_ms: 2.077608
+  type: 'test'
+  ...
+# Subtest: synthetic SQL snapshot: one joined data statement follows the shared recovery lock in the same clean transaction
+ok 6 - synthetic SQL snapshot: one joined data statement follows the shared recovery lock in the same clean transaction
+  ---
+  duration_ms: 1.080747
+  type: 'test'
+  ...
+# Subtest: synthetic SQL snapshot: another owner completing recovery before the shared lock grants is observed by the data snapshot
+ok 7 - synthetic SQL snapshot: another owner completing recovery before the shared lock grants is observed by the data snapshot
+  ---
+  duration_ms: 0.807115
+  type: 'test'
+  ...
+# Subtest: synthetic SQL snapshot: malformed data or lost commit returns no snapshot and retires unknown leases
+ok 8 - synthetic SQL snapshot: malformed data or lost commit returns no snapshot and retires unknown leases
+  ---
+  duration_ms: 1.085355
+  type: 'test'
+  ...
+# Subtest: trusted startup composes canonical session, submit and membership history, with missing lifecycle owners refused before writes
+ok 9 - trusted startup composes canonical session, submit and membership history, with missing lifecycle owners refused before writes
+  ---
+  duration_ms: 198.141308
+  type: 'test'
+  ...
+# Subtest: actual readiness response names composition gaps and keeps release held
+ok 10 - actual readiness response names composition gaps and keeps release held
+  ---
+  duration_ms: 31.177407
+  type: 'test'
+  ...
+# Subtest: removed member cannot obtain an action session at assembled startup
+ok 11 - removed member cannot obtain an action session at assembled startup
+  ---
+  duration_ms: 2.971363
+  type: 'test'
+  ...
+# Subtest: client removed cannot obtain an action session at assembled startup
+ok 12 - client removed cannot obtain an action session at assembled startup
+  ---
+  duration_ms: 10.352486
+  type: 'test'
+  ...
+# Subtest: removed member after allocation refuses input admission and submit before a run or dispatch
+ok 13 - removed member after allocation refuses input admission and submit before a run or dispatch
+  ---
+  duration_ms: 12.718528
+  type: 'test'
+  ...
+# Subtest: membership revision after allocation refuses input admission and submit before a run or dispatch
+ok 14 - membership revision after allocation refuses input admission and submit before a run or dispatch
+  ---
+  duration_ms: 9.477358
+  type: 'test'
+  ...
+# Subtest: client roster after allocation refuses input admission and submit before a run or dispatch
+ok 15 - client roster after allocation refuses input admission and submit before a run or dispatch
+  ---
+  duration_ms: 11.694005
+  type: 'test'
+  ...
+# Subtest: removed member after dispatch refuses the old session's event stream and reload page
+ok 16 - removed member after dispatch refuses the old session's event stream and reload page
+  ---
+  duration_ms: 21.208448
+  type: 'test'
+  ...
+# Subtest: membership revision after dispatch refuses the old session's event stream and reload page
+ok 17 - membership revision after dispatch refuses the old session's event stream and reload page
+  ---
+  duration_ms: 23.314429
+  type: 'test'
+  ...
+# Subtest: client roster after dispatch refuses the old session's event stream and reload page
+ok 18 - client roster after dispatch refuses the old session's event stream and reload page
+  ---
+  duration_ms: 17.681339
+  type: 'test'
+  ...
+# Subtest: membership revision changing during assembled transcript read withholds reload response
+ok 19 - membership revision changing during assembled transcript read withholds reload response
+  ---
+  duration_ms: 19.547398
+  type: 'test'
+  ...
+# Subtest: scripted worker delta streams publicly and reloads from the membership transcript
+ok 20 - scripted worker delta streams publicly and reloads from the membership transcript
+  ---
+  duration_ms: 72.764756
+  type: 'test'
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1897.351624

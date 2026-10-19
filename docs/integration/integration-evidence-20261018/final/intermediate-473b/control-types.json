@@ -1,0 +1,13 @@
+{
+  "command": [
+    "node",
+    "apps/runtime/node_modules/typescript/bin/tsc",
+    "--noEmit",
+    "--pretty",
+    "false",
+    "-p",
+    "apps/control/conversations/tsconfig.json"
+  ],
+  "exit": 0,
+  "durationSeconds": 10.047
+}

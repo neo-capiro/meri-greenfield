@@ -1,0 +1,13 @@
+{
+  "command": [
+    "/tmp/meri-integration-sdk-env/bin/python",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "apps.proxy.product.test.test_sdk_proxy_offline"
+  ],
+  "sourceCommit": "90f82dc692fd017f4f8957cfaf8402000bb2f92f",
+  "exit": 0,
+  "logSha256": "3fda2e254a3ee299ecac216178db7f6dd4d90ede82c288e250513dcf6902d641"
+}

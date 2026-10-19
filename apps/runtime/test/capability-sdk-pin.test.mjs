@@ -44,10 +44,17 @@ const gate=(sdkOptionsSha256,run)=>createPreparedRunnerQuery({sdkOptions:{sdkOpt
 const admitted=(pin,run,options)=>typeof gate(pin,run)({prompt:'p',options})[Symbol.asyncIterator]==='function';
 const measured=async profile=>probeTemplateSha256({...inputs,...(profile===undefined?{}:{capabilityProfile:profile})},{root});
 
-test('without a capability profile the measured template is unchanged: the committed receipt hash',async()=>{
+test('the current no-profile template binds the supported SDK controls and refuses the historical receipt pin',async()=>{
  assert.ok(measuredProfile===undefined||measuredProfile===null,'no profile measured');
- assert.equal(await measured(),receipt.sdkOptions.sha256);
  assert.equal(receipt.sdkOptions.sha256,'af7f07b8f784884eae32e14e0b697d434d1668b0d68f55d203bf873c7af5431b');
+ const pin=await measured(),probe=await probeRun(inputs,{root});
+ try{
+  assert.deepEqual(probe.options.settings,{autoMemoryEnabled:false,modelOverrides:{'claude-sonnet-4-6':'meri-sonnet-qualification'}});
+  assert.deepEqual(probe.options.thinking,{type:'disabled'});assert.equal(probe.options.env.DISABLE_PROMPT_CACHING,'1');assert.equal(probe.options.env.CLAUDE_CODE_EFFORT_LEVEL,'unset');
+  assert.notEqual(pin,receipt.sdkOptions.sha256,'the historical measurement is not a pin for changed options');
+  assert.equal(sdkOptionsTemplateSha256(probe.options,probe.run),pin);assert.equal(admitted(pin,probe.run,probe.options),true);
+  assert.throws(()=>gate(receipt.sdkOptions.sha256,probe.run)({prompt:'p',options:probe.options}),/SDK_OPTIONS_REFUSED/u);
+ }finally{await probe.close();}
 });
 
 test('the projection admits exactly the capability keys in canonical form and refuses any other key, server or hook event',()=>{
@@ -110,7 +117,9 @@ test('a capability-bearing run hashes to the one measured pin whatever its avail
  for(const r of [a,b,c])assert.equal(admitted(pin,r.run,r.options),true);
  assert.throws(()=>gate(without,a.run)({prompt:'p',options:a.options}),/SDK_OPTIONS_REFUSED/u,'a different profile is never admitted');
  assert.throws(()=>gate(receipt.sdkOptions.sha256,a.run)({prompt:'p',options:a.options}),/SDK_OPTIONS_REFUSED/u,'nor the first-chat pin');
- const first=await activityRun({});assert.equal(sdkOptionsTemplateSha256(first.options,first.run),receipt.sdkOptions.sha256,'no policy: the unchanged first-chat pin');
+ const first=await activityRun({}),firstPin=await measured();assert.equal(sdkOptionsTemplateSha256(first.options,first.run),firstPin,'no policy: the current first-chat pin');
+ assert.equal(admitted(firstPin,first.run,first.options),true);
+ assert.throws(()=>gate(receipt.sdkOptions.sha256,first.run)({prompt:'p',options:first.options}),/SDK_OPTIONS_REFUSED/u,'the historical first-chat pin is stale');
  assert.throws(()=>gate(pin,first.run)({prompt:'p',options:first.options}),/SDK_OPTIONS_REFUSED/u);
  // The measured probe itself passes the same gate.
  const probe=await probeRun({...inputs,capabilityProfile:PORTABLE},{root});try{assert.equal(admitted(pin,probe.run,probe.options),true);}finally{await probe.close();}
@@ -233,10 +242,15 @@ test('matchPreparedDescriptor holds one launch template across conversations and
   assert.throws(()=>compileNativePreparationIntent({...intent(PROBES[0]),launchTemplate:{...launchTemplate,args}}),/PREPARATION_REFUSED/u);
 });
 
-test('without a capability profile the launch template, its run launch and every hash are unchanged',async()=>{
+test('the current no-profile launch adds exactly the supported SDK controls while historical launch bytes stay immutable',async()=>{
  const none=await measureFirstChatLaunch(inputs,{root});
- assert.deepEqual(none.launchTemplate.args,receipt.launchTemplate.args);assert.deepEqual(none.launchTemplate.env,receipt.launchTemplate.env);
- assert.equal(none.launchTemplateRunInvariant,true);assert.equal(none.sdkOptions.sha256,receipt.sdkOptions.sha256);assert.equal(none.sdkOptions.secondProbeSha256,receipt.sdkOptions.sha256);assert.equal(none.inputs.capabilityProfileSha256,null);
+ const args=[...receipt.launchTemplate.args],settingsAt=args.indexOf('--settings')+1;
+ assert.ok(settingsAt>0);assert.equal(args[settingsAt],'{"autoMemoryEnabled":false}');
+ args[settingsAt]=JSON.stringify({autoMemoryEnabled:false,modelOverrides:{'claude-sonnet-4-6':'meri-sonnet-qualification'}});
+ const thinkingAt=args.indexOf(`--max-turns=${inputs.maxTurns}`);assert.ok(thinkingAt>0);args.splice(thinkingAt,0,'--thinking=disabled');
+ assert.deepEqual(none.launchTemplate.args,args);
+ assert.deepEqual(none.launchTemplate.env,{...receipt.launchTemplate.env,DISABLE_PROMPT_CACHING:'1',CLAUDE_CODE_EFFORT_LEVEL:'unset'});
+ assert.equal(none.launchTemplateRunInvariant,true);assert.equal(none.sdkOptions.sha256,await measured());assert.equal(none.sdkOptions.secondProbeSha256,none.sdkOptions.sha256);assert.notEqual(none.sdkOptions.sha256,receipt.sdkOptions.sha256);assert.equal(none.inputs.capabilityProfileSha256,null);
  assert.equal(JSON.stringify(receipt.launchTemplate).includes(LAUNCH_WORKSPACE_PLACEHOLDER),false);
  for(const args of [receipt.launchTemplate.args,runtimeValues.preparationIntent.launchTemplate.args]){
   assert.equal(canonicalSha256(launchTemplateArgs(args,'/workspace/00000000-0000-4000-8000-000000000001')),canonicalSha256(args));

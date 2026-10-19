@@ -1,0 +1,200 @@
+{
+  "harnessCommit": "5fa5545898717e1148a28447bb93254a07fa6459",
+  "files": [
+    {
+      "name": "CLEANUP.json",
+      "bytes": 122,
+      "sha256": "7066242f116578e5573b3afa3cb5a1764f82dee43a9cfc51e4b97668b3a6667a"
+    },
+    {
+      "name": "PLAN-preliminary-retained.md",
+      "bytes": 5044,
+      "sha256": "b0c88ab85b0e61277cef2e39acfe373769c652e8969ada78030039e079110357"
+    },
+    {
+      "name": "PLAN.md",
+      "bytes": 9512,
+      "sha256": "dd12012a33dedf8678d991636e2153203c9bebf59c344fd7650587aa76e2a153"
+    },
+    {
+      "name": "PRODUCTION-BLOCKERS.md",
+      "bytes": 4860,
+      "sha256": "8b5785b65665ce256e43459d3f309d9029e02eecc04eaa7d9ec345284de8a1ba"
+    },
+    {
+      "name": "RESULTS.json",
+      "bytes": 7680,
+      "sha256": "bee8991090d4d2f592506f5980db974636254ed83d6afc0c4c726ba95a0275a2"
+    },
+    {
+      "name": "complete-attempt-1.json",
+      "bytes": 6985,
+      "sha256": "7b6953802a25e9c66a04a3e5b88f70616695873de10b5f0072e7c0ec01b33e5d"
+    },
+    {
+      "name": "final-qualification-commands.json",
+      "bytes": 6608,
+      "sha256": "7439dfa79ece0ef8c7f6a0ece39fe8477c039eb510e2c7a9c85eaf983ced1072"
+    },
+    {
+      "name": "focused-tests-final.log",
+      "bytes": 900,
+      "sha256": "4a2edae16fc77e4720af4c62431f1ea6b66878de2bdc6ebed1e3a24b0d4ce97a"
+    },
+    {
+      "name": "minimal-cached-final.json",
+      "bytes": 3744,
+      "sha256": "4e8eac5b2e066d36feb1f71927babdfddfa3f37c2fe222bb183a4c5c5b17e551"
+    },
+    {
+      "name": "minimal-complete-attempt-1.json",
+      "bytes": 1646,
+      "sha256": "c8c8de5583758da6ce253e0cc4705ed8250025691150b47f668a53dadd71e8fb"
+    },
+    {
+      "name": "minimal-complete-attempt-2.json",
+      "bytes": 2383,
+      "sha256": "de86e14c415b0571853650220cba4329a38cfc105c665a5de4f2eb050fbe6c8b"
+    },
+    {
+      "name": "minimal-complete-attempt-3.json",
+      "bytes": 2389,
+      "sha256": "1553e7a23de58289df7996b7c7740c5414088f80eacc79b94fd537c3911e6d1e"
+    },
+    {
+      "name": "minimal-complete-attempt-4.json",
+      "bytes": 2491,
+      "sha256": "e681a3328822b0a75782a49526770459ee65fcc5872885c38d0cacc5fa2f8106"
+    },
+    {
+      "name": "minimal-complete-attempt-5.json",
+      "bytes": 2791,
+      "sha256": "22e5a8f313590c2d905f2e839517eb1a29c352093d7ddedb5aa0397b0f783702"
+    },
+    {
+      "name": "minimal-missing-usage-final.json",
+      "bytes": 3751,
+      "sha256": "bad2e7c239c2c6f1d90a9acc9a7a15bf6a6daaec9cb8e483fea51f61bd466a62"
+    },
+    {
+      "name": "minimal-reservation-ack-lost-final.json",
+      "bytes": 3637,
+      "sha256": "04cad62ad7fffb0cfbf3248fb6c153ac3f0d9bbdb8982705fec76b1938d351b6"
+    },
+    {
+      "name": "minimal-settlement-ack-committed-final.json",
+      "bytes": 3838,
+      "sha256": "03577f03177380d446362cbe7ed3854ed7e7ce96031f7e3b66c2f5f8cb41a996"
+    },
+    {
+      "name": "minimal-settlement-ack-unresolved-final.json",
+      "bytes": 4887,
+      "sha256": "527d7ad508236c20c8ea3270a94b4ecd49be3da198f0bc6dc0a0a83cab63e1ee"
+    },
+    {
+      "name": "minimal-truncated-final.json",
+      "bytes": 3747,
+      "sha256": "5c7911a8fdc0027ac4b51edf67e12ac63a7062dd624e1b86737a77970e46d84f"
+    },
+    {
+      "name": "pinned-minimal-messages-cached-none.json",
+      "bytes": 5328,
+      "sha256": "dd4b2265a42705d17285e5ade3b5b18f371aa19a0d72e60b78220d614675b964"
+    },
+    {
+      "name": "pinned-minimal-messages-complete-none.json",
+      "bytes": 4394,
+      "sha256": "6debd03c7d3505f35609eef18c45e6705b393f9ce7f57f4da04241dc968e89ea"
+    },
+    {
+      "name": "pinned-minimal-messages-missing-usage-none.json",
+      "bytes": 5335,
+      "sha256": "fa1b7f4cc82c31b4b142f1f17f2b9bca15847b94fdf147f707f99f90102526bf"
+    },
+    {
+      "name": "pinned-minimal-messages-reservation-ack-lost-none.json",
+      "bytes": 4321,
+      "sha256": "96fee853bf4b113fe18ab13f2273f5b95ab655b75e2225b49cb975e8b7612671"
+    },
+    {
+      "name": "pinned-minimal-messages-settlement-ack-committed-none.json",
+      "bytes": 4522,
+      "sha256": "4217575e622ec80f36d4fcbafc99b990800dc8387dddec9a9d8b97addf82f016"
+    },
+    {
+      "name": "pinned-minimal-messages-settlement-ack-unresolved-none.json",
+      "bytes": 5571,
+      "sha256": "c8206ef4f821df90da40014b0c3cef0c7307fabafb8ca9c8c4f985424274a07b"
+    },
+    {
+      "name": "pinned-minimal-messages-truncated-none.json",
+      "bytes": 5331,
+      "sha256": "e63eebfa06d61b748ee4851c8f547bf096d349bf05daa850f740672b3faa588e"
+    },
+    {
+      "name": "pinned-sdk-complete-none.json",
+      "bytes": 19124,
+      "sha256": "4a7ca8eb2fb68d456904dac9840113c3d428bf0855efc1c9fbf34823e538c199"
+    },
+    {
+      "name": "pinned-sdk-configured-complete-none.json",
+      "bytes": 15579,
+      "sha256": "84aefa0a7653360003f4e12b5453ccbd77dae88b1f154c59379b379af333a45a"
+    },
+    {
+      "name": "pinned-sdk-constrained-complete-json-schema.json",
+      "bytes": 19497,
+      "sha256": "d37425a4dcef86fae8059cdbb9e038b5a8ebcb736eba896dc3f87fdadce1c48f"
+    },
+    {
+      "name": "pinned-sdk-constrained-complete-none.json",
+      "bytes": 15710,
+      "sha256": "440f8e80ac324a141fc4f3de0ef4e08a1ea3a17cfbc53bbc1d3d190d398c39a5"
+    },
+    {
+      "name": "python-installed-packages.json",
+      "bytes": 6287,
+      "sha256": "04251dae8b76a75f1e8b861344c5bbee989b5b185a64c155378b8fd49124c4a8"
+    },
+    {
+      "name": "sdk-configured-shape-corrected.json",
+      "bytes": 14581,
+      "sha256": "616bd84865867e48cd1918686e0f9d5f640c9a8728679ada7ba82b3e6bd7465d"
+    },
+    {
+      "name": "sdk-configured-shape-final.json",
+      "bytes": 14544,
+      "sha256": "1d4523e1f226de78077c527775a67badd09e1e65e5471bc6bf8957301efdf2ea"
+    },
+    {
+      "name": "sdk-constrained-json-schema-final.json",
+      "bytes": 18930,
+      "sha256": "1c60fa3b11bdaf8b5b9c417ec587c215b78ed4d5ae9a300660c60815cd3501fc"
+    },
+    {
+      "name": "sdk-constrained-none-final.json",
+      "bytes": 15485,
+      "sha256": "e6ec92f69bf47cd241cd601da2b02141201e5c19f416412cd2ddbe1dc8f20063"
+    },
+    {
+      "name": "sdk-shape-corrected.json",
+      "bytes": 18126,
+      "sha256": "523321032c796c62b98ca95c0aa014a5cb8f5b8db43df06b33f0936f140142eb"
+    },
+    {
+      "name": "sdk-shape-final.json",
+      "bytes": 16333,
+      "sha256": "b80506e45a8b4f0f0d7a786ee2799c4b269a6913a408a2677b3b989cfefb09a5"
+    },
+    {
+      "name": "setup-log-manifest.json",
+      "bytes": 4116,
+      "sha256": "83e9f453463f3f2972e260932fa9747f5f663a4fde4934a03caf1c25768e3052"
+    },
+    {
+      "name": "source-pins.json",
+      "bytes": 1162,
+      "sha256": "53abd76ce71343f3fee69f83618a6e5c22f079e8b70d7b8b68a57937084fba43"
+    }
+  ]
+}

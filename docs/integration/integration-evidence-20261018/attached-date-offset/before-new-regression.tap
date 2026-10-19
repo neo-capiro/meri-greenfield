@@ -1,0 +1,66 @@
+TAP version 13
+# Subtest: trusted default as-of is distinct from explicit date and generatedAt
+not ok 1 - trusted default as-of is distinct from explicit date and generatedAt
+  ---
+  duration_ms: 15.270919
+  type: 'test'
+  location: '<integration-worktree>/packages/contracts/test/retrieval-public-domain-query.test.mjs:103:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + '2020-01-01T12:30:00.000Z'
+    - '2020-01-01T07:00:00.000Z'
+                  ^
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '2020-01-01T07:00:00.000Z'
+  actual: '2020-01-01T12:30:00.000Z'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file://<integration-worktree>/packages/contracts/test/retrieval-public-domain-query.test.mjs:130:10)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.start (node:internal/test_runner/test:1242:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+  ...
+# Subtest: legacy explicit query dates preserve the native UTC parser reference
+not ok 2 - legacy explicit query dates preserve the native UTC parser reference
+  ---
+  duration_ms: 107.025853
+  type: 'test'
+  location: '<integration-worktree>/packages/contracts/test/retrieval-public-domain-query.test.mjs:160:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    12:30 Jan 1 2020+05
+    + actual - expected
+    
+    + '2020-01-01T12:30:00.000Z'
+    - '2020-01-01T07:30:00.000Z'
+                  ^
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '2020-01-01T07:30:00.000Z'
+  actual: '2020-01-01T12:30:00.000Z'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file://<integration-worktree>/packages/contracts/test/retrieval-public-domain-query.test.mjs:182:52)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 377.011533

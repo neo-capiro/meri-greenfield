@@ -1,0 +1,23 @@
+# Selected structured-output shipping gate — unresolved
+
+Source: Meri `5e76d962af234fc975d6da88ab5b41163b6461d6`. Read-only findings; no implementation or wire change is allocated here. Detailed trace: `MERI-STRUCTURED-SCHEMA-CUSTODY-REVIEW-5e76d962a.md`.
+
+**Plain default first chat is separate.** `apps/control/conversations/service.mjs:45-47` saves `skill:null` by default. `apps/worker/conversation/activity.mjs:55,76-79` adds outputFormat only for a selected skill or an explicitly composed Objective runtime. `apps/runtime/conversation-runner.mjs:62,81` composes selectedSkills but supplies no Objective runtime. There is no production createObjectiveGenerationRuntime caller at this pin. This schema gate must not be reported as the default plain-chat startup blocker.
+
+**The real pinned-SDK stand-in demonstrates structured transport only with explicitly injected trusted fixture BodyLimits. Production dynamic schema custody remains unresolved.**
+
+| Owner | Canonical source / required dependency |
+| --- | --- |
+| Skill schema | `packages/skills/index.mjs` immutable exact pin + `apps/runtime/selected/output-format.mjs` existing selectedOutputFormat; consumed by `apps/runtime/selected/task.mjs`. Reuse exact factory; no copied schema registry. |
+| Objective schema/custody | `apps/worker/conversation/objective-generation/typed-result.mjs` derives ModelOutcome/Draft from canonical candidate/private contracts. `apps/runtime/objective-source/run-start-facts.mjs`, `apps/runtime/objective-generation/prepared-facts-reader.mjs`, `apps/runtime/objective-source/prepared-reader.mjs` and `packages/runtime/objective-generation-custody.mjs` own accepted request, protected issued pair, definite ABSENT/STARTED, allocation/task/current Core joins. Production Objective query/current attestation composition remains a dependency. Worker-supplied schema is never authority. |
+| Trusted accepted model request | `apps/proxy/product/product-owner-facts.mjs:159-170` already joins accepted request hash to active model issuance/admitted allocation/current run, then drops the request. This is the narrow trusted schema-projection splice; bind policy to existing binding/model grant/requestSha256/expiry. |
+| Authenticated policy carriage | `apps/proxy/product/owner-channel.mjs:355-378,409-417` closed admission source tuple and sourceSha256; `apps/proxy/product/owner_admission.py:61-75,135-186` authenticated source validation/comparison. A future coordinated extension must include exact tool/schema or explicit ordinary null and detect drift; no worker upload/new authority endpoint. Closed facts checks in product-owner-placement.mjs and session-open must remain aligned. |
+| Per-request session | `apps/proxy/product/owner_startup.py:102-130` currently uses global/default BodyLimits. Future policy must derive exact per-session limits from authenticated owner bytes, preserving existing numeric bounds and freshness. |
+| Inference/count composition | `apps/proxy/product/host_composition.py:214-215` rejects limits differing from app-global limits;248-249 captures global CountTokens tool list. `cli_count_tokens.py:225-249` and `aws_cli_counter.py:20-38,69-86` currently check tool names but not exact selected schema. Both must use the same trusted session policy before count/native validation. |
+| Native guard and SDK pin | `apps/proxy/qualification/runtime/bedrock_body.py` already binds exact canonical JSON schema plus StructuredOutput name; keep it. Preserve selected outputFormat and its SDK-option projection/pin, current maximum8 allowed/native tools and other envelope limits. |
+
+A **resolver-only** repair still hits the global equality fence and count parser's captured list. A **global StructuredOutput allow** crosses request/run schemas, fails exact schema custody and does not authorize Objective selection. Neither is a valid production repair.
+
+Future integration sequence: reuse canonical selected/protected source → project exact trusted policy into existing owner source identity → derive session-local BodyLimits → reuse count parser/callback per session with exact schema comparison → keep final-native/settlement guards. Unsupported/unknown Objective custody refuses; absent trusted owner is not ordinary evidence. No new grant, migration, global tool grant, weakened assertion or broader body envelope is needed.
+
+Acceptance gate: synthetic actual-source accepted owner→wire→session→SDK/count/native tests for both skills/plain, exact schema/tool tamper, same-text different request ID, cross-run/model-grant drift, expiry/retirement between count and send, concurrent different schemas and unavailable Objective custody. Supported focused/type checks remain required. No live/provider call was made by this investigation.

@@ -1,0 +1,59 @@
+{
+  "branch": "fix/closeout-options-capability-envelope-20261018",
+  "base": "473b8588592149eaa762ee352ae67d1b820c72fb",
+  "commits": [
+    "725e0fab2d7b18486fd3e610bf77882c6f0fb262",
+    "749d2b3bb631e298db10f4a81dfd9c58a6da9f4a"
+  ],
+  "ownedPath": "apps/worker/conversation/test/options-capabilities.test.mjs",
+  "classification": "inherited stale expectations; two assertions in one distinct failing test",
+  "firstVisibleSourceAndFixtureCommit": "141f2ada6378382f2bf7462d8a2c5dc7758230d0",
+  "node": "24.19.0",
+  "command": "node --test --test-reporter=tap apps/worker/conversation/test/options-capabilities.test.mjs",
+  "baselines": [
+    {
+      "commit": "a1876afaeaa59d9da47729487d490cba8cfc9d9c",
+      "passed": 2,
+      "failed": 1,
+      "log": "/tmp/meri-options-capabilities-a187-before.tap"
+    },
+    {
+      "commit": "7252f483c59cd676e868e40d4bf73c2ca55c137f",
+      "passed": 2,
+      "failed": 1,
+      "log": "/tmp/meri-options-capabilities-7252-before.tap"
+    },
+    {
+      "commit": "473b8588592149eaa762ee352ae67d1b820c72fb",
+      "passed": 2,
+      "failed": 1,
+      "log": "/tmp/meri-options-capabilities-473b-before.tap"
+    }
+  ],
+  "intermediateFailureLog": "/tmp/meri-options-capabilities-473b-after.tap",
+  "fixedCandidatePreCommitLog": "/tmp/meri-options-capabilities-473b-after2.tap",
+  "final": {
+    "commit": "749d2b3bb631e298db10f4a81dfd9c58a6da9f4a",
+    "passed": 3,
+    "failed": 0,
+    "log": "/tmp/meri-options-capabilities-final.tap"
+  },
+  "assertions": [
+    {
+      "cause": "fixed token environment already present, fixture expected onlytwo routing credentials",
+      "fix": "exactfourkeys in order and exact string8192/0 values",
+      "commit": "725e0fab2d7b18486fd3e610bf77882c6f0fb262"
+    },
+    {
+      "cause": "immutable plugin catalog has14 admittedfrontmatter skillversions includingbill_watch1.0.1; stalefixture13",
+      "fix": "exact14 count",
+      "catalogBlobIdenticalAtAllPins": "f79c93b319ba8e6414d8877fbe5cee7d81004fee",
+      "commit": "749d2b3bb631e298db10f4a81dfd9c58a6da9f4a"
+    }
+  ],
+  "rootOriginalFailureLogUnchanged": "/tmp/meri-integration-final-evidence/new-startup-and-alias.raw.log",
+  "productionChanges": 0,
+  "pushes": 0,
+  "intermediateFailureLogSha256": "7d14e13fb2cc12009ed97015b9750289a21ad37bfa084604497547280fcf698c",
+  "fixedCandidatePreCommitLogSha256": "dc5286f9f13475fa4da349545a6949ef131aaebd29c34262dffbb0355549ca00"
+}

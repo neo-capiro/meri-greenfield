@@ -1,0 +1,22 @@
+{
+  "scope": "Affected source only; no real provider, SQL, AWS or image execution",
+  "environment": {
+    "node": "v24.19.0",
+    "typescript": "5.9.3",
+    "npm": "11.9.0",
+    "timezone": "America/Toronto",
+    "nodeOptions": "unset",
+    "python": "3.13.5",
+    "sdk": "0.3.295",
+    "cli": "2.1.295",
+    "litellm": "1.104.2"
+  },
+  "pythonFinal": "env -i PATH=/usr/bin:/bin TZ=America/Toronto PYTHONDONTWRITEBYTECODE=1 LITELLM_LOCAL_MODEL_COST_MAP=True AWS_EC2_METADATA_DISABLED=true /tmp/meri-integration-sdk-env/bin/python -m unittest apps.proxy.product.test.test_envelope apps.proxy.qualification.test.test_bedrock_transport apps.proxy.qualification.test.test_native_usage apps.proxy.product.test.test_response_terminal_gate apps.proxy.qualification.test.test_product_response_settlement apps.proxy.product.test.test_host_observation apps.proxy.product.test.test_host_composition apps.proxy.product.test.test_sdk_proxy_offline -v",
+  "workerOptions": "env -u NODE_OPTIONS TZ=America/Toronto node --test --test-concurrency=1 apps/worker/conversation/test/options-trust.test.mjs apps/worker/conversation/test/options-capabilities.test.mjs apps/worker/conversation/test/activity-capabilities.test.mjs apps/worker/conversation/test/bash-sandbox.test.mjs apps/runtime/native-authority/test/runner-query.test.mjs",
+  "workerFocused": "env -u NODE_OPTIONS TZ=America/Toronto node --test --test-reporter=tap apps/worker/conversation/test/options-trust.test.mjs apps/worker/conversation/test/activity.test.mjs apps/worker/conversation/test/terminal-settlement.test.mjs",
+  "runtimeTypes": "env -u NODE_OPTIONS TZ=America/Toronto node apps/runtime/node_modules/typescript/bin/tsc --noEmit --pretty false -p apps/runtime/tsconfig.json",
+  "runtimeOptions": "node --experimental-test-module-mocks --test --test-reporter=tap apps/runtime/test/capability-sdk-pin.test.mjs apps/runtime/test/dynamic-sdk-options.test.mjs apps/runtime/build/first-chat-launch-measurement.test.mjs",
+  "jsOwner": "env -u NODE_OPTIONS TZ=America/Toronto MERI_REVIEW_SOURCE_ROOT=/workspace/meri-source node --test --test-reporter=tap apps/gateway/model-proxy/product-request-owner.test.mjs apps/gateway/model-proxy/product-boundary-codec.test.mjs apps/gateway/model-proxy/product-reservation-bridge.test.mjs apps/gateway/model-proxy/product-settlement-bridge.test.mjs apps/gateway/model-proxy/product-envelope.test.mjs",
+  "qualification": "See each exact SDK command/exit in its source-pinned matrix; old final-named matrix is retained as before-owner-channel,15/17 and not a passing final claim.",
+  "ownerCarrierFinal": "env -i PATH=/usr/bin:/bin TZ=America/Toronto PYTHONDONTWRITEBYTECODE=1 LITELLM_LOCAL_MODEL_COST_MAP=True AWS_EC2_METADATA_DISABLED=true /tmp/meri-integration-sdk-env/bin/python -m unittest apps.proxy.product.test.test_owner_channel apps.proxy.product.test.test_owner_admission apps.proxy.product.test.test_sdk_proxy_offline -v"
+}

@@ -1,0 +1,12 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "apps/runtime/build/runtime-packages.test.mjs",
+    "infra/product-preview/runtime-packages/complete-pending-additions.test.mjs",
+    "infra/product-preview/image-build.test.mjs"
+  ],
+  "exit": 0,
+  "durationSeconds": 7.865
+}

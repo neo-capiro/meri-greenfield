@@ -1,0 +1,106 @@
+✔ one immutable provider supplies all12 datasets and88 fields without physical expressions (5.423688ms)
+✔ unknown or decorative provider refuses instead of adopting arbitrary field maps (0.630047ms)
+✔ exact family exports and normalization bind selected immutable snapshot (13.732405ms)
+✔ model SQL/table/alias/registry authority is refused at closed boundaries (2.113118ms)
+✔ selectors reject coercion hooks, hidden fields, proxies and callbacks (0.387894ms)
+✔ typed requests exclude legacy nonarray ignoring and broad Number coercion (1.010961ms)
+✔ positive finite row limit preserves floor/default and per-dataset maximum (2.876917ms)
+✔ all six aggregates preserve source type/group capabilities (3.727677ms)
+✔ bare count and alias collision rules remain exact (1.311352ms)
+✔ grouped mixed projections retain ordinary fields and groupable flags (1.056189ms)
+✔ ordering is limited to selected aliases and preserves legacy desc-exact default (0.536788ms)
+✔ every closed filter operator is admitted with its actual value contract (2.230425ms)
+✔ numeric boolean and date filters remain type-correct without invented ordering (1.194176ms)
+✔ filter windows and nonfilterable arrays fail closed (1.170591ms)
+✖ trusted default as-of is distinct from explicit date and generatedAt (3.416479ms)
+✖ legacy explicit query dates preserve the native UTC parser reference (96.200412ms)
+✖ query date normalization preserves UTC semantics in multiple host timezones (723.194955ms)
+✔ all twelve dataset projections accept their complete field selection windows (8.461803ms)
+✔ success omits SQL and retains exact aliases, dataset and pretrim count (5.145244ms)
+✔ counts retain exact unsafe integer strings and refuse fractional or null values (2.091936ms)
+✔ numbers preserve decimal strings and nullable stored/aggregate results (2.42027ms)
+✔ array scalars preserve null elements; dates and booleans retain source types (1.03067ms)
+✔ truncation reports whole-row prefix and original fetched count, including zero retained (1.320726ms)
+✔ legacy256Ki ceiling counts UTF16 not UTF8 and never silently drops half a row (5.682757ms)
+✔ error envelope remains explicit and never doubles as empty success (0.730168ms)
+✔ result observation is independent; validator never claims audit or role admission (0.754074ms)
+✔ snapshots cannot mutate provider, requests, normalized tuples or returned siblings (0.476877ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 24
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1149.22402
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-public-domain-query.test.mjs:103:1
+✖ trusted default as-of is distinct from explicit date and generatedAt (3.416479ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + '2020-01-01T12:30:00.000Z'
+  - '2020-01-01T17:30:00.000Z'
+                 ^
+  
+      at TestContext.<anonymous> (file://<query-date-worktree>/packages/contracts/test/retrieval-public-domain-query.test.mjs:124:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '2020-01-01T12:30:00.000Z',
+    expected: '2020-01-01T17:30:00.000Z',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-public-domain-query.test.mjs:134:1
+✖ legacy explicit query dates preserve the native UTC parser reference (96.200412ms)
+  AssertionError [ERR_ASSERTION]: January 1, 2020 12:30 PM +05
+  + actual - expected
+  
+  + '2020-01-01T12:30:00.000Z'
+  - '2020-01-01T07:30:00.000Z'
+                ^
+  
+      at TestContext.<anonymous> (file://<query-date-worktree>/packages/contracts/test/retrieval-public-domain-query.test.mjs:151:52)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: '2020-01-01T12:30:00.000Z',
+    expected: '2020-01-01T07:30:00.000Z',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-public-domain-query.test.mjs:153:1
+✖ query date normalization preserves UTC semantics in multiple host timezones (723.194955ms)
+  Error: Command failed: /opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node --test --test-reporter=tap --test-name-pattern=^(trusted default as-of is distinct from explicit date and generatedAt|legacy explicit query dates preserve the native UTC parser reference)$ <query-date-worktree>/packages/contracts/test/retrieval-public-domain-query.test.mjs
+      at genericNodeError (node:internal/errors:985:15)
+      at wrappedFn (node:internal/errors:539:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at TestContext.<anonymous> (file://<query-date-worktree>/packages/contracts/test/retrieval-public-domain-query.test.mjs:156:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12) {
+    status: 1,
+    signal: null,
+    output: [ null, "TAP version 13\n# Subtest: trusted default as-of is distinct from explicit date and generatedAt\nnot ok 1 - trusted default as-of is distinct from explicit date and generatedAt\n  ---\n  duration_ms: 23.7679\n  type: 'test'\n  location: '<query-date-worktree>/packages/contracts/test/retrieval-public-domain-query.test.mjs:103:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + '2020-01-01T12:30:00.000Z'\n    - '2020-01-01T17:30:00.000Z'\n                   ^\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: '2020-01-01T17:30:00.000Z'\n  actual: '2020-01-01T12:30:00.000Z'\n  operator: 'strictEqual'\n  stack: |-\n    TestContext.<anonymous> (file://<query-date-worktree>/packages/contracts/test/retrieval-public-domain-query.test.mjs:124:10)\n    Test.runInAsyncScope (node:async_hooks:227:14)\n    Test.run (node:internal/test_runner/test:1382:25)\n    Test.start (node:internal/test_runner/test:1242:17)\n    startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)\n  ...\n# Subtest: legacy explicit query dates preserve the native UTC parser reference\nnot ok 2 - legacy explicit query dates preserve the native UTC parser reference\n  ---\n  duration_ms: 82.880178\n  type: 'test'\n  location: '<query-date-worktree>/packages/contracts/test/retrieval-public-domain-query.test.mjs:134:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    January 1, 2020 12:30 PM +05\n    + actual - expected\n    \n    + '2020-01-01T12:30:00.000Z'\n    - '2020-01-01T07:30:00.000Z'\n                  ^\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: '2020-01-01T07:30:00.000Z'\n  actual: '2020-01-01T12:30:00.000Z'\n  operator: 'strictEqual'\n  stack: |-\n    TestContext.<anonymous> (file://<query-date-worktree>/packages/contracts/test/retrieval-public-domain-query.test.mjs:151:52)\n    Test.runInAsyncScope (node:async_hooks:227:14)\n    Test.run (node:internal/test_runner/test:1382:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:960:18)\n    Test.postRun (node:internal/test_runner/test:1522:19)\n    Test.run (node:internal/test_runner/test:1447:12)\n    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)\n  ...\n1..2\n# tests 2\n# suites 0\n# pass 0\n# fail 2\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 644.732312\n", '' ],
+    pid: 29,
+    stdout: "TAP version 13\n# Subtest: trusted default as-of is distinct from explicit date and generatedAt\nnot ok 1 - trusted default as-of is distinct from explicit date and generatedAt\n  ---\n  duration_ms: 23.7679\n  type: 'test'\n  location: '<query-date-worktree>/packages/contracts/test/retrieval-public-domain-query.test.mjs:103:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + '2020-01-01T12:30:00.000Z'\n    - '2020-01-01T17:30:00.000Z'\n                   ^\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: '2020-01-01T17:30:00.000Z'\n  actual: '2020-01-01T12:30:00.000Z'\n  operator: 'strictEqual'\n  stack: |-\n    TestContext.<anonymous> (file://<query-date-worktree>/packages/contracts/test/retrieval-public-domain-query.test.mjs:124:10)\n    Test.runInAsyncScope (node:async_hooks:227:14)\n    Test.run (node:internal/test_runner/test:1382:25)\n    Test.start (node:internal/test_runner/test:1242:17)\n    startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)\n  ...\n# Subtest: legacy explicit query dates preserve the native UTC parser reference\nnot ok 2 - legacy explicit query dates preserve the native UTC parser reference\n  ---\n  duration_ms: 82.880178\n  type: 'test'\n  location: '<query-date-worktree>/packages/contracts/test/retrieval-public-domain-query.test.mjs:134:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    January 1, 2020 12:30 PM +05\n    + actual - expected\n    \n    + '2020-01-01T12:30:00.000Z'\n    - '2020-01-01T07:30:00.000Z'\n                  ^\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: '2020-01-01T07:30:00.000Z'\n  actual: '2020-01-01T12:30:00.000Z'\n  operator: 'strictEqual'\n  stack: |-\n    TestContext.<anonymous> (file://<query-date-worktree>/packages/contracts/test/retrieval-public-domain-query.test.mjs:151:52)\n    Test.runInAsyncScope (node:async_hooks:227:14)\n    Test.run (node:internal/test_runner/test:1382:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:960:18)\n    Test.postRun (node:internal/test_runner/test:1522:19)\n    Test.run (node:internal/test_runner/test:1447:12)\n    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)\n  ...\n1..2\n# tests 2\n# suites 0\n# pass 0\n# fail 2\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 644.732312\n",
+    stderr: ''
+  }

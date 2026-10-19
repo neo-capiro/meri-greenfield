@@ -1,0 +1,64 @@
+TAP version 13
+# Subtest: the canonical retention gate composes, suppresses history and still permits cancellation cleanup
+not ok 1 - the canonical retention gate composes, suppresses history and still permits cancellation cleanup
+  ---
+  duration_ms: 10.847719
+  type: 'test'
+  location: '<startup-worktree>/apps/control/conversations/test/retention-port.test.mjs:11:1'
+  failureType: 'testCodeFailure'
+  error: 'INVALID_COMMAND'
+  code: 'ERR_TEST_FAILURE'
+  name: 'CommandError'
+  stack: |-
+    deny (file://<startup-worktree>/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+    own (file://<startup-worktree>/packages/contracts/commands-0.2/execution-boundary.mjs:10:166)
+    createConversationService (file://<startup-worktree>/apps/control/conversations/service.mjs:29:54)
+    applicationFixture (file://<startup-worktree>/apps/control/conversations/test/application-fixture.mjs:14:237)
+    async TestContext.<anonymous> (file://<startup-worktree>/apps/control/conversations/test/retention-port.test.mjs:14:10)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: optional serving methods are typed and unknown retention keys remain closed without invoking any owner
+not ok 2 - optional serving methods are typed and unknown retention keys remain closed without invoking any owner
+  ---
+  duration_ms: 2.900232
+  type: 'test'
+  location: '<startup-worktree>/apps/control/conversations/test/retention-port.test.mjs:27:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Got unwanted exception.
+    Actual message: "INVALID_COMMAND"
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  actual:
+  error: 'INVALID_COMMAND'
+  stack: |-
+    deny (file://<startup-worktree>/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+    own (file://<startup-worktree>/packages/contracts/commands-0.2/execution-boundary.mjs:10:166)
+    createConversationService (file://<startup-worktree>/apps/control/conversations/service.mjs:29:54)
+    file://<startup-worktree>/apps/control/conversations/test/retention-port.test.mjs:30:182
+    getActual (node:assert:611:5)
+    strict.doesNotThrow (node:assert:779:32)
+    TestContext.<anonymous> (file://<startup-worktree>/apps/control/conversations/test/retention-port.test.mjs:30:165)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+  operator: 'doesNotThrow'
+  stack: |-
+    TestContext.<anonymous> (file://<startup-worktree>/apps/control/conversations/test/retention-port.test.mjs:30:165)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 728.931719

@@ -1,0 +1,17 @@
+{
+  "command": [
+    "node",
+    "apps/runtime/node_modules/typescript/bin/tsc",
+    "--noEmit",
+    "--pretty",
+    "false",
+    "-p",
+    "apps/runtime/tsconfig.json"
+  ],
+  "exit": 0,
+  "sourceCommit": "ae62b15195bbeb3ad99cdcb5c3d5105736eadf59",
+  "sourceTree": "7b599373392e91b0ffd04f0e80b4f5a5291024c6",
+  "durationSeconds": 5.492,
+  "logCompletedMtimeUTC": "2026-10-18T22:57:26.059631+00:00",
+  "publishedCodeCommit": "88026e7e5ff5a568b9c2c250c6ebb1573abe09b3"
+}

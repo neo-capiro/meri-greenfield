@@ -1,0 +1,603 @@
+{
+  "repository": "neo-capiro/meri-greenfield",
+  "readAt": "2026-10-18T22:46:38.721437+00:00",
+  "operation": "read-only handoff ancestry, exact Git blob and receipt review; no tests/build/install/live operations",
+  "supersedes": {
+    "receipt": "OWNERSHIP-ANCESTRY.json",
+    "historicalReadAt": "2026-10-18T22:17:09.865Z",
+    "reason": "User accepted published 7252f483 combined source handoff and relayed newer source/operator facts; Core78 is now published."
+  },
+  "acceptedHandoff": {
+    "branch": "dot/meri-release-combined-20261018",
+    "commit": "7252f483c59cd676e868e40d4bf73c2ca55c137f",
+    "tree": "1a9dfbd00d94eb6a4bfe794b1ee435c4b66e639c",
+    "parents": [
+      "ba6ba2071d557a088f72437a3b04525cfd987bdd"
+    ],
+    "subject": "Record PR186 date acceptance hold in source handoff",
+    "publication": "GitHub commit resolves; branch name exists; exact accepted branch/pin supplied by user and fetched by root",
+    "readback": "published-7252f483-readback.json"
+  },
+  "beforeHandoff": {
+    "commit": "60829243203b9e94c4b12b8e575f375cb27f6c9b",
+    "tree": "f50b0d8585ee073ca507002390897315f486dc20",
+    "parents": [
+      "3e967626664dcae8d57773368fdb13fad5745563",
+      "665405cd23680c2c40d4df95fe183799d272fc61"
+    ],
+    "subject": "Receive reviewed PR186 explicit-offset correction and effective timezone evidence"
+  },
+  "commonAncestor": {
+    "commit": "4d82147624cba329ffc5ade1bb027838a4e37474",
+    "tree": "df5f941a2c1f728ea8a8168ba3ef1ca276fcb485",
+    "parents": [
+      "3ce470a28be602499406359f40fd2b5998d0c58e"
+    ],
+    "subject": "Record exact failure closeout, parent comparisons and integration dependencies"
+  },
+  "actualMerge": {
+    "commit": "334a5545c72f5d80ed82e5c46dd748269f9c3049",
+    "tree": "cfd67eaa2d41c07af20b9d79d20456be4f7390a5",
+    "parents": [
+      "60829243203b9e94c4b12b8e575f375cb27f6c9b",
+      "7252f483c59cd676e868e40d4bf73c2ca55c137f"
+    ],
+    "subject": "Receive dot combined-source ownership handoff snapshot",
+    "changedPathsFromFirstParent": [
+      "docs/integration/COMBINED-SOURCE-HANDOFF-20261018.md"
+    ],
+    "handoffDocumentBlob": "a81fbc91d57e265e2fea81428625dee8970a6e40",
+    "productionChanges": 0,
+    "duplicatePatchApplication": false
+  },
+  "sharedSiblingSources": [
+    {
+      "pr": 181,
+      "originalHead": "139e0a145d0b0d8d8d5161b048a8e50643856c1b",
+      "fileCount": 17,
+      "allBlobsEqual": true,
+      "files": [
+        {
+          "path": "apps/control/conversations/history/service.mjs",
+          "beforeBlob": "01bb429b465d6f4c23481c5badeb4c94379e8164",
+          "incomingBlob": "01bb429b465d6f4c23481c5badeb4c94379e8164",
+          "equal": true
+        },
+        {
+          "path": "apps/control/conversations/test/history-currentness-capability.test.mjs",
+          "beforeBlob": "488156adc68fd39a4a62a3238266ad9774aee8a7",
+          "incomingBlob": "488156adc68fd39a4a62a3238266ad9774aee8a7",
+          "equal": true
+        },
+        {
+          "path": "apps/control/conversations/test/history-http.test.mjs",
+          "beforeBlob": "62f2f5fa9fa96b17a8ffc83de8de3ffc4263d4cb",
+          "incomingBlob": "62f2f5fa9fa96b17a8ffc83de8de3ffc4263d4cb",
+          "equal": true
+        },
+        {
+          "path": "apps/control/product-access/currentness-serving-reader.mjs",
+          "beforeBlob": "d44b732fabfff948b1c682440c4d89b984c5b138",
+          "incomingBlob": "d44b732fabfff948b1c682440c4d89b984c5b138",
+          "equal": true
+        },
+        {
+          "path": "apps/control/product-access/http.mjs",
+          "beforeBlob": "9f3130727f54c31c4feea699da8c734abe4f934d",
+          "incomingBlob": "9f3130727f54c31c4feea699da8c734abe4f934d",
+          "equal": true
+        },
+        {
+          "path": "apps/control/retention/postgres-journal.mjs",
+          "beforeBlob": "2b980dae9b441a53241f4fa3dad5e5fa247b351f",
+          "incomingBlob": "2b980dae9b441a53241f4fa3dad5e5fa247b351f",
+          "equal": true
+        },
+        {
+          "path": "apps/control/retention/postgres-watermark.mjs",
+          "beforeBlob": "015dd1076edc51efd19eb3c5ea4f7973aedd42cc",
+          "incomingBlob": "015dd1076edc51efd19eb3c5ea4f7973aedd42cc",
+          "equal": true
+        },
+        {
+          "path": "apps/control/retention/recovery-watermark.mjs",
+          "beforeBlob": "eeb9c1460989c055d3622d1766416cefc9ca412c",
+          "incomingBlob": "eeb9c1460989c055d3622d1766416cefc9ca412c",
+          "equal": true
+        },
+        {
+          "path": "apps/control/retention/suppression.mjs",
+          "beforeBlob": "2b5ded12ef0dab6783dffc409aea29e89f37b08d",
+          "incomingBlob": "2b5ded12ef0dab6783dffc409aea29e89f37b08d",
+          "equal": true
+        },
+        {
+          "path": "apps/control/retention/test/release-fence.test.mjs",
+          "beforeBlob": "0593cc8ea9ceb4b625cc49c3e336f9ba20ae4f2d",
+          "incomingBlob": "0593cc8ea9ceb4b625cc49c3e336f9ba20ae4f2d",
+          "equal": true
+        },
+        {
+          "path": "apps/control/schedules/postgres-schedule-owner.mjs",
+          "beforeBlob": "c0530a07d905c24ae4c51784c699ccb46dfcaede",
+          "incomingBlob": "c0530a07d905c24ae4c51784c699ccb46dfcaede",
+          "equal": true
+        },
+        {
+          "path": "apps/control/schedules/scheduled-conversation-currentness.mjs",
+          "beforeBlob": "fc173401c9a6e1b0ca231dbcbffa75d5318ec286",
+          "incomingBlob": "fc173401c9a6e1b0ca231dbcbffa75d5318ec286",
+          "equal": true
+        },
+        {
+          "path": "apps/control/schedules/scheduled-origin-query.mjs",
+          "beforeBlob": "1e3872b210bf618f2f195105d4b156a3090769e1",
+          "incomingBlob": "1e3872b210bf618f2f195105d4b156a3090769e1",
+          "equal": true
+        },
+        {
+          "path": "apps/control/schedules/test/scheduled-conversation-fixture.mjs",
+          "beforeBlob": "6ae3f7f68c6a0754106267da09d8ee79b52de419",
+          "incomingBlob": "6ae3f7f68c6a0754106267da09d8ee79b52de419",
+          "equal": true
+        },
+        {
+          "path": "apps/control/schedules/test/scheduled-history-pool.test.mjs",
+          "beforeBlob": "87e3254f24f66dc6b9353cd001c4bb00dceafe56",
+          "incomingBlob": "87e3254f24f66dc6b9353cd001c4bb00dceafe56",
+          "equal": true
+        },
+        {
+          "path": "docs/integration/RETENTION-FENCE-POOL-FOLLOWUP-20261018.md",
+          "beforeBlob": "4e59f576fb8743ef03f9df2a0e06cf54b6525acd",
+          "incomingBlob": "4e59f576fb8743ef03f9df2a0e06cf54b6525acd",
+          "equal": true
+        },
+        {
+          "path": "packages/contracts/dist/conversation-history.metadata.json",
+          "beforeBlob": "fbb41eef35af2748300bbaf03c439fea113f6fa3",
+          "incomingBlob": "fbb41eef35af2748300bbaf03c439fea113f6fa3",
+          "equal": true
+        }
+      ]
+    },
+    {
+      "pr": 183,
+      "originalHead": "b51687d4dadbb8cbf8ee817490e5f95c01e60d54",
+      "fileCount": 5,
+      "allBlobsEqual": true,
+      "files": [
+        {
+          "path": "apps/proxy/product/test/test_host_composition.py",
+          "beforeBlob": "7b78ac9fb231bd565d9851e912200103c735e684",
+          "incomingBlob": "7b78ac9fb231bd565d9851e912200103c735e684",
+          "equal": true
+        },
+        {
+          "path": "apps/proxy/product/test/test_host_observation.py",
+          "beforeBlob": "e20b876ab687035380422d9f6ce7ff58dc34f317",
+          "incomingBlob": "e20b876ab687035380422d9f6ce7ff58dc34f317",
+          "equal": true
+        },
+        {
+          "path": "apps/proxy/qualification/runtime/native_usage.py",
+          "beforeBlob": "7007151aa633ee96ddf8cce99be1e0d9cf281797",
+          "incomingBlob": "7007151aa633ee96ddf8cce99be1e0d9cf281797",
+          "equal": true
+        },
+        {
+          "path": "apps/proxy/qualification/test/test_native_usage.py",
+          "beforeBlob": "3df7c25338e57f3ed2b66107c36eb9cbb4e3fae9",
+          "incomingBlob": "3df7c25338e57f3ed2b66107c36eb9cbb4e3fae9",
+          "equal": true
+        },
+        {
+          "path": "apps/proxy/qualification/test/test_product_response_settlement.py",
+          "beforeBlob": "da816a81a76d7465e931f34411fa4af81365117d",
+          "incomingBlob": "da816a81a76d7465e931f34411fa4af81365117d",
+          "equal": true
+        }
+      ]
+    },
+    {
+      "pr": 185,
+      "originalHead": "67a7bfbc7df47f326e4287de8df7f0f59b110b8c",
+      "fileCount": 25,
+      "allBlobsEqual": true,
+      "files": [
+        {
+          "path": "apps/proxy/product/startup-config.mjs",
+          "beforeBlob": "4acb3a884078201108a45dacfd7a3f341f33f2d7",
+          "incomingBlob": "4acb3a884078201108a45dacfd7a3f341f33f2d7",
+          "equal": true
+        },
+        {
+          "path": "apps/proxy/product/test/test_native_auth.py",
+          "beforeBlob": "21cec75cd8739653a9459b4572cd295e2a6d5cb4",
+          "incomingBlob": "21cec75cd8739653a9459b4572cd295e2a6d5cb4",
+          "equal": true
+        },
+        {
+          "path": "apps/runtime/cli.mjs",
+          "beforeBlob": "2cd8db22e222f1e707f1f1d2de7f87774c7d8505",
+          "incomingBlob": "2cd8db22e222f1e707f1f1d2de7f87774c7d8505",
+          "equal": true
+        },
+        {
+          "path": "apps/runtime/control-ca-bundle.mjs",
+          "beforeBlob": "03f932d5723ac200c1328aef7e53e2f1a5c37434",
+          "incomingBlob": "03f932d5723ac200c1328aef7e53e2f1a5c37434",
+          "equal": true
+        },
+        {
+          "path": "apps/runtime/material-init-cli.mjs",
+          "beforeBlob": "2b2965bc8c3e7ea73e67e243cfe6bfc01888e584",
+          "incomingBlob": "2b2965bc8c3e7ea73e67e243cfe6bfc01888e584",
+          "equal": true
+        },
+        {
+          "path": "apps/runtime/test/control-ca-bundle.test.mjs",
+          "beforeBlob": "655f2d234f5b75696f9bb6989c5a5361657f80b6",
+          "incomingBlob": "655f2d234f5b75696f9bb6989c5a5361657f80b6",
+          "equal": true
+        },
+        {
+          "path": "apps/runtime/test/control-ca-init.test.mjs",
+          "beforeBlob": "f8c3e13336e66a65ef40325b911b8490b0bd9fa1",
+          "incomingBlob": "f8c3e13336e66a65ef40325b911b8490b0bd9fa1",
+          "equal": true
+        },
+        {
+          "path": "docs/coordination/audits/control-ca-trust-20261018/.gitattributes",
+          "beforeBlob": "78cfe0847c2391d75a9b101036f6b0ba172994ee",
+          "incomingBlob": "78cfe0847c2391d75a9b101036f6b0ba172994ee",
+          "equal": true
+        },
+        {
+          "path": "docs/coordination/audits/control-ca-trust-20261018/README.md",
+          "beforeBlob": "06dccd10eb41c782ba24ffb201b53f1b9099fc74",
+          "incomingBlob": "06dccd10eb41c782ba24ffb201b53f1b9099fc74",
+          "equal": true
+        },
+        {
+          "path": "docs/coordination/audits/control-ca-trust-20261018/focused-tests-initial-dependency-failure.tap",
+          "beforeBlob": "326ab946cec3c2b586467845b230cbf77cdc7b20",
+          "incomingBlob": "326ab946cec3c2b586467845b230cbf77cdc7b20",
+          "equal": true
+        },
+        {
+          "path": "docs/coordination/audits/control-ca-trust-20261018/focused-tests-prior-control-assertions.tap",
+          "beforeBlob": "fd5bdedb0927a60c93cebde29c45e5975a0937b7",
+          "incomingBlob": "fd5bdedb0927a60c93cebde29c45e5975a0937b7",
+          "equal": true
+        },
+        {
+          "path": "docs/coordination/audits/control-ca-trust-20261018/focused-tests.tap",
+          "beforeBlob": "ef0742de36eef5314dcc1f49683e6ad1a3349625",
+          "incomingBlob": "ef0742de36eef5314dcc1f49683e6ad1a3349625",
+          "equal": true
+        },
+        {
+          "path": "docs/coordination/audits/control-ca-trust-20261018/render-stage3-fixture-blocked.tap",
+          "beforeBlob": "36b70ea9e0d81b5f99cf906f8e69c5acb09b4a8b",
+          "incomingBlob": "36b70ea9e0d81b5f99cf906f8e69c5acb09b4a8b",
+          "equal": true
+        },
+        {
+          "path": "docs/coordination/tasks/CONTROL-CA-TRUST-SOURCE-20261018.md",
+          "beforeBlob": "c71ac9c4cee1369b9eed14bc12b74318c6fffd7e",
+          "incomingBlob": "c71ac9c4cee1369b9eed14bc12b74318c6fffd7e",
+          "equal": true
+        },
+        {
+          "path": "docs/integration/CA-MODEL-SOURCE-RECEIVE-20261018.md",
+          "beforeBlob": "45a87fe0fc7458de1f75b943abfc515229af3f89",
+          "incomingBlob": "45a87fe0fc7458de1f75b943abfc515229af3f89",
+          "equal": true
+        },
+        {
+          "path": "infra/product-preview/first-chat/model-alias-flow.test.mjs",
+          "beforeBlob": "a164981fc1c691a05c254ae18bc7a630f942b9a1",
+          "incomingBlob": "a164981fc1c691a05c254ae18bc7a630f942b9a1",
+          "equal": true
+        },
+        {
+          "path": "infra/product-preview/first-chat/render-material.mjs",
+          "beforeBlob": "fbf62e2de99a1d9b6182c9070fdb7f3bc0ddad5f",
+          "incomingBlob": "fbf62e2de99a1d9b6182c9070fdb7f3bc0ddad5f",
+          "equal": true
+        },
+        {
+          "path": "infra/product-preview/first-chat/render-material.test.mjs",
+          "beforeBlob": "6fb19f13f77daf416b0c2ab741ab70164bb49090",
+          "incomingBlob": "6fb19f13f77daf416b0c2ab741ab70164bb49090",
+          "equal": true
+        },
+        {
+          "path": "infra/product-preview/first-chat/runtime-values.mjs",
+          "beforeBlob": "6c5ea1dfb15a937d032425e8105efb9a4808da79",
+          "incomingBlob": "6c5ea1dfb15a937d032425e8105efb9a4808da79",
+          "equal": true
+        },
+        {
+          "path": "infra/product-preview/first-chat/runtime-values.test.mjs",
+          "beforeBlob": "875497c7f030ddfbfd458ac19013cd50a5f3d0aa",
+          "incomingBlob": "875497c7f030ddfbfd458ac19013cd50a5f3d0aa",
+          "equal": true
+        },
+        {
+          "path": "infra/product-preview/first-chat/stage3-bindings.mjs",
+          "beforeBlob": "3f294c8a0643b0e480db772b5ad7b37c297fb8a9",
+          "incomingBlob": "3f294c8a0643b0e480db772b5ad7b37c297fb8a9",
+          "equal": true
+        },
+        {
+          "path": "infra/product-preview/first-chat/stage3-bindings.test.mjs",
+          "beforeBlob": "2b77958e69b676b189e8dbc23f91151ceea62c49",
+          "incomingBlob": "2b77958e69b676b189e8dbc23f91151ceea62c49",
+          "equal": true
+        },
+        {
+          "path": "infra/product-preview/manifest-token-writers.test.mjs",
+          "beforeBlob": "c9e8692e332ffb0a8822d347dbbbeab424c27fb7",
+          "incomingBlob": "c9e8692e332ffb0a8822d347dbbbeab424c27fb7",
+          "equal": true
+        },
+        {
+          "path": "infra/product-preview/manifest.mjs",
+          "beforeBlob": "366a3b3331b4c822a6e5671cd992accee6aae80c",
+          "incomingBlob": "366a3b3331b4c822a6e5671cd992accee6aae80c",
+          "equal": true
+        },
+        {
+          "path": "infra/product-preview/manifest.test.mjs",
+          "beforeBlob": "f58bd0d1c97d83e9a3485da550c9f34d50fa33a5",
+          "incomingBlob": "f58bd0d1c97d83e9a3485da550c9f34d50fa33a5",
+          "equal": true
+        }
+      ]
+    }
+  ],
+  "additionalReceivingSource": [
+    {
+      "scope": "Complete three-commit executor dependency closure received as local commits, not architecture guard alone",
+      "originalCommits": [
+        "31d8de37630d674b7f30a12323d216db68ec9298",
+        "94b692648c47fd509e62a621cc5b612e0d356ed3",
+        "d2f054362521f622b9dd63c65ef5eaa3bdde8d5a"
+      ],
+      "receivingCommits": [
+        "ea28788b6ab05475a619903b2d59b5ce6df9c481",
+        "2611c9baabf3d8a8fa0ce90f45adbc1a4ce879a9",
+        "3e967626664dcae8d57773368fdb13fad5745563"
+      ],
+      "fileCount": 60,
+      "files": [
+        ".dockerignore",
+        "apps/artifacts/generation/licenses/pptxgenjs-LICENSE",
+        "apps/artifacts/generation/package-lock.json",
+        "apps/artifacts/generation/package.json",
+        "apps/runtime/Dockerfile",
+        "apps/runtime/build/runtime-packages.mjs",
+        "apps/runtime/build/runtime-packages.test.mjs",
+        "infra/product-preview/image-build.test.mjs",
+        "infra/product-preview/runtime-packages.lock.json",
+        "infra/product-preview/runtime-packages/.gitattributes",
+        "infra/product-preview/runtime-packages/build-attempt-20261018.txt",
+        "infra/product-preview/runtime-packages/complete-pending-additions.mjs",
+        "infra/product-preview/runtime-packages/complete-pending-additions.test.mjs",
+        "infra/product-preview/runtime-packages/executor-generation-smoke.mjs",
+        "infra/product-preview/runtime-packages/retained-additions-receipt.json",
+        "infra/product-preview/runtime-packages/wheels/et_xmlfile-2.0.0-py3-none-any.whl",
+        "infra/product-preview/runtime-packages/wheels/openpyxl-3.1.5-py2.py3-none-any.whl",
+        "infra/product-preview/runtime-packages/wheels/python_docx-1.2.0-py3-none-any.whl",
+        "infra/product-preview/runtime-packages/wheels/xlsxwriter-3.2.9-py3-none-any.whl",
+        "infra/product-preview/runtime-packages/x86_64/freetype-2.14.3-r7.apk",
+        "infra/product-preview/runtime-packages/x86_64/gdbm-1.26-r7.apk",
+        "infra/product-preview/runtime-packages/x86_64/lcms2-2.19.1-r3.apk",
+        "infra/product-preview/runtime-packages/x86_64/libbz2-1-1.0.8-r25.apk",
+        "infra/product-preview/runtime-packages/x86_64/libexpat1-2.9.0-r0.apk",
+        "infra/product-preview/runtime-packages/x86_64/libffi-3.8.0-r2.apk",
+        "infra/product-preview/runtime-packages/x86_64/libgfortran-16.2.0-r1.apk",
+        "infra/product-preview/runtime-packages/x86_64/libjpeg-turbo-3.2.0-r5.apk",
+        "infra/product-preview/runtime-packages/x86_64/libopenblas-0-0.3.34-r1.apk",
+        "infra/product-preview/runtime-packages/x86_64/libpng-1.6.59-r0.apk",
+        "infra/product-preview/runtime-packages/x86_64/libuuid-2.42.4-r0.apk",
+        "infra/product-preview/runtime-packages/x86_64/libwebp-1.6.0-r7.apk",
+        "infra/product-preview/runtime-packages/x86_64/libxau-1.0.12-r9.apk",
+        "infra/product-preview/runtime-packages/x86_64/libxcb-1.17.0-r17.apk",
+        "infra/product-preview/runtime-packages/x86_64/libxdmcp-1.1.5-r12.apk",
+        "infra/product-preview/runtime-packages/x86_64/libxml2-16-2.15.4-r1.apk",
+        "infra/product-preview/runtime-packages/x86_64/libxslt-1.1.45-r5.apk",
+        "infra/product-preview/runtime-packages/x86_64/libzstd1-1.5.7-r10.apk",
+        "infra/product-preview/runtime-packages/x86_64/mpdecimal-4.0.1-r4.apk",
+        "infra/product-preview/runtime-packages/x86_64/openjpeg-2.5.4-r3.apk",
+        "infra/product-preview/runtime-packages/x86_64/py3-pip-wheel-26.2.1-r4.apk",
+        "infra/product-preview/runtime-packages/x86_64/py3.13-contourpy-1.4.0-r1.apk",
+        "infra/product-preview/runtime-packages/x86_64/py3.13-cycler-0.12.1-r8.apk",
+        "infra/product-preview/runtime-packages/x86_64/py3.13-fonttools-4.67.0-r0.apk",
+        "infra/product-preview/runtime-packages/x86_64/py3.13-kiwisolver-1.5.1-r1.apk",
+        "infra/product-preview/runtime-packages/x86_64/py3.13-lxml-6.1.3-r0.apk",
+        "infra/product-preview/runtime-packages/x86_64/py3.13-matplotlib-3.11.2-r0.apk",
+        "infra/product-preview/runtime-packages/x86_64/py3.13-numpy-2.2-2.2.6-r5.apk",
+        "infra/product-preview/runtime-packages/x86_64/py3.13-packaging-26.3-r0.apk",
+        "infra/product-preview/runtime-packages/x86_64/py3.13-pillow-12.3.0-r1.apk",
+        "infra/product-preview/runtime-packages/x86_64/py3.13-pygments-2.21.0-r0.apk",
+        "infra/product-preview/runtime-packages/x86_64/py3.13-pyparsing-3.3.3-r0.apk",
+        "infra/product-preview/runtime-packages/x86_64/py3.13-python-dateutil-2.9.0-r13.apk",
+        "infra/product-preview/runtime-packages/x86_64/py3.13-six-1.17.0-r7.apk",
+        "infra/product-preview/runtime-packages/x86_64/py3.13-typing-extensions-4.16.0-r0.apk",
+        "infra/product-preview/runtime-packages/x86_64/python-3.13-base-3.13.16_git20261016-r0.apk",
+        "infra/product-preview/runtime-packages/x86_64/readline-8.3-r3.apk",
+        "infra/product-preview/runtime-packages/x86_64/sqlite-libs-3.54.1-r0.apk",
+        "infra/product-preview/runtime-packages/x86_64/tiff-4.7.2-r3.apk",
+        "infra/product-preview/runtime-packages/x86_64/xz-5.8.4-r0.apk",
+        "infra/product-preview/runtime-wheels.lock.json"
+      ]
+    },
+    {
+      "scope": "Concurrent scheduled history HTTP capacity-one regression",
+      "receivingCommits": [
+        "1fe6baaedbd410089907bed2e52b804ec28482ce"
+      ],
+      "fileCount": 1,
+      "files": [
+        "apps/control/schedules/test/scheduled-history-concurrent-pool.test.mjs"
+      ]
+    },
+    {
+      "scope": "PR186 date-offset correction and effective-timezone evidence, already received before handoff",
+      "originalHead": "665405cd23680c2c40d4df95fe183799d272fc61",
+      "receivingCommits": [
+        "3e0dbe243f734602ad9df0264939d3b8cd4fea9a",
+        "665405cd23680c2c40d4df95fe183799d272fc61",
+        "60829243203b9e94c4b12b8e575f375cb27f6c9b"
+      ],
+      "fileCount": 60,
+      "files": [
+        "docs/integration/FAILURE-CLOSEOUT-20261018.md",
+        "docs/integration/QUERY-DATE-OFFSET-FOLLOWUP-20261018.md",
+        "docs/integration/query-date-offset-evidence-20261018/FILES.json",
+        "docs/integration/query-date-offset-evidence-20261018/REVIEW.json",
+        "docs/integration/query-date-offset-evidence-20261018/evidence-manifest.json",
+        "docs/integration/query-date-offset-evidence-20261018/meri-date-offsets-real-child-America-Toronto-497b-final.scrubbed.tap",
+        "docs/integration/query-date-offset-evidence-20261018/meri-date-offsets-real-child-America-Toronto-706e-final.scrubbed.tap",
+        "docs/integration/query-date-offset-evidence-20261018/meri-date-offsets-real-child-America-Toronto.scrubbed.tap",
+        "docs/integration/query-date-offset-evidence-20261018/meri-date-offsets-real-child-Asia-Tokyo-497b-final.scrubbed.tap",
+        "docs/integration/query-date-offset-evidence-20261018/meri-date-offsets-real-child-Asia-Tokyo-706e-final.scrubbed.tap",
+        "docs/integration/query-date-offset-evidence-20261018/meri-date-offsets-real-child-Asia-Tokyo.scrubbed.tap",
+        "docs/integration/query-date-offset-evidence-20261018/meri-date-offsets-real-child-UTC-497b-final.scrubbed.tap",
+        "docs/integration/query-date-offset-evidence-20261018/meri-date-offsets-real-child-UTC-706e-final.scrubbed.tap",
+        "docs/integration/query-date-offset-evidence-20261018/meri-date-offsets-real-child-UTC.scrubbed.tap",
+        "docs/integration/query-date-offset-evidence-20261018/meri-date-offsets-review-497b-focused-final.scrubbed.tap",
+        "docs/integration/query-date-offset-evidence-20261018/meri-date-offsets-review-706e-focused-final.scrubbed.tap",
+        "docs/integration/query-date-offset-evidence-20261018/meri-date-offsets-review-focused.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-date-offsets-review-focused2.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-offset-after.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-offset-before-effective-timezones.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-offset-before.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-offset-exact-cases-after.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-offset-exact-cases-before.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-offset-exact-cases-final.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-offset-filter-before.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-offset-focused-approval.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-offset-focused-complete.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-offset-focused-final-grammar.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-offset-focused-final-reviewed.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-offset-focused-final.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-offset-focused.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-offset-probe.mjs",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-offset-toronto.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-public-review-America-Toronto-497b-final.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-public-review-America-Toronto-706e-final.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-public-review-America-Toronto-9c9e.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-public-review-America-Toronto-before-final.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-public-review-America-Toronto-broad.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-public-review-America-Toronto-delimiter-before.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-public-review-America-Toronto-named-final.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-public-review-America-Toronto-prefix-before.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-public-review-Asia-Tokyo-497b-final.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-public-review-Asia-Tokyo-706e-final.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-public-review-Asia-Tokyo-9c9e.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-public-review-Asia-Tokyo-before-final.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-public-review-Asia-Tokyo-broad.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-public-review-Asia-Tokyo-delimiter-before.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-public-review-Asia-Tokyo-named-final.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-public-review-Asia-Tokyo-prefix-before.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-public-review-UTC-497b-final.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-public-review-UTC-706e-final.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-public-review-UTC-9c9e.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-public-review-UTC-before-final.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-public-review-UTC-broad.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-public-review-UTC-delimiter-before.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-public-review-UTC-named-final.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-public-review-UTC-prefix-before.scrubbed.log",
+        "docs/integration/query-date-offset-evidence-20261018/meri-query-date-public-review.mjs",
+        "packages/contracts/retrieval-0.2/public-domain-query-validation.mjs",
+        "packages/contracts/test/retrieval-public-domain-query.test.mjs"
+      ]
+    }
+  ],
+  "postMergeFixtureFollowup": {
+    "commit": "8c587b491197bc6d0e22117d3acb6d714cb1375e",
+    "tree": "bd13e7108619c7423bf0cee89aa2a589623af751",
+    "parents": [
+      "334a5545c72f5d80ed82e5c46dd748269f9c3049"
+    ],
+    "subject": "Compose canonical retention and Core currentness in inherited fixtures",
+    "files": [
+      "apps/control/retention/test/postgres-watermark.test.mjs",
+      "apps/runtime/test/startup-history.test.mjs"
+    ],
+    "note": "Separate root-authorized fixture commit after handoff merge; this lane made no edits and ran no tests."
+  },
+  "latestStatus": [
+    {
+      "id": "OWN-1",
+      "status": "accepted handoff",
+      "cause": "User supplies and accepts 7252f483 source handoff. Supersedes earlier no-ack observation for received source. Ongoing operator lane and listed separate source remain distinct."
+    },
+    {
+      "id": "CORE-1",
+      "status": "published, prepared and unmounted",
+      "repository": "neo-capiro/capiro-backend",
+      "commit": "78ceaf9bdfe00c8f013aac15eb8483312ae4f803",
+      "readback": "core-78ceaf9-source-readback.json",
+      "details": "Selected-client batch composition and fake native-owner checks are published. Mandatory same-transaction original-membership lock plus new online Clerk identity methods have no production implementation; no route uses port. Middleware edits require Neo approval per source doc. Special-scope owners, native bearer relay, complete response/cursor subject projection and final frozen-byte release receipt remain integration dependencies. Doc names older Meri181a50; current139 was received."
+    },
+    {
+      "id": "SRC-51",
+      "status": "preserved jumpbox source, publication requested",
+      "commit": "51f4a38e2e43d6ff050db08e3235b2b447b708cf",
+      "basis": "Latest user/operator relay, not a fresh jumpbox/GitHub readback",
+      "details": "Source-only draft publication requested and acknowledged by root. Current handoff merge does not contain this commit. Preserve source and await exact published receipt before receiving. Do not infer source lost or credential deletion."
+    },
+    {
+      "id": "IMG-1",
+      "status": "full dependency source received; exact product image held",
+      "details": "Handoff records exact checked-in Dockerfile build stopped on local Docker vfs ENOSPC, while a layer-grouped local diagnostic built and checked pinned APK/wheel set plus document generation. Diagnostic success is separate from exact Dockerfile/product image qualification; prior broad no-package-install wording is superseded. Final canonical source/image closure and alias/options measurements must be regenerated against final source. Frozen Oct15 closure has21/45 stale hashes per handoff, not independently remeasured by this lane."
+    },
+    {
+      "id": "DATE-1",
+      "status": "handoff hold addressed by separate source successor, verification evidence remains tied to exact pins",
+      "details": "Incoming725 reports PR186 legacy-offset defect; receiving608 already contains correction/effective-timezone evidence665. Do not mistake historical handoff text for current absence of correction or reuse original PR186 counts as qualification of combined tree."
+    },
+    {
+      "id": "OP-1",
+      "status": "operator unavailable; no fresh live state",
+      "basis": "Latest user/operator relay",
+      "details": "CodexSandboxOffline, network off and AWS profile unavailable. This review made no fresh live readback or deployment. Source is preserved; credentials are not established deleted. Existing historical ECS linux/amd64 observation is not current state evidence."
+    }
+  ],
+  "scope": {
+    "sourceOnly": true,
+    "excluded": [
+      "PR175 branch",
+      "PR98 composer source",
+      "Portfolio/Modules owner work",
+      "AWS mutations",
+      "migrations",
+      "credentials/IAM/network changes",
+      "live SQL",
+      "paid provider calls"
+    ],
+    "handoffMergeExclusionProof": "Only handoff document added to first parent; zero production/excluded-source changes. This proves merge delta, not live environment state.",
+    "ongoingOwnership": "Root receiving session owns Meri source integration after accepted handoff; dot retains Portfolio/Modules; authorized shipping operator retains operator-only work when available.",
+    "remainingHolds": [
+      "deployment/chat hold",
+      "production Core native identity batch mounting and Meri complete-page receipt integration",
+      "exact image build and final-source closure",
+      "final-source canonical model alias/options measurements",
+      "live provider/PostgreSQL/first-chat/deployment qualification"
+    ]
+  },
+  "commands": [
+    "git merge-base <before608> <incoming725>",
+    "git diff --name-only a187 <each sibling head>",
+    "git rev-parse <before608>:<each shared path> and <incoming725>:<each shared path>",
+    "git show -s --format=%H%n%T%n%P%n%s 334a5545",
+    "git diff --name-status 60829243 334a5545",
+    "git diff --name-status 334a5545 8c587b49",
+    "GitHub fetch_commit for7252f483 and78ceaf9; fetch_file Core owner doc; search_branches exact handoff name"
+  ]
+}

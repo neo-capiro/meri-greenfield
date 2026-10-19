@@ -1,0 +1,43 @@
+{
+  "parentPublished": "b3611559582be27f4545509d9c2f03dc3b1332cd",
+  "parentReviewedLocal": "f101c5072ad637af2bdb8850a9b58a466f677d59",
+  "publishedFix": "0d3388a88aa575fba2bf9ee9c1c219053ea09418",
+  "reviewedLocalFix": "78a5ef00ea16cedcf188602ab6904af1d939d6b8",
+  "identicalCompleteTree": "be5ece2d8ff81d6112fb55c29e60beb69c8c4c09",
+  "exactCase": "12:30 Jan 1 2020+0530",
+  "expected": "2020-01-01T07:00:00.000Z",
+  "before": "2020-01-01T12:30:00.000Z",
+  "classification": "introduced regression surviving earlierPR186offsetrepair and combinedb361candidate; notinherited fromtheoriginal48-failurebaseline",
+  "productionChange": "plus sign may directlyfollowa datenumber; minus stillrequiresnative-date tokenboundary; rawDate.parsevalidityremainsauthoritative",
+  "beforeNewNamedTests": {
+    "pass": 0,
+    "fail": 2
+  },
+  "afterQueryFile": {
+    "pass": 27,
+    "fail": 0,
+    "skipped": 0
+  },
+  "independentPublicAssertionsPerTimezone": 84,
+  "timezones": [
+    "UTC",
+    "America/Toronto",
+    "Asia/Tokyo"
+  ],
+  "actualSelectedTestsPerTimezone": 2,
+  "nativeUTCReferenceTuples": 948,
+  "finalStandard": {
+    "pass": 4391,
+    "fail": 0,
+    "skipped": 0
+  },
+  "finalWorker": {
+    "pass": 20,
+    "fail": 0,
+    "skipped": 0
+  },
+  "runtimeDiagnostics": 0,
+  "controlDiagnostics": 0,
+  "sdk": "unchanged; actualSDKadmissionstillBLOCKED bycontextmanagement/structuredoutput/requestcontract; providerexecutions0",
+  "noMergeDeployMigrationCredentialAWSorPaidModelCall": true
+}

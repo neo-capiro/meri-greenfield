@@ -1,0 +1,48 @@
+{
+  "scope": "READ_ONLY_ADDENDUM_UNDOCUMENTED_OVERRIDE_NOT_PRODUCT_ANSWER",
+  "harnessCommit": "5fa5545898717e1148a28447bb93254a07fa6459",
+  "experimentExitCode": 2,
+  "command": [
+    "node",
+    "/tmp/meri-integration-sdk-review/pinned-capability-experiment.mjs",
+    "--python",
+    "/tmp/meri-integration-sdk-env/bin/python",
+    "--out",
+    "/tmp/meri-integration-sdk-review/pinned-capability-experiment-receipt.json",
+    "--client",
+    "sdk",
+    "--output-format",
+    "json-schema"
+  ],
+  "activeTaskPids": [],
+  "temporaryHarnessDirectories": [],
+  "worktreeStatus": "",
+  "freeBytes": 441376768,
+  "files": [
+    {
+      "name": "EFFORT-BETA-RESEARCH.md",
+      "sha256": "1cd1b9b29a86ba6958b00cae3db92b543a1f92145ef5e44ed4b98e71ecd0339f",
+      "bytes": 6952
+    },
+    {
+      "name": "PINNED-EFFORT-BETA-SNIPPETS.json",
+      "sha256": "437f30d390de991388942aaebc6ac00e74ec02958bf5dc4cbd8045c776f7fbc8",
+      "bytes": 3010
+    },
+    {
+      "name": "pinned-capability-experiment.mjs",
+      "sha256": "66831c109d98c5f97fbab1d549a9abb2439933de2f8d64c8d179b8cf7ede3ba7",
+      "bytes": 13407
+    },
+    {
+      "name": "pinned-capability-experiment-source.json",
+      "sha256": "7d111cf65f77d6fa5aa0bd971c94878209a731cdb2ea1c4223ee0bdb52e2028a",
+      "bytes": 551
+    },
+    {
+      "name": "pinned-capability-experiment-receipt.json",
+      "sha256": "e6467900714e38637c982ca776fcc5e29c08d3d11c8db07f387bfacbddeeedbe",
+      "bytes": 20418
+    }
+  ]
+}

@@ -1,0 +1,348 @@
+[
+  {
+    "case": "canonical-final-minimal-messages-truncated",
+    "command": [
+      "node",
+      "scripts/qualification/sdk-proxy-offline/run.mjs",
+      "--python",
+      "/tmp/meri-integration-sdk-env/bin/python",
+      "--out",
+      "/tmp/meri-integration-sdk-review/canonical-final-minimal-messages-truncated.json",
+      "--client",
+      "minimal-messages",
+      "--mode",
+      "truncated"
+    ],
+    "startedAt": "2026-10-19T00:13:34.715550+00:00",
+    "durationSeconds": 16.304,
+    "exit": 0,
+    "stdoutBytes": 0,
+    "stderrBytes": 0
+  },
+  {
+    "case": "canonical-final-minimal-messages-cached",
+    "command": [
+      "node",
+      "scripts/qualification/sdk-proxy-offline/run.mjs",
+      "--python",
+      "/tmp/meri-integration-sdk-env/bin/python",
+      "--out",
+      "/tmp/meri-integration-sdk-review/canonical-final-minimal-messages-cached.json",
+      "--client",
+      "minimal-messages",
+      "--mode",
+      "cached"
+    ],
+    "startedAt": "2026-10-19T00:13:34.715885+00:00",
+    "durationSeconds": 16.648,
+    "exit": 0,
+    "stdoutBytes": 0,
+    "stderrBytes": 0
+  },
+  {
+    "case": "canonical-final-minimal-messages-complete",
+    "command": [
+      "node",
+      "scripts/qualification/sdk-proxy-offline/run.mjs",
+      "--python",
+      "/tmp/meri-integration-sdk-env/bin/python",
+      "--out",
+      "/tmp/meri-integration-sdk-review/canonical-final-minimal-messages-complete.json",
+      "--client",
+      "minimal-messages",
+      "--mode",
+      "complete"
+    ],
+    "startedAt": "2026-10-19T00:13:34.714965+00:00",
+    "durationSeconds": 16.687,
+    "exit": 0,
+    "stdoutBytes": 0,
+    "stderrBytes": 0
+  },
+  {
+    "case": "canonical-final-minimal-messages-missing-usage",
+    "command": [
+      "node",
+      "scripts/qualification/sdk-proxy-offline/run.mjs",
+      "--python",
+      "/tmp/meri-integration-sdk-env/bin/python",
+      "--out",
+      "/tmp/meri-integration-sdk-review/canonical-final-minimal-messages-missing-usage.json",
+      "--client",
+      "minimal-messages",
+      "--mode",
+      "missing-usage"
+    ],
+    "startedAt": "2026-10-19T00:13:51.020140+00:00",
+    "durationSeconds": 14.375,
+    "exit": 0,
+    "stdoutBytes": 0,
+    "stderrBytes": 0
+  },
+  {
+    "case": "canonical-final-minimal-messages-reservation-ack-lost",
+    "command": [
+      "node",
+      "scripts/qualification/sdk-proxy-offline/run.mjs",
+      "--python",
+      "/tmp/meri-integration-sdk-env/bin/python",
+      "--out",
+      "/tmp/meri-integration-sdk-review/canonical-final-minimal-messages-reservation-ack-lost.json",
+      "--client",
+      "minimal-messages",
+      "--mode",
+      "reservation-ack-lost"
+    ],
+    "startedAt": "2026-10-19T00:13:51.364320+00:00",
+    "durationSeconds": 14.239,
+    "exit": 0,
+    "stdoutBytes": 0,
+    "stderrBytes": 0
+  },
+  {
+    "case": "canonical-final-minimal-messages-settlement-ack-committed",
+    "command": [
+      "node",
+      "scripts/qualification/sdk-proxy-offline/run.mjs",
+      "--python",
+      "/tmp/meri-integration-sdk-env/bin/python",
+      "--out",
+      "/tmp/meri-integration-sdk-review/canonical-final-minimal-messages-settlement-ack-committed.json",
+      "--client",
+      "minimal-messages",
+      "--mode",
+      "settlement-ack-committed"
+    ],
+    "startedAt": "2026-10-19T00:13:51.402375+00:00",
+    "durationSeconds": 14.254,
+    "exit": 0,
+    "stdoutBytes": 0,
+    "stderrBytes": 0
+  },
+  {
+    "case": "canonical-final-minimal-messages-settlement-ack-unresolved",
+    "command": [
+      "node",
+      "scripts/qualification/sdk-proxy-offline/run.mjs",
+      "--python",
+      "/tmp/meri-integration-sdk-env/bin/python",
+      "--out",
+      "/tmp/meri-integration-sdk-review/canonical-final-minimal-messages-settlement-ack-unresolved.json",
+      "--client",
+      "minimal-messages",
+      "--mode",
+      "settlement-ack-unresolved"
+    ],
+    "startedAt": "2026-10-19T00:14:05.395313+00:00",
+    "durationSeconds": 14.643,
+    "exit": 0,
+    "stdoutBytes": 0,
+    "stderrBytes": 0
+  },
+  {
+    "case": "canonical-final-sdk-complete",
+    "command": [
+      "node",
+      "scripts/qualification/sdk-proxy-offline/run.mjs",
+      "--python",
+      "/tmp/meri-integration-sdk-env/bin/python",
+      "--out",
+      "/tmp/meri-integration-sdk-review/canonical-final-sdk-complete.json",
+      "--client",
+      "sdk",
+      "--mode",
+      "complete"
+    ],
+    "startedAt": "2026-10-19T00:14:05.603903+00:00",
+    "durationSeconds": 14.984,
+    "exit": 0,
+    "stdoutBytes": 0,
+    "stderrBytes": 0
+  },
+  {
+    "case": "canonical-final-sdk-truncated",
+    "command": [
+      "node",
+      "scripts/qualification/sdk-proxy-offline/run.mjs",
+      "--python",
+      "/tmp/meri-integration-sdk-env/bin/python",
+      "--out",
+      "/tmp/meri-integration-sdk-review/canonical-final-sdk-truncated.json",
+      "--client",
+      "sdk",
+      "--mode",
+      "truncated"
+    ],
+    "startedAt": "2026-10-19T00:14:05.656573+00:00",
+    "durationSeconds": 45.278,
+    "exit": 0,
+    "stdoutBytes": 0,
+    "stderrBytes": 0
+  },
+  {
+    "case": "canonical-final-sdk-cached",
+    "command": [
+      "node",
+      "scripts/qualification/sdk-proxy-offline/run.mjs",
+      "--python",
+      "/tmp/meri-integration-sdk-env/bin/python",
+      "--out",
+      "/tmp/meri-integration-sdk-review/canonical-final-sdk-cached.json",
+      "--client",
+      "sdk",
+      "--mode",
+      "cached"
+    ],
+    "startedAt": "2026-10-19T00:14:20.038516+00:00",
+    "durationSeconds": 45.103,
+    "exit": 0,
+    "stdoutBytes": 0,
+    "stderrBytes": 0
+  },
+  {
+    "case": "canonical-final-sdk-missing-usage",
+    "command": [
+      "node",
+      "scripts/qualification/sdk-proxy-offline/run.mjs",
+      "--python",
+      "/tmp/meri-integration-sdk-env/bin/python",
+      "--out",
+      "/tmp/meri-integration-sdk-review/canonical-final-sdk-missing-usage.json",
+      "--client",
+      "sdk",
+      "--mode",
+      "missing-usage"
+    ],
+    "startedAt": "2026-10-19T00:14:20.587989+00:00",
+    "durationSeconds": 44.908,
+    "exit": 0,
+    "stdoutBytes": 0,
+    "stderrBytes": 0
+  },
+  {
+    "case": "canonical-final-sdk-settlement-ack-committed",
+    "command": [
+      "node",
+      "scripts/qualification/sdk-proxy-offline/run.mjs",
+      "--python",
+      "/tmp/meri-integration-sdk-env/bin/python",
+      "--out",
+      "/tmp/meri-integration-sdk-review/canonical-final-sdk-settlement-ack-committed.json",
+      "--client",
+      "sdk",
+      "--mode",
+      "settlement-ack-committed"
+    ],
+    "startedAt": "2026-10-19T00:15:05.141179+00:00",
+    "durationSeconds": 13.771,
+    "exit": 0,
+    "stdoutBytes": 0,
+    "stderrBytes": 0
+  },
+  {
+    "case": "canonical-final-sdk-complete-schema",
+    "command": [
+      "node",
+      "scripts/qualification/sdk-proxy-offline/run.mjs",
+      "--python",
+      "/tmp/meri-integration-sdk-env/bin/python",
+      "--out",
+      "/tmp/meri-integration-sdk-review/canonical-final-sdk-complete-schema.json",
+      "--client",
+      "sdk",
+      "--mode",
+      "complete",
+      "--output-format",
+      "json-schema"
+    ],
+    "startedAt": "2026-10-19T00:15:18.911910+00:00",
+    "durationSeconds": 13.75,
+    "exit": 0,
+    "stdoutBytes": 0,
+    "stderrBytes": 0
+  },
+  {
+    "case": "canonical-final-sdk-reservation-ack-lost",
+    "command": [
+      "node",
+      "scripts/qualification/sdk-proxy-offline/run.mjs",
+      "--python",
+      "/tmp/meri-integration-sdk-env/bin/python",
+      "--out",
+      "/tmp/meri-integration-sdk-review/canonical-final-sdk-reservation-ack-lost.json",
+      "--client",
+      "sdk",
+      "--mode",
+      "reservation-ack-lost"
+    ],
+    "startedAt": "2026-10-19T00:14:50.935220+00:00",
+    "durationSeconds": 45.288,
+    "exit": 0,
+    "stdoutBytes": 0,
+    "stderrBytes": 0
+  },
+  {
+    "case": "canonical-final-sdk-settlement-ack-unresolved",
+    "command": [
+      "node",
+      "scripts/qualification/sdk-proxy-offline/run.mjs",
+      "--python",
+      "/tmp/meri-integration-sdk-env/bin/python",
+      "--out",
+      "/tmp/meri-integration-sdk-review/canonical-final-sdk-settlement-ack-unresolved.json",
+      "--client",
+      "sdk",
+      "--mode",
+      "settlement-ack-unresolved"
+    ],
+    "startedAt": "2026-10-19T00:15:05.495729+00:00",
+    "durationSeconds": 45.331,
+    "exit": 0,
+    "stdoutBytes": 0,
+    "stderrBytes": 0
+  },
+  {
+    "case": "canonical-final-sdk-truncated-schema",
+    "command": [
+      "node",
+      "scripts/qualification/sdk-proxy-offline/run.mjs",
+      "--python",
+      "/tmp/meri-integration-sdk-env/bin/python",
+      "--out",
+      "/tmp/meri-integration-sdk-review/canonical-final-sdk-truncated-schema.json",
+      "--client",
+      "sdk",
+      "--mode",
+      "truncated",
+      "--output-format",
+      "json-schema"
+    ],
+    "startedAt": "2026-10-19T00:15:32.661876+00:00",
+    "durationSeconds": 44.691,
+    "exit": 0,
+    "stdoutBytes": 0,
+    "stderrBytes": 0
+  },
+  {
+    "case": "canonical-final-sdk-settlement-ack-unresolved-schema",
+    "command": [
+      "node",
+      "scripts/qualification/sdk-proxy-offline/run.mjs",
+      "--python",
+      "/tmp/meri-integration-sdk-env/bin/python",
+      "--out",
+      "/tmp/meri-integration-sdk-review/canonical-final-sdk-settlement-ack-unresolved-schema.json",
+      "--client",
+      "sdk",
+      "--mode",
+      "settlement-ack-unresolved",
+      "--output-format",
+      "json-schema"
+    ],
+    "startedAt": "2026-10-19T00:15:36.223233+00:00",
+    "durationSeconds": 44.808,
+    "exit": 0,
+    "stdoutBytes": 0,
+    "stderrBytes": 0
+  }
+]

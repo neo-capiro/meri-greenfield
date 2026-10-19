@@ -1,0 +1,78 @@
+[
+  {
+    "name": "interop-final-sdk-settlement-ack-committed.json",
+    "sha256": "1823cfeb23c4ec78b24e099189ef9ce4304a838ec13019e1075c73702b51877d"
+  },
+  {
+    "name": "interop-final-minimal-messages-complete.json",
+    "sha256": "ea0a43c5add1e4a36a8ead96765501116e85d4e856fe0daa68a438711aa89a79"
+  },
+  {
+    "name": "interop-final-minimal-messages-settlement-ack-unresolved.json",
+    "sha256": "61f9e9860385c870e24b52383767d349e1f736fc883a209a1335398a7f7088e4"
+  },
+  {
+    "name": "interop-final-sdk-settlement-ack-unresolved-schema.json",
+    "sha256": "13c4bbcb84b8b3aa6a4f8e661c68b7d8540957cafff90a27abec03302e35b71f"
+  },
+  {
+    "name": "interop-final-sdk-complete-schema.json",
+    "sha256": "cc8fc50e7abd8ecb2e29c9a6269888d858cc78a33fc10a21f6df93e3f1a0d0f2"
+  },
+  {
+    "name": "interop-final-minimal-messages-missing-usage.json",
+    "sha256": "58dafc13c1091803d703d704be002d2ed548a17cd38f68bfffd35d33971de45e"
+  },
+  {
+    "name": "interop-final-sdk-truncated.json",
+    "sha256": "1b569ef0943b76d368892aff9940caa31aaa71e92d913dc9ba53585503e49e26"
+  },
+  {
+    "name": "interop-final-sdk-missing-usage.json",
+    "sha256": "673e4980710a4f2a477b592b1655e89d17259177eaafd03a7c0aefaf760e5c15"
+  },
+  {
+    "name": "interop-final-minimal-messages-cached.json",
+    "sha256": "4faef442c793b302d685c70715221bdcb822c04cdfc755b693f7d9309d9a94fa"
+  },
+  {
+    "name": "interop-final-sdk-reservation-ack-lost.json",
+    "sha256": "471567cfe909404846dbe1146a7b6049a4746ee2167cac2528469def2f225937"
+  },
+  {
+    "name": "interop-final-sdk-truncated-schema.json",
+    "sha256": "051fa0cca04c437fd466ea488793ec7aeb9698cd5d6612154bbab60ac8e91b71"
+  },
+  {
+    "name": "interop-final-sdk-complete.json",
+    "sha256": "14f966efdac429e4cde18bc7457773d38a611391e47b620d0c0041c1b6634c7e"
+  },
+  {
+    "name": "interop-final-minimal-messages-reservation-ack-lost.json",
+    "sha256": "62dbee08b9e7d19fbc4af0c7c63d170ffe307c6d526793fb1f6b4dba980b6166"
+  },
+  {
+    "name": "interop-final-sdk-settlement-ack-unresolved.json",
+    "sha256": "ace7b9dbaf3afac5969d5e1184e6689a90a85864af83decfcc6c46a1a4f39881"
+  },
+  {
+    "name": "interop-final-sdk-cached.json",
+    "sha256": "7f2c53ac4b1aa98cab9a9e35da85ff5c44085186f55d75a48a28a807b67bc5aa"
+  },
+  {
+    "name": "interop-final-minimal-messages-truncated.json",
+    "sha256": "082f505a144e9cd0f7aecf1fd9f203e45eb55d9eeb97d1fce518a1636af9146a"
+  },
+  {
+    "name": "interop-final-minimal-messages-settlement-ack-committed.json",
+    "sha256": "86e1f43f8e11e70364fe2b80cf6a8ce733494af88e77b65df56e8669f632421e"
+  },
+  {
+    "name": "INTEROP-FINAL-COMMANDS.json",
+    "sha256": "7c68fe0bb49b8081091ed860e2af1cbcbe5867657bd55379a645769de24bd495"
+  },
+  {
+    "name": "INTEROP-UNRESOLVED-REQUEST-HASHES.json",
+    "sha256": "c8250d18d3b43b5938b17d6950d0d4588f60f527e2d708ec5e49864751a702bf"
+  }
+]

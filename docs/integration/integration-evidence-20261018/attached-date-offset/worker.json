@@ -1,0 +1,12 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "apps/worker/conversation/test/options-trust.test.mjs",
+    "apps/worker/conversation/test/activity.test.mjs",
+    "apps/worker/conversation/test/terminal-settlement.test.mjs"
+  ],
+  "exit": 0,
+  "durationSeconds": 2.623805522918701
+}

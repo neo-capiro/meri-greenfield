@@ -1,0 +1,34 @@
+TAP version 13
+# Subtest: concurrent scheduled and ordinary HTTP history requests complete on one connection with both final custody checks
+not ok 1 - concurrent scheduled and ordinary HTTP history requests complete on one connection with both final custody checks
+  ---
+  duration_ms: 1117.018869
+  type: 'test'
+  location: '<review-scratch>/concurrent-http-a50-control.test.mjs:53:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    the first final origin read must use the held lease rather than wait for a nested checkout
+    + actual - expected
+    
+    + Response {}
+    - null
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: ~
+  actual:
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file://<review-scratch>/concurrent-http-a50-control.test.mjs:70:10)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1918.719234

@@ -1,0 +1,11 @@
+{
+  "originalHarnessCommit": "5fa5545898717e1148a28447bb93254a07fa6459",
+  "privateExperimentScript": "/tmp/meri-integration-sdk-review/pinned-capability-experiment.mjs",
+  "privateExperimentSha256": "66831c109d98c5f97fbab1d549a9abb2439933de2f8d64c8d179b8cf7ede3ba7",
+  "productionEdits": false,
+  "globalBetasDisabled": false,
+  "sdkOptionsOwner": "actual buildConversationOptions",
+  "modelAlias": "meri-sonnet-qualification",
+  "schema": "canonical Objective output-format argument",
+  "overrideSupport": "PIN_RECOGNIZED_NOT_PUBLICLY_DOCUMENTED"
+}

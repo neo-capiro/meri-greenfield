@@ -1,0 +1,51 @@
+{
+  "readAt": "2026-10-18T22:46:25.074Z",
+  "branch": {
+    "branches": [
+      {
+        "branch": "dot/meri-release-combined-20261018"
+      }
+    ],
+    "cursor": "MQ"
+  },
+  "commit": {
+    "commit": {
+      "sha": "7252f483c59cd676e868e40d4bf73c2ca55c137f",
+      "message": "Record PR186 date acceptance hold in source handoff",
+      "url": "https://api.github.com/repos/neo-capiro/meri-greenfield/commits/7252f483c59cd676e868e40d4bf73c2ca55c137f",
+      "html_url": "https://github.com/neo-capiro/meri-greenfield/commit/7252f483c59cd676e868e40d4bf73c2ca55c137f",
+      "diff": "@@ -23,7 +23,8 @@ conflict or manual content resolution occurred. PR186's separate published\n evidence records 4,391/4,391 standard tests, 20/20 focused worker tests and\n zero runtime/control TypeScript diagnostics on its exact code tree\n `859f84abf40d0ed565088b621f5c26a6f824877d`. Those counts do not qualify\n-this combined tree. PR186's retained scrubbed evidence files contain trailing\n+this combined tree, and PR186 source acceptance is now **HOLD** for the date\n+regression below. PR186's retained scrubbed evidence files contain trailing\n whitespace, so a full PR186 diff whitespace check reports notices even though\n its code-path check passes.\n \n@@ -39,6 +40,14 @@ build has run on this combined tree at this handoff.\n \n ## Remaining receiving work\n \n+- Independent PR186 review found a regression in\n+  `packages/contracts/retrieval-0.2/public-domain-query-validation.mjs:14\u201328`:\n+  explicit legacy offsets can be treated as unzoned. On Node 24.19 across\n+  UTC, Toronto and Tokyo, `January 1, 2020 12:30 PM -0500` yielded 12:30Z\n+  instead of 17:30Z; `Jan 1 12:30:00 -0500 2020` and AM with +0530 also\n+  mis-normalize. Public schema admits these strings. The source owner has the\n+  minimal repair and three-timezone regression; do not accept PR186 or this\n+  combined tree until that fix is received and checked. No repair is made here.\n - Four inherited retention/history fixture failures from PR186 remain:\n   `postgres-watermark.test.mjs:50` lacks `journal.withTransition` in its inner\n   synthetic fixture; three `startup-history.test.mjs` cases return 503 because",
+      "files": [
+        {
+          "filename": "docs/integration/COMBINED-SOURCE-HANDOFF-20261018.md",
+          "patch": "@@ -23,7 +23,8 @@ conflict or manual content resolution occurred. PR186's separate published\n evidence records 4,391/4,391 standard tests, 20/20 focused worker tests and\n zero runtime/control TypeScript diagnostics on its exact code tree\n `859f84abf40d0ed565088b621f5c26a6f824877d`. Those counts do not qualify\n-this combined tree. PR186's retained scrubbed evidence files contain trailing\n+this combined tree, and PR186 source acceptance is now **HOLD** for the date\n+regression below. PR186's retained scrubbed evidence files contain trailing\n whitespace, so a full PR186 diff whitespace check reports notices even though\n its code-path check passes.\n \n@@ -39,6 +40,14 @@ build has run on this combined tree at this handoff.\n \n ## Remaining receiving work\n \n+- Independent PR186 review found a regression in\n+  `packages/contracts/retrieval-0.2/public-domain-query-validation.mjs:14\u201328`:\n+  explicit legacy offsets can be treated as unzoned. On Node 24.19 across\n+  UTC, Toronto and Tokyo, `January 1, 2020 12:30 PM -0500` yielded 12:30Z\n+  instead of 17:30Z; `Jan 1 12:30:00 -0500 2020` and AM with +0530 also\n+  mis-normalize. Public schema admits these strings. The source owner has the\n+  minimal repair and three-timezone regression; do not accept PR186 or this\n+  combined tree until that fix is received and checked. No repair is made here.\n - Four inherited retention/history fixture failures from PR186 remain:\n   `postgres-watermark.test.mjs:50` lacks `journal.withTransition` in its inner\n   synthetic fixture; three `startup-history.test.mjs` cases return 503 because"
+        }
+      ],
+      "repository_full_name": "neo-capiro/meri-greenfield",
+      "comments": null,
+      "author": {
+        "login": "neo-capiro",
+        "name": null,
+        "email": null,
+        "avatar_url": "https://avatars.githubusercontent.com/u/276034435?v=4",
+        "id": 276034435
+      },
+      "committer": {
+        "login": "neo-capiro",
+        "name": null,
+        "email": null,
+        "avatar_url": "https://avatars.githubusercontent.com/u/276034435?v=4",
+        "id": 276034435
+      },
+      "created_at": "2026-10-18T22:14:11Z",
+      "git_author_email": null,
+      "display_url": "https://github.com/neo-capiro/meri-greenfield/commit/7252f483c59cd676e868e40d4bf73c2ca55c137f",
+      "display_title": "Record PR186 date acceptance hold in source handoff"
+    },
+    "url": "https://github.com/neo-capiro/meri-greenfield/commit/7252f483c59cd676e868e40d4bf73c2ca55c137f",
+    "title": "Record PR186 date acceptance hold in source handoff",
+    "diff": "@@ -23,7 +23,8 @@ conflict or manual content resolution occurred. PR186's separate published\n evidence records 4,391/4,391 standard tests, 20/20 focused worker tests and\n zero runtime/control TypeScript diagnostics on its exact code tree\n `859f84abf40d0ed565088b621f5c26a6f824877d`. Those counts do not qualify\n-this combined tree. PR186's retained scrubbed evidence files contain trailing\n+this combined tree, and PR186 source acceptance is now **HOLD** for the date\n+regression below. PR186's retained scrubbed evidence files contain trailing\n whitespace, so a full PR186 diff whitespace check reports notices even though\n its code-path check passes.\n \n@@ -39,6 +40,14 @@ build has run on this combined tree at this handoff.\n \n ## Remaining receiving work\n \n+- Independent PR186 review found a regression in\n+  `packages/contracts/retrieval-0.2/public-domain-query-validation.mjs:14\u201328`:\n+  explicit legacy offsets can be treated as unzoned. On Node 24.19 across\n+  UTC, Toronto and Tokyo, `January 1, 2020 12:30 PM -0500` yielded 12:30Z\n+  instead of 17:30Z; `Jan 1 12:30:00 -0500 2020` and AM with +0530 also\n+  mis-normalize. Public schema admits these strings. The source owner has the\n+  minimal repair and three-timezone regression; do not accept PR186 or this\n+  combined tree until that fix is received and checked. No repair is made here.\n - Four inherited retention/history fixture failures from PR186 remain:\n   `postgres-watermark.test.mjs:50` lacks `journal.withTransition` in its inner\n   synthetic fixture; three `startup-history.test.mjs` cases return 503 because",
+    "display_url": "https://github.com/neo-capiro/meri-greenfield/commit/7252f483c59cd676e868e40d4bf73c2ca55c137f",
+    "display_title": "Record PR186 date acceptance hold in source handoff"
+  }
+}

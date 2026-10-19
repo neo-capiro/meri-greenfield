@@ -1,0 +1,222 @@
+[
+  {
+    "command": [
+      "node",
+      "scripts/qualification/sdk-proxy-offline/run.mjs",
+      "--python",
+      "/tmp/meri-integration-sdk-env/bin/python",
+      "--out",
+      "/tmp/meri-integration-sdk-review/pinned-sdk-constrained-complete-json-schema.json",
+      "--client",
+      "sdk-constrained",
+      "--mode",
+      "complete",
+      "--output-format",
+      "json-schema"
+    ],
+    "cwd": "<integration-worktree>-sdk",
+    "exitCode": 2,
+    "seconds": 48.073,
+    "receipt": "/tmp/meri-integration-sdk-review/pinned-sdk-constrained-complete-json-schema.json"
+  },
+  {
+    "command": [
+      "node",
+      "scripts/qualification/sdk-proxy-offline/run.mjs",
+      "--python",
+      "/tmp/meri-integration-sdk-env/bin/python",
+      "--out",
+      "/tmp/meri-integration-sdk-review/pinned-sdk-complete-none.json",
+      "--client",
+      "sdk",
+      "--mode",
+      "complete",
+      "--output-format",
+      "none"
+    ],
+    "cwd": "<integration-worktree>-sdk",
+    "exitCode": 2,
+    "seconds": 48.792,
+    "receipt": "/tmp/meri-integration-sdk-review/pinned-sdk-complete-none.json"
+  },
+  {
+    "command": [
+      "node",
+      "scripts/qualification/sdk-proxy-offline/run.mjs",
+      "--python",
+      "/tmp/meri-integration-sdk-env/bin/python",
+      "--out",
+      "/tmp/meri-integration-sdk-review/pinned-sdk-configured-complete-none.json",
+      "--client",
+      "sdk-configured",
+      "--mode",
+      "complete",
+      "--output-format",
+      "none"
+    ],
+    "cwd": "<integration-worktree>-sdk",
+    "exitCode": 2,
+    "seconds": 48.871,
+    "receipt": "/tmp/meri-integration-sdk-review/pinned-sdk-configured-complete-none.json"
+  },
+  {
+    "command": [
+      "node",
+      "scripts/qualification/sdk-proxy-offline/run.mjs",
+      "--python",
+      "/tmp/meri-integration-sdk-env/bin/python",
+      "--out",
+      "/tmp/meri-integration-sdk-review/pinned-minimal-messages-truncated-none.json",
+      "--client",
+      "minimal-messages",
+      "--mode",
+      "truncated",
+      "--output-format",
+      "none"
+    ],
+    "cwd": "<integration-worktree>-sdk",
+    "exitCode": 0,
+    "seconds": 20.724,
+    "receipt": "/tmp/meri-integration-sdk-review/pinned-minimal-messages-truncated-none.json"
+  },
+  {
+    "command": [
+      "node",
+      "scripts/qualification/sdk-proxy-offline/run.mjs",
+      "--python",
+      "/tmp/meri-integration-sdk-env/bin/python",
+      "--out",
+      "/tmp/meri-integration-sdk-review/pinned-minimal-messages-complete-none.json",
+      "--client",
+      "minimal-messages",
+      "--mode",
+      "complete",
+      "--output-format",
+      "none"
+    ],
+    "cwd": "<integration-worktree>-sdk",
+    "exitCode": 0,
+    "seconds": 21.065,
+    "receipt": "/tmp/meri-integration-sdk-review/pinned-minimal-messages-complete-none.json"
+  },
+  {
+    "command": [
+      "node",
+      "scripts/qualification/sdk-proxy-offline/run.mjs",
+      "--python",
+      "/tmp/meri-integration-sdk-env/bin/python",
+      "--out",
+      "/tmp/meri-integration-sdk-review/pinned-minimal-messages-cached-none.json",
+      "--client",
+      "minimal-messages",
+      "--mode",
+      "cached",
+      "--output-format",
+      "none"
+    ],
+    "cwd": "<integration-worktree>-sdk",
+    "exitCode": 0,
+    "seconds": 16.144,
+    "receipt": "/tmp/meri-integration-sdk-review/pinned-minimal-messages-cached-none.json"
+  },
+  {
+    "command": [
+      "node",
+      "scripts/qualification/sdk-proxy-offline/run.mjs",
+      "--python",
+      "/tmp/meri-integration-sdk-env/bin/python",
+      "--out",
+      "/tmp/meri-integration-sdk-review/pinned-minimal-messages-missing-usage-none.json",
+      "--client",
+      "minimal-messages",
+      "--mode",
+      "missing-usage",
+      "--output-format",
+      "none"
+    ],
+    "cwd": "<integration-worktree>-sdk",
+    "exitCode": 0,
+    "seconds": 16.085,
+    "receipt": "/tmp/meri-integration-sdk-review/pinned-minimal-messages-missing-usage-none.json"
+  },
+  {
+    "command": [
+      "node",
+      "scripts/qualification/sdk-proxy-offline/run.mjs",
+      "--python",
+      "/tmp/meri-integration-sdk-env/bin/python",
+      "--out",
+      "/tmp/meri-integration-sdk-review/pinned-sdk-constrained-complete-none.json",
+      "--client",
+      "sdk-constrained",
+      "--mode",
+      "complete",
+      "--output-format",
+      "none"
+    ],
+    "cwd": "<integration-worktree>-sdk",
+    "exitCode": 2,
+    "seconds": 52.285,
+    "receipt": "/tmp/meri-integration-sdk-review/pinned-sdk-constrained-complete-none.json"
+  },
+  {
+    "command": [
+      "node",
+      "scripts/qualification/sdk-proxy-offline/run.mjs",
+      "--python",
+      "/tmp/meri-integration-sdk-env/bin/python",
+      "--out",
+      "/tmp/meri-integration-sdk-review/pinned-minimal-messages-settlement-ack-committed-none.json",
+      "--client",
+      "minimal-messages",
+      "--mode",
+      "settlement-ack-committed",
+      "--output-format",
+      "none"
+    ],
+    "cwd": "<integration-worktree>-sdk",
+    "exitCode": 0,
+    "seconds": 14.42,
+    "receipt": "/tmp/meri-integration-sdk-review/pinned-minimal-messages-settlement-ack-committed-none.json"
+  },
+  {
+    "command": [
+      "node",
+      "scripts/qualification/sdk-proxy-offline/run.mjs",
+      "--python",
+      "/tmp/meri-integration-sdk-env/bin/python",
+      "--out",
+      "/tmp/meri-integration-sdk-review/pinned-minimal-messages-reservation-ack-lost-none.json",
+      "--client",
+      "minimal-messages",
+      "--mode",
+      "reservation-ack-lost",
+      "--output-format",
+      "none"
+    ],
+    "cwd": "<integration-worktree>-sdk",
+    "exitCode": 0,
+    "seconds": 14.67,
+    "receipt": "/tmp/meri-integration-sdk-review/pinned-minimal-messages-reservation-ack-lost-none.json"
+  },
+  {
+    "command": [
+      "node",
+      "scripts/qualification/sdk-proxy-offline/run.mjs",
+      "--python",
+      "/tmp/meri-integration-sdk-env/bin/python",
+      "--out",
+      "/tmp/meri-integration-sdk-review/pinned-minimal-messages-settlement-ack-unresolved-none.json",
+      "--client",
+      "minimal-messages",
+      "--mode",
+      "settlement-ack-unresolved",
+      "--output-format",
+      "none"
+    ],
+    "cwd": "<integration-worktree>-sdk",
+    "exitCode": 0,
+    "seconds": 14.008,
+    "receipt": "/tmp/meri-integration-sdk-review/pinned-minimal-messages-settlement-ack-unresolved-none.json"
+  }
+]

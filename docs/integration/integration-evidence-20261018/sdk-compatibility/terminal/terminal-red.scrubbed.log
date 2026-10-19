@@ -1,0 +1,304 @@
+test_cancellation_and_wire_bounds_never_flush_held_terminals (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_cancellation_and_wire_bounds_never_flush_held_terminals) ... FAIL
+test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle) ... 
+  test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle) (structured=False, chunks=1) ... FAIL
+  test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle) (structured=False, chunks=6) ... FAIL
+  test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle) (structured=False, chunks=7) ... FAIL
+  test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle) (structured=False, chunks=7) ... FAIL
+  test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle) (structured=False, chunks=6) ... FAIL
+  test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle) (structured=True, chunks=1) ... FAIL
+  test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle) (structured=True, chunks=6) ... FAIL
+  test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle) (structured=True, chunks=7) ... FAIL
+  test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle) (structured=True, chunks=7) ... FAIL
+  test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle) (structured=True, chunks=6) ... FAIL
+test_json_body_is_withheld_until_ack (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_json_body_is_withheld_until_ack) ... FAIL
+test_lost_ack_releases_only_after_exact_settled_readback (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_lost_ack_releases_only_after_exact_settled_readback) ... 
+  test_lost_ack_releases_only_after_exact_settled_readback (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_lost_ack_releases_only_after_exact_settled_readback) (outcome={'requestId': 'request_A', 'state': 'UNKNOWN', 'actualMicroUSD': None}) ... FAIL
+  test_lost_ack_releases_only_after_exact_settled_readback (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_lost_ack_releases_only_after_exact_settled_readback) (outcome={'requestId': 'other', 'state': 'SETTLED', 'actualMicroUSD': '90'}) ... FAIL
+  test_lost_ack_releases_only_after_exact_settled_readback (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_lost_ack_releases_only_after_exact_settled_readback) (outcome=RuntimeError('synthetic unavailable readback')) ... FAIL
+test_terminal_is_withheld_through_ack_for_coalesced_split_and_structured_frames (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_terminal_is_withheld_through_ack_for_coalesced_split_and_structured_frames) ... 
+  test_terminal_is_withheld_through_ack_for_coalesced_split_and_structured_frames (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_terminal_is_withheld_through_ack_for_coalesced_split_and_structured_frames) (structured=False, chunks=1) ... FAIL
+  test_terminal_is_withheld_through_ack_for_coalesced_split_and_structured_frames (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_terminal_is_withheld_through_ack_for_coalesced_split_and_structured_frames) (structured=False, chunks=6) ... FAIL
+  test_terminal_is_withheld_through_ack_for_coalesced_split_and_structured_frames (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_terminal_is_withheld_through_ack_for_coalesced_split_and_structured_frames) (structured=False, chunks=125) ... FAIL
+  test_terminal_is_withheld_through_ack_for_coalesced_split_and_structured_frames (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_terminal_is_withheld_through_ack_for_coalesced_split_and_structured_frames) (structured=True, chunks=1) ... FAIL
+  test_terminal_is_withheld_through_ack_for_coalesced_split_and_structured_frames (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_terminal_is_withheld_through_ack_for_coalesced_split_and_structured_frames) (structured=True, chunks=6) ... FAIL
+  test_terminal_is_withheld_through_ack_for_coalesced_split_and_structured_frames (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_terminal_is_withheld_through_ack_for_coalesced_split_and_structured_frames) (structured=True, chunks=134) ... FAIL
+
+======================================================================
+FAIL: test_cancellation_and_wire_bounds_never_flush_held_terminals (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_cancellation_and_wire_bounds_never_flush_held_terminals)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/meri-integration-python/cpython-3.13.5-linux-x86_64-gnu/lib/python3.13/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/tmp/meri-integration-python/cpython-3.13.5-linux-x86_64-gnu/lib/python3.13/asyncio/base_events.py", line 725, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "<worktree>/apps/proxy/product/test/test_response_terminal_gate.py", line 226, in test_cancellation_and_wire_bounds_never_flush_held_terminals
+    self.assertEqual([e["type"] for e in decoded_events(emitted)], ["message_start"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['message_start', 'content_block_start', 'content_block_d[56 chars]top'] != ['message_start']
+
+First list contains 5 additional elements.
+First extra element 1:
+'content_block_start'
+
+- ['message_start',
+?                 ^
+
++ ['message_start']
+?                 ^
+
+-  'content_block_start',
+-  'content_block_delta',
+-  'content_block_stop',
+-  'message_delta',
+-  'message_stop']
+
+======================================================================
+FAIL: test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle) (structured=False, chunks=1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>/apps/proxy/product/test/test_response_terminal_gate.py", line 185, in test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle
+    with self.assertRaisesRegex(AdmissionDenied, "INCOMPLETE_NATIVE_RESPONSE"):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: AdmissionDenied not raised
+
+======================================================================
+FAIL: test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle) (structured=False, chunks=6)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>/apps/proxy/product/test/test_response_terminal_gate.py", line 185, in test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle
+    with self.assertRaisesRegex(AdmissionDenied, "INCOMPLETE_NATIVE_RESPONSE"):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: AdmissionDenied not raised
+
+======================================================================
+FAIL: test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle) (structured=False, chunks=7)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>/apps/proxy/product/test/test_response_terminal_gate.py", line 185, in test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle
+    with self.assertRaisesRegex(AdmissionDenied, "INCOMPLETE_NATIVE_RESPONSE"):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: AdmissionDenied not raised
+
+======================================================================
+FAIL: test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle) (structured=False, chunks=7)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>/apps/proxy/product/test/test_response_terminal_gate.py", line 185, in test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle
+    with self.assertRaisesRegex(AdmissionDenied, "INCOMPLETE_NATIVE_RESPONSE"):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: AdmissionDenied not raised
+
+======================================================================
+FAIL: test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle) (structured=False, chunks=6)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>/apps/proxy/product/test/test_response_terminal_gate.py", line 185, in test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle
+    with self.assertRaisesRegex(AdmissionDenied, "INCOMPLETE_NATIVE_RESPONSE"):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: AdmissionDenied not raised
+
+======================================================================
+FAIL: test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle) (structured=True, chunks=1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>/apps/proxy/product/test/test_response_terminal_gate.py", line 185, in test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle
+    with self.assertRaisesRegex(AdmissionDenied, "INCOMPLETE_NATIVE_RESPONSE"):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: AdmissionDenied not raised
+
+======================================================================
+FAIL: test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle) (structured=True, chunks=6)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>/apps/proxy/product/test/test_response_terminal_gate.py", line 185, in test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle
+    with self.assertRaisesRegex(AdmissionDenied, "INCOMPLETE_NATIVE_RESPONSE"):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: AdmissionDenied not raised
+
+======================================================================
+FAIL: test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle) (structured=True, chunks=7)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>/apps/proxy/product/test/test_response_terminal_gate.py", line 185, in test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle
+    with self.assertRaisesRegex(AdmissionDenied, "INCOMPLETE_NATIVE_RESPONSE"):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: AdmissionDenied not raised
+
+======================================================================
+FAIL: test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle) (structured=True, chunks=7)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>/apps/proxy/product/test/test_response_terminal_gate.py", line 185, in test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle
+    with self.assertRaisesRegex(AdmissionDenied, "INCOMPLETE_NATIVE_RESPONSE"):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: AdmissionDenied not raised
+
+======================================================================
+FAIL: test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle) (structured=True, chunks=6)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>/apps/proxy/product/test/test_response_terminal_gate.py", line 185, in test_invalid_truncated_and_trailing_frames_never_release_terminals_or_settle
+    with self.assertRaisesRegex(AdmissionDenied, "INCOMPLETE_NATIVE_RESPONSE"):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: AdmissionDenied not raised
+
+======================================================================
+FAIL: test_json_body_is_withheld_until_ack (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_json_body_is_withheld_until_ack)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/meri-integration-python/cpython-3.13.5-linux-x86_64-gnu/lib/python3.13/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/tmp/meri-integration-python/cpython-3.13.5-linux-x86_64-gnu/lib/python3.13/asyncio/base_events.py", line 725, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "<worktree>/apps/proxy/product/test/test_response_terminal_gate.py", line 168, in test_json_body_is_withheld_until_ack
+    self.assertEqual(emitted, [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+AssertionError: Lists differ: [b'{"id":"msg_synthetic', b'","type":"mess[188 chars]3}}'] != []
+
+First list contains 2 additional elements.
+First extra element 0:
+b'{"id":"msg_synthetic'
+
++ []
+- [b'{"id":"msg_synthetic',
+-  b'","type":"message","role":"assistant","model":"claude-sonnet-4-6","content":'
+-  b'[{"type":"text","text":"synthetic"}],"stop_reason":"end_turn","stop_sequence'
+-  b'":null,"usage":{"input_tokens":12,"output_tokens":3}}']
+
+======================================================================
+FAIL: test_lost_ack_releases_only_after_exact_settled_readback (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_lost_ack_releases_only_after_exact_settled_readback) (outcome={'requestId': 'request_A', 'state': 'UNKNOWN', 'actualMicroUSD': None})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>/apps/proxy/product/test/test_response_terminal_gate.py", line 214, in test_lost_ack_releases_only_after_exact_settled_readback
+    self.assertEqual([e["type"] for e in decoded_events(emitted)], ["message_start"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['message_start', 'content_block_start', 'content_block_d[56 chars]top'] != ['message_start']
+
+First list contains 5 additional elements.
+First extra element 1:
+'content_block_start'
+
+- ['message_start',
+?                 ^
+
++ ['message_start']
+?                 ^
+
+-  'content_block_start',
+-  'content_block_delta',
+-  'content_block_stop',
+-  'message_delta',
+-  'message_stop']
+
+======================================================================
+FAIL: test_lost_ack_releases_only_after_exact_settled_readback (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_lost_ack_releases_only_after_exact_settled_readback) (outcome={'requestId': 'other', 'state': 'SETTLED', 'actualMicroUSD': '90'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>/apps/proxy/product/test/test_response_terminal_gate.py", line 214, in test_lost_ack_releases_only_after_exact_settled_readback
+    self.assertEqual([e["type"] for e in decoded_events(emitted)], ["message_start"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['message_start', 'content_block_start', 'content_block_d[56 chars]top'] != ['message_start']
+
+First list contains 5 additional elements.
+First extra element 1:
+'content_block_start'
+
+- ['message_start',
+?                 ^
+
++ ['message_start']
+?                 ^
+
+-  'content_block_start',
+-  'content_block_delta',
+-  'content_block_stop',
+-  'message_delta',
+-  'message_stop']
+
+======================================================================
+FAIL: test_lost_ack_releases_only_after_exact_settled_readback (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_lost_ack_releases_only_after_exact_settled_readback) (outcome=RuntimeError('synthetic unavailable readback'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>/apps/proxy/product/test/test_response_terminal_gate.py", line 214, in test_lost_ack_releases_only_after_exact_settled_readback
+    self.assertEqual([e["type"] for e in decoded_events(emitted)], ["message_start"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['message_start', 'content_block_start', 'content_block_d[56 chars]top'] != ['message_start']
+
+First list contains 5 additional elements.
+First extra element 1:
+'content_block_start'
+
+- ['message_start',
+?                 ^
+
++ ['message_start']
+?                 ^
+
+-  'content_block_start',
+-  'content_block_delta',
+-  'content_block_stop',
+-  'message_delta',
+-  'message_stop']
+
+======================================================================
+FAIL: test_terminal_is_withheld_through_ack_for_coalesced_split_and_structured_frames (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_terminal_is_withheld_through_ack_for_coalesced_split_and_structured_frames) (structured=False, chunks=1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>/apps/proxy/product/test/test_response_terminal_gate.py", line 147, in test_terminal_is_withheld_through_ack_for_coalesced_split_and_structured_frames
+    self.assertNotIn("message_delta", [e["type"] for e in observed])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'message_delta' unexpectedly found in ['message_start', 'content_block_start', 'content_block_delta', 'content_block_stop', 'message_delta', 'message_stop']
+
+======================================================================
+FAIL: test_terminal_is_withheld_through_ack_for_coalesced_split_and_structured_frames (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_terminal_is_withheld_through_ack_for_coalesced_split_and_structured_frames) (structured=False, chunks=6)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>/apps/proxy/product/test/test_response_terminal_gate.py", line 147, in test_terminal_is_withheld_through_ack_for_coalesced_split_and_structured_frames
+    self.assertNotIn("message_delta", [e["type"] for e in observed])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'message_delta' unexpectedly found in ['message_start', 'content_block_start', 'content_block_delta', 'content_block_stop', 'message_delta', 'message_stop']
+
+======================================================================
+FAIL: test_terminal_is_withheld_through_ack_for_coalesced_split_and_structured_frames (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_terminal_is_withheld_through_ack_for_coalesced_split_and_structured_frames) (structured=False, chunks=125)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>/apps/proxy/product/test/test_response_terminal_gate.py", line 147, in test_terminal_is_withheld_through_ack_for_coalesced_split_and_structured_frames
+    self.assertNotIn("message_delta", [e["type"] for e in observed])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'message_delta' unexpectedly found in ['message_start', 'content_block_start', 'content_block_delta', 'content_block_stop', 'message_delta', 'message_stop']
+
+======================================================================
+FAIL: test_terminal_is_withheld_through_ack_for_coalesced_split_and_structured_frames (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_terminal_is_withheld_through_ack_for_coalesced_split_and_structured_frames) (structured=True, chunks=1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>/apps/proxy/product/test/test_response_terminal_gate.py", line 147, in test_terminal_is_withheld_through_ack_for_coalesced_split_and_structured_frames
+    self.assertNotIn("message_delta", [e["type"] for e in observed])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'message_delta' unexpectedly found in ['message_start', 'content_block_start', 'content_block_delta', 'content_block_stop', 'message_delta', 'message_stop']
+
+======================================================================
+FAIL: test_terminal_is_withheld_through_ack_for_coalesced_split_and_structured_frames (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_terminal_is_withheld_through_ack_for_coalesced_split_and_structured_frames) (structured=True, chunks=6)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>/apps/proxy/product/test/test_response_terminal_gate.py", line 147, in test_terminal_is_withheld_through_ack_for_coalesced_split_and_structured_frames
+    self.assertNotIn("message_delta", [e["type"] for e in observed])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'message_delta' unexpectedly found in ['message_start', 'content_block_start', 'content_block_delta', 'content_block_stop', 'message_delta', 'message_stop']
+
+======================================================================
+FAIL: test_terminal_is_withheld_through_ack_for_coalesced_split_and_structured_frames (apps.proxy.product.test.test_response_terminal_gate.TerminalGateTests.test_terminal_is_withheld_through_ack_for_coalesced_split_and_structured_frames) (structured=True, chunks=134)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>/apps/proxy/product/test/test_response_terminal_gate.py", line 147, in test_terminal_is_withheld_through_ack_for_coalesced_split_and_structured_frames
+    self.assertNotIn("message_delta", [e["type"] for e in observed])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'message_delta' unexpectedly found in ['message_start', 'content_block_start', 'content_block_delta', 'content_block_stop', 'message_delta', 'message_stop']
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.030s
+
+FAILED (failures=21)

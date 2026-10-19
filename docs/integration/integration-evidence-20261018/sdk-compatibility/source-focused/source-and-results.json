@@ -1,0 +1,63 @@
+{
+  "sourceCommit": "938c70f494a9d903c10a70376e50769ebe8ad7bd",
+  "sourceTree": "6859d2404a053714e94b50a97716da3bcc26ec06",
+  "node": "v24.19.0",
+  "timezone": "America/Toronto",
+  "nodeOptions": "unset",
+  "files": {
+    "apps/worker/conversation/options.mjs": "f015fff44fbb547a61a144c4396b7b5082de43ab9170949f79311484644b8df4",
+    "apps/runtime/native-authority/sdk-option-projection.mjs": "9c07e88bf0fbe93bce30b23461b7fefe4ab529eb3517009ffb13ae2b47e6bf11",
+    "apps/proxy/qualification/runtime/bedrock_body.py": "bac0408d7dc1003b084643f3f2ad1c943bea460bd61acc8c51a0ea97547ad1e3",
+    "apps/proxy/qualification/runtime/bedrock_transport.py": "bd4030cd52f8d0d2d7e90575f09ab594024e6149d4e4c3e7bdd821e9906bcee1",
+    "apps/proxy/qualification/runtime/native_usage.py": "fc9654eb96ba3cec039d7cd6f1e0bf6d187088b7c9dd07006554fe4e4963110a",
+    "apps/gateway/model-proxy/product-request-owner.mjs": "7d689d2ce1fb118a5d2721f1d115d0a19f9a818b61148f8322a7b452c474beac",
+    "apps/proxy/product/response_settlement.py": "662a905f03f5c3ee752135f06ab3576baa6f2ef3545e7e26b2a8bffb6087c133",
+    "scripts/qualification/sdk-proxy-offline/run.mjs": "83d17932e184f63dcb8704f74621701c6e5668c19f117a356017905b218ff0d3",
+    "scripts/qualification/sdk-proxy-offline/native_proxy.py": "f7754ecd70a9158f65286ee8d55361b3c50381d037dbcecf93197b7828ed154a",
+    "scripts/qualification/sdk-proxy-offline/provider_stub.py": "8d8b31f2feff3b37b9d8c5a4186a0b90475088bbd07b74ed5e178f77fde20757",
+    "scripts/qualification/sdk-proxy-offline/model_ledger_fixture.mjs": "46fe63c2795c60588142881bd81bb983dfabaf6ff021911ee1e50a530e5dd313"
+  },
+  "checks": {
+    "workerOptions26": {
+      "pass": 26,
+      "fail": 0,
+      "skip": 0
+    },
+    "worker22": {
+      "pass": 22,
+      "fail": 0,
+      "skip": 0
+    },
+    "jsOwner21": {
+      "pass": 21,
+      "fail": 0,
+      "skip": 0
+    },
+    "runtimeTypes": {
+      "exit": 0,
+      "diagnostics": 0
+    }
+  },
+  "limitations": [
+    "SDK matrix qualified on separate sparse worktree; executable hashes must match",
+    "Historical standard4391 and controltypes remain at date0d; not rerun for unchanged contracts/control",
+    "Additional activity-capabilities setup8failure control relocates baseline test imports into current source; not a complete baseline worktree run",
+    "First combined Python launch had one nonexistent test module; retained environment/setup result",
+    "All final native98 and owner30 checks pass; earlier setup and stale-expectation failures remain separately preserved. See SDK final17-run matrix for actual execution."
+  ],
+  "latestPublishedCandidate": "34851020aa0d73fead4db59ba6e26a098e2d0313",
+  "finalOwnerCarrierCheck": {
+    "localSource": "e104f6934e13b5ecce477f89ed842dfd791a1ab1",
+    "pass": 30,
+    "fail": 0,
+    "skip": 0,
+    "log": "owner-carrier-final.log"
+  },
+  "finalNativeGroup": {
+    "localSource": "f45b9b599ada9438fd443e878641a91602c32b92",
+    "pass": 98,
+    "fail": 0,
+    "skip": 0,
+    "log": "python-final.log"
+  }
+}

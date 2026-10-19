@@ -1,0 +1,9 @@
+{
+  "checkedAt": "2026-10-19T00:17:19.931702+00:00",
+  "sourceCommit": "90f82dc692fd017f4f8957cfaf8402000bb2f92f",
+  "taskProcesses": [],
+  "taskTemporaryDirectories": [],
+  "workingTreeClean": true,
+  "freeDiskBytes": 430043136,
+  "preserved": "task-local Python env, source worktrees, setup failures, and all prior/final receipts retained"
+}

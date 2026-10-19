@@ -1,0 +1,15 @@
+{
+  "sourceReadAt": "2026-10-18T23:42:08.818Z",
+  "file": "infra/product-preview/first-chat/n21-build-receipt.json",
+  "sourceReferenceCommit": "0d3388a88aa575fba2bf9ee9c1c219053ea09418",
+  "sourceGitBlob": "c0c510d35c11a342dbf07c4fae103fc97ef54a80",
+  "url": "https://github.com/neo-capiro/meri-greenfield/blob/0d3388a88aa575fba2bf9ee9c1c219053ea09418/infra/product-preview/first-chat/n21-build-receipt.json",
+  "status": "HISTORICAL_NOT_A_CURRENT_CANDIDATE_OR_ROLLBACK",
+  "historicalSourceCommit": "176a8811a9b05d8613282e70bd7a57ebd75ca201",
+  "buildId": "meri-greenfield-qualification-build:4239045e-1f13-4f71-a7ac-eedc487b9976",
+  "nodeImageUri": "public.ecr.aws/docker/library/node@sha256:c83040f7e24bacea68e58a0b96a484ba430bf24abb2973eab7ba4701144b7b63",
+  "nodeVersion": "v24.21.0",
+  "runtimeBaseImageUri": "cgr.dev/chainguard/wolfi-base@sha256:030e45cb37187dff322bbefe9658bcaec31b824a5d523380771a64864c9f45d4",
+  "runtimeUser": "1000:1000",
+  "historicalImageDigest": "sha256:5534edfe5805eec7a5d0bce66b2c85765fe2f957173ddd3ce2726bed67e322d8"
+}

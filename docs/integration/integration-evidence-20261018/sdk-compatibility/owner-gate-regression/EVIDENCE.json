@@ -1,0 +1,87 @@
+{
+  "sourceCommit": "fb3b62977a0306cd16ef90fbf7dc211272524d5b",
+  "branch": "test/owner-unresolved-settlement-quarantine-20261019",
+  "baseCommit": "f45b9b599ada9438fd443e878641a91602c32b92",
+  "python": "3.13.5",
+  "commands": {
+    "final": "env -i PATH=/usr/bin:/bin TZ=America/Toronto PYTHONDONTWRITEBYTECODE=1 LITELLM_LOCAL_MODEL_COST_MAP=True AWS_EC2_METADATA_DISABLED=true /tmp/meri-integration-sdk-env/bin/python -m unittest apps.proxy.product.test.test_owner_channel apps.proxy.product.test.test_owner_admission -v",
+    "baseline": "git show f45b9b599ada9438fd443e878641a91602c32b92:apps/proxy/product/test/test_owner_channel.py > /tmp/meri-owner-channel-baseline-20261019.py\nenv -i PATH=/usr/bin:/bin PYTHONPATH=/workspace/scratch/f840037f8c71/meri-closeout-capabilities TZ=America/Toronto PYTHONDONTWRITEBYTECODE=1 LITELLM_LOCAL_MODEL_COST_MAP=True AWS_EC2_METADATA_DISABLED=true /tmp/meri-integration-sdk-env/bin/python /tmp/meri-owner-channel-baseline-20261019.py -v"
+  },
+  "files": [
+    {
+      "path": "apps/proxy/product/test/test_owner_channel.py",
+      "sha256": "d53c965ecece19fc496db1c3ae91acd24d6f14ccb9d3c3e92090b7fb002ca785",
+      "unchangedProduction": false
+    },
+    {
+      "path": "apps/proxy/product/owner_channel.py",
+      "sha256": "7ec8278885bdbc1e4d14d81de97ab7b0c6c570d5798bdcb08fe125bde935677c",
+      "unchangedProduction": true
+    },
+    {
+      "path": "apps/proxy/product/owner_admission.py",
+      "sha256": "5c75a9a76c4cdae6c19dd1beeceafc3d92b99dbcafeee1fa5c1b6196b816070c",
+      "unchangedProduction": true
+    },
+    {
+      "path": "apps/proxy/product/owner_startup.py",
+      "sha256": "573a49043a0aaccbccc1642d586675e2dc902d66e347abc95bf3c6d5c0d404e8",
+      "unchangedProduction": true
+    },
+    {
+      "path": "apps/gateway/budget/product-model-budget.mjs",
+      "sha256": "97e72045bc55d9c7e21d275f8c3e2b4bf0976e86beaf738be06e1adb08490a81",
+      "unchangedProduction": true
+    },
+    {
+      "path": "apps/gateway/budget/product-model-settlement.mjs",
+      "sha256": "07c1683ce7f55f4bd14b55edc0fd9e32ee64a5f1bbd9bac00c4214557f540a5a",
+      "unchangedProduction": true
+    }
+  ],
+  "logs": [
+    {
+      "stage": "baseline",
+      "path": "/tmp/meri-owner-readback-gate-review-20261019/meri-owner-readback-gate-baseline-20261019.log",
+      "sha256": "11dd89384f7909c3393e4d26839167f28e5b070814e380b5cecbc0967e955d56",
+      "result": "Ran 10 tests in 0.446s\n\nOK"
+    },
+    {
+      "stage": "focused",
+      "path": "/tmp/meri-owner-readback-gate-review-20261019/meri-owner-readback-gate-focused-20261019.log",
+      "sha256": "bf5c2b9f6a5f2aa3513f7b57cf007417244db3acd4167056f8f813239267f566",
+      "result": "Ran 12 tests in 0.377s\n\nFAILED (errors=2)"
+    },
+    {
+      "stage": "final",
+      "path": "/tmp/meri-owner-readback-gate-review-20261019/meri-owner-readback-gate-final-20261019.log",
+      "sha256": "373b6ac3fcd10b7221c924a7d39f9f35d8ff7763d9083765ca6e1053ea9feb3e",
+      "result": "Ran 25 tests in 0.308s\n\nOK"
+    },
+    {
+      "stage": "final2",
+      "path": "/tmp/meri-owner-readback-gate-review-20261019/meri-owner-readback-gate-final2-20261019.log",
+      "sha256": "f4d2810e903c7c290a8a267b1625d4e3b125c1cf791c6dbf2eec633fa671c8ee",
+      "result": "Ran 25 tests in 0.287s\n\nFAILED (errors=1)"
+    },
+    {
+      "stage": "final3",
+      "path": "/tmp/meri-owner-readback-gate-review-20261019/meri-owner-readback-gate-final3-20261019.log",
+      "sha256": "77598f50065ebaacdd8cefe05c5b378649d7ac54615853513dde91d8dc3cac8f",
+      "result": "Ran 25 tests in 0.318s\n\nOK"
+    },
+    {
+      "stage": "final4",
+      "path": "/tmp/meri-owner-readback-gate-review-20261019/meri-owner-readback-gate-final4-20261019.log",
+      "sha256": "9c3b19a0e288811354ce52390aa839fe64bbfe61c2ddbbe37d01ffa29b3c3243",
+      "result": "Ran 25 tests in 0.333s\n\nOK"
+    }
+  ],
+  "classification": "Qualification stand-in omitted existing production fail-closed bridge and channel; no production SQL reservation policy defect demonstrated. Tests characterize existing production behavior.",
+  "limits": [
+    "No production edits, public contract changes, SQL policy change, migration, deduplication rule or provider call.",
+    "This source unit fixture proves refusal before new owner exchange; separate actual-SDK wire matrix establishes provider execution count.",
+    "Post-unresolved failure only; not cross-process exactly-once or all concurrent requests before readback finishes.",
+    "Synthetic peer replies are not live HTTPS authentication or physical connection-stop proof."
+  ]
+}

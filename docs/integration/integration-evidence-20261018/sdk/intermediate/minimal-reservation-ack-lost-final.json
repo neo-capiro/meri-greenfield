@@ -1,0 +1,122 @@
+{
+  "scope": "OFFLINE_PARTITION_ONLY",
+  "mode": "reservation-ack-lost",
+  "client": "minimal-messages",
+  "fullOwnerHttps": "OPEN_RFC1918_INTERFACES_UNAVAILABLE",
+  "productImage": "UNRUN",
+  "postgresql": "UNRUN",
+  "providerCalls": 0,
+  "sdkResults": [],
+  "sdkSpawns": 0,
+  "sourceCommit": "1fe6baaedbd410089907bed2e52b804ec28482ce",
+  "sourceFiles": {
+    "run.mjs": "9512192c0224d185b92d9e875c0fb626a7f0b8522b8a0ac1c291167d08395014",
+    "native_proxy.py": "5f2e77e075a3f32d693060f2ce5602ed80580cf0283964bc0413cb7df18402c2",
+    "provider_stub.py": "f17bef6e1d485989ae8e2aaf4f38b70f4e1de32e05405bf88330252c04f5c4d5",
+    "owner_peer.mjs": "8f12e58c29060d4f7b7d4c04de9af2d45fbc1ea919311943c5815130efaeb9d7",
+    "model_ledger_fixture.mjs": "85f907ec737b10ffcc1fc3bbff68af77ac5c0f31c6de7cd92441edea979bd964"
+  },
+  "productConfigSha256": "64860d829d7c022f6640b1a75eb48ad05dc2421d8e5e2bcdfdda50b421754d19",
+  "versions": {
+    "sdk": "0.3.295",
+    "cli": "2.1.295",
+    "node": "v24.19.0"
+  },
+  "executableSha256": "4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358",
+  "clientResult": {
+    "status": 503,
+    "bytes": 241,
+    "sha256": "dc875a18f140a30f3fde286a04b5c9763500752ea4fcb1a991518743b607b3d0",
+    "events": []
+  },
+  "native": {
+    "scope": "offline-partition-only",
+    "fullOwnerHttps": "OPEN_RFC1918_INTERFACES_UNAVAILABLE",
+    "syntheticIngress": true,
+    "ownerTransport": "private-subprocess-IPC",
+    "database": "scripted-SQL-canonical-JS-accounting",
+    "countTransport": "botocore-Stubber",
+    "providerTransport": "in-process-HTTPX-stub",
+    "providerExecutions": 0,
+    "countRequests": 1,
+    "sdkRequests": [
+      {
+        "bytes": 151,
+        "sha256": "ae5baca25964a93361f3b52f431a5118e87a8bde80c3f9656236d1de1213c63a",
+        "fieldNames": [
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].role",
+          "model",
+          "stream",
+          "temperature"
+        ]
+      }
+    ],
+    "nativeRequests": [
+      {
+        "bytes": 152,
+        "sha256": "050494ca4db1622e35d5405b99b0671df81ae67b1823887d11097120d8de8365",
+        "fieldNames": [
+          "anthropic_version",
+          "max_tokens",
+          "messages",
+          "messages[].content",
+          "messages[].role",
+          "temperature"
+        ],
+        "url": "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke-with-response-stream",
+        "headerNames": [
+          "accept",
+          "accept-encoding",
+          "anthropic-version",
+          "authorization",
+          "connection",
+          "content-length",
+          "content-type",
+          "host",
+          "user-agent",
+          "x-amz-date"
+        ]
+      }
+    ],
+    "errors": [
+      {
+        "operation": "reserve",
+        "code": "BudgetCommitUncertain"
+      }
+    ],
+    "versions": {
+      "python": "3.13.5",
+      "litellm": "1.104.2",
+      "boto3": "1.43.111",
+      "botocore": "1.43.111",
+      "httpx": "0.28.1",
+      "fastapi": "0.136.3",
+      "uvicorn": "0.51.0"
+    },
+    "ownerOperations": {
+      "reserve": 1
+    },
+    "ledger": {
+      "requests": [
+        {
+          "requestId": "aead409a35394eee85c084d96259db74",
+          "state": "UNKNOWN",
+          "holdMicroUSD": "344",
+          "actualMicroUSD": null,
+          "inputTokens": 12,
+          "maxOutputTokens": 16
+        }
+      ],
+      "consumedMicroUSD": "0",
+      "quarantined": false,
+      "reservationInserts": 1,
+      "settlementUpdates": 0
+    },
+    "nativeStarted": true,
+    "nativeStopped": true
+  },
+  "partitionPassed": true
+}

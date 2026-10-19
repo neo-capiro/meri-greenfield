@@ -1,0 +1,1728 @@
+diff --git a/.dockerignore b/.dockerignore
+index 9b5a3632a95a796e71d6c4ecff4a7da3fd97721f..16d7bf0a0f5e844b0768658ecc22689ac039fd56 100644
+--- a/.dockerignore
++++ b/.dockerignore
+@@ -66,6 +66,7 @@ infra/product-preview/*
+ !infra/product-preview/runtime-packages/
+ infra/product-preview/runtime-packages/*
+ !infra/product-preview/runtime-packages/x86_64/
++!infra/product-preview/runtime-packages/wheels/
+ scripts
+ *.env
+ **/*.env
+diff --git a/apps/artifacts/generation/licenses/pptxgenjs-LICENSE b/apps/artifacts/generation/licenses/pptxgenjs-LICENSE
+new file mode 100644
+index 0000000000000000000000000000000000000000..0b21750ad94fcfc08e723c81d337fd66e5b35964
+--- /dev/null
++++ b/apps/artifacts/generation/licenses/pptxgenjs-LICENSE
+@@ -0,0 +1,21 @@
++The MIT License (MIT)
++
++Copyright (c) 2015-2022 Brent Ely
++
++Permission is hereby granted, free of charge, to any person obtaining a copy
++of this software and associated documentation files (the "Software"), to deal
++in the Software without restriction, including without limitation the rights
++to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++copies of the Software, and to permit persons to whom the Software is
++furnished to do so, subject to the following conditions:
++
++The above copyright notice and this permission notice shall be included in all
++copies or substantial portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
++AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
++LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
++OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
++SOFTWARE.
+diff --git a/apps/artifacts/generation/package-lock.json b/apps/artifacts/generation/package-lock.json
+new file mode 100644
+index 0000000000000000000000000000000000000000..9f9cf5fc7b87bb0a167f41db11c7b8b47e1cffed
+--- /dev/null
++++ b/apps/artifacts/generation/package-lock.json
+@@ -0,0 +1,174 @@
++{
++  "name": "@meri/artifact-generation",
++  "version": "0.1.0",
++  "lockfileVersion": 3,
++  "requires": true,
++  "packages": {
++    "": {
++      "name": "@meri/artifact-generation",
++      "version": "0.1.0",
++      "dependencies": {
++        "pptxgenjs": "4.0.1"
++      },
++      "engines": {
++        "node": ">=24 <25"
++      }
++    },
++    "node_modules/@types/node": {
++      "version": "22.20.5",
++      "resolved": "https://registry.npmjs.org/@types/node/-/node-22.20.5.tgz",
++      "integrity": "sha512-U2+DNr+wSjpsTS/wZGYHq7GcwfuSmKiKvoPvK22zwTlRhU91yOniN4qRR5KhIjvif7ysw/dz/hKmfDH0Ris4aA==",
++      "license": "MIT",
++      "dependencies": {
++        "undici-types": "~6.21.0"
++      }
++    },
++    "node_modules/core-util-is": {
++      "version": "1.0.3",
++      "resolved": "https://registry.npmjs.org/core-util-is/-/core-util-is-1.0.3.tgz",
++      "integrity": "sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==",
++      "license": "MIT"
++    },
++    "node_modules/https": {
++      "version": "1.0.0",
++      "resolved": "https://registry.npmjs.org/https/-/https-1.0.0.tgz",
++      "integrity": "sha512-4EC57ddXrkaF0x83Oj8sM6SLQHAWXw90Skqu2M4AEWENZ3F02dFJE/GARA8igO79tcgYqGrD7ae4f5L3um2lgg==",
++      "license": "ISC"
++    },
++    "node_modules/image-size": {
++      "version": "1.2.1",
++      "resolved": "https://registry.npmjs.org/image-size/-/image-size-1.2.1.tgz",
++      "integrity": "sha512-rH+46sQJ2dlwfjfhCyNx5thzrv+dtmBIhPHk0zgRUukHzZ/kRueTJXoYYsclBaKcSMBWuGbOFXtioLpzTb5euw==",
++      "license": "MIT",
++      "dependencies": {
++        "queue": "6.0.2"
++      },
++      "bin": {
++        "image-size": "bin/image-size.js"
++      },
++      "engines": {
++        "node": ">=16.x"
++      }
++    },
++    "node_modules/immediate": {
++      "version": "3.0.6",
++      "resolved": "https://registry.npmjs.org/immediate/-/immediate-3.0.6.tgz",
++      "integrity": "sha512-XXOFtyqDjNDAQxVfYxuF7g9Il/IbWmmlQg2MYKOH8ExIT1qg6xc4zyS3HaEEATgs1btfzxq15ciUiY7gjSXRGQ==",
++      "license": "MIT"
++    },
++    "node_modules/inherits": {
++      "version": "2.0.4",
++      "resolved": "https://registry.npmjs.org/inherits/-/inherits-2.0.4.tgz",
++      "integrity": "sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==",
++      "license": "ISC"
++    },
++    "node_modules/isarray": {
++      "version": "1.0.0",
++      "resolved": "https://registry.npmjs.org/isarray/-/isarray-1.0.0.tgz",
++      "integrity": "sha512-VLghIWNM6ELQzo7zwmcg0NmTVyWKYjvIeM83yjp0wRDTmUnrM678fQbcKBo6n2CJEF0szoG//ytg+TKla89ALQ==",
++      "license": "MIT"
++    },
++    "node_modules/jszip": {
++      "version": "3.10.2",
++      "resolved": "https://registry.npmjs.org/jszip/-/jszip-3.10.2.tgz",
++      "integrity": "sha512-3l+rb15IOWtUhU0H5MFqES/T6Kh7abYwjosBey/vD6hDt8zoEffkSC5Ws5SGtgVw3gBx2NEbhTeSW1+kWkpyTQ==",
++      "license": "(MIT OR GPL-3.0-or-later)",
++      "dependencies": {
++        "lie": "~3.3.0",
++        "pako": "~1.0.2",
++        "readable-stream": "~2.3.6",
++        "setimmediate": "^1.0.5"
++      }
++    },
++    "node_modules/lie": {
++      "version": "3.3.0",
++      "resolved": "https://registry.npmjs.org/lie/-/lie-3.3.0.tgz",
++      "integrity": "sha512-UaiMJzeWRlEujzAuw5LokY1L5ecNQYZKfmyZ9L7wDHb/p5etKaxXhohBcrw0EYby+G/NA52vRSN4N39dxHAIwQ==",
++      "license": "MIT",
++      "dependencies": {
++        "immediate": "~3.0.5"
++      }
++    },
++    "node_modules/pako": {
++      "version": "1.0.11",
++      "resolved": "https://registry.npmjs.org/pako/-/pako-1.0.11.tgz",
++      "integrity": "sha512-4hLB8Py4zZce5s4yd9XzopqwVv/yGNhV1Bl8NTmCq1763HeK2+EwVTv+leGeL13Dnh2wfbqowVPXCIO0z4taYw==",
++      "license": "(MIT AND Zlib)"
++    },
++    "node_modules/pptxgenjs": {
++      "version": "4.0.1",
++      "resolved": "https://registry.npmjs.org/pptxgenjs/-/pptxgenjs-4.0.1.tgz",
++      "integrity": "sha512-TeJISr8wouAuXw4C1F/mC33xbZs/FuEG6nH9FG1Zj+nuPcGMP5YRHl6X+j3HSUnS1f3at6k75ZZXPMZlA5Lj9A==",
++      "license": "MIT",
++      "dependencies": {
++        "@types/node": "^22.8.1",
++        "https": "^1.0.0",
++        "image-size": "^1.2.1",
++        "jszip": "^3.10.1"
++      }
++    },
++    "node_modules/process-nextick-args": {
++      "version": "2.0.1",
++      "resolved": "https://registry.npmjs.org/process-nextick-args/-/process-nextick-args-2.0.1.tgz",
++      "integrity": "sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==",
++      "license": "MIT"
++    },
++    "node_modules/queue": {
++      "version": "6.0.2",
++      "resolved": "https://registry.npmjs.org/queue/-/queue-6.0.2.tgz",
++      "integrity": "sha512-iHZWu+q3IdFZFX36ro/lKBkSvfkztY5Y7HMiPlOUjhupPcG2JMfst2KKEpu5XndviX/3UhFbRngUPNKtgvtZiA==",
++      "license": "MIT",
++      "dependencies": {
++        "inherits": "~2.0.3"
++      }
++    },
++    "node_modules/readable-stream": {
++      "version": "2.3.8",
++      "resolved": "https://registry.npmjs.org/readable-stream/-/readable-stream-2.3.8.tgz",
++      "integrity": "sha512-8p0AUk4XODgIewSi0l8Epjs+EVnWiK7NoDIEGU0HhE7+ZyY8D1IMY7odu5lRrFXGg71L15KG8QrPmum45RTtdA==",
++      "license": "MIT",
++      "dependencies": {
++        "core-util-is": "~1.0.0",
++        "inherits": "~2.0.3",
++        "isarray": "~1.0.0",
++        "process-nextick-args": "~2.0.0",
++        "safe-buffer": "~5.1.1",
++        "string_decoder": "~1.1.1",
++        "util-deprecate": "~1.0.1"
++      }
++    },
++    "node_modules/safe-buffer": {
++      "version": "5.1.2",
++      "resolved": "https://registry.npmjs.org/safe-buffer/-/safe-buffer-5.1.2.tgz",
++      "integrity": "sha512-Gd2UZBJDkXlY7GbJxfsE8/nvKkUEU1G38c1siN6QP6a9PT9MmHB8GnpscSmMJSoF8LOIrt8ud/wPtojys4G6+g==",
++      "license": "MIT"
++    },
++    "node_modules/setimmediate": {
++      "version": "1.0.5",
++      "resolved": "https://registry.npmjs.org/setimmediate/-/setimmediate-1.0.5.tgz",
++      "integrity": "sha512-MATJdZp8sLqDl/68LfQmbP8zKPLQNV6BIZoIgrscFDQ+RsvK/BxeDQOgyxKKoh0y/8h3BqVFnCqQ/gd+reiIXA==",
++      "license": "MIT"
++    },
++    "node_modules/string_decoder": {
++      "version": "1.1.1",
++      "resolved": "https://registry.npmjs.org/string_decoder/-/string_decoder-1.1.1.tgz",
++      "integrity": "sha512-n/ShnvDi6FHbbVfviro+WojiFzv+s8MPMHBczVePfUpDJLwoLT0ht1l4YwBCbi8pJAveEEdnkHyPyTP/mzRfwg==",
++      "license": "MIT",
++      "dependencies": {
++        "safe-buffer": "~5.1.0"
++      }
++    },
++    "node_modules/undici-types": {
++      "version": "6.21.0",
++      "resolved": "https://registry.npmjs.org/undici-types/-/undici-types-6.21.0.tgz",
++      "integrity": "sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==",
++      "license": "MIT"
++    },
++    "node_modules/util-deprecate": {
++      "version": "1.0.2",
++      "resolved": "https://registry.npmjs.org/util-deprecate/-/util-deprecate-1.0.2.tgz",
++      "integrity": "sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==",
++      "license": "MIT"
++    }
++  }
++}
+diff --git a/apps/artifacts/generation/package.json b/apps/artifacts/generation/package.json
+new file mode 100644
+index 0000000000000000000000000000000000000000..8d4c769a32d1c2d27e50a75c769f5e19b3d4173d
+--- /dev/null
++++ b/apps/artifacts/generation/package.json
+@@ -0,0 +1,13 @@
++{
++  "name": "@meri/artifact-generation",
++  "version": "0.1.0",
++  "private": true,
++  "description": "The pinned PptxGenJS module the fixed typed presentation generator (apps/artifacts/presentation.mjs) loads by absolute path; no code of its own. In the runtime image artifacts.executor.pptxModulePath is /opt/meri/apps/artifacts/generation/node_modules/pptxgenjs.",
++  "type": "module",
++  "engines": {
++    "node": ">=24 <25"
++  },
++  "dependencies": {
++    "pptxgenjs": "4.0.1"
++  }
++}
+diff --git a/apps/runtime/Dockerfile b/apps/runtime/Dockerfile
+index b5288e76087ed77fda8028cb456b9b906d55d8f2..48005795530d312f6ee236ac58d41cc121210c45 100644
+--- a/apps/runtime/Dockerfile
++++ b/apps/runtime/Dockerfile
+@@ -18,6 +18,10 @@ COPY apps/control/conversations/package.json apps/control/conversations/package-
+ RUN npm ci --prefix apps/control/conversations --ignore-scripts --no-audit --no-fund
+ COPY apps/artifacts/storage/package.json apps/artifacts/storage/package-lock.json ./apps/artifacts/storage/
+ RUN npm ci --prefix apps/artifacts/storage --omit=dev --ignore-scripts --no-audit --no-fund
++# The pinned PptxGenJS module the fixed presentation generator loads by absolute path
++# (artifacts.executor.pptxModulePath = /opt/meri/apps/artifacts/generation/node_modules/pptxgenjs).
++COPY apps/artifacts/generation/package.json apps/artifacts/generation/package-lock.json ./apps/artifacts/generation/
++RUN npm ci --prefix apps/artifacts/generation --omit=dev --ignore-scripts --no-audit --no-fund
+ COPY apps ./apps
+ COPY packages ./packages
+ COPY infra/product-preview/runtime-packages.lock.json ./infra/product-preview/runtime-packages.lock.json
+@@ -28,6 +32,9 @@ COPY infra/product-preview/first-chat-migrate.mjs infra/product-preview/first-ch
+ # outside /opt/meri so the snapshot is not copied into the runtime image.
+ COPY infra/product-preview/runtime-packages/x86_64 /opt/meri-runtime-input/x86_64
+ RUN --network=none node apps/runtime/build/runtime-packages.mjs fetch --lock infra/product-preview/runtime-packages.lock.json --directory /opt/meri-runtime-packages --from /opt/meri-runtime-input/x86_64
++# The retained exact PyPI wheels of the pure-Python generator libraries Wolfi does not
++# package (infra/product-preview/runtime-wheels.lock.json); verified and unpacked in the runtime stage.
++COPY infra/product-preview/runtime-packages/wheels /opt/meri-runtime-input/wheels
+ # Bake the pinned, upstream-verified SWC raw addon while the image layer is writable.
+ # Runtime retains the read-only root and non-executable temporary mount.
+ RUN --network=none node apps/runtime/build/materialize-swc.mjs
+@@ -41,11 +48,41 @@ COPY --from=builder /opt/meri /opt/meri
+ # Authenticate the pinned repository index through the base's existing public
+ # key. apk authenticates each indexed package's control/data identity. Never use
+ # allow-untrusted, floating upgrades, network fallback or copied Debian libraries.
++# Every package is pinned explicitly: the four runtime additions plus the document
++# generation executor's CPython 3.13 interpreter and the Pillow, lxml, typing-extensions
++# and matplotlib (numpy/openblas) closure that apps/artifacts/python imports; each row and
++# its version is also in runtime-packages.lock.json, which `verify` below compares with the
++# installed database. pandas (run_analysis only, not a documents-family operation) is omitted.
+ RUN --mount=type=bind,from=builder,source=/opt/meri-runtime-packages,target=/tmp/runtime-repo,readonly --network=none \
+     printf '%s\n' 'f0031424cf46f7db780ce63a45f0fd6aa6f85f601e6bb3b7a91fe3d4d5b7d2cc  /etc/apk/keys/wolfi-signing.rsa.pub' | sha256sum -c - && \
+     apk --repositories-file /dev/null --keys-dir /etc/apk/keys --repository /tmp/runtime-repo add --no-network --no-cache \
+-      bash=5.3-r14 libstdc++=16.2.0-r1 ncurses=6.6.20261010-r0 ncurses-terminfo-base=6.6.20261010-r0 && \
+-    node apps/runtime/build/runtime-packages.mjs verify --lock infra/product-preview/runtime-packages.lock.json
++      bash=5.3-r14 libstdc++=16.2.0-r1 ncurses=6.6.20261010-r0 ncurses-terminfo-base=6.6.20261010-r0 \
++      python-3.13-base=3.13.16_git20261016-r0 py3-pip-wheel=26.2.1-r4 gdbm=1.26-r7 libbz2-1=1.0.8-r25 libexpat1=2.9.0-r0 libffi=3.8.0-r2 \
++      libuuid=2.42.4-r0 mpdecimal=4.0.1-r4 readline=8.3-r3 sqlite-libs=3.54.1-r0 xz=5.8.4-r0 \
++      py3.13-pillow=12.3.0-r1 freetype=2.14.3-r7 lcms2=2.19.1-r3 libjpeg-turbo=3.2.0-r5 libpng=1.6.59-r0 libwebp=1.6.0-r7 openjpeg=2.5.4-r3 \
++      tiff=4.7.2-r3 libzstd1=1.5.7-r10 libxcb=1.17.0-r17 libxau=1.0.12-r9 libxdmcp=1.1.5-r12 \
++      py3.13-lxml=6.1.3-r0 libxml2-16=2.15.4-r1 libxslt=1.1.45-r5 py3.13-typing-extensions=4.16.0-r0 \
++      py3.13-matplotlib=3.11.2-r0 py3.13-numpy-2.2=2.2.6-r5 libopenblas-0=0.3.34-r1 libgfortran=16.2.0-r1 py3.13-pygments=2.21.0-r0 \
++      py3.13-contourpy=1.4.0-r1 py3.13-cycler=0.12.1-r8 py3.13-fonttools=4.67.0-r0 py3.13-kiwisolver=1.5.1-r1 py3.13-packaging=26.3-r0 \
++      py3.13-pyparsing=3.3.3-r0 py3.13-python-dateutil=2.9.0-r13 py3.13-six=1.17.0-r7
++# The pure-Python generator libraries Wolfi does not package (python-docx, XlsxWriter,
++# openpyxl, et_xmlfile): exact PyPI wheels pinned by infra/product-preview/runtime-wheels.lock.json
++# (the same hashes as apps/worker/qualification/requirements.lock.txt), retained under
++# infra/product-preview/runtime-packages/wheels and unpacked into the interpreter's own
++# site-packages, the only path `python -I` reads. No pip, no network. The import smoke then
++# pins every library version the executor runs, the PptxGenJS module loads, and the lock's
++# `verify` compares the complete installed package set and required files with the lock.
++RUN --mount=type=bind,from=builder,source=/opt/meri-runtime-input/wheels,target=/tmp/runtime-wheels,readonly --network=none \
++    cd /tmp/runtime-wheels && set -- * && test "$#" = 4 && printf '%s\n' \
++      '7a91720bc756843502c3b7504c77b8fe44217c85c537d85037f0f536151b2caa  et_xmlfile-2.0.0-py3-none-any.whl' \
++      '5282c12b107bffeef825f4617dc029afaf41d0ea60823bbb665ef3079dc79de2  openpyxl-3.1.5-py2.py3-none-any.whl' \
++      '3fd478f3250fbbbfd3b94fe1e985955737c145627498896a8a6bf81f4baf66c7  python_docx-1.2.0-py3-none-any.whl' \
++      '9a5db42bc5dff014806c58a20b9eae7322a134abb6fce3c92c181bfb275ec5b3  xlsxwriter-3.2.9-py3-none-any.whl' | sha256sum -c - && \
++    test "$(/usr/bin/python3.13 -I -c 'import sysconfig;print(sysconfig.get_paths()["purelib"])')" = /usr/lib/python3.13/site-packages && \
++    for wheel in et_xmlfile-2.0.0-py3-none-any.whl openpyxl-3.1.5-py2.py3-none-any.whl python_docx-1.2.0-py3-none-any.whl xlsxwriter-3.2.9-py3-none-any.whl; do /usr/bin/python3.13 -I -B -m zipfile -e "$wheel" /usr/lib/python3.13/site-packages || exit 2; done && \
++    cd / && MPLCONFIGDIR=/tmp/meri-image-smoke HOME=/tmp/meri-image-smoke OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 /usr/bin/python3.13 -I -B -c 'import sys,resource,docx,openpyxl,xlsxwriter,et_xmlfile,lxml,PIL,matplotlib,numpy;assert sys.version_info[:3]==(3,13,16),sys.version;assert (docx.__version__,openpyxl.__version__,xlsxwriter.__version__,et_xmlfile.__version__,lxml.__version__,PIL.__version__,matplotlib.__version__,numpy.__version__)==("1.2.0","3.1.5","3.2.9","2.0.0","6.1.3","12.3.0","3.11.2","2.2.6")' && rm -rf /tmp/meri-image-smoke && \
++    node -e 'const p=require("/opt/meri/apps/artifacts/generation/node_modules/pptxgenjs/package.json");if(p.name!=="pptxgenjs"||p.version!=="4.0.1")process.exit(2);require("/opt/meri/apps/artifacts/generation/node_modules/pptxgenjs")' && \
++    node /opt/meri/apps/runtime/build/runtime-packages.mjs verify --lock /opt/meri/infra/product-preview/runtime-packages.lock.json
+ RUN addgroup -g 1000 node && adduser -D -u 1000 -G node -h /home/node node
+ # Amazon RDS global CA bundle, pinned by apps/runtime/certs/rds-global-bundle.lock.json.
+ # node-postgres sslmode=verify-full (control, proxy owner, issuer -> Aurora) uses
+diff --git a/apps/runtime/build/runtime-packages.mjs b/apps/runtime/build/runtime-packages.mjs
+index 02e2894210a30507d47dc033c34b688480728ab4..7c93b3120d2ecdcec7373bb955a22aeafac61200 100644
+--- a/apps/runtime/build/runtime-packages.mjs
++++ b/apps/runtime/build/runtime-packages.mjs
+@@ -7,7 +7,8 @@ import {Readable} from 'node:stream';
+ import path from 'node:path';
+ import {pathToFileURL} from 'node:url';
+ 
+-const LOCK_LIMIT=256*1024, FILE_LIMIT=16*1024*1024, TOTAL_LIMIT=64*1024*1024, DB_LIMIT=8*1024*1024;
++// TOTAL_LIMIT covers the signed index plus the document-generation executor closure (CPython, Pillow, lxml, matplotlib/numpy/openblas; ~83 MiB).
++const LOCK_LIMIT=256*1024, FILE_LIMIT=16*1024*1024, TOTAL_LIMIT=128*1024*1024, DB_LIMIT=8*1024*1024;
+ const ORIGIN='https://packages.wolfi.dev/os/x86_64/';
+ const NAME=/^[a-z0-9][a-z0-9+_.-]{0,127}$/u, VERSION=/^[0-9][A-Za-z0-9._+~-]{0,127}$/u;
+ const HASH=/^[a-f0-9]{64}$/u;
+@@ -194,12 +195,13 @@ async function runtimePath(root,name){const file=await fs.realpath(path.join(roo
+ function installedSet(bytes){
+  const text=utf8(bytes);need(!/[\0\r]/u.test(text),'VERIFY');const result=[],seen=new Set();
+  for(const block of text.split(/\n\n+/u)){
+-  if(!block.trim())continue;let name,version;
++  if(!block.trim())continue;let name,version,architecture;
+   for(const line of block.split('\n')){
+    if(line.startsWith('P:')){need(name===undefined,'VERIFY');name=line.slice(2);}
+    if(line.startsWith('V:')){need(version===undefined,'VERIFY');version=line.slice(2);}
++   if(line.startsWith('A:')){need(architecture===undefined,'VERIFY');architecture=line.slice(2);}
+   }
+-  need(typeof name==='string'&&NAME.test(name)&&typeof version==='string'&&VERSION.test(version)&&!seen.has(name),'VERIFY');
++  need(typeof name==='string'&&NAME.test(name)&&typeof version==='string'&&VERSION.test(version)&&architecture==='x86_64'&&!seen.has(name),'VERIFY');
+   seen.add(name);result.push({name,version});need(result.length<=2176,'VERIFY');
+  }
+  return result.sort((a,b)=>a.name<b.name?-1:a.name>b.name?1:0);
+diff --git a/apps/runtime/build/runtime-packages.test.mjs b/apps/runtime/build/runtime-packages.test.mjs
+index 631911dc28de875dfbe244f3c9ec9105ebaf485b..aad54e4319550792b03b568a94c0ee0cac01e8c7 100644
+--- a/apps/runtime/build/runtime-packages.test.mjs
++++ b/apps/runtime/build/runtime-packages.test.mjs
+@@ -60,7 +60,7 @@ test('lock permits only exact public APK/index URLs and strict per-file/combined
+  for(const mutate of [x=>{x.additionalPackages[0].url='http://packages.wolfi.dev/os/x86_64/bash-5.3-r14.apk';},x=>{x.additionalPackages[0].url+='?token=private';},
+   x=>{x.additionalPackages[0].url=x.additionalPackages[0].url.replace('https://','https://private@');},x=>{x.additionalPackages[0].file='../bash.apk';},
+   x=>{x.repositoryIndex.url=x.repositoryIndex.url.replace('packages.wolfi.dev','foreign.example');},x=>{x.repositoryIndex.bytes=16*1024*1024+1;},x=>{x.repositoryIndex.bytes=0;},
+-  x=>{x.additionalPackages=Array.from({length:5},(_,i)=>({name:'package'+i,version:'1-r0',file:'package'+i+'-1-r0.apk',url:origin+'package'+i+'-1-r0.apk',sha256:'c'.repeat(64),bytes:16*1024*1024}));}]){
++  x=>{x.additionalPackages=Array.from({length:9},(_,i)=>({name:'package'+i,version:'1-r0',file:'package'+i+'-1-r0.apk',url:origin+'package'+i+'-1-r0.apk',sha256:'c'.repeat(64),bytes:16*1024*1024}));}]){
+   const f=fixture();mutate(f.lock);assert.throws(()=>parseRuntimePackageLock(bytes(f.lock)),/^Error: RUNTIME_PACKAGES_LOCK$/u);
+  }
+ });
+@@ -159,6 +159,7 @@ test('installed verification joins every base/addition name and version with exa
+ test('missing, extra, duplicate, wrong-version and malformed installed identities cannot verify',async t=>{
+  const x=await installedFixture(t);const variants=[x.rows.slice(1),[...x.rows,{name:'foreign',version:'1-r0'}],[...x.rows,x.rows[0]],x.rows.map((r,i)=>i===0?{...r,version:'0-r0'}:r)];
+  for(const rows of variants){await fs.writeFile(x.database,x.db(rows));await assert.rejects(verifyInstalledPackages(x.f.raw,{rootDirectory:x.root,measureRuntime:runtime}),/^Error: RUNTIME_PACKAGES_VERIFY$/u);}
++ for(const db of [x.db(x.rows).replace('A:x86_64','A:aarch64'),x.db(x.rows).replace('A:x86_64\n',''),x.db(x.rows).replace('A:x86_64','A:x86_64\nA:x86_64')]){await fs.writeFile(x.database,db);await assert.rejects(verifyInstalledPackages(x.f.raw,{rootDirectory:x.root,measureRuntime:runtime}),/^Error: RUNTIME_PACKAGES_VERIFY$/u);}
+  for(const text of ['P:glibc\nV:2.44-r4\nV:2.44-r4\n','private-only-data','P:glibc\nV:2.44-r4\0\n','P:glibc\nV:2.44-r4\r\n']){await fs.writeFile(x.database,text);await assert.rejects(verifyInstalledPackages(x.f.raw,{rootDirectory:x.root,measureRuntime:runtime}),/^Error: RUNTIME_PACKAGES_VERIFY$/u);}
+ });
+ 
+diff --git a/infra/product-preview/image-build.test.mjs b/infra/product-preview/image-build.test.mjs
+index f9d99b627f48d235f464bca24083f2b9f9260105..cdb5fd0c00e4f9cc2a33cd263eb84529de37ebf8 100644
+--- a/infra/product-preview/image-build.test.mjs
++++ b/infra/product-preview/image-build.test.mjs
+@@ -8,6 +8,7 @@ import {fileURLToPath} from 'node:url';
+ import {createHash} from 'node:crypto';
+ import {createProductImageBuildRecipe} from './image-build-recipe.mjs';
+ import productImageTestReporter from './image-build-test-reporter.mjs';
++import {compileRuntimeArtifactsConfiguration} from '../../apps/runtime/artifacts/configuration.mjs';
+ 
+ const verifier=fileURLToPath(new URL('./image-build-source.py',import.meta.url));
+ const producer=fileURLToPath(new URL('./image-build-producer.py',import.meta.url));
+@@ -289,6 +290,56 @@ test('runtime Dockerfile bakes the locked RDS bundle read-only and points NODE_E
+  assert.deepEqual(ignore.filter(line=>line.startsWith('!')&&/\.(pem|key|crt)$/u.test(line)),['!'+lock.path]);
+ });
+ 
++const wheelLockPath='infra/product-preview/runtime-wheels.lock.json',pendingPath='infra/product-preview/runtime-packages/pending-additions.json';
++/** The `name=version` pins of the runtime stage's one offline `apk add`, continuation lines included. */
++function apkPins(runtime){
++ const lines=runtime.split('\n'),start=lines.findIndex(line=>line.includes('--repository /tmp/runtime-repo add --no-network --no-cache'));assert.ok(start>=0);
++ const pins=[];
++ for(let i=start;;i++){
++  const line=lines[i],tokens=line.replace(/\\$/u,'').trim().split(/\s+/u).filter(Boolean),from=i===start?tokens.indexOf('--no-cache')+1:0;
++  for(const token of tokens.slice(from)){assert.match(token,/^[a-z0-9][a-z0-9+_.-]*=[0-9][A-Za-z0-9._+~-]*$/u,token);pins.push(token);}
++  if(!line.endsWith('\\'))break;
++ }
++ return pins;
++}
++test('runtime Dockerfile pins exactly the locked additional packages plus the pending retained downloads, and bakes the executor wheels',()=>{
++ const dockerfile=repoFile('apps/runtime/Dockerfile').toString('utf8'),runtime=dockerfile.slice(dockerfile.indexOf('FROM ${RUNTIME_IMAGE} AS runtime'));
++ const lock=JSON.parse(repoFile(runtimeLockPath)),wheels=JSON.parse(repoFile(wheelLockPath));
++ let pending=[];try{pending=JSON.parse(repoFile(pendingPath)).apkPackages;}catch(error){if(error.code!=='ENOENT')throw error;}
++ const rows=[...lock.additionalPackages,...pending],pins=apkPins(runtime);
++ assert.deepEqual([...pins].sort(),rows.map(r=>`${r.name}=${r.version}`).sort());assert.equal(new Set(pins).size,pins.length);
++ const lockedNames=new Set(lock.additionalPackages.map(r=>r.name));for(const row of pending)assert.ok(!lockedNames.has(row.name),row.name+' is both locked and pending');
++ // Wheels: copied in the builder, re-included in the context, every lock row hash-checked, unpacked into the lock's site-packages and probed by the lock.
++ assert.ok(dockerfile.includes('COPY infra/product-preview/runtime-packages/wheels /opt/meri-runtime-input/wheels'));
++ assert.ok(repoFile('.dockerignore').toString('utf8').split(/\r?\n/u).includes('!infra/product-preview/runtime-packages/wheels/'));
++ assert.ok(runtime.includes(`set -- * && test "$#" = ${wheels.wheels.length} &&`));
++ assert.ok(runtime.includes(`test "$(/usr/bin/python3.13 -I -c 'import sysconfig;print(sysconfig.get_paths()["purelib"])')" = ${wheels.sitePackages}`));
++ for(const row of wheels.wheels){assert.ok(runtime.includes(`'${row.sha256}  ${row.file}'`),row.file);assert.ok(lock.requiredPaths.includes(`${wheels.sitePackages}/${row.importName}/__init__.py`),row.importName);}
++ const loop=/for wheel in ([^;]+); do \/usr\/bin\/python3\.13 -I -B -m zipfile -e "\$wheel" (\S+)/u.exec(runtime);assert.ok(loop);
++ assert.deepEqual(loop[1].trim().split(/\s+/u).sort(),wheels.wheels.map(r=>r.file).sort());assert.equal(loop[2],wheels.sitePackages);
++ // The import smoke pins each generator library version: the wheel versions and the apk versions (Wolfi `-rN` / `_gitN` suffixes stripped).
++ const versions=/__version__\)==\(([^)]*)\)/u.exec(runtime);assert.ok(versions);const pinned=versions[1].split(',').map(v=>v.trim().slice(1,-1));
++ const apkVersion=name=>{const row=rows.find(r=>r.name===name);assert.ok(row,name);return row.version.replace(/-r\d+$/u,'').replace(/_git\d+$/u,'');};
++ for(const row of wheels.wheels)assert.ok(pinned.includes(row.version),row.name);
++ for(const name of ['py3.13-lxml','py3.13-pillow','py3.13-matplotlib','py3.13-numpy-2.2'])assert.ok(pinned.includes(apkVersion(name)),name);
++ assert.ok(runtime.includes(`sys.version_info[:3]==(${apkVersion('python-3.13-base').split('.').join(',')})`));
++ // PptxGenJS: its own locked package installed in the builder, loaded at the in-image path the executor configuration names, same pin as presentation.mjs.
++ const generation=JSON.parse(repoFile('apps/artifacts/generation/package.json')),generationLock=JSON.parse(repoFile('apps/artifacts/generation/package-lock.json'));
++ assert.equal(generation.dependencies.pptxgenjs,'4.0.1');assert.equal(generationLock.packages[''].dependencies.pptxgenjs,'4.0.1');assert.equal(generationLock.packages['node_modules/pptxgenjs'].version,'4.0.1');
++ assert.ok(repoFile('apps/artifacts/presentation.mjs').toString('utf8').includes(`packageData.version!=='${generation.dependencies.pptxgenjs}'`));
++ assert.ok(dockerfile.includes('RUN npm ci --prefix apps/artifacts/generation --omit=dev --ignore-scripts --no-audit --no-fund'));
++ assert.ok(runtime.includes('require("/opt/meri/apps/artifacts/generation/node_modules/pptxgenjs/package.json")'));
++ // The lock's verify runs after the wheels are unpacked (it probes their __init__ files) and before the non-root user exists.
++ assert.ok(runtime.indexOf('-m zipfile -e')<runtime.indexOf('runtime-packages.mjs verify')&&runtime.indexOf('runtime-packages.mjs verify')<runtime.indexOf('RUN addgroup -g 1000 node'));
++});
++test('the rendered artifacts.executor image paths validate and name files the lock verifies in the image',()=>{
++ const lock=JSON.parse(repoFile(runtimeLockPath)),dockerfile=repoFile('apps/runtime/Dockerfile').toString('utf8');
++ const executor={pythonExecutable:'/usr/bin/python3.13',nodeExecutable:'/usr/local/bin/node',pptxModulePath:'/opt/meri/apps/artifacts/generation/node_modules/pptxgenjs',tempRoot:'/tmp',timeoutMs:30000};
++ assert.deepEqual(compileRuntimeArtifactsConfiguration({artifacts:{enabled:false,executor}}).executor,executor);
++ for(const path of [executor.pythonExecutable,executor.nodeExecutable,executor.pptxModulePath+'/package.json','/opt/meri/apps/artifacts/python/entry.py','/opt/meri/apps/artifacts/presentation.mjs','/usr/lib/libpython3.13.so.1.0'])assert.ok(lock.requiredPaths.includes(path),path);
++ assert.match(dockerfile,/^VOLUME \[.*"\/tmp".*\]$/mu);assert.ok(dockerfile.includes('chmod 1777 /tmp'));
++});
++
+ test('Python entrypoint help/import/missing configuration are bounded and inert',()=>{
+  assert.equal(python([verifier,'--help']).status,0);assert.equal(python([producer]).status,2);
+  const code=`import importlib.util\ns=importlib.util.spec_from_file_location('build_source',${JSON.stringify(verifier)})\nm=importlib.util.module_from_spec(s);s.loader.exec_module(m)\nprint(m.CONTRACT)\n`;
+diff --git a/infra/product-preview/runtime-packages.lock.json b/infra/product-preview/runtime-packages.lock.json
+index 44d1c57ab3e2f49be25b45a54290d347da724d94..a914d229530bd9f5711fb1e2cd968ecad2c22740 100644
+--- a/infra/product-preview/runtime-packages.lock.json
++++ b/infra/product-preview/runtime-packages.lock.json
+@@ -98,6 +98,86 @@
+       "sha256": "28274b1abce489dd947e0b517935992a3b069647b7f3a4d8eb95bb262c0751d1",
+       "bytes": 784966
+     },
++    {
++      "name": "freetype",
++      "version": "2.14.3-r7",
++      "file": "freetype-2.14.3-r7.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/freetype-2.14.3-r7.apk",
++      "sha256": "81694e54dd1c00ae479310aed0b45e492b31b15d2ae81865ee5393604354cf92",
++      "bytes": 478404
++    },
++    {
++      "name": "gdbm",
++      "version": "1.26-r7",
++      "file": "gdbm-1.26-r7.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/gdbm-1.26-r7.apk",
++      "sha256": "b353e1fb3f7702fe2faba2fd6800bbfd3db63a726e17d294a626aacbf239629b",
++      "bytes": 280622
++    },
++    {
++      "name": "lcms2",
++      "version": "2.19.1-r3",
++      "file": "lcms2-2.19.1-r3.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/lcms2-2.19.1-r3.apk",
++      "sha256": "f2c5857cab8fd797f0a07e56042e41e93522bca988281e8765d275614ee23933",
++      "bytes": 237648
++    },
++    {
++      "name": "libbz2-1",
++      "version": "1.0.8-r25",
++      "file": "libbz2-1-1.0.8-r25.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/libbz2-1-1.0.8-r25.apk",
++      "sha256": "52d98e5a8b0ea3e1f301d565bf8c8fed6b106f881d9d120dbde0d38fbd4f9fb8",
++      "bytes": 50263
++    },
++    {
++      "name": "libexpat1",
++      "version": "2.9.0-r0",
++      "file": "libexpat1-2.9.0-r0.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/libexpat1-2.9.0-r0.apk",
++      "sha256": "49291dad97f2292a5796c2cdb766f6476b274332ae2bbd3c35447d7f305f81a8",
++      "bytes": 113449
++    },
++    {
++      "name": "libffi",
++      "version": "3.8.0-r2",
++      "file": "libffi-3.8.0-r2.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/libffi-3.8.0-r2.apk",
++      "sha256": "93fe2f937802653775e8537c7a2840c6de8a1d83c396559be200c0d5d86375f6",
++      "bytes": 47462
++    },
++    {
++      "name": "libgfortran",
++      "version": "16.2.0-r1",
++      "file": "libgfortran-16.2.0-r1.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/libgfortran-16.2.0-r1.apk",
++      "sha256": "de6d40b1510125b2530c7b7e1d37c1c3f70c49a1c7dfc33826c3725e3d92f4e2",
++      "bytes": 1312300
++    },
++    {
++      "name": "libjpeg-turbo",
++      "version": "3.2.0-r5",
++      "file": "libjpeg-turbo-3.2.0-r5.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/libjpeg-turbo-3.2.0-r5.apk",
++      "sha256": "0a30d14964216ff18d89107d75bf7903d5ef7d7a1bddf33c7d5f93715a72511a",
++      "bytes": 638577
++    },
++    {
++      "name": "libopenblas-0",
++      "version": "0.3.34-r1",
++      "file": "libopenblas-0-0.3.34-r1.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/libopenblas-0-0.3.34-r1.apk",
++      "sha256": "1eab6e1b9049452dcad27dc3ef02dcbf1575648d6f01ee991966021b0794402a",
++      "bytes": 11799709
++    },
++    {
++      "name": "libpng",
++      "version": "1.6.59-r0",
++      "file": "libpng-1.6.59-r0.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/libpng-1.6.59-r0.apk",
++      "sha256": "658ba44b0ae145eac273d5822093e891be48967dd482067af79b189a00b8eb9b",
++      "bytes": 143584
++    },
+     {
+       "name": "libstdc++",
+       "version": "16.2.0-r1",
+@@ -106,6 +186,78 @@
+       "sha256": "fc233c091aa551d6ba6da3e444d99a94e9947d53814d20183a0a7ded9a668f80",
+       "bytes": 1260650
+     },
++    {
++      "name": "libuuid",
++      "version": "2.42.4-r0",
++      "file": "libuuid-2.42.4-r0.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/libuuid-2.42.4-r0.apk",
++      "sha256": "e1f5d85296afc0074e4d69fb3bdf7cb12b82233768ea5ad38330d53c76724785",
++      "bytes": 33422
++    },
++    {
++      "name": "libwebp",
++      "version": "1.6.0-r7",
++      "file": "libwebp-1.6.0-r7.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/libwebp-1.6.0-r7.apk",
++      "sha256": "e1dcd7b76e2a53791462c84e4b8fa8f15892665e16f60a54c1751cb7a9804000",
++      "bytes": 339709
++    },
++    {
++      "name": "libxau",
++      "version": "1.0.12-r9",
++      "file": "libxau-1.0.12-r9.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/libxau-1.0.12-r9.apk",
++      "sha256": "fa4cab03a805ef6996e7540d69096d3185903ca0a3101a3d57d9c6526df41793",
++      "bytes": 16465
++    },
++    {
++      "name": "libxcb",
++      "version": "1.17.0-r17",
++      "file": "libxcb-1.17.0-r17.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/libxcb-1.17.0-r17.apk",
++      "sha256": "5b395537596061fb0bc6a55a1e5b89162b0f64d29ae0d3c882a3be3d338dbd3c",
++      "bytes": 399741
++    },
++    {
++      "name": "libxdmcp",
++      "version": "1.1.5-r12",
++      "file": "libxdmcp-1.1.5-r12.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/libxdmcp-1.1.5-r12.apk",
++      "sha256": "7cc7cb88364210cd1d48016f7a1c4caf50525ea1c84516588f837020c0768d03",
++      "bytes": 20709
++    },
++    {
++      "name": "libxml2-16",
++      "version": "2.15.4-r1",
++      "file": "libxml2-16-2.15.4-r1.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/libxml2-16-2.15.4-r1.apk",
++      "sha256": "461b0e802a5ffb3428f61e85eb56395361c1b2fd0cc0d4cc2666abb672c16471",
++      "bytes": 709117
++    },
++    {
++      "name": "libxslt",
++      "version": "1.1.45-r5",
++      "file": "libxslt-1.1.45-r5.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/libxslt-1.1.45-r5.apk",
++      "sha256": "774aa16154ab1fe6ba8059ffabde298f2cc6ed3c3485de645e3db875108f46f6",
++      "bytes": 292610
++    },
++    {
++      "name": "libzstd1",
++      "version": "1.5.7-r10",
++      "file": "libzstd1-1.5.7-r10.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/libzstd1-1.5.7-r10.apk",
++      "sha256": "6660523fbffeca75cd601b0c61f201f0054a568bac72204bb13be0dba36da176",
++      "bytes": 639525
++    },
++    {
++      "name": "mpdecimal",
++      "version": "4.0.1-r4",
++      "file": "mpdecimal-4.0.1-r4.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/mpdecimal-4.0.1-r4.apk",
++      "sha256": "823156afdf095874d8e386ab453e69bf5677ab76dd249da7f6451929e6f9ccd4",
++      "bytes": 131249
++    },
+     {
+       "name": "ncurses",
+       "version": "6.6.20261010-r0",
+@@ -121,6 +273,174 @@
+       "url": "https://packages.wolfi.dev/os/x86_64/ncurses-terminfo-base-6.6.20261010-r0.apk",
+       "sha256": "fac2c47f1e85175a8cb6842c374b5462aa8a10d548b5d602d28ee7829b00a751",
+       "bytes": 119342
++    },
++    {
++      "name": "openjpeg",
++      "version": "2.5.4-r3",
++      "file": "openjpeg-2.5.4-r3.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/openjpeg-2.5.4-r3.apk",
++      "sha256": "eca7c6ea6d158a9d07cef353b9a7af8b2080e92c7a58dddae74f5a92f9fcd83d",
++      "bytes": 244855
++    },
++    {
++      "name": "py3-pip-wheel",
++      "version": "26.2.1-r4",
++      "file": "py3-pip-wheel-26.2.1-r4.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/py3-pip-wheel-26.2.1-r4.apk",
++      "sha256": "9e7ff37eeaa621df6d066b9904a91555848c5c13db95dab7efd2ad67c11fae7a",
++      "bytes": 1814451
++    },
++    {
++      "name": "py3.13-contourpy",
++      "version": "1.4.0-r1",
++      "file": "py3.13-contourpy-1.4.0-r1.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-contourpy-1.4.0-r1.apk",
++      "sha256": "cb321f90a0d52f888d78d1b3a561dbd6c860dc0a764ea76551ca9affa949849e",
++      "bytes": 462780
++    },
++    {
++      "name": "py3.13-cycler",
++      "version": "0.12.1-r8",
++      "file": "py3.13-cycler-0.12.1-r8.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-cycler-0.12.1-r8.apk",
++      "sha256": "ca1b3cc9bed9249546f77bcbb211f5268df09ead37f236b9e6b19a124ba89328",
++      "bytes": 27301
++    },
++    {
++      "name": "py3.13-fonttools",
++      "version": "4.67.0-r0",
++      "file": "py3.13-fonttools-4.67.0-r0.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-fonttools-4.67.0-r0.apk",
++      "sha256": "0161c9847bf6b62452c7fa29a831d3b08699f6af95677455a86d67ff832d2c50",
++      "bytes": 3354281
++    },
++    {
++      "name": "py3.13-kiwisolver",
++      "version": "1.5.1-r1",
++      "file": "py3.13-kiwisolver-1.5.1-r1.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-kiwisolver-1.5.1-r1.apk",
++      "sha256": "31d9b285bc8d5535ae89906ff5705971e6e51f8e1a9344d785436b7ec09d655f",
++      "bytes": 115891
++    },
++    {
++      "name": "py3.13-lxml",
++      "version": "6.1.3-r0",
++      "file": "py3.13-lxml-6.1.3-r0.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-lxml-6.1.3-r0.apk",
++      "sha256": "b77cf8d2a37b5a68351b9d8387a6fffc6da785bd44060a150b1eeebaa3afff5f",
++      "bytes": 2581465
++    },
++    {
++      "name": "py3.13-matplotlib",
++      "version": "3.11.2-r0",
++      "file": "py3.13-matplotlib-3.11.2-r0.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-matplotlib-3.11.2-r0.apk",
++      "sha256": "6f16b931d0208a6f296fb129529547430024eb997bdfe1a9e976e99ce4dacee4",
++      "bytes": 14295686
++    },
++    {
++      "name": "py3.13-numpy-2.2",
++      "version": "2.2.6-r5",
++      "file": "py3.13-numpy-2.2-2.2.6-r5.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-numpy-2.2-2.2.6-r5.apk",
++      "sha256": "82242789cf3bcbe8a3c64093d2782380a92de9ec3a4807d70ff975260203b219",
++      "bytes": 12477950
++    },
++    {
++      "name": "py3.13-packaging",
++      "version": "26.3-r0",
++      "file": "py3.13-packaging-26.3-r0.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-packaging-26.3-r0.apk",
++      "sha256": "fc9f3c999a5963b1b6634b1c481af9942658920a93f444642166051f5defe3ec",
++      "bytes": 343989
++    },
++    {
++      "name": "py3.13-pillow",
++      "version": "12.3.0-r1",
++      "file": "py3.13-pillow-12.3.0-r1.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-pillow-12.3.0-r1.apk",
++      "sha256": "30204e23855c47ed5ca62de88df3cbc8ff81ef4d1820d9b2323ef41aa46507d3",
++      "bytes": 1396143
++    },
++    {
++      "name": "py3.13-pygments",
++      "version": "2.21.0-r0",
++      "file": "py3.13-pygments-2.21.0-r0.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-pygments-2.21.0-r0.apk",
++      "sha256": "80b8019c2aeeeea4abeea2053eabc46997adc404ab20354e9c5ec8991f840416",
++      "bytes": 2899203
++    },
++    {
++      "name": "py3.13-pyparsing",
++      "version": "3.3.3-r0",
++      "file": "py3.13-pyparsing-3.3.3-r0.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-pyparsing-3.3.3-r0.apk",
++      "sha256": "628ce308e90f234dfd34db2146f28bf4e25da682c8273c07f240b86f4f2b3ace",
++      "bytes": 362378
++    },
++    {
++      "name": "py3.13-python-dateutil",
++      "version": "2.9.0-r13",
++      "file": "py3.13-python-dateutil-2.9.0-r13.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-python-dateutil-2.9.0-r13.apk",
++      "sha256": "9f363a36fdcc074d0952d032dea5c3860eb6bfc6ea37f5dbea4f2a15b56a1521",
++      "bytes": 389607
++    },
++    {
++      "name": "py3.13-six",
++      "version": "1.17.0-r7",
++      "file": "py3.13-six-1.17.0-r7.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-six-1.17.0-r7.apk",
++      "sha256": "fcc24f3d528239978d16c215f379b103bf3115d9915d0a2dbb71a53e30cc3c47",
++      "bytes": 41637
++    },
++    {
++      "name": "py3.13-typing-extensions",
++      "version": "4.16.0-r0",
++      "file": "py3.13-typing-extensions-4.16.0-r0.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-typing-extensions-4.16.0-r0.apk",
++      "sha256": "1b2911197709c8700828f33a8da32159b490df009fdd36a4c634dd58b505fe96",
++      "bytes": 130024
++    },
++    {
++      "name": "python-3.13-base",
++      "version": "3.13.16_git20261016-r0",
++      "file": "python-3.13-base-3.13.16_git20261016-r0.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/python-3.13-base-3.13.16_git20261016-r0.apk",
++      "sha256": "081235dc7cc8a68e0896b80cd6b0ec27d9c0f38cdd6dcfd8df052e083735881d",
++      "bytes": 12199161
++    },
++    {
++      "name": "readline",
++      "version": "8.3-r3",
++      "file": "readline-8.3-r3.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/readline-8.3-r3.apk",
++      "sha256": "bc694bcbfcf3d3d48c890b2701714269c9c0851a85c44bb5bf38347e4999f80b",
++      "bytes": 349087
++    },
++    {
++      "name": "sqlite-libs",
++      "version": "3.54.1-r0",
++      "file": "sqlite-libs-3.54.1-r0.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/sqlite-libs-3.54.1-r0.apk",
++      "sha256": "5ea68a7dad00791dbc5eff42aad9022b0984f82e271058811a4d72181e450144",
++      "bytes": 989586
++    },
++    {
++      "name": "tiff",
++      "version": "4.7.2-r3",
++      "file": "tiff-4.7.2-r3.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/tiff-4.7.2-r3.apk",
++      "sha256": "2ff8e1ab80b34e531013dac8e42c546ac5fa0c097217f46a1ee74fc12d931587",
++      "bytes": 544160
++    },
++    {
++      "name": "xz",
++      "version": "5.8.4-r0",
++      "file": "xz-5.8.4-r0.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/xz-5.8.4-r0.apk",
++      "sha256": "d015b40af8b300a0a33e710573e1e7d6cdc31ae5124bcac2fd299bea90a8506a",
++      "bytes": 397390
+     }
+   ],
+   "requiredPaths": [
+@@ -130,6 +450,19 @@
+     "/usr/bin/bash",
+     "/usr/lib/libgcc_s.so.1",
+     "/usr/lib/libstdc++.so.6",
+-    "/usr/local/bin/node"
++    "/usr/local/bin/node",
++    "/usr/bin/python3.13",
++    "/usr/lib/libpython3.13.so.1.0",
++    "/usr/lib/python3.13/site-packages/PIL/__init__.py",
++    "/usr/lib/python3.13/site-packages/lxml/__init__.py",
++    "/usr/lib/python3.13/site-packages/matplotlib/__init__.py",
++    "/usr/lib/python3.13/site-packages/numpy/__init__.py",
++    "/usr/lib/python3.13/site-packages/docx/__init__.py",
++    "/usr/lib/python3.13/site-packages/openpyxl/__init__.py",
++    "/usr/lib/python3.13/site-packages/xlsxwriter/__init__.py",
++    "/usr/lib/python3.13/site-packages/et_xmlfile/__init__.py",
++    "/opt/meri/apps/artifacts/python/entry.py",
++    "/opt/meri/apps/artifacts/presentation.mjs",
++    "/opt/meri/apps/artifacts/generation/node_modules/pptxgenjs/package.json"
+   ]
+ }
+diff --git a/infra/product-preview/runtime-packages/.gitattributes b/infra/product-preview/runtime-packages/.gitattributes
+index e3bdef2420f805784e6f08b5858017fb91303e49..b5899d5ac2a2e941a13bb2b1bfef8d6fae2c051a 100644
+--- a/infra/product-preview/runtime-packages/.gitattributes
++++ b/infra/product-preview/runtime-packages/.gitattributes
+@@ -1 +1,2 @@
+ x86_64/* -text
++wheels/* -text
+diff --git a/infra/product-preview/runtime-packages/build-attempt-20261018.txt b/infra/product-preview/runtime-packages/build-attempt-20261018.txt
+new file mode 100644
+index 0000000000000000000000000000000000000000..068edb3fae7b5d87093085313159df4bde410f1e
+--- /dev/null
++++ b/infra/product-preview/runtime-packages/build-attempt-20261018.txt
+@@ -0,0 +1,149 @@
++#0 building with "desktop-linux" instance using docker driver
++
++#1 [internal] load build definition from Dockerfile
++#1 transferring dockerfile: 10.52kB 0.0s done
++#1 WARN: InvalidDefaultArgInFrom: Default value for ARG ${NODE_IMAGE} results in empty or invalid base image name (line 5)
++#1 WARN: InvalidDefaultArgInFrom: Default value for ARG ${RUNTIME_IMAGE} results in empty or invalid base image name (line 43)
++#1 DONE 0.1s
++
++#2 [internal] load metadata for cgr.dev/chainguard/wolfi-base@sha256:030e45cb37187dff322bbefe9658bcaec31b824a5d523380771a64864c9f45d4
++#2 ...
++
++#3 [internal] load metadata for public.ecr.aws/docker/library/node@sha256:c83040f7e24bacea68e58a0b96a484ba430bf24abb2973eab7ba4701144b7b63
++#3 DONE 1.0s
++
++#2 [internal] load metadata for cgr.dev/chainguard/wolfi-base@sha256:030e45cb37187dff322bbefe9658bcaec31b824a5d523380771a64864c9f45d4
++#2 DONE 1.1s
++
++#4 [internal] load .dockerignore
++#4 transferring context: 2.98kB 0.0s done
++#4 DONE 0.0s
++
++#5 [builder  1/27] FROM public.ecr.aws/docker/library/node@sha256:c83040f7e24bacea68e58a0b96a484ba430bf24abb2973eab7ba4701144b7b63
++#5 resolve public.ecr.aws/docker/library/node@sha256:c83040f7e24bacea68e58a0b96a484ba430bf24abb2973eab7ba4701144b7b63 0.0s done
++#5 sha256:68a475a783180cb3a959cf6b1f0d1cd2330fcf47b79de7b584861bdd72bba0e9 448B / 448B 0.1s done
++#5 sha256:ae7f77214d73d6afb09dc62d131d41dc20db4d24f2d02c232ec067df86f8d640 0B / 1.72MB 0.2s
++#5 sha256:342851af33a61abdbf3bf89b3a77058ab358aa789d9e74774bd40a45d458bb39 0B / 50.91MB 0.2s
++#5 sha256:92e5108e7149ec8b07da9c78dcf69dba4052f25a022c7a5f19c2ca9b513988aa 3.31kB / 3.31kB 0.2s done
++#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 0B / 29.84MB 0.2s
++#5 sha256:ae7f77214d73d6afb09dc62d131d41dc20db4d24f2d02c232ec067df86f8d640 1.72MB / 1.72MB 0.4s done
++#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 3.15MB / 29.84MB 0.5s
++#5 sha256:342851af33a61abdbf3bf89b3a77058ab358aa789d9e74774bd40a45d458bb39 4.19MB / 50.91MB 0.6s
++#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 5.24MB / 29.84MB 0.6s
++#5 sha256:342851af33a61abdbf3bf89b3a77058ab358aa789d9e74774bd40a45d458bb39 7.34MB / 50.91MB 0.8s
++#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 7.34MB / 29.84MB 0.8s
++#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 9.44MB / 29.84MB 1.1s
++#5 ...
++
++#6 [runtime  1/10] FROM cgr.dev/chainguard/wolfi-base@sha256:030e45cb37187dff322bbefe9658bcaec31b824a5d523380771a64864c9f45d4
++#6 resolve cgr.dev/chainguard/wolfi-base@sha256:030e45cb37187dff322bbefe9658bcaec31b824a5d523380771a64864c9f45d4 0.0s done
++#6 sha256:34f839d4cbf4599cc784bb5a3fbecf0667b148297697a99524b077cb48497900 15.12kB / 15.12kB 0.2s done
++#6 sha256:8153a0839d92c08f2f2768d29b71755d4bad01fc5047124a16463e5f015d6047 78.71kB / 78.71kB 0.3s done
++#6 sha256:0e0d95cd11d9bc8775ae15b999b97b5a0d635976fda218a952d94954606fa728 109.28kB / 109.28kB 0.4s done
++#6 sha256:b10d4a946640307a04381e8ff5b3dc262f7332586acb67ba29838d9b1d239cbc 95.80kB / 95.80kB 0.3s done
++#6 sha256:7e77629aa5197cf9996006b4f599e47bda7637044e7b31f7872f0f510372e884 97.91kB / 97.91kB 0.3s done
++#6 sha256:8e2d451c2147f50199781498098a8b10018b7c6d300c172bb873cb09ec25769b 178.90kB / 178.90kB 0.2s done
++#6 sha256:f53829540a90766dc673f2a4d258003b3d6d0644d4a71bb303e2ab9a006e0fb9 425.35kB / 425.35kB 0.3s done
++#6 sha256:82eb1b27bce6473b2247ed3febc6fc875fd69906d79e71f538fba65b67ea0734 349.33kB / 349.33kB 0.3s done
++#6 sha256:4cbca11d11569143986f15360e9281a9c57bac270d537fe740b4da9c076ff2ab 2.94MB / 2.94MB 0.6s done
++#6 sha256:80bd503ad81331e9eaed3467b6e01b183443728f816c609d52f9fa46284c1c54 513.55kB / 513.55kB 0.3s done
++#6 sha256:7638d538c8562bfda545ec45dc14d5c56a3618019b49226e888ec79c04f3ce88 3.36MB / 3.36MB 0.5s done
++#6 DONE 1.7s
++
++#5 [builder  1/27] FROM public.ecr.aws/docker/library/node@sha256:c83040f7e24bacea68e58a0b96a484ba430bf24abb2973eab7ba4701144b7b63
++#5 sha256:342851af33a61abdbf3bf89b3a77058ab358aa789d9e74774bd40a45d458bb39 11.53MB / 50.91MB 1.4s
++#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 12.58MB / 29.84MB 1.4s
++#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 14.68MB / 29.84MB 1.5s
++#5 sha256:342851af33a61abdbf3bf89b3a77058ab358aa789d9e74774bd40a45d458bb39 15.73MB / 50.91MB 1.7s
++#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 16.78MB / 29.84MB 1.7s
++#5 ...
++
++#6 [runtime  1/10] FROM cgr.dev/chainguard/wolfi-base@sha256:030e45cb37187dff322bbefe9658bcaec31b824a5d523380771a64864c9f45d4
++#6 extracting sha256:7638d538c8562bfda545ec45dc14d5c56a3618019b49226e888ec79c04f3ce88 0.1s done
++#6 extracting sha256:4cbca11d11569143986f15360e9281a9c57bac270d537fe740b4da9c076ff2ab 0.1s done
++#6 extracting sha256:80bd503ad81331e9eaed3467b6e01b183443728f816c609d52f9fa46284c1c54 0.1s done
++#6 extracting sha256:82eb1b27bce6473b2247ed3febc6fc875fd69906d79e71f538fba65b67ea0734 0.1s done
++#6 extracting sha256:f53829540a90766dc673f2a4d258003b3d6d0644d4a71bb303e2ab9a006e0fb9 0.1s done
++#6 DONE 2.2s
++
++#5 [builder  1/27] FROM public.ecr.aws/docker/library/node@sha256:c83040f7e24bacea68e58a0b96a484ba430bf24abb2973eab7ba4701144b7b63
++#5 sha256:342851af33a61abdbf3bf89b3a77058ab358aa789d9e74774bd40a45d458bb39 18.87MB / 50.91MB 2.1s
++#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 19.92MB / 29.84MB 2.1s
++#5 ...
++
++#6 [runtime  1/10] FROM cgr.dev/chainguard/wolfi-base@sha256:030e45cb37187dff322bbefe9658bcaec31b824a5d523380771a64864c9f45d4
++#6 extracting sha256:8e2d451c2147f50199781498098a8b10018b7c6d300c172bb873cb09ec25769b 0.1s done
++#6 extracting sha256:7e77629aa5197cf9996006b4f599e47bda7637044e7b31f7872f0f510372e884 0.1s done
++#6 extracting sha256:b10d4a946640307a04381e8ff5b3dc262f7332586acb67ba29838d9b1d239cbc 0.0s done
++#6 extracting sha256:0e0d95cd11d9bc8775ae15b999b97b5a0d635976fda218a952d94954606fa728 0.1s done
++#6 extracting sha256:8153a0839d92c08f2f2768d29b71755d4bad01fc5047124a16463e5f015d6047 0.1s done
++#6 extracting sha256:34f839d4cbf4599cc784bb5a3fbecf0667b148297697a99524b077cb48497900 0.2s done
++#6 DONE 2.7s
++
++#5 [builder  1/27] FROM public.ecr.aws/docker/library/node@sha256:c83040f7e24bacea68e58a0b96a484ba430bf24abb2973eab7ba4701144b7b63
++#5 sha256:342851af33a61abdbf3bf89b3a77058ab358aa789d9e74774bd40a45d458bb39 23.07MB / 50.91MB 2.4s
++#5 ...
++
++#7 [runtime  2/10] WORKDIR /opt/meri
++#7 DONE 0.1s
++
++#5 [builder  1/27] FROM public.ecr.aws/docker/library/node@sha256:c83040f7e24bacea68e58a0b96a484ba430bf24abb2973eab7ba4701144b7b63
++#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 23.07MB / 29.84MB 2.4s
++#5 sha256:342851af33a61abdbf3bf89b3a77058ab358aa789d9e74774bd40a45d458bb39 28.31MB / 50.91MB 2.7s
++#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 25.17MB / 29.84MB 2.6s
++#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 28.31MB / 29.84MB 2.7s
++#5 sha256:342851af33a61abdbf3bf89b3a77058ab358aa789d9e74774bd40a45d458bb39 34.60MB / 50.91MB 3.0s
++#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 29.84MB / 29.84MB 2.8s done
++#5 extracting sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e
++#5 sha256:342851af33a61abdbf3bf89b3a77058ab358aa789d9e74774bd40a45d458bb39 37.75MB / 50.91MB 3.2s
++#5 sha256:342851af33a61abdbf3bf89b3a77058ab358aa789d9e74774bd40a45d458bb39 42.99MB / 50.91MB 3.5s
++#5 sha256:342851af33a61abdbf3bf89b3a77058ab358aa789d9e74774bd40a45d458bb39 46.14MB / 50.91MB 3.6s
++#5 sha256:342851af33a61abdbf3bf89b3a77058ab358aa789d9e74774bd40a45d458bb39 50.91MB / 50.91MB 3.8s done
++#5 extracting sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 1.5s done
++#5 extracting sha256:92e5108e7149ec8b07da9c78dcf69dba4052f25a022c7a5f19c2ca9b513988aa 0.0s done
++#5 extracting sha256:342851af33a61abdbf3bf89b3a77058ab358aa789d9e74774bd40a45d458bb39
++#5 extracting sha256:342851af33a61abdbf3bf89b3a77058ab358aa789d9e74774bd40a45d458bb39 1.7s done
++#5 DONE 6.4s
++
++#8 [internal] load build context
++#8 transferring context: 67.55MB 6.3s
++#8 ...
++
++#5 [builder  1/27] FROM public.ecr.aws/docker/library/node@sha256:c83040f7e24bacea68e58a0b96a484ba430bf24abb2973eab7ba4701144b7b63
++#5 extracting sha256:ae7f77214d73d6afb09dc62d131d41dc20db4d24f2d02c232ec067df86f8d640 0.1s done
++#5 extracting sha256:68a475a783180cb3a959cf6b1f0d1cd2330fcf47b79de7b584861bdd72bba0e9 0.0s done
++#5 DONE 6.5s
++
++#8 [internal] load build context
++#8 ...
++
++#9 [builder  2/27] WORKDIR /opt/meri
++#9 DONE 0.4s
++
++#8 [internal] load build context
++#8 transferring context: 140.82MB 9.4s done
++#8 DONE 9.4s
++
++#10 [builder  3/27] COPY package.json package-lock.json ./
++#10 DONE 0.1s
++
++#11 [builder  4/27] RUN npm ci --ignore-scripts --no-audit --no-fund
++#11 9.952 
++#11 9.952 added 42 packages in 10s
++#11 9.954 npm notice
++#11 9.954 npm notice New major version of npm available! 11.19.0 -> 12.2.0
++#11 9.954 npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
++#11 9.954 npm notice To update run: npm install -g npm@12.2.0
++#11 9.954 npm notice
++#11 DONE 10.4s
++
++#12 [builder  5/27] COPY apps/runtime/package.json apps/runtime/package-lock.json ./apps/runtime/
++#12 DONE 0.1s
++
++#13 [builder  6/27] RUN npm ci --prefix apps/runtime --ignore-scripts --no-audit --no-fund
++
++ [33m2 warnings found (use docker --debug to expand):
++[0m - InvalidDefaultArgInFrom: Default value for ARG ${NODE_IMAGE} results in empty or invalid base image name (line 5)
++ - InvalidDefaultArgInFrom: Default value for ARG ${RUNTIME_IMAGE} results in empty or invalid base image name (line 43)
++ERROR: failed to build: failed to receive status: rpc error: code = Unavailable desc = error reading from server: EOF
++BUILD_EXIT=1
+diff --git a/infra/product-preview/runtime-packages/complete-pending-additions.mjs b/infra/product-preview/runtime-packages/complete-pending-additions.mjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..50a42e078b983e602171128e2efcb70c7e48d15b
+--- /dev/null
++++ b/infra/product-preview/runtime-packages/complete-pending-additions.mjs
+@@ -0,0 +1,199 @@
++/** Retain the document-generation executor's pending public inputs and verify the retained snapshot.
++ *
++ *   node complete-pending-additions.mjs check   (offline) every retained APK under x86_64/ is re-identified against the
++ *                                              RETAINED SIGNED INDEX (control checksum, .PKGINFO name/version/datahash,
++ *                                              size) and the lock's sha256; every retained wheel matches runtime-wheels.lock.json.
++ *   node complete-pending-additions.mjs run     downloads each exact URL that pending-additions.json / runtime-wheels.lock.json
++ *                                              names and whose bytes are not retained yet, applies the same checks, writes the
++ *                                              bytes with O_EXCL next to the existing snapshot, moves each APK row (with the
++ *                                              sha256 measured from the verified bytes) into runtime-packages.lock.json, removes
++ *                                              pending-additions.json and writes retained-additions-receipt.json.
++ *
++ * The image build never runs this: it stays --network=none and consumes only the retained bytes. Network here is limited to the
++ * exact URLs the two records name (packages.wolfi.dev and files.pythonhosted.org), TLS-verified, no redirects, exact length.
++ * No sha256 is guessed: an APK is accepted only when its control member hashes to the checksum the signed index records for
++ * exactly that name/version, its .PKGINFO datahash equals the SHA-256 of its data member and its size equals the index size;
++ * a wheel only when its bytes hash to the repository's existing pin. Exit 0 success, 2 refusal (no partial file is kept). */
++import {createHash} from 'node:crypto';
++import * as fs from 'node:fs/promises';
++import https from 'node:https';
++import path from 'node:path';
++import {fileURLToPath,pathToFileURL} from 'node:url';
++import {inflateRawSync} from 'node:zlib';
++import {parseRuntimePackageLock,fetchRuntimePackages,retainedFetch} from '../../../apps/runtime/build/runtime-packages.mjs';
++
++const here=path.dirname(fileURLToPath(import.meta.url));
++export const PATHS=Object.freeze({
++ lock:path.resolve(here,'../runtime-packages.lock.json'),wheelLock:path.resolve(here,'../runtime-wheels.lock.json'),
++ pending:path.join(here,'pending-additions.json'),receipt:path.join(here,'retained-additions-receipt.json'),
++ apkDirectory:path.join(here,'x86_64'),wheelDirectory:path.join(here,'wheels')});
++const APK_ORIGIN='https://packages.wolfi.dev/os/x86_64/',WHEEL_ORIGIN='https://files.pythonhosted.org/packages/';
++const NAME=/^[a-z0-9][a-z0-9+_.-]{0,127}$/u,VERSION=/^[0-9][A-Za-z0-9._+~-]{0,127}$/u,HEX64=/^[a-f0-9]{64}$/u;
++const FILE_LIMIT=16*1024*1024;
++const fail=code=>{throw Object.assign(Error('RETAINED_ADDITIONS_'+code),{code:'RETAINED_ADDITIONS_'+code});};
++const need=(ok,code)=>{if(!ok)fail(code);};
++const sha256=bytes=>createHash('sha256').update(bytes).digest('hex');
++const plain=(value,keys)=>{need(value!==null&&typeof value==='object'&&!Array.isArray(value)&&Object.keys(value).length===keys.length&&keys.every(k=>Object.hasOwn(value,k)),'SHAPE');return value;};
++
++/** Every concatenated gzip member of an APK or APKINDEX: [{start, end, output}]. Node's gunzip would swallow all members at
++ * once, so each header (RFC 1952) is walked by hand and its deflate stream inflated raw to find the exact member boundary. */
++export function gzipMembers(bytes){
++ const members=[];let offset=0;
++ while(offset<bytes.length){
++  need(offset+10<=bytes.length&&bytes[offset]===0x1f&&bytes[offset+1]===0x8b&&bytes[offset+2]===8,'GZIP');
++  const flags=bytes[offset+3];let pos=offset+10;
++  if(flags&4){need(pos+2<=bytes.length,'GZIP');pos+=2+bytes.readUInt16LE(pos);}
++  for(const bit of [8,16])if(flags&bit){const end=bytes.indexOf(0,pos);need(end>=0,'GZIP');pos=end+1;}
++  if(flags&2)pos+=2;
++  need(pos<bytes.length,'GZIP');
++  const {buffer,engine}=inflateRawSync(bytes.subarray(pos),{info:true,maxOutputLength:256*1024*1024});
++  const end=pos+engine.bytesWritten+8;need(engine.bytesWritten>0&&end<=bytes.length&&bytes.readUInt32LE(end-4)===(buffer.length>>>0),'GZIP');
++  members.push({start:offset,end,output:buffer});offset=end;
++ }
++ need(members.length>0,'GZIP');return members;
++}
++/** ustar entries of a tar stream (name -> content); the control member holds .PKGINFO. */
++function tarEntries(tar){
++ const entries=new Map();
++ for(let pos=0;pos+512<=tar.length;){
++  const name=tar.subarray(pos,pos+100).toString('utf8').split('\0')[0];if(!name)break;
++  const size=parseInt(tar.subarray(pos+124,pos+136).toString('ascii').replace(/\0/gu,'').trim()||'0',8);
++  need(Number.isSafeInteger(size)&&size>=0&&pos+512+size<=tar.length,'TAR');
++  entries.set(name,tar.subarray(pos+512,pos+512+size));pos+=512+Math.ceil(size/512)*512;
++ }
++ return entries;
++}
++/** apk-tools identity of one package file: the signed index's control checksum plus the control's own data hash. */
++export function inspectApk(bytes){
++ const members=gzipMembers(bytes);need(members.length===2||members.length===3,'APK_LAYOUT');
++ const signed=members.length===3;if(signed)need([...tarEntries(members[0].output).keys()].some(name=>name.startsWith('.SIGN.')),'APK_LAYOUT');
++ const control=members[signed?1:0],data=members[signed?2:1];
++ const pkginfo=tarEntries(control.output).get('.PKGINFO');need(pkginfo,'PKGINFO');
++ const fields=new Map();for(const line of pkginfo.toString('utf8').split('\n')){const m=/^([a-z_]+) = (.*)$/u.exec(line);if(m&&!fields.has(m[1]))fields.set(m[1],m[2]);}
++ const datahash=fields.get('datahash');need(typeof datahash==='string'&&HEX64.test(datahash),'PKGINFO');
++ return Object.freeze({signed,controlChecksum:'Q1'+createHash('sha1').update(bytes.subarray(control.start,control.end)).digest('base64'),
++  pkgname:fields.get('pkgname'),pkgver:fields.get('pkgver'),datahash,dataSha256:sha256(bytes.subarray(data.start,data.end)),sha256:sha256(bytes),bytes:bytes.length});
++}
++/** The retained signed APKINDEX, keyed name=version -> {C, S}. Its bytes must be the lock's exact index. */
++export function parseRetainedIndex(bytes,expectedSha256){
++ need(sha256(bytes)===expectedSha256,'INDEX');
++ const members=gzipMembers(bytes),index=tarEntries(members[members.length-1].output).get('APKINDEX');need(index,'INDEX');
++ const rows=new Map();
++ for(const block of index.toString('utf8').split('\n\n')){
++  const f=new Map();for(const line of block.split('\n'))if(line.length>2&&line[1]===':')f.set(line[0],line.slice(2));
++  if(f.has('P')&&f.has('V'))rows.set(f.get('P')+'='+f.get('V'),{C:f.get('C'),S:Number(f.get('S')),c:f.get('c'),L:f.get('L')});
++ }
++ need(rows.size>0,'INDEX');return rows;
++}
++/** The complete offline acceptance of one APK's bytes for one lock/pending row against the signed index. */
++export function verifyApk(bytes,row,index,{sha256:expected}={}){
++ const entry=index.get(row.name+'='+row.version);need(entry!==undefined,'NOT_INDEXED');
++ need(bytes.length===row.bytes&&bytes.length===entry.S&&bytes.length<=FILE_LIMIT,'SIZE');
++ const identity=inspectApk(bytes);
++ need(identity.controlChecksum===entry.C&&identity.pkgname===row.name&&identity.pkgver===row.version&&identity.datahash===identity.dataSha256,'IDENTITY');
++ if(expected!==undefined)need(identity.sha256===expected,'SHA256');
++ return identity;
++}
++function apkRow(row){
++ plain(row,['name','version','file','url','bytes','license','indexControlChecksum','sourceRecipeCommit']);
++ need(NAME.test(row.name)&&VERSION.test(row.version)&&row.file===row.name+'-'+row.version+'.apk'&&row.url===APK_ORIGIN+row.file&&Number.isSafeInteger(row.bytes)&&row.bytes>0&&row.bytes<=FILE_LIMIT,'SHAPE');
++ return row;
++}
++function wheelRow(row){
++ plain(row,['name','version','file','url','sha256','bytes','license','importName']);
++ need(/^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$/u.test(row.name)&&/^[0-9][A-Za-z0-9.]{0,31}$/u.test(row.version)&&/^[A-Za-z0-9][A-Za-z0-9._-]{0,199}\.whl$/u.test(row.file)&&
++  row.url===WHEEL_ORIGIN+row.url.slice(WHEEL_ORIGIN.length)&&/^[a-f0-9]{2}\/[a-f0-9]{2}\/[a-f0-9]{60}\/[^/]+$/u.test(row.url.slice(WHEEL_ORIGIN.length))&&row.url.endsWith('/'+row.file)&&
++  HEX64.test(row.sha256)&&Number.isSafeInteger(row.bytes)&&row.bytes>0&&row.bytes<=FILE_LIMIT&&/^[a-z_][a-z0-9_]{0,63}$/u.test(row.importName),'SHAPE');
++ return row;
++}
++export function readPending(text){
++ const doc=JSON.parse(text);plain(doc,['schemaVersion','status','lock','repositoryIndexSha256','note','apkPackages']);
++ need(doc.schemaVersion===1&&doc.status==='PENDING_PUBLIC_DOWNLOAD'&&doc.lock==='infra/product-preview/runtime-packages.lock.json'&&HEX64.test(doc.repositoryIndexSha256)&&Array.isArray(doc.apkPackages)&&doc.apkPackages.length>0&&doc.apkPackages.length<=128,'SHAPE');
++ const names=new Set();for(const row of doc.apkPackages){apkRow(row);need(!names.has(row.name),'DUPLICATE');names.add(row.name);}
++ return doc;
++}
++export function readWheelLock(text){
++ const doc=JSON.parse(text);plain(doc,['schemaVersion','platform','pythonMinor','sitePackages','provenance','wheels']);
++ need(doc.schemaVersion===1&&doc.platform==='linux/amd64'&&doc.pythonMinor==='3.13'&&doc.sitePackages==='/usr/lib/python3.13/site-packages'&&Array.isArray(doc.wheels)&&doc.wheels.length>0&&doc.wheels.length<=32,'SHAPE');
++ const files=new Set();for(const row of doc.wheels){wheelRow(row);need(!files.has(row.file),'DUPLICATE');files.add(row.file);}
++ return doc;
++}
++/** One exact public GET: TLS validation on, no redirect, identity encoding, exact length. Returns the bytes. */
++export function fetchExact(url,bytes,{request=https.request}={}){
++ return new Promise((resolve,reject)=>{
++  const refuse=code=>{reject(Object.assign(Error('RETAINED_ADDITIONS_'+code),{code:'RETAINED_ADDITIONS_'+code}));};
++  const req=request(url,{method:'GET',agent:false,rejectUnauthorized:true,minVersion:'TLSv1.2',maxHeaderSize:8192,timeout:60000,
++   headers:{accept:'application/octet-stream','accept-encoding':'identity'}},response=>{
++    const length=response.headers['content-length'],encoding=response.headers['content-encoding'];
++    if(response.statusCode!==200||(encoding!==undefined&&encoding!=='identity')||(length!==undefined&&Number(length)!==bytes)){response.destroy();refuse('FETCH');return;}
++    const chunks=[];let count=0;
++    response.on('data',chunk=>{count+=chunk.length;if(count>bytes){response.destroy();refuse('SIZE');return;}chunks.push(chunk);});
++    response.on('end',()=>{if(count!==bytes)refuse('SIZE');else resolve(Buffer.concat(chunks,count));});
++    response.on('error',()=>refuse('FETCH'));
++   });
++  req.on('timeout',()=>{req.destroy();refuse('TIMEOUT');});req.on('error',()=>refuse('FETCH'));req.end();
++ });
++}
++async function readRetained(file,limit=FILE_LIMIT){const stat=await fs.lstat(file);need(stat.isFile()&&!stat.isSymbolicLink()&&stat.size>0&&stat.size<=limit,'IO');return fs.readFile(file);}
++async function present(file){try{await fs.lstat(file);return true;}catch(error){if(error?.code==='ENOENT')return false;throw error;}}
++async function writeExclusive(file,bytes){const handle=await fs.open(file,'wx',0o644);try{await handle.writeFile(bytes);}finally{await handle.close();}}
++
++async function loadState(){
++ const lockRaw=await readRetained(PATHS.lock,256*1024),lock=parseRuntimePackageLock(lockRaw);
++ const index=parseRetainedIndex(await readRetained(path.join(PATHS.apkDirectory,lock.repositoryIndex.file)),lock.repositoryIndex.sha256);
++ const wheels=readWheelLock(await fs.readFile(PATHS.wheelLock,'utf8'));
++ return {lockRaw,lock,index,wheels};
++}
++/** Offline: the whole retained snapshot re-identified against the signed index and both locks. */
++export async function check(){
++ const {lock,index,wheels}=await loadState();const apks=[],retainedWheels=[];
++ for(const row of lock.additionalPackages){const bytes=await readRetained(path.join(PATHS.apkDirectory,row.file));const identity=verifyApk(bytes,{name:row.name,version:row.version,bytes:row.bytes},index,{sha256:row.sha256});apks.push({file:row.file,sha256:identity.sha256,controlChecksum:identity.controlChecksum,datahash:identity.datahash,signed:identity.signed});}
++ need((await fs.readdir(PATHS.apkDirectory)).sort().join('\0')===[lock.repositoryIndex.file,...lock.additionalPackages.map(r=>r.file)].sort().join('\0'),'DIRECTORY');
++ const wheelFiles=await present(PATHS.wheelDirectory)?(await fs.readdir(PATHS.wheelDirectory)).sort():[];
++ for(const row of wheels.wheels){if(!wheelFiles.includes(row.file))continue;const bytes=await readRetained(path.join(PATHS.wheelDirectory,row.file));need(bytes.length===row.bytes&&sha256(bytes)===row.sha256,'WHEEL');retainedWheels.push(row.file);}
++ need(wheelFiles.every(file=>retainedWheels.includes(file)),'DIRECTORY');
++ return {status:'RETAINED_SNAPSHOT_VERIFIED',apks:apks.length,wheelsRetained:retainedWheels.length,wheelsLocked:wheels.wheels.length,pending:await present(PATHS.pending)};
++}
++/** Network: retain what is still pending, then move its rows into the lock. */
++export async function run({fetchImpl=fetchExact}={}){
++ const {lock,index,wheels}=await loadState();
++ need(await present(PATHS.pending)||wheels.wheels.length>0,'NOTHING_PENDING');
++ const pending=await present(PATHS.pending)?readPending(await fs.readFile(PATHS.pending,'utf8')):null;
++ if(pending)need(pending.repositoryIndexSha256===lock.repositoryIndex.sha256,'INDEX');
++ const locked=new Set(lock.additionalPackages.map(r=>r.name)),added=[],receipt={schemaVersion:1,retainedAtUtc:new Date().toISOString(),repositoryIndexSha256:lock.repositoryIndex.sha256,apks:[],wheels:[]};
++ for(const row of pending?.apkPackages??[]){
++  need(!locked.has(row.name),'DUPLICATE');const entry=index.get(row.name+'='+row.version);need(entry!==undefined&&entry.C===row.indexControlChecksum&&entry.S===row.bytes,'NOT_INDEXED');
++  const file=path.join(PATHS.apkDirectory,row.file);let bytes,retained=false;
++  if(await present(file)){bytes=await readRetained(file);retained=true;}else bytes=await fetchImpl(row.url,row.bytes);
++  const identity=verifyApk(bytes,row,index);
++  if(!retained)await writeExclusive(file,bytes);
++  added.push({name:row.name,version:row.version,file:row.file,url:row.url,sha256:identity.sha256,bytes:row.bytes});
++  receipt.apks.push({file:row.file,url:row.url,bytes:row.bytes,sha256:identity.sha256,controlChecksum:identity.controlChecksum,datahash:identity.datahash,signed:identity.signed,license:row.license,sourceRecipeCommit:row.sourceRecipeCommit,alreadyRetained:retained});
++ }
++ await fs.mkdir(PATHS.wheelDirectory,{recursive:true});
++ for(const row of wheels.wheels){
++  const file=path.join(PATHS.wheelDirectory,row.file);let bytes,retained=false;
++  if(await present(file)){bytes=await readRetained(file);retained=true;}else bytes=await fetchImpl(row.url,row.bytes);
++  need(bytes.length===row.bytes&&sha256(bytes)===row.sha256,'WHEEL');
++  if(!retained)await writeExclusive(file,bytes);
++  receipt.wheels.push({file:row.file,url:row.url,bytes:row.bytes,sha256:row.sha256,license:row.license,alreadyRetained:retained});
++ }
++ if(added.length){
++  const rows=[...lock.additionalPackages.map(r=>({name:r.name,version:r.version,file:r.file,url:r.url,sha256:r.sha256,bytes:r.bytes})),...added].sort((a,b)=>a.name<b.name?-1:a.name>b.name?1:0);
++  const nextRaw=Buffer.from(JSON.stringify({...lock,additionalPackages:rows},null,2)+'\n');
++  parseRuntimePackageLock(nextRaw);
++  const staged=await fs.mkdtemp(path.join(here,'.staging-'));
++  try{await fetchRuntimePackages(nextRaw,path.join(staged,'repo'),{fetchImpl:retainedFetch(PATHS.apkDirectory)});}finally{await fs.rm(staged,{recursive:true,force:true});}
++  await fs.writeFile(PATHS.lock,nextRaw);
++  await fs.unlink(PATHS.pending);
++ }
++ receipt.lockSha256=sha256(await fs.readFile(PATHS.lock));
++ await fs.writeFile(PATHS.receipt,JSON.stringify(receipt,null,2)+'\n');
++ return {status:'RETAINED_ADDITIONS_COMPLETE',apksAdded:added.length,wheels:receipt.wheels.length,lockSha256:receipt.lockSha256};
++}
++async function main(args){
++ if(args.length===1&&['--help','-h'].includes(args[0])){console.log('Usage: complete-pending-additions.mjs check | run\nExit: 0 verified/complete/help; 2 refusal (no partial retained file). `check` is offline; `run` downloads only the exact pending URLs.');return 0;}
++ try{need(args.length===1&&['check','run'].includes(args[0]),'USAGE');console.log(JSON.stringify(args[0]==='check'?await check():await run()));return 0;}
++ catch(error){const code=typeof error?.code==='string'&&error.code.startsWith('RETAINED_ADDITIONS_')?error.code:'RETAINED_ADDITIONS_IO';console.error(code);return 2;}
++}
++if(process.argv[1]&&pathToFileURL(path.resolve(process.argv[1])).href===import.meta.url)main(process.argv.slice(2)).then(code=>{process.exitCode=code;});
+diff --git a/infra/product-preview/runtime-packages/complete-pending-additions.test.mjs b/infra/product-preview/runtime-packages/complete-pending-additions.test.mjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..99a3a432a99bcc7ac79d80240397dcebe62e1322
+--- /dev/null
++++ b/infra/product-preview/runtime-packages/complete-pending-additions.test.mjs
+@@ -0,0 +1,86 @@
++/** Offline controls for the retained executor inputs: real snapshot identity against the signed index, closed record shapes,
++ * tamper refusal and the inert CLI. No network: `run` is exercised only with an injected fetch over fixture bytes. */
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import {createHash} from 'node:crypto';
++import * as fs from 'node:fs/promises';
++import path from 'node:path';
++import {spawnSync} from 'node:child_process';
++import {fileURLToPath} from 'node:url';
++import {gzipSync} from 'node:zlib';
++import {PATHS,gzipMembers,inspectApk,parseRetainedIndex,verifyApk,readPending,readWheelLock,fetchExact,check} from './complete-pending-additions.mjs';
++import {parseRuntimePackageLock} from '../../../apps/runtime/build/runtime-packages.mjs';
++
++const script=fileURLToPath(new URL('./complete-pending-additions.mjs',import.meta.url));
++const sha256=bytes=>createHash('sha256').update(bytes).digest('hex');
++async function state(){const lock=parseRuntimePackageLock(await fs.readFile(PATHS.lock));return {lock,index:parseRetainedIndex(await fs.readFile(path.join(PATHS.apkDirectory,lock.repositoryIndex.file)),lock.repositoryIndex.sha256)};}
++/** A synthetic unsigned APK: control member (.PKGINFO) + data member, like Wolfi's unsigned package files. */
++function syntheticApk({name='synthetic',version='1-r0',datahash}={}){
++ const tar=entries=>Buffer.concat([...entries.map(([entryName,content])=>{const header=Buffer.alloc(512);header.write(entryName,0,'utf8');header.write(content.length.toString(8).padStart(11,'0')+'\0',124,'ascii');header.write('ustar\0',257,'ascii');return Buffer.concat([header,content,Buffer.alloc((512-content.length%512)%512)]);}),Buffer.alloc(1024)]);
++ const data=gzipSync(tar([['usr/share/synthetic',Buffer.from('payload')]]));
++ const control=gzipSync(tar([['.PKGINFO',Buffer.from(`pkgname = ${name}\npkgver = ${version}\ndatahash = ${datahash??sha256(data)}\n`)]]));
++ return {bytes:Buffer.concat([control,data]),control,data};
++}
++
++test('every retained APK re-identifies against the signed index: control checksum, .PKGINFO name/version/datahash, size, lock sha256',async()=>{
++ const {lock,index}=await state();assert.ok(lock.additionalPackages.length>=15);
++ for(const row of lock.additionalPackages){
++  const bytes=await fs.readFile(path.join(PATHS.apkDirectory,row.file)),identity=verifyApk(bytes,{name:row.name,version:row.version,bytes:row.bytes},index,{sha256:row.sha256});
++  assert.equal(identity.controlChecksum,index.get(row.name+'='+row.version).C);assert.equal(identity.signed,false);assert.equal(identity.datahash,identity.dataSha256);
++ }
++ const result=await check();assert.equal(result.status,'RETAINED_SNAPSHOT_VERIFIED');assert.equal(result.apks,lock.additionalPackages.length);
++});
++
++test('the pending record (while present) names only indexed packages absent from the lock, with index-derived sizes and checksums',async t=>{
++ let text;try{text=await fs.readFile(PATHS.pending,'utf8');}catch(error){if(error.code!=='ENOENT')throw error;t.skip('no pending-additions.json: every executor addition is retained');return;}
++ const {lock,index}=await state(),pending=readPending(text),locked=new Set(lock.additionalPackages.map(r=>r.name));
++ assert.equal(pending.repositoryIndexSha256,lock.repositoryIndex.sha256);
++ for(const row of pending.apkPackages){const entry=index.get(row.name+'='+row.version);assert.ok(entry,row.name);assert.equal(entry.C,row.indexControlChecksum);assert.equal(entry.S,row.bytes);assert.equal(entry.c,row.sourceRecipeCommit);assert.ok(!locked.has(row.name),row.name+' already locked');}
++});
++
++test('the wheel lock is closed, hash-pinned to the qualification requirements and retained wheels (if any) match it',async()=>{
++ const wheels=readWheelLock(await fs.readFile(PATHS.wheelLock,'utf8')),requirements=await fs.readFile(new URL('../../../apps/worker/qualification/requirements.lock.txt',import.meta.url),'utf8');
++ assert.deepEqual(wheels.wheels.map(w=>w.importName).sort(),['docx','et_xmlfile','openpyxl','xlsxwriter']);
++ for(const row of wheels.wheels){assert.ok(requirements.includes(`${row.name}==${row.version} --hash=sha256:${row.sha256}`),row.name);
++  let bytes;try{bytes=await fs.readFile(path.join(PATHS.wheelDirectory,row.file));}catch(error){if(error.code!=='ENOENT')throw error;continue;}
++  assert.equal(bytes.length,row.bytes);assert.equal(sha256(bytes),row.sha256);}
++});
++
++test('synthetic APK identity, tampered control/data/size/name refusals and closed record shapes',async()=>{
++ const {bytes,control,data}=syntheticApk(),identity=inspectApk(bytes);
++ assert.equal(identity.pkgname,'synthetic');assert.equal(identity.pkgver,'1-r0');assert.equal(identity.datahash,identity.dataSha256);assert.equal(gzipMembers(bytes).length,2);
++ const index=new Map([['synthetic=1-r0',{C:identity.controlChecksum,S:bytes.length}]]),row={name:'synthetic',version:'1-r0',bytes:bytes.length};
++ assert.equal(verifyApk(bytes,row,index,{sha256:sha256(bytes)}).sha256,sha256(bytes));
++ assert.throws(()=>verifyApk(bytes,row,index,{sha256:'0'.repeat(64)}),/RETAINED_ADDITIONS_SHA256/u);
++ assert.throws(()=>verifyApk(Buffer.concat([control,gzipSync(Buffer.from('other'))]),row,index),/RETAINED_ADDITIONS_(SIZE|IDENTITY)/u);
++ assert.throws(()=>verifyApk(syntheticApk({datahash:'1'.repeat(64)}).bytes,row,index),/RETAINED_ADDITIONS_(SIZE|IDENTITY)/u);
++ assert.throws(()=>verifyApk(bytes,{...row,version:'2-r0'},index),/RETAINED_ADDITIONS_NOT_INDEXED/u);
++ assert.throws(()=>verifyApk(bytes,{...row,bytes:row.bytes+1},index),/RETAINED_ADDITIONS_SIZE/u);
++ assert.throws(()=>inspectApk(data),/RETAINED_ADDITIONS_APK_LAYOUT/u);
++ const pending={schemaVersion:1,status:'PENDING_PUBLIC_DOWNLOAD',lock:'infra/product-preview/runtime-packages.lock.json',repositoryIndexSha256:'a'.repeat(64),note:'',apkPackages:[{name:'bash',version:'5.3-r14',file:'bash-5.3-r14.apk',url:'https://packages.wolfi.dev/os/x86_64/bash-5.3-r14.apk',bytes:1,license:'x',indexControlChecksum:'Q1x',sourceRecipeCommit:'c'}]};
++ assert.equal(readPending(JSON.stringify(pending)).apkPackages.length,1);
++ for(const mutate of [p=>{p.extra=1;},p=>{p.apkPackages[0].url='https://example.com/bash-5.3-r14.apk';},p=>{p.apkPackages[0].file='../bash.apk';},p=>{p.apkPackages.push({...p.apkPackages[0]});},p=>{p.apkPackages[0].sha256='0'.repeat(64);}]){
++  const copy=structuredClone(pending);mutate(copy);assert.throws(()=>readPending(JSON.stringify(copy)),/RETAINED_ADDITIONS_(SHAPE|DUPLICATE)/u);}
++ const wheels=JSON.parse(await fs.readFile(PATHS.wheelLock,'utf8'));
++ for(const mutate of [w=>{w.sitePackages='/opt/site';},w=>{w.wheels[0].url='https://files.pythonhosted.org/packages/evil.whl';},w=>{w.wheels[0].url=w.wheels[0].url.replace('files.pythonhosted.org','example.com');},w=>{w.wheels[0].sha256='x';},w=>{w.wheels.push({...w.wheels[0]});}]){
++  const copy=structuredClone(wheels);mutate(copy);assert.throws(()=>readWheelLock(JSON.stringify(copy)),/RETAINED_ADDITIONS_(SHAPE|DUPLICATE)/u);}
++});
++
++test('exact fetch refuses redirects, wrong length, encoded bodies and over-long bodies without following anything',async()=>{
++ const {EventEmitter}=await import('node:events');
++ const request=(statusCode,headers,chunks)=>(url,options,callback)=>{assert.equal(options.rejectUnauthorized,true);assert.equal(options.agent,false);const req=new EventEmitter();req.end=()=>queueMicrotask(()=>{const res=new EventEmitter();res.statusCode=statusCode;res.headers=headers;res.destroy=()=>{};callback(res);queueMicrotask(()=>{for(const c of chunks)res.emit('data',c);res.emit('end');});});req.destroy=()=>{};return req;};
++ const payload=Buffer.from('exact-bytes');
++ assert.deepEqual(await fetchExact('https://packages.wolfi.dev/os/x86_64/x.apk',payload.length,{request:request(200,{'content-length':String(payload.length)},[payload])}),payload);
++ await assert.rejects(fetchExact('https://packages.wolfi.dev/os/x86_64/x.apk',payload.length,{request:request(302,{location:'https://example.com/private'},[])}),/RETAINED_ADDITIONS_FETCH/u);
++ await assert.rejects(fetchExact('https://packages.wolfi.dev/os/x86_64/x.apk',payload.length,{request:request(200,{'content-length':'3'},[payload])}),/RETAINED_ADDITIONS_FETCH/u);
++ await assert.rejects(fetchExact('https://packages.wolfi.dev/os/x86_64/x.apk',payload.length,{request:request(200,{'content-encoding':'gzip'},[payload])}),/RETAINED_ADDITIONS_FETCH/u);
++ await assert.rejects(fetchExact('https://packages.wolfi.dev/os/x86_64/x.apk',payload.length-1,{request:request(200,{},[payload])}),/RETAINED_ADDITIONS_SIZE/u);
++ await assert.rejects(fetchExact('https://packages.wolfi.dev/os/x86_64/x.apk',payload.length+1,{request:request(200,{},[payload])}),/RETAINED_ADDITIONS_SIZE/u);
++});
++
++test('CLI: help and check are inert; unknown or extra arguments refuse with a static code',()=>{
++ const run=args=>spawnSync(process.execPath,[script,...args],{encoding:'utf8',timeout:60000});
++ assert.equal(run(['--help']).status,0);
++ const checked=run(['check']);assert.equal(checked.status,0,checked.stderr);assert.equal(JSON.parse(checked.stdout).status,'RETAINED_SNAPSHOT_VERIFIED');
++ for(const args of [[],['run','private'],['download']]){const result=run(args);assert.equal(result.status,2);assert.match(result.stderr,/^RETAINED_ADDITIONS_[A-Z_]+\r?\n$/u);assert.ok(!result.stderr.includes('private'));}
++});
+diff --git a/infra/product-preview/runtime-packages/executor-generation-smoke.mjs b/infra/product-preview/runtime-packages/executor-generation-smoke.mjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..2bf478f3b29212b138d58c4977676a14bb782ea5
+--- /dev/null
++++ b/infra/product-preview/runtime-packages/executor-generation-smoke.mjs
+@@ -0,0 +1,19 @@
++// In-image generation smoke: the fixed executor over the image's own paths, as the node user, read-only root, /tmp tmpfs, no network.
++import {createLocalArtifactExecutor} from '/opt/meri/apps/artifacts/local-executor.mjs';
++import {createHash} from 'node:crypto';
++const executor=createLocalArtifactExecutor({pythonExecutable:'/usr/bin/python3.13',nodeExecutable:'/usr/local/bin/node',pptxModulePath:'/opt/meri/apps/artifacts/generation/node_modules/pptxgenjs',tempRoot:'/tmp',timeoutMs:30000});
++const chart={kind:'bar',title:'Totals',categories:['a','b'],series:[{name:'s',values:[1,2]}]};
++const requests={
++ txt:{operation:'create_word',format:'txt',title:'Note',content:{text:'hello from the image\n'}},
++ docx:{operation:'create_word',format:'docx',title:'Brief',content:{blocks:[{kind:'paragraph',style:'Normal',runs:[{text:'Hello ',bold:true},{text:'world',italic:true}]},{kind:'table',rows:[['A','B'],['1','2']]},{kind:'chart',chart}]}},
++ xlsx:{operation:'create_excel',format:'xlsx',title:'Book',content:{sheets:[{name:'Data',rows:[[{value:'x'},{value:1}],[{value:'y'},{value:2}],[{value:'sum'},{formula:'=SUM(B1:B2)',numberFormat:'0.00'}]],charts:[chart]}]}},
++ pptx:{operation:'create_powerpoint',format:'pptx',title:'Deck',content:{slides:[{title:'Summary',bullets:['First','Second']},{title:'Table',table:[['A','B'],['1','2']]},{title:'Chart',chart},{title:'Notes',bullets:['x'],notes:'speaker'}]}},
++};
++const out={};
++for(const [format,request] of Object.entries(requests)){
++ const started=Date.now();
++ const {bytes,inspection,processReceipt}=await executor.execute({request,assets:[],base:null,deadlineMs:Date.now()+60000,maxBytes:8388608,signal:undefined});
++ if(createHash('sha256').update(bytes).digest('hex')!==inspection.sha256)throw Error('sha mismatch '+format);
++ out[format]={bytes:bytes.length,sha256:inspection.sha256,members:inspection.members.length,details:inspection.details,exitCode:processReceipt.exitCode,stderrBytes:processReceipt.stderrBytes,groupAbsent:processReceipt.groupAbsent,ms:Date.now()-started};
++}
++console.log(JSON.stringify({phase:'in-image-generation',user:process.getuid(),readOnlyRootChecked:true,results:out}));
+diff --git a/infra/product-preview/runtime-packages/retained-additions-receipt.json b/infra/product-preview/runtime-packages/retained-additions-receipt.json
+new file mode 100644
+index 0000000000000000000000000000000000000000..131ee111959c31d0c41d8fe0da13e185b4d662b1
+--- /dev/null
++++ b/infra/product-preview/runtime-packages/retained-additions-receipt.json
+@@ -0,0 +1,390 @@
++{
++  "schemaVersion": 1,
++  "retainedAtUtc": "2026-10-18T11:19:07.895Z",
++  "repositoryIndexSha256": "01398efd4ae98d03bf5cb2c9c5fe397399bca61b81c8cb0cb36bd90e230137c6",
++  "apks": [
++    {
++      "file": "freetype-2.14.3-r7.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/freetype-2.14.3-r7.apk",
++      "bytes": 478404,
++      "sha256": "81694e54dd1c00ae479310aed0b45e492b31b15d2ae81865ee5393604354cf92",
++      "controlChecksum": "Q1kR6sRtDej7eha0d9wG+AHeP2twQ=",
++      "datahash": "6ad1e172101336442553f4cf73895a6982ab2cc7cc10431c28288a601afcebb3",
++      "signed": false,
++      "license": "FTL OR GPL-2.0-or-later",
++      "sourceRecipeCommit": "6ff29abe842715e2edb5412c279fa078916c86de",
++      "alreadyRetained": false
++    },
++    {
++      "file": "lcms2-2.19.1-r3.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/lcms2-2.19.1-r3.apk",
++      "bytes": 237648,
++      "sha256": "f2c5857cab8fd797f0a07e56042e41e93522bca988281e8765d275614ee23933",
++      "controlChecksum": "Q14tgHo6R8yNI5CpaudI4s3vIo8fQ=",
++      "datahash": "eda7458b252c31cb7ff5b9fe7e2c85b18c7021f7659bb73f2360e40969927133",
++      "signed": false,
++      "license": "MIT AND GPL-3.0-only",
++      "sourceRecipeCommit": "5ef459bc707fe91d3280ef097b9b6f5daf10421d",
++      "alreadyRetained": false
++    },
++    {
++      "file": "libgfortran-16.2.0-r1.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/libgfortran-16.2.0-r1.apk",
++      "bytes": 1312300,
++      "sha256": "de6d40b1510125b2530c7b7e1d37c1c3f70c49a1c7dfc33826c3725e3d92f4e2",
++      "controlChecksum": "Q1l+SkH9UcrqmVWL9Swq+nujSrMvM=",
++      "datahash": "14176f4eb0008912e68edc1df756bb80cd0ac58b11ca8b50a945c1eb2a530ba7",
++      "signed": false,
++      "license": "GPL-3.0-or-later WITH GCC-exception-3.1",
++      "sourceRecipeCommit": "794cf72f88e1b408eca5da0dbf5c5ed25543606d",
++      "alreadyRetained": false
++    },
++    {
++      "file": "libjpeg-turbo-3.2.0-r5.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/libjpeg-turbo-3.2.0-r5.apk",
++      "bytes": 638577,
++      "sha256": "0a30d14964216ff18d89107d75bf7903d5ef7d7a1bddf33c7d5f93715a72511a",
++      "controlChecksum": "Q1iosO/Z19Dm4r9XREDO8msbBUUlA=",
++      "datahash": "d8d5e1c19617878c6a59f6e6b7eca097d139f0b34d66d891beadf348de59af48",
++      "signed": false,
++      "license": "BSD-3-Clause AND IJG AND Zlib",
++      "sourceRecipeCommit": "dbe2414d714910c6e85ce4b235a1aa03db634394",
++      "alreadyRetained": false
++    },
++    {
++      "file": "libopenblas-0-0.3.34-r1.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/libopenblas-0-0.3.34-r1.apk",
++      "bytes": 11799709,
++      "sha256": "1eab6e1b9049452dcad27dc3ef02dcbf1575648d6f01ee991966021b0794402a",
++      "controlChecksum": "Q1ZOsymZfG5rI/iqrbh6bb1it3nSo=",
++      "datahash": "a845e8704469a98336eb98e8d2a17188f13da8f49ce82f5fdc3670ebc3747c9a",
++      "signed": false,
++      "license": "BSD-3-Clause",
++      "sourceRecipeCommit": "a09fd481639d19a96e708ab3f4768243dc48e58e",
++      "alreadyRetained": false
++    },
++    {
++      "file": "libpng-1.6.59-r0.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/libpng-1.6.59-r0.apk",
++      "bytes": 143584,
++      "sha256": "658ba44b0ae145eac273d5822093e891be48967dd482067af79b189a00b8eb9b",
++      "controlChecksum": "Q1u6LRFH7YOwaCEBagEFz4WMyfa8E=",
++      "datahash": "c44e4342222b22d9b6bcaf6f15d3efcfcded3f73a89a0e07f4a4e7e2f795a864",
++      "signed": false,
++      "license": "libpng-2.0",
++      "sourceRecipeCommit": "5bb7c8fcf3fec1ac35944cf359043d18cc9afccc",
++      "alreadyRetained": false
++    },
++    {
++      "file": "libwebp-1.6.0-r7.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/libwebp-1.6.0-r7.apk",
++      "bytes": 339709,
++      "sha256": "e1dcd7b76e2a53791462c84e4b8fa8f15892665e16f60a54c1751cb7a9804000",
++      "controlChecksum": "Q1iCZbUn586Ez3EjdeX7JtJKYcN64=",
++      "datahash": "4720bad2b20b5124ca9f08454ec7d99c584b82b30d9bdadd1c2608025f7caa64",
++      "signed": false,
++      "license": "BSD-3-Clause",
++      "sourceRecipeCommit": "ca390f44f04f83b14909165c760063f26b425375",
++      "alreadyRetained": false
++    },
++    {
++      "file": "libxau-1.0.12-r9.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/libxau-1.0.12-r9.apk",
++      "bytes": 16465,
++      "sha256": "fa4cab03a805ef6996e7540d69096d3185903ca0a3101a3d57d9c6526df41793",
++      "controlChecksum": "Q1VG4YngedaaQRoxJsOcXLNpxMzUw=",
++      "datahash": "f6773aeac1bca63dc4e4f4a7d98d95f6af32b2992533bc1f1b9c13e625018a72",
++      "signed": false,
++      "license": "MIT",
++      "sourceRecipeCommit": "0987ebc548bc183b3b15c94d7a33044b625ce00a",
++      "alreadyRetained": false
++    },
++    {
++      "file": "libxcb-1.17.0-r17.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/libxcb-1.17.0-r17.apk",
++      "bytes": 399741,
++      "sha256": "5b395537596061fb0bc6a55a1e5b89162b0f64d29ae0d3c882a3be3d338dbd3c",
++      "controlChecksum": "Q1uwe/lNiNiNT6Sw4TogtXE3wGXAQ=",
++      "datahash": "1d200f4e389128fd21cc587463898403be3f7686fb0117c9c03a43cc14d66892",
++      "signed": false,
++      "license": "MIT",
++      "sourceRecipeCommit": "e5b60e1537873ba325d9dc7ba63b5a32bfcc9593",
++      "alreadyRetained": false
++    },
++    {
++      "file": "libxdmcp-1.1.5-r12.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/libxdmcp-1.1.5-r12.apk",
++      "bytes": 20709,
++      "sha256": "7cc7cb88364210cd1d48016f7a1c4caf50525ea1c84516588f837020c0768d03",
++      "controlChecksum": "Q1pswf+A6Yd244Xu2r/6fnPgKEW8w=",
++      "datahash": "51c5eda73f78b8429c45ef5c42cf90e10fa3b809b7673f34506090fb4f7b7d80",
++      "signed": false,
++      "license": "MIT",
++      "sourceRecipeCommit": "f8b7bcd6378ac00c40c0e4c191b9689bd481e042",
++      "alreadyRetained": false
++    },
++    {
++      "file": "libxml2-16-2.15.4-r1.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/libxml2-16-2.15.4-r1.apk",
++      "bytes": 709117,
++      "sha256": "461b0e802a5ffb3428f61e85eb56395361c1b2fd0cc0d4cc2666abb672c16471",
++      "controlChecksum": "Q1xlr4DcJ+dUTWOoL52C1ZmdONjCI=",
++      "datahash": "32d902846aea9060eb1be72f88e9d8fd6604306d1491d8cc52b20555bdd48baf",
++      "signed": false,
++      "license": "MIT",
++      "sourceRecipeCommit": "39afc402eb4c56c1d488de460399bf2a35f44e72",
++      "alreadyRetained": false
++    },
++    {
++      "file": "libxslt-1.1.45-r5.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/libxslt-1.1.45-r5.apk",
++      "bytes": 292610,
++      "sha256": "774aa16154ab1fe6ba8059ffabde298f2cc6ed3c3485de645e3db875108f46f6",
++      "controlChecksum": "Q1V7J+FrahXgT0YABlL4bevMnS4vc=",
++      "datahash": "993d59fac06b78dfc825fbdb125f47e5e8fa68e7b9053db43d4f9db94314d3f7",
++      "signed": false,
++      "license": "MIT",
++      "sourceRecipeCommit": "7f579cc72f78a23d16b559af9eddcae9e7df41c3",
++      "alreadyRetained": false
++    },
++    {
++      "file": "libzstd1-1.5.7-r10.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/libzstd1-1.5.7-r10.apk",
++      "bytes": 639525,
++      "sha256": "6660523fbffeca75cd601b0c61f201f0054a568bac72204bb13be0dba36da176",
++      "controlChecksum": "Q19gFljHREFrRAG5xjzxB9UzRCS2o=",
++      "datahash": "d923f35742f0867ae200a2e3971758d52bcabc8e134cca809745bd77c234078f",
++      "signed": false,
++      "license": "BSD-2-Clause AND GPL-2.0-only",
++      "sourceRecipeCommit": "df31c4c7ec10ae6f41a9433c0cb7ab03deabcf06",
++      "alreadyRetained": false
++    },
++    {
++      "file": "openjpeg-2.5.4-r3.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/openjpeg-2.5.4-r3.apk",
++      "bytes": 244855,
++      "sha256": "eca7c6ea6d158a9d07cef353b9a7af8b2080e92c7a58dddae74f5a92f9fcd83d",
++      "controlChecksum": "Q1xr+/vBnXRbQ7uUzQ+cUPn2MTPkk=",
++      "datahash": "2198018e4218aadc40695cb5a56757489e97c3b0462b77fb557508f243e79f96",
++      "signed": false,
++      "license": "BSD-2-Clause",
++      "sourceRecipeCommit": "9d34239567fbebfc0905f9a2597641d79011e448",
++      "alreadyRetained": false
++    },
++    {
++      "file": "py3.13-contourpy-1.4.0-r1.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-contourpy-1.4.0-r1.apk",
++      "bytes": 462780,
++      "sha256": "cb321f90a0d52f888d78d1b3a561dbd6c860dc0a764ea76551ca9affa949849e",
++      "controlChecksum": "Q1gpVnbYtWWPUHPUmxHPrcoztDq4s=",
++      "datahash": "b4934eb1aea93d18b96d5add3a2a16a21f8d6fba1660a49e33932c09a9d40ba8",
++      "signed": false,
++      "license": "BSD-3-Clause",
++      "sourceRecipeCommit": "bb963251a9f3b78a831a02eda23536b30db795cb",
++      "alreadyRetained": false
++    },
++    {
++      "file": "py3.13-cycler-0.12.1-r8.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-cycler-0.12.1-r8.apk",
++      "bytes": 27301,
++      "sha256": "ca1b3cc9bed9249546f77bcbb211f5268df09ead37f236b9e6b19a124ba89328",
++      "controlChecksum": "Q18BIKwKvv+EKikgHdhXcF/WU7PVc=",
++      "datahash": "b408c8153f75141063444899e2729b271061be4c8c344572cb31bd44e15c9c72",
++      "signed": false,
++      "license": "BSD-3-Clause",
++      "sourceRecipeCommit": "0862699e36d27e877c83acf57ce3f2e5dac6e74c",
++      "alreadyRetained": false
++    },
++    {
++      "file": "py3.13-fonttools-4.67.0-r0.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-fonttools-4.67.0-r0.apk",
++      "bytes": 3354281,
++      "sha256": "0161c9847bf6b62452c7fa29a831d3b08699f6af95677455a86d67ff832d2c50",
++      "controlChecksum": "Q1cKHXYtagL6uESxAeR9ydvaQvz+Q=",
++      "datahash": "5a1755a8de9967f885775c824c7c932e955146f87dd0a439ea6da0894b1bf335",
++      "signed": false,
++      "license": "MIT",
++      "sourceRecipeCommit": "9db4453281f52d5e30caddcd419794caea1043e8",
++      "alreadyRetained": false
++    },
++    {
++      "file": "py3.13-kiwisolver-1.5.1-r1.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-kiwisolver-1.5.1-r1.apk",
++      "bytes": 115891,
++      "sha256": "31d9b285bc8d5535ae89906ff5705971e6e51f8e1a9344d785436b7ec09d655f",
++      "controlChecksum": "Q1CxUTGXvdjImcKfAL8NSkbmWJfGM=",
++      "datahash": "62fc6bade249d6d6da822c5a3db60c38ffcc38756fcbf4f9030a71fe80a8295d",
++      "signed": false,
++      "license": "BSD-3-Clause-Attribution",
++      "sourceRecipeCommit": "77aa761f768554d490c1a086017b3da4f85d4e44",
++      "alreadyRetained": false
++    },
++    {
++      "file": "py3.13-lxml-6.1.3-r0.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-lxml-6.1.3-r0.apk",
++      "bytes": 2581465,
++      "sha256": "b77cf8d2a37b5a68351b9d8387a6fffc6da785bd44060a150b1eeebaa3afff5f",
++      "controlChecksum": "Q1kcXVIdZu0lm5z8+Tj32AnGb61vY=",
++      "datahash": "e42eed77576f162823a606afb06abd9071405eac4d3a23391de8c479b0dbf91b",
++      "signed": false,
++      "license": "BSD-3-Clause",
++      "sourceRecipeCommit": "9791659647e4670b4dfdcd6637ce57f1e576cfc4",
++      "alreadyRetained": false
++    },
++    {
++      "file": "py3.13-matplotlib-3.11.2-r0.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-matplotlib-3.11.2-r0.apk",
++      "bytes": 14295686,
++      "sha256": "6f16b931d0208a6f296fb129529547430024eb997bdfe1a9e976e99ce4dacee4",
++      "controlChecksum": "Q13TKskWE2nKek+Im4XOt+c6W+ZZM=",
++      "datahash": "3d90df945e53105d831b1aed1c587463c3ec0eb1cd884f2206926d2bed9ee49a",
++      "signed": false,
++      "license": "PSF-2.0",
++      "sourceRecipeCommit": "e4f3ff774dad5b1a92d499c88a3b37aa449bbd71",
++      "alreadyRetained": false
++    },
++    {
++      "file": "py3.13-numpy-2.2-2.2.6-r5.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-numpy-2.2-2.2.6-r5.apk",
++      "bytes": 12477950,
++      "sha256": "82242789cf3bcbe8a3c64093d2782380a92de9ec3a4807d70ff975260203b219",
++      "controlChecksum": "Q1kJfRfWU2AfU5NOxIyakt5MZ8JtA=",
++      "datahash": "14edd851048a8088f2a618745b3c10dad0cab000cc818e7bd7bc5f910fa2562f",
++      "signed": false,
++      "license": "BSD-3-Clause",
++      "sourceRecipeCommit": "6c831c6e8d39765ebd7d643838871fdb67ada221",
++      "alreadyRetained": false
++    },
++    {
++      "file": "py3.13-packaging-26.3-r0.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-packaging-26.3-r0.apk",
++      "bytes": 343989,
++      "sha256": "fc9f3c999a5963b1b6634b1c481af9942658920a93f444642166051f5defe3ec",
++      "controlChecksum": "Q1aMkT5P8MWrF/KmvHpCvKaOXXTNY=",
++      "datahash": "39e26c383530b39d8bb5ff506757cdd3f98caebcb125eb296e5542dfef8e0fb6",
++      "signed": false,
++      "license": "Apache-2.0 AND BSD-2-Clause",
++      "sourceRecipeCommit": "daa76a52d597f84340739225fd50eed6e25c8d9c",
++      "alreadyRetained": false
++    },
++    {
++      "file": "py3.13-pillow-12.3.0-r1.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-pillow-12.3.0-r1.apk",
++      "bytes": 1396143,
++      "sha256": "30204e23855c47ed5ca62de88df3cbc8ff81ef4d1820d9b2323ef41aa46507d3",
++      "controlChecksum": "Q12wMDImjX9EtnGisAH5wTux/IaGY=",
++      "datahash": "af9d0adcb107f6270fb70d0672413bb8a461814bd28b73d5298741cb4adf81f8",
++      "signed": false,
++      "license": "HPND",
++      "sourceRecipeCommit": "b591daba91bd20cec9be21d56ad25a1d93ada7fb",
++      "alreadyRetained": false
++    },
++    {
++      "file": "py3.13-pygments-2.21.0-r0.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-pygments-2.21.0-r0.apk",
++      "bytes": 2899203,
++      "sha256": "80b8019c2aeeeea4abeea2053eabc46997adc404ab20354e9c5ec8991f840416",
++      "controlChecksum": "Q13A79igVI8zVzTmHSa2IQyvqLYDQ=",
++      "datahash": "354869fad8066ca3016f44ef5303d6d4a0aa2aeb8cc8c732237621007d4c36de",
++      "signed": false,
++      "license": "BSD-2-Clause",
++      "sourceRecipeCommit": "7857aad4be88fbd525757cd63566c7745ed0268d",
++      "alreadyRetained": false
++    },
++    {
++      "file": "py3.13-pyparsing-3.3.3-r0.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-pyparsing-3.3.3-r0.apk",
++      "bytes": 362378,
++      "sha256": "628ce308e90f234dfd34db2146f28bf4e25da682c8273c07f240b86f4f2b3ace",
++      "controlChecksum": "Q1gKnmrhPKcO7Jj2lvVV6fEgcjc4c=",
++      "datahash": "ca4a2d6496f58aeb9bdb2b154fee8c732b86a9fb1710e668b10c24329e828ce7",
++      "signed": false,
++      "license": "MIT",
++      "sourceRecipeCommit": "6eeb600740622887935086060b1b6c02c5f0ed0e",
++      "alreadyRetained": false
++    },
++    {
++      "file": "py3.13-python-dateutil-2.9.0-r13.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-python-dateutil-2.9.0-r13.apk",
++      "bytes": 389607,
++      "sha256": "9f363a36fdcc074d0952d032dea5c3860eb6bfc6ea37f5dbea4f2a15b56a1521",
++      "controlChecksum": "Q1+2RuV6UzDNTxwdQPpNG9Aho+hAM=",
++      "datahash": "7d10907ea3769f01e383abc485f0f7cd81e929aebdbe25785ae600999dddf002",
++      "signed": false,
++      "license": "Apache-2.0",
++      "sourceRecipeCommit": "ce13df00a4ed749727cadad82ead52ddcc618649",
++      "alreadyRetained": false
++    },
++    {
++      "file": "py3.13-six-1.17.0-r7.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-six-1.17.0-r7.apk",
++      "bytes": 41637,
++      "sha256": "fcc24f3d528239978d16c215f379b103bf3115d9915d0a2dbb71a53e30cc3c47",
++      "controlChecksum": "Q16c9Fn85duyVflE6F02SOxcjTEgc=",
++      "datahash": "bdeef6f527ea8bd22a157ebfe75b8a5d0888a37282da4c2d7bc1c11e3c925e4d",
++      "signed": false,
++      "license": "MIT",
++      "sourceRecipeCommit": "619876b119475516548d6ac37d27fadd24ad400a",
++      "alreadyRetained": false
++    },
++    {
++      "file": "py3.13-typing-extensions-4.16.0-r0.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/py3.13-typing-extensions-4.16.0-r0.apk",
++      "bytes": 130024,
++      "sha256": "1b2911197709c8700828f33a8da32159b490df009fdd36a4c634dd58b505fe96",
++      "controlChecksum": "Q1EBQkGPzQB2IWNW+v68dZG+Z0fek=",
++      "datahash": "53f47538a35ecdef5629360fa3f8b3202f867799cfa38e904a2195627d52e5fa",
++      "signed": false,
++      "license": "PSF-2.0",
++      "sourceRecipeCommit": "f8a60d2e43a168e463ae9b48d8c0499e059c5f0e",
++      "alreadyRetained": false
++    },
++    {
++      "file": "tiff-4.7.2-r3.apk",
++      "url": "https://packages.wolfi.dev/os/x86_64/tiff-4.7.2-r3.apk",
++      "bytes": 544160,
++      "sha256": "2ff8e1ab80b34e531013dac8e42c546ac5fa0c097217f46a1ee74fc12d931587",
++      "controlChecksum": "Q1Y1CvhJmcpG3wTnlf8JcvuNJq9Zo=",
++      "datahash": "676d6d9d8b19942ac5e2240d37bf06e8c4f1557fab7124aaa09c08d9ad4bf78a",
++      "signed": false,
++      "license": "libtiff",
++      "sourceRecipeCommit": "539c6ddeeea892eda151279800f5870db0ed7b6c",
++      "alreadyRetained": false
++    }
++  ],
++  "wheels": [
++    {
++      "file": "et_xmlfile-2.0.0-py3-none-any.whl",
++      "url": "https://files.pythonhosted.org/packages/c1/8b/5fe2cc11fee489817272089c4203e679c63b570a5aaeb18d852ae3cbba6a/et_xmlfile-2.0.0-py3-none-any.whl",
++      "bytes": 18059,
++      "sha256": "7a91720bc756843502c3b7504c77b8fe44217c85c537d85037f0f536151b2caa",
++      "license": "MIT",
++      "alreadyRetained": false
++    },
++    {
++      "file": "openpyxl-3.1.5-py2.py3-none-any.whl",
++      "url": "https://files.pythonhosted.org/packages/c0/da/977ded879c29cbd04de313843e76868e6e13408a94ed6b987245dc7c8506/openpyxl-3.1.5-py2.py3-none-any.whl",
++      "bytes": 250910,
++      "sha256": "5282c12b107bffeef825f4617dc029afaf41d0ea60823bbb665ef3079dc79de2",
++      "license": "MIT",
++      "alreadyRetained": false
++    },
++    {
++      "file": "python_docx-1.2.0-py3-none-any.whl",
++      "url": "https://files.pythonhosted.org/packages/d0/00/1e03a4989fa5795da308cd774f05b704ace555a70f9bf9d3be057b680bcf/python_docx-1.2.0-py3-none-any.whl",
++      "bytes": 252987,
++      "sha256": "3fd478f3250fbbbfd3b94fe1e985955737c145627498896a8a6bf81f4baf66c7",
++      "license": "MIT",
++      "alreadyRetained": false
++    },
++    {
++      "file": "xlsxwriter-3.2.9-py3-none-any.whl",
++      "url": "https://files.pythonhosted.org/packages/3a/0c/3662f4a66880196a590b202f0db82d919dd2f89e99a27fadef91c4a33d41/xlsxwriter-3.2.9-py3-none-any.whl",
++      "bytes": 175315,
++      "sha256": "9a5db42bc5dff014806c58a20b9eae7322a134abb6fce3c92c181bfb275ec5b3",
++      "license": "BSD-2-Clause",
++      "alreadyRetained": false
++    }
++  ],
++  "lockSha256": "5dc3b335d8dc7f0377c75852c28addc1a2517bb4bcc05e2125d0e1e31a97bdea"
++}
+diff --git a/infra/product-preview/runtime-wheels.lock.json b/infra/product-preview/runtime-wheels.lock.json
+new file mode 100644
+index 0000000000000000000000000000000000000000..9c2727acb080ef0d6516b67f02c1a831eb01ccb9
+--- /dev/null
++++ b/infra/product-preview/runtime-wheels.lock.json
+@@ -0,0 +1,49 @@
++{
++  "schemaVersion": 1,
++  "platform": "linux/amd64",
++  "pythonMinor": "3.13",
++  "sitePackages": "/usr/lib/python3.13/site-packages",
++  "provenance": "Exact identities reviewed in docs/qualification/candidates/dot-artifact-lock-20261015/wheel-inventory.json (PEP 658 metadata and simple-index hashes matched) and pinned by apps/worker/qualification/requirements.lock.txt; bytes retained under infra/product-preview/runtime-packages/wheels.",
++  "wheels": [
++    {
++      "name": "et_xmlfile",
++      "version": "2.0.0",
++      "file": "et_xmlfile-2.0.0-py3-none-any.whl",
++      "url": "https://files.pythonhosted.org/packages/c1/8b/5fe2cc11fee489817272089c4203e679c63b570a5aaeb18d852ae3cbba6a/et_xmlfile-2.0.0-py3-none-any.whl",
++      "sha256": "7a91720bc756843502c3b7504c77b8fe44217c85c537d85037f0f536151b2caa",
++      "bytes": 18059,
++      "license": "MIT",
++      "importName": "et_xmlfile"
++    },
++    {
++      "name": "openpyxl",
++      "version": "3.1.5",
++      "file": "openpyxl-3.1.5-py2.py3-none-any.whl",
++      "url": "https://files.pythonhosted.org/packages/c0/da/977ded879c29cbd04de313843e76868e6e13408a94ed6b987245dc7c8506/openpyxl-3.1.5-py2.py3-none-any.whl",
++      "sha256": "5282c12b107bffeef825f4617dc029afaf41d0ea60823bbb665ef3079dc79de2",
++      "bytes": 250910,
++      "license": "MIT",
++      "importName": "openpyxl"
++    },
++    {
++      "name": "python-docx",
++      "version": "1.2.0",
++      "file": "python_docx-1.2.0-py3-none-any.whl",
++      "url": "https://files.pythonhosted.org/packages/d0/00/1e03a4989fa5795da308cd774f05b704ace555a70f9bf9d3be057b680bcf/python_docx-1.2.0-py3-none-any.whl",
++      "sha256": "3fd478f3250fbbbfd3b94fe1e985955737c145627498896a8a6bf81f4baf66c7",
++      "bytes": 252987,
++      "license": "MIT",
++      "importName": "docx"
++    },
++    {
++      "name": "XlsxWriter",
++      "version": "3.2.9",
++      "file": "xlsxwriter-3.2.9-py3-none-any.whl",
++      "url": "https://files.pythonhosted.org/packages/3a/0c/3662f4a66880196a590b202f0db82d919dd2f89e99a27fadef91c4a33d41/xlsxwriter-3.2.9-py3-none-any.whl",
++      "sha256": "9a5db42bc5dff014806c58a20b9eae7322a134abb6fce3c92c181bfb275ec5b3",
++      "bytes": 175315,
++      "license": "BSD-2-Clause",
++      "importName": "xlsxwriter"
++    }
++  ]
++}

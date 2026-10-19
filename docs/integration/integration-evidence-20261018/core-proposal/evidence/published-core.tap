@@ -1,0 +1,74 @@
+TAP version 13
+# (node:12) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: one RR tenant transaction locks native facts, all selected subjects, then observes Clerk before commit
+ok 1 - one RR tenant transaction locks native facts, all selected subjects, then observes Clerk before commit
+  ---
+  duration_ms: 4.951662
+  type: 'test'
+  ...
+# Subtest: empty list still locks original native facts and makes final online observation
+ok 2 - empty list still locks original native facts and makes final online observation
+  ---
+  duration_ms: 0.406252
+  type: 'test'
+  ...
+# Subtest: native target, impersonation and absent exact-provenance method refuse before transaction
+ok 3 - native target, impersonation and absent exact-provenance method refuse before transaction
+  ---
+  duration_ms: 0.906686
+  type: 'test'
+  ...
+# Subtest: identity drift, expiry, subject refusal and failed commit never return a receipt
+ok 4 - identity drift, expiry, subject refusal and failed commit never return a receipt
+  ---
+  duration_ms: 1.554662
+  type: 'test'
+  ...
+# (node:13) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: pins ordered RFC 8785 subject SHA across the wire, including an independent literal vector
+ok 5 - pins ordered RFC 8785 subject SHA across the wire, including an independent literal vector
+  ---
+  duration_ms: 2.379375
+  type: 'test'
+  ...
+# Subtest: empty list, list and transcript each use exactly one all-subject decision and exact receipt
+ok 6 - empty list, list and transcript each use exactly one all-subject decision and exact receipt
+  ---
+  duration_ms: 1.512198
+  type: 'test'
+  ...
+# Subtest: the batch port receives a detached frozen vector and principal
+ok 7 - the batch port receives a detached frozen vector and principal
+  ---
+  duration_ms: 0.608117
+  type: 'test'
+  ...
+# Subtest: closed request and nested Scope parser refuses malformed, duplicated and oversized vectors before calling owner
+ok 8 - closed request and nested Scope parser refuses malformed, duplicated and oversized vectors before calling owner
+  ---
+  duration_ms: 5.044141
+  type: 'test'
+  ...
+# Subtest: all seven Meri Scope kinds parse, but the owner must decide their authority
+ok 9 - all seven Meri Scope kinds parse, but the owner must decide their authority
+  ---
+  duration_ms: 0.446172
+  type: 'test'
+  ...
+# Subtest: decision exceptions, partial grants, wrong echoes and stale time yield no receipt
+ok 10 - decision exceptions, partial grants, wrong echoes and stale time yield no receipt
+  ---
+  duration_ms: 1.435333
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 158.898715

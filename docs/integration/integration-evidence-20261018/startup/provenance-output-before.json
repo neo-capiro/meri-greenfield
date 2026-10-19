@@ -1,0 +1,14 @@
+{
+  "packages/contracts/dist/conversation-application.mjs": "94465895c6a063536cd4de3ce84d6f736e8475890a663ef80e9c5d748992cea1",
+  "packages/contracts/dist/conversation-application.d.ts": "f7e961446b69049cda1b054c695daffc45486da46b3ebf67c6b3a56e875916fe",
+  "packages/contracts/dist/conversation-application.schema.json": "76f8a5a12958fcbcc6842f870a22a7ccba1675dd8b19359c2344f5ef2b06ad1b",
+  "packages/contracts/dist/conversation-application.metadata.json": "0c8876d53039b2462e97cf9833ecbb7d3111739333e59da70c275571177b66a9",
+  "packages/contracts/dist/conversation-input.metadata.json": "9f96c781c0644ec6944fbadf280090ecba1b414510227c8c82da0a7ce3ea6599",
+  "packages/contracts/dist/conversation-input.mjs": "85010997a028bdc2bc086e8b6f71bf16b4f3a6e595cf91b2764b61e76d674cb9",
+  "packages/contracts/dist/conversation-input.d.ts": "c23f833922fa41f0c779c75f52a8681f1fcc5cc09ede9ce52b2b0d93f0b359e9",
+  "packages/contracts/dist/conversation-input.schema.json": "ac9b1abfa74ea720e090dfdc8b33a3a2a8275a0012c69e693bb4902b07a7f2ad",
+  "packages/contracts/dist/conversation-initial-input.mjs": "86892c7c9b56194bae13096ce1156ff6d826050b78137daf380a0cdf71c510a7",
+  "packages/contracts/dist/conversation-initial-input.d.ts": "469d62a599a7d7250e62fbb095cc053cd0f7d63056bfd1d950addafa4d48daa2",
+  "packages/contracts/dist/conversation-initial-input.schema.json": "c59dc9fb3c133a08fcf80125a450f6de3186221356e3e05408401b1af2708324",
+  "packages/contracts/dist/conversation-initial-input.metadata.json": "203abbb3631bc70204e01b613bd823690243b7dfb7548f7eaf6a282a68ba00fe"
+}
