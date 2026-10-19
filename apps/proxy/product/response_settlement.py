@@ -91,7 +91,7 @@ def _native_chunk(frame):
 
 
 class _ObservedResponseStream(httpx.AsyncByteStream):
-    def __init__(self, source, status, headers, binding, complete, read_outcome):
+    def __init__(self, source, status, headers, binding, complete, read_outcome, *, gate_completion=False):
         self.source, self.status, self.binding, self.complete = source, status, binding, complete
         self.read_outcome = read_outcome
         self.content_type = headers.get("content-type")
@@ -101,9 +101,14 @@ class _ObservedResponseStream(httpx.AsyncByteStream):
         self.invalid = False
         self.eof = False
         self.closed = False
+        self._source_closed = False
+        self._held = bytearray()
         self.body = bytearray()
         self.frames = EventStreamBuffer() if self.content_type == _STREAM_TYPE else None
         self.native = NativeStreamUsage(binding) if self.frames is not None else None
+        # Only the outer canonical settlement transport enables this gate. The
+        # inner independent host observer must finish before settlement capture.
+        self.gate_completion = gate_completion
 
     def _consume(self, chunk):
         if type(chunk) is not bytes:
@@ -148,12 +153,32 @@ class _ObservedResponseStream(httpx.AsyncByteStream):
     async def __aiter__(self):
         if self.closed:
             raise RuntimeError("NATIVE_RESPONSE_ALREADY_CLOSED")
+        held = self._held
+        holding = self.gate_completion and self.frames is None
         try:
             async for chunk in self.source:
+                if self.gate_completion and self.closed:
+                    raise AdmissionDenied("INCOMPLETE_NATIVE_RESPONSE")
                 self._consume(chunk)
-                yield chunk
+                if self.gate_completion:
+                    if self.invalid or (self.native is not None and self.native.failed):
+                        raise AdmissionDenied("INCOMPLETE_NATIVE_RESPONSE")
+                    # Tool arguments can complete the SDK's StructuredOutput
+                    # internally before message_stop. Hold from any tool block,
+                    # as well as terminal deltas, until the owner's ACK proof.
+                    if self.native is not None and (self.native.phase in ("DELTA", "STOP")
+                            or any(row["kind"] == "tool_use" for row in self.native.blocks.values())):
+                        holding = True
+                if holding:
+                    # _consume enforced the existing wire/JSON byte envelope
+                    # before retaining this exact chunk, including oversize input.
+                    held.extend(chunk)
+                else:
+                    yield chunk
             self.eof = True
             result = self._result()
+            if self.gate_completion and (result is None or result.status != "COMPLETE"):
+                raise AdmissionDenied("INCOMPLETE_NATIVE_RESPONSE")
             if result is not None and result.status == "COMPLETE":
                 # The host bridge must authenticate this process and bind the
                 # original reservation, task, hashes and current tenant owner.
@@ -172,12 +197,29 @@ class _ObservedResponseStream(httpx.AsyncByteStream):
                         raise settlement_error from None
                     if not _settled_outcome(outcome, self.binding.request_id):
                         raise settlement_error
+                if self.gate_completion:
+                    if self.closed:
+                        raise AdmissionDenied("INCOMPLETE_NATIVE_RESPONSE")
+                    await self._close_source()
+                    if self.closed:
+                        raise AdmissionDenied("INCOMPLETE_NATIVE_RESPONSE")
+                if held:
+                    yield bytes(held)
         finally:
+            held.clear()
             self.closed = True
+            if self.gate_completion:
+                await self._close_source()
+
+    async def _close_source(self):
+        if not self._source_closed:
+            self._source_closed = True
+            await self.source.aclose()
 
     async def aclose(self):
         self.closed = True
-        await self.source.aclose()
+        self._held.clear()
+        await self._close_source()
 
 
 class NativeSettlementTransport(httpx.AsyncBaseTransport):
@@ -233,7 +275,8 @@ class NativeSettlementTransport(httpx.AsyncBaseTransport):
             raise AdmissionDenied("INVALID_NATIVE_RESPONSE")
         response.stream = _ObservedResponseStream(response.stream, response.status_code,
                                                   response.headers, binding,
-                                                  self.settle_complete, self.read_outcome)
+                                                  self.settle_complete, self.read_outcome,
+                                                  gate_completion=True)
         return response
 
     async def aclose(self):

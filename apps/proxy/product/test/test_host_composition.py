@@ -225,28 +225,25 @@ class HostCompositionTests(unittest.IsolatedAsyncioTestCase):
         )
         for label, terminal in cases:
             with self.subTest(label=label):
-                with self.assertRaisesRegex(Exception, "PRODUCT_NATIVE_LITELLM_REFUSED"):
+                with self.assertRaisesRegex(Exception, "INCOMPLETE_NATIVE_RESPONSE"):
                     await self.invoke_native_stream(streamed_message(terminal))
                 self.assertEqual((self.counter.calls, self.inner.calls,
                                   self.bridge.reservations, self.bridge.settlements),
                                  (1, 1, 1, 0))
-                self.assertEqual([event["type"] for event in self.native_sent],
-                                 ["http.response.start"])
+                self.assertEqual(self.native_sent, [])
                 self.counter = _Counter()
-        with self.assertRaisesRegex(Exception, "PRODUCT_NATIVE_LITELLM_REFUSED"):
+        with self.assertRaisesRegex(Exception, "INCOMPLETE_NATIVE_RESPONSE"):
             await self.invoke_native_stream(
                 streamed_message({"type": "message_stop"}, delta_usage=False))
         self.assertEqual((self.counter.calls, self.inner.calls,
                           self.bridge.reservations, self.bridge.settlements), (1, 1, 1, 0))
-        self.assertEqual([event["type"] for event in self.native_sent],
-                         ["http.response.start"])
+        self.assertEqual(self.native_sent, [])
         self.counter = _Counter()
-        with self.assertRaisesRegex(Exception, "PRODUCT_NATIVE_LITELLM_REFUSED"):
+        with self.assertRaisesRegex(Exception, "INCOMPLETE_NATIVE_RESPONSE"):
             await self.invoke_native_stream(streamed_message()[:-1])
         self.assertEqual((self.counter.calls, self.inner.calls,
                           self.bridge.reservations, self.bridge.settlements), (1, 1, 1, 0))
-        self.assertEqual([event["type"] for event in self.native_sent],
-                         ["http.response.start"])
+        self.assertEqual(self.native_sent, [])
 
     async def test_native_callback_lost_settlement_ack_uses_one_committed_readback(self):
         class LostAckBridge(_Bridge):
