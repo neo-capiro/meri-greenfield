@@ -1,0 +1,1016 @@
+TAP version 13
+# Subtest: authenticateSession: request cancellation during identity preserves the live session and rejects late release
+ok 1 - authenticateSession: request cancellation during identity preserves the live session and rejects late release
+  ---
+  duration_ms: 31.292429
+  type: 'test'
+  ...
+# Subtest: authenticateSession: request cancellation during context preserves the live session and rejects late release
+ok 2 - authenticateSession: request cancellation during context preserves the live session and rejects late release
+  ---
+  duration_ms: 7.548869
+  type: 'test'
+  ...
+# Subtest: authenticateSession: request cancellation during membership preserves the live session and rejects late release
+ok 3 - authenticateSession: request cancellation during membership preserves the live session and rejects late release
+  ---
+  duration_ms: 6.235418
+  type: 'test'
+  ...
+# Subtest: readCurrentState: request cancellation during identity preserves the live session and rejects late release
+ok 4 - readCurrentState: request cancellation during identity preserves the live session and rejects late release
+  ---
+  duration_ms: 7.134896
+  type: 'test'
+  ...
+# Subtest: readCurrentState: request cancellation during context preserves the live session and rejects late release
+ok 5 - readCurrentState: request cancellation during context preserves the live session and rejects late release
+  ---
+  duration_ms: 5.263531
+  type: 'test'
+  ...
+# Subtest: readCurrentState: request cancellation during membership preserves the live session and rejects late release
+ok 6 - readCurrentState: request cancellation during membership preserves the live session and rejects late release
+  ---
+  duration_ms: 4.728275
+  type: 'test'
+  ...
+# Subtest: authenticateSession: request cancellation cannot preserve expiry invalidation
+ok 7 - authenticateSession: request cancellation cannot preserve expiry invalidation
+  ---
+  duration_ms: 3.143694
+  type: 'test'
+  ...
+# Subtest: authenticateSession: request cancellation cannot preserve revocation invalidation
+ok 8 - authenticateSession: request cancellation cannot preserve revocation invalidation
+  ---
+  duration_ms: 3.335687
+  type: 'test'
+  ...
+# Subtest: authenticateSession: request cancellation cannot preserve invalid clock invalidation
+ok 9 - authenticateSession: request cancellation cannot preserve invalid clock invalidation
+  ---
+  duration_ms: 3.362539
+  type: 'test'
+  ...
+# Subtest: authenticateSession: request cancellation cannot preserve identity invalidation
+ok 10 - authenticateSession: request cancellation cannot preserve identity invalidation
+  ---
+  duration_ms: 9.605433
+  type: 'test'
+  ...
+# Subtest: authenticateSession: request cancellation cannot preserve context invalidation
+ok 11 - authenticateSession: request cancellation cannot preserve context invalidation
+  ---
+  duration_ms: 3.415424
+  type: 'test'
+  ...
+# Subtest: authenticateSession: request cancellation cannot preserve membership invalidation
+ok 12 - authenticateSession: request cancellation cannot preserve membership invalidation
+  ---
+  duration_ms: 3.471628
+  type: 'test'
+  ...
+# Subtest: readCurrentState: request cancellation cannot preserve expiry invalidation
+ok 13 - readCurrentState: request cancellation cannot preserve expiry invalidation
+  ---
+  duration_ms: 2.601347
+  type: 'test'
+  ...
+# Subtest: readCurrentState: request cancellation cannot preserve revocation invalidation
+ok 14 - readCurrentState: request cancellation cannot preserve revocation invalidation
+  ---
+  duration_ms: 2.859626
+  type: 'test'
+  ...
+# Subtest: readCurrentState: request cancellation cannot preserve invalid clock invalidation
+ok 15 - readCurrentState: request cancellation cannot preserve invalid clock invalidation
+  ---
+  duration_ms: 2.702037
+  type: 'test'
+  ...
+# Subtest: readCurrentState: request cancellation cannot preserve identity invalidation
+ok 16 - readCurrentState: request cancellation cannot preserve identity invalidation
+  ---
+  duration_ms: 2.910687
+  type: 'test'
+  ...
+# Subtest: readCurrentState: request cancellation cannot preserve context invalidation
+ok 17 - readCurrentState: request cancellation cannot preserve context invalidation
+  ---
+  duration_ms: 3.280015
+  type: 'test'
+  ...
+# Subtest: readCurrentState: request cancellation cannot preserve membership invalidation
+ok 18 - readCurrentState: request cancellation cannot preserve membership invalidation
+  ---
+  duration_ms: 2.784783
+  type: 'test'
+  ...
+# Subtest: authenticateSession: unknown without a cancelled request still invalidates
+ok 19 - authenticateSession: unknown without a cancelled request still invalidates
+  ---
+  duration_ms: 2.16939
+  type: 'test'
+  ...
+# Subtest: authenticateSession: AbortError without a cancelled request still invalidates
+ok 20 - authenticateSession: AbortError without a cancelled request still invalidates
+  ---
+  duration_ms: 2.006624
+  type: 'test'
+  ...
+# Subtest: authenticateSession: CANCELLED without a cancelled request still invalidates
+ok 21 - authenticateSession: CANCELLED without a cancelled request still invalidates
+  ---
+  duration_ms: 1.790617
+  type: 'test'
+  ...
+# Subtest: authenticateSession: DEADLINE without a cancelled request still invalidates
+ok 22 - authenticateSession: DEADLINE without a cancelled request still invalidates
+  ---
+  duration_ms: 1.956139
+  type: 'test'
+  ...
+# Subtest: readCurrentState: unknown without a cancelled request still invalidates
+ok 23 - readCurrentState: unknown without a cancelled request still invalidates
+  ---
+  duration_ms: 1.832861
+  type: 'test'
+  ...
+# Subtest: readCurrentState: AbortError without a cancelled request still invalidates
+ok 24 - readCurrentState: AbortError without a cancelled request still invalidates
+  ---
+  duration_ms: 2.196414
+  type: 'test'
+  ...
+# Subtest: readCurrentState: CANCELLED without a cancelled request still invalidates
+ok 25 - readCurrentState: CANCELLED without a cancelled request still invalidates
+  ---
+  duration_ms: 1.76454
+  type: 'test'
+  ...
+# Subtest: readCurrentState: DEADLINE without a cancelled request still invalidates
+ok 26 - readCurrentState: DEADLINE without a cancelled request still invalidates
+  ---
+  duration_ms: 2.171149
+  type: 'test'
+  ...
+# Subtest: authenticateSession: owner-only timeout invalidates despite a still-live request
+ok 27 - authenticateSession: owner-only timeout invalidates despite a still-live request
+  ---
+  duration_ms: 22.813595
+  type: 'test'
+  ...
+# Subtest: readCurrentState: owner-only timeout invalidates despite a still-live request
+ok 28 - readCurrentState: owner-only timeout invalidates despite a still-live request
+  ---
+  duration_ms: 22.696157
+  type: 'test'
+  ...
+# Subtest: authenticateSession: identity unknown winning before caller abort still invalidates
+ok 29 - authenticateSession: identity unknown winning before caller abort still invalidates
+  ---
+  duration_ms: 2.533529
+  type: 'test'
+  ...
+# Subtest: authenticateSession: identity authority refusal winning before caller abort still invalidates
+ok 30 - authenticateSession: identity authority refusal winning before caller abort still invalidates
+  ---
+  duration_ms: 1.582759
+  type: 'test'
+  ...
+# Subtest: authenticateSession: context unknown winning before caller abort still invalidates
+ok 31 - authenticateSession: context unknown winning before caller abort still invalidates
+  ---
+  duration_ms: 1.888532
+  type: 'test'
+  ...
+# Subtest: authenticateSession: context authority refusal winning before caller abort still invalidates
+ok 32 - authenticateSession: context authority refusal winning before caller abort still invalidates
+  ---
+  duration_ms: 1.802857
+  type: 'test'
+  ...
+# Subtest: authenticateSession: membership unknown winning before caller abort still invalidates
+ok 33 - authenticateSession: membership unknown winning before caller abort still invalidates
+  ---
+  duration_ms: 3.781887
+  type: 'test'
+  ...
+# Subtest: authenticateSession: membership authority refusal winning before caller abort still invalidates
+ok 34 - authenticateSession: membership authority refusal winning before caller abort still invalidates
+  ---
+  duration_ms: 3.051441
+  type: 'test'
+  ...
+# Subtest: readCurrentState: identity unknown winning before caller abort still invalidates
+ok 35 - readCurrentState: identity unknown winning before caller abort still invalidates
+  ---
+  duration_ms: 1.846281
+  type: 'test'
+  ...
+# Subtest: readCurrentState: identity authority refusal winning before caller abort still invalidates
+ok 36 - readCurrentState: identity authority refusal winning before caller abort still invalidates
+  ---
+  duration_ms: 1.725245
+  type: 'test'
+  ...
+# Subtest: readCurrentState: context unknown winning before caller abort still invalidates
+ok 37 - readCurrentState: context unknown winning before caller abort still invalidates
+  ---
+  duration_ms: 1.782267
+  type: 'test'
+  ...
+# Subtest: readCurrentState: context authority refusal winning before caller abort still invalidates
+ok 38 - readCurrentState: context authority refusal winning before caller abort still invalidates
+  ---
+  duration_ms: 2.612976
+  type: 'test'
+  ...
+# Subtest: readCurrentState: membership unknown winning before caller abort still invalidates
+ok 39 - readCurrentState: membership unknown winning before caller abort still invalidates
+  ---
+  duration_ms: 1.703081
+  type: 'test'
+  ...
+# Subtest: readCurrentState: membership authority refusal winning before caller abort still invalidates
+ok 40 - readCurrentState: membership authority refusal winning before caller abort still invalidates
+  ---
+  duration_ms: 1.789184
+  type: 'test'
+  ...
+# Subtest: authenticateSession: owner deadline winning before caller abort still invalidates
+ok 41 - authenticateSession: owner deadline winning before caller abort still invalidates
+  ---
+  duration_ms: 21.860662
+  type: 'test'
+  ...
+# Subtest: readCurrentState: owner deadline winning before caller abort still invalidates
+ok 42 - readCurrentState: owner deadline winning before caller abort still invalidates
+  ---
+  duration_ms: 20.888755
+  type: 'test'
+  ...
+# Subtest: event request abort reconnects with the same credential and accepted cursor
+ok 43 - event request abort reconnects with the same credential and accepted cursor
+  ---
+  duration_ms: 15.894277
+  type: 'test'
+  ...
+# Subtest: event subscription deadline reconnects with the same credential and accepted cursor
+ok 44 - event subscription deadline reconnects with the same credential and accepted cursor
+  ---
+  duration_ms: 115.816195
+  type: 'test'
+  ...
+# Subtest: independent session HTTP refuses method before owner
+ok 45 - independent session HTTP refuses method before owner
+  ---
+  duration_ms: 5.896978
+  type: 'test'
+  ...
+# Subtest: independent session HTTP refuses query before owner
+ok 46 - independent session HTTP refuses query before owner
+  ---
+  duration_ms: 0.879814
+  type: 'test'
+  ...
+# Subtest: independent session HTTP refuses fragment before owner
+ok 47 - independent session HTTP refuses fragment before owner
+  ---
+  duration_ms: 1.208248
+  type: 'test'
+  ...
+# Subtest: independent session HTTP refuses extra authority before owner
+ok 48 - independent session HTTP refuses extra authority before owner
+  ---
+  duration_ms: 5.983679
+  type: 'test'
+  ...
+# Subtest: independent session HTTP refuses duplicate auth before owner
+ok 49 - independent session HTTP refuses duplicate auth before owner
+  ---
+  duration_ms: 4.065551
+  type: 'test'
+  ...
+# Subtest: independent session HTTP refuses length mismatch before owner
+ok 50 - independent session HTTP refuses length mismatch before owner
+  ---
+  duration_ms: 3.133378
+  type: 'test'
+  ...
+# Subtest: independent session HTTP refuses oversized stream before owner
+ok 51 - independent session HTTP refuses oversized stream before owner
+  ---
+  duration_ms: 1.715605
+  type: 'test'
+  ...
+# Subtest: independent session HTTP refuses invalid utf8 before owner
+ok 52 - independent session HTTP refuses invalid utf8 before owner
+  ---
+  duration_ms: 1.673783
+  type: 'test'
+  ...
+# Subtest: independent session HTTP must not execute own Request accessors
+ok 53 - independent session HTTP must not execute own Request accessors
+  ---
+  duration_ms: 2.699973
+  type: 'test'
+  ...
+# Subtest: independent session HTTP rejects Proxy Request without traps
+ok 54 - independent session HTTP rejects Proxy Request without traps
+  ---
+  duration_ms: 0.972803
+  type: 'test'
+  ...
+# Subtest: independent session HTTP parked body is cancelled before issuance at finite deadline
+ok 55 - independent session HTTP parked body is cancelled before issuance at finite deadline
+  ---
+  duration_ms: 81.263951
+  type: 'test'
+  ...
+# Subtest: independent session constructor rejects borrowed issue getter without executing it
+ok 56 - independent session constructor rejects borrowed issue getter without executing it
+  ---
+  duration_ms: 0.523538
+  type: 'test'
+  ...
+# Subtest: independent actual HTTP opaque issuance reaches same accepted graph/proposal; native bearer, forged proposal and revoked session cannot execute
+not ok 57 - independent actual HTTP opaque issuance reaches same accepted graph/proposal; native bearer, forged proposal and revoked session cannot execute
+  ---
+  duration_ms: 430.591696
+  type: 'test'
+  location: '/workspace/meri-session-cancel-repair/apps/control/action-host/session/http-independent.test.mjs:18:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    502 !== 200
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 502
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-session-cancel-repair/apps/control/action-host/session/http-independent.test.mjs:22:229)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: independent issuance HTTP never reflects extra owner fields or response accessors
+ok 58 - independent issuance HTTP never reflects extra owner fields or response accessors
+  ---
+  duration_ms: 3.521342
+  type: 'test'
+  ...
+# Subtest: independent short HTTP cutoff reaches both real session-owner authorization ports
+ok 59 - independent short HTTP cutoff reaches both real session-owner authorization ports
+  ---
+  duration_ms: 1.838046
+  type: 'test'
+  ...
+# Subtest: the relay returns the live session credential only for the exact run and selected client
+ok 60 - the relay returns the live session credential only for the exact run and selected client
+  ---
+  duration_ms: 17.925449
+  type: 'test'
+  ...
+# Subtest: the freshest matching session wins; expiry, revocation and close refuse
+ok 61 - the freshest matching session wins; expiry, revocation and close refuse
+  ---
+  duration_ms: 6.735125
+  type: 'test'
+  ...
+# Subtest: malformed requests refuse before any session is inspected
+ok 62 - malformed requests refuse before any session is inspected
+  ---
+  duration_ms: 1.121752
+  type: 'test'
+  ...
+# Subtest: independent opaque sessions: inert constructor and exact detached public context, fresh canonical owner receipts
+ok 63 - independent opaque sessions: inert constructor and exact detached public context, fresh canonical owner receipts
+  ---
+  duration_ms: 26.43065
+  type: 'test'
+  ...
+# Subtest: independent hints are selectors only: reject mismatched conversationId
+ok 64 - independent hints are selectors only: reject mismatched conversationId
+  ---
+  duration_ms: 2.110185
+  type: 'test'
+  ...
+# Subtest: independent hints are selectors only: reject mismatched runId
+ok 65 - independent hints are selectors only: reject mismatched runId
+  ---
+  duration_ms: 1.30429
+  type: 'test'
+  ...
+# Subtest: independent hints are selectors only: reject mismatched clientId
+ok 66 - independent hints are selectors only: reject mismatched clientId
+  ---
+  duration_ms: 0.667599
+  type: 'test'
+  ...
+# Subtest: independent issuance rejects current owner identity hash
+ok 67 - independent issuance rejects current owner identity hash
+  ---
+  duration_ms: 1.02829
+  type: 'test'
+  ...
+# Subtest: independent issuance rejects current owner tenant
+ok 68 - independent issuance rejects current owner tenant
+  ---
+  duration_ms: 0.702311
+  type: 'test'
+  ...
+# Subtest: independent issuance rejects current owner actor
+ok 69 - independent issuance rejects current owner actor
+  ---
+  duration_ms: 3.66416
+  type: 'test'
+  ...
+# Subtest: independent issuance rejects current owner missing selected scope
+ok 70 - independent issuance rejects current owner missing selected scope
+  ---
+  duration_ms: 1.006752
+  type: 'test'
+  ...
+# Subtest: independent issuance rejects current owner stale
+ok 71 - independent issuance rejects current owner stale
+  ---
+  duration_ms: 0.868993
+  type: 'test'
+  ...
+# Subtest: independent issuance rejects current owner expired
+ok 72 - independent issuance rejects current owner expired
+  ---
+  duration_ms: 1.020662
+  type: 'test'
+  ...
+# Subtest: independent current revision change invalidates issued token
+ok 73 - independent current revision change invalidates issued token
+  ---
+  duration_ms: 1.67477
+  type: 'test'
+  ...
+# Subtest: independent current contextRevision change invalidates issued token
+ok 74 - independent current contextRevision change invalidates issued token
+  ---
+  duration_ms: 1.475478
+  type: 'test'
+  ...
+# Subtest: independent issued receipt cannot be forged or exchanged across session records
+ok 75 - independent issued receipt cannot be forged or exchanged across session records
+  ---
+  duration_ms: 1.892891
+  type: 'test'
+  ...
+# Subtest: independent capacity is bounded and explicit revocation frees only its issued record
+ok 76 - independent capacity is bounded and explicit revocation frees only its issued record
+  ---
+  duration_ms: 3.430962
+  type: 'test'
+  ...
+# Subtest: independent late revocation refuses in-flight authenticateSession
+ok 77 - independent late revocation refuses in-flight authenticateSession
+  ---
+  duration_ms: 2.825475
+  type: 'test'
+  ...
+# Subtest: independent late revocation refuses in-flight readCurrentState
+ok 78 - independent late revocation refuses in-flight readCurrentState
+  ---
+  duration_ms: 2.117927
+  type: 'test'
+  ...
+# Subtest: independent parked issue cancellation/close cannot leak a session after late owner return
+ok 79 - independent parked issue cancellation/close cannot leak a session after late owner return
+  ---
+  duration_ms: 16.686692
+  type: 'test'
+  ...
+# Subtest: independent hostile receipt and rejection are refused without traps or secret reflection
+ok 80 - independent hostile receipt and rejection are refused without traps or secret reflection
+  ---
+  duration_ms: 1.274649
+  type: 'test'
+  ...
+# Subtest: independent caller cutoff is passed unchanged or earlier to both owner ports
+ok 81 - independent caller cutoff is passed unchanged or earlier to both owner ports
+  ---
+  duration_ms: 1.529556
+  type: 'test'
+  ...
+# Subtest: empty hints resolve current context; native token is not an action session; revisions and revocation fail closed
+ok 82 - empty hints resolve current context; native token is not an action session; revisions and revocation fail closed
+  ---
+  duration_ms: 16.358692
+  type: 'test'
+  ...
+# Subtest: explicit substituted hints and hostile getters do not issue sessions
+ok 83 - explicit substituted hints and hostile getters do not issue sessions
+  ---
+  duration_ms: 1.593705
+  type: 'test'
+  ...
+# Subtest: bounded registry expires records and close invalidates all credentials
+ok 84 - bounded registry expires records and close invalidates all credentials
+  ---
+  duration_ms: 2.783632
+  type: 'test'
+  ...
+# Subtest: Fetch issuance is closed, bounded and content-free on refusal
+ok 85 - Fetch issuance is closed, bounded and content-free on refusal
+  ---
+  duration_ms: 12.419023
+  type: 'test'
+  ...
+# Subtest: actual HTTP session issuance composes shared-pool host query draft prepare and approved execute
+not ok 86 - actual HTTP session issuance composes shared-pool host query draft prepare and approved execute
+  ---
+  duration_ms: 322.242526
+  type: 'test'
+  location: '/workspace/meri-session-cancel-repair/apps/control/action-host/session/session.test.mjs:16:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    502 !== 200
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 502
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-session-cancel-repair/apps/control/action-host/session/session.test.mjs:16:1386)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: revocation while native verification is parked refuses receipt and skips the later context port
+ok 87 - revocation while native verification is parked refuses receipt and skips the later context port
+  ---
+  duration_ms: 2.426701
+  type: 'test'
+  ...
+# Subtest: HTTP original cutoff reaches native identity and current context ports
+ok 88 - HTTP original cutoff reaches native identity and current context ports
+  ---
+  duration_ms: 1.549233
+  type: 'test'
+  ...
+# Subtest: issuance response remains minimal and bounded even for injected malformed owners
+ok 89 - issuance response remains minimal and bounded even for injected malformed owners
+  ---
+  duration_ms: 2.962083
+  type: 'test'
+  ...
+# Subtest: native Request accessors and inert issue descriptors prevent caller code during routing
+ok 90 - native Request accessors and inert issue descriptors prevent caller code during routing
+  ---
+  duration_ms: 2.124463
+  type: 'test'
+  ...
+# Subtest: resume transition verifies trusted mapping without repinning original session
+ok 91 - resume transition verifies trusted mapping without repinning original session
+  ---
+  duration_ms: 20.992988
+  type: 'test'
+  ...
+# Subtest: fork transition verifies trusted mapping without repinning original session
+ok 92 - fork transition verifies trusted mapping without repinning original session
+  ---
+  duration_ms: 4.017637
+  type: 'test'
+  ...
+# Subtest: absent optional ports keeps fixed authentication and refuses transition verification
+ok 93 - absent optional ports keeps fixed authentication and refuses transition verification
+  ---
+  duration_ms: 3.286808
+  type: 'test'
+  ...
+# Subtest: optional transition ports must be paired callable inert properties
+ok 94 - optional transition ports must be paired callable inert properties
+  ---
+  duration_ms: 1.968793
+  type: 'test'
+  ...
+# Subtest: DISPATCHING/dispatch-start enforces purpose inside session owner
+ok 95 - DISPATCHING/dispatch-start enforces purpose inside session owner
+  ---
+  duration_ms: 4.13121
+  type: 'test'
+  ...
+# Subtest: DISPATCHING/dispatch-continued enforces purpose inside session owner
+ok 96 - DISPATCHING/dispatch-continued enforces purpose inside session owner
+  ---
+  duration_ms: 3.823226
+  type: 'test'
+  ...
+# Subtest: DISPATCHING/commit-applied enforces purpose inside session owner
+ok 97 - DISPATCHING/commit-applied enforces purpose inside session owner
+  ---
+  duration_ms: 2.899755
+  type: 'test'
+  ...
+# Subtest: DISPATCHING/receipt-readback enforces purpose inside session owner
+ok 98 - DISPATCHING/receipt-readback enforces purpose inside session owner
+  ---
+  duration_ms: 1.940474
+  type: 'test'
+  ...
+# Subtest: APPLIED/dispatch-start enforces purpose inside session owner
+ok 99 - APPLIED/dispatch-start enforces purpose inside session owner
+  ---
+  duration_ms: 2.191135
+  type: 'test'
+  ...
+# Subtest: APPLIED/dispatch-continued enforces purpose inside session owner
+ok 100 - APPLIED/dispatch-continued enforces purpose inside session owner
+  ---
+  duration_ms: 2.368723
+  type: 'test'
+  ...
+# Subtest: APPLIED/commit-applied enforces purpose inside session owner
+ok 101 - APPLIED/commit-applied enforces purpose inside session owner
+  ---
+  duration_ms: 1.46201
+  type: 'test'
+  ...
+# Subtest: APPLIED/receipt-readback enforces purpose inside session owner
+ok 102 - APPLIED/receipt-readback enforces purpose inside session owner
+  ---
+  duration_ms: 2.752223
+  type: 'test'
+  ...
+# Subtest: UNKNOWN/dispatch-start enforces purpose inside session owner
+ok 103 - UNKNOWN/dispatch-start enforces purpose inside session owner
+  ---
+  duration_ms: 1.725663
+  type: 'test'
+  ...
+# Subtest: UNKNOWN/receipt-readback enforces purpose inside session owner
+ok 104 - UNKNOWN/receipt-readback enforces purpose inside session owner
+  ---
+  duration_ms: 1.595216
+  type: 'test'
+  ...
+# Subtest: PENDING/dispatch-start enforces purpose inside session owner
+ok 105 - PENDING/dispatch-start enforces purpose inside session owner
+  ---
+  duration_ms: 1.985797
+  type: 'test'
+  ...
+# Subtest: fork cannot authorize source continued notification
+ok 106 - fork cannot authorize source continued notification
+  ---
+  duration_ms: 3.897578
+  type: 'test'
+  ...
+# Subtest: APPLIED readback and shorter rolling deadlines preserve immutable equality
+ok 107 - APPLIED readback and shorter rolling deadlines preserve immutable equality
+  ---
+  duration_ms: 3.454647
+  type: 'test'
+  ...
+# Subtest: state change to APPLIED during context read cannot authorize another dispatch
+ok 108 - state change to APPLIED during context read cannot authorize another dispatch
+  ---
+  duration_ms: 3.219794
+  type: 'test'
+  ...
+# Subtest: trusted source substitution refuses without repinning
+ok 109 - trusted source substitution refuses without repinning
+  ---
+  duration_ms: 3.719731
+  type: 'test'
+  ...
+# Subtest: trusted target substitution refuses without repinning
+ok 110 - trusted target substitution refuses without repinning
+  ---
+  duration_ms: 3.342164
+  type: 'test'
+  ...
+# Subtest: trusted tenant substitution refuses without repinning
+ok 111 - trusted tenant substitution refuses without repinning
+  ---
+  duration_ms: 2.64504
+  type: 'test'
+  ...
+# Subtest: trusted actor substitution refuses without repinning
+ok 112 - trusted actor substitution refuses without repinning
+  ---
+  duration_ms: 2.890048
+  type: 'test'
+  ...
+# Subtest: trusted conversation substitution refuses without repinning
+ok 113 - trusted conversation substitution refuses without repinning
+  ---
+  duration_ms: 2.413586
+  type: 'test'
+  ...
+# Subtest: trusted worker reuse substitution refuses without repinning
+ok 114 - trusted worker reuse substitution refuses without repinning
+  ---
+  duration_ms: 2.238824
+  type: 'test'
+  ...
+# Subtest: trusted control substitution refuses without repinning
+ok 115 - trusted control substitution refuses without repinning
+  ---
+  duration_ms: 2.734232
+  type: 'test'
+  ...
+# Subtest: trusted admission substitution refuses without repinning
+ok 116 - trusted admission substitution refuses without repinning
+  ---
+  duration_ms: 2.618154
+  type: 'test'
+  ...
+# Subtest: trusted retirement substitution refuses without repinning
+ok 117 - trusted retirement substitution refuses without repinning
+  ---
+  duration_ms: 2.509749
+  type: 'test'
+  ...
+# Subtest: trusted client substitution refuses without repinning
+ok 118 - trusted client substitution refuses without repinning
+  ---
+  duration_ms: 2.463821
+  type: 'test'
+  ...
+# Subtest: trusted scopes substitution refuses without repinning
+ok 119 - trusted scopes substitution refuses without repinning
+  ---
+  duration_ms: 2.594974
+  type: 'test'
+  ...
+# Subtest: trusted policy substitution refuses without repinning
+ok 120 - trusted policy substitution refuses without repinning
+  ---
+  duration_ms: 2.500759
+  type: 'test'
+  ...
+# Subtest: trusted checkpoint digest substitution refuses without repinning
+ok 121 - trusted checkpoint digest substitution refuses without repinning
+  ---
+  duration_ms: 2.819214
+  type: 'test'
+  ...
+# Subtest: trusted target session substitution refuses without repinning
+ok 122 - trusted target session substitution refuses without repinning
+  ---
+  duration_ms: 2.599684
+  type: 'test'
+  ...
+# Subtest: trusted extra authority substitution refuses without repinning
+ok 123 - trusted extra authority substitution refuses without repinning
+  ---
+  duration_ms: 2.406693
+  type: 'test'
+  ...
+# Subtest: immutable inputSha256 drift across backend read refuses
+ok 124 - immutable inputSha256 drift across backend read refuses
+  ---
+  duration_ms: 2.131641
+  type: 'test'
+  ...
+# Subtest: immutable checkpointId drift across backend read refuses
+ok 125 - immutable checkpointId drift across backend read refuses
+  ---
+  duration_ms: 1.966765
+  type: 'test'
+  ...
+# Subtest: immutable checkpointSha256 drift across backend read refuses
+ok 126 - immutable checkpointSha256 drift across backend read refuses
+  ---
+  duration_ms: 1.766451
+  type: 'test'
+  ...
+# Subtest: immutable sourceRequestSha256 drift across backend read refuses
+ok 127 - immutable sourceRequestSha256 drift across backend read refuses
+  ---
+  duration_ms: 1.821004
+  type: 'test'
+  ...
+# Subtest: immutable contextSha256 drift across backend read refuses
+ok 128 - immutable contextSha256 drift across backend read refuses
+  ---
+  duration_ms: 2.118533
+  type: 'test'
+  ...
+# Subtest: immutable resumeSessionAt drift across backend read refuses
+ok 129 - immutable resumeSessionAt drift across backend read refuses
+  ---
+  duration_ms: 2.204491
+  type: 'test'
+  ...
+# Subtest: effective identity deadline cannot widen
+ok 130 - effective identity deadline cannot widen
+  ---
+  duration_ms: 2.495559
+  type: 'test'
+  ...
+# Subtest: effective target deadline cannot widen
+ok 131 - effective target deadline cannot widen
+  ---
+  duration_ms: 2.327231
+  type: 'test'
+  ...
+# Subtest: effective admission deadline cannot widen
+ok 132 - effective admission deadline cannot widen
+  ---
+  duration_ms: 2.149136
+  type: 'test'
+  ...
+# Subtest: effective retirement deadline cannot widen
+ok 133 - effective retirement deadline cannot widen
+  ---
+  duration_ms: 2.158488
+  type: 'test'
+  ...
+# Subtest: effective reader deadline cannot widen
+ok 134 - effective reader deadline cannot widen
+  ---
+  duration_ms: 2.094769
+  type: 'test'
+  ...
+# Subtest: effective caller deadline cannot widen
+ok 135 - effective caller deadline cannot widen
+  ---
+  duration_ms: 1.938356
+  type: 'test'
+  ...
+# Subtest: effective original deadline cannot widen
+ok 136 - effective original deadline cannot widen
+  ---
+  duration_ms: 2.043095
+  type: 'test'
+  ...
+# Subtest: invalid current native principal invalidates retained session
+ok 137 - invalid current native principal invalidates retained session
+  ---
+  duration_ms: 1.605356
+  type: 'test'
+  ...
+# Subtest: invalid current native identityRevision invalidates retained session
+ok 138 - invalid current native identityRevision invalidates retained session
+  ---
+  duration_ms: 1.384076
+  type: 'test'
+  ...
+# Subtest: invalid current native expiresAtMs invalidates retained session
+ok 139 - invalid current native expiresAtMs invalidates retained session
+  ---
+  duration_ms: 1.256632
+  type: 'test'
+  ...
+# Subtest: current target context identity hash refusal invalidates session
+ok 140 - current target context identity hash refusal invalidates session
+  ---
+  duration_ms: 2.089071
+  type: 'test'
+  ...
+# Subtest: current target context binding refusal invalidates session
+ok 141 - current target context binding refusal invalidates session
+  ---
+  duration_ms: 1.857445
+  type: 'test'
+  ...
+# Subtest: current target context scopes refusal invalidates session
+ok 142 - current target context scopes refusal invalidates session
+  ---
+  duration_ms: 1.706248
+  type: 'test'
+  ...
+# Subtest: current target context client refusal invalidates session
+ok 143 - current target context client refusal invalidates session
+  ---
+  duration_ms: 1.675505
+  type: 'test'
+  ...
+# Subtest: current target context stale refusal invalidates session
+ok 144 - current target context stale refusal invalidates session
+  ---
+  duration_ms: 1.730534
+  type: 'test'
+  ...
+# Subtest: current target context expired refusal invalidates session
+ok 145 - current target context expired refusal invalidates session
+  ---
+  duration_ms: 1.874765
+  type: 'test'
+  ...
+# Subtest: expired original record cannot be revived by longer native and target receipts
+ok 146 - expired original record cannot be revived by longer native and target receipts
+  ---
+  duration_ms: 1.244244
+  type: 'test'
+  ...
+# Subtest: revocation during final journal check cannot release verified facts
+ok 147 - revocation during final journal check cannot release verified facts
+  ---
+  duration_ms: 2.392462
+  type: 'test'
+  ...
+# Subtest: concurrent verifications do not mutate session revision or original expiry
+ok 148 - concurrent verifications do not mutate session revision or original expiry
+  ---
+  duration_ms: 4.692037
+  type: 'test'
+  ...
+# Subtest: revocation while trusted reader is parked cannot release transition facts
+ok 149 - revocation while trusted reader is parked cannot release transition facts
+  ---
+  duration_ms: 1.859317
+  type: 'test'
+  ...
+# Subtest: cancellation of parked target context refuses and aborts owned signal
+ok 150 - cancellation of parked target context refuses and aborts owned signal
+  ---
+  duration_ms: 27.003802
+  type: 'test'
+  ...
+# Subtest: parked trusted port is bounded by original effective deadline
+ok 151 - parked trusted port is bounded by original effective deadline
+  ---
+  duration_ms: 22.516937
+  type: 'test'
+  ...
+# Subtest: historical ordinary authentication still refuses and cannot recreate a transition session
+ok 152 - historical ordinary authentication still refuses and cannot recreate a transition session
+  ---
+  duration_ms: 2.723226
+  type: 'test'
+  ...
+# Subtest: membership revision change refuses transition before reading the journal
+ok 153 - membership revision change refuses transition before reading the journal
+  ---
+  duration_ms: 5.386078
+  type: 'test'
+  ...
+# Subtest: client removal during final transition read withholds verified facts
+ok 154 - client removal during final transition read withholds verified facts
+  ---
+  duration_ms: 3.460882
+  type: 'test'
+  ...
+# Subtest: unknown purpose, forged credential and active input getters have no trusted effects
+ok 155 - unknown purpose, forged credential and active input getters have no trusted effects
+  ---
+  duration_ms: 1.700668
+  type: 'test'
+  ...
+# Subtest: hostile signal and coercible deadline are rejected before identity or reader ports
+ok 156 - hostile signal and coercible deadline are rejected before identity or reader ports
+  ---
+  duration_ms: 1.299363
+  type: 'test'
+  ...
+# Subtest: cancelled identity verification preserves live original session for effect-free APPLIED readback
+ok 157 - cancelled identity verification preserves live original session for effect-free APPLIED readback
+  ---
+  duration_ms: 4.910691
+  type: 'test'
+  ...
+# Subtest: cancelled target verification preserves live original session for effect-free APPLIED readback
+ok 158 - cancelled target verification preserves live original session for effect-free APPLIED readback
+  ---
+  duration_ms: 3.836544
+  type: 'test'
+  ...
+# Subtest: operation timeout preserves original session while fresh readback still rechecks identity
+ok 159 - operation timeout preserves original session while fresh readback still rechecks identity
+  ---
+  duration_ms: 23.439339
+  type: 'test'
+  ...
+# Subtest: live AI SDK transport preserves durable ids/sequences and upstream stream protocol
+ok 160 - live AI SDK transport preserves durable ids/sequences and upstream stream protocol
+  ---
+  duration_ms: 158.580353
+  type: 'test'
+  ...
+# Subtest: upstream reader cancellation reaches the owned live event source
+ok 161 - upstream reader cancellation reaches the owned live event source
+  ---
+  duration_ms: 1.133082
+  type: 'test'
+  ...
+# Subtest: live producer suppresses internal source error details
+ok 162 - live producer suppresses internal source error details
+  ---
+  duration_ms: 0.910154
+  type: 'test'
+  ...
+1..162
+# tests 162
+# suites 0
+# pass 160
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2828.594039
