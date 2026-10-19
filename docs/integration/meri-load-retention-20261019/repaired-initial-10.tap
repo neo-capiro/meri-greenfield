@@ -1,0 +1,71 @@
+TAP version 13
+# Subtest: suppression committed during final task verification withholds the saved load response
+ok 1 - suppression committed during final task verification withholds the saved load response
+  ---
+  duration_ms: 37.677676
+  type: 'test'
+  ...
+# {"status":403,"promptPresent":false,"projection":"SUPPRESSED","counts":{"task":3,"retention":4,"release":1,"scoped":1,"serialized":0,"reads":2,"journal":1,"writes":0}}
+# Subtest: earlier canonical suppression still refuses before loading saved data
+ok 2 - earlier canonical suppression still refuses before loading saved data
+  ---
+  duration_ms: 5.465852
+  type: 'test'
+  ...
+# Subtest: successful load serializes under its authenticated subject release fence
+ok 3 - successful load serializes under its authenticated subject release fence
+  ---
+  duration_ms: 13.681775
+  type: 'test'
+  ...
+# Subtest: cancel during release acquisition frees locks and prevents late serialization
+ok 4 - cancel during release acquisition frees locks and prevents late serialization
+  ---
+  duration_ms: 10.803291
+  type: 'test'
+  ...
+# Subtest: deadline during release acquisition frees locks and prevents late serialization
+ok 5 - deadline during release acquisition frees locks and prevents late serialization
+  ---
+  duration_ms: 202.858948
+  type: 'test'
+  ...
+# Subtest: cancel during release scoped read frees locks and prevents late serialization
+ok 6 - cancel during release scoped read frees locks and prevents late serialization
+  ---
+  duration_ms: 13.650004
+  type: 'test'
+  ...
+# Subtest: deadline during release scoped read frees locks and prevents late serialization
+ok 7 - deadline during release scoped read frees locks and prevents late serialization
+  ---
+  duration_ms: 202.724711
+  type: 'test'
+  ...
+# Subtest: serialization failure frees the canonical subject lock and revokes the temporary session
+ok 8 - serialization failure frees the canonical subject lock and revokes the temporary session
+  ---
+  duration_ms: 7.079552
+  type: 'test'
+  ...
+# Subtest: declared retention requires a release gate and supplied malformed ports fail closed
+ok 9 - declared retention requires a release gate and supplied malformed ports fail closed
+  ---
+  duration_ms: 1.740831
+  type: 'test'
+  ...
+# Subtest: a gate without its scoped assertion cannot serialize load data
+ok 10 - a gate without its scoped assertion cannot serialize load data
+  ---
+  duration_ms: 7.354197
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1076.881467

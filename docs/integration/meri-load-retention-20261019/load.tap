@@ -1,0 +1,245 @@
+TAP version 13
+# Subtest: fused runner/load keeps the original authority gates with bounded Core fanout
+ok 1 - fused runner/load keeps the original authority gates with bounded Core fanout
+  ---
+  duration_ms: 185.919911
+  type: 'test'
+  ...
+# Subtest: legacy session ports retain the original fresh pair at every load boundary
+ok 2 - legacy session ports retain the original fresh pair at every load boundary
+  ---
+  duration_ms: 229.003082
+  type: 'test'
+  ...
+# Subtest: non-load worker publish retains separate authentication and current observations
+ok 3 - non-load worker publish retains separate authentication and current observations
+  ---
+  duration_ms: 178.089616
+  type: 'test'
+  ...
+# Subtest: 35 ms serial Core responses fit the fused load deadline
+ok 4 - 35 ms serial Core responses fit the fused load deadline
+  ---
+  duration_ms: 1352.528114
+  type: 'test'
+  ...
+# Subtest: native client retains its independent three-second cap
+ok 5 - native client retains its independent three-second cap
+  ---
+  duration_ms: 3002.911389
+  type: 'test'
+  ...
+# Subtest: load budget retains the later startup stages and original-lease reserve
+ok 6 - load budget retains the later startup stages and original-lease reserve
+  ---
+  duration_ms: 1.1312
+  type: 'test'
+  ...
+# Subtest: activity separates long load from three-second runtime preparation
+ok 7 - activity separates long load from three-second runtime preparation
+  ---
+  duration_ms: 10.643955
+  type: 'test'
+  ...
+# Subtest: nested remote runner passes its load budget into the activity
+ok 8 - nested remote runner passes its load budget into the activity
+  ---
+  duration_ms: 2.163788
+  type: 'test'
+  ...
+# Subtest: 500 ms Core replies fit the unchanged 23-second load budget after removing duplicate observations
+ok 9 - 500 ms Core replies fit the unchanged 23-second load budget after removing duplicate observations
+  ---
+  duration_ms: 18646.826309
+  type: 'test'
+  ...
+# Subtest: the original paired path exceeds that same 23-second budget at 500 ms per Core response
+ok 10 - the original paired path exceeds that same 23-second budget at 500 ms per Core response
+  ---
+  duration_ms: 23002.967036
+  type: 'test'
+  ...
+# Subtest: conservative tail-heavy stress using observed per-route bounds fits the unchanged load budget
+ok 11 - conservative tail-heavy stress using observed per-route bounds fits the unchanged load budget
+  ---
+  duration_ms: 18235.029367
+  type: 'test'
+  ...
+# {"profile":"conservative tail-heavy stress, not a reconstructed live distribution","scheduledMs":18152,"durationMs":18234,"coreCalls":37,"counts":{"identity":10,"context":15,"membership":12,"taskAuthorization":3,"currentRun":18,"read":2,"append":0,"journalExecution":1,"retention":4},"outcome":"200"}
+# Subtest: only runner/load receives the longer native allowance
+ok 12 - only runner/load receives the longer native allowance
+  ---
+  duration_ms: 151.05555
+  type: 'test'
+  ...
+# Subtest: a parked Core response cannot release a receipt after cancellation
+ok 13 - a parked Core response cannot release a receipt after cancellation
+  ---
+  duration_ms: 2.188535
+  type: 'test'
+  ...
+# Subtest: a parked store read cannot release a receipt after cancellation
+ok 14 - a parked store read cannot release a receipt after cancellation
+  ---
+  duration_ms: 37.489027
+  type: 'test'
+  ...
+# Subtest: deadline expiry also refuses late Core and store completions
+ok 15 - deadline expiry also refuses late Core and store completions
+  ---
+  duration_ms: 1104.760461
+  type: 'test'
+  ...
+# Subtest: membership revocation during a delayed journal read withholds the receipt
+ok 16 - membership revocation during a delayed journal read withholds the receipt
+  ---
+  duration_ms: 345.367069
+  type: 'test'
+  ...
+# Subtest: selected client revocation during a delayed journal read withholds the receipt
+ok 17 - selected client revocation during a delayed journal read withholds the receipt
+  ---
+  duration_ms: 346.4133
+  type: 'test'
+  ...
+# Subtest: load accepts a next turn alone and refuses ambiguous continuation lineage
+ok 18 - load accepts a next turn alone and refuses ambiguous continuation lineage
+  ---
+  duration_ms: 124.334994
+  type: 'test'
+  ...
+# Subtest: a consistently foreign stored run cannot pass the fused load
+ok 19 - a consistently foreign stored run cannot pass the fused load
+  ---
+  duration_ms: 46.697499
+  type: 'test'
+  ...
+# Subtest: the fused load independently refuses an out-of-scope selected client
+ok 20 - the fused load independently refuses an out-of-scope selected client
+  ---
+  duration_ms: 4.210147
+  type: 'test'
+  ...
+# Subtest: mid-journal identity revocation cannot release a load receipt
+ok 21 - mid-journal identity revocation cannot release a load receipt
+  ---
+  duration_ms: 50.036301
+  type: 'test'
+  ...
+# Subtest: mid-journal identity revision drift cannot release a load receipt
+ok 22 - mid-journal identity revision drift cannot release a load receipt
+  ---
+  duration_ms: 65.880518
+  type: 'test'
+  ...
+# Subtest: mid-journal membership revocation cannot release a load receipt
+ok 23 - mid-journal membership revocation cannot release a load receipt
+  ---
+  duration_ms: 60.048334
+  type: 'test'
+  ...
+# Subtest: mid-journal selected client drift cannot release a load receipt
+ok 24 - mid-journal selected client drift cannot release a load receipt
+  ---
+  duration_ms: 60.362568
+  type: 'test'
+  ...
+# Subtest: mid-journal current policy drift cannot release a load receipt
+ok 25 - mid-journal current policy drift cannot release a load receipt
+  ---
+  duration_ms: 73.344855
+  type: 'test'
+  ...
+# Subtest: mid-journal retention suppression cannot release a load receipt
+ok 26 - mid-journal retention suppression cannot release a load receipt
+  ---
+  duration_ms: 53.028832
+  type: 'test'
+  ...
+# Subtest: mid-journal saved tenant drift cannot release a load receipt
+ok 27 - mid-journal saved tenant drift cannot release a load receipt
+  ---
+  duration_ms: 58.593095
+  type: 'test'
+  ...
+# Subtest: mid-journal saved request drift cannot release a load receipt
+ok 28 - mid-journal saved request drift cannot release a load receipt
+  ---
+  duration_ms: 49.777472
+  type: 'test'
+  ...
+# Subtest: identity refusal before initial authorization prevents all stored reads
+ok 29 - identity refusal before initial authorization prevents all stored reads
+  ---
+  duration_ms: 25.947565
+  type: 'test'
+  ...
+# Subtest: identity revocation during final stored read is caught by fresh release authorization
+ok 30 - identity revocation during final stored read is caught by fresh release authorization
+  ---
+  duration_ms: 51.898457
+  type: 'test'
+  ...
+# Subtest: membership refusal before initial authorization prevents all stored reads
+ok 31 - membership refusal before initial authorization prevents all stored reads
+  ---
+  duration_ms: 30.787502
+  type: 'test'
+  ...
+# Subtest: membership revocation during final stored read is caught by fresh release authorization
+ok 32 - membership revocation during final stored read is caught by fresh release authorization
+  ---
+  duration_ms: 55.324238
+  type: 'test'
+  ...
+# Subtest: selected client refusal before initial authorization prevents all stored reads
+ok 33 - selected client refusal before initial authorization prevents all stored reads
+  ---
+  duration_ms: 30.860598
+  type: 'test'
+  ...
+# Subtest: selected client revocation during final stored read is caught by fresh release authorization
+ok 34 - selected client revocation during final stored read is caught by fresh release authorization
+  ---
+  duration_ms: 53.294124
+  type: 'test'
+  ...
+# Subtest: policy refusal before initial authorization prevents all stored reads
+ok 35 - policy refusal before initial authorization prevents all stored reads
+  ---
+  duration_ms: 31.231366
+  type: 'test'
+  ...
+# Subtest: policy revocation during final stored read is caught by fresh release authorization
+ok 36 - policy revocation during final stored read is caught by fresh release authorization
+  ---
+  duration_ms: 63.193055
+  type: 'test'
+  ...
+# Subtest: retention refusal before initial authorization prevents all stored reads
+ok 37 - retention refusal before initial authorization prevents all stored reads
+  ---
+  duration_ms: 36.73255
+  type: 'test'
+  ...
+# Subtest: retention revocation during final stored read is caught by fresh release authorization
+ok 38 - retention revocation during final stored read is caught by fresh release authorization
+  ---
+  duration_ms: 77.986902
+  type: 'test'
+  ...
+# Subtest: task revocation at the final worker gate withholds the completed service receipt
+ok 39 - task revocation at the final worker gate withholds the completed service receipt
+  ---
+  duration_ms: 58.605352
+  type: 'test'
+  ...
+1..39
+# tests 39
+# suites 0
+# pass 39
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 69506.802527
