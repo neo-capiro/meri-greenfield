@@ -8,9 +8,10 @@ import {fileURLToPath} from 'node:url';
 const root=fileURLToPath(new URL('../../../',import.meta.url));
 const hash=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
 const proof=JSON.parse(fs.readFileSync(new URL('./source-manifest.json',import.meta.url),'utf8'));
-const candidate=JSON.parse(fs.readFileSync(new URL('./candidate-manifest-fable-20261015j.json',import.meta.url),'utf8'));
+const predecessor=JSON.parse(fs.readFileSync(new URL('./candidate-manifest-fable-20261015j.json',import.meta.url),'utf8'));
+const candidate=JSON.parse(fs.readFileSync(new URL('./candidate-manifest-fable-20261015k.json',import.meta.url),'utf8'));
 
-test('every preceding candidate through i is preserved byte-exact and the successor carries no image acceptance',()=>{
+test('every preceding candidate through j is preserved byte-exact and the successor carries no image acceptance',()=>{
  const read=name=>fs.readFileSync(new URL('./'+name,import.meta.url)),fable14=hash(read('candidate-manifest-fable-20261014.json')),dot=JSON.parse(read('candidate-manifest-dot-20261014.json').toString('utf8')),dot14=hash(read('candidate-manifest-dot-20261014.json')),fable15=JSON.parse(read('candidate-manifest-fable-20261015.json').toString('utf8')),fable15Sha=hash(read('candidate-manifest-fable-20261015.json')),fable15b=JSON.parse(read('candidate-manifest-fable-20261015b.json').toString('utf8')),fable15bSha=hash(read('candidate-manifest-fable-20261015b.json')),fable15c=JSON.parse(read('candidate-manifest-fable-20261015c.json').toString('utf8')),fable15cSha=hash(read('candidate-manifest-fable-20261015c.json'));
  const fable15d=JSON.parse(read('candidate-manifest-fable-20261015d.json').toString('utf8')),fable15dSha=hash(read('candidate-manifest-fable-20261015d.json'));
  const fable15e=JSON.parse(read('candidate-manifest-fable-20261015e.json').toString('utf8')),fable15eSha=hash(read('candidate-manifest-fable-20261015e.json'));
@@ -18,6 +19,7 @@ test('every preceding candidate through i is preserved byte-exact and the succes
  const fable15g=JSON.parse(read('candidate-manifest-fable-20261015g.json').toString('utf8')),fable15gSha=hash(read('candidate-manifest-fable-20261015g.json'));
  const fable15h=JSON.parse(read('candidate-manifest-fable-20261015h.json').toString('utf8')),fable15hSha=hash(read('candidate-manifest-fable-20261015h.json'));
  const fable15i=JSON.parse(read('candidate-manifest-fable-20261015i.json').toString('utf8')),fable15iSha=hash(read('candidate-manifest-fable-20261015i.json'));
+ const fable15jSha=hash(read('candidate-manifest-fable-20261015j.json'));
  assert.equal(fable14,'dc425cffa60a5a6bffc2d089cdf421be33694c3682d99d7c6b2b7818d3e1c627');assert.equal(dot.previousCandidate.sha256,fable14);
  assert.equal(dot14,'fb97f11639d173fd15781df776ea8c49d9c2c53cc868dc9e8512e957195b310b');assert.equal(fable15.previousCandidate.sha256,dot14);assert.equal(fable15.pickupHead,'215930c8092577e84da563b1496d1cca9a4ad4d7');
  assert.equal(fable15Sha,'59a67fa2d8685f743f1b1a1e4a46360632c30bfead683b119ebccfa424b3c6a4');assert.equal(fable15b.previousCandidate.sha256,fable15Sha);assert.equal(fable15b.status,'CANDIDATE_HOLD_SOURCE_REVIEW');
@@ -28,7 +30,8 @@ test('every preceding candidate through i is preserved byte-exact and the succes
  assert.equal(fable15fSha,'3215210633f64dcb4c8d98aa1c7e17af658c512511bc4f7bdf3df4f8a4085017');assert.equal(fable15g.previousCandidate.sha256,fable15fSha);assert.equal(fable15g.status,'CANDIDATE_HOLD_SOURCE_REVIEW');assert.equal(fable15g.pickupHead,fable15f.pickupHead);
  assert.equal(fable15gSha,'b74243e64a2a6d031434315cd7e4699ecc151f6ba2ca13959c04c31a75edfcd6');assert.equal(fable15h.previousCandidate.sha256,fable15gSha);assert.equal(fable15h.status,'CANDIDATE_HOLD_SOURCE_REVIEW');assert.equal(fable15h.pickupHead,fable15g.pickupHead);
  assert.equal(fable15hSha,'79a5f7fc5254c0152c0119264d653cdb5b561f27ded91d379569d00ba73a5c1e');assert.equal(fable15iSha,'9612902e156cffbdce71bd71b9115bd8ce642d979583795fd2a5ac5df549f5e2');assert.deepEqual(fable15i.previousCandidate,{path:'candidate-manifest-fable-20261015h.json',sha256:fable15hSha});assert.equal(fable15i.candidateSourceCommit,'abfba7c5f3424f61a774815181ed9793b9add877');
- assert.deepEqual(candidate.previousCandidate,{path:'candidate-manifest-fable-20261015i.json',sha256:fable15iSha});assert.equal(candidate.status,'CANDIDATE_HOLD_SOURCE_REVIEW');assert.equal(candidate.pickupHead,fable15i.pickupHead);assert.equal(candidate.candidateSourceCommit,'31f4fbd916cdc001a9300c8ae5271284c64c70b8');
+ assert.equal(fable15jSha,'2b4378802ccdd85775224c727b609a2bd8a220ffbe3d38bae5bba49820dadc88');assert.deepEqual(predecessor.previousCandidate,{path:'candidate-manifest-fable-20261015i.json',sha256:fable15iSha});assert.equal(predecessor.candidateSourceCommit,'31f4fbd916cdc001a9300c8ae5271284c64c70b8');
+ assert.deepEqual(candidate.previousCandidate,{path:'candidate-manifest-fable-20261015j.json',sha256:fable15jSha});assert.equal(candidate.status,'CANDIDATE_HOLD_SOURCE_REVIEW');assert.equal(candidate.pickupHead,predecessor.pickupHead);assert.equal(candidate.candidateSourceCommit,'a16cc40d2a7ca3695eb6cc5a8d45440d0c40d040');
  assert.deepEqual(candidate.historicalManifest,dot.historicalManifest);assert.deepEqual(candidate.priorPublishedDotManifest,dot.priorPublishedDotManifest);
  for(const row of dot.changedRows){const current=candidate.changedRows.find(r=>r.path===row.path);assert.ok(current,row.path);assert.equal(current.historicalSha256,row.historicalSha256,row.path+': the historical hash of every dot-enumerated change is carried unchanged');}
  for(const row of fable15.changedRows){const current=candidate.changedRows.find(r=>r.path===row.path);assert.ok(current,row.path);assert.equal(current.historicalSha256,row.historicalSha256,row.path);}
@@ -44,8 +47,11 @@ test('every preceding candidate through i is preserved byte-exact and the succes
   if(successor.sha256!==row.sha256){changedSinceH++;assert.ok(current,row.path);assert.equal(current.previousCandidateSha256,row.sha256,row.path+': successor names its exact h predecessor bytes');}}
  assert.equal(changedSinceH,24);
  const changedSinceI=[];
- for(const row of fable15i.files){const successor=candidate.files.find(r=>r.path===row.path);assert.ok(successor,row.path);if(successor.sha256!==row.sha256){changedSinceI.push(row.path);const change=candidate.changedRows.find(r=>r.path===row.path);assert.ok(change,row.path);assert.equal(change.previousCandidateSha256,row.sha256,row.path+': successor names its exact i predecessor bytes');}}
+ for(const row of fable15i.files){const successor=predecessor.files.find(r=>r.path===row.path);assert.ok(successor,row.path);if(successor.sha256!==row.sha256){changedSinceI.push(row.path);const change=predecessor.changedRows.find(r=>r.path===row.path);assert.ok(change,row.path);assert.equal(change.previousCandidateSha256,row.sha256,row.path+': j names its exact i predecessor bytes');}}
  assert.deepEqual(changedSinceI,['apps/runtime/test/prepared-candidate-bootstrap.test.mjs']);
+ const changedSinceJ=[];
+ for(const row of predecessor.files){const successor=candidate.files.find(r=>r.path===row.path);assert.ok(successor,row.path);if(successor.sha256!==row.sha256){changedSinceJ.push(row.path);const change=candidate.changedRows.find(r=>r.path===row.path);assert.ok(change,row.path);assert.equal(change.previousCandidateSha256,row.sha256,row.path+': k names its exact j predecessor bytes');}}
+ assert.deepEqual(changedSinceJ,['apps/runtime/test/prepared-candidate-bootstrap.test.mjs']);
 });
 
 test('all45 historical proof paths and44 non-recipe hashes remain in the preserved historical manifest',()=>{
@@ -76,6 +82,9 @@ test('exact16 proof-test files are allowlisted with parent reopening and sibling
   const patterns=fs.readFileSync(path.join(root,'.dockerignore'),'utf8').split(/\r?\n/).map(line=>line.trim()).filter(line=>line&&!line.startsWith('#'));
   const exceptions=patterns.filter(line=>line.startsWith('!')&&line.includes('/test/')&&!line.endsWith('/')).map(line=>line.slice(1)).sort();
   assert.deepEqual(exceptions,paths);
+  const separateRegression='apps/runtime/test/remote-runner-startup-budget.test.mjs';
+  assert.ok(fs.existsSync(path.join(root,separateRegression)),'the separate Linux regression remains in the source tree');
+  assert.ok(!exceptions.includes(separateRegression),'the separate Linux regression is outside Docker COPY');
   for(const parent of new Set(paths.map(file=>path.posix.dirname(file)))){
     const i=patterns.indexOf('!'+parent+'/');assert.ok(i>=0,parent);assert.equal(patterns[i+1],parent+'/*');
   }

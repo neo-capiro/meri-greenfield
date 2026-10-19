@@ -6,7 +6,7 @@ import {existsSync,readFileSync} from 'node:fs';
 import {join} from 'node:path';
 
 /** Exact source-only successor. Image admission remains a separate gate. */
-export const FROZEN_CANDIDATE=Object.freeze({file:'candidate-manifest-fable-20261015j.json',sha256:'2b4378802ccdd85775224c727b609a2bd8a220ffbe3d38bae5bba49820dadc88'});
+export const FROZEN_CANDIDATE=Object.freeze({file:'candidate-manifest-fable-20261015k.json',sha256:'11ad803b6076666bcef79ab0360cfef6cea3546c86cf50384a8eb8501ce5d71f'});
 export const HISTORICAL_MANIFEST='source-manifest.json';
 const sha256=bytes=>createHash('sha256').update(bytes).digest('hex');
 const refuse=(code,detail)=>{throw Object.assign(Error(code+(detail?': '+detail:'')),{code});};
