@@ -7,7 +7,8 @@ import {fault} from './config.mjs';
 import {copySessionEntries} from '../worker/qualification/checkpoint/bound-session-store.mjs';
 
 export function createFirstRuntimeSdkSession(configuration){
- const {client,binding,signal}=own(configuration,['client','binding'],['signal']);nativeSignal(signal);
+ const {client,binding,signal,timeoutMs}=own(configuration,['client','binding'],['signal','timeoutMs']);nativeSignal(signal);
+ if(timeoutMs!==undefined&&(!Number.isSafeInteger(timeoutMs)||timeoutMs<1||timeoutMs>23000))throw fault('RUNNER_SESSION_CONFIGURATION');
  const lifetime=new AbortController(),currentSignal=signal===undefined?lifetime.signal:AbortSignal.any([signal,lifetime.signal]);
  const methods=Object.freeze(Object.fromEntries(['register','load','append','listSubkeys'].map(name=>[name,storageMethod(client,name)])));
  let bound,registration,closed=false,failed=false;
@@ -22,7 +23,7 @@ export function createFirstRuntimeSdkSession(configuration){
    if(closed||currentSignal.aborted||options?.signal?.aborted)throw fault('RUNNER_SESSION_STOPPED');
    return methods[name](input,{...options,signal:options?.signal===undefined?currentSignal:AbortSignal.any([currentSignal,options.signal])});
   }]))};
-  bound=createNativeBoundSdkSessionStore({client:admitted,binding,sessionKey:main});
+  bound=createNativeBoundSdkSessionStore({client:admitted,binding,sessionKey:main,...(timeoutMs===undefined?{}:{timeoutMs})});
   registration=Promise.resolve().then(()=>{
    if(closed||currentSignal.aborted)throw fault('RUNNER_SESSION_STOPPED');
    return bound.register({signal:currentSignal});

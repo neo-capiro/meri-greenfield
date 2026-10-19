@@ -8,13 +8,14 @@ import {createOperationLifetime} from '../../packages/runtime/operation-lifetime
 import {createFirstRuntimeSdkSession} from './sdk-first-session.mjs';
 import {createContinuationRuntimeSdkSession} from './sdk-continuation-session.mjs';
 export function createRuntimeSdkSessionFactory(configuration){
- const {origin,credential,binding,fetchImpl=fetch,now=Date.now}=own(configuration,['origin','credential','binding'],['fetchImpl','now']);
+ const {origin,credential,binding,fetchImpl=fetch,now=Date.now,startupMaxRequestMs,startupExpiresAtMs}=own(configuration,['origin','credential','binding'],['fetchImpl','now','startupMaxRequestMs','startupExpiresAtMs']);
  const pinnedBinding=data(binding),client=createNativeSdkSessionClient({origin,credential,binding:pinnedBinding,fetchImpl,now});
+ if((startupMaxRequestMs===undefined)!==(startupExpiresAtMs===undefined)||startupMaxRequestMs!==undefined&&(!Number.isSafeInteger(startupMaxRequestMs)||startupMaxRequestMs<1||startupMaxRequestMs>23000||!Number.isSafeInteger(startupExpiresAtMs)||startupExpiresAtMs<1))throw fault('RUNNER_SESSION_CONFIGURATION');
  return async value=>{
   const {binding:currentBinding,sessionKey,signal,runtimeSignal,continuation,nextTurn}=own(value,['binding'],['sessionKey','signal','runtimeSignal','continuation','nextTurn']);
   if(continuation!==undefined&&nextTurn!==undefined)throw fault('RUNNER_SDK_RESTORE_REFUSED');
   if(canonicalSha256(data(currentBinding))!==canonicalSha256(pinnedBinding)||sessionKey===undefined)throw fault('RUNNER_SDK_REGISTRATION_UNAVAILABLE');
-  if(sessionKey===null){nativeSignal(signal);nativeSignal(runtimeSignal);if(continuation!==undefined||nextTurn!==undefined||signal?.aborted||runtimeSignal?.aborted)throw fault('RUNNER_SDK_REGISTRATION_UNAVAILABLE');return createFirstRuntimeSdkSession({client,binding:pinnedBinding,signal:runtimeSignal});}
+  if(sessionKey===null){nativeSignal(signal);nativeSignal(runtimeSignal);if(continuation!==undefined||nextTurn!==undefined||signal?.aborted||runtimeSignal?.aborted)throw fault('RUNNER_SDK_REGISTRATION_UNAVAILABLE');const firstClient=startupMaxRequestMs===undefined?client:createNativeSdkSessionClient({origin,credential,binding:pinnedBinding,fetchImpl,now,startupMaxRequestMs,startupExpiresAtMs});return createFirstRuntimeSdkSession({client:firstClient,binding:pinnedBinding,signal:runtimeSignal,...(startupMaxRequestMs===undefined?{}:{timeoutMs:startupMaxRequestMs})});}
   if(continuation!==undefined||nextTurn!==undefined)return createContinuationRuntimeSdkSession({client,binding:pinnedBinding,sessionKey,...(nextTurn===undefined?{continuation}:{nextTurn}),signal,runtimeSignal});
   const bound=createNativeBoundSdkSessionStore({client,binding:pinnedBinding,sessionKey});
   const settle=async()=>{const result=await bound.settleObservedCalls();if(result.uncertain)throw fault('RUNNER_SDK_SESSION_UNKNOWN');};

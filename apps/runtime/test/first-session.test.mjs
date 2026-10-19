@@ -23,6 +23,15 @@ test('fresh mirror is inert until actual main key and preserves ordered canonica
  assert.deepEqual(f.state().owner.owner.key,f.key);await f.mirror.close();
 });
 
+test('first SDK append can complete a bounded register/load/write sequence beyond the ordinary mirror timeout',async()=>{
+ const f=fixture({maxRequestMs:6000}),app=createNativeSdkSessionApplication({owner:f.owner,now:()=>NOW,maxRequestMs:6000}),calls=[];
+ const factory=createRuntimeSdkSessionFactory({origin:'https://native.synthetic.invalid',credential:'opaque-native-task',binding:f.binding,startupMaxRequestMs:5000,startupExpiresAtMs:Date.now()+30000,
+  fetchImpl:async(url,options)=>{const operation=new URL(url).pathname.split('/').at(-1);calls.push(operation);if(operation==='load'||operation==='append')await new Promise(resolve=>setTimeout(resolve,1600));return app.handle(new Request(url,options));}});
+ const mirror=await factory({binding:f.binding,sessionKey:null});
+ try{await mirror.store.append(f.key,[{type:'system',marker:'first'}]);await mirror.settle();assert.deepEqual(calls,['register','load','append']);assert.equal(f.state().entries.length,1);}
+ finally{await mirror.close();}
+});
+
 test('fresh mirror cannot load old state or report completion without observed registration',async()=>{
  const f=await mirrorFixture();await assert.rejects(f.mirror.store.load(f.key),{code:'RUNNER_SDK_FIRST_LOAD_REFUSED'});
  await assert.rejects(f.mirror.store.listSubkeys(f.key),{code:'RUNNER_SDK_FIRST_LOAD_REFUSED'});

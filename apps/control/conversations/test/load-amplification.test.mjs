@@ -142,10 +142,12 @@ test('native client retains its independent three-second cap',async()=>{
   assert.ok(result.durationMs>=2900&&result.durationMs<4000,JSON.stringify(result));
 });
 
-test('load-only budget leaves control and original-lease margins',()=>{
-  const budget=runnerLoadBudget({requestMs:25000,shutdownMs:10000,originalExpiresAtMs:100000});
-  assert.deepEqual(budget,{maxMs:23000,expiresAtMs:82000});
-  assert.deepEqual(runnerLoadBudget({requestMs:12000,shutdownMs:1000,originalExpiresAtMs:100000}),{maxMs:10000,expiresAtMs:91000});
+test('load budget retains the later startup stages and original-lease reserve',()=>{
+  const budget=runnerLoadBudget({requestMs:25000,shutdownMs:10000,originalExpiresAtMs:1000000});
+  assert.deepEqual(budget,{maxMs:23000,expiresAtMs:534000});
+  const narrow=runnerLoadBudget({requestMs:12000,shutdownMs:1000,originalExpiresAtMs:1000000});
+  assert.equal(narrow.maxMs,10000);
+  assert.ok(narrow.expiresAtMs<1000000-10000-12000);
   assert.throws(()=>runnerLoadBudget({requestMs:NaN,shutdownMs:1000,originalExpiresAtMs:100000}),/RUNNER_LOAD_BUDGET_REFUSED/u);
 });
 
@@ -179,7 +181,7 @@ test('nested remote runner passes its load budget into the activity',async()=>{
   const saved={run:{binding,state:'queued',scopes,versions,createdAt:new Date(0).toISOString(),policyRevision:scopes[0].policyRevision},
     request:{requestId:id(6),prompt:'Synthetic only',skill:null,window:null,windowRequest:null},lastSequence:1};
   const executionKey=hash(binding),configuration={binding,versions,sourceEnabled:false,limits:{requestMs:25000,shutdownMs:10000},
-    remoteTask:{original:{binding,versions,executionKey,executionId:executionKey,planSha256:'0'.repeat(64),expiresAtMs:50000}}};
+    remoteTask:{original:{binding,versions,executionKey,executionId:executionKey,planSha256:'0'.repeat(64),expiresAtMs:1000000}}};
   const native={async call(operation){if(operation==='runner/load'){clock+=19000;return saved;}if(operation==='runner/runtime'){runtimeCalls++;throw Error('STOP_BEFORE_MODEL');}throw Error('UNEXPECTED_NATIVE_CALL');}};
   const execute=assembleConversationRunner({configuration,native,now:()=>clock,query:()=>{throw Error('MODEL_CALL_FORBIDDEN');}});
   await assert.rejects(execute({binding}),/EXECUTION_FAILED/u);
