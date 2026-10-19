@@ -20,6 +20,9 @@ with patch.dict(sys.modules, _litellm_stubs):
     owner_channel = importlib.import_module("apps.proxy.product.owner_channel")
     from apps.proxy.product.test_boundary_codec import reservation, usage
     from apps.proxy.product.test.test_complete_capture_codec import capture
+    from apps.proxy.product.owner_admission import ProductOwnerAdmissionReader
+    from apps.proxy.product.test.test_bearer_eni_admission import source as issued_fixture
+from apps.proxy.product.response_settlement import SettlementCommitUncertain
 OPEN, OPERATION, POLL, REPLY = (owner_channel.OPEN, owner_channel.OPERATION,
                                owner_channel.POLL, owner_channel.REPLY)
 OwnerPeerPolicy, OwnerReply = owner_channel.OwnerPeerPolicy, owner_channel.OwnerReply
@@ -35,10 +38,11 @@ def wire(value):
 
 class FakeExchange:
     def __init__(self, policy, *, delay_poll=0, delay_operation=0,
-                 same_connection=False, uncertain=False):
+                 same_connection=False, uncertain=False, request_id="request_A"):
         self.policy = policy
         self.delay_poll, self.delay_operation = delay_poll, delay_operation
         self.same_connection, self.uncertain = same_connection, uncertain
+        self.request_id = request_id
         self.session_id = "owner_session_A"
         self.challenge = asyncio.Event()
         self.replied = asyncio.Event()
@@ -71,6 +75,7 @@ class FakeExchange:
                 await asyncio.sleep(self.delay_poll)
             await self.challenge.wait()
             request = reservation()[0]
+            request["requestId"] = self.request_id
             binding = frame_binding(request["binding"])
             answer = (["meri.proxy.capture-call/1", request["requestId"],
                        binding, request["deadlineMs"]] if self.kind == "call" else
@@ -78,28 +83,28 @@ class FakeExchange:
                        binding, "grant_A"])
         elif path == REPLY:
             self.replied.set()
-            answer = ["meri.proxy.capture-ack/1", self.session_id, "request_A", self.kind]
+            answer = ["meri.proxy.capture-ack/1", self.session_id, self.request_id, self.kind]
         else:
             if self.delay_operation:
                 await asyncio.sleep(self.delay_operation)
             claim = frame[2]
             if claim[0] == "meri.proxy.outcome/1":
                 answer = ["meri.proxy.outcome-receipt/1", self.session_id,
-                          ["request_A", "SETTLED", "42"]]
+                          [self.request_id, "SETTLED", "42"]]
             else:
                 self.kind = "call" if claim[0] == "meri.proxy.reservation/1" else "complete"
                 self.challenge.set()
                 await self.replied.wait()
                 if self.kind == "call":
                     answer = ["meri.proxy.reservation-receipt/1", self.session_id,
-                              ["request_A", hashlib.sha256(reservation()[1][
+                              [self.request_id, hashlib.sha256(reservation()[1][
                                   "nativeRequest"]["body"]).hexdigest(), "UNKNOWN"]]
                 elif self.uncertain:
                     answer = ["meri.proxy.commit-uncertain/1", self.session_id,
-                              "request_A"]
+                              self.request_id]
                 else:
                     answer = ["meri.proxy.settlement-receipt/1", self.session_id,
-                              ["request_A", "SETTLED"]]
+                              [self.request_id, "SETTLED"]]
                 self.challenge.clear()
                 self.replied.clear()
         return OwnerReply(wire(answer), self.evidence(channel))
@@ -122,17 +127,34 @@ class OwnerChannelTests(unittest.IsolatedAsyncioTestCase):
         self.host_gate = OwnerHostGate()
         self.now = lambda: self.value["deadlineMs"] - 5000
 
-    def bridge(self, port, captured=None):
+    def bridge(self, port, captured=None, *, request_id="request_A"):
         if captured is None:
             async def captured(request):
-                return self.observation
+                return {**self.observation, "requestId": request["requestId"]}
         return make_product_owner_bridge(
             policy=self.policy, exchange=port, host_gate=self.host_gate,
-            request_id=self.value["requestId"], binding=self.value["binding"],
+            request_id=request_id, binding=self.value["binding"],
             deadline_ms=self.value["deadlineMs"], grant_id="grant_A",
             capability_sha256=hashlib.sha256(
                 self.observation["proxyCredential"].encode()).hexdigest(),
             now_ms=self.now)(captured)
+
+    def complete_observation(self):
+        result = capture()
+        result["completion"]["binding"] = self.value["binding"]
+        result["completion"]["taskArn"] = self.observation["peer"]["taskArn"]
+        result["completion"]["capabilitySha256"] = hashlib.sha256(
+            self.observation["proxyCredential"].encode()).hexdigest()
+        result["rawRequestBody"] = self.observation["rawRequestBody"]
+        result["nativeRequestBody"] = self.observation["nativeRequest"]["body"]
+        native_sha = hashlib.sha256(result["nativeRequestBody"]).hexdigest()
+        raw_sha = hashlib.sha256(result["rawRequestBody"]).hexdigest()
+        result["reservation"]["nativeBodySha256"] = native_sha
+        result["completion"]["nativeBodySha256"] = native_sha
+        result["completion"]["rawRequestSha256"] = raw_sha
+        result["usageResult"]["binding"]["native_body_sha256"] = native_sha
+        result["usageResult"]["binding"]["raw_request_sha256"] = raw_sha
+        return result
 
     async def test_reservation_and_settlement_use_distinct_fresh_capture(self):
         port = FakeExchange(self.policy)
@@ -154,21 +176,7 @@ class OwnerChannelTests(unittest.IsolatedAsyncioTestCase):
 
         async def complete_capture(request):
             complete_captures.append(request)
-            result = capture()
-            result["completion"]["binding"] = self.value["binding"]
-            result["completion"]["taskArn"] = self.observation["peer"]["taskArn"]
-            result["completion"]["capabilitySha256"] = hashlib.sha256(
-                self.observation["proxyCredential"].encode()).hexdigest()
-            result["rawRequestBody"] = self.observation["rawRequestBody"]
-            result["nativeRequestBody"] = self.observation["nativeRequest"]["body"]
-            native_sha = hashlib.sha256(result["nativeRequestBody"]).hexdigest()
-            raw_sha = hashlib.sha256(result["rawRequestBody"]).hexdigest()
-            result["reservation"]["nativeBodySha256"] = native_sha
-            result["completion"]["nativeBodySha256"] = native_sha
-            result["completion"]["rawRequestSha256"] = raw_sha
-            result["usageResult"]["binding"]["native_body_sha256"] = native_sha
-            result["usageResult"]["binding"]["raw_request_sha256"] = raw_sha
-            return result
+            return self.complete_observation()
 
         bridge.bind_complete_capture(complete_capture)
         await bridge.settle_complete("request_A", usage())
@@ -179,6 +187,79 @@ class OwnerChannelTests(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(port.aborted)
         self.assertEqual([path for _, path in port.calls].count(POLL), 2)
         self.assertEqual([path for _, path in port.calls].count(REPLY), 2)
+
+    async def test_settled_readback_allows_a_distinct_request_with_identical_bytes(self):
+        port = FakeExchange(self.policy, uncertain=True)
+        bridge = self.bridge(port)
+        await bridge.reserve(self.value, self.observation)
+        async def complete_capture(_request):
+            return self.complete_observation()
+        bridge.bind_complete_capture(complete_capture)
+        with self.assertRaises(SettlementCommitUncertain):
+            await bridge.settle_complete("request_A", usage())
+        self.assertEqual(await bridge.read_outcome("request_A"),
+                         {"requestId": "request_A", "state": "SETTLED", "actualMicroUSD": "42"})
+        self.assertTrue(self.host_gate.available)
+        self.assertFalse(port.aborted)
+        calls = len(port.calls)
+        port.request_id, port.session_id = "request_B", "owner_session_B"
+        next_bridge = self.bridge(port, request_id="request_B")
+        next_value = {**self.value, "requestId": "request_B"}
+        next_observation = {**self.observation, "requestId": "request_B"}
+        self.assertEqual(next_observation["rawRequestBody"], self.observation["rawRequestBody"])
+        self.assertEqual(next_observation["nativeRequest"]["body"], self.observation["nativeRequest"]["body"])
+        receipt = await next_bridge.reserve(next_value, next_observation)
+        self.assertEqual(receipt["requestId"], "request_B")
+        self.assertEqual(receipt["state"], "UNKNOWN")
+        self.assertEqual([path for _, path in port.calls[calls:]].count(OPEN), 1)
+        self.assertFalse(port.aborted)
+
+    async def test_unavailable_settlement_readback_stops_next_bridge_and_admission_without_exchange(self):
+        class UnavailableOutcome(FakeExchange):
+            async def __call__(self, channel, path, body, timeout):
+                if path == OPERATION and json.loads(body)[2][0] == "meri.proxy.outcome/1":
+                    self.calls.append((channel, path))
+                    raise RuntimeError("synthetic unavailable readback")
+                return await super().__call__(channel, path, body, timeout)
+
+        port = UnavailableOutcome(self.policy, uncertain=True)
+        bridge = self.bridge(port)
+        next_port = FakeExchange(self.policy, request_id="request_B")
+        next_bridge = self.bridge(next_port, request_id="request_B")
+        reader = ProductOwnerAdmissionReader(policy=self.policy, exchange=port,
+            host_gate=self.host_gate, owner_loop=asyncio.get_running_loop(), now_ms=self.now)
+        template = issued_fixture()[0].issued
+        issued = replace(template, expires_at_ms=self.value["deadlineMs"],
+            tags=tuple((key, str(self.value["deadlineMs"]) if key == "meri:expires-at-ms" else value)
+                       for key, value in template.tags))
+        self.assertGreater(issued.expires_at_ms, self.now(), "admission input is not already expired")
+        await bridge.reserve(self.value, self.observation)
+        async def complete_capture(_request):
+            return self.complete_observation()
+        bridge.bind_complete_capture(complete_capture)
+        with self.assertRaises(SettlementCommitUncertain):
+            await bridge.settle_complete("request_A", usage())
+        self.assertTrue(self.host_gate.available, "commit uncertainty still permits exact readback")
+        self.assertFalse(port.aborted)
+        with self.assertRaises(StateDenied):
+            await bridge.read_outcome("request_A")
+        self.assertFalse(self.host_gate.available)
+        self.assertTrue(port.aborted, "the real bridge retires the borrowed transport")
+        calls = list(port.calls)
+        with self.assertRaises(StateDenied):
+            await next_bridge.reserve({**self.value, "requestId": "request_B"},
+                                      {**self.observation, "requestId": "request_B"})
+        with self.assertRaises(StateDenied):
+            self.bridge(next_port, request_id="request_B")
+        with self.assertRaises(StateDenied):
+            await asyncio.to_thread(reader.resolve_for_issued_sync,
+                issued=issued,
+                capability_sha256=bridge.capability_sha256, deadline_ms=self.value["deadlineMs"])
+        with self.assertRaises(StateDenied):
+            ProductOwnerAdmissionReader(policy=self.policy, exchange=next_port,
+                host_gate=self.host_gate, owner_loop=asyncio.get_running_loop(), now_ms=self.now)
+        self.assertEqual(port.calls, calls)
+        self.assertEqual(next_port.calls, [], "no next reservation or provider dispatch is authorized")
 
     async def test_same_tls_connection_and_late_reply_poison_without_retry(self):
         port = FakeExchange(self.policy, same_connection=True)
