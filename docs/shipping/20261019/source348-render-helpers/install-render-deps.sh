@@ -8,8 +8,10 @@
 # Scope and safety:
 #  - Public npm packages only, --ignore-scripts as in the image build. Before installing, the script refuses if any tracked lockfile resolves a package
 #    from a host other than registry.npmjs.org, or if the checkout carries a project .npmrc.
-#  - Anonymous access is REQUIRED: npm is run with empty user and global configuration files (so no auth token or private registry/scope setting from
-#    your own npm configuration can be used) and NPM_TOKEN / NODE_AUTH_TOKEN unset. If your network policy needs an authenticated proxy or registry, the
+#  - Anonymous access is REQUIRED: before npm runs, every inherited npm_config_* / NPM_CONFIG_* variable, NPM_TOKEN and NODE_AUTH_TOKEN are removed from the
+#    environment, as is any HTTP_PROXY / HTTPS_PROXY / ALL_PROXY variable (any letter case) whose URL carries credentials (user[:password]@host); the names that
+#    were removed are printed (never the values). npm then runs with empty user and global configuration files, so no auth token or private registry/scope
+#    setting from your own npm configuration can be used. A proxy without credentials is kept (a plain proxy is not a credential). If your network policy needs an authenticated proxy or registry, the
 #    install fails rather than sending a credential.
 #  - It writes only inside <checkout>/node_modules and the nested node_modules folders (git-ignored; `git status` stays clean) and never edits a lockfile.
 #  - An existing link is accepted only if it resolves to the intended package; otherwise the script stops.
@@ -44,6 +46,21 @@ link() {
   echo "linked  $linkpath"
 }
 
+# scrub_npm_environment: removes every inherited npm_config_* / NPM_CONFIG_* variable, NPM_TOKEN, NODE_AUTH_TOKEN and any HTTP_PROXY / HTTPS_PROXY /
+# ALL_PROXY variable (any case) whose value carries credentials (user[:password]@ before the first slash). Prints the removed NAMES only.
+scrub_npm_environment() {
+  local name value removed=""
+  while IFS= read -r name; do
+    case "$name" in
+      [nN][pP][mM]_[cC][oO][nN][fF][iI][gG]_*|NPM_TOKEN|NODE_AUTH_TOKEN) unset "$name"; removed="$removed $name" ;;
+      [hH][tT][tT][pP]_[pP][rR][oO][xX][yY]|[hH][tT][tT][pP][sS]_[pP][rR][oO][xX][yY]|[aA][lL][lL]_[pP][rR][oO][xX][yY])
+        value="${!name}"
+        if [[ "$value" =~ ^([A-Za-z][A-Za-z0-9+.-]*://)?[^/]*@ ]]; then unset "$name"; removed="$removed $name"; fi ;;
+    esac
+  done < <(compgen -e)
+  echo "scrubbed environment variables (names only):${removed:- none}"
+}
+
 # The eight lockfiles this helper installs from (the same eight apps/runtime/Dockerfile installs). Other tracked lockfiles (for example the qualification
 # fixtures, which reference a vendored in-repo tarball) are not installed by this helper and are not scanned.
 INSTALLED_LOCKS=(package-lock.json apps/runtime/package-lock.json apps/worker/conversation/package-lock.json packages/ui-stream/package-lock.json
@@ -71,6 +88,7 @@ main() {
   node -e "if(process.versions.node.split('.')[0]!=='24'){console.error('Node 24.x required, found '+process.version);process.exit(1);}"
   check_lock_hosts "$PWD"
   # npm refuses to load one file as both the user and the global configuration ("double-loading config"), so two distinct empty files are used.
+  scrub_npm_environment
   # The two files are globals on purpose: the EXIT trap runs after main has returned, when function-locals no longer exist (under `set -u` that
   # would turn a successful install into exit status 1).
   local native_user native_global

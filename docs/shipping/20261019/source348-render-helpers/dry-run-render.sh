@@ -21,15 +21,25 @@ refuse() { echo "DRY_RUN_REFUSED $*" >&2; exit 2; }
 # same_dir <a> <b>: both exist and resolve to the same directory (paths are data for node, never code).
 same_dir() { node -e "const fs=require('fs');try{process.exit(fs.realpathSync(process.argv[1])===fs.realpathSync(process.argv[2])?0:1)}catch{process.exit(1)}" "$1" "$2"; }
 
-# safe_remove_tmp <dir> <temp root>: removes <dir> only if it is a real directory (not a link) named dryrun.* whose parent is exactly the resolved
-# temporary root; reports a failed removal instead of hiding it. Returns non-zero when anything is refused or left behind.
+# exact_regular_file <checkout> <path relative to the checkout>: the file exists, is a regular file, is not a link, and its fully resolved path equals the
+# resolved checkout plus that relative path, so neither the file nor any parent directory redirects somewhere else. Paths are data for node, never code.
+exact_regular_file() {
+  node -e "
+const fs=require('fs'),path=require('path');
+try{const root=fs.realpathSync(process.argv[1]),want=path.join(root,...process.argv[2].split('/')),f=path.join(process.argv[1],...process.argv[2].split('/'));
+ const st=fs.lstatSync(f);if(st.isSymbolicLink()||!st.isFile())process.exit(1);
+ const real=fs.realpathSync(f),w=process.platform==='win32';process.exit((w?real.toLowerCase()===want.toLowerCase():real===want)?0:1);}catch{process.exit(1)}" "$1" "$2"
+}
+
+# safe_remove_tmp <dir> <temp root> [name prefix, default dryrun]: removes <dir> only if it is a real directory (not a link) named <prefix>.* whose parent is
+# exactly the resolved temporary root; reports a failed removal instead of hiding it. Returns non-zero when anything is refused or left behind.
 safe_remove_tmp() {
-  local d="${1:-}" root="${2:-}"
+  local d="${1:-}" root="${2:-}" prefix="${3:-dryrun}"
   [ -n "$d" ] && [ -n "$root" ] || { echo "CLEANUP_REFUSED empty path" >&2; return 1; }
   [ -d "$d" ] && [ ! -L "$d" ] || { echo "CLEANUP_REFUSED not a real directory" >&2; return 1; }
   local canon; canon="$(cd "$d" && pwd -P)" || { echo "CLEANUP_REFUSED unresolvable path" >&2; return 1; }
   [ "$canon" != "$root" ] && [ "$(dirname "$canon")" = "$root" ] || { echo "CLEANUP_REFUSED not a direct child of the temporary root" >&2; return 1; }
-  case "$(basename "$canon")" in dryrun.*) ;; *) echo "CLEANUP_REFUSED unexpected directory name" >&2; return 1 ;; esac
+  case "$(basename "$canon")" in "$prefix".*) ;; *) echo "CLEANUP_REFUSED unexpected directory name" >&2; return 1 ;; esac
   rm -rf -- "$canon" || true
   if [ -e "$canon" ]; then echo "CLEANUP_FAILED throwaway material remains in $canon" >&2; return 1; fi
   echo "throwaway material deleted"
@@ -43,8 +53,13 @@ main() {
   local top; top="$(git -C "$R" rev-parse --show-toplevel 2>/dev/null)" || refuse "not a git checkout"
   same_dir "$top" "$R" || refuse "give the checkout root, not a subdirectory"
   local F="$R/infra/product-preview/first-chat" PUB="$R/$PACKET"
-  [ -f "$F/render-material.mjs" ] && [ -f "$F/stage3-deploy.mjs" ] && [ -f "$F/pki.py" ] || refuse "not a Meri source checkout"
-  [ -f "$PUB/deployment-inputs.candidate.json" ] && [ -f "$PUB/runtime-values.candidate.json" ] || refuse "public packet files not found at $PACKET"
+  local f
+  for f in render-material.mjs stage3-deploy.mjs pki.py foundation-outputs.json; do
+    exact_regular_file "$R" "infra/product-preview/first-chat/$f" || refuse "infra/product-preview/first-chat/$f is missing, is not a regular file, or resolves through a link"
+  done
+  for f in deployment-inputs.candidate.json runtime-values.candidate.json; do
+    exact_regular_file "$R" "$PACKET/$f" || refuse "$PACKET/$f is missing, is not a regular file, or resolves outside the public packet (symlinked file or directory)"
+  done
   local HERE; HERE="$(cd "$(dirname "$0")" && pwd -P)"
   local PY="" c   # the first Python that can import `cryptography` (pki.py needs it); a bare python3 on PATH may lack it
   for c in python python3; do if command -v "$c" >/dev/null 2>&1 && "$c" -I -c 'import cryptography' >/dev/null 2>&1; then PY="$c"; break; fi; done
