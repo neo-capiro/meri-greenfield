@@ -4,6 +4,7 @@ import {canonicalSha256,validateShape} from '../../packages/contracts/validate.m
 import {own} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {readSecret,fault} from './config.mjs';
 import {createNativeCapabilityClient} from './native-client.mjs';
+import {runnerLoadBudget} from '../../packages/runtime/runner-load-budget.mjs';
 import {lstat,realpath,mkdir,open} from 'node:fs/promises';
 import {constants} from 'node:fs';
 import {createHash} from 'node:crypto';
@@ -15,6 +16,7 @@ import {createLifecycleRunOwner} from '../control/conversations/lifecycle/worker
 import {createTaskSelectedSkills} from './selected/task.mjs';
 import {createRuntimeSdkSessionFactory,createOwnedRuntimeSdkSession} from './sdk-session-runtime.mjs';
 import {waitForAdmittedTask,loadRemoteTaskBinding} from './task-bootstrap.mjs';
+import {remoteOriginal} from './native-authority/remote-task-boundary.mjs';
 import {storageMethod} from '../artifacts/storage/boundary.mjs';
 import {captureGeneralReadPort} from './general-read-port.mjs';
 import {atRunnerStage,markRunnerStage,captureRunnerFailure} from './runner-runtime-diagnostics.mjs';
@@ -54,8 +56,14 @@ export async function ensureSdkConfigurationDirectories(directories,options={}){
  await assertOwnedPrivateDirectory(sdkSecureStorageDirectory,uid);
  return directories;
 }
+function loadBudgetFor(configuration){
+ if(configuration.remoteTask===undefined)return null;
+ const original=remoteOriginal(configuration.remoteTask.original);
+ return runnerLoadBudget({requestMs:configuration.limits?.requestMs,shutdownMs:configuration.limits?.shutdownMs,originalExpiresAtMs:original.expiresAtMs});
+}
 export function assembleConversationRunner({configuration,native,query,credentialForBinding,sessionFactory,generalReads,governedIntents,now=Date.now}){
  const readPort=captureGeneralReadPort(generalReads,configuration.sourceEnabled);
+ const loadBudget=loadBudgetFor(configuration);
  validateShape('RuntimeVersions',configuration.versions);const configuredVersionsSha256=canonicalSha256(configuration.versions);
  const binding=configuration.binding,call=(operation,input,signal)=>native.call(operation,{binding,...input},{signal});
  if(sessionFactory!==undefined&&typeof sessionFactory!=='function')throw fault('RUNNER_SESSION_CONFIGURATION');
@@ -78,7 +86,7 @@ export function assembleConversationRunner({configuration,native,query,credentia
   // G3: the read-only skill plugin copy under the admitted private config parent, one run-invariant path (sdkSkillPluginDirectory).
    markRunnerStage('skill-plugin');const plugin=skillPlugin===true&&directories.sdkConfigDirectory!==undefined?await prepareRunSkillPlugin(sdkSkillPluginDirectory(dirname(directories.sdkConfigDirectory))):undefined;
    markRunnerStage('activity');return {...runtime,cwd:configuration.workspace,sessionStore,...directories,...(plugin?{skillPluginDirectory:plugin.directory}:{})};});
- const activity=createConversationActivity({runOwner,prepareRuntime,selectedSkills,now,...(readPort?{generalReads:readPort}:{}),...(governedIntents?{governedIntents}:{}),...(query?{query}:{}),...(lifecycle?{lifecycle}:{}),heartbeat:()=>{},diagnostics:{stage:markRunnerStage,failure:captureRunnerFailure}});
+ const activity=createConversationActivity({runOwner,prepareRuntime,selectedSkills,now,...(loadBudget?{loadMaxMs:loadBudget.maxMs,loadExpiresAtMs:loadBudget.expiresAtMs}:{}),...(readPort?{generalReads:readPort}:{}),...(governedIntents?{governedIntents}:{}),...(query?{query}:{}),...(lifecycle?{lifecycle}:{}),heartbeat:()=>{},diagnostics:{stage:markRunnerStage,failure:captureRunnerFailure}});
   const execute=async input=>atRunnerStage('activity',async()=>{try{return await activity(input);}catch(error){captureRunnerFailure(error);throw error;}finally{markRunnerStage('runner-cleanup');try{await selectedSkills.close();}finally{await sdkSession?.close();}}});
  Object.defineProperty(execute,'cleanupStatus',{value:()=>sdkSession?.cleanupStatus()??{pendingInitializations:0,closed:true,failures:[],physicalStopProven:false}});return execute;
 }
@@ -97,7 +105,7 @@ export async function runConversation(configuration,{signal,query,sessionFactory
    markRunnerStage('remote-module-import');const {runRemoteConversation}=await import('./remote-conversation-runner.mjs');
   return runRemoteConversation(configuration,{signal,...(readPort?{generalReads:readPort}:{}),...(sessionFactory?{sessionFactory}:{})});
  }
-  markRunnerStage('capability-load');const bytes=await readSecret(configuration.native.capabilityFile),credential=bytes.toString('utf8').trim(),native=createNativeCapabilityClient({configuration:configuration.native,credential,...(nativeFetch===undefined?{}:{fetch:nativeFetch})});
+  markRunnerStage('capability-load');const loadBudget=loadBudgetFor(configuration),bytes=await readSecret(configuration.native.capabilityFile),credential=bytes.toString('utf8').trim(),native=createNativeCapabilityClient({configuration:configuration.native,credential,...(loadBudget?{loadMaxRequestMs:loadBudget.maxMs}:{}),...(nativeFetch===undefined?{}:{fetch:nativeFetch})});
  if(configuration.bootstrap?.remote===true&&query===undefined){
    markRunnerStage('binding-bootstrap');const resolved=await loadRemoteTaskBinding({native,configuration,signal,...(poststartTls===undefined?{}:{poststartTls})});
    markRunnerStage('remote-module-import');const {runRemoteConversation}=await import('./remote-conversation-runner.mjs');

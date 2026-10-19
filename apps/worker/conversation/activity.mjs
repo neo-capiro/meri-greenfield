@@ -2,6 +2,7 @@
 import {query as sdkQuery} from '@anthropic-ai/claude-agent-sdk';
 import {randomUUID,createHash} from 'node:crypto';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
+import {RUNNER_LOAD_MAX_MS} from '../../../packages/runtime/runner-load-budget.mjs';
 import {validateShape,canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {assertSkillManifest} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import catalog from '../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
@@ -26,11 +27,12 @@ const CAPABILITY_RUNTIME_FACTS=Object.freeze(['skillPluginDirectory','bashSandbo
 /** Acknowledgement bound for one terminal publication attempt: the control service's default per-request bound. Terminal
  * settlement makes at most two rounds over the (at most two) candidate events, so it is finite (here at most 12 s). */
 export const TERMINAL_ATTEMPT_MS=3000;
-export function createConversationActivity({runOwner,prepareRuntime,query=sdkQuery,heartbeat=()=>{},now=Date.now,newId=randomUUID,lifecycle,selectedSkills,generalReads,governedIntents,browser,objectiveGeneration,terminalAttemptMs=TERMINAL_ATTEMPT_MS,cleanupAttemptMs=CLEANUP_ATTEMPT_MS,diagnostics}){
+export function createConversationActivity({runOwner,prepareRuntime,query=sdkQuery,heartbeat=()=>{},now=Date.now,newId=randomUUID,lifecycle,selectedSkills,generalReads,governedIntents,browser,objectiveGeneration,terminalAttemptMs=TERMINAL_ATTEMPT_MS,cleanupAttemptMs=CLEANUP_ATTEMPT_MS,loadMaxMs=3000,loadExpiresAtMs,diagnostics}){
  // Optional trusted observers cannot affect execution, publication or bounded cleanup.
  const diagnostic=(method,value)=>{try{Promise.resolve(diagnostics?.[method]?.(value)).catch(()=>{});}catch{}};
  if(['load','append'].some(k=>typeof runOwner?.[k]!=='function')||typeof prepareRuntime!=='function'||typeof query!=='function'||typeof heartbeat!=='function'||!Number.isSafeInteger(terminalAttemptMs)||terminalAttemptMs<1||terminalAttemptMs>30000)throw fault('ACTIVITY_CONFIGURATION');
  if(!Number.isSafeInteger(cleanupAttemptMs)||cleanupAttemptMs<1||cleanupAttemptMs>30000)throw fault('ACTIVITY_CONFIGURATION');
+ if(!Number.isSafeInteger(loadMaxMs)||loadMaxMs<1||loadMaxMs>RUNNER_LOAD_MAX_MS||loadExpiresAtMs!==undefined&&!Number.isSafeInteger(loadExpiresAtMs))throw fault('ACTIVITY_CONFIGURATION');
  if(lifecycle!==undefined)assertLifecycleConfiguration(lifecycle,runOwner);
  if(selectedSkills!==undefined&&typeof selectedSkills.prepare!=='function')throw fault('SKILL_ACTIVITY_CONFIGURATION');
  // Trusted gateway general-read port (`apps/gateway/general-reads/mount.mjs`); absent means no general read.
@@ -42,12 +44,14 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
  if(objectiveGeneration!==undefined&&typeof objectiveGeneration.prepare!=='function')throw fault('OBJECTIVE_ACTIVITY_CONFIGURATION');
  return async function executeConversation({binding,signal}){
   diagnostic('stage','activity-input');validateShape('RunBinding',binding);let preparation,life,stream,controls,input,skillRuntime,readRuntime,intentRuntime,browserRun,browserOutcome='ended',browserPreparationCleanupUnknown=false,skillOutput,terminalResult,claimed=false,closed=false,resultSeen=false,bytes=0,heartbeatTimer;const controller=new AbortController();let failure;let closing;const closeQuery=()=>{if(!closing&&stream&&!closed){closed=true;closing=Promise.resolve().then(()=>stream.close?.());closing.catch(()=>{});}return closing;};
-  try{diagnostic('stage','activity-load');preparation=createOperationLifetime({deadlineMs:now()+3000,now,signal,errorFactory:fault});const saved=await preparation.run(signal=>runOwner.load({binding,signal}));validateShape('Run',saved.run);if(!same(saved.run.binding,binding)||saved.run.state!=='queued')throw fault('RUN_NOT_QUEUED');
+  // Only load may use the longer allowance; runtime preparation gets a fresh
+  // three seconds but must finish by the same pre-claim lease cutoff.
+  try{diagnostic('stage','activity-load');preparation=createOperationLifetime({deadlineMs:Math.min(now()+loadMaxMs,loadExpiresAtMs??Infinity),now,signal,errorFactory:fault});const saved=await preparation.run(signal=>runOwner.load({binding,signal}));preparation.close();preparation=undefined;validateShape('Run',saved.run);if(!same(saved.run.binding,binding)||saved.run.state!=='queued')throw fault('RUN_NOT_QUEUED');
    diagnostic('stage','activity-policy');const policy=readCapabilityPolicy(saved); // Default-off SDK capabilities, validated before any claim; absent policy keeps first-chat behaviour.
    const runBudgets=readRunBudgets(saved); // The run's admitted allocation budgets bound the early read ledger; absent keeps its defaults.
    const prepareStarted=now();if(saved.continuation&&saved.nextTurn)throw fault('CONTINUATION_REFUSED');const lineage=saved.nextTurn?{nextTurn:saved.nextTurn}:saved.continuation?{continuation:saved.continuation}:null,sourceRequest=saved.nextTurn?.sourceRequest??saved.sourceRequest;if(lineage&&lifecycle===undefined)throw fault('CONTINUATION_UNAVAILABLE');
    // A run whose policy enables the skill plugin asks runtime preparation for its read-only plugin copy (the trusted skillPluginDirectory fact).
-    diagnostic('stage','runtime-prepare');const runtime=await preparation.run(signal=>prepareRuntime({binding,versions:saved.run.versions,...(policy?.skillPlugin===true?{skillPlugin:true}:{}),
+    diagnostic('stage','runtime-prepare');preparation=createOperationLifetime({deadlineMs:Math.min(now()+3000,loadExpiresAtMs??Infinity),now,signal,errorFactory:fault});const runtime=await preparation.run(signal=>prepareRuntime({binding,versions:saved.run.versions,...(policy?.skillPlugin===true?{skillPlugin:true}:{}),
     ...(lineage?{...lineage,sourceRequest,request:saved.request,scopes:saved.run.scopes}:{}),runtimeSignal:controller.signal,signal}));
     diagnostic('stage','activity-setup');life=createOperationLifetime({deadlineMs:runtime.deadlineMs,now,signal,errorFactory:fault});preparation.close();const abort=()=>controller.abort(life.signal.reason);life.signal.addEventListener('abort',abort,{once:true});
    const publish=async(type,data,eventId=newId())=>{life.check();await life.run(signal=>runOwner.append({binding,event:{eventId,createdAt:new Date(now()).toISOString(),type,data},signal}));life.check();};
