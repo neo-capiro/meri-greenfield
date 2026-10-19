@@ -37,12 +37,12 @@ function setup({enabled=true,optionsFor}={}){
  const principal={tenantId:c.binding.tenantId,actorId:c.binding.actorId,role:'member',permissions:[],clientIds:[],membershipRevision:'m1'};
  const gate={async admit({credential}){if(credential!=='token')throw new ProductError('ACCESS_DENIED');return {principal,expiresAtMs:NOW+60000};},async recheck({principal}){return principal;}};
  const app=createIntentApplication({owner,gate,now:clock,limits:{maxRequestMs:5000,maxRequestBytes:4096,maxResponseBytes:262144}});
- const conversationId=c.binding.conversationId,prepare=(n=1)=>m.prepare({operation:CREATE,arguments:{title:'Task'},deliveryId:delivery(n)});
+ const conversationId=c.binding.conversationId,proposalById=new Map(),prepare=async(n=1)=>{const out=await m.prepare({operation:CREATE,arguments:{title:'Task'},deliveryId:delivery(n)});proposalById.set(out.proposal.proposalId,out.proposal);return out;};
  const decideBody=(proposal,n=1,decision='approved')=>({conversationId,deliveryId:delivery(n),proposalId:proposal.proposalId,commandSha256:proposal.commandSha256,decision});
  /** One real HTTP exchange, returned both raw and as admitted by the public receiver (or the refusal it raised). */
- async function exchange(route,body,{token='token',headers}={}){
+ async function exchange(route,body,{token='token',headers,proposal}={}){
   const response=await app.handle(new Request('http://127.0.0.1'+INTENT_PATHS[route],{method:'POST',headers:{'content-type':'application/json',...(token===null?{}:{authorization:'Bearer '+token}),...headers},body:JSON.stringify(body)}));
-  const text=await response.text(),status=response.status;return {status,text,json:JSON.parse(text),admitted:await receive(route,status,text,{request:body})};
+  const text=await response.text(),status=response.status;const retained=proposal??proposalById.get(body.proposalId)??[...proposalById.values()][0];return {status,text,json:JSON.parse(text),admitted:await receive(route,status,text,route==='decide'?{request:body,proposal:retained}:{request:body})};
  }
  const listBody=(extra={})=>({conversationId,...extra});
  return {c,core,store,owner,principal,app,prepare,decideBody,exchange,listBody,conversationId};
@@ -61,7 +61,7 @@ test('actual list and decide answers are admitted: awaiting, approve, executed, 
 test('rejected answer is admitted only for a rejection and history reads rejected',async()=>{
  const s=setup(),{proposal}=await s.prepare(),body=s.decideBody(proposal,1,'rejected'),done=await s.exchange('decide',body);
  assert.equal(done.admitted.status,'rejected');assert.equal(done.admitted.decision.decision,'rejected');assert.equal((await s.exchange('list',s.listBody())).admitted.intents[0].phase,'rejected');
- await assert.rejects(receive('decide',200,done.text,{request:{...body,decision:'approved'}}),refused('INTENTS_CORRELATION'));
+ await assert.rejects(receive('decide',200,done.text,{request:{...body,decision:'approved'},proposal}),refused('INTENTS_CORRELATION'));
 });
 test('paging cursor, unavailable decision owner and withheld content are admitted; a tampered retained proposal is not',async()=>{
  const s=setup();for(const n of [1,2,3])await s.prepare(n);
@@ -105,7 +105,7 @@ test('actual error bodies and statuses are admitted: transport, membership, doma
  assert.equal((await u.exchange('decide',b2)).admitted.status,'executed');
 });
 
-const executedFixture=async()=>{const s=setup(),{proposal}=await s.prepare(),body=s.decideBody(proposal),done=await s.exchange('decide',body),list=await s.exchange('list',s.listBody());return {s,proposal,body,done:done.json,list:list.json,listBody:s.listBody()};};
+const executedFixture=async()=>{const s=setup(),prepared=await s.prepare(),body=s.decideBody(prepared.proposal),done=await s.exchange('decide',body),list=await s.exchange('list',s.listBody());return {s,proposal:list.json.intents[0].proposal,body,done:done.json,list:list.json,listBody:s.listBody()};};
 const rehash=item=>{item.proposal.commandSha256=canonicalSha256(item.proposal.command);};
 const listMutations={
  'extra property':v=>{v.authorized=true;},'item extra property':v=>{v.intents[0].approved=true;},'foreign conversation':v=>{v.conversationId=id(995);},
@@ -131,19 +131,19 @@ const decideMutations={
  'extra property':v=>{v.approved=true;},'another delivery':v=>{v.deliveryId=delivery(9);},'another proposal':v=>{v.proposalId=id(991);},
  'decision for another hash':v=>{v.decision.commandSha256='d'.repeat(64);},'decision for another proposal':v=>{v.decision.proposalId=id(990);},'rejection decision for an approval':v=>{v.decision.decision='rejected';},
  'rejected status for an approval':v=>{v.status='rejected';delete v.outcome;},'receipt for another hash':v=>{v.outcome.receipt.commandSha256='e'.repeat(64);},
- 'executed without an outcome':v=>{delete v.outcome;},'indeterminate with an outcome':v=>{v.status='indeterminate';},'non-canonical decidedAt':v=>{v.decision.decidedAt='2026-10-13T07:00:00Z';},
+ 'executed without an outcome':v=>{delete v.outcome;},'indeterminate with an outcome':v=>{v.status='indeterminate';},
 };
 for(const [name,mutate] of Object.entries(decideMutations))test('decide response refuses '+name,async()=>{
  const f=await executedFixture(),value=clone(f.done);mutate(value);
- await assert.rejects(receive('decide',200,JSON.stringify(value),{request:f.body}),e=>e instanceof IntentsResponseError&&['INTENTS_SHAPE','INTENTS_CORRELATION'].includes(e.code));
+ await assert.rejects(receive('decide',200,JSON.stringify(value),{request:f.body,proposal:f.proposal}),e=>e instanceof IntentsResponseError&&['INTENTS_SHAPE','INTENTS_CORRELATION'].includes(e.code));
 });
 test('an indeterminate acknowledgement is admitted without an outcome, never as execution',async()=>{
  const f=await executedFixture(),value={status:'indeterminate',deliveryId:f.done.deliveryId,proposalId:f.done.proposalId,decision:f.done.decision};
- const out=await receive('decide',200,JSON.stringify(value),{request:f.body});assert.equal(out.status,'indeterminate');assert.equal(Object.hasOwn(out,'outcome'),false);
+ const out=await receive('decide',200,JSON.stringify(value),{request:f.body,proposal:f.proposal});assert.equal(out.status,'indeterminate');assert.equal(Object.hasOwn(out,'outcome'),false);
 });
 
 test('error statuses form one closed table: exact status, optional field except on 502, closed outcomes',async()=>{
- const f=await executedFixture(),expect={request:f.body};
+ const f=await executedFixture(),expect={request:f.body,proposal:f.proposal};
  for(const [code,status] of Object.entries(intentsMetadata.errorStatuses)){
   assert.deepEqual(await receive('decide',status,JSON.stringify({error:{code}}),expect),{error:{code}});
   await assert.rejects(receive('decide',status===500?501:status+1,JSON.stringify({error:{code}}),expect),refused('INTENTS_STATUS'));
@@ -158,7 +158,7 @@ test('error statuses form one closed table: exact status, optional field except 
 });
 test('the captured request is mandatory, closed and accessor-free',async()=>{
  const f=await executedFixture(),text=JSON.stringify(f.done);
- for(const bad of [undefined,null,{},{request:f.body,extra:1},{request:{...f.body,decision:'maybe'}},{request:{...f.body,tenantId:'other'}},[],'x'])
+ for(const bad of [undefined,null,{},{request:f.body},{proposal:f.proposal},{request:f.body,proposal:f.proposal,extra:1},{request:f.body,proposal:{...f.proposal,extra:1}},{request:f.body,extra:1},{request:{...f.body,decision:'maybe'}},{request:{...f.body,tenantId:'other'}},[],'x'])
   await assert.rejects(receive('decide',200,text,bad),e=>e instanceof IntentsResponseError&&['INTENTS_EXPECTATION','INTENTS_SHAPE'].includes(e.code));
  let reads=0;await assert.rejects(receive('decide',200,text,{get request(){reads++;return f.body;}}),refused('INTENTS_EXPECTATION'));assert.equal(reads,0);
  await assert.rejects(receive('decide',200,text,{request:Object.create({decision:'approved'})}),refused('INTENTS_EXPECTATION'));
@@ -179,6 +179,85 @@ test('requests are closed objects with literal ids; identity never travels in th
  await assert.rejects(request('approve',json(f.body)),refused('INTENTS_ROUTE'));
 });
 
+/** Review corrections (dot, PR191): decide answers bind to the request conversation and retained proposal; receipts and task results follow the canonical
+ * executor outcome check; timestamps follow the producers' accepted spellings; the generated bundle does not depend on the checkout layout. */
+const outcomeMutations={
+ 'receipt conversation':o=>{o.receipt.binding.conversationId=id(993);},'receipt tenant':o=>{o.receipt.binding.tenantId='other';},'receipt actor':o=>{o.receipt.binding.actorId='other';},
+ 'receipt run':o=>{o.receipt.binding.runId=id(992);},'receipt idempotency key':o=>{o.receipt.idempotencyKey='other-key';},'receipt scopes':o=>{o.receipt.scopes[0].policyRevision='other';},
+ 'receipt command id':o=>{o.receipt.commandId=id(991);},'receipt command hash':o=>{o.receipt.commandSha256='c'.repeat(64);},
+ 'failed receipt':o=>{o.receipt.outcome='failed';},'indeterminate receipt':o=>{o.receipt.outcome='indeterminate';},'source transaction':o=>{o.receipt.sourceTransactionId='tx-1';},
+ 'receipt completedAt spelling':o=>{o.receipt.completedAt=o.receipt.completedAt.replace(/\.\d{3}Z$/u,'Z');},
+ 'result title':o=>{o.result.title='Other title';},'result client':o=>{o.result.clientId=id(990);},'result due date':o=>{o.result.dueDate='2026-10-14T00:00:00.000Z';},
+};
+const bounded=e=>e instanceof IntentsResponseError&&['INTENTS_SHAPE','INTENTS_CORRELATION'].includes(e.code);
+for(const [name,mutate] of Object.entries(outcomeMutations)){
+ test('executed decide answer refuses '+name,async()=>{const f=await executedFixture(),value=clone(f.done);mutate(value.outcome);await assert.rejects(receive('decide',200,JSON.stringify(value),{request:f.body,proposal:f.proposal}),bounded);});
+ test('completed history refuses '+name,async()=>{const f=await executedFixture(),value=clone(f.list);mutate(value.intents[0].execution.outcome);await assert.rejects(receive('list',200,JSON.stringify(value),{request:f.listBody}),bounded);});
+}
+test('attempt, worker and fence may differ from the original binding; the stable binding may not',async()=>{
+ const f=await executedFixture(),value=clone(f.done),binding=value.outcome.receipt.binding;binding.attemptId=id(989);binding.workerId=id(988);binding.writerFence=7;
+ assert.equal((await receive('decide',200,JSON.stringify(value),{request:f.body,proposal:f.proposal})).status,'executed');
+ const history=clone(f.list),b=history.intents[0].execution.outcome.receipt.binding;b.attemptId=id(989);b.workerId=id(988);b.writerFence=7;
+ assert.equal((await receive('list',200,JSON.stringify(history),{request:f.listBody})).intents[0].phase,'completed');
+});
+test('decide answers are bound to the request conversation and the retained proposal',async()=>{
+ const f=await executedFixture(),text=JSON.stringify(f.done),ok={request:f.body,proposal:f.proposal};
+ assert.equal((await receive('decide',200,text,ok)).status,'executed');
+ // Only the captured request's conversation changes: the reply is not for that request.
+ await assert.rejects(receive('decide',200,text,{request:{...f.body,conversationId:id(995)},proposal:f.proposal}),refused('INTENTS_CORRELATION'));
+ // A retained proposal for another proposal or hash cannot stand in for the request's.
+ const other=clone(f.proposal);other.proposalId=id(984);await assert.rejects(receive('decide',200,text,{request:f.body,proposal:other}),refused('INTENTS_CORRELATION'));
+ const hashed=clone(f.proposal);hashed.commandSha256='d'.repeat(64);await assert.rejects(receive('decide',200,text,{request:f.body,proposal:hashed}),refused('INTENTS_CORRELATION'));
+ // The retained proposal must itself be coherent.
+ const foreign=clone(f.proposal);foreign.command.binding.conversationId=id(983);foreign.commandSha256=canonicalSha256(foreign.command);
+ await assert.rejects(receive('decide',200,text,{request:{...f.body,commandSha256:foreign.commandSha256},proposal:foreign}),refused('INTENTS_CORRELATION'));
+});
+test('rejected and indeterminate replies are bound by the retained proposal: approver, time and approvable action',async()=>{
+ const s=setup(),prepared=await s.prepare(),proposal=prepared.proposal,body=s.decideBody(proposal,1,'rejected'),done=await s.exchange('decide',body),ok={request:body,proposal};
+ assert.equal((await receive('decide',200,done.text,ok)).status,'rejected');
+ const another=clone(done.json);another.decision.approver={tenantId:'tenant',actorId:'someone-else'};await assert.rejects(receive('decide',200,JSON.stringify(another),ok),refused('INTENTS_CORRELATION'));
+ const early=clone(done.json);early.decision.decidedAt='2000-01-01T00:00:00Z';await assert.rejects(receive('decide',200,JSON.stringify(early),ok),refused('INTENTS_CORRELATION'));
+ const approve={...body,decision:'approved'},reply={status:'indeterminate',deliveryId:done.json.deliveryId,proposalId:done.json.proposalId,decision:{...done.json.decision,decision:'approved'}};
+ assert.equal((await receive('decide',200,JSON.stringify(reply),{request:approve,proposal})).status,'indeterminate');
+ const wrong=clone(reply);wrong.decision.approver={tenantId:'tenant',actorId:'someone-else'};await assert.rejects(receive('decide',200,JSON.stringify(wrong),{request:approve,proposal}),refused('INTENTS_CORRELATION'));
+ // The handler never records a decision for an action it cannot approve, so no 200 may describe one.
+ const held=clone(proposal);held.command.action='memory.propose';held.commandSha256=canonicalSha256(held.command);
+ await assert.rejects(receive('decide',200,done.text,{request:{...body,commandSha256:held.commandSha256},proposal:held}),refused('INTENTS_CORRELATION'));
+});
+for(const action of ['memory.propose','artifact.file'])test('a task result is never interpreted for a '+action+' proposal',async()=>{
+ const f=await executedFixture(),value=clone(f.list),item=value.intents[0];item.proposal.command.action=action;
+ const hash=canonicalSha256(item.proposal.command);item.proposal.commandSha256=hash;item.execution.outcome.receipt.commandSha256=hash;
+ await assert.rejects(receive('list',200,JSON.stringify(value),{request:f.listBody}),refused('INTENTS_CORRELATION'));
+ const retained=clone(f.proposal);retained.command.action=action;retained.commandSha256=hash;const done=clone(f.done);done.outcome.receipt.commandSha256=hash;
+ await assert.rejects(receive('decide',200,JSON.stringify(done),{request:{...f.body,commandSha256:hash},proposal:retained}),refused('INTENTS_CORRELATION'));
+});
+test('a task.create proposal must carry canonical, normalized arguments and no attachments',async()=>{
+ const f=await executedFixture();
+ for(const mutate of [item=>{item.proposal.command.arguments.title=' padded ';},item=>{item.proposal.command.arguments.extra=true;},item=>{item.proposal.command.attachments=[{objectId:id(982),versionId:'v1',sha256:'a'.repeat(64),bytes:1,scopes:item.proposal.command.scopes}];}]){
+  const value=clone(f.list),item=value.intents[0];mutate(item);item.proposal.commandSha256=canonicalSha256(item.proposal.command);item.execution.outcome.receipt.commandSha256=item.proposal.commandSha256;
+  await assert.rejects(receive('list',200,JSON.stringify(value),{request:f.listBody}),bounded);
+ }
+});
+test('owner-valid timestamps without milliseconds are admitted; impossible or offset dates are refused',async()=>{
+ const f=await executedFixture(),plain=iso=>iso.replace(/\.\d{3}Z$/u,'Z'),later=iso=>plain(new Date(Date.parse(iso)+1500).toISOString());
+ const done=clone(f.done);done.decision.decidedAt=later(done.decision.decidedAt);done.decision.expiresAt=later(done.decision.expiresAt);
+ assert.equal((await receive('decide',200,JSON.stringify(done),{request:f.body,proposal:f.proposal})).status,'executed');
+ const history=clone(f.list),item=history.intents[0];item.proposal.createdAt=plain(item.proposal.createdAt);item.proposal.expiresAt=plain(item.proposal.expiresAt);item.decision.decidedAt=plain(item.decision.decidedAt);item.decision.expiresAt=plain(item.decision.expiresAt);
+ assert.equal((await receive('list',200,JSON.stringify(history),{request:f.listBody})).intents[0].phase,'completed');
+ for(const bad of ['2026-13-45T07:00:00Z','2026-10-13T25:00:00Z','not-a-date','2026-10-13T07:00:00+00:00','2026-10-13']){
+  const value=clone(f.done);value.decision.decidedAt=bad;await assert.rejects(receive('decide',200,JSON.stringify(value),{request:f.body,proposal:f.proposal}),e=>e instanceof IntentsResponseError);
+  const proposalBad=clone(f.list);proposalBad.intents[0].proposal.createdAt=bad;await assert.rejects(receive('list',200,JSON.stringify(proposalBad),{request:f.listBody}),e=>e instanceof IntentsResponseError);
+ }
+});
+test('generated bundle is independent of the checkout layout',async()=>{
+ const source=await readFile(new URL('../dist/intents-application.mjs',import.meta.url),'utf8'),metadata=JSON.parse(await readFile(new URL('../dist/intents-application.metadata.json',import.meta.url),'utf8'));
+ // A drive letter is a lone letter before `:\` or `:/` (not the end of a URL scheme such as `http://`).
+ const layout=/\.\.\/|(?<![A-Za-z0-9])[A-Za-z]:[\\/](?!\/)|\/(?:home|Users)\/|wt-/u;
+ assert(!layout.test(source),'no parent-relative, drive-letter, home or worktree path anywhere in the bundle');
+ const labels=[...source.matchAll(/^\/\/ (.+)$/gmu)].map(m=>m[1]).filter(label=>/\.m?js$/u.test(label));
+ assert(labels.length>=5&&labels.every(label=>/^(?:node_modules\/|intents-generated:\.\/generated-|(?:intents-application|document-application)\/)/u.test(label)),labels.join(', '));
+ assert(metadata.browserInputs.every(entry=>!layout.test(entry)));
+});
 test('metadata, paths and vocabularies are the handlers\' own, and approval authority is not widened',async()=>{
  assert.deepEqual(intentsPaths,INTENT_PATHS);assert.deepEqual(intentsMetadata.routes,{list:{method:'POST',path:'/api/conversations/intents/list',response:'json'},decide:{method:'POST',path:'/api/conversations/intents/decide',response:'json'}});
  assert.deepEqual(intentsMetadata.errorStatuses,protocol.INTENTS_ERROR_STATUSES);assert.deepEqual(intentsMetadata.approvableActions,['task.create']);assert.deepEqual(intentsMetadata.failureCodes,protocol.INTENTS_FAILURE_CODES);
@@ -201,7 +280,7 @@ test('actual memory.propose and artifact.file proposals are admitted as held: li
   const principal={tenantId:binding.tenantId,actorId:binding.actorId,role:'member',permissions:[],clientIds:[id(9)],membershipRevision:'m1'},at='http://127.0.0.1';
   const gate={async admit(){return {principal,expiresAtMs:NOW+60000};},async recheck({principal}){return principal;}};
   const app=createIntentApplication({owner,gate,now:()=>clock.now,limits:{maxRequestMs:5000,maxRequestBytes:4096,maxResponseBytes:262144}});
-  const post=async(route,body)=>{const r=await app.handle(new Request(at+INTENT_PATHS[route],{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer t'},body:JSON.stringify(body)}));const text=await r.text();return {status:r.status,admitted:await receive(route,r.status,text,{request:body})};};
+  const post=async(route,body)=>{const r=await app.handle(new Request(at+INTENT_PATHS[route],{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer t'},body:JSON.stringify(body)}));const text=await r.text();return {status:r.status,admitted:await receive(route,r.status,text,route==='decide'?{request:body,proposal}:{request:body})};};
   const listed=await post('list',{conversationId:binding.conversationId}),item=listed.admitted.intents.find(entry=>entry.proposal?.proposalId===proposal.proposalId);
   assert.equal(item.proposal.command.action,action);assert.equal(item.decision,'unavailable');assert.equal(item.execution,'unavailable');assert.ok(['unknown_decision','expired'].includes(item.phase));
   assert.equal(item.proposal.commandSha256,proposal.commandSha256);

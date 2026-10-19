@@ -15,6 +15,7 @@ export function intentsSchema({errorStatuses,errorOutcomes,failureCodes,fieldPat
  IntentsDecideRequest:object({conversationId:ref('IntentsConversationId'),deliveryId:ref('IntentsDeliveryId'),proposalId:{type:'string',pattern:UUID},commandSha256:{type:'string',pattern:'^[a-f0-9]{64}$'},decision:{enum:['approved','rejected']}}),
  IntentsProposal:pub('ApprovalProposal'),
  IntentsDecision:pub('ApprovalDecision'),
+ IntentsTaskCreateArguments:task('TaskCreateArguments'),
  IntentsExecutionOutcome:object({receipt:pub('CommandReceipt'),result:task('TaskCreateResult')}),
  IntentsExecution:{oneOf:[object({state:{const:'executing'}}),object({state:{const:'unknown'}}),object({state:{const:'completed'},outcome:ref('IntentsExecutionOutcome')})]},
  IntentsPendingItem:item({state:{const:'pending'}}),

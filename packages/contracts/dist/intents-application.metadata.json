@@ -85,7 +85,8 @@
     "list": "read-only durable history of this conversation's prepared intents; next is the last returned deliveryId when more remain, otherwise null",
     "decision": "approved or rejected is recorded by the canonical decision owner for exactly the named proposal, command hash and approver; display, stream or model text never approves",
     "execution": "only actions in approvableActions execute; any other prepared proposal answers INTENT_NOT_APPROVABLE and stays prepared",
-    "executed": "status executed returns the observed receipt and task result; the caller reads receipt.outcome, status alone does not assert success",
+    "executed": "status executed returns the observed receipt and task result; the receiver admits it only as the executor's own outcome for the retained task.create command (its hash, id, idempotency key, scopes and stable binding, a succeeded receipt with no source transaction, and a result equal to the immutable arguments)",
+    "correlation": "a list answer is admitted against its captured list request; a decide answer is admitted against the captured decide request and the proposal admitted from an earlier list answer; rejected and indeterminate replies carry no conversation or command of their own, so only that retained proposal binds them to the request's conversation and approver",
     "uncertainty": "UNKNOWN and RESULT_NOT_RELEASED mean a decision or effect may exist: repeat the identical decide request or read list; never prepare a second proposal",
     "withheld": "withheld items carry no content because the caller no longer sees a client scope of the retained command",
     "expiry": "the caller compares proposal.expiresAt with a fresh clock before presenting a decision; the server rechecks current authority",
@@ -147,8 +148,8 @@
     },
     {
       "path": "generate-intents.mjs",
-      "sha256": "df5929ac9c57ca90e4c71dcd800085985f51727bff5930b99a3f72379d803ab8",
-      "bytes": 9268
+      "sha256": "b5dfd102c937f22c8fa6ee4485be2da388d3d31ec5167c150f75c0c923e4a2f3",
+      "bytes": 9990
     },
     {
       "path": "intents-application/boundary.mjs",
@@ -157,28 +158,28 @@
     },
     {
       "path": "intents-application/protocol.mjs",
-      "sha256": "89d23915b1177dd43632038fe2560f6a32c7023e3868df30c87125cb47816ba5",
-      "bytes": 2421
+      "sha256": "7600b9622aa52ff5e76d3809e874096d858caef7358521d7dc0c46cd89f2f7f7",
+      "bytes": 2965
     },
     {
       "path": "intents-application/README.md",
-      "sha256": "37832399cfa76d68ffef69c5567d58a3b1ea2b5a1221ae22884052950085c5dc",
-      "bytes": 4653
+      "sha256": "010140234c19034a34b8ae93e8517ad524dcf26035cdf014edea0cc2d8da7d27",
+      "bytes": 6385
     },
     {
       "path": "intents-application/receive.mjs",
-      "sha256": "a91e87cca6c2a51d6b6896c8cd9e04aeab7be20c74e3c3ba745efcfc72ed38ed",
-      "bytes": 2292
+      "sha256": "93151b65c6fe9f4eacea718cde34e8c70462d9fcabc0e09f40c51738cc78b3d6",
+      "bytes": 2686
     },
     {
       "path": "intents-application/schema.mjs",
-      "sha256": "d1b2925c27ef635003f0a1adaafd3a5e48c9f4ee5d368ce1f9ce12d373a06127",
-      "bytes": 4301
+      "sha256": "45ef30ec12c826bc75d47838c6117ee4298a89ccb2cc57901772266c9bf65a51",
+      "bytes": 4358
     },
     {
       "path": "intents-application/semantics.mjs",
-      "sha256": "daf34228ddac1c062272942113274b3f2a800a591cc7527d976047024cb050a2",
-      "bytes": 3550
+      "sha256": "647afe477f66ba3a21a195c9142cb690346a3692071feb3ef42f3c6958eb16e3",
+      "bytes": 6144
     },
     {
       "path": "meri.schema.json",
@@ -186,7 +187,7 @@
       "bytes": 50043
     }
   ],
-  "schemaSha256": "050f8e8e0f7bb5bb4cd69fd9402d066a03184369e2ec5ba3651f696382310d37",
+  "schemaSha256": "c33a0fe0fe29419f14cb3c2fc766437e4859ec2551cb3c4074b8fab5b624576a",
   "browserInputs": [
     "document-application/boundary.mjs",
     "intents-application/boundary.mjs",

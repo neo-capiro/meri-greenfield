@@ -8,6 +8,7 @@ export type IntentsApplicationEnvelope =
   | IntentsDecideRequest
   | Canonical_ApprovalProposalD1A3E74F
   | Canonical_ApprovalDecision_5E8Bdbcf
+  | Canonical_TaskCreateArguments_1202C301
   | IntentsExecutionOutcome
   | IntentsExecution
   | IntentsPendingItem
@@ -139,6 +140,11 @@ export interface Canonical_ApprovalDecision_5E8Bdbcf {
   expiresAt: string;
   approver: Canonical_IdentityAba0A4E9;
   policyRevision: string;
+}
+export interface Canonical_TaskCreateArguments_1202C301 {
+  title: string;
+  clientId: string | null;
+  dueDate: string | null;
 }
 export interface IntentsExecutionOutcome {
   receipt: Canonical_CommandReceiptAc49Ee1E;
@@ -299,7 +305,8 @@ export interface IntentsErrorResponse {
 export type IntentsRoute='list'|'decide';
 export interface IntentsRequestMap {list:IntentsListRequest;decide:IntentsDecideRequest;}
 export interface IntentsResponseMap {list:IntentsListResponse;decide:IntentsDecideResponse;}
-export interface IntentsExpectationMap {list:{request:IntentsListRequest};decide:{request:IntentsDecideRequest};}
+export type IntentsProposal = IntentsProposalItem['proposal'];
+export interface IntentsExpectationMap {list:{request:IntentsListRequest};decide:{request:IntentsDecideRequest;proposal:IntentsProposal};}
 export type IntentsResponse<R extends IntentsRoute>=IntentsResponseMap[R]|IntentsErrorResponse;
 export declare class IntentsResponseError extends Error {readonly code:string;}
 export declare const intentsVersion:'0.1.0';
@@ -391,7 +398,8 @@ export declare const intentsMetadata:{
     "list": "read-only durable history of this conversation's prepared intents; next is the last returned deliveryId when more remain, otherwise null",
     "decision": "approved or rejected is recorded by the canonical decision owner for exactly the named proposal, command hash and approver; display, stream or model text never approves",
     "execution": "only actions in approvableActions execute; any other prepared proposal answers INTENT_NOT_APPROVABLE and stays prepared",
-    "executed": "status executed returns the observed receipt and task result; the caller reads receipt.outcome, status alone does not assert success",
+    "executed": "status executed returns the observed receipt and task result; the receiver admits it only as the executor's own outcome for the retained task.create command (its hash, id, idempotency key, scopes and stable binding, a succeeded receipt with no source transaction, and a result equal to the immutable arguments)",
+    "correlation": "a list answer is admitted against its captured list request; a decide answer is admitted against the captured decide request and the proposal admitted from an earlier list answer; rejected and indeterminate replies carry no conversation or command of their own, so only that retained proposal binds them to the request's conversation and approver",
     "uncertainty": "UNKNOWN and RESULT_NOT_RELEASED mean a decision or effect may exist: repeat the identical decide request or read list; never prepare a second proposal",
     "withheld": "withheld items carry no content because the caller no longer sees a client scope of the retained command",
     "expiry": "the caller compares proposal.expiresAt with a fresh clock before presenting a decision; the server rechecks current authority",

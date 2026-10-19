@@ -27,16 +27,20 @@ Every item carries `deliveryId`, `createdAt`, `operation {id, version:'0.2.0'}` 
 
 ## Receiver API
 
-`receiveIntentsRequest(route, jsonText)` and `receiveIntentsResponse(route, httpStatus, jsonText, {request})` are async; results are recursively frozen. The captured request is mandatory. The receiver refuses, with `IntentsResponseError.code`:
+`receiveIntentsRequest(route, jsonText)` and `receiveIntentsResponse(route, httpStatus, jsonText, expectation)` are async; results are recursively frozen. The captured context is mandatory: `{request}` for list and `{request, proposal}` for decide, where `proposal` is the one the caller admitted from an earlier list answer. A rejected or indeterminate decide reply carries no conversation, command or binding of its own, so the retained proposal is what binds it to the request's conversation and approver. The receiver refuses, with `IntentsResponseError.code`:
 
 - non-canonical or oversized JSON, unknown fields, wrong shapes (`INTENTS_JSON`, `INTENTS_LIMIT`, `INTENTS_SHAPE`);
 - an error status that does not match the closed table, or a `field` on a 502 (`INTENTS_STATUS`);
-- a response that does not answer the captured request (`INTENTS_CORRELATION`): wrong conversation, more items than `limit`, duplicate delivery ids, a cursor that is not the last full page entry, a proposal whose `commandSha256` is not the canonical hash of its command, a proposal outside the requested conversation or tenant, a decision for another proposal or hash, a `phase` that contradicts the decision/execution evidence, a receipt for another command, a decide answer for another delivery, proposal, hash or decision, or `rejected` returned for an approval.
+- a response that does not answer the captured context (`INTENTS_CORRELATION`): wrong conversation, more items than `limit`, duplicate delivery ids, a cursor that is not the last full page entry, a proposal whose `commandSha256` is not the canonical hash of its command, a proposal outside the requested conversation or tenant, a task.create proposal with non-canonical arguments or attachments, a decision for another proposal or hash, a `phase` that contradicts the decision/execution evidence, a decide answer for another delivery, proposal, hash or decision, a decision by an approver other than the proposal's required approver or dated before the proposal, an approvable action the handler could not have approved, or `rejected` returned for an approval;
+- an execution outcome that is not the executor's own for the retained task.create command (`commands-0.2/execution-intent.mjs` `outcome` and `task-create-validation.mjs`): receipt command id, hash, idempotency key, scopes and stable tenant/actor/conversation/run binding must match (attempt, worker and fence may differ), the receipt must be `succeeded` with no source transaction and an exactly spelled `completedAt`, and the task result's title, client and due date must equal the immutable arguments. An outcome is interpreted only for task.create.
+
+Timestamps are read as their producers read them: proposal and decision times are any schema-valid date-time ending in `Z` that `Date.parse` accepts (so `…:00Z` without milliseconds is admitted, as `approval.mjs` admits it); receipt and task-result times use the canonical exact spelling.
 
 ## Deliberate limits
 
 - Only `task.create` executes (`APPROVABLE_ACTIONS`). `execution.outcome` is therefore typed `{receipt, result:TaskCreateResult}`. Memory and filing outcome shapes are not invented; widening them needs a new contract version once Core defines the native approval/receiver payloads.
-- `executed` does not assert success: the caller reads `receipt.outcome`.
+- For task.create the receiver admits only a succeeded receipt (the executor's outcome check requires it); `executed` therefore means the executor's own observed success for the retained command.
+- Generation output is independent of the checkout layout: the bundle is built with symlinks preserved so inputs read `node_modules/<package>/…`, and the generator refuses output that embeds a parent-relative, drive-letter or home-directory path.
 - The wire shapes were a local proposal in the handler; this contract freezes the shapes the handlers produce at the base commit and nothing else. Mounting, Core decision-owner wiring, membership and persistence qualification remain handoff work.
 - The request ceiling (4096 bytes) is this contract's own; response and deadline ceilings are the product-access maxima, and a composition may configure lower ones.
 

@@ -1,10 +1,12 @@
-import {receiveIntentsRequest,receiveIntentsResponse,intentsMetadata,intentsPaths,type IntentsListRequest,type IntentsDecideRequest,type IntentsListResponse,type IntentsDecideResponse,type IntentsErrorResponse,type IntentsItem} from '@capiro/meri-contracts/intents-application';
+import {receiveIntentsRequest,receiveIntentsResponse,intentsMetadata,intentsPaths,type IntentsListRequest,type IntentsDecideRequest,type IntentsListResponse,type IntentsDecideResponse,type IntentsErrorResponse,type IntentsItem,type IntentsProposal} from '@capiro/meri-contracts/intents-application';
 const list:IntentsListRequest=await receiveIntentsRequest('list',JSON.stringify({conversationId:'id'}));
 const decide:IntentsDecideRequest=await receiveIntentsRequest('decide','{}');
 const listed=await receiveIntentsResponse('list',200,'{}',{request:list});
 const exactList:IntentsListResponse|IntentsErrorResponse=listed;void exactList;
-if(!('error'in listed))for(const item of listed.intents){const entry:IntentsItem=item;if(entry.state==='prepared'&&entry.kind==='proposal'&&!('withheld'in entry)){const phase:'awaiting_approval'|'approved'|'rejected'|'expired'|'executing'|'completed'|'unknown'|'unknown_decision'=entry.phase;void phase;}}
-const decided=await receiveIntentsResponse('decide',200,'{}',{request:decide});
+let retained:IntentsProposal|undefined;
+if(!('error'in listed))for(const item of listed.intents){const entry:IntentsItem=item;if(entry.state==='prepared'&&entry.kind==='proposal'&&!('withheld'in entry)){retained=entry.proposal;const phase:'awaiting_approval'|'approved'|'rejected'|'expired'|'executing'|'completed'|'unknown'|'unknown_decision'=entry.phase;void phase;}}
+if(retained===undefined)throw new Error('no proposal admitted');
+const decided=await receiveIntentsResponse('decide',200,'{}',{request:decide,proposal:retained});
 const exactDecide:IntentsDecideResponse|IntentsErrorResponse=decided;void exactDecide;
 if(!('error'in decided)&&decided.status==='executed'){const commandSha256:string=decided.outcome.receipt.commandSha256;void commandSha256;}
 const path:'/api/conversations/intents/decide'=intentsPaths.decide,status:409=intentsMetadata.errorStatuses.INTENT_EXPIRED,action:'task.create'=intentsMetadata.approvableActions[0];void path;void status;void action;
@@ -12,6 +14,8 @@ const path:'/api/conversations/intents/decide'=intentsPaths.decide,status:409=in
 const approved:{approved:true}=decided;void approved;
 // @ts-expect-error the captured request is mandatory
 await receiveIntentsResponse('decide',200,'{}');
+// @ts-expect-error a decide answer needs the proposal admitted from an earlier list answer
+await receiveIntentsResponse('decide',200,'{}',{request:decide});
 // @ts-expect-error the contract has exactly two routes and no approve or execute route
 await receiveIntentsRequest('approve','{}');
 // @ts-expect-error the decision vocabulary is closed

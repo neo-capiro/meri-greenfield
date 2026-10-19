@@ -30,15 +30,20 @@ export async function generateIntentsContracts({check=false,toolchainRoot}={}){
   const ajv=new Ajv({strict:true,allErrors:false,code:{source:true,esm:true}});formats(ajv);ajv.addSchema(root);const refs={};for(const name of names){const ref=root.$id+'#/$defs/'+name;ajv.compile({$ref:ref});refs['validate'+name]=ref;}
   const generated=standalone(ajv,refs)+'\nexport const validators={'+names.map(name=>name+':validate'+name).join(',')+'};\n';
   const protocol='import {createIntentsMetadata} from '+JSON.stringify(fileURLToPath(new URL('intents-application/protocol.mjs',HERE)))+';export const intentsPaths=Object.freeze('+JSON.stringify(config.paths)+');export const intentsMetadata=createIntentsMetadata('+JSON.stringify(config)+');';
-  const bundled=await esbuild.build({absWorkingDir:dir,stdin:{contents:await readFile(new URL('intents-application/receive.mjs',HERE),'utf8'),sourcefile:'intents-application-receiver.mjs',resolveDir:resolve(dir,'intents-application')},bundle:true,write:false,platform:'browser',format:'esm',target:'es2022',legalComments:'inline',metafile:true,
+  // preserveSymlinks keeps every input under this package's own node_modules path, so the bundle's comments and CommonJS labels read
+  // `node_modules/<package>/...` whatever checkout, worktree or link layout supplied the installed packages.
+  const bundled=await esbuild.build({absWorkingDir:dir,stdin:{contents:await readFile(new URL('intents-application/receive.mjs',HERE),'utf8'),sourcefile:'intents-application-receiver.mjs',resolveDir:resolve(dir,'intents-application')},bundle:true,write:false,platform:'browser',format:'esm',target:'es2022',legalComments:'inline',metafile:true,preserveSymlinks:true,
    plugins:[{name:'intents-generated',setup(b){b.onResolve({filter:/^\.\/generated-(validator|protocol)\.mjs$/},a=>({path:a.path,namespace:'intents-generated'}));b.onLoad({filter:/.*/,namespace:'intents-generated'},a=>({contents:a.path.includes('validator')?generated:protocol,resolveDir:dir,loader:'js'}));}}]});
   if(Object.values(bundled.metafile.outputs).some(o=>o.imports.length))throw Error('Intents browser external import');
+  // Output must not depend on where the checkout sits: no parent-relative, drive-letter or home-directory path in any comment or module label.
+  const leak=/^(?:\/\/ |\s+")[^\n]*(?:\.\.\/|(?<![A-Za-z0-9])[A-Za-z]:[\\/](?!\/)|\/(?:home|Users)\/)/mu.exec(bundled.outputFiles[0].text);if(leak)throw Error('Intents bundle embeds checkout layout: '+leak[0].slice(0,120));
   const declarations=await compiler.compile({title:'IntentsApplicationEnvelope',anyOf:names.map(name=>({$ref:'#/$defs/'+name})),$defs:root.$defs},'IntentsApplicationEnvelope',{bannerComment:'// Generated additive intents contract from its canonical HTTP/approval owners. No authority implied.',additionalProperties:false,style:{singleQuote:true}});
   const api=`
 export type IntentsRoute='list'|'decide';
 export interface IntentsRequestMap {list:IntentsListRequest;decide:IntentsDecideRequest;}
 export interface IntentsResponseMap {list:IntentsListResponse;decide:IntentsDecideResponse;}
-export interface IntentsExpectationMap {list:{request:IntentsListRequest};decide:{request:IntentsDecideRequest};}
+export type IntentsProposal = IntentsProposalItem['proposal'];
+export interface IntentsExpectationMap {list:{request:IntentsListRequest};decide:{request:IntentsDecideRequest;proposal:IntentsProposal};}
 export type IntentsResponse<R extends IntentsRoute>=IntentsResponseMap[R]|IntentsErrorResponse;
 export declare class IntentsResponseError extends Error {readonly code:string;}
 export declare const intentsVersion:'0.1.0';
