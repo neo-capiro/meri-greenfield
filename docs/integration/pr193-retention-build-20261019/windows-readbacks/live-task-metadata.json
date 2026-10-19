@@ -1,0 +1,755 @@
+[
+  {
+    "arn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-control:33",
+    "family": "meri-product-preview-control",
+    "revision": 33,
+    "status": "ACTIVE",
+    "taskRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-control-task",
+    "executionRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-control-execution",
+    "runtimePlatform": {
+      "cpuArchitecture": "X86_64",
+      "operatingSystemFamily": "LINUX"
+    },
+    "containers": [
+      {
+        "name": "control",
+        "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:9bff84ba24959130e63e64b2ac72783144053084168fcf14f4344f4dd8583717",
+        "user": "1000:1000",
+        "readOnly": true,
+        "environmentNames": [
+          "MERI_PRODUCT_PREVIEW_REQUIRED",
+          "NODE_EXTRA_CA_CERTS"
+        ],
+        "secrets": []
+      },
+      {
+        "name": "material-init",
+        "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:9bff84ba24959130e63e64b2ac72783144053084168fcf14f4344f4dd8583717",
+        "user": "1000:1000",
+        "readOnly": true,
+        "environmentNames": [
+          "MERI_STATIC_MATERIAL_EXPECTED"
+        ],
+        "secrets": [
+          {
+            "name": "MERI_STATIC_MATERIAL_BUNDLE",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/control/material-OhIfMV:::1ef98de4-6155-4d3d-9283-d5eaafc5846f"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "arn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-worker:32",
+    "family": "meri-product-preview-temporal-worker",
+    "revision": 32,
+    "status": "ACTIVE",
+    "taskRoleArn": null,
+    "executionRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-worker-execution",
+    "runtimePlatform": {
+      "cpuArchitecture": "X86_64",
+      "operatingSystemFamily": "LINUX"
+    },
+    "containers": [
+      {
+        "name": "temporal-worker",
+        "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:9bff84ba24959130e63e64b2ac72783144053084168fcf14f4344f4dd8583717",
+        "user": "1000:1000",
+        "readOnly": true,
+        "environmentNames": [
+          "MERI_PRODUCT_PREVIEW_REQUIRED",
+          "NODE_EXTRA_CA_CERTS"
+        ],
+        "secrets": []
+      },
+      {
+        "name": "material-init",
+        "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:9bff84ba24959130e63e64b2ac72783144053084168fcf14f4344f4dd8583717",
+        "user": "1000:1000",
+        "readOnly": true,
+        "environmentNames": [
+          "MERI_STATIC_MATERIAL_EXPECTED"
+        ],
+        "secrets": [
+          {
+            "name": "MERI_STATIC_MATERIAL_BUNDLE",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/worker/material-1tudsv:::ade84123-8404-4f23-b30a-829da9fc348c"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "arn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-issuer:32",
+    "family": "meri-product-preview-temporal-issuer",
+    "revision": 32,
+    "status": "ACTIVE",
+    "taskRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-issuer-task",
+    "executionRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-issuer-execution",
+    "runtimePlatform": {
+      "cpuArchitecture": "X86_64",
+      "operatingSystemFamily": "LINUX"
+    },
+    "containers": [
+      {
+        "name": "material-init",
+        "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:9bff84ba24959130e63e64b2ac72783144053084168fcf14f4344f4dd8583717",
+        "user": "1000:1000",
+        "readOnly": true,
+        "environmentNames": [
+          "MERI_STATIC_MATERIAL_EXPECTED"
+        ],
+        "secrets": [
+          {
+            "name": "MERI_STATIC_MATERIAL_BUNDLE",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/issuer/material-MYhacb:::e0d0fe97-c5db-48eb-b397-e75d58d6ad2a"
+          }
+        ]
+      },
+      {
+        "name": "temporal-issuer",
+        "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:9bff84ba24959130e63e64b2ac72783144053084168fcf14f4344f4dd8583717",
+        "user": "1000:1000",
+        "readOnly": true,
+        "environmentNames": [
+          "MERI_TEMPORAL_ISSUER_REQUIRED"
+        ],
+        "secrets": []
+      }
+    ]
+  },
+  {
+    "arn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-owner:31",
+    "family": "meri-product-preview-owner",
+    "revision": 31,
+    "status": "ACTIVE",
+    "taskRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-owner-task",
+    "executionRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-owner-execution",
+    "runtimePlatform": {
+      "cpuArchitecture": "X86_64",
+      "operatingSystemFamily": "LINUX"
+    },
+    "containers": [
+      {
+        "name": "material-init",
+        "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:9bff84ba24959130e63e64b2ac72783144053084168fcf14f4344f4dd8583717",
+        "user": "1000:1000",
+        "readOnly": true,
+        "environmentNames": [
+          "MERI_STATIC_MATERIAL_EXPECTED"
+        ],
+        "secrets": [
+          {
+            "name": "MERI_STATIC_MATERIAL_BUNDLE",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/owner/material-05kED4:::eae1bf25-23d7-4e14-b272-ae394eed37a4"
+          }
+        ]
+      },
+      {
+        "name": "model-owner",
+        "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:9bff84ba24959130e63e64b2ac72783144053084168fcf14f4344f4dd8583717",
+        "user": "1000:1000",
+        "readOnly": true,
+        "environmentNames": [
+          "MERI_PRODUCT_OWNER_REQUIRED",
+          "MERI_PRODUCT_OWNER_CONFIG_SHA256"
+        ],
+        "secrets": []
+      }
+    ]
+  },
+  {
+    "arn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-proxy:31",
+    "family": "meri-product-preview-proxy",
+    "revision": 31,
+    "status": "ACTIVE",
+    "taskRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-proxy-task",
+    "executionRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-proxy-execution",
+    "runtimePlatform": {
+      "cpuArchitecture": "X86_64",
+      "operatingSystemFamily": "LINUX"
+    },
+    "containers": [
+      {
+        "name": "material-init",
+        "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:9bff84ba24959130e63e64b2ac72783144053084168fcf14f4344f4dd8583717",
+        "user": "0:0",
+        "readOnly": true,
+        "environmentNames": [
+          "MERI_STATIC_MATERIAL_EXPECTED"
+        ],
+        "secrets": [
+          {
+            "name": "MERI_STATIC_MATERIAL_BUNDLE",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/proxy/material-kpYYOE:::699ed693-4f69-4feb-a63e-ab1687ca8fc9"
+          }
+        ]
+      },
+      {
+        "name": "model-proxy",
+        "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:734a20ec036a9aacb1f99cd8f8d2a0d5a3319a44a27e13e14781e396ebec3551",
+        "user": "10001:10001",
+        "readOnly": true,
+        "environmentNames": [
+          "MERI_PRODUCT_PROXY_REQUIRED"
+        ],
+        "secrets": []
+      }
+    ]
+  },
+  {
+    "arn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-frontend:1",
+    "family": "meri-product-preview-temporal-frontend",
+    "revision": 1,
+    "status": "ACTIVE",
+    "taskRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-temporal-frontend-task",
+    "executionRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-temporal-execution",
+    "runtimePlatform": {
+      "cpuArchitecture": "X86_64",
+      "operatingSystemFamily": "LINUX"
+    },
+    "containers": [
+      {
+        "name": "frontend",
+        "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:f73ce01ef4739a77fad6ace3fbfbbe1f1aeaa553b5c263d705053a2f5063cf2d",
+        "user": null,
+        "readOnly": true,
+        "environmentNames": [
+          "MERI_TEMPORAL_DB_GRANTS_SHA256",
+          "DB_PORT",
+          "SQL_VIS_MAX_CONNS",
+          "TEMPORAL_AUTH_AUDIENCE",
+          "MERI_TEMPORAL_MIGRATION_PLAN_SHA256",
+          "MERI_TEMPORAL_LAUNCH_CONTRACT_SHA256",
+          "TEMPORAL_TLS_INTERNODE_DISABLE_HOST_VERIFICATION",
+          "USE_INTERNAL_FRONTEND",
+          "BIND_ON_IP",
+          "MERI_TEMPORAL_VISIBILITY_USERNAME_EXPECTED",
+          "MERI_TEMPORAL_ACTIVATION",
+          "MERI_TEMPORAL_RENDER_DIR",
+          "VISIBILITY_DBNAME",
+          "DBNAME",
+          "MERI_TEMPORAL_ISSUER_CA_SHA256",
+          "MERI_TEMPORAL_PRIMARY_USERNAME_EXPECTED",
+          "TEMPORAL_TASK_QUEUE",
+          "VISIBILITY_POSTGRES_SEEDS",
+          "TEMPORAL_AUTH_CLAIM_MAPPER",
+          "SQL_HOST_NAME",
+          "MERI_TEMPORAL_LAUNCH_SOURCE_COMMIT",
+          "TEMPORAL_NAMESPACE",
+          "TEMPORAL_JWT_KEY_REFRESH",
+          "MERI_TEMPORAL_ROLE",
+          "TEMPORAL_TLS_FRONTEND_DISABLE_HOST_VERIFICATION",
+          "TEMPORAL_TLS_REQUIRE_CLIENT_AUTH",
+          "TEMPORAL_AUTH_AUTHORIZER",
+          "TEMPORAL_JWT_KEY_SOURCE1",
+          "SQL_MAX_IDLE_CONNS",
+          "MERI_TEMPORAL_SERVICE_NAME",
+          "MERI_TEMPORAL_UPSTREAM_IMAGE_DIGEST",
+          "TEMPORAL_AUTH_ISSUER",
+          "POSTGRES_SEEDS",
+          "MERI_TEMPORAL_PREVIEW_REQUIRED",
+          "SQL_MAX_CONNS",
+          "NUM_HISTORY_SHARDS",
+          "SQL_VIS_MAX_IDLE_CONNS",
+          "TEMPORAL_TLS_INTERNODE_SERVER_NAME",
+          "SQL_TLS_ENABLED",
+          "TEMPORAL_TLS_FRONTEND_SERVER_NAME",
+          "SQL_HOST_VERIFICATION",
+          "MERI_TEMPORAL_RDS_CA_SHA256",
+          "DB"
+        ],
+        "secrets": [
+          {
+            "name": "POSTGRES_USER",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/db-default-uoHJhw:username::6eb92912-90b2-4320-bba9-a15acc65389d"
+          },
+          {
+            "name": "POSTGRES_PWD",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/db-default-uoHJhw:password::6eb92912-90b2-4320-bba9-a15acc65389d"
+          },
+          {
+            "name": "VISIBILITY_POSTGRES_USER",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/db-visibility-L1SU3i:username::b9f98e0a-3852-4ce9-9e41-5574724baa58"
+          },
+          {
+            "name": "VISIBILITY_POSTGRES_PWD",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/db-visibility-L1SU3i:password::b9f98e0a-3852-4ce9-9e41-5574724baa58"
+          },
+          {
+            "name": "MERI_TEMPORAL_INTERNODE_CERT_PEM",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/frontend/material-QkE7eP:internodeCert::3d8a43ba-a26a-4fd0-8cec-fada8f224346"
+          },
+          {
+            "name": "MERI_TEMPORAL_INTERNODE_KEY_PEM",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/frontend/material-QkE7eP:internodeKey::3d8a43ba-a26a-4fd0-8cec-fada8f224346"
+          },
+          {
+            "name": "MERI_TEMPORAL_INTERNODE_CA_PEM",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/frontend/material-QkE7eP:internodeCa::3d8a43ba-a26a-4fd0-8cec-fada8f224346"
+          },
+          {
+            "name": "MERI_TEMPORAL_FRONTEND_CA_PEM",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/frontend/material-QkE7eP:frontendCa::3d8a43ba-a26a-4fd0-8cec-fada8f224346"
+          },
+          {
+            "name": "MERI_TEMPORAL_RDS_CA_PEM",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/frontend/material-QkE7eP:rdsCa::3d8a43ba-a26a-4fd0-8cec-fada8f224346"
+          },
+          {
+            "name": "MERI_TEMPORAL_FRONTEND_CERT_PEM",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/frontend/material-QkE7eP:frontendCert::3d8a43ba-a26a-4fd0-8cec-fada8f224346"
+          },
+          {
+            "name": "MERI_TEMPORAL_FRONTEND_KEY_PEM",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/frontend/material-QkE7eP:frontendKey::3d8a43ba-a26a-4fd0-8cec-fada8f224346"
+          },
+          {
+            "name": "MERI_TEMPORAL_CLIENT_CA_PEM",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/frontend/material-QkE7eP:clientCa::3d8a43ba-a26a-4fd0-8cec-fada8f224346"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "arn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-history:1",
+    "family": "meri-product-preview-temporal-history",
+    "revision": 1,
+    "status": "ACTIVE",
+    "taskRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-temporal-history-task",
+    "executionRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-temporal-execution",
+    "runtimePlatform": {
+      "cpuArchitecture": "X86_64",
+      "operatingSystemFamily": "LINUX"
+    },
+    "containers": [
+      {
+        "name": "history",
+        "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:f73ce01ef4739a77fad6ace3fbfbbe1f1aeaa553b5c263d705053a2f5063cf2d",
+        "user": null,
+        "readOnly": true,
+        "environmentNames": [
+          "MERI_TEMPORAL_DB_GRANTS_SHA256",
+          "DB_PORT",
+          "SQL_VIS_MAX_CONNS",
+          "TEMPORAL_AUTH_AUDIENCE",
+          "MERI_TEMPORAL_MIGRATION_PLAN_SHA256",
+          "MERI_TEMPORAL_LAUNCH_CONTRACT_SHA256",
+          "TEMPORAL_TLS_INTERNODE_DISABLE_HOST_VERIFICATION",
+          "USE_INTERNAL_FRONTEND",
+          "BIND_ON_IP",
+          "MERI_TEMPORAL_VISIBILITY_USERNAME_EXPECTED",
+          "MERI_TEMPORAL_ACTIVATION",
+          "MERI_TEMPORAL_RENDER_DIR",
+          "VISIBILITY_DBNAME",
+          "DBNAME",
+          "MERI_TEMPORAL_ISSUER_CA_SHA256",
+          "MERI_TEMPORAL_PRIMARY_USERNAME_EXPECTED",
+          "TEMPORAL_TASK_QUEUE",
+          "VISIBILITY_POSTGRES_SEEDS",
+          "TEMPORAL_AUTH_CLAIM_MAPPER",
+          "SQL_HOST_NAME",
+          "MERI_TEMPORAL_LAUNCH_SOURCE_COMMIT",
+          "TEMPORAL_NAMESPACE",
+          "TEMPORAL_JWT_KEY_REFRESH",
+          "MERI_TEMPORAL_ROLE",
+          "TEMPORAL_TLS_FRONTEND_DISABLE_HOST_VERIFICATION",
+          "TEMPORAL_TLS_REQUIRE_CLIENT_AUTH",
+          "TEMPORAL_AUTH_AUTHORIZER",
+          "TEMPORAL_JWT_KEY_SOURCE1",
+          "SQL_MAX_IDLE_CONNS",
+          "MERI_TEMPORAL_SERVICE_NAME",
+          "MERI_TEMPORAL_UPSTREAM_IMAGE_DIGEST",
+          "TEMPORAL_AUTH_ISSUER",
+          "POSTGRES_SEEDS",
+          "MERI_TEMPORAL_PREVIEW_REQUIRED",
+          "NUM_HISTORY_SHARDS",
+          "SQL_MAX_CONNS",
+          "SQL_VIS_MAX_IDLE_CONNS",
+          "TEMPORAL_TLS_INTERNODE_SERVER_NAME",
+          "SQL_TLS_ENABLED",
+          "TEMPORAL_TLS_FRONTEND_SERVER_NAME",
+          "SQL_HOST_VERIFICATION",
+          "MERI_TEMPORAL_RDS_CA_SHA256",
+          "DB"
+        ],
+        "secrets": [
+          {
+            "name": "POSTGRES_USER",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/db-default-uoHJhw:username::6eb92912-90b2-4320-bba9-a15acc65389d"
+          },
+          {
+            "name": "POSTGRES_PWD",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/db-default-uoHJhw:password::6eb92912-90b2-4320-bba9-a15acc65389d"
+          },
+          {
+            "name": "VISIBILITY_POSTGRES_USER",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/db-visibility-L1SU3i:username::b9f98e0a-3852-4ce9-9e41-5574724baa58"
+          },
+          {
+            "name": "VISIBILITY_POSTGRES_PWD",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/db-visibility-L1SU3i:password::b9f98e0a-3852-4ce9-9e41-5574724baa58"
+          },
+          {
+            "name": "MERI_TEMPORAL_INTERNODE_CERT_PEM",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/history/material-fl67yL:internodeCert::47fbc48a-be7b-446e-a74b-db9c438fcdc6"
+          },
+          {
+            "name": "MERI_TEMPORAL_INTERNODE_KEY_PEM",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/history/material-fl67yL:internodeKey::47fbc48a-be7b-446e-a74b-db9c438fcdc6"
+          },
+          {
+            "name": "MERI_TEMPORAL_INTERNODE_CA_PEM",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/history/material-fl67yL:internodeCa::47fbc48a-be7b-446e-a74b-db9c438fcdc6"
+          },
+          {
+            "name": "MERI_TEMPORAL_FRONTEND_CA_PEM",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/history/material-fl67yL:frontendCa::47fbc48a-be7b-446e-a74b-db9c438fcdc6"
+          },
+          {
+            "name": "MERI_TEMPORAL_RDS_CA_PEM",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/history/material-fl67yL:rdsCa::47fbc48a-be7b-446e-a74b-db9c438fcdc6"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "arn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-matching:1",
+    "family": "meri-product-preview-temporal-matching",
+    "revision": 1,
+    "status": "ACTIVE",
+    "taskRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-temporal-matching-task",
+    "executionRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-temporal-execution",
+    "runtimePlatform": {
+      "cpuArchitecture": "X86_64",
+      "operatingSystemFamily": "LINUX"
+    },
+    "containers": [
+      {
+        "name": "matching",
+        "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:f73ce01ef4739a77fad6ace3fbfbbe1f1aeaa553b5c263d705053a2f5063cf2d",
+        "user": null,
+        "readOnly": true,
+        "environmentNames": [
+          "MERI_TEMPORAL_DB_GRANTS_SHA256",
+          "DB_PORT",
+          "SQL_VIS_MAX_CONNS",
+          "TEMPORAL_AUTH_AUDIENCE",
+          "MERI_TEMPORAL_MIGRATION_PLAN_SHA256",
+          "MERI_TEMPORAL_LAUNCH_CONTRACT_SHA256",
+          "TEMPORAL_TLS_INTERNODE_DISABLE_HOST_VERIFICATION",
+          "USE_INTERNAL_FRONTEND",
+          "BIND_ON_IP",
+          "MERI_TEMPORAL_VISIBILITY_USERNAME_EXPECTED",
+          "MERI_TEMPORAL_ACTIVATION",
+          "MERI_TEMPORAL_RENDER_DIR",
+          "VISIBILITY_DBNAME",
+          "DBNAME",
+          "MERI_TEMPORAL_ISSUER_CA_SHA256",
+          "MERI_TEMPORAL_PRIMARY_USERNAME_EXPECTED",
+          "TEMPORAL_TASK_QUEUE",
+          "VISIBILITY_POSTGRES_SEEDS",
+          "TEMPORAL_AUTH_CLAIM_MAPPER",
+          "SQL_HOST_NAME",
+          "MERI_TEMPORAL_LAUNCH_SOURCE_COMMIT",
+          "TEMPORAL_NAMESPACE",
+          "TEMPORAL_JWT_KEY_REFRESH",
+          "MERI_TEMPORAL_ROLE",
+          "TEMPORAL_TLS_FRONTEND_DISABLE_HOST_VERIFICATION",
+          "TEMPORAL_TLS_REQUIRE_CLIENT_AUTH",
+          "TEMPORAL_AUTH_AUTHORIZER",
+          "TEMPORAL_JWT_KEY_SOURCE1",
+          "SQL_MAX_IDLE_CONNS",
+          "MERI_TEMPORAL_UPSTREAM_IMAGE_DIGEST",
+          "MERI_TEMPORAL_SERVICE_NAME",
+          "TEMPORAL_AUTH_ISSUER",
+          "POSTGRES_SEEDS",
+          "MERI_TEMPORAL_PREVIEW_REQUIRED",
+          "SQL_MAX_CONNS",
+          "NUM_HISTORY_SHARDS",
+          "SQL_VIS_MAX_IDLE_CONNS",
+          "TEMPORAL_TLS_INTERNODE_SERVER_NAME",
+          "SQL_TLS_ENABLED",
+          "TEMPORAL_TLS_FRONTEND_SERVER_NAME",
+          "SQL_HOST_VERIFICATION",
+          "MERI_TEMPORAL_RDS_CA_SHA256",
+          "DB"
+        ],
+        "secrets": [
+          {
+            "name": "POSTGRES_USER",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/db-default-uoHJhw:username::6eb92912-90b2-4320-bba9-a15acc65389d"
+          },
+          {
+            "name": "POSTGRES_PWD",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/db-default-uoHJhw:password::6eb92912-90b2-4320-bba9-a15acc65389d"
+          },
+          {
+            "name": "VISIBILITY_POSTGRES_USER",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/db-visibility-L1SU3i:username::b9f98e0a-3852-4ce9-9e41-5574724baa58"
+          },
+          {
+            "name": "VISIBILITY_POSTGRES_PWD",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/db-visibility-L1SU3i:password::b9f98e0a-3852-4ce9-9e41-5574724baa58"
+          },
+          {
+            "name": "MERI_TEMPORAL_INTERNODE_CERT_PEM",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/matching/material-igTBBS:internodeCert::adfab592-feb0-4630-8965-ebd407f8ab87"
+          },
+          {
+            "name": "MERI_TEMPORAL_INTERNODE_KEY_PEM",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/matching/material-igTBBS:internodeKey::adfab592-feb0-4630-8965-ebd407f8ab87"
+          },
+          {
+            "name": "MERI_TEMPORAL_INTERNODE_CA_PEM",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/matching/material-igTBBS:internodeCa::adfab592-feb0-4630-8965-ebd407f8ab87"
+          },
+          {
+            "name": "MERI_TEMPORAL_FRONTEND_CA_PEM",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/matching/material-igTBBS:frontendCa::adfab592-feb0-4630-8965-ebd407f8ab87"
+          },
+          {
+            "name": "MERI_TEMPORAL_RDS_CA_PEM",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/matching/material-igTBBS:rdsCa::adfab592-feb0-4630-8965-ebd407f8ab87"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "arn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-internal-worker:1",
+    "family": "meri-product-preview-temporal-internal-worker",
+    "revision": 1,
+    "status": "ACTIVE",
+    "taskRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-temporal-worker-task",
+    "executionRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-temporal-execution",
+    "runtimePlatform": {
+      "cpuArchitecture": "X86_64",
+      "operatingSystemFamily": "LINUX"
+    },
+    "containers": [
+      {
+        "name": "internal-worker",
+        "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:f73ce01ef4739a77fad6ace3fbfbbe1f1aeaa553b5c263d705053a2f5063cf2d",
+        "user": null,
+        "readOnly": true,
+        "environmentNames": [
+          "MERI_TEMPORAL_DB_GRANTS_SHA256",
+          "DB_PORT",
+          "SQL_VIS_MAX_CONNS",
+          "TEMPORAL_AUTH_AUDIENCE",
+          "MERI_TEMPORAL_MIGRATION_PLAN_SHA256",
+          "MERI_TEMPORAL_LAUNCH_CONTRACT_SHA256",
+          "TEMPORAL_TLS_INTERNODE_DISABLE_HOST_VERIFICATION",
+          "USE_INTERNAL_FRONTEND",
+          "BIND_ON_IP",
+          "MERI_TEMPORAL_VISIBILITY_USERNAME_EXPECTED",
+          "MERI_TEMPORAL_ACTIVATION",
+          "MERI_TEMPORAL_RENDER_DIR",
+          "VISIBILITY_DBNAME",
+          "DBNAME",
+          "MERI_TEMPORAL_ISSUER_CA_SHA256",
+          "MERI_TEMPORAL_PRIMARY_USERNAME_EXPECTED",
+          "TEMPORAL_TASK_QUEUE",
+          "VISIBILITY_POSTGRES_SEEDS",
+          "TEMPORAL_AUTH_CLAIM_MAPPER",
+          "SQL_HOST_NAME",
+          "MERI_TEMPORAL_LAUNCH_SOURCE_COMMIT",
+          "TEMPORAL_NAMESPACE",
+          "TEMPORAL_JWT_KEY_REFRESH",
+          "MERI_TEMPORAL_ROLE",
+          "TEMPORAL_TLS_FRONTEND_DISABLE_HOST_VERIFICATION",
+          "TEMPORAL_TLS_REQUIRE_CLIENT_AUTH",
+          "TEMPORAL_AUTH_AUTHORIZER",
+          "TEMPORAL_JWT_KEY_SOURCE1",
+          "SQL_MAX_IDLE_CONNS",
+          "MERI_TEMPORAL_UPSTREAM_IMAGE_DIGEST",
+          "MERI_TEMPORAL_SERVICE_NAME",
+          "TEMPORAL_AUTH_ISSUER",
+          "POSTGRES_SEEDS",
+          "MERI_TEMPORAL_PREVIEW_REQUIRED",
+          "SQL_MAX_CONNS",
+          "NUM_HISTORY_SHARDS",
+          "SQL_VIS_MAX_IDLE_CONNS",
+          "TEMPORAL_TLS_INTERNODE_SERVER_NAME",
+          "SQL_TLS_ENABLED",
+          "TEMPORAL_TLS_FRONTEND_SERVER_NAME",
+          "SQL_HOST_VERIFICATION",
+          "MERI_TEMPORAL_RDS_CA_SHA256",
+          "DB"
+        ],
+        "secrets": [
+          {
+            "name": "POSTGRES_USER",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/db-default-uoHJhw:username::6eb92912-90b2-4320-bba9-a15acc65389d"
+          },
+          {
+            "name": "POSTGRES_PWD",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/db-default-uoHJhw:password::6eb92912-90b2-4320-bba9-a15acc65389d"
+          },
+          {
+            "name": "VISIBILITY_POSTGRES_USER",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/db-visibility-L1SU3i:username::b9f98e0a-3852-4ce9-9e41-5574724baa58"
+          },
+          {
+            "name": "VISIBILITY_POSTGRES_PWD",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/db-visibility-L1SU3i:password::b9f98e0a-3852-4ce9-9e41-5574724baa58"
+          },
+          {
+            "name": "MERI_TEMPORAL_INTERNODE_CERT_PEM",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/worker/material-1Qm4jB:internodeCert::ec250dcf-1e9f-45bb-bee2-05e9b78c79b9"
+          },
+          {
+            "name": "MERI_TEMPORAL_INTERNODE_KEY_PEM",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/worker/material-1Qm4jB:internodeKey::ec250dcf-1e9f-45bb-bee2-05e9b78c79b9"
+          },
+          {
+            "name": "MERI_TEMPORAL_INTERNODE_CA_PEM",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/worker/material-1Qm4jB:internodeCa::ec250dcf-1e9f-45bb-bee2-05e9b78c79b9"
+          },
+          {
+            "name": "MERI_TEMPORAL_FRONTEND_CA_PEM",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/worker/material-1Qm4jB:frontendCa::ec250dcf-1e9f-45bb-bee2-05e9b78c79b9"
+          },
+          {
+            "name": "MERI_TEMPORAL_RDS_CA_PEM",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/worker/material-1Qm4jB:rdsCa::ec250dcf-1e9f-45bb-bee2-05e9b78c79b9"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "arn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-internal-frontend:1",
+    "family": "meri-product-preview-temporal-internal-frontend",
+    "revision": 1,
+    "status": "ACTIVE",
+    "taskRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-temporal-internal-frontend-task",
+    "executionRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-temporal-execution",
+    "runtimePlatform": {
+      "cpuArchitecture": "X86_64",
+      "operatingSystemFamily": "LINUX"
+    },
+    "containers": [
+      {
+        "name": "internal-frontend",
+        "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:f73ce01ef4739a77fad6ace3fbfbbe1f1aeaa553b5c263d705053a2f5063cf2d",
+        "user": null,
+        "readOnly": true,
+        "environmentNames": [
+          "MERI_TEMPORAL_DB_GRANTS_SHA256",
+          "DB_PORT",
+          "SQL_VIS_MAX_CONNS",
+          "TEMPORAL_AUTH_AUDIENCE",
+          "MERI_TEMPORAL_MIGRATION_PLAN_SHA256",
+          "MERI_TEMPORAL_LAUNCH_CONTRACT_SHA256",
+          "TEMPORAL_TLS_INTERNODE_DISABLE_HOST_VERIFICATION",
+          "USE_INTERNAL_FRONTEND",
+          "BIND_ON_IP",
+          "MERI_TEMPORAL_VISIBILITY_USERNAME_EXPECTED",
+          "MERI_TEMPORAL_ACTIVATION",
+          "MERI_TEMPORAL_RENDER_DIR",
+          "VISIBILITY_DBNAME",
+          "DBNAME",
+          "MERI_TEMPORAL_ISSUER_CA_SHA256",
+          "MERI_TEMPORAL_PRIMARY_USERNAME_EXPECTED",
+          "TEMPORAL_TASK_QUEUE",
+          "VISIBILITY_POSTGRES_SEEDS",
+          "TEMPORAL_AUTH_CLAIM_MAPPER",
+          "SQL_HOST_NAME",
+          "MERI_TEMPORAL_LAUNCH_SOURCE_COMMIT",
+          "TEMPORAL_NAMESPACE",
+          "TEMPORAL_JWT_KEY_REFRESH",
+          "MERI_TEMPORAL_ROLE",
+          "TEMPORAL_TLS_FRONTEND_DISABLE_HOST_VERIFICATION",
+          "TEMPORAL_TLS_REQUIRE_CLIENT_AUTH",
+          "TEMPORAL_AUTH_AUTHORIZER",
+          "TEMPORAL_JWT_KEY_SOURCE1",
+          "SQL_MAX_IDLE_CONNS",
+          "MERI_TEMPORAL_UPSTREAM_IMAGE_DIGEST",
+          "MERI_TEMPORAL_SERVICE_NAME",
+          "TEMPORAL_AUTH_ISSUER",
+          "POSTGRES_SEEDS",
+          "MERI_TEMPORAL_PREVIEW_REQUIRED",
+          "SQL_MAX_CONNS",
+          "NUM_HISTORY_SHARDS",
+          "SQL_VIS_MAX_IDLE_CONNS",
+          "TEMPORAL_TLS_INTERNODE_SERVER_NAME",
+          "SQL_TLS_ENABLED",
+          "TEMPORAL_TLS_FRONTEND_SERVER_NAME",
+          "SQL_HOST_VERIFICATION",
+          "MERI_TEMPORAL_RDS_CA_SHA256",
+          "DB"
+        ],
+        "secrets": [
+          {
+            "name": "POSTGRES_USER",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/db-default-uoHJhw:username::6eb92912-90b2-4320-bba9-a15acc65389d"
+          },
+          {
+            "name": "POSTGRES_PWD",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/db-default-uoHJhw:password::6eb92912-90b2-4320-bba9-a15acc65389d"
+          },
+          {
+            "name": "VISIBILITY_POSTGRES_USER",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/db-visibility-L1SU3i:username::b9f98e0a-3852-4ce9-9e41-5574724baa58"
+          },
+          {
+            "name": "VISIBILITY_POSTGRES_PWD",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/db-visibility-L1SU3i:password::b9f98e0a-3852-4ce9-9e41-5574724baa58"
+          },
+          {
+            "name": "MERI_TEMPORAL_INTERNODE_CERT_PEM",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/internal-frontend/material-GGIaW1:internodeCert::51b4be94-540d-4935-b48f-16f44177f37b"
+          },
+          {
+            "name": "MERI_TEMPORAL_INTERNODE_KEY_PEM",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/internal-frontend/material-GGIaW1:internodeKey::51b4be94-540d-4935-b48f-16f44177f37b"
+          },
+          {
+            "name": "MERI_TEMPORAL_INTERNODE_CA_PEM",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/internal-frontend/material-GGIaW1:internodeCa::51b4be94-540d-4935-b48f-16f44177f37b"
+          },
+          {
+            "name": "MERI_TEMPORAL_FRONTEND_CA_PEM",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/internal-frontend/material-GGIaW1:frontendCa::51b4be94-540d-4935-b48f-16f44177f37b"
+          },
+          {
+            "name": "MERI_TEMPORAL_RDS_CA_PEM",
+            "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/internal-frontend/material-GGIaW1:rdsCa::51b4be94-540d-4935-b48f-16f44177f37b"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "arn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-runner:18",
+    "family": "meri-product-preview-runner",
+    "revision": 18,
+    "status": "ACTIVE",
+    "taskRoleArn": null,
+    "executionRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-runner-execution",
+    "runtimePlatform": {
+      "cpuArchitecture": "X86_64",
+      "operatingSystemFamily": "LINUX"
+    },
+    "containers": [
+      {
+        "name": "worker",
+        "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:9bff84ba24959130e63e64b2ac72783144053084168fcf14f4344f4dd8583717",
+        "user": "1000:1000",
+        "readOnly": true,
+        "environmentNames": [
+          "MERI_RUNNER_SHA256",
+          "MERI_POSTSTART_CONTROL_ORIGIN",
+          "MERI_POSTSTART_CA_SHA256",
+          "MERI_PRODUCT_PREVIEW_REQUIRED",
+          "MERI_POSTSTART_CA_BASE64"
+        ],
+        "secrets": []
+      }
+    ]
+  }
+]

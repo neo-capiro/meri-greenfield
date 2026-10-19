@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-10-19T20:10:32.8199777Z",
+  "completedAt": "2026-10-19T20:11:10.4992340Z",
+  "account": "967807252336",
+  "region": "us-east-1",
+  "sourceCommit": "5b395d4ce9218b872b21c420dc00a3af31739824",
+  "proposedLabel": "FIRST_CHAT_20261019D",
+  "labelAbsentForAllFive": true,
+  "privateValuesRead": false,
+  "appTemplateProjection": "Only Resources.controlService from live Original template; canonical helper reads its public port8080 target group",
+  "mutations": 0
+}

@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-19T20:11:10.4992340Z",
+  "files": [
+    {
+      "path": "app.live.template.json",
+      "bytes": 1700,
+      "sha256": "5fdb068922d4b6a9cb788f3d666b1e27af75ee38d1ecc9af63f8d88dcc77ecc6"
+    },
+    {
+      "path": "caller.json",
+      "bytes": 87,
+      "sha256": "19ae6882c19ec3197ce8257632f1097db094fed3ab5fee421ad6d5aa59f43b09"
+    },
+    {
+      "path": "foundation-live.json",
+      "bytes": 5117,
+      "sha256": "dd1a6d414bf7bf8458aab76c024c3f64ec00093555c792de62c1e5d8324a84c9"
+    },
+    {
+      "path": "latest.tsv",
+      "bytes": 1388,
+      "sha256": "887006bbeb78f4159682ac9c66b3508070c7797a699c66dc4ce7f5f200e34f2a"
+    },
+    {
+      "path": "live-latest-revisions.json",
+      "bytes": 2870,
+      "sha256": "0968898f3544f500c4f784fd250992efdd04afa2754b83844dc99bb42a5767eb"
+    },
+    {
+      "path": "live-services.json",
+      "bytes": 12082,
+      "sha256": "6452faaf373a0c7173bd59d619b90c473a63889d5e717334fd5f85803a26f4af"
+    },
+    {
+      "path": "live-task-metadata.json",
+      "bytes": 33699,
+      "sha256": "37a64c1e5616cedf23c78a918414a791b2a93c49a23fe6ea5ac4cd10f4d4cce4"
+    },
+    {
+      "path": "private-edge-outputs.json",
+      "bytes": 408,
+      "sha256": "49e24e02552773c0da77d757a7f3dc4fdf205e254082bf0b8316999942b5ab1f"
+    },
+    {
+      "path": "readback-summary.json",
+      "bytes": 518,
+      "sha256": "49b6cc2f2608091f4344b4e493f22a6702a4c5554623bac03848df224dacf070"
+    },
+    {
+      "path": "secret-label-metadata.json",
+      "bytes": 9381,
+      "sha256": "c748533864516fbabda0feadd11ad0962551f8858e873a7e8fd5789d93508ee7"
+    },
+    {
+      "path": "stack-metadata.json",
+      "bytes": 9354,
+      "sha256": "4f2736fdfc174eaf2777ee7c4f63586a752ada819dd7d46e8b0253a73f2228ee"
+    },
+    {
+      "path": "stage3.observed.json",
+      "bytes": 2254,
+      "sha256": "4f01bf52d8e6f66153b4b0706d390ae0d0ba6bd9c072f4e931fe346a2599e5ee"
+    }
+  ]
+}
