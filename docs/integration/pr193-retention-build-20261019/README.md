@@ -4,6 +4,8 @@
 
 Start with [Neo's exact local render/upload instructions](NEO-PRIVATE-RERENDER-HANDOFF.md). Existing private inputs stay on Neo's secure operator host; every private path is a placeholder. Fresh revision, foundation and role readbacks precede rendering. External upload/deployment require the parent's separate approval.
 
+For Windows, use the [PowerShell local-render command](windows/README.md). Its public inputs are pinned to the accepted packet and the separate `windows-readbacks/FILE-MANIFEST.json`; the original public manifest below describes the qualification packet before these operator additions.
+
 | Item | Pin |
 | --- | --- |
 | Product source | `5b395d4ce9218b872b21c420dc00a3af31739824` |

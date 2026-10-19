@@ -1,5 +1,7 @@
 # Neo: private local re-render handoff for PR193
 
+**Windows operator:** use the [reviewed PowerShell wrapper and exact invocation](windows/README.md) instead of translating the Bash examples below. It pins the public packet/source and fresh readbacks, and takes existing private paths only as local parameters.
+
 This document prepares a reviewable operator handoff. Both qualification jobs succeeded. Root verified the six authenticated receipt joins, all seven launch gates and canonical runtime-values assembly; independent result review also passed. It does not authorize a deployment or an external mutation. Neo retains private material on the existing secure operator host. Every private path below is a placeholder, not a discovered or guessed location.
 
 ## Fixed candidate and scope
