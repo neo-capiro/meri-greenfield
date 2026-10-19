@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-19T19:59:09.0349208Z",
+  "sourceCommit": "5b395d4ce9218b872b21c420dc00a3af31739824",
+  "account": "967807252336",
+  "region": "us-east-1",
+  "derivation": "canonical parseLatestTsv and nextRevisions over both ACTIVE and INACTIVE records",
+  "reserved": false,
+  "reReadRequiredBeforePrivateRender": true,
+  "nextRevisions": {
+    "control": 34,
+    "temporal-worker": 33,
+    "temporal-issuer": 33,
+    "model-owner": 32,
+    "model-proxy": 32,
+    "runner": 19
+  }
+}

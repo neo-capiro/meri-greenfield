@@ -1,0 +1,13 @@
+{
+    "imageId": {
+        "imageDigest": "sha256:ea0e9ad4cfcec1052c33b39ae2f41c1df6e591b7ab2e74c762a1f68f54990b49"
+    },
+    "imageScanStatus": {
+        "status": "COMPLETE",
+        "description": "The scan was completed successfully."
+    },
+    "imageScanFindings": {
+        "findingSeverityCounts": {}
+    },
+    "nextToken": null
+}

@@ -1,0 +1,15 @@
+[
+    {
+        "name": "meri-greenfield-qualification-build",
+        "serviceRole": "arn:aws:iam::967807252336:role/MeriGreenfield-QualificationBui-BuilderRoleBBEBFA71-8G97EeNmFM0H",
+        "environment": {
+            "type": "LINUX_CONTAINER",
+            "computeType": "BUILD_GENERAL1_SMALL",
+            "image": "aws/codebuild/standard:7.0",
+            "privilegedMode": true
+        },
+        "timeout": 30,
+        "queueTimeout": 5,
+        "concurrency": 1
+    }
+]

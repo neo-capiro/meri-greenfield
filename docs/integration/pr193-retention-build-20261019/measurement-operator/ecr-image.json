@@ -1,0 +1,17 @@
+{
+    "imageDetails": [
+        {
+            "registryId": "967807252336",
+            "repositoryName": "meri-greenfield/qualification-worker",
+            "imageDigest": "sha256:ea0e9ad4cfcec1052c33b39ae2f41c1df6e591b7ab2e74c762a1f68f54990b49",
+            "imageTags": [
+                "product-5b395d4ce9218b872b21c420dc00a3af31739824-ef2439c9e0afe141d11e27836503975f"
+            ],
+            "imageSizeInBytes": 596531081,
+            "imagePushedAt": "2026-10-19T19:28:58.218000+00:00",
+            "imageManifestMediaType": "application/vnd.docker.distribution.manifest.v2+json",
+            "artifactMediaType": "application/vnd.docker.container.image.v1+json",
+            "imageStatus": "ACTIVE"
+        }
+    ]
+}

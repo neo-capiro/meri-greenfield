@@ -1,0 +1,351 @@
+{
+  "observedAt": "2026-10-19T19:58:57.9466300Z",
+  "account": "967807252336",
+  "region": "us-east-1",
+  "cluster": "capiro-dev",
+  "readback": {
+    "services": [
+      {
+        "serviceName": "meri-product-preview-control",
+        "status": "ACTIVE",
+        "desiredCount": 1,
+        "runningCount": 1,
+        "pendingCount": 0,
+        "taskDefinition": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-control:33",
+        "deploymentConfiguration": {
+          "deploymentCircuitBreaker": {
+            "enable": false,
+            "rollback": false,
+            "resetOnHealthyTask": true,
+            "thresholdConfiguration": {
+              "type": "BOUNDED_PERCENT",
+              "value": 50
+            }
+          },
+          "maximumPercent": 100,
+          "minimumHealthyPercent": 0,
+          "strategy": "ROLLING",
+          "bakeTimeInMinutes": 0
+        },
+        "availabilityZoneRebalancing": "DISABLED",
+        "deployments": [
+          {
+            "status": "PRIMARY",
+            "taskDefinition": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-control:33",
+            "desiredCount": 1,
+            "runningCount": 1,
+            "pendingCount": 0,
+            "rolloutState": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "serviceName": "meri-product-preview-temporal-worker",
+        "status": "ACTIVE",
+        "desiredCount": 1,
+        "runningCount": 1,
+        "pendingCount": 0,
+        "taskDefinition": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-worker:32",
+        "deploymentConfiguration": {
+          "deploymentCircuitBreaker": {
+            "enable": false,
+            "rollback": false,
+            "resetOnHealthyTask": true,
+            "thresholdConfiguration": {
+              "type": "BOUNDED_PERCENT",
+              "value": 50
+            }
+          },
+          "maximumPercent": 200,
+          "minimumHealthyPercent": 100,
+          "strategy": "ROLLING",
+          "bakeTimeInMinutes": 0
+        },
+        "availabilityZoneRebalancing": "ENABLED",
+        "deployments": [
+          {
+            "status": "PRIMARY",
+            "taskDefinition": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-worker:32",
+            "desiredCount": 1,
+            "runningCount": 1,
+            "pendingCount": 0,
+            "rolloutState": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "serviceName": "meri-product-preview-temporal-issuer",
+        "status": "ACTIVE",
+        "desiredCount": 1,
+        "runningCount": 1,
+        "pendingCount": 0,
+        "taskDefinition": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-issuer:32",
+        "deploymentConfiguration": {
+          "deploymentCircuitBreaker": {
+            "enable": false,
+            "rollback": false,
+            "resetOnHealthyTask": true,
+            "thresholdConfiguration": {
+              "type": "BOUNDED_PERCENT",
+              "value": 50
+            }
+          },
+          "maximumPercent": 200,
+          "minimumHealthyPercent": 100,
+          "strategy": "ROLLING",
+          "bakeTimeInMinutes": 0
+        },
+        "availabilityZoneRebalancing": "ENABLED",
+        "deployments": [
+          {
+            "status": "PRIMARY",
+            "taskDefinition": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-issuer:32",
+            "desiredCount": 1,
+            "runningCount": 1,
+            "pendingCount": 0,
+            "rolloutState": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "serviceName": "meri-product-preview-owner",
+        "status": "ACTIVE",
+        "desiredCount": 1,
+        "runningCount": 1,
+        "pendingCount": 0,
+        "taskDefinition": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-owner:31",
+        "deploymentConfiguration": {
+          "deploymentCircuitBreaker": {
+            "enable": false,
+            "rollback": false,
+            "resetOnHealthyTask": true,
+            "thresholdConfiguration": {
+              "type": "BOUNDED_PERCENT",
+              "value": 50
+            }
+          },
+          "maximumPercent": 200,
+          "minimumHealthyPercent": 100,
+          "strategy": "ROLLING",
+          "bakeTimeInMinutes": 0
+        },
+        "availabilityZoneRebalancing": "ENABLED",
+        "deployments": [
+          {
+            "status": "PRIMARY",
+            "taskDefinition": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-owner:31",
+            "desiredCount": 1,
+            "runningCount": 1,
+            "pendingCount": 0,
+            "rolloutState": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "serviceName": "meri-product-preview-proxy",
+        "status": "ACTIVE",
+        "desiredCount": 1,
+        "runningCount": 1,
+        "pendingCount": 0,
+        "taskDefinition": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-proxy:31",
+        "deploymentConfiguration": {
+          "deploymentCircuitBreaker": {
+            "enable": false,
+            "rollback": false,
+            "resetOnHealthyTask": true,
+            "thresholdConfiguration": {
+              "type": "BOUNDED_PERCENT",
+              "value": 50
+            }
+          },
+          "maximumPercent": 200,
+          "minimumHealthyPercent": 100,
+          "strategy": "ROLLING",
+          "bakeTimeInMinutes": 0
+        },
+        "availabilityZoneRebalancing": "ENABLED",
+        "deployments": [
+          {
+            "status": "PRIMARY",
+            "taskDefinition": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-proxy:31",
+            "desiredCount": 1,
+            "runningCount": 1,
+            "pendingCount": 0,
+            "rolloutState": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "serviceName": "meri-product-preview-temporal-frontend",
+        "status": "ACTIVE",
+        "desiredCount": 1,
+        "runningCount": 1,
+        "pendingCount": 0,
+        "taskDefinition": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-frontend:1",
+        "deploymentConfiguration": {
+          "deploymentCircuitBreaker": {
+            "enable": false,
+            "rollback": false,
+            "resetOnHealthyTask": true,
+            "thresholdConfiguration": {
+              "type": "BOUNDED_PERCENT",
+              "value": 50
+            }
+          },
+          "maximumPercent": 200,
+          "minimumHealthyPercent": 100,
+          "strategy": "ROLLING",
+          "bakeTimeInMinutes": 0
+        },
+        "availabilityZoneRebalancing": "ENABLED",
+        "deployments": [
+          {
+            "status": "PRIMARY",
+            "taskDefinition": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-frontend:1",
+            "desiredCount": 1,
+            "runningCount": 1,
+            "pendingCount": 0,
+            "rolloutState": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "serviceName": "meri-product-preview-temporal-history",
+        "status": "ACTIVE",
+        "desiredCount": 1,
+        "runningCount": 1,
+        "pendingCount": 0,
+        "taskDefinition": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-history:1",
+        "deploymentConfiguration": {
+          "deploymentCircuitBreaker": {
+            "enable": false,
+            "rollback": false,
+            "resetOnHealthyTask": true,
+            "thresholdConfiguration": {
+              "type": "BOUNDED_PERCENT",
+              "value": 50
+            }
+          },
+          "maximumPercent": 200,
+          "minimumHealthyPercent": 100,
+          "strategy": "ROLLING",
+          "bakeTimeInMinutes": 0
+        },
+        "availabilityZoneRebalancing": "ENABLED",
+        "deployments": [
+          {
+            "status": "PRIMARY",
+            "taskDefinition": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-history:1",
+            "desiredCount": 1,
+            "runningCount": 1,
+            "pendingCount": 0,
+            "rolloutState": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "serviceName": "meri-product-preview-temporal-matching",
+        "status": "ACTIVE",
+        "desiredCount": 1,
+        "runningCount": 1,
+        "pendingCount": 0,
+        "taskDefinition": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-matching:1",
+        "deploymentConfiguration": {
+          "deploymentCircuitBreaker": {
+            "enable": false,
+            "rollback": false,
+            "resetOnHealthyTask": true,
+            "thresholdConfiguration": {
+              "type": "BOUNDED_PERCENT",
+              "value": 50
+            }
+          },
+          "maximumPercent": 200,
+          "minimumHealthyPercent": 100,
+          "strategy": "ROLLING",
+          "bakeTimeInMinutes": 0
+        },
+        "availabilityZoneRebalancing": "ENABLED",
+        "deployments": [
+          {
+            "status": "PRIMARY",
+            "taskDefinition": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-matching:1",
+            "desiredCount": 1,
+            "runningCount": 1,
+            "pendingCount": 0,
+            "rolloutState": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "serviceName": "meri-product-preview-temporal-internal-frontend",
+        "status": "ACTIVE",
+        "desiredCount": 1,
+        "runningCount": 1,
+        "pendingCount": 0,
+        "taskDefinition": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-internal-frontend:1",
+        "deploymentConfiguration": {
+          "deploymentCircuitBreaker": {
+            "enable": false,
+            "rollback": false,
+            "resetOnHealthyTask": true,
+            "thresholdConfiguration": {
+              "type": "BOUNDED_PERCENT",
+              "value": 50
+            }
+          },
+          "maximumPercent": 200,
+          "minimumHealthyPercent": 100,
+          "strategy": "ROLLING",
+          "bakeTimeInMinutes": 0
+        },
+        "availabilityZoneRebalancing": "ENABLED",
+        "deployments": [
+          {
+            "status": "PRIMARY",
+            "taskDefinition": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-internal-frontend:1",
+            "desiredCount": 1,
+            "runningCount": 1,
+            "pendingCount": 0,
+            "rolloutState": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "serviceName": "meri-product-preview-temporal-internal-worker",
+        "status": "ACTIVE",
+        "desiredCount": 1,
+        "runningCount": 1,
+        "pendingCount": 0,
+        "taskDefinition": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-internal-worker:1",
+        "deploymentConfiguration": {
+          "deploymentCircuitBreaker": {
+            "enable": false,
+            "rollback": false,
+            "resetOnHealthyTask": true,
+            "thresholdConfiguration": {
+              "type": "BOUNDED_PERCENT",
+              "value": 50
+            }
+          },
+          "maximumPercent": 200,
+          "minimumHealthyPercent": 100,
+          "strategy": "ROLLING",
+          "bakeTimeInMinutes": 0
+        },
+        "availabilityZoneRebalancing": "ENABLED",
+        "deployments": [
+          {
+            "status": "PRIMARY",
+            "taskDefinition": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-internal-worker:1",
+            "desiredCount": 1,
+            "runningCount": 1,
+            "pendingCount": 0,
+            "rolloutState": "COMPLETED"
+          }
+        ]
+      }
+    ],
+    "failures": []
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "createdAt": "2026-10-19T19:51:13.2704647Z",
+  "attempt": "113ba3cc0d3f4baf978e157a347c9654",
+  "source": "5b395d4ce9218b872b21c420dc00a3af31739824",
+  "imageDigest": "sha256:ea0e9ad4cfcec1052c33b39ae2f41c1df6e591b7ab2e74c762a1f68f54990b49",
+  "startRequestSha256": "dd581fab794c42ed9aeeed683bbd4ac0c02943caf6ba9b4ddfc14ff964ddaed4",
+  "job": 2,
+  "cycleMaxJobs": 2,
+  "cycleCeilingUSD": 5,
+  "automaticRetries": 0
+}

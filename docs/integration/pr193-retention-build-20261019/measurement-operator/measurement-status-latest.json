@@ -1,0 +1,97 @@
+{
+    "id": "meri-greenfield-qualification-build:56cd3c64-a7cb-46ec-9cd6-86f92041bbed",
+    "status": "SUCCEEDED",
+    "complete": true,
+    "phase": "COMPLETED",
+    "start": "2026-10-19T19:51:14.033000+00:00",
+    "end": "2026-10-19T19:52:48.735000+00:00",
+    "phases": [
+        {
+            "phase": "SUBMITTED",
+            "status": "SUCCEEDED",
+            "duration": 0,
+            "codes": null
+        },
+        {
+            "phase": "QUEUED",
+            "status": "SUCCEEDED",
+            "duration": 0,
+            "codes": null
+        },
+        {
+            "phase": "PROVISIONING",
+            "status": "SUCCEEDED",
+            "duration": 6,
+            "codes": [
+                ""
+            ]
+        },
+        {
+            "phase": "DOWNLOAD_SOURCE",
+            "status": "SUCCEEDED",
+            "duration": 6,
+            "codes": [
+                ""
+            ]
+        },
+        {
+            "phase": "INSTALL",
+            "status": "SUCCEEDED",
+            "duration": 0,
+            "codes": [
+                ""
+            ]
+        },
+        {
+            "phase": "PRE_BUILD",
+            "status": "SUCCEEDED",
+            "duration": 0,
+            "codes": [
+                ""
+            ]
+        },
+        {
+            "phase": "BUILD",
+            "status": "SUCCEEDED",
+            "duration": 79,
+            "codes": [
+                ""
+            ]
+        },
+        {
+            "phase": "POST_BUILD",
+            "status": "SUCCEEDED",
+            "duration": 0,
+            "codes": [
+                ""
+            ]
+        },
+        {
+            "phase": "UPLOAD_ARTIFACTS",
+            "status": "SUCCEEDED",
+            "duration": 0,
+            "codes": [
+                ""
+            ]
+        },
+        {
+            "phase": "FINALIZING",
+            "status": "SUCCEEDED",
+            "duration": 0,
+            "codes": [
+                ""
+            ]
+        },
+        {
+            "phase": "COMPLETED",
+            "status": null,
+            "duration": null,
+            "codes": null
+        }
+    ],
+    "logs": {
+        "group": "/meri-greenfield/qualification/build",
+        "stream": "56cd3c64-a7cb-46ec-9cd6-86f92041bbed"
+    },
+    "artifacts": "arn:aws:s3:::meri-greenfield-qual-build-967807252336-us-east-1/results/launch-measurement/5b395d4ce9218b872b21c420dc00a3af31739824/113ba3cc0d3f4baf978e157a347c9654"
+}

@@ -1,0 +1,283 @@
+{
+  "observedAt": "2026-10-19T20:00:33.4593948Z",
+  "readbacks": [
+    {
+      "taskDefinitionArn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-control:33",
+      "family": "meri-product-preview-control",
+      "revision": 33,
+      "status": "ACTIVE",
+      "registeredAt": "2026-10-19T18:06:32.579+00:00",
+      "cpu": "512",
+      "memory": "1024",
+      "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+      },
+      "requiresCompatibilities": [
+        "FARGATE"
+      ],
+      "containers": [
+        {
+          "name": "control",
+          "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:9bff84ba24959130e63e64b2ac72783144053084168fcf14f4344f4dd8583717",
+          "essential": true
+        },
+        {
+          "name": "material-init",
+          "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:9bff84ba24959130e63e64b2ac72783144053084168fcf14f4344f4dd8583717",
+          "essential": false
+        }
+      ]
+    },
+    {
+      "taskDefinitionArn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-worker:32",
+      "family": "meri-product-preview-temporal-worker",
+      "revision": 32,
+      "status": "ACTIVE",
+      "registeredAt": "2026-10-19T18:06:32.548+00:00",
+      "cpu": "512",
+      "memory": "1024",
+      "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+      },
+      "requiresCompatibilities": [
+        "FARGATE"
+      ],
+      "containers": [
+        {
+          "name": "temporal-worker",
+          "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:9bff84ba24959130e63e64b2ac72783144053084168fcf14f4344f4dd8583717",
+          "essential": true
+        },
+        {
+          "name": "material-init",
+          "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:9bff84ba24959130e63e64b2ac72783144053084168fcf14f4344f4dd8583717",
+          "essential": false
+        }
+      ]
+    },
+    {
+      "taskDefinitionArn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-issuer:32",
+      "family": "meri-product-preview-temporal-issuer",
+      "revision": 32,
+      "status": "ACTIVE",
+      "registeredAt": "2026-10-19T17:59:43.067+00:00",
+      "cpu": "256",
+      "memory": "512",
+      "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+      },
+      "requiresCompatibilities": [
+        "FARGATE"
+      ],
+      "containers": [
+        {
+          "name": "material-init",
+          "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:9bff84ba24959130e63e64b2ac72783144053084168fcf14f4344f4dd8583717",
+          "essential": false
+        },
+        {
+          "name": "temporal-issuer",
+          "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:9bff84ba24959130e63e64b2ac72783144053084168fcf14f4344f4dd8583717",
+          "essential": true
+        }
+      ]
+    },
+    {
+      "taskDefinitionArn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-owner:31",
+      "family": "meri-product-preview-owner",
+      "revision": 31,
+      "status": "ACTIVE",
+      "registeredAt": "2026-10-19T17:48:54.173+00:00",
+      "cpu": "512",
+      "memory": "1024",
+      "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+      },
+      "requiresCompatibilities": [
+        "FARGATE"
+      ],
+      "containers": [
+        {
+          "name": "material-init",
+          "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:9bff84ba24959130e63e64b2ac72783144053084168fcf14f4344f4dd8583717",
+          "essential": false
+        },
+        {
+          "name": "model-owner",
+          "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:9bff84ba24959130e63e64b2ac72783144053084168fcf14f4344f4dd8583717",
+          "essential": true
+        }
+      ]
+    },
+    {
+      "taskDefinitionArn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-proxy:31",
+      "family": "meri-product-preview-proxy",
+      "revision": 31,
+      "status": "ACTIVE",
+      "registeredAt": "2026-10-19T17:48:54.266+00:00",
+      "cpu": "512",
+      "memory": "1024",
+      "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+      },
+      "requiresCompatibilities": [
+        "FARGATE"
+      ],
+      "containers": [
+        {
+          "name": "material-init",
+          "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:9bff84ba24959130e63e64b2ac72783144053084168fcf14f4344f4dd8583717",
+          "essential": false
+        },
+        {
+          "name": "model-proxy",
+          "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:734a20ec036a9aacb1f99cd8f8d2a0d5a3319a44a27e13e14781e396ebec3551",
+          "essential": true
+        }
+      ]
+    },
+    {
+      "taskDefinitionArn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-frontend:1",
+      "family": "meri-product-preview-temporal-frontend",
+      "revision": 1,
+      "status": "ACTIVE",
+      "registeredAt": "2026-10-17T15:16:07.386+00:00",
+      "cpu": "1024",
+      "memory": "2048",
+      "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+      },
+      "requiresCompatibilities": [
+        "FARGATE"
+      ],
+      "containers": [
+        {
+          "name": "frontend",
+          "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:f73ce01ef4739a77fad6ace3fbfbbe1f1aeaa553b5c263d705053a2f5063cf2d",
+          "essential": true
+        }
+      ]
+    },
+    {
+      "taskDefinitionArn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-history:1",
+      "family": "meri-product-preview-temporal-history",
+      "revision": 1,
+      "status": "ACTIVE",
+      "registeredAt": "2026-10-17T15:16:07.232+00:00",
+      "cpu": "2048",
+      "memory": "4096",
+      "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+      },
+      "requiresCompatibilities": [
+        "FARGATE"
+      ],
+      "containers": [
+        {
+          "name": "history",
+          "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:f73ce01ef4739a77fad6ace3fbfbbe1f1aeaa553b5c263d705053a2f5063cf2d",
+          "essential": true
+        }
+      ]
+    },
+    {
+      "taskDefinitionArn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-matching:1",
+      "family": "meri-product-preview-temporal-matching",
+      "revision": 1,
+      "status": "ACTIVE",
+      "registeredAt": "2026-10-17T15:16:07.408+00:00",
+      "cpu": "1024",
+      "memory": "2048",
+      "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+      },
+      "requiresCompatibilities": [
+        "FARGATE"
+      ],
+      "containers": [
+        {
+          "name": "matching",
+          "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:f73ce01ef4739a77fad6ace3fbfbbe1f1aeaa553b5c263d705053a2f5063cf2d",
+          "essential": true
+        }
+      ]
+    },
+    {
+      "taskDefinitionArn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-internal-frontend:1",
+      "family": "meri-product-preview-temporal-internal-frontend",
+      "revision": 1,
+      "status": "ACTIVE",
+      "registeredAt": "2026-10-17T15:16:07.556+00:00",
+      "cpu": "1024",
+      "memory": "2048",
+      "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+      },
+      "requiresCompatibilities": [
+        "FARGATE"
+      ],
+      "containers": [
+        {
+          "name": "internal-frontend",
+          "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:f73ce01ef4739a77fad6ace3fbfbbe1f1aeaa553b5c263d705053a2f5063cf2d",
+          "essential": true
+        }
+      ]
+    },
+    {
+      "taskDefinitionArn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-internal-worker:1",
+      "family": "meri-product-preview-temporal-internal-worker",
+      "revision": 1,
+      "status": "ACTIVE",
+      "registeredAt": "2026-10-17T15:16:07.535+00:00",
+      "cpu": "1024",
+      "memory": "2048",
+      "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+      },
+      "requiresCompatibilities": [
+        "FARGATE"
+      ],
+      "containers": [
+        {
+          "name": "internal-worker",
+          "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:f73ce01ef4739a77fad6ace3fbfbbe1f1aeaa553b5c263d705053a2f5063cf2d",
+          "essential": true
+        }
+      ]
+    },
+    {
+      "taskDefinitionArn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-runner:18",
+      "family": "meri-product-preview-runner",
+      "revision": 18,
+      "status": "ACTIVE",
+      "registeredAt": "2026-10-19T18:06:32.581+00:00",
+      "cpu": "1024",
+      "memory": "2048",
+      "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+      },
+      "requiresCompatibilities": [
+        "FARGATE"
+      ],
+      "containers": [
+        {
+          "name": "worker",
+          "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:9bff84ba24959130e63e64b2ac72783144053084168fcf14f4344f4dd8583717",
+          "essential": true
+        }
+      ]
+    }
+  ]
+}

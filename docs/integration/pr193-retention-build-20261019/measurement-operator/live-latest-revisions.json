@@ -1,0 +1,79 @@
+{
+  "observedAt": "2026-10-19T19:59:09.0349208Z",
+  "account": "967807252336",
+  "region": "us-east-1",
+  "readbacks": [
+    {
+      "family": "meri-product-preview-control",
+      "status": "ACTIVE",
+      "latestArn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-control:33",
+      "observedCount": 1
+    },
+    {
+      "family": "meri-product-preview-control",
+      "status": "INACTIVE",
+      "latestArn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-control:32",
+      "observedCount": 32
+    },
+    {
+      "family": "meri-product-preview-temporal-worker",
+      "status": "ACTIVE",
+      "latestArn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-worker:32",
+      "observedCount": 1
+    },
+    {
+      "family": "meri-product-preview-temporal-worker",
+      "status": "INACTIVE",
+      "latestArn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-worker:31",
+      "observedCount": 31
+    },
+    {
+      "family": "meri-product-preview-temporal-issuer",
+      "status": "ACTIVE",
+      "latestArn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-issuer:32",
+      "observedCount": 1
+    },
+    {
+      "family": "meri-product-preview-temporal-issuer",
+      "status": "INACTIVE",
+      "latestArn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-issuer:31",
+      "observedCount": 31
+    },
+    {
+      "family": "meri-product-preview-owner",
+      "status": "ACTIVE",
+      "latestArn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-owner:31",
+      "observedCount": 1
+    },
+    {
+      "family": "meri-product-preview-owner",
+      "status": "INACTIVE",
+      "latestArn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-owner:30",
+      "observedCount": 30
+    },
+    {
+      "family": "meri-product-preview-proxy",
+      "status": "ACTIVE",
+      "latestArn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-proxy:31",
+      "observedCount": 1
+    },
+    {
+      "family": "meri-product-preview-proxy",
+      "status": "INACTIVE",
+      "latestArn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-proxy:30",
+      "observedCount": 30
+    },
+    {
+      "family": "meri-product-preview-runner",
+      "status": "ACTIVE",
+      "latestArn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-runner:18",
+      "observedCount": 1
+    },
+    {
+      "family": "meri-product-preview-runner",
+      "status": "INACTIVE",
+      "latestArn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-runner:17",
+      "observedCount": 17
+    }
+  ]
+}
