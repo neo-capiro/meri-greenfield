@@ -22,6 +22,7 @@ import {compileMemoryConfiguration} from './product-ports/memory.mjs';
 import {compileGatewayLimits} from './native-authority/current-authority-limits.mjs';
 import {compileRoutinesCoreConfiguration} from './native-authority/routines-configuration.mjs';
 import {compileObjectiveGenerationConfiguration} from './objective-generation/configuration.mjs';
+import {compileRetainedReadAuthority} from './native-authority/retained-reads/configuration.mjs';
 export {compileControlUserPreferencesConfiguration};
 export const fault=code=>Object.assign(new Error(code),{code});
 const requireValue=(condition,code='RUNTIME_CONFIGURATION')=>{if(!condition)throw fault(code);};
@@ -111,8 +112,9 @@ export function validateConfiguration(raw,role){
  if(c.memory!==undefined){requireValue(role==='control','MEMORY_CONFIGURATION');compileMemoryConfiguration(c);if(c.memory.enabled)file(c.memory.serviceSecretFile);}
  // General reads (lane 2): control builds the reads composer before startControl only when declared enabled. Secrets are
  // server-side files; the user bearer is never a file (RC1 option A: the live-session relay supplies it per call).
- if(c.reads!==undefined){requireValue(role==='control','READS_CONFIGURATION');own(c.reads,['enabled'],['serviceSecretFile','readModeServiceSecretFile','defaultCongress','gateway','delegation','installation','discovery']);if(c.reads.delegation!==undefined){own(c.reads.delegation,['enabled']);requireValue(typeof c.reads.delegation.enabled==='boolean'&&(c.reads.enabled||!c.reads.delegation.enabled),'READS_CONFIGURATION');}if(c.reads.gateway!==undefined)compileGatewayLimits(c.reads.gateway);requireValue(typeof c.reads.enabled==='boolean','READS_CONFIGURATION');
-  if(c.reads.enabled){file(c.reads.serviceSecretFile);if(c.reads.readModeServiceSecretFile!==undefined)file(c.reads.readModeServiceSecretFile);}else requireValue(['serviceSecretFile','readModeServiceSecretFile','installation','discovery'].every(k=>c.reads[k]===undefined),'READS_CONFIGURATION');
+ if(c.reads!==undefined){requireValue(role==='control','READS_CONFIGURATION');own(c.reads,['enabled'],['serviceSecretFile','readModeServiceSecretFile','defaultCongress','gateway','delegation','installation','discovery','retainedAuthority']);if(c.reads.delegation!==undefined){own(c.reads.delegation,['enabled']);requireValue(typeof c.reads.delegation.enabled==='boolean'&&(c.reads.enabled||!c.reads.delegation.enabled),'READS_CONFIGURATION');}if(c.reads.gateway!==undefined)compileGatewayLimits(c.reads.gateway);requireValue(typeof c.reads.enabled==='boolean','READS_CONFIGURATION');
+  if(c.reads.enabled){file(c.reads.serviceSecretFile);if(c.reads.readModeServiceSecretFile!==undefined)file(c.reads.readModeServiceSecretFile);}else requireValue(['serviceSecretFile','readModeServiceSecretFile','installation','discovery','retainedAuthority'].every(k=>c.reads[k]===undefined),'READS_CONFIGURATION');
+  if(c.reads.retainedAuthority!==undefined){try{compileRetainedReadAuthority(c.reads.retainedAuthority);}catch{throw fault('READS_CONFIGURATION');}}
   if(c.reads.defaultCongress!==undefined)requireValue(integer(c.reads.defaultCongress,1,1000),'READS_CONFIGURATION');
   // P2 installation (gateway/general-reads/installation-issuer.mjs): the render pins the in-image measurement's canonical sha256 and ships the
   // measurement (brotli-compressed JSON) as a material file distinct from the secret files; revocations are exact catalog OperationRefs. Disabled names nothing.

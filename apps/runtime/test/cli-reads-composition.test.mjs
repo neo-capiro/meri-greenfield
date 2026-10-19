@@ -84,6 +84,38 @@ test('a signed selected-client receipt composes only its genuine task port when 
  }finally{state.bytes=saved;}
 });
 
+test('startup composes Monday and query_tasks under Option B and evidence GETs under attended credentials',async()=>{
+ const saved=state.bytes;
+ try{
+  for(const [id,family,delegated] of [['read_monday_client_boards','client-knowledge-monday',true],
+   ['query_tasks','operational-reads',true],['get_research_evidence','research-portfolio-evidence',false]]){
+   const measurement={...MEASUREMENT,operations:[{...MEASUREMENT.operations[0],operation:{id,version:'0.2.0'},family}]};
+   state.bytes=material(measurement);
+   const reads={enabled:true,serviceSecretFile:SERVICE,installation:{enabled:true,measurementSha256:canonicalSha256(measurement),measurementFile:FILE},
+    ...(delegated?{delegation:{enabled:true}}:{})};
+   const result=await start(reads);assert.equal(result.code,0,result.err);
+   assert.deepEqual(result.composer[0].familyIds,[family]);assert.equal(typeof result.composer[0].retainedTaskPorts,'function');
+   if(delegated){const held=await start({...reads,delegation:undefined});assert.equal(held.code,0,held.err);assert.equal(held.composer[0].retainedTaskPorts,undefined);}
+  }
+ }finally{state.bytes=saved;}
+});
+
+test('startup connects retained Research and Florida only with explicit public verifier pins',async()=>{
+ const saved=state.bytes,{publicKey}=generateKeyPairSync('ed25519');
+ const retainedAuthority={issuerId:'synthetic-core/retained',keyId:'synthetic-key',publicKeyJwk:publicKey.export({format:'jwk'}),
+  recipients:{get_research_portfolio:'https://core.synthetic.invalid',get_research_portfolio_changes:'https://core.synthetic.invalid',get_florida_budget_project:'https://intel.synthetic.invalid'}};
+ try{
+  const operations=[['get_research_portfolio','research-portfolio'],['get_research_portfolio_changes','research-portfolio'],['get_florida_budget_project','florida-budget']]
+   .map(([id,family])=>({...MEASUREMENT.operations[0],operation:{id,version:'0.2.0'},family}));
+  const measurement={...MEASUREMENT,operations};state.bytes=material(measurement);
+  const reads={enabled:true,serviceSecretFile:SERVICE,installation:{enabled:true,measurementSha256:canonicalSha256(measurement),measurementFile:FILE}};
+  const held=await start(reads);assert.equal(held.code,0,held.err);assert.equal(held.composer[0].retainedTaskPorts,undefined);
+  const composed=await start({...reads,retainedAuthority});assert.equal(composed.code,0,composed.err);
+  assert.deepEqual(composed.composer[0].familyIds,['research-portfolio','florida-budget']);
+  assert.equal(typeof composed.composer[0].retainedTaskPorts,'function');
+ }finally{state.bytes=saved;}
+});
+
 test('reviewed local dataset and selected action families reach the task port without enabling unrelated retained families',async()=>{
  const saved=state.bytes;
  const dataset={...MEASUREMENT.operations[0],operation:{id:'list_global_datasets',version:'0.2.0'},family:'dataset-metadata'};

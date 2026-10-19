@@ -4,7 +4,7 @@
 import {types} from 'node:util';
 import {own,data} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
-import {nativeReadFault} from '../../../../packages/contracts/runtime-0.2/reads.mjs';
+import {assertNativeReadConfiguration,nativeReadFault} from '../../../../packages/contracts/runtime-0.2/reads.mjs';
 import {retainedOperationIds,retainedOrigin} from '../../../../packages/contracts/runtime-0.2/retained-reads.mjs';
 import {createPostgresConversationStore} from '../../../control/conversations/postgres-store.mjs';
 import {createRetainedReadControl} from './runtime.mjs';
@@ -15,12 +15,16 @@ const refuse=code=>{throw nativeReadFault(code);};
 /** Returns a synchronous `retainedTaskPorts` slice for reads-composer. The caller
  * merges its two families and retained context with the other retained owners. */
 export function createCoreRetainedTaskPorts(configuration={}){
- const c=own(configuration,[],['coreOrigin','recipients','issuerId','keyId','publicKeyJwk','fetchImpl','now','enabled']);
+ const c=own(configuration,[],['coreOrigin','recipients','issuerId','keyId','publicKeyJwk','fetchImpl','now','enabled',
+  'maxRequestMs','maxResponseBytes']);
  const enabled=c.enabled??false;
  if(typeof enabled!=='boolean')refuse('CONFIGURATION');
  if(!enabled)return ()=>refuse('UNAVAILABLE');
  if(typeof c.fetchImpl!=='function'||types.isProxy(c.fetchImpl)||typeof c.now!=='function'||types.isProxy(c.now)||
   typeof c.issuerId!=='string'||!c.issuerId||typeof c.keyId!=='string'||!c.keyId||!c.publicKeyJwk||!c.recipients)refuse('CONFIGURATION');
+ const maxRequestMs=c.maxRequestMs??15000,maxResponseBytes=c.maxResponseBytes??1048576;
+ if(!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000||
+  !Number.isSafeInteger(maxResponseBytes)||maxResponseBytes<1||maxResponseBytes>16777216)refuse('CONFIGURATION');
  const coreOrigin=retainedOrigin(c.coreOrigin),recipients=data(own(c.recipients,retainedOperationIds));
  for(const origin of Object.values(recipients))retainedOrigin(origin);
  if(recipients.get_research_portfolio!==recipients.get_research_portfolio_changes)refuse('CONFIGURATION');
@@ -35,6 +39,10 @@ export function createCoreRetainedTaskPorts(configuration={}){
   if(typeof task.pool?.connect!=='function'||typeof task.taskVerifier?.verify!=='function'||
    typeof task.taskCapability!=='string'||!task.taskCapability||canonicalSha256(task.binding)!==canonicalSha256(original.binding)||
    !Number.isSafeInteger(original.expiresAtMs)||original.expiresAtMs<=c.now())refuse('UNAVAILABLE');
+  const approved=task.approvedReads===undefined?null:assertNativeReadConfiguration(task.approvedReads);
+  if(approved?.enabled===false)refuse('UNAVAILABLE');
+  const requestLimit=Math.min(maxRequestMs,approved?.maxExecuteMs??maxRequestMs),
+   responseLimit=Math.min(maxResponseBytes,approved?.maxResponseBytes??maxResponseBytes);
   // The source slice must retain the action-session expiry. The older string-only
   // callback remains available to other composed families but is never used here.
   const currentBearer=async request=>{
@@ -51,7 +59,8 @@ export function createCoreRetainedTaskPorts(configuration={}){
    fetchImpl:c.fetchImpl,issuerId:c.issuerId,keyId:c.keyId,publicKeyJwk:c.publicKeyJwk,recipients,now:c.now,enabled:true});
   if(!control.available)refuse('UNAVAILABLE');
   const researchOrigin=recipients.get_research_portfolio,floridaOrigin=recipients.get_florida_budget_project;
-  const family=origin=>Object.freeze({origin,delegatedTransport:createRetainedDelegatedTransport({origin,getCredentials:control.getCredentials,now:c.now,fetchImpl:c.fetchImpl})});
+  const family=origin=>Object.freeze({origin,delegatedTransport:createRetainedDelegatedTransport({origin,getCredentials:control.getCredentials,
+   now:c.now,fetchImpl:c.fetchImpl,maxRequestMs:requestLimit,maxResponseBytes:responseLimit})});
   return Object.freeze({families:Object.freeze({'research-portfolio':family(researchOrigin),'florida-budget':family(floridaOrigin)}),
    contextPorts:Object.freeze({retainedContextPorts:control.retainedContextPorts})});
  };

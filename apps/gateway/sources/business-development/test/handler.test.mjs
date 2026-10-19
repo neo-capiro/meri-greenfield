@@ -124,8 +124,8 @@ test('canonical hash/context substitution, revoked decisions, cancellation and e
  const j=storedCase();j.state.afterSource=()=>j.state.now=j.authority.deadlineMs;await assert.rejects(j.handler()(j.call()),{message:'DEADLINE'});
 });
 
-test('factory and capture refuse evidence, foreign, duplicate and wrong-version operations',()=>{
- const f=storedCase();for(const operations of [[],[f.operation,f.operation],[{id:'get_business_development_evidence',version:'0.2.0'}],[{id:ids[0],version:'0.1.0'}],[{id:'query_outreach',version:'0.2.0'}]])
+test('factory and capture refuse foreign, duplicate and wrong-version operations',()=>{
+ const f=storedCase();for(const operations of [[],[f.operation,f.operation],[{id:ids[0],version:'0.1.0'}],[{id:'query_outreach',version:'0.2.0'}]])
   assert.throws(()=>createBusinessDevelopmentHandlers({...f.transport,now:f.now},operations));
- assert.throws(()=>captureBusinessDevelopmentResource({id:'get_business_development_evidence',version:'0.2.0'},f.arguments,f.authority.subject),{message:'UNAVAILABLE'});assert.equal(f.wire.length,0);
+ assert.throws(()=>captureBusinessDevelopmentResource({id:'get_business_development_brief',version:'0.2.0'},f.arguments,f.authority.subject),{message:'UNAVAILABLE'});assert.equal(f.wire.length,0);
 });

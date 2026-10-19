@@ -5,6 +5,7 @@ import {MODE_READ_OPERATIONS} from '../../../../packages/contracts/native-read-o
 import {captureHearingClientReference,captureHearingClientSelection} from '../../../gateway/sources/public-domain-hearings/request-context.mjs';
 import {assertLegalRawRequest,captureResearchClientReference,legalSliceContext} from '../../../gateway/sources/research-legal-legislation/request-context.mjs';
 import {assertNewsRawRequest,newsSliceContext} from '../../../gateway/sources/research-legal-news/request-context.mjs';
+import {assertResearchCandidatesRequest,researchCandidatesContext} from '../../../gateway/sources/research-legal-candidates/request-context.mjs';
 import {captureOutreachListClientReference,captureOutreachListClientSelection} from '../../../gateway/sources/outreach-query/request-context.mjs';
 import {assertStoredStateRequest} from '../../../gateway/sources/state-status-votes/request-context.mjs';
 import {captureBusinessDevelopmentResource} from '../../../gateway/sources/business-development/request-context.mjs';
@@ -55,7 +56,7 @@ export function sourceReadClientReference(contract,request){
   reference=request.clientId.trim().slice(0,80);
   if(!reference.trim())refuse('INVALID_ARGUMENTS');
  }else if(contract.binding.group==='public-domain-hearings')reference=captureHearingClientReference(request);
- else if(contract.binding.group==='research-legal-legislation'||contract.binding.group==='research-legal-news')reference=captureResearchClientReference(request);
+ else if(['research-legal-legislation','research-legal-news','research-legal-candidates'].includes(contract.binding.group))reference=captureResearchClientReference(request);
  else if(contract.binding.group==='outreach-query')reference=captureOutreachListClientReference(request);
  return reference!==null&&!UUID.test(reference.trim().toLowerCase())?reference:null;
 }
@@ -73,6 +74,7 @@ export function assertSourceReadRequest(contract,request,subject){
   assertLegalRawRequest(contract.descriptor.operation,request);
  }
  if(contract.binding.group==='research-legal-news')assertNewsRawRequest(contract.descriptor.operation,request);
+ if(contract.binding.group==='research-legal-candidates')assertResearchCandidatesRequest(contract.descriptor.operation,request);
  if(contract.binding.group==='outreach-query')captureOutreachListClientReference(request);
  if(contract.binding.group==='business-development')captureBusinessDevelopmentResource(contract.descriptor.operation,request,subject);
  if(contract.binding.group==='funding-opportunities')assertFundingClientSubject(subject,captureFundingClientSelection(contract.descriptor.operation,request));
@@ -104,8 +106,8 @@ export function createSourceReadContext({contract,proof,native,defaultCongress,n
  }
  if(['bill-text','federal-legislation'].includes(group))return {defaultCongress};
  if(group==='acquisition-personnel')return {actorRole:native.actorRole};
- if(group==='research-legal-legislation'||group==='research-legal-news'){
-  const context=group==='research-legal-legislation'?legalSliceContext(contract.descriptor.operation,proof.request,clientReferenceObservation):newsSliceContext(contract.descriptor.operation,proof.request,clientReferenceObservation);
+ if(['research-legal-legislation','research-legal-news','research-legal-candidates'].includes(group)){
+  const context=(group==='research-legal-legislation'?legalSliceContext:group==='research-legal-news'?newsSliceContext:researchCandidatesContext)(contract.descriptor.operation,proof.request,clientReferenceObservation);
   if(context.clientResolution===null){if(proof.subject.kind==='client'||proof.subject.entityType==='client')refuse('ACCESS_DENIED');}
   else if(context.clientResolution.clientId!==clientSubject(proof,native))refuse('ACCESS_DENIED');
   return context;

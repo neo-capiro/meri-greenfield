@@ -71,9 +71,22 @@ test('independent eager-body response handoff abort still cancels acquired body'
 test('independent memory adapter eager-response handoff retains cancellation ownership',async()=>{
  const {createMemoryProposalHttpAdapter}=await import('../sources/memory-proposals/http-adapter.mjs');
  const f=fixture(),controller=new AbortController(),entered=Promise.withResolvers(),pending=Promise.withResolvers();let cancelled=0,fetches=0;
+ const memoryOperation={id:'memory.list_own_proposals',version:'0.2.0'},contract=resolveOperationContract(memoryOperation),clientId=uuid('c');
+ Object.assign(f.binding,{tenantId:uuid('a'),actorId:uuid('b')});
+ Object.assign(f.subject,{kind:'client',entityType:'client',tenantId:f.binding.tenantId,actorId:f.binding.actorId,entityIds:[clientId]});
+ Object.assign(f.claims.scopes[0],{tenantId:f.binding.tenantId,kind:'client',resourceId:clientId});
+ f.state.grants=[...contract.descriptor.requiredGrants];
+ const business=f.ports.authorizeBusiness;
+ f.ports.authorizeBusiness=async(...args)=>{const receipt=JSON.parse(await business(...args));receipt.decision.operation=`${memoryOperation.id}@${memoryOperation.version}`;return JSON.stringify(receipt);};
+ f.ports.authorizeSources=async()=>JSON.stringify({sourceIds:contract.descriptor.sourceRequirements.map(source=>source.sourceId),enabled:f.state.sourceEnabled,policyRevision:f.claims.policyRevision,checkedAtMs:f.state.now});
+ const {input}=contract.normalizeInput({}, {subject:f.subject});
+ const authority=await f.authority.check({credential:'SYNTHETIC_TASK',descriptor:contract.descriptor,input,limitDeadline(){}});
  const adapter=createMemoryProposalHttpAdapter({origin:'https://memory.invalid',now:()=>NOW,maxResponseBytes:65536,maxRequestMs:1000,
- getCredentials:async()=>({binding:clone(f.binding),bearerToken:'SYNTHETIC',serviceSecret:'SYNTHETIC',expiresAtMs:NOW+5000}),
- fetchImpl:async()=>{fetches++;return new Response(new ReadableStream({pull(){entered.resolve();return pending.promise;},cancel(){cancelled++;}}),{headers:{'content-type':'application/json'}});}});
- const execution=adapter.read({input:{clientId:null,cursor:null,limit:5},authority:{binding:f.binding,subject:f.subject,claims:f.claims,policyRevision:f.claims.policyRevision,deadlineMs:NOW+1000},signal:controller.signal});
- await entered.promise;controller.abort();await assert.rejects(execution,/CANCELLED/);pending.resolve();await new Promise(r=>setImmediate(r));assert.equal(fetches,1);assert.equal(cancelled,1);
+ getCredentials:async pins=>{const {input:selection,deadlineMs,signal,...echo}=pins;assert.equal(selection.clientId,clientId);return {...clone(echo),authorizationScheme:'CapiroMeriRead',bearerToken:'SYNTHETIC_TOOL_TOKEN',serviceSecret:'SYNTHETIC_SERVICE_SECRET',expiresAtMs:deadlineMs};},
+ fetchImpl:async(url,options)=>{fetches++;assert.equal(url,'https://memory.invalid/api/clio/tools/memory.list_own_proposals');assert.equal(options.headers.authorization,'CapiroMeriRead SYNTHETIC_TOOL_TOKEN');return new Response(new ReadableStream({pull(){entered.resolve();return pending.promise;},cancel(){cancelled++;}}),{headers:{'content-type':'application/json'}});}});
+ const execution=adapter.read({input,authority,invocationId:'synthetic_memory_handoff',signal:controller.signal});
+ // Surface an admission failure immediately instead of awaiting a body that can
+ // never be acquired; success must still wait for the cancellation below.
+ await Promise.race([entered.promise,execution.then(()=>assert.fail('Memory body completed before cancellation'))]);
+ controller.abort();await assert.rejects(execution,/CANCELLED/);pending.resolve();await new Promise(r=>setImmediate(r));assert.equal(fetches,1);assert.equal(cancelled,1);
 });

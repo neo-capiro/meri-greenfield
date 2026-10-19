@@ -13,7 +13,8 @@ const sha=value=>createHash('sha256').update(value,'utf8').digest('hex');
 function scene() {
   const f=createClientKnowledgeFixture(operation),wire=[],requests=[];
   const config={...f.config,endpoints:{[operation]:endpoint},
-    async getCredentials(pins){requests.push(pins);return {...f.credentials(pins),invocationId:pins.invocationId,
+    async getCredentials(pins){requests.push(pins);return {...f.receiptPins(pins),invocationId:pins.invocationId,
+      bearerToken:'SYNTHETIC_KNOWLEDGE_TOKEN',serviceSecret:'SYNTHETIC_SERVICE_SECRET',expiresAtMs:NOW+10000,
       authorizationScheme:'CapiroMeriRead',target:pins.target,correlationSha256:pins.correlationSha256};},
     async fetchImpl(url,options){wire.push({url,options});return new Response(JSON.stringify(f.page(JSON.parse(options.body).input)),
       {headers:{'content-type':'application/json'}});}};
@@ -58,7 +59,11 @@ for(const [name,change] of Object.entries({
   body:receipt=>{receipt.target={...receipt.target,bodySha256:'0'.repeat(64)};},
   correlation:receipt=>{receipt.correlationSha256='0'.repeat(64);},
   missingCorrelation:receipt=>{delete receipt.correlationSha256;},
-  mapping:receipt=>{receipt.managedBoardMapping.clientId=uuid('d');},
+  unexpectedMapping:receipt=>{receipt.managedBoardMapping={clientId:uuid('d')};},
+  actor:receipt=>{receipt.binding.actorId=uuid('d');},
+  tenant:receipt=>{receipt.binding.tenantId=uuid('d');},
+  client:receipt=>{receipt.subject.entityIds[0]=uuid('d');},
+  operation:receipt=>{receipt.operation.id='search_memory';},
   expired:receipt=>{receipt.expiresAtMs=NOW;},
   beyondDeadline:receipt=>{receipt.expiresAtMs=NOW+10001;},
 }))test(`Monday ${name} receipt refuses before Fetch`,async()=>{
@@ -68,12 +73,55 @@ for(const [name,change] of Object.entries({
   assert.equal(s.wire.length,0);
 });
 
-test('Monday bound mapping rejects a source row outside the current board set',async()=>{
-  const s=scene(),page=s.f.page();page.records[0].payload.origin.boardId='999';
-  page.records[0].provenance.boardId='999';page.records[0].recordId='999:202';
+test('Core rejects an unselected board; the signed receiver preserves denial instead of an empty page',async()=>{
+  const s=scene();
+  const request={...s.f.args,boardContext:'board:999'};
   await assert.rejects(s.execute({fetchImpl:async(url,options)=>{s.wire.push({url,options});
-    return new Response(JSON.stringify(page),{headers:{'content-type':'application/json'}});}}),/INVALID_RESULT/);
+    assert.equal(JSON.parse(options.body).input.boardContext,'board:999');
+    return Response.json({code:'RETAINED_SOURCE_UNAVAILABLE'},{status:403});}},
+   {...s.f.call(request),invocationId}),/ACCESS_DENIED/);
   assert.equal(s.wire.length,1);
+});
+
+for(const [name,change] of Object.entries({
+ actor:page=>{page.records[0].payload.sourceActorUserId=uuid('d');},
+ client:page=>{page.records[0].payload.clientId=uuid('d');},
+ wrapper:page=>{page.result={};},
+}))test(`Monday signed source rejects ${name} substitution`,async()=>{
+ const s=scene(),page=s.f.page();change(page);
+ await assert.rejects(s.execute({fetchImpl:async()=>Response.json(page)}),/INVALID_RESULT/);
+});
+
+test('Monday opaque page request and partial coverage survive unchanged',async()=>{
+ const s=scene(),request={...s.f.args,cursor:'OPAQUE_PROVIDER_CURSOR'},page=s.f.page();
+ page.coverage.complete=false;page.coverage.paginationComplete=false;
+ page.coverage.sources[0].hasMore=true;page.coverage.sources[0].paginationComplete=false;
+ page.coverage.sources[0].coverageComplete=false;page.coverage.stopReason='explicit-page';
+ const output=JSON.parse(await s.execute({fetchImpl:async(url,options)=>{
+  s.wire.push({url,options});return Response.json(page);
+ }},{...s.f.call(request),invocationId}));
+ assert.deepEqual(output.result,page);
+ assert.equal(JSON.parse(s.wire[0].options.body).input.cursor,'OPAQUE_PROVIDER_CURSOR');
+});
+
+test('Monday canonical unavailable output remains unavailable rather than healthy empty',async()=>{
+ const s=scene(),page=s.f.page();page.currentStatus='unavailable';page.records=[];
+ page.coverage.sources=[];page.coverage.complete=false;page.coverage.paginationComplete=false;
+ page.coverage.recordsReturned=0;page.coverage.unavailableSources=['monday'];
+ const output=JSON.parse(await s.execute({fetchImpl:async()=>Response.json(page)}));
+ assert.deepEqual(output.result,page);assert.equal(output.result.currentStatus,'unavailable');
+});
+
+test('Monday current credential revocation and Core unavailability never become empty success',async()=>{
+ const s=scene();await assert.rejects(s.execute({getCredentials:async()=>{throw Error('revoked');}}));
+ assert.equal(s.wire.length,0);
+ await assert.rejects(s.execute({fetchImpl:async()=>Response.json({code:'SOURCE_UNAVAILABLE'},{status:503})}),/UNAVAILABLE/);
+});
+
+test('Monday malformed response is refused before inspecting source accessors',async()=>{
+ const s=scene();let reads=0;
+ const response=new Proxy({}, {get(target,key){if(key==='then')return undefined;reads++;throw Error('UNTRUSTED_GETTER');}});
+ await assert.rejects(s.execute({fetchImpl:async()=>response}));assert.equal(reads,0);
 });
 
 test('Monday signed response obeys claim output byte bound',async()=>{

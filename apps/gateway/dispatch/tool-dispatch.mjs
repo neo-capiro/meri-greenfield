@@ -40,11 +40,11 @@ export function createToolDispatch({ catalog, authority, budget, limits, now, ne
     if (!sourceEnabled || entry === null) deny('UNAVAILABLE');
     if (canonicalSha256(entry.descriptor.operation) !== canonicalSha256(request.operation)) deny('GATEWAY_CONFIGURATION');
     const signedSource=signedRetainedSourceId(request.operation.id);
-    const originalAction=request.operation.id==='query_action_items'&&request.operation.version==='0.2.0';
+    const originalTracking=['query_tasks','query_action_items'].includes(request.operation.id)&&request.operation.version==='0.2.0';
     const memoryPage=request.operation.id==='search_memory'&&request.operation.version==='0.2.0';
     const memoryProposal=request.operation.id==='memory.list_own_proposals'&&request.operation.version==='0.2.0';
     if((signedSource&&!signedRetainedSourceOperation(request.operation))||
-       (signedSource||originalAction||memoryPage||memoryProposal)&&invocationId===undefined)deny('UNAVAILABLE');
+       (signedSource||originalTracking||memoryPage||memoryProposal)&&invocationId===undefined)deny('UNAVAILABLE');
     assertOperationArguments(entry, request.arguments);
     let deadlineMs = now()+limits.maxRequestMs;
     const ownedLifetime = createDispatchLifetime({ deadlineMs, now, signal });
@@ -95,7 +95,7 @@ export function createToolDispatch({ catalog, authority, budget, limits, now, ne
       try { outputJson = await lifetime.run(signal => entry.execute({ input: normalized.input,
         request: normalized.request, authority: effect, argumentsSha256: normalized.argumentsSha256,
         ...(projection || context.handlerNormalization ? {normalizationContext:context.options(effect)} : {}),
-        ...(signedSource||originalAction||memoryPage||memoryProposal?{invocationId}:{}),
+        ...(signedSource||originalTracking||memoryPage||memoryProposal?{invocationId}:{}),
         ...(memoryPage?{limitReleaseDeadline}:{}),signal })); }
       catch (error) {
         const failure = safeFailure(error);

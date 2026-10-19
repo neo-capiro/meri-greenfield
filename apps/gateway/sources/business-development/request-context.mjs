@@ -1,9 +1,10 @@
 /** Pure native resource capture. The private owner and native inline domain gate retain current authority. */
 import {snapshotOperationData} from '../../../../packages/contracts/retrieval-0.2/operation-contracts.mjs';
 import {assertSubject,resolveOperationContract} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {BUSINESS_DEVELOPMENT_OPERATION_IDS} from '../../../../packages/contracts/retrieval-0.2/business-development-validation.mjs';
 import {ownFields} from '../source-admission.mjs';
 import {deny} from '../../dispatch/operation-result.mjs';
-const IDS=new Set(['get_business_development_context','get_business_development_recent_changes']);
+const IDS=new Set(BUSINESS_DEVELOPMENT_OPERATION_IDS);
 const UUID=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/iu;
 
 export function captureBusinessDevelopmentResource(operation,request,subject){
@@ -13,6 +14,7 @@ export function captureBusinessDevelopmentResource(operation,request,subject){
  try{raw=resolveOperationContract(reference).normalizeInput(request,{}).request;}catch{deny('INVALID_ARGUMENTS');}
  try{selected=snapshotOperationData(subject);assertSubject(selected);}catch{deny('ACCESS_DENIED');}
  if(!selected.scopes.length)deny('ACCESS_DENIED');
+ if(reference.id==='get_business_development_evidence'&&selected.kind!=='client')deny('UNAVAILABLE');
  if(selected.kind==='personal'){
   if(selected.scopes.some(scope=>!(scope.kind==='tenant'&&scope.resourceId===selected.tenantId||
    scope.kind==='private-user'&&scope.resourceId===selected.actorId)))deny('ACCESS_DENIED');
