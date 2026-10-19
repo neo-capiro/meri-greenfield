@@ -1,0 +1,215 @@
+TAP version 13
+# Subtest: complete synthetic evidence joins without turning absent C features into activation
+ok 1 - complete synthetic evidence joins without turning absent C features into activation
+  ---
+  duration_ms: 4.8593
+  type: 'test'
+  ...
+# Subtest: refuses foreign digest despite matching runner
+ok 2 - refuses foreign digest despite matching runner
+  ---
+  duration_ms: 1.6172
+  type: 'test'
+  ...
+# Subtest: refuses module tamper
+ok 3 - refuses module tamper
+  ---
+  duration_ms: 1.0523
+  type: 'test'
+  ...
+# Subtest: refuses runner byte count mismatch
+ok 4 - refuses runner byte count mismatch
+  ---
+  duration_ms: 0.9871
+  type: 'test'
+  ...
+# Subtest: refuses Node hash substituted for native CLI
+ok 5 - refuses Node hash substituted for native CLI
+  ---
+  duration_ms: 0.6039
+  type: 'test'
+  ...
+# Subtest: refuses Windows platform
+ok 6 - refuses Windows platform
+  ---
+  duration_ms: 0.4294
+  type: 'test'
+  ...
+# Subtest: refuses wrong native package
+ok 7 - refuses wrong native package
+  ---
+  duration_ms: 0.6397
+  type: 'test'
+  ...
+# Subtest: refuses failed launch gate
+ok 8 - refuses failed launch gate
+  ---
+  duration_ms: 0.8546
+  type: 'test'
+  ...
+# Subtest: refuses missing launch invariance
+ok 9 - refuses missing launch invariance
+  ---
+  duration_ms: 1.3677
+  type: 'test'
+  ...
+# Subtest: refuses invented active read subset
+ok 10 - refuses invented active read subset
+  ---
+  duration_ms: 2.1206
+  type: 'test'
+  ...
+# Subtest: refuses full inventory truncation
+ok 11 - refuses full inventory truncation
+  ---
+  duration_ms: 0.9153
+  type: 'test'
+  ...
+# Subtest: refuses native compatibility tamper
+ok 12 - refuses native compatibility tamper
+  ---
+  duration_ms: 0.535
+  type: 'test'
+  ...
+# Subtest: refuses unknown cleanup
+ok 13 - refuses unknown cleanup
+  ---
+  duration_ms: 0.3416
+  type: 'test'
+  ...
+# Subtest: refuses failed authenticated build
+ok 14 - refuses failed authenticated build
+  ---
+  duration_ms: 0.3146
+  type: 'test'
+  ...
+# Subtest: refuses wrong immutable source version
+ok 15 - refuses wrong immutable source version
+  ---
+  duration_ms: 0.3753
+  type: 'test'
+  ...
+# Subtest: refuses changed actual override
+ok 16 - refuses changed actual override
+  ---
+  duration_ms: 0.3562
+  type: 'test'
+  ...
+# Subtest: refuses HIGH finding
+ok 17 - refuses HIGH finding
+  ---
+  duration_ms: 0.4547
+  type: 'test'
+  ...
+# Subtest: refuses wrong source commit
+ok 18 - refuses wrong source commit
+  ---
+  duration_ms: 0.4308
+  type: 'test'
+  ...
+# Subtest: refuses expanded measurement timeout
+ok 19 - refuses expanded measurement timeout
+  ---
+  duration_ms: 0.3344
+  type: 'test'
+  ...
+# Subtest: refuses automatic retry enabled
+ok 20 - refuses automatic retry enabled
+  ---
+  duration_ms: 0.3509
+  type: 'test'
+  ...
+# Subtest: refuses unsubmitted build substitution
+ok 21 - refuses unsubmitted build substitution
+  ---
+  duration_ms: 0.4301
+  type: 'test'
+  ...
+# Subtest: refuses nonterminal producer
+ok 22 - refuses nonterminal producer
+  ---
+  duration_ms: 0.368
+  type: 'test'
+  ...
+# Subtest: refuses same build reused
+ok 23 - refuses same build reused
+  ---
+  duration_ms: 0.4652
+  type: 'test'
+  ...
+# Subtest: refuses different existing project
+ok 24 - refuses different existing project
+  ---
+  duration_ms: 0.5584
+  type: 'test'
+  ...
+# Subtest: refuses different role
+ok 25 - refuses different role
+  ---
+  duration_ms: 0.4878
+  type: 'test'
+  ...
+# Subtest: refuses foreign artifact prefix
+ok 26 - refuses foreign artifact prefix
+  ---
+  duration_ms: 0.3515
+  type: 'test'
+  ...
+# Subtest: six selected-version artifact byte joins
+ok 27 - six selected-version artifact byte joins
+  ---
+  duration_ms: 0.7787
+  type: 'test'
+  ...
+# Subtest: refuses artifact stale build
+ok 28 - refuses artifact stale build
+  ---
+  duration_ms: 0.692
+  type: 'test'
+  ...
+# Subtest: refuses artifact wrong key
+ok 29 - refuses artifact wrong key
+  ---
+  duration_ms: 0.4405
+  type: 'test'
+  ...
+# Subtest: refuses artifact wrong bucket
+ok 30 - refuses artifact wrong bucket
+  ---
+  duration_ms: 0.5032
+  type: 'test'
+  ...
+# Subtest: refuses artifact null version
+ok 31 - refuses artifact null version
+  ---
+  duration_ms: 0.4232
+  type: 'test'
+  ...
+# Subtest: refuses artifact missing file
+ok 32 - refuses artifact missing file
+  ---
+  duration_ms: 0.6094
+  type: 'test'
+  ...
+# Subtest: refuses artifact substituted bytes
+ok 33 - refuses artifact substituted bytes
+  ---
+  duration_ms: 0.3604
+  type: 'test'
+  ...
+# Subtest: submission has only bounded existing-project measurement overrides
+ok 34 - submission has only bounded existing-project measurement overrides
+  ---
+  duration_ms: 0.3155
+  type: 'test'
+  ...
+1..34
+# tests 34
+# suites 0
+# pass 34
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 173.2654
+Node prepare/verify syntax PASS; Python3.12.14 isolated AST parse PASS. No AWS or Docker commands executed by author. Initial fixture run16/18 failed on two aliased fixture objects; final fixtures independently JSON-parsed.

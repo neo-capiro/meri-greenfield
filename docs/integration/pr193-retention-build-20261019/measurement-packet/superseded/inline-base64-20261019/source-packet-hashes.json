@@ -1,0 +1,30 @@
+[
+  {
+    "name": "receipt-joins.mjs",
+    "sha256": "eeaeedab4c44aa8138fc3060d4acf5814ae678d424115d6106c10b5af551ef17"
+  },
+  {
+    "name": "prepare-measurement.mjs",
+    "sha256": "fbbdd9094ec89620345bf37f04e9b622d039ba5b84dd69a8b28b1e2116332184"
+  },
+  {
+    "name": "measurement-build-wrapper.py",
+    "sha256": "8afb2093090a80c92f50f6988e21d182cf8a98fce61d5923674bb60db2d5d93c"
+  },
+  {
+    "name": "verify-measurement.mjs",
+    "sha256": "5aa33bcc17bf48bf365e08844e339258553b1369360b70cf62633f268cdf740f"
+  },
+  {
+    "name": "receipt-joins.test.mjs",
+    "sha256": "1a6fa2e5fa647d130c3ece325e5e341d1da2013dc66219f54a3f398e81f5dd40"
+  },
+  {
+    "name": "README.md",
+    "sha256": "3df0a5cf15678c522660ff6745e4cc4e96ca5972ea2cf2769e70f455458c9da0"
+  },
+  {
+    "name": "offline-test-evidence.txt",
+    "sha256": "96699a3a01de244bedb7c22e46532cdfade49ad321b579e8a5416021079f17c4"
+  }
+]

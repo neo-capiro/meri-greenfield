@@ -1,0 +1,82 @@
+TAP version 13
+# Subtest: real public payload reconstructs exact unchanged plan and wrapper bytes
+ok 1 - real public payload reconstructs exact unchanged plan and wrapper bytes
+  ---
+  duration_ms: 5.1647
+  type: 'test'
+  ...
+# Subtest: refuses payload pin bucket
+ok 2 - refuses payload pin bucket
+  ---
+  duration_ms: 1.628
+  type: 'test'
+  ...
+# Subtest: refuses payload pin key
+ok 3 - refuses payload pin key
+  ---
+  duration_ms: 0.5352
+  type: 'test'
+  ...
+# Subtest: refuses payload pin null-version
+ok 4 - refuses payload pin null-version
+  ---
+  duration_ms: 4.9075
+  type: 'test'
+  ...
+# Subtest: refuses payload pin length
+ok 5 - refuses payload pin length
+  ---
+  duration_ms: 0.5056
+  type: 'test'
+  ...
+# Subtest: refuses payload pin sha256
+ok 6 - refuses payload pin sha256
+  ---
+  duration_ms: 0.4021
+  type: 'test'
+  ...
+# Subtest: refuses payload pin checksum
+ok 7 - refuses payload pin checksum
+  ---
+  duration_ms: 0.4706
+  type: 'test'
+  ...
+# Subtest: refuses payload pin KMS algorithm
+ok 8 - refuses payload pin KMS algorithm
+  ---
+  duration_ms: 0.5121
+  type: 'test'
+  ...
+# Subtest: refuses payload pin KMS account
+ok 9 - refuses payload pin KMS account
+  ---
+  duration_ms: 0.607
+  type: 'test'
+  ...
+# Subtest: refuses payload individual hash tampering and oversize
+ok 10 - refuses payload individual hash tampering and oversize
+  ---
+  duration_ms: 2.3829
+  type: 'test'
+  ...
+# Subtest: refuses another KMS key in the same account
+ok 11 - refuses another KMS key in the same account
+  ---
+  duration_ms: 0.6155
+  type: 'test'
+  ...
+# Subtest: actual generated Python bootstrap reconstructs exact bytes and refuses altered downloads without running AWS or wrapper
+ok 12 - actual generated Python bootstrap reconstructs exact bytes and refuses altered downloads without running AWS or wrapper
+  ---
+  duration_ms: 405.9736
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 528.5832

@@ -1,0 +1,54 @@
+[
+  {
+    "name": "finalize-measurement.mjs",
+    "sha256": "1a9b8385bc6209febd336a58d9c9135159abe00d3fc6c3c1317367e714b365e4"
+  },
+  {
+    "name": "measurement-build-wrapper.py",
+    "sha256": "8afb2093090a80c92f50f6988e21d182cf8a98fce61d5923674bb60db2d5d93c"
+  },
+  {
+    "name": "measurement-payload.mjs",
+    "sha256": "3a175c37092a21e128d3286e7ce611fc90621b3b972ed2281c4443140119e5aa"
+  },
+  {
+    "name": "measurement-payload.test.mjs",
+    "sha256": "afaf500c6eb61683dd2519d336c057b2054953444cfd377efb17c4491247b3a2"
+  },
+  {
+    "name": "offline-test-evidence.txt",
+    "sha256": "96699a3a01de244bedb7c22e46532cdfade49ad321b579e8a5416021079f17c4"
+  },
+  {
+    "name": "payload-bootstrap-check.py",
+    "sha256": "e3563be778c6f563579198cec780d90055606d8078abd5c3269023fa33bf397d"
+  },
+  {
+    "name": "PAYLOAD-PACKAGING.md",
+    "sha256": "f8fed2c7e019d10ff88fde5c2582eb90560606ba75ff3e7ad67ea653020c17d3"
+  },
+  {
+    "name": "payload-test-evidence.txt",
+    "sha256": "b598671c23b3ede4c6bb359be30d0bac3089a8aeea51454319a053023513089b"
+  },
+  {
+    "name": "prepare-measurement.mjs",
+    "sha256": "f9de66d0184a8d247a25217ecf48314baf530423f5bca6fd37fafd920f0d61e1"
+  },
+  {
+    "name": "README.md",
+    "sha256": "80fa62a0ce836268e8b9751668eda30929aa56b3645603a2d6e2a2e5dc7cd395"
+  },
+  {
+    "name": "receipt-joins.mjs",
+    "sha256": "eeaeedab4c44aa8138fc3060d4acf5814ae678d424115d6106c10b5af551ef17"
+  },
+  {
+    "name": "receipt-joins.test.mjs",
+    "sha256": "1a6fa2e5fa647d130c3ece325e5e341d1da2013dc66219f54a3f398e81f5dd40"
+  },
+  {
+    "name": "verify-measurement.mjs",
+    "sha256": "6397bf5b3a788f4937561766ae5d51688753d825291f2e86bf5bcbd94ec1e459"
+  }
+]
