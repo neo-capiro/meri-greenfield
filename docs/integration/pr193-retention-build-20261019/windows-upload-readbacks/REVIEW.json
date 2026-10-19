@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "reviewedAtUtc": "2026-10-19T21:20:07.4731092Z",
+  "renderPublicHashJoins": 7,
+  "renderPublicHashJoinsPassed": true,
+  "foundationOutputsUnchanged": true,
+  "servicesHealthy": 10,
+  "serviceDesiredEach": 1,
+  "serviceRunningEach": 1,
+  "servicePendingEach": 0,
+  "allServiceRollouts": "COMPLETED",
+  "currentNodeDigest": "sha256:9bff84ba24959130e63e64b2ac72783144053084168fcf14f4344f4dd8583717",
+  "currentNodeSourceTag": "a16cc40d2a7ca3695eb6cc5a8d45440d0c40d040",
+  "candidateNodeDigest": "sha256:ea0e9ad4cfcec1052c33b39ae2f41c1df6e591b7ab2e74c762a1f68f54990b49",
+  "candidateSource": "5b395d4ce9218b872b21c420dc00a3af31739824",
+  "candidateCurrentlyDeployed": false,
+  "proxyMainUnchanged": true,
+  "temporalServerUnchanged": true,
+  "candidateRevisions": {
+    "control": 34,
+    "temporal-worker": 33,
+    "temporal-issuer": 33,
+    "model-owner": 32,
+    "model-proxy": 32,
+    "runner": 19
+  },
+  "neoManifestSha256": "870bc3e9abd6a53f6da97d220261ccb83ff5f9947ec1be5c8d0623fe54c19c50",
+  "execution": "HELD_PARENT_RECEIPT_AND_OPERATION_CLAIMS",
+  "privateValuesRead": false,
+  "mutations": 0
+}

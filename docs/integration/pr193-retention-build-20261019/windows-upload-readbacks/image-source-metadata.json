@@ -1,0 +1,62 @@
+[
+    {
+        "uri":  "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:9bff84ba24959130e63e64b2ac72783144053084168fcf14f4344f4dd8583717",
+        "details":  [
+                        {
+                            "registryId":  "967807252336",
+                            "repositoryName":  "meri-greenfield/qualification-worker",
+                            "imageDigest":  "sha256:9bff84ba24959130e63e64b2ac72783144053084168fcf14f4344f4dd8583717",
+                            "imageTags":  [
+                                              "product-a16cc40d2a7ca3695eb6cc5a8d45440d0c40d040-fa027e7a88373fc02aa7d5a7417efaac"
+                                          ],
+                            "imagePushedAt":  "2026-10-19T17:38:30.106000+00:00",
+                            "imageSizeInBytes":  596516396
+                        }
+                    ]
+    },
+    {
+        "uri":  "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:734a20ec036a9aacb1f99cd8f8d2a0d5a3319a44a27e13e14781e396ebec3551",
+        "details":  [
+                        {
+                            "registryId":  "967807252336",
+                            "repositoryName":  "meri-greenfield/qualification-worker",
+                            "imageDigest":  "sha256:734a20ec036a9aacb1f99cd8f8d2a0d5a3319a44a27e13e14781e396ebec3551",
+                            "imageTags":  [
+                                              "proxy-product-34851020aa0d73fead4db59ba6e26a098e2d0313-b74e22252de620bda577b53dbf505869"
+                                          ],
+                            "imagePushedAt":  "2026-10-19T01:01:46.071000+00:00",
+                            "imageSizeInBytes":  296954520
+                        }
+                    ]
+    },
+    {
+        "uri":  "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:f73ce01ef4739a77fad6ace3fbfbbe1f1aeaa553b5c263d705053a2f5063cf2d",
+        "details":  [
+                        {
+                            "registryId":  "967807252336",
+                            "repositoryName":  "meri-greenfield/qualification-worker",
+                            "imageDigest":  "sha256:f73ce01ef4739a77fad6ace3fbfbbe1f1aeaa553b5c263d705053a2f5063cf2d",
+                            "imageTags":  [
+                                              "temporal-server-989a4227e6da6f176975d798826904d71c3a9f9c-bcc18465bfc9c131e5b213cfbc1bdca6"
+                                          ],
+                            "imagePushedAt":  "2026-10-17T14:26:20.528000+00:00",
+                            "imageSizeInBytes":  98773242
+                        }
+                    ]
+    },
+    {
+        "uri":  "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:ea0e9ad4cfcec1052c33b39ae2f41c1df6e591b7ab2e74c762a1f68f54990b49",
+        "details":  [
+                        {
+                            "registryId":  "967807252336",
+                            "repositoryName":  "meri-greenfield/qualification-worker",
+                            "imageDigest":  "sha256:ea0e9ad4cfcec1052c33b39ae2f41c1df6e591b7ab2e74c762a1f68f54990b49",
+                            "imageTags":  [
+                                              "product-5b395d4ce9218b872b21c420dc00a3af31739824-ef2439c9e0afe141d11e27836503975f"
+                                          ],
+                            "imagePushedAt":  "2026-10-19T19:28:58.218000+00:00",
+                            "imageSizeInBytes":  596531081
+                        }
+                    ]
+    }
+]

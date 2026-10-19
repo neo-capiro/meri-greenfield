@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    {
+      "path": "caller.json",
+      "bytes": 93,
+      "sha256": "3b06685a77fe00a495d5bcdb0d8ccdde7dde4f7e43c1a356d3608b227ffd0c6c"
+    },
+    {
+      "path": "image-source-metadata.json",
+      "bytes": 3705,
+      "sha256": "82d15d75e0484a4d7a9c2c92a9a95db26be4df9efe7584f0175c5bfa0088f1c7"
+    },
+    {
+      "path": "latest.tsv",
+      "bytes": 1388,
+      "sha256": "887006bbeb78f4159682ac9c66b3508070c7797a699c66dc4ce7f5f200e34f2a"
+    },
+    {
+      "path": "live-latest-revisions.json",
+      "bytes": 4338,
+      "sha256": "84a71cf088273bc87a080ceffd99ba074c614bf193c9e7a183ed5280ceb9bb27"
+    },
+    {
+      "path": "live-services.json",
+      "bytes": 12605,
+      "sha256": "0de36267cde25bb470a50ec5767c78a7ffa379d1f1cd19a3127d0b0957d1219d"
+    },
+    {
+      "path": "live-task-metadata.json",
+      "bytes": 33247,
+      "sha256": "d19f3547563d0d0df25cdb5e3889513214e2cde5afe24a0015a6e67db61e98a0"
+    },
+    {
+      "path": "readback-summary.json",
+      "bytes": 570,
+      "sha256": "0f69bed4f73cf2d7457eb4bcae617995272448fb47feea7f1322037933e274d2"
+    },
+    {
+      "path": "refresh-public-metadata.ps1",
+      "bytes": 8545,
+      "sha256": "e203ac3c2e372b120f09967925bb0bf87212fb2c63c543569965c3539636012e"
+    },
+    {
+      "path": "REVIEW.json",
+      "bytes": 1158,
+      "sha256": "808560fac6fbcf5245a6bd36e5cbf6282c34a3de90d982e3e933b8577258ad82"
+    },
+    {
+      "path": "secret-label-metadata.json",
+      "bytes": 48620,
+      "sha256": "37853ca911277baefbce225c5317313177d46f6bd9029ee6dd04bdab81126aa2"
+    },
+    {
+      "path": "stack-metadata.json",
+      "bytes": 14168,
+      "sha256": "67c20a8124da805b25cfa281658c16559781e65e6eabe3c9ff367528939af047"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+    "schemaVersion":  1,
+    "startedAt":  "2026-10-19T21:15:42.6315364Z",
+    "completedAt":  "2026-10-19T21:16:25.1582312Z",
+    "account":  "967807252336",
+    "region":  "us-east-1",
+    "sourceCommit":  "5b395d4ce9218b872b21c420dc00a3af31739824",
+    "renderReadbackCommit":  "05b73a61cb4f2bbfa52eae38ea23e44598c33e9f",
+    "proposedLabel":  "FIRST_CHAT_20261019D",
+    "labelAbsentForAllFive":  true,
+    "currentAndKmsMatchRenderReadback":  true,
+    "latestTsvMatchesRenderReadback":  true,
+    "privateValuesRead":  false,
+    "mutations":  0
+}
