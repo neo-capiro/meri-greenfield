@@ -15,7 +15,7 @@ This branch adds one additive browser contract, `@capiro/meri-contracts/intents-
 | `packages/contracts/test/intents-application-public{.test.mjs,-types.ts}` | new tests |
 | `packages/contracts/package.json` | additive: two `exports`, `build`/`check:generated` chain entries, `build:intents`/`check:intents`, test and typecheck entries |
 
-Output SHA-256 (at the review-correction commit): `.mjs` `642f8fe3f1ebeefdd5797bd28c51794e6d884068275bd0fecc1076a81f57b460`, `.d.ts` `cc6900ef…5f31`, `.schema.json` `c33a0fe0…576a`, `.metadata.json` `4f6a0c87…2323` (full values in `dist/intents-application.metadata.json` sources and by `sha256sum`).
+Output SHA-256 (at branch head `5ee2fd6e979dff1c2b111bd964c91aadab8357a5`, the accepted source freeze): `.mjs` `21dce7c2b3d73b8d5d27ad66fefce04aa64db58ebcb75530c95f7fd00d420db3`, `.d.ts` `cc6900efdecf4cdb475e771ca422de60b28e21396e551efe8e701a2bfb335f31`, `.schema.json` `c33a0fe0fe29419f14cb3c2fc766437e4859ec2551cb3c4074b8fab5b624576a`, `.metadata.json` `9bacfe225ddba05efd02c0b5f2f534a5a8dd1ad1e5594477458dee2979864dc8`. Hashes recorded at earlier commits in this PR are superseded.
 
 ## Derived from the handlers, not copied
 
@@ -55,12 +55,13 @@ Beyond the closed JSON schema, `receiveIntentsResponse(route, status, text, expe
 | 2. exact `toISOString` spelling too strict | proposal/decision times parsed as the producers parse them; receipts and task results keep the canonical exact spelling | `owner-valid timestamps without milliseconds are admitted; impossible or offset dates are refused` |
 | 3. completed outcome only checked hash and command id | executor outcome rules (binding, idempotency, scopes, succeeded receipt, result equals arguments), task.create only, task.create argument checks | 15 outcome mutations × (list, decide), attempt/worker/fence variation, `a task result is never interpreted for a memory.propose / artifact.file proposal`, `a task.create proposal must carry canonical, normalized arguments…` |
 | 4. bundle embedded checkout paths | `preserveSymlinks` build, generator refuses layout paths, clean-layout reproduction | `generated bundle is independent of the checkout layout` |
+| 5. (re-review of `c81d834a`) journal `createdAt` rolled impossible days | exact `toISOString` spelling again for journal `createdAt` only; lenient reads stay for schema-validated proposal/decision times | `journal createdAt is read exactly: an impossible calendar day cannot roll into the next month` |
 
 ## Evidence
 
 All on Windows (Git Bash), Node v24.19.0, synthetic decision owner, journal and fixtures; no PostgreSQL, Core, runtime mount or deployment.
 
-- `node --test test/intents-application-public.test.mjs`: **81 tests, 81 pass**.
+- `node --test test/intents-application-public.test.mjs`: **82 tests, 82 pass**.
 - **Clean-layout reproducibility:** a fresh worktree of the correction commit at a different path, with a real copied `packages/contracts/node_modules` directory (no junction, no root install), regenerates all four outputs byte-identically (`node generate-intents.mjs --check` passes there).
 - `npm run typecheck` (all public type files including the new one, strict): pass. `node generate-intents.mjs --check`: pass.
 - The other public suites (eleven files, 273 tests, including the document receiver tests) fail the same six tests on a pristine PR190 checkout and with this branch; with this branch the same run is 316 tests, 310 pass. Five of the six are Windows path handling (`C:\C:\…` ENOENT in their child-process and URL helpers). The sixth, `public-package` "generated distribution check", reports `Generated drift: browser.mjs` from the existing `generate.mjs --check`, which fails identically on the pristine base on this host. No test that passed at the base fails.
