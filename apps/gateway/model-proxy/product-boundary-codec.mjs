@@ -112,7 +112,8 @@ export function decodeSettlementFrame(wire){
     !['COMPLETE_NATIVE_MESSAGE','COMPLETE_NATIVE_STREAM'].includes(reason))deny();
  for(const value of [nativeSha,rawSha,pricingRevision,evidenceSha])ascii(value,64,64,hash);
  integer(countedInput,1,PRODUCT_MAX_INPUT_TOKENS);integer(maxOutput,1,PRODUCT_MAX_OUTPUT_TOKENS);
- if(integer(inputTokens,1,PRODUCT_MAX_INPUT_TOKENS)!==countedInput)deny();integer(outputTokens,0,maxOutput);
+ // Billed input may be below the CountTokens basis of the hold, never above it.
+ if(integer(inputTokens,1,PRODUCT_MAX_INPUT_TOKENS)>countedInput)deny();integer(outputTokens,0,maxOutput);
  if(!Array.isArray(names)||names.length>8)deny();
  const allowed_tool_names=names.map(name=>ascii(name,128,1,slot));
  if(new Set(allowed_tool_names).size!==allowed_tool_names.length||

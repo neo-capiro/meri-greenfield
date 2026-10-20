@@ -15,6 +15,8 @@ _HASH = re.compile(r"[a-f0-9]{64}\Z")
 _NAME = re.compile(r"[A-Za-z0-9_-]{1,128}\Z")
 _MODELS = frozenset({"anthropic.claude-sonnet-4-6", "claude-sonnet-4-6"})
 _STOPS = frozenset({"end_turn", "max_tokens", "tool_use", "refusal", "model_context_window_exceeded"})
+_CACHE_CREATION = ("ephemeral_5m_input_tokens", "ephemeral_1h_input_tokens")
+_SERVICE_TIERS = frozenset({"standard"})
 MAX_BYTES = 4 * 1024 * 1024
 MAX_SAFE_JSON_INTEGER = 9007199254740991
 
@@ -70,18 +72,31 @@ def _load(raw):
     return value
 
 
-def _usage(value, binding, *, delta=False):
-    _object(value, ("output_tokens",) if delta else ("input_tokens", "output_tokens"),
-            ("cache_creation_input_tokens", "cache_read_input_tokens"))
+def _usage(value, binding, *, input_tokens=None):
+    """Return (input, output). A start/complete usage binds the billed input; a cumulative delta may repeat it.
+
+    Bedrock CountTokens is the reservation basis, not the bill: on the same native bytes it counted 465 where the
+    billed usage was 448 (2026-10-20). Billed input may be below the count; above it the hold no longer bounds cost.
+    """
+    _object(value, ("output_tokens",) if input_tokens is not None else ("input_tokens", "output_tokens"),
+            ("input_tokens", "cache_creation_input_tokens", "cache_read_input_tokens", "cache_creation", "service_tier"))
     for name in ("cache_creation_input_tokens", "cache_read_input_tokens"):
         if name in value:_integer(value[name], 0, 0)
+    if "cache_creation" in value:
+        _object(value["cache_creation"], (), _CACHE_CREATION)
+        for name in value["cache_creation"]:_integer(value["cache_creation"][name], 0, 0)
+    # Other tiers price differently; only the standard on-demand tier belongs to this envelope.
+    if "service_tier" in value and value["service_tier"] not in _SERVICE_TIERS:raise ValueError("UNQUALIFIED_SERVICE_TIER")
     output = _integer(value["output_tokens"], 0, binding.max_output_tokens)
-    if not delta and _integer(value["input_tokens"], 1, ENVELOPE_MAX_INPUT_TOKENS) != binding.counted_input_tokens:
-        raise ValueError("COUNT_USAGE_MISMATCH")
-    return output
+    if input_tokens is None:
+        billed = _integer(value["input_tokens"], 1, ENVELOPE_MAX_INPUT_TOKENS)
+        if billed > binding.counted_input_tokens:raise ValueError("COUNT_USAGE_MISMATCH")
+        return billed, output
+    if "input_tokens" in value and value["input_tokens"] != input_tokens:raise ValueError("COUNT_USAGE_MISMATCH")
+    return input_tokens, output
 
 
-def _terminal_metrics(event, binding, output):
+def _terminal_metrics(event, binding, input_tokens, output):
     # Anthropic's bound start and cumulative delta carry the required usage.
     # Bedrock's optional stop extension must agree whenever it is present.
     _object(event, ("type",), ("amazon-bedrock-invocationMetrics",))
@@ -90,7 +105,7 @@ def _terminal_metrics(event, binding, output):
     metrics = event["amazon-bedrock-invocationMetrics"]
     _object(metrics, ("inputTokenCount", "outputTokenCount", "invocationLatency", "firstByteLatency"),
             ("cacheReadInputTokenCount", "cacheWriteInputTokenCount"))
-    if (_integer(metrics["inputTokenCount"], 1, ENVELOPE_MAX_INPUT_TOKENS) != binding.counted_input_tokens
+    if (_integer(metrics["inputTokenCount"], 1, ENVELOPE_MAX_INPUT_TOKENS) != input_tokens
             or _integer(metrics["outputTokenCount"], 0, binding.max_output_tokens) != output):
         raise ValueError("TERMINAL_USAGE_MISMATCH")
     latency = _integer(metrics["invocationLatency"], 0, MAX_SAFE_JSON_INTEGER)
@@ -104,10 +119,20 @@ def _terminal_metrics(event, binding, output):
             _integer(metrics[name], 0, 0)
 
 
+def _stop_extensions(value, *, start):
+    # Bedrock Sonnet 4.6 sends both on every message and stop delta. No container tool is qualified, so a container
+    # must stay null; stop details are data about the (already allowed) stop reason and are absent until the stop.
+    if value.get("container") is not None:raise ValueError("UNQUALIFIED_CONTAINER")
+    details = value.get("stop_details")
+    if details is not None and (start or type(details) is not dict):raise ValueError("UNSUPPORTED_STOP_DETAILS")
+
+
 def _message(value, binding, *, start=False):
+    """Return (billed input, output) from a complete message or a message_start."""
     _object(value, ("id", "type", "role", "model", "content", "stop_reason", "stop_sequence", "usage"),
-            ("context_management",))
+            ("context_management", "container", "stop_details"))
     _context_observation(value.get("context_management"))
+    _stop_extensions(value, start=start)
     if (type(value["id"]) is not str or not 1 <= len(value["id"]) <= 256
             or value["type"] != "message" or value["role"] != "assistant"
             or type(value["model"]) is not str or value["model"] not in _MODELS
@@ -151,12 +176,12 @@ def parse_complete_message(raw, binding, *, http_status, body_complete, content_
     try:
         if type(http_status) is not int or http_status != 200 or body_complete is not True or content_type != "application/json":
             raise ValueError("INCOMPLETE_OR_FAILED_HTTP")
-        value = _load(raw);output = _message(value, binding);ids=set()
+        value = _load(raw);billed, output = _message(value, binding);ids=set()
         for block in value["content"]:
             if _block(block, binding) == "tool_use":
                 if block["id"] in ids:raise ValueError("DUPLICATE_TOOL_ID")
                 ids.add(block["id"])
-        return UsageResult("COMPLETE", binding, evidence, binding.counted_input_tokens, output, "COMPLETE_NATIVE_MESSAGE")
+        return UsageResult("COMPLETE", binding, evidence, billed, output, "COMPLETE_NATIVE_MESSAGE")
     except (ValueError, TypeError, RecursionError, UnicodeError):
         return UsageResult("UNKNOWN", binding, evidence)
 
@@ -170,7 +195,7 @@ class NativeStreamUsage:
     def __init__(self, binding):
         if type(binding) is not UsageBinding:raise ValueError("TYPED_USAGE_BINDING_REQUIRED")
         self.binding=binding; self.phase="START"; self.failed=False
-        self.bytes=0; self.chunks=0; self.output=0; self.blocks={}; self.ids=set()
+        self.bytes=0; self.chunks=0; self.input=None; self.output=0; self.blocks={}; self.ids=set()
         self.hash=hashlib.sha256(b"meri-native-usage-stream/1\0"); self.finished=False
 
     def feed_native_chunk(self, raw):
@@ -192,7 +217,7 @@ class NativeStreamUsage:
         if self.phase=="START":
             _object(event,("type","message"))
             if kind!="message_start":raise ValueError("MISSING_START")
-            self.output=_message(event["message"],self.binding,start=True);self.phase="BLOCKS";return
+            self.input,self.output=_message(event["message"],self.binding,start=True);self.phase="BLOCKS";return
         if kind=="content_block_start" and self.phase=="BLOCKS":
             _object(event,("type","index","content_block"));index=_integer(event["index"],0,63)
             if index!=len(self.blocks) or any(not r["closed"] for r in self.blocks.values()):raise ValueError("BLOCK_ORDER")
@@ -220,14 +245,15 @@ class NativeStreamUsage:
         if kind=="message_delta" and self.phase in ("BLOCKS","DELTA"):
             _object(event,("type","delta","usage"),("context_management",))
             _context_observation(event.get("context_management"))
-            _object(event["delta"],("stop_reason","stop_sequence"))
+            _object(event["delta"],("stop_reason","stop_sequence"),("stop_details","container"))
+            _stop_extensions(event["delta"],start=False)
             if (any(not r["closed"] for r in self.blocks.values()) or event["delta"]["stop_sequence"] is not None
                     or type(event["delta"]["stop_reason"]) is not str or event["delta"]["stop_reason"] not in _STOPS):raise ValueError("INVALID_MESSAGE_DELTA")
-            output=_usage(event["usage"],self.binding,delta=True)
+            _,output=_usage(event["usage"],self.binding,input_tokens=self.input)
             if output<self.output:raise ValueError("USAGE_REGRESSION")
             self.output=output;self.phase="DELTA";return
         if kind=="message_stop" and self.phase=="DELTA":
-            _terminal_metrics(event,self.binding,self.output);self.phase="STOP";return
+            _terminal_metrics(event,self.binding,self.input,self.output);self.phase="STOP";return
         raise ValueError("UNSUPPORTED_OR_OUT_OF_ORDER_EVENT")
 
     def finish(self, *, transport_complete, cancelled=False):
@@ -235,4 +261,4 @@ class NativeStreamUsage:
         self.finished=True
         if self.failed or self.phase!="STOP" or transport_complete is not True or cancelled is not False:
             return UsageResult("UNKNOWN",self.binding,self.hash.hexdigest())
-        return UsageResult("COMPLETE",self.binding,self.hash.hexdigest(),self.binding.counted_input_tokens,self.output,"COMPLETE_NATIVE_STREAM")
+        return UsageResult("COMPLETE",self.binding,self.hash.hexdigest(),self.input,self.output,"COMPLETE_NATIVE_STREAM")
