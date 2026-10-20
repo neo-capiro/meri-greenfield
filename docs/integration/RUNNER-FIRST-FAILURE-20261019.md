@@ -30,6 +30,41 @@ node --experimental-test-module-mocks --test --test-concurrency=1 apps/runtime/t
 node --test --test-concurrency=1 --test-name-pattern="^(control task ports|startup prepare and start|startup stage cutoff|timed out fetch|client close during prepare|client ignores late stdout|stdout refusal during close|stdin refusal)" apps/runtime/native-authority/test/remote-task.test.mjs
 ```
 
+## Pinned native transport classes (20 October follow-up)
+
+The product runner's `fetchImpl` for native prepare/start is `apps/runtime/pinned-native-transport.mjs`. Its rejections
+were code-less, so every control/ALB status, socket, TLS or truncation failure at `origin=native-start` printed `UNKNOWN`.
+Each rejection now carries exactly one constant from `PINNED_NATIVE_FAILURE_CODES`, allowlisted by the canonical
+diagnostic owner. The message stays `PINNED_NATIVE_REFUSED`. No status text, body, system code, peer detail, header,
+prompt or credential is echoed, and request bytes, TLS options, ceilings and denial conditions are unchanged.
+
+| Class | Meaning |
+| --- | --- |
+| `PINNED_NATIVE_CONFIGURATION` | adapter construction refused (origin, limits, CA file ownership/mode/type/size/hash) |
+| `PINNED_NATIVE_REFUSED` | the call was refused locally before any byte was sent |
+| `PINNED_NATIVE_ABORTED` / `PINNED_NATIVE_TIMEOUT` | caller signal / the adapter's own 30 s ceiling |
+| `PINNED_NATIVE_CONNECT` / `PINNED_NATIVE_TLS` / `PINNED_NATIVE_SOCKET` | failure before any response head |
+| `PINNED_NATIVE_TRANSPORT` | any other request error (bounded fallback) |
+| `PINNED_NATIVE_STATUS_403` / `_503` / `_4XX` / `_5XX` / `_OTHER` | non-200 head, decided at the head before any body is read |
+| `PINNED_NATIVE_RESPONSE` | 200 head whose framing, size or body did not complete, including loss after the head |
+
+At `native-start`, the client's operation lifetime still wins deadline and cancellation races, which print
+`REMOTE_TASK_REFUSED`. The transport's 30 s `TIMEOUT` is unreachable within the 23 s start bound. A 200 reply whose body is
+not JSON, is not valid UTF-8, or has a missing or wrong-shaped `original` still prints `UNKNOWN`. Those failures are raised in
+`native-authority/remote-task-client.mjs` (`JSON.parse`, `TextDecoder`, `CommandError('INVALID_COMMAND')` without a code),
+not in the transport.
+
+`apps/runtime/test/pinned-native-transport.test.mjs` drives the real transport over local TLS. It covers every class,
+cancellation, the ceiling, abort/response races, late responses, redaction, unchanged denial, and socket/timer/listener
+cleanup, and it also drives the remote client plus runner diagnostics. On POSIX the CA is a real 0600 own-uid file, and the
+ownership/mode refusals run against the real filesystem with no module mock. On Windows only, the CA handle is mocked and
+cases are labelled `[windows-ca-mock]`. The test is not part of the image build's `LINUX_ONLY_TESTS` set, and
+`.dockerignore` keeps it out of the build context.
+
+```text
+node --experimental-test-module-mocks --test --test-concurrency=1 apps/runtime/test/pinned-native-transport.test.mjs
+```
+
 ## Limits and retained startup evidence
 
 The new event identifies the first observed terminal error at a rejecting boundary. A cancellation can still produce an outer SDK terminal rejection; the native prepare/start origin is suppressed once that client is closed or its spawn signal aborted. Concurrent failures may race to capture first. The event does not prove root cause or provider contact. An already assembled aggregate remains UNKNOWN; its members, cause and message are never inspected.
