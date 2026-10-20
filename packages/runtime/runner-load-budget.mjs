@@ -22,12 +22,35 @@ export const RUNNER_STARTUP_MARGIN_MS=2000;
 export const RUNNER_NATIVE_STARTUP_ROUTER_MS=RUNNER_LOAD_MAX_MS-RUNNER_LOAD_CONTROL_MARGIN_MS;
 export const RUNNER_NATIVE_STARTUP_RECEIVER_MS=RUNNER_NATIVE_STARTUP_ROUTER_MS-RUNNER_LOAD_CONTROL_MARGIN_MS;
 
+// SDK session mirror RPCs (runner -> control /v1/runner/session/*). Control's session owner verifies task authority, two Core
+// calls each, twice for a read, three times for an append and four times for a registration plus its observation hop; the
+// continuation snapshot verifies three times and reads its checkpoint object. Control bounds each operation one control margin
+// inside the runner's allowance, so control answers before the runner gives up.
+export const RUNNER_SESSION_RPC_MS=Object.freeze({register:12000,append:7000,load:6000,'list-subkeys':6000,snapshot:8000});
+export const controlSessionRpcMs=operation=>RUNNER_SESSION_RPC_MS[operation]-RUNNER_LOAD_CONTROL_MARGIN_MS;
+// One bound-store call: the first load of a subpath, then its append.
+export const RUNNER_SESSION_STORE_CALL_MS=RUNNER_SESSION_RPC_MS.load+RUNNER_SESSION_RPC_MS.append+RUNNER_LOAD_CONTROL_MARGIN_MS;
+
+// A runner checkpoint call (`checkpoint/complete` at the end of a turn, `checkpoint/capture` for a pause) has one network
+// allowance. It encloses control's checkpoint capture, which encloses control's capture channel to the runner, the task
+// router's forwarding of it and the runner's capture with its session reads.
+export const CONTROL_CHECKPOINT_CAPTURE_MS=RUNNER_LOAD_MAX_MS-RUNNER_LOAD_CONTROL_MARGIN_MS;
+export const CONTROL_CAPTURE_CHANNEL_MS=CONTROL_CHECKPOINT_CAPTURE_MS-RUNNER_LOAD_CONTROL_MARGIN_MS;
+export const TASK_ROUTER_CAPTURE_MS=CONTROL_CAPTURE_CHANNEL_MS-RUNNER_LOAD_CONTROL_MARGIN_MS;
+export const RUNNER_CAPTURE_MS=TASK_ROUTER_CAPTURE_MS-RUNNER_LOAD_CONTROL_MARGIN_MS;
+
 export const RUNNER_STARTUP_STAGE_ORDER=Object.freeze([
  'bootstrap','admittedBefore','admittedAfter','load','runtime','local',
  'starting','setup','running','nativePrepare','nativeStart','session',
 ]);
 
-const LOCAL_STAGE_MS=3000;
+// SDK session preparation; a continuation reads its checkpoint snapshot from control here.
+const LOCAL_STAGE_MS=RUNNER_SESSION_RPC_MS.snapshot+RUNNER_LOAD_CONTROL_MARGIN_MS;
+// The activity's bound on runtime preparation: the runner/runtime call, then the local stage. It is the one place where an
+// enclosing bound is smaller than its inner allowances in sequence (runtime 23 s + local 10 s = 33 s against 30 s). Each stage
+// keeps its own allowance and absolute cutoff, so the 30 s only shortens the local stage after a runtime call past 20 s; the
+// local stage's work is about 3.3 s at the tail profile (adj-e D2), so that takes a runtime call past 26.7 s, beyond its own 23 s.
+export const ACTIVITY_PREPARATION_MAX_MS=30000;
 // Optional Browser host, objective, and selected-skill preparation share this
 // stage before the first running publication.
 const SETUP_STAGE_MS=23000;

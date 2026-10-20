@@ -28,7 +28,7 @@ export async function createContinuationRuntimeSdkSession(configuration){
  const check=()=>{if(closed||signal.aborted||failed)throw fault('RUNNER_SDK_SESSION_UNKNOWN');};
  function first(key){check();scopedSessionKey(key,target,!bound);
   if(bound)return bound;
-  const admitted={register:methods.register,...Object.fromEntries(['load','append','listSubkeys'].map(name=>[name,async(input,options)=>{await bootstrap;check();return methods[name](input,{...options,signal});}]))};
+  const admitted={register:methods.register,...Object.fromEntries(['load','append','listSubkeys'].map(name=>[name,async(input,options)=>{check();return methods[name](input,{...options,signal});}]))};
   bound=createNativeBoundSdkSessionStore({client:admitted,binding:c.binding,sessionKey:target});
   bootstrap=Promise.resolve().then(async()=>{check();await methods.register({key:target},{signal});check();
    // Exact immutable history seeds a distinct target namespace only AFTER the
@@ -36,7 +36,10 @@ export async function createContinuationRuntimeSdkSession(configuration){
    for(const batch of batches){await methods.append(batch,{signal});check();}ready=true;
   });bootstrap.catch(()=>{failed=true;});return bound;
  }
- const store=Object.freeze({async load(key){check();const captured=assertSdkSessionKey(key);if(continuation.mode==='fork'&&captured.sessionId===source.key.sessionId||!ready)return source.store.load(captured);return bound.store.load(captured);},async listSubkeys(key){check();const captured=assertSdkSessionKey(key,{main:true});if(continuation.mode==='fork'&&captured.sessionId===source.key.sessionId||!ready)return source.store.listSubkeys(captured);return bound.store.listSubkeys(captured);},async append(key,entries){try{check();const copied=copySessionEntries(entries);return await first(key).store.append(key,copied);}catch(error){failed=true;throw error;}}});
+ const store=Object.freeze({async load(key){check();const captured=assertSdkSessionKey(key);if(continuation.mode==='fork'&&captured.sessionId===source.key.sessionId||!ready)return source.store.load(captured);return bound.store.load(captured);},async listSubkeys(key){check();const captured=assertSdkSessionKey(key,{main:true});if(continuation.mode==='fork'&&captured.sessionId===source.key.sessionId||!ready)return source.store.listSubkeys(captured);return bound.store.listSubkeys(captured);},async append(key,entries){try{check();const copied=copySessionEntries(entries),target=first(key);
+  // The bootstrap's register and restore appends each run on their own RPC allowance; the bound store's per-call timer starts
+  // only once they are done, so it covers this call's own load and append.
+  await bootstrap;check();return await target.store.append(key,copied);}catch(error){failed=true;throw error;}}});
  const settle=async()=>{check();if(!bound)throw fault('RUNNER_SDK_REGISTRATION_UNAVAILABLE');const result=await bound.settleObservedCalls();await bootstrap;check();if(result.uncertain||result.appendFailures||result.rejectedAppends)throw fault('RUNNER_SDK_SESSION_UNKNOWN');};
  const close=async()=>{closed=true;abort.abort();if(bound){bound.closeMirror();const result=await bound.settleObservedCalls();await bootstrap;if(failed||result.uncertain||result.appendFailures||result.rejectedAppends)throw fault('RUNNER_SDK_SESSION_UNKNOWN');}};
  return Object.freeze({store,settle,close});

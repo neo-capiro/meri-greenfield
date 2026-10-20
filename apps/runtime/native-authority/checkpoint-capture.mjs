@@ -7,6 +7,7 @@ import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {copySessionJson} from '../../worker/qualification/checkpoint/session-store-data.mjs';
 import {assertCaptureReceipt} from '../../worker/conversation/continuation/native-receipts.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
+import {CONTROL_CHECKPOINT_CAPTURE_MS} from '../../../packages/runtime/runner-load-budget.mjs';
 import {verifyCheckpointReadback} from './checkpoint-readback.mjs';
 import {publishCapturedCheckpoint} from './checkpoint-publication.mjs';
 const fail=()=>{throw Error('NATIVE_CHECKPOINT_CAPTURE_REFUSED');};
@@ -17,7 +18,7 @@ export function createNativeCheckpointCapture(configuration){
  const readRun=storageMethod(c.store,'read'),getControl=storageMethod(c.store.lifecycle,'get'),publish=storageMethod(c.store.lifecycle,'checkpoint'),readCheckpoint=storageMethod(c.store.lifecycle,'readCheckpoint'),readExecution=storageMethod(c.store.lifecycle,'execution'),verify=storageMethod(c.authority,'verify'),capture=storageMethod(c.taskCapture,'capture');
  storageMethod(c.objects,'put');storageMethod(c.objects,'get');
  const check=signal=>{if(!enabled||signal?.aborted||now()>=original.expiresAtMs)fail();};
- async function operation(signal,body){nativeSignal(signal);check(signal);const life=createOperationLifetime({now,signal,deadlineMs:Math.min(now()+maxRequestMs,original.expiresAtMs),errorFactory:()=>Error('NATIVE_CHECKPOINT_CAPTURE_REFUSED')});
+ async function operation(signal,body){nativeSignal(signal);check(signal);const life=createOperationLifetime({now,signal,deadlineMs:Math.min(now()+Math.min(maxRequestMs,CONTROL_CHECKPOINT_CAPTURE_MS),original.expiresAtMs),errorFactory:()=>Error('NATIVE_CHECKPOINT_CAPTURE_REFUSED')});
   let pinned;async function fresh(){check(life.signal);const started=now(),inputSha256=hash({binding:original.binding});const a=assertWorkerAuthorization(await life.run(signal=>verify({capability:c.taskCapability,binding:original.binding,operation:'load',inputSha256,signal})),{binding:original.binding,operation:'load',inputSha256,started,now});if(a.expiresAtMs<original.expiresAtMs)fail();life.limitDeadline(a.expiresAtMs);const identity=data({scopes:a.scopes,selectedClientId:a.selectedClientId,policyRevision:a.policyRevision});if(pinned&&hash(identity)!==hash(pinned))fail();pinned??=identity;return identity;}
   try{return await body(life,fresh);}finally{life.close();}
  }

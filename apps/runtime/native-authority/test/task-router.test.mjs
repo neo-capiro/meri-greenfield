@@ -1,6 +1,7 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {createTaskRouterApplication} from '../task-router.mjs';
 import {taskRouterFixture} from './task-router-fixture.mjs';
+import {TASK_ROUTER_CAPTURE_MS,CONTROL_CAPTURE_CHANNEL_MS} from '../../../../packages/runtime/runner-load-budget.mjs';
 function fixture(options={}){
  const f=taskRouterFixture();let networkHook=()=>{},connectHook=async()=>{},sendHook=async()=>({status:200,body:Buffer.from(JSON.stringify({original:f.original,receipt:{physicalStopProven:true}}))});
  const router=createTaskRouterApplication({authority:f.authority,privateIngress:f.privateIngress,networkReader:{async observe(){f.counts.network++;await networkHook();return {...f.candidate,checkedAtMs:Date.now()};}},connector:{async connect(value){f.counts.connect++;await connectHook(value);return {async send(input){f.counts.send++;return sendHook(input);},close(){f.counts.close++;}};}},enabled:true,...options});
@@ -50,4 +51,11 @@ test('oversized request and foreign downstream response are refused without succ
 });
 test('deadline closes a late TLS connection and never sends its credential',async()=>{
  const f=fixture({maxRequestMs:20}),release=Promise.withResolvers();f.onConnect(()=>release.promise);assert.equal((await f.post()).status,403);release.resolve();await new Promise(resolve=>setImmediate(resolve));assert.equal(f.counts.send,0);assert.equal(f.counts.close,1);f.router.close();
+});
+test('a forwarded capture keeps its own allowance, longer than an ordinary exchange and inside the capture channel',async t=>{
+ t.mock.timers.enable({apis:['setTimeout','Date'],now:Date.now()});
+ const f=fixture({maxRequestMs:8000}),answer=TASK_ROUTER_CAPTURE_MS-1000;f.onSend(input=>new Promise(resolve=>setTimeout(()=>resolve({status:200,body:Buffer.from(JSON.stringify({original:f.original,capture:{synthetic:true}}))}),answer)));
+ assert.ok(answer>8000&&TASK_ROUTER_CAPTURE_MS<CONTROL_CAPTURE_CHANNEL_MS);
+ const pending=f.post('capture',f.controlCredential,{request:{synthetic:true}});for(let i=0;i<20&&f.counts.send===0;i++)await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(f.counts.send,1);t.mock.timers.tick(answer);assert.equal((await pending).status,200);f.router.close();
 });
