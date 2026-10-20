@@ -246,6 +246,8 @@ The templates are ready to update live stacks (`applyLiveServiceProfile` in `sta
 - Control runs one task at a time: max 100 / min 0, with AZ rebalancing DISABLED, which ECS requires for max 100.
 - Control starts only after the runner task definition exists.
 
+This profile **supersedes** `build-update-compatible-v2.mjs`. That helper exists only on the historical `handoff/runner-diagnostic-release-20261020` branch, and releases C–E used it. Deploy the `bindings` templates directly. Applying the old helper on top is redundant, and it is no longer a supported step.
+
 `deploy-plan.json` lists the stacks in release order **model → issuer → app**, each with its `aws cloudformation deploy … --no-execute-changeset` command and its `wait stack-update-complete`. For each stack:
 
 1. Create the change set.
