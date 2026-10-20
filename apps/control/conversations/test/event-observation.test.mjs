@@ -72,12 +72,18 @@ test('Core calls per delivered event: eight per page after the window check, not
  assert.equal(burst.core(),8+2*8,'a 120-event backlog: the window check and one recheck for each 100- and 20-event page');
  assert.deepEqual(burst.calls,{identity:6,context:6,membership:12});
 });
-test('the subscription cap still ends the window, and a reconnect resumes exactly after the accepted cursor',async()=>{
+test('the subscription cap closes an idle window cleanly, and a reconnect resumes exactly after the accepted cursor',async()=>{
  const f=fixture();f.state.visible=1;const started=Date.now(),reader=f.open({maxSubscriptionMs:150});
  try{assert.deepEqual(await take(reader,1),[1]);
-  // A finite subscription may end with a clean close or the scrubbed failure; either way the observer resumes from its cursor.
-  const ended=await reader.read().then(next=>next.done,()=>true);assert.equal(ended,true);assert.ok(Date.now()-started<1000,'ended by the cap, not by an unbounded wait');
+  // An idle window closes cleanly at its cap; the observer then resumes from its cursor.
+  assert.equal((await reader.read()).done,true,'a clean close, not SUBSCRIPTION_UNAVAILABLE');assert.ok(Date.now()-started<1000,'ended by the cap, not by an unbounded wait');
  }finally{reader.releaseLock();}
  f.state.visible=3;const resumed=createConversationEventSource({service:f.service,credential:'action-session',after:1,pollMs:10}).getReader();
  try{assert.deepEqual(await take(resumed,2),[2,3]);}finally{resumed.releaseLock();}
+});
+test('idle windows end with a clean close at the cap every time, not with the lifetime deadline',async()=>{
+ const f=fixture();f.state.visible=1;let clean=0;const windows=20;
+ for(let i=0;i<windows;i++){const reader=f.open({maxSubscriptionMs:60+(i%7)});
+  try{assert.deepEqual(await take(reader,1),[1]);clean+=await reader.read().then(next=>next.done?1:0,()=>0);}finally{reader.releaseLock();}}
+ assert.equal(clean,windows,'every idle window closed cleanly (the lifetime timer used to win the race at the cap)');
 });

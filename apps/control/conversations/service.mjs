@@ -19,6 +19,8 @@ export const cleanupRead=Symbol('conversation.cleanupRead');
 export const loadWithLifecycle=Symbol('conversation.loadWithLifecycle');
 /** Events released per observation page: the history route's own page maximum. */
 const OBSERVE_PAGE_EVENTS=100;
+/** An idle observation window closes this long before its cap: more than one timer tick of lateness (Windows ~15.6 ms) plus loop lag. */
+const WINDOW_END_SLACK_MS=50;
 export function createConversationService({sessions,store,dispatcher,versions,fiscalCalendars=[],now=Date.now,newId=randomUUID,maxRequestMs=3000,selectedSkillAdmission,selectedOutputPublication,retention,capabilityPolicy,runBudgets}){
  const readCurrent=authenticatedCurrentState(sessions);
  const admissionPort=selectedSkillAdmission===undefined?undefined:own(selectedSkillAdmission,['admitSelection'],['currentSkillRun']),publicationPort=selectedOutputPublication===undefined?undefined:own(selectedOutputPublication,['prepareEvent']);
@@ -113,7 +115,10 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
     if(terminal(page.run.state)&&(!page.events.length||cursor===page.lastSequence))return;
     if(page.events.length)continue;
     if(now()-checkedAt>=idleRecheckMs){await fresh();checkedAt=now();}
-    await life.run(signal=>delay(Math.min(pollMs,Math.max(1,untilMs-now())),undefined,{signal}));
+    // Never sleep into the window deadline: the lifetime timer enforces the hard cap and, firing first, would turn a clean idle
+    // end into an error. The idle window ends WINDOW_END_SLACK_MS early so a late poll timer cannot reach the cap.
+    const left=untilMs-now()-WINDOW_END_SLACK_MS;if(left<=0)return;
+    await life.run(signal=>delay(Math.min(pollMs,left),undefined,{signal}));
    }},{untilMs});}
  async function cancel({credential,signal}){return operation(credential,signal,async(c,life,fresh)=>{const old=await life.run(()=>store.read(c.binding,{after:0,limit:1},life.check));if(!same(old.run.scopes,c.scopes))fail('SCOPE_REFUSED');if(!terminal(old.run.state)){await fresh();const e=event(c.binding,c.scopes,'run.status',{state:'cancelled',reasonCode:'USER_CANCELLED'});await life.run(()=>store.append(c.binding,e,life.check,c.scopes));}await fresh();await life.run(signal=>dispatcher.cancel({binding:c.binding,signal}));return {state:terminal(old.run.state)?old.run.state:'cancelled'};},{cleanup:true});}
  async function loadForExecution({credential,binding,signal},readLifecycle){validateShape('RunBinding',binding);return operation(credential,signal,async(c,life,fresh)=>{
