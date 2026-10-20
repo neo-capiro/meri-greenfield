@@ -3,6 +3,7 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {createCoreMembershipGate} from '../core-membership.mjs';
 import {createProductApplication} from '../http.mjs';
 import {productFailure} from '../errors.mjs';
+import {isAuthorityUnavailable} from '../../../../packages/runtime/authority-availability.mjs';
 const ORIGIN='https://core.synthetic.invalid',PATH='/api/clio/application-authority/membership',NOW=1800000000000;
 const CLIENT='00000000-0000-4000-8000-000000000001';
 const code=(promise,expected)=>assert.rejects(promise,e=>productFailure(e)?.code===expected);
@@ -103,4 +104,20 @@ test('configuration rejects user URL components and active getters without IO',(
  let executed=0;assert.throws(()=>createCoreMembershipGate({...f.configuration,identityContext:{get verifyIdentity(){executed++;throw Error();}}}),e=>productFailure(e)?.code==='PRODUCT_CONFIGURATION');
  assert.throws(()=>createCoreMembershipGate({...f.configuration,origin:{toString(){executed++;return ORIGIN;}}}),e=>productFailure(e)?.code==='PRODUCT_CONFIGURATION');
  assert.equal(executed,0);assert.equal(f.state.requests.length,0);
+});
+const answered=(promise,expected,transient)=>assert.rejects(promise,e=>productFailure(e)?.code===expected&&isAuthorityUnavailable(e)===transient);
+test('Core that did not answer is transient with unchanged codes; explicit membership answers stay definitive',async()=>{
+ const f=fixture(),access=await f.gate.admit({credential:'A'}),recheck=()=>f.gate.recheck({...access,credential:'A',deadlineMs:access.expiresAtMs});
+ for(const [status,expected] of [[503,'CONVERSATION_UNAVAILABLE'],[500,'CONVERSATION_UNAVAILABLE'],[429,'CONVERSATION_UNAVAILABLE'],[408,'DEADLINE']]){f.state.respond=()=>new Response('{}',{status});await answered(recheck(),expected,true);}
+ f.state.respond=()=>{throw new TypeError('fetch failed');};await answered(recheck(),'CONVERSATION_UNAVAILABLE',true);
+ for(const [status,expected] of [[401,'UNAUTHENTICATED'],[403,'ACCESS_DENIED'],[409,'MEMBERSHIP_CHANGED']]){f.state.respond=()=>new Response('{}',{status});await answered(recheck(),expected,false);}
+ f.state.respond=null;f.state.status='removed';await answered(recheck(),'MEMBERSHIP_REVOKED',false);
+ f.state.status='active';f.state.respond=()=>new Response('not json',{headers:{'content-type':'application/json'}});await answered(recheck(),'CONVERSATION_UNAVAILABLE',false);
+ f.state.respond=null;assert.equal((await recheck()).membershipRevision,access.principal.membershipRevision);
+});
+test('membership request budget running out is transient; identity owner marks pass through admission',async()=>{
+ const f=fixture(),access=await f.gate.admit({credential:'A'});
+ f.state.respond=call=>new Promise((_,reject)=>call.options.signal.addEventListener('abort',()=>reject(call.options.signal.reason),{once:true}));
+ await answered(f.gate.recheck({...access,credential:'A',deadlineMs:NOW+15}),'DEADLINE',true);
+ f.state.respond=null;f.state.identityError=true;await answered(f.gate.admit({credential:'A'}),'CONVERSATION_UNAVAILABLE',false);
 });

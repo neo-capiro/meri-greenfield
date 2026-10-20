@@ -7,6 +7,7 @@ import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {jsonBody} from '../action-application/http.mjs';
 import {createMembershipGate} from './membership.mjs';
 import {ProductError,asProductError,refuse} from './errors.mjs';
+import {markAuthorityUnavailable,carryAuthorityUnavailable,isUnavailableStatus} from '../../../packages/runtime/authority-availability.mjs';
 const path='/api/clio/application-authority/membership';
 const admittedRoles=new Set(['standard_user','user_admin','capiro_admin']);
 const getters=Object.fromEntries(['status','headers','body','redirected'].map(k=>[k,Object.getOwnPropertyDescriptor(Response.prototype,k).get]));
@@ -23,23 +24,24 @@ export function createCoreMembershipGate(configuration){
   origin=url.origin;verifyIdentity=storageMethod(c.identityContext,'verifyIdentity');
  }catch{refuse('PRODUCT_CONFIGURATION');}
  async function readMembership(value){
-  let life,response;
+  // Core did not answer: this request's own budget ran out, the network failed, or Core reported 408/429/5xx. Codes are unchanged.
+  let life,response,unanswered=false;
   try{
    const call=own(value,['tenantId','actorId','credential','deadlineMs'],['signal']);nativeSignal(call.signal);
    if(!credentialOk(call.credential))refuse('UNAUTHENTICATED');
    const at=now();if(!Number.isSafeInteger(at)||at<0||!Number.isSafeInteger(call.deadlineMs))refuse('CONVERSATION_UNAVAILABLE');
    const deadlineMs=Math.min(call.deadlineMs,at+limits.maxRequestMs);
-   life=createOperationLifetime({deadlineMs,now,signal:call.signal,errorFactory:code=>new ProductError(code)});
+   life=createOperationLifetime({deadlineMs,now,signal:call.signal,errorFactory:code=>{if(code==='DEADLINE'&&!call.signal?.aborted)unanswered=true;return new ProductError(code);}});
    response=await life.run(signal=>{
     const pending=Promise.resolve(fetchImpl(origin+path,{method:'POST',redirect:'error',credentials:'omit',cache:'no-store',
      headers:{authorization:'Bearer '+call.credential,'content-type':'application/json',accept:'application/json','accept-encoding':'identity','x-meri-deadline-at':String(deadlineMs)},body:'{}',signal}));
     // A raced-out fetch may settle later. It never releases a fact and its borrowed body is cancelled.
-    pending.then(r=>{if(life.signal.aborted)cancel(r);},()=>{});return pending;
+    pending.then(r=>{if(life.signal.aborted)cancel(r);},()=>{});return pending.catch(error=>{unanswered||=!call.signal?.aborted;throw error;});
    });life.check();
    if(!response||types.isProxy(response)||!(response instanceof Response)||getters.redirected.call(response))refuse('CONVERSATION_UNAVAILABLE');
    const status=getters.status.call(response);
    if(status===401)refuse('UNAUTHENTICATED');if(status===403)refuse('ACCESS_DENIED');
-   if(status===409)refuse('MEMBERSHIP_CHANGED');if(status===408)refuse('DEADLINE');
+   if(status===409)refuse('MEMBERSHIP_CHANGED');if(isUnavailableStatus(status)){unanswered=true;refuse(status===408?'DEADLINE':'CONVERSATION_UNAVAILABLE');}
    if(status!==200)refuse('CONVERSATION_UNAVAILABLE');
    const headers=getters.headers.call(response),header=k=>Headers.prototype.get.call(headers,k),body=getters.body.call(response),length=header('content-length');
    if(!/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(header('content-type')??'')||![null,'identity'].includes(header('content-encoding'))||!body||
@@ -47,13 +49,13 @@ export function createCoreMembershipGate(configuration){
    const result=await jsonBody({body,length:length===null?null:Number(length)},limits.maxFactBytes,life,life.check);life.check();
    if(!result||typeof result!=='object'||!admittedRoles.has(result.role))refuse('ACCESS_DENIED');
    return result; // Shape, freshness, exact principal and rights remain owned by createMembershipGate.
-  }catch(error){throw asProductError(error,'CONVERSATION_UNAVAILABLE');}finally{cancel(response);life?.close();}
+  }catch(error){const failure=asProductError(error,'CONVERSATION_UNAVAILABLE');throw unanswered?markAuthorityUnavailable(failure):failure;}finally{cancel(response);life?.close();}
  }
  return createMembershipGate({now,limits,readMembership,async verifyToken(call){
   if(!credentialOk(call.credential))refuse('UNAUTHENTICATED');
   try{
    const receipt=assertAuthorityIdentityReceipt(await verifyIdentity(call));
    return {tenantId:receipt.principal.tenantId,actorId:receipt.principal.actorId,checkedAtMs:receipt.checkedAtMs,expiresAtMs:receipt.expiresAtMs};
-  }catch(error){throw asProductError(error,'CONVERSATION_UNAVAILABLE');}
+  }catch(error){throw carryAuthorityUnavailable(error,asProductError(error,'CONVERSATION_UNAVAILABLE'));}
  }});
 }

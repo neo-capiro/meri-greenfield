@@ -107,12 +107,13 @@ test('expired sessions refuse before authority reads and caller cutoffs reach ev
  await assert.rejects(f.read({credential:issued.credential}),/SESSION_REFUSED/u);assert.equal(f.state.calls.length,0);
 });
 
-test('deadline expiry during context cannot release combined authority and invalidates the session',async t=>{
+test('request deadline during context cannot release combined authority; the session waits for a full recheck',async t=>{
  const f=fixture(t),issued=await f.issue(),abort=new AbortController(),deadlineMs=f.state.now+25;
  f.state.hook=stage=>{if(stage==='context')f.state.now=deadlineMs;};
- await assert.rejects(f.read({credential:issued.credential,deadlineMs,signal:abort.signal}),/SESSION_REFUSED/u);
+ await assert.rejects(f.read({credential:issued.credential,deadlineMs,signal:abort.signal}),/SESSION_AUTHORITY_UNAVAILABLE/u);
  assert.equal(abort.signal.aborted,false);
- assert.equal(f.owner.status().sessions,0);
+ assert.equal(f.owner.status().sessions,1);
+ f.state.hook=null;f.state.calls=[];await f.read({credential:issued.credential});assert.ok(f.state.calls.length>0);
 });
 
 for(const stage of ['identity','context','member'])test(`caller cancellation while ${stage} is pending preserves the session for a fresh combined observation`,async t=>{

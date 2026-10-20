@@ -90,14 +90,15 @@ for(const method of methods)for(const failure of ['unknown','AbortError','CANCEL
 }
 
 for(const method of methods){
- test(`${method}: owner-only timeout invalidates despite a still-live request`,async t=>{
+ test(`${method}: owner-only timeout refuses the request as unavailable and keeps the session for a full recheck`,async t=>{
   const f=await fixture(t),blocked=park(t,f,'identity'),abort=new AbortController();
-  const rejected=assert.rejects(f.invoke(method,{signal:abort.signal,deadlineMs:NOW+20}),{code:'SESSION_REFUSED'});
+  const rejected=assert.rejects(f.invoke(method,{signal:abort.signal,deadlineMs:NOW+20}),{code:'SESSION_AUTHORITY_UNAVAILABLE'});
   await blocked.entered;await rejected;
   assert.equal(abort.signal.aborted,false);
-  assert.equal(f.owner.status().sessions,0);
+  assert.equal(f.owner.status().sessions,1);
   blocked.release();await nextTurn();
-  assert.equal(f.owner.status().sessions,0);
+  delete f.state.hooks.identity;const calls=f.state.calls.identity;await f.invoke(method);
+  assert.equal(f.state.calls.identity,calls+1,'the late return released nothing; the next request rechecks');
  });
 }
 
@@ -124,12 +125,12 @@ for(const method of methods){
    call.signal.addEventListener('abort',()=>abort.abort(),{once:true});entered.resolve();
    await release.promise;return value;
   };
-  const rejected=assert.rejects(f.invoke(method,{signal:abort.signal,deadlineMs:NOW+20}),{code:'SESSION_REFUSED'});
+  const rejected=assert.rejects(f.invoke(method,{signal:abort.signal,deadlineMs:NOW+20}),{code:'SESSION_AUTHORITY_UNAVAILABLE'});
   await entered.promise;await rejected;
   assert.equal(abort.signal.aborted,true);
-  assert.equal(f.owner.status().sessions,0,'the winning owner deadline must remain invalidating');
+  assert.equal(f.owner.status().sessions,1,'a winning owner deadline is unavailability, not a refusal');
   release.resolve();await nextTurn();
-  assert.equal(f.owner.status().sessions,0);
+  assert.equal(f.owner.status().sessions,1);
  });
 }
 
