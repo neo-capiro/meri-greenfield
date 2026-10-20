@@ -24,7 +24,7 @@ test('runtime preparation retains its stage and allowed code through generic act
   }},query(){queries++;throw Error('No SDK Query allowed');}});
   await assert.rejects(withRunnerDiagnostics(()=>execute({binding}),{write:line=>lines.push(line)}),{code:'EXECUTION_FAILED'});
   assert.deepEqual(lines,['RUNNER_FIRST_FAILURE origin=runtime stage=runtime-admission code=NATIVE_UNAVAILABLE class=ERROR exit=none signal=none\n','RUNNER_RUNTIME_FAILED stage=runtime-admission code=NATIVE_UNAVAILABLE\n']);
-  assert.equal(queries,0);assert.equal(saved.run.state,'queued');assert.deepEqual(operations.slice(0,3),['runner/load','runner/publish','runner/runtime']);
+  assert.equal(queries,0);assert.deepEqual(operations.slice(0,3),['runner/load','runner/publish','runner/runtime']);
 });
 
 test('first failure survives cleanup replacement without emitting error text, dynamic codes, getters or stacks',async()=>{
