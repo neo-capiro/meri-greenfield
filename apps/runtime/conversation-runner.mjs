@@ -5,6 +5,7 @@ import {own} from '../../packages/contracts/commands-0.2/execution-boundary.mjs'
 import {readSecret,fault} from './config.mjs';
 import {createNativeCapabilityClient} from './native-client.mjs';
 import {runnerStartupBudget,RUNNER_STARTUP_MIN_SHUTDOWN_MS,RUNNER_STARTUP_CLEANUP_MS,RUNNER_STARTUP_MARGIN_MS} from '../../packages/runtime/runner-load-budget.mjs';
+const ACTIVITY_PREPARATION_MAX_MS=30000;
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 import {lstat,realpath,mkdir,open} from 'node:fs/promises';
 import {constants} from 'node:fs';
@@ -98,7 +99,9 @@ export function assembleConversationRunner({configuration,native,query,credentia
   // G3: the read-only skill plugin copy under the admitted private config parent, one run-invariant path (sdkSkillPluginDirectory).
    markRunnerStage('skill-plugin');const plugin=skillPlugin===true&&directories.sdkConfigDirectory!==undefined?await prepareRunSkillPlugin(sdkSkillPluginDirectory(dirname(directories.sdkConfigDirectory))):undefined;
    markRunnerStage('activity');return {...runtime,cwd:configuration.workspace,sessionStore,...directories,...(plugin?{skillPluginDirectory:plugin.directory}:{})};});}finally{localLife?.close();}});
- const activity=createConversationActivity({runOwner,prepareRuntime,selectedSkills,now,...(stages?{loadMaxMs:stages.load.maxMs,loadExpiresAtMs:stages.load.expiresAtMs,runtimeMaxMs:stages.runtime.maxMs+stages.local.maxMs,runtimeExpiresAtMs:stages.local.expiresAtMs,setupBudget:stages.setup,modelDeadlineMs:stages.session.expiresAtMs,executionDeadlineMs:stages.session.expiresAtMs+stages.session.maxMs,terminalAttemptMs:stages.session.maxMs}:{}),...(readPort?{generalReads:readPort}:{}),...(governedIntents?{governedIntents}:{}),...(query?{query}:{}),...(lifecycle?{lifecycle}:{}),heartbeat:()=>{},diagnostics:{stage:markRunnerStage,failure:captureRunnerFailure}});
+ // The activity bounds runtime preparation (the runner/runtime call, then the local stage) at 30 s; each stage keeps its own
+ // allowance and absolute cutoff inside it.
+ const activity=createConversationActivity({runOwner,prepareRuntime,selectedSkills,now,...(stages?{loadMaxMs:stages.load.maxMs,loadExpiresAtMs:stages.load.expiresAtMs,runtimeMaxMs:Math.min(stages.runtime.maxMs+stages.local.maxMs,ACTIVITY_PREPARATION_MAX_MS),runtimeExpiresAtMs:stages.local.expiresAtMs,setupBudget:stages.setup,modelDeadlineMs:stages.session.expiresAtMs,executionDeadlineMs:stages.session.expiresAtMs+stages.session.maxMs,terminalAttemptMs:stages.session.maxMs}:{}),...(readPort?{generalReads:readPort}:{}),...(governedIntents?{governedIntents}:{}),...(query?{query}:{}),...(lifecycle?{lifecycle}:{}),heartbeat:()=>{},diagnostics:{stage:markRunnerStage,failure:captureRunnerFailure}});
   const execute=async input=>atRunnerStage('activity',async()=>{try{return await activity(input);}catch(error){captureRunnerFailure(error);throw error;}finally{markRunnerStage('runner-cleanup');try{await selectedSkills.close();}finally{await sdkSession?.close();}}});
  Object.defineProperty(execute,'cleanupStatus',{value:()=>sdkSession?.cleanupStatus()??{pendingInitializations:0,closed:true,failures:[],physicalStopProven:false}});return execute;
 }
