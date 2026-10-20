@@ -637,7 +637,7 @@ class BoundedBootstrapTests(unittest.IsolatedAsyncioTestCase):
             self.assertFalse(app.ready)  # Late success never reopens the host.
         finally:
             gate.set()
-    async def test_timeout_and_poison_each_leave_one_line_and_the_budget_is_25_seconds(self):
+    async def test_timeout_and_poison_each_leave_one_line_and_the_budget_is_35_seconds(self):
         gate, lines = threading.Event(), []
         _, _ingress, scope = fixture()
 
@@ -657,10 +657,10 @@ class BoundedBootstrapTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(lines, ["PRODUCT_PROXY_REFUSED gate=bootstrap step=timeout at=placement-read code=DEADLINE\n",
                                  "PRODUCT_PROXY_REFUSED gate=bootstrap step=poisoned code=REFUSED\n"])
         parameter = inspect.signature(PRODUCT.create_bearer_eni_product_proxy_app).parameters["bootstrap_seconds"]
-        self.assertEqual(parameter.default, 25.0)
-        self._app(lambda _: None, seconds=25)
+        self.assertEqual(parameter.default, 35.0)  # 25 s plus one 10 s owner carrier wait.
+        self._app(lambda _: None, seconds=35)
         with self.assertRaises(PRODUCT.StateDenied):
-            self._app(lambda _: None, seconds=25.5)
+            self._app(lambda _: None, seconds=35.5)
 
     async def test_cancellation_quarantines_outstanding_lookup(self):
         gate = threading.Event()
@@ -689,10 +689,11 @@ class BoundedBootstrapTests(unittest.IsolatedAsyncioTestCase):
 
 class ProductLifetimeLimitTests(unittest.TestCase):
     def test_product_requests_bound_owner_checks_and_close_by_the_exchange_budget(self):
-        from apps.proxy.product.budgets import MAX_OWNER_EXCHANGE_MS
+        from apps.proxy.product.budgets import MAX_OWNER_EXCHANGE_MS, OWNER_CARRIER_WAIT_MS
         from apps.proxy.product.host_composition import (
             PRODUCT_LIFETIME_LIMITS, create_bearer_eni_product_proxy_app, create_product_proxy_app)
-        self.assertEqual(PRODUCT_LIFETIME_LIMITS.check_seconds, MAX_OWNER_EXCHANGE_MS / 1000)
+        # One owner exchange that may first wait for its carrier: the wait, the exchange budget and a second of margin.
+        self.assertEqual(PRODUCT_LIFETIME_LIMITS.check_seconds, (OWNER_CARRIER_WAIT_MS + MAX_OWNER_EXCHANGE_MS) / 1000 + 1)
         self.assertGreaterEqual(PRODUCT_LIFETIME_LIMITS.cleanup_seconds, PRODUCT_LIFETIME_LIMITS.check_seconds)
         for factory in (create_product_proxy_app, create_bearer_eni_product_proxy_app):
             with self.subTest(factory=factory.__name__):

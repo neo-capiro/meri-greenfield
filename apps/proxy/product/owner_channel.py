@@ -1,7 +1,10 @@
 """One-request proxy side of the unmounted private HTTPS :8444 owner channel.
 
-The injected exchange port MUST use two dedicated, pinned-mTLS connections:
-operation claims on one and fresh host capture on another. Evidence returned
+The injected exchange port MUST use three dedicated, pinned-mTLS connections:
+operation claims on one, fresh host capture on another, and every owner read
+that is not inside a capture callback (placement and admission reads) on a
+third, so a watch refresh or a second request never queues behind a held
+reserve or settle operation. Evidence returned
 by an arbitrary callback is not TLS authentication. No client, credential,
 listener or network request is created by this module.
 """
@@ -21,6 +24,7 @@ from ..qualification.state.pricing import StateDenied
 from .boundary_codec import (_binding, _wire, encode_complete_capture,
                              encode_reservation, encode_settlement)
 from .binding import _binding as _host_binding
+from .budgets import OWNER_CARRIER_WAIT_MS
 
 
 OPEN = "/v1/internal/product-model/owner/session/open"
@@ -35,6 +39,23 @@ _SERVICE_GATES = {}
 _SERVICE_GATES_LOCK = threading.Lock()
 _EXCHANGE_STATES = WeakKeyDictionary()
 _CAPTURE_ADMISSION = ContextVar("product_owner_capture_admission", default=None)
+CARRIERS = ("operation", "capture", "admission")
+
+
+class OwnerCarrierBusy(StateDenied):
+    """A carrier stayed held past its wait bound. Nothing was sent, so this refusal never poisons the host gate."""
+
+
+async def acquire_owner_carrier(lock, wait_seconds):
+    """Wait for one carrier without spending any exchange budget; True when the carrier was not free at once."""
+    waited = lock.locked()
+    if type(wait_seconds) not in (int, float) or not wait_seconds > 0:
+        raise OwnerCarrierBusy("OWNER_CARRIER_BUSY")
+    try:
+        await asyncio.wait_for(lock.acquire(), wait_seconds)
+    except asyncio.TimeoutError:
+        raise OwnerCarrierBusy("OWNER_CARRIER_BUSY") from None
+    return waited
 
 
 def _deny():
@@ -144,7 +165,7 @@ def validate_owner_reply(policy, reply, channel, connections):
     """
     if (type(policy) is not OwnerPeerPolicy or type(reply) is not OwnerReply
             or reply.status != 200 or reply.content_type != "application/json"
-            or type(connections) is not dict or set(connections) != {"operation", "capture"}
+            or type(connections) is not dict or set(connections) != set(CARRIERS)
             or channel not in connections):
         _deny()
     evidence = reply.evidence
@@ -162,9 +183,8 @@ def validate_owner_reply(policy, reply, channel, connections):
         if not hmac.compare_digest(_sha(actual), expected):
             _deny()
     ident = _slot(evidence.connection_id)
-    other = "capture" if channel == "operation" else "operation"
     if (connections[channel] is not None and connections[channel] != ident
-            or connections[other] == ident):
+            or any(connections[other] == ident for other in CARRIERS if other != channel)):
         _deny()
     connections[channel] = ident
     return _frame(reply.body)
@@ -199,8 +219,8 @@ def owner_exchange_state(exchange, policy, host_gate):
         state = _EXCHANGE_STATES.get(exchange)
         if state is None:
             state = (loop, policy, host_gate,
-                     {"operation": asyncio.Lock(), "capture": asyncio.Lock()},
-                     {"operation": None, "capture": None}, {}, asyncio.Lock())
+                     {name: asyncio.Lock() for name in CARRIERS},
+                     dict.fromkeys(CARRIERS), {}, asyncio.Lock())
             _EXCHANGE_STATES[exchange] = state
         if state[0] is not loop or state[1] != policy or state[2] is not host_gate:
             _deny()
@@ -220,7 +240,7 @@ class _CaptureAdmissionLease:
 
 def validate_capture_admission_lease(lease, exchange, host_gate, expected_source):
     if lease is None:
-        return "operation"
+        return "admission"
     if (type(lease) is not _CaptureAdmissionLease or not lease.active
             or lease.bridge.exchange is not exchange or lease.bridge.host_gate is not host_gate
             or lease.bridge._capture_token is not lease.token or not host_gate.available
@@ -282,6 +302,7 @@ class ProductOwnerBridge:
         self._complete_capture = None
         self._capture_token = None
         self._aborted = False
+        self._sent = False
         self._state = "NEW"
 
     def _abort(self):
@@ -315,16 +336,34 @@ class ProductOwnerBridge:
         self._operation_connection = connections["operation"]
         self._capture_connection = connections["capture"]
 
+    def _wait_seconds(self):
+        if not self.host_gate.available:
+            _deny()
+        at = self.now_ms()
+        if type(at) is not int or at >= self.deadline_ms:
+            _deny()
+        return min(OWNER_CARRIER_WAIT_MS, self.deadline_ms - at) / 1000
+
     async def _exchange(self, channel, path, body):
         if (path not in (OPEN, OPERATION, POLL, REPLY)
                 or (channel == "operation") != (path in (OPEN, OPERATION))
+                or channel not in ("operation", "capture")
                 or type(body) is not bytes or not 1 <= len(body) <= _WIRE_MAX):
             _deny()
-        timeout = self._remaining()
+        lock = owner_exchange_state(self.exchange, self.policy, self.host_gate)[3][channel]
+        # Waiting sends nothing (OwnerCarrierBusy on expiry); the exchange clock starts with the carrier held.
+        await acquire_owner_carrier(lock, self._wait_seconds())
+        try:
+            timeout = self._remaining()
+        except BaseException:
+            lock.release()
+            raise
         async def dispatch():
-            lock = owner_exchange_state(self.exchange, self.policy, self.host_gate)[3][channel]
-            async with lock:
-                return await self.exchange(channel, path, body, self._remaining())
+            try:
+                return await self.exchange(channel, path, body, timeout)
+            finally:
+                lock.release()
+        self._sent = True
         task = asyncio.create_task(dispatch())
         try:
             done, _ = await asyncio.wait({task}, timeout=timeout)
@@ -437,8 +476,9 @@ class ProductOwnerBridge:
                 _deny()
             capture.result()
             return result
-        except BaseException:
-            self._abort()
+        except BaseException as error:
+            if not isinstance(error, OwnerCarrierBusy) or self._sent:
+                self._abort()
             capture.cancel()
             if capture.done():
                 try:
@@ -477,6 +517,7 @@ class ProductOwnerBridge:
             _deny()
         self._state = "FAILED"
         claim_lock = await self._claim()
+        self._sent = False
         try:
             claim = encode_reservation(value, observation)
             # The open selector is derived from the host-observed credential;
@@ -500,6 +541,10 @@ class ProductOwnerBridge:
         except asyncio.CancelledError:
             self._abort()
             raise
+        except OwnerCarrierBusy:
+            if self._sent:
+                self._abort()
+            raise
         except Exception:
             self._abort()
             _deny()
@@ -518,6 +563,7 @@ class ProductOwnerBridge:
             _deny()
         self._state = "FAILED"
         claim_lock = await self._claim()
+        self._sent = False
         try:
             result_frame = await self._operation(encode_settlement(request_id, result),
                                                  "complete")
@@ -534,6 +580,10 @@ class ProductOwnerBridge:
         except asyncio.CancelledError:
             self._abort()
             raise
+        except OwnerCarrierBusy:
+            if self._sent:
+                self._abort()
+            raise
         except Exception:
             self._abort()
             _deny()
@@ -545,6 +595,7 @@ class ProductOwnerBridge:
             _deny()
         self._state = "FAILED"
         claim_lock = await self._claim()
+        self._sent = False
         try:
             result = await self._exchange("operation", OPERATION, _wire([
                 "meri.proxy.operation/1", self.session_id,
@@ -562,6 +613,10 @@ class ProductOwnerBridge:
                     "actualMicroUSD": result[2][2]}
         except asyncio.CancelledError:
             self._abort()
+            raise
+        except OwnerCarrierBusy:
+            if self._sent:
+                self._abort()
             raise
         except Exception:
             self._abort()

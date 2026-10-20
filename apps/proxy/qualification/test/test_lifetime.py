@@ -207,8 +207,8 @@ class LimitTests(unittest.TestCase):
                     LifetimeLimits(**{name: value})
 
     def test_check_and_cleanup_reach_the_owner_exchange_budget(self):
-        LifetimeLimits(check_seconds=15, cleanup_seconds=15)
-        for name, value in (("check_seconds", 15.01), ("cleanup_seconds", 15.01), ("poll_seconds", 5.01)):
+        LifetimeLimits(check_seconds=30, cleanup_seconds=30)
+        for name, value in (("check_seconds", 30.01), ("cleanup_seconds", 30.01), ("poll_seconds", 5.01)):
             with self.subTest(name=name), self.assertRaises(StateDenied):
                 LifetimeLimits(**{name: value})
 

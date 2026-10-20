@@ -1,4 +1,4 @@
-"""Real two-connection owner mTLS transport. Import/construction open no socket.
+"""Real three-connection owner mTLS transport (operation, capture, admission). Import/construction open no socket.
 
 Only externally delivered certificate files are accepted. No CA discovery,
 certificate issuance, provider request, retry or account credential is involved.
@@ -134,7 +134,7 @@ class ProductOwnerHttpsExchange:
         service_pair_reader.assert_transport(policy,self.owner_ipv4,self.proxy_ipv4,expires_at_ms,deployment_revision)
         self.now_ms = now_ms or (lambda: time.time_ns() // 1000000)
         self._state = threading.RLock()
-        self._locks = {name: threading.Lock() for name in ("operation", "capture")}
+        self._locks = {name: threading.Lock() for name in ("operation", "capture", "admission")}
         self._connections, self._sockets = {}, set()
         self._retired = False
 
@@ -278,14 +278,19 @@ class ProductOwnerHttpsExchange:
         if (channel not in self._locks or path not in (OPEN, OPERATION, POLL, REPLY)
                 or path in (OPEN,) and channel != "operation"
                 or path in (POLL, REPLY) and channel != "capture"
+                or channel == "admission" and path != OPERATION
                 or type(body) is not bytes or not 1 <= len(body) <= 12*1024*1024
                 or type(timeout) not in (int, float) or not math.isfinite(timeout)
                 or not 0 < timeout <= self.policy.max_exchange_ms/1000):
             _deny()
-        if channel == "capture" and path == OPERATION:
+        # The capture carrier carries only leased admission reads; the admission carrier only placement and admission reads.
+        reads = {"capture": ("meri.proxy.admission-read/1",),
+                 "admission": ("meri.proxy.admission-read/1", "meri.proxy.placement-read/1")}
+        if channel in reads and path == OPERATION:
             try:
                 frame = json.loads(body)
-                if type(frame) is not list or len(frame) != 5 or frame[0] != "meri.proxy.admission-read/1":
+                if (type(frame) is not list or not frame or frame[0] not in reads[channel]
+                        or len(frame) != (5 if frame[0] == "meri.proxy.admission-read/1" else 4)):
                     _deny()
             except (ValueError, TypeError, UnicodeError):
                 _deny()

@@ -413,6 +413,8 @@ class InstalledNativeStartup(unittest.IsolatedAsyncioTestCase):
                 async with actual_app.router.lifespan_context(actual_app):
                     self.assertTrue(invoker.registration_current())
                     self.assertIs(native.user_custom_auth, native_auth.authenticate_product_request)
+                    # One deployment: a cooldown after a single failure would only refuse the next turn for 5 s.
+                    self.assertIs(native.llm_router.disable_cooldowns, True)
                     await fixture.asyncSetUp()
                     fixture_started = True
                     async def once():

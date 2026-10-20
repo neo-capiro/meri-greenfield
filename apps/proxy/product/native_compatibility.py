@@ -20,7 +20,7 @@ VERSION = "1.104.2"
 UPSTREAM_COMMIT = "fc3920bf403124ad075bc04990f999f7e0612e12"
 AUTH_SOURCE_SHA256 = "c1d3372bff29536e18c83493b6a258592e01cbe97cf1363299b6a6eecf545682"
 BOOT_SOURCE_SHA256 = "5a1552faf88a46949806a75950be1cb505a57c4ac15f38ee4bf54843c12d020b"
-FIXED_CONFIG_SHA256 = "64860d829d7c022f6640b1a75eb48ad05dc2421d8e5e2bcdfdda50b421754d19"
+FIXED_CONFIG_SHA256 = "fd33b4aaf5d3c2566d86691b3c895c21e10633ad4ed1c08a8a6a0f3c104ef06f"
 _CONFIG = Path(__file__).with_name("litellm-product-config.yaml")
 _SETTINGS = {"custom_auth": HOOK, "custom_auth_run_common_checks": True,
              "fail_closed_budget_enforcement": True, "disable_budget_reservation": False}

@@ -6,6 +6,7 @@ import importlib
 import itertools
 import json
 import sys
+import time
 import types
 import unittest
 from unittest.mock import patch
@@ -155,6 +156,38 @@ class OwnerChannelTests(unittest.IsolatedAsyncioTestCase):
         result["usageResult"]["binding"]["native_body_sha256"] = native_sha
         result["usageResult"]["binding"]["raw_request_sha256"] = raw_sha
         return result
+
+    async def test_a_held_carrier_refuses_the_reserve_before_sending_and_never_poisons(self):
+        deadline = self.value["deadlineMs"]
+        self.now = lambda: deadline - 100  # The carrier wait is bounded by the 100 ms left.
+        port = FakeExchange(self.policy)
+        lock = owner_channel.owner_exchange_state(port, self.policy, self.host_gate)[3]["operation"]
+        await lock.acquire()
+        try:
+            with self.assertRaisesRegex(Exception, "^OWNER_CARRIER_BUSY$"):
+                await self.bridge(port).reserve(self.value, self.observation)
+        finally:
+            lock.release()
+        self.assertEqual(port.calls, [])
+        self.assertFalse(port.aborted)
+        self.assertTrue(self.host_gate.available)
+
+    async def test_the_reserve_exchange_clock_starts_once_its_carrier_is_held(self):
+        self.policy = replace(self.policy, max_exchange_ms=200)
+        started, deadline = time.monotonic(), self.value["deadlineMs"]
+        self.now = lambda: deadline - 5000 + int((time.monotonic() - started) * 1000)
+        port = FakeExchange(self.policy)
+        lock = owner_channel.owner_exchange_state(port, self.policy, self.host_gate)[3]["operation"]
+        await lock.acquire()
+        async def release():
+            await asyncio.sleep(.3)  # Longer than the whole 200 ms exchange budget.
+            lock.release()
+        releaser = asyncio.create_task(release())
+        receipt = await self.bridge(port).reserve(self.value, self.observation)
+        await releaser
+        self.assertEqual(receipt["state"], "UNKNOWN")
+        self.assertFalse(port.aborted)
+        self.assertTrue(self.host_gate.available)
 
     async def test_reservation_and_settlement_use_distinct_fresh_capture(self):
         port = FakeExchange(self.policy)

@@ -31,7 +31,7 @@ from .startup_config import (ProductProxyConfiguration, parse_product_proxy_star
 
 _NATIVE_CONFIG = Path(__file__).with_name("litellm-product-config.yaml")
 # Updated only with an independently reviewed change of the fixed product file.
-_NATIVE_SHA = "64860d829d7c022f6640b1a75eb48ad05dc2421d8e5e2bcdfdda50b421754d19"
+_NATIVE_SHA = "fd33b4aaf5d3c2566d86691b3c895c21e10633ad4ed1c08a8a6a0f3c104ef06f"
 _running = False
 # Reviewed constants rather than startup configuration, so the closed proxy
 # schema and its rendered bindings stay unchanged. Each attempt is a complete
