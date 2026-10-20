@@ -4,13 +4,14 @@ import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs'
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {copySessionJson} from '../../worker/qualification/checkpoint/session-store-data.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
+import {RUNNER_CAPTURE_MS} from '../../../packages/runtime/runner-load-budget.mjs';
 import {remoteOriginal} from './remote-task-boundary.mjs';
 import {assertNativeExecution} from './execution-broker.mjs';
 import {createCheckpointSdkSnapshot} from './checkpoint-snapshot.mjs';
 import {createWorkspaceCapture} from './workspace-capture.mjs';
 const fault=()=>Error('TASK_CHECKPOINT_SOURCE_UNKNOWN'),refuse=()=>{throw fault();};
 export function createTaskCheckpointSource(configuration){
- const c=own(configuration,['original','workspace','session','native','closeQuery'],['now','maxRequestMs']),original=remoteOriginal(c.original),now=c.now??Date.now,maxRequestMs=c.maxRequestMs??8000;
+ const c=own(configuration,['original','workspace','session','native','closeQuery'],['now','maxRequestMs']),original=remoteOriginal(c.original),now=c.now??Date.now,maxRequestMs=c.maxRequestMs??RUNNER_CAPTURE_MS;
  const settle=storageMethod(c.session,'settle'),snapshot=storageMethod(c.session,'snapshot'),closeSession=storageMethod(c.session,'close'),closeNative=storageMethod(c.native,'close'),inspectNative=storageMethod(c.native,'inspect'),closeQuery=storageMethod(c,'closeQuery'),assertFrozen=Object.hasOwn(c.session,'assertFrozen')?storageMethod(c.session,'assertFrozen'):null;
  if(typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)refuse();
  const workspace=createWorkspaceCapture({workspace:c.workspace,expiresAtMs:original.expiresAtMs,now});let state='pristine';

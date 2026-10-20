@@ -5,6 +5,7 @@ import {sdkSessionOperations} from '../../../packages/contracts/runtime-0.2/sess
 import {jsonBody,response} from '../../control/action-application/http.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {captureSessionMethods} from '../../worker/qualification/checkpoint/session-store-data.mjs';
+import {controlSessionRpcMs} from '../../../packages/runtime/runner-load-budget.mjs';
 const get=Object.fromEntries(['url','method','headers','body','signal'].map(k=>[k,Object.getOwnPropertyDescriptor(Request.prototype,k).get]));
 export function createNativeSdkSessionApplication(configuration){
  const {owner,snapshot,now=Date.now,maxRequestMs=3000,maxRequestBytes=9437184}=own(configuration,['owner'],['snapshot','now','maxRequestMs','maxRequestBytes']);
@@ -19,7 +20,8 @@ export function createNativeSdkSessionApplication(configuration){
   if(!/^Bearer [\x21-\x2b\x2d-\x7e]{1,8192}$/u.test(credential??''))return response({error:{code:'SDK_SESSION_REFUSED'}},401);
   if(!/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(header('content-type')??'')||![null,'identity'].includes(header('content-encoding')))return response({error:{code:'INVALID_SDK_SESSION_REQUEST'}},400);
   const length=header('content-length');if(length!==null&&(!/^(0|[1-9][0-9]*)$/u.test(length)||!Number.isSafeInteger(Number(length))||Number(length)>maxRequestBytes))return response({error:{code:'SDK_SESSION_REQUEST_LIMIT'}},413);
-  const deadlineMs=now()+maxRequestMs;life=createOperationLifetime({now,deadlineMs,signal:info.signal,errorFactory:code=>Object.assign(Error(code),{code})});
+  // One control margin inside the runner client's allowance for this operation, so control answers first.
+  const deadlineMs=now()+Math.min(maxRequestMs,controlSessionRpcMs(route[1]));life=createOperationLifetime({now,deadlineMs,signal:info.signal,errorFactory:code=>Object.assign(Error(code),{code})});
   const input=await jsonBody({...info,length:length===null?null:Number(length)},maxRequestBytes,life,life.check),method=route[1]==='list-subkeys'?'listSubkeys':route[1];
   const result=await life.run(signal=>(route[1]==='snapshot'?snapshotRead:methods[method])({credential:credential.slice(7),request:input,signal,deadlineMs}));life.check();return response(result);
  }catch(error){

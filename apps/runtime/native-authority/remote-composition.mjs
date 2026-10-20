@@ -34,6 +34,7 @@ import {capabilityDigest,matchesCapability,compileNativeTaskAccess} from './task
 import {exactOriginal} from './remote-task-boundary.mjs';
 import {compileNativePreparationIntent,matchPreparedDescriptorShape} from './preparation-intent.mjs';
 import {createPreparedNativeReads,captureReadRuntimeOptions} from './prepared-reads.mjs';
+import {RUNNER_CAPTURE_MS} from '../../../packages/runtime/runner-load-budget.mjs';
 export function createRemoteNativeController(configuration){
  const {runtimeConfiguration,transport,objects}=own(configuration,['runtimeConfiguration','transport'],['objects']);
  const pinned=compileNativeBrokerPlan({runtime:runtimeConfiguration.runtime,plan:runtimeConfiguration.plan,preparationIntent:runtimeConfiguration.preparationIntent});exactOriginal(transport.original,pinned.original);if(!matchesCapability(transport.credential,runtimeConfiguration.controlCapabilitySha256))throw Error('REMOTE_CONTROL_BINDING_REFUSED');
@@ -72,7 +73,7 @@ export function createRemoteNativeWorker(configuration){
  let nativeTask,activeQuery;const remoteQuery=createRemoteRunnerQuery({...c.processTransport,...(startupMaxRequestMs===undefined?{}:{startupMaxRequestMs}),...(c.preparationBudget?{startupBudget:c.preparationBudget}:{}),sdkOptions:sdkOptionsPin(i,c.original.binding),...(c.session?{restoration:sdkOptionsRestoration(c.original.binding,c.session)}:{})}),query=input=>{activeQuery=remoteQuery(input);return activeQuery;};
  const workspace=createSupervisorWorkspace({binding:c.original.binding,workspace:i.workspace,expiresAtMs:c.original.expiresAtMs,now:c.now??Date.now});
  if(c.capture&&c.session)throw Error('REMOTE_CAPTURE_CONFIGURATION');
- const capture=c.session?createTaskCheckpointSource({original:c.original,workspace:i.workspace,session:c.session,native:{close:()=>nativeTask.close(),inspect:value=>nativeTask.inspect(value)},closeQuery:()=>activeQuery.close(),now:c.now??Date.now,maxRequestMs:c.limits?.maxRequestMs??8000}):c.capture;
+ const capture=c.session?createTaskCheckpointSource({original:c.original,workspace:i.workspace,session:c.session,native:{close:()=>nativeTask.close(),inspect:value=>nativeTask.inspect(value)},closeQuery:()=>activeQuery.close(),now:c.now??Date.now,maxRequestMs:Math.min(c.limits?.maxRequestMs??RUNNER_CAPTURE_MS,RUNNER_CAPTURE_MS)}):c.capture;
  const application=createRemoteNativeTaskApplication({original:c.original,controlCapabilitySha256:c.controlCapabilitySha256,taskCapabilitySha256:c.taskCapabilitySha256,taskArn:c.taskArn,descriptorPolicy:{workspace:i.workspace,command:i.launchTemplate.command,configParentDirectory:i.configParentDirectory,secureStorageDirectory:i.secureStorageDirectory},preparationAuthorizer:createNativePreparationClient({native:c.native,...(taskPreparationBudget?{startupBudget:taskPreparationBudget}:{})}),nativeFactory({original,descriptor}){
   // Task-side shape check only; the preparation authority verifies the exact issued credential (and its own continuation) before any
   // launch. A continuation run's arguments come from the restoration this task's SDK session mirror was initialized with; no mirror: fresh.

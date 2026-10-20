@@ -5,6 +5,7 @@ import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts
 import {assertWorkerAuthorization} from '../../../packages/contracts/runtime-0.2/validate.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
+import {CONTROL_CHECKPOINT_CAPTURE_MS} from '../../../packages/runtime/runner-load-budget.mjs';
 import {assertCaptureReceipt} from '../../worker/conversation/continuation/native-receipts.mjs';
 import {remoteOriginal} from './remote-task-boundary.mjs';
 import {checkpointIdentity,publishCapturedCheckpoint} from './checkpoint-publication.mjs';
@@ -21,7 +22,7 @@ export function createNativeCompletionCapture(configuration){
   const v=own(value,['binding','request','versions','scopes','sessionId','contextSha256'],['signal','typedResult']),{signal,...rest}=v,input=data(rest);nativeSignal(signal);validateShape('RunBinding',input.binding);
   if(!enabled||!same(input.binding,original.binding)||!same(input.versions,original.versions)||!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(input.sessionId)||signal?.aborted||now()>=original.expiresAtMs)throw fault();
   const typed=input.typedResult===undefined?undefined:assertTypedResult(input.typedResult,{binding:original.binding,sourceRequestSha256:hash(input.request),sessionId:input.sessionId});
-  const life=createOperationLifetime({now,signal,deadlineMs:Math.min(now()+maxRequestMs,original.expiresAtMs),errorFactory:fault});let pins,policyRevision,identity,proof,typedSelection,captureExpiresAtMs=original.expiresAtMs;
+  const life=createOperationLifetime({now,signal,deadlineMs:Math.min(now()+Math.min(maxRequestMs,CONTROL_CHECKPOINT_CAPTURE_MS),original.expiresAtMs),errorFactory:fault});let pins,policyRevision,identity,proof,typedSelection,captureExpiresAtMs=original.expiresAtMs;
   async function selected(){
    if(!readFacts){if(typed)throw fault();return;}
    const entry=data(await life.run(signal=>readFacts({binding:original.binding,signal})));life.check();

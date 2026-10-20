@@ -6,7 +6,7 @@ import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {jsonBody} from '../../control/action-application/http.mjs';
 import {remoteOriginal,exactOriginal} from './remote-task-boundary.mjs';
 import {taskRouterFault,taskRouterBody,taskRouterOperation,createTaskRouterIngress} from './task-router-boundary.mjs';
-import {RUNNER_NATIVE_STARTUP_ROUTER_MS} from '../../../packages/runtime/runner-load-budget.mjs';
+import {RUNNER_NATIVE_STARTUP_ROUTER_MS,TASK_ROUTER_CAPTURE_MS} from '../../../packages/runtime/runner-load-budget.mjs';
 import {createExchangeRecord,writeEventLine} from './exchange-diagnostics.mjs';
 const getters=Object.fromEntries(['url','method','headers','body','signal'].map(k=>[k,Object.getOwnPropertyDescriptor(Request.prototype,k).get]));
 const reply=(status=403)=>Response.json({error:{code:status===503?'TASK_ROUTER_UNAVAILABLE':'TASK_ROUTER_REFUSED'}},{status,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
@@ -14,6 +14,7 @@ const pin=candidate=>hash(Object.fromEntries(Object.entries(candidate).filter(([
 // A forwarded prepare/start encloses the receiver's whole SDK process preparation, including its nested
 // authority calls back through control. It receives the startup allowance instead of the per-exchange one.
 const startupOperations=new Set(['prepare','start']);
+// A forwarded capture encloses the runner's whole checkpoint capture, including its session reads back through control.
 // Stops are bounded apart from ordinary forwarding. More than one is admitted because the runner's own stop and control's final
 // stop for the same original overlap when a runner fails; admitting only one refuses control's stop and the runner then waits for it.
 const maxCleanupRequests=8;
@@ -35,7 +36,7 @@ export function createTaskRouterApplication(configuration){
    reservation=maxRequestBytes+maxResponseBytes;
    if((cleanup?cleanups.size>=maxCleanupRequests:active.size-cleanups.size>=maxConcurrent)||reservation>(cleanup?maxBufferedBytes:maxBufferedBytes-4194304)-reservedBytes){reservation=0;throw taskRouterFault();}
    reservedBytes+=reservation;controller=new AbortController();active.add(controller);if(cleanup)cleanups.add(controller);
-   life=createOperationLifetime({now,signal:AbortSignal.any([info.signal,controller.signal]),deadlineMs:now()+(startupOperations.has(operation)?startupMaxRequestMs:maxRequestMs),errorFactory:code=>{record.fail(code);return taskRouterFault();}});
+   life=createOperationLifetime({now,signal:AbortSignal.any([info.signal,controller.signal]),deadlineMs:now()+(startupOperations.has(operation)?startupMaxRequestMs:operation==='capture'?TASK_ROUTER_CAPTURE_MS:maxRequestMs),errorFactory:code=>{record.fail(code);return taskRouterFault();}});
    record.phase('body');const input=taskRouterBody(await jsonBody({body:info.body,length:declared===null?null:Number(declared)},maxRequestBytes,life,life.check),operation),original=remoteOriginal(input.original);record.bind(original);
    if(!cleanup)life.limitDeadline(original.expiresAtMs);
    const authority=()=>life.run(signal=>verify({original,operation,credential:authorization.slice(7),signal,check:life.check}));

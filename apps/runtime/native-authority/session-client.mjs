@@ -8,10 +8,11 @@ import {createRunBoundSessionStore,copySessionEntries,copySessionTranscript,scop
 import {copySessionJson} from '../../worker/qualification/checkpoint/session-store-data.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {pinnedStatusRefusal} from '../runner-runtime-diagnostics.mjs';
+import {RUNNER_SESSION_RPC_MS,RUNNER_SESSION_STORE_CALL_MS} from '../../../packages/runtime/runner-load-budget.mjs';
 const fail=code=>{throw Object.assign(Error(code),{code});},get=Object.fromEntries(['status','headers','body','redirected'].map(k=>[k,Object.getOwnPropertyDescriptor(Response.prototype,k).get]));
 export function createNativeSdkSessionClient(configuration){
- const {origin,credential,binding,fetchImpl,now=Date.now,maxRequestMs=3000,maxResponseBytes=35651584,startupMaxRequestMs,startupExpiresAtMs}=own(configuration,['origin','credential','binding','fetchImpl'],['now','maxRequestMs','maxResponseBytes','startupMaxRequestMs','startupExpiresAtMs']);
- let url;try{url=new URL(origin);}catch{fail('SDK_SESSION_CONFIGURATION');}if(url.protocol!=='https:'||url.pathname!=='/'||url.username||url.password||url.search||url.hash||typeof credential!=='string'||!credential||!/^\S{1,8192}$/u.test(credential)||typeof fetchImpl!=='function'||types.isProxy(fetchImpl)||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000||!Number.isSafeInteger(maxResponseBytes)||maxResponseBytes<1||maxResponseBytes>35651584||(startupMaxRequestMs===undefined)!==(startupExpiresAtMs===undefined)||startupMaxRequestMs!==undefined&&(!Number.isSafeInteger(startupMaxRequestMs)||startupMaxRequestMs<1||startupMaxRequestMs>23000||!Number.isSafeInteger(startupExpiresAtMs)||startupExpiresAtMs<1))fail('SDK_SESSION_CONFIGURATION');
+ const {origin,credential,binding,fetchImpl,now=Date.now,maxRequestMs,maxResponseBytes=35651584,startupMaxRequestMs,startupExpiresAtMs}=own(configuration,['origin','credential','binding','fetchImpl'],['now','maxRequestMs','maxResponseBytes','startupMaxRequestMs','startupExpiresAtMs']);
+ let url;try{url=new URL(origin);}catch{fail('SDK_SESSION_CONFIGURATION');}if(url.protocol!=='https:'||url.pathname!=='/'||url.username||url.password||url.search||url.hash||typeof credential!=='string'||!credential||!/^\S{1,8192}$/u.test(credential)||typeof fetchImpl!=='function'||types.isProxy(fetchImpl)||typeof now!=='function'||maxRequestMs!==undefined&&(!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)||!Number.isSafeInteger(maxResponseBytes)||maxResponseBytes<1||maxResponseBytes>35651584||(startupMaxRequestMs===undefined)!==(startupExpiresAtMs===undefined)||startupMaxRequestMs!==undefined&&(!Number.isSafeInteger(startupMaxRequestMs)||startupMaxRequestMs<1||startupMaxRequestMs>23000||!Number.isSafeInteger(startupExpiresAtMs)||startupExpiresAtMs<1))fail('SDK_SESSION_CONFIGURATION');
  const ownedBinding=assertSdkSessionRequestHeaders('load',{binding,key:{projectKey:'validation-only',sessionId:'11111111-1111-4111-8111-111111111111'}}).binding;
  // Only the first real request for each pre-model mirror operation may use
  // the trusted startup window. Every later call keeps the ordinary cap.
@@ -19,7 +20,8 @@ export function createNativeSdkSessionClient(configuration){
  async function call(operation,value,{signal,deadlineMs}={}){
   const fields=own(value,operation==='snapshot'?[]:['key',...(operation==='append'?['appendId','expectedOffset','entriesSha256','entries']:[])]),headers=operation==='snapshot'?{binding:ownedBinding}:assertSdkSessionRequestHeaders(operation,{binding:ownedBinding,...fields}),entries=operation==='append'?copySessionEntries(fields.entries):undefined;
   if(entries!==undefined&&hash(entries)!==headers.entriesSha256)fail('INVALID_SDK_SESSION_REQUEST');const body=JSON.stringify({...headers,...(entries===undefined?{}:{entries})});if(Buffer.byteLength(body)>9437184)fail('SDK_SESSION_REQUEST_LIMIT');
-  const started=now(),startup=startupPending.delete(operation),requestMs=startup?startupMaxRequestMs:maxRequestMs;
+  // Each operation takes its own allowance from the stage table; `maxRequestMs` only lowers it.
+  const started=now(),startup=startupPending.delete(operation),requestMs=startup?startupMaxRequestMs:Math.min(maxRequestMs??Infinity,RUNNER_SESSION_RPC_MS[operation]);
   const life=createOperationLifetime({now,deadlineMs:Math.min(deadlineMs??started+requestMs,started+requestMs,...(startup?[startupExpiresAtMs]:[])),signal,errorFactory:code=>Object.assign(Error('SDK_SESSION_'+code),{code:'SDK_SESSION_'+code})});let reader,response;
   try{response=await life.run(signal=>{const pending=Promise.resolve(fetchImpl(url.origin+'/v1/runner/session/'+operation,{method:'POST',redirect:'error',credentials:'omit',cache:'no-store',headers:{authorization:'Bearer '+credential,'content-type':'application/json'},body,signal}));pending.then(r=>{if(life.signal.aborted)try{get.body.call(r)?.cancel().catch(()=>{});}catch{}},()=>{});return pending;});
    if(types.isProxy(response)||!(response instanceof Response)||get.redirected.call(response))fail('SDK_SESSION_UNAVAILABLE');
@@ -42,7 +44,7 @@ export function createNativeSdkSessionClient(configuration){
 
 /** Existing run-bound SDK adapter supplies queue bounds and uncertainty barrier. */
 export function createNativeBoundSdkSessionStore(configuration){
- const {client,binding,sessionKey,timeoutMs=3000}=own(configuration,['client','binding','sessionKey'],['timeoutMs']);
+ const {client,binding,sessionKey,timeoutMs=RUNNER_SESSION_STORE_CALL_MS}=own(configuration,['client','binding','sessionKey'],['timeoutMs']);
  const admitted=Object.freeze(Object.fromEntries(['register','load','append','listSubkeys'].map(name=>[name,storageMethod(client,name)])));
  const key=scopedSessionKey(sessionKey,sessionKey,true),offsets=new Map();
  const name=k=>k.subpath??'';

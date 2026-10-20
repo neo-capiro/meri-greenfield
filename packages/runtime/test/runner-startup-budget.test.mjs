@@ -13,9 +13,9 @@ test('startup stages retain their own cap and all later caps before settlement',
   'starting','setup','running','nativePrepare','nativeStart','session',
  ]);
  assert.equal(budget.stages.bootstrap.maxMs,23_000);
- assert.equal(budget.stages.local.maxMs,3_000);
+ assert.equal(budget.stages.local.maxMs,10_000,'the continuation snapshot read and one control margin');
  assert.equal(budget.stages.setup.maxMs,23_000);
- assert.deepEqual(budget.stages.load,{maxMs:23_000,expiresAtMs:expiry-466_000});
+ assert.deepEqual(budget.stages.load,{maxMs:23_000,expiresAtMs:expiry-473_000});
  assert.equal(budget.stages.session.expiresAtMs,expiry-budget.reserveMs);
  for(let i=0;i<RUNNER_STARTUP_STAGE_ORDER.length-1;i++){
   const current=budget.stages[RUNNER_STARTUP_STAGE_ORDER[i]];
@@ -23,7 +23,7 @@ test('startup stages retain their own cap and all later caps before settlement',
   assert.equal(next.expiresAtMs-current.expiresAtMs,next.maxMs);
  }
  assert.equal(budget.stages.bootstrap.expiresAtMs-budget.stages.bootstrap.maxMs,
-  expiry-budget.reserveMs-256_000);
+  expiry-budget.reserveMs-263_000);
  assert.ok(Object.isFrozen(budget)&&Object.isFrozen(budget.stages)&&Object.isFrozen(budget.stages.load));
  assert.deepEqual(runnerLoadBudget({requestMs:25_000,shutdownMs:10_000,originalExpiresAtMs:expiry}),budget.stages.load);
 });
