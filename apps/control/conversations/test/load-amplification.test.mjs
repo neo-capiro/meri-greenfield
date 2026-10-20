@@ -147,16 +147,20 @@ test('legacy session ports retain the original fresh pair at every load boundary
   }
 });
 
-test('non-load worker publish retains separate authentication and current observations',async()=>{
-  const current=await one({mode:'dynamic',route:'publish'}),legacy=await one({mode:'dynamic',route:'publish',legacySessions:true});
-  for(const result of [current,legacy]){
-    assert.equal(result.outcome,'200',JSON.stringify(result));assert.equal(result.coreCalls,42,JSON.stringify(result));
-    assert.equal(result.counts.taskAuthorization,3);assert.equal(result.counts.append,1);assert.equal(result.counts.retention,2);
-    assert.equal(result.counts.journalExecution,0);assert.deepEqual(result.value.scopes,scopes);
+test('worker publish cross-checks its new session with one observation; the service keeps its separate pair before the write',async()=>{
+  for(const [mode,owner,legacyCalls] of [['fixed',31,35],['dynamic',37,42]]){
+    const current=await one({mode,route:'publish'}),legacy=await one({mode,route:'publish',legacySessions:true});
+    for(const result of [current,legacy]){
+      assert.equal(result.outcome,'200',JSON.stringify(result));
+      assert.equal(result.counts.taskAuthorization,3);assert.equal(result.counts.append,1);assert.equal(result.counts.retention,2);
+      assert.equal(result.counts.journalExecution,0);assert.deepEqual(result.value.scopes,scopes);
+    }
+    // Before: 35 (fixed) / 42 (dynamic) for both ports. Only the worker's session/task cross-check changed: one owner resolve
+    // (identity, membership, context, membership) instead of an authenticate + current-state pair.
+    assert.equal(current.coreCalls,owner,JSON.stringify(current));assert.equal(legacy.coreCalls,legacyCalls,JSON.stringify(legacy));
+    assert.equal(legacy.counts.identity-current.counts.identity,1);assert.equal(legacy.counts.membership-current.counts.membership,2);
   }
-  assert.deepEqual(current.counts,legacy.counts);
 });
-
 test('the lifecycle control page is read with the task authority alone: two task verifies, no session',async()=>{
   // Before: 67 (fixed) / 82 (dynamic) Core calls: a task verify, a session issue and pair, a middle verify, the lifecycle
   // service's own session observations and gated history read on both sides of the journal read, and a final verify.

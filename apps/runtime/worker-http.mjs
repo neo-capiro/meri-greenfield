@@ -26,8 +26,10 @@ export function createWorkerRunApplication({service,sessions,native,configuratio
   if(route[1]==='next-controls'){if(typeof service[taskControlPage]!=='function')throw fault('WORKER_REQUEST_REFUSED');
    result=await life.run(signal=>service[taskControlPage]({binding:pinned.binding,scopes:pinned.scopes,selectedClientId:pinned.selectedClientId,after:input.after??0,signal}));}
   else{session=await life.run(signal=>sessions.issue({identityCredential:authorization.identityCredential,hints:{conversationId:input.binding.conversationId,runId:input.binding.runId,clientId:authorization.selectedClientId},signal}));
+  // This observation only cross-checks the new session against the task authority; the service observes the session again (as a
+  // separate pair for every effect) immediately before it reads or writes, so one complete observation suffices here.
   let current;
-  if(route[1]==='load'&&readCurrent)({current}=await life.run(signal=>readCurrent({credential:session.credential,signal})));
+  if(readCurrent)({current}=await life.run(signal=>readCurrent({credential:session.credential,signal})));
   else{const authentication=await life.run(signal=>sessions.authenticateSession({credential:session.credential,signal}));current=await life.run(signal=>sessions.readCurrentState({authentication,signal}));}
   if(!same(current.binding,pinned.binding)||!same(current.scopes,pinned.scopes)||current.selectedClientId!==pinned.selectedClientId)throw fault('WORKER_AUTHORITY_CHANGED');
   await fresh();result=await life.run(signal=>service[runOwnerOperations[route[1]]]({credential:session.credential,...input,signal}));}
