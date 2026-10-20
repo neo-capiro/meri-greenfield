@@ -43,6 +43,9 @@ test('all five roles render from throwaway PKI and pass every repository validat
  parseTemporalIssuerRuntimeConfiguration(parsed('temporal-issuer'));
  assert.equal(validateProductOwnerConfiguration(parsed('model-owner')).enabled,true);
  parseProductProxyStartupConfiguration(parsed('model-proxy'));
+ // One model request makes two owner exchanges, each with fresh pair discoveries on both sides (adj-e-PROXY-DENIED.md, attempt 2).
+ assert.equal(parsed('model-owner').limits.maxRequestMs,15000);assert.equal(parsed('model-proxy').ownerPeer.max_exchange_ms,15000);
+ const longer=parsed('model-proxy');longer.ownerPeer.max_exchange_ms=15001;assert.throws(()=>parseProductProxyStartupConfiguration(longer));
  for(const role of ROLES){
   const plan=compileProductMaterialPlan({role,configuration:parsed(role),runtimeUser:RUNTIME_USERS[role],...(role==='model-owner'?{controlConfiguration:control}:{})});
   assert.deepEqual(plan.requiredFiles.map(f=>f.path).sort(),Object.keys(roles[role].expected.sha256ByPath).sort(),role);
@@ -128,6 +131,8 @@ test('fail closed: PENDING values, foreign subnet, mismatched pins, validity bey
  await assert.rejects(render(i=>{i.stage3.taskDefinitions.control=i.stage3.taskDefinitions.control.replace(/:1$/u,'');}),{code:'RENDER_INPUT_REFUSED'});
  await assert.rejects(render(x=>x,{validityDays:31}),{code:'RENDER_VALIDITY_REFUSED'});
  await assert.rejects(render(i=>{i.runtime.preparationIntent.runnerSha256='0'.repeat(64);}),{code:'RENDER_INPUT_REFUSED'});
+ // A source commit missing from the local clone cannot be measured: refuse rather than trust the supplied runnerSha256.
+ await assert.rejects(render(i=>{i.deployment.images.nodeRuntimeSourceCommit='f'.repeat(40);}),{code:'RENDER_INPUT_REFUSED',message:/fetch it before rendering/u});
 });
 
 test('CLI writes a new 0700 directory outside the repository and refuses one inside it',async()=>{

@@ -1,6 +1,7 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {createTaskRouterApplication} from '../task-router.mjs';
 import {taskRouterFixture} from './task-router-fixture.mjs';
+import {TASK_ROUTER_CAPTURE_MS,CONTROL_CAPTURE_CHANNEL_MS} from '../../../../packages/runtime/runner-load-budget.mjs';
 function fixture(options={}){
  const f=taskRouterFixture();let networkHook=()=>{},connectHook=async()=>{},sendHook=async()=>({status:200,body:Buffer.from(JSON.stringify({original:f.original,receipt:{physicalStopProven:true}}))});
  const router=createTaskRouterApplication({authority:f.authority,privateIngress:f.privateIngress,networkReader:{async observe(){f.counts.network++;await networkHook();return {...f.candidate,checkedAtMs:Date.now()};}},connector:{async connect(value){f.counts.connect++;await connectHook(value);return {async send(input){f.counts.send++;return sendHook(input);},close(){f.counts.close++;}};}},enabled:true,...options});
@@ -37,6 +38,12 @@ test('authenticated stop has a reserved saturation slot, cancels in-flight work 
  const f=fixture({maxConcurrent:1,maxBufferedBytes:8388608}),entered=Promise.withResolvers();f.onSend(async input=>{if(input.operation==='stop')return {status:200,body:Buffer.from(JSON.stringify({original:f.original,receipt:{physicalStopProven:true}}))};entered.resolve();return new Promise((resolve,reject)=>{input.signal.addEventListener('abort',()=>reject(Error('stopped')),{once:true});});});
  const pending=f.post();await entered.promise;const stopped=await f.post('stop',f.taskCredential);assert.equal(stopped.status,200);assert.equal((await pending).status,403);assert.equal((await f.post()).status,403);assert.equal(f.counts.send,2);f.router.close();
 });
+test('the runner\'s own stop and control\'s final stop for the same original are both forwarded, neither cancels the other',async()=>{
+ const f=fixture(),sent=[],first=Promise.withResolvers();f.onSend(async input=>{sent.push(input.authorization);if(sent.length===1){await first.promise;if(input.signal.aborted)throw Error('cancelled');}return {status:200,body:Buffer.from(JSON.stringify({original:f.original,receipt:{physicalStopProven:true}}))};});
+ const runnerStop=f.post('stop',f.taskCredential);while(sent.length===0)await new Promise(resolve=>setImmediate(resolve));
+ const controlStop=await f.post('stop',f.controlCredential);first.resolve();
+ assert.equal(controlStop.status,200);assert.equal((await runnerStop).status,200);assert.deepEqual(sent,['Bearer '+f.taskCredential,'Bearer '+f.controlCredential]);assert.equal((await f.post()).status,403);f.router.close();
+});
 test('oversized request and foreign downstream response are refused without successful release',async()=>{
  const f=fixture(),request=new Request('https://router.invalid/v1/native-task/inspect',{method:'POST',headers:{authorization:'Bearer '+f.controlCredential,'content-type':'application/json','content-length':'2097153'},body:JSON.stringify({original:f.original})});
  assert.equal((await f.router.privateApplication.handle(request,{ingress:f.ingress})).status,403);assert.equal(f.counts.connect,0);
@@ -44,4 +51,11 @@ test('oversized request and foreign downstream response are refused without succ
 });
 test('deadline closes a late TLS connection and never sends its credential',async()=>{
  const f=fixture({maxRequestMs:20}),release=Promise.withResolvers();f.onConnect(()=>release.promise);assert.equal((await f.post()).status,403);release.resolve();await new Promise(resolve=>setImmediate(resolve));assert.equal(f.counts.send,0);assert.equal(f.counts.close,1);f.router.close();
+});
+test('a forwarded capture keeps its own allowance, longer than an ordinary exchange and inside the capture channel',async t=>{
+ t.mock.timers.enable({apis:['setTimeout','Date'],now:Date.now()});
+ const f=fixture({maxRequestMs:8000}),answer=TASK_ROUTER_CAPTURE_MS-1000;f.onSend(input=>new Promise(resolve=>setTimeout(()=>resolve({status:200,body:Buffer.from(JSON.stringify({original:f.original,capture:{synthetic:true}}))}),answer)));
+ assert.ok(answer>8000&&TASK_ROUTER_CAPTURE_MS<CONTROL_CAPTURE_CHANNEL_MS);
+ const pending=f.post('capture',f.controlCredential,{request:{synthetic:true}});for(let i=0;i<20&&f.counts.send===0;i++)await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(f.counts.send,1);t.mock.timers.tick(answer);assert.equal((await pending).status,200);f.router.close();
 });

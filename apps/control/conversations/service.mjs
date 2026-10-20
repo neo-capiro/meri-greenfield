@@ -1,5 +1,6 @@
 /** Authenticated request/history control; policy remains in existing session owners. */
 import {randomUUID} from 'node:crypto';
+import {setTimeout as delay} from 'node:timers/promises';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {resolveWindow} from '../../../packages/window-resolution/index.mjs';
 import {selectSkill} from '../../../packages/skills/index.mjs';
@@ -11,11 +12,12 @@ import {assertOriginalInputFacts,assertOriginalInputActive,assertOriginalInputAc
 import {ProductError} from '../product-access/errors.mjs';
 import {authenticatedCurrentState} from '../action-host/session/owner.mjs';
 import {own,bounded,same,hash,fail,uuid,validateShape,terminal} from './boundary.mjs';
-/** Cleanup-only read used by the lifecycle owner's cancellation path: the same authenticated history without the retention serving gate,
- * so trusted cancellation still stops work for a suppressed subject. Not a public intent. */
-export const cleanupRead=Symbol('conversation.cleanupRead');
 /** Trusted lifecycle composition only. Keeps its read inside the basic load's authorization lifetime. */
 export const loadWithLifecycle=Symbol('conversation.loadWithLifecycle');
+/** Events released per observation page: the history route's own page maximum. */
+const OBSERVE_PAGE_EVENTS=100;
+/** An idle observation window closes this long before its cap: more than one timer tick of lateness (Windows ~15.6 ms) plus loop lag. */
+const WINDOW_END_SLACK_MS=50;
 export function createConversationService({sessions,store,dispatcher,versions,fiscalCalendars=[],now=Date.now,newId=randomUUID,maxRequestMs=3000,selectedSkillAdmission,selectedOutputPublication,retention,capabilityPolicy,runBudgets}){
  const readCurrent=authenticatedCurrentState(sessions);
  const admissionPort=selectedSkillAdmission===undefined?undefined:own(selectedSkillAdmission,['admitSelection'],['currentSkillRun']),publicationPort=selectedOutputPublication===undefined?undefined:own(selectedOutputPublication,['prepareEvent']);
@@ -33,9 +35,13 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
  const retentionGate=retention===undefined?undefined:own(retention,['assertServable'],['isSuppressed','withRelease']);
  if(retentionGate!==undefined&&(typeof retentionGate.assertServable!=='function'||Object.hasOwn(retentionGate,'withRelease')&&typeof retentionGate.withRelease!=='function'))fail('CONTROL_CONFIGURATION');
  validateShape('RuntimeVersions',versions);versions=bounded(versions);fiscalCalendars=bounded(fiscalCalendars);if(['authenticateSession','readCurrentState'].some(k=>typeof sessions?.[k]!=='function')||['accept','append','read'].some(k=>typeof store?.[k]!=='function')||['start','cancel'].some(k=>typeof dispatcher?.[k]!=='function')||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('CONTROL_CONFIGURATION');
- async function operation(credential,signal,body,{cleanup=false,load=false}={}){if(typeof credential!=='string'||!credential||credential.length>8192)fail('SESSION_REFUSED');const life=createOperationLifetime({deadlineMs:now()+maxRequestMs,now,signal,errorFactory:failError});let pinned,authorityExpiresAtMs=Number.MAX_SAFE_INTEGER;
+ // untilMs: an observation window whose body releases nothing without its own post-read fresh(); it ends at untilMs instead of
+ // maxRequestMs and skips the trailing recheck, which would only repeat the last release's.
+ async function operation(credential,signal,body,{cleanup=false,untilMs}={}){if(typeof credential!=='string'||!credential||credential.length>8192)fail('SESSION_REFUSED');const life=createOperationLifetime({deadlineMs:untilMs??now()+maxRequestMs,now,signal,errorFactory:failError});let pinned,authorityExpiresAtMs=Number.MAX_SAFE_INTEGER;
+  // One pass is one complete session observation: the registered owner's fused reader resolves the session once and yields both
+  // receipts. A plain session port keeps the authenticate + current-state pair.
   async function fresh(){const started=now();let authentication,current;
-   if(load&&readCurrent)({authentication,current}=bounded(await life.run(signal=>readCurrent({credential,signal,deadlineMs:started+maxRequestMs}))));
+   if(readCurrent)({authentication,current}=bounded(await life.run(signal=>readCurrent({credential,signal,deadlineMs:started+maxRequestMs}))));
    else{authentication=bounded(await life.run(signal=>sessions.authenticateSession({credential,signal,deadlineMs:started+maxRequestMs})));current=bounded(await life.run(signal=>sessions.readCurrentState({authentication,signal,deadlineMs:started+maxRequestMs})));}
    if(current.authenticationSha256!==hash(authentication)||authentication.principal?.tenantId!==current.binding?.tenantId||authentication.principal?.actorId!==current.binding?.actorId||authentication.principal?.conversationId!==current.binding?.conversationId||authentication.principal?.runId!==current.binding?.runId)fail('SESSION_REFUSED');validateShape('RunBinding',current.binding);if(!Array.isArray(current.scopes)||!current.scopes.length||current.scopes.length>100)fail('SCOPE_REFUSED');
    for(const scope of current.scopes){validateShape('Scope',scope);if(scope.tenantId!==current.binding.tenantId)fail('SCOPE_REFUSED');}if(new Set(current.scopes.map(hash)).size!==current.scopes.length||new Set(current.scopes.map(s=>s.policyRevision)).size!==1)fail('SCOPE_REFUSED');
@@ -44,7 +50,7 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
    if(retentionGate&&!cleanup){await life.run(()=>retentionGate.assertServable({tenantId:pinned.binding.tenantId,kind:'conversation',subjectId:pinned.binding.conversationId}));life.check();}
    return pinned;
   }
-  try{const context=await fresh();const result=await body(context,life,fresh,()=>authorityExpiresAtMs);await fresh();life.check();return result;}finally{life.close();}
+  try{const context=await fresh();const result=await body(context,life,fresh,()=>authorityExpiresAtMs);if(untilMs===undefined)await fresh();life.check();return result;}finally{life.close();}
  }
  const event=(binding,scopes,type,data)=>({contractVersion:'0.1.0',eventId:newId(),binding,sequence:1,createdAt:new Date(now()).toISOString(),scopes,type,data});
  function inputIntent(raw){const i=bounded(raw);own(i,['requestId','prompt'],['skill','windowRequest']);uuid(i.requestId);if(typeof i.prompt!=='string'||!i.prompt.trim()||i.prompt.length>100000)fail('INVALID_REQUEST');if(i.windowRequest)retrievalShape('WindowRequest',i.windowRequest);return i;}
@@ -91,9 +97,35 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
    return release(saved);});
  }
  const submit=input=>acceptInput(input,true),admitInput=input=>acceptInput(input,false);
- async function history({credential,after=0,limit=100,signal}){return operation(credential,signal,async(c,life)=>{
-  // An admitted conversation has no run row until its first input is accepted: that is "no saved turns yet" (404), not corruption.
-  const result=typeof store.readOptional==='function'?await life.run(()=>store.readOptional(c.binding,{after,limit},life.check)):await life.run(()=>store.read(c.binding,{after,limit},life.check));if(result===null)fail('NOT_FOUND');if(!same(result.run.scopes,c.scopes))fail('SCOPE_REFUSED');return result;});}
+ // One saved page under the pinned context. An admitted conversation has no run row until its first input is accepted: that is
+ // "no saved turns yet" (404), not corruption.
+ async function readPage(c,life,after,limit){const result=typeof store.readOptional==='function'?await life.run(()=>store.readOptional(c.binding,{after,limit},life.check)):await life.run(()=>store.read(c.binding,{after,limit},life.check));if(result===null)fail('NOT_FOUND');if(!same(result.run.scopes,c.scopes))fail('SCOPE_REFUSED');return result;}
+ async function history({credential,after=0,limit=100,signal}){return operation(credential,signal,(c,life)=>readPage(c,life,after,limit));}
+ /** Event-stream window until untilMs. Polls read only the store. A page of new events is passed to deliver only after a complete
+  * fresh recheck that started after the page was read, as history releases; an idle window also rechecks once idleRecheckMs has
+  * passed since the last one, so revocation or suppression ends it. Latency bound: no event is released after a refusal; an idle
+  * window notices a refusal within idleRecheckMs plus one poll and one recheck. Returns once the run is terminal and fully
+  * delivered, or at untilMs. opened(run), when given, is called once with the first authorized page's run before anything is
+  * delivered, so a caller can validate its selector and cursor without a separate history read. */
+ async function observe({credential,after=0,untilMs,pollMs,idleRecheckMs,signal,deliver,opened}){
+  if(typeof deliver!=='function'||opened!==undefined&&typeof opened!=='function'||![after,untilMs,pollMs,idleRecheckMs].every(Number.isSafeInteger)||after<0||pollMs<1||idleRecheckMs<1)fail('SUBSCRIPTION_CONFIGURATION');
+  const begun=now();
+  return operation(credential,signal,async(c,life,fresh)=>{let cursor=after,checkedAt=now(),longest=checkedAt-begun,first=true;
+   // A recheck still running at untilMs ends the window with an error instead of a clean close. One is started only when the
+   // longest recheck seen in this window (the opening one included) still fits; otherwise the window closes now, releasing nothing
+   // that was not rechecked after its read, and the reconnect resumes from the same cursor.
+   const recheck=async()=>{if(untilMs-now()<longest+WINDOW_END_SLACK_MS)return false;const started=now();await fresh();checkedAt=now();longest=Math.max(longest,checkedAt-started);return true;};
+   while(now()<untilMs){const page=await readPage(c,life,cursor,OBSERVE_PAGE_EVENTS);
+    if(first){first=false;opened?.(page.run);}
+    if(page.events.length){if(!await recheck())return;deliver(page.events);cursor=page.events.at(-1).sequence;}
+    if(terminal(page.run.state)&&(!page.events.length||cursor===page.lastSequence))return;
+    if(page.events.length)continue;
+    if(now()-checkedAt>=idleRecheckMs&&!await recheck())return;
+    // Never sleep into the window deadline: the lifetime timer enforces the hard cap and, firing first, would turn a clean idle
+    // end into an error. The idle window ends WINDOW_END_SLACK_MS early so a late poll timer cannot reach the cap.
+    const left=untilMs-now()-WINDOW_END_SLACK_MS;if(left<=0)return;
+    await life.run(signal=>delay(Math.min(pollMs,left),undefined,{signal}));
+   }},{untilMs});}
  async function cancel({credential,signal}){return operation(credential,signal,async(c,life,fresh)=>{const old=await life.run(()=>store.read(c.binding,{after:0,limit:1},life.check));if(!same(old.run.scopes,c.scopes))fail('SCOPE_REFUSED');if(!terminal(old.run.state)){await fresh();const e=event(c.binding,c.scopes,'run.status',{state:'cancelled',reasonCode:'USER_CANCELLED'});await life.run(()=>store.append(c.binding,e,life.check,c.scopes));}await fresh();await life.run(signal=>dispatcher.cancel({binding:c.binding,signal}));return {state:terminal(old.run.state)?old.run.state:'cancelled'};},{cleanup:true});}
  async function loadForExecution({credential,binding,signal},readLifecycle){validateShape('RunBinding',binding);return operation(credential,signal,async(c,life,fresh)=>{
   if(!same(c.binding,binding))fail('STALE_WRITER');
@@ -112,7 +144,7 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
   }
   if(extra&&lineage?.nextTurn)fail('EXECUTION_LINEAGE_AMBIGUOUS');
   return {run:result.run,request:result.request,...(lineage??{}),...(capabilities===null?{}:{capabilities}),...(budgets===null?{}:{runBudgets:budgets}),...(extra??{})};
- },{load:true});}
+ });}
  async function publish({credential,binding,event,signal}){validateShape('RunBinding',binding);const e=bounded(event);own(e,['eventId','createdAt','type','data']);if(!['run.status','message.delta'].includes(e.type))fail('EVENT_TYPE_REFUSED');return operation(credential,signal,async(c,life)=>{if(!same(c.binding,binding))fail('STALE_WRITER');const result=await life.run(()=>store.append(binding,e,life.check,c.scopes));if(!same(result.scopes,c.scopes))fail('SCOPE_REFUSED');return result;});}
  async function publishSelectedOutput({credential,binding,output,signal}){validateShape('RunBinding',binding);if(!selectedOutputPublication)fail('OUTPUT_PUBLICATION_UNAVAILABLE');return operation(credential,signal,async(c,life,fresh)=>{
   if(!same(c.binding,binding))fail('STALE_WRITER');const saved=await life.run(()=>store.read(binding,{after:0,limit:1},life.check));if(!same(saved.run.scopes,c.scopes)||saved.run.state!=='running')fail('RUN_NOT_WRITABLE');
@@ -120,8 +152,7 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
   own(value,['event','checkedAtMs','expiresAtMs']);const e=own(value.event,['eventId','createdAt','type','data']);if(!['message.delta','artifact.available'].includes(e.type)||!Number.isSafeInteger(value.checkedAtMs)||value.checkedAtMs<at||value.checkedAtMs>now()||!Number.isSafeInteger(value.expiresAtMs)||value.expiresAtMs<=now())fail('OUTPUT_PUBLICATION_REFUSED');life.limitDeadline(value.expiresAtMs);
   await fresh();const result=await life.run(()=>store.append(binding,e,life.check,c.scopes));if(!same(result.scopes,c.scopes))fail('SCOPE_REFUSED');await fresh();return result;
  });}
- async function historyForCleanup({credential,after=0,limit=100,signal}){return operation(credential,signal,async(c,life)=>{const result=await life.run(()=>store.read(c.binding,{after,limit},life.check));if(!same(result.run.scopes,c.scopes))fail('SCOPE_REFUSED');return result;},{cleanup:true});}
- return Object.freeze(Object.defineProperty({submit,admitInput,allocateInput,history,cancel,loadForExecution:args=>loadForExecution(args),publish,publishSelectedOutput,[cleanupRead]:historyForCleanup},loadWithLifecycle,{value:loadForExecution}));
+ return Object.freeze(Object.defineProperty({submit,admitInput,allocateInput,history,observe,cancel,loadForExecution:args=>loadForExecution(args),publish,publishSelectedOutput},loadWithLifecycle,{value:loadForExecution}));
 }
 function failError(code){return Object.assign(new Error(code),{code});}
 /** Closed run budgets: positive integer calls and per-result bytes, and an optional run aggregate no smaller than one result. */

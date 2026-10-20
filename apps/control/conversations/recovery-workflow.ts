@@ -4,8 +4,10 @@
 import {proxyActivities,CancellationScope} from '@temporalio/workflow';
 interface Binding {tenantId:string;actorId:string;conversationId:string;runId:string;attemptId:string;workerId:string;writerFence:number}
 interface RecoveryActivities {reconcileConversation(input:{binding:Binding}):Promise<{state:'reconciled'}>}
-/** Healthy-infrastructure bound: 30 s heartbeat detection plus at most 85 s of reconcile attempts stays under two minutes. */
-const {reconcileConversation}=proxyActivities<RecoveryActivities>({startToCloseTimeout:'20 seconds',scheduleToCloseTimeout:'85 seconds',retry:{initialInterval:'1 second',backoffCoefficient:2,maximumInterval:'10 seconds'}});
+/** The reconcile retries until ECS reports the original STOPPED: the runner's 60 s stopTimeout plus deprovisioning (47 s observed live
+ * after StopTask). 30 s heartbeat detection plus at most 240 s of attempts, at most 10 s apart, stays under five minutes. A next turn
+ * waits for that proven stop (next-run.mjs). */
+const {reconcileConversation}=proxyActivities<RecoveryActivities>({startToCloseTimeout:'20 seconds',scheduleToCloseTimeout:'240 seconds',retry:{initialInterval:'1 second',backoffCoefficient:2,maximumInterval:'10 seconds'}});
 export async function reconcileAfterFailure<T>(input:{binding:Binding},execute:()=>Promise<T>):Promise<T>{
  try{return await execute();}
  catch(error){

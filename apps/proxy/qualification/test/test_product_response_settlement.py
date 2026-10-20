@@ -47,13 +47,13 @@ def events():
                 "invocationLatency": 9240, "firstByteLatency": 500}}]
 
 
-def frame(event):
+def frame(event, envelope_extra=None):
     headers = b""
     for name, value in ((":message-type", "event"), (":event-type", "chunk"),
                         (":content-type", "application/json")):
         name, value = name.encode(), value.encode()
         headers += bytes([len(name)]) + name + b"\x07" + struct.pack(">H", len(value)) + value
-    payload = raw({"bytes": base64.b64encode(raw(event)).decode()})
+    payload = raw({"bytes": base64.b64encode(raw(event)).decode(), **(envelope_extra or {})})
     prelude = struct.pack(">II", 16 + len(headers) + len(payload), len(headers))
     before_crc = prelude + struct.pack(">I", zlib.crc32(prelude)) + headers + payload
     return before_crc + struct.pack(">I", zlib.crc32(before_crc))
@@ -187,6 +187,37 @@ class SettlementTests(unittest.IsolatedAsyncioTestCase):
             await self.call(transport)
         self.assertEqual(inner.sends, 1)
         self.assertEqual(self.calls, [])
+
+    async def test_real_bedrock_padded_stream_settles_once_on_billed_input(self):
+        # 2026-10-20 Bedrock Sonnet 4.6: every envelope carries a random "p" string, the messages carry null
+        # container/stop_details, usage carries zero cache_creation and the standard tier, and billed input < count.
+        native = events()
+        native[0]["message"].update(container=None, stop_details=None, context_management=None)
+        native[0]["message"]["usage"].update(input_tokens=5, cache_creation_input_tokens=0, cache_read_input_tokens=0,
+                                             cache_creation={"ephemeral_5m_input_tokens": 0, "ephemeral_1h_input_tokens": 0},
+                                             service_tier="standard")
+        native[-2]["delta"].update(stop_details=None, container=None)
+        native[-2]["usage"].update(input_tokens=5, cache_creation_input_tokens=0, cache_read_input_tokens=0)
+        native[-2]["context_management"] = {"applied_edits": []}
+        native[-1]["amazon-bedrock-invocationMetrics"]["inputTokenCount"] = 5
+        payload = b"".join(frame(event, {"p": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJ"[:5 + index * 7]})
+                           for index, event in enumerate(native))
+        inner, transport = self.setup_transport(
+            [payload], headers={"content-type": "application/vnd.amazon.eventstream"})
+        self.assertEqual((await self.call(transport)).content, payload)
+        self.assertEqual(inner.sends, 1)
+        self.assertEqual(len(self.calls), 1)
+        self.assertEqual((self.calls[0][1].input_tokens, self.calls[0][1].output_tokens), (5, 3))
+
+    async def test_envelope_padding_must_be_a_bounded_string_and_nothing_else(self):
+        for extra in ({"q": "x"}, {"p": 7}, {"p": "x" * 1025}, {"p": "x", "q": "y"}):
+            with self.subTest(extra=extra):
+                payload = b"".join(frame(event, extra) for event in events())
+                inner, transport = self.setup_transport(
+                    [payload], headers={"content-type": "application/vnd.amazon.eventstream"})
+                with self.assertRaisesRegex(AdmissionDenied, "^INCOMPLETE_NATIVE_RESPONSE$"):
+                    await self.call(transport)
+                self.assertEqual(self.calls, [])
 
     async def test_bare_stop_with_bound_start_and_delta_usage_settles_once(self):
         native = events()

@@ -15,15 +15,17 @@ const unavailable=()=>Object.assign(Error('TEMPORAL_DISPATCH_UNKNOWN'),{code:'TE
 
 /** The production composition: lifecycle cancel over the basic service, with only the journal's cancel and the dispatcher's cancel observable. */
 async function stopFixture({cancelJournal,cancelWorkflow,stopOriginal,maxRequestMs=3000}={}){
- const f=await applicationFixture({transitions:true,initialInput:true}),journal=f.store.lifecycle,calls={cancels:[],native:[]};let n=500;
+ const f=await applicationFixture({transitions:true,initialInput:true}),journal=f.store.lifecycle,calls={cancels:[],native:[],reconciled:[]},pending=[];let n=500;
  const store={...f.store,lifecycle:{...journal,cancel:(...args)=>cancelJournal?cancelJournal(journal,...args):journal.cancel(...args)}};
  const dispatcher={...f.dispatcher,async signal(){},async continued(){},async cancel(input){calls.cancels.push(input.binding.runId);return cancelWorkflow?cancelWorkflow(input):{workflow:'CANCEL_REQUESTED'};}};
  const native={async call(operation,input,{signal}){calls.native.push({operation,input});assert.equal(signal.aborted,false);assert.ok(['completed','failed','cancelled'].includes((await f.store.read(binding,{after:0,limit:1},()=>{})).run.state),'native cleanup follows the durable terminal fence');return stopOriginal?stopOriginal(input,signal):{...input,expiresAtMs:1};}};
- const make=()=>createConversationLifecycleService({service:f.service,store,dispatcher,reconcileOriginal:createOriginalReconciler({native,timeoutMs:maxRequestMs}),maxRequestMs,checkpoints:{async read(){throw Error('unused');}},sessions:f.sessions,newId:()=>id(n++)});
+ // Stop's cleanup settles after its answer: record each reconcile outcome, and let a test wait for all of them.
+ const reconcile=createOriginalReconciler({native,timeoutMs:maxRequestMs}),reconcileOriginal=input=>{const outcome=reconcile(input);pending.push(outcome.then(()=>calls.reconciled.push('reconciled'),()=>calls.reconciled.push('UNKNOWN')));return outcome;};
+ const make=()=>createConversationLifecycleService({retention:null,service:f.service,store,dispatcher,reconcileOriginal,maxRequestMs,checkpoints:{async read(){throw Error('unused');}},sessions:f.sessions,newId:()=>id(n++)});
  const publish=state=>f.service.publish({credential:f.credential,binding,event:status(n++,state)});
  async function running(){await f.service.allocateInput({credential:f.credential,input:f.input});await f.service.submit({credential:f.credential,input:f.input});await publish('starting');await publish('running');}
  const read=async()=>{const saved=await f.store.read(binding,{after:0,limit:100},()=>{});return {state:saved.run.state,cancelled:saved.events.filter(e=>e.data?.reasonCode==='USER_CANCELLED').length};};
- return {f,calls,make,publish,running,read,stop:(service=make(),signal)=>service.cancel({credential:f.credential,signal})};
+ return {f,calls,make,publish,running,read,drain:()=>Promise.allSettled(pending),stop:(service=make(),signal)=>service.cancel({credential:f.credential,signal})};
 }
 
 test('Stop racing a natural completion reports completed and writes no cancellation',async()=>{
@@ -41,12 +43,12 @@ test('an unproven cancellation of a still-live run stays UNKNOWN and writes noth
  try{await x.running();await assert.rejects(x.stop(),error=>error.code==='LIFECYCLE_STOP_UNKNOWN'&&error.outcome==='UNKNOWN');assert.deepEqual(await x.read(),{state:'running',cancelled:0});assert.deepEqual(x.calls.cancels,[]);}finally{x.f.close();}
 });
 
-test('an unknown Temporal cancel keeps the durable fence; Stop after a control restart asks again without a second write',async()=>{
+test('an unknown Temporal cancel does not change the answer of the durable fence; Stop after a control restart asks again without a second write',async()=>{
  let lost=true;const x=await stopFixture({async cancelWorkflow(){if(lost)throw unavailable();return {workflow:'CANCEL_REQUESTED'};}});
- try{await x.running();await assert.rejects(x.stop(),/LIFECYCLE_STOP_UNKNOWN/);assert.deepEqual(await x.read(),{state:'cancelled',cancelled:1});assert.equal(x.calls.native.length,1,'unknown Temporal cancellation still attempts native cleanup');
+ try{await x.running();assert.deepEqual(await x.stop(),{state:'cancelled'});await x.drain();assert.deepEqual(await x.read(),{state:'cancelled',cancelled:1});assert.equal(x.calls.native.length,1,'unknown Temporal cancellation still attempts native cleanup');
   lost=false;const restarted=x.make();
   assert.deepEqual(await x.stop(restarted),{state:'cancelled'});assert.deepEqual(await x.stop(restarted),{state:'cancelled'});
-  assert.deepEqual(await x.read(),{state:'cancelled',cancelled:1});assert.deepEqual(x.calls.cancels,[binding.runId,binding.runId,binding.runId]);assert.equal(x.calls.native.length,3);
+  await x.drain();assert.deepEqual(await x.read(),{state:'cancelled',cancelled:1});assert.deepEqual(x.calls.cancels,[binding.runId,binding.runId,binding.runId]);assert.equal(x.calls.native.length,3);
  }finally{x.f.close();}
 });
 
@@ -64,22 +66,23 @@ test('Stop of an already completed run whose workflow closed answers completed',
  try{await x.running();await x.publish('completed');assert.deepEqual(await x.stop(),{state:'completed'});assert.deepEqual(await x.read(),{state:'completed',cancelled:0});assert.equal(x.calls.native.length,1);}finally{x.f.close();}
 });
 
-test('a lost cleanup acknowledgement is UNKNOWN; repeated Stop after restart reconciles the same execution without a second cancellation',async()=>{
+test('a lost cleanup acknowledgement stays UNKNOWN for its owner, not for the answer; repeated Stop after restart reconciles the same execution without a second cancellation',async()=>{
  let lost=true;const x=await stopFixture({async cancelWorkflow(){return {workflow:'NOT_FOUND'};},async stopOriginal(input){if(lost)throw Error('lost retirement acknowledgement');return {...input,expiresAtMs:1};}});
- try{await x.running();const starts=x.f.state.starts;await assert.rejects(x.stop(),error=>error.code==='LIFECYCLE_STOP_UNKNOWN'&&error.outcome==='UNKNOWN');assert.deepEqual(await x.read(),{state:'cancelled',cancelled:1});
-  lost=false;assert.deepEqual(await x.stop(x.make()),{state:'cancelled'});assert.deepEqual(await x.stop(),{state:'cancelled'});assert.equal(x.f.state.starts,starts);assert.equal(x.calls.cancels.length,3);assert.equal(x.calls.native.length,3);for(const call of x.calls.native)assert.deepEqual(call,{operation:'execution/kickoff/stop',input:{binding,executionId:hash(binding)}});assert.deepEqual(await x.read(),{state:'cancelled',cancelled:1});
+ try{await x.running();const starts=x.f.state.starts;assert.deepEqual(await x.stop(),{state:'cancelled'});await x.drain();assert.deepEqual(x.calls.reconciled,['UNKNOWN']);assert.deepEqual(await x.read(),{state:'cancelled',cancelled:1});
+  lost=false;assert.deepEqual(await x.stop(x.make()),{state:'cancelled'});assert.deepEqual(await x.stop(),{state:'cancelled'});await x.drain();assert.deepEqual(x.calls.reconciled,['UNKNOWN','reconciled','reconciled']);assert.equal(x.f.state.starts,starts);assert.equal(x.calls.cancels.length,3);assert.equal(x.calls.native.length,3);for(const call of x.calls.native)assert.deepEqual(call,{operation:'execution/kickoff/stop',input:{binding,executionId:hash(binding)}});assert.deepEqual(await x.read(),{state:'cancelled',cancelled:1});
  }finally{x.f.close();}
 });
 
-for(const mode of ['binding','execution','missing','revocation'])test(`Stop refuses ${mode} cleanup evidence even when the workflow is already closed`,async()=>{
+for(const mode of ['binding','execution','missing','revocation'])test(`${mode} cleanup evidence is refused by the reconciler and never becomes the answer of Stop`,async()=>{
  const x=await stopFixture({async cancelWorkflow(){return {workflow:'NOT_FOUND'};},async stopOriginal(input){if(mode==='revocation')throw Error('revocation UNKNOWN');if(mode==='missing')return undefined;return {...input,...(mode==='binding'?{binding:{...input.binding,writerFence:input.binding.writerFence+1}}:{executionId:'f'.repeat(64)}),expiresAtMs:1};}});
- try{await x.running();await x.publish('completed');await assert.rejects(x.stop(),error=>error.code==='LIFECYCLE_STOP_UNKNOWN'&&error.outcome==='UNKNOWN');assert.deepEqual(await x.read(),{state:'completed',cancelled:0});assert.equal(x.calls.cancels.length,1);assert.equal(x.calls.native.length,1);}finally{x.f.close();}
+ try{await x.running();await x.publish('completed');assert.deepEqual(await x.stop(),{state:'completed'});await x.drain();assert.deepEqual(x.calls.reconciled,['UNKNOWN']);assert.deepEqual(await x.read(),{state:'completed',cancelled:0});assert.equal(x.calls.cancels.length,1);assert.equal(x.calls.native.length,1);}finally{x.f.close();}
 });
 
-for(const blocked of ['temporal','native'])test(`both Stop owners are attempted when ${blocked} stalls`,async()=>{
+for(const blocked of ['temporal','native'])test(`Stop answers the fence inside its request while ${blocked} stalls, and both owners are attempted and bounded`,async()=>{
  const stall=signal=>new Promise((_,reject)=>signal.addEventListener('abort',()=>reject(signal.reason),{once:true}));
  const x=await stopFixture({maxRequestMs:250,...(blocked==='temporal'?{cancelWorkflow:({signal})=>stall(signal)}:{stopOriginal:(_,signal)=>stall(signal)})});
- try{await x.running();await assert.rejects(x.stop(),/LIFECYCLE_STOP_UNKNOWN/);assert.equal(x.calls.cancels.length,1);assert.equal(x.calls.native.length,1);assert.deepEqual(await x.read(),{state:'cancelled',cancelled:1});}finally{x.f.close();}
+ try{await x.running();const started=Date.now();assert.deepEqual(await x.stop(),{state:'cancelled'});assert.ok(Date.now()-started<250,'answered before the stalled owner reached its bound');
+  assert.equal(x.calls.cancels.length,1);assert.equal(x.calls.native.length,1);await x.drain();assert.deepEqual(x.calls.reconciled,[blocked==='native'?'UNKNOWN':'reconciled'],'the stalled owner ends at its own bound');assert.deepEqual(await x.read(),{state:'cancelled',cancelled:1});}finally{x.f.close();}
 });
 
 test('a caller disconnect during Temporal cancellation still permits independent native cleanup',async()=>{
@@ -92,9 +95,9 @@ for(const lost of [false,true])test(`disconnect immediately after the durable ca
  try{await x.running();await assert.rejects(x.stop(x.make(),abort.signal),error=>error.code==='LIFECYCLE_STOP_UNKNOWN'&&error.outcome==='UNKNOWN');assert.equal(x.calls.cancels.length,1);assert.equal(x.calls.native.length,1);assert.deepEqual(await x.read(),{state:'cancelled',cancelled:1});}finally{x.f.close();}
 });
 
-test('public HTTP Stop refuses success when native cleanup is UNKNOWN and preserves the durable fence',async()=>{
+test('public HTTP Stop answers the committed fence when native cleanup is UNKNOWN; the cleanup is still attempted',async()=>{
  const x=await stopFixture({async stopOriginal(){throw Error('revocation UNKNOWN');}});
- try{await x.running();const app=createConversationLifecycleApplication({service:x.make()}),response=await app.handle(new Request('https://meri.invalid/api/conversations/cancel',{method:'POST',headers:{authorization:`Bearer ${x.f.credential}`,'content-type':'application/json'},body:'{}'}));assert.equal(response.status,502);assert.deepEqual(await response.json(),{error:{code:'CONVERSATION_UNAVAILABLE'}});assert.equal(x.calls.cancels.length,1);assert.equal(x.calls.native.length,1);assert.deepEqual(await x.read(),{state:'cancelled',cancelled:1});}finally{x.f.close();}
+ try{await x.running();const app=createConversationLifecycleApplication({service:x.make()}),response=await app.handle(new Request('https://meri.invalid/api/conversations/cancel',{method:'POST',headers:{authorization:`Bearer ${x.f.credential}`,'content-type':'application/json'},body:'{}'}));assert.equal(response.status,200);assert.deepEqual(await response.json(),{state:'cancelled'});await x.drain();assert.deepEqual(x.calls.reconciled,['UNKNOWN']);assert.equal(x.calls.cancels.length,1);assert.equal(x.calls.native.length,1);assert.deepEqual(await x.read(),{state:'cancelled',cancelled:1});}finally{x.f.close();}
 });
 
 test('revoked session refuses Stop before any fence or native effect',async()=>{
@@ -118,7 +121,7 @@ test('uncommitted cancellation with revoked session cannot authorize stop-only c
 
 test('the lifecycle owner refuses composition without journal or dispatcher cancellation',async()=>{
  const f=await applicationFixture({transitions:true,initialInput:true});
- try{const base={service:f.service,checkpoints:{async read(){}},sessions:f.sessions,reconcileOriginal:async()=>({state:'reconciled'})};
+ try{const base={service:f.service,checkpoints:{async read(){}},sessions:f.sessions,retention:null,reconcileOriginal:async()=>({state:'reconciled'})};
   const journal={...f.store.lifecycle};delete journal.cancel;
   assert.throws(()=>createConversationLifecycleService({...base,store:{...f.store,lifecycle:journal},dispatcher:{...f.dispatcher,async signal(){}}}),/LIFECYCLE_CONFIGURATION/);
   const noFence={...f.store.lifecycle};delete noFence.readStopFence;

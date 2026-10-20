@@ -205,3 +205,25 @@ class LimitTests(unittest.TestCase):
             for value in (True, 0, -1, float("nan"), float("inf"), "1", 2**30):
                 with self.subTest(name=name, value=value), self.assertRaises(StateDenied):
                     LifetimeLimits(**{name: value})
+
+    def test_check_and_cleanup_reach_the_owner_exchange_budget(self):
+        LifetimeLimits(check_seconds=30, cleanup_seconds=30)
+        for name, value in (("check_seconds", 30.01), ("cleanup_seconds", 30.01), ("poll_seconds", 5.01)):
+            with self.subTest(name=name), self.assertRaises(StateDenied):
+                LifetimeLimits(**{name: value})
+
+
+class CleanupBoundTests(unittest.IsolatedAsyncioTestCase):
+    async def test_close_waits_for_a_thread_inside_its_bound_and_quarantines_only_past_it(self):
+        _, ingress, _ = fixture()
+        async def current():
+            return PeerLease(ingress.peer.ipv4, time.monotonic(), BINDING, GRANT)
+        for cleanup, quarantined in ((.5, False), (.02, True)):
+            with self.subTest(cleanup_seconds=cleanup):
+                pending = PendingWork()
+                life = RequestLifetime(ingress, current, time.monotonic()+2, replace(LIMITS, cleanup_seconds=cleanup), pending)
+                life.spawn(asyncio.to_thread(time.sleep, .1), thread=True)
+                await life.close()
+                self.assertEqual(pending.ready, not quarantined)
+                if pending.tasks:
+                    await asyncio.wait(set(pending.tasks), timeout=1)

@@ -21,6 +21,7 @@ from ..qualification.runtime.native_usage import (
 
 _MAX_WIRE_BYTES = 8 * 1024 * 1024
 _MAX_NATIVE_CHUNK = 262144
+_MAX_PADDING = 1024
 _STREAM_TYPE = "application/vnd.amazon.eventstream"
 _JSON_TYPE = "application/json"
 _CHUNK_HEADERS = {
@@ -82,7 +83,9 @@ def _native_chunk(frame):
     if frame.headers != _CHUNK_HEADERS or len(frame.payload) > _MAX_NATIVE_CHUNK * 2:
         raise ValueError("UNSUPPORTED_EVENT_FRAME")
     envelope = json.loads(frame.payload.decode("utf-8", "strict"), object_pairs_hook=_pairs)
-    if type(envelope) is not dict or set(envelope) != {"bytes"} or type(envelope["bytes"]) is not str:
+    # Bedrock pads every chunk envelope with a random-length "p" string (observed 5-47 characters); it carries no data.
+    if (type(envelope) is not dict or set(envelope) - {"p"} != {"bytes"} or type(envelope["bytes"]) is not str
+            or "p" in envelope and (type(envelope["p"]) is not str or len(envelope["p"]) > _MAX_PADDING)):
         raise ValueError("UNSUPPORTED_EVENT_FRAME")
     value = base64.b64decode(envelope["bytes"], validate=True)
     if not 1 <= len(value) <= _MAX_NATIVE_CHUNK:

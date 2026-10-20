@@ -1,5 +1,6 @@
 """Offline real-transport refusal/framing/cleanup checks; native TLS is unrun."""
 import asyncio
+import dataclasses
 import http.client
 import socket
 import ssl
@@ -10,7 +11,8 @@ from unittest.mock import patch
 
 from apps.proxy.product.owner_https import (ProductOwnerHttpsExchange,OwnerClientTlsMaterial,
     validate_owner_http_reply,load_owner_client_tls_material)
-from apps.proxy.product.owner_channel import OwnerPeerPolicy,OPERATION
+from apps.proxy.product.owner_channel import OwnerPeerPolicy,OPEN,OPERATION,POLL,REPLY
+from apps.proxy.product import refusal_diagnostics as diagnostics
 from apps.proxy.product.service_pair_discovery import compile_owner_peer
 from apps.proxy.product.test.test_service_pair_discovery import fixture, peer_template
 
@@ -71,6 +73,35 @@ class HttpsTests(unittest.IsolatedAsyncioTestCase):
             with self.assertRaisesRegex(Exception,'PRODUCT_OWNER_HTTPS_DENIED'):
                 item._send('operation',OPERATION,b'[]',item.now_ms()+1000)
         self.assertFalse(item.available);self.assertEqual(len(sent),1)
+    def test_an_owner_refusal_is_one_reply_status_line_and_the_exchange_cap_is_15000(self):
+        item=exchange();lines=[];diagnostics.install(write=lambda data:lines.append(data.decode('ascii')))
+        response=SimpleNamespace(status=403,version=11,will_close=False,length=0,
+            getheaders=lambda:[('content-length','0'),('cache-control','no-store')],read=lambda _size:b'')
+        connection=SimpleNamespace(sock=SimpleNamespace(settimeout=lambda _value:None),request=lambda *a,**kw:None,getresponse=lambda:response)
+        try:
+            with diagnostics.request(),diagnostics.phase('placement'):
+                with patch.object(item,'_connect',return_value=connection),patch.object(item,'_evidence',return_value='synthetic-peer-boundary-only'):
+                    with self.assertRaisesRegex(Exception,'PRODUCT_OWNER_HTTPS_DENIED'):
+                        item._send('operation',OPERATION,b'[]',item.now_ms()+1000)
+        finally:
+            diagnostics.uninstall()
+        self.assertEqual(lines,['PRODUCT_PROXY_REFUSED gate=exchange step=reply-status phase=placement at=exchange-wait code=REFUSED\n'])
+        self.assertFalse(item.available)
+        context=ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+        context.minimum_version=context.maximum_version=ssl.TLSVersion.TLSv1_3
+        for budget,allowed in ((15000,True),(15001,False)):
+            f=fixture();f.configuration['ownerCertSha256']='a'*64;f.configuration['proxyCertSha256']='c'*64
+            template=peer_template();template.update(server_cert_sha256='a'*64,client_cert_sha256='c'*64)
+            reader=f.reader();peer=dataclasses.replace(compile_owner_peer(template,reader.read(deadline_ms=f.at+3000)),max_exchange_ms=budget)
+            build=lambda:ProductOwnerHttpsExchange(policy=peer,material=OwnerClientTlsMaterial(context,'c'*64),
+                owner_ipv4='10.40.4.1',proxy_ipv4='10.40.4.2',expires_at_ms=f.configuration['expiresAtMs'],
+                deployment_revision='reviewed-v1',service_pair_reader=reader)
+            if allowed:
+                build().abort()
+            else:
+                with self.assertRaisesRegex(Exception,'PRODUCT_OWNER_HTTPS_DENIED'):
+                    build()
+
     def test_closed_http_response_framing(self):
         valid=[('content-type','application/json'),('content-length','2'),('cache-control','no-store'),
                ('x-meri-owner-revision','reviewed-v1')]
@@ -108,6 +139,15 @@ class HttpsTests(unittest.IsolatedAsyncioTestCase):
         item=exchange()
         with self.assertRaisesRegex(Exception,'PRODUCT_OWNER_HTTPS_DENIED'):
             await item('capture',OPERATION,b'["meri.proxy.operation/1"]',.1)
+        item.abort()
+
+    async def test_admission_connection_carries_only_owner_reads(self):
+        item=exchange()
+        for path,body in ((OPEN,b'["meri.proxy.session-open/1"]'),(POLL,b'["meri.proxy.capture-poll/1"]'),
+                          (REPLY,b'["meri.proxy.capture-reply/1"]'),(OPERATION,b'["meri.proxy.operation/1","s",[]]'),
+                          (OPERATION,b'["meri.proxy.admission-read/1","r","a"]'),(OPERATION,b'["meri.proxy.placement-read/1","r"]')):
+            with self.assertRaisesRegex(Exception,'PRODUCT_OWNER_HTTPS_DENIED'):
+                await item('admission',path,body,.1)
         item.abort()
 
     def test_unsupported_verified_chain_api_refuses_before_socket_creation(self):

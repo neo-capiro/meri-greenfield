@@ -12,6 +12,10 @@ import {createTemporalRuntimeFence,assertTemporalRuntimeCleanup,temporalCleanupU
 import {createObjectiveWorkerActivities,objectiveWorkerPorts} from './objective-generation/worker-activities.mjs';
 import {stopOriginal,createOriginalReconciler as createReconcileActivity} from './original-stop.mjs';
 export {createReconcileActivity};
+/** The broker's control calls (kickoff, status, poll, stop) each cross control's task router, which allows 8 s per exchange
+ * (control.mjs), plus a Core-backed task verify. They get one control margin above that, the native client's cap, inside the
+ * activity's 30 s heartbeat. The former 3 s client default and 3 s cleanup were below one router hop at tail latency. */
+export const BROKER_NATIVE_MS=10000;
 async function sleep(signal,ms){signal.throwIfAborted();await new Promise((resolve,reject)=>{const abort=()=>{clearTimeout(timer);reject(fault('CANCELLED'));},timer=setTimeout(()=>{signal.removeEventListener('abort',abort);resolve();},ms);signal.addEventListener('abort',abort,{once:true});if(signal.aborted)abort();});}
 /**
  * The only admitted broker mode is the prepared original kickoff. Every exit after dispatch (terminal result, cancellation,
@@ -23,7 +27,7 @@ async function sleep(signal,ms){signal.throwIfAborted();await new Promise((resol
 export function createBrokerActivity({native,context=()=>Context.current(),now=Date.now,pollMs=1000}){
  if(!Number.isSafeInteger(pollMs)||pollMs<10||pollMs>1000)throw fault('BROKER_CONFIGURATION');
  return async function executeConversation(input){own(input,['binding']);validateShape('RunBinding',input.binding);const activity=context(),signal=activity.cancellationSignal;signal.throwIfAborted();const executionKey=canonicalSha256(input.binding);let started,cleaning;
-  const cleanup=()=>cleaning??=stopOriginal({native,binding:input.binding,expiresAtMs:started?.expiresAtMs,now,timeoutMs:3000,code:'BROKER_KICKOFF_CLEANUP_UNKNOWN'});
+  const cleanup=()=>cleaning??=stopOriginal({native,binding:input.binding,expiresAtMs:started?.expiresAtMs,now,timeoutMs:BROKER_NATIVE_MS,code:'BROKER_KICKOFF_CLEANUP_UNKNOWN'});
   try{started=own(await native.call('execution/kickoff',{binding:input.binding,executionKey},{signal}),['binding','executionId','expiresAtMs']);if(canonicalSha256(started.binding)!==executionKey||started.executionId!==executionKey||!Number.isSafeInteger(started.expiresAtMs)||started.expiresAtMs<=now())throw fault('BROKER_START_REFUSED');
    const currentLease=()=>{signal.throwIfAborted();if(now()>=started.expiresAtMs)throw fault('BROKER_LEASE_EXPIRED');};
    const observe=(value,preparing=false)=>{const current=data(value);own(current,['binding','executionId','state'],preparing?['expiresAtMs']:[]);if(canonicalSha256(current.binding)!==executionKey||current.executionId!==started.executionId||!['executing','completed','failed','cancelled','paused','waiting-for-approval',...(preparing?['preparing']:[])].includes(current.state)||preparing&&current.expiresAtMs!==started.expiresAtMs)throw fault('BROKER_RECEIPT_REFUSED');activity.heartbeat({runId:input.binding.runId,executionId:started.executionId});currentLease();return current;};
@@ -69,7 +73,7 @@ export async function startTemporalWorker(configuration,{signal,testOwners={}}={
   authorization=await (owners.authorization??temporalAuthorization)(configuration,{signal:startupSignal,onUnavailable:onAuthorizationUnavailable});
   if(authorization)unwatch=authorization.watch(onAuthorizationUnavailable);checkAuthorization();
   const [tls,bytes]=await Promise.all([(owners.tls??temporalTls)(configuration.temporal.tls),(owners.readMaterial??readSecret)(configuration.native.capabilityFile)]);checkAuthorization();
-  const native=(owners.nativeClient??createNativeCapabilityClient)({configuration:configuration.native,credential:bytes.toString('utf8').trim()});
+  const native=(owners.nativeClient??createNativeCapabilityClient)({configuration:configuration.native,credential:bytes.toString('utf8').trim(),maxRequestMs:BROKER_NATIVE_MS});
   await native.readiness({signal:startupSignal});checkAuthorization();
   connection=await (owners.connect??(options=>NativeConnection.connect(options)))({address:configuration.temporal.address,tls,...(authorization?{apiKey:authorization.apiKey()}:{})});checkAuthorization();
   if(authorization)authorization.attach(connection);

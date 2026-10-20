@@ -394,7 +394,8 @@ test('Stage 3: feature material rides the existing control/material secret; temp
  const versions=Object.fromEntries(ROLES.map((role,n)=>[role,`${n+1}`.repeat(8)+'-aaaa-4bbb-8ccc-'+`${n+1}`.repeat(12)]));
  const p=i.deployment.privateEdge,bindings=buildStage3Bindings({deployment:i.deployment,foundationOutputs,
   privateEdgeOutputs:{ControlPrivateOrigin:p.controlPrivateOrigin,ControlPrivateTargetGroupArn:p.controlPrivateTargetGroupArn,PrivateAlbSecurityGroupId:p.privateAlbSecurityGroupId},
-  renderSummary:rendered.summary,renderedExpected:Object.fromEntries(ROLES.map(role=>[role,rendered.roles[role].expected])),secretVersions:versions,imageScans:{proxy:'c'.repeat(64),nodeRuntime:'d'.repeat(64)}});
+  renderSummary:rendered.summary,renderedExpected:Object.fromEntries(ROLES.map(role=>[role,rendered.roles[role].expected])),secretVersions:versions,imageScans:{proxy:'c'.repeat(64),nodeRuntime:'d'.repeat(64)},
+  liveAppTemplate:{Resources:{controlService:{Properties:{LoadBalancers:[{ContainerPort:8080,TargetGroupArn:foundationOutputs.ControlTargetGroupArn}]}}}}});
  const {bodies}=synthesizeStage3(bindings),key=rendered.roles.control.bundle.files.find(f=>f.path===PATHS.downloadLinkKey).base64;
  assert.equal(bindings.app.materialDelivery.control.valueFrom,`${i.deployment.secrets['control/material']}:::${versions.control}`);
  for(const path of [PATHS.readsServiceSecret,PATHS.readsReadModeServiceSecret,PATHS.downloadLinkKey])assert.ok(bodies.app.includes(path),path);

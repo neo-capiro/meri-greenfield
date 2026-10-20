@@ -6,12 +6,13 @@ import {withRunnerDiagnostics, markRunnerStage, captureRunnerFailure} from '../r
 import {createRemoteSdkProcessClient} from '../native-authority/remote-task-client.mjs';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {binding, versions} from '../../control/conversations/test/store-fixture.mjs';
+import {withoutDetail} from './runner-diagnostic-lines.mjs';
 
 let sdkQuery = () => assert.fail('SDK query not configured by this test');
 mock.module('../../worker/conversation/agent-sdk.mjs', {namedExports: {query: value => sdkQuery(value)}});
 const {prepareNativeSdkQuery} = await import('../native-authority/sdk-query-preparation.mjs');
 const descriptor = {command: '/synthetic/node', args: [], cwd: '/synthetic/workspace', env: {}};
-const firstLine = (origin, code) => `RUNNER_FIRST_FAILURE origin=${origin} code=${code}\n`;
+const firstLine = (origin, code, kind = 'ERROR') => `RUNNER_FIRST_FAILURE origin=${origin} stage=activity-stream code=${code} class=${kind} exit=none signal=none\n`;
 const finalLine = code => `RUNNER_RUNTIME_FAILED stage=activity-stream code=${code}\n`;
 const coded = code => Object.assign(Error('synthetic-private-canary'), {code});
 const observe = promise => promise.then(value => ({value}), error => ({error}));
@@ -95,7 +96,7 @@ for (const phase of ['prepare', 'start']) {
           }, close: () => client.close()};
         }});
       } catch (error) {caught = error; throw error;}
-    }, {write: line => lines.push(line)});
+    }, {write: line => lines.push(withoutDetail(line))});
     const result = observe(pending).then(value => {settled = true; return value;});
     try {
       await stopEntered.promise;
@@ -123,7 +124,7 @@ test('SDK no-launch refusal is captured by actual preparation before rethrow', a
   const {error} = await observe(withRunnerDiagnostics(() => {
     markRunnerStage('activity-stream');
     return prepareNativeSdkQuery({prompt: 'synthetic prompt', options: {}, bindLaunch() {assert.fail('No launch allowed');}});
-  }, {write: line => {lines.push(line); events.push(line.startsWith('RUNNER_FIRST_FAILURE') ? 'first' : 'final');}}));
+  }, {write: line => {lines.push(withoutDetail(line)); events.push(line.startsWith('RUNNER_FIRST_FAILURE') ? 'first' : 'final');}}));
   assert.equal(error.code, 'NATIVE_EXECUTION_SDK_PREPARATION_NO_LAUNCH');
   assert.deepEqual(events, ['first', 'sdk-close', 'final']);
   assert.deepEqual(lines, [firstLine('sdk-prepare', error.code), finalLine(error.code)]);
@@ -134,14 +135,14 @@ test('preparation refusal or already assembled aggregate is rethrown without ins
   const refused = coded('NATIVE_EXECUTION_SDK_PREPARATION_REFUSED');
   const aggregate = new AggregateError([refused, Error('synthetic-private-canary')]);
   Object.defineProperty(aggregate, 'errors', {get() {inspected++; throw Error('private aggregate members');}});
-  for (const [initial, code] of [[refused, refused.code], [aggregate, 'UNKNOWN']]) {
+  for (const [initial, code, kind] of [[refused, refused.code, 'ERROR'], [aggregate, 'AGGREGATE_ERROR', 'AGGREGATE_ERROR']]) {
     const lines = [];
     sdkQuery = () => {throw initial;};
     await assert.rejects(withRunnerDiagnostics(() => {
       markRunnerStage('activity-stream');
       return prepareNativeSdkQuery({prompt: 'synthetic prompt', options: {}, bindLaunch() {assert.fail('No launch allowed');}});
-    }, {write: line => lines.push(line)}), error => error === initial);
-    assert.deepEqual(lines, [firstLine('sdk-prepare', code), finalLine(code)]);
+    }, {write: line => lines.push(withoutDetail(line))}), error => error === initial);
+    assert.deepEqual(lines, [firstLine('sdk-prepare', code, kind), finalLine(code)]);
   }
   assert.equal(inspected, 0);
 });
@@ -161,7 +162,7 @@ test('held SDK cleanup preserves the first code and passes the same aggregate to
         }};
       }});
     } catch (error) {aggregate = error; throw error;}
-  }, {write: line => {lines.push(line); events.push(line.startsWith('RUNNER_FIRST_FAILURE') ? 'first' : 'final');}})).then(value => {settled = true; return value;});
+  }, {write: line => {lines.push(withoutDetail(line)); events.push(line.startsWith('RUNNER_FIRST_FAILURE') ? 'first' : 'final');}})).then(value => {settled = true; return value;});
   try {
     await entered.promise;
     assert.equal(settled, false);
@@ -199,7 +200,7 @@ test('successful preparation retains start, stop and SDK-close order without dia
     assert.deepEqual(events, ['sdk-query', 'sdk-next', 'sdk-bind', 'prepare', 'start', 'stdout']);
     await ready.close();
     await ready.close();
-  }, {write: line => lines.push(line)});
+  }, {write: line => lines.push(withoutDetail(line))});
   assert.deepEqual(events, ['sdk-query', 'sdk-next', 'sdk-bind', 'prepare', 'start', 'stdout', 'stop', 'sdk-close']);
   assert.deepEqual(lines, []);
 });
@@ -222,7 +223,7 @@ for (const cancellation of ['close', 'abort']) {
         await client.close();
       } finally {late.resolve(prepared(original));}
       assert.equal((await pending).error.code, 'REMOTE_TASK_REFUSED');
-    }, {write: line => lines.push(line)});
+    }, {write: line => lines.push(withoutDetail(line))});
     if (cancellation === 'abort') assert.equal(requestSignal.aborted, true);
     assert.deepEqual(events, ['prepare', 'stop']);
     assert.deepEqual(lines, []);
@@ -241,7 +242,7 @@ test('expired preparation deadline still refuses before start and records native
   await assert.rejects(withRunnerDiagnostics(() => {
     markRunnerStage('activity-stream');
     return client.startPreparedProcess();
-  }, {write: line => lines.push(line)}), {code: 'REMOTE_TASK_REFUSED'});
+  }, {write: line => lines.push(withoutDetail(line))}), {code: 'REMOTE_TASK_REFUSED'});
   assert.deepEqual(events, ['prepare', 'stop']);
   assert.deepEqual(lines, [firstLine('native-prepare', 'REMOTE_TASK_REFUSED'), finalLine('REMOTE_TASK_REFUSED')]);
 });
@@ -256,7 +257,7 @@ test('first record is immediate, immutable and emitted once despite later captur
     markRunnerStage('remote-cleanup');
     captureRunnerFailure(coded('NATIVE_EXECUTION_SDK_PREPARATION_CLEANUP_UNKNOWN'), 'sdk-prepare');
     throw replacement;
-  }, {write: line => lines.push(line)}), error => error === replacement);
+  }, {write: line => lines.push(withoutDetail(line))}), error => error === replacement);
   assert.deepEqual(lines, [firstLine('native-prepare', 'REMOTE_TASK_REFUSED'), finalLine('REMOTE_TASK_REFUSED')]);
 });
 
@@ -266,20 +267,21 @@ test('only fixed SDK codes are emitted and hostile errors/origins are never insp
     const lines = [], error = coded(code);
     await assert.rejects(withRunnerDiagnostics(async () => {
       markRunnerStage('activity-stream'); captureRunnerFailure(error, 'sdk-prepare'); throw error;
-    }, {write: line => lines.push(line)}), thrown => thrown === error);
+    }, {write: line => lines.push(withoutDetail(line))}), thrown => thrown === error);
     assert.deepEqual(lines, [firstLine('sdk-prepare', code), finalLine(code)]);
   }
   let inspected = 0;
   const accessor = Object.defineProperty({}, 'code', {get() {inspected++; throw Error('private');}});
   const proxy = new Proxy({}, {getOwnPropertyDescriptor() {inspected++; throw Error('private');}, get() {inspected++; throw Error('private');}});
-  for (const error of [accessor, proxy, coded('REMOTE_TASK_REFUSED\nsynthetic-private-canary'), 'synthetic-private-canary', null]) {
+  // An unlisted code or message is never printed: an Error reports only its type, anything else NON_ERROR.
+  for (const [error, code] of [[accessor, 'NON_ERROR'], [proxy, 'NON_ERROR'], [coded('REMOTE_TASK_REFUSED\nsynthetic-private-canary'), 'ERROR'], ['synthetic-private-canary', 'NON_ERROR'], [null, 'NON_ERROR']]) {
     const lines = [];
     // Node's assert.rejects inspects thrown proxies itself; retain the rejection in an inert envelope.
     const outcome = await observe(withRunnerDiagnostics(async () => {
       markRunnerStage('activity-stream'); captureRunnerFailure(error, 'sdk-prepare\nsynthetic-private-canary'); throw error;
-    }, {write: line => lines.push(line)}));
+    }, {write: line => lines.push(withoutDetail(line))}));
     assert.equal(outcome.error, error);
-    assert.deepEqual(lines, [firstLine('runtime', 'UNKNOWN'), finalLine('UNKNOWN')]);
+    assert.deepEqual(lines, [firstLine('runtime', code, code), finalLine(code)]);
   }
   assert.equal(inspected, 0);
 });
@@ -291,6 +293,6 @@ test('failed diagnostic writes cannot alter rejection or cause a duplicate first
     captureRunnerFailure(error, 'native-start');
     captureRunnerFailure(coded('EACCES'), 'sdk-prepare');
     throw error;
-  }, {write(line) {attempts.push(line); throw Error('synthetic stderr failure');}}), thrown => thrown === error);
+  }, {write(line) {attempts.push(withoutDetail(line)); throw Error('synthetic stderr failure');}}), thrown => thrown === error);
   assert.deepEqual(attempts, [firstLine('native-start', 'REMOTE_TASK_REFUSED'), finalLine('REMOTE_TASK_REFUSED')]);
 });

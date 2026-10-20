@@ -123,7 +123,7 @@ function usage(value,id){
   input_tokens:integer(u[3],1,PRODUCT_MAX_INPUT_TOKENS),output_tokens:integer(u[4],0,PRODUCT_MAX_OUTPUT_TOKENS),
   reason:u[5],origin:u[6]};
  if(result.status!=='COMPLETE'||result.binding.request_id!==id||
-    result.input_tokens!==result.binding.counted_input_tokens||
+    result.input_tokens>result.binding.counted_input_tokens||
     result.output_tokens>result.binding.max_output_tokens||
     !['COMPLETE_NATIVE_MESSAGE','COMPLETE_NATIVE_STREAM'].includes(result.reason)||
     result.origin!=='native-usage-data')deny();

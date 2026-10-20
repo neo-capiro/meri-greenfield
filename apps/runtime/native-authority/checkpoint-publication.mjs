@@ -22,9 +22,10 @@ export async function publishCapturedCheckpoint({captured,original,input,capture
  const intent={binding:original.binding,controlId:input.controlId},requestSha256=hash({...intent,sourceRequestSha256:hash(input.request),contextSha256:input.contextSha256}),createdAt=new Date(now()).toISOString();
  const manifest={contractVersion:'0.1.0',manifestId:checkpointIdentity({...intent,kind:'workspace'}),binding:original.binding,logicalCwd:'/workspace/conversation',entries:files.map(f=>({path:f.path,kind:'file',object:{objectId:checkpointIdentity({...intent,path:f.path}),versionId:'pending',sha256:f.sha256,bytes:f.bytes,scopes:input.scopes},executable:f.executable})),scopes:input.scopes,createdAt};
  assertWorkspacePaths(manifest);await fresh();await revalidate();
+ // Authority is verified before each object write. The stored bytes are proved once, by the readback below, against the
+ // reference's length and sha256 checked here.
  async function put(bytes,objectId){await fresh();const ref=data(await life.run(signal=>objectPort.put({objectId,bytes,scopes:input.scopes,requestSha256},signal)));validateShape('ObjectReference',ref);
-  if(ref.objectId!==objectId||hash(ref.scopes)!==hash(input.scopes)||ref.bytes!==bytes.length||ref.sha256!==sha(bytes)||ref.versionId==='null')fail();
-  await fresh();const read=await life.run(signal=>objectPort.get(ref,signal));life.check();if(!Buffer.isBuffer(read)||!read.equals(bytes))fail();await fresh();return ref;}
+  if(ref.objectId!==objectId||hash(ref.scopes)!==hash(input.scopes)||ref.bytes!==bytes.length||ref.sha256!==sha(bytes)||ref.versionId==='null')fail();return ref;}
  for(let i=0;i<files.length;i++)manifest.entries[i].object=await put(files[i].rawBytes,manifest.entries[i].object.objectId);
  const opaqueSession=await put(opaqueBytes,checkpointIdentity({...intent,kind:'session'}));
  const checkpoint={contractVersion:'0.1.0',checkpointId:checkpointId??checkpointIdentity({...intent,kind:'checkpoint'}),parentCheckpointId,binding:original.binding,sessionId:input.sessionId,opaqueSession,workspace:manifest,workspaceSha256:hash(manifest),versions:original.versions,lastEventSequence:captureSequence,scopes:input.scopes,createdAt,durableReceiptId:checkpointIdentity({...intent,kind:'durable-receipt'})};validateShape('Checkpoint',checkpoint);

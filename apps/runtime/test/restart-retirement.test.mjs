@@ -13,7 +13,7 @@ import {originalFacts,fakeEcs,syntheticAdmission,processAllocator} from '../nati
 const check=()=>{};
 function publicStop(x,p){
  const f=x.f;let cancels=0;
- const service=createConversationLifecycleService({service:f.service,store:f.store,sessions:f.sessions,checkpoints:f.checkpoints,reconcileOriginal:createOriginalReconciler({native:p.native,timeoutMs:5000}),maxRequestMs:5000,dispatcher:{...f.dispatcher,async cancel({binding}){assert.deepEqual(binding,x.binding);cancels++;return {workflow:'NOT_FOUND'};}}});
+ const service=createConversationLifecycleService({retention:null,service:f.service,store:f.store,sessions:f.sessions,checkpoints:f.checkpoints,reconcileOriginal:createOriginalReconciler({native:p.native,timeoutMs:5000}),maxRequestMs:5000,dispatcher:{...f.dispatcher,async cancel({binding}){assert.deepEqual(binding,x.binding);cancels++;return {workflow:'NOT_FOUND'};}}});
  return {cancel:()=>service.cancel({credential:f.credential}),cancels:()=>cancels};
 }
 async function crashed(t,{admitted=false,state='running'}={}){

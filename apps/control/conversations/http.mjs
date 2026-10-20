@@ -39,10 +39,14 @@ export function createConversationApplication({service,now=Date.now,maxRequestBy
      else{closedBody(body,[],['after','limit']);after=body.after??0;const limit=body.limit??100;if(!Number.isSafeInteger(limit)||limit<1||limit>100)fail('INVALID_CURSOR');}
    }
    const credential=auth.slice(7);
-   // Authenticate and validate the cursor/selector before any event is exposed.
-   const history=await life.run(signal=>service.history({credential,after,limit:1,signal}));
-   if(selector!==undefined&&selector!==history.run.binding.conversationId)fail('CONVERSATION_SELECTOR_REFUSED');
-   life.check();const result=meriLiveEventStreamResponse({messageId:randomUUID(),events:createConversationEventSource({service,credential,after,signal:info.signal,now})});
+   // The window's own opening session pass and first page read authenticate and validate the cursor and selector before any header
+   // or event is exposed; a refusal before that point is answered here with its own status, as a separate history read was.
+   const opening=Promise.withResolvers();opening.promise.catch(()=>{});
+   const events=createConversationEventSource({service,credential,after,signal:info.signal,now,refused:opening.reject,
+    opened(run){if(selector!==undefined&&selector!==run.binding.conversationId)fail('CONVERSATION_SELECTOR_REFUSED');opening.resolve();}});
+   // Cancelling an already errored window rejects with its own scrubbed error; the refusal to answer is the original one.
+   try{await life.run(()=>opening.promise);life.check();}catch(error){await events.cancel().catch(()=>{});throw error;}
+   const result=meriLiveEventStreamResponse({messageId:randomUUID(),events});
    result.headers.set('cache-control','no-store');result.headers.set('x-content-type-options','nosniff');return result;
   }catch(error){const observed=error?.code??error?.message,code=['INVALID_JSON','INVALID_UTF8','INVALID_BODY','INVALID_CONTENT_LENGTH'].includes(observed)?'INVALID_REQUEST':observed,status=Object.hasOwn(conversationErrorStatuses,code)?conversationErrorStatuses[code].at(-1):502;return response({error:{code:status===502?'CONVERSATION_UNAVAILABLE':code}},status);}finally{life?.close();}}});
 }

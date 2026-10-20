@@ -23,6 +23,7 @@ import threading
 import time
 
 from ..qualification.state.pricing import PRICING_REVISION, StateDenied
+from . import refusal_diagnostics as diagnostics
 from .owner_channel import OwnerPeerPolicy
 from .startup_config import (ProductProxyConfiguration, parse_product_proxy_startup,
                              read_reviewed_file, _environment)
@@ -30,7 +31,7 @@ from .startup_config import (ProductProxyConfiguration, parse_product_proxy_star
 
 _NATIVE_CONFIG = Path(__file__).with_name("litellm-product-config.yaml")
 # Updated only with an independently reviewed change of the fixed product file.
-_NATIVE_SHA = "64860d829d7c022f6640b1a75eb48ad05dc2421d8e5e2bcdfdda50b421754d19"
+_NATIVE_SHA = "fd33b4aaf5d3c2566d86691b3c895c21e10633ad4ed1c08a8a6a0f3c104ef06f"
 _running = False
 # Reviewed constants rather than startup configuration, so the closed proxy
 # schema and its rendered bindings stay unchanged. Each attempt is a complete
@@ -358,7 +359,8 @@ async def run_product_proxy(configuration):
 @contextmanager
 def _quiet_native_output():
     # Native logging/tracebacks must not expose request bodies or task creds.
-    # The executable emits only one fixed terminal status outside this scope.
+    # The executable emits only one fixed terminal status outside this scope,
+    # plus refusal_diagnostics' fixed-vocabulary lines on the stderr kept by main().
     with open(os.devnull, "w", encoding="utf-8") as sink:
         with redirect_stdout(sink), redirect_stderr(sink):
             yield
@@ -376,6 +378,7 @@ def main(argv=None):
         configuration = parse_product_proxy_startup(raw, args.config_sha256)
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
+        diagnostics.install_stderr()
         with _quiet_native_output():
             loop.run_until_complete(run_product_proxy(configuration))
         return 0

@@ -50,8 +50,8 @@ for(const custody of ['absent','scheduled'])test(`one-connection history release
   limits:{maxRequestMs:1000,maxRequestBytes:131072,maxResponseBytes:2097152}});
  const response=await app.handle(new Request('https://meri.invalid/api/conversations/list',{method:'POST',headers:{authorization:'Bearer native','content-type':'application/json'},body:'{}'}));
  assert.equal(response.status,200);assert.deepEqual((await response.json()).conversations.map(c=>c.conversationId),[conversationId]);
- assert.equal(core.calls,custody==='absent'?2:0,'absent origin alone routes to Core on both currentness passes');
- assert.deepEqual(pool.state.originReads.map(r=>r.held),[false,false,true,true],'final two custody reads use the fenced session');
+ assert.equal(core.calls,custody==='absent'?1:0,'absent origin alone routes to Core, once, in the fenced release');
+ assert.deepEqual(pool.state.originReads.map(r=>r.held),[true,true],'both custody reads are the final ones and use the fenced session');
  assert.ok(pool.state.originReads.every(r=>r.tenantId===fixture.principal.tenantId&&r.conversationId===conversationId));
  assert.equal(pool.state.peak,1);assert.equal(pool.state.queued,0);assert.equal(pool.state.active,0);
  assert.ok(pool.state.releases.every(error=>error===undefined));

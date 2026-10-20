@@ -90,14 +90,15 @@ for(const method of methods)for(const failure of ['unknown','AbortError','CANCEL
 }
 
 for(const method of methods){
- test(`${method}: owner-only timeout invalidates despite a still-live request`,async t=>{
+ test(`${method}: owner-only timeout refuses the request as unavailable and keeps the session for a full recheck`,async t=>{
   const f=await fixture(t),blocked=park(t,f,'identity'),abort=new AbortController();
-  const rejected=assert.rejects(f.invoke(method,{signal:abort.signal,deadlineMs:NOW+20}),{code:'SESSION_REFUSED'});
+  const rejected=assert.rejects(f.invoke(method,{signal:abort.signal,deadlineMs:NOW+20}),{code:'SESSION_AUTHORITY_UNAVAILABLE'});
   await blocked.entered;await rejected;
   assert.equal(abort.signal.aborted,false);
-  assert.equal(f.owner.status().sessions,0);
+  assert.equal(f.owner.status().sessions,1);
   blocked.release();await nextTurn();
-  assert.equal(f.owner.status().sessions,0);
+  delete f.state.hooks.identity;const calls=f.state.calls.identity;await f.invoke(method);
+  assert.equal(f.state.calls.identity,calls+1,'the late return released nothing; the next request rechecks');
  });
 }
 
@@ -124,12 +125,12 @@ for(const method of methods){
    call.signal.addEventListener('abort',()=>abort.abort(),{once:true});entered.resolve();
    await release.promise;return value;
   };
-  const rejected=assert.rejects(f.invoke(method,{signal:abort.signal,deadlineMs:NOW+20}),{code:'SESSION_REFUSED'});
+  const rejected=assert.rejects(f.invoke(method,{signal:abort.signal,deadlineMs:NOW+20}),{code:'SESSION_AUTHORITY_UNAVAILABLE'});
   await entered.promise;await rejected;
   assert.equal(abort.signal.aborted,true);
-  assert.equal(f.owner.status().sessions,0,'the winning owner deadline must remain invalidating');
+  assert.equal(f.owner.status().sessions,1,'a winning owner deadline is unavailability, not a refusal');
   release.resolve();await nextTurn();
-  assert.equal(f.owner.status().sessions,0);
+  assert.equal(f.owner.status().sessions,1);
  });
 }
 
@@ -137,16 +138,16 @@ for(const boundary of ['request abort','subscription deadline'])test(`event ${bo
  const f=await fixture(t),abort=new AbortController(),entered=gate(),release=gate();
  t.after(()=>release.resolve());
  const events=[1,2].map(sequence=>({contractVersion:'0.1.0',eventId:id(30+sequence),binding,sequence,createdAt:new Date(NOW).toISOString(),scopes,type:'run.status',data:{state:sequence===1?'queued':'running',reasonCode:null}}));
- let runState='running';const seenCursors=[];
+ let runState='running',visible=1;const seenCursors=[];
  const service=createConversationService({sessions:f.owner,now:f.now,versions,maxRequestMs:1000,
   dispatcher:{async start(){throw Error('unexpected dispatch');},async cancel(){throw Error('unexpected durable cancellation');}},
-  store:{async accept(){throw Error('unexpected write');},async append(){throw Error('unexpected write');},async read(_binding,{after,limit}){seenCursors.push(after);return {run:{binding,scopes,state:runState,createdAt:new Date(NOW).toISOString(),policyRevision:'policy1',versions},request:{requestId:id(6),prompt:'Synthetic',skill:null,window:null,windowRequest:null},events:events.filter(event=>event.sequence>after).slice(0,limit),lastSequence:2};}},
+  store:{async accept(){throw Error('unexpected write');},async append(){throw Error('unexpected write');},async read(_binding,{after,limit}){seenCursors.push(after);return {run:{binding,scopes,state:runState,createdAt:new Date(NOW).toISOString(),policyRevision:'policy1',versions},request:{requestId:id(6),prompt:'Synthetic',skill:null,window:null,windowRequest:null},events:events.filter(event=>event.sequence>after&&event.sequence<=visible).slice(0,limit),lastSequence:visible};}},
  });
- let identityReads=0;
- f.state.hooks.identity=async value=>{if(++identityReads===5){entered.resolve();await release.promise;}return value;};
  const source=createConversationEventSource({service,credential:f.issued.credential,signal:abort.signal,now:f.now,maxSubscriptionMs:boundary==='subscription deadline'?100:30000}),reader=source.getReader();
  t.after(()=>reader.releaseLock());
  const first=await reader.read();assert.equal(first.value.sequence,1);const cursor=first.value.sequence;
+ // The next event becomes visible; its release recheck parks until the request abort or the subscription deadline ends the stream.
+ f.state.hooks.identity=async value=>{entered.resolve();await release.promise;return value;};visible=2;
  const pending=reader.read(),rejected=assert.rejects(pending,/SUBSCRIPTION_UNAVAILABLE/);
  await entered.promise;if(boundary==='request abort')abort.abort();await rejected;
  delete f.state.hooks.identity;release.resolve();await nextTurn();
@@ -158,7 +159,7 @@ for(const boundary of ['request abort','subscription deadline'])test(`event ${bo
  t.after(()=>reconnected.releaseLock());
  assert.equal((await reconnected.read()).value.sequence,2);
  assert.equal((await reconnected.read()).done,true);
- assert.deepEqual(seenCursors,[0,1,1]);
+ assert.equal(seenCursors[0],0);assert.ok(seenCursors.slice(1).every(after=>after===cursor),'every later read resumes from the accepted cursor');
  assert.equal(f.owner.status().sessions,1);
  const fresh=await f.owner.authenticateSession({credential:f.issued.credential});
  assert.equal(fresh.sessionRevision,f.authentication.sessionRevision);

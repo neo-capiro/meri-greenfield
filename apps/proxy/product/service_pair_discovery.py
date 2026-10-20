@@ -5,6 +5,7 @@ Revision/certificate pins are configuration custody, not AWS attestation.
 Blocking SDK calls run only inside the caller's owned native-work deadline;
 abort retires future commands without claiming an in-flight call has stopped.
 """
+from concurrent.futures import ThreadPoolExecutor, wait
 import copy
 from datetime import datetime
 import ipaddress
@@ -12,6 +13,8 @@ import re
 import threading
 import time
 from ..qualification.state.pricing import StateDenied
+from . import refusal_diagnostics as diagnostics
+from .budgets import MAX_OWNER_EXCHANGE_MS
 
 _PREFIX = 'arn:aws:ecs:us-east-1:967807252336:'
 _IAM = 'arn:aws:iam::967807252336:role/'
@@ -75,7 +78,7 @@ def parse_owner_peer_template(raw):
             or v['origin'] != 'https://'+v['server_name']+':8444'
             or not all(_matches(r'[a-f0-9]{64}', v[k]) for k in ('server_cert_sha256', 'server_issuer_sha256', 'client_cert_sha256'))
             or v['server_cert_sha256'] == v['client_cert_sha256'] or not _matches(r'[A-Za-z0-9_-]{1,128}', v['client_subject'])
-            or type(v['max_exchange_ms']) is not int or not 1 <= v['max_exchange_ms'] <= 3000):
+            or type(v['max_exchange_ms']) is not int or not 1 <= v['max_exchange_ms'] <= MAX_OWNER_EXCHANGE_MS):
         _deny()
     return v
 
@@ -191,6 +194,13 @@ def _network(n, v, p):
     if len(set(ips)) != len(ips) or v['privateIpv4Address'] not in ips:
         _deny()
 
+def _together(pool, *reads):
+    """Independent reads at once. Every read started settles before any failure is raised, so no SDK call outlives
+    the proof; the first failure in argument order is raised."""
+    futures = [pool.submit(read) for read in reads]
+    wait(futures)
+    return [future.result() for future in futures]
+
 class ProductServicePairDiscovery:
     def __init__(self, *, configuration, ecs_client, ec2_client, now_ms=None, max_request_ms=3000, max_lease_ms=30000, enabled=False):
         self._pins = parse_service_pair_configuration(configuration)
@@ -233,7 +243,7 @@ class ProductServicePairDiscovery:
             raise StateDenied('PRODUCT_PROXY_CLEANUP_UNKNOWN')
 
     def read(self, *, deadline_ms):
-        acquired = False
+        acquired, step, cutoff = False, 'unavailable', None
         try:
             at = self._now()
             if not self.available or not _instant(at) or not _instant(deadline_ms) or deadline_ms <= at:
@@ -243,6 +253,7 @@ class ProductServicePairDiscovery:
             def check():
                 if not self.available or self._now() < at or self._now() >= cutoff or time.monotonic() >= monotonic_cutoff:
                     _deny()
+            step = 'lock'
             acquired = self._read_lock.acquire(timeout=max(0, monotonic_cutoff-time.monotonic()))
             if not acquired:
                 _deny()
@@ -287,30 +298,39 @@ class ProductServicePairDiscovery:
                         _deny()
                     tokens.add(token)
                 _deny()
-            first = services()
-            ids = {r: member(pins[r]) for r in ('owner', 'proxy')}
-            if len(set(ids.values())) != 2:
-                _deny()
-            for r in ('owner', 'proxy'):
-                _definition(call(self._ecs, 'describe_task_definition', taskDefinition=pins[r]['taskDefinitionArn']), pins[r])
-            reply = call(self._ecs, 'describe_tasks', cluster=pins['owner']['clusterArn'], tasks=list(ids.values()), include=['TAGS'])
-            rows = reply.get('tasks')
-            if type(rows) is not list or len(rows) != 2 or len({t.get('taskArn') for t in rows}) != 2 or reply.get('failures', []) != []:
-                _deny()
-            tasks = {t.get('taskArn'): t for t in rows}
-            pair = {r: _task(tasks[ids[r]], pins[r], ids[r], first[r], at) for r in ('owner', 'proxy')}
-            if pair['owner']['eni'] == pair['proxy']['eni'] or pair['owner']['privateIpv4Address'] == pair['proxy']['privateIpv4Address']:
-                _deny()
-            reply = call(self._ec2, 'describe_network_interfaces', NetworkInterfaceIds=[pair[r]['eni'] for r in ('owner', 'proxy')])
-            rows = reply.get('NetworkInterfaces')
-            if type(rows) is not list or len(rows) != 2 or len({n.get('NetworkInterfaceId') for n in rows}) != 2:
-                _deny()
-            networks = {n.get('NetworkInterfaceId'): n for n in rows}
-            for r in ('owner', 'proxy'):
-                _network(networks[pair[r]['eni']], pair[r], pins[r])
-            if services() != first or any(member(pins[r]) != ids[r] for r in ('owner', 'proxy')):
-                _deny()
+            def definition(p):
+                _definition(call(self._ecs, 'describe_task_definition', taskDefinition=p['taskDefinitionArn']), p)
+            # Four phases instead of ten sequential round trips (5/1/1/3 calls, at most 5 at once); same reads and checks.
+            with ThreadPoolExecutor(max_workers=5, thread_name_prefix='meri-service-pair') as pool:
+                step = 'snapshot'; diagnostics.stage('pair-snapshot')
+                first, owner_id, proxy_id, _, _ = _together(pool, services, lambda: member(pins['owner']),
+                    lambda: member(pins['proxy']), lambda: definition(pins['owner']), lambda: definition(pins['proxy']))
+                ids = {'owner': owner_id, 'proxy': proxy_id}
+                if len(set(ids.values())) != 2:
+                    _deny()
+                step = 'tasks'; diagnostics.stage('pair-tasks')
+                reply = call(self._ecs, 'describe_tasks', cluster=pins['owner']['clusterArn'], tasks=list(ids.values()), include=['TAGS'])
+                rows = reply.get('tasks')
+                if type(rows) is not list or len(rows) != 2 or len({t.get('taskArn') for t in rows}) != 2 or reply.get('failures', []) != []:
+                    _deny()
+                tasks = {t.get('taskArn'): t for t in rows}
+                pair = {r: _task(tasks[ids[r]], pins[r], ids[r], first[r], at) for r in ('owner', 'proxy')}
+                if pair['owner']['eni'] == pair['proxy']['eni'] or pair['owner']['privateIpv4Address'] == pair['proxy']['privateIpv4Address']:
+                    _deny()
+                step = 'network'; diagnostics.stage('pair-network')
+                reply = call(self._ec2, 'describe_network_interfaces', NetworkInterfaceIds=[pair[r]['eni'] for r in ('owner', 'proxy')])
+                rows = reply.get('NetworkInterfaces')
+                if type(rows) is not list or len(rows) != 2 or len({n.get('NetworkInterfaceId') for n in rows}) != 2:
+                    _deny()
+                networks = {n.get('NetworkInterfaceId'): n for n in rows}
+                for r in ('owner', 'proxy'):
+                    _network(networks[pair[r]['eni']], pair[r], pins[r])
+                step = 'recheck'; diagnostics.stage('pair-recheck')
+                last, owner_again, proxy_again = _together(pool, services, lambda: member(pins['owner']), lambda: member(pins['proxy']))
+                if last != first or (owner_again, proxy_again) != (ids['owner'], ids['proxy']):
+                    _deny()
             check()
+            step = 'identity'
             identity = tuple(tuple(pair[r][k] for k in ('taskArn', 'createdAtMs', 'privateIpv4Address')) for r in ('owner', 'proxy'))
             with self._state:
                 if self._retired or self._identity is not None and self._identity != identity:
@@ -322,7 +342,8 @@ class ProductServicePairDiscovery:
                 _deny()
             return {**{r: {k: pair[r][k] for k in ('taskArn', 'createdAtMs', 'privateIpv4Address')} for r in ('owner', 'proxy')},
                 'checkedAtMs': checked, 'expiresAtMs': min(pins['expiresAtMs'], deadline_ms, checked+self._max_lease_ms)}
-        except Exception:
+        except Exception as error:
+            diagnostics.refused('pair', step, error, deadline_ms=cutoff, now_ms=self._now)
             _deny()
         finally:
             if acquired:

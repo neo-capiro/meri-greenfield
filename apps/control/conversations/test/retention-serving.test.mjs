@@ -49,8 +49,8 @@ test('a suppression that lands during an awaited read is caught before release; 
 });
 test('an open event stream and a reconnect stop exposing events after suppression or barrier closure',async()=>{
  const r=retentionFixture(),f=await allocatedApplicationFixture({retention:r.port});try{
-  await f.post('submit');const source=createConversationEventSource({service:f.service,credential:f.credential,after:0}),reader=source.getReader();assert.equal((await reader.read()).value.sequence,1);
-  // The event source keeps its existing public failure (SUBSCRIPTION_UNAVAILABLE); the gate's refusal is what closed it.
+  await f.post('submit');const source=createConversationEventSource({service:f.service,credential:f.credential,after:0,idleRecheckMs:100}),reader=source.getReader();assert.equal((await reader.read()).value.sequence,1);
+  // The event source keeps its existing public failure (SUBSCRIPTION_UNAVAILABLE); the gate's refusal at the idle recheck closed it.
   await r.suppress();await assert.rejects(reader.read(),/SUBSCRIPTION_UNAVAILABLE/,'the open stream stops');reader.releaseLock();
   const reconnect=createConversationEventSource({service:f.service,credential:f.credential,after:0}).getReader();await assert.rejects(reconnect.read(),/SUBSCRIPTION_UNAVAILABLE/,'a reconnect gets nothing');reconnect.releaseLock();assert.ok(r.state.calls.length>0);
   await r.release();r.serving.disable();const barred=createConversationEventSource({service:f.service,credential:f.credential,after:0}).getReader();await assert.rejects(barred.read(),/SUBSCRIPTION_UNAVAILABLE/);barred.releaseLock();r.serving.enable();

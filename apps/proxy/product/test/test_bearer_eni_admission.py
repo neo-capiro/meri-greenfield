@@ -13,6 +13,7 @@ from apps.proxy.product.bearer_eni_admission import (
 from apps.proxy.qualification.runtime.ingress import PeerLease
 from apps.proxy.qualification.state.admission import GrantAdmission
 from apps.proxy.qualification.state.pricing import StateDenied
+from apps.proxy.product import refusal_diagnostics as diagnostics
 from apps.proxy.qualification.test.test_ingress import BINDING, GRANT, SHA, Store, fixture
 
 
@@ -121,6 +122,29 @@ class DirectBearerTests(unittest.IsolatedAsyncioTestCase):
         renewed = await trusted.observer()
         self.assertIs(type(renewed), PeerLease)
         self.assertEqual(aws.calls, 4)
+
+    async def test_each_resolver_and_eni_refusal_is_one_line_naming_its_check(self):
+        grant, created = source()
+        aws = FakeAws(grant.issued)
+        aws.task["createdAt"] = created
+        _, _, scope = fixture()
+        resolver = create_bearer_eni_trusted_resolver(
+            read_direct_tls_socket=lambda _scope: DirectTlsSocketPeer("10.77.0.9", 4321, "TLSv1.3"),
+            resolve_bearer_sha256=lambda sha: grant if sha == SHA else None,
+            observe_task_eni=reader(aws), max_request_seconds=60)
+        lines = []
+        diagnostics.install(write=lambda data: lines.append(data.decode("ascii")))
+        try:
+            unsigned = dict(scope, headers=[row for row in scope["headers"] if row[0] != b"authorization"])
+            with diagnostics.request(), self.assertRaises(StateDenied):
+                resolver(unsigned)
+            aws.task["attachments"][0]["details"][1]["value"] = "subnet-eeeeeeeeeeeeeeeee"
+            with diagnostics.request(), self.assertRaises(StateDenied):
+                resolver(scope)
+        finally:
+            diagnostics.uninstall()
+        self.assertEqual(lines, ["PRODUCT_PROXY_REFUSED gate=resolver step=bearer-header code=REFUSED\n",
+                                 "PRODUCT_PROXY_REFUSED gate=eni step=attachment at=eni-read code=REFUSED\n"])
 
     async def test_wrong_socket_bearer_and_headers_fail_before_aws(self):
         grant, created = source()

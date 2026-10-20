@@ -3,6 +3,7 @@ import {randomBytes,randomUUID,createHash} from 'node:crypto';
 import {canonicalSha256,validateShape} from '../../../../packages/contracts/validate.mjs';
 import {own,data,nativeSignal} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
+import {markAuthorityUnavailable,isAuthorityUnavailable} from '../../../../packages/runtime/authority-availability.mjs';
 const hash=x=>createHash('sha256').update(x).digest('hex'),same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u;
 const transitionKeys=['controlId','intent','inputSha256','sourceBinding','targetBinding','scopes','selectedClientId','policyRevision','admissionReceiptId','retirementReceiptId','checkpointId','checkpointSha256','sourceRequestSha256','contextSha256','targetSessionId','resumeSessionAt'];
@@ -13,6 +14,10 @@ const errors=new WeakSet();
 const currentReaders=new WeakMap();
 /** Trusted load composition: each call to the reader performs one complete fresh observation. */
 export const authenticatedCurrentState=owner=>currentReaders.get(owner);
+const currentIssuers=new WeakMap();
+/** Trusted per-request composition (worker HTTP): issuance plus the binding, scopes and selected client its own complete resolve
+ * just observed, so the caller can compare them without resolving the new session again. */
+export const issuedCurrentState=owner=>currentIssuers.get(owner);
 export class ActionSessionError extends Error{constructor(code){super(code);this.name='ActionSessionError';this.code=code;errors.add(this);}}
 const deny=(code='SESSION_REFUSED')=>{throw new ActionSessionError(code);};
 // One minimal issuance wire owner, reused at construction and HTTP release.
@@ -32,15 +37,27 @@ export function createActionSessionOwner(configuration){
  function active(signal){const at=now();if(closed||signal?.aborted||!Number.isSafeInteger(at)||at<0)deny();return at;}
  function remove(r){sessions.delete(r.digest);ids.delete(r.sessionId);r.nativeCredential='';r.receipts.clear();}
  function valid(r,signal){const at=active(signal);if(!r||sessions.get(r.digest)!==r||ids.get(r.sessionId)!==r||r.expiresAtMs<=at) {if(r)remove(r);deny();}return at;}
- function release(r,t){t.check();if(valid(r,t.signal)>=t.deadline())deny();}
+ function release(r,t){t.check();valid(r,t.signal);t.check();}
+ // A recheck re-verifies exactly the bound run: it names that conversation and run, so selection can never move or reserve a successor.
+ function boundHints(r){return data({...r.hints,conversationId:r.context.binding.conversationId,runId:r.context.binding.runId});}
  function life(deadlineMs,signal){
   nativeSignal(signal);const at=active(signal);if(deadlineMs!==undefined&&!Number.isSafeInteger(deadlineMs))deny();let cutoff=Math.min(deadlineMs??at+l.maxRequestMs,at+l.maxRequestMs),requestCancellation;
-  const timer=createOperationLifetime({deadlineMs:cutoff,now,signal,errorFactory:code=>{const error=new ActionSessionError('SESSION_REFUSED');if(code==='CANCELLED'&&signal?.aborted)requestCancellation??=error;return error;}});
+  const timer=createOperationLifetime({deadlineMs:cutoff,now,signal,errorFactory:code=>{
+   // Running out of this request's time is an owner that did not answer, not a refusal. Session expiry is decided by valid().
+   if(code==='DEADLINE'&&!signal?.aborted)return markAuthorityUnavailable(new ActionSessionError('SESSION_AUTHORITY_UNAVAILABLE'));
+   const error=new ActionSessionError('SESSION_REFUSED');if(code==='CANCELLED'&&signal?.aborted)requestCancellation??=error;return error;}});
   // Only this lifetime's winning caller cancellation can preserve a shared session.
   // A later caller abort cannot disguise an upstream refusal or an owner deadline.
   return {...timer,deadline:()=>cutoff,isRequestCancellation:error=>requestCancellation!==undefined&&signal?.aborted&&error===requestCancellation&&timer.signal.reason===error,limitDeadline(next){cutoff=Math.min(cutoff,next);timer.limitDeadline(cutoff);}};
  }
- function rejectRecheck(record,t,error){if(t.isRequestCancellation(error)){try{valid(record);}catch{remove(record);}}else remove(record);deny();}
+ // A definitive refusal removes the session. An identity, membership or context owner that did not answer (deadline, network,
+ // 408/429/5xx) refuses only this request: the record keeps its pins and an expiry that only shortens, and every later request
+ // must complete a fresh recheck before anything is released. An expired or removed record is still refused definitively.
+ function rejectRecheck(record,t,error){
+  if(t.isRequestCancellation(error)){try{valid(record);}catch{remove(record);}deny();}
+  if(isAuthorityUnavailable(error)){valid(record);throw markAuthorityUnavailable(new ActionSessionError('SESSION_AUTHORITY_UNAVAILABLE'));}
+  remove(record);deny();
+ }
  function fact(value,keys,started,t){const v=data(value);own(v,keys);if(Buffer.byteLength(JSON.stringify(v))>l.maxFactBytes)deny();const at=active(t.signal);t.check();if(!Number.isSafeInteger(v.checkedAtMs)||v.checkedAtMs<started||v.checkedAtMs>at||!Number.isSafeInteger(v.expiresAtMs)||v.expiresAtMs<=at)deny();t.limitDeadline(v.expiresAtMs);return v;}
  function hints(value){const v=data(value);own(v,[],['conversationId','runId','clientId']);if(Object.values(v).some(x=>typeof x!=='string'||!uuid.test(x)))deny();return v;}
  // The membership owner is independent of Core's native /identity and /context
@@ -67,7 +84,7 @@ export function createActionSessionOwner(configuration){
   try{
    const current=memberFact(await t.run(signal=>member.recheck({principal,credential,signal,deadlineMs:t.deadline()})),identity,selectedClientId);
    if(!same(current,principal))deny();return current;
-  }catch(error){if(t.isRequestCancellation(error))throw error;if(record&&!t.signal.aborted)remove(record);deny();}
+  }catch(error){if(t.isRequestCancellation(error)||isAuthorityUnavailable(error))throw error;if(record&&!t.signal.aborted)remove(record);deny();}
  }
  async function resolve(nativeCredential,selected,t,record,ceiling=Infinity){
   let started=active(t.signal);const identity=fact(await t.run(signal=>verifyIdentity({credential:nativeCredential,signal,deadlineMs:t.deadline()})),['principal','identityRevision','checkedAtMs','expiresAtMs'],started,t);
@@ -86,21 +103,25 @@ export function createActionSessionOwner(configuration){
   const context=data({binding:current.binding,scopes:current.scopes,selectedClientId:current.selectedClientId,contextRevision:current.contextRevision});if(record&&!same(context,record.context))deny();
   const expiresAtMs=Math.min(identity.expiresAtMs,current.expiresAtMs,record?.expiresAtMs??ceiling,membershipAdmission?.expiresAtMs??Infinity);t.limitDeadline(expiresAtMs);active(t.signal);t.check();return {identity,context,expiresAtMs,...(member?{membershipPrincipal}:{})};
  }
- async function issue(value){const {identityCredential,hints:rawHints={},signal,deadlineMs}=own(value,['identityCredential'],['hints','signal','deadlineMs']);if(typeof identityCredential!=='string'||!identityCredential||identityCredential.length>8192||!/^\S+$/u.test(identityCredential))deny();const selected=hints(rawHints),t=life(deadlineMs,signal);let record;
+ async function issue(value,withCurrent){const {identityCredential,hints:rawHints={},signal,deadlineMs}=own(value,['identityCredential'],['hints','signal','deadlineMs']);if(typeof identityCredential!=='string'||!identityCredential||identityCredential.length>8192||!/^\S+$/u.test(identityCredential))deny();const selected=hints(rawHints),t=life(deadlineMs,signal);let record;
   try{const started=active(t.signal);for(const r of sessions.values())if(r.expiresAtMs<=started)remove(r);if(sessions.size>=l.maxSessions)deny('SESSION_CAPACITY');const resolved=await resolve(identityCredential,selected,t,undefined,started+l.maxTtlMs);
    active(t.signal);t.check();if(sessions.size>=l.maxSessions)deny('SESSION_CAPACITY');const credential=`action_session_${randomBytes(32).toString('base64url')}`,sessionId=randomUUID();record={...resolved,digest:hash(credential),sessionId,sessionRevision:randomUUID(),nativeCredential:identityCredential,hints:selected,receipts:new Set()};sessions.set(record.digest,record);ids.set(sessionId,record);
-   const b=record.context.binding,out=assertActionSessionReceipt({credential,expiresAtMs:record.expiresAtMs,context:{tenantId:b.tenantId,actorId:b.actorId,conversationId:b.conversationId,runId:b.runId,selectedClientId:record.context.selectedClientId}},active(t.signal));release(record,t);return out;
-  }catch(error){if(record)remove(record);if(errors.has(error))throw error;deny();}finally{t.close();}
+   const b=record.context.binding,out=assertActionSessionReceipt({credential,expiresAtMs:record.expiresAtMs,context:{tenantId:b.tenantId,actorId:b.actorId,conversationId:b.conversationId,runId:b.runId,selectedClientId:record.context.selectedClientId}},active(t.signal));release(record,t);
+   return withCurrent?data({receipt:out,current:{binding:b,scopes:record.context.scopes,selectedClientId:record.context.selectedClientId,checkedAtMs:active(t.signal),expiresAtMs:record.expiresAtMs}}):out;
+  }catch(error){if(record)remove(record);if(errors.has(error))throw error;
+   // An owner that did not answer refuses only this issuance, as it does a recheck. The issuance route still answers 401
+   // (http.mjs); worker-http answers 503 so the runner can replay an idempotent call.
+   if(isAuthorityUnavailable(error))throw markAuthorityUnavailable(new ActionSessionError('SESSION_AUTHORITY_UNAVAILABLE'));deny();}finally{t.close();}
  }
  function currentReceipt(r,authentication,current,t){return data({authenticationSha256:canonicalSha256(authentication),binding:current.context.binding,scopes:current.context.scopes,selectedClientId:current.context.selectedClientId,checkedAtMs:active(t.signal),expiresAtMs:r.expiresAtMs});}
  async function authenticate(value,includeCurrent){const {credential,signal,deadlineMs}=own(value,['credential'],['signal','deadlineMs']);if(typeof credential!=='string'||!/^action_session_[A-Za-z0-9_-]{43}$/u.test(credential))deny();const r=sessions.get(hash(credential));valid(r,signal);const t=life(Math.min(deadlineMs??r.expiresAtMs,r.expiresAtMs),signal);
-  try{const current=await resolve(r.nativeCredential,r.hints,t,r);valid(r,t.signal);r.expiresAtMs=current.expiresAtMs;const b=r.context.binding,authentication=data({principal:{sessionId:r.sessionId,tenantId:b.tenantId,actorId:b.actorId,conversationId:b.conversationId,runId:b.runId},sessionRevision:r.sessionRevision,checkedAtMs:active(t.signal),expiresAtMs:r.expiresAtMs});t.check();r.receipts.add(canonicalSha256(authentication));if(r.receipts.size>64)r.receipts.delete(r.receipts.values().next().value);
+  try{const current=await resolve(r.nativeCredential,boundHints(r),t,r);valid(r,t.signal);r.expiresAtMs=current.expiresAtMs;const b=r.context.binding,authentication=data({principal:{sessionId:r.sessionId,tenantId:b.tenantId,actorId:b.actorId,conversationId:b.conversationId,runId:b.runId},sessionRevision:r.sessionRevision,checkedAtMs:active(t.signal),expiresAtMs:r.expiresAtMs});t.check();r.receipts.add(canonicalSha256(authentication));if(r.receipts.size>64)r.receipts.delete(r.receipts.values().next().value);
    const out=includeCurrent?data({authentication,current:currentReceipt(r,authentication,current,t)}):authentication;release(r,t);return out;
   }catch(error){rejectRecheck(r,t,error);}finally{t.close();}
  }
  const authenticateSession=value=>authenticate(value,false);
  async function readCurrentState(value){const {authentication,signal,deadlineMs}=own(value,['authentication'],['signal','deadlineMs']),a=data(authentication);const r=ids.get(a.principal?.sessionId);valid(r,signal);if(!r.receipts.has(canonicalSha256(a)))deny();const t=life(Math.min(deadlineMs??r.expiresAtMs,r.expiresAtMs),signal);
-  try{const current=await resolve(r.nativeCredential,r.hints,t,r);valid(r,t.signal);r.expiresAtMs=current.expiresAtMs;t.check();const out=currentReceipt(r,a,current,t);release(r,t);return out;}catch(error){rejectRecheck(r,t,error);}finally{t.close();}
+  try{const current=await resolve(r.nativeCredential,boundHints(r),t,r);valid(r,t.signal);r.expiresAtMs=current.expiresAtMs;t.check();const out=currentReceipt(r,a,current,t);release(r,t);return out;}catch(error){rejectRecheck(r,t,error);}finally{t.close();}
  }
  async function verifyTransition(value){
   let t,r;try{
@@ -154,6 +175,6 @@ export function createActionSessionOwner(configuration){
   if(best===null)deny('SESSION_UNAVAILABLE');valid(best,v.signal);
   return Object.freeze({credential:best.nativeCredential,expiresAtMs:best.expiresAtMs});
  }
- const owner=Object.freeze({issue,authenticateSession,readCurrentState,verifyTransition,nativeCredentialFor,revoke(credential){if(typeof credential!=='string')deny();const r=sessions.get(hash(credential));if(r)remove(r);},close(){closed=true;for(const r of sessions.values())remove(r);},status:()=>data({mode,closed,sessions:sessions.size})});
- currentReaders.set(owner,value=>authenticate(value,true));return owner;
+ const owner=Object.freeze({issue:value=>issue(value,false),authenticateSession,readCurrentState,verifyTransition,nativeCredentialFor,revoke(credential){if(typeof credential!=='string')deny();const r=sessions.get(hash(credential));if(r)remove(r);},close(){closed=true;for(const r of sessions.values())remove(r);},status:()=>data({mode,closed,sessions:sessions.size})});
+ currentReaders.set(owner,value=>authenticate(value,true));currentIssuers.set(owner,value=>issue(value,true));return owner;
 }

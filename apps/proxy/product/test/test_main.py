@@ -4,7 +4,7 @@ These exercise the actual lifecycle and existing owner startup, not native
 LiteLLM success, an mTLS handshake, AWS authorization or a model dispatch.
 """
 import asyncio
-from contextlib import asynccontextmanager
+from contextlib import asynccontextmanager, contextmanager
 import hashlib
 import json
 from importlib import metadata, import_module
@@ -223,6 +223,26 @@ def _not_running(role):
     return change
 
 
+class RefusalDiagnosticsWiringTests(unittest.TestCase):
+    def test_refusal_lines_keep_stderr_before_native_output_is_silenced(self):
+        events = []
+
+        @contextmanager
+        def quiet():
+            events.append("quiet")
+            yield
+
+        async def run(_configuration):
+            events.append("run")
+
+        with (patch.object(main, "_environment"), patch.object(main, "read_reviewed_file", return_value=b"{}"),
+              patch.object(main, "parse_product_proxy_startup", return_value=object()),
+              patch.object(main.diagnostics, "install_stderr", side_effect=lambda: events.append("install")),
+              patch.object(main, "_quiet_native_output", quiet), patch.object(main, "run_product_proxy", run)):
+            self.assertEqual(main.main(["--config", "/run/meri/proxy.json", "--config-sha256", "a" * 64]), 0)
+        self.assertEqual(events, ["install", "quiet", "run"])
+
+
 class StartupPairWaitTests(unittest.IsolatedAsyncioTestCase):
     """Bounded startup wait for the service pair through the actual executable
     path; native, SDK, TLS and serving constructors stay synthetic."""
@@ -280,10 +300,10 @@ class StartupPairWaitTests(unittest.IsolatedAsyncioTestCase):
             services.changes['describe_services'] = change
             result = await self._run(services)
             self.assertEqual(len(result.sleeps), 2)
-            # Two denied attempts stop at their first service read; the admitted
-            # attempt is a complete fresh read (services read first and last).
+            # Two denied attempts stop after their first phase (services, both members and both task
+            # definitions read together); the admitted attempt is a complete fresh read (services first and last).
             self.assertEqual(len(result.services), 2+2)
-            self.assertEqual(len(services.calls), 2+10)
+            self.assertEqual(len(services.calls), 2*5+10)
             self.assertEqual(len(result.served), 1)
             self.assertEqual((result.served[0]['owner_ipv4'], result.served[0]['proxy_ipv4']), ('10.40.4.1', '10.40.4.2'))
             self.assertEqual(result.tls[0].owner_task_arn, services.task_id('owner'))
@@ -393,6 +413,8 @@ class InstalledNativeStartup(unittest.IsolatedAsyncioTestCase):
                 async with actual_app.router.lifespan_context(actual_app):
                     self.assertTrue(invoker.registration_current())
                     self.assertIs(native.user_custom_auth, native_auth.authenticate_product_request)
+                    # One deployment: a cooldown after a single failure would only refuse the next turn for 5 s.
+                    self.assertIs(native.llm_router.disable_cooldowns, True)
                     await fixture.asyncSetUp()
                     fixture_started = True
                     async def once():

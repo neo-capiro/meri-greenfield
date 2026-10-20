@@ -1,10 +1,11 @@
-"""Unmounted product admission reader over the existing owner operation channel.
+"""Unmounted product admission reader over the owner's dedicated admission carrier (or a bridge's capture carrier).
 
 No SQL, socket, listener, credential or placement authority is created. Transport
 evidence from a callback is not live mTLS authentication. Trusted startup must
 provide that real exchange and an independently trusted IssuedTaskNetwork.
 """
 import asyncio
+from collections import OrderedDict
 from dataclasses import dataclass, replace
 import hashlib
 import inspect
@@ -14,12 +15,19 @@ import threading
 import time
 import uuid
 
-from .owner_channel import (OPERATION, OwnerPeerPolicy, OwnerReply, OwnerHostGate,
-                            owner_exchange_state, validate_owner_reply,
+from .owner_channel import (OPERATION, OwnerPeerPolicy, OwnerReply, OwnerHostGate, OwnerCarrierBusy,
+                            acquire_owner_carrier, owner_exchange_state, validate_owner_reply,
                             admission_carrier, validate_capture_admission_lease)
+from .budgets import MIN_OWNER_EXCHANGE_MS, OWNER_CARRIER_WAIT_MS
 from .bearer_eni_admission import IssuedTaskNetwork, ProductBearerSource
 from .binding import _binding as checked_binding
+from . import refusal_diagnostics as diagnostics
 from ..qualification.state.pricing import StateDenied
+
+
+READ_ID_WINDOW = 4096
+"""Recent read ids kept to refuse a reused id. Ids are fresh uuid4 values and each reply must echo its own; a window, not a
+lifetime cap, so a long-lived proxy (about 30 reads per turn) never runs out of reads."""
 
 
 def _deny():
@@ -97,22 +105,23 @@ class ProductOwnerAdmissionReader:
     physical-stop proof is supplied by this source interface.
     """
     def __init__(self, *, policy, exchange, host_gate, owner_loop,
-                 now_ms=None, max_exchange_ms=3000):
+                 now_ms=None, max_exchange_ms=3000, max_carrier_wait_ms=OWNER_CARRIER_WAIT_MS):
         if (type(policy) is not OwnerPeerPolicy or type(host_gate) is not OwnerHostGate
                 or not host_gate.available or not callable(exchange)
                 or not callable(getattr(exchange, "abort", None))
                 or inspect.iscoroutinefunction(exchange.abort)
                 or asyncio.get_running_loop() is not owner_loop or not owner_loop.is_running()
-                or type(max_exchange_ms) is not int or not 1 <= max_exchange_ms <= policy.max_exchange_ms):
+                or type(max_exchange_ms) is not int or not 1 <= max_exchange_ms <= policy.max_exchange_ms
+                or type(max_carrier_wait_ms) is not int or not 1 <= max_carrier_wait_ms <= OWNER_CARRIER_WAIT_MS):
             _deny()
         self.policy, self.exchange, self.host_gate = policy, exchange, host_gate
         self.loop, self.loop_thread = owner_loop, threading.get_ident()
         self.now_ms = now_ms or (lambda: time.time_ns() // 1_000_000)
         if not callable(self.now_ms):
             _deny()
-        self.max_exchange_ms = max_exchange_ms
+        self.max_exchange_ms, self.max_carrier_wait_ms = max_exchange_ms, max_carrier_wait_ms
         self.state = owner_exchange_state(exchange, policy, host_gate)
-        self._receipts, self._read_ids = {}, set()
+        self._receipts, self._read_ids = {}, OrderedDict()
         self._initial_caps = {}
         self._pending_tasks = set()
 
@@ -132,8 +141,8 @@ class ProductOwnerAdmissionReader:
             _deny()
         return (cutoff - at) / 1000
 
-    async def _read(self, read_id, capability_sha256, expected, started, cutoff, carrier, lease):
-        acquired = False
+    async def _read(self, read_id, capability_sha256, expected, started, deadline, carrier, lease):
+        acquired, step, cutoff = False, "carrier", deadline
         task = asyncio.current_task()
         self._pending_tasks.add(task)
         def finished(value):
@@ -146,63 +155,84 @@ class ProductOwnerAdmissionReader:
                     None if expected is None else _json(expected)) != carrier:
                 _deny()
             return self._remaining(cutoff)
-        try:
-            if read_id in self._read_ids or len(self._read_ids) >= 4096:
-                _deny()
-            self._read_ids.add(read_id)
-            await asyncio.wait_for(self.state[3][carrier].acquire(), check_carrier())
-            acquired = True
-            check_carrier()
-            body = _json(["meri.proxy.admission-read/1", read_id, capability_sha256,
-                          None if expected is None else _hash(expected), cutoff])
-            reply = await asyncio.wait_for(
-                self.exchange(carrier, OPERATION, body, check_carrier()),
-                check_carrier())
-            check_carrier()
-            if type(reply) is not OwnerReply or type(reply.body) is not bytes or len(reply.body) > 16384:
-                _deny()
-            frame = validate_owner_reply(self.policy, reply, carrier, self.state[4])
-            _tuple(frame, 8)
-            if frame[:3] != ["meri.proxy.admission/1", read_id, capability_sha256]:
-                _deny()
-            binding = _source(frame[4])
-            if frame[4][2] != capability_sha256 or _sha(frame[3]) != _hash(frame[4]):
-                _deny()
-            if expected is not None and _json(expected) != _json(frame[4]):
-                _deny()
-            current = _tuple(frame[5], 7)
-            _sha(current[0]); _sha(current[4]); _binding(current[1])
-            scopes = [["client", binding["tenantId"], frame[4][7], frame[4][3][4]]]
-            at = _integer(self.now_ms())
-            if (current[1] != frame[4][0] or current[2] != scopes or current[3] != frame[4][7]
-                    or not started <= _integer(current[5]) <= at
-                    or not started <= _integer(frame[6]) <= at
-                    or _integer(frame[7], 1) <= at or frame[7] > cutoff
-                    or frame[7] > _integer(current[6], 1) or frame[7] > frame[4][4][3]):
-                _deny()
-            check_carrier()
-            result = _VerifiedAdmission(read_id, _json(frame[4]), frame[6], frame[7], lease, _json(current))
-            self._receipts[id(result)] = result
-            return result
-        except BaseException:
-            self._abort()
-            raise
-        finally:
-            if acquired:
-                self.state[3][carrier].release()
+        with diagnostics.phase("admission" if expected is None else "session"):
+            try:
+                if read_id in self._read_ids:
+                    _deny()
+                self._read_ids[read_id] = None
+                while len(self._read_ids) > READ_ID_WINDOW:
+                    self._read_ids.popitem(last=False)
+                # Waiting sends nothing: it is bounded on its own and never spends the exchange budget below.
+                wait = min(self.max_carrier_wait_ms / 1000, check_carrier())
+                waited = await acquire_owner_carrier(self.state[3][carrier], wait)
+                acquired = True
+                at = _integer(self.now_ms())
+                cutoff = min(deadline, at + self.max_exchange_ms)
+                if waited and deadline - at < min(MIN_OWNER_EXCHANGE_MS, self.max_exchange_ms):
+                    raise OwnerCarrierBusy("OWNER_CARRIER_BUSY")
+                check_carrier()
+                step = "exchange"
+                body = _json(["meri.proxy.admission-read/1", read_id, capability_sha256,
+                              None if expected is None else _hash(expected), cutoff])
+                reply = await asyncio.wait_for(
+                    self.exchange(carrier, OPERATION, body, check_carrier()),
+                    check_carrier())
+                check_carrier()
+                step = "reply"
+                if type(reply) is not OwnerReply or type(reply.body) is not bytes or len(reply.body) > 16384:
+                    _deny()
+                frame = validate_owner_reply(self.policy, reply, carrier, self.state[4])
+                step = "frame"
+                _tuple(frame, 8)
+                if frame[:3] != ["meri.proxy.admission/1", read_id, capability_sha256]:
+                    _deny()
+                step = "source"
+                binding = _source(frame[4])
+                if frame[4][2] != capability_sha256 or _sha(frame[3]) != _hash(frame[4]):
+                    _deny()
+                if expected is not None and _json(expected) != _json(frame[4]):
+                    _deny()
+                step = "current"
+                current = _tuple(frame[5], 7)
+                _sha(current[0]); _sha(current[4]); _binding(current[1])
+                scopes = [["client", binding["tenantId"], frame[4][7], frame[4][3][4]]]
+                at = _integer(self.now_ms())
+                if (current[1] != frame[4][0] or current[2] != scopes or current[3] != frame[4][7]
+                        or not started <= _integer(current[5]) <= at
+                        or not started <= _integer(frame[6]) <= at
+                        or _integer(frame[7], 1) <= at or frame[7] > cutoff
+                        or frame[7] > _integer(current[6], 1) or frame[7] > frame[4][4][3]):
+                    _deny()
+                check_carrier()
+                result = _VerifiedAdmission(read_id, _json(frame[4]), frame[6], frame[7], lease, _json(current))
+                self._receipts[id(result)] = result
+                return result
+            except OwnerCarrierBusy as error:
+                # Nothing was sent on this carrier: a plain refusal, never a poisoned gate.
+                diagnostics.refused("admission", step, error, deadline_ms=cutoff, now_ms=self.now_ms)
+                raise
+            except BaseException as error:
+                diagnostics.refused("admission", step, error, deadline_ms=cutoff, now_ms=self.now_ms)
+                self._abort()
+                raise
+            finally:
+                if acquired:
+                    self.state[3][carrier].release()
 
     def _sync_read(self, capability_sha256, expected, deadline_ms):
         if threading.get_ident() == self.loop_thread or self.loop.is_closed() or not self.loop.is_running():
             _deny()
         started = _integer(self.now_ms())
-        cutoff = min(_integer(deadline_ms, 1), started + self.max_exchange_ms)
+        deadline = _integer(deadline_ms, 1)
         carrier, lease = admission_carrier(self.exchange, self.host_gate,
                                            None if expected is None else _json(expected))
         if lease is not None:
-            cutoff = min(cutoff, lease.deadline_ms)
-        self._remaining(cutoff)
+            deadline = min(deadline, lease.deadline_ms)
+        self._remaining(deadline)
+        # The read resolves itself within one carrier wait plus one exchange; the second of margin only catches a stuck loop.
+        bound = min(deadline, started + self.max_carrier_wait_ms + self.max_exchange_ms)
         read_id = uuid.uuid4().hex
-        coroutine = self._read(read_id, _sha(capability_sha256), expected, started, cutoff, carrier, lease)
+        coroutine = self._read(read_id, _sha(capability_sha256), expected, started, deadline, carrier, lease)
         try:
             future = asyncio.run_coroutine_threadsafe(coroutine, self.loop)
         except BaseException:
@@ -210,11 +240,14 @@ class ProductOwnerAdmissionReader:
             self._abort()
             _deny()
         try:
-            result = future.result(timeout=self._remaining(cutoff))
+            result = future.result(timeout=max(.001, (bound - self.now_ms()) / 1000 + 1))
             validate_capture_admission_lease(lease, self.exchange, self.host_gate,
                 None if expected is None else _json(expected))
             return result
-        except BaseException:
+        except OwnerCarrierBusy:
+            raise
+        except BaseException as error:
+            diagnostics.refused("admission", "read", error, deadline_ms=bound, now_ms=self.now_ms)
             self._abort(); future.cancel()
             _deny()
 
@@ -223,6 +256,7 @@ class ProductOwnerAdmissionReader:
                 or self._receipts.pop(id(receipt), None) is not receipt
                 or not self.host_gate.available or receipt.expires_at_ms <= self.now_ms()
                 or expected is not None and receipt.source_bytes != _json(expected)):
+            diagnostics.refused("admission", "consume")
             _deny()
         validate_capture_admission_lease(receipt.capture_lease, self.exchange,
             self.host_gate, receipt.source_bytes)
@@ -243,6 +277,7 @@ class ProductOwnerAdmissionReader:
                                 issued.task_definition_arn, issued.container_name]
                 or original != [issued.started_by, issued.started_by, dict(issued.tags)["meri:plan-sha256"],
                                 issued.expires_at_ms, issued.image_digest]):
+            diagnostics.refused("admission", "join")
             self._abort(); _deny()
         # The immutable issuance cap is distinct from this read's short lease.
         # A later check must read again; it may never extend the original cap.
@@ -250,6 +285,7 @@ class ProductOwnerAdmissionReader:
         encoded = _json(source)
         previous = self.state[5].get(capability_sha256)
         if previous is not None and previous != encoded:
+            diagnostics.refused("admission", "replay")
             self._abort(); _deny()
         self.state[5][capability_sha256] = encoded
         from ..qualification.state.admission import GrantAdmission

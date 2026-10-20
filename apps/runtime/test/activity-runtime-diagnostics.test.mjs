@@ -5,6 +5,7 @@ import {withRunnerDiagnostics} from '../runner-runtime-diagnostics.mjs';
 import {createConversationActivity} from '../../worker/conversation/activity.mjs';
 import {attemptCleanup} from '../../worker/conversation/cleanup.mjs';
 import {binding,versions,scopes,id} from '../../control/conversations/test/store-fixture.mjs';
+import {withoutDetail} from './runner-diagnostic-lines.mjs';
 
 const fail=code=>Object.assign(Error('synthetic private bearer detail'),{code});
 const configuration={sourceEnabled:false,binding,versions,workspace:'/workspace/'+binding.conversationId,
@@ -47,8 +48,8 @@ for(const entry of [
  {failureAt:'stream',code:'EACCES',cleanupFailure:true,stage:'activity-stream',returnedCode:'SDK_CLEANUP_UNKNOWN',states:['starting','running','failed'],queries:1,closes:1},
 ])test(`canonical activity preserves ${entry.stage} before generic failure${entry.cleanupFailure?' and cleanup uncertainty':''}`,async()=>{
  const f=fixture(entry),lines=[];
- await assert.rejects(withRunnerDiagnostics(()=>f.execute({binding}),{write:line=>lines.push(line)}),{code:entry.returnedCode??'EXECUTION_FAILED'});
- assert.deepEqual(lines,[`RUNNER_FIRST_FAILURE origin=runtime code=${entry.reportedCode??entry.code??'NATIVE_UNAVAILABLE'}\n`,`RUNNER_RUNTIME_FAILED stage=${entry.stage} code=${entry.reportedCode??entry.code??'NATIVE_UNAVAILABLE'}\n`]);
+ await assert.rejects(withRunnerDiagnostics(()=>f.execute({binding}),{write:line=>lines.push(withoutDetail(line))}),{code:entry.returnedCode??'EXECUTION_FAILED'});
+ assert.deepEqual(lines,[`RUNNER_FIRST_FAILURE origin=runtime stage=${entry.stage} code=${entry.reportedCode??entry.code??'NATIVE_UNAVAILABLE'} class=ERROR exit=none signal=none\n`,`RUNNER_RUNTIME_FAILED stage=${entry.stage} code=${entry.reportedCode??entry.code??'NATIVE_UNAVAILABLE'}\n`]);
  assert.deepEqual(f.events.filter(event=>event.type==='run.status').map(event=>event.data.state),entry.states);
  assert.deepEqual(f.counts(),{queries:entry.queries,closes:entry.closes});
  assert.equal(f.saved.run.state,entry.states.at(-1)??'queued');
@@ -56,7 +57,7 @@ for(const entry of [
 
 test('successful activity remains silent and publishes starting, running, completed in order',async()=>{
  const f=fixture(),lines=[];
- assert.deepEqual(await withRunnerDiagnostics(()=>f.execute({binding}),{write:line=>lines.push(line)}),{state:'completed'});
+ assert.deepEqual(await withRunnerDiagnostics(()=>f.execute({binding}),{write:line=>lines.push(withoutDetail(line))}),{state:'completed'});
  assert.deepEqual(lines,[]);assert.deepEqual(f.events.map(event=>event.data.state),['starting','running','completed']);
  assert.deepEqual(f.counts(),{queries:1,closes:1});
 });

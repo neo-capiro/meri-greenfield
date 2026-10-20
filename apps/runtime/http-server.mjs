@@ -2,10 +2,13 @@
 import {serve} from '@hono/node-server';
 import {createServer as createHttpsServer} from 'node:https';
 import {fault} from './config.mjs';
+/** Idle keep-alive sockets outlive the private ALB's 120 s idle timeout (first-chat-private-edge.mjs), so the load balancer, not
+ * this listener, closes them. A listener that closes first races the ALB's reuse of the socket, and the ALB answers 502. */
+export const RUNTIME_KEEP_ALIVE_MS=125000;
 export async function listenRuntime({configuration,application,readiness,signal,tls,exposeReadiness=true,testOwners={}}){
  const startServer=testOwners.serve??serve;if(Object.keys(testOwners).some(key=>key!=='serve')||typeof startServer!=='function'||typeof exposeReadiness!=='boolean')throw fault('HTTP_CONFIGURATION');
  signal?.throwIfAborted();
- let stopping=false;const active=new Set(),sockets=new Set();const json=(body,status=200)=>Response.json(body,{status,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
+ let stopping=false;const active=new Set(),sockets=new Set(),serving=new Map();const json=(body,status=200)=>Response.json(body,{status,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
  const server=startServer({hostname:configuration.http.hostname,port:configuration.http.port,overrideGlobalObjects:false,
   ...(tls?{createServer:createHttpsServer,serverOptions:tls}:{}),fetch:async request=>{
   const path=new URL(request.url).pathname;
@@ -28,10 +31,17 @@ export async function listenRuntime({configuration,application,readiness,signal,
   }finally{if(!streamed)cleanup();}
  }});
  server.on('connection',socket=>{sockets.add(socket);socket.once('close',()=>sockets.delete(socket));});
- server.requestTimeout=configuration.limits.requestMs+1000;server.headersTimeout=configuration.limits.requestMs;server.keepAliveTimeout=1000;server.maxHeadersCount=100;
+ // Once close() has begun, no connection outlives the responses it has in flight: one not yet started says `connection: close`,
+ // and a connection is closed as its last response ends. Kept alive, it would hold the listener open for the whole keep-alive
+ // timeout, and close() would end only on its shutdown timer.
+ server.on('request',(request,response)=>{const socket=request.socket,open=serving.get(socket)??new Set();serving.set(socket,open.add(response));
+  if(stopping)response.setHeader('connection','close');
+  response.once('close',()=>{open.delete(response);if(open.size)return;serving.delete(socket);if(stopping)socket.destroySoon();});});
+ server.requestTimeout=configuration.limits.requestMs+1000;server.headersTimeout=configuration.limits.requestMs;server.keepAliveTimeout=RUNTIME_KEEP_ALIVE_MS;server.maxHeadersCount=100;
  await new Promise((resolve,reject)=>{if(server.listening)return resolve();server.once('listening',resolve);server.once('error',reject);});
  let closing;const close=()=>closing??=new Promise(resolve=>{
   stopping=true;for(const c of active)c.abort(fault('RUNTIME_STOPPING'));
+  for(const open of serving.values())for(const response of open)if(!response.headersSent)response.setHeader('connection','close');
   let stopped=false,timer;
   const receipt=()=>({listenerStopped:stopped,pendingRequests:active.size+sockets.size});
   timer=setTimeout(()=>{for(const socket of sockets)socket.destroy();resolve(receipt());},configuration.limits.shutdownMs);timer.unref();

@@ -6,6 +6,7 @@ import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {ROLE_NAME} from '../../worker/conversation/capabilities/policy-resolution.mjs';
 import {ProductError,asProductError,refuse} from './errors.mjs';
+import {markAuthorityUnavailable,carryAuthorityUnavailable} from '../../../packages/runtime/authority-availability.mjs';
 import {UUID,closed,text} from './shape.mjs';
 const PERMISSION=/^[a-z][a-z0-9_.-]{0,63}$/u;
 const IDENTITY=['tenantId','actorId'];
@@ -21,7 +22,8 @@ export function createMembershipGate(options){
  const {verifyToken,readMembership,now,limits}=closedPorts(options);
  /** One bounded lifetime per call; `deadline()` is the current cutoff (caller deadline ∧ maxRequestMs ∧ every receipt expiry). */
  const life=(deadlineMs,signal)=>{const at=now();let cutoff=Math.min(Number.isSafeInteger(deadlineMs)?deadlineMs:at+limits.maxRequestMs,at+limits.maxRequestMs);
-  const t=createOperationLifetime({deadlineMs:cutoff,now,signal,errorFactory:code=>new ProductError(code)});
+  // Running out of time without the caller cancelling means an owner did not answer; the code stays DEADLINE.
+  const t=createOperationLifetime({deadlineMs:cutoff,now,signal,errorFactory:code=>{const error=new ProductError(code);return code==='DEADLINE'&&!signal?.aborted?markAuthorityUnavailable(error):error;}});
   return Object.freeze({...t,deadline:()=>cutoff,limitDeadline(next){t.limitDeadline(next);cutoff=Math.min(cutoff,next);}});};
  /** Freshness and size of one port receipt; publishes its expiry into the lifetime. */
  function fact(raw,keys,started,lifetime){
@@ -53,7 +55,7 @@ export function createMembershipGate(options){
   /** New access: verify the native credential, then require an active current membership. */
   async admit({credential,signal,deadlineMs}){
    const lifetime=life(deadlineMs,signal);
-   try{return await admitWithin(credential,lifetime);}catch(error){throw asProductError(error,'ACCESS_DENIED');}finally{lifetime.close();}
+   try{return await admitWithin(credential,lifetime);}catch(error){throw carryAuthorityUnavailable(error,asProductError(error,'ACCESS_DENIED'));}finally{lifetime.close();}
   },
   /** Stored or pending access: the same member must still be active at the same membership revision before anything is released. */
   async recheck({principal,credential,signal,deadlineMs}){
@@ -62,7 +64,7 @@ export function createMembershipGate(options){
     const m=await membershipOf({tenantId:principal.tenantId,actorId:principal.actorId},lifetime,credential);
     if(canonicalSha256(principalFrom(m))!==canonicalSha256(principal))refuse('MEMBERSHIP_CHANGED');
     return principal;
-   }catch(error){throw asProductError(error,'ACCESS_DENIED');}finally{lifetime.close();}
+   }catch(error){throw carryAuthorityUnavailable(error,asProductError(error,'ACCESS_DENIED'));}finally{lifetime.close();}
   },
   /** Identity port for the existing action-session owner. Its identityRevision is the membership revision, and the owner rechecks
    * it on every use, so removing or changing a membership refuses and discards stored action sessions. */
@@ -70,7 +72,7 @@ export function createMembershipGate(options){
    const lifetime=life(deadlineMs,signal);
    try{const {principal,expiresAtMs}=await admitWithin(credential,lifetime);
     return Object.freeze({principal:Object.freeze({tenantId:principal.tenantId,actorId:principal.actorId}),identityRevision:canonicalSha256(principal),checkedAtMs:now(),expiresAtMs});
-   }catch(error){throw asProductError(error,'ACCESS_DENIED');}finally{lifetime.close();}
+   }catch(error){throw carryAuthorityUnavailable(error,asProductError(error,'ACCESS_DENIED'));}finally{lifetime.close();}
   },
  });
  function closedPorts(value){

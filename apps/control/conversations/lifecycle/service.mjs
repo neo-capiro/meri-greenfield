@@ -3,22 +3,42 @@ import {randomUUID} from 'node:crypto';
 import {assertWorkspacePaths,assertProposalIntegrity} from '../../../../packages/contracts/validate.mjs';
 import {assertLifecycleCommand,assertLifecycleReceipt,assertWorkerControl,assertContinuationEnvelope,assertCheckpointInspectionRequest,assertCheckpointInspectionReceipt} from '../../../../packages/contracts/conversation-lifecycle/validate.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
-import {bounded,same,hash,fail,validateShape,own,uuid} from '../boundary.mjs';
+import {bounded,same,hash,fail,validateShape,own,uuid,data} from '../boundary.mjs';
+/** Trusted worker HTTP only: a runner's page of durable controls read with its verified task authority instead of an opaque
+ * session. Not a run-owner operation, so neither the generic worker dispatch nor product HTTP can reach it. */
+export const taskControlPage=Symbol('taskControlPage');
+const controlPage=(rows,after)=>({controls:rows.filter(p=>p.command&&p.state==='PENDING').map(p=>({controlSequence:p.controlSequence,commandSha256:p.commandSha256,command:p.command})),nextControlSequence:rows.at(-1)?.controlSequence??after});
 const contextHash=saved=>hash({window:saved.request.window,skill:saved.request.skill,scopes:saved.run.scopes});
 const receipt=(p,replayed=p.replayed)=>assertLifecycleReceipt({controlId:p.input.controlId,intent:p.input.intent,sourceBinding:p.sourceBinding,inputSha256:hash(p.input),state:p.state,checkpointId:p.checkpointId,targetBinding:p.target?.binding??null,admissionReceiptId:p.target?.admissionReceiptId??null,retirementReceiptId:p.retirement?.retirementReceiptId??null,replayed});
-import {cleanupRead,loadWithLifecycle} from '../service.mjs';
-export function createConversationLifecycleService({service,store,dispatcher,reconcileOriginal,checkpoints,nativeAdmission,approvals,sessions,now=Date.now,newId=randomUUID,maxRequestMs=3000}){
- const journal=store?.lifecycle;
- if(['authenticateSession','readCurrentState'].some(k=>typeof sessions?.[k]!=='function')||['history','loadForExecution','publish'].some(k=>typeof service?.[k]!=='function')||['begin','change','get','controls','claim','checkpoint','readCheckpoint','execution','continuation','cancel','readStopFence'].some(k=>typeof journal?.[k]!=='function')||['signal','cancel'].some(k=>typeof dispatcher?.[k]!=='function')||typeof reconcileOriginal!=='function'||typeof checkpoints?.read!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('LIFECYCLE_CONFIGURATION');
+import {loadWithLifecycle} from '../service.mjs';
+import {authenticatedCurrentState} from '../../action-host/session/owner.mjs';
+export function createConversationLifecycleService({service,store,dispatcher,reconcileOriginal,checkpoints,nativeAdmission,approvals,sessions,retention,now=Date.now,newId=randomUUID,maxRequestMs=3000}){
+ const journal=store?.lifecycle,readCurrent=authenticatedCurrentState(sessions);
+ if(['authenticateSession','readCurrentState'].some(k=>typeof sessions?.[k]!=='function')||['loadForExecution','publish'].some(k=>typeof service?.[k]!=='function')||typeof store?.read!=='function'||retention!==null&&typeof retention?.assertServable!=='function'||['begin','change','get','controls','claim','checkpoint','readCheckpoint','execution','continuation','cancel','readStopFence'].some(k=>typeof journal?.[k]!=='function')||['signal','cancel'].some(k=>typeof dispatcher?.[k]!=='function')||typeof reconcileOriginal!=='function'||typeof checkpoints?.read!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('LIFECYCLE_CONFIGURATION');
  const event=(type,data)=>({contractVersion:'0.1.0',eventId:newId(),createdAt:new Date(now()).toISOString(),type,data});
- /** Every lifecycle operation reads the conversation through the gated history (retention serving gate included); cancellation uses
-  * the cleanup-only read so a suppressed subject can still be stopped without any content release. */
- async function operation(credential,signal,body,{cleanup=false}={}){const read=cleanup&&typeof service[cleanupRead]==='function'?service[cleanupRead]:service.history;let cutoff=now()+maxRequestMs;const timer=createOperationLifetime({deadlineMs:cutoff,now,signal,errorFactory:code=>Object.assign(new Error(code),{code})}),life={...timer,deadline:()=>cutoff,limitDeadline(next){cutoff=Math.min(cutoff,next);timer.limitDeadline(cutoff);}};let pinned;
-  async function fresh(active=life){
-   const started=now(),authentication=bounded(await active.run(signal=>sessions.authenticateSession({credential,signal,deadlineMs:started+maxRequestMs}))),current=bounded(await active.run(signal=>sessions.readCurrentState({authentication,signal,deadlineMs:started+maxRequestMs}))),saved=bounded(await active.run(signal=>read({credential,after:0,limit:1,signal})),2097152);
-   if(current.authenticationSha256!==hash(authentication)||!same(current.binding,saved.run.binding)||!same(current.scopes,saved.run.scopes)||['tenantId','actorId','conversationId','runId'].some(k=>authentication.principal?.[k]!==saved.run.binding[k]))fail('SESSION_REFUSED');uuid(current.selectedClientId);if(!current.scopes.some(s=>s.kind==='client'&&s.resourceId===current.selectedClientId))fail('SCOPE_REFUSED');
+ /** Every lifecycle operation reads the conversation between two complete session observations and two retention checks, the gated
+  * read the conversation service's history applies; cancellation skips retention so a suppressed subject can still be stopped without
+  * any content release. One observation is one owner resolve (identity, membership, context, membership): the history read used a
+  * back-to-back authenticate + current-state pair at each end, and this operation another pair before it, so each was a repeat. */
+ async function operation(credential,signal,body,{cleanup=false}={}){let cutoff=now()+maxRequestMs;const timer=createOperationLifetime({deadlineMs:cutoff,now,signal,errorFactory:code=>Object.assign(new Error(code),{code})}),life={...timer,deadline:()=>cutoff,limitDeadline(next){cutoff=Math.min(cutoff,next);timer.limitDeadline(cutoff);}};let pinned;
+  async function observe(active){
+   const started=now(),deadlineMs=started+maxRequestMs;let authentication,current;
+   if(readCurrent)({authentication,current}=bounded(await active.run(signal=>readCurrent({credential,signal,deadlineMs}))));
+   else{authentication=bounded(await active.run(signal=>sessions.authenticateSession({credential,signal,deadlineMs})));current=bounded(await active.run(signal=>sessions.readCurrentState({authentication,signal,deadlineMs})));}
+   if(current.authenticationSha256!==hash(authentication)||['tenantId','actorId','conversationId','runId'].some(k=>authentication.principal?.[k]!==current.binding?.[k]))fail('SESSION_REFUSED');validateShape('RunBinding',current.binding);
+   if(!Array.isArray(current.scopes)||!current.scopes.length||current.scopes.length>100)fail('SCOPE_REFUSED');for(const scope of current.scopes){validateShape('Scope',scope);if(scope.tenantId!==current.binding.tenantId)fail('SCOPE_REFUSED');}
+   if(new Set(current.scopes.map(hash)).size!==current.scopes.length||new Set(current.scopes.map(s=>s.policyRevision)).size!==1)fail('SCOPE_REFUSED');
+   uuid(current.selectedClientId);if(!current.scopes.some(s=>s.kind==='client'&&s.resourceId===current.selectedClientId))fail('SCOPE_REFUSED');
    const at=now();for(const r of [authentication,current])if(!Number.isSafeInteger(r.checkedAtMs)||r.checkedAtMs<started||r.checkedAtMs>at||!Number.isSafeInteger(r.expiresAtMs)||r.expiresAtMs<=at)fail('SESSION_REFUSED');active.limitDeadline(Math.min(authentication.expiresAtMs,current.expiresAtMs));
-   const selected={binding:saved.run.binding,scopes:saved.run.scopes,versions:saved.run.versions,request:saved.request,selectedClientId:current.selectedClientId};if(pinned&&!same(pinned,selected))fail('SESSION_CHANGED');pinned??=selected;active.check();return {...saved,selectedClientId:current.selectedClientId};
+   return data({binding:current.binding,scopes:current.scopes,selectedClientId:current.selectedClientId});
+  }
+  const servable=async(active,{binding})=>{if(retention&&!cleanup){await active.run(()=>retention.assertServable({tenantId:binding.tenantId,kind:'conversation',subjectId:binding.conversationId}));active.check();}};
+  async function fresh(active=life){
+   const before=await observe(active);await servable(active,before);
+   // An admitted conversation has no run row until its first input is accepted: that is "no saved turns yet" (404), not corruption.
+   const saved=bounded(await active.run(()=>(cleanup||typeof store.readOptional!=='function'?store.read:store.readOptional)(before.binding,{after:0,limit:1},active.check)),2097152);if(saved===null)fail('NOT_FOUND');if(!same(saved.run.scopes,before.scopes))fail('SCOPE_REFUSED');
+   const after=await observe(active);if(!same(after,before))fail('SESSION_CHANGED');if(!same(after.binding,saved.run.binding))fail('SESSION_REFUSED');await servable(active,after);
+   const selected={binding:saved.run.binding,scopes:saved.run.scopes,versions:saved.run.versions,request:saved.request,selectedClientId:after.selectedClientId};if(pinned&&!same(pinned,selected))fail('SESSION_CHANGED');pinned??=selected;active.check();return {...saved,selectedClientId:after.selectedClientId};
   }
   try{return await body(await fresh(),life,fresh);}finally{life.close();}
  }
@@ -83,7 +103,11 @@ export function createConversationLifecycleService({service,store,dispatcher,rec
    throw Object.assign(new Error('LIFECYCLE_EFFECT_UNKNOWN'),{code:'LIFECYCLE_EFFECT_UNKNOWN',outcome:'UNKNOWN'});
   }
  });}
- async function nextControls({credential,binding,after=0,signal}){return operation(credential,signal,async(saved,life,fresh)=>{if(!same(binding,saved.run.binding))fail('STALE_WRITER');const rows=await life.run(()=>journal.controls({binding,scopes:saved.run.scopes,selectedClientId:saved.selectedClientId,after},life.check));await fresh();return {controls:rows.filter(p=>p.command&&p.state==='PENDING').map(p=>({controlSequence:p.controlSequence,commandSha256:p.commandSha256,command:p.command})),nextControlSequence:rows.at(-1)?.controlSequence??after};});}
+ async function nextControls({credential,binding,after=0,signal}){return operation(credential,signal,async(saved,life,fresh)=>{if(!same(binding,saved.run.binding))fail('STALE_WRITER');const rows=await life.run(()=>journal.controls({binding,scopes:saved.run.scopes,selectedClientId:saved.selectedClientId,after},life.check));await fresh();return controlPage(rows,after);});}
+ // The journal re-reads the run row for this exact binding and scopes and pins every control to it and the selected client.
+ async function controlsForTask({binding,scopes,selectedClientId,after=0,signal}){validateShape('RunBinding',binding);uuid(selectedClientId);if(!Array.isArray(scopes)||!scopes.length)fail('SCOPE_REFUSED');
+  const life=createOperationLifetime({deadlineMs:now()+maxRequestMs,now,signal,errorFactory:code=>Object.assign(new Error(code),{code})});
+  try{const rows=await life.run(()=>journal.controls({binding,scopes,selectedClientId,after},life.check));life.check();return bounded(controlPage(rows,after),2097152);}finally{life.close();}}
  async function claimControl({credential,binding,input,signal}){const i=bounded(input);own(i,['controlId','commandSha256']);return operation(credential,signal,async(saved,life,fresh)=>{if(!same(binding,saved.run.binding))fail('STALE_WRITER');const result=await life.run(()=>journal.claim({binding,scopes:saved.run.scopes,selectedClientId:saved.selectedClientId,...i},life.check));await fresh();const p=result.projection;return result.claimed?{claimed:true,control:{controlSequence:p.controlSequence,commandSha256:p.commandSha256,command:p.command}}:{claimed:false,receipt:receipt(p)};});}
  async function ackControl({credential,binding,input,signal}){const i=bounded(input);own(i,['controlId','commandSha256','outcome'],['sdkUserMessageId']);if(!['APPLIED','UNKNOWN'].includes(i.outcome))fail('LIFECYCLE_INPUT_REFUSED');return operation(credential,signal,async(saved,life,fresh)=>{if(!same(binding,saved.run.binding))fail('STALE_WRITER');const p=await life.run(()=>journal.get({binding,scopes:saved.run.scopes,selectedClientId:saved.selectedClientId,controlId:i.controlId},life.check));if(!p||p.commandSha256!==i.commandSha256||p.state==='PENDING'||p.state==='APPLIED'&&i.outcome!=='APPLIED'||i.outcome==='APPLIED'&&(p.input.intent!=='steer'||i.sdkUserMessageId!==i.controlId))fail('LIFECYCLE_ACK_REFUSED');const next=await life.run(()=>journal.change({binding,scopes:saved.run.scopes,selectedClientId:saved.selectedClientId,controlId:i.controlId,from:p.state,to:i.outcome},life.check));await fresh();return receipt(next);});}
  async function recordCheckpoint({credential,binding,input,signal}){const i=bounded(input);own(i,['controlId','checkpointId','checkpointSha256']);return operation(credential,signal,async(saved,life,fresh)=>{if(!same(binding,saved.run.binding))fail('STALE_WRITER');const verified=await proof(i.checkpointId,i.checkpointSha256,saved,life,fresh);const p=await life.run(()=>journal.checkpoint({binding,scopes:saved.run.scopes,selectedClientId:saved.selectedClientId,controlId:i.controlId,proof:verified,events:[event('checkpoint.verified',{checkpointId:i.checkpointId}),event('run.status',{state:'paused',reasonCode:'CONTROL_CHECKPOINTED'})]},life.check));await fresh();return receipt(p);});}
@@ -99,9 +123,12 @@ export function createConversationLifecycleService({service,store,dispatcher,rec
   if(typeof service[loadWithLifecycle]==='function')return service[loadWithLifecycle](args,(current,check)=>journal.execution(current,check));
   // Injected legacy services keep the original independently gated path.
   const saved=await service.loadForExecution(args);return operation(args.credential,args.signal,async(current,life,fresh)=>{if(!same(current.run.binding,args.binding))fail('STALE_WRITER');const extra=await life.run(()=>journal.execution({binding:args.binding,scopes:current.run.scopes,selectedClientId:current.selectedClientId},life.check));await fresh();if(extra&&saved.nextTurn)fail('EXECUTION_LINEAGE_AMBIGUOUS');return extra?{...saved,...extra}:{...saved};});}
- /** Stop fences durably, then attempts Temporal cancellation and native original retirement independently. Neither a terminal run
-  * nor Temporal NOT_FOUND proves physical stop or grant revocation. Every repeat asks both owners again, including after restart;
-  * only the native adapter's validated reconciliation receipt permits success. A lost acknowledgement remains UNKNOWN. */
+ /** Stop answers the durable stop fence: once the cancellation is committed (or the run is already terminal) and the caller is still
+  * authorized, it returns the run's terminal state. A lost fence acknowledgement that the readback cannot prove remains UNKNOWN.
+  * Every Stop, including a repeat after restart, starts Temporal cancellation and native original retirement independently under
+  * their own bounded lifetime. The answer does not wait for them: an ECS stop outlasts any request (stopTimeout plus deprovisioning).
+  * Their outcome is owned durably: the fence refuses every later run output, and only the allocation journal's RETIRED with a proven
+  * physical stop and revoked grants lets a next turn start (next-run.mjs), retried by the Temporal reconcile. */
  async function cancel({credential,signal}){return operation(credential,signal,async(saved,life,fresh)=>{const terminal=s=>['completed','failed','cancelled'].includes(s),unknown=()=>Object.assign(new Error('LIFECYCLE_STOP_UNKNOWN'),{code:'LIFECYCLE_STOP_UNKNOWN',outcome:'UNKNOWN'});let state=saved.run.state;
   if(!terminal(state)){
    await fresh();
@@ -118,13 +145,13 @@ export function createConversationLifecycleService({service,store,dispatcher,rec
     if(!terminal(current.state)||current.cancelCommitted&&current.state!=='cancelled')throw unknown();state=current.state;
    }finally{fence.close();}
   }
-  // The authenticated terminal fence authorizes stop-only cleanup even if this request disconnects during either effect.
-  const cleanup=createOperationLifetime({deadlineMs:now()+maxRequestMs,now,errorFactory:unknown});let results;
-  try{results=await Promise.allSettled([
+  // The authenticated terminal fence authorizes stop-only cleanup even if this request disconnects during either effect. It runs
+  // under its own lifetime and settles after the answer; its owners above record the outcome.
+  const cleanup=createOperationLifetime({deadlineMs:now()+maxRequestMs,now,errorFactory:unknown});
+  void Promise.allSettled([
    cleanup.run(signal=>dispatcher.cancel({binding:saved.run.binding,signal})),
-   cleanup.run(async()=>{const p=bounded(await reconcileOriginal({binding:saved.run.binding}));own(p,['state']);if(p.state!=='reconciled')fail('LIFECYCLE_STOP_UNKNOWN');}),
-  ]);}finally{cleanup.close();}
-  if(results.some(result=>result.status==='rejected'))throw unknown();
+   cleanup.run(()=>reconcileOriginal({binding:saved.run.binding})),
+  ]).finally(()=>cleanup.close());
   try{await fresh();}catch{throw unknown();}return {state};},{cleanup:true});}
- return Object.freeze({...service,cancel,control,inspectCheckpoint,nextControls,claimControl,ackControl,recordCheckpoint,loadForExecution});
+ return Object.freeze({...service,cancel,control,inspectCheckpoint,nextControls,claimControl,ackControl,recordCheckpoint,loadForExecution,[taskControlPage]:controlsForTask});
 }

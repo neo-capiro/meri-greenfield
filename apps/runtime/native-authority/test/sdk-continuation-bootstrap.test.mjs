@@ -5,6 +5,7 @@ import {createRuntimeSdkSessionFactory} from '../../sdk-session-runtime.mjs';
 import {createNativeSdkSessionApplication} from '../session-http.mjs';
 import {continuationFixture,id} from '../../../worker/conversation/continuation/test/fixtures.mjs';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
+import {RUNNER_SESSION_STORE_CALL_MS} from '../../../../packages/runtime/runner-load-budget.mjs';
 function fixture(mode='resume'){
  const f=continuationFixture(mode),projectKey='-workspace-conversation',source={projectKey,sessionId:f.continuation.checkpoint.sessionId},target={projectKey,sessionId:mode==='resume'?source.sessionId:f.continuation.targetSessionId},history=[{type:'system',future:{opaque:['exact',null,7]}},{type:'user',uuid:id(90),message:{role:'user',content:'original'}}],child=[{type:'assistant',opaque:{retained:true}}],native=new InMemorySessionStore(),gate=Promise.withResolvers();let registered=false,registers=0,writes=0,snapshots=0,uncertain=false;
  const client={async snapshot(){snapshots++;return {binding:f.target.binding,key:source,checkpointSha256:f.continuation.checkpointSha256,opaqueSessionSha256:f.continuation.checkpoint.opaqueSession.sha256,transcripts:[{entries:history},{subpath:'subagents/original',entries:child}]};},async register({key}){registers++;assert.deepEqual(key,target);await gate.promise;registered=true;return {registered:true,key};},async load({key}){assert.equal(registered,true);const entries=await native.load(key);return {entries,offset:entries?.length??0};},async listSubkeys({key}){assert.equal(registered,true);return {subkeys:await native.listSubkeys(key)};},async append(value){assert.equal(registered,true);assert.equal(value.key.sessionId,target.sessionId,'source namespace never receives a write');assert.equal(value.entriesSha256,hash(value.entries));const before=await native.load(value.key);assert.equal(value.expectedOffset,before?.length??0);writes++;await native.append(value.key,value.entries);if(uncertain)throw Error('synthetic-lost-append-ack');return {committed:true,appendId:value.appendId,entriesSha256:value.entriesSha256,offset:value.expectedOffset+value.entries.length,added:value.entries.length};}};
@@ -46,4 +47,11 @@ test('next prompt seeds exact old snapshot into independently registered target 
 test('direct factory rejects ambiguous lifecycle and next-prompt hints before native requests',async()=>{
  const x=fixture();let calls=0;const factory=createRuntimeSdkSessionFactory({origin:'https://synthetic-native.invalid',credential:'synthetic-task',binding:x.f.target.binding,fetchImpl(){calls++;throw Error('not reached');}});
  await assert.rejects(factory({binding:x.f.target.binding,sessionKey:x.target,continuation:x.f.continuation,nextTurn:{}}),/RUNNER_SDK_RESTORE_REFUSED/);assert.equal(calls,0);
+});
+test('a register and restore slower than one bound-store call do not run on the timer of the first write',async t=>{
+ t.mock.timers.enable({apis:['setTimeout']});
+ const x=fixture(),mirror=await createContinuationRuntimeSdkSession({client:x.client,binding:x.f.target.binding,sessionKey:x.target,continuation:x.f.continuation}),entry={type:'assistant',uuid:id(92),message:{role:'assistant',content:'after a slow bootstrap'}};
+ const writing=mirror.store.append(x.target,[entry]);await new Promise(resolve=>setImmediate(resolve));assert.equal(x.state().registers,1);
+ t.mock.timers.tick(RUNNER_SESSION_STORE_CALL_MS+1);x.gate.resolve();await writing;await mirror.settle();
+ assert.deepEqual(await x.native.load(x.target),[...x.history,entry]);await mirror.close();
 });

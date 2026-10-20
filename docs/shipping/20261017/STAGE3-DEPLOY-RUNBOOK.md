@@ -2,6 +2,8 @@
 
 Prepared by Fable on 17 October 2026, branch `fable/meri-stage3-deploy-20261017`, on integration `ce2da186`. This is the mechanical sequence the coordinator runs **after Neo stores the Core bearer** in `meri/preview/core/identity-bearer`. Every AWS mutation below is an explicit command; `infra/product-preview/first-chat/stage3-deploy.mjs` only does local data plumbing (it reads and writes files, validates, and never prints a secret).
 
+**Since the first rollout, all three stacks are live.** Steps 5 to 8 are the release procedure for every later image: render, stage under a new label, update model → issuer → app, then gate. `first-chat/ship-packet.mjs` turns one release into a reviewable packet. The create-time details below remain as the record of the first deployment.
+
 Account `967807252336`, region `us-east-1`, cluster `capiro-dev`. Resource names come from `infra/product-preview/first-chat/foundation-outputs.json`, `deployment-inputs.json`, `temporal-binding.json` and `issuer-service-binding.json`.
 
 ## What gets deployed
@@ -20,7 +22,7 @@ Bindings come from `infra/product-preview/first-chat/stage3-bindings.mjs` (`buil
   - runner: `MeriPreview-runner-execution`, `/meri/product-preview/runner`
 
   The runner's role is the only role `MeriPreview-control-task` may `iam:PassRole`.
-- **Control attaches only to the private target group** `meri-preview-control-8082`. The public `meri-preview-control-8080` target group is left for Stage 6.
+- **Control attaches to the private target group** `meri-preview-control-8082` and, since Stage 6, to the public `meri-preview-control-8080`.
 - **Security groups for each ENI:**
   - control: `sg-05a350c100574b21f` (control), `sg-0c3da023e9e8fb292` (issuer-client) and `sg-0d5b5286baf28242e` (db-client)
   - worker: `sg-00111cd0e475badfa` and `sg-0c3da023e9e8fb292`
@@ -201,25 +203,16 @@ Validity:
 - The owner and proxy `serviceTasks` and the pricing expire **7 days** after render (`--validity-days`). After that, owner and proxy refuse to start, and steps 5 to 7 must be repeated.
 - The static candidate's grants expire after `maxRuntimeSeconds` (900 s). That is expected: real chats use dynamic runs.
 
-## 6. Store each role bundle as a new exact secret version
+## 6. Stage each role bundle as a new exact secret version
+
+The task definitions reference exact VersionIds, so AWSCURRENT never moves. Each release stages its five versions under a **new custom label** (`FIRST_CHAT_<YYYYMMDD><letter>`; earlier labels stay on their versions). `upload-plan` writes the exact commands with one fixed idempotency token per role and never reads a bundle:
 
 ```bash
-: > "$W/secret-versions.tsv"
-while read -r role key; do
-  arn=$(node -e 'const d=require(process.argv[1]);process.stdout.write(d.secrets[process.argv[2]])' "$R/infra/product-preview/first-chat/deployment-inputs.json" "$key")
-  v=$(aws secretsmanager put-secret-value --secret-id "$arn" --secret-string "file://$W/rendered/$role/bundle.json" --query VersionId --output text)
-  printf '%s\t%s\n' "$role" "$v" >> "$W/secret-versions.tsv"
-done <<'EOF'
-control control/material
-temporal-worker worker/material
-temporal-issuer issuer/material
-model-owner owner/material
-model-proxy proxy/material
-EOF
-cat "$W/secret-versions.tsv"     # role and VersionId only
+node "$R/$STAGE3" upload-plan --deployment-inputs "$R/infra/product-preview/first-chat/deployment-inputs.json" \
+  --rendered "$W/rendered" --label FIRST_CHAT_<YYYYMMDD><L> --out "$W/upload-plan.json"
 ```
 
-Secret ARNs:
+Run each role's `command` once and append `role<TAB>VersionId` to `$W/secret-versions.tsv`, then check its `readback`: the new version carries only the label, and AWSCURRENT and earlier labels are unchanged. After an uncertain outcome, resend the **same** command (same token, same bytes); never generate a new token. Each secret holds at most 100 versions.
 
 | Role | Secret ARN (`arn:aws:secretsmanager:us-east-1:967807252336:secret:…`) |
 |---|---|
@@ -231,86 +224,57 @@ Secret ARNs:
 
 Each execution role may read only its own secret.
 
-The running issuer keeps its old exact version (`0edb8e72-…`) until step 7 updates it. Old versions stay readable by VersionId.
+## 7. Build the bindings and update the three stacks
 
-## 7. Build the bindings and deploy the three stacks
-
-Read the live foundation and private-edge outputs. The builder refuses if the live foundation differs from `deployment-inputs.json`, or the live private edge differs from its `privateEdge` block:
+All three stacks are live. `bindings` refuses if the live foundation differs from `deployment-inputs.json`, or the live private edge from its `privateEdge` block. It also needs the live app template, because control keeps the public 8080 target group its service is attached to.
 
 ```bash
-FSTACK=$(aws cloudformation describe-stacks --query "Stacks[?Outputs[?OutputKey=='RunnerExecutionRoleArn']].StackName | [0]" --output text)
-ESTACK=$(aws cloudformation describe-stacks --query "Stacks[?Outputs[?OutputKey=='ControlPrivateTargetGroupArn']].StackName | [0]" --output text)
-aws cloudformation describe-stacks --stack-name "$FSTACK" --query 'Stacks[0].Outputs' > "$W/foundation-live.json"
-aws cloudformation describe-stacks --stack-name "$ESTACK" --query 'Stacks[0].Outputs' > "$W/private-edge-outputs.json"
-# $W/image-scans.json = {"proxy":"<sha256 B6 receipt>","nodeRuntime":"<sha256 N6 receipt>"}
+aws cloudformation describe-stacks --stack-name meri-first-chat-foundation --query 'Stacks[0].Outputs' > "$W/foundation-live.json"
+aws cloudformation describe-stacks --stack-name meri-first-chat-private-edge --query 'Stacks[0].Outputs' > "$W/private-edge-outputs.json"
+aws cloudformation get-template --stack-name meri-first-chat-app --template-stage Original --query TemplateBody --output json > "$W/app.live.template.json"
 node "$R/$STAGE3" bindings --deployment-inputs "$R/infra/product-preview/first-chat/deployment-inputs.json" \
   --foundation-outputs "$W/foundation-live.json" --private-edge-outputs "$W/private-edge-outputs.json" \
-  --rendered "$W/rendered" --secret-versions "$W/secret-versions.tsv" --image-scans "$W/image-scans.json" --out "$W/stage3"
+  --rendered "$W/rendered" --secret-versions "$W/secret-versions.tsv" --image-scans "$W/image-scans.json" \
+  --live-app-template "$W/app.live.template.json" --out "$W/stage3"
 ```
 
-This writes `$W/stage3/{app,model,issuer}.binding.json`, `{app,model,issuer}.template.json` and `deploy-plan.json`:
-- Each template has already passed its own renderer (`synthesizeProductPreview`, `synthesizeModelProxyTemplate` and `synthesizeFirstChatIssuerServiceTemplate`).
-- `deploy-plan.json` holds the exact `aws cloudformation deploy` command per stack.
-- A template over 51,200 bytes gets `--s3-bucket meri-greenfield-qual-build-967807252336-us-east-1 --s3-prefix cfn`. On throwaway material they measure about 14 KB (app), 16 KB (model) and 6 KB (issuer), so all three are inline today.
+`image-scans.json` is `{"proxy":"<sha256 of the proxy build receipt file>","nodeRuntime":"<sha256 of the producer receipt file>"}`. These are hashes of the receipt files, not image digests.
 
-Deploy in this order. Each `deploy` only creates a change set (`--no-execute-changeset`); review it, then execute.
+The templates are ready to update live stacks (`applyLiveServiceProfile` in `stage3-bindings.mjs`):
+
+- Owner, proxy, control and worker stay at one task. The renderers' create-time `DesiredCount 0` would scale them to zero on update.
+- Control runs one task at a time: max 100 / min 0, with AZ rebalancing DISABLED, which ECS requires for max 100.
+- Control starts only after the runner task definition exists.
+
+`deploy-plan.json` lists the stacks in release order **model → issuer → app**, each with its `aws cloudformation deploy … --no-execute-changeset` command and its `wait stack-update-complete`. For each stack:
+
+1. Create the change set.
+2. Review it: task definitions and services Modify, nothing else.
+3. Execute the ARN it printed, and wait.
+4. Pass the stage gate in step 8 before starting the next stack.
+
+The issuer admits only the control/worker revisions it pins, so control and the worker are refused from the issuer update until the app update lands. Run the app stack immediately after the issuer gate.
 
 ```bash
-# 7a. issuer (existing stack): keep the current template for rollback first.
-aws cloudformation get-template --stack-name meri-first-chat-issuer --query TemplateBody --output json > "$W/issuer.previous.template.json"
-aws cloudformation deploy --stack-name meri-first-chat-issuer --template-file "$W/stage3/issuer.template.json" --no-execute-changeset --no-fail-on-empty-changeset
-#   review: TemporalIssuerTask Modify/Replacement=True (new revision), TemporalIssuerService Modify. Nothing else.
-aws cloudformation execute-change-set --change-set-name <arn printed above>
-aws cloudformation wait stack-update-complete --stack-name meri-first-chat-issuer
-
-# 7b. model proxy + owner (new; creates 4 IAM managed policies -> CAPABILITY_IAM).
-aws cloudformation deploy --stack-name meri-first-chat-model --template-file "$W/stage3/model.template.json" --capabilities CAPABILITY_IAM --no-execute-changeset
-#   review: 2 TaskDefinitions, 2 Services (DesiredCount 0), 4 ManagedPolicies on MeriPreview-{proxy,owner}-{task,execution}.
-aws cloudformation execute-change-set --change-set-name <arn>; aws cloudformation wait stack-create-complete --stack-name meri-first-chat-model
-
-# 7c. control, temporal-worker, runner (new).
-aws cloudformation deploy --stack-name meri-first-chat-app --template-file "$W/stage3/app.template.json" --no-execute-changeset
-#   review: 3 TaskDefinitions, 2 Services (DesiredCount 0); control LoadBalancers = only meri-preview-control-8082.
-aws cloudformation execute-change-set --change-set-name <arn>; aws cloudformation wait stack-create-complete --stack-name meri-first-chat-app
-
-# 7d. Every deployed task definition must be exactly the revision the material pins.
 for s in app model issuer; do aws cloudformation describe-stacks --stack-name meri-first-chat-$s --query 'Stacks[0].Outputs' > "$W/$s.outputs.json"; done
 node "$R/$STAGE3" verify-outputs --bindings "$W/stage3" --app "$W/app.outputs.json" --model "$W/model.outputs.json" --issuer "$W/issuer.outputs.json"
 ```
 
-**On a `verify-outputs` mismatch** (for example a failed create that consumed a revision), do not scale anything:
-1. Delete the new stacks. They are at count 0, so nothing ran.
-2. Redeploy the issuer from `issuer.previous.template.json`.
-3. Repeat steps 5 to 7 with a fresh `latest.tsv`.
+**On a `verify-outputs` mismatch or a failed update:** the rendered material pins exact task-definition revisions, and a rolled-back update burns them. Do not patch. Read the revisions again and repeat steps 5 to 7 with a fresh render under a new label.
 
-**Rollback:**
-- `aws cloudformation delete-stack --stack-name meri-first-chat-app` (then `meri-first-chat-model`).
-- Issuer: `aws cloudformation deploy --stack-name meri-first-chat-issuer --template-file "$W/issuer.previous.template.json"`. Its old material version is pinned by VersionId and still readable.
+**Rollback** is a forward redeploy of the previous release: its images and runtime values, a new render, a new label, then model → issuer → app. `UpdateService` to an older revision cannot work, because the material refuses unpinned revisions.
 
-## 8. Scale order and readiness
+`infra/product-preview/first-chat/ship-packet.mjs` assembles steps 5 to 8 for one release into a reviewable, hash-pinned packet: pins, evidence, migration delta, cost limits, ordered commands and gates, smoke checks, rollback, cleanup and risks.
 
-```bash
-since() { echo $(( ($(date +%s) - ${1:-900}) * 1000 )); }
-logs()  { aws logs filter-log-events --log-group-name "$1" --start-time "$(since)" --filter-pattern "$2" --query 'events[].[logStreamName,message]' --output text; }
-up()    { aws ecs update-service --cluster capiro-dev --service "$1" --desired-count 1 >/dev/null; aws ecs wait services-stable --cluster capiro-dev --services "$1"; }
-tasks() { aws ecs describe-tasks --cluster capiro-dev --tasks $(aws ecs list-tasks --cluster capiro-dev --service-name "$1" --query 'taskArns' --output text) \
-          --query 'tasks[].{task:taskArn,status:lastStatus,health:healthStatus,td:taskDefinitionArn,containers:containers[].{n:name,s:lastStatus,exit:exitCode,h:healthStatus}}'; }
-```
+## 8. Stage gates
 
-Prerequisites: Temporal's five roles are running (they are), and Core is healthy (step 2).
+| After | Gate |
+|---|---|
+| model | `aws ecs wait services-stable --cluster capiro-dev --services meri-product-preview-owner meri-product-preview-proxy`. Both 1/1/0 on the new revisions, with main containers RUNNING past 120 s. One Cloud Map instance each: `aws servicediscovery list-instances --service-id srv-fqjjiu4dmuqsg5mo` (owner) and `srv-dv43rzktx7mvrh6m` (proxy). One owner restart is expected while the old proxy overlaps (`PRODUCT_OWNER_UNAVAILABLE` after about 184 s); its replacement must pass. Neither service emits a positive listening line, so this proves liveness only |
+| issuer | `aws ecs wait services-stable … --services meri-product-preview-temporal-issuer`. `/meri/product-preview/issuer` shows `{"ready":true,…}` and `runtime.listening` on the new task definition |
+| app | Exactly one control task; worker 1/1/0; `runtime.listening` for `"role":"control"` and `"role":"temporal-worker"`. `aws elbv2 describe-target-health` is healthy for `meri-preview-control-8082/1732509ee5fbf759` and `meri-preview-control-8080/03297203fa59801c`. A first worker task may be refused while the old one overlaps |
 
-| # | Service | Action | Ready when |
-|---|---|---|---|
-| 1 | `meri-product-preview-temporal-issuer` | Already 1; the step 7a update rolls it. `aws ecs wait services-stable --cluster capiro-dev --services meri-product-preview-temporal-issuer` | The init exited 0 (`logs /meri/product-preview/issuer '"ready"'` shows `{"ready":true,"role":"temporal-issuer","fileCount":6}`). Then `logs /meri/product-preview/issuer '"runtime.listening"'` shows `{"event":"runtime.listening","role":"temporal-issuer"}` on the new task definition. The task runs the new revision |
-| 2 | `meri-product-preview-owner`, then `meri-product-preview-proxy` | `up meri-product-preview-owner; up meri-product-preview-proxy` | The init exited 0 (`{"ready":true,"role":"model-owner"…}` / `"model-proxy"` in `/meri/product-preview/{owner,proxy}`). The main container is RUNNING after 120 s with no exit. There is no `PRODUCT_OWNER_UNAVAILABLE` in the owner log, and the proxy log has no `*_REFUSED`. One Cloud Map instance shows in `aws servicediscovery list-instances --service-id srv-fqjjiu4dmuqsg5mo` (owner) and in `--service-id srv-dv43rzktx7mvrh6m` (proxy). Neither emits a positive "listening" line, so this is liveness only (see Source gaps) |
-| 3 | `meri-product-preview-control` | `up meri-product-preview-control` (exactly one: poststart nonces are process-local) | `logs /meri/product-preview/control '"runtime.listening"'` shows `"role":"control"`. `tasks meri-product-preview-control` shows health `HEALTHY`. The private target group is healthy: `aws elbv2 describe-target-health --target-group-arn arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/meri-preview-control-8082/1732509ee5fbf759` → one target `:8082` `healthy` (`GET /health/live`) |
-| 4 | `meri-product-preview-temporal-worker` | `up meri-product-preview-temporal-worker` | `logs /meri/product-preview/worker '"runtime.listening"'` shows `"role":"temporal-worker"`, and `tasks` shows `HEALTHY` (8081 `/health/live`). There is no `RUNTIME_CONFIGURATION` (the worker gate requires `NODE_EXTRA_CA_CERTS`) and no `RUNTIME_UNAVAILABLE` |
-
-Any `RUNTIME_UNAVAILABLE`, `RUNTIME_CONFIGURATION`, `STATIC_INIT_*` or init exit ≠ 0 stops the sequence.
-
-**Rollback:** set the counts back to 0 in reverse order (worker, control, proxy, owner), each with `aws ecs update-service --cluster capiro-dev --service <name> --desired-count 0`. Leave the issuer at 1 unless step 7a is rolled back. Then fence and reconcile as in the change set's Stage 5.
-
-CloudFormation keeps `DesiredCount: 0` in these templates. A later update that does not change that property leaves the live count alone; confirm this in each later change set.
+Any of these on a replacement task stops the sequence: `RUNTIME_UNAVAILABLE`, `RUNTIME_CONFIGURATION`, `STATIC_INIT_*`, `*_REFUSED`, or an init exit ≠ 0. In Git Bash, set `MSYS_NO_PATHCONV=1` for the `/meri/…` log groups.
 
 ## 9. Private probe (no public route)
 
@@ -342,15 +306,11 @@ Both are outside Stage 3.
 ## 10. Next stages
 
 - **Stage 4 (dot executes; Neo approves):** install the Meri host deny at priority 6 under capiro-backend PR78 `bcdd689956e1aff3fa316103e75ec60ebe024fda`. The operator procedure is `docs/core-meri-shared-listener-reconciliation-20261017.md` at that commit. It relocates rules 9→16, 8→9, 7→8 and 6→7, then creates a fixed JSON 404 for exactly `meri-preview.capiro.ai`.
-- **Stage 6 (dot executes the listener and DNS; Neo approves):** attach `meri-preview-control-8080` (foundation `ControlTargetGroupArn` `…/meri-preview-control-8080/03297203fa59801c`):
-  1. Add `controlTargetGroupArn` to `$W/stage3/app.binding.json`.
-  2. Re-synthesize, and update `meri-first-chat-app` through a reviewed change set (check that `controlService` is Modify, not Replacement).
-  3. Follow the change set's Stage 6 ordering (anchor rule or same-change attach), the rule-6 read-back, then the Route 53 alias under its own approval.
-  4. Do teardown action-first: rule 6 back to 404 before draining.
+- **Stage 6** is complete: control is attached to `meri-preview-control-8080`. Every update keeps that attachment, because step 7 binds it from the live app template.
 
 ## Source gaps found while building this
 
-1. **Image scan receipt hashes.** Model-proxy plan v2 requires `images.{proxy,nodeRuntime}.reviewedScanSha256`, and nothing in the repository records them for B6 or N6. The coordinator supplies them in `image-scans.json` from the build receipts.
+1. **Image scan receipt hashes** are the sha256 of each build receipt file. `first-chat/image-scans.json` records the reviewed pair; a new image needs its own.
 2. **`frontendOrigin`** is still `PENDING_CORE` in `deployment-inputs.json`. It must come from dot, because control's public listener checks `Origin` against it.
 3. **No positive readiness signal for the owner or proxy.** Neither emits a listening line, and neither task definition has a container health check (the issuer has the same gap, but logs `runtime.listening`). Step 8 can prove only liveness and Cloud Map registration for them.
 4. **No private authenticated first-chat path or client.** See step 9.

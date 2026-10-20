@@ -47,7 +47,7 @@ class ConfigurationTests(unittest.TestCase):
                 lambda v: v.update(enabled=False), lambda v: v.update(expiresAtMs=True),
                 lambda v: v.update(expiresAtMs=1), lambda v: v.update(pricingRevision="f"*64),
                 lambda v: v["ownerPeer"].update(origin="http://owner.invalid:8444"),
-                lambda v: v["ownerPeer"].update(max_exchange_ms=3001),
+                lambda v: v["ownerPeer"].update(max_exchange_ms=15001),
                 lambda v: v.update(ownerIpv4="10.40.4.1"),
                 lambda v: v["ownerPeer"].update(owner_task_arn="prelaunch-task"),
                 lambda v: v["serviceTasks"].update(schemaVersion=1),

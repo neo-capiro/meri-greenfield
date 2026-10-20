@@ -6,8 +6,13 @@ import {isIPv4} from 'node:net';
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createProductOwnerChannel,createProductOwnerAdmissionChannel,OWNER_PATHS} from './owner-channel.mjs';
 import {parseOwnerWire} from './owner-wire-codec.mjs';
+import {OWNER_MAX_REQUEST_MS} from './service-pair-discovery.mjs';
 
 const fail=()=>{throw Error('PRODUCT_OWNER_HTTPS_UNAVAILABLE');};
+/** The proxy keeps one verified socket per carrier for the pair's lifetime and never reconnects after loss (owner_https.py), and a
+ * session is bound to its socket, so the owner never closes an idle one: the former 900 s idle close retired the pair at the first
+ * exchange after a quiet quarter hour. TCP keep-alive still reaps a socket whose proxy task is gone. */
+export const PRODUCT_OWNER_IDLE_SOCKETS=Object.freeze({keepAliveTimeout:0,keepAlive:true,keepAliveInitialDelay:60000});
 const sha=v=>createHash('sha256').update(v).digest('hex');
 const digest=v=>typeof v==='string'&&/^[a-f0-9]{64}$/u.test(v)?v:fail();
 const slot=v=>typeof v==='string'&&/^[A-Za-z0-9_-]{1,128}$/u.test(v)?v:fail();
@@ -98,7 +103,7 @@ export function createProductOwnerHttpsServer(configuration){
   'taskLeaseReader','serviceGate','now'],['enabled','maxRequestMs','nativeCurrentness']);
  const enabled=c.enabled??false,maxRequestMs=c.maxRequestMs??3000;
  if(typeof enabled!=='boolean'||typeof c.now!=='function'||!Number.isSafeInteger(maxRequestMs)||
-    maxRequestMs<1||maxRequestMs>3000)fail();
+    maxRequestMs<1||maxRequestMs>OWNER_MAX_REQUEST_MS)fail();
  if(!enabled)return Object.freeze({available:false,listen:async()=>fail(),close:async()=>{}});
  const t=own(c.tlsMaterial,['origin','serverName','ca','cert','key','certSha256','issuerSha256']);
  const policy=Object.freeze(data(c.clientPolicy));
@@ -178,7 +183,7 @@ export function createProductOwnerHttpsServer(configuration){
  const server=createServer({key:t.key,cert:t.cert,ca:t.ca,requestCert:true,rejectUnauthorized:true,
   minVersion:'TLSv1.3',maxVersion:'TLSv1.3',ALPNProtocols:['http/1.1'],
   secureOptions:constants.SSL_OP_NO_TICKET,maxHeaderSize:16384,headersTimeout:maxRequestMs,
-  requestTimeout:maxRequestMs,keepAliveTimeout:900000},async(req,res)=>{
+  requestTimeout:maxRequestMs,...PRODUCT_OWNER_IDLE_SOCKETS},async(req,res)=>{
   const socket=req.socket,s=state(socket),started=c.now(),deadline=started+maxRequestMs;
   const abort=new AbortController();let timer,releaseRequest;
   req.once('aborted',()=>{if(releaseRequest){abort.abort();retire();}});

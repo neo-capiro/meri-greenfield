@@ -7,10 +7,17 @@ import {createSdkCommandAdapter} from './commands.mjs';
 import {continuationContextSha256} from './options.mjs';
 import {assertCaptureReceipt} from './native-receipts.mjs';
 import {assertTypedResult} from '../../../../packages/runtime/objective-generation-custody.mjs';
-const fault=code=>Object.assign(new Error(code),{code}),same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
+const fault=(code,cause)=>Object.assign(new Error(code,cause===undefined?undefined:{cause}),{code}),same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u;
 /** The control store's only worker exit from a control hold (lifecycle/journal.mjs HOLD_CHECKPOINT_FAILED): an explicit, verified failure, never a silent close. */
 export const HOLD_CHECKPOINT_FAILED='HOLD_CHECKPOINT_FAILED';
+/** An unfenced control-page read that did not answer observed nothing and changed nothing, so it counts as "no controls this
+ * tick" and the next read waits first: 0.5, 1, 2, 4 s, then 5 s at most. Control not answering within the read's allowance
+ * (DEADLINE) is skipped for as long as the run lives. NATIVE_UNAVAILABLE is skipped at most twice in a row, because the native
+ * client reports control's definitive authority refusal with the same code, so a revocation still ends the run on the third read. */
+export const LIFECYCLE_READ_BACKOFF_MS=Object.freeze({first:500,max:5000});
+export const LIFECYCLE_READ_UNAVAILABLE_LIMIT=2;
+export const lifecycleReadBackoffMs=missed=>Math.min(LIFECYCLE_READ_BACKOFF_MS.max,LIFECYCLE_READ_BACKOFF_MS.first*2**Math.min(missed-1,4));
 export function assertLifecycleConfiguration(config,runOwner) {
  const {captureCheckpoint,captureCompletion,pollMs=100,captureOwnsClose=false}=own(config,['captureCheckpoint'],['captureCompletion','pollMs','captureOwnsClose']);
  if(typeof captureOwnsClose!=='boolean'||typeof captureCheckpoint!=='function'||captureCompletion!==undefined&&typeof captureCompletion!=='function'||!Number.isSafeInteger(pollMs)||pollMs<5||pollMs>5000||
@@ -41,7 +48,16 @@ export function createActivityLifecycle({config,runOwner,binding,saved,runtime,i
    recorded.state!=='APPLIED'||recorded.intent!==(entry.command.action==='pause'?'pause':'approval.wait'))throw fault('CHECKPOINT_RECORD_REFUSED');
   pending.delete(entry.command.controlId);heldResult.resolve({state:entry.command.action==='pause'?'paused':'waiting-for-approval'});
  }
- async function pump(){try{await poll.run(()=>initialized.promise);while(!stopped&&!held){const fencedRead=fenced,raw=await poll.run(signal=>runOwner.nextControls({binding,after,signal}));
+ function idle(ms){return poll.run(signal=>new Promise((resolve,reject)=>{const timer=setTimeout(done,ms);wakeIdle=done;
+  function done(){clearTimeout(timer);wakeIdle=undefined;signal.removeEventListener('abort',cancel);resolve();}function cancel(){clearTimeout(timer);wakeIdle=undefined;reject(fault('CANCELLED'));}
+  signal.addEventListener('abort',cancel,{once:true});if(signal.aborted)cancel();}));}
+ // Only the read is skippable: a fenced read (a hold must be found), the run's own lifetime ending, claims, acks and checkpoints stay fatal.
+ const skippableRead=(e,fencedRead)=>!fencedRead&&!poll.signal.aborted&&['DEADLINE','NATIVE_UNAVAILABLE'].includes(e?.code);
+ async function pump(){try{await poll.run(()=>initialized.promise);let missed=0,unavailable=0;while(!stopped&&!held){const fencedRead=fenced;let raw;
+  try{raw=await poll.run(signal=>runOwner.nextControls({binding,after,signal}));}
+  catch(e){if(!skippableRead(e,fencedRead)||e.code==='NATIVE_UNAVAILABLE'&&++unavailable>LIFECYCLE_READ_UNAVAILABLE_LIMIT)throw e;
+   missed++;if(!stopped&&!held&&!fenced)await idle(lifecycleReadBackoffMs(missed));continue;}
+  missed=0;unavailable=0;
   if(!Array.isArray(raw)||raw.length>32)throw fault('CONTROL_PAGE_REFUSED');
   for(const row of raw){const entry=envelope(row);if(stopped||held)break;if(pending.size>=32)throw fault('CONTROL_PENDING_LIMIT');
    const claim=data(await poll.run(signal=>runOwner.claimControl({binding,input:{controlId:entry.command.controlId,commandSha256:entry.commandSha256},signal})));
@@ -53,10 +69,8 @@ export function createActivityLifecycle({config,runOwner,binding,saved,runtime,i
   // A read begun after a refused publication must reach the durable hold that refused it; exhausting
   // the pending controls without one is not a hold, so the refusal stays an execution failure.
   if(fencedRead&&!held&&raw.length===0)throw fault('HOLD_CONTROL_MISSING');
-  if(!stopped&&!held&&!fenced)await poll.run(signal=>new Promise((resolve,reject)=>{const timer=setTimeout(done,pollMs);wakeIdle=done;
-   function done(){clearTimeout(timer);wakeIdle=undefined;signal.removeEventListener('abort',cancel);resolve();}function cancel(){clearTimeout(timer);wakeIdle=undefined;reject(fault('CANCELLED'));}
-   signal.addEventListener('abort',cancel,{once:true});if(signal.aborted)cancel();}));
- }}catch(e){if(!stopped){error=fault('LIFECYCLE_EXECUTION_UNKNOWN');failed.resolve(error);heldResult.reject(error);}}
+  if(!stopped&&!held&&!fenced)await idle(pollMs);
+ }}catch(e){if(!stopped){error=fault('LIFECYCLE_EXECUTION_UNKNOWN',e);failed.resolve(error);heldResult.reject(error);}}
  }
  const pumping=pump();heldResult.promise.catch(()=>{});
  async function observe(message){if(stopped)return;

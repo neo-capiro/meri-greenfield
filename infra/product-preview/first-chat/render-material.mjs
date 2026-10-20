@@ -75,6 +75,7 @@ import {productRunnerMeasurement} from '../../../apps/runtime/native-authority/e
 import {runOwnerOperations} from '../../../packages/contracts/runtime-0.2/validate.mjs';
 import {sdkSessionOperations} from '../../../packages/contracts/runtime-0.2/session.mjs';
 import {validateProductOwnerConfiguration} from '../../../apps/proxy/product/owner-entrypoint.mjs';
+import {OWNER_MAX_REQUEST_MS} from '../../../apps/proxy/product/service-pair-discovery.mjs';
 import {parseProductProxyStartupConfiguration,PRODUCT_PROXY_PRICING_REVISION,PRODUCT_PROXY_MODEL_ALIAS} from '../../../apps/proxy/product/startup-config.mjs';
 import {compileCapabilityPlatform,createConfiguredRunCapabilityPolicy} from '../../../apps/runtime/product-ports/capability-policy.mjs';
 import {compileRuntimeArtifactsConfiguration} from '../../../apps/runtime/artifacts/configuration.mjs';
@@ -496,11 +497,11 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,ident
  if(o.temporalAddress!==`${d.names.temporal_frontend}:7233`)fail('RENDER_INPUT_REFUSED','temporal address must be names.temporal_frontend:7233');
  if(o.proxyUrl!==`https://${d.names.proxy}:8443`||o.ownerOrigin!==`https://${d.names.owner}:8444`)fail('RENDER_INPUT_REFUSED','proxy/owner origins');
  const nodeImage=d.images.nodeRuntime,nodeDigest=imageDigest(nodeImage),proxyImage=d.images.proxy;
- // Runner measurement: an explicit value must equal the git blob at the image's source commit when that commit is present.
+ // Runner measurement: the image's source commit must be present locally (fetch it), and an explicit value must equal its git blob.
  const measured=runnerSha256AtCommit(d.images.nodeRuntimeSourceCommit,{sourceRoot});
+ if(!measured)fail('RENDER_INPUT_REFUSED','the node runtime source commit is not available locally: fetch it before rendering');
  const runnerSha256=r.preparationIntent.runnerSha256??measured;
- if(!runnerSha256)fail('RENDER_INPUT_REFUSED','runnerSha256 is not supplied and the node runtime source commit is not available locally');
- if(measured&&measured!==runnerSha256)fail('RENDER_INPUT_REFUSED','runnerSha256 differs from apps/runtime/conversation-runner.mjs at the node runtime source commit');
+ if(measured!==runnerSha256)fail('RENDER_INPUT_REFUSED','runnerSha256 differs from apps/runtime/conversation-runner.mjs at the node runtime source commit');
  // The issuer pins each role's exact ENI security-group set (task-authority.mjs roles.<role>.securityGroupIds, sameSet with the
  // peer ENI) and one shared subnet list. Both are the Stage 3 service network values, so they cannot drift apart.
  const issuerSubnets=[...d.privateSubnetIds];
@@ -633,12 +634,12 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,ident
   serviceTasks,pricing:{modelId:d.model.modelId,profileId:d.model.profileId,revision:d.model.pricingRevision,validUntilMs:expiresAtMs,
    actualInputMicroUSDPerK:d.model.actualInputMicroUSDPerK,reserveInputMicroUSDPerK:d.model.reserveInputMicroUSDPerK,outputMicroUSDPerK:d.model.outputMicroUSDPerK,
    maxInputTokens:d.model.maxInputTokens,maxOutputTokens:d.model.maxOutputTokens},
-  limits:{maxRequestMs:3000,maxFactBytes:131072,maxLeaseMs:30000}};
+  limits:{maxRequestMs:OWNER_MAX_REQUEST_MS,maxFactBytes:131072,maxLeaseMs:30000}};
  const ref=(path,bytes)=>({path,sha256:sha(bytes)});
  const proxy={schemaVersion:1,enabled:true,deploymentRevision,expiresAtMs,pricingRevision:PRODUCT_PROXY_PRICING_REVISION,
   serverTls:{certificateFile:ref(PATHS.proxyServerCert,pki.certs['proxy-server']),privateKeyFile:ref(PATHS.proxyServerKey,pki.keys['proxy-server']),certificateSha256:pins.der['proxy-server']},
   ownerPeer:{origin:o.ownerOrigin,server_name:d.names.owner,server_cert_sha256:pins.der['owner-server'],server_issuer_sha256:pins.der['owner-bridge-ca'],
-   client_cert_sha256:pins.der['proxy-owner-client'],client_subject:d.proxyClientSubject,max_exchange_ms:3000},
+   client_cert_sha256:pins.der['proxy-owner-client'],client_subject:d.proxyClientSubject,max_exchange_ms:OWNER_MAX_REQUEST_MS},
   ownerTls:{caFile:ref(PATHS.proxyOwnerCa,pki.certs['owner-bridge-ca']),certificateFile:ref(PATHS.proxyOwnerCert,pki.certs['proxy-owner-client']),privateKeyFile:ref(PATHS.proxyOwnerKey,pki.keys['proxy-owner-client'])},
   serviceTasks};
 

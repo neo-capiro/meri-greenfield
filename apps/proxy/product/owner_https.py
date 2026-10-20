@@ -1,4 +1,4 @@
-"""Real two-connection owner mTLS transport. Import/construction open no socket.
+"""Real three-connection owner mTLS transport (operation, capture, admission). Import/construction open no socket.
 
 Only externally delivered certificate files are accepted. No CA discovery,
 certificate issuance, provider request, retry or account credential is involved.
@@ -19,6 +19,8 @@ import time
 
 from .owner_channel import OwnerPeerPolicy, OwnerReply, OwnerTlsEvidence, OPEN, OPERATION, POLL, REPLY
 from .service_pair_discovery import ProductServicePairDiscovery
+from . import refusal_diagnostics as diagnostics
+from .budgets import MAX_OWNER_EXCHANGE_MS
 from ..qualification.state.pricing import StateDenied
 
 
@@ -113,7 +115,7 @@ class ProductOwnerHttpsExchange:
                 or material.context.verify_mode != ssl.CERT_REQUIRED
                 or material.context.check_hostname is not True
                 or material.client_cert_sha256 != policy.client_cert_sha256
-                or policy.max_exchange_ms > 3000
+                or policy.max_exchange_ms > MAX_OWNER_EXCHANGE_MS
                 or type(deployment_revision) is not str or not 1 <= len(deployment_revision) <= 128
                 or not deployment_revision.isascii()
                 or any(not (c.isalnum() or c in '_-') for c in deployment_revision)
@@ -132,7 +134,7 @@ class ProductOwnerHttpsExchange:
         service_pair_reader.assert_transport(policy,self.owner_ipv4,self.proxy_ipv4,expires_at_ms,deployment_revision)
         self.now_ms = now_ms or (lambda: time.time_ns() // 1000000)
         self._state = threading.RLock()
-        self._locks = {name: threading.Lock() for name in ("operation", "capture")}
+        self._locks = {name: threading.Lock() for name in ("operation", "capture", "admission")}
         self._connections, self._sockets = {}, set()
         self._retired = False
 
@@ -224,33 +226,41 @@ class ProductOwnerHttpsExchange:
         return connection
 
     def _send(self, channel, path, body, cutoff):
-        acquired = False
+        acquired, step = False, "lock"
         try:
             acquired = self._locks[channel].acquire(timeout=self._remaining(cutoff))
             if not acquired:
                 _deny()
+            step = "pair-before"; diagnostics.stage("exchange-pair-before")
             self._prove_pair(cutoff)
+            step = "connect"
             connection = self._connections.get(channel) or self._connect(channel, cutoff)
             sock = connection.sock
             evidence = self._evidence(sock)
             sock.settimeout(self._remaining(cutoff))
+            step = "request"; diagnostics.stage("exchange-wait")
             connection.request("POST", path, body=body, headers={
                 "host": f"{self.policy.server_name}:8444", "content-type": "application/json",
                 "content-length": str(len(body)), "accept-encoding": "identity", "connection": "keep-alive"})
             response = connection.getresponse()
+            step = "reply-status"  # a non-200 reply is the owner's own refusal
             length = validate_owner_http_reply(response.status, response.getheaders(),
                                                expected_revision=self.deployment_revision)
             if response.version != 11 or response.will_close:
                 _deny()
+            step = "reply-read"
             value = response.read(length+1)
             if len(value) != length or response.length not in (0, None):
                 _deny()
+            step = "pair-after"; diagnostics.stage("exchange-pair-after")
             self._prove_pair(cutoff)
             self._remaining(cutoff)
+            step = "evidence"
             if self._evidence(sock) != evidence:
                 _deny()
             return OwnerReply(value, evidence)
-        except BaseException:
+        except BaseException as error:
+            diagnostics.refused("exchange", step, error, deadline_ms=cutoff, now_ms=self.now_ms)
             self.abort()
             _deny()
         finally:
@@ -268,14 +278,19 @@ class ProductOwnerHttpsExchange:
         if (channel not in self._locks or path not in (OPEN, OPERATION, POLL, REPLY)
                 or path in (OPEN,) and channel != "operation"
                 or path in (POLL, REPLY) and channel != "capture"
+                or channel == "admission" and path != OPERATION
                 or type(body) is not bytes or not 1 <= len(body) <= 12*1024*1024
                 or type(timeout) not in (int, float) or not math.isfinite(timeout)
                 or not 0 < timeout <= self.policy.max_exchange_ms/1000):
             _deny()
-        if channel == "capture" and path == OPERATION:
+        # The capture carrier carries only leased admission reads; the admission carrier only placement and admission reads.
+        reads = {"capture": ("meri.proxy.admission-read/1",),
+                 "admission": ("meri.proxy.admission-read/1", "meri.proxy.placement-read/1")}
+        if channel in reads and path == OPERATION:
             try:
                 frame = json.loads(body)
-                if type(frame) is not list or len(frame) != 5 or frame[0] != "meri.proxy.admission-read/1":
+                if (type(frame) is not list or not frame or frame[0] not in reads[channel]
+                        or len(frame) != (5 if frame[0] == "meri.proxy.admission-read/1" else 4)):
                     _deny()
             except (ValueError, TypeError, UnicodeError):
                 _deny()
@@ -283,6 +298,7 @@ class ProductOwnerHttpsExchange:
         try:
             return await asyncio.wait_for(asyncio.to_thread(self._send, channel, path, body, cutoff),
                                           self._remaining(cutoff))
-        except BaseException:
+        except BaseException as error:
+            diagnostics.refused("exchange", "call", error, deadline_ms=cutoff, now_ms=self.now_ms)
             self.abort()
             raise

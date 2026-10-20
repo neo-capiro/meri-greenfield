@@ -2,12 +2,18 @@
 import {ProductError,asProductError,productFailure,refuse} from '../../product-access/errors.mjs';
 import {TURN_SCHEMA} from './protocol.mjs';
 import {terminal} from '../boundary.mjs';
+// Core currentness rows are independent reads; this many run at once on a released page.
+const CURRENTNESS_CONCURRENCY=4;
 export function createConversationHistoryService({store,nextRunOwner,gate,retention}){
  if(['list','transcript'].some(k=>typeof store?.history?.[k]!=='function')||typeof gate?.recheck!=='function'||retention!==undefined&&['assertServable','withRelease'].some(k=>typeof retention[k]!=='function'))refuse('PRODUCT_CONFIGURATION');
  const guard=fn=>async value=>{try{return await fn(value);}catch(error){throw asProductError(error,'CONVERSATION_UNAVAILABLE');}};
  const check=signal=>()=>signal?.throwIfAborted();
  async function servable(principal,conversationId){if(retention)await retention.assertServable({tenantId:principal.tenantId,kind:'conversation',subjectId:conversationId});}
  async function current(recheckConversation,conversation,readScheduleOriginRows){if(typeof recheckConversation!=='function')refuse('CONVERSATION_UNAVAILABLE');await recheckConversation({conversationId:conversation.conversationId,scopes:conversation.scopes},readScheduleOriginRows);}
+ // Every row is still checked; the first refusal withholds the page once the reads already started have settled.
+ async function currentAll(recheckConversation,conversations,readScheduleOriginRows){let next=0,failure;
+  const worker=async()=>{while(!failure&&next<conversations.length){const conversation=conversations[next++];try{await current(recheckConversation,conversation,readScheduleOriginRows);}catch(error){failure??={error};}}};
+  await Promise.all(Array.from({length:Math.min(CURRENTNESS_CONCURRENCY,conversations.length)},worker));if(failure)throw failure.error;}
  async function transcript({principal,request,signal,recheckConversation}){
   // Subject ownership/client authorization precedes subject-specific retention observations.
   const result=await store.history.transcript({principal,...request},check(signal));
@@ -16,13 +22,11 @@ export function createConversationHistoryService({store,nextRunOwner,gate,retent
   await servable(principal,request.conversationId);return result;
  }
  return Object.freeze({
-  list:guard(async({principal,request,signal,recheckConversation})=>{
-   const result=await store.history.list({principal,...request},check(signal)),authorized=[],visible=[];
-   for(const c of result.conversations){try{await servable(principal,c.conversationId);}catch(error){if(error?.code==='RETENTION_SUPPRESSED')continue;throw error;}
-    // Core's current context wire does not distinguish archive from outage; withhold the whole page on either failure.
-    await current(recheckConversation,c);authorized.push(c);}
-   // Recheck every authorized row after all awaited Core reads, before releasing the saved page.
-   for(const c of authorized){try{await servable(principal,c.conversationId);}catch(error){if(error?.code==='RETENTION_SUPPRESSED')continue;throw error;}visible.push(c);}
+  // A page is released only through recheckRelease, which checks Core currentness for every row inside the serving fence after
+  // the final membership recheck. Checking it here as well would only repeat those reads, so the list keeps the retention filter.
+  list:guard(async({principal,request,signal})=>{
+   const result=await store.history.list({principal,...request},check(signal)),visible=[];
+   for(const c of result.conversations){try{await servable(principal,c.conversationId);}catch(error){if(error?.code==='RETENTION_SUPPRESSED')continue;throw error;}visible.push(c);}
    return {...result,conversations:visible};
   }),
   transcript:guard(transcript),
@@ -37,7 +41,8 @@ export function createConversationHistoryService({store,nextRunOwner,gate,retent
     if(retention&&typeof assertReleaseServable!=='function')refuse('PRODUCT_CONFIGURATION');
     const releaseServable=conversationId=>retention?assertReleaseServable({tenantId:principal.tenantId,kind:'conversation',subjectId:conversationId}):Promise.resolve();
     check(signal)();await recheckMembership();
-    for(const conversation of conversations)await current(recheckConversation,conversation,readScheduleOriginRows);
+    // Core's current context wire does not distinguish archive from outage; withhold the whole page on either failure.
+    await currentAll(recheckConversation,conversations,readScheduleOriginRows);
     if(operation==='list'){const visible=[];
      for(const conversation of conversations){try{await releaseServable(conversation.conversationId);}catch(error){if(error?.code==='RETENTION_SUPPRESSED')continue;throw error;}visible.push(conversation);}
      check(signal)();check(fenceSignal)();return publish({...result,conversations:visible});
