@@ -11,13 +11,13 @@ const identity={principal,identityRevision:'native-1',checkedAtMs:at,expiresAtMs
 const runFact=()=>JSON.stringify({binding:next,policyRevision,checkedAtMs:at,deadlineMs:at+800});
 
 function fixture({denyContext=false,rotateContext=false}={}){
- const order=[];let contextReads=0;
+ const order=[],admitted=[];let contextReads=0;
  const adapters=createApplicationContextAdapters({commandContext:{binding,clientResolution:{reference:clientId,clientId}},now:()=>at,limits:{maxRequestMs:500,maxFactBytes:65536},
   client:{async readIdentity(){order.push('identity');return identity;},async readContext({conversationId,clientId:requested,identitySha256}){order.push('context');contextReads++;if(denyContext)throw Error('Core denied');return {...identity,identitySha256,conversationId,selectedClientId:requested,contextRevision:rotateContext&&contextReads===2?'changed':'stable'};}},
   async currentRun(request){order.push('current');assert.deepEqual(request,next);return runFact();},
-  async admitInitialConversation(request){order.push('admit');assert.deepEqual(request.principal,principal);assert.equal(request.conversationId,candidate);assert.equal(request.selectedClientId,clientId);return runFact();}});
+  async admitInitialConversation(request){order.push('admit');admitted.push(request);assert.deepEqual(request.principal,principal);assert.equal(request.conversationId,candidate);assert.equal(request.selectedClientId,clientId);return runFact();}});
  const resolve=async(hints={conversationId:candidate,clientId})=>{const proven=await adapters.verifyIdentity({credential:'native-bearer',deadlineMs:at+500});return adapters.resolveContext({identityCredential:'native-bearer',identity:proven,identitySha256:canonicalSha256(proven),hints,deadlineMs:at+500});};
- return {order,resolve};
+ return {order,admitted,resolve};
 }
 
 test('dynamic initial binding is admitted only after native Core context and rechecked before release',async()=>{
@@ -27,3 +27,7 @@ test('dynamic initial binding is admitted only after native Core context and rec
 test('Core denial cannot admit a candidate conversation',async()=>{const f=fixture({denyContext:true});await assert.rejects(f.resolve());assert.deepEqual(f.order,['identity','context']);});
 test('changed Core context during admission refuses release',async()=>{const f=fixture({rotateContext:true});await assert.rejects(f.resolve());assert.deepEqual(f.order,['identity','context','admit','current','context']);});
 test('run hint cannot replace the admitted binding',async()=>{const f=fixture();await assert.rejects(f.resolve({conversationId:candidate,clientId,runId:id(714)}));assert.deepEqual(f.order,['identity','context','admit']);});
+test('an exact run hint reaches the trusted admission only as a constraint; no hint passes none',async()=>{
+ const hinted=fixture();assert.deepEqual((await hinted.resolve({conversationId:candidate,clientId,runId:next.runId})).binding,next);assert.equal(hinted.admitted[0].runId,next.runId);
+ const plain=fixture();await plain.resolve();assert.equal(Object.hasOwn(plain.admitted[0],'runId'),false);
+});

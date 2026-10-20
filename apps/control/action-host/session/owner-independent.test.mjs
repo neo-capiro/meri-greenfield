@@ -38,3 +38,10 @@ test('independent membership recheck: no answer keeps the session, an explicit m
  try{const s=await f.issue();state.recheck=()=>{throw noAnswer();};await assert.rejects(f.owner.authenticateSession({credential:s.credential}),unavailableCode);assert.equal(f.owner.status().sessions,1);
   state.recheck=null;await f.owner.authenticateSession({credential:s.credential});
   state.recheck=()=>{throw Object.assign(Error('MEMBERSHIP_REVOKED'),{code:'MEMBERSHIP_REVOKED'});};await assert.rejects(f.owner.authenticateSession({credential:s.credential}),refusedCode);assert.equal(f.owner.status().sessions,0);}finally{f.owner.close();}});
+test('independent rechecks pin the bound run so selection can never move or reserve a successor',async()=>{const f=fixture();try{
+ const s=await f.issue({hints:{clientId:f.clientId}});assert.deepEqual(f.state.calls.find(([k])=>k==='context')[1].hints,{clientId:f.clientId},'issuance passes only the caller hints');
+ f.state.calls=[];const a=await f.owner.authenticateSession({credential:s.credential});await f.owner.readCurrentState({authentication:a});
+ const rechecks=f.state.calls.filter(([k])=>k==='context').map(([,call])=>call.hints);assert.equal(rechecks.length,2);
+ for(const hints of rechecks)assert.deepEqual(hints,{clientId:f.clientId,conversationId:f.binding.conversationId,runId:f.binding.runId});
+ f.state.current=v=>({...v,binding:{...v.binding,runId:uuid(98)}});await assert.rejects(f.owner.authenticateSession({credential:s.credential}));assert.equal(f.owner.status().sessions,0,'a different selected run still refuses and removes the session');
+}finally{f.owner.close();}});
