@@ -3,6 +3,7 @@ import {randomBytes,randomUUID,createHash} from 'node:crypto';
 import {canonicalSha256,validateShape} from '../../../../packages/contracts/validate.mjs';
 import {own,data,nativeSignal} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
+import {markAuthorityUnavailable,isAuthorityUnavailable} from '../../../../packages/runtime/authority-availability.mjs';
 const hash=x=>createHash('sha256').update(x).digest('hex'),same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u;
 const transitionKeys=['controlId','intent','inputSha256','sourceBinding','targetBinding','scopes','selectedClientId','policyRevision','admissionReceiptId','retirementReceiptId','checkpointId','checkpointSha256','sourceRequestSha256','contextSha256','targetSessionId','resumeSessionAt'];
@@ -32,15 +33,25 @@ export function createActionSessionOwner(configuration){
  function active(signal){const at=now();if(closed||signal?.aborted||!Number.isSafeInteger(at)||at<0)deny();return at;}
  function remove(r){sessions.delete(r.digest);ids.delete(r.sessionId);r.nativeCredential='';r.receipts.clear();}
  function valid(r,signal){const at=active(signal);if(!r||sessions.get(r.digest)!==r||ids.get(r.sessionId)!==r||r.expiresAtMs<=at) {if(r)remove(r);deny();}return at;}
- function release(r,t){t.check();if(valid(r,t.signal)>=t.deadline())deny();}
+ function release(r,t){t.check();valid(r,t.signal);t.check();}
  function life(deadlineMs,signal){
   nativeSignal(signal);const at=active(signal);if(deadlineMs!==undefined&&!Number.isSafeInteger(deadlineMs))deny();let cutoff=Math.min(deadlineMs??at+l.maxRequestMs,at+l.maxRequestMs),requestCancellation;
-  const timer=createOperationLifetime({deadlineMs:cutoff,now,signal,errorFactory:code=>{const error=new ActionSessionError('SESSION_REFUSED');if(code==='CANCELLED'&&signal?.aborted)requestCancellation??=error;return error;}});
+  const timer=createOperationLifetime({deadlineMs:cutoff,now,signal,errorFactory:code=>{
+   // Running out of this request's time is an owner that did not answer, not a refusal. Session expiry is decided by valid().
+   if(code==='DEADLINE'&&!signal?.aborted)return markAuthorityUnavailable(new ActionSessionError('SESSION_AUTHORITY_UNAVAILABLE'));
+   const error=new ActionSessionError('SESSION_REFUSED');if(code==='CANCELLED'&&signal?.aborted)requestCancellation??=error;return error;}});
   // Only this lifetime's winning caller cancellation can preserve a shared session.
   // A later caller abort cannot disguise an upstream refusal or an owner deadline.
   return {...timer,deadline:()=>cutoff,isRequestCancellation:error=>requestCancellation!==undefined&&signal?.aborted&&error===requestCancellation&&timer.signal.reason===error,limitDeadline(next){cutoff=Math.min(cutoff,next);timer.limitDeadline(cutoff);}};
  }
- function rejectRecheck(record,t,error){if(t.isRequestCancellation(error)){try{valid(record);}catch{remove(record);}}else remove(record);deny();}
+ // A definitive refusal removes the session. An identity, membership or context owner that did not answer (deadline, network,
+ // 408/429/5xx) refuses only this request: the record keeps its pins and an expiry that only shortens, and every later request
+ // must complete a fresh recheck before anything is released. An expired or removed record is still refused definitively.
+ function rejectRecheck(record,t,error){
+  if(t.isRequestCancellation(error)){try{valid(record);}catch{remove(record);}deny();}
+  if(isAuthorityUnavailable(error)){valid(record);throw markAuthorityUnavailable(new ActionSessionError('SESSION_AUTHORITY_UNAVAILABLE'));}
+  remove(record);deny();
+ }
  function fact(value,keys,started,t){const v=data(value);own(v,keys);if(Buffer.byteLength(JSON.stringify(v))>l.maxFactBytes)deny();const at=active(t.signal);t.check();if(!Number.isSafeInteger(v.checkedAtMs)||v.checkedAtMs<started||v.checkedAtMs>at||!Number.isSafeInteger(v.expiresAtMs)||v.expiresAtMs<=at)deny();t.limitDeadline(v.expiresAtMs);return v;}
  function hints(value){const v=data(value);own(v,[],['conversationId','runId','clientId']);if(Object.values(v).some(x=>typeof x!=='string'||!uuid.test(x)))deny();return v;}
  // The membership owner is independent of Core's native /identity and /context
@@ -67,7 +78,7 @@ export function createActionSessionOwner(configuration){
   try{
    const current=memberFact(await t.run(signal=>member.recheck({principal,credential,signal,deadlineMs:t.deadline()})),identity,selectedClientId);
    if(!same(current,principal))deny();return current;
-  }catch(error){if(t.isRequestCancellation(error))throw error;if(record&&!t.signal.aborted)remove(record);deny();}
+  }catch(error){if(t.isRequestCancellation(error)||isAuthorityUnavailable(error))throw error;if(record&&!t.signal.aborted)remove(record);deny();}
  }
  async function resolve(nativeCredential,selected,t,record,ceiling=Infinity){
   let started=active(t.signal);const identity=fact(await t.run(signal=>verifyIdentity({credential:nativeCredential,signal,deadlineMs:t.deadline()})),['principal','identityRevision','checkedAtMs','expiresAtMs'],started,t);
