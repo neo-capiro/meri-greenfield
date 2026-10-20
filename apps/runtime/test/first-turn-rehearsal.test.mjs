@@ -41,9 +41,10 @@ const delay=(ms,signal)=>new Promise((resolve,reject)=>{if(signal?.aborted)retur
 
 /** One composed first turn. `clerkTimeoutAt` makes that (1-based) Core call wait Core's Clerk timeout and answer `clerkStatus`:
  * 401 as Core does today, 503 once Core reports the timeout as unavailable. The SDK streams the reply as `deltas` text deltas
- * (the product sets includePartialMessages). `leaseElapsedMs` is the original's lease already spent when the runner starts
- * (live: acknowledgement, allocation and the ECS task start); the lease itself is the live allocation's 900 s runtime. */
-export async function rehearseFirstTurn({profile,clerkTimeoutAt,clerkStatus=401,deltas=2,leaseElapsedMs=0}){
+ * (the product sets includePartialMessages), `deltaMs` apart (0: all at once). `leaseElapsedMs` is the original's lease already
+ * spent when the runner starts (live: acknowledgement, allocation and the ECS task start); the lease itself is the live
+ * allocation's 900 s runtime. */
+export async function rehearseFirstTurn({profile,clerkTimeoutAt,clerkStatus=401,deltas=2,deltaMs=0,leaseElapsedMs=0}){
  const latency=CORE_PROFILES[profile];if(!latency)throw Error('unknown profile');
  const f=continuationFixture('resume'),{target}=f;target.sourceRequest.skill=null;target.request.skill=null;
  const binding=f.binding,versions=target.versions,scopes=target.scopes,clientId=id(5),principal={tenantId:binding.tenantId,actorId:binding.actorId};
@@ -118,7 +119,7 @@ export async function rehearseFirstTurn({profile,clerkTimeoutAt,clerkStatus=401,
    yield {type:'system',subtype:'init',session_id:sessionId};marks.init=at();await args.prompt[Symbol.asyncIterator]().next();
    yield {type:'stream_event',session_id:sessionId,parent_tool_use_id:null,event:{type:'message_start',message:{id:'msg_rehearsal',role:'assistant',content:[]}}};
    yield {type:'stream_event',session_id:sessionId,parent_tool_use_id:null,event:{type:'content_block_start',index:0,content_block:{type:'text',text:''}}};
-   for(const part of parts)yield text(part);
+   for(const part of parts){if(deltaMs)await delay(deltaMs);yield text(part);}
    yield {type:'stream_event',session_id:sessionId,parent_tool_use_id:null,event:{type:'content_block_stop',index:0}};
    yield {type:'assistant',session_id:sessionId,parent_tool_use_id:null,message:{id:'msg_rehearsal',role:'assistant',content:[{type:'text',text:reply}]}};
    yield {type:'result',subtype:'success',is_error:false,session_id:sessionId,result:reply};},async interrupt(){return {still_queued:[]};},close(){}};}});
@@ -133,7 +134,7 @@ export async function rehearseFirstTurn({profile,clerkTimeoutAt,clerkStatus=401,
  const median=list=>[...list].sort((a,b)=>a-b)[Math.floor((list.length-1)/2)];
  const perOperation=Object.fromEntries(Object.entries(calls).sort().map(([name,v])=>[name,durations[name]?{...v,medianMs:median(durations[name]),maxMs:Math.max(...durations[name])}:v]));
  const published=events.map(e=>e.type==='run.status'?e.data.state:e.type);
- return {profile,clerkTimeoutAt:clerkTimeoutAt??null,...(clerkTimeoutAt?{clerkStatus}:{}),deltas,leaseElapsedMs,outcome:outcome.value?.state??outcome.error,initMs:marks.init??null,firstTextMs:marks.firstText??null,
+ return {profile,clerkTimeoutAt:clerkTimeoutAt??null,...(clerkTimeoutAt?{clerkStatus}:{}),deltas,deltaMs,leaseElapsedMs,outcome:outcome.value?.state??outcome.error,initMs:marks.init??null,firstTextMs:marks.firstText??null,
   lastTextMs:marks.lastText??null,resultMs:at(),coreCalls:coreCalls,perOperation,deltasPublished:published.filter(type=>type==='message.delta').length,
   statuses:published.filter(type=>type!=='message.delta'),firstFailure:failures.find(line=>line.startsWith('RUNNER_FIRST_FAILURE'))??null,refusals,thrown,hostClockSteps:clock.steps};
 }
@@ -147,9 +148,14 @@ for(const [profile,clerkTimeoutAt,clerkStatus] of [['live-tail'],['live-median',
  test(`first turn under the ${profile} Core profile${clerkTimeoutAt?` with a Clerk timeout answered ${clerkStatus}`:''} (reported)`,posix,async t=>{
   t.diagnostic(JSON.stringify(await rehearseFirstTurn({profile,clerkTimeoutAt,clerkStatus})));
  });
-// A realistic reply streams tens of text deltas and each one is a separately authorized publish. 90 s of lease already spent
-// is the live first attempt's acknowledgement plus allocation and task start.
+// A realistic reply streams tens of text deltas, and every publication is separately authorized: deltas read while one is in
+// flight share the next. 90 s of lease already spent is the live first attempt's acknowledgement plus allocation and task start.
 for(const profile of ['quiet','live-median','live-tail'])
  test(`a 40-delta reply under the ${profile} Core profile with 90 s of lease spent (reported)`,{...posix,timeout:1200000},async t=>{
   t.diagnostic(JSON.stringify(await rehearseFirstTurn({profile,deltas:40,leaseElapsedMs:90000})));
  });
+// Every delta at once is the best case for sharing. Paced at 250 ms a delta (slower than a live model streams), the reply outlasts
+// the first publication, and each later one carries what arrived while the one before it was in flight.
+test('a 40-delta reply streamed over 10 s under the live-median Core profile with 90 s of lease spent (reported)',{...posix,timeout:1200000},async t=>{
+ t.diagnostic(JSON.stringify(await rehearseFirstTurn({profile:'live-median',deltas:40,deltaMs:250,leaseElapsedMs:90000})));
+});
