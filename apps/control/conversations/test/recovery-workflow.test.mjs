@@ -29,8 +29,10 @@ for(const [name,workflow] of Object.entries({meriConversationWorkflow,meriConver
  test(`${name}: a terminal result needs no reconciliation`,async()=>{const w=await start(workflow,name);try{
   await w.resolve('executeConversation',ok({state:'completed'}));assert.deepEqual(w.outcome().value,{state:'completed'});assert.equal(w.scheduled().length,1);}finally{setActivator(undefined);}});
 }
-test('modeled healthy-infrastructure recovery: crash detection plus reconciliation fits within two minutes (unqualified live)',async()=>{const w=await start(meriConversationWorkflow,'meriConversationWorkflow');try{
+test('modeled recovery: crash detection plus reconciliation outlasts an ECS stop and fits within five minutes (unqualified live)',async()=>{const w=await start(meriConversationWorkflow,'meriConversationWorkflow');try{
  const execute=w.scheduled()[0];await w.resolve('executeConversation',lost);const reconcile=w.scheduled()[1];
  const detect=seconds(execute.heartbeatTimeout),budget=seconds(reconcile.scheduleToCloseTimeout),attempt=seconds(reconcile.startToCloseTimeout);
- assert.equal(detect,30);assert.equal(attempt,20);assert.equal(budget,85);assert.ok(detect+budget<120,`${detect}+${budget} s`);
+ assert.equal(detect,30);assert.equal(attempt,20);assert.equal(budget,240);assert.ok(detect+budget<300,`${detect}+${budget} s`);
+ // The attempts must outlast ECS's stop of the original: the runner's 60 s stopTimeout plus about 47 s of deprovisioning.
+ assert.ok(budget>=60+47+seconds(reconcile.retryPolicy.maximumInterval),`${budget} s of attempts against an ECS stop`);
  assert.ok(seconds(reconcile.retryPolicy.maximumInterval)<=10&&seconds(reconcile.retryPolicy.initialInterval)<=1);}finally{setActivator(undefined);}});
