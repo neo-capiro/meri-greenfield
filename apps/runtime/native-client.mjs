@@ -10,6 +10,7 @@ const startupOperations=new Set([
  'runner/native/bootstrap','runner/native/admitted','runner/native/prepare',
  'runner/native/verify','runner/native/start','runner/native/started',
  'runner/runtime','runner/publish','runner/checkpoint/capture','runner/checkpoint/complete',
+ 'runner/next-controls','runner/claim-control','runner/ack-control','runner/record-checkpoint',
  'runner/session/register','runner/session/load','runner/session/append',
 ]);
 const STARTUP_REQUEST_MAX_MS=23000;

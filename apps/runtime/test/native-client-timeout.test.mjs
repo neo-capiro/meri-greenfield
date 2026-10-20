@@ -49,7 +49,7 @@ test('startup-only request limit is bounded by its absolute stage deadline',asyn
  await assert.rejects(client.call('runner/runtime',{}, {maxRequestMs:5000,deadlineMs:start+3000}),/DEADLINE/);
  for(const [operation,options] of [
   ['runner/load',{maxRequestMs:5000,deadlineMs:start+6000}],
-  ['runner/next-controls',{maxRequestMs:5000,deadlineMs:start+6000}],
+  ['readiness',{maxRequestMs:5000,deadlineMs:start+6000}],
   ['runner/publish',{maxRequestMs:5000}],
   ['runner/publish',{maxRequestMs:23001,deadlineMs:start+6000}],
   ['runner/publish',{maxRequestMs:0,deadlineMs:start+6000}],
