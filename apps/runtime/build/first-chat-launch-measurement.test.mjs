@@ -37,7 +37,7 @@ test('descriptor capture yields a credential-free launch template bound to the p
  assert.equal(Object.hasOwn(env,'CLAUDE_CONFIG_DIR'),false);assert.equal(Object.hasOwn(env,'ANTHROPIC_AUTH_TOKEN'),false);
  assert.equal(env.ANTHROPIC_BASE_URL,'https://proxy.meri.internal:8443/');assert.equal(env.NODE_EXTRA_CA_CERTS,'/run/meri/poststart/bootstrap/control-ca.pem');
  assert.equal(env.CLAUDE_SECURESTORAGE_CONFIG_DIR,'/run/meri/sdk-secure');assert.equal(env.CLAUDE_CODE_MAX_OUTPUT_TOKENS,'8192');
- assert.equal(env.MAX_THINKING_TOKENS,'0');assert.equal(env.DISABLE_PROMPT_CACHING,'1');assert.equal(env.CLAUDE_CODE_EFFORT_LEVEL,'unset');
+ assert.equal(env.MAX_THINKING_TOKENS,'0');assert.equal(env.DISABLE_PROMPT_CACHING,'1');assert.equal(env.CLAUDE_CODE_EFFORT_LEVEL,'unset');assert.equal(env.CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC,'1');
  const settingsAt=args.indexOf('--settings')+1;assert.ok(settingsAt>0);
  assert.deepEqual(JSON.parse(args[settingsAt]),{autoMemoryEnabled:false,modelOverrides:{'claude-sonnet-4-6':'meri-sonnet-qualification'}});
  assert.equal(JSON.stringify(r).includes('meri-measurement-synthetic-credential'),false,'the probe credential never reaches the receipt');

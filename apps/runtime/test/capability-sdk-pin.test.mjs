@@ -249,7 +249,7 @@ test('the current no-profile launch adds exactly the supported SDK controls whil
  args[settingsAt]=JSON.stringify({autoMemoryEnabled:false,modelOverrides:{'claude-sonnet-4-6':'meri-sonnet-qualification'}});
  const thinkingAt=args.indexOf(`--max-turns=${inputs.maxTurns}`);assert.ok(thinkingAt>0);args.splice(thinkingAt,0,'--thinking=disabled');
  assert.deepEqual(none.launchTemplate.args,args);
- assert.deepEqual(none.launchTemplate.env,{...receipt.launchTemplate.env,DISABLE_PROMPT_CACHING:'1',CLAUDE_CODE_EFFORT_LEVEL:'unset'});
+ assert.deepEqual(none.launchTemplate.env,{...receipt.launchTemplate.env,DISABLE_PROMPT_CACHING:'1',CLAUDE_CODE_EFFORT_LEVEL:'unset',CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC:'1'});
  assert.equal(none.launchTemplateRunInvariant,true);assert.equal(none.sdkOptions.sha256,await measured());assert.equal(none.sdkOptions.secondProbeSha256,none.sdkOptions.sha256);assert.notEqual(none.sdkOptions.sha256,receipt.sdkOptions.sha256);assert.equal(none.inputs.capabilityProfileSha256,null);
  assert.equal(JSON.stringify(receipt.launchTemplate).includes(LAUNCH_WORKSPACE_PLACEHOLDER),false);
  for(const args of [receipt.launchTemplate.args,runtimeValues.preparationIntent.launchTemplate.args]){
