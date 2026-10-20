@@ -203,7 +203,7 @@ test('native client retains its independent three-second cap',async()=>{
 
 test('load budget retains the later startup stages and original-lease reserve',()=>{
   const budget=runnerLoadBudget({requestMs:25000,shutdownMs:10000,originalExpiresAtMs:1000000});
-  assert.deepEqual(budget,{maxMs:23000,expiresAtMs:534000});
+  assert.deepEqual(budget,{maxMs:46500,attemptMs:23000,expiresAtMs:534000});
   assert.throws(()=>runnerLoadBudget({requestMs:12000,shutdownMs:1000,originalExpiresAtMs:1000000}),/RUNNER_LOAD_BUDGET_REFUSED/u);
   assert.throws(()=>runnerLoadBudget({requestMs:NaN,shutdownMs:1000,originalExpiresAtMs:100000}),/RUNNER_LOAD_BUDGET_REFUSED/u);
 });

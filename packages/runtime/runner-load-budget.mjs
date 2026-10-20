@@ -3,6 +3,12 @@
  * cannot borrow time reserved for startup, shutdown, or failure settlement. */
 export const RUNNER_LOAD_MAX_MS=23000;
 export const RUNNER_LOAD_CONTROL_MARGIN_MS=2000;
+// runner/load and runner/publish are sent again after an answer reporting a dependency that did not answer (a Clerk timeout
+// answered 503), after these pauses and only inside the caller's absolute deadline (native-client.mjs).
+export const RUNNER_REPLAY_DELAYS_MS=Object.freeze([500,1500]);
+// The load stage fits one replay: a full attempt, the first pause and a second full attempt. Each attempt keeps
+// RUNNER_LOAD_MAX_MS. At the tail Core profile one load takes about 15.7 s, so a single 23 s window could never hold a replay.
+export const RUNNER_LOAD_STAGE_MAX_MS=2*RUNNER_LOAD_MAX_MS+RUNNER_REPLAY_DELAYS_MS[0];
 export const RUNNER_STARTUP_MIN_SHUTDOWN_MS=10000;
 export const RUNNER_STARTUP_SHUTDOWN_STEPS=3;
 // Successful completion gets one bounded publication (including session
@@ -65,12 +71,14 @@ export function runnerStartupBudget({requestMs,shutdownMs,originalExpiresAtMs}){
  const reserveMs=RUNNER_STARTUP_SHUTDOWN_STEPS*Math.max(shutdownMs,RUNNER_STARTUP_MIN_SHUTDOWN_MS)+
   RUNNER_STARTUP_CATCH_CLEANUP_MS+RUNNER_STARTUP_SETTLEMENT_MS+
   RUNNER_STARTUP_CLEANUP_MS+RUNNER_STARTUP_MARGIN_MS;
- const capFor=stage=>stage==='local'?LOCAL_STAGE_MS:stage==='setup'?SETUP_STAGE_MS:networkMs;
+ const loadStageMs=2*networkMs+RUNNER_REPLAY_DELAYS_MS[0];
+ const capFor=stage=>stage==='local'?LOCAL_STAGE_MS:stage==='setup'?SETUP_STAGE_MS:stage==='load'?loadStageMs:networkMs;
  let cutoff=originalExpiresAtMs-reserveMs;
  const stages={};
  for(const stage of [...RUNNER_STARTUP_STAGE_ORDER].reverse()){
   const maxMs=capFor(stage);
-  stages[stage]=Object.freeze({maxMs,expiresAtMs:cutoff});
+  // The load stage also names its per-attempt allowance, the native client's runner/load request bound.
+  stages[stage]=Object.freeze(stage==='load'?{maxMs,attemptMs:networkMs,expiresAtMs:cutoff}:{maxMs,expiresAtMs:cutoff});
   cutoff-=maxMs;
  }
  return Object.freeze({originalExpiresAtMs,reserveMs,stages:Object.freeze(stages)});

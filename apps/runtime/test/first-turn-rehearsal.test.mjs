@@ -146,7 +146,8 @@ for(const profile of ['quiet','live-median'])test(`first turn completes under th
  const r=await rehearseFirstTurn({profile});t.diagnostic(JSON.stringify(r));
  assert.equal(r.outcome,'completed',JSON.stringify(r));assert.ok(r.firstTextMs!==null,'text was published');
 });
-for(const [profile,clerkTimeoutAt,clerkStatus] of [['live-tail'],['live-median',40,401],['live-median',40,503]])
+// Core call 31 is late in runner/load (32 Core calls): at the tail a replayed load needs the load stage's room for one replay.
+for(const [profile,clerkTimeoutAt,clerkStatus] of [['live-tail'],['live-median',40,401],['live-median',40,503],['live-tail',31,503]])
  test(`first turn under the ${profile} Core profile${clerkTimeoutAt?` with a Clerk timeout answered ${clerkStatus}`:''} (reported)`,posix,async t=>{
   t.diagnostic(JSON.stringify(await rehearseFirstTurn({profile,clerkTimeoutAt,clerkStatus})));
  });

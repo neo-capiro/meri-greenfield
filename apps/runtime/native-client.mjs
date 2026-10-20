@@ -2,7 +2,7 @@
 import {setTimeout as pause} from 'node:timers/promises';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 import {data,own} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
-import {RUNNER_LOAD_MAX_MS} from '../../packages/runtime/runner-load-budget.mjs';
+import {RUNNER_LOAD_MAX_MS,RUNNER_REPLAY_DELAYS_MS} from '../../packages/runtime/runner-load-budget.mjs';
 import {markAuthorityUnavailable,isAuthorityUnavailable} from '../../packages/runtime/authority-availability.mjs';
 import {PINNED_NATIVE_UNANSWERED,PINNED_NATIVE_ERROR_BODY_MAX_BYTES,pinnedStatusRefusal} from './runner-runtime-diagnostics.mjs';
 import {fault} from './config.mjs';
@@ -29,7 +29,7 @@ export const unansweredNativeAnswer=(status,error)=>status===503&&(unansweredCod
 // runner/publish carries a fixed eventId that control's store returns instead of appending twice
 // (apps/control/conversations/postgres-store.mjs appendEvent). No other operation is replayed.
 const replayable=new Set(['runner/load','runner/publish']);
-const REPLAY_DELAYS_MS=[500,1500],REPLAY_MIN_ATTEMPT_MS=1000;
+const REPLAY_DELAYS_MS=RUNNER_REPLAY_DELAYS_MS,REPLAY_MIN_ATTEMPT_MS=1000;
 // A transport that failed after dispatch before any answer: one of the pinned transport's no-answer rejections, or a plain
 // fetch's network TypeError. Its timeout or abort is a deadline, and a non-200 head arrives as a Response, never here.
 const noAnswer=error=>error instanceof TypeError||PINNED_NATIVE_UNANSWERED.includes(error?.code);
