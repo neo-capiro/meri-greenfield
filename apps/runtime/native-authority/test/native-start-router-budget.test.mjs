@@ -26,6 +26,7 @@ import {createTaskRouterIngress} from '../task-router-boundary.mjs';
 import {createRemoteNativeTaskApplication} from '../remote-task-http.mjs';
 import {createRemoteSdkProcessClient} from '../remote-task-client.mjs';
 import {createNativePreparationApplication, createNativePreparationClient} from '../preparation-http.mjs';
+import {withoutDetail} from '../../test/runner-diagnostic-lines.mjs';
 
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const taskToken = 'synthetic-task-only', controlToken = 'synthetic-control-only';
@@ -172,7 +173,7 @@ async function driveStart(x) {
   const lines = [], consoleLines = [], consoleError = console.error;
   console.error = (...args) => { consoleLines.push(args.map(String).join(' ')); };
   try {
-    await withRunnerDiagnostics(async () => { x.client.spawnClaudeCodeProcess(x.descriptor); await x.client.startPreparedProcess(); }, {write: line => lines.push(line)});
+    await withRunnerDiagnostics(async () => { x.client.spawnClaudeCodeProcess(x.descriptor); await x.client.startPreparedProcess(); }, {write: line => lines.push(withoutDetail(line))});
     return {ok: true, lines, consoleLines, receiverState: x.receiver.status().state};
   } catch (error) {
     return {ok: false, error, lines, consoleLines};
