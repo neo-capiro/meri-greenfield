@@ -128,6 +128,8 @@ test('fail closed: PENDING values, foreign subnet, mismatched pins, validity bey
  await assert.rejects(render(i=>{i.stage3.taskDefinitions.control=i.stage3.taskDefinitions.control.replace(/:1$/u,'');}),{code:'RENDER_INPUT_REFUSED'});
  await assert.rejects(render(x=>x,{validityDays:31}),{code:'RENDER_VALIDITY_REFUSED'});
  await assert.rejects(render(i=>{i.runtime.preparationIntent.runnerSha256='0'.repeat(64);}),{code:'RENDER_INPUT_REFUSED'});
+ // A source commit missing from the local clone cannot be measured: refuse rather than trust the supplied runnerSha256.
+ await assert.rejects(render(i=>{i.deployment.images.nodeRuntimeSourceCommit='f'.repeat(40);}),{code:'RENDER_INPUT_REFUSED',message:/fetch it before rendering/u});
 });
 
 test('CLI writes a new 0700 directory outside the repository and refuses one inside it',async()=>{

@@ -496,11 +496,11 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,ident
  if(o.temporalAddress!==`${d.names.temporal_frontend}:7233`)fail('RENDER_INPUT_REFUSED','temporal address must be names.temporal_frontend:7233');
  if(o.proxyUrl!==`https://${d.names.proxy}:8443`||o.ownerOrigin!==`https://${d.names.owner}:8444`)fail('RENDER_INPUT_REFUSED','proxy/owner origins');
  const nodeImage=d.images.nodeRuntime,nodeDigest=imageDigest(nodeImage),proxyImage=d.images.proxy;
- // Runner measurement: an explicit value must equal the git blob at the image's source commit when that commit is present.
+ // Runner measurement: the image's source commit must be present locally (fetch it), and an explicit value must equal its git blob.
  const measured=runnerSha256AtCommit(d.images.nodeRuntimeSourceCommit,{sourceRoot});
+ if(!measured)fail('RENDER_INPUT_REFUSED','the node runtime source commit is not available locally: fetch it before rendering');
  const runnerSha256=r.preparationIntent.runnerSha256??measured;
- if(!runnerSha256)fail('RENDER_INPUT_REFUSED','runnerSha256 is not supplied and the node runtime source commit is not available locally');
- if(measured&&measured!==runnerSha256)fail('RENDER_INPUT_REFUSED','runnerSha256 differs from apps/runtime/conversation-runner.mjs at the node runtime source commit');
+ if(measured!==runnerSha256)fail('RENDER_INPUT_REFUSED','runnerSha256 differs from apps/runtime/conversation-runner.mjs at the node runtime source commit');
  // The issuer pins each role's exact ENI security-group set (task-authority.mjs roles.<role>.securityGroupIds, sameSet with the
  // peer ENI) and one shared subnet list. Both are the Stage 3 service network values, so they cannot drift apart.
  const issuerSubnets=[...d.privateSubnetIds];
