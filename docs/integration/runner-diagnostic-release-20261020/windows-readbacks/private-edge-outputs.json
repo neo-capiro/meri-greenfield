@@ -1,0 +1,14 @@
+[
+  {
+    "OutputKey": "PrivateAlbSecurityGroupId",
+    "OutputValue": "sg-0c3fe2e509b22ee5c"
+  },
+  {
+    "OutputKey": "ControlPrivateTargetGroupArn",
+    "OutputValue": "arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/meri-preview-control-8082/1732509ee5fbf759"
+  },
+  {
+    "OutputKey": "ControlPrivateOrigin",
+    "OutputValue": "https://control.meri-preview.internal"
+  }
+]

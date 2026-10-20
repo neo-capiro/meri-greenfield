@@ -1,0 +1,12 @@
+meri-product-preview-control	arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-control:34
+meri-product-preview-control	arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-control:33
+meri-product-preview-temporal-worker	arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-worker:33
+meri-product-preview-temporal-worker	arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-worker:32
+meri-product-preview-temporal-issuer	arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-issuer:33
+meri-product-preview-temporal-issuer	arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-issuer:32
+meri-product-preview-owner	arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-owner:32
+meri-product-preview-owner	arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-owner:31
+meri-product-preview-proxy	arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-proxy:32
+meri-product-preview-proxy	arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-proxy:31
+meri-product-preview-runner	arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-runner:19
+meri-product-preview-runner	arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-runner:18

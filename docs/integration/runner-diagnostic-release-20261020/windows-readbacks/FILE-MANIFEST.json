@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "2b4421f612f9fbb728d6da52927aac228d712d40",
+  "proposedLabel": "FIRST_CHAT_20261020E",
+  "files": [
+    {
+      "path": "app.live.template.json",
+      "bytes": 1700,
+      "sha256": "5fdb068922d4b6a9cb788f3d666b1e27af75ee38d1ecc9af63f8d88dcc77ecc6"
+    },
+    {
+      "path": "baseline-verification.json",
+      "bytes": 646,
+      "sha256": "cad4ab158980219b97fd3f61b49146770f01a0e79fb22400b3808bd8a6974f4e"
+    },
+    {
+      "path": "caller.json",
+      "bytes": 87,
+      "sha256": "19ae6882c19ec3197ce8257632f1097db094fed3ab5fee421ad6d5aa59f43b09"
+    },
+    {
+      "path": "foundation-live.json",
+      "bytes": 5117,
+      "sha256": "dd1a6d414bf7bf8458aab76c024c3f64ec00093555c792de62c1e5d8324a84c9"
+    },
+    {
+      "path": "latest.tsv",
+      "bytes": 1388,
+      "sha256": "c583aee8548bb72c61ba4471304740e8977ef6c7dfbd7a400b4175044c546b7e"
+    },
+    {
+      "path": "live-latest-revisions.json",
+      "bytes": 2870,
+      "sha256": "c391e3512efafa7541166dbabe7af248410da2511c66ef6509e2661e5687edbb"
+    },
+    {
+      "path": "live-services.json",
+      "bytes": 12082,
+      "sha256": "e824534e7ad22e6d5bebaf1f9631cd7363fe8e6f1f20b5f076bb18aa9930f9b3"
+    },
+    {
+      "path": "live-task-metadata.json",
+      "bytes": 33699,
+      "sha256": "0d4a2d76e2f130765d1ad9c19ee42303c2d1864d495057abeea9ef7c2e773eb6"
+    },
+    {
+      "path": "private-edge-outputs.json",
+      "bytes": 408,
+      "sha256": "49e24e02552773c0da77d757a7f3dc4fdf205e254082bf0b8316999942b5ab1f"
+    },
+    {
+      "path": "readback-summary.json",
+      "bytes": 518,
+      "sha256": "05712d3704e1eebcea1dd8a6a9bbf3bdacf5b969f24dfa9925c346d482a574c4"
+    },
+    {
+      "path": "secret-label-metadata.json",
+      "bytes": 9866,
+      "sha256": "017f32c14a3fc3a2ce1532ce16892bc11ab428eb06e39d6c54b22e42c6ffbffb"
+    },
+    {
+      "path": "stack-metadata.json",
+      "bytes": 9353,
+      "sha256": "5a2fc1dd80911a33611c2f50649fdb6e1bda24287e6c25e2b65cfef94a1543ad"
+    },
+    {
+      "path": "stage3.observed.json",
+      "bytes": 2254,
+      "sha256": "4ed035291fe02954ad5b2abd6ac3d29fe1cf1c8e176a344c0efdef6506bd1419"
+    }
+  ]
+}
