@@ -9,11 +9,15 @@ import {assertSelectionAdmission} from '../../../packages/contracts/selected-ski
 import {assertConversationInputReceipt} from '../../../packages/contracts/conversation-input/validate.mjs';
 import {assertOriginalInputFacts,assertOriginalInputActive,assertOriginalInputAcceptance,prepareOriginalInputFacts,sameOriginalInputIdentity,originalInputReceipt} from './initial-input-facts.mjs';
 import {ProductError} from '../product-access/errors.mjs';
+import {authenticatedCurrentState} from '../action-host/session/owner.mjs';
 import {own,bounded,same,hash,fail,uuid,validateShape,terminal} from './boundary.mjs';
 /** Cleanup-only read used by the lifecycle owner's cancellation path: the same authenticated history without the retention serving gate,
  * so trusted cancellation still stops work for a suppressed subject. Not a public intent. */
 export const cleanupRead=Symbol('conversation.cleanupRead');
+/** Trusted lifecycle composition only. Keeps its read inside the basic load's authorization lifetime. */
+export const loadWithLifecycle=Symbol('conversation.loadWithLifecycle');
 export function createConversationService({sessions,store,dispatcher,versions,fiscalCalendars=[],now=Date.now,newId=randomUUID,maxRequestMs=3000,selectedSkillAdmission,selectedOutputPublication,retention,capabilityPolicy,runBudgets}){
+ const readCurrent=authenticatedCurrentState(sessions);
  const admissionPort=selectedSkillAdmission===undefined?undefined:own(selectedSkillAdmission,['admitSelection'],['currentSkillRun']),publicationPort=selectedOutputPublication===undefined?undefined:own(selectedOutputPublication,['prepareEvent']);
  if(admissionPort!==undefined&&typeof admissionPort.admitSelection!=='function'||publicationPort!==undefined&&typeof publicationPort.prepareEvent!=='function')fail('CONTROL_CONFIGURATION');
  // G2: the trusted run capability-policy producer (apps/runtime/product-ports/capability-policy.mjs). Absent, or answering null, a loaded run
@@ -29,8 +33,10 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
  const retentionGate=retention===undefined?undefined:own(retention,['assertServable'],['isSuppressed','withRelease']);
  if(retentionGate!==undefined&&(typeof retentionGate.assertServable!=='function'||Object.hasOwn(retentionGate,'withRelease')&&typeof retentionGate.withRelease!=='function'))fail('CONTROL_CONFIGURATION');
  validateShape('RuntimeVersions',versions);versions=bounded(versions);fiscalCalendars=bounded(fiscalCalendars);if(['authenticateSession','readCurrentState'].some(k=>typeof sessions?.[k]!=='function')||['accept','append','read'].some(k=>typeof store?.[k]!=='function')||['start','cancel'].some(k=>typeof dispatcher?.[k]!=='function')||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('CONTROL_CONFIGURATION');
- async function operation(credential,signal,body,{cleanup=false}={}){if(typeof credential!=='string'||!credential||credential.length>8192)fail('SESSION_REFUSED');const life=createOperationLifetime({deadlineMs:now()+maxRequestMs,now,signal,errorFactory:failError});let pinned,authorityExpiresAtMs=Number.MAX_SAFE_INTEGER;
-  async function fresh(){const started=now();const authentication=bounded(await life.run(signal=>sessions.authenticateSession({credential,signal,deadlineMs:started+maxRequestMs})));const current=bounded(await life.run(signal=>sessions.readCurrentState({authentication,signal,deadlineMs:started+maxRequestMs})));
+ async function operation(credential,signal,body,{cleanup=false,load=false}={}){if(typeof credential!=='string'||!credential||credential.length>8192)fail('SESSION_REFUSED');const life=createOperationLifetime({deadlineMs:now()+maxRequestMs,now,signal,errorFactory:failError});let pinned,authorityExpiresAtMs=Number.MAX_SAFE_INTEGER;
+  async function fresh(){const started=now();let authentication,current;
+   if(load&&readCurrent)({authentication,current}=bounded(await life.run(signal=>readCurrent({credential,signal,deadlineMs:started+maxRequestMs}))));
+   else{authentication=bounded(await life.run(signal=>sessions.authenticateSession({credential,signal,deadlineMs:started+maxRequestMs})));current=bounded(await life.run(signal=>sessions.readCurrentState({authentication,signal,deadlineMs:started+maxRequestMs})));}
    if(current.authenticationSha256!==hash(authentication)||authentication.principal?.tenantId!==current.binding?.tenantId||authentication.principal?.actorId!==current.binding?.actorId||authentication.principal?.conversationId!==current.binding?.conversationId||authentication.principal?.runId!==current.binding?.runId)fail('SESSION_REFUSED');validateShape('RunBinding',current.binding);if(!Array.isArray(current.scopes)||!current.scopes.length||current.scopes.length>100)fail('SCOPE_REFUSED');
    for(const scope of current.scopes){validateShape('Scope',scope);if(scope.tenantId!==current.binding.tenantId)fail('SCOPE_REFUSED');}if(new Set(current.scopes.map(hash)).size!==current.scopes.length||new Set(current.scopes.map(s=>s.policyRevision)).size!==1)fail('SCOPE_REFUSED');
    const at=now();for(const receipt of [authentication,current])if(!Number.isSafeInteger(receipt.checkedAtMs)||receipt.checkedAtMs<started||receipt.checkedAtMs>at||!Number.isSafeInteger(receipt.expiresAtMs)||receipt.expiresAtMs<=at)fail('SESSION_REFUSED');authorityExpiresAtMs=Math.min(authorityExpiresAtMs,authentication.expiresAtMs,current.expiresAtMs);life.limitDeadline(authorityExpiresAtMs);
@@ -89,7 +95,24 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
   // An admitted conversation has no run row until its first input is accepted: that is "no saved turns yet" (404), not corruption.
   const result=typeof store.readOptional==='function'?await life.run(()=>store.readOptional(c.binding,{after,limit},life.check)):await life.run(()=>store.read(c.binding,{after,limit},life.check));if(result===null)fail('NOT_FOUND');if(!same(result.run.scopes,c.scopes))fail('SCOPE_REFUSED');return result;});}
  async function cancel({credential,signal}){return operation(credential,signal,async(c,life,fresh)=>{const old=await life.run(()=>store.read(c.binding,{after:0,limit:1},life.check));if(!same(old.run.scopes,c.scopes))fail('SCOPE_REFUSED');if(!terminal(old.run.state)){await fresh();const e=event(c.binding,c.scopes,'run.status',{state:'cancelled',reasonCode:'USER_CANCELLED'});await life.run(()=>store.append(c.binding,e,life.check,c.scopes));}await fresh();await life.run(signal=>dispatcher.cancel({binding:c.binding,signal}));return {state:terminal(old.run.state)?old.run.state:'cancelled'};},{cleanup:true});}
- async function loadForExecution({credential,binding,signal}){validateShape('RunBinding',binding);return operation(credential,signal,async(c,life)=>{if(!same(c.binding,binding))fail('STALE_WRITER');const result=await life.run(()=>store.read(binding,{after:0,limit:1},life.check));if(!same(result.run.scopes,c.scopes))fail('SCOPE_REFUSED');const lineage=typeof store.nextRuns?.execution==='function'?await life.run(()=>store.nextRuns.execution({binding,scopes:c.scopes,selectedClientId:c.selectedClientId},life.check)):null;const capabilities=capabilityPort===undefined?null:await life.run(signal=>capabilityPort.forRun({tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,signal}));const budgets=runBudgetPort===undefined?null:runBudgetsOf(await life.run(signal=>runBudgetPort.read.call(runBudgets,{binding,signal})));return {run:result.run,request:result.request,...(lineage??{}),...(capabilities===null?{}:{capabilities}),...(budgets===null?{}:{runBudgets:budgets})};});}
+ async function loadForExecution({credential,binding,signal},readLifecycle){validateShape('RunBinding',binding);return operation(credential,signal,async(c,life,fresh)=>{
+  if(!same(c.binding,binding))fail('STALE_WRITER');
+  if(readLifecycle!==undefined){uuid(c.selectedClientId);if(!c.scopes.some(scope=>scope.kind==='client'&&scope.resourceId===c.selectedClientId))fail('SCOPE_REFUSED');}
+  const result=await life.run(()=>store.read(binding,{after:0,limit:1},life.check));if(!same(result.run.binding,c.binding))fail('STALE_WRITER');if(!same(result.run.scopes,c.scopes))fail('SCOPE_REFUSED');
+  const lineage=typeof store.nextRuns?.execution==='function'?await life.run(()=>store.nextRuns.execution({binding,scopes:c.scopes,selectedClientId:c.selectedClientId},life.check)):null;
+  const capabilities=capabilityPort===undefined?null:await life.run(signal=>capabilityPort.forRun({tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,signal}));
+  const budgets=runBudgetPort===undefined?null:runBudgetsOf(await life.run(signal=>runBudgetPort.read.call(runBudgets,{binding,signal})));
+  let extra=null;
+  if(readLifecycle!==undefined){
+   // Keep currentness and retention checks on both sides of the journal read. The second store read preserves
+   // the lifecycle wrapper's original run/request snapshot comparison if either record changes mid-load.
+   await fresh();extra=await life.run(()=>readLifecycle({binding,scopes:c.scopes,selectedClientId:c.selectedClientId},life.check));await fresh();
+   const latest=await life.run(()=>store.read(binding,{after:0,limit:1},life.check));
+   if(!same(latest.run.binding,result.run.binding)||!same(latest.run.scopes,result.run.scopes)||!same(latest.run.versions,result.run.versions)||!same(latest.request,result.request))fail('SESSION_CHANGED');
+  }
+  if(extra&&lineage?.nextTurn)fail('EXECUTION_LINEAGE_AMBIGUOUS');
+  return {run:result.run,request:result.request,...(lineage??{}),...(capabilities===null?{}:{capabilities}),...(budgets===null?{}:{runBudgets:budgets}),...(extra??{})};
+ },{load:true});}
  async function publish({credential,binding,event,signal}){validateShape('RunBinding',binding);const e=bounded(event);own(e,['eventId','createdAt','type','data']);if(!['run.status','message.delta'].includes(e.type))fail('EVENT_TYPE_REFUSED');return operation(credential,signal,async(c,life)=>{if(!same(c.binding,binding))fail('STALE_WRITER');const result=await life.run(()=>store.append(binding,e,life.check,c.scopes));if(!same(result.scopes,c.scopes))fail('SCOPE_REFUSED');return result;});}
  async function publishSelectedOutput({credential,binding,output,signal}){validateShape('RunBinding',binding);if(!selectedOutputPublication)fail('OUTPUT_PUBLICATION_UNAVAILABLE');return operation(credential,signal,async(c,life,fresh)=>{
   if(!same(c.binding,binding))fail('STALE_WRITER');const saved=await life.run(()=>store.read(binding,{after:0,limit:1},life.check));if(!same(saved.run.scopes,c.scopes)||saved.run.state!=='running')fail('RUN_NOT_WRITABLE');
@@ -98,7 +121,7 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
   await fresh();const result=await life.run(()=>store.append(binding,e,life.check,c.scopes));if(!same(result.scopes,c.scopes))fail('SCOPE_REFUSED');await fresh();return result;
  });}
  async function historyForCleanup({credential,after=0,limit=100,signal}){return operation(credential,signal,async(c,life)=>{const result=await life.run(()=>store.read(c.binding,{after,limit},life.check));if(!same(result.run.scopes,c.scopes))fail('SCOPE_REFUSED');return result;},{cleanup:true});}
- return Object.freeze({submit,admitInput,allocateInput,history,cancel,loadForExecution,publish,publishSelectedOutput,[cleanupRead]:historyForCleanup});
+ return Object.freeze(Object.defineProperty({submit,admitInput,allocateInput,history,cancel,loadForExecution:args=>loadForExecution(args),publish,publishSelectedOutput,[cleanupRead]:historyForCleanup},loadWithLifecycle,{value:loadForExecution}));
 }
 function failError(code){return Object.assign(new Error(code),{code});}
 /** Closed run budgets: positive integer calls and per-result bytes, and an optional run aggregate no smaller than one result. */

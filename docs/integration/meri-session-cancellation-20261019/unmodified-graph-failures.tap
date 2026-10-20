@@ -1,0 +1,56 @@
+TAP version 13
+# Subtest: independent actual HTTP opaque issuance reaches same accepted graph/proposal; native bearer, forged proposal and revoked session cannot execute
+not ok 1 - independent actual HTTP opaque issuance reaches same accepted graph/proposal; native bearer, forged proposal and revoked session cannot execute
+  ---
+  duration_ms: 279.533822
+  type: 'test'
+  location: '/workspace/meri-session-cancel-baseline/apps/control/action-host/session/http-independent.test.mjs:18:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    502 !== 200
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 502
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-session-cancel-baseline/apps/control/action-host/session/http-independent.test.mjs:22:229)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: actual HTTP session issuance composes shared-pool host query draft prepare and approved execute
+not ok 2 - actual HTTP session issuance composes shared-pool host query draft prepare and approved execute
+  ---
+  duration_ms: 300.126223
+  type: 'test'
+  location: '/workspace/meri-session-cancel-baseline/apps/control/action-host/session/session.test.mjs:16:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    502 !== 200
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 502
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-session-cancel-baseline/apps/control/action-host/session/session.test.mjs:16:1386)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 921.073792

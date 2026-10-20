@@ -4,6 +4,8 @@ import {canonicalSha256,validateShape} from '../../packages/contracts/validate.m
 import {own} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {readSecret,fault} from './config.mjs';
 import {createNativeCapabilityClient} from './native-client.mjs';
+import {runnerStartupBudget,RUNNER_STARTUP_MIN_SHUTDOWN_MS,RUNNER_STARTUP_CLEANUP_MS,RUNNER_STARTUP_MARGIN_MS} from '../../packages/runtime/runner-load-budget.mjs';
+import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 import {lstat,realpath,mkdir,open} from 'node:fs/promises';
 import {constants} from 'node:fs';
 import {createHash} from 'node:crypto';
@@ -15,6 +17,7 @@ import {createLifecycleRunOwner} from '../control/conversations/lifecycle/worker
 import {createTaskSelectedSkills} from './selected/task.mjs';
 import {createRuntimeSdkSessionFactory,createOwnedRuntimeSdkSession} from './sdk-session-runtime.mjs';
 import {waitForAdmittedTask,loadRemoteTaskBinding} from './task-bootstrap.mjs';
+import {remoteOriginal} from './native-authority/remote-task-boundary.mjs';
 import {storageMethod} from '../artifacts/storage/boundary.mjs';
 import {captureGeneralReadPort} from './general-read-port.mjs';
 import {atRunnerStage,markRunnerStage,captureRunnerFailure} from './runner-runtime-diagnostics.mjs';
@@ -54,10 +57,22 @@ export async function ensureSdkConfigurationDirectories(directories,options={}){
  await assertOwnedPrivateDirectory(sdkSecureStorageDirectory,uid);
  return directories;
 }
+function startupBudgetFor(configuration){
+ if(configuration.remoteTask===undefined)return null;
+ const original=remoteOriginal(configuration.remoteTask.original);
+ return runnerStartupBudget({requestMs:configuration.limits?.requestMs,shutdownMs:configuration.limits?.shutdownMs,originalExpiresAtMs:original.expiresAtMs});
+}
 export function assembleConversationRunner({configuration,native,query,credentialForBinding,sessionFactory,generalReads,governedIntents,now=Date.now}){
  const readPort=captureGeneralReadPort(generalReads,configuration.sourceEnabled);
+ const startup=startupBudgetFor(configuration),stages=startup?.stages;
  validateShape('RuntimeVersions',configuration.versions);const configuredVersionsSha256=canonicalSha256(configuration.versions);
- const binding=configuration.binding,call=(operation,input,signal)=>native.call(operation,{binding,...input},{signal});
+ const binding=configuration.binding,call=(operation,input,signal)=>{let stage;
+  if(operation==='runner/load')stage=stages?.load;
+  else if(operation==='runner/runtime')stage=stages?.runtime;
+  else if(operation==='runner/publish'&&startup){const state=input.event?.type==='run.status'?input.event.data?.state:null;
+   stage=stages[state]??{maxMs:stages.session.maxMs,expiresAtMs:state==='failed'||state==='cancelled'?startup.originalExpiresAtMs-3*Math.max(configuration.limits.shutdownMs,RUNNER_STARTUP_MIN_SHUTDOWN_MS)-RUNNER_STARTUP_CLEANUP_MS-RUNNER_STARTUP_MARGIN_MS:stages.session.expiresAtMs+stages.session.maxMs};}
+  else if(operation==='runner/checkpoint/capture'||operation==='runner/checkpoint/complete')stage=startup?{maxMs:stages.session.maxMs,expiresAtMs:stages.session.expiresAtMs+stages.session.maxMs}:undefined;
+  return native.call(operation,{binding,...input},stage?{signal,deadlineMs:stage.expiresAtMs,...(operation==='runner/load'?{}:{maxRequestMs:stage.maxMs})}:{signal});};
  if(sessionFactory!==undefined&&typeof sessionFactory!=='function')throw fault('RUNNER_SESSION_CONFIGURATION');
  const selectedSkills=createTaskSelectedSkills({native,now,sourceEnabled:configuration.sourceEnabled??false}),sdkSession=sessionFactory===undefined?null:createOwnedRuntimeSdkSession({factory:sessionFactory,now,cleanupMs:configuration.limits?.shutdownMs??1000});
  const localBinding=b=>{if(canonicalSha256(b)!==canonicalSha256(binding))throw fault('RUNNER_BINDING_REFUSED');};
@@ -71,14 +86,16 @@ export function assembleConversationRunner({configuration,native,query,credentia
  }
  const append=storageMethod(runOwner,'append');runOwner={...runOwner,async append(input){if(input.event.type==='run.status'&&input.event.data.state==='completed')await sdkSession?.settle(input.signal);return append(input);}};
   const prepareRuntime=async({binding:b,versions,signal,runtimeSignal,continuation,nextTurn,sourceRequest,request,scopes,skillPlugin})=>atRunnerStage('runtime-prepare',async()=>{if(canonicalSha256(versions)!==configuredVersionsSha256)throw fault('RUNNER_VERSION_REFUSED');if(continuation!==undefined&&nextTurn!==undefined)throw fault('RUNNER_RUNTIME_REFUSED');const lineage=nextTurn!==undefined?{nextTurn}:continuation!==undefined?{continuation}:null,resumed=lineage?{...lineage,sourceRequest,request,scopes}:{};markRunnerStage('runtime-admission');const r=await call('runner/runtime',{versions,...resumed},signal);own(r,['binding','versions','proxyUrl','proxyCredential','model','deadlineMs','maxTurns','maxCostMicroUSD','maxOutputBytes'],[...(lineage===null?[]:['restoreReceipt']),...(sessionFactory===undefined?[]:['sdkSessionKey'])]);if(canonicalSha256(r.binding)!==canonicalSha256(b)||canonicalSha256(r.versions)!==configuredVersionsSha256||new URL(r.proxyUrl).origin!==configuration.proxyOrigin)throw fault('RUNNER_RUNTIME_REFUSED');
+  const local=stages?.local,localLife=local?createOperationLifetime({now,signal,deadlineMs:Math.min(now()+local.maxMs,local.expiresAtMs),errorFactory:fault}):null;
+  try{return await (localLife?localLife.run:async fn=>fn(signal))(async localSignal=>{
   const {sdkSessionKey,...runtime}=r;let sessionStore;
-   markRunnerStage('sdk-session');if(sessionFactory!==undefined){if(sdkSessionKey===undefined||sdkSessionKey===null&&lineage!==null)throw fault('RUNNER_SDK_REGISTRATION_UNAVAILABLE');sessionStore=await sdkSession.prepare({binding:b,sessionKey:sdkSessionKey,signal,...(lineage??{}),...(sdkSessionKey===null||lineage!==null?{runtimeSignal}:{})});}
+   markRunnerStage('sdk-session');if(sessionFactory!==undefined){if(sdkSessionKey===undefined||sdkSessionKey===null&&lineage!==null)throw fault('RUNNER_SDK_REGISTRATION_UNAVAILABLE');sessionStore=await sdkSession.prepare({binding:b,sessionKey:sdkSessionKey,signal:localSignal,...(lineage??{}),...(sdkSessionKey===null||lineage!==null?{runtimeSignal}:{})});}
   else sessionStore={load:key=>call('runner/session/load',{key}).then(v=>{own(v,['entries']);return v.entries;}),append:(key,entries)=>call('runner/session/append',{key,entries}).then(v=>{own(v,['committed']);if(v.committed!==true)throw fault('SESSION_PERSISTENCE_FAILED');})};
    markRunnerStage('sdk-directories');const directories=await ensureSdkConfigurationDirectories(sdkConfigurationDirectories(configuration));
   // G3: the read-only skill plugin copy under the admitted private config parent, one run-invariant path (sdkSkillPluginDirectory).
    markRunnerStage('skill-plugin');const plugin=skillPlugin===true&&directories.sdkConfigDirectory!==undefined?await prepareRunSkillPlugin(sdkSkillPluginDirectory(dirname(directories.sdkConfigDirectory))):undefined;
-   markRunnerStage('activity');return {...runtime,cwd:configuration.workspace,sessionStore,...directories,...(plugin?{skillPluginDirectory:plugin.directory}:{})};});
- const activity=createConversationActivity({runOwner,prepareRuntime,selectedSkills,now,...(readPort?{generalReads:readPort}:{}),...(governedIntents?{governedIntents}:{}),...(query?{query}:{}),...(lifecycle?{lifecycle}:{}),heartbeat:()=>{},diagnostics:{stage:markRunnerStage,failure:captureRunnerFailure}});
+   markRunnerStage('activity');return {...runtime,cwd:configuration.workspace,sessionStore,...directories,...(plugin?{skillPluginDirectory:plugin.directory}:{})};});}finally{localLife?.close();}});
+ const activity=createConversationActivity({runOwner,prepareRuntime,selectedSkills,now,...(stages?{loadMaxMs:stages.load.maxMs,loadExpiresAtMs:stages.load.expiresAtMs,runtimeMaxMs:stages.runtime.maxMs+stages.local.maxMs,runtimeExpiresAtMs:stages.local.expiresAtMs,setupBudget:stages.setup,modelDeadlineMs:stages.session.expiresAtMs,executionDeadlineMs:stages.session.expiresAtMs+stages.session.maxMs,terminalAttemptMs:stages.session.maxMs}:{}),...(readPort?{generalReads:readPort}:{}),...(governedIntents?{governedIntents}:{}),...(query?{query}:{}),...(lifecycle?{lifecycle}:{}),heartbeat:()=>{},diagnostics:{stage:markRunnerStage,failure:captureRunnerFailure}});
   const execute=async input=>atRunnerStage('activity',async()=>{try{return await activity(input);}catch(error){captureRunnerFailure(error);throw error;}finally{markRunnerStage('runner-cleanup');try{await selectedSkills.close();}finally{await sdkSession?.close();}}});
  Object.defineProperty(execute,'cleanupStatus',{value:()=>sdkSession?.cleanupStatus()??{pendingInitializations:0,closed:true,failures:[],physicalStopProven:false}});return execute;
 }
@@ -97,9 +114,9 @@ export async function runConversation(configuration,{signal,query,sessionFactory
    markRunnerStage('remote-module-import');const {runRemoteConversation}=await import('./remote-conversation-runner.mjs');
   return runRemoteConversation(configuration,{signal,...(readPort?{generalReads:readPort}:{}),...(sessionFactory?{sessionFactory}:{})});
  }
-  markRunnerStage('capability-load');const bytes=await readSecret(configuration.native.capabilityFile),credential=bytes.toString('utf8').trim(),native=createNativeCapabilityClient({configuration:configuration.native,credential,...(nativeFetch===undefined?{}:{fetch:nativeFetch})});
+  markRunnerStage('capability-load');const startup=startupBudgetFor(configuration),bytes=await readSecret(configuration.native.capabilityFile),credential=bytes.toString('utf8').trim(),native=createNativeCapabilityClient({configuration:configuration.native,credential,...(startup?{loadMaxRequestMs:startup.stages.load.maxMs}:{}),...(nativeFetch===undefined?{}:{fetch:nativeFetch})});
  if(configuration.bootstrap?.remote===true&&query===undefined){
-   markRunnerStage('binding-bootstrap');const resolved=await loadRemoteTaskBinding({native,configuration,signal,...(poststartTls===undefined?{}:{poststartTls})});
+   markRunnerStage('binding-bootstrap');const bootstrap=runnerStartupBudget({requestMs:configuration.limits.requestMs,shutdownMs:configuration.limits.shutdownMs,originalExpiresAtMs:configuration.bootstrap.expiresAtMs}).stages.bootstrap;const resolved=await loadRemoteTaskBinding({native,configuration,signal,startupBudget:bootstrap,...(poststartTls===undefined?{}:{poststartTls})});
    markRunnerStage('remote-module-import');const {runRemoteConversation}=await import('./remote-conversation-runner.mjs');
   return runRemoteConversation(resolved,{signal,...(nativeFetch===undefined?{}:{fetchImpl:nativeFetch,poststartNativeFetch:nativeFetch}),...(readPort?{generalReads:readPort}:{}),...(sessionFactory?{sessionFactory}:{})});
  }

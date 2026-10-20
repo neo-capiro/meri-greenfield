@@ -6,7 +6,7 @@ import {createOperationLifetime} from '../../../../packages/runtime/operation-li
 import {bounded,same,hash,fail,validateShape,own,uuid} from '../boundary.mjs';
 const contextHash=saved=>hash({window:saved.request.window,skill:saved.request.skill,scopes:saved.run.scopes});
 const receipt=(p,replayed=p.replayed)=>assertLifecycleReceipt({controlId:p.input.controlId,intent:p.input.intent,sourceBinding:p.sourceBinding,inputSha256:hash(p.input),state:p.state,checkpointId:p.checkpointId,targetBinding:p.target?.binding??null,admissionReceiptId:p.target?.admissionReceiptId??null,retirementReceiptId:p.retirement?.retirementReceiptId??null,replayed});
-import {cleanupRead} from '../service.mjs';
+import {cleanupRead,loadWithLifecycle} from '../service.mjs';
 export function createConversationLifecycleService({service,store,dispatcher,reconcileOriginal,checkpoints,nativeAdmission,approvals,sessions,now=Date.now,newId=randomUUID,maxRequestMs=3000}){
  const journal=store?.lifecycle;
  if(['authenticateSession','readCurrentState'].some(k=>typeof sessions?.[k]!=='function')||['history','loadForExecution','publish'].some(k=>typeof service?.[k]!=='function')||['begin','change','get','controls','claim','checkpoint','readCheckpoint','execution','continuation','cancel','readStopFence'].some(k=>typeof journal?.[k]!=='function')||['signal','cancel'].some(k=>typeof dispatcher?.[k]!=='function')||typeof reconcileOriginal!=='function'||typeof checkpoints?.read!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('LIFECYCLE_CONFIGURATION');
@@ -92,7 +92,13 @@ export function createConversationLifecycleService({service,store,dispatcher,rec
   const verified=await proof(i.checkpointId,retained.proof.checkpointSha256,saved,life,fresh);if(!same({...retained.proof,readReceiptId:verified.readReceiptId},verified))fail('CHECKPOINT_REFUSED');await fresh();
   return assertCheckpointInspectionReceipt({checkpointId:i.checkpointId,checkpointSha256:verified.checkpointSha256,sourceBinding:saved.run.binding,lastEventSequence:verified.checkpoint.lastEventSequence});
  });}
- async function loadForExecution(args){const saved=await service.loadForExecution(args);return operation(args.credential,args.signal,async(current,life,fresh)=>{if(!same(current.run.binding,args.binding))fail('STALE_WRITER');const extra=await life.run(()=>journal.execution({binding:args.binding,scopes:current.run.scopes,selectedClientId:current.selectedClientId},life.check));await fresh();if(extra&&saved.nextTurn)fail('EXECUTION_LINEAGE_AMBIGUOUS');return extra?{...saved,...extra}:{...saved};});}
+ async function loadForExecution(args){
+  // The basic load already checks identity, membership, current binding and retention before its reads and immediately
+  // before release. Keep the lifecycle's read-only journal verification inside that same lifetime, without nesting
+  // another history operation and repeating its Core authorization checks for every lifecycle fresh pass.
+  if(typeof service[loadWithLifecycle]==='function')return service[loadWithLifecycle](args,(current,check)=>journal.execution(current,check));
+  // Injected legacy services keep the original independently gated path.
+  const saved=await service.loadForExecution(args);return operation(args.credential,args.signal,async(current,life,fresh)=>{if(!same(current.run.binding,args.binding))fail('STALE_WRITER');const extra=await life.run(()=>journal.execution({binding:args.binding,scopes:current.run.scopes,selectedClientId:current.selectedClientId},life.check));await fresh();if(extra&&saved.nextTurn)fail('EXECUTION_LINEAGE_AMBIGUOUS');return extra?{...saved,...extra}:{...saved};});}
  /** Stop fences durably, then attempts Temporal cancellation and native original retirement independently. Neither a terminal run
   * nor Temporal NOT_FOUND proves physical stop or grant revocation. Every repeat asks both owners again, including after restart;
   * only the native adapter's validated reconciliation receipt permits success. A lost acknowledgement remains UNKNOWN. */

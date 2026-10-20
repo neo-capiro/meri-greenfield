@@ -7,5 +7,5 @@ test('kickoff diagnostics retain the exact prefixed execution fault without priv
  const lines=[],error=executionFault('KICKOFF_UNKNOWN');
  Object.defineProperty(error,'message',{get(){assert.fail('private error message must not be read');}});
  await assert.rejects(withRunnerDiagnostics(()=>atRunnerStage('kickoff-wait',async()=>{throw error;}),{write:line=>lines.push(line)}),value=>value===error);
- assert.deepEqual(lines,['RUNNER_RUNTIME_FAILED stage=kickoff-wait code=NATIVE_EXECUTION_KICKOFF_UNKNOWN\n']);
+ assert.deepEqual(lines,['RUNNER_FIRST_FAILURE origin=runtime code=NATIVE_EXECUTION_KICKOFF_UNKNOWN\n','RUNNER_RUNTIME_FAILED stage=kickoff-wait code=NATIVE_EXECUTION_KICKOFF_UNKNOWN\n']);
 });

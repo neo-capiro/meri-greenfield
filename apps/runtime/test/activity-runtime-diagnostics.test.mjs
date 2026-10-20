@@ -48,7 +48,7 @@ for(const entry of [
 ])test(`canonical activity preserves ${entry.stage} before generic failure${entry.cleanupFailure?' and cleanup uncertainty':''}`,async()=>{
  const f=fixture(entry),lines=[];
  await assert.rejects(withRunnerDiagnostics(()=>f.execute({binding}),{write:line=>lines.push(line)}),{code:entry.returnedCode??'EXECUTION_FAILED'});
- assert.deepEqual(lines,[`RUNNER_RUNTIME_FAILED stage=${entry.stage} code=${entry.reportedCode??entry.code??'NATIVE_UNAVAILABLE'}\n`]);
+ assert.deepEqual(lines,[`RUNNER_FIRST_FAILURE origin=runtime code=${entry.reportedCode??entry.code??'NATIVE_UNAVAILABLE'}\n`,`RUNNER_RUNTIME_FAILED stage=${entry.stage} code=${entry.reportedCode??entry.code??'NATIVE_UNAVAILABLE'}\n`]);
  assert.deepEqual(f.events.filter(event=>event.type==='run.status').map(event=>event.data.state),entry.states);
  assert.deepEqual(f.counts(),{queries:entry.queries,closes:entry.closes});
  assert.equal(f.saved.run.state,entry.states.at(-1)??'queued');

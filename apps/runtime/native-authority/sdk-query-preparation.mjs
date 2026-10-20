@@ -4,6 +4,7 @@ import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/ex
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {executionFault} from './execution-broker.mjs';
+import {captureRunnerFailure} from '../runner-runtime-diagnostics.mjs';
 export async function prepareNativeSdkQuery(configuration){
  const c=own(configuration,['prompt','options','bindLaunch']);
  if(typeof c.bindLaunch!=='function'||types.isProxy(c.bindLaunch)||types.isAsyncFunction(c.bindLaunch)||!c.options||types.isProxy(c.options)||Object.getPrototypeOf(c.options)!==Object.prototype)throw executionFault('SDK_PREPARATION_CONFIGURATION');
@@ -42,5 +43,5 @@ export async function prepareNativeSdkQuery(configuration){
   await original.start();
   let initial=true;const messages=Object.freeze({[Symbol.asyncIterator](){return this;},next(){if(initial){initial=false;return first;}return iterator.next();},async return(){await close();return {done:true,value:undefined};}});
   return Object.freeze({query:stream,messages,close});
- }catch(error){try{await close();}catch(cleanup){throw new AggregateError([error,cleanup],'SDK_PREPARATION_CLEANUP_UNKNOWN');}throw error;}
+ }catch(error){captureRunnerFailure(error,'sdk-prepare');try{await close();}catch(cleanup){throw new AggregateError([error,cleanup],'SDK_PREPARATION_CLEANUP_UNKNOWN');}throw error;}
 }

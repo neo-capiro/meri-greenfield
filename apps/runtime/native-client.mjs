@@ -1,13 +1,27 @@
 /** Fixed native provider boundary. Receipts never replace current native policy. */
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 import {data,own} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {RUNNER_LOAD_MAX_MS} from '../../packages/runtime/runner-load-budget.mjs';
 import {fault} from './config.mjs';
-export function createNativeCapabilityClient({configuration,credential,fetch:transport=fetch,now=Date.now,maxRequestMs=3000}){
+// The longer window is available only to bounded original-run operations.
+// Each caller must also pass its absolute lease-derived deadline; other operations
+// retain the ordinary 3s default (or the factory's configured cap).
+const startupOperations=new Set([
+ 'runner/native/bootstrap','runner/native/admitted','runner/native/prepare',
+ 'runner/native/verify','runner/native/start','runner/native/started',
+ 'runner/runtime','runner/publish','runner/checkpoint/capture','runner/checkpoint/complete',
+ 'runner/session/register','runner/session/load','runner/session/append',
+]);
+const STARTUP_REQUEST_MAX_MS=23000;
+export function createNativeCapabilityClient({configuration,credential,fetch:transport=fetch,now=Date.now,maxRequestMs=3000,loadMaxRequestMs=maxRequestMs}){
  if(typeof credential!=='string'||!/^[A-Za-z0-9._~+\/-]{1,8192}={0,2}$/u.test(credential)||
-    !Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>10000)throw fault('NATIVE_CONFIGURATION');
+    !Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>10000||
+    !Number.isSafeInteger(loadMaxRequestMs)||loadMaxRequestMs<1||loadMaxRequestMs>RUNNER_LOAD_MAX_MS)throw fault('NATIVE_CONFIGURATION');
  const c=configuration;
- async function call(operation,input,{signal,deadlineMs}={}){
-  const life=createOperationLifetime({deadlineMs:Math.min(deadlineMs??now()+maxRequestMs,now()+maxRequestMs),now,signal,errorFactory:fault});let response;
+ async function call(operation,input,{signal,deadlineMs,maxRequestMs:requestMaxMs}={}){
+  if(requestMaxMs!==undefined&&(!startupOperations.has(operation)||!Number.isSafeInteger(requestMaxMs)||requestMaxMs<1||requestMaxMs>STARTUP_REQUEST_MAX_MS||!Number.isSafeInteger(deadlineMs)))throw fault('NATIVE_CONFIGURATION');
+  const limitMs=operation==='runner/load'?loadMaxRequestMs:requestMaxMs??maxRequestMs;
+  const life=createOperationLifetime({deadlineMs:Math.min(deadlineMs??now()+limitMs,now()+limitMs),now,signal,errorFactory:fault});let response;
   try{const body=JSON.stringify(data(input));if(Buffer.byteLength(body)>2097152)throw fault('NATIVE_REQUEST_LIMIT');
    response=await life.run(signal=>transport(c.origin+'/v1/'+operation,{method:'POST',redirect:'error',headers:{authorization:'Bearer '+credential,'content-type':'application/json'},body,signal}));
    if(response.status!==200||!/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(response.headers.get('content-type')??'')||response.headers.get('content-encoding'))throw fault('NATIVE_UNAVAILABLE');

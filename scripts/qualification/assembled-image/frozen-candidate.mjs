@@ -5,8 +5,8 @@ import {createHash} from 'node:crypto';
 import {existsSync,readFileSync} from 'node:fs';
 import {join} from 'node:path';
 
-/** dot-reviewed static candidate (PACKAGE3-REVIEW-20261015). A successor candidate replaces both values together. */
-export const FROZEN_CANDIDATE=Object.freeze({file:'candidate-manifest-fable-20261015f.json',sha256:'3215210633f64dcb4c8d98aa1c7e17af658c512511bc4f7bdf3df4f8a4085017'});
+/** Exact source-only successor. Image admission remains a separate gate. */
+export const FROZEN_CANDIDATE=Object.freeze({file:'candidate-manifest-fable-20261015i.json',sha256:'9612902e156cffbdce71bd71b9115bd8ce642d979583795fd2a5ac5df549f5e2'});
 export const HISTORICAL_MANIFEST='source-manifest.json';
 const sha256=bytes=>createHash('sha256').update(bytes).digest('hex');
 const refuse=(code,detail)=>{throw Object.assign(Error(code+(detail?': '+detail:'')),{code});};

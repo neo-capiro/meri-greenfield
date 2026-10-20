@@ -12,6 +12,11 @@ export function createNativePreparationApplication({owner,taskCapabilitySha256,e
   }catch{return Response.json({error:{code:'NATIVE_PREPARATION_REFUSED'}},{status:403});}finally{life?.close();}
  }});
 }
-export function createNativePreparationClient({native}){
- if(typeof native?.call!=='function')throw remoteFault();return Object.freeze(Object.fromEntries([...methods].map(method=>[method,value=>{const {signal,...input}=own(value,method==='admitted'?['original']:['original','descriptorSha256','configTreeSha256',...(method==='prepare'?['descriptor']:['preparationId'])],['signal']);nativeSignal(signal);return native.call('runner/native/'+method,input,{signal});}])));
+export function createNativePreparationClient({native,startupBudget}){
+ if(typeof native?.call!=='function')throw remoteFault();
+ // The trusted original lease supplies stage cutoffs. A gate proof must also
+ // fit inside the control-side ten-second release request.
+ let firstAdmissionProven=false;
+ const stageFor=method=>method==='admitted'?(firstAdmissionProven?startupBudget?.admittedAfter:startupBudget?.admittedBefore):method==='prepare'?startupBudget?.nativePrepare:startupBudget?.nativeStart;
+ return Object.freeze(Object.fromEntries([...methods].map(method=>[method,async value=>{const {signal,...input}=own(value,method==='admitted'?['original']:['original','descriptorSha256','configTreeSha256',...(method==='prepare'?['descriptor']:['preparationId'])],['signal']);nativeSignal(signal);const stage=stageFor(method),options=stage?{signal,deadlineMs:stage.expiresAtMs,maxRequestMs:method==='admitted'?Math.min(8000,stage.maxMs):stage.maxMs}:{signal};const result=await native.call('runner/native/'+method,input,options);if(method==='admitted')firstAdmissionProven=true;return result;}])));
 }
