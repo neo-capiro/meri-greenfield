@@ -20,6 +20,7 @@ import {withRunnerDiagnostics, markRunnerStage, captureRunnerFailure, PINNED_NAT
 import {createRemoteSdkProcessClient} from '../native-authority/remote-task-client.mjs';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {binding, versions} from '../../control/conversations/test/store-fixture.mjs';
+import {withoutDetail} from './runner-diagnostic-lines.mjs';
 
 const realSetTimeout = globalThis.setTimeout;
 const delay = ms => new Promise(resolve => realSetTimeout(resolve, ms));
@@ -176,11 +177,11 @@ test('the class set is closed and constant-shaped, every class prints, and the a
     assert.match(code, /^PINNED_NATIVE_[A-Z0-9_]{1,40}$/u);
     const lines = [];
     await withRunnerDiagnostics(async () => {markRunnerStage('activity-stream'); captureRunnerFailure(coded(code), 'native-start'); throw coded(code);},
-      {write: line => lines.push(line)}).catch(() => {});
+      {write: line => lines.push(withoutDetail(line))}).catch(() => {});
     assert.deepEqual(lines, [`RUNNER_FIRST_FAILURE origin=native-start stage=activity-stream code=${code} class=ERROR exit=none signal=none\n`, `RUNNER_RUNTIME_FAILED stage=activity-stream code=${code}\n`]);
   }
   const lines = []; // a look-alike outside the set stays UNKNOWN: the allowlist is exact, not a prefix match
-  await withRunnerDiagnostics(async () => {throw coded('PINNED_NATIVE_SECRET');}, {write: line => lines.push(line)}).catch(() => {});
+  await withRunnerDiagnostics(async () => {throw coded('PINNED_NATIVE_SECRET');}, {write: line => lines.push(withoutDetail(line))}).catch(() => {});
   assert.deepEqual(lines, ['RUNNER_FIRST_FAILURE origin=runtime stage=module-import code=ERROR class=ERROR exit=none signal=none\n', 'RUNNER_RUNTIME_FAILED stage=module-import code=ERROR\n']);
 });
 
@@ -356,7 +357,7 @@ async function driveStart(selected, {base = origin, startupBudget} = {}) {
   const client = createRemoteSdkProcessClient({original, origin: base, credential: SECRET.credential, fetchImpl, ...(startupBudget ? {startupBudget: startupBudget(original)} : {})});
   const lines = [];
   const failure = await withRunnerDiagnostics(async () => {markRunnerStage('activity-stream'); client.spawnClaudeCodeProcess(descriptor); await client.startPreparedProcess();},
-    {write: line => lines.push(line)}).then(() => null, error => error);
+    {write: line => lines.push(withoutDetail(line))}).then(() => null, error => error);
   await client.close().catch(() => {});
   await quiesce(baseline);
   return {lines, failure};

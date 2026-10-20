@@ -45,11 +45,16 @@ test('startup-only request limit is bounded by its absolute stage deadline',asyn
  const fetchImpl=async()=>{at=start+3500;return Response.json({ok:true});};
  const client=createNativeCapabilityClient({configuration,credential,fetch:fetchImpl,now:()=>at});
  assert.deepEqual(await client.call('runner/native/bootstrap',{}, {maxRequestMs:5000,deadlineMs:start+6000}),{ok:true});
+ // Lifecycle control calls cross three task-authority verifies on control (worker-http.mjs); live they outlived 3 s.
+ for(const operation of ['runner/next-controls','runner/claim-control','runner/ack-control','runner/record-checkpoint']){
+  at=start;assert.deepEqual(await client.call(operation,{}, {maxRequestMs:5000,deadlineMs:start+6000}),{ok:true});
+ }
  at=start;
  await assert.rejects(client.call('runner/runtime',{}, {maxRequestMs:5000,deadlineMs:start+3000}),/DEADLINE/);
  for(const [operation,options] of [
   ['runner/load',{maxRequestMs:5000,deadlineMs:start+6000}],
-  ['runner/next-controls',{maxRequestMs:5000,deadlineMs:start+6000}],
+  ['identity/verify',{maxRequestMs:5000,deadlineMs:start+6000}],
+  ['runner/next-controls',{maxRequestMs:5000}],
   ['runner/publish',{maxRequestMs:5000}],
   ['runner/publish',{maxRequestMs:23001,deadlineMs:start+6000}],
   ['runner/publish',{maxRequestMs:0,deadlineMs:start+6000}],

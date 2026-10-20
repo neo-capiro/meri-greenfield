@@ -7,7 +7,7 @@ import {createSdkCommandAdapter} from './commands.mjs';
 import {continuationContextSha256} from './options.mjs';
 import {assertCaptureReceipt} from './native-receipts.mjs';
 import {assertTypedResult} from '../../../../packages/runtime/objective-generation-custody.mjs';
-const fault=code=>Object.assign(new Error(code),{code}),same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
+const fault=(code,cause)=>Object.assign(new Error(code,cause===undefined?undefined:{cause}),{code}),same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u;
 /** The control store's only worker exit from a control hold (lifecycle/journal.mjs HOLD_CHECKPOINT_FAILED): an explicit, verified failure, never a silent close. */
 export const HOLD_CHECKPOINT_FAILED='HOLD_CHECKPOINT_FAILED';
@@ -56,7 +56,7 @@ export function createActivityLifecycle({config,runOwner,binding,saved,runtime,i
   if(!stopped&&!held&&!fenced)await poll.run(signal=>new Promise((resolve,reject)=>{const timer=setTimeout(done,pollMs);wakeIdle=done;
    function done(){clearTimeout(timer);wakeIdle=undefined;signal.removeEventListener('abort',cancel);resolve();}function cancel(){clearTimeout(timer);wakeIdle=undefined;reject(fault('CANCELLED'));}
    signal.addEventListener('abort',cancel,{once:true});if(signal.aborted)cancel();}));
- }}catch(e){if(!stopped){error=fault('LIFECYCLE_EXECUTION_UNKNOWN');failed.resolve(error);heldResult.reject(error);}}
+ }}catch(e){if(!stopped){error=fault('LIFECYCLE_EXECUTION_UNKNOWN',e);failed.resolve(error);heldResult.reject(error);}}
  }
  const pumping=pump();heldResult.promise.catch(()=>{});
  async function observe(message){if(stopped)return;

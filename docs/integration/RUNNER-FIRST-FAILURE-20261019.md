@@ -80,7 +80,10 @@ The event is now:
 
 ```text
 RUNNER_FIRST_FAILURE origin=<origin> stage=<stage> code=<code> class=<class> exit=<0-255|none> signal=<SIGNAME|none>
+  cause=<code|none> msg=<12 hex|none> site=<module:line:column,…|none>
 ```
+
+(one line in the log; wrapped here)
 
 - `code`: an allowlisted own code, else an allowlisted constant message, else the class. An Error is never printed as
   `UNKNOWN`; a thrown non-error or proxy is `NON_ERROR`.
@@ -90,9 +93,32 @@ RUNNER_FIRST_FAILURE origin=<origin> stage=<stage> code=<code> class=<class> exi
   `RANGE_ERROR`, `REFERENCE_ERROR`, `DOM_EXCEPTION`, `ERROR`).
 - `exit` / `signal`: the SDK's own `exitCode` / `signal` data, bounded to 0–255 and a fixed list of POSIX names.
 - `stage` is on the first line because a hung cleanup never reaches the final line.
+- `cause`: the own `cause`, classified like `code`. The lifecycle controls' `LIFECYCLE_EXECUTION_UNKNOWN` now carries its
+  original failure as `cause`.
+- `msg`: the first 12 hex characters of SHA-256 over the message, never the text. Resolve it with
+  `docs/integration/runner-first-failure-message-hashes.json`. That table holds the constant messages of the pinned SDK
+  bundle (including its plain `Error`s) and of the runner, worker and contract sources. Regenerate it with
+  `node scripts/diagnostics/runner-first-failure-message-hashes.mjs > docs/integration/runner-first-failure-message-hashes.json`.
+- `site`: up to three innermost stack frames as module basename, line and column, for absolute file paths and `node:`
+  modules only. The lines of the `name: message` header are skipped, so message text is never read as a frame.
 
-Only own data properties are read. Getters and proxies are never invoked, and no message, stack, stderr tail or path is
-printed.
+Only own data properties are read. Getters and proxies are never invoked. The stack is formatted only through V8's own
+accessor and Node's default `prepareStackTrace`, and only when `name` and `message` resolve to data properties. No message,
+stack text, stderr tail or directory is printed.
+
+Attempt 2 (20 October, 08:26Z) printed `code=ERROR class=ERROR`, the line the lifecycle pump produced then:
+`LIFECYCLE_EXECUTION_UNKNOWN` was unlisted, and its original failure was dropped. A failed control poll now prints
+`code=LIFECYCLE_EXECUTION_UNKNOWN … cause=<the poll's failure> msg=a6073a611574 site=activity-lifecycle.mjs:…`.
+
+The failure itself was the first lifecycle control poll after `system/init`:
+- `runner/next-controls` crosses control's `worker-http.mjs`, which verifies task authority three times and issues and
+  reads an action session for every call. Live, verifies took 0.8–1.35 s each.
+- The native client gave that call its 3 s default, so the poll timed out (`DEADLINE`), and the pump failed the run about
+  3.0 s after the session started.
+- The four lifecycle control calls (`next-controls`, `claim-control`, `ack-control`, `record-checkpoint`) now share the
+  session allowance up to the execution cutoff, as checkpoint capture already did.
+- `apps/runtime/test/lifecycle.test.mjs` reproduces the failure through the real native client and proves that the product
+  budget completes the same slow poll.
 
 `apps/runtime/native-authority/test/sdk-initialization-milestones.test.mjs` signals the real CLI after its initialize answer
 crosses the remote facade:

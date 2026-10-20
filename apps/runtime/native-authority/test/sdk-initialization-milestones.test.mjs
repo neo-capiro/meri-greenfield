@@ -18,6 +18,7 @@ import {createRemoteSdkProcessClient} from '../remote-task-client.mjs';
 import {createIndependentNativeTask} from '../independent-task.mjs';
 import {createPreparedRunnerQuery} from '../runner-query.mjs';
 import {withRunnerDiagnostics, markRunnerStage} from '../../runner-runtime-diagnostics.mjs';
+import {withoutDetail} from '../../test/runner-diagnostic-lines.mjs';
 
 const cliPackage = fileURLToPath(new URL('../../../worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk-linux-x64/claude', import.meta.url));
 const available = process.platform === 'linux' && existsSync(cliPackage);
@@ -172,7 +173,7 @@ test('a refused start ends the SDK iteration promptly, before any process or mod
 /** The runner's first-failure line for an activity whose SDK iteration rejected with `error` (activity.mjs captures it raw). */
 async function firstFailureLine(error) {
   const lines = [];
-  await withRunnerDiagnostics(async () => {markRunnerStage('activity-stream'); throw error;}, {write: line => lines.push(line)}).catch(() => {});
+  await withRunnerDiagnostics(async () => {markRunnerStage('activity-stream'); throw error;}, {write: line => lines.push(withoutDetail(line))}).catch(() => {});
   return lines[0];
 }
 
