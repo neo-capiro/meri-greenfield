@@ -1,10 +1,18 @@
 // Offline public-payload packaging. This module performs no I/O or AWS calls.
 import assert from 'node:assert/strict';
-import {hash,checkedJson,SOURCE_COMMIT,ARTIFACT_NAMES} from './receipt-joins.mjs';
+import {hash,checkedJson,sourceCommitArgument,ARTIFACT_NAMES} from './receipt-joins.mjs';
 export const VERIFIER_SHA256='c373ff556873823e1fd7cb5a00945ed2f70f41acb74c96d2d9756d0f12bf461d';
 export const PAYLOAD_KMS_KEY_ARN='arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042';
 export const MAX_PAYLOAD_BYTES=1048576;
-export const payloadKey=plan=>'inputs/launch-measurement/'+SOURCE_COMMIT+'/'+plan.attempt+'/measurement-payload.json';
+export const payloadKey=plan=>'inputs/launch-measurement/'+plan.request.sourceCommit+'/'+plan.attempt+'/measurement-payload.json';
+// measurement-build-wrapper.py is a template: its only variable line is the measured source commit, filled here, so the Linux
+// wrapper still carries the literal pin it checks the plan against. Every other byte is shipped unchanged.
+export const WRAPPER_SOURCE_PLACEHOLDER='SOURCE = "{{MERI_MEASUREMENT_SOURCE_COMMIT}}"';
+export function renderWrapper(templateBytes,sourceCommit){
+ const text=templateBytes.toString('utf8');
+ assert.equal(text.split(WRAPPER_SOURCE_PLACEHOLDER).length,2,'wrapper template must hold exactly one source placeholder');
+ return Buffer.from(text.replace(WRAPPER_SOURCE_PLACEHOLDER,`SOURCE = "${sourceCommitArgument(sourceCommit)}"`));
+}
 export function createPayload(planBytes,wrapperBytes){
  const encoded={schema:'meri.operator-launch-measurement-payload.v1',plan:planBytes.toString('base64'),planBytes:planBytes.length,planSha256:hash(planBytes),wrapper:wrapperBytes.toString('base64'),wrapperBytes:wrapperBytes.length,wrapperSha256:hash(wrapperBytes)};
  const bytes=Buffer.from(JSON.stringify(encoded)+'\n');assert.ok(bytes.length<=MAX_PAYLOAD_BYTES,'payload bound');return bytes;
@@ -14,8 +22,8 @@ export function decodePayload(bytes){
  assert.equal(p.schema,'meri.operator-launch-measurement-payload.v1');
  const result={};for(const key of ['plan','wrapper']){assert.match(p[key],/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/);const raw=Buffer.from(p[key],'base64');assert.equal(raw.length,p[key+'Bytes']);assert.equal(hash(raw),p[key+'Sha256']);result[key]=raw;}return result;
 }
-export function validatePayloadPin({plan,payloadBytes,pin}){
- assert.equal(plan.request.sourceCommit,SOURCE_COMMIT);assert.equal(plan.request.verifierSha256,VERIFIER_SHA256);
+export function validatePayloadPin({plan,payloadBytes,pin,sourceCommit}){
+ assert.equal(plan.request.sourceCommit,sourceCommitArgument(sourceCommit));assert.equal(plan.request.verifierSha256,VERIFIER_SHA256);
  assert.equal(pin.bucket,plan.request.archive.bucket);assert.equal(pin.key,payloadKey(plan));
  assert.ok(typeof pin.versionId==='string'&&pin.versionId!=='null');assert.match(pin.versionId,/^[A-Za-z0-9._~+/=-]{1,1024}$/);
  assert.equal(pin.bytes,payloadBytes.length);assert.ok(pin.bytes>0&&pin.bytes<=MAX_PAYLOAD_BYTES);assert.equal(pin.sha256,hash(payloadBytes));
@@ -23,8 +31,8 @@ export function validatePayloadPin({plan,payloadBytes,pin}){
  assert.equal(pin.kmsKeyArn,PAYLOAD_KMS_KEY_ARN);
  return pin;
 }
-export function createPinnedPayloadBuildspec({plan,payloadBytes,pin}){
- validatePayloadPin({plan,payloadBytes,pin});const decoded=decodePayload(payloadBytes);
+export function createPinnedPayloadBuildspec({plan,payloadBytes,pin,sourceCommit}){
+ validatePayloadPin({plan,payloadBytes,pin,sourceCommit});const decoded=decodePayload(payloadBytes);
  assert.equal(hash(decoded.plan),hash(Buffer.from(JSON.stringify(plan)+'\n')),'plan bytes');
  const encodedPin=Buffer.from(JSON.stringify(pin)).toString('base64');
  // Follow image-build-producer.py download(): exact VersionId HEAD bound,

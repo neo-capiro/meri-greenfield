@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {joinMeasurement,joinArtifactDownloads,measurementStartRequest,artifactPrefix,ARTIFACT_NAMES,PROJECT_ROLE_ARN,hash,SOURCE_COMMIT,CLI,MODULE,RUNNER,GATES} from './receipt-joins.mjs';
+import {joinMeasurement,joinArtifactDownloads,measurementStartRequest,artifactPrefix,ARTIFACT_NAMES,PROJECT_ROLE_ARN,hash,CLI,MODULE,RUNNER,GATES} from './receipt-joins.mjs';
+/** The measured commit as the operator passes it (--source-commit); synthetic here. */
+const SOURCE_COMMIT='3dc993ef81846730ac696bb482b653162da8920c';
 function fixture(){
  const h=n=>String(n).repeat(64),digest='sha256:'+h(7),repository='967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker';
  const request={schemaVersion:2,sourceCommit:SOURCE_COMMIT,dockerfileSha256:h(1),nodeImageUri:'public.ecr.aws/docker/library/node@sha256:'+h(2),nodeVersion:'v24.21.0',runtimeBaseImageUri:'cgr.dev/chainguard/wolfi-base@sha256:'+h(3),runtimePackagesSha256:h(4),runnerSha256:h(5),runtimeUser:'1000:1000',verifierSha256:h(6),producerSha256:h(8),archive:{bucket:'approved-bucket',key:'exact.zip',versionId:'version-one',sha256:h(1)},manifest:{sha256:h(2)},ecrRepositoryUri:repository,imageTag:'product-'+SOURCE_COMMIT+'-'+'a'.repeat(32),codeBuildProjectArn:'arn:aws:codebuild:us-east-1:967807252336:project/meri-greenfield-qualification-build'};
@@ -20,7 +22,7 @@ function fixture(){
  const provenance={schema:'meri.operator-launch-measurement-result.v1',buildId:'measurement-build-id',planSha256:plan.planSha256,attempt:plan.attempt,image,sourceCommit:SOURCE_COMMIT,sourceVersion:'version-one',cleanup:'COMPLETE',inspection:{RepoDigests:[image],Os:'linux',Architecture:'amd64',Size:123,Config:{User:'node',WorkingDir:'/opt/meri',Entrypoint:['node','apps/runtime/cli.mjs'],Labels:{'org.opencontainers.image.revision':SOURCE_COMMIT,'org.opencontainers.image.base.name':request.runtimeBaseImageUri,'io.meri.node.base':request.nodeImageUri,'io.meri.runtime.packages.sha256':request.runtimePackagesSha256}}}};
  // Real evidence is separately parsed JSON: destroy fixture aliases too, so a
  // tamper to an observed object cannot also mutate its independent expectation.
- return JSON.parse(JSON.stringify({plan,launch,readback,native,packages,provenance,operator}));
+ return JSON.parse(JSON.stringify({plan,launch,readback,native,packages,provenance,operator,sourceCommit:SOURCE_COMMIT}));
 }
 test('complete synthetic evidence joins without turning absent C features into activation',()=>{
  const result=joinMeasurement(fixture());assert.equal(result.status,'MEASUREMENT_JOINS_MATCH_ONLY');assert.equal(result.enabledCapabilityProfile,false);assert.equal(result.activeReadSubset,false);
@@ -38,6 +40,7 @@ for(const [name,change]of [
  ['full inventory truncation',v=>{v.launch.generalReadInstallation.measurement.operations=[];}],
  ['native compatibility tamper',v=>{v.native.temporalNativeLoaded=false;}],
  ['unknown cleanup',v=>{v.provenance.cleanup='UNKNOWN';}],
+ ['another operator source commit',v=>{v.sourceCommit='0'.repeat(40);}],
  ['failed authenticated build',v=>{v.operator.measurementBuild.buildStatus='FAILED';}],
  ['wrong immutable source version',v=>{v.operator.measurementBuild.sourceVersion='other';}],
  ['changed actual override',v=>{v.operator.measurementBuild.source.buildspec='changed';}],
@@ -52,6 +55,9 @@ for(const [name,change]of [
  ['different role',v=>{v.plan.projectRoleArn+='-other';}],
  ['foreign artifact prefix',v=>{v.operator.measurementBuild.artifacts.location+='/other';}],
 ])test('refuses '+name,()=>{const value=fixture();change(value);assert.throws(()=>joinMeasurement(value),/MEASUREMENT_JOIN_REFUSED/);});
+test('the source commit is an exact 40-hex operator argument, never defaulted',()=>{
+ for(const commit of [undefined,'3dc993ef','3DC993EF81846730AC696BB482B653162DA8920C'])assert.throws(()=>joinMeasurement({...fixture(),sourceCommit:commit}),/--source-commit must be 40 lowercase hex/);
+});
 
 function downloadFixture(){
  const {plan}=fixture(),buildId='measurement-build-id';
