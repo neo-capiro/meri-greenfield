@@ -2,7 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {setImmediate as nextTurn} from 'node:timers/promises';
-import {createActionSessionOwner,authenticatedCurrentState} from './owner.mjs';
+import {createActionSessionOwner,authenticatedCurrentState,issuedCurrentState} from './owner.mjs';
 import {createActionSessionApplication} from './http.mjs';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 
@@ -139,4 +139,19 @@ for(const stage of ['identity','context','member'])test(`caller cancellation whi
  assert.ok(after.authentication.checkedAtMs>before.authentication.checkedAtMs);
  assert.deepEqual(after.current.binding,f.binding);
  assert.deepEqual(after.current.scopes,f.scopes);
+});
+
+test('issuance can hand back exactly what its own resolve observed, once, only to the registered owner capability',async t=>{
+ const f=fixture(t),issue=issuedCurrentState(f.owner);
+ for(const unknown of [{...f.owner},{},null,undefined])assert.equal(issuedCurrentState(unknown),undefined);
+ f.state.calls=[];
+ const {receipt,current}=await issue({identityCredential:'native',hints:{conversationId:id(1),runId:id(2),clientId:id(5)}});
+ assert.deepEqual(f.state.calls.map(c=>c.stage),['identity','admit','context','member'],'one issuance resolve and nothing after it');
+ assert.deepEqual(current.binding,f.binding);assert.deepEqual(current.scopes,f.scopes);assert.equal(current.selectedClientId,id(5));
+ assert.equal(current.expiresAtMs,receipt.expiresAtMs);assert.ok(Object.isFrozen(current));
+ f.state.calls=[];const later=await f.read({credential:receipt.credential});
+ assert.deepEqual(later.current.binding,current.binding);assert.deepEqual(later.current.scopes,current.scopes);
+ assert.deepEqual(f.state.calls.map(c=>c.stage),['identity','member','context','member'],'the issued session is the ordinary one');
+ f.state.hook=stage=>{if(stage==='context')throw Error('refused');};
+ await assert.rejects(issue({identityCredential:'native'}));assert.equal(f.owner.status().sessions,1,'a refused issuance leaves no session');
 });

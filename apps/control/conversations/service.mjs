@@ -12,9 +12,6 @@ import {assertOriginalInputFacts,assertOriginalInputActive,assertOriginalInputAc
 import {ProductError} from '../product-access/errors.mjs';
 import {authenticatedCurrentState} from '../action-host/session/owner.mjs';
 import {own,bounded,same,hash,fail,uuid,validateShape,terminal} from './boundary.mjs';
-/** Cleanup-only read used by the lifecycle owner's cancellation path: the same authenticated history without the retention serving gate,
- * so trusted cancellation still stops work for a suppressed subject. Not a public intent. */
-export const cleanupRead=Symbol('conversation.cleanupRead');
 /** Trusted lifecycle composition only. Keeps its read inside the basic load's authorization lifetime. */
 export const loadWithLifecycle=Symbol('conversation.loadWithLifecycle');
 /** Events released per observation page: the history route's own page maximum. */
@@ -146,8 +143,7 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
   own(value,['event','checkedAtMs','expiresAtMs']);const e=own(value.event,['eventId','createdAt','type','data']);if(!['message.delta','artifact.available'].includes(e.type)||!Number.isSafeInteger(value.checkedAtMs)||value.checkedAtMs<at||value.checkedAtMs>now()||!Number.isSafeInteger(value.expiresAtMs)||value.expiresAtMs<=now())fail('OUTPUT_PUBLICATION_REFUSED');life.limitDeadline(value.expiresAtMs);
   await fresh();const result=await life.run(()=>store.append(binding,e,life.check,c.scopes));if(!same(result.scopes,c.scopes))fail('SCOPE_REFUSED');await fresh();return result;
  });}
- async function historyForCleanup({credential,after=0,limit=100,signal}){return operation(credential,signal,async(c,life)=>{const result=await life.run(()=>store.read(c.binding,{after,limit},life.check));if(!same(result.run.scopes,c.scopes))fail('SCOPE_REFUSED');return result;},{cleanup:true});}
- return Object.freeze(Object.defineProperty({submit,admitInput,allocateInput,history,observe,cancel,loadForExecution:args=>loadForExecution(args),publish,publishSelectedOutput,[cleanupRead]:historyForCleanup},loadWithLifecycle,{value:loadForExecution}));
+ return Object.freeze(Object.defineProperty({submit,admitInput,allocateInput,history,observe,cancel,loadForExecution:args=>loadForExecution(args),publish,publishSelectedOutput},loadWithLifecycle,{value:loadForExecution}));
 }
 function failError(code){return Object.assign(new Error(code),{code});}
 /** Closed run budgets: positive integer calls and per-result bytes, and an optional run aggregate no smaller than one result. */
