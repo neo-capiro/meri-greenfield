@@ -1,7 +1,9 @@
 /** Fixed native provider boundary. Receipts never replace current native policy. */
+import {setTimeout as pause} from 'node:timers/promises';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 import {data,own} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {RUNNER_LOAD_MAX_MS} from '../../packages/runtime/runner-load-budget.mjs';
+import {markAuthorityUnavailable,isAuthorityUnavailable} from '../../packages/runtime/authority-availability.mjs';
 import {fault} from './config.mjs';
 // The longer window is available only to bounded original-run operations.
 // Each caller must also pass its absolute lease-derived deadline; other operations
@@ -14,25 +16,60 @@ const startupOperations=new Set([
  'runner/next-controls','runner/claim-control','runner/ack-control','runner/record-checkpoint',
 ]);
 const STARTUP_REQUEST_MAX_MS=23000;
+// Answers that report a dependency that did not answer, never a decision: control's Core/Clerk authority reads
+// (worker-http.mjs), the task verifier's (native-authority/task-verifier-http.mjs), or a gateway that lost a request it had
+// dispatched (native-runner-gateway.mjs). Such a failure keeps code NATIVE_UNAVAILABLE and carries the transient mark of
+// packages/runtime/authority-availability.mjs; every other non-200 answer, including every refusal, stays definitive.
+const unansweredCodes=new Set(['WORKER_AUTHORITY_UNAVAILABLE','NATIVE_TASK_AUTHORITY_UNAVAILABLE']);
+const unanswered=(status,error)=>status===503&&(unansweredCodes.has(error?.code)||error?.code==='NATIVE_GATEWAY_UNAVAILABLE'&&error?.outcome==='UNKNOWN');
+// Sent again after an unanswered attempt, and only inside the caller's absolute deadline: runner/load is a read, and
+// runner/publish carries a fixed eventId that control's store returns instead of appending twice
+// (apps/control/conversations/postgres-store.mjs appendEvent). No other operation is replayed.
+const replayable=new Set(['runner/load','runner/publish']);
+const REPLAY_DELAYS_MS=[500,1500],REPLAY_MIN_ATTEMPT_MS=1000,ERROR_BODY_MAX_BYTES=4096;
+const json=response=>/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(response.headers.get('content-type')??'')&&!response.headers.get('content-encoding');
 export function createNativeCapabilityClient({configuration,credential,fetch:transport=fetch,now=Date.now,maxRequestMs=3000,loadMaxRequestMs=maxRequestMs}){
  if(typeof credential!=='string'||!/^[A-Za-z0-9._~+\/-]{1,8192}={0,2}$/u.test(credential)||
     !Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>10000||
     !Number.isSafeInteger(loadMaxRequestMs)||loadMaxRequestMs<1||loadMaxRequestMs>RUNNER_LOAD_MAX_MS)throw fault('NATIVE_CONFIGURATION');
  const c=configuration;
- async function call(operation,input,{signal,deadlineMs,maxRequestMs:requestMaxMs}={}){
+ async function body(response,life,limit){
+  const reader=response.body?.getReader();if(!reader)throw fault('NATIVE_UNAVAILABLE');const parts=[];let size=0;try{while(true){const next=await life.run(()=>reader.read());if(next.done)break;size+=next.value.length;if(size>limit)throw fault('NATIVE_RESPONSE_LIMIT');parts.push(next.value);}}finally{
+   // Fetch cancellation is signalled immediately. A transport's unresolved
+   // cleanup promise must not extend the owned read deadline.
+   void reader.cancel().catch(()=>{});reader.releaseLock();
+  }
+  try{return JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(Buffer.concat(parts)));}catch{throw fault('NATIVE_RESPONSE_INVALID');}
+ }
+ async function attempt(operation,input,{signal,deadlineMs,maxRequestMs:requestMaxMs}){
   if(requestMaxMs!==undefined&&(!startupOperations.has(operation)||!Number.isSafeInteger(requestMaxMs)||requestMaxMs<1||requestMaxMs>STARTUP_REQUEST_MAX_MS||!Number.isSafeInteger(deadlineMs)))throw fault('NATIVE_CONFIGURATION');
   const limitMs=operation==='runner/load'?loadMaxRequestMs:requestMaxMs??maxRequestMs;
-  const life=createOperationLifetime({deadlineMs:Math.min(deadlineMs??now()+limitMs,now()+limitMs),now,signal,errorFactory:fault});let response;
-  try{const body=JSON.stringify(data(input));if(Buffer.byteLength(body)>2097152)throw fault('NATIVE_REQUEST_LIMIT');
-   response=await life.run(signal=>transport(c.origin+'/v1/'+operation,{method:'POST',redirect:'error',headers:{authorization:'Bearer '+credential,'content-type':'application/json'},body,signal}));
-   if(response.status!==200||!/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(response.headers.get('content-type')??'')||response.headers.get('content-encoding'))throw fault('NATIVE_UNAVAILABLE');
-   const reader=response.body?.getReader();if(!reader)throw fault('NATIVE_UNAVAILABLE');const parts=[];let size=0;try{while(true){const next=await life.run(()=>reader.read());if(next.done)break;size+=next.value.length;if(size>c.maxResponseBytes)throw fault('NATIVE_RESPONSE_LIMIT');parts.push(next.value);}}finally{
-    // Fetch cancellation is signalled immediately. A transport's unresolved
-    // cleanup promise must not extend the owned read deadline.
-    void reader.cancel().catch(()=>{});reader.releaseLock();
+  const life=createOperationLifetime({deadlineMs:Math.min(deadlineMs??now()+limitMs,now()+limitMs),now,signal,errorFactory:fault});let response,dispatched=false,transient=false;
+  try{const payload=JSON.stringify(data(input));if(Buffer.byteLength(payload)>2097152)throw fault('NATIVE_REQUEST_LIMIT');
+   response=await life.run(signal=>{dispatched=true;return transport(c.origin+'/v1/'+operation,{method:'POST',redirect:'error',headers:{authorization:'Bearer '+credential,'content-type':'application/json'},body:payload,signal});});
+   if(response.status!==200){
+    // Only an explicit "did not answer" is transient; an unreadable error body leaves the failure definitive.
+    if(json(response))try{transient=unanswered(response.status,(await body(response,life,ERROR_BODY_MAX_BYTES))?.error);}catch(error){if(['DEADLINE','CANCELLED'].includes(error?.code))throw error;}
+    throw fault('NATIVE_UNAVAILABLE');
    }
-   let value;try{value=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(Buffer.concat(parts)));}catch{throw fault('NATIVE_RESPONSE_INVALID');}life.check();return data(value);
-  }catch(error){throw fault(['DEADLINE','CANCELLED'].includes(error?.code)?error.code:'NATIVE_UNAVAILABLE');}finally{life.close();}
+   if(!json(response))throw fault('NATIVE_UNAVAILABLE');
+   const value=await body(response,life,c.maxResponseBytes);life.check();return data(value);
+  }catch(error){
+   const code=['DEADLINE','CANCELLED'].includes(error?.code)?error.code:'NATIVE_UNAVAILABLE',failure=fault(code);
+   // A transport that failed after dispatch, before any answer, is as transient as an explicit "did not answer".
+   if(code==='NATIVE_UNAVAILABLE'&&(transient||dispatched&&response===undefined))markAuthorityUnavailable(failure);
+   throw failure;
+  }finally{life.close();}
+ }
+ async function call(operation,input,options={}){
+  for(let replays=0;;replays++){
+   try{return await attempt(operation,input,options);}
+   catch(error){
+    const wait=REPLAY_DELAYS_MS[replays],{deadlineMs,signal}=options;
+    if(!replayable.has(operation)||!isAuthorityUnavailable(error)||wait===undefined||!Number.isSafeInteger(deadlineMs)||deadlineMs-now()-wait<REPLAY_MIN_ATTEMPT_MS)throw error;
+    try{await pause(wait,undefined,{signal});}catch{throw fault('CANCELLED');}
+   }
+  }
  }
  return Object.freeze({call,
   verifyIdentity:({credential,signal,deadlineMs})=>call('identity/verify',{credential},{signal,deadlineMs}),

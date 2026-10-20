@@ -3,6 +3,7 @@ import {types} from 'node:util';
 import {own,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {jsonBody} from '../../control/action-application/http.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
+import {isAuthorityUnavailable} from '../../../packages/runtime/authority-availability.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {matchesCapability,taskFault} from './task-verifier.mjs';
 export function createNativeTaskVerifierApplication(configuration){
@@ -22,5 +23,8 @@ export function createNativeTaskVerifierApplication(configuration){
   const deadlineMs=now()+maxRequestMs;nativeSignal(request.signal);life=createOperationLifetime({now,deadlineMs,signal:request.signal,errorFactory:()=>taskFault('REFUSED')});
   const input=own(await jsonBody({body:request.body,length:length===null?null:Number(length)},131072,life,life.check),['capability','binding','operation','inputSha256']);
   const receipt=await life.run(signal=>verify({...input,signal,deadlineMs}));life.check();return reply(receipt);
- }catch{return reply({error:{code:'NATIVE_TASK_REFUSED'}},403);}finally{life?.close();}}});
+ }catch(error){
+  // Core/Clerk did not answer the verifier's identity or context read: transient for control (native-client.mjs), never a refusal.
+  return isAuthorityUnavailable(error)?reply({error:{code:'NATIVE_TASK_AUTHORITY_UNAVAILABLE'}},503):reply({error:{code:'NATIVE_TASK_REFUSED'}},403);
+ }finally{life?.close();}}});
 }

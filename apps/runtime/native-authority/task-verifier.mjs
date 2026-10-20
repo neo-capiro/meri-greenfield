@@ -7,6 +7,7 @@ import {sdkSessionOperations} from '../../../packages/contracts/runtime-0.2/sess
 import {nativeReadOperations} from '../../../packages/contracts/runtime-0.2/reads.mjs';
 import {parseAdmittedGrantSet} from '../../gateway/budget/admitted-run-binding.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
+import {carryAuthorityUnavailable} from '../../../packages/runtime/authority-availability.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 export const taskFault=code=>Object.assign(Error('NATIVE_TASK_'+code),{code:'NATIVE_TASK_'+code});
 export const capabilityDigest=token=>createHash('sha256').update(token).digest('hex');
@@ -51,6 +52,6 @@ export function createNativeTaskVerifier(configuration){
   const receipt={binding,operation:input.operation,inputSha256:input.inputSha256,identityCredential:c.identityCredential,scopes:resolved.scopes,
    selectedClientId:resolved.selectedClientId,policyRevision:policy,authorizationDecisionId:hash({grantId:grant.grantId,binding,operation:input.operation,inputSha256:input.inputSha256,identitySha256:hash(native),contextRevision:resolved.contextRevision,checkedAtMs}),checkedAtMs,expiresAtMs:authorityExpiry};
   return assertWorkerAuthorization(receipt,{binding,operation:input.operation,inputSha256:input.inputSha256,started,now});
- }catch(error){throw taskFault(!enabled?'UNAVAILABLE':'REFUSED');}finally{life?.close();}}
+ }catch(error){throw carryAuthorityUnavailable(error,taskFault(!enabled?'UNAVAILABLE':'REFUSED'));}finally{life?.close();}}
  return Object.freeze({verify});
 }
