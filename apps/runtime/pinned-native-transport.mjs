@@ -5,19 +5,17 @@ import {request as httpsRequest} from 'node:https';
 import {open} from 'node:fs/promises';
 import {constants} from 'node:fs';
 import {createHash} from 'node:crypto';
+import {PINNED_NATIVE_FAILURE_CODES} from './runner-runtime-diagnostics.mjs';
 
-/** Fixed failure classes. A rejection carries exactly one of these constants as `code` (its message stays
- * PINNED_NATIVE_REFUSED); the observed system/TLS code, status text, body or peer detail is never echoed. The diagnostics
- * allowlist (runner-runtime-diagnostics.mjs) names the same constants, so RUNNER_FIRST_FAILURE can tell a refused status
- * from a dropped or untrusted connection without any message or payload reaching stderr.
+/** A rejection carries exactly one PINNED_NATIVE_FAILURE_CODES constant as `code` (its message stays
+ * PINNED_NATIVE_REFUSED); the observed system/TLS code, status text, body or peer detail is never echoed. The runner
+ * diagnostics allowlist owns the list, so RUNNER_FIRST_FAILURE can tell a refused status from a dropped or untrusted
+ * connection without any message or payload reaching stderr.
  * CONFIGURATION: origin, limits or CA file refused while building the adapter. REFUSED: this call refused locally before
  * any byte was sent (address, method, headers, body). ABORTED/TIMEOUT: the caller's signal or this adapter's 30 s ceiling.
  * CONNECT/TLS/SOCKET: failure before any response head. TRANSPORT: any other request error (bounded fallback).
  * STATUS_*: a non-200 head. RESPONSE: a 200 head whose framing, size or body did not complete (malformed, oversize,
  * truncated, or the connection lost after the head). */
-export const PINNED_NATIVE_FAILURE_CODES=Object.freeze(['PINNED_NATIVE_CONFIGURATION','PINNED_NATIVE_REFUSED','PINNED_NATIVE_ABORTED','PINNED_NATIVE_TIMEOUT',
- 'PINNED_NATIVE_CONNECT','PINNED_NATIVE_TLS','PINNED_NATIVE_SOCKET','PINNED_NATIVE_TRANSPORT','PINNED_NATIVE_RESPONSE',
- 'PINNED_NATIVE_STATUS_403','PINNED_NATIVE_STATUS_503','PINNED_NATIVE_STATUS_4XX','PINNED_NATIVE_STATUS_5XX','PINNED_NATIVE_STATUS_OTHER']);
 const refusal=code=>Object.assign(Error('PINNED_NATIVE_REFUSED'),{code:PINNED_NATIVE_FAILURE_CODES.includes(code)?code:'PINNED_NATIVE_TRANSPORT'});
 const fail=()=>{throw refusal('PINNED_NATIVE_REFUSED');};
 const failConfiguration=()=>{throw refusal('PINNED_NATIVE_CONFIGURATION');};
