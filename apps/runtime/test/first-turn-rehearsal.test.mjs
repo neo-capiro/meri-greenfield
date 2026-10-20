@@ -156,8 +156,8 @@ for(const profile of ['quiet','live-median','live-tail'])
  test(`a 40-delta reply under the ${profile} Core profile with 90 s of lease spent (reported)`,{...posix,timeout:1200000},async t=>{
   t.diagnostic(JSON.stringify(await rehearseFirstTurn({profile,deltas:40,leaseElapsedMs:90000})));
  });
-// Every delta at once is the best case for sharing. Paced at 250 ms a delta (slower than a live model streams), the reply outlasts
-// the first publication, and each later one carries what arrived while the one before it was in flight.
-test('a 40-delta reply streamed over 10 s under the live-median Core profile with 90 s of lease spent (reported)',{...posix,timeout:1200000},async t=>{
- t.diagnostic(JSON.stringify(await rehearseFirstTurn({profile:'live-median',deltas:40,deltaMs:250,leaseElapsedMs:90000})));
+// Every delta at once is the best case for sharing. Paced at 500 ms a delta (far slower than a live model streams), the reply
+// outlasts a median publication, and each publication after the first carries what arrived while the one before it was in flight.
+test('a 40-delta reply streamed over 20 s under the live-median Core profile with 90 s of lease spent (reported)',{...posix,timeout:1200000},async t=>{
+ t.diagnostic(JSON.stringify(await rehearseFirstTurn({profile:'live-median',deltas:40,deltaMs:500,leaseElapsedMs:90000})));
 });
