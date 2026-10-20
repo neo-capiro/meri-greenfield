@@ -7,7 +7,7 @@ import {createOriginalRetirement} from '../remote-composition.mjs';
 import {originalFacts,fakeEcs,syntheticAdmission,processAllocator} from './original-retirement-fixture.mjs';
 const check=()=>{};
 async function fixture(t,{config:override}={}){
- const o=originalFacts(),f=await lifecycleFixture();t.after(()=>f.close());await f.service.submit({credential:f.credential,input:f.input});
+ const o=originalFacts(),f=await lifecycleFixture();t.after(()=>f.close());await f.service.allocateInput({credential:f.credential,input:f.input});await f.service.submit({credential:f.credential,input:f.input});
  const ecs=fakeEcs(o.original,o.config.taskRequest),budget=syntheticAdmission(o),key={binding:o.original.binding,allocationKey:o.original.executionKey};
  const record=async()=>(await f.store.allocations.read(key,check)).record;
  /** An earlier process claimed and launched the original, then crashed before admission: the durable state is ALLOCATED. */

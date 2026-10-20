@@ -37,6 +37,8 @@ export function runnerStartupBudget({requestMs,shutdownMs,originalExpiresAtMs}){
     requestMs<=RUNNER_LOAD_CONTROL_MARGIN_MS||shutdownMs<1||originalExpiresAtMs<1)
   throw new TypeError('RUNNER_STARTUP_BUDGET_REFUSED');
  const networkMs=Math.min(RUNNER_LOAD_MAX_MS,requestMs-RUNNER_LOAD_CONTROL_MARGIN_MS);
+ // The runner client's native start allowance must keep one control margin above the router's startup allowance.
+ if(networkMs<RUNNER_NATIVE_STARTUP_ROUTER_MS+RUNNER_LOAD_CONTROL_MARGIN_MS)throw new TypeError('RUNNER_STARTUP_BUDGET_REFUSED');
  const reserveMs=RUNNER_STARTUP_SHUTDOWN_STEPS*Math.max(shutdownMs,RUNNER_STARTUP_MIN_SHUTDOWN_MS)+
   RUNNER_STARTUP_CATCH_CLEANUP_MS+RUNNER_STARTUP_SETTLEMENT_MS+
   RUNNER_STARTUP_CLEANUP_MS+RUNNER_STARTUP_MARGIN_MS;

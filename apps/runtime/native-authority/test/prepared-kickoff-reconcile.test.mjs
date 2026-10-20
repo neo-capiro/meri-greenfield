@@ -7,7 +7,7 @@ import {lifecycleFixture,binding,id,versions} from '../../../control/conversatio
 import {allocateOriginal,recordRetired} from '../../../control/conversations/test/terminal-settlement-harness.mjs';
 import {createPreparedTaskKickoff} from '../prepared-kickoff.mjs';
 async function fixture(t,{proven=true,reconcile=true,state='running'}={}){
- const f=await lifecycleFixture();t.after(()=>f.close());await f.service.submit({credential:f.credential,input:f.input});const allocation=await allocateOriginal(f.store,binding);let n=600,closes=0;
+ const f=await lifecycleFixture();t.after(()=>f.close());await f.service.allocateInput({credential:f.credential,input:f.input});await f.service.submit({credential:f.credential,input:f.input});const allocation=await allocateOriginal(f.store,binding);let n=600,closes=0;
  for(const s of ['starting','running'].slice(0,state==='running'?2:state==='starting'?1:0))await f.service.publish({credential:f.credential,binding,event:{eventId:id(n++),createdAt:new Date().toISOString(),type:'run.status',data:{state:s,reasonCode:null}}});
  const original=createExecutionBinding({binding,versions,plan:{synthetic:'kickoff-reconcile'},expiresAtMs:Date.now()+30000});
  const controller={allocate:async()=>{throw Error('not dispatched in this test');},close:async()=>{closes++;if(proven)await recordRetired(f.store,allocation);}};

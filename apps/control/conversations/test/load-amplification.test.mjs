@@ -173,35 +173,35 @@ test('native client retains its independent three-second cap',async()=>{
 test('load budget retains the later startup stages and original-lease reserve',()=>{
   const budget=runnerLoadBudget({requestMs:25000,shutdownMs:10000,originalExpiresAtMs:1000000});
   assert.deepEqual(budget,{maxMs:23000,expiresAtMs:534000});
-  const narrow=runnerLoadBudget({requestMs:12000,shutdownMs:1000,originalExpiresAtMs:1000000});
-  assert.equal(narrow.maxMs,10000);
-  assert.ok(narrow.expiresAtMs<1000000-10000-12000);
+  assert.throws(()=>runnerLoadBudget({requestMs:12000,shutdownMs:1000,originalExpiresAtMs:1000000}),/RUNNER_LOAD_BUDGET_REFUSED/u);
   assert.throws(()=>runnerLoadBudget({requestMs:NaN,shutdownMs:1000,originalExpiresAtMs:100000}),/RUNNER_LOAD_BUDGET_REFUSED/u);
 });
 
 test('activity separates long load from three-second runtime preparation',async()=>{
   const saved={run:{binding,state:'queued',scopes,versions,createdAt:new Date(0).toISOString(),policyRevision:scopes[0].policyRevision},
     request:{requestId:id(6),prompt:'Synthetic only',skill:null,window:null,windowRequest:null},lastSequence:1};
-  let clock=0,prepared=0,published=0;
-  const runOwner={async load(){clock+=19000;return saved;},async append(){published++;throw Error('STOP_BEFORE_MODEL');}};
-  const activity=createConversationActivity({runOwner,prepareRuntime:async()=>{prepared++;return {binding,versions,deadlineMs:clock+1000};},query:()=>{throw Error('MODEL_CALL_FORBIDDEN');},now:()=>clock,loadMaxMs:23000,loadExpiresAtMs:50000});
+  // The starting claim is accepted; every later publication fails, so no model call is reached. Reaching the setup stage shows
+  // that runtime preparation completed under its own fresh bound after the long load.
+  let clock=0,prepared=0,claims=0,stages=[];
+  const runOwner={async load(){clock+=19000;return saved;},async append({event}){if(event.data?.state==='starting'){claims++;return;}throw Error('STOP_BEFORE_MODEL');}};
+  const bounds={query:()=>{throw Error('MODEL_CALL_FORBIDDEN');},now:()=>clock,loadMaxMs:23000,diagnostics:{stage:stage=>stages.push(stage)}};
+  const activity=createConversationActivity({runOwner,prepareRuntime:async()=>{prepared++;return {binding,versions,deadlineMs:clock+1000};},...bounds,loadExpiresAtMs:50000});
   await assert.rejects(activity({binding}),/EXECUTION_FAILED/u);
+  assert.equal(claims,1,'the run is claimed before runtime preparation');
   assert.equal(prepared,1,'a 19-second load may reach runtime preparation');
-  assert.equal(published,1,'runtime preparation uses its own fresh bound');
+  assert.ok(stages.includes('activity-setup'),'runtime preparation uses its own fresh bound');
 
-  clock=0;prepared=0;published=0;
-  const slowPreparation=createConversationActivity({runOwner:{...runOwner,async load(){clock+=19000;return saved;}},
-    prepareRuntime:async()=>{prepared++;clock+=3001;return {binding,versions,deadlineMs:clock+1000};},query:()=>{throw Error('MODEL_CALL_FORBIDDEN');},now:()=>clock,loadMaxMs:23000,loadExpiresAtMs:50000});
+  clock=0;prepared=0;claims=0;stages=[];
+  const slowPreparation=createConversationActivity({runOwner,prepareRuntime:async()=>{prepared++;clock+=3001;return {binding,versions,deadlineMs:clock+1000};},...bounds,loadExpiresAtMs:50000});
   await assert.rejects(slowPreparation({binding}),/EXECUTION_FAILED/u);
   assert.equal(prepared,1);
-  assert.equal(published,0,'runtime preparation still has a three-second cap');
+  assert.ok(!stages.includes('activity-setup'),'runtime preparation still has a three-second cap');
 
-  clock=0;prepared=0;published=0;
-  const expiringOriginal=createConversationActivity({runOwner,prepareRuntime:async()=>{prepared++;throw Error('PREPARATION_MUST_NOT_START');},
-    query:()=>{throw Error('MODEL_CALL_FORBIDDEN');},now:()=>clock,loadMaxMs:23000,loadExpiresAtMs:15000});
+  clock=0;prepared=0;claims=0;stages=[];
+  const expiringOriginal=createConversationActivity({runOwner,prepareRuntime:async()=>{prepared++;throw Error('PREPARATION_MUST_NOT_START');},...bounds,loadExpiresAtMs:15000});
   await assert.rejects(expiringOriginal({binding}),/EXECUTION_FAILED/u);
   assert.equal(prepared,0,'the original lease reserve clips load below its 23-second ceiling');
-  assert.equal(published,0);
+  assert.equal(claims,0);
 });
 
 test('nested remote runner passes its load budget into the activity',async()=>{
@@ -210,7 +210,7 @@ test('nested remote runner passes its load budget into the activity',async()=>{
     request:{requestId:id(6),prompt:'Synthetic only',skill:null,window:null,windowRequest:null},lastSequence:1};
   const executionKey=hash(binding),configuration={binding,versions,sourceEnabled:false,limits:{requestMs:25000,shutdownMs:10000},
     remoteTask:{original:{binding,versions,executionKey,executionId:executionKey,planSha256:'0'.repeat(64),expiresAtMs:1000000}}};
-  const native={async call(operation){if(operation==='runner/load'){clock+=19000;return saved;}if(operation==='runner/runtime'){runtimeCalls++;throw Error('STOP_BEFORE_MODEL');}throw Error('UNEXPECTED_NATIVE_CALL');}};
+  const native={async call(operation,input){if(operation==='runner/load'){clock+=19000;return saved;}if(operation==='runner/publish'&&input.event.data?.state==='starting')return {};if(operation==='runner/runtime'){runtimeCalls++;throw Error('STOP_BEFORE_MODEL');}throw Error('UNEXPECTED_NATIVE_CALL');}};
   const execute=assembleConversationRunner({configuration,native,now:()=>clock,query:()=>{throw Error('MODEL_CALL_FORBIDDEN');}});
   await assert.rejects(execute({binding}),/EXECUTION_FAILED/u);
   assert.equal(runtimeCalls,1,'a 19-second load reaches runtime admission through nested runner wiring');
