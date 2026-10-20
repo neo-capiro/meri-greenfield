@@ -5,14 +5,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
-import {mkdtemp,readFile,writeFile,rm} from 'node:fs/promises';
+import {mkdtemp,mkdir,readFile,writeFile,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createRenderFixture} from './render-material.fixture.mjs';
 import {PATHS,ROLES,writeRendered} from './render-material.mjs';
 import {STAGE3_FAMILIES,STAGE3_EXISTING,STAGE3_DEPLOY_ORDER,nextRevisions,stage3RenderInput,buildStage3Bindings,synthesizeStage3,applyLiveServiceProfile,liveControlTargetGroup} from './stage3-bindings.mjs';
-import {parseLatestTsv,coreValuesFromMembership,tenantBudgetOverrides,TENANT_BUDGET_PROGRAM,parseVersionsTsv,outputsObject,deployPlan,uploadPlan,verifyOutputs,probeTaskDefinition,PROBE_PROGRAM,main} from './stage3-deploy.mjs';
+import {parseLatestTsv,coreValuesFromMembership,tenantBudgetOverrides,TENANT_BUDGET_PROGRAM,parseVersionsTsv,outputsObject,deployPlan,uploadPlan,secretLabelReadback,verifyOutputs,probeTaskDefinition,PROBE_PROGRAM,main} from './stage3-deploy.mjs';
 import {productWorkerTrustsPinnedServerCa} from '../../../apps/runtime/cli.mjs';
 
 const here=fileURLToPath(new URL('.',import.meta.url));
@@ -21,6 +21,9 @@ const fixture=createRenderFixture();
 test.after(()=>fixture.cleanup());
 const fakeVersion=n=>`${String(n).repeat(8)}-aaaa-4bbb-8ccc-${String(n).repeat(12)}`;
 const SECRET_VERSIONS=Object.fromEntries(ROLES.map((role,i)=>[role,fakeVersion(i+1)]));
+/** A before-upload label readback per material secret: AWSCURRENT, AWSPREVIOUS and one earlier release label, plus extras. */
+const labelReadback=(deployment,extra={})=>Object.fromEntries(['control/material','worker/material','issuer/material','owner/material','proxy/material'].map(key=>deployment.secrets[key]).map(arn=>[arn,
+ [{VersionId:'v-current',VersionStages:['AWSCURRENT']},{VersionId:'v-previous',VersionStages:['AWSPREVIOUS']},{VersionId:'v-e',VersionStages:['FIRST_CHAT_20261020E']},...(extra[arn]??[])]]));
 const SCANS={proxy:'c'.repeat(64),nodeRuntime:'d'.repeat(64)};
 /** The live app stack's control service as `get-template --stage Original` returns it: public 8080 and private 8082 groups. */
 const PUBLIC_TG='arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/meri-preview-control-8080/03297203fa59801c';
@@ -227,7 +230,11 @@ test('CLI writes stage3.json, bindings, templates and the deploy plan outside th
   r=await quiet(['bindings','--deployment-inputs',join(work,'deployment.json'),'--foundation-outputs',foundation,'--private-edge-outputs',join(work,'edge.json'),
    '--rendered',out,'--secret-versions',join(work,'versions.tsv'),'--image-scans',join(work,'scans.json'),'--live-app-template',join(work,'app.live.json'),'--out',join(here,'should-not-exist')]);
   assert.equal(r.code,2);assert.match(r.text,/outside the repository/u);
-  r=await quiet(['upload-plan','--deployment-inputs',join(work,'deployment.json'),'--rendered',out,'--label','FIRST_CHAT_20261021A','--out',join(work,'upload-plan.json')]);
+  await mkdir(join(work,'labels'));
+  for(const [i,[ARN,Versions]] of Object.entries(labelReadback(args.deployment)).entries())await writeFile(join(work,'labels',`${i}.json`),JSON.stringify({ARN,Name:`secret-${i}`,Versions}));
+  r=await quiet(['upload-plan','--deployment-inputs',join(work,'deployment.json'),'--rendered',out,'--label','FIRST_CHAT_20261020E','--secret-labels',join(work,'labels'),'--out',join(work,'upload-reused.json')]);
+  assert.equal(r.code,2);assert.match(r.text,/FIRST_CHAT_20261020E is already on a version/u);
+  r=await quiet(['upload-plan','--deployment-inputs',join(work,'deployment.json'),'--rendered',out,'--label','FIRST_CHAT_20261021A','--secret-labels',join(work,'labels'),'--out',join(work,'upload-plan.json')]);
   assert.equal(r.code,0,r.text);
   const upload=await readFile(join(work,'upload-plan.json'),'utf8');assert.equal(JSON.parse(upload).roles.length,ROLES.length);
   for(const secret of ['synthetic-control','synthetic-core-identity-bearer-not-real','PRIVATE KEY'])assert.equal(upload.includes(secret),false,secret);
@@ -261,15 +268,35 @@ test('live stacks: every update keeps owner, proxy, control and worker serving, 
 
 test('secret upload plan: one new version per role under a fresh label, fixed idempotency token, bundles by path only',async()=>{
  const {inputs}=await setup();let n=0;
- const plan=uploadPlan({deployment:inputs.deployment,renderedDirectory:'/w/rendered',label:'FIRST_CHAT_20261021A',newToken:()=>`token-${++n}`});
+ const secretLabels=labelReadback(inputs.deployment);
+ const plan=uploadPlan({deployment:inputs.deployment,renderedDirectory:'/w/rendered',label:'FIRST_CHAT_20261021A',secretLabels,newToken:()=>`token-${++n}`});
  assert.deepEqual(plan.map(p=>p.role),ROLES);
  for(const [i,p] of plan.entries()){
   assert.equal(p.command[p.command.indexOf('--version-stages')+1],'FIRST_CHAT_20261021A','never AWSCURRENT: task definitions pin exact VersionIds');
   assert.equal(p.command[p.command.indexOf('--client-request-token')+1],`token-${i+1}`);
   assert.equal(p.command[p.command.indexOf('--secret-string')+1],`file://${join('/w/rendered',p.role,'bundle.json')}`);
   assert.equal(p.command[p.command.indexOf('--secret-id')+1],p.secretArn);
+  assert.deepEqual(p.labelsBefore,['AWSCURRENT','AWSPREVIOUS','FIRST_CHAT_20261020E'],'the before state the readback gate compares against');
  }
- for(const label of ['AWSCURRENT','AWSPREVIOUS','AWSPENDING','','bad label'])assert.throws(()=>uploadPlan({deployment:inputs.deployment,renderedDirectory:'/w',label}),/new custom staging label/u);
+ for(const label of ['AWSCURRENT','AWSPREVIOUS','AWSPENDING','','bad label'])assert.throws(()=>uploadPlan({deployment:inputs.deployment,renderedDirectory:'/w',label,secretLabels}),/new custom staging label/u);
  const broken=structuredClone(inputs.deployment);broken.secrets['owner/material']='arn:aws:secretsmanager:us-east-1:111111111111:secret:x';
- assert.throws(()=>uploadPlan({deployment:broken,renderedDirectory:'/w',label:'L'}),/owner\/material/u);
+ assert.throws(()=>uploadPlan({deployment:broken,renderedDirectory:'/w',label:'L',secretLabels}),/owner\/material/u);
+});
+
+test('secret upload preconditions: a label already in use, a full secret or a missing readback refuses before any command exists',async()=>{
+ const {inputs}=await setup(),d=inputs.deployment,arn=d.secrets['owner/material'];
+ const plan=extra=>()=>uploadPlan({deployment:d,renderedDirectory:'/w',label:'FIRST_CHAT_20261021A',secretLabels:labelReadback(d,extra)});
+ // PutSecretValue would silently move a reused label off an older version: refuse instead.
+ assert.throws(plan({[arn]:[{VersionId:'v-reused',VersionStages:['FIRST_CHAT_20261021A']}]}),/already on a version of model-owner/u);
+ const labels=Array.from({length:17},(_,i)=>({VersionId:`v-${i}`,VersionStages:[`FIRST_CHAT_OLD${i}`]}));
+ assert.throws(plan({[arn]:labels}),/20 staging-label quota/u,'AWSCURRENT, AWSPREVIOUS, E and 17 more labels reach the quota');
+ assert.doesNotThrow(plan({[arn]:labels.slice(1)}),'19 labels leave room for one more');
+ assert.throws(plan({[arn]:Array.from({length:97},(_,i)=>({VersionId:`u-${i}`}))}),/already holds 100 versions/u);
+ const missing=labelReadback(d);delete missing[arn];
+ assert.throws(()=>uploadPlan({deployment:d,renderedDirectory:'/w',label:'FIRST_CHAT_20261021A',secretLabels:missing}),/no label readback for model-owner/u);
+ // The CLI reads one raw list-secret-version-ids output per secret, keyed by its own ARN; duplicates or other shapes refuse.
+ const outputs=Object.entries(labelReadback(d)).map(([ARN,Versions])=>({ARN,Name:'n',Versions}));
+ assert.deepEqual(secretLabelReadback(outputs),labelReadback(d));
+ assert.throws(()=>secretLabelReadback([...outputs,outputs[0]]),/one list-secret-version-ids output per secret/u);
+ assert.throws(()=>secretLabelReadback([{Versions:[]}]),/one list-secret-version-ids output per secret/u);
 });
