@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {startTemporalWorker} from '../temporal-worker.mjs';
+import {readFileSync} from 'node:fs';
+import {startTemporalWorker,BROKER_NATIVE_MS} from '../temporal-worker.mjs';
+import {RUNNER_LOAD_CONTROL_MARGIN_MS} from '../../../packages/runtime/runner-load-budget.mjs';
 
 const configuration={temporal:{address:'temporal.synthetic.invalid:7233',namespace:'meri',taskQueue:'meri-conversations',tls:{}},native:{capabilityFile:'/synthetic/not-read'},limits:{requestMs:100,shutdownMs:100},http:{}};
 function boundaries(){
@@ -32,4 +34,12 @@ test('real startup orders issuer before private material and exposes asynchronou
  assert.equal(b.calls[0],'issuer');assert.ok(b.calls.indexOf('material')<b.calls.indexOf('connect'));
  b.lose();await assert.rejects(runtime.completion,{code:'TEMPORAL_AUTHORIZATION_UNAVAILABLE'});await runtime.close();
  assert.equal(b.state(),'STOPPED');assert.ok(b.calls.includes('connection-close'));
+});
+
+test('the broker native client allows one control margin above a task router exchange',async()=>{
+ const b=boundaries(),stub=b.owners.nativeClient;let options;b.owners.nativeClient=value=>{options=value;return stub(value);};
+ const runtime=await startTemporalWorker(configuration,{testOwners:b.owners});
+ try{const router=Number(/createTaskRouterApplication\(\{[^}]*maxRequestMs:(\d+)\}\)/u.exec(readFileSync(new URL('../control.mjs',import.meta.url),'utf8'))[1]);
+  assert.equal(options.maxRequestMs,BROKER_NATIVE_MS);assert.ok(BROKER_NATIVE_MS>=router+RUNNER_LOAD_CONTROL_MARGIN_MS,`broker ${BROKER_NATIVE_MS} ms against router ${router} ms`);}
+ finally{await runtime.close();}
 });

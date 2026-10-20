@@ -7,7 +7,7 @@ import test from 'node:test';import assert from 'node:assert/strict';import {cre
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {createExecutionBinding} from '../../control/conversations/execution-boundary.mjs';
 import {binding,versions} from '../../control/conversations/test/store-fixture.mjs';
-import {createBrokerActivity} from '../temporal-worker.mjs';
+import {createBrokerActivity,BROKER_NATIVE_MS} from '../temporal-worker.mjs';
 import {validateConfiguration} from '../config.mjs';
 import {createNativeCapabilityClient} from '../native-client.mjs';
 import {createPreparedTaskKickoff} from '../native-authority/prepared-kickoff.mjs';
@@ -19,7 +19,7 @@ import {candidateFixture} from './prepared-candidate-fixture.mjs';
 const control='synthetic-existing-control',task='synthetic-existing-task',sha=v=>createHash('sha256').update(v).digest('hex');
 const taskArn='arn:aws:ecs:us-east-1:967807252336:task/meri/'+'a'.repeat(32);
 // The activity's own cleanup lifetime: an original stop that does not settle inside it is BROKER_KICKOFF_CLEANUP_UNKNOWN.
-const CLEANUP_BOUND_MS=3000;
+const CLEANUP_BOUND_MS=BROKER_NATIVE_MS;
 
 test('audit probe: a default-constructed broker never uses execution/start and stops the original when cancelled after launch and poll',async()=>{
  const executionId=hash(binding),expiresAtMs=Date.now()+30000,calls=[],abort=new AbortController();let polls=0,stopLive=null;
