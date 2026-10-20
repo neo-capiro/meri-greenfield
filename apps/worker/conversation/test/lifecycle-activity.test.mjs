@@ -111,3 +111,31 @@ test('a fenced read that does not answer stays fatal: a refused publication must
  await assert.rejects(execute({binding:f.binding}));
  assert.equal(claims,0);assert.equal(f.state.records,0);
 });
+
+// Delta coalescing (activity.mjs foldDeltas): the SDK is read ahead while a publication is in flight, so these pin that a refusal
+// and a hold still end all display output, exactly as they did when every delta was its own publication.
+const streamed=(f,count,stop)=>({async *[Symbol.asyncIterator](){
+ yield {type:'system',subtype:'init',session_id:f.sessionId};
+ yield {type:'stream_event',parent_tool_use_id:null,event:{type:'message_start',message:{id:'m1'}}};
+ yield {type:'stream_event',parent_tool_use_id:null,event:{type:'content_block_start',index:0,content_block:{type:'text',text:''}}};
+ for(let i=0;i<count;i++)yield {type:'stream_event',parent_tool_use_id:null,event:{type:'content_block_delta',index:0,delta:{type:'text_delta',text:`w${i} `}}};
+ await stop.promise;},async interrupt(){f.state.interrupts++;return {still_queued:[]};},close(){f.state.closed++;stop.resolve();}});
+test('a refused publication of streamed deltas fences: the deltas read ahead are never published and the hold settles',async()=>{
+ const f=fixture({action:'pause'});let hold=false,emitted=false,refused=0;const stop=Promise.withResolvers();
+ f.runOwner.nextControls=async()=>{if(!hold||emitted)return [];emitted=true;return [f.entry];};
+ f.runOwner.append=async({event})=>{if(event.type==='message.delta'){hold=true;refused++;throw unanswered('NATIVE_UNAVAILABLE');}f.state.events.push(event);};
+ const execute=createConversationActivity({runOwner:f.runOwner,prepareRuntime:f.prepareRuntime,lifecycle:{captureCheckpoint:f.captureCheckpoint,pollMs:5},query:()=>streamed(f,20,stop)});
+ assert.deepEqual(await execute({binding:f.binding}),{state:'paused'});
+ assert.equal(refused,1,'one refused publication, then nothing');assert.equal(f.state.claims,1);assert.equal(f.state.records,1);
+ assert.deepEqual(f.state.events.map(e=>e.data.state),['starting','running']);
+});
+test('a hold claimed while a delta publication is in flight ends display output: nothing read ahead is folded or published',async()=>{
+ const f=fixture({action:'pause'});let gate=false,emitted=false;const stop=Promise.withResolvers(),published=[];
+ f.runOwner.nextControls=async()=>{if(!gate||emitted)return [];emitted=true;return [f.entry];};
+ f.runOwner.append=async({event})=>{if(event.type==='message.delta'){published.push(event.data.text);
+   if(published.length===1){gate=true;while(f.state.claims===0)await new Promise(resolve=>setTimeout(resolve,5));await new Promise(resolve=>setTimeout(resolve,20));}}
+  f.state.events.push(event);};
+ const execute=createConversationActivity({runOwner:f.runOwner,prepareRuntime:f.prepareRuntime,lifecycle:{captureCheckpoint:f.captureCheckpoint,pollMs:5},query:()=>streamed(f,20,stop)});
+ assert.deepEqual(await execute({binding:f.binding}),{state:'paused'});
+ assert.deepEqual(published,['w0 '],'only the publication in flight when the hold was claimed');assert.equal(f.state.records,1);
+});
