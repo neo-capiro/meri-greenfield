@@ -3,11 +3,13 @@
 // HTTP listener: the first model request is captured and answered locally, nothing leaves loopback and no credential is used.
 // Linux only (the supervisor pins /proc facts and process groups); skipped when the platform CLI is not installed.
 // SDK_START_DELAY_MS models the startup exchange between descriptor capture and the start acknowledgement.
+// Both execution transports run here: 'forwarded' (byte frames through the receiver's routes, an in-process fetch standing in
+// for control's router) and 'local' (runner.executionTransport, local-process-client.mjs).
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createServer} from 'node:http';
 import {createHash} from 'node:crypto';
-import {existsSync, mkdtempSync, mkdirSync, readFileSync, realpathSync, rmSync} from 'node:fs';
+import {cpSync, existsSync, mkdtempSync, mkdirSync, readFileSync, realpathSync, rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {dirname, join} from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -17,6 +19,7 @@ import {createRemoteNativeTaskApplication} from '../remote-task-http.mjs';
 import {createRemoteSdkProcessClient} from '../remote-task-client.mjs';
 import {createIndependentNativeTask} from '../independent-task.mjs';
 import {createPreparedRunnerQuery} from '../runner-query.mjs';
+import {createLocalSdkProcessClient} from '../local-process-client.mjs';
 
 const cliPackage = fileURLToPath(new URL('../../../worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk-linux-x64/claude', import.meta.url));
 const available = process.platform === 'linux' && existsSync(cliPackage);
@@ -25,8 +28,9 @@ const taskArn = 'arn:aws:ecs:us-east-1:967807252336:task/synthetic/' + 'a'.repea
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const startDelayMs = Number(process.env.SDK_START_DELAY_MS ?? 2000);
 
-/** Local stand-in for the trusted proxy: records the first model request shape only and answers one streamed text turn. */
-async function localProvider(t) {
+/** Local stand-in for the trusted proxy: records the model request shape only and answers one streamed text turn, after `hold()`
+ * settles when given (a held request never answers). */
+async function localProvider(t, {hold} = {}) {
   const requests = [];
   const events = model => [
     ['message_start', {type: 'message_start', message: {id: 'msg_local', type: 'message', role: 'assistant', model, content: [], stop_reason: null, stop_sequence: null, usage: {input_tokens: 1, output_tokens: 1}}}],
@@ -47,6 +51,7 @@ async function localProvider(t) {
       }
       const body = JSON.parse(Buffer.concat(chunks).toString('utf8'));
       requests.push({at: Date.now(), path, method: request.method, model: body.model, stream: body.stream === true, messages: body.messages?.length ?? 0});
+      if (hold) return void hold();
       if (body.stream === true) {
         response.writeHead(200, {'content-type': 'text/event-stream', 'cache-control': 'no-cache'});
         for (const [event, data] of events(body.model)) response.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
@@ -58,16 +63,26 @@ async function localProvider(t) {
     });
   });
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
-  t.after(() => new Promise(resolve => server.close(resolve)));
+  t.after(() => new Promise(resolve => { server.closeAllConnections(); server.close(resolve); }));
   return {origin: 'http://127.0.0.1:' + server.address().port, requests};
 }
 
-/** One composed run; `refuseStart` makes the control-side start authority refuse after the modelled delay. */
-async function runQuery(t, {refuseStart = false} = {}) {
-  const provider = await localProvider(t);
-  const root = realpathSync(mkdtempSync(join(tmpdir(), 'meri-sdk-milestones-'))), workspace = join(root, 'workspace'), configDirectory = join(root, 'config-run');
-  mkdirSync(workspace, {mode: 0o700}); mkdirSync(configDirectory, {mode: 0o700});
+/** A conversation's shared workspace; each run gets its own SDK config directory, as in the product. */
+function conversation(t) {
+  const root = realpathSync(mkdtempSync(join(tmpdir(), 'meri-sdk-milestones-'))), workspace = join(root, 'workspace');
+  mkdirSync(workspace, {mode: 0o700});
   t.after(() => rmSync(root, {recursive: true, force: true}));
+  return {root, workspace, runs: 0};
+}
+
+/** One composed run. `refuseStart` makes the control-side start authority refuse after the modelled delay. `resume` continues an
+ * SDK session whose transcript is first restored into this run's own config directory, as the product's checkpoint restore does
+ * (the SDK's SessionStore resume would instead materialize into /tmp/claude-resume-*, which the descriptor policy refuses). */
+async function runQuery(t, {refuseStart = false, transport = 'forwarded', session = conversation(t), resume, provider, onReceiver} = {}) {
+  provider ??= await localProvider(t);
+  const {root, workspace} = session, previous = join(root, 'config-run-' + session.runs), configDirectory = join(root, 'config-run-' + ++session.runs);
+  mkdirSync(configDirectory, {mode: 0o700});
+  if (resume) cpSync(join(previous, 'projects'), join(configDirectory, 'projects'), {recursive: true});
   const command = realpathSync(cliPackage), executableSha256 = sha(readFileSync(command));
   const {binding, target} = continuationFixture(), executionKey = hash(binding);
   const original = {binding, executionKey, executionId: executionKey, planSha256: 'b'.repeat(64), expiresAtMs: Date.now() + 600000, versions: target.versions};
@@ -76,9 +91,10 @@ async function runQuery(t, {refuseStart = false} = {}) {
 
   const began = Date.now(), at = () => Date.now() - began, milestones = {}, mark = name => { milestones[name] ??= at(); };
   let nativeTask;
+  const verifications = {count: 0};
   const ack = pins => ({original, descriptorSha256: pins.descriptorSha256, configTreeSha256: pins.configTreeSha256, preparationId, taskArn, checkedAtMs: Date.now(), expiresAtMs: original.expiresAtMs});
   const authorizer = {
-    prepare: async pins => ack(pins), verify: async pins => ack(pins), started: async pins => ack(pins),
+    prepare: async pins => ack(pins), verify: async pins => { verifications.count++; return ack(pins); }, started: async pins => ack(pins),
     admitted: async () => ({original, taskArn, checkedAtMs: Date.now(), expiresAtMs: original.expiresAtMs}),
     // The control broker launches the supervisor inside start; the delay stands for the authority chain around it.
     start: async ({signal, ...pins}) => {
@@ -95,8 +111,9 @@ async function runQuery(t, {refuseStart = false} = {}) {
         executableSha256, launch: {command: descriptor.command, args: descriptor.args, env: descriptor.env}, enabled: true};
       nativeTask = createIndependentNativeTask({original, launchConfiguration, deferredSpawn: true, maxRequestMs: 25000});
       return {task: nativeTask, launchConfiguration};
-    }, enabled: true, limits: {maxRequestMs: 25000}});
+    }, enabled: true, limits: {maxRequestMs: 25000}, executionTransport: transport});
   t.after(() => receiver.close().catch(() => {}));
+  onReceiver?.({receiver, original});
 
   // In-process stand-in for runner → control router → receiver; records which byte operations happen when.
   const exchanges = [];
@@ -116,12 +133,15 @@ async function runQuery(t, {refuseStart = false} = {}) {
     if (exchanges.at(-1).initializeResponse) mark('initializeResponded');
     return response;
   };
-  const client = createRemoteSdkProcessClient({original, origin: 'https://runner.invalid', credential: taskToken, fetchImpl, startupMaxRequestMs: 23000});
-  const spawn = client.spawnClaudeCodeProcess;
-  const processClient = {...client, spawnClaudeCodeProcess: descriptor => { mark('descriptorCaptured'); return spawn(descriptor); }};
+  const client = transport === 'local' ? createLocalSdkProcessClient({task: receiver.local})
+    : createRemoteSdkProcessClient({original, origin: 'https://runner.invalid', credential: taskToken, fetchImpl, startupMaxRequestMs: 23000});
+  const processClient = {...client,
+    spawnClaudeCodeProcess: descriptor => { mark('descriptorCaptured'); return client.spawnClaudeCodeProcess(descriptor); },
+    startPreparedProcess: async () => { await client.startPreparedProcess(); mark('startAcknowledged'); }};
   const query = createPreparedRunnerQuery({processClientFactory: () => processClient})({
     prompt: (async function* () { yield {type: 'user', session_id: '', parent_tool_use_id: null, message: {role: 'user', content: 'Reply with hello'}}; })(),
-    options: {cwd: workspace, env, pathToClaudeCodeExecutable: command, model: 'meri-sonnet-qualification', maxTurns: 1, includePartialMessages: true, settingSources: [], tools: []}});
+    options: {cwd: workspace, env, pathToClaudeCodeExecutable: command, model: 'meri-sonnet-qualification', maxTurns: 1, includePartialMessages: true, settingSources: [], tools: [],
+      ...(resume ? {resume} : {})}});
 
   let result, sessionId, error;
   const failure = setTimeout(() => { void query.close(); }, 120000);
@@ -131,13 +151,13 @@ async function runQuery(t, {refuseStart = false} = {}) {
       if (message.type === 'stream_event') mark('firstStreamEvent');
       if (message.type === 'result') { result = message; mark('result'); break; }
     }
-  } catch (thrown) { error = thrown; mark('iteratorRejected'); } finally { clearTimeout(failure); await query.close().catch(() => {}); }
+  } catch (thrown) { error = thrown; mark('iteratorRejected'); } finally { mark('iterationEnded'); clearTimeout(failure); await query.close().catch(() => {}); }
   const firstModelRequest = provider.requests.find(request => request.path === '/v1/messages');
   if (firstModelRequest) milestones.firstModelRequest = firstModelRequest.at - began;
-  t.diagnostic(JSON.stringify({startDelayMs, milestones, providerRequests: provider.requests.map(({at: when, ...rest}) => ({...rest, at: when - began})),
+  t.diagnostic(JSON.stringify({transport, startDelayMs, verifications: verifications.count, milestones, providerRequests: provider.requests.map(({at: when, ...rest}) => ({...rest, at: when - began})),
     stdinBeforeStart: exchanges.filter(e => e.operation === 'stdin' && e.sent < milestones.startAcknowledged).length,
     operations: exchanges.reduce((counts, e) => ({...counts, [e.operation]: (counts[e.operation] ?? 0) + 1}), {}), result: result && {subtype: result.subtype, isError: result.is_error}, error: error?.code}));
-  return {milestones, exchanges, provider, firstModelRequest, sessionId, result, error, receiver, nativeTask};
+  return {milestones, exchanges, provider, firstModelRequest, sessionId, result, error, receiver, nativeTask, verifications: verifications.count};
 }
 
 test('SDK initialization milestones through the deferred remote process facade', {skip: !available && 'needs Linux and the pinned Linux CLI'}, async t => {
@@ -165,4 +185,63 @@ test('a refused start ends the SDK iteration promptly, before any process or mod
   assert.deepEqual({supervisorPid: nativeTask.status().supervisorPid, nativePid: nativeTask.status().nativePid}, {supervisorPid: null, nativePid: null});
   // A failed start stays UNKNOWN at the receiver even after its stop; only the stop receipt says nothing was allocated.
   assert.equal(receiver.status().state, 'unknown');
+});
+
+const linux = {skip: !available && 'needs Linux and the pinned Linux CLI'};
+
+test('local execution reaches the same milestones with no byte exchanges and only startup plus lease verification', linux, async t => {
+  const local = await runQuery(t, {transport: 'local'}), forwarded = await runQuery(t);
+  for (const name of ['descriptorCaptured', 'supervisorBooted', 'startAcknowledged', 'sessionRegistered', 'firstModelRequest', 'result'])
+    assert.equal(typeof local.milestones[name], 'number', 'missing milestone ' + name + ' ' + JSON.stringify(local.milestones));
+  assert.ok(local.milestones.startAcknowledged <= local.milestones.sessionRegistered && local.milestones.sessionRegistered <= local.milestones.firstModelRequest);
+  assert.equal(local.result.subtype, 'success');
+  assert.equal(local.nativeTask.status().physicalStopProven, true);
+  // Per-frame cost contrast for the same one-word turn: every forwarded frame is a byte exchange with two authority rechecks.
+  const frames = forwarded.exchanges.filter(e => e.operation === 'stdin' || e.operation === 'stdout').length;
+  assert.deepEqual(local.exchanges, []);
+  assert.ok(frames >= 10, String(frames));
+  assert.ok(forwarded.verifications >= 2 * frames, JSON.stringify({frames, verifications: forwarded.verifications}));
+  assert.ok(local.verifications <= 4, String(local.verifications));
+  t.diagnostic(JSON.stringify({contrast: {forwarded: {frames, verifications: forwarded.verifications, toResultMs: forwarded.milestones.result},
+    local: {frames: 0, verifications: local.verifications, toResultMs: local.milestones.result}}}));
+});
+
+for (const transport of ['forwarded', 'local']) {
+  test('two-turn conversation resumes its SDK session from the restored transcript (' + transport + ')', linux, async t => {
+    const session = conversation(t), provider = await localProvider(t);
+    const first = await runQuery(t, {transport, session, provider});
+    assert.equal(first.result.subtype, 'success');
+    const second = await runQuery(t, {transport, session, provider, resume: first.sessionId});
+    assert.equal(second.result.subtype, 'success');
+    assert.equal(second.sessionId, first.sessionId);
+    const modelRequests = provider.requests.filter(request => request.path === '/v1/messages');
+    // The second model request carries the first turn's user and assistant messages before the new prompt.
+    assert.equal(modelRequests.length, 2);
+    assert.ok(modelRequests[1].messages >= modelRequests[0].messages + 2, JSON.stringify(modelRequests.map(request => request.messages)));
+    assert.equal(second.nativeTask.status().physicalStopProven, true);
+  });
+}
+
+test('a refused start ends local execution promptly, before any process or model request', linux, async t => {
+  const {milestones, exchanges, provider, error, nativeTask} = await runQuery(t, {transport: 'local', refuseStart: true});
+  assert.equal(error?.code, 'REMOTE_TASK_REFUSED');
+  assert.ok(milestones.iteratorRejected - milestones.startRefused < 3000, JSON.stringify(milestones));
+  assert.deepEqual(exchanges, []);
+  assert.deepEqual(provider.requests, []);
+  assert.deepEqual({supervisorPid: nativeTask.status().supervisorPid, nativePid: nativeTask.status().nativePid}, {supervisorPid: null, nativePid: null});
+});
+
+test('a control stop during a local run stops the CLI mid-request and ends the SDK iteration', linux, async t => {
+  let run, stopped;
+  const provider = await localProvider(t, {hold: () => {
+    stopped = run.receiver.handle(new Request('https://runner.invalid/v1/native-task/stop', {method: 'POST',
+      headers: {authorization: 'Bearer ' + controlToken, 'content-type': 'application/json'}, body: JSON.stringify({original: run.original})}));
+  }});
+  const result = await runQuery(t, {transport: 'local', provider, onReceiver: value => { run = value; }});
+  const response = await stopped;
+  assert.equal(response.status, 200);
+  assert.equal((await response.json()).receipt.physicalStopProven, true);
+  assert.equal(result.result, undefined);
+  assert.ok(result.milestones.iterationEnded - result.milestones.firstModelRequest < 5000, JSON.stringify(result.milestones));
+  assert.equal(result.nativeTask.status().physicalStopProven, true);
 });

@@ -10,10 +10,10 @@ import {captureSdkConfiguration,installSdkConfiguration,verifySdkConfiguration} 
 import {RUNNER_NATIVE_STARTUP_RECEIVER_MS} from '../../../packages/runtime/runner-load-budget.mjs';
 const sha=b=>createHash('sha256').update(b).digest('hex'),frame=b=>({bytes:b.length,sha256:sha(b),base64:b.toString('base64')}),get=Object.fromEntries(['url','method','headers','body','signal'].map(k=>[k,Object.getOwnPropertyDescriptor(Request.prototype,k).get]));
 export function createRemoteNativeTaskApplication(configuration){
- const c=own(configuration,['original','controlCapabilitySha256','taskCapabilitySha256'],['task','launchConfiguration','preparationAuthorizer','nativeFactory','descriptorPolicy','taskArn','capture','enabled','now','limits','configurationSha256','parkedWorkspace']);
- const original=remoteOriginal(c.original),now=c.now??Date.now,limits=transportLimits(c.limits),enabled=c.enabled??false;
+ const c=own(configuration,['original','controlCapabilitySha256','taskCapabilitySha256'],['task','launchConfiguration','preparationAuthorizer','nativeFactory','descriptorPolicy','taskArn','capture','enabled','now','limits','configurationSha256','parkedWorkspace','executionTransport']);
+ const original=remoteOriginal(c.original),now=c.now??Date.now,limits=transportLimits(c.limits),enabled=c.enabled??false,local=(c.executionTransport??'forwarded')==='local';
  if(typeof now!=='function'||typeof enabled!=='boolean'||![c.controlCapabilitySha256,c.taskCapabilitySha256].every(digest)||c.controlCapabilitySha256===c.taskCapabilitySha256)throw remoteFault();
- if(c.nativeFactory&&(types.isProxy(c.nativeFactory)||types.isAsyncFunction(c.nativeFactory)))throw remoteFault();const legacy=c.task!==undefined;if(legacy!== (c.launchConfiguration!==undefined)||legacy&&(c.nativeFactory!==undefined||c.descriptorPolicy!==undefined)||!legacy&&(!c.preparationAuthorizer||typeof c.nativeFactory!=='function'))throw remoteFault();
+ if(c.nativeFactory&&(types.isProxy(c.nativeFactory)||types.isAsyncFunction(c.nativeFactory)))throw remoteFault();const legacy=c.task!==undefined;if(legacy!== (c.launchConfiguration!==undefined)||legacy&&(c.nativeFactory!==undefined||c.descriptorPolicy!==undefined)||!legacy&&(!c.preparationAuthorizer||typeof c.nativeFactory!=='function')||!['forwarded','local',undefined].includes(c.executionTransport)||local&&legacy)throw remoteFault();
  let task=c.task,p=legacy?compileNativeLaunch(c.launchConfiguration):undefined;if(p&&(hash(p.binding)!==hash(original.binding)||p.expiresAtMs!==original.expiresAtMs))throw remoteFault();
  const authorizer=c.preparationAuthorizer,prepareAuthority=authorizer&&storageMethod(authorizer,'prepare'),verifyAuthority=authorizer&&storageMethod(authorizer,'verify'),startAuthority=authorizer&&storageMethod(authorizer,'start'),startedAuthority=authorizer&&Object.hasOwn(authorizer,'started')?storageMethod(authorizer,'started'):undefined;
  const admittedAuthority=c.parkedWorkspace&&authorizer?storageMethod(authorizer,'admitted'):undefined;if(c.parkedWorkspace&&!admittedAuthority)throw remoteFault();
@@ -42,7 +42,8 @@ export function createRemoteNativeTaskApplication(configuration){
    processPort.stdout.on('error',outputFailed);processPort.stdout.on('close',()=>{if(!stdoutEnded)outputFailed();});
    processPort.on('exit',(code,signal)=>{exited=true;ended ||= stdoutEnded;exitCode=code;signalCode=signal;notify();});
    if(processPort.stdout.destroyed&&!stdoutEnded)outputFailed();
-   processPort.stdout.on('data',raw=>{if(['closing','stopped'].includes(state))return;const bytes=Buffer.from(raw);for(let at=0;at<bytes.length;at+=limits.maxFrameBytes){const part=bytes.subarray(at,at+limits.maxFrameBytes);queued+=part.length;if(queued>limits.maxBufferedBytes){state='unknown';void stop().catch(()=>{});return;}output.push(Buffer.from(part));}notify();});
+   // Locally executed, the SDK reads this stream itself; only the forwarded path frames it for stdout polls.
+   if(!local)processPort.stdout.on('data',raw=>{if(['closing','stopped'].includes(state))return;const bytes=Buffer.from(raw);for(let at=0;at<bytes.length;at+=limits.maxFrameBytes){const part=bytes.subarray(at,at+limits.maxFrameBytes);queued+=part.length;if(queued>limits.maxBufferedBytes){state='unknown';void stop().catch(()=>{});return;}output.push(Buffer.from(part));}notify();});
    await fresh(signal);if(state!=='preparing'||signal.aborted)throw remoteFault();state='prepared';return {original,...pins,...(ack?{ack}:{})};
   }catch(error){if(!['closing','stopped'].includes(state))state='unknown';try{await stop();}catch{}throw error;}
  }
@@ -80,11 +81,23 @@ export function createRemoteNativeTaskApplication(configuration){
  // Startup exchanges finish inside the control router's startup allowance, so a slow nested authority call
  // is refused here first and the router still receives an answer instead of cutting the connection.
  const startupMs=Math.min(limits.maxRequestMs,RUNNER_NATIVE_STARTUP_RECEIVER_MS);
+ const lifetime=(name,signal)=>createOperationLifetime({now,signal,deadlineMs:Math.min(now()+(name==='prepare'||name==='start'?startupMs:limits.maxRequestMs),['stop','inspect','retire'].includes(name)?Infinity:original.expiresAtMs),errorFactory:remoteFault});
+ // Every in-process refusal is the same fixed REMOTE_TASK_REFUSED the forwarded route answers.
+ async function bounded(name,signal,body){let life;try{life=lifetime(name,signal);const result=await life.run(body);life.check();return result;}catch{throw remoteFault();}finally{life?.close();}}
+ // In-process task operations for local execution (local-process-client.mjs): the same prepare/start owner, authority calls
+ // and lifetimes as the forwarded routes, without the control hairpin; `verify` is the running lease recheck.
+ const localTask=local?Object.freeze({
+  prepare:({descriptor,signal})=>bounded('prepare',signal,s=>operation('prepare',{descriptor},s)),
+  start:({descriptorSha256,signal})=>bounded('start',signal,s=>operation('start',{descriptorSha256},s)),
+  verify:({signal}={})=>bounded('verify',signal,async s=>{if(state!=='running')throw remoteFault();await fresh(s);if(state!=='running')throw remoteFault();}),
+  process:()=>{if(state!=='running')throw remoteFault();return processPort;},
+  stop,
+ }):undefined;
  return Object.freeze({async handle(request){let life;try{
   const info=Object.fromEntries(Object.entries(get).map(([k,g])=>[k,g.call(request)])),url=new URL(info.url);if(!url.pathname.startsWith('/v1/native-task/'))return null;const name=url.pathname.slice('/v1/native-task/'.length);if(!Object.hasOwn(fields,name)||url.search||info.method!=='POST')throw remoteFault();if(!enabled)return reply({error:{code:'REMOTE_TASK_UNAVAILABLE'}},503);
-  const header=k=>Headers.prototype.get.call(info.headers,k),auth=header('authorization');if(!auth?.startsWith('Bearer '))throw remoteFault();const token=auth.slice(7),control=matchesCapability(token,c.controlCapabilitySha256),taskRole=matchesCapability(token,c.taskCapabilitySha256);if(!control&&!(worker.has(name)&&taskRole)||worker.has(name)&&name!=='stop'&&!taskRole)throw remoteFault();
+  const header=k=>Headers.prototype.get.call(info.headers,k),auth=header('authorization');if(!auth?.startsWith('Bearer '))throw remoteFault();const token=auth.slice(7),control=matchesCapability(token,c.controlCapabilitySha256),taskRole=matchesCapability(token,c.taskCapabilitySha256);if(!control&&!(worker.has(name)&&taskRole)||worker.has(name)&&name!=='stop'&&(!taskRole||local))throw remoteFault();
   if(!/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(header('content-type')??'')||header('content-encoding'))throw remoteFault();const length=header('content-length');if(length!==null&&!/^(0|[1-9][0-9]*)$/u.test(length))throw remoteFault();
-  life=createOperationLifetime({now,signal:info.signal,deadlineMs:Math.min(now()+(name==='prepare'||name==='start'?startupMs:limits.maxRequestMs),['stop','inspect','retire'].includes(name)?Infinity:original.expiresAtMs),errorFactory:remoteFault});
+  life=lifetime(name,info.signal);
   const body=own(await jsonBody({body:info.body,length:length===null?null:Number(length)},name==='configuration'||name==='workspace-restore'?50331648:2097152,life,life.check),['original',...fields[name]]);exactOriginal(body.original,original);const {original:ignored,...input}=body;const result=await life.run(signal=>operation(name,input,signal));life.check();return reply(result);
- }catch{return reply({error:{code:'REMOTE_TASK_REFUSED'}},403);}finally{life?.close();}},close:stop,status:()=>({state,inputSequence,outputSequence,queuedBytes:queued})});
+ }catch{return reply({error:{code:'REMOTE_TASK_REFUSED'}},403);}finally{life?.close();}},close:stop,status:()=>({state,inputSequence,outputSequence,queuedBytes:queued}),...(localTask?{local:localTask}:{})});
 }

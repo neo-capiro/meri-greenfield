@@ -1,6 +1,7 @@
 /** Synchronous activity facade; first next prepares exactly one retained SDK Query. */
 import {prepareNativeSdkQuery} from './sdk-query-preparation.mjs';
 import {createRemoteSdkProcessClient} from './remote-task-client.mjs';
+import {createLocalSdkProcessClient} from './local-process-client.mjs';
 import {assertSdkOptions,assertSdkOptionsPin,assertSdkOptionsRestoration} from './sdk-option-template.mjs';
 import {own} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {executionFault} from './execution-broker.mjs';
@@ -26,3 +27,5 @@ export function createPreparedRunnerQuery(configuration){
 }
 /** The remote task path always pins its options: a missing pin is a configuration fault, never an unchecked query. */
 export function createRemoteRunnerQuery(configuration){const {sdkOptions,restoration,...transport}=configuration;if(sdkOptions===undefined)throw executionFault('SDK_PREPARATION_CONFIGURATION');return createPreparedRunnerQuery({sdkOptions,...(restoration===undefined?{}:{restoration}),processClientFactory:()=>createRemoteSdkProcessClient(transport)});}
+/** Local execution (runner.executionTransport 'local'): the same pinned query over this runner's own prepared task. */
+export function createLocalRunnerQuery(configuration){const {sdkOptions,restoration,task}=configuration;if(sdkOptions===undefined)throw executionFault('SDK_PREPARATION_CONFIGURATION');return createPreparedRunnerQuery({sdkOptions,...(restoration===undefined?{}:{restoration}),processClientFactory:()=>createLocalSdkProcessClient({task})});}

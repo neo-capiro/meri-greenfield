@@ -25,7 +25,7 @@ import {createSupervisorWorkspace} from './supervisor-workspace.mjs';
 import {createTaskCheckpointSource} from './task-checkpoint-source.mjs';
 import {createNativeCheckpointCapture} from './checkpoint-capture.mjs';
 import {createNativeCompletionCapture} from './completion-capture.mjs';
-import {createRemoteRunnerQuery} from './runner-query.mjs';
+import {createRemoteRunnerQuery,createLocalRunnerQuery} from './runner-query.mjs';
 import {sdkOptionsPin,sdkOptionsRestoration} from './sdk-option-template.mjs';
 import {sdkOptionsContinuation} from './continuation-pin.mjs';
 import {sdkSessionOperations} from '../../../packages/contracts/runtime-0.2/session.mjs';
@@ -53,7 +53,7 @@ export function createRemoteNativeController(configuration){
  return Object.freeze({prepared,remote,checkpoint,application,readsOwner:reads.owner,continuation,restorer,runtime:prepared.runtime,productPorts:Object.freeze({sdkSessionOwner,sdkSessionSnapshot:continuation}),reconcile,allocate:prepared.prepareAllocation,async close(){try{await prepared.close();}finally{await remote.close();}}});
 }
 export function createRemoteNativeWorker(configuration){
- const c=own(configuration,['original','preparationIntent','controlCapabilitySha256','taskCapabilitySha256','taskArn','native','processTransport'],['capture','session','enabled','now','limits','preparationBudget']);
+ const c=own(configuration,['original','preparationIntent','controlCapabilitySha256','taskCapabilitySha256','taskArn','native','processTransport'],['capture','session','enabled','now','limits','preparationBudget','executionTransport']);
  exactOriginal(c.processTransport.original,c.original);if(!matchesCapability(c.processTransport.credential,c.taskCapabilitySha256))throw Error('REMOTE_TASK_BINDING_REFUSED');
  // The SDK options pin is the configured run-invariant template plus this run's facts from the same intent and original binding. A
  // continuation run's resume fields are checked against the restoration the runner initialized this task's SDK session mirror with
@@ -65,7 +65,7 @@ export function createRemoteNativeWorker(configuration){
  // Workspace restore/verify rechecks admission while SDK preparation is
  // underway. The earlier gate proof cutoff does not apply to these reads.
  const taskPreparationBudget=c.preparationBudget?Object.freeze({...c.preparationBudget,admittedBefore:c.preparationBudget.nativePrepare,admittedAfter:c.preparationBudget.nativePrepare}):undefined;
- let nativeTask,activeQuery;const remoteQuery=createRemoteRunnerQuery({...c.processTransport,...(startupMaxRequestMs===undefined?{}:{startupMaxRequestMs}),...(c.preparationBudget?{startupBudget:c.preparationBudget}:{}),sdkOptions:sdkOptionsPin(i,c.original.binding),...(c.session?{restoration:sdkOptionsRestoration(c.original.binding,c.session)}:{})}),query=input=>{activeQuery=remoteQuery(input);return activeQuery;};
+ let nativeTask,activeQuery,runnerQuery;const query=input=>{activeQuery=runnerQuery(input);return activeQuery;};
  const workspace=createSupervisorWorkspace({binding:c.original.binding,workspace:i.workspace,expiresAtMs:c.original.expiresAtMs,now:c.now??Date.now});
  if(c.capture&&c.session)throw Error('REMOTE_CAPTURE_CONFIGURATION');
  const capture=c.session?createTaskCheckpointSource({original:c.original,workspace:i.workspace,session:c.session,native:{close:()=>nativeTask.close(),inspect:value=>nativeTask.inspect(value)},closeQuery:()=>activeQuery.close(),now:c.now??Date.now,maxRequestMs:c.limits?.maxRequestMs??8000}):c.capture;
@@ -75,7 +75,12 @@ export function createRemoteNativeWorker(configuration){
   let continuation=null;if(c.session){try{continuation=sdkOptionsContinuation(storageMethod(c.session,'restoration')(),{binding:original.binding,workspace:i.workspace});}catch{throw executionFault('PREPARATION_REFUSED');}}
   const d=matchPreparedDescriptorShape(descriptor,i,continuation),launchConfiguration={binding:original.binding,workspace:d.cwd,configDirectory:d.env.CLAUDE_CONFIG_DIR,secureStorageDirectory:i.secureStorageDirectory,versions:{sdk:original.versions.sdk,cli:original.versions.cli},expiresAtMs:original.expiresAtMs,executableSha256:i.executableSha256,launch:{command:d.command,args:d.args,env:d.env},enabled:c.enabled??false};
   nativeTask=createIndependentNativeTask({original,launchConfiguration,deferredSpawn:true,...(startupMaxRequestMs===undefined?{}:{startupMaxRequestMs})});return {task:nativeTask,launchConfiguration};
- },parkedWorkspace:workspace,...(capture?{capture}:{}),enabled:c.enabled??false,now:c.now??Date.now,...(c.limits?{limits:c.limits}:{})});
+ },parkedWorkspace:workspace,...(capture?{capture}:{}),enabled:c.enabled??false,now:c.now??Date.now,...(c.limits?{limits:c.limits}:{}),...(c.executionTransport===undefined?{}:{executionTransport:c.executionTransport})});
+ const pinned={sdkOptions:sdkOptionsPin(i,c.original.binding),...(c.session?{restoration:sdkOptionsRestoration(c.original.binding,c.session)}:{})};
+ // Temporary execution switch (ADR EXECUTION-ARCHITECTURE-SIMPLIFICATION-20261020 phase 1): 'local' runs the SDK's CLI through this
+ // task's own receiver in-process; the default keeps the forwarded byte path through control's task router.
+ runnerQuery=c.executionTransport==='local'?createLocalRunnerQuery({...pinned,task:application.local})
+  :createRemoteRunnerQuery({...c.processTransport,...(startupMaxRequestMs===undefined?{}:{startupMaxRequestMs}),...(c.preparationBudget?{startupBudget:c.preparationBudget}:{}),...pinned});
  return Object.freeze({application,workspace,query,capture,close:()=>application.close()});
 }
 
